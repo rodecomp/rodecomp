@@ -106,8 +106,9 @@ void CRedLineEffect::OnProcess() {
         const int alpha = particle->alpha - 15;
         particle->alpha = alpha >= 0 ? alpha : 0;
         particle->speedParameter = std::max(0.0f, particle->speedParameter - 5.0f);
-        width = particle->speedParameter;
-      } else if (age < 100) {
+      }
+
+      if (age < 100) {
         width = 0.0f;
       } else if (age <= 115) {
         width = g_sinTable[(age - 100) * 6] * particle->speedParameter;
@@ -124,31 +125,32 @@ void CRedLineEffect::OnProcess() {
       const float rise = width * g_sinTable[particle->phaseParameter];
 
       EffectPoint points[2];
-      points[0].x = particle->scale * g_cosTable[angle];
-      points[0].z = particle->scale * g_sinTable[angle];
+      float innerX = particle->scale * g_cosTable[angle];
+      float innerY = 0.0f;
+      float innerZ = particle->scale * g_sinTable[angle];
 
       if (particle->animationParameter == 1.0f) {
-        points[0].x *= 1.5f;
-        points[0].z *= 1.5f;
+        innerX *= 1.5f;
+        innerZ *= 1.5f;
       }
 
-      points[1].x = flat * g_cosTable[angle] + points[0].x;
-      points[1].y = points[0].y - rise;
-      points[1].z = flat * g_sinTable[angle] + points[0].z;
+      float outerX = flat * g_cosTable[angle] + innerX;
+      float outerY = innerY - rise;
+      float outerZ = flat * g_sinTable[angle] + innerZ;
 
-      points[0].x += particle->offsetX;
-      points[0].y += particle->offsetY;
-      points[0].z += particle->offsetZ;
-      points[1].x += particle->offsetX;
-      points[1].y += particle->offsetY;
-      points[1].z += particle->offsetZ;
+      innerX += particle->offsetX;
+      innerY += particle->offsetY;
+      innerZ += particle->offsetZ;
+      outerX += particle->offsetX;
+      outerY += particle->offsetY;
+      outerZ += particle->offsetZ;
 
-      particle->vertices[1].x = points[1].x;
-      particle->vertices[1].y = points[1].y;
-      particle->vertices[1].z = points[1].z;
-      particle->vertices[3].x = points[0].x;
-      particle->vertices[3].y = points[0].y;
-      particle->vertices[3].z = points[0].z;
+      particle->vertices[1].x = outerX;
+      particle->vertices[1].y = outerY;
+      particle->vertices[1].z = outerZ;
+      particle->vertices[3].x = innerX;
+      particle->vertices[3].y = innerY;
+      particle->vertices[3].z = innerZ;
 
       if (segment != 0) {
         particle->vertices[0].x = this->previousOuter.x;
@@ -159,12 +161,12 @@ void CRedLineEffect::OnProcess() {
         particle->vertices[2].z = this->previousInner.z;
       }
 
-      this->previousInner.x = points[0].x;
-      this->previousInner.y = points[0].y;
-      this->previousInner.z = points[0].z;
-      this->previousOuter.x = points[1].x;
-      this->previousOuter.y = points[1].y;
-      this->previousOuter.z = points[1].z;
+      this->previousInner.x = innerX;
+      this->previousInner.y = innerY;
+      this->previousInner.z = innerZ;
+      this->previousOuter.x = outerX;
+      this->previousOuter.y = outerY;
+      this->previousOuter.z = outerZ;
     }
 
     ++particle->elapsedFrames;

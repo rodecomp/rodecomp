@@ -75,19 +75,19 @@ void CLevel99Effect::AddRings() {
         const float height = radius * g_sinTable[ringTilt];
 
         EffectPoint points[2];
-        points[0].x = particle->scale * cosine;
-        points[0].y = 0.0f;
-        points[0].z = particle->scale * sine;
-        points[1].x = points[0].x + spread * cosine;
-        points[1].y = 0.0f - height;
-        points[1].z = points[0].z + spread * sine;
+        const float innerX = particle->scale * cosine;
+        const float innerY = 0.0f;
+        const float innerZ = particle->scale * sine;
+        const float outerX = innerX + spread * cosine;
+        const float outerY = 0.0f - height;
+        const float outerZ = innerZ + spread * sine;
 
-        particle->vertices[3].x = points[0].x;
-        particle->vertices[3].y = points[0].y;
-        particle->vertices[3].z = points[0].z;
-        particle->vertices[1].x = points[1].x;
-        particle->vertices[1].y = points[1].y;
-        particle->vertices[1].z = points[1].z;
+        particle->vertices[3].x = innerX;
+        particle->vertices[3].y = innerY;
+        particle->vertices[3].z = innerZ;
+        particle->vertices[1].x = outerX;
+        particle->vertices[1].y = outerY;
+        particle->vertices[1].z = outerZ;
 
         if (index != 0) {
           particle->vertices[0].x = this->previousRingPoints[1].x;
@@ -98,12 +98,12 @@ void CLevel99Effect::AddRings() {
           particle->vertices[2].z = this->previousRingPoints[0].z;
         }
 
-        this->previousRingPoints[0].x = points[0].x;
-        this->previousRingPoints[0].y = points[0].y;
-        this->previousRingPoints[0].z = points[0].z;
-        this->previousRingPoints[1].x = points[1].x;
-        this->previousRingPoints[1].y = points[1].y;
-        this->previousRingPoints[1].z = points[1].z;
+        this->previousRingPoints[0].x = innerX;
+        this->previousRingPoints[0].y = innerY;
+        this->previousRingPoints[0].z = innerZ;
+        this->previousRingPoints[1].x = outerX;
+        this->previousRingPoints[1].y = outerY;
+        this->previousRingPoints[1].z = outerZ;
       }
     }
 

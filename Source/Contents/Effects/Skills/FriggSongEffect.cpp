@@ -1,6 +1,7 @@
 #include "Contents/Effects/Skills/FriggSongEffect.h"
 
 #include "Contents/Effects/Core/EffectMemoryMgr.h"
+#include "Contents/Effects/Core/EffectPoint.h"
 #include "Contents/Effects/Core/EffectTypes.h"
 #include "Contents/Effects/Particles/Particle.h"
 #include "Utility/Math/AffineMatrix.h"
@@ -44,9 +45,10 @@ void CFriggSongEffect::Open() {
     particle->speedParameter = 120.0f;
     particle->phaseParameter = 90;
     float& baseAngle = *reinterpret_cast<float*>(&particle->angleBits);
-    baseAngle = static_cast<float>(particle->rowIndex * 10);
-    particle->scale = static_cast<float>(particle->rowIndex) * 0.5f + 2.5f;
-    (&particle->animationParameter)[particle->rowIndex] = 0.0f;
+    const int row = particle->rowIndex;
+    baseAngle = static_cast<float>(row * 10);
+    particle->scale = static_cast<float>(row) * 0.5f + 2.5f;
+    (&particle->animationParameter)[row] = 0.0f;
     particle->elapsedFrames = particle->rowIndex;
 
     int angle = static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f) * particle->columnIndex) + baseAngle) % 360;
@@ -55,22 +57,28 @@ void CFriggSongEffect::Open() {
     }
 
     const int tilt = particle->phaseParameter;
-    const float radius = particle->speedParameter;
-    vector3d points[2] = {};
-    points[0].x = particle->scale * g_cosTable[angle];
-    points[0].y = 0.0f;
-    points[0].z = particle->scale * g_sinTable[angle];
-    points[1].x = points[0].x + radius * g_cosTable[tilt] * g_cosTable[angle];
-    points[1].y = 0.0f - radius * g_sinTable[tilt];
-    points[1].z = points[0].z + radius * g_cosTable[tilt] * g_sinTable[angle];
+    const float spread = particle->speedParameter * g_cosTable[tilt];
+    const float height = particle->speedParameter * g_sinTable[tilt];
+    const float cosine = g_cosTable[angle];
+    const float sine = g_sinTable[angle];
+    const float offsetX = spread * cosine;
+    const float offsetZ = spread * sine;
+
+    EffectPoint points[2];
+    const float innerX = particle->scale * cosine;
+    const float innerY = 0.0f;
+    const float innerZ = particle->scale * sine;
+    const float outerX = innerX + offsetX;
+    const float outerY = 0.0f - height;
+    const float outerZ = innerZ + offsetZ;
 
     if (particle->columnIndex >= 1 && particle->columnIndex <= 20) {
-      particle->vertices[1].x = points[1].x;
-      particle->vertices[1].y = points[1].y;
-      particle->vertices[1].z = points[1].z;
-      particle->vertices[3].x = points[0].x;
-      particle->vertices[3].y = points[0].y;
-      particle->vertices[3].z = points[0].z;
+      particle->vertices[1].x = outerX;
+      particle->vertices[1].y = outerY;
+      particle->vertices[1].z = outerZ;
+      particle->vertices[3].x = innerX;
+      particle->vertices[3].y = innerY;
+      particle->vertices[3].z = innerZ;
       particle->vertices[0].x = this->lastInner[1].x;
       particle->vertices[0].y = this->lastInner[1].y;
       particle->vertices[0].z = this->lastInner[1].z;
@@ -79,12 +87,12 @@ void CFriggSongEffect::Open() {
       particle->vertices[2].z = this->lastInner[0].z;
     }
 
-    this->lastInner[0].x = points[0].x;
-    this->lastInner[0].y = points[0].y;
-    this->lastInner[0].z = points[0].z;
-    this->lastInner[1].x = points[1].x;
-    this->lastInner[1].y = points[1].y;
-    this->lastInner[1].z = points[1].z;
+    this->lastInner[0].x = innerX;
+    this->lastInner[0].y = innerY;
+    this->lastInner[0].z = innerZ;
+    this->lastInner[1].x = outerX;
+    this->lastInner[1].y = outerY;
+    this->lastInner[1].z = outerZ;
     this->particles.push_back(particle);
   }
 }
