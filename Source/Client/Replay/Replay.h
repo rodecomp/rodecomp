@@ -200,7 +200,7 @@ public:
   }
 
   void Clear();
-  void Refresh();
+  bool Refresh();
   const char* FileName(int index) const;
   char* SetPath(const char* value);
   bool Select(int index);

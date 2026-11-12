@@ -639,28 +639,28 @@ __declspec(noinline) void ReplayFileList::Clear() {
 
 // OFFSET: 0x00B84B60
 // FUNCTION: fn_19321
-void ReplayFileList::Refresh() {
+bool ReplayFileList::Refresh() {
   this->Clear();
 
+  BOOL more = TRUE;
   char directory[260] = {};
   GetCurrentDirectoryA(sizeof(directory), directory);
 
-  std::string pattern(directory, std::strlen(directory));
+  std::string pattern(directory);
   pattern.append("\\Replay\\*.rrf", 13);
 
   WIN32_FIND_DATAA found;
   HANDLE search = FindFirstFileA(pattern.c_str(), &found);
 
   if (search != INVALID_HANDLE_VALUE) {
-    BOOL more = TRUE;
-
     while (more) {
       if ((found.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0) {
-        const std::size_t length = std::strlen(found.cFileName);
-        const char* extension = found.cFileName + length - 4;
+        const char* extension = found.cFileName + std::strlen(found.cFileName) - 4;
+        const BOOL isReplay = extension[3] == 'f' && extension[2] == 'r' && extension[1] == 'r' && extension[0] == '.';
 
-        if (extension[0] == '.' && extension[1] == 'r' && extension[2] == 'r' && extension[3] == 'f') {
+        if (isReplay) {
           ReplayFileEntry entry = {};
+          const std::size_t length = std::strlen(found.cFileName);
           std::memcpy(entry.name, found.cFileName, length);
           entry.name[length] = '\0';
           entry.index = 0;
@@ -680,6 +680,7 @@ void ReplayFileList::Refresh() {
   }
 
   FindClose(search);
+  return true;
 }
 
 // OFFSET: 0x00B84300
