@@ -145,7 +145,7 @@ void UIButton::OnMouseHover(int x, int y) {
   UIWindow* parent = this->parent;
   if (parent && (this->geometry.id == 201 || this->geometry.id == 202) && parent->geometry.id != 203) {
     if (this->geometry.id == 202 && parent->geometry.id != 0) {
-      this->m_tooltip.clear();
+      this->m_tooltip = "";
     } else {
       const char* text = nullptr;
       if (g_session.m_hotkeyScript->Call("GetBeHaviorOfWindow", "d>s", parent->geometry.id, &text)) {
