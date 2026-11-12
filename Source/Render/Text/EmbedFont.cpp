@@ -96,8 +96,8 @@ int CEmbedFont::Load(HANDLE* fontReference, const char* familyName, const char* 
       std::strcmp(rootUrl, "http://www.puccaracing.co.kr") != 0 && std::strcmp(rootUrl, "http://www.ragnarok.co.kr") != 0) {
     return -3;
   }
-  std::string familyNameText = familyName;
-  std::string pathText = path == nullptr ? familyNameText : std::string(path);
+  const std::string familyNameText = familyName;
+  std::string pathText = path == nullptr ? familyNameText : path;
   std::wstring wideFamilyName = ToWideString(familyNameText);
   std::wstring widePath = ToWideString(pathText);
   std::wstring wideRootUrl = ToWideString(std::string(rootUrl));
