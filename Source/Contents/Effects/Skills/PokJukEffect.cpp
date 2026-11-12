@@ -111,18 +111,16 @@ void CPokJukEffect::OnProcess() {
       const int age = particle->elapsedFrames;
 
       if (age > 0) {
-        vector3d* trail = this->trails[index];
-
         if (age % 3 == 0) {
-          trail[3].x = trail[2].x;
-          trail[3].y = trail[2].y;
-          trail[3].z = trail[2].z;
-          trail[2].x = trail[1].x;
-          trail[2].y = trail[1].y;
-          trail[2].z = trail[1].z;
-          trail[1].x = trail[0].x;
-          trail[1].y = trail[0].y;
-          trail[1].z = trail[0].z;
+          this->trails[index][3].x = this->trails[index][2].x;
+          this->trails[index][3].y = this->trails[index][2].y;
+          this->trails[index][3].z = this->trails[index][2].z;
+          this->trails[index][2].x = this->trails[index][1].x;
+          this->trails[index][2].y = this->trails[index][1].y;
+          this->trails[index][2].z = this->trails[index][1].z;
+          this->trails[index][1].x = this->trails[index][0].x;
+          this->trails[index][1].y = this->trails[index][0].y;
+          this->trails[index][1].z = this->trails[index][0].z;
         }
 
         const int delay = this->delays[index];
@@ -143,7 +141,7 @@ void CPokJukEffect::OnProcess() {
         spinAngle = static_cast<float>((static_cast<int>(spinAngle) + 5) % 360);
 
         if (this->states[index] == 0) {
-          trail[0].y -= 0.25f;
+          this->trails[index][0].y -= 0.25f;
 
           if (age > 154) {
             this->states[index] = 1;
@@ -152,11 +150,11 @@ void CPokJukEffect::OnProcess() {
         } else if (this->states[index] == 1) {
           const int heading = particle->angleParameter;
           const float speed = particle->scale;
-          trail[0].y += speed * g_sinTable[heading];
+          this->trails[index][0].y += speed * g_sinTable[heading];
           const float flat = speed * g_cosTable[heading];
-          trail[0].x += flat * g_cosTable[particle->phaseParameter];
-          trail[0].z += flat * g_sinTable[particle->phaseParameter];
-          trail[0].y += 0.02f;
+          this->trails[index][0].x += flat * g_cosTable[particle->phaseParameter];
+          this->trails[index][0].z += flat * g_sinTable[particle->phaseParameter];
+          this->trails[index][0].y += 0.02f;
           particle->scale = speed * 0.98f;
 
           const int alpha = particle->alpha;
@@ -173,9 +171,9 @@ void CPokJukEffect::OnProcess() {
           particle->elapsedFrames = 0;
           particle->phaseParameter = ClampedRandom(360);
           particle->scale = static_cast<float>(ClampedRandom(100)) * 0.004f + 0.4f;
-          trail[0].x = -15.0f;
-          trail[0].y = 0.0f;
-          trail[0].z = 0.0f;
+          this->trails[index][0].x = -15.0f;
+          this->trails[index][0].y = 0.0f;
+          this->trails[index][0].z = 0.0f;
           this->states[index] = 0;
         }
       }
