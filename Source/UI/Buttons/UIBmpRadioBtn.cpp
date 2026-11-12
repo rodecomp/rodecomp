@@ -1,6 +1,9 @@
 #include "UI/Buttons/UIBmpRadioBtn.h"
 #include "UI/Lists/UIChatHisBox.h"
 
+template __declspec(noinline) std::list<std::vector<UIItemTagButton*>>::~list() noexcept;
+template __declspec(noinline) std::list<std::vector<UINaviLinkButton*>>::~list() noexcept;
+
 // OFFSET: 0x0086C590
 // FUNCTION: fn_11028
 UIBmpRadioBtn::UIBmpRadioBtn() : UIWindow(0), m_names{std::string(), std::string(), std::string(), std::string()} {
