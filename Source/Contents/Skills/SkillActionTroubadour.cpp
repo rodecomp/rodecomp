@@ -201,12 +201,14 @@ EfstActionMessage CEfstAction_KVASIR_SONATA::GetEfstEndMessage() {
 // FUNCTION: fn_08982
 void CSkillAction_TR_PRON_MARCH::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    if (CEffect* effect = g_effectMgr->Spawn(
+    EffectLists* effects = g_effectMgr;
+    if (CEffect* effect = effects->Spawn(
           source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("pronmarch_cast_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0
         )) {
       effect->SetLifeTime(level);
     }
-    if (CEffect* effect = g_effectMgr->Spawn(
+    effects = g_effectMgr;
+    if (CEffect* effect = effects->Spawn(
           source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("pronmarch_cast"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0
         )) {
       effect->SetLifeTime(level);
@@ -389,12 +391,14 @@ EfstActionMessage CEfstAction_GEF_NOCTURN::GetEfstEndMessage() {
 // FUNCTION: fn_09002
 void CSkillAction_TR_RHYTHMICAL_WAVE::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    if (CEffect* effect = g_effectMgr->Spawn(
+    EffectLists* effects = g_effectMgr;
+    if (CEffect* effect = effects->Spawn(
           source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rhythmical_wave_cast_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0
         )) {
       effect->SetLifeTime(level);
     }
-    if (CEffect* effect = g_effectMgr->Spawn(
+    effects = g_effectMgr;
+    if (CEffect* effect = effects->Spawn(
           source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rhythmical_wave_cast"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0
         )) {
       effect->SetLifeTime(level);
