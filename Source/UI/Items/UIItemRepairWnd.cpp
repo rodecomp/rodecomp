@@ -82,7 +82,11 @@ void UIMakeTargetResultWnd::Paint() {
   this->DrawShadowedText(firstWidth + 0x10, 2, LookupMessage(0x1AC + (this->succeeded == 1)), 0, 0, 0xFFFFFF, 0, 0xC, 0);
 
   const int secondWidth = this->DrawFittedItemName(0x10, 0x2A, &item, 0, 0, 0xC, 0);
-  this->DrawShadowedText(secondWidth + 0x10, 0x2A, LookupMessage(this->succeeded == 1 ? 0x1AF : 0x1AE), 0, 0, 0xFFFFFF, 0, 0xC, 0);
+  if (this->succeeded == 1) {
+    this->DrawShadowedText(secondWidth + 0x10, 0x2A, LookupMessage(0x1AF), 0, 0, 0xFFFFFF, 0, 0xC, 0);
+  } else {
+    this->DrawShadowedText(secondWidth + 0x10, 0x2A, LookupMessage(0x1AE), 0, 0, 0xFFFFFF, 0, 0xC, 0);
+  }
 }
 
 // OFFSET: 0x009A0B00
