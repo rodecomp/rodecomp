@@ -7,6 +7,8 @@
 
 #include <cstring>
 
+template __declspec(noinline) void std::list<CSkillInfo>::clear() noexcept;
+
 namespace {
   // INLINED
   template <class T> T Read(const unsigned char* bytes) {
