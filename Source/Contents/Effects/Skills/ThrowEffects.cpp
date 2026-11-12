@@ -403,7 +403,7 @@ void CThrowItemEffect::InitTrajectory(CParticle* particle) {
   this->heightDelta = this->sourcePosition[1] - this->position[1];
 
   const unsigned short heading = static_cast<unsigned short>(static_cast<int>(DirectionAngle(deltaX, deltaZ)));
-  unsigned short offset = 0;
+  int offset = 0;
   if (this->id == 981) {
     offset = static_cast<unsigned short>(static_cast<short>(360 / this->projectileCount) * static_cast<short>(particle->rowIndex));
   }
