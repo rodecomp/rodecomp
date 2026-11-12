@@ -29,7 +29,7 @@ const char* g_loadMyPartyPoolName = DecryptName<0x93E7A3A1F587CDC5ULL>(CRYPT_BYT
 // OFFSET: 0x005CF1B0
 // FUNCTION: fn_03685
 CLoadMyPartyAsyncWork::CLoadMyPartyAsyncWork()
-    : NAsyncWork("MyParty_Load"), m_accountId(0), m_characterId(0), m_diagnostic(false, std::string(DecryptName<0x2FF3C5036D070127ULL>({0x52, 0x6F, 0x6C, 0x03, 0x74, 0xAA, 0x9D, 0x2F})), sourceFile, 28) {
+    : NAsyncWork(g_loadMyPartyPoolName), m_accountId(0), m_characterId(0), m_diagnostic(false, std::string(DecryptName<0x2FF3C5036D070127ULL>({0x52, 0x6F, 0x6C, 0x03, 0x74, 0xAA, 0x9D, 0x2F})), sourceFile, 28) {
 }
 
 // INLINED
