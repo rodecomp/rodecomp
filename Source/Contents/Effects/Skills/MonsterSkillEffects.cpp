@@ -2731,11 +2731,12 @@ bool CRandomOptEffect::IsAlive() {
 void CRandomOptEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
-    particle->position.x = this->position[0];
-    particle->position.y = this->position[1];
-    particle->position.z = this->position[2];
+    vector3d& particlePosition = (*it)->position;
+    particlePosition.x = this->position[0];
+    particlePosition.y = this->position[1];
+    particlePosition.z = this->position[2];
 
-    if (*it) {
+    if (particle) {
       const int angle = static_cast<int>(
           static_cast<float>(particle->rowIndex) + *reinterpret_cast<const float*>(&particle->angleBits) + 3.0f);
       *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(angle);
