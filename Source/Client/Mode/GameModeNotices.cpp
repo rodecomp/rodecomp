@@ -3687,19 +3687,22 @@ void CGameMode::ReceiveLongParChange(const unsigned char* data) {
 // OFFSET: 0x00D73A10
 // FUNCTION: fn_22142
 void CGameMode::ReceiveNavigation(const unsigned char* packet) {
-  const int value = packet[3];
-  unsigned char group = value >= 100;
-  int code = value >= 100 ? value - 100 : value;
+  int code = packet[3];
+  unsigned char group = 0;
+  if (code >= 100) {
+    group = 1;
+    code -= 100;
+  }
   if (code >= 10) {
     group += 2;
     code -= 10;
   }
 
   const unsigned char mode = code >= 1 ? group + 4 : group;
-  const int x = *reinterpret_cast<const std::int16_t*>(packet + 0x15);
-  const int y = *reinterpret_cast<const std::int16_t*>(packet + 0x17);
-  const int id = *reinterpret_cast<const std::int16_t*>(packet + 0x19);
-  g_navigationManager.StartNavigation(std::string(reinterpret_cast<const char*>(packet + 5)), packet[2], mode, *reinterpret_cast<const bool*>(packet + 4), x, y, id);
+  g_navigationManager.StartNavigation(
+    std::string(reinterpret_cast<const char*>(packet + 5)), packet[2], mode, *reinterpret_cast<const bool*>(packet + 4),
+    *reinterpret_cast<const std::int16_t*>(packet + 0x15), *reinterpret_cast<const std::int16_t*>(packet + 0x17), *reinterpret_cast<const std::int16_t*>(packet + 0x19)
+  );
 }
 
 // OFFSET: 0x00D73AF0
@@ -4552,8 +4555,9 @@ void CGameMode::ReceiveWindow227Entries(const unsigned char* data) {
     return;
   }
 
-  std::vector<std::uint16_t> entries;
-  entries.insert(entries.end(), packet->entries, packet->entries + count);
+  std::vector<char> entries;
+  const char* first = reinterpret_cast<const char*>(packet->entries);
+  entries.insert(entries.end(), first, first + count * sizeof(std::uint16_t));
   UIWindow* window = g_windowMgr.EnsureWindow(WID_MERGEITEMWND);
   if (window) {
     window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(entries.data()), count, 0, 0);
