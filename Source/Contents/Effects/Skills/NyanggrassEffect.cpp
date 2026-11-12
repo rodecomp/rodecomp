@@ -150,7 +150,7 @@ void CNyanggrassEffect::Open() {
 
   for (int row = 0; row < this->gridSize; ++row) {
     for (int column = 0; column < this->gridSize; ++column) {
-      CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 1);
+      CParticle* particle = CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 1);
       if (particle) {
         CEZ2STRParticle* effect = static_cast<CEZ2STRParticle*>(particle);
         effect->effectId = this->id;
@@ -160,9 +160,11 @@ void CNyanggrassEffect::Open() {
         effect->m_loop = true;
         const vector3d origin = *reinterpret_cast<const vector3d*>(this->position);
         const int half = this->gridSize / 2;
-        effect->position.x = static_cast<float>((column - half) * 5) + origin.x;
+        const float x = static_cast<float>((column - half) * 5) + origin.x;
+        const float z = static_cast<float>((row - half) * 5) + origin.z;
+        effect->position.x = x;
         effect->position.y = origin.y;
-        effect->position.z = static_cast<float>((row - half) * 5) + origin.z;
+        effect->position.z = z;
         effect->InitParticleQuad(effect->vertices);
         effect->Open("su_nyanggrass\\su_nyanggrass.str");
         this->particles.push_back(particle);
