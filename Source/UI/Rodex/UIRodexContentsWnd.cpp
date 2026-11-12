@@ -82,13 +82,12 @@ ITEM_INFO UIRodexContentsWnd::GetItemAtPoint(int x, int y) {
 
   this->m_itemIndex = 0;
   int index = 0;
-  int left = 30;
   for (auto item = this->m_items.begin(); item != this->m_items.end(); ++item) {
+    const int left = 30 + index * 34;
     if (x > left && x < left + 24) {
       return *item;
     }
     ++index;
-    left += 34;
     this->m_itemIndex = index;
   }
   return ITEM_INFO(0);

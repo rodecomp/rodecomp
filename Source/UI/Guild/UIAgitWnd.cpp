@@ -159,10 +159,10 @@ int UIListBoxAgitMenu::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       return 0;
     }
 
+    char* agitName = nullptr;
     GuildInfo* guildInfo = &g_guildInfo;
     uint16_t agitId = static_cast<uint16_t>(guildInfo->GetAgitId(this->m_agitIndex));
 
-    char* agitName = nullptr;
     g_session.m_hotkeyScript->Call("get_agit_name", "d>s", agitId, &agitName);
     if (strnlen(agitName, 256) != 0) {
       int costZeny = 0;

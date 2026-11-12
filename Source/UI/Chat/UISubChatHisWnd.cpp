@@ -174,16 +174,18 @@ void UISubChatHisWnd::OnCreate(int width, int height) {
   this->m_resizer->SetColors(0xFFFF00FF, 0xFFFF00FF);
   this->AddChild(this->m_resizer);
 
-  int x = 0;
-  int y = 0;
-  this->ToScreen(x, y);
-  this->m_state.x = x;
-  this->m_state.backgroundColor = 0x66000000;
-  this->m_state.y = y + this->m_inputHeight;
-  this->m_state.width = this->geometry.width;
-  this->m_state.flags = 0;
-  this->m_state.height = this->geometry.height - this->m_inputHeight;
-  this->m_state.borderStyle = 0;
+  {
+    int x = 0;
+    int y = 0;
+    this->ToScreen(x, y);
+    this->m_state.x = x;
+    this->m_state.backgroundColor = 0x66000000;
+    this->m_state.y = y + this->m_inputHeight;
+    this->m_state.width = this->geometry.width;
+    this->m_state.flags = 0;
+    this->m_state.height = this->geometry.height - this->m_inputHeight;
+    this->m_state.borderStyle = 0;
+  }
 
   const auto found = g_session.m_subChatWnds.find(this->m_index);
   if (found != g_session.m_subChatWnds.end()) {
