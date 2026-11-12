@@ -74,13 +74,11 @@ int BasicInfoWndInfo::IsValid() {
     return 0;
   }
 
-  if (this->height == 55 || this->height == 71) {
-    this->expanded = 0;
-  } else if (this->height == 134 || this->height == 149) {
-    this->expanded = 1;
-  } else {
+  if (this->height != 55 && this->height != 134 && this->height != 71 && this->height != 149) {
     return 0;
   }
+
+  this->expanded = this->height == 134 || this->height == 149;
 
   if (g_session.IsTreeGroupThree(g_session.GetDisplayJob()) == true) {
     if (this->height != 71 && this->height != 149) {
