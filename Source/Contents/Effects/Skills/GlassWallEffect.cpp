@@ -50,8 +50,8 @@ void CGlassWall::Close() {
 // OFFSET: 0x00B449B0
 // FUNCTION: fn_18892
 void CGlassWall::Open() {
-  int angle = 180;
   CRenderObject* actor = FindRenderObject(this->actor);
+  int angle = 180;
   if (actor) {
     angle = static_cast<int>(180.0f - actor->render.angle);
   }
@@ -70,9 +70,12 @@ void CGlassWall::Open() {
   this->effect = new CEZ2STRScreenEffect();
   this->effect->SetActor(this->actor);
   this->effect->SetSourceActor(this->sourceActor);
-  this->effect->position[0] = this->position[0];
-  this->effect->position[1] = this->position[1];
-  this->effect->position[2] = this->position[2];
+  {
+    CEffect* effect = this->effect;
+    effect->position[0] = this->position[0];
+    effect->position[1] = this->position[1];
+    effect->position[2] = this->position[2];
+  }
   this->effect->SetId(this->id);
   this->effect->Open();
 }
