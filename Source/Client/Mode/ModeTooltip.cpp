@@ -13,8 +13,6 @@
 // OFFSET: 0x00AD6510
 // FUNCTION: fn_17834
 void CMode::ShowTooltip(const char* value, int x, int y, std::uint32_t color, unsigned char option, unsigned char convert) {
-  const std::uint32_t red = color & 255;
-  const std::uint32_t blue = (color >> 16) & 255;
   if (std::strlen(value) == 0) {
     return;
   }
@@ -25,6 +23,9 @@ void CMode::ShowTooltip(const char* value, int x, int y, std::uint32_t color, un
   } else {
     strncpy_s(text, sizeof(text), value, _TRUNCATE);
   }
+
+  const std::uint32_t blue = (color >> 16) & 255;
+  const std::uint32_t red = color & 255;
 
   this->tooltipTick = timeGetTime();
 
