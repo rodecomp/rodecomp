@@ -325,52 +325,51 @@ std::uint32_t ITEM_INFO::Deserialize(const std::vector<unsigned char>& data) {
   std::uint32_t offset = 6;
   ItemRecordHeader header;
   header.Read(data.data());
-  if (header.id != 281) {
+  if (281 != header.id) {
     return 0xFFFFFFFF;
   }
 
-  while (offset < data.size()) {
+  while (data.size() > offset) {
     header.Read(data.data() + offset);
     offset += 6;
-    const unsigned char* source = data.data() + offset;
     switch (header.id) {
     case 282:
       return offset;
     case 283:
-      std::memcpy(&this->identity[0], source, header.bytes);
-      offset += header.bytes;
-      break;
-    case 284:
-      std::memcpy(&this->identity[2], source, header.bytes);
+      std::memcpy(&this->identity[0], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 285:
-      std::memcpy(&this->identity[1], source, header.bytes);
+      std::memcpy(&this->identity[1], data.data() + offset, header.bytes);
+      offset += header.bytes;
+      break;
+    case 284:
+      std::memcpy(&this->identity[2], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 286:
-      std::memcpy(&this->identity[3], source, header.bytes);
+      std::memcpy(&this->identity[3], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 287:
-      std::memcpy(&this->quantity, source, header.bytes);
+      std::memcpy(&this->quantity, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 288:
-      std::memcpy(&this->prices[0], source, header.bytes);
+      std::memcpy(&this->prices[0], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 289:
-      std::memcpy(&this->prices[1], source, header.bytes);
+      std::memcpy(&this->prices[1], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 290:
-      std::memcpy(this->cards, source, header.bytes);
+      std::memcpy(this->cards, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 291: {
       int id = 0;
-      std::memcpy(&id, source, header.bytes);
+      std::memcpy(&id, data.data() + offset, header.bytes);
       offset += header.bytes;
       char buffer[16] = {};
       this->itemId = _itoa(id, buffer, 10);
@@ -385,39 +384,39 @@ std::uint32_t ITEM_INFO::Deserialize(const std::vector<unsigned char>& data) {
       break;
     }
     case 293:
-      std::memcpy(&this->identified, source, header.bytes);
+      std::memcpy(&this->identified, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 294:
-      std::memcpy(&this->damaged, source, header.bytes);
+      std::memcpy(&this->damaged, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 295:
-      std::memcpy(&this->refiningLevel, source, header.bytes);
+      std::memcpy(&this->refiningLevel, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 296:
-      std::memcpy(&this->bindOnEquip, source, header.bytes);
+      std::memcpy(&this->bindOnEquip, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 297:
-      std::memcpy(&this->expireTime, source, header.bytes);
+      std::memcpy(&this->expireTime, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 298:
-      std::memcpy(&this->sprite, source, header.bytes);
+      std::memcpy(&this->sprite, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 299:
-      std::memcpy(&this->grade, source, header.bytes);
+      std::memcpy(&this->grade, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 300:
-      std::memcpy(&this->optionCount, source, header.bytes);
+      std::memcpy(&this->optionCount, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 301:
-      std::memcpy(this->options, source, header.bytes);
+      std::memcpy(this->options, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     default:
