@@ -63,19 +63,6 @@
 #include <cstring>
 #include "Resource/MSGSTRINGID.h"
 
-#include "Utility/StdWindowListEmplace.h"
-
-using IntIntTree = std::_Tree<std::_Tmap_traits<int, int, std::less<int>, std::allocator<std::pair<const int, int>>, false>>;
-extern template std::_Tree_find_result<std::_Tree_node<std::pair<const int, int>, void*>*>
-IntIntTree::_Find_lower_bound<int>(const int&) const;
-using IdListLineTree = std::_Tree<std::_Tmap_traits<int, IdListLine, std::less<int>, std::allocator<std::pair<const int, IdListLine>>, false>>;
-extern template std::_Tree_find_result<std::_Tree_node<std::pair<const int, IdListLine>, void*>*>
-IdListLineTree::_Find_lower_bound<int>(const int&) const;
-using ExtendedListLineTree = std::_Tree<std::_Tmap_traits<int, ExtendedListLine, std::less<int>, std::allocator<std::pair<const int, ExtendedListLine>>, false>>;
-extern template std::_Tree_find_result<std::_Tree_node<std::pair<const int, ExtendedListLine>, void*>*>
-ExtendedListLineTree::_Find_lower_bound<int>(const int&) const;
-extern template UITextButton** std::allocator<UITextButton*>::allocate(const std::size_t);
-
 // OFFSET: 0x0086EEB0
 // FUNCTION: fn_11085
 UITextButton::UITextButton() : UIButton() {
@@ -179,8 +166,6 @@ void UITextButton::OnMouseMove(int x, int y) {
     }
   }
 }
-
-
 
 // OFFSET: 0x00892000
 // FUNCTION: fn_11461
@@ -432,9 +417,6 @@ void UIBarGraph4::OnMouseHover(int, int) {
 
   this->ToScreen(screenX, screenY);
 
-
-
-
   char text[260];
   std::memset(text, 0, sizeof(text));
   const int permille = static_cast<int>(static_cast<float>(*this->m_current) / static_cast<float>(*this->m_maximum) * 1000.0f);
@@ -452,9 +434,6 @@ void UIINT64BarGraph::OnMouseHover(int, int) {
   int screenX = 0, screenY = -16;
 
   this->ToScreen(screenX, screenY);
-
-
-
 
   char text[260];
   std::memset(text, 0, sizeof(text));
@@ -539,9 +518,6 @@ void UIBasicItemCtrl::OnMouseHover(int, int) {
 
   this->ToScreen(screenX, screenY);
 
-
-
-
   if (!text.empty()) {
     g_modeMgr.gameMode->ShowTooltip(text.c_str(), screenX, screenY, -1, false, true);
   }
@@ -557,9 +533,6 @@ void UIBasicSkillCtrl::OnMouseHover(int, int) {
   int screenX = 0, screenY = 0;
 
   this->ToScreen(screenX, screenY);
-
-
-
 
   LuaScript& script = *g_session.m_hotkeyScript;
   CSkillInfo skill = g_session.LookupSkill(static_cast<std::uint32_t>(this->m_skillId));
@@ -653,9 +626,6 @@ void UIStaticItem::OnMouseHover(int, int) {
   int screenX = 0, screenY = -20;
 
   this->ToScreen(screenX, screenY);
-
-
-
 
   g_modeMgr.gameMode->ShowTooltip(text, screenX, screenY, -1, false, true);
 }
@@ -2815,8 +2785,6 @@ void UIScrollBar_Custom::SetThumbBitmaps(std::string top, std::string middle, st
 
 #include <format>
 
-extern template std::string std::format<const std::string&>(const std::_Fmt_string<const std::string&>, const std::string&);
-
 // OFFSET: 0x00884720
 // FUNCTION: fn_11310
 void UIItemTagOnChat::PlaceTagButton(UIWindow* button, const std::string& name, const int& x, int) {
@@ -3556,9 +3524,6 @@ int UISlotBmpButton::SendMsg(UIWindow* sender, int message, std::intptr_t argume
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/CLoginMode.h"
 
-#include "Utility/StdStringConcat.h"
-
-
 // OFFSET: 0x0088EBC0
 // FUNCTION: fn_11385
 void UISlotBmpButton::Paint() {
@@ -3634,5 +3599,4 @@ UIItemTagButton::UIItemTagButton() {
   this->textY = 1;
   this->tipId = 0;
 }
-
 

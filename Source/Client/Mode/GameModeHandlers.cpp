@@ -370,7 +370,6 @@ struct GroundSkillArgumentData {
 static_assert(sizeof(GroundSkillExtendedData) == 0x20);
 static_assert(sizeof(GroundSkillArgumentData) == 0x24);
 
-
 // OFFSET: 0x00D66230
 // FUNCTION: fn_22010
 void CGameMode::ReceivePartyRoster(const unsigned char* packet) {
@@ -488,7 +487,6 @@ void CGameMode::SpawnGroundSkill(std::uint32_t aid, std::uint32_t owner, int val
   const int address = reinterpret_cast<int>(&data);
   skill->SendMsg(nullptr, AM_SKILLSTANDENTRY, 0, address, address >> 31, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 }
-
 
 int CountItemRandomOptions(const unsigned char* entries);
 
@@ -1245,8 +1243,6 @@ void CGameMode::ReceiveBillingInfo(const unsigned char* packet) {
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFFFF, 0, 0, 0);
 }
 
-extern template std::uint32_t& std::map<std::uint32_t, std::uint32_t>::operator[](const std::uint32_t&);
-
 struct ActorMessage32 {
   /* 0000 */ std::string text;
   /* 0018 */ std::string extra;
@@ -1928,16 +1924,11 @@ void CGameMode::ReceiveRuneRewardSteps(const unsigned char* data) {
     ++entry;
   }
 
-
   UIWindow* window = g_windowMgr.LookupWindow(WID_RUNESYSTEMWND);
   if (window) {
     window->SendMsg(window, UM_REFRESH, 0, 0, 0, 0);
   }
 }
-using RodexMailTree = std::_Tree<std::_Tmap_traits<
-  std::int64_t, RodexMail, std::greater<std::int64_t>, std::allocator<std::pair<const std::int64_t, RodexMail>>, false>>;
-extern template std::_Tree_find_result<std::_Tree_node<std::pair<const std::int64_t, RodexMail>, void*>*>
-RodexMailTree::_Find_lower_bound<std::int64_t>(const std::int64_t&) const;
 
 // OFFSET: 0x00D66B10
 // FUNCTION: fn_22021
@@ -2125,7 +2116,6 @@ void CGameMode::ReceiveGameOptionResult(int command, int result, int enabled) {
     break;
   }
 }
-
 
 // OFFSET: 0x00D678E0
 // FUNCTION: fn_22035
@@ -2501,9 +2491,6 @@ void CGameMode::ReceiveDdukddakBoxTest(const unsigned char* packet) {
 
 #include "UI/Text/UIBroadcastBalloon.h"
 
-extern template decltype(auto) std::list<BroadcastBalloonLine>::emplace_back<std::string&, std::uint32_t&>(std::string&, std::uint32_t&);
-extern template std::list<BroadcastBalloonLine>::~list();
-
 #include <chrono>
 
 // OFFSET: 0x00D3C9B0
@@ -2662,7 +2649,6 @@ void CGameMode::Zc_Skill_Entry(const unsigned char* record) {
   data.visible = true;
   data.level = 0;
   packet.visible = 1;
-
 
   CSkill* skill = static_cast<CSkill*>(this->scene->GetSkillByAID(data.aid));
   if (data.owner != g_session.m_aid && !data.visible) {

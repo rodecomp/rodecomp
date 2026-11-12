@@ -9112,7 +9112,6 @@ void CGameMode::UpdateHoverNameBalloon() {
 #include <direct.h>
 #include <format>
 #include <io.h>
-#include "Utility/StdStringCompare.h"
 
 #pragma pack(push, 1)
 struct TalkWhisperSettingPacket {

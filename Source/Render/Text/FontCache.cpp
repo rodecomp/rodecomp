@@ -256,8 +256,6 @@ HFONT FontCache::Get(int family, int height, unsigned charset, unsigned char bol
   return entry.font;
 }
 
-#include "Utility/StdTraitsEqual.h"
-
 // OFFSET: 0x0054F830
 // FUNCTION: fn_01959
 int FallbackFontIndex(const std::string& name) {
