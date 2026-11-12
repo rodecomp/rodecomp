@@ -1098,12 +1098,7 @@ bool CSession::UnequipItem(int location, std::uint32_t identity) {
 
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     if (mode != nullptr) {
-      auto it = g_activeSkillEffects.begin();
-      for (; it != g_activeSkillEffects.end(); ++it) {
-        if (it->id == 0x2B7) {
-          break;
-        }
-      }
+      auto it = std::find_if(g_activeSkillEffects.begin(), g_activeSkillEffects.end(), [](const ActiveSkillEffect& effect) { return effect.id == 0x2B7; });
       if (it != g_activeSkillEffects.end()) {
         g_activeSkillEffects.erase(it);
       }
