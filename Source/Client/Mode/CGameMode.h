@@ -822,7 +822,6 @@ public:
   void ReceiveVendingItemList(int aid, int storeId, char own, int count, std::uint32_t duration, const unsigned char* data, int value, int unused);
   void ReceiveVendingItemList2(int aid, int storeId, char own, int count, std::uint32_t duration, const unsigned char* data);
   void ReceiveVendingItemSoldNow(const unsigned char* data);
-  void ProcessBuyingStorePurchase(int field14, int itemId, int quantity, int field8, int fieldC, int field10);
   void ReceiveBuyingStorePurchase(const unsigned char* packet);
   void ReceiveFriendAddResult(const unsigned char* data);
   void ReceiveNavigation(const unsigned char* packet);
@@ -1037,5 +1036,6 @@ int CountItemRandomOptions(const unsigned char* entries);
 void TraceSelection(int selection);
 void TraceSelectionRange(int first, int last);
 void WriteMyLog(const char* file, int line, const char* format, ...);
+void __stdcall ProcessBuyingStorePurchase(int updateTime, int itemId, int amount, int zeny, int zenyLimit, int charId);
 
 #endif

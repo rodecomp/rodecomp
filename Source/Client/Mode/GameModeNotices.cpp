@@ -3950,7 +3950,7 @@ static __forceinline void FillVendingItem(ITEM_INFO& item, const VendingItemReco
 // OFFSET: 0x00D47720
 // FUNCTION: fn_21850
 void CGameMode::ReceiveVendingItemSoldNow(const unsigned char* data) {
-  this->ProcessBuyingStorePurchase(static_cast<int>(_time32(nullptr)), *reinterpret_cast<const int*>(data + 2),
+  ProcessBuyingStorePurchase(static_cast<int>(_time32(nullptr)), *reinterpret_cast<const int*>(data + 2),
              *reinterpret_cast<const short*>(data + 6), *reinterpret_cast<const int*>(data + 8), 0, 0);
 }
 

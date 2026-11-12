@@ -1977,19 +1977,19 @@ void __stdcall ProcessVendingSale(int field8, int itemIdWord, int quantityWord, 
 
 // OFFSET: 0x00D08670
 // FUNCTION: fn_21592
-void __declspec(noinline) __stdcall ProcessBuyingStorePurchase(int field14, int itemId, int quantity, int field8, int fieldC, int field10) {
+void __declspec(noinline) __stdcall ProcessBuyingStorePurchase(int updateTime, int itemId, int amount, int zeny, int zenyLimit, int charId) {
   ITEM_INFO item = g_session.FindItem1758ByItemId(itemId);
   item.SetItemId(itemId);
-  item.quantity = quantity;
-  item.prices[0] = static_cast<std::uint32_t>(field8);
+  item.quantity = amount;
+  item.prices[0] = static_cast<std::uint32_t>(zeny);
   UIWindow* window = g_windowMgr.EnsureWindow(WID_MERCHANTITEMLOGWND_MODE_1);
-  window->SendMsg(nullptr, UM_REFRESHITEM, reinterpret_cast<std::intptr_t>(&item), field10, field14, 0);
+  window->SendMsg(nullptr, UM_REFRESHITEM, reinterpret_cast<std::intptr_t>(&item), charId, updateTime, 0);
   g_session.RemoveItem1758ByItemId(item);
   if (g_windowMgr.itemWnd != nullptr) {
     g_windowMgr.itemWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
   if (g_windowMgr.buyingShopMyItemsWnd != nullptr) {
-    g_windowMgr.buyingShopMyItemsWnd->SendMsg(nullptr, UM_SET_BUYING_SHOP_ZENY, fieldC, 0, 0, 0);
+    g_windowMgr.buyingShopMyItemsWnd->SendMsg(nullptr, UM_SET_BUYING_SHOP_ZENY, zenyLimit, 0, 0, 0);
     g_windowMgr.buyingShopMyItemsWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
     if (g_session.m_muteSellSound) {
       g_soundMgr->PlayWave("effect\\ef_steal.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
@@ -2003,7 +2003,7 @@ void __declspec(noinline) __stdcall ProcessBuyingStorePurchase(int field14, int 
 // OFFSET: 0x00D08640
 // FUNCTION: fn_21591
 __declspec(noinline) void CGameMode::ReceiveBuyingStorePurchase(const unsigned char* packet) {
-  this->ProcessBuyingStorePurchase(
+  ProcessBuyingStorePurchase(
     *reinterpret_cast<const int*>(packet + 0x14),
     *reinterpret_cast<const int*>(packet + 2),
     *reinterpret_cast<const short*>(packet + 6),
