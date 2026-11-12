@@ -1184,7 +1184,7 @@ int UIPartySettingWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       }
 
       std::string name = this->m_nameEdit->Text();
-      if (name.find('#') != std::string::npos) {
+      if (name.find("#") != std::string::npos) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_INVENTORY_ITEM_COMPARE)), 0xFF, 0, 0, 0);
       } else if (name.find(s_partyItemLinkOpen) != std::string::npos || name.find(s_partyItemLinkClose) != std::string::npos) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_STYLING_SHOP_OPEN_COUPON)), 0xFF, 0, 0, 0);
@@ -12014,7 +12014,7 @@ void UITipboxWnd::Search(std::string& keyword) {
   for (const int id : results) {
     const std::string& source = g_itemTagOwner->GetTip(id).title;
     std::string title(source.c_str(), source.size());
-    const std::size_t separator = title.find('#');
+    const std::size_t separator = title.find("#");
     if (separator != std::string::npos) {
       title = title.substr(0, separator);
     }
