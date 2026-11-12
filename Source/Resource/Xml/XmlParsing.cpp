@@ -56,15 +56,15 @@ const std::string& XmlNode::Text() {
 // OFFSET: 0x00AFA940
 // FUNCTION: fn_18299
 std::string XmlNode::DecodeEntity(const char* begin, const char* end) {
-  if (begin[0] == 'l' && begin[1] == 't') {
+  if (std::memcmp(begin, "lt", 2) == 0) {
     return std::string(1, '<');
   }
 
-  if (begin[0] == 'g' && begin[1] == 't') {
+  if (std::memcmp(begin, "gt", 2) == 0) {
     return std::string(1, '>');
   }
 
-  if (begin[0] == 'a' && begin[1] == 'm' && begin[2] == 'p') {
+  if (std::memcmp(begin, "am", 2) == 0 && begin[2] == 'p') {
     return std::string(1, '&');
   }
 
