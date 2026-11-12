@@ -4603,8 +4603,8 @@ void CGameMode::ReceiveItemDropEntry(const unsigned char* data) {
   entry.identified = packet->identified;
   entry.type = packet->type;
   entry.showEffect = packet->showEffect;
-  entry.grade = packet->grade;
   entry.falling = 1;
+  entry.grade = packet->grade;
 
   CItem* item = this->scene->GetItemByAID(packet->aid);
   if (!item) {
