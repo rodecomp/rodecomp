@@ -19,6 +19,9 @@ enum ReputeVisibility : std::int64_t {
 };
 
 struct ReputeInfo {
+  // INLINED
+  ReputeInfo() {}
+
   /* 0000 */ std::string name;
   /* 0018 */ std::uint64_t maxPointPositive;
   /* 0020 */ std::uint64_t maxPointNegative;
