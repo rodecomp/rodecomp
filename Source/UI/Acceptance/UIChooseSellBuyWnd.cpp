@@ -3643,7 +3643,7 @@ int UIBabyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
     FramedMessageHeader header;
     std::memcpy(&header, packet, sizeof(header));
     unsigned offset = 6;
-    if (header.type == 0x53FC) {
+    if (0x53FC == header.type) {
       while (offset < static_cast<unsigned>(b)) {
         std::memcpy(&header, packet + offset, sizeof(header));
         offset += 6;
@@ -10286,8 +10286,8 @@ int UIChooseWarpWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
     const unsigned char* records = reinterpret_cast<const unsigned char*>(a);
     FramedMessageHeader header;
     std::memcpy(&header, records, sizeof(header));
-    if (header.type == 0x55BE) {
-      unsigned int position = sizeof(header);
+    unsigned int position = sizeof(header);
+    if (0x55BE == header.type) {
       while (position < static_cast<unsigned int>(b)) {
         std::memcpy(&header, records + position, sizeof(header));
         position += sizeof(header);
@@ -11932,8 +11932,8 @@ int UIChooseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     const unsigned char* records = reinterpret_cast<const unsigned char*>(a);
     FramedMessageHeader header;
     std::memcpy(&header, records, sizeof(header));
-    if (header.type == 0x558C) {
-      unsigned int position = sizeof(header);
+    unsigned int position = sizeof(header);
+    if (0x558C == header.type) {
       bool done = false;
       while (!done && position < static_cast<unsigned int>(b)) {
         std::memcpy(&header, records + position, sizeof(header));
