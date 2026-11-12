@@ -207,7 +207,7 @@ void CAcidifiedThrow::OnProcess() {
   for (__int64 i = 0; i < 3; ++i) {
     EZ2STREmitter* emitter = this->impactEmitters[i];
     if (emitter) {
-      if (emitter->lifetime == 0.0f || static_cast<float>(emitter->elapsed) < emitter->lifetime * 60.0f) {
+      if (0.0f == emitter->lifetime || static_cast<float>(emitter->elapsed) < emitter->lifetime * 60.0f) {
         emitter->position.x = this->impactPosition.x - 1.0f;
         emitter->position.y = this->impactPosition.y - 14.0f;
         emitter->position.z = this->impactPosition.z;
