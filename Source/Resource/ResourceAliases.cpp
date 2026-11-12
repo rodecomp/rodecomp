@@ -14,7 +14,7 @@ const char* ResourceMgr::Resolve(const char* name) const {
   }
 
   std::string key(name);
-  const std::size_t marker = key.rfind('@');
+  const std::size_t marker = key.rfind("@");
   if (marker != std::string::npos && marker >= 4) {
     key.erase(marker - 4, 3);
     entry = this->m_aliases.find(key);
