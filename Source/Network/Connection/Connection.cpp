@@ -37,8 +37,7 @@ CRagConnection::~CRagConnection() {
 
 namespace {
   // INLINED
-  unsigned long ResolveConnectionAddress(std::string overrideAddress, const char* defaultAddress) {
-    std::string address = defaultAddress;
+  unsigned long ResolveConnectionAddress(std::string address, std::string overrideAddress) {
     if (!overrideAddress.empty()) {
       const std::size_t colon = overrideAddress.rfind(":");
       if (colon != std::string::npos) {
@@ -56,7 +55,8 @@ namespace {
     if (!overrideAddress.empty()) {
       const std::size_t colon = overrideAddress.rfind(":");
       if (colon != std::string::npos) {
-        port = std::atoi(overrideAddress.substr(colon + 1).c_str());
+        const std::string portText = overrideAddress.substr(colon + 1);
+        port = std::atoi(portText.c_str());
       }
     }
     return htons(static_cast<u_short>(port));
@@ -80,7 +80,7 @@ bool CConnection::Connect(const ConnectionEndpoint& endpoint) {
   u_long nonblocking = 1;
   if (ioctlsocket(this->m_socket, FIONBIO, &nonblocking) != SOCKET_ERROR) {
     SecureZeroMemory(&this->m_address, sizeof(this->m_address));
-    this->m_address.sin_addr.s_addr = ResolveConnectionAddress(endpoint.overrideAddress, endpoint.address);
+    this->m_address.sin_addr.s_addr = ResolveConnectionAddress(endpoint.address, endpoint.overrideAddress);
     this->m_address.sin_family = AF_INET;
     this->m_address.sin_port = ResolveConnectionPort(endpoint.overrideAddress, endpoint.port);
     if (connect(this->m_socket, reinterpret_cast<const sockaddr*>(&this->m_address), sizeof(this->m_address)) != SOCKET_ERROR ||
