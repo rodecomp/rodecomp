@@ -260,13 +260,14 @@ void UIChangeMaterialWnd_List::ApplyFilter(std::string text) {
   std::transform(filter.begin(), filter.end(), filter.begin(), [](unsigned char c) { return static_cast<char>(tolower(c)); });
 
   int index = 0;
-  for (auto entry = this->m_entries.begin(); entry != this->m_entries.end(); ++entry, ++index) {
-    std::string name = ItemDisplayName(entry->results.front().id);
+  for (const MaterialListEntry& entry : this->m_entries) {
+    std::string name = ItemDisplayName(entry.results.front().id);
     std::transform(name.begin(), name.end(), name.begin(), [](unsigned char c) { return static_cast<char>(tolower(c)); });
 
     if (name.find(filter) != std::string::npos) {
       this->m_items.push_back(index);
     }
+    ++index;
   }
 
   this->UpdateScrollBar();
