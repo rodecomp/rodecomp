@@ -199,7 +199,8 @@ void UIBarGraphPlayer::Paint() {
     return;
   }
 
-  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\gze_bg1.bmp"))), false);
+  CBitmapRes* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\gze_bg1.bmp")));
+  this->DrawBitmap(0, 0, background, false);
   if (0 == maximum) {
     return;
   }
@@ -238,7 +239,8 @@ void UIBarGraphPlayerAP::Paint() {
     return;
   }
 
-  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\gze_bg1.bmp"))), false);
+  CBitmapRes* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\gze_bg1.bmp")));
+  this->DrawBitmap(0, 0, background, false);
   if (maximum > 0) {
     const double ratio = static_cast<double>(current) / static_cast<double>(maximum);
     if (ratio > 0.0) {

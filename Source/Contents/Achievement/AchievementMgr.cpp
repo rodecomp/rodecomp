@@ -386,9 +386,9 @@ int CAchievementMgr::L_InsertAchieveInfo(lua_State* state) {
     const std::string title = lua_tostring(state, -4);
     const std::string summaryText = lua_tostring(state, -3);
     const std::string description = lua_tostring(state, -2);
+    const double value = lua_tonumber(state, -1);
     CAchievementMgr* const manager = g_achievementMgr;
-    const std::pair<bool, std::string> result =
-      manager->InsertAchieveInfo(id, title, summaryText, description, static_cast<int>(lua_tonumber(state, -1)));
+    const std::pair<bool, std::string> result = manager->InsertAchieveInfo(id, title, summaryText, description, static_cast<int>(value));
     if (!result.first) {
       lua_pushboolean(state, 0);
       lua_pushstring(state, FormatString("InsertAchieveInfo : %s", result.second.c_str()));

@@ -41,8 +41,9 @@ void CHitLineEffect::Open() {
         CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
         if (particle) {
           particle->SetTexture("effect\\white02.bmp");
+          const int id = this->id;
           particle->rowIndex = line;
-          particle->effectId = this->id;
+          particle->effectId = id;
           particle->columnIndex = segment;
           particle->groupIndex = 4;
           particle->elapsedFrames = delay;

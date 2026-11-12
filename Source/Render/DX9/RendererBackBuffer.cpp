@@ -16,15 +16,15 @@ int CRendererDX9::LockBackBuffer() {
 
   int bitsPerPixel;
   switch (owner.backBufferDescription.Format) {
-  case D3DFMT_A8R8G8B8:
-  case D3DFMT_X8R8G8B8:
-    bitsPerPixel = 32;
-    break;
   case D3DFMT_R5G6B5:
   case D3DFMT_X1R5G5B5:
   case D3DFMT_A1R5G5B5:
   case D3DFMT_A4R4G4B4:
     bitsPerPixel = 16;
+    break;
+  case D3DFMT_A8R8G8B8:
+  case D3DFMT_X8R8G8B8:
+    bitsPerPixel = 32;
     break;
   default:
     bitsPerPixel = 0;

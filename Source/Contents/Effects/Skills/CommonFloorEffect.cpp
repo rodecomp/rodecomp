@@ -46,9 +46,9 @@ void CCommonFloorEffect::Open() {
     if (particle) {
       particle->SetTexture("effect\\ra_unlimit.tga");
       particle->effectId = this->id;
-      particle->groupIndex = 1;
       particle->columnIndex = i;
       particle->rowIndex = 0;
+      particle->groupIndex = 1;
       particle->alpha = 90;
       *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(angle);
       particle->phaseParameter = angle;
@@ -90,7 +90,7 @@ bool CCommonFloorEffect::IsAlive() {
 void CCommonFloorEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
-    vector3d& position = (*it)->position;
+    vector3d& position = particle->position;
     position.x = this->position[0];
     position.y = this->position[1];
     position.z = this->position[2];
@@ -118,7 +118,7 @@ void CCommonFloorEffect::OnProcess() {
       result.Compose(scale, rotation);
       particle->transform = result;
     }
-    ++(*it)->elapsedFrames;
+    ++particle->elapsedFrames;
   }
 }
 

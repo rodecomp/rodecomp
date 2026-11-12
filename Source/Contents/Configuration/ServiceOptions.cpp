@@ -745,7 +745,7 @@ bool ServiceOptions::Set(int id, unsigned char value) {
 // FUNCTION: fn_06320
 __declspec(noinline) void GameSettings::ApplyScriptOption(int id, const char* key) {
   for (const GameSettingsOption& option : this->options) {
-    if (option.id != id) {
+    if (id != option.id) {
       continue;
     }
 
@@ -1062,7 +1062,7 @@ void ApplyServiceOptionCursorClip(int id, unsigned char value, bool notify, int 
 // OFFSET: 0x006C5DF0
 // FUNCTION: fn_06369
 void ApplyServiceOptionAskOnDisable(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
-  if (g_serviceOptions.Get(0x128) == value) {
+  if (value == g_serviceOptions.Get(0x128)) {
     return;
   }
 
