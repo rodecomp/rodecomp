@@ -165,7 +165,7 @@ void UIRoMapWnd::DrawHoverTooltip() {
 
   int textY = y + 5;
   for (std::list<std::string>::const_iterator it = this->hoveredRecord->relatedNames.begin(); it != this->hoveredRecord->relatedNames.end(); ++it) {
-    const std::uint32_t color = std::strcmp(it->c_str(), g_session.DecodePlayerName()) == 0 ? 0x8080F0 : 0xFFFFFF;
+    const std::uint32_t color = std::strcmp(it->c_str(), g_session.DecodePlayerName()) != 0 ? 0xFFFFFF : 0x8080F0;
     this->DrawOutlinedText(boxX + 5, textY, it->c_str(), 0, color, 0, 0, 12, 1, 0);
     textY += lineHeight;
   }
