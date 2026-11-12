@@ -1,5 +1,7 @@
 #include "Contents/Navigation/NavigationManager.h"
 
+template __declspec(noinline) void std::vector<NaviLink>::_Tidy() noexcept;
+
 // OFFSET: 0x00B8D8D0
 // FUNCTION: fn_19436
 CNavi_Link::~CNavi_Link() {
