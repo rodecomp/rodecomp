@@ -27,6 +27,8 @@
 #include <iterator>
 #include <new>
 
+template __declspec(noinline) std::string::basic_string(const std::string&);
+
 template __declspec(noinline) std::list<ITEM_INFO>::~list() noexcept;
 template __declspec(noinline) std::list<SelectPackageItemBox::CTabInfoData>::~list() noexcept;
 
