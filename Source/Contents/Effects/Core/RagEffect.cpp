@@ -2181,8 +2181,13 @@ bool CRagEffect::Signum() {
   this->state.tlvertY = screen.y;
 
   if (this->state.stateCnt == 30) {
-    PlayEffectWave(*this, "effect\\EF_Signum.wav");
-    PlayEffectWave(*this, "effect\\EF_Bash.wav");
+    const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+    g_soundMgr->PlayWave(
+      "effect\\EF_Signum.wav", this->render.position.x - player->render.position.x, 0.0f, this->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
+    );
+    g_soundMgr->PlayWave(
+      "effect\\EF_Bash.wav", this->render.position.x - player->render.position.x, 0.0f, this->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
+    );
 
     this->state.lastPrim = CreateEffectParticle(*this, this->render, 4, 0.0f, 0.0f, 0.0f, WorldObjects());
     this->state.lastPrim->state.duration = 40;
