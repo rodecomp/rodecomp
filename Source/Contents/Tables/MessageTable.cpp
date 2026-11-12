@@ -5016,6 +5016,23 @@ int FindMessageId(const char* name) {
 // OFFSET: 0x00B00890
 // FUNCTION: fn_18371
 char* DecodeMessageRot(char* str) {
+  if (g_serviceType == 0) {
+    return str;
+  }
+
+  const int length = static_cast<int>(std::strlen(str));
+  for (int i = 0; i < length; ++i) {
+    unsigned char c = static_cast<unsigned char>(str[i]);
+    if (c >= 'a' && c <= 'z') {
+      c = static_cast<unsigned char>('a' + 'z' - c);
+    }
+    if (c >= 'A' && c <= 'Z') {
+      c = static_cast<unsigned char>('A' + 'Z' - c);
+    } else if (c >= 0xB0 && c <= 0xBF) {
+      c = static_cast<unsigned char>(0xB0 + 0xBF - c);
+    }
+    str[i] = static_cast<char>(c);
+  }
   return str;
 }
 
