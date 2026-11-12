@@ -212,7 +212,7 @@ void CAsyncWorkMgr::LoadStore(
 void CAsyncWorkMgr::SaveStore(
   std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, std::string data, int type
 ) {
-  NAsyncWorkPtr work(this->m_pools, "MerchantStoreInformation_Save");
+  NAsyncWorkPtr work(this->m_pools, g_mcStoreInfoBackupSavePoolName);
 
   if (work.Get()) {
     static_cast<CMCStoreInfoBackupSaveAsyncWork*>(work.Get())->Bind(url, accountId, characterId, world, token, data, type);
@@ -225,7 +225,7 @@ void CAsyncWorkMgr::SaveStore(
 void CAsyncWorkMgr::RegisterParty(
   std::uint32_t accountId, std::uint32_t characterId, std::string world, std::string url, std::string token, CAdvenPartyInfo info
 ) {
-  NAsyncWorkPtr work(this->m_pools, "Register_Party");
+  NAsyncWorkPtr work(this->m_pools, g_registerPartyPoolName);
 
   if (work.Get()) {
     static_cast<CRegisterPartyAsyncWork*>(work.Get())->Bind(accountId, characterId, world, url, token, info);
