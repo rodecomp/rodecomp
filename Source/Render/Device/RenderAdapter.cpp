@@ -119,8 +119,10 @@ HRESULT CRenderSystemDX9::Initialize(HWND window) {
   UINT ordinal = D3DADAPTER_DEFAULT;
 
   for (size_t i = 0; i < adapters.size(); ++i) {
-    if (adapters[i].Matches(selected)) {
-      ordinal = adapters[i].ordinal;
+    const RenderAdapter& adapter = adapters[i];
+
+    if (adapter.Matches(selected)) {
+      ordinal = adapter.ordinal;
       break;
     }
   }

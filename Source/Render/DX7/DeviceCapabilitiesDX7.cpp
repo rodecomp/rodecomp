@@ -51,7 +51,7 @@ CRenderer* DeviceOwnerDX7::CreateRenderer() {
     this->maxTextureWidth = this->caps.dwMaxTextureWidth;
     this->maxTextureHeight = this->caps.dwMaxTextureHeight;
     this->maxTextureAspectRatio = this->caps.dwMaxTextureAspectRatio;
-    g_multitexture = this->caps.wMaxSimultaneousTextures >= 2 && (this->caps.dwTextureOpCaps & D3DTEXOPCAPS_MODULATEALPHA_ADDCOLOR) != 0;
+    g_multitexture = this->caps.wMaxTextureBlendStages >= 2 && (this->caps.dwTextureOpCaps & D3DTEXOPCAPS_MODULATEALPHA_ADDCOLOR) != 0;
     g_textureAllocationDX7.Update(g_textureFiltering, this->caps);
   }
 
