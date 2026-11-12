@@ -29,7 +29,8 @@ void CRotateBgEffect::Close() {
 // FUNCTION: fn_19142
 void CRotateBgEffect::Open() {
   for (int ring = 0; ring < 2; ++ring) {
-    const int start = std::max(rand() % 360, 0);
+    const int startRoll = rand() % 360;
+    const int start = startRoll >= 0 ? startRoll : 0;
     for (int index = 0; index < 10; ++index) {
       CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
       if (particle) {
@@ -53,7 +54,8 @@ void CRotateBgEffect::Open() {
 
   int layer = 0;
   for (int angle = 0; angle < 360; angle += 90) {
-    const int span = std::max(rand() % 21, 0) + 80;
+    const int spanRoll = rand() % 21;
+    const int span = (spanRoll >= 0 ? spanRoll : 0) + 80;
     for (int index = 0; index < 21; ++index) {
       CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
       if (particle) {
