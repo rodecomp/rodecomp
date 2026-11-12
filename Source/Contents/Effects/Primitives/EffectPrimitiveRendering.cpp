@@ -6769,54 +6769,53 @@ void CEffectPrim::RenderGrandCross2(matrix& wtm) {
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
-    EffectPrimitiveSlot& slot = this->state.slots[ec];
-    if (slot.life != 1 || slot.alphaB <= 0) {
+    if (this->state.slots[ec].life != 1 || this->state.slots[ec].alphaB <= 0) {
       continue;
     }
 
-    const float cs1 = g_cosTable[slot.rotStart];
-    const float sn1 = g_sinTable[slot.rotStart];
-    float rx = slot.height[0];
-    float rz = slot.height[1];
-    slot.vecBPre.x = cs1 * rx - sn1 * rz;
-    slot.vecBPre.z = sn1 * rx + cs1 * rz;
-    slot.vecBPre.y = -1.0f;
+    const float cs1 = g_cosTable[this->state.slots[ec].rotStart];
+    const float sn1 = g_sinTable[this->state.slots[ec].rotStart];
+    float rx = this->state.slots[ec].height[0];
+    float rz = this->state.slots[ec].height[1];
+    this->state.slots[ec].vecBPre.x = cs1 * rx - sn1 * rz;
+    this->state.slots[ec].vecBPre.z = sn1 * rx + cs1 * rz;
+    this->state.slots[ec].vecBPre.y = -1.0f;
 
-    rx = slot.height[0];
-    rz = -slot.height[1];
-    slot.vecBNow.x = cs1 * rx - sn1 * rz;
-    slot.vecBNow.z = sn1 * rx + cs1 * rz;
-    slot.vecBNow.y = -1.0f;
+    rx = this->state.slots[ec].height[0];
+    rz = -this->state.slots[ec].height[1];
+    this->state.slots[ec].vecBNow.x = cs1 * rx - sn1 * rz;
+    this->state.slots[ec].vecBNow.z = sn1 * rx + cs1 * rz;
+    this->state.slots[ec].vecBNow.y = -1.0f;
 
-    rx = -slot.height[0];
-    rz = -slot.height[1];
-    slot.vecTNow.x = cs1 * rx - sn1 * rz;
-    slot.vecTNow.z = sn1 * rx + cs1 * rz;
-    slot.vecTNow.y = -1.0f;
+    rx = -this->state.slots[ec].height[0];
+    rz = -this->state.slots[ec].height[1];
+    this->state.slots[ec].vecTNow.x = cs1 * rx - sn1 * rz;
+    this->state.slots[ec].vecTNow.z = sn1 * rx + cs1 * rz;
+    this->state.slots[ec].vecTNow.y = -1.0f;
 
-    rx = -slot.height[0];
-    rz = slot.height[1];
-    slot.vecTPre.x = cs1 * rx - sn1 * rz;
-    slot.vecTPre.z = sn1 * rx + cs1 * rz;
-    slot.vecTPre.y = -1.0f;
+    rx = -this->state.slots[ec].height[0];
+    rz = this->state.slots[ec].height[1];
+    this->state.slots[ec].vecTPre.x = cs1 * rx - sn1 * rz;
+    this->state.slots[ec].vecTPre.z = sn1 * rx + cs1 * rz;
+    this->state.slots[ec].vecTPre.y = -1.0f;
 
-    vector3d vec1 = slot.vecBPre;
-    vec1.y -= slot.height[2];
-    vector3d vec2 = slot.vecBNow;
-    vec2.y -= slot.height[2];
-    vector3d vec3 = slot.vecTPre;
-    vec3.y -= slot.height[2];
-    vector3d vec4 = slot.vecTNow;
-    vec4.y -= slot.height[2];
+    vector3d vec1 = this->state.slots[ec].vecBPre;
+    vec1.y -= this->state.slots[ec].height[2];
+    vector3d vec2 = this->state.slots[ec].vecBNow;
+    vec2.y -= this->state.slots[ec].height[2];
+    vector3d vec3 = this->state.slots[ec].vecTPre;
+    vec3.y -= this->state.slots[ec].height[2];
+    vector3d vec4 = this->state.slots[ec].vecTNow;
+    vec4.y -= this->state.slots[ec].height[2];
 
-    this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBPre, slot.vecBNow, vec2, vec1, wtm, 1, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBNow, slot.vecTNow, vec4, vec2, wtm, 1, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecTNow, slot.vecTPre, vec3, vec4, wtm, 1, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecTPre, slot.vecBPre, vec1, vec3, wtm, 1, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, vec2, vec1, wtm, 1, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBNow, this->state.slots[ec].vecTNow, vec4, vec2, wtm, 1, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecTNow, this->state.slots[ec].vecTPre, vec3, vec4, wtm, 1, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecTPre, this->state.slots[ec].vecBPre, vec1, vec3, wtm, 1, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
 
-    const short alpha = static_cast<short>(slot.alphaB / 2);
-    this->RenderTeiRect(&rpCnt, alpha, slot.vecBPre, slot.vecBNow, slot.vecTNow, slot.vecTPre, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    this->RenderTeiRect(&rpCnt, alpha, slot.vecTPre, slot.vecTNow, slot.vecBNow, slot.vecBPre, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    const short alpha = static_cast<short>(this->state.slots[ec].alphaB / 2);
+    this->RenderTeiRect(&rpCnt, alpha, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, this->state.slots[ec].vecTNow, this->state.slots[ec].vecTPre, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    this->RenderTeiRect(&rpCnt, alpha, this->state.slots[ec].vecTPre, this->state.slots[ec].vecTNow, this->state.slots[ec].vecBNow, this->state.slots[ec].vecBPre, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
   }
 }
 
