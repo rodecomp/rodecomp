@@ -677,7 +677,8 @@ void CCashEmotionMgr::ProcessChatCommand(const char* command) {
 
   int actionId;
   {
-    std::string key(command + 1);
+    ++command;
+    std::string key(command);
     auto it = this->m_commands.find(key);
     actionId = this->m_commands.end() != it ? it->second : 0;
   }
