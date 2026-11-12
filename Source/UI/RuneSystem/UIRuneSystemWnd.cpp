@@ -13,6 +13,8 @@
 
 #include "Resource/MSGSTRINGID.h"
 
+template __declspec(noinline) bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+
 // GLOBAL: gl_24886
 extern const int g_runeSetSlotX[6] = {87, 201, 19, 269, 87, 201};
 // GLOBAL: gl_24887
