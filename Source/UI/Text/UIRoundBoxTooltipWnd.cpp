@@ -61,7 +61,7 @@ void UIColoringTextViewer::Paint() {
 
   const int first = this->topLine;
   const int limit = this->geometry.height / spacing + first;
-  int end = static_cast<int>(std::min<unsigned>(this->lines.size(), limit));
+  int end = static_cast<int>(std::min<unsigned>(limit, this->lines.size()));
   if (this->lineLimit) {
     end = this->lineLimit;
   }
