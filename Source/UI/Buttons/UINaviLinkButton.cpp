@@ -2,6 +2,8 @@
 #include "UI/Navigation/NavigationLink.h"
 #include "UI/Buttons/UINaviLinkButton.h"
 
+template __declspec(noinline) std::size_t std::_Traits_find<std::char_traits<char>>(const char*, std::size_t, std::size_t, const char*, std::size_t) noexcept;
+
 // OFFSET: 0x0086DF60
 // FUNCTION: fn_11062
 UINaviLinkButton::UINaviLinkButton() : UITextButton() {
