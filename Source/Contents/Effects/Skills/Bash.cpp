@@ -73,18 +73,19 @@ void CBash::Open() {
   do {
     CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 1);
     const int angle = rand() % 360;
-    const float speed = static_cast<float>(std::max(rand() % 60, 0) + 10) / 10.0f;
+    const int roll = rand() % 60;
+    const float speed = static_cast<float>((roll >= 0 ? roll : 0) + 10) / 10.0f;
     const float acceleration = -(speed / static_cast<float>(this->effectLifetime)) / 1.5f;
     const int width = rand() % 25;
     const int radius = rand() % 40;
     const int growth = rand() % 30;
     float* values = &particle->animationParameter;
-    values[0] = static_cast<float>(std::max(angle, 0));
+    values[0] = static_cast<float>(angle >= 0 ? angle : 0);
     values[1] = speed;
     values[2] = acceleration;
-    values[3] = static_cast<float>(std::max(width, 0) + 5) / 10.0f;
-    values[4] = static_cast<float>(std::max(radius, 0) + 20);
-    values[5] = static_cast<float>(std::max(growth, 0) + 20) / 10.0f;
+    values[3] = static_cast<float>((width >= 0 ? width : 0) + 5) / 10.0f;
+    values[4] = static_cast<float>((radius >= 0 ? radius : 0) + 20);
+    values[5] = static_cast<float>((growth >= 0 ? growth : 0) + 20) / 10.0f;
     values[6] = 200.0f;
     values[7] = 20.0f;
     values[8] = static_cast<float>(this->effectLifetime - this->effectLifetime / 3);
