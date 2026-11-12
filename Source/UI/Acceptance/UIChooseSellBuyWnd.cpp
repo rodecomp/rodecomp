@@ -772,12 +772,11 @@ void UIMinimapZoomWnd::OnCreate(int, int) {
   const char* names[5] = {"object", "plus", "minus", "mini", "viewon"};
   const std::string prefix("minimap\\i_");
 
-  auto& buttons = *reinterpret_cast<std::vector<UIWindow*>*>(&this->townButtonsStorage);
-  buttons.clear();
+  this->m_buttons.clear();
   for (int i = 0; i < 5; ++i) {
     const std::string name = prefix + names[i];
     UIWindow* button = AddNumberedButtonInline(this, ids[i], xs[i], ys[i], name.c_str(), tooltips[i], true);
-    buttons.push_back(button);
+    this->m_buttons.push_back(button);
   }
 
   this->SendMsg(this, UM_COMMAND, 502, 0, 0, 0);
@@ -831,7 +830,7 @@ int UIMinimapZoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     }
     return 0;
   case 453: {
-    const auto it = this->m_zoom.find(static_cast<int>(argument2));
+    const auto it = this->m_zoom.find(argument2);
     if (it != this->m_zoom.end()) {
       static_cast<UIButton*>(it->second)->Enable(1);
       it->second->Move(static_cast<int>(argument3) - this->geometry.x, static_cast<int>(argument4) - this->geometry.y);
@@ -840,7 +839,7 @@ int UIMinimapZoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     return 0;
   }
   case 455: {
-    const auto it = this->m_zoom.find(static_cast<int>(argument2));
+    const auto it = this->m_zoom.find(argument2);
     if (it != this->m_zoom.end()) {
       static_cast<UIButton*>(it->second)->Enable(0);
     }
@@ -849,9 +848,8 @@ int UIMinimapZoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
   }
   case 502: {
     const unsigned char enabled = g_serviceOptions.Get(223);
-    const auto& buttons = *reinterpret_cast<std::vector<UIWindow*>*>(&this->townButtonsStorage);
-    for (auto it = buttons.begin(); it != buttons.end(); ++it) {
-      static_cast<UIButton*>(*it)->Enable(enabled);
+    for (UIWindow* button : this->m_buttons) {
+      static_cast<UIButton*>(button)->Enable(enabled);
     }
     this->Invalidate();
     break;
@@ -859,7 +857,7 @@ int UIMinimapZoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
   }
 
   std::string mapName = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->MapName();
-  TownInfo town = g_townInfoMgr->GetTownInfo(mapName.c_str(), static_cast<unsigned int>(argument1 - 1000));
+  TownInfo town = g_townInfoMgr->GetTownInfo(mapName, static_cast<unsigned int>(argument1 - 1000));
   if (!town.image.empty()) {
     const std::size_t extension = mapName.find_first_of(".");
     if (extension != std::string::npos) {

@@ -4,6 +4,7 @@
 #include "UI/Window/UIFrameWnd.h"
 
 #include <map>
+#include <vector>
 
 struct TownInfo;
 
@@ -18,9 +19,7 @@ public:
   void AddTownButton(int index, TownInfo town);
 
   /* 00B4 */ std::map<int, UIWindow*> m_zoom;
-  /* 00BC */ int townButtonsStorage;
-  /* 00C0 */ int townButtonsEnd;
-  /* 00C4 */ int townButtonsCapacity;
+  /* 00BC */ std::vector<UIWindow*> m_buttons;
 };
 
 #endif
