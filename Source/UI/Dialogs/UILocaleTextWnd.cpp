@@ -20,13 +20,12 @@ void CUISubTab::OnCreate(int width, int height) {
   this->labelText->SetText("");
   this->labelText->SetFitText(0);
   this->labelText->SetAlign(6, 6);
-  {
-    CUIStaticText* text = this->labelText;
+  this->labelText->SetFont([] {
     constexpr std::array<std::uint8_t, 6> fontSourceArray = CRYPT_NAME("Gulim", 0xB127A19D775BF751ULL);
     const std::uint8_t (&fontSource)[6] = fontSourceArray._Elems;
     thread_local EncryptedName<sizeof(fontSource), 0xB127A19D775BF751ULL> fontName(fontSource);
-    text->SetFont(fontName.Text());
-  }
+    return fontName.Text();
+  }());
   this->labelText->SetFontHeight(12);
   this->labelText->SetBold(1);
   this->labelText->SetColor(0x5F3C2C);
@@ -37,12 +36,11 @@ void CUISubTab::OnCreate(int width, int height) {
   this->stampImage = new CUIStaticImage();
   this->stampImage->SetSize(40, 26);
   this->stampImage->Move(58, 0);
-  {
-    CUIStaticImage* stamp = this->stampImage;
+  this->stampImage->SetImage([] {
     const std::array<char, 54> stampSource = CRYPT_CHARS(54, "유저인터페이스\\AdventureGuide\\stamp_completed_sub.bmp", 0x0F61499B4973EB5DULL);
     thread_local EncryptedName<sizeof(stampSource), 0x0F61499B4973EB5DULL> stampName(stampSource);
-    stamp->SetImage(stampName.Text());
-  }
+    return stampName.Text();
+  }());
   this->AddChild(this->stampImage);
 }
 
