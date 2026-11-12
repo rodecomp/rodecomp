@@ -34,46 +34,46 @@ CAsyncWorkRecycleObjectPoolMgr::~CAsyncWorkRecycleObjectPoolMgr() {
 // OFFSET: 0x00578F30
 // FUNCTION: fn_02566
 bool CAsyncWorkRecycleObjectPoolMgr::RegisterPools() {
-  if (!this->m_pools.insert(std::make_pair("AccountLinkedUserData_Load", new (std::nothrow) NRecycleObjectPool<CAccountLinkedUserDataLoadAsyncWork>(2))).second) {
+  if (!this->m_pools.insert(std::make_pair(g_accountLinkedUserDataLoadPoolName, new (std::nothrow) NRecycleObjectPool<CAccountLinkedUserDataLoadAsyncWork>(2))).second) {
     return false;
   }
-  if (!this->m_pools.insert(std::make_pair("AccountLinkedUserData_Save", new (std::nothrow) NRecycleObjectPool<CAccountLinkedUserDataSaveAsyncWork>(2))).second) {
+  if (!this->m_pools.insert(std::make_pair(g_accountLinkedUserDataSavePoolName, new (std::nothrow) NRecycleObjectPool<CAccountLinkedUserDataSaveAsyncWork>(2))).second) {
     return false;
   }
-  if (!this->m_pools.insert(std::make_pair("CharacterLinkedUserData_Load", new (std::nothrow) NRecycleObjectPool<CCharacterLinkedUserDataLoadAsyncWork>(2))).second) {
+  if (!this->m_pools.insert(std::make_pair(g_characterLinkedUserDataLoadPoolName, new (std::nothrow) NRecycleObjectPool<CCharacterLinkedUserDataLoadAsyncWork>(2))).second) {
     return false;
   }
-  if (!this->m_pools.insert(std::make_pair("CharacterLinkedUserData_Save", new (std::nothrow) NRecycleObjectPool<CCharacterLinkedUserDataSaveAsyncWork>(2))).second) {
+  if (!this->m_pools.insert(std::make_pair(g_characterLinkedUserDataSavePoolName, new (std::nothrow) NRecycleObjectPool<CCharacterLinkedUserDataSaveAsyncWork>(2))).second) {
     return false;
   }
-  if (!this->m_pools.insert(std::make_pair("Emblem_Upload", new (std::nothrow) NRecycleObjectPool<CEmblemDataUploadAsyncWork>(2))).second) {
+  if (!this->m_pools.insert(std::make_pair(g_emblemDataUploadPoolName, new (std::nothrow) NRecycleObjectPool<CEmblemDataUploadAsyncWork>(2))).second) {
     return false;
   }
-  if (!this->m_pools.insert(std::make_pair("Emblem_Download", new (std::nothrow) NRecycleObjectPool<CEmblemDataDownloadAsyncWork>(2))).second) {
+  if (!this->m_pools.insert(std::make_pair(g_emblemDataDownloadPoolName, new (std::nothrow) NRecycleObjectPool<CEmblemDataDownloadAsyncWork>(2))).second) {
     return false;
   }
-  if (!this->m_pools.insert(std::make_pair("MerchantStoreInformation_Load", new (std::nothrow) NRecycleObjectPool<CMCStoreInfoBackupLoadAsyncWork>(2))).second) {
+  if (!this->m_pools.insert(std::make_pair(g_mcStoreInfoBackupLoadPoolName, new (std::nothrow) NRecycleObjectPool<CMCStoreInfoBackupLoadAsyncWork>(2))).second) {
     return false;
   }
-  if (!this->m_pools.insert(std::make_pair("MerchantStoreInformation_Save", new (std::nothrow) NRecycleObjectPool<CMCStoreInfoBackupSaveAsyncWork>(2))).second) {
+  if (!this->m_pools.insert(std::make_pair(g_mcStoreInfoBackupSavePoolName, new (std::nothrow) NRecycleObjectPool<CMCStoreInfoBackupSaveAsyncWork>(2))).second) {
     return false;
   }
-  if (!this->m_pools.insert(std::make_pair("PartyList_Load", new (std::nothrow) NRecycleObjectPool<CLoadPartyListAsyncWork>(2))).second) {
+  if (!this->m_pools.insert(std::make_pair(g_loadPartyListPoolName, new (std::nothrow) NRecycleObjectPool<CLoadPartyListAsyncWork>(2))).second) {
     return false;
   }
-  if (!this->m_pools.insert(std::make_pair("MyParty_Load", new (std::nothrow) NRecycleObjectPool<CLoadMyPartyAsyncWork>(2))).second) {
+  if (!this->m_pools.insert(std::make_pair(g_loadMyPartyPoolName, new (std::nothrow) NRecycleObjectPool<CLoadMyPartyAsyncWork>(2))).second) {
     return false;
   }
-  if (!this->m_pools.insert(std::make_pair("Register_Party", new (std::nothrow) NRecycleObjectPool<CRegisterPartyAsyncWork>(2))).second) {
+  if (!this->m_pools.insert(std::make_pair(g_registerPartyPoolName, new (std::nothrow) NRecycleObjectPool<CRegisterPartyAsyncWork>(2))).second) {
     return false;
   }
-  if (!this->m_pools.insert(std::make_pair("Stop_Recruiting", new (std::nothrow) NRecycleObjectPool<CStopRecruitingAsyncWork>(2))).second) {
+  if (!this->m_pools.insert(std::make_pair(g_stopRecruitingPoolName, new (std::nothrow) NRecycleObjectPool<CStopRecruitingAsyncWork>(2))).second) {
     return false;
   }
-  if (!this->m_pools.insert(std::make_pair("Change_PartyMaster", new (std::nothrow) NRecycleObjectPool<CChangePartyMasterAsyncWork>(2))).second) {
+  if (!this->m_pools.insert(std::make_pair(g_changePartyMasterPoolName, new (std::nothrow) NRecycleObjectPool<CChangePartyMasterAsyncWork>(2))).second) {
     return false;
   }
-  if (!this->m_pools.insert(std::make_pair("PartyInfo_Load", new (std::nothrow) NRecycleObjectPool<CLoadPartyInfoAsyncWork>(2))).second) {
+  if (!this->m_pools.insert(std::make_pair(g_loadPartyInfoPoolName, new (std::nothrow) NRecycleObjectPool<CLoadPartyInfoAsyncWork>(2))).second) {
     return false;
   }
   return true;
