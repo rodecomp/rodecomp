@@ -200,7 +200,8 @@ void CPokJukEffect::Render() {
         const float radius = particle->speedParameter - shrink;
 
         for (int corner = 0; corner < 4; ++corner) {
-          const int angle = static_cast<int>(static_cast<float>(corner * 90) + *reinterpret_cast<float*>(&particle->angleBits)) % 360;
+          int angle = static_cast<int>(static_cast<float>(corner * 90) + *reinterpret_cast<float*>(&particle->angleBits));
+          angle = angle % 360;
           corners[corner].x = radius * g_cosTable[angle];
           corners[corner].y = 0.0f;
           corners[corner].z = radius * g_sinTable[angle];
