@@ -3740,15 +3740,15 @@ __declspec(safebuffers) void CEffectPrim::RenderOrbitSquare(matrix& wtm) {
     const int tilt = static_cast<int>(slot.height[2]);
     const float sn = g_sinTable[tilt];
     const float cs = g_cosTable[tilt];
-    const int angle2 = angle1 + 90 < 360 ? angle1 + 90 : angle1 - 270;
-    const int angle3 = angle2 + 90 < 360 ? angle2 + 90 : angle2 - 270;
-    const int angle4 = angle3 + 90 < 360 ? angle3 + 90 : angle3 - 270;
+    const int angle2 = angle1 + (angle1 + 90 < 360 ? 90 : -270);
+    const int angle3 = angle2 + (angle2 + 90 < 360 ? 90 : -270);
+    const int angle4 = angle3 + (angle3 + 90 < 360 ? 90 : -270);
     const char kind = slot.flag1[0];
 
     if (kind == 2 || kind == 8 || kind == 9) {
-      const int face1 = angle1 + 90 < 360 ? angle1 + 90 : angle1 - 270;
-      const int face2 = face1 + 90 < 360 ? face1 + 90 : face1 - 270;
-      const int face3 = face2 + 90 < 360 ? face2 + 90 : face2 - 270;
+      const int face1 = angle1 + (angle1 + 90 < 360 ? 90 : -270);
+      const int face2 = face1 + (face1 + 90 < 360 ? 90 : -270);
+      const int face3 = face2 + (face2 + 90 < 360 ? 90 : -270);
       vec1.Set(radius * g_cosTable[angle1], 0.0f, radius * g_sinTable[angle1]);
       vec2.Set(radius * g_cosTable[face1], 0.0f, radius * g_sinTable[face1]);
       vec3.Set(radius * g_cosTable[face2], 0.0f, radius * g_sinTable[face2]);
