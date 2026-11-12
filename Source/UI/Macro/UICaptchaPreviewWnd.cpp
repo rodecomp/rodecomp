@@ -37,7 +37,7 @@ void UICaptchaPreviewWnd::AddImageData(const void* data, int size) {
     uLongf length = 0x9AB0;
     Bytef* image = new (std::nothrow) Bytef[0x9AB0];
     uncompress(image, &length, this->m_imageData, this->m_imageReceived);
-    this->m_image->m_bitmap.image.DecodeBitmap(image, length, false);
+    this->m_image->m_bitmap.DecodeBitmap(image, length, false);
     if (image) {
       delete[] image;
     }
@@ -56,7 +56,7 @@ void UIMacroDetectorWnd::AddImageData(const void* data, int size) {
       uLongf length = 0x9AB0;
       Bytef* image = new (std::nothrow) Bytef[0x9AB0];
       uncompress(image, &length, this->m_imageData, this->m_imageReceived);
-      this->m_image->m_bitmap.image.DecodeBitmap(image, length, false);
+      this->m_image->m_bitmap.DecodeBitmap(image, length, false);
       if (image) {
         delete[] image;
       }

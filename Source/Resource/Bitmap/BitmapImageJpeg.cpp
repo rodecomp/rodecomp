@@ -1,11 +1,11 @@
-#include "Resource/Bitmap/BitmapImage.h"
+#include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/Bitmap/IJL15Runtime.h"
 
 #include <cstdlib>
 
 // OFFSET: 0x0074BCC0
 // FUNCTION: fn_07871
-bool BitmapImage::DecodeJpeg(const void* data, int bytes) {
+bool CBitmapRes::DecodeJpeg(const void* data, int bytes) {
   IJL15Properties properties = {};
   if (ijlInit(&properties) != 0) {
     return false;
@@ -16,12 +16,12 @@ bool BitmapImage::DecodeJpeg(const void* data, int bytes) {
   unsigned char* source;
 
   if (ijlRead(&properties, 1) == 0) {
-    this->width = properties.jpegWidth;
-    this->height = properties.jpegHeight;
+    this->image.width = properties.jpegWidth;
+    this->image.height = properties.jpegHeight;
     source = new unsigned char[properties.jpegHeight * properties.jpegWidth * 3];
-    this->pixels = new std::uint32_t[this->height * this->width];
-    properties.dibWidth = this->width;
-    properties.dibHeight = this->height;
+    this->image.pixels = new std::uint32_t[this->image.height * this->image.width];
+    properties.dibWidth = this->image.width;
+    properties.dibHeight = this->image.height;
     properties.dibBytes = source;
     properties.dibColor = 2;
     properties.dibChannels = 3;
@@ -29,8 +29,8 @@ bool BitmapImage::DecodeJpeg(const void* data, int bytes) {
 
     if (ijlRead(&properties, 3) != 0) {
       delete[] source;
-      delete[] this->pixels;
-      this->pixels = nullptr;
+      delete[] this->image.pixels;
+      this->image.pixels = nullptr;
 
       return false;
     }
@@ -40,14 +40,14 @@ bool BitmapImage::DecodeJpeg(const void* data, int bytes) {
 
   ijlFree(&properties);
 
-  for (int y = 0; y < this->height; ++y) {
-    std::uint32_t* out = &this->pixels[this->width * y];
-    const unsigned char* input = &source[3 * this->width * y];
+  for (int y = 0; y < this->image.height; ++y) {
+    std::uint32_t* out = &this->image.pixels[this->image.width * y];
+    const unsigned char* input = &source[3 * this->image.width * y];
     if (!input) {
       return false;
     }
 
-    for (int x = 0; x < this->width; ++x) {
+    for (int x = 0; x < this->image.width; ++x) {
       const unsigned red = input[2];
       const unsigned blue = input[0];
       const unsigned green = input[1];
@@ -57,6 +57,6 @@ bool BitmapImage::DecodeJpeg(const void* data, int bytes) {
   }
 
   delete[] source;
-  this->alpha = 0;
+  this->image.alpha = 0;
   return true;
 }

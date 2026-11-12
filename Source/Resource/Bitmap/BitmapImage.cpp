@@ -1,4 +1,4 @@
-#include "Resource/Bitmap/BitmapImage.h"
+#include "Resource/Bitmap/BitmapResource.h"
 
 #include <bit>
 #include <cstdlib>
@@ -71,17 +71,17 @@ namespace {
 
 // OFFSET: 0x0074A680
 // FUNCTION: fn_07866
-bool BitmapImage::CreateAuxiliary(int mode) {
-  if (!this->pixels || this->auxiliary) {
+bool CBitmapRes::CreateAuxiliary(int mode) {
+  if (!this->image.pixels || this->image.auxiliary) {
     return false;
   }
 
-  this->auxiliary = new std::uint32_t[this->width * this->height];
-  std::memset(this->auxiliary, 255, 4u * this->width * this->height);
-  for (int y = 0; y < this->height; ++y) {
-    for (int x = 0; x < this->width; ++x) {
-      const int index = this->width * y + x;
-      const std::uint32_t value = this->pixels[index];
+  this->image.auxiliary = new std::uint32_t[this->image.width * this->image.height];
+  std::memset(this->image.auxiliary, 255, 4u * this->image.width * this->image.height);
+  for (int y = 0; y < this->image.height; ++y) {
+    for (int x = 0; x < this->image.width; ++x) {
+      const int index = this->image.width * y + x;
+      const std::uint32_t value = this->image.pixels[index];
       unsigned red = (value >> 16) & 255;
       unsigned green = (value >> 8) & 255;
       const unsigned alpha = value >> 24;
@@ -103,7 +103,7 @@ bool BitmapImage::CreateAuxiliary(int mode) {
           blue = 200;
         }
       }
-      static_cast<std::uint32_t*>(this->auxiliary)[index] = Color(alpha, red, green, blue);
+      static_cast<std::uint32_t*>(this->image.auxiliary)[index] = Color(alpha, red, green, blue);
     }
   }
   return true;
@@ -111,26 +111,26 @@ bool BitmapImage::CreateAuxiliary(int mode) {
 
 // OFFSET: 0x0074A7F0
 // FUNCTION: fn_07867
-std::uint32_t BitmapImage::Pixel(int x, int y) const {
-  if (x < 0 || x >= this->width || y < 0 || y >= this->height) {
+std::uint32_t CBitmapRes::Pixel(int x, int y) const {
+  if (x < 0 || x >= this->image.width || y < 0 || y >= this->image.height) {
     return 0x00FF0000;
   }
-  return this->pixels[x + y * this->width];
+  return this->image.pixels[x + y * this->image.width];
 }
 
 // OFFSET: 0x0074C540
 // FUNCTION: fn_07874
-void BitmapImage::ClearAuxiliary() {
-  if (this->auxiliary) {
-    delete[] static_cast<std::uint32_t*>(this->auxiliary);
-    this->auxiliary = nullptr;
+void CBitmapRes::ClearAuxiliary() {
+  if (this->image.auxiliary) {
+    delete[] static_cast<std::uint32_t*>(this->image.auxiliary);
+    this->image.auxiliary = nullptr;
   }
 }
 
 // OFFSET: 0x0074AB00
 // FUNCTION: fn_07869
-bool BitmapImage::DecodeBitmap(const void* input, int, bool iconOnly) {
-  this->Clear();
+bool CBitmapRes::DecodeBitmap(const void* input, int, bool iconOnly) {
+  this->Unload();
   const auto* data = static_cast<const unsigned char*>(input);
 
   BITMAPFILEHEADER fileHeader;
@@ -167,10 +167,10 @@ bool BitmapImage::DecodeBitmap(const void* input, int, bool iconOnly) {
       return false;
     }
 
-    this->height = height;
-    this->width = width;
+    this->image.height = height;
+    this->image.width = width;
     rgb = new unsigned char[height * width * 3];
-    this->pixels = new std::uint32_t[this->width * this->height];
+    this->image.pixels = new std::uint32_t[this->image.width * this->image.height];
 
     if (bits == 8) {
       const std::uint32_t count = Read32(source);
@@ -184,30 +184,30 @@ bool BitmapImage::DecodeBitmap(const void* input, int, bool iconOnly) {
         source = ReadPalette(palette, first, second, source, 256);
       }
 
-      DecodeIndexedRows(*this, rgb, source, palette, row);
+      DecodeIndexedRows(this->image, rgb, source, palette, row);
     } else if (bits == 24) {
-      auto* first = new unsigned char[this->width * this->height * 3];
-      auto* second = new unsigned char[this->width * this->height * 2];
+      auto* first = new unsigned char[this->image.width * this->image.height * 3];
+      auto* second = new unsigned char[this->image.width * this->image.height * 2];
 
       unsigned char* target = first;
-      for (int y = this->height - 1; y >= 0; --y) {
-        std::memcpy(target, source, this->width * 2);
-        target += this->width * 2;
-        source += this->width * 2;
+      for (int y = this->image.height - 1; y >= 0; --y) {
+        std::memcpy(target, source, this->image.width * 2);
+        target += this->image.width * 2;
+        source += this->image.width * 2;
       }
 
       target = second;
-      for (int y = this->height - 1; y >= 0; --y) {
-        std::memcpy(target, source, this->width);
-        target += this->width;
-        source += this->width;
+      for (int y = this->image.height - 1; y >= 0; --y) {
+        std::memcpy(target, source, this->image.width);
+        target += this->image.width;
+        source += this->image.width;
       }
 
       unsigned char* pixel = rgb;
       int index = 0;
-      for (int y = 0; y < this->height; ++y) {
-        for (int x = 0; x < this->width; ++x) {
-          pixel[0] = *(second + this->width * y + x);
+      for (int y = 0; y < this->image.height; ++y) {
+        for (int x = 0; x < this->image.width; ++x) {
+          pixel[0] = *(second + this->image.width * y + x);
           pixel[1] = first[index];
           pixel[2] = first[index + 1];
           index += 2;
@@ -237,11 +237,11 @@ bool BitmapImage::DecodeBitmap(const void* input, int, bool iconOnly) {
       return false;
     }
 
-    this->height = infoHeader.biHeight;
+    this->image.height = infoHeader.biHeight;
     const std::uint32_t stride = (infoHeader.biWidth + 3) & ~3u;
-    this->width = infoHeader.biWidth;
+    this->image.width = infoHeader.biWidth;
     rgb = new unsigned char[infoHeader.biHeight * infoHeader.biWidth * 3];
-    this->pixels = new std::uint32_t[this->width * this->height];
+    this->image.pixels = new std::uint32_t[this->image.width * this->image.height];
 
     if (infoHeader.biBitCount == 8) {
       std::uint32_t paletteSize;
@@ -258,7 +258,7 @@ bool BitmapImage::DecodeBitmap(const void* input, int, bool iconOnly) {
         return false;
       }
 
-      DecodeIndexedRows(*this, rgb, data + fileHeader.bfOffBits, palette, row);
+      DecodeIndexedRows(this->image, rgb, data + fileHeader.bfOffBits, palette, row);
     } else if (infoHeader.biBitCount == 24) {
       if (fileHeader.bfOffBits > sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER)) {
         return false;
@@ -266,27 +266,27 @@ bool BitmapImage::DecodeBitmap(const void* input, int, bool iconOnly) {
 
       const unsigned char* source = data + fileHeader.bfOffBits;
 
-      for (int y = this->height - 1; y >= 0; --y) {
-        std::memcpy(rgb + this->width * y * 3, source, this->width * 3);
-        source += this->width * 3;
+      for (int y = this->image.height - 1; y >= 0; --y) {
+        std::memcpy(rgb + this->image.width * y * 3, source, this->image.width * 3);
+        source += this->image.width * 3;
 
-        if (stride - this->width != 0) {
-          source += this->width - stride + 4;
+        if (stride - this->image.width != 0) {
+          source += this->image.width - stride + 4;
         }
       }
     }
   }
 
-  for (int y = 0; y < this->height; ++y) {
-    const unsigned char* source = rgb + this->width * y * 3;
+  for (int y = 0; y < this->image.height; ++y) {
+    const unsigned char* source = rgb + this->image.width * y * 3;
 
     if (source) {
-      std::uint32_t* target = this->pixels + this->width * y;
+      std::uint32_t* target = this->image.pixels + this->image.width * y;
 
       if (target) {
         *target++ = Color(255, source[2], source[1], source[0]);
 
-        for (int x = 1; x < this->width; ++x) {
+        for (int x = 1; x < this->image.width; ++x) {
           source += 3;
           *target++ = Color(255, source[2], source[1], source[0]);
         }
@@ -298,7 +298,7 @@ bool BitmapImage::DecodeBitmap(const void* input, int, bool iconOnly) {
     delete[] rgb;
   }
 
-  this->alpha = 0;
+  this->image.alpha = 0;
   return true;
 }
 
@@ -328,7 +328,7 @@ struct TgaPixel {
 
 // OFFSET: 0x0074C300
 // FUNCTION: fn_07873
-bool BitmapImage::DecodeTga(const void* input, int) {
+bool CBitmapRes::DecodeTga(const void* input, int) {
   const auto* source = static_cast<const unsigned char*>(input);
   const TgaHeader header = *static_cast<const TgaHeader*>(input);
   source += sizeof(header);
@@ -340,10 +340,10 @@ bool BitmapImage::DecodeTga(const void* input, int) {
     source += header.idLength;
   }
 
-  this->width = header.width;
-  this->height = header.height;
-  this->pixels = new std::uint32_t[this->width * this->height];
-  std::uint32_t* row = this->pixels + (this->height - 1) * this->width;
+  this->image.width = header.width;
+  this->image.height = header.height;
+  this->image.pixels = new std::uint32_t[this->image.width * this->image.height];
+  std::uint32_t* row = this->image.pixels + (this->image.height - 1) * this->image.width;
   TgaPixel pixel = {};
   pixel.alpha = 255;
   // INLINED
@@ -358,10 +358,10 @@ bool BitmapImage::DecodeTga(const void* input, int) {
     return Color(pixel.alpha, pixel.red, pixel.green, pixel.blue);
   };
 
-  for (int y = 0; y < this->height; ++y) {
+  for (int y = 0; y < this->image.height; ++y) {
     int x = 0;
 
-    while (x < this->width) {
+    while (x < this->image.width) {
       if (header.imageType == 10) {
         const unsigned char packet = *source++;
         std::uint16_t count = (packet & 127) + 1;
@@ -381,9 +381,9 @@ bool BitmapImage::DecodeTga(const void* input, int) {
       }
     }
 
-    row -= this->width;
+    row -= this->image.width;
   }
 
-  this->alpha = 1;
+  this->image.alpha = 1;
   return true;
 }

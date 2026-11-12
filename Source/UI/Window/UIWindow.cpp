@@ -815,23 +815,23 @@ void UIWindow::RemoveChild(UIWindow* child, unsigned char destroy) {
 
 // OFFSET: 0x00A81CC0
 // FUNCTION: fn_16986
-bool UIWindow::Contains(const UIWindow* window) const {
+int UIWindow::Contains(const UIWindow* window) const {
   if (!window) {
-    return false;
+    return 0;
   }
 
   if (window == this) {
-    return true;
+    return 1;
   }
 
   for (auto it = this->m_children.begin(); it != this->m_children.end(); ++it) {
     UIWindow* child = *it;
     if (child->Contains(window)) {
-      return true;
+      return 1;
     }
   }
 
-  return false;
+  return 0;
 }
 
 // OFFSET: 0x00A7B3F0
@@ -1208,10 +1208,10 @@ void UIWindow::DrawAuxiliaryScaled(int mode, int x, int y, int width, int height
   }
 
   if (rebuild) {
-    image->ClearAuxiliary();
+    reinterpret_cast<CBitmapRes*>(image)->ClearAuxiliary();
   }
 
-  image->CreateAuxiliary(mode);
+  reinterpret_cast<CBitmapRes*>(image)->CreateAuxiliary(mode);
   if (image->auxiliary) {
     this->geometry.surface->ScaleCopy(x, y, image->width, image->height, width, height, static_cast<const std::uint32_t*>(image->auxiliary), option);
   }
@@ -1225,10 +1225,10 @@ void UIWindow::DrawAuxiliary(int mode, int x, int y, BitmapImage* image, bool tr
   }
 
   if (rebuild) {
-    image->ClearAuxiliary();
+    reinterpret_cast<CBitmapRes*>(image)->ClearAuxiliary();
   }
 
-  image->CreateAuxiliary(mode);
+  reinterpret_cast<CBitmapRes*>(image)->CreateAuxiliary(mode);
   if (image->auxiliary) {
     this->geometry.surface->Copy(x, y, image->width, image->height, static_cast<const std::uint32_t*>(image->auxiliary), transparent);
   }

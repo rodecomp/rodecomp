@@ -1,4 +1,4 @@
-#include "Resource/Bitmap/BitmapImage.h"
+#include "Resource/Bitmap/BitmapResource.h"
 
 #include <cstdlib>
 #include <cstring>
@@ -25,7 +25,7 @@ namespace {
 
 // OFFSET: 0x0074BF10
 // FUNCTION: fn_07872
-bool BitmapImage::DecodePng(const void* data, int bytes, const char*) {
+bool CBitmapRes::DecodePng(const void* data, int bytes, const char*) {
   unsigned char signature[8] = {};
   if (data) {
     std::memcpy(signature, data, sizeof(signature));
@@ -60,8 +60,8 @@ bool BitmapImage::DecodePng(const void* data, int bytes, const char*) {
   std::iostream stream(&buffer);
   png_set_read_fn(png, &stream, ReadPng);
   png_read_info(png, info);
-  this->width = png_get_image_width(png, info);
-  this->height = png_get_image_height(png, info);
+  this->image.width = png_get_image_width(png, info);
+  this->image.height = png_get_image_height(png, info);
   const unsigned colorType = png_get_color_type(png, info);
   const unsigned depth = png_get_bit_depth(png, info);
   png_set_interlace_handling(png);
@@ -91,27 +91,27 @@ bool BitmapImage::DecodePng(const void* data, int bytes, const char*) {
   }
 
   png_read_update_info(png, info);
-  auto** rows = static_cast<png_bytep*>(std::malloc(sizeof(png_bytep) * static_cast<std::uint32_t>(this->height)));
+  auto** rows = static_cast<png_bytep*>(std::malloc(sizeof(png_bytep) * static_cast<std::uint32_t>(this->image.height)));
 
-  for (int y = 0; y < this->height; ++y) {
+  for (int y = 0; y < this->image.height; ++y) {
     rows[y] = static_cast<png_bytep>(std::malloc(png_get_rowbytes(png, info)));
   }
 
   png_read_image(png, rows);
-  this->pixels = new std::uint32_t[this->width * this->height];
+  this->image.pixels = new std::uint32_t[this->image.width * this->image.height];
 
-  for (int y = 0; y < this->height; ++y) {
+  for (int y = 0; y < this->image.height; ++y) {
     const unsigned char* pixel = rows[y];
-    std::uint32_t* out = &this->pixels[this->width * y];
-    for (int x = 0; x < this->width; ++x) {
+    std::uint32_t* out = &this->image.pixels[this->image.width * y];
+    for (int x = 0; x < this->image.width; ++x) {
       *out++ = (((((pixel[3] << 8) + pixel[0]) << 8) + pixel[1]) << 8) + pixel[2];
       pixel += 4;
     }
   }
 
-  this->alpha = 1;
+  this->image.alpha = 1;
 
-  for (int y = 0; y < this->height; ++y) {
+  for (int y = 0; y < this->image.height; ++y) {
     std::free(rows[y]);
   }
 

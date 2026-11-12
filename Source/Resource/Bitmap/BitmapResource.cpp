@@ -49,19 +49,19 @@ bool CBitmapRes::Decode(const char* name, const void* data, int bytes, bool icon
   }
 
   if (lstrcmpiA(extension, ".bmp") == 0) {
-    return this->image.DecodeBitmap(data, bytes, iconOnly);
+    return this->DecodeBitmap(data, bytes, iconOnly);
   }
 
   if (lstrcmpiA(extension, ".tga") == 0) {
-    return this->image.DecodeTga(data, bytes);
+    return this->DecodeTga(data, bytes);
   }
 
   if (lstrcmpiA(extension, ".jpg") == 0) {
-    return this->image.DecodeJpeg(data, bytes);
+    return this->DecodeJpeg(data, bytes);
   }
 
   if (lstrcmpiA(extension, ".png") == 0) {
-    return this->image.DecodePng(data, bytes, name);
+    return this->DecodePng(data, bytes, name);
   }
 
   ShowErrorDialog("Unsupport fileformat!", 0);

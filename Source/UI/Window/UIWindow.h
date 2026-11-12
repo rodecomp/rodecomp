@@ -101,7 +101,7 @@ public:
   void RemoveChild(UIWindow* child, unsigned char destroy);
 
   void InvalidateChildren();
-  bool Contains(const UIWindow* window) const;
+  int Contains(const UIWindow* window) const;
   bool IsDescendantOf(const UIWindow* ancestor) const;
   void BroadcastMsg4();
   void BroadcastMsg3();
