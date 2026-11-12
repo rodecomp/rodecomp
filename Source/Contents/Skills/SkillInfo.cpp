@@ -2591,10 +2591,9 @@ void CSkillAction_NPC_LIGHTNING_JUDGEMENT::OnSkillEffect(int level, CGameActor* 
   if (source) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("spark_blaster_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-    const CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
-    g_soundMgr->PlayWave(
-      "effect\\NPC_LIGHTNING_JUDGEMENT.wav", target->render.position.x - player->render.position.x, 0.0f, target->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
-    );
+    const vector3d& listener = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->render.position;
+    const vector3d position = {target->render.position.x - listener.x, 0.0f, target->render.position.z - listener.z};
+    g_soundMgr->PlayWave("effect\\NPC_LIGHTNING_JUDGEMENT.wav", position.x, position.y, position.z, 250, 40, 1.0f, 0);
   }
 }
 
