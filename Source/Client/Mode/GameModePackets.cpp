@@ -12796,6 +12796,8 @@ struct ActorMoveEntry {
   /* 0074 */ int robe;
   /* 0078 */ std::uint32_t gid;
   /* 007C */ int body;
+
+  ActorMoveEntry() {}
 };
 
 static_assert(sizeof(ActorMoveEntry) == 0x80);
