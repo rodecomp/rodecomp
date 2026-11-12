@@ -1366,16 +1366,16 @@ bool CNpc::OnProcess() {
     case JT_WARPNPC:
     case JT_HIDDEN_WARP_NPC:
       break;
+    case JT_HIDDEN_NPC:
+      this->ProcessDamageMessages();
+      this->UpdateGaugePositions();
+      result = this->ProcessState();
+      break;
     case JT_EFFECTLAUNCHER:
       if (timeGetTime() > this->effectTick + this->xSize * 1000) {
         this->effectTick = timeGetTime();
         this->LaunchEffect(*reinterpret_cast<int*>(&this->destinationAndSpeed[4]), vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
-      break;
-    case JT_HIDDEN_NPC:
-      this->ProcessDamageMessages();
-      this->UpdateGaugePositions();
-      result = this->ProcessState();
       break;
     default:
       this->ProcessBodyState();
@@ -1395,46 +1395,50 @@ bool CNpc::OnProcess() {
 
   WIN32_FIND_DATAA findData;
   if (g_session.IsHomunAid(this->render.accountId)) {
-    if (!this->homunAI) {
-      this->homunAI = reinterpret_cast<int>(new CMercenaryAI(0));
-    } else if (reinterpret_cast<CMercenaryAI*>(this->homunAI)->state) {
-      reinterpret_cast<CMercenaryAI*>(this->homunAI)->Process(this->render.accountId);
-    } else {
-      if (g_serviceOptions.Get(0xA4)) {
-        HANDLE find = FindFirstFileA(".\\AI\\USER_AI", &findData);
-        if (find == INVALID_HANDLE_VALUE) {
-          CreateDirectoryA(".\\AI\\USER_AI", nullptr);
-        }
-        FindClose(find);
-        CopyFileA(".\\AI\\AI.lua", ".\\AI\\USER_AI\\AI.lua", TRUE);
-        reinterpret_cast<CMercenaryAI*>(this->homunAI)->Load(".\\AI\\USER_AI\\AI.lua");
+    if (this->homunAI) {
+      if (reinterpret_cast<CMercenaryAI*>(this->homunAI)->state) {
+        reinterpret_cast<CMercenaryAI*>(this->homunAI)->Process(this->render.accountId);
       } else {
-        reinterpret_cast<CMercenaryAI*>(this->homunAI)->Load(".\\AI\\AI.lua");
+        if (g_serviceOptions.Get(0xA4)) {
+          HANDLE find = FindFirstFileA(".\\AI\\USER_AI", &findData);
+          if (find == INVALID_HANDLE_VALUE) {
+            CreateDirectoryA(".\\AI\\USER_AI", nullptr);
+          }
+          FindClose(find);
+          CopyFileA(".\\AI\\AI.lua", ".\\AI\\USER_AI\\AI.lua", TRUE);
+          reinterpret_cast<CMercenaryAI*>(this->homunAI)->Load(".\\AI\\USER_AI\\AI.lua");
+        } else {
+          reinterpret_cast<CMercenaryAI*>(this->homunAI)->Load(".\\AI\\AI.lua");
+        }
+        this->SendMsg(nullptr, AM_UPDATEGAGE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
-      this->SendMsg(nullptr, AM_UPDATEGAGE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    } else {
+      this->homunAI = reinterpret_cast<int>(new CMercenaryAI(0));
     }
   }
 
   if (g_session.IsMercenaryAid(this->render.accountId)) {
-    if (!this->merAI) {
-      this->merAI = reinterpret_cast<int>(new CMercenaryAI(1));
-    } else if (reinterpret_cast<CMercenaryAI*>(this->merAI)->state) {
-      reinterpret_cast<CMercenaryAI*>(this->merAI)->Process(this->render.accountId);
-    } else {
-      const char* path;
-      if (g_serviceOptions.Get(0xAE)) {
-        HANDLE find = FindFirstFileA(".\\AI\\USER_AI", &findData);
-        if (find == INVALID_HANDLE_VALUE) {
-          CreateDirectoryA(".\\AI\\USER_AI", nullptr);
-        }
-        FindClose(find);
-        CopyFileA(".\\AI\\AI_M.lua", ".\\AI\\USER_AI\\AI_M.lua", TRUE);
-        path = ".\\AI\\USER_AI\\AI_M.lua";
+    if (this->merAI) {
+      if (reinterpret_cast<CMercenaryAI*>(this->merAI)->state) {
+        reinterpret_cast<CMercenaryAI*>(this->merAI)->Process(this->render.accountId);
       } else {
-        path = ".\\AI\\AI_M.lua";
+        const char* path;
+        if (g_serviceOptions.Get(0xAE)) {
+          HANDLE find = FindFirstFileA(".\\AI\\USER_AI", &findData);
+          if (find == INVALID_HANDLE_VALUE) {
+            CreateDirectoryA(".\\AI\\USER_AI", nullptr);
+          }
+          FindClose(find);
+          CopyFileA(".\\AI\\AI_M.lua", ".\\AI\\USER_AI\\AI_M.lua", TRUE);
+          path = ".\\AI\\USER_AI\\AI_M.lua";
+        } else {
+          path = ".\\AI\\AI_M.lua";
+        }
+        reinterpret_cast<CMercenaryAI*>(this->merAI)->Load(path);
+        this->SendMsg(nullptr, AM_UPDATEGAGE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
       }
-      reinterpret_cast<CMercenaryAI*>(this->merAI)->Load(path);
-      this->SendMsg(nullptr, AM_UPDATEGAGE, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    } else {
+      this->merAI = reinterpret_cast<int>(new CMercenaryAI(1));
     }
   }
 
