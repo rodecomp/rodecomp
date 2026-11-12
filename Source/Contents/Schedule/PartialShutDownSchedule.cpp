@@ -78,7 +78,8 @@ void CPartialShutDownSchedule::Process(const std::uint64_t& now) {
   if (seconds >= 3600) {
     char text[256];
     std::memset(text, 0, 255);
-    std::sprintf(text, LookupMessage(MSI_MENU_WEBBROWSERWND), seconds / 3600, (seconds % 3600) / 60);
+    int secondsPerHour = 3600;
+    std::sprintf(text, LookupMessage(MSI_MENU_WEBBROWSERWND), seconds / secondsPerHour, (seconds % secondsPerHour) / 60);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
     return;
   }
