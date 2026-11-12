@@ -23,6 +23,8 @@ protected:
   /* 0090 */ AsyncDiagnostic m_diagnostic;
 };
 
+extern const char* g_characterLinkedUserDataLoadPoolName;
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CCharacterLinkedUserDataLoadAsyncWork) == 200);
 #endif

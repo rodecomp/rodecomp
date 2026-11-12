@@ -29,6 +29,9 @@ namespace {
   }
 }
 
+// GLOBAL: gl_25604
+const char* g_loadPartyListPoolName = DecryptName<0x07112F85A39F4FABULL>(CRYPT_BYTES(15, "PartyList_Load", 0x07112F85A39F4FABULL));
+
 // OFFSET: 0x005D1640
 // FUNCTION: fn_03698
 CLoadPartyListAsyncWork::CLoadPartyListAsyncWork()

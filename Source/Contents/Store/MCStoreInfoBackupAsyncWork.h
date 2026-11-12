@@ -52,6 +52,9 @@ protected:
   /* 00E4 */ unsigned char padding_00E4[4];
 };
 
+extern const char* g_mcStoreInfoBackupLoadPoolName;
+extern const char* g_mcStoreInfoBackupSavePoolName;
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CMCStoreInfoBackupLoadAsyncWork) == 208);
 static_assert(sizeof(CMCStoreInfoBackupSaveAsyncWork) == 232);

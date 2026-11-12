@@ -6,6 +6,7 @@
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
+#include "Utility/Cipher/CryptName.h"
 
 #include <cstdio>
 #include <windows.h>
@@ -21,6 +22,9 @@ namespace {
     return name.Text();
   }
 }
+
+// GLOBAL: gl_25602
+const char* g_changePartyMasterPoolName = DecryptName<0x93E7A3A1F587CDC5ULL>(CRYPT_BYTES(19, "Change_PartyMaster", 0x93E7A3A1F587CDC5ULL));
 
 // OFFSET: 0x005CD7B0
 // FUNCTION: fn_03677

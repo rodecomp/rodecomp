@@ -25,6 +25,9 @@ namespace {
   }
 }
 
+// GLOBAL: gl_25601
+const char* g_accountLinkedUserDataSavePoolName = DecryptName<0x1D6D75EDE7CD311FULL>(CRYPT_BYTES(27, "AccountLinkedUserData_Save", 0x1D6D75EDE7CD311FULL));
+
 // OFFSET: 0x005BDAA0
 // FUNCTION: fn_03478
 CAccountLinkedUserDataSaveAsyncWork::CAccountLinkedUserDataSaveAsyncWork()

@@ -33,6 +33,8 @@ protected:
   WindowManagerWindows* m_windows;
 };
 
+extern const char* g_loadPartyListPoolName;
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CLoadPartyListAsyncWork) == 288);
 #endif

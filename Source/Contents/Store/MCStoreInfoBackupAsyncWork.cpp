@@ -41,6 +41,12 @@ namespace {
   }
 }
 
+// GLOBAL: gl_25611
+const char* g_mcStoreInfoBackupLoadPoolName = DecryptName<0xA7471985F93F9BDFULL>(CRYPT_BYTES(30, "MerchantStoreInformation_Load", 0xA7471985F93F9BDFULL));
+
+// GLOBAL: gl_25612
+const char* g_mcStoreInfoBackupSavePoolName = DecryptName<0x73D1674B61DF7B0BULL>(CRYPT_BYTES(30, "MerchantStoreInformation_Save", 0x73D1674B61DF7B0BULL));
+
 // OFFSET: 0x00607B10
 // FUNCTION: fn_04241
 CMCStoreInfoBackupLoadAsyncWork::CMCStoreInfoBackupLoadAsyncWork()

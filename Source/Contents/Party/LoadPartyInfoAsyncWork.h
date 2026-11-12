@@ -24,6 +24,8 @@ protected:
   /* 0094 */ AsyncDiagnostic m_diagnostic;
 };
 
+extern const char* g_loadPartyInfoPoolName;
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CLoadPartyInfoAsyncWork) == 208);
 #endif

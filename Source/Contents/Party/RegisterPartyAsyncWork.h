@@ -25,6 +25,8 @@ protected:
   /* 00FC */ std::string m_response;
 };
 
+extern const char* g_registerPartyPoolName;
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CRegisterPartyAsyncWork) == 280);
 #endif

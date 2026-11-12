@@ -33,6 +33,8 @@ protected:
   /* 00C8 */ AsyncDiagnostic m_diagnostic;
 };
 
+extern const char* g_changePartyMasterPoolName;
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CChangePartyMasterAsyncWork) == 256);
 #endif

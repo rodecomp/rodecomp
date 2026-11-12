@@ -23,6 +23,8 @@ protected:
   /* 0090 */ AsyncDiagnostic m_diagnostic;
 };
 
+extern const char* g_stopRecruitingPoolName;
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CStopRecruitingAsyncWork) == 0xC8);
 #endif

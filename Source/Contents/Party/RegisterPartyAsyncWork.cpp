@@ -24,6 +24,9 @@ namespace {
   }
 }
 
+// GLOBAL: gl_25605
+const char* g_registerPartyPoolName = DecryptName<0x07112F85A39F4FABULL>(CRYPT_BYTES(15, "Register_Party", 0x07112F85A39F4FABULL));
+
 // OFFSET: 0x005D3600
 // FUNCTION: fn_03704
 CRegisterPartyAsyncWork::CRegisterPartyAsyncWork()

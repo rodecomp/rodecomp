@@ -39,10 +39,13 @@ namespace {
   }
 }
 
+// GLOBAL: gl_25600
+const char* g_accountLinkedUserDataLoadPoolName = DecryptName<0x1D6D75EDE7CD311FULL>(CRYPT_BYTES(27, "AccountLinkedUserData_Load", 0x1D6D75EDE7CD311FULL));
+
 // OFFSET: 0x005B9E50
 // FUNCTION: fn_03440
 CAccountLinkedUserDataLoadAsyncWork::CAccountLinkedUserDataLoadAsyncWork()
-    : NAsyncWork("AccountLinkedUserData_Load"), m_accountId(0),
+    : NAsyncWork(g_accountLinkedUserDataLoadPoolName), m_accountId(0),
       m_diagnostic(false, std::string(DecryptName<0x59278F63D79F3DA1ULL>({0xD4, 0x53, 0xF4, 0xB9, 0x14, 0xE0, 0x49, 0x59})), sourceFile, 26) {
 }
 

@@ -22,6 +22,8 @@ protected:
   /* 00AC */ int padding_00AC;
 };
 
+extern const char* g_accountLinkedUserDataLoadPoolName;
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CAccountLinkedUserDataLoadAsyncWork) == 176);
 #endif

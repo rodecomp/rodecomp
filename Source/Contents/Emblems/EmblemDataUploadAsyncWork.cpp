@@ -23,6 +23,9 @@ namespace {
   }
 }
 
+// GLOBAL: gl_25610
+const char* g_emblemDataUploadPoolName = DecryptName<0x2FF3C5036D070127ULL>(CRYPT_BYTES(14, "Emblem_Upload", 0x2FF3C5036D070127ULL));
+
 // OFFSET: 0x005EBF50
 // FUNCTION: fn_03978
 CEmblemDataUploadAsyncWork::CEmblemDataUploadAsyncWork()

@@ -25,6 +25,8 @@ protected:
   /* 00A8 */ AsyncDiagnostic m_diagnostic;
 };
 
+extern const char* g_emblemDataUploadPoolName;
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CEmblemDataUploadAsyncWork) == 0xE0);
 #endif

@@ -6,6 +6,7 @@
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
+#include "Utility/Cipher/CryptName.h"
 
 #include <cstdio>
 #include <windows.h>
@@ -21,6 +22,9 @@ namespace {
     return name.Text();
   }
 }
+
+// GLOBAL: gl_25606
+const char* g_stopRecruitingPoolName = DecryptName<0xD97D5DBDBB2F2709ULL>(CRYPT_BYTES(16, "Stop_Recruiting", 0xD97D5DBDBB2F2709ULL));
 
 // OFFSET: 0x005D5D70
 // FUNCTION: fn_03711

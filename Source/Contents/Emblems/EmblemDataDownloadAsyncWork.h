@@ -28,6 +28,8 @@ protected:
   /* 0098 */ AsyncDiagnostic m_diagnostic;
 };
 
+extern const char* g_emblemDataDownloadPoolName;
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CEmblemDataDownloadAsyncWork) == 208);
 #endif

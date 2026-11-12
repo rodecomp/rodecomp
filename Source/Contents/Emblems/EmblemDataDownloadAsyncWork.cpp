@@ -6,6 +6,7 @@
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
+#include "Utility/Cipher/CryptName.h"
 
 #include <stdio.h>
 #include <windows.h>
@@ -27,6 +28,9 @@ namespace {
     return name.Text();
   }
 }
+
+// GLOBAL: gl_25609
+const char* g_emblemDataDownloadPoolName = DecryptName<0x17359BF953C367B3ULL>(CRYPT_BYTES(16, "Emblem_Download", 0x17359BF953C367B3ULL));
 
 // OFFSET: 0x005E9C00
 // FUNCTION: fn_03963
