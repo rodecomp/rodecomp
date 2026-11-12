@@ -25,6 +25,8 @@
 #include <cstdlib>
 #include <cstring>
 
+template __declspec(noinline) std::_Tree_find_result<std::map<std::int64_t, std::int64_t>::_Mybase::_Nodeptr> std::map<std::int64_t, std::int64_t>::_Mybase::_Find_lower_bound<std::int64_t>(const std::int64_t&) const;
+template __declspec(noinline) std::pair<std::map<int, SessionRecord6144>::_Mybase::_Nodeptr, bool> std::map<int, SessionRecord6144>::_Mybase::_Emplace<std::pair<const int, SessionRecord6144>>(std::pair<const int, SessionRecord6144>&&);
 
 // GLOBAL: gl_24650
 char g_decodedPlayerName[64];
@@ -551,23 +553,23 @@ void CSession::DeleteProhibitionLog(std::uint32_t aid, std::uint32_t minutes) {
 // OFFSET: 0x00E08690
 // FUNCTION: fn_23764
 std::int64_t CSession::FindSummonHp(std::int64_t key) const {
-  auto found = this->summonHp.lower_bound(key);
-  if (found == this->summonHp.end() || key < found->first) {
-    return -1;
+  auto found = this->summonHp.find(key);
+  if (found != this->summonHp.end()) {
+    return found->second;
   }
 
-  return found->second;
+  return -1;
 }
 
 // OFFSET: 0x00E086F0
 // FUNCTION: fn_23765
 std::int64_t CSession::FindSummonMaxHp(std::int64_t key) const {
-  auto found = this->summonMaxHp.lower_bound(key);
-  if (found == this->summonMaxHp.end() || key < found->first) {
-    return -1;
+  auto found = this->summonMaxHp.find(key);
+  if (found != this->summonMaxHp.end()) {
+    return found->second;
   }
 
-  return found->second;
+  return -1;
 }
 
 // OFFSET: 0x00E08750
