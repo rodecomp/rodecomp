@@ -6372,7 +6372,11 @@ int UIItemSellWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     if (a == ID_OK) {
       if (count > 0) {
         const int result = g_windowMgr.Confirm(LookupMessage(MSI_MIX_ACCEPT), 2, true, false, 0, "Message", 280, 120, 0);
-        mode->SendMsg(result == 187 ? 266 : 267, this->shopId, 0, 0, 0);
+        if (result == 187) {
+          mode->SendMsg(266, this->shopId, 0, 0, 0);
+        } else {
+          mode->SendMsg(267, this->shopId, 0, 0, 0);
+        }
         g_windowMgr.CloseWindow(WID_ITEMSHOPWND2);
         g_windowMgr.CloseWindow(WID_ITEMSELLWND2);
         g_session.ClearTradeItems();
@@ -7223,7 +7227,11 @@ void UIMerchantItemPurchaseWnd::OnLBtnDown(int x, int y) {
   if (item.identity[1] > 0) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     item = g_session.FindItem1760ByItemId(item.itemId.c_str());
-    mode->drag.BeginItem(g_windowMgr, this->buyingStore != 0 ? 21 : 13, item, item.quantity, -1);
+    if (this->buyingStore != 0) {
+      mode->drag.BeginItem(g_windowMgr, 21, item, item.quantity, -1);
+    } else {
+      mode->drag.BeginItem(g_windowMgr, 13, item, item.quantity, -1);
+    }
   }
 }
 
@@ -7243,9 +7251,13 @@ void UIMerchantMirrorItemWnd::OnLBtnDown(int x, int y) {
   if (item.identity[1] > 0) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     item = g_session.FindMerchantMyShopItem(item.identity[1]);
-    mode->drag.BeginItem(
-      g_windowMgr, this->mode == 1 ? 20 : this->mode == 2 ? 22 : 11, item, item.quantity, -1
-    );
+    if (this->mode == 1) {
+      mode->drag.BeginItem(g_windowMgr, 20, item, item.quantity, -1);
+    } else if (this->mode == 2) {
+      mode->drag.BeginItem(g_windowMgr, 22, item, item.quantity, -1);
+    } else {
+      mode->drag.BeginItem(g_windowMgr, 11, item, item.quantity, -1);
+    }
   }
 }
 
@@ -7266,7 +7278,11 @@ void UIMerchantShopMakeWnd::OnLBtnDown(int x, int y) {
   if (item.identity[1] > 0) {
     CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     item = g_session.FindMerchantPurchaseSavedItem(item.identity[1]);
-    gameMode->drag.BeginItem(g_windowMgr, this->mode != 0 ? 19 : 10, item, item.quantity, -1);
+    if (this->mode != 0) {
+      gameMode->drag.BeginItem(g_windowMgr, 19, item, item.quantity, -1);
+    } else {
+      gameMode->drag.BeginItem(g_windowMgr, 10, item, item.quantity, -1);
+    }
   }
 }
 
