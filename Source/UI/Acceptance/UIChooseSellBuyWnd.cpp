@@ -9107,14 +9107,8 @@ int UISelectCartWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
   case UM_COMMAND:
     if (a != ID_CLOSE) {
       const int type = static_cast<int>(a) - 9000;
-      std::vector<int>::iterator cart = this->cartTypes.begin();
-      for (;; ++cart) {
-        if (cart == this->cartTypes.end()) {
-          return 0;
-        }
-        if (*cart == type) {
-          break;
-        }
+      if (std::find(this->cartTypes.begin(), this->cartTypes.end(), type) == this->cartTypes.end()) {
+        return 0;
       }
       g_modeMgr.GetGameMode()->SendMsg(MM_SELECT_CART, type, this->selectionContext, 0, 0);
     }
