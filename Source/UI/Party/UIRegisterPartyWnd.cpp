@@ -90,7 +90,7 @@ void UIRegisterPartyWnd::OnCreate(int, int) {
   this->minimum->maximum = 3;
   this->minimum->Background(232, 232, 232);
   char number[10] = {};
-  StringFormat(number, sizeof(number), _TRUNCATE, "%d", std::max((level - 5), 1));
+  StringFormat(number, sizeof(number), _TRUNCATE, "%d", level - 5 > 1 ? level - 5 : 1);
   this->minimum->SetText(number);
   this->AddChild(this->minimum);
 
@@ -100,8 +100,9 @@ void UIRegisterPartyWnd::OnCreate(int, int) {
   this->maximum->invalidatesParent = 1;
   this->maximum->maximum = 3;
   this->maximum->Background(232, 232, 232);
-  StringFormat(number, sizeof(number), _TRUNCATE, "%d", level + 5);
-  this->maximum->SetText(number);
+  char maximumNumber[10] = {};
+  StringFormat(maximumNumber, sizeof(maximumNumber), _TRUNCATE, "%d", level + 5);
+  this->maximum->SetText(maximumNumber);
   this->AddChild(this->maximum);
 
   auto* typeLabel = new UIStaticText();

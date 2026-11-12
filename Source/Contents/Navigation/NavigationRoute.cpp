@@ -68,7 +68,7 @@ void CNavigationManager::DrawRoute(const float* matrix) {
   const int lastX = last.x;
   const int lastY = last.y;
 
-  if (minX < lastX && lastX < maxX && minY < lastY && lastY < maxY) {
+  if (minX < lastX && maxX > lastX && minY < lastY && maxY > lastY) {
     visible = 1;
     std::uint32_t color;
     if (this->drawDestination && std::strcmp(g_session.m_navigationPlayerMap, this->data.GetInfo()->GetName()) == 0) {
@@ -88,27 +88,26 @@ void CNavigationManager::DrawRoute(const float* matrix) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     if (mode && mode->scene && mode->scene->ground) {
       GroundGeometry* ground = mode->scene->ground;
-      const std::string name = FormatOwnedString("유저인터페이스\\navigation_interface3\\location%d.tga", g_locationFrame);
-      CTexture* texture = g_texMgr.Load(name.c_str(), 0, false, true, false);
-      ground->DrawTerrainOverlay(matrix, lastX, lastY, color, texture);
+      ground->DrawTerrainOverlay(
+        matrix, lastX, lastY, color,
+        g_texMgr.Load(FormatOwnedString("유저인터페이스\\navigation_interface3\\location%d.tga", g_locationFrame).c_str(), 0, false, true, false)
+      );
     }
   }
 
-  const DWORD now = timeGetTime();
-  const int blink = static_cast<int>((now % 1000) / 100);
+  const int blink = static_cast<int>(timeGetTime() % 1000 / 100);
   auto& points = this->movementRoute.points;
 
   if (points.size() - 1 != 0) {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     for (unsigned index = 0; index < points.size() - 1; index += 2) {
       const int x = points[index].x;
       const int y = points[index].y;
-      if (minX < x && x < maxX && minY < y && y < maxY) {
+      if (minX < x && maxX > x && minY < y && maxY > y) {
         ++visible;
         CTexture* texture = g_texMgr.Load(this->labels[points[index + 1].metadata].c_str(), 0, false, true, false);
-              constexpr float uv[8] = {0, 0, 1, 0, 0, 1, 1, 1};
+        constexpr float uv[8] = {0, 0, 1, 0, 0, 1, 1, 1};
         const std::uint32_t color = blink == static_cast<int>(index) % 10 ? 0xEEFFFFFF : 0x99FFFFFF;
-        this->ground->DrawGridDecal(matrix, x, y, color, *texture, uv);
+        this->ground->DrawCellDecal(matrix, x, y, color, *texture, uv);
       }
     }
   }
