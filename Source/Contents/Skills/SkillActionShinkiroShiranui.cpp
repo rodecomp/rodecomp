@@ -444,12 +444,14 @@ public:
 
 class CSkillAction_SS_KAGENOMAI : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_SS_KAGEGISSEN : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
 };
@@ -504,6 +506,18 @@ public:
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
 };
+
+// OFFSET: 0x00793A40
+// FUNCTION: fn_08757
+int CSkillAction_SS_KAGENOMAI::GetSkillAttackMotion() {
+  return 2;
+}
+
+// OFFSET: 0x00793BE0
+// FUNCTION: fn_08760
+int CSkillAction_SS_KAGEGISSEN::GetSkillAttackMotion() {
+  return 2;
+}
 
 // OFFSET: 0x00792500
 // FUNCTION: fn_08738
@@ -904,3 +918,56 @@ void CSkillAction_SS_REIKETSUHOU::OnSkillCast(int level, CGameActor* source) {
     static_cast<EffectActor*>(source)->LaunchEffect(54, level / 16);
   }
 }
+
+// GLOBAL: gl_25844
+static EfstActionRegistrar s_efstAction1395(1395, NewAction<CEfstAction_NIGHTMARE, CEfstAction>);
+// GLOBAL: gl_25845
+static EfstActionRegistrar s_efstAction1393(1393, NewAction<CEfstAction_SHADOW_CLOCK, CEfstAction>);
+// GLOBAL: gl_25846
+static CSkillObjectActionRegistration s_skillObjectAction290(290, NewAction<CSkillObjectAction_NPC_FUUMA, CSkillObjectAction>);
+// GLOBAL: gl_25847
+static CSkillObjectActionRegistration s_skillObjectAction298(298, NewAction<CSkillObjectAction_SS_KUNAITRAP, CSkillObjectAction>);
+// GLOBAL: gl_25848
+static CSkillObjectActionRegistration s_skillObjectAction294(294, NewAction<CSkillObjectAction_SS_SBUNSHIN, CSkillObjectAction>);
+// GLOBAL: gl_25849
+static SkillActionRegistrar s_skillAction5478(5478, NewAction<CSkillAction_SS_AKUMUKESU, CSkillAction>);
+// GLOBAL: gl_25850
+static SkillActionRegistrar s_skillAction5495(5495, NewAction<CSkillAction_SS_ANKOKURYUUAKUMU, CSkillAction>);
+// GLOBAL: gl_25851
+static SkillActionRegistrar s_skillAction5492(5492, NewAction<CSkillAction_SS_ANTENPOU, CSkillAction>);
+// GLOBAL: gl_25852
+static SkillActionRegistrar s_skillAction5499(5499, NewAction<CSkillAction_SS_FOUR_CHARM, CSkillAction>);
+// GLOBAL: gl_25853
+static SkillActionRegistrar s_skillAction5484(5484, NewAction<CSkillAction_SS_FUUMAKOUCHIKU, CSkillAction>);
+// GLOBAL: gl_25854
+static SkillActionRegistrar s_skillAction5483(5483, NewAction<CSkillAction_SS_FUUMASHOUAKU, CSkillAction>);
+// GLOBAL: gl_25855
+static SkillActionRegistrar s_skillAction5498(5498, NewAction<CSkillAction_SS_FUUMASHOUAKU_HIT, CSkillAction>);
+// GLOBAL: gl_25856
+static SkillActionRegistrar s_skillAction5494(5494, NewAction<CSkillAction_SS_HITOUAKUMU, CSkillAction>);
+// GLOBAL: gl_25857
+static SkillActionRegistrar s_skillAction5493(5493, NewAction<CSkillAction_SS_KAGEAKUMU, CSkillAction>);
+// GLOBAL: gl_25858
+static SkillActionRegistrar s_skillAction5480(5480, NewAction<CSkillAction_SS_KAGEGARI, CSkillAction>);
+// GLOBAL: gl_25859
+static SkillActionRegistrar s_skillAction5482(5482, NewAction<CSkillAction_SS_KAGEGISSEN, CSkillAction>);
+// GLOBAL: gl_25860
+static SkillActionRegistrar s_skillAction5481(5481, NewAction<CSkillAction_SS_KAGENOMAI, CSkillAction>);
+// GLOBAL: gl_25861
+static SkillActionRegistrar s_skillAction5491(5491, NewAction<CSkillAction_SS_KINRYUUHOU, CSkillAction>);
+// GLOBAL: gl_25862
+static SkillActionRegistrar s_skillAction5486(5486, NewAction<CSkillAction_SS_KUNAIKAITEN, CSkillAction>);
+// GLOBAL: gl_25863
+static SkillActionRegistrar s_skillAction5487(5487, NewAction<CSkillAction_SS_KUNAIKUSSETSU, CSkillAction>);
+// GLOBAL: gl_25864
+static SkillActionRegistrar s_skillAction5485(5485, NewAction<CSkillAction_SS_KUNAIWAIKYOKU, CSkillAction>);
+// GLOBAL: gl_25865
+static SkillActionRegistrar s_skillAction5490(5490, NewAction<CSkillAction_SS_RAIDENPOU, CSkillAction>);
+// GLOBAL: gl_25866
+static SkillActionRegistrar s_skillAction5489(5489, NewAction<CSkillAction_SS_REIKETSUHOU, CSkillAction>);
+// GLOBAL: gl_25867
+static SkillActionRegistrar s_skillAction5488(5488, NewAction<CSkillAction_SS_SEKIENHOU, CSkillAction>);
+// GLOBAL: gl_25868
+static SkillActionRegistrar s_skillAction5479(5479, NewAction<CSkillAction_SS_SHINKIROU, CSkillAction>);
+// GLOBAL: gl_25869
+static SkillActionRegistrar s_skillAction5476(5476, NewAction<CSkillAction_SS_TOKEDASU, CSkillAction>);

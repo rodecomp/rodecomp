@@ -42,6 +42,12 @@ public:
   void OnEfstUpdate(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
 };
 
+class CEfstAction_ChangeSizeMonster : public CEfstAction_ChangeSize {
+};
+
+class CEfstAction_ChangeSizeNPC : public CEfstAction_ChangeSize {
+};
+
 class CSkillAction_CD_DIVINUS_FLOS : public CSkillAction {
 public:
   void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
@@ -61,6 +67,15 @@ public:
   void OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) override;
   void OnEfstEnd(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
   void OnEfstUpdate(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
+};
+
+class CEfstAction_ShowEffect1 : public CEfstAction_ShowEffect {
+};
+
+class CEfstAction_ShowEffect2 : public CEfstAction_ShowEffect {
+};
+
+class CEfstAction_ShowEffect3 : public CEfstAction_ShowEffect {
 };
 
 class CSkillAction_RA_UNLIMIT : public CSkillAction {
@@ -91,6 +106,7 @@ public:
 
 class CSkillAction_SHC_SHADOW_STAB : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
   void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
 };
@@ -112,6 +128,7 @@ public:
 
 class CSkillAction_ABC_CHASING_BREAK : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   bool SuppressAttackSkillArrow() override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
   void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
@@ -119,6 +136,7 @@ public:
 
 class CSkillAction_ABC_CHASING_SHOT : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   bool SuppressAttackSkillArrow() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
@@ -146,24 +164,28 @@ public:
 
 class CSkillAction_SHC_IMPACT_CRATER : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
   void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_SHC_CROSS_SLASH : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
   void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_SHC_DANCING_KNIFE : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_ABC_HIT_AND_SLIDING : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
 };
 
@@ -183,6 +205,7 @@ public:
 
 class CSkillAction_IQ_BLAZING_FLAME_BLAST : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
   void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
@@ -190,12 +213,14 @@ public:
 
 class CSkillAction_BO_MAYHEMIC_THORNS : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_BO_EXPLOSIVE_POWDER : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   bool KeepSkillAttackSpeed() override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
 };
@@ -234,6 +259,7 @@ public:
 
 class CSkillAction_DK_SERVANTWEAPON_ATK : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   void OnSkillHit(int level, CGameActor* source, CGameActor* target) override;
   void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
 };
@@ -251,12 +277,18 @@ public:
   void OnEfstUpdate(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
 };
 
+class CSkillAction_DK_SERVANT_W_SIGN : public CSkillAction {
+public:
+  int GetSkillAttackMotion() override;
+  void OnTargetSkillCast(int argument1, int argument2, int argument3) override;
+};
+
 class CSkillAction_DK_SERVANT_W_PHANTOM : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
   void OnSkillHit(int caster, CGameActor* target, CGameActor* argument3) override;
-  void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_DK_SERVANT_W_DEMOL : public CSkillAction {
@@ -268,11 +300,13 @@ public:
 
 class CSkillAction_DK_STORMSLASH : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_DK_MADNESS_CRUSHER : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   bool IsSkillWithoutMotion() override;
   void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
@@ -280,6 +314,7 @@ public:
 
 class CSkillAction_DK_DRAGONIC_PIERCE : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
   void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
@@ -287,6 +322,7 @@ public:
 
 class CSkillAction_DK_DRAGONIC_BREATH : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
   void OnSkillHit(int level, CGameActor* source, CGameActor* target) override;
@@ -294,6 +330,7 @@ public:
 
 class CSkillAction_DK_CHARGINGPIERCE : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
 };
@@ -311,6 +348,7 @@ public:
 
 class CSkillAction_DK_HACKANDSLASHER : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
   void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
 };
@@ -395,6 +433,108 @@ CSkillInfo::~CSkillInfo() = default;
 // FUNCTION: fn_08325
 bool CSkillInfo::IsValid() const {
   return this->available != 0 && this->level != 0;
+}
+
+// OFFSET: 0x00776540
+// FUNCTION: fn_08348
+int CSkillAction_SHC_IMPACT_CRATER::GetSkillAttackMotion() {
+  return 2;
+}
+
+// OFFSET: 0x00776940
+// FUNCTION: fn_08351
+int CSkillAction_SHC_CROSS_SLASH::GetSkillAttackMotion() {
+  return 2;
+}
+
+// OFFSET: 0x00776C30
+// FUNCTION: fn_08354
+int CSkillAction_SHC_DANCING_KNIFE::GetSkillAttackMotion() {
+  return 2;
+}
+
+// OFFSET: 0x00777930
+// FUNCTION: fn_08360
+int CSkillAction_SHC_SHADOW_STAB::GetSkillAttackMotion() {
+  return 2;
+}
+
+// OFFSET: 0x00778130
+// FUNCTION: fn_08370
+int CSkillAction_ABC_CHASING_BREAK::GetSkillAttackMotion() {
+  return 2;
+}
+
+// OFFSET: 0x00778570
+// FUNCTION: fn_08374
+int CSkillAction_ABC_CHASING_SHOT::GetSkillAttackMotion() {
+  return 2;
+}
+
+// OFFSET: 0x00778DC0
+// FUNCTION: fn_08380
+int CSkillAction_ABC_HIT_AND_SLIDING::GetSkillAttackMotion() {
+  return 2;
+}
+
+// OFFSET: 0x00779E20
+// FUNCTION: fn_08391
+int CSkillAction_IQ_BLAZING_FLAME_BLAST::GetSkillAttackMotion() {
+  return 2;
+}
+
+// OFFSET: 0x0077CCB0
+// FUNCTION: fn_08436
+int CSkillAction_BO_MAYHEMIC_THORNS::GetSkillAttackMotion() {
+  return 2;
+}
+
+// OFFSET: 0x0077D010
+// FUNCTION: fn_08439
+int CSkillAction_BO_EXPLOSIVE_POWDER::GetSkillAttackMotion() {
+  return 2;
+}
+
+// OFFSET: 0x0077E3A0
+// FUNCTION: fn_08455
+int CSkillAction_DK_SERVANTWEAPON_ATK::GetSkillAttackMotion() {
+  return -1;
+}
+
+// OFFSET: 0x0077FB30
+// FUNCTION: fn_08472
+int CSkillAction_DK_STORMSLASH::GetSkillAttackMotion() {
+  return 2;
+}
+
+// OFFSET: 0x0077FD40
+// FUNCTION: fn_08474
+int CSkillAction_DK_MADNESS_CRUSHER::GetSkillAttackMotion() {
+  return 2;
+}
+
+// OFFSET: 0x00780010
+// FUNCTION: fn_08478
+int CSkillAction_DK_DRAGONIC_PIERCE::GetSkillAttackMotion() {
+  return 2;
+}
+
+// OFFSET: 0x00780830
+// FUNCTION: fn_08482
+int CSkillAction_DK_DRAGONIC_BREATH::GetSkillAttackMotion() {
+  return 2;
+}
+
+// OFFSET: 0x00780DA0
+// FUNCTION: fn_08486
+int CSkillAction_DK_CHARGINGPIERCE::GetSkillAttackMotion() {
+  return 2;
+}
+
+// OFFSET: 0x00781320
+// FUNCTION: fn_08492
+int CSkillAction_DK_HACKANDSLASHER::GetSkillAttackMotion() {
+  return 2;
 }
 
 // OFFSET: 0x008AC440
@@ -1949,10 +2089,17 @@ EfstActionMessage CEfstAction_SERVANTWEAPON::GetEfstEndMessage() {
   return {LookupMessage(MSI_IG_ATTACK_STANCE_ON), 0xFF};
 }
 
+// OFFSET: 0x0077E810
+// FUNCTION: fn_08460
+int CSkillAction_DK_SERVANT_W_SIGN::GetSkillAttackMotion() {
+  return 2;
+}
+
 // OFFSET: 0x0077E820
 // FUNCTION: fn_08461
-void CSkillAction_DK_SERVANT_W_PHANTOM::OnSkillDamage(int actor, CGameActor* targetActor, CGameActor*) {
-  CGameActor* source = reinterpret_cast<CGameActor*>(actor);
+void CSkillAction_DK_SERVANT_W_SIGN::OnTargetSkillCast(int argument1, int argument2, int) {
+  CGameActor* source = reinterpret_cast<CGameActor*>(argument1);
+  CGameActor* targetActor = reinterpret_cast<CGameActor*>(argument2);
   if (source) {
     if (CServantWeaponNewEffect* effect = static_cast<CServantWeaponNewEffect*>(g_effectMgr->Find(source->render.accountId, 0x99C))) {
       effect->Shoot(0x1453);
@@ -1993,6 +2140,12 @@ void CEfstAction_SERVANT_SIGN::OnEfstEnd(int efstId, int argument2, int argument
 // FUNCTION: fn_08464
 void CEfstAction_SERVANT_SIGN::OnEfstUpdate(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
   this->OnEfstBegin(efstId, value, 0, 0, actor, false);
+}
+
+// OFFSET: 0x0077EF60
+// FUNCTION: fn_08465
+int CSkillAction_DK_SERVANT_W_PHANTOM::GetSkillAttackMotion() {
+  return 2;
 }
 
 // OFFSET: 0x0077EF70
@@ -2436,6 +2589,7 @@ public:
 
 class CSkillAction_NPC_AIMED_SHOWER : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
   void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
@@ -2577,6 +2731,12 @@ class CSkillAction_HN_OVERCOMING_CRISIS : public CSkillAction {
 public:
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
 };
+
+// OFFSET: 0x00782850
+// FUNCTION: fn_08515
+int CSkillAction_NPC_AIMED_SHOWER::GetSkillAttackMotion() {
+  return 2;
+}
 
 // OFFSET: 0x00781EA0
 // FUNCTION: fn_08505
@@ -3237,13 +3397,181 @@ void CSkillAction_HN_OVERCOMING_CRISIS::OnSkillEffect(int level, CGameActor* sou
 }
 
 
-class CSkillObjectActionRegistration {
-public:
-  CSkillObjectActionRegistration(int skillId, std::function<CSkillObjectAction*()> factory);
-};
-
 // OFFSET: 0x00786450
 // FUNCTION: fn_08576
 CSkillObjectActionRegistration::CSkillObjectActionRegistration(int skillId, std::function<CSkillObjectAction*()> factory) {
   CSkillActionMgr::GetInstance()->RegisterSkillObjectAction(skillId, factory);
 }
+
+// GLOBAL: gl_25720
+static EfstActionRegistrar s_efstAction1421(1421, NewAction<CEfstAction_ChangeSizeMonster, CEfstAction>);
+// GLOBAL: gl_25721
+static EfstActionRegistrar s_efstAction1420(1420, NewAction<CEfstAction_ChangeSizeNPC, CEfstAction>);
+// GLOBAL: gl_25722
+static EfstActionRegistrar s_efstAction1559(1559, NewAction<CEfstAction_GenderChange, CEfstAction>);
+// GLOBAL: gl_25723
+static EfstActionRegistrar s_efstAction1422(1422, NewAction<CEfstAction_ShowEffect1, CEfstAction>);
+// GLOBAL: gl_25724
+static EfstActionRegistrar s_efstAction1423(1423, NewAction<CEfstAction_ShowEffect2, CEfstAction>);
+// GLOBAL: gl_25725
+static EfstActionRegistrar s_efstAction1424(1424, NewAction<CEfstAction_ShowEffect3, CEfstAction>);
+
+// OFFSET: 0x00453F10
+// FUNCTION: fn_45562
+static bool s_efstActionRegistered722 = [] {
+  std::function<CEfstAction*()> factory = NewAction<CEfstAction_UNLIMIT, CEfstAction>;
+  CSkillActionMgr::GetInstance()->RegisterEfstAction(722, factory);
+  return true;
+}();
+
+// OFFSET: 0x00453FE0
+// FUNCTION: fn_45563
+static bool s_skillActionRegistered5002 = [] {
+  std::function<CSkillAction*()> factory = NewAction<CSkillAction_RA_UNLIMIT, CSkillAction>;
+  CSkillActionMgr::GetInstance()->RegisterSkillAction(5002, factory);
+  return true;
+}();
+
+// GLOBAL: gl_25726
+static SkillActionRegistrar s_skillAction6516(6516, NewAction<CSkillAction_AG_ENERGY_CONVERSION, CSkillAction>);
+// GLOBAL: gl_25727
+static SkillActionRegistrar s_skillAction6518(6518, NewAction<CSkillAction_CD_DIVINUS_FLOS, CSkillAction>);
+// GLOBAL: gl_25728
+static EfstActionRegistrar s_efstAction1193(1193, NewAction<CEfstAction_DANCING_KNIFE, CEfstAction>);
+// GLOBAL: gl_25729
+static EfstActionRegistrar s_efstAction1192(1192, NewAction<CEfstAction_SHADOW_EXCEED, CEfstAction>);
+// GLOBAL: gl_25730
+static EfstActionRegistrar s_efstAction1226(1226, NewAction<CEfstAction_SHADOW_WEAPON, CEfstAction>);
+// GLOBAL: gl_25731
+static SkillActionRegistrar s_skillAction6511(6511, NewAction<CSkillAction_SHC_CROSS_SLASH, CSkillAction>);
+// GLOBAL: gl_25732
+static SkillActionRegistrar s_skillAction5286(5286, NewAction<CSkillAction_SHC_DANCING_KNIFE, CSkillAction>);
+// GLOBAL: gl_25733
+static SkillActionRegistrar s_skillAction5293(5293, NewAction<CSkillAction_SHC_ENCHANTING_SHADOW, CSkillAction>);
+// GLOBAL: gl_25734
+static SkillActionRegistrar s_skillAction5292(5292, NewAction<CSkillAction_SHC_IMPACT_CRATER, CSkillAction>);
+// GLOBAL: gl_25735
+static SkillActionRegistrar s_skillAction5285(5285, NewAction<CSkillAction_SHC_SHADOW_EXCEED, CSkillAction>);
+// GLOBAL: gl_25736
+static SkillActionRegistrar s_skillAction5291(5291, NewAction<CSkillAction_SHC_SHADOW_STAB, CSkillAction>);
+// GLOBAL: gl_25738
+static SkillActionRegistrar s_skillAction6515(6515, NewAction<CSkillAction_ABC_ABYSS_FLAME, CSkillAction>);
+// GLOBAL: gl_25739
+static SkillActionRegistrar s_skillAction6522(6522, NewAction<CSkillAction_ABC_ABYSS_FLAME_ATK, CSkillAction>);
+// GLOBAL: gl_25740
+static SkillActionRegistrar s_skillAction6513(6513, NewAction<CSkillAction_ABC_CHASING_BREAK, CSkillAction>);
+// GLOBAL: gl_25741
+static SkillActionRegistrar s_skillAction6514(6514, NewAction<CSkillAction_ABC_CHASING_SHOT, CSkillAction>);
+// GLOBAL: gl_25742
+static SkillActionRegistrar s_skillAction6512(6512, NewAction<CSkillAction_ABC_HIT_AND_SLIDING, CSkillAction>);
+// GLOBAL: gl_25743
+static SkillActionRegistrar s_skillAction6517(6517, NewAction<CSkillAction_EM_PSYCHIC_STREAM, CSkillAction>);
+// GLOBAL: gl_25744
+static SkillActionRegistrar s_skillAction6519(6519, NewAction<CSkillAction_IQ_BLAZING_FLAME_BLAST, CSkillAction>);
+
+// OFFSET: 0x00457500
+// FUNCTION: fn_45564
+static bool s_efstActionRegistered1665 = [] {
+  std::function<CEfstAction*()> factory = NewAction<CEfstAction_MYSTERY_POWDER, CEfstAction>;
+  CSkillActionMgr::GetInstance()->RegisterEfstAction(1665, factory);
+  return true;
+}();
+
+// GLOBAL: gl_25745
+static SkillActionRegistrar s_skillAction6510(6510, NewAction<CSkillAction_BO_DUST_EXPLOSION, CSkillAction>);
+// GLOBAL: gl_25746
+static SkillActionRegistrar s_skillAction6005(6005, NewAction<CSkillAction_BO_EXPLOSIVE_POWDER, CSkillAction>);
+// GLOBAL: gl_25747
+static SkillActionRegistrar s_skillAction6006(6006, NewAction<CSkillAction_BO_MAYHEMIC_THORNS, CSkillAction>);
+// GLOBAL: gl_25748
+static SkillActionRegistrar s_skillAction6509(6509, NewAction<CSkillAction_BO_MYSTERY_POWDER, CSkillAction>);
+// GLOBAL: gl_25749
+static EfstActionRegistrar s_efstAction1174(1174, NewAction<CEfstAction_CHARGINGPIERCE, CEfstAction>);
+// GLOBAL: gl_25750
+static EfstActionRegistrar s_efstAction1175(1175, NewAction<CEfstAction_CHARGINGPIERCE_COUNT, CEfstAction>);
+// GLOBAL: gl_25751
+static EfstActionRegistrar s_efstAction1172(1172, NewAction<CEfstAction_SERVANTWEAPON, CEfstAction>);
+// GLOBAL: gl_25752
+static EfstActionRegistrar s_efstAction1173(1173, NewAction<CEfstAction_SERVANT_SIGN, CEfstAction>);
+// GLOBAL: gl_25753
+static EfstActionRegistrar s_efstAction1178(1178, NewAction<CEfstAction_VIGOR, CEfstAction>);
+// GLOBAL: gl_25754
+static SkillActionRegistrar s_skillAction5206(5206, NewAction<CSkillAction_DK_CHARGINGPIERCE, CSkillAction>);
+// GLOBAL: gl_25755
+static SkillActionRegistrar s_skillAction6001(6001, NewAction<CSkillAction_DK_DRAGONIC_BREATH, CSkillAction>);
+// GLOBAL: gl_25756
+static SkillActionRegistrar s_skillAction6502(6502, NewAction<CSkillAction_DK_DRAGONIC_PIERCE, CSkillAction>);
+// GLOBAL: gl_25757
+static SkillActionRegistrar s_skillAction5208(5208, NewAction<CSkillAction_DK_HACKANDSLASHER, CSkillAction>);
+// GLOBAL: gl_25758
+static SkillActionRegistrar s_skillAction5209(5209, NewAction<CSkillAction_DK_HACKANDSLASHER_ATK, CSkillAction>);
+// GLOBAL: gl_25759
+static SkillActionRegistrar s_skillAction5211(5211, NewAction<CSkillAction_DK_MADNESS_CRUSHER, CSkillAction>);
+// GLOBAL: gl_25760
+static SkillActionRegistrar s_skillAction5202(5202, NewAction<CSkillAction_DK_SERVANTWEAPON_ATK, CSkillAction>);
+// GLOBAL: gl_25761
+static SkillActionRegistrar s_skillAction5205(5205, NewAction<CSkillAction_DK_SERVANT_W_DEMOL, CSkillAction>);
+// GLOBAL: gl_25762
+static SkillActionRegistrar s_skillAction5204(5204, NewAction<CSkillAction_DK_SERVANT_W_PHANTOM, CSkillAction>);
+// GLOBAL: gl_25763
+static SkillActionRegistrar s_skillAction5203(5203, NewAction<CSkillAction_DK_SERVANT_W_SIGN, CSkillAction>);
+// GLOBAL: gl_25764
+static SkillActionRegistrar s_skillAction5213(5213, NewAction<CSkillAction_DK_STORMSLASH, CSkillAction>);
+// GLOBAL: gl_25765
+static SkillActionRegistrar s_skillAction5212(5212, NewAction<CSkillAction_DK_VIGOR, CSkillAction>);
+// GLOBAL: gl_25766
+static EfstActionRegistrar s_efstAction1454(1454, NewAction<CEfstAction_BLOCK_SEAL, CEfstAction>);
+// GLOBAL: gl_25767
+static EfstActionRegistrar s_efstAction1455(1455, NewAction<CEfstAction_FROST_STORM, CEfstAction>);
+// GLOBAL: gl_25768
+static EfstActionRegistrar s_efstAction1456(1456, NewAction<CEfstAction_GROGGY, CEfstAction>);
+// GLOBAL: gl_25769
+static EfstActionRegistrar s_efstAction1453(1453, NewAction<CEfstAction_TARGET_MARKER, CEfstAction>);
+// GLOBAL: gl_25770
+static SkillActionRegistrar s_skillAction786(786, NewAction<CSkillAction_NPC_AIMED_SHOWER, CSkillAction>);
+// GLOBAL: gl_25771
+static SkillActionRegistrar s_skillAction787(787, NewAction<CSkillAction_NPC_BLAZING_ERUPTION, CSkillAction>);
+// GLOBAL: gl_25772
+static SkillActionRegistrar s_skillAction789(789, NewAction<CSkillAction_NPC_BLOCK_EXPLOSION, CSkillAction>);
+// GLOBAL: gl_25773
+static SkillActionRegistrar s_skillAction788(788, NewAction<CSkillAction_NPC_BLOCK_SEAL, CSkillAction>);
+// GLOBAL: gl_25774
+static SkillActionRegistrar s_skillAction790(790, NewAction<CSkillAction_NPC_FROST_FIELD, CSkillAction>);
+// GLOBAL: gl_25775
+static SkillActionRegistrar s_skillAction791(791, NewAction<CSkillAction_NPC_LIGHTNING_JUDGEMENT, CSkillAction>);
+// GLOBAL: gl_25776
+static SkillActionRegistrar s_skillAction793(793, NewAction<CSkillAction_NPC_RESET_EFST, CSkillAction>);
+// GLOBAL: gl_25777
+static EfstActionRegistrar s_efstAction1383(1383, NewAction<CEfstAction_BREAKINGLIMIT, CEfstAction>);
+// GLOBAL: gl_25778
+static EfstActionRegistrar s_efstAction1384(1384, NewAction<CEfstAction_RULEBREAK, CEfstAction>);
+// GLOBAL: gl_25779
+static CSkillObjectActionRegistration s_skillObjectAction296(296, NewAction<CSkillObjectAction_HN_GROUND_GRAVITATION, CSkillObjectAction>);
+// GLOBAL: gl_25780
+static CSkillObjectActionRegistration s_skillObjectAction295(295, NewAction<CSkillObjectAction_HN_JACK_FROST_NOVA, CSkillObjectAction>);
+// GLOBAL: gl_25781
+static SkillActionRegistrar s_skillAction5461(5461, NewAction<CSkillAction_HN_BREAKINGLIMIT, CSkillAction>);
+// GLOBAL: gl_25782
+static SkillActionRegistrar s_skillAction5451(5451, NewAction<CSkillAction_HN_DOUBLEBOWLINGBASH, CSkillAction>);
+// GLOBAL: gl_25783
+static SkillActionRegistrar s_skillAction5459(5459, NewAction<CSkillAction_HN_GROUND_GRAVITATION, CSkillAction>);
+// GLOBAL: gl_25784
+static SkillActionRegistrar s_skillAction5458(5458, NewAction<CSkillAction_HN_HELLS_DRIVE, CSkillAction>);
+// GLOBAL: gl_25785
+static SkillActionRegistrar s_skillAction5457(5457, NewAction<CSkillAction_HN_JACK_FROST_NOVA, CSkillAction>);
+// GLOBAL: gl_25786
+static SkillActionRegistrar s_skillAction5456(5456, NewAction<CSkillAction_HN_JUPITEL_THUNDER_STORM, CSkillAction>);
+// GLOBAL: gl_25787
+static SkillActionRegistrar s_skillAction5452(5452, NewAction<CSkillAction_HN_MEGA_SONIC_BLOW, CSkillAction>);
+// GLOBAL: gl_25788
+static SkillActionRegistrar s_skillAction5455(5455, NewAction<CSkillAction_HN_METEOR_STORM_BUSTER, CSkillAction>);
+// GLOBAL: gl_25789
+static SkillActionRegistrar s_skillAction5460(5460, NewAction<CSkillAction_HN_NAPALM_VULCAN_STRIKE, CSkillAction>);
+// GLOBAL: gl_25790
+static SkillActionRegistrar s_skillAction5505(5505, NewAction<CSkillAction_HN_OVERCOMING_CRISIS, CSkillAction>);
+// GLOBAL: gl_25791
+static SkillActionRegistrar s_skillAction5462(5462, NewAction<CSkillAction_HN_RULEBREAK, CSkillAction>);
+// GLOBAL: gl_25792
+static SkillActionRegistrar s_skillAction5453(5453, NewAction<CSkillAction_HN_SHIELD_CHAIN_RUSH, CSkillAction>);
+// GLOBAL: gl_25793
+static SkillActionRegistrar s_skillAction5454(5454, NewAction<CSkillAction_HN_SPIRAL_PIERCE_MAX, CSkillAction>);

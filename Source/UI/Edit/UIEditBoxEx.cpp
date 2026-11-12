@@ -49,6 +49,12 @@ void CUIEditBoxEx::SetCursor(std::size_t position) {
   this->edit->SetCursor(position);
 }
 
+// OFFSET: 0x009E4960
+// FUNCTION: fn_14436
+UIWindow* CUIEditBoxEx::GetEditWindow() {
+  return this->edit;
+}
+
 // OFFSET: 0x009E4970
 // FUNCTION: fn_14437
 int CUIEditCtrlEx::LeadingBytesFitting(const std::string& text, int width) {
@@ -635,7 +641,7 @@ void CUIEditBoxEx::Create(int width, int height, bool withScrollBar) {
 
 // OFFSET: 0x009E4660
 // FUNCTION: fn_14435
-void CUIEditCtrlEx::PaintTextLines() {
+void CUIEditCtrlEx::PaintText() {
   if (this->selectedAll) {
     this->Synchronize();
     this->selectedAll = 0;

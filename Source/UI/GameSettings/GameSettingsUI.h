@@ -171,6 +171,7 @@ public:
   __declspec(noinline) CUIGroupProcessPriority();
   void OnCreate(int width, int height) override;
   void OnInit() override;
+  void Apply() override;
   void Refresh() override;
   void OnSelect(CUIRadioButton* button);
 
@@ -313,17 +314,17 @@ public:
   /* 0094 */ CUIGroupTrilinear* m_trilinear;
 };
 
-class CUIListPage : public CUIControl {
+class CUIListPage final : public CUIControl {
 public:
   __declspec(noinline) CUIListPage();
   void OnCreate(int width, int height) override;
   void OnInit() override;
   void Paint() override;
   virtual void OnSelectOption(CUIOptionItem* item, const TALKTYPE& type);
-  bool SetOptionChecked(int id);
-  void BindOption(CUIOptionItem* item, const TALKTYPE& id);
-  void LoadOptions(int tab);
-  __declspec(noinline) void RefreshOptions();
+  virtual void BindOption(CUIOptionItem* item, const TALKTYPE& id);
+  virtual void LoadOptions(int tab);
+  virtual void RefreshOptions();
+  virtual bool SetOptionChecked(int id);
   __declspec(noinline) void RefreshHotkeyLabels();
   std::string GetHotkeyText(int tab, int index);
 

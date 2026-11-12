@@ -2042,12 +2042,6 @@ void CGameActor::ProcessBodyState() {
   }
 }
 
-// OFFSET: 0x0077E3A0
-// FUNCTION: fn_08455
-int CGameActor::GetShield() {
-  return -1;
-}
-
 // OFFSET: 0x005A1280
 // FUNCTION: fn_03042
 void CGameActor::SetSex(int value) {

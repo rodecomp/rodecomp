@@ -22,6 +22,7 @@
 
 class CSkillAction_IG_GUARDIAN_SHIELD : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
 };
@@ -52,6 +53,7 @@ public:
 
 class CSkillAction_IG_JUDGEMENT_CROSS : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
   void OnSkillHit(int level, CGameActor* source, CGameActor* target) override;
@@ -60,6 +62,7 @@ public:
 
 class CSkillAction_IG_OVERSLASH : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
   void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
@@ -92,12 +95,14 @@ public:
 
 class CSkillAction_IG_IMPERIAL_CROSS : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
   void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_IG_RADIANT_SPEAR : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
   void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
@@ -112,6 +117,7 @@ public:
 
 class CSkillAction_IG_SHIELD_SHOOTING : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
   void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
@@ -148,6 +154,12 @@ public:
   EfstActionMessage GetEfstBeginMessage() override;
   EfstActionMessage GetEfstEndMessage() override;
 };
+
+// OFFSET: 0x007879C0
+// FUNCTION: fn_08588
+int CSkillAction_IG_GUARDIAN_SHIELD::GetSkillAttackMotion() {
+  return 2;
+}
 
 // OFFSET: 0x00787A30
 // FUNCTION: fn_08590
@@ -267,6 +279,12 @@ EfstActionMessage CEfstAction_IG_HOLY_SHIELD::GetEfstEndMessage() {
   return {LookupMessage(MSI_AG_CLIMAX_ON), 0xFF};
 }
 
+// OFFSET: 0x00788B80
+// FUNCTION: fn_08603
+int CSkillAction_IG_JUDGEMENT_CROSS::GetSkillAttackMotion() {
+  return 2;
+}
+
 // OFFSET: 0x00788B90
 // FUNCTION: fn_08604
 void CSkillAction_IG_JUDGEMENT_CROSS::OnSkillCast(int level, CGameActor* source) {
@@ -318,6 +336,12 @@ void CSkillAction_IG_JUDGEMENT_CROSS::OnSkillDamage(int level, CGameActor* sourc
     EffectLists* effects = g_effectMgr;
     effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_judgement_cross_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
+}
+
+// OFFSET: 0x007893F0
+// FUNCTION: fn_08608
+int CSkillAction_IG_OVERSLASH::GetSkillAttackMotion() {
+  return 2;
 }
 
 // OFFSET: 0x00789400
@@ -444,6 +468,12 @@ void CEfstAction_IG_ULTIMATE_SACRIFICE::OnEfstUpdate(int efstId, int value, int 
   this->OnEfstBegin(efstId, value, 0, 0, actor, false);
 }
 
+// OFFSET: 0x0078A520
+// FUNCTION: fn_08621
+int CSkillAction_IG_IMPERIAL_CROSS::GetSkillAttackMotion() {
+  return 2;
+}
+
 // OFFSET: 0x0078A530
 // FUNCTION: fn_08622
 void CSkillAction_IG_IMPERIAL_CROSS::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
@@ -460,6 +490,12 @@ void CSkillAction_IG_IMPERIAL_CROSS::OnSkillDamage(int level, CGameActor* source
     EffectLists* effects = g_effectMgr;
     effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("imperial_cross_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
+}
+
+// OFFSET: 0x0078A820
+// FUNCTION: fn_08624
+int CSkillAction_IG_RADIANT_SPEAR::GetSkillAttackMotion() {
+  return 2;
 }
 
 // OFFSET: 0x0078A830
@@ -539,6 +575,12 @@ void CSkillAction_IG_IMPERIAL_PRESSURE::OnSkillDamage(int level, CGameActor* sou
     EffectLists* effects = g_effectMgr;
     effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("imperial_pressure_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
+}
+
+// OFFSET: 0x0078B390
+// FUNCTION: fn_08631
+int CSkillAction_IG_SHIELD_SHOOTING::GetSkillAttackMotion() {
+  return 2;
 }
 
 // OFFSET: 0x0078B3A0
@@ -703,6 +745,7 @@ void CEfstAction_IG_GUARD_STANCE::OnEfstBegin(int efstId, int value, int argumen
 
 class CSkillAction_IG_CROSS_RAIN : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   int GetSkillScopeType() override;
 };
@@ -714,6 +757,7 @@ public:
 
 class CSkillAction_IG_GRAND_JUDGEMENT : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
 };
@@ -724,6 +768,18 @@ public:
   void OnEfstEnd(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) override;
   void OnEfstUpdate(int efstId, int value, int argument3, int argument4, CRenderObject* actor) override;
 };
+
+// OFFSET: 0x00786F20
+// FUNCTION: fn_08582
+int CSkillAction_IG_GRAND_JUDGEMENT::GetSkillAttackMotion() {
+  return 2;
+}
+
+// OFFSET: 0x00786A90
+// FUNCTION: fn_08578
+int CSkillAction_IG_CROSS_RAIN::GetSkillAttackMotion() {
+  return 2;
+}
 
 // OFFSET: 0x00786AA0
 // FUNCTION: fn_08579
@@ -877,3 +933,55 @@ EfstActionMessage CEfstAction_IG_GUARD_STANCE::GetEfstBeginMessage() {
 EfstActionMessage CEfstAction_IG_GUARD_STANCE::GetEfstEndMessage() {
   return {LookupMessage(MSI_IG_REBOUND_SHIELD_ON), 0xFF};
 }
+
+// GLOBAL: gl_25794
+static EfstActionRegistrar s_efstAction1203(1203, NewAction<CEfstAction_IG_ATTACK_STANCE, CEfstAction>);
+// GLOBAL: gl_25795
+static EfstActionRegistrar s_efstAction1222(1222, NewAction<CEfstAction_IG_GRAND_JUDGEMENT, CEfstAction>);
+// GLOBAL: gl_25796
+static EfstActionRegistrar s_efstAction1204(1204, NewAction<CEfstAction_IG_GUARDIAN_SHIELD, CEfstAction>);
+// GLOBAL: gl_25797
+static EfstActionRegistrar s_efstAction1202(1202, NewAction<CEfstAction_IG_GUARD_STANCE, CEfstAction>);
+// GLOBAL: gl_25798
+static EfstActionRegistrar s_efstAction1220(1220, NewAction<CEfstAction_IG_HOLY_SHIELD, CEfstAction>);
+// GLOBAL: gl_25799
+static EfstActionRegistrar s_efstAction1221(1221, NewAction<CEfstAction_IG_ULTIMATE_SACRIFICE, CEfstAction>);
+// GLOBAL: gl_25800
+static EfstActionRegistrar s_efstAction1217(1217, NewAction<CEfstAction_REBOUND_S, CEfstAction>);
+
+// OFFSET: 0x0045A7E0
+// FUNCTION: fn_45565
+static bool s_skillObjectActionRegistered275 = [] {
+  std::function<CSkillObjectAction*()> factory = NewAction<CSkillObjectAction_IG_CROSS_RAIN, CSkillObjectAction>;
+  CSkillActionMgr::GetInstance()->RegisterSkillObjectAction(275, factory);
+  return true;
+}();
+
+// GLOBAL: gl_25801
+static SkillActionRegistrar s_skillAction5260(5260, NewAction<CSkillAction_IG_ATTACK_STANCE, CSkillAction>);
+// GLOBAL: gl_25802
+static SkillActionRegistrar s_skillAction5267(5267, NewAction<CSkillAction_IG_CROSS_RAIN, CSkillAction>);
+// GLOBAL: gl_25803
+static SkillActionRegistrar s_skillAction5263(5263, NewAction<CSkillAction_IG_GRAND_JUDGEMENT, CSkillAction>);
+// GLOBAL: gl_25804
+static SkillActionRegistrar s_skillAction5256(5256, NewAction<CSkillAction_IG_GUARDIAN_SHIELD, CSkillAction>);
+// GLOBAL: gl_25805
+static SkillActionRegistrar s_skillAction5255(5255, NewAction<CSkillAction_IG_GUARD_STANCE, CSkillAction>);
+// GLOBAL: gl_25806
+static SkillActionRegistrar s_skillAction5262(5262, NewAction<CSkillAction_IG_HOLY_SHIELD, CSkillAction>);
+// GLOBAL: gl_25807
+static SkillActionRegistrar s_skillAction6504(6504, NewAction<CSkillAction_IG_IMPERIAL_CROSS, CSkillAction>);
+// GLOBAL: gl_25808
+static SkillActionRegistrar s_skillAction6505(6505, NewAction<CSkillAction_IG_IMPERIAL_PRESSURE, CSkillAction>);
+// GLOBAL: gl_25809
+static SkillActionRegistrar s_skillAction5264(5264, NewAction<CSkillAction_IG_JUDGEMENT_CROSS, CSkillAction>);
+// GLOBAL: gl_25810
+static SkillActionRegistrar s_skillAction5266(5266, NewAction<CSkillAction_IG_OVERSLASH, CSkillAction>);
+// GLOBAL: gl_25811
+static SkillActionRegistrar s_skillAction6503(6503, NewAction<CSkillAction_IG_RADIANT_SPEAR, CSkillAction>);
+// GLOBAL: gl_25812
+static SkillActionRegistrar s_skillAction5257(5257, NewAction<CSkillAction_IG_REBOUND_SHIELD, CSkillAction>);
+// GLOBAL: gl_25813
+static SkillActionRegistrar s_skillAction5265(5265, NewAction<CSkillAction_IG_SHIELD_SHOOTING, CSkillAction>);
+// GLOBAL: gl_25814
+static SkillActionRegistrar s_skillAction5261(5261, NewAction<CSkillAction_IG_ULTIMATE_SACRIFICE, CSkillAction>);

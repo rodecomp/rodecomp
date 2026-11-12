@@ -232,7 +232,6 @@ public:
   void SetActorJob(int job);
   void RenderMercenary(const float* matrix, int job);
   void ProcessBodyState();
-  int GetShield();
   int GetEffectiveJob(int job);
   void LaunchAttackProjectile(int target, float scale);
   void SetStatusStates(int bodyState, std::uint32_t stateFlags, int effectState, bool notify);

@@ -35,12 +35,14 @@ public:
 
 class CSkillAction_SKE_SKY_SUN : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
   void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_SKE_SKY_MOON : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
   void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
@@ -230,6 +232,12 @@ void CEfstAction_SKY_ENCHANT::OnEfstUpdate(int efstId, int value, int argument3,
   }
 }
 
+// OFFSET: 0x00797D30
+// FUNCTION: fn_08823
+int CSkillAction_SKE_SKY_SUN::GetSkillAttackMotion() {
+  return 2;
+}
+
 // OFFSET: 0x00797D40
 // FUNCTION: fn_08824
 void CSkillAction_SKE_SKY_SUN::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
@@ -263,6 +271,12 @@ void CSkillAction_SKE_SKY_SUN::OnSkillDamage(int level, CGameActor* source, CGam
     EffectLists* effects = g_effectMgr;
     effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("sky_sun_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
+}
+
+// OFFSET: 0x00798230
+// FUNCTION: fn_08826
+int CSkillAction_SKE_SKY_MOON::GetSkillAttackMotion() {
+  return 2;
 }
 
 // OFFSET: 0x00798240
@@ -695,3 +709,52 @@ void CSkillAction_SKE_STAR_CANNON::OnSkillCast(int level, CGameActor* source) {
     static_cast<EffectActor*>(source)->LaunchEffect(441, level / 16);
   }
 }
+
+// GLOBAL: gl_25870
+static EfstActionRegistrar s_efstAction1390(1390, NewAction<CEfstAction_DAWN_MOON, CEfstAction>);
+// GLOBAL: gl_25871
+static EfstActionRegistrar s_efstAction1389(1389, NewAction<CEfstAction_MIDNIGHT_MOON, CEfstAction>);
+// GLOBAL: gl_25872
+static EfstActionRegistrar s_efstAction1386(1386, NewAction<CEfstAction_NOON_SUN, CEfstAction>);
+// GLOBAL: gl_25873
+static EfstActionRegistrar s_efstAction1388(1388, NewAction<CEfstAction_RISING_MOON, CEfstAction>);
+// GLOBAL: gl_25874
+static EfstActionRegistrar s_efstAction1385(1385, NewAction<CEfstAction_RISING_SUN, CEfstAction>);
+// GLOBAL: gl_25875
+static EfstActionRegistrar s_efstAction1392(1392, NewAction<CEfstAction_SKY_ENCHANT, CEfstAction>);
+// GLOBAL: gl_25876
+static EfstActionRegistrar s_efstAction1391(1391, NewAction<CEfstAction_STAR_BURST, CEfstAction>);
+// GLOBAL: gl_25877
+static EfstActionRegistrar s_efstAction1387(1387, NewAction<CEfstAction_SUNSET_SUN, CEfstAction>);
+// GLOBAL: gl_25878
+static CSkillObjectActionRegistration s_skillObjectAction287(287, NewAction<CSkillObjectAction_SKE_STAR_CANNON, CSkillObjectAction>);
+// GLOBAL: gl_25879
+static CSkillObjectActionRegistration s_skillObjectAction286(286, NewAction<CSkillObjectAction_SKE_TWINKLING_GALAXY, CSkillObjectAction>);
+// GLOBAL: gl_25880
+static SkillActionRegistrar s_skillAction5474(5474, NewAction<CSkillAction_SKE_ALL_IN_THE_SKY, CSkillAction>);
+// GLOBAL: gl_25881
+static SkillActionRegistrar s_skillAction5470(5470, NewAction<CSkillAction_SKE_DAWN_BREAK, CSkillAction>);
+// GLOBAL: gl_25882
+static SkillActionRegistrar s_skillAction5475(5475, NewAction<CSkillAction_SKE_ENCHANTING_SKY, CSkillAction>);
+// GLOBAL: gl_25883
+static SkillActionRegistrar s_skillAction5469(5469, NewAction<CSkillAction_SKE_MIDNIGHT_KICK, CSkillAction>);
+// GLOBAL: gl_25884
+static SkillActionRegistrar s_skillAction5466(5466, NewAction<CSkillAction_SKE_NOON_BLAST, CSkillAction>);
+// GLOBAL: gl_25885
+static SkillActionRegistrar s_skillAction5468(5468, NewAction<CSkillAction_SKE_RISING_MOON, CSkillAction>);
+// GLOBAL: gl_25886
+static SkillActionRegistrar s_skillAction5465(5465, NewAction<CSkillAction_SKE_RISING_SUN, CSkillAction>);
+// GLOBAL: gl_25887
+static SkillActionRegistrar s_skillAction5503(5503, NewAction<CSkillAction_SKE_SKY_MOON, CSkillAction>);
+// GLOBAL: gl_25888
+static SkillActionRegistrar s_skillAction5502(5502, NewAction<CSkillAction_SKE_SKY_SUN, CSkillAction>);
+// GLOBAL: gl_25889
+static SkillActionRegistrar s_skillAction5472(5472, NewAction<CSkillAction_SKE_STAR_BURST, CSkillAction>);
+// GLOBAL: gl_25890
+static SkillActionRegistrar s_skillAction5473(5473, NewAction<CSkillAction_SKE_STAR_CANNON, CSkillAction>);
+// GLOBAL: gl_25891
+static SkillActionRegistrar s_skillAction5504(5504, NewAction<CSkillAction_SKE_STAR_LIGHT_KICK, CSkillAction>);
+// GLOBAL: gl_25892
+static SkillActionRegistrar s_skillAction5467(5467, NewAction<CSkillAction_SKE_SUNSET_BLAST, CSkillAction>);
+// GLOBAL: gl_25893
+static SkillActionRegistrar s_skillAction5471(5471, NewAction<CSkillAction_SKE_TWINKLING_GALAXY, CSkillAction>);

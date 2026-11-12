@@ -637,3 +637,55 @@ void CSkillObjectAction_SOA_TOTEM_OF_TUTELARY::OnSkillObjectRemove(CRenderObject
     effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("totem_of_tutelary_end"), object->render.position, 0, -1, 0, 0);
   }
 }
+
+// GLOBAL: gl_25894
+static EfstActionRegistrar s_efstAction1365(1365, NewAction<CEfstAction_HEAVEN_AND_EARTH, CEfstAction>);
+// GLOBAL: gl_25895
+static EfstActionRegistrar s_efstAction1360(1360, NewAction<CEfstAction_T_FIRST_GOD, CEfstAction>);
+// GLOBAL: gl_25896
+static EfstActionRegistrar s_efstAction1364(1364, NewAction<CEfstAction_T_FIVETH_GOD, CEfstAction>);
+// GLOBAL: gl_25897
+static EfstActionRegistrar s_efstAction1363(1363, NewAction<CEfstAction_T_FOURTH_GOD, CEfstAction>);
+// GLOBAL: gl_25898
+static EfstActionRegistrar s_efstAction1361(1361, NewAction<CEfstAction_T_SECOND_GOD, CEfstAction>);
+// GLOBAL: gl_25899
+static EfstActionRegistrar s_efstAction1362(1362, NewAction<CEfstAction_T_THIRD_GOD, CEfstAction>);
+
+// OFFSET: 0x00460720
+// FUNCTION: fn_45566
+static bool s_skillObjectActionRegistered292 = [] {
+  std::function<CSkillObjectAction*()> factory = NewAction<CSkillObjectAction_SOA_TOTEM_OF_TUTELARY, CSkillObjectAction>;
+  CSkillActionMgr::GetInstance()->RegisterSkillObjectAction(292, factory);
+  return true;
+}();
+
+// GLOBAL: gl_25900
+static SkillActionRegistrar s_skillAction5431(5431, NewAction<CSkillAction_SOA_CIRCLE_OF_DIRECTIONS_AND_ELEMENTALS, CSkillAction>);
+// GLOBAL: gl_25901
+static SkillActionRegistrar s_skillAction5425(5425, NewAction<CSkillAction_SOA_EXORCISM_OF_MALICIOUS_SOUL, CSkillAction>);
+// GLOBAL: gl_25902
+static SkillActionRegistrar s_skillAction5421(5421, NewAction<CSkillAction_SOA_SOUL_GATHERING, CSkillAction>);
+// GLOBAL: gl_25903
+static SkillActionRegistrar s_skillAction5432(5432, NewAction<CSkillAction_SOA_SOUL_OF_HEAVEN_AND_EARTH, CSkillAction>);
+// GLOBAL: gl_25904
+static SkillActionRegistrar s_skillAction5429(5429, NewAction<CSkillAction_SOA_TALISMAN_OF_BLACK_TORTOISE, CSkillAction>);
+// GLOBAL: gl_25905
+static SkillActionRegistrar s_skillAction5426(5426, NewAction<CSkillAction_SOA_TALISMAN_OF_BLUE_DRAGON, CSkillAction>);
+// GLOBAL: gl_25906
+static SkillActionRegistrar s_skillAction5423(5423, NewAction<CSkillAction_SOA_TALISMAN_OF_FIVE_ELEMENTS, CSkillAction>);
+// GLOBAL: gl_25907
+static SkillActionRegistrar s_skillAction5430(5430, NewAction<CSkillAction_SOA_TALISMAN_OF_FOUR_BEARING_GOD, CSkillAction>);
+// GLOBAL: gl_25908
+static SkillActionRegistrar s_skillAction5420(5420, NewAction<CSkillAction_SOA_TALISMAN_OF_MAGICIAN, CSkillAction>);
+// GLOBAL: gl_25909
+static SkillActionRegistrar s_skillAction5418(5418, NewAction<CSkillAction_SOA_TALISMAN_OF_PROTECTION, CSkillAction>);
+// GLOBAL: gl_25910
+static SkillActionRegistrar s_skillAction5428(5428, NewAction<CSkillAction_SOA_TALISMAN_OF_RED_PHOENIX, CSkillAction>);
+// GLOBAL: gl_25911
+static SkillActionRegistrar s_skillAction5424(5424, NewAction<CSkillAction_SOA_TALISMAN_OF_SOUL_STEALING, CSkillAction>);
+// GLOBAL: gl_25912
+static SkillActionRegistrar s_skillAction5419(5419, NewAction<CSkillAction_SOA_TALISMAN_OF_WARRIOR, CSkillAction>);
+// GLOBAL: gl_25913
+static SkillActionRegistrar s_skillAction5427(5427, NewAction<CSkillAction_SOA_TALISMAN_OF_WHITE_TIGER, CSkillAction>);
+// GLOBAL: gl_25914
+static SkillActionRegistrar s_skillAction5422(5422, NewAction<CSkillAction_SOA_TOTEM_OF_TUTELARY, CSkillAction>);

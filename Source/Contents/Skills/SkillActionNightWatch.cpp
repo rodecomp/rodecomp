@@ -21,6 +21,7 @@
 
 class CSkillAction_NW_INTENSIVE_AIM : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
 };
 
@@ -47,16 +48,19 @@ public:
 
 class CSkillAction_NW_THE_VIGILANTE_AT_NIGHT_GUN_GATLING : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_NW_THE_VIGILANTE_AT_NIGHT_GUN_SHOTGUN : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_NW_ONLY_ONE_BULLET : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnTargetSkillCast(int argument1, int argument2, int argument3) override;
   void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
@@ -64,24 +68,29 @@ public:
 
 class CSkillAction_NW_SPIRAL_SHOOTING : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_NW_MAGAZINE_FOR_ONE : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_NW_WILD_FIRE : public CSkillAction {
 public:
+  int GetSkillScopeType() override;
+  int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnGroundSkillEffect(vector3d position, int argument2, int argument3) override;
 };
 
 class CSkillAction_NW_BASIC_GRENADE : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnGroundSkillEffect(vector3d position, int argument2, int argument3) override;
   int GetSkillScopeType() override;
@@ -89,6 +98,8 @@ public:
 
 class CSkillAction_NW_HASTY_FIRE_IN_THE_HOLE : public CSkillAction {
 public:
+  int GetSkillScopeType() override;
+  int GetSkillAttackMotion() override;
   bool KeepSkillAttackMotion(int argument) override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnGroundSkillEffect(vector3d position, int argument2, int argument3) override;
@@ -96,6 +107,7 @@ public:
 
 class CSkillAction_NW_GRENADES_DROPPING : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   bool KeepSkillAttackMotion(int argument) override;
   void OnSkillCast(int level, CGameActor* source) override;
   int GetSkillScopeType() override;
@@ -108,12 +120,14 @@ public:
 
 class CSkillAction_NW_AUTO_FIRING_LAUNCHER : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_NW_HIDDEN_CARD : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
 };
@@ -127,6 +141,7 @@ public:
 
 class CSkillAction_NW_MISSION_BOMBARD : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   bool KeepSkillAttackMotion(int argument) override;
   void OnSkillCast(int level, CGameActor* source) override;
   int GetSkillScopeType() override;
@@ -139,6 +154,7 @@ public:
 
 class CSkillAction_NW_WILD_SHOT : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
   void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
@@ -146,12 +162,19 @@ public:
 
 class CSkillAction_NW_MIDNIGHT_FALLEN : public CSkillAction {
 public:
+  int GetSkillAttackMotion() override;
   bool KeepSkillAttackMotion(int argument) override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnGroundSkillEffect(vector3d position, int argument2, int argument3) override;
   void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
   int GetSkillScopeType() override;
 };
+
+// OFFSET: 0x0078E460
+// FUNCTION: fn_08675
+int CSkillAction_NW_INTENSIVE_AIM::GetSkillAttackMotion() {
+  return 2;
+}
 
 // OFFSET: 0x0078E470
 // FUNCTION: fn_08676
@@ -248,6 +271,12 @@ void CSkillAction_NW_THE_VIGILANTE_AT_NIGHT::OnSkillCast(int level, CGameActor* 
   }
 }
 
+// OFFSET: 0x0078F100
+// FUNCTION: fn_08682
+int CSkillAction_NW_THE_VIGILANTE_AT_NIGHT_GUN_GATLING::GetSkillAttackMotion() {
+  return 2;
+}
+
 // OFFSET: 0x0078F110
 // FUNCTION: fn_08683
 void CSkillAction_NW_THE_VIGILANTE_AT_NIGHT_GUN_GATLING::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
@@ -276,6 +305,12 @@ void CSkillAction_NW_THE_VIGILANTE_AT_NIGHT_GUN_GATLING::OnSkillEffect(int level
   }
 }
 
+// OFFSET: 0x0078F530
+// FUNCTION: fn_08684
+int CSkillAction_NW_THE_VIGILANTE_AT_NIGHT_GUN_SHOTGUN::GetSkillAttackMotion() {
+  return 2;
+}
+
 // OFFSET: 0x0078F540
 // FUNCTION: fn_08685
 void CSkillAction_NW_THE_VIGILANTE_AT_NIGHT_GUN_SHOTGUN::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
@@ -302,6 +337,12 @@ void CSkillAction_NW_THE_VIGILANTE_AT_NIGHT_GUN_SHOTGUN::OnSkillEffect(int level
     effect->SetDelay(index * 32);
     effect->SetScale(static_cast<float>(std::max(rand() % 31, 0) + 70) * 0.01f);
   }
+}
+
+// OFFSET: 0x0078F950
+// FUNCTION: fn_08686
+int CSkillAction_NW_ONLY_ONE_BULLET::GetSkillAttackMotion() {
+  return 2;
 }
 
 // OFFSET: 0x0078F960
@@ -337,6 +378,12 @@ void CSkillAction_NW_ONLY_ONE_BULLET::OnSkillDamage(int level, CGameActor* sourc
   }
 }
 
+// OFFSET: 0x0078FCD0
+// FUNCTION: fn_08690
+int CSkillAction_NW_SPIRAL_SHOOTING::GetSkillAttackMotion() {
+  return 2;
+}
+
 // OFFSET: 0x0078FCE0
 // FUNCTION: fn_08691
 void CSkillAction_NW_SPIRAL_SHOOTING::OnSkillCast(int level, CGameActor* source) {
@@ -352,6 +399,12 @@ void CSkillAction_NW_SPIRAL_SHOOTING::OnSkillEffect(int level, CGameActor* sourc
     EffectLists* effects = g_effectMgr;
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("spiral_shooting"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
+}
+
+// OFFSET: 0x0078FE80
+// FUNCTION: fn_08693
+int CSkillAction_NW_MAGAZINE_FOR_ONE::GetSkillAttackMotion() {
+  return 2;
 }
 
 // OFFSET: 0x0078FE90
@@ -371,6 +424,12 @@ void CSkillAction_NW_MAGAZINE_FOR_ONE::OnSkillEffect(int level, CGameActor* sour
   }
 }
 
+// OFFSET: 0x00790030
+// FUNCTION: fn_08696
+int CSkillAction_NW_WILD_FIRE::GetSkillAttackMotion() {
+  return 2;
+}
+
 // OFFSET: 0x00790040
 // FUNCTION: fn_08697
 void CSkillAction_NW_WILD_FIRE::OnSkillCast(int level, CGameActor* source) {
@@ -386,6 +445,18 @@ void CSkillAction_NW_WILD_FIRE::OnGroundSkillEffect(vector3d position, int argum
   effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("wild_fire"), position.x, position.y, position.z, 0, -1, 0, 0);
   effects = g_effectMgr;
   effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("wild_fire_bottom"), position.x, position.y, position.z, 0, -1, 0, 0);
+}
+
+// OFFSET: 0x00790280
+// FUNCTION: fn_08699
+int CSkillAction_NW_WILD_FIRE::GetSkillScopeType() {
+  return 5;
+}
+
+// OFFSET: 0x00790290
+// FUNCTION: fn_08700
+int CSkillAction_NW_BASIC_GRENADE::GetSkillAttackMotion() {
+  return 2;
 }
 
 // OFFSET: 0x007902A0
@@ -409,6 +480,12 @@ void CSkillAction_NW_BASIC_GRENADE::OnGroundSkillEffect(vector3d position, int a
 // FUNCTION: fn_08703
 int CSkillAction_NW_BASIC_GRENADE::GetSkillScopeType() {
   return 3;
+}
+
+// OFFSET: 0x00790500
+// FUNCTION: fn_08704
+int CSkillAction_NW_HASTY_FIRE_IN_THE_HOLE::GetSkillAttackMotion() {
+  return 2;
 }
 
 // OFFSET: 0x00790510
@@ -445,6 +522,18 @@ void CSkillAction_NW_HASTY_FIRE_IN_THE_HOLE::OnGroundSkillEffect(vector3d positi
   }
 }
 
+// OFFSET: 0x007908C0
+// FUNCTION: fn_08708
+int CSkillAction_NW_HASTY_FIRE_IN_THE_HOLE::GetSkillScopeType() {
+  return 5;
+}
+
+// OFFSET: 0x007908D0
+// FUNCTION: fn_08709
+int CSkillAction_NW_GRENADES_DROPPING::GetSkillAttackMotion() {
+  return 2;
+}
+
 // OFFSET: 0x007908E0
 // FUNCTION: fn_08710
 bool CSkillAction_NW_GRENADES_DROPPING::KeepSkillAttackMotion(int argument) {
@@ -473,6 +562,12 @@ void CSkillObjectAction_NW_GRENADES_DROPPING::OnSkillObjectCreate(int argument, 
   }
 }
 
+// OFFSET: 0x00790980
+// FUNCTION: fn_08714
+int CSkillAction_NW_AUTO_FIRING_LAUNCHER::GetSkillAttackMotion() {
+  return 2;
+}
+
 // OFFSET: 0x00790990
 // FUNCTION: fn_08715
 void CSkillAction_NW_AUTO_FIRING_LAUNCHER::OnSkillCast(int level, CGameActor* source) {
@@ -490,6 +585,12 @@ void CSkillAction_NW_AUTO_FIRING_LAUNCHER::OnSkillEffect(int level, CGameActor* 
     effects = g_effectMgr;
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("auto_firing_launcher_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
+}
+
+// OFFSET: 0x00790C50
+// FUNCTION: fn_08717
+int CSkillAction_NW_HIDDEN_CARD::GetSkillAttackMotion() {
+  return 2;
 }
 
 // OFFSET: 0x00790C60
@@ -533,6 +634,12 @@ void CEfstAction_HIDDEN_CARD::OnEfstUpdate(int efstId, int value, int argument3,
   this->OnEfstBegin(efstId, value, 0, 0, actor, false);
 }
 
+// OFFSET: 0x007910C0
+// FUNCTION: fn_08723
+int CSkillAction_NW_MISSION_BOMBARD::GetSkillAttackMotion() {
+  return 2;
+}
+
 // OFFSET: 0x007910D0
 // FUNCTION: fn_08724
 bool CSkillAction_NW_MISSION_BOMBARD::KeepSkillAttackMotion(int argument) {
@@ -565,6 +672,12 @@ void CSkillObjectAction_NW_MISSION_BOMBARD::OnSkillObjectCreate(int argument, CR
     effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mission_bombard_fire_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     g_effectMgr->Spawn(object->render.accountId, 2354, object->render.position, 0, -1, 0, 0);
   }
+}
+
+// OFFSET: 0x007914E0
+// FUNCTION: fn_08728
+int CSkillAction_NW_WILD_SHOT::GetSkillAttackMotion() {
+  return 2;
 }
 
 // OFFSET: 0x007914F0
@@ -630,6 +743,12 @@ void CSkillAction_NW_WILD_SHOT::OnSkillDamage(int level, CGameActor* source, CGa
   }
 }
 
+// OFFSET: 0x00791BA0
+// FUNCTION: fn_08732
+int CSkillAction_NW_MIDNIGHT_FALLEN::GetSkillAttackMotion() {
+  return 2;
+}
+
 // OFFSET: 0x00791BB0
 // FUNCTION: fn_08733
 bool CSkillAction_NW_MIDNIGHT_FALLEN::KeepSkillAttackMotion(int argument) {
@@ -686,3 +805,48 @@ void CSkillAction_NW_MIDNIGHT_FALLEN::OnSkillDamage(int level, CGameActor* sourc
 int CSkillAction_NW_MIDNIGHT_FALLEN::GetSkillScopeType() {
   return 7;
 }
+
+// GLOBAL: gl_25822
+static EfstActionRegistrar s_efstAction1354(1354, NewAction<CEfstAction_HIDDEN_CARD, CEfstAction>);
+// GLOBAL: gl_25823
+static EfstActionRegistrar s_efstAction1345(1345, NewAction<CEfstAction_INTENSIVE_AIM, CEfstAction>);
+// GLOBAL: gl_25824
+static EfstActionRegistrar s_efstAction1346(1346, NewAction<CEfstAction_INTENSIVE_AIM_COUNT, CEfstAction>);
+// GLOBAL: gl_25825
+static CSkillObjectActionRegistration s_skillObjectAction288(288, NewAction<CSkillObjectAction_NW_GRENADES_DROPPING, CSkillObjectAction>);
+// GLOBAL: gl_25826
+static CSkillObjectActionRegistration s_skillObjectAction291(291, NewAction<CSkillObjectAction_NW_MISSION_BOMBARD, CSkillObjectAction>);
+// GLOBAL: gl_25827
+static SkillActionRegistrar s_skillAction5413(5413, NewAction<CSkillAction_NW_AUTO_FIRING_LAUNCHER, CSkillAction>);
+// GLOBAL: gl_25828
+static SkillActionRegistrar s_skillAction5410(5410, NewAction<CSkillAction_NW_BASIC_GRENADE, CSkillAction>);
+// GLOBAL: gl_25829
+static SkillActionRegistrar s_skillAction5412(5412, NewAction<CSkillAction_NW_GRENADES_DROPPING, CSkillAction>);
+// GLOBAL: gl_25830
+static SkillActionRegistrar s_skillAction5404(5404, NewAction<CSkillAction_NW_GRENADE_FRAGMENT, CSkillAction>);
+// GLOBAL: gl_25831
+static SkillActionRegistrar s_skillAction5411(5411, NewAction<CSkillAction_NW_HASTY_FIRE_IN_THE_HOLE, CSkillAction>);
+// GLOBAL: gl_25832
+static SkillActionRegistrar s_skillAction5414(5414, NewAction<CSkillAction_NW_HIDDEN_CARD, CSkillAction>);
+// GLOBAL: gl_25833
+static SkillActionRegistrar s_skillAction5403(5403, NewAction<CSkillAction_NW_INTENSIVE_AIM, CSkillAction>);
+// GLOBAL: gl_25834
+static SkillActionRegistrar s_skillAction5408(5408, NewAction<CSkillAction_NW_MAGAZINE_FOR_ONE, CSkillAction>);
+// GLOBAL: gl_25835
+static SkillActionRegistrar s_skillAction5501(5501, NewAction<CSkillAction_NW_MIDNIGHT_FALLEN, CSkillAction>);
+// GLOBAL: gl_25836
+static SkillActionRegistrar s_skillAction5415(5415, NewAction<CSkillAction_NW_MISSION_BOMBARD, CSkillAction>);
+// GLOBAL: gl_25837
+static SkillActionRegistrar s_skillAction5406(5406, NewAction<CSkillAction_NW_ONLY_ONE_BULLET, CSkillAction>);
+// GLOBAL: gl_25838
+static SkillActionRegistrar s_skillAction5407(5407, NewAction<CSkillAction_NW_SPIRAL_SHOOTING, CSkillAction>);
+// GLOBAL: gl_25839
+static SkillActionRegistrar s_skillAction5405(5405, NewAction<CSkillAction_NW_THE_VIGILANTE_AT_NIGHT, CSkillAction>);
+// GLOBAL: gl_25840
+static SkillActionRegistrar s_skillAction5496(5496, NewAction<CSkillAction_NW_THE_VIGILANTE_AT_NIGHT_GUN_GATLING, CSkillAction>);
+// GLOBAL: gl_25841
+static SkillActionRegistrar s_skillAction5497(5497, NewAction<CSkillAction_NW_THE_VIGILANTE_AT_NIGHT_GUN_SHOTGUN, CSkillAction>);
+// GLOBAL: gl_25842
+static SkillActionRegistrar s_skillAction5409(5409, NewAction<CSkillAction_NW_WILD_FIRE, CSkillAction>);
+// GLOBAL: gl_25843
+static SkillActionRegistrar s_skillAction5500(5500, NewAction<CSkillAction_NW_WILD_SHOT, CSkillAction>);

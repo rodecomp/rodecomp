@@ -30,33 +30,68 @@
 class CSkillAction_AnimalForm : public CSkillAction {
 public:
   bool CanUse(CGameActor* actor);
+  virtual bool IsInForm(CGameActor* actor) = 0;
+  virtual void PlayFormAttackEffect(CGameActor* actor) = 0;
 };
 
 class CSkillAction_Direction {
+public:
+  int GetDirection(float angle);
+  bool IsValidDirection(unsigned int direction);
 };
 
 class CSkillAction_DamageWereRaptorForm : public CSkillAction_AnimalForm, public CSkillAction_Direction {
 public:
-  void SpawnAttack01Effect(int level, CGameActor* source);
-  void SpawnAttack02Effect(int level, CGameActor* source);
+  void SpawnAttack00Effect(int sourceActor, CGameActor* target);
+  __declspec(noinline) void SpawnAttack01Effect(int level, CGameActor* source);
+  __declspec(noinline) void SpawnAttack02Effect(int level, CGameActor* source);
+  void SpawnDirectionalEffect(CGameActor* source, CGameActor* target, std::string_view name);
+  void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
+  bool IsInForm(CGameActor* actor) override;
+  void PlayFormAttackEffect(CGameActor* actor) override;
 };
 
 class CSkillAction_DamageWereWolfForm : public CSkillAction_AnimalForm {
+public:
+  void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
+  bool IsInForm(CGameActor* actor) override;
+  void PlayFormAttackEffect(CGameActor* actor) override;
 };
 
 class CSkillAction_Earthing : public CSkillAction {
-};
-
-class CSkillAction_Thundering : public CSkillAction {
-};
-
-class CSkillAction_ThunderingBasic : public CSkillAction_Thundering {
-};
-
-class CSkillAction_ThunderingExpand : public CSkillAction_Thundering {
+public:
+  int GetSkillCastMotion() override;
+  int GetSkillAttackMotion() override;
+  void OnSkillCast(int level, CGameActor* source) override;
+  void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
 };
 
 class CSkillAction_Icing : public CSkillAction {
+public:
+  int GetSkillCastMotion() override;
+  int GetSkillAttackMotion() override;
+  void OnSkillCast(int level, CGameActor* source) override;
+  void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
+  void SpawnIcing(CGameActor* target);
+};
+
+class CSkillAction_Thundering : public CSkillAction {
+public:
+  int GetSkillCastMotion() override;
+  int GetSkillAttackMotion() override;
+  void OnSkillCast(int level, CGameActor* source) override;
+  void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
+  virtual void PlayThunderEffect(CGameActor* source) = 0;
+};
+
+class CSkillAction_ThunderingBasic : public CSkillAction_Thundering {
+public:
+  void PlayThunderEffect(CGameActor* source) override;
+};
+
+class CSkillAction_ThunderingExpand : public CSkillAction_Thundering {
+public:
+  void PlayThunderEffect(CGameActor* source) override;
 };
 
 class CSkillAction_KR_DOUBLE_SLASH : public CSkillAction_DamageWereWolfForm {
@@ -1168,3 +1203,61 @@ void CSkillAction_SKID_KR_CHOP_CHOP::OnSkillEffect(int level, CGameActor* source
     static_cast<CWhirlwindEffect*>(effect)->SetDuration(500);
   }
 }
+
+// GLOBAL: gl_25660
+static EfstActionRegistrar s_efstAction1721(1721, NewAction<CEfstAction_CHOP_CHOP, CEfstAction>);
+// GLOBAL: gl_25661
+static EfstActionRegistrar s_efstAction1692(1692, NewAction<CEfstAction_IRON_HOWLING, CEfstAction>);
+// GLOBAL: gl_25662
+static EfstActionRegistrar s_efstAction1693(1693, NewAction<CEfstAction_WIND_VEIL, CEfstAction>);
+
+// OFFSET: 0x0040E870
+// FUNCTION: fn_45561
+static bool s_skillObjectActionRegistered313 = [] {
+  std::function<CSkillObjectAction*()> factory = NewAction<CSkillObjectAction_KR_ICE_PILLAR, CSkillObjectAction>;
+  CSkillActionMgr::GetInstance()->RegisterSkillObjectAction(313, factory);
+  return true;
+}();
+
+// GLOBAL: gl_25663
+static SkillActionRegistrar s_skillAction6551(6551, NewAction<CSkillAction_KR_CLAW_WAVE, CSkillAction>);
+// GLOBAL: gl_25664
+static SkillActionRegistrar s_skillAction6550(6550, NewAction<CSkillAction_KR_DOUBLE_SLASH, CSkillAction>);
+// GLOBAL: gl_25665
+static SkillActionRegistrar s_skillAction6569(6569, NewAction<CSkillAction_KR_EARTH_DRILL, CSkillAction>);
+// GLOBAL: gl_25666
+static SkillActionRegistrar s_skillAction6570(6570, NewAction<CSkillAction_KR_EARTH_STAMP, CSkillAction>);
+// GLOBAL: gl_25667
+static SkillActionRegistrar s_skillAction6558(6558, NewAction<CSkillAction_KR_FEATHER_SPRINKLE, CSkillAction>);
+// GLOBAL: gl_25668
+static SkillActionRegistrar s_skillAction6574(6574, NewAction<CSkillAction_KR_GROUND_BLOOM, CSkillAction>);
+// GLOBAL: gl_25669
+static SkillActionRegistrar s_skillAction6561(6561, NewAction<CSkillAction_KR_ICE_PILLAR, CSkillAction>);
+// GLOBAL: gl_25670
+static SkillActionRegistrar s_skillAction6562(6562, NewAction<CSkillAction_KR_ICE_SPLASH, CSkillAction>);
+// GLOBAL: gl_25671
+static SkillActionRegistrar s_skillAction6553(6553, NewAction<CSkillAction_KR_IRON_HOWLING, CSkillAction>);
+// GLOBAL: gl_25672
+static SkillActionRegistrar s_skillAction6549(6549, NewAction<CSkillAction_KR_NASTY_SLASH, CSkillAction>);
+// GLOBAL: gl_25673
+static SkillActionRegistrar s_skillAction6555(6555, NewAction<CSkillAction_KR_SHARPEN_GUST, CSkillAction>);
+// GLOBAL: gl_25674
+static SkillActionRegistrar s_skillAction6556(6556, NewAction<CSkillAction_KR_SHARPEN_HAIL, CSkillAction>);
+// GLOBAL: gl_25675
+static SkillActionRegistrar s_skillAction6567(6567, NewAction<CSkillAction_KR_THUNDERING_CALL, CSkillAction>);
+// GLOBAL: gl_25676
+static SkillActionRegistrar s_skillAction6568(6568, NewAction<CSkillAction_KR_THUNDERING_CALL_S, CSkillAction>);
+// GLOBAL: gl_25677
+static SkillActionRegistrar s_skillAction6563(6563, NewAction<CSkillAction_KR_THUNDERING_FOCUS, CSkillAction>);
+// GLOBAL: gl_25678
+static SkillActionRegistrar s_skillAction6564(6564, NewAction<CSkillAction_KR_THUNDERING_FOCUS_S, CSkillAction>);
+// GLOBAL: gl_25679
+static SkillActionRegistrar s_skillAction6565(6565, NewAction<CSkillAction_KR_THUNDERING_ORB, CSkillAction>);
+// GLOBAL: gl_25680
+static SkillActionRegistrar s_skillAction6566(6566, NewAction<CSkillAction_KR_THUNDERING_ORB_S, CSkillAction>);
+// GLOBAL: gl_25681
+static SkillActionRegistrar s_skillAction6557(6557, NewAction<CSkillAction_KR_TYPHOON_WING, CSkillAction>);
+// GLOBAL: gl_25682
+static SkillActionRegistrar s_skillAction6559(6559, NewAction<CSkillAction_KR_WIND_VEIL, CSkillAction>);
+// GLOBAL: gl_25683
+static SkillActionRegistrar s_skillAction6552(6552, NewAction<CSkillAction_SKID_KR_CHOP_CHOP, CSkillAction>);

@@ -35,9 +35,9 @@ public:
   /* 00E4 */ CUIResizer* resizer;
   /* 00E8 */ int currentTab;
 
-  bool IsFrameWnd() override;
-  bool NeedsFrameRefresh() override;
-  bool IsTransmitMouseInput() override;
+  bool UnusedIsFrameWnd();
+  bool UnusedNeedsFrameRefresh();
+  bool UnusedIsTransmitMouseInput();
   void OnCreate(int width, int height) override;
   virtual void Initialize();
   void Grow(int width, int height) override;

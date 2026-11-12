@@ -1908,7 +1908,7 @@ void GameSettingsUI::CUIGroupGraphicsAPI::Apply() {
 
 // OFFSET: 0x00A404D0
 // FUNCTION: fn_15973
-void SetNormalProcessPriority() {
+void GameSettingsUI::CUIGroupProcessPriority::Apply() {
   g_session.m_priorityClass = NORMAL_PRIORITY_CLASS;
   HANDLE process = GetCurrentProcess();
   SetPriorityClass(process, NORMAL_PRIORITY_CLASS);

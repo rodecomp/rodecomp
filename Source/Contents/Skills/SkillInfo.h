@@ -93,6 +93,25 @@ public:
   }
 };
 
+struct EfstActionRegistrar {
+  EfstActionRegistrar(int efstId, std::function<CEfstAction*()> factory);
+};
+
+struct SkillActionRegistrar {
+  SkillActionRegistrar(int skillId, std::function<CSkillAction*()> factory);
+};
+
+class CSkillObjectActionRegistration {
+public:
+  CSkillObjectActionRegistration(int skillId, std::function<CSkillObjectAction*()> factory);
+};
+
+// INLINED
+template <class Action, class Base>
+Base* NewAction() {
+  return new Action;
+}
+
 struct SkillInfoEntry {
   // INLINED
   SkillInfoEntry& operator=(const SkillInfoEntry& other) {

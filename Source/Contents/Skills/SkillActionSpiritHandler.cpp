@@ -583,3 +583,49 @@ void CSkillAction_SH_HYUN_ROK_SPIRIT_POWER::OnSkillDamage(int level, CGameActor*
     effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hyun_rok_spirit_power_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
+
+// GLOBAL: gl_25915
+static EfstActionRegistrar s_efstAction1366(1366, NewAction<CEfstAction_HOGOGONG, CEfstAction>);
+// GLOBAL: gl_25916
+static EfstActionRegistrar s_efstAction1367(1367, NewAction<CEfstAction_MARINE_FESTIVAL, CEfstAction>);
+// GLOBAL: gl_25917
+static EfstActionRegistrar s_efstAction1368(1368, NewAction<CEfstAction_SANDY_FESTIVAL, CEfstAction>);
+// GLOBAL: gl_25918
+static EfstActionRegistrar s_efstAction1377(1377, NewAction<CEfstAction_TEMPORARY_COMMUNION, CEfstAction>);
+
+// OFFSET: 0x004616C0
+// FUNCTION: fn_45567
+static bool s_skillObjectActionRegistered293 = [] {
+  std::function<CSkillObjectAction*()> factory = NewAction<CSkillObjectAction_SH_HYUN_ROKS_BREEZE, CSkillObjectAction>;
+  CSkillActionMgr::GetInstance()->RegisterSkillObjectAction(293, factory);
+  return true;
+}();
+
+// GLOBAL: gl_25919
+static SkillActionRegistrar s_skillAction5448(5448, NewAction<CSkillAction_SH_BLESSING_OF_MYSTICAL_CREATURES, CSkillAction>);
+// GLOBAL: gl_25920
+static SkillActionRegistrar s_skillAction5506(5506, NewAction<CSkillAction_SH_CHUL_HO_BATTERING, CSkillAction>);
+// GLOBAL: gl_25921
+static SkillActionRegistrar s_skillAction5435(5435, NewAction<CSkillAction_SH_CHUL_HO_SONIC_CLAW, CSkillAction>);
+// GLOBAL: gl_25922
+static SkillActionRegistrar s_skillAction5444(5444, NewAction<CSkillAction_SH_COLORS_OF_HYUN_ROK, CSkillAction>);
+// GLOBAL: gl_25923
+static SkillActionRegistrar s_skillAction5437(5437, NewAction<CSkillAction_SH_HOGOGONG_STRIKE, CSkillAction>);
+// GLOBAL: gl_25924
+static SkillActionRegistrar s_skillAction5436(5436, NewAction<CSkillAction_SH_HOWLING_OF_CHUL_HO, CSkillAction>);
+// GLOBAL: gl_25925
+static SkillActionRegistrar s_skillAction5445(5445, NewAction<CSkillAction_SH_HYUN_ROKS_BREEZE, CSkillAction>);
+// GLOBAL: gl_25926
+static SkillActionRegistrar s_skillAction5446(5446, NewAction<CSkillAction_SH_HYUN_ROK_CANNON, CSkillAction>);
+// GLOBAL: gl_25927
+static SkillActionRegistrar s_skillAction5507(5507, NewAction<CSkillAction_SH_HYUN_ROK_SPIRIT_POWER, CSkillAction>);
+// GLOBAL: gl_25928
+static SkillActionRegistrar s_skillAction5442(5442, NewAction<CSkillAction_SH_KI_SUL_RAMPAGE, CSkillAction>);
+// GLOBAL: gl_25929
+static SkillActionRegistrar s_skillAction5439(5439, NewAction<CSkillAction_SH_KI_SUL_WATER_SPRAYING, CSkillAction>);
+// GLOBAL: gl_25930
+static SkillActionRegistrar s_skillAction5440(5440, NewAction<CSkillAction_SH_MARINE_FESTIVAL_OF_KI_SUL, CSkillAction>);
+// GLOBAL: gl_25931
+static SkillActionRegistrar s_skillAction5441(5441, NewAction<CSkillAction_SH_SANDY_FESTIVAL_OF_KI_SUL, CSkillAction>);
+// GLOBAL: gl_25932
+static SkillActionRegistrar s_skillAction5447(5447, NewAction<CSkillAction_SH_TEMPORARY_COMMUNION, CSkillAction>);

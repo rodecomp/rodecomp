@@ -116,7 +116,7 @@ void CUIGameItem::OnMouseHover(int x, int y) {
 
 // OFFSET: 0x009E7750
 // FUNCTION: fn_14483
-void CUIGameItem::OnLBtnDblClk(int, int) {
+void CUIGameItem::OnRBtnDown(int, int) {
   if (this->allowItemInfo == 0 || std::atoi(this->itemInfo.itemId.c_str()) <= 0) {
     return;
   }

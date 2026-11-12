@@ -215,19 +215,19 @@ void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::s
 
 // OFFSET: 0x00A08410
 // FUNCTION: fn_15021
-bool CUIEquipmentPropertiesWnd::IsFrameWnd() {
+bool CUIEquipmentPropertiesWnd::UnusedIsFrameWnd() {
   return true;
 }
 
 // OFFSET: 0x00A08420
 // FUNCTION: fn_15022
-bool CUIEquipmentPropertiesWnd::NeedsFrameRefresh() {
+bool CUIEquipmentPropertiesWnd::UnusedNeedsFrameRefresh() {
   return true;
 }
 
 // OFFSET: 0x00A08430
 // FUNCTION: fn_15023
-bool CUIEquipmentPropertiesWnd::IsTransmitMouseInput() {
+bool CUIEquipmentPropertiesWnd::UnusedIsTransmitMouseInput() {
   return true;
 }
 

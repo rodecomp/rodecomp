@@ -34,7 +34,7 @@ public:
   void HandleKeyDown(int key, std::intptr_t lparam);
   void ResetDragState();
   void DrawCaret(int x, int y);
-  void PaintTextLines();
+  void PaintText() override;
   int LeadingBytesFitting(const std::string& text, int width);
   int TrailingOffsetFitting(const std::string& text, int width);
 
@@ -66,6 +66,7 @@ public:
   CUIEditBoxEx();
   void Resize(int width, int height) override;
   bool IsEditable() override;
+  UIWindow* GetEditWindow() override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
