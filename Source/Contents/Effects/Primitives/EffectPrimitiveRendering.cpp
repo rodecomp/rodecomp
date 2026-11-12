@@ -2095,30 +2095,28 @@ __declspec(safebuffers) void CEffectPrim::RenderRipple(matrix& wtm) {
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
-    EffectPrimitiveSlot& slot = this->state.slots[ec];
-
-    if (slot.life != 1) {
+    if (this->state.slots[ec].life != 1) {
       continue;
     }
 
     for (int ring = 10; ring >= 1; --ring) {
-      const char kind = slot.flag1[4];
+      const char kind = this->state.slots[ec].flag1[4];
       int spread = 10 - ring;
       if (kind != 2) {
         spread *= 3;
       }
 
-      const float rx = static_cast<float>(spread) + slot.distance;
-      slot.vecBPre = {rx * g_cosTable[45], 0.0f, rx * g_sinTable[45]};
-      slot.vecBNow = {rx * g_cosTable[135], 0.0f, rx * g_sinTable[135]};
-      slot.vecTNow = {rx * g_cosTable[225], 0.0f, rx * g_sinTable[225]};
-      slot.vecTPre = {rx * g_cosTable[315], 0.0f, rx * g_sinTable[315]};
+      const float rx = static_cast<float>(spread) + this->state.slots[ec].distance;
+      this->state.slots[ec].vecBPre = {rx * g_cosTable[45], 0.0f, rx * g_sinTable[45]};
+      this->state.slots[ec].vecBNow = {rx * g_cosTable[135], 0.0f, rx * g_sinTable[135]};
+      this->state.slots[ec].vecTNow = {rx * g_cosTable[225], 0.0f, rx * g_sinTable[225]};
+      this->state.slots[ec].vecTPre = {rx * g_cosTable[315], 0.0f, rx * g_sinTable[315]};
 
-      const float base = slot.height[0];
-      vec1.Set(slot.vecBPre.x + base, slot.vecBPre.y, slot.vecBPre.z);
-      vec2.Set(slot.vecBNow.x + base, slot.vecBNow.y, slot.vecBNow.z);
-      vec3.Set(slot.vecTNow.x + base, slot.vecTNow.y, slot.vecTNow.z);
-      vec4.Set(slot.vecTPre.x + base, slot.vecTPre.y, slot.vecTPre.z);
+      const float base = this->state.slots[ec].height[0];
+      vec1.Set(this->state.slots[ec].vecBPre.x + base, this->state.slots[ec].vecBPre.y, this->state.slots[ec].vecBPre.z);
+      vec2.Set(this->state.slots[ec].vecBNow.x + base, this->state.slots[ec].vecBNow.y, this->state.slots[ec].vecBNow.z);
+      vec3.Set(this->state.slots[ec].vecTNow.x + base, this->state.slots[ec].vecTNow.y, this->state.slots[ec].vecTNow.z);
+      vec4.Set(this->state.slots[ec].vecTPre.x + base, this->state.slots[ec].vecTPre.y, this->state.slots[ec].vecTPre.z);
       this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
 
       const float drop = kind == 2 ? 40.0f : 30.0f;
@@ -2127,12 +2125,12 @@ __declspec(safebuffers) void CEffectPrim::RenderRipple(matrix& wtm) {
       vec3.y -= drop;
       vec4.y -= drop;
 
-      const int alpha = static_cast<int>(slot.height[ring]);
+      const int alpha = static_cast<int>(this->state.slots[ec].height[ring]);
       if (alpha > 0) {
         if (ring == 10) {
-          this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec2, vec1, vec4, vec3, wtm, 0, slot.flag1[0], 0, 55, 55, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec2, vec1, vec4, vec3, wtm, 0, this->state.slots[ec].flag1[0], 0, 55, 55, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         } else {
-          this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec2, vec1, vec4, vec3, wtm, 0, slot.flag1[0], 0, 5, 5, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec2, vec1, vec4, vec3, wtm, 0, this->state.slots[ec].flag1[0], 0, 5, 5, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         }
       }
     }
