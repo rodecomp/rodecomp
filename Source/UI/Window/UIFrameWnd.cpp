@@ -132,11 +132,10 @@ void UIFrameWnd::OnLBtnDown(int x, int y) {
 
   RaiseWindow(this);
   g_windowMgr.SetCapture(this);
-  int screenX = x;
-  int screenY = y;
-  this->ToScreen(screenX, screenY);
-  this->m_dragX = screenX;
-  this->m_dragY = screenY;
+  int screen[2] = {x, y};
+  this->ToScreen(screen[0], screen[1]);
+  this->m_dragX = screen[0];
+  this->m_dragY = screen[1];
   this->m_originX = this->geometry.x;
   this->m_originY = this->geometry.y;
   this->geometry.targetAlpha = 128;
