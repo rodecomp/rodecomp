@@ -11403,7 +11403,7 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     ITEM_INFO item;
     item.Assign(reinterpret_cast<const RawItemData&>(mode->drag));
     if (mode->drag.source == 20) {
-      if (g_session.GetList11Size() < this->slotCount) {
+      if (this->slotCount > g_session.GetList11Size()) {
         if (!g_session.AddMerchantPurchaseSavedItem(item, 1, 1)) {
           g_windowMgr.Confirm(LookupMessage(MSI_BUYINGSTORE_MAKEWND_DUPLICATEITEM), 0, true, false, 0, "Message", 280, 120, 0);
         } else {
@@ -11411,17 +11411,15 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         }
       }
       int index = std::min(std::max(g_session.GetList11Size() - 1, 0), 4);
-      UIEditCtrl* edit = this->priceEdits[index];
-      if (edit) {
-        if (edit->Length() == 0) {
-          edit->SetText("0");
-          g_windowMgr.SetFocus(edit);
-          edit->SelectAll();
+      if (this->priceEdits[index]) {
+        if (this->priceEdits[index]->Length() == 0) {
+          this->priceEdits[index]->SetText("0");
+          g_windowMgr.SetFocus(this->priceEdits[index]);
+          this->priceEdits[index]->SelectAll();
         } else if (this->quantityEdits[index]->Length() == 0) {
-          edit = this->quantityEdits[index];
-          edit->SetText("0");
-          g_windowMgr.SetFocus(edit);
-          edit->SelectAll();
+          this->quantityEdits[index]->SetText("0");
+          g_windowMgr.SetFocus(this->quantityEdits[index]);
+          this->quantityEdits[index]->SelectAll();
         }
       }
     } else if (mode->drag.source == 11) {
@@ -11434,11 +11432,13 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       }
       if (item.quantity != 0) {
         const bool full = this->slotCount <= g_session.GetList11Size();
-        int quantity = g_session.GetItem1750Quantity(mode->drag.id);
-        if (full && quantity != 0) {
-          quantity = g_session.GetItem1768Quantity(mode->drag.id);
+        bool movable;
+        if (!full) {
+          movable = g_session.GetItem1750Quantity(mode->drag.id) != 0;
+        } else {
+          movable = g_session.GetItem1750Quantity(mode->drag.id) != 0 && g_session.GetItem1768Quantity(mode->drag.id) != 0;
         }
-        if (quantity != 0) {
+        if (movable) {
           g_session.AddMerchantPurchaseSavedItem(item, 0, 1);
           g_session.RemoveMerchantMyShopItem(item, 0, 1);
         }
@@ -11510,14 +11510,16 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       for (; index < this->slotCount - 1; ++index) {
         this->priceEdits[index]->SetText(this->priceEdits[index + 1]->Text());
         this->priceEdits[index + 1]->SetText("0");
-        std::sprintf(text, "%s ", this->priceEdits[index]->Text());
+        UIEditCtrl* edit = this->priceEdits[index];
+        std::sprintf(text, "%s ", edit->Text());
         g_session.IsNumberWithCommas(text);
-        PriceColors colors = PriceColor(_atoi64(text));
-        this->priceEdits[index]->TextColor(GetRValue(colors.primary), GetGValue(colors.primary), GetBValue(colors.primary), colors.secondary);
-        std::sprintf(text, "%s ", this->priceEdits[index + 1]->Text());
+        const PriceColors colors = PriceColor(_atoi64(text));
+        edit->TextColor(GetRValue(colors.primary), GetGValue(colors.primary), GetBValue(colors.primary), colors.secondary);
+        UIEditCtrl* next = this->priceEdits[index + 1];
+        std::sprintf(text, "%s ", next->Text());
         g_session.IsNumberWithCommas(text);
-        colors = PriceColor(_atoi64(text));
-        this->priceEdits[index + 1]->TextColor(GetRValue(colors.primary), GetGValue(colors.primary), GetBValue(colors.primary), colors.secondary);
+        const PriceColors nextColors = PriceColor(_atoi64(text));
+        next->TextColor(GetRValue(nextColors.primary), GetGValue(nextColors.primary), GetBValue(nextColors.primary), nextColors.secondary);
       }
       this->InvalidateChildren();
     }
@@ -11542,10 +11544,7 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         const int maximum = std::max(count - this->maxVisibleRows, 0);
         this->scrollable = maximum != 0;
         UIScrollBar* bar = static_cast<UIScrollBar*>(this->scrollBar);
-        if (maximum == 0) {
-          this->scroll = 0;
-          bar->SetRange(0, this->maxVisibleRows, count);
-        } else {
+        if (maximum != 0) {
           bar->SetRange(maximum, this->maxVisibleRows, count);
           if (this->scroll < 0) {
             this->scroll = 0;
@@ -11554,6 +11553,9 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
             this->scroll = count - this->maxVisibleRows;
           }
           bar->SetPosition(this->scroll);
+        } else {
+          this->scroll = 0;
+          bar->SetRange(0, this->maxVisibleRows, count);
         }
         bar->Invalidate();
       }
@@ -11583,39 +11585,34 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     break;
   }
   case UM_COMMAND:
-    if (a == ID_CHECK) {
-      g_session.m_skipPriceWarning = !g_session.m_skipPriceWarning;
-    } else if (a == ID_HELP) {
-      if (!g_windowMgr.LookupWindow(WID_NOTEWND)) {
-        g_windowMgr.EnsureWindow(WID_NOTEWND);
-      }
-    } else if (a == ID_RESTORE_STORE_INFO) {
-      this->actionButton->SetDisabled(1);
-      this->actionButton->Invalidate();
-      g_session.m_storeInfoBackup.Load(g_session.m_aid, g_session.m_gid, std::string(g_session.m_accountName.c_str()), this->mode);
-    } else if (a == ID_CANCEL) {
+    switch (a) {
+    case ID_CANCEL: {
       CMode* mode = g_modeMgr.GetGameMode();
-      if (this->mode == 0) {
-        if (this->itemsSet != 1) {
-          mode->SendMsg(MM_REQ_OPENSTORE, reinterpret_cast<std::intptr_t>(this->titleEdit->Text()), 0, 0, 0);
-          g_windowMgr.CloseWindow(WID_MERCHANTSHOPMAKEWND);
-        } else if (this->suspended == 1) {
-          this->SetSuspended(0);
+      if (this->mode != 0) {
+        if (this->itemsSet == 1) {
+          if (this->suspended == 1) {
+            this->SetSuspended(0);
+          } else {
+            mode->SendMsg(MM_CANCEL_BUYING_STORE_MAKE, 0, 0, 0, 0);
+          }
         } else {
-          mode->SendMsg(MM_CANCEL_VENDING_MAKE, 0, 0, 0, 0);
+          mode->SendMsg(MM_REQ_OPEN_BUYING_STORE, 0, 0, 0, 0);
+          g_windowMgr.CloseWindow(WID_MERCHANTSHOPMAKEWND_MODE_1);
         }
       } else if (this->itemsSet == 1) {
         if (this->suspended == 1) {
           this->SetSuspended(0);
         } else {
-          mode->SendMsg(MM_CANCEL_BUYING_STORE_MAKE, 0, 0, 0, 0);
+          mode->SendMsg(MM_CANCEL_VENDING_MAKE, 0, 0, 0, 0);
         }
       } else {
-        mode->SendMsg(MM_REQ_OPEN_BUYING_STORE, 0, 0, 0, 0);
-        g_windowMgr.CloseWindow(WID_MERCHANTSHOPMAKEWND_MODE_1);
+        mode->SendMsg(MM_REQ_OPENSTORE, reinterpret_cast<std::intptr_t>(this->titleEdit->Text()), 0, 0, 0);
+        g_windowMgr.CloseWindow(WID_MERCHANTSHOPMAKEWND);
       }
       this->RecordResponse(185, static_cast<int>(b), static_cast<int>(c), static_cast<int>(d));
-    } else if (a == ID_OK) {
+      break;
+    }
+    case ID_OK: {
       CMode* mode = g_modeMgr.GetGameMode();
       if (g_windowMgr.HasTitleAtActorCell(g_session.m_aid)) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SWAP_EQUIPITEM_EQUIPMENTSET)), 0xFF, 0, 0, 0);
@@ -11624,7 +11621,11 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       if (g_windowMgr.chatRoomWnd || g_windowMgr.chatRoomMakeWnd) {
         g_windowMgr.Confirm(LookupMessage(MSI_CANT_OPEN_STORE_WHILE_CHAT), 0, true, false, 0, "Message", 280, 120, 0);
         if (this->itemsSet == 1) {
-          g_modeMgr.GetGameMode()->SendMsg(this->mode == 1 ? MM_CANCEL_BUYING_STORE_MAKE : MM_CANCEL_VENDING_MAKE, 0, 0, 0, 0);
+          if (this->mode == 1) {
+            g_modeMgr.GetGameMode()->SendMsg(MM_CANCEL_BUYING_STORE_MAKE, 0, 0, 0, 0);
+          } else {
+            g_modeMgr.GetGameMode()->SendMsg(MM_CANCEL_VENDING_MAKE, 0, 0, 0, 0);
+          }
         } else {
           g_windowMgr.CloseWindow(WID_MERCHANTSHOPMAKEWND);
         }
@@ -11633,8 +11634,8 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       if (this->mode == 0 && !this->CommitPrice(-1)) {
         break;
       }
-      bool freeItem = false;
-      bool highPrice = false;
+      BOOL freeItem = FALSE;
+      BOOL highPrice = FALSE;
       if (this->mode != 0 && this->items.empty()) {
         error = 1724;
         goto showError;
@@ -11647,12 +11648,7 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
           error = 602;
           goto showError;
         }
-        std::int64_t price = _atoi64(text);
-        if (price < 0) {
-          price = 0;
-        } else if (price > 0x7FFFFFFF) {
-          price = 0x7FFFFFFF;
-        }
+        const std::int64_t price = std::max(std::min(_atoi64(text), static_cast<std::int64_t>(0x7FFFFFFF)), static_cast<std::int64_t>(0));
         if (this->mode == 0) {
           if (this->items.empty()) {
             error = 2494;
@@ -11668,20 +11664,26 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
               goto showError;
             }
             if (price == 0) {
-              freeItem = true;
+              freeItem = TRUE;
             }
           }
           if (!g_session.m_skipPriceWarning && static_cast<unsigned>(i) < this->items.size() && price > 1000000000) {
-            highPrice = true;
+            highPrice = TRUE;
           }
         } else {
           if (static_cast<unsigned>(i) >= this->items.size()) {
             break;
           }
-          if (price == 0 || price > 99990000) {
+          if (price == 0) {
             const std::string name = current->DisplayName(0);
-            const std::string text = FormatOwnedString(LookupMessage(price == 0 ? 1725 : 1726), name.c_str());
-            g_windowMgr.Confirm(text.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+            const std::string message = FormatOwnedString(LookupMessage(1725), name.c_str());
+            g_windowMgr.Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+            return 0;
+          }
+          if (price > 99990000) {
+            const std::string name = current->DisplayName(0);
+            const std::string message = FormatOwnedString(LookupMessage(1726), name.c_str());
+            g_windowMgr.Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
             return 0;
           }
           ++current;
@@ -11695,7 +11697,8 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
             g_windowMgr.Confirm(LookupMessage(MSI_BASIC_EXP_MSG_INDONESIA), 2, true, false, 0, "Message", 280, 120, 0) != 187) {
           break;
         }
-      } else {
+      }
+      if (this->mode != 0) {
         current = this->items.begin();
         for (int i = 0; i < this->slotCount; ++i) {
           char text[24];
@@ -11708,17 +11711,27 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
             break;
           }
           const int quantity = std::max(std::atoi(text), 0);
-          if (quantity == 0 || std::atoi(text) + current->quantity > 9999) {
+          if (quantity == 0) {
             const std::string name = current->DisplayName(0);
-            const std::string message = FormatOwnedString(LookupMessage(quantity == 0 ? 1727 : 1728), name.c_str());
+            const std::string message = FormatOwnedString(LookupMessage(1727), name.c_str());
+            g_windowMgr.Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+            return 0;
+          }
+          if (std::atoi(text) + current->quantity > 9999) {
+            const std::string name = current->DisplayName(0);
+            const std::string message = FormatOwnedString(LookupMessage(1728), name.c_str());
             g_windowMgr.Confirm(message.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
             return 0;
           }
           ++current;
         }
         const std::int64_t budget = _atoi64(this->zenyLimitEdit->Text());
-        if (budget > g_session.m_zeny || budget > 0x7FFFFFFF) {
-          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(budget > g_session.m_zeny ? 3683 : 1870)), 0x6464FF, 0, 0, 0);
+        if (budget > g_session.m_zeny) {
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(3683)), 0x6464FF, 0, 0, 0);
+          break;
+        }
+        if (budget > 0x7FFFFFFF) {
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(1870)), 0x6464FF, 0, 0, 0);
           break;
         }
       }
@@ -11769,7 +11782,9 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         std::int64_t total = g_session.m_zeny;
         for (std::int64_t i = 0; i < g_session.GetList11Size(); ++i) {
           ITEM_INFO item = g_session.GetItem1768At(static_cast<int>(i));
-          total += static_cast<std::int64_t>(static_cast<int>(item.prices[1])) * item.quantity;
+          const std::int64_t price = static_cast<int>(item.prices[1]);
+          const std::int64_t quantity = item.quantity;
+          total += price * quantity;
         }
         if (total > 0x7FFFFFFF) {
           error = 3826;
@@ -11782,7 +11797,23 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         }
       }
       this->RecordText(0, this->titleEdit->Text());
-      g_session.m_storeInfoBackup.title = std::string(this->titleEdit->Text());
+      const std::string title(this->titleEdit->Text());
+      g_session.m_storeInfoBackup.title = title;
+      break;
+    }
+    case ID_CHECK:
+      g_session.m_skipPriceWarning = !g_session.m_skipPriceWarning;
+      break;
+    case ID_RESTORE_STORE_INFO:
+      this->actionButton->SetDisabled(1);
+      this->actionButton->Invalidate();
+      g_session.m_storeInfoBackup.Load(g_session.m_aid, g_session.m_gid, std::string(g_session.m_accountName.c_str()), this->mode);
+      break;
+    case ID_HELP:
+      if (!g_windowMgr.LookupWindow(WID_NOTEWND)) {
+        g_windowMgr.EnsureWindow(WID_NOTEWND);
+      }
+      break;
     }
     break;
   }
