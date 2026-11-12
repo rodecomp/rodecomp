@@ -149,20 +149,18 @@ void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::OnWheel(int value
 // FUNCTION: fn_15200
 template <>
 void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::OnScroll(int position) {
-  auto it = this->items.begin();
-  if (it == this->items.end()) {
+  if (this->items.empty()) {
     return;
   }
   if (this->data.size() == 0) {
-    for (; it != this->items.end(); ++it) {
-      ExchangeUI::CUIItem* item = *it;
+    for (auto* item : this->items) {
       item->index = -1;
       item->Show(0);
     }
     return;
   }
 
-  const int first = (*it)->index;
+  const int first = this->items.front()->index;
   unsigned int row = position / this->rowHeight;
   if (first != -1) {
     if (first < static_cast<int>(row)) {
@@ -170,13 +168,14 @@ void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::OnScroll(int posi
         std::rotate(this->items.begin(), this->items.begin() + (row - first), this->items.end());
       }
     } else if (first > static_cast<int>(row)) {
-      if (first - row < static_cast<unsigned int>(this->items.size())) {
-        std::rotate(this->items.begin(), this->items.end() - (first - row), this->items.end());
+      const unsigned int shift = first - row;
+      if (shift < static_cast<unsigned int>(this->items.size())) {
+        std::rotate(this->items.begin(), this->items.end() - shift, this->items.end());
       }
     }
   }
 
-  it = this->items.begin();
+  auto it = this->items.begin();
   for (int y = this->itemY - position % this->rowHeight; y < this->geometry.height; y += this->rowHeight, ++it, ++row) {
     if (it == this->items.end() || row >= this->data.size()) {
       break;
@@ -197,8 +196,8 @@ void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::OnScroll(int posi
     }
   }
 
-  for (; it != this->items.end(); ++it) {
-    ExchangeUI::CUIItem* item = *it;
+  for (const auto end = this->items.end(); it != end; ++it) {
+    auto* const item = *it;
     item->index = -1;
     item->Show(0);
   }

@@ -366,19 +366,18 @@ void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabIn
 // FUNCTION: fn_16676
 template <>
 void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::OnScroll(int position) {
-  auto it = this->items.begin();
-  if (it == this->items.end()) {
+  if (this->items.empty()) {
     return;
   }
   if (this->data.size() == 0) {
-    for (; it != this->items.end(); ++it) {
-      (*it)->index = -1;
-      (*it)->Show(0);
+    for (auto* item : this->items) {
+      item->index = -1;
+      item->Show(0);
     }
     return;
   }
 
-  const int first = (*it)->index;
+  const int first = this->items.front()->index;
   unsigned int row = position / this->rowHeight;
   if (first != -1) {
     if (first < static_cast<int>(row)) {
@@ -386,13 +385,14 @@ void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::OnScroll(int po
         std::rotate(this->items.begin(), this->items.begin() + (row - first), this->items.end());
       }
     } else if (first > static_cast<int>(row)) {
-      if (first - row < static_cast<unsigned int>(this->items.size())) {
-        std::rotate(this->items.begin(), this->items.end() - (first - row), this->items.end());
+      const unsigned int shift = first - row;
+      if (shift < static_cast<unsigned int>(this->items.size())) {
+        std::rotate(this->items.begin(), this->items.end() - shift, this->items.end());
       }
     }
   }
 
-  it = this->items.begin();
+  auto it = this->items.begin();
   for (int y = this->itemY - position % this->rowHeight; y < this->geometry.height; y += this->rowHeight, ++it, ++row) {
     if (it == this->items.end() || row >= this->data.size()) {
       break;
@@ -413,9 +413,10 @@ void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::OnScroll(int po
     }
   }
 
-  for (; it != this->items.end(); ++it) {
-    (*it)->index = -1;
-    (*it)->Show(0);
+  for (const auto end = this->items.end(); it != end; ++it) {
+    auto* const item = *it;
+    item->index = -1;
+    item->Show(0);
   }
 }
 
@@ -423,19 +424,18 @@ void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::OnScroll(int po
 // FUNCTION: fn_16677
 template <>
 void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabInfoData>::OnScroll(int position) {
-  auto it = this->items.begin();
-  if (it == this->items.end()) {
+  if (this->items.empty()) {
     return;
   }
   if (this->data.size() == 0) {
-    for (; it != this->items.end(); ++it) {
-      (*it)->index = -1;
-      (*it)->Show(0);
+    for (auto* item : this->items) {
+      item->index = -1;
+      item->Show(0);
     }
     return;
   }
 
-  const int first = (*it)->index;
+  const int first = this->items.front()->index;
   unsigned int row = position / this->rowHeight;
   if (first != -1) {
     if (first < static_cast<int>(row)) {
@@ -443,13 +443,14 @@ void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabIn
         std::rotate(this->items.begin(), this->items.begin() + (row - first), this->items.end());
       }
     } else if (first > static_cast<int>(row)) {
-      if (first - row < static_cast<unsigned int>(this->items.size())) {
-        std::rotate(this->items.begin(), this->items.end() - (first - row), this->items.end());
+      const unsigned int shift = first - row;
+      if (shift < static_cast<unsigned int>(this->items.size())) {
+        std::rotate(this->items.begin(), this->items.end() - shift, this->items.end());
       }
     }
   }
 
-  it = this->items.begin();
+  auto it = this->items.begin();
   for (int y = this->itemY - position % this->rowHeight; y < this->geometry.height; y += this->rowHeight, ++it, ++row) {
     if (it == this->items.end() || row >= this->data.size()) {
       break;
@@ -470,9 +471,10 @@ void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabIn
     }
   }
 
-  for (; it != this->items.end(); ++it) {
-    (*it)->index = -1;
-    (*it)->Show(0);
+  for (const auto end = this->items.end(); it != end; ++it) {
+    auto* const item = *it;
+    item->index = -1;
+    item->Show(0);
   }
 }
 

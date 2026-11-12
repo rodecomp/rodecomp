@@ -721,44 +721,45 @@ void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::ClearItems() {
 // FUNCTION: fn_16444
 template <>
 void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::OnScroll(int position) {
-  auto it = this->items.begin();
-  if (it == this->items.end()) {
+  if (this->items.empty()) {
     return;
   }
   if (this->data.size() == 0) {
-    for (; it != this->items.end(); ++it) {
-      RenewQuestUI::CUIQuestItem* item = *it;
+    for (auto* item : this->items) {
       item->index = -1;
       item->Show(0);
     }
     return;
   }
 
-  const int first = (*it)->index;
-  int row = position / this->rowHeight;
+  const int first = this->items.front()->index;
+  unsigned int row = position / this->rowHeight;
   if (first != -1) {
-    if (first < row) {
-      if (static_cast<unsigned int>(row - first) < this->items.size()) {
+    if (first < static_cast<int>(row)) {
+      if (row - first < static_cast<unsigned int>(this->items.size())) {
         std::rotate(this->items.begin(), this->items.begin() + (row - first), this->items.end());
       }
-    } else if (first > row) {
-      if (static_cast<unsigned int>(first - row) < this->items.size()) {
-        std::rotate(this->items.begin(), this->items.end() - (first - row), this->items.end());
+    } else if (first > static_cast<int>(row)) {
+      const unsigned int shift = first - row;
+      if (shift < static_cast<unsigned int>(this->items.size())) {
+        std::rotate(this->items.begin(), this->items.end() - shift, this->items.end());
       }
     }
   }
 
-  it = this->items.begin();
+  auto it = this->items.begin();
   for (int y = this->itemY - position % this->rowHeight; y < this->geometry.height; y += this->rowHeight, ++it, ++row) {
-    if (it == this->items.end() || static_cast<unsigned int>(row) >= this->data.size()) {
+    if (it == this->items.end() || row >= this->data.size()) {
       break;
     }
     RenewQuestUI::CUIQuestItem* item = *it;
     if (item) {
-      if (this->rebind || row != item->index) {
+      if (this->rebind || row != static_cast<unsigned int>(item->index)) {
         item->index = row;
         if (this->binder) {
-          this->binder(item, *std::next(this->data.begin(), row));
+          auto node = this->data.begin();
+          std::advance(node, static_cast<int>(row));
+          this->binder(item, *node);
         }
       }
       item->SetSelected(row == this->selected);
@@ -767,9 +768,10 @@ void CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::OnScroll(int posit
     }
   }
 
-  for (; it != this->items.end(); ++it) {
-    (*it)->index = -1;
-    (*it)->Show(0);
+  for (const auto end = this->items.end(); it != end; ++it) {
+    auto* const item = *it;
+    item->index = -1;
+    item->Show(0);
   }
 }
 
