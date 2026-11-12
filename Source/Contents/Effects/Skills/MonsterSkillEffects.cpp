@@ -1523,7 +1523,9 @@ void CFromTheAbyssEffect::SetLevel(long long level) {
       if (emitter) {
         AsParticle(emitter)->Load("from_the_abyss\\from_the_abyss_shadowball_create\\from_the_abyss_shadowball_create.str");
         AsParticle(emitter)->m_scale = this->waves[i].scale;
-        emitter->offset = this->waves[i].offset;
+        emitter->offset.x = this->waves[i].offset.x;
+        emitter->offset.y = this->waves[i].offset.y;
+        emitter->offset.z = this->waves[i].offset.z;
         AbyssParticle& entry = this->particles[i];
         entry.emitter = emitter;
         entry.kind = 1;
@@ -1542,7 +1544,9 @@ void CFromTheAbyssEffect::SetLevel(long long level) {
         if (emitter) {
           AsParticle(emitter)->Load("from_the_abyss\\from_the_abyss_shadowball_die\\from_the_abyss_shadowball_die.str");
           AsParticle(emitter)->m_scale = static_cast<float>(scale);
-          emitter->offset = offset;
+          emitter->offset.x = offset.x;
+          emitter->offset.y = offset.y;
+          emitter->offset.z = offset.z;
         }
 
         AbyssParticle& entry = this->particles[i];
