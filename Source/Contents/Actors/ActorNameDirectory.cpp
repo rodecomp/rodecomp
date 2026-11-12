@@ -2,6 +2,8 @@
 
 #include <algorithm>
 
+template __declspec(noinline) bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+
 // OFFSET: 0x005BF870
 // FUNCTION: fn_03497
 std::size_t CActorNameCardHolder::Erase(std::uint32_t id) {
