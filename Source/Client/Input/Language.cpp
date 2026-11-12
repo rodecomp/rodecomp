@@ -129,8 +129,8 @@ void CLanguageBase::CopySelection() {
   if (memory) {
     auto* data = static_cast<char*>(GlobalLock(memory));
     if (data) {
-      const int begin = std::min(this->cursor, this->anchor);
-      const int end = std::max(this->anchor, this->cursor);
+      const int begin = this->anchor < this->cursor ? this->anchor : this->cursor;
+      const int end = this->anchor < this->cursor ? this->cursor : this->anchor;
 
       if (!this->password) {
         std::memcpy(data, this->text.c_str() + begin, end - begin);
