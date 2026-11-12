@@ -88,7 +88,7 @@ UINewMakeCharWnd::UINewMakeCharWnd()
   this->m_raceActions[0].assign(static_cast<const std::string&>(g_session.GetBodyActionResourceName(this->m_job, this->m_sex, 0, 0)));
   this->m_raceSprites[0].assign(static_cast<const std::string&>(g_session.GetBodySprName(this->m_job, this->m_sex, 0, 0)));
 
-  if (!g_session.IsDoramJob(this->m_job) && this->m_sex == 1 && this->m_head == 13) {
+  if (!g_session.IsDoramJob(this->m_job) && this->m_sex == 1 && 13 == this->m_head) {
     this->m_head = 14;
   }
 
