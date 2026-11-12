@@ -28,7 +28,19 @@
 #include <cstdio>
 #include <cstring>
 #include <new>
+#include <string>
 #include <timeapi.h>
+
+// GLOBAL: gl_25613
+static const std::string s_makeCharItemLinkOpen = "<ITEML>";
+
+// GLOBAL: gl_25614
+static const std::string s_makeCharItemLinkClose = "</ITEML>";
+
+// OFFSET: 0x007D9960
+// FUNCTION: fn_09607
+UIHairBitmap::UIHairBitmap() : UIBitmapButton() {
+}
 
 // OFFSET: 0x007D9A50
 // FUNCTION: fn_09609

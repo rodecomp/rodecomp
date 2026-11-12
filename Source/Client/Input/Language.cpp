@@ -386,11 +386,6 @@ int SubACFCE0() {
   return 0;
 }
 
-// OFFSET: 0x007D9960
-// FUNCTION: fn_09607
-UIHairBitmap::UIHairBitmap() : UIBitmapButton() {
-}
-
 // OFFSET: 0x007ECEC0
 // FUNCTION: fn_09804
 UICaptchaPreviewWnd::UICaptchaPreviewWnd() : UIFrameWnd(0), m_image(nullptr), m_imageData(nullptr), m_imageSize(0), m_imageReceived(0) {
