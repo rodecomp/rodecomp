@@ -7,6 +7,7 @@
 #include "Utility/Text/FormatString.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
 #include "Utility/Cipher/CryptName.h"
+#include "Utility/Cipher/Obfuscate.h"
 
 #include <cctype>
 #include <windows.h>
@@ -16,21 +17,16 @@ namespace {
   constexpr char sourceFile[] = "C:\\repositories\\RagnarokClient\\RagnarokClient\\Contents\\Emblem\\CEmblemDataUploadAsyncWork.cpp";
 
   // INLINED
-  template <std::uint64_t Key, std::size_t Length>
-  const char* DecryptName(const std::uint8_t (&source)[Length]) {
-    thread_local EncryptedName<Length, Key> name(source);
-    return name.Text();
   }
-}
 
 // GLOBAL: gl_25610
-const char* g_emblemDataUploadPoolName = DecryptName<0x2FF3C5036D070127ULL>(CRYPT_BYTES(14, "Emblem_Upload", 0x2FF3C5036D070127ULL));
+const char* g_emblemDataUploadPoolName = OBFUSCATE_BYTES_TEXT("Emblem_Upload", 0x2FF3C5036D070127ULL);
 
 // OFFSET: 0x005EBF50
 // FUNCTION: fn_03978
 CEmblemDataUploadAsyncWork::CEmblemDataUploadAsyncWork()
     : NAsyncWork(g_emblemDataUploadPoolName), m_accountId(0), m_guildId(0),
-      m_diagnostic(false, std::string(DecryptName<0x93E7A3A1F587CDC5ULL>({0xB0, 0xA3, 0xEC, 0x9B, 0xD6, 0xCC, 0x89, 0x93})), sourceFile, 27) {
+      m_diagnostic(false, std::string(OBFUSCATE_BYTES_TEXT("unknwon", 0x93E7A3A1F587CDC5ULL)), sourceFile, 27) {
 }
 
 // INLINED
@@ -52,9 +48,7 @@ void CEmblemDataUploadAsyncWork::Bind(std::string url, std::uint32_t accountId, 
   this->m_accountName = accountName;
   this->m_guildId = guildId;
   this->m_path = path;
-  constexpr std::array<std::uint8_t, 8> diagnosticSourceArray = CRYPT_NAME("unknwon", 0xC52FB5FBB94FF917ULL);
-  const std::uint8_t (&diagnosticSource)[8] = diagnosticSourceArray._Elems;
-  this->m_diagnostic = AsyncDiagnostic(false, std::string(DecryptName<0xC52FB5FBB94FF917ULL>(diagnosticSource)), sourceFile, 54);
+  this->m_diagnostic = AsyncDiagnostic(false, std::string(OBFUSCATE_BYTES_TEXT("unknwon", 0xC52FB5FBB94FF917ULL)), sourceFile, 54);
 }
 
 // OFFSET: 0x005EC7C0
@@ -74,29 +68,18 @@ bool CEmblemDataUploadAsyncWork::Execute() {
 
   std::string imageType = g_curlMgr->ToUtf8(extension);
   CCURLPostHander handler(this->m_url);
-  constexpr std::array<std::uint8_t, 4> aidArray = CRYPT_NAME("AID", 0x812BE72BCD5707B7ULL);
-  const std::uint8_t (&aid)[4] = aidArray._Elems;
-  handler.AddField(DecryptName<0x812BE72BCD5707B7ULL>(aid), account, 4);
-  constexpr std::array<std::uint8_t, 10> authTokenArray = CRYPT_NAME("AuthToken", 0x59278F63D79F3DA1ULL);
-  const std::uint8_t (&authToken)[10] = authTokenArray._Elems;
-  handler.AddField(DecryptName<0x59278F63D79F3DA1ULL>(authToken), this->m_token, 4);
-  const std::uint8_t worldName[] = CRYPT_BYTES(10, "WorldName", 0x1D6D75EDE7CD311FULL);
-  handler.AddField(DecryptName<0x1D6D75EDE7CD311FULL>(worldName), name, 4);
-  constexpr std::array<std::uint8_t, 5> gdidArray = CRYPT_NAME("GDID", 0x3375B1C7DBB5FD55ULL);
-  const std::uint8_t (&gdid)[5] = gdidArray._Elems;
-  handler.AddField(DecryptName<0x3375B1C7DBB5FD55ULL>(gdid), guild, 4);
-  const std::uint8_t imgType[] = CRYPT_BYTES(8, "ImgType", 0x0F0F8B6B8F9D19D1ULL);
-  handler.AddField(DecryptName<0x0F0F8B6B8F9D19D1ULL>(imgType), imageType, 4);
-  const std::uint8_t img[] = CRYPT_BYTES(4, "Img", 0xD98F03A52D35636DULL);
-  handler.AddField(DecryptName<0xD98F03A52D35636DULL>(img), path, 10);
+  handler.AddField(OBFUSCATE_BYTES_TEXT("AID", 0x812BE72BCD5707B7ULL), account, 4);
+  handler.AddField(OBFUSCATE_BYTES_TEXT("AuthToken", 0x59278F63D79F3DA1ULL), this->m_token, 4);
+  handler.AddField(OBFUSCATE_BYTES_TEXT("WorldName", 0x1D6D75EDE7CD311FULL), name, 4);
+  handler.AddField(OBFUSCATE_BYTES_TEXT("GDID", 0x3375B1C7DBB5FD55ULL), guild, 4);
+  handler.AddField(OBFUSCATE_BYTES_TEXT("ImgType", 0x0F0F8B6B8F9D19D1ULL), imageType, 4);
+  handler.AddField(OBFUSCATE_BYTES_TEXT("Img", 0xD98F03A52D35636DULL), path, 10);
 
   if (handler.Perform() == 0) {
     this->m_response = g_curlMgr->FromUtf8(handler.Response());
-    const std::uint8_t good[] = CRYPT_BYTES(5, "good", 0x31D7C1EDA345E36DULL);
-    this->m_diagnostic = AsyncDiagnostic(true, std::string(DecryptName<0x31D7C1EDA345E36DULL>(good)), sourceFile, 100);
+    this->m_diagnostic = AsyncDiagnostic(true, std::string(OBFUSCATE_BYTES_TEXT("good", 0x31D7C1EDA345E36DULL)), sourceFile, 100);
   } else {
-    const std::uint8_t fail[] = CRYPT_BYTES(5, "fail", 0xD3755DD95F47A909ULL);
-    this->m_diagnostic = AsyncDiagnostic(false, std::string(DecryptName<0xD3755DD95F47A909ULL>(fail)), sourceFile, 109);
+    this->m_diagnostic = AsyncDiagnostic(false, std::string(OBFUSCATE_BYTES_TEXT("fail", 0xD3755DD95F47A909ULL)), sourceFile, 109);
   }
 
   return false;
