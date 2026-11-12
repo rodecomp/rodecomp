@@ -77,8 +77,8 @@ void CDCBitmap::Draw(int x, int y, int width, int height, std::uint32_t color) {
   }
 
   if (this->m_cache.m_alpha == true) {
-    for (CTexture* texture : this->m_cache.m_textures) {
-      texture->Draw(x, y, width, height, color);
+    for (auto texture = this->m_cache.m_textures.begin(); texture != this->m_cache.m_textures.end(); ++texture) {
+      (*texture)->Draw(x, y, width, height, color);
     }
   } else {
     auto texture = this->m_cache.m_textures.begin();
