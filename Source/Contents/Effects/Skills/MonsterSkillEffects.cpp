@@ -2160,7 +2160,7 @@ void CNewCloudKillEffect::OnProcess() {
       if (alpha == 0) {
         particle->animationState = 1;
       } else {
-        const float fall = particle->speedParameter * 1.0f;
+        const float fall = particle->speedParameter * 1.0;
         particle->scale -= particle->scale / static_cast<float>(alpha);
         particle->offsetY -= fall;
         particle->offsetX += 0.0f;
@@ -2218,7 +2218,7 @@ void CNewCloudKillEffect::OnProcess() {
       particle->scale -= particle->scale / static_cast<float>(alpha);
     }
 
-    const float fall = particle->speedParameter * 1.0f;
+    const float fall = particle->speedParameter * 1.0;
     particle->offsetY -= fall;
     particle->offsetX += 0.0f;
     particle->offsetZ += 0.0f;
@@ -2302,7 +2302,7 @@ void CNewCloudKillEffect::OnProcess() {
       particle->scale = (particle->scale / static_cast<float>(maximum)) * static_cast<float>(alpha);
     }
 
-    const float fall = particle->speedParameter * 1.0f;
+    const float fall = particle->speedParameter * 1.0;
     particle->offsetY -= fall;
     particle->offsetX += 0.0f;
     particle->offsetZ += 0.0f;
