@@ -3,8 +3,8 @@
 // OFFSET: 0x0091BE20
 // FUNCTION: fn_12610
 int CSession::GetOption(int id) const {
-  const auto entry = this->m_options.Values().find(id);
-  return entry == this->m_options.Values().end() ? 0 : static_cast<int>(entry->second);
+  const auto entry = this->m_options.Values().find(static_cast<int>(id));
+  return static_cast<int>(entry == this->m_options.Values().end() ? 0 : entry->second);
 }
 
 // OFFSET: 0x005E7970

@@ -973,13 +973,15 @@ ITEM_INFO CSession::GetItem1784At(int list, int index) const {
     return ITEM_INFO(0);
   }
 
-  if (static_cast<unsigned int>(list) < 11 && !this->inventoryCategories[list].empty()) {
+  if (static_cast<unsigned int>(list) < 11 && this->inventoryCategories[list].size() != 0) {
+    std::list<ITEM_INFO>::const_iterator it = this->inventoryCategories[list].begin();
     int position = 0;
-    for (const ITEM_INFO& item : this->inventoryCategories[list]) {
+    while (it != this->inventoryCategories[list].end()) {
       if (position == index) {
-        return item;
+        return *it;
       }
       ++position;
+      ++it;
     }
   }
 
