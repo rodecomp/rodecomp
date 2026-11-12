@@ -1219,10 +1219,12 @@ void UINewSkillListWnd::LayoutButtons() {
   this->m_btnClose->Move(this->geometry.width - 16, 5);
   this->m_btnApply->Move(this->geometry.width - inset - 100, this->geometry.height - 27);
   this->m_btnCancel->Move(this->geometry.width - inset - 50, this->geometry.height - 27);
-  this->m_btnApply->SetDisabled(!this->m_locked);
-  this->m_btnApply->Invalidate();
-  this->m_btnCancel->SetDisabled(!this->m_locked);
-  this->m_btnCancel->Invalidate();
+  UIBitmapButton* apply = this->m_btnApply;
+  apply->SetDisabled(!this->m_locked);
+  apply->Invalidate();
+  UIBitmapButton* cancel = this->m_btnCancel;
+  cancel->SetDisabled(!this->m_locked);
+  cancel->Invalidate();
   if (!this->m_locked) {
     this->m_btnApply->SetState(0);
     this->m_btnCancel->SetState(0);
@@ -1254,11 +1256,11 @@ void UINewSkillListWnd::LayoutButtons() {
     }
   } else if (!this->m_locked) {
     for (std::list<CSkillInfo>::iterator it = list.begin(); it != list.end(); ++it) {
-      const unsigned int slot = it->treePosition - this->m_columns * this->m_firstRow;
-      if (slot < 42 && it->available != 0 && it->treePosition != 0xFFFFFFFF && it->level != 0 &&
+      const int slot = it->treePosition - this->m_columns * this->m_firstRow;
+      if (slot >= 0 && slot < 42 && it->available != 0 && it->treePosition != 0xFFFFFFFF && it->level != 0 &&
           CSkillInfo::UsesLevel(*g_session.m_hotkeyScript, it->id)) {
-        const int y = static_cast<int>(slot) / this->m_columns * 56 + 70;
-        const int x = static_cast<int>(slot) % this->m_columns * 68 + 56;
+        const int y = slot / this->m_columns * 56 + 70;
+        const int x = slot % this->m_columns * 68 + 56;
         this->m_btnSkillUps[slot]->Move(x + 55, y);
         this->m_btnSkills[slot]->Move(x, y);
       }
