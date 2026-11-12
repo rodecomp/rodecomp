@@ -2,7 +2,7 @@
 
 // OFFSET: 0x008CA740
 // FUNCTION: fn_11995
-UIChooseWnd::~UIChooseWnd() {
+__declspec(noinline) UIChooseWnd::~UIChooseWnd() {
   this->m_items.clear();
 }
 

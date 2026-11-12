@@ -8,5 +8,5 @@ UIStaticItem::UIStaticItem()
 
 // OFFSET: 0x00871A00
 // FUNCTION: fn_11109
-UIStaticItem::~UIStaticItem() {
+__declspec(noinline) UIStaticItem::~UIStaticItem() {
 }
