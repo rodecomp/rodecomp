@@ -9648,9 +9648,9 @@ void UIAutoMessageWnd::OnCreate(int, int) {
 // OFFSET: 0x008EC840
 // FUNCTION: fn_12209
 void UInCash_CallWnd::OnCreate(int, int) {
-  const int ids[] = {192};
-  const int positions[] = {0};
-  const char* names[] = {"NC_CashShop"};
+  int positions[3] = {0};
+  int ids[3] = {192};
+  const char* names[8] = {"NC_CashShop"};
   const std::string prefix("유저인터페이스\\basic_interface\\");
   for (int index = 0; index < 1; ++index) {
     auto* button = new UIBitmapButton();
