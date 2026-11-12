@@ -6,6 +6,7 @@
 #include "Utility/Async/AsyncDiagnostic.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
+#include "Utility/Cipher/Obfuscate.h"
 
 #include "Resource/MSGSTRINGID.h"
 #include <json/reader.h>
@@ -21,12 +22,6 @@ namespace {
 #pragma pack(pop)
   static_assert(sizeof(EmblemVersionPacket) == 10);
 
-  // INLINED
-  template <std::uint64_t Key, std::size_t Length>
-  const char* DecryptName(const std::uint8_t (&source)[Length]) {
-    thread_local EncryptedName<Length, Key> name(source);
-    return name.Text();
-  }
 }
 
 // OFFSET: 0x005EBAD0
@@ -43,9 +38,9 @@ void CEmblemDataMgr::CompleteUpload(AsyncDiagnostic diagnostic, std::string resp
     return;
   }
 
-  switch (root[DecryptName<0xC52FB5FBB94FF917ULL>({0x43, 0x80, 0x3F, 0xDC, 0xFB})].asInt()) {
+  switch (root[(OBFUSCATE_DECRYPT_BYTES(0xC52FB5FBB94FF917ULL, 5, {0x43, 0x80, 0x3F, 0xDC, 0xFB}))].asInt()) {
   case 1: {
-    EmblemVersionPacket packet{0x0B46, guildId, root[DecryptName<0x812BE72BCD5707B7ULL>({0xC1, 0x62, 0x25, 0xBE, 0x42, 0x88, 0x45, 0x81})].asInt()};
+    EmblemVersionPacket packet{0x0B46, guildId, root[(OBFUSCATE_DECRYPT_BYTES(0x812BE72BCD5707B7ULL, 8, {0xC1, 0x62, 0x25, 0xBE, 0x42, 0x88, 0x45, 0x81}))].asInt()};
     GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
     break;
   }

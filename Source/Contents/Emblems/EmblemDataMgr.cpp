@@ -3,6 +3,7 @@
 #include "Client/Session/Session.h"
 #include "Network/Connection/Connection.h"
 #include "Utility/Cipher/CryptName.h"
+#include "Utility/Cipher/Obfuscate.h"
 
 #include "Utility/Cipher/EncryptedName.h"
 
@@ -59,13 +60,13 @@ void CEmblemDataMgr::RefreshUrls(LuaScript& settings, LuaScript& tables, const c
 
   if (!base.empty()) {
     {
-      constexpr std::array<std::uint8_t, 15> sourceArray = CRYPT_NAME("/emblem/upload", 0x2FF3C5036D070127ULL);
+      constexpr std::array<std::uint8_t, 15> sourceArray = OBFUSCATE_SOURCE("/emblem/upload", 0x2FF3C5036D070127ULL);
       const std::uint8_t (&source)[15] = sourceArray._Elems;
       thread_local EncryptedName<sizeof(source), 0x2FF3C5036D070127ULL> name(source);
       this->m_uploadUrl = base + name.Text();
     }
     {
-      const std::uint8_t source[] = CRYPT_BYTES(17, "/emblem/download", 0x93E7A3A1F587CDC5ULL);
+      const std::uint8_t source[] = OBFUSCATE_SOURCE_BYTES(17, "/emblem/download", 0x93E7A3A1F587CDC5ULL);
       thread_local EncryptedName<sizeof(source), 0x93E7A3A1F587CDC5ULL> name(source);
       this->m_downloadUrl = base + name.Text();
     }

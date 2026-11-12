@@ -1023,7 +1023,7 @@ void UIReplayRECControlWnd::AnimateLoading() {
 // OFFSET: 0x008AE8A0
 // FUNCTION: fn_11741
 void UILoginOTPWnd::OnCreate(int, int) {
-  const auto prefixSource = CRYPT_NAME("유저인터페이스\\", 0x793F370985ED674FULL);
+  const auto prefixSource = OBFUSCATE_SOURCE("유저인터페이스\\", 0x793F370985ED674FULL);
   thread_local EncryptedName<sizeof(prefixSource), 0x793F370985ED674FULL> prefixName(prefixSource.data);
   const std::string prefix(prefixName.Text());
 
@@ -3283,7 +3283,7 @@ UIPetInfoWnd::~UIPetInfoWnd() {
 // OFFSET: 0x008A5CC0
 // FUNCTION: fn_11686
 EncryptedName<80, 0xF3CB6F7711A71B6DULL>& HangameJoinUrl::operator()() const {
-  constexpr auto sourceText = CRYPT_NAME("http://ro.hangame.com/login/loginstep.asp?prevURL=/NHNCommon/NHN/Memberjoin.asp", 0xF3CB6F7711A71B6DULL);
+  constexpr auto sourceText = OBFUSCATE_SOURCE("http://ro.hangame.com/login/loginstep.asp?prevURL=/NHNCommon/NHN/Memberjoin.asp", 0xF3CB6F7711A71B6DULL);
   const auto& source = sourceText.data;
   thread_local EncryptedName<sizeof(source), 0xF3CB6F7711A71B6DULL> name(source);
   return name;
@@ -3419,7 +3419,7 @@ int UILoginOTPWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 
     case 382: {
       CSoundMgr* const soundMgr = g_soundMgr;
-      constexpr auto soundSourceText = CRYPT_NAME("버튼소리.wav", 0x7321C3814F8799E1ULL);
+      constexpr auto soundSourceText = OBFUSCATE_SOURCE("버튼소리.wav", 0x7321C3814F8799E1ULL);
       const auto& soundSource = soundSourceText.data;
       thread_local EncryptedName<sizeof(soundSource), 0x7321C3814F8799E1ULL> soundName(soundSource);
       soundMgr->PlayWave(soundName.Text(), 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);

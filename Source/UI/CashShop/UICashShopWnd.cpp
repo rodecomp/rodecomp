@@ -446,12 +446,12 @@ void UICashShopWnd::Paint() {
 
   if (g_session.characterRenameEnabled) {
     this->DrawCenteredText(0x21A, 0x1B, []() {
-      const auto source = CRYPT_NAME("스토브 구입 리스트", 0x474DC581D5E98357ULL);
+      const auto source = OBFUSCATE_SOURCE("스토브 구입 리스트", 0x474DC581D5E98357ULL);
       thread_local EncryptedName<sizeof(source), 0x474DC581D5E98357ULL> title(source.data);
       return title.Text();
     }(), 0xB9, 0, 0xE, 0, 1);
     this->DrawCenteredText(0x219, 0x1A, []() {
-      const char source[] = CRYPT_CHARS(19, "스토브 구입 리스트", 0x3F557BE333F95F6DULL);
+      const char source[] = OBFUSCATE_SOURCE_CHARS(19, "스토브 구입 리스트", 0x3F557BE333F95F6DULL);
       thread_local EncryptedName<sizeof(source), 0x3F557BE333F95F6DULL> title(source);
       return title.Text();
     }(), 0xB9, 0, 0xE, 0xFFFFFF, 1);

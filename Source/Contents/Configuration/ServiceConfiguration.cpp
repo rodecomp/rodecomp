@@ -123,13 +123,6 @@ const int s_monsterJobIds[48] = {
   9100786, 9100787, 9100788, 9100789, 9100790, 9100791, 9100792, 9100793
 };
 
-// INLINED
-template <std::uint64_t Key, std::size_t Length>
-const char* DecryptText(const std::uint8_t (&source)[Length]) {
-  thread_local EncryptedName<Length, Key> text(source);
-  return text.Text();
-}
-
 // OFFSET: 0x00ACFCF0
 // FUNCTION: fn_17807
 const char* GetLicenceText() {
@@ -438,8 +431,8 @@ void InitializeLanguage() {
 // OFFSET: 0x00AD1C90
 // FUNCTION: fn_17817
 void InitializeServiceConfiguration() {
-  const std::uint8_t portSource[] = CRYPT_BYTES(5, "6900", 0xEB3D4FAB0FC183DBULL);
-  g_servicePort = DecryptText<0xEB3D4FAB0FC183DBULL>(portSource);
+  const std::uint8_t portSource[] = OBFUSCATE_SOURCE_BYTES(5, "6900", 0xEB3D4FAB0FC183DBULL);
+  g_servicePort = OBFUSCATE_DECRYPT(0xEB3D4FAB0FC183DBULL, portSource);
 
   g_webPageUrl = OBFUSCATE_TEXT("http://www.ragnarok.co.kr", 0xFFBF43D1FFD5FF49ULL);
 

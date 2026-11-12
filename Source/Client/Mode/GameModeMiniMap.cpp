@@ -26,6 +26,7 @@
 #include "Utility/Text/FormatString.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
 #include "Utility/Cipher/CryptName.h"
+#include "Utility/Cipher/Obfuscate.h"
 
 #include <cstdint>
 #include <cstdio>
@@ -39,7 +40,7 @@ namespace {
 
 // INLINED
 __forceinline const char* TimeFontActionName() {
-  constexpr auto sourceText = CRYPT_NAME("이팩트\\TimeFont.act", 0x7D5D0F110B6B8371ULL);
+  constexpr auto sourceText = OBFUSCATE_SOURCE("이팩트\\TimeFont.act", 0x7D5D0F110B6B8371ULL);
   const auto& source = sourceText.data;
   // GLOBAL: gl_25508
   thread_local EncryptedName<sizeof(source), 0x7D5D0F110B6B8371ULL> name(source);
@@ -48,7 +49,7 @@ __forceinline const char* TimeFontActionName() {
 
 // INLINED
 __forceinline const char* TimeFontSpriteName() {
-  const char source[] = CRYPT_CHARS(20, "이팩트\\TimeFont.spr", 0x114901C7E37F6D49ULL);
+  const char source[] = OBFUSCATE_SOURCE_CHARS(20, "이팩트\\TimeFont.spr", 0x114901C7E37F6D49ULL);
   // GLOBAL: gl_25509
   thread_local EncryptedName<sizeof(source), 0x114901C7E37F6D49ULL> name(source);
   return name.Text();

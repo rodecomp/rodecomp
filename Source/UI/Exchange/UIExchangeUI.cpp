@@ -622,7 +622,7 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   this->titleBar->Move(0, 0);
   {
     CUITitleBar* titleBar = this->titleBar;
-    const auto titleRightSource = CRYPT_NAME("유저인터페이스\\basic_interface\\titlebar_right.bmp", 0x17A9E5BF39AD4737ULL);
+    const auto titleRightSource = OBFUSCATE_SOURCE("유저인터페이스\\basic_interface\\titlebar_right.bmp", 0x17A9E5BF39AD4737ULL);
     // GLOBAL: gl_25394
     thread_local EncryptedName<sizeof(titleRightSource), 0x17A9E5BF39AD4737ULL> titleRightName(titleRightSource.data);
     const std::string titleRight(titleRightName.Text());

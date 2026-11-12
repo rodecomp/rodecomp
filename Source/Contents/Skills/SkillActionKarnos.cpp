@@ -908,7 +908,7 @@ void CSkillAction_KR_NASTY_SLASH::OnSkillEffect(int level, CGameActor* source, C
   }
 
   const float angle = ScreenAngle(&source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values);
-  constexpr std::array<std::uint8_t, 12> effectSourceArray = CRYPT_NAME("nasty_slash", 0x2FF3C5036D070127ULL);
+  constexpr std::array<std::uint8_t, 12> effectSourceArray = OBFUSCATE_SOURCE("nasty_slash", 0x2FF3C5036D070127ULL);
   const std::uint8_t (&effectSource)[12] = effectSourceArray._Elems;
   thread_local EncryptedName<sizeof(effectSource), 0x2FF3C5036D070127ULL> effectName(effectSource);
   if (CEffect* effect = g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
@@ -959,7 +959,7 @@ void CSkillAction_KR_IRON_HOWLING::OnSkillEffect(int level, CGameActor* source, 
     return;
   }
 
-  constexpr std::array<std::uint8_t, 13> effectSourceArray = CRYPT_NAME("iron_howling", 0x91E147EBBD47C39FULL);
+  constexpr std::array<std::uint8_t, 13> effectSourceArray = OBFUSCATE_SOURCE("iron_howling", 0x91E147EBBD47C39FULL);
   const std::uint8_t (&effectSource)[13] = effectSourceArray._Elems;
   thread_local EncryptedName<sizeof(effectSource), 0x91E147EBBD47C39FULL> effectName(effectSource);
   EffectLists* effects = g_effectMgr;

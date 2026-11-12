@@ -353,13 +353,6 @@ static_assert(sizeof(AcceptEnterNeoUnionPacket) == 0x18 + sizeof(CharacterInfo))
 static_assert(offsetof(CharacterSlotCountsPacket, extension) == 0xA);
 static_assert(sizeof(BlockedCharacter) == 0x18);
 static_assert(offsetof(AcceptEnterPacket, characters) == 0x1B);
-// INLINED
-template <std::uint64_t Key, std::size_t Length>
-const char* DecryptName(const std::array<char, Length>& source) {
-  thread_local EncryptedName<Length, Key> name(source);
-  return name.Text();
-}
-
 
 struct CharacterInfo2SizeErrorFormat {
   __declspec(noinline) EncryptedName<75, 0xED15938D333D2DB9ULL>& operator()() const;
@@ -929,9 +922,9 @@ void CLoginMode::ReceiveDeleteReservation(const CharacterDeletePacket* packet) {
 void CLoginMode::ReceiveMapStates(const MapStatePacket* packet) {
   const unsigned int count = (packet->length - 4) / sizeof(MapStateInfo);
   if ((packet->length - 4) % sizeof(MapStateInfo) != 0) {
-    constexpr std::array<char, 34> source = CRYPT_NAME("mismatch MapState size(size = %d)", 0x792FFD1325418FB5ULL);
+    constexpr std::array<char, 34> source = OBFUSCATE_SOURCE("mismatch MapState size(size = %d)", 0x792FFD1325418FB5ULL);
     char text[256];
-    sprintf(text, DecryptName<0x792FFD1325418FB5ULL>(source), sizeof(MapStateInfo));
+    sprintf(text, OBFUSCATE_DECRYPT(0x792FFD1325418FB5ULL, source), sizeof(MapStateInfo));
     g_windowMgr.Confirm(text, 0, true, false, 0, "Message", 280, 120, 0);
     this->pendingCursorType = 7;
     return;
@@ -1194,34 +1187,34 @@ void CLoginMode::OpenAccountRegistration() {
   case ServiceKorea:
     if (*reinterpret_cast<const int*>(&g_session.mouseAndChannelOptions[0x198]) == 1) {
       const char* url = LookupMessage(MSI_SETTLE_WEB_URL_HANGAME);
-      constexpr std::array<char, 5> source = CRYPT_NAME("open", 0xCFF3899D95AF355FULL);
-      ShellExecuteA(hWnd, DecryptName<0xCFF3899D95AF355FULL>(source), url, nullptr, nullptr, SW_SHOWNORMAL);
+      constexpr std::array<char, 5> source = OBFUSCATE_SOURCE("open", 0xCFF3899D95AF355FULL);
+      ShellExecuteA(hWnd, OBFUSCATE_DECRYPT(0xCFF3899D95AF355FULL, source), url, nullptr, nullptr, SW_SHOWNORMAL);
     } else {
       const char* url = LookupMessage(MSI_SETTLE_WEB_URL);
-      constexpr std::array<char, 5> source = CRYPT_NAME("open", 0xE52DF30DCBAF7125ULL);
-      ShellExecuteA(hWnd, DecryptName<0xE52DF30DCBAF7125ULL>(source), url, nullptr, nullptr, SW_SHOWNORMAL);
+      constexpr std::array<char, 5> source = OBFUSCATE_SOURCE("open", 0xE52DF30DCBAF7125ULL);
+      ShellExecuteA(hWnd, OBFUSCATE_DECRYPT(0xE52DF30DCBAF7125ULL, source), url, nullptr, nullptr, SW_SHOWNORMAL);
     }
     break;
   case 1: {
-    constexpr std::array<char, 61> urlSource = CRYPT_NAME("https://iro.ragnarokonline.com/member/memberjoin1.asp?mNum=1", 0x13E33FA1A591AB67ULL);
-    const char* file = DecryptName<0x13E33FA1A591AB67ULL>(urlSource);
-    constexpr std::array<char, 5> source = CRYPT_NAME("open", 0x17A9E5BF39AD4737ULL);
-    ShellExecuteA(hWnd, DecryptName<0x17A9E5BF39AD4737ULL>(source), file, nullptr, nullptr, SW_SHOWNORMAL);
+    constexpr std::array<char, 61> urlSource = OBFUSCATE_SOURCE("https://iro.ragnarokonline.com/member/memberjoin1.asp?mNum=1", 0x13E33FA1A591AB67ULL);
+    const char* file = OBFUSCATE_DECRYPT(0x13E33FA1A591AB67ULL, urlSource);
+    constexpr std::array<char, 5> source = OBFUSCATE_SOURCE("open", 0x17A9E5BF39AD4737ULL);
+    ShellExecuteA(hWnd, OBFUSCATE_DECRYPT(0x17A9E5BF39AD4737ULL, source), file, nullptr, nullptr, SW_SHOWNORMAL);
     break;
   }
   case ServiceJapan:
     break;
   case ServiceChina: {
-    constexpr std::array<char, 54> urlSource = CRYPT_NAME("http://t.kunlun.com/?act=voucher.main&cid=1000&pid=61", 0x9949BFD527532943ULL);
-    const char* file = DecryptName<0x9949BFD527532943ULL>(urlSource);
-    constexpr std::array<char, 5> source = CRYPT_NAME("open", 0xCD8F077123FB7D6FULL);
-    ShellExecuteA(hWnd, DecryptName<0xCD8F077123FB7D6FULL>(source), file, nullptr, nullptr, SW_SHOWNORMAL);
+    constexpr std::array<char, 54> urlSource = OBFUSCATE_SOURCE("http://t.kunlun.com/?act=voucher.main&cid=1000&pid=61", 0x9949BFD527532943ULL);
+    const char* file = OBFUSCATE_DECRYPT(0x9949BFD527532943ULL, urlSource);
+    constexpr std::array<char, 5> source = OBFUSCATE_SOURCE("open", 0xCD8F077123FB7D6FULL);
+    ShellExecuteA(hWnd, OBFUSCATE_DECRYPT(0xCD8F077123FB7D6FULL, source), file, nullptr, nullptr, SW_SHOWNORMAL);
     break;
   }
   default: {
     const char* url = LookupMessage(MSI_SETTLE_WEB_URL);
-    constexpr std::array<char, 5> source = CRYPT_NAME("open", 0xC517FB932D95BB6DULL);
-    ShellExecuteA(hWnd, DecryptName<0xC517FB932D95BB6DULL>(source), url, nullptr, nullptr, SW_SHOWNORMAL);
+    constexpr std::array<char, 5> source = OBFUSCATE_SOURCE("open", 0xC517FB932D95BB6DULL);
+    ShellExecuteA(hWnd, OBFUSCATE_DECRYPT(0xC517FB932D95BB6DULL, source), url, nullptr, nullptr, SW_SHOWNORMAL);
     break;
   }
   }
@@ -1245,65 +1238,65 @@ void CLoginMode::ReceiveRefuseLogin(const RefuseLoginPacket* packet) {
   memset(text, 0, sizeof(text));
   {
     const char* message = LookupMessage(MSI_NAVIGATION_ROADLISTVIEW);
-    constexpr std::array<char, 3> source = CRYPT_NAME("%s", 0x891B232D09451965ULL);
-    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), DecryptName<0x891B232D09451965ULL>(source), message);
+    constexpr std::array<char, 3> source = OBFUSCATE_SOURCE("%s", 0x891B232D09451965ULL);
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0x891B232D09451965ULL, source), message);
   }
 
   switch (packet->result) {
   case 1: {
     const char* message = LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_PERSONALNUMBER);
-    constexpr std::array<char, 3> source = CRYPT_NAME("%s", 0x758F1D0B4F7705B9ULL);
-    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), DecryptName<0x758F1D0B4F7705B9ULL>(source), message);
+    constexpr std::array<char, 3> source = OBFUSCATE_SOURCE("%s", 0x758F1D0B4F7705B9ULL);
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0x758F1D0B4F7705B9ULL, source), message);
     break;
   }
   case 2: {
     const char* message = LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_ACCOUNT_BLOCK);
-    constexpr std::array<char, 3> source = CRYPT_NAME("%s", 0x35E5656B5DEDCD75ULL);
-    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), DecryptName<0x35E5656B5DEDCD75ULL>(source), message);
+    constexpr std::array<char, 3> source = OBFUSCATE_SOURCE("%s", 0x35E5656B5DEDCD75ULL);
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0x35E5656B5DEDCD75ULL, source), message);
     break;
   }
   case 3: {
     const char* message = LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_SYSTEM);
-    constexpr std::array<char, 3> source = CRYPT_NAME("%s", 0x4941FD9F21BBB9FDULL);
-    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), DecryptName<0x4941FD9F21BBB9FDULL>(source), message);
+    constexpr std::array<char, 3> source = OBFUSCATE_SOURCE("%s", 0x4941FD9F21BBB9FDULL);
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0x4941FD9F21BBB9FDULL, source), message);
     break;
   }
   case 4: {
     const char* message = LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_UNKNOWN);
-    constexpr std::array<char, 3> source = CRYPT_NAME("%s", 0xE7978FB5A94DD7FDULL);
-    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), DecryptName<0xE7978FB5A94DD7FDULL>(source), message);
+    constexpr std::array<char, 3> source = OBFUSCATE_SOURCE("%s", 0xE7978FB5A94DD7FDULL);
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0xE7978FB5A94DD7FDULL, source), message);
     break;
   }
   case 5: {
     const char* message = LookupMessage(MSI_NAVIGATION_ICONTITEL);
-    constexpr std::array<char, 3> source = CRYPT_NAME("%s", 0xB7FD8F670FC7B96BULL);
-    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), DecryptName<0xB7FD8F670FC7B96BULL>(source), message);
+    constexpr std::array<char, 3> source = OBFUSCATE_SOURCE("%s", 0xB7FD8F670FC7B96BULL);
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0xB7FD8F670FC7B96BULL, source), message);
     break;
   }
   case 6: {
     const char* message = LookupMessage(MSI_NAVIGATION_RUITELISTTITEL);
-    constexpr std::array<char, 3> source = CRYPT_NAME("%s", 0x39FF7FB50DEB998FULL);
-    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), DecryptName<0x39FF7FB50DEB998FULL>(source), message);
+    constexpr std::array<char, 3> source = OBFUSCATE_SOURCE("%s", 0x39FF7FB50DEB998FULL);
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0x39FF7FB50DEB998FULL, source), message);
     break;
   }
   case 7: {
     const char* message = LookupMessage(MSI_NAVIGATION_V4_HELP02);
-    constexpr std::array<char, 3> source = CRYPT_NAME("%s", 0x2FE993D1DDE1F197ULL);
-    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), DecryptName<0x2FE993D1DDE1F197ULL>(source), message);
+    constexpr std::array<char, 3> source = OBFUSCATE_SOURCE("%s", 0x2FE993D1DDE1F197ULL);
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0x2FE993D1DDE1F197ULL, source), message);
     break;
   }
   case 8:
   case 100:
   case 102: {
     const char* message = LookupMessage(MSI_NAVIGATION_ROADLISTVIEW);
-    constexpr std::array<char, 3> source = CRYPT_NAME("%s", 0xAD075B8DB599F1CDULL);
-    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), DecryptName<0xAD075B8DB599F1CDULL>(source), message);
+    constexpr std::array<char, 3> source = OBFUSCATE_SOURCE("%s", 0xAD075B8DB599F1CDULL);
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0xAD075B8DB599F1CDULL, source), message);
     break;
   }
   case 9: {
     const char* message = LookupMessage(MSI_ZEROQUEST_SIMPLEUI_ON);
-    constexpr std::array<char, 3> source = CRYPT_NAME("%s", 0x2F8B0F37118D157FULL);
-    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), DecryptName<0x2F8B0F37118D157FULL>(source), message);
+    constexpr std::array<char, 3> source = OBFUSCATE_SOURCE("%s", 0x2F8B0F37118D157FULL);
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0x2F8B0F37118D157FULL, source), message);
     break;
   }
   case 101: {
@@ -1318,8 +1311,8 @@ void CLoginMode::ReceiveRefuseLogin(const RefuseLoginPacket* packet) {
 
   GetRagConnection().Close();
   const int result = packet->result;
-  constexpr std::array<char, 7> source = CRYPT_NAME("%s(%d)", 0x050505679903579BULL);
-  g_windowMgr.Confirm(FormatString(DecryptName<0x050505679903579BULL>(source), text, result), 0, true, false, 0, "Message", 280, 120, 0);
+  constexpr std::array<char, 7> source = OBFUSCATE_SOURCE("%s(%d)", 0x050505679903579BULL);
+  g_windowMgr.Confirm(FormatString(OBFUSCATE_DECRYPT(0x050505679903579BULL, source), text, result), 0, true, false, 0, "Message", 280, 120, 0);
   g_charServerAccountIdPending = 0;
   this->pendingCursorType = 3;
 }
@@ -1519,8 +1512,8 @@ int CLoginMode::Run() {
       g_modeMgr.Quit();
       std::string message = g_nProtectGameGuardMgr->ErrorMessage();
       if (!message.empty()) {
-        constexpr std::array<char, 19> source = CRYPT_NAME("nProtect GameGuard", 0x2D51E3B7236175EDULL);
-        MessageBoxA(hWnd, message.c_str(), DecryptName<0x2D51E3B7236175EDULL>(source), 0);
+        constexpr std::array<char, 19> source = OBFUSCATE_SOURCE("nProtect GameGuard", 0x2D51E3B7236175EDULL);
+        MessageBoxA(hWnd, message.c_str(), OBFUSCATE_DECRYPT(0x2D51E3B7236175EDULL, source), 0);
       }
     }
 
@@ -1661,22 +1654,22 @@ void CLoginMode::SubD90C90(const PasswordModePacket* packet) {
     break;
   case 9: {
     const char* text = LookupMessage(MSI_NAVIGATION_RUITELISTTITEL);
-    constexpr std::array<char, 7> source = CRYPT_NAME("%s(%d)", 0x0B8745519B1F95D7ULL);
-    g_windowMgr.Confirm(FormatString(DecryptName<0x0B8745519B1F95D7ULL>(source), text, 9), 0, true, false, 0, "Message",
+    constexpr std::array<char, 7> source = OBFUSCATE_SOURCE("%s(%d)", 0x0B8745519B1F95D7ULL);
+    g_windowMgr.Confirm(FormatString(OBFUSCATE_DECRYPT(0x0B8745519B1F95D7ULL, source), text, 9), 0, true, false, 0, "Message",
                                                           280, 120, 0);
     break;
   }
   case 10: {
     const char* text = LookupMessage(MSI_NAVIGATION_RUITELISTTITEL);
-    constexpr std::array<char, 7> source = CRYPT_NAME("%s(%d)", 0xA597A7E7492B39D5ULL);
-    g_windowMgr.Confirm(FormatString(DecryptName<0xA597A7E7492B39D5ULL>(source), text, 10), 0, true, false, 0, "Message",
+    constexpr std::array<char, 7> source = OBFUSCATE_SOURCE("%s(%d)", 0xA597A7E7492B39D5ULL);
+    g_windowMgr.Confirm(FormatString(OBFUSCATE_DECRYPT(0xA597A7E7492B39D5ULL, source), text, 10), 0, true, false, 0, "Message",
                                                           280, 120, 0);
     break;
   }
   case 11: {
     const char* text = LookupMessage(MSI_NAVIGATION_RUITELISTTITEL);
-    constexpr std::array<char, 7> source = CRYPT_NAME("%s(%d)", 0xFFABE3D5D1BBEF73ULL);
-    g_windowMgr.Confirm(FormatString(DecryptName<0xFFABE3D5D1BBEF73ULL>(source), text, 11), 0, true, false, 0, "Message",
+    constexpr std::array<char, 7> source = OBFUSCATE_SOURCE("%s(%d)", 0xFFABE3D5D1BBEF73ULL);
+    g_windowMgr.Confirm(FormatString(OBFUSCATE_DECRYPT(0xFFABE3D5D1BBEF73ULL, source), text, 11), 0, true, false, 0, "Message",
                                                           280, 120, 0);
     break;
   }
@@ -1743,22 +1736,22 @@ void CLoginMode::SubD911C0(const PasswordModePacket* packet) {
     break;
   case 9: {
     const char* text = LookupMessage(MSI_NAVIGATION_RUITELISTTITEL);
-    constexpr std::array<char, 7> source = CRYPT_NAME("%s(%d)", 0x49D33529F1556333ULL);
-    g_windowMgr.Confirm(FormatString(DecryptName<0x49D33529F1556333ULL>(source), text, 9), 0, true, false, 0, "Message",
+    constexpr std::array<char, 7> source = OBFUSCATE_SOURCE("%s(%d)", 0x49D33529F1556333ULL);
+    g_windowMgr.Confirm(FormatString(OBFUSCATE_DECRYPT(0x49D33529F1556333ULL, source), text, 9), 0, true, false, 0, "Message",
                                                           280, 120, 0);
     break;
   }
   case 10: {
     const char* text = LookupMessage(MSI_NAVIGATION_RUITELISTTITEL);
-    constexpr std::array<char, 7> source = CRYPT_NAME("%s(%d)", 0x01CB4F1DF9D3F931ULL);
-    g_windowMgr.Confirm(FormatString(DecryptName<0x01CB4F1DF9D3F931ULL>(source), text, 10), 0, true, false, 0, "Message",
+    constexpr std::array<char, 7> source = OBFUSCATE_SOURCE("%s(%d)", 0x01CB4F1DF9D3F931ULL);
+    g_windowMgr.Confirm(FormatString(OBFUSCATE_DECRYPT(0x01CB4F1DF9D3F931ULL, source), text, 10), 0, true, false, 0, "Message",
                                                           280, 120, 0);
     break;
   }
   case 11: {
     const char* text = LookupMessage(MSI_NAVIGATION_RUITELISTTITEL);
-    constexpr std::array<char, 7> source = CRYPT_NAME("%s(%d)", 0xC5B1BBCD9BC9C997ULL);
-    g_windowMgr.Confirm(FormatString(DecryptName<0xC5B1BBCD9BC9C997ULL>(source), text, 11), 0, true, false, 0, "Message",
+    constexpr std::array<char, 7> source = OBFUSCATE_SOURCE("%s(%d)", 0xC5B1BBCD9BC9C997ULL);
+    g_windowMgr.Confirm(FormatString(OBFUSCATE_DECRYPT(0xC5B1BBCD9BC9C997ULL, source), text, 11), 0, true, false, 0, "Message",
                                                           280, 120, 0);
     break;
   }
@@ -1942,8 +1935,8 @@ void CLoginMode::ShowLoginError(int code, int argument) {
         url = "https://member.onstove.com/auth/login/by_game?redirect_url=https://ro.game.onstove.com/account/ingamepopup/&access_token=";
       }
       url += g_stoveMgr->GetAccessToken();
-      constexpr std::array<char, 5> source = CRYPT_NAME("OPEN", 0xD98F5345098D630DULL);
-      ShellExecuteA(nullptr, DecryptName<0xD98F5345098D630DULL>(source), url.c_str(), url.c_str(), nullptr, SW_SHOWNORMAL);
+      constexpr std::array<char, 5> source = OBFUSCATE_SOURCE("OPEN", 0xD98F5345098D630DULL);
+      ShellExecuteA(nullptr, OBFUSCATE_DECRYPT(0xD98F5345098D630DULL, source), url.c_str(), url.c_str(), nullptr, SW_SHOWNORMAL);
       message = "";
       g_modeMgr.Quit();
       return;
@@ -1997,15 +1990,15 @@ void CLoginMode::ShowLoginError(int code, int argument) {
       message = std::string(PasswordRetryExceededMessage{}().Text());
       if (g_windowMgr.Confirm(message.c_str(), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8) {
         if (g_session.m_channelCopId == 1) {
-          constexpr std::array<char, 23> urlSource = CRYPT_NAME("http://www.hangame.com", 0xED796785D1DF137FULL);
-          const char* file = DecryptName<0xED796785D1DF137FULL>(urlSource);
-          constexpr std::array<char, 5> source = CRYPT_NAME("open", 0x83EFBFBB37EDBDBDULL);
-          ShellExecuteA(hWnd, DecryptName<0x83EFBFBB37EDBDBDULL>(source), file, nullptr, nullptr, SW_SHOWNORMAL);
+          constexpr std::array<char, 23> urlSource = OBFUSCATE_SOURCE("http://www.hangame.com", 0xED796785D1DF137FULL);
+          const char* file = OBFUSCATE_DECRYPT(0xED796785D1DF137FULL, urlSource);
+          constexpr std::array<char, 5> source = OBFUSCATE_SOURCE("open", 0x83EFBFBB37EDBDBDULL);
+          ShellExecuteA(hWnd, OBFUSCATE_DECRYPT(0x83EFBFBB37EDBDBDULL, source), file, nullptr, nullptr, SW_SHOWNORMAL);
         } else {
-          constexpr std::array<char, 22> urlSource = CRYPT_NAME("http://ragnarok.co.kr", 0xA5FD29D7AB6DC59FULL);
-          const char* file = DecryptName<0xA5FD29D7AB6DC59FULL>(urlSource);
-          constexpr std::array<char, 5> source = CRYPT_NAME("open", 0xD97D5DBDBB2F2709ULL);
-          ShellExecuteA(hWnd, DecryptName<0xD97D5DBDBB2F2709ULL>(source), file, nullptr, nullptr, SW_SHOWNORMAL);
+          constexpr std::array<char, 22> urlSource = OBFUSCATE_SOURCE("http://ragnarok.co.kr", 0xA5FD29D7AB6DC59FULL);
+          const char* file = OBFUSCATE_DECRYPT(0xA5FD29D7AB6DC59FULL, urlSource);
+          constexpr std::array<char, 5> source = OBFUSCATE_SOURCE("open", 0xD97D5DBDBB2F2709ULL);
+          ShellExecuteA(hWnd, OBFUSCATE_DECRYPT(0xD97D5DBDBB2F2709ULL, source), file, nullptr, nullptr, SW_SHOWNORMAL);
         }
         g_modeMgr.Quit();
       }
@@ -2077,13 +2070,13 @@ void CLoginMode::ShowLoginError(int code, int argument) {
   }
   case 16:
     if (g_serviceType == 0) {
-      constexpr std::array<char, 48> textSource = CRYPT_NAME("비밀 번호 변경 후, 다시 접속 해주시기 바랍니다.", 0xF14F79170939C7F1ULL);
-      message = std::string(DecryptName<0xF14F79170939C7F1ULL>(textSource));
+      constexpr std::array<char, 48> textSource = OBFUSCATE_SOURCE("비밀 번호 변경 후, 다시 접속 해주시기 바랍니다.", 0xF14F79170939C7F1ULL);
+      message = std::string(OBFUSCATE_DECRYPT(0xF14F79170939C7F1ULL, textSource));
       if (g_windowMgr.Confirm(message.c_str(), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8) {
-        constexpr std::array<char, 65> urlSource = CRYPT_NAME("http://www.ragnarok.co.kr/setNewPW/password_change_agreement.asp", 0x7F2DFFC1ABE91F2BULL);
-        const char* file = DecryptName<0x7F2DFFC1ABE91F2BULL>(urlSource);
-        constexpr std::array<char, 5> source = CRYPT_NAME("open", 0xFD69A9B3F311818DULL);
-        ShellExecuteA(hWnd, DecryptName<0xFD69A9B3F311818DULL>(source), file, nullptr, nullptr, SW_SHOWNORMAL);
+        constexpr std::array<char, 65> urlSource = OBFUSCATE_SOURCE("http://www.ragnarok.co.kr/setNewPW/password_change_agreement.asp", 0x7F2DFFC1ABE91F2BULL);
+        const char* file = OBFUSCATE_DECRYPT(0x7F2DFFC1ABE91F2BULL, urlSource);
+        constexpr std::array<char, 5> source = OBFUSCATE_SOURCE("open", 0xFD69A9B3F311818DULL);
+        ShellExecuteA(hWnd, OBFUSCATE_DECRYPT(0xFD69A9B3F311818DULL, source), file, nullptr, nullptr, SW_SHOWNORMAL);
         g_modeMgr.Quit();
       }
       message.clear();
@@ -2140,8 +2133,8 @@ void CLoginMode::ShowLoginError(int code, int argument) {
   case 110:
     if (g_windowMgr.Confirm(LookupMessage(MSI_SHOUTDOWN_TIME), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8) {
       const char* file = LookupMessage(MSI_PARTIAL_SHOUTDOWN_TIME);
-      constexpr std::array<char, 5> source = CRYPT_NAME("open", 0x9B0F234DEFDF7593ULL);
-      ShellExecuteA(hWnd, DecryptName<0x9B0F234DEFDF7593ULL>(source), file, nullptr, nullptr, SW_SHOWNORMAL);
+      constexpr std::array<char, 5> source = OBFUSCATE_SOURCE("open", 0x9B0F234DEFDF7593ULL);
+      ShellExecuteA(hWnd, OBFUSCATE_DECRYPT(0x9B0F234DEFDF7593ULL, source), file, nullptr, nullptr, SW_SHOWNORMAL);
       g_modeMgr.Quit();
     }
     message = "";
@@ -2165,8 +2158,8 @@ void CLoginMode::ShowLoginError(int code, int argument) {
     break;
   default: {
     message = LookupMessage(MSI_ACCESS_DENIED);
-    constexpr std::array<char, 5> source = CRYPT_NAME("(%d)", 0xC9712D676B5B3943ULL);
-    message += FormatOwnedString(DecryptName<0xC9712D676B5B3943ULL>(source), code);
+    constexpr std::array<char, 5> source = OBFUSCATE_SOURCE("(%d)", 0xC9712D676B5B3943ULL);
+    message += FormatOwnedString(OBFUSCATE_DECRYPT(0xC9712D676B5B3943ULL, source), code);
     break;
   }
 
@@ -2353,7 +2346,7 @@ void CLoginMode::ReceiveAcceptLogin(const AcceptLoginPacket* packet, int version
 
   CNProtectGameGuardMgr* gameGuard = g_nProtectGameGuardMgr;
   const std::uint32_t aid = packet->aid;
-  constexpr std::array<std::uint8_t, 3> source = CRYPT_NAME("%d", 0x637B959D55771F69ULL);
+  constexpr std::array<std::uint8_t, 3> source = OBFUSCATE_SOURCE("%d", 0x637B959D55771F69ULL);
   thread_local EncryptedName<sizeof(source), 0x637B959D55771F69ULL> format(source);
   gameGuard->Send(FormatString(format.Text(), aid));
   GetRagConnection().Close();
@@ -3610,12 +3603,12 @@ void CLoginMode::OnChangeState(int value) {
     std::memset(&endpoint, 0, sizeof(endpoint));
     if (!std::strstr(g_session.clientVersion, "Dev")) {
       const int port = rand() % 3 + 6951;
-      const std::array<std::uint8_t, 26> hostSource = CRYPT_BYTES(26, "kro-agency.ragnarok.co.kr", 0x7941D76335CFA14FULL);
+      const std::array<std::uint8_t, 26> hostSource = OBFUSCATE_SOURCE_BYTES(26, "kro-agency.ragnarok.co.kr", 0x7941D76335CFA14FULL);
       thread_local EncryptedName<sizeof(hostSource), 0x7941D76335CFA14FULL> host(hostSource);
       const char* hostText = host.Text();
       StringFormat(endpoint.host, sizeof(endpoint.host), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s:%d", 0x7321C3814F8799E1ULL), hostText, port);
     } else {
-      const std::array<std::uint8_t, 34> hostSource = CRYPT_BYTES(34, "kro-qm-agency.ragnarok.co.kr:6951", 0x7115D9F973F913C9ULL);
+      const std::array<std::uint8_t, 34> hostSource = OBFUSCATE_SOURCE_BYTES(34, "kro-qm-agency.ragnarok.co.kr:6951", 0x7115D9F973F913C9ULL);
       thread_local EncryptedName<sizeof(hostSource), 0x7115D9F973F913C9ULL> host(hostSource);
       const char* hostText = host.Text();
       StringFormat(endpoint.host, sizeof(endpoint.host), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s", 0xCB1D253B7FE1F563ULL), hostText);
@@ -3633,7 +3626,7 @@ void CLoginMode::OnChangeState(int value) {
     ZoneLoginPacket packet;
     std::memset(&packet, 0, sizeof(packet));
     packet.id = ID_CT_AUTH;
-    const std::array<std::uint8_t, 5> codeSource = CRYPT_BYTES(5, "0011", 0x793F370985ED674FULL);
+    const std::array<std::uint8_t, 5> codeSource = OBFUSCATE_SOURCE_BYTES(5, "0011", 0x793F370985ED674FULL);
     thread_local EncryptedName<sizeof(codeSource), 0x793F370985ED674FULL> code(codeSource);
     std::memcpy(packet.code, code.Text(), sizeof(packet.code));
     StringFormat(packet.name, sizeof(packet.name), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s", 0x234977DDB54BC71DULL), reinterpret_cast<const char*>(&this->loginCredentials[0x40]));

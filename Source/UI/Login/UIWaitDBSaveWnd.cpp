@@ -24,7 +24,7 @@ namespace {
 
 // INLINED
 __forceinline const char* WaitSpriteName() {
-  constexpr auto spriteSourceText = CRYPT_NAME("WaitDBSave\\NowLoading.spr", 0x078143534999254DULL);
+  constexpr auto spriteSourceText = OBFUSCATE_SOURCE("WaitDBSave\\NowLoading.spr", 0x078143534999254DULL);
   const auto& spriteSource = spriteSourceText.data;
   thread_local EncryptedName<sizeof(spriteSource), 0x078143534999254DULL> spriteName(spriteSource);
   return spriteName.Text();
@@ -32,7 +32,7 @@ __forceinline const char* WaitSpriteName() {
 
 // INLINED
 __forceinline const char* WaitActionName() {
-  constexpr auto actionSourceText = CRYPT_NAME("WaitDBSave\\NowLoading.act", 0x17FFC98B398FAF61ULL);
+  constexpr auto actionSourceText = OBFUSCATE_SOURCE("WaitDBSave\\NowLoading.act", 0x17FFC98B398FAF61ULL);
   const auto& actionSource = actionSourceText.data;
   thread_local EncryptedName<sizeof(actionSource), 0x17FFC98B398FAF61ULL> actionName(actionSource);
   return actionName.Text();

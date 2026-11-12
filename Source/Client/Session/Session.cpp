@@ -4087,7 +4087,7 @@ void CSession::LoadLuaDataFiles() {
   this->m_hotkeyScript->Load("Lua Files\\DataInfo\\jobName_F", true, false);
   this->m_hotkeyScript->Load("Lua Files\\DataInfo\\jobName", true, false);
   {
-    const std::array<char, 27> source = CRYPT_CHARS(27, "Lua Files\\DataInfo\\PetInfo", 0x35E5656B5DEDCD75ULL);
+    const std::array<char, 27> source = OBFUSCATE_SOURCE_CHARS(27, "Lua Files\\DataInfo\\PetInfo", 0x35E5656B5DEDCD75ULL);
     thread_local EncryptedName<sizeof(source), 0x35E5656B5DEDCD75ULL> name(source);
     this->m_hotkeyScript->Load(name.Text(), true, false);
   }
@@ -4106,12 +4106,12 @@ void CSession::LoadLuaDataFiles() {
   this->m_hotkeyScript->Load("Lua Files\\SkillInfoz\\jobinheritlist", true, false);
   this->m_hotkeyScript->Load("Lua Files\\SkillInfoz\\SkillID", true, false);
   {
-    const std::array<char, 35> source = CRYPT_CHARS(35, "Lua Files\\SkillInfoz\\SkillInfoList", 0x4941FD9F21BBB9FDULL);
+    const std::array<char, 35> source = OBFUSCATE_SOURCE_CHARS(35, "Lua Files\\SkillInfoz\\SkillInfoList", 0x4941FD9F21BBB9FDULL);
     thread_local EncryptedName<sizeof(source), 0x4941FD9F21BBB9FDULL> name(source);
     this->m_hotkeyScript->Load(name.Text(), true, false);
   }
   {
-    const std::array<char, 35> source = CRYPT_CHARS(35, "Lua Files\\SkillInfoz\\SkillDescript", 0x891B232D09451965ULL);
+    const std::array<char, 35> source = OBFUSCATE_SOURCE_CHARS(35, "Lua Files\\SkillInfoz\\SkillDescript", 0x891B232D09451965ULL);
     thread_local EncryptedName<sizeof(source), 0x891B232D09451965ULL> name(source);
     this->m_hotkeyScript->Load(name.Text(), true, false);
   }
@@ -4120,7 +4120,7 @@ void CSession::LoadLuaDataFiles() {
   this->m_hotkeyScript->Load("Lua Files\\SkillInfoz\\skilltreeview", true, false);
   this->m_hotkeyScript->Load("Lua Files\\StateIcon\\EFSTIDs", true, false);
   {
-    const std::array<char, 34> source = CRYPT_CHARS(34, "Lua Files\\StateIcon\\StateIconInfo", 0x758F1D0B4F7705B9ULL);
+    const std::array<char, 34> source = OBFUSCATE_SOURCE_CHARS(34, "Lua Files\\StateIcon\\StateIconInfo", 0x758F1D0B4F7705B9ULL);
     thread_local EncryptedName<sizeof(source), 0x758F1D0B4F7705B9ULL> name(source);
     this->m_hotkeyScript->Load(name.Text(), true, false);
   }
@@ -4166,7 +4166,7 @@ void CSession::LoadLuaDataFiles() {
   this->LoadNavigationScripts();
   this->m_hotkeyScript->Load("Lua Files\\DataInfo\\HelpMsgStr", true, false);
   {
-    const std::array<char, 36> source = CRYPT_CHARS(36, "Lua Files\\EntryQueue\\EntryQueueList", 0xD1413DBB01CD8B51ULL);
+    const std::array<char, 36> source = OBFUSCATE_SOURCE_CHARS(36, "Lua Files\\EntryQueue\\EntryQueueList", 0xD1413DBB01CD8B51ULL);
     thread_local EncryptedName<sizeof(source), 0xD1413DBB01CD8B51ULL> name(source);
     this->m_hotkeyScript->Load(name.Text(), true, false);
   }
@@ -4200,7 +4200,7 @@ void CSession::LoadLuaDataFiles() {
 
   this->m_hotkeyScript->Load("Lua Files\\SignBoardList_F", true, false);
   {
-    const std::array<char, 24> source = CRYPT_CHARS(24, "Lua Files\\SignBoardList", 0x637B959D55771F69ULL);
+    const std::array<char, 24> source = OBFUSCATE_SOURCE_CHARS(24, "Lua Files\\SignBoardList", 0x637B959D55771F69ULL);
     thread_local EncryptedName<sizeof(source), 0x637B959D55771F69ULL> name(source);
     this->m_hotkeyScript->Load(name.Text(), true, false);
   }
@@ -4210,12 +4210,12 @@ void CSession::LoadLuaDataFiles() {
   this->m_hotkeyScript->Load("Lua Files\\OffsetItemPos\\OffsetItemPos_F", true, false);
   this->m_hotkeyScript->Load("Lua Files\\OffsetItemPos\\OffsetItemPos", true, false);
   {
-    const std::array<char, 37> source = CRYPT_CHARS(37, "Lua Files\\datainfo\\LapineDdukDDakBox", 0x2BAD156DE3E1F9D9ULL);
+    const std::array<char, 37> source = OBFUSCATE_SOURCE_CHARS(37, "Lua Files\\datainfo\\LapineDdukDDakBox", 0x2BAD156DE3E1F9D9ULL);
     thread_local EncryptedName<sizeof(source), 0x2BAD156DE3E1F9D9ULL> name(source);
     this->m_hotkeyScript->Load(name.Text(), true, false);
   }
   {
-    const std::array<char, 36> source = CRYPT_CHARS(36, "Lua Files\\datainfo\\LapineUpgradeBox", 0x75ADC57D87EFBD8FULL);
+    const std::array<char, 36> source = OBFUSCATE_SOURCE_CHARS(36, "Lua Files\\datainfo\\LapineUpgradeBox", 0x75ADC57D87EFBD8FULL);
     thread_local EncryptedName<sizeof(source), 0x75ADC57D87EFBD8FULL> name(source);
     this->m_hotkeyScript->Load(name.Text(), true, false);
   }
@@ -4227,28 +4227,28 @@ void CSession::LoadLuaDataFiles() {
   this->m_hotkeyScript->Load("Lua Files\\datainfo\\tb_cashshop_banner", true, false);
   this->m_hotkeyScript->Load("Lua Files\\datainfo\\tb_stoveshop_banner", true, false);
   {
-    const std::array<char, 26> source = CRYPT_CHARS(26, "Lua Files\\Agit\\AgitConfig", 0xEDC74F6D13DF71EFULL);
+    const std::array<char, 26> source = OBFUSCATE_SOURCE_CHARS(26, "Lua Files\\Agit\\AgitConfig", 0xEDC74F6D13DF71EFULL);
     thread_local EncryptedName<sizeof(source), 0xEDC74F6D13DF71EFULL> name(source);
     this->m_hotkeyScript->Load(name.Text(), true, false);
   }
   {
-    const std::array<char, 28> source = CRYPT_CHARS(28, "Lua Files\\Agit\\AgitConfig_F", 0xF161095D0DE18F95ULL);
+    const std::array<char, 28> source = OBFUSCATE_SOURCE_CHARS(28, "Lua Files\\Agit\\AgitConfig_F", 0xF161095D0DE18F95ULL);
     thread_local EncryptedName<sizeof(source), 0xF161095D0DE18F95ULL> name(source);
     this->m_hotkeyScript->Load(name.Text(), true, false);
   }
   this->m_hotkeyScript->Load("Lua Files\\datainfo\\tb_checkAttendance_banner", true, false);
   {
-    const std::array<char, 36> source = CRYPT_CHARS(36, "Lua Files\\DamageSkin\\DamageSkinList", 0x0B7109397F6B1387ULL);
+    const std::array<char, 36> source = OBFUSCATE_SOURCE_CHARS(36, "Lua Files\\DamageSkin\\DamageSkinList", 0x0B7109397F6B1387ULL);
     thread_local EncryptedName<sizeof(source), 0x0B7109397F6B1387ULL> name(source);
     this->m_hotkeyScript->Load(name.Text(), true, false);
   }
   {
-    const std::array<char, 36> source = CRYPT_CHARS(36, "Lua Files\\DamageSkin\\DamageSkinInfo", 0x03772763F96D9DA5ULL);
+    const std::array<char, 36> source = OBFUSCATE_SOURCE_CHARS(36, "Lua Files\\DamageSkin\\DamageSkinInfo", 0x03772763F96D9DA5ULL);
     thread_local EncryptedName<sizeof(source), 0x03772763F96D9DA5ULL> name(source);
     this->m_hotkeyScript->Load(name.Text(), true, false);
   }
   {
-    const std::array<char, 38> source = CRYPT_CHARS(38, "Lua Files\\DamageSkin\\DamageSkinInfo_F", 0xC517FB932D95BB6DULL);
+    const std::array<char, 38> source = OBFUSCATE_SOURCE_CHARS(38, "Lua Files\\DamageSkin\\DamageSkinInfo_F", 0xC517FB932D95BB6DULL);
     thread_local EncryptedName<sizeof(source), 0xC517FB932D95BB6DULL> name(source);
     this->m_hotkeyScript->Load(name.Text(), true, false);
   }
@@ -5930,7 +5930,7 @@ void CSession::LoadSessionTables() {
   Sub7739F0();
   g_simpleStringMgr->Init();
 
-  constexpr std::array<char, 15> source = CRYPT_NAME("Ragnarok Setup", 0x9171997D6963C9F7ULL);
+  constexpr std::array<char, 15> source = OBFUSCATE_SOURCE("Ragnarok Setup", 0x9171997D6963C9F7ULL);
   thread_local EncryptedName<sizeof(source), 0x9171997D6963C9F7ULL> setupName(source);
   if (HWND window = FindWindowA(nullptr, setupName.Text())) {
     ShowErrorDialog(LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_PASSWORD), 0);
