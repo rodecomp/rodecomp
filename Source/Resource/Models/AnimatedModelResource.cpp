@@ -320,8 +320,7 @@ bool C3dGrannyModelRes::Load(const char* name) {
   CFile file;
 
   if (!file.Open(name, 0, true, false)) {
-    const std::string path(name);
-    const std::string message = std::string("Cannot find File : ") + path;
+    const std::string message = std::string("Cannot find File : ") + std::string(name);
     ShowErrorDialog(message.c_str(), 0);
     return false;
   }
