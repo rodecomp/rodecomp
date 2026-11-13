@@ -103,11 +103,6 @@ int UISeekPartyMBWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       }
       break;
     }
-    case ID_CANCEL:
-    case ID_CLOSE:
-      g_windowMgr.CloseWindow(WID_SEEKPARTYMBWND);
-      g_windowMgr.CloseWindow(WID_JOBLISTWND);
-      break;
     case ID_MINI:
       if (this->m_minimized) {
         this->Resize(this->geometry.width, this->m_restoreHeight);
@@ -118,6 +113,11 @@ int UISeekPartyMBWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
 
       this->m_minimized = !this->m_minimized;
       this->Invalidate();
+      break;
+    case ID_CANCEL:
+    case ID_CLOSE:
+      g_windowMgr.CloseWindow(WID_SEEKPARTYMBWND);
+      g_windowMgr.CloseWindow(WID_JOBLISTWND);
       break;
     }
     break;

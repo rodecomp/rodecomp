@@ -312,6 +312,9 @@ void CLanguageBase::KeyDown(unsigned key, LPARAM) {
 
   if (HIBYTE(GetKeyState(VK_CONTROL))) {
     switch (key) {
+    case 'V':
+      this->Paste();
+      break;
     case 'X':
       this->CopySelection();
       this->DeleteSelection();
@@ -325,9 +328,6 @@ void CLanguageBase::KeyDown(unsigned key, LPARAM) {
       if (this->cursor < 0) {
         this->cursor = 0;
       }
-      break;
-    case 'V':
-      this->Paste();
       break;
     }
 

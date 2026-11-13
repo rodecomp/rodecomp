@@ -75,19 +75,6 @@ void UIExchangeAcceptWnd::OnCreate(int width, int height) {
 // FUNCTION: fn_12343
 int UIExchangeAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case UM_COMMAND:
-    this->RecordResponse(static_cast<int>(a), b, c, d);
-    switch (a) {
-    case ID_OK:
-      g_windowMgr.CloseWindow(WID_EXCHANGEACCEPTWND);
-      g_modeMgr.gameMode->SendMsg(MM_ACK_EXCHANGE_ITEM, 3, 0, 0, 0);
-      return 0;
-    case ID_CANCEL:
-      g_windowMgr.CloseWindow(WID_EXCHANGEACCEPTWND);
-      g_modeMgr.gameMode->SendMsg(MM_ACK_EXCHANGE_ITEM, 4, 0, 0, 0);
-      return 0;
-    }
-    return 0;
   case UM_SETINFO:
     this->saved = reinterpret_cast<NormalItemSlotWindow*>(a);
     if (!reinterpret_cast<ExchangeAcceptWndInfo*>(this->saved)->IsValid()) {
@@ -106,6 +93,19 @@ int UIExchangeAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     this->viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(code.c_str()), 138, 0, 0);
     return 0;
   }
+  case UM_COMMAND:
+    this->RecordResponse(static_cast<int>(a), b, c, d);
+    switch (a) {
+    case ID_OK:
+      g_windowMgr.CloseWindow(WID_EXCHANGEACCEPTWND);
+      g_modeMgr.gameMode->SendMsg(MM_ACK_EXCHANGE_ITEM, 3, 0, 0, 0);
+      return 0;
+    case ID_CANCEL:
+      g_windowMgr.CloseWindow(WID_EXCHANGEACCEPTWND);
+      g_modeMgr.gameMode->SendMsg(MM_ACK_EXCHANGE_ITEM, 4, 0, 0, 0);
+      return 0;
+    }
+    return 0;
   case UM_REPLAY_FRAMED_DATA: {
     const auto* bytes = reinterpret_cast<const unsigned char*>(a);
     ExchangeRecordHeader header = {};

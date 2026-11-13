@@ -19,14 +19,14 @@ LRESULT CALLBACK BrowserHostProc(HWND window, UINT message, WPARAM value, LPARAM
   case WM_DESTROY:
     SetFocus(hWnd);
     break;
+  case WM_CLOSE:
+    g_windowMgr.RemoveBrowser(window);
+    break;
   case WM_SIZE:
     if (browser) {
       const auto dimensions = static_cast<std::uint32_t>(flags);
       browser->Resize(static_cast<std::uint16_t>(dimensions), dimensions >> 16);
     }
-    break;
-  case WM_CLOSE:
-    g_windowMgr.RemoveBrowser(window);
     break;
   case WM_HELP:
     return 1;
