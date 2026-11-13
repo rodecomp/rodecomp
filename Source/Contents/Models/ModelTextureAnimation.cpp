@@ -32,7 +32,7 @@ void SampleModelTexture(ModelTextureChannels& channels, float frame, ModelTextur
 
 // OFFSET: 0x00541160
 // FUNCTION: fn_01728
-void ModelKeyList1::Read(CFile& file) {
+__declspec(safebuffers) void ModelKeyList1::Read(CFile& file) {
   int count = 0;
   file.Read(&count, sizeof(count));
   for (int i = 0; i < count; ++i) {
@@ -44,7 +44,7 @@ void ModelKeyList1::Read(CFile& file) {
 
 // OFFSET: 0x005411E0
 // FUNCTION: fn_01729
-void ModelKeyList2::Read(CFile& file) {
+__declspec(safebuffers) void ModelKeyList2::Read(CFile& file) {
   int count;
   file.Read(&count, sizeof(count));
   for (int i = 0; i < count; ++i) {
@@ -56,7 +56,7 @@ void ModelKeyList2::Read(CFile& file) {
 
 // OFFSET: 0x00541250
 // FUNCTION: fn_01730
-void ModelKeyList3::Read(CFile& file) {
+__declspec(safebuffers) void ModelKeyList3::Read(CFile& file) {
   int count = 0;
   file.Read(&count, sizeof(count));
   for (int i = 0; i < count; ++i) {
@@ -68,7 +68,7 @@ void ModelKeyList3::Read(CFile& file) {
 
 // OFFSET: 0x00541350
 // FUNCTION: fn_01731
-void ModelKeyList4::Read(CFile& file) {
+__declspec(safebuffers) void ModelKeyList4::Read(CFile& file) {
   int count = 0;
   file.Read(&count, sizeof(count));
   for (int i = 0; i < count; ++i) {
