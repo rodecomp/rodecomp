@@ -4587,7 +4587,7 @@ void CGrannyPc::Render(int argument) {
 
   const matrix& view = *reinterpret_cast<const matrix*>(argument);
   if (this->renderFrame == 0) {
-    this->model->hairPivot = reinterpret_cast<GrannyHairPivot*>(&this->attachLayer);
+    this->model->hairPivot = &this->hairPivot;
     this->RenderModel(view, light, nullptr, 0, nullptr);
     for (int layer = 1; layer < 10; ++layer) {
       if (this->layerModels[layer]) {
@@ -4602,7 +4602,7 @@ void CGrannyPc::Render(int argument) {
   } else {
     this->RenderCached(view, 0, nullptr);
     if (this->layerModels[1]) {
-      this->layerModels[1]->hairPivot = reinterpret_cast<GrannyHairPivot*>(&this->attachLayer);
+      this->layerModels[1]->hairPivot = &this->hairPivot;
     }
     for (int layer = 1; layer < 10; ++layer) {
       if (this->layerModels[layer]) {

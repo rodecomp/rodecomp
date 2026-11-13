@@ -337,9 +337,14 @@ public:
   /* 2550 */ granny_world_pose* worldPose;
   /* 2554 */ CTexture* shadowTexture;
   /* 2558 */ std::vector<vector3d> attachmentPositions;
-  /* 2564 */ int attachLayer;
-  /* 2568 */ int padding_2568;
-  /* 256C */ matrix attachTransform;
+  union {
+    /* 2564 */ GrannyHairPivot hairPivot;
+    struct {
+      /* 2564 */ int attachLayer;
+      /* 2568 */ int padding_2568;
+      /* 256C */ matrix attachTransform;
+    };
+  };
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
