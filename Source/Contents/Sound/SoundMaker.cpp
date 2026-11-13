@@ -508,17 +508,17 @@ bool CGndRiser::OnProcess() {
 
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   if (mode) {
+    GroundGeometry* ground = mode->scene->ground;
     const float half = static_cast<float>(this->lifetime / 2);
     if (frame > half) {
       const float rise = frame - half;
       const float span = static_cast<float>(this->lifetime) * g_depthAverageHalf;
       const float alpha = (rise * rise - span * span) / 25.0f;
-      mode->scene->ground->SetGndRiseAmount(alpha, this->screenX, this->screenY);
-      return true;
+      ground->SetGndRiseAmount(alpha, this->screenX, this->screenY);
+    } else {
+      const float alpha = -frame * frame / 25.0f;
+      ground->SetGndRiseAmount(alpha, this->screenX, this->screenY);
     }
-
-    const float alpha = -(frame * frame) / 25.0f;
-    mode->scene->ground->SetGndRiseAmount(alpha, this->screenX, this->screenY);
   }
 
   return true;
