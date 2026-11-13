@@ -8,6 +8,9 @@
 
 #include <algorithm>
 
+template __declspec(noinline) std::_Tree_find_result<std::map<UIWindow*, SnapRectangle>::_Mybase::_Nodeptr> std::map<UIWindow*, SnapRectangle>::_Mybase::_Find_lower_bound<UIWindow*>(UIWindow* const&) const;
+template __declspec(noinline) void std::map<UIWindow*, SnapRectangle>::_Mybase::clear() noexcept;
+
 // OFFSET: 0x00A966E0
 // FUNCTION: fn_17184
 void UIWindowMgr::InvalidateAll() {
