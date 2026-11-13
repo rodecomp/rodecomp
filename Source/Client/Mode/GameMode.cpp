@@ -4695,10 +4695,6 @@ void CGameMode::PlaceWindowAtActor(UIWindow* window, CGameActor* actor) {
     offsetX = -(width / 2);
     offsetY = static_cast<int>(static_cast<float>(g_renderer->viewport.height * 20 / 480) * actor->render.distanceScale);
     break;
-  case NAME_BALLOON_TOP:
-    offsetX = -(width / 2);
-    offsetY = static_cast<int>(static_cast<float>(g_renderer->viewport.height * -100 / 480) * actor->render.distanceScale);
-    break;
   case NAME_BALLOON_LEFT:
     offsetX = static_cast<int>(
       static_cast<float>(g_renderer->viewport.width * -30 / 640) * actor->render.distanceScale - static_cast<float>(width / 2)
@@ -4714,6 +4710,10 @@ void CGameMode::PlaceWindowAtActor(UIWindow* window, CGameActor* actor) {
     offsetY = static_cast<int>(
       static_cast<float>(g_renderer->viewport.height * -25 / 480) * actor->render.distanceScale - static_cast<float>(height / 2)
     );
+    break;
+  case NAME_BALLOON_TOP:
+    offsetX = -(width / 2);
+    offsetY = static_cast<int>(static_cast<float>(g_renderer->viewport.height * -100 / 480) * actor->render.distanceScale);
     break;
   }
 
