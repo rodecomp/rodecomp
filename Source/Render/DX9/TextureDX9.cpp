@@ -433,7 +433,7 @@ bool CTextureDX9::UploadSurface(
 // FUNCTION: fn_02491
 void CTextureDX9::Upload(int x, int y, int width, int height, const std::uint32_t* pixels, int option, int sourceWidth) {
   this->SetImageSize(width, height);
-  std::uint8_t& transparent = reinterpret_cast<std::uint8_t*>(&this->textureFlags)[1];
+  std::uint8_t& transparent = this->transparent;
   transparent = static_cast<std::uint8_t>(option);
   if (!pixels) {
     return;

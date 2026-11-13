@@ -61,7 +61,13 @@ protected:
   friend class SpriteAtlas;
   friend class TextureCache;
   /* 0004 */ std::int32_t m_format;
-  /* 0008 */ std::uint16_t textureFlags;
+  union {
+    /* 0008 */ std::uint16_t textureFlags;
+    struct {
+      /* 0008 */ std::uint8_t fullSize;
+      /* 0009 */ std::uint8_t transparent;
+    };
+  };
   /* 000A */ std::uint8_t padding_000A[2];
   /* 000C */ std::uint32_t m_textureWidth;
   /* 0010 */ std::uint32_t m_textureHeight;
