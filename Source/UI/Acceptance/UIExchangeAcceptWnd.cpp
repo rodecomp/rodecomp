@@ -78,9 +78,9 @@ void UIExchangeAcceptWnd::OnCreate(int width, int height) {
 int UIExchangeAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
   case UM_SETINFO:
-    this->saved = reinterpret_cast<NormalItemSlotWindow*>(a);
-    if (!reinterpret_cast<ExchangeAcceptWndInfo*>(this->saved)->IsValid()) {
-      reinterpret_cast<ExchangeAcceptWndInfo*>(this->saved)->Reset();
+    this->saved = reinterpret_cast<ExchangeAcceptWndInfo*>(a);
+    if (!this->saved->IsValid()) {
+      this->saved->Reset();
     }
     this->Move(this->saved->x, this->saved->y);
     return 0;

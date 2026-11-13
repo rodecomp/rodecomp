@@ -6,6 +6,7 @@
 
 class UITextViewer;
 struct NormalItemSlotWindow;
+struct ExchangeAcceptWndInfo;
 
 class UIChooseSellBuyWnd : public UIFrameWnd {
 public:
@@ -33,7 +34,7 @@ public:
   void StoreInfo() override;
   std::vector<unsigned char> GetReplayData() override;
 
-  /* 00BC */ NormalItemSlotWindow* saved;
+  /* 00BC */ ExchangeAcceptWndInfo* saved;
 };
 
 class UIJoinPartyAcceptWnd : public UIExchangeAcceptWnd {

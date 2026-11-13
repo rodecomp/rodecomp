@@ -19,14 +19,9 @@ class UIEditCtrl;
 class UIListBoxNavi;
 class UIResizer;
 
-struct NavigationWndInfo {
-  /* 0000 */ int x;
-  /* 0004 */ int y;
-  /* 0008 */ int width;
-  /* 000C */ int height;
-  /* 0010 */ bool minimized;
-};
 
+
+struct NavigationWindowInfo;
 
 class UINavigationWnd : public UIFrameWnd {
 public:
@@ -70,7 +65,7 @@ protected:
   /* 0118 */ UICheckBox* m_includeObjects;
   /* 011C */ UICheckBox* m_allowWarps;
   /* 0120 */ UIBitmapButton* m_helpButton;
-  /* 0124 */ NavigationWndInfo* m_saved;
+  /* 0124 */ NavigationWindowInfo* m_saved;
   /* 0128 */ UIResizer* m_resizer;
   /* 012C */ std::vector<std::string> m_history;
 

@@ -3,7 +3,7 @@
 
 #include "UI/Window/UIFrameWnd.h"
 
-struct NormalItemSlotWindow;
+struct EquipWndInfo;
 struct ITEM_INFO;
 class UITabControl;
 class UIListBoxTitle;
@@ -22,7 +22,7 @@ public:
   /* 00B4 */ int m_viewOther;
   /* 00B8 */ int m_highlight[3];
   /* 00C4 */ int m_show;
-  /* 00C8 */ NormalItemSlotWindow* m_placement;
+  /* 00C8 */ EquipWndInfo* m_placement;
   /* 00CC */ UIBitmapButton* m_viewButton;
   /* 00D0 */ UIBitmapButton* m_otherButton;
   /* 00D4 */ std::uint32_t m_updateTick;

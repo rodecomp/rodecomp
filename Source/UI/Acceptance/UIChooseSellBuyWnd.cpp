@@ -3045,15 +3045,15 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
     this->Invalidate();
     return 0;
   case UM_SETINFO:
-    this->m_placement = reinterpret_cast<NormalItemSlotWindow*>(a);
-    if (!reinterpret_cast<EquipWndInfo*>(this->m_placement)->IsValid()) {
-      reinterpret_cast<EquipWndInfo*>(this->m_placement)->Reset();
+    this->m_placement = reinterpret_cast<EquipWndInfo*>(a);
+    if (!this->m_placement->IsValid()) {
+      this->m_placement->Reset();
     }
-    if (this->m_placement->height != this->m_placement->show && g_session.m_swapEquipmentMode == 0) {
+    if (this->m_placement->height != this->m_placement->contentHeight && g_session.m_swapEquipmentMode == 0) {
       this->SendMsg(nullptr, UM_COMMAND, ID_MINI, 0, 0, 0);
     } else {
       const int height = this->geometry.height + 20;
-      this->m_placement->show = height;
+      this->m_placement->contentHeight = height;
       this->m_placement->height = height;
     }
     this->Move(this->m_placement->x, this->m_placement->y);
@@ -4988,7 +4988,7 @@ void UIEquipWnd::StoreInfo() {
     this->m_placement->height = this->geometry.height;
     this->m_placement->x = this->geometry.x;
     this->m_placement->y = this->geometry.y;
-    this->m_placement->show = this->m_show;
+    this->m_placement->contentHeight = this->m_show;
   }
 }
 

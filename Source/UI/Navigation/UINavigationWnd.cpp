@@ -1,4 +1,5 @@
 #include "UI/Navigation/UINavigationWnd.h"
+#include "Contents/UserData/NormalItemSlots.h"
 #include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 
@@ -452,7 +453,7 @@ void UINavigationWnd::ApplyMinimized() {
     this->m_allowWarps->Move(-1000, -1000);
     this->m_titleBar->Move(-1000, -1000);
   } else {
-    if (this->m_saved->minimized) {
+    if (this->m_saved->expanded) {
       this->m_saved->width = 272;
       this->m_titleBar->Resize(226, 18);
     } else {
@@ -501,7 +502,7 @@ void UINavigationWnd::StoreInfo() {
   if (this->m_saved) {
     this->m_saved->width = this->geometry.width;
     this->m_saved->height = this->geometry.height;
-    const int maxX = g_renderer->viewport.width - (!this->m_saved->minimized ? 228 : 272);
+    const int maxX = g_renderer->viewport.width - (!this->m_saved->expanded ? 228 : 272);
     if (maxX < this->geometry.x) {
       this->geometry.x = maxX;
     }
@@ -530,7 +531,7 @@ void UINavigationWnd::Paint() {
     return;
   }
 
-  if (!this->m_saved->minimized) {
+  if (!this->m_saved->expanded) {
     return;
   }
 
@@ -617,8 +618,8 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
                              std::intptr_t argument4) {
   switch (message) {
   case UM_SETINFO:
-    this->m_saved = reinterpret_cast<NavigationWndInfo*>(argument1);
-    reinterpret_cast<NavigationWindowInfo*>(this->m_saved)->Clamp();
+    this->m_saved = reinterpret_cast<NavigationWindowInfo*>(argument1);
+    this->m_saved->Clamp();
     this->Move(this->m_saved->x, this->m_saved->y);
     this->Invalidate();
     return 0;
@@ -675,7 +676,7 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       }
       break;
     case 0x1AD:
-      if (!g_navigationManager.expandedMap && this->m_saved->minimized) {
+      if (!g_navigationManager.expandedMap && this->m_saved->expanded) {
         const int targetType = g_navigationManager.GetCurrentTarget().type;
         if (targetType != 1 && targetType != 6 && targetType != 0) {
           if (g_navigationManager.previewType == 1) {
@@ -692,7 +693,7 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       }
       break;
     case 0x11C:
-      this->m_saved->minimized = !this->m_saved->minimized;
+      this->m_saved->expanded = !this->m_saved->expanded;
       this->ApplyMinimized();
       this->Invalidate();
       return 0;
