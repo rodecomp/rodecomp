@@ -2718,8 +2718,7 @@ void UIMerchantItemPurchaseMSGWnd::Paint() {
 void UIMerchantItemWnd::Paint() {
   UIItemBaseWnd::Paint();
 
-  auto* count = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\inventory\\icon_num.bmp")));
-  this->DrawBitmap(10, this->geometry.height - 22, count, true);
+  this->DrawBitmap(10, this->geometry.height - 22, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\inventory\\icon_num.bmp"))), true);
 
   const std::uint32_t countColor = g_session.cartCount >= g_session.cartMaxCount ? 0xFF : 0x232323;
   this->DrawTextAt(23, this->geometry.height - 19, FormatOwnedString("%d", g_session.cartCount).c_str(), 0, 0, 11, countColor, 0, 0
@@ -2728,8 +2727,7 @@ void UIMerchantItemWnd::Paint() {
   this->DrawTextAt(countWidth + 24, this->geometry.height - 19, FormatOwnedString("/%d", g_session.cartMaxCount).c_str(), 0, 0, 11, 0, 0, 0
   );
 
-  auto* weight = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\inventory\\icon_weight.bmp")));
-  this->DrawBitmap(75, this->geometry.height - 20, weight, true);
+  this->DrawBitmap(75, this->geometry.height - 20, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\inventory\\icon_weight.bmp"))), true);
 
   const std::uint32_t weightColor = g_session.cartWeight >= g_session.cartMaxWeight ? 0xFF : 0x232323;
   this->DrawTextAt(90, this->geometry.height - 19, FormatOwnedString("%d", g_session.cartWeight).c_str(), 0, 0, 11, weightColor, 0, 0
@@ -11414,8 +11412,8 @@ void UIItemDropCntWnd::Show(int visible) {
     if (dragName) {
       ITEM_INFO item;
       item.itemId = dragName;
-      item.refiningLevel = 0;
       item.identified = gameMode->drag.identified;
+      item.refiningLevel = 0;
       name = item.DisplayName(0);
     }
 

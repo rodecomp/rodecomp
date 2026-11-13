@@ -963,8 +963,8 @@ void UIRune_Decom::OnRBtnDown(int x, int y) {
   const int index = this->HitTestItem(x, y);
   if (index != -1) {
     ITEM_INFO item;
-    item.SetItemId((*this->m_decomList)[index].m_itemId);
     item.identified = 1;
+    item.SetItemId((*this->m_decomList)[index].m_itemId);
     UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
     if (window) {
       window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);

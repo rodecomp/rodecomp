@@ -12120,8 +12120,7 @@ void CGameMode::ReceiveBroadcast(const unsigned char* packet) {
     g_windowMgr.SendNotice(UIM_PUSH_INTO_CHATROOM, reinterpret_cast<std::intptr_t>(text.empty() ? nullptr : &text[0]), 0x7800, 0, 0, 0);
   } else {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.empty() ? nullptr : &text[0]), 0xFF00, 1, 0, 0);
-    char* message = text.empty() ? nullptr : &text[0];
-    this->scene->player->SendMsg(nullptr, AM_CHAT, reinterpret_cast<int>(message), 0, 0, 0, 0, 0);
+    this->scene->player->SendMsg(nullptr, AM_CHAT, reinterpret_cast<int>((text.empty() ? nullptr : &text[0])), 0, 0, 0, 0, 0);
   }
 
   if (g_session.m_whisperRecord != 0) {
@@ -15056,8 +15055,7 @@ void CGameMode::ReceiveRefineBroadcast(const unsigned char* data) {
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 0, 0, 0);
   if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
     BroadcastBalloonMessage message;
-    std::uint32_t color = 0x62B0FF;
-    message.lines.emplace_back(text, color);
+    message.lines.emplace_back(text, 0x62B0FF);
     balloon->AddMessage(0, message);
   }
 }
@@ -15076,8 +15074,7 @@ void CGameMode::ReceiveTradeBroadcast(const unsigned char* data) {
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 0, 0, 0);
   if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
     BroadcastBalloonMessage message;
-    std::uint32_t color = 0x62B0FF;
-    message.lines.emplace_back(text, color);
+    message.lines.emplace_back(text, 0x62B0FF);
     balloon->AddMessage(0, message);
   }
 }
@@ -15478,8 +15475,7 @@ void CGameMode::ReceiveRefineStatusGraded(const char* playerName, int itemId, un
   item.identified = 1;
 
   int job = 0;
-  const char* signatureText = OBFUSCATE_BYTES_TEXT("d>d", 0xED796785D1DF137FULL);
-  g_session.m_hotkeyScript->Call(OBFUSCATE_BYTES_TEXT("GetEquipJob", 0xF14F79170939C7F1ULL), signatureText, itemId, &job);
+  g_session.m_hotkeyScript->Call(OBFUSCATE_BYTES_TEXT("GetEquipJob", 0xF14F79170939C7F1ULL), (OBFUSCATE_BYTES_TEXT("d>d", 0xED796785D1DF137FULL)), itemId, &job);
   if (job != 0) {
     item.identity[0] = 0x15;
   }
@@ -15490,8 +15486,7 @@ void CGameMode::ReceiveRefineStatusGraded(const char* playerName, int itemId, un
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0x62B0FF, 0, 0, 0);
   if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
     BroadcastBalloonMessage message;
-    std::uint32_t color = 0x62B0FF;
-    message.lines.emplace_back(line, color);
+    message.lines.emplace_back(line, 0x62B0FF);
     balloon->AddMessage(0, message);
   }
 }

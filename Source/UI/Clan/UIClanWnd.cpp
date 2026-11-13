@@ -158,10 +158,11 @@ void UIClanWnd::Paint() {
   g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->FillRegion(1, 18, 64, 23, RGB(red, green, blue));
   this->DrawTitleBar(false, "", 0);
-  g_skinInfo.PaletteChannels(14, 6, red, green, blue);
-  this->FillRegion(0, 41, this->geometry.width, this->geometry.height - 41, RGB(red, green, blue));
-  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-  this->FillRegion(1, 41, this->geometry.width - 2, this->geometry.height - 41, RGB(red, green, blue));
+  unsigned bodyRed, bodyGreen, bodyBlue;
+  g_skinInfo.PaletteChannels(14, 6, bodyRed, bodyGreen, bodyBlue);
+  this->FillRegion(0, 41, this->geometry.width, this->geometry.height - 41, RGB(bodyRed, bodyGreen, bodyBlue));
+  g_skinInfo.PaletteChannels(2, 2, bodyRed, bodyGreen, bodyBlue);
+  this->FillRegion(1, 41, this->geometry.width - 2, this->geometry.height - 41, RGB(bodyRed, bodyGreen, bodyBlue));
   this->DrawButtonBar(2, 0, 1);
 }
 

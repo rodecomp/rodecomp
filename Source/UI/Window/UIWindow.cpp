@@ -3503,7 +3503,8 @@ void UIPrivateAirplaneWnd::OnCreate(int, int) {
   this->AddBaseButton();
   this->AddCloseButton("", 0);
 
-  for (int index = 0, y = 26; index < static_cast<int>(g_privateAirplaneItems->m_needItems.size()); ++index, y += 26) {
+  for (int index = 0; index < static_cast<int>(g_privateAirplaneItems->m_needItems.size()); ++index) {
+    const int y = 26 * (index + 1);
     const int itemId = g_privateAirplaneItems->GetNeedItem(index);
     ITEM_INFO item;
     item.SetItemId(itemId);

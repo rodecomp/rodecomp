@@ -172,12 +172,10 @@ int UIListBoxAgitMenu::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       g_session.m_hotkeyScript->Call("get_agit_costzeny", "db>d", agitId, 1, &costGuildPoint);
 
       UIAgitMessageBox* box = new UIAgitMessageBox();
-      const char* text = FormatString(LookupMessage(MSI_NOT_LEARN_BASIC_SKILL), agitName, costZeny, costGuildPoint);
-      box->InitializeMessageBox(text, 310, 130);
+      box->InitializeMessageBox((FormatString(LookupMessage(MSI_NOT_LEARN_BASIC_SKILL), agitName, costZeny, costGuildPoint)), 310, 130);
 
       int x = g_renderer->viewport.centerX - box->geometry.width / 2;
-      int y = g_renderer->viewport.centerY - box->geometry.height / 2;
-      box->Move(x, y);
+      box->Move(x, (g_renderer->viewport.centerY - box->geometry.height / 2));
       box->m_agitId = agitId;
       g_windowMgr.AddRendered(box);
     }
@@ -185,8 +183,7 @@ int UIListBoxAgitMenu::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   }
   case 1: {
     CMode* mode = g_modeMgr.GetGameMode();
-    GuildInfo* guildInfo = &g_guildInfo;
-    uint16_t agitId = static_cast<uint16_t>(guildInfo->GetAgitId(this->m_agitIndex));
+    uint16_t agitId = static_cast<uint16_t>((&g_guildInfo)->GetAgitId(this->m_agitIndex));
     mode->SendMsg(MM_REQ_AGIT_INVESTMENT, agitId, 0, 0, 0);
     break;
   }
