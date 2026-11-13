@@ -13,7 +13,6 @@
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/Bitmap/TextureNames.h"
-#include "UI/Text/TextFitting.h"
 #include "UI/Text/TextWrapping.h"
 #include "UI/Party/UIApplyForPartyWnd.h"
 #include "UI/Buttons/UIBasicButton.h"
@@ -27,6 +26,8 @@
 
 #include "Resource/MSGSTRINGID.h"
 #include <cstdio>
+
+template __declspec(noinline) std::string::basic_string(const std::string&);
 
 // OFFSET: 0x007BAD00
 // FUNCTION: fn_09275
@@ -98,7 +99,7 @@ void UIApplyForPartyWnd::Paint() {
   this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\UIadventurerAgency\\bg_agency_register.bmp"))), false);
   this->DrawTitleBar(true, LookupMessage(MSI_ADVEN_REGISTER), 0);
   this->DrawTextAt(10, 25, LookupMessage(MSI_ADVENTURER_AGENCY_REGIST_SUCCESSED), 0, 0, 12, 0, 0, 0);
-  const std::string fitted = FitText(*this->geometry.surface, this->info.characterName, 119);
+  const std::string fitted = this->FitTextToWidth(this->info.characterName, 119);
   this->DrawTextAt(60, 25, fitted.c_str(), 0, 0, 12, 0, 0, 0);
   this->DrawTextAt(10, 49, LookupMessage(MSI_LEVEL), 0, 0, 12, 0, 0, 0);
   char levels[10] = {};

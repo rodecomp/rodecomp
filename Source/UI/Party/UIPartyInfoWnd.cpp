@@ -6,12 +6,13 @@
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/Bitmap/TextureNames.h"
-#include "UI/Text/TextFitting.h"
 #include "UI/Party/UIPartyInfoWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 
 #include "Resource/MSGSTRINGID.h"
+
+template __declspec(noinline) std::string::basic_string(const std::string&);
 // OFFSET: 0x007BAE20
 // FUNCTION: fn_09277
 UIPartyInfoWnd::UIPartyInfoWnd()
@@ -111,7 +112,7 @@ void UIPartyInfoWnd::Paint() {
   this->DrawBitmap(163, 3, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
       Resolve(this->info.assist ? "유저인터페이스\\UIadventurerAgency\\btn_job_buf_on.bmp" : "유저인터페이스\\UIadventurerAgency\\btn_job_buf_off.bmp"))), false);
 
-  const std::string fitted = FitText(*this->geometry.surface, this->name, 119);
+  const std::string fitted = this->FitTextToWidth(this->name, 119);
   this->DrawTextAt(192, 5, fitted.c_str(), static_cast<int>(fitted.size()), 0, 12, 0, 0, 0);
   this->DrawTextAt(315, 5, this->memo.c_str(), static_cast<int>(this->memo.size()), 0, 12, 0, 0, 0);
 

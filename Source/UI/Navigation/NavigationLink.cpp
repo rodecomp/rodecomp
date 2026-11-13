@@ -383,11 +383,11 @@ bool NavigationLinkParser::ParseNavigationLink(std::string value, std::string& n
 
 // OFFSET: 0x00835600
 // FUNCTION: fn_10419
-std::string FormatNavigationLink(std::string value, bool brackets) {
+std::string NavigationLinkParser::FormatNavigationLink(std::string value, bool brackets) {
   std::string name;
   int x = 0;
   int y = 0;
-  GetNavigationLinkParser()->ParseNavigationLink(value, name, x, y);
+  this->ParseNavigationLink(value, name, x, y);
   char text[128] = {};
 
   if (brackets) {
@@ -439,7 +439,7 @@ void DisplayNavigationLink(std::string& output, std::string value) {
     if (end != std::string::npos) {
       const std::string rest = text.substr(end + std::strlen(g_naviLinkCloseTag.c_str()));
       text = text.substr(0, end + std::strlen(g_naviLinkCloseTag.c_str()));
-      const std::string link = FormatNavigationLink(text, true);
+      const std::string link = g_navigationLinkParser->FormatNavigationLink(text, true);
       output += head;
       output += link;
       output += rest;

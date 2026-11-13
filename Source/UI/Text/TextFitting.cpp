@@ -1,6 +1,4 @@
 #include "UI/Window/UIWindow.h"
-#include "Render/Text/TextContext.h"
-#include "UI/Text/TextFitting.h"
 
 #include <atlconv.h>
 #include <atlexcept.h>
@@ -8,11 +6,14 @@
 
 // OFFSET: 0x00A837D0
 // FUNCTION: fn_17007
-std::string FitText(CDC& surface, std::string text, int width) {
-  TextContext context(surface);
-  context.SetFont(0, 12, 0, 0);
-  int extent = text.empty() ? 0 : context.Measure(text.c_str(), static_cast<int>(text.size())).cx;
-  context.Measure("...", 3);
+std::string UIWindow::FitTextToWidth(const std::string& source, int width) {
+  if (!this->geometry.surface) {
+    this->Resize(width, 15);
+  }
+
+  std::string text(source);
+  int extent = this->TextWidth(text.c_str(), 0, 0, 12, 0, 0);
+  this->TextWidth("...", 0, 0, 12, 0, 0);
   ATL::CA2WEX<128> wide(text.c_str(), CP_THREAD_ACP);
   std::wstring remaining(wide);
 
@@ -32,17 +33,8 @@ std::string FitText(CDC& surface, std::string text, int width) {
     ATL::CW2AEX<128> converted(remaining.c_str(), CP_THREAD_ACP);
     text = converted;
     text += "...";
-    extent = context.Measure(text.c_str(), static_cast<int>(text.size())).cx;
+    extent = this->TextWidth(text.c_str(), 0, 0, 12, 0, 0);
   }
 
   return text;
-}
-
-// INLINED
-std::string UIWindow::FitTextToWidth(const std::string& text, int width) {
-  if (!this->geometry.surface) {
-    this->Resize(width, 15);
-  }
-
-  return FitText(*this->geometry.surface, text, width);
 }

@@ -55,9 +55,8 @@ void CRendererDX9::DrawAuxiliaryQueue() {
 
 // OFFSET: 0x00567610
 // FUNCTION: fn_02229
-void CRendererDX9::DrawQueues(
-  RenderQueues& queues, unsigned char twoPass
-) {
+void CRendererDX9::DrawQueues() {
+  RenderQueues& queues = this->queues;
   this->ApplyFog();
   this->device->state.SetRenderState(D3DRS_ALPHATESTENABLE, 1);
   this->device->state.SetRenderState(D3DRS_ALPHAREF, 207);
@@ -130,7 +129,7 @@ void CRendererDX9::DrawQueues(
   }
 
   this->device->state.SetRenderState(D3DRS_ZWRITEENABLE, 0);
-  this->DrawAlphaQueues(queues, twoPass);
+  this->DrawAlphaQueues(queues, this->twoPass);
 
   {
     ScopedDeviceStateDX9 restore(this->device->state);

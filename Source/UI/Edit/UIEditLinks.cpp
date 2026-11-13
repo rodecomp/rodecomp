@@ -4,7 +4,6 @@
 #include "Client/Input/Language.h"
 #include "UI/Window/InputFocus.h"
 #include "UI/Navigation/NavigationLink.h"
-#include "UI/Text/TextFitting.h"
 #include "UI/Buttons/UIButton.h"
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Edit/UIItemTagCtrl.h"
@@ -21,7 +20,7 @@ bool UIEditCtrl::RemoveInvalidLink(int type, std::list<UIWindow*>::iterator& ent
   std::string name;
 
   if (type == 438) {
-    name = FormatNavigationLink(static_cast<UINaviLinkButton*>(*entry)->Link(), false);
+    name = g_navigationLinkParser->FormatNavigationLink(static_cast<UINaviLinkButton*>(*entry)->Link(), false);
   }
 
   const std::string current = this->text;
@@ -30,7 +29,7 @@ bool UIEditCtrl::RemoveInvalidLink(int type, std::list<UIWindow*>::iterator& ent
     return true;
   }
 
-  const std::string fitted = FitText(*this->geometry.surface, name, this->geometry.width / 2);
+  const std::string fitted = this->FitTextToWidth(name, this->geometry.width / 2);
   std::string remaining = current;
   const int bytes = static_cast<int>(std::strlen(fitted.c_str()));
   int found = static_cast<int>(current.find(fitted));
@@ -164,8 +163,8 @@ void UIEditCtrl::UpdateLinks() {
     }
 
     auto* button = static_cast<UINaviLinkButton*>(*entry);
-    const std::string name = FormatNavigationLink(button->Link(), false);
-    const std::string fitted = FitText(*this->geometry.surface, name, this->geometry.width / 2);
+    const std::string name = g_navigationLinkParser->FormatNavigationLink(button->Link(), false);
+    const std::string fitted = this->FitTextToWidth(name, this->geometry.width / 2);
     std::string display = "<" + fitted;
     display += ">";
     const int found = static_cast<int>(remaining.find(display));

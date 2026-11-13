@@ -3,7 +3,6 @@
 #include "Contents/Items/ItemNaming.h"
 #include "Contents/Tables/TipBoxTitles.h"
 #include "UI/Lists/UIChatHisBox.h"
-#include "UI/Text/TextFitting.h"
 
 #include <mbstring.h>
 
@@ -129,7 +128,7 @@ std::string UIChatHisBox::Convert(const std::string& text) {
 const std::string UIChatHisBox::BracketName(const std::string& name) {
   std::string result;
   result += '<';
-  result += FitText(*this->geometry.surface, name, this->geometry.width / 2);
+  result += this->FitTextToWidth(name, this->geometry.width / 2);
   result += '>';
   return result;
 }

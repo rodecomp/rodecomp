@@ -41,7 +41,6 @@
 #include "Resource/Sprites/SpriteResource.h"
 #include "UI/Buttons/UIBmpTextButton2.h"
 #include "UI/Buttons/UINaviLinkButton.h"
-#include "UI/Text/TextFitting.h"
 #include "UI/Navigation/NavigationLink.h"
 #include "UI/Buttons/UIItemTagButton.h"
 #include "UI/Buttons/UISpriteButton.h"
@@ -358,7 +357,7 @@ void UIEditCtrl::OnMouseHover(int x, int y) {
 
 // INLINED
 __forceinline void UIEditCtrl::InsertLink(const char* value) {
-  const std::string name = FormatNavigationLink(value, false);
+  const std::string name = g_navigationLinkParser->FormatNavigationLink(value, false);
   this->FitTextToWidth(name, this->geometry.width / 2);
   std::string display = "<";
   display += name;
@@ -374,7 +373,7 @@ __forceinline void UIEditCtrl::InsertLink(const char* value) {
     if (window->geometry.id == 438) {
       removed = true;
       UINaviLinkButton* button = static_cast<UINaviLinkButton*>(window);
-      const std::string linkName = FormatNavigationLink(button->Link(), false);
+      const std::string linkName = g_navigationLinkParser->FormatNavigationLink(button->Link(), false);
       this->FitTextToWidth(linkName, this->geometry.width / 2);
       std::string old = "<";
       old += linkName;

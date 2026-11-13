@@ -10,7 +10,6 @@
 #include "UI/Chat/UIWhisperWnd.h"
 #include "UI/Items/UIEquipWnd.h"
 #include "UI/Skill/UISkillDescribeWnd.h"
-#include "UI/Text/TextFitting.h"
 #include "Utility/Text/FormatString.h"
 
 #include <cstddef>
@@ -118,7 +117,7 @@ int UIFrameWnd::DrawFittedItemName(int x, int y, const ITEM_INFO* item, std::uin
   char* text = buffer;
   int offset = 0;
   for (auto it = breaks.begin(); it != breaks.end(); ++it) {
-    std::string fitted = FitText(*this->geometry.surface, std::string(text), this->geometry.width - x - 10);
+    std::string fitted = this->FitTextToWidth(std::string(text), this->geometry.width - x - 10);
     bool truncated;
     char* end;
     if (std::strcmp(fitted.c_str(), text) != 0) {

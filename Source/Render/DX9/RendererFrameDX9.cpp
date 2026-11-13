@@ -23,7 +23,7 @@ void CRenderer::ClearFrame() {
 // FUNCTION: fn_02222
 bool CRendererDX9::Draw() {
   this->device->Begin();
-  this->DrawQueues(this->queues, this->twoPass);
+  this->DrawQueues();
   this->ClearFrame();
   this->device->End();
 

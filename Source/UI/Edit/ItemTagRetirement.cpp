@@ -9,7 +9,6 @@
 #include "UI/Edit/ItemTagRetirement.h"
 #include "UI/Edit/UIItemTagCtrl.h"
 #include "UI/Rodex/UIRodexComposeWnd.h"
-#include "UI/Text/TextFitting.h"
 #include "UI/Text/UITextViewer.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
@@ -98,7 +97,7 @@ bool UIItemTagOnChat::CanInsertTag(const std::string& name, int width) {
 
   std::string tag = "<";
   this->tagWidth = width;
-  tag += FitText(*this->geometry.surface, name, width / 2);
+  tag += this->FitTextToWidth(name, width / 2);
   tag += ">";
 
   UIEditCtrl* edit = static_cast<UIEditCtrl*>(g_windowMgr.GetHoverWindow());
@@ -116,7 +115,7 @@ bool UIItemTagOnMail::CanInsertTag(const std::string& name, int width) {
 
   std::string tag = "<";
   this->tagWidth = width;
-  tag += FitText(*this->geometry.surface, name, width / 2);
+  tag += this->FitTextToWidth(name, width / 2);
   tag += ">";
 
   UIRodexEditCtrl3* contents = static_cast<UIRodexComposeWnd*>(g_windowMgr.rodexComposeWnd)->m_contents;
@@ -144,7 +143,7 @@ bool UIItemTagCtrl::SyncTagsWithText() {
     token = token.substr(0, token.find(">") + 1);
 
     for (auto entry = this->tags.begin(); entry != this->tags.end(); ++entry) {
-      std::string fitted = FitText(*this->geometry.surface, entry->name, this->tagWidth / 2);
+      std::string fitted = this->FitTextToWidth(entry->name, this->tagWidth / 2);
       if (token.find(fitted) != std::string::npos) {
         entry->index = kept.size();
         kept.push_back(*entry);
@@ -222,7 +221,7 @@ void UIItemTagCtrl::AddItemTag(const ITEM_INFO& item, unsigned int color) {
   UIItemTagButton* button = new UIItemTagButton();
 
   std::string label = "<";
-  label += FitText(*this->geometry.surface, item.DisplayName(0), this->tagWidth / 2);
+  label += this->FitTextToWidth(item.DisplayName(0), this->tagWidth / 2);
   label += ">";
 
   button->Configure(label.c_str(), color, 0, 12, 0, 0);
@@ -309,7 +308,7 @@ bool UIItemTagOnMegaPhone::CanInsertTag(const std::string& name, int width) {
 
   std::string tag = "<";
   this->tagWidth = width;
-  tag += FitText(*this->geometry.surface, name, width / 2);
+  tag += this->FitTextToWidth(name, width / 2);
   tag += ">";
 
   unsigned bytes = 0;
@@ -341,7 +340,7 @@ void UIItemTagCtrl::UpdateItemTags() {
       if (!this->geometry.surface) {
         this->Resize(this->tagWidth / 2, 15);
       }
-      const std::string fitted = FitText(*this->geometry.surface, entry->name, this->tagWidth / 2);
+      const std::string fitted = this->FitTextToWidth(entry->name, this->tagWidth / 2);
       std::string display = "<";
       display += fitted;
       display += ">";

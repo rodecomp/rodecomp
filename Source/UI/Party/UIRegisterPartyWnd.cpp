@@ -11,7 +11,6 @@
 #include "Render/Text/TextContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
-#include "UI/Text/TextFitting.h"
 #include "Utility/Text/FormatString.h"
 #include "UI/Text/TextWrapping.h"
 #include "UI/Buttons/UIBasicButton.h"

@@ -50,7 +50,6 @@
 #include <timeapi.h>
 #include "UI/Edit/UIItemTagCtrl.h"
 #include "UI/Rodex/UIRodexComposeWnd.h"
-#include "UI/Text/TextFitting.h"
 #include "Resource/MSGSTRINGID.h"
 
 template __declspec(noinline) std::string std::operator+(const char* const, const std::string&);
@@ -615,7 +614,7 @@ void UITabControl::AddTab(const char* label, const char* tooltip) {
       if (!this->geometry.surface) {
         this->Resize(tabWidth, 15);
       }
-      const std::string fitted = FitText(*this->geometry.surface, this->labels[index], tabWidth);
+      const std::string fitted = this->FitTextToWidth(this->labels[index], tabWidth);
       this->labels[index] = "";
       this->labels[index] = fitted;
     }
@@ -1782,7 +1781,7 @@ bool UIItemTagCtrl::RemoveInvalidTag(std::list<ItemTagRecord>::iterator& entry) 
   if (!this->geometry.surface) {
     this->Resize(this->tagWidth / 2, 15);
   }
-  const std::string fitted = FitText(*this->geometry.surface, entry->name, this->tagWidth / 2);
+  const std::string fitted = this->FitTextToWidth(entry->name, this->tagWidth / 2);
   std::string remaining = this->taggedText;
   const int bytes = static_cast<int>(std::strlen(fitted.c_str()));
   int found = static_cast<int>(this->taggedText.find(fitted));
@@ -2012,13 +2011,13 @@ std::string UIChatHisBox::RenderNavigationLinks(const char* text, std::string& s
     }
     link = link.substr(0, end + g_naviLinkTagEnd.size());
 
-    const std::string name = FormatNavigationLink(link, false);
+    const std::string name = g_navigationLinkParser->FormatNavigationLink(link, false);
     std::string label = "<";
     const int width = this->geometry.width / 2;
     if (this->geometry.surface == nullptr) {
       this->Resize(width, 15);
     }
-    label += FitText(*this->geometry.surface, name, width);
+    label += this->FitTextToWidth(name, width);
     label += ">";
 
     std::string tail;

@@ -3,7 +3,6 @@
 #include "UI/Buttons/UIButton.h"
 #include "UI/Buttons/UINaviLinkButton.h"
 #include "UI/Navigation/NavigationLink.h"
-#include "UI/Text/TextFitting.h"
 
 // OFFSET: 0x00861AB0
 // FUNCTION: fn_10902
@@ -70,8 +69,8 @@ void UIEditCtrl3::PlaceLinks(const std::string& value, int y, int line, int firs
     }
 
     auto* button = static_cast<UINaviLinkButton*>(*entry);
-    const std::string name = FormatNavigationLink(button->Link(), false);
-    const std::string fitted = FitText(*this->geometry.surface, name, this->geometry.width / 2);
+    const std::string name = g_navigationLinkParser->FormatNavigationLink(button->Link(), false);
+    const std::string fitted = this->FitTextToWidth(name, this->geometry.width / 2);
     std::string display = "<";
     display += fitted;
     display += ">";
@@ -92,7 +91,7 @@ void UIEditCtrl3::PlaceLinks(const std::string& value, int y, int line, int firs
       (*entry)->Move(x - 1 + this->TextWidth(prefix.c_str(), 0, 0, 12, 0, 0), y);
     }
 
-    const std::string visible = FitText(*this->geometry.surface, name, this->geometry.width / 2);
+    const std::string visible = this->FitTextToWidth(name, this->geometry.width / 2);
     this->SnapLinkSelection(prefix, static_cast<int>(std::strlen(visible.c_str())));
     this->pendingText[line] += prefix;
     this->pendingText[line] += button->Link();

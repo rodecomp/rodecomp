@@ -18,6 +18,7 @@ struct NavigationLinkParser {
   std::pair<bool, std::string> RemoveLineBreakTag(std::string value);
   void SplitMessageArguments(const char* text, std::vector<std::string>& arguments);
   std::string FormatMessageArguments(std::string value, int messageId);
+  std::string FormatNavigationLink(std::string value, bool brackets);
 
   /* 0000 */ bool m_ready;
 };
@@ -34,7 +35,6 @@ extern std::string g_naviLinkTagEnd;
 bool CreateNavigationLinkParser();
 void DestroyNavigationLinkParser();
 int __stdcall DecodeNavigationNumber(std::string value);
-std::string FormatNavigationLink(std::string value, bool brackets);
 void DisplayNavigationLink(std::string& output, std::string value);
 
 #endif
