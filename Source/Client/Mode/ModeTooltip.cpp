@@ -45,12 +45,12 @@ void CMode::ShowTooltip(const char* value, int x, int y, std::uint32_t color, un
   this->tooltip->SetColors((red << 16) | (color & 0xFF00) | blue, 0);
   this->tooltip->SetBackground(0x88000000u);
 
+  const int left = x >= -3 ? x : -3;
   const int maximumX = g_renderer->viewport.width - this->tooltip->geometry.width + 3;
+  const int top = y >= -3 ? y : -3;
   const int maximumY = g_renderer->viewport.height - this->tooltip->geometry.height + 3;
-  const int left = (std::max)(x, -3);
-  const int top = (std::max)(y, -3);
 
-  this->tooltip->Move((std::min)(left, maximumX), (std::min)(top, maximumY));
+  this->tooltip->Move(left <= maximumX ? left : maximumX, top <= maximumY ? top : maximumY);
 }
 
 // OFFSET: 0x00AD67A0

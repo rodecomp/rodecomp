@@ -125,12 +125,6 @@ void UITransBalloonText::OnCreate(int, int) {
   this->m_fontMode = 0;
 }
 
-// INLINED
-void UITransBalloonText::SetColors(std::uint32_t text, std::uint32_t outline) {
-  this->m_textColor = text;
-  this->m_outlineColor = outline;
-}
-
 // OFFSET: 0x008697E0
 // FUNCTION: fn_10970
 void UITransBalloonText::SetBackground(std::uint32_t color) {

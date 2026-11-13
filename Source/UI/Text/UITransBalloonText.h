@@ -32,7 +32,11 @@ public:
   void SetRichText(unsigned char value) {
     this->m_richText = value;
   }
-  void SetColors(std::uint32_t text, std::uint32_t outline);
+  // INLINED
+  void SetColors(std::uint32_t text, std::uint32_t outline) {
+    this->m_textColor = text;
+    this->m_outlineColor = outline;
+  }
   void SetBackground(std::uint32_t color);
   __declspec(noinline) void AddText(const char* text);
   void AddLine(const char* text, std::uint32_t color);
