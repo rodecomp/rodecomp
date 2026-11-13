@@ -395,8 +395,8 @@ int UIWindowMgr::ProcessMouse() {
     handled = 1;
   }
 
-  for (auto entry = this->browsers.begin(); entry != this->browsers.end(); ++entry) {
-    if (entry->second && entry->second->cursorState != 0) {
+  for (auto& entry : this->browsers) {
+    if (entry.second && entry.second->cursorState != 0) {
       handled = 1;
       break;
     }

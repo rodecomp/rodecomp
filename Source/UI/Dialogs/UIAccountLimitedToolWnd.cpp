@@ -325,7 +325,7 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       } else if (name.size() < 50) {
         AccountLimitedSearchPacket packet;
         packet.id = ID_CZ_SEARCH_ACCOUNT_LIMTIED_SALE_ITEM;
-        std::memset(packet.name, 0, sizeof(packet.name));
+        SecureZeroMemory(packet.name, sizeof(packet.name));
         strncpy_s(packet.name, sizeof(packet.name), name.c_str(), name.size());
         GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
       }

@@ -12780,13 +12780,14 @@ void CGameMode::ReceiveActorMoveEntryBody(const unsigned char* data) {
 // FUNCTION: fn_21984
 void CGameMode::ReceiveActorMoveEntryLegacy(const unsigned char* data) {
   const ActorMoveEntryLegacyPacket* packet = reinterpret_cast<const ActorMoveEntryLegacyPacket*>(data);
+  ActorMoveEntry entry;
+  entry.body = 0;
   const int nameLength = packet->packetLength - static_cast<int>(sizeof(ActorMoveEntryLegacyPacket));
   if (nameLength > 0) {
     const char* nameBegin = reinterpret_cast<const char*>(data + sizeof(ActorMoveEntryLegacyPacket));
     this->nameCard.SetName(packet->aid, std::string(nameBegin, nameBegin + nameLength));
   }
 
-  ActorMoveEntry entry;
   entry.robe = packet->robe;
   entry.job = packet->job;
   entry.aid = packet->aid;

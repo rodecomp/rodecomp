@@ -45,10 +45,11 @@ UIHairBitmap::UIHairBitmap() : UIBitmapButton() {
 // OFFSET: 0x007D9A50
 // FUNCTION: fn_09609
 UINewMakeCharWnd::UINewMakeCharWnd()
-    : UIFrameWnd(0),
-      nameEditStorage(0),
-      m_race(0),
-      m_raceViews() {
+    : UIFrameWnd(0) {
+  this->m_race = 0;
+  this->m_nameEdit = nullptr;
+  this->m_raceViews[0] = nullptr;
+  this->m_raceViews[1] = nullptr;
   this->geometry.animationFrame = 0;
 
   const int* preset = reinterpret_cast<const int*>(g_modeMgr.gameMode->SendMsg(LMM_GET_CHAR_PARAM, 0, 0, 0, 0));

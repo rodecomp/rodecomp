@@ -387,7 +387,7 @@ std::string FormatNavigationLink(std::string value, bool brackets) {
   std::string name;
   int x = 0;
   int y = 0;
-  GetNavigationLinkParser()->ParseNavigationLink(std::move(value), name, x, y);
+  GetNavigationLinkParser()->ParseNavigationLink(value, name, x, y);
   char text[128] = {};
 
   if (brackets) {

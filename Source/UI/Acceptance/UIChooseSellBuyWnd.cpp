@@ -559,8 +559,7 @@ void UIEquipWnd::Paint() {
     return;
   }
 
-  const char* background = this->m_viewOther != 0 ? "유저인터페이스\\basic_interface\\equipwin_bg.bmp" : "유저인터페이스\\basic_interface\\equipwin_bg2.bmp";
-  if (CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background)))) {
+  if (CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_viewOther != 0 ? "유저인터페이스\\basic_interface\\equipwin_bg.bmp" : "유저인터페이스\\basic_interface\\equipwin_bg2.bmp")))) {
     this->DrawBitmap(0, this->m_contentTop + 17, bitmap, false);
   }
 
@@ -589,7 +588,7 @@ void UIEquipWnd::Paint() {
 
     this->DrawEquipSlots();
     this->RefreshLook();
-    FuncDrawWNDChar drawer(
+    FuncDrawWNDChar(
       this,
       this->geometry.width / 2 + 1,
       149,
@@ -609,8 +608,7 @@ void UIEquipWnd::Paint() {
       0,
       0,
       this->m_updateTick
-    );
-    drawer.Draw(false);
+    ).Draw(false);
 
     if (this->m_viewOther == 0) {
       if (this->m_page == 0) {
