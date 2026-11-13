@@ -133,22 +133,21 @@ void CEffectPrim::RenderFoldingRibbon(matrix& wtm) {
 // OFFSET: 0x00BF7370
 // FUNCTION: fn_20002
 void CEffectPrim::RenderStandingPanels(matrix& wtm) {
-  vector3d vec1{};
   vector3d vec2{};
   vector3d vec3{};
   vector3d vec4{};
+  vector3d vec1{};
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
-    const EffectPrimitiveSlot& slot = this->state.slots[ec];
-    if (slot.life != 1 || slot.alphaB <= 0) {
+    if (this->state.slots[ec].life != 1 || this->state.slots[ec].alphaB <= 0) {
       continue;
     }
 
-    float dist = slot.distance;
-    float cs = g_cosTable[slot.rotStart];
-    float sn = g_sinTable[slot.rotStart];
-    const char frame = static_cast<char>(slot.process % 30);
+    float dist = this->state.slots[ec].distance;
+    float cs = g_cosTable[this->state.slots[ec].rotStart];
+    float sn = g_sinTable[this->state.slots[ec].rotStart];
+    const char frame = static_cast<char>(this->state.slots[ec].process % 30);
     vec1.x = cs * (dist * g_depthAverageHalf) - sn * 0.0f;
     vec1.y = -dist * 2.0f;
     vec1.z = sn * (dist * g_depthAverageHalf) + cs * 0.0f;
@@ -161,11 +160,11 @@ void CEffectPrim::RenderStandingPanels(matrix& wtm) {
     vec4.x = cs * (dist * g_depthAverageHalf) - sn * dist;
     vec4.y = -dist * 2.0f;
     vec4.z = sn * (dist * g_depthAverageHalf) + cs * dist;
-    this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, frame + 87, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 1, frame + 87, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
 
-    dist = slot.distance;
-    cs = g_cosTable[slot.rotStart];
-    sn = g_sinTable[slot.rotStart];
+    dist = this->state.slots[ec].distance;
+    cs = g_cosTable[this->state.slots[ec].rotStart];
+    sn = g_sinTable[this->state.slots[ec].rotStart];
     vec1.x = cs * (dist * g_depthAverageHalf) - sn * 0.0f;
     vec1.y = 0.0f;
     vec1.z = sn * (dist * g_depthAverageHalf) + cs * 0.0f;
@@ -178,11 +177,11 @@ void CEffectPrim::RenderStandingPanels(matrix& wtm) {
     vec4.x = cs * (dist * g_depthAverageHalf) - sn * 0.0f;
     vec4.y = -dist;
     vec4.z = sn * (dist * g_depthAverageHalf) + cs * 0.0f;
-    this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, frame, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 1, frame, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
 
-    dist = slot.distance;
-    cs = g_cosTable[slot.rotStart];
-    sn = g_sinTable[slot.rotStart];
+    dist = this->state.slots[ec].distance;
+    cs = g_cosTable[this->state.slots[ec].rotStart];
+    sn = g_sinTable[this->state.slots[ec].rotStart];
     vec1.x = cs * (dist * g_depthAverageHalf) - sn * 0.0f;
     vec1.y = -dist;
     vec1.z = sn * (dist * g_depthAverageHalf) + cs * 0.0f;
@@ -195,11 +194,11 @@ void CEffectPrim::RenderStandingPanels(matrix& wtm) {
     vec4.x = cs * (dist * g_depthAverageHalf) - sn * 0.0f;
     vec4.y = -dist * 2.0f;
     vec4.z = sn * (dist * g_depthAverageHalf) + cs * 0.0f;
-    this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, frame + 30, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 1, frame + 30, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
 
-    dist = slot.distance;
-    cs = g_cosTable[slot.rotStart];
-    sn = g_sinTable[slot.rotStart];
+    dist = this->state.slots[ec].distance;
+    cs = g_cosTable[this->state.slots[ec].rotStart];
+    sn = g_sinTable[this->state.slots[ec].rotStart];
     vec1.x = cs * (dist * 0.47f) - sn * -1.0f;
     vec1.y = dist * -0.0f;
     vec1.z = sn * (dist * 0.47f) + cs * -1.0f;
@@ -212,7 +211,7 @@ void CEffectPrim::RenderStandingPanels(matrix& wtm) {
     vec4.x = cs * (dist * 0.47f) - sn * -1.0f;
     vec4.y = dist * -0.6f;
     vec4.z = sn * (dist * 0.47f) + cs * -1.0f;
-    this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, static_cast<char>(slot.process % 27) + 60, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 1, static_cast<char>(this->state.slots[ec].process % 27) + 60, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
   }
 }
 
