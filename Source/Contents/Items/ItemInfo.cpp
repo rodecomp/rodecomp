@@ -1,5 +1,6 @@
 #include "UI/Window/UIEnums.h"
 #include "Contents/Items/ItemInfo.h"
+#include "Client/Mode/ModeDragState.h"
 #include "Contents/Items/ItemId.h"
 #include "Client/Session/Session.h"
 #include "Client/Input/InputCharset.h"
@@ -139,21 +140,21 @@ __declspec(noinline) ITEM_INFO& ITEM_INFO::operator=(const ITEM_INFO& other) {
 
 // OFFSET: 0x006D5550
 // FUNCTION: fn_06573
-std::uint32_t ITEM_INFO::Assign(const RawItemData& item) {
+std::uint32_t ITEM_INFO::Assign(const ModeDragState& item) {
   this->identity[0] = item.type;
-  this->identity[1] = item.index;
+  this->identity[1] = item.id;
   this->quantity = item.quantity;
-  this->prices[0] = item.price;
-  this->prices[1] = item.realPrice;
+  this->prices[0] = item.itemValue;
+  this->prices[1] = item.price;
 
   for (int index = 0; index < 4; ++index) {
     std::memcpy(&this->cards[index], &item.cards[index], sizeof(item.cards[index]));
   }
 
-  this->itemId = item.itemId;
+  this->itemId = item.name;
 
   this->identified = item.identified;
-  this->refiningLevel = item.refiningLevel;
+  this->refiningLevel = item.refine;
 
   this->optionCount = item.optionCount > 5 ? 0 : item.optionCount;
 
@@ -162,9 +163,9 @@ std::uint32_t ITEM_INFO::Assign(const RawItemData& item) {
   }
 
   this->grade = item.grade;
-  this->flags[3] = item.hasIndex;
-  this->identity[2] = item.location;
-  this->sprite = item.sprite;
+  this->flags[3] = item.uniqueItem;
+  this->identity[2] = item.equipmentLocation;
+  this->sprite = static_cast<std::uint32_t>(item.viewId);
 
   return this->sprite;
 }

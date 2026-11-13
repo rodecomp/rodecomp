@@ -1653,7 +1653,7 @@ int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     }
 
     ITEM_INFO item;
-    item.Assign(reinterpret_cast<const RawItemData&>(drag));
+    item.Assign(drag);
     int total = g_session.GetItem1720Total();
     int budget = g_session.m_zeny;
     if (this->cashShopMode) {
@@ -6224,7 +6224,7 @@ int UIMerchantMirrorItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     ModeDragState& drag = mode->drag;
     ITEM_INFO item;
-    item.Assign(reinterpret_cast<const RawItemData&>(drag));
+    item.Assign(drag);
     CSession* lists = &g_session;
 
     switch (drag.source) {
@@ -6346,7 +6346,7 @@ int UIItemSellWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     ModeDragState& drag = mode->drag;
     ITEM_INFO item;
-    item.Assign(reinterpret_cast<const RawItemData&>(drag));
+    item.Assign(drag);
     if (g_session.HasShopItemIdentity(drag.id)) {
       CSession* lists = &g_session;
       lists->AddStorageItem(item);
@@ -6498,7 +6498,7 @@ int UIMerchantItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intpt
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     ModeDragState& drag = mode->drag;
     ITEM_INFO item;
-    item.Assign(reinterpret_cast<const RawItemData&>(drag));
+    item.Assign(drag);
 
     ITEM_INFO found;
     const int ownedCount = g_session.GetList10Size();
@@ -6723,7 +6723,7 @@ int UIMerchantItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     if (this->buyingShop == 0) {
       ITEM_INFO item;
-      item.Assign(reinterpret_cast<const RawItemData&>(mode->drag));
+      item.Assign(mode->drag);
       g_session.RemoveMerchantHopeToSellItem(item);
       if (g_windowMgr.merchantItemPurchaseWnd) {
         static_cast<UIWindow*>(g_windowMgr.merchantItemPurchaseWnd)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
@@ -8201,7 +8201,7 @@ int UIItemShopWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     case 0: {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       ITEM_INFO item;
-      item.Assign(reinterpret_cast<const RawItemData&>(mode->drag));
+      item.Assign(mode->drag);
       g_session.RemoveItem1720ByName(item);
       if (g_windowMgr.itemPurchaseWnd) {
         g_windowMgr.itemPurchaseWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
@@ -8214,7 +8214,7 @@ int UIItemShopWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     case 1: {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       ITEM_INFO item;
-      item.Assign(reinterpret_cast<const RawItemData&>(mode->drag));
+      item.Assign(mode->drag);
       CSession* lists = &g_session;
       lists->MergeShopItem(item);
       lists->RemoveStorageItem(item);
@@ -8313,7 +8313,7 @@ int UIItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     if (a == 0) {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       ITEM_INFO item;
-      item.Assign(reinterpret_cast<const RawItemData&>(mode->drag));
+      item.Assign(mode->drag);
       g_session.RemoveItem1720ByName(item);
       if (g_windowMgr.itemPurchaseWnd) {
         g_windowMgr.itemPurchaseWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
@@ -8326,7 +8326,7 @@ int UIItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     if (a == 1) {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       ITEM_INFO item;
-      item.Assign(reinterpret_cast<const RawItemData&>(mode->drag));
+      item.Assign(mode->drag);
       CSession* lists = &g_session;
       lists->MergeShopItem(item);
       lists->RemoveStorageItem(item);
@@ -10887,7 +10887,7 @@ int UIItemSellWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     ModeDragState& drag = mode->drag;
     ITEM_INFO item;
-    item.Assign(reinterpret_cast<const RawItemData&>(drag));
+    item.Assign(drag);
     if (g_session.HasShopItemIdentity(drag.id)) {
       CSession* lists = &g_session;
       lists->AddStorageItem(item);
@@ -11443,7 +11443,7 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
   case UM_DROP: {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     ITEM_INFO item;
-    item.Assign(reinterpret_cast<const RawItemData&>(mode->drag));
+    item.Assign(mode->drag);
     if (mode->drag.source == 20) {
       if (this->slotCount > g_session.GetList11Size()) {
         if (!g_session.AddMerchantPurchaseSavedItem(item, 1, 1)) {

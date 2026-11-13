@@ -309,7 +309,7 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     }
 
     ITEM_INFO item;
-    item.Assign(reinterpret_cast<const RawItemData&>(drag));
+    item.Assign(drag);
     const int total = g_session.GetItem1720Total();
     const int price = drag.price;
     const bool affordable = g_session.m_zeny >= static_cast<long long>(price) * drag.quantity + total;
@@ -510,7 +510,7 @@ int UIParaItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   case UM_DROP:
     if (a == 0) {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-      const RawItemData& drag = reinterpret_cast<const RawItemData&>(mode->drag);
+      const ModeDragState& drag = mode->drag;
       ITEM_INFO item;
       item.Assign(drag);
       CSession* lists = &g_session;

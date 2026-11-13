@@ -6705,7 +6705,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     if (mode->drag.source == 4) {
       ITEM_INFO item;
-      item.Assign(reinterpret_cast<const RawItemData&>(mode->drag));
+      item.Assign(mode->drag);
       g_session.RemoveItem1720ByName(item);
       this->m_totalPrice -= item.quantity * item.prices[1];
       if (g_session.GetList2Size() == 3) {
@@ -6747,7 +6747,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
         }
       }
       ITEM_INFO item;
-      item.Assign(reinterpret_cast<const RawItemData&>(mode->drag));
+      item.Assign(mode->drag);
       item.bindOnEquip = static_cast<std::uint16_t>(this->m_selectedIndex);
       g_session.MergeItem1720ByName(item);
       this->m_totalPrice += item.quantity * item.prices[1];

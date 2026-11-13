@@ -7,35 +7,7 @@
 #include <string>
 #include <vector>
 
-struct RawItemData {
-  /* 0000 */ std::uint32_t source;
-  /* 0004 */ std::uint32_t index;
-  /* 0008 */ std::uint32_t price;
-  /* 000C */ std::uint32_t realPrice;
-  /* 0010 */ std::int32_t quantity;
-  /* 0014 */ std::uint32_t slot;
-  /* 0018 */ std::uint32_t type;
-  /* 001C */ std::uint32_t refiningLevel;
-  /* 0020 */ unsigned char identified;
-  /* 0021 */ unsigned char padding_0021[27];
-  /* 003C */ std::string itemId;
-  /* 0054 */ unsigned char skillNameAndLevel[28];
-  /* 0070 */ std::uint32_t cards[4];
-  /* 0080 */ unsigned char padding_0080[8];
-  /* 0088 */ std::int32_t optionCount;
-  /* 008C */ unsigned char options[25];
-  /* 00A5 */ unsigned char padding_00A5[7];
-  /* 00AC */ std::int16_t grade;
-  /* 00AE */ unsigned char hasIndex;
-  /* 00AF */ unsigned char padding_00AF;
-  /* 00B0 */ std::uint32_t location;
-  /* 00B4 */ std::uint32_t padding_00B4;
-  /* 00B8 */ std::uint32_t sprite;
-};
-
-#if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(RawItemData) == 188);
-#endif
+struct ModeDragState;
 
 struct RawItemBasic {
   /* 0000 */ std::int32_t id;
@@ -66,7 +38,7 @@ struct ITEM_INFO {
   ITEM_INFO(const ITEM_INFO& other);
   ITEM_INFO& operator=(const ITEM_INFO& other);
   void Reset();
-  std::uint32_t Assign(const RawItemData& item);
+  std::uint32_t Assign(const ModeDragState& item);
   ITEM_INFO& AssignBasic(const RawItemBasic& item);
   bool operator<(const ITEM_INFO& other) const;
   bool SetName(const char* name);
