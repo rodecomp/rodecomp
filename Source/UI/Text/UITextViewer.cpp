@@ -359,7 +359,7 @@ std::string UIItemTagCtrl::AddSkillTag(int tagId, unsigned int color) {
   this->AddTagButton(button);
 
   std::string link = "00000T";
-  const std::string number = reinterpret_cast<UITextViewer*>(this)->ItemLinkNumberText(tagId);
+  const std::string number = this->ItemLinkNumberText(tagId);
   link += number;
   link += "%0&0'0(1)0";
 

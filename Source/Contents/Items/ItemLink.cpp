@@ -2,6 +2,7 @@
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Items/ItemLink.h"
 #include "Network/TextEncoding.h"
+#include "UI/Edit/UIItemTagCtrl.h"
 #include "UI/Navigation/NavigationLink.h"
 #include "UI/Text/UITextViewer.h"
 
@@ -97,7 +98,7 @@ namespace {
 
 // OFFSET: 0x0087A810
 // FUNCTION: fn_11237
-std::string UITextViewer::ItemLinkNumberText(int value) {
+std::string UIItemTagCtrl::ItemLinkNumberText(int value) {
   char digits[] = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
   int base = 62;
   std::vector<char> reversed;

@@ -28,6 +28,7 @@ public:
   void SetTaggedText(const std::string& text, int width);
   void UpdateItemTags();
   void AddItemTag(const ITEM_INFO& item, unsigned int color);
+  std::string ItemLinkNumberText(int value);
   std::string AddSkillTag(int tagId, unsigned int color);
 
   /* 011C */ int previousTagCount;

@@ -232,29 +232,28 @@ void UIItemTagCtrl::AddItemTag(const ITEM_INFO& item, unsigned int color) {
   button->item = item;
   this->AddTagButton(button);
 
-  UITextViewer* links = reinterpret_cast<UITextViewer*>(this);
   std::string link;
   char delimiters[] = "!#$%&'()*+,-/";
-  if (links->ItemLinkNumberText(item.identity[2]).size() <= 5) {
-    for (unsigned int index = 0; index < 5 - links->ItemLinkNumberText(item.identity[2]).size(); ++index) {
+  if (this->ItemLinkNumberText(item.identity[2]).size() <= 5) {
+    for (unsigned int index = 0; index < 5 - this->ItemLinkNumberText(item.identity[2]).size(); ++index) {
       link += "0";
     }
   }
 
-  link += links->ItemLinkNumberText(item.identity[2]);
+  link += this->ItemLinkNumberText(item.identity[2]);
 
   link += Equipment(item) ? "1" : "0";
-  link += links->ItemLinkNumberText(std::atoi(item.itemId.c_str()));
+  link += this->ItemLinkNumberText(std::atoi(item.itemId.c_str()));
 
   if (item.refiningLevel != 0) {
     link += delimiters[3];
-    link += links->ItemLinkNumberText(item.refiningLevel);
+    link += this->ItemLinkNumberText(item.refiningLevel);
   }
 
   link += delimiters[4];
-  link += links->ItemLinkNumberText(item.sprite);
+  link += this->ItemLinkNumberText(item.sprite);
   link += delimiters[5];
-  link += links->ItemLinkNumberText(item.grade);
+  link += this->ItemLinkNumberText(item.grade);
 
   const std::uint32_t* cards = item.cards;
   int slots = ItemSlotsCount(item);
@@ -270,24 +269,24 @@ void UIItemTagCtrl::AddItemTag(const ITEM_INFO& item, unsigned int color) {
 
   for (int index = 0; index < slots; ++index) {
     link += delimiters[7];
-    link += links->ItemLinkNumberText(index < 4 ? cards[index] : 0);
+    link += this->ItemLinkNumberText(index < 4 ? cards[index] : 0);
   }
 
   const ItemLinkOption* options = reinterpret_cast<const ItemLinkOption*>(item.options);
   for (int index = 0; index < item.optionCount; ++index) {
     link += delimiters[9];
-    link += links->ItemLinkNumberText(options[index].id);
+    link += this->ItemLinkNumberText(options[index].id);
     link += delimiters[10];
-    link += links->ItemLinkNumberText(options[index].parameter);
+    link += this->ItemLinkNumberText(options[index].parameter);
     link += delimiters[11];
-    link += links->ItemLinkNumberText(options[index].value);
+    link += this->ItemLinkNumberText(options[index].value);
   }
 
   ItemTagRecord record;
   char number[64];
   std::memset(number, 0, sizeof(number));
   record.child = button;
-  StringFormat(number, sizeof(number), _TRUNCATE, "%s", links->ItemLinkNumberText(std::atoi(item.itemId.c_str())).c_str());
+  StringFormat(number, sizeof(number), _TRUNCATE, "%s", this->ItemLinkNumberText(std::atoi(item.itemId.c_str())).c_str());
   StringFormat(record.number, sizeof(record.number), _TRUNCATE, "%s", number);
   StringFormat(record.name, sizeof(record.name), _TRUNCATE, "%s", item.DisplayName(0).c_str());
   StringFormat(record.link, sizeof(record.link), _TRUNCATE, "%s", link.c_str());
