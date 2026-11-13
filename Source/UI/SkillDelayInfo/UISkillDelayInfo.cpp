@@ -28,6 +28,11 @@ namespace {
 
 }
 
+template __declspec(noinline) void std::_List_node<SkillDelayInfo::CDelayItemData, void*>::_Free_non_head(
+  std::allocator<std::_List_node<SkillDelayInfo::CDelayItemData, void*>>&, std::_List_node<SkillDelayInfo::CDelayItemData, void*>*) noexcept;
+template __declspec(noinline) std::list<SkillDelayInfo::CDelayItemData>::~list() noexcept;
+template __declspec(noinline) std::vector<std::string>::~vector() noexcept;
+
 struct SkillDelayInfoFreezeCallback {
   virtual ~SkillDelayInfoFreezeCallback() = default;
 
@@ -485,9 +490,7 @@ int CUISkillDelayInfo::SendMsg(UIWindow* sender, int message, std::intptr_t argu
 // FUNCTION: fn_16889
 void CUISkillDelayInfo::SetSkill(int skillId) {
   this->skillId = skillId;
-  this->delayList->data.erase(this->delayList->data.begin(), this->delayList->data.end());
-  this->delayList->selected = static_cast<unsigned int>(-1);
-  this->delayList->UpdateScrollBar();
+  this->delayList->ClearData();
 
   const char* skillDescription = nullptr;
   g_session.m_hotkeyScript->Call("GetSkillDescript", "ddd>s", g_session.m_job, skillId, 0, &skillDescription);
