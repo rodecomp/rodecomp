@@ -84,7 +84,7 @@ void UIWindow::DrawColoredText(
 
   const char* current = text;
   const char* end = text + bytes;
-  const char* marker = text + TextContext::Marker(text, bytes);
+  const char* marker = text + TextContext::Marker(text, static_cast<unsigned>(end - text));
   TextContext context(*this->geometry.surface);
   context.SetFont(family, height, 0, 0);
 
@@ -100,7 +100,7 @@ void UIWindow::DrawColoredText(
     std::string segment(current, next);
 
     if (marker && *marker != '\0') {
-      segment.insert(0, marker, 3);
+      segment.insert(segment.begin(), marker, marker + 3);
     }
 
     if (next != current) {
@@ -134,7 +134,7 @@ void UIWindow::DrawStyledColoredText(
 
   const char* current = text;
   const char* end = text + bytes;
-  const char* marker = text + TextContext::Marker(text, bytes);
+  const char* marker = text + TextContext::Marker(text, static_cast<unsigned>(end - text));
   TextContext context(*this->geometry.surface);
   context.SetFont(family, height, bold, italic);
 
@@ -150,7 +150,7 @@ void UIWindow::DrawStyledColoredText(
     std::string segment(current, next);
 
     if (marker && *marker != '\0') {
-      segment.insert(0, marker, 3);
+      segment.insert(segment.begin(), marker, marker + 3);
     }
 
     if (next != current) {
@@ -215,7 +215,7 @@ void UIWindow::DrawOutlinedColoredText(
 
   const char* current = text;
   const char* end = text + bytes;
-  const char* marker = text + TextContext::Marker(text, bytes);
+  const char* marker = text + TextContext::Marker(text, static_cast<unsigned>(end - text));
   TextContext context(*this->geometry.surface);
   context.SetFont(family, height, bold, 0);
 
@@ -226,7 +226,7 @@ void UIWindow::DrawOutlinedColoredText(
     std::string segment(current, next);
 
     if (marker && *marker != '\0') {
-      segment.insert(0, marker, 3);
+      segment.insert(segment.begin(), marker, marker + 3);
     }
 
     if (next != current) {
