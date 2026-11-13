@@ -1179,6 +1179,8 @@ void UISubChatHisWnd::Resize(int width, int height) {
 
 #include <mbstring.h>
 
+template __declspec(noinline) char* std::allocator<char>::allocate(const std::size_t);
+
 // OFFSET: 0x0093C210
 // FUNCTION: fn_12761
 int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {

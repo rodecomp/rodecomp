@@ -37,6 +37,8 @@
 #include <format>
 #include <windows.h>
 
+template __declspec(noinline) char* std::allocator<char>::allocate(const std::size_t);
+
 template __declspec(noinline) bool std::_Traits_equal<std::char_traits<char>>(const char* const, std::size_t, const char* const, std::size_t) noexcept;
 template __declspec(noinline) std::map<int, CResPtr<CBitmapRes>>::const_iterator std::map<int, CResPtr<CBitmapRes>>::_Mybase::find(const int&) const;
 
