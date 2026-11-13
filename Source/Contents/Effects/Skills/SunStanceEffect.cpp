@@ -62,9 +62,10 @@ void CSunStanceEffect::Open() {
     }
 
     particle->effectId = this->id;
-    particle->columnIndex = 1;
-    particle->rowIndex = 0;
-    particle->groupIndex = 1;
+    int* indices = &particle->groupIndex;
+    indices[1] = 1;
+    indices[2] = 0;
+    indices[0] = 1;
     particle->alpha = 255;
     particle->scale = 3.0f;
     particle->animationParameter = static_cast<float>(index) * 2.0943947f;

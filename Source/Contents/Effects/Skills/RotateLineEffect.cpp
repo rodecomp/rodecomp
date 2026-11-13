@@ -37,9 +37,10 @@ void CRotateLineEffect::Open() {
       }
 
       particle->effectId = this->id;
-      particle->columnIndex = i;
-      particle->rowIndex = ring;
-      particle->groupIndex = 1;
+      int* indices = &particle->groupIndex;
+      indices[1] = i;
+      indices[2] = ring;
+      indices[0] = 1;
       particle->SetTexture("effect\\cloud11.tga");
       particle->angleParameter = 30;
       particle->angle = static_cast<float>(startAngle);

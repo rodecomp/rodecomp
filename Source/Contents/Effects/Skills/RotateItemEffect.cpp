@@ -36,9 +36,10 @@ void CRotateItemEffect::Open() {
     }
 
     particle->effectId = this->id;
-    particle->columnIndex = index;
-    particle->rowIndex = 0;
-    particle->groupIndex = 1;
+    int* indices = &particle->groupIndex;
+    indices[1] = index;
+    indices[2] = 0;
+    indices[0] = 1;
     particle->SetTexture("유저인터페이스\\item\\쿠나이_독.bmp");
     particle->scale = 2.5f;
     particle->SetColor(255, 200, 255);

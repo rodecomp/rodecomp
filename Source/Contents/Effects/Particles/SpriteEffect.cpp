@@ -43,9 +43,10 @@ void CSpriteEffect::Open() {
   }
 
   particle->effectId = this->id;
-  particle->columnIndex = 1;
-  particle->rowIndex = 0;
-  particle->groupIndex = 1;
+  int* indices = &particle->groupIndex;
+  indices[1] = 1;
+  indices[2] = 0;
+  indices[0] = 1;
   this->SetupParticle(particle);
   particle->actorId = this->actor;
   this->particles.push_back(particle);

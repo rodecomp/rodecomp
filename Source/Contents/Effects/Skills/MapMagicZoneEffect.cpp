@@ -76,9 +76,10 @@ void CMapMagicZoneEffect::Open() {
     CParticle* particle = CreateParticle(&this->positionVector, 5);
     if (particle) {
       particle->effectId = this->id;
-      particle->columnIndex = index;
-      particle->rowIndex = 0;
-      particle->groupIndex = 1;
+      int* indices = &particle->groupIndex;
+      indices[1] = index;
+      indices[2] = 0;
+      indices[0] = 1;
       particle->SetTexture("effect\\pikapika2.bmp");
       particle->scale = 46.0f;
       particle->phaseParameter = angle;
@@ -99,8 +100,9 @@ void CMapMagicZoneEffect::Open() {
       CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (particle) {
         particle->SetTexture("effect\\ring_blue.tga");
+        const int id = this->id;
         particle->rowIndex = row;
-        particle->effectId = this->id;
+        particle->effectId = id;
         particle->columnIndex = segment;
         particle->groupIndex = 3;
         particle->alpha = 50;

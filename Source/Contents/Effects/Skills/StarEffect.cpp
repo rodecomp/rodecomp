@@ -58,9 +58,10 @@ void CStarEffect::Open() {
       }
 
       particle->effectId = this->id;
-      particle->columnIndex = index;
-      particle->rowIndex = ring;
-      particle->groupIndex = 1;
+      int* indices = &particle->groupIndex;
+      indices[1] = index;
+      indices[2] = ring;
+      indices[0] = 1;
       this->SetupParticle(particle);
       this->particles.push_back(particle);
     }

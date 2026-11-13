@@ -60,18 +60,20 @@ void CPowderingEffect::Open() {
     }
 
     particle->effectId = this->id;
-    particle->columnIndex = i;
-    particle->rowIndex = 0;
-    particle->groupIndex = 1;
+    int* indices = &particle->groupIndex;
+    indices[1] = i;
+    indices[2] = 0;
+    indices[0] = 1;
 
     particle->SetTexture("smoke2.bmp");
 
     const int offsetX = RandomSpan(this->particleGridSize * 5) - this->particleGridSize * 5 / 2 + 1;
     const int offsetZ = RandomSpan(this->particleGridSize * 5) - this->particleGridSize * 5 / 2 + 1;
 
-    particle->offsetY = 0.0f;
-    particle->offsetX = static_cast<float>(offsetX);
-    particle->offsetZ = static_cast<float>(offsetZ);
+    const vector3d offset = {static_cast<float>(offsetX), 0.0f, static_cast<float>(offsetZ)};
+    particle->offsetY = offset.y;
+    particle->offsetX = offset.x;
+    particle->offsetZ = offset.z;
 
     this->InitSmokeParticle(particle);
     particle->InitParticleQuad(particle->vertices);
@@ -87,9 +89,10 @@ void CPowderingEffect::Open() {
     }
 
     particle->effectId = this->id;
-    particle->columnIndex = i;
-    particle->rowIndex = 0;
-    particle->groupIndex = 1;
+    int* indices2 = &particle->groupIndex;
+    indices2[1] = i;
+    indices2[2] = 0;
+    indices2[0] = 1;
 
     particle->SetSprite("이팩트\\particle2.spr");
     particle->SetAction("이팩트\\particle2.act");

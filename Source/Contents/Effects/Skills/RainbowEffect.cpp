@@ -30,9 +30,10 @@ void CRainbowEffect::Open() {
       CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (particle) {
         particle->effectId = this->id;
-        particle->columnIndex = column;
-        particle->rowIndex = row;
-        particle->groupIndex = 1;
+        int* indices = &particle->groupIndex;
+        indices[1] = column;
+        indices[2] = row;
+        indices[0] = 1;
         particle->SetTexture("effect\\alpha_center.tga");
         particle->alpha = 0;
         particle->scale = 50.0f;
