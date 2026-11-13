@@ -449,7 +449,7 @@ myGPack::CGPakUpdate::CGPakUpdate() {
 
 // OFFSET: 0x00E55940
 // FUNCTION: fn_24308
-myGPack::CGPakUpdate::~CGPakUpdate() {
+__declspec(noinline) myGPack::CGPakUpdate::~CGPakUpdate() {
   this->Close();
 }
 
