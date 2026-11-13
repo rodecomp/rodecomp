@@ -62,7 +62,7 @@ UIAchievementWnd::UIAchievementWnd() : UIFrameWnd(0) {
 
 // OFFSET: 0x007B2E80
 // FUNCTION: fn_09192
-UIAchievementWnd::~UIAchievementWnd() {
+__declspec(noinline) UIAchievementWnd::~UIAchievementWnd() {
 }
 
 // OFFSET: 0x007B37F0
