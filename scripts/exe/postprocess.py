@@ -52,6 +52,15 @@ class Image:
         self.data = bytearray(self.pe.__data__)
         self.symbols = self._read_map(exe.with_suffix(".map"))
         self._starts = sorted(set(self.symbols.values()))
+        last = self.pe.sections[-1]
+        self._extra_rva = self._align(last.VirtualAddress + last.Misc_VirtualSize, self.pe.OPTIONAL_HEADER.SectionAlignment)
+        self._extra = bytearray()  # contents of the section added by allocate(), written on save()
+        self._dropped = set()      # RVAs whose base relocation was removed
+        self._added = set()        # RVAs that need a new base relocation
+
+    @staticmethod
+    def _align(value: int, alignment: int) -> int:
+        return (value + alignment - 1) // alignment * alignment
 
     def _read_map(self, path: Path):
         if not path.exists():
@@ -79,36 +88,78 @@ class Image:
     def offset(self, va: int) -> int:
         return self.pe.get_offset_from_rva(va - self.base)
 
+    def section(self, name: str):
+        """(start VA, end VA) of a section of the linked exe."""
+        for section in self.pe.sections:
+            if section.Name.rstrip(b"\0").decode() == name:
+                start = self.base + section.VirtualAddress
+                return start, start + section.Misc_VirtualSize
+        raise PatchError(f"section {name} not in {self.exe.name}")
+
+    def _view(self, va: int, size: int):
+        """(buffer, index) holding the bytes [va, va + size): the exe itself or the added section."""
+        extra = va - self.base - self._extra_rva
+        if 0 <= extra and extra + size <= len(self._extra):
+            return self._extra, extra
+        return self.data, self.offset(va)
+
     def read(self, va: int, size: int) -> bytes:
-        offset = self.offset(va)
-        return bytes(self.data[offset:offset + size])
+        buffer, index = self._view(va, size)
+        return bytes(buffer[index:index + size])
 
     def u32(self, va: int) -> int:
         return struct.unpack("<I", self.read(va, 4))[0]
 
     def find(self, start: int, end: int, pattern: str) -> int:
         """VA of the single match of a hex pattern (`??` = any byte) in [start, end)."""
-        regex = re.compile(b"".join(b"." if b == "??" else re.escape(bytes.fromhex(b)) for b in pattern.split()), re.S)
-        lo, hi = self.offset(start), self.offset(start) + (end - start)
-        hits = [m.start() for m in regex.finditer(bytes(self.data[lo:hi]))]
+        hits = self.find_all(start, end, pattern)
         if len(hits) != 1:
             raise PatchError(f"pattern '{pattern}' matched {len(hits)} times in {start:#x}-{end:#x}, expected 1")
-        return start + hits[0]
+        return hits[0]
 
-    def write(self, va: int, new: bytes, expect: bytes):
-        """Replace `expect` at va with `new` (same length) and drop the base relocations inside it."""
+    def find_all(self, start: int, end: int, pattern: str):
+        """VAs of every match of a hex pattern (`??` = any byte) in [start, end)."""
+        regex = re.compile(b"".join(b"." if b == "??" else re.escape(bytes.fromhex(b)) for b in pattern.split()), re.S)
+        lo, hi = self.offset(start), self.offset(start) + (end - start)
+        return [start + m.start() for m in regex.finditer(bytes(self.data[lo:hi]))]
+
+    def find_string(self, text: bytes) -> int:
+        """VA of the single NUL-terminated string `text` in .rdata."""
+        start, end = self.section(".rdata")
+        hits = [va for va in self.find_all(start, end, (text + b"\0").hex(" ")) if self.read(va - 1, 1) == b"\0"]
+        if len(hits) != 1:
+            raise PatchError(f"string {text!r} found {len(hits)} times in .rdata, expected 1")
+        return hits[0]
+
+    def write(self, va: int, new: bytes, expect: bytes, relocs=()):
+        """Replace `expect` at va with `new` (same length) and drop the base relocations inside it.
+
+        `relocs` are offsets into `new` of absolute VAs that the loader must rebase (/DYNAMICBASE)."""
         if len(new) != len(expect):
             raise PatchError("replacement and expected bytes differ in length")
         current = self.read(va, len(expect))
         if current != expect:
             raise PatchError(f"{va:#x}: expected {expect.hex(' ')}, found {current.hex(' ')}")
-        offset = self.offset(va)
-        self.data[offset:offset + len(new)] = new
+        buffer, index = self._view(va, len(new))
+        buffer[index:index + len(new)] = new
         self._drop_relocations(va - self.base, va - self.base + len(new))
+        self._added.update(va - self.base + offset for offset in relocs)
 
     def write_jmp(self, va: int, target: int, expect: bytes):
         """`jmp rel32` (5 bytes) from va to target."""
         self.write(va, b"\xe9" + struct.pack("<i", target - (va + 5)), expect)
+
+    def allocate(self, size: int, align: int = 16) -> int:
+        """VA of `size` zero bytes in a new executable, writable section (.patch) appended on save()."""
+        start = self._align(len(self._extra), align)
+        self._extra.extend(bytes(start + size - len(self._extra)))
+        return self.base + self._extra_rva + start
+
+    def add(self, data: bytes, relocs=(), align: int = 16) -> int:
+        """Place `data` in the .patch section and return its VA; `relocs` as in write()."""
+        va = self.allocate(len(data), align)
+        self.write(va, data, bytes(len(data)), relocs)
+        return va
 
     def _drop_relocations(self, lo: int, hi: int):
         for block in getattr(self.pe, "DIRECTORY_ENTRY_BASERELOC", []):
@@ -116,8 +167,51 @@ class Image:
                 if entry.type != 0 and lo < entry.rva + 4 and entry.rva < hi:
                     word_offset = entry.struct.get_file_offset()
                     struct.pack_into("<H", self.data, word_offset, 0)  # IMAGE_REL_BASED_ABSOLUTE: padding, skipped
+                    self._dropped.add(entry.rva)
+        self._added.difference_update(range(lo - 3, hi))
+
+    def _relocation_table(self) -> bytes:
+        """The base relocation directory: the linker's entries minus the dropped ones, plus the added ones."""
+        rvas = {entry.rva for block in getattr(self.pe, "DIRECTORY_ENTRY_BASERELOC", []) for entry in block.entries
+                if entry.type == pefile.RELOCATION_TYPE["IMAGE_REL_BASED_HIGHLOW"]}
+        rvas = sorted((rvas - self._dropped) | self._added)
+        table = bytearray()
+        pages = sorted({rva & ~0xFFF for rva in rvas})
+        for page in pages:
+            words = [0x3000 | (rva & 0xFFF) for rva in rvas if rva & ~0xFFF == page]
+            if len(words) % 2:
+                words.append(0)
+            table += struct.pack("<II", page, 8 + 2 * len(words)) + struct.pack(f"<{len(words)}H", *words)
+        return bytes(table)
+
+    def _append_section(self):
+        """Write the .patch section (allocated bytes + rebuilt relocation directory) into the exe."""
+        header = self.pe.OPTIONAL_HEADER
+        last = self.pe.sections[-1]
+        if len(self.data) != last.PointerToRawData + last.SizeOfRawData:
+            raise PatchError("data after the last section: cannot append .patch")
+        table_offset = self._align(len(self._extra), 4)
+        table = self._relocation_table()
+        contents = bytes(self._extra) + bytes(table_offset - len(self._extra)) + table
+        raw_size = self._align(len(contents), header.FileAlignment)
+        slot = last.get_file_offset() + 40
+        if slot + 40 > header.SizeOfHeaders or any(self.data[slot:slot + 40]):
+            raise PatchError("no room for another section header")
+        raw_offset = len(self.data)
+        self.data[slot:slot + 40] = struct.pack(
+            "<8sIIIIIIHHI", b".patch", len(contents), self._extra_rva, raw_size, raw_offset, 0, 0, 0, 0,
+            0xE0000020)  # code | execute | read | write
+        self.data += contents + bytes(raw_size - len(contents))
+        struct.pack_into("<H", self.data, self.pe.FILE_HEADER.get_field_absolute_offset("NumberOfSections"),
+                         self.pe.FILE_HEADER.NumberOfSections + 1)
+        struct.pack_into("<I", self.data, header.get_field_absolute_offset("SizeOfImage"),
+                         self._align(self._extra_rva + len(contents), header.SectionAlignment))
+        directory = header.DATA_DIRECTORY[pefile.DIRECTORY_ENTRY["IMAGE_DIRECTORY_ENTRY_BASERELOC"]]
+        struct.pack_into("<II", self.data, directory.get_file_offset(), self._extra_rva + table_offset, len(table))
 
     def save(self):
+        if self._extra or self._added:
+            self._append_section()
         self.pe.close()
         self.exe.write_bytes(self.data)
 
