@@ -71,7 +71,7 @@ public:
   /* 0084 */ float padding_0084;
   /* 0088 */ float cameraUpX;
   /* 008C */ float cameraUpY;
-  /* 0090 */ int cameraUpZ;
+  /* 0090 */ float cameraUpZ;
   /* 0094 */ int renderBounds[5];
   /* 00A8 */ float screenX;
   /* 00AC */ float screenY;

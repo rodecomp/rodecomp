@@ -71,7 +71,7 @@ void CCommonFloorEffect::ResetParticles() {
     particle->position.z = this->position[2];
     particle->scale = this->scaleParameter;
     particle->angle = static_cast<float>(this->baseAngle);
-    particle->phaseParameter = static_cast<int>(static_cast<float>(particle->rowIndex) * *reinterpret_cast<float*>(&this->rotationParameter));
+    particle->phaseParameter = static_cast<int>(static_cast<float>(particle->rowIndex) * this->rotationParameter);
     particle->alpha = this->baseAlpha;
     particle->sourceBlend = 5;
     particle->destinationBlend = 7;

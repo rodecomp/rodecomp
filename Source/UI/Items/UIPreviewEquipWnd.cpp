@@ -53,7 +53,7 @@ void UIPreviewEquipWnd::DrawCharacter() {
   float up[3];
   up[0] = this->m_render->cameraUpX;
   up[1] = this->m_render->cameraUpY;
-  up[2] = *reinterpret_cast<float*>(&this->m_render->cameraUpZ);
+  up[2] = this->m_render->cameraUpZ;
   view.LookAt(eye, &this->m_render->position.x, up);
 
   float screenX = 0.0f;

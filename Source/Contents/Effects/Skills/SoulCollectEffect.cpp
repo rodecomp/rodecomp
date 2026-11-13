@@ -85,7 +85,7 @@ bool CSoulCollectEffect::IsAlive() {
 // OFFSET: 0x0072A800
 // FUNCTION: fn_07463
 void CSoulCollectEffect::OnProcess() {
-  float& rotation = reinterpret_cast<float&>(this->rotationParameter);
+  float& rotation = this->rotationParameter;
 
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;

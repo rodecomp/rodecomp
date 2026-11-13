@@ -4496,7 +4496,7 @@ void CRagEffect::BubbleSpiral(std::int16_t angle, const char*, char flag) {
 // OFFSET: 0x00C6D2C0
 // FUNCTION: fn_20299
 void CRagEffect::BubbleSpiralKind(int angle, const char*, char kind) {
-  auto stored = [&]() -> CEffectPrim* { return reinterpret_cast<CEffectPrim*>(this->state.currentPrimitive); };
+  auto stored = [&]() -> CEffectPrim* { return this->state.lastPrim; };
   char name[64];
 
   const RenderObjectState& parent = this->state.parent->render;
@@ -4512,7 +4512,7 @@ void CRagEffect::BubbleSpiralKind(int angle, const char*, char kind) {
     this->state.duration = 100;
   }
 
-  this->state.currentPrimitive = reinterpret_cast<EffectPrimitiveState*>(CreateEffectParticle(*this, this->render, 144, 0.0f, 0.0f, 0.0f, WorldObjects()));
+  this->state.lastPrim = CreateEffectParticle(*this, this->render, 144, 0.0f, 0.0f, 0.0f, WorldObjects());
   stored()->state.renderFlag = 5;
   stored()->state.duration = this->state.duration;
 
@@ -6435,8 +6435,8 @@ void CRagEffect::TexturedScatterSphere(const char* name, char flag, int) {
   }
 
   CEffectPrim* particle = CreateEffectParticle(*this, this->render, 159, 0.0f, 0.0f, 0.0f, WorldObjects());
-  this->state.currentPrimitive = reinterpret_cast<EffectPrimitiveState*>(particle);
-  auto stored = [&]() -> CEffectPrim* { return reinterpret_cast<CEffectPrim*>(this->state.currentPrimitive); };
+  this->state.lastPrim = particle;
+  auto stored = [&]() -> CEffectPrim* { return this->state.lastPrim; };
   stored()->state.renderFlag = 5;
   stored()->state.duration = this->state.duration;
   AllocateTextures(particle->state);
@@ -7451,7 +7451,7 @@ void CRagEffect::TexturedForkBolt(const char* name, char flag) {
 // OFFSET: 0x00C77F50
 // FUNCTION: fn_20349
 void CRagEffect::MonsterSpriteBurst(char kind) {
-  auto stored = [&]() -> CEffectPrim* { return reinterpret_cast<CEffectPrim*>(this->state.currentPrimitive); };
+  auto stored = [&]() -> CEffectPrim* { return this->state.lastPrim; };
   const RenderObjectState& parent = this->state.parent->render;
   this->render.position.x = parent.position.x;
   this->render.position.y = parent.position.y;
@@ -7470,7 +7470,7 @@ void CRagEffect::MonsterSpriteBurst(char kind) {
     return;
   }
 
-  this->state.currentPrimitive = reinterpret_cast<EffectPrimitiveState*>(CreateEffectParticle(*this, this->render, 153, 0.0f, 0.0f, 0.0f, WorldObjects()));
+  this->state.lastPrim = CreateEffectParticle(*this, this->render, 153, 0.0f, 0.0f, 0.0f, WorldObjects());
   stored()->state.duration = this->state.duration - this->state.stateCnt;
   for (int i = 0; i < 4; ++i) {
     stored()->state.slots[i].life = 0;
@@ -7982,8 +7982,8 @@ void CRagEffect::FrostSplash(int, int) {
   this->render.position.y = parent.position.y;
   this->render.position.z = parent.position.z;
   CEffectPrim* particle = CreateEffectParticle(*this, this->render, 150, 0.0f, 0.0f, 0.0f, WorldObjects());
-  this->state.currentPrimitive = reinterpret_cast<EffectPrimitiveState*>(particle);
-  auto stored = [&]() -> CEffectPrim* { return reinterpret_cast<CEffectPrim*>(this->state.currentPrimitive); };
+  this->state.lastPrim = particle;
+  auto stored = [&]() -> CEffectPrim* { return this->state.lastPrim; };
   stored()->state.renderFlag = 5;
   stored()->state.duration = this->state.duration;
   stored()->state.totalTexture = 1;
@@ -8873,7 +8873,7 @@ void CRagEffect::ScatterItemIcons(char kind) {
 // OFFSET: 0x00C69910
 // FUNCTION: fn_20290
 void CRagEffect::Vallentine(char kind) {
-  auto stored = [&]() -> CEffectPrim* { return reinterpret_cast<CEffectPrim*>(this->state.currentPrimitive); };
+  auto stored = [&]() -> CEffectPrim* { return this->state.lastPrim; };
   const RenderObjectState& parent = this->state.parent->render;
   this->render.position.x = parent.position.x;
   this->render.position.y = parent.position.y;
@@ -8884,7 +8884,7 @@ void CRagEffect::Vallentine(char kind) {
   }
 
   PlayEffectWave(*this, "effect\\vallentine.wav");
-  this->state.currentPrimitive = reinterpret_cast<EffectPrimitiveState*>(CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects()));
+  this->state.lastPrim = CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects());
   stored()->state.pattern |= 0x200u;
   stored()->state.duration = this->state.duration;
   stored()->state.deltaPos2.y = 0.0f;
@@ -9612,7 +9612,7 @@ void CRagEffect::SageMagicRod() {
 // OFFSET: 0x00C59610
 // FUNCTION: fn_20213
 void CRagEffect::SakuraFireArrow() {
-  auto stored = [&]() -> CEffectPrim* { return reinterpret_cast<CEffectPrim*>(this->state.currentPrimitive); };
+  auto stored = [&]() -> CEffectPrim* { return this->state.lastPrim; };
   CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt >= 12 && this->state.stateCnt <= 15) {
@@ -9625,7 +9625,7 @@ void CRagEffect::SakuraFireArrow() {
     return;
   }
 
-  this->state.currentPrimitive = reinterpret_cast<EffectPrimitiveState*>(CreateEffectParticle(*this, this->render, 124, 0.0f, 0.0f, 0.0f, WorldObjects()));
+  this->state.lastPrim = CreateEffectParticle(*this, this->render, 124, 0.0f, 0.0f, 0.0f, WorldObjects());
   stored()->state.duration = this->state.duration;
   stored()->state.slots[0].life = 1;
   stored()->state.slots[0].maxHeight = static_cast<float>(ClampedRandom(3) + 2) * 0.15f;
@@ -16004,11 +16004,11 @@ void CRagEffect::TexturedRisingRing(const char* name) {
 // OFFSET: 0x00C52D20
 // FUNCTION: fn_20196
 bool CRagEffect::TexturedRisingRingStages(const char* name, char level) {
-  auto stored = [&]() -> CEffectPrim* { return reinterpret_cast<CEffectPrim*>(this->state.currentPrimitive); };
+  auto stored = [&]() -> CEffectPrim* { return this->state.lastPrim; };
   this->render.position = this->state.parent->render.position;
 
   if (this->state.stateCnt == 0) {
-    this->state.currentPrimitive = reinterpret_cast<EffectPrimitiveState*>(CreateEffectParticle(*this, this->render, 60, 0.0f, 0.0f, 0.0f, WorldObjects()));
+    this->state.lastPrim = CreateEffectParticle(*this, this->render, 60, 0.0f, 0.0f, 0.0f, WorldObjects());
     stored()->state.renderFlag = 5;
     stored()->state.duration = this->state.duration;
     AllocateTextures(stored()->state);
@@ -16066,7 +16066,7 @@ bool CRagEffect::TexturedRisingRingStages(const char* name, char level) {
   if (level == 1) {
     if (this->state.stateCnt == 30) {
       PlayEffectWave(*this, "effect\\EF_GlassWall.wav");
-      this->state.currentPrimitive = reinterpret_cast<EffectPrimitiveState*>(CreateEffectParticle(*this, this->render, 60, 0.0f, 0.0f, 0.0f, WorldObjects()));
+      this->state.lastPrim = CreateEffectParticle(*this, this->render, 60, 0.0f, 0.0f, 0.0f, WorldObjects());
       stored()->state.renderFlag = 5;
       stored()->state.duration = this->state.duration;
       AllocateTextures(stored()->state);
@@ -16123,7 +16123,7 @@ bool CRagEffect::TexturedRisingRingStages(const char* name, char level) {
   } else {
     if (this->state.stateCnt == 30) {
       PlayEffectWave(*this, "effect\\EF_GlassWall.wav");
-      this->state.currentPrimitive = reinterpret_cast<EffectPrimitiveState*>(CreateEffectParticle(*this, this->render, 60, 0.0f, 0.0f, 0.0f, WorldObjects()));
+      this->state.lastPrim = CreateEffectParticle(*this, this->render, 60, 0.0f, 0.0f, 0.0f, WorldObjects());
       stored()->state.renderFlag = 5;
       stored()->state.duration = this->state.duration;
       AllocateTextures(stored()->state);
@@ -16179,7 +16179,7 @@ bool CRagEffect::TexturedRisingRingStages(const char* name, char level) {
     }
 
     if (this->state.stateCnt == 60) {
-      this->state.currentPrimitive = reinterpret_cast<EffectPrimitiveState*>(CreateEffectParticle(*this, this->render, 60, 0.0f, 0.0f, 0.0f, WorldObjects()));
+      this->state.lastPrim = CreateEffectParticle(*this, this->render, 60, 0.0f, 0.0f, 0.0f, WorldObjects());
       stored()->state.renderFlag = 5;
       stored()->state.duration = this->state.duration;
       AllocateTextures(stored()->state);
@@ -17388,8 +17388,8 @@ void CRagEffect::TexturedGroundRing(const char* name, char flag, int unused1, in
   }
 
   CEffectPrim* particle = CreateEffectParticle(*this, this->render, 169, 0.0f, 0.0f, 0.0f, WorldObjects());
-  this->state.currentPrimitive = reinterpret_cast<EffectPrimitiveState*>(particle);
-  auto stored = [&]() -> CEffectPrim* { return reinterpret_cast<CEffectPrim*>(this->state.currentPrimitive); };
+  this->state.lastPrim = particle;
+  auto stored = [&]() -> CEffectPrim* { return this->state.lastPrim; };
   stored()->state.renderFlag = 5;
   stored()->state.duration = this->state.duration;
   AllocateTextures(stored()->state);
@@ -18613,7 +18613,7 @@ void CRagEffect::FreezingCircle(char kind) {
 // OFFSET: 0x00C4BB00
 // FUNCTION: fn_20175
 void CRagEffect::TorchDust(char kind) {
-  auto stored = [&]() -> CEffectPrim* { return reinterpret_cast<CEffectPrim*>(this->state.currentPrimitive); };
+  auto stored = [&]() -> CEffectPrim* { return this->state.lastPrim; };
   this->render.position = this->state.parent->render.position;
 
   if (this->state.stateCnt != 0) {
@@ -18621,7 +18621,7 @@ void CRagEffect::TorchDust(char kind) {
   }
 
   this->render.position = this->state.parent->render.position;
-  this->state.currentPrimitive = reinterpret_cast<EffectPrimitiveState*>(CreateEffectParticle(*this, this->render, 128, 0.0f, 0.0f, 0.0f, WorldObjects()));
+  this->state.lastPrim = CreateEffectParticle(*this, this->render, 128, 0.0f, 0.0f, 0.0f, WorldObjects());
   stored()->state.renderFlag = 5;
   stored()->state.duration = this->state.duration;
 

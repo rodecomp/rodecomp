@@ -365,7 +365,7 @@ int SetMagicFloorInfo(lua_State* state) {
     effect->baseAngle = luaL_checknumber(state, 3);
     break;
   case MSG_SET_RISEANGLE:
-    reinterpret_cast<float&>(effect->rotationParameter) = static_cast<float>(static_cast<int>(luaL_checknumber(state, 3)));
+    effect->rotationParameter = static_cast<float>(static_cast<int>(luaL_checknumber(state, 3)));
     break;
   case MSG_SET_ALPHA:
     effect->baseAlpha = luaL_checknumber(state, 3);
@@ -462,7 +462,7 @@ int SetOtherEffectInfo(lua_State* state) {
     effect->baseAngle = luaL_checknumber(state, 4);
     break;
   case MSG_SET_RISEANGLE:
-    reinterpret_cast<float&>(effect->rotationParameter) = static_cast<float>(static_cast<int>(luaL_checknumber(state, 4)));
+    effect->rotationParameter = static_cast<float>(static_cast<int>(luaL_checknumber(state, 4)));
     break;
   case MSG_SET_ALPHA:
     effect->baseAlpha = luaL_checknumber(state, 4);

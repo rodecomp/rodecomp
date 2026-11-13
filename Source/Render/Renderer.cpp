@@ -20,7 +20,7 @@
 // OFFSET: 0x00544A60
 // FUNCTION: fn_01820
 std::uint32_t __fastcall sub_544A60(const CRenderer* renderer) {
-  return renderer->viewDirectionZ;
+  return reinterpret_cast<const std::uint32_t&>(renderer->viewDirectionZ);
 }
 
 // OFFSET: 0x0055D150

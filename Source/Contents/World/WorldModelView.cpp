@@ -266,13 +266,13 @@ void CView::Render() {
   const float x = this->camera.target[0] - this->frame.eye[0];
   const float y = this->camera.target[1] - this->frame.eye[1];
   const float z = this->camera.target[2] - this->frame.eye[2];
-  *reinterpret_cast<float*>(&renderer->viewDirectionX) = x;
-  *reinterpret_cast<float*>(&renderer->viewDirectionY) = y;
-  *reinterpret_cast<float*>(&renderer->viewDirectionZ) = z;
+  renderer->viewDirectionX = x;
+  renderer->viewDirectionY = y;
+  renderer->viewDirectionZ = z;
   const float inverseLength = 1.0f / SquareRoot(x * x + y * y + z * z);
-  *reinterpret_cast<float*>(&renderer->viewDirectionX) *= inverseLength;
-  *reinterpret_cast<float*>(&renderer->viewDirectionY) *= inverseLength;
-  *reinterpret_cast<float*>(&renderer->viewDirectionZ) *= inverseLength;
+  renderer->viewDirectionX *= inverseLength;
+  renderer->viewDirectionY *= inverseLength;
+  renderer->viewDirectionZ *= inverseLength;
 
   this->spatial.inside.erase(this->spatial.inside.begin(), this->spatial.inside.end());
   this->spatial.clipped.erase(this->spatial.clipped.begin(), this->spatial.clipped.end());

@@ -56,9 +56,9 @@ public:
 
   /* 0004 */ RendererViewport viewport;
   /* 0038 */ unsigned frame;
-  /* 003C */ int viewDirectionX;
-  /* 0040 */ int viewDirectionY;
-  /* 0044 */ int viewDirectionZ;
+  /* 003C */ float viewDirectionX;
+  /* 0040 */ float viewDirectionY;
+  /* 0044 */ float viewDirectionZ;
   /* 0048 */ unsigned char twoPass;
   /* 0049 */ unsigned char padding_0049[3];
   /* 004C */ int padding_004C;

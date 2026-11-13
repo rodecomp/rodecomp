@@ -78,7 +78,7 @@ public:
   /* 003C */ unsigned char areaParameters[12];
   /* 0048 */ float scaleParameter;
   /* 004C */ int baseAngle;
-  /* 0050 */ int rotationParameter;
+  /* 0050 */ float rotationParameter;
   /* 0054 */ int baseAlpha;
   /* 0058 */ int fadeAlpha;
   /* 005C */ float heights[21];
