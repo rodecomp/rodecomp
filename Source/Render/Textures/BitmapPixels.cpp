@@ -261,9 +261,12 @@ void CDCBitmap::Brighten(int x, int y, int copyWidth, int copyHeight, int amount
     for (int column = x; column < right; ++column) {
       std::uint32_t& pixel = this->m_bitmap.pixels[column + row * this->m_bitmap.width];
       if (pixel != 0xFFFF00FF) {
-        const int red = std::min(std::max(static_cast<int>((pixel >> 16) & 0xFF) + amount, 0), 255);
-        const int green = std::min(std::max(static_cast<int>((pixel >> 8) & 0xFF) + amount, 0), 255);
-        const int blue = std::min(std::max(static_cast<int>(pixel & 0xFF) + amount, 0), 255);
+        const int brightRed = static_cast<int>((pixel >> 16) & 0xFF) + amount;
+        const int red = std::min(brightRed >= 0 ? brightRed : 0, 255);
+        const int brightGreen = static_cast<int>((pixel >> 8) & 0xFF) + amount;
+        const int green = std::min(brightGreen >= 0 ? brightGreen : 0, 255);
+        const int brightBlue = static_cast<int>(pixel & 0xFF) + amount;
+        const int blue = std::min(brightBlue >= 0 ? brightBlue : 0, 255);
         pixel = 0xFF000000 | ((red & 0xFF) << 16) | ((green & 0xFF) << 8) | (blue & 0xFF);
       }
     }
