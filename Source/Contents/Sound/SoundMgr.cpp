@@ -11,6 +11,8 @@
 #include <process.h>
 
 extern "C" __declspec(dllimport) unsigned int __stdcall AIL_stream_status(void* stream);
+extern "C" __declspec(dllimport) int __stdcall AIL_3D_room_type(void* provider);
+extern "C" __declspec(dllimport) void __stdcall AIL_set_3D_room_type(void* provider, int roomType);
 
 // STATIC: 0x0138BE7C
 // GLOBAL: gl_24457
@@ -670,11 +672,10 @@ void CSoundMgr::SetRoom(int room) {
     return;
   }
 
-  MilesRuntime& miles = MilesRuntime::Get();
-  this->roomSupport = miles.roomType(this->provider) != -1;
+  this->roomSupport = AIL_3D_room_type(reinterpret_cast<void*>(this->provider)) != -1;
 
   if (this->roomSupport) {
-    miles.setRoomType(this->provider, room);
+    AIL_set_3D_room_type(reinterpret_cast<void*>(this->provider), room);
   }
 }
 
