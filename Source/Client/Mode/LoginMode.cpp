@@ -192,20 +192,6 @@ struct AcceptLoginPacket {
   /* 002F */ unsigned char body[1];
 };
 
-struct ServerAddress {
-  /* 0000 */ std::uint32_t ip;
-  /* 0004 */ std::int16_t port;
-  /* 0006 */ char name[20];
-  /* 001A */ std::uint16_t userCount;
-  /* 001C */ std::int16_t state;
-  /* 001E */ std::int16_t property;
-};
-
-struct ServerAddress2 {
-  /* 0000 */ ServerAddress address;
-  /* 0020 */ char domain[128];
-};
-
 struct ResultPacket {
   /* 0000 */ std::int16_t id;
   /* 0002 */ unsigned char result;
@@ -336,8 +322,6 @@ int g_isAppActive;
 
 static_assert(sizeof(CharacterSlotsPacket) == 0x1D);
 static_assert(offsetof(AcceptLoginPacket, body) == 0x2F);
-static_assert(sizeof(ServerAddress) == 0x20);
-static_assert(sizeof(ServerAddress2) == 0xA0);
 static_assert(sizeof(AcceptEnterNeoUnionPacket) == 0x18 + sizeof(CharacterInfo));
 static_assert(offsetof(CharacterSlotCountsPacket, extension) == 0xA);
 static_assert(sizeof(BlockedCharacter) == 0x18);
@@ -3185,7 +3169,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
       return 0;
     }
 
-    ServerAddress2* servers = reinterpret_cast<ServerAddress2*>(this->serverList);
+    ServerAddress2* servers = this->serverList;
     if (servers[argument1].address.state == 3) {
       g_windowMgr.Confirm(LookupMessage(MSI_CANT_CONNECT_TO_PAY_SERVER), 0, true, false, 0, "Message", 280, 120, 0);
       this->pendingCursorType = 6;
@@ -3505,7 +3489,7 @@ __declspec(noinline) static std::uint32_t ParseXmlAddress(const std::string* tex
 // OFFSET: 0x03DE9318
 // FUNCTION: fn_45408
 void __stdcall LoadCustomServerList(CLoginMode* mode) {
-  ServerAddress2* servers = reinterpret_cast<ServerAddress2*>(mode->serverList);
+  ServerAddress2* servers = mode->serverList;
   mode->serverCount = 0;
   mode->selectedServer = -1;
 
@@ -3569,7 +3553,7 @@ void CLoginMode::OnChangeState(int value) {
   g_session.quitBlocked = 0;
   this->connectionReady = 1;
 
-  ServerAddress2* servers = reinterpret_cast<ServerAddress2*>(this->serverList);
+  ServerAddress2* servers = this->serverList;
 
   switch (value) {
   case 0:

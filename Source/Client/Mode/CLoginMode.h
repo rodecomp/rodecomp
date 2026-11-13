@@ -95,6 +95,23 @@ struct MapStateEntry {
   /* 0004 */ MapStateData data;
 };
 
+struct ServerAddress {
+  /* 0000 */ std::uint32_t ip;
+  /* 0004 */ std::int16_t port;
+  /* 0006 */ char name[20];
+  /* 001A */ std::uint16_t userCount;
+  /* 001C */ std::int16_t state;
+  /* 001E */ std::int16_t property;
+};
+
+struct ServerAddress2 {
+  /* 0000 */ ServerAddress address;
+  /* 0020 */ char domain[128];
+};
+
+static_assert(sizeof(ServerAddress) == 0x20);
+static_assert(sizeof(ServerAddress2) == 0xA0);
+
 class CLoginMode : public CMode {
 public:
   CLoginMode();
@@ -119,7 +136,7 @@ public:
   /* 01E0 */ bool characterDeleted;
   /* 01E1 */ unsigned char padding_01E1[0x3];
   /* 01E4 */ std::uint32_t otpStarted;
-  /* 01E8 */ unsigned char serverList[0x3E80];
+  /* 01E8 */ ServerAddress2 serverList[100];
   /* 4068 */ CharacterInfo characters[68];
   /* 6EE4 */ std::string wallpaperName;
   /* 6EFC */ CharacterSlotExtension slotExtension;
