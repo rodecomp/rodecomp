@@ -59,8 +59,8 @@ void SetRoMapMarker(std::string name, const WorldViewArea& area, RoMapMarker& ma
 
   marker.name = name;
   marker.area = area;
-  marker.centerX = centerX;
-  marker.centerY = centerY;
+  marker.center[0] = centerX;
+  marker.center[1] = centerY;
   marker.width = static_cast<float>(width);
   marker.height = static_cast<float>(height);
 }
@@ -610,15 +610,15 @@ void UIRoMapWnd::DrawKafraMarkers(float elapsed) {
     RoMapMarker to = this->m_kafraMarkers.markers[i];
     targets.insert(std::pair<std::string, RoMapMarker>(to.name, to));
     if (to.name.size() == 10 && std::memcmp(to.name.c_str(), "izlude.rsw", 10) == 0) {
-      from.centerX = static_cast<float>(from.area.right);
-      to.centerX = to.width * 0.8f + static_cast<float>(to.area.left);
-      to.centerY = static_cast<float>(to.area.top);
+      from.center[0] = static_cast<float>(from.area.right);
+      to.center[0] = to.width * 0.8f + static_cast<float>(to.area.left);
+      to.center[1] = static_cast<float>(to.area.top);
     }
 
     CTexture* head = g_texMgr.Load("mapArrow_head.bmp", 0, true, true, false);
     CTexture* body = g_texMgr.Load("mapArrow_body.bmp", 1, true, true, false);
     this->DrawArrow(
-      from.centerX, from.centerY, to.centerX, to.centerY, static_cast<float>(from.area.left), static_cast<float>(from.area.top),
+      from.center[0], from.center[1], to.center[0], to.center[1], static_cast<float>(from.area.left), static_cast<float>(from.area.top),
       static_cast<float>(from.area.right), static_cast<float>(from.area.bottom), static_cast<float>(to.area.left), static_cast<float>(to.area.top),
       static_cast<float>(to.area.right), static_cast<float>(to.area.bottom), 10, body, 20, head, this->m_kafraMarkers.blend, 0xAAFFFFFF
     );
@@ -710,10 +710,10 @@ void CFlyingShipRouteInfo::BuildRoute(const std::vector<std::string>& mapNames) 
       WorldViewArea area = {field->left, field->top, field->right, field->bottom, field->areaFlags};
       RoMapMarker marker;
       SetRoMapMarker(name, area, marker);
-      this->entries.push_back(reinterpret_cast<const FlyingShipRouteEntry&>(marker));
+      this->entries.push_back(marker);
     }
   }
-  reinterpret_cast<unsigned char*>(&this->routeState)[1] = 1;
+  this->m_routeBuilt = 1;
 }
 
 // OFFSET: 0x00938FF0
@@ -911,8 +911,8 @@ __forceinline void CFlyingShipRouteInfo::Update(UIRoMapWnd* wnd, float elapsed) 
       this->segmentIndex = index;
     }
 
-    const float dx = this->entries[index].screenPosition[0] - this->entries[index + 1].screenPosition[0];
-    const float dy = this->entries[index].screenPosition[1] - this->entries[index + 1].screenPosition[1];
+    const float dx = this->entries[index].center[0] - this->entries[index + 1].center[0];
+    const float dy = this->entries[index].center[1] - this->entries[index + 1].center[1];
     const float distance = SquareRoot(dx * dx + dy * dy);
     if (this->travelledDistance == 0.0f) {
       this->segmentLength = distance;

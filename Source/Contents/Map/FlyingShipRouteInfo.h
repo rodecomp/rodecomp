@@ -1,6 +1,8 @@
 #ifndef RAGNAROK_SOURCE_CONTENTS_MAP_FLYINGSHIPROUTEINFO_H
 #define RAGNAROK_SOURCE_CONTENTS_MAP_FLYINGSHIPROUTEINFO_H
 
+#include "Contents/World/WorldViewData.h"
+
 #include <cstddef>
 #include <string>
 #include <vector>
@@ -8,19 +10,18 @@
 class UIRoMapWnd;
 struct WorldViewRecord;
 
-struct FlyingShipRouteEntry {
+struct RoMapMarker {
   /* 0000 */ std::string name;
-  /* 0018 */ int areaBounds[4];
-  /* 0028 */ int areaFlags;
-  /* 002C */ float screenPosition[2];
+  /* 0018 */ WorldViewArea area = {};
+  /* 002C */ float center[2];
   /* 0034 */ float width;
   /* 0038 */ float height;
 
-  FlyingShipRouteEntry() = default;
-  FlyingShipRouteEntry(const FlyingShipRouteEntry& other) = default;
-  FlyingShipRouteEntry(FlyingShipRouteEntry&& other) noexcept;
-  FlyingShipRouteEntry& operator=(const FlyingShipRouteEntry& other) = default;
-  FlyingShipRouteEntry& operator=(FlyingShipRouteEntry&& other) = default;
+  RoMapMarker() = default;
+  RoMapMarker(const RoMapMarker& other) = default;
+  RoMapMarker(RoMapMarker&& other) noexcept;
+  RoMapMarker& operator=(const RoMapMarker& other) = default;
+  RoMapMarker& operator=(RoMapMarker&& other) = default;
 };
 
 class CFlyingShipRouteInfo {
@@ -34,7 +35,7 @@ public:
   __declspec(noinline) bool UpdateRoute(WorldViewRecord* record);
   void Update(UIRoMapWnd* wnd, float elapsed);
 
-  /* 0004 */ std::vector<FlyingShipRouteEntry> entries;
+  /* 0004 */ std::vector<RoMapMarker> entries;
   /* 0010 */ int padding_0010;
   /* 0014 */ int padding_0014;
   /* 0018 */ int segmentIndex;
@@ -55,9 +56,10 @@ public:
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(FlyingShipRouteEntry) == 0x3C);
-static_assert(offsetof(FlyingShipRouteEntry, areaBounds) == 0x18);
-static_assert(offsetof(FlyingShipRouteEntry, height) == 0x38);
+static_assert(sizeof(RoMapMarker) == 0x3C);
+static_assert(offsetof(RoMapMarker, area) == 0x18);
+static_assert(offsetof(RoMapMarker, center) == 0x2C);
+static_assert(offsetof(RoMapMarker, height) == 0x38);
 static_assert(sizeof(CFlyingShipRouteInfo) == 0x50);
 static_assert(offsetof(CFlyingShipRouteInfo, entries) == 0x04);
 static_assert(offsetof(CFlyingShipRouteInfo, routeReset) == 0x28);

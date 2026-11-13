@@ -21,15 +21,6 @@ class UICheckBox;
 class UIComboBoxDefWnd;
 class UIEditCtrl;
 
-struct RoMapMarker {
-  /* 0000 */ std::string name;
-  /* 0018 */ WorldViewArea area = {};
-  /* 002C */ float centerX;
-  /* 0030 */ float centerY;
-  /* 0034 */ float width;
-  /* 0038 */ float height;
-};
-
 struct RoMapTooltipBox {
   // INLINED
   RoMapTooltipBox(int x, int y, int width, int height) : x(x), y(y), width(width), height(height), padding_0010(1) {
@@ -133,9 +124,6 @@ private:
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(RoMapTooltipBox) == 0x14);
-static_assert(sizeof(RoMapMarker) == 0x3C);
-static_assert(offsetof(RoMapMarker, area) == 0x18);
-static_assert(offsetof(RoMapMarker, centerX) == 0x2C);
 static_assert(sizeof(CKafraMoveMapServiceInfo) == 0x68);
 static_assert(offsetof(CKafraMoveMapServiceInfo, markers) == 0x04);
 #endif
