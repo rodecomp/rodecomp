@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/ShadowExceedEffect.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "Contents/Actors/ActorEnums.h"
 
 #include "Client/Mode/CGameMode.h"
@@ -47,8 +48,8 @@ void CShadowExceed::Close() {
 
   CRenderObject* actor = FindRenderObject(this->actor);
   if (actor) {
-    while (static_cast<EffectActor*>(actor)->HasId(1004) == true) {
-      actor->SendMsg(nullptr, AM_DELETE_EFFECT, 1004, 0, 0, 0, 0, 0);
+    while (static_cast<EffectActor*>(actor)->HasId(EF_KAGEMUSYA) == true) {
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_KAGEMUSYA, 0, 0, 0, 0, 0);
     }
   }
 }
@@ -135,10 +136,10 @@ void CShadowExceed::OnProcess() {
     this->finishSpawned = 1;
     CRenderObject* actor = FindRenderObject(this->actor);
     if (actor) {
-      while (static_cast<EffectActor*>(actor)->HasId(1004) == true) {
-        actor->SendMsg(nullptr, AM_DELETE_EFFECT, 1004, 0, 0, 0, 0, 0);
+      while (static_cast<EffectActor*>(actor)->HasId(EF_KAGEMUSYA) == true) {
+        actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_KAGEMUSYA, 0, 0, 0, 0, 0);
       }
-      static_cast<EffectActor*>(actor)->LaunchEffect(1004, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      static_cast<EffectActor*>(actor)->LaunchEffect(EF_KAGEMUSYA, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
   }
 }

@@ -1,4 +1,5 @@
 #include "Contents/Actors/ActorEnums.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "UI/Window/WindowId.h"
 #include "Network/Packets/ActorNamePacket.h"
 #include "Client/Mode/CGameMode.h"
@@ -6968,7 +6969,7 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
     effectId = 0x1FB;
     break;
   case Durian:
-    static_cast<EffectActor*>(actor)->LaunchEffect(0x105, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    static_cast<EffectActor*>(actor)->LaunchEffect(EF_GUMGANG2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     effectId = 0xDC;
     break;
   case RAMADAN:
@@ -7067,8 +7068,8 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
     effectId = 0x253;
     break;
   case Assumptio_5_Scroll:
-    static_cast<EffectActor*>(actor)->LaunchEffect(0x177, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    static_cast<EffectActor*>(actor)->LaunchEffect(0x1B8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    static_cast<EffectActor*>(actor)->LaunchEffect(EF_ASSUMPTIO, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    static_cast<EffectActor*>(actor)->LaunchEffect(EF_ASSUMPTIO2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case Spray_Of_Flowers:
   case Large_Spray_Of_Flowers:
@@ -7697,7 +7698,7 @@ void CGameMode::ProcessMouseWheel(int requireControl) {
       g_cameraDistance = static_cast<float>(this->viewParameters[0]);
     }
     maxDistance = static_cast<float>(this->viewParameters[1] + this->viewParameters[0]);
-  } else if (zoomSkill.level <= 0 && this->scene->player->render.state == 6 && !this->scene->player->HasId(0x14E)) {
+  } else if (zoomSkill.level <= 0 && this->scene->player->render.state == 6 && !this->scene->player->HasId(EF_BLIND)) {
     switch (g_session.m_job) {
     case JT_STAR:
     case JT_STAR_B:

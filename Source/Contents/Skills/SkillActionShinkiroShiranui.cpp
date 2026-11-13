@@ -1,4 +1,5 @@
 #include "Contents/Actors/ActorEnums.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "Client/Mode/CGameMode.h"
 #include "Contents/CombatTypes.h"
 #include "Client/Mode/ModeMgr.h"
@@ -174,7 +175,7 @@ int CSkillAction_SS_KINRYUUHOU::GetSkillAttackMotion() {
 // FUNCTION: fn_08793
 void CSkillAction_SS_KINRYUUHOU::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(58, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL6, level / 16);
   }
 }
 
@@ -215,7 +216,7 @@ int CSkillAction_SS_ANTENPOU::GetSkillAttackMotion() {
 // FUNCTION: fn_08798
 void CSkillAction_SS_ANTENPOU::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(59, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL7, level / 16);
   }
 }
 
@@ -244,8 +245,8 @@ int CSkillAction_SS_KAGEAKUMU::GetSkillAttackMotion() {
 // FUNCTION: fn_08802
 void CSkillAction_SS_KAGEAKUMU::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(812, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    static_cast<EffectActor*>(source)->LaunchEffect(1656, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BLACKBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_NEW_EPICLESIS_CAST, level / 16);
   }
 }
 
@@ -274,8 +275,8 @@ int CSkillAction_SS_HITOUAKUMU::GetSkillAttackMotion() {
 // FUNCTION: fn_08806
 void CSkillAction_SS_HITOUAKUMU::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(812, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    static_cast<EffectActor*>(source)->LaunchEffect(1656, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BLACKBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_NEW_EPICLESIS_CAST, level / 16);
   }
 }
 
@@ -323,8 +324,8 @@ int CSkillAction_SS_ANKOKURYUUAKUMU::GetSkillAttackMotion() {
 // FUNCTION: fn_08810
 void CSkillAction_SS_ANKOKURYUUAKUMU::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(812, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    static_cast<EffectActor*>(source)->LaunchEffect(1656, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BLACKBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_NEW_EPICLESIS_CAST, level / 16);
   }
 }
 
@@ -553,15 +554,15 @@ void CEfstAction_NIGHTMARE::OnEfstUpdate(int efstId, int value, int argument3, i
 void CEfstAction_SHADOW_CLOCK::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   EffectLists* effects = g_effectMgr;
   effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("kagekakusi"), actor->render.position, 0, -1, 0, 0);
-  static_cast<EffectActor*>(actor)->LaunchEffect(963, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  static_cast<EffectActor*>(actor)->LaunchEffect(EF_GRAYBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
 }
 
 // OFFSET: 0x00792930
 // FUNCTION: fn_08742
 void CEfstAction_SHADOW_CLOCK::OnEfstEnd(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    while (static_cast<EffectActor*>(actor)->HasId(963)) {
-      actor->SendMsg(nullptr, AM_DELETE_EFFECT, 963, 0, 0, 0, 0, 0);
+    while (static_cast<EffectActor*>(actor)->HasId(EF_GRAYBODY)) {
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_GRAYBODY, 0, 0, 0, 0, 0);
     }
   }
 }
@@ -570,7 +571,7 @@ void CEfstAction_SHADOW_CLOCK::OnEfstEnd(int efstId, int argument2, int argument
 // FUNCTION: fn_08743
 void CEfstAction_SHADOW_CLOCK::OnEfstUpdate(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    static_cast<EffectActor*>(actor)->LaunchEffect(963, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    static_cast<EffectActor*>(actor)->LaunchEffect(EF_GRAYBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   }
 }
 
@@ -648,8 +649,8 @@ int CSkillAction_SS_AKUMUKESU::GetSkillAttackMotion() {
 // FUNCTION: fn_08751
 void CSkillAction_SS_AKUMUKESU::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(934, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    static_cast<EffectActor*>(source)->LaunchEffect(12, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_GUMGANG6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL, level / 16);
   }
 }
 
@@ -678,8 +679,8 @@ int CSkillAction_SS_SHINKIROU::GetSkillAttackMotion() {
 // FUNCTION: fn_08755
 void CSkillAction_SS_SHINKIROU::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(2373, level / 16);
-    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, 1774, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_VOLCANO_BLACK, level / 16);
+    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, EF_MYSTERY_ILLUSION_CAST_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
       effect->SetLifeTime(level);
     }
   }
@@ -696,7 +697,7 @@ void CSkillAction_SS_KAGEGARI::OnGroundSkillEffect(vector3d position, int argume
 // FUNCTION: fn_08758
 void CSkillAction_SS_KAGENOMAI::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(454, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_DARKCASTING, level / 16);
   }
 }
 
@@ -713,7 +714,7 @@ void CSkillAction_SS_KAGENOMAI::OnSkillEffect(int level, CGameActor* source, CGa
 // FUNCTION: fn_08761
 void CSkillAction_SS_KAGEGISSEN::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(454, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_DARKCASTING, level / 16);
   }
 }
 
@@ -742,8 +743,8 @@ int CSkillAction_SS_FUUMASHOUAKU::GetSkillAttackMotion() {
 // FUNCTION: fn_08764
 void CSkillAction_SS_FUUMASHOUAKU::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, 986, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-    static_cast<EffectActor*>(source)->LaunchEffect(454, level / 16);
+    g_effectMgr->Spawn(source->render.accountId, EF_ROTATE_LINE_GRAY, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_DARKCASTING, level / 16);
   }
 }
 
@@ -751,7 +752,7 @@ void CSkillAction_SS_FUUMASHOUAKU::OnSkillCast(int level, CGameActor* source) {
 // FUNCTION: fn_08765
 void CSkillObjectAction_NPC_FUUMA::OnSkillObjectCreate(int argument, CRenderObject* object, CGameActor* source) {
   if (object && source) {
-    g_effectMgr->Spawn(object->render.accountId, 2352, source->render.position,
+    g_effectMgr->Spawn(object->render.accountId, 0x930, source->render.position,
                        object->render.accountId, -1, 0, 0);
   }
 }
@@ -766,8 +767,8 @@ int CSkillAction_SS_FUUMAKOUCHIKU::GetSkillAttackMotion() {
 // FUNCTION: fn_08767
 void CSkillAction_SS_FUUMAKOUCHIKU::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, 986, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-    static_cast<EffectActor*>(source)->LaunchEffect(454, level / 16);
+    g_effectMgr->Spawn(source->render.accountId, EF_ROTATE_LINE_GRAY, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_DARKCASTING, level / 16);
   }
 }
 
@@ -797,8 +798,8 @@ int CSkillAction_SS_KUNAIWAIKYOKU::GetSkillAttackMotion() {
 // FUNCTION: fn_08771
 void CSkillAction_SS_KUNAIWAIKYOKU::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, 986, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-    static_cast<EffectActor*>(source)->LaunchEffect(454, level / 16);
+    g_effectMgr->Spawn(source->render.accountId, EF_ROTATE_LINE_GRAY, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_DARKCASTING, level / 16);
   }
 }
 
@@ -849,8 +850,8 @@ int CSkillAction_SS_KUNAIKUSSETSU::GetSkillAttackMotion() {
 // FUNCTION: fn_08776
 void CSkillAction_SS_KUNAIKUSSETSU::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, 986, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-    static_cast<EffectActor*>(source)->LaunchEffect(454, level / 16);
+    g_effectMgr->Spawn(source->render.accountId, EF_ROTATE_LINE_GRAY, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_DARKCASTING, level / 16);
   }
 }
 
@@ -887,7 +888,7 @@ int CSkillAction_SS_SEKIENHOU::GetSkillAttackMotion() {
 // FUNCTION: fn_08780
 void CSkillAction_SS_SEKIENHOU::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(55, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL3, level / 16);
   }
 }
 
@@ -895,7 +896,7 @@ void CSkillAction_SS_SEKIENHOU::OnSkillCast(int level, CGameActor* source) {
 // FUNCTION: fn_08781
 void CSkillAction_SS_SEKIENHOU::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (target) {
-    g_effectMgr->Spawn(0, 1270, target->render.position.x, target->render.position.y, target->render.position.z, 0, -1, 0, 0);
+    g_effectMgr->Spawn(0, EF_TETRA_VORTEX_FIRE_GROUND, target->render.position.x, target->render.position.y, target->render.position.z, 0, -1, 0, 0);
     const vector3d position = target->render.position;
     EffectLists* effects = g_effectMgr;
     if (CEffect* effect = effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("new_sekienhou"), position.x, position.y, position.z, 0, -1, 0, 0)) {
@@ -920,7 +921,7 @@ int CSkillAction_SS_REIKETSUHOU::GetSkillAttackMotion() {
 // FUNCTION: fn_08784
 void CSkillAction_SS_REIKETSUHOU::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(54, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL2, level / 16);
   }
 }
 

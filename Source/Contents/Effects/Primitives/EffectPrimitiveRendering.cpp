@@ -1,4 +1,5 @@
 #include "Contents/Actors/ActorEnums.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "Contents/Effects/Core/EffectPrimId.h"
 #include "Contents/Effects/Core/RagEffect.h"
 #include "Contents/Configuration/ServiceOptions.h"
@@ -2308,7 +2309,7 @@ __declspec(safebuffers) void CEffectPrim::RenderSMA3(matrix&) {
   if (slot.flag1[0] == 0) {
     if (slot.process % 8 == 0) {
       CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-      CRagEffect* effect = gameMode->scene->player->LaunchEffect(552, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      CRagEffect* effect = gameMode->scene->player->LaunchEffect(EF_SMA2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (effect) {
         vector3d position = slot.vecBNow;
         float extra[3] = {static_cast<float>(slot.process), slot.process % 16 == 0 ? 0.0f : 1.0f, 0.0f};
@@ -2317,7 +2318,7 @@ __declspec(safebuffers) void CEffectPrim::RenderSMA3(matrix&) {
     }
   } else if (slot.flag1[0] == 1) {
     CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    CRagEffect* effect = gameMode->scene->player->LaunchEffect(556, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    CRagEffect* effect = gameMode->scene->player->LaunchEffect(EF_SMA3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = slot.vecBNow;
       effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
@@ -2325,7 +2326,7 @@ __declspec(safebuffers) void CEffectPrim::RenderSMA3(matrix&) {
   } else if (slot.flag1[0] == 99) {
     if (slot.process % 8 == 0) {
       CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-      CRagEffect* effect = gameMode->scene->player->LaunchEffect(1205, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      CRagEffect* effect = gameMode->scene->player->LaunchEffect(EF_SMA_BLACK2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (effect) {
         vector3d position = slot.vecBNow;
         float extra[3] = {static_cast<float>(slot.process), slot.process % 16 == 0 ? 0.0f : 1.0f, 0.0f};
@@ -5042,9 +5043,9 @@ __declspec(safebuffers) void CEffectPrim::RenderSoulLink(matrix& wtm) {
       CRagEffect* effect = nullptr;
 
       if (static_cast<float>(g_session.m_aid) == slot.height[10]) {
-        effect = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(506, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        effect = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(EF_SOULLIGHT, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       } else if (auto* actor = static_cast<CGameActor*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAID(static_cast<std::uint32_t>(slot.height[10])))) {
-        effect = actor->LaunchEffect(506, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        effect = actor->LaunchEffect(EF_SOULLIGHT, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
 
       if (effect) {

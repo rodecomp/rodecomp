@@ -1,4 +1,5 @@
 #include "Contents/Effects/Primitives/EffectPrimitiveMotion.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "Client/Mode/ModeMessage.h"
 #include "Contents/Actors/ActorEnums.h"
 #include "Contents/Effects/Core/EffectPrimId.h"
@@ -2061,7 +2062,7 @@ void CEffectPrim::PrimTanji2() {
 
   if (this->state.slots[0].process % 4 == 0) {
     CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    CRagEffect* effect = gameMode->scene->player->LaunchEffect(416, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    CRagEffect* effect = gameMode->scene->player->LaunchEffect(EF_AIRTEXTURE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
 
     if (effect) {
       vector3d position = this->state.slots[0].vecBNow;

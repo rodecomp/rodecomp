@@ -1,4 +1,5 @@
 #include "Client/Mode/CGameMode.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/GameActor.h"
 #include "Contents/Camera/Camera.h"
@@ -231,7 +232,7 @@ void CSkillAction_TR_PRON_MARCH::OnSkillEffect(int level, CGameActor* source, CG
 // FUNCTION: fn_08984
 void CEfstAction_PRON_MARCH::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
-    static_cast<EffectActor*>(actor)->LaunchEffect(2294, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    static_cast<EffectActor*>(actor)->LaunchEffect(EF_STATUS_PATK_UP, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   }
 }
 
@@ -280,7 +281,7 @@ void CSkillAction_TR_JAWAII_SERENADE::OnSkillEffect(int level, CGameActor* sourc
 // FUNCTION: fn_08989
 void CEfstAction_JAWAII_SERENADE::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
-    static_cast<EffectActor*>(actor)->LaunchEffect(2298, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    static_cast<EffectActor*>(actor)->LaunchEffect(EF_STATUS_SMATK_UP, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   }
 }
 
@@ -323,7 +324,7 @@ void CSkillAction_TR_AIN_RHAPSODY::OnSkillEffect(int level, CGameActor* source, 
 // FUNCTION: fn_08994
 void CEfstAction_AIN_RHAPSODY::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
-    static_cast<EffectActor*>(actor)->LaunchEffect(2297, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    static_cast<EffectActor*>(actor)->LaunchEffect(EF_STATUS_RES_DOWN, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   }
 }
 
@@ -372,7 +373,7 @@ void CSkillAction_TR_GEF_NOCTURN::OnSkillEffect(int level, CGameActor* source, C
 // FUNCTION: fn_08999
 void CEfstAction_GEF_NOCTURN::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
-    static_cast<EffectActor*>(actor)->LaunchEffect(2293, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    static_cast<EffectActor*>(actor)->LaunchEffect(EF_STATUS_MRES_DOWN, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   }
 }
 

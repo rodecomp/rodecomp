@@ -1,4 +1,5 @@
 #include "Network/Packets/NoticeEnums.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
 #include "Contents/Items/ItemType.h"
@@ -5070,8 +5071,8 @@ void CSession::AddPartyMember(MessengerMember& member) {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   if (mode && (mode->scene->isPKZone != 0 || mode->scene->isEventPVPMode != 0)) {
     EffectActor* actor = static_cast<EffectActor*>(mode->scene->GetGameActorByAID(member.accountId));
-    if (actor && !actor->HasId(160)) {
-      actor->LaunchEffect(160, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    if (actor && !actor->HasId(EF_PARTY)) {
+      actor->LaunchEffect(EF_PARTY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
   }
 }

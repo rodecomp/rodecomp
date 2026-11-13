@@ -1,4 +1,5 @@
 #include "Contents/Effects/Core/RagEffect.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "Contents/Actors/ActorEnums.h"
 #include "Contents/Effects/Core/EffectActor.h"
 #include "Contents/Effects/Skills/PartyMemberEffects.h"
@@ -193,8 +194,8 @@ bool PartyMemberEffects::Enabled() const {
 // INLINED
 void PartyMemberEffects::EnsurePartyEffect(std::uint32_t accountId) {
   EffectActor* actor = static_cast<EffectActor*>(this->mode->scene->GetGameActorByAID(accountId));
-  if (actor && !actor->HasId(160)) {
-    actor->LaunchEffect(160, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  if (actor && !actor->HasId(EF_PARTY)) {
+    actor->LaunchEffect(EF_PARTY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   }
 }
 

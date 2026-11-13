@@ -1,4 +1,5 @@
 #include "Client/Mode/ModeMessage.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "Contents/Sound/SoundMaker.h"
 #include "Contents/Actors/ActorEnums.h"
 #include "Contents/Jobs/JobId.h"
@@ -945,7 +946,7 @@ bool CHalluNPC::OnProcess() {
   ++this->processCount;
   if (this->render.color >= static_cast<std::uint32_t>(this->fadeStep)) {
     if (this->processCount == 110) {
-      static_cast<EffectActor*>(static_cast<CRenderObject*>(this))->LaunchEffect(793, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      static_cast<EffectActor*>(static_cast<CRenderObject*>(this))->LaunchEffect(EF_HALLUTIME, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     if (static_cast<unsigned>(this->processCount) > 105 && (this->processCount & 3) == 0) {
       this->render.color -= this->fadeStep;
@@ -962,7 +963,7 @@ bool CHalluPC::OnProcess() {
   ++this->preMoveOn;
   if (this->render.color >= static_cast<std::uint32_t>(this->destCellZ)) {
     if (this->preMoveOn == 110) {
-      static_cast<EffectActor*>(static_cast<CRenderObject*>(this))->LaunchEffect(793, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      static_cast<EffectActor*>(static_cast<CRenderObject*>(this))->LaunchEffect(EF_HALLUTIME, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     if (static_cast<unsigned>(this->preMoveOn) > 105 && (this->preMoveOn & 3) == 0) {
       this->render.color -= this->destCellZ;
@@ -1605,7 +1606,7 @@ void CNpc::SetState(int state, int) {
       this->boundsBottom = static_cast<float>(height / 2) + this->render.position.z;
       if (this->appearanceInitialized == 0 && this->render.enabled) {
         this->appearanceInitialized = 1;
-        this->LaunchEffect(321, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        this->LaunchEffect(EF_WARPZONE2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
     }

@@ -1,4 +1,5 @@
 #include "Client/Mode/ModeMgr.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "Client/Session/Session.h"
 #include "Contents/Actors/ActorEnums.h"
 #include "Client/Mode/CGameMode.h"
@@ -1065,8 +1066,8 @@ void CEfstAction_SHADOW_EXCEED::OnEfstEnd(int efstId, int argument2, int argumen
   }
 
   auto* effectActor = static_cast<EffectActor*>(actor);
-  while (effectActor->HasId(1004)) {
-    actor->SendMsg(nullptr, AM_DELETE_EFFECT, 1004, 0, 0, 0, 0, 0);
+  while (effectActor->HasId(EF_KAGEMUSYA)) {
+    actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_KAGEMUSYA, 0, 0, 0, 0, 0);
   }
 }
 
@@ -1349,7 +1350,7 @@ void CSkillAction_ABC_CHASING_BREAK::OnSkillEffect(int level, CGameActor* source
     return;
   }
 
-  if (CRagEffect* effect = static_cast<EffectActor*>(source)->LaunchEffect(2416, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+  if (CRagEffect* effect = static_cast<EffectActor*>(source)->LaunchEffect(EF_ABC_CHASING_LINE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
     effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&target->render.position), 0, 0, 0, 0);
   }
 
@@ -1386,7 +1387,7 @@ void CSkillAction_ABC_CHASING_SHOT::OnSkillEffect(int level, CGameActor* source,
     return;
   }
 
-  if (CRagEffect* effect = static_cast<EffectActor*>(source)->LaunchEffect(2416, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+  if (CRagEffect* effect = static_cast<EffectActor*>(source)->LaunchEffect(EF_ABC_CHASING_LINE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
     effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&target->render.position), 0, 0, 0, 0);
   }
 
@@ -1621,7 +1622,7 @@ void CSkillAction_AG_ENERGY_CONVERSION::OnSkillEffect(int level, CGameActor* sou
     return;
   }
 
-  source->LaunchEffect(2427, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  source->LaunchEffect(EF_HEAL_BLUE_2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   EffectLists* effects = g_effectMgr;
   effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("energy_conversion"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
@@ -1663,8 +1664,8 @@ void CEfstAction_SHADOW_EXCEED::OnEfstBegin(int efstId, int value, int argument3
   }
 
   auto* effectActor = static_cast<EffectActor*>(actor);
-  if (!effectActor->HasId(1004)) {
-    effectActor->LaunchEffect(1004, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  if (!effectActor->HasId(EF_KAGEMUSYA)) {
+    effectActor->LaunchEffect(EF_KAGEMUSYA, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   }
 }
 
@@ -1893,10 +1894,10 @@ void CSkillActionMgr::RegisterSkillAction(int skillId, std::function<CSkillActio
 // FUNCTION: fn_08437
 void CSkillAction_BO_MAYHEMIC_THORNS::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, 2228, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, EF_ACIDIFIED_ZONE_GROUND_CAST, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
       effect->SetLifeTime(level);
     }
-    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, 2229, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, EF_ACIDIFIED_ZONE_GROUND_CAST_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
       effect->SetLifeTime(level);
     }
   }
@@ -2182,7 +2183,7 @@ int CSkillAction_DK_SERVANT_W_PHANTOM::GetSkillAttackMotion() {
 // FUNCTION: fn_08466
 void CSkillAction_DK_SERVANT_W_PHANTOM::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(12, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL, level / 16);
   }
 }
 
@@ -2190,7 +2191,7 @@ void CSkillAction_DK_SERVANT_W_PHANTOM::OnSkillCast(int level, CGameActor* sourc
 // FUNCTION: fn_08467
 void CSkillAction_DK_SERVANT_W_PHANTOM::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Find(source->render.accountId, 2460);
+    g_effectMgr->Find(source->render.accountId, 0x99C);
   }
 }
 
@@ -2235,7 +2236,7 @@ void CSkillAction_DK_SERVANT_W_PHANTOM::OnSkillHit(int caster, CGameActor* targe
 // FUNCTION: fn_08469
 void CSkillAction_DK_SERVANT_W_DEMOL::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Find(source->render.accountId, 2460);
+    g_effectMgr->Find(source->render.accountId, 0x99C);
   }
 }
 
@@ -2303,7 +2304,7 @@ bool CSkillAction_DK_MADNESS_CRUSHER::IsSkillWithoutMotion() {
 // FUNCTION: fn_08476
 void CSkillAction_DK_MADNESS_CRUSHER::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(12, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL, level / 16);
   }
 }
 
@@ -2391,7 +2392,7 @@ void CSkillAction_DK_DRAGONIC_PIERCE::OnSkillDamage(int level, CGameActor* sourc
 // FUNCTION: fn_08483
 void CSkillAction_DK_DRAGONIC_BREATH::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(12, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL, level / 16);
   }
 }
 
@@ -2434,7 +2435,7 @@ void CSkillAction_DK_DRAGONIC_BREATH::OnSkillHit(int level, CGameActor* source, 
 // FUNCTION: fn_08487
 void CSkillAction_DK_CHARGINGPIERCE::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(12, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL, level / 16);
   }
 }
 
@@ -2470,7 +2471,7 @@ void CEfstAction_CHARGINGPIERCE_COUNT::OnEfstBegin(int efstId, int value, int ar
       );
     }
   } else if (actor) {
-    if (CEffect* effect = g_effectMgr->Spawn(actor->render.accountId, 2461, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
+    if (CEffect* effect = g_effectMgr->Spawn(actor->render.accountId, 0x99D, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
       static_cast<CChargingPierceNewEffect*>(effect)->SetCount(value);
     }
   }
@@ -2523,7 +2524,7 @@ void CSkillAction_DK_HACKANDSLASHER_ATK::OnSkillDamage(int level, CGameActor* so
 // FUNCTION: fn_08497
 void CSkillAction_NPC_BLOCK_EXPLOSION::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(12, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL, level / 16);
   }
 }
 
@@ -2531,10 +2532,10 @@ void CSkillAction_NPC_BLOCK_EXPLOSION::OnSkillCast(int level, CGameActor* source
 // FUNCTION: fn_08498
 void CSkillAction_NPC_BLOCK_EXPLOSION::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, 2406, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, EF_THE_W_PROTECTION_REUSE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
   if (target) {
-    g_effectMgr->Spawn(target->render.accountId, 2407, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(target->render.accountId, EF_ELEMENTAL_BUSTER_FIRE_REUSE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -2542,7 +2543,7 @@ void CSkillAction_NPC_BLOCK_EXPLOSION::OnSkillEffect(int level, CGameActor* sour
 // FUNCTION: fn_08499
 void CSkillAction_NPC_FROST_FIELD::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(441, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BLUECASTING, level / 16);
   }
 }
 
@@ -2550,14 +2551,14 @@ void CSkillAction_NPC_FROST_FIELD::OnSkillCast(int level, CGameActor* source) {
 // FUNCTION: fn_08500
 void CSkillAction_NPC_FROST_FIELD::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, 2408, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-    g_effectMgr->Spawn(source->render.accountId, 2409, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, EF_DESTRUCTIVE_HURRICANE_BOTTOM_REUSE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, EF_CRYSTAL_IMPACT_BOTTOM_REUSE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     const CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
     const vector3d position = {target->render.position.x - player->render.position.x, 0.0f, target->render.position.z - player->render.position.z};
     g_soundMgr->PlayWave("effect\\NPC_FROST_FIELD.wav", position.x, position.y, position.z, 250, 40, 1.0f, 0);
   }
   if (target) {
-    g_effectMgr->Spawn(target->render.accountId, 1283, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(target->render.accountId, EF_NEW_DIAMONDDUST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -2565,7 +2566,7 @@ void CSkillAction_NPC_FROST_FIELD::OnSkillEffect(int level, CGameActor* source, 
 // FUNCTION: fn_08501
 void CSkillAction_NPC_FROST_FIELD::OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, 1310, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, EF_NEW_RAMPAGEBLASTER, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -2573,7 +2574,7 @@ void CSkillAction_NPC_FROST_FIELD::OnSkillDamage(int level, CGameActor* source, 
 // FUNCTION: fn_08502
 void CEfstAction_FROST_STORM::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
-    g_effectMgr->Spawn(actor->render.accountId, 2403, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(actor->render.accountId, EF_NEW_BATTLE_W_HIT_2, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -2772,7 +2773,7 @@ int CSkillAction_NPC_AIMED_SHOWER::GetSkillAttackMotion() {
 // FUNCTION: fn_08505
 void CSkillAction_NPC_LIGHTNING_JUDGEMENT::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(12, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL, level / 16);
   }
 }
 
@@ -2792,7 +2793,7 @@ void CSkillAction_NPC_LIGHTNING_JUDGEMENT::OnSkillEffect(int level, CGameActor* 
 // FUNCTION: fn_08507
 void CSkillAction_NPC_LIGHTNING_JUDGEMENT::OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, 1256, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, 0x4E8, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -2824,7 +2825,7 @@ void CEfstAction_GROGGY::OnEfstUpdate(int efstId, int value, int argument3, int 
 // FUNCTION: fn_08511
 void CSkillAction_NPC_RESET_EFST::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, 2410, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, EF_NEW_JUDEX_TARGET_REUSE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     const vector3d& listener = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->render.position;
     const vector3d position = {target->render.position.x - listener.x, 0.0f, target->render.position.z - listener.z};
     g_soundMgr->PlayWave("effect\\NPC_RESET_EFST.wav", position.x, position.y, position.z, 250, 40, 1.0f, 0);
@@ -2861,7 +2862,7 @@ void CEfstAction_TARGET_MARKER::OnEfstUpdate(int efstId, int value, int argument
 // FUNCTION: fn_08516
 void CSkillAction_NPC_AIMED_SHOWER::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(441, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BLUECASTING, level / 16);
   }
 }
 
@@ -2869,7 +2870,7 @@ void CSkillAction_NPC_AIMED_SHOWER::OnSkillCast(int level, CGameActor* source) {
 // FUNCTION: fn_08517
 void CSkillAction_NPC_AIMED_SHOWER::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, 1268, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, EF_TETRA_VORTEX_WIND_EXP, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     const vector3d& listener = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->render.position;
     const vector3d position = {target->render.position.x - listener.x, 0.0f, target->render.position.z - listener.z};
     g_soundMgr->PlayWave("effect\\NPC_AIMED_SHOWER.wav", position.x, position.y, position.z, 250, 40, 1.0f, 0);
@@ -2880,7 +2881,7 @@ void CSkillAction_NPC_AIMED_SHOWER::OnSkillEffect(int level, CGameActor* source,
 // FUNCTION: fn_08518
 void CSkillAction_NPC_AIMED_SHOWER::OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, 2405, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, EF_NEW_PRAMEN_REUSE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -2888,7 +2889,7 @@ void CSkillAction_NPC_AIMED_SHOWER::OnSkillDamage(int level, CGameActor* source,
 // FUNCTION: fn_08519
 void CSkillAction_NPC_BLAZING_ERUPTION::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(441, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BLUECASTING, level / 16);
   }
 }
 
@@ -2896,9 +2897,9 @@ void CSkillAction_NPC_BLAZING_ERUPTION::OnSkillCast(int level, CGameActor* sourc
 // FUNCTION: fn_08520
 void CSkillAction_NPC_BLAZING_ERUPTION::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, 1270, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-    g_effectMgr->Spawn(source->render.accountId, 1266, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-    static_cast<EffectActor*>(source)->LaunchEffect(225, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    g_effectMgr->Spawn(source->render.accountId, EF_TETRA_VORTEX_FIRE_GROUND, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, EF_TETRA_VORTEX_FIRE_EXP, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_VOLCANO, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     const vector3d& listener = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->render.position;
     const vector3d position = {target->render.position.x - listener.x, 0.0f, target->render.position.z - listener.z};
     g_soundMgr->PlayWave("effect\\NPC_BLAZING_ERUPTION.wav", position.x, position.y, position.z, 250, 40, 1.0f, 0);
@@ -2909,7 +2910,7 @@ void CSkillAction_NPC_BLAZING_ERUPTION::OnSkillEffect(int level, CGameActor* sou
 // FUNCTION: fn_08521
 void CSkillAction_NPC_BLOCK_SEAL::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(12, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL, level / 16);
   }
 }
 
@@ -2923,7 +2924,7 @@ void CEfstAction_BLOCK_SEAL::OnEfstBegin(int efstId, int value, int argument3, i
     effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("npc_block_seal_loop_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effects = g_effectMgr;
     effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("npc_block_seal_loop"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-    g_effectMgr->Spawn(actor->render.accountId, 2400, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(actor->render.accountId, 0x960, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -2955,7 +2956,7 @@ int CSkillAction_HN_DOUBLEBOWLINGBASH::GetSkillAttackMotion() {
 // FUNCTION: fn_08526
 void CSkillAction_HN_DOUBLEBOWLINGBASH::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(12, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL, level / 16);
   }
 }
 
@@ -2972,7 +2973,7 @@ void CSkillAction_HN_DOUBLEBOWLINGBASH::OnSkillEffect(int level, CGameActor* sou
 // FUNCTION: fn_08528
 void CSkillAction_HN_DOUBLEBOWLINGBASH::OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(73, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BOWLINGBASH, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   }
 }
 
@@ -2986,7 +2987,7 @@ int CSkillAction_HN_MEGA_SONIC_BLOW::GetSkillAttackMotion() {
 // FUNCTION: fn_08530
 void CSkillAction_HN_MEGA_SONIC_BLOW::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(121, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_SONICBLOW, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     EffectLists* effects = g_effectMgr;
     effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mega_sonic_blow"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
@@ -3002,7 +3003,7 @@ int CSkillAction_HN_SHIELD_CHAIN_RUSH::GetSkillAttackMotion() {
 // FUNCTION: fn_08532
 void CSkillAction_HN_SHIELD_CHAIN_RUSH::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(58, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL6, level / 16);
   }
 }
 
@@ -3025,7 +3026,7 @@ int CSkillAction_HN_SPIRAL_PIERCE_MAX::GetSkillAttackMotion() {
 // FUNCTION: fn_08535
 void CSkillAction_HN_SPIRAL_PIERCE_MAX::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(502, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_PIERCEBODY, level / 16);
   }
 }
 
@@ -3061,7 +3062,7 @@ bool CSkillAction_HN_METEOR_STORM_BUSTER::KeepSkillAttackMotion(int argument) {
 // FUNCTION: fn_08538
 void CSkillAction_HN_METEOR_STORM_BUSTER::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(55, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL3, level / 16);
   }
 }
 
@@ -3100,7 +3101,7 @@ int CSkillAction_HN_JUPITEL_THUNDER_STORM::GetSkillAttackMotion() {
 // FUNCTION: fn_08543
 void CSkillAction_HN_JUPITEL_THUNDER_STORM::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(57, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL5, level / 16);
   }
 }
 
@@ -3108,8 +3109,8 @@ void CSkillAction_HN_JUPITEL_THUNDER_STORM::OnSkillCast(int level, CGameActor* s
 // FUNCTION: fn_08544
 void CSkillAction_HN_JUPITEL_THUNDER_STORM::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source && target) {
-    static_cast<EffectActor*>(source)->LaunchEffect(12, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    g_effectMgr->Spawn(source->render.accountId, 2366, source->render.position, target->render.accountId, level, 0, 0);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    g_effectMgr->Spawn(source->render.accountId, 0x93E, source->render.position, target->render.accountId, level, 0, 0);
   }
 }
 
@@ -3132,7 +3133,7 @@ void CSkillAction_HN_JACK_FROST_NOVA::OnSkillCast(int level, CGameActor* source)
     return;
   }
 
-  static_cast<EffectActor*>(source)->LaunchEffect(1449, level / 16);
+  static_cast<EffectActor*>(source)->LaunchEffect(EF_NEW_FROSTMISTY, level / 16);
   EffectLists* effects = g_effectMgr;
   CEffect* effect = effects->Spawn(source->render.accountId, g_serviceOptions.Get(229) ? 1543 : 1446, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   if (effect) {
@@ -3189,7 +3190,7 @@ int CSkillAction_HN_HELLS_DRIVE::GetSkillAttackMotion() {
 // FUNCTION: fn_08553
 void CSkillAction_HN_HELLS_DRIVE::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(1709, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_NEW_EARTHDRIVE_CAST, level / 16);
   }
 }
 
@@ -3268,8 +3269,8 @@ bool CSkillAction_HN_GROUND_GRAVITATION::KeepSkillAttackMotion(int argument) {
 // FUNCTION: fn_08557
 void CSkillAction_HN_GROUND_GRAVITATION::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(9, level / 16);
-    static_cast<EffectActor*>(source)->LaunchEffect(12, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_ENHANCE, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL, level / 16);
   }
 }
 
@@ -3309,7 +3310,7 @@ int CSkillAction_HN_NAPALM_VULCAN_STRIKE::GetSkillAttackMotion() {
 // FUNCTION: fn_08561
 void CSkillAction_HN_NAPALM_VULCAN_STRIKE::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(58, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL6, level / 16);
   }
 }
 
@@ -3332,7 +3333,7 @@ int CSkillAction_HN_BREAKINGLIMIT::GetSkillAttackMotion() {
 // FUNCTION: fn_08564
 void CSkillAction_HN_BREAKINGLIMIT::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(2369, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL_RING_WHITE, level / 16);
   }
 }
 
@@ -3379,7 +3380,7 @@ int CSkillAction_HN_RULEBREAK::GetSkillAttackMotion() {
 // FUNCTION: fn_08570
 void CSkillAction_HN_RULEBREAK::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(2369, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL_RING_WHITE, level / 16);
   }
 }
 

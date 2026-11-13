@@ -1,4 +1,5 @@
 #include "Contents/Actors/GameActor.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "Contents/Effects/EffectResourceSwitcher.h"
 #include "Contents/Effects/Core/Effect.h"
 #include "Contents/Effects/Core/EffectActor.h"
@@ -168,7 +169,7 @@ public:
 // FUNCTION: fn_08815
 void CSkillObjectAction_SKE_STAR_CANNON::OnSkillObjectCreate(int argument, CRenderObject* object, CGameActor* source) {
   if (object) {
-    g_effectMgr->Spawn(object->render.accountId, 2350, object->render.position, 0, argument, 0, 0);
+    g_effectMgr->Spawn(object->render.accountId, 0x92E, object->render.position, 0, argument, 0, 0);
   }
 }
 
@@ -182,7 +183,7 @@ int CSkillAction_SKE_ALL_IN_THE_SKY::GetSkillAttackMotion() {
 // FUNCTION: fn_08817
 void CSkillAction_SKE_ALL_IN_THE_SKY::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(845, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL_N8, level / 16);
   }
 }
 
@@ -199,7 +200,7 @@ void CSkillAction_SKE_ALL_IN_THE_SKY::OnTargetSkillCast(int argument1, int argum
 // FUNCTION: fn_08819
 void CSkillAction_SKE_ENCHANTING_SKY::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(831, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL_N2, level / 16);
   }
 }
 
@@ -331,7 +332,7 @@ void CSkillAction_SKE_STAR_LIGHT_KICK::OnSkillEffect(int level, CGameActor* sour
     return;
   }
 
-  source->LaunchEffect(2426, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  source->LaunchEffect(EF_FORCE_ANIM_27, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   EffectLists* effects = g_effectMgr;
   effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("star_light_kick"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   effects = g_effectMgr;
@@ -592,7 +593,7 @@ int CSkillAction_SKE_MIDNIGHT_KICK::GetSkillAttackMotion() {
 // FUNCTION: fn_08857
 void CSkillAction_SKE_MIDNIGHT_KICK::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(58, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL6, level / 16);
   }
 }
 
@@ -615,7 +616,7 @@ int CSkillAction_SKE_DAWN_BREAK::GetSkillAttackMotion() {
 // FUNCTION: fn_08860
 void CSkillAction_SKE_DAWN_BREAK::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(58, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL6, level / 16);
   }
 }
 
@@ -644,7 +645,7 @@ bool CSkillAction_SKE_TWINKLING_GALAXY::KeepSkillAttackSpeed() {
 // FUNCTION: fn_08864
 void CSkillAction_SKE_TWINKLING_GALAXY::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(441, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BLUECASTING, level / 16);
   }
 }
 
@@ -652,7 +653,7 @@ void CSkillAction_SKE_TWINKLING_GALAXY::OnSkillCast(int level, CGameActor* sourc
 // FUNCTION: fn_08865
 void CSkillObjectAction_SKE_TWINKLING_GALAXY::OnSkillObjectCreate(int argument, CRenderObject* object, CGameActor* source) {
   if (object) {
-    g_effectMgr->Spawn(object->render.accountId, 2349, object->render.position, 0, argument, 0, 0);
+    g_effectMgr->Spawn(object->render.accountId, 0x92D, object->render.position, 0, argument, 0, 0);
   }
 }
 
@@ -666,7 +667,7 @@ bool CSkillAction_SKE_STAR_BURST::KeepSkillAttackMotion(int argument) {
 // FUNCTION: fn_08867
 void CSkillAction_SKE_STAR_BURST::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(441, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BLUECASTING, level / 16);
   }
 }
 
@@ -674,7 +675,7 @@ void CSkillAction_SKE_STAR_BURST::OnSkillCast(int level, CGameActor* source) {
 // FUNCTION: fn_08868
 void CEfstAction_STAR_BURST::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
-    g_effectMgr->Spawn(actor->render.accountId, 2348, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(actor->render.accountId, 0x92C, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -708,7 +709,7 @@ bool CSkillAction_SKE_STAR_CANNON::KeepSkillAttackSpeed() {
 // FUNCTION: fn_08873
 void CSkillAction_SKE_STAR_CANNON::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(441, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BLUECASTING, level / 16);
   }
 }
 

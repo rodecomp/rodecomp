@@ -1,4 +1,5 @@
 #include "Contents/Actors/ActorEnums.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/GameActor.h"
@@ -76,7 +77,7 @@ int CSkillAction_MT_SPARK_BLASTER::GetSkillAttackMotion() {
 // FUNCTION: fn_08652
 void CSkillAction_MT_SPARK_BLASTER::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(1938, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_NEW_BATTLE_W_ENTITY, level / 16);
   }
 }
 
@@ -101,7 +102,7 @@ int CSkillAction_MT_TRIPLE_LASER::GetSkillAttackMotion() {
 // FUNCTION: fn_08655
 void CSkillAction_MT_TRIPLE_LASER::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(1938, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_NEW_BATTLE_W_ENTITY, level / 16);
   }
 }
 
@@ -211,7 +212,7 @@ void CSkillAction_MT_RUSH_STRIKE::OnSkillEffect(int level, CGameActor* source, C
     return;
   }
 
-  if (CRagEffect* ragEffect = static_cast<EffectActor*>(source)->LaunchEffect(1568, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+  if (CRagEffect* ragEffect = static_cast<EffectActor*>(source)->LaunchEffect(EF_NEW_CROSSIMPACT_HIT, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
     ragEffect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&target->render.position), 0, 0, 0, 0);
   }
   EffectLists* effects = g_effectMgr;
@@ -272,7 +273,7 @@ void CSkillAction_MT_POWERFUL_SWING::OnSkillDamage(int level, CGameActor* source
 // FUNCTION: fn_08672
 void CEfstAction_GRADUAL_GRAVITY::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
-    static_cast<EffectActor*>(actor)->LaunchEffect(779, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    static_cast<EffectActor*>(actor)->LaunchEffect(EF_AGIUP3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   }
 }
 
@@ -280,8 +281,8 @@ void CEfstAction_GRADUAL_GRAVITY::OnEfstBegin(int efstId, int value, int argumen
 // FUNCTION: fn_08673
 void CEfstAction_GRADUAL_GRAVITY::OnEfstEnd(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    while (static_cast<EffectActor*>(actor)->HasId(779)) {
-      actor->SendMsg(nullptr, AM_DELETE_EFFECT, 779, 0, 0, 0, 0, 0);
+    while (static_cast<EffectActor*>(actor)->HasId(EF_AGIUP3)) {
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_AGIUP3, 0, 0, 0, 0, 0);
     }
   }
 }

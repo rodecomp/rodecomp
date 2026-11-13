@@ -1,4 +1,5 @@
 #include "Client/Session/Session.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "Client/Mode/ModeMessage.h"
 #include "Contents/Actors/ActorEnums.h"
 #include "UI/Window/UIEnums.h"
@@ -1803,8 +1804,8 @@ void CSession::RemovePartyMemberByName(const char* name) {
     }
 
     CRenderObject* actor = mode->scene->GetGameActorByAidIncludeMe(it->accountId);
-    if (actor != nullptr && static_cast<EffectActor*>(actor)->HasId(160) == true) {
-      actor->SendMsg(nullptr, AM_DELETE_EFFECT, 160, 0, 0, 0, 0, 0);
+    if (actor != nullptr && static_cast<EffectActor*>(actor)->HasId(EF_PARTY) == true) {
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_PARTY, 0, 0, 0, 0, 0);
     }
 
     this->m_partyMembers.erase(it);
@@ -3276,8 +3277,8 @@ void CSession::ClearItemContainers() {
   if (mode != nullptr) {
     for (std::list<MessengerMember>::iterator it = this->m_partyMembers.begin(); it != this->m_partyMembers.end(); ++it) {
       CRenderObject* actor = mode->scene->GetGameActorByAidIncludeMe(it->accountId);
-      if (actor != nullptr && static_cast<EffectActor*>(actor)->HasId(160) == true) {
-        actor->SendMsg(nullptr, AM_DELETE_EFFECT, 160, 0, 0, 0, 0, 0);
+      if (actor != nullptr && static_cast<EffectActor*>(actor)->HasId(EF_PARTY) == true) {
+        actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_PARTY, 0, 0, 0, 0, 0);
       }
     }
   }

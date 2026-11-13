@@ -1,4 +1,5 @@
 #include "Client/Mode/CGameMode.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/GameActor.h"
 #include "Contents/Camera/Camera.h"
@@ -172,7 +173,7 @@ int CSkillAction_SH_HOWLING_OF_CHUL_HO::GetSkillAttackMotion() {
 // FUNCTION: fn_08934
 void CSkillAction_SH_HOWLING_OF_CHUL_HO::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(840, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL_N3, level / 16);
   }
 }
 
@@ -219,7 +220,7 @@ int CSkillAction_SH_HOGOGONG_STRIKE::GetSkillAttackMotion() {
 // FUNCTION: fn_08940
 void CSkillAction_SH_HOGOGONG_STRIKE::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(840, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL_N3, level / 16);
   }
 }
 
@@ -236,7 +237,7 @@ void CSkillAction_SH_HOGOGONG_STRIKE::OnSkillHit(int level, CGameActor* source, 
 // FUNCTION: fn_08942
 void CSkillAction_SH_KI_SUL_WATER_SPRAYING::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(58, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL6, level / 16);
   }
 }
 
@@ -253,7 +254,7 @@ void CSkillAction_SH_KI_SUL_WATER_SPRAYING::OnSkillEffect(int level, CGameActor*
 // FUNCTION: fn_08944
 void CSkillAction_SH_MARINE_FESTIVAL_OF_KI_SUL::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(845, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL_N8, level / 16);
   }
 }
 
@@ -279,7 +280,7 @@ void CEfstAction_MARINE_FESTIVAL::OnEfstBegin(int efstId, int value, int argumen
 // FUNCTION: fn_08947
 void CSkillAction_SH_SANDY_FESTIVAL_OF_KI_SUL::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(842, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL_N5, level / 16);
   }
 }
 
@@ -305,7 +306,7 @@ void CEfstAction_SANDY_FESTIVAL::OnEfstBegin(int efstId, int value, int argument
 // FUNCTION: fn_08950
 void CSkillAction_SH_KI_SUL_RAMPAGE::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(831, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL_N2, level / 16);
   }
 }
 
@@ -324,7 +325,7 @@ void CSkillAction_SH_KI_SUL_RAMPAGE::OnSkillEffect(int level, CGameActor* source
 // FUNCTION: fn_08952
 void CSkillAction_SH_COLORS_OF_HYUN_ROK::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(58, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL6, level / 16);
   }
 }
 
@@ -378,7 +379,7 @@ bool CSkillAction_SH_HYUN_ROKS_BREEZE::KeepSkillAttackMotion(int argument) {
 // FUNCTION: fn_08955
 void CSkillAction_SH_HYUN_ROKS_BREEZE::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(841, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL_N4, level / 16);
   }
 }
 
@@ -403,7 +404,7 @@ void CSkillObjectAction_SH_HYUN_ROKS_BREEZE::OnSkillObjectCreate(int argument, C
 // FUNCTION: fn_08958
 void CSkillAction_SH_HYUN_ROK_CANNON::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(841, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL_N4, level / 16);
   }
 }
 
@@ -428,7 +429,7 @@ void CSkillAction_SH_HYUN_ROK_CANNON::OnSkillEffect(int level, CGameActor* sourc
 // FUNCTION: fn_08960
 void CSkillAction_SH_TEMPORARY_COMMUNION::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(2367, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL_RING_YELLOW, level / 16);
   }
 }
 
@@ -479,7 +480,7 @@ bool CSkillAction_SH_BLESSING_OF_MYSTICAL_CREATURES::IsSupport() {
 // FUNCTION: fn_08966
 void CSkillAction_SH_BLESSING_OF_MYSTICAL_CREATURES::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(2367, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL_RING_YELLOW, level / 16);
   }
 }
 

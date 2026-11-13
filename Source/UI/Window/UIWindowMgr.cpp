@@ -1,4 +1,5 @@
 #include "Contents/Actors/ActorEnums.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "Client/Mode/ModeMessage.h"
 #include "UI/Window/UIEnums.h"
 #include "Contents/Hotkeys/InterfaceHotkey.h"
@@ -1779,7 +1780,7 @@ void UIWindowMgr::CycleWindowVisibility(int) {
     this->CloseWindow(WID_MINIMAPZOOMWND);
     CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
     if (player) {
-      player->SendMsg(nullptr, AM_DELETE_EFFECT, 164, 0, 0, 0, 0, 0);
+      player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_STATUS_STATE, 0, 0, 0, 0, 0);
       player->skillEffect = 0;
     }
     this->windowVisibilityState = 2;

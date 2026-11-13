@@ -1,4 +1,5 @@
 #include "Client/Mode/CGameMode.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "Contents/Actors/ActorEnums.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/GameActor.h"
@@ -296,7 +297,7 @@ int CSkillAction_KR_CLAW_WAVE::GetSkillAttackMotion() {
 // FUNCTION: fn_03346
 void CSkillAction_KR_CLAW_WAVE::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(54, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL2, level / 16);
   }
 }
 
@@ -356,7 +357,7 @@ void CSkillAction_KR_GROUND_BLOOM::OnSkillDamage(int level, CGameActor* source, 
     return;
   }
 
-  if (CRagEffect* effect = source->LaunchEffect(0, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+  if (CRagEffect* effect = source->LaunchEffect(EF_HIT1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
     effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&source->render.position), 0, 0, 0, 0);
   }
 }
@@ -461,7 +462,7 @@ void CSkillAction_KR_THUNDERING_ORB::OnGroundSkillEffect(vector3d position, int 
     return;
   }
 
-  if (CEffect* orb = g_effectMgr->Spawn(target->render.accountId, 2441, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
+  if (CEffect* orb = g_effectMgr->Spawn(target->render.accountId, 0x989, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
     static_cast<CBezierArcThrowEffect*>(orb)->SetTarget(position);
   }
 
@@ -482,7 +483,7 @@ void CSkillAction_KR_THUNDERING_ORB_S::OnGroundSkillEffect(vector3d position, in
     return;
   }
 
-  if (CEffect* orb = g_effectMgr->Spawn(target->render.accountId, 2441, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
+  if (CEffect* orb = g_effectMgr->Spawn(target->render.accountId, 0x989, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
     static_cast<CBezierArcThrowEffect*>(orb)->SetTarget(position);
   }
 
@@ -530,12 +531,12 @@ void CSkillObjectAction_KR_ICE_PILLAR::OnSkillObjectCreate(int argument, CRender
   effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("ice_pillar_start_bottom", 0x8B3FEB5B8BD5C3C3ULL)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 
   effects = g_effectMgr;
-  if (CEffect* effect = effects->Spawn(object->render.accountId, 2472, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
+  if (CEffect* effect = effects->Spawn(object->render.accountId, 0x9A8, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
     static_cast<EffectResourceSwitcher*>(effect)->SetNames(OBFUSCATE_TEXT("ice_pillar_loop", 0x0BEB63A5C905B3A7ULL), OBFUSCATE_TEXT("ice_pillar_end", 0x078333BB9725B7C9ULL));
     effect->SetDelay(990);
   }
   effects = g_effectMgr;
-  if (CEffect* effect = effects->Spawn(object->render.accountId, 2473, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
+  if (CEffect* effect = effects->Spawn(object->render.accountId, 0x9A9, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
     static_cast<EffectResourceSwitcher*>(effect)->SetNames(OBFUSCATE_TEXT("ice_pillar_loop_bottom", 0x8F1B5BFD5F6175B5ULL), OBFUSCATE_TEXT("ice_pillar_end_bottom", 0x5B8F49AF09390D1BULL));
     effect->SetDelay(990);
   }
@@ -548,10 +549,10 @@ void CSkillObjectAction_KR_ICE_PILLAR::OnSkillObjectRemove(CRenderObject* object
     return;
   }
 
-  if (CEffect* effect = g_effectMgr->Find(object->render.accountId, 2472)) {
+  if (CEffect* effect = g_effectMgr->Find(object->render.accountId, 0x9A8)) {
     static_cast<EffectResourceSwitcher*>(effect)->Start();
   }
-  if (CEffect* effect = g_effectMgr->Find(object->render.accountId, 2473)) {
+  if (CEffect* effect = g_effectMgr->Find(object->render.accountId, 0x9A9)) {
     static_cast<EffectResourceSwitcher*>(effect)->Start();
   }
 }
@@ -584,7 +585,7 @@ int CSkillAction_KR_SHARPEN_GUST::GetSkillAttackMotion() {
 // FUNCTION: fn_03373
 void CSkillAction_KR_SHARPEN_GUST::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(56, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL4, level / 16);
   }
 }
 
@@ -614,7 +615,7 @@ void CSkillAction_KR_SHARPEN_HAIL::OnSkillCast(int level, CGameActor* source) {
     return;
   }
 
-  static_cast<EffectActor*>(source)->LaunchEffect(56, level / 16);
+  static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL4, level / 16);
 
   EffectLists* effects = g_effectMgr;
   if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("sharpen_hail", 0x7FC1015DFFCF6D19ULL, char)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
@@ -705,7 +706,7 @@ int CSkillAction_KR_IRON_HOWLING::GetSkillAttackMotion() {
 // FUNCTION: fn_03383
 void CSkillAction_KR_IRON_HOWLING::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(54, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL2, level / 16);
   }
 }
 
@@ -737,7 +738,7 @@ int CSkillAction_KR_TYPHOON_WING::GetSkillAttackMotion() {
 // FUNCTION: fn_03389
 void CSkillAction_KR_TYPHOON_WING::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(56, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL4, level / 16);
   }
 }
 
@@ -773,7 +774,7 @@ int CSkillAction_KR_WIND_VEIL::GetSkillAttackMotion() {
 // FUNCTION: fn_03393
 void CSkillAction_KR_WIND_VEIL::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(56, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL4, level / 16);
   }
 }
 
@@ -836,10 +837,10 @@ void CEfstAction_CHOP_CHOP::OnEfstEnd(int efstId, int argument2, int argument3, 
     return;
   }
 
-  while (CEffect* effect = g_effectMgr->Find(actor->render.accountId, 2466)) {
+  while (CEffect* effect = g_effectMgr->Find(actor->render.accountId, 0x9A2)) {
     g_effectMgr->Retire(effect, 1);
   }
-  while (CEffect* effect = g_effectMgr->Find(actor->render.accountId, 2444)) {
+  while (CEffect* effect = g_effectMgr->Find(actor->render.accountId, 0x98C)) {
     g_effectMgr->Retire(effect, 1);
   }
   for (;;) {
@@ -973,7 +974,7 @@ void CSkillAction_SKID_KR_CHOP_CHOP::OnSkillEffect(int level, CGameActor* source
     return;
   }
 
-  if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, 2466, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+  if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, 0x9A2, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
     effect->effectLifetime = 1;
   }
 
@@ -982,7 +983,7 @@ void CSkillAction_SKID_KR_CHOP_CHOP::OnSkillEffect(int level, CGameActor* source
     effect->SetAngle(static_cast<float>(std::ranges::max(rand() % 360, 0)));
   }
 
-  if (CRagEffect* effect = source->LaunchEffect(2444, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+  if (CRagEffect* effect = source->LaunchEffect(0x98C, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
     static_cast<CWhirlwindEffect*>(effect)->SetLifetime(1000);
     static_cast<CWhirlwindEffect*>(effect)->SetDuration(500);
   }

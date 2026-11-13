@@ -1,4 +1,5 @@
 #include "Client/Mode/CGameMode.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/GameActor.h"
 #include "Contents/Camera/Camera.h"
@@ -72,7 +73,7 @@ void CSkillAction_WH_GALESTORM::OnSkillCast(int level, CGameActor* source) {
 // FUNCTION: fn_09024
 void CSkillAction_WH_GALESTORM::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source && target) {
-    g_effectMgr->Spawn(target->render.accountId, 1973, target->render.position, 0, level, 0, 0);
+    g_effectMgr->Spawn(target->render.accountId, 0x7B5, target->render.position, 0, level, 0, 0);
   }
 }
 
@@ -224,7 +225,7 @@ void CSkillAction_WH_WILD_WALK::OnSkillEffect(int level, CGameActor* source, CGa
   if (source) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("wild_walk"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-    source->LaunchEffect(2425, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    source->LaunchEffect(EF_WH_WILD_WALK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   }
 }
 

@@ -1,4 +1,5 @@
 #include "Contents/Actors/GameActor.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "Contents/Actors/ActorEnums.h"
 #include "Contents/Effects/EffectResourceSwitcher.h"
 #include "Contents/Effects/Core/Effect.h"
@@ -163,7 +164,7 @@ bool CSkillAction_SOA_TALISMAN_OF_FIVE_ELEMENTS::IsSupport() {
 // FUNCTION: fn_08875
 void CSkillAction_SOA_TALISMAN_OF_FIVE_ELEMENTS::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(830, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL_N1, level / 16);
   }
 }
 
@@ -180,7 +181,7 @@ void CSkillAction_SOA_TALISMAN_OF_FIVE_ELEMENTS::OnSkillEffect(int level, CGameA
 // FUNCTION: fn_08877
 void CSkillAction_SOA_TALISMAN_OF_SOUL_STEALING::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(441, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BLUECASTING, level / 16);
   }
 }
 
@@ -188,7 +189,7 @@ void CSkillAction_SOA_TALISMAN_OF_SOUL_STEALING::OnSkillCast(int level, CGameAct
 // FUNCTION: fn_08878
 void CSkillAction_SOA_TALISMAN_OF_SOUL_STEALING::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (target) {
-    target->LaunchEffect(253, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    target->LaunchEffect(EF_ABSORBSPIRITS, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     target->SendMsg(nullptr, AM_MAKE_NUMBER, level, 0xFF0000FFu, 114, 0, 0, 0);
   }
 }
@@ -212,7 +213,7 @@ void CSkillAction_SOA_TALISMAN_OF_SOUL_STEALING::OnSkillHit(int argument1, CGame
 // FUNCTION: fn_08880
 void CSkillAction_SOA_EXORCISM_OF_MALICIOUS_SOUL::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(2367, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL_RING_YELLOW, level / 16);
   }
 }
 
@@ -229,7 +230,7 @@ void CSkillAction_SOA_EXORCISM_OF_MALICIOUS_SOUL::OnSkillEffect(int level, CGame
 // FUNCTION: fn_08882
 void CSkillAction_SOA_TALISMAN_OF_BLUE_DRAGON::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(845, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL_N8, level / 16);
   }
 }
 
@@ -247,7 +248,7 @@ void CSkillAction_SOA_TALISMAN_OF_BLUE_DRAGON::OnSkillEffect(int level, CGameAct
 void CEfstAction_T_FIRST_GOD::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
     g_effectMgr->Retire(actor->render.accountId, 2355);
-    g_effectMgr->Spawn(actor->render.accountId, 2355, actor->render.position, 0, 1, 0, 0);
+    g_effectMgr->Spawn(actor->render.accountId, 0x933, actor->render.position, 0, 1, 0, 0);
   }
 }
 
@@ -255,7 +256,7 @@ void CEfstAction_T_FIRST_GOD::OnEfstBegin(int efstId, int value, int argument3, 
 // FUNCTION: fn_08885
 void CEfstAction_T_FIRST_GOD::OnEfstEnd(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    if (CEffect* effect = g_effectMgr->Find(actor->render.accountId, 2355)) {
+    if (CEffect* effect = g_effectMgr->Find(actor->render.accountId, 0x933)) {
       static_cast<CTalismanMarkEffect*>(effect)->PlayEnd();
     }
   }
@@ -271,7 +272,7 @@ void CEfstAction_T_FIRST_GOD::OnEfstUpdate(int efstId, int value, int argument3,
 // FUNCTION: fn_08887
 void CSkillAction_SOA_TALISMAN_OF_WHITE_TIGER::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(843, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL_N6, level / 16);
   }
 }
 
@@ -289,7 +290,7 @@ void CSkillAction_SOA_TALISMAN_OF_WHITE_TIGER::OnSkillEffect(int level, CGameAct
 void CEfstAction_T_SECOND_GOD::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
     g_effectMgr->Retire(actor->render.accountId, 2355);
-    g_effectMgr->Spawn(actor->render.accountId, 2355, actor->render.position, 0, 2, 0, 0);
+    g_effectMgr->Spawn(actor->render.accountId, 0x933, actor->render.position, 0, 2, 0, 0);
   }
 }
 
@@ -297,7 +298,7 @@ void CEfstAction_T_SECOND_GOD::OnEfstBegin(int efstId, int value, int argument3,
 // FUNCTION: fn_08890
 void CEfstAction_T_SECOND_GOD::OnEfstEnd(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    if (CEffect* effect = g_effectMgr->Find(actor->render.accountId, 2355)) {
+    if (CEffect* effect = g_effectMgr->Find(actor->render.accountId, 0x933)) {
       static_cast<CTalismanMarkEffect*>(effect)->PlayEnd();
     }
   }
@@ -313,7 +314,7 @@ void CEfstAction_T_SECOND_GOD::OnEfstUpdate(int efstId, int value, int argument3
 // FUNCTION: fn_08892
 void CSkillAction_SOA_TALISMAN_OF_RED_PHOENIX::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(840, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL_N3, level / 16);
   }
 }
 
@@ -333,7 +334,7 @@ void CSkillAction_SOA_TALISMAN_OF_RED_PHOENIX::OnSkillEffect(int level, CGameAct
 void CEfstAction_T_THIRD_GOD::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
     g_effectMgr->Retire(actor->render.accountId, 2355);
-    g_effectMgr->Spawn(actor->render.accountId, 2355, actor->render.position, 0, 3, 0, 0);
+    g_effectMgr->Spawn(actor->render.accountId, 0x933, actor->render.position, 0, 3, 0, 0);
   }
 }
 
@@ -341,7 +342,7 @@ void CEfstAction_T_THIRD_GOD::OnEfstBegin(int efstId, int value, int argument3, 
 // FUNCTION: fn_08895
 void CEfstAction_T_THIRD_GOD::OnEfstEnd(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    if (CEffect* effect = g_effectMgr->Find(actor->render.accountId, 2355)) {
+    if (CEffect* effect = g_effectMgr->Find(actor->render.accountId, 0x933)) {
       static_cast<CTalismanMarkEffect*>(effect)->PlayEnd();
     }
   }
@@ -357,7 +358,7 @@ void CEfstAction_T_THIRD_GOD::OnEfstUpdate(int efstId, int value, int argument3,
 // FUNCTION: fn_08897
 void CSkillAction_SOA_TALISMAN_OF_BLACK_TORTOISE::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(2368, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL_SWIRL, level / 16);
   }
 }
 
@@ -381,7 +382,7 @@ int CSkillAction_SOA_TALISMAN_OF_BLACK_TORTOISE::GetSkillScopeType() {
 void CEfstAction_T_FOURTH_GOD::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
     g_effectMgr->Retire(actor->render.accountId, 2355);
-    g_effectMgr->Spawn(actor->render.accountId, 2355, actor->render.position, 0, 4, 0, 0);
+    g_effectMgr->Spawn(actor->render.accountId, 0x933, actor->render.position, 0, 4, 0, 0);
   }
 }
 
@@ -389,7 +390,7 @@ void CEfstAction_T_FOURTH_GOD::OnEfstBegin(int efstId, int value, int argument3,
 // FUNCTION: fn_08901
 void CEfstAction_T_FOURTH_GOD::OnEfstEnd(int efstId, int argument2, int argument3, int argument4, CRenderObject* actor) {
   if (actor) {
-    if (CEffect* effect = g_effectMgr->Find(actor->render.accountId, 2355)) {
+    if (CEffect* effect = g_effectMgr->Find(actor->render.accountId, 0x933)) {
       static_cast<CTalismanMarkEffect*>(effect)->PlayEnd();
     }
   }
@@ -405,7 +406,7 @@ void CEfstAction_T_FOURTH_GOD::OnEfstUpdate(int efstId, int value, int argument3
 // FUNCTION: fn_08903
 void CSkillAction_SOA_TALISMAN_OF_FOUR_BEARING_GOD::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(2369, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL_RING_WHITE, level / 16);
   }
 }
 
@@ -422,7 +423,7 @@ void CSkillAction_SOA_TALISMAN_OF_FOUR_BEARING_GOD::OnSkillEffect(int level, CGa
 // FUNCTION: fn_08905
 void CSkillAction_SOA_CIRCLE_OF_DIRECTIONS_AND_ELEMENTALS::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(1565, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_NEW_HEAL_YELLOW, level / 16);
   }
 }
 
@@ -469,7 +470,7 @@ bool CSkillAction_SOA_SOUL_OF_HEAVEN_AND_EARTH::IsSupport() {
 // FUNCTION: fn_08911
 void CSkillAction_SOA_SOUL_OF_HEAVEN_AND_EARTH::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(1556, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_NEW_HEAL_BLUE, level / 16);
   }
 }
 
@@ -516,7 +517,7 @@ bool CSkillAction_SOA_TALISMAN_OF_PROTECTION::IsSupport() {
 // FUNCTION: fn_08917
 void CSkillAction_SOA_TALISMAN_OF_PROTECTION::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(830, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL_N1, level / 16);
   }
 }
 
@@ -539,7 +540,7 @@ bool CSkillAction_SOA_TALISMAN_OF_WARRIOR::IsSupport() {
 // FUNCTION: fn_08920
 void CSkillAction_SOA_TALISMAN_OF_WARRIOR::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(830, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL_N1, level / 16);
   }
 }
 
@@ -562,7 +563,7 @@ bool CSkillAction_SOA_TALISMAN_OF_MAGICIAN::IsSupport() {
 // FUNCTION: fn_08923
 void CSkillAction_SOA_TALISMAN_OF_MAGICIAN::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(830, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL_N1, level / 16);
   }
 }
 
@@ -581,7 +582,7 @@ void CSkillAction_SOA_TALISMAN_OF_MAGICIAN::OnSkillEffect(int level, CGameActor*
 // FUNCTION: fn_08925
 void CSkillAction_SOA_SOUL_GATHERING::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(454, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_DARKCASTING, level / 16);
   }
 }
 
@@ -598,7 +599,7 @@ void CSkillAction_SOA_SOUL_GATHERING::OnSkillEffect(int level, CGameActor* sourc
 // FUNCTION: fn_08927
 void CSkillAction_SOA_TOTEM_OF_TUTELARY::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(911, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_GREENCASTING, level / 16);
   }
 }
 

@@ -1,4 +1,5 @@
 #include "Contents/Actors/ActorEnums.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Session/Session.h"
 #include "Client/Mode/ModeMgr.h"
@@ -535,7 +536,7 @@ void CSkillAction_Earthing::OnSkillDamage(int level, CGameActor* source, CGameAc
     return;
   }
 
-  if (CRagEffect* effect = source->LaunchEffect(0, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+  if (CRagEffect* effect = source->LaunchEffect(EF_HIT1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
     effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&source->render.position), 0, 0, 0, 0);
   }
 }
@@ -567,7 +568,7 @@ void CEfstAction_BasicAction::OnEfstBegin(int efstId, int value, int argument3, 
 // FUNCTION: fn_03178
 void CSkillAction_Earthing::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    source->LaunchEffect(57, level / 16);
+    source->LaunchEffect(EF_BEGINSPELL5, level / 16);
   }
 }
 
@@ -692,7 +693,7 @@ int CSkillAction_AT_PULSE_OF_MADNESS::GetSkillAttackMotion() {
 // FUNCTION: fn_03191
 void CSkillAction_AT_PULSE_OF_MADNESS::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    source->LaunchEffect(54, level / 16);
+    source->LaunchEffect(EF_BEGINSPELL2, level / 16);
   }
 }
 
@@ -758,7 +759,7 @@ int CSkillAction_AT_PINION_SHOT::GetSkillAttackMotion() {
 // FUNCTION: fn_03199
 void CSkillAction_AT_PINION_SHOT::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    source->LaunchEffect(56, level / 16);
+    source->LaunchEffect(EF_BEGINSPELL4, level / 16);
   }
 }
 
@@ -804,7 +805,7 @@ int CSkillAction_AT_QUILL_SPEAR::GetSkillAttackMotion() {
 // FUNCTION: fn_03204
 void CSkillAction_AT_QUILL_SPEAR::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    source->LaunchEffect(56, level / 16);
+    source->LaunchEffect(EF_BEGINSPELL4, level / 16);
   }
 }
 
@@ -821,7 +822,7 @@ void CSkillAction_AT_QUILL_SPEAR::OnSkillEffect(int level, CGameActor* source, C
       &source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values
     );
     effect->SetAngle(angle);
-    if (CRagEffect* ragEffect = source->LaunchEffect(2442, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+    if (CRagEffect* ragEffect = source->LaunchEffect(EF_QUILL_SPEAR_LINE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
       ragEffect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&target->render.position), 0, 0, 0, 0);
     }
   }
@@ -840,7 +841,7 @@ void CSkillAction_AT_QUILL_SPEAR_S::OnSkillEffect(int level, CGameActor* source,
       &source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values
     );
     effect->SetAngle(angle);
-    if (CRagEffect* ragEffect = source->LaunchEffect(2442, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+    if (CRagEffect* ragEffect = source->LaunchEffect(EF_QUILL_SPEAR_LINE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
       ragEffect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&target->render.position), 0, 0, 0, 0);
     }
   }
@@ -862,7 +863,7 @@ int CSkillAction_AT_NATURE_HARMONY::GetSkillAttackMotion() {
 // FUNCTION: fn_03209
 void CSkillAction_AT_NATURE_HARMONY::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    source->LaunchEffect(12, level / 16);
+    source->LaunchEffect(EF_BEGINSPELL, level / 16);
   }
 }
 
@@ -902,7 +903,7 @@ int CSkillAction_AT_GRAVITY_HOLE::GetSkillAttackMotion() {
 // FUNCTION: fn_03215
 void CSkillAction_AT_GRAVITY_HOLE::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    source->LaunchEffect(12, level / 16);
+    source->LaunchEffect(EF_BEGINSPELL, level / 16);
   }
 }
 
@@ -910,7 +911,7 @@ void CSkillAction_AT_GRAVITY_HOLE::OnSkillCast(int level, CGameActor* source) {
 // FUNCTION: fn_03216
 void CSkillAction_AT_GRAVITY_HOLE::OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    if (CRagEffect* effect = source->LaunchEffect(0, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+    if (CRagEffect* effect = source->LaunchEffect(EF_HIT1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
       effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&source->render.position), 0, 0, 0, 0);
     }
   }
@@ -1185,7 +1186,7 @@ int CSkillAction_AT_ALPHA_PHASE::GetSkillAttackMotion() {
 // FUNCTION: fn_03242
 void CSkillAction_AT_ALPHA_PHASE::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    source->LaunchEffect(54, level / 16);
+    source->LaunchEffect(EF_BEGINSPELL2, level / 16);
   }
 }
 
@@ -1505,7 +1506,7 @@ void CSkillAction_AT_SAVAGE_LUNGE::OnSkillEffect(int level, CGameActor* source, 
     return;
   }
 
-  if (CRagEffect* effect = source->LaunchEffect(2439, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+  if (CRagEffect* effect = source->LaunchEffect(EF_CRUEL_BITE_LINE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
     effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&target->render.position), 0, 0, 0, 0);
   }
   EffectLists* effects = g_effectMgr;

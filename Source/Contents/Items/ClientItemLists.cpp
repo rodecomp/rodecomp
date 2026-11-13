@@ -1,4 +1,5 @@
 #include "Network/Packets/NoticeEnums.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 #include "Client/Mode/ModeMessage.h"
@@ -1306,8 +1307,8 @@ void CSession::ClearPartyMembers() {
   if (mode) {
     for (auto member = this->m_partyMembers.begin(); member != this->m_partyMembers.end(); ++member) {
       CRenderObject* actor = mode->scene->GetGameActorByAidIncludeMe(member->accountId);
-      if (actor && static_cast<EffectActor*>(actor)->HasId(160) == true) {
-        actor->SendMsg(nullptr, AM_DELETE_EFFECT, 160, 0, 0, 0, 0, 0);
+      if (actor && static_cast<EffectActor*>(actor)->HasId(EF_PARTY) == true) {
+        actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_PARTY, 0, 0, 0, 0, 0);
       }
     }
   }

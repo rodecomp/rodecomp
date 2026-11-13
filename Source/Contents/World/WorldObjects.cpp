@@ -1,4 +1,5 @@
 #include "Client/Mode/CGameMode.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "Contents/Actors/ActorEnums.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
@@ -410,7 +411,7 @@ __declspec(safebuffers) bool CGameMode::LaunchTargetEffect(int effectId, CGameAc
     }
 
     if (effectId == 539) {
-      g_effectMgr->Spawn(source->render.accountId, 980, source->render.position,
+      g_effectMgr->Spawn(source->render.accountId, EF_THROWITEM4_1, source->render.position,
                          target->render.accountId, -1, 0, 0);
     }
     return true;

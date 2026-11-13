@@ -11448,7 +11448,7 @@ void CRagEffect::Sightrasher() {
   this->state.tlvertY = vertex.y;
 
   if (this->state.stateCnt == 0) {
-    this->state.parent->SendMsg(nullptr, AM_DELETE_EFFECT, 22, 0, 0, 0, 0, 0);
+    this->state.parent->SendMsg(nullptr, AM_DELETE_EFFECT, EF_SIGHT, 0, 0, 0, 0, 0);
     PlayEffectWave(*this, "effect\\wizard_sightrasher.wav");
   }
 
@@ -17275,8 +17275,8 @@ void CPlayer::UpdateFootprints(int kind) {
 // OFFSET: 0x00C74B60
 // FUNCTION: fn_20334
 void CPlayer::RefreshEffect164() {
-  this->SendMsg(nullptr, AM_DELETE_EFFECT, 164, 0, 0, 0, 0, 0);
-  this->skillEffect = this->LaunchEffect(164, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_STATUS_STATE, 0, 0, 0, 0, 0);
+  this->skillEffect = this->LaunchEffect(EF_STATUS_STATE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
 }
 
 // OFFSET: 0x00C4FAB0
@@ -21331,7 +21331,7 @@ bool CRagEffect::OnProcess3() {
     break;
   case EF_NPC_STOP2_DEL:
     if (this->state.stateCnt == 0) {
-      this->state.parent->SendMsg(nullptr, AM_DELETE_EFFECT, 604, 0, 0, 0, 0, 0);
+      this->state.parent->SendMsg(nullptr, AM_DELETE_EFFECT, EF_NPC_STOP2, 0, 0, 0, 0, 0);
     }
     break;
   case EF_SIGHT2:
@@ -21869,7 +21869,7 @@ bool CRagEffect::OnProcess3() {
     }
     break;
   case EF_REDLIGHTBODY:
-  case EF_UNK_1398:
+  case 0x576:
     if ((this->state.parent->render.flags & 0x40000) == 0) {
       this->state.parent->render.flags += 0x40000;
       if (this->state.stateCnt <= 200) {
@@ -22821,10 +22821,10 @@ bool CRagEffect::OnProcess3() {
       this->TexturedQuadRingSized(25, "effect\\ring_white.tga", 50);
     }
     break;
-  case EF_UNK_2277:
+  case 0x8E5:
     this->state.parent->SetColor(-1, 105, 105, 105);
     break;
-  case EF_UNK_2278:
+  case 0x8E6:
     this->state.parent->SetColor(-1, 251, 200, 4);
     break;
   case EF_STATUS_CRATE_UP:

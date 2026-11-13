@@ -1,4 +1,5 @@
 #include "Contents/Actors/ActorEnums.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/GameActor.h"
@@ -379,7 +380,7 @@ int CSkillAction_DR_ENRAGE_WOLF::GetSkillAttackMotion() {
 // FUNCTION: fn_04465
 void CSkillAction_DR_ENRAGE_WOLF::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    source->LaunchEffect(54, level / 16);
+    source->LaunchEffect(EF_BEGINSPELL2, level / 16);
   }
 }
 
@@ -411,7 +412,7 @@ int CSkillAction_DR_BLOOD_HOWLING::GetSkillAttackMotion() {
 // FUNCTION: fn_04471
 void CSkillAction_DR_BLOOD_HOWLING::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    source->LaunchEffect(54, level / 16);
+    source->LaunchEffect(EF_BEGINSPELL2, level / 16);
   }
 }
 
@@ -491,7 +492,7 @@ int CSkillAction_DR_ENRAGE_RAPTOR::GetSkillAttackMotion() {
 // FUNCTION: fn_04484
 void CSkillAction_DR_ENRAGE_RAPTOR::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    source->LaunchEffect(56, level / 16);
+    source->LaunchEffect(EF_BEGINSPELL4, level / 16);
   }
 }
 
@@ -523,7 +524,7 @@ int CSkillAction_DR_PREENING::GetSkillAttackMotion() {
 // FUNCTION: fn_04490
 void CSkillAction_DR_PREENING::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    source->LaunchEffect(56, level / 16);
+    source->LaunchEffect(EF_BEGINSPELL4, level / 16);
   }
 }
 
@@ -650,7 +651,7 @@ int CSkillAction_DR_NATURE_SHIELD::GetSkillAttackMotion() {
 // FUNCTION: fn_04503
 void CSkillAction_DR_NATURE_SHIELD::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    source->LaunchEffect(12, level / 16);
+    source->LaunchEffect(EF_BEGINSPELL, level / 16);
   }
 }
 
@@ -797,7 +798,7 @@ int CSkillAction_DR_TRUTH_OF_EARTH::GetSkillAttackMotion() {
 // FUNCTION: fn_04521
 void CSkillAction_DR_TRUTH_OF_EARTH::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    source->LaunchEffect(57, level / 16);
+    source->LaunchEffect(EF_BEGINSPELL5, level / 16);
   }
 }
 
@@ -853,7 +854,7 @@ int CSkillAction_DR_TRUTH_OF_ICE::GetSkillAttackMotion() {
 // FUNCTION: fn_04527
 void CSkillAction_DR_TRUTH_OF_ICE::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    source->LaunchEffect(54, level / 16);
+    source->LaunchEffect(EF_BEGINSPELL2, level / 16);
   }
 }
 
@@ -907,7 +908,7 @@ int CSkillAction_DR_TRUTH_OF_WIND::GetSkillAttackMotion() {
 // FUNCTION: fn_04533
 void CSkillAction_DR_TRUTH_OF_WIND::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    source->LaunchEffect(56, level / 16);
+    source->LaunchEffect(EF_BEGINSPELL4, level / 16);
   }
 }
 
@@ -961,7 +962,7 @@ int CSkillAction_DR_CUTTING_WIND::GetSkillAttackMotion() {
 // FUNCTION: fn_04539
 void CSkillAction_DR_CUTTING_WIND::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    source->LaunchEffect(56, level / 16);
+    source->LaunchEffect(EF_BEGINSPELL4, level / 16);
   }
 }
 
@@ -1014,7 +1015,7 @@ int CSkillAction_DR_WIND_BOMB::GetSkillAttackMotion() {
 // FUNCTION: fn_04544
 void CSkillAction_DR_WIND_BOMB::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    source->LaunchEffect(56, level / 16);
+    source->LaunchEffect(EF_BEGINSPELL4, level / 16);
   }
 }
 
@@ -1025,7 +1026,7 @@ void CSkillAction_DR_WIND_BOMB::OnSkillEffect(int level, CGameActor* source, CGa
     return;
   }
 
-  if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, 2468, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
+  if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, 0x9A4, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
     static_cast<CBezierArcThrowEffect*>(effect)->SetTarget(target->render.position);
   }
 
@@ -1244,7 +1245,7 @@ void CSkillAction_DR_CRUEL_BITE::OnSkillEffect(int level, CGameActor* source, CG
     return;
   }
 
-  if (CRagEffect* effect = source->LaunchEffect(2439, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+  if (CRagEffect* effect = source->LaunchEffect(EF_CRUEL_BITE_LINE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
     effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&target->render.position), 0, 0, 0, 0);
   }
 

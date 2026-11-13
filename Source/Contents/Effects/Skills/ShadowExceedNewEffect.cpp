@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/SkillEffects.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -84,8 +85,8 @@ bool CShadowExceedNew::IsAlive() {
     if (this->frontEmitters.size() != 0 && this->backEmitters.size() != 0) {
       return true;
     }
-    if (!static_cast<EffectActor*>(actor)->HasId(1004)) {
-      static_cast<EffectActor*>(actor)->LaunchEffect(1004, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    if (!static_cast<EffectActor*>(actor)->HasId(EF_KAGEMUSYA)) {
+      static_cast<EffectActor*>(actor)->LaunchEffect(EF_KAGEMUSYA, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
   }
   return false;

@@ -1038,14 +1038,14 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
     break;
   case WZ_METEOR:
     if (g_serviceOptions.Get(0xE5)) {
-      g_effectMgr->Spawn(0, 0x48B, position.x, position.y, position.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(0, EF_METEOR_STORM_VISUAL, position.x, position.y, position.z, 0, -1, 0, 0);
     } else {
       mode->LaunchDummyEffect(&position, 0x5C, EffectLifetime(0x5C) + 10, 0);
     }
     break;
   case WZ_VERMILION:
     if (g_serviceOptions.Get(0xE5)) {
-      g_effectMgr->Spawn(0, 0x48A, position.x, position.y, position.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(0, EF_LORD_OF_VERMILLION_VISUAL, position.x, position.y, position.z, 0, -1, 0, 0);
     } else {
       mode->LaunchDummyEffect(&position, 0x5A, EffectLifetime(0x5A) + 10, 0);
     }
@@ -1064,7 +1064,7 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
     break;
   case WZ_QUAGMIRE:
     if (g_serviceOptions.Get(0xE5)) {
-      g_effectMgr->Spawn(0, 0x489, position.x, position.y, position.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(0, EF_QUAGMIRE_VISUAL, position.x, position.y, position.z, 0, -1, 0, 0);
     } else {
       mode->LaunchDummyEffect(&position, 0x5F, EffectLifetime(0x5F) + 10, 0);
     }
@@ -1123,7 +1123,7 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
     g_soundMgr->PlayWave("effect\\wizard_earthspike.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   case CR_CULTIVATION:
-    this->LaunchEffect(0x3A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->LaunchEffect(EF_BEGINSPELL6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case GS_GROUNDDRIFT:
     g_soundMgr->PlayWave("effect\\그라운드.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
@@ -1132,11 +1132,11 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
     g_soundMgr->PlayWave("effect\\수둔.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   case NPC_ICEEXPLO:
-    this->LaunchEffect(0x87, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->LaunchEffect(EF_ICECRASH, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     g_soundMgr->PlayWave("effect\\ef_frostdiver.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   case NPC_MAXPAIN_ATK:
-    this->LaunchEffect(0x408, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->LaunchEffect(EF_MAXPAIN, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case NPC_MAGMA_ERUPTION:
   case NC_MAGMA_ERUPTION:
@@ -1144,13 +1144,13 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
     break;
   case NPC_RAYOFGENESIS:
   case LG_RAYOFGENESIS:
-    g_effectMgr->Spawn(0, 0x590, position.x, position.y, position.z, 0, -1, 0, 0);
+    g_effectMgr->Spawn(0, EF_NEW_RAYOFGENESIS, position.x, position.y, position.z, 0, -1, 0, 0);
     g_soundMgr->PlayWave("effect\\LG_RAYOFGENESIS.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   case NPC_RAINOFMETEOR: {
     const float raised = height + 25.0f;
-    g_effectMgr->Spawn(0, 0x4E7, x, raised, z, 0, -1, 0, 0);
-    g_effectMgr->Spawn(0, 0x4E6, x, raised, z, 0, -1, 0, 0);
+    g_effectMgr->Spawn(0, EF_NEW_METEORSTORM_BOTTOM, x, raised, z, 0, -1, 0, 0);
+    g_effectMgr->Spawn(0, EF_NEW_METEORSTORM, x, raised, z, 0, -1, 0, 0);
     g_soundMgr->PlayWave("effect\\wizard_meteor.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   }
@@ -1158,7 +1158,7 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
     mode->LaunchDummyEffect(&position, 0x577, EffectLifetime(0x577) + 10, 0);
     break;
   case NPC_LOCKON_LASER_ATK: {
-    CEffect* effect = g_effectMgr->Spawn(0, 0x426, position.x, position.y, position.z, 0, -1, 0, 0);
+    CEffect* effect = g_effectMgr->Spawn(0, EF_HAMMER_OF_GOD, position.x, position.y, position.z, 0, -1, 0, 0);
     if (effect != nullptr) {
       using SetFloat = void (CEffect::*)(float);
       const SetFloat set = reinterpret_cast<SetFloat>(&CEffect::AdvanceFrame);
@@ -1167,7 +1167,7 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
     break;
   }
   case NC_COLDSLOWER: {
-    CRagEffect* effect = this->LaunchEffect(0x317, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    CRagEffect* effect = this->LaunchEffect(EF_COLDTHROW, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect != nullptr) {
       effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
@@ -1176,15 +1176,15 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
   case SO_DIAMONDDUST:
     g_soundMgr->PlayWave("effect\\wl_jackfrost.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     if (g_serviceOptions.Get(0xE5)) {
-      g_effectMgr->Spawn(0, 0x5AA, position.x, position.y, position.z, 0, level, 0, 0);
-      g_effectMgr->Spawn(0, 0x5AB, position.x, position.y, position.z, 0, level, 0, 0);
+      g_effectMgr->Spawn(0, EF_MINEFFECT_DIAMONDDUST, position.x, position.y, position.z, 0, level, 0, 0);
+      g_effectMgr->Spawn(0, EF_MINEFFECT_DIAMONDDUST_BOTTOM, position.x, position.y, position.z, 0, level, 0, 0);
     } else {
-      g_effectMgr->Spawn(0, 0x502, position.x, position.y, position.z, 0, level, 0, 0);
-      g_effectMgr->Spawn(0, 0x503, position.x, position.y, position.z, 0, level, 0, 0);
+      g_effectMgr->Spawn(0, EF_NEW_DIAMONDDUST, position.x, position.y, position.z, 0, level, 0, 0);
+      g_effectMgr->Spawn(0, EF_NEW_DIAMONDDUST_BOTTOM, position.x, position.y, position.z, 0, level, 0, 0);
     }
     break;
   case RL_HAMMER_OF_GOD:
-    g_effectMgr->Spawn(0, 0x426, position.x, position.y, position.z, 0, -1, 0, 0);
+    g_effectMgr->Spawn(0, EF_HAMMER_OF_GOD, position.x, position.y, position.z, 0, -1, 0, 0);
     break;
   case SU_CN_METEOR:
     g_effectMgr->Spawn(0, 0x452, position.x, position.y, position.z, 0, -1, 0, 0);
@@ -1193,7 +1193,7 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
     g_effectMgr->Spawn(0, 0x458, position.x, position.y, position.z, 0, -1, 0, 0);
     break;
   case AG_VIOLENT_QUAKE_ATK:
-    g_effectMgr->Spawn(0, 0x6E0, position.x, position.y, position.z, 0, -1, 0, 0);
+    g_effectMgr->Spawn(0, EF_VIOLENTQUAKE, position.x, position.y, position.z, 0, -1, 0, 0);
     break;
   case AG_STRANTUM_TREMOR:
   case AG_TORNADO_STORM:
@@ -1204,13 +1204,13 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
     g_effectMgr->Spawn(0, 0x706, position.x, position.y, position.z, 0, -1, 0, 0);
     break;
   case ABC_ABYSS_STRIKE: {
-    g_effectMgr->Spawn(0, 0x827, position.x, position.y, position.z, 0, -1, 0, 0);
-    g_effectMgr->Spawn(0, 0x828, position.x, position.y, position.z, 0, -1, 0, 0);
-    CEffect* effect = g_effectMgr->Spawn(0, 0x82B, position.x, position.y, position.z, 0, -1, 0, 0);
+    g_effectMgr->Spawn(0, EF_ABYSS_STRIKE, position.x, position.y, position.z, 0, -1, 0, 0);
+    g_effectMgr->Spawn(0, EF_ABYSS_STRIKE_BOTTOM, position.x, position.y, position.z, 0, -1, 0, 0);
+    CEffect* effect = g_effectMgr->Spawn(0, EF_ABYSS_STRIKE_GROUND, position.x, position.y, position.z, 0, -1, 0, 0);
     if (effect != nullptr) {
       effect->SetDelay(0x370);
     }
-    effect = g_effectMgr->Spawn(0, 0x82C, position.x, position.y, position.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(0, EF_ABYSS_STRIKE_GROUND_BOTTOM, position.x, position.y, position.z, 0, -1, 0, 0);
     if (effect != nullptr) {
       effect->SetDelay(0x370);
     }
@@ -1432,14 +1432,14 @@ void CGameActor::SetState(int state, int resetPosition) {
     } else {
       this->render.sequenceInterval = 10;
       this->SetAnimationSequence(action, 0, action, 0, action, 0, action, 1, action, 1, 1, 3000, 0);
-      while (HasEffectOfType(this->state.effects, 0x1be)) {
-        this->SendMsg(nullptr, AM_DELETE_EFFECT, 0x1be, 0, 0, 0, 0, 0);
+      while (HasEffectOfType(this->state.effects, EF_LANDBODY)) {
+        this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_LANDBODY, 0, 0, 0, 0, 0);
       }
-      while (HasEffectOfType(this->state.effects, 0x1bd)) {
-        this->SendMsg(nullptr, AM_DELETE_EFFECT, 0x1bd, 0, 0, 0, 0, 0);
+      while (HasEffectOfType(this->state.effects, EF_JUMPBODY)) {
+        this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_JUMPBODY, 0, 0, 0, 0, 0);
       }
-      this->LaunchEffect(0x1bd, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      this->LaunchEffect(0x19b, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      this->LaunchEffect(EF_JUMPBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      this->LaunchEffect(EF_PEONG, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case ST_LANDJUMP:
@@ -1449,7 +1449,7 @@ void CGameActor::SetState(int state, int resetPosition) {
   case ST_R_STORM:
     this->render.sequenceInterval = 10;
     this->SetFrameSequence(action, 0, 0, action, 0, 1, 2000, 0);
-    this->LaunchEffect(0x1c1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->LaunchEffect(EF_TAE_READY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case ST_A_STORM:
     this->render.sequenceInterval = 10;
@@ -1458,7 +1458,7 @@ void CGameActor::SetState(int state, int resetPosition) {
   case ST_R_DOWN:
     this->render.sequenceInterval = 10;
     this->SetFrameSequence(action, 2, 2, action, 2, 1, 2000, 0);
-    this->LaunchEffect(0x1c1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->LaunchEffect(EF_TAE_READY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case ST_SG_DOWN:
     this->render.sequenceInterval = 10;
@@ -1471,7 +1471,7 @@ void CGameActor::SetState(int state, int resetPosition) {
   case ST_R_TURN:
     this->render.sequenceInterval = 10;
     this->SetFrameSequence(action, 3, 3, action, 3, 1, 2000, 0);
-    this->LaunchEffect(0x1c1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->LaunchEffect(EF_TAE_READY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case ST_SG_TURN:
     this->render.sequenceInterval = 10;
@@ -1484,7 +1484,7 @@ void CGameActor::SetState(int state, int resetPosition) {
   case ST_R_COUNTER:
     this->render.sequenceInterval = 10;
     this->SetFrameSequence(action, 4, 4, action, 4, 1, 2000, 0);
-    this->LaunchEffect(0x1c1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->LaunchEffect(EF_TAE_READY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case ST_A_COUNTER: {
     this->render.sequenceInterval = 4;
@@ -1513,7 +1513,7 @@ void CGameActor::SetState(int state, int resetPosition) {
   case ST_R_DODGE:
     this->render.sequenceInterval = 10;
     this->SetFrameSequence(action, 1, 1, action, 1, 1, 2000, 0);
-    this->LaunchEffect(0x1c1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->LaunchEffect(EF_TAE_READY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case ST_A_JUMPKICK:
     this->render.sequenceInterval = 10;
@@ -1592,14 +1592,14 @@ void CGameActor::SetState(int state, int resetPosition) {
   case 0x2e:
     this->render.sequenceInterval = 20;
     this->SetAnimationSequence(action, 0, action, 0, action, 0, action, 1, action, 1, 1, 3000, 0);
-    while (HasEffectOfType(this->state.effects, 0x1be)) {
-      this->SendMsg(nullptr, AM_DELETE_EFFECT, 0x1be, 0, 0, 0, 0, 0);
+    while (HasEffectOfType(this->state.effects, EF_LANDBODY)) {
+      this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_LANDBODY, 0, 0, 0, 0, 0);
     }
-    while (HasEffectOfType(this->state.effects, 0x430)) {
-      this->SendMsg(nullptr, AM_DELETE_EFFECT, 0x430, 0, 0, 0, 0, 0);
+    while (HasEffectOfType(this->state.effects, EF_JUMPBODY1)) {
+      this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_JUMPBODY1, 0, 0, 0, 0, 0);
     }
-    this->LaunchEffect(0x430, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    this->LaunchEffect(0x19b, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->LaunchEffect(EF_JUMPBODY1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->LaunchEffect(EF_PEONG, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case 0x2f:
     this->render.sequenceInterval = 6;
@@ -2254,7 +2254,7 @@ void CGameActor::ShowPartyMemberEffect(std::uint32_t accountId) {
         }
       }
 
-      this->LaunchEffect(160, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      this->LaunchEffect(EF_PARTY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       return;
     }
   }
@@ -2842,7 +2842,7 @@ void CGameActor::SetTetraBall(int index, int on, int value) {
     const int type = value & 3;
     if (type == 0) {
       if (ball == nullptr) {
-        CTetraBallEffect* spawned = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Spawn(this->render.accountId, 0x4EE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0));
+        CTetraBallEffect* spawned = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Spawn(this->render.accountId, EF_TETRA_VORTEX_BALL_1, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0));
         if (spawned != nullptr) {
           spawned->MoveFirstTo(index);
         }
@@ -2851,7 +2851,7 @@ void CGameActor::SetTetraBall(int index, int on, int value) {
       }
     } else if (type == 1) {
       if (ball == nullptr) {
-        CTetraBallEffect* spawned = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Spawn(this->render.accountId, 0x4F0, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0));
+        CTetraBallEffect* spawned = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Spawn(this->render.accountId, EF_TETRA_VORTEX_BALL_3, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0));
         if (spawned != nullptr) {
           spawned->MoveFirstTo(index);
         }
@@ -2860,7 +2860,7 @@ void CGameActor::SetTetraBall(int index, int on, int value) {
       }
     } else if (type == 2) {
       if (ball == nullptr) {
-        CTetraBallEffect* spawned = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Spawn(this->render.accountId, 0x4EF, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0));
+        CTetraBallEffect* spawned = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Spawn(this->render.accountId, EF_TETRA_VORTEX_BALL_2, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0));
         if (spawned != nullptr) {
           spawned->MoveFirstTo(index);
         }
@@ -2869,7 +2869,7 @@ void CGameActor::SetTetraBall(int index, int on, int value) {
       }
     } else if (type == 3) {
       if (ball == nullptr) {
-        CTetraBallEffect* spawned = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Spawn(this->render.accountId, 0x4F1, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0));
+        CTetraBallEffect* spawned = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Spawn(this->render.accountId, EF_TETRA_VORTEX_BALL_4, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0));
         if (spawned != nullptr) {
           spawned->MoveFirstTo(index);
         }
@@ -3196,25 +3196,25 @@ void CGameActor::SetEffectInstance(int effectId, int instance, bool on) {
 // FUNCTION: fn_21022
 void CGameActor::ResetJobEffects() {
   this->levelAuraType = 0;
-  this->SendMsg(this, AM_DELETE_EFFECT, 200, 0, 0, 0, 0, 0);
-  this->SendMsg(this, AM_DELETE_EFFECT, 976, 0, 0, 0, 0, 0);
-  this->SendMsg(this, AM_DELETE_EFFECT, 977, 0, 0, 0, 0, 0);
-  this->SendMsg(this, AM_DELETE_EFFECT, 978, 0, 0, 0, 0, 0);
-  this->SendMsg(this, AM_DELETE_EFFECT, 979, 0, 0, 0, 0, 0);
-  this->SendMsg(this, AM_DELETE_EFFECT, 1022, 0, 0, 0, 0, 0);
-  this->SendMsg(this, AM_DELETE_EFFECT, 1023, 0, 0, 0, 0, 0);
+  this->SendMsg(this, AM_DELETE_EFFECT, EF_LEVEL99, 0, 0, 0, 0, 0);
+  this->SendMsg(this, AM_DELETE_EFFECT, EF_LEVEL99_ORB1, 0, 0, 0, 0, 0);
+  this->SendMsg(this, AM_DELETE_EFFECT, EF_LEVEL99_ORB2, 0, 0, 0, 0, 0);
+  this->SendMsg(this, AM_DELETE_EFFECT, EF_LEVEL150, 0, 0, 0, 0, 0);
+  this->SendMsg(this, AM_DELETE_EFFECT, EF_LEVEL150_SUB, 0, 0, 0, 0, 0);
+  this->SendMsg(this, AM_DELETE_EFFECT, EF_LEVEL160, 0, 0, 0, 0, 0);
+  this->SendMsg(this, AM_DELETE_EFFECT, EF_LEVEL160_SUB, 0, 0, 0, 0, 0);
   this->SendMsg(this, AM_DELETE_EFFECT, 1226, 0, 0, 0, 0, 0);
   this->SendMsg(this, AM_DELETE_EFFECT, 1227, 0, 0, 0, 0, 0);
-  this->SendMsg(nullptr, AM_DELETE_EFFECT, 757, 0, 0, 0, 0, 0);
-  this->SendMsg(nullptr, AM_DELETE_EFFECT, 880, 0, 0, 0, 0, 0);
-  this->SendMsg(nullptr, AM_DELETE_EFFECT, 200, 0, 0, 0, 0, 0);
-  this->SendMsg(nullptr, AM_DELETE_EFFECT, 397, 0, 0, 0, 0, 0);
-  this->SendMsg(nullptr, AM_DELETE_EFFECT, 398, 0, 0, 0, 0, 0);
-  this->SendMsg(nullptr, AM_DELETE_EFFECT, 362, 0, 0, 0, 0, 0);
-  this->SendMsg(nullptr, AM_DELETE_EFFECT, 362, 0, 0, 0, 0, 0);
-  this->SendMsg(nullptr, AM_DELETE_EFFECT, 201, 0, 0, 0, 0, 0);
-  this->SendMsg(nullptr, AM_DELETE_EFFECT, 202, 0, 0, 0, 0, 0);
-  this->SendMsg(nullptr, AM_DELETE_EFFECT, 202, 0, 0, 0, 0, 0);
+  this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_CIRCLEPOWER, 0, 0, 0, 0, 0);
+  this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_BEGINSPELL_150, 0, 0, 0, 0, 0);
+  this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_LEVEL99, 0, 0, 0, 0, 0);
+  this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_LEVEL99_5, 0, 0, 0, 0, 0);
+  this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_LEVEL99_6, 0, 0, 0, 0, 0);
+  this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_LEVEL99_4, 0, 0, 0, 0, 0);
+  this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_LEVEL99_4, 0, 0, 0, 0, 0);
+  this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_LEVEL99_2, 0, 0, 0, 0, 0);
+  this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_LEVEL99_3, 0, 0, 0, 0, 0);
+  this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_LEVEL99_3, 0, 0, 0, 0, 0);
 
   const std::int64_t first = g_session.m_maxLevelEffect4th;
   this->SendMsg(this, AM_DELETE_EFFECT, first, 0, 0, 0, 0, 0);
@@ -3659,7 +3659,7 @@ void CGameActor::ProcessHitMessage(CGameObject*, const ActorHitInfo* info, int, 
     case DMG_LUCY_DODGE:
     case DMG_MULTI_HIT_CRITICAL: {
       if (this->isCounter != 0) {
-        CRagEffect* effect = this->LaunchEffect(0x83, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        CRagEffect* effect = this->LaunchEffect(EF_AUTOCOUNTER, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         if (effect != nullptr) {
           effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
         }
@@ -4084,7 +4084,7 @@ void C3dGrannyGameActor::RenderLit(int argument, const GrannyActorLight& light) 
     world.Compose(local, view);
 
     if (this->job == 0x49D && mesh == 28) {
-      this->LaunchEffect(0x175, vector3d{source[64].position[0], source[64].position[1], source[64].position[2]}, -this->angle);
+      this->LaunchEffect(EF_DRAGONSMOKE, vector3d{source[64].position[0], source[64].position[1], source[64].position[2]}, -this->angle);
     }
 
     RenderCommand* command;
@@ -4190,7 +4190,7 @@ void C3dGrannyGameActor::RenderShadowed(int argument) {
     }
 
     if (this->job == 0x49D && mesh == 28) {
-      this->LaunchEffect(0x175, vector3d{source[64].position[0], source[64].position[1], source[64].position[2]}, -this->angle);
+      this->LaunchEffect(EF_DRAGONSMOKE, vector3d{source[64].position[0], source[64].position[1], source[64].position[2]}, -this->angle);
     }
 
     int vertexCount = 0;
@@ -4255,10 +4255,10 @@ void C3dGrannyGameActor::RenderShadowed(int argument) {
 // OFFSET: 0x00CC3E50
 // FUNCTION: fn_21156
 void CGameActor::SetCharm(int type, int count) {
-  this->SendMsg(this, AM_DELETE_EFFECT, 0x2E1, 0, 0, 0, 0, 0);
-  this->SendMsg(this, AM_DELETE_EFFECT, 0x2E2, 0, 0, 0, 0, 0);
-  this->SendMsg(this, AM_DELETE_EFFECT, 0x2DF, 0, 0, 0, 0, 0);
-  this->SendMsg(this, AM_DELETE_EFFECT, 0x2E0, 0, 0, 0, 0, 0);
+  this->SendMsg(this, AM_DELETE_EFFECT, EF_CHOOKGI_WATER, 0, 0, 0, 0, 0);
+  this->SendMsg(this, AM_DELETE_EFFECT, EF_CHOOKGI_GROUND, 0, 0, 0, 0, 0);
+  this->SendMsg(this, AM_DELETE_EFFECT, EF_CHOOKGI_FIRE, 0, 0, 0, 0, 0);
+  this->SendMsg(this, AM_DELETE_EFFECT, EF_CHOOKGI_WIND, 0, 0, 0, 0, 0);
   if (count <= 0 || StateFlag01(this->GetStateFlags()) || StateFlag02(this->GetStateFlags())) {
     return;
   }
@@ -4269,23 +4269,23 @@ void CGameActor::SetCharm(int type, int count) {
     CEffect* effect;
     if (type == 1) {
       effect = g_effectMgr->Spawn(
-        this->render.accountId, 0x2E1, this->render.position, 0, -1, 0, 0
+        this->render.accountId, EF_CHOOKGI_WATER, this->render.position, 0, -1, 0, 0
       );
     } else if (type == 2) {
       effect = g_effectMgr->Spawn(
-        this->render.accountId, 0x2E2, this->render.position, 0, -1, 0, 0
+        this->render.accountId, EF_CHOOKGI_GROUND, this->render.position, 0, -1, 0, 0
       );
     } else if (type == 3) {
       effect = g_effectMgr->Spawn(
-        this->render.accountId, 0x2DF, this->render.position, 0, -1, 0, 0
+        this->render.accountId, EF_CHOOKGI_FIRE, this->render.position, 0, -1, 0, 0
       );
     } else if (type == 4) {
       effect = g_effectMgr->Spawn(
-        this->render.accountId, 0x2E0, this->render.position, 0, -1, 0, 0
+        this->render.accountId, EF_CHOOKGI_WIND, this->render.position, 0, -1, 0, 0
       );
     } else if (type == 5) {
       effect = g_effectMgr->Spawn(
-        this->render.accountId, 0xE4, this->render.position, 0, -1, 0, 0
+        this->render.accountId, EF_CHOOKGI, this->render.position, 0, -1, 0, 0
       );
     } else {
       return;
@@ -4297,15 +4297,15 @@ void CGameActor::SetCharm(int type, int count) {
   } else {
     CRagEffect* effect;
     if (type == 1) {
-      effect = this->LaunchEffect(0x2E1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      effect = this->LaunchEffect(EF_CHOOKGI_WATER, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     } else if (type == 2) {
-      effect = this->LaunchEffect(0x2E2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      effect = this->LaunchEffect(EF_CHOOKGI_GROUND, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     } else if (type == 3) {
-      effect = this->LaunchEffect(0x2DF, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      effect = this->LaunchEffect(EF_CHOOKGI_FIRE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     } else if (type == 4) {
-      effect = this->LaunchEffect(0x2E0, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      effect = this->LaunchEffect(EF_CHOOKGI_WIND, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     } else {
-      effect = this->LaunchEffect(0xE4, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      effect = this->LaunchEffect(EF_CHOOKGI, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
 
     vector3d position{static_cast<float>(count), 0.0f, 0.0f};
@@ -4592,7 +4592,7 @@ __declspec(noinline) void CGameActor::ProcessViewCheck() {
       zero.x = 0.0f;
       zero.y = 0.0f;
       zero.z = 0.0f;
-      this->LaunchEffect(0x16, zero, 0.0f);
+      this->LaunchEffect(EF_SIGHT, zero, 0.0f);
     }
   }
 
@@ -4603,7 +4603,7 @@ __declspec(noinline) void CGameActor::ProcessViewCheck() {
       zero.x = 0.0f;
       zero.y = 0.0f;
       zero.z = 0.0f;
-      this->LaunchEffect(0x21, zero, 0.0f);
+      this->LaunchEffect(EF_RUWACH, zero, 0.0f);
     }
   }
 
@@ -4782,21 +4782,21 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
   if (StateFlag01Changed(this->stateFlags, previousFlags)) {
     this->ResetJobEffects();
     if (this->GetEffectiveJob(-1) == 45) {
-      this->SendMsg(this, AM_DELETE_EFFECT, 321, 0, 0, 0, 0, 0);
+      this->SendMsg(this, AM_DELETE_EFFECT, EF_WARPZONE2, 0, 0, 0, 0, 0);
     }
 
     if (StateFlag01(this->stateFlags)) {
       if (notify) {
         this->SendMsg(nullptr, AM_MAKE_SMOKE_FFECT, 0, 0, 0, 0, 0, 0);
         if (this->GetEffectiveJob(-1) != 25 && this->GetEffectiveJob(-1) != 4222) {
-          this->LaunchEffect(16, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+          this->LaunchEffect(EF_BASH, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         }
       }
 
       this->render.enabled = 0;
       if (this->render.accountId != g_session.m_aid && g_session.IsAdminSubMode(7) == 0) {
         this->render.visibilityOptions[0] = 0;
-        this->SendMsg(nullptr, AM_DELETE_EFFECT, 159, 0, 0, 0, 0, 0);
+        this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_TOPRANK, 0, 0, 0, 0, 0);
         this->SendMsg(nullptr, AM_REMOVEGAGE, 0, 0, 0, 0, 0, 0);
       }
       if (this->maxHp > 0) {
@@ -4839,7 +4839,7 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
         this->UpdateMaxLevelAura();
       }
       if (this->GetEffectiveJob(-1) == 45) {
-        this->LaunchEffect(321, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        this->LaunchEffect(EF_WARPZONE2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
     }
   }
@@ -4852,7 +4852,7 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
       if (this->render.accountId != g_session.m_aid && g_session.IsAdminSubMode(7) == 0) {
         this->render.visibilityOptions[0] = 0;
         this->SendMsg(nullptr, AM_REMOVEGAGE, 0, 0, 0, 0, 0, 0);
-        this->SendMsg(nullptr, AM_DELETE_EFFECT, 159, 0, 0, 0, 0, 0);
+        this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_TOPRANK, 0, 0, 0, 0, 0);
       }
       if (this->maxHp > 0) {
         this->SendMsg(nullptr, AM_DELETE_CART, 0, 0, 0, 0, 0, 0);
@@ -4933,7 +4933,7 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
       this->render.visibilityOptions[0] = 0;
       if (admin == 0) {
         this->render.visible = 0;
-        this->SendMsg(nullptr, AM_DELETE_EFFECT, 159, 0, 0, 0, 0, 0);
+        this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_TOPRANK, 0, 0, 0, 0, 0);
         if (this->msgEffectList.size() != 0) {
           for (CGameObject* object : this->msgEffectList) {
             static_cast<CMsgEffect*>(object)->m_visible = this->render.accountId == g_session.m_aid;
@@ -5026,8 +5026,8 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
       this->SendMsg(nullptr, AM_DELETE_BURNING_EFFECT, 0, 0, 0, 0, 0, 0);
       break;
     case OPT1_IMPRISON:
-      while (this->HasId(802)) {
-        this->SendMsg(nullptr, AM_DELETE_EFFECT, 802, 0, 0, 0, 0, 0);
+      while (this->HasId(EF_BOTTOM_BASILICA2)) {
+        this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_BOTTOM_BASILICA2, 0, 0, 0, 0, 0);
       }
       break;
     default:
@@ -5080,8 +5080,8 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
       this->SendMsg(nullptr, AM_MAKE_BURNING_EFFECT, 0, 0, 0, 0, 0, 0);
       break;
     case OPT1_IMPRISON:
-      if (!this->HasId(802)) {
-        this->LaunchEffect(802, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      if (!this->HasId(EF_BOTTOM_BASILICA2)) {
+        this->LaunchEffect(EF_BOTTOM_BASILICA2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
     default:
@@ -5103,7 +5103,7 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
     if (this->render.accountId == g_session.m_aid) {
       g_playerPoisoned = 1;
     }
-    if (!this->HasId(812)) {
+    if (!this->HasId(EF_BLACKBODY)) {
       this->render.colorLocked = 1;
       color[1] = 0x80;
       color[2] = 0xFF;
@@ -5112,7 +5112,7 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
     poisonSound = true;
   } else if (this->render.accountId == g_session.m_aid) {
     if (g_playerPoisoned == 1) {
-      this->SendMsg(nullptr, AM_DELETE_EFFECT, 335, 0, 0, 0, 0, 0);
+      this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_POISON, 0, 0, 0, 0, 0);
     }
     g_playerPoisoned = 0;
   }
@@ -5123,8 +5123,8 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
     g_soundMgr->PlayWave(
       "_poison.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
     );
-    if (this->render.accountId == g_session.m_aid && !mode->scene->player->HasId(335)) {
-      this->LaunchEffect(335, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    if (this->render.accountId == g_session.m_aid && !mode->scene->player->HasId(EF_POISON)) {
+      this->LaunchEffect(EF_POISON, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
   }
 
@@ -5175,14 +5175,14 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
       g_soundMgr->PlayWave(
         "_blind.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
       );
-      if (this->render.accountId == g_session.m_aid && !mode->scene->player->HasId(334)) {
-        this->LaunchEffect(334, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      if (this->render.accountId == g_session.m_aid && !mode->scene->player->HasId(EF_BLIND)) {
+        this->LaunchEffect(EF_BLIND, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
     }
   } else if (this->render.accountId == g_session.m_aid) {
     if (static_cast<int>(this->render.instant.Get(16)) == 0) {
       if (g_overrideColor == 1) {
-        this->SendMsg(nullptr, AM_DELETE_EFFECT, 334, 0, 0, 0, 0, 0);
+        this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_BLIND, 0, 0, 0, 0, 0);
       }
       g_overrideColor = 0;
     }
@@ -5696,34 +5696,34 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
     break;
   case MO_CHAINCOMBO:
     this->SetFrameSequence(0x60, 5, 5, 0x60, 5, 1, g_session.FindActorSkillAnimationValue(this->render.accountId), 0);
-    static_cast<EffectActor*>(target)->LaunchEffect(0x106, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    this->LaunchEffect(0x107, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    static_cast<EffectActor*>(target)->LaunchEffect(0x111, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    static_cast<EffectActor*>(target)->LaunchEffect(EF_TEIHIT1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->LaunchEffect(EF_GUMGANG3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    static_cast<EffectActor*>(target)->LaunchEffect(EF_CHAINCOMBO, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case MO_COMBOFINISH:
     this->SetSequenceInterval(6);
     this->SetFrameSequence(0x60, 1, 2, 0x60, 2, 1, g_session.FindActorSkillAnimationValue(this->render.accountId), 0);
     static_cast<CMode*>(g_modeMgr.GetGameMode())->SendMsg(MM_QUAKE, 0, 0, 0, 0);
     g_soundMgr->PlayWave("effect\\mon_맹룡과강.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    this->LaunchEffect(0x107, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    this->LaunchEffect(0x14A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->LaunchEffect(EF_GUMGANG3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->LaunchEffect(EF_HITLINE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case CH_PALMSTRIKE:
     this->SetFrameSequence(0x60, 3, 4, 0x60, 4, 1, 1, 0);
     static_cast<CMode*>(g_modeMgr.GetGameMode())->SendMsg(MM_QUAKE, 0, 0, 0, 0);
     g_soundMgr->PlayWave("effect\\맹호경파산.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    static_cast<EffectActor*>(target)->LaunchEffect(0x178, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    static_cast<EffectActor*>(target)->LaunchEffect(EF_HITLINE2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case CH_TIGERFIST:
     this->SetSequenceInterval(6);
     this->SetFrameSequence(0x60, 4, 4, 0x60, 4, 1, g_session.FindActorSkillAnimationValue(this->render.accountId), 0);
     static_cast<CMode*>(g_modeMgr.GetGameMode())->SendMsg(MM_QUAKE, 0, 0, 0, 0);
-    this->LaunchEffect(0x179, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    this->LaunchEffect(0x107, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->LaunchEffect(EF_BASH3D2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->LaunchEffect(EF_GUMGANG3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case CH_CHAINCRUSH: {
-    this->LaunchEffect(0x107, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    CRagEffect* follow = this->LaunchEffect(0x200, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->LaunchEffect(EF_GUMGANG3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    CRagEffect* follow = this->LaunchEffect(EF_CHEMICAL2DASH, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (follow != nullptr) {
       vector3d position = target->render.position;
       follow->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
@@ -5742,11 +5742,11 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
   case SR_EARTHSHAKER:
     this->SetSequenceInterval(6);
     this->SetFrameSequence(0x60, 1, 2, 0x60, 2, 1, g_session.FindActorSkillAnimationValue(this->render.accountId), 0);
-    if (!this->HasId(0x378)) {
+    if (!this->HasId(EF_ELECTRIC4)) {
       static_cast<CMode*>(g_modeMgr.GetGameMode())->SendMsg(MM_QUAKE, 0, 0, 0, 0);
       g_soundMgr->PlayWave("effect\\SR_EARTHSHAKER.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      this->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      this->LaunchEffect(0x378, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      this->LaunchEffect(EF_GUMGANG5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      this->LaunchEffect(EF_ELECTRIC4, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case SR_FALLENEMPIRE:
@@ -5754,14 +5754,14 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
     this->SetFrameSequence(0x60, 3, 3, 0x60, 3, 1, g_session.FindActorSkillAnimationValue(this->render.accountId), 0);
     static_cast<CMode*>(g_modeMgr.GetGameMode())->SendMsg(MM_QUAKE, 0, 0, 0, 0);
     g_soundMgr->PlayWave("effect\\SR_FALLENEMPIRE.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    g_effectMgr->Spawn(target->render.accountId, 0x622, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-    g_effectMgr->Spawn(target->render.accountId, 0x623, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(target->render.accountId, EF_NEW_FALLENEMPIRE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(target->render.accountId, EF_NEW_FALLENEMPIRE_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     break;
   case SR_RAMPAGEBLASTER:
     if (target != this) {
-      static_cast<EffectActor*>(target)->LaunchEffect(0x225, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      static_cast<EffectActor*>(target)->LaunchEffect(0x226, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      CRagEffect* follow = this->LaunchEffect(0x37B, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      static_cast<EffectActor*>(target)->LaunchEffect(EF_BLUE_HIT, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      static_cast<EffectActor*>(target)->LaunchEffect(EF_QUAKEBODY3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      CRagEffect* follow = this->LaunchEffect(EF_FIREBALL4, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (follow != nullptr) {
         vector3d position = target->render.position;
         follow->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
@@ -5769,8 +5769,8 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
     }
     break;
   case RL_QD_SHOT:
-    static_cast<EffectActor*>(target)->LaunchEffect(0x106, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    static_cast<EffectActor*>(target)->LaunchEffect(0x111, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    static_cast<EffectActor*>(target)->LaunchEffect(EF_TEIHIT1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    static_cast<EffectActor*>(target)->LaunchEffect(EF_CHAINCOMBO, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case RL_FALLEN_ANGEL:
     this->SetSequenceInterval(4);

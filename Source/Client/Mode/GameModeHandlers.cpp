@@ -1,4 +1,5 @@
 #include "Client/Mode/CGameMode.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 #include "Contents/Actors/ActorEnums.h"
@@ -1671,7 +1672,7 @@ void CGameMode::SpawnSkillWarningPlanes(std::uint32_t aid, std::uint16_t skillId
     return;
   }
 
-  CWarningPlaneEffect* effect = static_cast<CWarningPlaneEffect*>(g_effectMgr->Spawn(actor->render.accountId, 1114, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0));
+  CWarningPlaneEffect* effect = static_cast<CWarningPlaneEffect*>(g_effectMgr->Spawn(actor->render.accountId, 0x45A, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0));
   if (!effect) {
     return;
   }
@@ -1720,7 +1721,7 @@ void CGameMode::ReceiveRuneRewardPacket(const unsigned char* packet) {
 
   switch (packet[0x32]) {
   case 0: {
-    CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, 2399, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, EF_RUNE_BROKEN, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     const vector3d offset = {598.0f, 219.0f, 0.0f};
     const int* words = reinterpret_cast<const int*>(&offset);
     effect->SetWindowOffset(words[0], words[1], words[2], 1, 361);
@@ -1952,12 +1953,12 @@ void CGameMode::ReceiveRuneGradeResult(int result, int tagId, int type, std::int
     const int previousSlots = g_runeSystemMgr->GetCurSlotCount();
     const int state = g_runeSystemMgr->SetRuneGrade(tagId, type, id, grade, gradeLevel);
     if (state == 2) {
-      CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, 2397, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, EF_RUNESET_UPGRADE_SUCCESS, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       const vector3d offset = {784.0f, 161.0f, 0.0f};
       const int* words = reinterpret_cast<const int*>(&offset);
       effect->SetWindowOffset(words[0], words[1], words[2], 1, 361);
     } else if (state == 1) {
-      CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, 2398, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, EF_RUNESET_UPGRADE_FAIL, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       const vector3d offset = {784.0f, 161.0f, 0.0f};
       const int* words = reinterpret_cast<const int*>(&offset);
       effect->SetWindowOffset(words[0], words[1], words[2], 1, 361);
@@ -2150,16 +2151,16 @@ void CGameMode::ReceiveGradeEnchantResult(const unsigned char* packet) {
     switch (result) {
     case ENCHANTGRADE_UPGRADE_SUCCESS:
       window->SetResult(2, 0);
-      g_effectMgr->Spawn(g_session.m_aid, 1607, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(g_session.m_aid, 1608, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)->SetDelay(2800);
+      g_effectMgr->Spawn(g_session.m_aid, EF_GRADE_ENCHANT_INTRO, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(g_session.m_aid, EF_GRADE_ENCHANT_SUCCESS, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)->SetDelay(2800);
       break;
     case ENCHANTGRADE_UPGRADE_FAILED:
     case ENCHANTGRADE_UPGRADE_DOWNGRADE:
     case ENCHANTGRADE_UPGRADE_BREAK:
     case ENCHANTGRADE_UPGRADE_PROTECTED:
       window->SetResult(2, result);
-      g_effectMgr->Spawn(g_session.m_aid, 1607, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(g_session.m_aid, 1609, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)->SetDelay(2800);
+      g_effectMgr->Spawn(g_session.m_aid, EF_GRADE_ENCHANT_INTRO, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(g_session.m_aid, EF_GRADE_ENCHANT_FAILED, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)->SetDelay(2800);
       break;
     }
   }
@@ -2193,7 +2194,7 @@ void CGameMode::ReceiveAchievementUpdate(
       balloon->m_outlineColor = 0;
     }
     this->achievementBalloon->Move(0, 50);
-    g_effectMgr->Spawn(g_session.m_aid, 0x446, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(g_session.m_aid, EF_ACH_COMPLETE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (UIWindow* window = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
       window->SendMsg(nullptr, UM_COMMAND, ID_NOTICE, 0x1D9, 1, 0);
     }

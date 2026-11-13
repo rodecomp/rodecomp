@@ -1,4 +1,5 @@
 #include "Contents/Map/MapSkyMgr.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session/Session.h"
@@ -118,29 +119,29 @@ __declspec(noinline) void CWeatherEffect::Play(char kind) {
   this->actor = mode->scene->player;
 
   if (kind == 0) {
-    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(0xe5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_CLOUD, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   } else if (kind == 1) {
-    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(0xe6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_CLOUD2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   } else if (kind == 2) {
-    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(0xe9, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_CLOUD3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   } else if (kind == 3) {
-    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(0x203, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_CLOUD4, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   } else if (kind == 4) {
-    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(0x204, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_CLOUD5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   } else if (kind == 5) {
-    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(0x250, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_CLOUD6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   } else if (kind == 7) {
-    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(0x2b9, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_CLOUD7, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   } else if (kind == 8) {
-    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(0x2ba, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_CLOUD8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   } else if (kind == 9) {
-    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(0x3b1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_CLOUD9, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   } else if (kind == 10) {
-    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(0x415, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_CLOUD10, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   } else if (kind == 11) {
-    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(0x45b, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_SU_CN_METEOR, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   } else if (kind == 15) {
-    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(0x479, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_RL_HAMMER_OF_GOD, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   }
 }
 
@@ -155,10 +156,10 @@ void CWeatherEffect::StartDarken() {
 void CWeatherEffect::Fireworks() {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   this->actor = mode->scene->player;
-  static_cast<EffectActor*>(this->actor)->LaunchEffect(0x12d, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_POKJUK_SOUND, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
 
   for (int count = 0; count < 160; ++count) {
-    static_cast<EffectActor*>(this->actor)->LaunchEffect(0x129, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_POKJUK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   }
 }
 
@@ -171,7 +172,7 @@ void CWeatherEffect::Snow() {
 
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   this->actor = mode->scene->player;
-  this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(0xa2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_SNOW, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
 }
 
 // OFFSET: 0x00C7BBA0
@@ -242,21 +243,21 @@ void CWeatherEffect::ApplyMapWeather(std::string mapName) {
       if (!this->effect || this->effect->GetDuration() - this->effect->state.stateCnt > 300) {
         CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
         this->actor = mode->scene->player;
-        this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(0xa2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_SNOW, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
     } else if (entry->second == "sakura") {
       if (!this->effect || this->effect->GetDuration() - this->effect->state.stateCnt > 300) {
         CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
         this->actor = mode->scene->player;
-        this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(0xa3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_SAKURA, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
     } else if (entry->second == "pokjuk") {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       this->actor = mode->scene->player;
-      static_cast<EffectActor*>(this->actor)->LaunchEffect(0x12d, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_POKJUK_SOUND, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
 
       for (int count = 0; count < 160; ++count) {
-        static_cast<EffectActor*>(this->actor)->LaunchEffect(0x129, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_POKJUK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
     }
   }
@@ -387,7 +388,7 @@ void CMapSkyMgr::CreateClouds(const std::string& mapName) {
       const float z = static_cast<float>((1 - 2 * signZ) * offsetZ);
       const float y = static_cast<float>(posY);
 
-      CEffect* spawned = g_effectMgr->Spawn(0, 0x47a, x, y, z, 0, -1, 0, 0);
+      CEffect* spawned = g_effectMgr->Spawn(0, 0x47A, x, y, z, 0, -1, 0, 0);
       if (!spawned) {
         continue;
       }

@@ -1,4 +1,5 @@
 #include "Client/Mode/CGameMode.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/GameActor.h"
 #include "Contents/Actors/Pc.h"
@@ -428,7 +429,7 @@ EfstActionMessage CEfstAction_REBOUND_S::GetEfstEndMessage() {
 // FUNCTION: fn_08616
 void CSkillAction_IG_ULTIMATE_SACRIFICE::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(58, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL6, level / 16);
     g_soundMgr->PlayWave("effect\\EF_BeginSpell.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
   }
 }
@@ -602,7 +603,7 @@ void CSkillAction_IG_SHIELD_SHOOTING::OnSkillEffect(int level, CGameActor* sourc
   }
 
   const vector3d position = source->render.position;
-  g_effectMgr->Spawn(source->render.accountId, 2183, position, target->render.accountId, -1, 0, 0);
+  g_effectMgr->Spawn(source->render.accountId, 0x887, position, target->render.accountId, -1, 0, 0);
 
   const vector3d& listener = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->render.position;
   const vector3d soundPosition = {target->render.position.x - listener.x, 0.0f, target->render.position.z - listener.z};
@@ -812,7 +813,7 @@ void CSkillObjectAction_IG_CROSS_RAIN::OnSkillObjectCreate(int argument, CRender
   if (object && source) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_cross_rain_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-    g_effectMgr->Spawn(object->render.accountId, 2462, object->render.position, 0, argument, 0, 0);
+    g_effectMgr->Spawn(object->render.accountId, 0x99E, object->render.position, 0, argument, 0, 0);
   }
 }
 
@@ -909,7 +910,7 @@ void CEfstAction_IG_GRAND_JUDGEMENT::OnEfstUpdate(int efstId, int value, int arg
 // FUNCTION: fn_08589
 void CSkillAction_IG_GUARDIAN_SHIELD::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(58, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL6, level / 16);
     g_soundMgr->PlayWave("effect\\EF_BeginSpell.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
   }
 }

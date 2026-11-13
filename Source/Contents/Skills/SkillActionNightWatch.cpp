@@ -1,4 +1,5 @@
 #include "Client/Mode/CGameMode.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/GameActor.h"
 #include "Contents/Actors/RenderObject.h"
@@ -267,7 +268,7 @@ void CSkillAction_NW_GRENADE_FRAGMENT::OnSkillEffect(int level, CGameActor* sour
 // FUNCTION: fn_08681
 void CSkillAction_NW_THE_VIGILANTE_AT_NIGHT::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(2367, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL_RING_YELLOW, level / 16);
   }
 }
 
@@ -352,7 +353,7 @@ int CSkillAction_NW_ONLY_ONE_BULLET::GetSkillAttackMotion() {
 // FUNCTION: fn_08687
 void CSkillAction_NW_ONLY_ONE_BULLET::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(2367, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL_RING_YELLOW, level / 16);
   }
 }
 
@@ -391,7 +392,7 @@ int CSkillAction_NW_SPIRAL_SHOOTING::GetSkillAttackMotion() {
 // FUNCTION: fn_08691
 void CSkillAction_NW_SPIRAL_SHOOTING::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(2367, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL_RING_YELLOW, level / 16);
   }
 }
 
@@ -414,7 +415,7 @@ int CSkillAction_NW_MAGAZINE_FOR_ONE::GetSkillAttackMotion() {
 // FUNCTION: fn_08694
 void CSkillAction_NW_MAGAZINE_FOR_ONE::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(2367, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL_RING_YELLOW, level / 16);
   }
 }
 
@@ -437,7 +438,7 @@ int CSkillAction_NW_WILD_FIRE::GetSkillAttackMotion() {
 // FUNCTION: fn_08697
 void CSkillAction_NW_WILD_FIRE::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(2367, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL_RING_YELLOW, level / 16);
   }
 }
 
@@ -466,7 +467,7 @@ int CSkillAction_NW_BASIC_GRENADE::GetSkillAttackMotion() {
 // FUNCTION: fn_08701
 void CSkillAction_NW_BASIC_GRENADE::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(830, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL_N1, level / 16);
   }
 }
 
@@ -501,7 +502,7 @@ bool CSkillAction_NW_HASTY_FIRE_IN_THE_HOLE::KeepSkillAttackMotion(int argument)
 // FUNCTION: fn_08706
 void CSkillAction_NW_HASTY_FIRE_IN_THE_HOLE::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(830, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL_N1, level / 16);
   }
 }
 
@@ -547,7 +548,7 @@ bool CSkillAction_NW_GRENADES_DROPPING::KeepSkillAttackMotion(int argument) {
 // FUNCTION: fn_08711
 void CSkillAction_NW_GRENADES_DROPPING::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(830, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL_N1, level / 16);
   }
 }
 
@@ -561,7 +562,7 @@ int CSkillAction_NW_GRENADES_DROPPING::GetSkillScopeType() {
 // FUNCTION: fn_08713
 void CSkillObjectAction_NW_GRENADES_DROPPING::OnSkillObjectCreate(int argument, CRenderObject* object, CGameActor* source) {
   if (object) {
-    g_effectMgr->Spawn(object->render.accountId, 2351, object->render.position, 0, argument, 0, 0);
+    g_effectMgr->Spawn(object->render.accountId, 0x92F, object->render.position, 0, argument, 0, 0);
   }
 }
 
@@ -575,7 +576,7 @@ int CSkillAction_NW_AUTO_FIRING_LAUNCHER::GetSkillAttackMotion() {
 // FUNCTION: fn_08715
 void CSkillAction_NW_AUTO_FIRING_LAUNCHER::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(830, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL_N1, level / 16);
   }
 }
 
@@ -600,7 +601,7 @@ int CSkillAction_NW_HIDDEN_CARD::GetSkillAttackMotion() {
 // FUNCTION: fn_08718
 void CSkillAction_NW_HIDDEN_CARD::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(840, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL_N3, level / 16);
   }
 }
 
@@ -653,7 +654,7 @@ bool CSkillAction_NW_MISSION_BOMBARD::KeepSkillAttackMotion(int argument) {
 // FUNCTION: fn_08725
 void CSkillAction_NW_MISSION_BOMBARD::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    static_cast<EffectActor*>(source)->LaunchEffect(840, level / 16);
+    static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL_N3, level / 16);
   }
 }
 
@@ -673,7 +674,7 @@ void CSkillObjectAction_NW_MISSION_BOMBARD::OnSkillObjectCreate(int argument, CR
     effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mission_bombard_fire"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effects = g_effectMgr;
     effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mission_bombard_fire_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-    g_effectMgr->Spawn(object->render.accountId, 2354, object->render.position, 0, -1, 0, 0);
+    g_effectMgr->Spawn(object->render.accountId, 0x932, object->render.position, 0, -1, 0, 0);
   }
 }
 
