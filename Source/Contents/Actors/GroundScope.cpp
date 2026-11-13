@@ -192,13 +192,13 @@ void CGroundScope::Render(int argument) {
 // FUNCTION: fn_24299
 void CGroundScope::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g) {
   switch (message) {
+    case AM_SETMASTERGID:
+      this->m_masterGid = static_cast<int>(b);
+      return;
+
     case AM_SETPOS:
       this->m_cellX = static_cast<int>(b);
       this->m_cellY = static_cast<int>(c);
-      return;
-
-    case AM_SETMASTERGID:
-      this->m_masterGid = static_cast<int>(b);
       return;
 
     case AM_SETTIME:
