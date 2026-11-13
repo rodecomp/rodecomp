@@ -481,7 +481,7 @@ void UICashShopWnd_Banner::Paint() {
 
   ResourceMgr& resources = ResourceMgr::Instance();
   this->DrawBitmap(
-    0, 0, static_cast<CBitmapRes*>(resources.Load(Resolve(("유저인터페이스\\cashshop\\" + this->m_entries[this->m_index].image).c_str()))),
+    0, 0, static_cast<CBitmapRes*>(resources.Load(Resolve(("유저인터페이스\\cashshop\\" + this->m_entries[this->m_index].first).c_str()))),
     false
   );
 }
@@ -635,7 +635,7 @@ void UICashShopWnd_Banner::OnLBtnUp(int, int) {
     return;
   }
 
-  std::string url = this->m_entries[this->m_index].url;
+  std::string url = this->m_entries[this->m_index].second;
   ShellExecuteA(nullptr, "OPEN", url.c_str(), url.c_str(), nullptr, SW_SHOW);
 }
 
@@ -744,7 +744,7 @@ void UICashShopWnd_CartItem::OnWheel(int delta) {
 // FUNCTION: fn_09557
 void UICashShopWnd_Banner::CreateButtons() {
   int index = 0;
-  for (std::vector<Entry>::iterator entry = this->m_entries.begin(); entry != this->m_entries.end(); ++entry) {
+  for (std::vector<std::pair<std::string, std::string>>::iterator entry = this->m_entries.begin(); entry != this->m_entries.end(); ++entry) {
     UIBmpRadioBtn* button = new UIBmpRadioBtn();
     button->SetBitmap("유저인터페이스\\cashshop\\btn_ad_off.bmp", 0);
     button->SetBitmap("유저인터페이스\\cashshop\\btn_ad_off.bmp", 1);

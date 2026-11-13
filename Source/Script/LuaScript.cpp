@@ -16,6 +16,7 @@
 #include "File/File.h"
 #include "File/ResourcePath.h"
 #include "Script/LuaFileOperations.h"
+#include "UI/CashShop/UICashShopWnd.h"
 #include "UI/Chat/UINewChatWnd.h"
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Window/UIWindow.h"
@@ -58,34 +59,20 @@ std::map<std::string, MiniMapPosition> g_exceptionMiniMapPosList;
 // GLOBAL: gl_24914
 std::map<std::string, std::vector<std::string>> g_kafraServiceMapList;
 
-class LuaScriptBag {
-public:
-  void Add(std::string left, std::string right);
-
-  /* 0000 */ unsigned char padding_0000[0x7C];
-  /* 007C */ std::vector<std::pair<std::string, std::string>> pairs;
-};
-
 // OFFSET: 0x00AFC8B0
 // FUNCTION: fn_18325
-void LuaScriptBag::Add(std::string left, std::string right) {
-  this->pairs.push_back(std::make_pair(left, right));
-}
-
-struct CashShopBannerWindow {
-  /* 0000 */ unsigned char padding_0000[0xBC];
-  /* 00BC */ LuaScriptBag* banners;
-  /* 00C0 */ LuaScriptBag* banners2;
-};
-
-// INLINED
-static void AddCashShopBanner(CashShopBannerWindow* window, std::string image, std::string url) {
-  window->banners->Add(image, url);
+void UICashShopWnd_Banner::AddEntry(std::string image, std::string url) {
+  this->m_entries.push_back(std::make_pair(image, url));
 }
 
 // INLINED
-static void AddCashShopBanner2(CashShopBannerWindow* window, std::string image, std::string url) {
-  window->banners2->Add(image, url);
+static void AddCashShopBanner(UICashShopWnd* window, std::string image, std::string url) {
+  window->m_banner->AddEntry(image, url);
+}
+
+// INLINED
+static void AddCashShopBanner2(UICashShopWnd* window, std::string image, std::string url) {
+  window->m_secondBanner->AddEntry(image, url);
 }
 
 // INLINED
@@ -811,7 +798,7 @@ int AddCashshopBanner(lua_State* state) {
   std::string image = luaL_checkstring(state, 1);
   std::string url = luaL_checkstring(state, 2);
   if (UIWindow* window = g_windowMgr.LookupWindow(WID_CASHSHOP_WND)) {
-    AddCashShopBanner(reinterpret_cast<CashShopBannerWindow*>(window), image, url);
+    AddCashShopBanner(static_cast<UICashShopWnd*>(window), image, url);
   }
 
   return 0;
@@ -823,7 +810,7 @@ int AddCashshopBanner2(lua_State* state) {
   std::string image = luaL_checkstring(state, 1);
   std::string url = luaL_checkstring(state, 2);
   if (UIWindow* window = g_windowMgr.LookupWindow(WID_CASHSHOP_WND)) {
-    AddCashShopBanner2(reinterpret_cast<CashShopBannerWindow*>(window), image, url);
+    AddCashShopBanner2(static_cast<UICashShopWnd*>(window), image, url);
   }
 
   return 0;

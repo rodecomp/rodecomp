@@ -9,6 +9,7 @@
 #include <list>
 #include <map>
 #include <string>
+#include <utility>
 #include <vector>
 
 class UIBmpTextButton;
@@ -19,11 +20,6 @@ class UIStaticBitmap;
 
 class UICashShopWnd_Banner : public UIWindow {
 public:
-  struct Entry {
-    /* 0000 */ std::string image;
-    /* 0018 */ std::string url;
-  };
-
   UICashShopWnd_Banner();
   void OnProcess() override;
   void Paint() override;
@@ -31,12 +27,13 @@ public:
   void OnLBtnUp(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
-  /* 007C */ std::vector<Entry> m_entries;
+  /* 007C */ std::vector<std::pair<std::string, std::string>> m_entries;
   /* 0088 */ std::vector<UIWindow*> m_buttons;
   /* 0094 */ unsigned int m_index;
   /* 0098 */ std::uint32_t m_lastTick;
 
   void CreateButtons();
+  void AddEntry(std::string image, std::string url);
 };
 
 class UICashShopWnd_CartItem : public UIWindow {
