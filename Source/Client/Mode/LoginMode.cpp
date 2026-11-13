@@ -2237,7 +2237,7 @@ static void ComputeLoginDigest(unsigned char* digest, const void* data, int size
 // FUNCTION: fn_22264
 void CLoginMode::ReceiveAcceptLogin(const AcceptLoginPacket* packet, int version) {
   g_session.m_loginAcceptTime = timeGetTime();
-  *reinterpret_cast<std::string*>(&g_session.autoReplyText) = LookupMessage(MSI_AUTO_MSG);
+  g_session.autoReplyText = LookupMessage(MSI_AUTO_MSG);
 
   g_session.m_authCode = packet->authCode;
   g_session.m_userLevel = packet->userLevel;

@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/AcidifiedThrow.h"
+#include "Contents/Actors/Pc.h"
 #include "Contents/Effects/Core/EffectTypes.h"
 
 #include "Client/Mode/CGameMode.h"
@@ -180,7 +181,7 @@ void CAcidifiedThrow::OnProcess() {
     FreeParticle(reinterpret_cast<CParticle*>(this->projectileEmitter));
     this->projectileEmitter = nullptr;
 
-    CRenderObject* player = reinterpret_cast<CRenderObject*>(reinterpret_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+    CRenderObject* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
     float soundX = player->render.position.x - this->impactPosition.x;
     float soundZ = player->render.position.z - this->impactPosition.z;
 

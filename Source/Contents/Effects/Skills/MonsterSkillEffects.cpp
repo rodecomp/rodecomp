@@ -1,4 +1,5 @@
 #include "Contents/Jobs/JobId.h"
+#include "Contents/Actors/Pc.h"
 #include "Contents/Skills/SkillId.h"
 #include "Contents/Effects/Skills/MonsterSkillEffects.h"
 #include "Client/Mode/CGameMode.h"
@@ -4653,7 +4654,7 @@ void CGravityControlEffect::Close() {
   actor->positionDelta.z = 0.0f;
 
   if (this->id == 0x4B1) {
-    CRenderObject* player = reinterpret_cast<CRenderObject*>(reinterpret_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+    CRenderObject* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
     const vector3d playerPosition = player->render.position;
     g_soundMgr->PlayWave("effect\\t_공격력.wav", this->position[0] - playerPosition.x, 0.0f, this->position[2] - playerPosition.z, 250, 40, 1.0f, 0);
   }
