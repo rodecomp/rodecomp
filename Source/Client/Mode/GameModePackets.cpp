@@ -755,7 +755,7 @@ void CGameMode::ReceiveDevotionList(const unsigned char* packet) {
 
   if (actor != nullptr) {
     for (int index = 0; index < 5; ++index) {
-      actor->SendMsg(nullptr, AM_DELETE_EFFECT, 232, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_LINELINK, 0, 0, 0, 0, 0);
     }
   }
 
@@ -767,7 +767,7 @@ void CGameMode::ReceiveDevotionList(const unsigned char* packet) {
     vector3d position{static_cast<float>(list->aid), static_cast<float>(list->devotees[index]), 0.0f};
     if (position.y == position.y && position.x == position.x) {
       if (actor != nullptr) {
-        CRagEffect* effect = actor->LaunchEffect(232, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        CRagEffect* effect = actor->LaunchEffect(EF_LINELINK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         if (effect != nullptr) {
           effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
         }
@@ -1340,7 +1340,7 @@ void CGameMode::ReceiveHpSpRecovery(const unsigned char* packet, int variant) {
       g_session.RefreshHpSpWindows();
     }
     player->SendMsg(nullptr, AM_MAKE_NUMBER, amount, 0xFF00FF00u, 114, 0, 0, 0);
-    player->LaunchEffect(331, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    player->LaunchEffect(EF_HPTIME, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   }
   case SP_SP: {
@@ -1352,7 +1352,7 @@ void CGameMode::ReceiveHpSpRecovery(const unsigned char* packet, int variant) {
       g_session.RefreshHpSpWindows();
     }
     player->SendMsg(nullptr, AM_MAKE_NUMBER, amount, 0xFF0000FFu, 114, 0, 0, 0);
-    player->LaunchEffect(332, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    player->LaunchEffect(EF_SPTIME, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   }
   }
@@ -2265,78 +2265,78 @@ void CGameMode::ApplyActorStatusEffects(std::uint32_t aid, int state, int flag, 
 
   if (actor->IsPlayerClass(actor->GetEffectiveJob(-1))) {
     if (StateFlag01(actor->GetStateFlags()) || StateFlag02(actor->GetStateFlags())) {
-      actor->SendMsg(nullptr, AM_DELETE_EFFECT, 203, 0, 0, 0, 0, 0);
-      actor->SendMsg(nullptr, AM_DELETE_EFFECT, 254, 0, 0, 0, 0, 0);
-      actor->SendMsg(nullptr, AM_DELETE_EFFECT, 1132, 0, 0, 0, 0, 0);
-      actor->SendMsg(nullptr, AM_DELETE_EFFECT, 418, 0, 0, 0, 0, 0);
-      actor->SendMsg(nullptr, AM_DELETE_EFFECT, 586, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_GUMGANG, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_STEELBODY, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_SU_STOOP, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_DOUBLEGUMGANG, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_M04, 0, 0, 0, 0, 0);
       return;
     }
 
     if (options & 0x1) {
-      if (!actor->HasId(166)) {
-        CRagEffect* effect = actor->LaunchEffect(166, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      if (!actor->HasId(EF_MAKEBLUR)) {
+        CRagEffect* effect = actor->LaunchEffect(EF_MAKEBLUR, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         if (effect) {
           effect->SendMsg(nullptr, AM_SETCOUNT, 0, 0xFFFF, 130, 0, 0, 0);
         }
       }
     } else if (options & 0x2) {
-      if (!actor->HasId(166)) {
-        CRagEffect* effect = actor->LaunchEffect(166, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      if (!actor->HasId(EF_MAKEBLUR)) {
+        CRagEffect* effect = actor->LaunchEffect(EF_MAKEBLUR, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         if (effect) {
           effect->SendMsg(nullptr, AM_SETCOUNT, 0, 0xFFFF, 128, 0, 0, 0);
         }
       }
     } else if (options & 0x4) {
-      if (!actor->HasId(166)) {
-        CRagEffect* effect = actor->LaunchEffect(166, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      if (!actor->HasId(EF_MAKEBLUR)) {
+        CRagEffect* effect = actor->LaunchEffect(EF_MAKEBLUR, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         if (effect) {
           effect->SendMsg(nullptr, AM_SETCOUNT, 0, 0xFFFF, 169, 0, 0, 0);
         }
       }
     } else if (options & 0x4000) {
-      if (!actor->HasId(617)) {
-        actor->LaunchEffect(617, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      if (!actor->HasId(EF_BUNSINJYUTSU)) {
+        actor->LaunchEffect(EF_BUNSINJYUTSU, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
     }
 
-    if ((options & 0x8) && !actor->HasId(203)) {
-      actor->LaunchEffect(203, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    if ((options & 0x8) && !actor->HasId(EF_GUMGANG)) {
+      actor->LaunchEffect(EF_GUMGANG, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
-    if ((options & 0x10) && !actor->HasId(254)) {
-      actor->LaunchEffect(254, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      actor->LaunchEffect(1132, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    if ((options & 0x10) && !actor->HasId(EF_STEELBODY)) {
+      actor->LaunchEffect(EF_STEELBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      actor->LaunchEffect(EF_SU_STOOP, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
-    if ((options & 0x1000) && !actor->HasId(418)) {
-      actor->LaunchEffect(418, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      actor->LaunchEffect(544, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    if ((options & 0x1000) && !actor->HasId(EF_DOUBLEGUMGANG)) {
+      actor->LaunchEffect(EF_DOUBLEGUMGANG, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      actor->LaunchEffect(EF_REDLIGHTBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
-    if ((options & 0x2000) && !actor->HasId(419)) {
-      actor->LaunchEffect(419, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    if ((options & 0x2000) && !actor->HasId(EF_REFLECTBODY)) {
+      actor->LaunchEffect(EF_REFLECTBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
-    if ((options & 0x8000) && !actor->HasId(424)) {
-      actor->LaunchEffect(424, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    if ((options & 0x8000) && !actor->HasId(EF_ASURABODY)) {
+      actor->LaunchEffect(EF_ASURABODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
-    if ((options & 0x20000) && !actor->HasId(586)) {
-      actor->LaunchEffect(586, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    if ((options & 0x20000) && !actor->HasId(EF_M04)) {
+      actor->LaunchEffect(EF_M04, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
-    if ((options & 0x10000) && !actor->HasId(655)) {
-      actor->LaunchEffect(655, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    if ((options & 0x10000) && !actor->HasId(EF_UNDEADBODY)) {
+      actor->LaunchEffect(EF_UNDEADBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
-    if ((options & 0x40) && !actor->HasId(474)) {
-      actor->LaunchEffect(474, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    if ((options & 0x40) && !actor->HasId(EF_AURABLADE2)) {
+      actor->LaunchEffect(EF_AURABLADE2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
-    if ((options & 0x100) && !actor->HasId(382)) {
-      actor->LaunchEffect(382, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    if ((options & 0x100) && !actor->HasId(EF_LIGHTBLADE)) {
+      actor->LaunchEffect(EF_LIGHTBLADE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
-    if ((options & 0x80) && !actor->HasId(368)) {
-      actor->LaunchEffect(368, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    if ((options & 0x80) && !actor->HasId(EF_REDBODY)) {
+      actor->LaunchEffect(EF_REDBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
-    if ((options & 0x200) && !actor->HasId(394)) {
-      actor->LaunchEffect(394, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    if ((options & 0x200) && !actor->HasId(EF_SPHEREWIND2)) {
+      actor->LaunchEffect(EF_SPHEREWIND2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
-    if ((options & 0x400) && !actor->HasId(396)) {
-      actor->LaunchEffect(396, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    if ((options & 0x400) && !actor->HasId(EF_PINKBODY)) {
+      actor->LaunchEffect(EF_PINKBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
 
     if (options & 0x20) {
@@ -2358,20 +2358,20 @@ void CGameMode::ApplyActorStatusEffects(std::uint32_t aid, int state, int flag, 
       actor->SetColor(-1, 64, 64, 64);
     }
 
-    if ((options & 0x800) && !actor->HasId(375)) {
-      actor->LaunchEffect(375, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    if ((options & 0x800) && !actor->HasId(EF_ASSUMPTIO)) {
+      actor->LaunchEffect(EF_ASSUMPTIO, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
-    if ((options & 0x40000) && !actor->HasId(744)) {
-      actor->LaunchEffect(744, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    if ((options & 0x40000) && !actor->HasId(EF_CLOAKING2)) {
+      actor->LaunchEffect(EF_CLOAKING2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     return;
   }
 
   if (StateFlag01(actor->GetStateFlags()) || StateFlag02(actor->GetStateFlags())) {
-    actor->SendMsg(nullptr, AM_DELETE_EFFECT, 203, 0, 0, 0, 0, 0);
-    actor->SendMsg(nullptr, AM_DELETE_EFFECT, 254, 0, 0, 0, 0, 0);
-    actor->SendMsg(nullptr, AM_DELETE_EFFECT, 1132, 0, 0, 0, 0, 0);
-    actor->SendMsg(nullptr, AM_DELETE_EFFECT, 418, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_GUMGANG, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_STEELBODY, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_SU_STOOP, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_DOUBLEGUMGANG, 0, 0, 0, 0, 0);
     return;
   }
 
@@ -2382,76 +2382,76 @@ void CGameMode::ApplyActorStatusEffects(std::uint32_t aid, int state, int flag, 
   }
 
   if (options & 0x2) {
-    if (!actor->HasId(420)) {
-      actor->LaunchEffect(420, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    if (!actor->HasId(EF_BABYBODY)) {
+      actor->LaunchEffect(EF_BABYBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
   } else {
-    while (actor->HasId(420)) {
-      actor->SendMsg(nullptr, AM_DELETE_EFFECT, 420, 0, 0, 0, 0, 0);
-      actor->LaunchEffect(540, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    while (actor->HasId(EF_BABYBODY)) {
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_BABYBODY, 0, 0, 0, 0, 0);
+      actor->LaunchEffect(EF_BABYBODY_BACK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
   }
 
   if (options & 0x4) {
-    if (!actor->HasId(427)) {
-      actor->LaunchEffect(427, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    if (!actor->HasId(EF_ASURABODY_MONSTER)) {
+      actor->LaunchEffect(EF_ASURABODY_MONSTER, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
   } else {
-    while (actor->HasId(427)) {
-      actor->SendMsg(nullptr, AM_DELETE_EFFECT, 427, 0, 0, 0, 0, 0);
+    while (actor->HasId(EF_ASURABODY_MONSTER)) {
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_ASURABODY_MONSTER, 0, 0, 0, 0, 0);
     }
   }
 
   if (options & 0x10) {
-    if (!actor->HasId(254)) {
-      actor->LaunchEffect(254, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      actor->LaunchEffect(1132, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    if (!actor->HasId(EF_STEELBODY)) {
+      actor->LaunchEffect(EF_STEELBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      actor->LaunchEffect(EF_SU_STOOP, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
   } else {
-    while (actor->HasId(254)) {
-      actor->SendMsg(nullptr, AM_DELETE_EFFECT, 254, 0, 0, 0, 0, 0);
-      actor->SendMsg(nullptr, AM_DELETE_EFFECT, 1132, 0, 0, 0, 0, 0);
+    while (actor->HasId(EF_STEELBODY)) {
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_STEELBODY, 0, 0, 0, 0, 0);
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_SU_STOOP, 0, 0, 0, 0, 0);
     }
   }
 
   if (options & 0x10000) {
-    if (!actor->HasId(655)) {
-      actor->LaunchEffect(655, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    if (!actor->HasId(EF_UNDEADBODY)) {
+      actor->LaunchEffect(EF_UNDEADBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
   } else {
-    while (actor->HasId(655)) {
-      actor->SendMsg(nullptr, AM_DELETE_EFFECT, 655, 0, 0, 0, 0, 0);
-      actor->LaunchEffect(656, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    while (actor->HasId(EF_UNDEADBODY)) {
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_UNDEADBODY, 0, 0, 0, 0, 0);
+      actor->LaunchEffect(EF_UNDEADBODY_DEL, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
   }
 
   if (options & 0x8000) {
-    if (!actor->HasId(667)) {
-      actor->LaunchEffect(667, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    if (!actor->HasId(EF_DA_SPACE)) {
+      actor->LaunchEffect(EF_DA_SPACE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
   } else {
-    while (actor->HasId(667)) {
-      actor->SendMsg(nullptr, AM_DELETE_EFFECT, 667, 0, 0, 0, 0, 0);
+    while (actor->HasId(EF_DA_SPACE)) {
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_DA_SPACE, 0, 0, 0, 0, 0);
     }
   }
 
   if (options & 0x800) {
-    if (!actor->HasId(375)) {
-      actor->LaunchEffect(375, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    if (!actor->HasId(EF_ASSUMPTIO)) {
+      actor->LaunchEffect(EF_ASSUMPTIO, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
   } else {
-    while (actor->HasId(375)) {
-      actor->SendMsg(nullptr, AM_DELETE_EFFECT, 375, 0, 0, 0, 0, 0);
+    while (actor->HasId(EF_ASSUMPTIO)) {
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_ASSUMPTIO, 0, 0, 0, 0, 0);
     }
   }
 
   if (options & 0x40000) {
-    if (!actor->HasId(744)) {
-      actor->LaunchEffect(744, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    if (!actor->HasId(EF_CLOAKING2)) {
+      actor->LaunchEffect(EF_CLOAKING2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
   } else {
-    while (actor->HasId(744) == 1) {
-      actor->SendMsg(nullptr, AM_DELETE_EFFECT, 744, 0, 0, 0, 0, 0);
+    while (actor->HasId(EF_CLOAKING2) == 1) {
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_CLOAKING2, 0, 0, 0, 0, 0);
     }
   }
 }
@@ -2711,7 +2711,7 @@ __declspec(noinline) void CGameMode::ReceiveActorStateValue(std::uint32_t aid, i
   }
 
   if (actor->UpdateMaximumValue(value) == true) {
-    actor->LaunchEffect(0x2a5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    actor->LaunchEffect(EF_CRITICALWOUND, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   }
 }
 
@@ -2797,7 +2797,7 @@ __declspec(noinline) void CGameMode::ReceiveItemNameListNotice(const unsigned ch
 // OFFSET: 0x00D61100
 // FUNCTION: fn_21976
 void LaunchRollingCutterEffect(CGameActor* actor) {
-  if (!actor || !actor->LaunchEffect(837, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+  if (!actor || !actor->LaunchEffect(EF_ROLLINGCAST, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
     return;
   }
 
@@ -2957,64 +2957,64 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
       break;
     }
     case NPC_COMET:
-      target->LaunchEffect(0x5C, origin, 0.0f);
+      target->LaunchEffect(EF_METEORSTORM, origin, 0.0f);
       source->SetState(7, 1);
       break;
     case NPC_WIDECRITICALWOUND:
       if (source == this->scene->player) {
-        source->LaunchEffect(0x461, origin, 0.0f);
+        source->LaunchEffect(EF_WIDE_CRITICAL_WOUND, origin, 0.0f);
       }
       if (target == this->scene->player) {
-        target->LaunchEffect(0x461, origin, 0.0f);
+        target->LaunchEffect(EF_WIDE_CRITICAL_WOUND, origin, 0.0f);
       }
       break;
     case NPC_HELLJUDGEMENT:
     case NPC_HELLJUDGEMENT2:
       if (source != target) {
-        target->LaunchEffect(0x174, origin, 0.0f);
+        target->LaunchEffect(EF_DEVIL, origin, 0.0f);
       }
       break;
     case RK_DEATHBOUND:
       source->SetState(2, 1);
-      target->LaunchEffect(0xB7, origin, 0.0f);
+      target->LaunchEffect(EF_SUI_EXPLOSION, origin, 0.0f);
       break;
     case WL_COMET:
       if (g_serviceOptions.Get(0xE5)) {
-        g_effectMgr->Spawn(target->render.accountId, 0x5FE, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_COMET, origin.x, origin.y, origin.z, 0, -1, 0, 0);
         effectId = 0x5FF;
       } else {
-        g_effectMgr->Spawn(target->render.accountId, 0x585, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_NEW_COMET, origin.x, origin.y, origin.z, 0, -1, 0, 0);
         effectId = 0x586;
       }
       g_effectMgr->Spawn(target->render.accountId, effectId, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       source->SetState(7, 1);
       break;
     case SO_VARETYR_SPEAR:
-      g_effectMgr->Spawn(target->render.accountId, 0x619, origin.x, origin.y, origin.z, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, 0x61A, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_NEW_VARETYRSPEAR, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_NEW_VARETYRSPEAR_BOTTOM, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       break;
     case GN_CARTCANNON: {
       CEffect* effect;
       if (g_serviceOptions.Get(0xE5)) {
-        effect = g_effectMgr->Spawn(source->render.accountId, 0x5DA, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+        effect = g_effectMgr->Spawn(source->render.accountId, EF_MINEFFECT_CART_CANNON_FIRE_BOTTOM, origin.x, origin.y, origin.z, 0, -1, 0, 0);
         if (effect) {
           effect->SetDelay(200);
         }
-        effect = g_effectMgr->Spawn(target->render.accountId, 0x5D8, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+        effect = g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_CART_CANNON_EXPLOSION, origin.x, origin.y, origin.z, 0, -1, 0, 0);
         if (effect) {
           effect->SetDelay(400);
         }
         effectId = 0x5D9;
       } else {
-        effect = g_effectMgr->Spawn(source->render.accountId, 0x550, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+        effect = g_effectMgr->Spawn(source->render.accountId, EF_NEW_CART_CANNON_FIRE, origin.x, origin.y, origin.z, 0, -1, 0, 0);
         if (effect) {
           effect->SetDelay(200);
         }
-        effect = g_effectMgr->Spawn(source->render.accountId, 0x551, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+        effect = g_effectMgr->Spawn(source->render.accountId, EF_NEW_CART_CANNON_FIRE_BOTTOM, origin.x, origin.y, origin.z, 0, -1, 0, 0);
         if (effect) {
           effect->SetDelay(200);
         }
-        effect = g_effectMgr->Spawn(target->render.accountId, 0x54E, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+        effect = g_effectMgr->Spawn(target->render.accountId, EF_NEW_CART_CANNON_EXPLOSION, origin.x, origin.y, origin.z, 0, -1, 0, 0);
         if (effect) {
           effect->SetDelay(400);
         }
@@ -3028,7 +3028,7 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
     }
     case ABC_UNLUCKY_RUSH:
       g_effectMgr->Spawn(
-        source->render.accountId, 0x86A, source->render.position.x, source->render.position.y, source->render.position.z,
+        source->render.accountId, EF_UNLUCKY_RUSH, source->render.position.x, source->render.position.y, source->render.position.z,
         target->render.accountId, -1, 0, 0
       );
       break;
@@ -3039,7 +3039,7 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
       const float yaw = mode->CameraDesiredYaw();
       const float heading = static_cast<float>(std::atan2(static_cast<double>(to.z - from.z), static_cast<double>(to.x - from.x)));
       const float angle = 360.0f - (heading / 3.141592f * 180.0f + yaw);
-      CEffect* effect = g_effectMgr->Spawn(source->render.accountId, 0x91F, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      CEffect* effect = g_effectMgr->Spawn(source->render.accountId, EF_GLANZEN_SPIES, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       if (effect) {
         effect->SetAngle(angle);
       }
@@ -3056,7 +3056,7 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
     switch (skillId) {
     case AS_SPLASHER:
       if (*reinterpret_cast<const std::int16_t*>(packet + 0x1C) == -1) {
-        target->LaunchEffect(0x81, origin, 0.0f);
+        target->LaunchEffect(EF_SPLASHER, origin, 0.0f);
       }
       break;
     case NPC_DRAGONBREATH:
@@ -3097,7 +3097,7 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
             effect->SetDelay(200);
           }
         }
-        effect = g_effectMgr->Spawn(target->render.accountId, 0x562, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+        effect = g_effectMgr->Spawn(target->render.accountId, EF_NEW_DRAGONBREATH_BOMB, origin.x, origin.y, origin.z, 0, -1, 0, 0);
         if (effect) {
           effect->SetDelay(350);
         }
@@ -3147,7 +3147,7 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
             effect->SetDelay(200);
           }
         }
-        effect = g_effectMgr->Spawn(target->render.accountId, 0x56A, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+        effect = g_effectMgr->Spawn(target->render.accountId, EF_NEW_DRAGONBREATH_WATER_BOMB, origin.x, origin.y, origin.z, 0, -1, 0, 0);
         if (effect) {
           effect->SetDelay(350);
         }
@@ -3162,7 +3162,7 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
     }
     case RK_WINDCUTTER:
       if (target != source) {
-        g_effectMgr->Spawn(target->render.accountId, 0x69D, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_NEW_WINDCUTTER_TARGET, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       }
       break;
     case WL_JACKFROST: {
@@ -3194,23 +3194,23 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
     }
     case RA_ELECTRICSHOCKER:
       g_soundMgr->PlayWave("effect\\hunter_shockwavetrap.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      target->LaunchEffect(0x92, origin, 0.0f);
+      target->LaunchEffect(EF_SHOCKWAVEHIT, origin, 0.0f);
       break;
     case RA_CLUSTERBOMB:
-      target->LaunchEffect(0x249, origin, 0.0f);
+      target->LaunchEffect(EF_M03, origin, 0.0f);
       g_soundMgr->PlayWave("effect\\hunter_landmine.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       break;
     case RA_FIRINGTRAP:
-      target->LaunchEffect(0x247, origin, 0.0f);
+      target->LaunchEffect(EF_M01, origin, 0.0f);
       g_soundMgr->PlayWave("effect\\폭염룡.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       break;
     case RA_ICEBOUNDTRAP:
-      target->LaunchEffect(0x87, origin, 0.0f);
+      target->LaunchEffect(EF_ICECRASH, origin, 0.0f);
       g_soundMgr->PlayWave("effect\\ef_frostdiver.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       break;
     case NC_FLAMELAUNCHER:
-      target->LaunchEffect(0x247, origin, 0.0f);
-      target->LaunchEffect(0x31, origin, 0.0f);
+      target->LaunchEffect(EF_M01, origin, 0.0f);
+      target->LaunchEffect(EF_FIREHIT, origin, 0.0f);
       g_soundMgr->PlayWave("effect\\폭염룡.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       break;
     case NC_ARMSCANNON: {
@@ -3240,13 +3240,13 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
 
         CEffect* effect;
         if (g_serviceOptions.Get(0xE5)) {
-          effect = g_effectMgr->Spawn(0, 0x5D2, position.x, position.y, position.z, 0, -1, 0, 0);
+          effect = g_effectMgr->Spawn(0, EF_MINEFFECT_ARMSCANNON_EXPLOSION, position.x, position.y, position.z, 0, -1, 0, 0);
           if (effect) {
             effect->SetDelay(duration);
           }
           effectId = 0x5D3;
         } else {
-          effect = g_effectMgr->Spawn(0, 0x54B, position.x, position.y, position.z, 0, -1, 0, 0);
+          effect = g_effectMgr->Spawn(0, EF_NEW_ARMSCANNON_EXPLOSION, position.x, position.y, position.z, 0, -1, 0, 0);
           if (effect) {
             effect->SetDelay(duration);
           }
@@ -3259,10 +3259,10 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
       }
 
       if (g_serviceOptions.Get(0xE5)) {
-        g_effectMgr->Spawn(target->render.accountId, 0x5D2, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_ARMSCANNON_EXPLOSION, origin.x, origin.y, origin.z, 0, -1, 0, 0);
         effectId = 0x5D3;
       } else {
-        g_effectMgr->Spawn(target->render.accountId, 0x54B, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_NEW_ARMSCANNON_EXPLOSION, origin.x, origin.y, origin.z, 0, -1, 0, 0);
         effectId = 0x54C;
       }
       g_effectMgr->Spawn(target->render.accountId, effectId, origin.x, origin.y, origin.z, 0, -1, 0, 0);
@@ -3271,16 +3271,16 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
     }
     case SC_FEINTBOMB:
       if (g_serviceOptions.Get(0xE5)) {
-        g_effectMgr->Spawn(target->render.accountId, 0x5B7, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_FEINTBOMB, origin.x, origin.y, origin.z, 0, -1, 0, 0);
         effectId = 0x5B8;
       } else {
-        g_effectMgr->Spawn(target->render.accountId, 0x520, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_NEW_FEINTBOMB, origin.x, origin.y, origin.z, 0, -1, 0, 0);
         effectId = 0x521;
       }
       g_effectMgr->Spawn(target->render.accountId, effectId, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       break;
     case SR_FALLENEMPIRE: {
-      CEffect* effect = g_effectMgr->Spawn(target->render.accountId, 0x624, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      CEffect* effect = g_effectMgr->Spawn(target->render.accountId, EF_NEW_FALLENEMPIRE_HIT, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       if (effect) {
         effect->SetDelay(100);
       }
@@ -3288,70 +3288,70 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
     }
     case GN_SPORE_EXPLOSION:
       g_soundMgr->PlayWave("effect\\폭염룡.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      target->LaunchEffect(0x385, origin, 0.0f);
+      target->LaunchEffect(EF_SPR_LIGHTPRINT, origin, 0.0f);
       break;
     case GN_HELLS_PLANT:
-      g_effectMgr->Spawn(target->render.accountId, 0x551, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_NEW_CART_CANNON_FIRE_BOTTOM, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       g_soundMgr->PlayWave("spore_attack.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       break;
     case SR_HOWLINGOFLION:
-      g_effectMgr->Spawn(target->render.accountId, 0x62C, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_NEW_HOWLINGOFLION_HIT, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       break;
     case CD_ARBITRIUM:
-      g_effectMgr->Spawn(target->render.accountId, 0x720, origin.x, origin.y, origin.z, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, 0x721, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_ARBITRIUM, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_ARBITRIUM_BOTTOM, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       break;
     case SHC_FATAL_SHADOW_CROW:
-      g_effectMgr->Spawn(target->render.accountId, 0x748, origin.x, origin.y, origin.z, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, 0x749, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_FATAL_SHADOW_CROW, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_FATAL_SHADOW_CROW_BOTTOM, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       break;
     case MH_TWISTER_CUTTER:
-      g_effectMgr->Spawn(target->render.accountId, 0x919, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_TWISTER_CUTTER, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       break;
     case MH_ABSOLUTE_ZEPHYR:
-      g_effectMgr->Spawn(target->render.accountId, 0x916, origin.x, origin.y, origin.z, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, 0x917, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_ABSOLUTE_ZEPHYR, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_ABSOLUTE_ZEPHYR_BOTTOM, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       break;
     case MH_BLAZING_AND_FURIOUS:
-      g_effectMgr->Spawn(target->render.accountId, 0x921, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_BLAZING_AND_FURIOUS, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       break;
     case MH_TOXIN_OF_MANDARA:
-      g_effectMgr->Spawn(target->render.accountId, 0x912, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_TOXIN_OF_MANDARA_SHOCK, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       break;
     case MH_NEEDLE_STINGER:
-      g_effectMgr->Spawn(target->render.accountId, 0x913, origin.x, origin.y, origin.z, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, 0x914, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_NEEDLE_STINGER, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_NEEDLE_STINGER_BOTTOM, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       break;
     case EM_EL_FLAMEROCK:
-      g_effectMgr->Spawn(target->render.accountId, 0x7F3, origin.x, origin.y, origin.z, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, 0x7F4, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_ARDOR, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_ARDOR_BOTTOM, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       break;
     case EM_EL_AGE_OF_ICE:
-      g_effectMgr->Spawn(target->render.accountId, 0x7E3, origin.x, origin.y, origin.z, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, 0x7E4, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_DILUVIO_ICE, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_DILUVIO_ICE_BOTTOM, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       break;
     case EM_EL_STORM_WIND:
-      g_effectMgr->Spawn(target->render.accountId, 0x832, origin.x, origin.y, origin.z, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, 0x833, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_PROCELLA, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_PROCELLA_BOTTOM, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       break;
     case EM_EL_AVALANCHE:
-      g_effectMgr->Spawn(target->render.accountId, 0x838, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_TERREMOTUS, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       break;
     case EM_EL_DEADLY_POISON:
-      g_effectMgr->Spawn(target->render.accountId, 0x7D9, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_SERPENS_BOTTOM, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       break;
     case ABR_BATTLE_BUSTER:
-      g_effectMgr->Spawn(target->render.accountId, 0x78E, origin.x, origin.y, origin.z, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, 0x791, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_NEW_BATTLE_W, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_NEW_BATTLE_W_HIT, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       break;
     case ABR_DUAL_CANNON_FIRE:
-      g_effectMgr->Spawn(target->render.accountId, 0x77B, origin.x, origin.y, origin.z, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, 0x77D, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_NEW_D_CANNON, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_NEW_D_CANNON_HIT, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       break;
     case ABR_INFINITY_BUSTER:
-      g_effectMgr->Spawn(target->render.accountId, 0x772, origin.x, origin.y, origin.z, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, 0x773, origin.x, origin.y, origin.z, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, 0x775, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_ABR_INFINITY, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_ABR_INFINITY_BOTTOM, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_ABR_INFINITY_HIT, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       break;
     }
   }
@@ -3850,24 +3850,24 @@ void CGameMode::Zc_Spirits2(const unsigned char* data) {
 
   CRagEffect* effect;
   if (actor->GetEffectiveJob(-1) == 4038) {
-    if (actor->HasId(504) || packet->accountId == 0) {
+    if (actor->HasId(EF_CHOOKGI2) || packet->accountId == 0) {
       return;
     }
 
-    effect = actor->LaunchEffect(504, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    effect = actor->LaunchEffect(EF_CHOOKGI2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   } else if (actor->GetEffectiveJob(-1) == 24 || actor->GetEffectiveJob(-1) == 4215 || actor->GetEffectiveJob(-1) == 4228 ||
              actor->GetEffectiveJob(-1) == 4229 || actor->GetEffectiveJob(-1) == 4306) {
-    if (actor->HasId(629) || packet->accountId == 0) {
+    if (actor->HasId(EF_CHOOKGI3) || packet->accountId == 0) {
       return;
     }
 
-    effect = actor->LaunchEffect(629, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    effect = actor->LaunchEffect(EF_CHOOKGI3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   } else {
-    if (actor->HasId(228) || packet->accountId == 0) {
+    if (actor->HasId(EF_CHOOKGI) || packet->accountId == 0) {
       return;
     }
 
-    effect = actor->LaunchEffect(228, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    effect = actor->LaunchEffect(EF_CHOOKGI, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   }
 
   vector3d count{static_cast<float>(packet->value), 0.0f, 0.0f};
@@ -3902,13 +3902,13 @@ void CGameMode::UpdateActorSpiritCount(std::uint32_t aid, std::int16_t count) {
     break;
   case JT_GUNSLINGER:
   case JT_GUNSLINGER_B:
-    actor->SendMsg(nullptr, AM_DELETE_EFFECT, 629, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_CHOOKGI3, 0, 0, 0, 0, 0);
     if (count == 0) {
       return;
     }
     break;
   case JT_MONK_B:
-    actor->SendMsg(nullptr, AM_DELETE_EFFECT, 504, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_CHOOKGI2, 0, 0, 0, 0, 0);
     if (count == 0) {
       return;
     }
@@ -3922,7 +3922,7 @@ void CGameMode::UpdateActorSpiritCount(std::uint32_t aid, std::int16_t count) {
     }
     break;
   default:
-    actor->SendMsg(nullptr, AM_DELETE_EFFECT, 228, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_CHOOKGI, 0, 0, 0, 0, 0);
     if (count == 0) {
       return;
     }
@@ -3946,15 +3946,15 @@ void CGameMode::UpdateActorSpiritCount(std::uint32_t aid, std::int16_t count) {
   switch (job) {
   case JT_GUNSLINGER:
   case JT_GUNSLINGER_B:
-    effect = actor->LaunchEffect(629, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    effect = actor->LaunchEffect(EF_CHOOKGI3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case JT_MONK_B:
-    effect = actor->LaunchEffect(504, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    effect = actor->LaunchEffect(EF_CHOOKGI2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case JT_REBELLION:
   case JT_REBELLION_B:
   case JT_NIGHT_WATCH: {
-    CEffect* coins = g_effectMgr->Spawn(actor->render.accountId, 1135, actor->render.position.x, actor->render.position.y,
+    CEffect* coins = g_effectMgr->Spawn(actor->render.accountId, EF_RL_B_TRAP, actor->render.position.x, actor->render.position.y,
                                         actor->render.position.z, 0, -1, 0, 0);
     if (!coins) {
       return;
@@ -3998,7 +3998,7 @@ void CGameMode::UpdateActorSpiritCount(std::uint32_t aid, std::int16_t count) {
     return;
   }
   default:
-    effect = actor->LaunchEffect(228, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    effect = actor->LaunchEffect(EF_CHOOKGI, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   }
 
@@ -4871,13 +4871,13 @@ void CGameMode::ApplyStatusChange(
     if (type == EFST_SPELLFIST && actor) {
       const unsigned char element = static_cast<unsigned char>(value3);
       if (element == 19) {
-        g_effectMgr->Spawn(actor->render.accountId, 1665, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-        g_effectMgr->Spawn(actor->render.accountId, 1666, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+        g_effectMgr->Spawn(actor->render.accountId, EF_NEW_SPELLFIST_FIRE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+        g_effectMgr->Spawn(actor->render.accountId, EF_NEW_SPELLFIST_FIRE_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       } else if (element == 20) {
-        g_effectMgr->Spawn(actor->render.accountId, 1669, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+        g_effectMgr->Spawn(actor->render.accountId, EF_NEW_SPELLFIST_WIND, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       } else if (element == 14) {
-        g_effectMgr->Spawn(actor->render.accountId, 1667, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-        g_effectMgr->Spawn(actor->render.accountId, 1668, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+        g_effectMgr->Spawn(actor->render.accountId, EF_NEW_SPELLFIST_WATER, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+        g_effectMgr->Spawn(actor->render.accountId, EF_NEW_SPELLFIST_WATER_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       }
     }
   }
@@ -5124,32 +5124,32 @@ void CGameMode::ApplyStatusChange(
     case EFST_SIREN:
       if (aid == g_session.m_aid) {
         CPlayer* player = this->scene->player;
-        player->SendMsg(nullptr, AM_DELETE_EFFECT, 879, 0, 0, 0, 0, 0);
-        player->LaunchEffect(879, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_HEARTASURA, 0, 0, 0, 0, 0);
+        player->LaunchEffect(EF_HEARTASURA, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         std::sprintf(message, "");
       }
       break;
     case EFST_SONG_OF_MANA:
       if (aid == g_session.m_aid) {
         CPlayer* player = this->scene->player;
-        player->SendMsg(nullptr, AM_DELETE_EFFECT, 865, 0, 0, 0, 0, 0);
-        player->LaunchEffect(865, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_CIRCLEPOWER3, 0, 0, 0, 0, 0);
+        player->LaunchEffect(EF_CIRCLEPOWER3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         std::sprintf(message, "");
       }
       break;
     case EFST_DANCE_WITH_WUG:
       if (aid == g_session.m_aid) {
         CPlayer* player = this->scene->player;
-        player->SendMsg(nullptr, AM_DELETE_EFFECT, 867, 0, 0, 0, 0, 0);
-        player->LaunchEffect(867, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_CIRCLEPOWER4, 0, 0, 0, 0, 0);
+        player->LaunchEffect(EF_CIRCLEPOWER4, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         std::sprintf(message, "");
       }
       break;
     case EFST_LERADS_DEW:
       if (aid == g_session.m_aid) {
         CPlayer* player = this->scene->player;
-        player->SendMsg(nullptr, AM_DELETE_EFFECT, 871, 0, 0, 0, 0, 0);
-        player->LaunchEffect(871, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_CIRCLEPOWER5, 0, 0, 0, 0, 0);
+        player->LaunchEffect(EF_CIRCLEPOWER5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         std::sprintf(message, "");
       }
       break;
@@ -5161,13 +5161,13 @@ void CGameMode::ApplyStatusChange(
       break;
     case EFST_NETHERWORLD:
       if (aid == g_session.m_aid) {
-        this->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, 453, 0, 0, 0, 0, 0);
+        this->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_NPC_STOP, 0, 0, 0, 0, 0);
         std::sprintf(message, "");
       }
       break;
     case EFST_WUGDASH:
       if (aid == g_session.m_aid) {
-        this->scene->player->LaunchEffect(752, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        this->scene->player->LaunchEffect(EF_BUNSINJYUTSU2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         std::sprintf(message, "");
       }
       break;
@@ -5529,7 +5529,7 @@ void CGameMode::ApplyStatusChange(
       break;
     case EFST_MARSHOFABYSS:
       if (aid == g_session.m_aid) {
-        this->scene->player->LaunchEffect(729, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        this->scene->player->LaunchEffect(EF_SPR_MASH, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       std::printf(message, "");
       break;
@@ -5688,7 +5688,7 @@ void CGameMode::ApplyStatusChange(
       std::sprintf(message, LookupMessage(MSI_ACCOUNTCLASS_INTEGRATION));
       break;
     case EFST_SOULCURSE:
-      g_effectMgr->Spawn(aid, 1362, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(aid, EF_QSCARABA_VISUAL, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       g_soundMgr->PlayWave("effect\\s포이즌버스터.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       break;
     case EFST_MADOGEAR_TYPE:
@@ -5726,13 +5726,13 @@ void CGameMode::ApplyStatusChange(
 
       const unsigned char element = static_cast<unsigned char>(value3);
       if (element == 19) {
-        g_effectMgr->Spawn(actor->render.accountId, 1665, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-        g_effectMgr->Spawn(actor->render.accountId, 1666, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+        g_effectMgr->Spawn(actor->render.accountId, EF_NEW_SPELLFIST_FIRE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+        g_effectMgr->Spawn(actor->render.accountId, EF_NEW_SPELLFIST_FIRE_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       } else if (element == 20) {
-        g_effectMgr->Spawn(actor->render.accountId, 1669, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+        g_effectMgr->Spawn(actor->render.accountId, EF_NEW_SPELLFIST_WIND, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       } else if (element == 14) {
-        g_effectMgr->Spawn(actor->render.accountId, 1667, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-        g_effectMgr->Spawn(actor->render.accountId, 1668, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+        g_effectMgr->Spawn(actor->render.accountId, EF_NEW_SPELLFIST_WATER, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+        g_effectMgr->Spawn(actor->render.accountId, EF_NEW_SPELLFIST_WATER_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       }
       break;
     }
@@ -5937,13 +5937,13 @@ void CGameMode::ApplyStatusChange(
         CPlayer* player = this->scene->player;
         const int stage = value1 & 3;
         if (stage == 0) {
-          player->SendMsg(nullptr, AM_DELETE_EFFECT, 735, 0, 0, 0, 0, 0);
+          player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_CHOOKGI_FIRE, 0, 0, 0, 0, 0);
         } else if (stage == 1) {
-          player->SendMsg(nullptr, AM_DELETE_EFFECT, 736, 0, 0, 0, 0, 0);
+          player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_CHOOKGI_WIND, 0, 0, 0, 0, 0);
         } else if (stage == 2) {
-          player->SendMsg(nullptr, AM_DELETE_EFFECT, 737, 0, 0, 0, 0, 0);
+          player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_CHOOKGI_WATER, 0, 0, 0, 0, 0);
         } else if (stage == 3) {
-          player->SendMsg(nullptr, AM_DELETE_EFFECT, 738, 0, 0, 0, 0, 0);
+          player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_CHOOKGI_GROUND, 0, 0, 0, 0, 0);
         }
       }
       std::sprintf(message, "");
@@ -6238,7 +6238,7 @@ void CGameMode::ApplyStatusChange(
       break;
     case EFST_SIREN:
       if (aid == g_session.m_aid) {
-        this->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, 879, 0, 0, 0, 0, 0);
+        this->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_HEARTASURA, 0, 0, 0, 0, 0);
       }
       std::sprintf(message, "");
       break;
@@ -6250,15 +6250,15 @@ void CGameMode::ApplyStatusChange(
       break;
     case EFST_NETHERWORLD:
       if (aid == g_session.m_aid) {
-        this->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, 453, 0, 0, 0, 0, 0);
+        this->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_NPC_STOP, 0, 0, 0, 0, 0);
       }
       std::sprintf(message, "");
       break;
     case EFST_WUGDASH:
       if (aid == g_session.m_aid) {
         CPlayer* player = this->scene->player;
-        while (player->HasId(752)) {
-          player->SendMsg(nullptr, AM_DELETE_EFFECT, 752, 0, 0, 0, 0, 0);
+        while (player->HasId(EF_BUNSINJYUTSU2)) {
+          player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_BUNSINJYUTSU2, 0, 0, 0, 0, 0);
         }
         std::sprintf(message, "");
       }
@@ -6324,7 +6324,7 @@ void CGameMode::ApplyStatusChange(
       break;
     case EFST_SOULCURSE:
     {
-      CEffect* effect = g_effectMgr->Find(aid, 1362);
+      CEffect* effect = g_effectMgr->Find(aid, EF_QSCARABA_VISUAL);
       if (effect) {
         g_effectMgr->Retire(effect, 1);
       }
@@ -10058,9 +10058,9 @@ void CGameMode::ReceiveEffectNumber(const unsigned char* data) {
 
   if (!IsAdminAccount(actor->render.accountId) || g_session.IsAdminSubMode(7)) {
     actor->SendMsg(nullptr, AM_CHANGE_RANK, packet->value, packet->count, 0, 0, 0, 0);
-    actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0x9F, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_TOPRANK, 0, 0, 0, 0, 0);
     if (packet->count <= 10) {
-      if (CRagEffect* effect = actor->LaunchEffect(0x9F, deltaPos, 0.0f)) {
+      if (CRagEffect* effect = actor->LaunchEffect(EF_TOPRANK, deltaPos, 0.0f)) {
         effect->SendMsg(nullptr, AM_SETCOUNT, 0, packet->count, 0, 0, 0, 0);
       }
     }
@@ -11134,7 +11134,7 @@ void LaunchSkillCastEffect(CGameMode* mode, CGameActor* source, CGameActor* targ
 
   CEffect* effect;
   if (skillId == CD_FRAMEN) {
-    effect = g_effectMgr->Spawn(target->render.accountId, 0x78A, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(target->render.accountId, EF_NEW_PRAMEN_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
@@ -11150,12 +11150,12 @@ void LaunchSkillCastEffect(CGameMode* mode, CGameActor* source, CGameActor* targ
     return;
   case WL_SOULEXPANSION: {
     const float speed = target->render.speed;
-    effect = g_effectMgr->Spawn(target->render.accountId, 0x635, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(target->render.accountId, EF_NEW_SOULEXPANSION_LOOP, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     const int duration = static_cast<int>(speed * 150.0f + 200.0f) + delay;
     if (effect) {
       effect->SetLifeTime(duration);
     }
-    effect = g_effectMgr->Spawn(target->render.accountId, 0x636, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(target->render.accountId, EF_NEW_SOULEXPANSION_LOOP_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(duration);
     }
@@ -11167,17 +11167,17 @@ void LaunchSkillCastEffect(CGameMode* mode, CGameActor* source, CGameActor* targ
     return;
   case WL_CHAINLIGHTNING:
     target->SendMsg(nullptr, AM_DELETE_MAGIC_TARGET, 0, 0, 0, 0, 0, 0);
-    g_effectMgr->Spawn(target->render.accountId, 0x665, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(target->render.accountId, EF_NEW_CHAINLIGHTNING_LOCKON, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     return;
   case RA_AIMEDBOLT:
     target->SendMsg(nullptr, AM_DELETE_MAGIC_TARGET, 0, 0, 0, 0, 0, 0);
-    effect = g_effectMgr->Spawn(target->render.accountId, 0x673, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(target->render.accountId, EF_NEW_AIMEDBOLT_TARGET_LOOP, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case NC_FLAMELAUNCHER:
-    if (CRagEffect* ragEffect = source->LaunchEffect(0x313, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+    if (CRagEffect* ragEffect = source->LaunchEffect(EF_FIRETHROW, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
       vector3d position = target->render.position;
       ragEffect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
@@ -11300,7 +11300,7 @@ void ApplyActorSkillState(CGameActor* actor, std::uint16_t skillId, int duration
     break;
   case CH_SOULCOLLECT:
     actor->SetFrameSequence(96, 0, 0, 96, 0, 0, 0, 0);
-    actor->LaunchEffect(0x192, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    actor->LaunchEffect(EF_PORTAL5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case WL_TETRAVORTEX:
     actor->SendMsg(nullptr, AM_EFFECT_LOOP_COUNT, 0x2DF, 1, 0, 0, 0, 0);
@@ -11328,11 +11328,11 @@ void CGameMode::NotifySkillCasting(
   NoticeSkillUse(source, target, skillId, silent);
 
   if (delay == 0 && skillId == 0xA04) {
-    CEffect* effect = g_effectMgr->Find(source->render.accountId, 0x474);
+    CEffect* effect = g_effectMgr->Find(source->render.accountId, EF_FALLEN_ANGEL);
     if (effect) {
       effect->Open();
     } else {
-      g_effectMgr->Spawn(source->render.accountId, 0x474, source->render.position, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_FALLEN_ANGEL, source->render.position, 0, -1, 0, 0);
     }
   }
 
@@ -11351,7 +11351,7 @@ void CGameMode::NotifySkillCasting(
       }
       g_modeMgr.GetGameMode()->SendMsg(MM_MAKE_SKILL_USED_MSG, 0x49, reinterpret_cast<std::intptr_t>(source), 0, 0);
     } else if (skillId == 0x1479) {
-      g_effectMgr->Spawn(source->render.accountId, 0x7C4, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_OLEUM_SANCTUM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
 
     CSkillActionMgr::GetInstance()->OnTargetSkillCast(skillId, reinterpret_cast<int>(source), reinterpret_cast<int>(target), delay);
@@ -11932,7 +11932,7 @@ void CGameMode::SpawnMirrorActor(std::uint32_t aid, std::uint32_t owner, short x
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
       pc->SendMsg(nullptr, AM_INITSTANDENTRY2, value, 0, 0, 0, 0, 0);
       pc->objectType = 7;
-      pc->LaunchEffect(0x3C3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      pc->LaunchEffect(EF_GRAYBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       this->scene->objects.push_back(pc);
       this->scene->actors.push_back(pc);
       this->spriteMirrorActorIds.push_back(aid);
@@ -14159,7 +14159,7 @@ void CGameMode::ReceiveActorStandEntryOld(const unsigned char* data) {
     this->scene->actors.push_back(actor);
     actor->SendMsg(nullptr, AM_INITSTANDENTRY2, reinterpret_cast<int>(&entry), 2, 0, 0, 0, 0);
     if (isPc && !IsAdminAccount(packet->aid) && !StateFlag06(packet->effectState)) {
-      actor->LaunchEffect(0x158, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      actor->LaunchEffect(EF_ENTRY2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
         (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
@@ -14285,7 +14285,7 @@ void CGameMode::ReceiveActorStandEntryOld2(const unsigned char* data) {
     actor->SendMsg(nullptr, AM_INITSTANDENTRY2, reinterpret_cast<int>(&entry), 2, 0, 0, 0, 0);
     actor->characterLevel = packet->level;
     if (isPc && !IsAdminAccount(packet->aid) && !StateFlag06(packet->effectState)) {
-      actor->LaunchEffect(0x158, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      actor->LaunchEffect(EF_ENTRY2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
         (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
@@ -14415,7 +14415,7 @@ void CGameMode::ReceiveActorStandEntryOld3(const unsigned char* data) {
     if (isPc) {
       *reinterpret_cast<short*>(actor->render.fontSequenceBytes) = packet->font;
       if (!IsAdminAccount(packet->aid) && !StateFlag06(packet->effectState)) {
-        actor->LaunchEffect(0x158, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        actor->LaunchEffect(EF_ENTRY2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
     }
     if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
@@ -14550,7 +14550,7 @@ void CGameMode::ReceiveActorStandEntryOld0(const unsigned char* data) {
       }
     }
     if (isPc && !IsAdminAccount(packet->aid) && !StateFlag06(packet->effectState)) {
-      actor->LaunchEffect(0x158, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      actor->LaunchEffect(EF_ENTRY2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
   }
 
@@ -15965,30 +15965,30 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     return;
   }
   case RK_IGNITIONBREAK:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x65A, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_NEW_IGNITIONBREAK_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case GC_POISONSMOKE:
-    actor->LaunchEffect(0x300, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    actor->LaunchEffect(EF_PURPLEBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     return;
   case WL_RECOGNIZEDSPELL:
-    actor->LaunchEffect(0x323, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    actor->LaunchEffect(EF_RECOGNIZED, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     return;
   case WL_TETRAVORTEX:
     if (g_serviceOptions.Get(0xE5)) {
-      effect = g_effectMgr->Spawn(actor->render.accountId, 0x5A0, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(actor->render.accountId, EF_MINEFFECT_TETRA_CORE_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetLifeTime(delay);
       }
-      effect = g_effectMgr->Spawn(actor->render.accountId, 0x597, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(actor->render.accountId, EF_MINEFFECT_TETRA_CORE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     } else {
-      effect = g_effectMgr->Spawn(actor->render.accountId, 0x4FD, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(actor->render.accountId, EF_TETRA_VORTEX_CORE_GROUND, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetLifeTime(delay);
       }
-      effect = g_effectMgr->Spawn(actor->render.accountId, 0x4ED, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(actor->render.accountId, EF_TETRA_VORTEX_CORE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     if (effect) {
       effect->SetLifeTime(delay);
@@ -15996,17 +15996,17 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     return;
   case WL_COMET:
     if (g_serviceOptions.Get(0xE5)) {
-      effect = g_effectMgr->Spawn(actor->render.accountId, 0x600, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(actor->render.accountId, EF_MINEFFECT_COMET_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetLifeTime(delay);
       }
-      effect = g_effectMgr->Spawn(actor->render.accountId, 0x603, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(actor->render.accountId, EF_MINEFFECT_COMET_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     } else {
-      effect = g_effectMgr->Spawn(actor->render.accountId, 0x587, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(actor->render.accountId, EF_NEW_COMET_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetLifeTime(delay);
       }
-      effect = g_effectMgr->Spawn(actor->render.accountId, 0x58D, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(actor->render.accountId, EF_NEW_COMET_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     if (effect) {
       effect->SetLifeTime(delay);
@@ -16019,46 +16019,46 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     }
     return;
   case WL_HELLINFERNO:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x610, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_NEW_HELLINFERNO_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case AB_CLEARANCE:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x617, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_NEW_CLEARANCE_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case WL_SOULEXPANSION:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x633, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_NEW_SOULEXPANSION_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x634, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_NEW_SOULEXPANSION_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case AB_JUDEX:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x65D, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_NEW_JUDEX_CAST_LOOP, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x65E, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_NEW_JUDEX_CAST_LOOP_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case WL_CHAINLIGHTNING:
-    g_effectMgr->Spawn(actor->render.accountId, 0x663, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x664, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(actor->render.accountId, EF_NEW_CHAINLIGHTNING_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_NEW_CHAINLIGHTNING_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case RA_AIMEDBOLT:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x671, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_NEW_AIMEDBOLT_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
@@ -16091,19 +16091,19 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
         id = 0x5D0;
       }
       g_effectMgr->Spawn(actor->render.accountId, id, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-      g_effectMgr->Spawn(actor->render.accountId, 0x5D4, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-      g_effectMgr->Spawn(actor->render.accountId, 0x5D5, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(actor->render.accountId, EF_MINEFFECT_ARMSCANNON_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(actor->render.accountId, EF_MINEFFECT_ARMSCANNON_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     } else {
       g_effectMgr->Spawn(actor->render.accountId, id, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       g_effectMgr->Spawn(actor->render.accountId, id + 1, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-      g_effectMgr->Spawn(actor->render.accountId, 0x568, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-      g_effectMgr->Spawn(actor->render.accountId, 0x569, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(actor->render.accountId, EF_NEW_ARMSCANNON_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      g_effectMgr->Spawn(actor->render.accountId, EF_NEW_ARMSCANNON_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     return;
   }
   case SO_EL_CURE: {
     g_soundMgr->PlayWave("_heal_effect.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    CRagEffect* ragEffect = actor->LaunchEffect(0xD8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    CRagEffect* ragEffect = actor->LaunchEffect(EF_BLOODDRAIN, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (ragEffect) {
       vector3d position = actor->render.position;
       ragEffect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
@@ -16133,17 +16133,17 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
   }
   case GN_CARTCANNON:
     if (g_serviceOptions.Get(0xE5)) {
-      effect = g_effectMgr->Spawn(actor->render.accountId, 0x5DB, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(actor->render.accountId, EF_MINEFFECT_CART_CANNON_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetLifeTime(delay);
       }
-      effect = g_effectMgr->Spawn(actor->render.accountId, 0x5DC, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(actor->render.accountId, EF_MINEFFECT_CART_CANNON_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     } else {
-      effect = g_effectMgr->Spawn(actor->render.accountId, 0x58E, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(actor->render.accountId, EF_NEW_CART_CANNON_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetLifeTime(delay);
       }
-      effect = g_effectMgr->Spawn(actor->render.accountId, 0x58F, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(actor->render.accountId, EF_NEW_CART_CANNON_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
     if (effect) {
       effect->SetLifeTime(delay);
@@ -16151,289 +16151,289 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     return;
   case NPC_RAYOFGENESIS:
   case LG_RAYOFGENESIS:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x591, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_NEW_RAYOFGENESIS_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x592, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_NEW_RAYOFGENESIS_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case SO_VARETYR_SPEAR:
     if (!g_serviceOptions.Get(0xE5)) {
-      effect = g_effectMgr->Spawn(actor->render.accountId, 0x61B, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(actor->render.accountId, EF_NEW_VARETYRSPEAR_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetLifeTime(delay);
       }
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x61C, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_NEW_VARETYRSPEAR_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case SC_MAELSTROM:
-    actor->LaunchEffect(0x10, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    actor->LaunchEffect(EF_BASH, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     return;
   case SR_GATEOFHELL:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x625, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_NEW_GATEOFHELL_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case SR_HOWLINGOFLION:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x62A, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_NEW_HOWLINGOFLION_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x62B, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_NEW_HOWLINGOFLION_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case WM_METALICSOUND:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x62D, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_NEW_METALLICSOUND, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x62E, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_NEW_METALLICSOUND_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case GN_WALLOFTHORN:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x654, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_NEW_WALLOFTHORN_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     if (g_serviceOptions.Get(0xE5)) {
       return;
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x655, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_NEW_WALLOFTHORN_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case GN_MANDRAGORA:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x669, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_NEW_MANDRAGORA_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case WM_SOUND_OF_DESTRUCTION:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x66A, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_NEW_SOUNDOFDESTRUCTION_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x66B, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_NEW_SOUNDOFDESTRUCTION_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case LG_OVERBRAND:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x697, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_NEW_OVERBRAND_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     if (g_serviceOptions.Get(0xE5)) {
       return;
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x698, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_NEW_OVERBRAND_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case AG_DEADLY_PROJECTION:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6CA, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_DEADLY_PROJECTION_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6CB, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_DEADLY_PROJECTION_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case AG_DESTRUCTIVE_HURRICANE:
   case AG_STORM_CANNON:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6C6, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_DESTRUCTIVE_HURRICANE_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6C7, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_DESTRUCTIVE_HURRICANE_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
       effect->AddEvent(0, "effect\\EF_BeginSpell.wav", 0, 0);
     }
     return;
   case AG_SOUL_VC_STRIKE:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6CE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_SOUL_VC_STRIKE_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6CF, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_SOUL_VC_STRIKE_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case AG_ROCK_DOWN:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6D3, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_ROCKDOWN_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6D4, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_ROCKDOWN_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case AG_RAIN_OF_CRYSTAL:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6D9, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_RAIN_OF_CRYSTAL, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6DA, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_RAIN_OF_CRYSTAL_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case AG_CRIMSON_ARROW:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6DD, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_CRIMSON_ARROW_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6DE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_CRIMSON_ARROW_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case AG_VIOLENT_QUAKE:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6E1, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_VIOLENT_QUAKE_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6E2, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_VIOLENT_QUAKE_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case AG_ASTRAL_STRIKE:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6E9, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_ASTRAL_STRIKE_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6EA, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_ASTRAL_STRIKE_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case AG_MYSTERY_ILLUSION:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6ED, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_MYSTERY_ILLUSION_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6EE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_MYSTERY_ILLUSION_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case AG_TORNADO_STORM:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6F2, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_TORNADO_STORM_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6F3, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_TORNADO_STORM_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case AG_FROZEN_SLASH:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6F6, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_FROZEN_SLASH_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x6F7, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_FROZEN_SLASH_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case AG_CLIMAX:
-    g_effectMgr->Spawn(actor->render.accountId, 0x70A, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x70B, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(actor->render.accountId, EF_CLIMAX_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_CLIMAX_CAST_LOOP, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetDelay(200);
       effect->SetLifeTime(delay - 200);
     }
     return;
   case AG_FLORAL_FLARE_ROAD:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x70D, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_FLORAL_FLARE_ROAD_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x70E, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_FLORAL_FLARE_ROAD_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case AG_ALL_BLOOM:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x704, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_ALL_BLOOM_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x705, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_ALL_BLOOM_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case IQ_FIRST_FAITH_POWER:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7B8, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_FIRST_FAITH_POWER_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case IQ_JUDGE:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7BB, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_JUDGE_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case IQ_THIRD_EXOR_FLAME:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7BF, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_THIRD_EXOR_FLAME_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case CD_MEDIALE_VOTUM:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x711, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_MEDIALE_VOTUM_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case CD_ARGUTUS_VITA:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x714, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_ARGUTUS_VITA_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case CD_ARGUTUS_TELUM:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x716, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_ARGUTUS_TELUM_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case CD_PRESENS_ACIES:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x718, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_PRESENS_ACIES_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case CD_ARBITRIUM:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x71F, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_ARBITRIUM_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     if (g_serviceOptions.Get(0xE5)) {
       return;
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x71E, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_ARBITRIUM_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
@@ -16463,181 +16463,181 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     return;
   }
   case AG_CRYSTAL_IMPACT:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x740, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_CRYSTAL_IMPACT_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x741, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_CRYSTAL_IMPACT_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case MT_SUMMON_ABR_MOTHER_NET:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x76D, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_ABR_MOTHER_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case CD_RELIGIO:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x745, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_RELIGIO_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case WH_FLAMETRAP:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x781, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_FLAME_TRAP_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case WH_DEEPBLINDTRAP:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x751, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_DEEP_BLIND_TRAP_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case WH_SWIFTTRAP:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x755, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_SWIFT_TRAP_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case WH_SOLIDTRAP:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x758, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_SOLID_TRAP_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x759, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_SOLID_TRAP_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case ABC_ABYSS_SLAYER:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x84F, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_ABYSS_SLAYER_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x850, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_ABYSS_SLAYER_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case CD_BENEDICTUM:
     if (!g_serviceOptions.Get(0xE5)) {
-      effect = g_effectMgr->Spawn(actor->render.accountId, 0x760, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(actor->render.accountId, EF_BENEDICTUM_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetLifeTime(delay);
       }
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x761, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_BENEDICTUM_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case CD_PNEUMATICUS_PROCELLA:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7A6, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_PNEUMATICUS_PROCELLA_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case CD_DILECTIO_HEAL:
     if (!g_serviceOptions.Get(0xE5)) {
-      effect = g_effectMgr->Spawn(actor->render.accountId, 0x785, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(actor->render.accountId, EF_NEW_DILECTIO_HEAL_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetLifeTime(delay);
       }
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x786, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_NEW_DILECTIO_HEAL_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case AG_STRANTUM_TREMOR:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x762, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_STRATUM_TREMOR_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x763, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_STRATUM_TREMOR_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case MT_SUMMON_ABR_INFINITY:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x774, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_ABR_INFINITY_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case MT_SUMMON_ABR_BATTLE_WARIOR:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x78F, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_NEW_BATTLE_W_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case MT_SUMMON_ABR_DUAL_CANNON:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x77C, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_NEW_D_CANNON_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case WH_HAWKBOOMERANG:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7B1, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_HAWK_BOOMERANG_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case EM_INCREASING_ACTIVITY:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7C9, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_INCREASING_ACTIVITY_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7CA, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_INCREASING_ACTIVITY_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case EM_ACTIVITY_BURN:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7D4, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_ACTIVITY_BURN_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7D5, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_ACTIVITY_BURN_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case EM_SUMMON_ELEMENTAL_SERPENS:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7DA, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_SERPENS_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7DB, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_SERPENS_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case ABC_CHAIN_REACTION_SHOT:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7DE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_CHAIN_REACTION_SHOT_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7DF, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_CHAIN_REACTION_SHOT_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case EM_SUMMON_ELEMENTAL_DILUVIO:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7E5, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_DILUVIO_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x7E6, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_DILUVIO_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   case TR_NIPELHEIM_REQUIEM:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x81C, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_NIFLHEIM_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
@@ -16647,13 +16647,13 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     }
     return;
   case TR_MUSICAL_INTERLUDE:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x84B, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_MUSICAL_INTERLUDE_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay + 50);
     }
     return;
   case MH_HEILIGE_PFERD:
-    effect = g_effectMgr->Spawn(actor->render.accountId, 0x91D, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_HEILIGE_PFERD_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay + 50);
     }
@@ -16756,14 +16756,14 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case NPC_RANDOMBREAK:
     if (target != nullptr) {
-      if (CRagEffect* effect = target->LaunchEffect(0x985, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+      if (CRagEffect* effect = target->LaunchEffect(EF_RG_COIN_BLUE_2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
         effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&target->render.position), 0, 0, 0, 0);
       }
     }
     break;
   case NPC_STRIP_SHADOW:
     if (target != nullptr) {
-      if (CRagEffect* effect = target->LaunchEffect(0x984, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+      if (CRagEffect* effect = target->LaunchEffect(EF_RG_COIN_BLUE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
         effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&target->render.position), 0, 0, 0, 0);
       }
     }
@@ -16812,40 +16812,40 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   switch (skillId) {
   case PR_GLORIA:
     if (source != nullptr) {
-      source->LaunchEffect(0x4B, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_GLORIA, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case PR_SLOWPOISON:
     if (g_serviceType == 0 && target != nullptr) {
-      target->LaunchEffect(0x88, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_SLOWPOISON, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case BS_WEAPONPERFECT:
     if (target != nullptr) {
-      target->LaunchEffect(0x67, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_PERFECTION, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case BS_MAXIMIZE:
     if (source != nullptr) {
-      source->LaunchEffect(0x68, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_MAXPOWER, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case AS_ENCHANTPOISON:
   case AS_SPLASHER:
     if (target != nullptr) {
-      target->LaunchEffect(0x7D, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_ENCHANTPOISON, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case AS_POISONREACT:
     if (target != nullptr) {
-      target->LaunchEffect(0x7E, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_POISONREACT, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case KN_TWOHANDQUICKEN:
   case KN_ONEHAND:
     if (source != nullptr) {
-      source->SendMsg(nullptr, AM_DELETE_EFFECT, 0x82, 0, 0, 0, 0, 0);
-      source->LaunchEffect(0x82, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->SendMsg(nullptr, AM_DELETE_EFFECT, EF_TWOHANDQUICKEN, 0, 0, 0, 0, 0);
+      source->LaunchEffect(EF_TWOHANDQUICKEN, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case KN_AUTOCOUNTER:
@@ -16859,50 +16859,50 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case PR_IMPOSITIO:
     if (target != nullptr) {
-      target->LaunchEffect(0x54, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_IMPOSITIO, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case PR_SUFFRAGIUM:
     if (target != nullptr) {
-      target->LaunchEffect(0x58, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_SUFFRAGIUM, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case PR_ASPERSIO:
     if (target != nullptr) {
-      target->LaunchEffect(0x56, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_ASPERSIO, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case AL_CURE:
     if (target != nullptr) {
-      target->LaunchEffect(0x42, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_CURE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case PR_STRECOVERY:
     if (target != nullptr) {
-      target->LaunchEffect(0x4E, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_RECOVERY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case PR_LEXAETERNA:
   case NPC_LEX_AETERNA:
   case AB_VITUPERATUM:
     if (target != nullptr) {
-      target->LaunchEffect(0x55, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_LEXAETERNA, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case WZ_SIGHTRASHER:
     if (source != nullptr) {
-      source->LaunchEffect(0x3E, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_SIGHTRASHER, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case WZ_FROSTNOVA:
     if (target != nullptr) {
-      target->LaunchEffect(0x1C, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_FROSTDIVER2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case HT_SPRINGTRAP:
     if (source != nullptr) {
       if (CRenderObject* skill = this->scene->GetSkillByAID(targetAid)) {
-        static_cast<EffectActor*>(skill)->LaunchEffect(0x6F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        static_cast<EffectActor*>(skill)->LaunchEffect(EF_SPRINGTRAP, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         if (source->statusEffects[0] != 0) {
           const int address = reinterpret_cast<int>(&skill->render.position);
           source->statusEffects[0]->SendMsg(nullptr, AM_REQ_ATTACK, address, 0, 0, 0, 0, 0);
@@ -16912,143 +16912,143 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case HT_REMOVETRAP:
     if (CRenderObject* skill = this->scene->GetSkillByAID(targetAid)) {
-      static_cast<EffectActor*>(skill)->LaunchEffect(0x64, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      static_cast<EffectActor*>(skill)->LaunchEffect(EF_REMOVETRAP, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case ALL_RESURRECTION:
     if (target != nullptr) {
-      target->LaunchEffect(0x4D, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_RESURRECTION, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (IsPlayerJob(target->GetEffectiveJob(-1))) {
-        target->LaunchEffect(0x8C, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        target->LaunchEffect(EF_REVIVE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
     }
     break;
   case TF_DETOXIFY:
     if (target != nullptr) {
-      target->LaunchEffect(0x15, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_DETOXICATION, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case TF_STEAL:
     if (target != nullptr) {
-      target->LaunchEffect(0x12, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_STEAL, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case MG_STONECURSE:
     if (target != nullptr && skillId == MG_STONECURSE) {
-      target->LaunchEffect(0x17, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_STONECURSE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("_stonecurse.wav", target->render.position.x - this->scene->player->render.position.x, 0.0f, target->render.position.z - this->scene->player->render.position.z, 250, 40, 1.0f, 0);
     }
     break;
   case AL_DECAGI:
     if (target != nullptr) {
-      target->LaunchEffect(0x26, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_DECAGILITY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case AL_HOLYWATER:
     if (source != nullptr) {
-      source->LaunchEffect(0x27, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_AQUA, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case AL_CRUCIS:
     if (source != nullptr) {
-      source->LaunchEffect(0x28, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_SIGNUM, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case AL_ANGELUS:
     if (source != nullptr) {
-      source->LaunchEffect(0x29, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_ANGELUS, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case SM_ENDURE:
     if (source != nullptr) {
-      source->LaunchEffect(0xB, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_ENDURE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case SM_PROVOKE:
     if (target != nullptr) {
-      target->LaunchEffect(0x43, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_PROVOKE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case AC_CONCENTRATION:
     if (source != nullptr) {
-      source->LaunchEffect(0x99, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_CONCENTRATION, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case MG_ENERGYCOAT:
     if (source != nullptr) {
-      source->LaunchEffect(0xA9, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_ENERGYCOAT, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case NPC_CHANGEWATER:
     if (source != nullptr) {
-      source->LaunchEffect(0xAE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_CHANGECOLD, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case NPC_CHANGEGROUND:
     if (source != nullptr) {
-      source->LaunchEffect(0xB1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_CHANGEEARTH, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case NPC_CHANGEFIRE:
     if (source != nullptr) {
-      source->LaunchEffect(0xAD, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_CHANGEFIRE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case NPC_CHANGEWIND:
     if (source != nullptr) {
-      source->LaunchEffect(0xAF, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_CHANGEWIND, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case NPC_CHANGEPOISON:
     if (source != nullptr) {
-      source->LaunchEffect(0xB3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_CHANGEPOISON, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case NPC_CHANGEHOLY:
     if (source != nullptr) {
-      source->LaunchEffect(0xB2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_CHAINGEHOLY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case NPC_CHANGEDARKNESS:
     if (source != nullptr) {
-      source->LaunchEffect(0xAC, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_CHANGEDARK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case NPC_CHANGETELEKINESIS:
     if (source != nullptr) {
-      source->LaunchEffect(0xB0, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_CHANGEFLAME, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case NPC_SUICIDE:
     if (source != nullptr) {
-      if (CRagEffect* effect = this->scene->player->LaunchEffect(0xB9, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+      if (CRagEffect* effect = this->scene->player->LaunchEffect(EF_SUICIDE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
         effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&source->render.position), 0, 0, 0, 0);
       }
     }
     break;
   case NPC_SUMMONSLAVE:
     if (source != nullptr) {
-      source->LaunchEffect(0xD7, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_SUMMONSLAVE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case NPC_KEEPING:
     if (source != nullptr) {
-      source->LaunchEffect(0xD6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_KEEPING, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case NPC_DEFENDER:
     if (source != nullptr) {
-      source->LaunchEffect(0xD5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_DEFFENDER, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case CR_REFLECTSHIELD:
     if (source != nullptr) {
-      source->LaunchEffect(0xFC, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_REFLECTSHIELD, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case MC_LOUD:
     if (source != nullptr) {
-      source->LaunchEffect(0x137, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_LOUD, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case RG_STEALCOIN:
@@ -17058,31 +17058,31 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
         std::sprintf(notice, LookupMessage(MSI_NOTIFY_STEAL_COIN), static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ActorName(target->render.accountId).c_str(), level);
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(notice), 0xC8C8FF, 0x10, 0, 0);
       }
-      if (CRagEffect* effect = target->LaunchEffect(0x112, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+      if (CRagEffect* effect = target->LaunchEffect(EF_RG_COIN, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
         vector3d position = target->render.position;
         effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
       }
-      target->LaunchEffect(0x10C, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_STEALCOIN, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case RG_RAID:
     if (source != nullptr) {
-      source->LaunchEffect(0x114, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_TEIHIT3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case RG_STRIPSHIELD:
     if (target != nullptr) {
-      target->LaunchEffect(0x10E, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_STRIPSHIELD, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case RG_STRIPARMOR:
     if (target != nullptr) {
-      target->LaunchEffect(0x10F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_STRIPARMOR, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case RG_STRIPHELM:
     if (target != nullptr) {
-      target->LaunchEffect(0x110, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_STRIPHELM, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case AM_CP_WEAPON:
@@ -17090,7 +17090,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case AM_CP_ARMOR:
   case AM_CP_HELM:
     if (target != nullptr) {
-      target->LaunchEffect(0x12C, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_CHEMICALPROTECTION, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case AM_POTIONPITCHER:
@@ -17103,39 +17103,39 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case CR_DEVOTION:
     if (source != nullptr) {
-      source->LaunchEffect(0xFB, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_DEVOTION, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case SA_SPELLBREAKER:
     if (target != nullptr) {
-      target->LaunchEffect(0xEA, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_SPELLBREAKER, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case SA_DISPELL:
   case NPC_WIDEDISPEL:
     if (target != nullptr) {
-      target->LaunchEffect(0xEB, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_DISPELL, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case SA_MAGICROD:
     if (source != nullptr) {
-      source->LaunchEffect(0xF4, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_MAGICROD, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case CR_PROVIDENCE:
     if (target != nullptr) {
-      target->LaunchEffect(0xF8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_PROVIDENCE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case CR_SPEARQUICKEN:
     if (source != nullptr) {
-      source->SendMsg(nullptr, AM_DELETE_EFFECT, 0xFA, 0, 0, 0, 0, 0);
-      source->LaunchEffect(0xFA, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->SendMsg(nullptr, AM_DELETE_EFFECT, EF_SPEARQUICKEN, 0, 0, 0, 0, 0);
+      source->LaunchEffect(EF_SPEARQUICKEN, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case MO_ABSORBSPIRITS:
     if (source != nullptr) {
-      source->LaunchEffect(0xFD, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_ABSORBSPIRITS, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case MO_BLADESTOP:
@@ -17147,9 +17147,9 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     if (source != nullptr) {
       g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
       g_soundMgr->PlayWave("effect\\mon_폭기.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      source->SendMsg(nullptr, AM_DELETE_EFFECT, 0xCB, 0, 0, 0, 0, 0);
-      source->LaunchEffect(0xCB, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      source->LaunchEffect(0x105, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->SendMsg(nullptr, AM_DELETE_EFFECT, EF_GUMGANG, 0, 0, 0, 0, 0);
+      source->LaunchEffect(EF_GUMGANG, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_GUMGANG2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       source->SetSequenceInterval(30);
       source->SetFrameSequence(0x60, 1, 2, 0x60, 2, 1, 1000, 0);
     }
@@ -17158,58 +17158,58 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     if (source != nullptr) {
       g_soundMgr->PlayWave("effect\\mon_맹룡과강.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
-      source->LaunchEffect(0x105, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_GUMGANG2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       source->SetFrameSequence(0x60, 0, 0, 0x60, 0, 1, 20, 0);
     }
     break;
   case BS_ADRENALINE:
   case BS_ADRENALINE2:
     if (source != nullptr) {
-      source->LaunchEffect(0x62, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_HASTEUP, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case BS_OVERTHRUST:
   case WS_OVERTHRUSTMAX:
     if (source != nullptr) {
-      source->SendMsg(nullptr, AM_DELETE_EFFECT, 0x80, 0, 0, 0, 0, 0);
-      source->LaunchEffect(0x80, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->SendMsg(nullptr, AM_DELETE_EFFECT, EF_OVERTHRUST, 0, 0, 0, 0, 0);
+      source->LaunchEffect(EF_OVERTHRUST, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case NPC_STOP:
     if (target != nullptr) {
-      target->LaunchEffect(0x1C5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_NPC_STOP, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case WE_FEMALE:
     if (target != nullptr) {
-      target->LaunchEffect(0xFD, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_ABSORBSPIRITS, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       target->SendMsg(nullptr, AM_MAKE_NUMBER, level, 0xFF0000FFu, 0x72, 0, 0, 0);
     }
     break;
   case WE_BABY:
     if (target != nullptr) {
-      target->LaunchEffect(0x198, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_BABY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case LK_AURABLADE:
     if (source != nullptr) {
-      source->SendMsg(nullptr, AM_DELETE_EFFECT, 0x16F, 0, 0, 0, 0, 0);
-      source->LaunchEffect(0x16F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      source->SendMsg(nullptr, AM_DELETE_EFFECT, 0x1DA, 0, 0, 0, 0, 0);
-      source->LaunchEffect(0x1DA, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->SendMsg(nullptr, AM_DELETE_EFFECT, EF_AURABLADE, 0, 0, 0, 0, 0);
+      source->LaunchEffect(EF_AURABLADE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->SendMsg(nullptr, AM_DELETE_EFFECT, EF_AURABLADE2, 0, 0, 0, 0, 0);
+      source->LaunchEffect(EF_AURABLADE2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       source->SetFrameSequence(0x20, 0, 5, 0x20, 5, 1, 1000, 0);
       g_soundMgr->PlayWave("effect\\오라 블레이드.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
   case LK_CONCENTRATION:
     if (source != nullptr) {
-      source->SendMsg(nullptr, AM_DELETE_EFFECT, 0x171, 0, 0, 0, 0, 0);
-      source->LaunchEffect(0x171, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->SendMsg(nullptr, AM_DELETE_EFFECT, EF_LKCONCENTRATION, 0, 0, 0, 0, 0);
+      source->LaunchEffect(EF_LKCONCENTRATION, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case ST_FULLSTRIP:
     if (target != nullptr) {
-      if (CRagEffect* effect = target->LaunchEffect(0x1EF, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+      if (CRagEffect* effect = target->LaunchEffect(EF_RG_COIN2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
         vector3d position = target->render.position;
         effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
       }
@@ -17217,26 +17217,26 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case ST_PRESERVE:
     if (source != nullptr) {
-      source->LaunchEffect(0x1F0, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_GUARD2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case NPC_POWERUP:
     if (source != nullptr) {
       g_soundMgr->PlayWave("effect\\mon_폭기.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      source->LaunchEffect(0x1C7, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_GUMGANGNPC, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case RG_STRIPWEAPON:
   case NPC_WEAPONBRAKER:
     if (target != nullptr) {
-      target->LaunchEffect(0x10D, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_STRIPWEAPON, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case DC_SCREAM:
     if (source != nullptr) {
       source->SetFrameSequence(0x60, 0, 0, 0x60, 0, 1, 1200, 0);
       if (source == this->scene->player) {
-        source->LaunchEffect(0x128, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        source->LaunchEffect(EF_TALK_SCREAM, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
     }
     break;
@@ -17245,50 +17245,50 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
       source->SetSequenceInterval(10);
       source->SetFrameSequence(0x60, 4, 5, 0x60, 4, 1, 1800, 1);
       if (source == this->scene->player) {
-        source->LaunchEffect(0x127, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        source->LaunchEffect(EF_TALK_FROSTJOKE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
     }
     break;
   case BA_ASSASSINCROSS:
     g_soundMgr->PlayWave("effect\\석양의 어쌔신.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     if (source != nullptr) {
-      source->LaunchEffect(0x348, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_BEGINSPELL_N3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case BA_POEMBRAGI:
     g_soundMgr->PlayWave("effect\\브라기의 시.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     if (source != nullptr) {
-      source->LaunchEffect(0x34B, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_BEGINSPELL_N6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case BA_APPLEIDUN:
     g_soundMgr->PlayWave("effect\\이둔의 사과.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     if (source != nullptr) {
-      source->LaunchEffect(0x349, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_BEGINSPELL_N4, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case DC_HUMMING:
     g_soundMgr->PlayWave("effect\\흥얼거림.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     if (source != nullptr) {
-      source->LaunchEffect(0x34C, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_BEGINSPELL_N7, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case DC_DONTFORGETME:
     g_soundMgr->PlayWave("effect\\나를잊지말아요.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     if (source != nullptr) {
-      source->LaunchEffect(0x34C, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_BEGINSPELL_N7, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case DC_SERVICEFORYOU:
     g_soundMgr->PlayWave("effect\\당신을 위한 서비스.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     if (source != nullptr) {
-      source->LaunchEffect(0x348, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_BEGINSPELL_N3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case BD_LULLABY:
     g_soundMgr->PlayWave("effect\\자장가.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     if (source != nullptr) {
-      source->LaunchEffect(0x34D, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_BEGINSPELL_N8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case CG_HERMODE:
@@ -17297,132 +17297,132 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case CG_TAROTCARD:
     if (target != nullptr) {
       g_soundMgr->PlayWave("effect\\priest_slowpoison.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      target->LaunchEffect(0x1F4, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_CHEMICALBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case BD_RICHMANKIM:
     g_soundMgr->PlayWave("effect\\김서방돈.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     if (source != nullptr) {
-      source->LaunchEffect(0x34A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_BEGINSPELL_N5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case BD_ETERNALCHAOS:
     g_soundMgr->PlayWave("effect\\영원의 혼돈.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     if (source != nullptr) {
-      source->LaunchEffect(0x34C, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_BEGINSPELL_N7, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case BD_DRUMBATTLEFIELD:
     g_soundMgr->PlayWave("effect\\전장의.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     if (source != nullptr) {
-      source->LaunchEffect(0x34A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_BEGINSPELL_N5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case BD_RINGNIBELUNGEN:
     g_soundMgr->PlayWave("effect\\니벨룽겐의 반지.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     if (source != nullptr) {
-      source->LaunchEffect(0x34A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_BEGINSPELL_N5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case BD_ROKISWEIL:
     g_soundMgr->PlayWave("effect\\로키.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     if (source != nullptr) {
-      source->LaunchEffect(0x34D, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_BEGINSPELL_N8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case BD_INTOABYSS:
     g_soundMgr->PlayWave("effect\\심연속으로.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     if (source != nullptr) {
-      source->LaunchEffect(0x34A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_BEGINSPELL_N5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case BD_SIEGFRIED:
     g_soundMgr->PlayWave("effect\\불사신.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     if (source != nullptr) {
-      source->LaunchEffect(0x34A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_BEGINSPELL_N5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case BA_WHISTLE:
     if (source != nullptr) {
-      source->LaunchEffect(0x34C, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_BEGINSPELL_N7, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case DC_FORTUNEKISS:
     g_soundMgr->PlayWave("effect\\행운의.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     if (source != nullptr) {
-      source->LaunchEffect(0x348, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_BEGINSPELL_N3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case NPC_AGIUP:
   case GS_INCREASING:
     if (source != nullptr) {
-      source->LaunchEffect(0x1C8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_AGIUP, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case HW_SOULDRAIN:
     if (source != nullptr && target != nullptr) {
       source->SetFrameSequence(0x58, 0, 3, 0x58, 3, 1, 1000, 0);
-      if (CRagEffect* effect = source->LaunchEffect(0x17A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+      if (CRagEffect* effect = source->LaunchEffect(EF_ENERGYDRAIN2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
         vector3d position = target->render.position;
         effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
       }
-      target->LaunchEffect(0x17B, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_TRANSBLUEBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case HW_MAGICPOWER:
     if (target != nullptr) {
-      target->SendMsg(nullptr, AM_DELETE_EFFECT, 0x17E, 0, 0, 0, 0, 0);
-      target->LaunchEffect(0x17E, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->SendMsg(nullptr, AM_DELETE_EFFECT, EF_LIGHTBLADE, 0, 0, 0, 0, 0);
+      target->LaunchEffect(EF_LIGHTBLADE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\마법력 증폭.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
   case PF_HPCONVERSION:
     if (source != nullptr) {
-      source->LaunchEffect(0x17F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_ENERGYDRAIN3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case PF_SOULCHANGE:
     if (source != nullptr && target != nullptr) {
       vector3d offset{0.0f, static_cast<float>(target->render.accountId), 0.0f};
-      if (CRagEffect* effect = source->LaunchEffect(0x180, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+      if (CRagEffect* effect = source->LaunchEffect(EF_LINELINK2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
         effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&offset), 0, 0, 0, 0);
       }
-      source->LaunchEffect(0x181, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      target->LaunchEffect(0x181, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      source->LaunchEffect(0x197, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      target->LaunchEffect(0x197, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_LINKLIGHT, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_LINKLIGHT, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_SOULCHANGE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_SOULCHANGE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case PF_SOULBURN:
     if (target != nullptr) {
-      target->LaunchEffect(0x196, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      target->LaunchEffect(0x17C, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_SOULBURN, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_MAGICCRASHER, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case ASC_EDP:
     if (source != nullptr) {
-      source->LaunchEffect(0x1ED, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_EDP, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case SN_SIGHT:
     if (source != nullptr) {
-      source->LaunchEffect(0x182, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_TRUESIGHT, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case SN_WINDWALK:
     if (source != nullptr) {
-      source->LaunchEffect(0x185, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_PORTAL4, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case WS_MELTDOWN:
     if (source != nullptr) {
-      source->LaunchEffect(0x186, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_MELTDOWN, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case WS_CARTBOOST:
     if (source != nullptr) {
       g_soundMgr->PlayWave("effect\\EF_IncAgility.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      source->LaunchEffect(0x187, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_CARTBOOST, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case ST_CHASEWALK:
@@ -17432,53 +17432,53 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case ST_REJECTSWORD:
     if (source != nullptr) {
-      source->LaunchEffect(0x188, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_REJECTSWORD, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case CG_MOONLIT:
-    if (source != nullptr && !source->HasId(0x18A)) {
-      source->LaunchEffect(0x18A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    if (source != nullptr && !source->HasId(EF_SPHEREWIND2)) {
+      source->LaunchEffect(EF_SPHEREWIND2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     g_soundMgr->PlayWave("effect\\달빛.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   case CG_MARIONETTE:
     if (source != nullptr && target != nullptr) {
       vector3d offset{0.0f, static_cast<float>(target->render.accountId), 0.0f};
-      if (CRagEffect* effect = source->LaunchEffect(0x18B, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+      if (CRagEffect* effect = source->LaunchEffect(EF_LINELINK3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
         effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&offset), 0, 0, 0, 0);
       }
-      source->LaunchEffect(0x18C, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      target->LaunchEffect(0x18C, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_PINKBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_PINKBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case PF_MINDBREAKER:
     if (target != nullptr) {
-      target->LaunchEffect(0x193, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_MAGICCRASHER2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case PF_MEMORIZE:
   case HLIF_CHANGE:
     if (source != nullptr) {
-      source->LaunchEffect(0x1F9, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_MEMORIZE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case ASC_METEORASSAULT:
     if (source != nullptr) {
-      source->LaunchEffect(0x199, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_SOULBREAKER2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case TK_RUN:
     if (source != nullptr) {
-      if (source->HasId(0x1BB)) {
-        source->LaunchEffect(0x1BC, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      } else if (!source->HasId(0x1BA)) {
-        source->LaunchEffect(0x1BA, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      if (source->HasId(EF_STOPRUN)) {
+        source->LaunchEffect(EF_STOPEFFECT, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      } else if (!source->HasId(EF_RUN)) {
+        source->LaunchEffect(EF_RUN, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
     }
     break;
   case TK_STORMKICK:
     if (source != nullptr) {
-      source->LaunchEffect(0x1B3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_STORMKICK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case TK_DODGE:
@@ -17487,10 +17487,10 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case TK_SEVENWIND:
     if (source != nullptr) {
       g_soundMgr->PlayWave("effect\\T_바람방출.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      while (source->HasId(0x1CD)) {
-        source->SendMsg(nullptr, AM_DELETE_EFFECT, 0x1CD, 0, 0, 0, 0, 0);
+      while (source->HasId(EF_STORMKICK3)) {
+        source->SendMsg(nullptr, AM_DELETE_EFFECT, EF_STORMKICK3, 0, 0, 0, 0, 0);
       }
-      source->LaunchEffect(0x1CD, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_STORMKICK3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       const int effectId = effectLevel + 0x1D2;
       while (source->HasId(effectId)) {
         source->SendMsg(nullptr, AM_DELETE_EFFECT, effectId, 0, 0, 0, 0, 0);
@@ -17500,12 +17500,12 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case TK_HIGHJUMP:
     if (source != nullptr) {
-      if (source->HasId(0x1BE)) {
-        source->SendMsg(nullptr, AM_DELETE_EFFECT, 0x1BE, 0, 0, 0, 0, 0);
+      if (source->HasId(EF_LANDBODY)) {
+        source->SendMsg(nullptr, AM_DELETE_EFFECT, EF_LANDBODY, 0, 0, 0, 0, 0);
       }
-      source->LaunchEffect(0x1BE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      while (source->HasId(0x1BD)) {
-        source->SendMsg(nullptr, AM_DELETE_EFFECT, 0x1BD, 0, 0, 0, 0, 0);
+      source->LaunchEffect(EF_LANDBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      while (source->HasId(EF_JUMPBODY)) {
+        source->SendMsg(nullptr, AM_DELETE_EFFECT, EF_JUMPBODY, 0, 0, 0, 0, 0);
       }
     }
     break;
@@ -17513,27 +17513,27 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case SG_MOON_WARM:
   case SG_STAR_WARM:
     if (source != nullptr && target != nullptr) {
-      source->SendMsg(nullptr, AM_DELETE_EFFECT, 0x1A2, 0, 0, 0, 0, 0);
-      source->LaunchEffect(0x1A2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      source->SendMsg(nullptr, AM_DELETE_EFFECT, 0x220, 0, 0, 0, 0, 0);
-      source->LaunchEffect(0x220, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      source->LaunchEffect(0x23C, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->SendMsg(nullptr, AM_DELETE_EFFECT, EF_DOUBLEGUMGANG, 0, 0, 0, 0, 0);
+      source->LaunchEffect(EF_DOUBLEGUMGANG, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->SendMsg(nullptr, AM_DELETE_EFFECT, EF_REDLIGHTBODY, 0, 0, 0, 0, 0);
+      source->LaunchEffect(EF_REDLIGHTBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_HATED2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case SG_SUN_COMFORT:
   case SG_MOON_COMFORT:
   case SG_STAR_COMFORT:
     if (source != nullptr) {
-      source->SendMsg(nullptr, AM_DELETE_EFFECT, 0x1E8, 0, 0, 0, 0, 0);
-      source->LaunchEffect(0x1E8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      source->LaunchEffect(0x21F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->SendMsg(nullptr, AM_DELETE_EFFECT, EF_FLOWERCAST, 0, 0, 0, 0, 0);
+      source->LaunchEffect(EF_FLOWERCAST, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_HATED, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case SG_HATE:
     if (target != nullptr) {
       g_soundMgr->PlayWave("effect\\T_등록.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      target->SendMsg(nullptr, AM_DELETE_EFFECT, 0x21F, 0, 0, 0, 0, 0);
-      target->LaunchEffect(0x21F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->SendMsg(nullptr, AM_DELETE_EFFECT, EF_HATED, 0, 0, 0, 0, 0);
+      target->LaunchEffect(EF_HATED, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case SG_FUSION:
@@ -17545,78 +17545,78 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case AM_BERSERKPITCHER:
     if (source != nullptr && target != nullptr) {
       this->LaunchTargetEffect(0x21D, source, target, 4);
-      target->LaunchEffect(0xDC, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_POTION_BERSERK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case SL_KAIZEL:
     if (target != nullptr) {
       g_soundMgr->PlayWave("effect\\priest_resurrection.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      target->LaunchEffect(0x21F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      target->LaunchEffect(0x24E, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_HATED, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_KAIZEL, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case SL_KAAHI:
     if (target != nullptr) {
       g_soundMgr->PlayWave("effect\\T_보조마법.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      target->LaunchEffect(0x21F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_HATED, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case SL_KAUPE:
     if (target != nullptr) {
       g_soundMgr->PlayWave("effect\\T_치잉.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      target->LaunchEffect(0x21E, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_BLUEBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case SL_KAITE:
     if (target != nullptr) {
       g_soundMgr->PlayWave("effect\\T_마법반사.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      target->SendMsg(nullptr, AM_DELETE_EFFECT, 0x1A3, 0, 0, 0, 0, 0);
-      target->LaunchEffect(0x1A3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      target->LaunchEffect(0x21E, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->SendMsg(nullptr, AM_DELETE_EFFECT, EF_REFLECTBODY, 0, 0, 0, 0, 0);
+      target->LaunchEffect(EF_REFLECTBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_BLUEBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case SL_SWOO:
     if (target != nullptr) {
       g_soundMgr->PlayWave("effect\\T_슈웃.wav", 0.0f, -50.0f, 0.0f, 250, 40, 1.0f, 0);
-      target->SendMsg(nullptr, AM_DELETE_EFFECT, 0x1A4, 0, 0, 0, 0, 0);
-      target->LaunchEffect(0x1A4, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      target->LaunchEffect(0x24D, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->SendMsg(nullptr, AM_DELETE_EFFECT, EF_BABYBODY, 0, 0, 0, 0, 0);
+      target->LaunchEffect(EF_BABYBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_M07, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case SL_SKE:
     if (target != nullptr) {
       g_soundMgr->PlayWave("effect\\T_공격력.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      target->SendMsg(nullptr, AM_DELETE_EFFECT, 0x1AB, 0, 0, 0, 0, 0);
-      target->LaunchEffect(0x1AB, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->SendMsg(nullptr, AM_DELETE_EFFECT, EF_ASURABODY_MONSTER, 0, 0, 0, 0, 0);
+      target->LaunchEffect(EF_ASURABODY_MONSTER, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case SL_SKA:
     if (target != nullptr) {
       g_soundMgr->PlayWave("effect\\T_방어형.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
-      target->SendMsg(nullptr, AM_DELETE_EFFECT, 0xFE, 0, 0, 0, 0, 0);
-      target->SendMsg(nullptr, AM_DELETE_EFFECT, 0x46C, 0, 0, 0, 0, 0);
-      target->LaunchEffect(0xFE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      target->LaunchEffect(0x46C, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      target->LaunchEffect(0x105, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->SendMsg(nullptr, AM_DELETE_EFFECT, EF_STEELBODY, 0, 0, 0, 0, 0);
+      target->SendMsg(nullptr, AM_DELETE_EFFECT, EF_SU_STOOP, 0, 0, 0, 0, 0);
+      target->LaunchEffect(EF_STEELBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_SU_STOOP, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_GUMGANG2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case CR_FULLPROTECTION:
     if (target != nullptr) {
-      target->LaunchEffect(0x12C, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      target->LaunchEffect(0x1F4, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_CHEMICALPROTECTION, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_CHEMICALBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case PF_DOUBLECASTING:
     if (target != nullptr) {
-      target->LaunchEffect(0x209, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_DOUBLECASTBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\마법력 증폭.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
   case CG_LONGINGFREEDOM:
     g_soundMgr->PlayWave("effect\\ac_concentration.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     if (source != nullptr) {
-      source->LaunchEffect(0x34B, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_BEGINSPELL_N6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case TK_MISSION:
@@ -17627,13 +17627,13 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case GS_MADNESSCANCEL:
     if (source != nullptr) {
-      source->LaunchEffect(0x271, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_MADNESS_BLUE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case GS_ADJUSTMENT:
   case GS_GATLINGFEVER:
     if (source != nullptr) {
-      source->LaunchEffect(0x272, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_MADNESS_RED, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case GS_CRACKER:
@@ -17641,7 +17641,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case GS_DISARM:
     if (target != nullptr) {
-      if (CRagEffect* effect = target->LaunchEffect(0x273, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+      if (CRagEffect* effect = target->LaunchEffect(EF_RG_COIN3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
         vector3d position = target->render.position;
         effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
       }
@@ -17649,7 +17649,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case GS_DESPERADO:
     if (source != nullptr) {
-      source->LaunchEffect(0x27D, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_DESPERADO, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case NJ_TATAMIGAESHI:
@@ -17657,17 +17657,17 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case NJ_BAKUENRYU:
     if (target != nullptr) {
-      target->LaunchEffect(0x27B, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_BAKU, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case NJ_HYOUSYOURAKU:
     if (source != nullptr) {
-      source->LaunchEffect(0x27C, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_HYOUSYOURAKU, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case NJ_RAIGEKISAI:
     if (source != nullptr) {
-      source->LaunchEffect(0x26E, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_THUNDERSTORM2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case MB_M_TELEPORT:
@@ -17676,50 +17676,50 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     }
     if (target != nullptr) {
       target->SendMsg(nullptr, AM_MAKE_SMOKE_FFECT, 0, 0, 0, 0, 0, 0);
-      target->LaunchEffect(0x158, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_ENTRY2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case NV_FIRSTAID:
   case RK_VITALITYACTIVATION:
     if (source != nullptr) {
-      source->LaunchEffect(0x135, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_FIRSTAID, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case SA_FLAMELAUNCHER:
   case SA_ELEMENTFIRE:
     if (target != nullptr) {
-      target->LaunchEffect(0xFF, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_FLAMELAUNCHER, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case SA_FROSTWEAPON:
   case SA_ELEMENTWATER:
     if (target != nullptr) {
-      target->LaunchEffect(0x100, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_FROSTWEAPON, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case SA_LIGHTNINGLOADER:
   case SA_ELEMENTWIND:
     if (target != nullptr) {
-      target->LaunchEffect(0x101, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_LIGHTNINGLOADER, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case SA_SEISMICWEAPON:
   case SA_ELEMENTGROUND:
     if (target != nullptr) {
-      target->LaunchEffect(0x102, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_SEISMICWEAPON, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case BA_DISSONANCE:
   case DC_UGLYDANCE:
     if (source != nullptr) {
-      source->LaunchEffect(0x34B, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_BEGINSPELL_N6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case HP_ASSUMPTIO:
   case CASH_ASSUMPTIO:
     if (target != nullptr) {
-      target->LaunchEffect(0x177, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      target->LaunchEffect(0x1B8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_ASSUMPTIO, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_ASSUMPTIO2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case SL_ALCHEMIST:
@@ -17744,16 +17744,16 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case SL_GUNNER:
     if (target != nullptr) {
       vector3d offset{0.0f, static_cast<float>(target->render.accountId), 0.0f};
-      if (CRagEffect* effect = target->LaunchEffect(0x1F7, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+      if (CRagEffect* effect = target->LaunchEffect(EF_SOULLINK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
         effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&offset), 0, 0, 0, 0);
       }
-      target->SendMsg(nullptr, AM_DELETE_EFFECT, 0x1A8, 0, 0, 0, 0, 0);
-      target->LaunchEffect(0x1A8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->SendMsg(nullptr, AM_DELETE_EFFECT, EF_ASURABODY, 0, 0, 0, 0, 0);
+      target->LaunchEffect(EF_ASURABODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case DE_BERSERKAIZER:
     if (source != nullptr) {
-      source->LaunchEffect(0xDC, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_POTION_BERSERK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case ALL_CATCRY:
@@ -17763,12 +17763,12 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case ALL_PARTYFLEE:
     if (target != nullptr) {
-      target->LaunchEffect(0x2BB, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_FLOWERLEAF, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case ALL_ANGEL_PROTECT:
     if (target != nullptr) {
-      target->LaunchEffect(0x5B, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_BENEDICTIO, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case ALL_DREAM_SUMMERNIGHT:
@@ -17779,33 +17779,33 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case ALL_WEWISH:
     if (source != nullptr) {
       g_soundMgr->PlayWave("effect\\wewish.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      source->LaunchEffect(0x2CD, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_WEWISH, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case NPC_MAXPAIN:
   case NPC_MAXPAIN_ATK:
     if (source != nullptr) {
-      source->LaunchEffect(0x408, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_MAXPAIN, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case NPC_DEATHSUMMON:
     if (source != nullptr) {
-      source->LaunchEffect(0x409, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_DEATHSUMMON, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case NPC_HELLBURNING:
     if (source != nullptr) {
-      source->LaunchEffect(0x19, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_FIREWALL, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case NPC_WIDEWEB:
     if (source != nullptr) {
-      source->LaunchEffect(0x41D, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_NPC_WIDEWEB, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case NPC_WIDESUCK:
     if (source != nullptr && target != nullptr) {
-      if (CRagEffect* effect = target->LaunchEffect(0x41C, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+      if (CRagEffect* effect = target->LaunchEffect(EF_BLOODDRAIN2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
         vector3d position = source->render.position;
         effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
       }
@@ -17813,13 +17813,13 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case NPC_SR_CURSEDCIRCLE:
     if (source != nullptr) {
-      source->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_GUMGANG5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\SR_CURSEDCIRCLE.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
   case NPC_MANDRAGORA:
     if (source != nullptr) {
-      source->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_GUMGANG5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
       g_soundMgr->PlayWave("effect\\G하울링오브만드라고라.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
@@ -17827,13 +17827,13 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case NPC_VENOMIMPRESS:
   case GC_VENOMIMPRESS:
     if (target != nullptr) {
-      target->LaunchEffect(0x300, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_PURPLEBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\수둔.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
   case NPC_IGNITIONBREAK:
     g_soundMgr->PlayWave("effect\\wl_jackfrost.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    source->LaunchEffect(0x2D2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    source->LaunchEffect(EF_IGN_STR, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case NPC_HALLUCINATIONWALK:
   case GC_HALLUCINATIONWALK:
@@ -17852,29 +17852,29 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case NPC_RELIEVE_ON:
     if (target != nullptr) {
-      target->LaunchEffect(0x640, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_GUARD5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case All_EVENT_20TH_ANNIVERSARY:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, 0x94E, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_20TH_FIREWORK, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case CR_SHRINK:
     if (source != nullptr) {
-      source->LaunchEffect(0x257, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_SHRINK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case RG_CLOSECONFINE:
     if (target != nullptr) {
-      target->LaunchEffect(0x25A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_QUAKEBODY4, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case BA_PANGVOICE:
     if (source != nullptr && target != nullptr) {
       source->SetFrameSequence(0x60, 4, 5, 0x60, 4, 1, 0x708, 1);
       g_soundMgr->PlayWave("amon_ra_die01.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      if (CRagEffect* effect = source->LaunchEffect(0x25E, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+      if (CRagEffect* effect = source->LaunchEffect(EF_FVOICE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
         vector3d position = target->render.position;
         effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
       }
@@ -17885,7 +17885,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
       const std::int64_t emotion = g_cashEmotionMgr->GetSpecialEmotion(CashEmotionSpecial::Chup);
       source->SendMsg(nullptr, AM_CASH_EMOTION, 0, emotion, 0, 0, 0, 0);
       g_soundMgr->PlayWave("effect\\vallentine.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      if (CRagEffect* effect = source->LaunchEffect(0x25F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+      if (CRagEffect* effect = source->LaunchEffect(EF_WINK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
         vector3d position = target->render.position;
         effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
       }
@@ -17898,24 +17898,24 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case RK_ENCHANTBLADE:
     if (source != nullptr) {
-      source->LaunchEffect(0x2F4, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_POTION_BERSERK2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\닌자_던지기.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
   case GC_ANTIDOTE:
     if (target != nullptr) {
-      target->LaunchEffect(0x15, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      target->LaunchEffect(0x300, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_DETOXICATION, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_PURPLEBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case GC_POISONINGWEAPON:
     if (source != nullptr) {
-      source->LaunchEffect(0x303, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_POISONWAV, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case GC_WEAPONBLOCKING:
     if (source != nullptr) {
-      source->LaunchEffect(0x300, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_PURPLEBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\t_낙법.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
@@ -17923,19 +17923,19 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     if (source != nullptr) {
       g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
       g_soundMgr->PlayWave("effect\\mon_맹룡과강.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      g_effectMgr->Spawn(source->render.accountId, 0x570, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_NEW_COUNTER_SLASH, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (!g_serviceOptions.Get(0xE5)) {
-        g_effectMgr->Spawn(source->render.accountId, 0x571, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(source->render.accountId, EF_NEW_COUNTER_SLASH_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       }
     }
     break;
   case GC_ROLLINGCUTTER:
     if (source != nullptr) {
       if (g_serviceOptions.Get(0xE5)) {
-        g_effectMgr->Spawn(source->render.accountId, 0x5BA, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(source->render.accountId, EF_MINEFFECT_ROLLINGCUTTER_CAST, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
         LaunchRollingCutterEffect(source);
       } else {
-        g_effectMgr->Spawn(source->render.accountId, 0x513, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(source->render.accountId, EF_NEW_ROLLINGCUTTER, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
         LaunchRollingCutterEffect(source);
       }
     }
@@ -17948,11 +17948,11 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
         g_soundMgr->PlayWave("effect\\wl_tetravortex.wav", target->render.position.x - source->render.position.x, 0.0f, target->render.position.z - source->render.position.z, 250, 40, 1.0f, 0);
       }
       if (g_serviceOptions.Get(0xE5)) {
-        g_effectMgr->Spawn(target->render.accountId, 0x59C, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-        g_effectMgr->Spawn(target->render.accountId, 0x598, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_TETRA_FIRE_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_TETRA_FIRE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       } else {
-        g_effectMgr->Spawn(target->render.accountId, 0x4F6, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-        g_effectMgr->Spawn(target->render.accountId, 0x4F2, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_TETRA_VORTEX_FIRE_GROUND, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_TETRA_VORTEX_FIRE_EXP, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       }
       for (int i = 0; i < 4; ++i) {
         vector3d position = target->render.position;
@@ -17970,7 +17970,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
           position.x -= static_cast<float>(std::max(std::rand() % 35, 10));
           position.z += static_cast<float>(std::max(std::rand() % 35, 10));
         }
-        g_effectMgr->Spawn(0, 0x4FE, position.x, position.y, position.z, 0, -1, 0, 0);
+        g_effectMgr->Spawn(0, EF_TETRA_VORTEX_FIRE_SUB, position.x, position.y, position.z, 0, -1, 0, 0);
       }
     }
     break;
@@ -17982,11 +17982,11 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
         g_soundMgr->PlayWave("effect\\wl_tetravortex.wav", target->render.position.x - source->render.position.x, 0.0f, target->render.position.z - source->render.position.z, 250, 40, 1.0f, 0);
       }
       if (g_serviceOptions.Get(0xE5)) {
-        g_effectMgr->Spawn(target->render.accountId, 0x59D, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-        g_effectMgr->Spawn(target->render.accountId, 0x599, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_TETRA_WATER_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_TETRA_WATER, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       } else {
-        g_effectMgr->Spawn(target->render.accountId, 0x4F7, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-        g_effectMgr->Spawn(target->render.accountId, 0x4F3, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_TETRA_VORTEX_WATER_GROUND, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_TETRA_VORTEX_WATER_EXP, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       }
       for (int i = 0; i < 4; ++i) {
         vector3d position = target->render.position;
@@ -18004,7 +18004,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
           position.x -= static_cast<float>(std::max(std::rand() % 35, 10));
           position.z += static_cast<float>(std::max(std::rand() % 35, 10));
         }
-        g_effectMgr->Spawn(0, 0x4FF, position.x, position.y, position.z, 0, -1, 0, 0);
+        g_effectMgr->Spawn(0, EF_TETRA_VORTEX_WATER_SUB, position.x, position.y, position.z, 0, -1, 0, 0);
       }
     }
     break;
@@ -18016,11 +18016,11 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
         g_soundMgr->PlayWave("effect\\wl_tetravortex.wav", target->render.position.x - source->render.position.x, 0.0f, target->render.position.z - source->render.position.z, 250, 40, 1.0f, 0);
       }
       if (g_serviceOptions.Get(0xE5)) {
-        g_effectMgr->Spawn(target->render.accountId, 0x59E, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-        g_effectMgr->Spawn(target->render.accountId, 0x59A, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_TETRA_WIND_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_TETRA_WIND, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       } else {
-        g_effectMgr->Spawn(target->render.accountId, 0x4F8, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-        g_effectMgr->Spawn(target->render.accountId, 0x4F4, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_TETRA_VORTEX_WIND_GROUND, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_TETRA_VORTEX_WIND_EXP, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       }
       for (int i = 0; i < 4; ++i) {
         vector3d position = target->render.position;
@@ -18038,7 +18038,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
           position.x -= static_cast<float>(std::max(std::rand() % 35, 10));
           position.z += static_cast<float>(std::max(std::rand() % 35, 10));
         }
-        g_effectMgr->Spawn(0, 0x500, position.x, position.y, position.z, 0, -1, 0, 0);
+        g_effectMgr->Spawn(0, EF_TETRA_VORTEX_WIND_SUB, position.x, position.y, position.z, 0, -1, 0, 0);
       }
     }
     break;
@@ -18050,11 +18050,11 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
         g_soundMgr->PlayWave("effect\\wl_tetravortex.wav", target->render.position.x - source->render.position.x, 0.0f, target->render.position.z - source->render.position.z, 250, 40, 1.0f, 0);
       }
       if (g_serviceOptions.Get(0xE5)) {
-        g_effectMgr->Spawn(target->render.accountId, 0x59F, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-        g_effectMgr->Spawn(target->render.accountId, 0x59B, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_TETRA_EARTH_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_TETRA_EARTH, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       } else {
-        g_effectMgr->Spawn(target->render.accountId, 0x4F9, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-        g_effectMgr->Spawn(target->render.accountId, 0x4F5, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_TETRA_VORTEX_EARTH_GROUND, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_TETRA_VORTEX_EARTH_EXP, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       }
       for (int i = 0; i < 4; ++i) {
         vector3d position = target->render.position;
@@ -18072,13 +18072,13 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
           position.x -= static_cast<float>(std::max(std::rand() % 35, 10));
           position.z += static_cast<float>(std::max(std::rand() % 35, 10));
         }
-        g_effectMgr->Spawn(0, 0x501, position.x, position.y, position.z, 0, -1, 0, 0);
+        g_effectMgr->Spawn(0, EF_TETRA_VORTEX_EARTH_SUB, position.x, position.y, position.z, 0, -1, 0, 0);
       }
     }
     break;
   case WL_RELEASE:
     if (source != nullptr && target != nullptr) {
-      if (CRagEffect* effect = source->LaunchEffect(0x2EF, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+      if (CRagEffect* effect = source->LaunchEffect(EF_FIREBALL2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
         vector3d position = target->render.position;
         effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
       }
@@ -18089,7 +18089,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case AB_CANTO:
   case MER_INCAGI:
     if (target != nullptr) {
-      target->LaunchEffect(0x25, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_INCAGILITY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case AL_BLESSING:
@@ -18097,20 +18097,20 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case AB_CLEMENTIA:
   case MER_BLESSING:
     if (target != nullptr) {
-      target->LaunchEffect(0x2A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_BLESSING, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case PR_LEXDIVINA:
   case AB_SILENTIUM:
     if (target != nullptr) {
-      target->LaunchEffect(0x57, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_LEXDIVINA, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case NPC_MILLENNIUMSHIELD:
   case RK_MILLENNIUMSHIELD:
     if (source != nullptr) {
-      source->LaunchEffect(0x1B9, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      source->LaunchEffect(0x2ED, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_BLUECASTING, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_MILSHIELD_STR, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\ef_soulstrike.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
@@ -18118,7 +18118,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case WL_JACKFROST:
     if (source != nullptr && target != nullptr) {
       for (int count = 0; count < 10; ++count) {
-        CRagEffect* effect = source->LaunchEffect(0x321, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        CRagEffect* effect = source->LaunchEffect(EF_FROSTDIVER3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         if (effect) {
           vector3d position = source->render.position;
           const short index = static_cast<short>(std::max(std::rand() % 36, 0) + count * 36);
@@ -18133,15 +18133,15 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case NPC_PHANTOMTHRUST:
   case RK_PHANTOMTHRUST:
     if (source != nullptr && target != nullptr) {
-      source->LaunchEffect(0x21A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      source->LaunchEffect(0x1B9, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      target->LaunchEffect(0x21A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      target->LaunchEffect(0x1B9, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_GREENBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_BLUECASTING, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_GREENBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_BLUECASTING, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case RK_DEATHBOUND:
     if (source != nullptr) {
-      source->LaunchEffect(0x1B9, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_BLUECASTING, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case RK_WINDCUTTER:
@@ -18160,93 +18160,93 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
       } else {
         effectId = 0x69B;
       }
-      g_effectMgr->Spawn(source->render.accountId, 0x69A, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_NEW_WINDCUTTER, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       g_effectMgr->Spawn(source->render.accountId, effectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case RK_IGNITIONBREAK:
     g_soundMgr->PlayWave("effect\\wl_jackfrost.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, 0x658, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(source->render.accountId, 0x659, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_NEW_IGNITIONBREAK, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_NEW_IGNITIONBREAK_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case RK_DRAGONHOWLING:
     if (source != nullptr) {
       g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
-      source->LaunchEffect(0x2DB, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_DHOWL_STR, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("dragon_h.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
   case RK_REFRESH:
     if (source != nullptr) {
-      source->LaunchEffect(0x21A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_GREENBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("_heal_effect.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
   case RK_GIANTGROWTH:
     if (source != nullptr) {
-      source->LaunchEffect(0x2F4, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_POTION_BERSERK2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\닌자_던지기.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
   case RK_STONEHARDSKIN:
   case RK_FIGHTINGSPIRIT:
     if (source != nullptr) {
-      source->LaunchEffect(0x2F4, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      source->LaunchEffect(0x1B9, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_POTION_BERSERK2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_BLUECASTING, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case RK_STORMBLAST:
     if (source != nullptr) {
-      source->LaunchEffect(0x11, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_MAGNUMBREAK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     if (target != nullptr) {
       g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
       g_soundMgr->PlayWave("effect\\mon_맹룡과강.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      target->LaunchEffect(0x107, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      target->LaunchEffect(0x14A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_GUMGANG3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_HITLINE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case RK_ABUNDANCE:
     if (source != nullptr) {
-      source->LaunchEffect(0x21A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_GREENBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\흡기.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
   case AB_ANCILLA:
     if (target != nullptr) {
       g_soundMgr->PlayWave("effect\\AB_ancilla.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      target->LaunchEffect(0x1B9, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_BLUECASTING, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case AB_PRAEFATIO:
     if (target != nullptr) {
-      target->LaunchEffect(0x70, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_KYRIE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case AB_ORATIO:
     if (source != nullptr) {
-      source->LaunchEffect(0x2D5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_DETECT2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case AB_LAUDAAGNUS:
   case AB_LAUDARAMUS:
     if (target != nullptr) {
-      target->LaunchEffect(0x42, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_CURE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("lauagnus.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
   case AB_RENOVATIO:
     if (target != nullptr) {
       g_soundMgr->PlayWave("effect\\AB_renovatio.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      target->LaunchEffect(0x2CF, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_FORESTLIGHT5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case AB_CLEARANCE:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x615, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, 0x616, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_NEW_CLEARANCE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_NEW_CLEARANCE_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case AB_EXPIATIO:
@@ -18257,8 +18257,8 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case AB_DUPLELIGHT:
     if (target != nullptr) {
       g_soundMgr->PlayWave("effect\\AB_duplelight.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      if (!target->HasId(0x341)) {
-        CRagEffect* effect = target->LaunchEffect(0x341, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      if (!target->HasId(EF_CHOOKGI_N)) {
+        CRagEffect* effect = target->LaunchEffect(EF_CHOOKGI_N, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         vector3d scale{2.0f, 0.0f, 0.0f};
         if (effect) {
           effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&scale), 0, 0, 0, 0);
@@ -18268,8 +18268,8 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case WL_MARSHOFABYSS:
     if (target != nullptr) {
-      target->LaunchEffect(0x2D9, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      target->LaunchEffect(0x1D2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_SPR_MASH, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_SPINEDBODY2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case WL_RECOGNIZEDSPELL:
@@ -18279,17 +18279,17 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case WL_SIENNAEXECRATE:
     if (target != nullptr) {
-      target->LaunchEffect(0x31D, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_STONERING, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case WL_STASIS:
     if (source != nullptr) {
-      source->LaunchEffect(0x31F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_STASIS, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case RA_FEARBREEZE:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, 0x60D, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_NEW_FEARBREEZE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case RA_WUGMASTERY:
@@ -18300,30 +18300,30 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case NC_ACCELERATION:
     if (source != nullptr) {
-      source->LaunchEffect(0x309, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_AGIUP2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case LG_SHIELDSPELL:
     if (source != nullptr) {
-      source->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_GUMGANG5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\LG_SHIELDSPELL.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
   case LG_PRESTIGE:
     if (source != nullptr) {
-      source->LaunchEffect(0x38C, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_PRIMECHARGE2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\LG_PRESTIGE.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
   case LG_INSPIRATION:
     if (source != nullptr) {
-      source->LaunchEffect(0x38E, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_PRIMECHARGE4, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case SR_WINDMILL:
     if (source != nullptr) {
-      source->LaunchEffect(0x1B3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      source->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_STORMKICK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_GUMGANG5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\SR_WINDMILL.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
@@ -18337,35 +18337,35 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case SO_STRIKING:
     if (source != nullptr) {
       g_soundMgr->PlayWave("effect\\S스트라이킹.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      source->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      source->LaunchEffect(0x1B9, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_GUMGANG5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_BLUECASTING, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case SO_ARRULLO:
     if (target != nullptr) {
-      target->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      target->LaunchEffect(0x1B9, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_GUMGANG5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_BLUECASTING, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\S포이즌버스터.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       vector3d position{0.0f, static_cast<float>(target->render.accountId), 0.0f};
-      if (CRagEffect* effect = target->LaunchEffect(0x3A3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+      if (CRagEffect* effect = target->LaunchEffect(EF_LINKPARTICLE2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
         effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
       }
     }
     break;
   case SO_EL_ACTION:
     if (source != nullptr) {
-      source->LaunchEffect(0x3A6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_GUMGANG6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case GN_CART_TORNADO:
     if (source != nullptr) {
-      source->LaunchEffect(0x555, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_NEW_CART_TORNADO, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (g_serviceOptions.Get(0xE5)) {
-        g_effectMgr->Spawn(source->render.accountId, 0x5DD, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-        g_effectMgr->Spawn(source->render.accountId, 0x5DE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(source->render.accountId, EF_MINEFFECT_CART_TORNADO, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(source->render.accountId, EF_MINEFFECT_CART_TORNADO_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       } else {
-        g_effectMgr->Spawn(source->render.accountId, 0x555, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-        g_effectMgr->Spawn(source->render.accountId, 0x556, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(source->render.accountId, EF_NEW_CART_TORNADO, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(source->render.accountId, EF_NEW_CART_TORNADO_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       }
     }
     break;
@@ -18382,7 +18382,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case GN_BLOOD_SUCKER:
     if (source != nullptr && target != nullptr) {
       g_soundMgr->PlayWave("effect\\S바큠익스트림.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      if (CRagEffect* effect = target->LaunchEffect(0xD8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+      if (CRagEffect* effect = target->LaunchEffect(EF_BLOODDRAIN, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
         vector3d position = source->render.position;
         effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
       }
@@ -18396,16 +18396,16 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case GN_MANDRAGORA:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, 0x667, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(source->render.accountId, 0x668, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_NEW_MANDRAGORA, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_NEW_MANDRAGORA_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
       g_soundMgr->PlayWave("effect\\G하울링오브만드라고라.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
   case GN_SLINGITEM:
     if (source != nullptr && target != nullptr) {
-      source->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      if (CRagEffect* effect = source->LaunchEffect(0x1B7, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+      source->LaunchEffect(EF_GUMGANG5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      if (CRagEffect* effect = source->LaunchEffect(EF_CHEMICAL3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
         vector3d position = target->render.position;
         effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
         g_soundMgr->PlayWave("effect\\G스포어익스플로젼.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
@@ -18417,78 +18417,78 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case GN_MAKEBOMB:
   case GN_S_PHARMACY:
     if (source != nullptr) {
-      source->LaunchEffect(0x38F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_GREENCASTING, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case LG_REFLECTDAMAGE:
   case LG_FORCEOFVANGUARD:
     if (source != nullptr) {
-      source->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_GUMGANG5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\LG_REFLECTDAMAGE.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
   case SR_GENTLETOUCH_CURE:
     if (source != nullptr && target != nullptr) {
-      source->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      target->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_GUMGANG5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_GUMGANG5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("_heal_effect.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
   case SR_GENTLETOUCH_ENERGYGAIN:
     if (source != nullptr && target != nullptr) {
-      source->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      target->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_GUMGANG5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_GUMGANG5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\세크리파이스.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
   case SR_GENTLETOUCH_CHANGE:
     if (source != nullptr) {
-      source->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_GUMGANG5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\샤프슈팅.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
   case SR_GENTLETOUCH_REVITALIZE:
     if (source != nullptr) {
-      source->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_GUMGANG5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\mon_탄지신통.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
   case SR_RAISINGDRAGON:
     if (source != nullptr) {
-      source->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_GUMGANG5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\SR_RAISINGDRAGON.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
   case SR_POWERVELOCITY:
     if (source != nullptr && target != nullptr) {
-      source->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      target->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_GUMGANG5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_GUMGANG5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\SR_POWERVELOCITY.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
   case SR_CRESCENTELBOW:
     if (source != nullptr) {
-      source->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_GUMGANG5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\SR_CRESCENTELBOW.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
   case SR_LIGHTNINGWALK:
     if (source != nullptr) {
-      source->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_GUMGANG5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\SR_LIGHTNINGWALK.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
   case SR_CURSEDCIRCLE:
     if (source != nullptr) {
-      source->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_GUMGANG5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       source->SetFrameSequence(96, 3, 3, 96, 3, 1, 3000, 0);
       g_soundMgr->PlayWave("effect\\SR_CURSEDCIRCLE.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
   case SR_CRESCENTELBOW_AUTOSPELL:
     if (source != nullptr && target != nullptr) {
-      source->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      CRagEffect* effect = source->LaunchEffect(0x37C, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_GUMGANG5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      CRagEffect* effect = source->LaunchEffect(EF_TRIPLEATTACK4, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (effect != nullptr) {
         vector3d position = target->render.position;
         effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
@@ -18498,37 +18498,37 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case WM_RANDOMIZESPELL:
     if (target != nullptr) {
-      target->LaunchEffect(0x35E, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_SECRA2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\AB_ancilla.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
   case WA_SWING_DANCE:
     if (target != nullptr) {
-      target->LaunchEffect(0x34F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_DANCE1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\스윙댄스.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
   case WA_SYMPHONY_OF_LOVER:
     if (target != nullptr) {
-      target->LaunchEffect(0x34F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_DANCE1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\연인들을위한심포니.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
   case WA_MOONLIT_SERENADE:
     if (target != nullptr) {
-      target->LaunchEffect(0x34F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_DANCE1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\AB_judex.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
   case MI_RUSH_WINDMILL:
     if (target != nullptr) {
-      target->LaunchEffect(0x350, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_DANCE2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\풍차를향해돌격.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
   case MI_ECHOSONG:
     if (target != nullptr) {
-      target->LaunchEffect(0x350, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_DANCE2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\메아리의노래.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
@@ -18541,12 +18541,12 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     if (target != nullptr && source != nullptr) {
       vector3d position{0.0f, 0.0f, 0.0f};
       position.y = static_cast<float>(target->render.accountId);
-      CRagEffect* targetEffect = target->LaunchEffect(0x351, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      CRagEffect* targetEffect = target->LaunchEffect(EF_LINKPARTICLE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (targetEffect != nullptr) {
         targetEffect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
       }
       position.y = static_cast<float>(source->render.accountId);
-      CRagEffect* sourceEffect = source->LaunchEffect(0x351, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      CRagEffect* sourceEffect = source->LaunchEffect(EF_LINKPARTICLE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (sourceEffect != nullptr) {
         sourceEffect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
       }
@@ -18555,27 +18555,27 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case NC_REPAIR:
     if (target != nullptr) {
-      target->LaunchEffect(0x311, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_REPAIRTIME, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case SC_REPRODUCE:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, 0x631, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(source->render.accountId, 0x632, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_NEW_REPRODUCE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_NEW_REPRODUCE_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     g_soundMgr->PlayWave("effect\\reproduce.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   case SC_AUTOSHADOWSPELL:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, 0x6C2, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(source->render.accountId, 0x6C3, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_NEW_AUTOSHADOWSPELL, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_NEW_AUTOSHADOWSPELL_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     g_soundMgr->PlayWave("effect\\autoshadow.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   case SC_BODYPAINT:
     if (source != nullptr) {
       g_soundMgr->PlayWave("effect\\bodypaint.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      source->LaunchEffect(0x32B, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_STRETCH, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case SC_INVISIBILITY:
@@ -18584,48 +18584,48 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case SC_DEADLYINFECT:
     if (source != nullptr) {
       g_soundMgr->PlayWave("effect\\deadlyinfect.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      source->LaunchEffect(0x32C, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_BLACKBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case SC_ENERVATION:
     if (target != nullptr) {
       g_soundMgr->PlayWave("effect\\enervation.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      target->LaunchEffect(0x32D, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_ENERVATION, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case SC_GROOMY:
     if (target != nullptr) {
       g_soundMgr->PlayWave("effect\\groomy.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      target->LaunchEffect(0x32E, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_ENERVATION2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case SC_IGNORANCE:
     if (target != nullptr) {
       g_soundMgr->PlayWave("effect\\ignorance.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      target->LaunchEffect(0x32F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_ENERVATION3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case SC_LAZINESS:
     if (target != nullptr) {
       g_soundMgr->PlayWave("effect\\laziness.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      target->LaunchEffect(0x330, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_ENERVATION4, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case SC_UNLUCKY:
     if (target != nullptr) {
       g_soundMgr->PlayWave("effect\\unlucky.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      target->LaunchEffect(0x331, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_ENERVATION5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case SC_WEAKNESS:
     if (target != nullptr) {
       g_soundMgr->PlayWave("effect\\weakness.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      target->LaunchEffect(0x332, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_ENERVATION6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case SC_STRIPACCESSARY:
     if (target != nullptr) {
-      CRagEffect* effect = target->LaunchEffect(0x334, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      CRagEffect* effect = target->LaunchEffect(EF_RG_COIN5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (effect != nullptr) {
         vector3d position = target->render.position;
         effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
@@ -18635,11 +18635,11 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case SC_SHADOWFORM: {
     if (source != nullptr) {
       g_soundMgr->PlayWave("effect\\shadowform.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      source->LaunchEffect(0x33A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_DARKCASTING2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     vector3d position{static_cast<float>(sourceAid), static_cast<float>(targetAid), 0.0f};
     if (position.y != 0.0f && position.x != 0.0f && source != nullptr) {
-      CRagEffect* effect = source->LaunchEffect(0x333, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      CRagEffect* effect = source->LaunchEffect(EF_LINELINK4, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (effect != nullptr) {
         effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&position), 0, 0, 0, 0);
       }
@@ -18649,120 +18649,120 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case NC_EMERGENCYCOOL:
     if (source != nullptr) {
       g_soundMgr->PlayWave("effect\\ef_decagility.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      source->LaunchEffect(0x21F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_HATED, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case NC_STEALTHFIELD:
     if (source != nullptr) {
       g_soundMgr->PlayWave("effect\\t_등록.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      source->LaunchEffect(0x1F4, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_CHEMICALBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case NC_NEUTRALBARRIER:
     if (source != nullptr) {
       g_soundMgr->PlayWave("effect\\mon_금강불괴.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      source->LaunchEffect(0x30E, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_GUARD4, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case NC_SHAPESHIFT:
     if (source != nullptr) {
-      source->LaunchEffect(0x30B, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_AGIUP3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case NC_HOVERING:
     if (source != nullptr) {
       g_soundMgr->PlayWave("effect\\HOVERING.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      source->LaunchEffect(0x21F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      source->LaunchEffect(0x30A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_HATED, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_DETECT3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case NC_B_SIDESLIDE:
     if (source != nullptr) {
       g_soundMgr->PlayWave("effect\\B_SIDESLIDE.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      source->LaunchEffect(0x30A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_DETECT3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case NC_F_SIDESLIDE:
     if (source != nullptr) {
       g_soundMgr->PlayWave("effect\\F_SIDESLIDE.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      source->LaunchEffect(0x30A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_DETECT3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case WM_SIRCLEOFNATURE:
     if (target != nullptr) {
-      target->LaunchEffect(0x35D, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_CIRCLEPOWER2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\순환하는자연의소리.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
   case WM_GLOOMYDAY:
     if (target != nullptr) {
-      target->LaunchEffect(0x360, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_ENERVATION7, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\AB_renovatio.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
   case WM_DEADHILLHERE:
     if (target != nullptr) {
-      target->LaunchEffect(0x35D, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      target->LaunchEffect(0x355, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_CIRCLEPOWER2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_SPR_PLANT, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\사망의골짜기에서.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
   case WM_SONG_OF_MANA:
     if (target != nullptr) {
-      target->LaunchEffect(0x364, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_SPR_PLANT3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\마나의노래.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
   case WM_DANCE_WITH_WUG:
     if (target != nullptr) {
-      target->LaunchEffect(0x362, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_SPR_PLANT2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\워그와함께춤을.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
   case WM_SATURDAY_NIGHT_FEVER:
     if (target != nullptr) {
-      target->LaunchEffect(0x366, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_SPR_PLANT4, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\새터데이나이트피버.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
   case WM_LERADS_DEW:
     if (target != nullptr) {
-      target->LaunchEffect(0x368, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_SPR_PLANT5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\SR_LIGHTNINGWALK.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
   case WM_MELODYOFSINK:
     if (target != nullptr) {
-      target->LaunchEffect(0x36A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_SPR_PLANT6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\멜로디오브싱크.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
   case WM_BEYOND_OF_WARCRY:
     if (target != nullptr) {
-      target->LaunchEffect(0x36C, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_SPR_PLANT7, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\비욘드오브워크라이.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
   case WM_UNLIMITED_HUMMING_VOICE:
     if (target != nullptr) {
-      target->LaunchEffect(0x36E, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_SPR_PLANT8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\언리미티드허밍보이스.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
   case WM_LULLABY_DEEPSLEEP:
-    target->LaunchEffect(0x3C9, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    target->LaunchEffect(EF_CHEMICAL_ALLRANGE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     g_soundMgr->PlayWave("effect\\안식의자장가.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   case GN_CARTBOOST:
     if (source != nullptr) {
       g_soundMgr->PlayWave("effect\\G카트부스트.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      g_effectMgr->Spawn(source->render.accountId, 0x68B, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(source->render.accountId, 0x68C, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_NEW_CARTBOOST, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_NEW_CARTBOOST_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case WM_SOUND_OF_DESTRUCTION:
     if (source != nullptr) {
-      source->LaunchEffect(0x34A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_BEGINSPELL_N5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case LG_EARTHDRIVE:
@@ -18782,11 +18782,11 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
         scale = 0.9f;
         break;
       }
-      CEffect* effect = g_effectMgr->Spawn(0, 0x6AA, source->render.position.x, source->render.position.y, source->render.position.z, 0, -1, 0, 0);
+      CEffect* effect = g_effectMgr->Spawn(0, EF_NEW_EARTHDRIVE, source->render.position.x, source->render.position.y, source->render.position.z, 0, -1, 0, 0);
       if (effect) {
         effect->SetScale(scale);
       }
-      effect = g_effectMgr->Spawn(0, 0x6AB, position.x, position.y, position.z, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(0, EF_NEW_EARTHDRIVE_BOTTOM, position.x, position.y, position.z, 0, -1, 0, 0);
       if (effect) {
         effect->SetScale(scale);
       }
@@ -18801,83 +18801,83 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
         );
       }
       if (g_serviceOptions.Get(0xE5)) {
-        g_effectMgr->Spawn(target->render.accountId, 0x5AD, target->render.position.x, target->render.position.y, target->render.position.z, target->render.accountId, effectLevel, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_SECRAMENT, target->render.position.x, target->render.position.y, target->render.position.z, target->render.accountId, effectLevel, 0, 0);
       } else {
-        g_effectMgr->Spawn(target->render.accountId, 0x507, target->render.position.x, target->render.position.y, target->render.position.z, target->render.accountId, effectLevel, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_NEW_SECRAMENT, target->render.position.x, target->render.position.y, target->render.position.z, target->render.accountId, effectLevel, 0, 0);
       }
     }
     break;
   case SR_HOWLINGOFLION:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, 0x628, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(source->render.accountId, 0x629, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_NEW_HOWLINGOFLION, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_NEW_HOWLINGOFLION_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       g_soundMgr->PlayWave("effect\\SR_HOWLINGOFLION.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
   case RL_MASS_SPIRAL:
     if (target != nullptr) {
-      g_effectMgr->Spawn(0, 0x427, target->render.position.x, target->render.position.y, target->render.position.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(0, EF_MASS_SPIRAL, target->render.position.x, target->render.position.y, target->render.position.z, 0, -1, 0, 0);
     }
     break;
   case RL_QD_SHOT:
     if (target != nullptr) {
-      g_effectMgr->Spawn(0, 0x434, target->render.position.x, target->render.position.y, target->render.position.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(0, EF_QD_SHOT, target->render.position.x, target->render.position.y, target->render.position.z, 0, -1, 0, 0);
     }
     break;
   case RL_FALLEN_ANGEL:
     if (source != nullptr) {
-      source->LaunchEffect(0x1BE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      while (source->HasId(0x430)) {
-        source->SendMsg(nullptr, AM_DELETE_EFFECT, 0x430, 0, 0, 0, 0, 0);
+      source->LaunchEffect(EF_LANDBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      while (source->HasId(EF_JUMPBODY1)) {
+        source->SendMsg(nullptr, AM_DELETE_EFFECT, EF_JUMPBODY1, 0, 0, 0, 0, 0);
       }
     }
     break;
   case RL_R_TRIP:
     if (source != nullptr) {
-      source->LaunchEffect(0x27D, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      g_effectMgr->Spawn(0, 0x1B3, source->render.position.x, source->render.position.y, source->render.position.z, 0, -1, 0, 0);
+      source->LaunchEffect(EF_DESPERADO, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      g_effectMgr->Spawn(0, EF_STORMKICK, source->render.position.x, source->render.position.y, source->render.position.z, 0, -1, 0, 0);
     }
     break;
   case RL_B_FLICKER_ATK:
     if (CRenderObject* skill = this->scene->GetSkillByAID(targetAid)) {
-      g_effectMgr->Spawn(0, 0x432, skill->render.position.x, skill->render.position.y, skill->render.position.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(0, EF_RL_EXPLOSION, skill->render.position.x, skill->render.position.y, skill->render.position.z, 0, -1, 0, 0);
     }
     break;
   case RL_P_ALTER:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, 0x435, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_P_ALTER, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case SJ_STAREMPEROR:
     if (source != nullptr) {
-      source->LaunchEffect(0x1BE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      g_effectMgr->Spawn(source->render.accountId, 0x4B3, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      while (source->HasId(0x1BD)) {
-        source->SendMsg(nullptr, AM_DELETE_EFFECT, 0x1BD, 0, 0, 0, 0, 0);
+      source->LaunchEffect(EF_LANDBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      g_effectMgr->Spawn(source->render.accountId, EF_STAR_EMPEROR, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      while (source->HasId(EF_JUMPBODY)) {
+        source->SendMsg(nullptr, AM_DELETE_EFFECT, EF_JUMPBODY, 0, 0, 0, 0, 0);
       }
     }
     break;
   case SP_KAUTE:
     if (source != nullptr) {
-      source->LaunchEffect(0x4B8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_ENERGYDRAIN_BLACK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     if (target != nullptr) {
       g_soundMgr->PlayWave(
         "effect\\흡기.wav", target->render.position.x - this->scene->player->render.position.x, 0.0f,
         target->render.position.z - this->scene->player->render.position.z, 250, 40, 1.0f, 0
       );
-      target->LaunchEffect(0x4B7, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_PEONG_BLACK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case SP_SOULUNITY:
     if (target != nullptr) {
       if (source != nullptr) {
         vector3d data{0.0f, static_cast<float>(source->render.accountId), 0.0f};
-        if (CRagEffect* effect = target->LaunchEffect(0x4BA, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+        if (CRagEffect* effect = target->LaunchEffect(EF_LINELINK5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
           effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&data), 0, 0, 0, 0);
         }
       }
-      target->LaunchEffect(0x197, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_SOULCHANGE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case SP_SOULGOLEM:
@@ -18885,41 +18885,41 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case SP_SOULFALCON:
   case SP_SOULFAIRY:
     if (target != nullptr) {
-      if (CRagEffect* effect = target->LaunchEffect(0x1F7, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+      if (CRagEffect* effect = target->LaunchEffect(EF_SOULLINK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
         vector3d data{0.0f, static_cast<float>(target->render.accountId), 0.0f};
         effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&data), 0, 0, 0, 0);
       }
-      target->SendMsg(nullptr, AM_DELETE_EFFECT, 0x1A8, 0, 0, 0, 0, 0);
-      target->LaunchEffect(0x1A8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->SendMsg(nullptr, AM_DELETE_EFFECT, EF_ASURABODY, 0, 0, 0, 0, 0);
+      target->LaunchEffect(EF_ASURABODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       switch (skillId) {
       case SP_SOULGOLEM:
-        g_effectMgr->Spawn(target->render.accountId, 0x4CC, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_SOUL_GOLEM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
         break;
       case SP_SOULSHADOW:
-        g_effectMgr->Spawn(target->render.accountId, 0x4D3, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_SOUL_SHADOW, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
         break;
       case SP_SOULFALCON:
-        g_effectMgr->Spawn(target->render.accountId, 0x4D5, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_SOUL_FALCON, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
         break;
       case SP_SOULFAIRY:
-        g_effectMgr->Spawn(target->render.accountId, 0x4D4, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_SOUL_FAIRY, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
         break;
       }
     }
     break;
   case SJ_PROMINENCEKICK:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x4D7, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_PROMINENCE_KICK, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case SP_SOULCURSE:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x4D6, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_SOUL_CURSE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case SP_SOULREVOLVE:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x4DB, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_SOUL_REVOLVE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       g_soundMgr->PlayWave(
         "effect\\t_방어형.wav", target->render.position.x - this->scene->player->render.position.x, 0.0f,
         target->render.position.z - this->scene->player->render.position.z, 250, 40, 1.0f, 0
@@ -18928,36 +18928,36 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case KO_HUUMARANKA:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x3D8, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, 0x3E8, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, 0x3EA, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_ROTATE_HUUMARANKA, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_ROTATE_LINE_BLUE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_KO_HUUMARANKA, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case ALL_FULL_THROTTLE:
   case EVT_FULL_THROTTLE:
     if (source != nullptr) {
-      source->LaunchEffect(0x412, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_ALL_FULL_THROTTLE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case SR_FLASHCOMBO:
     if (target != nullptr) {
-      target->LaunchEffect(0x413, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_SR_FLASHCOMBO, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case RK_LUXANIMA:
     if (source != nullptr) {
-      source->LaunchEffect(0x414, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_RK_LUXANIMA, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case AB_OFFERTORIUM:
     if (source != nullptr) {
-      source->LaunchEffect(0x417, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_AB_OFFERTORIUM, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case SC_ESCAPE:
-    if (source != nullptr && !source->HasId(0x439)) {
+    if (source != nullptr && !source->HasId(EF_ESCAPE)) {
       vector3d position = source->render.position;
-      if (CRagEffect* effect = source->LaunchEffect(0x439, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+      if (CRagEffect* effect = source->LaunchEffect(EF_ESCAPE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
         const std::int64_t value = reinterpret_cast<std::intptr_t>(&position);
         effect->SendMsg(nullptr, AM_SETCOUNT, 0, 0xFFFF, 0x422, 0, static_cast<int>(value), static_cast<int>(value >> 32));
       }
@@ -18971,14 +18971,14 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
           vector3d position = source->render.position;
           position.z += static_cast<float>(row) * spacing;
           position.x += static_cast<float>(column) * spacing;
-          g_effectMgr->Spawn(0, 0x423, position.x, position.y, position.z, 0, -1, 0, 0);
+          g_effectMgr->Spawn(0, EF_WM_FRIGG_SONG, position.x, position.y, position.z, 0, -1, 0, 0);
         }
       }
     }
     break;
   case SO_ELEMENTAL_SHIELD:
     if (source != nullptr) {
-      source->LaunchEffect(0x416, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_SO_ELEMENTAL_SHIELD, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case WL_TELEKINESIS_INTENSE:
@@ -18992,37 +18992,37 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case SU_FRESHSHRIMP:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x44A, target->render.position.x, target->render.position.y, target->render.position.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_FRESHSHRIMP, target->render.position.x, target->render.position.y, target->render.position.z, 0, -1, 0, 0);
     }
     break;
   case SU_TUNABELLY:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x44E, target->render.position.x, target->render.position.y, target->render.position.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_SU_TUNABELLY, target->render.position.x, target->render.position.y, target->render.position.z, 0, -1, 0, 0);
     }
     break;
   case SU_SCRATCH:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x44F, target->render.position.x, target->render.position.y, target->render.position.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_SU_SCRATCH, target->render.position.x, target->render.position.y, target->render.position.z, 0, -1, 0, 0);
     }
     break;
   case SU_BITE:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x451, target->render.position.x, target->render.position.y, target->render.position.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_SU_BITE, target->render.position.x, target->render.position.y, target->render.position.z, 0, -1, 0, 0);
     }
     break;
   case SU_SCAROFTAROU:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x453, target->render.position.x, target->render.position.y, target->render.position.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_SU_SCAROFTAROU, target->render.position.x, target->render.position.y, target->render.position.z, 0, -1, 0, 0);
     }
     break;
   case SU_ARCLOUSEDASH:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x454, target->render.position.x, target->render.position.y, target->render.position.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_SU_ARCLOUSEDASH, target->render.position.x, target->render.position.y, target->render.position.z, 0, -1, 0, 0);
     }
     break;
   case SU_PICKYPECK:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x455, target->render.position.x, target->render.position.y, target->render.position.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_SU_PICKYPECK, target->render.position.x, target->render.position.y, target->render.position.z, 0, -1, 0, 0);
     }
     break;
   case SU_LUNATICCARROTBEAT:
@@ -19037,77 +19037,77 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case SU_LOPE:
     if (source != nullptr) {
-      source->LaunchEffect(0x1BE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      while (source->HasId(0x1BD)) {
-        source->SendMsg(nullptr, AM_DELETE_EFFECT, 0x1BD, 0, 0, 0, 0, 0);
+      source->LaunchEffect(EF_LANDBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      while (source->HasId(EF_JUMPBODY)) {
+        source->SendMsg(nullptr, AM_DELETE_EFFECT, EF_JUMPBODY, 0, 0, 0, 0, 0);
       }
-      source->LaunchEffect(0x19B, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_PEONG, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case SU_BUNCHOFSHRIMP:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, 0x45C, source->render.position.x, source->render.position.y, source->render.position.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_SU_BUNCHOFSHRIMP, source->render.position.x, source->render.position.y, source->render.position.z, 0, -1, 0, 0);
     }
     break;
   case SU_GROOMING:
   case SU_PURRING:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x463, target->render.position.x, target->render.position.y, target->render.position.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_SU_GROOMING, target->render.position.x, target->render.position.y, target->render.position.z, 0, -1, 0, 0);
     }
     break;
   case SU_CHATTERING:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x464, target->render.position.x, target->render.position.y, target->render.position.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_SU_CHATTERING, target->render.position.x, target->render.position.y, target->render.position.z, 0, -1, 0, 0);
     }
     break;
   case SU_HISS:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x466, target->render.position.x, target->render.position.y, target->render.position.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_SU_HISS, target->render.position.x, target->render.position.y, target->render.position.z, 0, -1, 0, 0);
     }
     break;
   case SU_POWEROFFLOCK:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x467, target->render.position.x, target->render.position.y, target->render.position.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_SU_POWEROFFLOCK, target->render.position.x, target->render.position.y, target->render.position.z, 0, -1, 0, 0);
     }
     break;
   case WE_ONEFOREVER:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x475, target->render.position.x, target->render.position.y, target->render.position.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_WE_ONEFOREVER, target->render.position.x, target->render.position.y, target->render.position.z, 0, -1, 0, 0);
     }
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, 0x475, source->render.position.x, source->render.position.y, source->render.position.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_WE_ONEFOREVER, source->render.position.x, source->render.position.y, source->render.position.z, 0, -1, 0, 0);
     }
     break;
   case WE_CHEERUP:
     if (target != nullptr) {
-      target->LaunchEffect(0x198, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_BABY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, 0x476, source->render.position.x, source->render.position.y, source->render.position.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_WE_CHEERUP, source->render.position.x, source->render.position.y, source->render.position.z, 0, -1, 0, 0);
     }
     break;
   case BD_ADAPTATION:
   case CG_SPECIALSINGER:
     if (source != nullptr) {
-      source->LaunchEffect(0x350, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_DANCE2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case NV_HELPANGEL:
     if (source != nullptr) {
       g_soundMgr->PlayWave("effect\\priest_sanctuary.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      g_effectMgr->Spawn(source->render.accountId, 0x557, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(source->render.accountId, 0x558, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_HELP_ANGEL, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_HELP_ANGEL_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case DK_DRAGONIC_AURA:
     if (source != nullptr && target != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, 0x6BA, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(source->render.accountId, 0x6BB, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      CEffect* effect = g_effectMgr->Spawn(target->render.accountId, 0x6BC, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_DRAGONIC_AURA, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_DRAGONIC_AURA_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      CEffect* effect = g_effectMgr->Spawn(target->render.accountId, EF_DRAGONIC_AURA_HIT, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (effect) {
         effect->SetDelay(100);
       }
-      effect = g_effectMgr->Spawn(target->render.accountId, 0x6BD, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(target->render.accountId, EF_DRAGONIC_AURA_HIT_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (effect) {
         effect->SetDelay(100);
       }
@@ -19120,44 +19120,44 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     }
     break;
   case AG_DESTRUCTIVE_HURRICANE:
-    g_effectMgr->Spawn(source->render.accountId, 0x6C4, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(source->render.accountId, 0x6C5, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, EF_DESTRUCTIVE_HURRICANE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, EF_DESTRUCTIVE_HURRICANE_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     break;
   case AG_CRYSTAL_IMPACT:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x73E, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, 0x73F, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_CRYSTAL_IMPACT, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_CRYSTAL_IMPACT_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case BS_REPAIRWEAPON:
   case MT_M_MACHINE:
     if (target != nullptr) {
-      target->LaunchEffect(0x65, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_REPAIRWEAPON, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case IQ_POWERFUL_FAITH:
     if (source != nullptr) {
       source->SetFrameSequence(96, 1, 1, 96, 1, 1, 500, 0);
-      g_effectMgr->Spawn(source->render.accountId, 0x7C3, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_POWERFUL_FAITH, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case IQ_FIRM_FAITH:
     if (source != nullptr) {
       source->SetFrameSequence(0x60, 1, 1, 0x60, 1, 1, 500, 0);
-      g_effectMgr->Spawn(source->render.accountId, 0x7CF, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_FIRM_FAITH, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case IQ_SINCERE_FAITH:
     if (source != nullptr) {
       source->SetFrameSequence(0x60, 1, 1, 0x60, 1, 1, 500, 0);
-      g_effectMgr->Spawn(source->render.accountId, 0x7AC, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(source->render.accountId, 0x7AD, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_SINCERE_FAITH, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_SINCERE_FAITH_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case IQ_FIRST_FAITH_POWER:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, 0x7B9, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      CEffect* effect = g_effectMgr->Spawn(source->render.accountId, 0x7B7, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_FIRST_FAITH_POWER_START, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      CEffect* effect = g_effectMgr->Spawn(source->render.accountId, EF_FIRST_FAITH_POWER, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (effect) {
         effect->SetDelay(1000);
       }
@@ -19166,12 +19166,12 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case IQ_JUDGE:
     if (source != nullptr) {
       source->SetFrameSequence(0x60, 5, 5, 0x60, 5, 1, 500, 0);
-      g_effectMgr->Spawn(source->render.accountId, 0x7BC, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      CEffect* effect = g_effectMgr->Spawn(source->render.accountId, 0x7BA, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_JUDGE_START, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      CEffect* effect = g_effectMgr->Spawn(source->render.accountId, EF_JUDGE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (effect) {
         effect->SetDelay(1000);
       }
-      effect = g_effectMgr->Spawn(source->render.accountId, 0x7BD, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(source->render.accountId, EF_JUDGE_AURA, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (effect) {
         effect->SetDelay(1000);
       }
@@ -19180,12 +19180,12 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case IQ_THIRD_EXOR_FLAME:
     if (source != nullptr) {
       source->SetFrameSequence(0x60, 2, 2, 0x60, 2, 1, 500, 0);
-      g_effectMgr->Spawn(source->render.accountId, 0x7C0, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      CEffect* effect = g_effectMgr->Spawn(source->render.accountId, 0x7BE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_THIRD_EXOR_FLAME_START, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      CEffect* effect = g_effectMgr->Spawn(source->render.accountId, EF_THIRD_EXOR_FLAME, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (effect) {
         effect->SetDelay(1000);
       }
-      effect = g_effectMgr->Spawn(source->render.accountId, 0x7C1, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(source->render.accountId, EF_THIRD_EXOR_FLAME_AURA, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (effect) {
         effect->SetDelay(1000);
       }
@@ -19193,90 +19193,90 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case IQ_OLEUM_SANCTUM:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, 0x7C5, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_OLEUM_SANCTUM_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case IQ_EXPOSION_BLASTER:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, 0x7CB, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(source->render.accountId, 0x7CC, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_EXPLOSION_BLASTER, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_EXPLOSION_BLASTER_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       source->SetSequenceInterval(5);
       source->SetFrameSequence(0x60, 1, 2, 0x60, 2, 1, 1100, 0);
     }
     break;
   case IQ_MASSIVE_F_BLASTER:
     if (source != nullptr) {
-      g_effectMgr->Spawn(0, 0x82E, source->render.position.x, source->render.position.y, source->render.position.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(0, EF_MASSIVE_FLAME_BLASTER, source->render.position.x, source->render.position.y, source->render.position.z, 0, -1, 0, 0);
       source->SetSequenceInterval(5);
       source->SetFrameSequence(0x60, 1, 2, 0x60, 2, 1, 1100, 0);
     }
     break;
   case IQ_THIRD_FLAME_BOMB:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x825, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, 0x826, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_THIRD_FLAME_BOMB, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_THIRD_FLAME_BOMB_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case IQ_THIRD_CONSECRATION:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x831, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, 0x8E7, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_THIRD_CONSECRATION, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_THIRD_CONSECRATION_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case IQ_THIRD_PUNISH:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x840, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, 0x841, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_THIRD_PUNISH, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_THIRD_PUNISH_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case CD_MEDIALE_VOTUM:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x710, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_MEDIALE_VOTUM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case CD_BENEDICTUM:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x75F, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_BENEDICTUM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case CD_RELIGIO:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x744, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_RELIGIO, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case CD_COMPETENTIA:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x739, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_COMPETENTIA, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (!g_serviceOptions.Get(0xE5)) {
-        g_effectMgr->Spawn(target->render.accountId, 0x73A, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(target->render.accountId, EF_COMPETENTIA_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       }
     }
     break;
   case CD_ARGUTUS_VITA:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x713, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_ARGUTUS_VITA, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case CD_PRESENS_ACIES:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x717, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_PRESENS_ACIES, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case CD_ARGUTUS_TELUM:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x715, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_ARGUTUS_TELUM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case CD_FRAMEN:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x789, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, 0x78B, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_NEW_PRAMEN_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_NEW_PRAMEN, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case AG_ROCK_DOWN:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x6D1, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, 0x6D2, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_ROCKDOWN, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_ROCKDOWN_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case AG_STORM_CANNON:
@@ -19290,7 +19290,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     if (source != nullptr) {
       source->SetFrameSequence(0x60, 1, 3, 0x60, 3, 1, 500, 0);
       g_effectMgr->Spawn(
-        source->render.accountId, 0x6F5, source->render.position.x, source->render.position.y, source->render.position.z, 0, -1, 0, 0
+        source->render.accountId, EF_FROZEN_SLASH, source->render.position.x, source->render.position.y, source->render.position.z, 0, -1, 0, 0
       );
       for (int i = 0; i < 8; ++i) {
         g_effectMgr->Spawn(
@@ -19300,50 +19300,50 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     }
     break;
   case 0x14BA:
-    g_effectMgr->Spawn(source->render.accountId, 0x6C8, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, EF_DESTRUCTIVE_HURRICANE_CLIMAX, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     break;
   case AG_CRIMSON_ARROW:
     if (source != nullptr && target != nullptr) {
       g_effectMgr->Spawn(
-        source->render.accountId, 0x6DC, source->render.position.x, source->render.position.y, source->render.position.z,
+        source->render.accountId, EF_CRIMSONARROW, source->render.position.x, source->render.position.y, source->render.position.z,
         target->render.accountId, -1, 0, 0
       );
     }
     break;
   case AG_CLIMAX:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, 0x709, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_CLIMAX_LIGHT, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case MT_SUMMON_ABR_MOTHER_NET:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, 0x76F, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(source->render.accountId, 0x770, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_ABR_MOTHER_01, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_ABR_MOTHER_02, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case MT_SUMMON_ABR_BATTLE_WARIOR:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, 0x78E, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_NEW_BATTLE_W, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case MT_SUMMON_ABR_DUAL_CANNON:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, 0x77B, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_NEW_D_CANNON, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case MT_SUMMON_ABR_INFINITY:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, 0x772, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_ABR_INFINITY, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case MT_D_MACHINE: {
-    g_effectMgr->Spawn(targetAid, 0x71A, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(targetAid, 0x71B, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    CEffect* effect = g_effectMgr->Spawn(targetAid, 0x71C, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(targetAid, EF_NEW_D_MACHINE_CAST, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(targetAid, EF_NEW_D_MACHINE_CAST_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    CEffect* effect = g_effectMgr->Spawn(targetAid, EF_NEW_D_MACHINE_START, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     if (effect) {
       effect->SetDelay(500);
     }
-    effect = g_effectMgr->Spawn(targetAid, 0x719, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(targetAid, EF_NEW_D_MACHINE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     if (effect) {
       effect->SetDelay(1430);
     }
@@ -19351,7 +19351,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   }
   case MT_A_MACHINE:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, 0x730, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_A_MACHINE_CAST, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case MT_AXE_STOMP: {
@@ -19362,11 +19362,11 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
       scale = 1.2f;
     }
     if (source != nullptr) {
-      CEffect* effect = g_effectMgr->Spawn(source->render.accountId, 0x794, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      CEffect* effect = g_effectMgr->Spawn(source->render.accountId, EF_NEW_AXE_STOMP_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (effect) {
         effect->SetScale(scale);
       }
-      effect = g_effectMgr->Spawn(source->render.accountId, 0x795, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(source->render.accountId, EF_NEW_AXE_STOMP, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (effect) {
         effect->SetScale(scale);
       }
@@ -19377,16 +19377,16 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   }
   case MT_RUSH_QUAKE:
-    g_effectMgr->Spawn(targetAid, 0x75C, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-    g_effectMgr->Spawn(targetAid, 0x75D, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(targetAid, EF_NEW_RUSH_QUAKE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    g_effectMgr->Spawn(targetAid, EF_NEW_RUSH_QUAKE_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     break;
   case IQ_SECOND_FLAME:
     if (target != nullptr) {
-      CEffect* effect = g_effectMgr->Spawn(target->render.accountId, 0x823, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      CEffect* effect = g_effectMgr->Spawn(target->render.accountId, EF_SECOND_FLAME, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (effect) {
         effect->SetDelay(500);
       }
-      effect = g_effectMgr->Spawn(target->render.accountId, 0x824, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(target->render.accountId, EF_SECOND_FLAME_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (effect) {
         effect->SetDelay(500);
       }
@@ -19395,21 +19395,21 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case CD_REPARATIO: {
     if (source != nullptr) {
       if (!g_serviceOptions.Get(0xE5)) {
-        g_effectMgr->Spawn(source->render.accountId, 0x727, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+        g_effectMgr->Spawn(source->render.accountId, EF_NEW_REPARATIO_CAST, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       }
-      g_effectMgr->Spawn(source->render.accountId, 0x728, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      CEffect* effect = g_effectMgr->Spawn(source->render.accountId, 0x729, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_NEW_REPARATIO_CAST_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      CEffect* effect = g_effectMgr->Spawn(source->render.accountId, EF_NEW_REPARATIO, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (effect) {
         effect->SetDelay(500);
       }
-      effect = g_effectMgr->Spawn(source->render.accountId, 0x72A, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(source->render.accountId, EF_NEW_REPARATIO_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (effect) {
         effect->SetDelay(500);
         effect->AddEvent(0, "effect\\CD_REPARATIO1.wav", 0x1F, 0);
       }
     }
     if (target != nullptr) {
-      CEffect* effect = g_effectMgr->Spawn(target->render.accountId, 0x72B, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      CEffect* effect = g_effectMgr->Spawn(target->render.accountId, EF_NEW_REPARATIO_TARGET, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (effect) {
         effect->SetDelay(800);
         effect->AddEvent(0, "effect\\CD_REPARATIO2.wav", 0x32, 0);
@@ -19419,17 +19419,17 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   }
   case CD_DILECTIO_HEAL:
     if (source != nullptr) {
-      CEffect* effect = g_effectMgr->Spawn(source->render.accountId, 0x784, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      CEffect* effect = g_effectMgr->Spawn(source->render.accountId, EF_NEW_DILECTIO_HEAL, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       if (effect) {
         effect->SetDelay(400);
       }
       if (target != nullptr) {
         if (source->render.accountId != target->render.accountId) {
-          if (g_effectMgr->Find(target->render.accountId, 0x787) == nullptr) {
-            g_effectMgr->Spawn(target->render.accountId, 0x787, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+          if (g_effectMgr->Find(target->render.accountId, EF_NEW_DILECTIO_HEAL_TARGET) == nullptr) {
+            g_effectMgr->Spawn(target->render.accountId, EF_NEW_DILECTIO_HEAL_TARGET, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
           }
-          if (g_effectMgr->Find(target->render.accountId, 0x788) == nullptr) {
-            g_effectMgr->Spawn(target->render.accountId, 0x788, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+          if (g_effectMgr->Find(target->render.accountId, EF_NEW_DILECTIO_HEAL_TARGET_BOTTOM) == nullptr) {
+            g_effectMgr->Spawn(target->render.accountId, EF_NEW_DILECTIO_HEAL_TARGET_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
           }
         } else if (effect) {
           effect->AddEvent(0, "effect\\CD_DILECTIO_HEAL.wav", 0x19, 0);
@@ -19447,20 +19447,20 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case CD_EFFLIGO:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x736, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, 0x737, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_EFFLIGO, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_EFFLIGO_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case TR_MUSICAL_INTERLUDE:
     if (source != nullptr) {
       source->SetFrameSequence(0x60, 1, 3, 0x60, 3, 1, 500, 0);
-      g_effectMgr->Spawn(source->render.accountId, 0x84A, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_MUSICAL_INTERLUDE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case TR_NIPELHEIM_REQUIEM:
     if (source != nullptr) {
       source->SetFrameSequence(0x60, 1, 3, 0x60, 3, 1, 500, 0);
-      g_effectMgr->Spawn(source->render.accountId, 0x81B, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_NIFLHEIM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case AG_RAIN_OF_CRYSTAL:
@@ -19472,12 +19472,12 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case WH_WIND_SIGN:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x76B, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_WIND_SIGN, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case WH_HAWKRUSH:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x771, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_HAWK_RUSH, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case CD_PETITIO:
@@ -19493,37 +19493,37 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case SHC_POTENT_VENOM:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, 0x78D, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_NEW_POTENT_VENOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case ABC_ABYSS_DAGGER:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, 0x7AE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_ABYSS_DAGGER, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       source->SetState(2, 1);
     }
     break;
   case WH_HAWKBOOMERANG:
     if (source != nullptr && target != nullptr) {
       g_effectMgr->Spawn(
-        0, 0x7B3, source->render.position.x, source->render.position.y, source->render.position.z, target->render.accountId, -1, 0, 0
+        0, EF_HAWK_BOOMERANG_START, source->render.position.x, source->render.position.y, source->render.position.z, target->render.accountId, -1, 0, 0
       );
     }
     break;
   case EM_INCREASING_ACTIVITY:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x7C8, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_INCREASING_ACTIVITY, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case EM_ACTIVITY_BURN:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x7D3, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_ACTIVITY_BURN, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case ABC_CHAIN_REACTION_SHOT:
     if (target != nullptr) {
       if (source != nullptr) {
         g_effectMgr->Spawn(
-          source->render.accountId, 0x7E2, source->render.position.x, source->render.position.y, source->render.position.z,
+          source->render.accountId, EF_CHAIN_REACTION_SHOT, source->render.position.x, source->render.position.y, source->render.position.z,
           target->render.accountId, -1, 0, 0
         );
       }
@@ -19536,69 +19536,69 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case EM_SPELL_ENCHANTING:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x7E9, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_SPELL_ENCHANTING, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case ABC_FROM_THE_ABYSS:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, 0x83E, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_FROM_THE_ABYSS, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       source->SetFrameSequence(0x60, 0, 0, 0x60, 0, 1, 0x2BC, 0);
     }
     break;
   case ABC_DEFT_STAB:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x854, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_DEFT_STAB, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case ABC_FRENZY_SHOT:
     if (source != nullptr && target != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, 0x842, source->render.position.x, source->render.position.y, source->render.position.z, target->render.accountId, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_FRENZY_SHOT, source->render.position.x, source->render.position.y, source->render.position.z, target->render.accountId, -1, 0, 0);
     }
     break;
   case EM_ELEMENTAL_BUSTER_FIRE:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, 0x85B, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(source->render.accountId, 0x85C, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_ELEMENTAL_BUSTER_FIRE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_ELEMENTAL_BUSTER_FIRE_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case EM_ELEMENTAL_BUSTER_GROUND:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, 0x85E, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(source->render.accountId, 0x85F, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_ELEMENTAL_BUSTER_LAND, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_ELEMENTAL_BUSTER_LAND_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case EM_ELEMENTAL_BUSTER_POISON:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, 0x861, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(source->render.accountId, 0x862, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_ELEMENTAL_BUSTER_POISON, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_ELEMENTAL_BUSTER_POISON_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case EM_ELEMENTAL_BUSTER_WATER:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, 0x864, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(source->render.accountId, 0x865, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_ELEMENTAL_BUSTER_WATER, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_ELEMENTAL_BUSTER_WATER_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case EM_ELEMENTAL_BUSTER_WIND:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, 0x867, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(source->render.accountId, 0x868, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_ELEMENTAL_BUSTER_WIND, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_ELEMENTAL_BUSTER_WIND_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case BO_ADVANCE_PROTECTION:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x871, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, 0x872, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_ADVANCED_PROTECTION, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_ADVANCED_PROTECTION_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case BO_THE_WHOLE_PROTECTION:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x88A, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_THE_W_PROTECTION, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case NPC_BO_HELL_HOWLING:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, 0x8BF, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_HELLTREE_HOWLING, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case BO_ACIDIFIED_ZONE_FIRE:
@@ -19608,17 +19608,17 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case NPC_BO_THROWROCK:
     if (source != nullptr && target != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, 0x8CC, source->render.position.x, source->render.position.y, source->render.position.z, target->render.accountId, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_WOODEN_WARRIOR_THROWROCK, source->render.position.x, source->render.position.y, source->render.position.z, target->render.accountId, -1, 0, 0);
     }
     break;
   case NPC_BO_WOODEN_ATTACK:
     if (source != nullptr && target != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, 0x8CA, source->render.position.x, source->render.position.y, source->render.position.z, target->render.accountId, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_WOODEN_WARRIOR_ATTACK, source->render.position.x, source->render.position.y, source->render.position.z, target->render.accountId, -1, 0, 0);
     }
     break;
   case NPC_BO_FAIRY_DUSTY:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, 0x8D1, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_WOODEN_FAIRY_DUSTY, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case BO_ACIDIFIED_ZONE_WATER:
@@ -19638,19 +19638,19 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case BO_RESEARCHREPORT:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, 0x8C1, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_RESEARCH_REPORT, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case ABC_STRIP_SHADOW:
     if (target != nullptr) {
-      if (CRagEffect* effect = target->LaunchEffect(0x1EF, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+      if (CRagEffect* effect = target->LaunchEffect(EF_RG_COIN2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
         effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<std::intptr_t>(&target->render.position), 0, 0, 0, 0);
       }
     }
     break;
   case BO_BIONIC_PHARMACY:
     if (source != nullptr) {
-      source->LaunchEffect(0x3A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_BEGINSPELL6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case IQ_SECOND_JUDGEMENT:
@@ -19694,12 +19694,12 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case MH_SILENT_BREEZE:
     if (source != nullptr) {
-      source->LaunchEffect(0x3C1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_SILENT_BREEZE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case MH_MAGMA_FLOW:
     if (source != nullptr) {
-      source->LaunchEffect(0x3C2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_MAGMA_FLOW, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case NPC_SELFDESTRUCTION:
@@ -19707,25 +19707,25 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case NC_SELFDESTRUCTION:
   case HVAN_EXPLOSION:
     if (source != nullptr) {
-      source->LaunchEffect(0xB7, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_SUI_EXPLOSION, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case PR_MAGNIFICAT:
   case MER_MAGNIFICAT:
     if (source != nullptr) {
-      source->LaunchEffect(0x4C, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_MAGNIFICAT, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case PR_KYRIE:
   case MER_KYRIE:
     if (source != nullptr) {
-      source->LaunchEffect(0x70, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_KYRIE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case SM_MAGNUM:
   case MS_MAGNUM:
     if (source != nullptr) {
-      source->LaunchEffect(0x11, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_MAGNUMBREAK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case CR_AUTOGUARD:
@@ -19739,113 +19739,113 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case CR_DEFENDER:
   case ML_DEFENDER:
     if (source != nullptr) {
-      source->LaunchEffect(0xDE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_DEFENDER, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case LK_BERSERK:
   case LK_FURY:
   case MS_BERSERK:
     if (source != nullptr) {
-      source->SendMsg(nullptr, AM_DELETE_EFFECT, 0x170, 0, 0, 0, 0, 0);
-      source->LaunchEffect(0x170, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->SendMsg(nullptr, AM_DELETE_EFFECT, EF_REDBODY, 0, 0, 0, 0, 0);
+      source->LaunchEffect(EF_REDBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
       g_soundMgr->PlayWave("effect\\버서크.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
   case HLIF_AVOID:
     if (source != nullptr) {
-      source->LaunchEffect(0x1C8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_AGIUP, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     if (target != nullptr) {
-      target->LaunchEffect(0x1C8, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_AGIUP, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case HFLI_FLEET:
   case HFLI_SPEED:
     if (source != nullptr) {
-      source->LaunchEffect(0x234, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_HOMUNCASTING, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case HAMI_DEFENCE:
     g_soundMgr->PlayWave("effect\\h_defence.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     if (source != nullptr) {
-      source->LaunchEffect(0x239, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_HAMIDEFENCE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     if (target != nullptr) {
-      target->LaunchEffect(0x239, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_HAMIDEFENCE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case HAMI_CASTLE:
     g_soundMgr->PlayWave("effect\\h_castling.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     if (source != nullptr) {
-      source->LaunchEffect(0x23A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_HAMICASTLE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     if (target != nullptr) {
-      target->LaunchEffect(0x23A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_HAMICASTLE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case HAMI_BLOODLUST:
     if (source != nullptr) {
-      source->LaunchEffect(0x23B, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      source->LaunchEffect(EF_HAMIBLOOD, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   case MH_TOXIN_OF_MANDARA:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x910, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, 0x911, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_TOXIN_OF_MANDARA_BOMB, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_TOXIN_OF_MANDARA_BOMB_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case MH_HEILIGE_PFERD:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x91B, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, 0x91C, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_HEILIGE_PFERD, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_HEILIGE_PFERD_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case MH_GOLDENE_TONE:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, 0x91E, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_GOLDENE_TONE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case MH_THE_ONE_FIGHTER_RISES:
     if (source != nullptr) {
-      source->LaunchEffect(0x922, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      g_effectMgr->Spawn(source->render.accountId, 0x923, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      source->LaunchEffect(EF_THE_ONE_FIGHTER_RISES, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      g_effectMgr->Spawn(source->render.accountId, EF_THE_ONE_FIGHTER_RISES_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case MH_TEMPERING:
     if (source != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, 0x924, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_TEMPERING, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case EM_EL_FLAMETECHNIC:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x8D6, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, 0x8D7, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_ARDOR_FLAMETECHNIC, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_ARDOR_FLAMETECHNIC_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case ABR_NET_REPAIR:
     if (target != nullptr) {
-      target->LaunchEffect(0x139, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      if (source != nullptr && g_effectMgr->Find(source->render.accountId, 0x76F) == nullptr) {
-        g_effectMgr->Spawn(source->render.accountId, 0x76F, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      target->LaunchEffect(EF_HEAL2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      if (source != nullptr && g_effectMgr->Find(source->render.accountId, EF_ABR_MOTHER_01) == nullptr) {
+        g_effectMgr->Spawn(source->render.accountId, EF_ABR_MOTHER_01, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       }
     }
     break;
   case ABR_NET_SUPPORT:
     if (target != nullptr) {
-      target->LaunchEffect(0xFD, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      if (source != nullptr && g_effectMgr->Find(source->render.accountId, 0x770) == nullptr) {
-        g_effectMgr->Spawn(source->render.accountId, 0x770, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      target->LaunchEffect(EF_ABSORBSPIRITS, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      if (source != nullptr && g_effectMgr->Find(source->render.accountId, EF_ABR_MOTHER_02) == nullptr) {
+        g_effectMgr->Spawn(source->render.accountId, EF_ABR_MOTHER_02, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       }
     }
     break;
   case EM_EL_POISON_SHIELD: {
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x7DD, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_SERPENS_SHIELD, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     CRenderObject* summoner = this->scene->GetGameActorByAidIncludeMe(target->emblemVersion);
     if (summoner != nullptr) {
-      g_effectMgr->Spawn(summoner->render.accountId, 0x7DD, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(summoner->render.accountId, EF_SERPENS_SHIELD, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
       g_soundMgr->PlayWave("effect\\EM_SUMMON_ELEMENTAL_SERPENS_1.wav", player->render.position.x - summoner->render.position.x, 0.0f, player->render.position.z - summoner->render.position.z, 250, 40, 1.0f, 0);
     }
@@ -19853,17 +19853,17 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   }
   case EM_EL_DEEP_POISONING:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x8D2, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, 0x8D3, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_SERPENS_DEEP_POISONING, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_SERPENS_DEEP_POISONING_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case EM_EL_CRYSTAL_ARMOR: {
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x7E8, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_DILUVIO_ARMOR, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     CRenderObject* summoner = this->scene->GetGameActorByAidIncludeMe(target->emblemVersion);
     if (summoner != nullptr) {
-      g_effectMgr->Spawn(summoner->render.accountId, 0x7E8, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(summoner->render.accountId, EF_DILUVIO_ARMOR, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
       g_soundMgr->PlayWave("effect\\EM_SUMMON_ELEMENTAL_DILUVIO_1.wav", player->render.position.x - summoner->render.position.x, 0.0f, player->render.position.z - summoner->render.position.z, 250, 40, 1.0f, 0);
     }
@@ -19871,17 +19871,17 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   }
   case EM_EL_COLD_FORCE:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x8D4, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, 0x8D5, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_DILUVIO_COLD_FORCE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_DILUVIO_COLD_FORCE_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case EM_EL_FLAMEARMOR: {
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x7F8, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_ARDOR_FLAMEARMOR, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     CRenderObject* summoner = this->scene->GetGameActorByAidIncludeMe(target->emblemVersion);
     if (summoner != nullptr) {
-      g_effectMgr->Spawn(summoner->render.accountId, 0x7F8, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(summoner->render.accountId, EF_ARDOR_FLAMEARMOR, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
       g_soundMgr->PlayWave("effect\\EM_SUMMON_ELEMENTAL_ARDOR_1.wav", player->render.position.x - summoner->render.position.x, 0.0f, player->render.position.z - summoner->render.position.z, 250, 40, 1.0f, 0);
     }
@@ -19889,11 +19889,11 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   }
   case EM_EL_EYES_OF_STORM: {
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x837, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_PROCELLA_STORM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     CRenderObject* summoner = this->scene->GetGameActorByAidIncludeMe(target->emblemVersion);
     if (summoner != nullptr) {
-      g_effectMgr->Spawn(summoner->render.accountId, 0x837, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(summoner->render.accountId, EF_PROCELLA_STORM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
       g_soundMgr->PlayWave("effect\\EM_SUMMON_ELEMENTAL_PROCELLA_1.wav", player->render.position.x - summoner->render.position.x, 0.0f, player->render.position.z - summoner->render.position.z, 250, 40, 1.0f, 0);
     }
@@ -19901,17 +19901,17 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   }
   case EM_EL_GRACE_BREEZE:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x8D8, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, 0x8D9, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_PROCELLA_GRACE_BREEZE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_PROCELLA_GRACE_BREEZE_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case EM_EL_STRONG_PROTECTION: {
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x83C, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_TERREMOTUS_PROTECT, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     CRenderObject* summoner = this->scene->GetGameActorByAidIncludeMe(target->emblemVersion);
     if (summoner != nullptr) {
-      g_effectMgr->Spawn(summoner->render.accountId, 0x83C, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(summoner->render.accountId, EF_TERREMOTUS_PROTECT, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
       g_soundMgr->PlayWave("effect\\EM_SUMMON_ELEMENTAL_TERREMOTUS_1.wav", player->render.position.x - summoner->render.position.x, 0.0f, player->render.position.z - summoner->render.position.z, 250, 40, 1.0f, 0);
     }
@@ -19919,8 +19919,8 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   }
   case EM_EL_EARTH_CARE:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x8DA, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, 0x8DB, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_TERREMOTUS_EARTH_CARE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_TERREMOTUS_EARTH_CARE_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case MG_SAFETYWALL:
@@ -20806,7 +20806,7 @@ void CGameMode::ProcessIncomingPackets() {
       this->ReceiveActorCharm(g_gameModePacketBuffer);
       break;
     case ID_ZC_FASTMOVE:
-      this->ReceiveActorMessage144(g_gameModePacketBuffer);
+      this->ReceiveFastMove(g_gameModePacketBuffer);
       break;
     case ID_ZC_CLEAR_DIALOG:
       this->RefreshWindow16(g_gameModePacketBuffer);

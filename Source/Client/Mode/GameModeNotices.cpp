@@ -796,7 +796,7 @@ void CGameMode::ReceiveNamedResult(std::uint32_t, std::string name, int result) 
 
     CWorld* scene = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
     if (scene) {
-      scene->player->LaunchEffect(41, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      scene->player->LaunchEffect(EF_ANGELUS, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
   }
@@ -995,7 +995,7 @@ void CGameMode::ReceiveActorEffect347(const unsigned char* data) {
     const auto* packet = reinterpret_cast<const ActorPacket*>(data);
     CRenderObject* actor = packet->aid == g_session.m_aid ? this->scene->player : this->scene->GetGameActorByAID(packet->aid);
     if (actor && packet->aid) {
-      static_cast<EffectActor*>(actor)->LaunchEffect(347, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      static_cast<EffectActor*>(actor)->LaunchEffect(EF_COLORPAPER, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
   }
 }
@@ -1075,7 +1075,7 @@ void CGameMode::ReceiveZoneItemRetrievalFailure(const unsigned char*) {
 
 // OFFSET: 0x00D6EC40
 // FUNCTION: fn_22119
-void CGameMode::ReceiveActorMessage144(const unsigned char* data) {
+void CGameMode::ReceiveFastMove(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const ActorPointPacket*>(data);
   CRenderObject* actor;
   if (packet->aid == g_session.m_aid) {
@@ -1087,7 +1087,7 @@ void CGameMode::ReceiveActorMessage144(const unsigned char* data) {
   if (actor) {
     const std::int64_t y = packet->y;
     const std::int64_t x = packet->x;
-    actor->SendMsg(nullptr, AM_FALLEN_ANGEL, x, y, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_FASTMOVE, x, y, 0, 0, 0, 0);
   }
 }
 
@@ -1231,16 +1231,16 @@ void CGameMode::ReceiveActorEffect228(const unsigned char* data) {
 
   auto* gameActor = static_cast<CGameActor*>(actor);
   if (StateFlag01(gameActor->GetStateFlags()) == true || StateFlag02(gameActor->GetStateFlags()) == true) {
-    actor->SendMsg(nullptr, AM_DELETE_EFFECT, 228, 0, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_CHOOKGI, 0, 0, 0, 0, 0);
   }
 
   if (0 == packet->state) {
-    actor->SendMsg(nullptr, AM_DELETE_EFFECT, 228, 0, 0, 0, 0, 0);
-  } else if (1 != packet->state || static_cast<EffectActor*>(actor)->HasId(228)) {
+    actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_CHOOKGI, 0, 0, 0, 0, 0);
+  } else if (1 != packet->state || static_cast<EffectActor*>(actor)->HasId(EF_CHOOKGI)) {
     return;
   }
 
-  CRagEffect* effect = static_cast<EffectActor*>(actor)->LaunchEffect(228, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+  CRagEffect* effect = static_cast<EffectActor*>(actor)->LaunchEffect(EF_CHOOKGI, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   if (effect) {
     vector3d position{static_cast<float>(packet->value), 0.0f, 0.0f};
     effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
@@ -1537,15 +1537,15 @@ void CGameMode::ReceiveRefineResult(const unsigned char* data) {
 
   switch (packet->result) {
   case ITEMREFINING_SUCCESS:
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(154, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(EF_REFINEOK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_REFINING_SUCCEESS)), 0xFFFF00, 0, 0, 0);
     break;
   case ITEMREFINING_FAILURE:
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(155, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(EF_REFINEFAIL, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_REFINING_FAIL)), 0xFFFF00, 0, 0, 0);
     break;
   case ITEMREFINING_DOWNGRADE:
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(155, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(EF_REFINEFAIL, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_REFINING_DOWNGRADE)), 0xFFFF00, 0, 0, 0);
     break;
   }
@@ -1566,46 +1566,46 @@ void CGameMode::ReceiveItemEffectResult(const unsigned char* data) {
 
   switch (packet->type) {
   case 0:
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(154, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(EF_REFINEOK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_MAKE_TARGET_SUCCEESS_MSG), item.DisplayName(0).c_str()));
     break;
   case 1:
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(155, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(EF_REFINEFAIL, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_MAKE_TARGET_FAIL_MSG), item.DisplayName(0).c_str()));
     break;
   case 2:
-    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->HasId(305)) {
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, 305, 0, 0, 0, 0, 0);
+    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->HasId(EF_PHARMACY_OK)) {
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_PHARMACY_OK, 0, 0, 0, 0, 0);
     }
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(305, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(EF_PHARMACY_OK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     text = FormatOwnedString(LookupMessage(MSI_MAKE_TARGET_SUCCEESS_MSG), item.DisplayName(0).c_str()).c_str();
     break;
   case 3:
-    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->HasId(306)) {
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, 306, 0, 0, 0, 0, 0);
+    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->HasId(EF_PHARMACY_FAIL)) {
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_PHARMACY_FAIL, 0, 0, 0, 0, 0);
     }
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(306, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(EF_PHARMACY_FAIL, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     text = FormatOwnedString(LookupMessage(MSI_MAKE_TARGET_FAIL_MSG), item.DisplayName(0).c_str()).c_str();
     break;
   case 4:
-    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->HasId(1015)) {
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, 1015, 0, 0, 0, 0, 0);
+    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->HasId(EF_RUN_MAKE_OK)) {
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_RUN_MAKE_OK, 0, 0, 0, 0, 0);
     }
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(1015, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(EF_RUN_MAKE_OK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     text = FormatOwnedString(LookupMessage(MSI_MAKE_TARGET_SUCCEESS_MSG), item.DisplayName(0).c_str()).c_str();
     break;
   case 5:
-    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->HasId(1016)) {
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, 1016, 0, 0, 0, 0, 0);
+    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->HasId(EF_RUN_MAKE_FAILURE)) {
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_RUN_MAKE_FAILURE, 0, 0, 0, 0, 0);
     }
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(1016, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(EF_RUN_MAKE_FAILURE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     text = FormatOwnedString(LookupMessage(MSI_MAKE_TARGET_FAIL_MSG), item.DisplayName(0).c_str()).c_str();
     break;
   case 6: {
-    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->HasId(1017)) {
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, 1017, 0, 0, 0, 0, 0);
+    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->HasId(EF_MIRESULT_MAKE_OK)) {
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_MIRESULT_MAKE_OK, 0, 0, 0, 0, 0);
     }
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(1017, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(EF_MIRESULT_MAKE_OK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     text = FormatOwnedString(LookupMessage(MSI_MAKE_TARGET_FAIL_MSG), item.DisplayName(0).c_str()).c_str();
     UIWindow* window = g_windowMgr.LookupWindow(WID_CHANGEMATERIALWND);
     if (window) {
@@ -1614,10 +1614,10 @@ void CGameMode::ReceiveItemEffectResult(const unsigned char* data) {
     break;
   }
   case 7: {
-    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->HasId(1018)) {
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, 1018, 0, 0, 0, 0, 0);
+    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->HasId(EF_MIRESULT_MAKE_FAIL)) {
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_MIRESULT_MAKE_FAIL, 0, 0, 0, 0, 0);
     }
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(1018, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(EF_MIRESULT_MAKE_FAIL, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     text = FormatOwnedString(LookupMessage(MSI_MAKE_TARGET_FAIL_MSG), item.DisplayName(0).c_str()).c_str();
     UIWindow* window = g_windowMgr.LookupWindow(WID_CHANGEMATERIALWND);
     if (window) {
@@ -2554,31 +2554,31 @@ void CGameMode::ReceivePartyMemberEffect(const unsigned char* data) {
 
   switch (packet->type) {
   case LEVELUP_EFFECT:
-    actor->LaunchEffect(371, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    actor->LaunchEffect(EF_ANGEL, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case JOBLEVELUP_EFFECT:
-    actor->LaunchEffect(158, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    actor->LaunchEffect(EF_JOBLVUP, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case LEVELUP_EFFECT2:
-    actor->LaunchEffect(338, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    actor->LaunchEffect(EF_ANGEL2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case LEVELUP_EFFECT3:
-    actor->LaunchEffect(582, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    actor->LaunchEffect(EF_ANGEL3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case JOBLEVELUP_EFFECT2:
-    actor->LaunchEffect(337, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    actor->LaunchEffect(EF_JOBLVUP50, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case REFINING_FAIL_EFFECT:
-    actor->LaunchEffect(155, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    actor->LaunchEffect(EF_REFINEFAIL, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case REFINING_SUCCESS_EFFECT:
-    actor->LaunchEffect(154, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    actor->LaunchEffect(EF_REFINEOK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case MAKEITEM_AM_SUCCESS_EFFECT:
-    actor->LaunchEffect(305, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    actor->LaunchEffect(EF_PHARMACY_OK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case MAKEITEM_AM_FAIL_EFFECT:
-    actor->LaunchEffect(306, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    actor->LaunchEffect(EF_PHARMACY_FAIL, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case GAME_OVER_EFFECT:
     g_session.m_whisperOption0 = 1;
@@ -2657,7 +2657,7 @@ void CGameMode::ReceiveWindow348Result(unsigned char result, std::int16_t index)
   switch (result) {
   case 0: {
     g_windowMgr.CloseWindow(WID_ITEMREFORMWND);
-    g_effectMgr->Spawn(g_session.m_aid, 1608, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(g_session.m_aid, EF_GRADE_ENCHANT_SUCCESS, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     ITEM_INFO item = g_session.LookupClientItemByIdentity(index);
     if (item.identity[1] <= 0) {
       return;
@@ -3695,7 +3695,7 @@ void CGameMode::ReceiveNotifyEffect(const unsigned char* packet) {
 
   int effectId = *reinterpret_cast<const int*>(packet + 6);
   if (effectId == EF_DUSTSTORM) {
-    CEmitterEffect* emitter = static_cast<CEmitterEffect*>(g_effectMgr->Spawn(0, 0x3CE, actor->render.position, 0, -1, 0, 0));
+    CEmitterEffect* emitter = static_cast<CEmitterEffect*>(g_effectMgr->Spawn(0, EF_EMITTER, actor->render.position, 0, -1, 0, 0));
     emitter->velocityMin.x = -2.0f;
     emitter->velocityMin.y = 2.0f;
     emitter->velocityMin.z = -2.0f;
@@ -4073,7 +4073,7 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
     }
     case NPC_CLOUD_KILL:
     case SO_CLOUD_KILL:
-      actor->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      actor->LaunchEffect(EF_GUMGANG5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\S클라우드킬.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       break;
     case WL_FROSTMISTY: {
@@ -4092,7 +4092,7 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
     case SO_PSYCHIC_WAVE: {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       g_soundMgr->PlayWave("effect\\S사이킥웨이브.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      actor->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      actor->LaunchEffect(EF_GUMGANG5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       float x;
       float z;
       mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
@@ -4109,17 +4109,17 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       for (int delay = 0; count != 0; --count, delay += 500) {
         CEffect* effect;
         if (g_serviceOptions.Get(0xE5)) {
-          effect = g_effectMgr->Spawn(0, 0x5AE, position.x, position.y, position.z, 0, -1, 0, 0);
+          effect = g_effectMgr->Spawn(0, EF_MINEFFECT_PSYCHICWAVE, position.x, position.y, position.z, 0, -1, 0, 0);
           if (effect) {
             effect->SetDelay(delay);
           }
-          effect = g_effectMgr->Spawn(0, 0x5AF, position.x, position.y, position.z, 0, -1, 0, 0);
+          effect = g_effectMgr->Spawn(0, EF_MINEFFECT_PSYCHICWAVE_BOTTOM, position.x, position.y, position.z, 0, -1, 0, 0);
         } else {
-          effect = g_effectMgr->Spawn(0, 0x508, position.x, position.y, position.z, 0, -1, 0, 0);
+          effect = g_effectMgr->Spawn(0, EF_NEW_PSYCHICWAVE, position.x, position.y, position.z, 0, -1, 0, 0);
           if (effect) {
             effect->SetDelay(delay);
           }
-          effect = g_effectMgr->Spawn(0, 0x509, position.x, position.y, position.z, 0, -1, 0, 0);
+          effect = g_effectMgr->Spawn(0, EF_NEW_PSYCHICWAVE_BOTTOM, position.x, position.y, position.z, 0, -1, 0, 0);
         }
         if (effect) {
           effect->SetDelay(delay);
@@ -4130,7 +4130,7 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
     case SO_EARTHGRAVE: {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       g_soundMgr->PlayWave("effect\\G가시나무덫.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      actor->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      actor->LaunchEffect(EF_GUMGANG5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       float x;
       float z;
       mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
@@ -4144,12 +4144,12 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
         position.x = rotation.values[0] * radius + rotation.values[3] * 0.0f + rotation.values[6] * 0.0f + rotation.values[9] + x;
         position.y = rotation.values[1] * radius + rotation.values[4] * 0.0f + rotation.values[7] * 0.0f + rotation.values[10] + y;
         position.z = rotation.values[2] * radius + rotation.values[5] * 0.0f + rotation.values[8] * 0.0f + rotation.values[11] + z;
-        CEffect* effect = g_effectMgr->Spawn(0, 0x5B9, position.x, position.y, position.z, 0, -1, 0, 0);
+        CEffect* effect = g_effectMgr->Spawn(0, EF_NEW_EARTHGRAVE_VISUAL, position.x, position.y, position.z, 0, -1, 0, 0);
         if (effect) {
           effect->SetScale(0.5f);
           effect->SetDelay(delay);
         }
-        effect = g_effectMgr->Spawn(0, 0x656, position.x, position.y, position.z, 0, -1, 0, 0);
+        effect = g_effectMgr->Spawn(0, EF_NEW_EARTHGRAVE_BOTTOM, position.x, position.y, position.z, 0, -1, 0, 0);
         if (effect) {
           effect->SetScale(0.5f);
           effect->SetDelay(delay);
@@ -4206,7 +4206,7 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
     }
     case SR_RIDEINLIGHTNING: {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-      actor->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      actor->LaunchEffect(EF_GUMGANG5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       float x;
       float z;
       mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
@@ -4222,7 +4222,7 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
     }
     case WM_LULLABY_DEEPSLEEP: {
       g_soundMgr->PlayWave("effect\\안식의자장가.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      CRagEffect* effect = actor->LaunchEffect(0x35A, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      CRagEffect* effect = actor->LaunchEffect(EF_CHEMICAL_V2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (effect == nullptr) {
         return;
       }
@@ -4238,7 +4238,7 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       break;
     }
     case WM_DOMINION_IMPULSE: {
-      CRagEffect* effect = actor->LaunchEffect(0x35F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      CRagEffect* effect = actor->LaunchEffect(EF_CHEMICAL_V3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (effect == nullptr) {
         return;
       }
@@ -4268,7 +4268,7 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       if (actor == nullptr) {
         return;
       }
-      g_effectMgr->Spawn(actor->render.accountId, 0x4D0, actor->render.position.x, actor->render.position.y, actor->render.position.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(actor->render.accountId, EF_BOOK_OF_CREATINGSTAR, actor->render.position.x, actor->render.position.y, actor->render.position.z, 0, -1, 0, 0);
       break;
     default:
       CSkillActionMgr::GetInstance()->OnGroundSkillEffect(*reinterpret_cast<const std::uint16_t*>(packet + 2), *reinterpret_cast<const std::int16_t*>(packet + 0xA),
@@ -4279,16 +4279,16 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       vector3d position = {0.0f, 0.0f, 0.0f};
       this->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), position.x, position.z);
       position.y = this->scene->terrain->Height(position.x, position.z);
-      g_effectMgr->Spawn(0, 0x856, position.x, position.y, position.z, 0, -1, 0, 0);
-      g_effectMgr->Spawn(0, 0x855, position.x, position.y, position.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(0, EF_TERRA_DRIVE_BOTTOM, position.x, position.y, position.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(0, EF_TERRA_DRIVE, position.x, position.y, position.z, 0, -1, 0, 0);
       break;
     }
     case EM_DIAMOND_STORM: {
       vector3d position = {0.0f, 0.0f, 0.0f};
       this->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), position.x, position.z);
       position.y = this->scene->terrain->Height(position.x, position.z);
-      g_effectMgr->Spawn(0, 0x7EB, position.x, position.y, position.z, 0, -1, 0, 0);
-      g_effectMgr->Spawn(0, 0x7EA, position.x, position.y, position.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(0, EF_DIAMOND_STORM_BOTTOM, position.x, position.y, position.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(0, EF_DIAMOND_STORM, position.x, position.y, position.z, 0, -1, 0, 0);
       break;
     }
     }
@@ -4297,12 +4297,12 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
     int loopType;
     g_session.GetMonsterSkillInfo(g_session.GetJobName(job, -1), *reinterpret_cast<const std::uint16_t*>(packet + 2), &action, &loopType);
     if (*reinterpret_cast<const std::uint16_t*>(packet + 2) == 0x2C8) {
-      actor->LaunchEffect(0x199, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      actor->LaunchEffect(EF_SOULBREAKER2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     if (*reinterpret_cast<const std::uint16_t*>(packet + 2) == 0x2E0) {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       g_soundMgr->PlayWave("effect\\S사이킥웨이브.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      actor->LaunchEffect(0x376, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      actor->LaunchEffect(EF_GUMGANG5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       float x;
       float z;
       mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
@@ -4319,17 +4319,17 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       for (int delay = 0; count != 0; --count, delay += 500) {
         CEffect* effect;
         if (g_serviceOptions.Get(0xE5)) {
-          effect = g_effectMgr->Spawn(0, 0x5AE, position.x, position.y, position.z, 0, -1, 0, 0);
+          effect = g_effectMgr->Spawn(0, EF_MINEFFECT_PSYCHICWAVE, position.x, position.y, position.z, 0, -1, 0, 0);
           if (effect) {
             effect->SetDelay(delay);
           }
-          effect = g_effectMgr->Spawn(0, 0x5AF, position.x, position.y, position.z, 0, -1, 0, 0);
+          effect = g_effectMgr->Spawn(0, EF_MINEFFECT_PSYCHICWAVE_BOTTOM, position.x, position.y, position.z, 0, -1, 0, 0);
         } else {
-          effect = g_effectMgr->Spawn(0, 0x508, position.x, position.y, position.z, 0, -1, 0, 0);
+          effect = g_effectMgr->Spawn(0, EF_NEW_PSYCHICWAVE, position.x, position.y, position.z, 0, -1, 0, 0);
           if (effect) {
             effect->SetDelay(delay);
           }
-          effect = g_effectMgr->Spawn(0, 0x509, position.x, position.y, position.z, 0, -1, 0, 0);
+          effect = g_effectMgr->Spawn(0, EF_NEW_PSYCHICWAVE_BOTTOM, position.x, position.y, position.z, 0, -1, 0, 0);
         }
         if (effect) {
           effect->SetDelay(delay);
@@ -5512,7 +5512,7 @@ void CGameMode::ReceiveSpecialBroadcast(const unsigned char* data) {
     break;
   case 1:
     text.assign(FormatOwnedString(LookupMessage(packet->index + 840), g_session.DecodePlayerName(), packet->name));
-    player->LaunchEffect(543, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    player->LaunchEffect(EF_HATED, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     g_soundMgr->PlayWave("effect\\T_피링.wav", 0.0f, -250.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   case 10:
@@ -5520,16 +5520,16 @@ void CGameMode::ReceiveSpecialBroadcast(const unsigned char* data) {
     break;
   case 11:
     text.assign(FormatOwnedString(LookupMessage(packet->index + 846), g_session.DecodePlayerName(), g_session.GetJobName(packet->value, -1)));
-    player->LaunchEffect(543, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    player->LaunchEffect(EF_HATED, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     g_soundMgr->PlayWave("effect\\T_피링.wav", 0.0f, -250.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   case 20:
     text.assign(FormatOwnedString(LookupMessage(MSI_TAEKWON_MISSION), packet->name, packet->index));
-    player->LaunchEffect(543, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    player->LaunchEffect(EF_HATED, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case 21:
     text.assign(FormatOwnedString(LookupMessage(MSI_GANGSI_MISSION), packet->name));
-    player->LaunchEffect(543, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    player->LaunchEffect(EF_HATED, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case 22: {
     ITEM_INFO item;
@@ -5538,12 +5538,12 @@ void CGameMode::ReceiveSpecialBroadcast(const unsigned char* data) {
     int capacity = sizeof(itemName);
     item.GetIdDisplayName(itemName, capacity, 0);
     text.assign(FormatOwnedString(LookupMessage(MSI_COLLECTOR_MISSION), itemName));
-    player->LaunchEffect(543, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    player->LaunchEffect(EF_HATED, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   }
   case 30:
     text = LookupMessage(MSI_STAR_ANGEL);
-    player->LaunchEffect(432, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    player->LaunchEffect(EF_ELECTRIC, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case 40:
     text = std::format("Target HP : {}", packet->value);
@@ -6787,7 +6787,7 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
       break;
     case EFST_SIREN:
       if (packet->aid == g_session.m_aid) {
-        this->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, 879, 0, 0, 0, 0, 0);
+        this->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_HEARTASURA, 0, 0, 0, 0, 0);
       }
       std::sprintf(message, "");
       break;
@@ -6799,15 +6799,15 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
       break;
     case EFST_NETHERWORLD:
       if (packet->aid == g_session.m_aid) {
-        this->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, 453, 0, 0, 0, 0, 0);
+        this->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_NPC_STOP, 0, 0, 0, 0, 0);
       }
       std::sprintf(message, "");
       break;
     case EFST_WUGDASH:
       if (packet->aid == g_session.m_aid) {
         CPlayer* player = this->scene->player;
-        while (player->HasId(752)) {
-          player->SendMsg(nullptr, AM_DELETE_EFFECT, 752, 0, 0, 0, 0, 0);
+        while (player->HasId(EF_BUNSINJYUTSU2)) {
+          player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_BUNSINJYUTSU2, 0, 0, 0, 0, 0);
         }
       }
       std::sprintf(message, "");
@@ -6869,16 +6869,16 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
     case EFST_DARKCROW:
       if (packet->aid == g_session.m_aid) {
         CPlayer* player = this->scene->player;
-        while (player->HasId(1040)) {
-          player->SendMsg(nullptr, AM_DELETE_EFFECT, 1040, 0, 0, 0, 0, 0);
+        while (player->HasId(EF_GC_DARKCROW)) {
+          player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_GC_DARKCROW, 0, 0, 0, 0, 0);
         }
       }
       break;
     case EFST_C_MARKER:
       if (packet->aid == g_session.m_aid) {
         CPlayer* player = this->scene->player;
-        while (player->HasId(1061)) {
-          player->SendMsg(nullptr, AM_DELETE_EFFECT, 1061, 0, 0, 0, 0, 0);
+        while (player->HasId(EF_C_MAKER)) {
+          player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_C_MAKER, 0, 0, 0, 0, 0);
         }
       }
       break;
@@ -6898,7 +6898,7 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
       std::sprintf(message, LookupMessage(MSI_ACCOUNTCLASS_RAGNAROK));
       break;
     case EFST_SOULCURSE:
-      if (CEffect* effect = g_effectMgr->Find(packet->aid, 1362)) {
+      if (CEffect* effect = g_effectMgr->Find(packet->aid, EF_QSCARABA_VISUAL)) {
         g_effectMgr->Retire(effect, 1);
       }
       break;
@@ -6921,7 +6921,7 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
       break;
     }
     case EFST_RELIEVE_DAMAGE:
-      if (CEffect* effect = g_effectMgr->Find(packet->aid, 1599)) {
+      if (CEffect* effect = g_effectMgr->Find(packet->aid, EF_TETRA_VORTEX_CORE_REUSE)) {
         g_effectMgr->Retire(effect, 1);
       }
       break;
@@ -6934,7 +6934,7 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
         actor = this->scene->GetGameActorByAID(packet->aid);
       }
       if (actor) {
-        actor->SendMsg(nullptr, AM_DELETE_EFFECT, 1601, 0, 0, 0, 0, 0);
+        actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_MAGIC_CIRCLE_1, 0, 0, 0, 0, 0);
       }
       break;
     }
@@ -6947,15 +6947,15 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
         actor = this->scene->GetGameActorByAID(packet->aid);
       }
       if (actor) {
-        actor->SendMsg(nullptr, AM_DELETE_EFFECT, 1610, 0, 0, 0, 0, 0);
+        actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_POK_MAGIC, 0, 0, 0, 0, 0);
       }
       break;
     }
     case EFST_DRAGONIC_AURA:
-      if (CEffect* effect = g_effectMgr->Find(packet->aid, 1726)) {
+      if (CEffect* effect = g_effectMgr->Find(packet->aid, EF_DRAGONIC_AURA_BUFF)) {
         g_effectMgr->Retire(effect, 1);
       }
-      if (CEffect* effect = g_effectMgr->Find(packet->aid, 1727)) {
+      if (CEffect* effect = g_effectMgr->Find(packet->aid, EF_DRAGONIC_AURA_BUFF_BOTTOM)) {
         g_effectMgr->Retire(effect, 1);
       }
       break;
@@ -7011,9 +7011,9 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
       _snprintf_s(message, 256, LookupMessage(MSI_MT_D_MACHINE_ON));
       break;
     case EFST_D_MACHINE:
-      if (CEffect* effect = g_effectMgr->Find(packet->aid, 1817)) {
+      if (CEffect* effect = g_effectMgr->Find(packet->aid, EF_NEW_D_MACHINE)) {
         g_effectMgr->Retire(effect, 1);
-        g_effectMgr->Spawn(packet->aid, 1821, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+        g_effectMgr->Spawn(packet->aid, EF_NEW_D_MACHINE_END, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       }
       StringFormat(message, 256, static_cast<std::size_t>(-1), "%s", LookupMessage(MSI_TR_KVASIR_SONATA_OFF));
       break;

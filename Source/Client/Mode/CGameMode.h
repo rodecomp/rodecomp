@@ -449,7 +449,7 @@ public:
   void ReceiveToggle128(int enabled);
   void PlaceWindow16(unsigned int xPercent, unsigned int yPercent);
   void ReceiveExtraInventorySlots(const unsigned char* packet);
-  void ReceiveActorMessage144(const unsigned char* packet);
+  void ReceiveFastMove(const unsigned char* packet);
   void StopActorMove(std::uint32_t aid, std::int16_t x, std::int16_t y, unsigned char flag);
   void NotifyGmCheckerResult(int result);
   void NotifyCaptchaRegistrationResult(int result);
