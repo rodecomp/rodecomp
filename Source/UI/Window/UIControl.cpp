@@ -237,7 +237,7 @@ CBitmapRes* CUIControl::LoadBitmapResource(const std::string& name, bool resolve
 }
 
 // INLINED
-__forceinline CUIButton::CUIButton() : CUIControl(), state(0), disabled(0), tooltip(), clickWindow(nullptr), hoverWindow(nullptr) {
+__forceinline CUIButton::CUIButton() : CUIControl(), state(0), disabled(0), tooltip(), onClick(), onHover() {
 }
 
 // OFFSET: 0x009BDF40
@@ -793,8 +793,7 @@ void CUIButton::SetState(int value) {
 // OFFSET: 0x009D3050
 // FUNCTION: fn_14027
 void CUIButton::SetOnClick(std::function<void()> handler) {
-  std::function<void()>& onClick = *reinterpret_cast<std::function<void()>*>(this->clickHandlerStorage);
-  onClick = handler;
+  this->onClick = handler;
 }
 
 // OFFSET: 0x009EE920
@@ -817,8 +816,8 @@ void CUIButton::OnLBtnDown(int, int) {
 void CUIButton::OnLBtnUp(int, int) {
   this->SetState(2);
   if (this == g_windowMgr.Capture()) {
-    if (!this->disabled && this->clickWindow) {
-      this->clickWindow->IsFrameWnd();
+    if (!this->disabled && this->onClick) {
+      this->onClick();
     }
     g_windowMgr.ReleaseCapture();
   }
@@ -833,8 +832,8 @@ void CUIButton::OnMouseEnter() {
 // OFFSET: 0x009EEA00
 // FUNCTION: fn_14631
 void CUIButton::OnMouseHover(int, int) {
-  if (this->hoverWindow) {
-    this->hoverWindow->IsFrameWnd();
+  if (this->onHover) {
+    this->onHover();
   }
 
   if (this->tooltip.empty()) {
@@ -1149,8 +1148,8 @@ void CUITabButton::SetSelected(bool selected) {
   if (this->page) {
     this->page->Show(selected);
   }
-  if (selected && this->clickWindow) {
-    this->clickWindow->IsFrameWnd();
+  if (selected && this->onClick) {
+    this->onClick();
   }
   this->Invalidate();
 }
@@ -2773,9 +2772,6 @@ CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::~CUIListBoxEx()
 // OFFSET: 0x009BFDB0
 // FUNCTION: fn_13963
 CUIButton::~CUIButton() {
-  using Handler = std::function<void()>;
-  reinterpret_cast<Handler*>(this->hoverHandlerStorage)->~Handler();
-  reinterpret_cast<Handler*>(this->clickHandlerStorage)->~Handler();
 }
 
 // OFFSET: 0x009BFED0

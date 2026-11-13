@@ -2292,7 +2292,7 @@ void GameSettingsUI::CUIGroupSound::Apply() {
 
 // OFFSET: 0x00A19C60
 // FUNCTION: fn_15346
-inline CUIButton::CUIButton() : CUIControl(), state(0), disabled(0), tooltip(), clickWindow(nullptr), hoverWindow(nullptr) {
+inline CUIButton::CUIButton() : CUIControl(), state(0), disabled(0), tooltip(), onClick(), onHover() {
 }
 
 // OFFSET: 0x00A19D30

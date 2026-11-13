@@ -137,10 +137,8 @@ public:
   /* 0084 */ unsigned char disabled;
   /* 0085 */ unsigned char padding_0085[0x03];
   /* 0088 */ std::string tooltip;
-  /* 00A0 */ unsigned char clickHandlerStorage[0x24];
-  /* 00C4 */ UIWindow* clickWindow;
-  /* 00C8 */ unsigned char hoverHandlerStorage[0x24];
-  /* 00EC */ UIWindow* hoverWindow;
+  /* 00A0 */ std::function<void()> onClick;
+  /* 00C8 */ std::function<void()> onHover;
 };
 
 class CUITextButton : public CUIButton {
