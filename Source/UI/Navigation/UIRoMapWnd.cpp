@@ -674,7 +674,7 @@ UIRoMapWnd::UIRoMapWnd() : UIFrameWnd(0), previewTexture(nullptr) {
 
 // OFFSET: 0x009144B0
 // FUNCTION: fn_12541
-UIRoMapWnd::~UIRoMapWnd() {
+__declspec(noinline) UIRoMapWnd::~UIRoMapWnd() {
   delete this->previewArea;
   delete this->selectedRecord;
   this->previewTexture = nullptr;

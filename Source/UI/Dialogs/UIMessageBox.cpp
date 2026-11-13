@@ -3271,7 +3271,7 @@ UICntWnd::~UICntWnd() = default;
 
 // OFFSET: 0x008A5050
 // FUNCTION: fn_11679
-UILoginWnd::~UILoginWnd() = default;
+__declspec(noinline) UILoginWnd::~UILoginWnd() = default;
 
 // OFFSET: 0x008A54C0
 // FUNCTION: fn_11681
