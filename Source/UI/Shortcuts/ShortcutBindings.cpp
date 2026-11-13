@@ -61,7 +61,7 @@ void CSession::AssignShortcut(unsigned char type, std::uint32_t id, int level, i
       if (id == previous.itemId && level == previous.value && type == previous.enabled) {
         return true;
       }
-      return !CSkillInfo::UsesLevel(*this->m_hotkeyScript, static_cast<int>(previous.itemId)) && id == previous.itemId && type == previous.enabled;
+      return !CSkillInfo::UsesLevel(static_cast<int>(previous.itemId)) && id == previous.itemId && type == previous.enabled;
     };
     if (bank == 0) {
       if (!isDuplicate(this->m_shortcutSlots[index])) {

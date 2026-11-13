@@ -8004,7 +8004,7 @@ void CGameMode::ReceiveSkillList(int packetType, const std::vector<SkillListEntr
       skill.spCost = entry->spCost;
       skill.upgradable = entry->upgradable;
       skill.range = entry->range;
-      skill.name = skill.IdName(*g_session.m_hotkeyScript);
+      skill.name = skill.IdName();
       skill.learnedLevel = entry->learnedLevel;
       skill.apCost = skill.UseApAmount(*g_session.m_hotkeyScript, entry->level);
       g_session.m_skillBundle.ApplyLevelChange(skill);

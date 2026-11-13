@@ -3866,7 +3866,7 @@ void CRagEffect::TexturedSkillIcon(const char* name, std::int16_t level, std::in
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
 
   if (mode == 2) {
-    std::sprintf(iconName, "유저인터페이스\\item\\%s.bmp", CSkillInfo::IdName(*g_session.m_hotkeyScript, 2285));
+    std::sprintf(iconName, "유저인터페이스\\item\\%s.bmp", CSkillInfo::IdName(2285));
     this->state.lastPrim->state.textures[0] = g_texMgr.Load(iconName, 0, false, true, false);
   } else if (level > 0) {
     int skillId;
@@ -3876,7 +3876,7 @@ void CRagEffect::TexturedSkillIcon(const char* name, std::int16_t level, std::in
       skillId = rand() % 13 + 80;
     }
 
-    std::sprintf(iconName, "유저인터페이스\\item\\%s.bmp", CSkillInfo::IdName(*g_session.m_hotkeyScript, skillId));
+    std::sprintf(iconName, "유저인터페이스\\item\\%s.bmp", CSkillInfo::IdName(skillId));
     this->state.lastPrim->state.textures[0] = g_texMgr.Load(iconName, 0, false, true, false);
   } else {
     this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);

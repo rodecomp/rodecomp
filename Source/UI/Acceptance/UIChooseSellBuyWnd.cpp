@@ -1465,7 +1465,7 @@ void UISpellListWnd::Paint() {
 
     skill.id = this->m_skills[position];
     char path[256];
-    g_session.ItemBitmapPath(skill.IdName(*g_session.m_hotkeyScript), path);
+    g_session.ItemBitmapPath(skill.IdName(), path);
     this->DrawBitmap(8, y, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)))->image, true);
     this->DrawTextAt(40, y + 4, name, 0, 0, 12, 0, 0, 0);
 
@@ -8228,7 +8228,7 @@ int UISkillDescribeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
       this->m_text->Clear();
     }
 
-    this->iconName = "유저인터페이스\\item\\" + std::string(skill.IdName(*g_session.m_hotkeyScript)) + ".bmp";
+    this->iconName = "유저인터페이스\\item\\" + std::string(skill.IdName()) + ".bmp";
     this->m_viewer->Clear();
 
     const char* description = nullptr;

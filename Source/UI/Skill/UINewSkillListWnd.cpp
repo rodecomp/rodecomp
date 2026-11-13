@@ -304,7 +304,7 @@ void UINewSkillListWnd::DrawSkillList() {
       const int green = level > maxLevel ? 0 : shade;
       const int textX = x + 112;
       const int textY = y + 47;
-      const bool usesLevel = CSkillInfo::UsesLevel(*g_session.m_hotkeyScript, static_cast<int>(skill.id));
+      const bool usesLevel = CSkillInfo::UsesLevel(static_cast<int>(skill.id));
       if (level != 0) {
         std::sprintf(text, g_serviceType == 12 ? "Nv :" : "Lv :");
         const int labelX = this->m_locked != 0 || !usesLevel ? textX + 1 : textX + 12;
@@ -1248,7 +1248,7 @@ void UINewSkillListWnd::LayoutButtons() {
         this->m_btnLevelUp[row]->Move(78, y - 14);
       }
       if (!this->m_locked && row < this->m_visibleRows && static_cast<unsigned int>(this->m_firstRow + row) < list.size() &&
-          skill.available != 0 && skill.level != 0 && CSkillInfo::UsesLevel(*g_session.m_hotkeyScript, skill.id)) {
+          skill.available != 0 && skill.level != 0 && CSkillInfo::UsesLevel(skill.id)) {
         this->m_btnSkills[row]->Move(112, y);
         this->m_btnSkillUps[row]->Move(192, y);
       }
@@ -1257,7 +1257,7 @@ void UINewSkillListWnd::LayoutButtons() {
     for (std::list<CSkillInfo>::iterator it = list.begin(); it != list.end(); ++it) {
       const int slot = it->treePosition - this->m_columns * this->m_firstRow;
       if (slot >= 0 && slot < 42 && it->available != 0 && it->treePosition != 0xFFFFFFFF && it->level != 0 &&
-          CSkillInfo::UsesLevel(*g_session.m_hotkeyScript, it->id)) {
+          CSkillInfo::UsesLevel(it->id)) {
         const int y = slot / this->m_columns * 56 + 70;
         const int x = slot % this->m_columns * 68 + 56;
         this->m_btnSkillUps[slot]->Move(x + 55, y);

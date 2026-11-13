@@ -249,7 +249,7 @@ bool CSession::UpdateSkill(const CSkillInfo& value, unsigned char notify, unsign
     }
 
     if (grouped || snapshot.available) {
-      if (CSkillInfo::UsesLevel(*this->m_hotkeyScript, static_cast<int>(snapshot.id)) && snapshot.level != 0) {
+      if (CSkillInfo::UsesLevel(static_cast<int>(snapshot.id)) && snapshot.level != 0) {
         const int saved = this->UseLevel(static_cast<int>(snapshot.id));
         if (saved <= 0 || saved > snapshot.level) {
           this->m_skillBundle.SetSkillValue(static_cast<int>(snapshot.id), snapshot.level);

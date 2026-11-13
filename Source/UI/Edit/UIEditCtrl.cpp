@@ -4927,7 +4927,7 @@ void UISkillListWnd::UpdateRowButtons() {
     }
 
     if (row < this->visibleRows && this->scroll + row < this->skills.size() && skill.available != 0 && skill.level != 0 &&
-        CSkillInfo::UsesLevel(*g_session.m_hotkeyScript, static_cast<int>(skill.id))) {
+        CSkillInfo::UsesLevel(static_cast<int>(skill.id))) {
       this->levelButtons[row]->Move(112, y);
       this->levelLabels[row]->Move(192, y);
     } else {

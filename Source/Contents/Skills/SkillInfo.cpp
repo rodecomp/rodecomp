@@ -847,22 +847,22 @@ bool CSkillActionMgr::IsSupportAction(int skillId) {
 
 // OFFSET: 0x007737C0
 // FUNCTION: fn_08316
-const char* CSkillInfo::IdName(LuaScript& script) const {
-  return CSkillInfo::IdName(script, static_cast<int>(this->id));
+const char* CSkillInfo::IdName() const {
+  return CSkillInfo::IdName(static_cast<int>(this->id));
 }
 
 // OFFSET: 0x00773870
 // FUNCTION: fn_08317
-const char* CSkillInfo::IdName(LuaScript& script, int skillId) {
+const char* CSkillInfo::IdName(int skillId) {
   const char* result = nullptr;
-  return script.Call("GetSkillIdName", "d>s", skillId, &result) ? result : "Zero Skill";
+  return g_session.m_hotkeyScript->Call("GetSkillIdName", "d>s", skillId, &result) ? result : "Zero Skill";
 }
 
 // OFFSET: 0x00774500
 // FUNCTION: fn_08323
-bool CSkillInfo::UsesLevel(LuaScript& script, int skillId) {
+bool CSkillInfo::UsesLevel(int skillId) {
   bool result = false;
-  return script.Call("IsLevelUseSkill", "d>b", skillId, &result) ? result : false;
+  return g_session.m_hotkeyScript->Call("IsLevelUseSkill", "d>b", skillId, &result) ? result : false;
 }
 
 // OFFSET: 0x007745B0

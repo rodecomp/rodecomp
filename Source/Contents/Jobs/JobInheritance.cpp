@@ -1598,7 +1598,7 @@ int CSession::SetHotkeyEntry(char enabled, int id, int value, int slot) {
     NormalItemSlot& entry = this->SkillHotkey(index);
 
     if (id == static_cast<int>(entry.itemId) && value == entry.value && enabled == static_cast<char>(entry.enabled) ||
-      !CSkillInfo::UsesLevel(*g_session.m_hotkeyScript, static_cast<int>(entry.itemId)) && id == static_cast<int>(entry.itemId)) {
+      !CSkillInfo::UsesLevel(static_cast<int>(entry.itemId)) && id == static_cast<int>(entry.itemId)) {
       entry.enabled = 0;
       entry.itemId = 0;
       entry.value = 0;

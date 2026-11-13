@@ -61,7 +61,7 @@ void CGameMode::ReceiveLearnedSkill(
   value.id = id;
   value.level = level;
   value.upgradable = upgradable;
-  value.name = value.IdName(*g_session.m_hotkeyScript);
+  value.name = value.IdName();
   value.spCost = spCost;
   value.range = range;
   value.learnedLevel = learnedLevel;
@@ -94,7 +94,7 @@ void CGameMode::ApplyAdditionalSkillPacket(const void* packet) {
     value.spCost = static_cast<std::int32_t>(Read<std::int16_t>(record + 8));
     value.type = Read<std::uint32_t>(record + 2);
     value.upgradable = record[36];
-    value.name = value.IdName(*g_session.m_hotkeyScript);
+    value.name = value.IdName();
     value.apCost = value.UseApAmount(*g_session.m_hotkeyScript, Read<std::int16_t>(record + 6));
 
     if (value.id - 10000u <= 19u) {

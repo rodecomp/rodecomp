@@ -37,10 +37,10 @@ void LoadSkillUseLevelRegistry() {
     DWORD size = sizeof(int);
     char name[100] = {};
     const int character = g_session.selectedCharacterSlot;
-    const char* skill = CSkillInfo::IdName(*g_session.m_hotkeyScript, id);
+    const char* skill = CSkillInfo::IdName(id);
     std::sprintf(name, "%s%d", skill, character);
 
-    return RegQueryValueExA(handle, name, nullptr, &type, reinterpret_cast<BYTE*>(&value), &size) == ERROR_SUCCESS && CSkillInfo::UsesLevel(*g_session.m_hotkeyScript, id);
+    return RegQueryValueExA(handle, name, nullptr, &type, reinterpret_cast<BYTE*>(&value), &size) == ERROR_SUCCESS && CSkillInfo::UsesLevel(id);
   };
 
   int value;
