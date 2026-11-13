@@ -10,7 +10,7 @@
 // OFFSET: 0x007E2130
 // FUNCTION: fn_09690
 bool CSkinMgr::Selected() const {
-  return this->selected > -1;
+  return -1 < this->selected;
 }
 
 // OFFSET: 0x007E2140

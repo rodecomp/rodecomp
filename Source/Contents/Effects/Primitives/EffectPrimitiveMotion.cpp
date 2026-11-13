@@ -5065,7 +5065,7 @@ __declspec(noinline) bool CEffectPrim::PrimFadeAlpha() {
     }
   }
 
-  this->state.ProcessAlpha();
+  reinterpret_cast<EffectPrimitiveState*>(this)->ProcessAlpha();
   this->ShiftSegment();
   return this->AnimMotion();
 }

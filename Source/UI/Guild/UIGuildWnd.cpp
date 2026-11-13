@@ -350,7 +350,10 @@ bool CompareWideText(const char* left, const char* right) {
   memset(wideRight, 0, sizeof(wideRight));
   MultiByteToWideChar(CP_ACP, 0, left, -1, wideLeft, 260);
   MultiByteToWideChar(CP_ACP, 0, right, -1, wideRight, 260);
-  return wcscmp(wideLeft, wideRight) < 0;
+  if (wcscmp(wideLeft, wideRight) < 0) {
+    return true;
+  }
+  return false;
 }
 
 // OFFSET: 0x009578F0

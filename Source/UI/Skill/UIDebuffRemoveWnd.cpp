@@ -10,6 +10,7 @@ namespace {
 #pragma pack(push, 1)
 struct DebuffRemovePacket {
   /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t unknown_0002;
 };
 #pragma pack(pop)
 }
@@ -44,8 +45,7 @@ int UIDebuffRemoveWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   }
 
   if (a == 184) {
-    DebuffRemovePacket packet;
-    packet.id = 0xC2A;
+    DebuffRemovePacket packet = {0xC2A};
     GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
   }
 

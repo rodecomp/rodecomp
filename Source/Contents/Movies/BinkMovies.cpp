@@ -127,7 +127,7 @@ void BinkMovies::Update() {
         const float y = position->y - playerPosition[1];
         const float z = position->z - playerPosition[2];
         const float distance = SquareRoot((y * y + x * x) + z * z);
-        nearest = distance < nearest ? distance : nearest;
+        nearest = std::min(nearest, distance);
       }
 
       if (movie->radius > nearest) {

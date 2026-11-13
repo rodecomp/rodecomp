@@ -92,7 +92,7 @@ void UIBarGraph4::Paint() {
   }
 
   const float ratio = static_cast<float>(*this->m_current) / static_cast<float>(*this->m_maximum);
-  if (ratio == 0.0f) {
+  if (0.0f == ratio) {
     return;
   }
 

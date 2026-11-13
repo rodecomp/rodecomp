@@ -133,7 +133,7 @@ public:
   void Close() override;
 
   /* 00CC */ unsigned int startTime;
-  /* 00D0 */ std::vector<EZ2STREmitter*> emitters;
+  /* 00D0 */ std::vector<CParticle*> emitters;
 };
 
 class CDancingKnifeEffect : public CEffect {

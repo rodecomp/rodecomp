@@ -2273,11 +2273,11 @@ bool CPc::OnProcess() {
         effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
         this->msgEffect = effect;
       }
-      return result;
+    } else if (this->msgEffect) {
+      this->msgEffect->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0);
+      this->msgEffect = nullptr;
     }
-  }
-
-  if (this->msgEffect) {
+  } else if (this->msgEffect) {
     this->msgEffect->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0);
     this->msgEffect = nullptr;
   }

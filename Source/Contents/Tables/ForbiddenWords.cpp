@@ -94,7 +94,7 @@ bool ForbiddenWords::Allows(const char* text) const {
   if (!storage) {
     return false;
   }
-  std::strncpy(storage, text, size);
+  strncpy_s(storage, size, text, _TRUNCATE);
   const char* current = Lowercase(storage);
   const char* end = current + std::strlen(current);
 

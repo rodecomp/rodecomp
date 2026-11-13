@@ -665,7 +665,7 @@ void CCylinderEffect::Open() {
   this->startTime = timeGetTime();
   for (long long i = 0; i < 21; ++i) {
     CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
-    EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(particle);
+    CParticle* created = particle;
     if (!particle) {
       continue;
     }
@@ -685,7 +685,7 @@ void CCylinderEffect::Open() {
       particle->sourceBlend = 5;
       particle->destinationBlend = 6;
     }
-    this->emitters.push_back(emitter);
+    this->emitters.push_back(created);
   }
 }
 
@@ -741,7 +741,7 @@ void CWarningPlaneEffect::Render() {
 // FUNCTION: fn_07196
 void CCylinderEffect::Render() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
-    CEZ2STRParticle* particle = AsParticle(*it);
+    CEZ2STRParticle* particle = AsParticle(reinterpret_cast<EZ2STREmitter*>(*it));
     if (!particle) {
       continue;
     }
@@ -3484,7 +3484,7 @@ void CRandomOptEffect::Close() {
 // FUNCTION: fn_07192
 void CCylinderEffect::Close() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
-    FreeParticle(AsParticle(*it));
+    FreeParticle(*it);
   }
   this->emitters.clear();
 }
@@ -4568,8 +4568,8 @@ __declspec(noinline) vector3d* CylinderSlice::ComputePoints(vector3d points[2], 
 // FUNCTION: fn_07195
 void CCylinderEffect::OnProcess() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
-    EZ2STREmitter* emitter = *it;
-    vector3d& position = (*it)->position;
+    EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(*it);
+    vector3d& position = emitter->position;
     position.x = this->position[0];
     position.y = this->position[1];
     position.z = this->position[2];
