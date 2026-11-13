@@ -1,4 +1,5 @@
 #include "UI/Window/WindowId.h"
+#include "Client/Session/Session.h"
 #include "Contents/Skin/SkinMgr.h"
 #include "Client/Mode/ModeMessage.h"
 #include "Client/Mode/CMode.h"

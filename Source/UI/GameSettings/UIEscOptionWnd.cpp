@@ -38,7 +38,7 @@ void UIEscOptionWnd::OnCreate(int, int) {
 // OFFSET: 0x0092BDE0
 // FUNCTION: fn_12662
 void UIEscOptionWnd::Paint() {
-  this->m_titleHeight = this->DrawTitleBar(true, FormatOwnedString("%s (%s)", LookupMessage(MSI_ESC_OPTIONWND), ShortcutFilename(g_session.m_gid).c_str()).c_str(), 0);
+  this->m_titleHeight = this->DrawTitleBar(true, FormatOwnedString("%s (%s)", LookupMessage(MSI_ESC_OPTIONWND), g_session.ShortcutFilename(g_session.m_gid).c_str()).c_str(), 0);
 
   this->DrawPanelBackground(this->m_titleHeight, 0, "");
 }

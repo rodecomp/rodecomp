@@ -1,4 +1,5 @@
 #include "File/ShortcutFilename.h"
+#include "Client/Session/Session.h"
 
 // OFFSET: 0x00DD9430
 // FUNCTION: fn_23335
@@ -49,4 +50,9 @@ std::string ShortcutFilename(std::uint32_t identifier) {
   }
 
   return result;
+}
+
+// INLINED
+std::string CSession::ShortcutFilename(std::uint32_t identifier) const {
+  return ::ShortcutFilename(identifier);
 }

@@ -268,7 +268,7 @@ void UIRodexComposeWnd::SetRecipient(int id, unsigned short job, unsigned short 
   this->m_recipientJobText->SetTextWithinWidth(g_session.GetJobName(job, 99), 0);
   this->m_recipientJobText->Show(1);
   this->m_recipientId = id;
-  this->m_recipientIdText->SetTextWithinWidth(ShortcutFilename(id).c_str(), 0);
+  this->m_recipientIdText->SetTextWithinWidth(g_session.ShortcutFilename(id).c_str(), 0);
   this->m_recipientIdText->Show(1);
   this->m_recipientEdit->Show(0);
   this->m_confirmRecipientButton->Enable(0);

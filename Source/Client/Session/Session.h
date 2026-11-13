@@ -183,6 +183,7 @@ class CSession {
 public:
   void IconPath(char* output, const char* id, int identified);
   ITEM_INFO LookupClientItemByIdentity(std::uint32_t id) const;
+  std::string ShortcutFilename(std::uint32_t identifier) const;
   const char* ItemDragResource(const char* id, int identified);
   const char* SkillDragResource(const char* name);
   /* 0000 */ std::uint32_t mapPropertyId;
