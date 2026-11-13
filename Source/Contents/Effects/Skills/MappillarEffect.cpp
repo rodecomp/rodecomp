@@ -42,7 +42,7 @@ void CMappillarEffect::Open() {
       const int row = particle->rowIndex;
       particle->angle = static_cast<float>(row * 90);
       particle->scale = static_cast<float>(row) * 0.5f + 11.0f;
-      reinterpret_cast<int*>(&particle->animationParameter)[row] = 0;
+      (&particle->animationParameter)[row] = 0.0f;
       particle->elapsedFrames = particle->rowIndex * 30;
 
       const float baseAngle = particle->angle;
