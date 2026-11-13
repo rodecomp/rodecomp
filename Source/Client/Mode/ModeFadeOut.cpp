@@ -22,7 +22,7 @@ std::uint32_t FadeOutMode(CRenderer& renderer, CRenderSystemBase& system, Resour
     DrawAlphaRectangle(0, 0, renderer.viewport.width, renderer.viewport.height, elapsed << 24);
     if (showLogo != 0) {
       auto* logo = static_cast<CBitmapRes*>(resources.Load(Resolve("rag_logo.bmp")));
-      DrawBitmapResource(system, renderer.viewport.width - 192, renderer.viewport.height - 122, logo);
+      DrawBitmapResource(renderer.viewport.width - 192, renderer.viewport.height - 122, logo);
     }
     if (renderer.Draw()) {
       renderer.Present(1);

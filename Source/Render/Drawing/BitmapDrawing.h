@@ -4,6 +4,6 @@
 class CRenderSystemBase;
 class CBitmapRes;
 
-void DrawBitmapResource(CRenderSystemBase& system, int x, int y, const CBitmapRes* bitmap);
+void DrawBitmapResource(int x, int y, const CBitmapRes* bitmap);
 
 #endif

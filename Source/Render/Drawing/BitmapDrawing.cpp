@@ -4,7 +4,7 @@
 
 // OFFSET: 0x00A8FC30
 // FUNCTION: fn_17148
-void DrawBitmapResource(CRenderSystemBase& system, int x, int y, const CBitmapRes* bitmap) {
+void DrawBitmapResource(int x, int y, const CBitmapRes* bitmap) {
   if (!bitmap) {
     return;
   }
