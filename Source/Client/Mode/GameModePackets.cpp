@@ -10990,7 +10990,8 @@ void CGameMode::ReceiveMapMove(const unsigned char* data) {
     g_session.m_loginTimeTicks = _Xtime_get_ticks();
     mapName.append(".rsw", 4);
     g_modeMgr.Switch(1, mapName.c_str());
-    static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND))->SetMessage(LookupMessage(MSI_PLEASE_BE_PATIENT), 17, 1);
+    UIWaitWnd* waitWnd = static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND));
+    waitWnd->SetMessage(LookupMessage(MSI_PLEASE_BE_PATIENT), 17, 1);
     g_windowMgr.modalResponse = 185;
     g_session.ClearStoreSearchResults();
     sameMap = 0;
