@@ -532,7 +532,12 @@ void EquipmentPropertyStore::Clear() {
 // OFFSET: 0x006965A0
 // FUNCTION: fn_05740
 EquipmentPropertyStore::~EquipmentPropertyStore() {
-  this->Clear();
+  for (auto& group : this->properties) {
+    for (const auto& property : std::as_const(group.second)) {
+      delete property.second;
+    }
+  }
+  this->properties.clear();
 }
 
 // OFFSET: 0x00699040
