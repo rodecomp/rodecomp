@@ -1585,7 +1585,7 @@ void CGameMode::ReceiveSummonHpInit(const unsigned char* buffer) {
 // FUNCTION: fn_22000
 void CGameMode::ReceiveSummonHpUpdate(const unsigned char* buffer) {
   const SummonHpUpdatePacket* packet = reinterpret_cast<const SummonHpUpdatePacket*>(buffer);
-  if (g_session.FindSummonMaxHp(packet->summonId) == -1) {
+  if (-1 == g_session.FindSummonMaxHp(packet->summonId)) {
     return;
   }
 
