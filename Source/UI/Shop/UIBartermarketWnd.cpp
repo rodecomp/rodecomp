@@ -1412,10 +1412,11 @@ int UIBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_
   }
 
   case UM_REFRESHITEM: {
-    this->items.clear();
+    this->items.erase(this->items.begin(), this->items.end());
     std::list<BarterMarketItem>* items = g_barterMarketItemMgr->GetAllItems();
     for (std::list<BarterMarketItem>::iterator it = items->begin(); it != items->end(); ++it) {
-      this->items.push_back(it->ToItemInfo());
+      ITEM_INFO info = it->ToItemInfo();
+      this->items.push_back(info);
     }
     this->Invalidate();
     this->UpdateScrollBar();
@@ -1426,7 +1427,7 @@ int UIBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     break;
   }
 
-  return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  return UIItemBaseWnd::SendMsg(sender, message, a, b, c, d);
 }
 
 // OFFSET: 0x00846FB0
@@ -1537,10 +1538,11 @@ int UIBartermarketWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   }
 
   case UM_REFRESHITEM: {
-    this->items.clear();
+    this->items.erase(this->items.begin(), this->items.end());
     std::list<BarterMarketItem>* items = g_barterMarketItemMgr->GetItems();
     for (std::list<BarterMarketItem>::iterator it = items->begin(); it != items->end(); ++it) {
-      this->items.push_back(it->ToItemInfo());
+      ITEM_INFO info = it->ToItemInfo();
+      this->items.push_back(info);
     }
     this->Invalidate();
     this->UpdateScrollBar();
@@ -1551,7 +1553,7 @@ int UIBartermarketWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     break;
   }
 
-  return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  return UIItemBaseWnd::SendMsg(sender, message, a, b, c, d);
 }
 
 // OFFSET: 0x00842570
