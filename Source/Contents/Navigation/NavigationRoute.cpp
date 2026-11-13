@@ -119,9 +119,9 @@ void CNavigationManager::DrawRoute(const float* matrix) {
 // OFFSET: 0x00B88800
 // FUNCTION: fn_19376
 __declspec(noinline) CNaviInfo* CNavigationManager::FindObject(const char* name) const {
-  for (CNaviInfo* info : this->data.destinations) {
-    if (info->HasName(name)) {
-      return info;
+  for (auto it = this->data.destinations.begin(); it != this->data.destinations.end(); ++it) {
+    if ((*it)->HasName(name)) {
+      return *it;
     }
   }
   return nullptr;
