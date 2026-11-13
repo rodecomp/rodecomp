@@ -1587,6 +1587,13 @@ void CNpc::SetState(int state, int) {
   }
 
   switch (this->GetEffectiveJob(-1)) {
+    case JT_HIDDEN_NPC:
+      this->xSize *= 2;
+      this->ySize *= 2;
+      break;
+    case JT_EFFECTLAUNCHER:
+      this->render.position.y -= static_cast<float>(this->ySize * 5);
+      break;
     case JT_WARPNPC: {
       int height = this->ySize;
       if (height <= 10) {
@@ -1608,13 +1615,6 @@ void CNpc::SetState(int state, int) {
       }
       break;
     }
-    case JT_EFFECTLAUNCHER:
-      this->render.position.y -= static_cast<float>(this->ySize * 5);
-      break;
-    case JT_HIDDEN_NPC:
-      this->xSize *= 2;
-      this->ySize *= 2;
-      break;
     case JT_HIDDEN_WARP_NPC:
       break;
     default: {
@@ -1698,6 +1698,22 @@ void CNpc::SetState(int state, int) {
           }
           this->UnRegisterPos();
           break;
+        case ST_SKILL:
+          switch (this->objectType) {
+            case 8:
+            case 10:
+            case 13:
+            case 14:
+              this->SetAction(40, 4, 1);
+              break;
+            case 9:
+              this->SetAction(16, 4, 1);
+              break;
+          }
+          if (this->GetEffectiveJob(-1) >= 6017 && this->GetEffectiveJob(-1) <= 6046) {
+            this->SetAction(96, 6, 1);
+          }
+          break;
         case ST_ATTACK:
           if (this->bodyState != 1 && this->bodyState != 2) {
             this->render.isMotionFreezed = false;
@@ -1719,6 +1735,21 @@ void CNpc::SetState(int state, int) {
           this->RegisterPos();
           this->LaunchAttackProjectile(this->hitTargetAid, this->render.speed * this->attackMotion);
           break;
+        case ST_DAMAGE:
+          if (this->render.frameSequenceActive != 0 || this->render.animationSequenceActive != 0 || this->render.timedSequenceActive != 0) {
+            return;
+          }
+          if (this->GetEffectiveJob(-1) >= 6017 && this->GetEffectiveJob(-1) <= 6046) {
+            this->SetAction(48, 5, 1);
+            break;
+          }
+          if (this->render.previousAnimation < 40) {
+            this->SetAction(24, 4, 1);
+            this->RegisterPos();
+            break;
+          }
+          this->ProcessMotion();
+          return;
         case ST_DEAD:
           this->render.frameSequenceActive = 0;
           this->render.animationSequenceActive = 0;
@@ -1737,37 +1768,6 @@ void CNpc::SetState(int state, int) {
           } else {
             this->SetAction(32, 8, 1);
             this->UnRegisterPos();
-          }
-          break;
-        case ST_DAMAGE:
-          if (this->render.frameSequenceActive != 0 || this->render.animationSequenceActive != 0 || this->render.timedSequenceActive != 0) {
-            return;
-          }
-          if (this->GetEffectiveJob(-1) >= 6017 && this->GetEffectiveJob(-1) <= 6046) {
-            this->SetAction(48, 5, 1);
-            break;
-          }
-          if (this->render.previousAnimation >= 40) {
-            this->ProcessMotion();
-            return;
-          }
-          this->SetAction(24, 4, 1);
-          this->RegisterPos();
-          break;
-        case ST_SKILL:
-          switch (this->objectType) {
-            case 8:
-            case 10:
-            case 13:
-            case 14:
-              this->SetAction(40, 4, 1);
-              break;
-            case 9:
-              this->SetAction(16, 4, 1);
-              break;
-          }
-          if (this->GetEffectiveJob(-1) >= 6017 && this->GetEffectiveJob(-1) <= 6046) {
-            this->SetAction(96, 6, 1);
           }
           break;
         case ST_SLEEP:
