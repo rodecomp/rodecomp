@@ -1239,8 +1239,8 @@ void UIWindow::DrawAuxiliary(int mode, int x, int y, CBitmapRes* bitmap, bool tr
 // OFFSET: 0x00A7BE90
 // FUNCTION: fn_16941
 void UIWindow::DrawAmount(int amount, std::string text, int x, int y) {
-  COLORREF color = 0;
-  COLORREF shadow = 0;
+  COLORREF color;
+  COLORREF shadow;
   bool outlined = true;
 
   if (amount >= 1000000000) {
@@ -1248,11 +1248,13 @@ void UIWindow::DrawAmount(int amount, std::string text, int x, int y) {
     shadow = 0xFF;
   } else if (amount >= 100000000) {
     color = 0x64C8C8;
+    shadow = 0;
   } else if (amount >= 10000000) {
     color = 0xFF;
     outlined = false;
   } else if (amount >= 1000000) {
     color = 0xFF00;
+    shadow = 0;
   } else if (amount >= 100000) {
     color = 0xFF0000;
     outlined = false;
@@ -1270,6 +1272,7 @@ void UIWindow::DrawAmount(int amount, std::string text, int x, int y) {
     shadow = 0xFF0000;
   } else {
     color = 0xFFFF00;
+    shadow = 0;
   }
 
   if (outlined) {
