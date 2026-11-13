@@ -323,15 +323,6 @@ int g_loginStartMode = 3;
 // GLOBAL: gl_25148
 const char* g_loginWallpaperName = "";
 
-struct SessionAccount {
-  /* 0000 */ int sex;
-  /* 0004 */ int padding_0004;
-  /* 0008 */ int authCode;
-  /* 000C */ int userLevel;
-  /* 0010 */ std::uint32_t lastLoginIp;
-  /* 0014 */ char lastLoginTime[27];
-};
-
 // GLOBAL: gl_25252
 unsigned char g_loginExitFlag;
 // GLOBAL: gl_25221
@@ -2263,9 +2254,8 @@ void CLoginMode::ReceiveAcceptLogin(const AcceptLoginPacket* packet, int version
   g_session.m_loginAcceptTime = timeGetTime();
   *reinterpret_cast<std::string*>(&g_session.autoReplyText) = LookupMessage(MSI_AUTO_MSG);
 
-  SessionAccount& account = *reinterpret_cast<SessionAccount*>(&g_session.m_sex);
-  account.authCode = packet->authCode;
-  account.userLevel = packet->userLevel;
+  g_session.m_authCode = packet->authCode;
+  g_session.m_userLevel = packet->userLevel;
   g_session.m_aid = packet->aid;
 
   unsigned char digest[16] = {};
@@ -2294,9 +2284,9 @@ void CLoginMode::ReceiveAcceptLogin(const AcceptLoginPacket* packet, int version
   const unsigned char flags = g_serviceOptions.Get(0x6C);
   g_session.SetServiceFlags(flags, flags);
 
-  account.lastLoginIp = packet->lastLoginIp;
-  memcpy_s(account.lastLoginTime, sizeof(packet->lastLoginTime), packet->lastLoginTime, sizeof(packet->lastLoginTime));
-  account.lastLoginTime[26] = '\0';
+  g_session.m_lastLoginIp = packet->lastLoginIp;
+  memcpy_s(g_session.m_lastLoginTime, sizeof(packet->lastLoginTime), packet->lastLoginTime, sizeof(packet->lastLoginTime));
+  g_session.m_lastLoginTime[26] = '\0';
 
   unsigned int count;
   switch (version) {
@@ -3580,7 +3570,6 @@ void CLoginMode::OnChangeState(int value) {
   this->connectionReady = 1;
 
   ServerAddress2* servers = reinterpret_cast<ServerAddress2*>(this->serverList);
-  SessionAccount& account = *reinterpret_cast<SessionAccount*>(&g_session.m_sex);
 
   switch (value) {
   case 0:
@@ -3889,9 +3878,9 @@ void CLoginMode::OnChangeState(int value) {
     packet.id = ID_CH_ENTER;
     packet.clientType = 0;
     packet.aid = g_session.m_aid;
-    packet.authCode = account.authCode;
-    packet.userLevel = account.userLevel;
-    packet.sex = static_cast<unsigned char>(account.sex);
+    packet.authCode = g_session.m_authCode;
+    packet.userLevel = g_session.m_userLevel;
+    packet.sex = static_cast<unsigned char>(g_session.m_sex);
     GetRagConnection().Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(packet.id), &packet);
     static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND))->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
     g_accountLinkedUserDataMgr->Load(g_session.m_aid, g_session.m_accountName);
@@ -3985,7 +3974,7 @@ void CLoginMode::OnChangeState(int value) {
     packet.clientTime = timeGetTime();
     packet.aid = g_session.m_aid;
     packet.gid = g_session.m_gid;
-    packet.authCode = account.authCode;
+    packet.authCode = g_session.m_authCode;
     packet.sex = static_cast<unsigned char>(g_session.GetCurrentSex());
     GetRagConnection().Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(packet.packetType), &packet);
     g_session.SetOption(17, 1, 0);

@@ -7370,7 +7370,7 @@ void CGameMode::InitializeState() {
     g_guildInfo.Init();
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_LIST_COMMAND)), 0xFFE6E6, 0, 0, 0);
-    inet_ntoa(*reinterpret_cast<const in_addr*>(&g_session.m_zoneServerAddress));
+    inet_ntoa(*reinterpret_cast<const in_addr*>(&g_session.m_lastLoginIp));
     if (!g_accountLinkedUserDataMgr->m_loaded) {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_OFFER_GUILD_EXP_MAX_RATE)), 255, 0, 0, 0);
     }
