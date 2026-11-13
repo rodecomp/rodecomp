@@ -169,7 +169,7 @@ CRenderObject::CRenderObject() {
 
 // OFFSET: 0x00CA8F90
 // FUNCTION: fn_20998
-CRenderObject::~CRenderObject() = default;
+__declspec(noinline) CRenderObject::~CRenderObject() = default;
 
 // OFFSET: 0x00CAFDC0
 // FUNCTION: fn_21089
