@@ -144,7 +144,7 @@ void FuncDrawWNDChar::Draw(bool option) {
       SpriteAtlasRecord record{};
       const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
       if (cell.imageType == 0 && !g_renderer->atlas.Find(image, palette, record)) {
-        g_renderer->atlas.Insert(*GetRenderSystemHolder()->system, image, palette, record, g_serviceType, g_resourceReuseDelay);
+        g_renderer->atlas.Insert(image, palette, record);
       }
 
       float scale = GetSkillFactor(this->m_job);
@@ -166,7 +166,7 @@ void FuncDrawWNDChar::Draw(bool option) {
       if (cell.imageType == 0) {
         texture = g_renderer->atlas.Find(image, palette, record);
         if (!texture) {
-          texture = g_renderer->atlas.Insert(*GetRenderSystemHolder()->system, image, palette, record, g_serviceType, g_resourceReuseDelay);
+          texture = g_renderer->atlas.Insert(image, palette, record);
         }
       } else {
         texture = static_cast<CTexture*>(const_cast<void*>(image->surface));

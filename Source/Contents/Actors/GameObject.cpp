@@ -801,7 +801,7 @@ void CRenderObject::DrawQuad(const SpriteQuad& quad, const std::uint32_t* palett
   if (!texture) {
     texture = g_renderer->atlas.Find(image, palette, record);
     if (!texture) {
-      texture = g_renderer->atlas.Insert(*GetRenderSystemHolder()->system, image, palette, record, g_serviceType, g_resourceReuseDelay);
+      texture = g_renderer->atlas.Insert(image, palette, record);
     }
   } else {
     record.u0 = 0.0f;

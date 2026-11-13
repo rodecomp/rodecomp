@@ -5,6 +5,8 @@
 #include <cstdint>
 #include <string>
 
+class CActRes;
+class CSprRes;
 class CTexture;
 class UITransBalloonText;
 struct TextureRegion;
@@ -47,6 +49,9 @@ public:
   void DrawCursor();
   void DrawFadeIn();
   void DrawTexture(const tagRECT& rect, int angle, float rhw, std::uint32_t color, CTexture* texture, TextureRegion region);
+  void DrawActionSprite(
+    int x, int y, const CActRes* action, const CSprRes* sprite, int animation, int frame, float scale, float angle, std::uint32_t color, std::uint16_t flags
+  );
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

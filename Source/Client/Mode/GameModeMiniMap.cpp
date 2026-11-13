@@ -8,7 +8,6 @@
 #include "Contents/Actors/Pc.h"
 #include "Contents/Ground/TerrainHeight.h"
 #include "Contents/World/World.h"
-#include "Render/Drawing/ActionSpriteDrawing.h"
 #include "Render/Primitives/RenderPrimitivePool.h"
 #include "Render/Primitives/RenderQueues.h"
 #include "Render/Renderer.h"
@@ -514,11 +513,11 @@ void CGameMode::DrawMiniMapCoordinates() {
   int x = g_renderer->viewport.width - 80 + count * 25;
   const int y = g_renderer->viewport.height - 30;
   for (int index = 0; index < count; ++index, x -= 25) {
-    DrawActionSprite(reinterpret_cast<CRenderSystemBase&>(*this), x, y, action, sprite, digits[index], 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201);
+    this->DrawActionSprite(x, y, action, sprite, digits[index], 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201);
   }
 
-  DrawActionSprite(
-    reinterpret_cast<CRenderSystemBase&>(*this), g_renderer->viewport.width - 80, g_renderer->viewport.height - 40, action, sprite, 10, 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201
+  this->DrawActionSprite(
+    g_renderer->viewport.width - 80, g_renderer->viewport.height - 40, action, sprite, 10, 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201
   );
 
   value = coordinateX;
@@ -542,7 +541,7 @@ void CGameMode::DrawMiniMapCoordinates() {
   x = g_renderer->viewport.width - 105;
   const int secondY = g_renderer->viewport.height - 50;
   for (int index = 0; index < count; ++index, x -= 25) {
-    DrawActionSprite(reinterpret_cast<CRenderSystemBase&>(*this), x, secondY, action, sprite, digits[index], 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201);
+    this->DrawActionSprite(x, secondY, action, sprite, digits[index], 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201);
   }
 }
 
@@ -571,15 +570,15 @@ void CGameMode::DrawMiniMapNumber() {
       if (value < 0) {
         value = 0;
       }
+      int digits = 1;
       if (value > 999) {
-        g_minimapCoordinateDigits = 4;
+        digits = 4;
       } else if (value > 99) {
-        g_minimapCoordinateDigits = 3;
+        digits = 3;
       } else if (value > 9) {
-        g_minimapCoordinateDigits = 2;
-      } else {
-        g_minimapCoordinateDigits = 1;
+        digits = 2;
       }
+      g_minimapCoordinateDigits = digits;
     }
 
     g_minimapCoordinateDigitValues[0] = value % 10;
@@ -598,8 +597,8 @@ void CGameMode::DrawMiniMapNumber() {
       static_cast<float>(g_minimapCoordinateDigits * 16 - 16)
     );
     const int y = static_cast<int>(static_cast<float>(g_mouse.y) + this->cursorOffsetY);
-    DrawActionSprite(
-      reinterpret_cast<CRenderSystemBase&>(*this), x, y, action, sprite, 0, g_minimapCoordinateDigitValues[index], 2.0f, 0.0f, 0xFAFFFFFF, 0x201
+    this->DrawActionSprite(
+    x, y, action, sprite, 0, g_minimapCoordinateDigitValues[index], 2.0f, 0.0f, 0xFAFFFFFF, 0x201
     );
   }
 }
@@ -685,8 +684,8 @@ void CGameMode::DrawTimeAttackTimer() {
   const int center = g_renderer->viewport.width / 2;
   for (int index = 0; index < total; ++index, --startIndex) {
     const int digit = (index + 1) % 3 == 0 ? 10 : digits[startIndex];
-    DrawActionSprite(
-      reinterpret_cast<CRenderSystemBase&>(*this), center + offset + index * 40, 40, action, sprite, digit, 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201
+    this->DrawActionSprite(
+    center + offset + index * 40, 40, action, sprite, digit, 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201
     );
   }
 
@@ -696,8 +695,8 @@ void CGameMode::DrawTimeAttackTimer() {
     const int frame = g_timeAttackFrame / 3;
     if (frame < static_cast<int>(titleAction->FrameCount(0))) {
       const int titleX = g_renderer->viewport.width / 2 - titleSprite->images[0][0]->height / 2;
-      DrawActionSprite(
-        reinterpret_cast<CRenderSystemBase&>(*this), titleX, 120, titleAction, titleSprite, 0, frame, 1.0f, 0.0f, 0xFFFFFFFF, 0x201
+      this->DrawActionSprite(
+    titleX, 120, titleAction, titleSprite, 0, frame, 1.0f, 0.0f, 0xFFFFFFFF, 0x201
       );
       ++g_timeAttackFrame;
     }
@@ -807,8 +806,8 @@ void CGameMode::DrawTimeAttackCountdown(std::uint32_t value, int mode) {
   const int center = g_renderer->viewport.width / 2;
   for (int index = 0; index < total; ++index, --startIndex) {
     const int digit = (index + 1) % 3 == 0 ? 10 : digits[startIndex];
-    DrawActionSprite(
-      reinterpret_cast<CRenderSystemBase&>(*this), center + offset + index * 40, 40, action, sprite, digit, 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201
+    this->DrawActionSprite(
+    center + offset + index * 40, 40, action, sprite, digit, 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201
     );
   }
 }

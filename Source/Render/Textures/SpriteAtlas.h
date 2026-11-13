@@ -44,9 +44,7 @@ public:
   void Initialize(unsigned spareCount);
   void Clear();
   CTexture* Find(const SpriteRleImage* image, const std::uint32_t* palette, SpriteAtlasRecord& output);
-  CTexture* Insert(
-    CRenderSystemBase& system, const SpriteRleImage* image, const std::uint32_t* palette, SpriteAtlasRecord& output, int serviceType, std::uint32_t reuseDelay
-  );
+  CTexture* Insert(const SpriteRleImage* image, const std::uint32_t* palette, SpriteAtlasRecord& output);
   void ClearExpired(std::uint32_t reuseDelay);
 
 private:

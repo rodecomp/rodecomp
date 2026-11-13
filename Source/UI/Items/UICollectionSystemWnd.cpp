@@ -48,7 +48,7 @@ void CUICollectionSystemWnd::Paint() {
     const SpriteRleImage* image = this->m_sprite->images[0][cell.image];
     CTexture* texture = g_renderer->atlas.Find(image, palette, record);
     if (!texture) {
-      texture = g_renderer->atlas.Insert(*GetRenderSystemHolder()->system, image, palette, record, g_serviceType, g_resourceReuseDelay);
+      texture = g_renderer->atlas.Insert(image, palette, record);
     }
     this->geometry.surface->DrawSurface(
       this->geometry.width / 2 + cell.x, this->geometry.height / 2 + cell.y, texture, static_cast<int>(record.u0 * 256.0f),

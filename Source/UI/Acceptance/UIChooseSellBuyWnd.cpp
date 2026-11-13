@@ -936,7 +936,7 @@ void UIMonsterDisplayWnd::Paint() {
     if (cell.imageType == 0) {
       texture = g_renderer->atlas.Find(image, sprite->palette, record);
       if (!texture) {
-        texture = g_renderer->atlas.Insert(*GetRenderSystemHolder()->system, image, sprite->palette, record, g_serviceType, g_resourceReuseDelay);
+        texture = g_renderer->atlas.Insert(image, sprite->palette, record);
       }
     } else {
       texture = static_cast<CTexture*>(const_cast<void*>(image->surface));
@@ -1788,7 +1788,7 @@ void UIPetTamingDeceiveWnd::Paint() {
     const SpriteRleImage* image = sprite->images[0][cell.image];
     CTexture* texture = g_renderer->atlas.Find(image, sprite->palette, record);
     if (!texture) {
-      texture = g_renderer->atlas.Insert(*GetRenderSystemHolder()->system, image, sprite->palette, record, g_serviceType, g_resourceReuseDelay);
+      texture = g_renderer->atlas.Insert(image, sprite->palette, record);
     }
     this->geometry.surface->DrawSurface(
       this->geometry.width / 2 + cell.x, this->geometry.height / 2 + cell.y, texture, static_cast<int>(record.u0 * 256.0f),

@@ -1,7 +1,9 @@
+#include "Contents/Configuration/ServiceConfiguration.h"
 #include "Render/RenderSystemBase.h"
 #include "Render/Textures/SpriteAtlas.h"
 #include "Render/Textures/Texture.h"
 #include "Render/Textures/TextureCache.h"
+#include "Resource/ResourceMgr.h"
 
 #include <bit>
 #include <windows.h>
@@ -169,10 +171,8 @@ SpriteAtlasPage* SpriteAtlas::Allocate(unsigned category, unsigned width, unsign
 
 // OFFSET: 0x0056F410
 // FUNCTION: fn_02404
-CTexture* SpriteAtlas::Insert(
-  CRenderSystemBase& system, const SpriteRleImage* image, const std::uint32_t* palette, SpriteAtlasRecord& output, int serviceType, std::uint32_t reuseDelay
-) {
-  const std::uint32_t threshold = timeGetTime() - (reuseDelay >> 2);
+CTexture* SpriteAtlas::Insert(const SpriteRleImage* image, const std::uint32_t* palette, SpriteAtlasRecord& output) {
+  const std::uint32_t threshold = timeGetTime() - (g_resourceReuseDelay >> 2);
   float width = 256.0f;
   float height = 256.0f;
   if (image->width > 256) {
@@ -211,7 +211,7 @@ CTexture* SpriteAtlas::Insert(
   record.image = image;
   record.palette = palette;
   float u1 = static_cast<float>(record.x + image->width) / width;
-  if (serviceType != 10) {
+  if (g_serviceType != 10) {
     record.u1 = u1;
     record.v1 = static_cast<float>(record.y + image->height) / height;
   } else {

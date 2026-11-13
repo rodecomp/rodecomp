@@ -1,5 +1,5 @@
 #include "Contents/Configuration/ServiceConfiguration.h"
-#include "Render/Drawing/ActionSpriteDrawing.h"
+#include "Client/Mode/CMode.h"
 #include "Render/Renderer.h"
 #include "Render/Primitives/TextureQuad.h"
 #include "Render/Textures/SpriteAtlas.h"
@@ -10,9 +10,8 @@
 
 // OFFSET: 0x00AD5A70
 // FUNCTION: fn_17825
-void DrawActionSprite(
-  CRenderSystemBase& system, int x, int y, const CActRes* action, const CSprRes* sprite, int animation, int frame, float scale, float angle,
-  std::uint32_t color, std::uint16_t flags
+void CMode::DrawActionSprite(
+  int x, int y, const CActRes* action, const CSprRes* sprite, int animation, int frame, float scale, float angle, std::uint32_t color, std::uint16_t flags
 ) {
   if (!action || !sprite) {
     return;
@@ -42,7 +41,7 @@ void DrawActionSprite(
     if (cell.imageType == 0) {
       texture = g_renderer->atlas.Find(image, sprite->palette, record);
       if (!texture) {
-        texture = g_renderer->atlas.Insert(system, image, sprite->palette, record, g_serviceType, g_resourceReuseDelay);
+        texture = g_renderer->atlas.Insert(image, sprite->palette, record);
       }
     } else {
       texture = static_cast<CTexture*>(const_cast<void*>(image->surface));

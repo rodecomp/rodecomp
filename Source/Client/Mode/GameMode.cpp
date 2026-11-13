@@ -8712,7 +8712,6 @@ int CGameMode::ProcessGroundClick(int result) {
 #include "Contents/Async/AsyncWorkMgr.h"
 #include "Contents/Emblems/EmblemDataMgr.h"
 #include "Client/Stove/StovePCSDK.h"
-#include "Render/Drawing/ActionSpriteDrawing.h"
 #include "Utility/Hash/GGHashMgr.h"
 #include "Contents/Actors/GroundScope.h"
 #include "Contents/Ground/GroundGeometry.h"
@@ -8881,7 +8880,7 @@ void CGameMode::Update() {
         const std::string resource = this->drag.resource;
         CSprRes* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load((resource + ".spr").c_str()));
         CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load((resource + ".act").c_str()));
-        DrawActionSprite(*GetRenderSystemHolder()->system, g_mouse.x, g_mouse.y, action, sprite, 0, 0, 1.0f, 0.0f, 0xFAFFFFFF, 0x201);
+        this->DrawActionSprite(g_mouse.x, g_mouse.y, action, sprite, 0, 0, 1.0f, 0.0f, 0xFAFFFFFF, 0x201);
       }
     }
 

@@ -805,7 +805,7 @@ void CDCBitmap::DrawScaledSprite(
     if (!cell->imageType) {
       surface = g_renderer->atlas.Find(image, palette, record);
       if (!surface) {
-        surface = g_renderer->atlas.Insert(*GetRenderSystemHolder()->system, image, palette, record, g_serviceType, g_resourceReuseDelay);
+        surface = g_renderer->atlas.Insert(image, palette, record);
       }
     } else {
       surface = static_cast<CSurface*>(const_cast<void*>(image->surface));

@@ -218,7 +218,7 @@ void UIRoMapWnd::DrawKafraIcon(float x, float y) {
   if (cell->imageType == 0) {
     texture = g_renderer->atlas.Find(image, palette, record);
     if (!texture) {
-      texture = g_renderer->atlas.Insert(*GetRenderSystemHolder()->system, image, palette, record, g_serviceType, g_resourceReuseDelay);
+      texture = g_renderer->atlas.Insert(image, palette, record);
     }
   } else {
     texture = static_cast<CTexture*>(const_cast<void*>(image->surface));

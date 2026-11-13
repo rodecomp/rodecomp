@@ -16,7 +16,7 @@ RenderPrimitive* BuildSpriteQuad(CRenderSystemBase& system, const SpriteQuad& qu
   if (!texture) {
     texture = g_renderer->atlas.Find(image, palette, record);
     if (!texture) {
-      texture = g_renderer->atlas.Insert(system, image, palette, record, g_serviceType, g_resourceReuseDelay);
+      texture = g_renderer->atlas.Insert(image, palette, record);
     }
   } else {
     record.u0 = 0.0f;

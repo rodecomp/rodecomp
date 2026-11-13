@@ -110,7 +110,7 @@ void UIWindow::DrawRobeSprite(int job, int sex, int robe, int x, int y, bool ove
   if (cell.imageType == 0) {
     texture = g_renderer->atlas.Find(image, sprite->palette, record);
     if (!texture) {
-      texture = g_renderer->atlas.Insert(*GetRenderSystemHolder()->system, image, sprite->palette, record, g_serviceType, g_resourceReuseDelay);
+      texture = g_renderer->atlas.Insert(image, sprite->palette, record);
     }
   } else {
     texture = static_cast<CTexture*>(const_cast<void*>(image->surface));
