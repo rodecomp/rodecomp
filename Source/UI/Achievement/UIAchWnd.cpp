@@ -717,7 +717,8 @@ void UIAchievementWnd::SelectAchievement(int id) {
   if (index < list->rowCount) {
     list->firstRow = 0;
   } else {
-    list->firstRow = std::min(static_cast<unsigned>(index), static_cast<unsigned>(list->achievementList->count - list->rowCount));
+    const unsigned limit = static_cast<unsigned>(list->achievementList->count - list->rowCount);
+    list->firstRow = static_cast<unsigned>(index) > limit ? limit : index;
   }
 
   list->scrollBar->SetPosition(list->firstRow);
