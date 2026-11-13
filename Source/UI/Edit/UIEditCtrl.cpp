@@ -617,7 +617,7 @@ void UIEditCtrl::DrawSelectionAt(int x, int y, int width) {
 
   if (left < right && extent > 0) {
     unsigned red, green, blue;
-    SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
+    g_skinInfo.PaletteChannels(6, 2, red, green, blue);
     this->FillRegion(left, y, left + extent > right ? right - left : extent, 14, RGB(red, green, blue));
   }
 }
@@ -631,7 +631,7 @@ void UIEditCtrl::DrawSelection(int x, int width) {
 
   if (left < right && extent > 0) {
     unsigned red, green, blue;
-    SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
+    g_skinInfo.PaletteChannels(6, 2, red, green, blue);
     this->FillRegion(left, 0, left + extent > right ? right - left : extent, this->geometry.height, RGB(red, green, blue));
   }
 }
@@ -2568,7 +2568,7 @@ void UIItemBaseWnd::Paint() {
   }
 
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - 38, RGB(red, green, blue));
   this->FillRegion(20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - 38) % 32, RGB(red, green, blue));
   this->DrawButtonBar(this->alternateButtonBar != 0 ? 2 : 0, 0, 1);
@@ -2785,7 +2785,7 @@ void UISkillListWnd::Paint() {
   }
 
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - 38, RGB(red, green, blue));
   this->FillRegion(20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - 38) % 32, RGB(red, green, blue));
   this->DrawButtonBar(2, 0, 1);
@@ -2798,7 +2798,7 @@ void UISkillListWnd::Paint() {
   }
 
   unsigned fillBlue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, fillBlue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, fillBlue);
   this->FillRegion(72, 17, slotColumns * 32 - 32, slotRows * 32, RGB(red, green, fillBlue));
 
   if (this->skillTab == 0) {
@@ -2828,11 +2828,11 @@ void UISkillListWnd::Paint() {
     int x = drawn % this->columns * 32;
     if (this->hovered == index) {
       unsigned selectRed, selectGreen, selectBlue;
-      SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, selectRed, selectGreen, selectBlue);
+      g_skinInfo.PaletteChannels(6, 2, selectRed, selectGreen, selectBlue);
       if (it->level == 0) {
-        SkinPaletteChannels(ResourceMgr::Instance(), 10, 2, selectRed, selectGreen, selectBlue);
+        g_skinInfo.PaletteChannels(10, 2, selectRed, selectGreen, selectBlue);
       } else if (it->spCost == 0) {
-        SkinPaletteChannels(ResourceMgr::Instance(), 14, 2, selectRed, selectGreen, selectBlue);
+        g_skinInfo.PaletteChannels(14, 2, selectRed, selectGreen, selectBlue);
       }
       this->FillRegion(x + 104, top + 19, 164, 28, RGB(selectRed, selectGreen, selectBlue));
     }
@@ -8969,7 +8969,7 @@ void UIItemStoreFindWnd::Paint() {
   this->DrawTitleBar(true, "", 0);
 
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->FillRegion(0, 17, this->geometry.width, this->geometry.height - 38, RGB(red, green, blue));
   this->DrawButtonBar(0, 0, 1);
 
@@ -8981,7 +8981,7 @@ void UIItemStoreFindWnd::Paint() {
   }
 
   unsigned fillRed, fillGreen, fillBlue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, fillRed, fillGreen, fillBlue);
+  g_skinInfo.PaletteChannels(2, 2, fillRed, fillGreen, fillBlue);
   this->FillRegion(72, 17, columns * 32 - 32, rows * 32, RGB(fillRed, fillGreen, fillBlue));
 
   int visible = 0;
@@ -9027,7 +9027,7 @@ void UIItemStoreSubWnd::Paint() {
   this->DrawTitleBar(true, "", 0);
 
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->FillRegion(0, 17, this->geometry.width, this->geometry.height - 38, RGB(red, green, blue));
   this->DrawButtonBar(0, 0, 1);
 
@@ -9039,7 +9039,7 @@ void UIItemStoreSubWnd::Paint() {
   }
 
   unsigned fillRed, fillGreen, fillBlue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, fillRed, fillGreen, fillBlue);
+  g_skinInfo.PaletteChannels(2, 2, fillRed, fillGreen, fillBlue);
   this->FillRegion(72, 17, columns * 32 - 32, rows * 32, RGB(fillRed, fillGreen, fillBlue));
 
   int visible = 0;
@@ -9101,13 +9101,13 @@ void UIItemPurchaseWnd::Paint() {
   }
 
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - 38, RGB(red, green, blue));
   this->FillRegion(20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - 38) % 32, RGB(red, green, blue));
   this->DrawButtonBar(this->alternateButtonBar != 0 ? 2 : 0, 0, 1);
 
   const int height = this->geometry.height;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->FillRegion(40, 17, this->geometry.width - 50, (height - 38) / 32 * 32, RGB(red, green, blue));
 
   int slots = (height - 58) / 32;
@@ -9131,7 +9131,7 @@ void UIItemPurchaseWnd::Paint() {
     const int top = visible / this->columns * 32;
     if (this->hovered == index) {
       unsigned hoverRed, hoverGreen, hoverBlue;
-      SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, hoverRed, hoverGreen, hoverBlue);
+      g_skinInfo.PaletteChannels(6, 2, hoverRed, hoverGreen, hoverBlue);
       this->FillRegion(column + 72, top + 19, 191, 28, RGB(hoverRed, hoverGreen, hoverBlue));
     }
 
@@ -9227,7 +9227,7 @@ void UIItemSellWnd::Paint() {
   }
 
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - 38, RGB(red, green, blue));
   this->FillRegion(20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - 38) % 32, RGB(red, green, blue));
   this->DrawButtonBar(this->alternateButtonBar != 0 ? 2 : 0, 0, 1);
@@ -9240,7 +9240,7 @@ void UIItemSellWnd::Paint() {
   }
 
   unsigned fillRed, fillGreen, fillBlue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, fillRed, fillGreen, fillBlue);
+  g_skinInfo.PaletteChannels(2, 2, fillRed, fillGreen, fillBlue);
   this->FillRegion(72, 17, columns * 32 - 32, slotRows * 32, RGB(fillRed, fillGreen, fillBlue));
 
   int visible = 0;
@@ -9259,7 +9259,7 @@ void UIItemSellWnd::Paint() {
     const int top = visible / this->columns * 32;
     if (this->hovered == index) {
       unsigned hoverRed, hoverGreen, hoverBlue;
-      SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, hoverRed, hoverGreen, hoverBlue);
+      g_skinInfo.PaletteChannels(6, 2, hoverRed, hoverGreen, hoverBlue);
       this->FillRegion(column + 72, top + 19, 191, 28, RGB(hoverRed, hoverGreen, hoverBlue));
     }
 
@@ -9327,7 +9327,7 @@ void UIItemShopWnd::Paint() {
   }
 
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - this->bottomPadding - 17, RGB(red, green, blue));
   this->FillRegion(
     20, (this->geometry.height - this->bottomPadding - 17) / 32 * 32 + 17, this->geometry.width - 24,
@@ -9345,7 +9345,7 @@ void UIItemShopWnd::Paint() {
   if (this->showFooter != 0) {
     slotRows = (this->geometry.height - this->bottomPadding - 17) / 32;
   }
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->FillRegion(72, 17, columns * 32 - 32, slotRows * 32, RGB(red, green, blue));
   if (this->showFooter != 0) {
     this->FillRegion(40, slotRows * 32 - 15, 32, 32, RGB(red, green, blue));
@@ -9367,7 +9367,7 @@ void UIItemShopWnd::Paint() {
     const int top = visible / this->columns * 32;
     if (this->hovered == index) {
       unsigned hoverRed, hoverGreen, hoverBlue;
-      SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, hoverRed, hoverGreen, hoverBlue);
+      g_skinInfo.PaletteChannels(6, 2, hoverRed, hoverGreen, hoverBlue);
       this->FillRegion(column + 72, top + 19, 191, 28, RGB(hoverRed, hoverGreen, hoverBlue));
     }
 
@@ -9471,7 +9471,7 @@ void UIItemStoreWnd::Paint() {
   }
 
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - 38, RGB(red, green, blue));
   this->FillRegion(20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - 38) % 32, RGB(red, green, blue));
   this->DrawButtonBar(this->alternateButtonBar != 0 ? 3 : 0, 0, 1);
@@ -9481,7 +9481,7 @@ void UIItemStoreWnd::Paint() {
   if (!this->m_hideCapacity) {
     this->scrollBar->Show(0);
     unsigned fillRed, fillGreen, fillBlue;
-    SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, fillRed, fillGreen, fillBlue);
+    g_skinInfo.PaletteChannels(2, 2, fillRed, fillGreen, fillBlue);
     this->FillRegion(40, 17, columns * 32, slotRows * 32, RGB(fillRed, fillGreen, fillBlue));
     DrawRoundedBorder(*this, 55, 131, 187, 139, 0xCE9484);
     DrawFilledRoundedBorder(*this, 56, 132, 185, 137, 0xFFE7DE);
@@ -9501,7 +9501,7 @@ void UIItemStoreWnd::Paint() {
   }
 
   unsigned fillRed, fillGreen, fillBlue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, fillRed, fillGreen, fillBlue);
+  g_skinInfo.PaletteChannels(2, 2, fillRed, fillGreen, fillBlue);
   this->FillRegion(72, 17, columns * 32 - 32, slotRows * 32, RGB(fillRed, fillGreen, fillBlue));
 
   int visible = 0;
@@ -9567,7 +9567,7 @@ void UIMerchantItemPurchaseWnd::Paint() {
   }
 
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - 38, RGB(red, green, blue));
   this->FillRegion(20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - 38) % 32, RGB(red, green, blue));
   this->DrawButtonBar(this->alternateButtonBar != 0 ? 2 : 0, 0, 1);
@@ -9580,7 +9580,7 @@ void UIMerchantItemPurchaseWnd::Paint() {
   }
 
   unsigned fillRed, fillGreen, fillBlue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, fillRed, fillGreen, fillBlue);
+  g_skinInfo.PaletteChannels(2, 2, fillRed, fillGreen, fillBlue);
   this->FillRegion(72, 17, columns * 32 - 32, slotRows * 32, RGB(fillRed, fillGreen, fillBlue));
 
   int visible = 0;
@@ -9595,7 +9595,7 @@ void UIMerchantItemPurchaseWnd::Paint() {
     const int top = visible / this->columns * 32;
     if (this->hovered == index) {
       unsigned hoverRed, hoverGreen, hoverBlue;
-      SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, hoverRed, hoverGreen, hoverBlue);
+      g_skinInfo.PaletteChannels(6, 2, hoverRed, hoverGreen, hoverBlue);
       this->FillRegion(column + 72, top + 19, 191, 28, RGB(hoverRed, hoverGreen, hoverBlue));
     }
 
@@ -9633,7 +9633,7 @@ void UIMerchantShopMakeWnd::Paint() {
   this->DrawTitleBar(false, "", 0);
 
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->FillRegion(0, 17, this->geometry.width, this->geometry.height - 38, RGB(red, green, blue));
 
   int barHeight;
@@ -10391,7 +10391,7 @@ void UIMerchantItemShopWnd::Paint() {
   }
 
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - this->footerHeight - 17, RGB(red, green, blue));
   this->FillRegion(
     20, static_cast<unsigned>(this->geometry.height - this->footerHeight - 17) / 32 * 32 + 17, this->geometry.width - 24,
@@ -10407,7 +10407,7 @@ void UIMerchantItemShopWnd::Paint() {
   }
 
   unsigned fillRed, fillGreen, fillBlue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, fillRed, fillGreen, fillBlue);
+  g_skinInfo.PaletteChannels(2, 2, fillRed, fillGreen, fillBlue);
   this->FillRegion(72, 17, columns * 32 - 32, slotRows * 32, RGB(fillRed, fillGreen, fillBlue));
 
   {
@@ -10437,7 +10437,7 @@ void UIMerchantItemShopWnd::Paint() {
     const int left = column + 40;
     if (this->hovered == index) {
       unsigned hoverRed, hoverGreen, hoverBlue;
-      SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, hoverRed, hoverGreen, hoverBlue);
+      g_skinInfo.PaletteChannels(6, 2, hoverRed, hoverGreen, hoverBlue);
       this->FillRegion(left + 32, top + 19, 191, 28, RGB(hoverRed, hoverGreen, hoverBlue));
     }
 
@@ -10744,7 +10744,7 @@ void UIItemSellWnd2::Paint() {
   }
 
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - 38, RGB(red, green, blue));
   this->FillRegion(20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - 38) % 32, RGB(red, green, blue));
   this->DrawButtonBar(this->alternateButtonBar != 0 ? 2 : 0, 0, 1);
@@ -10757,7 +10757,7 @@ void UIItemSellWnd2::Paint() {
   }
 
   unsigned fillRed, fillGreen, fillBlue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, fillRed, fillGreen, fillBlue);
+  g_skinInfo.PaletteChannels(2, 2, fillRed, fillGreen, fillBlue);
   this->FillRegion(72, 17, columns * 32 - 32, slotRows * 32, RGB(fillRed, fillGreen, fillBlue));
 
   int visible = 0;
@@ -10776,7 +10776,7 @@ void UIItemSellWnd2::Paint() {
     const int top = visible / this->columns * 32;
     if (this->hovered == index) {
       unsigned hoverRed, hoverGreen, hoverBlue;
-      SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, hoverRed, hoverGreen, hoverBlue);
+      g_skinInfo.PaletteChannels(6, 2, hoverRed, hoverGreen, hoverBlue);
       this->FillRegion(column + 72, top + 19, 191, 28, RGB(hoverRed, hoverGreen, hoverBlue));
     }
 
@@ -10822,7 +10822,7 @@ void UIItemShopWnd2::Paint() {
   }
 
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - this->bottomBarHeight - 17, RGB(red, green, blue));
   this->FillRegion(20, (this->geometry.height - this->bottomBarHeight - 17) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - this->bottomBarHeight - 17) % 32, RGB(red, green, blue));
   this->DrawButtonBar(this->alternateButtonBar != 0 ? 2 : 0, 0, 1);
@@ -10835,7 +10835,7 @@ void UIItemShopWnd2::Paint() {
   }
 
   unsigned fillRed, fillGreen, fillBlue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, fillRed, fillGreen, fillBlue);
+  g_skinInfo.PaletteChannels(2, 2, fillRed, fillGreen, fillBlue);
   this->FillRegion(72, 17, columns * 32 - 32, slotRows * 32, RGB(fillRed, fillGreen, fillBlue));
 
   int visible = 0;
@@ -10854,7 +10854,7 @@ void UIItemShopWnd2::Paint() {
     const int top = visible / this->columns * 32;
     if (this->hovered == index) {
       unsigned hoverRed, hoverGreen, hoverBlue;
-      SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, hoverRed, hoverGreen, hoverBlue);
+      g_skinInfo.PaletteChannels(6, 2, hoverRed, hoverGreen, hoverBlue);
       this->FillRegion(column + 72, top + 19, 191, 28, RGB(hoverRed, hoverGreen, hoverBlue));
     }
 
@@ -11041,10 +11041,10 @@ void UIItemWnd::Paint() {
 
   unsigned red, green, blue;
   if (this->categoryFilter == 3 && g_session.m_blockPrivateTab == 1) {
-    SkinPaletteChannels(ResourceMgr::Instance(), 0, 8, red, green, blue);
+    g_skinInfo.PaletteChannels(0, 8, red, green, blue);
     this->FillRegion(20, 17, this->geometry.width - 21, this->geometry.height - 38, RGB(red, green, blue));
   } else {
-    SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+    g_skinInfo.PaletteChannels(2, 2, red, green, blue);
     this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - 38, RGB(red, green, blue));
     this->FillRegion(20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - 38) % 32, RGB(red, green, blue));
   }

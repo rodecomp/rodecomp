@@ -1,4 +1,5 @@
 #include "UI/Window/UIWindowMgr.h"
+#include "Contents/Skin/SkinMgr.h"
 #include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/GameSettings/UIBattleMsgOptionWnd.h"
@@ -214,7 +215,7 @@ void UIBattleMsgOptionWnd::Paint() {
   }
 
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 14, 6, red, green, blue);
+  g_skinInfo.PaletteChannels(14, 6, red, green, blue);
   this->FillRegion(18, 17, 1, this->geometry.height - 21, RGB(red, green, blue));
   this->DrawButtonBar(0, 0, 1);
 
@@ -228,7 +229,7 @@ void UIBattleMsgOptionWnd::Paint() {
 
     if (this->hoveredOption == index) {
       unsigned selectRed, selectGreen, selectBlue;
-      SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, selectRed, selectGreen, selectBlue);
+      g_skinInfo.PaletteChannels(6, 2, selectRed, selectGreen, selectBlue);
       this->FillRegion(25, y - 3, this->geometry.width - 40, 20, RGB(selectRed, selectGreen, selectBlue));
       this->FillRegion(26, y - 2, this->geometry.width - 42, 18, 0xFFFFFF);
     }

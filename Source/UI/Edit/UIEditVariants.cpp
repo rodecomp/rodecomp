@@ -545,7 +545,7 @@ void UIEditCtrl3::PaintText() {
       const int windowWidth = this->geometry.width;
       if (left < windowWidth && span > 0) {
         unsigned red, green, blue;
-        SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
+        g_skinInfo.PaletteChannels(6, 2, red, green, blue);
         this->FillRegion(left, y, left + span <= windowWidth ? span : windowWidth - left, 14, RGB(red, green, blue));
       }
     }

@@ -1,4 +1,5 @@
 #include "UI/Clan/UIClanWnd.h"
+#include "Contents/Skin/SkinMgr.h"
 #include "Client/Session/Session.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
@@ -99,7 +100,7 @@ void UIClanInfoManageWnd::Paint() {
   std::sprintf(text, "%s", LookupMessage(MSI_SEND_TO_CLAN));
   this->DrawTextAt(200, 65, text, 0, 0, 12, 0, 0, 0);
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(6, 2, red, green, blue);
   this->FillRegion(279, 64, 26, 26, RGB(red, green, blue));
   if (g_clanInfo->m_clanId != 0) {
     this->DrawBitmap(280, 65, this->m_emblem, true);
@@ -109,7 +110,7 @@ void UIClanInfoManageWnd::Paint() {
   std::sprintf(text, "%s", LookupMessage(MSI_CLAN_NUM_MEMBER));
   this->DrawTextAt(200, 213, text, 0, 0, 12, 0, 0, 0);
 
-  SkinPaletteChannels(ResourceMgr::Instance(), 14, 6, red, green, blue);
+  g_skinInfo.PaletteChannels(14, 6, red, green, blue);
   this->FillRegion(200, 155, 168, 48, RGB(red, green, blue));
   int row = 0;
   int y = 157;
@@ -119,7 +120,7 @@ void UIClanInfoManageWnd::Paint() {
     }
     if (relation->first == 0) {
       if (row == this->allyRow) {
-        SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
+        g_skinInfo.PaletteChannels(6, 2, red, green, blue);
         this->FillRegion(204, y, 80, 16, RGB(red, green, blue));
       }
       this->DrawTextAt(204, y, relation->second.c_str(), 0, 0, 12, 0, 0, 0);
@@ -128,7 +129,7 @@ void UIClanInfoManageWnd::Paint() {
     }
   }
 
-  SkinPaletteChannels(ResourceMgr::Instance(), 14, 6, red, green, blue);
+  g_skinInfo.PaletteChannels(14, 6, red, green, blue);
   this->FillRegion(200, 229, 168, 48, RGB(red, green, blue));
   row = 0;
   y = 231;
@@ -138,7 +139,7 @@ void UIClanInfoManageWnd::Paint() {
     }
     if (relation->first == 1) {
       if (row == this->hostileRow) {
-        SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
+        g_skinInfo.PaletteChannels(6, 2, red, green, blue);
         this->FillRegion(204, y, 80, 16, RGB(red, green, blue));
       }
       this->DrawTextAt(204, y, relation->second.c_str(), 0, 0, 12, 0, 0, 0);
@@ -152,14 +153,14 @@ void UIClanInfoManageWnd::Paint() {
 // FUNCTION: fn_10631
 void UIClanWnd::Paint() {
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 10, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(10, 2, red, green, blue);
   this->FillRegion(0, 17, this->geometry.width, 24, RGB(red, green, blue));
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->FillRegion(1, 18, 64, 23, RGB(red, green, blue));
   this->DrawTitleBar(false, "", 0);
-  SkinPaletteChannels(ResourceMgr::Instance(), 14, 6, red, green, blue);
+  g_skinInfo.PaletteChannels(14, 6, red, green, blue);
   this->FillRegion(0, 41, this->geometry.width, this->geometry.height - 41, RGB(red, green, blue));
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->FillRegion(1, 41, this->geometry.width - 2, this->geometry.height - 41, RGB(red, green, blue));
   this->DrawButtonBar(2, 0, 1);
 }

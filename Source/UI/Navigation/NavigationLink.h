@@ -33,7 +33,7 @@ extern std::string g_naviLinkTagEnd;
 
 bool CreateNavigationLinkParser();
 void DestroyNavigationLinkParser();
-int DecodeNavigationNumber(std::string value);
+int __stdcall DecodeNavigationNumber(std::string value);
 std::string FormatNavigationLink(std::string value, bool brackets);
 void DisplayNavigationLink(std::string& output, std::string value);
 

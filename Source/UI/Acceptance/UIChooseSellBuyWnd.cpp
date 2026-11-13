@@ -351,7 +351,7 @@ void UIChooseSellBuyWnd::OnCreate(int width, int height) {
   this->viewer = new UITextViewer();
   this->viewer->Configure(10, 22, width - 20, height - 55, 0);
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->viewer->SetBackgroundColor(0xFF000000u | RGB(red, green, blue));
   this->AddChild(this->viewer);
   const char* text = LookupMessage(MSI_SELECT_DEAL_TYPE);
@@ -450,7 +450,7 @@ void UIDisconnectedServerMsgWnd::OnCreate(int width, int height) {
   this->m_viewer = new UITextViewer();
   this->m_viewer->Configure(10, 22, width - 20, height - 55, 0);
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->m_viewer->SetBackgroundColor(0xFF000000u | RGB(red, green, blue));
   this->AddChild(this->m_viewer);
   this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_UNABLE_TO_CONNECT_SERVER)), 38, 0, 0);
@@ -689,10 +689,10 @@ void UILoadingWnd::Paint() {
 // FUNCTION: fn_12230
 void UIMenuWnd::Paint() {
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 6, 6, red, green, blue);
+  g_skinInfo.PaletteChannels(6, 6, red, green, blue);
   this->ClearSurface(RGB(red, green, blue));
   unsigned fillRed, fillGreen, fillBlue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, fillRed, fillGreen, fillBlue);
+  g_skinInfo.PaletteChannels(2, 2, fillRed, fillGreen, fillBlue);
   this->FillRegion(1, 1, this->geometry.width - 2, this->geometry.height - 2, RGB(fillRed, fillGreen, fillBlue));
 
   auto* leftUp = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_lu.bmp")));
@@ -704,7 +704,7 @@ void UIMenuWnd::Paint() {
   auto* rightDown = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_rd.bmp")));
   this->DrawBitmap(this->geometry.width - rightDown->image.width, this->geometry.height - rightDown->image.height, rightDown, false);
 
-  SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(6, 2, red, green, blue);
   const int count = static_cast<int>(this->m_items.size());
   for (int index = 0; index < count; ++index) {
     const std::string& item = this->m_items[index];
@@ -720,7 +720,7 @@ void UIMenuWnd::Paint() {
       this->DrawTextAt(3, this->m_itemHeight * (unique ? index : index - 1) / 2 + 1, this->m_items[index].c_str(), 0, 0, 12, this->m_colors[index], 0, 0);
     } else {
       unsigned lineRed, lineGreen, lineBlue;
-      SkinPaletteChannels(ResourceMgr::Instance(), 14, 6, lineRed, lineGreen, lineBlue);
+      g_skinInfo.PaletteChannels(14, 6, lineRed, lineGreen, lineBlue);
       this->FillRegion(0, this->m_itemHeight * index / 2 + 2, this->geometry.width, 1, RGB(lineRed, lineGreen, lineBlue));
     }
   }
@@ -888,7 +888,7 @@ void UIMinimapZoomWnd::AddTownButton(int index, TownInfo town) {
 void UIMonsterDisplayWnd::Paint() {
   this->DrawTitleBar(true, "", 0);
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->FillRegion(0, 17, this->geometry.width, this->geometry.height - 38, RGB(red, green, blue));
 
   char spriteName[128];
@@ -1354,7 +1354,7 @@ void UISelectCartWnd::Paint() {
 void UISkillDescribeWnd::Paint() {
   this->ClearSurface(0xFFFF00FF);
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   const UIWindow* text = this->m_text;
   this->FillRegion(
     text->geometry.width + text->geometry.x, text->geometry.y, this->geometry.width - text->geometry.width - text->geometry.x - 3, text->geometry.height,
@@ -1462,7 +1462,7 @@ void UISpellListWnd::Paint() {
     const int y = row / this->m_columns * 32 + 34;
     if (this->m_selected == index) {
       unsigned red, green, blue;
-      SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
+      g_skinInfo.PaletteChannels(6, 2, red, green, blue);
       this->FillRegion(5, y - 3, this->geometry.width - 24, 30, RGB(red, green, blue));
     }
 
@@ -1507,7 +1507,7 @@ void UITipOfTheDayWnd::Paint() {
   }
 
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - 38, RGB(red, green, blue));
   this->FillRegion(20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - 38) % 32, RGB(red, green, blue));
   this->DrawButtonBar(2, 0, 1);
@@ -1518,7 +1518,7 @@ void UITipOfTheDayWnd::Paint() {
     DrawItemSlotBackground(*this, 40, y);
   }
 
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->FillRegion(72, 17, columns * 32 - 32, slots * 32, RGB(red, green, blue));
 }
 
@@ -3759,7 +3759,7 @@ int UIBookWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
           this->m_lines.erase(this->m_lines.begin());
         }
       } else {
-        SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, this->m_red, this->m_green, this->m_blue);
+        g_skinInfo.PaletteChannels(2, 2, this->m_red, this->m_green, this->m_blue);
       }
 
       this->m_pageCount = this->m_lineCount / 19;
@@ -3959,7 +3959,7 @@ void UIItemCollectionWnd::OnCreate(int width, int height) {
   this->m_viewer = new UITextViewer();
   this->m_viewer->Configure(91, 31, width - 98, height - 40, 0);
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->m_viewer->backgroundColor = 0xFF000000u | RGB(red, green, blue);
   this->m_viewer->Invalidate();
   this->AddChild(this->m_viewer);
@@ -4047,7 +4047,7 @@ void UIItemCollection_ComparisonWnd::OnCreate(int width, int height) {
   this->m_closeButton->Enable(0);
   this->m_kind = 234;
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 30, 6, red, green, blue);
+  g_skinInfo.PaletteChannels(30, 6, red, green, blue);
   this->m_viewer->SetBackgroundColor(0xFF000000u | RGB(red, green, blue));
 }
 
@@ -4136,7 +4136,7 @@ void UISkillDescribeWnd::OnCreate(int width, int height) {
   this->m_viewer = new UITextViewer();
   this->m_viewer->Configure(3, 3, width - 6, height - 6, 0);
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   const std::uint32_t color = 0xFF000000u | RGB(red, green, blue);
   this->m_viewer->SetBackgroundColor(color);
   this->AddChild(this->m_viewer);
@@ -4322,7 +4322,7 @@ void UIItemIdentifyWnd::Paint() {
     const int y = row / this->m_columns * 32 + 34;
     if (this->m_selected == index) {
       unsigned red, green, blue;
-      SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
+      g_skinInfo.PaletteChannels(6, 2, red, green, blue);
       this->FillRegion(5, y - 3, this->geometry.width - 24, 30, RGB(red, green, blue));
     }
 
@@ -7728,7 +7728,7 @@ void UINoticeConfirmWnd::OnCreate(int width, int height) {
   this->m_viewer = new UITextViewer();
   this->m_viewer->Configure(10, 22, width - 20, height - 55, 0);
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->m_viewer->SetBackgroundColor(0xFF000000u | RGB(red, green, blue));
   this->AddChild(this->m_viewer);
   const char* text = LookupMessage(MSI_DO_YOU_AGREE);
@@ -7896,7 +7896,7 @@ void UIWaitWnd::OnCreate(int width, int height) {
   this->m_textViewer = new UITextViewer();
   this->m_textViewer->Configure(10, 22, width - 20, height - 55, 0);
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->m_textViewer->SetBackgroundColor(0xFF000000u | RGB(red, green, blue));
   this->AddChild(this->m_textViewer);
   this->m_textViewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PLEASE_BE_PATIENT)), 38, 0, 0);
@@ -9846,7 +9846,7 @@ void UILoadingWnd::OnCreate(int, int) {
   this->m_progressBar->Move(0, 0);
   this->m_progressBar->SetValue(0.0f);
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 22, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(22, 2, red, green, blue);
   this->m_progressBar->m_fillRed = red;
   this->m_progressBar->m_fillGreen = green;
   this->m_progressBar->m_fillBlue = blue;
@@ -10425,7 +10425,7 @@ void UITipOfTheDayWnd::OnCreate(int width, int height) {
   this->m_textViewer = new UITextViewer();
   this->m_textViewer->Configure(10, 22, width - 20, height - 55, 0);
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->m_textViewer->SetBackgroundColor(0xFF000000u | RGB(red, green, blue));
   this->AddChild(this->m_textViewer);
 
@@ -10456,7 +10456,7 @@ void UITipboxWnd::OnCreate(int width, int) {
   this->m_message0 = 365;
 
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
 
   this->tipViewer = new UITagTextViewer();
   this->tipViewer->SetSize(226, 245);
@@ -12401,11 +12401,11 @@ void UIExchangeWnd::Paint() {
   unsigned green;
   unsigned blue;
   if (this->isLocalTrader != 0) {
-    SkinPaletteChannels(ResourceMgr::Instance(), 10, 6, red, green, blue);
+    g_skinInfo.PaletteChannels(10, 6, red, green, blue);
     this->FillRegion(4, 21, 272, 310, RGB(red, green, blue));
   }
   if (this->localConfirmed != 0) {
-    SkinPaletteChannels(ResourceMgr::Instance(), 10, 6, red, green, blue);
+    g_skinInfo.PaletteChannels(10, 6, red, green, blue);
     this->FillRegion(283, 21, 272, 310, RGB(red, green, blue));
   }
   int row = 0;

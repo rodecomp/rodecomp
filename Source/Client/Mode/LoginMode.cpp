@@ -463,48 +463,51 @@ void CLoginMode::SubD8D500(const char* packet) {
 // OFFSET: 0x00D8E1D0
 // FUNCTION: fn_22270
 int GetClientType() {
-  switch (g_serviceMode) {
-  case 1:
-    switch (g_serviceType) {
-    case 1:
-      return 14;
-    case ServiceJapan:
-      return 9;
-    case ServiceChina:
-      return 4;
-    case ServiceTaiwan:
-      return 5;
-    case ServiceThai:
-      return 7;
-    case 6:
-      return 13;
-    case 7:
-      return 18;
-    case 8:
-      return 16;
-    case 9:
-      return 17;
-    case 10:
-      return 20;
-    case 11:
-      return 21;
-    case 12:
-      return 22;
-    case 13:
-      return 23;
-    case ServiceVietnam:
-      return 33;
-    case 19:
-      return 35;
-    case ServiceRussia:
-      return 25;
-    case 20:
-      return 36;
-    default:
-      return 2;
+  if (g_serviceMode != 1) {
+    if (g_serviceMode != 5) {
+      switch (g_serviceType) {
+      case 1:
+        return 1;
+      case ServiceJapan:
+        return 3;
+      case ServiceChina:
+        return 4;
+      case ServiceTaiwan:
+        return 5;
+      case ServiceThai:
+        return 7;
+      case 6:
+        return 12;
+      case 7:
+        return 15;
+      case 8:
+        return 16;
+      case 9:
+        return 17;
+      case 10:
+        return 20;
+      case 11:
+        return 21;
+      case 12:
+        return 22;
+      case 13:
+        return 23;
+      case ServiceRussia:
+        return 25;
+      case ServiceVietnam:
+        return 26;
+      case ServiceChile:
+        return 30;
+      case 18:
+        return 31;
+      case 19:
+        return 35;
+      case 20:
+        return 36;
+      default:
+        return 0;
+      }
     }
-
-  case 5:
     switch (g_serviceType) {
     case 7:
       return 27;
@@ -519,50 +522,44 @@ int GetClientType() {
     default:
       return 0;
     }
-
+  }
+  switch (g_serviceType) {
+  case 1:
+    return 14;
+  case ServiceJapan:
+    return 9;
+  case ServiceChina:
+    return 4;
+  case ServiceTaiwan:
+    return 5;
+  case ServiceThai:
+    return 7;
+  case 6:
+    return 13;
+  case 7:
+    return 18;
+  case 8:
+    return 16;
+  case 9:
+    return 17;
+  case 10:
+    return 20;
+  case 11:
+    return 21;
+  case 12:
+    return 22;
+  case 13:
+    return 23;
+  case ServiceVietnam:
+    return 33;
+  case 19:
+    return 35;
+  case ServiceRussia:
+    return 25;
+  case 20:
+    return 36;
   default:
-    switch (g_serviceType) {
-    case 1:
-      return 1;
-    case ServiceJapan:
-      return 3;
-    case ServiceChina:
-      return 4;
-    case ServiceTaiwan:
-      return 5;
-    case ServiceThai:
-      return 7;
-    case 6:
-      return 12;
-    case 7:
-      return 15;
-    case 8:
-      return 16;
-    case 9:
-      return 17;
-    case 10:
-      return 20;
-    case 11:
-      return 21;
-    case 12:
-      return 22;
-    case 13:
-      return 23;
-    case ServiceRussia:
-      return 25;
-    case ServiceVietnam:
-      return 26;
-    case ServiceChile:
-      return 30;
-    case 18:
-      return 31;
-    case 19:
-      return 35;
-    case 20:
-      return 36;
-    default:
-      return 0;
-    }
+    return 2;
   }
 }
 

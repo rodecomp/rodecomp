@@ -1,4 +1,5 @@
 #include "UI/Window/UIWindowMgr.h"
+#include "Contents/Skin/SkinMgr.h"
 #include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 #include "Render/DeviceContext/DeviceContext.h"
@@ -22,7 +23,7 @@ namespace {
     unsigned red;
     unsigned green;
     unsigned blue;
-    SkinPaletteChannels(resources, column, row, red, green, blue);
+    g_skinInfo.PaletteChannels(column, row, red, green, blue);
 
     return RGB(red, green, blue);
   }

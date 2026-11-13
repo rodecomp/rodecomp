@@ -1,4 +1,5 @@
 #include "UI/Guild/UIGuildHelperWnd.h"
+#include "Contents/Skin/SkinMgr.h"
 #include "Client/Mode/ModeMessage.h"
 #include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
@@ -403,7 +404,7 @@ void UIGuildTipWnd::OnCreate(int width, int height) {
   unsigned int red;
   unsigned int green;
   unsigned int blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->m_textViewer->SetBackgroundColor(0xFF000000 | RGB(red, green, blue));
   this->AddChild(this->m_textViewer);
 

@@ -1,4 +1,5 @@
 #include "Client/Mode/ModeMessage.h"
+#include "Contents/Skin/SkinMgr.h"
 #include "UI/Window/WindowId.h"
 #include "UI/Exchange/UIExchangeUI.h"
 #include "UI/Window/UIEnums.h"
@@ -307,7 +308,7 @@ void ExchangeUI::CUIItem::Paint() {
     unsigned red = 0;
     unsigned green = 0;
     unsigned blue = 0;
-    SkinPaletteChannels(ResourceMgr::Instance(), 10, 6, red, green, blue);
+    g_skinInfo.PaletteChannels(10, 6, red, green, blue);
     this->ClearSurface(RGB(red, green, blue));
   } else {
     this->ClearSurface(0xFFFFFFFF);

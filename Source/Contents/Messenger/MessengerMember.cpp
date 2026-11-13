@@ -1,4 +1,5 @@
 #include "Contents/Messenger/MessengerMember.h"
+#include "Contents/Skin/SkinMgr.h"
 #include "Client/Mode/ModeMessage.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
@@ -922,7 +923,7 @@ void UIMessengerGroupWnd::Paint() {
   this->DrawTitleBar(true, "", 0);
   {
     unsigned red, green, blue;
-    SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+    g_skinInfo.PaletteChannels(2, 2, red, green, blue);
     this->FillRegion(0, 17, this->geometry.width, this->geometry.height - 38, RGB(red, green, blue));
   }
   DrawRectangleBorder(*this, 0, 17, this->geometry.width, this->geometry.height - 38, 0xC0C0C0);
@@ -979,7 +980,7 @@ void UIMessengerGroupWnd::Paint() {
       }
       if (this->selected == index) {
         unsigned selectRed, selectGreen, selectBlue;
-        SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, selectRed, selectGreen, selectBlue);
+        g_skinInfo.PaletteChannels(6, 2, selectRed, selectGreen, selectBlue);
         this->FillRegion(0, top + 2, this->geometry.width, this->rowHeight, RGB(selectRed, selectGreen, selectBlue));
       }
 
@@ -1083,7 +1084,7 @@ void UIMessengerGroupWnd::Paint() {
 
       if (this->selected == index) {
         unsigned selectRed, selectGreen, selectBlue;
-        SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, selectRed, selectGreen, selectBlue);
+        g_skinInfo.PaletteChannels(6, 2, selectRed, selectGreen, selectBlue);
         this->FillRegion(
           x + 17, top + 4, this->TextWidth(nameText, 0, 0, 12, 0, 0) + 3, 16,
           RGB(selectRed, selectGreen, selectBlue)

@@ -1,4 +1,5 @@
 #include "Render/DeviceContext/DCSurface.h"
+#include "Contents/Skin/SkinMgr.h"
 #include "UI/Window/WindowId.h"
 #include "Client/Mode/ModeMessage.h"
 #include "UI/Window/UIEnums.h"
@@ -98,7 +99,7 @@ int UIGuildTotalInfoWnd::Tab() {
 void UIGuildWnd::Paint() {
   const int tab = this->Tab();
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 10, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(10, 2, red, green, blue);
   this->FillRegion(0, 17, this->geometry.width, 24, RGB(red, green, blue));
 
   for (int x = 1, index = 0; x < 397; x += 66, ++index) {
@@ -111,15 +112,15 @@ void UIGuildWnd::Paint() {
       shade = 14;
       tone = 6;
     }
-    SkinPaletteChannels(ResourceMgr::Instance(), shade, tone, red, green, blue);
+    g_skinInfo.PaletteChannels(shade, tone, red, green, blue);
     this->FillRegion(x, 18, 64, 23, RGB(red, green, blue));
   }
 
   this->DrawTitleBar(false, "", 0);
   unsigned borderRed, borderGreen, borderBlue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 14, 6, borderRed, borderGreen, borderBlue);
+  g_skinInfo.PaletteChannels(14, 6, borderRed, borderGreen, borderBlue);
   this->FillRegion(0, 41, this->geometry.width, this->geometry.height - 41, RGB(borderRed, borderGreen, borderBlue));
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, borderRed, borderGreen, borderBlue);
+  g_skinInfo.PaletteChannels(2, 2, borderRed, borderGreen, borderBlue);
   this->FillRegion(1, 41, this->geometry.width - 2, this->geometry.height - 41, RGB(borderRed, borderGreen, borderBlue));
   this->DrawButtonBar(2, 0, 1);
 }
@@ -1285,11 +1286,11 @@ void UIGuildSkillWnd::Paint() {
     const int y = drawn / this->m_columns * 34;
     if (this->m_hoverIndex == index) {
       unsigned red, green, blue;
-      SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
+      g_skinInfo.PaletteChannels(6, 2, red, green, blue);
       if (skill->level == 0) {
-        SkinPaletteChannels(ResourceMgr::Instance(), 10, 2, red, green, blue);
+        g_skinInfo.PaletteChannels(10, 2, red, green, blue);
       } else if (skill->spCost == 0) {
-        SkinPaletteChannels(ResourceMgr::Instance(), 14, 2, red, green, blue);
+        g_skinInfo.PaletteChannels(14, 2, red, green, blue);
       }
       this->FillRegion(x + 104, y + 43, 164, 28, RGB(red, green, blue));
     }
@@ -1353,7 +1354,7 @@ void UIGuildPositionManageWnd::Paint() {
   }
 
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 14, 6, red, green, blue);
+  g_skinInfo.PaletteChannels(14, 6, red, green, blue);
   this->FillRegion(4, 45, this->geometry.width - 22, this->geometry.height - g_guildPositionRowHeight - 69, RGB(red, green, blue));
 
   const int cellHeight = g_guildPositionRowHeight - 1;
@@ -1364,7 +1365,7 @@ void UIGuildPositionManageWnd::Paint() {
   widths[3] = g_guildPositionColumnWidths[3];
   widths[4] = g_guildPositionColumnWidths[4];
   widths[5] = g_guildPositionColumnWidths[5];
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   for (int row = 0; row < 12; ++row) {
     int x = 0;
     for (int column = 0; column < 6; ++column) {
@@ -1397,7 +1398,7 @@ void UIGuildPositionManageWnd::Paint() {
     const int y = drawn / this->m_columns * g_guildPositionRowHeight + 68;
     if (this->m_hoverIndex == index) {
       unsigned hoverRed, hoverGreen, hoverBlue;
-      SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, hoverRed, hoverGreen, hoverBlue);
+      g_skinInfo.PaletteChannels(6, 2, hoverRed, hoverGreen, hoverBlue);
       this->FillRegion(5, y - 3, this->geometry.width - 24, 18, RGB(hoverRed, hoverGreen, hoverBlue));
     }
 
@@ -1518,7 +1519,7 @@ void UIGuildInfoManageWnd::Paint() {
   this->DrawTextAt(200, 213, text, 0, 0, 12, 0, 0, 0);
 
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(6, 2, red, green, blue);
   this->FillRegion(299, 64, 26, 26, RGB(red, green, blue));
   {
     const std::string emblemName = g_guildMgr->GetEmblemFilename(this->m_guildId);
@@ -1529,7 +1530,7 @@ void UIGuildInfoManageWnd::Paint() {
   }
 
   unsigned boxRed, boxGreen, boxBlue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 14, 6, boxRed, boxGreen, boxBlue);
+  g_skinInfo.PaletteChannels(14, 6, boxRed, boxGreen, boxBlue);
   this->FillRegion(200, 155, 168, 48, RGB(boxRed, boxGreen, boxBlue));
   int row = 0;
   int y = 157;
@@ -1540,7 +1541,7 @@ void UIGuildInfoManageWnd::Paint() {
     if (related->relation == 0) {
       if (row == this->m_allyRow) {
         unsigned hoverRed, hoverGreen, hoverBlue;
-        SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, hoverRed, hoverGreen, hoverBlue);
+        g_skinInfo.PaletteChannels(6, 2, hoverRed, hoverGreen, hoverBlue);
         this->FillRegion(204, y, 80, 16, RGB(hoverRed, hoverGreen, hoverBlue));
       }
       this->DrawTextAt(204, y, related->name.c_str(), 0, 0, 12, 0, 0, 0);
@@ -1549,7 +1550,7 @@ void UIGuildInfoManageWnd::Paint() {
     }
   }
 
-  SkinPaletteChannels(ResourceMgr::Instance(), 14, 6, boxRed, boxGreen, boxBlue);
+  g_skinInfo.PaletteChannels(14, 6, boxRed, boxGreen, boxBlue);
   this->FillRegion(200, 229, 168, 48, RGB(boxRed, boxGreen, boxBlue));
   row = 0;
   y = 231;
@@ -1560,7 +1561,7 @@ void UIGuildInfoManageWnd::Paint() {
     if (related->relation == 1) {
       if (row == this->m_hostileRow) {
         unsigned hoverRed, hoverGreen, hoverBlue;
-        SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, hoverRed, hoverGreen, hoverBlue);
+        g_skinInfo.PaletteChannels(6, 2, hoverRed, hoverGreen, hoverBlue);
         this->FillRegion(204, y, 80, 16, RGB(hoverRed, hoverGreen, hoverBlue));
       }
       this->DrawTextAt(204, y, related->name.c_str(), 0, 0, 12, 0, 0, 0);
@@ -1607,7 +1608,7 @@ void UIGuildTotalInfoWnd::Paint() {
   }
 
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 14, 6, red, green, blue);
+  g_skinInfo.PaletteChannels(14, 6, red, green, blue);
   this->FillRegion(4, 45, this->geometry.width - 22, this->geometry.height - 69, RGB(red, green, blue));
 
   const int cellHeight = g_guildTotalInfoRowHeight - 1;
@@ -1616,7 +1617,7 @@ void UIGuildTotalInfoWnd::Paint() {
   widths[1] = g_guildTotalInfoColumnWidths[1];
   widths[2] = g_guildTotalInfoColumnWidths[2];
   widths[3] = g_guildTotalInfoColumnWidths[3];
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   for (int row = 0; row < 12; ++row) {
     int x = 0;
     for (int column = 0; column < 4; ++column) {
@@ -1648,7 +1649,7 @@ void UIGuildTotalInfoWnd::Paint() {
     const int y = drawn / this->m_columns * g_guildBanishedRowHeight + 68;
     if (this->m_hoverRow == index) {
       unsigned hoverRed, hoverGreen, hoverBlue;
-      SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, hoverRed, hoverGreen, hoverBlue);
+      g_skinInfo.PaletteChannels(6, 2, hoverRed, hoverGreen, hoverBlue);
       this->FillRegion(5, y - 3, this->geometry.width - 24, 18, RGB(hoverRed, hoverGreen, hoverBlue));
     }
 
@@ -1770,7 +1771,7 @@ void UIAgitMessageBox::InitializeMessageBox(const char* text, int width, int hei
   unsigned int red;
   unsigned int green;
   unsigned int blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   viewer->backgroundColor = 0xFF000000 | (blue << 16) | (green << 8) | red;
   viewer->Invalidate();
   this->AddChild(viewer);
@@ -1802,14 +1803,14 @@ void UIGuildBanishedMemberWnd::Paint() {
   }
 
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 14, 6, red, green, blue);
+  g_skinInfo.PaletteChannels(14, 6, red, green, blue);
   this->FillRegion(4, 45, this->geometry.width - 22, this->geometry.height - g_guildBanishedRowHeight - 69, RGB(red, green, blue));
 
   const int cellHeight = g_guildBanishedRowHeight - 1;
   int widths[2];
   widths[0] = g_guildBanishedColumnWidths[0];
   widths[1] = g_guildBanishedColumnWidths[1];
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   for (int row = 0; row < 12; ++row) {
     int x = 0;
     for (int column = 0; column < 2; ++column) {
@@ -1839,7 +1840,7 @@ void UIGuildBanishedMemberWnd::Paint() {
     const int y = drawn / this->m_columns * g_guildBanishedRowHeight + 68;
     if (this->m_hoverRow == index) {
       unsigned hoverRed, hoverGreen, hoverBlue;
-      SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, hoverRed, hoverGreen, hoverBlue);
+      g_skinInfo.PaletteChannels(6, 2, hoverRed, hoverGreen, hoverBlue);
       this->FillRegion(5, y - 3, this->geometry.width - 24, 18, RGB(hoverRed, hoverGreen, hoverBlue));
     }
 
@@ -1890,7 +1891,7 @@ bool UIGuildMemberManageWnd::DrawMember(GuildInfo::Member& member, int& index, i
 
   if (this->m_hoverRow == index) {
     unsigned red, green, blue;
-    SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
+    g_skinInfo.PaletteChannels(6, 2, red, green, blue);
     this->FillRegion(6, (this->m_rowSpacing + 36) * row + 67, 375, this->m_rowSpacing + 35, RGB(red, green, blue));
   }
 
@@ -2496,7 +2497,7 @@ void UIGuildMemberManageWnd::Paint() {
   }
 
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 14, 6, red, green, blue);
+  g_skinInfo.PaletteChannels(14, 6, red, green, blue);
   DrawRectangleBorder(*this, 5, 46, 377, this->m_rowSpacing / 2 + 237, RGB(red, green, blue));
   this->FillRegion(5, 66, 377, 1, RGB(red, green, blue));
   const int rows = 6 - this->m_rowSpacing * 6 / 36;

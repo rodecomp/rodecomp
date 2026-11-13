@@ -12,6 +12,5 @@ struct SkinPaletteCell {
 
 std::uint32_t __stdcall SkinPaletteColor(const SkinPaletteCell& cell, bool resolveSkin);
 std::uint32_t SkinPaletteColor(ResourceMgr& resources, const SkinPaletteCell& cell, bool resolveSkin);
-void SkinPaletteChannels(ResourceMgr& resources, int x, int y, unsigned& red, unsigned& green, unsigned& blue);
 
 #endif

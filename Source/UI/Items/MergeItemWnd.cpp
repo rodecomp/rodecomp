@@ -1,4 +1,5 @@
 #include "UI/Window/WindowId.h"
+#include "Contents/Skin/SkinMgr.h"
 #include "Render/Text/FontCache.h"
 #include "UI/Window/UIEnums.h"
 #include "Render/Text/TextContext.h"
@@ -134,7 +135,7 @@ void CMergeItemWnd::OnCreate(int, int) {
 // FUNCTION: fn_09666
 void CMergeItemWnd::Paint() {
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->DrawTitleBar(true, LookupMessage(MSI_MERGE_ITEM_FAILED_NOT_MERGE), 0);
   this->FillRegion(0, 17, this->geometry.width, this->geometry.height, RGB(red, green, blue));
 

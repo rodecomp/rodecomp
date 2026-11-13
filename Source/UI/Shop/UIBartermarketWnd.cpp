@@ -1,4 +1,5 @@
 #include "UI/Shop/UIBartermarketWnd.h"
+#include "Contents/Skin/SkinMgr.h"
 #include "Client/Mode/ModeMessage.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
@@ -1684,7 +1685,7 @@ void UIBarterItemPurchaseWnd::Paint() {
   unsigned red;
   unsigned green;
   unsigned blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   const int rightRemainder = (this->geometry.width - 60) % 32;
   this->FillRegion(20, 17, rightRemainder, this->geometry.height - 38, RGB(red, green, blue));
   const int bottomRemainder = (this->geometry.height - 38) % 32;
@@ -1692,7 +1693,7 @@ void UIBarterItemPurchaseWnd::Paint() {
   this->DrawButtonBar(2, 0, 1);
 
   const int rows = (this->geometry.height - 38) / 32;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->FillRegion(40, 17, this->geometry.width - 50, rows * 32, RGB(red, green, blue));
 
   for (int row = 0; row < rows; ++row) {
@@ -1712,7 +1713,7 @@ void UIBarterItemPurchaseWnd::Paint() {
     const int x = column * 32;
     const int y = row * 32;
     if (this->hovered == index) {
-      SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
+      g_skinInfo.PaletteChannels(6, 2, red, green, blue);
       this->FillRegion(x + 72, y + 19, 0xBF, 0x1C, RGB(red, green, blue));
     }
 
@@ -1758,7 +1759,7 @@ void UIBartermarketWnd::Paint() {
   unsigned red;
   unsigned green;
   unsigned blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   const int rightRemainder = (this->geometry.width - 60) % 32;
   this->FillRegion(20, 17, rightRemainder, this->geometry.height - this->bottomPadding - 17, RGB(red, green, blue));
   const int bottomRemainder = (this->geometry.height - this->bottomPadding - 17) % 32;
@@ -1773,7 +1774,7 @@ void UIBartermarketWnd::Paint() {
   unsigned slotRed;
   unsigned slotGreen;
   unsigned slotBlue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, slotRed, slotGreen, slotBlue);
+  g_skinInfo.PaletteChannels(2, 2, slotRed, slotGreen, slotBlue);
   this->FillRegion(72, 17, columns * 32 - 32, rows * 32, RGB(slotRed, slotGreen, slotBlue));
 
   int visible = 0;
@@ -1792,7 +1793,7 @@ void UIBartermarketWnd::Paint() {
       unsigned hoverRed;
       unsigned hoverGreen;
       unsigned hoverBlue;
-      SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, hoverRed, hoverGreen, hoverBlue);
+      g_skinInfo.PaletteChannels(6, 2, hoverRed, hoverGreen, hoverBlue);
       this->FillRegion(x + 72, y + 19, this->geometry.width - 0x58, 0x1C, RGB(hoverRed, hoverGreen, hoverBlue));
     }
 
@@ -1842,7 +1843,7 @@ void UIExpandedBarterItemPurchaseWnd::Paint() {
   unsigned red;
   unsigned green;
   unsigned blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->FillRegion(20, 17, this->geometry.width - 40, this->geometry.height - 46, RGB(red, green, blue));
   this->DrawButtonBar(2, 0, 1);
 
@@ -1862,7 +1863,7 @@ void UIExpandedBarterItemPurchaseWnd::Paint() {
       unsigned hoverRed;
       unsigned hoverGreen;
       unsigned hoverBlue;
-      SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, hoverRed, hoverGreen, hoverBlue);
+      g_skinInfo.PaletteChannels(6, 2, hoverRed, hoverGreen, hoverBlue);
       this->FillRegion(72, y + 19, this->geometry.width - 0x5A, 0x3C, RGB(hoverRed, hoverGreen, hoverBlue));
     }
 
@@ -1936,7 +1937,7 @@ void UIExpandedBartermarketWnd::Paint() {
   unsigned red;
   unsigned green;
   unsigned blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->FillRegion(20, 17, this->geometry.width - 40, this->geometry.height - 46, RGB(red, green, blue));
   this->DrawButtonBar(2, 0, 1);
 
@@ -1956,7 +1957,7 @@ void UIExpandedBartermarketWnd::Paint() {
       unsigned hoverRed;
       unsigned hoverGreen;
       unsigned hoverBlue;
-      SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, hoverRed, hoverGreen, hoverBlue);
+      g_skinInfo.PaletteChannels(6, 2, hoverRed, hoverGreen, hoverBlue);
       this->FillRegion(72, y + 19, this->geometry.width - 0x5A, 0x3C, RGB(hoverRed, hoverGreen, hoverBlue));
     }
 

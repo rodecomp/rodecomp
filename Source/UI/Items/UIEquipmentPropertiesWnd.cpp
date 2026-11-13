@@ -1,4 +1,5 @@
 #include "UI/Window/UIEnums.h"
+#include "Contents/Skin/SkinMgr.h"
 #include "UI/Window/WindowId.h"
 #include "UI/Items/UIEquipmentPropertiesWnd.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
@@ -805,9 +806,9 @@ void CUIEquipmentPropertiesWnd::Grow(int width, int height) {
 // FUNCTION: fn_15170
 void EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine::LoadSkin(bool resolveSkin) {
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->evenRowColor = RGB(red, green, blue);
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 10, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 10, red, green, blue);
   this->oddRowColor = RGB(red, green, blue);
 }
 

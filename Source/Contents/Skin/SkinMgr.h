@@ -9,6 +9,7 @@
 // VTABLE: vt_00808
 class CSkinMgr {
 public:
+  void PaletteChannels(int x, int y, unsigned& red, unsigned& green, unsigned& blue);
   /* 0004 */ std::string m_name;
   /* 001C */ int selected;
   /* 0020 */ std::vector<std::string> names;

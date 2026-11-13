@@ -1,4 +1,5 @@
 #include "Resource/ResourceMgr.h"
+#include "Contents/Skin/SkinMgr.h"
 #include "Resource/Bitmap/SkinPalette.h"
 #include "UI/Buttons/UIColorButton.h"
 
@@ -7,7 +8,7 @@
 void UIColorButton::Paint() {
   const int textWidth = this->TextWidth(this->label.c_str(), 0, 0, 12, 0, 0);
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 22, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(22, 2, red, green, blue);
   this->ClearSurface(static_cast<unsigned char>(red) | (static_cast<unsigned char>(green) << 8) | (static_cast<unsigned char>(blue) << 16));
 
   std::uint32_t color;

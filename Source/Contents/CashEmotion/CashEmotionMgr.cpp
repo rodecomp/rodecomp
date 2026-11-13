@@ -1,4 +1,5 @@
 #include "UI/Window/WindowId.h"
+#include "Contents/Skin/SkinMgr.h"
 #include "Client/Mode/ModeMessage.h"
 #include "Render/DeviceContext/DCSurface.h"
 #include "UI/Window/UIEnums.h"
@@ -3559,7 +3560,7 @@ void UICashEmotionPiece::Paint() {
     unsigned red;
     unsigned green;
     unsigned blue;
-    SkinPaletteChannels(ResourceMgr::Instance(), 14, 6, red, green, blue);
+    g_skinInfo.PaletteChannels(14, 6, red, green, blue);
     DrawRoundedBorder(*this, 0, 0, this->geometry.width, this->geometry.height, RGB(red, green, blue));
   }
 }

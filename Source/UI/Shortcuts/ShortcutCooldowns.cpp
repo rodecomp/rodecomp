@@ -340,7 +340,7 @@ void UISeekPartyListWnd::Paint() {
   unsigned red;
   unsigned green;
   unsigned blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->FillRegion(0, 17, this->geometry.width, this->geometry.height - 38, RGB(red, green, blue));
 
   if (g_session.m_partyBooking.m_entries.size() != 0) {
@@ -399,7 +399,7 @@ void UISeekPartyMBWnd::Paint() {
   unsigned red;
   unsigned green;
   unsigned blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->FillRegion(0, 17, this->geometry.width, this->geometry.height - 38, RGB(red, green, blue));
 
   const RECT outer = {50, 95, 310, 293};
@@ -417,7 +417,7 @@ void UISeekPartyWnd::Paint() {
   unsigned red;
   unsigned green;
   unsigned blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->FillRegion(0, 17, this->geometry.width, this->geometry.height - 38, RGB(red, green, blue));
 
   if (!this->m_minimized) {

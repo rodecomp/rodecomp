@@ -1,4 +1,5 @@
 #include "Render/DeviceContext/DCSurface.h"
+#include "Contents/Skin/SkinMgr.h"
 #include "Client/Mode/ModeMessage.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
@@ -532,7 +533,7 @@ void UIChatRoomWnd::Paint() {
   const int titleHeight = this->DrawTitleBar(false, "", 0);
   this->DrawPanelBackground(titleHeight, 0, "");
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 20, 6, red, green, blue);
+  g_skinInfo.PaletteChannels(20, 6, red, green, blue);
   const int width = this->geometry.width;
   this->FillRegion(width - width * 56 / 280 - 2, 17, 1, this->geometry.height - 38, RGB(red, green, blue));
   this->DrawButtonBar(0, 0, 1);
@@ -585,7 +586,7 @@ void UIFrameWnd::DrawBorder(int x, int y, int width, int height) {
   bitmap = load("유저인터페이스\\sysbox_rd.bmp");
   this->DrawBitmap(x + width - bitmap->image.width, y + height - bitmap->image.height, bitmap, false);
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->FillRegion(x + 14, y + 14, innerWidth, innerHeight, RGB(red, green, blue));
 }
 
@@ -634,7 +635,7 @@ void UIMessageBox::Configure(
   this->viewer = new UITextViewer();
   this->viewer->Configure(inset + 10, 22, width - inset - 20, height - 55, 0);
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->viewer->backgroundColor = 0xFF000000u | RGB(red, green, blue);
   this->viewer->Invalidate();
   this->AddChild(this->viewer);
@@ -1297,7 +1298,7 @@ void UINoticeWnd::Paint() {
   unsigned red;
   unsigned green;
   unsigned blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->FillRegion(20, 17, this->geometry.width - 40, this->geometry.height - 38, RGB(red, green, blue));
   this->FillRegion(
     20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - 38) % 32, RGB(red, green, blue)
@@ -2092,7 +2093,7 @@ void UIMonsterInfoWnd::DrawResistance(int x, int y, const char* label, int value
   unsigned red;
   unsigned green;
   unsigned blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 22, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(22, 2, red, green, blue);
   this->FillRegion(x, y, 70, 16, border);
   this->FillRegion(x + 1, y + 1, 68, 14, fill);
   this->DrawTextAt((70 - this->TextWidth(text, 0, 0, 12, 0, 0)) / 2 + x, y + 2, text, 0, 0, 12, RGB(red, blue, green), 0, 0);
@@ -2104,12 +2105,12 @@ void UIMonsterInfoWnd::Paint() {
   unsigned red;
   unsigned green;
   unsigned blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   const std::uint32_t fill = RGB(red, green, blue);
   this->ClearSurface(fill);
   this->DrawPanelBackground(this->DrawTitleBar(false, "", 0), 0, "");
   this->DrawButtonBar(2, 0, 1);
-  SkinPaletteChannels(ResourceMgr::Instance(), 22, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(22, 2, red, green, blue);
   const std::uint32_t border = RGB(red, green, blue);
 
   this->DrawTextAt(17, 3, LookupMessage(MSI_MONSTER_INFO_WINDOW), 0, 0, 12, 0xFFFFFF, 0, 0);
@@ -3061,7 +3062,7 @@ void UIPetInfoWnd::Paint() {
   unsigned red;
   unsigned green;
   unsigned blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->ClearSurface(RGB(red, green, blue));
   this->DrawPanelBackground(this->DrawTitleBar(false, "", 0), 0, "");
 
@@ -4078,7 +4079,7 @@ void UIFrameWnd::DrawSkinBox(const char* name, int x, int y, int width, int heig
     }
   } else {
     unsigned red, green, blue;
-    SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+    g_skinInfo.PaletteChannels(2, 2, red, green, blue);
     this->FillRegion(left, top, innerWidth, height - 28, RGB(red, green, blue));
   }
 
@@ -4152,7 +4153,7 @@ void UIMessageBoxAutoreturn::Configure(const char* text, int timeout) {
   this->viewer = new UITextViewer();
   this->viewer->Configure(10, 22, 260, 48, 0);
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->viewer->backgroundColor = RGB(red, green, blue) | 0xFF000000u;
   this->viewer->Invalidate();
   this->AddChild(this->viewer);
@@ -4162,11 +4163,11 @@ void UIMessageBoxAutoreturn::Configure(const char* text, int timeout) {
   this->gauge->SetSize(240, 15);
   this->gauge->Move(20, this->geometry.height - 50);
   this->gauge->SetValue(0);
-  SkinPaletteChannels(ResourceMgr::Instance(), 18, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(18, 2, red, green, blue);
   this->gauge->m_backgroundRed = red;
   this->gauge->m_backgroundGreen = green;
   this->gauge->m_backgroundBlue = blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 22, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(22, 2, red, green, blue);
   this->gauge->m_fillRed = red;
   this->gauge->m_fillGreen = green;
   this->gauge->m_fillBlue = blue;

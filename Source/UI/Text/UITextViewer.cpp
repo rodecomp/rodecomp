@@ -1,4 +1,5 @@
 #include "Render/DeviceContext/DeviceContext.h"
+#include "Contents/Skin/SkinMgr.h"
 #include "UI/Window/UIEnums.h"
 #include "Render/Text/TextContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
@@ -30,7 +31,7 @@ UITextViewer::UITextViewer() : UIListBox(), splitTipLinks(0), outline(0), bold(0
   unsigned red;
   unsigned green;
   unsigned blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 18, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(18, 2, red, green, blue);
   this->SetBackgroundColor(0xFF000000u | RGB(red, green, blue));
 
   this->plainTextMode = 0;

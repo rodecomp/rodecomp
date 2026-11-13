@@ -1,4 +1,5 @@
 #include "UI/Window/UIEnums.h"
+#include "Contents/Skin/SkinMgr.h"
 #include "UI/Window/WindowId.h"
 #include "UI/Text/UIRoundBoxTooltipWnd.h"
 
@@ -34,7 +35,7 @@ void UIRoundBoxTooltipWnd::OnCreate(int width, int height) {
   unsigned red;
   unsigned green;
   unsigned blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 1, 1, red, green, blue);
+  g_skinInfo.PaletteChannels(1, 1, red, green, blue);
 
   {
     auto* viewer = this->viewer;

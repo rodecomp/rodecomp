@@ -1,4 +1,5 @@
 #include "Contents/Jobs/JobId.h"
+#include "Contents/Skin/SkinMgr.h"
 #include "Client/Mode/ModeMessage.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
@@ -272,11 +273,11 @@ void UINewSkillListWnd::DrawSkillList() {
 
       if (this->m_selectedSkill == index) {
         unsigned red, green, blue;
-        SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
+        g_skinInfo.PaletteChannels(6, 2, red, green, blue);
         if (skill.level == 0) {
-          SkinPaletteChannels(ResourceMgr::Instance(), 10, 2, red, green, blue);
+          g_skinInfo.PaletteChannels(10, 2, red, green, blue);
         } else if (skill.spCost == 0) {
-          SkinPaletteChannels(ResourceMgr::Instance(), 14, 2, red, green, blue);
+          g_skinInfo.PaletteChannels(14, 2, red, green, blue);
         }
         this->FillRegion(x + 104, y + 32, 164, 28, RGB(red, green, blue));
       }

@@ -1,4 +1,5 @@
 #include "UI/Edit/UICandidateWnd.h"
+#include "Contents/Skin/SkinMgr.h"
 
 #include "Client/Input/InputCharset.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
@@ -59,7 +60,7 @@ void UICandidateWnd::Paint() {
       StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%d %s", i + 1, this->m_candidates[i].c_str());
       if (this->m_selection == i) {
         unsigned red, green, blue;
-        SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
+        g_skinInfo.PaletteChannels(6, 2, red, green, blue);
         this->FillRegion(8, y - 2, this->TextWidth(text, 0, 0, 12, 0, 0) + 4, 16, RGB(red, green, blue));
       }
       this->DrawTextAt(10, y, text, 0, 0, 12, 0, 0, 0);
@@ -107,10 +108,10 @@ void UIKeyStrokeWnd::Paint() {
   }
 
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->FillRegion(1, 1, this->geometry.width - 2, this->geometry.height - 2, RGB(red, green, blue));
 
-  SkinPaletteChannels(ResourceMgr::Instance(), 22, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(22, 2, red, green, blue);
   this->FillRegion(0, 0, this->geometry.width, 1, RGB(red, green, blue));
   this->FillRegion(0, 0, 1, this->geometry.height, RGB(red, green, blue));
   this->FillRegion(0, this->geometry.height - 1, this->geometry.width, 1, RGB(red, green, blue));

@@ -1,4 +1,5 @@
 #include "UI/Login/UINewSelectCharWnd.h"
+#include "Contents/Skin/SkinMgr.h"
 #include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Status/UIBasicInfoWnd.h"
@@ -441,9 +442,9 @@ void UIBasicInfoWnd::DrawCollapsed() {
     unsigned red;
     unsigned green;
     unsigned blue;
-    SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+    g_skinInfo.PaletteChannels(2, 2, red, green, blue);
     this->FillRegion(1, 17, this->geometry.width - 2, this->geometry.height - 18, RGB(red, green, blue));
-    SkinPaletteChannels(ResourceMgr::Instance(), 14, 6, red, green, blue);
+    g_skinInfo.PaletteChannels(14, 6, red, green, blue);
     DrawRoundedBorder(*this, 0, 14, this->geometry.width, this->geometry.height - 14, RGB(red, green, blue));
   }
   this->DrawTitleBar(false, "", 0);
@@ -608,10 +609,10 @@ void UIBasicInfoWnd::Paint() {
       unsigned red;
       unsigned green;
       unsigned blue;
-      SkinPaletteChannels(ResourceMgr::Instance(), 14, 6, red, green, blue);
+      g_skinInfo.PaletteChannels(14, 6, red, green, blue);
       DrawRoundedBorder(*this, 0, 17, this->geometry.width, this->geometry.height - 17, RGB(red, green, blue));
       this->FillRegion(0, 17, this->geometry.width, 5, RGB(red, green, blue));
-      SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+      g_skinInfo.PaletteChannels(2, 2, red, green, blue);
       this->FillRegion(1, 17, this->geometry.width - 2, this->geometry.height - 19, RGB(red, green, blue));
       this->FillRegion(2, this->geometry.height - 2, this->geometry.width - 4, 1, RGB(red, green, blue));
     }

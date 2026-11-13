@@ -1,4 +1,5 @@
 #include "Render/Text/FontCache.h"
+#include "Contents/Skin/SkinMgr.h"
 #include "Client/Mode/ModeMessage.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
@@ -675,7 +676,7 @@ void UIParaItemShopWnd::Paint() {
 
   const int barHeight = this->DrawButtonBar(this->alternateButtonBar != 1 ? 0 : 2, 0, 1);
   unsigned red = 0xFF, green = 0xFF, blue = 0xFF;
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   const int height = this->geometry.height - barHeight - titleHeight;
   this->FillRegion(0, titleHeight, this->geometry.width, height, RGB(red, green, blue));
 
@@ -720,7 +721,7 @@ void UIParaItemShopWnd::Paint() {
     const int top = visible * 32 + titleHeight;
     if (this->hovered == index) {
       unsigned hoverRed = 0xFF, hoverGreen = 0xFF, hoverBlue = 0xFF;
-      SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, hoverRed, hoverGreen, hoverBlue);
+      g_skinInfo.PaletteChannels(6, 2, hoverRed, hoverGreen, hoverBlue);
       this->FillRegion(72, top + 2, 191, 28, RGB(hoverRed, hoverGreen, hoverBlue));
     }
 
@@ -808,7 +809,7 @@ void UIParaResultWnd::Paint() {
 
   {
     unsigned red = 0, green = 0, blue = 0;
-    SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+    g_skinInfo.PaletteChannels(2, 2, red, green, blue);
     const int listHeight = this->geometry.height - this->footerHeight - 17;
     this->FillRegion(20, 17, (this->geometry.width - 60) % 32, listHeight, RGB(red, green, blue));
     this->FillRegion(20, listHeight / 32 * 32 + 17, this->geometry.width - 24, listHeight % 32, RGB(red, green, blue));
@@ -823,7 +824,7 @@ void UIParaResultWnd::Paint() {
 
   {
     unsigned red = 0, green = 0, blue = 0;
-    SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+    g_skinInfo.PaletteChannels(2, 2, red, green, blue);
     this->FillRegion(72, 17, columns * 32 - 32, slots * 32, RGB(red, green, blue));
   }
 
@@ -843,7 +844,7 @@ void UIParaResultWnd::Paint() {
     const int top = visible / this->columns * 32;
     if (this->hovered == index) {
       unsigned hoverRed = 0, hoverGreen = 0, hoverBlue = 0;
-      SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, hoverRed, hoverGreen, hoverBlue);
+      g_skinInfo.PaletteChannels(6, 2, hoverRed, hoverGreen, hoverBlue);
       this->FillRegion(column + 72, top + 19, 191, 28, RGB(hoverRed, hoverGreen, hoverBlue));
     }
 

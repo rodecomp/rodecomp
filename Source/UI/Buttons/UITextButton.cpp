@@ -1,4 +1,5 @@
 #include "Client/Input/InputCharset.h"
+#include "Contents/Skin/SkinMgr.h"
 #include "Client/Mode/ModeMessage.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
@@ -1826,9 +1827,9 @@ void UIINT64BarGraph::Paint() {
   }
 
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 26, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(26, 2, red, green, blue);
   this->ClearSurface((green & 255) << 16 | (green & 255) << 8 | (red & 255));
-  SkinPaletteChannels(ResourceMgr::Instance(), 30, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(30, 2, red, green, blue);
   this->FillRegion(1, 1, this->geometry.width - 2, this->geometry.height - 2, (blue & 255) << 16 | (green & 255) << 8 | (red & 255));
 
   if (this->m_maximum == 0) {
@@ -1841,7 +1842,7 @@ void UIINT64BarGraph::Paint() {
     return;
   }
 
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 6, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 6, red, green, blue);
 
   if (this->m_plainColor == 0 && 25.0 > ratio * 100.0) {
     red = 255;
@@ -2403,9 +2404,9 @@ void UICaptchaImage::Paint() {
 // FUNCTION: fn_11350
 void UIComboBox::Paint() {
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 6, 6, red, green, blue);
+  g_skinInfo.PaletteChannels(6, 6, red, green, blue);
   this->ClearSurface(RGB(red, green, blue));
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->FillRegion(1, 1, this->geometry.width - 2, this->geometry.height - 2, RGB(red, green, blue));
 
   this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_lu.bmp"))), false);
@@ -2421,7 +2422,7 @@ void UIComboBox::Paint() {
 
   for (int index = first, row = 0; index < static_cast<int>(end); ++index, ++row) {
     if (index == this->selected) {
-      SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
+      g_skinInfo.PaletteChannels(6, 2, red, green, blue);
       this->FillRegion(3, row * this->lineHeight + 1, this->geometry.width - 6, this->lineHeight - 2, RGB(red, green, blue));
     }
 
@@ -2430,7 +2431,7 @@ void UIComboBox::Paint() {
   }
 
   if (this->verticalOverflow != 0) {
-    SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+    g_skinInfo.PaletteChannels(2, 2, red, green, blue);
     this->FillRegion(this->geometry.width - 16, 0, 16, this->geometry.height, RGB(red, green, blue));
   }
 
@@ -3060,9 +3061,9 @@ void UIListBoxTitle::Paint() {
 // FUNCTION: fn_11355
 void UIComboBoxID::Paint() {
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 6, 6, red, green, blue);
+  g_skinInfo.PaletteChannels(6, 6, red, green, blue);
   this->ClearSurface(RGB(red, green, blue));
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->FillRegion(1, 1, this->geometry.width - 2, this->geometry.height - 2, RGB(red, green, blue));
 
   this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_lu.bmp"))), false);
@@ -3081,7 +3082,7 @@ void UIComboBoxID::Paint() {
 
   for (int index = first; index < static_cast<int>(end); ++index) {
     if (index == this->selected) {
-      SkinPaletteChannels(ResourceMgr::Instance(), 6, 2, red, green, blue);
+      g_skinInfo.PaletteChannels(6, 2, red, green, blue);
       this->FillRegion(3, (index - first) * this->lineHeight + 1, this->geometry.width - 6, this->lineHeight - 2, RGB(red, green, blue));
     }
 
@@ -3091,7 +3092,7 @@ void UIComboBoxID::Paint() {
   }
 
   if (this->verticalOverflow != 0) {
-    SkinPaletteChannels(ResourceMgr::Instance(), 2, 2, red, green, blue);
+    g_skinInfo.PaletteChannels(2, 2, red, green, blue);
     this->FillRegion(this->geometry.width - 16, 0, 16, this->geometry.height, RGB(red, green, blue));
   }
 

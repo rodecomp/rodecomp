@@ -1,4 +1,5 @@
 #include "UI/Gauges/UIBarGraph.h"
+#include "Contents/Skin/SkinMgr.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/Bitmap/SkinPalette.h"
@@ -81,9 +82,9 @@ void UIBarGraph4::Paint() {
   }
 
   unsigned red, green, blue;
-  SkinPaletteChannels(ResourceMgr::Instance(), 26, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(26, 2, red, green, blue);
   this->ClearSurface(RGB(red, green, green));
-  SkinPaletteChannels(ResourceMgr::Instance(), 30, 2, red, green, blue);
+  g_skinInfo.PaletteChannels(30, 2, red, green, blue);
   this->FillRegion(1, 1, this->geometry.width - 2, this->geometry.height - 2, RGB(red, green, blue));
 
   if (*this->m_maximum == 0) {
@@ -95,7 +96,7 @@ void UIBarGraph4::Paint() {
     return;
   }
 
-  SkinPaletteChannels(ResourceMgr::Instance(), 2, 6, red, green, blue);
+  g_skinInfo.PaletteChannels(2, 6, red, green, blue);
   if (!this->m_plainColor && ratio * 100.0f < 25.0f) {
     red = 255;
     green = 0;

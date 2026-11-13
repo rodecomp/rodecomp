@@ -306,7 +306,7 @@ std::string NavigationLinkParser::ExpandMessages(std::string text) {
 
 // OFFSET: 0x00833160
 // FUNCTION: fn_10409
-int DecodeNavigationNumber(std::string value) {
+int __stdcall DecodeNavigationNumber(std::string value) {
   const char digits[] = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
   const int size = static_cast<int>(value.size()) + 1;
   int result = 0;
