@@ -961,7 +961,7 @@ void CSession::AddStorageItem(const ITEM_INFO& item) {
 void CSession::AddShopItem(const RawItemBasic& item, int mode) {
   if (mode != 0) {
     const ITEM_INFO owned = this->LookupClientItemByIdentity(item.id);
-    if (owned.identity[1] != 0) {
+    if (owned.identity[1] > 0) {
       ITEM_INFO value(owned);
       value.AssignBasic(item);
       value.SetItemId(std::atoi(value.itemId.c_str()));

@@ -2964,7 +2964,7 @@ void UIItemWnd::OnLBtnDblClk(int x, int y) {
   }
 
   ITEM_INFO item = this->GetItemAt(x, y);
-  if (item.identity[1] == 0) {
+  if (item.identity[1] <= 0) {
     return;
   }
 
@@ -2999,7 +2999,7 @@ void UIItemWnd::OnLBtnDblClk(int x, int y) {
     if (!item.identified) {
       break;
     }
-    if (item.identity[1] == 0 || item.identity[2] == 0 || item.identity[3] != 0) {
+    if (item.identity[1] <= 0 || item.identity[2] == 0 || item.identity[3] != 0) {
       if (!g_session.IsPetAccessory(item.GetItemId())) {
         break;
       }
@@ -3018,7 +3018,7 @@ void UIItemWnd::OnLBtnDblClk(int x, int y) {
   case 16:
   case 17:
   case 19:
-    if (item.identity[1] == 0 || item.identity[3] != 0) {
+    if (item.identity[1] <= 0 || item.identity[3] != 0) {
       break;
     }
     if (GetAsyncKeyState(VK_CONTROL) && g_session.m_swapEquipmentMode) {

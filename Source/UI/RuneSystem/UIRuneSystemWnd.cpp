@@ -1275,8 +1275,8 @@ void UIRune_Decom::OnMouseHover(int x, int y) {
   }
 
   ITEM_INFO item;
-  item.SetItemId((*this->m_decomList)[index].m_itemId);
   item.identified = 1;
+  item.SetItemId((*this->m_decomList)[index].m_itemId);
   int tipX = index % 4 * 54 + 211;
   int tipY = index > 3 ? 387 : 333;
   this->ToScreen(tipX, tipY);

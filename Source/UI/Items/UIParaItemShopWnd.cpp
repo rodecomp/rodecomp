@@ -210,7 +210,7 @@ void UIParaResultWnd::OnRBtnDown(int x, int y) {
   }
 
   ITEM_INFO item = this->GetItemByIndex(this->hovered);
-  if (item.identity[1] != 0) {
+  if (item.identity[1] > 0) {
     g_modeMgr.GetGameMode();
     UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
     window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);

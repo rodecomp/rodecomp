@@ -2235,7 +2235,7 @@ void CGameMode::ReceiveItemOptionsRefresh(const unsigned char* data) {
   }
 
   ITEM_INFO item = g_session.LookupClientItemByIdentity(packet->index);
-  if (item.identity[1] != 0) {
+  if (item.identity[1] > 0) {
     item.refiningLevel = packet->refine;
     item.optionCount = CountItemSlotOptions(packet->options);
     for (int index = 0; index < item.optionCount; ++index) {

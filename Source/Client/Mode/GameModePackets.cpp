@@ -2813,7 +2813,7 @@ void LaunchRollingCutterEffect(CGameActor* actor) {
 // FUNCTION: fn_21721
 __declspec(noinline) void CGameMode::ReceiveInventoryItemUpdate(const unsigned char* packet) {
   ITEM_INFO item = g_session.LookupClientItemByIdentity(*reinterpret_cast<const std::uint16_t*>(packet + 2));
-  if (item.identity[1] != 0) {
+  if (item.identity[1] > 0) {
     item.flags[0] = *reinterpret_cast<const unsigned char*>(packet + 4) == 0;
     g_session.UpdateInventoryItem(item, 1);
   }

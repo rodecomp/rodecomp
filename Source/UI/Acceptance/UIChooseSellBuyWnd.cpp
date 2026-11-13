@@ -4134,7 +4134,8 @@ void UISkillDescribeWnd::OnCreate(int width, int height) {
   this->m_viewer->Configure(3, 3, width - 6, height - 6, 0);
   unsigned red, green, blue;
   g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-  const std::uint32_t color = 0xFF000000u | RGB(red, green, blue);
+  const COLORREF rgb = RGB(red, green, blue);
+  const std::uint32_t color = 0xFF000000u | rgb;
   this->m_viewer->SetBackgroundColor(color);
   this->AddChild(this->m_viewer);
   this->m_closeButton = this->AddCloseButton("ESC", 0);
@@ -7726,7 +7727,8 @@ void UINoticeConfirmWnd::OnCreate(int width, int height) {
   this->m_viewer->Configure(10, 22, width - 20, height - 55, 0);
   unsigned red, green, blue;
   g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-  this->m_viewer->SetBackgroundColor(0xFF000000u | RGB(red, green, blue));
+  const COLORREF rgb = RGB(red, green, blue);
+  this->m_viewer->SetBackgroundColor(0xFF000000u | rgb);
   this->AddChild(this->m_viewer);
   const char* text = LookupMessage(MSI_DO_YOU_AGREE);
   this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text), 38, 0, 0);
@@ -9046,7 +9048,8 @@ void UIBookWnd::Paint() {
 void UICardItemIllustWnd::Paint() {
   this->DrawTitleBar(false, "", 0);
   if (this->m_bitmapPath.size() != 0) {
-    this->DrawBitmap(0, 17, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_bitmapPath.c_str()))), false);
+    CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_bitmapPath.c_str())));
+    this->DrawBitmap(0, 17, bitmap, false);
   }
 
   ITEM_INFO item;
