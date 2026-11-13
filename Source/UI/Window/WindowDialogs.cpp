@@ -110,7 +110,7 @@ bool UIWindowMgr::ProcessDialogKey(int, int key) {
 
 // OFFSET: 0x00A91450
 // FUNCTION: fn_17160
-UIWindow* UIWindowMgr::Top() const {
+__declspec(noinline) UIWindow* UIWindowMgr::Top() const {
   return this->modalWindows.empty() ? nullptr : this->modalWindows.back();
 }
 
@@ -154,7 +154,7 @@ int UIWindowMgr::Confirm(
     return 185;
   }
 
-  if (UIWindow* active = this->Top()) {
+  if (UIWindow* active = this->modalWindows.empty() ? nullptr : this->modalWindows.back()) {
     if (active->SendMsg(nullptr, UM_IS_MESSAGE_PROTECTED, 0, 0, 0, 0) == 0 && replace) {
       active->SendMsg(nullptr, UM_CHANGEMSG, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
     }
