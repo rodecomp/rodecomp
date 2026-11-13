@@ -8,6 +8,7 @@
 class DeviceOwnerDX9 {
 public:
   DeviceOwnerDX9();
+  ~DeviceOwnerDX9();
   DeviceOwnerDX9(const DeviceOwnerDX9&) = delete;
   DeviceOwnerDX9& operator=(const DeviceOwnerDX9&) = delete;
   HRESULT Initialize(HWND window, UINT adapter);
