@@ -18,8 +18,8 @@ UIItemStoreComboBox::UIItemStoreComboBox()
 // FUNCTION: fn_11325
 void UIItemStoreComboBoxWnd::OnCreate(int, int) {
   std::string path = "유저인터페이스\\basic_interface\\";
-  const char* pressed = this->pink == 1 ? "combo_btn_pink_b" : "combo_btn_b";
-  const char* disabled = this->pink == 1 ? "combo_btn_pink_c" : "combo_btn_c";
+  const char* pressed = this->pink != 1 ? "combo_btn_b" : "combo_btn_pink_b";
+  const char* disabled = this->pink != 1 ? "combo_btn_c" : "combo_btn_pink_c";
 
   this->button = new UIBitmapButton();
   this->button->SetBitmap((path + "combo_btn_a" + ".bmp").c_str(), 0, 0);
@@ -38,14 +38,16 @@ void UIItemStoreComboBoxWnd::OnCreate(int, int) {
   this->list->Show(0);
   this->AddChild(this->list);
 
-  char text[12] = {};
-  std::sprintf(text, "(NO SELECT)");
-  this->label = new UIStaticText();
-  this->label->SetSize(this->geometry.width - this->button->BitmapWidth(), this->button->BitmapHeight());
-  this->label->SetText(text, 0);
-  this->label->Move(2, 3);
-  this->label->shadow = 1;
-  this->AddChild(this->label);
+  {
+    char text[12] = {};
+    std::sprintf(text, "(NO SELECT)");
+    this->label = new UIStaticText();
+    this->label->SetSize(this->geometry.width - this->button->BitmapWidth(), this->button->BitmapHeight());
+    this->label->SetText(text, 0);
+    this->label->Move(2, 3);
+    this->label->shadow = 1;
+    this->AddChild(this->label);
+  }
 }
 
 // OFFSET: 0x0086D590
