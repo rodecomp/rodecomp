@@ -56,7 +56,7 @@ void UIMakeTargetProcessWnd::DragAndDrop(int x, int y, std::intptr_t value) {
     }
 
     if (emptySlot < 3) {
-      ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, drag->id);
+      ITEM_INFO item = g_session.LookupClientItemByIdentity(drag->id);
       if (item.identity[1] > 0 && item.IsForgeMaterial() && (!hasElementalStone || !item.IsElementalStone())) {
         this->materials[emptySlot] = item;
         this->materials[emptySlot].quantity = 1;

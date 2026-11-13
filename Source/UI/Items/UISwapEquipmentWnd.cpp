@@ -61,7 +61,7 @@ void UISwapEquipmentWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   unsigned char equipped = 0;
   switch (drag->source) {
   case 1:
-    item = LookupClientItemByIdentity(g_session.m_inventoryItems, drag->id);
+    item = g_session.LookupClientItemByIdentity(drag->id);
     break;
   case 2:
     equipped = 1;
@@ -382,7 +382,7 @@ void UISwapEquipmentWnd::Paint() {
   }
 
   if (g_session.swapArrowIndex != 0) {
-    ITEM_INFO dragItem = LookupClientItemByIdentity(g_session.m_inventoryItems, g_session.swapArrowIndex);
+    ITEM_INFO dragItem = g_session.LookupClientItemByIdentity(g_session.swapArrowIndex);
     if (dragItem.identity[1] > 0) {
       DrawItemIcon(*this, ResourceMgr::Instance(), this->geometry.width / 2 - 24, 27, dragItem, 0);
       this->DrawFittedItemName(this->geometry.width / 2 - 24, 51, &dragItem, 0, 0, 12, 0);

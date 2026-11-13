@@ -1104,7 +1104,7 @@ void CUIEnchantUI::SetEnchantGroup(uint64_t group) {
       if (g_session.HasSwapEquipmentItem(index)) {
         continue;
       }
-      const ITEM_INFO target = LookupClientItemByIdentity(g_session.m_inventoryItems, index);
+      const ITEM_INFO target = g_session.LookupClientItemByIdentity(index);
       if (static_cast<std::uint32_t>(target.refiningLevel) < this->enchantInfo->condition1) {
         continue;
       }

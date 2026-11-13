@@ -25,7 +25,7 @@ __declspec(noinline) void TraceSelection(int selection) {
 // FUNCTION: fn_23368
 ITEM_INFO CSession::GetEquippedItemAt(int index) const {
   if (index == 15) {
-    return LookupClientItemByIdentity(this->m_inventoryItems, this->equippedArrowIndex);
+    return this->LookupClientItemByIdentity(this->equippedArrowIndex);
   }
 
   if (static_cast<unsigned int>(index) <= 9) {

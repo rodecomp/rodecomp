@@ -852,7 +852,7 @@ int UIRefiningWnd::SendMsg(
     break;
   case UM_REFRESHITEM:
     if (this->state == 0 || this->state == 1) {
-      const ITEM_INFO info = LookupClientItemByIdentity(g_session.m_inventoryItems, argument1);
+      const ITEM_INFO info = g_session.LookupClientItemByIdentity(argument1);
       if (g_session.HasSwapEquipmentItem(info.identity[1]) == 1) {
         g_modeMgr.GetGameMode()->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
         return -1;
@@ -886,7 +886,7 @@ void UIRefiningWnd::ApplyItem(int id, int count, RefiningMaterial* materials, in
       return;
     }
 
-    ITEM_INFO found = LookupClientItemByIdentity(g_session.m_inventoryItems, id);
+    ITEM_INFO found = g_session.LookupClientItemByIdentity(id);
     if (found.identity[1] == 0) {
       return;
     }
@@ -944,7 +944,7 @@ void UIRefiningWnd::ApplyItem(int id, int count, RefiningMaterial* materials, in
       return;
     }
 
-    ITEM_INFO found = LookupClientItemByIdentity(g_session.m_inventoryItems, id);
+    ITEM_INFO found = g_session.LookupClientItemByIdentity(id);
     if (found.identity[1] == 0) {
       return;
     }

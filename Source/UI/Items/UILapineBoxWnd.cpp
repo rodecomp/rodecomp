@@ -402,7 +402,7 @@ int UILapineBox_IngredientListWnd::SendMsg(UIWindow* sender, int message, std::i
     }
 
     for (std::vector<UIIngredientInfoWnd*>::iterator it = this->items.begin(); it != this->items.end(); ++it) {
-      ITEM_INFO owned = LookupClientItemByIdentity(g_session.m_inventoryItems, (*it)->item.identity[1]);
+      ITEM_INFO owned = g_session.LookupClientItemByIdentity((*it)->item.identity[1]);
       if (owned.identity[1] == 0) {
         (*it)->Show(0);
       }
@@ -553,7 +553,7 @@ void UILapineBoxWnd::AddMaterial(int id, int quantity) {
 // OFFSET: 0x006028C0
 // FUNCTION: fn_04183
 void UIIngredientInfoWnd::SetIngredientItem(std::uint32_t id) {
-  this->item = LookupClientItemByIdentity(g_session.m_inventoryItems, id);
+  this->item = g_session.LookupClientItemByIdentity(id);
 
   std::vector<char*> breaks;
   char name[260];

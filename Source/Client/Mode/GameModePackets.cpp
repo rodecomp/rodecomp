@@ -2812,7 +2812,7 @@ void LaunchRollingCutterEffect(CGameActor* actor) {
 // OFFSET: 0x00D2D8D0
 // FUNCTION: fn_21721
 __declspec(noinline) void CGameMode::ReceiveInventoryItemUpdate(const unsigned char* packet) {
-  ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *reinterpret_cast<const std::uint16_t*>(packet + 2));
+  ITEM_INFO item = g_session.LookupClientItemByIdentity(*reinterpret_cast<const std::uint16_t*>(packet + 2));
   if (item.identity[1] != 0) {
     item.flags[0] = *reinterpret_cast<const unsigned char*>(packet + 4) == 0;
     g_session.UpdateInventoryItem(item, 1);
@@ -2848,7 +2848,7 @@ void CGameMode::ReceiveItemIdentificationList(const unsigned char* packet) {
   count >>= 1;
   const std::int16_t* ids = reinterpret_cast<const std::int16_t*>(packet + 4);
   for (unsigned int index = count; index != 0; --index, ++ids) {
-    ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *ids);
+    ITEM_INFO item = g_session.LookupClientItemByIdentity(*ids);
     if (item.identity[1] != 0) {
       window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), item.identity[1], 0, 0);
     }
@@ -2867,7 +2867,7 @@ void CGameMode::ReceiveCardCompositionItemList(const unsigned char* packet) {
   count >>= 1;
   const std::int16_t* ids = reinterpret_cast<const std::int16_t*>(packet + 4);
   for (unsigned int index = count; index != 0; --index, ++ids) {
-    ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *ids);
+    ITEM_INFO item = g_session.LookupClientItemByIdentity(*ids);
     if (item.identity[1] != 0) {
       window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), item.identity[1], 0, 0);
     }
@@ -6497,7 +6497,7 @@ __declspec(noinline) void CGameMode::ReceiveWearEquipAck(unsigned char result, s
   this->waitingWearEquipAck = timeGetTime() - 2000;
   switch (result) {
   case ITEM_EQUIP_ACK_OK: {
-    ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, index);
+    ITEM_INFO item = g_session.LookupClientItemByIdentity(index);
     if (item.identity[1] > 0) {
       item.sprite = look;
       item.identity[3] = location;
@@ -6885,7 +6885,7 @@ __declspec(noinline) void CGameMode::ReceiveItemSellResult(const unsigned char* 
   {
     const int count = *reinterpret_cast<const std::int16_t*>(packet + 4);
     const int total = *reinterpret_cast<const int*>(packet + 6) * count;
-    ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *reinterpret_cast<const std::int16_t*>(packet + 2));
+    ITEM_INFO item = g_session.LookupClientItemByIdentity(*reinterpret_cast<const std::int16_t*>(packet + 2));
     g_windowMgr.SendNotice(
       UIM_PUSHINTOCHATHISTORY,
       reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_BUYINGSTORE_TRADE_SELLCOMPLETE), item.DisplayName(0).c_str(), count, total).c_str()),
@@ -7065,7 +7065,7 @@ void CGameMode::ReceiveItemObtainNotice(const unsigned char* packet) {
 // OFFSET: 0x00D8A460
 // FUNCTION: fn_22219
 __declspec(noinline) void CGameMode::ReceiveTakeOffEquipItemResult(const unsigned char* packet) {
-  ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *reinterpret_cast<const std::uint16_t*>(packet + 2));
+  ITEM_INFO item = g_session.LookupClientItemByIdentity(*reinterpret_cast<const std::uint16_t*>(packet + 2));
   item.identity[3] = *reinterpret_cast<const std::uint32_t*>(packet + 4);
   switch (*reinterpret_cast<const std::uint16_t*>(packet + 8)) {
   case 0: {
@@ -7912,7 +7912,7 @@ namespace {
     }
 
     if (g_session.IsPetEgg(std::atoi(item.itemId.c_str())) && item.damaged) {
-      const int petEgg = std::atoi(LookupClientItemByIdentity(g_session.m_inventoryItems, g_session.petEggIndex).itemId.c_str());
+      const int petEgg = std::atoi(g_session.LookupClientItemByIdentity(g_session.petEggIndex).itemId.c_str());
       if (!g_petEvolutionMgr->IsAutoFeeding(petEgg) && g_session.m_petAutoFeed == true) {
         g_session.SendPetAutoFeedOption(0);
       }
@@ -8058,7 +8058,7 @@ namespace {
     }
 
     if (g_session.IsPetEgg(std::atoi(item.itemId.c_str())) && item.damaged) {
-      const int petEgg = std::atoi(LookupClientItemByIdentity(g_session.m_inventoryItems, g_session.petEggIndex).itemId.c_str());
+      const int petEgg = std::atoi(g_session.LookupClientItemByIdentity(g_session.petEggIndex).itemId.c_str());
       if (!g_petEvolutionMgr->IsAutoFeeding(petEgg) && g_session.m_petAutoFeed == true) {
         g_session.SendPetAutoFeedOption(0);
       }
@@ -8232,7 +8232,9 @@ void CGameMode::ReceiveItemPickupAck2(const unsigned char* data) {
     item.identity[3] = 0;
     item.quantity = packet->amount;
     item.SetItemId(packet->itemId);
-    std::memcpy(item.cards, packet->cards, sizeof(packet->cards));
+    for (int card = 0; card < 4; ++card) {
+      item.cards[card] = packet->cards[card];
+    }
     item.identified = packet->identified;
     item.damaged = packet->damaged;
     item.refiningLevel = packet->refine;
@@ -8263,7 +8265,9 @@ void CGameMode::ReceiveItemPickupAck2(const unsigned char* data) {
     item.identity[3] = 0;
     item.quantity = packet->amount;
     item.SetItemId(packet->itemId);
-    std::memcpy(item.cards, packet->cards, sizeof(packet->cards));
+    for (int card = 0; card < 4; ++card) {
+      item.cards[card] = packet->cards[card];
+    }
     item.identified = packet->identified;
     item.damaged = packet->damaged;
     item.refiningLevel = packet->refine;
@@ -8290,16 +8294,13 @@ void CGameMode::ReceiveItemPickupAck2(const unsigned char* data) {
       break;
     }
 
-    const ITEM_INFO current = LookupClientItemByIdentity(g_session.m_inventoryItems, packet->index);
-    int amount = packet->amount;
-    if (current.identity[1] > 0) {
-      amount -= current.quantity;
-    }
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_GET_ITEM), item.DisplayName(0).c_str(), amount).c_str()), 0xFFFF00, 6, 0, 0);
+    const ITEM_INFO current = g_session.LookupClientItemByIdentity(packet->index);
+    const int count = current.identity[1] > 0 ? packet->amount - current.quantity : packet->amount;
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_GET_ITEM), item.DisplayName(0).c_str(), count).c_str()), 0xFFFF00, 6, 0, 0);
 
     UIWindow* window = g_windowMgr.EnsureWindow(WID_NOTIFYITEMOBTAINWND);
     window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, item.identified, 0, 0, 0);
-    window->SendMsg(nullptr, UM_SETTITLE, 0, amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
+    window->SendMsg(nullptr, UM_SETTITLE, 0, count, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
     window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     if (this->isWaitingCancelExchangeItem != 0) {
       this->isWaitingCancelExchangeItem = 0;
@@ -8329,7 +8330,9 @@ void CGameMode::ReceiveItemPickupAck3(const unsigned char* data) {
     item.identity[3] = 0;
     item.quantity = packet->amount;
     item.SetItemId(packet->itemId);
-    std::memcpy(item.cards, packet->cards, sizeof(packet->cards));
+    for (int card = 0; card < 4; ++card) {
+      item.cards[card] = packet->cards[card];
+    }
     item.identified = packet->identified;
     item.damaged = packet->damaged;
     item.refiningLevel = packet->refine;
@@ -8365,7 +8368,9 @@ void CGameMode::ReceiveItemPickupAck3(const unsigned char* data) {
     item.identity[3] = 0;
     item.quantity = packet->amount;
     item.SetItemId(packet->itemId);
-    std::memcpy(item.cards, packet->cards, sizeof(packet->cards));
+    for (int card = 0; card < 4; ++card) {
+      item.cards[card] = packet->cards[card];
+    }
     item.identified = packet->identified;
     item.damaged = packet->damaged;
     item.refiningLevel = packet->refine;
@@ -8393,16 +8398,13 @@ void CGameMode::ReceiveItemPickupAck3(const unsigned char* data) {
       break;
     }
 
-    const ITEM_INFO current = LookupClientItemByIdentity(g_session.m_inventoryItems, packet->index);
-    int amount = packet->amount;
-    if (current.identity[1] > 0) {
-      amount -= current.quantity;
-    }
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_GET_ITEM), item.DisplayName(0).c_str(), amount).c_str()), 0xFFFF00, 6, 0, 0);
+    const ITEM_INFO current = g_session.LookupClientItemByIdentity(packet->index);
+    const int count = current.identity[1] > 0 ? packet->amount - current.quantity : packet->amount;
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_GET_ITEM), item.DisplayName(0).c_str(), count).c_str()), 0xFFFF00, 6, 0, 0);
 
     UIWindow* window = g_windowMgr.EnsureWindow(WID_NOTIFYITEMOBTAINWND);
     window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, item.identified, 0, 0, 0);
-    window->SendMsg(nullptr, UM_SETTITLE, 0, amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
+    window->SendMsg(nullptr, UM_SETTITLE, 0, count, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
     window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     if (this->isWaitingCancelExchangeItem != 0) {
       this->isWaitingCancelExchangeItem = 0;
@@ -8435,7 +8437,9 @@ void CGameMode::ReceiveItemPickupAck(const unsigned char* data) {
     item.identity[3] = 0;
     item.quantity = packet->amount;
     item.SetItemId(packet->itemId);
-    std::memcpy(item.cards, packet->cards, sizeof(packet->cards));
+    for (int card = 0; card < 4; ++card) {
+      item.cards[card] = packet->cards[card];
+    }
     item.identified = packet->identified;
     item.damaged = packet->damaged;
     item.refiningLevel = packet->refine;
@@ -8465,7 +8469,9 @@ void CGameMode::ReceiveItemPickupAck(const unsigned char* data) {
     item.identity[3] = 0;
     item.quantity = packet->amount;
     item.SetItemId(packet->itemId);
-    std::memcpy(item.cards, packet->cards, sizeof(packet->cards));
+    for (int card = 0; card < 4; ++card) {
+      item.cards[card] = packet->cards[card];
+    }
     item.identified = packet->identified;
     item.damaged = packet->damaged;
     item.refiningLevel = packet->refine;
@@ -8491,14 +8497,14 @@ void CGameMode::ReceiveItemPickupAck(const unsigned char* data) {
       break;
     }
 
-    const ITEM_INFO current = LookupClientItemByIdentity(g_session.m_inventoryItems, packet->index);
+    const ITEM_INFO current = g_session.LookupClientItemByIdentity(packet->index);
     std::string text;
     int amount;
     if (current.identity[1] > 0) {
-      text = FormatOwnedString(LookupMessage(MSI_GET_ITEM), item.DisplayName(0).c_str(), packet->amount - current.quantity);
+      text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_GET_ITEM), item.DisplayName(0).c_str(), packet->amount - current.quantity));
       amount = packet->amount - current.quantity;
     } else {
-      text = FormatOwnedString(LookupMessage(MSI_GET_ITEM), item.DisplayName(0).c_str(), packet->amount);
+      text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_GET_ITEM), item.DisplayName(0).c_str(), packet->amount));
       amount = packet->amount;
     }
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF00, 6, 0, 0);
@@ -8662,7 +8668,7 @@ namespace {
     item.quantity = amount;
     item.SetItemId(itemId);
     for (int card = 0; card < 4; ++card) {
-      reinterpret_cast<std::uint32_t*>(item.cards)[card] = slots.cards[card];
+      item.cards[card] = slots.cards[card];
     }
     item.identified = identified;
     item.damaged = damaged;
@@ -8708,7 +8714,7 @@ namespace {
     item.quantity = amount;
     item.SetItemId(itemId);
     for (int card = 0; card < 4; ++card) {
-      reinterpret_cast<std::uint32_t*>(item.cards)[card] = slots.cards[card];
+      item.cards[card] = slots.cards[card];
     }
     item.identified = identified;
     item.damaged = damaged;
@@ -8742,7 +8748,7 @@ namespace {
       break;
     }
 
-    const ITEM_INFO current = LookupClientItemByIdentity(g_session.m_inventoryItems, index);
+    const ITEM_INFO current = g_session.LookupClientItemByIdentity(index);
     const int count = current.identity[1] > 0 ? amount - current.quantity : amount;
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_GET_ITEM), item.DisplayName(0).c_str(), count).c_str()), 0xFFFF00, 6, 0, 0);
 
@@ -9745,7 +9751,7 @@ namespace {
   __forceinline void AddPickedUpItemEx(
     std::uint16_t index, std::uint16_t amount, int itemId, unsigned char identified, unsigned char damaged, unsigned char refine, ItemCardSlots slots,
     std::uint32_t location, unsigned char type, std::uint32_t expireTime, std::uint16_t bindOnEquip, PickupItemOptions options, unsigned char favorite,
-    std::uint16_t look, unsigned char grade
+    std::uint16_t look, std::int16_t grade
   ) {
     ITEM_INFO item;
     item.identity[0] = type;
@@ -9755,7 +9761,7 @@ namespace {
     item.quantity = amount;
     item.SetItemId(itemId);
     for (int card = 0; card < 4; ++card) {
-      reinterpret_cast<std::uint32_t*>(item.cards)[card] = slots.cards[card];
+      item.cards[card] = slots.cards[card];
     }
     item.identified = identified;
     item.damaged = damaged;
@@ -9795,7 +9801,7 @@ namespace {
   __forceinline void UpdateReceivedItemEx(
     std::uint16_t index, std::uint16_t amount, int itemId, unsigned char identified, unsigned char damaged, unsigned char refine, ItemCardSlots slots,
     std::uint32_t location, unsigned char type, std::uint32_t expireTime, std::uint16_t bindOnEquip, PickupItemOptions options, unsigned char favorite,
-    std::uint16_t look, unsigned char grade
+    std::uint16_t look, std::int16_t grade
   ) {
     ITEM_INFO item;
     item.identity[0] = type;
@@ -9805,7 +9811,7 @@ namespace {
     item.quantity = amount;
     item.SetItemId(itemId);
     for (int card = 0; card < 4; ++card) {
-      reinterpret_cast<std::uint32_t*>(item.cards)[card] = slots.cards[card];
+      item.cards[card] = slots.cards[card];
     }
     item.identified = identified;
     item.damaged = damaged;
@@ -9842,7 +9848,7 @@ namespace {
     item.sprite = look;
     item.grade = grade;
 
-    const ITEM_INFO current = LookupClientItemByIdentity(g_session.m_inventoryItems, index);
+    const ITEM_INFO current = g_session.LookupClientItemByIdentity(index);
     const int count = current.identity[1] > 0 ? amount - current.quantity : amount;
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_GET_ITEM), item.DisplayName(0).c_str(), count).c_str()), 0xFFFF00, 6, 0, 0);
 
@@ -21645,7 +21651,7 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_USE_ITEM_ACK: {
       const ItemUseAckPacket *packet = reinterpret_cast<const ItemUseAckPacket *>(g_gameModePacketBuffer);
       if (packet->result) {
-        ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, packet->index);
+        ITEM_INFO item = g_session.LookupClientItemByIdentity(packet->index);
         if (item.identity[1]) {
           g_session.RemoveInventoryItem(packet->index, item.quantity - packet->amount);
           if (item.IsAboveItemId600()) {
@@ -21665,7 +21671,7 @@ void CGameMode::ProcessIncomingPackets() {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CAN_NOT_EQUIP_ITEM)), 0xFF, 7, 0, 0);
         break;
       case ACK_REQ_EQUIP_SUCCESS: {
-        ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *reinterpret_cast<const std::uint16_t *>(packet + 2));
+        ITEM_INFO item = g_session.LookupClientItemByIdentity(*reinterpret_cast<const std::uint16_t *>(packet + 2));
         if (item.identity[1]) {
           item.sprite = *reinterpret_cast<const std::uint16_t *>(packet + 6);
           item.identity[3] = *reinterpret_cast<const std::uint16_t *>(packet + 4);
@@ -21698,7 +21704,7 @@ void CGameMode::ProcessIncomingPackets() {
 
       const std::uint16_t index = *reinterpret_cast<const std::uint16_t *>(packet + 2);
       const std::int16_t amount = *reinterpret_cast<const std::int16_t *>(packet + 4);
-      ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, index);
+      ITEM_INFO item = g_session.LookupClientItemByIdentity(index);
       if (item.identity[1] && amount > 0) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_DROP_ITEM), item.DisplayName(0).c_str(), amount).c_str()),
                                0xFFFF00, 6, 0, 0);
@@ -22677,7 +22683,7 @@ void CGameMode::ProcessIncomingPackets() {
       window->SendMsg(nullptr, UM_CLEAR_ITEM, 0, 0, 0, 0);
       const std::int16_t *index = reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 4);
       for (; count != 0; --count, ++index) {
-        ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *index);
+        ITEM_INFO item = g_session.LookupClientItemByIdentity(*index);
         if (item.identity[1]) {
           window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), item.identity[1], 0, 0);
         }
@@ -22689,7 +22695,7 @@ void CGameMode::ProcessIncomingPackets() {
       switch (g_gameModePacketBuffer[4]) {
       case ITEMIDENTIFY_SUCCESS: {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_IDENTIFY_SUCCEESS)), 0xFFFF00, 0, 0, 0);
-        ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2));
+        ITEM_INFO item = g_session.LookupClientItemByIdentity(*reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 2));
         item.identified = 1;
         g_session.UpdateInventoryItem(item, 1);
         break;
@@ -22706,7 +22712,7 @@ void CGameMode::ProcessIncomingPackets() {
       window->SendMsg(nullptr, UM_SET_CARD_ITEM_INDEX, this->cardItemIndex, 0, 0, 0);
       const std::int16_t *index = reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 4);
       for (; count != 0; --count, ++index) {
-        ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *index);
+        ITEM_INFO item = g_session.LookupClientItemByIdentity(*index);
         if (item.identity[1]) {
           window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), item.identity[1], 0, 0);
         }
@@ -22869,7 +22875,7 @@ void CGameMode::ProcessIncomingPackets() {
       window->SendMsg(nullptr, UM_CLEAR_ITEM, 0, 0, 0, 0);
       const std::int16_t *index = reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 4);
       for (int i = 0; i < count; ++i, ++index) {
-        ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *index);
+        ITEM_INFO item = g_session.LookupClientItemByIdentity(*index);
         if (item.identity[1]) {
           window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), item.identity[1], 0, 0);
         }
@@ -22995,7 +23001,7 @@ void CGameMode::ProcessIncomingPackets() {
       if (*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 8) == g_session.m_aid) {
         this->waitingUseItemAck = 0;
         if (g_gameModePacketBuffer[0xE]) {
-          ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2));
+          ITEM_INFO item = g_session.LookupClientItemByIdentity(*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2));
           if (item.identity[1]) {
             g_session.RemoveInventoryItem(*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2),
                                      item.quantity - *reinterpret_cast<const std::int16_t *>(g_gameModePacketBuffer + 0xC));
@@ -23392,7 +23398,7 @@ void CGameMode::ProcessIncomingPackets() {
       g_renewQuestMgr->UpdateQuestWindows();
       break;
     case ID_ZC_NOTIFY_BIND_ON_EQUIP: {
-      ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2));
+      ITEM_INFO item = g_session.LookupClientItemByIdentity(*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2));
       if (item.identity[1]) {
         std::string name = item.DisplayName(0);
         std::string message = FormatOwnedString(LookupMessage(MSI_YOURITEM_EQUIPED), name.c_str());
@@ -24074,7 +24080,7 @@ void CGameMode::ProcessIncomingPackets() {
       this->waitingWearEquipAck = timeGetTime() - 2000;
       switch (packet[8]) {
       case ITEM_EQUIP_ACK_OK: {
-        ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *reinterpret_cast<const std::uint16_t *>(packet + 2));
+        ITEM_INFO item = g_session.LookupClientItemByIdentity(*reinterpret_cast<const std::uint16_t *>(packet + 2));
         if (item.identity[1]) {
           item.sprite = *reinterpret_cast<const std::uint16_t *>(packet + 6);
           item.identity[3] = *reinterpret_cast<const std::uint16_t *>(packet + 4);

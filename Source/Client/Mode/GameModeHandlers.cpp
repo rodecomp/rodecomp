@@ -739,7 +739,7 @@ void CGameMode::ReceiveItem1718IndexList(const unsigned char* packet) {
   const Item1718IndexRecord* records = reinterpret_cast<const Item1718IndexRecord*>(packet + 4);
   for (int i = 0; i < count; ++i) {
     const Item1718IndexRecord record = records[i];
-    ITEM_INFO owned = LookupClientItemByIdentity(g_session.m_inventoryItems, record.index);
+    ITEM_INFO owned = g_session.LookupClientItemByIdentity(record.index);
     if (owned.identity[1] != 0 && (owned.flags[0] == 0 || g_session.hotkeyAndSortOptions[10] == 0)) {
       RawItemBasic item = {};
       item.id = record.index;
@@ -2131,7 +2131,7 @@ void CGameMode::ReceiveServiceRequest(unsigned char type, int value) {
 // OFFSET: 0x00D679E0
 // FUNCTION: fn_22037
 void CGameMode::ReceiveGradeEnchantResult(const unsigned char* packet) {
-  ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *reinterpret_cast<const std::int16_t*>(packet + 2));
+  ITEM_INFO item = g_session.LookupClientItemByIdentity(*reinterpret_cast<const std::int16_t*>(packet + 2));
   if (item.identity[1] > 0) {
     const int result = *reinterpret_cast<const int*>(packet + 6);
     if (result == ENCHANTGRADE_UPGRADE_SUCCESS) {

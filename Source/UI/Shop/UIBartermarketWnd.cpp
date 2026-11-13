@@ -504,7 +504,7 @@ int UIExpandedBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std:
 
     found.second.value = mode->drag.quantity;
     for (std::vector<BarterChunk16>::iterator chunk = found.second.chunks.begin(); chunk != found.second.chunks.end(); ++chunk) {
-      ITEM_INFO owned = LookupClientItemByIdentity(g_session.m_inventoryItems, chunk->field_0);
+      ITEM_INFO owned = g_session.LookupClientItemByIdentity(chunk->field_0);
       if (owned.identity[1] > 0) {
         mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
         g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);

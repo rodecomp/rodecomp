@@ -219,6 +219,23 @@ ITEM_INFO LookupClientItem(const std::list<ITEM_INFO>& values, int id, unsigned 
 
 // OFFSET: 0x00DDD5A0
 // FUNCTION: fn_23387
+ITEM_INFO CSession::LookupClientItemByIdentity(std::uint32_t id) const {
+  const std::list<ITEM_INFO>& values = this->m_inventoryItems;
+  if (values.empty()) {
+    return ITEM_INFO(0);
+  }
+
+  auto it = values.begin();
+  for (; it != values.end(); ++it) {
+    if (it->identity[1] == id) {
+      break;
+    }
+  }
+
+  return it != values.end() ? *it : ITEM_INFO(0);
+}
+
+// INLINED
 ITEM_INFO LookupClientItemByIdentity(const std::list<ITEM_INFO>& values, std::uint32_t id) {
   if (values.empty()) {
     return ITEM_INFO(0);
@@ -433,7 +450,7 @@ std::uint32_t ITEM_INFO::Deserialize(const std::vector<unsigned char>& data) {
 bool CSession::HasRequiredItems() const {
   for (auto it = this->storageItems.begin(); it != this->storageItems.end(); ++it) {
     const ITEM_INFO& required = *it;
-    const ITEM_INFO owned = LookupClientItemByIdentity(this->m_inventoryItems, required.identity[1]);
+    const ITEM_INFO owned = this->LookupClientItemByIdentity(required.identity[1]);
     if (owned.identity[1] <= 0 || owned.quantity < required.quantity) {
       return false;
     }
@@ -473,7 +490,7 @@ bool CSession::HasInventoryItem(std::uint32_t id) const {
 // OFFSET: 0x00DFBE40
 // FUNCTION: fn_23591
 bool CSession::HasItemId(int itemId) const {
-  const ITEM_INFO owned = LookupClientItemByIdentity(this->m_inventoryItems, this->equippedArrowIndex);
+  const ITEM_INFO owned = this->LookupClientItemByIdentity(this->equippedArrowIndex);
   if (owned.identity[1] > 0 && std::atoi(owned.itemId.c_str()) == itemId) {
     return true;
   }
@@ -490,7 +507,7 @@ bool CSession::HasItemId(int itemId) const {
 // OFFSET: 0x00DFBF70
 // FUNCTION: fn_23592
 bool CSession::HasItemCount(int itemId, int count) const {
-  const ITEM_INFO owned = LookupClientItemByIdentity(this->m_inventoryItems, this->equippedArrowIndex);
+  const ITEM_INFO owned = this->LookupClientItemByIdentity(this->equippedArrowIndex);
   if (owned.identity[1] != 0 && std::atoi(owned.itemId.c_str()) == itemId) {
     return true;
   }

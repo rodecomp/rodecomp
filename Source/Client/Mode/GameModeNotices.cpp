@@ -1484,8 +1484,8 @@ void CGameMode::ReceiveCardCompositionResult(const unsigned char* data) {
   switch (packet->result) {
   case ITEMCOMPOSITON_SUCCESS: {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_COMPOUNDING_SUCCEESS)), 0xFFFF00, 0, 0, 0);
-    ITEM_INFO card = LookupClientItemByIdentity(g_session.m_inventoryItems, packet->cardIndex);
-    ITEM_INFO equip = LookupClientItemByIdentity(g_session.m_inventoryItems, packet->equipIndex);
+    ITEM_INFO card = g_session.LookupClientItemByIdentity(packet->cardIndex);
+    ITEM_INFO equip = g_session.LookupClientItemByIdentity(packet->equipIndex);
     if (equip.identity[1] != 0 && card.identity[1] != 0) {
       int* cards = reinterpret_cast<int*>(equip.cards);
       for (int i = 0; i < 4; ++i) {
@@ -1510,7 +1510,7 @@ void CGameMode::ReceiveCardCompositionResult(const unsigned char* data) {
 // FUNCTION: fn_21859
 void CGameMode::ReceiveRefineResult(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const RefineResultPacket*>(data);
-  ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, packet->index);
+  ITEM_INFO item = g_session.LookupClientItemByIdentity(packet->index);
   if (item.identity[1] != 0) {
     item.refiningLevel = packet->refine;
     g_session.UpdateInventoryItem(item, 1);
@@ -1550,7 +1550,7 @@ void CGameMode::ReceiveRefineResult(const unsigned char* data) {
     break;
   }
 
-  ITEM_INFO refined = LookupClientItemByIdentity(g_session.m_inventoryItems, packet->index);
+  ITEM_INFO refined = g_session.LookupClientItemByIdentity(packet->index);
   refined.refiningLevel = packet->refine;
   g_session.UpdateInventoryItem(refined, 1);
 }
@@ -2234,7 +2234,7 @@ void CGameMode::ReceiveItemOptionsRefresh(const unsigned char* data) {
     return;
   }
 
-  ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, packet->index);
+  ITEM_INFO item = g_session.LookupClientItemByIdentity(packet->index);
   if (item.identity[1] != 0) {
     item.refiningLevel = packet->refine;
     item.optionCount = CountItemSlotOptions(packet->options);
@@ -2658,7 +2658,7 @@ void CGameMode::ReceiveWindow348Result(unsigned char result, std::int16_t index)
   case 0: {
     g_windowMgr.CloseWindow(WID_ITEMREFORMWND);
     g_effectMgr->Spawn(g_session.m_aid, 1608, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-    ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, index);
+    ITEM_INFO item = g_session.LookupClientItemByIdentity(index);
     if (item.identity[1] <= 0) {
       return;
     }
@@ -3070,7 +3070,7 @@ void CGameMode::ReceiveExchangeItemAddAck(const unsigned char* data) {
   switch (packet->result) {
   case EXITEM_ADD_SUCCEED:
     if (packet->index != 0) {
-      ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, packet->index);
+      ITEM_INFO item = g_session.LookupClientItemByIdentity(packet->index);
       item.quantity = exchangeAmount;
       g_session.AddExchangeItem(item);
     } else {
@@ -3535,7 +3535,7 @@ void CGameMode::ReceiveStorageNormalList2(const unsigned char* data) {
 // OFFSET: 0x00D6DEF0
 // FUNCTION: fn_22094
 void CGameMode::ReceiveItemUpgrade(std::uint16_t index, std::uint16_t refine, ItemCardSlots cards, ItemSlotOptions options) {
-  ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, index);
+  ITEM_INFO item = g_session.LookupClientItemByIdentity(index);
   item.refiningLevel = refine;
   std::memcpy(item.cards, cards.cards, sizeof(cards.cards));
   item.optionCount = CountItemSlotOptions(options.options);
@@ -7417,7 +7417,7 @@ void CGameMode::RefreshInventoryOrEquipItem(std::uint16_t itemId, unsigned char 
 // FUNCTION: fn_22092
 void CGameMode::RefreshInventoryOrEquipItem2(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const EquipItemUpdatePacket*>(data);
-  ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, packet->itemId);
+  ITEM_INFO item = g_session.LookupClientItemByIdentity(packet->itemId);
   long long lookup = 0;
   int slot = 0;
   if (item.identity[1] == 0) {

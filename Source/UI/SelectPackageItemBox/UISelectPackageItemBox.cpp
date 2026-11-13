@@ -1088,7 +1088,7 @@ void CUISelectPackageItemBox::Open(int sourceIndex) {
   this->itemList->ClearData();
   this->title->SetTitle("", 0);
   this->sourceIndex = sourceIndex;
-  const ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, sourceIndex);
+  const ITEM_INFO item = g_session.LookupClientItemByIdentity(sourceIndex);
   if (item.identity[1] == 0) {
     return;
   }

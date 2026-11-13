@@ -599,7 +599,7 @@ void CGameMode::ReceiveEquipItemList(const unsigned char* packet) {
       }
 
       if (g_session.IsPetEgg(std::atoi(item.itemId.c_str())) && item.damaged) {
-        const int petEgg = std::atoi(LookupClientItemByIdentity(g_session.m_inventoryItems, g_session.petEggIndex).itemId.c_str());
+        const int petEgg = std::atoi(g_session.LookupClientItemByIdentity(g_session.petEggIndex).itemId.c_str());
         if (!g_petEvolutionMgr->IsAutoFeeding(petEgg) && g_session.m_petAutoFeed == true) {
           g_session.SendPetAutoFeedOption(0);
         }
@@ -938,7 +938,7 @@ void CSession::MergePurchaseItem(const ITEM_INFO& item) {
 // OFFSET: 0x00DD7890
 // FUNCTION: fn_23296
 void CSession::AddStorageItem(const ITEM_INFO& item) {
-  const ITEM_INFO owned = LookupClientItemByIdentity(this->m_inventoryItems, item.identity[1]);
+  const ITEM_INFO owned = this->LookupClientItemByIdentity(item.identity[1]);
   if (owned.identity[1] > 0) {
     for (ITEM_INFO& value : this->storageItems) {
       if (value.identity[1] == item.identity[1]) {
@@ -960,7 +960,7 @@ void CSession::AddStorageItem(const ITEM_INFO& item) {
 // FUNCTION: fn_23297
 void CSession::AddShopItem(const RawItemBasic& item, int mode) {
   if (mode != 0) {
-    const ITEM_INFO owned = LookupClientItemByIdentity(this->m_inventoryItems, item.id);
+    const ITEM_INFO owned = this->LookupClientItemByIdentity(item.id);
     if (owned.identity[1] != 0) {
       ITEM_INFO value(owned);
       value.AssignBasic(item);
@@ -1087,7 +1087,7 @@ bool CSession::OnItemEquipped(ITEM_INFO& item) {
 // FUNCTION: fn_23598
 bool CSession::UnequipItem(int location, std::uint32_t identity) {
   if (location == 0x8000) {
-    const ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, identity);
+    const ITEM_INFO item = g_session.LookupClientItemByIdentity(identity);
     if (item.identity[1] != 0) {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s%s", item.DisplayName(0).c_str(), LookupMessage(MSI_ITEM_IS_REMOVED)).c_str()), 0xFF, 7, 0, 0);
     }
@@ -1719,7 +1719,7 @@ ITEM_INFO CSession::FindItemByIdentity(std::uint32_t identity, int location) {
     return ITEM_INFO(0);
   }
 
-  ITEM_INFO item = LookupClientItemByIdentity(this->m_inventoryItems, identity);
+  ITEM_INFO item = this->LookupClientItemByIdentity(identity);
   if (item.identity[1] > 0) {
     return item;
   }
@@ -1753,7 +1753,7 @@ ITEM_INFO CSession::FindItemByIdentity(std::uint32_t identity, int location) {
 void CSession::SetMerchantMyShopItems(int count, const short* ids) {
   this->ClearMerchantMyShopItems();
   for (int i = 0; i < count; ++i) {
-    const ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, ids[i]);
+    const ITEM_INFO item = g_session.LookupClientItemByIdentity(ids[i]);
     if (item.identity[1] > 0) {
       this->merchantMyShopItems.push_back(item);
     }

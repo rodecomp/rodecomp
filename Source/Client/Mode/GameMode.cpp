@@ -4893,7 +4893,7 @@ bool CGameMode::IsEffectId994Group(int id) {
 // FUNCTION: fn_21419
 bool CGameMode::ConfirmDraggedItemUse() {
   if (g_session.equippedArrowIndex == this->drag.id) {
-    ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, this->drag.id);
+    ITEM_INFO item = g_session.LookupClientItemByIdentity(this->drag.id);
     if (item.identity[1] > 0) {
       if (g_replayAnimationScaling) {
         this->replayDragState[0] = 0;

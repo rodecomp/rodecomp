@@ -2266,7 +2266,7 @@ ITEM_INFO CSession::GetSwapEquippedItem(int index) const {
 // FUNCTION: fn_24175
 ITEM_INFO CSession::GetSwapCostumeItem(int index) const {
   if (index == 15) {
-    return LookupClientItemByIdentity(this->m_inventoryItems, this->swapArrowIndex);
+    return this->LookupClientItemByIdentity(this->swapArrowIndex);
   }
 
   if (static_cast<unsigned int>(index) <= 9) {

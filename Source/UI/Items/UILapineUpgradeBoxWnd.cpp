@@ -339,7 +339,7 @@ int UILapineUpgradeBox_IngredientListWnd::SendMsg(UIWindow* sender, int message,
       }
     }
     for (auto it = this->items.begin(); it != this->items.end(); ++it) {
-      const ITEM_INFO owned = LookupClientItemByIdentity(g_session.m_inventoryItems, (*it)->item.identity[1]);
+      const ITEM_INFO owned = g_session.LookupClientItemByIdentity((*it)->item.identity[1]);
       if (owned.identity[1] <= 0) {
         (*it)->Show(0);
       }
@@ -502,7 +502,7 @@ void UILapineUpgradeBoxWnd::AddMaterial(int id) {
 // OFFSET: 0x006052F0
 // FUNCTION: fn_04220
 bool UILapineUpgradeBox_IngredientListWnd::AddIngredient(std::uint32_t identity) {
-  ITEM_INFO owned = LookupClientItemByIdentity(g_session.m_inventoryItems, identity);
+  ITEM_INFO owned = g_session.LookupClientItemByIdentity(identity);
   if (owned.identity[1] <= 0) {
     return false;
   }
@@ -539,7 +539,7 @@ bool UILapineUpgradeBox_IngredientListWnd::AddIngredient(std::uint32_t identity)
 // OFFSET: 0x006059B0
 // FUNCTION: fn_04224
 __declspec(noinline) void UILapineUpgradeBox_IngredientInfoWnd::SetItem(std::uint32_t identity) {
-  this->item = LookupClientItemByIdentity(g_session.m_inventoryItems, identity);
+  this->item = g_session.LookupClientItemByIdentity(identity);
 
   std::vector<char*> breaks;
   char name[0x104];
@@ -645,7 +645,7 @@ int UILapineUpgradeBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     break;
   case UM_ADDITEM:
     if (this->item.identity[1] == 0 && this->ingredientList->CanUseIngredient(static_cast<std::uint32_t>(a)) == 1) {
-      ITEM_INFO owned = LookupClientItemByIdentity(g_session.m_inventoryItems, static_cast<std::uint32_t>(a));
+      ITEM_INFO owned = g_session.LookupClientItemByIdentity(static_cast<std::uint32_t>(a));
       if (owned.identity[1] != 0) {
         std::vector<char*> breaks;
         char name[260];

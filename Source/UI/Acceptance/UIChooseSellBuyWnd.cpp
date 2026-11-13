@@ -614,7 +614,7 @@ void UIEquipWnd::Paint() {
 
     if (this->m_viewOther == 0) {
       if (this->m_page == 0) {
-        ITEM_INFO dragItem = LookupClientItemByIdentity(g_session.m_inventoryItems, g_session.equippedArrowIndex);
+        ITEM_INFO dragItem = g_session.LookupClientItemByIdentity(g_session.equippedArrowIndex);
         if (dragItem.identity[1] != 0) {
           DrawItemIcon(*this, ResourceMgr::Instance(), this->geometry.width / 2 - 25, this->m_contentTop + 44, dragItem, 0);
           this->DrawItemName(this->geometry.width / 2 - 25, this->m_contentTop + 68, 40, &dragItem, 0, 0, 12);
@@ -2243,7 +2243,7 @@ void UIEquipWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   switch (drag->source) {
   case 1:
-    item = LookupClientItemByIdentity(g_session.m_inventoryItems, drag->id);
+    item = g_session.LookupClientItemByIdentity(drag->id);
     break;
   case 17:
     fromStorage = true;
@@ -9732,7 +9732,7 @@ UISpellListWnd::UISpellListWnd() : UIItemIdentifyWnd() {
 int UIPetEggListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
   case UM_ADDITEM: {
-    const ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, static_cast<std::uint32_t>(argument2));
+    const ITEM_INFO item = g_session.LookupClientItemByIdentity(static_cast<std::uint32_t>(argument2));
     this->m_items.push_back(item);
     this->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
     return 0;

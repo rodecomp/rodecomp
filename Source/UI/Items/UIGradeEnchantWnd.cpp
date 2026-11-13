@@ -588,7 +588,7 @@ int UIGradeEnchantWnd::SendMsg(
     break;
   case UM_REFRESHITEM:
     if (this->state == 0 || this->state == 1) {
-      const ITEM_INFO dropped = LookupClientItemByIdentity(g_session.m_inventoryItems, argument1);
+      const ITEM_INFO dropped = g_session.LookupClientItemByIdentity(argument1);
       if (g_session.HasSwapEquipmentItem(dropped.identity[1]) == 1) {
         g_modeMgr.GetGameMode()->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
         return -1;
@@ -624,7 +624,7 @@ void UIGradeEnchantWnd::SetEnchantInfo(
     return;
   }
 
-  const ITEM_INFO owned = LookupClientItemByIdentity(g_session.m_inventoryItems, index);
+  const ITEM_INFO owned = g_session.LookupClientItemByIdentity(index);
   if (owned.identity[1] == 0) {
     return;
   }

@@ -217,7 +217,7 @@ int CSelectPackageItemMgr::LuaAddTab(lua_State* L) {
 // OFFSET: 0x0061F2F0
 // FUNCTION: fn_04448
 bool CSelectPackageItemMgr::OpenItem(unsigned int itemIndex) {
-  const ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, itemIndex);
+  const ITEM_INFO item = g_session.LookupClientItemByIdentity(itemIndex);
   if (item.identity[1] > 0) {
     const int packageId = std::atoi(item.itemId.c_str());
     if (this->m_packages.find(packageId) != this->m_packages.end()) {

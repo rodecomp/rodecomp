@@ -1234,7 +1234,7 @@ void UIItemWnd::OnRBtnDown(int x, int y) {
         return;
       }
 
-      item = LookupClientItemByIdentity(g_session.m_inventoryItems, item.identity[1]);
+      item = g_session.LookupClientItemByIdentity(item.identity[1]);
       mode->drag.BeginItem(g_windowMgr, 1, item, item.quantity, -1);
       if (mode->ConfirmDraggedItemUse()) {
         return;

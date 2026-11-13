@@ -3766,7 +3766,7 @@ void UIPetInfoWnd::OnCreate(int, int) {
   this->UpdateFriendlyGauge();
   this->m_message0 = 201;
 
-  const int petEgg = std::atoi(LookupClientItemByIdentity(g_session.m_inventoryItems, g_session.petEggIndex).itemId.c_str());
+  const int petEgg = std::atoi(g_session.LookupClientItemByIdentity(g_session.petEggIndex).itemId.c_str());
   this->autoFeedAvailable = g_petEvolutionMgr->IsAutoFeeding(petEgg);
   if (this->autoFeedAvailable == true) {
     this->autoFeedCheck = new UICheckBox();
@@ -3817,7 +3817,7 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       if (g_session.m_petFriendly > 900) {
         g_windowMgr.CloseWindow(WID_COMBOBOXIDWND);
         UIWindow* window = g_windowMgr.EnsureWindow(WID_PETEVOLUTIONWND);
-        const int petEgg = LookupClientItemByIdentity(g_session.m_inventoryItems, g_session.petEggIndex).GetItemId();
+        const int petEgg = g_session.LookupClientItemByIdentity(g_session.petEggIndex).GetItemId();
         window->SendMsg(nullptr, UM_SET_PET_EVOLUTION_MATERIALS, petEgg, b, 0, 0);
         this->SendMsg(nullptr, UM_COMMAND, ID_CLOSE, 0, 0, 0);
         g_windowMgr.CloseWindow(WID_COMBOBOXIDWND);
@@ -3885,7 +3885,7 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(performance.c_str()), 468, 0, 0);
       menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(unequip.c_str()), 469, 0, 0);
       menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(returnToEgg.c_str()), 470, 0, 0);
-      const int petEgg = LookupClientItemByIdentity(g_session.m_inventoryItems, g_session.petEggIndex).GetItemId();
+      const int petEgg = g_session.LookupClientItemByIdentity(g_session.petEggIndex).GetItemId();
       const std::pair<bool, std::vector<int>> targets = g_petEvolutionMgr->GetEvolutionTargets(petEgg);
       if (targets.first == true) {
         for (auto it = targets.second.begin(); it != targets.second.end(); ++it) {

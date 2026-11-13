@@ -101,7 +101,7 @@ void CEnchantMgr::HandleEnchantResult(int messageId, int itemId) {
       return;
     }
 
-    ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, this->m_request.index);
+    ITEM_INFO item = g_session.LookupClientItemByIdentity(this->m_request.index);
     if (item.identity[1] == 0) {
       return;
     }
