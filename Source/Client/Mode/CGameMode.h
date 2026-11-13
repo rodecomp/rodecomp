@@ -398,7 +398,7 @@ public:
   CMsgEffect* SpawnMsgEffect(int effectId, const vector3d* position, std::uint32_t accountId, bool visible);
   void ApplyMapFog(int enabled);
   void SpawnGrannyCorpse(float x, float y, float z, float angle, const char* name);
-  void SpawnMandraAttack(std::uint32_t aid, int target, char flag);
+  void SpawnMandraAttack(std::uint32_t target, int job, float startFrame);
   void OpenActorMenu(const ActorPickInfo* pick, int handled);
   int HandleActorPick(ActorPickInfo* pick, int result);
   void ExecuteTalkType(int talkType, std::string* arguments);
@@ -635,7 +635,7 @@ public:
   void ReceiveSummonHpUpdate(const unsigned char* buffer);
   void ReceiveGameOptionResult(int command, int result, int enabled);
   void ReceiveCharViewResult(const unsigned char* packet);
-  void SpawnArrowEffect(std::uint32_t aid, int target, char flag, int argument);
+  void SpawnArrowEffect(const vector3d* source, std::uint32_t target, float speed, int job);
   void SpawnArrowEffect64(const vector3d* source, const vector3d* target, float speed);
   void UnusedArrowStub(int a, int b, int c, int d, int e, int f, int g, int h, int i, int j);
   bool UpdateReplayPause(bool resume);

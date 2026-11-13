@@ -2318,9 +2318,7 @@ void CGameActor::LaunchAttackProjectile(int target, float scale) {
   case JT_EP20_MELIBE_ICESLUG:
   case JT_EP20_RGAN_WARLOCK:
   case JT_G_EP20_RGAN_WARLOCK: {
-    using SpawnArrow = void (CGameMode::*)(const vector3d*, int, float, int);
-    const SpawnArrow spawn = reinterpret_cast<SpawnArrow>(&CGameMode::SpawnArrowEffect);
-    (mode->*spawn)(&this->render.position, target, scale, this->GetEffectiveJob(-1));
+    mode->SpawnArrowEffect(&this->render.position, target, scale, this->GetEffectiveJob(-1));
     return;
   }
   case JT_MANDRAGORA:
@@ -2354,9 +2352,7 @@ void CGameActor::LaunchAttackProjectile(int target, float scale) {
   case JT_CH1_FIRE_FLOWER:
   case JT_CH1_SHADIEST:
   case JT_CP_CH1_SHADIEST: {
-    using SpawnMandra = void (CGameMode::*)(int, int, float);
-    const SpawnMandra spawn = reinterpret_cast<SpawnMandra>(&CGameMode::SpawnMandraAttack);
-    (mode->*spawn)(target, this->GetEffectiveJob(-1), 0.0f);
+    mode->SpawnMandraAttack(target, this->GetEffectiveJob(-1), 0.0f);
     return;
   }
   case JT_DISGUISER:

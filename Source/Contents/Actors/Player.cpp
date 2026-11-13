@@ -393,8 +393,6 @@ void CGrannyPc::SetState(int state, int resetPosition) {
     this->render.position.z = this->damageDestZ;
   }
 
-  using SpawnArrow = void (CGameMode::*)(const vector3d*, std::uint32_t, float, int);
-  const SpawnArrow spawnArrow = reinterpret_cast<SpawnArrow>(&CGameMode::SpawnArrowEffect);
 
   switch (state) {
   case ST_BEGIN_SKILL:
@@ -462,7 +460,7 @@ void CGrannyPc::SetState(int state, int resetPosition) {
     g_session.m_hotkeyScript->Call("IsItemUsingArrow", "d>b", this->weapon, &usesArrow);
     if (usesArrow == true) {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-      (mode->*spawnArrow)(&this->render.position, this->hitTargetAid, this->attackMotion * this->render.speed, 0);
+      mode->SpawnArrowEffect(&this->render.position, this->hitTargetAid, this->attackMotion * this->render.speed, 0);
       this->attackMotion = 8.0f / this->render.speed + this->attackMotion;
     }
     break;
@@ -480,7 +478,7 @@ void CGrannyPc::SetState(int state, int resetPosition) {
     this->attackMotion = AttackMotionLength(this->GetEffectiveJob(-1), this->sex, this->weapon, weaponAllowed);
     if ((this->weapon == 14 && this->secondaryWeapon == 0) || (this->weapon == 13 && this->secondaryWeapon == 0)) {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-      (mode->*spawnArrow)(&this->render.position, this->hitTargetAid, this->attackMotion * this->render.speed, 0);
+      mode->SpawnArrowEffect(&this->render.position, this->hitTargetAid, this->attackMotion * this->render.speed, 0);
       this->attackMotion = 8.0f / this->render.speed + this->attackMotion;
     }
     break;
@@ -4372,8 +4370,6 @@ void CPc::SetState(int state, int resetPosition) {
     action = this->JobActionBase(state);
   }
 
-  using SpawnArrow = void (CGameMode::*)(const vector3d*, std::uint32_t, float, int);
-  const SpawnArrow spawnArrow = reinterpret_cast<SpawnArrow>(&CGameMode::SpawnArrowEffect);
 
   switch (state) {
   case ST_BEGIN_SKILL:
@@ -4532,14 +4528,14 @@ void CPc::SetState(int state, int resetPosition) {
         this->SetArrowEffectSuppressed(false);
       } else {
         CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-        (mode->*spawnArrow)(&this->render.position, this->hitTargetAid, this->render.speed * this->attackMotion, 0);
+        mode->SpawnArrowEffect(&this->render.position, this->hitTargetAid, this->render.speed * this->attackMotion, 0);
       }
       this->attackMotion = 8.0f / this->render.speed + this->attackMotion;
     }
 
     if (g_session.IsDoramJob(this->GetEffectiveJob(-1)) == true && this->alternateDoramAppearance[0] == 1) {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-      (mode->*spawnArrow)(&this->render.position, this->hitTargetAid, this->attackMotion * this->render.speed, this->GetEffectiveJob(-1));
+      mode->SpawnArrowEffect(&this->render.position, this->hitTargetAid, this->attackMotion * this->render.speed, this->GetEffectiveJob(-1));
       this->attackMotion = 8.0f / this->render.speed + this->attackMotion;
     }
     break;
@@ -4556,7 +4552,7 @@ void CPc::SetState(int state, int resetPosition) {
     this->attackMotion = AttackMotionLength(this->GetEffectiveJob(-1), this->sex, this->weapon, weaponAllowed);
     if ((this->weapon == 14 && this->secondaryWeapon == 0) || (this->weapon == 13 && this->secondaryWeapon == 0)) {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-      (mode->*spawnArrow)(&this->render.position, this->hitTargetAid, this->attackMotion * this->render.speed, 0);
+      mode->SpawnArrowEffect(&this->render.position, this->hitTargetAid, this->attackMotion * this->render.speed, 0);
       this->attackMotion = 8.0f / this->render.speed + this->attackMotion;
     }
     break;

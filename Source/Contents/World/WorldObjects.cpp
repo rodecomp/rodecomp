@@ -283,7 +283,7 @@ void CWorld::SendObjectMessage(CGameObject* sender, std::uint64_t identity, int 
 
 // OFFSET: 0x00CD8000
 // FUNCTION: fn_21298
-void CGameMode::SpawnArrowEffect(std::uint32_t aid, int target, char flag, int argument) {
+void CGameMode::SpawnArrowEffect(const vector3d* source, std::uint32_t target, float speed, int job) {
   if (target == 0) {
     return;
   }
@@ -292,7 +292,7 @@ void CGameMode::SpawnArrowEffect(std::uint32_t aid, int target, char flag, int a
 
   if (effect) {
     this->scene->objects.push_back(effect);
-    effect->SendMsg(nullptr, AM_SETPOS, static_cast<int>(aid), static_cast<std::uint32_t>(target), reinterpret_cast<int>(&flag), argument, 0, 0);
+    effect->SendMsg(nullptr, AM_SETPOS, reinterpret_cast<std::intptr_t>(source), target, reinterpret_cast<std::intptr_t>(&speed), job, 0, 0);
   }
 }
 
@@ -625,12 +625,12 @@ void CGameMode::ApplyMapFog(int enabled) {
 
 // OFFSET: 0x00CD8F30
 // FUNCTION: fn_21306
-void CGameMode::SpawnMandraAttack(std::uint32_t aid, int target, char flag) {
+void CGameMode::SpawnMandraAttack(std::uint32_t target, int job, float startFrame) {
   CMandraAttackEffect* effect = new CMandraAttackEffect;
 
   if (effect) {
     this->scene->objects.push_back(effect);
-    effect->SendMsg(nullptr, AM_SETPOS, aid, reinterpret_cast<int>(&flag), target, 0, 0, 0);
+    effect->SendMsg(nullptr, AM_SETPOS, target, reinterpret_cast<std::intptr_t>(&startFrame), job, 0, 0, 0);
   }
 }
 
