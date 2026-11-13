@@ -60,7 +60,7 @@ public:
   /* 000C */ std::unordered_map<std::uint32_t, CSkillInfo*, SkillIdHash> index;
   /* 002C */ std::map<int, std::list<CSkillInfo>> groups;
   /* 0034 */ std::list<CSkillInfo> extra;
-  /* 003C */ std::vector<std::uint32_t> extraIds;
+  /* 003C */ std::vector<int> extraIds;
   /* 0048 */ std::map<int, lcEXCInfo> levelChanges;
   /* 0050 */ std::map<int, bool> changed;
   /* 0058 */ std::vector<int> removals;

@@ -967,7 +967,7 @@ public:
   void ReceiveActorMoveEntryLegacy(const unsigned char* data);
   void SpawnMovingActor(
     unsigned char objectType, std::uint32_t aid, std::uint32_t gid, short speed, short bodyState, short healthState, int effectState, short job, short head,
-    int weapon, int shield, short accessory, std::uint32_t moveStartTime, short accessory2, short accessory3, short headPalette, short bodyPalette,
+    std::int64_t weapon, short accessory, std::uint32_t moveStartTime, short accessory2, short accessory3, short headPalette, short bodyPalette,
     short headDir, short robe, int guildId, short guildVersion, short honor, int virtue, unsigned char pkMode, unsigned char sex,
     const unsigned char* moveData, unsigned char xSize, unsigned char ySize, short level, short font, int maxHp, int hp, unsigned char isBoss,
     std::string name, short body
@@ -977,7 +977,7 @@ public:
   void ReceiveActorStandEntryLegacy(const unsigned char* data);
   void SpawnStandingActor(
     unsigned char objectType, std::uint32_t aid, std::uint32_t gid, short speed, short bodyState, short healthState, int effectState, short job, short head,
-    int weapon, int shield, short accessory, short accessory2, short accessory3, short headPalette, short bodyPalette, short headDir, short robe,
+    std::int64_t weapon, short accessory, short accessory2, short accessory3, short headPalette, short bodyPalette, short headDir, short robe,
     int guildId, short guildVersion, short honor, int virtue, unsigned char pkMode, unsigned char sex, const unsigned char* posDir, unsigned char xSize,
     unsigned char ySize, short level, short font, int maxHp, int hp, unsigned char isBoss, std::string name, short body
   );
@@ -986,7 +986,7 @@ public:
   void ReceiveActorStateEntryLegacy(const unsigned char* data);
   void SpawnStateActor(
     unsigned char objectType, std::uint32_t aid, std::uint32_t gid, short speed, short bodyState, short healthState, int effectState, short job, short head,
-    int weapon, int shield, short accessory, short accessory2, short accessory3, short headPalette, short bodyPalette, short headDir, short robe,
+    std::int64_t weapon, short accessory, short accessory2, short accessory3, short headPalette, short bodyPalette, short headDir, short robe,
     int guildId, short guildVersion, short honor, int virtue, unsigned char pkMode, unsigned char sex, const unsigned char* posDir, unsigned char xSize,
     unsigned char ySize, unsigned char state, short level, short font, int maxHp, int hp, unsigned char isBoss, std::string name, short body
   );

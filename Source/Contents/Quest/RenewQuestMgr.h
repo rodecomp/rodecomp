@@ -60,7 +60,7 @@ struct RenewQuestOngoingInfo : RenewQuestInfo {
   RenewQuestOngoingInfo() : m_simpleView(true), baseExpReward(""), jobExpReward("") {
     this->m_descriptions.clear();
     this->m_rewards.clear();
-    for (int index = 0; index < 3; ++index) {
+    for (unsigned int index = 0; index < 3; ++index) {
       this->m_huntMobId[index] = 31999;
       this->m_huntMinLevel[index] = -1;
       this->m_huntMaxLevel[index] = -1;

@@ -174,7 +174,7 @@ void CPlayerSkillBundle::ClearExtra() {
 // OFFSET: 0x007713E0
 // FUNCTION: fn_08274
 void CPlayerSkillBundle::AddExtra(const CSkillInfo& value) {
-  this->extraIds.push_back(value.id);
+  this->extraIds.push_back(reinterpret_cast<const int&>(value.id));
   if (UIWindow* window = g_windowMgr.LookupWindow(WID_SKILLLISTWND)) {
     window->SendMsg(nullptr, UM_REFRESH_EXTRA_SKILL_TAB, 0, 0, 0, 0);
   }

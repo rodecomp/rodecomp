@@ -12781,8 +12781,7 @@ struct ActorMoveEntryPacket {
   /* 0013 */ int effectState;
   /* 0017 */ short job;
   /* 0019 */ short head;
-  /* 001B */ int weapon;
-  /* 001F */ int shield;
+  /* 001B */ std::int64_t weapon;
   /* 0023 */ short accessory;
   /* 0025 */ std::uint32_t moveStartTime;
   /* 0029 */ short accessory2;
@@ -12861,7 +12860,7 @@ void CGameMode::ReceiveActorMoveEntry(const unsigned char* data) {
   const std::string name(nameBegin, reinterpret_cast<const char*>(data + packet->packetLength));
   this->SpawnMovingActor(
     packet->objectType, packet->aid, packet->gid, packet->speed, packet->bodyState, packet->healthState, packet->effectState, packet->job, packet->head,
-    packet->weapon, packet->shield, packet->accessory, packet->moveStartTime, packet->accessory2, packet->accessory3, packet->headPalette,
+    packet->weapon, packet->accessory, packet->moveStartTime, packet->accessory2, packet->accessory3, packet->headPalette,
     packet->bodyPalette, packet->headDir, packet->robe, packet->guildId, packet->guildVersion, packet->honor, packet->virtue, packet->pkMode, packet->sex,
     packet->moveData, packet->xSize, packet->ySize, packet->level, packet->font, packet->maxHp, packet->hp, packet->isBoss, name, 0
   );
@@ -12875,7 +12874,7 @@ void CGameMode::ReceiveActorMoveEntryBody(const unsigned char* data) {
   const std::string name(nameBegin, reinterpret_cast<const char*>(data + packet->packetLength));
   this->SpawnMovingActor(
     packet->objectType, packet->aid, packet->gid, packet->speed, packet->bodyState, packet->healthState, packet->effectState, packet->job, packet->head,
-    packet->weapon, packet->shield, packet->accessory, packet->moveStartTime, packet->accessory2, packet->accessory3, packet->headPalette,
+    packet->weapon, packet->accessory, packet->moveStartTime, packet->accessory2, packet->accessory3, packet->headPalette,
     packet->bodyPalette, packet->headDir, packet->robe, packet->guildId, packet->guildVersion, packet->honor, packet->virtue, packet->pkMode, packet->sex,
     packet->moveData, packet->xSize, packet->ySize, packet->level, packet->font, packet->maxHp, packet->hp, packet->isBoss, name, packet->body
   );
@@ -13006,7 +13005,7 @@ void CGameMode::ReceiveActorMoveEntryLegacy(const unsigned char* data) {
 // FUNCTION: fn_21985
 void CGameMode::SpawnMovingActor(
   unsigned char objectType, std::uint32_t aid, std::uint32_t gid, short speed, short bodyState, short healthState, int effectState, short job, short head,
-  int weapon, int shield, short accessory, std::uint32_t moveStartTime, short accessory2, short accessory3, short headPalette, short bodyPalette,
+  std::int64_t weapon, short accessory, std::uint32_t moveStartTime, short accessory2, short accessory3, short headPalette, short bodyPalette,
   short headDir, short robe, int guildId, short guildVersion, short honor, int virtue, unsigned char pkMode, unsigned char sex,
   const unsigned char* moveData, unsigned char xSize, unsigned char ySize, short level, short font, int maxHp, int hp, unsigned char isBoss,
   std::string name, short body
@@ -13028,7 +13027,7 @@ void CGameMode::SpawnMovingActor(
   entry.appearanceVariant = this->SubD07740(entry.job, sex);
   entry.speed = speed;
   entry.head = head;
-  entry.weapon = weapon;
+  entry.weapon = static_cast<int>(weapon);
   entry.accessory = accessory;
   entry.healthState = healthState;
   entry.bodyState = bodyState;
@@ -13042,7 +13041,7 @@ void CGameMode::SpawnMovingActor(
   entry.guildId = guildId;
   entry.guildVersion = guildVersion;
   entry.honor = honor;
-  entry.shield = shield;
+  entry.shield = static_cast<int>(weapon >> 32);
   entry.virtue = virtue;
   entry.gid = gid;
   entry.body = body;
@@ -13767,8 +13766,7 @@ struct ActorStandEntryNamedPacket {
   /* 0013 */ int effectState;
   /* 0017 */ short job;
   /* 0019 */ short head;
-  /* 001B */ int weapon;
-  /* 001F */ int shield;
+  /* 001B */ std::int64_t weapon;
   /* 0023 */ short accessory;
   /* 0025 */ short accessory2;
   /* 0027 */ short accessory3;
@@ -13808,8 +13806,7 @@ struct ActorStateEntryNamedPacket {
   /* 0013 */ int effectState;
   /* 0017 */ short job;
   /* 0019 */ short head;
-  /* 001B */ int weapon;
-  /* 001F */ int shield;
+  /* 001B */ std::int64_t weapon;
   /* 0023 */ short accessory;
   /* 0025 */ short accessory2;
   /* 0027 */ short accessory3;
@@ -13854,7 +13851,7 @@ void CGameMode::ReceiveActorStandEntryNamed(const unsigned char* data) {
   const std::string name(nameBegin, reinterpret_cast<const char*>(data + packet->packetLength));
   this->SpawnStandingActor(
     packet->objectType, packet->aid, packet->gid, packet->speed, packet->bodyState, packet->healthState, packet->effectState, packet->job, packet->head,
-    packet->weapon, packet->shield, packet->accessory, packet->accessory2, packet->accessory3, packet->headPalette, packet->bodyPalette, packet->headDir,
+    packet->weapon, packet->accessory, packet->accessory2, packet->accessory3, packet->headPalette, packet->bodyPalette, packet->headDir,
     packet->robe, packet->guildId, packet->guildVersion, packet->honor, packet->virtue, packet->pkMode, packet->sex, packet->posDir, packet->xSize,
     packet->ySize, packet->level, packet->font, packet->maxHp, packet->hp, packet->isBoss, name, 0
   );
@@ -13868,7 +13865,7 @@ void CGameMode::ReceiveActorStandEntryNamedBody(const unsigned char* data) {
   const std::string name(nameBegin, reinterpret_cast<const char*>(data + packet->packetLength));
   this->SpawnStandingActor(
     packet->objectType, packet->aid, packet->gid, packet->speed, packet->bodyState, packet->healthState, packet->effectState, packet->job, packet->head,
-    packet->weapon, packet->shield, packet->accessory, packet->accessory2, packet->accessory3, packet->headPalette, packet->bodyPalette, packet->headDir,
+    packet->weapon, packet->accessory, packet->accessory2, packet->accessory3, packet->headPalette, packet->bodyPalette, packet->headDir,
     packet->robe, packet->guildId, packet->guildVersion, packet->honor, packet->virtue, packet->pkMode, packet->sex, packet->posDir, packet->xSize,
     packet->ySize, packet->level, packet->font, packet->maxHp, packet->hp, packet->isBoss, name, packet->body
   );
@@ -14948,7 +14945,7 @@ void CGameMode::ReceiveActorStateEntryOld(const unsigned char* data) {
 // FUNCTION: fn_21989
 void CGameMode::SpawnStandingActor(
   unsigned char objectType, std::uint32_t aid, std::uint32_t gid, short speed, short bodyState, short healthState, int effectState, short job, short head,
-  int weapon, int shield, short accessory, short accessory2, short accessory3, short headPalette, short bodyPalette, short headDir, short robe,
+  std::int64_t weapon, short accessory, short accessory2, short accessory3, short headPalette, short bodyPalette, short headDir, short robe,
   int guildId, short guildVersion, short honor, int virtue, unsigned char pkMode, unsigned char sex, const unsigned char* posDir, unsigned char xSize,
   unsigned char ySize, short level, short font, int maxHp, int hp, unsigned char isBoss, std::string name, short body
 ) {
@@ -14967,7 +14964,7 @@ void CGameMode::SpawnStandingActor(
   entry.xSize = xSize;
   entry.ySize = ySize;
   entry.head = head;
-  entry.weapon = weapon;
+  entry.weapon = static_cast<int>(weapon);
   entry.accessory = accessory;
   entry.effectState = healthState;
   entry.bodyState = bodyState;
@@ -14982,7 +14979,7 @@ void CGameMode::SpawnStandingActor(
   entry.honor = honor;
   entry.virtue = virtue;
   entry.robe = robe;
-  entry.shield = shield;
+  entry.shield = static_cast<int>(weapon >> 32);
   entry.guildVersion = guildVersion;
   if (objectType == 0) {
     entry.state = 0;
@@ -15094,7 +15091,7 @@ void CGameMode::ReceiveActorStateEntryNamed(const unsigned char* data) {
   const std::string name(nameBegin, reinterpret_cast<const char*>(data + packet->packetLength));
   this->SpawnStateActor(
     packet->objectType, packet->aid, packet->gid, packet->speed, packet->bodyState, packet->healthState, packet->effectState, packet->job, packet->head,
-    packet->weapon, packet->shield, packet->accessory, packet->accessory2, packet->accessory3, packet->headPalette, packet->bodyPalette, packet->headDir,
+    packet->weapon, packet->accessory, packet->accessory2, packet->accessory3, packet->headPalette, packet->bodyPalette, packet->headDir,
     packet->robe, packet->guildId, packet->guildVersion, packet->honor, packet->virtue, packet->pkMode, packet->sex, packet->posDir, packet->xSize,
     packet->ySize, packet->state, packet->level, packet->font, packet->maxHp, packet->hp, packet->isBoss, name, 0
   );
@@ -15108,7 +15105,7 @@ void CGameMode::ReceiveActorStateEntryNamedBody(const unsigned char* data) {
   const std::string name(nameBegin, reinterpret_cast<const char*>(data + packet->packetLength));
   this->SpawnStateActor(
     packet->objectType, packet->aid, packet->gid, packet->speed, packet->bodyState, packet->healthState, packet->effectState, packet->job, packet->head,
-    packet->weapon, packet->shield, packet->accessory, packet->accessory2, packet->accessory3, packet->headPalette, packet->bodyPalette, packet->headDir,
+    packet->weapon, packet->accessory, packet->accessory2, packet->accessory3, packet->headPalette, packet->bodyPalette, packet->headDir,
     packet->robe, packet->guildId, packet->guildVersion, packet->honor, packet->virtue, packet->pkMode, packet->sex, packet->posDir, packet->xSize,
     packet->ySize, packet->state, packet->level, packet->font, packet->maxHp, packet->hp, packet->isBoss, name, packet->body
   );
@@ -15222,7 +15219,7 @@ static_assert(sizeof(RateInfoRecord) == 0xD);
 // FUNCTION: fn_21993
 void CGameMode::SpawnStateActor(
   unsigned char objectType, std::uint32_t aid, std::uint32_t gid, short speed, short bodyState, short healthState, int effectState, short job, short head,
-  int weapon, int shield, short accessory, short accessory2, short accessory3, short headPalette, short bodyPalette, short headDir, short robe,
+  std::int64_t weapon, short accessory, short accessory2, short accessory3, short headPalette, short bodyPalette, short headDir, short robe,
   int guildId, short guildVersion, short honor, int virtue, unsigned char pkMode, unsigned char sex, const unsigned char* posDir, unsigned char xSize,
   unsigned char ySize, unsigned char state, short level, short font, int maxHp, int hp, unsigned char isBoss, std::string name, short body
 ) {
@@ -15241,7 +15238,7 @@ void CGameMode::SpawnStateActor(
   entry.xSize = xSize;
   entry.ySize = ySize;
   entry.head = head;
-  entry.weapon = weapon;
+  entry.weapon = static_cast<int>(weapon);
   entry.accessory = accessory;
   entry.effectState = healthState;
   entry.bodyState = bodyState;
@@ -15256,7 +15253,7 @@ void CGameMode::SpawnStateActor(
   entry.honor = honor;
   entry.virtue = virtue;
   entry.robe = robe;
-  entry.shield = shield;
+  entry.shield = static_cast<int>(weapon >> 32);
   entry.guildVersion = guildVersion;
   entry.state = state;
   if (objectType != 0) {
