@@ -77,7 +77,7 @@ td sync
    the bytes match, some referenced data has no symbol yet) is a bonus, not the
    bar. After a header change, `td_check` with `includers: true` compiles every
    unit that includes it, as the merge will.
-   Run checks sequentially: they share `.td/build`.
+   Run checks sequentially: they share `.td/build-head` and `.td/build-work`.
    **Name your files** (`files: [...]`, or `td check <files>`): named files are
    compiled over a clean HEAD, so other agents' uncommitted edits in a shared
    checkout are left out. **Name every modified header your files depend on**:
