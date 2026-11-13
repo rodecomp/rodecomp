@@ -409,7 +409,7 @@ int UIMiniMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
       return 0;
     default:
       if (argument1 >= 601 && argument1 < 621) {
-        if (g_windowMgr.Confirm(LookupMessage(MSI_MINIMAP_MSG_14), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+        if (g_windowMgr.Confirm(LookupMessage(MSI_MINIMAP_MSG_14), 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
           this->memoButtons[argument1 - 601]->SetTooltip("");
           this->memoButtons[argument1 - 601]->Move(-100, -100);
 

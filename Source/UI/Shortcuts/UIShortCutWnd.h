@@ -10,6 +10,12 @@ class UIBitmapButton;
 struct NormalItemSlot;
 struct NormalItemSlotWindow;
 
+enum ShortCutButtonId : int {
+  SHORTCUT_BUTTON_BANK = 549,
+  SHORTCUT_BUTTON_SHOW_ITEMS = 588,
+  SHORTCUT_BUTTON_HIDE_ITEMS = 589,
+};
+
 class UIShortCutWnd : public UIFrameWnd {
 public:
   UIShortCutWnd();

@@ -6,6 +6,7 @@
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketId.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Script/LuaInstance.h"
 #include "Script/LuaScript.h"
 #include "Utility/Text/FormatString.h"
@@ -485,7 +486,7 @@ void CRenewQuestMgr::LoadQuestInfo() {
   g_session.m_hotkeyScript->Load("Lua Files\\DataInfo\\QuestInfo_f", true, false);
   g_session.m_hotkeyScript->Load("savedata\\OngoingSimpleViewList", false, true);
   g_session.m_hotkeyScript->Load("savedata\\RecommendedActiveList", false, true);
-  if (g_serviceMode == 1) {
+  if (g_serviceMode == ServerSakray) {
     g_session.m_hotkeyScript->Load("system\\OngoingQuestInfoList_Sakray", false, true);
     g_session.m_hotkeyScript->Load("system\\RecommendedQuestInfoList_Sakray", false, true);
   } else {

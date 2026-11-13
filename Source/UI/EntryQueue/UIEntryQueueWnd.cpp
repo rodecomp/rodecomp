@@ -622,7 +622,7 @@ bool UIEntryQueueWnd::ConfirmApply(const char* type) {
     char text[0x104];
     std::memset(text, 0, sizeof(text));
     sprintf_s(text, sizeof(text), "%s %s", info->displayName, type);
-    return g_windowMgr.Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) == 187;
+    return g_windowMgr.Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) == ID_YES;
   }
 
   return false;

@@ -8,6 +8,10 @@
 #include <cstddef>
 #include <vector>
 
+enum AdvenPartyBoardButtonId : int {
+  ADVENPARTY_BUTTON_STOP_RECRUIT = 410,
+};
+
 class UIStaticText;
 class UIBasicButton;
 class UIEditCtrl;

@@ -16,6 +16,10 @@
 
 #include <mbstring.h>
 
+enum NewMakeCharButtonId : int {
+  MAKECHAR_BUTTON_HAIR_STYLE = 524,
+  MAKECHAR_BUTTON_GENDER = 525,
+};
 #include <cstdint>
 
 class UIHairBitmap : public UIBitmapButton {

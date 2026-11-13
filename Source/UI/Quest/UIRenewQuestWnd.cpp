@@ -572,7 +572,7 @@ void UIRenewDetailQuestInfoWnd::OnCreate(int, int) {
   this->m_closeButton->SetBitmap("유저인터페이스\\basic_interface\\btn_close_b.bmp", 2, 0);
   this->m_closeButton->SetSize(this->m_closeButton->BitmapWidth(), this->m_closeButton->BitmapHeight());
   this->m_closeButton->Move(288, 388);
-  this->m_closeButton->SetId(201);
+  this->m_closeButton->SetId(ID_CLOSE);
   this->AddChild(this->m_closeButton);
 }
 
@@ -721,7 +721,7 @@ void UIRenewQuestWnd::OnCreate(int, int) {
   this->m_closeButton->SetBitmap("유저인터페이스\\basic_interface\\btn_close_b.bmp", 2, 0);
   this->m_closeButton->SetSize(this->m_closeButton->BitmapWidth(), this->m_closeButton->BitmapHeight());
   this->m_closeButton->Move(327, 442);
-  this->m_closeButton->SetId(201);
+  this->m_closeButton->SetId(ID_CLOSE);
   this->AddChild(this->m_closeButton);
 
   this->m_scrollBar = new UIRenewQuestScrollBar();
@@ -731,7 +731,7 @@ void UIRenewQuestWnd::OnCreate(int, int) {
 
   for (int index = 0; index < 9; ++index) {
     const int y = 46 + index * 46;
-    UICheckBox* check = this->AddStyledCheckBox(389 + index, 14, 14, nullptr, 350, y - 19, true, nullptr, 0, 0, "유저인터페이스\\renew_questui\\bt_check_on.bmp",
+    UICheckBox* check = this->AddStyledCheckBox(RENEWQUEST_ROW_1 + index, 14, 14, nullptr, 350, y - 19, true, nullptr, 0, 0, "유저인터페이스\\renew_questui\\bt_check_on.bmp",
       "유저인터페이스\\renew_questui\\bt_check_off.bmp"
     );
     this->m_rows.checkBoxes[index] = check;
@@ -739,7 +739,7 @@ void UIRenewQuestWnd::OnCreate(int, int) {
     this->m_rows.checkBoxes[index]->SetTooltip(LookupMessage(MSI_PASSWORD));
     this->m_rows.checkBoxes[index]->SetHidden(true);
 
-    UICheckBox* lock = this->AddStyledCheckBox(389 + index, 20, 17, nullptr, 344, y, true, nullptr, 0, 0, "유저인터페이스\\renew_questui\\bt_lock_open.bmp",
+    UICheckBox* lock = this->AddStyledCheckBox(RENEWQUEST_ROW_1 + index, 20, 17, nullptr, 344, y, true, nullptr, 0, 0, "유저인터페이스\\renew_questui\\bt_lock_open.bmp",
       "유저인터페이스\\renew_questui\\bt_lock.bmp"
     );
     this->m_rows.lockBoxes[index] = lock;
@@ -1054,17 +1054,17 @@ int UIRenewQuestWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         return 0;
       }
       break;
-    case 0x185:
-    case 0x186:
-    case 0x187:
-    case 0x188:
-    case 0x189:
-    case 0x18A:
-    case 0x18B:
-    case 0x18C:
-    case 0x18D:
+    case RENEWQUEST_ROW_1:
+    case RENEWQUEST_ROW_2:
+    case RENEWQUEST_ROW_3:
+    case RENEWQUEST_ROW_4:
+    case RENEWQUEST_ROW_5:
+    case RENEWQUEST_ROW_6:
+    case RENEWQUEST_ROW_7:
+    case RENEWQUEST_ROW_8:
+    case RENEWQUEST_ROW_9:
       if (sender) {
-        const unsigned int questId = this->m_questIds[this->m_tab][this->m_scroll + argument1 - 0x185];
+        const unsigned int questId = this->m_questIds[this->m_tab][this->m_scroll + argument1 - RENEWQUEST_ROW_1];
         const int checkMessage = static_cast<UICheckBox*>(sender)->m_message;
         if (this->m_tab == 1) {
           if (checkMessage == 1) {

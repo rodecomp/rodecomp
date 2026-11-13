@@ -166,7 +166,7 @@ void UISerachStoreInfoWnd::OnCreate(int width, int height) {
     this->m_findButton->SetBitmap((path + "btn_find_b" + ".bmp").c_str(), 2, 0);
     this->m_findButton->SetSize(this->m_findButton->BitmapWidth(), this->m_findButton->BitmapHeight());
     this->m_findButton->Move(this->geometry.width - 0x2D, 0x38);
-    this->m_findButton->SetId(0x16D);
+    this->m_findButton->SetId(ID_PARTY_SEARCH);
     this->AddChild(this->m_findButton);
   }
 
@@ -177,7 +177,7 @@ void UISerachStoreInfoWnd::OnCreate(int width, int height) {
       this->geometry.width / 2 - this->TextWidth(LookupMessage(MSI_PREV_PAGE), 0, 0, 0xC, 0, 0) - 0x14,
       this->geometry.height - 0x15);
   this->m_prevButton->SetTooltip(LookupMessage(MSI_PREV_PAGE));
-  this->m_prevButton->SetId(0x13C);
+  this->m_prevButton->SetId(ID_PREV_PAGE);
   this->AddChild(this->m_prevButton);
 
   this->m_nextButton = new UITextButton();
@@ -185,7 +185,7 @@ void UISerachStoreInfoWnd::OnCreate(int width, int height) {
   this->m_nextButton->m_hoverColor = 0xEFB700;
   this->m_nextButton->Move(this->geometry.width / 2 + 0x14, this->geometry.height - 0x15);
   this->m_nextButton->SetTooltip(LookupMessage(MSI_NEXT_PAGE));
-  this->m_nextButton->SetId(0x13D);
+  this->m_nextButton->SetId(ID_NEXT_PAGE);
   this->AddChild(this->m_nextButton);
 
   this->AddBaseButton();
@@ -236,7 +236,7 @@ int UISerachStoreInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
         }
       }
       break;
-    case 365: {
+    case ID_PARTY_SEARCH: {
       this->m_searchPending = 1;
       UIBitmapButton* findButton = this->m_findButton;
       findButton->SetDisabled(1);
@@ -382,7 +382,7 @@ int UISerachStoreInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
 
   case UM_TEXT_LBTN_UP:
     switch (argument1) {
-    case 316:
+    case ID_PREV_PAGE:
       if (this->m_page > 1) {
         this->m_hoverRow = -1;
         --this->m_page;
@@ -390,7 +390,7 @@ int UISerachStoreInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
         return 0;
       }
       break;
-    case 317: {
+    case ID_NEXT_PAGE: {
       const int page = this->m_page;
       this->m_hoverRow = -1;
       if (static_cast<unsigned int>(page * 10) < g_session.storeSearchResults.size()) {

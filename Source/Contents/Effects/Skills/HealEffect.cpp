@@ -396,7 +396,7 @@ void CHealEffect::SpawnParticles() {
       this->AddSparks(2);
     }
     break;
-  case 1113:
+  case EF_UNK_1113:
     if (this->spawnTick == 0) {
       this->AddColumn(6);
     }
@@ -404,7 +404,7 @@ void CHealEffect::SpawnParticles() {
       this->AddSparks(6);
     }
     break;
-  case 1143:
+  case EF_UNK_1143:
     if (this->spawnTick == 0) {
       this->AddColumn(7);
     }
@@ -412,7 +412,7 @@ void CHealEffect::SpawnParticles() {
       this->AddSparks(7);
     }
     break;
-  case 1144:
+  case EF_UNK_1144:
     if (this->spawnTick == 0) {
       this->AddColumn(8);
     }

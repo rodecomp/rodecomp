@@ -10,6 +10,18 @@
 #include <string>
 #include <vector>
 
+enum RenewQuestRowId : int {
+  RENEWQUEST_ROW_1 = 389,
+  RENEWQUEST_ROW_2 = 390,
+  RENEWQUEST_ROW_3 = 391,
+  RENEWQUEST_ROW_4 = 392,
+  RENEWQUEST_ROW_5 = 393,
+  RENEWQUEST_ROW_6 = 394,
+  RENEWQUEST_ROW_7 = 395,
+  RENEWQUEST_ROW_8 = 396,
+  RENEWQUEST_ROW_9 = 397,
+};
+
 class CActRes;
 class CSprRes;
 class UIBitmapButton;

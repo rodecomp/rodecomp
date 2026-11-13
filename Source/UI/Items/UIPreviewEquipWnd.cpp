@@ -113,7 +113,7 @@ void UIPreviewEquipWnd::OnCreate(int width, int height) {
   this->m_leftButton->SetBitmap("유저인터페이스\\equip_preview\\chr_arrow_rotate_l_press.bmp", 2, 0);
   this->m_leftButton->SetSize(this->m_leftButton->BitmapWidth(), this->m_leftButton->BitmapHeight());
   this->m_leftButton->Move(13, 151);
-  this->m_leftButton->SetId(0x180);
+  this->m_leftButton->SetId(PREVIEWEQUIP_BUTTON_ROTATE_LEFT);
   this->AddChild(this->m_leftButton);
 
   this->m_rightButton = new UIBitmapButton();
@@ -122,13 +122,13 @@ void UIPreviewEquipWnd::OnCreate(int width, int height) {
   this->m_rightButton->SetBitmap("유저인터페이스\\equip_preview\\chr_arrow_rotate_r_press.bmp", 2, 0);
   this->m_rightButton->SetSize(this->m_rightButton->BitmapWidth(), this->m_rightButton->BitmapHeight());
   this->m_rightButton->Move(this->geometry.width - this->m_rightButton->BitmapWidth() - 13, 151);
-  this->m_rightButton->SetId(0x181);
+  this->m_rightButton->SetId(PREVIEWEQUIP_BUTTON_ROTATE_RIGHT);
   this->AddChild(this->m_rightButton);
 
   this->m_actionButton = new UIBasicButton();
   this->m_actionButton->Configure(80, LookupMessage(MSI_BLOCK_CALL_PERMIT));
   this->m_actionButton->Move(static_cast<int>((this->geometry.width - this->m_actionButton->geometry.width) * 0.5), this->geometry.height - 30);
-  this->m_actionButton->SetId(0x16B);
+  this->m_actionButton->SetId(ID_RESET);
   this->m_actionButton->invalidateParent = 1;
   this->AddChild(this->m_actionButton);
 }
@@ -178,14 +178,14 @@ int UIPreviewEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   switch (message) {
   case UM_COMMAND:
     switch (a) {
-    case 0x180:
+    case PREVIEWEQUIP_BUTTON_ROTATE_LEFT:
       this->m_render->actionIndex = this->m_render->actionIndex + 1;
       if (this->m_render->actionIndex > 7) {
         this->m_render->actionIndex = 0;
       }
       this->Invalidate();
       break;
-    case 0x181:
+    case PREVIEWEQUIP_BUTTON_ROTATE_RIGHT:
       this->m_render->actionIndex = this->m_render->actionIndex - 1;
       if (this->m_render->actionIndex < 0) {
         this->m_render->actionIndex = 7;
@@ -230,8 +230,8 @@ int UIPreviewEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
           this->m_render->upperHeadgear = 0;
         }
         break;
-      case 0x300:
-      case 0xC00:
+      case EQP_HEAD_TOP | EQP_HEAD_MID:
+      case EQP_COSTUME_HEAD_TOP | EQP_COSTUME_HEAD_MID:
         this->m_render->upperHeadgear = item->sprite;
         this->m_render->middleHeadgear = 0;
         this->m_render->upperHeadgearLocation = 0x300;
@@ -241,8 +241,8 @@ int UIPreviewEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
           this->m_render->lowerHeadgear = 0;
         }
         break;
-      case 0x301:
-      case 0x1C00:
+      case EQP_HEAD_TOP | EQP_HEAD_MID | EQP_HEAD_LOW:
+      case EQP_COSTUME_HEAD_TOP | EQP_COSTUME_HEAD_MID | EQP_COSTUME_HEAD_LOW:
         this->m_render->lowerHeadgear = item->sprite;
         this->m_render->upperHeadgear = 0;
         this->m_render->middleHeadgear = 0;
@@ -250,8 +250,8 @@ int UIPreviewEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         this->m_render->upperHeadgearLocation = 0x301;
         this->m_render->middleHeadgearLocation = 0x301;
         break;
-      case 0x201:
-      case 0x1800:
+      case EQP_HEAD_MID | EQP_HEAD_LOW:
+      case EQP_COSTUME_HEAD_MID | EQP_COSTUME_HEAD_LOW:
         this->m_render->middleHeadgear = item->sprite;
         this->m_render->lowerHeadgear = 0;
         this->m_render->middleHeadgearLocation = 0x201;
@@ -261,8 +261,8 @@ int UIPreviewEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
           this->m_render->upperHeadgear = 0;
         }
         break;
-      case 0x101:
-      case 0x1400:
+      case EQP_HEAD_TOP | EQP_HEAD_LOW:
+      case EQP_COSTUME_HEAD_TOP | EQP_COSTUME_HEAD_LOW:
         this->m_render->upperHeadgear = item->sprite;
         this->m_render->lowerHeadgear = 0;
         this->m_render->upperHeadgearLocation = 0x101;

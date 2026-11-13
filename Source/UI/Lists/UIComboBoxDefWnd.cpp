@@ -67,7 +67,7 @@ void UIComboBoxDefWnd::OnCreate(int, int) {
 
   this->button->SetSize(this->button->BitmapWidth(), this->button->BitmapHeight());
   this->button->Move((this->geometry.width - this->button->BitmapWidth()), 0);
-  this->button->SetId(273);
+  this->button->SetId(ID_OPEN_MEMBER_POS_COMBO);
   this->AddChild(this->button);
 
   this->list = new UIComboBoxEx();
@@ -100,7 +100,7 @@ void UIComboBox_BmpWnd::Create(int width, int height, const char* path, const ch
   this->button->SetBitmap((base + "_press.bmp").c_str(), 2, 0);
   this->button->SetSize(this->button->BitmapWidth(), this->button->BitmapHeight());
   this->button->Move((this->geometry.width - this->button->BitmapWidth()), 0);
-  this->button->SetId(273);
+  this->button->SetId(ID_OPEN_MEMBER_POS_COMBO);
   this->AddChild(this->button);
 
   this->list = new UIComboBoxEx();
@@ -290,7 +290,7 @@ void UIComboBoxDef2Wnd::OnCreate(int width, int) {
 
   this->button->SetSize(this->button->BitmapWidth(), this->button->BitmapHeight());
   this->button->Move((this->geometry.width - this->button->BitmapWidth()), 0);
-  this->button->SetId(273);
+  this->button->SetId(ID_OPEN_MEMBER_POS_COMBO);
   this->AddChild(this->button);
 
   auto* list = new UIComboBoxEx2();
@@ -342,7 +342,7 @@ void UINewComboBoxCtrl::OnCreate(int, int) {
   this->button->SetBitmap((base + "c.bmp").c_str(), 2, 0);
   this->button->SetSize(this->button->BitmapWidth(), this->button->BitmapHeight());
   this->button->Move((this->geometry.width - this->button->BitmapWidth()), 0);
-  this->button->SetId(273);
+  this->button->SetId(ID_OPEN_MEMBER_POS_COMBO);
   this->AddChild(this->button);
 
   this->label = new UIStaticText();

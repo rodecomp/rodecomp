@@ -4,6 +4,7 @@
 #include "Contents/Actors/ActorEnums.h"
 #include "Contents/Jobs/JobId.h"
 #include "Contents/Skills/SkillId.h"
+#include "Network/Packets/NoticeEnums.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -353,7 +354,7 @@ bool CGameActor::ProcessState() {
     if (this->render.isMotionFinished && this->willBeAttackedList.size() == 0) {
       mode->SendMsg(MM_DELETEREGISTERPOS, static_cast<int>(this->render.accountId), 0, 0, 0);
       const int job = this->GetEffectiveJob(-1);
-      if ((job > 31 && job < 1000) || g_session.IsMonsterClass(job) || this->objectType == 9 ||
+      if ((job > 31 && job < 1000) || g_session.IsMonsterClass(job) || this->objectType == NPC_MERSOL_TYPE ||
           g_session.IsCompanionJob(job)) {
         this->MakeCorpse();
         return false;

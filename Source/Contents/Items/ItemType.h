@@ -19,6 +19,7 @@ enum ITEMTYPE : int {
   TYPE_AMMO = 16,
   TYPE_THROWWEAPON = 17,
   TYPE_CASH_POINT_ITEM = 18,
+  TYPE_CANNONBALL = 19,
 };
 
 #endif

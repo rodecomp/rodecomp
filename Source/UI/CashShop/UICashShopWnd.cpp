@@ -977,7 +977,7 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
         return 0;
       }
 
-      if (g_windowMgr.Confirm(text, 2, true, true, 0, "Message", 0x118, 0x78, 0) != 0xBB) {
+      if (g_windowMgr.Confirm(text, 2, true, true, 0, "Message", 0x118, 0x78, 0) != ID_YES) {
         return 0;
       }
 
@@ -1093,7 +1093,7 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
 // OFFSET: 0x007D2C00
 // FUNCTION: fn_09559
 int UICashShopWnd_Banner::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  if (message == UM_COMMAND && argument1 == 0xD7) {
+  if (message == UM_COMMAND && argument1 == ID_RADIOBTN) {
     for (unsigned int index = 0; index < this->m_buttons.size(); ++index) {
       if (sender == this->m_buttons[index]) {
         this->m_buttons[index]->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
@@ -1138,7 +1138,7 @@ int UICashShopWnd_Cart::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       if (g_session.m_launchPassCommandLine && !this->m_cartItems.empty()) {
         const int result =
           g_windowMgr.Confirm(FormatOwnedString(CashShopReplaceCartItemText()().Text(), item.displayName.c_str()).c_str(), 2, true, false, 0, "Message", 0x118, 0x78, 0);
-        if (result != 0xBB) {
+        if (result != ID_YES) {
           break;
         }
         this->m_cartItems.clear();

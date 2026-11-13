@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/SkillEffects.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "Client/Mode/ModeMessage.h"
 
 #include "Client/Mode/CGameMode.h"
@@ -43,8 +44,8 @@ void CMeteorEffect::Close() {
 // FUNCTION: fn_07056
 void CMeteorEffect::Open() {
   switch (this->id) {
-    case 1099:
-    case 1111: {
+    case EF_UNK_1099:
+    case EF_UNK_1111: {
       const long long counts[5] = {3, 3, 5, 5, 7};
       unsigned int level = this->effectLevel;
       if (level > 5) {
@@ -84,8 +85,8 @@ void CMeteorEffect::Open() {
       break;
     }
 
-    case 1106:
-    case 1112: {
+    case EF_UNK_1106:
+    case EF_UNK_1112: {
       CSpriteParticle* particle = static_cast<CSpriteParticle*>(
         CreateSpriteParticle(&this->positionVector, 1)
       );

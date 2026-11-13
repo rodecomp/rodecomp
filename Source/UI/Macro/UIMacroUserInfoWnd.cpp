@@ -125,7 +125,7 @@ void UIMacroReporterWnd::AddActorRow(int aid, std::string name) {
   btn1->SetBitmap("유저인터페이스\\basic_interface\\que_close_off.bmp", 1, 0);
   btn1->SetBitmap("유저인터페이스\\basic_interface\\que_close_off.bmp", 2, 0);
   btn1->SetSize(btn1->BitmapWidth(), btn1->BitmapHeight());
-  btn1->SetId(211);
+  btn1->SetId(ID_DELETE);
   reinterpret_cast<AccessibleButton*>(btn1)->m_argument = aid;
   btn1->Enable(0);
   this->AddChild(btn1);
@@ -493,7 +493,7 @@ void UIMacroReporterWnd::OnCreate(int, int) {
   static_cast<UIBitmapButton*>(this->m_reportButton)->SetBitmap("유저인터페이스\\btn_ok_c.bmp", 3, 0);
   static_cast<UIBitmapButton*>(this->m_reportButton)->SetSize(static_cast<UIBitmapButton*>(this->m_reportButton)->BitmapWidth(), static_cast<UIBitmapButton*>(this->m_reportButton)->BitmapHeight());
   static_cast<UIBitmapButton*>(this->m_reportButton)->Move(202, 285);
-  static_cast<UIBitmapButton*>(this->m_reportButton)->SetId(345);
+  static_cast<UIBitmapButton*>(this->m_reportButton)->SetId(ID_SEND);
   this->AddChild(this->m_reportButton);
 
   std::string labels[4] = {LookupMessage(MSI_MACRO_REPORTER_TOOLTIP_CELL), LookupMessage(MSI_MACRO_REPORTER_TOOLTIP_RANGE), LookupMessage(MSI_MACRO_REPORTER_TOOLTIP_QUIZ), LookupMessage(MSI_MACRO_REPORTER_UNKNWON_MAP)};
@@ -505,7 +505,7 @@ void UIMacroReporterWnd::OnCreate(int, int) {
     static_cast<UIRadioBtn*>(this->m_tabs[index])->SetSize(50, 12);
     static_cast<UIRadioBtn*>(this->m_tabs[index])->Move(14 + index * 55, 31);
     static_cast<UIRadioBtn*>(this->m_tabs[index])->SetText(labels[index].c_str());
-    static_cast<UIRadioBtn*>(this->m_tabs[index])->SetId(215);
+    static_cast<UIRadioBtn*>(this->m_tabs[index])->SetId(ID_RADIOBTN);
     static_cast<UIRadioBtn*>(this->m_tabs[index])->value = index;
     static_cast<UIRadioBtn*>(this->m_tabs[index])->SendMsg(this, UM_SETSTATE, index == this->m_mode, 0, 0, 0);
     if (const char* tooltip = tooltips[index].c_str()) {
@@ -518,7 +518,7 @@ void UIMacroReporterWnd::OnCreate(int, int) {
     static_cast<UIRadioBtn*>(this->m_tabs[index])->SetSize(50, 12);
     static_cast<UIRadioBtn*>(this->m_tabs[index])->Move(70 + index * 30, 31);
     static_cast<UIRadioBtn*>(this->m_tabs[index])->SetText(labels[index].c_str());
-    static_cast<UIRadioBtn*>(this->m_tabs[index])->SetId(215);
+    static_cast<UIRadioBtn*>(this->m_tabs[index])->SetId(ID_RADIOBTN);
     static_cast<UIRadioBtn*>(this->m_tabs[index])->value = index;
     static_cast<UIRadioBtn*>(this->m_tabs[index])->SendMsg(this, UM_SETSTATE, index == this->m_mode, 0, 0, 0);
     if (const char* tooltip = tooltips[index].c_str()) {

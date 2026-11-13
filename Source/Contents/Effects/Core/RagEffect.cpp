@@ -21869,7 +21869,7 @@ bool CRagEffect::OnProcess3() {
     }
     break;
   case EF_REDLIGHTBODY:
-  case 0x576:
+  case EF_UNK_1398:
     if ((this->state.parent->render.flags & 0x40000) == 0) {
       this->state.parent->render.flags += 0x40000;
       if (this->state.stateCnt <= 200) {
@@ -22821,10 +22821,10 @@ bool CRagEffect::OnProcess3() {
       this->TexturedQuadRingSized(25, "effect\\ring_white.tga", 50);
     }
     break;
-  case 0x8E5:
+  case EF_UNK_2277:
     this->state.parent->SetColor(-1, 105, 105, 105);
     break;
-  case 0x8E6:
+  case EF_UNK_2278:
     this->state.parent->SetColor(-1, 251, 200, 4);
     break;
   case EF_STATUS_CRATE_UP:

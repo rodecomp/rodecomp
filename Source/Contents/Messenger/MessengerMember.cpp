@@ -6,6 +6,7 @@
 #include "UI/Window/UIEnums.h"
 #include "Client/Input/Mouse.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Contents/Tables/MessageTable.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
@@ -1971,10 +1972,10 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       }
       this->LayoutButtons();
       switch (g_serviceType) {
-      case 10:
-      case 12:
-      case 15:
-      case 18:
+      case ServiceGermany:
+      case ServiceBrazil:
+      case ServiceVietnam:
+      case ServiceFrance:
         this->visibleRows = this->scrollBar->geometry.height / this->rowHeight;
         break;
       }

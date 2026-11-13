@@ -7,6 +7,7 @@
 #include "Contents/Actors/Pc.h"
 #include "Contents/Camera/Camera.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Contents/Map/MapSkyMgr.h"
 #include "Contents/Tables/MessageTable.h"
 #include "Contents/Skin/SkinMgr.h"
@@ -17,6 +18,7 @@
 #include "Render/Textures/TextureCache.h"
 #include "Resource/ResourcePreload.h"
 #include "UI/GameSettings/GameSettingsUI.h"
+#include "UI/GameSettings/TalkType.h"
 #include "UI/Items/UIItemWnd.h"
 #include "UI/Events/UIRoulletteWnd.h"
 #include "Contents/Skills/ClientSkills.h"
@@ -542,11 +544,11 @@ unsigned char ServiceOptions::Get(int id) {
 // FUNCTION: fn_06319
 bool IsServiceOption(int id) {
   switch (id) {
-  case 106:
-  case 107:
-  case 108:
-  case 231:
-  case 269:
+  case TT_FULL_AURA_ON_OFF:
+  case TT_HIDE_AURA_ON_OFF:
+  case TT_BOLD_NAME_TYPE_ON_OFF:
+  case TT_BLOCK_CALL_ON_OFF:
+  case TT_HIDE_FOOTPRINT_ON_OFF:
     return true;
   default:
     return false;
@@ -719,7 +721,7 @@ std::pair<int, unsigned char> FindServiceOption(const char* name) {
     return {3, 0};
   }
 
-  int optionId = 3;
+  int optionId = TT_UNKNOWN;
   std::string strings[3];
   g_session.GetTalkType(name, &optionId, strings);
   const auto entry = g_serviceOptions.values.find(optionId);
@@ -981,7 +983,7 @@ void ApplyServiceOptionMapFog(int id, unsigned char value, bool notify, int enab
 void ApplyServiceOptionWithNotice(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
   if (value != g_serviceOptions.Get(id)) {
     g_serviceOptions.Set(id, value);
-    if (g_serviceOptions.Get(107)) {
+    if (g_serviceOptions.Get(TT_HIDE_AURA_ON_OFF)) {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SWAP_EQUIPITEM_FAIL_DEAD)), 0x64FFFF, 0, 0, 0);
       return;
     }
@@ -1379,7 +1381,7 @@ void ShowPlayerLocation() {
   const std::string text = std::format("{}({}) : {}, {}", g_session.GetMapDisplayName(mode->MapName().c_str()), name.c_str(), column, row);
   g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0x64FFFF, 0, 0, 0);
-  if (g_serviceType != 10) {
+  if (g_serviceType != ServiceGermany) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY2, reinterpret_cast<std::intptr_t>(text.c_str()), 0x64FFFF, 0, 0, 0);
   }
 }

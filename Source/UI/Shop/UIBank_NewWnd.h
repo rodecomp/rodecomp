@@ -3,6 +3,15 @@
 
 #include "UI/Window/UIFrameWnd.h"
 
+enum BankButtonId : int {
+  BANK_BUTTON_MAX = 389,
+  BANK_BUTTON_10MIL = 390,
+  BANK_BUTTON_1MIL = 391,
+  BANK_BUTTON_100K = 392,
+  BANK_BUTTON_DEPOSIT = 462,
+  BANK_BUTTON_WITHDRAW = 463,
+};
+
 class UIEditCtrl;
 
 class UIBank_NewWnd : public UIFrameWnd {

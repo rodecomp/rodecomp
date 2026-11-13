@@ -3,6 +3,15 @@
 
 #include "UI/Window/UIFrameWnd.h"
 
+enum PasswordWndMode : int {
+  PASSWORDWND_MODE_OK = 0,
+  PASSWORDWND_MODE_PASSED = 1,
+  PASSWORDWND_MODE_ASK = 2,
+  PASSWORDWND_MODE_EXPIRED = 3,
+  PASSWORDWND_MODE_NOTSET = 4,
+  PASSWORDWND_MODE_NEW = 5,
+};
+
 class UIBitmapButton;
 class UIEditCtrl;
 class UIStaticText;

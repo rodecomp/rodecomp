@@ -32,6 +32,7 @@
 #include "Contents/Configuration/GameSettingsMgr.h"
 #include "Contents/CashEmotion/CashEmotionMgr.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Items/ItemInfoMgr.h"
 #include "Contents/Map/MapInfoMgr.h"
@@ -1364,64 +1365,64 @@ int GetEquipLocationMask(const int& location) {
   int mask = 0;
   switch (location) {
   case 1:
-    mask = 0x1;
+    mask = EQP_HEAD_LOW;
     break;
   case 2:
-    mask = 0x10;
+    mask = EQP_ARMOR;
     break;
   case 3:
-    mask = 0x20;
+    mask = EQP_HAND_L;
     break;
   case 4:
-    mask = 0x2;
+    mask = EQP_HAND_R;
     break;
   case 5:
-    mask = 0x4;
+    mask = EQP_GARMENT;
     break;
   case 6:
-    mask = 0x40;
+    mask = EQP_SHOES;
     break;
   case 7:
-    mask = 0x8;
+    mask = EQP_ACC_R;
     break;
   case 8:
-    mask = 0x80;
+    mask = EQP_ACC_L;
     break;
   case 10:
-    mask = 0x100;
+    mask = EQP_HEAD_TOP;
     break;
   case 11:
-    mask = 0x200;
+    mask = EQP_HEAD_MID;
     break;
   case 20:
-    mask = 0x400;
+    mask = EQP_COSTUME_HEAD_TOP;
     break;
   case 21:
-    mask = 0x800;
+    mask = EQP_COSTUME_HEAD_MID;
     break;
   case 22:
-    mask = 0x1000;
+    mask = EQP_COSTUME_HEAD_LOW;
     break;
   case 23:
-    mask = 0x2000;
+    mask = EQP_COSTUME_GARMENT;
     break;
   case 30:
-    mask = 0x10000;
+    mask = EQP_SHADOW_ARMOR;
     break;
   case 31:
-    mask = 0x20000;
+    mask = EQP_SHADOW_WEAPON;
     break;
   case 32:
-    mask = 0x40000;
+    mask = EQP_SHADOW_SHIELD;
     break;
   case 33:
-    mask = 0x80000;
+    mask = EQP_SHADOW_SHOES;
     break;
   case 34:
-    mask = 0x100000;
+    mask = EQP_SHADOW_ACC_R;
     break;
   case 35:
-    mask = 0x200000;
+    mask = EQP_SHADOW_ACC_L;
     break;
   }
   return mask;
@@ -4900,22 +4901,22 @@ int GetPlayerValue(lua_State* state) {
     value = g_session.m_jobLevel;
     break;
   case 255:
-    value = traitStats[219];
+    value = traitStats[SP_POW];
     break;
   case 256:
-    value = traitStats[220];
+    value = traitStats[SP_STA];
     break;
   case 257:
-    value = traitStats[221];
+    value = traitStats[SP_WIS];
     break;
   case 258:
-    value = traitStats[222];
+    value = traitStats[SP_SPL];
     break;
   case 259:
-    value = traitStats[223];
+    value = traitStats[SP_CON];
     break;
   case 260:
-    value = traitStats[224];
+    value = traitStats[SP_CRT];
     break;
   case 263:
     value = g_runeSystemMgr->GetCurSlotCount();
@@ -5474,64 +5475,64 @@ int CLuaInstance::GetInt(int& value, int index) {
 bool CGameMode::IsAllowedPair(int kind, int value) {
   bool result = false;
   switch (kind) {
-  case 8:
+  case WID_ITEMWND:
     if (value == 6 || value == 9) {
       result = true;
     }
     break;
-  case 0x16:
+  case WID_ITEMSHOPWND:
     if (g_windowMgr.dragAllItems != 0) {
       break;
     }
-  case 0xA0:
+  case WID_ITEMSHOPWND2:
     if (value == 4 || value == 5) {
       result = true;
     }
     break;
-  case 0x18:
+  case WID_ITEMSELLWND:
     if (g_windowMgr.dragAllItems != 0) {
       break;
     }
-  case 0x17:
-  case 0xA1:
+  case WID_ITEMPURCHASEWND:
+  case WID_ITEMSELLWND2:
     result = value == 3;
     break;
-  case 0x21:
+  case WID_ITEMSTOREWND:
     if (value == 9 || value == 1) {
       result = true;
     }
     break;
-  case 0x28:
+  case WID_MERCHANTITEMWND:
     if (value == 1 || value == 6) {
       result = true;
     }
     break;
-  case 0x29:
+  case WID_MERCHANTSHOPMAKEWND:
     result = value == 0xB;
     break;
-  case 0x2A:
+  case WID_MERCHANTMIRRORITEMWND:
     result = value == 0xA;
     break;
-  case 0x2B:
+  case WID_MERCHANTITEMSHOPWND:
     result = value == 0xD;
     break;
-  case 0x2C:
-  case 0xB2:
+  case WID_MERCHANTITEMPURCHASEWND:
+  case WID_MERCHANTITEMPURCHASEWND_MODE_1:
     if (value == 0xC || value == 0x16) {
       result = true;
     }
     break;
-  case 0xAF:
+  case WID_MERCHANTMIRRORITEMWND_MODE_1:
     result = value == 0x15;
     break;
-  case 0xB8:
-  case 0x13E:
+  case WID_NCASHWND:
+  case WID_CASHSHOP_WND:
     if (value == 6 || value == 4) {
       result = true;
     }
     break;
   case 0x1F:
-  case 0x271B:
+  case WID_EXCHANGEUI:
     if (value == 1) {
       result = true;
     }
@@ -6372,7 +6373,7 @@ void CSession::InitClientData() {
   this->LoadOptionInfo();
   this->LoadDamageSkinSettings();
 
-  if (g_serviceType == 0) {
+  if (g_serviceType == ServiceKorea) {
     InitEmbedFont();
     SetEmbedFontRootUrl("http://www.ragnarok.co.kr");
     LoadEmbedFont(&g_embedFontFiles, "RixSquirrel_10.eot", 0);

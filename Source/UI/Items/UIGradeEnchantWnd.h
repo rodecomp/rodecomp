@@ -8,6 +8,10 @@
 #include <cstdint>
 #include <vector>
 
+enum GradeEnchantButtonId : int {
+  GRADEENCHANT_BUTTON_PROBABILITY = 510,
+};
+
 #pragma pack(push, 1)
 struct GradeEnchantMaterial {
   /* 0000 */ std::uint32_t itemId;

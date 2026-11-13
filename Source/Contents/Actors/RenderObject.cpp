@@ -4,6 +4,7 @@
 #include "Contents/Actors/ActorEnums.h"
 #include "Contents/CombatTypes.h"
 #include "Contents/Skills/SkillId.h"
+#include "Network/Packets/NoticeEnums.h"
 #include "Contents/Actors/GrannyGameActor.h"
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/Actors/ActorPickNode.h"
@@ -916,10 +917,10 @@ void CGameActor::SetRenderInfo(const float* bounds, float x, float y) {
     }
 
     switch (this->objectType) {
-    case 9:
-    case 10:
-    case 13:
-    case 14:
+    case NPC_MERSOL_TYPE:
+    case NPC_ELEMENTAL_TYPE:
+    case NPC_ABR_TYPE:
+    case NPC_BIONIC_TYPE:
       depth = 50.0f;
       break;
     }
@@ -946,10 +947,10 @@ void CGameActor::SetRenderInfo(const float* bounds, float x, float y) {
         info->kind = g_session.IsCompanionJob(this->GetEffectiveJob(-1)) != 0 ? 4 : 0;
       }
       switch (this->objectType) {
-      case 9:
-      case 10:
-      case 13:
-      case 14:
+      case NPC_MERSOL_TYPE:
+      case NPC_ELEMENTAL_TYPE:
+      case NPC_ABR_TYPE:
+      case NPC_BIONIC_TYPE:
         info->kind = 4;
         break;
       }
@@ -5670,7 +5671,7 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
   case MO_INVESTIGATE:
   case MO_FINGEROFFENSIVE:
   case SR_RIDEINLIGHTNING:
-    if (this->objectType != 5) {
+    if (this->objectType != NPC_MOB_TYPE) {
       this->SetSequenceInterval(10);
       unsigned char animation;
       unsigned char firstFrame;
@@ -5688,7 +5689,7 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
     }
     break;
   case MO_EXTREMITYFIST:
-    if (this->objectType != 5) {
+    if (this->objectType != NPC_MOB_TYPE) {
       this->SetSequenceInterval(4);
       this->SetFrameSequence(0x58, 0, 7, 0x58, 7, 1, 3500, 0);
       this->isAsuraAttack = 1;

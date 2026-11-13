@@ -1,6 +1,7 @@
 #include "Contents/Guild/GuildTip.h"
 #include "Client/Input/InputCharset.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "File/File.h"
 #include "File/ResourcePath.h"
 
@@ -23,7 +24,7 @@ int CGuildTip::Load() {
   char* fileBuf = nullptr;
   int fileSize = 0;
 
-  if (g_serviceType == 0) {
+  if (g_serviceType == ServiceKorea) {
     FILE* file = std::fopen("GuildTip.txt", "r");
 
     if (file == nullptr) {

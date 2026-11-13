@@ -12,6 +12,14 @@
 #include <utility>
 #include <vector>
 
+enum RodexInboxButtonId : int {
+  RODEX_BUTTON_SENDER = 322,
+  RODEX_BUTTON_SUBJECT = 323,
+  RODEX_BUTTON_RECEIVE_ALL = 546,
+  RODEX_BUTTON_DELETE_SELECTED = 547,
+  RODEX_BUTTON_DELETE_ALL = 548,
+};
+
 class UIBasicButton;
 class UIBitmapButton;
 class UIBmpRadioBtn;

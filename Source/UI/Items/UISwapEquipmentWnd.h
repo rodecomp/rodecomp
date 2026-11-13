@@ -8,6 +8,10 @@
 
 struct ITEM_INFO;
 
+enum SwapEquipmentButtonId : int {
+  SWAPEQUIP_BUTTON_SWAP = 508,
+};
+
 
 class UISwapBitmapButton : public UIBitmapButton {
 public:

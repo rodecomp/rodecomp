@@ -154,14 +154,14 @@ void UIRegisterPartyWnd::OnCreate(int, int) {
     this->change = new UIBasicButton();
     this->change->Configure(this->TextWidth(LookupMessage(MSI_LOGIN), 0, 0, 12, 0, 0) + 10, LookupMessage(MSI_LOGIN));
     this->change->Move(108, 165);
-    this->change->SetId(564);
+    this->change->SetId(ID_EDIT_OWN_PARTY_LISTING);
     this->m_message0 = 564;
     this->AddChild(this->change);
   } else {
     this->recruit = new UIBasicButton();
     this->recruit->Configure(this->TextWidth(LookupMessage(MSI_CHAT_WITH_PARTYMASTER), 0, 0, 12, 0, 0) + 10, LookupMessage(MSI_CHAT_WITH_PARTYMASTER));
     this->recruit->Move(108, 165);
-    this->recruit->SetId(565);
+    this->recruit->SetId(ID_REGISTER_PARTY_LISTING);
     this->m_message0 = 565;
     this->AddChild(this->recruit);
   }
@@ -187,7 +187,7 @@ void UIRegisterPartyWnd::OnCreate(int, int) {
   close->SetBitmap("유저인터페이스\\basic_interface\\btn_close_b.bmp", 2, 0);
   close->SetSize(close->BitmapWidth(), close->BitmapHeight());
   close->Move(173, 165);
-  close->SetId(201);
+  close->SetId(ID_CLOSE);
   this->AddChild(close);
 
   this->types = new UIComboBoxDef2Wnd();
@@ -280,8 +280,8 @@ int UIRegisterPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
     switch (a) {
     case ID_CLOSE:
       break;
-    case 564:
-    case 565:
+    case ID_EDIT_OWN_PARTY_LISTING:
+    case ID_REGISTER_PARTY_LISTING:
       if (g_session.partyLeader == 0) {
         char text[256] = {};
         StringFormat(text, sizeof(text), _TRUNCATE, LookupMessage(MSI_EXPAND_SIGHT_OPTIONWND));

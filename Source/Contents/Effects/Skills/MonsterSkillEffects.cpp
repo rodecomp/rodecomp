@@ -2537,7 +2537,7 @@ void CRandomHitEffect::Open() {
       reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
   if (this->emitter) {
     switch (this->id) {
-    case 2080: {
+    case EF_UNK_2080: {
       AsParticle(this->emitter)->Load(std::string("4ig_secondfalth\\secondfalth_hit\\secondfalth_hit.str"));
       const int index = static_cast<int>(s_randomHitIndex);
       AsParticle(this->emitter)->m_angle = static_cast<float>(angles[index]);
@@ -2548,7 +2548,7 @@ void CRandomHitEffect::Open() {
       AsParticle(this->emitter)->m_delay = index * 200;
       break;
     }
-    case 2082: {
+    case EF_UNK_2082: {
       AsParticle(this->emitter)->Load(std::string("4iq_secondjudgement\\secondjudgement\\secondjudgement.str"));
       const int index = static_cast<int>(s_randomHitIndex);
       AsParticle(this->emitter)->m_angle = static_cast<float>(angles[index]);
@@ -4231,7 +4231,7 @@ void CSvgSpiritEffect::Open() {
 void CCurseOfCubeEffect::SpawnShock() {
   CEZ2STRParticle* particle;
   switch (this->id) {
-  case 0x901: {
+  case EF_UNK_2305: {
     particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
     if (!particle) {
       return;
@@ -4239,7 +4239,7 @@ void CCurseOfCubeEffect::SpawnShock() {
     particle->Open("NPC_CURSE_OF_RED_CUBE\\npc_cur_r_shock\\npc_cur_r_shock.str");
     break;
   }
-  case 0x902: {
+  case EF_UNK_2306: {
     particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
     if (!particle) {
       return;
@@ -4394,7 +4394,7 @@ void CDancingKnifeEffect::OnProcess() {
 // FUNCTION: fn_07173
 void CCurseOfCubeEffect::SpawnLoop() {
   switch (this->id) {
-  case 0x901: {
+  case EF_UNK_2305: {
     CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
     if (bottom) {
       bottom->Open("NPC_CURSE_OF_RED_CUBE\\npc_cur_r_cube\\npc_cur_r_cube_bottom_loop.str");
@@ -4409,7 +4409,7 @@ void CCurseOfCubeEffect::SpawnLoop() {
     }
     break;
   }
-  case 0x902: {
+  case EF_UNK_2306: {
     CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
     if (bottom) {
       bottom->Open("NPC_CURSE_OF_BLUE_CUBE\\npc_cur_b_cube\\npc_cur_b_cube_bottom_loop.str");
@@ -4431,7 +4431,7 @@ void CCurseOfCubeEffect::SpawnLoop() {
 // FUNCTION: fn_07174
 void CCurseOfCubeEffect::SpawnStart() {
   switch (this->id) {
-  case 0x901: {
+  case EF_UNK_2305: {
     CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
     EZ2STREmitter* bottomEmitter = reinterpret_cast<EZ2STREmitter*>(bottom);
     if (bottom) {
@@ -4446,7 +4446,7 @@ void CCurseOfCubeEffect::SpawnStart() {
     }
     break;
   }
-  case 0x902: {
+  case EF_UNK_2306: {
     CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
     EZ2STREmitter* bottomEmitter = reinterpret_cast<EZ2STREmitter*>(bottom);
     if (bottom) {
@@ -4762,7 +4762,7 @@ void CGaleStorm::OnProcess() {
 // FUNCTION: fn_07290
 void CGravityControlEffect::Open() {
   switch (this->id) {
-  case 0x4B1: {
+  case EF_UNK_1201: {
     CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
     if (particle) {
       particle->m_loop = true;
@@ -4772,7 +4772,7 @@ void CGravityControlEffect::Open() {
     }
     break;
   }
-  case 0x960:
+  case EF_UNK_2400:
     this->retained = 1;
     break;
   }

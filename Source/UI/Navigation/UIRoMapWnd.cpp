@@ -1017,7 +1017,7 @@ void UIRoMapWnd::OnCreate(int, int) {
   closeButton->SetBitmap("유저인터페이스\\basic_interface\\world_close_on.bmp", 2, 0);
   closeButton->SetSize(closeButton->BitmapWidth(), closeButton->BitmapHeight());
   closeButton->Move(closeX, 0);
-  closeButton->SetId(201);
+  closeButton->SetId(ID_CLOSE);
   closeButton->SetTooltip("ctrl+`");
   this->AddChild(closeButton);
 
@@ -1027,7 +1027,7 @@ void UIRoMapWnd::OnCreate(int, int) {
     this->m_labelCheck = new (std::nothrow) UICheckBox();
     this->m_labelCheck->SetSize(80, 12);
     this->m_labelCheck->SetImages(checked.c_str(), unchecked.c_str(), LookupMessage(MSI_WORLDMAP_MSG4));
-    this->m_labelCheck->SetId(192);
+    this->m_labelCheck->SetId(ID_STATUS);
     this->m_labelCheck->Move(closeX - 82, 3);
     this->m_labelCheck->SetChecked(this->m_showLabels);
     this->m_labelCheck->SetTooltip("Tab");
@@ -1039,7 +1039,7 @@ void UIRoMapWnd::OnCreate(int, int) {
     this->m_searchButton->SetBitmap("유저인터페이스\\navigation_interface\\NaviSearch_C.bmp", 2, 0);
     this->m_searchButton->SetSize(this->m_searchButton->BitmapWidth(), this->m_searchButton->BitmapHeight());
     this->m_searchButton->Move(-100, -100);
-    this->m_searchButton->SetId(321);
+    this->m_searchButton->SetId(ID_SEARCH);
     this->m_searchButton->SetTooltip(LookupMessage(MSI_NAVIGATION_SEARCHINFO));
     this->AddChild(this->m_searchButton);
 
@@ -1049,7 +1049,7 @@ void UIRoMapWnd::OnCreate(int, int) {
     this->m_searchListButton->SetBitmap("유저인터페이스\\scroll0down.bmp", 2, 0);
     this->m_searchListButton->SetSize(this->m_searchListButton->BitmapWidth(), this->m_searchListButton->BitmapHeight());
     this->m_searchListButton->Move(-100, -100);
-    this->m_searchListButton->SetId(200);
+    this->m_searchListButton->SetId(ID_BASE);
     this->m_searchListButton->SetTooltip(LookupMessage(MSI_NAVIGATION_V4_HELP01));
     this->AddChild(this->m_searchListButton);
 

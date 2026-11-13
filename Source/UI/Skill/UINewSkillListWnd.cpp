@@ -1314,7 +1314,7 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       g_windowMgr.CloseWindow(WID_SKILLLISTWND);
       return 0;
     case ID_APPLY:
-      if (g_windowMgr.Confirm(LookupMessage(MSI_APPLY_SKILL_UP), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_APPLY_SKILL_UP), 2, false, false, 0, "Message", 280, 120, 0) == ID_YES) {
         this->ApplySkillPoints();
         this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
         if (ChatWindow()) {
@@ -1349,11 +1349,11 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     case ID_LVLUP5:
     case ID_LVLUP6:
     case ID_LVLUP7:
-    case 246:
-    case 247:
-    case 248:
+    case ID_LVLUP8:
+    case ID_LVLUP9:
+    case ID_LVLUP10:
       if (this->m_skillPoints != 0) {
-        CSkillInfo skill = this->SkillAt(this->m_columns * this->m_firstRow + a - 239, false);
+        CSkillInfo skill = this->SkillAt(this->m_columns * this->m_firstRow + a - ID_LVLUP1, false);
         if (skill.available != 0 && skill.upgradable != 0 && this->IncreaseSkillLevel(skill.id)) {
           this->m_needsRedraw = 1;
           this->m_locked = 1;

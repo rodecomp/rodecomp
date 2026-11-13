@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/AcidifiedThrow.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -50,28 +51,28 @@ void CAcidifiedThrow::Open() {
   }
 
   switch (this->id) {
-  case 0x89E:
+  case EF_UNK_2206:
     reinterpret_cast<CEZ2STRParticle*>(this->projectileEmitter)->Load("acidified_zone_fire\\acidified_zone_fire_c\\acidified_zone_fire_c.str");
     reinterpret_cast<CEZ2STRParticle*>(this->impactEmitters[0])->Load("acidified_zone_fire\\acidified_zone_fire_b\\acidified_zone_fire_b.str");
     reinterpret_cast<CEZ2STRParticle*>(this->impactEmitters[1])->Load("acidified_zone_fire\\acidified_zone_fire_b_bottom\\acidified_zone_fire_b_bottom.str");
     reinterpret_cast<CEZ2STRParticle*>(this->impactEmitters[2])->Load("acidified_zone_fire\\acidified_zone_fire_water\\acidified_zone_fire_water.str");
     break;
 
-  case 0x8A6:
+  case EF_UNK_2214:
     reinterpret_cast<CEZ2STRParticle*>(this->projectileEmitter)->Load("acidified_zone_water\\acidified_zone_water_c\\acidified_zone_water_c.str");
     reinterpret_cast<CEZ2STRParticle*>(this->impactEmitters[0])->Load("acidified_zone_water\\acidified_zone_water_b\\acidified_zone_water_b.str");
     reinterpret_cast<CEZ2STRParticle*>(this->impactEmitters[1])->Load("acidified_zone_water\\acidified_zone_water_b_bottom\\acidified_zone_water_b_bottom.str");
     reinterpret_cast<CEZ2STRParticle*>(this->impactEmitters[2])->Load("acidified_zone_water\\acidified_zone_water_water\\acidified_zone_water_water.str");
     break;
 
-  case 0x8AE:
+  case EF_UNK_2222:
     reinterpret_cast<CEZ2STRParticle*>(this->projectileEmitter)->Load("acidified_zone_wind\\acidified_zone_wind_c\\acidified_zone_wind_c.str");
     reinterpret_cast<CEZ2STRParticle*>(this->impactEmitters[0])->Load("acidified_zone_wind\\acidified_zone_wind_b\\acidified_zone_wind_b.str");
     reinterpret_cast<CEZ2STRParticle*>(this->impactEmitters[1])->Load("acidified_zone_wind\\acidified_zone_wind_b_bottom\\acidified_zone_wind_b_bottom.str");
     reinterpret_cast<CEZ2STRParticle*>(this->impactEmitters[2])->Load("acidified_zone_wind\\acidified_zone_wind_water\\acidified_zone_wind_water.str");
     break;
 
-  case 0x8B6:
+  case EF_UNK_2230:
     reinterpret_cast<CEZ2STRParticle*>(this->projectileEmitter)->Load("acidified_zone_ground\\acidified_zone_ground_c\\acidified_zone_ground_c.str");
     reinterpret_cast<CEZ2STRParticle*>(this->impactEmitters[0])->Load("acidified_zone_ground\\acidified_zone_ground_b\\acidified_zone_ground_b.str");
     reinterpret_cast<CEZ2STRParticle*>(this->impactEmitters[1])->Load("acidified_zone_ground\\acidified_zone_ground_b_bottom\\acidified_zone_ground_b_bottom.str");
@@ -186,16 +187,16 @@ void CAcidifiedThrow::OnProcess() {
     g_soundMgr->PlayWave("effect\\BO_ACIDIFIED_ZONE.wav", soundX, 0.0f, soundZ, 250, 40, 1.0f, 0);
 
     switch (this->id) {
-    case 0x89E:
+    case EF_UNK_2206:
       g_soundMgr->PlayWave("effect\\BO_ACIDIFIED_ZONE_FIRE.wav", soundX, 0.0f, soundZ, 250, 40, 1.0f, 0);
       return;
-    case 0x8A6:
+    case EF_UNK_2214:
       g_soundMgr->PlayWave("effect\\BO_ACIDIFIED_ZONE_WATER.wav", soundX, 0.0f, soundZ, 250, 40, 1.0f, 0);
       return;
-    case 0x8AE:
+    case EF_UNK_2222:
       g_soundMgr->PlayWave("effect\\BO_ACIDIFIED_ZONE_WIND.wav", soundX, 0.0f, soundZ, 250, 40, 1.0f, 0);
       return;
-    case 0x8B6:
+    case EF_UNK_2230:
       g_soundMgr->PlayWave("effect\\BO_ACIDIFIED_ZONE_GROUND.wav", soundX, 0.0f, soundZ, 250, 40, 1.0f, 0);
       return;
     default:

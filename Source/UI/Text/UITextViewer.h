@@ -5,6 +5,22 @@
 
 #include <windows.h>
 
+enum TextLinkKind : int {
+  TEXT_LINK_ITEM = 0,
+  TEXT_LINK_URL = 1,
+  TEXT_LINK_NAVI = 2,
+  TEXT_LINK_TIP = 3,
+  TEXT_LINK_QUEST = 4,
+};
+
+enum TextLinkButtonId : int {
+  LINK_BUTTON_URL = 437,
+  LINK_BUTTON_NAVI = 438,
+  LINK_BUTTON_ITEM = 464,
+  LINK_BUTTON_TIP = 517,
+  LINK_BUTTON_QUEST = 539,
+};
+
 class UITextButton;
 
 class UITextViewer : public UIListBox {

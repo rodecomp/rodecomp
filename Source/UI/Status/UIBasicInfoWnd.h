@@ -6,6 +6,13 @@
 
 class UIStaticText;
 
+enum BasicInfoButtonId : int {
+  BASICINFO_BUTTON_CHATROOM = 214,
+  BASICINFO_BUTTON_CLOSE_ALL = 222,
+  BASICINFO_BUTTON_MERCHANT = 247,
+  BASICINFO_BUTTON_GUILD = 373,
+};
+
 class UIBasicInfoWnd : public UIFrameWnd {
 public:
   UIBasicInfoWnd();

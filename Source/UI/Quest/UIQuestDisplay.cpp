@@ -232,7 +232,7 @@ int UIQuestDisplay::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     for (auto it = g_renewQuestMgr->m_ongoingQuests.begin(); it != end; ++it, ++index) {
       if (index == this->m_selectedIndex) {
         switch (this->m_menuItems[argument1].value) {
-        case 48: {
+        case MENUID_TOGGLE_QUEST_ACTIVE: {
           PACKET_CZ_ACTIVE_QUEST packet;
           packet.packetType = ID_CZ_ACTIVE_QUEST;
           packet.questId = it->first;
@@ -241,7 +241,7 @@ int UIQuestDisplay::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
           this->Invalidate();
           break;
         }
-        case 49:
+        case MENUID_VIEW_QUEST_INFO:
           g_renewQuestMgr->ShowOngoingQuestInfo(it->first);
           break;
         }
@@ -256,8 +256,8 @@ int UIQuestDisplay::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       this->Show(0);
     }
     if (this->m_selectedIndex != -1) {
-      this->m_menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_VIEW_QUEST_INFO_MSG)).c_str(), 49));
-      this->m_menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_DELETE)).c_str(), 48));
+      this->m_menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_VIEW_QUEST_INFO_MSG)).c_str(), MENUID_VIEW_QUEST_INFO));
+      this->m_menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_DELETE)).c_str(), MENUID_TOGGLE_QUEST_ACTIVE));
     }
     if (this->m_menuItems.size() != 0) {
       UIWindow* menu = g_windowMgr.EnsureWindow(WID_MENUWND);

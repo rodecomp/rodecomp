@@ -10,6 +10,11 @@
 #include <string>
 #include <vector>
 
+enum SeekPartyListButtonId : int {
+  SEEKPARTY_BUTTON_OPEN_RECRUIT = 378,
+  SEEKPARTY_SEARCH_NEXT_PAGE = 380,
+};
+
 class UIBitmapButton;
 class UICheckBox;
 class UIComboBoxDefWnd;

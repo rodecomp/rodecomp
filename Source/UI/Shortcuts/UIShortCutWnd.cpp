@@ -188,7 +188,7 @@ __forceinline void UIShortCutWnd::ClickControl(int id) {
     g_windowMgr.ShowWindowById(WID_SHORTCUTWND, 0);
     return;
 
-  case 549: {
+  case SHORTCUT_BUTTON_BANK: {
     const int bank = g_session.GetOption(10);
     g_session.SetOption(10, bank == 0 ? 1 : 0, 0);
     this->m_bank->geometry.state = bank == 0;
@@ -202,7 +202,7 @@ __forceinline void UIShortCutWnd::ClickControl(int id) {
     return;
   }
 
-  case 589:
+  case SHORTCUT_BUTTON_HIDE_ITEMS:
     g_session.ItemSlotActive() = false;
     this->m_showItems->Enable(1);
     this->m_showItems->SetDisabled(0);
@@ -213,7 +213,7 @@ __forceinline void UIShortCutWnd::ClickControl(int id) {
     this->SendMsg(nullptr, UM_RESIZE, 0, 0, 0, 0);
     return;
 
-  case 588:
+  case SHORTCUT_BUTTON_SHOW_ITEMS:
     g_session.ItemSlotActive() = true;
     this->m_showItems->Enable(0);
     this->m_showItems->SetDisabled(1);
@@ -379,7 +379,7 @@ __forceinline void UseShortcutSlot(const NormalItemSlot& slot) {
   case TYPE_ARROW:
   case TYPE_AMMO:
   case TYPE_THROWWEAPON:
-  case 19:
+  case TYPE_CANNONBALL:
     if (item.identity[3] == 0x8000) {
       mode->SendMsg(MM_WEAR_EQUIP_ARROW, item.identity[1], item.identity[2], 0, 0);
     }
@@ -753,14 +753,14 @@ void UIMemorialDunWnd::OnCreate(int, int) {
     this->m_actionButton->SetBitmap((name + "_b.bmp").c_str(), 2, 0);
     this->m_actionButton->SetSize(this->m_actionButton->BitmapWidth(), this->m_actionButton->BitmapHeight());
     this->m_actionButton->Move(-100, -100);
-    this->m_actionButton->SetId(184);
+    this->m_actionButton->SetId(ID_OK);
     this->AddChild(this->m_actionButton);
   }
 
   this->m_partyButton = new (std::nothrow) UIBasicButton();
   this->m_partyButton->Configure(125, LookupMessage(MSI_PARTY_NOT_LEAVE_PARTY_UNTIL_YIELD_PARTYMASTER));
   this->m_partyButton->Move(-100, -100);
-  this->m_partyButton->SetId(211);
+  this->m_partyButton->SetId(ID_DELETE);
   this->AddChild(this->m_partyButton);
   this->ArrangeButtons();
 }
@@ -1393,7 +1393,7 @@ void UINewChatWnd::OnCreate(int width, int height) {
     static_cast<UIBitmapButton*>(this->m_headerButton)->SetBitmap((name + "_b.bmp").c_str(), 2, 0);
     static_cast<UIBitmapButton*>(this->m_headerButton)->SetSize(static_cast<UIBitmapButton*>(this->m_headerButton)->BitmapWidth(), static_cast<UIBitmapButton*>(this->m_headerButton)->BitmapHeight());
     static_cast<UIBitmapButton*>(this->m_headerButton)->Move(this->m_tabWidth * 2 + 4, 4);
-    static_cast<UIBitmapButton*>(this->m_headerButton)->SetId(0x166);
+    static_cast<UIBitmapButton*>(this->m_headerButton)->SetId(ID_STICK_OFF);
     this->AddChild(static_cast<UIBitmapButton*>(this->m_headerButton));
   }
 
@@ -1406,7 +1406,7 @@ void UINewChatWnd::OnCreate(int width, int height) {
     static_cast<UIBitmapButton*>(this->m_chatModeButton)->SetBitmap((name + "_b.bmp").c_str(), 2, 0);
     static_cast<UIBitmapButton*>(this->m_chatModeButton)->SetSize(static_cast<UIBitmapButton*>(this->m_chatModeButton)->BitmapWidth(), static_cast<UIBitmapButton*>(this->m_chatModeButton)->BitmapHeight());
     static_cast<UIBitmapButton*>(this->m_chatModeButton)->Move(this->m_tabWidth * 2 + 19, 5);
-    static_cast<UIBitmapButton*>(this->m_chatModeButton)->SetId(0xC1);
+    static_cast<UIBitmapButton*>(this->m_chatModeButton)->SetId(ID_OPTION);
     this->AddChild(static_cast<UIBitmapButton*>(this->m_chatModeButton));
   }
 
@@ -1419,7 +1419,7 @@ void UINewChatWnd::OnCreate(int width, int height) {
     button->SetBitmap((name + "_b.bmp").c_str(), 2, 0);
     button->SetSize(button->BitmapWidth(), button->BitmapHeight());
     button->Move(this->m_tabWidth * 2 + 34, 5);
-    button->SetId(0x176);
+    button->SetId(ID_ADD_CHAT_TAB);
     this->AddChild(button);
   }
 
@@ -1431,7 +1431,7 @@ void UINewChatWnd::OnCreate(int width, int height) {
     button->SetBitmap((name + "_b.bmp").c_str(), 1, 0);
     button->SetBitmap((name + "_b.bmp").c_str(), 2, 0);
     button->SetSize(button->BitmapWidth(), button->BitmapHeight());
-    button->SetId(0xCA);
+    button->SetId(ID_MINI);
     this->AddChild(button);
   }
 

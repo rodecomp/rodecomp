@@ -1,4 +1,5 @@
 #include "Client/Mode/CLoginMode.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Client/Mode/ModeMessage.h"
 #include "Network/Packets/NoticeEnums.h"
 #include "Client/Mode/ModeMgr.h"
@@ -186,7 +187,7 @@ void CLoginMode::ReceiveNotifyBan(const unsigned char* data) {
     strcpy(text, LookupMessage(MSI_BAN_HAN_VALID));
     break;
   case 107:
-    if (g_serviceType == 0) {
+    if (g_serviceType == ServiceKorea) {
       char buffer[200];
       sprintf(buffer, LookupMessage(MSI_BAN_OVER_CHARACTER_LIST), 9);
       strcpy(text, buffer);

@@ -118,7 +118,7 @@ void UIRune_Info::OnCreate(int, int) {
   this->m_activateButton->SetBitmap("유저인터페이스\\runesystem\\bt_active_disabled.bmp", 3, 0);
   this->m_activateButton->SetSize(this->m_activateButton->BitmapWidth(), this->m_activateButton->BitmapHeight());
   this->m_activateButton->Move(0xEE, this->geometry.height - 30);
-  this->m_activateButton->SetId(0x23C);
+  this->m_activateButton->SetId(RUNE_BUTTON_ACTIVATE);
 }
 
 // OFFSET: 0x00819610
@@ -200,7 +200,7 @@ void UIRuneSetList::DrawScrollBar(bool drawLine) {
 // OFFSET: 0x0081BE90
 // FUNCTION: fn_10195
 void UIEquipRuneSetWnd::OnLBtnDblClk(int, int) {
-  this->parent->SendMsg(this, 0xAB, 0x158, 0, 0, 0);
+  this->parent->SendMsg(this, 0xAB, RUNE_BUTTON_UNEQUIP, 0, 0, 0);
 }
 
 // OFFSET: 0x0081BEC0
@@ -902,7 +902,7 @@ void UIRuneSystemWnd::SelectTab() {
 int UIRune_Info::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
   case UM_COMMAND:
-    if (argument1 == 0x23C && (!this->parent || this->parent->SendMsg(this, 0x6A, 3000, 0, 0, 0) != 0) && this->m_rune) {
+    if (argument1 == RUNE_BUTTON_ACTIVATE && (!this->parent || this->parent->SendMsg(this, 0x6A, 3000, 0, 0, 0) != 0) && this->m_rune) {
       CRuneSystemMgr::GetInstance()->SendRequest(0xBCE, this->m_rune, -1);
     }
     [[fallthrough]];
@@ -1518,7 +1518,7 @@ UIRuneSystem_DecomResultWnd::UIRuneSystem_DecomResultWnd()
   button->SetBitmap("유저인터페이스\\runesystem\\bt_ok_disabled.bmp", 3, 0);
   button->SetSize(button->BitmapWidth(), button->BitmapHeight());
   button->Move(static_cast<int>(static_cast<float>(240 - button->geometry.width) * 0.5f), 154);
-  button->SetId(0xB8);
+  button->SetId(ID_OK);
   std::memset(this->m_itemIds, 0, sizeof(this->m_itemIds) + sizeof(this->m_counts));
 }
 
@@ -1539,7 +1539,7 @@ UIRuneSystem_tagListWnd::UIRuneSystem_tagListWnd()
   this->m_rightButton->SetBitmap("유저인터페이스\\runesystem\\bt_tag_right_disable.bmp", 3, 0);
   this->m_rightButton->SetSize(this->m_rightButton->BitmapWidth(), this->m_rightButton->BitmapHeight());
   this->m_rightButton->Move(267, 9);
-  this->m_rightButton->SetId(0x13D);
+  this->m_rightButton->SetId(ID_NEXT_PAGE);
 
   this->m_leftButton = new UIBitmapButton();
   this->AddChild(this->m_leftButton);
@@ -1549,7 +1549,7 @@ UIRuneSystem_tagListWnd::UIRuneSystem_tagListWnd()
   this->m_leftButton->SetBitmap("유저인터페이스\\runesystem\\bt_tag_left_disable.bmp", 3, 0);
   this->m_leftButton->SetSize(this->m_leftButton->BitmapWidth(), this->m_leftButton->BitmapHeight());
   this->m_leftButton->Move(7, 9);
-  this->m_leftButton->SetId(0x13C);
+  this->m_leftButton->SetId(ID_PREV_PAGE);
 
   if (CRuneSystemMgr::GetInstance()->GetTagCount() < this->m_visibleCount) {
     UIBitmapButton* const rightButton = this->m_rightButton;
@@ -1598,35 +1598,35 @@ int UIRuneSet_Info::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     switch (argument1) {
     case ID_EQUIP:
       if (this->m_runeSet && (!this->parent || this->parent->SendMsg(this, 0x6A, 1500, 0, 0, 0) != 0)) {
-        this->parent->SendMsg(this, 0xAB, 0xC3, reinterpret_cast<std::intptr_t>(this->m_runeSet), 0, 0);
+        this->parent->SendMsg(this, 0xAB, ID_EQUIP, reinterpret_cast<std::intptr_t>(this->m_runeSet), 0, 0);
       }
       break;
-    case 0x158:
+    case RUNE_BUTTON_UNEQUIP:
       if (!this->parent || this->parent->SendMsg(this, 0x6A, 1500, 0, 0, 0) != 0) {
-        this->parent->SendMsg(this, 0xAB, 0x158, 0, 0, 0);
+        this->parent->SendMsg(this, 0xAB, RUNE_BUTTON_UNEQUIP, 0, 0, 0);
       }
       break;
-    case 0x24E:
-    case 0x24F:
-    case 0x250:
-    case 0x251:
-    case 0x252:
-    case 0x253:
-    case 0x254:
-      if (!this->m_runeSet->IsRewardStep(argument1 - 0x24E)) {
+    case RUNE_BUTTON_REWARD_1:
+    case RUNE_BUTTON_REWARD_2:
+    case RUNE_BUTTON_REWARD_3:
+    case RUNE_BUTTON_REWARD_4:
+    case RUNE_BUTTON_REWARD_5:
+    case RUNE_BUTTON_REWARD_6:
+    case RUNE_BUTTON_REWARD_7:
+      if (!this->m_runeSet->IsRewardStep(argument1 - RUNE_BUTTON_REWARD_1)) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_REWARD_TITLE)), 0xFF, 0, 0, 0);
       } else {
         CRuneSystemMgr::GetInstance()->SendRequest(0xC16, this->m_runeSet, argument1 - 0x24D);
       }
       break;
-    case 0x23C:
+    case RUNE_BUTTON_ACTIVATE:
       if (!this->m_runeSet) {
         g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_EQUIP_NOT), 0, true, false, 0, "Message", 280, 120, 0);
       } else if (!this->parent || this->parent->SendMsg(this, 0x6A, 100, 0, 0, 0) != 0) {
         CRuneSystemMgr::GetInstance()->SendRequest(0xBD0, this->m_runeSet, -1);
       }
       break;
-    case 0x1FD:
+    case RUNE_BUTTON_GRADE:
       if (!this->m_runeSet) {
         g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_EQUIP_NOT), 0, true, false, 0, "Message", 280, 120, 0);
       } else if (!this->parent || this->parent->SendMsg(this, 0x6A, 100, 0, 0, 0) != 0) {
@@ -1726,7 +1726,7 @@ int UIRune_Decom::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
   if (message == UM_COMMAND) {
     if (argument1 == ID_RADIOBTN) {
       this->SelectDecomType(argument2);
-    } else if (argument1 == 0x197) {
+    } else if (argument1 == RUNE_BUTTON_DECOMPOSE) {
       g_windowMgr.CloseWindow(WID_RUNESYSTEM_DECOMRESULTWND);
       if (!CRuneSystemMgr::GetInstance()->IsRequestPending() && (!this->parent || this->parent->SendMsg(this, 0x6A, 50, 0, 0, 0) != 0) && this->m_ownedCount) {
         if (static_cast<float>(g_session.m_weight) > static_cast<float>(g_session.m_maxWeight) * 0.7f ||
@@ -1763,7 +1763,7 @@ void UIRune_Decom::OnCreate(int, int) {
   this->m_decomButton->SetBitmap("유저인터페이스\\runesystem\\bt_decom_disabled.bmp", 3, 0);
   this->m_decomButton->SetSize(this->m_decomButton->BitmapWidth(), this->m_decomButton->BitmapHeight());
   this->m_decomButton->Move(0x102, 0x1ED);
-  this->m_decomButton->SetId(0x197);
+  this->m_decomButton->SetId(RUNE_BUTTON_DECOMPOSE);
 
   int index = 0;
   for (int x = 0xDD; x < 0x1AF; x += 0x69, ++index) {
@@ -1870,7 +1870,7 @@ void UIRuneSet_Info::OnCreate(int, int) {
   this->m_activateButton->SetBitmap("유저인터페이스\\runesystem\\bt_active_disabled.bmp", 3, 0);
   this->m_activateButton->SetSize(this->m_activateButton->BitmapWidth(), this->m_activateButton->BitmapHeight());
   this->m_activateButton->Move(0x6F, 0x1EC);
-  this->m_activateButton->SetId(0x23C);
+  this->m_activateButton->SetId(RUNE_BUTTON_ACTIVATE);
 
   this->m_equipButton = new UIBitmapButton();
   this->AddChild(this->m_equipButton);
@@ -1880,7 +1880,7 @@ void UIRuneSet_Info::OnCreate(int, int) {
   this->m_equipButton->SetBitmap("유저인터페이스\\runesystem\\bt_equip_disabled.bmp", 3, 0);
   this->m_equipButton->SetSize(this->m_equipButton->BitmapWidth(), this->m_equipButton->BitmapHeight());
   this->m_equipButton->Move(0x6F, 0x1EC);
-  this->m_equipButton->SetId(0xC3);
+  this->m_equipButton->SetId(ID_EQUIP);
 
   this->m_unequipButton = new UIBitmapButton();
   this->AddChild(this->m_unequipButton);
@@ -1890,7 +1890,7 @@ void UIRuneSet_Info::OnCreate(int, int) {
   this->m_unequipButton->SetBitmap("유저인터페이스\\runesystem\\bt_equiptakeoff_disabled.bmp", 3, 0);
   this->m_unequipButton->SetSize(this->m_unequipButton->BitmapWidth(), this->m_unequipButton->BitmapHeight());
   this->m_unequipButton->Move(0x6F, 0x1EC);
-  this->m_unequipButton->SetId(0x158);
+  this->m_unequipButton->SetId(RUNE_BUTTON_UNEQUIP);
 
   this->m_tab = new UIRuneSystemTab();
   this->AddChild(this->m_tab);
@@ -1926,7 +1926,7 @@ void UIRuneSet_Info::OnCreate(int, int) {
   this->m_gradeButton->SetBitmap("유저인터페이스\\runesystem\\bt_upgrade_disabled.bmp", 3, 0);
   this->m_gradeButton->SetSize(this->m_gradeButton->BitmapWidth(), this->m_gradeButton->BitmapHeight());
   this->m_gradeButton->Move(0x1BD, this->geometry.height - 0x41);
-  this->m_gradeButton->SetId(0x1FD);
+  this->m_gradeButton->SetId(RUNE_BUTTON_GRADE);
 
   this->m_infoList = new UIRuneSetinfoList();
   this->AddChild(this->m_infoList);
@@ -1940,7 +1940,7 @@ void UIRuneSet_Info::OnCreate(int, int) {
 
   const int rewardX[6] = {398, 486, 540, 540, 486, 398};
   const int rewardY[6] = {97, 122, 197, 290, 365, 391};
-  const int rewardIds[6] = {0x24E, 0x24F, 0x250, 0x251, 0x252, 0x253};
+  const int rewardIds[6] = {RUNE_BUTTON_REWARD_1, RUNE_BUTTON_REWARD_2, RUNE_BUTTON_REWARD_3, RUNE_BUTTON_REWARD_4, RUNE_BUTTON_REWARD_5, RUNE_BUTTON_REWARD_6};
   for (int index = 0; index < 6; ++index) {
     this->m_rewards[index] = new UIRuneSetReWard();
     this->AddChild(this->m_rewards[index]);
@@ -1968,7 +1968,7 @@ void UIRuneSet_Info::OnCreate(int, int) {
   this->m_rewards[6]->SendMsg(this, UM_SETINFO, 1, reinterpret_cast<std::intptr_t>("유저인터페이스\\runesystem\\bt_reward_l_complete.tga"), 0, 0);
   this->m_rewards[6]->SendMsg(this, UM_SETINFO, 2, reinterpret_cast<std::intptr_t>("유저인터페이스\\runesystem\\bt_reward_l_disabled_mouseon.tga"), 0, 0);
   this->m_rewards[6]->Move(0x179, 0xCF);
-  this->m_rewards[6]->SetId(0x254);
+  this->m_rewards[6]->SetId(RUNE_BUTTON_REWARD_7);
   this->m_rewards[6]->SendMsg(this, UM_SETID, 0, 0, 0, 0);
 
   this->Refresh();
@@ -2300,7 +2300,7 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         break;
       }
       this->Invalidate();
-    } else if (argument1 == 0xC3) {
+    } else if (argument1 == ID_EQUIP) {
       if (CRuneSystemMgr::GetInstance()->GetCurRuneSet()) {
         g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_DURING_CANNOT_OPEN_BANKING), 0, true, false, 0, "Message", 280, 120, 0);
       } else if (!argument2) {
@@ -2313,7 +2313,7 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         packet.tagId = static_cast<std::uint16_t>(rune->GetTagId());
         GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
       }
-    } else if (argument1 == 0x158) {
+    } else if (argument1 == RUNE_BUTTON_UNEQUIP) {
       RuneSetData* runeSet = CRuneSystemMgr::GetInstance()->GetCurRuneSet();
       if (!runeSet) {
         g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_DURING_CANNOT_OPEN_RODEX), 0, true, false, 0, "Message", 280, 120, 0);

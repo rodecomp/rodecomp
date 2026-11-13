@@ -7907,7 +7907,7 @@ bool CEffectPrim::OnProcess() {
         return true;
       }
       break;
-    case 23:
+    case PP_3DCASTING:
     case 28:
     case 29:
     case 30:
@@ -7915,12 +7915,12 @@ bool CEffectPrim::OnProcess() {
     case 35:
     case 60:
     case PP_ASURACASTING:
-    case 99:
-    case 104:
+    case PP_DOUBLEGUMGANG:
+    case PP_HALFSPHERE:
     case 105:
-    case 106:
+    case PP_ATTACKENERGY2:
     case PP_FLOWERCAST:
-    case 109:
+    case PP_SOULLINK:
     case PP_SOULPARTICLE:
     case 130:
     case 131:
@@ -8051,10 +8051,10 @@ bool CEffectPrim::OnProcess() {
     case PP_3DPARTICLESPLINE:
       this->Prim3DParticleSpline();
       break;
-    case 9:
+    case PP_3DQUADHORN:
       this->AdvanceEffectPrimitive();
       break;
-    case 117: {
+    case PP_3DQUADHORN2: {
       this->state.orgPos.x = this->state.master->render.position.x + this->state.deltaPos2.x;
       this->state.orgPos.y = this->state.master->render.position.y + this->state.deltaPos2.y;
       this->state.orgPos.z = this->state.master->render.position.z + this->state.deltaPos2.z;
@@ -8156,7 +8156,7 @@ bool CEffectPrim::OnProcess() {
       this->state.longitude = this->state.longitude + this->state.longSpeed;
       this->state.deltaPos2.y = this->state.deltaPos2.y + this->state.heightSpeed;
     } break;
-    case 20:
+    case PP_3DLINE:
       this->render.position.y = this->render.position.y + 5.0f;
       break;
     case PP_3DPARTICLE_NOMASTER:
@@ -8169,7 +8169,7 @@ bool CEffectPrim::OnProcess() {
         return false;
       }
       break;
-    case 23:
+    case PP_3DCASTING:
       this->UpdateStoneCurse();
       break;
     case 144:
@@ -8184,7 +8184,7 @@ bool CEffectPrim::OnProcess() {
     case 173:
       this->PrimWaveHeightsSlow();
       break;
-    case 24: {
+    case PP_3DCASTING_2: {
       this->render.position.x = this->state.master->render.position.x;
       this->render.position.y = this->state.master->render.position.y;
       this->render.position.z = this->state.master->render.position.z;
@@ -8231,7 +8231,7 @@ bool CEffectPrim::OnProcess() {
         }
       }
     } break;
-    case 25:
+    case PP_3DCASTING_3:
       this->UpdateFireWall();
       break;
     case PP_3DCASTING_4:
@@ -8246,7 +8246,7 @@ bool CEffectPrim::OnProcess() {
     case PP_ACIDDEMON:
       this->PrimAcidDemon();
       break;
-    case 73: {
+    case PP_MAGNUM2: {
       const vector3d& parent = this->state.master->render.position;
       this->render.position.x = parent.x;
       this->render.position.y = parent.y;
@@ -8302,7 +8302,7 @@ bool CEffectPrim::OnProcess() {
     case 131:
       this->PrimRisingFan2();
       break;
-    case 70: {
+    case PP_HITLINE: {
       for (int index = 0; index < 4; ++index) {
         EffectPrimitiveSlot& slot = this->state.slots[index];
 
@@ -8337,7 +8337,7 @@ bool CEffectPrim::OnProcess() {
         }
       }
     } break;
-    case 100: {
+    case PP_HITLINE3: {
       for (int index = 0; index < 4; ++index) {
         EffectPrimitiveSlot& slot = this->state.slots[index];
 
@@ -8378,7 +8378,7 @@ bool CEffectPrim::OnProcess() {
     case 103:
       this->PrimSpinFade();
       break;
-    case 101: {
+    case PP_ELECTRIC: {
       for (int index = 0; index < 4; ++index) {
         EffectPrimitiveSlot& slot = this->state.slots[index];
 
@@ -8433,13 +8433,13 @@ bool CEffectPrim::OnProcess() {
       this->PrimDriftingRings();
       break;
     case 60:
-    case 110:
+    case PP_HEAL_LOW:
       this->PrimPulsingColumns();
       break;
     case PP_GUARD:
       this->PrimGuard();
       break;
-    case 104: {
+    case PP_HALFSPHERE: {
       FollowMaster(*this);
 
       for (int index = 0; index < 4; ++index) {
@@ -8498,7 +8498,7 @@ bool CEffectPrim::OnProcess() {
         }
       }
     } break;
-    case 106: {
+    case PP_ATTACKENERGY2: {
       FollowMaster(*this);
 
       for (int index = 0; index < 4; ++index) {
@@ -8546,7 +8546,7 @@ bool CEffectPrim::OnProcess() {
     case PP_SAINTWING:
       this->PrimSaintWing();
       break;
-    case 77: {
+    case PP_SPHEREWIND: {
       const vector3d& parent = this->state.master->render.position;
       this->render.position.x = parent.x;
       this->render.position.y = parent.y;
@@ -8570,7 +8570,7 @@ bool CEffectPrim::OnProcess() {
     case PP_SPHEREWIND2:
       this->PrimSphereWind2();
       break;
-    case 78: {
+    case PP_COLORPAPER: {
       for (int index = 0; index < 4; ++index) {
         EffectPrimitiveSlot& slot = this->state.slots[index];
 
@@ -8703,7 +8703,7 @@ bool CEffectPrim::OnProcess() {
     case 157:
       this->PrimOrbitFade();
       break;
-    case 109: {
+    case PP_SOULLINK: {
       FaceCamera(this->state.slots);
       FollowMaster(*this);
 
@@ -9009,7 +9009,7 @@ bool CEffectPrim::OnProcess() {
     case 142:
       this->PrimWaterFall();
       break;
-    case 93: {
+    case PP_RAINBOW: {
       for (int index = 0; index < 4; ++index) {
         EffectPrimitiveSlot& slot = this->state.slots[index];
 
@@ -9087,7 +9087,7 @@ bool CEffectPrim::OnProcess() {
         }
       }
     } break;
-    case 37: {
+    case PP_GRANDCROSS2: {
       for (int index = 0; index < 4; ++index) {
         EffectPrimitiveSlot& slot = this->state.slots[index];
 
@@ -9116,7 +9116,7 @@ bool CEffectPrim::OnProcess() {
         slot.height[2] = g_sinTable[slot.process] * slot.maxHeight;
       }
     } break;
-    case 75: {
+    case PP_SLASH1: {
       const vector3d& parent = this->state.master->render.position;
       this->render.position.x = parent.x;
       this->render.position.y = parent.y;
@@ -9164,7 +9164,7 @@ bool CEffectPrim::OnProcess() {
         }
       }
     } break;
-    case 64:
+    case PP_RECT_UP:
       this->PrimPulseRing();
       break;
     case 132:
@@ -9211,7 +9211,7 @@ bool CEffectPrim::OnProcess() {
         }
       }
       break;
-    case 90:
+    case PP_RECT_UP2:
       this->PrimFadingColumns();
       break;
     case PP_INTIMIDATE:
@@ -9416,7 +9416,7 @@ bool CEffectPrim::OnProcess() {
     case PP_SMA:
       this->PrimSMA();
       break;
-    case 121:
+    case PP_SMA2:
       for (int index = 0; index < 4; ++index) {
         EffectPrimitiveSlot& slot = this->state.slots[index];
 
@@ -9553,7 +9553,7 @@ bool CEffectPrim::OnProcess() {
       this->PrimPokJuk();
       break;
     case 35:
-    case 99:
+    case PP_DOUBLEGUMGANG:
       this->PrimFloatingBubbles();
       break;
     case 39: {
@@ -9605,7 +9605,7 @@ bool CEffectPrim::OnProcess() {
     case 148:
       this->FollowMasterAndTickSlots2();
       break;
-    case 114: {
+    case PP_HERMODE: {
       EffectPrimitiveSlot& slot = this->state.slots[0];
       this->render.position = this->state.master->render.position;
 
@@ -9923,7 +9923,7 @@ bool CEffectPrim::OnProcess() {
         }
       }
     } break;
-    case 71:
+    case PP_BLIND:
       this->PrimFadeInFollow();
       break;
     case 72:

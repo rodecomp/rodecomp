@@ -173,7 +173,7 @@ void UISeekPartyListWnd::OnCreate(int width, int height) {
     this->m_okButton->SetBitmap((path + "btn_ok_b" + ".bmp").c_str(), 2, 0);
     this->m_okButton->SetSize(this->m_okButton->BitmapWidth(), this->m_okButton->BitmapHeight());
     this->m_okButton->Move(this->geometry.width - 0x2D, this->geometry.height - 0x18);
-    this->m_okButton->SetId(0xC9);
+    this->m_okButton->SetId(ID_CLOSE);
     this->AddChild(this->m_okButton);
   }
 
@@ -185,7 +185,7 @@ void UISeekPartyListWnd::OnCreate(int width, int height) {
     this->m_findButton->SetBitmap((path + "btn_find_b" + ".bmp").c_str(), 2, 0);
     this->m_findButton->SetSize(this->m_findButton->BitmapWidth(), this->m_findButton->BitmapHeight());
     this->m_findButton->Move(0x1E0, 0x25);
-    this->m_findButton->SetId(0x16D);
+    this->m_findButton->SetId(ID_PARTY_SEARCH);
     this->AddChild(this->m_findButton);
   }
 
@@ -197,7 +197,7 @@ void UISeekPartyListWnd::OnCreate(int width, int height) {
     this->m_chatButton->SetBitmap((path + "direct_chat" + ".bmp").c_str(), 2, 0);
     this->m_chatButton->SetSize(this->m_chatButton->BitmapWidth(), this->m_chatButton->BitmapHeight());
     this->m_chatButton->Move(0x46, this->geometry.height - 0x18);
-    this->m_chatButton->SetId(0x17D);
+    this->m_chatButton->SetId(ID_WHISPER_PARTY_LEADER);
     this->AddChild(this->m_chatButton);
   }
 
@@ -206,7 +206,7 @@ void UISeekPartyListWnd::OnCreate(int width, int height) {
   this->m_refreshButton->m_hoverColor = 0xEFB700;
   this->m_refreshButton->SetTooltip(LookupMessage(MSI_PARTY_BOOKING_REQURT_TIP));
   this->m_refreshButton->Move(10, this->geometry.height - 0x16);
-  this->m_refreshButton->SetId(0x17A);
+  this->m_refreshButton->SetId(SEEKPARTY_BUTTON_OPEN_RECRUIT);
   this->AddChild(this->m_refreshButton);
 
   {
@@ -217,7 +217,7 @@ void UISeekPartyListWnd::OnCreate(int width, int height) {
     this->m_tabButton->SetBitmap((path + "_b.bmp").c_str(), 2, 0);
     this->m_tabButton->SetSize(this->m_tabButton->BitmapWidth(), this->m_tabButton->BitmapHeight());
     this->m_tabButton->Move(this->geometry.width - 0x6E, this->geometry.height - 0x18);
-    this->m_tabButton->SetId(0x157);
+    this->m_tabButton->SetId(ID_HELP);
     this->AddChild(this->m_tabButton);
   }
 
@@ -265,8 +265,8 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     case ID_HELP:
       g_windowMgr.EnsureWindow(WID_PARTYBOOKINGHELPWND);
       return 0;
-    case 365:
-    case 380: {
+    case ID_PARTY_SEARCH:
+    case SEEKPARTY_SEARCH_NEXT_PAGE: {
       PACKET_CZ_PARTY_BOOKING_REQ_SEARCH packet;
       packet.packetType = ID_CZ_PARTY_BOOKING_REQ_SEARCH;
       packet.level = static_cast<short>(std::atoi(this->m_searchEdit->Text()));
@@ -299,13 +299,13 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         packet.job = static_cast<short>(jobOffsets[this->m_jobCategory] - 1 + this->m_jobCategoryChanged);
       }
 
-      if (argument1 == 365) {
+      if (argument1 == ID_PARTY_SEARCH) {
         if (this->m_filterJob == packet.job && this->m_filterLevel == packet.level && this->m_filterMap == packet.mapId) {
           return 0;
         }
         packet.lastIndex = 0;
         g_session.m_partyBooking.Clear();
-      } else if (argument1 == 380) {
+      } else if (argument1 == SEEKPARTY_SEARCH_NEXT_PAGE) {
         if (!g_session.m_partyBooking.m_lastPage) {
           g_session.m_partyBooking.FlushPending();
           return 0;
@@ -344,7 +344,7 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       this->Invalidate();
       return 0;
     }
-    case 381: {
+    case ID_WHISPER_PARTY_LEADER: {
       if (this->m_hoverIndex == -1) {
         return 0;
       }
@@ -357,7 +357,7 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
 
         const PartyBookingEntry entry = it->second;
         if (entry.isEnd) {
-          this->SendMsg(nullptr, UM_COMMAND, 0x17C, 0, 0, 0);
+          this->SendMsg(nullptr, UM_COMMAND, SEEKPARTY_SEARCH_NEXT_PAGE, 0, 0, 0);
           g_session.m_partyBooking.EraseEntry(it->first);
         } else {
           const std::string leaderName = it->second.leaderName;
@@ -377,7 +377,7 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       return 0;
     }
   case UM_TEXT_LBTN_UP:
-    if (argument1 != 378 || g_windowMgr.CloseWindow(WID_SEEKPARTYMBWND)) {
+    if (argument1 != SEEKPARTY_BUTTON_OPEN_RECRUIT || g_windowMgr.CloseWindow(WID_SEEKPARTYMBWND)) {
       return 0;
     }
     g_windowMgr.EnsureWindow(WID_SEEKPARTYMBWND);

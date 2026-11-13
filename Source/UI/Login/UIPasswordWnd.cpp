@@ -99,12 +99,12 @@ void UISecondPasswordInputWnd::CreateKeypad(unsigned int seed) {
   this->actionButtons[0]->Enable(0);
 
   switch (g_session.m_passwordWndMode) {
-  case 2:
+  case PASSWORDWND_MODE_ASK:
     this->actionButtons[0]->Enable(1);
     this->actionButtons[3]->Enable(0);
     break;
-  case 4:
-  case 5:
+  case PASSWORDWND_MODE_NOTSET:
+  case PASSWORDWND_MODE_NEW:
     this->actionButtons[1]->SetDisabled(1);
     this->actionButtons[1]->Invalidate();
     this->actionButtons[2]->SetDisabled(1);
@@ -145,7 +145,7 @@ void UISecondPasswordInputWnd::EnableKeypad() {
     ++slot;
   }
 
-  if (g_session.m_passwordWndMode == 4 || g_session.m_passwordWndMode == 5) {
+  if (g_session.m_passwordWndMode == PASSWORDWND_MODE_NOTSET || g_session.m_passwordWndMode == PASSWORDWND_MODE_NEW) {
     UIButton* button = this->actionButtons[1];
     button->SetDisabled(1);
     button->Invalidate();

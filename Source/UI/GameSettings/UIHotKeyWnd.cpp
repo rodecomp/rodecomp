@@ -102,7 +102,7 @@ void UIHotKeyWnd::OnCreate(int, int) {
   {
     std::string path = "유저인터페이스\\";
     const char* names[4] = {"btn_ok", "btn_cancel", "btn_reset", "btn_close"};
-    const int ids[4] = {184, 185, 363, 201};
+    const int ids[4] = {ID_OK, ID_CANCEL, ID_RESET, ID_CLOSE};
     int x = 0;
     for (int index = 0; index < 4; ++index) {
       UIBitmapButton* button = new UIBitmapButton();
@@ -114,13 +114,13 @@ void UIHotKeyWnd::OnCreate(int, int) {
       const int id = ids[index];
       button->SetId(id);
       this->AddChild(button);
-      if (id == 184) {
+      if (id == ID_OK) {
         x = this->geometry.width - 139;
-      } else if (id == 185) {
+      } else if (id == ID_CANCEL) {
         x = this->geometry.width - 92;
-      } else if (id == 363) {
+      } else if (id == ID_RESET) {
         x = 5;
-      } else if (id == 201) {
+      } else if (id == ID_CLOSE) {
         x = this->geometry.width - 46;
       }
 
@@ -652,7 +652,7 @@ int UIHotKeyWnd::CheckHotkeyConflict() {
       }
 
       StringFormat(message, sizeof(message), static_cast<std::size_t>(-1), LookupMessage(MSI_HOTKEYWND_NOTICE4), info.description.c_str());
-      if (g_windowMgr.Confirm(message, 2, true, false, 0, "Message", 280, 120, 0) != 187) {
+      if (g_windowMgr.Confirm(message, 2, true, false, 0, "Message", 280, 120, 0) != ID_YES) {
         return 1;
       }
 

@@ -224,7 +224,7 @@ int UIBasicInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
   switch (message) {
   case UM_COMMAND:
     switch (argument1) {
-    case 373:
+    case BASICINFO_BUTTON_GUILD:
       if (!g_windowMgr.CloseWindow(WID_GUILDWND)) {
         g_windowMgr.EnsureWindow(WID_GUILDWND);
       }
@@ -239,7 +239,7 @@ int UIBasicInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
         g_windowMgr.EnsureWindow(WID_ESCOPTIONWND);
       }
       break;
-    case 247:
+    case BASICINFO_BUTTON_MERCHANT:
       if (!g_windowMgr.LookupWindow(WID_MERGEITEMWND) && !g_windowMgr.CloseWindow(WID_MERCHANTITEMWND) && g_session.replayPacketMode > 0) {
         g_windowMgr.EnsureWindow(WID_MERCHANTITEMWND);
       }
@@ -283,7 +283,7 @@ int UIBasicInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
         g_windowMgr.EnsureWindow(WID_MESSENGERWND);
       }
       break;
-    case 214:
+    case BASICINFO_BUTTON_CHATROOM:
       if (!g_windowMgr.CloseWindow(WID_CHATROOMMAKEWND) && !g_windowMgr.chatRoomWnd) {
         if (!g_windowMgr.merchantShopMakeWnd && !g_windowMgr.merchantItemMyShopWnd) {
           g_windowMgr.EnsureWindow(WID_CHATROOMMAKEWND);
@@ -292,9 +292,9 @@ int UIBasicInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
         }
       }
       break;
-    case 222:
+    case BASICINFO_BUTTON_CLOSE_ALL:
       g_windowMgr.CloseWindow(WID_STATUSWND);
-      g_windowMgr.CloseWindow(13);
+      g_windowMgr.CloseWindow(WID_OPTIONWND);
       g_windowMgr.CloseWindow(WID_ITEMWND);
       g_windowMgr.CloseWindow(WID_RENEWQUESTUI);
       g_windowMgr.CloseWindow(WID_EQUIPWND);

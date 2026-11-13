@@ -135,10 +135,10 @@ __declspec(noinline) std::string UIStaticText::GetText() const {
 // FUNCTION: fn_09588
 void UINewSelectCharWnd::DisableButtonById(int id) {
   switch (id) {
-  case 416:
+  case SELECTCHAR_BUTTON_CHANGE_SECOND_PASSWORD:
     this->m_button416->Enable(0);
     break;
-  case 417:
+  case SELECTCHAR_BUTTON_EDIT_SECOND_PASSWORD:
     this->m_button417->Enable(0);
     break;
   }
@@ -180,7 +180,7 @@ void UINewSelectCharWnd::OnCreate(int width, int height) {
     button->SetBitmap("유저인터페이스\\select_character_ver3\\img_slot_lock.bmp", 3, 0);
     button->SetSize(0xA1, 0xC5);
     button->Move((index % 5) * 0x9D + 10, (index / 5) * 0xC3 + 0x15);
-    button->SetId(0xCC);
+    button->SetId(ID_SLOT);
     button->SetSlot(slot, -1);
     this->AddChild(button);
     this->m_slotButtons2[index] = button;
@@ -199,7 +199,7 @@ void UINewSelectCharWnd::OnCreate(int width, int height) {
   closeButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_close2_press.bmp", 2, 0);
   closeButton->SetSize(closeButton->BitmapWidth(), closeButton->BitmapHeight());
   closeButton->Move(this->geometry.width - 0x34, 5);
-  closeButton->SetId(0xB9);
+  closeButton->SetId(ID_CANCEL);
   this->AddChild(closeButton);
 
   this->m_textButton = new UIBmpTextButton();
@@ -212,7 +212,7 @@ void UINewSelectCharWnd::OnCreate(int width, int height) {
   this->m_textButton->AddTextStyle(0, 0xC, 0x313131, 0, 1, -1000, -1000);
   this->m_textButton->AddTextStyle(1, 0xC, 0x313131, 0, 1, -1000, -1000);
   this->m_textButton->AddTextStyle(2, 0xC, 0x313131, 0, 1, -1000, -1000);
-  this->m_textButton->SetId(0x11E);
+  this->m_textButton->SetId(ID_NOTICE);
   this->m_textButton->Enable(0);
   this->AddChild(this->m_textButton);
 
@@ -229,7 +229,7 @@ void UINewSelectCharWnd::OnCreate(int width, int height) {
   startButton->AddTextStyle(1, 0xC, 0x313131, 0, 1, -1000, -1000);
   startButton->AddTextStyle(2, 0xC, 0x313131, 0, 1, -1000, -1000);
   startButton->AddTextStyle(3, 0xC, 0x909090, 0, 0, -1000, -1000);
-  startButton->SetId(0x197);
+  startButton->SetId(SELECTCHAR_BUTTON_DELETE);
   this->AddChild(startButton);
   if (this->m_slotStatus[this->m_slotsPerPage * this->m_page + this->m_pageSlot] == 1) {
     startButton->SetDisabled(1);
@@ -247,7 +247,7 @@ void UINewSelectCharWnd::OnCreate(int width, int height) {
   cancelDeleteButton->AddTextStyle(0, 0xC, 0x313131, 0, 1, -1000, -1000);
   cancelDeleteButton->AddTextStyle(1, 0xC, 0x313131, 0, 1, -1000, -1000);
   cancelDeleteButton->AddTextStyle(2, 0xC, 0x313131, 0, 1, -1000, -1000);
-  cancelDeleteButton->SetId(0x198);
+  cancelDeleteButton->SetId(SELECTCHAR_BUTTON_CANCEL_DELETE);
   cancelDeleteButton->Enable(0);
   this->AddChild(cancelDeleteButton);
 
@@ -259,7 +259,7 @@ void UINewSelectCharWnd::OnCreate(int width, int height) {
   gameStartButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_gameStart_off.bmp", 3, 0);
   gameStartButton->SetSize(gameStartButton->BitmapWidth(), gameStartButton->BitmapHeight());
   gameStartButton->Move(0x330, 0x197);
-  gameStartButton->SetId(0xB8);
+  gameStartButton->SetId(ID_OK);
   gameStartButton->SetText(LookupMessage(MSI_SELECTCHARWND_NOTICE));
   gameStartButton->AddTextStyle(0, 0x12, 0xFFFFFF, 1, 1, -1000, 0x39);
   gameStartButton->AddTextStyle(1, 0x12, 0xFFFFFF, 1, 1, -1000, 0x39);
@@ -278,7 +278,7 @@ void UINewSelectCharWnd::OnCreate(int width, int height) {
   deleteButton->AddTextStyle(0, 0xC, 0x313131, 0, 1, -1000, -1000);
   deleteButton->AddTextStyle(1, 0xC, 0x313131, 0, 1, -1000, -1000);
   deleteButton->AddTextStyle(2, 0xC, 0x313131, 0, 1, -1000, -1000);
-  deleteButton->SetId(0xD3);
+  deleteButton->SetId(ID_DELETE);
   deleteButton->Enable(0);
   this->AddChild(deleteButton);
 
@@ -288,7 +288,7 @@ void UINewSelectCharWnd::OnCreate(int width, int height) {
   this->m_button416->SetBitmap("유저인터페이스\\btn_make_b.bmp", 2, 0);
   this->m_button416->SetSize(this->m_button416->BitmapWidth(), this->m_button416->BitmapHeight());
   this->m_button416->Move(200, 0x14E);
-  this->m_button416->SetId(0x1A0);
+  this->m_button416->SetId(SELECTCHAR_BUTTON_CHANGE_SECOND_PASSWORD);
   this->m_button416->Enable(0);
   this->AddChild(this->m_button416);
 
@@ -298,7 +298,7 @@ void UINewSelectCharWnd::OnCreate(int width, int height) {
   this->m_button417->SetBitmap("유저인터페이스\\btn_del_b.bmp", 2, 0);
   this->m_button417->SetSize(this->m_button417->BitmapWidth(), this->m_button417->BitmapHeight());
   this->m_button417->Move(200, 0x14E);
-  this->m_button417->SetId(0x1A1);
+  this->m_button417->SetId(SELECTCHAR_BUTTON_EDIT_SECOND_PASSWORD);
   this->m_button417->Enable(0);
   this->AddChild(this->m_button417);
   this->m_button416->Enable(0);
@@ -322,7 +322,7 @@ void UINewSelectCharWnd::OnCreate(int width, int height) {
   this->m_prevPageButton->SetBitmap(prevPress, 2, 0);
   this->m_prevPageButton->SetSize(this->m_prevPageButton->BitmapWidth(), this->m_prevPageButton->BitmapHeight());
   this->m_prevPageButton->Move(0x33E, 0x22E);
-  this->m_prevPageButton->SetId(0x13C);
+  this->m_prevPageButton->SetId(ID_PREV_PAGE);
   this->AddChild(this->m_prevPageButton);
 
   this->m_nextPageButton = new UIBitmapButton();
@@ -343,7 +343,7 @@ void UINewSelectCharWnd::OnCreate(int width, int height) {
   this->m_nextPageButton->SetBitmap(nextPress, 2, 0);
   this->m_nextPageButton->SetSize(this->m_nextPageButton->BitmapWidth(), this->m_nextPageButton->BitmapHeight());
   this->m_nextPageButton->Move(0x3AB, 0x22E);
-  this->m_nextPageButton->SetId(0x13D);
+  this->m_nextPageButton->SetId(ID_NEXT_PAGE);
   this->AddChild(this->m_nextPageButton);
 
   UIStaticText* pageTitle = new UIStaticText();
@@ -641,7 +641,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         g_windowMgr.CloseWindow(WID_NEWSELECTCHARWND);
       }
       break;
-    case 0x197: {
+    case SELECTCHAR_BUTTON_DELETE: {
       if (this->m_slotStatus[static_cast<unsigned char>(g_selectedSlotIndex)] == 1) {
         break;
       }
@@ -654,7 +654,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
       break;
     }
-    case 0x198: {
+    case SELECTCHAR_BUTTON_CANCEL_DELETE: {
       CharacterGidPacket packet;
       packet.id = ID_CH_DELETE_CHAR3_CANCEL;
       packet.gid = this->m_slotMap[static_cast<unsigned char>(g_selectedSlotIndex)];
@@ -679,10 +679,10 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         }
       }
 
-      if (g_windowMgr.Confirm(LookupMessage(MSI_DELETE_CHARACTER), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_DELETE_CHARACTER), 2, false, false, 0, "Message", 0x118, 0x78, 0) == ID_YES) {
         this->m_navigationBlocked = true;
-        if (g_windowMgr.RunEmailAddress() == 0xB8) {
-          g_modeMgr.gameMode->SendMsg(MM_COMMAND, 0x271A, 0, 0, 0);
+        if (g_windowMgr.RunEmailAddress() == ID_OK) {
+          g_modeMgr.gameMode->SendMsg(MM_COMMAND, LMM_DELETE_CHARACTER, 0, 0, 0);
           g_windowMgr.Schedule(this);
         }
         this->m_navigationBlocked = false;
@@ -786,39 +786,39 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       );
       break;
     }
-    case 0x1A0:
+    case SELECTCHAR_BUTTON_CHANGE_SECOND_PASSWORD:
       g_windowMgr.EnsureWindow(WID_SECONDPASSWORDEDITWND);
       g_windowMgr.secondPasswordEditWnd->SendMsg(nullptr, UM_COMMAND, ID_CHANGE_STORE_PASSWORD, 0, 0, 0);
       g_windowMgr.secondPasswordEditWnd->SendMsg(nullptr, UM_COMMAND, ID_OK, 1, 0, 0);
       break;
-    case 0x1A1:
+    case SELECTCHAR_BUTTON_EDIT_SECOND_PASSWORD:
       g_windowMgr.EnsureWindow(WID_SECONDPASSWORDEDITWND);
       break;
-    case 0x1A2: {
+    case SELECTCHAR_BUTTON_CHECK_SECOND_PASSWORD: {
       CharacterGidPacket packet;
       packet.id = ID_CH_AVAILABLE_SECOND_PASSWD;
       packet.gid = g_session.m_aid;
       GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
       break;
     }
-    case 0x1B2:
+    case SELECTCHAR_BUTTON_SLOT_MOVE_1:
       this->m_slotButtons2[0]->OnLBtnDown(0, 0);
-      this->SendMsg(nullptr, UM_COMMAND, 0x1B0, 0, 0, 0);
+      this->SendMsg(nullptr, UM_COMMAND, SELECTCHAR_BUTTON_SLOT_MOVE_BEGIN, 0, 0, 0);
       break;
-    case 0x1B3:
+    case SELECTCHAR_BUTTON_SLOT_MOVE_2:
       this->m_slotButtons2[1]->OnLBtnDown(0, 0);
-      this->SendMsg(nullptr, UM_COMMAND, 0x1B0, 0, 0, 0);
+      this->SendMsg(nullptr, UM_COMMAND, SELECTCHAR_BUTTON_SLOT_MOVE_BEGIN, 0, 0, 0);
       break;
-    case 0x1B4:
+    case SELECTCHAR_BUTTON_SLOT_MOVE_3:
       this->m_slotButtons2[2]->OnLBtnDown(0, 0);
-      this->SendMsg(nullptr, UM_COMMAND, 0x1B0, 0, 0, 0);
+      this->SendMsg(nullptr, UM_COMMAND, SELECTCHAR_BUTTON_SLOT_MOVE_BEGIN, 0, 0, 0);
       break;
-    case 0x1B0:
+    case SELECTCHAR_BUTTON_SLOT_MOVE_BEGIN:
       this->m_slotMoveSource = static_cast<unsigned char>(g_selectedSlotIndex);
       break;
-    case 0x1B1: {
+    case SELECTCHAR_BUTTON_SLOT_MOVE_CONFIRM: {
       const unsigned char selected = static_cast<unsigned char>(g_selectedSlotIndex);
-      if (g_windowMgr.Confirm(LookupMessage(MSI_CHANGE_CHARACTER_SLOT), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_CHANGE_CHARACTER_SLOT), 2, false, false, 0, "Message", 0x118, 0x78, 0) == ID_YES) {
         const CharacterInfo* info = reinterpret_cast<const CharacterInfo*>(g_modeMgr.gameMode->SendMsg(MM_QUERYCHARICTORINFO, this->m_slotMoveSource, 0, 0, 0));
         if (info != nullptr) {
           CharacterMovePacket packet;
@@ -1091,10 +1091,10 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
 // FUNCTION: fn_09595
 void UINewSelectCharWnd::EnableButtonById(int id) {
   switch (id) {
-  case 416:
+  case SELECTCHAR_BUTTON_CHANGE_SECOND_PASSWORD:
     this->m_button416->Enable(1);
     break;
-  case 417:
+  case SELECTCHAR_BUTTON_EDIT_SECOND_PASSWORD:
     this->m_button417->Enable(1);
     break;
   }

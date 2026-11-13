@@ -2240,7 +2240,7 @@ void UINavigationV4Wnd::OnCreate(int, int) {
   static_cast<UIBitmapButton*>(this->expandedCloseButton)->SetBitmap("유저인터페이스\\navigation_interface3\\btn_close_over.bmp", 1, 0);
   static_cast<UIBitmapButton*>(this->expandedCloseButton)->SetBitmap("유저인터페이스\\navigation_interface3\\btn_close_press.bmp", 2, 0);
   this->expandedCloseButton->SetSize(static_cast<UIBitmapButton*>(this->expandedCloseButton)->BitmapWidth(), static_cast<UIBitmapButton*>(this->expandedCloseButton)->BitmapHeight());
-  this->expandedCloseButton->SetId(201);
+  this->expandedCloseButton->SetId(ID_CLOSE);
   static_cast<UIBitmapButton*>(this->expandedCloseButton)->SetTooltip(LookupMessage(MSI_ZENY_LOTTO_BUY_10));
   this->AddChild(this->expandedCloseButton);
 
@@ -2249,7 +2249,7 @@ void UINavigationV4Wnd::OnCreate(int, int) {
   static_cast<UIBitmapButton*>(this->maximizeButton)->SetBitmap("유저인터페이스\\navigation_interface3\\btn_maximize_over.bmp", 1, 0);
   static_cast<UIBitmapButton*>(this->maximizeButton)->SetBitmap("유저인터페이스\\navigation_interface3\\btn_maximize_press.bmp", 2, 0);
   this->maximizeButton->SetSize(static_cast<UIBitmapButton*>(this->maximizeButton)->BitmapWidth(), static_cast<UIBitmapButton*>(this->maximizeButton)->BitmapHeight());
-  this->maximizeButton->SetId(200);
+  this->maximizeButton->SetId(ID_BASE);
   static_cast<UIBitmapButton*>(this->maximizeButton)->SetTooltip(LookupMessage(MSI_NAVIGATION_ALL));
   this->AddChild(this->maximizeButton);
 
@@ -2263,7 +2263,7 @@ void UINavigationV4Wnd::OnCreate(int, int) {
   this->roadIconButton = new UIBitmapButton();
   this->SetRoadIcon(g_navigationManager.viewIcon);
   this->roadIconButton->SetSize(static_cast<UIBitmapButton*>(this->roadIconButton)->BitmapWidth(), static_cast<UIBitmapButton*>(this->roadIconButton)->BitmapHeight());
-  this->roadIconButton->SetId(189);
+  this->roadIconButton->SetId(ID_BUTTON1);
   static_cast<UIBitmapButton*>(this->roadIconButton)->SetTooltip(LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_NOTACTIVATED));
   this->AddChild(this->roadIconButton);
 
@@ -2272,7 +2272,7 @@ void UINavigationV4Wnd::OnCreate(int, int) {
   static_cast<UIBitmapButton*>(this->roadListButton)->SetBitmap("유저인터페이스\\navigation_interface3\\btn_roadlistwnd_over.bmp", 1, 0);
   static_cast<UIBitmapButton*>(this->roadListButton)->SetBitmap("유저인터페이스\\navigation_interface3\\btn_roadlistwnd_press.bmp", 2, 0);
   this->roadListButton->SetSize(static_cast<UIBitmapButton*>(this->roadListButton)->BitmapWidth(), static_cast<UIBitmapButton*>(this->roadListButton)->BitmapHeight());
-  this->roadListButton->SetId(442);
+  this->roadListButton->SetId(NAVI_BUTTON_ROAD_LIST);
   static_cast<UIBitmapButton*>(this->roadListButton)->SetTooltip(LookupMessage(MSI_NAVIGATION_SEARCHTORUITE));
   this->AddChild(this->roadListButton);
 
@@ -2281,7 +2281,7 @@ void UINavigationV4Wnd::OnCreate(int, int) {
   this->roadList->backgroundRed = 255;
   this->roadList->backgroundGreen = 255;
   this->roadList->backgroundBlue = 255;
-  this->roadList->SetId(336);
+  this->roadList->SetId(ID_SELECT_ITEM);
   this->AddChild(this->roadList);
 
   this->searchList = new UIListBox_NaviSearch();
@@ -2289,13 +2289,13 @@ void UINavigationV4Wnd::OnCreate(int, int) {
   this->searchList->backgroundRed = 240;
   this->searchList->backgroundGreen = 244;
   this->searchList->backgroundBlue = 253;
-  this->searchList->SetId(441);
+  this->searchList->SetId(NAVI_SEARCH_LIST);
   this->AddChild(this->searchList);
 
   this->filterCheck = new UICheckBox();
   this->filterCheck->SetSize(110, 12);
   static_cast<UICheckBox*>(this->filterCheck)->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", "service");
-  this->filterCheck->SetId(213);
+  this->filterCheck->SetId(ID_CHECK);
   static_cast<UICheckBox*>(this->filterCheck)->SetChecked(g_navigationManager.allowGates);
   static_cast<UICheckBox*>(this->filterCheck)->SetTooltip(LookupMessage(MSI_NAVIGATION_V4_HELP));
   this->AddChild(this->filterCheck);
@@ -2305,7 +2305,7 @@ void UINavigationV4Wnd::OnCreate(int, int) {
   static_cast<UIBitmapButton*>(this->shareButton)->SetBitmap("유저인터페이스\\private_airplane\\btn_share_over.bmp", 1, 0);
   static_cast<UIBitmapButton*>(this->shareButton)->SetBitmap("유저인터페이스\\private_airplane\\btn_share_press.bmp", 2, 0);
   this->shareButton->SetSize(static_cast<UIBitmapButton*>(this->shareButton)->BitmapWidth(), static_cast<UIBitmapButton*>(this->shareButton)->BitmapHeight());
-  this->shareButton->SetId(354);
+  this->shareButton->SetId(ID_PREVIEW);
   static_cast<UIBitmapButton*>(this->shareButton)->SetTooltip(LookupMessage(MSI_NAVIGATION_SHARE_DESC));
   this->AddChild(this->shareButton);
 
@@ -2314,7 +2314,7 @@ void UINavigationV4Wnd::OnCreate(int, int) {
   static_cast<UIBitmapButton*>(this->findButton)->SetBitmap("유저인터페이스\\private_airplane\\btn_find_over.bmp", 1, 0);
   static_cast<UIBitmapButton*>(this->findButton)->SetBitmap("유저인터페이스\\private_airplane\\btn_find_press.bmp", 2, 0);
   this->findButton->SetSize(static_cast<UIBitmapButton*>(this->findButton)->BitmapWidth(), static_cast<UIBitmapButton*>(this->findButton)->BitmapHeight());
-  this->findButton->SetId(430);
+  this->findButton->SetId(NAVI_BUTTON_FIND);
   static_cast<UIBitmapButton*>(this->findButton)->SetTooltip(LookupMessage(MSI_NAVIGATION_VIEWCHANGE));
   this->AddChild(this->findButton);
 
@@ -2323,7 +2323,7 @@ void UINavigationV4Wnd::OnCreate(int, int) {
   static_cast<UIBitmapButton*>(this->moveButton)->SetBitmap("유저인터페이스\\private_airplane\\btn_move_over.bmp", 1, 0);
   static_cast<UIBitmapButton*>(this->moveButton)->SetBitmap("유저인터페이스\\private_airplane\\btn_move_press.bmp", 2, 0);
   this->moveButton->SetSize(static_cast<UIBitmapButton*>(this->moveButton)->BitmapWidth(), static_cast<UIBitmapButton*>(this->moveButton)->BitmapHeight());
-  this->moveButton->SetId(499);
+  this->moveButton->SetId(NAVI_BUTTON_PRIVATE_AIRPLANE);
   this->AddChild(this->moveButton);
 
   this->summaryLabel = new UIStaticText();
@@ -2340,7 +2340,7 @@ void UINavigationV4Wnd::OnCreate(int, int) {
   static_cast<UIBitmapButton*>(this->helpButton)->SetBitmap("유저인터페이스\\navigation_interface\\NaviHelp_on.bmp", 1, 0);
   static_cast<UIBitmapButton*>(this->helpButton)->SetBitmap("유저인터페이스\\navigation_interface\\NaviHelp_on.bmp", 2, 0);
   this->helpButton->SetSize(static_cast<UIBitmapButton*>(this->helpButton)->BitmapWidth(), static_cast<UIBitmapButton*>(this->helpButton)->BitmapHeight());
-  this->helpButton->SetId(343);
+  this->helpButton->SetId(ID_HELP);
   static_cast<UIBitmapButton*>(this->helpButton)->SetTooltip(LookupMessage(MSI_NAVIGATION_NPC));
   this->AddChild(this->helpButton);
 
@@ -2349,7 +2349,7 @@ void UINavigationV4Wnd::OnCreate(int, int) {
   static_cast<UIBitmapButton*>(this->dataButton)->SetBitmap("유저인터페이스\\navigation_interface3\\btn_Navidata_Open_over.bmp", 1, 0);
   static_cast<UIBitmapButton*>(this->dataButton)->SetBitmap("유저인터페이스\\navigation_interface3\\btn_Navidata_Open_press.bmp", 2, 0);
   this->dataButton->SetSize(static_cast<UIBitmapButton*>(this->dataButton)->BitmapWidth(), static_cast<UIBitmapButton*>(this->dataButton)->BitmapHeight());
-  this->dataButton->SetId(191);
+  this->dataButton->SetId(NAVI_BUTTON_DATA);
   static_cast<UIBitmapButton*>(this->dataButton)->SetTooltip(LookupMessage(MSI_NAVIGATION_MINI));
   this->AddChild(this->dataButton);
 
@@ -2357,7 +2357,7 @@ void UINavigationV4Wnd::OnCreate(int, int) {
   this->searchEdit->SetSize(113, 18);
   static_cast<UIBitmapEditCtrl*>(this->searchEdit)->maximum = 30;
   static_cast<UIBitmapEditCtrl*>(this->searchEdit)->SetBitmapName("유저인터페이스\\navigation_interface3\\bg_search.bmp");
-  this->searchEdit->SetId(516);
+  this->searchEdit->SetId(NAVI_SEARCH_EDIT);
   this->AddChild(this->searchEdit);
 
   this->searchButton = new UIBitmapButton();
@@ -2366,7 +2366,7 @@ void UINavigationV4Wnd::OnCreate(int, int) {
   static_cast<UIBitmapButton*>(this->searchButton)->SetBitmap("유저인터페이스\\navigation_interface3\\btn_searchbar_over.bmp", 1, 0);
   static_cast<UIBitmapButton*>(this->searchButton)->SetBitmap("유저인터페이스\\navigation_interface3\\btn_searchbar_press.bmp", 2, 0);
   this->searchButton->SetSize(static_cast<UIBitmapButton*>(this->searchButton)->BitmapWidth(), static_cast<UIBitmapButton*>(this->searchButton)->BitmapHeight());
-  this->searchButton->SetId(321);
+  this->searchButton->SetId(ID_SEARCH);
   static_cast<UIBitmapButton*>(this->searchButton)->SetTooltip(LookupMessage(MSI_NAVIGATION_SEARCHINFO));
   this->AddChild(this->searchButton);
 
@@ -2376,7 +2376,7 @@ void UINavigationV4Wnd::OnCreate(int, int) {
   static_cast<UIBitmapButton*>(this->backButton)->SetBitmap("유저인터페이스\\navigation_interface3\\bt_back_on.bmp", 1, 0);
   static_cast<UIBitmapButton*>(this->backButton)->SetBitmap("유저인터페이스\\navigation_interface3\\bt_back_on.bmp", 2, 0);
   this->backButton->SetSize(static_cast<UIBitmapButton*>(this->backButton)->BitmapWidth(), static_cast<UIBitmapButton*>(this->backButton)->BitmapHeight());
-  this->backButton->SetId(284);
+  this->backButton->SetId(ID_CHARGE);
   static_cast<UIBitmapButton*>(this->backButton)->SetTooltip(LookupMessage(MSI_NAVIGATION_ICONTIP));
   this->AddChild(this->backButton);
 
@@ -2580,12 +2580,12 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
     break;
 
   case UM_COMMAND:
-    if (argument1 != 0x150 && argument1 != 0x1B9) {
+    if (argument1 != ID_SELECT_ITEM && argument1 != NAVI_SEARCH_LIST) {
       this->RecordResponse(static_cast<int>(argument1), argument2, argument3, argument4);
     }
 
     switch (argument1) {
-    case 0x1AE: {
+    case NAVI_BUTTON_FIND: {
       this->Invalidate();
       int result = g_navigationManager.SaveCurrentTarget();
       if (result == 0) {
@@ -2651,7 +2651,7 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
         g_windowMgr.EnsureWindow(WID_NAVIGATIONROADICONWND);
       }
       break;
-    case 0xBF: {
+    case NAVI_BUTTON_DATA: {
       if (g_windowMgr.comboBoxWnd != 0) {
         g_windowMgr.CloseWindow(WID_COMBOBOXWND);
       }
@@ -2681,7 +2681,7 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
         g_windowMgr.EnsureWindow(WID_NAVIGATIONHELPWND);
       }
       break;
-    case 0x1BA:
+    case NAVI_BUTTON_ROAD_LIST:
       if (!g_windowMgr.CloseWindow(WID_NAVIGATIONRUIDEWND) && g_navigationManager.NodeCount() != 0) {
         g_windowMgr.EnsureWindow(WID_NAVIGATIONRUIDEWND);
       }
@@ -2707,7 +2707,7 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
       }
       this->Invalidate();
       break;
-    case 0x1B9:
+    case NAVI_SEARCH_LIST:
       if (g_replayAnimationScaling == 0) {
         argument2 = this->searchList->selected;
       }
@@ -2786,38 +2786,38 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
         g_windowMgr.CloseWindow(WID_NAVIGATIONV4WND);
       }
       break;
-    case 499:
+    case NAVI_BUTTON_PRIVATE_AIRPLANE:
       if (!g_windowMgr.LookupWindow(WID_WAITWND)) {
         UIPrivateAirplaneWnd* window = new UIPrivateAirplaneWnd();
         window->SetSize(0xD0, 0x6E);
         window->Move(static_cast<int>((g_renderer->viewport.width - 0xD0) * 0.5), static_cast<int>((g_renderer->viewport.height - 0x6E) * 0.5));
         g_windowMgr.AddRendered(window);
         if (g_navigationManager.GetCurrentTargetType() == 2) {
-          window->SendMsg(nullptr, 0x9A, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_TO_BLOCK_WHISPER_FAILED1)), 0, 0, 0);
+          window->SendMsg(nullptr, UM_RESOLVE_PLAYER_TAGS, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_TO_BLOCK_WHISPER_FAILED1)), 0, 0, 0);
         }
 
         std::string mapName = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->MapName();
         mapName = mapName.substr(0, mapName.find(".rsw")) + ".gat";
         if (!g_privateAirplaneItems->IsStartableMap(mapName)) {
-          window->SendMsg(nullptr, 0x9A, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ENTER_ONE_LINE_WITHOUT_LINE_BREAKS)), 0, 0, 0);
+          window->SendMsg(nullptr, UM_RESOLVE_PLAYER_TAGS, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ENTER_ONE_LINE_WITHOUT_LINE_BREAKS)), 0, 0, 0);
           window->SendMsg(nullptr, UM_REFRESHBUTTON, 0, 0, 0, 0);
         }
 
         std::string targetName = g_navigationManager.GetCurrentTargetName() + ".gat";
         if (!g_privateAirplaneItems->IsEndableMap(targetName)) {
-          window->SendMsg(nullptr, 0x9A, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_REGISTER_NAME_THAT_CONTAINS_BADWORDS)), 0, 0, 0);
+          window->SendMsg(nullptr, UM_RESOLVE_PLAYER_TAGS, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_REGISTER_NAME_THAT_CONTAINS_BADWORDS)), 0, 0, 0);
           window->SendMsg(nullptr, UM_REFRESHBUTTON, 0, 0, 0, 0);
         }
 
         if (mapName.compare(targetName) == 0) {
-          window->SendMsg(nullptr, 0x9A, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_REGISTER_ADVENTURER_AGENCY)), 0, 0, 0);
+          window->SendMsg(nullptr, UM_RESOLVE_PLAYER_TAGS, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_REGISTER_ADVENTURER_AGENCY)), 0, 0, 0);
           window->SendMsg(nullptr, UM_REFRESHBUTTON, 0, 0, 0, 0);
         }
 
         CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
         if (mode->scene && static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player &&
             static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->render.state == 3) {
-          window->SendMsg(nullptr, 0x9A, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_REGISTER_ADVENTURER_AGENCY2)), 0, 0, 0);
+          window->SendMsg(nullptr, UM_RESOLVE_PLAYER_TAGS, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_REGISTER_ADVENTURER_AGENCY2)), 0, 0, 0);
           window->SendMsg(nullptr, UM_REFRESHBUTTON, 0, 0, 0, 0);
         }
 
@@ -2876,7 +2876,7 @@ void UINavigationRuideWnd::OnCreate(int width, int) {
   this->routeList->backgroundRed = 255;
   this->routeList->backgroundGreen = 255;
   this->routeList->backgroundBlue = 255;
-  this->routeList->SetId(336);
+  this->routeList->SetId(ID_SELECT_ITEM);
   this->routeList->Move(2, 20);
   this->AddChild(this->routeList);
   this->RefreshRoute();
@@ -3323,7 +3323,7 @@ void UINavigationV4Wnd::InsertNavigationLink(std::string name, int x, int y) {
     g_windowMgr.SetFocus(ChatWindow()->m_suggestions);
   }
 
-  g_windowMgr.GetHoverWindow()->SendMsg(nullptr, 153, reinterpret_cast<std::intptr_t>(link.c_str()), 0, 0, 0);
+  g_windowMgr.GetHoverWindow()->SendMsg(nullptr, UM_INSERT_ITEM_LINK, reinterpret_cast<std::intptr_t>(link.c_str()), 0, 0, 0);
 }
 
 // OFFSET: 0x005C4830
@@ -3523,7 +3523,7 @@ void UIPrivateAirplaneWnd::OnCreate(int, int) {
     UIBasicButton* button = new UIBasicButton();
     button->Configure(0xc0, FormatOwnedString(LookupMessage(MSI_PRIVATE_AIRPLANE_FAILED_ISNOT_ENDABLE_MAP), name).c_str());
     button->Move(8, y);
-    button->SetId(500);
+    button->SetId(AIRPLANE_BUTTON_DESTINATION);
     button->m_argument = itemId;
     this->AddChild(button);
     this->m_buttons.push_back(button);
@@ -3536,7 +3536,7 @@ int UIPrivateAirplaneWnd::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
   switch (message) {
-  case 154:
+  case UM_RESOLVE_PLAYER_TAGS:
     this->m_text = reinterpret_cast<const char*>(argument1);
     this->Invalidate();
     break;
@@ -3555,7 +3555,7 @@ int UIPrivateAirplaneWnd::SendMsg(
         g_windowMgr.modalResponse = 0xBC;
       }
       break;
-    case 500: {
+    case AIRPLANE_BUTTON_DESTINATION: {
       const std::string mapName = g_navigationManager.GetCurrentTargetName() + ".gat";
       g_navigationManager.RequestPrivateAirship(mapName, static_cast<int>(argument2));
       break;
@@ -3579,7 +3579,7 @@ UIItemTagButton* UIWindow::CreateItemTagButton(const std::string& title, const s
     }
 
     button->m_hoverColor = color;
-    button->SetId(0x1D0);
+    button->SetId(LINK_BUTTON_ITEM);
     button->m_value = 0x205;
     button->Move(0, 0);
     button->tipId = tagId;

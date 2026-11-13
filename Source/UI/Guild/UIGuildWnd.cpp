@@ -2166,7 +2166,7 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
       CSkillInfo skill = this->SkillAt(this->m_hoverIndex);
       if (skill.available != 0) {
         const std::string text = LookupMessage(MSI_SEE_INFORMATION_OF_SKILL);
-        this->m_menuItems.push_back(MiniPartyInfoEntry(text.c_str(), 3));
+        this->m_menuItems.push_back(MiniPartyInfoEntry(text.c_str(), MENUID_QUERYINFO));
       }
     }
     if (this->m_menuItems.size() != 0) {
@@ -2197,7 +2197,7 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
       CSkillInfo skill = this->SkillAt(this->m_hoverIndex);
       if (skill.available != 0) {
         switch (this->m_menuItems[a1].value) {
-        case 3:
+        case MENUID_QUERYINFO:
           g_windowMgr.EnsureWindow(WID_SKILLDESCRIBEWND)->SendMsg(nullptr, UM_SKILLDESCRIBE, skill.id, 0, 0, 0);
           break;
         case 14:
@@ -2673,33 +2673,33 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
         if (member.characterId == static_cast<int>(g_session.m_gid)) {
           if (master != 0) {
             if (member.characterId != master) {
-              this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_LEAVE_GUILD), 17));
+              this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_LEAVE_GUILD), MENUID_LEAVE_GUILD));
             }
           } else if (!(member.name == g_guildInfo.masterName)) {
-            this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_LEAVE_GUILD), 17));
+            this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_LEAVE_GUILD), MENUID_LEAVE_GUILD));
           }
         } else {
           if (master != 0) {
             if (master == static_cast<int>(g_session.m_gid)) {
-              this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_EXPEL_GUILD), 16));
+              this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_EXPEL_GUILD), MENUID_REMOVE_GUILE_MEMBER));
               this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_SHOP_WITHDRAWAL), 59));
             } else if (g_guildInfo.canExpel != 0 && member.characterId != master) {
-              this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_EXPEL_GUILD), 16));
+              this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_EXPEL_GUILD), MENUID_REMOVE_GUILE_MEMBER));
             }
           } else if (g_guildInfo.masterName == g_session.DecodePlayerName()) {
-            this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_EXPEL_GUILD), 16));
+            this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_EXPEL_GUILD), MENUID_REMOVE_GUILE_MEMBER));
             this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_SHOP_WITHDRAWAL), 59));
           } else if (g_guildInfo.canExpel != 0 && !(member.name == g_guildInfo.masterName)) {
-            this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_EXPEL_GUILD), 16));
+            this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_EXPEL_GUILD), MENUID_REMOVE_GUILE_MEMBER));
           }
 
           if (member.online == 1) {
             const bool invite = g_session.partyLeader != 0 &&
                                 g_session.PartyByName(member.name.c_str()).valid == 0;
             if (invite) {
-              this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_REQ_JOIN_PARTY3), 5));
+              this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_REQ_JOIN_PARTY3), MENUID_INVITE_IN_PARTY));
             }
-            this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_DIRECT_CHAT), 20));
+            this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_DIRECT_CHAT), MENUID_MAKE_WHISPER_WINDOW));
           }
           this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_USA_PERSONALINFO_DEATH), 58));
         }
@@ -2788,7 +2788,7 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
       GuildInfo::Member target;
       if (this->GetMember(this->m_hoverRow, target) == true) {
         const std::string text = FormatOwnedString(LookupMessage(MSI_REMAIN_TIME), target.name.c_str(), target.name.c_str());
-        if (g_windowMgr.Confirm(text.c_str(), 2, false, false, 0, "Message", 280, 120, 0) != 188) {
+        if (g_windowMgr.Confirm(text.c_str(), 2, false, false, 0, "Message", 280, 120, 0) != ID_NO) {
           target.positionId = 0;
           target.positionName = g_guildInfo.m_positions[target.positionId];
           this->membersByCharacterId[static_cast<int>(target.characterId)].accountId = target.accountId;

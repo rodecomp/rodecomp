@@ -111,10 +111,10 @@ int UIMacroDetectorWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
     break;
   case UM_COMMAND:
     switch (a) {
-    case 201:
+    case ID_CLOSE:
       g_windowMgr.CloseWindow(WID_CAPTCHAREGISTERWND);
       break;
-    case 345:
+    case ID_SEND:
       if (this->m_editCtrl->Length() != 0 && this->m_lastAnswer.compare(this->m_editCtrl->Text()) != 0) {
         CaptchaAnswerPacket packet;
         packet.id = ID_CZ_ACK_ANSWER_MACRO_DETECTOR;

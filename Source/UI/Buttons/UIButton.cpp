@@ -143,8 +143,8 @@ void UISpriteButton2::OnMouseMove(int x, int y) {
 // FUNCTION: fn_10858
 void UIButton::OnMouseHover(int x, int y) {
   UIWindow* parent = this->parent;
-  if (parent && (this->geometry.id == 201 || this->geometry.id == 202) && parent->geometry.id != 203) {
-    if (this->geometry.id == 202 && parent->geometry.id != 0) {
+  if (parent && (this->geometry.id == ID_CLOSE || this->geometry.id == ID_MINI) && parent->geometry.id != 203) {
+    if (this->geometry.id == ID_MINI && parent->geometry.id != 0) {
       this->m_tooltip = "";
     } else {
       const char* text = nullptr;
@@ -209,13 +209,13 @@ void UIButton::OnLBtnUp(int x, int y) {
     if (this->parent) {
       if (g_windowMgr.WindowPolicy(3, this->parent->geometry.id) != 0) {
         int id = this->geometry.id;
-        if (id == 185 && g_modeMgr.gameMode && g_modeMgr.gameMode->cursorType == 2) {
+        if (id == ID_CANCEL && g_modeMgr.gameMode && g_modeMgr.gameMode->cursorType == 2) {
           const char* text = LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT);
-          if (g_windowMgr.Confirm(text, 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+          if (g_windowMgr.Confirm(text, 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
             g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
           }
         } else {
-          if (id == 184 || id == 321) {
+          if (id == ID_OK || id == ID_SEARCH) {
             this->parent->RecordEditTexts();
             id = this->geometry.id;
           }

@@ -5,6 +5,7 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Session/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Contents/Tables/MessageTable.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Text/FormatString.h"
@@ -103,25 +104,25 @@ std::string CNProtectGameGuardMgr::ErrorMessage() {
 // FUNCTION: fn_08216
 const char* CNProtectGameGuardMgr::GameName() {
   switch (g_serviceType) {
-  case 3: {
+  case ServiceChina: {
     return OBFUSCATE_TEXT("ROCN", 0x7321C3814F8799E1ULL);
   }
-  case 0:
+  case ServiceKorea:
     if (std::strstr(g_session.m_launchServerName, g_devClientTag) != nullptr) {
       return OBFUSCATE_TEXT("RagnarokKR", 0x7941D76335CFA14FULL);
     } else {
       return OBFUSCATE_TEXT("RagnarokKR", 0x0F15B16B5BAFD57FULL);
     }
-  case 2: {
+  case ServiceJapan: {
     return OBFUSCATE_TEXT("RagnarokJP", 0x7DE349D717D7F123ULL);
   }
-  case 12: {
+  case ServiceBrazil: {
     return OBFUSCATE_TEXT("RagnarokBR", 0x9FED7DA189490D5DULL);
   }
-  case 7: {
+  case ServicePhilippine: {
     return OBFUSCATE_TEXT("RagnarokPH", 0x452FEF0D7FC95565ULL);
   }
-  case 4: {
+  case ServiceTaiwan: {
     return OBFUSCATE_TEXT("ROTW", 0xF3CB6F7711A71B6DULL);
   }
   default: {
@@ -159,7 +160,7 @@ void CNProtectGameGuardMgr::Send(const char*) {
 // FUNCTION: fn_08219
 int __stdcall GameGuardCallback(int code, const int* packet) {
   switch (code) {
-  case 0x3F3: {
+  case NPGAMEMON_SPEEDHACK: {
     CNProtectGameGuardMgr* manager = g_nProtectGameGuardMgr;
     manager->SetError(g_nprotectSource, 0x136, std::string(FormatString(
       []() {
@@ -167,13 +168,13 @@ int __stdcall GameGuardCallback(int code, const int* packet) {
       }(), LookupMessage(MSI_SPEEDHACK_DETECT), code)));
     return 0;
   }
-  case 0x3E9:
-  case 0x3EA: {
+  case NPGAMEMON_COMM_ERROR:
+  case NPGAMEMON_COMM_CLOSE: {
     CNProtectGameGuardMgr* manager = g_nProtectGameGuardMgr;
     manager->SetError(g_nprotectSource, 0x13B, std::string(FormatString(OBFUSCATE_TEXT("unknown(%d)", 0x2D51E3B7236175EDULL), code)));
     return 0;
   }
-  case 0x3F6: {
+  case NPGAMEMON_INIT_ERROR: {
     CNProtectGameGuardMgr* manager = g_nProtectGameGuardMgr;
     manager->SetError(g_nprotectSource, 0x13F, std::string(FormatString(
       []() {
@@ -181,13 +182,13 @@ int __stdcall GameGuardCallback(int code, const int* packet) {
       }(), LookupMessage(MSI_INIT_ERROR), code)));
     return 0;
   }
-  case 0x3F4:
-  case 0x3F5: {
+  case NPGAMEMON_GAMEHACK_KILLED:
+  case NPGAMEMON_GAMEHACK_DETECT: {
     CNProtectGameGuardMgr* manager = g_nProtectGameGuardMgr;
     manager->SetError(g_nprotectSource, 0x14B, std::string(LookupMessage(MSI_USA_PERSONALINFO_DROP)));
     return 0;
   }
-  case 0x3F7: {
+  case NPGAMEMON_GAMEHACK_DOUBT: {
     CNProtectGameGuardMgr* manager = g_nProtectGameGuardMgr;
     manager->SetError(g_nprotectSource, 0x151, std::string(FormatString(
       []() {
@@ -195,7 +196,7 @@ int __stdcall GameGuardCallback(int code, const int* packet) {
       }(), LookupMessage(MSI_GAMEHACK_DOUBT), code)));
     return 0;
   }
-  case 0x3FB: {
+  case NPGAMEMON_CHECK_CSAUTH3: {
     CNProtectGameGuardMgr* manager = g_nProtectGameGuardMgr;
     const unsigned char* data = reinterpret_cast<const unsigned char*>(packet + 2);
     CNProtectGameGuardMgr::lcCSAuthToken token(packet[0], std::vector<unsigned char>(data, data + packet[1]));
@@ -219,7 +220,7 @@ bool CNProtectGameGuardMgr::Initialize() {
   }
 
   const int status = gameLib->Init();
-  if (status != 0x755) {
+  if (status != NPGAMEMON_SUCCESS) {
     char message[0x400] = {};
     StringFormat(message, sizeof(message), static_cast<std::size_t>(-1), OBFUSCATE_ARRAY_TEXT("GameGuard Error: %lu", 0xCFF3899D95AF355FULL, char), status);
 

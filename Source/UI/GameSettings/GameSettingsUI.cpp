@@ -1532,7 +1532,7 @@ void CUIGroupSound::SetEffectVolume(int volume) {
 void CUIGroupEmblem::SetEnabled(bool enabled) {
   g_serviceOptions.Set(0xF3, enabled);
   g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(enabled ? 0xDC7 : 0xDC8)), 0x64FFFF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(enabled ? MSI_USESKILL_FAIL_EMPTY_SOUL_ENERGY : MSI_ADDSKILL_FAIL_INCLUDE_SKILL_YOU_CANNOT_LEARN)), 0x64FFFF, 0, 0, 0);
 }
 
 // OFFSET: 0x00A3F5C0
@@ -1540,7 +1540,7 @@ void CUIGroupEmblem::SetEnabled(bool enabled) {
 void CUIGroupLogInOut::SetEnabled(bool enabled) {
   g_serviceOptions.Set(0xA5, enabled);
   g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(enabled ? 0x414 : 0x415)), 0x64FFFF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(enabled ? MSI_LOGINOUT_ON : MSI_LOGINOUT_OFF)), 0x64FFFF, 0, 0, 0);
 }
 
 // OFFSET: 0x00A3F6B0
@@ -1805,7 +1805,7 @@ void CUIGameSettingsUI::OnTitleIconClick() {
 // FUNCTION: fn_45480
 void CUIGameSettingsUI::OnApply() {
   const bool modified = this->m_graphicsPage->IsModified();
-  if (g_windowMgr.Confirm(LookupMessage(modified ? 3168 : 3167), 2, true, false, 0, "Message", 280, 120, 0) != 188) {
+  if (g_windowMgr.Confirm(LookupMessage(modified ? MSI_GRAPHIC_SETTING_AURA_OFF_CHECK : MSI_GRAPHIC_SETTING_SIMPLE_AURA_CHECK), 2, true, false, 0, "Message", 280, 120, 0) != ID_NO) {
     this->m_graphicsPage->ApplySettings();
     this->UpdateApplyButton();
   }
@@ -3426,7 +3426,7 @@ void CUIGameSettingsUI::RefreshHotkeyLabels() {
 // OFFSET: 0x00A3F180
 // FUNCTION: fn_15940
 void CUIGameSettingsUI::ResetToDefaults() {
-  if (g_windowMgr.Confirm(LookupMessage(MSI_GRAPHIC_SETTING_FOG_CHECK), 2, true, false, 0, "Message", 280, 120, 0) == 0xBC) {
+  if (g_windowMgr.Confirm(LookupMessage(MSI_GRAPHIC_SETTING_FOG_CHECK), 2, true, false, 0, "Message", 280, 120, 0) == ID_NO) {
     return;
   }
 

@@ -152,25 +152,25 @@ void InitializeServiceStrings() {
 
   switch (g_serviceType) {
   case ServiceKorea:
-  case 1:
+  case ServiceAmerica:
   case ServiceJapan:
   case ServiceChina:
   case ServiceTaiwan:
   case ServiceThai:
-  case 6:
-  case 7:
-  case 8:
-  case 9:
-  case 10:
-  case 11:
-  case 12:
-  case 13:
+  case ServiceIndonesia:
+  case ServicePhilippine:
+  case ServiceMalaysia:
+  case ServiceSingapore:
+  case ServiceGermany:
+  case ServiceIndia:
+  case ServiceBrazil:
+  case ServiceAustralia:
   case ServiceRussia:
   case ServiceVietnam:
   case ServiceChile:
-  case 18:
-  case 19:
-  case 20:
+  case ServiceFrance:
+  case ServiceUae:
+  case ServiceEu:
     break;
   default: {
     ShowErrorDialog(OBFUSCATE_TEXT("Unknown ServiceType !!!", 0xD3755DD95F47A909ULL), 0);
@@ -180,7 +180,7 @@ void InitializeServiceStrings() {
 
   InitializeLanguage();
 
-  if (g_serviceType == 0 || g_serviceType == 6) {
+  if (g_serviceType == ServiceKorea || g_serviceType == ServiceIndonesia) {
     g_nameBalloonFontHeight = 13;
     g_serviceFlag05 = true;
   } else {
@@ -206,7 +206,7 @@ void InitializeServiceStrings() {
   }
 
   switch (g_serviceMode) {
-  case 2: {
+  case ServerLocal: {
     g_clientExeName = OBFUSCATE_BYTES_TEXT("RagIndoor.exe", 0xC399B7091589B50BULL);
     g_patcherExeName = OBFUSCATE_BYTES_TEXT("Indoorup.exe", 0x7FC1015DFFCF6D19ULL);
     g_runPatcherMessage = OBFUSCATE_TEXT("Please run RagIndoor.exe", 0x0753A7E1EFA9E139ULL);
@@ -241,7 +241,7 @@ void LoadLoadingScreens(int count) {
     case ServiceKorea:
       count = 7;
       break;
-    case 1:
+    case ServiceAmerica:
     case ServiceVietnam:
       count = 12;
       break;
@@ -249,10 +249,10 @@ void LoadLoadingScreens(int count) {
       count = 4;
       break;
     case ServiceThai:
-    case 7:
+    case ServicePhilippine:
       count = 8;
       break;
-    case 6:
+    case ServiceIndonesia:
       count = 9;
       break;
     default:
@@ -344,20 +344,20 @@ void InitializeLanguage() {
     g_serverLanguage = &thaiCharset;
     g_textCodePage = 874;
     break;
-  case 10:
+  case ServiceGermany:
     g_language = 1;
     g_inlineCharset = 1;
     g_textCodePage = 0;
     g_serverLanguage = &defaultCharset;
     break;
-  case 11:
+  case ServiceIndia:
     g_language = 1;
     g_inlineCharset = 0;
     g_textCodePage = 0;
     g_serverLanguage = &defaultCharset;
     break;
-  case 12:
-  case 18:
+  case ServiceBrazil:
+  case ServiceFrance:
     g_language = 6;
     g_inlineCharset = 0;
     g_textCodePage = 1252;
@@ -381,7 +381,7 @@ void InitializeLanguage() {
     g_textCodePage = 1145;
     g_serverLanguage = &defaultCharset;
     break;
-  case 19:
+  case ServiceUae:
     g_language = 12;
     g_serverLanguage = &arabicCharset;
     g_textCodePage = 1256;
@@ -389,13 +389,13 @@ void InitializeLanguage() {
   default: {
     ShowErrorDialog(OBFUSCATE_TEXT("no language setting !!!", 0x5B832361BDA77197ULL), 0);
   }
-  case 1:
-  case 6:
-  case 7:
-  case 8:
-  case 9:
-  case 13:
-  case 20:
+  case ServiceAmerica:
+  case ServiceIndonesia:
+  case ServicePhilippine:
+  case ServiceMalaysia:
+  case ServiceSingapore:
+  case ServiceAustralia:
+  case ServiceEu:
     g_textCodePage = 0;
     g_language = 1;
     g_serverLanguage = &defaultCharset;
@@ -442,8 +442,8 @@ void InitializeServiceConfiguration() {
   g_monsterJobs.clear();
 
   switch (g_serviceMode) {
-  case 0:
-  case 1: {
+  case ServerPrimary:
+  case ServerSakray: {
     // Original instructions between 0x00AD1E58 and 0x00AD237D were overwritten by the protector
     // (jump into the empty stub 0x027AB0FE). The code from here on starts at 0x00AD237E.
     g_serviceFlag07 = 29;
@@ -460,7 +460,7 @@ void InitializeServiceConfiguration() {
     g_monsterJobs.assign(std::begin(s_monsterJobIds), std::end(s_monsterJobIds));
     break;
   }
-  case 2: {
+  case ServerLocal: {
     g_serviceFlag07 = 14;
     g_serviceHost = OBFUSCATE_BYTES_TEXT("192.168.5.52", 0x71B7691737C5A1AFULL);
     break;
@@ -485,52 +485,52 @@ void ReadClientInfo(XmlNode* clientInfo) {
       clientInfo->FindChild(OBFUSCATE_BYTES_TEXT("servicetype", 0x5B8F49AF09390D1BULL));
   if (serviceType) {
     if (serviceType->Text() == std::string(OBFUSCATE_BYTES_TEXT("korea", 0x3F557BE333F95F6DULL))) {
-      g_serviceType = 0;
+      g_serviceType = ServiceKorea;
     } else if (serviceType->Text() == std::string(OBFUSCATE_BYTES_TEXT("america", 0x474DC581D5E98357ULL))) {
-      g_serviceType = 1;
+      g_serviceType = ServiceAmerica;
     } else if (serviceType->Text() == std::string(OBFUSCATE_BYTES_TEXT("japan", 0x01FF9313695DD9DFULL))) {
-      g_serviceType = 2;
+      g_serviceType = ServiceJapan;
     } else if (serviceType->Text() == std::string(OBFUSCATE_BYTES_TEXT("china", 0x1BF915E1F37DFDFDULL))) {
-      g_serviceType = 3;
+      g_serviceType = ServiceChina;
     } else if (serviceType->Text() == std::string(OBFUSCATE_BYTES_TEXT("taiwan", 0x49C3759B77DBD3C1ULL))) {
-      g_serviceType = 4;
+      g_serviceType = ServiceTaiwan;
     } else if (serviceType->Text() == std::string(OBFUSCATE_BYTES_TEXT("thai", 0x6DED3DD1CF75AD9BULL))) {
-      g_serviceType = 5;
+      g_serviceType = ServiceThai;
     } else if (serviceType->Text() ==
                std::string(OBFUSCATE_BYTES_TEXT("indonesia", 0x91E147EBBD47C39FULL))) {
-      g_serviceType = 6;
+      g_serviceType = ServiceIndonesia;
     } else if (serviceType->Text() ==
                std::string(OBFUSCATE_BYTES_TEXT("philippine", 0xD1538513DF975701ULL))) {
-      g_serviceType = 7;
+      g_serviceType = ServicePhilippine;
     } else if (serviceType->Text() ==
                std::string(OBFUSCATE_BYTES_TEXT("malaysia", 0xA1A55B4D1597EDD3ULL))) {
-      g_serviceType = 8;
+      g_serviceType = ServiceMalaysia;
     } else if (serviceType->Text() ==
                std::string(OBFUSCATE_BYTES_TEXT("singapore", 0x4F1791FB1503C713ULL))) {
-      g_serviceType = 9;
+      g_serviceType = ServiceSingapore;
     } else if (serviceType->Text() ==
                std::string(OBFUSCATE_BYTES_TEXT("germany", 0x7D993F650D2785FFULL))) {
-      g_serviceType = 10;
+      g_serviceType = ServiceGermany;
     } else if (serviceType->Text() == std::string(OBFUSCATE_BYTES_TEXT("india", 0x61FF87ED7BF39BE1ULL))) {
-      g_serviceType = 11;
+      g_serviceType = ServiceIndia;
     } else if (serviceType->Text() == std::string(OBFUSCATE_BYTES_TEXT("brazil", 0x151F77EBEBBB2147ULL))) {
-      g_serviceType = 12;
+      g_serviceType = ServiceBrazil;
     } else if (serviceType->Text() ==
                std::string(OBFUSCATE_BYTES_TEXT("australia", 0x2D394DBD0F332733ULL))) {
-      g_serviceType = 13;
+      g_serviceType = ServiceAustralia;
     } else if (serviceType->Text() == std::string(OBFUSCATE_BYTES_TEXT("russia", 0x69D345DB950F336DULL))) {
-      g_serviceType = 14;
+      g_serviceType = ServiceRussia;
     } else if (serviceType->Text() ==
                std::string(OBFUSCATE_BYTES_TEXT("vietnam", 0xC7912587FFF31B71ULL))) {
-      g_serviceType = 15;
+      g_serviceType = ServiceVietnam;
     } else if (serviceType->Text() == std::string(OBFUSCATE_BYTES_TEXT("chile", 0x2D3B15774149D5DDULL))) {
-      g_serviceType = 17;
+      g_serviceType = ServiceChile;
     } else if (serviceType->Text() == std::string(OBFUSCATE_BYTES_TEXT("france", 0x9B17C9EFDBB39F2FULL))) {
-      g_serviceType = 18;
+      g_serviceType = ServiceFrance;
     } else if (serviceType->Text() == std::string(OBFUSCATE_BYTES_TEXT("uae", 0x0BEB63A5C905B3A7ULL))) {
-      g_serviceType = 19;
+      g_serviceType = ServiceUae;
     } else if (serviceType->Text() == std::string(OBFUSCATE_BYTES_TEXT("eu", 0x8B3FEB5B8BD5C3C3ULL))) {
-      g_serviceType = 20;
+      g_serviceType = ServiceEu;
     } else {
       ShowErrorDialog(
                       OBFUSCATE_TEXT("ServiceType Error !!", 0x8F1B5BFD5F6175B5ULL),
@@ -546,13 +546,13 @@ void ReadClientInfo(XmlNode* clientInfo) {
       clientInfo->FindChild(OBFUSCATE_BYTES_TEXT("servertype", 0xF5657D1F3DE5CDC7ULL));
   if (serverType) {
     if (serverType->Text() == std::string(OBFUSCATE_BYTES_TEXT("primary", 0x69FD1D9733D3CFC1ULL))) {
-      g_serviceMode = g_serviceMode == 13 ? 13 : 0;
+      g_serviceMode = g_serviceMode == 13 ? 13 : ServerPrimary;
     } else if (serverType->Text() == std::string(OBFUSCATE_BYTES_TEXT("sakray", 0xF7530137154D8FE5ULL))) {
-      g_serviceMode = 1;
+      g_serviceMode = ServerSakray;
     } else if (serverType->Text() == std::string(OBFUSCATE_BYTES_TEXT("local", 0x8B65CD61012B5931ULL))) {
-      g_serviceMode = 2;
+      g_serviceMode = ServerLocal;
     } else if (serverType->Text() == std::string(OBFUSCATE_BYTES_TEXT("pk", 0x17359BF953C367B3ULL))) {
-      g_serviceMode = 5;
+      g_serviceMode = ServerPk;
     } else {
       ShowErrorDialog(
                       OBFUSCATE_TEXT("ServerType Error !!", 0x2FF3C5036D070127ULL),

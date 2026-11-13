@@ -1,4 +1,6 @@
 #include "Contents/Actors/ActorEnums.h"
+#include "Network/Packets/NoticeEnums.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Contents/Effects/Core/EffectTypes.h"
 #include "UI/Window/WindowId.h"
 #include "Network/Packets/ActorNamePacket.h"
@@ -836,7 +838,7 @@ bool CGameMode::IsMenuWindowOpen() const {
 // OFFSET: 0x00CF0B30
 // FUNCTION: fn_21422
 bool CGameMode::ShowRestrictedNotice(int grade) {
-  if (g_serviceMode == 3 || g_serviceType == 10 || grade < 2) {
+  if (g_serviceMode == 3 || g_serviceType == ServiceGermany || grade < 2) {
     return false;
   }
 
@@ -1935,7 +1937,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
             char first[0x16A];
             char middle[0x400];
             char last[0x16A];
-            if (g_serviceType == 0) {
+            if (g_serviceType == ServiceKorea) {
               std::sprintf(first, LookupMessage(MSI_SUPERNOVICE1));
               const char* suffix = LookupMessage(MSI_SUPERNOVICE3);
               const char* name = g_session.DecodePlayerName();
@@ -2194,7 +2196,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         return 0;
       }
       char message[1024];
-      std::sprintf(message, LookupMessage(argument2 == 0 ? 0x1E6 : 0x1E5), argument1);
+      std::sprintf(message, LookupMessage(argument2 == 0 ? MSI_GUILD_MEMBER_STATUS_OFFLINE : MSI_GUILD_MEMBER_STATUS_ONLINE), argument1);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFFFF00, 4, 0, 0);
       return 0;
     }
@@ -2655,7 +2657,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
           return 0;
         }
         const CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(argument2));
-        if (actor != nullptr && actor->objectType == 0) {
+        if (actor != nullptr && actor->objectType == PC_TYPE) {
           return 0;
         }
         g_windowMgr.EnsureWindow(WID_PETTAMINGDECEIVEWND)->SendMsg(nullptr, UM_SET_TARGET, 0, argument2, 0, 0);
@@ -2923,7 +2925,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         const std::string actorName = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ActorName(argument3);
         std::strcpy(text, actorName.c_str());
         std::strcpy(skillName, CSkillInfo::DisplayName(*g_session.m_hotkeyScript, argument1));
-        if (g_serviceType == 0) {
+        if (g_serviceType == ServiceKorea) {
           std::strcat(skillName, " \xA2\xBD");
         }
         std::strcat(text, " !!  ");
@@ -2935,7 +2937,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       if (argument1 == WE_CALLPARTNER) {
         std::sprintf(text, "%s", this->coupleName);
         std::strcpy(skillName, CSkillInfo::DisplayName(*g_session.m_hotkeyScript, argument1));
-        if (g_serviceType == 0) {
+        if (g_serviceType == ServiceKorea) {
           std::strcat(skillName, " \xA2\xBD");
         }
         std::strcat(text, " !!  ");
@@ -3045,7 +3047,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       if (this->IsMenuWindowOpen()) {
         return 0;
       }
-      if (g_serviceType == 6 && g_windowMgr.exchangeAcceptWnd != nullptr) {
+      if (g_serviceType == ServiceIndonesia && g_windowMgr.exchangeAcceptWnd != nullptr) {
         g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CHARACTER_IS_DEALING)), 255, 0, 0, 0);
         return 0;
@@ -3624,7 +3626,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         case MENUID_INVITE_IN_PARTY:
         case 58: {
           const std::string name = this->ActorName(this->menuTargetAid);
-          this->SendMsg(action == 5 ? 0x3B : 0x10C, reinterpret_cast<int>(name.c_str()), 0, 0, 0);
+          this->SendMsg(action == MENUID_INVITE_IN_PARTY ? MM_REQ_JOIN_GROUP : MM_OPEN_WRITE_RODEX, reinterpret_cast<int>(name.c_str()), 0, 0, 0);
           return 0;
         }
         case MENUID_ADD_TO_FRIEND_CHAR_LIST:
@@ -3668,7 +3670,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
           window->Move(UIWindowMgr::CenterOnViewportX(200), y);
           g_windowMgr.AddRendered(window);
           window->SendMsg(nullptr, UM_SET_TARGET, action == 23 ? 0x97 : 0x98, 0, 0, 0);
-          window->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(action == 23 ? 0x185 : 0x186)), 0, 0, 0);
+          window->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(action == 23 ? MSI_GIVE_PLUS_MANNER_POINT : MSI_GIVE_MINUS_MANNER_POINT)), 0, 0, 0);
           window->SendMsg(nullptr, UM_SET_COUNT, 1, 0, 0, 0);
           return 0;
         }
@@ -3881,7 +3883,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0x6E96FF, 0, 0, 0);
         return 0;
       }
-      if (g_serviceType == 12 && std::strchr(name, 0x2323)) {
+      if (g_serviceType == ServiceBrazil && std::strchr(name, 0x2323)) {
         g_windowMgr.Confirm(LookupMessage(MSI_BILLING_1), 0, true, false, 0, "Message", 280, 120, 0);
         return 0;
       }
@@ -4301,9 +4303,9 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       CFile file;
       const char* path = nullptr;
       if (argument1 == 0) {
-        path = g_serviceType == 10 ? "english\\DC_scream.txt" : "DC_scream.txt";
+        path = g_serviceType == ServiceGermany ? "english\\DC_scream.txt" : "DC_scream.txt";
       } else if (argument1 == 1) {
-        path = g_serviceType == 10 ? "english\\BA_frostjoke.txt" : "BA_frostjoke.txt";
+        path = g_serviceType == ServiceGermany ? "english\\BA_frostjoke.txt" : "BA_frostjoke.txt";
       }
       if (file.Open(path, 0, true, false)) {
         const int size = static_cast<int>(file.GetSize());
@@ -6772,7 +6774,7 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
     if (itemId == 0x3113) {
       const int job = player->GetEffectiveJob(-1);
       char text[0x100];
-      strcpy_s(text, sizeof(text), LookupMessage(job >= 4054 && job <= 4112 ? 0x704 : 0x703));
+      strcpy_s(text, sizeof(text), LookupMessage(job >= 4054 && job <= 4112 ? MSI_PLUSEXP50 : MSI_PLUSEXP75));
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF00, 8, 0, 0);
     }
   } else {
@@ -6908,11 +6910,11 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
   case Mother:
   case Korea_Rice_Cake:
   case Woe_Violet_Potion:
-  case 0x2D37:
-  case 0x2D38:
+  case Lucky_Cookie_B:
+  case Lucky_Candy_Cane_B:
   case Rice_Ball_B:
   case Candy_Striper_B:
-  case 0x2D3B:
+  case Lucky_Candy_B:
   case Candy_B:
   case Piece_Of_Cake_B:
   case Well_Baked_Cookie_B:
@@ -7421,7 +7423,7 @@ void CGameMode::InitializeState() {
   }
 
   g_mapSkyMgr->Apply(this->mapName);
-  if ((g_serviceType == 8 || g_serviceType == 9) && std::strcmp(this->mapName, "comodo.rsw") == 0 && g_serviceOptions.Get(8)) {
+  if ((g_serviceType == ServiceMalaysia || g_serviceType == ServiceSingapore) && std::strcmp(this->mapName, "comodo.rsw") == 0 && g_serviceOptions.Get(8)) {
     g_weatherEffect.Fireworks();
   }
 
@@ -8082,7 +8084,7 @@ void CGameMode::ShowActorNameBalloon(std::uint32_t id) {
   CRenderObject* actor = this->scene->GetGameActorByAID(id);
   if (actor) {
     CGameActor* gameActor = static_cast<CGameActor*>(actor);
-    if (gameActor->GetEffectiveJob(-1) == 45) {
+    if (gameActor->GetEffectiveJob(-1) == JT_WARPNPC) {
       return;
     }
 
@@ -8129,7 +8131,7 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
     this->SetCursorAction(11);
   } else {
     attack = HIBYTE(GetAsyncKeyState(VK_SHIFT)) == 0;
-    if (actor->objectType == 7) {
+    if (actor->objectType == NPC_PET_TYPE) {
       this->SetCursorAction(0);
     } else if (g_session.GetMapProperty08() != 0 || this->scene->isSiegeMode != 0) {
       if (g_session.IsLocalPlayerAid(actor->GetGdid())) {
@@ -8984,7 +8986,7 @@ void CGameMode::ProcessInput() {
     g_session.UpdateMonsterInfoEnabled(mode == 2 || mode == 4);
     if (pick) {
       bool offset;
-      if (this->skillId == 0xE7) {
+      if (this->skillId == AM_POTIONPITCHER) {
         offset = g_session.IsCompanionJob(pick->job) && pick->kind == 4;
       } else {
         int eligible;
@@ -9081,7 +9083,7 @@ void CGameMode::UpdateHoverNameBalloon() {
     }
   }
 
-  if (actor->GetEffectiveJob(-1) != 45 &&
+  if (actor->GetEffectiveJob(-1) != JT_WARPNPC &&
       (actor->objectType || (actor->render.visible == 1 && actor->render.enabled == 1 && !StateFlag02(actor->GetStateFlags())))) {
     this->SendMsg(MM_SHOWMOUSEPOINTER, static_cast<int>(actor->render.position.x), static_cast<int>(actor->render.position.z), 0, 0);
     return;
@@ -9143,7 +9145,7 @@ static_assert(sizeof(TalkSelectPacket) == 8);
 void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
   std::string defaults[3];
   std::string* parts = arguments ? arguments : defaults;
-  if (g_serviceType == 4 && talkType == TT_REQ_NUM_USER) {
+  if (g_serviceType == ServiceTaiwan && talkType == TT_REQ_NUM_USER) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_INVALID_COMMAND)), 0xFFFF, 0, 0, 0);
     return;
   }
@@ -9304,7 +9306,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
       char* message = const_cast<char*>(g_windowMgr.chatInputText.c_str());
       std::string copy(message);
       g_session.HiFriends(message);
-      if (g_serviceType == 0) {
+      if (g_serviceType == ServiceKorea) {
         std::sprintf(text, "[ To Friends ] : (Hi) %s", copy.c_str());
       } else {
         std::sprintf(text, "[ To Friends ] : (Hi) %s%s", g_serverLanguage->Prefix(false), copy.c_str());
@@ -9366,18 +9368,18 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
   case TT_SKILLFAIL_ON_OFF:
     g_serviceOptions.Set(0x71, !g_serviceOptions.Get(0x71));
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(g_serviceOptions.Get(0x71) ? 0x2DA : 0x2DB)), 0x64FFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(g_serviceOptions.Get(0x71) ? MSI_SKILLFAIL_ON : MSI_SKILLFAIL_OFF)), 0x64FFFF, 0, 0, 0);
     break;
   case TT_LOGINOUT_ON_OFF:
     g_serviceOptions.Set(0xA5, !g_serviceOptions.Get(0xA5));
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(g_serviceOptions.Get(0xA5) ? 0x414 : 0x415)), 0x64FFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(g_serviceOptions.Get(0xA5) ? MSI_LOGINOUT_ON : MSI_LOGINOUT_OFF)), 0x64FFFF, 0, 0, 0);
     g_windowMgr.RefreshGameSettings();
     break;
   case TT_EMBLEM_FRAME_ON_OFF:
     g_serviceOptions.Set(0xF3, !g_serviceOptions.Get(0xF3));
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(g_serviceOptions.Get(0xF3) ? 0xDC7 : 0xDC8)), 0x64FFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(g_serviceOptions.Get(0xF3) ? MSI_USESKILL_FAIL_EMPTY_SOUL_ENERGY : MSI_ADDSKILL_FAIL_INCLUDE_SKILL_YOU_CANNOT_LEARN)), 0x64FFFF, 0, 0, 0);
     g_windowMgr.RefreshGameSettings();
     break;
   case TT_BATTLE_ON_OFF:
@@ -9395,7 +9397,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
   case TT_BATTLECHAT_ON_OFF:
     g_session.battleChat = 1 - g_session.battleChat;
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(g_session.battleChat ? 0x555 : 0x556)), 0x64FFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(g_session.battleChat ? MSI_BATTLECHAT_ON : MSI_BATTLECHAT_OFF)), 0x64FFFF, 0, 0, 0);
     break;
   case TT_AUTO_MSG_ON_OFF:
     g_session.m_autoReplyEnabled = !g_session.m_autoReplyEnabled;
@@ -9449,7 +9451,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
   case TT_EFFECT_SOUND_ON_OFF:
     g_serviceOptions.Set(0xB, !g_serviceOptions.Get(0xB));
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(g_serviceOptions.Get(0xB) ? 0x1B : 0x1C)), 0x64FFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(g_serviceOptions.Get(0xB) ? MSI_SOUND_ON : MSI_SOUND_OFF)), 0x64FFFF, 0, 0, 0);
     if (g_serviceOptions.Get(0xB)) {
       g_soundMgr->tingOnly = 0;
     }
@@ -9457,17 +9459,17 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     break;
   case TT_TINGONLY_ON_OFF:
     g_soundMgr->tingOnly = g_soundMgr->tingOnly == 0;
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(g_soundMgr->tingOnly ? 0x5DA : 0x5DB)), 0x64FFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(g_soundMgr->tingOnly ? MSI_TINGONLY_ON : MSI_TINGONLY_OFF)), 0x64FFFF, 0, 0, 0);
     break;
   case TT_FRAMESKIP_ON_OFF:
     g_frameskip = 1 - g_frameskip;
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(g_frameskip ? 0x1D : 0x1E)), 0x64FFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(g_frameskip ? MSI_FRAME_SKIP_ON : MSI_FRAME_SKIP_OFF)), 0x64FFFF, 0, 0, 0);
     break;
   case TT_MUSIC_ON_OFF:
     g_serviceOptions.Set(7, !g_serviceOptions.Get(7));
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(g_serviceOptions.Get(7) ? 0x1F : 0x20)), 0x64FFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(g_serviceOptions.Get(7) ? MSI_BGM_ON : MSI_BGM_OFF)), 0x64FFFF, 0, 0, 0);
     if (g_serviceOptions.Get(7)) {
       g_soundMgr->PlayStream(nullptr, 0, false);
     } else {
@@ -10031,7 +10033,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
   case TT_PROBABILITY_TEST: {
     this->recordItemPickups = this->recordItemPickups == 0;
     std::string server("Dev");
-    if (g_serviceMode == 0 && server.compare(0, 3, g_launchServerName, std::strlen(g_launchServerName)) != 0) {
+    if (g_serviceMode == ServerPrimary && server.compare(0, 3, g_launchServerName, std::strlen(g_launchServerName)) != 0) {
       break;
     }
     SYSTEMTIME time;
@@ -10131,11 +10133,11 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
         bool friendly = true;
         bool known = true;
         switch (actor->objectType) {
-        case 8:
-        case 9:
-        case 10:
-        case 13:
-        case 14: {
+        case NPC_HO_TYPE:
+        case NPC_MERSOL_TYPE:
+        case NPC_ELEMENTAL_TYPE:
+        case NPC_ABR_TYPE:
+        case NPC_BIONIC_TYPE: {
           CGameActor* summoner = static_cast<CGameActor*>(scene->GetGameActorByAID(actor->emblemVersion));
           if (summoner) {
             if (!g_session.IsLocalPlayerAid(summoner->GetGdid())) {
@@ -10498,14 +10500,14 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
   if (pick->accountId != g_session.m_aid) {
     switch (pick->kind) {
     case 0:
-      if (pick->job != 45 && g_session.IsAllyActor(pick->accountId, pick->job) == 1) {
+      if (pick->job != JT_WARPNPC && g_session.IsAllyActor(pick->accountId, pick->job) == 1) {
         this->SetCursorAction(1);
         if (g_mouse.buttons[0] == 2) {
           result = 2;
         } else {
           result = 1;
         }
-      } else if (pick->job != 45) {
+      } else if (pick->job != JT_WARPNPC) {
         result = 1;
         if (IsPlayerJob(pick->job)) {
           const std::intptr_t mode = reinterpret_cast<std::intptr_t>(this->skillUseType);
@@ -10615,7 +10617,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
             if (attack) {
               if (skillMode) {
                 this->SetCursorAction(11);
-              } else if (actor != nullptr && actor->objectType == 7) {
+              } else if (actor != nullptr && actor->objectType == NPC_PET_TYPE) {
                 this->SetCursorAction(0);
               } else {
                 this->SetCursorAction(5);
@@ -10728,7 +10730,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
       CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(pick->accountId));
       if (actor != nullptr && actor->render.state != 3) {
         if (g_session.m_aid == static_cast<std::uint32_t>(actor->emblemVersion)) {
-          if (actor->objectType == 8 && this->skillId == 0xE7) {
+          if (actor->objectType == NPC_HO_TYPE && this->skillId == AM_POTIONPITCHER) {
             result = 1;
             this->SetCursorAction(11);
             this->lastMonGid = pick->accountId;
@@ -10759,7 +10761,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
 
   switch (pick->kind) {
   case 0: {
-    if (pick->job == 45) {
+    if (pick->job == JT_WARPNPC) {
       return result;
     }
 
@@ -11039,7 +11041,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
     this->SetCursorAction(0);
     if (g_session.IsMercenaryJob(pick->job)) {
       CWorld* scene = this->scene;
-      if (this->skillId == 0xE7 || ((scene->isPKZone != 0 || scene->isSiegeMode != 0 || siegeMode != 0) && !g_session.IsHomunAid(pick->accountId))) {
+      if (this->skillId == AM_POTIONPITCHER || ((scene->isPKZone != 0 || scene->isSiegeMode != 0 || siegeMode != 0) && !g_session.IsHomunAid(pick->accountId))) {
         if ((this->scene->isPKZone != 0 || this->scene->isSiegeMode != 0 || siegeMode != 0) && !g_session.IsHomunAid(pick->accountId)) {
           this->SetCursorAction(5);
         }

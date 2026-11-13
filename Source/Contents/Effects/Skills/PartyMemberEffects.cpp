@@ -123,10 +123,10 @@ CRagEffect* EffectActor::LaunchEffect(int effectId, vector3d deltaPos, float rot
   RecordLaunch(effectId);
 
   switch (effectId) {
-  case 837:
+  case EF_ROLLINGCAST:
     effect = new CRollingCutterRagEffect();
     break;
-  case 2444:
+  case EF_UNK_2444:
     effect = new CWhirlwindEffect();
     break;
   default:

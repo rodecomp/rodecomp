@@ -10,6 +10,22 @@
 #include <string>
 #include <vector>
 
+enum RefiningState : int {
+  REFINING_STATE_WAIT = 0,
+  REFINING_STATE_READY = 1,
+  REFINING_STATE_PROCESS = 2,
+  REFINING_STATE_SUCCESS = 3,
+  REFINING_STATE_FAIL = 4,
+  REFINING_STATE_DOWNGRADE = 5,
+  REFINING_STATE_FAIL2 = 6,
+};
+
+enum RefiningButtonId : int {
+  REFINING_BUTTON_PROBABILITY = 510,
+  REFINING_BUTTON_RETURN = 519,
+  REFINING_BUTTON_AGAIN = 520,
+};
+
 #pragma pack(push, 1)
 struct RefiningMaterial {
   /* 0000 */ std::uint32_t itemId;

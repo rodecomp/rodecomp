@@ -38,6 +38,7 @@
 #include "Client/Input/Mouse.h"
 #include "Client/Replay/Replay.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Contents/Guild/GuildMgr.h"
 #include "Contents/Jobs/JobInheritance.h"
 #include "Contents/Tables/MessageTable.h"
@@ -507,7 +508,7 @@ void CGameMode::UpdateNameBalloon(CGameActor* actor) {
   this->nameBalloonHeight = balloon->geometry.height;
   if (balloon) {
     const int aid = actor->render.accountId;
-    if (g_serviceType == 12) {
+    if (g_serviceType == ServiceBrazil) {
       switch (aid) {
       case 0x189111:
       case 0x189112:

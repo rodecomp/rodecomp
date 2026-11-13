@@ -1,8 +1,10 @@
 #include "Client/Replay/Replay.h"
 #include "Contents/Items/ItemType.h"
+#include "Contents/CombatTypes.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Items/ItemNaming.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Utility/Text/FormatString.h"
 #include "Contents/Tables/MessageTable.h"
 #include "Contents/Actors/PlayerNameDictionary.h"
@@ -315,7 +317,7 @@ std::string ITEM_INFO::DisplayName(unsigned char detailed) const {
         AppendText(result, text, this->Grade(text, capacity, 0));
       }
 
-      if (g_serviceType == 12 || g_serviceType == 14) {
+      if (g_serviceType == ServiceBrazil || g_serviceType == ServiceRussia) {
         AppendName(*this, result, text, capacity);
         AppendText(result, text, this->Element(text, capacity, 0));
         AppendText(result, text, this->Creator(text, capacity, 0));
@@ -344,12 +346,12 @@ std::string ITEM_INFO::DisplayName(unsigned char detailed) const {
         } else if (CardId(*this, 0) != 254 && CardId(*this, 0) != 255) {
           AppendName(*this, result, text, capacity);
           AppendText(result, text, this->Slots(text, capacity, 0));
-        } else if (g_serviceType == 12) {
+        } else if (g_serviceType == ServiceBrazil) {
           AppendName(*this, result, text, capacity);
           AppendText(result, text, this->Element(text, capacity, 0));
           AppendText(result, text, this->Star(text, capacity, 0));
           AppendText(result, text, this->Creator(text, capacity, 0));
-        } else if (g_serviceType == 14) {
+        } else if (g_serviceType == ServiceRussia) {
           AppendText(result, text, this->Star(text, capacity, 0));
           AppendName(*this, result, text, capacity);
           AppendText(result, text, this->Element(text, capacity, 0));
@@ -824,20 +826,20 @@ std::uint32_t __fastcall ItemCardColor(const ITEM_INFO* item) {
 // FUNCTION: fn_06583
 int ITEM_INFO::Element(char* output, int& capacity, unsigned char consume) const {
   switch (reinterpret_cast<const unsigned char*>(this->cards)[4]) {
-  case 0: {
+  case ELE_NEUTRAL: {
     const int id = std::atoi(this->itemId.c_str());
     if (id == 2634 || id == 2635) {
       return CopyText(output, capacity, consume, LookupMessage(2976));
     }
     return CopyText(output, capacity, consume, LookupMessage(450));
   }
-  case 1:
+  case ELE_WATER:
     return CopyText(output, capacity, consume, LookupMessage(MSI_MANUFACTURED_ICE_ITEM));
-  case 2:
+  case ELE_EARTH:
     return CopyText(output, capacity, consume, LookupMessage(MSI_MANUFACTURED_EARTH_ITEM));
-  case 3:
+  case ELE_FIRE:
     return CopyText(output, capacity, consume, LookupMessage(MSI_MANUFACTURED_FIRE_ITEM));
-  case 4:
+  case ELE_WIND:
     return CopyText(output, capacity, consume, LookupMessage(MSI_MANUFACTURED_WIND_ITEM));
   default:
     return 0;

@@ -362,7 +362,7 @@ void UINewMakeCharWnd::OnCreate(int width, int height) {
   closeButton->SetBitmap("유저인터페이스\\make_character_ver2\\bt_close_press.bmp", 2, 0);
   closeButton->SetSize(closeButton->BitmapWidth(), closeButton->BitmapHeight());
   closeButton->Move(0x300, 9);
-  closeButton->SetId(0xB9);
+  closeButton->SetId(ID_CANCEL);
   this->AddChild(closeButton);
 
   UIBmpTextButton* makeButton = new UIBmpTextButton();
@@ -379,7 +379,7 @@ void UINewMakeCharWnd::OnCreate(int width, int height) {
   makeButton->AddTextStyle(0, 0xE, 0x313131, 1, 1, -1000, -1000);
   makeButton->AddTextStyle(1, 0xE, 0x313131, 1, 1, -1000, -1000);
   makeButton->AddTextStyle(2, 0xE, 0x313131, 1, 1, -1000, -1000);
-  makeButton->SetId(0xB8);
+  makeButton->SetId(ID_OK);
   this->AddChild(makeButton);
 
   UIBmpTextButton* cancelButton = new UIBmpTextButton();
@@ -396,7 +396,7 @@ void UINewMakeCharWnd::OnCreate(int width, int height) {
   cancelButton->AddTextStyle(0, 0xE, 0x313131, 1, 1, -1000, -1000);
   cancelButton->AddTextStyle(1, 0xE, 0x313131, 1, 1, -1000, -1000);
   cancelButton->AddTextStyle(2, 0xE, 0x313131, 1, 1, -1000, -1000);
-  cancelButton->SetId(0xB9);
+  cancelButton->SetId(ID_CANCEL);
   this->AddChild(cancelButton);
 
   this->m_nameEdit = new UIEditCtrl2();
@@ -438,7 +438,7 @@ void UINewMakeCharWnd::OnCreate(int width, int height) {
   this->m_genderButtons[1]->SetBitmap("유저인터페이스\\make_character_ver2\\bt_male_press.bmp", 2, 0);
   this->m_genderButtons[1]->SetSize(this->m_genderButtons[1]->BitmapWidth(), this->m_genderButtons[1]->BitmapHeight());
   this->m_genderButtons[1]->Move(0x1B5, 0x3B);
-  this->m_genderButtons[1]->SetId(0x20D);
+  this->m_genderButtons[1]->SetId(MAKECHAR_BUTTON_GENDER);
   this->AddChild(this->m_genderButtons[1]);
 
   this->m_genderButtons[0] = new UIBitmapButton();
@@ -447,7 +447,7 @@ void UINewMakeCharWnd::OnCreate(int width, int height) {
   this->m_genderButtons[0]->SetBitmap("유저인터페이스\\make_character_ver2\\bt_female_press.bmp", 2, 0);
   this->m_genderButtons[0]->SetSize(this->m_genderButtons[0]->BitmapWidth(), this->m_genderButtons[0]->BitmapHeight());
   this->m_genderButtons[0]->Move(500, 0x3B);
-  this->m_genderButtons[0]->SetId(0x20D);
+  this->m_genderButtons[0]->SetId(MAKECHAR_BUTTON_GENDER);
   this->AddChild(this->m_genderButtons[0]);
 
   if (this->m_sex == 1) {
@@ -462,7 +462,7 @@ void UINewMakeCharWnd::OnCreate(int width, int height) {
   leftTurn->SetBitmap("유저인터페이스\\make_character_ver2\\bt_leftTurn_press.bmp", 2, 0);
   leftTurn->SetSize(leftTurn->BitmapWidth(), leftTurn->BitmapHeight());
   leftTurn->Move(0x1AA, 0xB3);
-  leftTurn->SetId(0xE3);
+  leftTurn->SetId(ID_LEFT);
   leftTurn->m_argument = 0;
   leftTurn->SetTooltip(LookupMessage(MSI_VIEW_BEFORE_WORLDINFO_TITLE));
   this->AddChild(leftTurn);
@@ -473,7 +473,7 @@ void UINewMakeCharWnd::OnCreate(int width, int height) {
   rightTurn->SetBitmap("유저인터페이스\\make_character_ver2\\bt_rightTurn_press.bmp", 2, 0);
   rightTurn->SetSize(rightTurn->BitmapWidth(), rightTurn->BitmapHeight());
   rightTurn->Move(0x227, 0xB3);
-  rightTurn->SetId(0xE2);
+  rightTurn->SetId(ID_RIGHT);
   rightTurn->m_argument = 0;
   rightTurn->SetTooltip(LookupMessage(MSI_VIEW_BEFORE_SERVERINFO));
   this->AddChild(rightTurn);
@@ -492,7 +492,7 @@ void UINewMakeCharWnd::OnCreate(int width, int height) {
     this->m_hairStyleButtons[index]->SetBitmap("유저인터페이스\\make_character_ver2\\bt_hairStyle_over.bmp", 1, 0);
     this->m_hairStyleButtons[index]->SetBitmap("유저인터페이스\\make_character_ver2\\bt_hairStyle_select.bmp", 2, 0);
     this->m_hairStyleButtons[index]->SetSize(0x24, 0x25);
-    this->m_hairStyleButtons[index]->SetId(0x20C);
+    this->m_hairStyleButtons[index]->SetId(MAKECHAR_BUTTON_HAIR_STYLE);
     this->m_hairStyleButtons[index]->Move((index % 4) * 0x26 + 0x25E, (index / 4) * 0x25 + 0x3B);
     this->AddChild(this->m_hairStyleButtons[index]);
     if (index == 0) {
@@ -705,7 +705,7 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     }
     return 0;
 
-  case 0x20C:
+  case MAKECHAR_BUTTON_HAIR_STYLE:
     for (int index = 0; index < 24; ++index) {
       if (sender == this->m_hairStyleButtons[index]) {
         if (index >= (g_session.IsDoramJob(this->m_job) == true ? 6 : 0x17)) {
@@ -723,7 +723,7 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     }
     return 0;
 
-  case 0x20D:
+  case MAKECHAR_BUTTON_GENDER:
     for (int index = 0; index < 2; ++index) {
       if (sender == this->m_genderButtons[index]) {
         if (index == this->m_sex) {

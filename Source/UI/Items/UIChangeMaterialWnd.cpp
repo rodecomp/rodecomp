@@ -381,7 +381,7 @@ int UIChangeMaterialWnd::SendMsg(
     break;
   case UM_COMMAND:
     switch (argument1) {
-    case 0x16c:
+    case ID_SORT_ITEMS:
       this->itemList->SortItems(argument2 > 0);
       break;
     case ID_OK:
@@ -393,7 +393,7 @@ int UIChangeMaterialWnd::SendMsg(
     case ID_SEARCH:
       this->itemList->SendMsg(nullptr, UM_COMMAND, ID_SEARCH, reinterpret_cast<std::intptr_t>(this->searchEdit->Text()), 0, 0);
       break;
-    case 0x19f:
+    case ID_PARTY_RELOAD_FIRST_PAGE:
       this->itemList->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       break;
     default:
@@ -693,7 +693,7 @@ void UIChangeMaterialWnd::OnCreate(int width, int height) {
   close->SetBitmap("유저인터페이스\\basic_interface\\sys_close_on.bmp", 2, 0);
   close->SetSize(close->BitmapWidth(), close->BitmapHeight());
   close->Move(480, 16);
-  close->SetId(201);
+  close->SetId(ID_CLOSE);
   this->AddChild(close);
 
   this->searchEdit = new UIEditCtrl();
@@ -715,7 +715,7 @@ void UIChangeMaterialWnd::OnCreate(int width, int height) {
   search->SetSize(search->BitmapWidth(), search->BitmapHeight());
   SetButtonText(search, LookupMessage(MSI_BO_BIONIC_PHARMACY_OK));
   search->Move(432, 259);
-  search->SetId(321);
+  search->SetId(ID_SEARCH);
   this->AddChild(search);
 
   UIBitmapButton* refresh = new UIBitmapButton();
@@ -725,7 +725,7 @@ void UIChangeMaterialWnd::OnCreate(int width, int height) {
   refresh->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_refresh_disable.bmp", 3, 0);
   refresh->SetSize(refresh->BitmapWidth(), refresh->BitmapHeight());
   refresh->Move(476, 259);
-  refresh->SetId(415);
+  refresh->SetId(ID_PARTY_RELOAD_FIRST_PAGE);
   this->AddChild(refresh);
 
   this->m_sortBox = new UIChangeMaterialWnd_CheckBox();
@@ -733,7 +733,7 @@ void UIChangeMaterialWnd::OnCreate(int width, int height) {
   this->m_sortBox->SetBitmaps("유저인터페이스\\ChangeMaterial\\btn_sort_up.bmp", "유저인터페이스\\ChangeMaterial\\btn_sort_down.bmp");
   this->m_sortBox->SetLabels(LookupMessage(MSI_MSG_IS_ILLEGAL_TAG_MSG), LookupMessage(MSI_BO_RESEARCHREPORT_ON));
   this->m_sortBox->Move(316, 24);
-  this->m_sortBox->SetId(364);
+  this->m_sortBox->SetId(ID_SORT_ITEMS);
   this->m_sortBox->SetChecked(1);
   this->AddChild(this->m_sortBox);
 
@@ -744,14 +744,14 @@ void UIChangeMaterialWnd::OnCreate(int width, int height) {
   this->m_button->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_change_disable.bmp", 3, 0);
   this->m_button->SetSize(this->m_button->BitmapWidth(), this->m_button->BitmapHeight());
   this->m_button->Move(140, 171);
-  this->m_button->SetId(184);
+  this->m_button->SetId(ID_OK);
   this->AddChild(this->m_button);
 
   UIBasicButton* cancel = new UIBasicButton();
   cancel->Configure(42, LookupMessage(MSI_ZENY_LOTTO_BUY_10));
   const int cancelY = height - cancel->geometry.height - 12;
   cancel->Move(width - cancel->geometry.width - 55, cancelY);
-  cancel->SetId(201);
+  cancel->SetId(ID_CLOSE);
   this->AddChild(cancel);
 
   this->itemList = new UIChangeMaterialWnd_List();

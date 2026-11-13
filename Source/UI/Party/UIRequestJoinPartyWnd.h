@@ -5,6 +5,11 @@
 
 #include <cstdint>
 
+enum RequestJoinPartyButtonId : int {
+  REQUESTJOIN_BUTTON_ACCEPT = 541,
+  REQUESTJOIN_BUTTON_REJECT = 542,
+};
+
 class UITextViewer;
 class UICheckBox;
 class UIStaticText;

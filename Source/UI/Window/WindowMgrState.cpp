@@ -4,6 +4,7 @@ __declspec(noinline) RenderSystemHolder* GetRenderSystemHolder();
 #include "Client/Mode/ModeMessage.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
+#include "Contents/Hotkeys/InterfaceHotkey.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/CLoginMode.h"
 #include "Client/Mode/ModeDragState.h"
@@ -1062,38 +1063,38 @@ void UIWindowMgr::SetBackgroundSurface(CBitmapRes* bitmap) {
 
 // OFFSET: 0x00AAA050
 // FUNCTION: fn_17266
-void UIWindowMgr::SendFlagEffect(int message) {
+void UIWindowMgr::SendFlagEffect(int hotkey) {
   CMode* mode = g_modeMgr.gameMode;
   if (!mode) {
     return;
   }
 
-  switch (message) {
-  case 210:
+  switch (hotkey) {
+  case HK_FLAG_1 + 200:
     mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_FLAG"), 0, 0, 0);
     break;
-  case 211:
+  case HK_FLAG_2 + 200:
     mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_INDONESIA_FLAG"), 0, 0, 0);
     break;
-  case 212:
+  case HK_FLAG_3 + 200:
     mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_PH_FLAG"), 0, 0, 0);
     break;
-  case 213:
+  case HK_FLAG_4 + 200:
     mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_MY_FLAG"), 0, 0, 0);
     break;
-  case 214:
+  case HK_FLAG_5 + 200:
     mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_SI_FLAG"), 0, 0, 0);
     break;
-  case 215:
+  case HK_FLAG_6 + 200:
     mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_BR_FLAG"), 0, 0, 0);
     break;
-  case 216:
+  case HK_FLAG_7 + 200:
     mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_INDIA_FLAG"), 0, 0, 0);
     break;
-  case 217:
+  case HK_FLAG_8 + 200:
     mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_FLAG8"), 0, 0, 0);
     break;
-  case 218:
+  case HK_FLAG_9 + 200:
     mode->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_FLAG9"), 0, 0, 0);
     break;
   }

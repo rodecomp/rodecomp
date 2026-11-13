@@ -6,6 +6,10 @@
 #include <string>
 #include <vector>
 
+enum PrivateAirplaneButtonId : int {
+  AIRPLANE_BUTTON_DESTINATION = 500,
+};
+
 class UIBasicButton;
 
 class UIPrivateAirplaneWnd : public UIFrameWnd {

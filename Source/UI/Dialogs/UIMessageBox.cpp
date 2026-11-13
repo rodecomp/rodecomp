@@ -803,7 +803,7 @@ int UIMessageBoxAutoreturn::SendMsg(UIWindow* sender, int message, std::intptr_t
 int UIMonsterInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
   case UM_COMMAND:
-    if (a == 184) {
+    if (a == ID_OK) {
       g_windowMgr.Schedule(this);
     }
 
@@ -961,7 +961,7 @@ int UIMerInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     case ID_FIRE_MER: {
       CMode* mode = g_modeMgr.GetGameMode();
 
-      if (g_windowMgr.Confirm(LookupMessage(MSI_DELETE_MER), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_DELETE_MER), 2, false, false, 0, "Message", 280, 120, 0) == ID_YES) {
         mode->SendMsg(MM_COMMAND_MER, 2, 0, 0, 0);
         g_windowMgr.CloseWindow(WID_MERINFOWND);
         g_windowMgr.CloseWindow(WID_SKILLLISTWND_SKILLTAB_1);
@@ -1417,12 +1417,12 @@ void UIPayConfirmWnd::Configure(const std::string& text, int itemId) {
   this->viewer->Move(7, 0x17);
   this->viewer->SetBackgroundColor(0xFFFF00FF);
 
-  auto accept = std::find_if(this->m_children.begin(), this->m_children.end(), [](UIWindow* child) { return child->geometry.id == 187; });
+  auto accept = std::find_if(this->m_children.begin(), this->m_children.end(), [](UIWindow* child) { return child->geometry.id == ID_YES; });
   if (this->m_children.end() != accept) {
     (*accept)->Move(0x59, 0x6D);
   }
 
-  auto cancel = std::find_if(this->m_children.begin(), this->m_children.end(), [](UIWindow* child) { return child->geometry.id == 188; });
+  auto cancel = std::find_if(this->m_children.begin(), this->m_children.end(), [](UIWindow* child) { return child->geometry.id == ID_NO; });
   if (this->m_children.end() != cancel) {
     auto* button = static_cast<UIBitmapButton*>(*cancel);
     button->SetBitmap("유저인터페이스\\basic_interface\\sys_close_off.bmp", 0, 0);
@@ -2301,13 +2301,13 @@ int UIReplayRECControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     case ID_CONFIRM_REPLAY_RECORDING_PATH: {
       auto* edit = static_cast<UIEditCtrl*>(this->filenameEdit);
       if (edit->Length() <= 0) {
-        g_windowMgr.Confirm(LookupMessage(1972), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_REPLAY_ENTERTHEFILENAME), 0, true, false, 0, "Message", 280, 120, 0);
         return 0;
       }
 
       if (_mbsstr(reinterpret_cast<const unsigned char*>(edit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkOpening.c_str())) ||
           _mbsstr(reinterpret_cast<const unsigned char*>(edit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkClosing.c_str()))) {
-        g_windowMgr.Confirm(LookupMessage(2812), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_STYLING_SHOP_OPEN_COUPON), 0, true, false, 0, "Message", 280, 120, 0);
         return 0;
       }
 
@@ -2870,7 +2870,7 @@ int UISelectReplayDataWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       }
       break;
     case ID_EXIT:
-      if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT), 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
         g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
         g_windowMgr.Schedule(this);
         return 0;
@@ -3039,7 +3039,7 @@ int UISelectServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       g_modeMgr.gameMode->SendMsg(LMM_CANCEL, 0, 0, 0, 0);
       return 0;
     case ID_EXIT:
-      if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT), 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
         g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
         g_windowMgr.Schedule(this);
         return 0;
@@ -3116,7 +3116,7 @@ void UIPetInfoWnd::Paint() {
     const int width = this->TextWidth(command, 0, 0, 12, 0, 0);
     this->DrawTextAt(206 - width / 2, 48, command, 0, 0, 12, 0, 0, 0);
     this->DrawTextAt(100, 119, LookupMessage(MSI_PET_ACCESSARY), 0, 0, 12, 0, 0, 0);
-    this->DrawTextAt(100, 139, LookupMessage(g_session.petAccessory == 0 ? 600 : 598), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(100, 139, LookupMessage(g_session.petAccessory == 0 ? MSI_ITEM_UNEQUIPED : MSI_ITEM_EQUIPED), 0, 0, 12, 0, 0, 0);
 
     if (this->autoFeedAvailable == 1) {
       this->DrawTextAt(100, 159, LookupMessage(MSI_PET_AUTO_FEEDING_OFF), 0, 0, 12, 0, 0, 0);
@@ -3322,7 +3322,7 @@ int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
           ShellExecuteA(hWnd, OBFUSCATE_TEXT_NAMED("open", 0x839B27DF8F5967B3ULL, verbName), url, nullptr, nullptr, SW_SHOWNORMAL);
           break;
         }
-        if (g_windowMgr.Confirm(LookupMessage(MSI_SELECTCHARWND_RESERVE_TO_DEL_CHAR), 2, true, false, 0, "Message", 280, 120, 0) != 187) {
+        if (g_windowMgr.Confirm(LookupMessage(MSI_SELECTCHARWND_RESERVE_TO_DEL_CHAR), 2, true, false, 0, "Message", 280, 120, 0) != ID_YES) {
           break;
         }
       }
@@ -3352,7 +3352,7 @@ int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       break;
     case ID_EXIT:
       this->SaveLogin();
-      if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT), 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
         goto quit;
       }
       break;
@@ -3411,8 +3411,8 @@ int UILoginOTPWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
   switch (message) {
   case UM_COMMAND: {
     switch (a) {
-    case 185:
-      if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+    case ID_CANCEL:
+      if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT), 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
         g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
         g_windowMgr.Schedule(this);
       }
@@ -3635,7 +3635,7 @@ int UIHomunInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       } else {
         char text[512];
         std::sprintf(text, LookupMessage(MSI_BLOCK_CALL_NOTIFY), this->nameEdit->Text());
-        if (g_windowMgr.Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) != 188) {
+        if (g_windowMgr.Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) != ID_NO) {
           if (g_forbiddenWords.Contains(this->nameEdit->Text()) != true) {
             g_modeMgr.GetGameMode()->SendMsg(MM_MER_RENAME, reinterpret_cast<int>(this->nameEdit->Text()), 0, 0, 0);
             std::sprintf(name, this->nameEdit->Text());
@@ -3675,7 +3675,7 @@ int UIHomunInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       return 0;
     case ID_DELETE_HOMUN: {
       CMode* mode = g_modeMgr.GetGameMode();
-      if (g_windowMgr.Confirm(LookupMessage(MSI_DELETE_HOMUN), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_DELETE_HOMUN), 2, false, false, 0, "Message", 280, 120, 0) == ID_YES) {
         mode->SendMsg(MM_COMMAND_HOMUN, 2, 0, 0, 0);
         g_windowMgr.CloseWindow(WID_HOMUNINFOWND);
         g_windowMgr.CloseWindow(WID_SKILLLISTWND_SKILLTAB_0);
@@ -3686,7 +3686,7 @@ int UIHomunInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     }
     case 488: {
       CMode* mode = g_modeMgr.GetGameMode();
-      if (sender == this->feedConfirmation && b == 187) {
+      if (sender == this->feedConfirmation && b == ID_YES) {
         if (g_windowMgr.LookupWindow(WID_EXCHANGEUI)) {
           g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_EXCHANGED_FAILED)), 255, 0, 0, 0);
         } else {
@@ -3830,7 +3830,7 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     return 0;
   }
   case UM_COMMAND:
-    if (a == 184 || a == 201) {
+    if (a == ID_OK || a == ID_CLOSE) {
       this->RecordResponse(static_cast<int>(a), b, c, d);
     }
 
@@ -3844,7 +3844,7 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       } else {
         char text[512];
         std::sprintf(text, LookupMessage(MSI_STORE_ASSISTANT_TRADE_CNT), this->nameEdit->Text());
-        if (g_windowMgr.Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) != 188) {
+        if (g_windowMgr.Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) != ID_NO) {
           if (g_forbiddenWords.Contains(this->nameEdit->Text()) != true) {
             g_modeMgr.GetGameMode()->SendMsg(MM_PET_RENAME, reinterpret_cast<int>(this->nameEdit->Text()), 0, 0, 0);
             std::sprintf(g_session.petName, this->nameEdit->Text());
@@ -3911,7 +3911,7 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     }
     case 488: {
       CMode* mode = g_modeMgr.GetGameMode();
-      if (sender == this->feedConfirmationWnd && b == 187) {
+      if (sender == this->feedConfirmationWnd && b == ID_YES) {
         if (g_windowMgr.LookupWindow(WID_EXCHANGEUI)) {
           g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARTERITEM_NAME_COUNT)), 255, 0, 0, 0);
           this->feedConfirmationWnd = nullptr;

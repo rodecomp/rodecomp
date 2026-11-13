@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/SunStanceEffect.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -38,16 +39,16 @@ void CSunStanceEffect::Open() {
     }
 
     switch (this->id) {
-    case 1214:
+    case EF_UNK_1214:
       particle->SetTexture("effect\\sun_stance\\sun_stance.tga");
       break;
-    case 1215:
+    case EF_UNK_1215:
       particle->SetTexture("effect\\sun_stance\\lunar_stance.tga");
       break;
-    case 1216:
+    case EF_UNK_1216:
       particle->SetTexture("effect\\sun_stance\\star_stance.tga");
       break;
-    case 1217:
+    case EF_UNK_1217:
       if (index == 0) {
         particle->SetTexture("effect\\sun_stance\\sun_stance.tga");
       } else if (index == 1) {

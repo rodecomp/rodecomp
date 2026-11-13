@@ -2,6 +2,7 @@
 #include "Contents/Tables/MessageTable.h"
 #include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
+#include "Network/Packets/PacketId.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Async/AsyncDiagnostic.h"
 #include "Utility/Cipher/XorBytes.h"
@@ -40,7 +41,7 @@ void CEmblemDataMgr::CompleteUpload(AsyncDiagnostic diagnostic, std::string resp
 
   switch (root[(OBFUSCATE_DECRYPT_BYTES(0xC52FB5FBB94FF917ULL, 5, {0x43, 0x80, 0x3F, 0xDC, 0xFB}))].asInt()) {
   case 1: {
-    EmblemVersionPacket packet{0x0B46, guildId, root[(OBFUSCATE_DECRYPT_BYTES(0x812BE72BCD5707B7ULL, 8, {0xC1, 0x62, 0x25, 0xBE, 0x42, 0x88, 0x45, 0x81}))].asInt()};
+    EmblemVersionPacket packet{ID_CZ_REQ_ADD_NEW_EMBLEM, guildId, root[(OBFUSCATE_DECRYPT_BYTES(0x812BE72BCD5707B7ULL, 8, {0xC1, 0x62, 0x25, 0xBE, 0x42, 0x88, 0x45, 0x81}))].asInt()};
     GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
     break;
   }

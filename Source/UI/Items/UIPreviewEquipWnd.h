@@ -8,6 +8,12 @@ class UIBasicButton;
 class UIBitmapButton;
 struct PreviewEquipWndInfo;
 
+enum PreviewEquipButtonId : int {
+  PREVIEWEQUIP_BUTTON_ROTATE_LEFT = 384,
+  PREVIEWEQUIP_BUTTON_ROTATE_RIGHT = 385,
+};
+
+
 class UIPreviewEquipWnd : public UIFrameWnd {
 public:
   UIPreviewEquipWnd();

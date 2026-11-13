@@ -244,6 +244,9 @@ enum item_itemid : int {
   Bath_Foam_B = 100148,
   Bath_Foam_C = 100149,
   Aroma_Oil = 100150,
+  Lucky_Cookie_B = 11575,
+  Lucky_Candy_Cane_B = 11576,
+  Lucky_Candy_B = 11579,
 };
 
 #endif

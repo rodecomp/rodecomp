@@ -2,6 +2,7 @@
 #include "UI/Window/WindowId.h"
 #include "UI/Items/UISwapEquipmentWnd.h"
 #include "UI/Window/UIEnums.h"
+#include "Contents/Items/ItemType.h"
 
 #include "Client/Input/InputCharset.h"
 #include "Client/Mode/CGameMode.h"
@@ -75,10 +76,10 @@ void UISwapEquipmentWnd::DragAndDrop(int x, int y, std::intptr_t value) {
 
   if (item.identity[1] > 0) {
     switch (item.identity[0]) {
-    case 10:
-    case 16:
-    case 17:
-    case 19:
+    case TYPE_ARROW:
+    case TYPE_AMMO:
+    case TYPE_THROWWEAPON:
+    case TYPE_CANNONBALL:
       mode->SendMsg(MM_WEAR_SWAP_EQUIP, drag->id, item.identity[2], 0, 0);
       break;
     default:
@@ -199,13 +200,13 @@ int UISwapEquipmentWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     case ID_CANCEL:
       g_session.m_swapEquipmentMode = 0;
       if (g_windowMgr.equipWnd) {
-        g_windowMgr.equipWnd->SendMsg(nullptr, UM_COMMAND, 0x1FC, 0, 0, 0);
+        g_windowMgr.equipWnd->SendMsg(nullptr, UM_COMMAND, SWAPEQUIP_BUTTON_SWAP, 0, 0, 0);
       }
       break;
     case ID_CLOSE:
-      g_windowMgr.CloseWindow(0x128);
+      g_windowMgr.CloseWindow(WID_SWAPEQUIPMENTWND);
       return 1;
-    case 0x1FC:
+    case SWAPEQUIP_BUTTON_SWAP:
       if (g_windowMgr.LookupWindow(WID_EXCHANGEUI)) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SWAP_EQUIPITEM_FAIL_CHAT)), 0xFF, 0, 0, 0);
         return 1;
@@ -314,13 +315,13 @@ void UISwapEquipmentWnd::OnCreate(int width, int height) {
   this->m_swapButton->SetLabel(LookupMessage(MSI_DESC_VIT2));
   this->m_swapButton->m_textColor = 0x172842;
   this->m_swapButton->Move(0x51, 0x9B);
-  this->m_swapButton->SetId(0x1FC);
+  this->m_swapButton->SetId(SWAPEQUIP_BUTTON_SWAP);
   this->AddChild(this->m_swapButton);
 
   UIBasicButton* close = new (std::nothrow) UIBasicButton();
   close->Configure(0x32, LookupMessage(MSI_CANCEL));
   close->Move(0xE0, 0x9B);
-  close->SetId(0xB9);
+  close->SetId(ID_CANCEL);
   this->AddChild(close);
 }
 

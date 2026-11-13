@@ -1,4 +1,6 @@
 #include "Client/Application/ApplicationWindow.h"
+#include "Client/Mode/ModeMessage.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Party/AdventurerAgencyMgr.h"
@@ -11,7 +13,7 @@
 // FUNCTION: fn_17849
 int CMode::SendMsg(int event, int argument1, int, int, int) {
   switch (event) {
-  case 2:
+  case MM_QUIT:
     g_accountLinkedUserDataMgr->Save();
     if (g_modeMgr.state == 1 && g_modeMgr.gameMode) {
       g_characterLinkedUserDataMgr->Save();
@@ -24,12 +26,12 @@ int CMode::SendMsg(int event, int argument1, int, int, int) {
       g_modeMgr.gameMode->running = 0;
     }
 
-    if (g_serviceType == 11) {
+    if (g_serviceType == ServiceIndia) {
       ShellExecuteA(hWnd, "open", "http://www.ragnarok.co.in/index.php", nullptr, nullptr, SW_SHOWNORMAL);
     }
     g_modeMgr.running = 0;
     break;
-  case 68:
+  case MM_SCREENSHOT:
     this->screenshotRequested = 1;
     if (const char* text = reinterpret_cast<const char*>(argument1)) {
       this->screenshotName = text;

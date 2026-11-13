@@ -760,24 +760,24 @@ void CGameMode::NotifyPrivateAirplaneResult(int result) {
   }
 
   switch (result) {
-  case 0:
+  case PRIVATEAIRSHIP_OK:
     if (!g_windowMgr.modalWindows.empty() && g_windowMgr.modalWindows.back()) {
       g_windowMgr.modalResponse = 188;
     }
     break;
-  case 1:
+  case PRIVATEAIRSHIP_RETRY:
     window->SendMsg(nullptr, 154, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PRIVATE_AIRPLANE_FAIL_LEVEL)), 0, 0, 0);
     break;
-  case 2:
+  case PRIVATEAIRSHIP_ITEM_NOT_ENOUGH:
     window->SendMsg(nullptr, 154, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CREATE_ACCOUNT)), 0, 0, 0);
     break;
-  case 3:
+  case PRIVATEAIRSHIP_DESTINATION_MAP_INVALID:
     window->SendMsg(nullptr, 154, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_REGISTER_NAME_THAT_CONTAINS_BADWORDS)), 0, 0, 0);
     break;
-  case 4:
+  case PRIVATEAIRSHIP_SOURCE_MAP_INVALID:
     window->SendMsg(nullptr, 154, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ENTER_ONE_LINE_WITHOUT_LINE_BREAKS)), 0, 0, 0);
     break;
-  case 5:
+  case PRIVATEAIRSHIP_ITEM_UNAVAILABLE:
     window->SendMsg(nullptr, 154, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MAKECHARWND_TITLE)), 0, 0, 0);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BUSY)), 0xFF, 0, 0, 0);
     break;
@@ -1095,19 +1095,19 @@ void CGameMode::ReceiveFastMove(const unsigned char* data) {
 // FUNCTION: fn_22121
 void CGameMode::NotifyGmCheckerResult(int result) {
   switch (result) {
-  case 0:
+  case MACROCHECKER_NOGM:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GAME_SETTINGS_TAB_BASIC)), 0xFF, 0, 0, 0);
     break;
-  case 1:
+  case MACROCHECKER_MAPFLAG:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GAME_SETTINGS_TAB_EFFECT)), 0xFF, 0, 0, 0);
     break;
-  case 2:
+  case MACROCHECKER_COOLDOWN:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GAME_SETTINGS_TAB_CONTROL)), 0xFF, 0, 0, 0);
     break;
-  case 3:
+  case MACROCHECKER_UNKNOWN_MAP:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CHECK_CHAR_DELETE_TEXT)), 0xFF, 0, 0, 0);
     break;
-  case 4:
+  case MACROCHECKER_SUCCESS:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GAME_SETTINGS_TAB_GRAPHICS)), 0xFF, 0, 0, 0);
     break;
   }
@@ -1671,13 +1671,13 @@ void CGameMode::ReceiveLapineBoxResult(std::uint16_t result) {
   }
 
   switch (result) {
-  case 0:
+  case LAPHINE_SYNTHESIS_SUCCESS:
     if (g_windowMgr.LookupWindow(WID_LAPINEBOXWND)) {
       g_windowMgr.CloseWindow(WID_LAPINEBOXWND);
     }
     break;
-  case 5:
-  case 7: {
+  case LAPHINE_SYNTHESIS_AMOUNT:
+  case LAPHINE_SYNTHESIS_ITEM: {
     UIWindow* window = g_windowMgr.LookupWindow(WID_LAPINEBOXWND);
     if (window) {
       window->SendMsg(nullptr, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_REGISTER_PARTY_TO_BOOKINGSYSTEM)), 0, 0, 0);
@@ -4927,7 +4927,7 @@ void CGameMode::ReceiveMapProperty(const unsigned char* data) {
   if (GetBaseJob(g_session.GetDisplayJob()) == 0x1082 && !g_mapPropertyMgr->GetValue(g_session.mapPropertyId, 41)) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RANKING_NAME)), 0xFFFF64, 0, 0, 0);
   }
-  if ((g_session.GetDisplayJob() == 0x108F || g_session.GetDisplayJob() == 0x1091 || g_session.GetDisplayJob() == 0x10CE) &&
+  if ((g_session.GetDisplayJob() == JT_STAR_EMPEROR || g_session.GetDisplayJob() == JT_STAR_EMPEROR_B || g_session.GetDisplayJob() == JT_SKY_EMPEROR) &&
       !g_mapPropertyMgr->GetValue(g_session.mapPropertyId, 41)) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RANKING_NAME)), 0xFFFF64, 0, 0, 0);
   }
@@ -7595,29 +7595,29 @@ void CGameMode::ReceiveGuildStorageLogItems(const unsigned char* data) {
 
 static std::map<int, int> BuildStatusFlagEffects() {
   std::map<int, int> effects;
-  effects[0x1] = 0x373;
-  effects[0x2] = 0x374;
-  effects[0x4] = 0x375;
-  effects[0x8] = 0x376;
-  effects[0x10] = 0x377;
-  effects[0x20] = 0x378;
-  effects[0x40] = 0x379;
-  effects[0x80] = 0x37A;
-  effects[0x100] = 0x37B;
+  effects[0x1] = EFST_HEALTHSTATE_POISON;
+  effects[0x2] = EFST_HEALTHSTATE_CURSE;
+  effects[0x4] = EFST_HEALTHSTATE_SILENCE;
+  effects[0x8] = EFST_HEALTHSTATE_CONFUSION;
+  effects[0x10] = EFST_HEALTHSTATE_BLIND;
+  effects[0x20] = EFST_HEALTHSTATE_ANGELUS;
+  effects[0x40] = EFST_HEALTHSTATE_BLOODING;
+  effects[0x80] = EFST_HEALTHSTATE_HEAVYPOISON;
+  effects[0x100] = EFST_HEALTHSTATE_FEAR;
   return effects;
 }
 
 static std::map<int, int> BuildStatusLevelEffects() {
   std::map<int, int> effects;
   effects[0] = 0;
-  effects[1] = 0x36B;
-  effects[2] = 0x36C;
-  effects[3] = 0x36D;
-  effects[4] = 0x36E;
+  effects[1] = EFST_BODYSTATE_STONECURSE;
+  effects[2] = EFST_BODYSTATE_FREEZING;
+  effects[3] = EFST_BODYSTATE_STUN;
+  effects[4] = EFST_BODYSTATE_SLEEP;
   effects[5] = 0;
-  effects[6] = 0x370;
-  effects[7] = 0x371;
-  effects[8] = 0x372;
+  effects[6] = EFST_BODYSTATE_STONECURSE_ING;
+  effects[7] = EFST_BODYSTATE_BURNNING;
+  effects[8] = EFST_BODYSTATE_IMPRISON;
   return effects;
 }
 
@@ -7632,9 +7632,9 @@ void CGameMode::ApplyStatusIcons(int level, unsigned int flags) {
   const std::uint32_t aid = g_session.m_aid;
   for (auto effect = statusFlagEffects.begin(); effect != statusFlagEffects.end(); ++effect) {
     switch (effect->second) {
-    case 0x377:
-    case 0x378:
-    case 0x379:
+    case EFST_HEALTHSTATE_BLIND:
+    case EFST_HEALTHSTATE_ANGELUS:
+    case EFST_HEALTHSTATE_BLOODING:
       break;
     default:
       this->ApplyStatusChange(aid, (effect->first & flags) != 0, effect->second, 9999, 0, 0, 0, 0, 9999);

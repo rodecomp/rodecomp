@@ -99,7 +99,7 @@ void UIItemRepairWnd::OnCreate(int width, int height) {
   this->m_list->backgroundRed = 240;
   this->m_list->backgroundGreen = 240;
   this->m_list->backgroundBlue = 240;
-  this->m_list->SetId(184);
+  this->m_list->SetId(ID_OK);
   this->AddChild(this->m_list);
 
   const std::string prefix("유저인터페이스\\");
@@ -131,7 +131,7 @@ void UIMakeTargetListWnd::OnCreate(int width, int height) {
   this->m_list->backgroundRed = 240;
   this->m_list->backgroundGreen = 240;
   this->m_list->backgroundBlue = 240;
-  this->m_list->SetId(184);
+  this->m_list->SetId(ID_OK);
   this->AddChild(this->m_list);
 
   const std::string prefix("유저인터페이스\\");
@@ -188,7 +188,7 @@ void UIMakeTargetResultWnd::OnCreate(int width, int height) {
   button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
   button->SetSize(button->BitmapWidth(), button->BitmapHeight());
   button->Move(buttonX, buttonY);
-  button->SetId(184);
+  button->SetId(ID_OK);
   this->AddChild(button);
 
   this->m_message0 = 184;
@@ -204,7 +204,7 @@ void UIWeaponRefineWnd::OnCreate(int width, int height) {
   this->m_list->backgroundRed = 240;
   this->m_list->backgroundGreen = 240;
   this->m_list->backgroundBlue = 240;
-  this->m_list->SetId(184);
+  this->m_list->SetId(ID_OK);
   this->AddChild(this->m_list);
 
   const std::string prefix("유저인터페이스\\");

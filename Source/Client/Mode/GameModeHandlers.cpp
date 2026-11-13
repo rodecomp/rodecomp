@@ -1,4 +1,5 @@
 #include "Client/Mode/CGameMode.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Contents/Effects/Core/EffectTypes.h"
 #include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
@@ -590,7 +591,7 @@ void CGameMode::ReceivePartyBookingUpdate(const unsigned char* packet) {
 // FUNCTION: fn_21787
 void CGameMode::ReceiveToggleNotice(const unsigned char* packet) {
   g_session.replaySessionFlag = packet[2];
-  const char* message = LookupMessage(g_session.replaySessionFlag == 0 ? 1326 : 1325);
+  const char* message = LookupMessage(g_session.replaySessionFlag == 0 ? MSI_INVITE_PARTY_ACCEPT : MSI_INVITE_PARTY_REFUSE);
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0x64FFFF, 0, 0, 0);
 }
 
@@ -885,7 +886,7 @@ void CGameMode::ReceiveHomunculusInfo(const unsigned char* data) {
   const HomunculusInfoPacket* packet = reinterpret_cast<const HomunculusInfoPacket*>(data);
   char* name = g_session.m_homunName;
   int* stats = g_session.m_homunStats;
-  if (g_serviceType == 10 || g_serviceType == 12 || g_serviceType == 15) {
+  if (g_serviceType == ServiceGermany || g_serviceType == ServiceBrazil || g_serviceType == ServiceVietnam) {
     std::sprintf(name, "%s", packet->name);
   } else {
     std::sprintf(name, packet->name);
@@ -990,7 +991,7 @@ void CGameMode::ReceiveHomunculusInfo2(const unsigned char* data) {
   const HomunculusInfoPacket2* packet = reinterpret_cast<const HomunculusInfoPacket2*>(data);
   char* name = g_session.m_homunName;
   int* stats = g_session.m_homunStats;
-  if (g_serviceType == 10 || g_serviceType == 12 || g_serviceType == 15) {
+  if (g_serviceType == ServiceGermany || g_serviceType == ServiceBrazil || g_serviceType == ServiceVietnam) {
     std::sprintf(name, "%s", packet->name);
   } else {
     std::sprintf(name, packet->name);
@@ -1062,7 +1063,7 @@ void CGameMode::ReceiveBookOpen(const unsigned char* packet) {
   _itoa(*reinterpret_cast<const int*>(packet + 2), number, 10);
 
   char path[260];
-  if (g_serviceType == 10) {
+  if (g_serviceType == ServiceGermany) {
     std::sprintf(path, "%sbook\\%s.txt", g_serverLanguage->servicePrefix.c_str(), number);
   } else {
     std::sprintf(path, "book\\%s.txt", number);
@@ -1125,7 +1126,7 @@ void CGameMode::IgnoreRemovedPacket2(const unsigned char*) {
 void CGameMode::ReceiveBillingInfo(const unsigned char* packet) {
   char text[512];
   std::memset(text, 0, sizeof(text));
-  if (g_serviceType == 3) {
+  if (g_serviceType == ServiceChina) {
     switch (*reinterpret_cast<const int*>(packet + 2)) {
     case 1:
       std::sprintf(text, LookupMessage(MSI_BILLING_1), *reinterpret_cast<const int*>(packet + 6) / 86400 + 1);
@@ -2486,7 +2487,7 @@ void CGameMode::ReceiveBroadcastBalloonNotice(const unsigned char* packet) {
     LookupMessage(MSI_PCBANG_EVENT), *reinterpret_cast<const int*>(packet + 2), *reinterpret_cast<const int*>(packet + 6),
     *reinterpret_cast<const int*>(packet + 10)
   );
-  if (g_serviceType == 12) {
+  if (g_serviceType == ServiceBrazil) {
     text = LookupMessage(MSI_BILLING_2);
   }
 
@@ -2496,7 +2497,7 @@ void CGameMode::ReceiveBroadcastBalloonNotice(const unsigned char* packet) {
       message.lines.emplace_back(text, color);
       balloon->AddMessage(0, message);
     }
-    if (g_serviceType == 0) {
+    if (g_serviceType == ServiceKorea) {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0x62B0FF, 0, 0, 0);
     }
   }

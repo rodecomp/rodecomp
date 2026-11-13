@@ -43,6 +43,22 @@ public:
     OBJECT_VALUE = 9,
   };
 
+  enum StorageKind : unsigned char {
+    null_value = 0,
+    bool_value = 1,
+    int64_value = 2,
+    uint64_value = 3,
+    half_value = 4,
+    double_value = 5,
+    short_string_value = 6,
+    long_string_value = 7,
+    byte_string_value = 8,
+    array_value = 9,
+    empty_object_value = 10,
+    object_value = 11,
+    json_const_pointer = 12,
+  };
+
   int GetType() const;
   bool IsNull() const;
   bool IsObject() const;
@@ -67,7 +83,7 @@ private:
 
 inline const JsonValue* JsonValue::Dereference() const {
   const JsonValue* value = this;
-  while ((value->type & 0x0f) == 0x0c) {
+  while ((value->type & 0x0f) == json_const_pointer) {
     value = static_cast<const JsonValue*>(value->pointer);
   }
 
@@ -77,26 +93,26 @@ inline const JsonValue* JsonValue::Dereference() const {
 inline int JsonValue::GetType() const {
   const JsonValue* value = this->Dereference();
   switch (value->type & 0x0f) {
-    case 0:
+    case null_value:
       return NULL_VALUE;
-    case 1:
+    case bool_value:
       return BOOL_VALUE;
-    case 2:
-    case 3:
+    case int64_value:
+    case uint64_value:
       return INT64_VALUE;
-    case 4:
+    case half_value:
       return HALF_VALUE;
-    case 5:
+    case double_value:
       return DOUBLE_VALUE;
-    case 6:
-    case 7:
+    case short_string_value:
+    case long_string_value:
       return STRING_VALUE;
-    case 8:
+    case byte_string_value:
       return BYTE_STRING_VALUE;
-    case 9:
+    case array_value:
       return ARRAY_VALUE;
-    case 10:
-    case 11:
+    case empty_object_value:
+    case object_value:
       return OBJECT_VALUE;
     default:
       return NULL_VALUE;
@@ -104,21 +120,21 @@ inline int JsonValue::GetType() const {
 }
 
 inline bool JsonValue::IsNull() const {
-  return (this->Dereference()->type & 0x0f) == 0;
+  return (this->Dereference()->type & 0x0f) == null_value;
 }
 
 inline bool JsonValue::IsObject() const {
   unsigned char tag = this->Dereference()->type & 0x0f;
-  return tag == 10 || tag == 11;
+  return tag == empty_object_value || tag == object_value;
 }
 
 inline bool JsonValue::AsBool() const {
   const JsonValue* value = this->Dereference();
   switch (value->type & 0x0f) {
-    case 1:
+    case bool_value:
       return value->smallValue != 0;
-    case 2:
-    case 3:
+    case int64_value:
+    case uint64_value:
       return value->integer != 0;
     default:
       throw std::domain_error("Not a bool");
@@ -128,9 +144,9 @@ inline bool JsonValue::AsBool() const {
 inline std::string JsonValue::AsString() const {
   const JsonValue* value = this->Dereference();
   switch (value->type & 0x0f) {
-    case 6:
+    case short_string_value:
       return std::string(reinterpret_cast<const char*>(value) + 2, value->type >> 4);
-    case 7: {
+    case long_string_value: {
       const unsigned int* view = static_cast<const unsigned int*>(value->pointer);
       return std::string(reinterpret_cast<const char*>(view[1]), view[2]);
     }
@@ -143,18 +159,18 @@ inline int JsonValue::AsInt() const {
   const JsonValue* value = this->Dereference();
   double real = 0.0;
   switch (value->type & 0x0f) {
-    case 1:
+    case bool_value:
       return value->smallValue != 0;
-    case 2:
-    case 3:
+    case int64_value:
+    case uint64_value:
       return static_cast<int>(value->integer);
-    case 4:
+    case half_value:
       return value->smallValue;
-    case 5:
+    case double_value:
       std::memcpy(&real, &value->integer, sizeof(real));
       return static_cast<int>(real);
-    case 6:
-    case 7:
+    case short_string_value:
+    case long_string_value:
       return std::atoi(this->AsString().c_str());
     default:
       throw std::domain_error("Not an integer");
@@ -165,11 +181,11 @@ inline double JsonValue::AsDouble() const {
   const JsonValue* value = this->Dereference();
   double real = 0.0;
   switch (value->type & 0x0f) {
-    case 2:
+    case int64_value:
       return static_cast<double>(value->integer);
-    case 3:
+    case uint64_value:
       return static_cast<double>(static_cast<unsigned long long>(value->integer));
-    case 5:
+    case double_value:
       std::memcpy(&real, &value->integer, sizeof(real));
       return real;
     default:
@@ -186,7 +202,7 @@ inline const JsonArray& JsonValue::GetArray() const {
 }
 
 inline const JsonArray& JsonValue::ArrayRange() const {
-  if ((this->type & 0x0f) != 9) {
+  if ((this->type & 0x0f) != array_value) {
     throw std::domain_error("Not an array");
   }
 
@@ -195,9 +211,9 @@ inline const JsonArray& JsonValue::ArrayRange() const {
 
 inline const JsonObject* JsonValue::ObjectRange() const {
   switch (this->type & 0x0f) {
-    case 10:
+    case empty_object_value:
       return nullptr;
-    case 11:
+    case object_value:
       return &static_cast<const JsonStorage<JsonObject>*>(this->pointer)->elements;
     default:
       throw std::domain_error("Not an object");

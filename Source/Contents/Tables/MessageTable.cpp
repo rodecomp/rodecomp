@@ -1,5 +1,6 @@
 #include "Client/Input/InputCharset.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Contents/Tables/MessageTable.h"
 #include "File/CommonObject.h"
 #include "File/File.h"
@@ -4928,7 +4929,7 @@ const char* LookupMessage(int id) {
     // STATIC: 0x016D57B4
     // GLOBAL: gl_24383
     static std::vector<std::string> cached(4698);
-    if (cached[id].empty() || g_serviceType == 19) {
+    if (cached[id].empty() || g_serviceType == ServiceUae) {
       // STATIC: 0x016D57C8
       // GLOBAL: gl_24384
       static char buffer[260];
@@ -5016,7 +5017,7 @@ int FindMessageId(const char* name) {
 // OFFSET: 0x00B00890
 // FUNCTION: fn_18371
 char* DecodeMessageRot(char* str) {
-  if (g_serviceType == 0) {
+  if (g_serviceType == ServiceKorea) {
     return str;
   }
 
@@ -5060,7 +5061,7 @@ void ImportMessageTable() {
 // OFFSET: 0x00B00EC0
 // FUNCTION: fn_18375
 bool IsObfuscatedMessage(int id) {
-  if (g_serviceType != 0) {
+  if (g_serviceType != ServiceKorea) {
     return false;
   }
 

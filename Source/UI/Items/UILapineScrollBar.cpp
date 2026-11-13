@@ -180,7 +180,7 @@ void UILapineBoxWnd::OnCreate(int, int) {
   this->cancelButton->SetBitmap("유저인터페이스\\lapine\\btn_cancel_dis.bmp", 3, 0);
   this->cancelButton->SetSize(this->cancelButton->BitmapWidth(), this->cancelButton->BitmapHeight());
   this->cancelButton->Move(280, 226);
-  this->cancelButton->SetId(201);
+  this->cancelButton->SetId(ID_CLOSE);
   this->AddChild(this->cancelButton);
 
   this->makeButton = new UIBitmapButton();
@@ -190,7 +190,7 @@ void UILapineBoxWnd::OnCreate(int, int) {
   this->makeButton->SetBitmap("유저인터페이스\\lapine\\btn_make_dis.bmp", 3, 0);
   this->makeButton->SetSize(this->makeButton->BitmapWidth(), this->makeButton->BitmapHeight());
   this->makeButton->Move(340, 226);
-  this->makeButton->SetId(503);
+  this->makeButton->SetId(ID_LAPINE_COMBINE_ITEMS);
   this->AddChild(this->makeButton);
 
   this->moveButton = new UIBitmapButton();
@@ -200,7 +200,7 @@ void UILapineBoxWnd::OnCreate(int, int) {
   this->moveButton->SetBitmap("유저인터페이스\\lapine\\btn_moveitem_dis.bmp", 3, 0);
   this->moveButton->SetSize(this->moveButton->BitmapWidth(), this->moveButton->BitmapHeight());
   this->moveButton->Move(213, 110);
-  this->moveButton->SetId(505);
+  this->moveButton->SetId(ID_LAPINE_ADD_INGREDIENT);
   this->AddChild(this->moveButton);
 }
 

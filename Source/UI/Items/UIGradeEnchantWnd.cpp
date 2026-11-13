@@ -178,7 +178,7 @@ void UIGradeEnchantWnd::OnCreate(int, int) {
   auto* title = new UIBasicButton();
   title->Configure(0x2A, LookupMessage(MSI_BOOK_CLOSE));
   title->Move(0x159, 299);
-  title->SetId(0xB9);
+  title->SetId(ID_CANCEL);
   this->AddChild(title);
 
   UIGradeEnchant_BtnStart* start = new UIGradeEnchant_BtnStart();
@@ -189,7 +189,7 @@ void UIGradeEnchantWnd::OnCreate(int, int) {
   start->SetBitmap("유저인터페이스\\grade_enchant\\btn_start_disable.bmp", 3, 0);
   start->Resize(start->BitmapWidth(), start->BitmapHeight());
   this->startButton->Move(0x23, 0x123);
-  this->startButton->SetId(0xB8);
+  this->startButton->SetId(ID_OK);
   {
     UIGradeEnchant_BtnStart* button = this->startButton;
     button->SetDisabled(0);
@@ -204,7 +204,7 @@ void UIGradeEnchantWnd::OnCreate(int, int) {
   enhancedUp->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_up_pick.bmp", 2, 0);
   enhancedUp->Resize(enhancedUp->BitmapWidth(), enhancedUp->BitmapHeight());
   this->enhancedUpButton->Move(0x9E, 0xE1);
-  this->enhancedUpButton->SetId(0x117);
+  this->enhancedUpButton->SetId(ID_UP);
   {
     UIGradeEnchant_BtnEnhancedUp* button = this->enhancedUpButton;
     button->SetDisabled(0);
@@ -219,7 +219,7 @@ void UIGradeEnchantWnd::OnCreate(int, int) {
   enhancedDown->SetBitmap("유저인터페이스\\grade_enchant\\btn_chance_down_pick.bmp", 2, 0);
   enhancedDown->Resize(enhancedDown->BitmapWidth(), enhancedDown->BitmapHeight());
   this->enhancedDownButton->Move(0x9E, 0xF0);
-  this->enhancedDownButton->SetId(0x118);
+  this->enhancedDownButton->SetId(ID_DOWN);
   {
     UIGradeEnchant_BtnEnhancedDown* button = this->enhancedDownButton;
     button->SetDisabled(0);
@@ -235,7 +235,7 @@ void UIGradeEnchantWnd::OnCreate(int, int) {
   help->SetSize(help->BitmapWidth(), help->BitmapHeight());
   help->Move(0x8C, 100);
   help->SetTooltip(LookupMessage(MSI_PROBABILITY_TITLE));
-  help->SetId(0x1FE);
+  help->SetId(GRADEENCHANT_BUTTON_PROBABILITY);
   this->AddChild(help);
 }
 
@@ -547,7 +547,7 @@ int UIGradeEnchantWnd::SendMsg(
         const int quantity = LookupClientItem(g_session.m_inventoryItems, this->materials[this->selectedMaterial].itemId, 0).quantity;
         if (quantity >= this->materials[this->selectedMaterial].amount && g_session.m_zeny >= this->SelectedMaterialZeny()) {
           if (this->protect != 0 || this->blessingAmount != 0 ||
-              g_windowMgr.Confirm(LookupMessage(MSI_MERCHANTSHOP_TOTA_LOVER_ZENY_ERR), 2, true, false, 0, "Message", 280, 120, 0) != 188) {
+              g_windowMgr.Confirm(LookupMessage(MSI_MERCHANTSHOP_TOTA_LOVER_ZENY_ERR), 2, true, false, 0, "Message", 280, 120, 0) != ID_NO) {
             this->requestPending = 1;
 
             GradeEnchantRequestPacket packet;
@@ -581,7 +581,7 @@ int UIGradeEnchantWnd::SendMsg(
         this->blessingAmount -= this->info.blessingStepAmount;
       }
       break;
-    case 510:
+    case GRADEENCHANT_BUTTON_PROBABILITY:
       ShellExecuteA(hWnd, "open", LookupMessage(MSI_ETC_PROBABILITY_URL), nullptr, nullptr, SW_SHOWNORMAL);
       break;
     }

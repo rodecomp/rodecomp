@@ -7,6 +7,16 @@
 #include <string>
 #include <vector>
 
+enum NavigationButtonId : int {
+  NAVI_BUTTON_DATA = 191,
+  NAVI_BUTTON_VIEW_CHANGE = 429,
+  NAVI_BUTTON_FIND = 430,
+  NAVI_SEARCH_LIST = 441,
+  NAVI_BUTTON_ROAD_LIST = 442,
+  NAVI_BUTTON_PRIVATE_AIRPLANE = 499,
+  NAVI_SEARCH_EDIT = 516,
+};
+
 class CBitmapRes;
 class CNavi_Object;
 class CTexture;

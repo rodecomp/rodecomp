@@ -207,17 +207,17 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       g_windowMgr.CloseWindow(WID_MENUWND);
     }
     if (this->m_owner->GetMember().valid) {
-      this->m_entries.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_USA_PERSONALINFO_DEATH)).c_str(), 58));
+      this->m_entries.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_USA_PERSONALINFO_DEATH)).c_str(), MENUID_WRITE_RODEX));
       if (this->m_owner->GetMember().name == g_session.DecodePlayerName()) {
-        this->m_entries.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_LEAVE_PARTY)).c_str(), 9));
+        this->m_entries.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_LEAVE_PARTY)).c_str(), MENUID_LEAVE));
       } else {
-        this->m_entries.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_OPEN_1ON1_WINDOW)).c_str(), 7));
+        this->m_entries.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_OPEN_1ON1_WINDOW)).c_str(), MENUID_TALKONLYTWO));
         if (g_session.partyLeader) {
-          this->m_entries.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_EXPEL)).c_str(), 0));
-          this->m_entries.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_YIELD_PARTYMASTER)).c_str(), 43));
+          this->m_entries.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_EXPEL)).c_str(), MENUID_EXPEL));
+          this->m_entries.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_YIELD_PARTYMASTER)).c_str(), MENUID_YIELD_PARTYMASTER));
         }
       }
-      this->m_entries.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_ACHIEVEMENT_NEXT_GRADE)).c_str(), 61));
+      this->m_entries.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_ACHIEVEMENT_NEXT_GRADE)).c_str(), MENUID_CLOSE_MINIPARTY));
     }
     if (this->m_entries.size()) {
       UIWindow* menu = g_windowMgr.EnsureWindow(WID_MENUWND);
@@ -225,7 +225,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       for (unsigned index = 0; index < this->m_entries.size(); ++index) {
         menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(this->m_entries[index].text.c_str()), 0, 0, 0);
       }
-      menu->SendMsg(nullptr, UM_SET_CALLER_WID, 301, this->m_owner->m_cell, 0, 0);
+      menu->SendMsg(nullptr, UM_SET_CALLER_WID, WID_MINIPARTYWND, this->m_owner->m_cell, 0, 0);
       menu->SendMsg(nullptr, UM_ADJUSTSIZE, 0, 0, 0, 0);
       int x = g_mouse.x + 1;
       int y = g_mouse.y + 1;
@@ -264,7 +264,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       this->SendMsg(nullptr, UM_COMMAND, ID_FRIEND_INFO, 0, 0, 0);
       return 0;
     case MENUID_EXPEL:
-    case 19:
+    case MENUID_DELETE_WHISPER_NAME:
       this->SendMsg(nullptr, UM_COMMAND, ID_DELETE_FRIEND, 0, 0, 0);
       return 0;
     case MENUID_LEAVE:
@@ -279,10 +279,10 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         return 0;
       }
       break;
-    case 43:
+    case MENUID_YIELD_PARTYMASTER:
       if (this->m_owner->m_cell != -1) {
         if (this->m_owner->GetMember().valid && this->m_owner->GetMember().offline == 0) {
-          if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_YIELD_PARTYMASTER), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
+          if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_YIELD_PARTYMASTER), 2, false, false, 0, "Message", 280, 120, 0) == ID_YES) {
             g_modeMgr.gameMode->SendMsg(MM_GROUP_CHANGE_MASTER, this->m_owner->GetMember().accountId, 0, 0, 0);
             return 0;
           }
@@ -293,13 +293,13 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         }
       }
       break;
-    case 58:
+    case MENUID_WRITE_RODEX:
       if (this->m_owner->GetMember().valid) {
         g_modeMgr.gameMode->SendMsg(MM_OPEN_WRITE_RODEX, reinterpret_cast<int>(this->m_owner->GetMember().name.c_str()), 0, 0, 0);
         return 0;
       }
       break;
-    case 61:
+    case MENUID_CLOSE_MINIPARTY:
       if (this->m_owner->GetMember().valid) {
         g_windowMgr.CloseMiniPartyWindow(this->m_owner->GetMember().accountId);
         return 0;
@@ -370,7 +370,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     case ID_LEAVE:
       if (!g_session.m_lockMouse) {
         if (this->m_owner->GetMember().valid && this->m_owner->GetMember().name == g_session.DecodePlayerName()) {
-          if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_LEAVE), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
+          if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_LEAVE), 2, false, false, 0, "Message", 280, 120, 0) == ID_YES) {
             g_modeMgr.gameMode->SendMsg(MM_REQ_LEAVE_GROUP, 0, 0, 0, 0);
             return 0;
           }

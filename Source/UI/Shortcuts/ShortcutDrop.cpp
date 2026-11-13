@@ -145,7 +145,7 @@ void UIShortCutWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
   case TYPE_ARROW:
   case TYPE_AMMO:
   case TYPE_THROWWEAPON:
-  case 19: {
+  case TYPE_CANNONBALL: {
     const int column = this->HitTestSlot(x, y);
     if (column != -1 && 9 * grid.rows <= 9 * g_session.m_hotkeyPage + column) {
       if (g_session.ItemSlotActive()) {
@@ -181,7 +181,7 @@ void UIShortCutWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
   case TYPE_ARROW:
   case TYPE_AMMO:
   case TYPE_THROWWEAPON:
-  case 19: {
+  case TYPE_CANNONBALL: {
     const int column = this->HitTestSlot(x, y);
     if (column != -1) {
       const int index = 9 * g_session.m_hotkeyPage + column;
@@ -298,7 +298,7 @@ void UIQuickSlotWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
       case TYPE_ARROW:
       case TYPE_AMMO:
       case TYPE_THROWWEAPON:
-      case 19: {
+      case TYPE_CANNONBALL: {
         const int slot = this->SlotAt(x, y);
         if (slot != -1) {
           g_session.SetHotkeyEntry(0, item.GetItemId(), 0, slot);

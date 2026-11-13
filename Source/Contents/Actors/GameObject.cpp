@@ -1964,11 +1964,11 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
   case AM_STANDENTRY: {
     PcStandEntry* entry = reinterpret_cast<PcStandEntry*>(static_cast<std::intptr_t>(b));
     switch (this->objectType) {
-    case 8:
-    case 9:
-    case 10:
-    case 13:
-    case 14:
+    case NPC_HO_TYPE:
+    case NPC_MERSOL_TYPE:
+    case NPC_ELEMENTAL_TYPE:
+    case NPC_ABR_TYPE:
+    case NPC_BIONIC_TYPE:
       this->emblemVersion = entry->pkState;
       break;
     }
@@ -1989,11 +1989,11 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
   case AM_INITSTANDENTRY: {
     PcStandEntry* entry = reinterpret_cast<PcStandEntry*>(static_cast<std::intptr_t>(b));
     switch (this->objectType) {
-    case 8:
-    case 9:
-    case 10:
-    case 13:
-    case 14:
+    case NPC_HO_TYPE:
+    case NPC_MERSOL_TYPE:
+    case NPC_ELEMENTAL_TYPE:
+    case NPC_ABR_TYPE:
+    case NPC_BIONIC_TYPE:
       this->emblemVersion = entry->pkState;
       break;
     }
@@ -2003,7 +2003,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     mode->CellCenter(entry->cellX, entry->cellY, this->render.position.x, this->render.position.z);
     this->render.position.y =
       mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
-    if (this->objectType == 5) {
+    if (this->objectType == NPC_MOB_TYPE) {
       const int job = this->job;
       if ((job >= 0x5248 && job <= 0x5260) || (job >= 0x5817 && job <= 0x588C)) {
         entry->direction += 4;
@@ -2048,11 +2048,11 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
   case AM_INITMOVEENTRY2: {
     PcMoveEntry* entry = reinterpret_cast<PcMoveEntry*>(static_cast<std::intptr_t>(b));
     switch (this->objectType) {
-    case 8:
-    case 9:
-    case 10:
-    case 13:
-    case 14:
+    case NPC_HO_TYPE:
+    case NPC_MERSOL_TYPE:
+    case NPC_ELEMENTAL_TYPE:
+    case NPC_ABR_TYPE:
+    case NPC_BIONIC_TYPE:
       this->emblemVersion = entry->pkState;
       break;
     }
@@ -2086,11 +2086,11 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
   case AM_MOVEENTRY2: {
     PcMoveEntry* entry = reinterpret_cast<PcMoveEntry*>(static_cast<std::intptr_t>(b));
     switch (this->objectType) {
-    case 8:
-    case 9:
-    case 10:
-    case 13:
-    case 14:
+    case NPC_HO_TYPE:
+    case NPC_MERSOL_TYPE:
+    case NPC_ELEMENTAL_TYPE:
+    case NPC_ABR_TYPE:
+    case NPC_BIONIC_TYPE:
       this->emblemVersion = entry->pkState;
       break;
     }

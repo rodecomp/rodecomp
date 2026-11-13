@@ -95,7 +95,7 @@ bool UITextViewer::AddItemLinks(std::string text, unsigned addedLines) {
     const int width = this->TextWidth(extracted[index].display.c_str(), 0, 0, 12, 0, 0);
     button->ResizeToTextClipped(width + 1, height);
     button->m_hoverColor = 0x00FF7864;
-    button->SetId(464);
+    button->SetId(LINK_BUTTON_ITEM);
     this->SplitTextLinkArguments(extracted[index].metadata, button);
     const auto position = this->LinkPosition(extracted[index].position, addedLines);
     button->m_value = position.first;
@@ -142,7 +142,7 @@ bool UITextViewer::AddNaviLinks(std::string text, unsigned addedLines) {
     const int width = this->TextWidth(link.display.c_str(), 0, 0, 12, 0, 0);
     button->ResizeToTextClipped(width + 1, height);
     button->m_hoverColor = 0x00FF7864;
-    button->SetId(438);
+    button->SetId(LINK_BUTTON_NAVI);
     this->SplitTextLinkArguments(link.metadata, button);
     const auto position = this->LinkPosition(link.position, addedLines);
     button->m_value = position.first;
@@ -243,7 +243,7 @@ bool UITextViewer::AddQuestLinks(std::string text, unsigned addedLines) {
     const int width = this->TextWidth(extracted[index].display.c_str(), 0, 0, 12, 0, 0);
     button->ResizeToTextClipped(width + 1, height);
     button->m_hoverColor = 0x00FF7864;
-    button->SetId(539);
+    button->SetId(LINK_BUTTON_QUEST);
     this->SplitTextLinkArguments(extracted[index].metadata, button);
     const auto position = this->LinkPosition(extracted[index].position, addedLines);
     button->m_value = position.first;
@@ -324,7 +324,7 @@ void UITextViewer::AddTipLinks(std::string text, unsigned addedLines) {
           const int width = this->TextWidth(labels[fragment].c_str(), 0, 0, 12, 0, 0);
           button->ResizeToTextClipped(width + 1, height);
           button->m_hoverColor = 0x00FF7864;
-          button->SetId(517);
+          button->SetId(LINK_BUTTON_TIP);
           this->SplitTextLinkArguments(extracted[index].metadata, button);
           const auto position = this->LinkPosition(fragment == 0 ? extracted[index].position : 0, addedLines - fragment);
           button->m_value = position.first;
@@ -339,7 +339,7 @@ void UITextViewer::AddTipLinks(std::string text, unsigned addedLines) {
         const int width = this->TextWidth(extracted[index].display.c_str(), 0, 0, 12, 0, 0);
         button->ResizeToTextClipped(width + 1, height);
         button->m_hoverColor = 0x00FF7864;
-        button->SetId(517);
+        button->SetId(LINK_BUTTON_TIP);
         this->SplitTextLinkArguments(extracted[index].metadata, button);
         const auto position = this->LinkPosition(extracted[index].position, addedLines);
         button->m_value = position.first;
@@ -381,7 +381,7 @@ bool UITextViewer::AddUrlLinks(std::string text, unsigned addedLines) {
     auto* button = new UITextButton();
     button->Configure(extracted[index].display.c_str(), 0x00E6A300, 0, 12, 0, 1);
     button->m_hoverColor = 0x00EFB700;
-    button->SetId(437);
+    button->SetId(LINK_BUTTON_URL);
     const int height = button->geometry.height;
     const int width = this->TextWidth(extracted[index].display.c_str(), 0, 0, 12, 0, 0);
     button->ResizeToTextClipped(width + 1, height);
@@ -401,19 +401,19 @@ bool UITextViewer::AddUrlLinks(std::string text, unsigned addedLines) {
 // INLINED
 void UITextViewer::AddLinks(const char* text, unsigned addedLines, int kind) {
   switch (kind) {
-  case 0:
+  case TEXT_LINK_ITEM:
     this->AddItemLinks(text, addedLines);
     break;
-  case 1:
+  case TEXT_LINK_URL:
     this->AddUrlLinks(text, addedLines);
     break;
-  case 2:
+  case TEXT_LINK_NAVI:
     this->AddNaviLinks(text, addedLines);
     break;
-  case 3:
+  case TEXT_LINK_TIP:
     this->AddTipLinks(text, addedLines);
     break;
-  case 4:
+  case TEXT_LINK_QUEST:
     this->AddQuestLinks(text, addedLines);
     break;
   default:

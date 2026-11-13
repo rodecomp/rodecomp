@@ -128,7 +128,7 @@ void UIStylingshopTabParentWnd::Paint() {
 // FUNCTION: fn_10353
 void UISlotForSelectWnd::OnLBtnDblClk(int, int) {
   if (this->parent) {
-    this->parent->SendMsg(nullptr, 121, 0, 0, 0, 0);
+    this->parent->SendMsg(nullptr, UM_REFRESH_PAGES, 0, 0, 0, 0);
   }
 }
 
@@ -159,13 +159,13 @@ void UIStylingShopButton::OnLBtnUp(int, int) {
   if (this->parent) {
     if (g_windowMgr.WindowPolicy(3, this->parent->geometry.id) != 0) {
       int id = this->geometry.id;
-      if (id == 185 && g_modeMgr.gameMode && g_modeMgr.gameMode->cursorType == 2) {
+      if (id == ID_CANCEL && g_modeMgr.gameMode && g_modeMgr.gameMode->cursorType == 2) {
         const char* text = LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT);
         if (g_windowMgr.Confirm(text, 2, true, false, 0, "Message", 280, 120, 0) == 187) {
           g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
         }
       } else {
-        if (id == 184 || id == 321) {
+        if (id == ID_OK || id == ID_SEARCH) {
           this->parent->RecordEditTexts();
           id = this->geometry.id;
         }
@@ -209,14 +209,14 @@ void UIStylingShopButton::OnMouseMove(int x, int y) {
 void UIStylingShopWnd::OnProcess() {
   for (std::map<UIWindow*, UIStylingshopTabParentWnd*>::iterator it = this->m_tabs.begin(); it != this->m_tabs.end(); ++it) {
     int id = it->first->geometry.id;
-    if (id == 200) {
+    if (id == ID_BASE) {
       it->second->primaryTabVisible = it->second->geometry.visible == 1;
-    } else if (id == 498 || id == 583) {
+    } else if (id == STYLINGSHOP_LAYOUT_2ND_COSTUME || id == STYLINGSHOP_TAB_COSTUME_CHANGE) {
       it->second->accessoryTabVisible = it->second->geometry.visible == 1;
     }
 
     if (it->second->geometry.visible != 0) {
-      if (it->first->geometry.id == 496) {
+      if (it->first->geometry.id == STYLINGSHOP_TAB_FAVORITE) {
         return;
       }
 
@@ -278,7 +278,7 @@ int UIBasicStylingWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
     return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
-  if (argument1 == 495) {
+  if (argument1 == STYLINGSHOP_BUTTON_PALETTE) {
     int count = 0;
     g_session.m_hotkeyScript->Call("StylingShop_GetSizeInTable", "s>d", "HeadPalette", &count);
 
@@ -326,7 +326,7 @@ int UICostumeChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
   }
 
   switch (argument1) {
-  case 584: {
+  case STYLINGSHOP_BUTTON_JOB_PREV: {
     UIDisplayCharacter* display = this->m_display;
     if (display->m_jobs.size() >= 2) {
       std::map<int, int>::iterator it = display->m_jobs.find(display->job);
@@ -342,7 +342,7 @@ int UICostumeChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     }
     break;
   }
-  case 585: {
+  case STYLINGSHOP_BUTTON_JOB_NEXT: {
     UIDisplayCharacter* display = this->m_display;
     if (display->m_jobs.size() >= 2) {
       std::map<int, int>::iterator it = display->m_jobs.find(display->job);
@@ -370,7 +370,7 @@ int UICostumeChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
 // FUNCTION: fn_10372
 int UIMyStyleWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   if (message != UM_COMMAND) {
-    if (message != 121) {
+    if (message != UM_REFRESH_PAGES) {
       return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
     }
 
@@ -378,7 +378,7 @@ int UIMyStyleWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
     if (this->m_slots[this->m_selectedSlot]) {
       UIDisplayCharacter* display = this->m_slots[this->m_selectedSlot]->m_display;
       for (std::map<UIWindow*, UIStylingshopTabParentWnd*>::iterator it = shop->m_tabs.begin(); it != shop->m_tabs.end(); ++it) {
-        if (it->first->geometry.id == 496 && it->second->geometry.visible == 1) {
+        if (it->first->geometry.id == STYLINGSHOP_TAB_FAVORITE && it->second->geometry.visible == 1) {
           shop->m_preview->CopyStyle(display);
           shop->SendMsg(nullptr, UM_COMMAND, ID_BASE, 0, 0, 0);
         }
@@ -542,7 +542,7 @@ void UIStylingShopWnd::RefreshFavoriteButton() {
   UIStylingshopTabParentWnd* visibleTab = nullptr;
   for (std::map<UIWindow*, UIStylingshopTabParentWnd*>::iterator it = this->m_tabs.begin(); it != this->m_tabs.end(); ++it) {
     if (it->second->geometry.visible == 1) {
-      if (it->first->geometry.id == 496) {
+      if (it->first->geometry.id == STYLINGSHOP_TAB_FAVORITE) {
         return;
       }
 
@@ -551,7 +551,7 @@ void UIStylingShopWnd::RefreshFavoriteButton() {
   }
 
   for (std::map<UIWindow*, UIStylingshopTabParentWnd*>::iterator it = this->m_tabs.begin(); it != this->m_tabs.end(); ++it) {
-    if (it->first->geometry.id == 496) {
+    if (it->first->geometry.id == STYLINGSHOP_TAB_FAVORITE) {
       UIMyStyleWnd* myStyle = static_cast<UIMyStyleWnd*>(it->second);
       UIDisplayCharacter* display = visibleTab->m_display;
       bool favorite = false;
@@ -588,7 +588,7 @@ __declspec(noinline) void UIStylingshopTabParentWnd::UpdateFavoriteButton(const 
 
   bool full = false;
   for (std::map<UIWindow*, UIStylingshopTabParentWnd*>::iterator it = shop->m_tabs.begin(); it != shop->m_tabs.end(); ++it) {
-    if (it->first->geometry.id == 496) {
+    if (it->first->geometry.id == STYLINGSHOP_TAB_FAVORITE) {
       UIMyStyleWnd* myStyle = static_cast<UIMyStyleWnd*>(it->second);
       full = true;
       for (int i = 0; i < 2; ++i) {
@@ -630,7 +630,7 @@ bool UIStylingShopWnd::AddToMyStyle() {
   }
 
   for (std::map<UIWindow*, UIStylingshopTabParentWnd*>::iterator it = this->m_tabs.begin(); it != this->m_tabs.end(); ++it) {
-    if (it->first->geometry.id == 496) {
+    if (it->first->geometry.id == STYLINGSHOP_TAB_FAVORITE) {
       UIMyStyleWnd* myStyle = static_cast<UIMyStyleWnd*>(it->second);
       int index = 0;
       for (; index < 2; ++index) {
@@ -758,7 +758,7 @@ void UIDisplayCharacter::LoadCostumes() {
 // FUNCTION: fn_10377
 void UIShowInfoWnd::ArrangeCheckBoxes(const int& layout) {
   switch (layout) {
-  case 496:
+  case STYLINGSHOP_TAB_FAVORITE:
     this->m_checkTop = 1;
     this->paymentFontSize = 11;
     this->paymentTextX = 24;
@@ -771,7 +771,7 @@ void UIShowInfoWnd::ArrangeCheckBoxes(const int& layout) {
       }
     }
     break;
-  case 200:
+  case ID_BASE:
     this->m_checkTop = 6;
     this->paymentFontSize = 12;
     this->showPaymentItems = 1;
@@ -787,7 +787,7 @@ void UIShowInfoWnd::ArrangeCheckBoxes(const int& layout) {
       this->m_checks[i]->Move(20, this->geometry.height / 8 * i + this->m_checkTop);
     }
     break;
-  case 497:
+  case STYLINGSHOP_TAB_ACCESSORY:
     this->m_checkTop = 1;
     this->paymentFontSize = 11;
     this->paymentTextX = 24;
@@ -800,8 +800,8 @@ void UIShowInfoWnd::ArrangeCheckBoxes(const int& layout) {
       }
     }
     break;
-  case 498:
-  case 583:
+  case STYLINGSHOP_LAYOUT_2ND_COSTUME:
+  case STYLINGSHOP_TAB_COSTUME_CHANGE:
     this->m_checkTop = 6;
     this->paymentFontSize = 12;
     this->showPaymentItems = 1;
@@ -826,7 +826,7 @@ __declspec(noinline) void ToggleStylingAccessory(int itemId, int slot) {
   UIStylingShopWnd* shop = static_cast<UIStylingShopWnd*>(g_windowMgr.LookupWindow(WID_STYLINGSHOPWND));
   auto it = shop->m_tabs.begin();
   for (; it != shop->m_tabs.end(); ++it) {
-    if (it->first->geometry.id == 497) {
+    if (it->first->geometry.id == STYLINGSHOP_TAB_ACCESSORY) {
       break;
     }
   }
@@ -939,34 +939,34 @@ void UIDisplayCharacter::SelectPreviousStyle(const char* table, int* goods) {
 std::string UIDisplayCharacter::GetStyleTable(const int& type) {
   std::string table;
   switch (type) {
-  case 1:
+  case STYLE_TABLE_HEAD_PALETTE:
     table = "HeadPalette";
     break;
-  case 2:
+  case STYLE_TABLE_HEAD_STYLE:
     table = "HeadStyle";
     break;
-  case 3:
+  case STYLE_TABLE_BODY_PALETTE:
     table = "BodyPalette";
     break;
-  case 7:
+  case STYLE_TABLE_BODY_STYLE:
     table = "BodyStyle";
     break;
-  case 4:
+  case STYLE_TABLE_TOP_ACCESSORY:
     table = "TopAccessory";
     break;
-  case 5:
+  case STYLE_TABLE_MID_ACCESSORY:
     table = "MidAccessory";
     break;
-  case 6:
+  case STYLE_TABLE_BOTTOM_ACCESSORY:
     table = "BottomAccessory";
     break;
   }
 
   switch (type) {
-  case 1:
-  case 4:
-  case 5:
-  case 6:
+  case STYLE_TABLE_HEAD_PALETTE:
+  case STYLE_TABLE_TOP_ACCESSORY:
+  case STYLE_TABLE_MID_ACCESSORY:
+  case STYLE_TABLE_BOTTOM_ACCESSORY:
     return table;
   default:
     if (!g_session.IsDoramJob(g_session.GetDisplayJob())) {
@@ -1009,25 +1009,25 @@ bool UIShowInfoWnd::CheckPayment(const int& index, const int& zeny, const int& i
 // FUNCTION: fn_10363
 void UIShowInfoWnd::GetPayment(const int& type, int* zeny, int* itemId, int* costumeItemId) {
   switch (type) {
-  case 1:
+  case STYLE_TABLE_HEAD_PALETTE:
     g_session.m_hotkeyScript->Call("StylingShop_GetPayment_by_goods", "sd>ddd", this->m_display->GetStyleTable(type).c_str(), this->m_display->headPalette, zeny, itemId, costumeItemId);
     break;
-  case 2:
+  case STYLE_TABLE_HEAD_STYLE:
     g_session.m_hotkeyScript->Call("StylingShop_GetPayment_by_goods", "sd>ddd", this->m_display->GetStyleTable(type).c_str(), this->m_display->head, zeny, itemId, costumeItemId);
     break;
-  case 3:
+  case STYLE_TABLE_BODY_PALETTE:
     g_session.m_hotkeyScript->Call("StylingShop_GetPayment_by_goods", "sd>ddd", this->m_display->GetStyleTable(type).c_str(), this->m_display->bodyStyle, zeny, itemId, costumeItemId);
     break;
-  case 4:
+  case STYLE_TABLE_TOP_ACCESSORY:
     g_session.m_hotkeyScript->Call("StylingShop_GetPayment_by_goods", "sd>ddd", this->m_display->GetStyleTable(type).c_str(), this->m_display->topAccessoryItemId, zeny, itemId, costumeItemId);
     break;
-  case 5:
+  case STYLE_TABLE_MID_ACCESSORY:
     g_session.m_hotkeyScript->Call("StylingShop_GetPayment_by_goods", "sd>ddd", this->m_display->GetStyleTable(type).c_str(), this->m_display->middleAccessoryItemId, zeny, itemId, costumeItemId);
     break;
-  case 6:
+  case STYLE_TABLE_BOTTOM_ACCESSORY:
     g_session.m_hotkeyScript->Call("StylingShop_GetPayment_by_goods", "sd>ddd", this->m_display->GetStyleTable(type).c_str(), this->m_display->bottomAccessoryItemId, zeny, itemId, costumeItemId);
     break;
-  case 7:
+  case STYLE_TABLE_BODY_STYLE:
     g_session.m_hotkeyScript->Call("StylingShop_GetPaymentChangeCostume", "dd>ddd", g_session.m_job, this->m_display->job, zeny, itemId, costumeItemId);
     break;
   }
@@ -1107,22 +1107,22 @@ int UIDisplayCharacter::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       --this->direction;
     }
     break;
-  case 450:
-    this->SelectPreviousStyle(this->GetStyleTable(2).c_str(), &this->head);
+  case STYLINGSHOP_BUTTON_HEAD_PREV:
+    this->SelectPreviousStyle(this->GetStyleTable(STYLE_TABLE_HEAD_STYLE).c_str(), &this->head);
     break;
-  case 451:
-    this->SelectNextStyle(this->GetStyleTable(2).c_str(), &this->head);
+  case STYLINGSHOP_BUTTON_HEAD_NEXT:
+    this->SelectNextStyle(this->GetStyleTable(STYLE_TABLE_HEAD_STYLE).c_str(), &this->head);
     break;
   case ID_PREVIEW:
-    this->SelectPreviousStyle(this->GetStyleTable(3).c_str(), &this->bodyStyle);
+    this->SelectPreviousStyle(this->GetStyleTable(STYLE_TABLE_BODY_PALETTE).c_str(), &this->bodyStyle);
     break;
   case ID_CANCEL:
     this->LoadSessionStyle();
     break;
   case ID_NEXTVIEW:
-    this->SelectNextStyle(this->GetStyleTable(3).c_str(), &this->bodyStyle);
+    this->SelectNextStyle(this->GetStyleTable(STYLE_TABLE_BODY_PALETTE).c_str(), &this->bodyStyle);
     break;
-  case 495:
+  case STYLINGSHOP_BUTTON_PALETTE:
     shop->SendMsg(nullptr, 495, 0, 0, 0, 0);
     break;
   case ID_BOOKMARK:
@@ -1409,15 +1409,15 @@ int UIStylingShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
 
   switch (argument1) {
   case ID_BASE:
-  case 496:
-  case 497:
-  case 498:
-  case 583:
-    if (g_session.IsTreeGroupThree(g_session.GetDisplayJob()) || g_session.IsTreeGroupTwo(g_session.GetDisplayJob()) || argument1 != 583) {
+  case STYLINGSHOP_TAB_FAVORITE:
+  case STYLINGSHOP_TAB_ACCESSORY:
+  case STYLINGSHOP_LAYOUT_2ND_COSTUME:
+  case STYLINGSHOP_TAB_COSTUME_CHANGE:
+    if (g_session.IsTreeGroupThree(g_session.GetDisplayJob()) || g_session.IsTreeGroupTwo(g_session.GetDisplayJob()) || argument1 != STYLINGSHOP_TAB_COSTUME_CHANGE) {
       std::map<UIWindow*, UIStylingshopTabParentWnd*>::iterator it;
       for (it = this->m_tabs.begin(); it != this->m_tabs.end(); ++it) {
         if (it->second->geometry.visible == 1) {
-          if (it->first->geometry.id != 496) {
+          if (it->first->geometry.id != STYLINGSHOP_TAB_FAVORITE) {
             UIStylingShopWnd* window = static_cast<UIStylingShopWnd*>(g_windowMgr.LookupWindow(WID_STYLINGSHOPWND));
             window->m_preview->CopyStyle(it->second->m_display);
           }
@@ -1427,10 +1427,10 @@ int UIStylingShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
 
       for (it = this->m_tabs.begin(); it != this->m_tabs.end(); ++it) {
         if (it->first->geometry.id == argument1) {
-          if (it->first->geometry.id != 496) {
+          if (it->first->geometry.id != STYLINGSHOP_TAB_FAVORITE) {
             it->second->m_display->CopyStyle(this->m_preview);
           }
-          if (it->first->geometry.id == 498) {
+          if (it->first->geometry.id == STYLINGSHOP_LAYOUT_2ND_COSTUME) {
             UI2ndCostumeWnd* costume = static_cast<UI2ndCostumeWnd*>(it->second);
             costume->m_hideCheckBox->SetChecked(costume->m_display->job == 0);
             costume->m_showCheckBox->SetChecked(costume->m_hideCheckBox->geometry.state == 0);
@@ -1456,7 +1456,7 @@ int UIStylingShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
         if (tab->geometry.visible == 0) {
           continue;
         }
-        if (it->first->geometry.id == 496) {
+        if (it->first->geometry.id == STYLINGSHOP_TAB_FAVORITE) {
           UIMyStyleWnd* myStyle = static_cast<UIMyStyleWnd*>(tab);
           UISlotOfMyStyleWnd* slot = myStyle->m_slots[myStyle->m_selectedSlot];
           if (slot && slot->m_showInfo && slot->m_showInfo->SendStyleChange() == true) {
@@ -1537,7 +1537,7 @@ void UISlotOfMyStyleWnd::OnCreate(int, int) {
 
   this->m_showInfo = new (std::nothrow) UIShowInfoWnd();
   this->m_showInfo->SetSize(this->geometry.width, static_cast<int>(std::round(static_cast<float>(this->geometry.height) * 0.36f)));
-  const int layout = 496;
+  const int layout = STYLINGSHOP_TAB_FAVORITE;
   this->m_showInfo->ArrangeCheckBoxes(layout);
   this->m_showInfo->Move(0, static_cast<int>(std::round(static_cast<float>(this->geometry.height) * 0.8f)) - 10);
   this->m_showInfo->m_display = this->m_display;
@@ -1550,27 +1550,27 @@ void UIStylingShopWnd::OnCreate(int, int) {
   this->AddCloseButton("", 0);
 
   UIBasicStylingWnd* basic = new (std::nothrow) UIBasicStylingWnd();
-  this->AddTab("유저인터페이스\\styleshop\\tab_hair_off.bmp", "유저인터페이스\\styleshop\\tab_hair_off.bmp", "유저인터페이스\\styleshop\\tab_hair_on.bmp", 200, basic,
+  this->AddTab("유저인터페이스\\styleshop\\tab_hair_off.bmp", "유저인터페이스\\styleshop\\tab_hair_off.bmp", "유저인터페이스\\styleshop\\tab_hair_on.bmp", ID_BASE, basic,
                LookupMessage(MSI_SKILL_FAIL_MHP_TOO_FEW));
   basic->Show(1);
   static_cast<UIButton*>(this->m_tabs.begin()->first)->SetState(2);
 
   UIAccessoryCusWnd* accessory = new (std::nothrow) UIAccessoryCusWnd();
   this->AddTab("유저인터페이스\\styleshop\\tab_accessories_off.bmp", "유저인터페이스\\styleshop\\tab_accessories_off_over.bmp",
-               "유저인터페이스\\styleshop\\tab_accessories_on.bmp", 497, accessory, LookupMessage(MSI_STYLING_SHOP_IS_NOT_COLORING_HEAD));
+               "유저인터페이스\\styleshop\\tab_accessories_on.bmp", STYLINGSHOP_TAB_ACCESSORY, accessory, LookupMessage(MSI_STYLING_SHOP_IS_NOT_COLORING_HEAD));
 
   if (g_session.IsTreeGroupThree(g_session.GetDisplayJob()) == true || g_session.IsTreeGroupTwo(g_session.GetDisplayJob()) == 1) {
     UICostumeChangeWnd* costume = new UICostumeChangeWnd();
-    this->AddTab("유저인터페이스\\styleshop\\tab_2ndcostume_off.bmp", "유저인터페이스\\styleshop\\tab_2ndcostume_on_over.bmp", "유저인터페이스\\styleshop\\tab_2ndcostume_on.bmp", 583,
+    this->AddTab("유저인터페이스\\styleshop\\tab_2ndcostume_off.bmp", "유저인터페이스\\styleshop\\tab_2ndcostume_on_over.bmp", "유저인터페이스\\styleshop\\tab_2ndcostume_on.bmp", STYLINGSHOP_TAB_COSTUME_CHANGE,
                  costume, LookupMessage(MSI_STYLING_SHOP_OPENING_COMMENT));
   } else {
     UICostumeChangeWnd* costume = new UICostumeChangeWnd();
-    this->AddTab("유저인터페이스\\styleshop\\tab_2ndcostume_off.bmp", "유저인터페이스\\styleshop\\tab_2ndcostume_off.bmp", "유저인터페이스\\styleshop\\tab_2ndcostume_off.bmp", 583,
+    this->AddTab("유저인터페이스\\styleshop\\tab_2ndcostume_off.bmp", "유저인터페이스\\styleshop\\tab_2ndcostume_off.bmp", "유저인터페이스\\styleshop\\tab_2ndcostume_off.bmp", STYLINGSHOP_TAB_COSTUME_CHANGE,
                  costume, LookupMessage(MSI_STYLING_SHOP_OPENING_COMMENT));
   }
 
   UIMyStyleWnd* myStyle = new (std::nothrow) UIMyStyleWnd();
-  this->AddTab("유저인터페이스\\styleshop\\tab_favorite_off.bmp", "유저인터페이스\\styleshop\\tab_favorite_off_over.bmp", "유저인터페이스\\styleshop\\tab_favorite_on.bmp", 496,
+  this->AddTab("유저인터페이스\\styleshop\\tab_favorite_off.bmp", "유저인터페이스\\styleshop\\tab_favorite_off_over.bmp", "유저인터페이스\\styleshop\\tab_favorite_on.bmp", STYLINGSHOP_TAB_FAVORITE,
                myStyle, LookupMessage(MSI_STYLING_SHOP_SUCCESS));
 
   this->m_preview = new UIDisplayCharacter();
@@ -1584,7 +1584,7 @@ void UIStylingShopWnd::OnCreate(int, int) {
   this->m_buyButton->SetBitmap("유저인터페이스\\styleshop\\btn_buy_down.bmp", 2, 0);
   this->m_buyButton->SetSize(this->m_buyButton->BitmapWidth(), this->m_buyButton->BitmapHeight());
   this->m_buyButton->Move(396, 306);
-  this->m_buyButton->SetId(224);
+  this->m_buyButton->SetId(ID_BUY);
   this->AddChild(this->m_buyButton);
 
   char zeny[256] = {};
@@ -1780,10 +1780,10 @@ void UIShowInfoWnd::DrawPayments() {
   }
 
   for (std::map<UIWindow*, UIStylingshopTabParentWnd*>::iterator it = shop->m_tabs.begin(); it != shop->m_tabs.end(); ++it) {
-    if (it->first->geometry.id == 496) {
+    if (it->first->geometry.id == STYLINGSHOP_TAB_FAVORITE) {
       if (it->second->geometry.visible != 0) {
         for (std::map<UIWindow*, UIStylingshopTabParentWnd*>::iterator tab = shop->m_tabs.begin(); tab != shop->m_tabs.end(); ++tab) {
-          if (tab->first->geometry.id == 496) {
+          if (tab->first->geometry.id == STYLINGSHOP_TAB_FAVORITE) {
             UIMyStyleWnd* myStyle = static_cast<UIMyStyleWnd*>(tab->second);
             bool buyable;
             if (myStyle->m_selectedSlot < 2 && myStyle->m_slots[myStyle->m_selectedSlot]) {
@@ -1847,48 +1847,48 @@ bool UIShowInfoWnd::SendStyleChange() {
     int kind = 0;
     int value = 0;
     const int type = *it;
-    if (type == 1) {
+    if (type == STYLE_TABLE_HEAD_PALETTE) {
       if (this->m_checks[index]->geometry.state != 0) {
         changed = true;
-        int table = 1;
+        int table = STYLE_TABLE_HEAD_PALETTE;
         g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", this->m_display->GetStyleTable(table).c_str(), this->m_display->headPalette, &value);
       }
-    } else if (type == 2) {
+    } else if (type == STYLE_TABLE_HEAD_STYLE) {
       if (this->m_checks[index]->geometry.state != 0) {
         changed = true;
-        int table = 2;
+        int table = STYLE_TABLE_HEAD_STYLE;
         g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", this->m_display->GetStyleTable(table).c_str(), this->m_display->head, &value);
         kind = g_session.IsDoramJob(g_session.GetDisplayJob()) == true ? 6 : 1;
       }
-    } else if (type == 3) {
+    } else if (type == STYLE_TABLE_BODY_PALETTE) {
       if (this->m_checks[index]->geometry.state != 0) {
         changed = true;
-        int table = 3;
+        int table = STYLE_TABLE_BODY_PALETTE;
         g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", this->m_display->GetStyleTable(table).c_str(), this->m_display->bodyStyle, &value);
         kind = g_session.IsDoramJob(g_session.GetDisplayJob()) == true ? 8 : 2;
       }
-    } else if (type == 4) {
+    } else if (type == STYLE_TABLE_TOP_ACCESSORY) {
       if (this->m_checks[index]->geometry.state != 0) {
         changed = true;
-        int table = 4;
+        int table = STYLE_TABLE_TOP_ACCESSORY;
         g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", this->m_display->GetStyleTable(table).c_str(), this->m_display->topAccessoryItemId, &value);
         kind = 3;
       }
-    } else if (type == 5) {
+    } else if (type == STYLE_TABLE_MID_ACCESSORY) {
       if (this->m_checks[index]->geometry.state != 0) {
         changed = true;
-        int table = 5;
+        int table = STYLE_TABLE_MID_ACCESSORY;
         g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", this->m_display->GetStyleTable(table).c_str(), this->m_display->middleAccessoryItemId, &value);
         kind = 4;
       }
-    } else if (type == 6) {
+    } else if (type == STYLE_TABLE_BOTTOM_ACCESSORY) {
       if (this->m_checks[index]->geometry.state != 0) {
         changed = true;
-        int table = 6;
+        int table = STYLE_TABLE_BOTTOM_ACCESSORY;
         g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", this->m_display->GetStyleTable(table).c_str(), this->m_display->bottomAccessoryItemId, &value);
         kind = 5;
       }
-    } else if (type == 7) {
+    } else if (type == STYLE_TABLE_BODY_STYLE) {
       if (this->m_checks[index]->geometry.state != 0) {
         changed = true;
         UIDisplayCharacter* display = this->m_display;
@@ -1969,7 +1969,7 @@ void UIAccessoryShowCase::AddAccessories(int& loaded, int& skipped, const char* 
     button->SetSize(button->BitmapWidth(), button->BitmapHeight());
     button->Move(static_cast<int>((button->BitmapWidth() + 7) * ((index - skipped - 1) % columns) + this->geometry.width * 0.03 + 2.5),
                  static_cast<int>((button->BitmapHeight() + 7) * ((index - skipped - 1) / columns) + this->geometry.height * 0.03));
-    button->SetId(189);
+    button->SetId(ID_BUTTON1);
     button->SetArgument(index);
 
     ITEM_DESC description = FindItemDescription(itemId);
@@ -2124,7 +2124,7 @@ void UIMyStyleWnd::OnCreate(int, int) {
   UISlotForSelectWnd* select = new UISlotForSelectWnd();
   select->SetSize(this->geometry.width, this->geometry.height);
   select->Move(0, 0);
-  select->SetId(204);
+  select->SetId(ID_SLOT);
   this->AddChild(select);
 
   for (int i = 0; i < 2; ++i) {
@@ -2134,7 +2134,7 @@ void UIMyStyleWnd::OnCreate(int, int) {
     this->deleteStyleButtons[i]->SetBitmap("유저인터페이스\\styleshop\\btn_delete_press.bmp", 2, 0);
     this->deleteStyleButtons[i]->SetSize(this->deleteStyleButtons[i]->BitmapWidth(), this->deleteStyleButtons[i]->BitmapHeight());
     this->deleteStyleButtons[i]->Move(static_cast<int>(std::round(static_cast<float>(this->geometry.width) * 0.5f)) * i + 7, 4);
-    this->deleteStyleButtons[i]->SetId(201);
+    this->deleteStyleButtons[i]->SetId(ID_CLOSE);
     if (this->m_slots[i] == nullptr) {
       this->deleteStyleButtons[i]->Enable(0);
     }
@@ -2149,7 +2149,7 @@ void UIMyStyleWnd::OnCreate(int, int) {
     this->rotateLeftButtons[i]->SetSize(this->rotateLeftButtons[i]->BitmapWidth(), this->rotateLeftButtons[i]->BitmapHeight());
     float ratio = static_cast<float>(i) * 0.5f + 0.25f;
     this->rotateLeftButtons[i]->Move(static_cast<int>(std::round(static_cast<float>(this->geometry.width) * ratio)) - this->rotateLeftButtons[i]->BitmapWidth(), 213);
-    this->rotateLeftButtons[i]->SetId(227);
+    this->rotateLeftButtons[i]->SetId(ID_LEFT);
     if (this->m_slots[i] == nullptr) {
       this->rotateLeftButtons[i]->Enable(0);
     }
@@ -2161,7 +2161,7 @@ void UIMyStyleWnd::OnCreate(int, int) {
     this->rotateRightButtons[i]->SetBitmap("유저인터페이스\\styleshop\\btn_rotatearrow_r_press.bmp", 2, 0);
     this->rotateRightButtons[i]->SetSize(this->rotateRightButtons[i]->BitmapWidth(), this->rotateRightButtons[i]->BitmapHeight());
     this->rotateRightButtons[i]->Move(static_cast<int>(std::round(static_cast<float>(this->geometry.width) * ratio)), 213);
-    this->rotateRightButtons[i]->SetId(226);
+    this->rotateRightButtons[i]->SetId(ID_RIGHT);
     if (this->m_slots[i] == nullptr) {
       this->rotateRightButtons[i]->Enable(0);
     }
@@ -2180,7 +2180,7 @@ void UIAccessoryCusWnd::OnCreate(int, int) {
 
   this->m_showInfo = new (std::nothrow) UIShowInfoWnd();
   this->m_showInfo->SetSize(this->m_display->geometry.width, static_cast<int>(std::round(static_cast<float>(this->geometry.height) * 0.4f)));
-  const int layout = 497;
+  const int layout = STYLINGSHOP_TAB_ACCESSORY;
   this->m_showInfo->ArrangeCheckBoxes(layout);
   this->m_showInfo->Move(0, this->m_display->geometry.height);
   this->m_showInfo->m_display = this->m_display;
@@ -2201,7 +2201,7 @@ void UIDisplayCharacter::CreateButtons() {
   upperLeft->SetBitmap("유저인터페이스\\styleshop\\arrow_chr_l_upper_over.bmp", 2, 0);
   upperLeft->SetSize(upperLeft->BitmapWidth(), upperLeft->BitmapHeight());
   upperLeft->Move(11, 90);
-  upperLeft->SetId(450);
+  upperLeft->SetId(STYLINGSHOP_BUTTON_HEAD_PREV);
   this->AddChild(upperLeft);
 
   UIBitmapButton* upperRight = new (std::nothrow) UIBitmapButton();
@@ -2210,7 +2210,7 @@ void UIDisplayCharacter::CreateButtons() {
   upperRight->SetBitmap("유저인터페이스\\styleshop\\arrow_chr_r_upper_over.bmp", 2, 0);
   upperRight->SetSize(upperRight->BitmapWidth(), upperRight->BitmapHeight());
   upperRight->Move(231, 90);
-  upperRight->SetId(451);
+  upperRight->SetId(STYLINGSHOP_BUTTON_HEAD_NEXT);
   this->AddChild(upperRight);
 
   UIBitmapButton* lowerLeft = new (std::nothrow) UIBitmapButton();
@@ -2219,7 +2219,7 @@ void UIDisplayCharacter::CreateButtons() {
   lowerLeft->SetBitmap("유저인터페이스\\styleshop\\arrow_chr_l_upper_over.bmp", 2, 0);
   lowerLeft->SetSize(lowerLeft->BitmapWidth(), lowerLeft->BitmapHeight());
   lowerLeft->Move(11, 117);
-  lowerLeft->SetId(354);
+  lowerLeft->SetId(ID_PREVIEW);
   this->AddChild(lowerLeft);
 
   UIBitmapButton* lowerRight = new (std::nothrow) UIBitmapButton();
@@ -2228,7 +2228,7 @@ void UIDisplayCharacter::CreateButtons() {
   lowerRight->SetBitmap("유저인터페이스\\styleshop\\arrow_chr_r_upper_over.bmp", 2, 0);
   lowerRight->SetSize(lowerRight->BitmapWidth(), lowerRight->BitmapHeight());
   lowerRight->Move(231, 117);
-  lowerRight->SetId(355);
+  lowerRight->SetId(ID_NEXTVIEW);
   this->AddChild(lowerRight);
 
   this->m_favoriteButton = new (std::nothrow) UIBitmapButton();
@@ -2237,7 +2237,7 @@ void UIDisplayCharacter::CreateButtons() {
   this->m_favoriteButton->SetBitmap("유저인터페이스\\styleshop\\btn_favorite_on.bmp", 2, 0);
   this->m_favoriteButton->SetSize(this->m_favoriteButton->BitmapWidth(), this->m_favoriteButton->BitmapHeight());
   this->m_favoriteButton->Move(7, 174);
-  this->m_favoriteButton->SetId(356);
+  this->m_favoriteButton->SetId(ID_BOOKMARK);
   this->AddChild(this->m_favoriteButton);
 
   UIBitmapButton* refresh = new (std::nothrow) UIBitmapButton();
@@ -2246,7 +2246,7 @@ void UIDisplayCharacter::CreateButtons() {
   refresh->SetBitmap("유저인터페이스\\styleshop\\btn_refresh_press.bmp", 2, 0);
   refresh->SetSize(refresh->BitmapWidth(), refresh->BitmapHeight());
   refresh->Move(7, 193);
-  refresh->SetId(185);
+  refresh->SetId(ID_CANCEL);
   this->AddChild(refresh);
 
   UIBitmapButton* rotateLeft = new (std::nothrow) UIBitmapButton();
@@ -2255,7 +2255,7 @@ void UIDisplayCharacter::CreateButtons() {
   rotateLeft->SetBitmap("유저인터페이스\\styleshop\\btn_rotatearrow_l_press.bmp", 2, 0);
   rotateLeft->SetSize(rotateLeft->BitmapWidth(), rotateLeft->BitmapHeight());
   rotateLeft->Move(-rotateLeft->BitmapWidth() - static_cast<int>(this->geometry.width * -0.5), 212);
-  rotateLeft->SetId(227);
+  rotateLeft->SetId(ID_LEFT);
   this->AddChild(rotateLeft);
 
   UIBitmapButton* rotateRight = new (std::nothrow) UIBitmapButton();
@@ -2264,7 +2264,7 @@ void UIDisplayCharacter::CreateButtons() {
   rotateRight->SetBitmap("유저인터페이스\\styleshop\\btn_rotatearrow_r_press.bmp", 2, 0);
   rotateRight->SetSize(rotateRight->BitmapWidth(), rotateRight->BitmapHeight());
   rotateRight->Move(static_cast<int>(this->geometry.width * 0.5), 212);
-  rotateRight->SetId(226);
+  rotateRight->SetId(ID_RIGHT);
   this->AddChild(rotateRight);
 }
 
@@ -2298,7 +2298,7 @@ void UIShowInfoWnd::OnCreate(int, int) {
     this->m_checks[i]->SetBitmaps("유저인터페이스\\styleshop\\check_able.bmp", "유저인터페이스\\styleshop\\Notcheck.bmp");
     this->m_checks[i]->SetChecked(0);
     this->m_checks[i]->Move(static_cast<int>(this->geometry.width * 0.1), this->geometry.height / 8 * i + this->m_checkTop);
-    this->m_checks[i]->SetId(189);
+    this->m_checks[i]->SetId(ID_BUTTON1);
     this->AddChild(this->m_checks[i]);
   }
 
@@ -2353,7 +2353,7 @@ void UI2ndCostumeWnd::OnCreate(int, int) {
 
   this->m_showInfo = new (std::nothrow) UIShowInfoWnd();
   this->m_showInfo->SetSize(this->geometry.width - this->m_display->geometry.width, this->geometry.height);
-  const int layout = 498;
+  const int layout = STYLINGSHOP_LAYOUT_2ND_COSTUME;
   this->m_showInfo->ArrangeCheckBoxes(layout);
   this->m_showInfo->Move(this->m_display->geometry.width, 13);
   this->m_showInfo->m_display = this->m_display;
@@ -2374,7 +2374,7 @@ void UIBasicStylingWnd::OnCreate(int, int) {
   this->AddChild(this->m_display);
 
   int count = 0;
-  const int type = 1;
+  const int type = STYLE_TABLE_HEAD_PALETTE;
   g_session.m_hotkeyScript->Call("StylingShop_GetSizeInTable", "s>d", this->m_display->GetStyleTable(type).c_str(), &count);
   for (int i = 0; i < count; ++i) {
     char normal[64];
@@ -2393,7 +2393,7 @@ void UIBasicStylingWnd::OnCreate(int, int) {
     button->SetBitmap(pressed, 2, 0);
     button->SetSize(button->BitmapWidth(), button->BitmapHeight());
     button->Move((button->BitmapWidth() + 4) * (i % 4) + 108, (button->BitmapHeight() + 4) * (i / 4) + 237);
-    button->SetId(495);
+    button->SetId(STYLINGSHOP_BUTTON_PALETTE);
     this->AddChild(button);
     this->m_paletteButtons.push_back(button);
   }
@@ -2403,14 +2403,14 @@ void UIBasicStylingWnd::OnCreate(int, int) {
   defaultButton->SetBitmap("유저인터페이스\\styleshop\\color00_on.bmp", 2, 0);
   defaultButton->SetSize(defaultButton->BitmapWidth(), defaultButton->BitmapHeight());
   defaultButton->Move(77, 256);
-  defaultButton->SetId(495);
+  defaultButton->SetId(STYLINGSHOP_BUTTON_PALETTE);
   this->AddChild(defaultButton);
   this->m_defaultPaletteButton = defaultButton;
   g_windowMgr.LookupWindow(WID_STYLINGSHOPWND);
 
   this->m_showInfo = new (std::nothrow) UIShowInfoWnd();
   this->m_showInfo->SetSize(this->geometry.width - this->m_display->geometry.width, this->geometry.height);
-  const int layout = 200;
+  const int layout = ID_BASE;
   this->m_showInfo->ArrangeCheckBoxes(layout);
   this->m_showInfo->Move(this->m_display->geometry.width, 13);
   this->m_showInfo->m_display = this->m_display;
@@ -2429,7 +2429,7 @@ void UICostumeChangeWnd::OnCreate(int, int) {
 
   this->m_showInfo = new UIShowInfoWnd();
   this->m_showInfo->SetSize(this->geometry.width - this->m_display->geometry.width, this->geometry.height);
-  const int layout = 583;
+  const int layout = STYLINGSHOP_TAB_COSTUME_CHANGE;
   this->m_showInfo->ArrangeCheckBoxes(layout);
   this->m_showInfo->Move(this->m_display->geometry.width, 13);
   this->m_showInfo->m_display = this->m_display;
@@ -2441,7 +2441,7 @@ void UICostumeChangeWnd::OnCreate(int, int) {
   previous->SetBitmap("유저인터페이스\\styleshop\\arrow_chr_l_upper_over.bmp", 2, 0);
   previous->SetSize(previous->BitmapWidth(), previous->BitmapHeight());
   previous->Move(19, 248);
-  previous->SetId(584);
+  previous->SetId(STYLINGSHOP_BUTTON_JOB_PREV);
   previous->Enable(1);
   this->AddChild(previous);
 
@@ -2451,7 +2451,7 @@ void UICostumeChangeWnd::OnCreate(int, int) {
   next->SetBitmap("유저인터페이스\\styleshop\\arrow_chr_r_upper_over.bmp", 2, 0);
   next->SetSize(next->BitmapWidth(), next->BitmapHeight());
   next->Move(220, 248);
-  next->SetId(585);
+  next->SetId(STYLINGSHOP_BUTTON_JOB_NEXT);
   next->Enable(1);
   this->AddChild(next);
 }

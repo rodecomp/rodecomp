@@ -1,4 +1,5 @@
 #include "Client/Application/Launcher.h"
+#include "Network/Packets/NoticeEnums.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Session/Session.h"
 #include "Contents/Actors/GameActor.h"
@@ -41,8 +42,8 @@ __declspec(noinline) unsigned char CSession::IsAllyActor(std::uint32_t aid, int 
   CGameActor* actor = static_cast<CGameActor*>(this->FindGameActor(aid));
   if (actor) {
     switch (actor->objectType) {
-    case 1:
-    case 6:
+    case NPC_TYPE:
+    case NPC_EVT_TYPE:
     case 12:
       return 1;
     }

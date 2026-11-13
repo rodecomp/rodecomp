@@ -123,7 +123,7 @@ void UIAdvenPartyBoardWnd::OnCreate(int, int) {
   search->SetBitmap("유저인터페이스\\UIadventurerAgency\\btn_search_disable.bmp", 3, 0);
   search->SetSize(search->BitmapWidth(), search->BitmapHeight());
   search->Move(354, 22);
-  search->SetId(365);
+  search->SetId(ID_PARTY_SEARCH);
   search->SetText(LookupMessage(MSI_ADVEN_PURPOSE));
   this->AddChild(search);
   auto* reset = new UIBmpTextButton();
@@ -133,7 +133,7 @@ void UIAdvenPartyBoardWnd::OnCreate(int, int) {
   reset->SetBitmap("유저인터페이스\\UIadventurerAgency\\btn_initialize_disable.bmp", 3, 0);
   reset->SetSize(reset->BitmapWidth(), reset->BitmapHeight());
   reset->Move(401, 22);
-  reset->SetId(363);
+  reset->SetId(ID_RESET);
   reset->SetText(LookupMessage(MSI_ADVEN_WARNING_TEXT));
   this->AddChild(reset);
   this->refresh = new UIBitmapButton();
@@ -143,7 +143,7 @@ void UIAdvenPartyBoardWnd::OnCreate(int, int) {
   this->refresh->SetBitmap("유저인터페이스\\UIadventurerAgency\\btn_refresh_disable.bmp", 3, 0);
   this->refresh->SetSize(this->refresh->BitmapWidth(), this->refresh->BitmapHeight());
   this->refresh->Move(452, 22);
-  this->refresh->SetId(415);
+  this->refresh->SetId(ID_PARTY_RELOAD_FIRST_PAGE);
   this->AddChild(this->refresh);
 
   this->previous = new UIBitmapButton();
@@ -153,7 +153,7 @@ void UIAdvenPartyBoardWnd::OnCreate(int, int) {
   this->previous->SetBitmap("유저인터페이스\\UIadventurerAgency\\btn_list_left_disable.bmp", 3, 0);
   this->previous->SetSize(this->previous->BitmapWidth(), this->previous->BitmapHeight());
   this->previous->Move(199, 319);
-  this->previous->SetId(246);
+  this->previous->SetId(ID_PREV);
   this->AddChild(this->previous);
   this->next = new UIBitmapButton();
   this->next->SetBitmap("유저인터페이스\\UIadventurerAgency\\btn_list_right.bmp", 0, 0);
@@ -162,7 +162,7 @@ void UIAdvenPartyBoardWnd::OnCreate(int, int) {
   this->next->SetBitmap("유저인터페이스\\UIadventurerAgency\\btn_list_right_disable.bmp", 3, 0);
   this->next->SetSize(this->next->BitmapWidth(), this->next->BitmapHeight());
   this->next->Move(265, 319);
-  this->next->SetId(218);
+  this->next->SetId(ID_NEXT);
   this->AddChild(this->next);
 
   const std::vector<CAdvenPartyInfo> parties = g_adventurerAgencyMgr->Entries();
@@ -175,7 +175,7 @@ void UIAdvenPartyBoardWnd::OnCreate(int, int) {
     this->rows[index]->SetSize(this->rows[index]->BitmapWidth(), this->rows[index]->BitmapHeight());
     this->rows[index]->Move(1, 73 + index * 24);
     DisableButton(this->rows[index], 1);
-    this->rows[index]->SetId(379);
+    this->rows[index]->SetId(ID_SELECT_PARTY_LISTING);
     this->rows[index]->m_argument = index;
     this->rows[index]->m_invalidateParent = 1;
     this->AddChild(this->rows[index]);
@@ -191,7 +191,7 @@ void UIAdvenPartyBoardWnd::OnCreate(int, int) {
   this->ownParty->SetBitmap("유저인터페이스\\UIadventurerAgency\\btn_recruiting_disable.bmp", 3, 0);
   this->ownParty->SetSize(this->ownParty->BitmapWidth(), this->ownParty->BitmapHeight());
   this->ownParty->Move(1, 49);
-  this->ownParty->SetId(564);
+  this->ownParty->SetId(ID_EDIT_OWN_PARTY_LISTING);
   this->ownParty->Enable(0);
   this->AddChild(this->ownParty);
   this->recruit = new UIBmpTextButton();
@@ -201,7 +201,7 @@ void UIAdvenPartyBoardWnd::OnCreate(int, int) {
   this->recruit->SetBitmap("유저인터페이스\\UIadventurerAgency\\btn_recruit_disable.bmp", 3, 0);
   this->recruit->SetSize(this->recruit->BitmapWidth(), this->recruit->BitmapHeight());
   this->recruit->Move(1, 49);
-  this->recruit->SetId(565);
+  this->recruit->SetId(ID_REGISTER_PARTY_LISTING);
   this->recruit->Enable(0);
   this->AddChild(this->recruit);
 
@@ -233,12 +233,12 @@ void UIAdvenPartyBoardWnd::OnCreate(int, int) {
   auto* close = new UIBasicButton();
   close->Configure(42, LookupMessage(MSI_ZENY_LOTTO_BUY_10));
   close->Move(this->geometry.width - close->geometry.width - 10, 317);
-  close->SetId(201);
+  close->SetId(ID_CLOSE);
   this->AddChild(close);
   this->stop = new UIBasicButton();
   this->stop->Configure((this->TextWidth(LookupMessage(MSI_REQUEST_PARTY), 0, 0, 12, 0, 0) + 10), LookupMessage(MSI_REQUEST_PARTY));
   this->stop->Move(close->geometry.x - this->stop->geometry.width - 5, 317);
-  this->stop->SetId(410);
+  this->stop->SetId(ADVENPARTY_BUTTON_STOP_RECRUIT);
   this->AddChild(this->stop);
   this->stop->Enable(0);
   this->AddBigCloseButton("", 0);
@@ -587,7 +587,7 @@ int UIAdvenPartyBoardWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
 
       break;
     }
-    case 410:
+    case ADVENPARTY_BUTTON_STOP_RECRUIT:
       g_adventurerAgencyMgr->RequestStop();
       break;
     case ID_PARTY_RELOAD_FIRST_PAGE:

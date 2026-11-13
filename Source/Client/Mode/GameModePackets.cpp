@@ -1,4 +1,5 @@
 #include "UI/Window/WindowId.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "UI/Window/UIEnums.h"
 #include "Client/Mode/ModeMessage.h"
 #include "Contents/Actors/ActorEnums.h"
@@ -1760,7 +1761,7 @@ void CGameMode::ReceiveItem1740EquipListOptions(const unsigned char* packet) {
 __declspec(noinline) void CGameMode::ReceiveEquipmentViewState(const unsigned char* packet) {
   const unsigned char value = packet[2];
   g_session.m_allowEquipView = value;
-  const char* text = LookupMessage(value != 0 ? 0x54F : 0x54E);
+  const char* text = LookupMessage(value != 0 ? MSI_OPEN_EQUIPEDITEM_ACCEPT : MSI_OPEN_EQUIPEDITEM_REFUSE);
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0x64FFFF, 0, 0, 0);
   if (g_windowMgr.equipWnd) {
     g_windowMgr.equipWnd->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
@@ -2743,7 +2744,7 @@ __declspec(noinline) void CGameMode::ReceiveSoulEnergy(const unsigned char* data
   }
 
   const int job = actor->GetEffectiveJob(-1);
-  if (job != 4240 && job != 4242 && job != 4303) {
+  if (job != JT_SOUL_REAPER && job != JT_SOUL_REAPER_B && job != JT_SOUL_ASCETIC) {
     return;
   }
 
@@ -3849,14 +3850,14 @@ void CGameMode::Zc_Spirits2(const unsigned char* data) {
   }
 
   CRagEffect* effect;
-  if (actor->GetEffectiveJob(-1) == 4038) {
+  if (actor->GetEffectiveJob(-1) == JT_MONK_B) {
     if (actor->HasId(EF_CHOOKGI2) || packet->accountId == 0) {
       return;
     }
 
     effect = actor->LaunchEffect(EF_CHOOKGI2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-  } else if (actor->GetEffectiveJob(-1) == 24 || actor->GetEffectiveJob(-1) == 4215 || actor->GetEffectiveJob(-1) == 4228 ||
-             actor->GetEffectiveJob(-1) == 4229 || actor->GetEffectiveJob(-1) == 4306) {
+  } else if (actor->GetEffectiveJob(-1) == JT_GUNSLINGER || actor->GetEffectiveJob(-1) == JT_REBELLION || actor->GetEffectiveJob(-1) == JT_GUNSLINGER_B ||
+             actor->GetEffectiveJob(-1) == JT_REBELLION_B || actor->GetEffectiveJob(-1) == JT_NIGHT_WATCH) {
     if (actor->HasId(EF_CHOOKGI3) || packet->accountId == 0) {
       return;
     }
@@ -7721,7 +7722,7 @@ void CGameMode::ReceiveNotifyBan(const unsigned char* packet) {
     text = text + LookupMessage(MSI_BAN_PAY_OUT) + "(" + IntToString(10, 0) + ")";
     break;
   case BAN_OP_FORCE:
-    if (g_serviceType == 4) {
+    if (g_serviceType == ServiceTaiwan) {
       text = text + LookupMessage(MSI_BAN_OP_FORCE) + "(" + IntToString(15, 0) + ")";
     }
     break;
@@ -9055,7 +9056,7 @@ void CGameMode::ReceivePetChangeState(const unsigned char* data) {
     if (actor) {
       g_session.petJob = actor->GetEffectiveJob(-1);
       actor->SendMsg(nullptr, AM_UPDATEGAGE, 0, 0, 0, 0, 0, 0);
-      actor->objectType = 7;
+      actor->objectType = NPC_PET_TYPE;
     }
     break;
   case CHANGESTATEPET_INTIMACY: {
@@ -9952,7 +9953,7 @@ void CGameMode::ReceiveActorChat(const unsigned char* data) {
   } else {
     if (IsMonsterJob(aid)) {
       g_windowMgr.SendNotice(
-        UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.data()), g_serviceType == 5 ? 0xFFFF00 : (g_serviceType == 10 ? 0x1D8DFF : 0xFFFF), 1, 0, 0
+        UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.data()), g_serviceType == ServiceThai ? 0xFFFF00 : (g_serviceType == ServiceGermany ? 0x1D8DFF : 0xFFFF), 1, 0, 0
       );
     } else if (MonsterJobColor(aid)) {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.data()), MonsterJobColor(aid), 0, 0, 0);
@@ -10310,8 +10311,8 @@ void CGameMode::ReceiveActorDisappear(const unsigned char* data) {
       }
       actor->SendMsg(nullptr, AM_WILL_BE_DEAD, 0, 0, 0, 0, 0, 0);
       const int job = actor->GetEffectiveJob(-1);
-      if (g_session.IsMonsterClass(job) || actor->objectType == 9 || g_session.IsCompanionJob(job) ||
-          actor->GetEffectiveJob(-1) == 0x235) {
+      if (g_session.IsMonsterClass(job) || actor->objectType == NPC_MERSOL_TYPE || g_session.IsCompanionJob(job) ||
+          actor->GetEffectiveJob(-1) == JT_MOB_TOMB) {
         this->SendMsg(MM_DELETEREGISTERPOS, packet->aid, 0, 0, 0);
       }
       if (g_windowMgr.buyingShopPurchaseWnd) {
@@ -10361,7 +10362,7 @@ void CGameMode::ReceiveActorDisappear(const unsigned char* data) {
       this->SendMsg(MM_PET_ACT, g_session.GetPetEmotionNumber(g_session.petJob, 3, hungerLevel), 0, 0, 0);
       this->SendMsg(MM_PET_ACT, action, 0, 0, 0);
     }
-    if (g_serviceType != 4) {
+    if (g_serviceType != ServiceTaiwan) {
       if (!g_windowMgr.CloseWindow(WID_ESCOPTIONWND)) {
         g_windowMgr.EnsureWindow(WID_ESCOPTIONWND);
       }
@@ -11123,7 +11124,7 @@ void LaunchSkillCastEffect(CGameMode* mode, CGameActor* source, CGameActor* targ
     return;
   }
 
-  if (g_session.IsHirelingJob(target->GetEffectiveJob(-1)) || target->objectType == 9) {
+  if (g_session.IsHirelingJob(target->GetEffectiveJob(-1)) || target->objectType == NPC_MERSOL_TYPE) {
     if (mode->scene->isPKZone != 0 || mode->scene->isSiegeMode != 0 || !IsSupportSkill(skillId)) {
       source->SendMsg(nullptr, AM_SET_TARGET_AID, static_cast<std::uint32_t>(target->render.accountId), 0, 0, 0, 0, 0);
     }
@@ -11327,7 +11328,7 @@ void CGameMode::NotifySkillCasting(
   CGameActor* target = static_cast<CGameActor*>(this->scene->GetGameActorByAidIncludeMe(targetAid));
   NoticeSkillUse(source, target, skillId, silent);
 
-  if (delay == 0 && skillId == 0xA04) {
+  if (delay == 0 && skillId == RL_FALLEN_ANGEL) {
     CEffect* effect = g_effectMgr->Find(source->render.accountId, EF_FALLEN_ANGEL);
     if (effect) {
       effect->Open();
@@ -11336,21 +11337,21 @@ void CGameMode::NotifySkillCasting(
     }
   }
 
-  if (silent == 0 && skillId != 0x3E && skillId != 0x39 && !g_session.IsMonsterActor(source)) {
-    if (skillId == 0x14E || skillId == 0x14F) {
+  if (silent == 0 && skillId != KN_BOWLINGBASH && skillId != KN_BRANDISHSPEAR && !g_session.IsMonsterActor(source)) {
+    if (skillId == WE_MALE || skillId == WE_FEMALE) {
       g_modeMgr.GetGameMode()->SendMsg(MM_MAKE_SKILL_USED_MSG, skillId, reinterpret_cast<std::intptr_t>(source), targetAid, 0);
     } else {
       g_modeMgr.GetGameMode()->SendMsg(MM_MAKE_SKILL_USED_MSG, skillId, reinterpret_cast<std::intptr_t>(source), 0, 0);
     }
   }
 
-  if (skillId != 0x10F) {
-    if (skillId == 0x49) {
+  if (skillId != MO_EXTREMITYFIST) {
+    if (skillId == PR_KYRIE) {
       if (target && source != target) {
         source->Face(target->render.position.x, target->render.position.z);
       }
       g_modeMgr.GetGameMode()->SendMsg(MM_MAKE_SKILL_USED_MSG, 0x49, reinterpret_cast<std::intptr_t>(source), 0, 0);
-    } else if (skillId == 0x1479) {
+    } else if (skillId == IQ_OLEUM_SANCTUM) {
       g_effectMgr->Spawn(source->render.accountId, EF_OLEUM_SANCTUM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
 
@@ -11365,18 +11366,18 @@ void CGameMode::NotifySkillCasting(
   g_session.GetSkillActionInfo(skillId, effectId, motion, property, source->GetEffectiveJob(-1));
   source->SetState(motion, 1);
 
-  if (skillId != 0x3E && skillId != 0x39 && delay != 0) {
+  if (skillId != KN_BOWLINGBASH && skillId != KN_BRANDISHSPEAR && delay != 0) {
     source->SendMsg(nullptr, AM_MAKE_SKILL_RECHARGEGAGE, static_cast<std::uint32_t>(delay), 0, 0, 0, 0, 0);
   }
   LaunchSkillActorEffect(source, x, y, skillId, delay, effectId);
 
-  if (skillId != 0x3E && skillId != 0x39 && g_session.IsMonsterActor(source)) {
+  if (skillId != KN_BOWLINGBASH && skillId != KN_BRANDISHSPEAR && g_session.IsMonsterActor(source)) {
     int action = 0;
     int loopType = 0;
     g_session.GetMonsterSkillInfo(g_session.GetJobName(source->GetEffectiveJob(-1), -1), skillId, &action, &loopType);
     if (action != -1) {
       source->SetAction(action * 8 - 8, 1, loopType == 0);
-      if (skillId == 0xC1) {
+      if (skillId == NPC_METAMORPHOSIS) {
         source->SetAnimationSpeed(static_cast<float>(static_cast<unsigned>(delay) / 300));
       }
     }
@@ -11695,7 +11696,7 @@ void CGameMode::ReceiveAddRelatedGuild(const unsigned char* data) {
 void CGameMode::ReceiveEquipItemResult(const unsigned char* packet) {
   const std::uint16_t result = *reinterpret_cast<const std::uint16_t*>(packet + 8);
   if (result != 0) {
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(result == 3 ? 3009 : 3033)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(result == 3 ? MSI_LAST_LOGIN : MSI_TW_ENABLE_SECOND_PASSWD)), 0xFF, 0, 0, 0);
     return;
   }
 
@@ -11931,7 +11932,7 @@ void CGameMode::SpawnMirrorActor(std::uint32_t aid, std::uint32_t owner, short x
       CPc* pc = new CPc;
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
       pc->SendMsg(nullptr, AM_INITSTANDENTRY2, value, 0, 0, 0, 0, 0);
-      pc->objectType = 7;
+      pc->objectType = NPC_PET_TYPE;
       pc->LaunchEffect(EF_GRAYBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       this->scene->objects.push_back(pc);
       this->scene->actors.push_back(pc);
@@ -12071,11 +12072,11 @@ void CGameMode::ReceivePartyMemberLeft(const unsigned char* data) {
     this->SendMsg(MM_DELETEPARTYPOS, g_session.GetPartyMemberAid(name), 0, 0, 0);
     g_session.RemovePartyMemberByName(name);
     break;
-  case 2:
+  case GROUPMEMBER_DELETE_CANT_LEAVE:
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PREVENT_PARTY_LEAVE)), 0xFF, 0, 0, 0);
     return;
-  case 3:
+  case GROUPMEMBER_DELETE_CANT_EXPEL:
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PREVENT_PARTY_EXPEL)), 0xFF, 0, 0, 0);
     return;
@@ -12500,7 +12501,7 @@ void CGameMode::ReceiveActorTypedEntry(const unsigned char* data) {
         actor->SetGuildInfo(guildId, guildVersion);
       }
     }
-    if (packet->objectType == 7) {
+    if (packet->objectType == NPC_PET_TYPE) {
       if (g_session.petGid == packet->aid) {
         g_session.petAccessory = entry.accessory;
       }
@@ -12510,7 +12511,7 @@ void CGameMode::ReceiveActorTypedEntry(const unsigned char* data) {
     }
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
     actor->SendMsg(nullptr, AM_STANDENTRY, value, 0, 0, 0, 0, 0);
-    if (g_session.GetSiegeMode() && packet->objectType != 7 && actor->sceneNameWindow == nullptr &&
+    if (g_session.GetSiegeMode() && packet->objectType != NPC_PET_TYPE && actor->sceneNameWindow == nullptr &&
         (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
     }
@@ -12518,7 +12519,7 @@ void CGameMode::ReceiveActorTypedEntry(const unsigned char* data) {
     const short job = packet->job;
     CGameActor* created;
     if ((JT_WARPNPC <= job && 1000 > job) || (1000 < job && 3999 > job) || static_cast<std::uint16_t>(job - 20021) <= 11978 ||
-        g_session.IsCompanionJob(job) || packet->objectType == 9) {
+        g_session.IsCompanionJob(job) || packet->objectType == NPC_MERSOL_TYPE) {
       if (g_session.IsHomunAid(packet->aid)) {
         g_session.homunAlive = 1;
       }
@@ -12532,7 +12533,7 @@ void CGameMode::ReceiveActorTypedEntry(const unsigned char* data) {
     }
 
     actor = created;
-    if (actor && packet->objectType == 7) {
+    if (actor && packet->objectType == NPC_PET_TYPE) {
       if (g_session.petGid == packet->aid) {
         g_session.petAccessory = entry.accessory;
       }
@@ -12546,7 +12547,7 @@ void CGameMode::ReceiveActorTypedEntry(const unsigned char* data) {
     if (actor) {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
       actor->SendMsg(nullptr, AM_INITSTANDENTRY, value, 0, 0, 0, 0, 0);
-      if (g_session.GetSiegeMode() && packet->objectType != 7 && actor->sceneNameWindow == nullptr &&
+      if (g_session.GetSiegeMode() && packet->objectType != NPC_PET_TYPE && actor->sceneNameWindow == nullptr &&
           (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
         this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
       }
@@ -12829,7 +12830,7 @@ void CGameMode::ReceiveActorMoveEntryLegacy(const unsigned char* data) {
     actor->SendMsg(nullptr, AM_MOVEENTRY2, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
   } else {
     CGameActor* created;
-    if (packet->objectType == 0) {
+    if (packet->objectType == PC_TYPE) {
       created = new CPc;
     } else {
       created = this->NewActor(packet->job);
@@ -12842,7 +12843,7 @@ void CGameMode::ReceiveActorMoveEntryLegacy(const unsigned char* data) {
     this->scene->objects.push_back(created);
     this->scene->actors.push_back(created);
     actor = created;
-    if (actor->objectType == 0) {
+    if (actor->objectType == PC_TYPE) {
       if (this->partyPosList.find(entry.aid) != this->partyPosList.end() || this->guildPosList.find(entry.aid) != this->guildPosList.end()) {
         actor->SetGroupMemberVisible(1);
       }
@@ -12860,16 +12861,16 @@ void CGameMode::ReceiveActorMoveEntryLegacy(const unsigned char* data) {
   }
   actor->characterLevel = packet->level;
   actor->render.font = packet->font;
-  if (packet->objectType == 7) {
+  if (packet->objectType == NPC_PET_TYPE) {
     if (g_session.IsPetAid(packet->aid)) {
       g_session.petAccessory = entry.accessory;
     }
     if (entry.accessory && !actor->GetGdid()) {
       actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
     }
-  } else if (packet->objectType == 8 && g_session.IsHomunAid(packet->aid)) {
+  } else if (packet->objectType == NPC_HO_TYPE && g_session.IsHomunAid(packet->aid)) {
     g_session.homunAlive = 1;
-  } else if (packet->objectType == 9 && g_session.IsMercenaryAid(packet->aid)) {
+  } else if (packet->objectType == NPC_MERSOL_TYPE && g_session.IsMercenaryAid(packet->aid)) {
     g_session.mercenaryAlive = 1;
   } else if (g_session.GetSiegeMode() && actor->sceneNameWindow == nullptr &&
              (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
@@ -12973,7 +12974,7 @@ void CGameMode::SpawnMovingActor(
     this->scene->objects.push_back(created);
     this->scene->actors.push_back(created);
     actor = created;
-    if (actor->objectType == 0) {
+    if (actor->objectType == PC_TYPE) {
       if (this->partyPosList.find(entry.aid) != this->partyPosList.end() || this->guildPosList.find(entry.aid) != this->guildPosList.end()) {
         actor->SetGroupMemberVisible(1);
       }
@@ -13235,7 +13236,7 @@ void CGameMode::ReceiveActorMoveEntryOld2(const unsigned char* data) {
     actor->characterLevel = packet->level;
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
     actor->SendMsg(nullptr, AM_MOVEENTRY2, value, 0, 0, 0, 0, 0);
-    if (packet->objectType == 7) {
+    if (packet->objectType == NPC_PET_TYPE) {
       if (g_session.petGid == packet->aid) {
         g_session.petAccessory = entry.accessory;
       }
@@ -13243,7 +13244,7 @@ void CGameMode::ReceiveActorMoveEntryOld2(const unsigned char* data) {
         actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
       }
     }
-    if (g_session.GetSiegeMode() && packet->objectType != 7 && actor->sceneNameWindow == nullptr &&
+    if (g_session.GetSiegeMode() && packet->objectType != NPC_PET_TYPE && actor->sceneNameWindow == nullptr &&
         (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
     }
@@ -13262,7 +13263,7 @@ void CGameMode::ReceiveActorMoveEntryOld2(const unsigned char* data) {
   } else {
     const short job = packet->job;
     if ((45 > job || 1000 <= job) && (1000 >= job || 3999 <= job) && static_cast<unsigned short>(job - 20021) > 11978 && !g_session.IsCompanionJob(job) &&
-        packet->objectType != 9) {
+        packet->objectType != NPC_MERSOL_TYPE) {
       actor = new CPc;
     } else {
       if (g_session.IsHomunAid(packet->aid)) {
@@ -13275,7 +13276,7 @@ void CGameMode::ReceiveActorMoveEntryOld2(const unsigned char* data) {
       entry.appearanceVariant = 0;
     }
 
-    if (actor && packet->objectType == 7) {
+    if (actor && packet->objectType == NPC_PET_TYPE) {
       if (g_session.petGid == packet->aid) {
         g_session.petAccessory = entry.accessory;
       }
@@ -13289,7 +13290,7 @@ void CGameMode::ReceiveActorMoveEntryOld2(const unsigned char* data) {
     this->scene->actors.push_back(actor);
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
     actor->SendMsg(nullptr, AM_INITMOVEENTRY2, value, 0, 0, 0, 0, 0);
-    if (g_session.GetSiegeMode() && packet->objectType == 7 && actor->sceneNameWindow == nullptr &&
+    if (g_session.GetSiegeMode() && packet->objectType == NPC_PET_TYPE && actor->sceneNameWindow == nullptr &&
         (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
     }
@@ -13382,7 +13383,7 @@ void CGameMode::ReceiveActorMoveEntryNamed(const unsigned char* data) {
     actor->characterLevel = packet->level;
     actor->render.font = packet->font;
     actor->SendMsg(nullptr, AM_MOVEENTRY2, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
-    if (packet->objectType == 7) {
+    if (packet->objectType == NPC_PET_TYPE) {
       if (g_session.petGid == packet->aid) {
         g_session.petAccessory = entry.accessory;
       }
@@ -13390,7 +13391,7 @@ void CGameMode::ReceiveActorMoveEntryNamed(const unsigned char* data) {
         actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
       }
     }
-    if (g_session.GetSiegeMode() && packet->objectType == 7 && actor->sceneNameWindow == nullptr &&
+    if (g_session.GetSiegeMode() && packet->objectType == NPC_PET_TYPE && actor->sceneNameWindow == nullptr &&
         (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
     }
@@ -13409,7 +13410,7 @@ void CGameMode::ReceiveActorMoveEntryNamed(const unsigned char* data) {
   } else {
     const short job = packet->job;
     if ((45 > job || 1000 <= job) && (1000 >= job || 3999 <= job) && static_cast<unsigned short>(job - 20021) > 11978 && !g_session.IsCompanionJob(job) &&
-        packet->objectType != 9) {
+        packet->objectType != NPC_MERSOL_TYPE) {
       actor = new CPc;
     } else {
       if (g_session.IsHomunAid(packet->aid)) {
@@ -13422,7 +13423,7 @@ void CGameMode::ReceiveActorMoveEntryNamed(const unsigned char* data) {
       entry.appearanceVariant = 0;
     }
 
-    if (actor && packet->objectType != 0) {
+    if (actor && packet->objectType != PC_TYPE) {
       if (g_session.petGid == packet->aid) {
         g_session.petAccessory = entry.accessory;
       }
@@ -13436,7 +13437,7 @@ void CGameMode::ReceiveActorMoveEntryNamed(const unsigned char* data) {
     actor->SendMsg(nullptr, AM_INITMOVEENTRY2, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
     actor->render.font = packet->font;
     actor->characterLevel = packet->level;
-    if (g_session.GetSiegeMode() && packet->objectType == 7 && actor->sceneNameWindow == nullptr &&
+    if (g_session.GetSiegeMode() && packet->objectType == NPC_PET_TYPE && actor->sceneNameWindow == nullptr &&
         (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
     }
@@ -13801,7 +13802,7 @@ void CGameMode::ReceiveActorStandEntryLegacy(const unsigned char* data) {
   entry.guildVersion = packet->guildVersion;
   entry.robe = packet->robe;
   entry.aid = packet->aid;
-  if (packet->objectType == 0) {
+  if (packet->objectType == PC_TYPE) {
     entry.state = 0;
   } else {
     entry.shieldAppearance = entry.guildVersion;
@@ -13812,7 +13813,7 @@ void CGameMode::ReceiveActorStandEntryLegacy(const unsigned char* data) {
 
   CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(entry.aid));
   if (actor) {
-    if (packet->objectType == 0) {
+    if (packet->objectType == PC_TYPE) {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
       actor->SendMsg(nullptr, AM_STANDENTRY2, value, 0, 0, 0, 0, 0);
     } else {
@@ -13821,7 +13822,7 @@ void CGameMode::ReceiveActorStandEntryLegacy(const unsigned char* data) {
     }
   } else {
     CGameActor* created;
-    if (packet->objectType == 0) {
+    if (packet->objectType == PC_TYPE) {
       created = new CPc;
     } else {
       created = this->NewActor(packet->job);
@@ -13834,7 +13835,7 @@ void CGameMode::ReceiveActorStandEntryLegacy(const unsigned char* data) {
     this->scene->objects.push_back(created);
     this->scene->actors.push_back(created);
     actor = created;
-    if (packet->objectType == 0) {
+    if (packet->objectType == PC_TYPE) {
       if (this->partyPosList.find(packet->aid) != this->partyPosList.end() || this->guildPosList.find(packet->aid) != this->guildPosList.end()) {
         actor->SetGroupMemberVisible(1);
       }
@@ -13855,16 +13856,16 @@ void CGameMode::ReceiveActorStandEntryLegacy(const unsigned char* data) {
   }
   actor->characterLevel = packet->level;
   actor->render.font = packet->font;
-  if (packet->objectType == 7) {
+  if (packet->objectType == NPC_PET_TYPE) {
     if (g_session.IsPetAid(packet->aid)) {
       g_session.petAccessory = entry.accessory;
     }
     if (entry.accessory && !actor->GetGdid()) {
       actor->SetActionName(g_session.GetPetAccActName(entry.accessory));
     }
-  } else if (packet->objectType == 8 && g_session.IsHomunAid(packet->aid)) {
+  } else if (packet->objectType == NPC_HO_TYPE && g_session.IsHomunAid(packet->aid)) {
     g_session.homunAlive = 1;
-  } else if (packet->objectType == 9 && g_session.IsMercenaryAid(packet->aid)) {
+  } else if (packet->objectType == NPC_MERSOL_TYPE && g_session.IsMercenaryAid(packet->aid)) {
     g_session.mercenaryAlive = 1;
   } else if (g_session.GetSiegeMode() && actor->sceneNameWindow == nullptr &&
              (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
@@ -13888,7 +13889,7 @@ void CGameMode::ReceiveActorStandEntryLegacy(const unsigned char* data) {
     break;
   }
 
-  if (packet->objectType != 0) {
+  if (packet->objectType != PC_TYPE) {
     const std::uint32_t guildId = (packet->accessory2 << 16) | packet->accessory3;
     if (guildId > 0 && !actor->GetGdid()) {
       actor->SetGuildInfo(guildId, packet->guildVersion);
@@ -13969,7 +13970,7 @@ void CGameMode::ReceiveActorStandEntryNamedOld(const unsigned char* data) {
   entry.guildVersion = packet->guildVersion;
   entry.robe = packet->robe;
   entry.aid = packet->aid;
-  if (packet->objectType == 0) {
+  if (packet->objectType == PC_TYPE) {
     entry.state = 0;
   } else {
     entry.shieldAppearance = entry.guildVersion;
@@ -13982,7 +13983,7 @@ void CGameMode::ReceiveActorStandEntryNamedOld(const unsigned char* data) {
   CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(entry.aid));
   if (!actor) {
     created = 1;
-    if (packet->objectType == 0) {
+    if (packet->objectType == PC_TYPE) {
       actor = new CPc;
     } else {
       actor = this->NewActor(packet->job);
@@ -13992,7 +13993,7 @@ void CGameMode::ReceiveActorStandEntryNamedOld(const unsigned char* data) {
   }
 
   actor->characterLevel = packet->level;
-  if (packet->objectType == 0) {
+  if (packet->objectType == PC_TYPE) {
     actor->render.font = packet->font;
     if (created) {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
@@ -14010,16 +14011,16 @@ void CGameMode::ReceiveActorStandEntryNamedOld(const unsigned char* data) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
     }
   } else {
-    if (packet->objectType == 7) {
+    if (packet->objectType == NPC_PET_TYPE) {
       if (g_session.petGid == packet->aid) {
         g_session.petAccessory = entry.accessory;
       }
       if (entry.accessory) {
         actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
       }
-    } else if (packet->objectType == 8 && g_session.IsHomunAid(packet->aid)) {
+    } else if (packet->objectType == NPC_HO_TYPE && g_session.IsHomunAid(packet->aid)) {
       g_session.homunAlive = 1;
-    } else if (packet->objectType == 9 && g_session.IsMercenaryAid(packet->aid)) {
+    } else if (packet->objectType == NPC_MERSOL_TYPE && g_session.IsMercenaryAid(packet->aid)) {
       g_session.mercenaryAlive = 1;
     }
 
@@ -14636,7 +14637,7 @@ void CGameMode::ReceiveActorStateEntryNamedOld(const unsigned char* data) {
   entry.guildVersion = packet->guildVersion;
   entry.robe = packet->robe;
   entry.aid = packet->aid;
-  if (packet->objectType != 0) {
+  if (packet->objectType != PC_TYPE) {
     entry.shieldAppearance = entry.guildVersion;
   }
   entry.cellX = (packet->posDir[0] << 2) | (packet->posDir[1] >> 6);
@@ -14647,7 +14648,7 @@ void CGameMode::ReceiveActorStateEntryNamedOld(const unsigned char* data) {
   CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(entry.aid));
   if (!actor) {
     created = 1;
-    if (packet->objectType == 0) {
+    if (packet->objectType == PC_TYPE) {
       actor = new CPc;
     } else {
       actor = this->NewActor(packet->job);
@@ -14656,7 +14657,7 @@ void CGameMode::ReceiveActorStateEntryNamedOld(const unsigned char* data) {
     actor->objectType = packet->objectType;
   }
 
-  if (packet->objectType == 0) {
+  if (packet->objectType == PC_TYPE) {
     actor->render.font = packet->font;
     actor->characterLevel = packet->level;
     if (created) {
@@ -14673,16 +14674,16 @@ void CGameMode::ReceiveActorStateEntryNamedOld(const unsigned char* data) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
     }
   } else {
-    if (packet->objectType == 7) {
+    if (packet->objectType == NPC_PET_TYPE) {
       if (g_session.petGid == packet->aid) {
         g_session.petAccessory = entry.accessory;
       }
       if (entry.accessory) {
         actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
       }
-    } else if (packet->objectType == 8 && g_session.IsHomunAid(packet->aid)) {
+    } else if (packet->objectType == NPC_HO_TYPE && g_session.IsHomunAid(packet->aid)) {
       g_session.homunAlive = 1;
-    } else if (packet->objectType == 9 && g_session.IsMercenaryAid(packet->aid)) {
+    } else if (packet->objectType == NPC_MERSOL_TYPE && g_session.IsMercenaryAid(packet->aid)) {
       g_session.mercenaryAlive = 1;
     }
 
@@ -15569,7 +15570,7 @@ void CGameMode::ReceiveActorStateEntryLegacy(const unsigned char* data) {
   entry.robe = packet->robe;
   entry.aid = packet->aid;
   entry.state = packet->state;
-  if (packet->objectType != 0) {
+  if (packet->objectType != PC_TYPE) {
     entry.shieldAppearance = entry.guildVersion;
   }
   entry.cellX = (packet->posDir[0] << 2) | (packet->posDir[1] >> 6);
@@ -15578,14 +15579,14 @@ void CGameMode::ReceiveActorStateEntryLegacy(const unsigned char* data) {
 
   CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(entry.aid));
   if (actor) {
-    if (packet->objectType == 0) {
+    if (packet->objectType == PC_TYPE) {
       actor->SendMsg(nullptr, AM_STANDENTRY2, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
     } else {
       actor->SendMsg(nullptr, AM_STANDENTRY, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
     }
   } else {
     CGameActor* created;
-    if (packet->objectType == 0) {
+    if (packet->objectType == PC_TYPE) {
       created = new CPc;
     } else {
       created = this->NewActor(packet->job);
@@ -15598,7 +15599,7 @@ void CGameMode::ReceiveActorStateEntryLegacy(const unsigned char* data) {
     this->scene->objects.push_back(created);
     this->scene->actors.push_back(created);
     actor = created;
-    if (packet->objectType == 0) {
+    if (packet->objectType == PC_TYPE) {
       if (this->partyPosList.find(packet->aid) != this->partyPosList.end() || this->guildPosList.find(packet->aid) != this->guildPosList.end()) {
         actor->SetGroupMemberVisible(1);
       }
@@ -15617,16 +15618,16 @@ void CGameMode::ReceiveActorStateEntryLegacy(const unsigned char* data) {
   }
   actor->characterLevel = packet->level;
   actor->render.font = packet->font;
-  if (packet->objectType == 7) {
+  if (packet->objectType == NPC_PET_TYPE) {
     if (g_session.IsPetAid(packet->aid)) {
       g_session.petAccessory = entry.accessory;
     }
     if (entry.accessory && !actor->GetGdid()) {
       actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
     }
-  } else if (packet->objectType == 8 && g_session.IsHomunAid(packet->aid)) {
+  } else if (packet->objectType == NPC_HO_TYPE && g_session.IsHomunAid(packet->aid)) {
     g_session.homunAlive = 1;
-  } else if (packet->objectType == 9 && g_session.IsMercenaryAid(packet->aid)) {
+  } else if (packet->objectType == NPC_MERSOL_TYPE && g_session.IsMercenaryAid(packet->aid)) {
     g_session.mercenaryAlive = 1;
   } else if (g_session.GetSiegeMode() && actor->sceneNameWindow == nullptr &&
              (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
@@ -15650,7 +15651,7 @@ void CGameMode::ReceiveActorStateEntryLegacy(const unsigned char* data) {
     break;
   }
 
-  if (packet->objectType != 0) {
+  if (packet->objectType != PC_TYPE) {
     const std::uint32_t guildId = (packet->accessory2 << 16) | packet->accessory3;
     if (guildId > 0 && !actor->GetGdid()) {
       actor->SetGuildInfo(guildId, packet->guildVersion);
@@ -16816,7 +16817,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     }
     break;
   case PR_SLOWPOISON:
-    if (g_serviceType == 0 && target != nullptr) {
+    if (g_serviceType == ServiceKorea && target != nullptr) {
       target->LaunchEffect(EF_SLOWPOISON, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
@@ -19299,7 +19300,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
       }
     }
     break;
-  case 0x14BA:
+  case AG_DESTRUCTIVE_HURRICANE_CLIMAX:
     g_effectMgr->Spawn(source->render.accountId, EF_DESTRUCTIVE_HURRICANE_CLIMAX, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     break;
   case AG_CRIMSON_ARROW:
@@ -21730,7 +21731,7 @@ void CGameMode::ProcessIncomingPackets() {
       unsigned int length = *reinterpret_cast<const std::uint16_t *>(packet + 2) - 8;
       UIWindow *window = g_windowMgr.EnsureWindow(WID_SAYDIALOGWND);
       char text[0x803];
-      if (g_serviceType == 10) {
+      if (g_serviceType == ServiceGermany) {
         sprintf(text, "|%02x", LanguageCharset(31));
         memcpy(text + 3, packet + 8, length);
         length += 3;
@@ -21763,7 +21764,7 @@ void CGameMode::ProcessIncomingPackets() {
     }
     case ID_ZC_USER_COUNT: {
       char text[128];
-      if (g_serviceType == 3 && !IsAdminAccount(g_session.m_aid)) {
+      if (g_serviceType == ServiceChina && !IsAdminAccount(g_session.m_aid)) {
         strcpy(text, GetUserCountText(*reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 2)));
       } else {
         sprintf(text, LookupMessage(MSI_NUMPEOPLE), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2));
@@ -21820,7 +21821,7 @@ void CGameMode::ProcessIncomingPackets() {
       break;
     case ID_ZC_ACK_DISCONNECT_CHARACTER: {
       char text[80];
-      sprintf(text, LookupMessage(g_gameModePacketBuffer[2] == 0 ? 152 : 151));
+      sprintf(text, LookupMessage(g_gameModePacketBuffer[2] == 0 ? MSI_FAIL_DISCONNECT_CHARACTER : MSI_SUCCESS_DISCONNECT_CHARACTER));
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0x32FF, 0, 0, 0);
       break;
@@ -21856,7 +21857,7 @@ void CGameMode::ProcessIncomingPackets() {
       const int count = (length - 4) / 24;
       char name[25];
       name[24] = '\0';
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(count != 0 ? 3396 : 3395)), 0xFFFF00, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(count != 0 ? MSI_RENEW_QUEST_TAB_HOLD : MSI_RENEW_QUEST_TAB_BEST)), 0xFFFF00, 0, 0, 0);
       for (int i = 0; i < count; ++i) {
         if (i * 24 + 4 > length) {
           break;
@@ -22062,7 +22063,7 @@ void CGameMode::ProcessIncomingPackets() {
       }
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
       if (g_session.partyExpShare == 0 || g_session.partyExpShare == 1) {
-        sprintf(text, "%s - %s : %s", LookupMessage(MSI_PARTYSETTING), LookupMessage(MSI_HOWEXPDIV), LookupMessage(g_session.partyExpShare == 0 ? 287 : 288));
+        sprintf(text, "%s - %s : %s", LookupMessage(MSI_PARTYSETTING), LookupMessage(MSI_HOWEXPDIV), LookupMessage(g_session.partyExpShare == 0 ? MSI_EXPDIV1 : MSI_EXPDIV2));
       } else if (g_session.partyExpShare == 2) {
         StringFormat(text, 128, static_cast<std::size_t>(-1), LookupMessage(MSI_PARTYSETTING_CHANGE_IMPOSSIBLE), LookupMessage(MSI_HOWEXPDIV), LookupMessage(MSI_EXPDIV2));
       } else {
@@ -22965,7 +22966,7 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_INFO_REMAINTIME: {
       char message[256];
       const int remaining = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6);
-      if (g_serviceType == 0) {
+      if (g_serviceType == ServiceKorea) {
         switch (*reinterpret_cast<const int *>(g_gameModePacketBuffer + 2)) {
         case ID_CA_LOGIN:
           sprintf(message, "\xb0\xb3\xc0\xce \xc1\xa4\xbe\xd7\xc1\xa6 \xbd\xc3\xb0\xa3\xc0\xcc %d\xba\xd0 %d\xc3\xca \xb3\xb2\xbe\xd2\xbd\xc0\xb4\xcf\xb4\xd9.",
@@ -22981,7 +22982,7 @@ void CGameMode::ProcessIncomingPackets() {
           break;
         }
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFFFFFF, 0, 0, 0);
-      } else if (g_serviceType == 6) {
+      } else if (g_serviceType == ServiceIndonesia) {
         sprintf(message, "Sisa waktu voucher kamu adalah %d menit.", remaining / 60);
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFFFFFF, 0, 0, 0);
       }
@@ -24737,7 +24738,7 @@ void CGameMode::ProcessIncomingPackets() {
       this->lastNaid = *reinterpret_cast<const int *>(packet + 4);
       unsigned int length = *reinterpret_cast<const std::uint16_t *>(packet + 2) - 9;
       char text[0x803];
-      if (g_serviceType == 10) {
+      if (g_serviceType == ServiceGermany) {
         sprintf(text, "|%02x", LanguageCharset(31));
         memcpy(text + 3, packet + 9, length);
         length += 3;

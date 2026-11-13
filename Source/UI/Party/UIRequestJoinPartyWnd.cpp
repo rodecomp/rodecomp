@@ -56,7 +56,7 @@ void UIRequestJoinPartyWnd::OnCreate(int, int) {
   this->levelText->SetText("1", 0);
   this->levelText->SetColor(0, 0, 0);
   this->AddChild(this->levelText);
-  const int ids[] = {541, 542};
+  const int ids[] = {REQUESTJOIN_BUTTON_ACCEPT, REQUESTJOIN_BUTTON_REJECT};
   const int positions[][2] = {{122, 136}, {169, 136}};
   const std::string labels[] = {LookupMessage(MSI_CANNOT_FIND_REQUEST_USER), LookupMessage(MSI_STORE_ASSISTANT_TRADE_FORCED_REMOVAL)};
 
@@ -68,7 +68,7 @@ void UIRequestJoinPartyWnd::OnCreate(int, int) {
     this->AddChild(button);
   }
 
-  this->m_message0 = 541;
+  this->m_message0 = REQUESTJOIN_BUTTON_ACCEPT;
   this->details = new UITextViewer();
   this->details->Configure(43, 20, 167, 60, 0);
   SetViewerBackground(this->details, 0xFFFFFFFFu);
@@ -79,7 +79,7 @@ void UIRequestJoinPartyWnd::OnCreate(int, int) {
   this->block->SetImages("유저인터페이스\\uiadventureragency\\btn_block_on.bmp", "유저인터페이스\\uiadventureragency\\btn_block_off.bmp", "");
   this->block->Move(7, 81);
   this->block->SetChecked(0);
-  this->block->SetId(213);
+  this->block->SetId(ID_CHECK);
   this->AddChild(this->block);
   std::vector<std::string> unused;
   WrapPlainText(LookupMessage(MSI_EXPAND_OBJALPHA), unused, 30);
@@ -108,14 +108,14 @@ int UIRequestJoinPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
   case UM_COMMAND:
     switch (a) {
     case ID_CLOSE:
-      this->SendMsg(nullptr, UM_COMMAND, 542, 0, 0, 0);
+      this->SendMsg(nullptr, UM_COMMAND, REQUESTJOIN_BUTTON_REJECT, 0, 0, 0);
       break;
-    case 541:
+    case REQUESTJOIN_BUTTON_ACCEPT:
       g_modeMgr.gameMode->SendMsg(MM_PARTY_REQ_ACK_MASTER_TO_JOIN, this->characterId, 1, reinterpret_cast<std::intptr_t>(&this->accountId), 0);
       g_requestJoinPartyMgr->Advance();
       this->block->SetChecked(0);
       break;
-    case 542:
+    case REQUESTJOIN_BUTTON_REJECT:
       if (this->block->geometry.state != 0) {
         g_requestJoinPartyMgr->Block(this->accountId);
       }

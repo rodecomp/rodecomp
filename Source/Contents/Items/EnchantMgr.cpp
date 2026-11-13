@@ -4,6 +4,7 @@
 #include "Network/Packets/PacketId.h"
 #include "Client/Session/Session.h"
 #include "Contents/Effects/Core/EffectLists.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "Contents/Items/ItemDBToIDMgr.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Items/ItemNaming.h"
@@ -106,7 +107,7 @@ void CEnchantMgr::HandleEnchantResult(int messageId, int itemId) {
       return;
     }
 
-    if (this->m_request.packetType == 0xB9E) {
+    if (this->m_request.packetType == ID_CZ_REQUEST_RESET_ENCHANT) {
       for (int slot : enchant->second.slots) {
         if (static_cast<uint32_t>(slot) < 4) {
           item.SetCard(0, slot);
@@ -125,15 +126,15 @@ void CEnchantMgr::HandleEnchantResult(int messageId, int itemId) {
     switch (this->m_request.packetType) {
     case ID_CZ_REQUEST_RANDOM_ENCHANT:
     case ID_CZ_REQUEST_PERFECT_ENCHANT:
-      effect = 0x908;
+      effect = EF_UI_ENCHANT_SUCCESS;
       break;
     case ID_CZ_REQUEST_UPGRADE_ENCHANT:
     case 0xBF0:
     case 0xBF1:
-      effect = 0x90B;
+      effect = EF_UI_LEVELUP_SUCCESS;
       break;
     case ID_CZ_REQUEST_RESET_ENCHANT:
-      effect = 0x90E;
+      effect = EF_UI_RESET_SUCCESS;
       break;
     }
     g_effectMgr->Spawn(g_session.m_aid, effect, position, 0, -1, 0, 0);
@@ -146,10 +147,10 @@ void CEnchantMgr::HandleEnchantResult(int messageId, int itemId) {
     case ID_CZ_REQUEST_UPGRADE_ENCHANT:
     case 0xBF0:
     case 0xBF1:
-      effect = 0x909;
+      effect = EF_UI_ENCHANT_FAIL;
       break;
     case ID_CZ_REQUEST_RESET_ENCHANT:
-      effect = 0x90F;
+      effect = EF_UI_RESET_FAIL;
       break;
     }
     g_effectMgr->Spawn(g_session.m_aid, effect, position, 0, -1, 0, 0);

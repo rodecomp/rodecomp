@@ -1011,7 +1011,7 @@ void UITabControl::OnMouseMove(int x, int y) {
 
   if ((this->dragX == 0 && this->dragY == 0) || this->dragX - x > 5 || this->dragY - y > 5) {
     if (this->parent) {
-      this->parent->SendMsg(this, 117, this->activeTabIndex, 0, 0, 0);
+      this->parent->SendMsg(this, UM_DETACH_CHAT_TAB, this->activeTabIndex, 0, 0, 0);
     }
 
     this->dragX = x;

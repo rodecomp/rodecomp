@@ -30,6 +30,20 @@
 #include <timeapi.h>
 #include <vector>
 
+enum RuneSystemButtonId : int {
+  RUNE_BUTTON_UNEQUIP = 344,
+  RUNE_BUTTON_DECOMPOSE = 407,
+  RUNE_BUTTON_GRADE = 509,
+  RUNE_BUTTON_ACTIVATE = 572,
+  RUNE_BUTTON_REWARD_1 = 590,
+  RUNE_BUTTON_REWARD_2 = 591,
+  RUNE_BUTTON_REWARD_3 = 592,
+  RUNE_BUTTON_REWARD_4 = 593,
+  RUNE_BUTTON_REWARD_5 = 594,
+  RUNE_BUTTON_REWARD_6 = 595,
+  RUNE_BUTTON_REWARD_7 = 596,
+};
+
 class Decom_ItemInfo;
 class RuneData;
 class RuneSetData;

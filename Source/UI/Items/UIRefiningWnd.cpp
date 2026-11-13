@@ -60,7 +60,7 @@ struct RefiningClosePacket {
 // FUNCTION: fn_09890
 UIRefiningWnd::UIRefiningWnd()
     : UIFrameWnd(0), refiningButton(nullptr), returnButton(nullptr),
-      cancelButton(nullptr), state(0), result(7), frameInterval(100), stateTick(0), frame(0), selectedMaterial(-1), materials(), catalystEnabled(0),
+      cancelButton(nullptr), state(REFINING_STATE_WAIT), result(7), frameInterval(100), stateTick(0), frame(0), selectedMaterial(-1), materials(), catalystEnabled(0),
       catalystItemId(0), catalystCount(0), item(0), requestPending(0), nextMaterials(), nextCatalystCount(0), nextItem(0) {
   this->catalystItemId = 6635;
 }
@@ -89,7 +89,7 @@ void UIRefiningWnd::OnCreate(int width, int height) {
   UIBasicButton* basic = new UIBasicButton();
   basic->Configure(56, LookupMessage(MSI_CANCEL));
   basic->Move(204, 322);
-  basic->SetId(185);
+  basic->SetId(ID_CANCEL);
   this->AddChild(basic);
   this->cancelButton = basic;
 
@@ -101,7 +101,7 @@ void UIRefiningWnd::OnCreate(int width, int height) {
   refining->SetBitmap("유저인터페이스\\refining_renewal\\bt_refining_disable.bmp", 3, 0);
   refining->Resize(refining->BitmapWidth(), refining->BitmapHeight());
   this->refiningButton->Move(84, 262);
-  this->refiningButton->SetId(184);
+  this->refiningButton->SetId(ID_OK);
   {
     auto* refiningButton = this->refiningButton;
     refiningButton->SetDisabled(1);
@@ -112,14 +112,14 @@ void UIRefiningWnd::OnCreate(int width, int height) {
   this->returnButton = new UIRefining_BtnReturn();
   this->returnButton->UpdateBitmaps();
   this->returnButton->Move(20, 267);
-  this->returnButton->SetId(519);
+  this->returnButton->SetId(REFINING_BUTTON_RETURN);
   this->returnButton->Enable(0);
   this->AddChild(this->returnButton);
 
   this->againButton = new UIRefining_BtnAgain();
   this->againButton->UpdateBitmaps();
   this->againButton->Move(142, 267);
-  this->againButton->SetId(520);
+  this->againButton->SetId(REFINING_BUTTON_AGAIN);
   this->againButton->Enable(0);
   this->AddChild(this->againButton);
 
@@ -136,7 +136,7 @@ void UIRefiningWnd::OnCreate(int width, int height) {
   help->SetSize(help->BitmapWidth(), help->BitmapHeight());
   help->Move(230, 20);
   help->SetTooltip(LookupMessage(MSI_PROBABILITY_TITLE));
-  help->SetId(510);
+  help->SetId(REFINING_BUTTON_PROBABILITY);
   this->AddChild(help);
 }
 
@@ -172,7 +172,7 @@ __declspec(noinline) void UIRefiningWnd::Reset() {
     button->Invalidate();
   }
 
-  this->state = 0;
+  this->state = REFINING_STATE_WAIT;
   this->result = 7;
   this->stateTick = timeGetTime();
   this->frame = 0;
@@ -228,13 +228,13 @@ __declspec(safebuffers) void UIRefiningWnd::ApplyResult() {
   this->againButton->Enable(1);
 
   switch (this->result) {
-  case 3:
+  case REFINING_STATE_SUCCESS:
     this->returnButton->highlighted = 1;
     this->returnButton->UpdateBitmaps();
     this->againButton->success = 1;
     this->againButton->UpdateBitmaps();
     break;
-  case 4:
+  case REFINING_STATE_FAIL:
     this->returnButton->highlighted = 0;
     this->returnButton->UpdateBitmaps();
     this->againButton->success = 0;
@@ -242,8 +242,8 @@ __declspec(safebuffers) void UIRefiningWnd::ApplyResult() {
     this->againButton->SetDisabled(1);
     this->againButton->Invalidate();
     break;
-  case 5:
-  case 6:
+  case REFINING_STATE_DOWNGRADE:
+  case REFINING_STATE_FAIL2:
     this->returnButton->highlighted = 0;
     this->returnButton->UpdateBitmaps();
     this->againButton->success = 0;
@@ -447,7 +447,7 @@ void UIRefiningWnd::OnLBtnDown(int x, int y) {
     return;
   }
 
-  if (this->state == 1 && this->item.identity[1] > 0 && static_cast<unsigned>(x - 109) <= 46 && static_cast<unsigned>(y - 201) <= 46) {
+  if (this->state == REFINING_STATE_READY && this->item.identity[1] > 0 && static_cast<unsigned>(x - 109) <= 46 && static_cast<unsigned>(y - 201) <= 46) {
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->BeginDragItem(28, this->item, 1, -1);
   }
 }
@@ -460,7 +460,7 @@ void UIRefiningWnd::OnLBtnUp(int x, int y) {
     return;
   }
 
-  if (this->state != 1) {
+  if (this->state != REFINING_STATE_READY) {
     return;
   }
 
@@ -484,7 +484,7 @@ void UIRefiningWnd::OnLBtnUp(int x, int y) {
       switch (this->materials[slot].itemId) {
       case Carnium:
       case Bradium:
-        message = 2990;
+        message = MSI_REFINING_FAIL_CLOSE_UI;
         break;
       case HD_Carnium:
       case HD_Bradium:
@@ -498,7 +498,7 @@ void UIRefiningWnd::OnLBtnUp(int x, int y) {
       case Etherdeocon:
       case Enriched_Ethernium:
       case Enriched_Etherdeocon:
-        message = 2989;
+        message = MSI_CANNOT_OPEN_RODEX_DURING_REFINING;
         break;
       case ITEMID_ORIDECON:
       case Elunium:
@@ -512,7 +512,7 @@ void UIRefiningWnd::OnLBtnUp(int x, int y) {
       case HD_Etel_Bradium:
       case Etel_Carnium:
       case HD_Etel_Carnium:
-        message = 2988;
+        message = MSI_CLOSE_RODEX_FOR_REFINING;
         break;
       default:
         this->Invalidate();
@@ -543,7 +543,7 @@ void UIRefiningWnd::OnLBtnUp(int x, int y) {
 // OFFSET: 0x007F76C0
 // FUNCTION: fn_09916
 void UIRefiningWnd::OnMouseHover(int x, int y) {
-  if (this->state != 1) {
+  if (this->state != REFINING_STATE_READY) {
     return;
   }
 
@@ -610,7 +610,7 @@ void UIRefiningWnd::OnProcess() {
     this->notice->OnProcess();
   }
 
-  if (this->state == 1 && this->refiningButton->Disabled() == 1 && this->item.identity[1] > 0 && this->selectedMaterial >= 0 &&
+  if (this->state == REFINING_STATE_READY && this->refiningButton->Disabled() == 1 && this->item.identity[1] > 0 && this->selectedMaterial >= 0 &&
       static_cast<unsigned>(this->selectedMaterial) < this->materials.size()) {
     {
       auto* refiningButton = this->refiningButton;
@@ -634,7 +634,7 @@ void UIRefiningWnd::OnProcess() {
   }
 
   ++this->frame;
-  if (this->state == 2) {
+  if (this->state == REFINING_STATE_PROCESS) {
     if (this->frame == 7) {
       g_soundMgr->PlayWave("effect\\refine\\bs_refine_1.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
@@ -645,15 +645,15 @@ void UIRefiningWnd::OnProcess() {
 
   if (frameCounts[this->state] <= this->frame) {
     switch (this->state) {
-    case 0:
+    case REFINING_STATE_WAIT:
       this->frame = 0;
       break;
-    case 3:
+    case REFINING_STATE_SUCCESS:
       this->frame = 13;
       break;
-    case 4:
-    case 5:
-    case 6:
+    case REFINING_STATE_FAIL:
+    case REFINING_STATE_DOWNGRADE:
+    case REFINING_STATE_FAIL2:
       this->frame = 18;
       break;
     default:
@@ -661,10 +661,10 @@ void UIRefiningWnd::OnProcess() {
       break;
     }
 
-    if (this->state == 2) {
-      if (this->result == 3) {
+    if (this->state == REFINING_STATE_PROCESS) {
+      if (this->result == REFINING_STATE_SUCCESS) {
         g_soundMgr->PlayWave("effect\\refine\\bs_refine_success.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      } else if (this->result == 4 || this->result == 5 || this->result == 6) {
+      } else if (this->result == REFINING_STATE_FAIL || this->result == REFINING_STATE_DOWNGRADE || this->result == REFINING_STATE_FAIL2) {
         g_soundMgr->PlayWave("effect\\refine\\bs_refine_failed.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       }
       this->ApplyResult();
@@ -707,7 +707,7 @@ void UIRefiningWnd::OnRBtnUp(int x, int y) {
     return;
   }
 
-  if (this->state == 1) {
+  if (this->state == REFINING_STATE_READY) {
     if (this->selectedMaterial != -1 && x >= 81 && x <= 105 && y >= 150 && y <= 174) {
       UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
       if (!window) {
@@ -805,7 +805,7 @@ int UIRefiningWnd::SendMsg(
   switch (message) {
   case UM_COMMAND:
     switch (argument1) {
-    case 510:
+    case REFINING_BUTTON_PROBABILITY:
       ShellExecuteA(hWnd, "open", LookupMessage(MSI_SELLINGSLOT_ERROR_MAXSLOT), nullptr, nullptr, SW_SHOWNORMAL);
       break;
     case ID_OK:
@@ -828,30 +828,30 @@ int UIRefiningWnd::SendMsg(
       break;
     case ID_CANCEL:
     case ID_CLOSE:
-      if (this->state != 2) {
+      if (this->state != REFINING_STATE_PROCESS) {
         RefiningClosePacket packet;
         packet.id = ID_CZ_CLOSE_REFINING_UI;
         GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
         g_windowMgr.CloseWindow(WID_REFININGWND);
       }
       break;
-    case 519:
+    case REFINING_BUTTON_RETURN:
       this->notice->SetNotice("", 0, 0);
       this->selectedMaterial = -1;
       this->catalystEnabled = 0;
-      if (this->state == 4) {
+      if (this->state == REFINING_STATE_FAIL) {
         this->Reset();
       } else {
-        this->SetState(1, 7);
+        this->SetState(REFINING_STATE_READY, 7);
       }
       break;
-    case 520:
+    case REFINING_BUTTON_AGAIN:
       this->SendMsg(this, UM_COMMAND, ID_OK, 0, 0, 0);
       break;
     }
     break;
   case UM_REFRESHITEM:
-    if (this->state == 0 || this->state == 1) {
+    if (this->state == REFINING_STATE_WAIT || this->state == REFINING_STATE_READY) {
       const ITEM_INFO info = g_session.LookupClientItemByIdentity(argument1);
       if (g_session.HasSwapEquipmentItem(info.identity[1]) == 1) {
         g_modeMgr.GetGameMode()->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
@@ -879,8 +879,8 @@ int UIRefiningWnd::SendMsg(
 // FUNCTION: fn_09924
 void UIRefiningWnd::ApplyItem(int id, int count, RefiningMaterial* materials, int catalystCount) {
   switch (this->state) {
-  case 0:
-  case 1: {
+  case REFINING_STATE_WAIT:
+  case REFINING_STATE_READY: {
     if (id == -1 || count == 0) {
       this->notice->SetNotice(LookupMessage(MSI_RETURN), 3000, 1);
       return;
@@ -910,7 +910,7 @@ void UIRefiningWnd::ApplyItem(int id, int count, RefiningMaterial* materials, in
     this->catalystCount = catalystCount;
     this->catalystEnabled = 0;
     this->notice->SetNotice("", 0, 0);
-    this->state = 1;
+    this->state = REFINING_STATE_READY;
     this->result = 7;
     this->stateTick = timeGetTime();
     this->frame = 0;
@@ -935,11 +935,11 @@ void UIRefiningWnd::ApplyItem(int id, int count, RefiningMaterial* materials, in
     this->requestPending = 0;
     break;
   }
-  case 2:
-  case 3:
-  case 4:
-  case 5:
-  case 6: {
+  case REFINING_STATE_PROCESS:
+  case REFINING_STATE_SUCCESS:
+  case REFINING_STATE_FAIL:
+  case REFINING_STATE_DOWNGRADE:
+  case REFINING_STATE_FAIL2: {
     if (id == -1 || this->item.identity[1] != static_cast<std::uint32_t>(id)) {
       return;
     }
@@ -1009,8 +1009,8 @@ void UIRefiningWnd::SetState(int state, int result) {
   }
 
   switch (state) {
-  case 0:
-  case 1:
+  case REFINING_STATE_WAIT:
+  case REFINING_STATE_READY:
     this->result = 7;
     this->refiningButton->Enable(1);
     {
@@ -1022,7 +1022,7 @@ void UIRefiningWnd::SetState(int state, int result) {
     this->againButton->Enable(0);
     this->Invalidate();
     return;
-  case 2:
+  case REFINING_STATE_PROCESS:
     this->refiningButton->Enable(1);
     {
       UIButton* button = this->refiningButton;
@@ -1036,14 +1036,14 @@ void UIRefiningWnd::SetState(int state, int result) {
       button->Invalidate();
     }
     break;
-  case 3:
+  case REFINING_STATE_SUCCESS:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_REFINING_SUCCEESS)), 0xFFFF00, 0, 0, 0);
     break;
-  case 5:
+  case REFINING_STATE_DOWNGRADE:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_REFINING_DOWNGRADE)), 0xFFFF00, 0, 0, 0);
     break;
-  case 4:
-  case 6:
+  case REFINING_STATE_FAIL:
+  case REFINING_STATE_FAIL2:
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_REFINING_FAIL)), 0xFFFF00, 0, 0, 0);
     break;
   }
@@ -1080,25 +1080,25 @@ __declspec(safebuffers) void UIRefiningWnd::Paint() {
 
   std::string background;
   switch (this->state) {
-  case 0:
+  case REFINING_STATE_WAIT:
     background = static_cast<const std::string&>(FormatOwnedString("유저인터페이스\\refining_renewal\\bg_refining_wait_%02d.bmp", this->frame));
     break;
-  case 1:
+  case REFINING_STATE_READY:
     background = static_cast<const std::string&>(FormatOwnedString("유저인터페이스\\refining_renewal\\bg_refining%s_ready_%02d.bmp", this->catalystCount > 0 ? "A" : "B", this->frame));
     break;
-  case 2:
+  case REFINING_STATE_PROCESS:
     if (this->frame < 9) {
       background = static_cast<const std::string&>(FormatOwnedString("유저인터페이스\\refining_renewal\\bg_refining%s_process_%02d.bmp", this->catalystEnabled == 1 ? "A" : "B", this->frame));
     } else {
       background = static_cast<const std::string&>(FormatOwnedString("유저인터페이스\\refining_renewal\\bg_refining_process_%02d.bmp", this->frame));
     }
     break;
-  case 3:
+  case REFINING_STATE_SUCCESS:
     background = static_cast<const std::string&>(FormatOwnedString("유저인터페이스\\refining_renewal\\bg_refining_success_%02d.bmp", this->frame));
     break;
-  case 4:
-  case 5:
-  case 6:
+  case REFINING_STATE_FAIL:
+  case REFINING_STATE_DOWNGRADE:
+  case REFINING_STATE_FAIL2:
     background = static_cast<const std::string&>(FormatOwnedString("유저인터페이스\\refining_renewal\\bg_refining_fail_%02d.bmp", this->frame));
     break;
   }
@@ -1107,7 +1107,7 @@ __declspec(safebuffers) void UIRefiningWnd::Paint() {
   this->DrawBitmap(1, 17, bitmap, false);
 
 
-  if (this->state == 1) {
+  if (this->state == REFINING_STATE_READY) {
     if (this->selectedMaterial >= 0) {
       this->DrawBitmap(this->selectedMaterial * 49 + 11, 55,
         static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\refining_renewal\\slot_select_blue%d.bmp", this->selectedMaterial).c_str()))),
@@ -1129,7 +1129,7 @@ __declspec(safebuffers) void UIRefiningWnd::Paint() {
       DrawItemIcon(*this, ResourceMgr::Instance(), x + 12, 69, icon, 0);
       const std::string count = FormatOwnedString("%s%d^000000/1", owned != 0 ? "" : color, owned);
       this->DrawFormattedText(x, 107, count, 48, 6, 0, 12, 0, 0);
-      if (index == this->selectedMaterial && (this->state == 1 || (this->state == 2 && this->frame == 0))) {
+      if (index == this->selectedMaterial && (this->state == REFINING_STATE_READY || (this->state == REFINING_STATE_PROCESS && this->frame == 0))) {
         DrawItemIcon(*this, ResourceMgr::Instance(), 81, 150, icon, 0);
       }
       ++index;
@@ -1143,7 +1143,7 @@ __declspec(safebuffers) void UIRefiningWnd::Paint() {
       DrawItemIcon(*this, ResourceMgr::Instance(), 218, 69, icon, 0);
       const std::string count = FormatOwnedString("%s%d^000000/%d", this->catalystCount <= owned ? "" : color, owned, this->catalystCount);
       this->DrawFormattedText(206, 107, count, 48, 6, 0, 12, 0, 0);
-      if (this->catalystEnabled == 1 && (this->state == 1 || (this->state == 2 && this->frame < 13))) {
+      if (this->catalystEnabled == 1 && (this->state == REFINING_STATE_READY || (this->state == REFINING_STATE_PROCESS && this->frame < 13))) {
         DrawItemIcon(*this, ResourceMgr::Instance(), 161, 150, icon, 0);
       }
     }
@@ -1159,24 +1159,24 @@ __declspec(safebuffers) void UIRefiningWnd::Paint() {
   }
 
   switch (this->state) {
-  case 1:
+  case REFINING_STATE_READY:
     this->DrawCenteredText(0, 246, this->item.displayName.c_str(), 264, 0, 12, 0x462117, 1);
     break;
-  case 3:
-  case 5:
-  case 6:
+  case REFINING_STATE_SUCCESS:
+  case REFINING_STATE_DOWNGRADE:
+  case REFINING_STATE_FAIL2:
     this->DrawCenteredText(0, 249, this->item.displayName.c_str(), 264, 0, 12, 0x462117, 1);
     break;
-  case 4:
+  case REFINING_STATE_FAIL:
     this->DrawCenteredText(0, 249, LookupMessage(MSI_OTP_MUST_8_CHAR), 264, 0, 12, 0x462117, 1);
     break;
   }
 
   switch (this->state) {
-  case 0:
-  case 1:
-  case 2: {
-    if (this->state == 2 && this->frame > 3) {
+  case REFINING_STATE_WAIT:
+  case REFINING_STATE_READY:
+  case REFINING_STATE_PROCESS: {
+    if (this->state == REFINING_STATE_PROCESS && this->frame > 3) {
       break;
     }
 
@@ -1201,15 +1201,15 @@ __declspec(safebuffers) void UIRefiningWnd::Paint() {
     this->DrawTextAt(x - percentWidth + labelWidth, 31, percent.c_str(), 0, 0, 12, 0xDE612A, 1, 0);
     break;
   }
-  case 3: {
+  case REFINING_STATE_SUCCESS: {
     const int width = this->TextWidth(LookupMessage(MSI_SUCCESS), 0, 0, 12, 1, 0);
     this->DrawTextAt(static_cast<int>((this->geometry.width - width) * 0.5), 31, LookupMessage(MSI_SUCCESS), 0, 0, 12, 0x422B1F, 1, 0
     );
     break;
   }
-  case 4:
-  case 5:
-  case 6: {
+  case REFINING_STATE_FAIL:
+  case REFINING_STATE_DOWNGRADE:
+  case REFINING_STATE_FAIL2: {
     const int width = this->TextWidth(LookupMessage(MSI_RESET), 0, 0, 12, 1, 0);
     this->DrawTextAt(static_cast<int>((this->geometry.width - width) * 0.5), 31, LookupMessage(MSI_RESET), 0, 0, 12, 0x422B1F, 1, 0
     );
