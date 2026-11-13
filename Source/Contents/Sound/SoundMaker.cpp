@@ -377,7 +377,7 @@ int CPc::GetPkState() {
 // OFFSET: 0x00DA2B70
 // FUNCTION: fn_22383
 std::int64_t CPc::GetWeapon() {
-  return *reinterpret_cast<const std::uint64_t*>(&this->weapon);
+  return this->weaponPair;
 }
 
 // OFFSET: 0x00DA2BC0

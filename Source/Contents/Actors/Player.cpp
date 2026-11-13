@@ -377,7 +377,7 @@ void CGrannyPc::SetSprWeapon(int weaponLow32, int weaponHigh32) {
     int high32;
   };
   const WeaponValueParts values = {weaponLow32, weaponHigh32};
-  *reinterpret_cast<WeaponValueParts*>(&this->weapon) = values;
+  std::memcpy(&this->weaponPair, &values, sizeof(values));
 }
 
 // OFFSET: 0x00DB3C30
@@ -1456,7 +1456,7 @@ void CPc::SetSprWeapon(int first, int second) {
   this->LoadEquipAction(5, actName.c_str());
   this->LoadEquipSprite(5, sprName.c_str());
 
-  switch (*reinterpret_cast<const std::int64_t*>(&this->weapon)) {
+  switch (this->weaponPair) {
     case W_DAGGER:
     case W_1HSWORD:
     case W_2HSWORD:
@@ -1769,7 +1769,7 @@ CRes* CPc::GetEquipSprite(int slot) const {
 // OFFSET: 0x00DAB160
 // FUNCTION: fn_22580
 std::int64_t CGrannyPc::GetWeapon() {
-  return *reinterpret_cast<const std::int64_t*>(&this->weapon);
+  return this->weaponPair;
 }
 
 // OFFSET: 0x00DAB250

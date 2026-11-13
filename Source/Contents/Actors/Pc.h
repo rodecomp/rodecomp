@@ -116,8 +116,13 @@ public:
   /* 043C */ int headDir;
   /* 0440 */ int head;
   /* 0444 */ int headPalette;
-  /* 0448 */ int weapon;
-  /* 044C */ int secondaryWeapon;
+  union {
+    /* 0448 */ std::int64_t weaponPair;
+    struct {
+      /* 0448 */ int weapon;
+      /* 044C */ int secondaryWeapon;
+    };
+  };
   /* 0450 */ int accessory;
   /* 0454 */ int accessory2;
   /* 0458 */ int accessory3;
@@ -294,8 +299,13 @@ public:
   /* 0434 */ int head;
   /* 0438 */ int headPalette;
   /* 043C */ unsigned char padding_043C[4];
-  /* 0440 */ int weapon;
-  /* 0444 */ int secondaryWeapon;
+  union {
+    /* 0440 */ std::int64_t weaponPair;
+    struct {
+      /* 0440 */ int weapon;
+      /* 0444 */ int secondaryWeapon;
+    };
+  };
   /* 0448 */ int accessory;
   /* 044C */ int accessory2;
   /* 0450 */ int accessory3;
