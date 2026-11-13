@@ -23,6 +23,8 @@
 #include <windows.h>
 
 template __declspec(noinline) std::list<ProbabilityTable::CItemData>::iterator std::next(std::list<ProbabilityTable::CItemData>::iterator, std::ptrdiff_t);
+template __declspec(noinline) void std::_List_node<ProbabilityTable::CItemData, void*>::_Free_non_head(
+  std::allocator<std::_List_node<ProbabilityTable::CItemData, void*>>&, std::_List_node<ProbabilityTable::CItemData, void*>*) noexcept;
 
 // OFFSET: 0x00A4E3B0
 // FUNCTION: fn_16206
