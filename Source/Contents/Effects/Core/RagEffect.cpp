@@ -9964,7 +9964,7 @@ void CRagEffect::SpawnBlurAfterimage() {
       return;
     }
 
-    CRenderObject* blur = new CBlurPC(reinterpret_cast<CPc*>(this->state.parent));
+    CRenderObject* blur = new CBlurPC(static_cast<CPc*>(this->state.parent));
     SetBlendedTint(*blur, *this->state.parent, this->render.position);
     WorldObjects().push_back(blur);
     return;
@@ -9990,7 +9990,7 @@ void CRagEffect::SpawnBlurAfterimage() {
 
   CBlurPC* blur;
   if (this->state.duration == 30) {
-    blur = new CBlurPC(reinterpret_cast<CPc*>(this->state.parent));
+    blur = new CBlurPC(static_cast<CPc*>(this->state.parent));
   } else {
     if (this->state.stateCnt % 5 != 0) {
       return;
@@ -10001,7 +10001,7 @@ void CRagEffect::SpawnBlurAfterimage() {
       return;
     }
 
-    blur = new CBlurPC(reinterpret_cast<CPc*>(this->state.parent));
+    blur = new CBlurPC(static_cast<CPc*>(this->state.parent));
   }
 
   SendAfterimageColor(*blur, *this, this->render.position);
@@ -10019,7 +10019,7 @@ void CRagEffect::SpawnHallucinationOnce() {
       return;
     }
 
-    CRenderObject* hallu = new CHalluPC(reinterpret_cast<CPc*>(this->state.parent));
+    CRenderObject* hallu = new CHalluPC(static_cast<CPc*>(this->state.parent));
     SetBlendedTint(*hallu, *this->state.parent, this->render.position);
     WorldObjects().push_back(hallu);
     return;
@@ -10034,7 +10034,7 @@ void CRagEffect::SpawnHallucinationOnce() {
     return;
   }
 
-  CHalluPC* hallu = new CHalluPC(reinterpret_cast<CPc*>(this->state.parent));
+  CHalluPC* hallu = new CHalluPC(static_cast<CPc*>(this->state.parent));
   SendAfterimageColor(*hallu, *this, this->render.position);
   CRenderObject* object = hallu;
   WorldObjects().push_back(object);
@@ -10051,7 +10051,7 @@ void CRagEffect::SpawnHallucinationTrail() {
       return;
     }
 
-    CRenderObject* hallu = new CHalluPC2(reinterpret_cast<CPc*>(this->state.parent));
+    CRenderObject* hallu = new CHalluPC2(static_cast<CPc*>(this->state.parent));
     SetBlendedTint(*hallu, *this->state.parent, this->render.position);
     WorldObjects().push_back(hallu);
     return;
@@ -10063,13 +10063,13 @@ void CRagEffect::SpawnHallucinationTrail() {
 
   CHalluPC2* hallu;
   if (this->state.duration == 30) {
-    hallu = new CHalluPC2(reinterpret_cast<CPc*>(this->state.parent));
+    hallu = new CHalluPC2(static_cast<CPc*>(this->state.parent));
   } else {
     if (this->state.stateCnt % 5 != 0) {
       return;
     }
 
-    hallu = new CHalluPC2(reinterpret_cast<CPc*>(this->state.parent));
+    hallu = new CHalluPC2(static_cast<CPc*>(this->state.parent));
   }
 
   WorldObjects().push_back(hallu);
@@ -10087,10 +10087,10 @@ void CRagEffect::SpawnActorHallucination() {
     }
 
     CRenderObject* hallu;
-    if (!IsPlayerJob(reinterpret_cast<CGameActor*>(this->state.parent)->GetEffectiveJob(-1))) {
-      hallu = new CHalluNPC(reinterpret_cast<CGameActor*>(this->state.parent));
+    if (!IsPlayerJob(static_cast<CGameActor*>(this->state.parent)->GetEffectiveJob(-1))) {
+      hallu = new CHalluNPC(static_cast<CGameActor*>(this->state.parent));
     } else {
-      hallu = new CHalluPC(reinterpret_cast<CPc*>(this->state.parent));
+      hallu = new CHalluPC(static_cast<CPc*>(this->state.parent));
     }
     SetBlendedTint(*hallu, *this->state.parent, this->render.position);
     WorldObjects().push_back(hallu);
@@ -10109,10 +10109,10 @@ void CRagEffect::SpawnActorHallucination() {
   }
 
   CRenderObject* hallu;
-  if (!IsPlayerJob(reinterpret_cast<CGameActor*>(this->state.parent)->GetEffectiveJob(-1))) {
-    hallu = new CHalluNPC(reinterpret_cast<CGameActor*>(this->state.parent));
+  if (!IsPlayerJob(static_cast<CGameActor*>(this->state.parent)->GetEffectiveJob(-1))) {
+    hallu = new CHalluNPC(static_cast<CGameActor*>(this->state.parent));
   } else {
-    hallu = new CHalluPC(reinterpret_cast<CPc*>(this->state.parent));
+    hallu = new CHalluPC(static_cast<CPc*>(this->state.parent));
   }
   SendAfterimageColor(*hallu, *this, this->render.position);
   WorldObjects().push_back(hallu);
@@ -13972,7 +13972,7 @@ void CRagEffect::SpawnPaleBlur() {
     return;
   }
 
-  CBlurPC* blur = new CBlurPC(reinterpret_cast<CPc*>(this->state.parent));
+  CBlurPC* blur = new CBlurPC(static_cast<CPc*>(this->state.parent));
   SendAfterimageColor(*blur, *this, this->render.position);
   CRenderObject* object = blur;
   WorldObjects().push_back(object);
@@ -13991,7 +13991,7 @@ void CRagEffect::SpawnLightBlur() {
     return;
   }
 
-  CBlurPC* blur = new CBlurPC(reinterpret_cast<CPc*>(this->state.parent));
+  CBlurPC* blur = new CBlurPC(static_cast<CPc*>(this->state.parent));
   SendAfterimageColor(*blur, *this, this->render.position);
   CRenderObject* object = blur;
   WorldObjects().push_back(object);
@@ -20203,7 +20203,7 @@ bool CRagEffect::OnProcess3() {
       const int value = (this->state.stateCnt & 1) != 0 ? 255 : 0;
       this->state.parent->SetColor(-1, value, value, value);
     } else if (this->state.stateCnt >= 61) {
-      CGameActor* actor = reinterpret_cast<CGameActor*>(this->state.parent);
+      CGameActor* actor = static_cast<CGameActor*>(this->state.parent);
       if (actor->render.isCharacter != 0 && (actor->effectState & 1) != 0) {
         actor->render.colorLocked = 1;
         this->state.parent->SetColor(-1, 255, 128, 255);
@@ -20371,7 +20371,7 @@ bool CRagEffect::OnProcess3() {
     break;
   case EF_KAGEMUSYA:
     {
-      CHalluPC2* hallu = new CHalluPC2(reinterpret_cast<CPc*>(this->state.parent));
+      CHalluPC2* hallu = new CHalluPC2(static_cast<CPc*>(this->state.parent));
       hallu->render.position = this->state.parent->render.position;
       hallu->render.position.x -= ClientSine(static_cast<int>(this->state.parent->render.angle)) * 5.0f;
       hallu->render.position.z += ClientCosine(static_cast<int>(this->state.parent->render.angle)) * 5.0f;
@@ -22135,7 +22135,7 @@ bool CRagEffect::OnProcess3() {
     }
     break;
   case EF_AB_OFFERTORIUM_RING:
-    if (!this->ProcessEZ2STR(0.0f, -5.0f - static_cast<float>(reinterpret_cast<CGameActor*>(this->state.parent)->MountHeightOffset()), 0.0f)) {
+    if (!this->ProcessEZ2STR(0.0f, -5.0f - static_cast<float>(static_cast<CGameActor*>(this->state.parent)->MountHeightOffset()), 0.0f)) {
       return false;
     }
     break;
@@ -22229,7 +22229,7 @@ bool CRagEffect::OnProcess3() {
       z *= inverse;
       this->state.parent->SetColor(-1, 200, 200, 0);
       if (this->state.stateCnt % 5 == 0) {
-        CHalluPC* hallu = new CHalluPC(reinterpret_cast<CPc*>(this->state.parent));
+        CHalluPC* hallu = new CHalluPC(static_cast<CPc*>(this->state.parent));
         hallu->render.position.x = this->state.deltaPos[0];
         hallu->render.position.y = this->state.deltaPos[1];
         hallu->render.position.z = this->state.deltaPos[2];

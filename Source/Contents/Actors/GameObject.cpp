@@ -4421,31 +4421,31 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     );
     break;
   case AM_MAKE_MISFORTUNE_EFFECT:
-    if (this->firstFollowerEffect == 0) {
+    if (this->firstFollowerEffect == nullptr) {
       CGameObject* effect = mode->SpawnMsgEffect(68, &this->render.position, this->render.accountId, true);
       this->msgEffectList.push_back(effect);
       effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
-      this->firstFollowerEffect = reinterpret_cast<int>(effect);
+      this->firstFollowerEffect = effect;
     }
     break;
   case AM_DELETE_MISFORTUNE_EFFECT:
-    if (this->firstFollowerEffect != 0) {
-      reinterpret_cast<CGameObject*>(this->firstFollowerEffect)->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0);
-      this->firstFollowerEffect = 0;
+    if (this->firstFollowerEffect != nullptr) {
+      this->firstFollowerEffect->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0);
+      this->firstFollowerEffect = nullptr;
     }
     break;
   case AM_MAKE_DEEPSILENCE_EFFECT:
-    if (this->secondFollowerEffect == 0) {
+    if (this->secondFollowerEffect == nullptr) {
       CGameObject* effect = mode->SpawnMsgEffect(9, &this->render.position, this->render.accountId, true);
       this->msgEffectList.push_back(effect);
       effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
-      this->secondFollowerEffect = reinterpret_cast<int>(effect);
+      this->secondFollowerEffect = effect;
     }
     break;
   case AM_DELETE_DEEPSILENCE_EFFECT:
-    if (this->secondFollowerEffect != 0) {
-      reinterpret_cast<CGameObject*>(this->secondFollowerEffect)->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0);
-      this->secondFollowerEffect = 0;
+    if (this->secondFollowerEffect != nullptr) {
+      this->secondFollowerEffect->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0);
+      this->secondFollowerEffect = nullptr;
     }
     break;
   default:

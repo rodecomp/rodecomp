@@ -160,8 +160,8 @@ public:
   /* 03C8 */ int transformPriority;
   /* 03CC */ int charmType;
   /* 03D0 */ int charmCount;
-  /* 03D4 */ int firstFollowerEffect;
-  /* 03D8 */ int secondFollowerEffect;
+  /* 03D4 */ CGameObject* firstFollowerEffect;
+  /* 03D8 */ CGameObject* secondFollowerEffect;
   /* 03DC */ int mountedState;
   union { /* 03E0 */ std::uint16_t actorFlags; struct { unsigned char storedActorEntry; /* 03E1 */ bool modelReady; }; };
   /* 03E2 */ unsigned char padding_03E2[0x06];

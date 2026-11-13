@@ -530,8 +530,8 @@ void CGameActor::ResetState() {
   this->mountedState = 0;
   this->actorFlags = 0;
   this->emblemVersion = 0;
-  this->firstFollowerEffect = 0;
-  this->secondFollowerEffect = 0;
+  this->firstFollowerEffect = nullptr;
+  this->secondFollowerEffect = nullptr;
 
   this->maximumValue = 0;
 }
