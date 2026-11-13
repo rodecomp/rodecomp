@@ -3123,7 +3123,8 @@ void CSession::Init() {
 void CSession::ResetCharacterState() {
   *reinterpret_cast<float*>(&this->m_navigationPlayerMap[0x18]) = SquareRoot(50.0f);
 
-  const int randomValue = std::max(0, std::rand() % 1024) + 1;
+  const int roll = std::rand() % 1024;
+  const int randomValue = (roll >= 0 ? roll : 0) + 1;
 
   this->m_zeny = 0;
   this->m_exp = 0;
