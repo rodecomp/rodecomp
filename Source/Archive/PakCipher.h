@@ -22,8 +22,8 @@ namespace myGPack {
   };
 
   static_assert(sizeof(PakCipher) == 128);
-  int InitialPermutation(std::uint8_t* block);
-  int FinalPermutation(std::uint8_t* block);
+  int __stdcall InitialPermutation(std::uint8_t* block);
+  int __stdcall FinalPermutation(std::uint8_t* block);
 
 }
 

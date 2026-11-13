@@ -367,7 +367,7 @@ namespace myGPack {
 
   // OFFSET: 0x00AE9260
   // FUNCTION: fn_18104
-  int InitialPermutation(std::uint8_t* block) {
+  int __stdcall InitialPermutation(std::uint8_t* block) {
     Block64 result;
     result.words[0] = result.words[1] = 0;
 
@@ -378,13 +378,15 @@ namespace myGPack {
       }
     }
 
-    std::memcpy(block, &result, sizeof(result));
-    return result.words[1];
+    Block64* destination = reinterpret_cast<Block64*>(block);
+    destination->words[0] = result.words[0];
+    destination->words[1] = result.words[1];
+    return static_cast<int>(result.words[1]);
   }
 
   // OFFSET: 0x00AE91D0
   // FUNCTION: fn_18103
-  int FinalPermutation(std::uint8_t* block) {
+  int __stdcall FinalPermutation(std::uint8_t* block) {
     Block64 result;
     result.words[0] = result.words[1] = 0;
 
@@ -395,8 +397,10 @@ namespace myGPack {
       }
     }
 
-    std::memcpy(block, &result, sizeof(result));
-    return result.words[1];
+    Block64* destination = reinterpret_cast<Block64*>(block);
+    destination->words[0] = result.words[0];
+    destination->words[1] = result.words[1];
+    return static_cast<int>(result.words[1]);
   }
 
   // OFFSET: 0x00AE9020
