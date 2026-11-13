@@ -1138,7 +1138,7 @@ void UIMessengerGroupWnd::OnRBtnUp(int x, int y) {
 // FUNCTION: fn_07709
 void UIMessengerGroupWnd::OnLBtnDown(int x, int y) {
   if (y < 17) {
-    UIFrameWnd::OnRBtnUp(x, y);
+    UIFrameWnd::OnLBtnDown(x, y);
     if (UIWindow* window = this->CompanionWindow()) {
       window->geometry.targetAlpha = 128;
       window->geometry.alphaStart = timeGetTime();
