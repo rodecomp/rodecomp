@@ -229,7 +229,7 @@ void UINavigationWnd::RefreshHeaderTexts(int mode) {
 
 // OFFSET: 0x0093DD20
 // FUNCTION: fn_12772
-void UINavigationWnd::RefreshWorldMapMarks() {
+void UIRoMapWnd::RefreshWorldMapMarks() {
   g_worldViewMgr.ClearMarks();
   if (g_navigationManager.viewMode == 2) {
     std::string name;
@@ -251,7 +251,7 @@ void UINavigationWnd::RefreshWorldMapMarks() {
 
 // OFFSET: 0x0093DED0
 // FUNCTION: fn_12773
-void UINavigationWnd::RefreshWorldMapSelection() {
+void UIRoMapWnd::RefreshWorldMapSelection() {
   this->Invalidate();
   std::string name = g_navigationManager.GetCurrentTargetName();
   if (!name.empty()) {
@@ -264,7 +264,7 @@ void UINavigationWnd::RefreshWorldMapSelection() {
 
 // OFFSET: 0x0093DF80
 // FUNCTION: fn_12774
-void UINavigationWnd::RefreshWorldMapLevels() {
+void UIRoMapWnd::RefreshWorldMapLevels() {
   g_worldViewMgr.ClearLevels();
   const int count = g_navigationManager.StateCount();
   if (count > 0) {
@@ -641,7 +641,7 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
           this->SendMsg(this, UM_COMMAND, ID_BUTTON1, 0, 0, 0);
           this->RefreshRouteList();
           if (g_windowMgr.modal) {
-            static_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapMarks();
+            g_windowMgr.modal->RefreshWorldMapMarks();
           }
         }
       }
@@ -654,7 +654,7 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         g_navigationManager.RefreshSearch();
         this->SendMsg(this, UM_COMMAND, ID_BUTTON2, 0, 0, 0);
         if (g_windowMgr.modal) {
-          static_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapLevels();
+          g_windowMgr.modal->RefreshWorldMapLevels();
           return 0;
         }
       }
@@ -668,7 +668,7 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         const int index = static_cast<int>(argument2) - this->m_routePanel->LineOffset();
         if (index >= 0 && g_navigationManager.SelectState(index)) {
           if (g_windowMgr.modal) {
-            static_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapSelection();
+            g_windowMgr.modal->RefreshWorldMapSelection();
           }
           this->Invalidate();
           return 0;
@@ -702,7 +702,7 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       this->ApplyMinimized();
       this->RefreshHeaderTexts(g_navigationManager.viewMode);
       if (g_navigationManager.expandedMap && g_windowMgr.modal) {
-        static_cast<UIRoMapWnd*>(g_windowMgr.modal)->UpdateNavigationButtons();
+        g_windowMgr.modal->UpdateNavigationButtons();
         return 0;
       }
       break;
@@ -722,7 +722,7 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       g_navigationManager.hideWindow = false;
       if (g_windowMgr.modal) {
         g_navigationManager.expandedMap = true;
-        static_cast<UIRoMapWnd*>(g_windowMgr.modal)->UpdateNavigationButtons();
+        g_windowMgr.modal->UpdateNavigationButtons();
         return 0;
       }
       g_windowMgr.Schedule(this);
@@ -792,7 +792,7 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         this->RecordResponse(0x1B9, argument2, argument3, argument4);
         if (g_navigationManager.SelectTarget(static_cast<int>(argument2) - this->m_searchPanel->LineOffset())) {
           if (g_windowMgr.modal) {
-            static_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapSelection();
+            g_windowMgr.modal->RefreshWorldMapSelection();
           }
           this->Invalidate();
           return 0;

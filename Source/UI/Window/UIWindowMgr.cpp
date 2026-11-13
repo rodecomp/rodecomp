@@ -361,7 +361,7 @@ void UIWindowMgr::DrawWindows() {
       }
 
       if (window == this->modal) {
-        static_cast<UIRoMapWnd*>(this->modal)->DrawWorld();
+        this->modal->DrawWorld();
       }
 
       g_renderDiagnosticLine = 3835;
@@ -6581,8 +6581,8 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
   case WID_ROMAPWND:
     window = this->modal;
     if (window == nullptr) {
-      window = new UIRoMapWnd();
-      this->modal = window;
+      this->modal = new UIRoMapWnd();
+      window = this->modal;
       window->SetSize(g_renderer->viewport.width, g_renderer->viewport.height);
       window->Move(0, 0);
       this->AddRendered(window);

@@ -88,6 +88,9 @@ public:
   );
   __declspec(noinline) void DrawKafraMarkers(float elapsed);
   __declspec(noinline) void DrawMapMarker(const RoMapMarker& marker, unsigned char skipSelected);
+  void RefreshWorldMapMarks();
+  void RefreshWorldMapSelection();
+  void RefreshWorldMapLevels();
   void DrawWorld();
   __declspec(noinline) void RefreshPartyRecords();
   __declspec(noinline) bool LocateRecord(WorldViewRecord& record);

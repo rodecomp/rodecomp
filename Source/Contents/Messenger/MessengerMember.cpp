@@ -22,6 +22,7 @@
 #include "Contents/World/World.h"
 #include "UI/Window/UIFrameWnd.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Navigation/UIRoMapWnd.h"
 #include "UI/Window/WindowManagerWindows.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session/Session.h"

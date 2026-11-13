@@ -18,6 +18,7 @@
 #include "UI/Navigation/UINavigationV4Wnd.h"
 #include "UI/Navigation/UINavigationWnd.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Navigation/UIRoMapWnd.h"
 #include "UI/CashShop/UIPayConfirmWnd.h"
 #include "Client/Application/RegistryKey.h"
 
@@ -650,9 +651,9 @@ bool CNavigationManager::StartNavigation(std::string name, int type, unsigned ch
   }
 
   if (g_windowMgr.modal) {
-    static_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapSelection();
-    static_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapLevels();
-    static_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapMarks();
+    g_windowMgr.modal->RefreshWorldMapSelection();
+    g_windowMgr.modal->RefreshWorldMapLevels();
+    g_windowMgr.modal->RefreshWorldMapMarks();
   }
 
   this->displayMode = 1;
@@ -704,7 +705,7 @@ bool CNavigationManager::SearchNavigation(std::string name, int type, bool flag)
       } else {
         g_windowMgr.navigationWnd->SendMsg(nullptr, UM_COMMAND, ID_BASE, 0, 0, 0);
         if (g_windowMgr.modal != nullptr) {
-          static_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapLevels();
+          g_windowMgr.modal->RefreshWorldMapLevels();
         }
       }
 
@@ -1313,8 +1314,8 @@ bool CNavigationManager::SetDestinationMap(std::string mapName, int x, int y) {
   }
 
   if (g_windowMgr.modal) {
-    static_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapSelection();
-    static_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapLevels();
+    g_windowMgr.modal->RefreshWorldMapSelection();
+    g_windowMgr.modal->RefreshWorldMapLevels();
   }
   return true;
 }

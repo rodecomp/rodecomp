@@ -2594,7 +2594,7 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
           g_navigationManager.displayMode = 1;
           g_navigationManager.SelectTarget(g_navigationManager.GetSelectedNode());
           if (g_windowMgr.modal) {
-            static_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapMarks();
+            g_windowMgr.modal->RefreshWorldMapMarks();
           }
         }
       }
@@ -2616,7 +2616,7 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
         this->FillRouteGroups();
         g_navigationManager.displayMode = 0;
         if (g_windowMgr.modal) {
-          static_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapLevels();
+          g_windowMgr.modal->RefreshWorldMapLevels();
         }
         this->LayoutWithDetails();
         g_serverLanguage->ResetInput();
@@ -2632,7 +2632,7 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
       this->geometry.targetAlpha = 0xAA;
       this->geometry.alphaStart = timeGetTime();
       if (g_windowMgr.modal) {
-        static_cast<UIRoMapWnd*>(g_windowMgr.modal)->UpdateNavigationButtons();
+        g_windowMgr.modal->UpdateNavigationButtons();
       }
       this->RefreshLayout();
       break;
@@ -2697,7 +2697,7 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
         this->searchList->selected = g_navigationManager.selectedPathNode;
         this->searchList->Invalidate();
         if (g_windowMgr.modal) {
-          static_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapSelection();
+          g_windowMgr.modal->RefreshWorldMapSelection();
         }
         this->Invalidate();
         this->RecordResponse(static_cast<int>(argument1), argument2, argument3, argument4);
@@ -3386,7 +3386,7 @@ void UINavigationV4Wnd::SelectRouteNode(int node) {
   list->selected = g_navigationManager.selectedPathNode;
   list->Invalidate();
   if (g_windowMgr.modal) {
-    static_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapSelection();
+    g_windowMgr.modal->RefreshWorldMapSelection();
   }
   this->Invalidate();
 }

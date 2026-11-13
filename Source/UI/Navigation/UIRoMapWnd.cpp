@@ -744,7 +744,7 @@ int UIRoMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
       if (this->m_searchEdit->Length()) {
         std::string name(this->m_searchEdit->Text());
         if (g_navigationManager.SearchNavigation(name, 0, true) == true) {
-          reinterpret_cast<UINavigationWnd*>(this)->RefreshWorldMapLevels();
+          this->RefreshWorldMapLevels();
         }
       }
       return 0;
@@ -1008,8 +1008,8 @@ void UIRoMapWnd::OnCreate(int, int) {
     }
   }
 
-  reinterpret_cast<UINavigationWnd*>(this)->RefreshWorldMapLevels();
-  reinterpret_cast<UINavigationWnd*>(this)->RefreshWorldMapMarks();
+  this->RefreshWorldMapLevels();
+  this->RefreshWorldMapMarks();
   const int closeX = this->geometry.width - 18;
   UIBitmapButton* closeButton = new UIBitmapButton();
   closeButton->SetBitmap("유저인터페이스\\basic_interface\\world_close_off.bmp", 0, 0);

@@ -22,6 +22,7 @@ class CSurface;
 class CWebBrowser;
 struct MessengerMember;
 struct ReplayOptions;
+class UIRoMapWnd;
 struct ModeDragState;
 
 struct WindowTextEntry {
@@ -288,7 +289,7 @@ public:
   /* 03F7 */ unsigned char padding_03F7;
   /* 03F8 */ UIWindow* memorialDunWnd;
   /* 03FC */ UIWindow* otherEquipWnd;
-  /* 0400 */ UIWindow* modal;
+  /* 0400 */ UIRoMapWnd* modal;
   /* 0404 */ UIWindow* hotkeyWnd;
   /* 0408 */ UIWindow* escOptionWnd;
   /* 040C */ UIWindow* buyingShopMakeWnd;

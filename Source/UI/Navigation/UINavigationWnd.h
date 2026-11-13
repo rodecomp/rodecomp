@@ -33,9 +33,6 @@ public:
   void LayoutTabs();
   void ApplyMinimized();
   __declspec(noinline) void RefreshHeaderTexts(int mode);
-  void RefreshWorldMapMarks();
-  void RefreshWorldMapSelection();
-  void RefreshWorldMapLevels();
   void RefreshRouteList();
   void FillRouteList();
   bool LoadRoute(int index);
