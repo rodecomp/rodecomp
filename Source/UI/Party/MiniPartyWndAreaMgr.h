@@ -5,6 +5,8 @@
 #include <vector>
 #include <windows.h>
 
+#include "UI/Party/MiniPartyGrid.h"
+
 class CMiniPartyWndAreaMgr {
 public:
   static CMiniPartyWndAreaMgr* Instance();
@@ -20,6 +22,9 @@ public:
 
   CMiniPartyWndAreaMgr();
   int FindFreeCell();
+  MiniPartyGridPoint GetCellPosition(int index) const;
+  int FindCell(int x, int y) const;
+  void BuildAvailableCells();
 };
 
 extern CMiniPartyWndAreaMgr* g_miniPartyWndAreaMgr;

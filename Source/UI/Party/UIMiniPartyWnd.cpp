@@ -405,7 +405,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
 // OFFSET: 0x00742E10
 // FUNCTION: fn_07743
 void UIMiniPartyWnd::OnLBtnUp(int x, int y) {
-  const int cell = reinterpret_cast<MiniPartyGrid*>(CMiniPartyWndAreaMgr::Instance())->FindCell(this->geometry.x, this->geometry.y);
+  const int cell = CMiniPartyWndAreaMgr::Instance()->FindCell(this->geometry.x, this->geometry.y);
   if (cell != -1) {
     UIMiniPartyWnd* other = static_cast<UIMiniPartyWnd*>(g_windowMgr.FindSnapExcludedWindow(cell));
     if (other) {

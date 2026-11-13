@@ -5,6 +5,8 @@
 #include <list>
 #include <windows.h>
 
+#include "UI/Party/MiniPartyGrid.h"
+
 class CMiniPartyWndSortArea {
 public:
   /* 0004 */ RECT area;
@@ -16,6 +18,7 @@ public:
 
   explicit CMiniPartyWndSortArea(const RECT& bounds);
   std::list<int> GetCells() const;
+  MiniPartyGridPoint GetWindowPosition(int index) const;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
