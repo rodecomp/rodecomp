@@ -1,6 +1,7 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Session/Session.h"
+#include "Contents/Actors/Pc.h"
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Ground/GroundGeometry.h"
@@ -217,7 +218,7 @@ bool CRenderObject::GetTargetPos(std::uint32_t targetAid, vector3d& targetPos) c
   bool found = true;
 
   if (targetAid == g_session.m_aid) {
-    const vector3d& playerPos = reinterpret_cast<const CRenderObject*>(mode->scene->player)->render.position;
+    const vector3d& playerPos = mode->scene->player->render.position;
     targetPos.x = playerPos.x;
     targetPos.y = playerPos.y;
     targetPos.z = playerPos.z;
@@ -227,7 +228,7 @@ bool CRenderObject::GetTargetPos(std::uint32_t targetAid, vector3d& targetPos) c
     targetPos.z = actor->render.position.z;
   } else {
     found = false;
-    const vector3d& playerPos = reinterpret_cast<const CRenderObject*>(mode->scene->player)->render.position;
+    const vector3d& playerPos = mode->scene->player->render.position;
     const vector3d& position = this->render.position;
     const vector3d delta = {playerPos.x - position.x, playerPos.y - position.y, playerPos.z - position.z};
     targetPos.x = position.x - delta.x;
