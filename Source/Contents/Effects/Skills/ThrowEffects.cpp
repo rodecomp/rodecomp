@@ -70,7 +70,7 @@ void CThrowItemEffect::Open() {
         particle->SetTexture("유저인터페이스\\item\\빈병.bmp");
         particle->scale = 1.5f;
         particle->SetColor(135, 255, 135);
-        particle->angleBits = 0;
+        particle->angle = 0;
         particle->speedParameter = particle->animationParameter / 25.0f;
         particle->alpha = 255;
         particle->offsetX = this->position[0];
@@ -88,7 +88,7 @@ void CThrowItemEffect::Open() {
         particle->SetTexture("유저인터페이스\\item\\돌.bmp");
         particle->scale = 1.0f;
         particle->SetColor(255, 255, 255);
-        particle->angleBits = 0;
+        particle->angle = 0;
         particle->speedParameter = 2.0f;
         particle->alpha = 255;
         particle->offsetX = this->position[0];
@@ -144,7 +144,7 @@ void CThrowItemEffect::Open() {
         particle->SetTexture("유저인터페이스\\item\\쿠나이_독.bmp");
         particle->scale = 3.0f;
         particle->SetColor(255, 200, 255);
-        *reinterpret_cast<float*>(&particle->angleBits) = 330.0f;
+        particle->angle = 330.0f;
         particle->speedParameter = 1.5f;
         particle->alpha = 255;
         particle->offsetX = this->position[0];
@@ -163,7 +163,7 @@ void CThrowItemEffect::Open() {
         particle->SetTexture("effect\\coin_a.bmp");
         particle->scale = 2.5f;
         particle->SetColor(255, 200, 0);
-        *reinterpret_cast<float*>(&particle->angleBits) = 330.0f;
+        particle->angle = 330.0f;
         particle->speedParameter = 2.0f;
         particle->alpha = 255;
         particle->destinationBlend = 6;
@@ -186,7 +186,7 @@ void CThrowItemEffect::Open() {
 
           this->effectLifetime = 200;
           particle->scale = 2.0f;
-          *reinterpret_cast<float*>(&particle->angleBits) = 330.0f;
+          particle->angle = 330.0f;
           particle->speedParameter = 1.5f;
           particle->alpha = 255;
           particle->offsetZ = this->position[2];
@@ -210,7 +210,7 @@ void CThrowItemEffect::InitFlameParticle(CParticle* particle) {
   this->InitTrajectory(particle);
   particle->scale = 1.5f;
   particle->SetColor(255, 255, 255);
-  particle->angleBits = 0;
+  particle->angle = 0;
   particle->alpha = 255;
   particle->speedParameter = particle->animationParameter / 25.0f;
   const vector3d offset = {this->position[0], this->position[1] - 8.0f, this->position[2]};
@@ -227,7 +227,7 @@ void CThrowItemEffect::InitPotionParticle(CParticle* particle, int kind) {
   this->arcHeight = 30.0f;
   this->InitTrajectory(particle);
   particle->scale = 1.5f;
-  particle->angleBits = 0;
+  particle->angle = 0;
   particle->alpha = 255;
   particle->speedParameter = particle->animationParameter / 25.0f;
   const vector3d offset = {this->position[0], this->position[1] - 8.0f, this->position[2]};
@@ -261,7 +261,7 @@ __declspec(noinline) void CThrowItemEffect::InitSpinParticle(CParticle* particle
   this->arcHeight = 1.0f;
   particle->scale = 2.0f;
   particle->SetColor(255, 200, 255);
-  *reinterpret_cast<float*>(&particle->angleBits) = 330.0f;
+  particle->angle = 330.0f;
   particle->speedParameter = 3.0f;
   particle->alpha = 255;
   const vector3d offset = {this->position[0], this->position[1] - 8.0f, this->position[2]};
@@ -308,7 +308,7 @@ void CThrowItemEffect::OnProcess() {
 
     if (target != nullptr && this->launchDelay <= this->frame) {
       float& angle = target->speedParameter;
-      float& rotation = *reinterpret_cast<float*>(&target->angleBits);
+      float& rotation = target->angle;
       float& offsetX = *reinterpret_cast<float*>(&target->offsetX);
       float& offsetY = *reinterpret_cast<float*>(&target->offsetY);
       float& offsetZ = *reinterpret_cast<float*>(&target->offsetZ);
@@ -439,7 +439,7 @@ void CVolcanoEffect::AddRings() {
         particle->animationParameter = 0.0f;
         particle->angleParameter = 360;
         particle->alpha = 1;
-        *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(row * 90);
+        particle->angle = static_cast<float>(row * 90);
         particle->scale = static_cast<float>(row) + 1.0f;
         break;
       case EF_VOLCANO:
@@ -458,7 +458,7 @@ void CVolcanoEffect::AddRings() {
         particle->animationParameter = 0.0f;
         particle->angleParameter = 360;
         particle->alpha = 1;
-        *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(baseAngle);
+        particle->angle = static_cast<float>(baseAngle);
         particle->scale = static_cast<float>(row) + 1.0f;
         break;
       case EF_GUMGANG5:
@@ -466,7 +466,7 @@ void CVolcanoEffect::AddRings() {
         particle->angleParameter = 360;
         particle->speedParameter = 25.0f;
         particle->phaseParameter = 80;
-        *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(row * 90);
+        particle->angle = static_cast<float>(row * 90);
         particle->animationParameter = 0.0f;
         particle->scale = static_cast<float>(row) + 1.0f;
         particle->SetColor(0, 0, 255);
@@ -580,7 +580,7 @@ void CVolcanoEffect::OnProcess() {
       }
       particle->phaseParameter = tilt;
 
-      float& spin = *reinterpret_cast<float*>(&particle->angleBits);
+      float& spin = particle->angle;
       spin = static_cast<float>(static_cast<int>(spin) + (this->id != EF_GUMGANG2) * 2 + 3);
 
       switch (this->id) {

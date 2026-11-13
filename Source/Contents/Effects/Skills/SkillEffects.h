@@ -9,6 +9,7 @@
 
 class CEZ2STRParticle;
 class CParticle;
+class CSpriteParticle;
 
 class CMeteorEffect : public CEffect {
 public:
@@ -45,7 +46,7 @@ public:
 class CSprArrowEffect : public CEffect {
 public:
   CSprArrowEffect()
-      : CEffect(2404), spriteParticle(0), startTick(0), startX(0), startY(0), startZ(0), velocityX(0),
+      : CEffect(2404), spriteParticle(nullptr), startTick(0), startX(0), startY(0), startZ(0), velocityX(0),
         velocityY(0), velocityZ(0), travelSpeedScale(1.0f), heading(0), delayFrames(0), spriteFrame(0), launched(0),
         alive(1) {}
 
@@ -56,7 +57,7 @@ public:
   bool IsAlive() override;
   ~CSprArrowEffect() override;
   void SetBulletSprite(int job);
-  /* 00CC */ int spriteParticle;
+  /* 00CC */ CSpriteParticle* spriteParticle;
   /* 00D0 */ int startTick;
   /* 00D4 */ float startX;
   /* 00D8 */ float startY;

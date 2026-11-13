@@ -39,7 +39,7 @@ void CHealEffect::AddSparks(int kind) {
     particle->groupIndex = 1;
     particle->SetTexture("effect\\pok1.tga");
     particle->alpha = 0;
-    particle->angleBits = 0;
+    particle->angle = 0;
     particle->angleParameter = 0;
 
     const int driftZ = ClampedRandom(13);
@@ -105,7 +105,7 @@ void CHealEffect::AddColumn(int kind) {
       particle->phaseParameter = 90;
       particle->animationParameter = 0.0f;
 
-      float& baseAngle = *reinterpret_cast<float*>(&particle->angleBits);
+      float& baseAngle = particle->angle;
       switch (kind) {
       case 0:
         particle->SetTexture("effect\\ring_white.tga");
@@ -206,7 +206,7 @@ void CHealEffect::AddCone(int kind) {
       particle->alpha = 0;
       particle->animationParameter = 0.0f;
 
-      float& baseAngle = *reinterpret_cast<float*>(&particle->angleBits);
+      float& baseAngle = particle->angle;
       switch (kind) {
       case 0:
         particle->SetTexture("effect\\ring_white.tga");
@@ -454,7 +454,7 @@ void CHealEffect::OnProcess() {
       }
       height = (std::max)(height, 0.0f);
 
-      const float baseAngle = *reinterpret_cast<const float*>(&particle->angleBits);
+      const float baseAngle = particle->angle;
       const int angle = static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f) * segment) + baseAngle) % 360;
       const float tiltCos = g_cosTable[particle->phaseParameter];
       const float cosine = g_cosTable[angle];
@@ -520,7 +520,7 @@ void CHealEffect::OnProcess() {
       }
       height = (std::max)(height, 0.0f);
 
-      const float baseAngle = *reinterpret_cast<const float*>(&particle->angleBits);
+      const float baseAngle = particle->angle;
       const int angle = static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f) * segment) + baseAngle) % 360;
       const float tiltCos = g_cosTable[particle->phaseParameter];
       const float cosine = g_cosTable[angle];

@@ -45,7 +45,7 @@ void CScatterEffect::Open() {
       const int delayRoll = rand() % 3;
       particle->frameDelay = static_cast<float>((delayRoll >= 0 ? delayRoll : 0) + 2) * 0.15f;
       const int spinRoll = rand() % 360;
-      *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(spinRoll >= 0 ? spinRoll : 0);
+      particle->angle = static_cast<float>(spinRoll >= 0 ? spinRoll : 0);
       const int angleRoll = rand() % 360;
       const int angle = angleRoll >= 0 ? angleRoll : 0;
       particle->velocity.x = 0.0f;

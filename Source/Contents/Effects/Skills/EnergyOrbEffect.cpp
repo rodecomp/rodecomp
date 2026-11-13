@@ -50,7 +50,7 @@ void CEnergyOrbEffect::Open() {
       particle->rowIndex = i;
       particle->columnIndex = j;
       particle->groupIndex = 1;
-      *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(360 / this->count * i);
+      particle->angle = static_cast<float>(360 / this->count * i);
       particle->SetTexture("effect\\thunder_center.bmp");
       particle->alpha = 0;
       particle->scale = 0.8f;
@@ -119,11 +119,11 @@ void CEnergyOrbEffect::OnProcess() {
         ++particle->alpha;
       }
 
-      float angle = particle->speedParameter * 5.0f + *reinterpret_cast<float*>(&particle->angleBits);
+      float angle = particle->speedParameter * 5.0f + particle->angle;
       if (angle > 360.0f) {
         angle -= 360.0f;
       }
-      *reinterpret_cast<float*>(&particle->angleBits) = angle;
+      particle->angle = angle;
 
       if (particle->alpha > 0) {
         matrix rotation;
@@ -143,7 +143,7 @@ void CEnergyOrbEffect::OnProcess() {
         scaling.SetScale(size, size, size);
 
         const float wave = g_sinTable[particle->phaseParameter] * 0.6f;
-        const int index = static_cast<int>(*reinterpret_cast<float*>(&particle->angleBits));
+        const int index = static_cast<int>(particle->angle);
         const float radius = wave + particle->animationParameter;
         matrix translation;
         std::memcpy(translation.values, g_identityMatrix, sizeof(translation.values));

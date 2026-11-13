@@ -29,12 +29,12 @@ void CMapMagicZoneEffect::AddSpinner(int kind) {
     particle->groupIndex = 1;
     if (kind == 0) {
       particle->SetTexture("effect\\mjin2.tga");
-      *reinterpret_cast<float*>(&particle->angleBits) = 0.0f;
+      particle->angle = 0.0f;
       particle->alpha = 200;
       particle->animationParameter = -0.5f;
     } else if (kind == 1) {
       particle->SetTexture("effect\\mjin.tga");
-      *reinterpret_cast<float*>(&particle->angleBits) = 45.0f;
+      particle->angle = 45.0f;
       particle->alpha = 50;
       particle->animationParameter = -0.4f;
     }
@@ -82,7 +82,7 @@ void CMapMagicZoneEffect::Open() {
       particle->SetTexture("effect\\pikapika2.bmp");
       particle->scale = 46.0f;
       particle->phaseParameter = angle;
-      *reinterpret_cast<float*>(&particle->angleBits) = 0.0f;
+      particle->angle = 0.0f;
       particle->alpha = 25;
       particle->animationParameter = -1.0f;
       particle->InitParticleQuad(particle->vertices);
@@ -104,7 +104,7 @@ void CMapMagicZoneEffect::Open() {
         particle->columnIndex = segment;
         particle->groupIndex = 3;
         particle->alpha = 50;
-        *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(angle);
+        particle->angle = static_cast<float>(angle);
         particle->angleParameter = 315;
         particle->speedParameter = 15.0f - (static_cast<float>(row) + static_cast<float>(row));
         particle->scale = static_cast<float>(row) * 0.2f + 12.9f;
@@ -184,7 +184,7 @@ void CMapMagicZoneEffect::OnProcess() {
     particlePosition.y = this->position[1];
     particlePosition.z = this->position[2];
     ++particle->elapsedFrames;
-    float& spinAngle = *reinterpret_cast<float*>(&particle->angleBits);
+    float& spinAngle = particle->angle;
     spinAngle = static_cast<float>(static_cast<int>(particle->rowIndex + spinAngle + 3.0f));
 
     matrix rotation;
@@ -239,7 +239,7 @@ void CMapMagicZoneEffect::OnProcess() {
 void CMapMagicZoneEffect::UpdateSpinner(CParticle* particle) {
   if (particle) {
     ZoneVector3d corners[4];
-    float& spinAngle = *reinterpret_cast<float*>(&particle->angleBits);
+    float& spinAngle = particle->angle;
     const int angle = static_cast<int>(spinAngle + 1.0f);
     spinAngle = static_cast<float>(angle % 360);
     const float radius = (g_sinTable[particle->phaseParameter] + 1.0f) * (particle->scale * 0.1f) + particle->scale * 0.8f;

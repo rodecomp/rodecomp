@@ -5930,7 +5930,7 @@ std::vector<unsigned char> CGameMode::SaveActorStates() {
       }
     }
 
-    UIChatRoomTitle* room = reinterpret_cast<UIChatRoomTitle*>(static_cast<CGameActor*>(*it)->actorWindows[1]);
+    UIChatRoomTitle* room = static_cast<UIChatRoomTitle*>(static_cast<CGameActor*>(*it)->actorWindows[1]);
     if (room != nullptr) {
       scratch.resize(sizeof(ChatRoomEntryPacket), 0);
       auto* packet = reinterpret_cast<ChatRoomEntryPacket*>(scratch.data());
@@ -5978,7 +5978,7 @@ std::vector<unsigned char> CGameMode::SaveActorStates() {
       data.insert(data.end(), chunk.begin(), chunk.end());
     }
 
-    UIMerchantShopTitle* shop = reinterpret_cast<UIMerchantShopTitle*>(static_cast<CGameActor*>(*it)->actorWindows[2]);
+    UIMerchantShopTitle* shop = static_cast<UIMerchantShopTitle*>(static_cast<CGameActor*>(*it)->actorWindows[2]);
     if (shop != nullptr) {
       scratch.resize(sizeof(ShopEntryPacket), 0);
       auto* packet = reinterpret_cast<ShopEntryPacket*>(scratch.data());
@@ -6001,7 +6001,7 @@ std::vector<unsigned char> CGameMode::SaveActorStates() {
       data.insert(data.end(), chunk.begin(), chunk.end());
     }
 
-    UIMerchantShopTitle* buyingShop = reinterpret_cast<UIMerchantShopTitle*>(static_cast<CGameActor*>(*it)->actorWindows[4]);
+    UIMerchantShopTitle* buyingShop = static_cast<UIMerchantShopTitle*>(static_cast<CGameActor*>(*it)->actorWindows[4]);
     if (buyingShop != nullptr) {
       scratch.resize(sizeof(ShopEntryPacket), 0);
       auto* packet = reinterpret_cast<ShopEntryPacket*>(scratch.data());

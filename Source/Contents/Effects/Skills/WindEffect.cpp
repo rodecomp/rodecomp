@@ -48,7 +48,7 @@ void CWindEffect::Init() {
         particle->destinationBlend = this->destinationBlend;
       }
       particle->SetTexture(this->textureName);
-      *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(segment) * step + static_cast<float>(startAngle);
+      particle->angle = static_cast<float>(segment) * step + static_cast<float>(startAngle);
       particle->animationState = 0;
       particle->InitParticleQuad(particle->vertices);
       particle->effectId = this->id;
@@ -119,7 +119,7 @@ void CWindEffect::OnProcess() {
     }
     }
 
-    float& angle = *reinterpret_cast<float*>(&particle->angleBits);
+    float& angle = particle->angle;
     float nextAngle = particle->speedParameter + angle;
     if (nextAngle > 360.0f) {
       nextAngle -= 360.0f;

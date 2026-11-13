@@ -41,7 +41,7 @@ void CLightSphereEffect::CreateRayParticles(int param) {
         particle->phaseParameter = r1;
 
         int r2 = std::rand() % 360;
-        *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(std::ranges::max(r2, 0));
+        particle->angle = static_cast<float>(std::ranges::max(r2, 0));
 
         int r3 = std::rand() % 360;
         particle->angleParameter = r3 < 0 ? 0 : r3;
@@ -254,7 +254,7 @@ void CLightSphereEffect::OnProcess() {
       EffectPoint points[3];
       const float radius = particle->scale * g_sinTable[phase] + particle->scale;
       const int pitch = particle->phaseParameter;
-      const int yaw = static_cast<int>(*reinterpret_cast<float*>(&particle->angleBits));
+      const int yaw = static_cast<int>(particle->angle);
       const float flat = radius * g_cosTable[pitch];
       float corner0X = flat * g_cosTable[yaw];
       float corner0Y = radius * g_sinTable[pitch] - particle->animationParameter;

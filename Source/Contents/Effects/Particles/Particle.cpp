@@ -714,7 +714,7 @@ static __forceinline void ResetParticle(CParticle& particle) {
   particle.speedParameter = 0;
   particle.texture = nullptr;
   particle.alpha = 0xFF;
-  particle.angleBits = 0;
+  particle.angle = 0;
   particle.life = 0;
   particle.auxiliaryParameter = 0;
   particle.auxiliaryIndex = 0;

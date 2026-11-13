@@ -55,8 +55,8 @@ void CSmokeEffect::OnProcess() {
     position.z = this->position[2];
     if (particle) {
       matrix& rotation = *reinterpret_cast<matrix*>(particle->rotationStorage);
-      float& angle = *reinterpret_cast<float*>(&particle->angleBits);
-      float& spin = *reinterpret_cast<float*>(&particle->spinBits);
+      float& angle = particle->angle;
+      float& spin = particle->spin;
       if (particle->elapsedFrames < 50) {
         const float speed = particle->frameDelay;
         const float* values = rotation.values;

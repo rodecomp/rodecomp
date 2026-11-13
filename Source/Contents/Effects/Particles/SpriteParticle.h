@@ -23,7 +23,7 @@ public:
   /* 02C0 */ float screenOffsetX;
   /* 02C4 */ float screenOffsetY;
   /* 02C8 */ vector3d velocity;
-  /* 02D4 */ int spinBits;
+  /* 02D4 */ float spin;
   /* 02D8 */ float frameDelay;
   /* 02DC */ unsigned char accelerationStorage[4];
   /* 02E0 */ CSprRes* sprite;

@@ -544,7 +544,7 @@ void CGameActor::UpdateGaugePositions() {
 
   if (this->actorWindows[0] != 0) {
     if (timeGetTime() < this->chatTick + 5000) {
-      UIWindow* window = reinterpret_cast<UIWindow*>(this->actorWindows[0]);
+      UIWindow* window = this->actorWindows[0];
       int x = this->render.screenX - this->chatWidth / 2;
       if (x < -3) {
         x = -3;
@@ -565,20 +565,20 @@ void CGameActor::UpdateGaugePositions() {
       }
       window->Move(x, y);
     } else {
-      g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->actorWindows[0]));
+      g_windowMgr.Schedule(this->actorWindows[0]);
       this->actorWindows[0] = 0;
     }
   }
 
   if (this->actorWindows[1] != 0) {
-    reinterpret_cast<UIWindow*>(this->actorWindows[1])->Move(
+    this->actorWindows[1]->Move(
       this->render.screenX - 70,
       static_cast<int>(static_cast<float>(this->render.screenY) - s_gaugeOffsetY * this->render.distanceScale - 17.0f)
     );
   }
 
   if (this->actorWindows[2] != 0) {
-    reinterpret_cast<UIWindow*>(this->actorWindows[2])->Move(
+    this->actorWindows[2]->Move(
       this->render.screenX - 70,
       static_cast<int>(static_cast<float>(this->render.screenY) - s_gaugeOffsetY * this->render.distanceScale - 17.0f - 17.0f)
     );
@@ -591,7 +591,7 @@ void CGameActor::UpdateGaugePositions() {
         this->SetState(0, 1);
       }
     } else {
-      reinterpret_cast<UIWindow*>(this->actorWindows[3])->Move(
+      this->actorWindows[3]->Move(
         this->render.screenX - 30,
         static_cast<int>(static_cast<float>(this->render.screenY) - s_gaugeOffsetY * this->render.distanceScale)
       );
@@ -600,12 +600,12 @@ void CGameActor::UpdateGaugePositions() {
       if (elapsed > total) {
         elapsed = total;
       }
-      reinterpret_cast<UIRechargeGage*>(this->actorWindows[3])->SetValues(elapsed, total);
+      static_cast<UIRechargeGage*>(this->actorWindows[3])->SetValues(elapsed, total);
     }
   }
 
   if (this->actorWindows[4] != 0) {
-    reinterpret_cast<UIWindow*>(this->actorWindows[4])->Move(
+    this->actorWindows[4]->Move(
       this->render.screenX - 70,
       static_cast<int>(static_cast<float>(this->render.screenY) - s_gaugeOffsetY * this->render.distanceScale - 17.0f - 17.0f)
     );
@@ -634,27 +634,27 @@ void CGameActor::ReleaseAttachments() {
   }
 
   if (this->actorWindows[0]) {
-    g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->actorWindows[0]));
+    g_windowMgr.Schedule(this->actorWindows[0]);
     this->actorWindows[0] = 0;
   }
 
   if (this->actorWindows[1]) {
-    g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->actorWindows[1]));
+    g_windowMgr.Schedule(this->actorWindows[1]);
     this->actorWindows[1] = 0;
   }
 
   if (this->actorWindows[2]) {
-    g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->actorWindows[2]));
+    g_windowMgr.Schedule(this->actorWindows[2]);
     this->actorWindows[2] = 0;
   }
 
   if (this->actorWindows[3]) {
-    g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->actorWindows[3]));
+    g_windowMgr.Schedule(this->actorWindows[3]);
     this->actorWindows[3] = 0;
   }
 
   if (this->actorWindows[4]) {
-    g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->actorWindows[4]));
+    g_windowMgr.Schedule(this->actorWindows[4]);
     this->actorWindows[4] = 0;
   }
 
@@ -892,7 +892,7 @@ int __stdcall MountedJob(int job, std::uint32_t flags) {
 
 // OFFSET: 0x00CAD420
 // FUNCTION: fn_21051
-int CGameActor::GetEffectCounter(int effectId) {
+CGameObject* CGameActor::GetEffectCounter(int effectId) {
   switch (effectId) {
   case HT_BLITZBEAT:
   case SN_FALCONASSAULT:
@@ -906,7 +906,7 @@ int CGameActor::GetEffectCounter(int effectId) {
   case RA_WUGBITE:
     return this->statusEffects[1];
   }
-  return 0;
+  return nullptr;
 }
 
 // OFFSET: 0x00CAD4B0

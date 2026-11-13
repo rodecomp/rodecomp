@@ -50,7 +50,7 @@ void CSpriteParticle::Reset() {
   this->sprite = nullptr;
   this->action = nullptr;
   this->frameDelay = 0;
-  this->spinBits = 0;
+  this->spin = 0;
   this->velocity.x = 0;
   this->velocity.y = 0;
   this->velocity.z = 0;
@@ -201,7 +201,7 @@ void CSpriteParticle::Draw(char mode) {
     matrix worldScale;
     worldScale.SetScale(this->scale, this->scale, 1.0f);
     matrix worldRotation;
-    worldRotation.MakeZRotation(ToRadians(*reinterpret_cast<const float*>(&this->angleBits)));
+    worldRotation.MakeZRotation(ToRadians(this->angle));
     worldRotation.AppendXRotation(ToRadians(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch));
     worldRotation.AppendYRotation(ToRadians(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw));
     matrix worldTranslate;

@@ -74,7 +74,7 @@ void CLevel150Effect::AddBubbleRing(int alphaOffset) {
         particle->SetColor(255, 155, 0);
       }
 
-      *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>((ring + 2) * 90 % 360);
+      particle->angle = static_cast<float>((ring + 2) * 90 % 360);
       particle->angleParameter = 360;
       particle->speedParameter = 30.0f - static_cast<float>(ring);
       particle->scale = 3.5f;
@@ -86,7 +86,7 @@ void CLevel150Effect::AddBubbleRing(int alphaOffset) {
       const float radius = particle->speedParameter * g_sinTable[index * 9] * 0.15f + particle->speedParameter;
       const int direction =
         static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f) * index) +
-                         *reinterpret_cast<const float*>(&particle->angleBits)) %
+                         particle->angle) %
         360;
       const int tilt = particle->phaseParameter;
       const float spread = radius * g_cosTable[tilt];
@@ -351,7 +351,7 @@ void CLevel150SubEffect::Init() {
       }
 
       particle->SetTexture("effect\\emp shock.tga");
-      *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(std::ranges::max(rand() % 360, 0));
+      particle->angle = static_cast<float>(std::ranges::max(rand() % 360, 0));
       particle->alpha = 200;
       particle->animationParameter = 10.0f;
       particle->animationParameters[0] = 10.0f;
@@ -412,14 +412,14 @@ void CLevel150SubEffect::OnProcess() {
         int alpha = particle->alpha - 3;
         if (alpha <= 0) {
           size = 10.0f;
-          *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(std::ranges::max(rand() % 360, 0));
+          particle->angle = static_cast<float>(std::ranges::max(rand() % 360, 0));
           alpha = 200;
         }
         particle->alpha = alpha;
       }
       particle->animationParameter = size;
 
-      const int angle = static_cast<int>(*reinterpret_cast<const float*>(&particle->angleBits));
+      const int angle = static_cast<int>(particle->angle);
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       const int yaw = static_cast<int>(mode->camera->camera.yaw);
       const float scale = particle->animationParameter;

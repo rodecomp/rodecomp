@@ -917,7 +917,7 @@ void CEfstAction_ChangeSize::OnEfstBegin(int, int value, int, int, CRenderObject
     }
   }
 
-  *reinterpret_cast<float*>(&effect->scaleParameter) = static_cast<float>(value) * 0.01f;
+  effect->scaleParameter = static_cast<float>(value) * 0.01f;
 }
 
 // OFFSET: 0x007760D0

@@ -54,7 +54,7 @@ void CLevel99Effect::AddRings() {
       particle->groupIndex = 3;
       particle->alpha = 120;
       particle->SetColor(100, 100, 255);
-      *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(startAngle);
+      particle->angle = static_cast<float>(startAngle);
       particle->angleParameter = 315;
       particle->speedParameter = 15.0f - static_cast<float>(row) * 2.0f;
       particle->scale = static_cast<float>(row) * 0.2f + 3.9f;
@@ -66,7 +66,7 @@ void CLevel99Effect::AddRings() {
       if (particle) {
         const int index = particle->columnIndex;
         const float radius = g_sinTable[index * 9] * particle->speedParameter;
-        const float baseAngle = *reinterpret_cast<const float*>(&particle->angleBits);
+        const float baseAngle = particle->angle;
         const int angle = static_cast<int>(static_cast<int>(particle->angleParameter / 20.0f) * index + baseAngle) % 360;
         const int ringTilt = particle->phaseParameter;
         const float spread = radius * g_cosTable[ringTilt];
@@ -142,7 +142,7 @@ void CLevel99Effect::Open() {
       particle->rowIndex = 0;
       particle->groupIndex = 1;
       particle->alpha = 200;
-      *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(angle);
+      particle->angle = static_cast<float>(angle);
       particle->phaseParameter = tilt;
       particle->scale = 9.0f;
       particle->InitParticleQuad(particle->vertices);
@@ -176,7 +176,7 @@ void CLevel99Effect::OnProcess() {
     if (particle) {
       matrix rotation;
       std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
-      rotation.MakeZRotation(*reinterpret_cast<const float*>(&particle->angleBits) / 180.0f * 3.141592f);
+      rotation.MakeZRotation(particle->angle / 180.0f * 3.141592f);
       rotation.AppendXRotation(1.570796f);
 
       int phase = particle->phaseParameter + 3;
@@ -205,7 +205,7 @@ void CLevel99Effect::OnProcess() {
     position.z = this->position[2];
 
     if (particle) {
-      float& baseAngle = *reinterpret_cast<float*>(&particle->angleBits);
+      float& baseAngle = particle->angle;
       const float degrees = static_cast<float>(static_cast<int>(static_cast<float>(particle->rowIndex) + baseAngle + 3.0f));
       baseAngle = degrees;
 

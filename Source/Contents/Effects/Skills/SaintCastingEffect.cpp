@@ -32,7 +32,7 @@ void CSaintCastingEffect::AddRing(const char* texture, int alpha) {
       particle->phaseParameter = 80;
       particle->animationParameter = 0.0f;
       const int row = particle->rowIndex;
-      *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>((row + 2) * 90 % 360);
+      particle->angle = static_cast<float>((row + 2) * 90 % 360);
 
       switch (this->id) {
       case EF_COUPLECASTING:
@@ -211,7 +211,7 @@ void CSaintCastingEffect::OnProcess() {
       const float spread = radius * g_cosTable[tilt];
       const int angle =
         static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f) * segment) +
-                         *reinterpret_cast<const float*>(&particle->angleBits)) %
+                         particle->angle) %
         360;
       const float cosine = g_cosTable[angle];
       const float sine = g_sinTable[angle];

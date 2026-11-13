@@ -5129,7 +5129,7 @@ void CPc::SendMsg(
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
     effect->SetAnimationSpeed(6.0f);
     this->AddMsgEffect(effect);
-    this->statusEffects[0] = reinterpret_cast<int>(effect);
+    this->statusEffects[0] = effect;
     break;
   }
   case AM_MAKE_WOLF: {
@@ -5165,7 +5165,7 @@ void CPc::SendMsg(
     }
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
     this->AddMsgEffect(effect);
-    this->statusEffects[1] = reinterpret_cast<int>(effect);
+    this->statusEffects[1] = effect;
     break;
   }
   default:

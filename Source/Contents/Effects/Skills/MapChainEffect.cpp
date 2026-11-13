@@ -29,7 +29,7 @@ void CMapChainEffect::CreateChainParticles(int param) {
         particle->groupIndex = 1;
         particle->speedParameter = 10.0f;
         particle->scale = 14.0f;
-        *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(localC);
+        particle->angle = static_cast<float>(localC);
         particle->phaseParameter = param;
         particle->alpha = 255;
         particle->angleParameter = 60;
@@ -54,7 +54,7 @@ void CMapChainEffect::CreateChainParticles(int param) {
         particle->groupIndex = 1;
         particle->speedParameter = 10.0f;
         particle->scale = 14.0f;
-        *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(local82);
+        particle->angle = static_cast<float>(local82);
         particle->phaseParameter = param;
         particle->alpha = 255;
         particle->angleParameter = 60;
@@ -128,11 +128,11 @@ void CMapChainEffect::OnProcess() {
     position.y = this->position[1];
     position.z = this->position[2];
     if (particle) {
-      float angle = *static_cast<const float*>(particle->animationParameters) + *reinterpret_cast<float*>(&particle->angleBits);
+      float angle = *static_cast<const float*>(particle->animationParameters) + particle->angle;
       if (angle >= 360.0f) {
         angle -= 360.0f;
       }
-      *reinterpret_cast<float*>(&particle->angleBits) = angle;
+      particle->angle = angle;
 
       if (particle->rowIndex > 5) {
         int delta = -3;
@@ -152,7 +152,7 @@ void CMapChainEffect::OnProcess() {
       particle->transform = rotation;
 
       const int segment = particle->columnIndex;
-      const int index = static_cast<int>(static_cast<float>(static_cast<int>(particle->angleParameter / 20.0f) * segment) + *reinterpret_cast<float*>(&particle->angleBits)) % 360;
+      const int index = static_cast<int>(static_cast<float>(static_cast<int>(particle->angleParameter / 20.0f) * segment) + particle->angle) % 360;
 
       MapChainPoint points[4];
 

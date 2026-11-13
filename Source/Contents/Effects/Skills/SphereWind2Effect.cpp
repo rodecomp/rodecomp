@@ -48,7 +48,7 @@ void CSphereWind2Effect::Open() {
         particle->elapsedFrames = delay;
         particle->speedParameter = radius;
         particle->scale = 5.0f;
-        *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(rotation);
+        particle->angle = static_cast<float>(rotation);
         particle->phaseParameter = angle;
         particle->alpha = 0;
         particle->angleParameter = step;
@@ -103,7 +103,7 @@ void CSphereWind2Effect::OnProcess() {
         const int angle = particle->phaseParameter;
 
         const int texPart = particle->columnIndex;
-        float& spin = *reinterpret_cast<float*>(&particle->angleBits);
+        float& spin = particle->angle;
         float rotation = particle->animationParameters[0] + spin;
         if (rotation >= 360.0f) {
           rotation -= 360.0f;

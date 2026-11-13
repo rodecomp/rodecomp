@@ -36,7 +36,7 @@ void CElectricEffect::AddBolt(int tilt) {
         particle->alpha = 0;
         particle->phaseParameter = tilt;
         particle->scale = 0.0f;
-        *reinterpret_cast<float*>(&particle->angleBits) = spin;
+        particle->angle = spin;
         particle->angleParameter = 0;
         particle->InitParticleQuad(particle->vertices);
         this->bolts.push_back(particle);
@@ -126,7 +126,7 @@ void CElectricEffect::OnProcess() {
         const float bend = arc[segment + index];
         const float radius = bend / 90.0f * particle->scale;
         this->path[index].x = radius * g_cosTable[particle->phaseParameter];
-        this->path[index].y = -particle->scale * g_sinTable[static_cast<int>(bend)] * *reinterpret_cast<const float*>(&particle->angleBits);
+        this->path[index].y = -particle->scale * g_sinTable[static_cast<int>(bend)] * particle->angle;
         this->path[index].z = radius * g_sinTable[particle->phaseParameter];
 
         const int jitterZ = rand() % 7;

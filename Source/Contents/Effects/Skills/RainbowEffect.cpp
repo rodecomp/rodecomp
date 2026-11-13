@@ -37,7 +37,7 @@ void CRainbowEffect::Open() {
         particle->alpha = 0;
         particle->scale = 50.0f;
         particle->angleParameter = 180;
-        particle->angleBits = 0;
+        particle->angle = 0;
         particle->phaseParameter = angle;
         particle->InitParticleQuad(particle->vertices);
         this->bands.push_back(particle);
@@ -73,7 +73,7 @@ void CRainbowEffect::OnProcess() {
         --alpha;
       }
 
-      float& spinAngle = *reinterpret_cast<float*>(&particle->angleBits);
+      float& spinAngle = particle->angle;
       spinAngle += 1.0f;
 
       if (alpha < 0) {

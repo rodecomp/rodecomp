@@ -76,7 +76,7 @@ public:
   /* 0035 */ unsigned char padding_0035[3];
   /* 0038 */ int range;
   /* 003C */ unsigned char areaParameters[12];
-  /* 0048 */ int scaleParameter;
+  /* 0048 */ float scaleParameter;
   /* 004C */ int baseAngle;
   /* 0050 */ int rotationParameter;
   /* 0054 */ int baseAlpha;

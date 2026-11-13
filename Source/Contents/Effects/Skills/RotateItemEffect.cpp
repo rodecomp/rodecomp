@@ -42,7 +42,7 @@ void CRotateItemEffect::Open() {
     particle->SetTexture("유저인터페이스\\item\\쿠나이_독.bmp");
     particle->scale = 2.5f;
     particle->SetColor(255, 200, 255);
-    *reinterpret_cast<float*>(&particle->angleBits) = 360.0f;
+    particle->angle = 360.0f;
     particle->speedParameter = 0.4f;
     particle->alpha = 255;
     particle->animationParameter = 13.0f;
@@ -66,7 +66,7 @@ void CRotateItemEffect::OnProcess() {
     (*it)->position.z = this->position[2];
     if (CParticle* particle = *it) {
       if (this->frame >= 5) {
-        float& particleAngle = *reinterpret_cast<float*>(&particle->angleBits);
+        float& particleAngle = particle->angle;
         if (particle->columnIndex == 0) {
           particleAngle = static_cast<float>(static_cast<int>(particle->speedParameter * 45.0f + particleAngle) % 360);
           if (this->id != 984) {

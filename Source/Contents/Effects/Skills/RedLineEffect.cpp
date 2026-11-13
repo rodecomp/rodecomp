@@ -36,7 +36,7 @@ void CRedLineEffect::CreateLines(int layer) {
         particle->columnIndex = segment;
         particle->groupIndex = 3;
         particle->angleParameter = 360;
-        *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(angle);
+        particle->angle = static_cast<float>(angle);
         particle->alpha = 150;
         particle->speedParameter = 120.0f;
         particle->phaseParameter = 90;
@@ -90,7 +90,7 @@ void CRedLineEffect::OnProcess() {
     position.z = this->position[2];
 
     if (particle != nullptr) {
-      float& spinAngle = *reinterpret_cast<float*>(&particle->angleBits);
+      float& spinAngle = particle->angle;
       float spin = spinAngle + 1.0f;
       const int age = particle->elapsedFrames;
 

@@ -20,6 +20,8 @@ enum {
   BODYSTATE_STONECURSE_ING,
 };
 
+class UIWindow;
+
 struct ActorHitInfo {
   /* 0000 */ int padding_0000;
   /* 0004 */ int damage;
@@ -101,7 +103,7 @@ public:
   /* 0258 */ std::uint32_t lastServerTime;
   /* 025C */ int job;
   /* 0260 */ int sex;
-  /* 0264 */ int actorWindows[5];
+  /* 0264 */ UIWindow* actorWindows[5];
   /* 0278 */ int freezeEndTick;
   /* 027C */ int petEmotionStartTick;
   /* 0280 */ std::uint32_t skillRechargeEndTick;
@@ -150,7 +152,7 @@ public:
   /* 0348 */ float merMsg[6];
   /* 0360 */ float merResMsg[6];
   /* 0378 */ float attackMotion;
-  /* 037C */ int statusEffects[13];
+  /* 037C */ CGameObject* statusEffects[13];
   /* 03B0 */ std::list<CGameObject*> msgEffectList;
   /* 03B8 */ int transformJobs[3];
   /* 03C4 */ int monsterTransformJob;
@@ -261,7 +263,7 @@ public:
   void SetEffectState(int effectId, bool on);
   void SetEffectInstance(int effectId, int instance, bool on);
   void ResetJobEffects();
-  void ClearStatusEffectInstance(int value);
+  void ClearStatusEffectInstance(CGameObject* value);
   void SpawnDamageDigits(int unused, int damage, std::uint32_t color, int type);
   __declspec(noinline) int WeaponActionBase(int weaponType);
   int GetShapeShift();
@@ -280,7 +282,7 @@ public:
   void UpdateDamageMessages();
   void ProcessHitMessage(CGameObject* sender, const ActorHitInfo* info, int unused1, int unused2);
   void ProcessSkillMessage(CGameObject* sender, const ActorSkillInfo* info, int unused1, int unused2);
-  int GetEffectCounter(int effectId);
+  CGameObject* GetEffectCounter(int effectId);
   float GetNameOffset();
   float GetNameHeight();
   void SetStackedEffect(int effectId, bool on);

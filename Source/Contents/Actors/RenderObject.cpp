@@ -1083,7 +1083,7 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
     mode->LaunchDummyEffect(&position, 0x77, EffectLifetime(0x77) + 10, 0);
     if (this->statusEffects[0] != 0) {
       const std::int64_t address = reinterpret_cast<int>(&position);
-      reinterpret_cast<CGameObject*>(this->statusEffects[0])->SendMsg(nullptr, AM_REQ_ATTACK, address, 0, 0, 0, 0, 0);
+      this->statusEffects[0]->SendMsg(nullptr, AM_REQ_ATTACK, address, 0, 0, 0, 0, 0);
     }
     break;
   case AS_VENOMDUST:
@@ -2232,7 +2232,7 @@ void CGameActor::MakeCorpse() {
     }
 
     if (CEffect* effect = g_effectMgr->Find(static_cast<int>(this->render.accountId), 2374)) {
-      corpse->spriteOffset = *reinterpret_cast<const float*>(&effect->scaleParameter);
+      corpse->spriteOffset = effect->scaleParameter;
     }
   }
 }
@@ -3224,7 +3224,7 @@ void CGameActor::ResetJobEffects() {
 
 // OFFSET: 0x00CAB020
 // FUNCTION: fn_21024
-__declspec(noinline) void CGameActor::ClearStatusEffectInstance(int value) {
+__declspec(noinline) void CGameActor::ClearStatusEffectInstance(CGameObject* value) {
   if (this->statusEffects[1] == value) {
     this->statusEffects[1] = 0;
   } else if (this->statusEffects[0] == value) {
@@ -4704,7 +4704,7 @@ void CGameActor::SpawnDamageDigits(int, int damage, std::uint32_t color, int typ
     for (auto it = this->msgEffectList.begin(); it != this->msgEffectList.end();) {
       CMsgEffect* effect = static_cast<CMsgEffect*>(*it);
       if (effect->m_type == 22) {
-        this->ClearStatusEffectInstance(reinterpret_cast<int>(effect));
+        this->ClearStatusEffectInstance(effect);
         effect->SendMsg(this, AM_MASTER_DEAD, 0, 0, 0, 0, 0, 0);
         it = this->msgEffectList.erase(it);
         static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->RemoveObject(effect);
@@ -5253,7 +5253,7 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
   vector3d targetPos;
   if (target != nullptr) {
     if (known) {
-      this->SendValueMessage(reinterpret_cast<int>(&target->render.position), reinterpret_cast<CGameObject*>(this->GetEffectCounter(skillId)));
+      this->SendValueMessage(reinterpret_cast<int>(&target->render.position), this->GetEffectCounter(skillId));
     }
 
     targetPos = target->render.position;

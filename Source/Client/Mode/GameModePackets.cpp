@@ -9618,7 +9618,7 @@ void CGameMode::ReceiveChatRoomMemberList(const unsigned char* data) {
   ChatRoomTitleInfo info;
   bool joined = false;
   if (actor) {
-    if (UIChatRoomTitle* room = reinterpret_cast<UIChatRoomTitle*>(actor->actorWindows[1])) {
+    if (UIChatRoomTitle* room = static_cast<UIChatRoomTitle*>(actor->actorWindows[1])) {
       info.title = room->title;
       info.password = room->password;
       info.type = room->roomType;
@@ -17011,7 +17011,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
         static_cast<EffectActor*>(skill)->LaunchEffect(0x6F, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         if (source->statusEffects[0] != 0) {
           const int address = reinterpret_cast<int>(&skill->render.position);
-          reinterpret_cast<CGameObject*>(source->statusEffects[0])->SendMsg(nullptr, AM_REQ_ATTACK, address, 0, 0, 0, 0, 0);
+          source->statusEffects[0]->SendMsg(nullptr, AM_REQ_ATTACK, address, 0, 0, 0, 0, 0);
         }
       }
     }

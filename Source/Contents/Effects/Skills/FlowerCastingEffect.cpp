@@ -30,7 +30,7 @@ void CFlowerCastingEffect::AddRing(int kind) {
       particle->angleParameter = 315;
       particle->alpha = 0;
 
-      float& baseAngle = *reinterpret_cast<float*>(&particle->angleBits);
+      float& baseAngle = particle->angle;
       if (kind == 0) {
         if (ring == 0) {
           particle->scale = 4.5f;
@@ -147,7 +147,7 @@ void CFlowerCastingEffect::OnProcess() {
       }
       radius = (std::max)(radius, 0.0f);
 
-      const float baseAngle = *reinterpret_cast<const float*>(&particle->angleBits);
+      const float baseAngle = particle->angle;
       const int angle = static_cast<int>(static_cast<int>(particle->angleParameter / 20.0f) * segment + baseAngle) % 360;
       const int tilt = particle->phaseParameter;
       const float spread = radius * g_cosTable[tilt];

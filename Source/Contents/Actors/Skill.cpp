@@ -92,7 +92,7 @@ CSkill::CSkill(std::uint32_t aid) {
 // FUNCTION: fn_24259
 CSkill::~CSkill() {
   if (this->actorWindows[0] != 0) {
-    g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->actorWindows[0]));
+    g_windowMgr.Schedule(this->actorWindows[0]);
     this->actorWindows[0] = 0;
   }
 
@@ -335,12 +335,12 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
     if (this->actorWindows[0] == 0) {
       UITransBalloonText* balloon =
         new UITransBalloonText();
-      this->actorWindows[0] = reinterpret_cast<int>(balloon);
+      this->actorWindows[0] = balloon;
       balloon->SetSize(8, 8);
-      g_windowMgr.AddRenderedFront(reinterpret_cast<UIWindow*>(this->actorWindows[0]));
+      g_windowMgr.AddRenderedFront(this->actorWindows[0]);
     }
 
-    UITransBalloonText* balloon = reinterpret_cast<UITransBalloonText*>(this->actorWindows[0]);
+    UITransBalloonText* balloon = static_cast<UITransBalloonText*>(this->actorWindows[0]);
     balloon->SetText(text, 35);
     balloon->SetColors(0xFF8080, 0);
     this->chatWidth = balloon->geometry.width;

@@ -74,7 +74,7 @@ void CRectUpEffect::Render() {
     CParticle* particle = *it;
     if (particle) {
       const int previous = particle->columnIndex;
-      const int angle = static_cast<int>(*reinterpret_cast<float*>(&particle->angleBits)) % 360;
+      const int angle = static_cast<int>(particle->angle) % 360;
       const float x = particle->scale * g_cosTable[angle];
       const float z = particle->scale * g_sinTable[angle];
 
@@ -166,7 +166,7 @@ void CRectUpEffect::Open() {
         particle->rowIndex = 0;
         particle->groupIndex = 1;
         particle->angleParameter = ClampedRandom(360);
-        *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(angle);
+        particle->angle = static_cast<float>(angle);
         particle->animationParameter = 0.0f;
         if (this->id == 1088) {
           particle->speedParameter = 16.0f;

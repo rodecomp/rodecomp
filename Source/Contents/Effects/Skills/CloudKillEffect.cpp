@@ -61,7 +61,7 @@ void CCloudKillEffect::AddSprites() {
       particle->frameDelay = speed;
       reinterpret_cast<float&>(particle->accelerationStorage) = acceleration;
       particle->scale = static_cast<float>(size + 40) / 170.0f;
-      reinterpret_cast<float&>(particle->spinBits) = 3.0f;
+      particle->spin = 3.0f;
       particle->alpha = 0;
       particle->animationParameter = 25.4f;
       particle->animationParameters[0] = 32.0f;
@@ -112,7 +112,7 @@ void CCloudKillEffect::OnProcess() {
     particle->frameDelay = speed;
     reinterpret_cast<float&>(particle->accelerationStorage) = -(speed / 10.0f) * g_depthAverageHalf;
     particle->scale = 0.8f;
-    reinterpret_cast<float&>(particle->spinBits) = 3.0f;
+    particle->spin = 3.0f;
     particle->alpha = 70;
     particle->animationParameter = 25.4f;
     particle->animationParameters[0] = 8.0f;
@@ -129,7 +129,7 @@ void CCloudKillEffect::OnProcess() {
       it = this->particles.erase(it);
     } else {
       const float* values = reinterpret_cast<matrix*>(particle->rotationStorage)->values;
-      float& angle = reinterpret_cast<float&>(particle->angleBits);
+      float& angle = particle->angle;
       const float speed = reinterpret_cast<float&>(particle->accelerationStorage) + particle->frameDelay;
       particle->frameDelay = speed;
       const float x = values[3] * 0.0f + values[0] * 0.0f + speed * values[6] + values[9] + particle->velocity.x;
@@ -138,7 +138,7 @@ void CCloudKillEffect::OnProcess() {
       particle->velocity.x = x;
       particle->velocity.y = y;
       particle->velocity.z = z;
-      angle = reinterpret_cast<float&>(particle->spinBits) + angle;
+      angle = particle->spin + angle;
       particle->position.z = particle->velocity.z + this->position[2];
       particle->position.x = particle->velocity.x + this->position[0];
       particle->position.y = particle->velocity.y + this->position[1];
@@ -167,7 +167,7 @@ void CCloudKillEffect::OnProcess() {
       it = this->sprites.erase(it);
     } else {
       const float* values = reinterpret_cast<matrix*>(particle->rotationStorage)->values;
-      float& angle = reinterpret_cast<float&>(particle->angleBits);
+      float& angle = particle->angle;
       const float speed = reinterpret_cast<float&>(particle->accelerationStorage) + particle->frameDelay;
       particle->frameDelay = speed;
       const float x = values[3] * 0.0f + values[0] * 0.0f + speed * values[6] + values[9] + particle->velocity.x;
@@ -179,7 +179,7 @@ void CCloudKillEffect::OnProcess() {
       particle->position.y = particle->originY + this->position[1] + particle->velocity.y;
       particle->position.x = particle->originX + this->position[0] + particle->velocity.x;
       particle->position.z = this->position[2] + particle->originZ + particle->velocity.z;
-      angle = reinterpret_cast<float&>(particle->spinBits) + angle;
+      angle = particle->spin + angle;
       const int age = particle->elapsedFrames;
       float fade = particle->animationParameter;
       if (age == static_cast<int>(particle->animationParameters[0])) {

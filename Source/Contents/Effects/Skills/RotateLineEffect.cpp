@@ -42,7 +42,7 @@ void CRotateLineEffect::Open() {
       particle->groupIndex = 1;
       particle->SetTexture("effect\\cloud11.tga");
       particle->angleParameter = 30;
-      *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(startAngle);
+      particle->angle = static_cast<float>(startAngle);
       particle->alpha = 50;
       particle->phaseParameter = tilt;
       particle->scale = 7.0f - static_cast<float>(ring);
@@ -81,7 +81,7 @@ void CRotateLineEffect::OnProcess() {
     particlePosition.y = this->position[1];
     particlePosition.z = this->position[2];
     if (particle) {
-      float& particleAngle = *reinterpret_cast<float*>(&particle->angleBits);
+      float& particleAngle = particle->angle;
       int& particleSpread = particle->angleParameter;
       if (particle->columnIndex == 0) {
         this->angle = static_cast<int>(particleAngle);

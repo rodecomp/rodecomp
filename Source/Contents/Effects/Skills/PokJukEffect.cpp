@@ -41,7 +41,7 @@ void CPokJukEffect::SpawnParticles() {
         particle->rowIndex = row;
         particle->groupIndex = 1;
         particle->elapsedFrames = -300 - ClampedRandom(50);
-        *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(ClampedRandom(360));
+        particle->angle = static_cast<float>(ClampedRandom(360));
         particle->alpha = 0;
         particle->speedParameter = 2.0f;
         particle->scale = static_cast<float>(ClampedRandom(100)) * 0.004f + 0.4f;
@@ -147,7 +147,7 @@ void CPokJukEffect::OnProcess() {
           this->beats[index] = 0;
         }
 
-        float& spinAngle = *reinterpret_cast<float*>(&particle->angleBits);
+        float& spinAngle = particle->angle;
         spinAngle = static_cast<float>((static_cast<int>(spinAngle) + 5) % 360);
 
         if (this->states[index] == 0) {
@@ -210,7 +210,7 @@ void CPokJukEffect::Render() {
         vector3d* corner = corners;
         for (int offset = 0; offset < 360; offset += 90) {
           corner->y = 0.0f;
-          int angle = static_cast<int>(static_cast<float>(offset) + *reinterpret_cast<float*>(&particle->angleBits));
+          int angle = static_cast<int>(static_cast<float>(offset) + particle->angle);
           angle = angle % 360;
           corner->x = radius * g_cosTable[angle];
           corner->z = radius * g_sinTable[angle];

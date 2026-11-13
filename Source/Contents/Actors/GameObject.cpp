@@ -280,7 +280,7 @@ void CRenderObject::DrawSprite(int argument, bool seasonal, float offset) {
 
   float extra = offset;
   if (CEffect* effect = g_effectMgr->Find(static_cast<int>(this->render.accountId), 2374)) {
-    extra += *reinterpret_cast<const float*>(&effect->scaleParameter);
+    extra += effect->scaleParameter;
   }
   if (g_championMonsterMgr->IsChampion(static_cast<int>(this->render.spriteJob))) {
     extra += g_championMonsterMgr->GetValue(static_cast<int>(this->render.spriteJob));
@@ -1200,13 +1200,13 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     break;
   case AM_DELETE_PROHIBITEFFECT:
     if (this->statusEffects[10] != 0) {
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->RemoveObject(reinterpret_cast<CRenderObject*>(this->statusEffects[10]));
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->RemoveObject(static_cast<CRenderObject*>(this->statusEffects[10]));
     }
     break;
   case AM_MSGEFFECT_DEAD:
     for (auto it = this->msgEffectList.begin(); it != this->msgEffectList.end(); ++it) {
       if (*it == sender) {
-        const int effect = reinterpret_cast<int>(*it);
+        CGameObject* const effect = *it;
         if (this->statusEffects[1] == effect) {
           this->statusEffects[1] = 0;
         } else if (this->statusEffects[0] == effect) {
@@ -1297,7 +1297,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
       if (this->statusEffects[10] != 0) {
         break;
       }
-      CGameObject** slot = reinterpret_cast<CGameObject**>(&this->statusEffects[10]);
+      CGameObject** slot = &this->statusEffects[10];
       *slot = mode->SpawnCashEmotion(reinterpret_cast<int>(&this->render.position), static_cast<int>(b), static_cast<int>(c), this->render.accountId);
       if (*slot != nullptr) {
         this->msgEffectList.push_back(*slot);
@@ -1327,13 +1327,13 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     CMsgEffect* effect = mode->SpawnMsgEffect(effectIds[row][baby], &this->render.position, this->render.accountId, true);
     this->msgEffectList.push_back(effect);
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
-    this->statusEffects[1] = reinterpret_cast<int>(effect);
+    this->statusEffects[1] = effect;
     break;
   }
   case AM_DELETE_CART:
   case AM_DELETE_WOLF:
     if (this->statusEffects[1] != 0) {
-      reinterpret_cast<CGameObject*>(this->statusEffects[1])->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0);
+      this->statusEffects[1]->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0);
       this->statusEffects[1] = 0;
     }
     break;
@@ -1375,13 +1375,13 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     this->msgEffectList.push_back(effect);
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
     effect->SetAnimationSpeed(6.0f);
-    this->statusEffects[0] = reinterpret_cast<int>(effect);
+    this->statusEffects[0] = effect;
     break;
   }
   case AM_DELETE_BIRD:
     if (this->statusEffects[0] != 0) {
-      reinterpret_cast<CGameObject*>(this->statusEffects[0])->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0);
-      reinterpret_cast<CMsgEffect*>(this->statusEffects[0])->m_visible = false;
+      this->statusEffects[0]->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0);
+      static_cast<CMsgEffect*>(this->statusEffects[0])->m_visible = false;
       this->statusEffects[0] = 0;
     }
     break;
@@ -1411,7 +1411,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     CMsgEffect* effect = mode->SpawnMsgEffect(effectId, &this->render.position, this->render.accountId, true);
     this->msgEffectList.push_back(effect);
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
-    this->statusEffects[1] = reinterpret_cast<int>(effect);
+    this->statusEffects[1] = effect;
     break;
   }
   case AM_MAKE_PKEFFECT: {
@@ -1421,12 +1421,12 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     CMsgEffect* effect = mode->SpawnMsgEffect(2, &this->render.position, this->render.accountId, true);
     this->msgEffectList.push_back(effect);
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
-    this->statusEffects[2] = reinterpret_cast<int>(effect);
+    this->statusEffects[2] = effect;
     break;
   }
   case AM_DELETE_PKEFFECT:
     if (this->statusEffects[2] != 0) {
-      reinterpret_cast<CGameObject*>(this->statusEffects[2])->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0);
+      this->statusEffects[2]->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0);
       this->statusEffects[2] = 0;
     }
     break;
@@ -1437,13 +1437,13 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     CMsgEffect* effect = mode->SpawnMsgEffect(3, &this->render.position, this->render.accountId, visible);
     this->msgEffectList.push_back(effect);
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
-    this->statusEffects[3] = reinterpret_cast<int>(effect);
+    this->statusEffects[3] = effect;
     break;
   }
   case AM_DELETE_ICEEFFECT:
   case 107:
     if (this->statusEffects[3] != 0) {
-      reinterpret_cast<CGameObject*>(this->statusEffects[3])->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0);
+      this->statusEffects[3]->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0);
       this->statusEffects[3] = 0;
     }
     break;
@@ -1454,12 +1454,12 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     CMsgEffect* effect = mode->SpawnMsgEffect(6, &this->render.position, this->render.accountId, true);
     this->msgEffectList.push_back(effect);
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
-    this->statusEffects[4] = reinterpret_cast<int>(effect);
+    this->statusEffects[4] = effect;
     break;
   }
   case AM_DELETE_CURSE_EFFECT:
     if (this->statusEffects[4] != 0) {
-      reinterpret_cast<CGameObject*>(this->statusEffects[4])->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0);
+      this->statusEffects[4]->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0);
       this->statusEffects[4] = 0;
     }
     break;
@@ -1470,13 +1470,13 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     CMsgEffect* effect = mode->SpawnMsgEffect(7, &this->render.position, this->render.accountId, true);
     this->msgEffectList.push_back(effect);
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
-    this->statusEffects[5] = reinterpret_cast<int>(effect);
+    this->statusEffects[5] = effect;
     this->SetState(10, 1);
     break;
   }
   case AM_DELETE_SLEEP_EFFECT:
     if (this->statusEffects[5] != 0) {
-      reinterpret_cast<CGameObject*>(this->statusEffects[5])->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0);
+      this->statusEffects[5]->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0);
       this->statusEffects[5] = 0;
       this->SetState(this->render.previousState, 1);
     }
@@ -1488,12 +1488,12 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     CMsgEffect* effect = mode->SpawnMsgEffect(8, &this->render.position, this->render.accountId, true);
     this->msgEffectList.push_back(effect);
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
-    this->statusEffects[6] = reinterpret_cast<int>(effect);
+    this->statusEffects[6] = effect;
     break;
   }
   case AM_DELETE_STUN_EFFECT:
     if (this->statusEffects[6] != 0) {
-      reinterpret_cast<CGameObject*>(this->statusEffects[6])->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0);
+      this->statusEffects[6]->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0);
       this->statusEffects[6] = 0;
     }
     break;
@@ -1510,12 +1510,12 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     CMsgEffect* effect = mode->SpawnMsgEffect(9, &this->render.position, this->render.accountId, true);
     this->msgEffectList.push_back(effect);
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
-    this->statusEffects[7] = reinterpret_cast<int>(effect);
+    this->statusEffects[7] = effect;
     break;
   }
   case AM_DELETE_SILENCE_EFFECT:
     if (this->statusEffects[7] != 0) {
-      reinterpret_cast<CGameObject*>(this->statusEffects[7])->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0);
+      this->statusEffects[7]->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0);
       this->statusEffects[7] = 0;
     }
     break;
@@ -1526,12 +1526,12 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     CMsgEffect* effect = mode->SpawnMsgEffect(0xA, &this->render.position, this->render.accountId, true);
     this->msgEffectList.push_back(effect);
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
-    this->statusEffects[8] = reinterpret_cast<int>(effect);
+    this->statusEffects[8] = effect;
     break;
   }
   case AM_DELETE_ANGELUS_EFFECT:
     if (this->statusEffects[8] != 0) {
-      reinterpret_cast<CGameObject*>(this->statusEffects[8])->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0);
+      this->statusEffects[8]->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0);
       this->statusEffects[8] = 0;
     }
     break;
@@ -1542,12 +1542,12 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     CMsgEffect* effect = mode->SpawnMsgEffect(0xB, &this->render.position, this->render.accountId, true);
     this->msgEffectList.push_back(effect);
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
-    this->statusEffects[9] = reinterpret_cast<int>(effect);
+    this->statusEffects[9] = effect;
     break;
   }
   case AM_DELETE_CRUCIS_EFFECT:
     if (this->statusEffects[9] != 0) {
-      reinterpret_cast<CGameObject*>(this->statusEffects[9])->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0);
+      this->statusEffects[9]->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0);
       this->statusEffects[9] = 0;
     }
     break;
@@ -1613,12 +1613,12 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     CMsgEffect* effect = mode->SpawnMsgEffect(0x1F, &this->render.position, this->render.accountId, true);
     this->msgEffectList.push_back(effect);
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
-    this->statusEffects[11] = reinterpret_cast<int>(effect);
+    this->statusEffects[11] = effect;
     break;
   }
   case 135:
     if (this->statusEffects[11] != 0) {
-      reinterpret_cast<CGameObject*>(this->statusEffects[11])->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0);
+      this->statusEffects[11]->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0);
       this->statusEffects[11] = 0;
     }
     break;
@@ -1629,12 +1629,12 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     CMsgEffect* effect = mode->SpawnMsgEffect(0x43, &this->render.position, this->render.accountId, true);
     this->msgEffectList.push_back(effect);
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
-    this->statusEffects[12] = reinterpret_cast<int>(effect);
+    this->statusEffects[12] = effect;
     break;
   }
   case AM_DELETE_LASSITUDE_EFFECT:
     if (this->statusEffects[12] != 0) {
-      reinterpret_cast<CGameObject*>(this->statusEffects[12])->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0);
+      this->statusEffects[12]->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0);
       this->statusEffects[12] = 0;
     }
     break;
@@ -2126,59 +2126,59 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
   }
   case AM_DELETE_SHOP_TITLE:
     if (this->actorWindows[2] != 0) {
-      g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->actorWindows[2]));
+      g_windowMgr.Schedule(this->actorWindows[2]);
       this->actorWindows[2] = 0;
     }
     break;
   case AM_DELETE_CHAT_TITLE:
     if (this->actorWindows[1] != 0) {
-      g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->actorWindows[1]));
+      g_windowMgr.Schedule(this->actorWindows[1]);
       this->actorWindows[1] = 0;
     }
     break;
   case AM_MAKE_SHOP_TITLE:
     if (this->actorWindows[2] == 0) {
       UIMerchantShopTitle* title = new UIMerchantShopTitle(0);
-      this->actorWindows[2] = reinterpret_cast<int>(title);
+      this->actorWindows[2] = title;
       title->SetSize(140, 34);
-      g_windowMgr.AddRenderedFront(reinterpret_cast<UIWindow*>(this->actorWindows[2]));
+      g_windowMgr.AddRenderedFront(this->actorWindows[2]);
     }
-    reinterpret_cast<UIWindow*>(this->actorWindows[2])->SendMsg(nullptr, UM_SETINFO, b, static_cast<std::int16_t>(this->render.fontSequenceState), 0, 0);
-    reinterpret_cast<UIWindow*>(this->actorWindows[2])->SendMsg(nullptr, UM_SETNAID, this->render.accountId, 0, 0, 0);
-    reinterpret_cast<UIWindow*>(this->actorWindows[2])->Move(this->render.screenX - 70, this->render.screenY - ScaleByScreenHeight(110));
+    this->actorWindows[2]->SendMsg(nullptr, UM_SETINFO, b, static_cast<std::int16_t>(this->render.fontSequenceState), 0, 0);
+    this->actorWindows[2]->SendMsg(nullptr, UM_SETNAID, this->render.accountId, 0, 0, 0);
+    this->actorWindows[2]->Move(this->render.screenX - 70, this->render.screenY - ScaleByScreenHeight(110));
     if (!g_serviceOptions.Get(0xFA)) {
-      reinterpret_cast<UIWindow*>(this->actorWindows[2])->Show(0);
+      this->actorWindows[2]->Show(0);
     }
     break;
   case AM_MAKE_CHAT_TITLE:
     if (this->actorWindows[1] == 0) {
       UIChatRoomTitle* title = new UIChatRoomTitle();
-      this->actorWindows[1] = reinterpret_cast<int>(title);
+      this->actorWindows[1] = title;
       title->SetSize(140, 34);
-      g_windowMgr.AddRenderedFront(reinterpret_cast<UIWindow*>(this->actorWindows[1]));
+      g_windowMgr.AddRenderedFront(this->actorWindows[1]);
     }
-    reinterpret_cast<UIWindow*>(this->actorWindows[1])->SendMsg(nullptr, UM_SETINFO, b, static_cast<std::int16_t>(this->render.fontSequenceState), 0, 0);
-    reinterpret_cast<UIWindow*>(this->actorWindows[1])->Move(this->render.screenX - 70, this->render.screenY - ScaleByScreenHeight(110));
+    this->actorWindows[1]->SendMsg(nullptr, UM_SETINFO, b, static_cast<std::int16_t>(this->render.fontSequenceState), 0, 0);
+    this->actorWindows[1]->Move(this->render.screenX - 70, this->render.screenY - ScaleByScreenHeight(110));
     break;
   case AM_MAKE_SKILL_RECHARGEGAGE:
     if (this->actorWindows[3] == 0) {
       // GLOBAL: gl_25466
       static float s_gaugeOffsetY = static_cast<float>(g_renderer->viewport.height * 81 / 480);
       UIRechargeGage* gauge = new UIRechargeGage();
-      this->actorWindows[3] = reinterpret_cast<int>(gauge);
+      this->actorWindows[3] = gauge;
       gauge->SetSize(60, 6);
-      reinterpret_cast<UIWindow*>(this->actorWindows[3])->Move(
+      this->actorWindows[3]->Move(
         this->render.screenX - 30,
         static_cast<int>(static_cast<float>(this->render.screenY) - s_gaugeOffsetY * this->render.distanceScale)
       );
-      g_windowMgr.AddRenderedFront(reinterpret_cast<UIWindow*>(this->actorWindows[3]));
+      g_windowMgr.AddRenderedFront(this->actorWindows[3]);
     }
     this->skillRechargeEndTick = timeGetTime() + static_cast<std::uint32_t>(b);
     this->skillRechargeStartTick = timeGetTime();
     break;
   case AM_DELETE_SKILL_RECHARGEGAGE:
     if (this->actorWindows[3] != 0) {
-      g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->actorWindows[3]));
+      g_windowMgr.Schedule(this->actorWindows[3]);
       this->actorWindows[3] = 0;
       if (this->render.accountId == g_session.m_aid) {
         if (g_session.m_playerMessage82Pending == true) {
@@ -2205,22 +2205,22 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
       this->chatTick = timeGetTime();
       if (this->actorWindows[0] == 0) {
         UITransBalloonText* created = new UITransBalloonText();
-        this->actorWindows[0] = reinterpret_cast<int>(created);
+        this->actorWindows[0] = created;
         created->SetSize(8, 8);
-        g_windowMgr.AddRenderedFront(reinterpret_cast<UIWindow*>(this->actorWindows[0]));
+        g_windowMgr.AddRenderedFront(this->actorWindows[0]);
       }
       if (this->actorWindows[0] != 0) {
         if (this->render.accountId == g_session.m_aid) {
-          reinterpret_cast<UITransBalloonText*>(this->actorWindows[0])->m_fontMode = static_cast<std::int8_t>(g_session.chatFont);
+          static_cast<UITransBalloonText*>(this->actorWindows[0])->m_fontMode = static_cast<std::int8_t>(g_session.chatFont);
         } else {
-          reinterpret_cast<UITransBalloonText*>(this->actorWindows[0])->m_fontMode = static_cast<std::uint16_t>(this->render.fontSequenceState);
+          static_cast<UITransBalloonText*>(this->actorWindows[0])->m_fontMode = static_cast<std::uint16_t>(this->render.fontSequenceState);
         }
-        reinterpret_cast<UITransBalloonText*>(this->actorWindows[0])->SetText(message, 35);
+        static_cast<UITransBalloonText*>(this->actorWindows[0])->SetText(message, 35);
         if (c != 0) {
-          reinterpret_cast<UITransBalloonText*>(this->actorWindows[0])->m_textColor = static_cast<std::uint32_t>(c);
-          reinterpret_cast<UITransBalloonText*>(this->actorWindows[0])->m_outlineColor = 0;
+          static_cast<UITransBalloonText*>(this->actorWindows[0])->m_textColor = static_cast<std::uint32_t>(c);
+          static_cast<UITransBalloonText*>(this->actorWindows[0])->m_outlineColor = 0;
         }
-        UIWindow* balloon = reinterpret_cast<UIWindow*>(this->actorWindows[0]);
+        UIWindow* balloon = this->actorWindows[0];
         const int width = balloon->geometry.width;
         this->chatWidth = width;
         this->chatHeight = balloon->geometry.height;
@@ -4358,23 +4358,23 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     if (this->actorWindows[4] == 0) {
       break;
     }
-    g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->actorWindows[4]));
+    g_windowMgr.Schedule(this->actorWindows[4]);
     this->actorWindows[4] = 0;
     break;
   case AM_MAKE_BUYING_SHOP_TITLE: {
     if (this->actorWindows[4] == 0) {
       UIMerchantShopTitle* const title = new UIMerchantShopTitle(1);
-      this->actorWindows[4] = reinterpret_cast<int>(title);
+      this->actorWindows[4] = title;
       title->SetSize(140, 34);
-      g_windowMgr.AddRenderedFront(reinterpret_cast<UIWindow*>(this->actorWindows[4]));
+      g_windowMgr.AddRenderedFront(this->actorWindows[4]);
     }
-    reinterpret_cast<UIWindow*>(this->actorWindows[4])->SendMsg(nullptr, UM_SETINFO, b, static_cast<std::int16_t>(this->render.fontSequenceState), 0, 0);
-    reinterpret_cast<UIWindow*>(this->actorWindows[4])->SendMsg(nullptr, UM_SETNAID, this->render.accountId, 0, 0, 0);
-    reinterpret_cast<UIWindow*>(this->actorWindows[4])->Move(this->render.screenX - 70, this->render.screenY - ScaleByScreenHeight(110));
+    this->actorWindows[4]->SendMsg(nullptr, UM_SETINFO, b, static_cast<std::int16_t>(this->render.fontSequenceState), 0, 0);
+    this->actorWindows[4]->SendMsg(nullptr, UM_SETNAID, this->render.accountId, 0, 0, 0);
+    this->actorWindows[4]->Move(this->render.screenX - 70, this->render.screenY - ScaleByScreenHeight(110));
     if (g_serviceOptions.Get(0xFA)) {
       break;
     }
-    reinterpret_cast<UIWindow*>(this->actorWindows[4])->Show(0);
+    this->actorWindows[4]->Show(0);
     break;
   }
   case AM_FALLEN_ANGEL:

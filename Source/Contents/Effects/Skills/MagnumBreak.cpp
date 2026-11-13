@@ -15,7 +15,7 @@ void CMagnumBreak::AddRings() {
     ring->columnIndex = index;
     ring->rowIndex = 0;
     ring->groupIndex = 1;
-    *reinterpret_cast<float*>(&ring->angleBits) = static_cast<float>(index) * 36.0f;
+    ring->angle = static_cast<float>(index) * 36.0f;
     ring->scale = 0.0f;
     ring->speedParameter = 1.75f;
     ring->animationParameter = growth;
@@ -131,7 +131,7 @@ void CMagnumBreak::OnProcess() {
 void CMagnumBreak::Render() {
   for (std::vector<CParticle*>::iterator it = this->rings.begin(); it != this->rings.end(); ++it) {
     CParticle* ring = *it;
-    const int angle = static_cast<int>(*reinterpret_cast<float*>(&ring->angleBits));
+    const int angle = static_cast<int>(ring->angle);
     const float outer = ring->animationParameters[1];
     const float inner = outer - ring->scale;
     const float cos0 = g_cosTable[angle];

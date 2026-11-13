@@ -50,7 +50,7 @@ void CCommonFloorEffect::Open() {
       particle->rowIndex = 0;
       particle->groupIndex = 1;
       particle->alpha = 90;
-      *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(angle);
+      particle->angle = static_cast<float>(angle);
       particle->phaseParameter = angle;
       particle->speedParameter = 6.0f;
       particle->scale = 15.0f;
@@ -69,8 +69,8 @@ void CCommonFloorEffect::ResetParticles() {
     particle->position.x = this->position[0];
     particle->position.y = this->position[1];
     particle->position.z = this->position[2];
-    particle->scale = *reinterpret_cast<float*>(&this->scaleParameter);
-    *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(this->baseAngle);
+    particle->scale = this->scaleParameter;
+    particle->angle = static_cast<float>(this->baseAngle);
     particle->phaseParameter = static_cast<int>(static_cast<float>(particle->rowIndex) * *reinterpret_cast<float*>(&this->rotationParameter));
     particle->alpha = this->baseAlpha;
     particle->sourceBlend = 5;
@@ -95,7 +95,7 @@ void CCommonFloorEffect::OnProcess() {
     position.y = this->position[1];
     position.z = this->position[2];
     if (particle) {
-      int angle = static_cast<int>(particle->speedParameter + *reinterpret_cast<float*>(&particle->angleBits));
+      int angle = static_cast<int>(particle->speedParameter + particle->angle);
       if (angle >= 360) {
         angle -= 360;
       } else if (angle < 0) {
@@ -103,7 +103,7 @@ void CCommonFloorEffect::OnProcess() {
       }
 
       const float degrees = static_cast<float>(angle);
-      *reinterpret_cast<float*>(&particle->angleBits) = degrees;
+      particle->angle = degrees;
 
       matrix rotation;
       std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));

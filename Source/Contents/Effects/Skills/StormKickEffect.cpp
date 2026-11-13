@@ -41,7 +41,7 @@ void CStormKickEffect::CreateStorms(int layer) {
     particle->groupIndex = 1;
     particle->speedParameter = 40.0f;
     particle->alpha = 0;
-    *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(ClampedRandom(360));
+    particle->angle = static_cast<float>(ClampedRandom(360));
     particle->scale = 2.0f;
     particle->animationParameter = 50.0f;
     float* motion = particle->animationParameters;
@@ -100,7 +100,7 @@ void CStormKickEffect::CreateClouds(int layer) {
       particle->groupIndex = 1;
       particle->alpha = 0;
       particle->angleParameter = 30;
-      *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(angle);
+      particle->angle = static_cast<float>(angle);
       particle->phaseParameter = ClampedRandom(21) + 80;
       particle->animationParameter = 1.0f;
 
@@ -140,7 +140,7 @@ void CStormKickEffect::UpdateStorm(CParticle* particle) {
   const int segment = particle->columnIndex;
   float radius = particle->speedParameter;
   const float height = segment * motion[0] + depth;
-  int angle = static_cast<int>(static_cast<float>(segment * 45) + *reinterpret_cast<const float*>(&particle->angleBits));
+  int angle = static_cast<int>(static_cast<float>(segment * 45) + particle->angle);
   angle = angle % 360;
   for (int step = 1; step <= segment; ++step) {
     radius -= (2.2f - step * 0.2f) * particle->scale;
@@ -281,7 +281,7 @@ void CStormKickEffect::OnProcess() {
       }
       particle->alpha = alpha;
 
-      float& rotation = *reinterpret_cast<float*>(&particle->angleBits);
+      float& rotation = particle->angle;
       const int jitter = rand() % 3;
       const int turned = static_cast<int>(rotation - static_cast<float>((jitter >= 0 ? jitter : 0) + 3));
       rotation = static_cast<float>(turned % 360);
@@ -302,7 +302,7 @@ void CStormKickEffect::OnProcess() {
     particlePosition.y = this->position[1];
     particlePosition.z = this->position[2];
     if (particle) {
-      float& rotation = *reinterpret_cast<float*>(&particle->angleBits);
+      float& rotation = particle->angle;
       const float nextRotation = static_cast<float>(static_cast<int>(rotation + 5.0f) % 360);
       const int spread = std::min(particle->angleParameter + 3, 180);
       particle->angleParameter = spread;

@@ -65,7 +65,7 @@ void CRotateBgEffect::Open() {
         particle->groupIndex = 2;
         particle->SetTexture("effect\\cloud11.tga");
         particle->angleParameter = 30;
-        *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(angle);
+        particle->angle = static_cast<float>(angle);
         particle->alpha = 0;
         particle->phaseParameter = span;
         particle->animationParameter = 28.0f - static_cast<float>(layer) * 5.0f;
@@ -153,7 +153,7 @@ void CRotateBgEffect::OnProcess() {
     particlePosition.z = this->position[2];
     if (particle) {
       if (particle->columnIndex == 0) {
-        this->segmentAngle = static_cast<int>(*reinterpret_cast<float*>(&particle->angleBits));
+        this->segmentAngle = static_cast<int>(particle->angle);
         this->segmentSpan = particle->angleParameter;
         this->segmentAlpha = particle->alpha;
         this->segmentScale = particle->scale;
@@ -164,7 +164,7 @@ void CRotateBgEffect::OnProcess() {
       }
 
       this->segmentAngle += 5;
-      *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(this->segmentAngle % 360);
+      particle->angle = static_cast<float>(this->segmentAngle % 360);
       this->segmentSpan += 3;
       if (this->segmentSpan > 180) {
         this->segmentSpan = 180;
@@ -188,7 +188,7 @@ void CRotateBgEffect::OnProcess() {
 
       const int index = particle->columnIndex;
       const int span = particle->angleParameter;
-      const float rotation = *reinterpret_cast<float*>(&particle->angleBits);
+      const float rotation = particle->angle;
       int angle = static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(span) / 21.0f) * index) + rotation) % 360;
       if (span == 360 && index == 20) {
         angle = static_cast<int>(rotation);

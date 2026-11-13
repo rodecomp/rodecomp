@@ -40,12 +40,12 @@ void CMappillarEffect::Open() {
       particle->speedParameter = 120.0f;
       particle->phaseParameter = 89;
       const int row = particle->rowIndex;
-      *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(row * 90);
+      particle->angle = static_cast<float>(row * 90);
       particle->scale = static_cast<float>(row) * 0.5f + 11.0f;
       reinterpret_cast<int*>(&particle->animationParameter)[row] = 0;
       particle->elapsedFrames = particle->rowIndex * 30;
 
-      const float baseAngle = *reinterpret_cast<const float*>(&particle->angleBits);
+      const float baseAngle = particle->angle;
       int angle = static_cast<int>(static_cast<float>(static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f) * particle->columnIndex) + baseAngle) % 360;
       if (particle->columnIndex == 20) {
         angle = static_cast<int>(baseAngle);
@@ -110,7 +110,7 @@ void CMappillarEffect::OnProcess() {
     if (particle) {
       if (particle->rowIndex != 3 || particle->columnIndex != 21 || particle->elapsedFrames <= 999) {
         const int frame = particle->elapsedFrames;
-        const int angle = static_cast<int>(*reinterpret_cast<float*>(&particle->angleBits) - static_cast<float>(frame));
+        const int angle = static_cast<int>(particle->angle - static_cast<float>(frame));
         float height;
         if (frame < 800) {
           if (frame < 200) {

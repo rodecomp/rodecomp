@@ -56,7 +56,7 @@ void CBash::Open() {
     particle->columnIndex = index;
     particle->rowIndex = 0;
     particle->groupIndex = 1;
-    *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(angle);
+    particle->angle = static_cast<float>(angle);
     particle->scale = 100.0f;
     particle->speedParameter = 28.333334f;
     float* values = &particle->animationParameter;
@@ -164,7 +164,7 @@ void CBash::OnProcess() {
 void CBash::Render() {
   for (auto it = this->rays.begin(); it != this->rays.end(); ++it) {
     CParticle* particle = *it;
-    const int angle = static_cast<int>(*reinterpret_cast<float*>(&particle->angleBits));
+    const int angle = static_cast<int>(particle->angle);
     const float scale = particle->scale;
     const float cosine = g_cosTable[angle];
     const float sine = g_sinTable[angle];

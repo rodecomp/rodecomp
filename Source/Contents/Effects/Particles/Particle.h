@@ -82,7 +82,7 @@ public:
   /* 00A8 */ unsigned char animationState;
   /* 00A9 */ unsigned char frameParameters[0x17];
   /* 00C0 */ float speedParameter;
-  /* 00C4 */ int angleBits;
+  /* 00C4 */ float angle;
   /* 00C8 */ int auxiliaryParameter;
   /* 00CC */ float life;
   /* 00D0 */ float offsetX = 0;

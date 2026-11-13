@@ -24,7 +24,7 @@ void CGlassWall::AddPanel(float angle, float scale, vector3d offset) {
   particle->scale = scale;
   particle->speedParameter = 0.25f;
   particle->alpha = 0;
-  *reinterpret_cast<float*>(&particle->angleBits) = angle;
+  particle->angle = angle;
   particle->offsetX = offset.x;
   particle->offsetY = offset.y;
   particle->offsetZ = offset.z;
@@ -114,7 +114,7 @@ void CGlassWall::OnProcess() {
     translation.MakeTranslate(particle->position.x + particle->offsetX, particle->position.y + particle->offsetY,
                               particle->position.z + particle->offsetZ);
     matrix rotation;
-    rotation.MakeYRotation(GetRadian(static_cast<int>(*reinterpret_cast<float*>(&particle->angleBits))));
+    rotation.MakeYRotation(GetRadian(static_cast<int>(particle->angle)));
     matrix result;
     result.Compose(rotation, translation);
 

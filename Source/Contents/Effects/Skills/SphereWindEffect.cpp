@@ -50,7 +50,7 @@ void CSphereWindEffect::Open() {
         particle->groupIndex = 1;
         particle->speedParameter = radius;
         particle->scale = 14.0f;
-        *reinterpret_cast<float*>(&particle->angleBits) = static_cast<float>(rotation);
+        particle->angle = static_cast<float>(rotation);
         particle->phaseParameter = tilt;
         particle->alpha = 100;
         particle->angleParameter = spread;
@@ -95,7 +95,7 @@ void CSphereWindEffect::OnProcess() {
 // OFFSET: 0x00B78480
 // FUNCTION: fn_19192
 __declspec(noinline) void CSphereWindEffect::UpdateParticle(CParticle* particle) {
-  float& rotation = *reinterpret_cast<float*>(&particle->angleBits);
+  float& rotation = particle->angle;
   if (particle) {
     float value = *static_cast<const float*>(particle->animationParameters) + rotation;
     if (value >= 360.0f) {

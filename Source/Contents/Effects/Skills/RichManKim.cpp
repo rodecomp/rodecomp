@@ -30,7 +30,7 @@ void CRichManKim::Open() {
   particle->rowIndex = 0;
   particle->groupIndex = 1;
   particle->alpha = 200;
-  particle->angleBits = 0;
+  particle->angle = 0;
   particle->phaseParameter = 0;
   particle->scale = 1.0f;
   particle->animationParameter = -5.0f - static_cast<float>(rand() % 5);

@@ -44,7 +44,7 @@ void CFriggSongEffect::Open() {
     particle->angleParameter = 360;
     particle->speedParameter = 120.0f;
     particle->phaseParameter = 90;
-    float& baseAngle = *reinterpret_cast<float*>(&particle->angleBits);
+    float& baseAngle = particle->angle;
     const int row = particle->rowIndex;
     baseAngle = static_cast<float>(row * 10);
     particle->scale = static_cast<float>(row) * 0.5f + 2.5f;
@@ -118,7 +118,7 @@ void CFriggSongEffect::OnProcess() {
     (*it)->position.z = this->position[2];
     if (CParticle* particle = *it) {
       const int age = particle->elapsedFrames;
-      const float baseAngle = *reinterpret_cast<const float*>(&particle->angleBits);
+      const float baseAngle = particle->angle;
       const int angle = static_cast<int>(baseAngle - static_cast<float>(age));
       float& height = particle->animationParameter;
       if (age < 20) {

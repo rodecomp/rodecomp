@@ -31,7 +31,7 @@ void CFortuneKiss::Open() {
   particle->rowIndex = 0;
   particle->groupIndex = 1;
   particle->alpha = 255;
-  particle->angleBits = 0;
+  particle->angle = 0;
   particle->phaseParameter = 0;
   particle->scale = 1.0f;
   const int drift = rand() % 5;
