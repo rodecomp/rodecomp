@@ -281,7 +281,8 @@ int CSkillAction_NW_THE_VIGILANTE_AT_NIGHT_GUN_GATLING::GetSkillAttackMotion() {
 // FUNCTION: fn_08683
 void CSkillAction_NW_THE_VIGILANTE_AT_NIGHT_GUN_GATLING::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("the_vigilante_at_night_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("the_vigilante_at_night_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 
   if (!target) {
