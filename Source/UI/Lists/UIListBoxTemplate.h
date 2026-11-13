@@ -38,6 +38,7 @@ public:
 };
 
 class CUIStaticText;
+class CUITextViewer;
 class CSprRes;
 class CActRes;
 
@@ -94,7 +95,7 @@ public:
   };
   /* 00F0 */ CUIStaticText* descriptionViewer;
   /* 00F4 */ CUIStaticText* optionsViewer;
-  /* 00F8 */ CUIStaticText* sourcesViewer;
+  /* 00F8 */ CUITextViewer* sourcesViewer;
   /* 00FC */ int itemId;
   /* 0100 */ int type;
   /* 0104 */ int location;
@@ -110,8 +111,8 @@ public:
   void SetMonster(const std::string& title);
 
   /* 00E8 */ CUIStaticText* nameText;
-  /* 00EC */ CUIStaticText* detailsViewer;
-  /* 00F0 */ CUIStaticText* valuesViewer;
+  /* 00EC */ CUITextViewer* detailsViewer;
+  /* 00F0 */ CUITextViewer* valuesViewer;
   /* 00F4 */ CSprRes* sprite;
   /* 00F8 */ CActRes* action;
 };
@@ -127,9 +128,9 @@ public:
   void SetViewerLines(const std::vector<std::string>& lines);
 
   /* 00E8 */ UIWindow* stampImage;
-  /* 00EC */ CUIStaticText* titleViewer;
-  /* 00F0 */ CUIStaticText* linesViewer;
-  /* 00F4 */ CUIStaticText* statusViewer;
+  /* 00EC */ CUITextViewer* titleViewer;
+  /* 00F0 */ CUITextViewer* linesViewer;
+  /* 00F4 */ CUITextViewer* statusViewer;
   /* 00F8 */ std::string title;
   /* 0110 */ int questId;
 };

@@ -357,9 +357,9 @@ void CUIItem::BindItem(CUIItemInfo* item, const CItemData& data) {
   item->image->SetImage(image);
   reinterpret_cast<CUIQuestInfo*>(item)->SetStatusLines(data.first, data.second, data.third);
   item->SetDescription(data.type, info.Description());
-  reinterpret_cast<CUITextViewer*>(item->sourcesViewer)->Clear();
+  item->sourcesViewer->Clear();
   for (const std::string& value : data.values) {
-    reinterpret_cast<CUITextViewer*>(item->sourcesViewer)->AddLine(value);
+    item->sourcesViewer->AddLine(value);
   }
   item->description = data.text;
 }
@@ -372,8 +372,8 @@ void __stdcall BindQuestInfo(CUIQuestInfo* owner, const CQuestInfo& data) {
     owner->SetTitle(data.id);
     owner->SetViewerLines(data.rewards);
     owner->title = data.title;
-    reinterpret_cast<CUITextViewer*>(owner->statusViewer)->Clear();
-    reinterpret_cast<CUITextViewer*>(owner->statusViewer)->AddLine(data.text);
+    owner->statusViewer->Clear();
+    owner->statusViewer->AddLine(data.text);
     owner->questId = data.questId;
     {
       const bool isNew = g_renewQuestMgr->IsNewQuest(data.questId);
@@ -384,16 +384,16 @@ void __stdcall BindQuestInfo(CUIQuestInfo* owner, const CQuestInfo& data) {
     owner->SetTitle(data.id);
     owner->SetViewerLines(data.rewards);
     owner->title = data.title;
-    reinterpret_cast<CUITextViewer*>(owner->statusViewer)->Clear();
-    reinterpret_cast<CUITextViewer*>(owner->statusViewer)->AddLine(data.text);
+    owner->statusViewer->Clear();
+    owner->statusViewer->AddLine(data.text);
     owner->stampImage->Show(0);
     return;
   case 4:
     owner->SetTip(data.id);
     owner->SetViewerLines(data.rewards);
     owner->title = data.title;
-    reinterpret_cast<CUITextViewer*>(owner->statusViewer)->Clear();
-    reinterpret_cast<CUITextViewer*>(owner->statusViewer)->AddLine(data.text);
+    owner->statusViewer->Clear();
+    owner->statusViewer->AddLine(data.text);
     owner->stampImage->Show(0);
     return;
   }
@@ -555,11 +555,11 @@ void CUIIntro::BindContents(CUITabInfo* item, const Guide_Intro::Contents& conte
 // OFFSET: 0x009E0350
 // FUNCTION: fn_14361
 void CUIQuestInfo::SetTitle(int id) {
-  reinterpret_cast<CUITextViewer*>(this->titleViewer)->Clear();
+  this->titleViewer->Clear();
 
   const TipBoxEntry& entry = g_itemTagOwner->GetTip(id);
   if (entry.title.empty() || entry.paragraphs.empty()) {
-    reinterpret_cast<CUITextViewer*>(this->titleViewer)->AddLine(std::to_string(id));
+    this->titleViewer->AddLine(std::to_string(id));
     return;
   }
 
@@ -573,8 +573,8 @@ void CUIQuestInfo::SetTitle(int id) {
 
   text.erase(0, text.find_first_not_of(whitespace));
   text.erase(text.find_last_not_of(whitespace) + 1);
-  reinterpret_cast<CUITextViewer*>(this->titleViewer)->SetBold(1);
-  reinterpret_cast<CUITextViewer*>(this->titleViewer)->AddLine(text);
+  this->titleViewer->SetBold(1);
+  this->titleViewer->AddLine(text);
 
   text = entry.paragraphs[0];
   std::regex_search(text.c_str(), text.c_str() + text.size(), match, std::regex("\n"));
@@ -584,43 +584,43 @@ void CUIQuestInfo::SetTitle(int id) {
 
   text.erase(0, text.find_first_not_of(whitespace));
   text.erase(text.find_last_not_of(whitespace) + 1);
-  reinterpret_cast<CUITextViewer*>(this->titleViewer)->SetBold(0);
-  reinterpret_cast<CUITextViewer*>(this->titleViewer)->AddLine(text);
+  this->titleViewer->SetBold(0);
+  this->titleViewer->AddLine(text);
 }
 
 // OFFSET: 0x009DFAD0
 // FUNCTION: fn_14359
 void CUIQuestInfo::SetStatusLines(bool first, bool second, bool third) {
-  reinterpret_cast<CUITextViewer*>(this->statusViewer)->Clear();
+  this->statusViewer->Clear();
   if (first == true) {
-    reinterpret_cast<CUITextViewer*>(this->statusViewer)->SetTextColor(0xC86464u);
-    reinterpret_cast<CUITextViewer*>(this->statusViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_ENCHANT_IMPOSSIBLE)));
+    this->statusViewer->SetTextColor(0xC86464u);
+    this->statusViewer->AddLine(FormatOwnedString(LookupMessage(MSI_ENCHANT_IMPOSSIBLE)));
   } else {
-    reinterpret_cast<CUITextViewer*>(this->statusViewer)->SetTextColor(0x6464C8u);
-    reinterpret_cast<CUITextViewer*>(this->statusViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_GRADE_ENCHANT_POSSIBLE)));
+    this->statusViewer->SetTextColor(0x6464C8u);
+    this->statusViewer->AddLine(FormatOwnedString(LookupMessage(MSI_GRADE_ENCHANT_POSSIBLE)));
   }
   if (second == true) {
-    reinterpret_cast<CUITextViewer*>(this->statusViewer)->SetTextColor(0xC86464u);
-    reinterpret_cast<CUITextViewer*>(this->statusViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_GRADE_ENCHANT_IMPOSSIBLE)));
+    this->statusViewer->SetTextColor(0xC86464u);
+    this->statusViewer->AddLine(FormatOwnedString(LookupMessage(MSI_GRADE_ENCHANT_IMPOSSIBLE)));
   } else {
-    reinterpret_cast<CUITextViewer*>(this->statusViewer)->SetTextColor(0x6464C8u);
-    reinterpret_cast<CUITextViewer*>(this->statusViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_EQUIP_OUT)));
+    this->statusViewer->SetTextColor(0x6464C8u);
+    this->statusViewer->AddLine(FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_EQUIP_OUT)));
   }
   if (third == true) {
-    reinterpret_cast<CUITextViewer*>(this->statusViewer)->SetTextColor(0xC86464u);
-    reinterpret_cast<CUITextViewer*>(this->statusViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_EQUIP_NOTPUT)));
+    this->statusViewer->SetTextColor(0xC86464u);
+    this->statusViewer->AddLine(FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_EQUIP_NOTPUT)));
   } else {
-    reinterpret_cast<CUITextViewer*>(this->statusViewer)->SetTextColor(0x6464C8u);
-    reinterpret_cast<CUITextViewer*>(this->statusViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_RUNESET_TITLE)));
+    this->statusViewer->SetTextColor(0x6464C8u);
+    this->statusViewer->AddLine(FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_RUNESET_TITLE)));
   }
 }
 
 // OFFSET: 0x009E07B0
 // FUNCTION: fn_14362
 void CUIQuestInfo::SetViewerLines(const std::vector<std::string>& lines) {
-  reinterpret_cast<CUITextViewer*>(this->linesViewer)->Clear();
+  this->linesViewer->Clear();
   for (const std::string& line : lines) {
-    reinterpret_cast<CUITextViewer*>(this->linesViewer)->AddLine(line);
+    this->linesViewer->AddLine(line);
   }
 }
 
@@ -831,11 +831,11 @@ void CUIAdventureGuide::OnInit() {
 // OFFSET: 0x009DE7D0
 // FUNCTION: fn_14356
 void AdventureGuide::CUIQuestInfo::SetTip(int id) {
-  reinterpret_cast<CUITextViewer*>(this->titleViewer)->Clear();
+  this->titleViewer->Clear();
 
   const TipBoxEntry& tip = g_itemTagOwner->GetTip(id);
   if (tip.title.empty() || tip.paragraphs.empty()) {
-    reinterpret_cast<CUITextViewer*>(this->titleViewer)->AddLine(std::to_string(id));
+    this->titleViewer->AddLine(std::to_string(id));
     return;
   }
 
@@ -849,8 +849,8 @@ void AdventureGuide::CUIQuestInfo::SetTip(int id) {
 
   title.erase(0, title.find_first_not_of(whitespace));
   title.erase(title.find_last_not_of(whitespace) + 1);
-  reinterpret_cast<CUITextViewer*>(this->titleViewer)->SetBold(true);
-  reinterpret_cast<CUITextViewer*>(this->titleViewer)->AddLine(title);
+  this->titleViewer->SetBold(true);
+  this->titleViewer->AddLine(title);
 
   title = tip.paragraphs.front();
   std::regex_search(title.c_str(), title.c_str() + title.size(), match, std::regex("\n"));
@@ -859,8 +859,8 @@ void AdventureGuide::CUIQuestInfo::SetTip(int id) {
   }
   title.erase(0, title.find_first_not_of(whitespace));
   title.erase(title.find_last_not_of(whitespace) + 1);
-  reinterpret_cast<CUITextViewer*>(this->titleViewer)->SetBold(false);
-  reinterpret_cast<CUITextViewer*>(this->titleViewer)->AddLine(title);
+  this->titleViewer->SetBold(false);
+  this->titleViewer->AddLine(title);
 }
 
 // OFFSET: 0x009DEBF0
@@ -1066,7 +1066,7 @@ void CUIItemInfo::OnCreate(int width, int height) {
   this->AddChild(options);
 
   CUITextViewer* sources = new CUITextViewer();
-  this->sourcesViewer = reinterpret_cast<CUIStaticText*>(sources);
+  this->sourcesViewer = sources;
   sources->SetSize(108, 118);
   sources->Move(480, 5);
   sources->SetTextOffset(0, 6);
@@ -1114,64 +1114,64 @@ void CUIMonsterInfo::OnCreate(int width, int height) {
   this->nameText->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->nameText);
 
-  this->detailsViewer = reinterpret_cast<CUIStaticText*>(new CUITextViewer());
-  reinterpret_cast<CUITextViewer*>(this->detailsViewer)->SetSize(288, 84);
-  reinterpret_cast<CUITextViewer*>(this->detailsViewer)->Move(165, 39);
-  reinterpret_cast<CUITextViewer*>(this->detailsViewer)->SetTextOffset(0, 6);
+  this->detailsViewer = new CUITextViewer();
+  this->detailsViewer->SetSize(288, 84);
+  this->detailsViewer->Move(165, 39);
+  this->detailsViewer->SetTextOffset(0, 6);
   {
-    CUITextViewer* details = reinterpret_cast<CUITextViewer*>(this->detailsViewer);
+    CUITextViewer* details = this->detailsViewer;
     details->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Gulim", 0x39A39F87DD5F535BULL)));
   }
-  reinterpret_cast<CUITextViewer*>(this->detailsViewer)->SetFontHeight(12);
-  reinterpret_cast<CUITextViewer*>(this->detailsViewer)->SetBold(0);
-  reinterpret_cast<CUITextViewer*>(this->detailsViewer)->SetTextColor(0);
-  reinterpret_cast<CUITextViewer*>(this->detailsViewer)->SetOutline(0, 0xFFFF00FF);
-  reinterpret_cast<CUITextViewer*>(this->detailsViewer)->SetLineSpacing(6);
-  reinterpret_cast<CUITextViewer*>(this->detailsViewer)->SetBackgroundColor(0xFFFF00FF);
-  reinterpret_cast<CUITextViewer*>(this->detailsViewer)->SetPadding(0, 0, 0, 0);
-  reinterpret_cast<CUITextViewer*>(this->detailsViewer)->SetScrollBarSize(8, 84);
-  reinterpret_cast<CUITextViewer*>(this->detailsViewer)->SetScrollStep(20);
+  this->detailsViewer->SetFontHeight(12);
+  this->detailsViewer->SetBold(0);
+  this->detailsViewer->SetTextColor(0);
+  this->detailsViewer->SetOutline(0, 0xFFFF00FF);
+  this->detailsViewer->SetLineSpacing(6);
+  this->detailsViewer->SetBackgroundColor(0xFFFF00FF);
+  this->detailsViewer->SetPadding(0, 0, 0, 0);
+  this->detailsViewer->SetScrollBarSize(8, 84);
+  this->detailsViewer->SetScrollStep(20);
   {
-    CUITextViewer* details = reinterpret_cast<CUITextViewer*>(this->detailsViewer);
+    CUITextViewer* details = this->detailsViewer;
     details->SetScrollBarButtonImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_arrow_up.bmp", 0x6FE153231D879777ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_arrow_down.bmp", 0x33133B977BCD03CDULL)));
   }
   {
-    CUITextViewer* details = reinterpret_cast<CUITextViewer*>(this->detailsViewer);
+    CUITextViewer* details = this->detailsViewer;
     details->SetScrollBarBackground(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_bg_mid.bmp", 0x2FEB8739E5975BD1ULL)));
   }
   {
-    CUITextViewer* details = reinterpret_cast<CUITextViewer*>(this->detailsViewer);
+    CUITextViewer* details = this->detailsViewer;
     details->SetScrollBarThumbImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_thumb_up.bmp", 0x6BA1C1132F033B75ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_thumb_mid.bmp", 0xA12DAB392545D72FULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_thumb_down.bmp", 0x8783C33941E15117ULL)));
   }
   this->AddChild(this->detailsViewer);
 
-  this->valuesViewer = reinterpret_cast<CUIStaticText*>(new CUITextViewer());
-  reinterpret_cast<CUITextViewer*>(this->valuesViewer)->SetSize(108, 118);
-  reinterpret_cast<CUITextViewer*>(this->valuesViewer)->Move(480, 5);
-  reinterpret_cast<CUITextViewer*>(this->valuesViewer)->SetTextOffset(0, 6);
+  this->valuesViewer = new CUITextViewer();
+  this->valuesViewer->SetSize(108, 118);
+  this->valuesViewer->Move(480, 5);
+  this->valuesViewer->SetTextOffset(0, 6);
   {
-    CUITextViewer* values = reinterpret_cast<CUITextViewer*>(this->valuesViewer);
+    CUITextViewer* values = this->valuesViewer;
     values->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Gulim", 0x271B45771F83DD9FULL)));
   }
-  reinterpret_cast<CUITextViewer*>(this->valuesViewer)->SetFontHeight(12);
-  reinterpret_cast<CUITextViewer*>(this->valuesViewer)->SetBold(0);
-  reinterpret_cast<CUITextViewer*>(this->valuesViewer)->SetTextColor(0);
-  reinterpret_cast<CUITextViewer*>(this->valuesViewer)->SetOutline(0, 0xFFFF00FF);
-  reinterpret_cast<CUITextViewer*>(this->valuesViewer)->SetLineSpacing(6);
-  reinterpret_cast<CUITextViewer*>(this->valuesViewer)->SetBackgroundColor(0xFFFF00FF);
-  reinterpret_cast<CUITextViewer*>(this->valuesViewer)->SetPadding(0, 0, 0, 0);
-  reinterpret_cast<CUITextViewer*>(this->valuesViewer)->SetScrollBarSize(8, 118);
-  reinterpret_cast<CUITextViewer*>(this->valuesViewer)->SetScrollStep(20);
+  this->valuesViewer->SetFontHeight(12);
+  this->valuesViewer->SetBold(0);
+  this->valuesViewer->SetTextColor(0);
+  this->valuesViewer->SetOutline(0, 0xFFFF00FF);
+  this->valuesViewer->SetLineSpacing(6);
+  this->valuesViewer->SetBackgroundColor(0xFFFF00FF);
+  this->valuesViewer->SetPadding(0, 0, 0, 0);
+  this->valuesViewer->SetScrollBarSize(8, 118);
+  this->valuesViewer->SetScrollStep(20);
   {
-    CUITextViewer* values = reinterpret_cast<CUITextViewer*>(this->valuesViewer);
+    CUITextViewer* values = this->valuesViewer;
     values->SetScrollBarButtonImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_arrow_up.bmp", 0xC70319B5EB61598FULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_arrow_down.bmp", 0x0B8745519B1F95D7ULL)));
   }
   {
-    CUITextViewer* values = reinterpret_cast<CUITextViewer*>(this->valuesViewer);
+    CUITextViewer* values = this->valuesViewer;
     values->SetScrollBarBackground(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_bg_mid.bmp", 0xA597A7E7492B39D5ULL)));
   }
   {
-    CUITextViewer* values = reinterpret_cast<CUITextViewer*>(this->valuesViewer);
+    CUITextViewer* values = this->valuesViewer;
     values->SetScrollBarThumbImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_thumb_up.bmp", 0xFFABE3D5D1BBEF73ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_thumb_mid.bmp", 0x0399459DAF454F0FULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_thumb_down.bmp", 0xD5A78DB38D8DAFABULL)));
   }
   this->AddChild(this->valuesViewer);
@@ -1189,88 +1189,88 @@ void CUIQuestInfo::OnCreate(int width, int height) {
   }
   this->AddChild(this->stampImage);
 
-  this->titleViewer = reinterpret_cast<CUIStaticText*>(new CUITextViewer());
-  reinterpret_cast<CUITextViewer*>(this->titleViewer)->SetSize(360, 57);
-  reinterpret_cast<CUITextViewer*>(this->titleViewer)->Move(25, 13);
-  reinterpret_cast<CUITextViewer*>(this->titleViewer)->SetTextOffset(0, 0);
+  this->titleViewer = new CUITextViewer();
+  this->titleViewer->SetSize(360, 57);
+  this->titleViewer->Move(25, 13);
+  this->titleViewer->SetTextOffset(0, 0);
   {
-    CUITextViewer* title = reinterpret_cast<CUITextViewer*>(this->titleViewer);
+    CUITextViewer* title = this->titleViewer;
     title->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Gulim", 0x35E5656B5DEDCD75ULL)));
   }
-  reinterpret_cast<CUITextViewer*>(this->titleViewer)->SetFontHeight(12);
-  reinterpret_cast<CUITextViewer*>(this->titleViewer)->SetBold(1);
-  reinterpret_cast<CUITextViewer*>(this->titleViewer)->SetTextColor(0);
-  reinterpret_cast<CUITextViewer*>(this->titleViewer)->SetOutline(0, 0xFFFF00FF);
-  reinterpret_cast<CUITextViewer*>(this->titleViewer)->SetLineSpacing(6);
-  reinterpret_cast<CUITextViewer*>(this->titleViewer)->SetBackgroundColor(0xFFFF00FF);
-  reinterpret_cast<CUITextViewer*>(this->titleViewer)->SetPadding(15, 5, 5, 5);
-  reinterpret_cast<CUITextViewer*>(this->titleViewer)->SetScrollBarSize(8, 87);
-  reinterpret_cast<CUITextViewer*>(this->titleViewer)->SetScrollStep(20);
+  this->titleViewer->SetFontHeight(12);
+  this->titleViewer->SetBold(1);
+  this->titleViewer->SetTextColor(0);
+  this->titleViewer->SetOutline(0, 0xFFFF00FF);
+  this->titleViewer->SetLineSpacing(6);
+  this->titleViewer->SetBackgroundColor(0xFFFF00FF);
+  this->titleViewer->SetPadding(15, 5, 5, 5);
+  this->titleViewer->SetScrollBarSize(8, 87);
+  this->titleViewer->SetScrollStep(20);
   {
-    CUITextViewer* title = reinterpret_cast<CUITextViewer*>(this->titleViewer);
+    CUITextViewer* title = this->titleViewer;
     title->SetScrollBarButtonImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_arrow_up.bmp", 0x4941FD9F21BBB9FDULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_arrow_down.bmp", 0xE7978FB5A94DD7FDULL)));
   }
   {
-    CUITextViewer* title = reinterpret_cast<CUITextViewer*>(this->titleViewer);
+    CUITextViewer* title = this->titleViewer;
     title->SetScrollBarBackground(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_bg_mid.bmp", 0xB7FD8F670FC7B96BULL)));
   }
   {
-    CUITextViewer* title = reinterpret_cast<CUITextViewer*>(this->titleViewer);
+    CUITextViewer* title = this->titleViewer;
     title->SetScrollBarThumbImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_thumb_up.bmp", 0x39FF7FB50DEB998FULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_thumb_mid.bmp", 0x2FE993D1DDE1F197ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_thumb_down.bmp", 0xAD075B8DB599F1CDULL)));
   }
   this->AddChild(this->titleViewer);
 
-  this->linesViewer = reinterpret_cast<CUIStaticText*>(new CUITextViewer());
-  reinterpret_cast<CUITextViewer*>(this->linesViewer)->SetSize(200, 87);
-  reinterpret_cast<CUITextViewer*>(this->linesViewer)->Move(400, 5);
-  reinterpret_cast<CUITextViewer*>(this->linesViewer)->SetTextOffset(0, 6);
+  this->linesViewer = new CUITextViewer();
+  this->linesViewer->SetSize(200, 87);
+  this->linesViewer->Move(400, 5);
+  this->linesViewer->SetTextOffset(0, 6);
   {
-    CUITextViewer* lines = reinterpret_cast<CUITextViewer*>(this->linesViewer);
+    CUITextViewer* lines = this->linesViewer;
     lines->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Gulim", 0x2F8B0F37118D157FULL)));
   }
-  reinterpret_cast<CUITextViewer*>(this->linesViewer)->SetFontHeight(12);
-  reinterpret_cast<CUITextViewer*>(this->linesViewer)->SetBold(1);
-  reinterpret_cast<CUITextViewer*>(this->linesViewer)->SetTextColor(0);
-  reinterpret_cast<CUITextViewer*>(this->linesViewer)->SetOutline(0, 0xFFFF00FF);
-  reinterpret_cast<CUITextViewer*>(this->linesViewer)->SetLineSpacing(6);
-  reinterpret_cast<CUITextViewer*>(this->linesViewer)->SetBackgroundColor(0xFFFF00FF);
-  reinterpret_cast<CUITextViewer*>(this->linesViewer)->SetPadding(15, 5, 5, 5);
-  reinterpret_cast<CUITextViewer*>(this->linesViewer)->SetScrollBarSize(8, 87);
-  reinterpret_cast<CUITextViewer*>(this->linesViewer)->SetScrollStep(20);
+  this->linesViewer->SetFontHeight(12);
+  this->linesViewer->SetBold(1);
+  this->linesViewer->SetTextColor(0);
+  this->linesViewer->SetOutline(0, 0xFFFF00FF);
+  this->linesViewer->SetLineSpacing(6);
+  this->linesViewer->SetBackgroundColor(0xFFFF00FF);
+  this->linesViewer->SetPadding(15, 5, 5, 5);
+  this->linesViewer->SetScrollBarSize(8, 87);
+  this->linesViewer->SetScrollStep(20);
   {
-    CUITextViewer* lines = reinterpret_cast<CUITextViewer*>(this->linesViewer);
+    CUITextViewer* lines = this->linesViewer;
     lines->SetScrollBarButtonImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_arrow_up.bmp", 0x0F15B16B5BAFD57FULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_arrow_down.bmp", 0x7DE349D717D7F123ULL)));
   }
   {
-    CUITextViewer* lines = reinterpret_cast<CUITextViewer*>(this->linesViewer);
+    CUITextViewer* lines = this->linesViewer;
     lines->SetScrollBarBackground(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_bg_mid.bmp", 0x7321C3814F8799E1ULL)));
   }
   {
-    CUITextViewer* lines = reinterpret_cast<CUITextViewer*>(this->linesViewer);
+    CUITextViewer* lines = this->linesViewer;
     lines->SetScrollBarThumbImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_thumb_up.bmp", 0x7941D76335CFA14FULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_thumb_mid.bmp", 0xCB1D253B7FE1F563ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_thumb_down.bmp", 0x7115D9F973F913C9ULL)));
   }
   this->AddChild(this->linesViewer);
 
-  this->statusViewer = reinterpret_cast<CUIStaticText*>(new CUITextViewer());
-  reinterpret_cast<CUITextViewer*>(this->statusViewer)->SetSize(360, 13);
-  reinterpret_cast<CUITextViewer*>(this->statusViewer)->Move(25, 73);
-  reinterpret_cast<CUITextViewer*>(this->statusViewer)->SetTextOffset(0, 0);
+  this->statusViewer = new CUITextViewer();
+  this->statusViewer->SetSize(360, 13);
+  this->statusViewer->Move(25, 73);
+  this->statusViewer->SetTextOffset(0, 0);
   {
-    CUITextViewer* status = reinterpret_cast<CUITextViewer*>(this->statusViewer);
+    CUITextViewer* status = this->statusViewer;
     status->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Gulim", 0xE55723712993051DULL)));
   }
-  reinterpret_cast<CUITextViewer*>(this->statusViewer)->SetFontHeight(12);
-  reinterpret_cast<CUITextViewer*>(this->statusViewer)->SetBold(0);
-  reinterpret_cast<CUITextViewer*>(this->statusViewer)->SetTextColor(0);
-  reinterpret_cast<CUITextViewer*>(this->statusViewer)->SetOutline(0, 0xFFFF00FF);
-  reinterpret_cast<CUITextViewer*>(this->statusViewer)->SetLineSpacing(6);
-  reinterpret_cast<CUITextViewer*>(this->statusViewer)->SetBackgroundColor(0xFFFF00FF);
-  reinterpret_cast<CUITextViewer*>(this->statusViewer)->SetPadding(15, 0, 3, 0);
-  reinterpret_cast<CUITextViewer*>(this->statusViewer)->SetScrollBarSize(8, 12);
-  reinterpret_cast<CUITextViewer*>(this->statusViewer)->SetScrollStep(1);
-  reinterpret_cast<CUITextViewer*>(this->statusViewer)->SetScrollBarButtonImages("", "");
-  reinterpret_cast<CUITextViewer*>(this->statusViewer)->SetScrollBarBackground("");
-  reinterpret_cast<CUITextViewer*>(this->statusViewer)->SetScrollBarThumbImages("", "", "");
+  this->statusViewer->SetFontHeight(12);
+  this->statusViewer->SetBold(0);
+  this->statusViewer->SetTextColor(0);
+  this->statusViewer->SetOutline(0, 0xFFFF00FF);
+  this->statusViewer->SetLineSpacing(6);
+  this->statusViewer->SetBackgroundColor(0xFFFF00FF);
+  this->statusViewer->SetPadding(15, 0, 3, 0);
+  this->statusViewer->SetScrollBarSize(8, 12);
+  this->statusViewer->SetScrollStep(1);
+  this->statusViewer->SetScrollBarButtonImages("", "");
+  this->statusViewer->SetScrollBarBackground("");
+  this->statusViewer->SetScrollBarThumbImages("", "", "");
   this->AddChild(this->statusViewer);
 }
 
@@ -1346,16 +1346,16 @@ void CUIItemInfo::OnRBtnDown(int, int) {
 // FUNCTION: fn_14322
 void CUIMonster::BindMonster(CUIMonsterInfo* item, const CMonsterData& data) {
   item->SetMonster(data.name);
-  reinterpret_cast<CUITextViewer*>(item->valuesViewer)->Clear();
+  item->valuesViewer->Clear();
   for (const std::string& value : data.values) {
-    reinterpret_cast<CUITextViewer*>(item->valuesViewer)->AddLine(value);
+    item->valuesViewer->AddLine(value);
   }
 }
 
 // OFFSET: 0x009DFCB0
 // FUNCTION: fn_14360
 void CUIMonsterInfo::SetMonster(const std::string& title) {
-  reinterpret_cast<CUITextViewer*>(this->detailsViewer)->Clear();
+  this->detailsViewer->Clear();
 
   std::string name;
   std::string spriteName;
@@ -1375,60 +1375,60 @@ void CUIMonsterInfo::SetMonster(const std::string& title) {
   this->action = static_cast<CActRes*>(ResourceMgr::Instance().Load(spriteName + ".act"));
 
   if (element == 1) {
-    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY4), elementLevel));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY4), elementLevel));
   } else if (element == 2) {
-    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY5), elementLevel));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY5), elementLevel));
   } else if (element == 3) {
-    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY6), elementLevel));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY6), elementLevel));
   } else if (element == 4) {
-    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY7), elementLevel));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY7), elementLevel));
   } else if (element == 5) {
-    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY8), elementLevel));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY8), elementLevel));
   } else if (element == 6) {
-    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY9), elementLevel));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY9), elementLevel));
   } else if (element == 7) {
-    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY0), elementLevel));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY0), elementLevel));
   } else if (element == 8) {
-    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_SCALE1), elementLevel));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_SCALE1), elementLevel));
   } else if (element == 9) {
-    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_SCALE2), elementLevel));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_SCALE2), elementLevel));
   } else {
-    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_SCALE0), elementLevel));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_SCALE0), elementLevel));
   }
 
   if (race == 1) {
-    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE4)));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE4)));
   } else if (race == 2) {
-    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE5)));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE5)));
   } else if (race == 3) {
-    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE6)));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE6)));
   } else if (race == 4) {
-    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE7)));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE7)));
   } else if (race == 5) {
-    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE8)));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE8)));
   } else if (race == 6) {
-    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE9)));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE9)));
   } else if (race == 7) {
-    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE0)));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE0)));
   } else if (race == 8) {
-    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_MOVECLICK)));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_MOVECLICK)));
   } else if (race == 9) {
-    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_NPCMOVE)));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_NPCMOVE)));
   } else {
-    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_NPCCLICK)));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_NPCCLICK)));
   }
 
   if (size == 1) {
-    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE1)));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE1)));
   } else if (size == 2) {
-    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE2)));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE2)));
   } else {
-    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE3)));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE3)));
   }
 
   if (type == 0x12D) {
-    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->SetTextColor(0x6464FFu);
-    reinterpret_cast<CUITextViewer*>(this->detailsViewer)->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_TARGET_D_D)));
+    this->detailsViewer->SetTextColor(0x6464FFu);
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_TARGET_D_D)));
   }
 }
 
