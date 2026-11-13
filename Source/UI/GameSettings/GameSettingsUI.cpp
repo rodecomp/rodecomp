@@ -2103,7 +2103,7 @@ bool GameSettingsUI::CUIListPage::SetOptionChecked(int id) {
 __declspec(noinline) void CUIGameSettingsUI::RefreshOption(int id) {
   for (GameSettingsUI::CUIListPage* page : this->m_pages) {
     for (GameSettingsUI::CUIOptionItem* item : page->m_optionList->items) {
-      if (item->m_optionId == id) {
+      if (id == item->m_optionId) {
         CUICheckBox* check = item->m_check;
         check->checked = IsServiceOption(id) ^ g_serviceOptions.Get(id);
         check->Invalidate();
