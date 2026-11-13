@@ -75,7 +75,7 @@ void CRotateItemEffect::OnProcess() {
             }
           }
         } else {
-          this->alpha -= particle->columnIndex == 1 ? 150 : 25;
+          this->alpha -= particle->columnIndex != 1 ? 25 : 150;
           particle->alpha = this->alpha;
           particleAngle = this->angle;
         }
