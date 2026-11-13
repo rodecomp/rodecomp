@@ -5,11 +5,14 @@
 // OFFSET: 0x00ABD8F0
 // FUNCTION: fn_17548
 GroundQuad::GroundQuad() {
-  for (auto& vertex : this->vertices) {
-    vertex[0] = 0.0f;
-    vertex[1] = 0.0f;
-    vertex[2] = 0.0f;
-  }
+  int remaining = 4;
+  float (*vertex)[8] = this->vertices;
+  do {
+    (*vertex)[0] = 0.0f;
+    (*vertex)[1] = 0.0f;
+    (*vertex)[2] = 0.0f;
+    ++vertex;
+  } while (--remaining);
   this->texture = nullptr;
   this->selected = 0;
 }
@@ -17,11 +20,14 @@ GroundQuad::GroundQuad() {
 // OFFSET: 0x00ABD8A0
 // FUNCTION: fn_17547
 GroundCell::GroundCell() {
-  for (auto& corner : this->corners) {
-    corner[0] = 0.0f;
-    corner[1] = 0.0f;
-    corner[2] = 0.0f;
-  }
+  float (*corner)[3] = this->corners;
+  int remaining = 4;
+  do {
+    (*corner)[0] = 0.0f;
+    (*corner)[1] = 0.0f;
+    (*corner)[2] = 0.0f;
+    ++corner;
+  } while (--remaining);
   this->top = nullptr;
   this->side1 = nullptr;
   this->side2 = nullptr;
