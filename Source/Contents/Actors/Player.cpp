@@ -2821,9 +2821,6 @@ float CPlayer::AdjustFollowDistance(CGameActor* target, float distance) {
   return std::max(adjusted, 0.0f);
 }
 
-// GLOBAL: gl_25248
-bool g_refreshWindow289;
-
 struct PlayerMoveRequest {
   std::uint32_t serverTime;
   int column;

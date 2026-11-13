@@ -357,7 +357,6 @@ struct CRagEffect : CRenderObject {
   /* 0138 */ RagEffectState state;
 };
 
-extern int g_statusIconIds[100];
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CRagEffect) == 0x11CA8);

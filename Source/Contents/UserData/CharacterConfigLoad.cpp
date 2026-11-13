@@ -37,7 +37,7 @@ void CCharacterLinkedUserDataMgr::CompleteLoad(
 
     {
       const Json::Value sorting = root["data"]["SortPrivateTab"];
-      g_sortPrivateTab = sorting.isNull() ? false : sorting.asBool();
+      g_session.m_sortPrivateTab = sorting.isNull() ? false : sorting.asBool();
     }
 
     this->LoadNormalItemSlots(root["data"]);

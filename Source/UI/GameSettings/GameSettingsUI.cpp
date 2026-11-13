@@ -1685,10 +1685,10 @@ void CUIGroupProcessPriority::Refresh() {
 // FUNCTION: fn_16038
 void CUIGroupRodexSpam::Refresh() {
   auto* const onButton = this->m_onButton;
-  onButton->checked = g_gameOptionFlag;
+  onButton->checked = g_session.m_gameOptionFlag;
   onButton->Invalidate();
   auto* const offButton = this->m_offButton;
-  offButton->checked = !g_gameOptionFlag;
+  offButton->checked = !g_session.m_gameOptionFlag;
   offButton->Invalidate();
 }
 

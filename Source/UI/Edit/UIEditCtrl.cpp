@@ -1029,15 +1029,15 @@ void UIItemStoreSubWnd::DragAndDrop(int x, int y, std::intptr_t value) {
 // FUNCTION: fn_13274
 void UIItemStoreWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   char text[250];
-  if (g_buyingStoreMode) {
-    if (g_buyingStoreNoPermission == 1) {
+  if (g_session.m_buyingStoreMode) {
+    if (g_session.m_buyingStoreNoPermission == 1) {
       std::memset(text, 0, 250);
       std::sprintf(text, LookupMessage(MSI_GUILD_STORAGE_PERMISSON_WARNING_MSG));
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
       return;
     }
 
-    if (!g_buyingStoreDbNumber && !g_buyingStoreNoPermission) {
+    if (!g_session.m_buyingStoreDbNumber && !g_session.m_buyingStoreNoPermission) {
       std::memset(text, 0, 250);
       std::sprintf(text, LookupMessage(MSI_BARGAINSALE_TOOLWND_DB_NUMBER));
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
@@ -1662,7 +1662,7 @@ int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>("한 번에 10개 이상 구매 할 수 없습니다."), 0xFF, 0, 0, 0);
         return 0;
       }
-      budget = g_pendingGid + g_pendingAid;
+      budget = g_session.m_pendingGid + g_session.m_pendingAid;
     }
 
     total += drag.quantity * drag.price;
@@ -1710,8 +1710,8 @@ int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         if (amount < 0) {
           amount = 0;
         }
-        if (amount > g_pendingGid) {
-          amount = g_pendingGid;
+        if (amount > g_session.m_pendingGid) {
+          amount = g_session.m_pendingGid;
         }
         if (amount > g_session.GetItem1720Total()) {
           amount = g_session.GetItem1720Total();
@@ -1724,12 +1724,12 @@ int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         g_windowMgr.SetFocus(nullptr);
 
         const int total = g_session.GetItem1720Total();
-        if (g_pendingGid + g_pendingAid < total) {
+        if (g_session.m_pendingGid + g_session.m_pendingAid < total) {
           g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BUY_CASH_FAIL_MONEY)), 0xFF, 0, 0, 0);
           break;
         }
 
-        if (amount == 0 && g_pendingAid < total) {
+        if (amount == 0 && g_session.m_pendingAid < total) {
           if (g_windowMgr.Confirm(LookupMessage(MSI_BUY_TO_FREE_POINT), 0, true, false, 0, "Message", 280, 120, 0)) {
             break;
           }
@@ -1760,8 +1760,8 @@ int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         if (amount < 0) {
           amount = 0;
         }
-        if (amount > g_pendingGid) {
-          amount = g_pendingGid;
+        if (amount > g_session.m_pendingGid) {
+          amount = g_session.m_pendingGid;
         }
 
         char text[12];
@@ -7891,7 +7891,7 @@ UIItemStoreWnd::UIItemStoreWnd() : UIItemBaseWnd() {
 void UIItemStoreWnd::OnCreate(int width, int height) {
   this->title = new UIStaticText();
   this->title->SetSize(70, 15);
-  this->title->SetText(LookupMessage(g_buyingStoreMode ? 2500 : 169), 0);
+  this->title->SetText(LookupMessage(g_session.m_buyingStoreMode ? 2500 : 169), 0);
   this->title->Move(16, 2);
   this->title->shadow = 1;
   this->AddChild(this->title);
@@ -8175,7 +8175,7 @@ UINoticeMessageBox_LockSellItem::UINoticeMessageBox_LockSellItem() : UIFrameWnd(
 // OFFSET: 0x0096FB70
 // FUNCTION: fn_13238
 UIItemStoreWnd::~UIItemStoreWnd() {
-  g_buyingStoreMode = 0;
+  g_session.m_buyingStoreMode = 0;
 }
 
 // OFFSET: 0x0096FC10
@@ -9437,12 +9437,12 @@ void UIItemShopWnd::Paint() {
     }
 
     char text[352];
-    const int aid = g_session.m_renameAid;
+    const int aid = g_session.m_pendingAid;
     const char* name = this->ClipTextToWidth(g_session.DecodePlayerName(), 100, 0, 12, 0);
     int length = sprintf(text, LookupMessage(message), name, aid);
     this->DrawTextAt(12, this->geometry.height - 21, text, length, 0, 12, 0, 0, 0);
 
-    const int gid = g_session.m_renameCharGid;
+    const int gid = g_session.m_pendingGid;
     name = this->ClipTextToWidth(g_session.DecodePlayerName(), 100, 0, 12, 0);
     length = sprintf(text, LookupMessage(MSI_POINT_SHOP2), name, gid);
     this->DrawTextAt(12, this->geometry.height - this->bottomPadding - 21, text, length, 0, 12, 0, 0, 0);
@@ -9818,9 +9818,6 @@ void UIMerchantShopMakeWnd::Paint() {
   }
 }
 
-// GLOBAL: gl_25363
-bool g_sortPrivateTab;
-
 // OFFSET: 0x0098F700
 // FUNCTION: fn_13426
 int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
@@ -9871,7 +9868,7 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
       if (this->categoryFilter != 3) {
         return 0;
       }
-      g_sortPrivateTab = !g_sortPrivateTab;
+      g_session.m_sortPrivateTab = !g_session.m_sortPrivateTab;
       this->RefreshSortButton();
       this->RefreshItems();
       return 0;
@@ -10074,14 +10071,14 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
 // FUNCTION: fn_13461
 void UIItemWnd::RefreshSortButton() {
   std::string name = "유저인터페이스\\inventory\\bt_sort";
-  if (!g_sortPrivateTab) {
+  if (!g_session.m_sortPrivateTab) {
     name += "_off";
   }
 
   static_cast<UIBitmapButton*>(this->filterButton)->SetBitmap(std::format("{}.bmp", name).c_str(), 0, 0);
   static_cast<UIBitmapButton*>(this->filterButton)->SetBitmap(std::format("{}_over.bmp", name).c_str(), 1, 0);
   static_cast<UIBitmapButton*>(this->filterButton)->SetBitmap(std::format("{}_press.bmp", name).c_str(), 2, 0);
-  this->filterButton->SetTooltip(std::format("{} {}", LookupMessage(MSI_BABY_INDEPENDENCE_RODEX_ERASED), g_sortPrivateTab ? "ON" : "OFF").c_str());
+  this->filterButton->SetTooltip(std::format("{} {}", LookupMessage(MSI_BABY_INDEPENDENCE_RODEX_ERASED), g_session.m_sortPrivateTab ? "ON" : "OFF").c_str());
   this->Invalidate();
 }
 
@@ -10114,7 +10111,7 @@ void UIItemWnd::RefreshItems() {
     }
   }
 
-  if (g_sortPrivateTab) {
+  if (g_session.m_sortPrivateTab) {
     this->items.sort(ItemTypeNameLess());
   }
   this->Invalidate();

@@ -3,7 +3,6 @@
 
 #include <vector>
 
-extern bool g_petAutoFeed;
 
 void RequestBasicInfoRefresh();
 void __stdcall SetPetInfoAlert(bool enabled);

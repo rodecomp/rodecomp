@@ -949,7 +949,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
     case MM_ADD_ITEM_TO_STORE: {
       g_session.FlagInventoryItem(static_cast<std::uint32_t>(argument1));
       const GameModePacketWordDword packet{
-        g_buyingStoreMode != 0 ? 0x9E1 : 0x364,
+        g_session.m_buyingStoreMode != 0 ? 0x9E1 : 0x364,
         static_cast<std::uint16_t>(argument1), static_cast<std::uint32_t>(argument2)
       };
       GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
@@ -958,14 +958,14 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
     case MM_MOVE_ITEM_FROM_STORE_TO_BODY: {
       g_session.FlagCartItem(static_cast<std::uint32_t>(argument1));
       const GameModePacketWordDword packet{
-        g_buyingStoreMode != 0 ? 0x9E2 : 0x365,
+        g_session.m_buyingStoreMode != 0 ? 0x9E2 : 0x365,
         static_cast<std::uint16_t>(argument1), static_cast<std::uint32_t>(argument2)
       };
       GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
       return 0;
     }
     case MM_CLOSE_STORE: {
-      const std::uint16_t packet = g_buyingStoreMode != 0 ? 0x9BE : 0x193;
+      const std::uint16_t packet = g_session.m_buyingStoreMode != 0 ? 0x9BE : 0x193;
       GetRagConnection().Send(g_packetLengths.FixedLength(packet), &packet);
       return 0;
     }
@@ -1007,7 +1007,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       if (!this->IsMenuWindowOpen()) {
         g_session.FlagCartItem(static_cast<std::uint32_t>(argument1));
         const GameModePacketWordDword packet{
-          g_buyingStoreMode != 0 ? 0x9E4 : 0x128,
+          g_session.m_buyingStoreMode != 0 ? 0x9E4 : 0x128,
           static_cast<std::uint16_t>(argument1), static_cast<std::uint32_t>(argument2)
         };
         GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
@@ -1017,7 +1017,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       if (!this->IsMenuWindowOpen()) {
         g_session.FlagMerchantShopItem(static_cast<std::uint32_t>(argument1));
         const GameModePacketWordDword packet{
-          g_buyingStoreMode != 0 ? 0x9E3 : 0x129,
+          g_session.m_buyingStoreMode != 0 ? 0x9E3 : 0x129,
           static_cast<std::uint16_t>(argument1), static_cast<std::uint32_t>(argument2)
         };
         GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
@@ -2734,7 +2734,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       std::memcpy(packet + 4, &id, sizeof(id));
       std::memcpy(packet + 6, &argument2, sizeof(argument2));
       if (id == 0x5D) {
-        g_monsterInfoActorId = argument2;
+        g_session.m_monsterInfoActorId = argument2;
       }
       GetRagConnection().Send(g_packetLengths.FixedLength(packetId), packet);
       return 0;
@@ -2791,13 +2791,13 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       return 0;
     }
     case MM_SWAP_EQUIPMENT: {
-      if (timeGetTime() - g_swapEquipmentTick < 10000U) {
+      if (timeGetTime() - g_session.m_swapEquipmentTick < 10000U) {
         const char* suffix = LookupMessage(MSI_CONNECT_SNS_FAIL_CONNECT);
-        const std::string message = FormatOwnedString("%d%s", 10U - (timeGetTime() - g_swapEquipmentTick) / 1000U, suffix);
+        const std::string message = FormatOwnedString("%d%s", 10U - (timeGetTime() - g_session.m_swapEquipmentTick) / 1000U, suffix);
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), 0xC8FF00, 7, 0, 0);
         return 0;
       }
-      g_swapEquipmentTick = timeGetTime();
+      g_session.m_swapEquipmentTick = timeGetTime();
       const std::uint16_t packet = 0xA9C;
       GetRagConnection().Send(g_packetLengths.FixedLength(packet), &packet);
       return 0;
@@ -3208,7 +3208,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
           this->sameChatRepeatCount = 0;
         }
       }
-      if (g_windowToggleFlag == 0 && this->ShowRestrictedNotice(this->sameChatRepeatCount)) {
+      if (g_session.m_autoReplyEnabled == 0 && this->ShowRestrictedNotice(this->sameChatRepeatCount)) {
         return 0;
       }
       this->lastChat.assign(text, std::strlen(text));
@@ -3565,9 +3565,9 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       return 0;
     }
     case MM_SWAP_EQUIPMENT_BY_INDEX: {
-      if (timeGetTime() - g_swapEquipmentTick < 10000U) {
+      if (timeGetTime() - g_session.m_swapEquipmentTick < 10000U) {
         const char* suffix = LookupMessage(MSI_CONNECT_SNS_FAIL_CONNECT);
-        const unsigned remaining = 10U - (timeGetTime() - g_swapEquipmentTick) / 1000U;
+        const unsigned remaining = 10U - (timeGetTime() - g_session.m_swapEquipmentTick) / 1000U;
         const std::string text = FormatOwnedString("%d%s", remaining, suffix);
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xC8FF00, 7, 0, 0);
         return 0;
@@ -4190,7 +4190,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
     case MM_MOVE_ITEM_TO_PERSONAL: {
       g_session.FlagCartItem(static_cast<std::uint32_t>(argument1));
       const GameModePacketDwordWordDword packet{
-        0xC22, g_buyingStoreMode != 0 ? 1U : 0U, static_cast<std::uint16_t>(argument1), static_cast<std::uint32_t>(argument2)
+        0xC22, g_session.m_buyingStoreMode != 0 ? 1U : 0U, static_cast<std::uint16_t>(argument1), static_cast<std::uint32_t>(argument2)
       };
       GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
       return 0;
@@ -7254,12 +7254,12 @@ void CGameMode::InitializeState() {
     g_windowMgr.EnsureWindow(WID_SEEKPARTYWND);
   }
 
-  if (g_searchStoreInfoCreated) {
+  if (g_session.m_searchStoreInfoCreated) {
     g_windowMgr.EnsureWindow(WID_SEARCH_STORE_INFO);
   }
 
   g_windowMgr.EnsureWindow(WID_OPENROULLETTEWND);
-  if (g_refreshWindow289) {
+  if (g_session.showCameraInfo) {
     g_windowMgr.EnsureWindow(WID_VIEWCAMERAINFOWND);
   }
 
@@ -7451,10 +7451,10 @@ void CGameMode::InitializeState() {
   }
 
   g_navigationManager.ResumeRoute();
-  if (g_mileageWndActive) {
+  if (g_session.m_mileageWndActive) {
     UIWindow* mileage = g_windowMgr.EnsureWindow(WID_MILEAGEWND);
     if (mileage) {
-      mileage->SendMsg(nullptr, UM_SETINFO, g_mileageWndActive, g_mileageWndPoint, g_mileageWndElapsed, g_mileageWndBonus);
+      mileage->SendMsg(nullptr, UM_SETINFO, g_session.m_mileageWndActive, g_session.m_mileageWndPoint, g_session.m_mileageWndElapsed, g_session.m_mileageWndBonus);
     }
   }
 
@@ -8158,18 +8158,18 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
           message.target = actor->render.accountId;
           homun->SetResMsg2AI(reinterpret_cast<const float*>(&message), 0);
         }
-      } else if (g_session.attackHomunEnemy != 0 && g_groundMarkAid == actor->render.accountId) {
+      } else if (g_session.attackHomunEnemy != 0 && g_session.homunEnemyGid == actor->render.accountId) {
         CGameActor* homun = static_cast<CGameActor*>(this->scene->GetGameActorByAID(homunAid));
         if (homun && homun->HasActiveHomunculusAI()) {
           AiMessage message = {};
           message.type = 3;
-          message.target = g_groundMarkAid;
+          message.target = g_session.homunEnemyGid;
           homun->SetMsg2AI(reinterpret_cast<const float*>(&message), 0);
         }
         g_session.attackHomunEnemy = 0;
       } else {
         this->SetCursorAction(11);
-        g_groundMarkAid = actor->render.accountId;
+        g_session.homunEnemyGid = actor->render.accountId;
         g_session.homunEnemyX = 0;
         g_session.homunEnemyY = 0;
         g_session.moveHomunEnemy = 0;
@@ -8201,18 +8201,18 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
         message.target = actor->render.accountId;
         mercenary->SetResMsg2AI(reinterpret_cast<const float*>(&message), 1);
       }
-    } else if (g_session.attackMercenaryEnemy != 0 && g_groundMarkAltAid == actor->render.accountId) {
+    } else if (g_session.attackMercenaryEnemy != 0 && g_session.mercenaryEnemyGid == actor->render.accountId) {
       CGameActor* mercenary = static_cast<CGameActor*>(this->scene->GetGameActorByAID(mercenaryAid));
       if (mercenary && mercenary->HasActiveMercenaryAI()) {
         AiMessage message = {};
         message.type = 3;
-        message.target = g_groundMarkAltAid;
+        message.target = g_session.mercenaryEnemyGid;
         mercenary->SetMsg2AI(reinterpret_cast<const float*>(&message), 1);
       }
       g_session.attackMercenaryEnemy = 0;
     } else {
       this->SetCursorAction(11);
-      g_groundMarkAltAid = actor->render.accountId;
+      g_session.mercenaryEnemyGid = actor->render.accountId;
       g_session.mercenaryEnemyX = 0;
       g_session.mercenaryEnemyY = 0;
       g_session.moveMercenaryEnemy = 0;
@@ -8515,7 +8515,7 @@ int CGameMode::ProcessGroundClick(int result) {
 
       g_session.homunEnemyX = column;
       g_session.homunEnemyY = row;
-      g_groundMarkAid = 0;
+      g_session.homunEnemyGid = 0;
       g_session.attackHomunEnemy = 0;
       if (homun && homun->HasActiveHomunculusAI()) {
         AiMessage message = {};
@@ -8554,7 +8554,7 @@ int CGameMode::ProcessGroundClick(int result) {
 
       g_session.mercenaryEnemyX = column;
       g_session.mercenaryEnemyY = row;
-      g_groundMarkAltAid = 0;
+      g_session.mercenaryEnemyGid = 0;
       g_session.attackMercenaryEnemy = 0;
       if (mercenary && mercenary->HasActiveMercenaryAI()) {
         AiMessage message = {};
@@ -8808,7 +8808,7 @@ void CGameMode::Update() {
 
     g_nProtectGameGuardMgr->Stop();
     g_ggHashMgr->VerifyPendingFiles();
-    if (g_session.characterRenameEnabled) {
+    if (g_session.m_launchPassCommandLine) {
       Base_RunCallback();
     }
 
@@ -9325,11 +9325,11 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     break;
   case TT_RANDOM_LOADING_SCREEN_ON_OFF: {
     const char* text;
-    if (g_randomLoadingScreen) {
-      g_randomLoadingScreen = false;
+    if (g_session.m_randomLoadingScreen) {
+      g_session.m_randomLoadingScreen = false;
       text = "RANDOM LOADING SCREEN ON";
     } else {
-      g_randomLoadingScreen = true;
+      g_session.m_randomLoadingScreen = true;
       text = "RANDOM LOADING SCREEN OFF";
     }
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0x6E96FF, 0, 0, 0);
@@ -9397,9 +9397,9 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(g_session.battleChat ? 0x555 : 0x556)), 0x64FFFF, 0, 0, 0);
     break;
   case TT_AUTO_MSG_ON_OFF:
-    g_windowToggleFlag = !g_windowToggleFlag;
+    g_session.m_autoReplyEnabled = !g_session.m_autoReplyEnabled;
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-    if (g_windowToggleFlag) {
+    if (g_session.m_autoReplyEnabled) {
       g_windowMgr.EnsureWindow(WID_AUTOMESSAGEWND);
     } else {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_AUTO_MSG_OFF)), 0x64FFFF, 0, 0, 0);
@@ -10199,18 +10199,18 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
         message.target = actor->render.accountId;
         homun->SetResMsg2AI(reinterpret_cast<const float*>(&message), 0);
       }
-    } else if (g_session.attackHomunEnemy != 0 && g_groundMarkAid == actor->render.accountId) {
+    } else if (g_session.attackHomunEnemy != 0 && g_session.homunEnemyGid == actor->render.accountId) {
       CGameActor* homun = static_cast<CGameActor*>(this->scene->GetGameActorByAID(homunAid));
       if (homun && homun->HasActiveHomunculusAI()) {
         AiMessage message = {};
         message.type = 3;
-        message.target = g_groundMarkAid;
+        message.target = g_session.homunEnemyGid;
         homun->SetMsg2AI(reinterpret_cast<const float*>(&message), 0);
       }
       g_session.attackHomunEnemy = 0;
     } else {
       this->SetCursorAction(11);
-      g_groundMarkAid = actor->render.accountId;
+      g_session.homunEnemyGid = actor->render.accountId;
       g_session.homunEnemyX = 0;
       g_session.homunEnemyY = 0;
       g_session.moveHomunEnemy = 0;
@@ -10241,18 +10241,18 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
         message.target = actor->render.accountId;
         mercenary->SetResMsg2AI(reinterpret_cast<const float*>(&message), 1);
       }
-    } else if (g_session.attackMercenaryEnemy != 0 && g_groundMarkAltAid == actor->render.accountId) {
+    } else if (g_session.attackMercenaryEnemy != 0 && g_session.mercenaryEnemyGid == actor->render.accountId) {
       CGameActor* mercenary = static_cast<CGameActor*>(this->scene->GetGameActorByAID(mercenaryAid));
       if (mercenary && mercenary->HasActiveMercenaryAI()) {
         AiMessage message = {};
         message.type = 3;
-        message.target = g_groundMarkAltAid;
+        message.target = g_session.mercenaryEnemyGid;
         mercenary->SetMsg2AI(reinterpret_cast<const float*>(&message), 1);
       }
       g_session.attackMercenaryEnemy = 0;
     } else {
       this->SetCursorAction(11);
-      g_groundMarkAltAid = actor->render.accountId;
+      g_session.mercenaryEnemyGid = actor->render.accountId;
       g_session.mercenaryEnemyX = 0;
       g_session.mercenaryEnemyY = 0;
       g_session.moveMercenaryEnemy = 0;
@@ -10356,7 +10356,7 @@ void CGameMode::ProcessStatusIconTooltip(int x, int y) {
     return;
   }
 
-  const int id = g_statusIconIds[slot];
+  const int id = g_session.m_statusIconIds[slot];
   if (id == -1) {
     hoveredId = -1;
     if (this->statusIconTooltip) {
@@ -10817,18 +10817,18 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
             message.target = pick->accountId;
             homun->SetResMsg2AI(reinterpret_cast<const float*>(&message), 0);
           }
-        } else if (g_session.attackHomunEnemy != 0 && g_groundMarkAid == pick->accountId) {
+        } else if (g_session.attackHomunEnemy != 0 && g_session.homunEnemyGid == pick->accountId) {
           CGameActor* homun = static_cast<CGameActor*>(this->scene->GetGameActorByAID(homunAid));
           if (homun != nullptr && homun->HasActiveHomunculusAI()) {
             AiMessage message = {};
             message.type = 3;
-            message.target = g_groundMarkAid;
+            message.target = g_session.homunEnemyGid;
             homun->SetMsg2AI(reinterpret_cast<const float*>(&message), 0);
           }
           g_session.attackHomunEnemy = 0;
         } else {
           this->SetCursorAction(11);
-          g_groundMarkAid = pick->accountId;
+          g_session.homunEnemyGid = pick->accountId;
           g_session.homunEnemyX = 0;
           g_session.homunEnemyY = 0;
           g_session.moveHomunEnemy = 0;
@@ -10861,18 +10861,18 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
             message.target = pick->accountId;
             mercenary->SetResMsg2AI(reinterpret_cast<const float*>(&message), 1);
           }
-        } else if (g_session.attackMercenaryEnemy != 0 && g_groundMarkAltAid == pick->accountId) {
+        } else if (g_session.attackMercenaryEnemy != 0 && g_session.mercenaryEnemyGid == pick->accountId) {
           CGameActor* mercenary = static_cast<CGameActor*>(this->scene->GetGameActorByAID(mercenaryAid));
           if (mercenary != nullptr && mercenary->HasActiveMercenaryAI()) {
             AiMessage message = {};
             message.type = 3;
-            message.target = g_groundMarkAltAid;
+            message.target = g_session.mercenaryEnemyGid;
             mercenary->SetMsg2AI(reinterpret_cast<const float*>(&message), 1);
           }
           g_session.attackMercenaryEnemy = 0;
         } else {
           this->SetCursorAction(11);
-          g_groundMarkAltAid = pick->accountId;
+          g_session.mercenaryEnemyGid = pick->accountId;
           g_session.mercenaryEnemyX = 0;
           g_session.mercenaryEnemyY = 0;
           g_session.moveMercenaryEnemy = 0;

@@ -495,21 +495,6 @@ struct GameOptionEntry {
   /* 0004 */ int value;
 };
 
-// GLOBAL: gl_24865
-bool g_gameOptionFlag;
-
-// GLOBAL: gl_24927
-int g_pendingAid;
-
-// GLOBAL: gl_24928
-int g_pendingGid;
-
-// GLOBAL: gl_24929
-unsigned char g_toggleNoticeState;
-
-// GLOBAL: gl_25094
-bool g_playerMessage82Pending;
-
 // OFFSET: 0x00D3B690
 // FUNCTION: fn_21781
 void CGameMode::ReceivePartyBookingRegisterResult(const unsigned char* packet) {
@@ -603,8 +588,8 @@ void CGameMode::ReceivePartyBookingUpdate(const unsigned char* packet) {
 // OFFSET: 0x00D3B9A0
 // FUNCTION: fn_21787
 void CGameMode::ReceiveToggleNotice(const unsigned char* packet) {
-  g_toggleNoticeState = packet[2];
-  const char* message = LookupMessage(g_toggleNoticeState == 0 ? 1326 : 1325);
+  g_session.replaySessionFlag = packet[2];
+  const char* message = LookupMessage(g_session.replaySessionFlag == 0 ? 1326 : 1325);
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0x64FFFF, 0, 0, 0);
 }
 
@@ -616,8 +601,8 @@ void CGameMode::ReceivePendingResult(const unsigned char* packet) {
   switch (*reinterpret_cast<const std::int16_t*>(packet + 10)) {
   case ERROR_TYPE_NONE:
   case 8:
-    g_pendingAid = *reinterpret_cast<const int*>(packet + 2);
-    g_pendingGid = *reinterpret_cast<const int*>(packet + 6);
+    g_session.m_pendingAid = *reinterpret_cast<const int*>(packet + 2);
+    g_session.m_pendingGid = *reinterpret_cast<const int*>(packet + 6);
     if (g_windowMgr.itemShopWnd) {
       g_windowMgr.itemShopWnd->Invalidate();
     }
@@ -890,7 +875,7 @@ void CGameMode::ReceivePlayerMessage82(const unsigned char* packet) {
   }
 
   player->SendMsg(nullptr, AM_MAKE_SKILL_RECHARGEGAGE, static_cast<std::uint32_t>(*reinterpret_cast<const int*>(packet + 6) * 1000), 0, 0, 0, 0, 0);
-  g_session.playerStatusFlags[0x0A] = true;
+  g_session.m_playerMessage82Pending = true;
 }
 
 // OFFSET: 0x00D3D390
@@ -1709,7 +1694,7 @@ void CGameMode::ReceiveGameOptions(int count, const GameOptionEntry* entries) {
   for (int i = 0; i < count; ++i) {
     switch (entries[i].id) {
     case 1:
-      g_gameOptionFlag = entries[i].value != 0;
+      g_session.m_gameOptionFlag = entries[i].value != 0;
       break;
     }
   }
@@ -2101,9 +2086,9 @@ void CGameMode::ReceiveGameOptionResult(int command, int result, int enabled) {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RODEX_SPAMOPTION_USERBLOCK)), 0x64FFFF, 0, 0, 0);
     }
 
-    g_gameOptionFlag = enabled != 0;
+    g_session.m_gameOptionFlag = enabled != 0;
     g_windowMgr.RefreshGameSettings();
-    if (!g_gameOptionFlag) {
+    if (!g_session.m_gameOptionFlag) {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RODEX_SPAMOPTION_RETURN_SUCCESS)), 0x64FFFF, 0, 0, 0);
     } else {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RODEX_SPAMOPTION_RETURN_FAIL)), 0x64FFFF, 0, 0, 0);
@@ -2939,8 +2924,8 @@ void CGameMode::ReceivePendingItem1718List(const unsigned char* packet) {
     ++record;
   }
 
-  g_pendingAid = *reinterpret_cast<const int*>(packet + 4);
-  g_pendingGid = *reinterpret_cast<const int*>(packet + 8);
+  g_session.m_pendingAid = *reinterpret_cast<const int*>(packet + 4);
+  g_session.m_pendingGid = *reinterpret_cast<const int*>(packet + 8);
   this->isOnQuest = 1;
 
   UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMSHOPWND);
@@ -3037,7 +3022,7 @@ void CGameMode::ReceiveSearchStoreItems(const unsigned char* packet) {
     }
     g_session.storeSearchResults.clear();
   }
-  reinterpret_cast<unsigned char*>(&g_session.storeSearchPageFlags)[1] = header->hasNext;
+  g_session.m_storeSearchHasNext = header->hasNext;
   g_session.storeSearchCount = header->count;
   const unsigned int count = (header->length - 7) / sizeof(SearchStoreItemPacket);
   for (long long i = 0; i < count; ++i) {
@@ -3085,7 +3070,7 @@ void CGameMode::ReceiveSearchStoreItemsOld(const unsigned char* packet) {
     g_session.storeSearchResults.clear();
   }
   const int count = (header->length - 7) / sizeof(SearchStoreItemPacketOld);
-  reinterpret_cast<unsigned char*>(&g_session.storeSearchPageFlags)[1] = header->hasNext;
+  g_session.m_storeSearchHasNext = header->hasNext;
   g_session.storeSearchCount = header->count;
   for (int i = 0; i < count; ++i, ++next) {
     SearchStoreItemPacketOld record;

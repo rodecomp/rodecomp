@@ -63,9 +63,6 @@
 
 template __declspec(noinline) std::string& std::string::erase(std::size_t, std::size_t);
 
-// GLOBAL: gl_24747
-std::uint32_t g_monsterInfoActorId;
-
 // OFFSET: 0x008A3700
 // FUNCTION: fn_11657
 UIFrameWnd::UIFrameWnd(unsigned char cached)
@@ -451,7 +448,7 @@ void UIMonsterInfoWnd::OnMouseHover(int x, int y) {
   int screenX = 0;
   int screenY = 0;
   this->ToScreen(screenX, screenY);
-  std::string name = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ActorName(g_monsterInfoActorId);
+  std::string name = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ActorName(g_session.m_monsterInfoActorId);
   const std::size_t mark = name.find("#", 0);
   if (mark != std::string::npos) {
     name.erase(mark, name.size());

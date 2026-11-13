@@ -429,7 +429,7 @@ void UIBasicInfoWnd::DrawExpanded() {
   }
 
   const int denominator = g_session.m_maxWeight < 1 ? 1 : g_session.m_maxWeight;
-  const std::uint32_t weightColor = 100 * g_session.m_weight / denominator >= g_overweightThresholdPercent ? 255 : 0;
+  const std::uint32_t weightColor = 100 * g_session.m_weight / denominator >= g_session.m_overweightThresholdPercent ? 255 : 0;
   this->DrawRightAlignedText(
     this->geometry.width - zenyWidth - 5, this->layoutOffset + 103, weightText.c_str(), 0, 1, 14, weightColor, 0
   );
@@ -785,7 +785,7 @@ void UIBasicInfoWnd::Paint() {
     if (capacity < 1) {
       capacity = 1;
     }
-    const std::uint32_t color = g_session.m_weight * 100 / capacity >= g_overweightThresholdPercent ? 255 : 0;
+    const std::uint32_t color = g_session.m_weight * 100 / capacity >= g_session.m_overweightThresholdPercent ? 255 : 0;
     this->DrawRightAlignedText(this->geometry.width - zenyWidth - 10, this->layoutOffset + 103, text, std::strlen(text), 1, 14, color, 0);
   }
 }

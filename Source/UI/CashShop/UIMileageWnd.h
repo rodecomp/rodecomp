@@ -26,9 +26,5 @@ protected:
   /* 00C4 */ std::string m_tooltip;
 };
 
-extern int g_mileageWndActive;
-extern int g_mileageWndPoint;
-extern int g_mileageWndElapsed;
-extern int g_mileageWndBonus;
 
 #endif

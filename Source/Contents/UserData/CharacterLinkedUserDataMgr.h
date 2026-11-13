@@ -42,7 +42,6 @@ protected:
 };
 
 extern CCharacterLinkedUserDataMgr* g_characterLinkedUserDataMgr;
-extern bool g_sortPrivateTab;
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CCharacterLinkedUserDataMgr) == 96);

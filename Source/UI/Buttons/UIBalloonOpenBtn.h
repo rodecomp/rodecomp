@@ -25,6 +25,5 @@ protected:
   /* 00D0 */ UIBitmapButton* m_button;
 };
 
-extern std::int8_t g_balloonFontMode;
 
 #endif

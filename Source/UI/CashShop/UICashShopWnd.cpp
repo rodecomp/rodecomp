@@ -209,7 +209,7 @@ void UICashShopWnd::OnCreate(int, int) {
   this->m_banner->SetSize(0x213, 0x33);
   this->m_banner->Move(3, 0x12);
   this->AddChild(this->m_banner);
-  if (g_session.characterRenameEnabled) {
+  if (g_session.m_launchPassCommandLine) {
     this->m_secondBanner = new UICashShopWnd_Banner();
     this->m_secondBanner->SetSize(0xB0, 0x38);
     this->m_secondBanner->Move(0x21A, 0x1A9);
@@ -345,7 +345,7 @@ void UICashShopWnd::OnCreate(int, int) {
   this->SendMsg(this->m_tabButtons[this->m_selectedTab], UM_COMMAND, ID_RADIOBTN, 0, 0, 0);
   this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   g_modeMgr.GetGameMode()->SendMsg(MM_GET_ACCOUNT_LIMITED_SALE_LIST, 0, 0, 0, 0);
-  if (g_session.characterRenameEnabled) {
+  if (g_session.m_launchPassCommandLine) {
     charge->Enable(0);
     this->m_pointsEdit->Show(0);
   }
@@ -433,7 +433,7 @@ void UICashShopWnd::Paint() {
   const char* background = this->m_selectedTab == 9 ? "유저인터페이스\\cashshop\\img_shop_bg2.bmp" : "유저인터페이스\\cashshop\\img_shop_bg.bmp";
   CBitmapRes* backgroundBitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background)));
   this->DrawBitmap(0, 0, backgroundBitmap, false);
-  if (g_session.characterRenameEnabled) {
+  if (g_session.m_launchPassCommandLine) {
     this->DrawBitmap(
       0x218, 0x11, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\cashshop\\img_shop_bg3_cover.bmp"))), false
     );
@@ -446,7 +446,7 @@ void UICashShopWnd::Paint() {
     this->DrawWrappedFormattedText(0xF7, 0x1EE, FormatOwnedString("^b%d^/b / %d", this->m_page + 1, this->m_pageCount), 0x2B, 0, 6, 0, 0xC, 0x6B2921, 0);
   }
 
-  if (g_session.characterRenameEnabled) {
+  if (g_session.m_launchPassCommandLine) {
     this->DrawCenteredText(0x21A, 0x1B, []() {
       const auto source = OBFUSCATE_SOURCE("스토브 구입 리스트", 0x474DC581D5E98357ULL);
       thread_local EncryptedName<sizeof(source), 0x474DC581D5E98357ULL> title(source.data);
@@ -686,7 +686,7 @@ void UICashShopWnd::OnProcess() {
   }
 
   this->m_banner->OnProcess();
-  if (g_session.characterRenameEnabled) {
+  if (g_session.m_launchPassCommandLine) {
     this->m_secondBanner->OnProcess();
   }
 }
@@ -766,7 +766,7 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
   const CSession& lists = g_session;
   switch (message) {
   case UM_SETINFO:
-    if (g_session.characterRenameEnabled) {
+    if (g_session.m_launchPassCommandLine) {
       if (g_session.m_hotkeyScript->Call("set_stoveshop_banner", "") == true) {
         this->m_banner->CreateButtons();
         this->m_secondBanner->CreateButtons();
@@ -907,7 +907,7 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
   case UM_COMMAND:
     switch (argument1) {
     case ID_CLOSE:
-      if (g_session.characterRenameEnabled) {
+      if (g_session.m_launchPassCommandLine) {
         g_modeMgr.GetGameMode()->SendMsg(MM_STOVE_AUTHENTICATION, 5, 0, 0, 0);
       }
       g_windowMgr.CloseWindow(WID_CASHSHOP_WND);
@@ -946,7 +946,7 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
         return 0;
       }
 
-      if (g_session.characterRenameEnabled) {
+      if (g_session.m_launchPassCommandLine) {
         const int owned = lists.GetList0Size() + g_session.CountDistinctEquippedItems() + g_session.CountDistinctCostumeItems();
         if (g_session.m_weight > g_session.m_maxWeight * 0.7f || cartItems.front().quantity + owned > g_session.extraInventorySlots + 100) {
           g_windowMgr.Confirm(LookupMessage(MSI_ANOTHER_WORKING), 0, true, false, 0, "Message", 0x118, 0x78, 0);
@@ -1135,7 +1135,7 @@ int UICashShopWnd_Cart::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     }
 
     if (it == this->m_cartItems.end()) {
-      if (g_session.characterRenameEnabled && !this->m_cartItems.empty()) {
+      if (g_session.m_launchPassCommandLine && !this->m_cartItems.empty()) {
         const int result =
           g_windowMgr.Confirm(FormatOwnedString(CashShopReplaceCartItemText()().Text(), item.displayName.c_str()).c_str(), 2, true, false, 0, "Message", 0x118, 0x78, 0);
         if (result != 0xBB) {

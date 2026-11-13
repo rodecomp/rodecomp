@@ -1261,7 +1261,7 @@ std::vector<unsigned char> CSession::BuildCharacterReplayRecords() {
   AppendRecord(records, MakeReplayRecord(1082, this->playerTeam, 1));
   AppendRecord(records, MakeReplayRecord(1083, &this->m_score1, sizeof(this->m_score1)));
   AppendRecord(records, MakeReplayRecord(1084, &this->m_score2, sizeof(this->m_score2)));
-  AppendRecord(records, MakeReplayRecord(1085, this->chatFont, 1));
+  AppendRecord(records, MakeReplayRecord(1085, &this->chatFont, 1));
   AppendRecord(records, MakeReplayRecord(1086, &this->cartCount, sizeof(this->cartCount)));
   AppendRecord(records, MakeReplayRecord(1087, &this->cartMaxCount, sizeof(this->cartMaxCount)));
   AppendRecord(records, MakeReplayRecord(1088, &this->cartWeight, sizeof(this->cartWeight)));

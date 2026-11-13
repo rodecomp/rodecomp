@@ -88,7 +88,7 @@ void CCharacterLinkedUserDataMgr::Save() {
   }
 
   data["ItemComparison"] = g_serviceOptions.Get(264) != 0;
-  data["SortPrivateTab"] = g_sortPrivateTab;
+  data["SortPrivateTab"] = g_session.m_sortPrivateTab;
   this->ExportNormalItemSlots(data);
 
   if (data.isNull() != true) {

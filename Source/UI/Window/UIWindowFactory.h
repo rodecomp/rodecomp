@@ -1,6 +1,5 @@
 #ifndef RAGNAROK_SOURCE_UI_WINDOW_UIWINDOWFACTORY_H
 #define RAGNAROK_SOURCE_UI_WINDOW_UIWINDOWFACTORY_H
 
-extern bool g_searchStoreInfoCreated;
 
 #endif

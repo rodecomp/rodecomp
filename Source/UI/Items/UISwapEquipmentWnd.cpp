@@ -39,9 +39,6 @@
 #include <new>
 #include <string>
 
-// GLOBAL: gl_24874
-unsigned long g_swapEquipmentTick;
-
 // OFFSET: 0x0082F560
 // FUNCTION: fn_10387
 UISwapEquipmentWnd::UISwapEquipmentWnd()
@@ -331,7 +328,7 @@ void UISwapEquipmentWnd::OnCreate(int width, int height) {
 // FUNCTION: fn_10395
 void UISwapBitmapButton::Paint() {
   UIBitmapButton::Paint();
-  const unsigned long elapsed = timeGetTime() - g_swapEquipmentTick;
+  const unsigned long elapsed = timeGetTime() - g_session.m_swapEquipmentTick;
   this->SetBitmap(elapsed >= 10000 ? "유저인터페이스\\swap_equipment\\btn_change2_normal.bmp" : "유저인터페이스\\swap_equipment\\btn_change2_disable.bmp", 0, 0);
   this->SetBitmap(elapsed >= 10000 ? "유저인터페이스\\swap_equipment\\btn_change2_over.bmp" : "유저인터페이스\\swap_equipment\\btn_change2_disable.bmp", 1, 0);
   this->SetBitmap(elapsed >= 10000 ? "유저인터페이스\\swap_equipment\\btn_change2_press.bmp" : "유저인터페이스\\swap_equipment\\btn_change2_disable.bmp", 2, 0);

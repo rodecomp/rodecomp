@@ -324,9 +324,6 @@ bool CWorldViewMgr::ScaleToScreen() {
   return true;
 }
 
-// GLOBAL: gl_25167
-static int gl_25167 = 0;
-
 // OFFSET: 0x006168F0
 // FUNCTION: fn_04375
 void CWorldViewMgr::LoadTextures() {

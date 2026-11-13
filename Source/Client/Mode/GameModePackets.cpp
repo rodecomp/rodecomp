@@ -1358,9 +1358,6 @@ void CGameMode::ReceiveHpSpRecovery(const unsigned char* packet, int variant) {
   }
 }
 
-// GLOBAL: gl_24965
-int g_overweightThresholdPercent;
-
 // OFFSET: 0x00D50580
 // FUNCTION: fn_21884
 void CGameMode::IgnoreRemovedPacket7(const unsigned char*) {
@@ -1370,7 +1367,7 @@ void CGameMode::IgnoreRemovedPacket7(const unsigned char*) {
 // FUNCTION: fn_22167
 __declspec(noinline) void CGameMode::ReceiveOverweightThreshold(const unsigned char* packet) {
   if (*reinterpret_cast<const int*>(packet + 2) > 0) {
-    g_overweightThresholdPercent = *reinterpret_cast<const int*>(packet + 2);
+    g_session.m_overweightThresholdPercent = *reinterpret_cast<const int*>(packet + 2);
   }
 }
 
@@ -4500,7 +4497,7 @@ ACTSTRUCT::~ACTSTRUCT() = default;
 // FUNCTION: fn_21779
 __declspec(noinline) void CGameMode::ReceiveSearchStoreOpen(const unsigned char* packet) {
   g_session.storeSearchCount = packet[4];
-  reinterpret_cast<std::int16_t*>(&g_session.storeSearchPageFlags)[1] = *reinterpret_cast<const std::int16_t*>(packet + 2);
+  g_session.m_storeSearchPage = *reinterpret_cast<const std::int16_t*>(packet + 2);
   g_windowMgr.EnsureWindow(WID_SEARCH_STORE_INFO);
 }
 
@@ -4710,9 +4707,9 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
 
     const int percent = (g_session.m_weight * 100) / (g_session.m_maxWeight < 1 ? 1 : g_session.m_maxWeight);
     if (oldPercent < percent) {
-      if (percent >= g_overweightThresholdPercent && oldPercent < g_overweightThresholdPercent) {
+      if (percent >= g_session.m_overweightThresholdPercent && oldPercent < g_session.m_overweightThresholdPercent) {
         g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_USA_LOGINERRORMSG_UNKNOWN), g_overweightThresholdPercent).c_str()), 0xFF, 8, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_USA_LOGINERRORMSG_UNKNOWN), g_session.m_overweightThresholdPercent).c_str()), 0xFF, 8, 0, 0);
       }
       if (percent >= 90 && oldPercent < 90) {
         g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
@@ -4723,7 +4720,7 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
     if (oldPercent <= percent) {
       break;
     }
-    if (percent < g_overweightThresholdPercent && g_overweightThresholdPercent <= oldPercent) {
+    if (percent < g_session.m_overweightThresholdPercent && g_session.m_overweightThresholdPercent <= oldPercent) {
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NO_RECOVER_OVERWEIGHT_RELEASED)), 0xFFFF00, 8, 0, 0);
     }
@@ -7916,7 +7913,7 @@ namespace {
 
     if (g_session.IsPetEgg(std::atoi(item.itemId.c_str())) && item.damaged) {
       const int petEgg = std::atoi(LookupClientItemByIdentity(g_session.m_inventoryItems, g_session.petEggIndex).itemId.c_str());
-      if (!g_petEvolutionMgr->IsAutoFeeding(petEgg) && g_petAutoFeed == true) {
+      if (!g_petEvolutionMgr->IsAutoFeeding(petEgg) && g_session.m_petAutoFeed == true) {
         g_session.SendPetAutoFeedOption(0);
       }
 
@@ -8062,7 +8059,7 @@ namespace {
 
     if (g_session.IsPetEgg(std::atoi(item.itemId.c_str())) && item.damaged) {
       const int petEgg = std::atoi(LookupClientItemByIdentity(g_session.m_inventoryItems, g_session.petEggIndex).itemId.c_str());
-      if (!g_petEvolutionMgr->IsAutoFeeding(petEgg) && g_petAutoFeed == true) {
+      if (!g_petEvolutionMgr->IsAutoFeeding(petEgg) && g_session.m_petAutoFeed == true) {
         g_session.SendPetAutoFeedOption(0);
       }
 
@@ -20257,7 +20254,7 @@ static_assert(offsetof(ChatRoomMemberUpdateInfo, type) == 0x30);
 void CGameMode::ProcessIncomingPackets() {
   memset(g_gameModePacketBuffer, 0, sizeof(g_gameModePacketBuffer));
   if (!g_replayAnimationScaling) {
-    const std::uint32_t elapsedHours = (timeGetTime() - g_loginAcceptTime) / 3600000;
+    const std::uint32_t elapsedHours = (timeGetTime() - g_session.m_loginAcceptTime) / 3600000;
     if (!GetRagConnection().Update()) {
       g_modeMgr.gameMode->SendMsg(MM_SOCKETERROR, 0, 0, 0, 0);
     }
@@ -23631,7 +23628,7 @@ void CGameMode::ProcessIncomingPackets() {
     }
     case ID_ZC_NOTIFY_FONT:
       if (*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2) == g_session.m_aid) {
-        g_session.chatFont[0] = g_gameModePacketBuffer[6];
+        g_session.chatFont = g_gameModePacketBuffer[6];
       } else if (CRenderObject *actor = this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2))) {
         *reinterpret_cast<std::uint16_t *>(actor->render.effectPhaseBytes) = *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 6);
       }
@@ -23639,7 +23636,7 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_PROGRESS:
       if (CPlayer *player = this->scene->player) {
         player->SendMsg(nullptr, AM_MAKE_SKILL_RECHARGEGAGE, static_cast<std::uint32_t>(*reinterpret_cast<const int *>(g_gameModePacketBuffer + 6) * 1000), 0, 0, 0, 0, 0);
-        g_session.playerStatusFlags[0x0A] = true;
+        g_session.m_playerMessage82Pending = true;
       }
       break;
     case ID_ZC_PROGRESS_CANCEL:

@@ -36,7 +36,6 @@ public:
   /* 0288 */ std::uint32_t m_createTime;
 };
 
-extern unsigned char g_doramCreationEnabled;
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(UIDescriptRaceText) == 0x148);

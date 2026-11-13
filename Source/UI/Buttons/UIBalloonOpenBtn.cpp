@@ -12,9 +12,6 @@
 #include <windows.h>
 #include <timeapi.h>
 
-// GLOBAL: gl_24910
-std::int8_t g_balloonFontMode;
-
 // OFFSET: 0x0094D250
 // FUNCTION: fn_12902
 void UIBalloonOpenBtn::Paint() {
@@ -60,7 +57,7 @@ int UIBalloonOpenBtn::SendMsg(UIWindow* sender, int message, std::intptr_t argum
         return 0;
       }
 
-      this->m_balloon->m_fontMode = static_cast<std::int8_t>(g_session.chatFont[0]);
+      this->m_balloon->m_fontMode = static_cast<std::int8_t>(g_session.chatFont);
       this->m_balloon->m_richText = 1;
       this->m_balloon->SetLine("", popup->m_color);
       for (auto it = popup->m_descriptions.begin(); it != popup->m_descriptions.end(); ++it) {

@@ -207,9 +207,6 @@ static const char bookmarkKeySuffixText[] = "\\BookMark";
 // GLOBAL: gl_24751
 const char* g_bookmarkKeySuffix = bookmarkKeySuffixText;
 
-// GLOBAL: gl_25391
-bool g_randomLoadingScreen;
-
 // GLOBAL: gl_25459
 static const std::string s_partyItemLinkOpen = "<ITEML>";
 
@@ -4893,7 +4890,7 @@ int UInCash_CallWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
   }
 
   if (a == ID_STATUS) {
-    if (g_session.characterRenameEnabled) {
+    if (g_session.m_launchPassCommandLine) {
       g_modeMgr.GetGameMode()->SendMsg(MM_STOVE_AUTHENTICATION, 2, 0, 0, 0);
       return 0;
     }
@@ -9373,7 +9370,7 @@ int UIAutoMessageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
   }
 
   if (a == ID_OK) {
-    reinterpret_cast<std::string&>(g_session.autoReplyState[4]) = this->m_edit->Text();
+    reinterpret_cast<std::string&>(g_session.autoReplyText) = this->m_edit->Text();
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_AUTO_MSG_ON)), 0x64FFFF, 0, 0, 0);
     g_windowMgr.RestoreInput();
     g_windowMgr.CloseWindow(WID_AUTOMESSAGEWND);
@@ -9644,7 +9641,7 @@ void UIAutoMessageWnd::OnCreate(int, int) {
   this->m_edit->Move(15, 22);
   this->m_edit->maximum = 100;
   this->m_edit->Background(232, 232, 232);
-  this->m_edit->SetText(reinterpret_cast<const std::string&>(g_session.autoReplyState[4]).c_str());
+  this->m_edit->SetText(reinterpret_cast<const std::string&>(g_session.autoReplyText).c_str());
   this->m_edit->SelectAll();
   this->AddChild(this->m_edit);
 
@@ -9856,7 +9853,7 @@ void UILoadingWnd::OnCreate(int, int) {
   char name[256];
   if (g_session.m_localMapMove == 1) {
     std::strcpy(name, "유저인터페이스\\loading_airplane.jpg");
-  } else if (!g_randomLoadingScreen) {
+  } else if (!g_session.m_randomLoadingScreen) {
     if (s_loadingScreenIndex < count) {
       std::strcpy(name, g_loadingScreens[s_loadingScreenIndex++].c_str());
     } else {

@@ -332,8 +332,6 @@ struct SessionAccount {
   /* 0014 */ char lastLoginTime[27];
 };
 
-// GLOBAL: gl_25169
-std::uint32_t g_loginAcceptTime;
 // GLOBAL: gl_25252
 unsigned char g_loginExitFlag;
 // GLOBAL: gl_25221
@@ -1830,7 +1828,7 @@ void CLoginMode::Zc_Accept_Enter3(const AcceptEnterPositionPacket* packet) {
   const int y = ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4);
   const int dir = packet->posDir[2] & 0xF;
   g_session.SetPlayerPosition(x, y, dir);
-  g_session.chatFont[0] = packet->font;
+  g_session.chatFont = packet->font;
 
   char mapName[36];
   sprintf(mapName, "%s.rsw", g_session.m_navigationPlayerMap);
@@ -2262,8 +2260,8 @@ static void ComputeLoginDigest(unsigned char* digest, const void* data, int size
 // OFFSET: 0x00D8CD60
 // FUNCTION: fn_22264
 void CLoginMode::ReceiveAcceptLogin(const AcceptLoginPacket* packet, int version) {
-  g_loginAcceptTime = timeGetTime();
-  *reinterpret_cast<std::string*>(&g_session.autoReplyState[4]) = LookupMessage(MSI_AUTO_MSG);
+  g_session.m_loginAcceptTime = timeGetTime();
+  *reinterpret_cast<std::string*>(&g_session.autoReplyText) = LookupMessage(MSI_AUTO_MSG);
 
   SessionAccount& account = *reinterpret_cast<SessionAccount*>(&g_session.m_sex);
   account.authCode = packet->authCode;
@@ -2849,7 +2847,7 @@ void CLoginMode::PollNetworkStatus() {
     case ID_ZC_RECOVER_PENALTY_OVERWEIGHT: {
       const int value = reinterpret_cast<const IntValuePacket*>(g_gameModePacketBuffer)->value;
       if (value > 0) {
-        g_overweightThresholdPercent = value;
+        g_session.m_overweightThresholdPercent = value;
       }
       break;
     }
@@ -3593,7 +3591,7 @@ void CLoginMode::OnChangeState(int value) {
   case 38: {
     CharServerEndpoint endpoint;
     std::memset(&endpoint, 0, sizeof(endpoint));
-    if (!std::strstr(g_session.clientVersion, "Dev")) {
+    if (!std::strstr(g_session.m_launchServerName, "Dev")) {
       const int port = rand() % 3 + 6951;
       const std::array<std::uint8_t, 26> hostSource = OBFUSCATE_SOURCE_BYTES(26, "kro-agency.ragnarok.co.kr", 0x7941D76335CFA14FULL);
       thread_local EncryptedName<sizeof(hostSource), 0x7941D76335CFA14FULL> host(hostSource);
@@ -3641,7 +3639,7 @@ void CLoginMode::OnChangeState(int value) {
     g_emblemDataMgr->RefreshUrls(*g_session.m_hotkeyScript, *g_session.m_hotkeyScript, g_serviceHost, g_servicePort, g_serviceOverrideKey);
     this->wallpaperName = g_loginWallpaperName;
     g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
-    if (!g_session.characterRenameEnabled) {
+    if (!g_session.m_launchPassCommandLine) {
       if (g_session.m_loginModeFlag == true) {
         this->otpStarted = timeGetTime();
         g_charServerAccountIdPending = 0;
@@ -3812,7 +3810,7 @@ void CLoginMode::OnChangeState(int value) {
     g_playerNameDictionary->Clear();
     this->wallpaperName = g_loginWallpaperName;
     g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
-    if (!std::strstr(g_session.clientVersion, "Dev")) {
+    if (!std::strstr(g_session.m_launchServerName, "Dev")) {
       OBFUSCATE_BYTES_TEXT("kro-acc1.ragnarok.co.kr:6900", 0x2FEB8739E5975BD1ULL);
       OBFUSCATE_BYTES_TEXT("%s", 0x33133B977BCD03CDULL);
     } else {

@@ -107,7 +107,7 @@ const char* CNProtectGameGuardMgr::GameName() {
     return OBFUSCATE_TEXT("ROCN", 0x7321C3814F8799E1ULL);
   }
   case 0:
-    if (std::strstr(g_session.clientVersion, g_devClientTag) != nullptr) {
+    if (std::strstr(g_session.m_launchServerName, g_devClientTag) != nullptr) {
       return OBFUSCATE_TEXT("RagnarokKR", 0x7941D76335CFA14FULL);
     } else {
       return OBFUSCATE_TEXT("RagnarokKR", 0x0F15B16B5BAFD57FULL);

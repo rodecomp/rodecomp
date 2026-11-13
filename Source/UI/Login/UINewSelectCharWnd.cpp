@@ -772,11 +772,11 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     case ID_CHANGE_NAME_SUCCESS: {
       CharacterInfo* info =
         reinterpret_cast<CharacterInfo*>(g_modeMgr.gameMode->SendMsg(MM_QUERYCHARICTORINFO, static_cast<unsigned char>(g_selectedSlotIndex), 0, 0, 0));
-      if (info->gid != g_renameGid) {
+      if (info->gid != g_session.m_renameGid) {
         break;
       }
 
-      std::memcpy(info->name, g_renameName, sizeof(info->name));
+      std::memcpy(info->name, g_session.m_renameName, sizeof(info->name));
       const int column = static_cast<unsigned char>(g_selectedSlotIndex) - this->m_slotsPerPage * this->m_page;
       this->m_characterWindows[column]->SetTextFitted(info->name);
       UIStaticText* name = this->m_characterWindows[column];

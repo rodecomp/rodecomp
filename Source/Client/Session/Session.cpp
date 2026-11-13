@@ -2983,7 +2983,7 @@ void CSession::Init() {
   this->m_petFriendly = 100;
   this->petEggIndex = -1;
   this->petPreviousHunger = 100;
-  this->m_monsterTalkActive = 0;
+  this->m_petAutoFeed = 0;
   this->m_monsterTalkId = -1;
   std::sprintf(this->petName, "");
 
@@ -3032,12 +3032,12 @@ void CSession::Init() {
   this->m_mercenaryAttackRange = 0;
   this->m_mercenaryExpiration = 0;
   this->m_mercenaryActionState = 0;
-  this->autoReplyState[0] = 0;
+  this->m_autoReplyEnabled = false;
 
   this->m_itemSendTick = GetTickCount();
   this->m_renameGid = 0;
   std::sprintf(this->m_renameName, "");
-  reinterpret_cast<bool&>(this->replaySessionFlag) = false;
+  this->replaySessionFlag = 0;
   this->memorialWindowOpen = 0;
   this->memorialWindowX = -1;
   this->memorialWindowY = -1;
@@ -3076,11 +3076,11 @@ void CSession::Init() {
   }
 
   this->replayPacketMode = 0;
-  this->unknown_5C18 = 0;
+  this->m_monsterInfoActorId = 0;
   this->m_skipPriceWarning = true;
-  this->unknown_5C30 = 0;
-  this->unknown_5C34 = 0;
-  this->unknown_5C38 = 0;
+  this->m_buyingStoreMode = 0;
+  this->m_buyingStoreDbNumber = 0;
+  this->m_buyingStoreNoPermission = 0;
   this->mainShortcutRow = 0;
   this->alternateShortcutRow = 0;
   for (int index = 0; index < 5; ++index) {
@@ -3088,10 +3088,10 @@ void CSession::Init() {
   }
 
   this->achievementResult = 0;
-  this->unknown_5C04 = 0;
-  this->unknown_5C08 = 0;
-  this->unknown_5C0C = 0;
-  this->unknown_5C10 = 1;
+  this->m_mileageWndActive = 0;
+  this->m_mileageWndPoint = 0;
+  this->m_mileageWndElapsed = 0;
+  this->m_mileageWndBonus = 1;
   this->m_muteSellSound = true;
   this->ClearAchievements();
   this->playerAppearanceState = 0;
@@ -3105,14 +3105,14 @@ void CSession::Init() {
   this->m_mercenaryAid = -1;
   this->m_guildMemberListSort = true;
   this->m_blockPrivateTab = false;
-  this->swapEquipmentFlag[0] = 0;
+  this->m_sortPrivateTab = false;
   this->m_itemDefaultSort = false;
   this->m_itemAscendingOrder = false;
   this->m_itemDescendingOrder = false;
   this->m_showMenuIcon = true;
   this->m_homunculusAutoFeed = false;
   this->unknown_7F80 = -1;
-  this->unknown_7F84 = 50;
+  this->m_overweightThresholdPercent = 50;
   this->m_loginModeFlag = false;
   this->m_showRankingSchedule = -1;
   this->m_hideCostumes = 0;
@@ -3191,7 +3191,7 @@ void CSession::ResetCharacterState() {
   this->playerTeam[0] = 0;
   this->m_score1 = -1;
   this->m_score2 = -1;
-  this->chatFont[0] = 0;
+  this->chatFont = 0;
   this->storeItemLimit = 20;
   this->selectedCharacterSlot = 0;
 
@@ -3205,9 +3205,9 @@ void CSession::ResetCharacterState() {
   this->quitAllowed = 0;
   this->sessionFlag = 0;
   g_session.m_mapTransitionFlag = 0;
-  *reinterpret_cast<std::uint16_t*>(&this->playerStatusFlags[0x08]) = 0;
+  this->unknown_5564 = 0;
   this->adoptionSkillAvailable = 0;
-  this->m_loginOption = 1;
+  this->m_randomLoadingScreen = 1;
   this->guildLeader = 0;
   this->showTimer = 0;
   this->mouseAndChannelOptions[0] = 1;
@@ -4036,7 +4036,7 @@ CSession::CSession() {
   this->m_localMapMove = 0;
   this->m_swapEquipmentMode = 0;
   this->m_makeableDoram = 1;
-  this->unknown_7F78 = 0;
+  this->m_swapEquipmentTick = 0;
   CPrivateAirplaneMgr::Create();
   CCheckAttendanceMgr::Create();
   this->m_equipViewLook[9] = 0;

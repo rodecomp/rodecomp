@@ -1435,7 +1435,7 @@ void CGameMode::NotifyCaptchaRegistered() {
 // FUNCTION: fn_22120
 void CGameMode::ReceiveItem1784List(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const Item1784ListPacket*>(data);
-  if (g_session.characterRenameEnabled || packet->flag != 0) {
+  if (g_session.m_launchPassCommandLine || packet->flag != 0) {
     return;
   }
 
@@ -1852,15 +1852,6 @@ void CGameMode::ReceiveMacroReporterList(int count, const int* aids) {
   }
 }
 
-// GLOBAL: gl_25111
-int g_buyingStoreMode;
-
-// GLOBAL: gl_25112
-int g_buyingStoreDbNumber;
-
-// GLOBAL: gl_25113
-int g_buyingStoreNoPermission;
-
 // OFFSET: 0x00D1C050
 // FUNCTION: fn_21624
 void CGameMode::ReceiveStorageClose(const AchievementStatePacket* packet) {
@@ -1874,9 +1865,9 @@ void CGameMode::ReceiveStorageClose(const AchievementStatePacket* packet) {
   }
 
   g_session.ClearCartItems();
-  g_buyingStoreMode = 0;
-  g_buyingStoreDbNumber = 0;
-  g_buyingStoreNoPermission = 0;
+  g_session.m_buyingStoreMode = 0;
+  g_session.m_buyingStoreDbNumber = 0;
+  g_session.m_buyingStoreNoPermission = 0;
 }
 
 // OFFSET: 0x00D6C460
@@ -2112,14 +2103,14 @@ void CGameMode::ReceiveBuyingStoreResult(const BuyingStoreResultPacket* packet) 
     std::sprintf(text, LookupMessage(MSI_GUILD_STORAGE_TITLE));
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
   } else if (3 == result) {
-    g_buyingStoreNoPermission = 1;
+    g_session.m_buyingStoreNoPermission = 1;
     std::memset(text, 0, 250);
     std::sprintf(text, LookupMessage(MSI_GUILD_STORAGE_PERMISSON_WARNING_MSG));
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
   } else if (1 == result) {
-    g_buyingStoreMode = 1;
+    g_session.m_buyingStoreMode = 1;
     const std::int16_t dbNumber = packet->value;
-    g_buyingStoreDbNumber = dbNumber;
+    g_session.m_buyingStoreDbNumber = dbNumber;
     if (dbNumber == 0) {
     std::memset(text, 0, 250);
     std::sprintf(text, LookupMessage(MSI_BARGAINSALE_TOOLWND_DB_NUMBER));
@@ -2475,9 +2466,6 @@ struct ExtraInventoryResultPacket {
 };
 #pragma pack(pop)
 
-// GLOBAL: gl_25117
-int g_partyEffectNoticePending;
-
 // OFFSET: 0x00D1A1C0
 // FUNCTION: fn_21616
 void CGameMode::ReceiveTypedNotice(const unsigned char* data) {
@@ -2593,7 +2581,7 @@ void CGameMode::ReceivePartyMemberEffect(const unsigned char* data) {
     actor->LaunchEffect(306, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case GAME_OVER_EFFECT:
-    g_partyEffectNoticePending = 1;
+    g_session.m_whisperOption0 = 1;
     break;
   }
 }
@@ -4377,7 +4365,7 @@ void CGameMode::ReceiveAcceptEnter(const unsigned char* data) {
   g_session.SetServerTime(packet->startTime);
   g_session.SetPlayerPosition((packet->posDir[0] << 2) | (packet->posDir[1] >> 6), ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4),
     packet->posDir[2] & 0xF);
-  g_session.chatFont[0] = packet->font;
+  g_session.chatFont = packet->font;
 
   char mapName[36];
   sprintf(mapName, "%s.rsw", g_session.m_navigationPlayerMap);
@@ -7679,7 +7667,7 @@ void CGameMode::ProcessWhisper(int shortcutId, std::string name, std::string tex
   line.append(message.data());
 
   if (g_windowMgr.ShowWhisperFrom(name.c_str(), line.c_str(), 0x222222, static_cast<std::uint32_t>(shortcutId)) != 0) {
-    if (g_session.autoReplyState[0] != 0) {
+    if (g_session.m_autoReplyEnabled != 0) {
       char notice[24];
       std::sprintf(notice, LookupMessage(MSI_AUTO_MSG2));
       const char length = static_cast<char>(std::strlen(notice));
@@ -7688,7 +7676,7 @@ void CGameMode::ProcessWhisper(int shortcutId, std::string name, std::string tex
       head[length] = '\0';
       if (std::strcmp(head, notice) != 0) {
         std::string reply(LookupMessage(MSI_AUTO_MSG2));
-        reply.append(reinterpret_cast<const std::string&>(g_session.autoReplyState[4]).c_str());
+        reply.append(reinterpret_cast<const std::string&>(g_session.autoReplyText).c_str());
         g_windowMgr.SetChatInputText(reply.c_str());
         g_modeMgr.gameMode->SendMsg(MM_WHISPERMSG, reinterpret_cast<int>(name.c_str()), 0, 0, 0);
       }
@@ -7786,7 +7774,7 @@ void CGameMode::ProcessWhisper(int shortcutId, std::string name, std::string tex
     }
   }
 
-  if (g_session.autoReplyState[0] != 0) {
+  if (g_session.m_autoReplyEnabled != 0) {
     char notice[24];
     std::sprintf(notice, LookupMessage(MSI_AUTO_MSG2));
     const char length = static_cast<char>(std::strlen(notice));
@@ -7795,7 +7783,7 @@ void CGameMode::ProcessWhisper(int shortcutId, std::string name, std::string tex
     head[length] = '\0';
     if (std::strcmp(head, notice) != 0) {
       std::string reply(LookupMessage(MSI_AUTO_MSG2));
-      reply.append(reinterpret_cast<const std::string&>(g_session.autoReplyState[4]).c_str());
+      reply.append(reinterpret_cast<const std::string&>(g_session.autoReplyText).c_str());
       g_windowMgr.SetChatInputText(reply.c_str());
       g_modeMgr.gameMode->SendMsg(MM_WHISPERMSG, reinterpret_cast<int>(name.c_str()), 0, 0, 0);
     }

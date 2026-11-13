@@ -23,6 +23,5 @@ extern float g_worldLightDirection[3];
 extern float g_worldDiffuse[3];
 extern float g_worldAmbient[3];
 extern float g_worldLoadCenter[3];
-extern int g_partyEffectNoticePending;
 
 #endif

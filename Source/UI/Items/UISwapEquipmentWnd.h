@@ -8,7 +8,6 @@
 
 struct ITEM_INFO;
 
-extern unsigned long g_swapEquipmentTick;
 
 class UISwapBitmapButton : public UIBitmapButton {
 public:

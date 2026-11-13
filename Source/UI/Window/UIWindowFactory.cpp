@@ -14,9 +14,6 @@
 
 #include <string>
 
-// GLOBAL: gl_25184
-bool g_searchStoreInfoCreated;
-
 // OFFSET: 0x00AA1350
 // FUNCTION: fn_17208
 UIWindow* UIWindowMgr::CreateLayoutWindow(int id) {
@@ -51,7 +48,7 @@ UIWindow* UIWindowMgr::CreateLayoutWindow(int id) {
       break;
     case WID_SEARCH_STORE_INFO:
       window = new UISerachStoreInfoWnd();
-      g_searchStoreInfoCreated = true;
+      g_session.m_searchStoreInfoCreated = true;
       break;
     }
 

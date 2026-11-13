@@ -25,7 +25,6 @@ struct ServiceOptions {
 
 extern ServiceOptions g_serviceOptions;
 extern float g_serviceOptionJitterScale;
-extern bool g_showBattleFieldIcon;
 extern const GUID g_defaultDrawGuidDX7;
 
 #if defined(_WIN32) && !defined(_WIN64)

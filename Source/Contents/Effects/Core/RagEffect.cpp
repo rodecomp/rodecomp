@@ -188,9 +188,6 @@ static __forceinline void SendAfterimageColor(CGameObject& target, CRagEffect& s
 }
 
 
-// GLOBAL: gl_25089
-int g_statusIconIds[100];
-
 // OFFSET: 0x00C11C60
 // FUNCTION: fn_20039
 void CRagEffect::Endure() {
@@ -15281,7 +15278,7 @@ void CRagEffect::StatusIconColumn() {
   }
 
   for (int index = 0; index < 100; ++index) {
-    g_statusIconIds[index] = -1;
+    g_session.m_statusIconIds[index] = -1;
   }
 
   int foundCount = 0;
@@ -15301,7 +15298,7 @@ void CRagEffect::StatusIconColumn() {
 
       bool known = false;
       for (int index = 0; index < foundCount; ++index) {
-        if (g_statusIconIds[index] == id) {
+        if (g_session.m_statusIconIds[index] == id) {
           known = true;
           break;
         }
@@ -15338,7 +15335,7 @@ void CRagEffect::StatusIconColumn() {
       this->state.lastPrim->state.textures[1] = g_texMgr.Load("effect\\white02.bmp", 0, false, true, false);
 
       if (foundCount < 99) {
-        g_statusIconIds[foundCount] = id;
+        g_session.m_statusIconIds[foundCount] = id;
         ++foundCount;
         ++row;
       }

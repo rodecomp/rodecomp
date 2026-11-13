@@ -341,7 +341,7 @@ int UISerachStoreInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       case SSI_FAILED_NOTHING_SEARCH_ITEM:
         this->m_page = 1;
         g_session.storeSearchResults.clear();
-        reinterpret_cast<unsigned char*>(&g_session.storeSearchPageFlags)[1] = 0;
+        g_session.m_storeSearchHasNext = 0;
         this->m_statusText = LookupMessage(MSI_SSI_FAILED_SEARCH_STORE);
         --g_session.storeSearchCount;
         break;
@@ -373,7 +373,7 @@ int UISerachStoreInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     } else {
       this->m_prevButton->Enable(1);
     }
-    this->m_nextButton->Enable(reinterpret_cast<unsigned char*>(&g_session.storeSearchPageFlags)[1]);
+    this->m_nextButton->Enable(g_session.m_storeSearchHasNext);
     if (static_cast<unsigned int>(this->m_page * 10) < g_session.storeSearchResults.size()) {
       this->m_nextButton->Enable(1);
     }
@@ -398,7 +398,7 @@ int UISerachStoreInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
         this->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
         return 0;
       }
-      if (reinterpret_cast<unsigned char*>(&g_session.storeSearchPageFlags)[1] != 0) {
+      if (g_session.m_storeSearchHasNext != 0) {
         this->m_page = page + 1;
         SearchStoreRequestHeader packet;
         packet.packetType = ID_CZ_SEARCH_STORE_INFO_NEXT_PAGE;
@@ -436,7 +436,7 @@ void UISerachStoreInfoWnd::OnLBtnDblClk(int x, int y) {
     return;
   }
 
-  if (reinterpret_cast<std::int16_t*>(&g_session.storeSearchPageFlags)[1] != 0 &&
+  if (g_session.m_storeSearchPage != 0 &&
       g_windowMgr.Confirm(LookupMessage(MSI_OPEN_SEARCH_STORE), 2, true, false, 0, "Message", 0x118, 0x78, 0) != 0xBB) {
     return;
   }

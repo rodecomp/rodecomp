@@ -3194,9 +3194,9 @@ void UIMonsterInfoWnd::OnCreate(int, int) {
   this->AddChild(button);
   this->m_message0 = 184;
 
-  this->actorId = g_monsterInfoActorId;
+  this->actorId = g_session.m_monsterInfoActorId;
   {
-    const std::string actorName = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ActorName(g_monsterInfoActorId);
+    const std::string actorName = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ActorName(g_session.m_monsterInfoActorId);
     this->name = actorName;
   }
   const std::size_t separator = this->name.find("#");
@@ -3773,7 +3773,7 @@ void UIPetInfoWnd::OnCreate(int, int) {
     this->autoFeedCheck->SetSize(12, 12);
     this->autoFeedCheck->Move(this->TextWidth(LookupMessage(MSI_PET_AUTO_FEEDING_OFF), 0, 0, 12, 0, 0) + 110, 159);
     this->autoFeedCheck->SetBitmaps("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp");
-    this->autoFeedCheck->SetChecked(g_petAutoFeed);
+    this->autoFeedCheck->SetChecked(g_session.m_petAutoFeed);
     this->AddChild(this->autoFeedCheck);
   }
 }

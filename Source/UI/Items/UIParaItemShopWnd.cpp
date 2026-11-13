@@ -776,13 +776,13 @@ void UIParaItemShopWnd::Paint() {
   if (this->showFooter == 1) {
     std::string text;
     if (g_serviceType == 0 && g_session.m_channelCopId == 1) {
-      text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_POINT_SHOP_NHN), this->ClipTextToWidth(g_session.DecodePlayerName(), 100, 0, 12, 0), g_pendingAid));
+      text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_POINT_SHOP_NHN), this->ClipTextToWidth(g_session.DecodePlayerName(), 100, 0, 12, 0), g_session.m_pendingAid));
     } else {
-      text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_POINT_SHOP), this->ClipTextToWidth(g_session.DecodePlayerName(), 100, 0, 12, 0), g_pendingAid));
+      text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_POINT_SHOP), this->ClipTextToWidth(g_session.DecodePlayerName(), 100, 0, 12, 0), g_session.m_pendingAid));
     }
     this->DrawTextAt(12, this->geometry.height - 21, text.c_str(), text.size(), 0, 12, 0, 0, 0);
 
-    text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_POINT_SHOP2), this->ClipTextToWidth(g_session.DecodePlayerName(), 100, 0, 12, 0), g_pendingGid));
+    text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_POINT_SHOP2), this->ClipTextToWidth(g_session.DecodePlayerName(), 100, 0, 12, 0), g_session.m_pendingGid));
     this->DrawTextAt(12, this->geometry.height - barHeight - 21, text.c_str(), text.size(), 0, 12, 0, 0, 0);
   }
 }

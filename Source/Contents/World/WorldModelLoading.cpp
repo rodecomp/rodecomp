@@ -287,5 +287,5 @@ void CWorld::InitWorld() {
 
   this->player = new CPlayer();
   this->objects.push_back(this->player);
-  g_partyEffectNoticePending = 0;
+  g_session.m_whisperOption0 = 0;
 }

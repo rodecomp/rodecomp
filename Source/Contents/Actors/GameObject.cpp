@@ -2181,11 +2181,11 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
       g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->actorWindows[3]));
       this->actorWindows[3] = 0;
       if (this->render.accountId == g_session.m_aid) {
-        if (g_session.playerStatusFlags[0x0A] == true) {
+        if (g_session.m_playerMessage82Pending == true) {
           std::int16_t packetType = 0x2F1;
           GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packetType), &packetType);
         }
-        g_session.playerStatusFlags[0x0A] = false;
+        g_session.m_playerMessage82Pending = false;
       }
     }
     break;
@@ -2211,7 +2211,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
       }
       if (this->actorWindows[0] != 0) {
         if (this->render.accountId == g_session.m_aid) {
-          reinterpret_cast<UITransBalloonText*>(this->actorWindows[0])->m_fontMode = static_cast<std::int8_t>(g_session.chatFont[0]);
+          reinterpret_cast<UITransBalloonText*>(this->actorWindows[0])->m_fontMode = static_cast<std::int8_t>(g_session.chatFont);
         } else {
           reinterpret_cast<UITransBalloonText*>(this->actorWindows[0])->m_fontMode = static_cast<std::uint16_t>(this->render.fontSequenceState);
         }

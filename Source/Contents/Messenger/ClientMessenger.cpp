@@ -4962,7 +4962,7 @@ int GetWeaponClass(lua_State* state) {
 // OFFSET: 0x006BF240
 // FUNCTION: fn_06290
 int IsPremiumPcCafe(lua_State* state) {
-  lua_pushnumber(state, g_mileageWndActive == 1 ? 2 : 0);
+  lua_pushnumber(state, g_session.m_mileageWndActive == 1 ? 2 : 0);
   return 1;
 }
 

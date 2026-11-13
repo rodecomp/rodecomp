@@ -511,7 +511,7 @@ void UIString::ParseTags(std::string text) {
 // FUNCTION: fn_11630
 void UIDescriptRace::DrawRaceDescription() {
   if (this->m_race == 1) {
-    if (!g_doramCreationEnabled) {
+    if (!g_session.m_makeableDoram) {
       return;
     }
 

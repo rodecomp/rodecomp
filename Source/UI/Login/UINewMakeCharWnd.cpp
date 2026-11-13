@@ -417,7 +417,7 @@ void UINewMakeCharWnd::OnCreate(int width, int height) {
   UIDescriptRace* doram = new UIDescriptRace(1);
   const char* doramNormal;
   const char* doramActive;
-  if (!g_doramCreationEnabled) {
+  if (!g_session.m_makeableDoram) {
     doramActive = "유저인터페이스\\make_character_ver2\\img_doram_comingSoon.bmp";
     doramNormal = doramActive;
   } else {
@@ -557,7 +557,7 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
   switch (argument1) {
   case ID_OK: {
     for (int index = 0; index < 2; ++index) {
-      if ((g_doramCreationEnabled || index != 1) && sender == this->m_raceViews[index]) {
+      if ((g_session.m_makeableDoram || index != 1) && sender == this->m_raceViews[index]) {
         return 0;
       }
     }
@@ -639,7 +639,7 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     return 0;
 
   case ID_SLOT:
-    if (g_doramCreationEnabled || sender != this->m_raceViews[1]) {
+    if (g_session.m_makeableDoram || sender != this->m_raceViews[1]) {
       for (int index = 0; index < 2; ++index) {
         if (sender == this->m_raceViews[index]) {
           this->m_race = index;

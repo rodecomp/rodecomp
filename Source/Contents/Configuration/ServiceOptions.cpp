@@ -1433,9 +1433,6 @@ void CGameSettingsMgr::Init_Func() {
   this->functions[0x98] = NotifyGameModeOptionAlt;
 }
 
-// GLOBAL: gl_25208
-bool g_showBattleFieldIcon;
-
 // GLOBAL: gl_25209
 int g_configuredOldWidth;
 
@@ -1527,7 +1524,7 @@ void CSession::LoadOptionInfo() {
 
   g_skinInfo.m_name = this->GetOptionString("SkinName", "<Basic Skin>");
   this->monsterInfoEnabled = g_serviceOptions.Get(0x2E);
-  g_showBattleFieldIcon = this->GetOptionInteger("ShowBattleFieldIcon", 1) != 0;
+  g_session.m_showBattleFieldIcon = this->GetOptionInteger("ShowBattleFieldIcon", 1) != 0;
   Singleton<CGameSettingsMgr>::GetInstance()->ApplyScriptOption(ConfineCursor, "MouseExclusive");
 
   const int resetPolicy = this->RenderSystemResetPolicy();
@@ -1666,7 +1663,7 @@ void CSession::SaveOptionInfo() {
   this->WriteOptionInteger(output, "Show_SkillDescript", this->m_showSkillDescription);
   this->WriteOptionInteger(output, "ChangeChatMode", g_windowMgr.chatModeChanged);
   this->WriteOptionInteger(output, "LockMouse", this->m_lockMouse);
-  this->WriteOptionInteger(output, "ShowBattleFieldIcon", g_showBattleFieldIcon);
+  this->WriteOptionInteger(output, "ShowBattleFieldIcon", g_session.m_showBattleFieldIcon);
   this->WriteOptionInteger(output, "MouseExclusive", g_serviceOptions.Get(ConfineCursor));
   this->WriteOptionInteger(output, "RenderSystemReset", g_renderSystemReset);
   this->WriteOptionInteger(output, "RENDERSYSTEM", g_configuredRenderBackend);

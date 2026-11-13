@@ -65,9 +65,6 @@ namespace {
 }
 
 
-// GLOBAL: gl_24493
-bool g_petAutoFeed;
-
 // OFFSET: 0x00E46040
 // FUNCTION: fn_24210
 std::uint32_t CSession::ReadReplayStats(const std::vector<unsigned char>& data) {
@@ -983,7 +980,7 @@ void CSession::SetHomunculusAutoFeed(bool enabled) {
 // OFFSET: 0x00E48980
 // FUNCTION: fn_24223
 void CSession::SetPetAutoFeed(bool enabled) {
-  g_petAutoFeed = enabled == true;
+  g_session.m_petAutoFeed = enabled == true;
   const char* text = LookupMessage(enabled ? 2579 : 2580);
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0x64FFFF, 0, 0, 0);
 }
@@ -1448,7 +1445,7 @@ std::uint32_t CSession::ReadReplayCharacter(const std::vector<unsigned char>& da
       offset += header.bytes;
       break;
     case 1085:
-      std::memcpy(this->chatFont, data.data() + offset, header.bytes);
+      std::memcpy(&this->chatFont, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1086:

@@ -242,7 +242,6 @@ static_assert(offsetof(CPlayer, proceedTargetGid) == 0x51C);
 static_assert(offsetof(CPlayer, skillEffect) == 0x544);
 #endif
 
-extern bool g_refreshWindow289;
 
 struct GrannyPcLight {
   /* 0000 */ vector3d direction;

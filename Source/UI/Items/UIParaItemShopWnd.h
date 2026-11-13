@@ -11,8 +11,6 @@
 
 class UIStaticText;
 
-extern int g_pendingAid;
-extern int g_pendingGid;
 
 class UIParaItemPurchaseWnd : public UIItemPurchaseWnd {
 public:

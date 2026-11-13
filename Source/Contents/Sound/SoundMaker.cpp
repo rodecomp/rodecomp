@@ -38,12 +38,6 @@
 #include <windows.h>
 #include <timeapi.h>
 
-// GLOBAL: gl_25141
-std::uint32_t g_groundMarkAid;
-
-// GLOBAL: gl_25142
-std::uint32_t g_groundMarkAltAid;
-
 // OFFSET: 0x00DA1190
 // FUNCTION: fn_22354
 CCorpse::CCorpse() {
@@ -1437,9 +1431,9 @@ bool CNpc::OnProcess() {
 
   this->UpdateBubblePositions();
 
-  if (g_session.homunAlive && g_groundMarkAid == this->render.accountId) {
+  if (g_session.homunAlive && g_session.homunEnemyGid == this->render.accountId) {
     this->SendMsg(nullptr, 0x86, 0, 0, 0, 0, 0, 0);
-  } else if (g_session.mercenaryAlive && g_groundMarkAltAid == this->render.accountId) {
+  } else if (g_session.mercenaryAlive && g_session.mercenaryEnemyGid == this->render.accountId) {
     this->SendMsg(nullptr, 0x86, 0, 0, 0, 0, 0, 0);
   } else {
     this->SendMsg(nullptr, 0x87, 0, 0, 0, 0, 0, 0);

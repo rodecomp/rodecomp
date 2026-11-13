@@ -38,12 +38,6 @@ struct CharacterRenamePacket {
 
 static_assert(sizeof(CharacterRenamePacket) == 30);
 
-// GLOBAL: gl_25092
-std::uint32_t g_renameGid;
-
-// GLOBAL: gl_25093
-char g_renameName[24];
-
 // OFFSET: 0x0092BCA0
 // FUNCTION: fn_12660
 void UIChangeNameWnd::Paint() {
@@ -170,9 +164,9 @@ int UIChangeNameWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intpt
         CharacterRenamePacket packet;
         packet.id = ID_CH_REQ_CHANGE_CHARACTERNAME;
         packet.gid = this->m_character->gid;
-        g_renameGid = packet.gid;
+        g_session.m_renameGid = packet.gid;
         std::memcpy(packet.name, this->m_info.name, sizeof(packet.name));
-        std::memcpy(g_renameName, this->m_info.name, sizeof(g_renameName));
+        std::memcpy(g_session.m_renameName, this->m_info.name, sizeof(g_session.m_renameName));
         GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
         g_windowMgr.Schedule(this);
       }

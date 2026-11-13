@@ -306,9 +306,6 @@ CMiniPartyWndAreaMgr* g_miniPartyWndAreaMgr = nullptr;
 // GLOBAL: gl_24366
 UIWindowMgr g_windowMgr;
 
-// GLOBAL: gl_25159
-bool g_windowToggleFlag;
-
 // GLOBAL: gl_24683
 int g_windowCloseValue;
 
@@ -2470,7 +2467,7 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
     }
 
     if (this->autoMessageWnd != 0) {
-      g_windowToggleFlag = false;
+      g_session.m_autoReplyEnabled = false;
     }
 
     if ((this->IsHoverOnWindow01C8Button() || (this->windowHistory.begin() != this->windowHistory.end() && *this->windowHistory.begin() == 1)) && this->inputSuggestionsEnabled != 0 &&

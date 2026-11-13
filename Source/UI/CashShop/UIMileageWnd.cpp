@@ -29,18 +29,6 @@ struct DynamicNpcCreatePacket {
 #pragma pack(pop)
 }
 
-// GLOBAL: gl_24859
-int g_mileageWndActive;
-
-// GLOBAL: gl_24860
-int g_mileageWndPoint;
-
-// GLOBAL: gl_24890
-int g_mileageWndElapsed;
-
-// GLOBAL: gl_24861
-int g_mileageWndBonus;
-
 // OFFSET: 0x0094D4D0
 // FUNCTION: fn_12905
 void UIMileageWnd::Paint() {
@@ -120,7 +108,7 @@ void UIMileageWnd::OnProcess() {
 
   this->m_startTime = seconds * 1000 - elapsed + now;
   this->Invalidate();
-  g_mileageWndElapsed = 3600 - this->m_remaining;
+  g_session.m_mileageWndElapsed = 3600 - this->m_remaining;
 }
 
 // OFFSET: 0x0094C230
@@ -136,14 +124,14 @@ int UIMileageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     return this->UIWindow::SendMsg(sender, message, a, b, c, d);
   }
 
-  g_mileageWndActive = static_cast<int>(a);
+  g_session.m_mileageWndActive = static_cast<int>(a);
   this->Show(static_cast<int>(a));
 
   if (a != 0) {
     this->m_point = static_cast<int>(b);
-    g_mileageWndPoint = static_cast<int>(b);
+    g_session.m_mileageWndPoint = static_cast<int>(b);
     this->m_bonus = static_cast<int>(d);
-    g_mileageWndBonus = static_cast<int>(d);
+    g_session.m_mileageWndBonus = static_cast<int>(d);
 
     this->m_remaining = std::max(3600 - static_cast<int>(c), 0);
     this->m_startTime = timeGetTime();

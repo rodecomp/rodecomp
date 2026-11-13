@@ -35,7 +35,6 @@ public:
   /* 00D8 */ std::string name;
 };
 
-extern std::uint32_t g_monsterInfoActorId;
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(MonsterInfo) == 32);

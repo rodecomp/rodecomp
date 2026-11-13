@@ -27,7 +27,5 @@ public:
   /* 00C4 */ CharacterInfo m_info;
 };
 
-extern std::uint32_t g_renameGid;
-extern char g_renameName[24];
 
 #endif
