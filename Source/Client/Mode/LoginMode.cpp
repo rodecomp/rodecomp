@@ -1168,7 +1168,7 @@ void CLoginMode::SubD97F00(int) {
 void CLoginMode::OpenAccountRegistration() {
   switch (g_serviceType) {
   case ServiceKorea:
-    if (*reinterpret_cast<const int*>(&g_session.mouseAndChannelOptions[0x198]) == 1) {
+    if (g_session.m_channelCopId == 1) {
       const char* url = LookupMessage(MSI_SETTLE_WEB_URL_HANGAME);
       constexpr std::array<char, 5> source = OBFUSCATE_SOURCE("open", 0xCFF3899D95AF355FULL);
       ShellExecuteA(hWnd, OBFUSCATE_DECRYPT(0xCFF3899D95AF355FULL, source), url, nullptr, nullptr, SW_SHOWNORMAL);

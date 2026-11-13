@@ -164,7 +164,7 @@ public:
   /* 0280 */ std::uint32_t merchantShopRequestTick;
   /* 0284 */ unsigned char isEmotionRequested;
   /* 0288 */ float fixedLongitude;
-  /* 028C */ unsigned char lastCoupleIds[0x08];
+  /* 028C */ std::uint32_t lastCoupleIds[2];
   /* 0294 */ char coupleName[0x18];
   /* 02AC */ UINameBalloonText* nameBalloon;
   /* 02B0 */ UINameBalloonText* itemNameBalloon;

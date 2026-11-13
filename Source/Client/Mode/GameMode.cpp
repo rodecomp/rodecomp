@@ -1372,8 +1372,8 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
     case MM_JOIN_COUPLE: {
       const GameModePacketDwordDwordDword packet{
         0x1E3,
-        *reinterpret_cast<const std::uint32_t*>(&this->lastCoupleIds[0]),
-        *reinterpret_cast<const std::uint32_t*>(&this->lastCoupleIds[4]),
+        this->lastCoupleIds[0],
+        this->lastCoupleIds[1],
         static_cast<std::uint32_t>(argument2)
       };
       GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
@@ -1382,8 +1382,8 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
     case MM_JOIN_BABY: {
       const GameModePacketDwordDwordDword packet{
         0x1F7,
-        *reinterpret_cast<const std::uint32_t*>(&this->lastCoupleIds[0]),
-        *reinterpret_cast<const std::uint32_t*>(&this->lastCoupleIds[4]),
+        this->lastCoupleIds[0],
+        this->lastCoupleIds[1],
         static_cast<std::uint32_t>(argument2)
       };
       GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);

@@ -23095,8 +23095,8 @@ void CGameMode::ProcessIncomingPackets() {
       char name[25];
       strncpy(name, reinterpret_cast<const char *>(g_gameModePacketBuffer + 0xA), 24);
       name[24] = 0;
-      *reinterpret_cast<int *>(this->lastCoupleIds) = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2);
-      *reinterpret_cast<int *>(this->lastCoupleIds + 4) = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6);
+      this->lastCoupleIds[0] = *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2);
+      this->lastCoupleIds[1] = *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 6);
       g_windowMgr.EnsureWindow(WID_COUPLEACCEPTWND)->SendMsg(nullptr, UM_SET_COUPLE_MSG, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6), reinterpret_cast<std::intptr_t>(name), 0,
                                            0);
       break;
@@ -23219,8 +23219,8 @@ void CGameMode::ProcessIncomingPackets() {
       char name[25];
       strncpy(name, reinterpret_cast<const char *>(g_gameModePacketBuffer + 0xA), 24);
       name[24] = 0;
-      *reinterpret_cast<int *>(this->lastCoupleIds) = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2);
-      *reinterpret_cast<int *>(this->lastCoupleIds + 4) = *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6);
+      this->lastCoupleIds[0] = *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2);
+      this->lastCoupleIds[1] = *reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 6);
       g_windowMgr.EnsureWindow(WID_BABYACCEPTWND)->SendMsg(nullptr, UM_SET_BABY_MSG, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6), reinterpret_cast<std::intptr_t>(name), 0,
                                            0);
       break;

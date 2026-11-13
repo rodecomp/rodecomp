@@ -7305,7 +7305,7 @@ void UIItemPurchaseWnd::OnMouseHover(int x, int y) {
       if (g_serviceType == 6) {
         sprintf(currency, "Koin");
       } else if (g_serviceType == 0) {
-        if (*reinterpret_cast<const int*>(&g_session.mouseAndChannelOptions[0x198]) == 1) {
+        if (g_session.m_channelCopId == 1) {
           sprintf(currency, "한코인");
         } else {
           sprintf(currency, LookupMessage(MSI_CASH));
@@ -9165,7 +9165,7 @@ void UIItemPurchaseWnd::Paint() {
       if (g_serviceType == 6) {
         name = "Koin";
       } else if (g_serviceType == 0) {
-        if (*reinterpret_cast<const int*>(&g_session.mouseAndChannelOptions[0x198]) == 1) {
+        if (g_session.m_channelCopId == 1) {
           name = "한코인";
         } else {
           name = LookupMessage(MSI_CASH);
@@ -9401,7 +9401,7 @@ void UIItemShopWnd::Paint() {
       if (g_serviceType == 6) {
         name = "K";
       } else if (g_serviceType == 0) {
-        name = *reinterpret_cast<const int*>(&g_session.mouseAndChannelOptions[0x198]) != 1 ? "C" : "H";
+        name = g_session.m_channelCopId != 1 ? "C" : "H";
       } else {
         name = "P";
       }
@@ -9425,7 +9425,7 @@ void UIItemShopWnd::Paint() {
 
   if (this->showFooter != 0) {
     int message;
-    if (g_serviceType == 0 && *reinterpret_cast<const int*>(&g_session.mouseAndChannelOptions[0x198]) == 1) {
+    if (g_serviceType == 0 && g_session.m_channelCopId == 1) {
       message = 1290;
     } else {
       message = 1210;
