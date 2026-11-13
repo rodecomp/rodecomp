@@ -469,7 +469,7 @@ void UIRodexComposeWnd::Paint() {
 
   this->DrawBitmap(19, 342, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\icon_zeny.bmp"))), true);
 
-  this->DrawTextAt(135, 350, "Zeny", 0, 0, 11, 0x737373, 0, 0);
+  this->DrawTextAt(135, 350, "/", 0, 0, 11, 0x737373, 0, 0);
 
   char zenyBuf[260] = {};
   FormatGroupedInteger(static_cast<std::int64_t>(g_session.m_zeny), zenyBuf, sizeof(zenyBuf));
