@@ -9,6 +9,7 @@
 #include "Utility/Cipher/CryptName.h"
 #include "Utility/Cipher/Obfuscate.h"
 
+#include <algorithm>
 #include <cctype>
 #include <windows.h>
 #include <timeapi.h>
@@ -58,15 +59,13 @@ bool CEmblemDataUploadAsyncWork::Execute() {
   StringFormat(account, sizeof(account), _TRUNCATE, "%lu", this->m_accountId);
   char guild[64] = {};
   StringFormat(guild, sizeof(guild), _TRUNCATE, "%lu", this->m_guildId);
-  std::string name = g_curlMgr->ToUtf8(this->m_accountName);
-  std::string path = g_curlMgr->ToUtf8(this->m_path);
+  std::string name = CCURLMgr::GetInstance()->ToUtf8(this->m_accountName);
+  std::string path = CCURLMgr::GetInstance()->ToUtf8(this->m_path);
   std::string extension = this->m_path.substr(this->m_path.size() - 3, this->m_path.size());
 
-  for (char& value : extension) {
-    value = static_cast<char>(std::toupper(static_cast<unsigned char>(value)));
-  }
+  std::transform(extension.begin(), extension.end(), extension.begin(), [](unsigned char value) { return static_cast<char>(std::toupper(value)); });
 
-  std::string imageType = g_curlMgr->ToUtf8(extension);
+  std::string imageType = CCURLMgr::GetInstance()->ToUtf8(extension);
   CCURLPostHander handler(this->m_url);
   handler.AddField(OBFUSCATE_BYTES_TEXT("AID", 0x812BE72BCD5707B7ULL), account, 4);
   handler.AddField(OBFUSCATE_BYTES_TEXT("AuthToken", 0x59278F63D79F3DA1ULL), this->m_token, 4);
@@ -76,7 +75,7 @@ bool CEmblemDataUploadAsyncWork::Execute() {
   handler.AddField(OBFUSCATE_BYTES_TEXT("Img", 0xD98F03A52D35636DULL), path, 10);
 
   if (handler.Perform() == 0) {
-    this->m_response = g_curlMgr->FromUtf8(handler.Response());
+    this->m_response = CCURLMgr::GetInstance()->FromUtf8(handler.Response());
     this->m_diagnostic = AsyncDiagnostic(true, std::string(OBFUSCATE_BYTES_TEXT("good", 0x31D7C1EDA345E36DULL)), sourceFile, 100);
   } else {
     this->m_diagnostic = AsyncDiagnostic(false, std::string(OBFUSCATE_BYTES_TEXT("fail", 0xD3755DD95F47A909ULL)), sourceFile, 109);
