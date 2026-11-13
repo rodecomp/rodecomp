@@ -97,11 +97,7 @@ void UIQuestDisplay::Paint() {
     } else {
       for (int index = 0; index < info.m_huntCount; ++index) {
         std::string hunt;
-        if (info.m_huntMobId[index] == 31999) {
-          hunt = static_cast<const std::string&>(
-            g_renewQuestMgr->GetMonsterConditionText(info.m_huntConditionFlags[index], info.m_huntMinLevel[index], info.m_huntMaxLevel[index])
-          );
-        } else {
+        if (info.m_huntMobId[index] != 31999) {
           const short minLevel = info.m_huntMinLevel[index];
           const short maxLevel = info.m_huntMaxLevel[index];
           const char* name = info.m_huntName[index];
@@ -116,6 +112,10 @@ void UIQuestDisplay::Paint() {
           } else {
             hunt = static_cast<const std::string&>(FormatOwnedString("%s", name));
           }
+        } else {
+          hunt = static_cast<const std::string&>(
+            g_renewQuestMgr->GetMonsterConditionText(info.m_huntConditionFlags[index], info.m_huntMinLevel[index], info.m_huntMaxLevel[index])
+          );
         }
 
         hunt = StripColorCodes(hunt.c_str(), hunt.size());
@@ -135,10 +135,10 @@ void UIQuestDisplay::Paint() {
         const short goal = info.m_huntMaxCount[index];
         if (goal > 0) {
           const short count = info.m_huntKillCount[index];
-          if (count == goal) {
-            hunt = static_cast<const std::string&>(FormatOwnedString("%s ( %s )", hunt.c_str(), LookupMessage(MSI_COMPLETE_HUNTING_QUEST)));
-          } else {
+          if (count != goal) {
             hunt = static_cast<const std::string&>(FormatOwnedString("%s ( %d / %d )", hunt.c_str(), count, goal));
+          } else {
+            hunt = static_cast<const std::string&>(FormatOwnedString("%s ( %s )", hunt.c_str(), LookupMessage(MSI_COMPLETE_HUNTING_QUEST)));
           }
 
           const int y = index * 13 + top;
