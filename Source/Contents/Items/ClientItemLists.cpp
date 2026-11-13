@@ -1397,7 +1397,7 @@ __declspec(noinline) int CSession::IsDifferentName(const char* name, const char*
   std::sprintf(second, "%s", other);
   const short secondLength = static_cast<short>(std::strlen(second));
 
-  const short difference = firstLength >= secondLength ? firstLength - secondLength : secondLength - firstLength;
+  const short difference = firstLength < secondLength ? secondLength - firstLength : firstLength - secondLength;
   const short length = firstLength >= secondLength ? secondLength : firstLength;
 
   if (firstLength >= secondLength + 2 && firstLength <= secondLength + 4) {
