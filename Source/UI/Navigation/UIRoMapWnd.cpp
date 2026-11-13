@@ -89,15 +89,14 @@ void UIRoMapWnd::ResetKafraBounds() {
 // OFFSET: 0x0091EBA0
 // FUNCTION: fn_12634
 void UIRoMapWnd::UpdateNavigationButtons() {
-  UIWindow** buttons = reinterpret_cast<UIWindow**>(reinterpret_cast<unsigned char*>(this) + 0x20C);
-  if (g_windowMgr.navigationWnd != nullptr && !g_navigationManager.expandedMap) {
-    buttons[0]->Move(-100, -100);
-    buttons[1]->Move(-100, -100);
-    buttons[2]->Move(-100, -100);
+    if (g_windowMgr.navigationWnd != nullptr && !g_navigationManager.expandedMap) {
+    this->m_searchButton->Move(-100, -100);
+    this->m_searchListButton->Move(-100, -100);
+    this->m_searchEdit->Move(-100, -100);
   } else {
-    buttons[0]->Move(335, 0);
-    buttons[1]->Move(375, 3);
-    buttons[2]->Move(131, 0);
+    this->m_searchButton->Move(335, 0);
+    this->m_searchListButton->Move(375, 3);
+    this->m_searchEdit->Move(131, 0);
     g_navigationManager.hideWindow = true;
   }
 

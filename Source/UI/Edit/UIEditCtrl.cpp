@@ -4454,7 +4454,7 @@ std::string UIEditCtrl3::PlaceLineLinks(const char* line, std::string& text, con
       }
 
       UIItemTagButton* button = new (std::nothrow) UIItemTagButton();
-      reinterpret_cast<ITEM_INFO&>(button->itemPayload) = item;
+      button->item = item;
       button->Configure(name.c_str(), 0x82F2E1, 0, 12, 0, 0);
       button->SetTooltip(item.DisplayName(0).c_str());
       button->m_hoverColor = 0x82F2E1;

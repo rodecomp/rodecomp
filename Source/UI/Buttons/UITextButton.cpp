@@ -2893,7 +2893,7 @@ void UIItemTagButton::OnLBtnDown(int x, int y) {
   } else {
     this->geometry.state = 1;
     if (this->parent) {
-      this->parent->SendMsg(this, UM_TEXT_LBTN_UP, this->geometry.id, this->m_value, reinterpret_cast<std::intptr_t>(this->itemPayload), 0);
+      this->parent->SendMsg(this, UM_TEXT_LBTN_UP, this->geometry.id, this->m_value, reinterpret_cast<std::intptr_t>(&this->item), 0);
       this->Invalidate();
       return;
     }
@@ -3609,7 +3609,6 @@ void UISlotBmpButton::Paint() {
 // OFFSET: 0x0086D5F0
 // FUNCTION: fn_11049
 UIItemTagButton::UIItemTagButton() {
-  new (reinterpret_cast<ITEM_INFO*>(reinterpret_cast<unsigned char*>(this) + 0xF8)) ITEM_INFO();
   this->textY = 1;
   this->tipId = 0;
 }

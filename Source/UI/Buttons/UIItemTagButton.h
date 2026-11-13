@@ -1,6 +1,7 @@
 #ifndef RAGNAROK_SOURCE_UI_BUTTONS_UIITEMTAGBUTTON_H
 #define RAGNAROK_SOURCE_UI_BUTTONS_UIITEMTAGBUTTON_H
 
+#include "Contents/Items/ItemInfo.h"
 #include "UI/Buttons/UITextButton.h"
 
 #include <cstddef>
@@ -16,8 +17,7 @@ public:
   void OnLBtnDown(int x, int y) override;
   void OnMouseHover(int x, int y) override;
 
-  /* 00F8 */ unsigned char itemPayload[0xF0];
-  /* 01E8 */ unsigned char padding_01E8[0x8];
+  /* 00F8 */ ITEM_INFO item;
   /* 01F0 */ int column;
   /* 01F4 */ int line;
   /* 01F8 */ int tipId;
@@ -25,6 +25,7 @@ public:
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
+static_assert(offsetof(UIItemTagButton, item) == 0xF8);
 static_assert(offsetof(UIItemTagButton, column) == 0x1F0);
 static_assert(offsetof(UIItemTagButton, line) == 0x1F4);
 #endif

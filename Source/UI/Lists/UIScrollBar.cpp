@@ -1940,7 +1940,7 @@ std::string UIChatHisBox::RenderItemLinks(const char* lineText, std::string& sou
       }
 
       UIItemTagButton* button = new (std::nothrow) UIItemTagButton();
-      reinterpret_cast<ITEM_INFO&>(button->itemPayload) = item;
+      button->item = item;
       button->Configure(label.c_str(), 0x82F2E1, 0, 12, 0, 0);
       button->SetTooltip(item.DisplayName(0).c_str());
       button->m_hoverColor = 0x82F2E1;

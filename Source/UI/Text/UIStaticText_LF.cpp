@@ -11,14 +11,14 @@ void UIStaticText_LF::Paint() {
   this->ClearSurface(0xFFFF00FF);
   this->DrawWrappedFormattedText(
     0, 0,
-    *reinterpret_cast<const std::string*>(reinterpret_cast<const char*>(this) + 0x7C),
+    this->m_text,
     this->geometry.width,
-    *reinterpret_cast<const int*>(reinterpret_cast<const char*>(this) + 0x94),
-    *reinterpret_cast<const int*>(reinterpret_cast<const char*>(this) + 0x98),
-    *reinterpret_cast<const int*>(reinterpret_cast<const char*>(this) + 0x9C),
-    *reinterpret_cast<const int*>(reinterpret_cast<const char*>(this) + 0xA0),
-    *reinterpret_cast<const std::uint32_t*>(reinterpret_cast<const char*>(this) + 0xA4),
-    *reinterpret_cast<const unsigned char*>(reinterpret_cast<const char*>(this) + 0xA8)
+    this->m_lineSpacing,
+    this->m_align,
+    this->m_fontFamily,
+    this->m_fontHeight,
+    this->m_textColor,
+    this->m_bold
   );
 }
 

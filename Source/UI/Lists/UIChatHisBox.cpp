@@ -45,14 +45,14 @@ std::string UIChatHisBox::ResolvePlayerTags(const char* name) {
           position += start + std::strlen(opening.c_str()) + 1;
           row[index]->column = this->TextWidth(head.c_str(), 0, 0, 12, 0, 0) - this->horizontalOffset;
 
-          const std::string bracket = this->BracketName(reinterpret_cast<const ITEM_INFO&>(row[index]->itemPayload).DisplayName(0));
+          const std::string bracket = this->BracketName(row[index]->item.DisplayName(0));
           row[index]->SetTooltip(bracket.c_str());
           row[index]->label = bracket;
           row[index]->ResizeToTextClipped(this->TextWidth(bracket.c_str(), 0, 0, 12, 0, 0) + 1, row[index]->geometry.height);
           this->lines[line] = result;
         }
       } else {
-        const std::string bracket = this->BracketName(reinterpret_cast<const ITEM_INFO&>(row[index]->itemPayload).DisplayName(0));
+        const std::string bracket = this->BracketName(row[index]->item.DisplayName(0));
         const std::string tail = result.substr(position);
         const std::size_t found = tail.find(bracket);
         const std::string head = result.substr(0, position + found);

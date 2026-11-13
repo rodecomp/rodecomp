@@ -229,7 +229,7 @@ void UIItemTagCtrl::AddItemTag(const ITEM_INFO& item, unsigned int color) {
   button->SetTooltip(tag.c_str());
   button->SetId(0x1D0);
   button->Move(0, 0);
-  reinterpret_cast<ITEM_INFO&>(button->itemPayload) = item;
+  button->item = item;
   this->AddTagButton(button);
 
   UITextViewer* links = reinterpret_cast<UITextViewer*>(this);
