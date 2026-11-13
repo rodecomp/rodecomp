@@ -295,16 +295,16 @@ void UILapineUpgradeBoxWnd::SetIngredient(int id) {
     std::size_t remaining = sizeof(name);
     int highlightColor;
     this->BuildItemName(&item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
-    this->title.assign(name, std::strlen(name));
+    this->title = name;
   }
 
   int minimumRefine = 0;
-  int maximumRefine = 0;
   g_session.m_hotkeyScript->CallTable("tblLapineUpgradeBox", "get_min_need_refine", "d>d", id, &minimumRefine);
   this->ingredientList->minRefine = minimumRefine;
+  int maximumRefine = 0;
   g_session.m_hotkeyScript->CallTable("tblLapineUpgradeBox", "get_max_need_refine", "d>d", id, &maximumRefine);
   this->ingredientList->maxRefine = maximumRefine;
-  g_session.m_hotkeyScript->CallTable("tblLapineUpgradeBox", "get_min_need_option", "d>d", id, &this->minOptionCount);
+  g_session.m_hotkeyScript->CallTable("tblLapineUpgradeBox", "get_min_need_option_num", "d>d", id, &this->minOptionCount);
   this->ingredientList->minOptionCount = this->minOptionCount;
   g_session.m_hotkeyScript->CallTable("tblLapineUpgradeBox", "set_resource_item_list", "d", id);
   this->ingredientList->SendMsg(this, UM_REFRESHITEM, 0, 0, 0, 0);
