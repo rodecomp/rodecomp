@@ -31,15 +31,15 @@ void CDCBitmap::UpdateCache() {
       }
     }
 
-    for (CTexture* texture : this->m_cache.m_textures) {
-      texture->Upload(0, 0, this->m_bitmap.width, this->m_bitmap.height, this->m_bitmap.pixels, 0, this->m_bitmap.width);
+    for (auto it = this->m_cache.m_textures.begin(); it != this->m_cache.m_textures.end(); ++it) {
+      (*it)->Upload(0, 0, this->m_bitmap.width, this->m_bitmap.height, this->m_bitmap.pixels, 0, this->m_bitmap.width);
     }
   } else {
     if (this->m_cache.m_textures.empty()) {
       for (unsigned y = 0; y < this->m_bitmap.height; y += 256) {
         for (unsigned x = 0; x < this->m_bitmap.width; x += 256) {
           this->m_cache.m_textures.push_back(
-            g_texMgr.CreateTexture(std::min(256u, this->m_bitmap.width - x), std::min(256u, this->m_bitmap.height - y), TextureFormat::A1R5G5B5, false, false)
+            g_texMgr.CreateTexture(std::min(this->m_bitmap.width - x, 256u), std::min(this->m_bitmap.height - y, 256u), TextureFormat::A1R5G5B5, false, false)
           );
         }
       }
@@ -55,7 +55,7 @@ void CDCBitmap::UpdateCache() {
 
     for (unsigned y = 0; y < this->m_bitmap.height; y += 256) {
       for (unsigned x = 0; x < this->m_bitmap.width; x += 256) {
-        (*texture)->Upload(0, 0, std::min(256u, this->m_bitmap.width - x), std::min(256u, this->m_bitmap.height - y), this->m_bitmap.pixels + x + y * this->m_bitmap.width, 0, this->m_bitmap.width);
+        (*texture)->Upload(0, 0, std::min(this->m_bitmap.width - x, 256u), std::min(this->m_bitmap.height - y, 256u), this->m_bitmap.pixels + x + y * this->m_bitmap.width, 0, this->m_bitmap.width);
         ++texture;
       }
     }
