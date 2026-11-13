@@ -579,7 +579,7 @@ void EquipWndInfo::Reset() {
   this->width = 280;
   this->height = 167;
   this->contentHeight = 167;
-  this->resetState = 0;
+  this->visible = 0;
 }
 
 // OFFSET: 0x009A6540
@@ -733,7 +733,7 @@ void ItemWndInfo::Reset() {
   this->usableRows = 3;
   this->equipmentRows = 3;
   this->etcRows = 4;
-  this->resetState = 0;
+  this->visible = 0;
 }
 
 // OFFSET: 0x009A6850
@@ -832,7 +832,7 @@ void MessengerGroupWndInfo::Reset() {
   this->iconIndex = 0;
   this->x = 300;
   this->y = 200;
-  this->resetState = 0;
+  this->visible = 0;
   this->mode = 1;
 }
 
@@ -853,7 +853,7 @@ void UnusedWndInfoB::Reset() {
   this->width = 250;
   this->height = 60;
   this->defaultHeight = 60;
-  this->resetState = 0;
+  this->visible = 0;
 }
 
 // OFFSET: 0x009A6AA0
@@ -950,7 +950,7 @@ void UnusedWndInfoC::Reset() {
   this->y = 300;
   this->width = 140;
   this->height = 30;
-  this->resetState = 0;
+  this->visible = 0;
 }
 
 // OFFSET: 0x009A6C80
@@ -977,7 +977,7 @@ void StatusWndInfo::Reset() {
   this->x = 185;
   this->y = 300;
   this->width = 280;
-  this->resetState = 0;
+  this->visible = 0;
   this->height = 141;
   this->expandedHeight = 141;
   this->extended = 1;
@@ -1062,102 +1062,101 @@ void UIWindowMgr::ResetUIRectInfo() {
   }
   s_resetPending = false;
 
-  unsigned char* const base = reinterpret_cast<unsigned char*>(this);
-  reinterpret_cast<BasicInfoWndInfo*>(base + 0x514)->Reset();
-  reinterpret_cast<ItemWndInfo*>(base + 0x528)->Reset();
+  this->basicInfoWndInfo.Reset();
+  this->itemWndInfo.Reset();
 
-  int* const questWnd = reinterpret_cast<int*>(base + 0x550);
+  int* const questWnd = this->questWndPlacement;
   questWnd[0] = 0;
   questWnd[1] = 120;
   questWnd[2] = 280;
   questWnd[3] = 200;
   questWnd[4] = 200;
   questWnd[5] = 0;
-  questWnd[6] = 0;
+  this->questWndVisible = 0;
 
-  reinterpret_cast<StatusWndInfo*>(base + 0x574)->Reset();
-  reinterpret_cast<EquipWndInfo*>(base + 0x590)->Reset();
-  reinterpret_cast<UnusedWndInfoB*>(base + 0x5A8)->Reset();
-  reinterpret_cast<UnusedWndInfoC*>(base + 0x5C0)->Reset();
-  reinterpret_cast<UnusedWndInfoD*>(base + 0x5D4)->Reset();
-  reinterpret_cast<SayDialogWndInfo*>(base + 0x5E4)->Reset();
-  reinterpret_cast<ChooseWndInfo*>(base + 0x5F4)->Reset();
-  reinterpret_cast<ChatRoomWndInfo*>(base + 0x604)->Reset();
-  reinterpret_cast<ItemStoreFindListInfo*>(base + 0x614)->Reset();
+  this->statusWndInfo.Reset();
+  this->equipWndInfo.Reset();
+  this->optionWndInfo.Reset();
+  this->shortenItemWndInfo.Reset();
+  this->unusedWndInfoD.Reset();
+  this->sayDialogWndInfo.Reset();
+  this->chooseWndInfo.Reset();
+  this->chatRoomWndInfo.Reset();
+  this->itemStoreFindListInfo.Reset();
 
-  ItemStoreFindSlotInfo* const storeSlots = reinterpret_cast<ItemStoreFindSlotInfo*>(base + 0x62C);
+  ItemStoreFindSlotInfo* const storeSlots = this->itemStoreFindSlots;
   for (int index = 0; index < 8; ++index) {
     storeSlots[index].Reset(index);
   }
   this->itemStoreWindowCount = 8;
 
-  reinterpret_cast<ItemStoreFindWndInfo*>(base + 0x6AC)->Reset();
-  reinterpret_cast<SeekPartyListWndInfo*>(base + 0x6BC)->Reset();
-  reinterpret_cast<SeekPartyMBWndInfo*>(base + 0x6CC)->Reset();
-  reinterpret_cast<SeekPartyWndInfo*>(base + 0x6DC)->Reset();
-  reinterpret_cast<JobListWndInfo*>(base + 0x6EC)->Reset();
-  reinterpret_cast<ItemShopWndInfo*>(base + 0x6FC)->Reset();
-  reinterpret_cast<ItemSellWndInfo*>(base + 0x70C)->Reset();
-  reinterpret_cast<ItemPurchaseWndInfo*>(base + 0x71C)->Reset();
-  reinterpret_cast<MessengerGroupWndInfo*>(base + 0x72C)->Reset();
-  reinterpret_cast<NormalItemSlotWindow*>(base + 0x748)->Reset();
-  reinterpret_cast<ExchangeAcceptWndInfo*>(base + 0x75C)->Reset();
-  reinterpret_cast<SkillListWndInfo*>(base + 0x76C)->Reset();
-  reinterpret_cast<MerchantItemWndInfo*>(base + 0x780)->Reset();
-  reinterpret_cast<MerchantMirrorItemWndInfo*>(base + 0x794)->Reset();
-  reinterpret_cast<MerchantShopMakeWndInfo*>(base + 0x7A4)->Reset();
-  reinterpret_cast<MerchantItemShopWndInfo*>(base + 0x7B4)->Reset(false);
-  reinterpret_cast<MerchantItemMyShopWndInfo*>(base + 0x7C4)->Reset();
-  reinterpret_cast<MerchantItemPurchaseWndInfo*>(base + 0x7D4)->Reset();
-  reinterpret_cast<ItemCollectionWndInfo*>(base + 0x7E4)->Reset();
-  reinterpret_cast<CombinedCardItemCollectionWndInfo*>(base + 0x7F4)->Reset();
-  reinterpret_cast<ItemParamChangeDisplayWndInfo*>(base + 0x804)->Reset();
-  reinterpret_cast<PartySettingWndInfo*>(base + 0x814)->Reset();
-  reinterpret_cast<UnusedWndInfoA*>(base + 0x824)->Reset();
-  reinterpret_cast<GuildWndInfo*>(base + 0x834)->Reset();
-  reinterpret_cast<WhisperWndInfo*>(base + 0x848)->Reset();
-  reinterpret_cast<ItemCompositionWndInfo*>(base + 0x87C)->Reset();
-  reinterpret_cast<ItemIdentifyWndInfo*>(base + 0x88C)->Reset();
-  reinterpret_cast<EmotionWndInfo*>(base + 0x89C)->Reset();
-  reinterpret_cast<CashEmotionListWndInfo*>(base + 0x8AC)->Reset();
-  reinterpret_cast<PetInfoWndInfo*>(base + 0x8BC)->Reset();
-  reinterpret_cast<HomunInfoWndInfo*>(base + 0x8CC)->Reset();
-  reinterpret_cast<MerInfoWndInfo*>(base + 0x8F0)->Reset();
-  reinterpret_cast<SubChatHisWndInfo*>(base + 0x914)->Reset(0);
-  reinterpret_cast<SubChatHisWndInfo*>(base + 0x924)->Reset(1);
-  reinterpret_cast<QuickSlotWndInfo*>(base + 0x934)->Reset();
-  reinterpret_cast<EntryQueueWndInfo*>(base + 0x944)->Reset();
-  reinterpret_cast<MerchantShopMakeWndInfo*>(base + 0x954)->Reset();
-  reinterpret_cast<MerchantMirrorItemWndInfo*>(base + 0x964)->Reset();
-  reinterpret_cast<MerchantItemMyShopWndInfo*>(base + 0x974)->Reset();
-  reinterpret_cast<MerchantItemShopWndInfo*>(base + 0x984)->Reset(true);
-  reinterpret_cast<MerchantItemPurchaseWndInfo*>(base + 0x994)->Reset();
-  reinterpret_cast<MerchantMirrorItemWndInfo*>(base + 0x9A4)->Reset();
-  reinterpret_cast<NCashWndInfo*>(base + 0x9B4)->Reset();
-  reinterpret_cast<ReplayRECControlWndInfo*>(base + 0x4F154)->Reset();
+  this->itemStoreFindWndInfo.Reset();
+  this->seekPartyListWndInfo.Reset();
+  this->seekPartyMBWndInfo.Reset();
+  this->seekPartyWndInfo.Reset();
+  this->jobListWndInfo.Reset();
+  this->itemShopWndInfo.Reset();
+  this->itemSellWndInfo.Reset();
+  this->itemPurchaseWndInfo.Reset();
+  this->messengerGroupWndInfo.Reset();
+  this->m_normalItemSlotWindow.Reset();
+  this->exchangeAcceptWndInfo.Reset();
+  this->skillListWndInfo.Reset();
+  this->merchantItemWndInfo.Reset();
+  this->merchantMirrorItemWndInfo.Reset();
+  this->merchantShopMakeWndInfo.Reset();
+  this->merchantItemShopWndInfo.Reset(false);
+  this->merchantItemMyShopWndInfo.Reset();
+  this->merchantItemPurchaseWndInfo.Reset();
+  this->itemCollectionWndInfo.Reset();
+  this->combinedCardItemCollectionWndInfo.Reset();
+  this->itemParamChangeDisplayWndInfo.Reset();
+  this->partySettingWndInfo.Reset();
+  this->unusedWndInfoA.Reset();
+  this->guildWndInfo.Reset();
+  this->m_whisperPlacement.Reset();
+  this->itemCompositionWndInfo.Reset();
+  this->itemIdentifyWndInfo.Reset();
+  this->emotionWndInfo.Reset();
+  this->cashEmotionListWndInfo.Reset();
+  this->petInfoWndInfo.Reset();
+  this->homunInfoWndInfo.Reset();
+  this->merInfoWndInfo.Reset();
+  this->subChatHisWndInfo[0].Reset(0);
+  this->subChatHisWndInfo[1].Reset(1);
+  this->quickSlotWndInfo.Reset();
+  this->entryQueueWndInfo.Reset();
+  this->buyingShopMakeWndInfo.Reset();
+  this->buyingMirrorItemWndInfo.Reset();
+  this->buyingItemMyShopWndInfo.Reset();
+  this->buyingItemShopWndInfo.Reset(true);
+  this->buyingItemPurchaseWndInfo.Reset();
+  this->buyingMirrorItemWndInfo2.Reset();
+  this->nCashWndInfo.Reset();
+  this->replayRecControlWndInfo.Reset();
 
-  NavigationWindowInfo* const navigation = reinterpret_cast<NavigationWindowInfo*>(base + 0x4F178);
+  NavigationWindowInfo* const navigation = &this->navigationWindowInfo;
   navigation->x = static_cast<int>(g_renderer->viewport.width * 0.5 - 136.0);
   navigation->y = static_cast<int>(g_renderer->viewport.height * 0.5 - 169.0);
   navigation->width = 272;
   navigation->height = 338;
   navigation->expanded = 1;
 
-  reinterpret_cast<MiniMapWndInfo*>(base + 0x4F1A8)->Reset();
-  reinterpret_cast<AchTracingWndInfo*>(base + 0x4F1D8)->Reset();
-  reinterpret_cast<MacroReporterWndInfo*>(base + 0x4F200)->Reset();
-  reinterpret_cast<PreviewEquipWndInfo*>(base + 0x4F220)->Reset();
+  this->miniMapWndInfo.Reset();
+  reinterpret_cast<AchTracingWndInfo*>(&this->achievementTracingX)->Reset();
+  this->macroReporterWndInfo.Reset();
+  reinterpret_cast<PreviewEquipWndInfo*>(&this->previewEquipX)->Reset();
 
-  int* const swapEquipment = reinterpret_cast<int*>(base + 0x4F228);
+  int* const swapEquipment = this->swapEquipmentPlacement;
   swapEquipment[0] = (g_renderer->viewport.width - 280) / 2;
   swapEquipment[1] = (g_renderer->viewport.height - 177) / 2;
   swapEquipment[2] = 280;
   swapEquipment[3] = 167;
 
-  reinterpret_cast<QuestDisplayInfo*>(base + 0x570)->Reset();
-  reinterpret_cast<RegisterPartyWndInfo*>(base + 0xA00)->Reset();
-  reinterpret_cast<ApplyForPartyWndInfo*>(base + 0xA10)->Reset();
-  reinterpret_cast<AdvenPartyBoardWndInfo*>(base + 0xA20)->Reset();
+  this->questDisplayInfo.Reset();
+  this->registerPartyWndInfo.Reset();
+  this->applyForPartyWndInfo.Reset();
+  this->advenPartyBoardWndInfo.Reset();
 }
 
 // OFFSET: 0x009A7CA0

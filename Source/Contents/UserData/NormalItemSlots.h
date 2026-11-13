@@ -51,7 +51,7 @@ struct SkillListWndInfo : WindowPlacement {
 
 struct StatusWndInfo : WindowPlacement {
   /* 0010 */ int expandedHeight;
-  /* 0014 */ int resetState;
+  /* 0014 */ int visible;
   /* 0018 */ int extended;
 
   void Reset();
@@ -94,7 +94,7 @@ struct PreviewEquipWndInfo : WindowPlacement {
 };
 
 struct UnusedWndInfoC : WindowPlacement {
-  /* 0010 */ int resetState;
+  /* 0010 */ int visible;
 
   void Reset();
 };
@@ -109,6 +109,10 @@ struct AchTracingWndInfo : WindowPlacement {
 };
 
 struct BasicInfoWndInfo : WindowPlacement {
+  // INLINED
+  BasicInfoWndInfo() : expanded(1) {
+  }
+
   /* 0010 */ unsigned char mode;
   /* 0011 */ unsigned char padding_0011;
   /* 0012 */ unsigned char expanded;
@@ -154,7 +158,7 @@ struct EmotionWndInfo : WindowPlacement {
 
 struct EquipWndInfo : WindowPlacement {
   /* 0010 */ int contentHeight;
-  /* 0014 */ int resetState;
+  /* 0014 */ int visible;
 
   void Reset();
   int IsValid() const;
@@ -244,13 +248,23 @@ struct ItemStoreFindSlotInfo : WindowPlacement {
   int IsValid() const;
 };
 
+struct NavigationWindowInfo {
+  /* 0000 */ int x;
+  /* 0004 */ int y;
+  /* 0008 */ int width;
+  /* 000C */ int height;
+  /* 0010 */ unsigned char expanded;
+
+  void Clamp();
+};
+
 struct ItemWndInfo : WindowPlacement {
   /* 0010 */ int expandedHeight;
   /* 0014 */ int selectedTab;
   /* 0018 */ int usableRows;
   /* 001C */ int equipmentRows;
   /* 0020 */ int etcRows;
-  /* 0024 */ int resetState;
+  /* 0024 */ int visible;
 
   void Reset();
   int IsValid() const;
@@ -308,7 +322,7 @@ struct MerchantShopMakeWndInfo : WindowPlacement {
 };
 
 struct MessengerGroupWndInfo : WindowPlacement {
-  /* 0010 */ int resetState;
+  /* 0010 */ int visible;
   /* 0014 */ int mode;
   /* 0018 */ int iconIndex;
 
@@ -323,7 +337,7 @@ struct NCashWndInfo : WindowPlacement {
 
 struct UnusedWndInfoB : WindowPlacement {
   /* 0010 */ int defaultHeight;
-  /* 0014 */ int resetState;
+  /* 0014 */ int visible;
 
   void Reset();
   int IsValid() const;

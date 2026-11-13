@@ -230,8 +230,8 @@ void UIMiniMapWnd::OnLBtnDown(int x, int y) {
     if (x >= 2 && y >= 19 && this->geometry.width - 2 >= x && this->geometry.height - 19 >= y && this->dragging) {
       this->dragging = 0;
       int clickX = x - 6;
-      g_windowMgr.miniMapClickY = y - 6;
-      g_windowMgr.miniMapClickX = clickX < 0 ? 0 : clickX;
+      g_windowMgr.miniMapWndInfo.y = y - 6;
+      g_windowMgr.miniMapWndInfo.x = clickX < 0 ? 0 : clickX;
       g_windowMgr.EnsureWindow(WID_EDITCTRLWND);
     }
   } else {
@@ -260,7 +260,7 @@ int UIEditctrlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
       FILE* file = std::fopen(text.c_str(), "ab");
       if (file) {
         std::fseek(file, 0, SEEK_END);
-        text = FormatOwnedString(g_miniMapMemoLineFormat, g_windowMgr.miniMapClickX, g_windowMgr.miniMapClickY, this->edit->Text());
+        text = FormatOwnedString(g_miniMapMemoLineFormat, g_windowMgr.miniMapWndInfo.x, g_windowMgr.miniMapWndInfo.y, this->edit->Text());
         std::fwrite(text.c_str(), text.size(), 1, file);
         std::fclose(file);
         if (g_windowMgr.miniMapWnd) {

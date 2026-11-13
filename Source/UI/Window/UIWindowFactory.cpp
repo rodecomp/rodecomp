@@ -74,9 +74,9 @@ UIWindow* UIWindowMgr::CreateLayoutWindow(int id) {
     window->Move(x, y);
     this->rendered.push_back(window);
     if (id == 0x9F) {
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(this->hotkeyPlacement), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->quickSlotWndInfo), 0, 0, 0);
     } else if (id == 0x9D) {
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(this->battlefieldPlacement), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->entryQueueWndInfo), 0, 0, 0);
     } else if (id == 0xD4) {
       window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(this->entryQueueStandbyPlacement), 0, 0, 0);
     }

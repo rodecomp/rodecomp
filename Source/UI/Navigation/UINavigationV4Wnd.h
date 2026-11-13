@@ -1,6 +1,7 @@
 #ifndef RAGNAROK_SOURCE_UI_NAVIGATION_UINAVIGATIONV4WND_H
 #define RAGNAROK_SOURCE_UI_NAVIGATION_UINAVIGATIONV4WND_H
 
+#include "Contents/UserData/NormalItemSlots.h"
 #include "UI/Window/UIFrameWnd.h"
 
 #include <string>
@@ -11,16 +12,6 @@ class CNavi_Object;
 class CTexture;
 class UIListBox_NaviSearch;
 class UIStaticText;
-
-struct NavigationWindowInfo {
-  /* 0000 */ int x;
-  /* 0004 */ int y;
-  /* 0008 */ int width;
-  /* 000C */ int height;
-  /* 0010 */ unsigned char expanded;
-
-  void Clamp();
-};
 
 class UINavigationV4Wnd : public UIFrameWnd {
 public:

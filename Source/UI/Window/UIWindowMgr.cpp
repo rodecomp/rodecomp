@@ -868,7 +868,7 @@ void UIWindowMgr::ResetWindows() {
 // OFFSET: 0x00A88490
 // FUNCTION: fn_17086
 UIWindowMgr::UIWindowMgr()
-    : activeWindowId(0), retainedPersistentWindow(false), changeNameWnd(nullptr), previousMouseX(-1), previousMouseY(-1), basicInfoExpanded(true),
+    : activeWindowId(0), retainedPersistentWindow(false), changeNameWnd(nullptr), previousMouseX(-1), previousMouseY(-1),
       dropDownBoxWnd(nullptr), macroReporterVisible(false), padding_4F211(false), waitDBSaveWnd(nullptr) {
   this->ResetWindows();
   this->backgroundSurface = nullptr;
@@ -1503,14 +1503,14 @@ std::vector<unsigned char> UIWindowMgr::SaveReplayReserved() {
 // OFFSET: 0x00AA8980
 // FUNCTION: fn_17245
 void UIWindowMgr::ApplyReplayOptions(const ReplayOptions& options) {
-  this->equipWndVisible = 0;
-  this->statusWndVisible = 0;
+  this->equipWndInfo.visible = 0;
+  this->statusWndInfo.visible = 0;
   this->questWndVisible = 0;
-  this->itemWndVisible = 0;
-  this->messengerGroupWndVisible = 0;
+  this->itemWndInfo.visible = 0;
+  this->messengerGroupWndInfo.visible = 0;
   this->skillListWndVisible = 0;
-  this->optionWndVisible = 0;
-  this->shortenItemWndVisible = 0;
+  this->optionWndInfo.visible = 0;
+  this->shortenItemWndInfo.visible = 0;
   this->m_normalItemSlotWindow.show = options.showItemSlots;
   this->chatWndVisible = options.recordRestricted;
 }
@@ -2764,7 +2764,7 @@ bool UIWindowMgr::CloseWindow(int id) {
       this->Schedule(this->itemWnd);
       this->itemWnd = nullptr;
       closed = true;
-      this->itemWndVisible = 0;
+      this->itemWndInfo.visible = 0;
     }
     break;
   case WID_RUNESYSTEMWND:
@@ -2786,7 +2786,7 @@ bool UIWindowMgr::CloseWindow(int id) {
       this->Schedule(this->equipWnd);
       this->equipWnd = nullptr;
       closed = true;
-      this->equipWndVisible = 0;
+      this->equipWndInfo.visible = 0;
       g_savedWindowCloseValue = g_windowCloseValue;
     }
     break;
@@ -2804,7 +2804,7 @@ bool UIWindowMgr::CloseWindow(int id) {
       }
       this->statusWnd = nullptr;
       closed = true;
-      this->statusWndVisible = 0;
+      this->statusWndInfo.visible = 0;
     }
     break;
   case WID_ITEMDROPCNTWND:
@@ -3169,7 +3169,7 @@ bool UIWindowMgr::CloseWindow(int id) {
     if (this->messengerGroupWnd) {
       this->Schedule(this->messengerGroupWnd);
       this->messengerGroupWnd = nullptr;
-      this->messengerGroupWndVisible = 0;
+      this->messengerGroupWndInfo.visible = 0;
       g_windowMgr.CloseWindow(WID_PARTYSETTINGWND_PARTYCOUNT);
       g_windowMgr.CloseWindow(WID_FRIENDOPTIONWND);
       g_windowMgr.DismissTransient();
@@ -4279,18 +4279,18 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
     break;
   case HK_FRIENDWND_ONOFF + 100:
     if (this->basicInfoWnd) {
-      const int previous = this->messengerPartyTab;
-      this->messengerPartyTab = 0;
-      if (!g_windowMgr.CloseWindow(WID_MESSENGERWND) || previous != this->messengerPartyTab) {
+      const int previous = this->messengerGroupWndInfo.mode;
+      this->messengerGroupWndInfo.mode = 0;
+      if (!g_windowMgr.CloseWindow(WID_MESSENGERWND) || previous != this->messengerGroupWndInfo.mode) {
         g_windowMgr.EnsureWindow(WID_MESSENGERWND);
       }
     }
     break;
   case HK_PARTYWND_ONOFF + 100:
     if (this->basicInfoWnd) {
-      const int previous = this->messengerPartyTab;
-      this->messengerPartyTab = 1;
-      if (!g_windowMgr.CloseWindow(WID_MESSENGERWND) || previous != this->messengerPartyTab) {
+      const int previous = this->messengerGroupWndInfo.mode;
+      this->messengerGroupWndInfo.mode = 1;
+      if (!g_windowMgr.CloseWindow(WID_MESSENGERWND) || previous != this->messengerGroupWndInfo.mode) {
         g_windowMgr.EnsureWindow(WID_MESSENGERWND);
       }
     }
@@ -4691,7 +4691,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(220, g_session.IsTreeGroupThree(g_session.GetDisplayJob()) == true ? 71 : 55);
       window->Move(0, 0);
       this->AddRendered(window);
-      this->basicInfoWnd->SendMsg(this->basicInfoWnd, UM_SETINFO, reinterpret_cast<std::intptr_t>(this->basicInfoPlacement), 0, 0, 0);
+      this->basicInfoWnd->SendMsg(this->basicInfoWnd, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->basicInfoWndInfo), 0, 0, 0);
       g_snapMgr.SetRoot(window);
       if (UIWindow* navigation = g_windowMgr.EnsureWindow(WID_MENUICONWND)) {
         int x = 0;
@@ -4710,16 +4710,16 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
         }
       }
     } else {
-      if (this->itemWndVisible) {
+      if (this->itemWndInfo.visible) {
         this->EnsureWindow(WID_ITEMWND);
       }
-      if (this->equipWndVisible) {
+      if (this->equipWndInfo.visible) {
         this->EnsureWindow(WID_EQUIPWND);
       }
-      if (this->statusWndVisible) {
+      if (this->statusWndInfo.visible) {
         this->EnsureWindow(WID_STATUSWND);
       }
-      if (this->optionWndVisible) {
+      if (this->optionWndInfo.visible) {
         this->EnsureWindow(13);
       }
       if (this->skillListWndVisible) {
@@ -4728,7 +4728,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       if (this->questWndVisible) {
         this->EnsureWindow(WID_RENEWQUESTWND);
       }
-      if (this->messengerGroupWndVisible) {
+      if (this->messengerGroupWndInfo.visible) {
         this->EnsureWindow(WID_MESSENGERWND);
       }
       if (g_session.lowMemory == 1 && g_session.performanceWarningEnabled == 1 && g_effectDetailLevel == 2 && g_textureDetailLevel == 2) {
@@ -4850,7 +4850,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       g_snapMgr.Add(window);
     }
     window->Show(1);
-    this->itemWndVisible = 1;
+    this->itemWndInfo.visible = 1;
     if (UIWindow* basicInfo = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
       basicInfo->SendMsg(nullptr, UM_COMMAND, ID_NOTICE, 0xC2, 0, 0);
     }
@@ -4915,7 +4915,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       g_snapMgr.Add(window);
     }
     window->Show(1);
-    this->equipWndVisible = 1;
+    this->equipWndInfo.visible = 1;
     break;
   case WID_NCASHWND:
     window = this->nCashWnd;
@@ -4942,7 +4942,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       g_snapMgr.Add(window);
     }
     window->Show(1);
-    this->statusWndVisible = 1;
+    this->statusWndInfo.visible = 1;
     this->CloseWindow(WID_NOTIFYLEVELUPWND);
     if (UIWindow* basicInfo = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
       basicInfo->SendMsg(nullptr, UM_COMMAND, ID_NOTICE, 0xC0, 0, 0);
@@ -5102,7 +5102,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     break;
   case WID_MESSENGERWND:
-    if (this->messengerPartyTab) {
+    if (this->messengerGroupWndInfo.mode) {
       this->EnsureWindow(WID_MESSENGERGROUPWND)->SendMsg(nullptr, UM_COMMAND, ID_RADIOBTN, 2, 0, 0);
     } else {
       this->EnsureWindow(WID_MESSENGERGROUPWND)->SendMsg(nullptr, UM_COMMAND, ID_RADIOBTN, 1, 0, 0);
@@ -5123,7 +5123,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->messengerGroupWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x72C), 0, 0, 0);
     }
     window->Show(1);
-    this->messengerGroupWndVisible = 1;
+    this->messengerGroupWndInfo.visible = 1;
     break;
   case WID_MERCHANTSHOPMAKEWND:
     window = this->merchantShopMakeWnd;
@@ -5146,7 +5146,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(280, 120);
       window->Move(CenterOnViewportX(0), ScaleByScreenHeight(120));
       this->AddRendered(window);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(this->merchantMirrorItemPlacement), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->merchantMirrorItemWndInfo), 0, 0, 0);
     }
     window->Show(1);
     break;
@@ -5163,7 +5163,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(280, 120);
       window->Move(CenterOnViewportX(200), ScaleByScreenHeight(120));
       this->AddRendered(window);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(this->merchantItemPlacement), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->merchantItemWndInfo), 0, 0, 0);
     }
     window->Show(1);
     this->merchantItemWndVisible = 1;
@@ -6393,7 +6393,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(194, 34);
       window->Move(CenterOnViewportX(259), CenterOnViewportY(230));
       this->AddRendered(window);
-      this->replayRecordControlWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(this->navigationPlacement), 0, 0, 0);
+      this->replayRecordControlWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->replayRecControlWndInfo), 0, 0, 0);
     }
     break;
   case WID_NAVIGATIONV4WND:
@@ -6625,7 +6625,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window = new UIEntryQueueWnd();
       window->SetSize(350, 350);
       this->AddRendered(window);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(this->battlefieldPlacement), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->entryQueueWndInfo), 0, 0, 0);
     }
     window->Show(1);
     break;
@@ -7170,7 +7170,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window = new UIPreviewEquipWnd();
       window->SetSize(280, 260);
       window->Move(static_cast<int>((g_renderer->viewport.width - 280) * g_depthAverageHalf), static_cast<int>((g_renderer->viewport.height - 260) * g_depthAverageHalf));
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(this->previewEquipPlacement), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->previewEquipX), 0, 0, 0);
       this->AddRendered(window);
     } else {
       window = this->LookupWindow(WID_PREVIEWEQUIPWND);
