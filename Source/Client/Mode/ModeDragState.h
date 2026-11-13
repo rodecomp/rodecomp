@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <string>
 
+#include "Contents/Items/ItemInfo.h"
 #include "UI/Window/WindowManagerWindows.h"
 class ResourceMgr;
 struct ITEM_INFO;
@@ -28,7 +29,7 @@ struct ModeDragState {
   /* 0388 */ unsigned char skill;
   /* 038C */ std::uint32_t sourceWindow;
   /* 0390 */ int optionCount;
-  /* 0394 */ unsigned char options[25];
+  /* 0394 */ ItemOptionRecord options[5];
   /* 03B0 */ int barterId;
   /* 03B4 */ std::uint16_t grade;
   /* 03B6 */ unsigned char uniqueItem;

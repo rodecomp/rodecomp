@@ -6299,7 +6299,7 @@ void CGameMode::ReceiveUiDragMessage(const unsigned char* message) {
     drag.optionCount = 0;
   }
   for (int index = 0; index < drag.optionCount; ++index) {
-    std::memcpy(&drag.options[index * 5], &packet->options[index * 5], 5);
+    std::memcpy(&drag.options[index], &packet->options[index * 5], sizeof(drag.options[index]));
   }
 
   UIWindow* window = g_windowMgr.LookupWindow(packet->windowId);

@@ -55,7 +55,7 @@ void CGameMode::BeginDragItem(int sourceValue, const ITEM_INFO& item, int quanti
     this->drag.optionCount = item.optionCount;
 
     for (int index = 0; index < this->drag.optionCount; ++index) {
-      std::memcpy(this->drag.options + 5 * index, item.options + 5 * index, 5);
+      this->drag.options[index] = item.options[index];
     }
 
     this->drag.grade = static_cast<std::uint16_t>(item.grade);
@@ -160,7 +160,7 @@ void ModeDragState::BeginItem(
   this->optionCount = item.optionCount;
 
   for (int index = 0; index < this->optionCount; ++index) {
-    std::memcpy(this->options + 5 * index, item.options + 5 * index, 5);
+    this->options[index] = item.options[index];
   }
 
   this->grade = static_cast<std::uint16_t>(item.grade);

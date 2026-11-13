@@ -6783,7 +6783,7 @@ EquipmentProperties::CEquipmentWearable::CEquipmentWearable(const ITEM_INFO* ite
 
   for (int index = 0; index < 5; ++index) {
     EquipmentItemOption option;
-    std::memcpy(&option, item->options + index * sizeof(option), sizeof(option));
+    std::memcpy(&option, &item->options[index], sizeof(option));
     const int optionId = option.id;
     EquipmentPropertyDefinition* definition = CEquipmentPropertiesMgr::GetInstance()->FindRandomOptionDefinition(optionId);
     if (definition == nullptr || definition->functions.front() == "SetWeaponAttr") {

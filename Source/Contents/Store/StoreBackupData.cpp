@@ -9,20 +9,6 @@
 #include <cstring>
 #include <json/value.h>
 
-// INLINED
-template <typename T>
-static __forceinline void StoreField(unsigned char* field, T value) {
-  std::memcpy(field, &value, sizeof(value));
-}
-
-// INLINED
-template <typename T>
-static __forceinline T LoadField(const unsigned char* field) {
-  T value;
-  std::memcpy(&value, field, sizeof(value));
-  return value;
-}
-
 // OFFSET: 0x00606190
 // FUNCTION: fn_04233
 void CMCStoreInfoBackup::ImportData(Json::Value& data) {
@@ -54,12 +40,12 @@ void CMCStoreInfoBackup::ImportData(Json::Value& data) {
     item.optionCount = (*entry).get("RandomOptionCount", 0).asInt();
     Json::Value options = (*entry)["RandomOptionList"];
     int index = 0;
-    unsigned char* record = item.options;
+    ItemOptionRecord* record = item.options;
 
-    for (auto option = options.begin(); option != options.end() && index <= 5; ++option, ++index, record += 5) {
-      StoreField<std::int16_t>(record, (*option).get("OptIndex", 0).asInt());
-      StoreField<std::int16_t>(record + 2, (*option).get("Value", 0).asInt());
-      record[4] = static_cast<unsigned char>((*option).get("Parm1", 0).asInt());
+    for (auto option = options.begin(); option != options.end() && index <= 5; ++option, ++index, ++record) {
+      record->id = static_cast<std::int16_t>((*option).get("OptIndex", 0).asInt());
+      record->value = static_cast<std::int16_t>((*option).get("Value", 0).asInt());
+      record->parameter = static_cast<unsigned char>((*option).get("Parm1", 0).asInt());
     }
 
     item.prices[0] = static_cast<std::uint32_t>((*entry).get("Price", 0).asInt());
@@ -98,14 +84,13 @@ void CMCStoreInfoBackup::ExportData(Json::Value& data) const {
     Json::Value options;
 
     for (int index = 0; index < count; ++index) {
-      const auto* record = reinterpret_cast<const unsigned char*>(&item) + offsetof(ITEM_INFO, options) + index * 5;
-      std::int16_t id, amount;
-      std::memcpy(&id, record, sizeof(id));
-      std::memcpy(&amount, record + 2, sizeof(amount));
+      const ItemOptionRecord& record = item.options[index];
+      const std::int16_t id = record.id;
+      const std::int16_t amount = record.value;
       Json::Value option;
       option["OptIndex"] = id;
       option["Value"] = amount;
-      option["Parm1"] = record[4];
+      option["Parm1"] = record.parameter;
       options.append(option);
     }
 

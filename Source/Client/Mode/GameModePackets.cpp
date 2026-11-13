@@ -263,11 +263,7 @@ namespace {
     /* 0004 */ char title[24];
   };
 
-  struct StoreItemOption {
-    /* 0000 */ std::int16_t id;
-    /* 0002 */ std::int16_t value;
-    /* 0004 */ unsigned char param;
-  };
+  using StoreItemOption = ItemOptionRecord;
 
   struct StoreEquipRecord {
     /* 0000 */ std::int16_t index;
@@ -882,7 +878,7 @@ void CGameMode::ReceiveItem1738EquipList(const unsigned char* data) {
     item.flags[0] = entry.placeEtcTab;
     item.optionCount = CountStoreItemOptions(options);
     for (int index = 0; index < item.optionCount; ++index) {
-      reinterpret_cast<StoreItemOption*>(item.options)[index] = options[index];
+      item.options[index] = options[index];
     }
     g_session.AddCartItem(item, 1);
   }
@@ -923,7 +919,7 @@ void CGameMode::ReceiveItem1738EquipListOptions(const unsigned char* data) {
     item.flags[0] = entry.placeEtcTab;
     item.optionCount = CountStoreItemOptions(entry.options);
     for (int index = 0; index < item.optionCount; ++index) {
-      reinterpret_cast<StoreItemOption*>(item.options)[index] = entry.options[index];
+      item.options[index] = entry.options[index];
     }
     g_session.AddCartItem(item, 1);
   }
@@ -1714,7 +1710,7 @@ __declspec(noinline) void CGameMode::ReceiveItem1740EquipList(const unsigned cha
     item.optionCount = CountStoreItemOptions(options);
     item.grade = 0;
     for (int index = 0; index < item.optionCount; ++index) {
-      reinterpret_cast<StoreItemOption*>(item.options)[index] = options[index];
+      item.options[index] = options[index];
     }
     g_session.AddMerchantShopItem(item);
   }
@@ -1749,7 +1745,7 @@ void CGameMode::ReceiveItem1740EquipListOptions(const unsigned char* packet) {
     item.grade = 0;
     item.optionCount = CountStoreItemOptions(entry.options);
     for (int index = 0; index < item.optionCount; ++index) {
-      reinterpret_cast<StoreItemOption*>(item.options)[index] = entry.options[index];
+      item.options[index] = entry.options[index];
     }
     g_session.AddMerchantShopItem(item);
   }
@@ -3598,7 +3594,7 @@ void CGameMode::ReceiveOpenedVendingItemList(const unsigned char* packet) {
     item.refiningLevel = entry.refine;
     item.optionCount = CountStoreItemOptions(entry.options);
     for (int index = 0; index < item.optionCount; ++index) {
-      reinterpret_cast<StoreItemOption*>(item.options)[index] = entry.options[index];
+      item.options[index] = entry.options[index];
     }
     g_session.AddMerchantPurchaseItem(item);
   }
@@ -3628,7 +3624,7 @@ void CGameMode::ReceiveItem1748List(const unsigned char* packet) {
     item.sprite = record.sprite;
     item.optionCount = CountStoreItemOptions(record.options);
     for (int index = 0; index < item.optionCount; ++index) {
-      reinterpret_cast<StoreItemOption*>(item.options)[index] = record.options[index];
+      item.options[index] = record.options[index];
     }
     g_session.AddMerchantMirrorItem(item);
   }
@@ -7872,7 +7868,7 @@ namespace {
     item.optionCount = CountStoreItemOptions(options);
     item.grade = 0;
     for (int index = 0; index < item.optionCount; ++index) {
-      reinterpret_cast<StoreItemOption*>(item.options)[index] = options[index];
+      item.options[index] = options[index];
     }
   }
 
@@ -7895,7 +7891,7 @@ namespace {
     item.optionCount = CountStoreItemOptions(record.options);
     item.grade = record.grade;
     for (int index = 0; index < item.optionCount; ++index) {
-      reinterpret_cast<StoreItemOption*>(item.options)[index] = record.options[index];
+      item.options[index] = record.options[index];
     }
   }
 
@@ -8556,7 +8552,7 @@ void CGameMode::ReceiveItemPickupAck5(
       item.flags[1] = 1;
       item.optionCount = CountStoreItemOptions(options);
       for (int option = 0; option < item.optionCount; ++option) {
-        reinterpret_cast<StoreItemOption*>(item.options)[option] = options[option];
+        item.options[option] = options[option];
       }
       if (std::atoi(item.itemId.c_str()) == 607) {
         static_cast<CGameMode*>(g_modeMgr.GetGameMode())->lastPickItemTime = 0;
@@ -8599,7 +8595,7 @@ void CGameMode::ReceiveItemPickupAck5(
     item.flags[1] = 1;
     item.optionCount = CountStoreItemOptions(options);
     for (int option = 0; option < item.optionCount; ++option) {
-      reinterpret_cast<StoreItemOption*>(item.options)[option] = options[option];
+      item.options[option] = options[option];
     }
     if (std::atoi(item.itemId.c_str()) == 607) {
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->lastPickItemTime = 0;
@@ -8680,7 +8676,7 @@ namespace {
     item.flags[1] = 1;
     item.optionCount = CountStoreItemOptions(options.options);
     for (int option = 0; option < item.optionCount; ++option) {
-      reinterpret_cast<StoreItemOption*>(item.options)[option] = options.options[option];
+      item.options[option] = options.options[option];
     }
     if (std::atoi(item.itemId.c_str()) == 607) {
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->lastPickItemTime = 0;
@@ -8726,7 +8722,7 @@ namespace {
     item.flags[1] = 1;
     item.optionCount = CountStoreItemOptions(options.options);
     for (int option = 0; option < item.optionCount; ++option) {
-      reinterpret_cast<StoreItemOption*>(item.options)[option] = options.options[option];
+      item.options[option] = options.options[option];
     }
     if (std::atoi(item.itemId.c_str()) == 607) {
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->lastPickItemTime = 0;
@@ -9773,7 +9769,7 @@ namespace {
     item.flags[1] = 1;
     item.optionCount = CountStoreItemOptions(options.options);
     for (int option = 0; option < item.optionCount; ++option) {
-      reinterpret_cast<StoreItemOption*>(item.options)[option] = options.options[option];
+      item.options[option] = options.options[option];
     }
     item.flags[0] = favorite;
     if (std::atoi(item.itemId.c_str()) == 607) {
@@ -9823,7 +9819,7 @@ namespace {
     item.flags[1] = 1;
     item.optionCount = CountStoreItemOptions(options.options);
     for (int option = 0; option < item.optionCount; ++option) {
-      reinterpret_cast<StoreItemOption*>(item.options)[option] = options.options[option];
+      item.options[option] = options.options[option];
     }
     item.flags[0] = favorite;
     if (std::atoi(item.itemId.c_str()) == 607) {
@@ -12022,7 +12018,7 @@ void CGameMode::ReceiveItem1748List2(const unsigned char* packet) {
     std::memcpy(item.cards, record.cards, sizeof(record.cards));
     item.optionCount = CountStoreItemOptions(record.options);
     for (std::int64_t index = 0; index < item.optionCount; ++index) {
-      reinterpret_cast<StoreItemOption*>(item.options)[index] = record.options[index];
+      item.options[index] = record.options[index];
     }
     item.identity[2] = record.location;
     item.sprite = record.sprite;
@@ -12152,7 +12148,7 @@ void CGameMode::ReceiveItem1758StoreList(const unsigned char* packet) {
     std::memcpy(item.cards, record.cards, sizeof(record.cards));
     item.optionCount = CountStoreItemOptions(record.options);
     for (std::int64_t index = 0; index < item.optionCount; ++index) {
-      reinterpret_cast<StoreItemOption*>(item.options)[index] = record.options[index];
+      item.options[index] = record.options[index];
     }
     item.grade = record.grade;
     items.push_back(item);
@@ -20120,11 +20116,7 @@ struct ActorMoveRoute {
 };
 
 #pragma pack(push, 1)
-struct ItemSlotOption {
-  /* 0000 */ std::int16_t id;
-  /* 0002 */ std::int16_t value;
-  /* 0004 */ unsigned char parameter;
-};
+using ItemSlotOption = ItemOptionRecord;
 
 struct ItemSlotOptions {
   /* 0000 */ ItemSlotOption options[5];

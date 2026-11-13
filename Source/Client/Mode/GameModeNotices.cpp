@@ -189,11 +189,7 @@ struct StatusChangeEffectPacket {
   /* 0014 */ int value3;
 };
 
-struct ItemSlotOption {
-  /* 0000 */ std::int16_t id;
-  /* 0002 */ std::int16_t value;
-  /* 0004 */ unsigned char parameter;
-};
+using ItemSlotOption = ItemOptionRecord;
 
 struct ItemSlotAddOptionsPacket {
   /* 0000 */ std::int16_t id;
@@ -2173,7 +2169,7 @@ void CGameMode::ReceiveItemSlotAddOptions(const unsigned char* data) {
   item.identity[1] = 0xFFFFFFFF;
   item.optionCount = CountItemSlotOptions(packet->options);
   for (int index = 0; index < item.optionCount; ++index) {
-    reinterpret_cast<ItemSlotOption*>(item.options)[index] = packet->options[index];
+    item.options[index] = packet->options[index];
   }
   item.identity[2] = packet->expireTime;
   item.sprite = packet->bindType;
@@ -2204,7 +2200,7 @@ void CGameMode::ReceiveItemSlotAddGrade(const unsigned char* data) {
   item.identity[1] = 0xFFFFFFFF;
   item.optionCount = CountItemSlotOptions(packet->options);
   for (int index = 0; index < item.optionCount; ++index) {
-    reinterpret_cast<ItemSlotOption*>(item.options)[index] = packet->options[index];
+    item.options[index] = packet->options[index];
   }
   item.identity[2] = packet->expireTime;
   item.sprite = packet->bindType;
@@ -2240,7 +2236,7 @@ void CGameMode::ReceiveItemOptionsRefresh(const unsigned char* data) {
     item.refiningLevel = packet->refine;
     item.optionCount = CountItemSlotOptions(packet->options);
     for (int index = 0; index < item.optionCount; ++index) {
-      reinterpret_cast<ItemSlotOption*>(item.options)[index] = packet->options[index];
+      item.options[index] = packet->options[index];
     }
     g_session.UpdateInventoryItem(item, 1);
   }
@@ -3413,7 +3409,7 @@ static __forceinline void AddStorageEquipItem(
   item.optionCount = CountItemSlotOptions(options.options);
   item.grade = 0;
   for (int i = 0; i < item.optionCount; ++i) {
-    reinterpret_cast<ItemSlotOption*>(item.options)[i] = options.options[i];
+    item.options[i] = options.options[i];
   }
   g_session.AddCartItem(item, 0);
 }
@@ -3541,7 +3537,7 @@ void CGameMode::ReceiveItemUpgrade(std::uint16_t index, std::uint16_t refine, It
   std::memcpy(item.cards, cards.cards, sizeof(cards.cards));
   item.optionCount = CountItemSlotOptions(options.options);
   for (int i = 0; i < item.optionCount; ++i) {
-    reinterpret_cast<ItemSlotOption*>(item.options)[i] = options.options[i];
+    item.options[i] = options.options[i];
   }
   g_session.UpdateInventoryItem(item, 1);
   if (UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND)) {
@@ -3922,7 +3918,7 @@ static __forceinline void FillVendingItem(ITEM_INFO& item, const VendingItemReco
   std::memcpy(item.cards, record.cards, sizeof(record.cards));
   item.optionCount = CountItemSlotOptions(record.options);
   for (int index = 0; index < item.optionCount; ++index) {
-    reinterpret_cast<ItemSlotOption*>(item.options)[index] = record.options[index];
+    item.options[index] = record.options[index];
   }
   item.identity[2] = record.location;
   item.sprite = record.sprite;
@@ -5212,7 +5208,7 @@ void CGameMode::ReceiveShopItemListPacket(const unsigned char* data) {
     std::memcpy(item.cards, entry.cards, sizeof(entry.cards));
     item.optionCount = CountItemSlotOptions(entry.options);
     for (long long option = 0; option < static_cast<unsigned int>(item.optionCount); ++option) {
-      reinterpret_cast<ItemSlotOption*>(item.options)[option] = entry.options[option];
+      item.options[option] = entry.options[option];
     }
     item.identity[2] = entry.location;
     item.sprite = entry.sprite;
@@ -5409,7 +5405,7 @@ void CGameMode::ReceiveRodexReadMail(const unsigned char* data) {
     item.sprite = record.bindType;
     item.optionCount = CountItemSlotOptions(record.options);
     for (long long option = 0; option < item.optionCount; ++option) {
-      reinterpret_cast<ItemSlotOption*>(item.options)[option] = record.options[option];
+      item.options[option] = record.options[option];
     }
     item.grade = record.grade;
     g_session.AddItemToFreeSlot(item);
@@ -7398,7 +7394,7 @@ void CGameMode::RefreshInventoryOrEquipItem(std::uint16_t itemId, unsigned char 
   std::memcpy(item.cards, cards.cards, sizeof(cards.cards));
   item.optionCount = CountItemSlotOptions(options.options);
   for (int index = 0; index < item.optionCount; ++index) {
-    reinterpret_cast<ItemSlotOption*>(item.options)[index] = options.options[index];
+    item.options[index] = options.options[index];
   }
 
   if (lookup == 0) {
@@ -7437,7 +7433,7 @@ void CGameMode::RefreshInventoryOrEquipItem2(const unsigned char* data) {
   }
   item.optionCount = CountItemSlotOptions(packet->options);
   for (long long index = 0; index < item.optionCount; ++index) {
-    reinterpret_cast<ItemSlotOption*>(item.options)[index] = packet->options[index];
+    item.options[index] = packet->options[index];
   }
   item.grade = packet->grade;
 

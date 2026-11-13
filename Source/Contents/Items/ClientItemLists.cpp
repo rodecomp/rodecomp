@@ -47,11 +47,7 @@ namespace {
   };
 
 #pragma pack(push, 1)
-  struct ItemRandomOption {
-    /* 0000 */ std::int16_t id;
-    /* 0002 */ std::int16_t value;
-    /* 0004 */ unsigned char param;
-  };
+  using ItemRandomOption = ItemOptionRecord;
 
   struct ItemRandomOptions {
     /* 0000 */ ItemRandomOption values[5];
@@ -156,11 +152,11 @@ namespace {
     }
 
     if (value.optionCount != 0) {
-      const auto* left = reinterpret_cast<const ItemRandomOption*>(value.options);
-      const auto* right = reinterpret_cast<const ItemRandomOption*>(item.options);
+      const auto* left = value.options;
+      const auto* right = item.options;
 
       for (int index = 0; index < count; ++index) {
-        if (left[index].id != right[index].id || left[index].value != right[index].value || left[index].param != right[index].param) {
+        if (left[index].id != right[index].id || left[index].value != right[index].value || left[index].parameter != right[index].parameter) {
           return false;
         }
       }
@@ -279,7 +275,7 @@ static __forceinline void AddCartPacketItem(std::int16_t index, int amount, int 
   cards[3] = card4;
   item.optionCount = CountItemOptions(options.values);
   for (int index = 0; index < item.optionCount; ++index) {
-    reinterpret_cast<ItemRandomOption*>(item.options)[index] = options.values[index];
+    item.options[index] = options.values[index];
   }
   item.grade = static_cast<std::int16_t>(grade);
   g_session.AddCartItem(item, 1);
@@ -306,7 +302,7 @@ static __forceinline void AddMerchantShopPacketItem(std::int16_t index, int amou
   cards[3] = card4;
   item.optionCount = CountItemOptions(options.values);
   for (int index = 0; index < item.optionCount; ++index) {
-    reinterpret_cast<ItemRandomOption*>(item.options)[index] = options.values[index];
+    item.options[index] = options.values[index];
   }
   item.grade = static_cast<std::int16_t>(grade);
   g_session.AddMerchantShopItem(item);
@@ -375,7 +371,7 @@ static __forceinline void AddExchangePacketItem(int itemId, unsigned char type, 
   item.quantity = slot;
   item.optionCount = CountItemOptions(options.values);
   for (int index = 0; index < item.optionCount; ++index) {
-    reinterpret_cast<ItemRandomOption*>(item.options)[index] = options.values[index];
+    item.options[index] = options.values[index];
   }
   g_session.AddItemSlot(item);
 }
@@ -548,7 +544,7 @@ namespace {
     item.optionCount = CountItemOptions(options);
     item.grade = record.grade;
     for (int index = 0; index < item.optionCount; ++index) {
-      reinterpret_cast<ItemRandomOption*>(item.options)[index] = options[index];
+      item.options[index] = options[index];
     }
   }
 }

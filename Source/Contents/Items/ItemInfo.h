@@ -32,6 +32,14 @@ struct ItemOption {
   /* 0004 */ unsigned char parameter;
 };
 
+#pragma pack(push, 1)
+struct ItemOptionRecord {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t value;
+  /* 0004 */ unsigned char parameter;
+};
+#pragma pack(pop)
+
 struct ITEM_INFO {
   ITEM_INFO();
   explicit ITEM_INFO(int unused);
@@ -86,7 +94,7 @@ struct ITEM_INFO {
   /* 0088 */ std::int16_t grade;
   /* 0090 */ std::uint64_t productId;
   /* 0098 */ std::int32_t optionCount;
-  /* 009C */ unsigned char options[25];
+  /* 009C */ ItemOptionRecord options[5];
   /* 00B8 */ std::uint32_t recordIds[2];
   /* 00C0 */ unsigned char recordType;
   /* 00C1 */ unsigned char recordName[24];
@@ -105,6 +113,7 @@ int ReadItemArray(ITEM_INFO* items, int offset, int size, const std::vector<unsi
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(ITEM_INFO) == 248);
 static_assert(sizeof(ItemOption) == 6);
+static_assert(sizeof(ItemOptionRecord) == 5);
 #endif
 
 #endif

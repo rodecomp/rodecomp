@@ -159,7 +159,7 @@ std::uint32_t ITEM_INFO::Assign(const ModeDragState& item) {
   this->optionCount = item.optionCount > 5 ? 0 : item.optionCount;
 
   for (int index = 0; index < this->optionCount; ++index) {
-    std::memcpy(this->options + index * 5, item.options + index * 5, 5);
+    this->options[index] = item.options[index];
   }
 
   this->grade = item.grade;
@@ -588,9 +588,9 @@ int ITEM_INFO::GetItemId() const {
 // FUNCTION: fn_06611
 void ITEM_INFO::SetOption(ItemOption option, const int& index) {
   if (index < 5) {
-    std::memcpy(this->options + index * 5, &option.id, sizeof(option.id));
-    this->options[index * 5 + 4] = option.parameter;
-    std::memcpy(this->options + index * 5 + 2, &option.value, sizeof(option.value));
+    this->options[index].id = option.id;
+    this->options[index].parameter = option.parameter;
+    this->options[index].value = option.value;
   }
 }
 
