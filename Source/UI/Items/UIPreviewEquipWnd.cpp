@@ -61,7 +61,7 @@ void UIPreviewEquipWnd::DrawCharacter() {
   float depth = 0.0f;
   g_renderer->ProjectViewportCentered(
     &this->m_render->position.x, view.values, &screenX, &screenY, &depth,
-    static_cast<float>(this->geometry.width) + *reinterpret_cast<float*>(&this->m_render->viewportOffsetX),
+    static_cast<float>(this->geometry.width) + this->m_render->viewportOffsetX,
     static_cast<float>(this->geometry.height) + this->m_render->viewportOffsetY
   );
 
@@ -166,7 +166,7 @@ void UIPreviewEquipWnd::SyncFromPlayer() {
   this->m_render->madogearType = player->GetMadogearType();
   this->m_render->riding = player->isRiding;
   this->m_render->bodyCostume = player->GetBodyCostume();
-  *reinterpret_cast<float*>(&this->m_render->viewportOffsetX) = -5.0f;
+  this->m_render->viewportOffsetX = -5.0f;
   this->m_render->viewportOffsetY = 136.0f;
   this->RefreshHeadgearLocations();
   this->Invalidate();

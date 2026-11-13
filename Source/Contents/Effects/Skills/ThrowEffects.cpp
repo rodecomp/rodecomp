@@ -309,9 +309,9 @@ void CThrowItemEffect::OnProcess() {
     if (target != nullptr && this->launchDelay <= this->frame) {
       float& angle = target->speedParameter;
       float& rotation = target->angle;
-      float& offsetX = *reinterpret_cast<float*>(&target->offsetX);
-      float& offsetY = *reinterpret_cast<float*>(&target->offsetY);
-      float& offsetZ = *reinterpret_cast<float*>(&target->offsetZ);
+      float& offsetX = target->offsetX;
+      float& offsetY = target->offsetY;
+      float& offsetZ = target->offsetZ;
 
       if (target->columnIndex == 0) {
         rotation = static_cast<float>(static_cast<int>(rotation + 45.0f) % 360);
