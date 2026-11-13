@@ -203,7 +203,7 @@ void UIEditCtrl::UpdateLinks() {
 std::string UIEditCtrl::BracketFittedText(const std::string& name) {
   std::string result = "";
   result += '<';
-  result += FitText(*this->geometry.surface, name, this->geometry.width / 2);
+  result += this->FitTextToWidth(name, this->geometry.width / 2);
   result += '>';
   return result;
 }

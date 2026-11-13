@@ -1,3 +1,4 @@
+#include "UI/Window/UIWindow.h"
 #include "Render/Text/TextContext.h"
 #include "UI/Text/TextFitting.h"
 
@@ -35,4 +36,13 @@ std::string FitText(CDC& surface, std::string text, int width) {
   }
 
   return text;
+}
+
+// INLINED
+std::string UIWindow::FitTextToWidth(const std::string& text, int width) {
+  if (!this->geometry.surface) {
+    this->Resize(width, 15);
+  }
+
+  return FitText(*this->geometry.surface, text, width);
 }

@@ -359,7 +359,7 @@ void UIEditCtrl::OnMouseHover(int x, int y) {
 // INLINED
 __forceinline void UIEditCtrl::InsertLink(const char* value) {
   const std::string name = FormatNavigationLink(value, false);
-  FitText(*this->geometry.surface, name, this->geometry.width / 2);
+  this->FitTextToWidth(name, this->geometry.width / 2);
   std::string display = "<";
   display += name;
   display += ">";
@@ -375,7 +375,7 @@ __forceinline void UIEditCtrl::InsertLink(const char* value) {
       removed = true;
       UINaviLinkButton* button = static_cast<UINaviLinkButton*>(window);
       const std::string linkName = FormatNavigationLink(button->Link(), false);
-      FitText(*this->geometry.surface, linkName, this->geometry.width / 2);
+      this->FitTextToWidth(linkName, this->geometry.width / 2);
       std::string old = "<";
       old += linkName;
       old += ">";

@@ -123,6 +123,7 @@ public:
   void DrawBitmap(int x, int y, CBitmapRes* bitmap, bool transparent);
   void DrawAlignedText(int x, int y, std::string text, int width, int align, std::uint32_t color, int arg7, int arg8, int arg9, int arg10, unsigned char bold);
   void FillRegion(int x, int y, int width, int height, std::uint32_t color);
+  std::string FitTextToWidth(const std::string& text, int width);
   void DrawRectOutline(int x, int y, int width, int height, std::uint32_t color);
   void DrawRoundedOutline(int x, int y, int width, int height, std::uint32_t color);
   void DrawFilledRoundedOutline(int x, int y, int width, int height, std::uint32_t color);
