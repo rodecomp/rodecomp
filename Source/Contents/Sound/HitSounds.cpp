@@ -21,7 +21,8 @@ const char* CSession::GetHitWaveName(int job) {
 
   const int weapon = g_session.GetRealWeaponId(-1);
   if (weapon == -1) {
-    switch (std::max(std::rand() % 4, 0)) {
+    const int roll = std::rand() % 4;
+    switch (roll >= 0 ? roll : 0) {
     case 0:
       return "_enemy_hit_normal1.wav";
     case 1:
@@ -43,7 +44,8 @@ const char* CSession::GetHitWaveName(int job) {
   }
 
   if (weapon == 0) {
-    switch (std::max(std::rand() % 4, 0)) {
+    const int roll = std::rand() % 4;
+    switch (roll >= 0 ? roll : 0) {
     case 0:
       return "_hit_fist1.wav";
     case 1:
@@ -63,7 +65,8 @@ const char* CSession::GetHitWaveName(int job) {
 const char* CSession::GetWeaponHitWaveName(int weapon) {
   const int realWeapon = g_session.GetRealWeaponId(weapon);
   if (realWeapon == -1) {
-    switch (std::max(std::rand() % 4, 0)) {
+    const int roll = std::rand() % 4;
+    switch (roll >= 0 ? roll : 0) {
     case 0:
       return "_enemy_hit_normal1.wav";
     case 1:
@@ -85,7 +88,8 @@ const char* CSession::GetWeaponHitWaveName(int weapon) {
   }
 
   if (realWeapon == 0) {
-    switch (std::max(std::rand() % 4, 0)) {
+    const int roll = std::rand() % 4;
+    switch (roll >= 0 ? roll : 0) {
     case 0:
       return "_hit_fist1.wav";
     case 1:

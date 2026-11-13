@@ -2422,8 +2422,8 @@ void CSkillAction_DK_DRAGONIC_BREATH::OnSkillHit(int level, CGameActor* source, 
 
     const int first = std::rand() % 10;
     const int second = std::rand() % 10;
-    const int jitterX = std::max(second, 0);
-    const int jitterY = std::max(first, 0);
+    const int jitterX = second >= 0 ? second : 0;
+    const int jitterY = first >= 0 ? first : 0;
     effect->position[0] = static_cast<float>((i % 2) * 10 - jitterX) + source->render.position.x;
     effect->position[2] = source->render.position.z + 0.0f;
     effect->position[1] = static_cast<float>((i % 4) / 2 * 10 - jitterY) + source->render.position.y;
@@ -3239,8 +3239,9 @@ void CSkillAction_HN_HELLS_DRIVE::OnSkillEffect(int level, CGameActor* source, C
     }
 
     effects = g_effectMgr;
+    const int variant = std::rand() % 3;
     if (CEffect* effect = effects->Spawn(
-          0, CEZ2STREffectMgr::GetInstance()->EffectId(FormatOwnedString("hells_drive_%02d", std::max(std::rand() % 3, 0))), source->render.position, 0, -1, 0, 0
+          0, CEZ2STREffectMgr::GetInstance()->EffectId(FormatOwnedString("hells_drive_%02d", variant >= 0 ? variant : 0)), source->render.position, 0, -1, 0, 0
         )) {
       const vector3d position = {offsetX + source->render.position.x, source->render.position.y + 0.0f, offsetZ + source->render.position.z};
       effect->position[0] = position.x;
