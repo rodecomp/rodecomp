@@ -135,7 +135,7 @@ int UICaptchaRegisterWnd::SendMsg(
               this->m_decompressedData = std::malloc(this->m_decompressedSize);
               compress(
                 static_cast<Bytef*>(this->m_decompressedData),
-                reinterpret_cast<uLongf*>(&this->m_decompressedSize),
+                &this->m_decompressedSize,
                 static_cast<const Bytef*>(file.GetData()),
                 file.GetSize()
               );

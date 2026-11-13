@@ -27,7 +27,7 @@ public:
   /* 00C4 */ UIBitmapButton* registerButton;
   /* 00C8 */ std::string m_selectedFile;
   /* 00E0 */ void* m_decompressedData;
-  /* 00E4 */ unsigned int m_decompressedSize;
+  /* 00E4 */ unsigned long m_decompressedSize;
 };
 
 #endif
