@@ -136,15 +136,27 @@ public:
   virtual ~CSkillInfo();
   __declspec(noinline) bool IsValid() const;
   bool MatchesShortcut(const NormalItemSlot* slot) const;
-  int UseApAmount(LuaScript& script, int skillLevel) const;
-  int UseSpAmount(LuaScript& script, int skillLevel) const;
+  int UseApAmount(int skillLevel) const;
+  // INLINED
+  __declspec(noinline) int UseApAmount(LuaScript&, int skillLevel) const {
+    return this->UseApAmount(skillLevel);
+  }
+  int UseSpAmount(int skillLevel) const;
+  // INLINED
+  __declspec(noinline) int UseSpAmount(LuaScript&, int skillLevel) const {
+    return this->UseSpAmount(skillLevel);
+  }
   const char* DisplayName() const;
   const char* IdName() const;
   // INLINED
   __declspec(noinline) const char* IdName(LuaScript&) const {
     return this->IdName();
   }
-  static const char* DisplayName(LuaScript& script, int skillId);
+  static const char* DisplayName(int skillId);
+  // INLINED
+  __declspec(noinline) static const char* DisplayName(LuaScript&, int skillId) {
+    return CSkillInfo::DisplayName(skillId);
+  }
   static const char* IdName(int skillId);
   // INLINED
   __declspec(noinline) static const char* IdName(LuaScript&, int skillId) {

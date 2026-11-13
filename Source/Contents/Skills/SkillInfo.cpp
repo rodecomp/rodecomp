@@ -559,29 +559,29 @@ bool CSkillInfo::MatchesShortcut(const NormalItemSlot* slot) const {
 
 // OFFSET: 0x00773550
 // FUNCTION: fn_08313
-int CSkillInfo::UseApAmount(LuaScript& script, int skillLevel) const {
+int CSkillInfo::UseApAmount(int skillLevel) const {
   int amount = 0;
-  script.Call("GetLevelUseApAmount", "dd>d", static_cast<int>(this->id), skillLevel, &amount);
+  g_session.m_hotkeyScript->Call("GetLevelUseApAmount", "dd>d", static_cast<int>(this->id), skillLevel, &amount);
   return amount;
 }
 
 // OFFSET: 0x00773620
 // FUNCTION: fn_08314
-int CSkillInfo::UseSpAmount(LuaScript& script, int skillLevel) const {
+int CSkillInfo::UseSpAmount(int skillLevel) const {
   int amount = 0;
-  script.Call("GetLevelUseSpAmount", "dd>d", static_cast<int>(this->id), skillLevel, &amount);
+  g_session.m_hotkeyScript->Call("GetLevelUseSpAmount", "dd>d", static_cast<int>(this->id), skillLevel, &amount);
   return amount;
 }
 
 // OFFSET: 0x007736F0
 // FUNCTION: fn_08315
 const char* CSkillInfo::DisplayName() const {
-  return CSkillInfo::DisplayName(*g_session.m_hotkeyScript, static_cast<int>(this->id));
+  return CSkillInfo::DisplayName(static_cast<int>(this->id));
 }
 
 // OFFSET: 0x00773920
 // FUNCTION: fn_08318
-const char* CSkillInfo::DisplayName(LuaScript&, int skillId) {
+const char* CSkillInfo::DisplayName(int skillId) {
   switch (skillId) {
   case SU_CN_METEOR2:
     skillId = SU_CN_METEOR;

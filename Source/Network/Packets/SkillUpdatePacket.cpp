@@ -65,7 +65,7 @@ void CGameMode::ReceiveLearnedSkill(
   value.spCost = spCost;
   value.range = range;
   value.learnedLevel = learnedLevel;
-  value.apCost = value.UseApAmount(*g_session.m_hotkeyScript, level);
+  value.apCost = value.UseApAmount(level);
 
   g_session.m_skillBundle.RecordLevelChange(value);
   if (value.id == 336) {

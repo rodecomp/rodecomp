@@ -11273,7 +11273,7 @@ void NoticeSkillUse(CGameActor* target, CGameActor* source, std::uint16_t skillI
     message += text;
   }
 
-  const std::string skillName = CSkillInfo::DisplayName(*g_session.m_hotkeyScript, skillId);
+  const std::string skillName = CSkillInfo::DisplayName(skillId);
   StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(MSI_NOTIFY_SKILL_TO_TARGET), skillName.c_str());
   message += text;
   if (!message.empty()) {
