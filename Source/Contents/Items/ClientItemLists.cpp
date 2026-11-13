@@ -646,15 +646,15 @@ void CGameMode::ReceiveItemListPart(unsigned char listType, int count, const uns
     item.refiningLevel = 0;
     item.flags[0] = (record->flags >> 1) & 1;
     switch (listType) {
+    case INVTYPE_STORAGE:
+    case INVTYPE_GUILD_STORAGE:
+      g_session.AddCartItem(item, 0);
+      break;
     case INVTYPE_INVENTORY:
       g_session.UpdateInventoryItem(item, 0);
       break;
     case INVTYPE_CART:
       g_session.AddMerchantShopItem(item);
-      break;
-    case INVTYPE_STORAGE:
-    case INVTYPE_GUILD_STORAGE:
-      g_session.AddCartItem(item, 0);
       break;
     }
   }

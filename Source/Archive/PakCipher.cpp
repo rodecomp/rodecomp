@@ -85,28 +85,28 @@ namespace myGPack {
       switch (value) {
       case 0x00:
         return 0x2B;
-      case 0x01:
-        return 0x68;
       case 0x2B:
         return 0x00;
-      case 0x48:
-        return 0x77;
-      case 0x60:
-        return 0xFF;
-      case 0x68:
-        return 0x01;
-      case 0x6C:
-        return 0x80;
-      case 0x77:
-        return 0x48;
-      case 0x80:
-        return 0x6C;
       case 0xB9:
         return 0xC0;
       case 0xC0:
         return 0xB9;
       case 0xEB:
         return 0xFE;
+      case 0x6C:
+        return 0x80;
+      case 0x80:
+        return 0x6C;
+      case 0x01:
+        return 0x68;
+      case 0x68:
+        return 0x01;
+      case 0x77:
+        return 0x48;
+      case 0x48:
+        return 0x77;
+      case 0x60:
+        return 0xFF;
       case 0xFE:
         return 0xEB;
       case 0xFF:
