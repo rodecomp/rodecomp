@@ -1093,8 +1093,9 @@ void RenewQuestUI::CUIQuestList::BindItem(CUIQuestItem* item, const unsigned lon
   item->questType = this->type;
   item->questId = questId;
   if (this->type == 2) {
-    auto found = g_renewQuestMgr->m_recommendedQuests.find(questId);
-    if (found == g_renewQuestMgr->m_recommendedQuests.end()) {
+    auto& quests = g_renewQuestMgr->m_recommendedQuests;
+    auto found = quests.find(questId);
+    if (found == quests.end()) {
       return;
     }
 
@@ -1105,13 +1106,15 @@ void RenewQuestUI::CUIQuestList::BindItem(CUIQuestItem* item, const unsigned lon
     item->descriptionText->SetText(info.summary);
     item->simpleViewCheckBox->Show(0);
     item->activeCheckBox->Show(1);
-    item->activeCheckBox->checked = info.m_active;
-    item->activeCheckBox->Invalidate();
+    CUICheckBox* activeCheckBox = item->activeCheckBox;
+    activeCheckBox->checked = info.m_active;
+    activeCheckBox->Invalidate();
     std::string tooltip = LookupMessage(MSI_SAVE_ID);
     item->activeCheckBox->tooltip = tooltip;
   } else {
-    auto found = g_renewQuestMgr->m_ongoingQuests.find(questId);
-    if (found == g_renewQuestMgr->m_ongoingQuests.end()) {
+    auto& quests = g_renewQuestMgr->m_ongoingQuests;
+    auto found = quests.find(questId);
+    if (found == quests.end()) {
       return;
     }
 
@@ -1121,11 +1124,13 @@ void RenewQuestUI::CUIQuestList::BindItem(CUIQuestItem* item, const unsigned lon
     item->titleText->SetText(info.m_title);
     item->descriptionText->SetText(info.summary);
     item->simpleViewCheckBox->Show(this->type != 8);
-    item->simpleViewCheckBox->checked = info.m_simpleView;
-    item->simpleViewCheckBox->Invalidate();
+    CUICheckBox* simpleViewCheckBox = item->simpleViewCheckBox;
+    simpleViewCheckBox->checked = info.m_simpleView;
+    simpleViewCheckBox->Invalidate();
     item->activeCheckBox->Show(this->type != 8);
-    item->activeCheckBox->checked = info.m_active;
-    item->activeCheckBox->Invalidate();
+    CUICheckBox* activeCheckBox = item->activeCheckBox;
+    activeCheckBox->checked = info.m_active;
+    activeCheckBox->Invalidate();
     std::string tooltip = LookupMessage(MSI_OTP_INPUT_TIME);
     item->activeCheckBox->tooltip = tooltip;
   }
