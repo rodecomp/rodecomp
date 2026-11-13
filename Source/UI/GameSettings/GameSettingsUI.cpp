@@ -119,7 +119,7 @@ void GameSettingsUI::CUIGroupSkin::OnCreate(int width, int height) {
 // FUNCTION: fn_15410
 template <class T, class D> void CUIComboBox<T, D>::Paint() {
   this->ClearSurface(0xFFFFFFFF);
-  DrawRectangleBorder(*this, 0, 0, this->geometry.width, this->geometry.height, 0xC6C6C6);
+  this->DrawRectOutline(0, 0, this->geometry.width, this->geometry.height, 0xC6C6C6);
 }
 
 template void CUIComboBox<GameSettingsUI::CUIComboItem, std::string>::Paint();
@@ -1292,7 +1292,7 @@ void CUIGroupTextureDetailLevel::Paint() {
 // FUNCTION: fn_15982
 void CUIListPage::Paint() {
   this->ClearSurface(0xFFFF00FF);
-  DrawRectangleBorder(*this, 0, 0, this->geometry.width, this->geometry.height, 0xCECECE);
+  this->DrawRectOutline(0, 0, this->geometry.width, this->geometry.height, 0xCECECE);
 }
 
 // OFFSET: 0x00A40BF0
@@ -1305,7 +1305,7 @@ void CUIOptionItem::Paint() {
 // FUNCTION: fn_15984
 void CUIPage::Paint() {
   this->ClearSurface(0xFFFF00FF);
-  DrawRectangleBorder(*this, 0, 0, this->geometry.width, this->geometry.height, 0xCECECE);
+  this->DrawRectOutline(0, 0, this->geometry.width, this->geometry.height, 0xCECECE);
 }
 
 // OFFSET: 0x00A40030

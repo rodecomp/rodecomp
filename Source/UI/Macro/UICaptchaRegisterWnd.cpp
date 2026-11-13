@@ -104,9 +104,9 @@ void UICaptchaRegisterWnd::OnCreate(int width, int height) {
 // OFFSET: 0x007EA8D0
 // FUNCTION: fn_09789
 void UICaptchaRegisterWnd::Paint() {
-  DrawFilledRoundedBorder(*this, 0, 0, this->geometry.width, this->geometry.height, 0xFFFFFFFF);
+  this->DrawFilledRoundedOutline(0, 0, this->geometry.width, this->geometry.height, 0xFFFFFFFF);
   this->DrawTitleBar(true, "", 0);
-  DrawRectangleBorder(*this, 34, 80, 222, 92, 0);
+  this->DrawRectOutline(34, 80, 222, 92, 0);
 }
 
 // OFFSET: 0x007EA910

@@ -27,8 +27,8 @@ void UINoteWnd::OnCreate(int width, int height) {
 // FUNCTION: fn_12907
 void UINoteWnd::Paint() {
   this->ClearSurface(0xFFFF00FF);
-  DrawFilledRoundedBorder(*this, 0, 0, this->geometry.width, this->geometry.height, 0xFFFFFF);
-  DrawRoundedBorder(*this, 2, 2, this->geometry.width - 4, this->geometry.height - 4, 0xC8C8C8);
+  this->DrawFilledRoundedOutline(0, 0, this->geometry.width, this->geometry.height, 0xFFFFFF);
+  this->DrawRoundedOutline(2, 2, this->geometry.width - 4, this->geometry.height - 4, 0xC8C8C8);
   this->FillRegion(8, 8, this->geometry.width - 16, this->geometry.height - 38, 0xF7F7F7);
 }
 

@@ -646,12 +646,12 @@ void UIGraffiStrboxWnd::Paint() {
 // INLINED
 static __forceinline void DrawParamChangeArrow(UIWindow& window, int x, int before, int after) {
   if (before < after) {
-    FillTriangle(window, x + 4, 11, x, 19, x + 8, 19, 0xFF);
+    window.FillTriangleRegion(x + 4, 11, x, 19, x + 8, 19, 0xFF);
   } else if (before == after) {
-    FillTriangle(window, x, 13, x + 8, 13, x, 17, 0x505050);
-    FillTriangle(window, x + 8, 13, x, 17, x + 8, 17, 0x505050);
+    window.FillTriangleRegion(x, 13, x + 8, 13, x, 17, 0x505050);
+    window.FillTriangleRegion(x + 8, 13, x, 17, x + 8, 17, 0x505050);
   } else {
-    FillTriangle(window, x, 11, x + 8, 11, x + 4, 19, 0xFF0000);
+    window.FillTriangleRegion(x, 11, x + 8, 11, x + 4, 19, 0xFF0000);
   }
 }
 
@@ -1357,8 +1357,8 @@ void UISkillDescribeWnd::Paint() {
     text->geometry.width + text->geometry.x, text->geometry.y, this->geometry.width - text->geometry.width - text->geometry.x - 3, text->geometry.height,
     RGB(red, green, blue)
   );
-  DrawRoundedBorder(*this, 0, 0, this->geometry.width, this->geometry.height, 0xC3C3C3);
-  DrawRoundedBorder(*this, 2, 2, this->geometry.width - 4, this->geometry.height - 4, 0xFFFFFF);
+  this->DrawRoundedOutline(0, 0, this->geometry.width, this->geometry.height, 0xC3C3C3);
+  this->DrawRoundedOutline(2, 2, this->geometry.width - 4, this->geometry.height - 4, 0xFFFFFF);
 }
 
 // OFFSET: 0x008F04B0
@@ -1543,7 +1543,7 @@ void UIWhisperWnd::Paint() {
     std::sprintf(title, "With  %s", this->m_name.c_str());
   }
 
-  DrawRoundedBorder(*this, 0, 0, this->geometry.width, this->geometry.height, 0xC0C0C0);
+  this->DrawRoundedOutline(0, 0, this->geometry.width, this->geometry.height, 0xC0C0C0);
   this->FillRegion(1, this->geometry.height - 20, this->geometry.width - 2, 1, 0xC0C0C0);
   this->DrawTextAt(10, 3, title, 0, 0, 12, 0xFFFFFF, 0, 0);
 }

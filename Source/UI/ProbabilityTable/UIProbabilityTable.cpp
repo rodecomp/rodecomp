@@ -755,8 +755,8 @@ void CUIItem::Paint() {
 // OFFSET: 0x00A4E180
 // FUNCTION: fn_16201
 void CUIProbabilityTable::Paint() {
-  DrawFilledRoundedBorder(*this, 0, 0, this->geometry.width, this->geometry.height, 0xFFFFFFFF);
-  DrawRoundedBorder(*this, 0, 0, this->geometry.width, this->geometry.height, 0xFF808080);
+  this->DrawFilledRoundedOutline(0, 0, this->geometry.width, this->geometry.height, 0xFFFFFFFF);
+  this->DrawRoundedOutline(0, 0, this->geometry.width, this->geometry.height, 0xFF808080);
   this->FillRegion(10, 60, 312, 25, 0xFF99E5FF);
   this->FillRegion(10, 60, 312, 1, 0xFFCEADA5);
   for (int y = 84; y <= 444; y += 30) {

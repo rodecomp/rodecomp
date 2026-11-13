@@ -1461,16 +1461,16 @@ void UIReplayControlWnd::Paint() {
 // FUNCTION: fn_11775
 void UIReplayRECControlWnd::Paint() {
   this->ClearSurface(0xFFFF00FF);
-  DrawFilledRoundedBorder(*this, 0, 0, this->geometry.width, 34, 0xF5B899);
-  DrawRoundedBorder(*this, 0, 0, this->geometry.width, 34, 0x945A63);
-  DrawRoundedBorder(*this, 1, 1, this->geometry.width - 2, 32, 0xF7C6AD);
-  DrawRoundedBorder(*this, 2, 2, this->geometry.width - 4, 30, 0xFFFFFF);
-  DrawRoundedBorder(*this, 3, 3, this->geometry.width - 6, 28, 0xAD7B84);
+  this->DrawFilledRoundedOutline(0, 0, this->geometry.width, 34, 0xF5B899);
+  this->DrawRoundedOutline(0, 0, this->geometry.width, 34, 0x945A63);
+  this->DrawRoundedOutline(1, 1, this->geometry.width - 2, 32, 0xF7C6AD);
+  this->DrawRoundedOutline(2, 2, this->geometry.width - 4, 30, 0xFFFFFF);
+  this->DrawRoundedOutline(3, 3, this->geometry.width - 6, 28, 0xAD7B84);
 
   if (this->mode == 2) {
-    DrawFilledRoundedBorder(*this, 0, 34, this->geometry.width, this->geometry.height - 34, 0xDEDEDE);
-    DrawFilledRoundedBorder(*this, 4, 38, this->geometry.width - 8, 95, 0xFFFFFF);
-    DrawFilledRoundedBorder(*this, 4, 138, this->geometry.width - 8, 57, 0xFFFFFF);
+    this->DrawFilledRoundedOutline(0, 34, this->geometry.width, this->geometry.height - 34, 0xDEDEDE);
+    this->DrawFilledRoundedOutline(4, 38, this->geometry.width - 8, 95, 0xFFFFFF);
+    this->DrawFilledRoundedOutline(4, 138, this->geometry.width - 8, 57, 0xFFFFFF);
     this->DrawOutlinedText(10, 42, LookupMessage(MSI_REPLAY_SETREPLAYSAVEDATA), 0, 0x7F3C00, 0xFFFFFF, 0, 12, 1, 0);
     this->DrawOutlinedText(10, 142, LookupMessage(MSI_REPLAY_SETRECOPTION), 0, 0x7F3C00, 0xFFFFFF, 0, 12, 1, 0);
   }

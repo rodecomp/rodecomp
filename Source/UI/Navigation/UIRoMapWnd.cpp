@@ -294,9 +294,9 @@ void UIRoMapWnd::DrawRecordBorders() {
     const int width = it->right - it->left;
     const int height = it->bottom - it->top;
     if (mapName == it->name) {
-      DrawRoundedBorder(*this, it->left, it->top, width, height, 0x23AEE8);
+      this->DrawRoundedOutline(it->left, it->top, width, height, 0x23AEE8);
     } else {
-      DrawRoundedBorder(*this, it->left, it->top, width, height, 0x7EE2F7);
+      this->DrawRoundedOutline(it->left, it->top, width, height, 0x7EE2F7);
     }
   }
 }
@@ -641,7 +641,7 @@ void UIRoMapWnd::DrawMapMarker(const RoMapMarker& marker, unsigned char skipSele
     }
   }
 
-  DrawRoundedBorder(*this, marker.area.left, marker.area.top, static_cast<int>(marker.width), static_cast<int>(marker.height), 0xFFFFFF);
+  this->DrawRoundedOutline(marker.area.left, marker.area.top, static_cast<int>(marker.width), static_cast<int>(marker.height), 0xFFFFFF);
   DrawAlphaRectangle(marker.area.left, marker.area.top, static_cast<int>(marker.width), static_cast<int>(marker.height), 0x66000000);
   std::string name = g_session.GetMapDisplayName(marker.name.c_str());
   this->DrawOutlinedText(marker.area.left + 2, marker.area.top + 5, name.c_str(), 0, 0xD2FF, 0, 0, 12, 1, 0);

@@ -40,7 +40,7 @@ void UIWindow::DrawPanelBackground(int y, int width, const char* bitmapName) {
   unsigned green;
   unsigned blue;
   g_skinInfo.PaletteChannels(14, 6, red, green, blue);
-  DrawRoundedBorder(*this, 0, y, width, this->geometry.height - y, RGB(red, green, blue));
+  this->DrawRoundedOutline(0, y, width, this->geometry.height - y, RGB(red, green, blue));
   this->FillRegion(0, y, width, 5, RGB(red, green, blue));
 
   g_skinInfo.PaletteChannels(2, 2, red, green, blue);
@@ -69,7 +69,7 @@ void UIWindow::DrawPanelBackgroundAt(int x, int y, int width, const char* bitmap
   unsigned blue;
   g_skinInfo.PaletteChannels(14, 6, red, green, blue);
   COLORREF color = RGB(red, green, blue);
-  DrawRoundedBorder(*this, x, y, width, height - y, color);
+  this->DrawRoundedOutline(x, y, width, height - y, color);
   this->FillRegion(x, y, width, 5, color);
 
   g_skinInfo.PaletteChannels(2, 2, red, green, blue);

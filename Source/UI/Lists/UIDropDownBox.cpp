@@ -62,7 +62,7 @@ void CUIDropDownBox::Paint() {
   this->ClearSurface(background);
 
   const std::uint32_t border = 0x00C6C6C6u;
-  DrawRectangleBorder(*this, 0, 0, this->geometry.width, this->geometry.height, border);
+  this->DrawRectOutline(0, 0, this->geometry.width, this->geometry.height, border);
 }
 
 // OFFSET: 0x00AA27B0

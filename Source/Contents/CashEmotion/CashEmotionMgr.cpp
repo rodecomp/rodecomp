@@ -2348,7 +2348,7 @@ void UICashEmotionListWnd::Paint() {
   const int width = this->geometry.width - 30;
   const int top = this->DrawTitleBarAt(29, width, false, LookupMessage(MSI_EMOTION_LIST));
   this->DrawPanelBackgroundAt(29, top, width, nullptr);
-  DrawRectangleBorder(*this, 60, 22, 161, 18, 0xB5B5B5);
+  this->DrawRectOutline(60, 22, 161, 18, 0xB5B5B5);
   this->FillRegion(29, 46, width, 1, 0xCECECE);
   this->DrawButtonBarAt(2, 29, width, 1);
 }
@@ -3563,7 +3563,7 @@ void UICashEmotionPiece::Paint() {
     unsigned green;
     unsigned blue;
     g_skinInfo.PaletteChannels(14, 6, red, green, blue);
-    DrawRoundedBorder(*this, 0, 0, this->geometry.width, this->geometry.height, RGB(red, green, blue));
+    this->DrawRoundedOutline(0, 0, this->geometry.width, this->geometry.height, RGB(red, green, blue));
   }
 }
 

@@ -64,7 +64,7 @@ void CUIFrameWnd::Paint() {
   if (this->m_hasSkinColors) {
     this->ClearSurface(0xFFFF00FF);
     this->FillRegion(1, 1, this->geometry.width - 2, this->geometry.height - 2, this->m_backgroundColor);
-    DrawRoundedBorder(*this, 0, 0, this->geometry.width, this->geometry.height, this->m_borderColor);
+    this->DrawRoundedOutline(0, 0, this->geometry.width, this->geometry.height, this->m_borderColor);
   }
 
   if (this->m_buttonBarStyle > 0) {

@@ -126,7 +126,7 @@ void UIMacroDetectorWnd::Paint() {
   this->DrawTitleBar(false, "", 0);
   this->DrawButtonBar(0, 0, 1);
   this->FillRegion(0, 16, this->geometry.width, this->geometry.height - 36, 0xFFFFFFFF);
-  DrawRectangleBorder(*this, 0, 16, this->geometry.width, this->geometry.height - 36, 0xC6C6C6);
+  this->DrawRectOutline(0, 16, this->geometry.width, this->geometry.height - 36, 0xC6C6C6);
 
   this->DrawTextAt(25, 28, LookupMessage(MSI_MACRO_DETECTOR_REMAIN_COUNT), 0, 0, 12, 0, 1, 0);
   this->DrawTextAt(25, 45, LookupMessage(MSI_MACRO_REPORTER_SELECT_MODE_CHAR), 0, 0, 12, 0, 1, 0);

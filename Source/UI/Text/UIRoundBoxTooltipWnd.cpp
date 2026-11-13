@@ -79,8 +79,8 @@ void UIColoringTextViewer::Paint() {
 // OFFSET: 0x0099A3F0
 // FUNCTION: fn_13542
 void UIRoundBoxTooltipWnd::Paint() {
-  DrawFilledRoundedBorder(*this, 0, 0, this->geometry.width, this->geometry.height, 0xEFB8B8);
-  DrawFilledRoundedBorder(*this, 1, 1, this->geometry.width - 2, this->geometry.height - 2, 0xEFE7E7);
+  this->DrawFilledRoundedOutline(0, 0, this->geometry.width, this->geometry.height, 0xEFB8B8);
+  this->DrawFilledRoundedOutline(1, 1, this->geometry.width - 2, this->geometry.height - 2, 0xEFE7E7);
 }
 
 // OFFSET: 0x0099A430

@@ -640,8 +640,8 @@ void UICustomGageBar::Paint() {
     return;
   }
 
-  DrawRectangleBorder(*this, 0, 0, this->geometry.width, this->geometry.height, this->outerBorderColor);
-  DrawRectangleBorder(*this, 1, 1, this->geometry.width - 2, this->geometry.height - 2, this->innerBorderColor);
+  this->DrawRectOutline(0, 0, this->geometry.width, this->geometry.height, this->outerBorderColor);
+  this->DrawRectOutline(1, 1, this->geometry.width - 2, this->geometry.height - 2, this->innerBorderColor);
   this->FillRegion(2, 2, this->geometry.width - 4, this->geometry.height - 4, this->backgroundColor);
 
   const float percent = static_cast<float>(this->value) * 100.0f / static_cast<float>(this->maximum);

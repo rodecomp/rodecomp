@@ -2716,7 +2716,7 @@ void UINewComboBoxCtrl::Paint() {
   this->FillRegion(0, 0, this->geometry.width, this->geometry.height, RGB(this->red, this->green, this->blue));
 
   if (!this->borderless) {
-    DrawRectangleBorder(*this, 0, 0, this->geometry.width, this->geometry.height, RGB(this->borderRed, this->borderGreen, this->borderBlue));
+    this->DrawRectOutline(0, 0, this->geometry.width, this->geometry.height, RGB(this->borderRed, this->borderGreen, this->borderBlue));
   }
 }
 
