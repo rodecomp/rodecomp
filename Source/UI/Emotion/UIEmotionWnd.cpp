@@ -91,7 +91,7 @@ void UIEmotionWnd::OnCreate(int, int) {
   this->m_edits[0]->SetCursor(0xff);
 
   for (int i = 0; i < 10; ++i) {
-    HotkeyInfo info = GetHotkeyInfo(*g_session.m_hotkeyScript, 2, i);
+    HotkeyInfo info = g_session.GetHotkeyInfo(2, i);
     if (!info.description.empty()) {
       this->m_labels[i]->SetText(info.text.c_str(), 0);
     }

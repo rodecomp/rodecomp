@@ -4023,12 +4023,12 @@ void UIReplayControlWnd::OnCreate(int, int) {
   this->AddChild(this->m_pauseButton);
 
   HotkeyInfo hotkey;
-  hotkey = GetHotkeyInfo(*g_session.m_hotkeyScript, 1, 39);
+  hotkey = g_session.GetHotkeyInfo(1, 39);
   this->m_playButton->SetTooltip(hotkey.text.c_str());
   this->m_pauseButton->SetTooltip(hotkey.text.c_str());
-  hotkey = GetHotkeyInfo(*g_session.m_hotkeyScript, 1, 40);
+  hotkey = g_session.GetHotkeyInfo(1, 40);
   static_cast<UIButton*>(this->m_buttons[2])->SetTooltip(hotkey.text.c_str());
-  hotkey = GetHotkeyInfo(*g_session.m_hotkeyScript, 1, 41);
+  hotkey = g_session.GetHotkeyInfo(1, 41);
   static_cast<UIButton*>(this->m_buttons[3])->SetTooltip(hotkey.text.c_str());
 
   this->m_progress = new UIBarGraph4();

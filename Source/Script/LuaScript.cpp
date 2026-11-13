@@ -1333,9 +1333,9 @@ int UIWindowMgr::GetHotkeyBehavior() {
   if (this->modifierKey == VK_SHIFT && !g_windowMgr.inputSuggestionsEnabled) {
     UIWindow* parent = this->hoverWindow ? this->hoverWindow->parent : nullptr;
     if (!parent || parent == this->chatWnd || parent->geometry.visible == 0) {
-      const int count = HotkeyCount(*g_session.m_hotkeyScript, 0);
+      const int count = g_session.HotkeyCount(0);
       for (int index = 0; index < count; ++index) {
-        const HotkeyInfo hotkey = GetHotkeyInfo(*g_session.m_hotkeyScript, 0, index);
+        const HotkeyInfo hotkey = g_session.GetHotkeyInfo(0, index);
         if (hotkey.key1 == this->keyCode && g_session.m_shortcutSlots[index].enabled != 0) {
           return index;
         }

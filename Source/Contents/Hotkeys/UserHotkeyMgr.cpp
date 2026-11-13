@@ -87,6 +87,11 @@ int HotkeyCount(LuaScript& script, int tab) {
   return count;
 }
 
+// INLINED
+int CSession::HotkeyCount(int tab) const {
+  return ::HotkeyCount(*g_session.m_hotkeyScript, tab);
+}
+
 // STATIC: 0x013898E4
 // GLOBAL: gl_24356
 CUserHotkeyMgr* g_userHotkeyMgr;

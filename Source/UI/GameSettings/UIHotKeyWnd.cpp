@@ -238,7 +238,7 @@ int UIHotKeyWnd::RowFromPoint(int x, int y) {
     row += this->m_rowsPerPage;
   }
 
-  const int count = HotkeyCount(*g_session.m_hotkeyScript, this->m_tab);
+  const int count = g_session.HotkeyCount(this->m_tab);
 
   if (row < count) {
     return row;
@@ -639,7 +639,7 @@ int UIHotKeyWnd::CheckHotkeyConflict() {
       continue;
     }
 
-    const int count = HotkeyCount(*g_session.m_hotkeyScript, tab);
+    const int count = g_session.HotkeyCount(tab);
     for (int index = 0; index < count; ++index) {
       const HotkeyEntry entry = this->GetHotkey(tab, index, true);
       HotkeyInfo info = entry.info;
@@ -662,7 +662,7 @@ int UIHotKeyWnd::CheckHotkeyConflict() {
       this->SetHotkey(tab, entry.index, info);
 
       if (tab == 0 && this->m_tab != 0) {
-        const int shortcutCount = HotkeyCount(*g_session.m_hotkeyScript, 3);
+        const int shortcutCount = g_session.HotkeyCount(3);
         for (int shortcut = 0; shortcut < shortcutCount; ++shortcut) {
           const HotkeyEntry other = this->GetHotkey(3, shortcut, true);
           HotkeyInfo otherInfo = other.info;
@@ -706,7 +706,7 @@ int UIHotKeyWnd::SendMsg(
       this->m_paged = 0;
       this->m_page = 1;
 
-      const int count = HotkeyCount(*g_session.m_hotkeyScript, tab);
+      const int count = g_session.HotkeyCount(tab);
       if (count > 36) {
         this->m_paged = 1;
         this->m_pageCount = count / 36;
