@@ -139,7 +139,7 @@ static void AllocateTextures(EffectPrimitiveState& particle) {
 
 // INLINED
 static void PlayEffectWave(const CRagEffect& effect, const char* name) {
-  const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+  const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
   g_soundMgr->PlayWave(
     name, effect.render.position.x - player->render.position.x, 0.0f, effect.render.position.z - player->render.position.z, 250, 40, 1.0f, 0
   );
@@ -2176,7 +2176,7 @@ bool CRagEffect::Signum() {
   this->state.tlvertY = screen.y;
 
   if (this->state.stateCnt == 30) {
-    const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+    const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
     g_soundMgr->PlayWave(
       "effect\\EF_Signum.wav", this->render.position.x - player->render.position.x, 0.0f, this->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
     );
@@ -5250,7 +5250,7 @@ void CRagEffect::FirstAid() {
     return;
   }
 
-  const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+  const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
   g_soundMgr->PlayWave(
     "_heal_effect.wav", this->render.position.x - player->render.position.x, 150.0f, this->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
   );
@@ -6113,7 +6113,7 @@ void CRagEffect::TexturedComet(const char* name, char kind) {
 // OFFSET: 0x00C5EC40
 // FUNCTION: fn_20240
 void CRagEffect::PokBurst() {
-  const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+  const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
   this->render.position.x = player->render.position.x;
   this->render.position.y = player->render.position.y;
   this->render.position.z = player->render.position.z;
@@ -7314,7 +7314,7 @@ void CRagEffect::TexturedRisingOrbs(const char* name, char kind) {
   CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt == 0) {
-    const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+    const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
     if (kind == 0) {
       g_soundMgr->PlayWave(
         "_heal_effect.wav", this->render.position.x - player->render.position.x, -40.0f, this->render.position.z - player->render.position.z, 250, 40,
@@ -8464,7 +8464,7 @@ void CRagEffect::TexturedTwinkleRing(const char* name, char level) {
 void CRagEffect::TetraVortexPillar(char kind) {
   CopyVector(this->render.position, this->state.parent->render.position);
 
-  const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+  const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
   switch (this->state.stateCnt) {
   case 0:
     g_soundMgr->PlayWave(
@@ -8812,7 +8812,7 @@ void CRagEffect::NotifyGameMode(char value) {
 // OFFSET: 0x00C68F20
 // FUNCTION: fn_20287
 void CRagEffect::ScatterItemIcons(char kind) {
-  const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+  const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
   this->render.position.x = player->render.position.x;
   this->render.position.y = player->render.position.y;
   this->render.position.z = player->render.position.z;
@@ -9662,7 +9662,7 @@ void CRagEffect::BeginSpellSwirl(int, const char*, char alpha) {
     return;
   }
 
-  const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+  const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
   g_soundMgr->PlayWave(
     "effect\\EF_BeginSpell.wav", this->render.position.x - player->render.position.x, -100.0f, this->render.position.z - player->render.position.z, 250, 40,
     1.0f, 0
@@ -9753,7 +9753,7 @@ void CRagEffect::SevereRainstormCylinder(int, const char*, char alpha, float dis
     return;
   }
 
-  const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+  const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
   g_soundMgr->PlayWave(
     "effect\\EF_BeginSpell.wav", this->render.position.x - player->render.position.x, -100.0f, this->render.position.z - player->render.position.z, 250, 40,
     1.0f, 0
@@ -10578,7 +10578,7 @@ void CRagEffect::StoneCurseRing() {
 // OFFSET: 0x00C49300
 // FUNCTION: fn_20166
 void CRagEffect::SkyCloud(char kind) {
-  const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+  const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
   this->render.position.x = player->render.position.x;
   this->render.position.y = player->render.position.y;
   this->render.position.z = player->render.position.z;
@@ -15461,7 +15461,7 @@ void CRagEffect::TexturedSkillAura(char type) {
     return;
   }
 
-  const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+  const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
   if (type == 0) {
     g_soundMgr->PlayWave(
       "effect\\hunter_detecting.wav", this->render.position.x - player->render.position.x, 0.0f, this->render.position.z - player->render.position.z,
@@ -17292,7 +17292,7 @@ void CRagEffect::PortalRings() {
     return;
   }
 
-  const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+  const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
   g_soundMgr->PlayWave(
     "effect\\EF_Portal.wav",
     this->render.position.x - player->render.position.x,
@@ -18748,7 +18748,7 @@ void CRagEffect::BlueSpellRings() {
   CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt == 0) {
-    const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+    const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
     g_soundMgr->PlayWave(
       "effect\\EF_BeginSpell.wav", this->render.position.x - player->render.position.x, -100.0f, this->render.position.z - player->render.position.z, 250, 40,
       1.0f, 0
@@ -18764,7 +18764,7 @@ void CRagEffect::WhiteSpellRings() {
   CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt == 0) {
-    const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+    const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
     g_soundMgr->PlayWave(
       "effect\\EF_BeginSpell.wav", this->render.position.x - player->render.position.x, -100.0f, this->render.position.z - player->render.position.z, 250, 40,
       1.0f, 0
@@ -18793,7 +18793,7 @@ void CRagEffect::BlackSpellRings(char silent) {
 
   if (this->state.stateCnt == 0) {
     if (silent == 0) {
-      const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+      const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
       g_soundMgr->PlayWave(
         "effect\\EF_BeginSpell.wav", this->render.position.x - player->render.position.x, 0.0f, this->render.position.z - player->render.position.z, 250, 40,
         1.0f, 0
@@ -20750,7 +20750,7 @@ bool CRagEffect::OnProcess3() {
   case EF_CHIMTO2:
     {
       this->render.position = this->state.parent->render.position;
-      const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+      const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
       if (this->state.stateCnt == 0) {
         g_soundMgr->PlayWave(
           "hundred.wav", this->render.position.x - player->render.position.x, 0.0f, this->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
@@ -21646,7 +21646,7 @@ bool CRagEffect::OnProcess3() {
   case EF_SOULLINK:
     {
       this->render.position = this->state.parent->render.position;
-      const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+      const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
       if (this->state.stateCnt == 0) {
         g_soundMgr->PlayWave(
           "effect\\T_캐스팅.wav", this->render.position.x - player->render.position.x, 0.0f, this->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
@@ -22502,7 +22502,7 @@ bool CRagEffect::OnProcess3() {
     this->render.position = this->state.parent->render.position;
     if (this->state.stateCnt == 0) {
       {
-        const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+        const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
         g_soundMgr->PlayWave(
           "effect\\EF_BeginSpell.wav", this->render.position.x - player->render.position.x, -100.0f, this->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
         );
@@ -22515,7 +22515,7 @@ bool CRagEffect::OnProcess3() {
     this->render.position = this->state.parent->render.position;
     if (this->state.stateCnt == 0) {
       {
-        const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+        const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
         g_soundMgr->PlayWave(
           "effect\\EF_BeginSpell.wav", this->render.position.x - player->render.position.x, -100.0f, this->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
         );
@@ -22528,7 +22528,7 @@ bool CRagEffect::OnProcess3() {
     this->render.position = this->state.parent->render.position;
     if (this->state.stateCnt == 0) {
       {
-        const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+        const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
         g_soundMgr->PlayWave(
           "effect\\EF_BeginSpell.wav", this->render.position.x - player->render.position.x, -100.0f, this->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
         );
@@ -22693,7 +22693,7 @@ bool CRagEffect::OnProcess3() {
     this->render.position = this->state.parent->render.position;
     if (this->state.stateCnt == 0) {
       {
-        const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+        const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
         g_soundMgr->PlayWave(
           "effect\\EF_BeginSpell.wav", this->render.position.x - player->render.position.x, -100.0f, this->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
         );
@@ -23052,7 +23052,7 @@ bool CRagEffect::OnProcess3() {
 
 // INLINED
 static void PlayEffectWaveAt(const CRagEffect& effect, const char* name, float height) {
-  const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+  const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
   g_soundMgr->PlayWave(
     name, effect.render.position.x - player->render.position.x, height, effect.render.position.z - player->render.position.z, 250, 40, 1.0f, 0
   );
@@ -23464,7 +23464,7 @@ bool CRagEffect::OnProcess() {
       break;
     case EF_FIREHIT:
       if (this->state.stateCnt == 0) {
-        const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+        const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
         g_soundMgr->PlayWave(
           g_session.GetEnemyHitWaveName(3), this->render.position.x - player->render.position.x, 0.0f, this->render.position.z - player->render.position.z, 250,
           40, 1.0f, 0
@@ -23798,7 +23798,7 @@ bool CRagEffect::OnProcess() {
       break;
     case EF_LORD:
     {
-      const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+      const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
       switch (this->state.stateCnt) {
       case 0:
         g_soundMgr->PlayWave(

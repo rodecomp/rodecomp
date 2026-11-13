@@ -749,7 +749,7 @@ bool CSession::AddMerchantPurchaseSavedItem(const ITEM_INFO& item, unsigned char
 
   this->merchantPurchaseSavedItems.push_back(item);
   if (refresh == 1) {
-    UIWindow* window = reinterpret_cast<UIWindow*>(alternate ? g_windowMgr.buyingShopMakeWnd : g_windowMgr.merchantShopMakeWnd);
+    UIWindow* window = static_cast<UIWindow*>(alternate ? g_windowMgr.buyingShopMakeWnd : g_windowMgr.merchantShopMakeWnd);
     if (window) {
       window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
     }
@@ -1497,7 +1497,7 @@ void CSession::RemoveInventoryItem(std::uint32_t id, int quantity) {
 // OFFSET: 0x00DFF0E0
 // FUNCTION: fn_23609
 void CSession::RefreshItem1768Window(unsigned char alternate, int argument) {
-  if (UIWindow* window = reinterpret_cast<UIWindow*>(alternate ? g_windowMgr.buyingShopMakeWnd : g_windowMgr.merchantShopMakeWnd)) {
+  if (UIWindow* window = static_cast<UIWindow*>(alternate ? g_windowMgr.buyingShopMakeWnd : g_windowMgr.merchantShopMakeWnd)) {
     window->SendMsg(nullptr, UM_REFRESHITEM, argument, 0, 0, 0);
   }
 }

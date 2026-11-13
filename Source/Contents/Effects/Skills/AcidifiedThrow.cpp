@@ -179,7 +179,7 @@ void CAcidifiedThrow::OnProcess() {
     FreeParticle(reinterpret_cast<CParticle*>(this->projectileEmitter));
     this->projectileEmitter = nullptr;
 
-    CRenderObject* player = reinterpret_cast<CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+    CRenderObject* player = reinterpret_cast<CRenderObject*>(reinterpret_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
     float soundX = player->render.position.x - this->impactPosition.x;
     float soundZ = player->render.position.z - this->impactPosition.z;
 

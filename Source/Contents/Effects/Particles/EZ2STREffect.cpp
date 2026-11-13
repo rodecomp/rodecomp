@@ -5400,7 +5400,7 @@ void CEZ2STRScreenEffect::OnProcess() {
   if (this->id == 0x851) {
     int frame = this->particle->elapsedFrames - 30;
     if (frame >= 0 && frame % 64 == 0) {
-      CRenderObject* player = reinterpret_cast<CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+      CRenderObject* player = reinterpret_cast<CRenderObject*>(reinterpret_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
       g_soundMgr->PlayWave(
         "effect\\ABC_ABYSS_SQUARE.wav", player->render.position.x - this->position[0], 0.0f, player->render.position.z - this->position[2], 250, 40, 1.0f, 0
       );

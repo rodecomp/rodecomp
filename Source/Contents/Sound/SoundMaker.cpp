@@ -236,7 +236,7 @@ bool CSoundMaker::OnProcess() {
     return true;
   }
 
-  const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+  const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
   if (!player) {
     return true;
   }

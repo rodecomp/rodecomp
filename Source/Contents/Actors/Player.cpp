@@ -2185,7 +2185,7 @@ bool CGrannyPc::OnProcess() {
 
   if (this->isPlayHitWave != 0) {
     const vector3d& player =
-      reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player)->render.position;
+      static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player)->render.position;
     g_soundMgr->PlayWave(
       reinterpret_cast<const char*>(this->hitWaveName), this->render.position.x - player.x, 0.0f,
       this->render.position.z - player.z, 250, 40, 1.0f, 0
@@ -2256,7 +2256,7 @@ bool CPc::OnProcess() {
 
   if (this->isPlayHitWave != 0) {
     const vector3d& player =
-      reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player)->render.position;
+      static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player)->render.position;
     g_soundMgr->PlayWave(
       reinterpret_cast<const char*>(this->hitWaveName), this->render.position.x - player.x, 0.0f,
       this->render.position.z - player.z, 250, 40, 1.0f, 0
@@ -2869,7 +2869,7 @@ bool CPlayer::OnProcess() {
 
   if (this->isPlayHitWave != 0) {
     const vector3d& player =
-      reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player)->render.position;
+      static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player)->render.position;
     g_soundMgr->PlayWave(
       reinterpret_cast<const char*>(this->hitWaveName), this->render.position.x - player.x, 0.0f,
       this->render.position.z - player.z, 250, 40, 1.0f, 0

@@ -2501,7 +2501,7 @@ bool CEffectPrim::Prim3DParticleGravity() {
     if (this->state.playWaveType == 1) {
       char name[52];
       std::sprintf(name, "effect\\EF_Coin%d.wav", ClampedRandom(3) + 1);
-      const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+      const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
       g_soundMgr->PlayWave(
         name, this->render.position.x - player->render.position.x, 0.0f, this->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
       );
@@ -3978,10 +3978,10 @@ void CEffectPrim::PrimSaintWing() {
     this->state.slots[index].fullDisplayAngle = static_cast<std::int16_t>(static_cast<int>(g_sinTable[this->state.slots[index].riseAngle] * 20.0f + 20.0f));
 
     if (index == 0 || index == 2) {
-      const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+      const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
       this->state.slots[index].rotStart = static_cast<std::int16_t>(static_cast<int>(player->render.angle + 135.0f));
     } else if (index == 1 || index == 3) {
-      const auto* player = reinterpret_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+      const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
       this->state.slots[index].rotStart = static_cast<std::int16_t>(static_cast<int>(player->render.angle + 45.0f));
     }
   }
