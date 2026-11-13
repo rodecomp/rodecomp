@@ -357,15 +357,15 @@ bool CGPak::ReadTableV3() {
     return false;
   }
 
-  this->m_entries.resize(this->m_entryCount);
   const std::uint8_t* cursor = decoded.data();
+  this->m_entries.resize(this->m_entryCount);
   std::uint32_t maximum = 0;
 
   for (std::uint32_t i = 0; i < this->m_entryCount; ++i) {
     const char* name = reinterpret_cast<const char*>(cursor);
-    const std::uint8_t* metadata = cursor + std::strlen(name) + 1;
-    const PakEntryFileV3* fileEntry = reinterpret_cast<const PakEntryFileV3*>(metadata);
-    cursor = metadata + sizeof(PakEntryFileV3);
+    cursor += std::strlen(name);
+    const PakEntryFileV3* fileEntry = reinterpret_cast<const PakEntryFileV3*>(cursor + 1);
+    cursor += sizeof(PakEntryFileV3) + 1;
 
     myGPack::PakEntry& entry = this->m_entries[i];
     entry.compressedSize = fileEntry->compressedSize;
