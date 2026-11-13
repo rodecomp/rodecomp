@@ -1447,9 +1447,14 @@ void UIChatHisBox::Paint() {
 // FUNCTION: fn_11563
 int UITreeView::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case UM_DEFPUSH:
-    if (sender == this->edit && this->editNode) {
-      this->SendMsg(nullptr, UM_CHANGE_TVITEM_TEXT, 0, 1, 0, 0);
+  case UM_UPPUSH:
+    if (this->verticalOverflow) {
+      this->SendMsg(this->verticalBar, UM_SCROLLVERT, -1, 0, 0, 0);
+    }
+    break;
+  case UM_DOWNPUSH:
+    if (this->verticalOverflow) {
+      this->SendMsg(this->verticalBar, UM_SCROLLVERT, 1, 0, 0, 0);
     }
     break;
   case UM_SCROLLVERT:
@@ -1481,16 +1486,6 @@ int UITreeView::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
     }
     return this->scrollRow - previous;
   }
-  case UM_UPPUSH:
-    if (this->verticalOverflow) {
-      this->SendMsg(this->verticalBar, UM_SCROLLVERT, -1, 0, 0, 0);
-    }
-    break;
-  case UM_DOWNPUSH:
-    if (this->verticalOverflow) {
-      this->SendMsg(this->verticalBar, UM_SCROLLVERT, 1, 0, 0, 0);
-    }
-    break;
   case UM_TEXT_LBTN_DblClk:
     this->selectedNode = reinterpret_cast<UITreeNode*>(a);
     if (a) {
@@ -1619,6 +1614,11 @@ int UITreeView::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       }
       this->editNode->labelButton->Move(x, y);
       this->editNode = nullptr;
+    }
+    break;
+  case UM_DEFPUSH:
+    if (sender == this->edit && this->editNode) {
+      this->SendMsg(nullptr, UM_CHANGE_TVITEM_TEXT, 0, 1, 0, 0);
     }
     break;
   default:
