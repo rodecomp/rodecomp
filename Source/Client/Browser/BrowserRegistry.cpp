@@ -39,13 +39,12 @@ void UIWindowMgr::RemoveBrowser(HWND window) {
 // OFFSET: 0x00A8C960
 // FUNCTION: fn_17138
 CWebBrowser* UIWindowMgr::EnsureSpecialBrowser(int width, int height) {
-  if (this->specialBrowser) {
-    return this->specialBrowser;
-  }
-
-  this->specialBrowser = new CWebBrowser();
-  if (this->specialBrowser && this->specialBrowser->Create(hWnd, g_instance, width, height)) {
-    this->browsers.insert(std::make_pair(this->specialBrowser->host, this->specialBrowser));
+  if (!this->specialBrowser) {
+    this->specialBrowser = new CWebBrowser();
+    if (this->specialBrowser && this->specialBrowser->Create(hWnd, g_instance, width, height)) {
+      CWebBrowser* browser = this->specialBrowser;
+      this->browsers.insert(std::pair<HWND, CWebBrowser*>(browser->host, browser));
+    }
   }
 
   return this->specialBrowser;
