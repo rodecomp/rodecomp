@@ -2393,12 +2393,10 @@ void CPetitioEffect::OnProcess() {
     }
 
     CEZ2STRParticle* particle = AsParticle(emitter);
-    const float x = this->position[0] + 0.0f;
-    const float z = this->position[2] + 0.0f;
-    const float y = this->position[1] - 12.0f;
-    particle->position.x = x;
-    particle->position.y = y;
-    particle->position.z = z;
+    const vector3d position = {this->position[0] + 0.0f, this->position[1] - 12.0f, this->position[2] + 0.0f};
+    particle->position.x = position.x;
+    particle->position.y = position.y;
+    particle->position.z = position.z;
     particle->Process(0.0f, 0.0f, 0.0f);
   }
 }
@@ -2883,12 +2881,10 @@ bool CSavageImpactEffect::IsAlive() {
 // FUNCTION: fn_07386
 void CSavageImpactEffect::OnProcess() {
   CEZ2STRParticle* particle = AsParticle(this->emitter);
-  const float x = this->position[0] + 0.0f;
-  const float z = this->position[2] + 0.0f;
-  const float y = this->position[1] - 12.0f;
-  particle->position.x = x;
-  particle->position.y = y;
-  particle->position.z = z;
+  const vector3d position = {this->position[0] + 0.0f, this->position[1] - 12.0f, this->position[2] + 0.0f};
+  particle->position.x = position.x;
+  particle->position.y = position.y;
+  particle->position.z = position.z;
   particle->Process(0.0f, 0.0f, 0.0f);
 }
 
@@ -3255,8 +3251,10 @@ void CNewCloudKillEffect::ResetMistParticle(CParticle* particle) {
 
   const int spread = ClampedRandom(15) + 2;
   const int angle = ClampedRandom(360);
-  particle->offsetZ = static_cast<float>(spread) * g_sinTable[angle];
-  particle->offsetX = static_cast<float>(spread) * g_cosTable[angle];
+  const float z = static_cast<float>(spread) * g_sinTable[angle];
+  const float x = static_cast<float>(spread) * g_cosTable[angle];
+  particle->offsetZ = z;
+  particle->offsetX = x;
   particle->offsetY = 0.0f;
   particle->scale = static_cast<float>(ClampedRandom(10)) * 0.1f + 0.5f;
   particle->speedParameter = static_cast<float>(ClampedRandom(30)) * 0.01f + 0.05f;
@@ -3387,12 +3385,13 @@ void CNewCloudKillEffect::ResetSmokeParticle(CParticle* particle) {
   particle->InitParticleQuad(particle->vertices);
 
   particle->scale = static_cast<float>(ClampedRandom(51)) * 0.1f + 7.0f;
-  particle->offsetY = particle->scale * -0.5f;
 
   const int spread = ClampedRandom(13) + 2;
   const int angle = ClampedRandom(360);
-  particle->offsetZ = static_cast<float>(spread) * g_sinTable[angle];
-  particle->offsetX = static_cast<float>(spread) * g_cosTable[angle];
+  const vector3d offset = {static_cast<float>(spread) * g_cosTable[angle], particle->scale * -0.5f, static_cast<float>(spread) * g_sinTable[angle]};
+  particle->offsetY = offset.y;
+  particle->offsetZ = offset.z;
+  particle->offsetX = offset.x;
 
   particle->frameParameters[0] = ClampedRandom(4);
   particle->effectParameter = ClampedRandom(151) + 50;
@@ -4152,12 +4151,10 @@ void CTunaPartyEffect::OnProcess() {
     particle->animationParameter = phase;
     const float cosine = ClientCos(phase) * 10.0f;
     const float sine = ClientSin(phase) * 10.0f;
-    const float y = this->position[1] - 10.0f;
-    const float x = this->position[0] + sine;
-    const float z = this->position[2] + cosine;
-    particle->position.y = y;
-    particle->position.x = x;
-    particle->position.z = z;
+    const vector3d position = {this->position[0] + sine, this->position[1] - 10.0f, this->position[2] + cosine};
+    particle->position.x = position.x;
+    particle->position.y = position.y;
+    particle->position.z = position.z;
     float angle = phase / 3.141592f * 180.0f;
     if (angle > 360.0f) {
       angle -= static_cast<float>(static_cast<int>(angle / 360.0f) * 360);
@@ -4170,8 +4167,8 @@ void CTunaPartyEffect::OnProcess() {
     if (direction < 0) {
       direction += 8;
     }
-    ++particle->elapsedFrames;
     particle->frame = direction;
+    ++particle->elapsedFrames;
   }
 }
 

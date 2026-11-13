@@ -842,9 +842,10 @@ void CNumEffect::SendMsg(
 ) {
   if (message == 14) {
     const float* position = reinterpret_cast<const float*>(static_cast<std::intptr_t>(b));
-    this->render.position.x = position[0];
-    this->render.position.y = position[1];
-    this->render.position.z = position[2];
+    float* target = &this->render.position.x;
+    target[0] = position[0];
+    target[1] = position[1];
+    target[2] = position[2];
     this->render.visible = 1;
     this->render.position.y -= 12.0f;
     this->baseHeight = this->render.position.y;

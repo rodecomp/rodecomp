@@ -733,8 +733,8 @@ bool UINewSkillListWnd::IsExtraTab(int tab) {
 // OFFSET: 0x009B0FA0
 // FUNCTION: fn_13813
 bool UINewSkillListWnd::IsSkillArea(int x, int y) {
-  int minX = 76;
   int rowHeight = 56;
+  int minX = 76;
   int yOffset = 40;
   bool inside = true;
   if (g_session.m_simplifiedSkillList != 0) {

@@ -266,7 +266,9 @@ void CWorld::SendObjectMessage(CGameObject* sender, std::uint64_t identity, int 
     return;
   }
 
-  if (identity == 0) {
+  const std::uint32_t low = static_cast<std::uint32_t>(identity);
+  const std::uint32_t high = static_cast<std::uint32_t>(identity >> 32);
+  if (low == 0 && high == 0) {
     return;
   }
 

@@ -31,20 +31,19 @@ void CHealSp::AddRing(float inner, float outer, float height, int duration) {
   const float holdFrame = static_cast<float>(this->holdFrame);
   for (int segment = 0; segment < 10; ++segment) {
     CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 1);
-    float* params = &particle->animationParameter;
     particle->effectId = this->id;
     particle->columnIndex = segment;
     particle->rowIndex = 0;
     particle->groupIndex = 1;
     particle->speedParameter = 5.0f;
     particle->scale = height;
-    params[0] = inner;
-    params[1] = outer;
-    params[2] = fadeFrame;
-    params[3] = holdFrame;
-    params[4] = static_cast<float>(duration);
-    params[5] = 0.0f;
-    params[6] = 0.0f;
+    particle->animationParameter = inner;
+    particle->animationParameters[0] = outer;
+    particle->animationParameters[1] = fadeFrame;
+    particle->animationParameters[2] = holdFrame;
+    particle->animationParameters[3] = static_cast<float>(duration);
+    particle->animationParameters[4] = 0.0f;
+    particle->animationParameters[5] = 0.0f;
     particle->SetColor(32, 176, 232);
     particle->SetTexture("effect\\alpha_down.tga");
     this->particles.push_back(particle);
