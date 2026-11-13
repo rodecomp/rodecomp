@@ -3805,7 +3805,6 @@ void UICashEmotionSprBtn::Paint() {
   int halfHeight = 0;
   int baseX = 0;
   int baseY = 0;
-  const std::uint32_t* palette = paletteRes ? paletteRes->palette : sprite->palette;
   for (unsigned index = 0; index < frame->cells.size(); ++index) {
     record = SpriteAtlasRecord{};
     const SpriteFrameCell* cell = &frame->Cell(index);
@@ -3818,6 +3817,7 @@ void UICashEmotionSprBtn::Paint() {
       continue;
     }
 
+    const std::uint32_t* palette = paletteRes ? paletteRes->palette : sprite->palette;
     CTexture* texture;
     if (cell->imageType == 0) {
       texture = g_renderer->atlas.Find(image, palette, record);
@@ -4003,7 +4003,6 @@ void UISpriteButton::Paint() {
   int halfHeight = 0;
   int baseX = 0;
   int baseY = 0;
-  const std::uint32_t* palette = paletteRes ? paletteRes->palette : sprite->palette;
   for (unsigned index = 0; index < frame.cells.size(); ++index) {
     SpriteAtlasRecord record{};
     const SpriteFrameCell& cell = frame.Cell(index);
@@ -4012,6 +4011,7 @@ void UISpriteButton::Paint() {
     }
 
     const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
+    const std::uint32_t* palette = paletteRes ? paletteRes->palette : sprite->palette;
     CTexture* texture;
     if (cell.imageType == 0) {
       texture = g_renderer->atlas.Find(image, palette, record);
