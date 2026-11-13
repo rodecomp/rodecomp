@@ -583,23 +583,22 @@ void CSoundMgr::PlayStream(const char* name, int loopCount, bool fade) {
       return;
     }
 
-    this->secondaryStream = MilesRuntime::Get().openStream(this->driver, this->currentName.c_str(), 0);
+    this->secondaryStream = AIL_open_stream(this->driver, this->currentName.c_str(), 0);
     const std::string copiedName(name);
     return;
   }
 
   this->StopStreams();
   this->currentName.assign(name);
-  MilesRuntime& miles = MilesRuntime::Get();
-  this->stream = miles.openStream(this->driver, this->currentName.c_str(), 0);
+  this->stream = AIL_open_stream(this->driver, this->currentName.c_str(), 0);
 
   {
     const std::string copiedName(name);
   }
 
-  miles.setStreamVolume(this->stream, this->streamVolume);
-  miles.setStreamLoopCount(this->stream, loopCount);
-  miles.startStream(this->stream);
+  AIL_set_stream_volume(this->stream, this->streamVolume);
+  AIL_set_stream_loop_count(this->stream, loopCount);
+  AIL_start_stream(this->stream);
 }
 
 // OFFSET: 0x0063A130
