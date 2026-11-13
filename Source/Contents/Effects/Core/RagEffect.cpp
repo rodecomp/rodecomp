@@ -11963,8 +11963,8 @@ void CRagEffect::Demonstration() {
   this->state.lastPrim->state.slots[0].flag1[4] = 0;
   this->state.lastPrim->state.alpha = 200.0f;
 
-  this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\\ub370\ubaac\uc2a4\ud2b8\ub808\uc774\uc158.spr");
-  this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "\uc774\ud329\ud2b8\\\ub370\ubaac\uc2a4\ud2b8\ub808\uc774\uc158.act");
+  this->state.lastPrim->SetSpriteName("이팩트\\데몬스트레이션.spr");
+  this->state.lastPrim->SetActionName("이팩트\\데몬스트레이션.act");
 
   this->state.lastPrim->state.animSpeed = 4;
   this->state.lastPrim->SetAction(0, 16, 0);
