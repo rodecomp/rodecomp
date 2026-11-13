@@ -1322,8 +1322,7 @@ void CNpc::UpdateMinimapMarker() {
       this->attachedEffectId = 9999;
     }
 
-    const int base = marker->effectType < 6 ? 0x24 : 0x36;
-    CMsgEffect* effect = mode->SpawnMsgEffect(base + marker->effectType, &this->render.position, this->render.accountId, true);
+    CMsgEffect* effect = mode->SpawnMsgEffect((6 > marker->effectType ? 0x24 : 0x36) + marker->effectType, &this->render.position, this->render.accountId, true);
     this->msgEffectList.push_back(effect);
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
     this->attachedEffect = effect;
