@@ -42,6 +42,7 @@
 #include "Render/DeviceContext/DCSurface.h"
 #include "Render/RenderSystemBase.h"
 #include "Render/Renderer.h"
+#include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/Xml/XmlNode.h"
 #include "Resource/ResourcePreload.h"
@@ -956,7 +957,7 @@ void CLoginMode::OnUpdateEx(int value) {
     g_restoreSurfaces = 0;
     GetRenderSystemHolder()->TestDevice();
     g_windowMgr.InvalidateAll();
-    CBitmapRes* bitmap = reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str())));
+    CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str())));
     g_windowMgr.SetBackgroundSurface(bitmap);
   }
 
@@ -1106,7 +1107,7 @@ void CLoginMode::Update() {
     g_restoreSurfaces = 0;
     GetRenderSystemHolder()->TestDevice();
     g_windowMgr.InvalidateAll();
-    CBitmapRes* bitmap = reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str())));
+    CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str())));
     g_windowMgr.SetBackgroundSurface(bitmap);
   }
 
@@ -3611,7 +3612,7 @@ void CLoginMode::OnChangeState(int value) {
     g_guildMgr->m_guilds.clear();
     g_emblemDataMgr->RefreshUrls(*g_session.m_hotkeyScript, *g_session.m_hotkeyScript, g_serviceHost, g_servicePort, g_serviceOverrideKey);
     this->wallpaperName = g_loginWallpaperName;
-    g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+    g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     if (!g_session.m_launchPassCommandLine) {
       if (g_session.m_loginModeFlag == true) {
         this->otpStarted = timeGetTime();
@@ -3640,7 +3641,7 @@ void CLoginMode::OnChangeState(int value) {
   case 6: {
     Replay::Instance().SetState(1);
     this->wallpaperName = g_loginWallpaperName;
-    g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+    g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     UISelectServerWnd* window = static_cast<UISelectServerWnd*>(g_windowMgr.EnsureWindow(WID_SELECTSERVERWND));
     window->SendMsg(nullptr, UM_SET_TARGET, 10003, reinterpret_cast<std::intptr_t>(OBFUSCATE_BYTES_TEXT("NUMSERVER", 0x6FE153231D879777ULL)), 0, 0);
 
@@ -3731,7 +3732,7 @@ void CLoginMode::OnChangeState(int value) {
     g_session.ClearAchievements();
     g_nProtectGameGuardMgr->IncrementCounter();
     this->wallpaperName = g_loginWallpaperName;
-    g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+    g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     g_rodexMailStore->Clear();
     if (UINewSelectCharWnd* window = dynamic_cast<UINewSelectCharWnd*>(static_cast<UIFrameWnd*>(g_windowMgr.EnsureWindow(WID_NEWSELECTCHARWND)))) {
       window->m_gameStartPending = false;
@@ -3751,38 +3752,38 @@ void CLoginMode::OnChangeState(int value) {
     switch (g_session.m_passwordWndMode) {
     case 2:
       g_session.m_passwordInputAlternate = false;
-      g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+      g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
       g_windowMgr.EnsureWindow(WID_SECONDPASSWORDINPUTWND);
       break;
     case 3:
       g_session.m_passwordInputAlternate = false;
-      g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+      g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
       g_windowMgr.EnsureWindow(WID_SECONDPASSWORDINPUTWND);
       g_windowMgr.secondPasswordInputWnd->SendMsg(nullptr, UM_COMMAND, ID_CHANGE_STORE_PASSWORD, 0, 0, 0);
       break;
     case 4:
       g_session.m_passwordInputAlternate = true;
-      g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+      g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
       g_windowMgr.EnsureWindow(WID_SECONDPASSWORDEDITWND);
       g_windowMgr.secondPasswordEditWnd->SendMsg(nullptr, UM_COMMAND, ID_CHANGE_STORE_PASSWORD, 0, 0, 0);
       g_windowMgr.secondPasswordEditWnd->SendMsg(nullptr, UM_COMMAND, ID_OK, 1, 0, 0);
       break;
     case 5:
       g_session.m_passwordInputAlternate = true;
-      g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+      g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
       g_windowMgr.EnsureWindow(WID_SECONDPASSWORDEDITWND);
       break;
     }
     break;
   case 8:
     this->wallpaperName = g_loginWallpaperName;
-    g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+    g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     g_windowMgr.EnsureWindow(WID_NEWMAKECHARWND);
     break;
   case 4: {
     g_playerNameDictionary->Clear();
     this->wallpaperName = g_loginWallpaperName;
-    g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+    g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     if (!std::strstr(g_session.m_launchServerName, "Dev")) {
       OBFUSCATE_BYTES_TEXT("kro-acc1.ragnarok.co.kr:6900", 0x2FEB8739E5975BD1ULL);
       OBFUSCATE_BYTES_TEXT("%s", 0x33133B977BCD03CDULL);
@@ -3843,7 +3844,7 @@ void CLoginMode::OnChangeState(int value) {
     break;
   case 5: {
     this->wallpaperName = g_loginWallpaperName;
-    g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+    g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     g_session.m_partyBooking.Reset();
     GetRagConnection().Close();
     this->connectionReady = GetRagConnection().Connect(*reinterpret_cast<const ConnectionEndpoint*>(&g_charServerEndpoint));
@@ -3872,7 +3873,7 @@ void CLoginMode::OnChangeState(int value) {
   }
   case 10: {
     this->wallpaperName = g_loginWallpaperName;
-    g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+    g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     MakeCharacterPacket packet;
     packet.id = ID_CH_MAKE_CHAR_TRIBE;
     std::memcpy(packet.name, g_charInfo.name, sizeof(packet.name));
@@ -3889,7 +3890,7 @@ void CLoginMode::OnChangeState(int value) {
   }
   case 11: {
     this->wallpaperName = g_loginWallpaperName;
-    g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+    g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     DeleteCharacterPacket packet;
     packet.id = ID_CH_DELETE_CHAR3;
     std::strncpy(packet.code, reinterpret_cast<const char*>(this->billingInfo), sizeof(packet.code));
@@ -3915,7 +3916,7 @@ void CLoginMode::OnChangeState(int value) {
   }
   case 9: {
     this->wallpaperName = g_loginWallpaperName;
-    g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+    g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     SelectCharacterPacket packet;
     packet.id = ID_CH_SELECT_CHAR;
     packet.slot = static_cast<unsigned char>(g_selectedSlotIndex);
@@ -3929,7 +3930,7 @@ void CLoginMode::OnChangeState(int value) {
     g_runeSystemMgr->Reset();
     g_session.memorialWindowOpen = 0;
     this->wallpaperName = g_loginWallpaperName;
-    g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+    g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     this->connectionReady = GetRagConnection().Connect(g_zoneServerEndpoint);
     if (!this->connectionReady) {
       GetRagConnection().Close();
@@ -3973,7 +3974,7 @@ void CLoginMode::OnChangeState(int value) {
     g_session.petJob = -1;
     g_session.SetEquippedArrowIndex(0);
     this->wallpaperName = g_loginWallpaperName;
-    g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+    g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     g_windowMgr.EnsureWindow(WID_SELCHARFORUSERVERWND);
     break;
   case 29: {
@@ -3984,7 +3985,7 @@ void CLoginMode::OnChangeState(int value) {
     g_session.SetServiceFlags(flags, flags);
     reinterpret_cast<Replay&>(ReplayFileList::Instance()).SetBaseFrame(reinterpret_cast<std::uint32_t>(&Replay::Instance()));
     this->wallpaperName = std::string(OBFUSCATE_BYTES_TEXT("유저인터페이스\\login_interface\\warning2.bmp", 0x4F99DF03C3EF31B7ULL));
-    g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+    g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     g_windowMgr.EnsureWindow(WID_NOTICECONFIRMWND)->SendMsg(nullptr, UM_SET_TARGET, 10026, 0, 0, 0);
     break;
   }
@@ -4008,7 +4009,7 @@ void CLoginMode::OnChangeState(int value) {
     this->SendMsg(LMM_SELECT_REPLAY_DATA, 0, 0, 0, 0);
   case 27: {
     this->wallpaperName = g_loginWallpaperName;
-    g_windowMgr.SetBackgroundSurface(reinterpret_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
+    g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     UISelectReplayDataWnd* window = static_cast<UISelectReplayDataWnd*>(g_windowMgr.EnsureWindow(WID_SELECTREPLAYDATAWND));
     ReplayFileList::Instance().Refresh();
     const int count = static_cast<int>(ReplayFileList::Instance().files.size());

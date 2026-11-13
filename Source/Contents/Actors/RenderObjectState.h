@@ -101,7 +101,11 @@ struct RenderObjectState {
   /* 00FB */ unsigned char battleTeam;
   union {
     /* 00FC */ std::uint32_t fontSequenceState;
-    /* 00FC */ unsigned char fontSequenceBytes[4];
+    struct {
+      /* 00FC */ std::uint16_t font;
+      /* 00FE */ unsigned char sequenceMode;
+      /* 00FF */ unsigned char padding_00FF;
+    };
   };
   /* 0100 */ unsigned char padding_0100;
   /* 0101 */ unsigned char padding_0101[3];

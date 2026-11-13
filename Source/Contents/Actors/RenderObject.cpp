@@ -256,7 +256,7 @@ void CRenderObject::ProcessMotion() {
       this->render.isMotionFinished = true;
     }
     if (this->render.sequenceFinished == 0) {
-      if (this->render.fontSequenceBytes[2] == 3) {
+      if (this->render.sequenceMode == 3) {
         this->render.sequenceFrame =
           static_cast<unsigned char>(~static_cast<int>(frame * -2.0f / this->render.speed) - this->render.sequenceLast);
       } else {
@@ -264,13 +264,13 @@ void CRenderObject::ProcessMotion() {
       }
     }
     if (this->render.sequenceFrame > this->render.sequenceLast) {
-      if (this->render.fontSequenceBytes[2] == 2) {
+      if (this->render.sequenceMode == 2) {
         ++this->render.sequenceTick;
-        this->render.fontSequenceBytes[2] = 3;
+        this->render.sequenceMode = 3;
         this->render.sequenceFrame = 0;
         return;
       }
-      this->render.fontSequenceBytes[2] = 0;
+      this->render.sequenceMode = 0;
       this->render.sequenceFrame = this->render.sequenceLast;
       this->render.sequenceFinished = 1;
     }

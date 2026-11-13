@@ -256,7 +256,7 @@ void UIItemTagCtrl::AddItemTag(const ITEM_INFO& item, unsigned int color) {
   link += delimiters[5];
   link += links->ItemLinkNumberText(item.grade);
 
-  const int* cards = reinterpret_cast<const int*>(item.cards);
+  const std::uint32_t* cards = item.cards;
   int slots = ItemSlotsCount(item);
   if (slots == 0) {
     slots = 4;

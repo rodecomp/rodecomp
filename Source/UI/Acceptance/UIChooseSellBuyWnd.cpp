@@ -9611,7 +9611,7 @@ void UIItemCollectionWnd::Paint() {
       const int y = top + 2;
       int slot = 0;
       for (int x = 4; x < 104; x += 25, ++slot) {
-        const int card = reinterpret_cast<const int*>(this->m_item.cards)[slot];
+        const int card = static_cast<int>(this->m_item.cards[slot]);
         if (card < 1) {
           CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\empty_card_slot.bmp")));
           if (this->m_kind == 234) {
@@ -11674,7 +11674,7 @@ int UIFrameWnd::BuildItemName(
   int& capacity = reinterpret_cast<int&>(*remaining);
 
   if (item->identified) {
-    const int* cards = reinterpret_cast<const int*>(item->cards);
+    const std::uint32_t* cards = item->cards;
     if (item->identity[0] == 4 && item->IsApprenticeItem() == true && cards[3] == 1) {
       *cursor += item->Apprentice(*cursor, capacity, 1);
       breaks->push_back(*cursor);
@@ -12619,7 +12619,7 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
     }
     if (g_session.IsPetEgg(std::atoi(item->itemId.c_str())) == 1) {
       std::string state;
-      const int* cards = reinterpret_cast<const int*>(item->cards);
+      const std::uint32_t* cards = item->cards;
       switch (cards[2]) {
       case 1:
         state = FormatOwnedString(LookupMessage(MSI_PARTYMASTER), LookupMessage(MSI_VERY_AWKWARD));

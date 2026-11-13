@@ -1487,7 +1487,7 @@ void CGameMode::ReceiveCardCompositionResult(const unsigned char* data) {
     ITEM_INFO card = g_session.LookupClientItemByIdentity(packet->cardIndex);
     ITEM_INFO equip = g_session.LookupClientItemByIdentity(packet->equipIndex);
     if (equip.identity[1] != 0 && card.identity[1] != 0) {
-      int* cards = reinterpret_cast<int*>(equip.cards);
+      std::uint32_t* cards = equip.cards;
       for (int i = 0; i < 4; ++i) {
         if (cards[i] == 0) {
           cards[i] = std::atoi(card.itemId.c_str());

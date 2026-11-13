@@ -7234,7 +7234,7 @@ __declspec(noinline) void CGameMode::ReceiveEquipCardChange(const unsigned char*
   const EquipSlots slots = g_session.GetEquipSlots(*reinterpret_cast<const std::int16_t*>(packet + 2));
   ITEM_INFO item = g_session.GetEquippedItemAt(slots.values[2]);
   if (item.identity[1] != 0) {
-    int* cards = reinterpret_cast<int*>(item.cards);
+    std::uint32_t* cards = item.cards;
     switch (packet[0xA]) {
     case 1:
       cards[*reinterpret_cast<const std::int16_t*>(packet + 4)] = *reinterpret_cast<const int*>(packet + 6);
@@ -12396,7 +12396,7 @@ void CGameMode::ReceiveActorStandEntryFont(const unsigned char* data) {
 
   CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(entry.aid));
   if (actor) {
-    *reinterpret_cast<std::uint16_t*>(actor->render.fontSequenceBytes) = packet->font;
+    actor->render.font = packet->font;
     if (entry.head == 0x2E) {
       if (g_session.petGid == packet->aid) {
         g_session.petAccessory = entry.accessory;
@@ -12446,7 +12446,7 @@ void CGameMode::ReceiveActorStandEntryFont(const unsigned char* data) {
           (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
         this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
       }
-      *reinterpret_cast<std::uint16_t*>(actor->render.fontSequenceBytes) = packet->font;
+      actor->render.font = packet->font;
       if (this->partyPosList.find(packet->aid) != this->partyPosList.end() || this->guildPosList.find(packet->aid) != this->guildPosList.end()) {
         actor->SetGroupMemberVisible(1);
       }
@@ -12859,7 +12859,7 @@ void CGameMode::ReceiveActorMoveEntryLegacy(const unsigned char* data) {
     bossFlag = 1;
   }
   actor->characterLevel = packet->level;
-  *reinterpret_cast<std::uint16_t*>(actor->render.fontSequenceBytes) = packet->font;
+  actor->render.font = packet->font;
   if (packet->objectType == 7) {
     if (g_session.IsPetAid(packet->aid)) {
       g_session.petAccessory = entry.accessory;
@@ -12990,7 +12990,7 @@ void CGameMode::SpawnMovingActor(
     bossFlag = 1;
   }
   actor->characterLevel = level;
-  *reinterpret_cast<short*>(actor->render.fontSequenceBytes) = font;
+  actor->render.font = font;
   if (objectType == 7) {
     if (g_session.IsPetAid(aid)) {
       g_session.petAccessory = entry.accessory;
@@ -13380,7 +13380,7 @@ void CGameMode::ReceiveActorMoveEntryNamed(const unsigned char* data) {
   CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(packet->aid));
   if (actor) {
     actor->characterLevel = packet->level;
-    *reinterpret_cast<short*>(actor->render.fontSequenceBytes) = packet->font;
+    actor->render.font = packet->font;
     actor->SendMsg(nullptr, AM_MOVEENTRY2, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
     if (packet->objectType == 7) {
       if (g_session.petGid == packet->aid) {
@@ -13434,7 +13434,7 @@ void CGameMode::ReceiveActorMoveEntryNamed(const unsigned char* data) {
     this->scene->objects.push_back(actor);
     this->scene->actors.push_back(actor);
     actor->SendMsg(nullptr, AM_INITMOVEENTRY2, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
-    *reinterpret_cast<short*>(actor->render.fontSequenceBytes) = packet->font;
+    actor->render.font = packet->font;
     actor->characterLevel = packet->level;
     if (g_session.GetSiegeMode() && packet->objectType == 7 && actor->sceneNameWindow == nullptr &&
         (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
@@ -13854,7 +13854,7 @@ void CGameMode::ReceiveActorStandEntryLegacy(const unsigned char* data) {
     bossFlag = 1;
   }
   actor->characterLevel = packet->level;
-  *reinterpret_cast<short*>(actor->render.fontSequenceBytes) = packet->font;
+  actor->render.font = packet->font;
   if (packet->objectType == 7) {
     if (g_session.IsPetAid(packet->aid)) {
       g_session.petAccessory = entry.accessory;
@@ -13993,7 +13993,7 @@ void CGameMode::ReceiveActorStandEntryNamedOld(const unsigned char* data) {
 
   actor->characterLevel = packet->level;
   if (packet->objectType == 0) {
-    *reinterpret_cast<short*>(actor->render.fontSequenceBytes) = packet->font;
+    actor->render.font = packet->font;
     if (created) {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
       actor->SendMsg(nullptr, AM_INITSTANDENTRY2, value, 2, 0, 0, 0, 0);
@@ -14368,7 +14368,7 @@ void CGameMode::ReceiveActorStandEntryOld3(const unsigned char* data) {
 
   CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(packet->aid));
   if (actor) {
-    *reinterpret_cast<short*>(actor->render.fontSequenceBytes) = packet->font;
+    actor->render.font = packet->font;
     actor->characterLevel = packet->level;
     if (entry.head == 0x2E) {
       if (g_session.petGid == packet->aid) {
@@ -14413,7 +14413,7 @@ void CGameMode::ReceiveActorStandEntryOld3(const unsigned char* data) {
     actor->SendMsg(nullptr, AM_INITSTANDENTRY2, reinterpret_cast<int>(&entry), 2, 0, 0, 0, 0);
     actor->characterLevel = packet->level;
     if (isPc) {
-      *reinterpret_cast<short*>(actor->render.fontSequenceBytes) = packet->font;
+      actor->render.font = packet->font;
       if (!IsAdminAccount(packet->aid) && !StateFlag06(packet->effectState)) {
         actor->LaunchEffect(EF_ENTRY2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
@@ -14657,7 +14657,7 @@ void CGameMode::ReceiveActorStateEntryNamedOld(const unsigned char* data) {
   }
 
   if (packet->objectType == 0) {
-    *reinterpret_cast<short*>(actor->render.fontSequenceBytes) = packet->font;
+    actor->render.font = packet->font;
     actor->characterLevel = packet->level;
     if (created) {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
@@ -14929,7 +14929,7 @@ void CGameMode::SpawnStandingActor(
     bossFlag = 1;
   }
   actor->characterLevel = level;
-  *reinterpret_cast<short*>(actor->render.fontSequenceBytes) = font;
+  actor->render.font = font;
   if (objectType == 7) {
     if (g_session.IsPetAid(aid)) {
       g_session.petAccessory = entry.accessory;
@@ -15202,7 +15202,7 @@ void CGameMode::SpawnStateActor(
     bossFlag = 1;
   }
   actor->characterLevel = level;
-  *reinterpret_cast<short*>(actor->render.fontSequenceBytes) = font;
+  actor->render.font = font;
   if (objectType == 7) {
     if (g_session.IsPetAid(aid)) {
       g_session.petAccessory = entry.accessory;
@@ -15616,7 +15616,7 @@ void CGameMode::ReceiveActorStateEntryLegacy(const unsigned char* data) {
     bossFlag = 1;
   }
   actor->characterLevel = packet->level;
-  *reinterpret_cast<short*>(actor->render.fontSequenceBytes) = packet->font;
+  actor->render.font = packet->font;
   if (packet->objectType == 7) {
     if (g_session.IsPetAid(packet->aid)) {
       g_session.petAccessory = entry.accessory;
@@ -23131,7 +23131,7 @@ void CGameMode::ProcessIncomingPackets() {
         item.identity[3] = record->location;
         item.quantity = record->amount;
         for (int card = 0; card < 4; ++card) {
-          reinterpret_cast<int*>(item.cards)[card] = record->cards[card];
+          item.cards[card] = record->cards[card];
         }
         item.SetItemId(record->itemId);
         item.identified = record->identified;
@@ -23153,7 +23153,7 @@ void CGameMode::ProcessIncomingPackets() {
         item.identity[3] = record->location;
         item.quantity = record->amount;
         for (int card = 0; card < 4; ++card) {
-          reinterpret_cast<int*>(item.cards)[card] = record->cards[card];
+          item.cards[card] = record->cards[card];
         }
         item.SetItemId(record->itemId);
         item.identified = record->identified;
@@ -23176,7 +23176,7 @@ void CGameMode::ProcessIncomingPackets() {
         item.identity[3] = record->location;
         item.quantity = record->amount;
         for (int card = 0; card < 4; ++card) {
-          reinterpret_cast<int*>(item.cards)[card] = record->cards[card];
+          item.cards[card] = record->cards[card];
         }
         item.SetItemId(record->itemId);
         item.identified = record->identified;
@@ -23459,7 +23459,7 @@ void CGameMode::ProcessIncomingPackets() {
         item.identity[3] = record->location;
         item.quantity = record->amount;
         for (int card = 0; card < 4; ++card) {
-          reinterpret_cast<int*>(item.cards)[card] = record->cards[card];
+          item.cards[card] = record->cards[card];
         }
         item.SetItemId(record->itemId);
         item.identified = record->identified;
@@ -23483,7 +23483,7 @@ void CGameMode::ProcessIncomingPackets() {
         item.identity[3] = record->location;
         item.quantity = record->amount;
         for (int card = 0; card < 4; ++card) {
-          reinterpret_cast<int*>(item.cards)[card] = record->cards[card];
+          item.cards[card] = record->cards[card];
         }
         item.SetItemId(record->itemId);
         item.identified = record->identified;
@@ -23508,7 +23508,7 @@ void CGameMode::ProcessIncomingPackets() {
         item.identity[3] = record->location;
         item.quantity = record->amount;
         for (int card = 0; card < 4; ++card) {
-          reinterpret_cast<int*>(item.cards)[card] = record->cards[card];
+          item.cards[card] = record->cards[card];
         }
         item.SetItemId(record->itemId);
         item.identified = record->identified;
@@ -24914,7 +24914,7 @@ void CGameMode::ProcessIncomingPackets() {
         item.identity[3] = record->location;
         item.quantity = record->amount;
         for (int card = 0; card < 4; ++card) {
-          reinterpret_cast<int*>(item.cards)[card] = record->cards[card];
+          item.cards[card] = record->cards[card];
         }
         item.SetItemId(record->itemId);
         item.damaged = 0;
@@ -24938,7 +24938,7 @@ void CGameMode::ProcessIncomingPackets() {
         item.identity[3] = record->location;
         item.quantity = record->amount;
         for (int card = 0; card < 4; ++card) {
-          reinterpret_cast<int*>(item.cards)[card] = record->cards[card];
+          item.cards[card] = record->cards[card];
         }
         item.SetItemId(record->itemId);
         item.damaged = 0;
@@ -24963,7 +24963,7 @@ void CGameMode::ProcessIncomingPackets() {
         item.identity[3] = record->location;
         item.quantity = record->amount;
         for (int card = 0; card < 4; ++card) {
-          reinterpret_cast<int*>(item.cards)[card] = record->cards[card];
+          item.cards[card] = record->cards[card];
         }
         item.SetItemId(record->itemId);
         item.damaged = 0;
@@ -24987,7 +24987,7 @@ void CGameMode::ProcessIncomingPackets() {
         item.identity[3] = record->wearState;
         item.quantity = 1;
         for (int card = 0; card < 4; ++card) {
-          reinterpret_cast<int*>(item.cards)[card] = record->cards[card];
+          item.cards[card] = record->cards[card];
         }
         item.SetItemId(record->itemId);
         item.identified = record->flags & 1;
@@ -25014,7 +25014,7 @@ void CGameMode::ProcessIncomingPackets() {
         item.identity[3] = record->wearState;
         item.quantity = 1;
         for (int card = 0; card < 4; ++card) {
-          reinterpret_cast<int*>(item.cards)[card] = record->cards[card];
+          item.cards[card] = record->cards[card];
         }
         item.SetItemId(record->itemId);
         item.identified = record->flags & 1;
