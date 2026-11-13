@@ -39,7 +39,7 @@ ModelQuaternionKey::ModelQuaternionKey() : frame(0), rotation{0.0f, 0.0f, 0.0f, 
 
 // OFFSET: 0x0053FFE0
 // FUNCTION: fn_01716
-void LegacyRotationTrack::Add(int frame, float x, float y, float z, float angle) {
+__declspec(safebuffers) void LegacyRotationTrack::Add(int frame, float x, float y, float z, float angle) {
   angle *= 0.5f;
   const float sine = ClientSin(angle);
   ModelRotationKey key;
@@ -48,7 +48,7 @@ void LegacyRotationTrack::Add(int frame, float x, float y, float z, float angle)
   key.rotation[1] = sine * y;
   key.rotation[2] = sine * z;
   key.rotation[3] = ClientCos(angle);
-  this->push_back(key);
+  this->push_back(std::move(key));
 }
 
 // OFFSET: 0x00540120
