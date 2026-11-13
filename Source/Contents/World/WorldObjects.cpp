@@ -62,6 +62,9 @@
 HANDLE hObject;
 // GLOBAL: gl_24757
 std::vector<DeferredWorldModel> g_deferredWorldModels;
+
+template __declspec(noinline) void std::list<std::uint32_t>::push_back(const std::uint32_t&);
+
 // OFFSET: 0x00AC8220
 // FUNCTION: fn_17667
 CRenderObject* CWorld::GetGameActorByAidIncludeMe(std::uint32_t aid) const {
