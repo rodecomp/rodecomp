@@ -390,24 +390,21 @@ bool CSession::EquipAlternateCostumeItem(const ITEM_INFO& item) {
 // OFFSET: 0x00E07930
 // FUNCTION: fn_23747
 void CSession::AddStackedItem(ITEM_INFO item) {
-  int index;
-  for (index = 0; index < 5; ++index) {
+  for (int index = 0; index < 5; ++index) {
     if (this->selectionItems[index].quantity != 0 && this->selectionItems[index].identity[1] == item.identity[1]) {
+      this->selectionItems[index].quantity += item.quantity;
+      goto refresh;
+    }
+  }
+
+  for (int index = 0; index < 5; ++index) {
+    if (this->selectionItems[index].quantity == 0) {
+      this->selectionItems[index] = item;
       break;
     }
   }
 
-  if (index < 5) {
-    this->selectionItems[index].quantity += item.quantity;
-  } else {
-    for (index = 0; index < 5; ++index) {
-      if (this->selectionItems[index].quantity == 0) {
-        this->selectionItems[index] = item;
-        break;
-      }
-    }
-  }
-
+refresh:
   if (UIWindow* window = static_cast<UIWindow*>(g_windowMgr.rodexComposeWnd)) {
     window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }

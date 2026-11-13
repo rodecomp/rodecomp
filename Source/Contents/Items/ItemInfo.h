@@ -60,7 +60,7 @@ struct ItemOption {
   /* 0004 */ unsigned char parameter;
 };
 
-struct alignas(8) ITEM_INFO {
+struct ITEM_INFO {
   ITEM_INFO();
   explicit ITEM_INFO(int unused);
   ITEM_INFO(const ITEM_INFO& other);

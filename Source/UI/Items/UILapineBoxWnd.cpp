@@ -241,9 +241,8 @@ bool UILapineBox_IngredientListWnd::CanUseIngredient(std::uint32_t identity) {
     return false;
   }
 
-  const int required = material->quantity;
-  if (required > item.quantity) {
-    this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_INPUT_FREE_MESSAGE), required).c_str()), 0, 0, 0);
+  if (material->quantity > item.quantity) {
+    this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_INPUT_FREE_MESSAGE), material->quantity).c_str()), 0, 0, 0);
     return false;
   }
   if (this->minRefine > item.refiningLevel) {
