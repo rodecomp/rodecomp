@@ -19,7 +19,11 @@ public:
   int Restore(unsigned char wholeItem, int maximum);
   std::string LoadUrl() const;
   std::string SaveUrl() const;
-  void Reset(LuaScript& settings, LuaScript& tables, const char* host, const char* port, const char* overrideKey);
+  void Reset();
+  // INLINED
+  __declspec(noinline) void Reset(LuaScript&, LuaScript&, const char*, const char*, const char*) {
+    this->Reset();
+  }
   void CompleteLoad(
     AsyncDiagnostic diagnostic, std::uint32_t accountId, std::uint32_t characterId, std::string accountName, std::string response
   );

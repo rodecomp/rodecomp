@@ -24,13 +24,17 @@ public:
   static void Shutdown();
   std::string SaveUrl() const;
   __declspec(noinline) std::string LoadUrl() const;
-  __declspec(noinline) void RefreshUrls(LuaScript& settings, LuaScript& tables, const char* host, const char* port, const char* overrideKey);
+  __declspec(noinline) void RefreshUrls();
 
   void CompleteLoad(
     AsyncDiagnostic diagnostic, std::uint32_t accountId, std::string accountName, std::string response
   );
   void Load(std::uint32_t accountId, std::string accountName);
-  void Reset(LuaScript& script, const char* host, const char* port, const char* overrideKey);
+  void Reset();
+  // INLINED
+  __declspec(noinline) void Reset(LuaScript&, const char*, const char*, const char*) {
+    this->Reset();
+  }
   void CompleteSave();
   void Save();
   void ExportUserHotkey(Json::Value& data);

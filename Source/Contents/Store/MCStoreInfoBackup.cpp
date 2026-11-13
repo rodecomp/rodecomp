@@ -73,7 +73,7 @@ std::string CMCStoreInfoBackup::SaveUrl() const {
 
 // OFFSET: 0x006070E0
 // FUNCTION: fn_04237
-void CMCStoreInfoBackup::Reset(LuaScript& settings, LuaScript& tables, const char* host, const char* port, const char* overrideKey) {
+void CMCStoreInfoBackup::Reset() {
   this->loaded = false;
   this->title = "";
   this->items.clear();

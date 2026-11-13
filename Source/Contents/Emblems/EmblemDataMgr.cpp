@@ -55,21 +55,12 @@ void CEmblemDataMgr::Shutdown() {
 
 // OFFSET: 0x005EB580
 // FUNCTION: fn_03974
-void CEmblemDataMgr::RefreshUrls(LuaScript& settings, LuaScript& tables, const char* host, const char* port, const char* overrideKey) {
+void CEmblemDataMgr::RefreshUrls() {
   const std::string base = g_session.ResolveAccountServiceBase();
 
   if (!base.empty()) {
-    {
-      constexpr std::array<std::uint8_t, 15> sourceArray = OBFUSCATE_SOURCE("/emblem/upload", 0x2FF3C5036D070127ULL);
-      const std::uint8_t (&source)[15] = sourceArray._Elems;
-      thread_local EncryptedName<sizeof(source), 0x2FF3C5036D070127ULL> name(source);
-      this->m_uploadUrl = base + name.Text();
-    }
-    {
-      const std::uint8_t source[] = OBFUSCATE_SOURCE_BYTES(17, "/emblem/download", 0x93E7A3A1F587CDC5ULL);
-      thread_local EncryptedName<sizeof(source), 0x93E7A3A1F587CDC5ULL> name(source);
-      this->m_downloadUrl = base + name.Text();
-    }
+    this->m_uploadUrl = base + OBFUSCATE_TEXT("/emblem/upload", 0x2FF3C5036D070127ULL);
+    this->m_downloadUrl = base + OBFUSCATE_TEXT("/emblem/download", 0x93E7A3A1F587CDC5ULL);
   }
 }
 

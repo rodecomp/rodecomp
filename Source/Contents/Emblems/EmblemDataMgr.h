@@ -15,7 +15,11 @@ public:
   virtual ~CEmblemDataMgr();
   static bool Initialize();
   static void Shutdown();
-  void RefreshUrls(LuaScript& settings, LuaScript& tables, const char* host, const char* port, const char* overrideKey);
+  void RefreshUrls();
+  // INLINED
+  __declspec(noinline) void RefreshUrls(LuaScript&, LuaScript&, const char*, const char*, const char*) {
+    this->RefreshUrls();
+  }
   void Download(std::uint32_t guildId, std::uint32_t version);
   bool Upload(std::uint32_t guildId, std::string path);
   void CompleteUpload(AsyncDiagnostic diagnostic, std::string response, std::uint32_t guildId);

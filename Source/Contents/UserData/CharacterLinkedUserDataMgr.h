@@ -28,7 +28,11 @@ public:
   void Save();
   void ExportNormalItemSlots(Json::Value& data);
   void RefreshUrls();
-  void Reset(LuaScript& script, const char* host, const char* port, const char* overrideKey);
+  void Reset();
+  // INLINED
+  __declspec(noinline) void Reset(LuaScript&, const char*, const char*, const char*) {
+    this->Reset();
+  }
 
 protected:
   /* 0004 */ bool m_enabled;

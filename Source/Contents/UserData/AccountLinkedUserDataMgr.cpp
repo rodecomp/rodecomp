@@ -119,28 +119,24 @@ void CAccountLinkedUserDataMgr::CompleteLoad(
 
 // OFFSET: 0x005BCB10
 // FUNCTION: fn_03467
-void CAccountLinkedUserDataMgr::RefreshUrls(LuaScript& settings, LuaScript& tables, const char* host, const char* port, const char* overrideKey) {
+void CAccountLinkedUserDataMgr::RefreshUrls() {
   const std::string base = g_session.ResolveAccountServiceBase();
   if (!base.empty()) {
-    constexpr std::array<std::uint8_t, 17> saveSourceArray = OBFUSCATE_SOURCE("/userconfig/save", 0x59278F63D79F3DA1ULL);
-    const std::uint8_t (&saveSource)[17] = saveSourceArray._Elems;
-    this->m_saveUrl = base + OBFUSCATE_DECRYPT(0x59278F63D79F3DA1ULL, saveSource);
-    constexpr std::array<std::uint8_t, 17> loadSourceArray = OBFUSCATE_SOURCE("/userconfig/load", 0x812BE72BCD5707B7ULL);
-    const std::uint8_t (&loadSource)[17] = loadSourceArray._Elems;
-    this->m_loadUrl = base + OBFUSCATE_DECRYPT(0x812BE72BCD5707B7ULL, loadSource);
+    this->m_saveUrl = base + OBFUSCATE_TEXT("/userconfig/save", 0x59278F63D79F3DA1ULL);
+    this->m_loadUrl = base + OBFUSCATE_TEXT("/userconfig/load", 0x812BE72BCD5707B7ULL);
   }
 }
 
 // OFFSET: 0x005BD170
 // FUNCTION: fn_03470
-void CAccountLinkedUserDataMgr::Reset(LuaScript& script, const char* host, const char* port, const char* overrideKey) {
+void CAccountLinkedUserDataMgr::Reset() {
   this->m_accountId = 0;
   this->m_accountName = "unknown";
   this->m_loaded = false;
   g_whisperBlockMgr->Reset();
   g_session.m_emotionHotkeys.saved.clear();
   g_userHotkeyMgr->Reset();
-  this->RefreshUrls(script, script, host, port, overrideKey);
+  this->RefreshUrls();
 }
 
 // OFFSET: 0x005BD650

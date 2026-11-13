@@ -81,7 +81,7 @@ __declspec(noinline) void CCharacterLinkedUserDataMgr::RefreshUrls() {
 
 // OFFSET: 0x005E73B0
 // FUNCTION: fn_03934
-void CCharacterLinkedUserDataMgr::Reset(LuaScript& script, const char* host, const char* port, const char* overrideKey) {
+void CCharacterLinkedUserDataMgr::Reset() {
   this->m_accountId = 0;
   this->m_characterId = 0;
   this->m_accountName = "unknown";
