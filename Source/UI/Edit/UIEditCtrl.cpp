@@ -3864,8 +3864,8 @@ bool ItemTypeNameLess::operator()(const ITEM_INFO& left, const ITEM_INFO& right)
 
 // OFFSET: 0x00996870
 // FUNCTION: fn_13470
-bool UIItemStoreSubWnd::Sort1() {
-  if (!this->UpdateItemNames1()) {
+bool UIItemStoreFindWnd::Sort() {
+  if (!this->UpdateItemNames()) {
     return false;
   }
   this->items.sort();
@@ -3884,8 +3884,8 @@ bool UIItemStoreSubWnd::Sort2() {
 
 // OFFSET: 0x009968F0
 // FUNCTION: fn_13472
-bool UIItemStoreSubWnd::Sort3() {
-  if (!this->UpdateItemNames3()) {
+bool UIItemStoreWnd::Sort() {
+  if (!this->UpdateItemNames()) {
     return false;
   }
   this->items.sort();
@@ -3894,8 +3894,8 @@ bool UIItemStoreSubWnd::Sort3() {
 
 // OFFSET: 0x00995CF0
 // FUNCTION: fn_13463
-bool UIItemStoreSubWnd::SortReversed1() {
-  if (!this->UpdateItemNames1()) {
+bool UIItemStoreFindWnd::SortReversed() {
+  if (!this->UpdateItemNames()) {
     return false;
   }
   this->items.sort();
@@ -3916,8 +3916,8 @@ bool UIItemStoreSubWnd::SortReversed2() {
 
 // OFFSET: 0x00995DB0
 // FUNCTION: fn_13465
-bool UIItemStoreSubWnd::SortReversed3() {
-  if (!this->UpdateItemNames3()) {
+bool UIItemStoreWnd::SortReversed() {
+  if (!this->UpdateItemNames()) {
     return false;
   }
   this->items.sort();
@@ -8620,7 +8620,7 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       break;
     }
     case ID_SORT_ITEMS:
-      reinterpret_cast<UIItemStoreSubWnd*>(this)->Sort3();
+      this->Sort();
       this->Invalidate();
       this->UpdateScrollBar();
       static_cast<UIButton*>(this->buttons[1])->Enable(0);
@@ -8718,7 +8718,7 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       if (!this->m_searchWindow) {
         this->m_searchWindow = g_windowMgr.EnsureWindow(WID_ITEMSTOREFINDWND);
         std::string text(this->searchEdit->Text());
-        if (!text.empty() && reinterpret_cast<UIItemStoreSubWnd*>(this)->FilterByName3(std::string(text.c_str(), text.size()))) {
+        if (!text.empty() && this->FilterByName(std::string(text.c_str(), text.size()))) {
           static_cast<UIItemStoreFindWnd*>(this->m_searchWindow)->SetSearchText(std::string(text.c_str(), text.size()));
           this->m_searchWindow->SendMsg(nullptr, UM_SEARCH_ITEMS, 0, 0, 0, 0);
         }
@@ -8830,14 +8830,14 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     }
 
     if (g_session.m_itemAscendingOrder) {
-      reinterpret_cast<UIItemStoreSubWnd*>(this)->Sort3();
+      this->Sort();
     } else if (g_session.m_itemDescendingOrder) {
-      reinterpret_cast<UIItemStoreSubWnd*>(this)->SortReversed3();
+      this->SortReversed();
     }
 
     std::string text = this->searchEdit->Text();
     if (!text.empty() && a == 365) {
-      if (reinterpret_cast<UIItemStoreSubWnd*>(this)->FilterByName3(std::string(text.c_str(), text.size()))) {
+      if (this->FilterByName(std::string(text.c_str(), text.size()))) {
         this->Invalidate();
         this->UpdateScrollBar();
         for (int index = 0; index < 7; ++index) {
@@ -8916,9 +8916,9 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       }
 
       if (a == 1) {
-        reinterpret_cast<UIItemStoreSubWnd*>(this)->Sort3();
+        this->Sort();
       } else if (a == 2) {
-        reinterpret_cast<UIItemStoreSubWnd*>(this)->SortReversed3();
+        this->SortReversed();
       }
 
       for (int index = 0; index < 8; ++index) {
@@ -10115,8 +10115,8 @@ void UIItemWnd::RefreshItems() {
 
 // OFFSET: 0x00995E10
 // FUNCTION: fn_13466
-bool UIItemStoreSubWnd::FilterByName1(std::string query) {
-  if (!this->UpdateItemNames1()) {
+bool UIItemStoreFindWnd::FilterByName(std::string query) {
+  if (!this->UpdateItemNames()) {
     return false;
   }
 
@@ -10153,8 +10153,8 @@ bool UIItemStoreSubWnd::FilterByName2(std::string query) {
 
 // OFFSET: 0x00996440
 // FUNCTION: fn_13468
-bool UIItemStoreSubWnd::FilterByName3(std::string query) {
-  if (!this->UpdateItemNames3()) {
+bool UIItemStoreWnd::FilterByName(std::string query) {
+  if (!this->UpdateItemNames()) {
     return false;
   }
 
@@ -10172,7 +10172,7 @@ bool UIItemStoreSubWnd::FilterByName3(std::string query) {
 
 // OFFSET: 0x00996950
 // FUNCTION: fn_13474
-bool UIItemStoreSubWnd::UpdateItemNames1() {
+bool UIItemStoreFindWnd::UpdateItemNames() {
   if (this->items.empty()) {
     return false;
   }
@@ -10214,7 +10214,7 @@ bool UIItemStoreSubWnd::UpdateItemNames2() {
 
 // OFFSET: 0x00996C90
 // FUNCTION: fn_13476
-bool UIItemStoreSubWnd::UpdateItemNames3() {
+bool UIItemStoreWnd::UpdateItemNames() {
   if (this->items.empty()) {
     return false;
   }
@@ -11294,13 +11294,13 @@ int UIItemStoreFindWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
     }
 
     if (g_session.m_itemAscendingOrder) {
-      reinterpret_cast<UIItemStoreSubWnd*>(this)->Sort1();
+      this->Sort();
     }
     if (g_session.m_itemDescendingOrder) {
-      reinterpret_cast<UIItemStoreSubWnd*>(this)->SortReversed1();
+      this->SortReversed();
     }
     if (!this->searchText.empty()) {
-      reinterpret_cast<UIItemStoreSubWnd*>(this)->FilterByName1(std::string(this->searchText.c_str(), this->searchText.size()));
+      this->FilterByName(std::string(this->searchText.c_str(), this->searchText.size()));
     }
 
     this->Invalidate();
@@ -11373,16 +11373,16 @@ int UIItemStoreFindWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
 
     this->sorted = true;
     if (g_session.m_itemAscendingOrder == true) {
-      reinterpret_cast<UIItemStoreSubWnd*>(this)->Sort1();
+      this->Sort();
     } else if (g_session.m_itemDescendingOrder == true) {
-      reinterpret_cast<UIItemStoreSubWnd*>(this)->SortReversed1();
+      this->SortReversed();
     }
     break;
   case UM_SEARCH_ITEMS:
     if (this->searchText.empty()) {
       return 0;
     }
-    if (!reinterpret_cast<UIItemStoreSubWnd*>(this)->FilterByName1(std::string(this->searchText.c_str(), this->searchText.size()))) {
+    if (!this->FilterByName(std::string(this->searchText.c_str(), this->searchText.size()))) {
       return 0;
     }
     break;

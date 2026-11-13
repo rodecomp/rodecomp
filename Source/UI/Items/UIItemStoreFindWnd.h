@@ -25,6 +25,10 @@ public:
 
   __declspec(noinline) ITEM_INFO GetItemAt(int x, int y);
   void SetTitle(std::string title);
+  bool Sort();
+  bool SortReversed();
+  bool UpdateItemNames();
+  bool FilterByName(std::string query);
   void SetSearchText(std::string text);
   void OnCreate(int width, int height) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;

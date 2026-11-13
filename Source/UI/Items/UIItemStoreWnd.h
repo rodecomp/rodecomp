@@ -29,6 +29,10 @@ public:
   __declspec(noinline) ITEM_INFO GetItemAt(int x, int y);
   void SetTabChecked(int index, bool checked);
   void SetTitle(std::string title);
+  bool Sort();
+  bool SortReversed();
+  bool UpdateItemNames();
+  bool FilterByName(std::string query);
 
   /* 00F0 */ UIBitmapEditCtrl* searchEdit;
   /* 00F4 */ UIItemStoreComboBoxWnd* sortCombo;

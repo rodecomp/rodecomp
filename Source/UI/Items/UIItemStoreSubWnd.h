@@ -26,18 +26,10 @@ public:
   __declspec(noinline) ITEM_INFO GetItemAt(int x, int y);
   void SetTabIndex(int index);
   void SetTitle(std::string title);
-  bool Sort1();
   bool Sort2();
-  bool Sort3();
-  bool SortReversed1();
   bool SortReversed2();
-  bool SortReversed3();
-  bool UpdateItemNames1();
   bool UpdateItemNames2();
-  bool UpdateItemNames3();
-  bool FilterByName1(std::string query);
   bool FilterByName2(std::string query);
-  bool FilterByName3(std::string query);
   void OnCreate(int width, int height) override;
 
   /* 00F0 */ unsigned char padding_00F0[0x20];
