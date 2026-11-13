@@ -2586,8 +2586,8 @@ void CPc::SetSprJob(int job) {
     this->LoadEquipSprite(0, g_session.GetBodySprName(effectiveJob, this->sex, this->bodyStyle, this->GetMadogearType()).c_str());
   }
 
-  this->SetActionName(ResourceMgr::Instance(), this->equipActions[0] ? this->equipActions[0]->GetName() : "");
-  this->SetSpriteName(ResourceMgr::Instance(), this->equipSprites[0] ? this->equipSprites[0]->GetName() : "");
+  this->SetActionName(this->equipActions[0] ? this->equipActions[0]->GetName() : "");
+  this->SetSpriteName(this->equipSprites[0] ? this->equipSprites[0]->GetName() : "");
   this->SetImfFileName();
 }
 
