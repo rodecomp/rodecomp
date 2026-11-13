@@ -520,9 +520,10 @@ void EffectLists::SpawnLevel99(CRenderObject* actor, unsigned char flag, int ext
 
     effect->SetActor(static_cast<std::uint32_t>(aid));
     effect->SetSourceActor(0);
-    effect->position[0] = position.x;
-    effect->position[1] = position.y;
-    effect->position[2] = position.z;
+    float* target = effect->position;
+    target[0] = position.x;
+    target[1] = position.y;
+    target[2] = position.z;
     effect->SetId(EF_LEVEL99);
     effect->Open();
     effect->InitEvents();

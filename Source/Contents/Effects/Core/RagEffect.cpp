@@ -13974,8 +13974,7 @@ void CRagEffect::SpawnPaleBlur() {
 
   CBlurPC* blur = new CBlurPC(static_cast<CPc*>(this->state.parent));
   SendAfterimageColor(*blur, *this, this->render.position);
-  CRenderObject* object = blur;
-  WorldObjects().push_back(object);
+  WorldObjects().push_back(blur);
 }
 
 // OFFSET: 0x00C5BDB0
@@ -13993,8 +13992,7 @@ void CRagEffect::SpawnLightBlur() {
 
   CBlurPC* blur = new CBlurPC(static_cast<CPc*>(this->state.parent));
   SendAfterimageColor(*blur, *this, this->render.position);
-  CRenderObject* object = blur;
-  WorldObjects().push_back(object);
+  WorldObjects().push_back(blur);
 }
 
 // OFFSET: 0x00C5BED0

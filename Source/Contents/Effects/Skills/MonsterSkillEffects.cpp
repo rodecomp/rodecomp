@@ -4617,9 +4617,10 @@ void CSpriteMableEffect::OnProcess() {
     const float offsetX = ClientSin(yaw) * 6.0f;
     const float offsetY = ClientSin(bob) * 3.0f - 6.0f;
     const float offsetZ = ClientCos(yaw) * 6.0f;
-    particle->position.x = offsetX + this->position[0];
-    particle->position.y = offsetY + this->position[1];
-    particle->position.z = offsetZ + this->position[2];
+    const vector3d vectorValue = {offsetX + this->position[0], offsetY + this->position[1], offsetZ + this->position[2]};
+    particle->position.x = vectorValue.x;
+    particle->position.y = vectorValue.y;
+    particle->position.z = vectorValue.z;
 
     int angle = static_cast<int>(static_cast<float>(static_cast<int>(yaw / 3.141592f * 180.0f) % 360) -
                                  static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw);
@@ -4628,8 +4629,8 @@ void CSpriteMableEffect::OnProcess() {
     }
 
     const int frame = (angle - 75) / 30;
-    ++particle->elapsedFrames;
     particle->frame = frame < 0 ? frame + 12 : frame;
+    ++particle->elapsedFrames;
   }
 }
 
@@ -4669,16 +4670,22 @@ void CGravityControlEffect::OnProcess() {
   this->heightOffset = std::max(this->heightOffset - g_depthAverageHalf, this->minimumHeightOffset);
 
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-  const float height = mode->scene->terrain->Height(actor->render.position.x, actor->render.position.z);
+  const float z = actor->render.position.z;
+  const float x = actor->render.position.x;
+  const float height = mode->scene->terrain->Height(x, z);
   const int offset = static_cast<int>(this->heightOffset);
-  actor->positionDelta.x = 0.0f;
-  actor->positionDelta.z = 0.0f;
-  actor->positionDelta.y = static_cast<float>(offset);
+  const vector3d vectorValue = {0.0f, static_cast<float>(offset), 0.0f};
+  actor->positionDelta.x = vectorValue.x;
+  actor->positionDelta.z = vectorValue.z;
+  actor->positionDelta.y = vectorValue.y;
   actor->render.position.y = height + this->heightOffset;
 
   if (this->target) {
     AsParticle(reinterpret_cast<EZ2STREmitter*>(this->target))->Process(0.0f, 0.0f, 0.0f);
-    reinterpret_cast<EZ2STREmitter*>(this->target)->position = *reinterpret_cast<const vector3d*>(this->position);
+    EZ2STREmitter* target = reinterpret_cast<EZ2STREmitter*>(this->target);
+    target->position.x = this->position[0];
+    target->position.y = this->position[1];
+    target->position.z = this->position[2];
     ++reinterpret_cast<EZ2STREmitter*>(this->target)->elapsed;
   }
 }

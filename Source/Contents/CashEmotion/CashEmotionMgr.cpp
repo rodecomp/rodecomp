@@ -3241,10 +3241,12 @@ UICashEmotionPack_Purchase::UICashEmotionPack_Purchase() : UICashEmotionPack() {
 // OFFSET: 0x007CAC40
 // FUNCTION: fn_09458
 UICashEmotionPack_Purchase::~UICashEmotionPack_Purchase() {
-  delete this->m_selectAction;
-  this->m_selectAction = nullptr;
-  delete this->m_purchaseAction;
-  this->m_purchaseAction = nullptr;
+  ICashEmotionAction*& select = this->m_selectAction;
+  delete select;
+  select = nullptr;
+  ICashEmotionAction*& purchase = this->m_purchaseAction;
+  delete purchase;
+  purchase = nullptr;
 }
 
 // OFFSET: 0x007CACE0

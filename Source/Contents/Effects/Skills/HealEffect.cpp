@@ -44,9 +44,10 @@ void CHealEffect::AddSparks(int kind) {
 
     const int driftZ = ClampedRandom(13);
     const int driftX = ClampedRandom(13);
-    particle->offsetY = 0.0f;
-    particle->offsetX = static_cast<float>(driftX - 6);
-    particle->offsetZ = static_cast<float>(driftZ - 6);
+    const vector3d vectorValue = {static_cast<float>(driftX - 6), 0.0f, static_cast<float>(driftZ - 6)};
+    particle->offsetY = vectorValue.y;
+    particle->offsetX = vectorValue.x;
+    particle->offsetZ = vectorValue.z;
     particle->SetColor(220, 250, 220);
     particle->InitParticleQuad(particle->vertices);
     this->sparkParticles.push_back(particle);

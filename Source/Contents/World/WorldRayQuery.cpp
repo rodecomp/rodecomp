@@ -164,12 +164,14 @@ int WorldRayQuery::Intersects(const float* bounds) const {
 // OFFSET: 0x00AC7750
 // FUNCTION: fn_17658
 void WorldRayQuery::Collect(const float* ray, WorldSpatialTree* root) {
-  this->direction[0] = ray[3];
-  this->direction[1] = ray[4];
-  this->direction[2] = ray[5];
-  this->origin[0] = ray[0];
-  this->origin[1] = ray[1];
-  this->origin[2] = ray[2];
+  auto* target = this->direction;
+  target[0] = ray[3];
+  target[1] = ray[4];
+  target[2] = ray[5];
+  auto* target2 = this->origin;
+  target2[0] = ray[0];
+  target2[1] = ray[1];
+  target2[2] = ray[2];
   this->limit = 999999.0f;
 
   if (root) {
