@@ -91,7 +91,7 @@ bool UIScrollWnd::Update(int redraw) {
 
   bool changed = false;
   for (UIWindow* child : this->m_children) {
-    if (child != this->horizontalBar && child != this->scrollBar) {
+    if (this->horizontalBar != child && this->scrollBar != child) {
       if (child->geometry.x + child->geometry.width > 0 && child->geometry.x < this->geometry.width && child->geometry.y + child->geometry.height > 0 &&
           child->geometry.y < this->geometry.height && child->geometry.visible == 1) {
         changed |= this->UpdateChild(child, redraw);
