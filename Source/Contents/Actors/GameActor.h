@@ -69,6 +69,7 @@ struct ActorDamageMessage {
 };
 
 class CMercenaryAI;
+class UIPcGage;
 
 class CGameActor : public EffectActor {
 public:
@@ -138,12 +139,12 @@ public:
   /* 02F4 */ int lastDamage;
   /* 02F8 */ int hasHp;
   /* 02FC */ int maxHp;
-  /* 0300 */ int hpGaugeWindow;
+  /* 0300 */ UIPcGage* hpGaugeWindow;
   /* 0304 */ unsigned char hpGaugeFlags;
   /* 0305 */ unsigned char hasSp;
   /* 0306 */ unsigned char padding_0306[2];
   /* 0308 */ int spGaugeValue;
-  /* 030C */ int homunAI;
+  /* 030C */ CMercenaryAI* homunAI;
   /* 0310 */ CMercenaryAI* merAI;
   /* 0314 */ unsigned char objectType;
   /* 0315 */ unsigned char padding_0315[3];

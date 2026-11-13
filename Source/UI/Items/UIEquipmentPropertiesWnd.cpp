@@ -111,8 +111,7 @@ void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::s
           new EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine();
       item->SetSize(this->itemWidth, this->rowHeight);
       item->Show(0);
-      CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
-      item->SetImageResources(images[0], images[1], images[2], images[3]);
+      item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
       item->onHover = [this](CUIListItem* listItem) {
         for (EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine* other : this->items) {
           other->SetHighlighted(other == listItem);
@@ -134,13 +133,12 @@ void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::s
 // FUNCTION: fn_15040
 template <>
 void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::string>::LoadSkin(bool resolveSkin) {
-  CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
-  images[0] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
-  images[1] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
-  images[2] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
-  images[3] = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->disabledName, resolveSkin));
+  this->normalImage = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[0], resolveSkin));
+  this->hoverImage = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[1], resolveSkin));
+  this->pressedImage = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->imageNames[2], resolveSkin));
+  this->disabledImage = CResPtr<CBitmapRes>(this->LoadBitmapResource(this->disabledName, resolveSkin));
   for (EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine* item : this->items) {
-    item->SetImageResources(images[0], images[1], images[2], images[3]);
+    item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
   }
 }
 

@@ -504,7 +504,7 @@ void CGameActor::ResetState() {
   this->isNeverAnimation = 0;
   this->isAsuraAttack = 0;
   this->isBladeStop = 0;
-  this->homunAI = 0;
+  this->homunAI = nullptr;
   this->merAI = nullptr;
   this->objectType = 4;
   this->actorWindows[4] = 0;
@@ -523,7 +523,7 @@ void CGameActor::ResetState() {
   this->movementState[5] = 0;
   this->hasHp = 0;
   this->maxHp = 0;
-  this->hpGaugeWindow = 0;
+  this->hpGaugeWindow = nullptr;
   this->hpGaugeFlags = 0;
   this->hasSp = 0;
   this->spGaugeValue = 0;
@@ -621,10 +621,10 @@ CGameActor::~CGameActor() {
 // OFFSET: 0x00CAF260
 // FUNCTION: fn_21079
 void CGameActor::ReleaseAttachments() {
-  if (this->homunAI && reinterpret_cast<CMercenaryAI*>(this->homunAI)->state) {
-    reinterpret_cast<CMercenaryAI*>(this->homunAI)->Shutdown();
-    delete reinterpret_cast<CMercenaryAI*>(this->homunAI);
-    this->homunAI = 0;
+  if (this->homunAI && this->homunAI->state) {
+    this->homunAI->Shutdown();
+    delete this->homunAI;
+    this->homunAI = nullptr;
   }
 
   if (this->merAI && this->merAI->state) {
@@ -659,8 +659,8 @@ void CGameActor::ReleaseAttachments() {
   }
 
   if (this->hpGaugeWindow) {
-    g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->hpGaugeWindow));
-    this->hpGaugeWindow = 0;
+    g_windowMgr.Schedule(this->hpGaugeWindow);
+    this->hpGaugeWindow = nullptr;
   }
 
   for (std::list<CGameObject*>::iterator it = this->msgEffectList.begin(); it != this->msgEffectList.end(); ++it) {
@@ -716,25 +716,25 @@ void CGameActor::UpdateStateEffects() {
 // OFFSET: 0x00CB03E0
 // FUNCTION: fn_21093
 void CGameActor::UpdateHpGauge() {
-  if (this->hpGaugeWindow == 0) {
+  if (this->hpGaugeWindow == nullptr) {
     return;
   }
 
-  if (g_serviceOptions.Get(0xD5) && reinterpret_cast<UIPcGage*>(this->hpGaugeWindow)->displayMode != 0 &&
+  if (g_serviceOptions.Get(0xD5) && this->hpGaugeWindow->displayMode != 0 &&
       !StateFlag01(this->stateFlags) && !StateFlag02(this->stateFlags) && !StateFlag06(this->stateFlags) &&
       g_windowMgr.windowVisibilityState != 2) {
-    reinterpret_cast<UIPcGage*>(this->hpGaugeWindow)->Show(1);
-    if (this->render.state == 3 && reinterpret_cast<UIPcGage*>(this->hpGaugeWindow)->current != 0) {
-      reinterpret_cast<UIPcGage*>(this->hpGaugeWindow)->SetValues(0, reinterpret_cast<UIPcGage*>(this->hpGaugeWindow)->maximum);
+    this->hpGaugeWindow->Show(1);
+    if (this->render.state == 3 && this->hpGaugeWindow->current != 0) {
+      this->hpGaugeWindow->SetValues(0, this->hpGaugeWindow->maximum);
     }
     const int y = static_cast<int>(static_cast<float>(ScaleByScreenHeight(12)) * this->render.distanceScale + static_cast<float>(this->render.screenY));
-    reinterpret_cast<UIPcGage*>(this->hpGaugeWindow)->Move(
-      this->render.screenX - reinterpret_cast<UIPcGage*>(this->hpGaugeWindow)->geometry.width / 2, y);
-    reinterpret_cast<UIPcGage*>(this->hpGaugeWindow)->Invalidate();
+    this->hpGaugeWindow->Move(
+      this->render.screenX - this->hpGaugeWindow->geometry.width / 2, y);
+    this->hpGaugeWindow->Invalidate();
     return;
   }
 
-  reinterpret_cast<UIPcGage*>(this->hpGaugeWindow)->Show(0);
+  this->hpGaugeWindow->Show(0);
 }
 
 // OFFSET: 0x00CB0A90
@@ -1094,19 +1094,19 @@ __declspec(noinline) float CGameActor::GetElapsedFrames() {
 // OFFSET: 0x00CADAF0
 // FUNCTION: fn_21058
 int CGameActor::GetGaugeCurrent() {
-  if (this->hpGaugeWindow == 0) {
+  if (this->hpGaugeWindow == nullptr) {
     return -1;
   }
-  return reinterpret_cast<UIPcGage*>(this->hpGaugeWindow)->current;
+  return this->hpGaugeWindow->current;
 }
 
 // OFFSET: 0x00CADB10
 // FUNCTION: fn_21059
 int CGameActor::GetGaugeMaximum() {
-  if (this->hpGaugeWindow == 0) {
+  if (this->hpGaugeWindow == nullptr) {
     return -1;
   }
-  return reinterpret_cast<UIPcGage*>(this->hpGaugeWindow)->maximum;
+  return this->hpGaugeWindow->maximum;
 }
 
 // OFFSET: 0x00CADB30

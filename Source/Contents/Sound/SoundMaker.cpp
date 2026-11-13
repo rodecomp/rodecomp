@@ -1380,8 +1380,8 @@ bool CNpc::OnProcess() {
   WIN32_FIND_DATAA findData;
   if (g_session.IsHomunAid(this->render.accountId)) {
     if (this->homunAI) {
-      if (reinterpret_cast<CMercenaryAI*>(this->homunAI)->state) {
-        reinterpret_cast<CMercenaryAI*>(this->homunAI)->Process(this->render.accountId);
+      if (this->homunAI->state) {
+        this->homunAI->Process(this->render.accountId);
       } else {
         if (g_serviceOptions.Get(0xA4)) {
           HANDLE find = FindFirstFileA(".\\AI\\USER_AI", &findData);
@@ -1390,14 +1390,14 @@ bool CNpc::OnProcess() {
           }
           FindClose(find);
           CopyFileA(".\\AI\\AI.lua", ".\\AI\\USER_AI\\AI.lua", TRUE);
-          reinterpret_cast<CMercenaryAI*>(this->homunAI)->Load(".\\AI\\USER_AI\\AI.lua");
+          this->homunAI->Load(".\\AI\\USER_AI\\AI.lua");
         } else {
-          reinterpret_cast<CMercenaryAI*>(this->homunAI)->Load(".\\AI\\AI.lua");
+          this->homunAI->Load(".\\AI\\AI.lua");
         }
         this->SendMsg(nullptr, AM_UPDATEGAGE, 0, 0, 0, 0, 0, 0);
       }
     } else {
-      this->homunAI = reinterpret_cast<int>(new CMercenaryAI(0));
+      this->homunAI = new CMercenaryAI(0);
     }
   }
 

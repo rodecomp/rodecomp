@@ -8,6 +8,7 @@
 #include "Client/Application/Registry.h"
 #include "Client/Replay/Replay.h"
 #include "Client/Session/Session.h"
+#include "Contents/Actors/MercenaryAI.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Contents/Messenger/ClientMessenger.h"
@@ -118,8 +119,7 @@ void UIWindowMgr::HideChatWnd() {
 // OFFSET: 0x00A91D90
 // FUNCTION: fn_17172
 bool CGameActor::HasActiveHomunculusAI() {
-  const int* entry = reinterpret_cast<const int*>(this->homunAI);
-  return entry && entry[1] != 0;
+  return this->homunAI && this->homunAI->state != nullptr;
 }
 
 // OFFSET: 0x00A91F60

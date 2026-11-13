@@ -3127,9 +3127,9 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
       }
       if (this->hpGaugeWindow) {
         if (on) {
-          reinterpret_cast<UIMonsterGage*>(this->hpGaugeWindow)->SetMode(0);
+          static_cast<UIMonsterGage*>(this->hpGaugeWindow)->SetMode(0);
         } else {
-          reinterpret_cast<UIMonsterGage*>(this->hpGaugeWindow)->SetMode(1);
+          static_cast<UIMonsterGage*>(this->hpGaugeWindow)->SetMode(1);
         }
       }
       break;
@@ -4397,26 +4397,26 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
   case AM_UPDATE_MONSTER_GAGE:
     if (b == -1 ||
         c == -1) {
-      if (this->hpGaugeWindow == 0) {
+      if (this->hpGaugeWindow == nullptr) {
         break;
       }
-      g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->hpGaugeWindow));
-      this->hpGaugeWindow = 0;
+      g_windowMgr.Schedule(this->hpGaugeWindow);
+      this->hpGaugeWindow = nullptr;
       break;
     }
-    if (d == 1 && this->hpGaugeWindow != 0) {
-      g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->hpGaugeWindow));
-      this->hpGaugeWindow = 0;
+    if (d == 1 && this->hpGaugeWindow != nullptr) {
+      g_windowMgr.Schedule(this->hpGaugeWindow);
+      this->hpGaugeWindow = nullptr;
     }
-    if (this->hpGaugeWindow == 0) {
+    if (this->hpGaugeWindow == nullptr) {
       UIMonsterGage* const gage = new UIMonsterGage();
-      this->hpGaugeWindow = reinterpret_cast<int>(gage);
+      this->hpGaugeWindow = gage;
       gage->SetSize(60, 5);
-      g_windowMgr.AddRenderedFront(reinterpret_cast<UIWindow*>(this->hpGaugeWindow));
+      g_windowMgr.AddRenderedFront(this->hpGaugeWindow);
     }
-    reinterpret_cast<UIPcGage*>(this->hpGaugeWindow)->SetValues(static_cast<int>(b), static_cast<int>(c));
-    reinterpret_cast<UIPcGage*>(this->hpGaugeWindow)->Move(
-      this->render.screenX - reinterpret_cast<UIPcGage*>(this->hpGaugeWindow)->geometry.width / 2,
+    this->hpGaugeWindow->SetValues(static_cast<int>(b), static_cast<int>(c));
+    this->hpGaugeWindow->Move(
+      this->render.screenX - this->hpGaugeWindow->geometry.width / 2,
       static_cast<int>(static_cast<float>(ScaleByScreenHeight(12)) * this->render.distanceScale + static_cast<float>(this->render.screenY))
     );
     break;

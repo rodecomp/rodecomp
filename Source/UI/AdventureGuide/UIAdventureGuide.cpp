@@ -1506,8 +1506,7 @@ AdventureGuide::CUISubTab* CUIListBox<AdventureGuide::CUISubTab>::CreateItem() {
   AdventureGuide::CUISubTab* item = new AdventureGuide::CUISubTab();
   item->SetSize(this->itemWidth, this->rowHeight);
   item->Show(0);
-  CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
-  item->SetImageResources(images[0], images[1], images[2], images[3]);
+  item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
   item->onHover = [this](CUIListItem* listItem) {
     for (AdventureGuide::CUISubTab* other : this->items) {
       other->SetHighlighted(other == listItem);
@@ -1530,8 +1529,7 @@ AdventureGuide::CUITab* CUIListBox<AdventureGuide::CUITab>::CreateItem() {
   AdventureGuide::CUITab* item = new AdventureGuide::CUITab();
   item->SetSize(this->itemWidth, this->rowHeight);
   item->Show(0);
-  CResPtr<CBitmapRes>* images = reinterpret_cast<CResPtr<CBitmapRes>*>(reinterpret_cast<std::uint8_t*>(this) + 0x80);
-  item->SetImageResources(images[0], images[1], images[2], images[3]);
+  item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
   item->onHover = [this](CUIListItem* listItem) {
     for (AdventureGuide::CUITab* other : this->items) {
       other->SetHighlighted(other == listItem);
