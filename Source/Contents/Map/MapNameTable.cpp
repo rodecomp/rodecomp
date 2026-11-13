@@ -19,7 +19,7 @@
 // FUNCTION: fn_23498
 bool CSession::LoadMapNameTable() {
   std::vector<char*> tokens;
-  CCommonObject& storage = reinterpret_cast<CCommonObject&>(this->minimapTokenStorage[0x30]);
+  CCommonObject& storage = this->m_tableLoader;
   const bool loaded = storage.LoadTokens(tokens, OBFUSCATE_TEXT("mapNameTable.txt", 0x17FB0F6BFF3BE93FULL), 0);
 
   for (auto token = tokens.begin(); token != tokens.end(); token += 2) {

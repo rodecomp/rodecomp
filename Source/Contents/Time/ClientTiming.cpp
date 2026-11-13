@@ -831,7 +831,7 @@ bool CSession::LoadExceptionMinimapNameTable() {
   this->m_navigationForbiddenMaps.clear();
   this->m_navigationForbiddenMaps.reserve(512);
 
-  CCommonObject& storage = reinterpret_cast<CCommonObject&>(this->minimapTokenStorage[0x30]);
+  CCommonObject& storage = this->m_tableLoader;
   const bool loaded = storage.LoadTokens(tokens, "ExceptionMinimapNameTable.txt", 0);
 
   for (char* token : tokens) {

@@ -5899,7 +5899,7 @@ void CSession::LoadSessionTables() {
   ++g_sessionTableLoadCount;
   session->InitJobHitWaveNames();
 
-  CCommonObject& storage = reinterpret_cast<CCommonObject&>(session->minimapTokenStorage[0x30]);
+  CCommonObject& storage = session->m_tableLoader;
   {
     std::vector<char*> tokens;
     session->m_bgmFileNames.clear();

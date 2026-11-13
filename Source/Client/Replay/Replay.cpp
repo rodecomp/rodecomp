@@ -1,3 +1,4 @@
+#include "File/CommonObject.h"
 #include "Client/Replay/Replay.h"
 #include "UI/Window/WindowId.h"
 #include "Network/Packets/PacketId.h"
@@ -1360,7 +1361,7 @@ std::vector<unsigned char> CSession::BuildStatsReplayRecords() {
   AppendRecord(records, BuildReplayTaggedRecord(2025, this->replayStatValuesA, sizeof(this->replayStatValuesA)));
   AppendRecord(records, BuildReplayTaggedRecord(2026, this->replayStatValuesB, sizeof(this->replayStatValuesB)));
   AppendRecord(records, BuildReplayTaggedRecord(2027, this->replayStatValuesC, sizeof(this->replayStatValuesC)));
-  AppendRecord(records, BuildReplayTaggedRecord(2028, this->minimapTokenStorage, 0x30));
+  AppendRecord(records, BuildReplayTaggedRecord(2028, this->replayStatValuesD, 0x30));
   AppendRecord(records, BuildReplayTaggedRecord(2029, &this->hp, sizeof(this->hp)));
   AppendRecord(records, BuildReplayTaggedRecord(2030, &this->maxHp, sizeof(this->maxHp)));
   AppendRecord(records, BuildReplayTaggedRecord(2031, &this->m_sp, sizeof(this->m_sp)));

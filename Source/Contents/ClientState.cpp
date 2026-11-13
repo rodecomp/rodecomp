@@ -159,7 +159,7 @@ std::uint32_t CSession::ReadReplayStats(const std::vector<unsigned char>& data) 
       offset += header.bytes;
       break;
     case 2028:
-      std::memcpy(this->minimapTokenStorage, data.data() + offset, header.bytes);
+      std::memcpy(this->replayStatValuesD, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 2029:

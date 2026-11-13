@@ -11,6 +11,7 @@
 #include "Contents/Skills/PlayerSkillBundle.h"
 #include "Contents/Store/MCStoreInfoBackup.h"
 #include "Contents/UserData/NormalItemSlots.h"
+#include "File/CommonObject.h"
 #include "Resource/Xml/XmlNode.h"
 #include "UI/Cooldowns/CooldownState.h"
 #include "UI/Shortcuts/ShortcutCooldowns.h"
@@ -440,7 +441,8 @@ public:
   /* 5370 */ unsigned char replayStatValuesA[0x30];
   /* 53A0 */ unsigned char replayStatValuesB[0x30];
   /* 53D0 */ unsigned char replayStatValuesC[0x30];
-  /* 5400 */ unsigned char minimapTokenStorage[0x40];
+  /* 5400 */ unsigned char replayStatValuesD[0x30];
+  /* 5430 */ CCommonObject m_tableLoader;
   /* 5440 */ std::list<ShortcutCooldownRecord> m_requestTimers;
   /* 5448 */ int showTimer;
   /* 544C */ int m_mapTransitionFlag;
