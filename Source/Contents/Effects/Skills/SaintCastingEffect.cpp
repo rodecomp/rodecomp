@@ -8,6 +8,7 @@
 #include "Contents/Effects/Core/EffectPoint.h"
 #include "Contents/Effects/Particles/Particle.h"
 #include "Contents/Sound/SoundMgr.h"
+#include "Contents/Actors/Pc.h"
 #include "Contents/World/World.h"
 #include "Utility/Math/AffineMatrix.h"
 
@@ -97,7 +98,7 @@ void CSaintCastingEffect::Close() {
 // FUNCTION: fn_19163
 void CSaintCastingEffect::Open() {
   CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
-  const vector3d& player = reinterpret_cast<const CRenderObject*>(world->player)->render.position;
+  const vector3d& player = world->player->render.position;
 
   switch (this->id) {
   case EF_BEGINSPELL:

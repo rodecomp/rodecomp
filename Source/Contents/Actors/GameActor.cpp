@@ -500,7 +500,7 @@ void CGameActor::ResetState() {
   this->freezeEndTick = 0;
   this->actorType = 0;
   this->sceneNameWindow = 0;
-  this->actorTitleWindow = 0;
+  this->actorTitleWindow = nullptr;
   this->isNeverAnimation = 0;
   this->isAsuraAttack = 0;
   this->isBladeStop = 0;
@@ -675,8 +675,8 @@ void CGameActor::ReleaseAttachments() {
   }
 
   if (this->actorTitleWindow) {
-    g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->actorTitleWindow));
-    this->actorTitleWindow = 0;
+    g_windowMgr.Schedule(this->actorTitleWindow);
+    this->actorTitleWindow = nullptr;
   }
 }
 

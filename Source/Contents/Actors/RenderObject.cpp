@@ -4812,8 +4812,8 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
         this->ClearSiegeNameWindow();
       }
       if (this->actorTitleWindow) {
-        g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->actorTitleWindow));
-        this->actorTitleWindow = 0;
+        g_windowMgr.Schedule(this->actorTitleWindow);
+        this->actorTitleWindow = nullptr;
       }
     } else {
       if (notify) {
@@ -4867,8 +4867,8 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
         this->ClearSiegeNameWindow();
       }
       if (this->actorTitleWindow) {
-        g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->actorTitleWindow));
-        this->actorTitleWindow = 0;
+        g_windowMgr.Schedule(this->actorTitleWindow);
+        this->actorTitleWindow = nullptr;
       }
     } else {
       this->render.visible = 1;
@@ -4955,8 +4955,8 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
         this->ClearSiegeNameWindow();
       }
       if (this->actorTitleWindow) {
-        g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->actorTitleWindow));
-        this->actorTitleWindow = 0;
+        g_windowMgr.Schedule(this->actorTitleWindow);
+        this->actorTitleWindow = nullptr;
       }
     } else {
       this->render.visible = 1;

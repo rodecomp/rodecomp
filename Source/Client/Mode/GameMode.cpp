@@ -6443,7 +6443,7 @@ void __stdcall OpenWordDisplay(CGameActor* actor) {
   UIWordDisplayWnd* window = new UIWordDisplayWnd();
   window->SendMsg(nullptr, AM_UPDATEGAGE, actor->render.accountId, 0, 0, 0);
   g_windowMgr.AddRendered(window);
-  actor->actorTitleWindow = reinterpret_cast<int>(window);
+  actor->actorTitleWindow = window;
 }
 
 // OFFSET: 0x00CFF070

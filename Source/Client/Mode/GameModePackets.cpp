@@ -23413,8 +23413,8 @@ void CGameMode::ProcessIncomingPackets() {
         if (team != g_session.playerTeam[0]) {
           OpenWordDisplay(actor);
         } else if (actor->actorTitleWindow) {
-          g_windowMgr.Schedule(reinterpret_cast<UIWindow *>(actor->actorTitleWindow));
-          actor->actorTitleWindow = 0;
+          g_windowMgr.Schedule(actor->actorTitleWindow);
+          actor->actorTitleWindow = nullptr;
         }
       }
       break;
