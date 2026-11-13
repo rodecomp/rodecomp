@@ -1530,6 +1530,19 @@ bool CRagEffect::ProcessEZ2STR(float x, float y, float z) {
 
       break;
 
+    case 5: {
+      const int frame = static_cast<int>(static_cast<float>(elapsed) * delta.anidelta + current.aniframe);
+      const int count = clip.textureCount - 1;
+      const int turns = frame / count;
+
+      if ((turns & 1) != 0) {
+        current.aniframe = static_cast<float>(count - (frame - turns * count));
+      } else {
+        current.aniframe = static_cast<float>(frame - turns * count);
+      }
+
+      break;
+    }
     case 3: {
       const float frame = current.aniframe += delta.anidelta;
       const float count = static_cast<float>(clip.textureCount);
@@ -1560,19 +1573,6 @@ bool CRagEffect::ProcessEZ2STR(float x, float y, float z) {
       break;
     }
 
-    case 5: {
-      const int frame = static_cast<int>(static_cast<float>(elapsed) * delta.anidelta + current.aniframe);
-      const int count = clip.textureCount - 1;
-      const int turns = frame / count;
-
-      if ((turns & 1) != 0) {
-        current.aniframe = static_cast<float>(count - (frame - turns * count));
-      } else {
-        current.aniframe = static_cast<float>(frame - turns * count);
-      }
-
-      break;
-    }
     }
 
     state.layerDrawn[layer] = true;
@@ -8523,17 +8523,17 @@ void CRagEffect::TetraVortexPillar(char kind) {
   this->state.lastPrim->state.slots[0].vecBPre.y = this->render.position.y - 10.0f;
   if (kind == 4) {
     switch (this->state.type) {
-    case EF_TETRA_FIRE:
-      this->state.lastPrim->state.slots[0].flag1[2] = 20;
+    case EF_TETRA_WIND:
+      this->state.lastPrim->state.slots[0].flag1[2] = 17;
       break;
     case EF_TETRA_WATER:
       this->state.lastPrim->state.slots[0].flag1[2] = 18;
       break;
-    case EF_TETRA_WIND:
-      this->state.lastPrim->state.slots[0].flag1[2] = 17;
-      break;
     case EF_TETRA_GROUND:
       this->state.lastPrim->state.slots[0].flag1[2] = 19;
+      break;
+    case EF_TETRA_FIRE:
+      this->state.lastPrim->state.slots[0].flag1[2] = 20;
       break;
     }
 

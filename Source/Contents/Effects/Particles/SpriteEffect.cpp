@@ -516,6 +516,26 @@ void CSpriteEffect::OnProcess() {
       SetOffsetPosition(particle->position, this->position, offset);
       break;
     }
+    case EF_C_GUIDE_OF_DEAD_TEXT: {
+      CGameActor* actor = static_cast<CGameActor*>(FindRenderObject(this->actor));
+      if (!actor) {
+        break;
+      }
+
+      const vector3d offset = {0.0f, -actor->GetNameOffset(), 0.0f};
+      SetOffsetPosition(particle->position, this->position, offset);
+      break;
+    }
+    case EF_C_MEDJED_TEXT: {
+      CGameActor* actor = static_cast<CGameActor*>(FindRenderObject(this->actor));
+      if (!actor) {
+        break;
+      }
+
+      const vector3d offset = {0.0f, -actor->GetNameOffset(), 0.0f};
+      SetOffsetPosition(particle->position, this->position, offset);
+      break;
+    }
     case EF_ATQUE_POENITENTIA: {
       CGameActor* actor = static_cast<CGameActor*>(FindRenderObject(this->actor));
       if (!actor) {
@@ -539,39 +559,19 @@ void CSpriteEffect::OnProcess() {
       SetOffsetPosition(particle->position, this->position, offset);
       break;
     }
-    case EF_C_GUIDE_OF_DEAD_TEXT: {
-      CGameActor* actor = static_cast<CGameActor*>(FindRenderObject(this->actor));
-      if (!actor) {
-        break;
-      }
-
-      const vector3d offset = {0.0f, -actor->GetNameOffset(), 0.0f};
-      SetOffsetPosition(particle->position, this->position, offset);
-      break;
-    }
-    case EF_C_MEDJED_TEXT: {
-      CGameActor* actor = static_cast<CGameActor*>(FindRenderObject(this->actor));
-      if (!actor) {
-        break;
-      }
-
-      const vector3d offset = {0.0f, -actor->GetNameOffset(), 0.0f};
-      SetOffsetPosition(particle->position, this->position, offset);
-      break;
-    }
-    case EF_UNK_2443:
+    case EF_S_BEELZEBUB_WING:
       particle->applyActorExtent = 1;
       particle->applyActorLift = 1;
-      particle->screenOffsetY = 0.0f;
+      particle->screenOffsetY = -105.0f;
       particle->screenOffsetX = 0.0f;
       particle->position.x = this->position[0];
       particle->position.y = this->position[1];
       particle->position.z = this->position[2];
       break;
-    case EF_S_BEELZEBUB_WING:
+    case EF_UNK_2443:
       particle->applyActorExtent = 1;
       particle->applyActorLift = 1;
-      particle->screenOffsetY = -105.0f;
+      particle->screenOffsetY = 0.0f;
       particle->screenOffsetX = 0.0f;
       particle->position.x = this->position[0];
       particle->position.y = this->position[1];

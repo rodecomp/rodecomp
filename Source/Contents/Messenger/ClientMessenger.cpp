@@ -4867,17 +4867,20 @@ int GetPlayerValue(lua_State* state) {
   std::map<int, int>& traitStats = g_session.m_traits.stats;
   int value = 0;
   switch (args[0]) {
+  case SP_BASELEVEL:
+    value = g_session.m_level;
+    break;
+  case SP_JOBLEVEL:
+    value = g_session.m_jobLevel;
+    break;
+  case SP_CLASS:
+    value = g_session.m_job;
+    break;
   case SP_SP:
     value = g_session.m_sp;
     break;
   case SP_MAXSP:
     value = g_session.m_maxSp;
-    break;
-  case SP_BASELEVEL:
-    value = g_session.m_level;
-    break;
-  case SP_CLASS:
-    value = g_session.m_job;
     break;
   case SP_USTR:
     value = g_session.m_standardStats[0];
@@ -4897,26 +4900,23 @@ int GetPlayerValue(lua_State* state) {
   case SP_ULUK:
     value = g_session.m_standardStats[5];
     break;
-  case SP_JOBLEVEL:
-    value = g_session.m_jobLevel;
-    break;
   case 255:
     value = traitStats[SP_POW];
     break;
   case 256:
     value = traitStats[SP_STA];
     break;
-  case 257:
-    value = traitStats[SP_WIS];
-    break;
-  case 258:
-    value = traitStats[SP_SPL];
-    break;
   case 259:
     value = traitStats[SP_CON];
     break;
   case 260:
     value = traitStats[SP_CRT];
+    break;
+  case 258:
+    value = traitStats[SP_SPL];
+    break;
+  case 257:
+    value = traitStats[SP_WIS];
     break;
   case 263:
     value = g_runeSystemMgr->GetCurSlotCount();

@@ -3696,6 +3696,11 @@ void CSevereRainStorm::SpawnParticles() {
       this->SpawnTwinklingGalaxy(this->elapsedFrames / 15 % 4);
     }
     break;
+  case EF_UNK_2462:
+    if (this->elapsedFrames % (9 - this->effectLevel / 3) == 0) {
+      this->SpawnCrossRain();
+    }
+    break;
   case EF_UNK_2349:
     if (this->ActorExists() && this->elapsedFrames % 18 == 0) {
       this->SpawnGalaxyStar();
@@ -3714,11 +3719,6 @@ void CSevereRainStorm::SpawnParticles() {
   case EF_UNK_2354:
     if (this->ActorExists() && this->elapsedFrames % 15 == 0) {
       this->SpawnBombardHits();
-    }
-    break;
-  case EF_UNK_2462:
-    if (this->elapsedFrames % (9 - this->effectLevel / 3) == 0) {
-      this->SpawnCrossRain();
     }
     break;
   }

@@ -3689,12 +3689,12 @@ void CGameActor::ProcessHitMessage(CGameObject*, const ActorHitInfo* info, int, 
           action = 0x5D;
           flag = 1;
           break;
-        case DMG_LUCY_DODGE:
-          action = this->isCounter != 0 ? 0x1A : 0x5E;
-          break;
         case DMG_MULTI_HIT_CRITICAL:
           action = 0x94;
           flag = 1;
+          break;
+        case DMG_LUCY_DODGE:
+          action = this->isCounter != 0 ? 0x1A : 0x5E;
           break;
         default:
           action = 0x1A;
