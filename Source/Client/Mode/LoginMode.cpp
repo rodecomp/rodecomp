@@ -3083,16 +3083,16 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
           g_session.m_maxSp = maxSp;
           g_session.RefreshHpSpWindows();
         }
-        g_session.m_zeny = *reinterpret_cast<const int*>(&this->characters[i].progressionData[0x00]);
+        g_session.m_zeny = this->characters[i].zeny;
         g_session.RefreshHpSpWindows();
         g_session.InvalidateWindowFrames();
-        g_session.m_jobExp = *reinterpret_cast<const std::int64_t*>(&this->characters[i].progressionData[0x04]);
+        g_session.m_jobExp = this->characters[i].jobExp;
         g_session.InvalidateWindowFrames();
-        g_session.m_karma = *reinterpret_cast<const int*>(&this->characters[i].progressionData[0x1C]);
+        g_session.m_karma = this->characters[i].karma;
         g_session.InvalidateWindowFrames();
-        g_session.m_manner = *reinterpret_cast<const int*>(&this->characters[i].progressionData[0x20]);
+        g_session.m_manner = this->characters[i].manner;
         g_session.InvalidateWindowFrames();
-        g_session.m_jobLevel = *reinterpret_cast<const int*>(&this->characters[i].progressionData[0x0C]);
+        g_session.m_jobLevel = this->characters[i].jobLevel;
         g_session.InvalidateWindowFrames();
         g_session.m_characterFlags = this->characters[i].characterFlags[0];
         g_session.m_head = this->characters[i].head;
@@ -3106,9 +3106,9 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
         g_session.m_accessory3 = this->characters[i].accessory3;
         g_session.m_robe = this->characters[i].robe;
         g_session.m_bodyCostume = this->characters[i].bodyCostume;
-        g_session.m_bodyState = *reinterpret_cast<const int*>(&this->characters[i].progressionData[0x10]);
-        g_session.m_effectState = *reinterpret_cast<const int*>(&this->characters[i].progressionData[0x14]);
-        g_session.m_jobFlags = *reinterpret_cast<const std::uint32_t*>(&this->characters[i].progressionData[0x18]);
+        g_session.m_bodyState = this->characters[i].bodyState;
+        g_session.m_effectState = this->characters[i].effectState;
+        g_session.m_jobFlags = this->characters[i].jobFlags;
         return 0;
       }
     }

@@ -631,7 +631,7 @@ void UINewChatWnd::Paint() {
   this->ClearSurface(0xFFFF00FF);
   this->FillRegion(4, this->geometry.height - this->m_inputAreaHeight, this->geometry.width - 8, 1, 0x8E8E8E);
 
-  if (static_cast<unsigned char>(g_windowMgr.chatWndStickOn) != 0 && this->geometry.height > this->m_inputAreaHeight + this->m_inputOffsetY) {
+  if (g_windowMgr.chatWndStickOn != 0 && this->geometry.height > this->m_inputAreaHeight + this->m_inputOffsetY) {
     const int tabsWidth = static_cast<int>(this->m_tabControl->labels.size()) * this->m_tabWidth;
     this->FillRegion(3, this->m_inputOffsetY, 1, this->geometry.height - this->m_inputOffsetY, 0xFFFFFF);
     this->FillRegion(tabsWidth + 3, this->m_inputOffsetY, this->geometry.width - tabsWidth - 10, 1, 0xFFFFFF);
@@ -1139,7 +1139,7 @@ UINewChatWnd::UINewChatWnd() : UIFrameWnd(0) {
   this->m_inputEdit = nullptr;
   this->m_inputResizer = nullptr;
   this->m_maxTabs = 10;
-  *reinterpret_cast<unsigned char*>(&g_windowMgr.chatWndStickOn) = 1;
+  g_windowMgr.chatWndStickOn = 1;
   this->geometry.state = 0;
   this->m_menuMode = 0;
   this->m_currentTab = 0;

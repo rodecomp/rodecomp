@@ -379,7 +379,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       g_windowMgr.SelectWhisperName(reinterpret_cast<const char*>(b));
       return 0;
     case ID_STICK_ON:
-      *reinterpret_cast<unsigned char*>(&g_windowMgr.chatWndStickOn) = 1;
+      g_windowMgr.chatWndStickOn = 1;
       this->m_currentTab = 0;
       if (this->m_savedRowCount == 0) {
         this->m_savedRowCount = 1;
@@ -615,7 +615,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       return 0;
     }
   case UM_RESIZE:
-    if (a == 2 && static_cast<unsigned char>(g_windowMgr.chatWndStickOn) != 0) {
+    if (a == 2 && g_windowMgr.chatWndStickOn != 0) {
       const int top = this->m_inputOffsetY + 0x38;
       if (c >= top) {
         int rows = (c - top) / 14 + 1;
@@ -631,7 +631,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     }
     return 0;
   case UM_TOGGLEPUSH:
-    if (static_cast<unsigned char>(g_windowMgr.chatWndStickOn) != 0) {
+    if (g_windowMgr.chatWndStickOn != 0) {
       const int step = a == 0 ? 1 : -1;
       int rows = step;
       if (this->geometry.state != 0) {
@@ -670,7 +670,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     this->ResizeRows(a);
     return 0;
   case UM_OPENCHATWND:
-    if (static_cast<unsigned char>(g_windowMgr.chatWndStickOn) != 0 && this->geometry.state == 0) {
+    if (g_windowMgr.chatWndStickOn != 0 && this->geometry.state == 0) {
       this->ResizeRows(1);
     }
     return 0;

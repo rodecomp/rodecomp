@@ -33,7 +33,14 @@ struct ConnectionEndpoint;
 struct CharacterInfo {
   /* 0000 */ std::uint32_t gid;
   /* 0004 */ std::int64_t exp;
-  /* 000C */ unsigned char progressionData[0x24];
+  /* 000C */ std::int32_t zeny;
+  /* 0010 */ std::int64_t jobExp;
+  /* 0018 */ std::int32_t jobLevel;
+  /* 001C */ std::int32_t bodyState;
+  /* 0020 */ std::int32_t effectState;
+  /* 0024 */ std::uint32_t jobFlags;
+  /* 0028 */ std::int32_t karma;
+  /* 002C */ std::int32_t manner;
   /* 0030 */ std::int16_t jobPoint;
   /* 0032 */ std::int64_t hp;
   /* 003A */ std::int64_t maxHp;

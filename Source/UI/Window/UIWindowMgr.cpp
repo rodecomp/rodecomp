@@ -890,6 +890,7 @@ UIWindowMgr::UIWindowMgr()
   this->padding_04F4 = 0;
   this->framesInvalidated = 0;
   this->chatWndStickOn = 1;
+  this->onStSubChat = 0;
   this->battleSubChatEnabled = 0;
   this->compactCompositionLayout = g_language == 2;
   this->skillDescriptionVisible = 0;
@@ -1599,8 +1600,8 @@ bool UIWindowMgr::ProcessKeyDown(int key, int keyData, int pressed) {
     if (this->inputSuggestionsEnabled) {
       const UIWindow* window = this->chatWnd;
       if (window) {
-        UIWindow* const* buttons = reinterpret_cast<UIWindow* const*>(reinterpret_cast<const char*>(window) + 0xBC);
-        if (this->hoverWindow == buttons[0] || this->hoverWindow == buttons[1]) {
+        const UINewChatWnd* const chat = static_cast<const UINewChatWnd*>(window);
+        if (this->hoverWindow == chat->m_chatEdit || this->hoverWindow == chat->m_whisperEdit) {
           hoverOnButton = true;
         }
       }
@@ -2003,8 +2004,8 @@ __declspec(noinline) void UIWindowMgr::BroadcastMessage21() {
 __declspec(noinline) bool UIWindowMgr::IsHoverOnWindow01C8Button() {
   const UIWindow* window = this->chatWnd;
   if (window) {
-    UIWindow* const* buttons = reinterpret_cast<UIWindow* const*>(reinterpret_cast<const char*>(window) + 0xBC);
-    if (this->hoverWindow == buttons[0] || this->hoverWindow == buttons[1]) {
+    const UINewChatWnd* const chat = static_cast<const UINewChatWnd*>(window);
+    if (this->hoverWindow == chat->m_chatEdit || this->hoverWindow == chat->m_whisperEdit) {
       return true;
     }
   }
@@ -4679,7 +4680,6 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
   }
 
-  unsigned char* const base = reinterpret_cast<unsigned char*>(this);
   const auto layerGreater = [](const UIWindow* left, const UIWindow* right) {
     return static_cast<int>(left->renderLayer) > static_cast<int>(right->renderLayer);
   };
@@ -4848,7 +4848,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(280, 120);
       window->Move(0, 120);
       this->AddRendered(window);
-      this->itemWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x528), 0, 0, 0);
+      this->itemWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->itemWndInfo.x), 0, 0, 0);
       g_snapMgr.Add(window);
     }
     window->Show(1);
@@ -4866,7 +4866,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->questDisplayWnd->renderLayer = 5;
       this->AddRendered(this->questDisplayWnd);
       this->rendered.sort(layerGreater);
-      this->questDisplayWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x570), 0, 0, 0);
+      this->questDisplayWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->questDisplayInfo.visible), 0, 0, 0);
     }
     break;
   case WID_WAITWND:
@@ -4913,7 +4913,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(280, 167);
       window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300));
       this->AddRendered(window);
-      this->equipWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x590), 0, 0, 0);
+      this->equipWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->equipWndInfo.x), 0, 0, 0);
       g_snapMgr.Add(window);
     }
     window->Show(1);
@@ -4927,7 +4927,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(640, 540);
       window->Move(CenterOnViewportX(0), ScaleByScreenHeight(30));
       this->AddRendered(window);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x9B4), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->nCashWndInfo.x), 0, 0, 0);
       g_snapMgr.Add(window);
     }
     window->Show(1);
@@ -4940,7 +4940,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(280, 141);
       window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300));
       this->AddRendered(window);
-      this->statusWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x574), 0, 0, 0);
+      this->statusWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->statusWndInfo.x), 0, 0, 0);
       g_snapMgr.Add(window);
     }
     window->Show(1);
@@ -4958,7 +4958,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(560, 400);
       window->Move(CenterOnViewportX(50), ScaleByScreenHeight(50));
       this->AddRendered(window);
-      this->skillListWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x76C), 0, 0, 0);
+      this->skillListWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->skillListWndInfo.x), 0, 0, 0);
     }
     window->Show(1);
     this->skillListWndVisible = 1;
@@ -4975,7 +4975,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(280, 458);
       window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
       this->AddRendered(window);
-      this->itemStoreWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x614), 0, 0, 0);
+      this->itemStoreWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->itemStoreFindListInfo.x), 0, 0, 0);
     }
     window->Show(1);
     break;
@@ -5012,7 +5012,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(140, 145);
       static_cast<UIItemStoreSubWnd*>(this->itemStoreTabWnds[tab])->SetTitle(LookupMessage(message));
       this->AddRendered(window);
-      this->itemStoreTabWnds[tab]->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(reinterpret_cast<ItemStoreFindSlotInfo*>(base + 0x62C) + tab), 0, 0, 0);
+      this->itemStoreTabWnds[tab]->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(this->itemStoreFindSlots + tab), 0, 0, 0);
     }
     window->Show(1);
     break;
@@ -5028,7 +5028,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       static_cast<UIItemStoreSubWnd*>(this->itemStoreLastTabWnd)->SetTitle(LookupMessage(id == WID_ITEMSTORESUBWND_TAB_7 ? 0x5BF : 0));
       window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
       this->AddRendered(window);
-      this->itemStoreLastTabWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x69C), 0, 0, 0);
+      this->itemStoreLastTabWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->itemStoreFindSlots[7].x), 0, 0, 0);
     }
     window->Show(1);
     break;
@@ -5041,7 +5041,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       static_cast<UIItemStoreFindWnd*>(this->itemStoreFindWnd)->SetTitle(LookupMessage(MSI_AUCTION_SEARCH));
       window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
       this->AddRendered(window);
-      this->itemStoreFindWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x6AC), 0, 0, 0);
+      this->itemStoreFindWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->itemStoreFindWndInfo.x), 0, 0, 0);
     }
     window->Show(1);
     break;
@@ -5061,7 +5061,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(152, 199);
       window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
       this->AddRendered(window);
-      this->jobListWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x6EC), 0, 0, 0);
+      this->jobListWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->jobListWndInfo.x), 0, 0, 0);
     }
     break;
   case WID_SEEKPARTYWND:
@@ -5072,7 +5072,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(152, 199);
       window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
       this->AddRendered(window);
-      this->seekPartyWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x6DC), 0, 0, 0);
+      this->seekPartyWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->seekPartyWndInfo.x), 0, 0, 0);
     }
     window->Show(1);
     g_session.m_partyBooking.seekWindowOpen = 1;
@@ -5085,7 +5085,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
         window->SetSize(360, 350);
         window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
         this->AddRendered(window);
-        this->seekPartyMessageWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x6CC), 0, 0, 0);
+        this->seekPartyMessageWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->seekPartyMBWndInfo.x), 0, 0, 0);
       } else {
         g_windowMgr.CloseWindow(WID_SEEKPARTYMBWND);
       }
@@ -5098,7 +5098,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(550, 350);
       window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
       this->AddRendered(window);
-      this->seekPartyListWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x6BC), 0, 0, 0);
+      this->seekPartyListWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->seekPartyListWndInfo.x), 0, 0, 0);
     } else {
       g_windowMgr.CloseWindow(WID_SEEKPARTYLISTWND);
     }
@@ -5122,7 +5122,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(273, 326);
       window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
       this->AddRendered(window);
-      this->messengerGroupWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x72C), 0, 0, 0);
+      this->messengerGroupWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->messengerGroupWndInfo.x), 0, 0, 0);
     }
     window->Show(1);
     this->messengerGroupWndInfo.visible = 1;
@@ -5135,7 +5135,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(400, 260);
       window->Move(CenterOnViewportX(185), ScaleByScreenHeight(200));
       this->AddRendered(window);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x7A4), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->merchantShopMakeWndInfo.x), 0, 0, 0);
     }
     window->Show(1);
     this->EnsureWindow(WID_MERCHANTMIRRORITEMWND);
@@ -5222,7 +5222,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(200, 100);
       window->Move(CenterOnViewportX(220), CenterOnViewportY(120));
       this->AddRendered(window);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x9D4), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->entryQueueStandbyWndInfo.x), 0, 0, 0);
     }
     window->Show(1);
     break;
@@ -5259,7 +5259,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     window->Show(1);
     break;
   case WID_GUILDWND: {
-    GuildWndInfo* guildInfo = reinterpret_cast<GuildWndInfo*>(base + 0x834);
+    GuildWndInfo* guildInfo = &this->guildWndInfo;
     if (!guildInfo->IsValid()) {
       guildInfo->Reset();
     }
@@ -5296,7 +5296,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(g_defaultPlacementWidth, g_defaultPlacementHeight);
       window->Move(ScaleToViewportWidth(0), 147);
       this->AddRendered(window);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x834), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->guildWndInfo.x), 0, 0, 0);
     }
     window->Show(1);
     break;
@@ -5308,7 +5308,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(g_defaultPlacementWidth, g_defaultPlacementHeight);
       window->Move(ScaleToViewportWidth(0), 147);
       this->AddRendered(window);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x834), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->guildWndInfo.x), 0, 0, 0);
     }
     window->Show(1);
     break;
@@ -5320,7 +5320,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(g_defaultPlacementWidth, g_defaultPlacementHeight);
       window->Move(ScaleToViewportWidth(0), 147);
       this->AddRendered(window);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x834), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->guildWndInfo.x), 0, 0, 0);
     }
     window->Show(1);
     break;
@@ -5332,7 +5332,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(g_defaultPlacementWidth, g_defaultPlacementHeight);
       window->Move(ScaleToViewportWidth(0), 147);
       this->AddRendered(window);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x834), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->guildWndInfo.x), 0, 0, 0);
     }
     window->Show(1);
     break;
@@ -5344,7 +5344,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(g_defaultPlacementWidth, g_defaultPlacementHeight);
       window->Move(ScaleToViewportWidth(0), 147);
       this->AddRendered(window);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x834), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->guildWndInfo.x), 0, 0, 0);
     }
     window->Show(1);
     break;
@@ -5356,7 +5356,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(g_defaultPlacementWidth, g_defaultPlacementHeight);
       window->Move(ScaleToViewportWidth(0), 147);
       this->AddRendered(window);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x834), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->guildWndInfo.x), 0, 0, 0);
     }
     window->Show(1);
     break;
@@ -5368,7 +5368,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(g_defaultPlacementWidth, g_defaultPlacementHeight);
       window->Move(ScaleToViewportWidth(0), 147);
       this->AddRendered(window);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x834), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->guildWndInfo.x), 0, 0, 0);
     }
     window->Show(1);
     break;
@@ -5437,7 +5437,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(213, 90);
       window->Move(CenterOnViewportX(200), ScaleByScreenHeight(120));
       this->AddRendered(window);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x86C), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->friendOptionWndInfo.x), 0, 0, 0);
     }
     window->Show(1);
     break;
@@ -5449,7 +5449,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(130, g_session.PartyCount() ? 245 : 180);
       window->Move(CenterOnViewportX(200), ScaleByScreenHeight(120));
       this->AddRendered(window);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x814), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->partySettingWndInfo.x), 0, 0, 0);
     }
     window->Show(1);
     break;
@@ -5461,7 +5461,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(130, 220);
       window->Move(CenterOnViewportX(200), ScaleByScreenHeight(120));
       this->AddRendered(window);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x814), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->partySettingWndInfo.x), 0, 0, 0);
     }
     window->Show(1);
     break;
@@ -5618,7 +5618,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(280, 120);
       window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
       this->AddRendered(window);
-      this->exchangeAcceptWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x75C), 0, 0, 0);
+      this->exchangeAcceptWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->exchangeAcceptWndInfo.x), 0, 0, 0);
     }
     window->Show(1);
     break;
@@ -5651,7 +5651,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(280, 180);
       window->Move(CenterOnViewportX(200), ScaleByScreenHeight(100));
       this->AddRendered(window);
-      this->sayDialogWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x5E4), 0, 0, 0);
+      this->sayDialogWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->sayDialogWndInfo.x), 0, 0, 0);
     }
     window->Show(1);
     this->sayDialogWnd->renderLayer = 1;
@@ -5676,7 +5676,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(280, 120);
       window->Move(CenterOnViewportX(200), ScaleByScreenHeight(300));
       this->AddRendered(window);
-      this->chatRoomWnd->SendMsg(nullptr, UM_SETINFO2, reinterpret_cast<std::intptr_t>(base + 0x604), 0, 0, 0);
+      this->chatRoomWnd->SendMsg(nullptr, UM_SETINFO2, reinterpret_cast<std::intptr_t>(&this->chatRoomWndInfo.x), 0, 0, 0);
     }
     window->Show(1);
     break;
@@ -5699,7 +5699,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(280, 120);
       window->Move(CenterOnViewportX(200), ScaleByScreenHeight(300));
       this->AddRendered(window);
-      this->choose3Wnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x5F4), 0, 0, 0);
+      this->choose3Wnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->chooseWndInfo.x), 0, 0, 0);
     }
     window->Show(1);
     break;
@@ -5711,7 +5711,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(200, 200);
       window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
       this->AddRendered(window);
-      this->itemCompositionWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x87C), 0, 0, 0);
+      this->itemCompositionWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->itemCompositionWndInfo.x), 0, 0, 0);
     }
     window->Show(1);
     break;
@@ -5723,7 +5723,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(200, 200);
       window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
       this->AddRendered(window);
-      this->itemIdentifyWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x88C), 0, 0, 0);
+      this->itemIdentifyWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->itemIdentifyWndInfo.x), 0, 0, 0);
     }
     window->Show(1);
     break;
@@ -5812,7 +5812,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(280, 120);
       window->Move(300, 200);
       this->AddRendered(window);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x70C), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->itemSellWndInfo.x), 0, 0, 0);
     }
     window->Show(1);
     break;
@@ -5824,7 +5824,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(280, 120);
       window->Move(300, 200);
       this->AddRendered(window);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x70C), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->itemSellWndInfo.x), 0, 0, 0);
     }
     window->Show(1);
     break;
@@ -5836,7 +5836,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(280, 120);
       window->Move(300, 200);
       this->AddRendered(window);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x7D4), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->merchantItemPurchaseWndInfo.x), 0, 0, 0);
     }
     window->Show(1);
     break;
@@ -5848,7 +5848,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(280, 120);
       window->Move(300, 200);
       this->AddRendered(window);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x71C), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->itemPurchaseWndInfo.x), 0, 0, 0);
     }
     window->Show(1);
     this->EnsureWindow(WID_ITEMPARAMCHANGEDISPLAYWND);
@@ -5861,7 +5861,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(280, 120);
       window->Move(0, 200);
       this->AddRendered(window);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x7C4), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->merchantItemMyShopWndInfo.x), 0, 0, 0);
     }
     window->Show(1);
     break;
@@ -5873,7 +5873,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(280, 120);
       window->Move(0, 200);
       this->AddRendered(window);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x7B4), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->merchantItemShopWndInfo.x), 0, 0, 0);
     }
     window->Show(1);
     break;
@@ -5885,7 +5885,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(280, 120);
       window->Move(0, 200);
       this->AddRendered(window);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x6FC), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->itemShopWndInfo.x), 0, 0, 0);
     }
     window->Show(1);
     break;
@@ -5897,7 +5897,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(280, 120);
       window->Move(0, 200);
       this->AddRendered(window);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x6FC), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->itemShopWndInfo.x), 0, 0, 0);
     }
     window->Show(1);
     break;
@@ -5909,7 +5909,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(280, 120);
       window->Move(0, 200);
       this->AddRendered(window);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x6FC), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->itemShopWndInfo.x), 0, 0, 0);
     }
     window->Show(1);
     break;
@@ -5921,7 +5921,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(280, 120);
       window->Move(300, 200);
       this->AddRendered(window);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x71C), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->itemPurchaseWndInfo.x), 0, 0, 0);
     }
     window->Show(1);
     break;
@@ -6044,7 +6044,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(280, 34);
       window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300) - 34);
       this->AddRendered(window);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x804), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->itemParamChangeDisplayWndInfo.x), 0, 0, 0);
     }
     window->Show(1);
     break;
@@ -6056,7 +6056,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(280, 120);
       window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300));
       this->AddRendered(window);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x7F4), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->combinedCardItemCollectionWndInfo.x), 0, 0, 0);
     }
     window->Show(1);
     break;
@@ -6068,7 +6068,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(280, 120);
       window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300));
       this->AddRendered(window);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x7E4), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->itemCollectionWndInfo.x), 0, 0, 0);
     }
     window->Show(1);
     break;
@@ -6091,7 +6091,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(280, 120);
       window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300));
       this->AddRendered(window);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x7F4), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->combinedCardItemCollectionWndInfo.x), 0, 0, 0);
     }
     window->Show(1);
     break;
@@ -6192,7 +6192,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->emotionWnd = window;
       window->SetSize(375, 260);
       window->Move(CenterOnViewportX(185), ScaleByScreenHeight(300) - 60);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x89C), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->emotionWndInfo.x), 0, 0, 0);
       this->AddRendered(window);
     }
     window->Show(1);
@@ -6207,7 +6207,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       }
       window->SetSize(298, 380);
       window->Move(CenterOnViewportX(185), ScaleByScreenHeight(400) - 60);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x8AC), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->cashEmotionListWndInfo.x), 0, 0, 0);
       this->AddRendered(window);
     }
     window->Show(1);
@@ -6222,7 +6222,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->petInfoWnd = window;
       window->SetSize(280, 180);
       window->Move(CenterOnViewportX(185), ScaleByScreenHeight(400) - 60);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x8BC), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->petInfoWndInfo.x), 0, 0, 0);
       this->AddRendered(window);
     }
     window->Show(1);
@@ -6332,7 +6332,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->homunInfoWnd = window;
       window->SetSize(280, 208);
       window->Move(CenterOnViewportX(185), ScaleByScreenHeight(400) - 60);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x8CC), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->homunInfoWndInfo.x), 0, 0, 0);
       this->AddRendered(window);
     }
     window->Show(1);
@@ -6346,7 +6346,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(280, 120);
       window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
       this->AddRendered(window);
-      this->homunculusSkillWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x8DC), 0, 0, 0);
+      this->homunculusSkillWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->homunculusSkillWndInfo.x), 0, 0, 0);
     }
     static_cast<UISkillListWnd*>(this->homunculusSkillWnd)->skillTab = 0;
     this->homunculusSkillWnd->Show(1);
@@ -6362,7 +6362,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->mercenaryInfoWnd = window;
       window->SetSize(280, 180);
       window->Move(CenterOnViewportX(185), ScaleByScreenHeight(400) - 60);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x8F0), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->merInfoWndInfo.x), 0, 0, 0);
       this->AddRendered(window);
     }
     window->Show(1);
@@ -6405,7 +6405,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window = new UINavigationV4Wnd();
       this->navigationWnd = window;
       window->SetSize(272, 338);
-      this->navigationWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x4F178), 0, 0, 0);
+      this->navigationWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->navigationWindowInfo.x), 0, 0, 0);
       this->AddRendered(window);
     }
     break;
@@ -6454,7 +6454,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(280, 120);
       window->Move(CenterOnViewportX(200), ScaleByScreenHeight(200));
       this->AddRendered(window);
-      this->mercenarySkillWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x900), 0, 0, 0);
+      this->mercenarySkillWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->mercenarySkillWndInfo.x), 0, 0, 0);
     }
     static_cast<UISkillListWnd*>(this->mercenarySkillWnd)->skillTab = 1;
     this->mercenarySkillWnd->Show(1);
@@ -6510,7 +6510,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(300, 95);
       this->AddRendered(window);
       reinterpret_cast<UIWindow*>(this->subChatHistoryWnd)->SetId(130);
-      reinterpret_cast<UIWindow*>(this->subChatHistoryWnd)->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x914), 0, 0, 0);
+      reinterpret_cast<UIWindow*>(this->subChatHistoryWnd)->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->subChatHisWndInfo[0].x), 0, 0, 0);
     }
     window->Show(0);
     break;
@@ -6522,7 +6522,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(300, 95);
       this->AddRendered(window);
       reinterpret_cast<UIWindow*>(this->secondSubChatHistoryWnd)->SetId(131);
-      reinterpret_cast<UIWindow*>(this->secondSubChatHistoryWnd)->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x924), 0, 0, 0);
+      reinterpret_cast<UIWindow*>(this->secondSubChatHistoryWnd)->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->subChatHisWndInfo[1].x), 0, 0, 0);
     }
     window->Show(0);
     break;
@@ -6668,7 +6668,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(360, 289);
       window->Move(CenterOnViewportX(185), ScaleByScreenHeight(200));
       this->AddRendered(window);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x954), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->buyingShopMakeWndInfo.x), 0, 0, 0);
     }
     window->Show(1);
     this->EnsureWindow(WID_MERCHANTMIRRORITEMWND_MODE_1);
@@ -6681,7 +6681,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(280, 120);
       window->Move(CenterOnViewportX(0), ScaleByScreenHeight(120));
       this->AddRendered(window);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x964), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->buyingMirrorItemWndInfo.x), 0, 0, 0);
     }
     window->Show(1);
     break;
@@ -6693,7 +6693,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(280, 120);
       window->Move(0, 200);
       this->AddRendered(window);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x974), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->buyingItemMyShopWndInfo.x), 0, 0, 0);
     }
     window->Show(1);
     break;
@@ -6705,7 +6705,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(350, 120);
       window->Move(0, 200);
       this->AddRendered(window);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x984), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->buyingItemShopWndInfo.x), 0, 0, 0);
     }
     window->Show(1);
     break;
@@ -6717,7 +6717,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(280, 120);
       window->Move(300, 200);
       this->AddRendered(window);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x994), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->buyingItemPurchaseWndInfo.x), 0, 0, 0);
     }
     window->Show(1);
     break;
@@ -6729,7 +6729,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(280, 120);
       window->Move(300, 0);
       this->AddRendered(window);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x9A4), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->buyingMirrorItemWndInfo2.x), 0, 0, 0);
     }
     window->Show(1);
     break;
@@ -6833,7 +6833,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(400, 317);
       window->Move(ScaleToViewportWidth(0), 147);
       this->AddRendered(window);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x9F0), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->clanInfoManageWndInfo.x), 0, 0, 0);
     }
     window->Show(1);
     break;
@@ -7025,14 +7025,14 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->renderLayer = 5;
       this->AddRendered(window);
       this->rendered.sort(layerGreater);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x4F1D8), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->achievementTracingX), 0, 0, 0);
     }
     break;
   case WID_MINIMAPWND:
     if (this->miniMapWnd == nullptr) {
       window = new UIMiniMapWnd();
       this->miniMapWnd = window;
-      MiniMapWndInfo* miniMapInfo = reinterpret_cast<MiniMapWndInfo*>(base + 0x4F1A8);
+      MiniMapWndInfo* miniMapInfo = &this->miniMapWndInfo;
       window->SetSize(miniMapInfo->expandedWidth, miniMapInfo->expandedHeight);
       window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(miniMapInfo), 0, 0, 0);
       window->Show(1);
@@ -7105,7 +7105,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->AddRendered(window);
     }
     window->Show(1);
-    window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x4F200), 0, 0, 0);
+    window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->macroReporterWndInfo.x), 0, 0, 0);
     this->macroReporterVisible = true;
     break;
   case WID_MACROUSERINFOWND:
@@ -7289,7 +7289,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(381, 466);
       window->Move((g_renderer->viewport.width - 381) / 2, (g_renderer->viewport.height - 466) / 2);
       this->AddRendered(window);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x550), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->questWndPlacement[0]), 0, 0, 0);
       g_snapMgr.Add(window);
     }
     window->Show(1);
@@ -7329,7 +7329,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(280, 400);
       window->Move(0, 200);
       this->AddRendered(window);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x6FC), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->itemShopWndInfo.x), 0, 0, 0);
     } else {
       window = this->LookupWindow(WID_BARTERMARKETWND);
     }
@@ -7341,7 +7341,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(280, 120);
       window->Move(300, 200);
       this->AddRendered(window);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0x71C), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->itemPurchaseWndInfo.x), 0, 0, 0);
     } else {
       window = this->LookupWindow(WID_BARTERITEMPURCHASEWND);
     }
@@ -7446,7 +7446,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(480, 340);
       window->Move(g_renderer->viewport.centerX - window->geometry.width / 2, g_renderer->viewport.centerY - window->geometry.height / 2);
       this->AddRendered(window);
-      this->advenPartyBoardWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0xA20), 0, 0, 0);
+      this->advenPartyBoardWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->advenPartyBoardWndInfo.x), 0, 0, 0);
     }
     break;
   case WID_REGISTERPARTYWND:
@@ -7457,7 +7457,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(220, 215);
       window->Move(g_renderer->viewport.centerX + 240, g_renderer->viewport.centerY + 170);
       this->AddRendered(window);
-      this->registerPartyWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0xA00), 0, 0, 0);
+      this->registerPartyWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->registerPartyWndInfo.x), 0, 0, 0);
     }
     break;
   case WID_REQUESTJOINPARTYWND:
@@ -7478,7 +7478,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->SetSize(220, 190);
       window->Move(g_renderer->viewport.centerX + 240, g_renderer->viewport.centerY - 170);
       this->AddRendered(window);
-      this->applyForPartyWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(base + 0xA10), 0, 0, 0);
+      this->applyForPartyWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->applyForPartyWndInfo.x), 0, 0, 0);
     }
     break;
   case WID_REPUTEWND:
