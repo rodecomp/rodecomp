@@ -53,7 +53,7 @@ void LegacyRotationTrack::Add(int frame, float x, float y, float z, float angle)
 
 // OFFSET: 0x00540120
 // FUNCTION: fn_01717
-void LegacyScaleTrack::Add(int frame, float scaleX, float scaleY, float scaleZ, float x, float y, float z, float angle) {
+__declspec(safebuffers) void LegacyScaleTrack::Add(int frame, float scaleX, float scaleY, float scaleZ, float x, float y, float z, float angle) {
   angle *= 0.5f;
   const float sine = ClientSin(angle);
   ModelScaleKey key;
