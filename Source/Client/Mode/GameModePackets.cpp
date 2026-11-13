@@ -23411,7 +23411,7 @@ void CGameMode::ProcessIncomingPackets() {
       }
       if (CGameActor *actor = static_cast<CGameActor *>(this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2)))) {
         const unsigned char team = g_gameModePacketBuffer[0x1E];
-        reinterpret_cast<unsigned char *>(&actor->render.flags)[3] = team;
+        actor->render.battleTeam = team;
         if (team != g_session.playerTeam[0]) {
           OpenWordDisplay(actor);
         } else if (actor->actorTitleWindow) {
@@ -23526,7 +23526,7 @@ void CGameMode::ProcessIncomingPackets() {
       if (*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2) == g_session.m_aid) {
         g_session.chatFont = g_gameModePacketBuffer[6];
       } else if (CRenderObject *actor = this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t *>(g_gameModePacketBuffer + 2))) {
-        *reinterpret_cast<std::uint16_t *>(actor->render.effectPhaseBytes) = *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 6);
+        actor->render.font = *reinterpret_cast<const std::uint16_t *>(g_gameModePacketBuffer + 6);
       }
       break;
     case ID_ZC_PROGRESS:
@@ -23538,7 +23538,7 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_PROGRESS_CANCEL:
       if (CPlayer *player = this->scene->player) {
         player->SendMsg(nullptr, AM_DELETE_SKILL_RECHARGEGAGE, 0, 0, 0, 0, 0, 0);
-        if (*reinterpret_cast<const int *>(&player->render.motionFinishThreshold) == 8) {
+        if (player->render.state == 8) {
           player->SetState(0, 1);
         }
       }
