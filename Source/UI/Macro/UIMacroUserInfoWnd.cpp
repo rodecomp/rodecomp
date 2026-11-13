@@ -465,8 +465,7 @@ void UIMacroReporterWnd::SendMacroUserInfoPacket(std::uint16_t first, std::uint1
   } packet{0x0A6C, first, second, third};
 
   CRagConnection* connection = &GetRagConnection();
-  const PacketLengths& lengths = reinterpret_cast<const PacketLengths&>(GetRagConnection());
-  const int length = lengths.FixedLength(packet.id);
+  const int length = GetRagConnection().GetPacketSize(packet.id);
   connection->Send(length, &packet);
 }
 
@@ -704,7 +703,7 @@ int UIMacroReporterWnd::SendMsg(
             PACKET_CZ_MACRO_REPORT_ACCOUNT packet;
             packet.packetType = ID_CZ_REQ_APPLY_MACRO_DETECTOR;
             packet.accountId = *it;
-            GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
+            GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
           }
           this->m_entries.clear();
           for (auto it = this->m_rows.begin(); it != this->m_rows.end(); ++it) {

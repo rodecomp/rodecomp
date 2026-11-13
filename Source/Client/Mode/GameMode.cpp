@@ -868,46 +868,46 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         const std::uint16_t packet[3] = {
           0x363, static_cast<std::uint16_t>(argument1), static_cast<std::uint16_t>(argument2)
         };
-        GetRagConnection().Send(g_packetLengths.FixedLength(packet[0]), packet);
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet[0]), packet);
       }
       this->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
       return 0;
     case MM_DISCONNECT_CHARACTER: {
       const GameModePacketDword packet{0xCC, static_cast<std::uint32_t>(argument1)};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_DISCONNECT_ALL_CHARACTER: {
       const std::uint16_t packet = 0xCE;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet), &packet);
       return 0;
     }
     case MM_REQ_NEXT_SCRIPT: {
       const GameModePacketDword packet{0xB9, static_cast<std::uint32_t>(argument1)};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_CHOOSE_MENU: {
       const GameModePacketDwordByte packet{
         0xB8, static_cast<std::uint32_t>(argument2), static_cast<std::uint8_t>(argument1)
       };
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_RESTART: {
       const GameModePacketByte packet{0xB2, static_cast<std::uint8_t>(argument1)};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_REQ_NUM_USER: {
       const std::uint16_t packet = 0xC1;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet), &packet);
       return 0;
     }
     case MM_REQ_EXIT_ROOM:
       if (g_windowMgr.chatRoomWnd != nullptr) {
         const std::uint16_t packet = 0xE3;
-        GetRagConnection().Send(g_packetLengths.FixedLength(packet), &packet);
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet), &packet);
       }
       return 0;
     case MM_PROCESS_TALK_TYPE:
@@ -920,7 +920,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       packet.packetId = ID_CZ_REQ_ROLE_CHANGE;
       packet.argument = static_cast<std::uint32_t>(argument2);
       std::memcpy(packet.payload, text, sizeof(text));
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_REQ_EXPEL_MEMBER: {
@@ -929,22 +929,22 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       GameModePacketPayload24 packet;
       packet.packetId = ID_CZ_REQ_EXPEL_MEMBER;
       std::memcpy(packet.payload, text, sizeof(text));
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_CONCLUDE_EXCHANGE_ITEM: {
       const std::uint16_t packet = 0xEB;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet), &packet);
       return 0;
     }
     case MM_CANCEL_EXCHANGE_ITEM: {
       const std::uint16_t packet = 0xED;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet), &packet);
       return 0;
     }
     case MM_EXEC_EXCHANGE_ITEM: {
       const std::uint16_t packet = 0xEF;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet), &packet);
       return 0;
     }
     case MM_ADD_ITEM_TO_STORE: {
@@ -953,7 +953,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         g_session.m_buyingStoreMode != 0 ? 0x9E1 : 0x364,
         static_cast<std::uint16_t>(argument1), static_cast<std::uint32_t>(argument2)
       };
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_MOVE_ITEM_FROM_STORE_TO_BODY: {
@@ -962,28 +962,28 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         g_session.m_buyingStoreMode != 0 ? 0x9E2 : 0x365,
         static_cast<std::uint16_t>(argument1), static_cast<std::uint32_t>(argument2)
       };
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_CLOSE_STORE: {
       const std::uint16_t packet = g_session.m_buyingStoreMode != 0 ? 0x9BE : 0x193;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet), &packet);
       return 0;
     }
     case MM_CANCEL_LOCKON: {
       const std::uint16_t packet = 0x118;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet), &packet);
       return 0;
     }
     case MM_SELECT_WARPPOINT: {
       GameModePacketWordText16 packet{0x11B, static_cast<std::uint16_t>(argument2), {}};
       std::strncpy(packet.text, reinterpret_cast<const char*>(argument1), sizeof(packet.text));
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_REMEMBER_WARPPOINT: {
       const std::uint16_t packet = 0x11D;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet), &packet);
       return 0;
     }
     case MM_MOVE_ITEM_FROM_BODY_TO_CART:
@@ -992,7 +992,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         const GameModePacketWordDword packet{
           0x126, static_cast<std::uint16_t>(argument1), static_cast<std::uint32_t>(argument2)
         };
-        GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       }
       return 0;
     case MM_MOVE_ITEM_FROM_CART_TO_BODY:
@@ -1001,7 +1001,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         const GameModePacketWordDword packet{
           0x127, static_cast<std::uint16_t>(argument1), static_cast<std::uint32_t>(argument2)
         };
-        GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       }
       return 0;
     case MM_MOVE_ITEM_FROM_STORE_TO_CART:
@@ -1011,7 +1011,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
           g_session.m_buyingStoreMode != 0 ? 0x9E4 : 0x128,
           static_cast<std::uint16_t>(argument1), static_cast<std::uint32_t>(argument2)
         };
-        GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       }
       return 0;
     case MM_MOVE_ITEM_FROM_CART_TO_STORE:
@@ -1021,23 +1021,23 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
           g_session.m_buyingStoreMode != 0 ? 0x9E3 : 0x129,
           static_cast<std::uint16_t>(argument1), static_cast<std::uint32_t>(argument2)
         };
-        GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       }
       return 0;
     case MM_REQ_CARTOFF: {
       const GameModePacketByte packet{0xB35, static_cast<std::uint8_t>(argument1)};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_REQ_CLOSESTORE: {
       const std::uint16_t packet = 0x12E;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet), &packet);
       return 0;
     }
     case MM_UPGRADE_SKILLLEVEL: {
       this->isReqUpgradeSkillLevel = 1;
       const GameModePacketWord packet{0x112, static_cast<std::uint16_t>(argument1)};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_MOVETO_MAP: {
@@ -1045,7 +1045,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         0x140, {}, static_cast<std::uint16_t>(argument2), static_cast<std::uint16_t>(argument3)
       };
       std::strncpy(packet.text, reinterpret_cast<const char*>(argument1), sizeof(packet.text));
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_WEAR_EQUIP_ARROW:
@@ -1057,7 +1057,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
           static_cast<std::uint16_t>(ID_CZ_REQ_WEAR_EQUIP_V5), static_cast<std::uint16_t>(argument1),
           static_cast<std::uint32_t>(argument2)
         };
-        GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       }
       return 0;
     case MM_CLOSE_DIALOG: {
@@ -1065,7 +1065,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       g_windowMgr.CloseWindow(WID_SAYDIALOGWND);
       g_windowMgr.CloseWindow(WID_CHOOSEWND);
       const GameModePacketDword packet{0x146, static_cast<std::uint32_t>(argument1)};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_REFRESH_MUSIC:
@@ -1090,29 +1090,29 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       return 0;
     case MM_CHANGE_GROUPEXPOPTION: {
       const GameModePacketDword packet{0x102, static_cast<std::uint32_t>(argument1)};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_REQ_GUILD_MENU: {
       const GameModePacketDword packet{0x14F, static_cast<std::uint32_t>(argument1)};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_REQ_OPEN_MEMBER_INFO: {
       const GameModePacketDword packet{0x157, static_cast<std::uint32_t>(argument1)};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_JOIN_GUILD: {
       const GameModePacketDwordDword packet{
         0x16B, static_cast<std::uint32_t>(argument1), static_cast<std::uint32_t>(argument2)
       };
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_REQ_GUILD_MENUINTERFACE: {
       const std::uint16_t packet = 0x14D;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet), &packet);
       return 0;
     }
     case MM_TESTPACKET: {
@@ -1132,7 +1132,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
           0x149, static_cast<std::uint32_t>(argument1), static_cast<std::uint8_t>(argument2),
           static_cast<std::uint16_t>(duration)
         };
-        GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       }
       return 0;
     case MM_GUILD_NOTICE: {
@@ -1150,49 +1150,49 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       }
       packet.firstText[0x3B] = 0;
       packet.secondText[0x77] = 0;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_REQ_ITEMIDENTIFY: {
       const GameModePacketWord packet{0x178, static_cast<std::uint16_t>(argument1)};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_REQ_DISCONNECT: {
       const std::uint16_t packet[2] = {0x18A, 0};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet[0]), packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet[0]), packet);
       return 0;
     }
     case MM_REQ_ITEMCOMPOSITION: {
       const GameModePacketWordWord packet{
         0x17C, static_cast<std::uint16_t>(argument1), static_cast<std::uint16_t>(argument2)
       };
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_REQ_HOSTILE_GUILD: {
       const GameModePacketDword packet{0x180, static_cast<std::uint32_t>(argument1)};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_REQ_ITEMCOMPOSITION_LIST: {
       this->cardItemIndex = argument1;
       const GameModePacketWord packet{0x17A, static_cast<std::uint16_t>(argument1)};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_ALLY_GUILD: {
       const GameModePacketDwordDword packet{
         0x172, static_cast<std::uint32_t>(argument1), static_cast<std::uint32_t>(argument2)
       };
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_REQ_DELETE_RELATED_GUILD: {
       const GameModePacketDwordDword packet{
         0x183, static_cast<std::uint32_t>(argument1), static_cast<std::uint32_t>(argument2)
       };
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_REQ_MAKING_ITEM: {
@@ -1203,7 +1203,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         packet.secondArgument = static_cast<std::uint32_t>(std::atoi(materials[1].itemId.c_str()));
         packet.thirdArgument = static_cast<std::uint32_t>(std::atoi(materials[2].itemId.c_str()));
       }
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_BEGIN_DRAG_FROM_METALPROCESSWND: {
@@ -1216,7 +1216,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
     }
     case MM_ITEMPICKUP: {
       const GameModePacketDword packet{0x362, static_cast<std::uint32_t>(argument1)};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_REQUEST_ACT:
@@ -1226,7 +1226,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         const GameModePacketDwordByte packet{
           0x437, static_cast<std::uint32_t>(argument2), static_cast<std::uint8_t>(argument1)
         };
-        GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       }
       return 0;
     case MM_REQUEST_MOVE:
@@ -1238,14 +1238,14 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
                                     (static_cast<std::uint32_t>(argument1) << 6)),
           static_cast<std::uint8_t>(static_cast<std::uint32_t>(argument2) << 4)
         };
-        GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       }
       return 0;
     case MM_CHANGE_DIRECTION: {
       const GameModePacketByteWord packet{
         0x361, static_cast<std::uint16_t>(argument2), static_cast<std::uint8_t>(argument1)
       };
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_RESET_PARAMETER: {
@@ -1253,7 +1253,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         g_session.m_skillBundle.ResetFirstLevelChange();
       }
       const std::uint16_t packet = 0x197;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet), &packet);
       return 0;
     }
     case MM_REQ_CHANGE_MAPTYPE: {
@@ -1261,12 +1261,12 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         0x198, static_cast<std::uint16_t>(argument1), static_cast<std::uint16_t>(argument2),
         static_cast<std::uint16_t>(argument3 != 0)
       };
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_CHANGE_EFFECTSTATE: {
       const GameModePacketDword packet{0x19D, static_cast<std::uint32_t>(argument1)};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_PET_RENAME: {
@@ -1280,22 +1280,22 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         std::memcpy(packet.payload, text, sizeof(packet.payload) - 1);
         packet.payload[sizeof(packet.payload) - 1] = 0;
       }
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_PETEGG_SELECT_FROM_LIST: {
       const GameModePacketWord packet{0x1A7, static_cast<std::uint16_t>(argument1)};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_REQ_PETEGG_INFO: {
       const GameModePacketWord packet{0x1A8, static_cast<std::uint16_t>(argument1)};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_PETDECEIVE_SHOOT: {
       const GameModePacketDword packet{0x19F, static_cast<std::uint32_t>(argument1)};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_REQ_GIVE_MANNER_POINT_PLUS:
@@ -1308,7 +1308,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       return 0;
     case MM_ARROW_FROM_LIST: {
       const GameModePacketDword packet{0x1AE, static_cast<std::uint32_t>(argument1)};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_SELECT_CART:
@@ -1316,58 +1316,58 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         const GameModePacketDwordByte packet{
           0x980, static_cast<std::uint32_t>(argument2), static_cast<std::uint8_t>(argument1)
         };
-        GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       } else {
         const GameModePacketWord packet{0x1AF, static_cast<std::uint16_t>(argument1)};
-        GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       }
       return 0;
     case MM_REMOVE_TO_AID: {
       const GameModePacketDword packet{
         0x843, static_cast<std::uint32_t>(std::atoi(reinterpret_cast<const char*>(argument1)))
       };
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_SHIFT_TO_GID: {
       GameModePacketPayload24 packet{0x1BB, {}};
       std::strcpy(reinterpret_cast<char*>(packet.payload), reinterpret_cast<const char*>(argument1));
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_RECALL_AID: {
       const GameModePacketDword packet{
         0x842, static_cast<std::uint32_t>(std::atoi(reinterpret_cast<const char*>(argument1)))
       };
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_RECALL_GID: {
       GameModePacketPayload24 packet{0x1BD, {}};
       std::strcpy(reinterpret_cast<char*>(packet.payload), reinterpret_cast<const char*>(argument1));
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_SKILL_SELECT_RESPONSE: {
       const GameModePacketDwordWord packet{
         0x443, static_cast<std::uint32_t>(argument2), static_cast<std::uint16_t>(argument1)
       };
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_OPEN_EQUIPEDITEM_CHANGE: {
       const GameModePacketDwordDword packet{0x2D8, 0, static_cast<std::uint32_t>(argument1)};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_BILLING_INFO: {
       const std::uint16_t packet = 0x1C0;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet), &packet);
       return 0;
     }
     case MM_SELECT_SPELL: {
       const GameModePacketDword packet{0x1CE, static_cast<std::uint32_t>(argument1)};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_JOIN_COUPLE: {
@@ -1377,7 +1377,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         this->lastCoupleIds[1],
         static_cast<std::uint32_t>(argument2)
       };
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_JOIN_BABY: {
@@ -1387,7 +1387,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         this->lastCoupleIds[1],
         static_cast<std::uint32_t>(argument2)
       };
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_REPAIRITEM_SELECT_FROM_LIST: {
@@ -1399,12 +1399,12 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       } else {
         std::memcpy(packet.payload, reinterpret_cast<const void*>(argument1), sizeof(packet.payload));
       }
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_DORIDORI: {
       const std::uint16_t packet = 0x1E7;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet), &packet);
       return 0;
     }
     case MM_SEND_TEXT_TO_NPC:
@@ -1418,7 +1418,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         static_cast<std::uint32_t>(*reinterpret_cast<const int*>(argument3)),
         static_cast<std::uint8_t>(argument2 != 0)
       };
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_PARTY_REQ_MASTER_TO_JOIN: {
@@ -1426,7 +1426,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         0xAE6, static_cast<std::uint32_t>(*reinterpret_cast<const int*>(argument2)),
         static_cast<std::uint32_t>(*reinterpret_cast<const int*>(argument1))
       };
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_OPEN_SEEKPARTY_MEMBER:
@@ -1440,13 +1440,13 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         0x7D7, static_cast<std::uint32_t>(argument1), static_cast<std::uint8_t>(argument2),
         static_cast<std::uint8_t>(argument3)
       };
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_GROUP_CHANGE_MASTER: {
       g_adventurerAgencyMgr->RequestStop();
       const GameModePacketDword packet{0x7DA, static_cast<std::uint32_t>(argument1)};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_PAUSE_REPLAY:
@@ -1477,77 +1477,77 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       return 0;
     case MM_REQ_CLOSE_BUYING_STORE: {
       const std::uint16_t packet = 0x815;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet), &packet);
       return 0;
     }
     case MM_TRYCOLLECTION: {
       const GameModePacketDword packet{0x8B5, static_cast<std::uint32_t>(argument1)};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_REQ_RANKING: {
       const GameModePacketWord packet{0x97C, static_cast<std::uint16_t>(argument1)};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_CANCEL_VENDING_MAKE: {
       const std::uint16_t packet = 0xA8C;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet), &packet);
       return 0;
     }
     case MM_CLOSE_OFFLINE_STORE: {
       const GameModePacketDword packet{0xA80, static_cast<std::uint32_t>(argument1)};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_MEMORIALDUNGEON_COMMAND: {
       const GameModePacketDword packet{0x2CF, 3};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_RESET_SKILL: {
       g_session.m_skillBundle.ResetFirstLevelChange();
       const GameModePacketByte packet{0xBB1, static_cast<std::uint8_t>(argument1)};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_OPEN_MAIL: {
       const GameModePacketByteInt64 packet{
         0x9EA, static_cast<std::uint8_t>(argument2), static_cast<std::int64_t>(argument1)
       };
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_DELETE_MAIL: {
       const GameModePacketByteInt64 packet{
         0x9F5, static_cast<std::uint8_t>(argument2), static_cast<std::int64_t>(argument1)
       };
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_CONFIG_CALL: {
       const GameModePacketDwordDword packet{
         0x2D8, 5, argument1 == 0 ? 0x3C00u : 0u
       };
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_REQ_JOIN_BABY: {
       const GameModePacketDword packet{0x1F9, static_cast<std::uint32_t>(argument1)};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_DELETE_FRIEND: {
       const GameModePacketDwordDword packet{
         0x203, static_cast<std::uint32_t>(argument1), static_cast<std::uint32_t>(argument2)
       };
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_CHECK_ID: {
       GameModePacketPayload24 packet{0x213, {}};
       std::memcpy(packet.payload, reinterpret_cast<const void*>(argument1), sizeof(packet.payload));
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       char text[256];
       std::sprintf(text, "[ %s ]", reinterpret_cast<const char*>(packet.payload));
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0x6EFA9B, 0, 0, 0);
@@ -1556,17 +1556,17 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
     case MM_RC_ID: {
       GameModePacketPayload24 packet{0x212, {}};
       std::memcpy(packet.payload, reinterpret_cast<const void*>(argument1), sizeof(packet.payload));
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_REFINEITEM_SELECT_FROM_LIST: {
       const GameModePacketDword packet{0x222, static_cast<std::uint32_t>(argument1)};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_COMMAND_HOMUN: {
       const GameModePacketByte packet{0x22D, static_cast<std::uint8_t>(argument1)};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_MER_RENAME: {
@@ -1580,75 +1580,75 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         std::memcpy(packet.payload, text, sizeof(packet.payload) - 1);
         packet.payload[sizeof(packet.payload) - 1] = 0;
       }
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_COMMAND_MER: {
       const GameModePacketByte packet{0x29F, static_cast<std::uint8_t>(argument1)};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_STARPLACE_ACCEPT: {
       const GameModePacketByte packet{0x254, static_cast<std::uint8_t>(argument1)};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_GET_MAIL_LIST: {
       const std::uint16_t packet = 0x23F;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet), &packet);
       return 0;
     }
     case MM_RESET_MAIL_ITEM: {
       const GameModePacketWord packet{0x246, static_cast<std::uint16_t>(argument1)};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_RETURN_MAIL: {
       GameModePacketDwordPayload24 packet{0x273, static_cast<std::uint32_t>(argument1), {}};
       std::memcpy(packet.payload, reinterpret_cast<const void*>(argument2), sizeof(packet.payload));
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_GET_MAIL_ITEM: {
       const GameModePacketDword packet{0x244, static_cast<std::uint32_t>(argument1)};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_ITEM_FROM_LIST: {
       const GameModePacketDwordWord packet{
         0x25B, static_cast<std::uint32_t>(argument1), static_cast<std::uint16_t>(argument2)
       };
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_CANCEL_BUYING_STORE_MAKE: {
       const std::uint16_t packet = 0xA94;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet), &packet);
       return 0;
     }
     case MM_REQ_OPEN_MSGBOX_EXTEND_BODYITEM_SIZE: {
       const std::uint16_t packet = 0xB14;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet), &packet);
       return 0;
     }
     case MM_REQ_EXTEND_BODYITEM_SIZE: {
       const std::uint16_t packet = 0xB16;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet), &packet);
       return 0;
     }
     case MM_CLOSE_MSGBOX_EXTEND_BODYITEM_SIZE: {
       const std::uint16_t packet = 0xB19;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet), &packet);
       return 0;
     }
     case MM_OPEN_ACCOUNT_LIMITED_TOOL: {
       const std::uint16_t packet = 0xB4F;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet), &packet);
       return 0;
     }
     case MM_CLOSE_ACCOUNT_LIMITED_TOOL: {
       const std::uint16_t packet = 0xB51;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet), &packet);
       return 0;
     }
     case MM_ADVANCED_STATUS_CHANGE:
@@ -1657,24 +1657,24 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         const GameModePacketWordWord packet{
           0xB24, static_cast<std::uint16_t>(argument1), static_cast<std::uint16_t>(argument2)
         };
-        GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       }
       return 0;
     case MM_REQ_MOVE_GUILD_AGIT:
       if (argument1 != 0) {
         const GameModePacketByte packet{0xB28, static_cast<std::uint8_t>(argument1)};
-        GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       }
       return 0;
     case MM_REQ_AGIT_INVESTMENT:
       if (argument1 != 0) {
         const GameModePacketByte packet{0xB2C, static_cast<std::uint8_t>(argument1)};
-        GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       }
       return 0;
     case MM_REBIRTH: {
       const std::uint16_t packet = 0x292;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet), &packet);
       return 0;
     }
     case MM_RELEASE_QUEST_SH:
@@ -1688,7 +1688,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       return 0;
     case MM_REQ_HUNTING: {
       const std::uint16_t packet = 0x279;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet), &packet);
       return 0;
     }
     case MM_SETLOCKONMOUSE:
@@ -1703,7 +1703,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         this->waitingReqStatusAck = 1;
         if (this->isPlayerDead == 0) {
           const std::uint16_t packet = 0xBA;
-          GetRagConnection().Send(g_packetLengths.FixedLength(packet), &packet);
+          GetRagConnection().Send(GetRagConnection().GetPacketSize(packet), &packet);
         }
       }
       return 0;
@@ -1714,7 +1714,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
           const GameModePacketBB packet{
             0xBB, static_cast<std::uint16_t>(argument1), static_cast<std::uint8_t>(argument2)
           };
-          GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+          GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
         }
       }
       return 0;
@@ -1734,13 +1734,13 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
     case MM_ACK_SELL:
       if (this->isPlayerDead == 0) {
         const GameModePacketC5 packet{0xC5, static_cast<std::uint32_t>(argument1), 1};
-        GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       }
       return 0;
     case MM_ACK_BUY:
       if (this->isPlayerDead == 0) {
         const GameModePacketC5 packet{0xC5, static_cast<std::uint32_t>(argument1), 0};
-        GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       }
       return 0;
     case MM_DELETEPARTYPOSALL:
@@ -1764,7 +1764,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         const GameModePacketDwordDword packet{
           0x143, static_cast<std::uint32_t>(argument1), static_cast<std::uint32_t>(argument2)
         };
-        GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       }
       return 0;
     case MM_INITWHISPERMENU:
@@ -1790,7 +1790,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
     }
     case MM_CANCEL_WRITE_RODEX: {
       const std::uint16_t packet = 0xA03;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet), &packet);
       g_session.RestoreSelectionItems();
       g_session.ClearItemQuantities();
       return 0;
@@ -1814,14 +1814,14 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         const GameModePacketDword packet{
           static_cast<std::uint16_t>(ID_CZ_SE_CASHSHOP_OPEN_V2), static_cast<std::uint32_t>(value)
         };
-        GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       }
       return 0;
     case MM_INVENTORY_TAB: {
       const GameModePacketBB packet{
         0x907, static_cast<std::uint16_t>(argument1), static_cast<std::uint8_t>(argument2 == 1)
       };
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_MOVE_ITEM_TO_PERSONAL_FROM_STORAGE:
@@ -1831,7 +1831,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
           static_cast<std::uint16_t>(ID_CZ_MOVE_ITEM_TO_PERSONAL), 2, static_cast<std::uint16_t>(argument1),
           static_cast<std::uint32_t>(argument2)
         };
-        GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       }
       return 0;
     case MM_ITEMTHROW_THROUGH_DROPCNTWND:
@@ -1960,7 +1960,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
                 break;
               }
               const std::uint16_t packet = 0x1ED;
-              GetRagConnection().Send(g_packetLengths.FixedLength(packet), &packet);
+              GetRagConnection().Send(GetRagConnection().GetPacketSize(packet), &packet);
             }
           }
         }
@@ -2088,7 +2088,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       const GameModePacketDwordDwordDword packet{
         0x168, static_cast<std::uint32_t>(argument1), g_session.m_aid, g_session.m_gid
       };
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_REQ_JOIN_GUILD2: {
@@ -2103,7 +2103,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       GameModePacketPayload24 packet;
       packet.packetId = ID_CZ_REQ_JOIN_GUILD2;
       std::strncpy(reinterpret_cast<char*>(packet.payload), name, sizeof(packet.payload));
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       const std::string notice = FormatOwnedString(LookupMessage(MSI_REQ_JOIN_GUILD), name);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(notice.c_str()), 0xFFFF00, 0, 0, 0);
       return 0;
@@ -2140,7 +2140,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       this->SendMsg(MM_RELEASE_QUEST, 0, 0, 0, 0);
       g_session.ClearTradeItems();
       const GameModePacketByte packet{0xE6, static_cast<std::uint8_t>(argument1)};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_REQ_JOIN_GROUP: {
@@ -2152,7 +2152,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       GameModePacketPayload24 packet;
       packet.packetId = ID_CZ_PARTY_JOIN_REQ;
       std::strncpy(reinterpret_cast<char*>(packet.payload), name, sizeof(packet.payload));
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       if (g_session.partyLeader != 0) {
         const std::string message = std::string(name) + LookupMessage(MSI_CHARACTER_PARTY_INVITATION_TO_JOIN);
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), 0xFFFF00, 0, 0, 0);
@@ -2209,7 +2209,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       std::strncpy(reinterpret_cast<char*>(packet + 2), g_session.partyRequestName.c_str(), 24);
       packet[26] = static_cast<std::uint8_t>(argument2);
       packet[27] = static_cast<std::uint8_t>(argument3);
-      GetRagConnection().Send(g_packetLengths.FixedLength(packetId), packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packetId), packet);
       return 0;
     }
     case MM_REQ_TRADE_BUYING_STORE: {
@@ -2485,7 +2485,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         packet.secondArgument = 0;
         packet.thirdArgument = 0;
       }
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_JOIN_GROUP: {
@@ -2495,7 +2495,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         g_windowMgr.EnsureWindow(WID_MESSENGERGROUPWND);
       }
       const GameModePacketDwordByte packet{0x2C7, static_cast<std::uint32_t>(argument1), static_cast<std::uint8_t>(argument2 != 0)};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_USESKILL_LEVEL_PLUS: {
@@ -2526,7 +2526,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         g_windowMgr.Confirm(LookupMessage(MSI_DISORGANIZE_GUILD_FAILURE), 0, true, false, 0, "Message", 280, 120, 0);
         return 0;
       }
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_COMMAND_PET: {
@@ -2550,7 +2550,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         }
       }
       const GameModePacketByte packet{0x1A1, static_cast<std::uint8_t>(argument1)};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_CANCEL_ITEMLISTWIN: {
@@ -2632,7 +2632,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         g_windowMgr.CloseWindow(WID_PARTYINVITATIONTOWND);
       }
       const std::uint16_t packet = 0x100;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet), &packet);
       return 0;
     }
     case MM_USE_SKILL: {
@@ -2663,7 +2663,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       }
       if (argument1 == 20000) {
         const GameModePacketDword packet{0x1E5, static_cast<std::uint32_t>(argument2)};
-        GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
         return 0;
       }
       if (argument1 == 20001) {
@@ -2671,7 +2671,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         std::sprintf(message, "[ (val1 == 20001) ]");
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0x6E96FF, 0, 0, 0);
         const GameModePacketDword packet{0x1F9, static_cast<std::uint32_t>(argument2)};
-        GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
         return 0;
       }
       if (argument1 == 40000) {
@@ -2737,7 +2737,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       if (id == 0x5D) {
         g_session.m_monsterInfoActorId = argument2;
       }
-      GetRagConnection().Send(g_packetLengths.FixedLength(packetId), packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packetId), packet);
       return 0;
     }
     case MM_SHOW_IMAGE: {
@@ -2800,7 +2800,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       }
       g_session.m_swapEquipmentTick = timeGetTime();
       const std::uint16_t packet = 0xA9C;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet), &packet);
       return 0;
     }
     case MM_STOVE_AUTHENTICATION: {
@@ -2815,7 +2815,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       const unsigned long long member = std::stoull(memberNumber, nullptr, 10);
       std::memcpy(packet + 2, &member, sizeof(member));
       StringFormat(reinterpret_cast<char*>(packet + 10), 600, static_cast<std::size_t>(-1), g_stoveMgr->GetAccessToken());
-      GetRagConnection().Send(g_packetLengths.FixedLength(packetId), packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packetId), packet);
       return 0;
     }
     case MM_TAKE_OFF_EQUIP: {
@@ -2835,7 +2835,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       }
       this->waitingTakeoffEquipAck = timeGetTime();
       const GameModePacketWord packet{0xAB, static_cast<std::uint16_t>(item.identity[1])};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 1;
     }
     case MM_TOGGLE_PLAYERGAGE: {
@@ -2978,7 +2978,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       const GameModePacketDwordDwordDword packet{
         0x170, static_cast<std::uint32_t>(argument1), g_session.m_aid, g_session.m_gid
       };
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_ADD_MAIL_ITEM: {
@@ -2989,7 +2989,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         0xA04, static_cast<std::uint16_t>(argument1), static_cast<std::uint16_t>(argument2)
       };
       g_session.m_requestedCommandValue = static_cast<std::int16_t>(argument2);
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_OPEN_WRITE_RODEX: {
@@ -3002,7 +3002,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         }
         std::memcpy(packet.payload, text.c_str(), 24);
       }
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_WEAR_EQUIP: {
@@ -3037,7 +3037,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       } else {
         this->waitingWearEquipAck = timeGetTime();
         const GameModePacketWordDword packet{0x998, static_cast<std::uint16_t>(argument1), static_cast<std::uint32_t>(argument2)};
-        GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       }
       return 0;
     }
@@ -3056,7 +3056,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       if (!name.empty()) {
         this->exchangeName = name;
         const GameModePacketDword packet{0xE4, static_cast<std::uint32_t>(argument1)};
-        GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       }
       return 0;
     }
@@ -3073,7 +3073,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         return 0;
       }
       const GameModePacketDword packet{0x1A9, static_cast<std::uint32_t>(argument1)};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_NPC_MARKET_PURCHASE_V2: {
@@ -3123,7 +3123,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       }
       lastRequest = timeGetTime();
       const GameModePacketDword packet{0x817, static_cast<std::uint32_t>(argument1)};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_PRISON_USER: {
@@ -3139,7 +3139,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       packet[0] = 0xB34;
       std::strncpy(reinterpret_cast<char*>(packet + 1), g_session.DecodePlayerName(), 24);
       std::strncpy(reinterpret_cast<char*>(packet + 13), name, 24);
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet[0]), packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet[0]), packet);
       return 0;
     }
     case MM_CHAT_ALLY: {
@@ -3321,7 +3321,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         std::strncpy(text, reinterpret_cast<const char*>(argument2), 0x27);
       }
       text[0x27] = 0;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packetId), packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packetId), packet);
       return 0;
     }
     case MM_JOIN_FRIEND: {
@@ -3332,7 +3332,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         0x208, static_cast<std::uint32_t>(argument1), static_cast<std::uint32_t>(argument2),
         static_cast<std::uint32_t>(argument3)
       };
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_HOMUN_WAIT: {
@@ -3458,7 +3458,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       }
       this->waitingUseItemAck = 1;
       const GameModePacketWordDword packet{0x439, static_cast<std::uint16_t>(argument1), g_session.m_aid};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_MAKE_GROUP: {
@@ -3492,7 +3492,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       std::strncpy(reinterpret_cast<char*>(packet.payload), reinterpret_cast<const char*>(argument1), 24);
       const MessengerMember member = g_session.PartyByName(reinterpret_cast<const char*>(argument1));
       packet.argument = member.accountId;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_USE_SKILL_TOGROUND_WITH_TALKBOX: {
@@ -3520,7 +3520,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       if (packet[1] == 0) {
         packet[1] = static_cast<std::uint16_t>(g_session.m_skillBundle.Lookup(packet[2]).level);
       }
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet[0]), packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet[0]), packet);
       return 0;
     }
     case MM_CHAT_BATTLEFIELD: {
@@ -3562,7 +3562,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         return 0;
       }
       const GameModePacketWordWord packet{0xA06, static_cast<std::uint16_t>(argument1), static_cast<std::uint16_t>(argument2)};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_SWAP_EQUIPMENT_BY_INDEX: {
@@ -3575,7 +3575,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       }
       const auto* request = reinterpret_cast<const std::uint16_t*>(argument1);
       const GameModePacketWord packet{0xACE, request[2]};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_SHORTCUT_KEY_CHANGE: {
@@ -3597,7 +3597,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         std::memcpy(packet + 3, slot, 7);
       }
       packet[2] = static_cast<std::uint16_t>(argument1);
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet[0]), packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet[0]), packet);
       return 0;
     }
     case MM_CASH_EMOTION: {
@@ -3758,7 +3758,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
           }
           const GameModePacketDword packet{static_cast<std::uint16_t>(action == 42 ? 0x2D6 : action == 44 ? 0x7F5 : 0xAF9),
             static_cast<std::uint32_t>(this->menuTargetAid)};
-          GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+          GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
           return 0;
         }
         case 57: {
@@ -3808,7 +3808,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       const GameModePacketWordWord packet{0xBE9, static_cast<std::uint16_t>(argument2), static_cast<std::uint16_t>(argument1)};
       tick = timeGetTime();
       this->isEmotionRequested = 1;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_REQ_OPENSTORE: {
@@ -3859,7 +3859,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         std::strncpy(text, reinterpret_cast<const char*>(argument1), 39);
       }
       text[39] = 0;
-      GetRagConnection().Send(g_packetLengths.FixedLength(ID_CZ_REQ_LEAVE_GUILD), packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(ID_CZ_REQ_LEAVE_GUILD), packet);
       return 0;
     }
     case MM_REQ_MAKE_GUILD: {
@@ -3899,7 +3899,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       packet.argument = g_session.m_gid;
       std::strncpy(reinterpret_cast<char*>(packet.payload), name, 23);
       packet.payload[23] = 0;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_DELETEGUILDPOS: {
@@ -3930,7 +3930,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       item = argument2 ? g_session.GetSwapEquippedItem(argument1) : g_session.GetSwapCostumeItem(argument1);
       if (item.identity[1] && item.quantity > 0) {
         const GameModePacketWord packet{0xA99, static_cast<std::uint16_t>(item.identity[1])};
-        GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       }
       return 0;
     }
@@ -3944,7 +3944,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       }
       tick = timeGetTime();
       const std::uint16_t packet = 0xB4C;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet), &packet);
       return 0;
     }
     case MM_USE_PACKAGEITEM: {
@@ -3981,7 +3981,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       *reinterpret_cast<std::uint32_t*>(packet + 4) = g_session.m_aid;
       *reinterpret_cast<std::uint32_t*>(packet + 8) = static_cast<std::uint32_t>(argument2);
       *reinterpret_cast<std::uint32_t*>(packet + 12) = static_cast<std::uint32_t>(argument3);
-      GetRagConnection().Send(g_packetLengths.FixedLength(ID_CZ_USE_PACKAGEITEM), packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(ID_CZ_USE_PACKAGEITEM), packet);
       g_windowMgr.CloseWindow(WID_SELECTPACKAGEITEMBOX);
       return 0;
     }
@@ -4002,7 +4002,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       this->isWaitingAddExchangeItem = 1;
       const GameModePacketWordDword packet{0xE8, static_cast<std::uint16_t>(argument1), static_cast<std::uint32_t>(argument2)};
       this->exchangeItemCnt = argument2;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       if (Replay::Instance().state == 2) {
         std::uint16_t record[5] = {0x08AE, 0x0387, 10};
         std::memcpy(record + 3, &this->exchangeItemCnt, sizeof(int));
@@ -4047,7 +4047,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       }
       previousTick = timeGetTime();
       const GameModePacketDword packet{0x130, static_cast<std::uint32_t>(argument1)};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_SEND_MAIL: {
@@ -4185,7 +4185,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       }
       this->waitingWearEquipAck = timeGetTime();
       const GameModePacketWordDword packet{0xA97, static_cast<std::uint16_t>(argument1), static_cast<std::uint32_t>(argument2)};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_MOVE_ITEM_TO_PERSONAL: {
@@ -4193,7 +4193,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       const GameModePacketDwordWordDword packet{
         0xC22, g_session.m_buyingStoreMode != 0 ? 1U : 0U, static_cast<std::uint16_t>(argument1), static_cast<std::uint32_t>(argument2)
       };
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_REQ_PURCHASE: {
@@ -4465,7 +4465,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         this->noMoveStartTick = timeGetTime();
       }
       const GameModePacketDwordByte packet{0x90, request[0], *reinterpret_cast<const std::uint8_t*>(request + 2)};
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetId), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetId), &packet);
       return 0;
     }
     case MM_USE_SKILL_TOGROUND: {
@@ -4495,7 +4495,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       unsigned char packet[11];
       std::memcpy(packet, words, sizeof(words));
       packet[10] = static_cast<unsigned char>(argument2);
-      GetRagConnection().Send(g_packetLengths.FixedLength(words[0]), packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(words[0]), packet);
       return 0;
     }
     case MM_SEND_GUILD_EMBLEM: {
@@ -4669,7 +4669,7 @@ void CGameMode::RequestAdminStatus() {
   packet.accountId = static_cast<std::uint32_t>(g_session.m_aid);
   packet.requestType = 2;
   packet.requestValue = 0xA;
-  GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(ID_CZ_REQ_GIVE_MANNER_POINT), &packet);
+  GetRagConnection().Send(GetRagConnection().GetPacketSize(ID_CZ_REQ_GIVE_MANNER_POINT), &packet);
 }
 
 // OFFSET: 0x00D06BD0
@@ -6545,7 +6545,7 @@ void CGameMode::ChangeZoneServer(std::string mapName, int x, int y, int ip, int 
     packet.gid = g_session.m_gid;
     packet.authCode = g_session.m_authCode;
     packet.sex = static_cast<unsigned char>(g_session.GetCurrentSex());
-    GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
+    GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
     g_session.SetOption(17, 1, 0);
     GetRagConnection().SetBlock(1);
   }
@@ -7904,7 +7904,7 @@ void CGameMode::Initialize(const char* name) {
       g_stoveMgr->FetchAllProducts();
     } else {
       std::int16_t packet = 0x8C9;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet), &packet);
     }
   }
 
@@ -8917,7 +8917,7 @@ void CGameMode::Update() {
     }
     packet.amount = 1;
     if (this->isPlayerDead == 0) {
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
       --pending;
     }
   }
@@ -9163,7 +9163,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     packet.id = ID_CZ_SETTING_WHISPER_PC;
     StringFormat(packet.name, 0x18, static_cast<std::size_t>(-1), "%s", this->refuseWhisperName.c_str());
     packet.type = 0;
-    GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+    GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
     break;
   }
   case TT_REQ_WHISPER_PC_IN: {
@@ -9176,7 +9176,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     packet.id = ID_CZ_SETTING_WHISPER_PC;
     StringFormat(packet.name, 0x18, static_cast<std::size_t>(-1), "%s", this->refuseWhisperName.c_str());
     packet.type = 1;
-    GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+    GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
     break;
   }
   case TT_REQ_SAVE_CHAT_FROM_CHATROOM:
@@ -9853,7 +9853,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     TalkConfigPacket packet;
     packet.value = talkType != TT_REQ_ACCEPT_INVITE_PARTY;
     packet.id = ID_CZ_PARTY_CONFIG;
-    GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+    GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
     break;
   }
   case TT_REQ_OPEN_EQUIPEDITEM_ONOFF:
@@ -9950,14 +9950,14 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     TalkConfigPacket packet;
     packet.value = talkType == TT_MACRO_REGISTER ? 2 : 3;
     packet.id = ID_CZ_UI_OPEN;
-    GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+    GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
     break;
   }
   case TT_MACRO_PREVIEW: {
     TalkIntPacket packet;
     packet.id = ID_CZ_REQ_PREVIEW_MACRO_DETECTOR;
     packet.value = std::atoi(parts[0].c_str());
-    GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+    GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
     break;
   }
   case TT_VIEW_CAMERAINFO_ON_OFF: {
@@ -9998,7 +9998,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
   case TT_RESET_COOLTIME: {
     TalkConfigPacket packet;
     packet.id = ID_CZ_CMD_RESETCOOLTIME;
-    GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+    GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
     break;
   }
   case TT_ADVEN_PARTY_BOARD:
@@ -10018,14 +10018,14 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
       packet.enabled = 0;
       packet.value = 0;
     }
-    GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+    GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
     break;
   }
   case TT_MACRO_CHECKER_MAP: {
     TalkNamePacket packet;
     packet.id = ID_CZ_GM_CHECKER;
     strncpy_s(packet.name, sizeof(packet.name), parts[0].c_str(), _TRUNCATE);
-    GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+    GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
     break;
   }
   case TT_PROBABILITY_TEST: {
@@ -10787,7 +10787,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
       packet.packetType = ID_CZ_CONTACTNPC;
       packet.npcId = pick->accountId;
       packet.type = 1;
-      GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
       return result;
     }
 

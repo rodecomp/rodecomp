@@ -52,7 +52,7 @@ void UpdateWorldProximityNotification(
     std::memcpy(packet + 2, &accountId, sizeof(accountId));
     std::memcpy(packet + 6, &enabled, sizeof(enabled));
     packet[8] = 1;
-    connection.Send(lengths.FixedLength(id), packet);
+    connection.Send(GetRagConnection().GetPacketSize(id), packet);
     notified = 1;
   }
 }
@@ -74,7 +74,7 @@ void CWorld::UpdateGuildMasterApproach(std::function<bool()> isNearby) {
     packet.accountId = g_guildInfo.masterCharacterId;
     packet.range = 1;
     packet.enabled = 1;
-    GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
+    GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
     this->guildMasterNearby = true;
   }
 }

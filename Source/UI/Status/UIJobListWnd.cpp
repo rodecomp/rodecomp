@@ -133,7 +133,7 @@ int UIJobListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
       return 0;
     }
 
-    GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
+    GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
   }
     [[fallthrough]];
   case ID_CLOSE:

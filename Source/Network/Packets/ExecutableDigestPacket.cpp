@@ -59,5 +59,5 @@ void SendExecutableDigest(const int& serviceType, const int& serviceMode, HINSTA
     std::memcpy(packet.digest, digest, sizeof(digest));
   }
 
-  connection.Send(lengths.FixedLength(packet.id), &packet);
+  connection.Send(GetRagConnection().GetPacketSize(packet.id), &packet);
 }

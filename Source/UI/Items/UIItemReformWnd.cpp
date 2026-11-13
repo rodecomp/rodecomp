@@ -470,7 +470,7 @@ int UIItemReformWnd::SendMsg(
         packet.packetType = ID_CZ_ITEM_REFORM;
         packet.itemId = this->reformItem.GetItemId();
         packet.index = static_cast<std::int16_t>(this->selectedItem->identity[1]);
-        GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
       }
       break;
     case ID_CLOSE:

@@ -205,7 +205,7 @@ int UIMacroBlackListCheckWnd::SendMsg(
       MacroBlackListCheckPacket packet;
       packet.id = 0x0BDC;
       strncpy_s(packet.text, sizeof(packet.text), this->input, _TRUNCATE);
-      GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
       this->inputLength = 0;
       std::memset(this->input, 0, sizeof(this->input));
       return 0;

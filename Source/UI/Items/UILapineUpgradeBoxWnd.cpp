@@ -71,7 +71,7 @@ UILapineUpgradeBoxWnd::~UILapineUpgradeBoxWnd() {
   LapineUpgradeClosePacket packet;
   packet.id = ID_CZ_RANDOM_UPGRADE_ITEM_UI_CLOSE;
   CRagConnection& connection = GetRagConnection();
-  connection.Send(g_packetLengths.FixedLength(packet.id), &packet);
+  connection.Send(GetRagConnection().GetPacketSize(packet.id), &packet);
 }
 
 // OFFSET: 0x006035D0
@@ -633,7 +633,7 @@ int UILapineUpgradeBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         packet.id = ID_CZ_REQ_RANDOM_UPGRADE_ITEM;
         packet.ingredientId = this->ingredientId;
         packet.itemId = static_cast<std::int16_t>(this->item.identity[1]);
-        GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
         this->waiting = 1;
         this->upgradeButton->SetDisabled(1);
         this->upgradeButton->Invalidate();

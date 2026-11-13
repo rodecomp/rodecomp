@@ -93,7 +93,7 @@ int UISeekPartyMBWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
           PACKET_CZ_PARTY_BOOKING_REQ_REGISTER packet;
           packet.packetType = ID_CZ_PARTY_BOOKING_REQ_REGISTER;
           packet.detail = this->m_registration.detail;
-          GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
+          GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
         }
       } else {
         char text[260];

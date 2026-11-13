@@ -657,7 +657,7 @@ int CRuneSystemMgr::SendRequest(int packetId, RuneData* rune, int value) {
     packet.tagId = static_cast<std::uint16_t>(rune->m_tagId);
     packet.runeId = static_cast<int>(rune->m_id);
     packet.value = static_cast<std::uint8_t>(value);
-    GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packetId), &packet);
+    GetRagConnection().Send(GetRagConnection().GetPacketSize(packetId), &packet);
     break;
   }
   case 0x0BCB: {
@@ -673,7 +673,7 @@ int CRuneSystemMgr::SendRequest(int packetId, RuneData* rune, int value) {
     RuneTagPacket packet;
     packet.id = static_cast<std::uint16_t>(packetId);
     packet.tagId = static_cast<std::uint16_t>(tag->m_id);
-    GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packetId), &packet);
+    GetRagConnection().Send(GetRagConnection().GetPacketSize(packetId), &packet);
     break;
   }
   case 0x0BCE:
@@ -686,7 +686,7 @@ int CRuneSystemMgr::SendRequest(int packetId, RuneData* rune, int value) {
     packet.id = static_cast<std::uint16_t>(packetId);
     packet.tagId = static_cast<std::uint16_t>(rune->m_tagId);
     packet.runeId = static_cast<int>(rune->m_id);
-    GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packetId), &packet);
+    GetRagConnection().Send(GetRagConnection().GetPacketSize(packetId), &packet);
     this->m_requestPending = true;
     break;
   }
@@ -699,21 +699,21 @@ int CRuneSystemMgr::SendRequest(int packetId, RuneData* rune, int value) {
     packet.id = static_cast<std::uint16_t>(packetId);
     packet.tagId = static_cast<std::uint16_t>(rune->m_tagId);
     packet.runeId = static_cast<int>(rune->m_id);
-    GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packetId), &packet);
+    GetRagConnection().Send(GetRagConnection().GetPacketSize(packetId), &packet);
     this->m_requestPending = true;
     break;
   }
   case 0x0BD4: {
     RuneHeaderPacket packet;
     packet.id = static_cast<std::uint16_t>(packetId);
-    GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packetId), &packet);
+    GetRagConnection().Send(GetRagConnection().GetPacketSize(packetId), &packet);
     break;
   }
   case 0x0BD6: {
     RuneIdPacket packet;
     packet.id = static_cast<std::uint16_t>(packetId);
     packet.runeId = static_cast<int>(rune->m_id);
-    GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packetId), &packet);
+    GetRagConnection().Send(GetRagConnection().GetPacketSize(packetId), &packet);
     break;
   }
   }

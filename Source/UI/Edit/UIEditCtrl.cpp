@@ -1090,7 +1090,7 @@ void UIItemWnd::DragAndDrop(int x, int y, std::intptr_t value) {
       packet.packetType = ID_CZ_INVENTORY_TAB;
       packet.index = static_cast<unsigned short>(drag->id);
       packet.favorite = this->tabs->TabAt(x, y) != 3;
-      GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
     }
     break;
   case 2:
@@ -1273,7 +1273,7 @@ void UIItemWnd::OnRBtnDown(int x, int y) {
           } packet;
           packet.packetType = ID_CZ_REQ_ONECLICK_ITEMIDENTIFY;
           packet.index = static_cast<unsigned short>(item.identity[1]);
-          GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
+          GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
         }
       }
     } else {

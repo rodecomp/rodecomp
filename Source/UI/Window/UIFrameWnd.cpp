@@ -544,7 +544,7 @@ int UIBank_NewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       packet.amount = static_cast<int>(amount);
       packet.id = 0x9A7;
       packet.aid = g_session.m_aid;
-      GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
       this->m_status.clear();
     }
     return 0;
@@ -569,7 +569,7 @@ int UIBank_NewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       packet.amount = static_cast<int>(amount);
       packet.id = 0x9A9;
       packet.aid = g_session.m_aid;
-      GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
       this->m_status.clear();
     }
     return 0;

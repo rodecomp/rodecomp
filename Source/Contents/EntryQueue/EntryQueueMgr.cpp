@@ -66,7 +66,7 @@ void CEntryQueueMgr::SendAdmissionReply(int result) {
     this->ready = 0;
   }
 
-  GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+  GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
 }
 
 // OFFSET: 0x00BA2030
@@ -76,7 +76,7 @@ void CEntryQueueMgr::SendApply(std::uint16_t type, const char* name) {
   packet.id = ID_CZ_REQ_ENTRY_QUEUE_APPLY;
   packet.type = type;
   strncpy_s(packet.queueName, sizeof(packet.queueName), name, 23);
-  GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+  GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
 }
 
 // OFFSET: 0x00BA20A0
@@ -86,7 +86,7 @@ void CEntryQueueMgr::SendCancel() {
     EntryQueueNamePacket packet;
     packet.id = ID_CZ_REQ_ENTRY_QUEUE_CANCEL;
     strcpy_s(packet.queueName, sizeof(packet.queueName), this->current->name);
-    GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+    GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
   }
 }
 
@@ -97,7 +97,7 @@ void CEntryQueueMgr::SendRankingRequest() {
     EntryQueueNamePacket packet;
     packet.id = ID_CZ_REQ_ENTRY_QUEUE_RANKING;
     strcpy_s(packet.queueName, sizeof(packet.queueName), this->current->name);
-    GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+    GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
   }
 }
 

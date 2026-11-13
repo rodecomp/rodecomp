@@ -1635,7 +1635,7 @@ void CGameMode::ReceiveCharacterRenameResult(const unsigned char* packet) {
   case 0: {
     PacketIdOnly request;
     request.id = ID_CZ_CLOSE_UI_STYLINGSHOP;
-    GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(request.id), &request);
+    GetRagConnection().Send(GetRagConnection().GetPacketSize(request.id), &request);
     g_windowMgr.Confirm(LookupMessage(MSI_NOT_USING_SPECIALLETTERS_ON_PARTYNAME), 0, true, false, 0, "Message", 280, 120, 0);
     g_windowMgr.CloseWindow(WID_STYLINGSHOPWND);
     break;
@@ -1821,7 +1821,7 @@ void CGameMode::ReceiveMacroBlackListCode(unsigned char state, const char* code)
 
     PacketIdOnly request;
     request.id = ID_CZ_START_MACROBLUSER_HUMAN_CHECK;
-    GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(request.id), &request);
+    GetRagConnection().Send(GetRagConnection().GetPacketSize(request.id), &request);
   }
 }
 
@@ -2001,7 +2001,7 @@ void CGameMode::ReceiveRouletteOpen(const unsigned char* packet) {
     if (g_rouletteMgr->m_items.size() == 0) {
       PacketIdOnly request;
       request.id = ID_CZ_REQ_ROULETTE_INFO;
-      GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(request.id), &request);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(request.id), &request);
     } else if (!g_windowMgr.roulletteWnd) {
       g_windowMgr.EnsureWindow(WID_ROULLETTEWND);
     }
@@ -4527,7 +4527,7 @@ void CGameMode::ReceiveWindow227Entries(const unsigned char* data) {
   if (count == 0) {
     PacketIdOnly request;
     request.id = ID_CZ_CANCEL_MERGE_ITEM;
-    GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(request.id), &request);
+    GetRagConnection().Send(GetRagConnection().GetPacketSize(request.id), &request);
     return;
   }
 
@@ -4937,7 +4937,7 @@ void CGameMode::ReceiveMapProperty(const unsigned char* data) {
 
   PacketIdOnly request;
   request.id = ID_CZ_BLOCKING_PLAY_CANCEL;
-  GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(request.id), &request);
+  GetRagConnection().Send(GetRagConnection().GetPacketSize(request.id), &request);
 }
 
 #pragma pack(push, 1)

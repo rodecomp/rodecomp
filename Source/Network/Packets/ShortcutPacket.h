@@ -46,7 +46,7 @@ inline void SendShortcutUpdate(
 
   const auto position = static_cast<std::uint16_t>(index);
   std::memcpy(packet + 4, &position, sizeof(position));
-  connection.Send(lengths.FixedLength(ID_CZ_SHORTCUT_KEY_CHANGE_V2), packet);
+  connection.Send(GetRagConnection().GetPacketSize(ID_CZ_SHORTCUT_KEY_CHANGE_V2), packet);
 }
 
 #endif

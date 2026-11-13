@@ -306,7 +306,7 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       AccountLimitedDeletePacket packet;
       packet.id = ID_CZ_DEL_ACCOUNT_LIMTIED_SALE_ITEM;
       packet.accountId = std::atoi(this->m_accountIdText->GetText().c_str());
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
       break;
     }
     case ID_CLOSE:
@@ -327,7 +327,7 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         packet.id = ID_CZ_SEARCH_ACCOUNT_LIMTIED_SALE_ITEM;
         std::memset(packet.name, 0, sizeof(packet.name));
         strncpy_s(packet.name, sizeof(packet.name), name.c_str(), name.size());
-        GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
       }
       break;
     }
@@ -413,7 +413,7 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       packet.start = startTime;
       packet.end = endTime;
       packet.period = period;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
       break;
     }
     }

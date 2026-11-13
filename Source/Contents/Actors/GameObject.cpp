@@ -2183,7 +2183,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
       if (this->render.accountId == g_session.m_aid) {
         if (g_session.m_playerMessage82Pending == true) {
           std::int16_t packetType = 0x2F1;
-          GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packetType), &packetType);
+          GetRagConnection().Send(GetRagConnection().GetPacketSize(packetType), &packetType);
         }
         g_session.m_playerMessage82Pending = false;
       }

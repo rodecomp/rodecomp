@@ -2399,7 +2399,7 @@ void CGameMode::RequestWindow169(unsigned char enable) {
       RequestWindow169Packet packet;
       packet.id = 0x0BE0;
       packet.flags = 0;
-      GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
     }
   } else if (window) {
     g_windowMgr.CloseWindow(WID_RUNESYSTEMWND);

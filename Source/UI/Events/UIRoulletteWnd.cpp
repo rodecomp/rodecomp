@@ -365,7 +365,7 @@ int UIRoulletteWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
           if (this->m_enabled == 1) {
             RouletteGeneratePacket packet;
             packet.id = ID_CZ_REQ_GENERATE_ROULETTE;
-            GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+            GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
             this->m_enabled = 0;
             return 0;
           }
@@ -375,7 +375,7 @@ int UIRoulletteWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
             RouletteReceiveItemPacket packet;
             packet.id = ID_CZ_RECV_ROULETTE_ITEM;
             packet.condition = static_cast<unsigned char>(argument2);
-            GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+            GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
             return 0;
           }
           break;

@@ -1298,7 +1298,7 @@ void UIWindowMgr::RequestAddFriend(const char* name) {
   AddFriendPacket packet;
   packet.id = ID_CZ_ADD_FRIENDS;
   std::memcpy(packet.name, name, sizeof(packet.name));
-  GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+  GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
 }
 
 // OFFSET: 0x00A8AE20
@@ -3941,7 +3941,7 @@ bool UIWindowMgr::CloseWindow(int id) {
   case WID_RODEXINBOXWND:
     if (this->rodexInboxWnd) {
       std::int16_t packet = 0x9E9;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet), &packet);
       this->Schedule(this->rodexInboxWnd);
       this->rodexInboxWnd = nullptr;
       closed = true;
@@ -3953,7 +3953,7 @@ bool UIWindowMgr::CloseWindow(int id) {
   case WID_RODEXCOMPOSEWND:
     if (this->rodexComposeWnd) {
       std::int16_t packet = 0xA03;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet), &packet);
       g_session.RestoreSelectionItems();
       g_session.ClearItemQuantities();
       this->Schedule(this->rodexComposeWnd);
@@ -3986,7 +3986,7 @@ bool UIWindowMgr::CloseWindow(int id) {
   case WID_ROULLETTEWND:
     if (this->roulletteWnd) {
       std::int16_t packet = 0xA1D;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet), &packet);
       g_rouletteMgr->Reset();
       this->Schedule(this->roulletteWnd);
       this->roulletteWnd = nullptr;
@@ -4072,7 +4072,7 @@ bool UIWindowMgr::CloseWindow(int id) {
       this->cashShopWnd = nullptr;
       closed = true;
       std::int16_t packet = 0x84A;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet), &packet);
     }
     break;
   case WID_TIPBOXWND:
@@ -4525,7 +4525,7 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
       packet.aid = g_session.m_aid;
       CRagConnection& connection = GetRagConnection();
       GetRagConnection();
-      connection.Send(g_packetLengths.FixedLength(packet.id), &packet);
+      connection.Send(GetRagConnection().GetPacketSize(packet.id), &packet);
     }
     break;
   case HK_STATUSWND_ONOFF + 100:
@@ -4547,7 +4547,7 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
     }
     CRagConnection& connection = GetRagConnection();
     GetRagConnection();
-    connection.Send(g_packetLengths.FixedLength(packet.id), &packet);
+    connection.Send(GetRagConnection().GetPacketSize(packet.id), &packet);
     break;
   }
   case HK_ACHIEVEMENT + 100:

@@ -333,7 +333,7 @@ int UIRodexComposeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
         } else {
           packet.known = g_session.IsKnownName(packet.name);
         }
-        GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
         return 0;
       }
 

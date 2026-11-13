@@ -62,6 +62,7 @@ public:
   CRagConnection();
   ~CRagConnection() override;
   short GetPacketType(const char* packet);
+  int GetPacketSize(int id);
 
 private:
   /* 006C */ unsigned char padding_006C;

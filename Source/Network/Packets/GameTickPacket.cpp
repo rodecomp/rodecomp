@@ -32,7 +32,7 @@ void SendGameTick(bool force, std::uint32_t& pendingTick, std::uint32_t& lastTic
   GameTickPacket packet;
   packet.id = ID_CZ_REQUEST_TIME2;
   packet.tick = timeGetTime();
-  connection.Send(lengths.FixedLength(packet.id), &packet);
+  connection.Send(GetRagConnection().GetPacketSize(packet.id), &packet);
 
   if (recording) {
     recordedTicks.push_back(timeGetTime());

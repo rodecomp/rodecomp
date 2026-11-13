@@ -167,7 +167,7 @@ int UIChangeNameWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intpt
         g_session.m_renameGid = packet.gid;
         std::memcpy(packet.name, this->m_info.name, sizeof(packet.name));
         std::memcpy(g_session.m_renameName, this->m_info.name, sizeof(g_session.m_renameName));
-        GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
         g_windowMgr.Schedule(this);
       }
       break;

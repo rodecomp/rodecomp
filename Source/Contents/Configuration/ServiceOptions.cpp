@@ -777,7 +777,7 @@ struct ConfigPacket {
 void SendServiceOptionPacket() {
   ServiceOptionPacket packet;
   packet.id = ID_CZ_NOCOSPLAY;
-  GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+  GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
 }
 
 // OFFSET: 0x006C5E70
@@ -864,7 +864,7 @@ void SendConfigServiceOption(int id, unsigned char value, bool notify, int enabl
     packet.id = ID_CZ_CONFIG;
     packet.type = 1;
     packet.value = value;
-    GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+    GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
   }
 }
 #pragma inline_depth()
@@ -1201,7 +1201,7 @@ void EnableWhisperBlock() {
   WhisperBlockPacket packet;
   packet.id = ID_CZ_SETTING_WHISPER_STATE;
   packet.enabled = 1;
-  GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+  GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
 }
 
 // OFFSET: 0x006C63D0
@@ -1210,7 +1210,7 @@ void DisableWhisperBlock() {
   WhisperBlockPacket packet;
   packet.id = ID_CZ_SETTING_WHISPER_STATE;
   packet.enabled = 0;
-  GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+  GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
 }
 
 // OFFSET: 0x006C6410
@@ -1218,7 +1218,7 @@ void DisableWhisperBlock() {
 void SendWhisperBlockPacket() {
   ServiceOptionPacket packet;
   packet.id = ID_CZ_REQ_WHISPER_LIST;
-  GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+  GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
 }
 
 #pragma inline_depth(0)

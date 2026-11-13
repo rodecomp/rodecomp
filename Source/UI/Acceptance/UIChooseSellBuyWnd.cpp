@@ -3209,7 +3209,7 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       ChangeTitlePacket packet;
       packet.packetType = ID_CZ_REQ_CHANGE_TITLE;
       packet.titleId = b;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
       return 0;
     }
     case 508: {
@@ -3250,7 +3250,7 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
         return 0;
       }
       packet.packetType = ID_CZ_REQ_TAKEOFF_EQUIP_ALL_0bf5;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
       this->unequipButton->SetDisabled(1);
       this->unequipButton->Invalidate();
       return 0;
@@ -6599,7 +6599,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
     case ID_CLOSE: {
       NCashClosePacket packet;
       packet.packetType = ID_CZ_SE_CASHSHOP_CLOSE;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
       g_windowMgr.CloseWindow(WID_NCASHWND);
       return 0;
     }
@@ -6656,7 +6656,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
           packet.packetType = ID_CZ_REQ_COUNT_BARGAIN_SALE_ITEM;
           packet.accountId = g_session.m_aid;
           packet.itemId = std::atoi(item.itemId.c_str());
-          GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
+          GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
         }
         return 0;
       }
@@ -8375,7 +8375,7 @@ int UIYourItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       packet.packetType = ID_CZ_REQ_WEAR_EQUIP_V5;
       packet.index = static_cast<std::uint16_t>(this->m_index);
       packet.location = this->m_location;
-      GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
       g_windowMgr.CloseWindow(WID_YOURITEMWND);
       break;
     }
@@ -10735,7 +10735,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
         packet.packetType = ID_CH_NOT_AVAILABLE_SECOND_PASSWD;
         packet.accountId = g_session.m_passwordWndAccountId;
         std::memcpy(packet.password, this->currentPassword, sizeof(packet.password));
-        GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
         this->DisableButtons();
         break;
       }
@@ -10765,7 +10765,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
         packet.packetType = ID_CH_SECOND_PASSWD_ACK;
         packet.accountId = g_session.m_passwordWndAccountId;
         std::memcpy(packet.password, this->currentPassword, sizeof(packet.password));
-        GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
         this->DisableButtons();
           break;
         }
@@ -10837,7 +10837,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
             packet.accountId = g_session.m_passwordWndAccountId;
             std::memcpy(packet.password, this->currentPassword, sizeof(packet.password));
             std::memcpy(packet.newPassword, this->confirmPassword, sizeof(packet.newPassword));
-            GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
+            GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
             this->DisableButtons();
           } else {
             g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_MISMATCH), 0, true, false, 0, "Message", 280, 120, 0);
@@ -11143,7 +11143,7 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         packet.packetType = ID_CH_NOT_AVAILABLE_SECOND_PASSWD;
         packet.accountId = g_session.m_passwordWndAccountId;
         std::memcpy(packet.password, this->currentPassword, sizeof(packet.password));
-        GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
         this->DisableButtons();
         break;
       }
@@ -11173,7 +11173,7 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         packet.packetType = ID_CH_DELETE_SECOND_PASSWD;
         packet.accountId = g_session.m_passwordWndAccountId;
         std::memcpy(packet.password, this->currentPassword, sizeof(packet.password));
-        GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
         this->DisableButtons();
           break;
         }
@@ -11230,7 +11230,7 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
             packet.packetType = ID_CH_MAKE_SECOND_PASSWD;
             packet.accountId = g_session.m_passwordWndAccountId;
             std::memcpy(packet.password, this->confirmPassword, sizeof(packet.password));
-            GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
+            GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
             this->DisableButtons();
             break;
           }

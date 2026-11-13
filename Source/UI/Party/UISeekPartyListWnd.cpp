@@ -314,7 +314,7 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       }
 
       packet.pageSize = 10;
-      GetRagConnection().Send(g_packetLengths.FixedLength(packet.packetType), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
 
       this->m_filterJob = packet.job;
       this->m_filterLevel = packet.level;

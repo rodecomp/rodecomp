@@ -237,7 +237,7 @@ int UIQuestDisplay::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
           packet.packetType = ID_CZ_ACTIVE_QUEST;
           packet.questId = it->first;
           packet.active = !it->second.m_active;
-          GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
+          GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
           this->Invalidate();
           break;
         }

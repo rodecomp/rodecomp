@@ -24,7 +24,6 @@ public:
   PacketLengths();
   ~PacketLengths();
   PacketLengthResult Lookup(int id) const;
-  int FixedLength(int id) const;
   int IsRecorded(int id) const;
 
 private:

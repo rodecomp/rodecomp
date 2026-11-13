@@ -2484,7 +2484,7 @@ void CLoginMode::PollNetworkStatus() {
         GameRoomReplyPacket reply;
         reply.id = ID_CA_REPLY_PNGAMEROOM;
         reply.permission = 1;
-        GetRagConnection().Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(reply.id), &reply);
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(reply.id), &reply);
       } else {
         GetRagConnection().Close();
         g_charServerAccountIdPending = 0;
@@ -2538,7 +2538,7 @@ void CLoginMode::PollNetworkStatus() {
           ChangeCharacterNamePacket request;
           request.id = ID_CH_REQ_CHANGE_CHARNAME;
           request.gid = g_session.m_renameGid;
-          GetRagConnection().Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(request.id), &request);
+          GetRagConnection().Send(GetRagConnection().GetPacketSize(request.id), &request);
           break;
         }
       } else if (g_windowMgr.Confirm(LookupMessage(MSI_CHARACTER_NAME_ALREADY_EXISTS), 0, true, true, 0, "Message", 280, 120, 0) != 0xB8) {
@@ -2987,7 +2987,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     PacketAD0 packet;
     packet.id = ID_CT_MOTP;
     memcpy_s(packet.code, sizeof(packet.code), this->m_authCode, sizeof(packet.code));
-    GetRagConnection().Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(packet.id), &packet);
+    GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
     this->waitWnd = g_windowMgr.EnsureWindow(WID_WAITWND);
     static_cast<UIWaitWnd*>(this->waitWnd)->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
     return 0;
@@ -3820,7 +3820,7 @@ void CLoginMode::OnChangeState(int value) {
     }
 
     g_packetReassembler->Notify(2);
-    SendExecutableDigest(g_serviceType, g_serviceMode, g_instance, GetRagConnection(), *reinterpret_cast<const PacketLengths*>(&GetRagConnection()));
+    SendExecutableDigest(g_serviceType, g_serviceMode, g_instance, GetRagConnection(), g_packetLengths);
     AccountLoginPacket packet;
     packet.id = ID_CA_LOGIN;
     packet.version = g_patchedClientVersion;
@@ -3835,7 +3835,7 @@ void CLoginMode::OnChangeState(int value) {
       std::memcpy(packet.password, this->m_password, sizeof(packet.password));
     }
     packet.clientType = static_cast<unsigned char>(GetClientType());
-    GetRagConnection().Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(packet.id), &packet);
+    GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
     static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND))->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
     break;
   }
@@ -3866,7 +3866,7 @@ void CLoginMode::OnChangeState(int value) {
     packet.authCode = g_session.m_authCode;
     packet.userLevel = g_session.m_userLevel;
     packet.sex = static_cast<unsigned char>(g_session.m_sex);
-    GetRagConnection().Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(packet.id), &packet);
+    GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
     static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND))->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
     g_accountLinkedUserDataMgr->Load(g_session.m_aid, g_session.m_accountName);
     break;
@@ -3882,7 +3882,7 @@ void CLoginMode::OnChangeState(int value) {
     packet.head = g_charInfo.head;
     packet.job = g_charInfo.job;
     packet.sex = g_charInfo.sex;
-    GetRagConnection().Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(packet.id), &packet);
+    GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
     if (UIWaitWnd* wait = static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND))) {
       wait->SetMessage(LookupMessage(MSI_MAKING_CHARACTER), 17, 1);
     }
@@ -3900,16 +3900,16 @@ void CLoginMode::OnChangeState(int value) {
       if (this->billingInfo[5] == '\0') {
         packet.code[0] = '\0';
       }
-      GetRagConnection().Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(packet.id), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
     } else if (g_serviceType == 10 || g_serviceType == 12 || g_serviceType == 1) {
       DeleteCharacterEmailPacket email;
       email.gid = character->gid;
       email.id = ID_CH_DELETE_CHAR2;
       std::strncpy(email.code, reinterpret_cast<const char*>(this->billingInfo), sizeof(email.code));
       email.code[49] = '\0';
-      GetRagConnection().Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(email.id), &email);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(email.id), &email);
     } else {
-      GetRagConnection().Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(packet.id), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
     }
     static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND))->SetMessage(LookupMessage(MSI_DELETING_CHARACTER), 17, 1);
     break;
@@ -3921,7 +3921,7 @@ void CLoginMode::OnChangeState(int value) {
     packet.id = ID_CH_SELECT_CHAR;
     packet.slot = static_cast<unsigned char>(g_selectedSlotIndex);
     g_cashEmotionMgr->ClearOwnedPacks();
-    GetRagConnection().Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(packet.id), &packet);
+    GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
     static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND))->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
     break;
   }
@@ -3961,7 +3961,7 @@ void CLoginMode::OnChangeState(int value) {
     packet.gid = g_session.m_gid;
     packet.authCode = g_session.m_authCode;
     packet.sex = static_cast<unsigned char>(g_session.GetCurrentSex());
-    GetRagConnection().Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(packet.packetType), &packet);
+    GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
     g_session.SetOption(17, 1, 0);
     GetRagConnection().SetBlock(1);
     static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND))->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
@@ -4075,7 +4075,7 @@ void CLoginMode::OnChangeState(int value) {
     packet.id = ID_CH_SELECT_ACCESSIBLE_MAPNAME;
     packet.slot = static_cast<unsigned char>(g_selectedSlotIndex);
     packet.map = static_cast<unsigned char>(this->mapStates.front().index);
-    GetRagConnection().Send(reinterpret_cast<const PacketLengths*>(&GetRagConnection())->FixedLength(packet.id), &packet);
+    GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
     break;
   }
   default:

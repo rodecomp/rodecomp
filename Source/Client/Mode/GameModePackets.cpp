@@ -2662,7 +2662,7 @@ __declspec(noinline) void CGameMode::ReceiveAntiBotChallenge(int value) {
   ValuePacket packet;
   packet.id = ID_CZ_ACK_AU_BOT;
   packet.value = value;
-  GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+  GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
 }
 
 // OFFSET: 0x00D79E10
@@ -4083,7 +4083,7 @@ void CGameMode::ReceiveShopName(const char* text, int shopId) {
   if (!g_session.AddShopName(name, shopId)) {
     packet.value = shopId;
     packet.id = ID_CZ_RES_LISTOFMODIFIED_ITEMNSKILL;
-    GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+    GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
   }
 }
 
@@ -24028,7 +24028,7 @@ void CGameMode::ProcessIncomingPackets() {
                           0, 0);
         } else {
           std::int16_t packetType = 0x844;
-          GetRagConnection().Send(reinterpret_cast<const PacketLengths &>(GetRagConnection()).FixedLength(packetType), &packetType);
+          GetRagConnection().Send(GetRagConnection().GetPacketSize(packetType), &packetType);
         }
       }
       break;

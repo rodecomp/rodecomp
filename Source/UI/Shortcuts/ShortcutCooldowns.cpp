@@ -607,7 +607,7 @@ int UISeekPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     case ID_CLOSE: {
       SeekPartyClosePacket packet;
       packet.id = 0x806;
-      GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
       g_windowMgr.CloseWindow(WID_JOBLISTWND);
       break;
     }

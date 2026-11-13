@@ -921,7 +921,7 @@ int UIAchViewWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::
       PACKET_CZ_REQ_ACH_REWARD packet;
       packet.packetType = ID_CZ_REQ_ACH_REWARD;
       packet.achievementId = this->achievementId;
-      GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
     }
     break;
   case UM_SELECT_ACHIEVEMENT:

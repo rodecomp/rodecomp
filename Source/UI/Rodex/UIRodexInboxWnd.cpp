@@ -84,7 +84,7 @@ UIRodexInboxWnd::UIRodexInboxWnd()
   if (g_rodexMailStore->m_mails1.size() > 0) {
     packet.lastMailId1 = g_rodexMailStore->m_mails1.rbegin()->first;
   }
-  GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
+  GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
 }
 
 // OFFSET: 0x00807640
@@ -713,13 +713,13 @@ void UIRodexInboxWnd::RequestMailAttachments(int type, std::int64_t mailId) {
     packet.id = ID_CZ_REQ_ITEM_FROM_RODEX;
     packet.mailId = mailId;
     packet.type = static_cast<std::uint8_t>(type);
-    GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+    GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
   }
   if ((flags & 2) != 0) {
     packet.id = ID_CZ_REQ_ZENY_FROM_RODEX;
     packet.mailId = mailId;
     packet.type = static_cast<std::uint8_t>(type);
-    GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+    GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
   }
 }
 
@@ -931,7 +931,7 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       if (g_rodexMailStore->m_mails1.size() > 0) {
         packet.lastMailId1 = g_rodexMailStore->m_mails1.rbegin()->first;
       }
-      GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
       this->SetButtonsDisabled(1);
       break;
     }
@@ -1047,7 +1047,7 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
           PACKET_CZ_RODEX_RETURN packet;
           packet.packetType = ID_CZ_RODEX_RETURN;
           packet.mailId = static_cast<std::uint32_t>(mail->first);
-          GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
+          GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
         }
       }
       break;

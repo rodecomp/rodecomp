@@ -66,7 +66,7 @@ void CUIMacroReport::SendReport() {
   packet.type = static_cast<std::uint16_t>(this->m_reportType);
   strncpy_s(packet.targetName, sizeof(packet.targetName), this->targetName.c_str(), _TRUNCATE);
   strncpy_s(packet.message, sizeof(packet.message), EditBoxText(this->m_messageEdit).c_str(), _TRUNCATE);
-  GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+  GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
   g_windowMgr.CloseWindow(WID_MACROREPORT);
 }
 

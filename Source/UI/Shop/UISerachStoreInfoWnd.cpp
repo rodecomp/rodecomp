@@ -217,7 +217,7 @@ int UISerachStoreInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     case ID_CLOSE: {
       SearchStoreRequestHeader packet;
       packet.packetType = ID_CZ_CLOSE_SEARCH_STORE_INFO;
-      GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
       g_session.storeSearchX = -1;
       g_session.storeSearchY = -1;
       g_session.storeSearchOwnerAid = 0xFFFFFFFF;
@@ -402,7 +402,7 @@ int UISerachStoreInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
         this->m_page = page + 1;
         SearchStoreRequestHeader packet;
         packet.packetType = ID_CZ_SEARCH_STORE_INFO_NEXT_PAGE;
-        GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
         return 0;
       }
       break;
@@ -452,6 +452,6 @@ void UISerachStoreInfoWnd::OnLBtnDblClk(int x, int y) {
   packet.accountId = entry->accountId;
   packet.storeId = entry->storeId;
   packet.itemId = entry->item.GetItemId();
-  GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
+  GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
   g_session.storeSearchOwnerAid = entry->accountId;
 }

@@ -172,7 +172,7 @@ int UICaptchaRegisterWnd::SendMsg(
           memcpy_s(packet.text, sizeof(packet.text), this->m_editCtrl->Text(), sizeof(packet.text));
           packet.size = static_cast<std::int16_t>(this->m_decompressedSize);
 
-          GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+          GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
 
           g_serverLanguage->ResetInput();
         }

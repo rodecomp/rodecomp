@@ -161,7 +161,7 @@ int UISelCharForUServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
       packet.accountId = g_session.m_aid;
       packet.count = count;
       std::memcpy(packet.characterIds, characterIds, sizeof(packet.characterIds));
-      GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
       g_windowMgr.Schedule(this);
       return 0;
     }

@@ -1085,7 +1085,7 @@ int UIRenewQuestWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
           packet.questId = questId;
           packet.packetType = ID_CZ_ACTIVE_QUEST;
           packet.active = argument2 != 0;
-          GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
+          GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
           return 0;
         }
       }

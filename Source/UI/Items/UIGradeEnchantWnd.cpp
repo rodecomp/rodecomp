@@ -557,7 +557,7 @@ int UIGradeEnchantWnd::SendMsg(
             packet.useBlessing = this->blessingAmount > 0;
             packet.blessingCount = this->blessingAmount / this->info.blessingStepAmount;
             packet.protect = this->protect;
-            GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+            GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
           }
         }
       }
@@ -566,7 +566,7 @@ int UIGradeEnchantWnd::SendMsg(
     case ID_CLOSE: {
       GradeEnchantClosePacket packet;
       packet.id = ID_CZ_GRADE_ENCHANT_CLOSE_UI;
-      GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
       g_windowMgr.CloseWindow(WID_GRADEENCHANTWND);
       break;
     }
@@ -598,7 +598,7 @@ int UIGradeEnchantWnd::SendMsg(
         GradeEnchantSelectPacket packet;
         packet.id = ID_CZ_GRADE_ENCHANT_SELECT_EQUIPMENT;
         packet.index = static_cast<std::uint16_t>(argument1);
-        GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
       }
     }
     break;

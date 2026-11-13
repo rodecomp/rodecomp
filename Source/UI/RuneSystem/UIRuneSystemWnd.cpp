@@ -1498,7 +1498,7 @@ UIRuneSystemWnd::UIRuneSystemWnd() : UIFrameWnd(0), m_nextTick(0) {
   RuneSystemOpenPacket packet;
   packet.id = 0x0BE0;
   packet.open = 1;
-  GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+  GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
 }
 
 // OFFSET: 0x00814DE0
@@ -1740,7 +1740,7 @@ int UIRune_Decom::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
           packet.itemId = item.GetItemId();
           packet.itemIndex = item.identity[1];
           packet.decomType = this->m_decomType + 1;
-          GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+          GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
           CRuneSystemMgr::GetInstance()->SetRequestPending(true);
         }
       }
@@ -2311,7 +2311,7 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         packet.id = 0x0BD6;
         packet.runeId = static_cast<int>(rune->GetId());
         packet.tagId = static_cast<std::uint16_t>(rune->GetTagId());
-        GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
       }
     } else if (argument1 == 0x158) {
       RuneSetData* runeSet = CRuneSystemMgr::GetInstance()->GetCurRuneSet();
@@ -2322,7 +2322,7 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         packet.id = 0x0BD6;
         packet.tagId = static_cast<std::uint16_t>(runeSet->GetTagId());
         packet.runeId = 0;
-        GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
       }
     }
     break;

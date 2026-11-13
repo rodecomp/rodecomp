@@ -1,3 +1,4 @@
+#include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
 #include "Network/Packets/PacketId.h"
 
@@ -27,7 +28,7 @@ __declspec(noinline) PacketLengthResult PacketLengths::Lookup(int id) const {
 
 // OFFSET: 0x00C7C970
 // FUNCTION: fn_20391
-int PacketLengths::FixedLength(int id) const {
+int CRagConnection::GetPacketSize(int id) {
   switch (id) {
   case ID_ZC_SRPACKETR2_INIT:
     return 12;

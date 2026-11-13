@@ -434,7 +434,7 @@ int UIMenuIconWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
         MenuIconBankingCheckPacket packet;
         packet.id = ID_CZ_REQ_BANKING_CHECK;
         packet.aid = g_session.m_aid;
-        GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
         break;
       }
       case 510:
@@ -468,7 +468,7 @@ int UIMenuIconWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
           MenuIconOpenUiPacket packet;
           packet.id = ID_CZ_UI_OPEN;
           packet.type = 5;
-          GetRagConnection().Send(g_packetLengths.FixedLength(packet.id), &packet);
+          GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
         }
         break;
       case 544:

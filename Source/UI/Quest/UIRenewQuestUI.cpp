@@ -821,7 +821,7 @@ void RenewQuestUI::CUIQuestItem::OnActiveStateChanged(bool active) {
     packet.id = ID_CZ_ACTIVE_QUEST;
     packet.questId = questId;
     packet.active = active;
-    GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+    GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
   }
 }
 

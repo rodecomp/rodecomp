@@ -1253,7 +1253,7 @@ void CUIGroupLogInOut::Apply() {
 // FUNCTION: fn_15974
 void CUIGroupRodexSpam::Apply() {
   RodexSpamOptionPacket packet = {0x0B93, 1, 1};
-  GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(static_cast<std::int16_t>(packet.id)), &packet);
+  GetRagConnection().Send(GetRagConnection().GetPacketSize(static_cast<std::int16_t>(packet.id)), &packet);
 }
 
 // OFFSET: 0x00A40550
@@ -1615,7 +1615,7 @@ void CUIGroupProcessPriority::OnSelect(CUIRadioButton* button) {
 // FUNCTION: fn_16007
 void CUIGroupRodexSpam::OnSelect(CUIRadioButton* button) {
   RodexSpamOptionPacket packet = {0x0B93, 1, this->m_offButton != button};
-  GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(static_cast<std::int16_t>(packet.id)), &packet);
+  GetRagConnection().Send(GetRagConnection().GetPacketSize(static_cast<std::int16_t>(packet.id)), &packet);
 }
 
 // OFFSET: 0x00A42FE0

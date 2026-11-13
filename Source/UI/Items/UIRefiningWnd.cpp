@@ -821,7 +821,7 @@ int UIRefiningWnd::SendMsg(
             packet.index = static_cast<std::uint16_t>(index);
             packet.materialId = this->materials[this->selectedMaterial].itemId;
             packet.useCatalyst = this->catalystEnabled;
-            GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+            GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
           }
         }
       }
@@ -831,7 +831,7 @@ int UIRefiningWnd::SendMsg(
       if (this->state != 2) {
         RefiningClosePacket packet;
         packet.id = ID_CZ_CLOSE_REFINING_UI;
-        GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
         g_windowMgr.CloseWindow(WID_REFININGWND);
       }
       break;
@@ -863,7 +863,7 @@ int UIRefiningWnd::SendMsg(
           RefiningSelectPacket packet;
           packet.id = ID_CZ_REFINING_SELECT_ITEM;
           packet.index = static_cast<std::uint16_t>(argument1);
-          GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+          GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
         } else {
           this->notice->SetNotice(LookupMessage(MSI_RETURN), 3000, 1);
         }

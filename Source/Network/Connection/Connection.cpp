@@ -258,7 +258,7 @@ bool CConnection::ReadPacket(void* output, unsigned short* bytes, const PacketLe
 
   unsigned short size;
   if (lengths.Lookup(id).kind == 1) {
-    size = static_cast<unsigned short>(lengths.FixedLength(id));
+    size = static_cast<unsigned short>(static_cast<CRagConnection*>(this)->GetPacketSize(id));
   } else {
     unsigned header;
     if (!this->m_input.PeekData(4, &header)) {

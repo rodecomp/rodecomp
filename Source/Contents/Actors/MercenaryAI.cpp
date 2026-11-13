@@ -295,7 +295,7 @@ int AiHomunAttack(lua_State* state) {
     packet.aid = aid;
     packet.target = target;
     packet.action = 0;
-    GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.opcode), &packet);
+    GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.opcode), &packet);
     lastAttackTime = timeGetTime();
   }
 
@@ -332,7 +332,7 @@ int AiMercenaryAttack(lua_State* state) {
     packet.aid = aid;
     packet.target = target;
     packet.action = 0;
-    GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.opcode), &packet);
+    GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.opcode), &packet);
     lastAttackTime = timeGetTime();
   }
 
@@ -1067,7 +1067,7 @@ int AiMove(lua_State* state) {
     packet.dest[1] = static_cast<unsigned char>(((y >> 4) & 0x3F) | (x << 6));
     packet.dest[2] = static_cast<unsigned char>(y << 4);
 
-    GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.opcode), &packet);
+    GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.opcode), &packet);
   }
 
   return 0;
@@ -1085,7 +1085,7 @@ int AiMoveToOwner(lua_State* state) {
   if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAID(aid)) {
     packet.opcode = ID_CZ_REQUEST_MOVETOOWNER;
     packet.aid = aid;
-    GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.opcode), &packet);
+    GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.opcode), &packet);
   }
 
   return 0;

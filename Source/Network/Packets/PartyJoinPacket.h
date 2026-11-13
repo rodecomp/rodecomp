@@ -28,7 +28,7 @@ inline void SendPartyJoin(CConnection& connection, const PacketLengths& lengths,
   std::memcpy(packet, &id, sizeof(id));
   std::memcpy(packet + 6, accountId, sizeof(*accountId));
   std::memcpy(packet + 2, characterId, sizeof(*characterId));
-  connection.Send(lengths.FixedLength(id), packet);
+  connection.Send(GetRagConnection().GetPacketSize(id), packet);
 }
 
 // INLINED
@@ -39,7 +39,7 @@ inline void SendPartyJoinDecision(CConnection& connection, const PacketLengths& 
   std::memcpy(packet + 2, &characterId, sizeof(characterId));
   packet[10] = accepted;
   std::memcpy(packet + 6, accountId, sizeof(*accountId));
-  connection.Send(lengths.FixedLength(id), packet);
+  connection.Send(GetRagConnection().GetPacketSize(id), packet);
 }
 
 // INLINED
@@ -57,7 +57,7 @@ inline void SendPartyInvitationDecision(
   std::memcpy(packet, &id, sizeof(id));
   packet[6] = accepted;
   std::memcpy(packet + 2, &identity, sizeof(identity));
-  connection.Send(lengths.FixedLength(id), packet);
+  connection.Send(GetRagConnection().GetPacketSize(id), packet);
 }
 
 #endif

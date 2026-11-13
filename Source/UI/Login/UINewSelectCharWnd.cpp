@@ -651,14 +651,14 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       CharacterGidPacket packet;
       packet.id = ID_CH_DELETE_CHAR3_RESERVED;
       packet.gid = info->gid;
-      GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
       break;
     }
     case 0x198: {
       CharacterGidPacket packet;
       packet.id = ID_CH_DELETE_CHAR3_CANCEL;
       packet.gid = this->m_slotMap[static_cast<unsigned char>(g_selectedSlotIndex)];
-      GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
       break;
     }
     case ID_DELETE: {
@@ -798,7 +798,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       CharacterGidPacket packet;
       packet.id = ID_CH_AVAILABLE_SECOND_PASSWD;
       packet.gid = g_session.m_aid;
-      GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
       break;
     }
     case 0x1B2:
@@ -826,7 +826,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
           packet.from = static_cast<std::int16_t>(this->m_slotMoveSource);
           packet.to = selected;
           packet.count = static_cast<std::int16_t>(info->slotChangeCount);
-          GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+          GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
         }
       }
       this->m_slotMoveSource = -1;

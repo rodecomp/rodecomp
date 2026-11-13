@@ -381,5 +381,5 @@ UILapineBoxWnd::~UILapineBoxWnd() {
   this->items.clear();
   short packetType = ID_CZ_RANDOM_COMBINE_ITEM_UI_CLOSE;
   CRagConnection& connection = GetRagConnection();
-  connection.Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packetType), &packetType);
+  connection.Send(GetRagConnection().GetPacketSize(packetType), &packetType);
 }

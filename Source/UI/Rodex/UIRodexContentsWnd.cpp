@@ -266,7 +266,7 @@ int UIRodexContentsWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         packet.packetType = ID_CZ_REQ_ITEM_FROM_RODEX;
         packet.mailId = g_rodexMailStore->currentMailId;
         packet.mailType = g_rodexMailStore->inboxType;
-        GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
         UIBitmapButton* button = this->m_itemButton;
         button->SetDisabled(1);
         button->Invalidate();
@@ -282,7 +282,7 @@ int UIRodexContentsWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         packet.packetType = ID_CZ_REQ_ZENY_FROM_RODEX;
         packet.mailId = g_rodexMailStore->currentMailId;
         packet.mailType = g_rodexMailStore->inboxType;
-        GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
         UIBitmapButton* button = this->m_zenyButton;
         button->SetDisabled(1);
         button->Invalidate();
@@ -347,7 +347,7 @@ int UIRodexContentsWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       RodexMailReportPacket packet;
       packet.packetType = ID_CZ_RODEX_RETURN;
       packet.mailId = static_cast<std::int32_t>(g_rodexMailStore->currentMailId);
-      GetRagConnection().Send(reinterpret_cast<const PacketLengths&>(GetRagConnection()).FixedLength(packet.packetType), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
       break;
     }
     }

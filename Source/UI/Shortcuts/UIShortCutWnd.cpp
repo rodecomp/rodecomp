@@ -1056,7 +1056,7 @@ int UIMemorialDunWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
       } else if (g_session.memorialDungeonState == 1) {
         packet.command = 1;
       }
-      GetRagConnection().Send(reinterpret_cast<PacketLengths&>(GetRagConnection()).FixedLength(packet.id), &packet);
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
       return 0;
     }
     case ID_DELETE:
