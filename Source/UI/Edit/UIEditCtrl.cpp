@@ -1300,7 +1300,7 @@ void UIMerchantItemPurchaseWnd::OnRBtnDown(int x, int y) {
     if (HIBYTE(GetAsyncKeyState(VK_MENU))) {
       if (g_windowMgr.merchantItemShopWnd) {
         item = g_session.FindItem1760ByItemId(item.itemId.c_str());
-        mode->drag.BeginItem(g_windowMgr, 13, item, item.quantity, -1);
+        mode->BeginDragItem(13, item, item.quantity, -1);
         static_cast<UIWindow*>(g_windowMgr.merchantItemShopWnd)->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
       }
     } else {
@@ -1326,7 +1326,7 @@ void UIMerchantItemShopWnd::OnRBtnDown(int x, int y) {
 
     if (HIBYTE(GetAsyncKeyState(VK_MENU))) {
       if (g_windowMgr.merchantItemPurchaseWnd) {
-        mode->drag.BeginItem(g_windowMgr, 12, item, item.quantity, -1);
+        mode->BeginDragItem(12, item, item.quantity, -1);
         static_cast<UIWindow*>(g_windowMgr.merchantItemPurchaseWnd)->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
       }
     } else {
@@ -5367,10 +5367,7 @@ void UISkillListWnd::OnLBtnDown(int x, int y) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
 
     if (mode) {
-      mode->drag.BeginSkill(
-        g_windowMgr, ResourceMgr::Instance(), 8, skill.id, skill.name,
-        g_session.SkillLevel(skill.id), -1
-      );
+      mode->BeginDragSkill(8, skill.id, skill.name, g_session.SkillLevel(skill.id), -1);
     }
   }
 }
@@ -5410,7 +5407,7 @@ void UIMerchantItemShopWnd::OnLBtnDown(int x, int y) {
     ITEM_INFO item = this->GetItemByIndex(this->hovered);
 
     if (item.identity[1] > 0) {
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(g_windowMgr, 12, item, 1, -1);
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->BeginDragItem(12, item, 1, -1);
     }
   }
 }
@@ -7016,7 +7013,7 @@ void UIItemPurchaseWnd::OnLBtnDown(int x, int y) {
   if (item.identity[1] > 0) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     item = g_session.FindItem1720ByItemId(item.itemId.c_str());
-    mode->drag.BeginItem(g_windowMgr, 4, item, item.quantity, -1);
+    mode->BeginDragItem(4, item, item.quantity, -1);
   }
 }
 
@@ -7236,9 +7233,9 @@ void UIMerchantItemPurchaseWnd::OnLBtnDown(int x, int y) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     item = g_session.FindItem1760ByItemId(item.itemId.c_str());
     if (this->buyingStore != 0) {
-      mode->drag.BeginItem(g_windowMgr, 21, item, item.quantity, -1);
+      mode->BeginDragItem(21, item, item.quantity, -1);
     } else {
-      mode->drag.BeginItem(g_windowMgr, 13, item, item.quantity, -1);
+      mode->BeginDragItem(13, item, item.quantity, -1);
     }
   }
 }
@@ -10674,7 +10671,7 @@ void UIMerchantItemWnd::OnLBtnDown(int x, int y) {
   if (item.identity[1] > 0 && !g_windowMgr.merchantShopMakeWnd && item.flags[2] == 0) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     item = g_session.FindMerchantShopItem(item.identity[1]);
-    mode->drag.BeginItem(g_windowMgr, 9, item, item.quantity, -1);
+    mode->BeginDragItem(9, item, item.quantity, -1);
 
     if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
       if (g_windowMgr.GetHoverWindow() && item.identified != 0) {

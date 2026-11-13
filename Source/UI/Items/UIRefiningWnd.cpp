@@ -448,7 +448,7 @@ void UIRefiningWnd::OnLBtnDown(int x, int y) {
   }
 
   if (this->state == 1 && this->item.identity[1] > 0 && static_cast<unsigned>(x - 109) <= 46 && static_cast<unsigned>(y - 201) <= 46) {
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(g_windowMgr, 28, this->item, 1, -1);
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->BeginDragItem(28, this->item, 1, -1);
   }
 }
 

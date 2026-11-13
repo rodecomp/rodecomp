@@ -257,6 +257,11 @@ public:
   bool IsEffectId990Group(int id);
   bool IsEffectId994Group(int id);
   bool ConfirmDraggedItemUse();
+  void ClearDrag();
+  void BeginDragItem(int source, const ITEM_INFO& item, int quantity, int slot);
+  void BeginDragSkill(int source, std::uint32_t id, const char* name, int level, int slot);
+  void BeginDragBarterItem(int source, const BarterMarketItem& item, int quantity, int slot);
+  void BeginDragBarterEntry(int source, const BarterMarketEntry& entry, int quantity, int slot);
   void RefreshStatusStateEffect(int actorId);
   void RefreshNotificationWindows(int value);
   void UpdatePetFriendlyWindow(int previousFriendly);

@@ -192,7 +192,7 @@ void UIRodexComposeWnd::OnLBtnDown(int x, int y) {
 
   ITEM_INFO item = this->GetItemAtPoint(x, y);
   if (item.identity[1] > 0) {
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(g_windowMgr, 15, item, item.quantity, -1);
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->BeginDragItem(15, item, item.quantity, -1);
   }
 }
 

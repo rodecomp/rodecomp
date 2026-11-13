@@ -616,7 +616,7 @@ void UICashShopWnd_CartItem::OnLBtnDblClk(int, int) {
 void UICashShopWnd_CartItem::OnLBtnDown(int, int) {
   if (this->m_item.identity[1] > 0) {
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())
-      ->drag.BeginItem(g_windowMgr, 4, this->m_item, this->m_item.quantity, -1);
+      ->BeginDragItem(4, this->m_item, this->m_item.quantity, -1);
   }
 }
 
@@ -624,7 +624,7 @@ void UICashShopWnd_CartItem::OnLBtnDown(int, int) {
 // FUNCTION: fn_09546
 void UICashShopWnd_Item::OnLBtnDown(int, int) {
   if (this->m_item.identity[1] > 0) {
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->drag.BeginItem(g_windowMgr, 6, this->m_item, 1, -1);
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->BeginDragItem(6, this->m_item, 1, -1);
   }
 }
 

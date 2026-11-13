@@ -907,7 +907,7 @@ void UIExpandedBarterItemPurchaseWnd::OnLBtnDown(int x, int y) {
   std::pair<bool, BarterMarketEntry> found = this->GetEntryAt(x, y);
   if (found.first == true) {
     if (CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode())) {
-      mode->drag.BeginBarterEntry(32, found.second, found.second.value, -1);
+      mode->BeginDragBarterEntry(32, found.second, found.second.value, -1);
     }
   }
 }
@@ -951,7 +951,7 @@ void UIExpandedBartermarketWnd::OnLBtnDown(int x, int y) {
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_INVENTORY_EXTEND_OF_BODYITEM)), 255, 0, 0, 0);
     } else if (CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode())) {
-      mode->drag.BeginBarterEntry(31, found.second, 1, -1);
+      mode->BeginDragBarterEntry(31, found.second, 1, -1);
     }
   }
 }

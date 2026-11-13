@@ -980,7 +980,7 @@ void UINewSkillListWnd::OnLBtnDown(int x, int y) {
         if (level == 0) {
           level = skill.level;
         }
-        gameMode->drag.BeginSkill(g_windowMgr, ResourceMgr::Instance(), 8, skill.id, skill.name, level, -1);
+        gameMode->BeginDragSkill(8, skill.id, skill.name, level, -1);
       }
     }
   }

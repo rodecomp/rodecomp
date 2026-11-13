@@ -24,7 +24,7 @@ struct ModeDragState {
   /* 0344 */ std::string name;
   /* 035C */ std::string skillName;
   /* 0374 */ int skillLevel;
-  /* 0378 */ unsigned char cards[16];
+  /* 0378 */ std::uint32_t cards[4];
   /* 0388 */ unsigned char skill;
   /* 038C */ std::uint32_t sourceWindow;
   /* 0390 */ int optionCount;
