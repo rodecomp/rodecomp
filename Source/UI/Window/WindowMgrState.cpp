@@ -1,3 +1,6 @@
+struct RenderSystemHolder;
+__declspec(noinline) RenderSystemHolder* GetRenderSystemHolder();
+
 #include "Client/Mode/ModeMessage.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
