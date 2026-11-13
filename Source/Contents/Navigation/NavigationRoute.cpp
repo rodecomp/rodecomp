@@ -173,12 +173,6 @@ void CNaviData::ClearAll() {
   this->destinations.clear();
 }
 
-// OFFSET: 0x00B8CF70
-// FUNCTION: fn_19432
-__declspec(noinline) bool CNavi_Object::HasId(const unsigned int& id) const {
-  return static_cast<unsigned int>(this->id) == id;
-}
-
 // OFFSET: 0x00B8D0D0
 // FUNCTION: fn_19433
 bool CNavi_Object::IsNamed(const char* name) const {
@@ -439,12 +433,6 @@ __declspec(noinline) void CNavigationManager::ShowRouteResult(int result, int mo
       g_windowMgr.Confirm(text.c_str(), 0, true, false, 0, "Message", 280, 120, 0);
     }
   }
-}
-
-// OFFSET: 0x00B8D270
-// FUNCTION: fn_19434
-__declspec(noinline) bool CNaviInfo::HasName(const char* name) const {
-  return std::strcmp(this->name.c_str(), name) == 0;
 }
 
 // OFFSET: 0x00B97FC0

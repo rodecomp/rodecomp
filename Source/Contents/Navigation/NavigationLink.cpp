@@ -2,6 +2,18 @@
 
 template __declspec(noinline) void std::vector<NaviLink>::_Tidy() noexcept;
 
+// OFFSET: 0x00B8CF70
+// FUNCTION: fn_19432
+bool CNavi_Object::HasId(const unsigned int& id) const {
+  return static_cast<unsigned int>(this->id) == id;
+}
+
+// OFFSET: 0x00B8D270
+// FUNCTION: fn_19434
+bool CNaviInfo::HasName(const char* name) const {
+  return std::strcmp(this->name.c_str(), name) == 0;
+}
+
 // OFFSET: 0x00B8D8D0
 // FUNCTION: fn_19436
 CNavi_Link::~CNavi_Link() {
