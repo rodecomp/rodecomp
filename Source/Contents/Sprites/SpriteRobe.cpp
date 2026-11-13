@@ -66,7 +66,7 @@ void CCharacterRender::RenderRobe(
       float bottomDepth;
       float topDepth;
       this->ProjectCell(
-        layer, layer, scale, cell, x, y, position, shift, bottomDepth, topDepth, *image, reinterpret_cast<SpriteCellQuad&>(quad), bounds, color, 0, 0,
+        layer, layer, scale, cell, x, y, position, shift, bottomDepth, topDepth, *image, quad, bounds, color, 0, 0,
         !drawOnTop
       );
 

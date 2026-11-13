@@ -7,7 +7,6 @@
 
 #include <cstddef>
 
-struct SpriteCellQuad;
 struct SpriteColor;
 struct SpriteFrameCell;
 struct SpriteQuad;

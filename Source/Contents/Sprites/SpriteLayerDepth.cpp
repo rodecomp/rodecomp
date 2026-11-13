@@ -2,6 +2,7 @@
 #include "Client/Session/Session.h"
 #include "Contents/Camera/Camera.h"
 #include "Render/Drawing/SpriteGeometry.h"
+#include "Render/Primitives/SpriteQuad.h"
 #include "Script/LuaScript.h"
 
 constexpr float robeTopLayerThreshold = 320.0f;
@@ -11,24 +12,24 @@ float g_cameraDistance = 300.0f;
 
 // OFFSET: 0x0080DAA0
 // FUNCTION: fn_10103
-void CCharacterRender::OffsetLayerDepth(int layer, SpriteCellQuad& quad, float bottomDepth, float topDepth) const {
+void CCharacterRender::OffsetLayerDepth(int layer, SpriteQuad& quad, float bottomDepth, float topDepth) const {
   switch (layer) {
   case 2:
     if (g_cameraDistance < robeTopLayerThreshold) {
-      quad.bottomDepth = bottomDepth + 0.000027f;
-      quad.topDepth = topDepth + 0.000027f;
+      quad.bottomRhw = bottomDepth + 0.000027f;
+      quad.topRhw = topDepth + 0.000027f;
     } else {
-      quad.bottomDepth = bottomDepth;
-      quad.topDepth = topDepth;
+      quad.bottomRhw = bottomDepth;
+      quad.topRhw = topDepth;
     }
     break;
   case 3:
     if (g_cameraDistance < robeTopLayerThreshold) {
-      quad.bottomDepth = bottomDepth + 0.00004f;
-      quad.topDepth = 0.0001f + topDepth;
+      quad.bottomRhw = bottomDepth + 0.00004f;
+      quad.topRhw = 0.0001f + topDepth;
     } else {
-      quad.bottomDepth = bottomDepth;
-      quad.topDepth = 0.000045f + topDepth;
+      quad.bottomRhw = bottomDepth;
+      quad.topRhw = 0.000045f + topDepth;
     }
     break;
   case 4:
@@ -36,96 +37,96 @@ void CCharacterRender::OffsetLayerDepth(int layer, SpriteCellQuad& quad, float b
       topDepth += 0.00003f;
       bottomDepth += 0.00003f;
     }
-    quad.bottomDepth = bottomDepth;
-    quad.topDepth = topDepth;
+    quad.bottomRhw = bottomDepth;
+    quad.topRhw = topDepth;
     break;
   }
 }
 
 // OFFSET: 0x0080E4D0
 // FUNCTION: fn_10107
-void CCharacterRender::OffsetAccessoryLayerDepth(int layer, SpriteCellQuad& quad, float bottomDepth, float topDepth) const {
+void CCharacterRender::OffsetAccessoryLayerDepth(int layer, SpriteQuad& quad, float bottomDepth, float topDepth) const {
   switch (layer) {
   case 1:
     if (this->upperHeadgear != 1095) {
       if (g_cameraDistance < robeTopLayerThreshold) {
-        quad.bottomDepth = bottomDepth + 0.000025f;
-        quad.topDepth = topDepth + 0.000025f;
+        quad.bottomRhw = bottomDepth + 0.000025f;
+        quad.topRhw = topDepth + 0.000025f;
       } else {
-        quad.bottomDepth = bottomDepth;
-        quad.topDepth = topDepth;
+        quad.bottomRhw = bottomDepth;
+        quad.topRhw = topDepth;
       }
     } else if (g_cameraDistance < 32.0f) {
-      quad.bottomDepth = bottomDepth - 0.000008f;
-      quad.topDepth = topDepth - 0.000008f;
+      quad.bottomRhw = bottomDepth - 0.000008f;
+      quad.topRhw = topDepth - 0.000008f;
     } else {
-      quad.bottomDepth = bottomDepth - 0.0000005f;
-      quad.topDepth = topDepth - 0.0000005f;
+      quad.bottomRhw = bottomDepth - 0.0000005f;
+      quad.topRhw = topDepth - 0.0000005f;
     }
     break;
   case 3:
     if (g_cameraDistance < robeTopLayerThreshold) {
-      quad.bottomDepth = bottomDepth + 0.00004f;
-      quad.topDepth = 0.0001f + topDepth;
+      quad.bottomRhw = bottomDepth + 0.00004f;
+      quad.topRhw = 0.0001f + topDepth;
     } else {
-      quad.bottomDepth = bottomDepth;
-      quad.topDepth = 0.000045f + topDepth;
+      quad.bottomRhw = bottomDepth;
+      quad.topRhw = 0.000045f + topDepth;
     }
     break;
   case 4:
     if (this->upperHeadgear == 1485) {
       if (g_cameraDistance < robeTopLayerThreshold) {
-        quad.bottomDepth = 0.00035f + bottomDepth;
-        quad.topDepth = 0.0006f + topDepth;
+        quad.bottomRhw = 0.00035f + bottomDepth;
+        quad.topRhw = 0.0006f + topDepth;
       } else {
-        quad.bottomDepth = 0.00001f + bottomDepth;
-        quad.topDepth = 0.00015f + topDepth;
+        quad.bottomRhw = 0.00001f + bottomDepth;
+        quad.topRhw = 0.00015f + topDepth;
       }
     } else {
       switch (this->middleHeadgear) {
       case 1318:
         if (g_cameraDistance < robeTopLayerThreshold) {
-          quad.bottomDepth = 0.00025f + bottomDepth;
-          quad.topDepth = 0.0001f + topDepth;
+          quad.bottomRhw = 0.00025f + bottomDepth;
+          quad.topRhw = 0.0001f + topDepth;
         } else {
-          quad.bottomDepth = 0.00005f + bottomDepth;
-          quad.topDepth = 0.00005f + topDepth;
+          quad.bottomRhw = 0.00005f + bottomDepth;
+          quad.topRhw = 0.00005f + topDepth;
         }
         break;
       case 1354:
         if (g_cameraDistance < robeTopLayerThreshold) {
-          quad.bottomDepth = bottomDepth + 0.00009f;
-          quad.topDepth = topDepth - 0.00005f;
+          quad.bottomRhw = bottomDepth + 0.00009f;
+          quad.topRhw = topDepth - 0.00005f;
         } else {
-          quad.bottomDepth = bottomDepth;
-          quad.topDepth = topDepth;
+          quad.bottomRhw = bottomDepth;
+          quad.topRhw = topDepth;
         }
         break;
       case 1363:
         if (g_cameraDistance < robeTopLayerThreshold) {
-          quad.bottomDepth = bottomDepth + 0.000027f + 0.0004f;
-          quad.topDepth = topDepth + 0.000027f + 0.0007f;
+          quad.bottomRhw = bottomDepth + 0.000027f + 0.0004f;
+          quad.topRhw = topDepth + 0.000027f + 0.0007f;
         } else {
-          quad.bottomDepth = bottomDepth + 0.00007f;
-          quad.topDepth = topDepth + 0.00017f;
+          quad.bottomRhw = bottomDepth + 0.00007f;
+          quad.topRhw = topDepth + 0.00017f;
         }
         break;
       case 1582:
         if (g_cameraDistance < robeTopLayerThreshold) {
-          quad.bottomDepth = bottomDepth + 0.0002f;
-          quad.topDepth = topDepth + 0.0002f;
+          quad.bottomRhw = bottomDepth + 0.0002f;
+          quad.topRhw = topDepth + 0.0002f;
         } else {
-          quad.bottomDepth = bottomDepth + 0.00004f;
-          quad.topDepth = topDepth + 0.00006f;
+          quad.bottomRhw = bottomDepth + 0.00004f;
+          quad.topRhw = topDepth + 0.00006f;
         }
         break;
       default:
         if (g_cameraDistance < robeTopLayerThreshold) {
-          quad.bottomDepth = bottomDepth + 0.00003f;
-          quad.topDepth = topDepth + 0.00003f;
+          quad.bottomRhw = bottomDepth + 0.00003f;
+          quad.topRhw = topDepth + 0.00003f;
         } else {
-          quad.bottomDepth = bottomDepth;
-          quad.topDepth = topDepth;
+          quad.bottomRhw = bottomDepth;
+          quad.topRhw = topDepth;
         }
         break;
       }
@@ -138,45 +139,45 @@ void CCharacterRender::OffsetAccessoryLayerDepth(int layer, SpriteCellQuad& quad
     case 1478:
     case 1499:
       if (g_cameraDistance < robeTopLayerThreshold) {
-        quad.bottomDepth = 0.0008f + bottomDepth;
-        quad.topDepth = 0.0008f + topDepth;
+        quad.bottomRhw = 0.0008f + bottomDepth;
+        quad.topRhw = 0.0008f + topDepth;
       } else {
-        quad.bottomDepth = 0.00019f + bottomDepth;
-        quad.topDepth = 0.00019f + topDepth;
+        quad.bottomRhw = 0.00019f + bottomDepth;
+        quad.topRhw = 0.00019f + topDepth;
       }
       break;
     case 1235:
       if (g_cameraDistance < robeTopLayerThreshold) {
-        quad.bottomDepth = 0.0008f + bottomDepth;
-        quad.topDepth = 0.0008f + topDepth;
+        quad.bottomRhw = 0.0008f + bottomDepth;
+        quad.topRhw = 0.0008f + topDepth;
       } else {
-        quad.bottomDepth = 0.00013f + bottomDepth;
-        quad.topDepth = 0.00013f + topDepth;
+        quad.bottomRhw = 0.00013f + bottomDepth;
+        quad.topRhw = 0.00013f + topDepth;
       }
       break;
     case 1488:
       if (g_cameraDistance < robeTopLayerThreshold) {
-        quad.bottomDepth = bottomDepth + 0.0008f;
-        quad.topDepth = topDepth + 0.0008f;
+        quad.bottomRhw = bottomDepth + 0.0008f;
+        quad.topRhw = topDepth + 0.0008f;
       } else {
-        quad.bottomDepth = bottomDepth + 0.00019f;
-        quad.topDepth = topDepth + 0.00019f;
+        quad.bottomRhw = bottomDepth + 0.00019f;
+        quad.topRhw = topDepth + 0.00019f;
       }
       break;
     default:
       if (g_cameraDistance < robeTopLayerThreshold) {
-        quad.bottomDepth = bottomDepth + 0.000027f;
-        quad.topDepth = topDepth + 0.000027f;
+        quad.bottomRhw = bottomDepth + 0.000027f;
+        quad.topRhw = topDepth + 0.000027f;
       } else {
-        quad.bottomDepth = bottomDepth;
-        quad.topDepth = topDepth;
+        quad.bottomRhw = bottomDepth;
+        quad.topRhw = topDepth;
       }
       break;
     }
     break;
   default:
-    quad.bottomDepth = bottomDepth;
-    quad.topDepth = topDepth;
+    quad.bottomRhw = bottomDepth;
+    quad.topRhw = topDepth;
     break;
   }
 
@@ -194,7 +195,7 @@ void CCharacterRender::OffsetAccessoryLayerDepth(int layer, SpriteCellQuad& quad
     }
 
     const double offset = g_cameraDistance < robeTopLayerThreshold ? nearOffset : farOffset;
-    quad.bottomDepth = static_cast<float>(static_cast<double>(bottomDepth) + offset);
-    quad.topDepth = static_cast<float>(static_cast<double>(topDepth) + offset);
+    quad.bottomRhw = static_cast<float>(static_cast<double>(bottomDepth) + offset);
+    quad.topRhw = static_cast<float>(static_cast<double>(topDepth) + offset);
   }
 }

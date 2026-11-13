@@ -12,7 +12,7 @@
 class CActRes;
 struct CharacterRenderDrawItem;
 struct RenderPrimitive;
-struct SpriteCellQuad;
+struct SpriteQuad;
 struct SpriteColor;
 struct SpriteFrameCell;
 struct SpriteRleImage;
@@ -36,10 +36,10 @@ public:
   bool SetRobe(int robe);
   bool ProjectCell(
     int unused, int layer, float scale, const SpriteFrameCell& cell, float x, float y, const float* position, float shift, float& bottomDepth,
-    float& topDepth, const SpriteRleImage& image, SpriteCellQuad& quad, tagRECT& bounds, SpriteColor& color, int offsetX, int offsetY, int flags
+    float& topDepth, const SpriteRleImage& image, SpriteQuad& quad, tagRECT& bounds, SpriteColor& color, int offsetX, int offsetY, int flags
   ) const;
-  void OffsetLayerDepth(int layer, SpriteCellQuad& quad, float bottomDepth, float topDepth) const;
-  void OffsetAccessoryLayerDepth(int layer, SpriteCellQuad& quad, float bottomDepth, float topDepth) const;
+  void OffsetLayerDepth(int layer, SpriteQuad& quad, float bottomDepth, float topDepth) const;
+  void OffsetAccessoryLayerDepth(int layer, SpriteQuad& quad, float bottomDepth, float topDepth) const;
   RenderPrimitive* DrawShadow(const float* matrix, float scale) const;
 
   /* 0004 */ vector3d position;

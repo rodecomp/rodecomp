@@ -312,7 +312,7 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
     tagRECT rect;
     if (!this->ProjectCell(
           index, layer, distanceScale, *cell, screenX, screenY, position, 0.0f, bottomDepth, topDepth, *image,
-          reinterpret_cast<SpriteCellQuad&>(quad), rect, color, offsetX, offsetY, 0
+          quad, rect, color, offsetX, offsetY, 0
         )) {
       continue;
     }
@@ -324,10 +324,10 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
       case 3:
       case 4:
       case 8:
-        this->OffsetLayerDepth(type, reinterpret_cast<SpriteCellQuad&>(quad), bottomDepth, topDepth);
+        this->OffsetLayerDepth(type, quad, bottomDepth, topDepth);
         break;
       default:
-        this->OffsetAccessoryLayerDepth(type, reinterpret_cast<SpriteCellQuad&>(quad), bottomDepth, topDepth);
+        this->OffsetAccessoryLayerDepth(type, quad, bottomDepth, topDepth);
         break;
     }
 
