@@ -4684,7 +4684,7 @@ void SetPlayerName(std::uint32_t id, std::string name) {
 
 // OFFSET: 0x00CDD350
 // FUNCTION: fn_21316
-void CGameMode::PlaceWindowAtActor(UIWindow* window, CGameActor* actor) {
+void CGameMode::PlaceWindowAtActor(UIWindow* window, CRenderObject* actor) {
   const int width = window->geometry.width;
   const int height = window->geometry.height;
   const bool raised = g_serviceOptions.Get(0x5C) != 0;
@@ -6560,15 +6560,15 @@ void CGameMode::UpdateBalloons() {
     if (this->isNameBalloonPlaced == 0) {
       this->isNameBalloonPlaced = 1;
       if (this->balloonActorId == g_session.m_aid) {
-        this->PlaceWindowAtActor(this->nameBalloon, reinterpret_cast<CGameActor*>(this->scene->player));
+        this->PlaceWindowAtActor(this->nameBalloon, this->scene->player);
       } else {
         CRenderObject* actor = this->scene->GetGameActorByAID(this->balloonActorId);
         if (actor) {
-          this->PlaceWindowAtActor(this->nameBalloon, reinterpret_cast<CGameActor*>(actor));
+          this->PlaceWindowAtActor(this->nameBalloon, actor);
         } else {
           CItem* item = this->scene->GetItemByAID(this->balloonActorId);
           if (item) {
-            this->PlaceWindowAtActor(this->nameBalloon, reinterpret_cast<CGameActor*>(item));
+            this->PlaceWindowAtActor(this->nameBalloon, item);
           }
         }
       }
@@ -6582,15 +6582,15 @@ void CGameMode::UpdateBalloons() {
     if (this->isItemNameBalloonPlaced == 0) {
       this->isItemNameBalloonPlaced = 1;
       if (this->balloonActorId == g_session.m_aid) {
-        this->PlaceWindowAtActor(this->itemNameBalloon, reinterpret_cast<CGameActor*>(this->scene->player));
+        this->PlaceWindowAtActor(this->itemNameBalloon, this->scene->player);
       } else {
         CRenderObject* actor = this->scene->GetGameActorByAID(this->balloonActorId);
         if (actor) {
-          this->PlaceWindowAtActor(this->itemNameBalloon, reinterpret_cast<CGameActor*>(actor));
+          this->PlaceWindowAtActor(this->itemNameBalloon, actor);
         } else {
           CItem* item = this->scene->GetItemByAID(this->balloonActorId);
           if (item) {
-            this->PlaceWindowAtActor(this->itemNameBalloon, reinterpret_cast<CGameActor*>(item));
+            this->PlaceWindowAtActor(this->itemNameBalloon, item);
           }
         }
       }
@@ -8110,7 +8110,7 @@ void CGameMode::ShowActorNameBalloon(std::uint32_t id) {
     this->nameBalloon->m_outlineColor = 0;
     this->nameBalloonWidth = this->nameBalloon->geometry.width;
     this->nameBalloonHeight = this->nameBalloon->geometry.height;
-    this->PlaceWindowAtActor(this->nameBalloon, reinterpret_cast<CGameActor*>(item));
+    this->PlaceWindowAtActor(this->nameBalloon, item);
   }
 }
 

@@ -625,7 +625,7 @@ public:
   void ProcessIncomingPackets();
   void TargetActorByAid(int aid);
   void OnChangeState(int value) override;
-  void PlaceWindowAtActor(UIWindow* window, CGameActor* actor);
+  void PlaceWindowAtActor(UIWindow* window, CRenderObject* actor);
   void ReceiveSummonHpInit(const unsigned char* buffer);
   void ReceiveSummonHpUpdate(const unsigned char* buffer);
   void ReceiveGameOptionResult(int command, int result, int enabled);
