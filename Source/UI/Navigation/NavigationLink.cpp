@@ -1205,7 +1205,7 @@ void CCreateLineInfo::NewLine() {
 // OFFSET: 0x0083AB90
 // FUNCTION: fn_10466
 void CCreateLineInfo::AddSegment(int type) {
-  LineTextSegment segment(std::string(), LineTextStyle{this->m_color, this->m_fontHeight, this->m_bold > 0, this->m_italic > 0});
+  LineTextSegment segment(std::string(""), LineTextStyle{this->m_color, this->m_fontHeight, this->m_bold > 0, this->m_italic > 0});
   segment.type = type;
   this->m_segments.push_back(segment);
   this->m_newSegment = false;
