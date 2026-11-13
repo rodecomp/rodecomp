@@ -274,14 +274,14 @@ void CAccountLinkedUserDataMgr::ExportUserHotkey(Json::Value& data) {
     case 0:
       skillBar1.append(value);
       break;
+    case 3:
+      skillBar2.append(value);
+      break;
     case 1:
       interfaceTab.append(value);
       break;
     case 2:
       emotionTab.append(value);
-      break;
-    case 3:
-      skillBar2.append(value);
       break;
     }
   }
