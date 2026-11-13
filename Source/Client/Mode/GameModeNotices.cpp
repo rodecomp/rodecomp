@@ -3707,9 +3707,7 @@ void CGameMode::ReceiveNotifyEffect(const unsigned char* packet) {
 
   int effectId = *reinterpret_cast<const int*>(packet + 6);
   if (effectId == EF_DUSTSTORM) {
-    CEmitterEffect* emitter = static_cast<CEmitterEffect*>(g_effectMgr->Spawn(
-      0, 0x3CE, actor->render.position.x, actor->render.position.y, actor->render.position.z, 0, -1, 0, 0
-    ));
+    CEmitterEffect* emitter = static_cast<CEmitterEffect*>(g_effectMgr->Spawn(0, 0x3CE, actor->render.position, 0, -1, 0, 0));
     emitter->velocityMin.x = -2.0f;
     emitter->velocityMin.y = 2.0f;
     emitter->velocityMin.z = -2.0f;
@@ -3756,9 +3754,7 @@ void CGameMode::ReceiveNotifyEffect(const unsigned char* packet) {
   }
 
   CGameActor* gameActor = static_cast<CGameActor*>(actor);
-  if (!g_effectMgr->Spawn(
-        actor->render.accountId, effectId, actor->render.position.x, actor->render.position.y, actor->render.position.z, 0, -1, 0, 0
-      )) {
+  if (!g_effectMgr->Spawn(actor->render.accountId, effectId, actor->render.position, 0, -1, 0, 0)) {
     gameActor->LaunchEffect(*reinterpret_cast<const int*>(packet + 6), vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   }
 

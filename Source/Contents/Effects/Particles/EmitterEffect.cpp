@@ -262,9 +262,3 @@ void CEmitterEffect::CheckRange() {
     this->outsideRange = 1;
   }
 }
-
-// OFFSET: 0x00B7F9C0
-// FUNCTION: fn_19246
-void CEmitterEffect::SetTexture(std::string name) {
-  this->texture = name;
-}

@@ -27,7 +27,11 @@ public:
 
   void SetCount(int value);
   void SetParticleSpeed(float value);
-  void SetTexture(std::string name);
+  // OFFSET: 0x00B7F9C0
+  // FUNCTION: fn_19246
+  void SetTexture(std::string name) {
+    this->texture = name;
+  }
 
   /* 00CC */ vector3d velocityMin;
   /* 00D8 */ vector3d velocityMax;
