@@ -36,7 +36,7 @@ void CSphereWind2Effect::Open() {
       const int speed = std::max(rand() % 4, 0) + 3;
 
       for (int part = 0; part < 21; ++part) {
-        CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+        CParticle* particle = CreateParticle(&this->positionVector, 5);
         if (!particle) {
           continue;
         }

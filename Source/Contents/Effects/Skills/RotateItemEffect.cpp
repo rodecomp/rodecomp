@@ -30,7 +30,7 @@ void CRotateItemEffect::Close() {
 // FUNCTION: fn_19149
 void CRotateItemEffect::Open() {
   for (int index = 0; index < 4; ++index) {
-    CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+    CParticle* particle = CreateParticle(&this->positionVector, 5);
     if (!particle) {
       continue;
     }

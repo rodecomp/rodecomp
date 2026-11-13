@@ -32,7 +32,7 @@ void CRotateBgEffect::Open() {
     const int startRoll = rand() % 360;
     const int start = startRoll >= 0 ? startRoll : 0;
     for (int index = 0; index < 10; ++index) {
-      CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+      CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (particle) {
         particle->effectId = this->id;
         particle->columnIndex = index;
@@ -57,7 +57,7 @@ void CRotateBgEffect::Open() {
     const int spanRoll = rand() % 21;
     const int span = (spanRoll >= 0 ? spanRoll : 0) + 80;
     for (int index = 0; index < 21; ++index) {
-      CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+      CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (particle) {
         particle->effectId = this->id;
         particle->columnIndex = index;

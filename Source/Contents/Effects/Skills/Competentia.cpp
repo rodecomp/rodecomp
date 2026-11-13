@@ -51,7 +51,7 @@ void CCompetentia::Close() {
 // FUNCTION: fn_07080
 void CCompetentia::Open() {
   for (__int64 i = 0; i < 10; ++i) {
-    vector3d pos = *reinterpret_cast<const vector3d*>(this->position);
+    vector3d pos = this->positionVector;
     const vector2d point = RandomDiscPoint(pos.x, pos.z, 50);
     pos.x = point.x;
     pos.z = point.y;

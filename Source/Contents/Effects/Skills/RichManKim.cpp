@@ -19,7 +19,7 @@ void CRichManKim::Close() {
 // OFFSET: 0x0070B1A0
 // FUNCTION: fn_07115
 void CRichManKim::Open() {
-  CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+  CParticle* particle = CreateParticle(&this->positionVector, 5);
   if (!particle) {
     return;
   }

@@ -33,7 +33,7 @@ void CShadowExceedNew::Open() {
   this->retained = 1;
   this->AddEvent(0, "effect\\SHC_SHADOW_EXCEED.wav", 0, 0);
 
-  CEZ2STRParticle* emitter = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+  CEZ2STRParticle* emitter = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
   if (emitter) {
     emitter->Load(std::string("SHADOW_CROSS\\SHC_SHADOW_EXCEED\\shadow_exceed\\shadow_exceed_f_shadow_bottom.str"));
     emitter->offsetX = 0.0f;
@@ -43,7 +43,7 @@ void CShadowExceedNew::Open() {
     this->frontEmitters.push_back(emitter);
   }
 
-  emitter = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+  emitter = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
   if (emitter) {
     emitter->Load(std::string("SHADOW_CROSS\\SHC_SHADOW_EXCEED\\shadow_exceed\\shadow_exceed_f_shadow.str"));
     emitter->offsetX = 0.0f;
@@ -53,7 +53,7 @@ void CShadowExceedNew::Open() {
     this->frontEmitters.push_back(emitter);
   }
 
-  emitter = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+  emitter = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
   if (emitter) {
     emitter->Load(std::string("SHADOW_CROSS\\SHC_SHADOW_EXCEED\\shadow_exceed\\shadow_exceed_b_shadow_bottom.str"));
     emitter->offsetX = 0.0f;
@@ -64,7 +64,7 @@ void CShadowExceedNew::Open() {
     this->backEmitters.push_back(emitter);
   }
 
-  emitter = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+  emitter = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
   if (emitter) {
     emitter->Load(std::string("SHADOW_CROSS\\SHC_SHADOW_EXCEED\\shadow_exceed\\shadow_exceed_b_shadow.str"));
     emitter->offsetX = 0.0f;

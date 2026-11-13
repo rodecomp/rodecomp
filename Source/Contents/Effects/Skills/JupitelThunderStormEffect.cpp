@@ -60,7 +60,7 @@ void CJupitelThunderStormEffect::Open() {
   this->step.z = scale * this->step.z * speed;
 
   const float angle = ScreenAngle(this->position, this->sourcePosition, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values);
-  CEZ2STRParticle* ball = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+  CEZ2STRParticle* ball = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
   this->particle = ball;
   if (ball) {
     ball->Load(std::string("HYPER_NOVICE\\HN_JUPITEL_THUNDER_STORM\\jupitel_thunder_storm_ball\\jupitel_thunder_storm_ball.str"));
@@ -72,7 +72,7 @@ void CJupitelThunderStormEffect::Open() {
   const int rings = (this->effectLevel - 1) / 4;
   const int lastDelay = ((this->effectLevel - 1) / 2 + 6) * 150;
   for (int delay = 80; delay <= lastDelay; delay += 80, ++index) {
-    CEZ2STRParticle* bolt = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+    CEZ2STRParticle* bolt = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
     if (!bolt) {
       continue;
     }
@@ -129,7 +129,7 @@ void CJupitelThunderStormEffect::OnProcess() {
         position.y = particle->position.y + this->step.y;
         position.z = particle->position.z + this->step.z;
       } else {
-        position = *reinterpret_cast<const vector3d*>(this->sourcePosition);
+        position = this->sourcePositionVector;
       }
       particle->position.x = position.x;
       particle->position.y = position.y;

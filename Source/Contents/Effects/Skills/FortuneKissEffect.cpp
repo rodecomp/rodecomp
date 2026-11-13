@@ -20,7 +20,7 @@ void CFortuneKiss::Close() {
 // OFFSET: 0x00701560
 // FUNCTION: fn_06995
 void CFortuneKiss::Open() {
-  CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+  CParticle* particle = CreateParticle(&this->positionVector, 5);
   if (!particle) {
     return;
   }

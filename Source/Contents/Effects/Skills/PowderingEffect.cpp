@@ -54,7 +54,7 @@ void CPowderingEffect::Open() {
   }
 
   for (int i = 0; i < this->particleGridSize * this->particleGridSize; ++i) {
-    CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+    CParticle* particle = CreateParticle(&this->positionVector, 5);
     if (!particle) {
       continue;
     }
@@ -80,7 +80,7 @@ void CPowderingEffect::Open() {
 
   for (int i = 0; i < this->particleGridSize * this->particleGridSize; ++i) {
     CSpriteParticle* particle = static_cast<CSpriteParticle*>(
-      CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 1)
+      CreateSpriteParticle(&this->positionVector, 1)
     );
     if (!particle) {
       continue;

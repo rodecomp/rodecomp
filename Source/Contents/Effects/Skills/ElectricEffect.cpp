@@ -22,7 +22,7 @@ void CElectricEffect::AddBolt(int tilt) {
 
     for (int segment = 0; segment < 20; ++segment) {
       for (int strand = 0; strand < 4; ++strand) {
-        CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+        CParticle* particle = CreateParticle(&this->positionVector, 5);
         if (!particle) {
           continue;
         }

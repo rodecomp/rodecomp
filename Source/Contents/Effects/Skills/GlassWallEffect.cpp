@@ -19,7 +19,7 @@ CGlassWall::~CGlassWall() {
 // FUNCTION: fn_18890
 void CGlassWall::AddPanel(float angle, float scale, vector3d offset) {
   const int startFrame = this->effectLifetime - 6;
-  CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 1);
+  CParticle* particle = CreateParticle(&this->positionVector, 1);
   particle->scale = scale;
   particle->speedParameter = 0.25f;
   particle->alpha = 0;

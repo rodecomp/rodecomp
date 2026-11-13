@@ -30,12 +30,12 @@ void CClimaxEffect::Close() {
 void CClimaxEffect::Open() {
   this->retained = 1;
 
-  CParticle* particle = CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+  CParticle* particle = CreateEZ2STRParticle(&this->positionVector, 5);
   static_cast<CEZ2STRParticle*>(particle)->Load("climax\\climax\\climax.str");
   static_cast<CEZ2STRParticle*>(particle)->m_loop = true;
   this->particles[0] = particle;
 
-  CParticle* bottom = CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13);
+  CParticle* bottom = CreateEZ2STRParticle(&this->positionVector, 13);
   switch (this->effectLevel) {
     case 1:
       static_cast<CEZ2STRParticle*>(bottom)->Load("climax\\climax_bottom\\climax_bottom_1.str");

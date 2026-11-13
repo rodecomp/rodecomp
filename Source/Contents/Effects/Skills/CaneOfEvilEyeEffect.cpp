@@ -32,7 +32,7 @@ CCaneOfEvilEyeEffect::CCaneOfEvilEyeEffect() : CEffect(-1) {
 // OFFSET: 0x006F8900
 // FUNCTION: fn_06872
 CEZ2STRParticle* CCaneOfEvilEyeEffect::CreateEye(int type, const float* position) {
-  CEZ2STRParticle* eye = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+  CEZ2STRParticle* eye = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
   if (!eye) {
     return nullptr;
   }
@@ -62,7 +62,7 @@ CEZ2STRParticle* CCaneOfEvilEyeEffect::CreateEye(int type, const float* position
 // OFFSET: 0x006F8B40
 // FUNCTION: fn_06873
 CEZ2STRParticle* CCaneOfEvilEyeEffect::CreateLight(int type, const float* position) {
-  CEZ2STRParticle* light = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+  CEZ2STRParticle* light = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
   if (!light) {
     return nullptr;
   }

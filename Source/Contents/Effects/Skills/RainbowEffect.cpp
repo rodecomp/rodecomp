@@ -27,7 +27,7 @@ void CRainbowEffect::Open() {
   const int angle = (360 - static_cast<int>(mode->camera->camera.yaw)) % 360;
   for (int row = 0; row < 7; ++row) {
     for (int column = 0; column < 21; ++column) {
-      CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+      CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (particle) {
         particle->effectId = this->id;
         particle->columnIndex = column;

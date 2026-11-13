@@ -80,7 +80,7 @@ void CCellRangeEffect::Open() {
   const int range = owner->range;
   for (int row = -range; row <= range; ++row) {
     for (int column = -range; column <= range; ++column) {
-      CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+      CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (particle) {
         particle->effectId = this->id;
         particle->columnIndex = column;

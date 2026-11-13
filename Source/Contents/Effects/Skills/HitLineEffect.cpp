@@ -38,7 +38,7 @@ void CHitLineEffect::Open() {
       const int angleRoll = rand() % 360;
       const int angle = angleRoll >= 0 ? angleRoll : 0;
       for (int segment = 0; segment < 20; ++segment) {
-        CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+        CParticle* particle = CreateParticle(&this->positionVector, 5);
         if (particle) {
           particle->SetTexture("effect\\white02.bmp");
           const int id = this->id;

@@ -19,7 +19,7 @@ CTetraBallEffect::CTetraBallEffect() : CEffect(-1) {
 // OFFSET: 0x0072E7D0
 // FUNCTION: fn_07511
 void CTetraBallEffect::AddBall(int id, int index) {
-  CEZ2STRParticle* ball = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+  CEZ2STRParticle* ball = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
   ball->m_loop = true;
 
   switch (id) {

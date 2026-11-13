@@ -128,8 +128,8 @@ __forceinline EffectPrimitiveState::EffectPrimitiveState(RenderObjectState& rend
     }
   }
 
-  std::memcpy(this->transform, g_identityMatrix, sizeof(g_identityMatrix));
-  std::memcpy(this->rotTransform, g_identityMatrix, sizeof(g_identityMatrix));
+  std::memcpy(&this->transform, g_identityMatrix, sizeof(g_identityMatrix));
+  std::memcpy(&this->rotTransform, g_identityMatrix, sizeof(g_identityMatrix));
   std::memset(this->slots, 0, sizeof(this->slots));
 }
 

@@ -56,7 +56,7 @@ void CMeteorEffect::Open() {
       const int range = static_cast<int>(count) * 5 + 1;
 
       for (long long i = 0; i < count; ++i) {
-        vector3d pos = *reinterpret_cast<const vector3d*>(this->position);
+        vector3d pos = this->positionVector;
         pos.x = static_cast<float>(RandomIndex(range)) - halfSpan + pos.x;
         pos.z = static_cast<float>(RandomIndex(range)) - halfSpan + pos.z;
 
@@ -87,7 +87,7 @@ void CMeteorEffect::Open() {
     case 1106:
     case 1112: {
       CSpriteParticle* particle = static_cast<CSpriteParticle*>(
-        CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 1)
+        CreateSpriteParticle(&this->positionVector, 1)
       );
       if (!particle) {
         return;

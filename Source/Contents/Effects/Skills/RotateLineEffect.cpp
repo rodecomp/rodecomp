@@ -31,7 +31,7 @@ void CRotateLineEffect::Open() {
     const int tiltRoll = rand() % 21;
     const int tilt = (tiltRoll >= 0 ? tiltRoll : 0) + 80;
     for (int i = 0; i < 21; ++i) {
-      CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+      CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (!particle) {
         continue;
       }

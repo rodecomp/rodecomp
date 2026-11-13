@@ -31,7 +31,7 @@ void CWindEffect::Init() {
     const int maxAlpha = this->maxAlpha;
     const int alpha = maxAlpha == 0 ? 0 : std::ranges::max(rand() % maxAlpha, 0);
     for (int segment = 0; segment < 21; ++segment) {
-      CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+      CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (!particle) {
         continue;
       }

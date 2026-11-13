@@ -28,7 +28,7 @@ void CRedLineEffect::CreateLines(int layer) {
     const float directionZ = g_sinTable[direction] * 5.0f;
 
     for (int segment = 0; segment <= 21; ++segment) {
-      CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+      CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (particle) {
         particle->SetTexture("effect\\ring_red.tga");
         particle->rowIndex = row;

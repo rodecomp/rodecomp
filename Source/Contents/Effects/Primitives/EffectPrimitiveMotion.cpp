@@ -196,14 +196,14 @@ bool CEffectPrim::MoveEffectPrimitive() {
     this->state.speed3d.x = 0;
     this->state.speed3d.y = 0;
     this->state.speed3d.z = 0;
-    Forward(this->state.speed3d, this->state.speed, this->state.transform);
+    Forward(this->state.speed3d, this->state.speed, this->state.transform.values);
     this->state.deltaPos.x = this->state.speed3d.x + this->state.deltaPos.x;
     this->state.deltaPos.z = this->state.speed3d.z + this->state.deltaPos.z;
     this->state.deltaPos.y = this->state.speed3d.y + this->state.deltaPos.y;
   } else if ((this->state.pattern & 0x100u) != 0) {
     this->state.deltaPos += this->state.speed3d;
   } else {
-    Forward(this->state.speed3d, this->state.speed, this->state.transform);
+    Forward(this->state.speed3d, this->state.speed, this->state.transform.values);
     this->state.deltaPos.x = this->state.speed3d.x + this->state.deltaPos.x;
     this->state.deltaPos.z = this->state.speed3d.z + this->state.deltaPos.z;
     this->state.deltaPos.y = this->state.speed3d.y + this->state.deltaPos.y;
@@ -231,7 +231,7 @@ bool CEffectPrim::MoveEffectPrimitive() {
     this->state.heightSpeed = 0;
   }
 
-  struct matrix& matrix = *reinterpret_cast<struct matrix*>(this->state.rotTransform);
+  struct matrix& matrix = this->state.rotTransform;
 
   if ((this->state.pattern & 0x200u) != 0) {
     matrix.MakeZRotation(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch);
@@ -450,11 +450,11 @@ bool CEffectPrim::Prim3DCylinder() {
   this->state.longSpeed = this->state.longAccel + this->state.longSpeed;
   this->state.longitude = this->state.longSpeed + this->state.longitude;
 
-  struct matrix& matrix = *reinterpret_cast<struct matrix*>(this->state.transform);
+  struct matrix& matrix = this->state.transform;
   matrix.MakeXRotation(GetRadian(static_cast<int>(this->state.latitude)));
   matrix.AppendYRotation(GetRadian(static_cast<int>(this->state.longitude)));
 
-  Upward(this->state.speed3d, this->state.speed, this->state.transform);
+  Upward(this->state.speed3d, this->state.speed, this->state.transform.values);
   this->state.deltaPos.y = this->state.speed3d.y + this->state.deltaPos.y;
   this->state.deltaPos.x = this->state.speed3d.x + this->state.deltaPos.x;
   this->state.deltaPos.z = this->state.speed3d.z + this->state.deltaPos.z;
@@ -503,11 +503,11 @@ bool CEffectPrim::Prim3DCylinderHalf() {
   this->state.innerSpeed = this->state.innerAccel + this->state.innerSpeed;
   this->state.heightSpeed = this->state.heightAccel + this->state.heightSpeed;
 
-  struct matrix& matrix = *reinterpret_cast<struct matrix*>(this->state.transform);
+  struct matrix& matrix = this->state.transform;
   matrix.MakeXRotation(GetRadian(static_cast<int>(this->state.latitude)));
   matrix.AppendYRotation(GetRadian(static_cast<int>(this->state.longitude)));
 
-  Upward(this->state.speed3d, this->state.speed, this->state.transform);
+  Upward(this->state.speed3d, this->state.speed, this->state.transform.values);
   this->state.deltaPos.x = this->state.speed3d.x + this->state.deltaPos.x;
   this->state.deltaPos.y = this->state.speed3d.y + this->state.deltaPos.y;
   this->state.deltaPos.z = this->state.speed3d.z + this->state.deltaPos.z;
@@ -557,7 +557,7 @@ __declspec(noinline) void CEffectPrim::AdvanceEffectPrimitive() {
   }
 
   this->state.speed = this->state.accel + this->state.speed;
-  Forward(this->state.speed3d, this->state.speed, this->state.transform);
+  Forward(this->state.speed3d, this->state.speed, this->state.transform.values);
   this->state.deltaPos.x = this->state.speed3d.x + this->state.deltaPos.x;
   this->state.deltaPos.y = this->state.speed3d.y + this->state.deltaPos.y;
   this->state.deltaPos.z = this->state.speed3d.z + this->state.deltaPos.z;
@@ -841,11 +841,11 @@ void CEffectPrim::Prim3DCircle() {
   this->state.radius = side;
   this->state.innerSize = vertical;
 
-  reinterpret_cast<struct matrix*>(this->state.transform)->MakeXRotation(GetRadian(static_cast<int>(this->state.latitude)));
-  reinterpret_cast<struct matrix*>(this->state.transform)->AppendYRotation(GetRadian(static_cast<int>(this->state.longitude)));
+  this->state.transform.MakeXRotation(GetRadian(static_cast<int>(this->state.latitude)));
+  this->state.transform.AppendYRotation(GetRadian(static_cast<int>(this->state.longitude)));
 
   const float distance = this->state.speed;
-  Forward(this->state.speed3d, distance, this->state.transform);
+  Forward(this->state.speed3d, distance, this->state.transform.values);
   const float offsetX = this->state.speed3d.x + this->state.deltaPos.x;
   const float offsetY = this->state.speed3d.y + this->state.deltaPos.y;
   const float offsetZ = this->state.speed3d.z + this->state.deltaPos.z;
@@ -2405,7 +2405,7 @@ bool CEffectPrim::Prim3DParticle() {
     this->state.size = lateral + this->state.size;
   } else if ((flags & 1u) != 0 || frame > this->state.fadeInCnt) {
     const float side = lateral + this->state.size;
-    Forward(this->state.speed3d, vertical, this->state.transform);
+    Forward(this->state.speed3d, vertical, this->state.transform.values);
     this->state.deltaPos.x = this->state.speed3d.x + this->state.deltaPos.x;
     this->state.deltaPos.y = this->state.speed3d.y + this->state.deltaPos.y;
     this->state.deltaPos.z = this->state.speed3d.z + this->state.deltaPos.z;
@@ -2438,8 +2438,8 @@ bool CEffectPrim::Prim3DParticle() {
     this->state.speed = static_cast<float>(ClampedRandom(35) + 15) / 100.0f;
     this->state.longitude = static_cast<float>(ClampedRandom(80)) + (this->state.longitude - 40.0f);
     this->state.latitude = static_cast<float>(ClampedRandom(80)) + (this->state.latitude - 40.0f);
-    reinterpret_cast<struct matrix*>(this->state.transform)->MakeYRotation(GetRadian(static_cast<int>(this->state.longitude)));
-    reinterpret_cast<struct matrix*>(this->state.transform)->AppendXRotation(GetRadian(static_cast<int>(this->state.latitude)));
+    this->state.transform.MakeYRotation(GetRadian(static_cast<int>(this->state.longitude)));
+    this->state.transform.AppendXRotation(GetRadian(static_cast<int>(this->state.latitude)));
     flags = this->state.pattern;
     this->state.chCnt = ClampedRandom(10) + 5;
   }
@@ -2447,8 +2447,8 @@ bool CEffectPrim::Prim3DParticle() {
   if ((flags & 8u) != 0 && this->state.stateCnt % static_cast<int>(this->state.chCnt) == 0) {
     this->state.longitude = static_cast<float>(ClampedRandom(10)) + (this->state.longitude - 5.0f);
     this->state.latitude = static_cast<float>(ClampedRandom(10)) + (this->state.latitude - 5.0f);
-    reinterpret_cast<struct matrix*>(this->state.transform)->MakeXRotation(GetRadian(static_cast<int>(this->state.latitude)));
-    reinterpret_cast<struct matrix*>(this->state.transform)->AppendYRotation(GetRadian(static_cast<int>(this->state.longitude)));
+    this->state.transform.MakeXRotation(GetRadian(static_cast<int>(this->state.latitude)));
+    this->state.transform.AppendYRotation(GetRadian(static_cast<int>(this->state.longitude)));
     this->state.chCnt = ClampedRandom(15) + 5;
   }
 
@@ -2484,7 +2484,7 @@ bool CEffectPrim::Prim3DParticleGravity() {
 
   const float speed = this->state.accel + this->state.speed;
   this->state.speed = speed < 0.0f ? 0.0f : speed;
-  Forward(this->state.speed3d, this->state.speed, this->state.transform);
+  Forward(this->state.speed3d, this->state.speed, this->state.transform.values);
 
   this->state.deltaPos.x = this->state.speed3d.x + this->state.deltaPos.x;
   this->state.deltaPos.y = this->state.deltaPos.y + this->state.gravSpeed;
@@ -2582,14 +2582,14 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
 
   if ((particle.pattern & 0x400u) != 0) {
     particle.speed3d = {};
-    Forward(particle.speed3d, particle.speed, particle.transform);
+    Forward(particle.speed3d, particle.speed, particle.transform.values);
     particle.deltaPos.x = particle.speed3d.x + particle.deltaPos.x;
     particle.deltaPos.y = particle.speed3d.y + particle.deltaPos.y;
     particle.deltaPos.z = particle.speed3d.z + particle.deltaPos.z;
   } else if ((particle.pattern & 0x100u) != 0) {
     particle.deltaPos += particle.speed3d;
   } else {
-    Forward(particle.speed3d, particle.speed, particle.transform);
+    Forward(particle.speed3d, particle.speed, particle.transform.values);
     particle.deltaPos.x = particle.speed3d.x + particle.deltaPos.x;
     particle.deltaPos.y = particle.speed3d.y + particle.deltaPos.y;
     particle.deltaPos.z = particle.speed3d.z + particle.deltaPos.z;
@@ -2617,7 +2617,7 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
     particle.heightSpeed = 0;
   }
 
-  auto& rotation = *reinterpret_cast<struct matrix*>(particle.rotTransform);
+  auto& rotation = particle.rotTransform;
   float angle;
 
   if ((particle.pattern & 0x200u) != 0) {
@@ -2760,7 +2760,7 @@ bool CEffectPrim::Prim3DParticleNoMaster() {
     this->state.size = lateral + this->state.size;
   } else if ((flags & 1u) != 0 || frame > this->state.fadeInCnt) {
     const float side = lateral + this->state.size;
-    Forward(this->state.speed3d, vertical, this->state.transform);
+    Forward(this->state.speed3d, vertical, this->state.transform.values);
     this->state.deltaPos.x = this->state.speed3d.x + this->state.deltaPos.x;
     this->state.deltaPos.y = this->state.speed3d.y + this->state.deltaPos.y;
     this->state.deltaPos.z = this->state.speed3d.z + this->state.deltaPos.z;
@@ -2793,8 +2793,8 @@ bool CEffectPrim::Prim3DParticleNoMaster() {
     this->state.speed = static_cast<float>(ClampedRandom(35) + 15) / 100.0f;
     this->state.longitude = static_cast<float>(ClampedRandom(80)) + (this->state.longitude - 40.0f);
     this->state.latitude = static_cast<float>(ClampedRandom(80)) + (this->state.latitude - 40.0f);
-    reinterpret_cast<struct matrix*>(this->state.transform)->MakeYRotation(GetRadian(static_cast<int>(this->state.longitude)));
-    reinterpret_cast<struct matrix*>(this->state.transform)->AppendXRotation(GetRadian(static_cast<int>(this->state.latitude)));
+    this->state.transform.MakeYRotation(GetRadian(static_cast<int>(this->state.longitude)));
+    this->state.transform.AppendXRotation(GetRadian(static_cast<int>(this->state.latitude)));
     this->state.chCnt = ClampedRandom(10) + 5;
     flags = this->state.pattern;
   }
@@ -2802,8 +2802,8 @@ bool CEffectPrim::Prim3DParticleNoMaster() {
   if ((flags & 8u) != 0 && this->state.stateCnt % static_cast<int>(this->state.chCnt) == 0) {
     this->state.longitude = static_cast<float>(ClampedRandom(10)) + (this->state.longitude - 5.0f);
     this->state.latitude = static_cast<float>(ClampedRandom(10)) + (this->state.latitude - 5.0f);
-    reinterpret_cast<struct matrix*>(this->state.transform)->MakeXRotation(GetRadian(static_cast<int>(this->state.latitude)));
-    reinterpret_cast<struct matrix*>(this->state.transform)->AppendYRotation(GetRadian(static_cast<int>(this->state.longitude)));
+    this->state.transform.MakeXRotation(GetRadian(static_cast<int>(this->state.latitude)));
+    this->state.transform.AppendYRotation(GetRadian(static_cast<int>(this->state.longitude)));
     this->state.chCnt = ClampedRandom(15) + 5;
     flags = this->state.pattern;
   }
@@ -2867,10 +2867,10 @@ bool CEffectPrim::Prim3DParticleOrbit() {
     }
   }
 
-  reinterpret_cast<struct matrix*>(this->state.transform)->MakeYRotation(GetRadian(static_cast<int>(this->state.longitude)));
+  this->state.transform.MakeYRotation(GetRadian(static_cast<int>(this->state.longitude)));
 
   const float distance = this->state.radius;
-  Forward(this->state.deltaPos, distance, this->state.transform);
+  Forward(this->state.deltaPos, distance, this->state.transform.values);
   this->render.position.x = this->state.deltaPos.x + this->state.orgPos.x;
   this->render.position.y = this->state.deltaPos.y + this->state.orgPos.y;
   this->render.position.z = this->state.deltaPos.z + this->state.orgPos.z;
@@ -2878,7 +2878,7 @@ bool CEffectPrim::Prim3DParticleOrbit() {
   this->state.size = this->state.sizeSpeed + this->state.size;
   const float rotation = this->state.latiSpeed + this->state.latitude;
   this->state.latitude = rotation;
-  reinterpret_cast<struct matrix*>(this->state.transform)->AppendZRotation(rotation);
+  this->state.transform.AppendZRotation(rotation);
 
   this->state.ProcessAlpha();
   this->ShiftSegment();
@@ -2904,11 +2904,11 @@ bool CEffectPrim::Prim3DParticleSpline() {
   this->state.gravSpeed = this->state.gravAccel + this->state.gravSpeed;
 
   const float distance = this->state.speed - this->state.gravSpeed;
-  Forward(this->state.speed3d, distance, this->state.transform);
-  reinterpret_cast<struct matrix*>(this->state.rotTransform)->MakeTransform(this->state.rotAxis, GetRadian(angle));
+  Forward(this->state.speed3d, distance, this->state.transform.values);
+  this->state.rotTransform.MakeTransform(this->state.rotAxis, GetRadian(angle));
 
   const float move = this->state.latitude;
-  Lift(this->state.deltaPos3, move, this->state.rotTransform);
+  Lift(this->state.deltaPos3, move, this->state.rotTransform.values);
   this->state.size = this->state.sizeSpeed + this->state.size;
 
   this->state.deltaPos.x = this->state.deltaPos.x - this->state.speed3d.x;
@@ -2968,7 +2968,7 @@ void CEffectPrim::ShiftSegment() {
   first.radius = this->state.radius;
   first.scale = this->state.size;
   first.angle = this->state.longitude;
-  std::memcpy(first.matrix, this->state.transform, sizeof(first.matrix));
+  std::memcpy(first.matrix, this->state.transform.values, sizeof(first.matrix));
   first.alpha = this->state.alpha;
 
   const std::uint32_t red = static_cast<unsigned char>(this->state.red);
@@ -5838,7 +5838,7 @@ bool CEffectPrim::Prim3DSlotParticle() {
     this->state.roll = this->state.rollSpeed + this->state.roll;
     this->state.size = this->state.size + this->state.sizeSpeed;
   } else if ((this->state.pattern & 1u) != 0 || this->state.stateCnt > this->state.fadeInCnt) {
-    Forward(this->state.speed3d, this->state.speed, this->state.transform);
+    Forward(this->state.speed3d, this->state.speed, this->state.transform.values);
     this->state.deltaPos.x = this->state.speed3d.x + this->state.deltaPos.x;
     this->state.deltaPos.y = this->state.speed3d.y + this->state.deltaPos.y;
     this->state.deltaPos.z = this->state.speed3d.z + this->state.deltaPos.z;
@@ -5846,7 +5846,7 @@ bool CEffectPrim::Prim3DSlotParticle() {
     this->state.roll = this->state.rollSpeed + this->state.roll;
   }
 
-  auto& rotation = *reinterpret_cast<struct matrix*>(this->state.transform);
+  auto& rotation = this->state.transform;
 
   if ((this->state.pattern & 2u) != 0) {
     if (this->state.stateCnt % static_cast<int>(this->state.chCnt) == 0) {
@@ -8093,7 +8093,7 @@ bool CEffectPrim::OnProcess() {
       }
 
       this->state.speed += this->state.accel;
-      Forward(this->state.speed3d, this->state.speed, this->state.transform);
+      Forward(this->state.speed3d, this->state.speed, this->state.transform.values);
       this->state.deltaPos.x = this->state.speed3d.x + this->state.deltaPos.x;
       this->state.deltaPos.y = this->state.speed3d.y + this->state.deltaPos.y;
       this->state.deltaPos.z = this->state.speed3d.z + this->state.deltaPos.z;

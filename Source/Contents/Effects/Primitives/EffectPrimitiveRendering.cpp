@@ -91,7 +91,7 @@ void CEffectPrim::DrawEffectPrimitive15(matrix& wtm) {
   vert[3].y = vert[2].y;
   vert[3].z = vert[1].z;
 
-  const float* matrix = this->state.rotTransform;
+  const float* matrix = this->state.rotTransform.values;
   TransformPrimitiveVertex(matrix, vert[0], tvert[0]);
   TransformPrimitiveVertex(matrix, vert[1], tvert[1]);
   TransformPrimitiveVertex(matrix, vert[2], tvert[2]);
@@ -5383,7 +5383,7 @@ __declspec(safebuffers) void CEffectPrim::RenderRecordRings(matrix& wtm) {
   ZeroVector3d point2;
   ZeroVector3d point3;
   ZeroVector3d point4;
-  const float* tm = this->state.transform;
+  const float* tm = this->state.transform.values;
   int rpCnt = 0;
   const float last = 360.0f - this->state.arcAngle;
   float uInc = 0.0f;
@@ -5544,7 +5544,7 @@ void CEffectPrim::RenderSizedSquare(matrix& wtm) {
 // OFFSET: 0x00BCAAC0
 // FUNCTION: fn_19860
 void CEffectPrim::RenderArcBand(matrix& wtm) {
-  const float* tm = this->state.transform;
+  const float* tm = this->state.transform.values;
   const vector3d& position = this->render.position;
   float uInc = 0.0f;
   int rpCnt = 0;
@@ -5660,7 +5660,7 @@ void CEffectPrim::RenderPyramid(matrix& wtm) {
   int count = 0;
   for (int face = 0; face < 4; ++face) {
     for (int corner = 0; corner < 3; ++corner) {
-      TransformPrimitiveVertex(this->state.rotTransform, table[face * 3 + corner], corners[face * 3 + corner]);
+      TransformPrimitiveVertex(this->state.rotTransform.values, table[face * 3 + corner], corners[face * 3 + corner]);
     }
 
     RenderVertex projected{0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
@@ -5723,7 +5723,7 @@ void CEffectPrim::RenderCrossPlanes(matrix& wtm) {
 
   for (int plane = 0; plane < 2; ++plane) {
     for (int corner = 0; corner < 4; ++corner) {
-      TransformPrimitiveVertex(this->state.transform, vert[plane * 4 + corner], tvert[corner]);
+      TransformPrimitiveVertex(this->state.transform.values, vert[plane * 4 + corner], tvert[corner]);
     }
 
     RenderVertex projected{0, 0, 0, 0, 0, 0xFF000000u, 0, 0};

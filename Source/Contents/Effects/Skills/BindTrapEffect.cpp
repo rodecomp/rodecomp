@@ -19,7 +19,7 @@ CBindTrapEffect::CBindTrapEffect() : CEffect(-1), particles() {
 // OFFSET: 0x006FB4E0
 // FUNCTION: fn_06906
 void CBindTrapEffect::AddParticle(int index) {
-  CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+  CParticle* particle = CreateParticle(&this->positionVector, 5);
   if (!particle) {
     return;
   }

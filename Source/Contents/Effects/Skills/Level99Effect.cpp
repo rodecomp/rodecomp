@@ -42,7 +42,7 @@ void CLevel99Effect::AddRings() {
   int tilt = 55;
   do {
     for (int segment = 0; segment <= 21; ++segment) {
-      CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 13);
+      CParticle* particle = CreateParticle(&this->positionVector, 13);
       if (!particle) {
         continue;
       }
@@ -134,7 +134,7 @@ void CLevel99Effect::Open() {
   int tilt = 0;
   int angle = 0;
   do {
-    CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 13);
+    CParticle* particle = CreateParticle(&this->positionVector, 13);
     if (particle) {
       particle->SetTexture("effect\\pikapika2.bmp");
       particle->effectId = this->id;

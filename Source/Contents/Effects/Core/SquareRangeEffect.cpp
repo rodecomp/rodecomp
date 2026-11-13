@@ -28,7 +28,7 @@ void CSquareRangeEffect::Open() {
     this->size = 7.0f;
   }
 
-  CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+  CParticle* particle = CreateParticle(&this->positionVector, 5);
   if (!particle) {
     return;
   }

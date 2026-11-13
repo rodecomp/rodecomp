@@ -27,7 +27,7 @@ void CMagicFloorEffect::AddFloors() {
   };
 
   for (int index = 0; index < 6; ++index) {
-    CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+    CParticle* particle = CreateParticle(&this->positionVector, 5);
     if (!particle) {
       continue;
     }
@@ -53,7 +53,7 @@ void CMagicFloorEffect::AddClouds(int layer) {
     const int roll = rand() % 360;
     const int angle = roll >= 0 ? roll : 0;
     for (int segment = 0; segment < 21; ++segment) {
-      CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+      CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (!particle) {
         continue;
       }

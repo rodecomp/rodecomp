@@ -32,7 +32,7 @@ void CSoulUnityEffect::Close() {
 // OFFSET: 0x0072B2A0
 // FUNCTION: fn_07469
 void CSoulUnityEffect::Open() {
-  CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 0);
+  CParticle* particle = CreateParticle(&this->positionVector, 0);
   if (particle) {
     particle->SetTexture("effect\\soul_unity\\soul_unity.bmp");
     particle->effectId = this->id;

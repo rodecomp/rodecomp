@@ -26,14 +26,14 @@ void CStormCannonEffect::Close() {
 // OFFSET: 0x0072CFA0
 // FUNCTION: fn_07487
 void CStormCannonEffect::Open() {
-  CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+  CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 13));
   if (bottom) {
     bottom->Load(std::string("stormcannon\\stormcannon_bottom\\stormcannon_bottom.str"));
     bottom->m_loop = true;
     this->emitters.push_back(bottom);
   }
 
-  CEZ2STRParticle* cannon = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+  CEZ2STRParticle* cannon = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
   if (cannon) {
     cannon->Load(std::string("stormcannon\\stormcannon\\stormcannon.str"));
     cannon->m_loop = true;
@@ -49,7 +49,7 @@ void CStormCannonEffect::Open() {
   this->direction.y = scale * this->direction.y;
   this->direction.z = scale * this->direction.z;
 
-  this->origin = *reinterpret_cast<const vector3d*>(this->position);
+  this->origin = this->positionVector;
   this->speed = 1.7;
 
   const float dx = this->sourcePosition[0] - this->position[0];

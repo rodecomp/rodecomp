@@ -29,7 +29,7 @@ CStormKickEffect::CStormKickEffect() : CEffect(-1) {
 // FUNCTION: fn_19218
 void CStormKickEffect::CreateStorms(int layer) {
   for (int index = 0; index < 10; ++index) {
-    CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+    CParticle* particle = CreateParticle(&this->positionVector, 5);
     if (!particle) {
       continue;
     }
@@ -88,7 +88,7 @@ void CStormKickEffect::CreateClouds(int layer) {
   int ring = 0;
   for (int angle = 0; angle < 360; angle += 90) {
     for (int segment = 0; segment < 21; ++segment) {
-      CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+      CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (!particle) {
         continue;
       }

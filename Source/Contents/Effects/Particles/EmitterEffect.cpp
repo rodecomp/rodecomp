@@ -47,7 +47,7 @@ void CEmitterEffect::Close() {
 // FUNCTION: fn_19012
 void CEmitterEffect::Open() {
   for (int i = 0; i < this->count; ++i) {
-    CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+    CParticle* particle = CreateParticle(&this->positionVector, 5);
     if (particle) {
       particle->speedParameter = this->particleSpeed;
       this->InitParticle(particle);

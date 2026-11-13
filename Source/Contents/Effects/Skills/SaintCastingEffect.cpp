@@ -16,7 +16,7 @@
 void CSaintCastingEffect::AddRing(const char* texture, int alpha) {
   for (int ring = 0; ring < 4; ++ring) {
     for (int segment = 0; segment < 21; ++segment) {
-      CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+      CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (!particle) {
         continue;
       }

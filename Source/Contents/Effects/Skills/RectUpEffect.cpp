@@ -153,7 +153,7 @@ void CRectUpEffect::Open() {
     for (int x = -5; x < 10; x += 5) {
       int index = 0;
       for (int angle = 45; angle <= 405; angle += 90, ++index) {
-        CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+        CParticle* particle = CreateParticle(&this->positionVector, 5);
         if (!particle) {
           continue;
         }

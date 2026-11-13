@@ -20,7 +20,7 @@ void CEffectPrim::InitSegment() {
     record.radius = this->state.radius;
     record.scale = this->state.size;
     record.angle = this->state.longitude;
-    std::memcpy(record.matrix, this->state.transform, sizeof(record.matrix));
+    std::memcpy(record.matrix, this->state.transform.values, sizeof(record.matrix));
     record.alpha = this->state.alpha;
     record.red = this->state.red;
     record.green = this->state.green;

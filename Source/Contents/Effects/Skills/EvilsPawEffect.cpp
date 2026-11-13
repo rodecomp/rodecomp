@@ -29,7 +29,7 @@ void CEvilsPawEffect::Close() {
 // OFFSET: 0x006FED20
 // FUNCTION: fn_06957
 void CEvilsPawEffect::Open() {
-  CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+  CParticle* particle = CreateParticle(&this->positionVector, 5);
   if (particle) {
     particle->SetColor(255, 255, 255);
     particle->alpha = 255;

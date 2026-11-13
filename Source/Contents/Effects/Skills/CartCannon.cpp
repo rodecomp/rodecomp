@@ -49,7 +49,7 @@ void CCartCannon::Open() {
   this->speed = 1.0f;
   this->delay = 0;
   this->currentPosition.y -= 10.0f;
-  vector3d target = *reinterpret_cast<const vector3d*>(this->sourcePosition);
+  vector3d target = this->sourcePositionVector;
   this->currentStep = 0;
   target.y -= 10.0f;
 

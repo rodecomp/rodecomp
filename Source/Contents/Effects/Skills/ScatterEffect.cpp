@@ -27,7 +27,7 @@ void CScatterEffect::Close() {
 // FUNCTION: fn_19170
 void CScatterEffect::Open() {
   for (int i = 0; i < 50; ++i) {
-    CSpriteParticle* particle = static_cast<CSpriteParticle*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 1));
+    CSpriteParticle* particle = static_cast<CSpriteParticle*>(CreateSpriteParticle(&this->positionVector, 1));
     if (!particle) {
       continue;
     }

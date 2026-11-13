@@ -45,7 +45,7 @@ void CChopChopClawMarks::UpdateParticlePosition(CEZ2STRParticle* particle) {
   if (particle) {
     const float* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values;
     const float* inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse.values;
-    const vector3d origin = *reinterpret_cast<const vector3d*>(this->position);
+    const vector3d origin = this->positionVector;
     const float x = origin.x;
     const float y = origin.y;
     const float z = origin.z;
@@ -64,7 +64,7 @@ void CChopChopClawMarks::UpdateParticlePosition(CEZ2STRParticle* particle) {
 // OFFSET: 0x005A34E0
 // FUNCTION: fn_03131
 void CChopChopClawMarks::SpawnParticle() {
-  CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+  CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
   if (particle) {
     const std::vector<RadialGridPoint>& ring = this->GetRing(3);
     RadialGridPoint point;

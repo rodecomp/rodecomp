@@ -52,7 +52,7 @@ void CLevel150Effect::AddBubbleRing(int alphaOffset) {
   const int effectId = this->id;
   for (int ring = 0; ring < 4; ++ring) {
     for (int segment = 0; segment <= 21; ++segment) {
-      CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 13);
+      CParticle* particle = CreateParticle(&this->positionVector, 13);
       if (!particle) {
         continue;
       }
@@ -136,7 +136,7 @@ void CLevel150Effect::AddBubbleRing(int alphaOffset) {
 void CLevel150Effect::AddShock(int kind) {
   const int effectId = this->id;
   for (int index = 0; index < 2; ++index) {
-    CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 13);
+    CParticle* particle = CreateParticle(&this->positionVector, 13);
     if (particle) {
       particle->effectId = this->id;
       particle->columnIndex = index;
@@ -345,7 +345,7 @@ void CLevel150SubEffect::Init() {
   const int effectId = this->id;
   for (int ring = 0; ring < 4; ++ring) {
     for (int index = 0; index < 2; ++index) {
-      CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 13);
+      CParticle* particle = CreateParticle(&this->positionVector, 13);
       if (!particle) {
         continue;
       }

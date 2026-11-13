@@ -59,8 +59,8 @@ void CBlastForge::RestartBlastParticles() {
     this->blastBottomParticle = nullptr;
   }
 
-  this->blastParticle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
-  this->blastBottomParticle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+  this->blastParticle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
+  this->blastBottomParticle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 13));
 
   if (this->blastParticle && this->blastBottomParticle) {
     this->blastParticle->Open("blast_forge\\blast_forge\\blast_forge.str");
@@ -86,8 +86,8 @@ void CBlastForge::Close() {
 void CBlastForge::Open() {
   this->retained = 1;
   this->openToggle = (this->openToggle == 0);
-  this->loopParticle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
-  this->loopBottomParticle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+  this->loopParticle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
+  this->loopBottomParticle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 13));
 
   if (this->loopParticle && this->loopBottomParticle) {
     this->loopParticle->Open("blast_forge\\blast_forge\\blast_forge_5s.str");

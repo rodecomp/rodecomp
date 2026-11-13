@@ -1,6 +1,7 @@
 #ifndef RAGNAROK_SOURCE_CONTENTS_EFFECTS_CORE_EFFECT_H
 #define RAGNAROK_SOURCE_CONTENTS_EFFECTS_CORE_EFFECT_H
 
+#include "Utility/Math/Vector3d.h"
 #include <cstddef>
 #include <cstdint>
 #include <list>
@@ -65,8 +66,14 @@ public:
   bool InRange();
 
   /* 0004 */ int id;
-  /* 0008 */ float position[3];
-  /* 0014 */ float sourcePosition[3];
+  union {
+    /* 0008 */ float position[3];
+    /* 0008 */ vector3d positionVector;
+  };
+  union {
+    /* 0014 */ float sourcePosition[3];
+    /* 0014 */ vector3d sourcePositionVector;
+  };
   /* 0020 */ std::uint32_t actor;
   /* 0024 */ std::uint32_t sourceActor;
   /* 0028 */ int frame;

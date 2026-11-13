@@ -43,7 +43,7 @@ void CSoulCollectEffect::Open() {
   if (current < count) {
     for (int index = 0; index < this->effectLevel - current; ++index) {
       for (int layer = 0; layer < 2; ++layer) {
-        CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+        CParticle* particle = CreateParticle(&this->positionVector, 5);
         if (!particle) {
           continue;
         }

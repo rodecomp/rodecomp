@@ -35,7 +35,7 @@ void CEvilLandEffect::Open() {
 
   for (int row = 0; row < this->effectLevel; ++row) {
     for (int column = 0; column < this->effectLevel; ++column) {
-      CParticle* created = CreateMultiTexParticle(reinterpret_cast<const vector3d*>(this->position), -1);
+      CParticle* created = CreateMultiTexParticle(&this->positionVector, -1);
       if (!created) {
         continue;
       }

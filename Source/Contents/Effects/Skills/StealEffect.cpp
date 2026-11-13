@@ -57,7 +57,7 @@ void CSteal::SpawnParticles() {
     const float velocityY = 0.0f * rotation.values[4] + 0.0f * rotation.values[1] + distance * rotation.values[7] + rotation.values[10] - 10.0f;
     const float velocityZ = 0.0f * rotation.values[5] + 0.0f * rotation.values[2] + distance * rotation.values[8] + rotation.values[11] + 0.0f;
 
-    CSpriteParticle* particle = static_cast<CSpriteParticle*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 1));
+    CSpriteParticle* particle = static_cast<CSpriteParticle*>(CreateSpriteParticle(&this->positionVector, 1));
     particle->effectId = this->id;
     particle->columnIndex = i;
     particle->rowIndex = 0;
@@ -112,7 +112,7 @@ bool CSteal::IsAlive() {
 void CSteal::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CSpriteParticle* particle = *it;
-    const vector3d origin = *reinterpret_cast<const vector3d*>(this->position);
+    const vector3d origin = this->positionVector;
     const float scale = particle->scale;
     float* params = &particle->animationParameter;
     const float scaleStep = params[5];

@@ -28,7 +28,7 @@ CHealEffect::CHealEffect() : CEffect(-1) {
 // FUNCTION: fn_19067
 void CHealEffect::AddSparks(int kind) {
   for (int index = 0; index < 4; ++index) {
-    CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+    CParticle* particle = CreateParticle(&this->positionVector, 5);
     if (!particle) {
       continue;
     }
@@ -91,7 +91,7 @@ void CHealEffect::AddColumn(int kind) {
   for (int row = 0, angle = 0; angle < 360; ++row, angle += 180) {
     const int randomAngle = (std::max)(rand() % 360, 0);
     for (int segment = 0; segment < 21; ++segment) {
-      CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+      CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (!particle) {
         continue;
       }
@@ -193,7 +193,7 @@ void CHealEffect::AddCone(int kind) {
   for (int row = 0, tilt = 50; tilt > 46; ++row, tilt -= 2) {
     const int randomAngle = (std::max)(rand() % 360, 0);
     for (int segment = 0; segment < 21; ++segment) {
-      CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+      CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (!particle) {
         continue;
       }

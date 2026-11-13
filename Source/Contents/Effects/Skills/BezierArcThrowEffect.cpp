@@ -39,7 +39,7 @@ void CBezierArcThrowEffect::Close() {
 // OFFSET: 0x007AB2C0
 // FUNCTION: fn_09108
 void CBezierArcThrowEffect::Open() {
-  this->m_particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+  this->m_particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
   if (this->m_particle) {
     this->m_particle->Load(this->m_name);
     this->m_particle->m_loop = true;

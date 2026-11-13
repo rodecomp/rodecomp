@@ -35,7 +35,7 @@ void CFuumaShouakuEffect::Close() {
 // FUNCTION: fn_07010
 void CFuumaShouakuEffect::Open() {
   this->retained = 1;
-  CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+  CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
   this->first = particle;
   if (!particle) {
     return;
@@ -80,7 +80,7 @@ void CFuumaShouakuEffect::OnProcess() {
         this->first = nullptr;
       }
 
-      this->second = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->sourcePosition), 5));
+      this->second = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->sourcePositionVector, 5));
       if (this->second) {
         this->second->Load(std::string("SHINKIRO_SHIRANUI\\SS_FUUMASHOUAKU\\fuumashouaku_00\\fuumashouaku_00.str"));
         this->second->m_loop = true;

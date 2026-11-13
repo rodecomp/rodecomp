@@ -43,7 +43,7 @@ void CLevel99Orb1Effect::Close() {
 void CLevel99Orb1Effect::Open() {
   for (int row = 0; row < 4; ++row) {
     for (int column = 0; column < 4; ++column) {
-      CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+      CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (particle) {
         particle->SetTexture("effect\\whitelight.tga");
         particle->effectId = this->id;

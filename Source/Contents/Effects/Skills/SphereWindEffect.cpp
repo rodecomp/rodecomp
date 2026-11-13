@@ -39,7 +39,7 @@ void CSphereWindEffect::Open() {
       const int spin = (spinRoll >= 0 ? spinRoll : 0) + 3;
 
       for (int segment = 0; segment < 21; ++segment) {
-        CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+        CParticle* particle = CreateParticle(&this->positionVector, 5);
         if (!particle) {
           continue;
         }

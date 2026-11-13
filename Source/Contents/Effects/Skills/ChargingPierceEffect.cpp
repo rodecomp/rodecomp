@@ -191,7 +191,7 @@ void CChargingPierceEffect::OnProcess() {
             height = -13.0f - static_cast<float>(actor->MountType() ? 3 : 0);
           }
 
-          const vector3d origin = *reinterpret_cast<const vector3d*>(this->position);
+          const vector3d origin = this->positionVector;
           const float x = origin.x;
           const float y = origin.y;
           const float z = origin.z;
@@ -213,7 +213,7 @@ void CChargingPierceEffect::OnProcess() {
         FreeParticle(emitter);
         this->emitters[index] = nullptr;
         if (!this->sparks[index]) {
-          CParticle* spark = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 0x101);
+          CParticle* spark = CreateParticle(&this->positionVector, 0x101);
           spark->effectId = this->id;
           spark->columnIndex = 1;
           spark->rowIndex = 0;
@@ -233,7 +233,7 @@ void CChargingPierceEffect::OnProcess() {
 // FUNCTION: fn_07031
 void CChargingPierceNewEffect::OnProcess() {
   for (CEZ2STRParticle* particle : this->emitters) {
-    const vector3d origin = *reinterpret_cast<const vector3d*>(this->position);
+    const vector3d origin = this->positionVector;
 
     const matrix& view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
     vector3d viewPos;

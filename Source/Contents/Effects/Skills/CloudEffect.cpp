@@ -61,7 +61,7 @@ void CCloud::Close() {
 // OFFSET: 0x006FBBD0
 // FUNCTION: fn_06917
 void CCloud::Open() {
-  this->particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 1);
+  this->particle = CreateParticle(&this->positionVector, 1);
   if (CParticle* particle = this->particle) {
     particle->effectId = this->id;
     particle->columnIndex = 0;

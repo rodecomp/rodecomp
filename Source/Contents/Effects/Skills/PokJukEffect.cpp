@@ -34,7 +34,7 @@ void CPokJukEffect::SpawnParticles() {
   int row = 0;
   for (int rowStart = 0; rowStart < 640; rowStart += 160) {
     for (int column = 0; column < 160; ++column) {
-      CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+      CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (particle) {
         particle->effectId = this->id;
         particle->columnIndex = column;

@@ -38,19 +38,19 @@ void CViolentQuakeEffect::InitAllBloom() {
 
   switch (roll) {
   case 0: {
-    CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+    CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 13));
     bottom->Load(std::string("allbloom\\allbloom_bomb\\allbloom_bomb01_bottom.str"));
     this->emitters.push_back(bottom);
-    CEZ2STRParticle* bomb = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+    CEZ2STRParticle* bomb = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
     bomb->Load(std::string("allbloom\\allbloom_bomb\\allbloom_bomb01.str"));
     this->emitters.push_back(bomb);
     break;
   }
   case 1: {
-    CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+    CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 13));
     bottom->Load(std::string("allbloom\\allbloom_bomb\\allbloom_bomb02_bottom.str"));
     this->emitters.push_back(bottom);
-    CEZ2STRParticle* bomb = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+    CEZ2STRParticle* bomb = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
     bomb->Load(std::string("allbloom\\allbloom_bomb\\allbloom_bomb02.str"));
     this->emitters.push_back(bomb);
     break;
@@ -75,7 +75,7 @@ void CViolentQuakeEffect::Close() {
 void CViolentQuakeEffect::Open() {
   switch (this->id) {
   case EF_VIOLENTQUAKE: {
-    CEZ2STRParticle* emitter = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+    CEZ2STRParticle* emitter = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
     const int roll = rand() % 3;
     emitter->Load(FormatOwnedString("violentquake\\violentquake\\violentquake_%02d.str", (roll >= 0 ? roll : 0) + 1));
     emitter->offsetX = 0.0f;
@@ -112,7 +112,7 @@ void CViolentQuakeEffect::OnProcess() {
       continue;
     }
 
-    const vector3d origin = *reinterpret_cast<const vector3d*>(this->position);
+    const vector3d origin = this->positionVector;
     const matrix view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
     const matrix& inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse;
 

@@ -42,7 +42,7 @@ void CCommonFloorEffect::Close() {
 void CCommonFloorEffect::Open() {
   for (int i = 0; i < 2; ++i) {
     const int angle = i * 180;
-    CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+    CParticle* particle = CreateParticle(&this->positionVector, 5);
     if (particle) {
       particle->SetTexture("effect\\ra_unlimit.tga");
       particle->effectId = this->id;

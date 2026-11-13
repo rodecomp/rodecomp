@@ -52,7 +52,7 @@ void CThrowItemEffect::Open() {
 
   for (int row = 0; row < this->projectileCount; ++row) {
     for (int column = 0; column < this->trailCount; ++column) {
-      CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+      CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (!particle) {
         continue;
       }
@@ -422,7 +422,7 @@ void CVolcanoEffect::AddRings() {
   int row = 0;
   for (int baseAngle = 0; baseAngle < 360; baseAngle += 90) {
     for (int segment = 0; segment <= 21; ++segment) {
-      CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+      CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (!particle) {
         continue;
       }

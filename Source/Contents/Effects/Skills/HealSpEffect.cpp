@@ -30,7 +30,7 @@ void CHealSp::AddRing(float inner, float outer, float height, int duration) {
   const float fadeFrame = static_cast<float>(duration) / 30.0f;
   const float holdFrame = static_cast<float>(this->holdFrame);
   for (int segment = 0; segment < 10; ++segment) {
-    CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 1);
+    CParticle* particle = CreateParticle(&this->positionVector, 1);
     particle->effectId = this->id;
     particle->columnIndex = segment;
     particle->rowIndex = 0;
@@ -92,7 +92,7 @@ void CHealSp::OnProcess() {
     const float x = values[3] * 0.0f + values[0] * 0.0f + values[6] * 3.0f + values[9];
     const float y = values[4] * 0.0f + values[1] * 0.0f + values[7] * 3.0f + values[10];
     const float z = values[5] * 0.0f + values[2] * 0.0f + values[8] * 3.0f + values[11];
-    CSpriteParticle* sprite = static_cast<CSpriteParticle*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 1));
+    CSpriteParticle* sprite = static_cast<CSpriteParticle*>(CreateSpriteParticle(&this->positionVector, 1));
     float* params = &sprite->animationParameter;
     sprite->life = 0.5f;
     sprite->scale = 0.55f;
@@ -150,7 +150,7 @@ void CHealSp::OnProcess() {
       const float delay = params[4];
       float fade = params[5];
       const float alpha = static_cast<float>(sprite->alpha);
-      const vector3d origin = *reinterpret_cast<const vector3d*>(this->position);
+      const vector3d origin = this->positionVector;
       vector3d velocity = sprite->velocity;
       const float lift = params[3] + params[2];
       velocity.y += lift;

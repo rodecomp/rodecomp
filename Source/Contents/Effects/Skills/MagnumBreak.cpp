@@ -10,7 +10,7 @@ void CMagnumBreak::AddRings() {
   const float growth = -(1.75f / static_cast<float>(this->effectLifetime)) * 0.5f;
 
   for (int index = 0; index < 10; ++index) {
-    CParticle* ring = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 0x201);
+    CParticle* ring = CreateParticle(&this->positionVector, 0x201);
     ring->effectId = this->id;
     ring->columnIndex = index;
     ring->rowIndex = 0;
@@ -32,7 +32,7 @@ void CMagnumBreak::AddWaves() {
 
   for (int tilt = -90; tilt <= 54; tilt += 36) {
     for (int angle = 0; angle <= 324; angle += 36) {
-      CParticle* wave = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 1);
+      CParticle* wave = CreateParticle(&this->positionVector, 1);
       wave->effectId = this->id;
       wave->columnIndex = angle;
       wave->rowIndex = tilt;

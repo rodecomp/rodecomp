@@ -37,7 +37,7 @@ void CSpriteEffect::Close() {
 // OFFSET: 0x00B78B40
 // FUNCTION: fn_19197
 void CSpriteEffect::Open() {
-  CSpriteParticle* particle = static_cast<CSpriteParticle*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 0x200));
+  CSpriteParticle* particle = static_cast<CSpriteParticle*>(CreateSpriteParticle(&this->positionVector, 0x200));
   if (!particle) {
     return;
   }

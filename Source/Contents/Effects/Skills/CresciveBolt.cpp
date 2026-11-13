@@ -44,7 +44,7 @@ void CCresciveBolt::Open() {
     angle = 360.0 - angle;
   }
 
-  CEZ2STRParticle* bolt = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+  CEZ2STRParticle* bolt = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
   if (bolt) {
     bolt->Load("crescivebolt\\crescivebolt\\crescivebolt.str");
     bolt->m_angle = static_cast<float>(angle);

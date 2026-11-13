@@ -65,25 +65,25 @@ void CShadowExceed::Open() {
 
   const int direction = actor->render.previousAnimation % 8;
   if (static_cast<unsigned int>(direction - 2) <= 3) {
-    CEZ2STRParticle* shadow = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+    CEZ2STRParticle* shadow = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
     shadow->Load(std::string("shadow_exceed\\shadow_exceed\\shadow_exceed_b_shadow.str"));
     if (direction == 4 || direction == 5) {
       shadow->m_flipX = true;
     }
     this->emitters.push_back(shadow);
 
-    CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+    CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
     bottom->Load(std::string("shadow_exceed\\shadow_exceed\\shadow_exceed_b_shadow_bottom.str"));
     this->emitters.push_back(bottom);
   } else {
-    CEZ2STRParticle* shadow = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+    CEZ2STRParticle* shadow = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 13));
     shadow->Load(std::string("shadow_exceed\\shadow_exceed\\shadow_exceed_f_shadow.str"));
     if (direction == 0 || direction == 1) {
       shadow->m_flipX = true;
     }
     this->emitters.push_back(shadow);
 
-    CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+    CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 13));
     bottom->Load(std::string("shadow_exceed\\shadow_exceed\\shadow_exceed_f_shadow_bottom.str"));
     this->emitters.push_back(bottom);
   }

@@ -75,7 +75,7 @@ void CTalismanMarkEffect::PlayEnd() {
     const int angle = particle->phaseParameter;
     FreeParticle(particle);
 
-    particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+    particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 13));
     if (!particle) {
       *it = nullptr;
       continue;
@@ -100,7 +100,7 @@ void CTalismanMarkEffect::Open() {
   this->retained = 1;
 
   for (int i = 0; i < std::min<unsigned int>(this->effectLevel, 4); ++i) {
-    CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+    CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 13));
     if (!particle) {
       continue;
     }
@@ -138,7 +138,7 @@ void CTalismanMarkEffect::OnProcess() {
         const int angle = particle->phaseParameter;
         FreeParticle(particle);
 
-        particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+        particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 13));
         if (!particle) {
           *it = nullptr;
           continue;
@@ -193,7 +193,7 @@ void CTalismanMarkEffect::UpdateParticle(CEZ2STRParticle* particle) {
     return;
   }
 
-  const vector3d center = *reinterpret_cast<const vector3d*>(this->position);
+  const vector3d center = this->positionVector;
   const float* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values;
   const float viewX = center.x * view[0] + center.y * view[3] + center.z * view[6] + view[9];
   const float viewY = center.x * view[1] + center.y * view[4] + center.z * view[7] + view[10];

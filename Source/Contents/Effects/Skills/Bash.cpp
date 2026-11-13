@@ -51,7 +51,7 @@ void CBash::Open() {
   const int fadeFrame = this->effectLifetime - 10;
   int index = 0;
   for (int angle = 0; angle < 360; angle += 36) {
-    CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 1);
+    CParticle* particle = CreateParticle(&this->positionVector, 1);
     particle->effectId = this->id;
     particle->columnIndex = index;
     particle->rowIndex = 0;
@@ -71,7 +71,7 @@ void CBash::Open() {
 
   int count = g_serviceOptions.Get(229) ? 10 : 20;
   do {
-    CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 1);
+    CParticle* particle = CreateParticle(&this->positionVector, 1);
     const int angle = rand() % 360;
     const int roll = rand() % 60;
     const float speed = static_cast<float>((roll >= 0 ? roll : 0) + 10) / 10.0f;

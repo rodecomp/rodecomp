@@ -41,7 +41,7 @@ void CEnergyOrbEffect::Open() {
     const int phase = phaseRoll >= 0 ? phaseRoll : 0;
 
     for (int j = 0; j < this->mode; ++j) {
-      CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+      CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (!particle) {
         continue;
       }

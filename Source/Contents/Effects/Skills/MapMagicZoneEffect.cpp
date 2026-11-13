@@ -21,7 +21,7 @@ struct ZoneVector3d : vector3d {
 // OFFSET: 0x00B6DCB0
 // FUNCTION: fn_19112
 void CMapMagicZoneEffect::AddSpinner(int kind) {
-  CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+  CParticle* particle = CreateParticle(&this->positionVector, 5);
   if (particle) {
     particle->effectId = this->id;
     particle->columnIndex = 0;
@@ -73,7 +73,7 @@ void CMapMagicZoneEffect::Open() {
 
   int index = 0;
   for (int angle = 0; angle < 360; angle += 180) {
-    CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+    CParticle* particle = CreateParticle(&this->positionVector, 5);
     if (particle) {
       particle->effectId = this->id;
       particle->columnIndex = index;
@@ -96,7 +96,7 @@ void CMapMagicZoneEffect::Open() {
   int angle = 0;
   for (int height = 55; height > 40; height -= 5) {
     for (int segment = 0; segment <= 21; ++segment) {
-      CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+      CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (particle) {
         particle->SetTexture("effect\\ring_blue.tga");
         particle->rowIndex = row;

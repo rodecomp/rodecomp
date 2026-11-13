@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "Contents/Actors/RenderObjectState.h"
+#include "Utility/Math/AffineMatrix.h"
 #include "Utility/Math/Vector3d.h"
 struct CRagEffect;
 class CTexture;
@@ -67,8 +68,8 @@ struct EffectPrimitiveState {
   /* 014C */ vector3d changeFlags;
   /* 0158 */ std::uint32_t chRadiSpeed;
   /* 015C */ std::uint32_t isDisappear;
-  /* 0160 */ float transform[12];
-  /* 0190 */ float rotTransform[12];
+  /* 0160 */ matrix transform;
+  /* 0190 */ matrix rotTransform;
   /* 01C0 */ std::uint32_t argb;
   /* 01C4 */ std::uint32_t renderFlag;
   /* 01C8 */ unsigned char useRenderFlag[4];

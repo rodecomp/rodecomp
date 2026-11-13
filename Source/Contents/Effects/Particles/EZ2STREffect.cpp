@@ -5603,7 +5603,7 @@ int CEZ2STRScreenEffect::GetFrame() {
 // FUNCTION: fn_19039
 void CEZ2STRScreenEffect::Open() {
   CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(
-    CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5)
+    CreateEZ2STRParticle(&this->positionVector, 5)
   );
   if (!particle) {
     return;
@@ -6505,14 +6505,14 @@ void CEZ2STRScreenEffect::InitEvents() {
     break;
 
   case EF_WOODEN_WARRIOR_THROWROCK: {
-    const double angle = ScreenAngle(*reinterpret_cast<const vector3d*>(this->position), *reinterpret_cast<const vector3d*>(this->sourcePosition));
+    const double angle = ScreenAngle(this->positionVector, this->sourcePositionVector);
     this->particle->m_angle = static_cast<float>(angle + 180.0);
     this->AddEvent(0, "effect\\BO_THROWROCK.wav", 0, 0);
     break;
   }
 
   case EF_WOODEN_WARRIOR_ATTACK: {
-    const double angle = ScreenAngle(*reinterpret_cast<const vector3d*>(this->position), *reinterpret_cast<const vector3d*>(this->sourcePosition));
+    const double angle = ScreenAngle(this->positionVector, this->sourcePositionVector);
     this->particle->m_angle = static_cast<float>(angle + 180.0);
     this->AddEvent(0, "effect\\BO_WOODEN_ATTACK.wav", 0, 0);
     break;

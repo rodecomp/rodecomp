@@ -29,7 +29,7 @@ void CFriggSongEffect::Close() {
 // FUNCTION: fn_07002
 void CFriggSongEffect::Open() {
   for (int segment = 0; segment <= 21; ++segment) {
-    CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+    CParticle* particle = CreateParticle(&this->positionVector, 5);
     if (!particle) {
       continue;
     }

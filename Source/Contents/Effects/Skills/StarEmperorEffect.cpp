@@ -22,7 +22,7 @@ void CStarEmperorEffect::BuildSphere() {
     const float bottomPitch = (static_cast<float>(row + 1) * 30.0f - 90.0f) / 180.0f * 3.141592f;
 
     for (int column = 0; column < 12; ++column) {
-      CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 1);
+      CParticle* particle = CreateParticle(&this->positionVector, 1);
       particle->SetTexture("effect\\star_emperor\\boom.tga");
 
       float leftYaw = static_cast<float>(column);
@@ -85,7 +85,7 @@ void CStarEmperorEffect::Open() {
   this->BuildSphere();
 
   for (int i = 0; i < 10; ++i) {
-    CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 0x201);
+    CParticle* particle = CreateParticle(&this->positionVector, 0x201);
     particle->effectId = this->id;
     particle->columnIndex = i;
     particle->rowIndex = 0;
