@@ -20,6 +20,22 @@ extern "C" __declspec(dllimport) void __stdcall AIL_set_stream_volume(void* stre
 extern "C" __declspec(dllimport) void __stdcall AIL_set_stream_loop_count(void* stream, int count);
 extern "C" __declspec(dllimport) void __stdcall AIL_start_stream(void* stream);
 extern "C" __declspec(dllimport) void __stdcall AIL_set_3D_room_type(void* provider, int roomType);
+extern "C" __declspec(dllimport) unsigned int __stdcall AIL_3D_sample_status(void* sample);
+extern "C" __declspec(dllimport) int __stdcall AIL_set_3D_sample_file(void* sample, const void* data);
+extern "C" __declspec(dllimport) void __stdcall AIL_set_3D_sample_effects_level(void* sample, float level);
+extern "C" __declspec(dllimport) void __stdcall AIL_set_3D_position(void* sample, float x, float y, float z);
+extern "C" __declspec(dllimport) void __stdcall AIL_set_3D_orientation(void* sample, float x, float y, float z, float upX, float upY, float upZ);
+extern "C" __declspec(dllimport) void __stdcall AIL_set_3D_sample_volume(void* sample, int volume);
+extern "C" __declspec(dllimport) void __stdcall AIL_set_3D_sample_distances(void* sample, float maximum, float minimum);
+extern "C" __declspec(dllimport) void __stdcall AIL_start_3D_sample(void* sample);
+extern "C" __declspec(dllimport) void __stdcall AIL_release_3D_sample_handle(void* sample);
+extern "C" __declspec(dllimport) void __stdcall AIL_close_3D_listener(void* listener);
+extern "C" __declspec(dllimport) void __stdcall AIL_close_3D_provider(MilesProvider provider);
+extern "C" __declspec(dllimport) void __stdcall AIL_release_sample_handle(void* sample);
+extern "C" __declspec(dllimport) void __stdcall AIL_close_digital_driver(void* driver);
+extern "C" __declspec(dllimport) void __stdcall AIL_shutdown();
+extern "C" __declspec(dllimport) void __stdcall AIL_pause_stream(void* stream, int paused);
+extern "C" __declspec(dllimport) int __stdcall AIL_stream_volume(void* stream);
 
 // STATIC: 0x0138BE7C
 // GLOBAL: gl_24457
@@ -273,9 +289,8 @@ void CSoundMgr::Update() {
   }
 
   if (this->stream) {
-    MilesRuntime& miles = MilesRuntime::Get();
-    miles.pauseStream(this->stream, 1);
-    miles.streamVolume(this->stream);
+    AIL_pause_stream(this->stream, 1);
+    AIL_stream_volume(this->stream);
   }
 
   this->FadeIn();
