@@ -3418,7 +3418,7 @@ bool CSession::LoadMapViewParameters() {
 // OFFSET: 0x00DF8670
 // FUNCTION: fn_23510
 void CSession::InitWeaponHitWaveNames() {
-  std::vector<std::string>& weaponWaves = reinterpret_cast<std::vector<std::string>&>(this->weaponSoundTables[0x18]);
+  std::vector<std::string>& weaponWaves = this->m_weaponHitWaves;
   weaponWaves.clear();
   weaponWaves.resize(105, "_hit_mace.wav");
   for (int weapon = 0; weapon < 105; ++weapon) {
@@ -4256,7 +4256,7 @@ void CSession::LoadLuaDataFiles() {
 // OFFSET: 0x00DE98B0
 // FUNCTION: fn_23502
 void CSession::InitResourceNameTables() {
-  std::vector<const char*>& bodyJobNames = reinterpret_cast<std::vector<const char*>&>(this->m_bodyJobNames);
+  std::vector<const char*>& bodyJobNames = this->m_bodyJobNames;
   bodyJobNames.resize(28053, "초보자");
   bodyJobNames[0] = "초보자";
   bodyJobNames[26] = "산타";
@@ -4589,7 +4589,7 @@ void CSession::InitResourceNameTables() {
   bodyJobNames[408] = OBFUSCATE_ARRAY("DRUID_RIDING", 0x2FEB8739E5975BD1ULL, char).Text();
   bodyJobNames[409] = OBFUSCATE_ARRAY("KARNOS_RIDING", 0x39A39F87DD5F535BULL, char).Text();
   bodyJobNames[410] = OBFUSCATE_ARRAY("ALITEA_RIDING", 0x6FE153231D879777ULL, char).Text();
-  std::vector<const char*>& imfNames = reinterpret_cast<std::vector<const char*>&>(this->m_imfNames);
+  std::vector<const char*>& imfNames = this->m_imfNames;
   imfNames.resize(28053, "초보자");
   imfNames[1] = "검사";
   imfNames[2] = "마법사";
@@ -4923,11 +4923,11 @@ void CSession::InitResourceNameTables() {
   imfNames[408] = "DRUID_RIDING";
   imfNames[409] = "KARNOS_RIDING";
   imfNames[410] = "ALITEA_RIDING";
-  std::vector<const char*>& sexNames = reinterpret_cast<std::vector<const char*>&>(this->m_sexNames);
+  std::vector<const char*>& sexNames = this->m_sexNames;
   sexNames.resize(2, "여");
   sexNames[0] = "여";
   sexNames[1] = "남";
-  std::vector<const char*>& humanMaleHeadNames = reinterpret_cast<std::vector<const char*>&>(this->m_humanMaleHeadNames);
+  std::vector<const char*>& humanMaleHeadNames = this->m_humanMaleHeadNames;
   humanMaleHeadNames.resize(46, "2");
   humanMaleHeadNames[0] = "2";
   humanMaleHeadNames[1] = "2";
@@ -4975,7 +4975,7 @@ void CSession::InitResourceNameTables() {
   humanMaleHeadNames[43] = "43";
   humanMaleHeadNames[44] = "44";
   humanMaleHeadNames[45] = "45";
-  std::vector<const char*>& humanFemaleHeadNames = reinterpret_cast<std::vector<const char*>&>(this->m_humanFemaleHeadNames);
+  std::vector<const char*>& humanFemaleHeadNames = this->m_humanFemaleHeadNames;
   humanFemaleHeadNames.resize(46, "2");
   humanFemaleHeadNames[0] = "2";
   humanFemaleHeadNames[1] = "2";
@@ -5023,7 +5023,7 @@ void CSession::InitResourceNameTables() {
   humanFemaleHeadNames[43] = "43";
   humanFemaleHeadNames[44] = "44";
   humanFemaleHeadNames[45] = "45";
-  std::vector<const char*>& doramMaleHeadNames = reinterpret_cast<std::vector<const char*>&>(this->m_doramMaleHeadNames);
+  std::vector<const char*>& doramMaleHeadNames = this->m_doramMaleHeadNames;
   doramMaleHeadNames.resize(11, "1");
   doramMaleHeadNames[1] = "1";
   doramMaleHeadNames[2] = "2";
@@ -5035,7 +5035,7 @@ void CSession::InitResourceNameTables() {
   doramMaleHeadNames[8] = "8";
   doramMaleHeadNames[9] = "9";
   doramMaleHeadNames[10] = "10";
-  std::vector<const char*>& doramFemaleHeadNames = reinterpret_cast<std::vector<const char*>&>(this->m_doramFemaleHeadNames);
+  std::vector<const char*>& doramFemaleHeadNames = this->m_doramFemaleHeadNames;
   doramFemaleHeadNames.resize(11, "1");
   doramFemaleHeadNames[1] = "1";
   doramFemaleHeadNames[2] = "2";
@@ -5056,7 +5056,7 @@ void CSession::InitResourceNameTables() {
       accessoryNames[index] = name;
     }
   }
-  std::vector<const char*>& shieldJobNames = reinterpret_cast<std::vector<const char*>&>(this->m_shieldJobNames);
+  std::vector<const char*>& shieldJobNames = this->m_shieldJobNames;
   shieldJobNames.resize(28053, OBFUSCATE_ARRAY("초보자\\초보자", 0x234977DDB54BC71DULL, char).Text());
   shieldJobNames[0] = OBFUSCATE_ARRAY("초보자\\초보자", 0xEF6D1D893F2B2DC5ULL, char).Text();
   shieldJobNames[1] = OBFUSCATE_ARRAY("검사\\검사", 0xE55723712993051DULL, char).Text();
@@ -5383,11 +5383,11 @@ void CSession::InitResourceNameTables() {
   shieldJobNames[403] = KarnosBodyPath1().Text();
   shieldJobNames[404] = KarnosBodyPath2().Text();
   shieldJobNames[405] = AliteaBodyPath1().Text();
-  std::vector<const char*>& femaleSuffixNames = reinterpret_cast<std::vector<const char*>&>(this->additionalSpriteNames[0x08]);
+  std::vector<const char*>& femaleSuffixNames = this->m_femaleSuffixNames;
   femaleSuffixNames.resize(2, "f");
   femaleSuffixNames[0] = "f";
   femaleSuffixNames[1] = "";
-  std::vector<const char*>& weaponNames = reinterpret_cast<std::vector<const char*>&>(this->m_weaponNamesBegin);
+  std::vector<const char*>& weaponNames = this->m_weaponNames;
   weaponNames.resize(105, "");
   for (int index = 0; index < 105; ++index) {
     const char* name = nullptr;
@@ -5970,7 +5970,7 @@ void CSession::LoadSessionTables() {
 // OFFSET: 0x00E31E30
 // FUNCTION: fn_24178
 void CSession::InitJobSpriteNames() {
-  std::vector<const char*>& jobSpriteNames = reinterpret_cast<std::vector<const char*>&>(this->m_jobSpriteNames);
+  std::vector<const char*>& jobSpriteNames = this->m_jobSpriteNames;
   jobSpriteNames.resize(28053, OBFUSCATE_ARRAY("초보자\\초보자", 0x114901C7E37F6D49ULL, char).Text());
   jobSpriteNames[0] = OBFUSCATE_ARRAY("초보자\\초보자", 0xDF8117FF49CFF551ULL, char).Text();
   jobSpriteNames[1] = OBFUSCATE_ARRAY("검사\\검사", 0xADC51BF9C98B413DULL, char).Text();

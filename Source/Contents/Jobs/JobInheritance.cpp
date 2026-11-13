@@ -1111,11 +1111,11 @@ bool __stdcall IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) {
 // FUNCTION: fn_23803
 std::string CSession::GetWeaponName(int weapon) {
   const unsigned index = GetRealWeaponId(weapon);
-  if (index >= static_cast<unsigned>(this->m_weaponNamesEnd - this->m_weaponNamesBegin)) {
-    return this->m_weaponNamesBegin[0];
+  if (index >= this->m_weaponNames.size()) {
+    return this->m_weaponNames[0];
   }
 
-  return this->m_weaponNamesBegin[index];
+  return this->m_weaponNames[index];
 }
 
 // OFFSET: 0x00DE3800
