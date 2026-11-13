@@ -22,6 +22,8 @@
 #include <utility>
 #include <windows.h>
 
+template __declspec(noinline) std::list<ProbabilityTable::CItemData>::iterator std::next(std::list<ProbabilityTable::CItemData>::iterator, std::ptrdiff_t);
+
 // OFFSET: 0x00A4E3B0
 // FUNCTION: fn_16206
 template <>
