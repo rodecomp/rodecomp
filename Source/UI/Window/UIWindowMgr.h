@@ -18,6 +18,7 @@
 class UIWindow;
 class UIMessageBox;
 class CBitmapRes;
+class CSurface;
 class CWebBrowser;
 struct MessengerMember;
 struct ReplayOptions;
@@ -317,7 +318,7 @@ public:
   /* 046C */ int previousMouseX;
   /* 0470 */ int previousMouseY;
   /* 0474 */ int modalResponse;
-  /* 0478 */ UIWindow* backgroundSurface;
+  /* 0478 */ CSurface* backgroundSurface;
   /* 047C */ int screenWidth;
   /* 0480 */ int screenHeight;
   /* 0484 */ std::string padding_0484;

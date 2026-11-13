@@ -1477,7 +1477,7 @@ void UIWindowMgr::DrawCenteredBackground() {
     int x = static_cast<int>(GetRenderSystemHolder()->Width() - this->screenWidth) / 2;
     int height = this->screenHeight;
     int y = static_cast<int>(GetRenderSystemHolder()->Height() - height) / 2;
-    reinterpret_cast<CSurface*>(this->backgroundSurface)->Stretch(x, y, this->screenWidth, height);
+    this->backgroundSurface->Stretch(x, y, this->screenWidth, height);
   }
 }
 

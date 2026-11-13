@@ -1049,12 +1049,12 @@ void UIWindowMgr::SetBackgroundSurface(CBitmapRes* bitmap) {
   }
 
   if (!this->backgroundSurface) {
-    this->backgroundSurface = reinterpret_cast<UIWindow*>(GetRenderSystemHolder()->CreateSurfaceOrTexture(bitmap->image.width, bitmap->image.height));
+    this->backgroundSurface = GetRenderSystemHolder()->CreateSurfaceOrTexture(bitmap->image.width, bitmap->image.height);
     if (!this->backgroundSurface) {
       return;
     }
   }
-  reinterpret_cast<CSurface*>(this->backgroundSurface)->Upload(0, 0, bitmap->image.width, bitmap->image.height, bitmap->image.pixels, 0, 0);
+  this->backgroundSurface->Upload(0, 0, bitmap->image.width, bitmap->image.height, bitmap->image.pixels, 0, 0);
 }
 
 // OFFSET: 0x00AAA050

@@ -1,5 +1,6 @@
 #include "UI/Window/UIEnums.h"
 #include "Contents/Configuration/ServiceOptions.h"
+#include "Render/Textures/Surface.h"
 #include "UI/Layout/SnapMgr.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
