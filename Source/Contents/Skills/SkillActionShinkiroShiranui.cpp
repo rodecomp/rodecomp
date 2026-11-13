@@ -21,6 +21,8 @@
 #include <string>
 #include <vector>
 
+template __declspec(noinline) std::vector<int>::~vector() noexcept;
+
 namespace {
 
 struct ShuffledSequence {
