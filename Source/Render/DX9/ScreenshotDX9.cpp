@@ -29,7 +29,7 @@ bool CRendererDX9::SaveScreenshot(const char* filename, int format, CTexture* ov
     ScreenshotOverlay drawing;
     drawing.Draw(std::bit_cast<std::int32_t>(x), std::bit_cast<std::int32_t>(y), overlay, 0xFFFFFFFFu, 0, 0, false);
 
-    if (owner.Begin(GetRenderSystemHolder()->system)) {
+    if (owner.Begin()) {
       ScopedDeviceStateDX9 restore(this->device->state);
       this->device->state.SetRenderState(D3DRS_ZENABLE, D3DZB_FALSE);
       this->device->state.SetRenderState(D3DRS_FOGENABLE, 0);

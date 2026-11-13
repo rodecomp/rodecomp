@@ -22,7 +22,7 @@ void CRenderer::ClearFrame() {
 // OFFSET: 0x00565970
 // FUNCTION: fn_02222
 bool CRendererDX9::Draw() {
-  this->device->Begin(GetRenderSystemHolder()->system);
+  this->device->Begin();
   this->DrawQueues(this->queues, this->twoPass);
   this->ClearFrame();
   this->device->End();

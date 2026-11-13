@@ -58,7 +58,7 @@ __declspec(noinline) HRESULT DeviceOwnerDX9::CheckState() {
 
 // OFFSET: 0x0054BAD0
 // FUNCTION: fn_01911
-bool DeviceOwnerDX9::Begin(CRenderSystemBase* renderSystem) {
+bool DeviceOwnerDX9::Begin() {
   if (!this->device || this->CheckState() != D3D_OK || FAILED(this->device->BeginScene())) {
     return false;
   }

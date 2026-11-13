@@ -23,7 +23,7 @@ public:
   HRESULT Present(int unused);
   HRESULT ClipFullscreenCursor();
   HRESULT CheckState();
-  bool Begin(class CRenderSystemBase* renderSystem);
+  bool Begin();
   void End();
   bool CaptureBackBuffer();
   bool RestoreBackBuffer();
