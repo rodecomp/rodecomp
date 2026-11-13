@@ -21,7 +21,7 @@ void CMapChainEffect::CreateChainParticles(int param) {
   int local8 = 0;
   for (int localC = 0; localC < 360; localC += 60, ++local8) {
     for (int i = 0; i < 21; ++i) {
-      CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(&this->position), 5);
+      CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (particle != nullptr) {
         particle->rowIndex = local8;
         particle->effectId = this->id;
@@ -46,7 +46,7 @@ void CMapChainEffect::CreateChainParticles(int param) {
   int localC2 = 6;
   for (int local82 = 0; local82 < 360; local82 += 60, ++localC2) {
     for (int i = 0; i < 21; ++i) {
-      CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(&this->position), 5);
+      CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (particle != nullptr) {
         particle->rowIndex = localC2;
         particle->effectId = this->id;

@@ -24,7 +24,7 @@ CLightSphereEffect::CLightSphereEffect() : CEffect(-1), spheres(), rays() {
 void CLightSphereEffect::CreateRayParticles(int param) {
   for (int c = 0; c < 4; ++c) {
     for (int i = 0; i < 80; ++i) {
-      CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(&this->position), 5);
+      CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (particle != nullptr) {
         particle->SetTexture("effect\\white02.bmp");
         particle->effectId = this->id;
@@ -125,7 +125,7 @@ void CLightSphereEffect::Close() {
 // FUNCTION: fn_19107
 void CLightSphereEffect::Open() {
   for (int i = 0; i < 4; ++i) {
-    CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(&this->position), 5);
+    CParticle* particle = CreateParticle(&this->positionVector, 5);
     if (particle != nullptr) {
       particle->SetTexture("effect\\thunder_center.bmp");
       particle->effectId = this->id;
