@@ -461,7 +461,7 @@ void CUIItemInfo::OnInit() {
 // OFFSET: 0x009DEF40
 // FUNCTION: fn_14358
 void CUIItemInfo::SetDescription(int type, const std::vector<const char*>& description) {
-  reinterpret_cast<CUITextViewer*>(this->descriptionViewer)->Clear();
+  this->descriptionViewer->Clear();
 
   if (type == 5) {
     this->type = 5;
@@ -486,7 +486,7 @@ void CUIItemInfo::SetDescription(int type, const std::vector<const char*>& descr
     std::regex_search(text.c_str(), text.c_str() + text.size(), match, pattern);
     while (!match.empty()) {
       std::string line = match.prefix().str() + match[0].str();
-      reinterpret_cast<CUITextViewer*>(this->descriptionViewer)->AddLine(line);
+      this->descriptionViewer->AddLine(line);
       ++lines;
       text = match.suffix().str();
       text.erase(0, text.find_first_not_of(" \r\n\t\v\f"));
@@ -1010,7 +1010,7 @@ void CUIItemInfo::OnCreate(int width, int height) {
   this->AddChild(this->nameText);
 
   CUITextViewer* description = new CUITextViewer();
-  this->descriptionViewer = reinterpret_cast<CUIStaticText*>(description);
+  this->descriptionViewer = description;
   description->SetSize(173, 97);
   description->Move(165, 26);
   description->SetTextOffset(0, 6);
@@ -1038,7 +1038,7 @@ void CUIItemInfo::OnCreate(int width, int height) {
   this->AddChild(description);
 
   CUITextViewer* options = new CUITextViewer();
-  this->optionsViewer = reinterpret_cast<CUIStaticText*>(options);
+  this->optionsViewer = options;
   options->SetSize(115, 90);
   options->Move(338, 26);
   options->SetTextOffset(0, 8);

@@ -93,8 +93,8 @@ public:
       /* 00EC */ CUIStaticText* nameText;
     };
   };
-  /* 00F0 */ CUIStaticText* descriptionViewer;
-  /* 00F4 */ CUIStaticText* optionsViewer;
+  /* 00F0 */ CUITextViewer* descriptionViewer;
+  /* 00F4 */ CUITextViewer* optionsViewer;
   /* 00F8 */ CUITextViewer* sourcesViewer;
   /* 00FC */ int itemId;
   /* 0100 */ int type;

@@ -12313,7 +12313,7 @@ void CGameMode::ReceiveActorStandEntry(const unsigned char* data) {
     }
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
     actor->SendMsg(nullptr, AM_STANDENTRY2, value, 0, 0, 0, 0, 0);
-    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == 0 &&
+    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
         (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
     }
@@ -12348,7 +12348,7 @@ void CGameMode::ReceiveActorStandEntry(const unsigned char* data) {
     if (actor) {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
       actor->SendMsg(nullptr, AM_INITSTANDENTRY2, value, 0, 0, 0, 0, 0);
-      if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == 0 &&
+      if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
           (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
         this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
       }
@@ -12407,7 +12407,7 @@ void CGameMode::ReceiveActorStandEntryFont(const unsigned char* data) {
     }
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
     actor->SendMsg(nullptr, AM_STANDENTRY2, value, 0, 0, 0, 0, 0);
-    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == 0 &&
+    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
         (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
     }
@@ -12442,7 +12442,7 @@ void CGameMode::ReceiveActorStandEntryFont(const unsigned char* data) {
     if (actor) {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
       actor->SendMsg(nullptr, AM_INITSTANDENTRY2, value, 0, 0, 0, 0, 0);
-      if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == 0 &&
+      if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
           (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
         this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
       }
@@ -12510,7 +12510,7 @@ void CGameMode::ReceiveActorTypedEntry(const unsigned char* data) {
     }
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
     actor->SendMsg(nullptr, AM_STANDENTRY, value, 0, 0, 0, 0, 0);
-    if (g_session.GetSiegeMode() && packet->objectType != 7 && actor->sceneNameWindow == 0 &&
+    if (g_session.GetSiegeMode() && packet->objectType != 7 && actor->sceneNameWindow == nullptr &&
         (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
     }
@@ -12546,7 +12546,7 @@ void CGameMode::ReceiveActorTypedEntry(const unsigned char* data) {
     if (actor) {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
       actor->SendMsg(nullptr, AM_INITSTANDENTRY, value, 0, 0, 0, 0, 0);
-      if (g_session.GetSiegeMode() && packet->objectType != 7 && actor->sceneNameWindow == 0 &&
+      if (g_session.GetSiegeMode() && packet->objectType != 7 && actor->sceneNameWindow == nullptr &&
           (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
         this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
       }
@@ -12871,7 +12871,7 @@ void CGameMode::ReceiveActorMoveEntryLegacy(const unsigned char* data) {
     g_session.homunAlive = 1;
   } else if (packet->objectType == 9 && g_session.IsMercenaryAid(packet->aid)) {
     g_session.mercenaryAlive = 1;
-  } else if (g_session.GetSiegeMode() && actor->sceneNameWindow == 0 &&
+  } else if (g_session.GetSiegeMode() && actor->sceneNameWindow == nullptr &&
              (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
     this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
   }
@@ -13002,7 +13002,7 @@ void CGameMode::SpawnMovingActor(
     g_session.homunAlive = 1;
   } else if (objectType == 9 && g_session.IsMercenaryAid(aid)) {
     g_session.mercenaryAlive = 1;
-  } else if (g_session.GetSiegeMode() && actor->sceneNameWindow == 0 &&
+  } else if (g_session.GetSiegeMode() && actor->sceneNameWindow == nullptr &&
              (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
     this->ShowGuildEmblem(actor, guildId, guildVersion);
   }
@@ -13109,7 +13109,7 @@ void CGameMode::ReceiveActorMoveEntryOld(const unsigned char* data) {
         actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
       }
     }
-    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == 0 &&
+    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
         (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
     }
@@ -13152,7 +13152,7 @@ void CGameMode::ReceiveActorMoveEntryOld(const unsigned char* data) {
     this->scene->actors.push_back(actor);
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
     actor->SendMsg(nullptr, AM_INITMOVEENTRY2, value, 0, 0, 0, 0, 0);
-    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == 0 &&
+    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
         (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
     }
@@ -13243,7 +13243,7 @@ void CGameMode::ReceiveActorMoveEntryOld2(const unsigned char* data) {
         actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
       }
     }
-    if (g_session.GetSiegeMode() && packet->objectType != 7 && actor->sceneNameWindow == 0 &&
+    if (g_session.GetSiegeMode() && packet->objectType != 7 && actor->sceneNameWindow == nullptr &&
         (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
     }
@@ -13289,7 +13289,7 @@ void CGameMode::ReceiveActorMoveEntryOld2(const unsigned char* data) {
     this->scene->actors.push_back(actor);
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
     actor->SendMsg(nullptr, AM_INITMOVEENTRY2, value, 0, 0, 0, 0, 0);
-    if (g_session.GetSiegeMode() && packet->objectType == 7 && actor->sceneNameWindow == 0 &&
+    if (g_session.GetSiegeMode() && packet->objectType == 7 && actor->sceneNameWindow == nullptr &&
         (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
     }
@@ -13390,7 +13390,7 @@ void CGameMode::ReceiveActorMoveEntryNamed(const unsigned char* data) {
         actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
       }
     }
-    if (g_session.GetSiegeMode() && packet->objectType == 7 && actor->sceneNameWindow == 0 &&
+    if (g_session.GetSiegeMode() && packet->objectType == 7 && actor->sceneNameWindow == nullptr &&
         (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
     }
@@ -13436,7 +13436,7 @@ void CGameMode::ReceiveActorMoveEntryNamed(const unsigned char* data) {
     actor->SendMsg(nullptr, AM_INITMOVEENTRY2, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
     *reinterpret_cast<short*>(actor->render.fontSequenceBytes) = packet->font;
     actor->characterLevel = packet->level;
-    if (g_session.GetSiegeMode() && packet->objectType == 7 && actor->sceneNameWindow == 0 &&
+    if (g_session.GetSiegeMode() && packet->objectType == 7 && actor->sceneNameWindow == nullptr &&
         (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
     }
@@ -13567,7 +13567,7 @@ void CGameMode::ReceiveActorMoveEntryOld0(const unsigned char* data) {
     }
   }
 
-  if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == 0 &&
+  if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
       (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
     this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
   }
@@ -13866,7 +13866,7 @@ void CGameMode::ReceiveActorStandEntryLegacy(const unsigned char* data) {
     g_session.homunAlive = 1;
   } else if (packet->objectType == 9 && g_session.IsMercenaryAid(packet->aid)) {
     g_session.mercenaryAlive = 1;
-  } else if (g_session.GetSiegeMode() && actor->sceneNameWindow == 0 &&
+  } else if (g_session.GetSiegeMode() && actor->sceneNameWindow == nullptr &&
              (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
     this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
   }
@@ -14006,7 +14006,7 @@ void CGameMode::ReceiveActorStandEntryNamedOld(const unsigned char* data) {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
       actor->SendMsg(nullptr, AM_STANDENTRY2, value, 0, 0, 0, 0, 0);
     }
-    if (g_session.GetSiegeMode() && actor->sceneNameWindow == 0) {
+    if (g_session.GetSiegeMode() && actor->sceneNameWindow == nullptr) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
     }
   } else {
@@ -14032,7 +14032,7 @@ void CGameMode::ReceiveActorStandEntryNamedOld(const unsigned char* data) {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
       actor->SendMsg(nullptr, AM_STANDENTRY, value, 0, 0, 0, 0, 0);
     }
-    if (g_session.IsGuardianJob(packet->job) && g_session.GetSiegeMode() && actor->sceneNameWindow == 0) {
+    if (g_session.IsGuardianJob(packet->job) && g_session.GetSiegeMode() && actor->sceneNameWindow == nullptr) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
     }
 
@@ -14126,7 +14126,7 @@ void CGameMode::ReceiveActorStandEntryOld(const unsigned char* data) {
       }
     }
     actor->SendMsg(nullptr, AM_STANDENTRY2, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
-    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == 0 &&
+    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
         (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
     }
@@ -14161,7 +14161,7 @@ void CGameMode::ReceiveActorStandEntryOld(const unsigned char* data) {
     if (isPc && !IsAdminAccount(packet->aid) && !StateFlag06(packet->effectState)) {
       actor->LaunchEffect(0x158, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
-    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == 0 &&
+    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
         (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
     }
@@ -14251,7 +14251,7 @@ void CGameMode::ReceiveActorStandEntryOld2(const unsigned char* data) {
     }
     actor->SendMsg(nullptr, AM_STANDENTRY2, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
     actor->characterLevel = packet->level;
-    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == 0 &&
+    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
         (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
     }
@@ -14287,7 +14287,7 @@ void CGameMode::ReceiveActorStandEntryOld2(const unsigned char* data) {
     if (isPc && !IsAdminAccount(packet->aid) && !StateFlag06(packet->effectState)) {
       actor->LaunchEffect(0x158, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
-    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == 0 &&
+    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
         (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
     }
@@ -14379,7 +14379,7 @@ void CGameMode::ReceiveActorStandEntryOld3(const unsigned char* data) {
       }
     }
     actor->SendMsg(nullptr, AM_STANDENTRY2, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
-    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == 0 &&
+    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
         (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
     }
@@ -14418,7 +14418,7 @@ void CGameMode::ReceiveActorStandEntryOld3(const unsigned char* data) {
         actor->LaunchEffect(0x158, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
     }
-    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == 0 &&
+    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
         (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
     }
@@ -14554,7 +14554,7 @@ void CGameMode::ReceiveActorStandEntryOld0(const unsigned char* data) {
     }
   }
 
-  if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == 0 &&
+  if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
       (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
     this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
   }
@@ -14669,7 +14669,7 @@ void CGameMode::ReceiveActorStateEntryNamedOld(const unsigned char* data) {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
       actor->SendMsg(nullptr, AM_STANDENTRY2, value, 0, 0, 0, 0, 0);
     }
-    if (g_session.GetSiegeMode() && actor->sceneNameWindow == 0) {
+    if (g_session.GetSiegeMode() && actor->sceneNameWindow == nullptr) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
     }
   } else {
@@ -14693,7 +14693,7 @@ void CGameMode::ReceiveActorStateEntryNamedOld(const unsigned char* data) {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
       actor->SendMsg(nullptr, AM_STANDENTRY, value, 0, 0, 0, 0, 0);
     }
-    if (g_session.IsGuardianJob(packet->job) && g_session.GetSiegeMode() && actor->sceneNameWindow == 0) {
+    if (g_session.IsGuardianJob(packet->job) && g_session.GetSiegeMode() && actor->sceneNameWindow == nullptr) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
     }
 
@@ -14792,7 +14792,7 @@ void CGameMode::ReceiveActorStateEntryOld(const unsigned char* data) {
       }
     }
     actor->SendMsg(nullptr, AM_STANDENTRY2, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
-    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == 0 &&
+    if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
         (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
       this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
     }
@@ -14823,7 +14823,7 @@ void CGameMode::ReceiveActorStateEntryOld(const unsigned char* data) {
     this->scene->actors.push_back(actor);
     if (actor) {
       actor->SendMsg(nullptr, AM_INITSTANDENTRY2, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
-      if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == 0 &&
+      if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
           (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
         this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
       }
@@ -14941,7 +14941,7 @@ void CGameMode::SpawnStandingActor(
     g_session.homunAlive = 1;
   } else if (objectType == 9 && g_session.IsMercenaryAid(aid)) {
     g_session.mercenaryAlive = 1;
-  } else if (g_session.GetSiegeMode() && actor->sceneNameWindow == 0 &&
+  } else if (g_session.GetSiegeMode() && actor->sceneNameWindow == nullptr &&
              (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
     this->ShowGuildEmblem(actor, guildId, guildVersion);
   }
@@ -15214,7 +15214,7 @@ void CGameMode::SpawnStateActor(
     g_session.homunAlive = 1;
   } else if (objectType == 9 && g_session.IsMercenaryAid(aid)) {
     g_session.mercenaryAlive = 1;
-  } else if (g_session.GetSiegeMode() && actor->sceneNameWindow == 0 &&
+  } else if (g_session.GetSiegeMode() && actor->sceneNameWindow == nullptr &&
              (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
     this->ShowGuildEmblem(actor, guildId, guildVersion);
   }
@@ -15628,7 +15628,7 @@ void CGameMode::ReceiveActorStateEntryLegacy(const unsigned char* data) {
     g_session.homunAlive = 1;
   } else if (packet->objectType == 9 && g_session.IsMercenaryAid(packet->aid)) {
     g_session.mercenaryAlive = 1;
-  } else if (g_session.GetSiegeMode() && actor->sceneNameWindow == 0 &&
+  } else if (g_session.GetSiegeMode() && actor->sceneNameWindow == nullptr &&
              (g_session.IsPlayerJobId(actor->GetEffectiveJob(-1)) || g_session.IsGuardianJob(actor->GetEffectiveJob(-1)))) {
     this->ShowGuildEmblem(actor, packet->guildId, packet->guildVersion);
   }

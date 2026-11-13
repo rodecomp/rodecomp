@@ -4501,10 +4501,10 @@ void CGameActor::SetActorJob(int job) {
 // OFFSET: 0x00CAAFD0
 // FUNCTION: fn_21023
 void CGameActor::ClearSiegeNameWindow() {
-  if (g_session.GetSiegeMode() != 0 && this->sceneNameWindow != 0) {
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->RemoveNotificationWindow(this->sceneNameWindow);
-    g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->sceneNameWindow));
-    this->sceneNameWindow = 0;
+  if (g_session.GetSiegeMode() != 0 && this->sceneNameWindow != nullptr) {
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->RemoveNotificationWindow(reinterpret_cast<int>(this->sceneNameWindow));
+    g_windowMgr.Schedule(this->sceneNameWindow);
+    this->sceneNameWindow = nullptr;
   }
 }
 

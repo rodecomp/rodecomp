@@ -85,7 +85,7 @@ public:
   /* 017C */ int isTrickDead;
   /* 0180 */ int isPlayHitWave;
   /* 0184 */ int isAsuraAttack;
-  /* 0188 */ int sceneNameWindow;
+  /* 0188 */ UIWindow* sceneNameWindow;
   /* 018C */ UIWindow* actorTitleWindow;
   /* 0190 */ char hitWaveName[0x80];
   /* 0210 */ std::uint16_t characterLevel;

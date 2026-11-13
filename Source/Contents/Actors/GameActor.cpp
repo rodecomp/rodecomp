@@ -499,7 +499,7 @@ void CGameActor::ResetState() {
   this->guildId = 0;
   this->freezeEndTick = 0;
   this->actorType = 0;
-  this->sceneNameWindow = 0;
+  this->sceneNameWindow = nullptr;
   this->actorTitleWindow = nullptr;
   this->isNeverAnimation = 0;
   this->isAsuraAttack = 0;
@@ -669,9 +669,9 @@ void CGameActor::ReleaseAttachments() {
   this->msgEffectList.erase(this->msgEffectList.begin(), this->msgEffectList.end());
 
   if (g_session.GetSiegeMode() && this->sceneNameWindow) {
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->RemoveNotificationWindow(this->sceneNameWindow);
-    g_windowMgr.Schedule(reinterpret_cast<UIWindow*>(this->sceneNameWindow));
-    this->sceneNameWindow = 0;
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->RemoveNotificationWindow(reinterpret_cast<int>(this->sceneNameWindow));
+    g_windowMgr.Schedule(this->sceneNameWindow);
+    this->sceneNameWindow = nullptr;
   }
 
   if (this->actorTitleWindow) {

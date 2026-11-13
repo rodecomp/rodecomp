@@ -552,7 +552,7 @@ void CGameMode::UpdateNameBalloon(CGameActor* actor) {
 // OFFSET: 0x00CD8820
 // FUNCTION: fn_21302
 void CGameMode::ShowGuildEmblem(CGameActor* actor, int guildId, int unused) {
-  if (!actor || !guildId || actor->sceneNameWindow != 0) {
+  if (!actor || !guildId || actor->sceneNameWindow != nullptr) {
     return;
   }
 
@@ -569,7 +569,7 @@ void CGameMode::ShowGuildEmblem(CGameActor* actor, int guildId, int unused) {
   UIEmblemWnd* window = new UIEmblemWnd;
   window->SendMsg(nullptr, UM_SETINFO, actor->render.accountId, guildId, 0, 0);
   g_windowMgr.AddRenderedFront(window);
-  actor->sceneNameWindow = reinterpret_cast<int>(window);
+  actor->sceneNameWindow = window;
   this->AddNotificationWindow(window);
 }
 
