@@ -1,3 +1,4 @@
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Contents/Items/ItemType.h"
 #include "Client/Mode/ModeMessage.h"
 #include "UI/Window/UIEnums.h"
@@ -1147,15 +1148,15 @@ UINewChatWnd::UINewChatWnd() : UIFrameWnd(0) {
   this->m_tabWidth = 71;
   this->m_inputAreaHeight = 24;
   switch (g_serviceType) {
-  case 10:
+  case ServiceGermany:
     this->m_tabWidth = 71;
     break;
-  case 18:
+  case ServiceFrance:
     this->m_tabWidth = 90;
     break;
-  case 1:
-  case 7:
-  case 11:
+  case ServiceAmerica:
+  case ServicePhilippine:
+  case ServiceIndia:
     this->m_tabWidth = 110;
     break;
   }

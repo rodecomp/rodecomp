@@ -1,4 +1,5 @@
 #include "UI/Window/UIEnums.h"
+#include "UI/GameSettings/TalkType.h"
 #include "Client/Mode/ModeMessage.h"
 #include "Contents/Actors/GameActor.h"
 #include "Contents/Actors/ActorEnums.h"
@@ -163,7 +164,7 @@ bool CGameActor::ProcessState() {
     if (timeGetTime() >= this->skillRechargeEndTick) {
       this->isCounter = 0;
       this->render.isMotionFreezed = false;
-      this->SetState(0, 1);
+      this->SetState(ST_STAND, 1);
       this->SendMsg(nullptr, AM_DELETE_SKILL_RECHARGEGAGE, 0, 0, 0, 0, 0, 0);
     }
     this->ProcessMotion();
@@ -173,7 +174,7 @@ bool CGameActor::ProcessState() {
 
   case ST_STAND:
     if (this->render.motionType == 1 && this->render.isMotionFinished) {
-      this->SetState(0, 1);
+      this->SetState(ST_STAND, 1);
     } else if (this->objectType == 7 && this->render.accountId == g_session.petGid && static_cast<std::uint32_t>(this->petEmotionStartTick) > 0 &&
                timeGetTime() > static_cast<std::uint32_t>(this->petEmotionStartTick) + 3000) {
       if (rand() % 100 < 25) {
@@ -258,7 +259,7 @@ bool CGameActor::ProcessState() {
       this->render.position.x = destX;
       this->render.position.z = destZ;
       this->NotifyCellMove(&this->render.position.x, &this->render.position.z);
-      this->SetState(0, 1);
+      this->SetState(ST_STAND, 1);
       this->isNeverAnimation = 0;
       this->render.isMotionFreezed = false;
       if (this->isAsuraAttack != 0) {
@@ -283,7 +284,7 @@ bool CGameActor::ProcessState() {
   case 0x3B:
     this->ProcessMotion();
     if (this->render.isMotionFinished) {
-      this->SetState(0, 1);
+      this->SetState(ST_STAND, 1);
     }
     this->lastProcessStateTime = timeGetTime();
     this->lastServerTime = serverTime;
@@ -313,7 +314,7 @@ bool CGameActor::ProcessState() {
     this->isCounter = 0;
     this->ProcessMotion();
     if (this->render.isMotionFinished) {
-      this->SetState(0, 1);
+      this->SetState(ST_STAND, 1);
     }
     this->lastProcessStateTime = timeGetTime();
     this->lastServerTime = serverTime;
@@ -339,7 +340,7 @@ bool CGameActor::ProcessState() {
         this->render.position.x = this->damageDestX;
         this->render.position.z = this->damageDestZ;
         moved = 1;
-        this->SetState(0, 1);
+        this->SetState(ST_STAND, 1);
       }
     }
     break;
@@ -451,7 +452,7 @@ void CGameActor::ResetState() {
   this->render.animation = 0;
   this->render.previousAnimation = 0;
   this->render.curMotion = 0;
-  this->render.state = 0;
+  this->render.state = ST_STAND;
   this->render.motionType = 0;
   this->render.speed = 1.0f;
   this->render.visibilityOptions[0] = 1;
@@ -588,8 +589,8 @@ void CGameActor::UpdateGaugePositions() {
   if (this->actorWindows[3] != 0) {
     if (timeGetTime() > this->skillRechargeEndTick) {
       this->SendMsg(nullptr, AM_DELETE_SKILL_RECHARGEGAGE, 0, 0, 0, 0, 0, 0);
-      if (this->render.state == 8) {
-        this->SetState(0, 1);
+      if (this->render.state == ST_BEGIN_SKILL) {
+        this->SetState(ST_STAND, 1);
       }
     } else {
       this->actorWindows[3]->Move(
@@ -721,11 +722,11 @@ void CGameActor::UpdateHpGauge() {
     return;
   }
 
-  if (g_serviceOptions.Get(0xD5) && this->hpGaugeWindow->displayMode != 0 &&
+  if (g_serviceOptions.Get(TT_MONSTERHP_ON_OFF) && this->hpGaugeWindow->displayMode != 0 &&
       !StateFlag01(this->stateFlags) && !StateFlag02(this->stateFlags) && !StateFlag06(this->stateFlags) &&
       g_windowMgr.windowVisibilityState != 2) {
     this->hpGaugeWindow->Show(1);
-    if (this->render.state == 3 && this->hpGaugeWindow->current != 0) {
+    if (this->render.state == ST_DEAD && this->hpGaugeWindow->current != 0) {
       this->hpGaugeWindow->SetValues(0, this->hpGaugeWindow->maximum);
     }
     const int y = static_cast<int>(static_cast<float>(ScaleByScreenHeight(12)) * this->render.distanceScale + static_cast<float>(this->render.screenY));

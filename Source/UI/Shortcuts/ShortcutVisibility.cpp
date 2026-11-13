@@ -1,4 +1,5 @@
 #include "UI/Window/WindowId.h"
+#include "UI/GameSettings/TalkType.h"
 #include "Client/Replay/Replay.h"
 #include "UI/Window/WindowId.h"
 #include "Contents/Configuration/ServiceOptions.h"
@@ -95,7 +96,7 @@ bool UIWindowMgr::ShowWindowById(int id, int visible) {
       PromoteWindow(this->shortCutWnd);
     }
 
-    if (g_serviceOptions.Get(0x10E)) {
+    if (g_serviceOptions.Get(TT_QUICK_SLOT_ON_OFF)) {
       g_windowMgr.EnsureWindow(WID_QUIKSLOTWND);
     }
 

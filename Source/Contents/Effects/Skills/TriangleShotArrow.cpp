@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/TriangleShotArrow.h"
+#include "UI/GameSettings/TalkType.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -39,7 +40,7 @@ void CTriangleShotArrow::Open() {
   this->current.z = this->position[2];
 
   CEZ2STRParticle* arrow = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->current, 5));
-  if (g_serviceOptions.Get(229)) {
+  if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
     arrow->Open("mineffect\\new_triangleshot\\new_triangleshot_arrow\\new_triangleshot_arrow.str");
   } else {
     arrow->Open("new_triangleshot\\new_triangleshot_arrow\\new_triangleshot_arrow.str");

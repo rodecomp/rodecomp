@@ -1,4 +1,5 @@
 #include "Contents/Actors/ActorEnums.h"
+#include "UI/GameSettings/TalkType.h"
 #include "Contents/Effects/Core/EffectTypes.h"
 #include "Client/Mode/ModeMessage.h"
 #include "UI/Window/UIEnums.h"
@@ -1322,7 +1323,7 @@ __declspec(noinline) void UIWindowMgr::ShowWindows189(unsigned char show) {
     }
 
     if (show == 1) {
-      if (!g_serviceOptions.Get(250)) {
+      if (!g_serviceOptions.Get(TT_SHOW_MERCHANT_SHOP_ON_OFF)) {
         (*it)->Show(0);
       } else {
         (*it)->Show(1);
@@ -1352,7 +1353,7 @@ void UIWindowMgr::DestroyPersistentWindows() {
 // OFFSET: 0x00A8CD70
 // FUNCTION: fn_17140
 void UIWindowMgr::RemoveSnapRectangle(UIWindow* window) {
-  if (g_serviceOptions.Get(141)) {
+  if (g_serviceOptions.Get(TT_WINDOW_SNAP_ON_OFF)) {
     const auto entry = this->snapRectangles.find(window);
     if (entry != this->snapRectangles.end()) {
       this->snapRectangles.erase(entry);
@@ -1811,7 +1812,7 @@ void UIWindowMgr::CycleWindowVisibility(int) {
     }
     for (std::list<UIWindow*>::iterator it = this->rendered.begin(); it != this->rendered.end(); ++it) {
       if ((*it)->geometry.id == 189) {
-        if (!g_serviceOptions.Get(250)) {
+        if (!g_serviceOptions.Get(TT_SHOW_MERCHANT_SHOP_ON_OFF)) {
           (*it)->Show(0);
         } else {
           (*it)->Show(1);
@@ -5978,7 +5979,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->Move(g_renderer->viewport.width - 187, 16);
       this->AddRendered(window);
     }
-    window->Show(g_serviceOptions.Get(218));
+    window->Show(g_serviceOptions.Get(TT_SHOW_CASHSHOP_BTN_ON_OFF));
     break;
   case WID_CARDITEMILLUSTWND:
     window = this->cardItemIllustWnd;
@@ -6976,7 +6977,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       }
       this->AddRendered(window);
     }
-    window->Show(g_serviceOptions.Get(219));
+    window->Show(g_serviceOptions.Get(TT_SHOW_GOLDPCCAFE_ON_OFF));
     break;
   case WID_OPENROULLETTEWND:
     window = this->openRoulletteWnd;
@@ -6987,7 +6988,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->Move(g_renderer->viewport.width - 187, 71);
       this->AddRendered(window);
     }
-    window->Show(g_serviceOptions.Get(220));
+    window->Show(g_serviceOptions.Get(TT_SHOW_ROULETTE_BTN_ON_OFF));
     break;
   case WID_ROULLETTEWND:
     window = this->roulletteWnd;

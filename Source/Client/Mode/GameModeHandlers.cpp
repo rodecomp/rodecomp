@@ -1,4 +1,5 @@
 #include "Client/Mode/CGameMode.h"
+#include "UI/GameSettings/TalkType.h"
 #include "Contents/Configuration/ServiceEnums.h"
 #include "Contents/Effects/Core/EffectTypes.h"
 #include "UI/Window/WindowId.h"
@@ -788,7 +789,7 @@ void CGameMode::ReceivePetAct(unsigned char* packet) {
     if (std::strcmp(speech, "") != 0) {
       const std::int64_t text = reinterpret_cast<std::intptr_t>(speech);
       actor->SendMsg(nullptr, AM_CHAT, text, 0, 0, 0, 0, 0);
-      if (!g_serviceOptions.Get(114) && !g_serviceOptions.Get(148)) {
+      if (!g_serviceOptions.Get(TT_NOTALKMSG_ON_OFF) && !g_serviceOptions.Get(TT_NOTALKMSG2_ON_OFF)) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(speech), 0xFAFAFA, 0, 0, 0);
       }
     }
@@ -826,7 +827,7 @@ void CGameMode::NotifyPetEvolutionResult(int result) {
 // OFFSET: 0x00D3CEC0
 // FUNCTION: fn_21798
 void CGameMode::PlayBgm(unsigned char type, std::string name) {
-  if (!g_serviceOptions.Get(7)) {
+  if (!g_serviceOptions.Get(TT_MUSIC_ON_OFF)) {
     return;
   }
 
@@ -856,7 +857,7 @@ void CGameMode::PlayBgm(unsigned char type, std::string name) {
 // OFFSET: 0x00D3D0F0
 // FUNCTION: fn_21799
 void CGameMode::ReceiveNpcBgm(const unsigned char* packet) {
-  if (g_serviceOptions.Get(7)) {
+  if (g_serviceOptions.Get(TT_MUSIC_ON_OFF)) {
     const std::string path = std::string("bgm\\") + reinterpret_cast<const char*>(packet + 2) + std::string(".mp3");
     g_soundMgr->PlayStream(path.c_str(), 1, true);
     g_soundMgr->secondaryEnabled = 1;
@@ -1673,7 +1674,7 @@ void CGameMode::SpawnSkillWarningPlanes(std::uint32_t aid, std::uint16_t skillId
     return;
   }
 
-  CWarningPlaneEffect* effect = static_cast<CWarningPlaneEffect*>(g_effectMgr->Spawn(actor->render.accountId, 0x45A, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0));
+  CWarningPlaneEffect* effect = static_cast<CWarningPlaneEffect*>(g_effectMgr->Spawn(actor->render.accountId, EF_WARNING_PLANE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0));
   if (!effect) {
     return;
   }
@@ -2957,7 +2958,7 @@ void CGameMode::ReceiveClanChat(const unsigned char* packet) {
     g_forbiddenWords.Mask(message, &masked);
   }
 
-  if (!g_serviceOptions.Get(148)) {
+  if (!g_serviceOptions.Get(TT_NOTALKMSG2_ON_OFF)) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xB4B4FF, 21, 0, 0);
   }
 }

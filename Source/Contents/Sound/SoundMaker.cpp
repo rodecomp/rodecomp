@@ -1,4 +1,5 @@
 #include "Client/Mode/ModeMessage.h"
+#include "UI/GameSettings/TalkType.h"
 #include "Contents/Effects/Core/EffectTypes.h"
 #include "Contents/Sound/SoundMaker.h"
 #include "Contents/Actors/ActorEnums.h"
@@ -1076,7 +1077,7 @@ void CNpc::Render(int argument) {
       bounds[4] = reciprocalDepth;
       this->SetRenderInfo(bounds, x, y);
 
-      if (!g_serviceOptions.Get(8)) {
+      if (!g_serviceOptions.Get(TT_EFFECT_ON_OFF)) {
         this->DrawShadow(argument, this->render.scale * 3.0f);
       }
       return;
@@ -1385,7 +1386,7 @@ bool CNpc::OnProcess() {
       if (this->homunAI->state) {
         this->homunAI->Process(this->render.accountId);
       } else {
-        if (g_serviceOptions.Get(0xA4)) {
+        if (g_serviceOptions.Get(TT_HOMUN_USERAI_ON_OFF)) {
           HANDLE find = FindFirstFileA(".\\AI\\USER_AI", &findData);
           if (find == INVALID_HANDLE_VALUE) {
             CreateDirectoryA(".\\AI\\USER_AI", nullptr);
@@ -1409,7 +1410,7 @@ bool CNpc::OnProcess() {
         this->merAI->Process(this->render.accountId);
       } else {
         const char* path;
-        if (g_serviceOptions.Get(0xAE)) {
+        if (g_serviceOptions.Get(TT_MER_USERAI_ON_OFF)) {
           HANDLE find = FindFirstFileA(".\\AI\\USER_AI", &findData);
           if (find == INVALID_HANDLE_VALUE) {
             CreateDirectoryA(".\\AI\\USER_AI", nullptr);
@@ -1452,7 +1453,7 @@ bool CNpc::OnProcess() {
     case NPC_ABR_TYPE:
     case NPC_BIONIC_TYPE:
       this->SetColor(
-        g_serviceOptions.Get(0x10A) ? 0x3A : static_cast<int>(this->render.color >> 24), static_cast<int>((this->render.color >> 16) & 0xFF),
+        g_serviceOptions.Get(TT_HIDE_SUMMON_ON_OFF) ? 0x3A : static_cast<int>(this->render.color >> 24), static_cast<int>((this->render.color >> 16) & 0xFF),
         static_cast<int>((this->render.color >> 8) & 0xFF), static_cast<int>(this->render.color & 0xFF)
       );
       break;

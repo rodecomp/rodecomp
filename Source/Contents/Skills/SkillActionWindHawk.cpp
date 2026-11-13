@@ -73,7 +73,7 @@ void CSkillAction_WH_GALESTORM::OnSkillCast(int level, CGameActor* source) {
 // FUNCTION: fn_09024
 void CSkillAction_WH_GALESTORM::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source && target) {
-    g_effectMgr->Spawn(target->render.accountId, 0x7B5, target->render.position, 0, level, 0, 0);
+    g_effectMgr->Spawn(target->render.accountId, EF_GALE_STORM, target->render.position, 0, level, 0, 0);
   }
 }
 

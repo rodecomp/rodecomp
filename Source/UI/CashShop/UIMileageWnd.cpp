@@ -1,4 +1,5 @@
 #include "Resource/Bitmap/BitmapResource.h"
+#include "UI/GameSettings/TalkType.h"
 #include "UI/Login/UINewSelectCharWnd.h"
 #include "UI/CashShop/UIMileageWnd.h"
 #include "Client/Session/Session.h"
@@ -135,7 +136,7 @@ int UIMileageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
 
     this->m_remaining = std::max(3600 - static_cast<int>(c), 0);
     this->m_startTime = timeGetTime();
-    this->Show(g_serviceOptions.Get(219));
+    this->Show(g_serviceOptions.Get(TT_SHOW_GOLDPCCAFE_ON_OFF));
   }
 
   this->Invalidate();

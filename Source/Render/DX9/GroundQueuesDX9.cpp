@@ -1,4 +1,5 @@
 #include "Render/DX9/DeviceOwnerDX9.h"
+#include "UI/GameSettings/TalkType.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Render/DX9/DeviceStateDX9.h"
 #include "Render/Primitives/RenderQueues.h"
@@ -31,7 +32,7 @@ void CRendererDX9::DrawGroundQueues() {
   this->device->state.SetRenderState(D3DRS_AMBIENT, 0xFFFFFFFFu);
   this->device->state.SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
 
-  if (g_serviceOptions.Get(119) != 0) {
+  if (g_serviceOptions.Get(TT_LIGHTMAP_ON_OFF) != 0) {
     if (g_multitexture == 1) {
       ScopedDeviceStateDX9 restoreDual(this->device->state);
       this->device->state.SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_MODULATEALPHA_ADDCOLOR);

@@ -1,4 +1,5 @@
 #include "UI/Layout/SnapMgr.h"
+#include "UI/GameSettings/TalkType.h"
 #include "UI/Window/UIWindow.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "UI/Window/UIWindowMgr.h"
@@ -15,7 +16,7 @@ void UIWindowMgr::StoreSnapRectangle(UIWindow* window) {
     }
   }
 
-  if (!g_serviceOptions.Get(141) || !window) {
+  if (!g_serviceOptions.Get(TT_WINDOW_SNAP_ON_OFF) || !window) {
     return;
   }
 

@@ -1,4 +1,5 @@
 #include "Contents/Sprites/SpriteLayerDrawing.h"
+#include "UI/GameSettings/TalkType.h"
 #include "Contents/Actors/ActorEnums.h"
 #include "Contents/Jobs/JobId.h"
 
@@ -416,7 +417,7 @@ int SpriteLayerRenderer::DrawBodyOutline(int layer) {
     return layer;
   }
 
-  if (g_serviceOptions.Get(229)) {
+  if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
     color = ((((0x46u << 8) | static_cast<std::uint8_t>(color >> 16)) << 8 | static_cast<std::uint8_t>(color >> 8)) << 8) | static_cast<std::uint8_t>(color);
   }
 

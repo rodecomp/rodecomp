@@ -169,7 +169,7 @@ public:
 // FUNCTION: fn_08815
 void CSkillObjectAction_SKE_STAR_CANNON::OnSkillObjectCreate(int argument, CRenderObject* object, CGameActor* source) {
   if (object) {
-    g_effectMgr->Spawn(object->render.accountId, 0x92E, object->render.position, 0, argument, 0, 0);
+    g_effectMgr->Spawn(object->render.accountId, EF_SKE_STAR_CANNON, object->render.position, 0, argument, 0, 0);
   }
 }
 
@@ -675,7 +675,7 @@ void CSkillAction_SKE_STAR_BURST::OnSkillCast(int level, CGameActor* source) {
 // FUNCTION: fn_08868
 void CEfstAction_STAR_BURST::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
-    g_effectMgr->Spawn(actor->render.accountId, 0x92C, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(actor->render.accountId, EF_SKE_TWINKLING_GALAXY, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 

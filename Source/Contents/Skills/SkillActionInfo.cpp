@@ -1,4 +1,5 @@
 #include "Client/Session/Session.h"
+#include "UI/GameSettings/TalkType.h"
 #include "Contents/CombatTypes.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Actors/Resources/EquipmentResourceMgr.h"
@@ -777,7 +778,7 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
   case WL_SUMMONBL:
   case WL_SUMMONWB:
   case WL_SUMMONSTONE:
-    effectId = g_serviceOptions.Get(229) ? 1430 : 1260;
+    effectId = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? 1430 : 1260;
     g_soundMgr->PlayWave("effect\\EF_BeginSpell.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     motion = 7;
     break;

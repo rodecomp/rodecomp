@@ -1,4 +1,5 @@
 #include "Contents/Camera/Camera.h"
+#include "UI/GameSettings/TalkType.h"
 #include "Contents/Camera/CameraState.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Render/Projection/RendererViewport.h"
@@ -58,7 +59,7 @@ void CameraState::Smooth() {
 
   this->pitch = (this->desiredPitch - this->pitch) / 10.0f + this->pitch;
   this->distance = (this->desiredDistance - this->distance) / 10.0f + this->distance;
-  const bool immediate = g_serviceOptions.Get(54) != 0;
+  const bool immediate = g_serviceOptions.Get(TT_FIXED_CAMERA_ON_OFF) != 0;
   float next[3] = {this->desiredTarget[0], this->desiredTarget[1], this->desiredTarget[2]};
 
   if (!immediate) {

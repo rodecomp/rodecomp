@@ -1,4 +1,5 @@
 #include "Client/Mode/CMode.h"
+#include "UI/GameSettings/TalkType.h"
 #include "Client/Mode/ModeMessage.h"
 #include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
@@ -841,7 +842,7 @@ int UIMinimapZoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     return 0;
   }
   case 502: {
-    const unsigned char enabled = g_serviceOptions.Get(223);
+    const unsigned char enabled = g_serviceOptions.Get(TT_SHOW_MINIMAP_BUTTON_ONOFF);
     for (UIWindow* button : this->m_buttons) {
       static_cast<UIButton*>(button)->Enable(enabled);
     }
@@ -12653,7 +12654,7 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
     }
     if (this->m_kind == 12) {
       ITEM_INFO* equipped = g_session.GetEquippedItem(&this->m_item);
-      if (g_serviceOptions.Get(264) && equipped && argument4 == 0) {
+      if (g_serviceOptions.Get(TT_ITEM_COMPARE_ON_OFF) && equipped && argument4 == 0) {
         UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTION_COMPARISONWND);
         if (window) {
           window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(equipped), 1, 0, 0);

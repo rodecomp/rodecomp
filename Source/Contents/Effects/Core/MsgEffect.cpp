@@ -1,4 +1,5 @@
 #include "Contents/Skills/SkillUnitId.h"
+#include "UI/GameSettings/TalkType.h"
 #include "Client/Mode/ModeMessage.h"
 #include "Client/Mode/GameModeEnums.h"
 #include "Contents/Actors/ActorEnums.h"
@@ -185,7 +186,7 @@ bool CMsgEffect::OnProcess() {
   }
 
   if (this->m_finished != 0) {
-    if (this->m_type != 0x12 || !this->m_visible) {
+    if (this->m_type != MET_BIRD || !this->m_visible) {
       return false;
     }
     if (this->processTick > 35 && this->activeMotion != 0) {
@@ -401,7 +402,7 @@ bool CMsgEffect::OnProcess() {
       }
       const float motion = elapsed / this->render.speed;
       this->render.curMotion = static_cast<int>(motion) % frames;
-      if (this->m_type == 1 && this->render.state == 10000) {
+      if (this->m_type == MET_EMOTION && this->render.state == 10000) {
         this->render.curMotion = 15;
         const ActionFrame& frame = action->Frame(this->render.previousAnimation, 15);
         const_cast<SpriteFrameCell&>(frame.cells[0]).mirrored = 0;
@@ -409,7 +410,7 @@ bool CMsgEffect::OnProcess() {
         return true;
       }
       if (motion / static_cast<float>(frames) >= 1.0f) {
-        if (this->m_type != 1) {
+        if (this->m_type != MET_EMOTION) {
           return false;
         }
         if (this->m_value == static_cast<int>(g_session.m_aid)) {
@@ -724,7 +725,7 @@ bool CSkill::OnProcess() {
     break;
 
   case UNT_EVILLAND:
-    if (!this->m_hasEffect && g_effectMgr->Spawn(this->skillAid, 0x613, this->render.position, 0, this->range * 2, 0, 0)) {
+    if (!this->m_hasEffect && g_effectMgr->Spawn(this->skillAid, EF_EVILLAND, this->render.position, 0, this->range * 2, 0, 0)) {
       this->m_hasEffect = true;
     }
     break;
@@ -803,7 +804,7 @@ bool CSkill::OnProcess() {
   case UNT_QUAGMIRE:
     if (this->m_effectTimer >= EffectLifetime(0x5F) - 20u) {
       this->m_effectTimer = 0;
-      if (g_serviceOptions.Get(0xE5)) {
+      if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
         g_effectMgr->Spawn(0, EF_QUAGMIRE_VISUAL, this->render.position, 0, -1, 0, 0);
       } else {
         this->LaunchEffect(EF_QUAGMIRE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -865,7 +866,7 @@ bool CSkill::OnProcess() {
   case UNT_SEVERE_RAINSTORM:
     if (this->m_effectTimer >= EffectLifetime(0x359) - 8u) {
       this->m_effectTimer = 0;
-      g_effectMgr->Spawn(0, 0x4FC, this->render.position, 0, -1, 0, 0);
+      g_effectMgr->Spawn(0, EF_NEW_SEVERERAINSTORM, this->render.position, 0, -1, 0, 0);
       g_soundMgr->PlayWave("effect\\rainstorm.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
@@ -1500,7 +1501,7 @@ void CMsgEffect::FollowOwner() {
 bool CSummonActorEffect::OnProcess() {
   const bool result = this->CMsgEffect::OnProcess();
   const unsigned char* color = reinterpret_cast<const unsigned char*>(&this->render.color);
-  const int alpha = g_serviceOptions.Get(0x10A) != 0 ? 0x32 : 0xFF;
+  const int alpha = g_serviceOptions.Get(TT_HIDE_SUMMON_ON_OFF) != 0 ? 0x32 : 0xFF;
   this->SetColor(alpha, color[2], color[1], color[0]);
   return result;
 }
@@ -1533,7 +1534,7 @@ void CMsgEffect::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
   const vector3d* position = reinterpret_cast<const vector3d*>(static_cast<std::intptr_t>(b));
   switch (message) {
     case AM_REQ_ATTACK:
-      if (this->m_type == 18) {
+      if (this->m_type == MET_BIRD) {
         this->m_velocity.x = (position->x - this->render.position.x) / 10.0f;
         this->m_velocity.y = (position->y - this->render.position.y) / 10.0f;
         this->activeMotion = 1;

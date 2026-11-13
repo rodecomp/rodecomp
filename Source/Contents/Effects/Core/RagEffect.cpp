@@ -1,4 +1,5 @@
 #include "Contents/Effects/Core/RagEffect.h"
+#include "UI/GameSettings/TalkType.h"
 #include "Client/Mode/ModeMessage.h"
 #include "Contents/Actors/ActorEnums.h"
 #include "Contents/Actors/ActorEnums.h"
@@ -423,7 +424,7 @@ void CRagEffect::FrostDiver2() {
 // OFFSET: 0x00C15E40
 // FUNCTION: fn_20054
 void CRagEffect::FrostDiver(char type) {
-  if (g_serviceOptions.Get(229) != 0) {
+  if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0) {
     return;
   }
 
@@ -747,7 +748,7 @@ void CRagEffect::Hit1() {
   this->state.currentPrimitive->textures = new CTexture*[this->state.currentPrimitive->totalTexture];
   this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\ring_blue.tga", 0, false, true, false);
 
-  if (g_serviceOptions.Get(0xe5) != 0) {
+  if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0) {
     return;
   }
 
@@ -1628,7 +1629,7 @@ bool CRagEffect::Aspersio() {
 // OFFSET: 0x00C0B910
 // FUNCTION: fn_20017
 void CRagEffect::Bash() {
-  if (g_serviceOptions.Get(0xe5) != 0) {
+  if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0) {
     return;
   }
 
@@ -1654,7 +1655,7 @@ void CRagEffect::Bash() {
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\alpha_down.tga", 0, false, true, false);
 
-  const int sparkCount = g_serviceOptions.Get(0xe5) != 0 ? 10 : 20;
+  const int sparkCount = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? 10 : 20;
 
   for (int spark = 0; spark < sparkCount; ++spark) {
     this->state.lastPrim = CreateEffectParticle(*this, this->render, 3, 0.0f, 0.0f, 0.0f, WorldObjects());
@@ -2469,7 +2470,7 @@ void CRagEffect::Exit() {
     PlayEffectWave(*this, "_heal_effect.wav");
   }
 
-  if (g_serviceOptions.Get(229) != 0) {
+  if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0) {
     return;
   }
 
@@ -9333,8 +9334,8 @@ void CRagEffect::AlphaDownRipples(const char* name, char kind) {
 // OFFSET: 0x00C0E820
 // FUNCTION: fn_20027
 bool CRagEffect::Coin() {
-  if (g_serviceOptions.Get(0xe5) == 0 && this->state.stateCnt == 20) {
-    const int coinCount = g_serviceOptions.Get(0xe5) != 0 ? 2 : 5;
+  if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) == 0 && this->state.stateCnt == 20) {
+    const int coinCount = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? 2 : 5;
 
     for (int coin = 0; coin < coinCount; ++coin) {
       this->state.lastPrim = CreateEffectParticle(*this, this->render, 6, 0.0f, 0.0f, 0.0f, WorldObjects());
@@ -11290,7 +11291,7 @@ void CRagEffect::TexturedPulseKind(const char* name, char kind) {
 
   bool pulsing = true;
   if (kind == 0) {
-    this->state.lastPrim->state.slots[0].maxHeight = g_serviceOptions.Get(229) != 0 ? 10.0f : 50.0f;
+    this->state.lastPrim->state.slots[0].maxHeight = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? 10.0f : 50.0f;
     this->state.lastPrim->state.slots[0].rotStart = 0;
     this->state.lastPrim->state.slots[0].alphaB = 30;
     this->state.lastPrim->state.slots[0].alphaT = 864;
@@ -12988,7 +12989,7 @@ void CRagEffect::Enhance() {
     this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\alpha_down.tga", 0, false, true, false);
   }
 
-  if (g_serviceOptions.Get(229) == 0) {
+  if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) == 0) {
     if (this->state.stateCnt % 5 != 0) {
       return;
     }
@@ -13381,7 +13382,7 @@ void CRagEffect::ShadedFireballVolley() {
 // OFFSET: 0x00C10180
 // FUNCTION: fn_20033
 void CRagEffect::Detoxication() {
-  const unsigned char enabled = g_serviceOptions.Get(0xe5);
+  const unsigned char enabled = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF);
 
   if (enabled == 0) {
     if (this->state.stateCnt % 5 != 0) {
@@ -15347,7 +15348,7 @@ bool CRagEffect::StormGust() {
     PlayEffectWave(*this, "effect\\wizard_stormgust.wav");
   }
 
-  if (g_serviceOptions.Get(229) == 0 && this->state.stateCnt % 29 == 0 &&
+  if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) == 0 && this->state.stateCnt % 29 == 0 &&
       static_cast<unsigned int>(this->state.stateCnt - 31) <= 119u) {
     for (int count = 2; count != 0; --count) {
       const int longitudeAngle = rand() % 360;
@@ -19652,7 +19653,7 @@ bool CRagEffect::OnProcess3() {
       PlayEffectWave(*this, "effect\\mon_맹룡과강.wav");
     }
     {
-      const int count = g_serviceOptions.Get(229) ? 6 : 20;
+      const int count = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? 6 : 20;
       for (int index = 0; index < count; ++index) {
         this->TexturedScatter("effect\\alpha_center.tga", 2);
       }
@@ -20037,7 +20038,7 @@ bool CRagEffect::OnProcess3() {
       const char* flare;
       const char* ring0;
       const char* ring1;
-      if (g_serviceOptions.Get(229)) {
+      if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
         flare = "effect\\mineffect\\new_maelstrom\\new_maelstrom\\mae_flare_00.bmp";
         ring0 = "effect\\mineffect\\new_maelstrom\\new_maelstrom\\mae_ring_00.tga";
         ring1 = "effect\\mineffect\\new_maelstrom\\new_maelstrom\\mae_ring_01.tga";
@@ -22383,7 +22384,7 @@ bool CRagEffect::OnProcess3() {
   case EF_NEW_SEVERERAINSTORM_HIT:
     if (this->state.stateCnt % 30 == 0) {
       const vector3d& position = this->state.parent->render.position;
-      g_effectMgr->Spawn(0, g_serviceOptions.Get(229) ? 1533 : 1285, position, 0, -1, 0, 0);
+      g_effectMgr->Spawn(0, g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? 1533 : 1285, position, 0, -1, 0, 0);
     }
     this->SevereRainstormCylinder(45, "", 3, 3.0f);
     this->SevereRainstormCylinder(45, "", 3, 3.0f);
@@ -22448,7 +22449,7 @@ bool CRagEffect::OnProcess3() {
           const float x = m[0] * static_cast<float>(distance) + m[3] * offset.x + m[6] * offset.x + m[9] + this->render.position.x;
           const float y = m[1] * static_cast<float>(distance) + m[4] * offset.x + m[7] * offset.x + m[10] + this->render.position.y;
           const float z = m[2] * static_cast<float>(distance) + m[5] * offset.x + m[8] * offset.x + m[11] + this->render.position.z;
-          g_effectMgr->Spawn(0, g_serviceOptions.Get(229) ? 1544 : 1447, vector3d{x, y, z}, 0, -1, 0, 0);
+          g_effectMgr->Spawn(0, g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? 1544 : 1447, vector3d{x, y, z}, 0, -1, 0, 0);
         }
       }
       if (this->state.stateCnt == 0) {
@@ -22552,7 +22553,7 @@ bool CRagEffect::OnProcess3() {
     break;
   case EF_NEW_CROSSIMPACT_HIT:
     for (int index = 0; index < 2; ++index) {
-      if (g_serviceOptions.Get(229)) {
+      if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
         this->LineStreakTextured(10, "effect\\mineffect\\new_crossimpact\\new_crossimpact_line\\line_pitch.tga");
         this->LineStreakTextured(11, "effect\\mineffect\\new_crossimpact\\new_crossimpact_line\\line_pitch.tga");
         this->LineStreakTextured(10, "effect\\mineffect\\new_crossimpact\\new_crossimpact_line\\line_red.tga");
@@ -22569,7 +22570,7 @@ bool CRagEffect::OnProcess3() {
     {
       std::string path("effect\\ABYSS_CHASER\\ABC_CHASING_BREAK\\chasing_line\\");
       for (int index = 0; index < 2; ++index) {
-        if (g_serviceOptions.Get(229)) {
+        if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
           this->LineStreakTextured(20, (path + "min_line_pitch2.tga").c_str());
           this->LineStreakTextured(21, (path + "min_line_pitch2.tga").c_str());
           this->LineStreakTextured(20, (path + "min_line_pur.tga").c_str());
@@ -22585,7 +22586,7 @@ bool CRagEffect::OnProcess3() {
     break;
   case EF_ABC_CROSSIMPACT_LINE:
     for (int index = 0; index < 2; ++index) {
-      if (g_serviceOptions.Get(229)) {
+      if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
         this->LineStreakTextured(30, "effect\\mineffect\\new_crossimpact\\new_crossimpact_line\\line_pitch.tga");
         this->LineStreakTextured(31, "effect\\mineffect\\new_crossimpact\\new_crossimpact_line\\line_pitch.tga");
         this->LineStreakTextured(30, "effect\\mineffect\\new_crossimpact\\new_crossimpact_line\\line_red.tga");
@@ -22600,7 +22601,7 @@ bool CRagEffect::OnProcess3() {
     break;
   case EF_NEW_GATEOFHELL:
     for (int index = 0; index < 4; ++index) {
-      if (g_serviceOptions.Get(229)) {
+      if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
         this->LineStreakTextured(10, "effect\\mineffect\\new_gateofhell\\line_hell.tga");
         this->LineStreakTextured(11, "effect\\mineffect\\new_gateofhell\\line_hell.tga");
       } else {
@@ -22610,7 +22611,7 @@ bool CRagEffect::OnProcess3() {
     }
     break;
   case EF_NEW_METALLICSOUND_LINE:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       this->TexturedBeam(2, "effect\\mineffect\\new_metalicsound\\new_metalicsound_line\\met_damege_line_1.tga");
       this->TexturedForkBolt("effect\\mineffect\\new_metalicsound\\new_metalicsound_icon\\met_particle_1.tga", 2);
       this->TexturedForkBolt("effect\\mineffect\\new_metalicsound\\new_metalicsound_icon\\met_particle_2.tga", 2);
@@ -22623,7 +22624,7 @@ bool CRagEffect::OnProcess3() {
     }
     break;
   case EF_NEW_REVERBERATION:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       this->TexturedDrop("effect\\mineffect\\new_reverberation\\melody_a.bmp", 2);
     } else {
       this->TexturedDrop("effect\\new_reverberation\\melody_a.bmp", 2);
@@ -22631,7 +22632,7 @@ bool CRagEffect::OnProcess3() {
     this->WhiteRingRippleSized(28);
     break;
   case EF_NEW_REVERBERATION_NOTE:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       this->TexturedSpinShards("effect\\mineffect\\new_reverberation\\rev_note_01.tga", 3);
       this->TexturedSpinShards("effect\\mineffect\\new_reverberation\\rev_note_02.tga", 3);
     } else {
@@ -22708,7 +22709,7 @@ bool CRagEffect::OnProcess3() {
     this->render.position = this->state.parent->render.position;
     if (this->state.stateCnt == 0) {
       PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
-      if (g_serviceOptions.Get(229)) {
+      if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
         this->QuadRingStackSized("effect\\mineffect\\new_earthdrive\\ring_brown.tga", 33);
       } else {
         this->QuadRingStackSized("effect\\new_earthdrive\\ring_brown.tga", 33);
@@ -22971,8 +22972,8 @@ bool CRagEffect::OnProcess3() {
     break;
   case EF_CRUEL_BITE_LINE:
     {
-      const char* line = g_serviceOptions.Get(229) ? "effect\\DRUID\\DR_CRUEL_BITE\\min_cruel_bite_line\\line_red.tga" : "effect\\DRUID\\DR_CRUEL_BITE\\cruel_bite_line\\line_red.tga";
-      const char* black = g_serviceOptions.Get(229) ? "effect\\DRUID\\DR_CRUEL_BITE\\min_cruel_bite_line\\line_black.tga" : "effect\\DRUID\\DR_CRUEL_BITE\\cruel_bite_line\\line_black.tga";
+      const char* line = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? "effect\\DRUID\\DR_CRUEL_BITE\\min_cruel_bite_line\\line_red.tga" : "effect\\DRUID\\DR_CRUEL_BITE\\cruel_bite_line\\line_red.tga";
+      const char* black = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? "effect\\DRUID\\DR_CRUEL_BITE\\min_cruel_bite_line\\line_black.tga" : "effect\\DRUID\\DR_CRUEL_BITE\\cruel_bite_line\\line_black.tga";
       for (int index = 0; index < 2; ++index) {
         this->TexturedSwirl(1, black);
         this->TexturedSwirl(0, black);
@@ -22983,8 +22984,8 @@ bool CRagEffect::OnProcess3() {
     break;
   case EF_QUILL_SPEAR_LINE:
     {
-      const char* line = g_serviceOptions.Get(229) ? "effect\\DRUID\\AT_QUILL_SPEAR\\min_quill_spear_line\\line_color.tga" : "effect\\DRUID\\AT_QUILL_SPEAR\\quill_spear_line\\line_color.tga";
-      const char* black = g_serviceOptions.Get(229) ? "effect\\DRUID\\AT_QUILL_SPEAR\\min_quill_spear_line\\line_black.tga" : "effect\\DRUID\\AT_QUILL_SPEAR\\quill_spear_line\\line_black.tga";
+      const char* line = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? "effect\\DRUID\\AT_QUILL_SPEAR\\min_quill_spear_line\\line_color.tga" : "effect\\DRUID\\AT_QUILL_SPEAR\\quill_spear_line\\line_color.tga";
+      const char* black = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? "effect\\DRUID\\AT_QUILL_SPEAR\\min_quill_spear_line\\line_black.tga" : "effect\\DRUID\\AT_QUILL_SPEAR\\quill_spear_line\\line_black.tga";
       for (int index = 0; index < 2; ++index) {
         this->TexturedSwirl(1, black);
         this->TexturedSwirl(0, black);

@@ -1,4 +1,5 @@
 #include "Client/Mode/CLoginMode.h"
+#include "UI/GameSettings/TalkType.h"
 #include "Client/Mode/ModeMessage.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
@@ -1752,7 +1753,7 @@ void CLoginMode::Initialize(const char* name) {
   g_session.ClearItemContainers();
   g_guildInfo.Init();
   PreloadCommonSprites();
-  if (g_serviceOptions.Get(7)) {
+  if (g_serviceOptions.Get(TT_MUSIC_ON_OFF)) {
     g_soundMgr->PlayStream("bgm\\01.mp3", 0, false);
   }
   this->slotExtension = CharacterSlotExtension();
@@ -2266,7 +2267,7 @@ void CLoginMode::ReceiveAcceptLogin(const AcceptLoginPacket* packet, int version
     g_serviceOptions.Set(0x6C, 0);
     break;
   }
-  const unsigned char flags = g_serviceOptions.Get(0x6C);
+  const unsigned char flags = g_serviceOptions.Get(TT_BOLD_NAME_TYPE_ON_OFF);
   g_session.SetServiceFlags(flags, flags);
 
   g_session.m_lastLoginIp = packet->lastLoginIp;
@@ -3981,7 +3982,7 @@ void CLoginMode::OnChangeState(int value) {
     if (g_serviceType == ServiceIndonesia || g_serviceType == ServiceGermany || g_serviceType == ServiceBrazil) {
       g_serviceOptions.Set(0x6C, 0);
     }
-    const unsigned char flags = g_serviceOptions.Get(0x6C);
+    const unsigned char flags = g_serviceOptions.Get(TT_BOLD_NAME_TYPE_ON_OFF);
     g_session.SetServiceFlags(flags, flags);
     ReplayFileList::Instance().SetReplay(&Replay::Instance());
     this->wallpaperName = std::string(OBFUSCATE_BYTES_TEXT("유저인터페이스\\login_interface\\warning2.bmp", 0x4F99DF03C3EF31B7ULL));

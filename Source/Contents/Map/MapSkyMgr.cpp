@@ -1,4 +1,5 @@
 #include "Contents/Map/MapSkyMgr.h"
+#include "UI/GameSettings/TalkType.h"
 #include "Contents/Effects/Core/EffectTypes.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -230,7 +231,7 @@ void CWeatherEffect::ResetEffect() {
 // OFFSET: 0x00C7BD40
 // FUNCTION: fn_20374
 void CWeatherEffect::ApplyMapWeather(std::string mapName) {
-  if (!g_serviceOptions.Get(8)) {
+  if (!g_serviceOptions.Get(TT_EFFECT_ON_OFF)) {
     return;
   }
 

@@ -1,4 +1,5 @@
 #include "Contents/Effects/Particles/Particle.h"
+#include "UI/GameSettings/TalkType.h"
 #include "UI/Window/WindowId.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -237,7 +238,7 @@ void CEZ2STRParticle::Open(std::string name) {
 // OFFSET: 0x00B3D9D0
 // FUNCTION: fn_18820
 void CEZ2STRParticle::Load(const std::string& name) {
-  if (g_serviceOptions.Get(229)) {
+  if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
     this->Open(this->ResolvePath(name));
   } else {
     this->Open(name);

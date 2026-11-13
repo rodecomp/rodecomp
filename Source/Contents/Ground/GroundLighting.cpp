@@ -1,4 +1,5 @@
 #include "Contents/Ground/GroundGeometry.h"
+#include "UI/GameSettings/TalkType.h"
 #include "Contents/Ground/GroundRendering.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Effects/Core/EffectPoint.h"
@@ -61,7 +62,7 @@ void GroundGeometry::DrawLightmapped(const float* matrix, const GroundQuad& quad
     }
   }
 
-  const bool enabled = g_serviceOptions.Get(119) != 0;
+  const bool enabled = g_serviceOptions.Get(TT_LIGHTMAP_ON_OFF) != 0;
 
   if (g_multitexture && enabled) {
     LightmappedPrimitive* primitive = g_renderer->lightmapped.Acquire();
@@ -79,7 +80,7 @@ void GroundGeometry::DrawLightmapped(const float* matrix, const GroundQuad& quad
     return;
   }
 
-  if (g_serviceOptions.Get(119) != 0) {
+  if (g_serviceOptions.Get(TT_LIGHTMAP_ON_OFF) != 0) {
     RenderPrimitive* lightmap = g_renderer->primitives.Acquire();
     std::memcpy(lightmap->vertices, vertices, sizeof(vertices));
 

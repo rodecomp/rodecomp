@@ -2,6 +2,7 @@
 #include "Contents/Actors/ActorEnums.h"
 #include "Contents/Skills/SkillId.h"
 #include "Contents/Skills/SkillUnitId.h"
+#include "Contents/Jobs/JobId.h"
 
 #include "Contents/Actors/ActorPickNode.h"
 #include "Contents/Skills/GraffiSkill.h"
@@ -664,7 +665,7 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
       }
       return;
     case UNT_CATNIPPOWDER:
-      g_effectMgr->Spawn(this->render.accountId, 0x450, position, 0, unit->level, 0, 0);
+      g_effectMgr->Spawn(this->render.accountId, EF_SU_CN_POWDERING, position, 0, unit->level, 0, 0);
       return;
     case UNT_NYANGGRASS: {
       const vector3d& player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->render.position;
@@ -698,7 +699,7 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
       }
       return;
     case UNT_PNEUMATICUS_PROCELLA:
-      g_effectMgr->Spawn(this->render.accountId, 0x7A5, position, 0, unit->level, 0, 0);
+      g_effectMgr->Spawn(this->render.accountId, EF_PNEUMATICUS_PROCELLA, position, 0, unit->level, 0, 0);
       return;
     case UNT_RAIN_OF_CRYSTAL:
       if (!g_effectMgr->Has(this->render.accountId, 0x6D8)) {
@@ -714,7 +715,7 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
       if (!g_effectMgr->Has(this->render.accountId, 0x6E8)) {
         g_effectMgr->Retire(this->render.accountId, 0x6E8);
       }
-      g_effectMgr->Spawn(this->render.accountId, 0x6E8, position, 0, unit->level, 0, 0);
+      g_effectMgr->Spawn(this->render.accountId, EF_ASTRAL_STRIKE, position, 0, unit->level, 0, 0);
       return;
     case UNT_MYSTERY_ILLUSION:
       if (!g_effectMgr->Has(this->render.accountId, 0x6EC)) {
@@ -740,7 +741,7 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
       return;
     case UNT_FLORAL_FLARE_ROAD:
       g_effectMgr->Retire(this->render.accountId, 0x70C);
-      g_effectMgr->Spawn(this->render.accountId, 0x70C, position, 0, unit->level, 0, 0);
+      g_effectMgr->Spawn(this->render.accountId, EF_FLORAL_FLARE_ROAD, position, 0, unit->level, 0, 0);
       return;
     case UNT_STRANTUM_TREMOR:
       for (std::int64_t effectId = 0x765; effectId <= 0x766; ++effectId) {
@@ -873,8 +874,8 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
       actions->OnSkillObjectCreate(this->GetEffectiveJob(-1), unit->level, this, static_cast<CGameActor*>(source));
       return;
     }
-    case 0x532C:
-      g_effectMgr->Spawn(this->render.accountId, 0x925, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    case JT_EP18_ARMED_VILLAGER01:
+      g_effectMgr->Spawn(this->render.accountId, EF_BLAST_FORGE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       return;
     }
   }

@@ -45,6 +45,9 @@ enum ACTORSTATEID : int {
   ST_MADOSKILL = 43,
   ST_MADOSKILL2 = 44,
   ST_AB_SPECIAL = 45,
+  ST_LEFT = 14,
+  ST_RIGHT = 15,
+  ST_FEED = 29,
 };
 
 enum AIPROPERTY : int {

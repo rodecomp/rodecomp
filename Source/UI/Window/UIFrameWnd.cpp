@@ -1,4 +1,5 @@
 #include "Client/Mode/CMode.h"
+#include "UI/GameSettings/TalkType.h"
 #include "Client/Mode/ModeMessage.h"
 #include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
@@ -918,7 +919,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     this->memberRoles[std::string(reinterpret_cast<const char*>(a))] = static_cast<int>(b);
     int color = 0;
     if (b != 0) {
-      if (g_serviceOptions.Get(11) && g_soundMgr->tingOnly != 0) {
+      if (g_serviceOptions.Get(TT_EFFECT_SOUND_ON_OFF) && g_soundMgr->tingOnly != 0) {
         g_soundMgr->PlayWave("버튼소리.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       }
     } else {

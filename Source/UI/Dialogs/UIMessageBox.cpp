@@ -655,9 +655,9 @@ void UIMessageBox::Configure(
     button->SetBitmap((prefix + names[2][2] + ".bmp").c_str(), 2, 0);
     button->SetSize(button->BitmapWidth(), button->BitmapHeight());
     button->Move(width - 46, height - 24);
-    button->SetId(185);
+    button->SetId(ID_CANCEL);
     this->AddChild(button);
-    this->m_message0 = 185;
+    this->m_message0 = ID_CANCEL;
     break;
   }
   case 0: {
@@ -667,9 +667,9 @@ void UIMessageBox::Configure(
     button->SetBitmap((prefix + names[0][2] + ".bmp").c_str(), 2, 0);
     button->SetSize(button->BitmapWidth(), button->BitmapHeight());
     button->Move(width - 46, height - 24);
-    button->SetId(184);
+    button->SetId(ID_OK);
     this->AddChild(button);
-    this->m_message0 = 184;
+    this->m_message0 = ID_OK;
     break;
   }
   case 2: {
@@ -699,9 +699,9 @@ void UIMessageBox::Configure(
     button->SetBitmap((prefix + names[0][2] + ".bmp").c_str(), 2, 0);
     button->SetSize(button->BitmapWidth(), button->BitmapHeight());
     button->Move(width - 46, height - 24);
-    button->SetId(184);
+    button->SetId(ID_OK);
     this->AddChild(button);
-    this->m_message0 = 184;
+    this->m_message0 = ID_OK;
 
     auto* link = new UITextButton();
     link->Configure(LookupMessage(MSI_FRIEND_ALREADY_FRIEND), 0x00F4934A, 0, 12, 0, 0);
@@ -894,7 +894,7 @@ void UIMerInfoWnd::OnCreate(int, int) {
     this->button->SetBitmap((name + "_b.bmp").c_str(), 2, 0);
     this->button->SetSize(this->button->BitmapWidth(), this->button->BitmapHeight());
     this->button->Move(187, 44);
-    this->button->SetId(350);
+    this->button->SetId(ID_FIRE_MER);
     this->AddChild(this->button);
   }
   {
@@ -905,7 +905,7 @@ void UIMerInfoWnd::OnCreate(int, int) {
     this->button->SetBitmap((name + "_b.bmp").c_str(), 2, 0);
     this->button->SetSize(this->button->BitmapWidth(), this->button->BitmapHeight());
     this->button->Move(232, 44);
-    this->button->SetId(349);
+    this->button->SetId(ID_OPEN_MERSKILLLIST);
     this->AddChild(this->button);
   }
 
@@ -921,7 +921,7 @@ void UIMerInfoWnd::OnCreate(int, int) {
   this->spBar->Move(117, 88);
   this->AddChild(this->spBar);
 
-  this->m_message0 = 201;
+  this->m_message0 = ID_CLOSE;
 }
 
 // OFFSET: 0x008C3630
@@ -1550,7 +1550,7 @@ void UIMakeCharWnd::InitHairControls() {
   this->m_rotateLeftButton->SetBitmap("유저인터페이스\\scroll1left.bmp", 2, 0);
   this->m_rotateLeftButton->SetSize(this->m_rotateLeftButton->BitmapWidth(), this->m_rotateLeftButton->BitmapHeight());
   this->m_rotateLeftButton->Move(20, 80);
-  this->m_rotateLeftButton->SetId(227);
+  this->m_rotateLeftButton->SetId(ID_LEFT);
   this->m_rotateLeftButton->SetTooltip(LookupMessage(MSI_VIEW_BEFORE_WORLDINFO_TITLE));
   this->AddChild(this->m_rotateLeftButton);
 
@@ -1560,7 +1560,7 @@ void UIMakeCharWnd::InitHairControls() {
   this->m_rotateRightButton->SetBitmap("유저인터페이스\\scroll1right.bmp", 2, 0);
   this->m_rotateRightButton->SetSize(this->m_rotateLeftButton->BitmapWidth(), this->m_rotateLeftButton->BitmapHeight());
   this->m_rotateRightButton->Move(110, 80);
-  this->m_rotateRightButton->SetId(226);
+  this->m_rotateRightButton->SetId(ID_RIGHT);
   this->m_rotateRightButton->SetTooltip(LookupMessage(MSI_VIEW_BEFORE_SERVERINFO));
   this->AddChild(this->m_rotateRightButton);
 
@@ -1603,7 +1603,7 @@ void UIMakeCharWnd::OnCreate(int, int) {
   this->AddChild(this->m_nameEdit);
   this->InitHairControls();
   g_windowMgr.SetFocus(this->m_nameEdit);
-  this->m_message0 = 184;
+  this->m_message0 = ID_OK;
 }
 
 // OFFSET: 0x008AD130
@@ -1616,7 +1616,7 @@ void UIChatRoomWnd::Move(int x, int y) {
 // OFFSET: 0x008AD3C0
 // FUNCTION: fn_11738
 void UIChatRoomWnd::OnCreate(int, int) {
-  this->m_message0 = 184;
+  this->m_message0 = ID_OK;
 
   this->resizer = new UIResizer();
   this->resizer->SetSize(16, 16);
@@ -1677,7 +1677,7 @@ void UINoticeWnd::OnCreate(int, int) {
     this->AddChild(button);
   }
 
-  this->m_message0 = 184;
+  this->m_message0 = ID_OK;
 
   if (!std::fopen(this->m_patchFile, "r")) {
     FILE* file = std::fopen(this->m_patchFile, "w");
@@ -1968,7 +1968,7 @@ void UISelectReplayDataWnd::OnCreate(int width, int height) {
     }
   }
 
-  this->m_message0 = 184;
+  this->m_message0 = ID_OK;
 
   UIStaticText** text = this->m_texts;
   for (int y = 35; y < 110; y += 15) {
@@ -2009,7 +2009,7 @@ void UITalkboxTrapInputWnd::OnCreate(int, int) {
     this->AddChild(button);
   }
 
-  this->m_message0 = 184;
+  this->m_message0 = ID_OK;
 }
 
 // OFFSET: 0x008B7A60
@@ -2716,10 +2716,10 @@ void UICntWnd::OnCreate(int, int) {
     button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
     button->SetSize(button->BitmapWidth(), button->BitmapHeight());
     button->Move(x, y);
-    button->SetId(184);
+    button->SetId(ID_OK);
     this->AddChild(button);
   }
-  this->m_message0 = 184;
+  this->m_message0 = ID_OK;
 }
 
 // OFFSET: 0x008C0B20
@@ -3190,9 +3190,9 @@ void UIMonsterInfoWnd::OnCreate(int, int) {
   button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
   button->SetSize(button->BitmapWidth(), button->BitmapHeight());
   button->Move(this->geometry.width - 46, this->geometry.height - 24);
-  button->SetId(184);
+  button->SetId(ID_OK);
   this->AddChild(button);
-  this->m_message0 = 184;
+  this->m_message0 = ID_OK;
 
   this->actorId = g_session.m_monsterInfoActorId;
   {
@@ -3469,7 +3469,7 @@ void UIHomunInfoWnd::OnCreate(int, int) {
     this->button->SetBitmap((bitmap + "_b.bmp").c_str(), 2, 0);
     this->button->SetSize(this->button->BitmapWidth(), this->button->BitmapHeight());
     this->button->Move(187, 44);
-    this->button->SetId(291);
+    this->button->SetId(ID_DELETE_HOMUN);
     this->AddChild(this->button);
   }
   {
@@ -3480,7 +3480,7 @@ void UIHomunInfoWnd::OnCreate(int, int) {
     this->button->SetBitmap((bitmap + "_b.bmp").c_str(), 2, 0);
     this->button->SetSize(this->button->BitmapWidth(), this->button->BitmapHeight());
     this->button->Move(232, 44);
-    this->button->SetId(289);
+    this->button->SetId(ID_OPEN_HOMUNSKILLLIST);
     this->AddChild(this->button);
   }
   {
@@ -3491,7 +3491,7 @@ void UIHomunInfoWnd::OnCreate(int, int) {
     this->button->SetBitmap((bitmap + "_b.bmp").c_str(), 2, 0);
     this->button->SetSize(this->button->BitmapWidth(), this->button->BitmapHeight());
     this->button->Move(210, 155);
-    this->button->SetId(290);
+    this->button->SetId(ID_FEED_TO_HOMUN);
     this->AddChild(this->button);
     this->button->Move(210, 105);
   }
@@ -3503,7 +3503,7 @@ void UIHomunInfoWnd::OnCreate(int, int) {
     this->button->SetBitmap((bitmap + "_b.bmp").c_str(), 2, 0);
     this->button->SetSize(this->button->BitmapWidth(), this->button->BitmapHeight());
     this->button->Move(232, 21);
-    this->button->SetId(184);
+    this->button->SetId(ID_OK);
     this->AddChild(this->button);
   }
 
@@ -3533,7 +3533,7 @@ void UIHomunInfoWnd::OnCreate(int, int) {
   this->intimacyBar->Move(101, 145);
   this->intimacyBar->SetValues(&g_session.homunHunger, &g_session.homunMaxHunger);
   this->AddChild(this->intimacyBar);
-  this->m_message0 = 201;
+  this->m_message0 = ID_CLOSE;
 
   this->autoFeedCheckBox = new UICheckBox();
   this->autoFeedCheckBox->SetSize(12, 12);
@@ -3735,7 +3735,7 @@ void UIPetInfoWnd::OnCreate(int, int) {
     this->renameButton->SetBitmap((prefix + "btn_rewrite_b" + ".bmp").c_str(), 2, 0);
     this->renameButton->SetSize(this->renameButton->BitmapWidth(), this->renameButton->BitmapHeight());
     this->renameButton->Move(230, 21);
-    this->renameButton->SetId(184);
+    this->renameButton->SetId(ID_OK);
     this->AddChild(this->renameButton);
   }
 
@@ -3764,7 +3764,7 @@ void UIPetInfoWnd::OnCreate(int, int) {
   this->friendlyGauge->Move(145, 105);
   this->AddChild(this->friendlyGauge);
   this->UpdateFriendlyGauge();
-  this->m_message0 = 201;
+  this->m_message0 = ID_CLOSE;
 
   const int petEgg = std::atoi(g_session.LookupClientItemByIdentity(g_session.petEggIndex).itemId.c_str());
   this->autoFeedAvailable = g_petEvolutionMgr->IsAutoFeeding(petEgg);
@@ -3981,7 +3981,7 @@ void UISelectServerWnd::OnCreate(int width, int height) {
     }
   }
 
-  this->m_message0 = 184;
+  this->m_message0 = ID_OK;
 }
 
 // OFFSET: 0x008B31F0
@@ -4180,9 +4180,9 @@ void UIMessageBoxAutoreturn::Configure(const char* text, int timeout) {
   button->SetBitmap((root + "btn_cancel_b" + ".bmp").c_str(), 2, 0);
   button->SetSize(button->BitmapWidth(), button->BitmapHeight());
   button->Move(234, 96);
-  button->SetId(185);
+  button->SetId(ID_CANCEL);
   this->AddChild(button);
-  this->m_message0 = 185;
+  this->m_message0 = ID_CANCEL;
 }
 
 // OFFSET: 0x008BEE20
@@ -4398,7 +4398,7 @@ void UILoginWnd::OnCreate(int, int) {
   button->SetBitmap(OBFUSCATE_TEXT_NAMED("유저인터페이스\\login_interface\\bt_join_press.bmp", 0xF161095D0DE18F95ULL, joinPressName), 2, 0);
   button->SetSize(button->BitmapWidth(), button->BitmapHeight() + 2);
   button->Move(87, 104);
-  button->SetId(267);
+  button->SetId(ID_MAKEACCOUNT);
   {
     const std::string text(LookupMessage(MSI_ADVENTURER_AGENCY_REGIST_FAILED));
     button->text = text;
@@ -4416,7 +4416,7 @@ void UILoginWnd::OnCreate(int, int) {
   bitmapButton->SetBitmap(OBFUSCATE_TEXT_NAMED("유저인터페이스\\login_interface\\bt_start_press.bmp", 0x2BAD156DE3E1F9D9ULL, startPressName), 2, 0);
   bitmapButton->SetSize(bitmapButton->BitmapWidth(), bitmapButton->BitmapHeight());
   bitmapButton->Move(192, 32);
-  bitmapButton->SetId(186);
+  bitmapButton->SetId(ID_LOGIN);
   this->AddChild(bitmapButton);
 
   bitmapButton = new UIBitmapButton();
@@ -4425,9 +4425,9 @@ void UILoginWnd::OnCreate(int, int) {
   bitmapButton->SetBitmap(OBFUSCATE_TEXT_NAMED("유저인터페이스\\login_interface\\bt_close2_press.bmp", 0x2F8B0F37118D157FULL, exitPressName), 2, 0);
   bitmapButton->SetSize(bitmapButton->BitmapWidth(), bitmapButton->BitmapHeight());
   bitmapButton->Move(273, 15);
-  bitmapButton->SetId(221);
+  bitmapButton->SetId(ID_EXIT);
   this->AddChild(bitmapButton);
-  this->m_message0 = 186;
+  this->m_message0 = ID_LOGIN;
 
   this->passwordEdit = new UIEditCtrl_Custom();
   this->passwordEdit->SetSize(153, 16);

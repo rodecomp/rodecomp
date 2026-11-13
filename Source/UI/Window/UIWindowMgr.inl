@@ -2,6 +2,7 @@
 #define RAGNAROK_SOURCE_UI_WINDOW_UIWINDOWMGR_INL
 
 #include "Client/Replay/Replay.h"
+#include "UI/GameSettings/TalkType.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
@@ -20,7 +21,7 @@ inline bool UIWindowMgr::ShowShortcutWindow(int value) {
     g_windowMgr.Promote(this->shortCutWnd);
   }
 
-  if (g_serviceOptions.Get(0x10E)) {
+  if (g_serviceOptions.Get(TT_QUICK_SLOT_ON_OFF)) {
     g_windowMgr.EnsureWindow(159);
   }
 

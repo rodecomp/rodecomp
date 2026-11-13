@@ -8,6 +8,7 @@
 #include "UI/Skill/UIDebuffRemoveWnd.h"
 
 #include "Resource/MSGSTRINGID.h"
+#include "UI/Window/UIEnums.h"
 #include <string>
 
 // OFFSET: 0x0094B410
@@ -29,7 +30,7 @@ void UIDebuffRemoveWnd::OnCreate(int width, int height) {
   this->m_button = new UIBasicButton();
   this->m_button->Configure(0x96, LookupMessage(0x10E6));
   this->m_button->Move(0xF, 0x16);
-  this->m_button->SetId(0xB8);
+  this->m_button->SetId(ID_OK);
   this->AddChild(this->m_button);
 }
 

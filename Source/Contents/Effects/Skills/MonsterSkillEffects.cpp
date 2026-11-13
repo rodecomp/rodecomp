@@ -1,4 +1,5 @@
 #include "Contents/Jobs/JobId.h"
+#include "UI/GameSettings/TalkType.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Skills/SkillId.h"
 #include "Contents/Effects/Skills/MonsterSkillEffects.h"
@@ -92,7 +93,7 @@ bool CCrimsonArrowEffect::IsAlive() {
 
 // OFFSET: 0x0070C150
 // FUNCTION: fn_07126
-CRootTwistEffect::CRootTwistEffect() : CEffect(1110) {
+CRootTwistEffect::CRootTwistEffect() : CEffect(EF_SU_SV_ROOTTWIST) {
 }
 
 // OFFSET: 0x0070C0B0
@@ -124,7 +125,7 @@ void CCrimsonArrowEffect::Render() {
 // OFFSET: 0x0070C3B0
 // FUNCTION: fn_07130
 void CRootTwistEffect::InitEvents() {
-  if (this->id == 1110) {
+  if (this->id == EF_SU_SV_ROOTTWIST) {
     this->AddEvent(0, "effect\\su_roottwist.wav", 0, 0);
   }
 }
@@ -332,7 +333,7 @@ void CSprArrowEffect::SetBulletSprite(int job) {
 
 // OFFSET: 0x0070CEA0
 // FUNCTION: fn_07141
-CSpriteMableEffect::CSpriteMableEffect() : CEffect(1096) {
+CSpriteMableEffect::CSpriteMableEffect() : CEffect(EF_SPRITEMABLE) {
 }
 
 // OFFSET: 0x0070D040
@@ -383,7 +384,7 @@ bool CSpriteMableEffect::IsAlive() {
 // OFFSET: 0x0070D2C0
 // FUNCTION: fn_07147
 void CSpriteMableEffect::Render() {
-  if (!g_serviceOptions.Get(240)) {
+  if (!g_serviceOptions.Get(TT_SPRITEMABLE_ON_OFF)) {
     return;
   }
 
@@ -549,7 +550,7 @@ void CSvgSpiritEffect::Render() {
 
 // OFFSET: 0x0070DCF0
 // FUNCTION: fn_07163
-CTunaPartyEffect::CTunaPartyEffect() : CEffect(1097) {
+CTunaPartyEffect::CTunaPartyEffect() : CEffect(EF_TUNAPARTY) {
 }
 
 // OFFSET: 0x0070DF30
@@ -610,7 +611,7 @@ void CCurseOfCubeEffect::Render() {
 
 // OFFSET: 0x0070F0D0
 // FUNCTION: fn_07181
-CWarningPlaneEffect::CWarningPlaneEffect() : CEffect(1114), fadingIn(0), expireTime(0) {
+CWarningPlaneEffect::CWarningPlaneEffect() : CEffect(EF_WARNING_PLANE), fadingIn(0), expireTime(0) {
 }
 
 // OFFSET: 0x0070F240
@@ -762,7 +763,7 @@ void CCylinderEffect::Render() {
 
 // OFFSET: 0x007100D0
 // FUNCTION: fn_07197
-CDancingKnifeEffect::CDancingKnifeEffect() : CEffect(1829) {
+CDancingKnifeEffect::CDancingKnifeEffect() : CEffect(EF_DANCING_KNIFE) {
 }
 
 // OFFSET: 0x00710830
@@ -858,7 +859,7 @@ void CEternalSlashAttackEffect::Render() {
 
 // OFFSET: 0x00711120
 // FUNCTION: fn_07213
-CEternalSlashCountEffect::CEternalSlashCountEffect() : CEffect(1913), emitter(nullptr) {
+CEternalSlashCountEffect::CEternalSlashCountEffect() : CEffect(EF_ETERNAL_SLASH_COUNT), emitter(nullptr) {
 }
 
 // OFFSET: 0x00711280
@@ -924,7 +925,7 @@ void CEternalSlashCountEffect::Render() {
 
 // OFFSET: 0x00711420
 // FUNCTION: fn_07220
-CFallenAngelEffect::CFallenAngelEffect() : CEffect(1140), emitter(nullptr), startX(0), startY(0), startZ(0) {
+CFallenAngelEffect::CFallenAngelEffect() : CEffect(EF_FALLEN_ANGEL), emitter(nullptr), startX(0), startY(0), startZ(0) {
 }
 
 // OFFSET: 0x00711580
@@ -996,7 +997,7 @@ void CFallenAngelEffect::SetPosition(vector3d position) {
 
 // OFFSET: 0x007118C0
 // FUNCTION: fn_07228
-CFloralFlareRoad::CFloralFlareRoad() : CEffect(1804) {
+CFloralFlareRoad::CFloralFlareRoad() : CEffect(EF_FLORAL_FLARE_ROAD) {
 }
 
 // OFFSET: 0x00711A70
@@ -1082,7 +1083,7 @@ bool CFootprintEffect::IsVisible() {
     return true;
   }
 
-  if (g_serviceOptions.Get(269) && this->actor != g_session.m_aid) {
+  if (g_serviceOptions.Get(TT_HIDE_FOOTPRINT_ON_OFF) && this->actor != g_session.m_aid) {
     return false;
   }
 
@@ -1240,7 +1241,7 @@ bool CFootprintStrEffect::IsVisible() {
     return true;
   }
 
-  if (g_serviceOptions.Get(269) && this->actor != g_session.m_aid) {
+  if (g_serviceOptions.Get(TT_HIDE_FOOTPRINT_ON_OFF) && this->actor != g_session.m_aid) {
     return false;
   }
 
@@ -1575,7 +1576,7 @@ CFullScreenEffect::CFullScreenEffect() : CEffect(-1), loaded(1) {
 // FUNCTION: fn_07277
 void CFullScreenEffect::Open() {
   std::string texture;
-  if (this->id == 2272) {
+  if (this->id == EF_FROSTBITE_SCREEN) {
     texture = "effect\\state_effect\\frostbite\\frostbite_screen\\frostbite_screen.tga";
     this->retained = 1;
     for (long long i = 0; i < 4; ++i) {
@@ -1664,7 +1665,7 @@ void CFullScreenEffect::Render() {
 
 // OFFSET: 0x007176E0
 // FUNCTION: fn_07280
-CGaleStorm::CGaleStorm() : CEffect(1973), countLow(5), countHigh(0) {
+CGaleStorm::CGaleStorm() : CEffect(EF_GALE_STORM), countLow(5), countHigh(0) {
 }
 
 // OFFSET: 0x00717DE0
@@ -1714,7 +1715,7 @@ void CGravityControlEffect::Render() {
 // OFFSET: 0x007184D0
 // FUNCTION: fn_07294
 CHawkVumerangEffect::CHawkVumerangEffect()
-    : CEffect(1968),
+    : CEffect(EF_HAWK_BOOMERANG),
       countLow(10),
       countHigh(0),
       angularRange(6.283184051513672),
@@ -1985,7 +1986,7 @@ void CJupitelThunderHit::SpawnSpark() {
 // OFFSET: 0x0071C520
 // FUNCTION: fn_07323
 void CJupitelThunderHit::Open() {
-  if (this->id != 1200) {
+  if (this->id != EF_THUNDER_PLAZMA_BLAST) {
     this->SpawnSpark();
   }
 
@@ -1995,7 +1996,7 @@ void CJupitelThunderHit::Open() {
 // OFFSET: 0x0071C540
 // FUNCTION: fn_07324
 bool CJupitelThunderHit::IsAlive() {
-  if (this->id != 1200) {
+  if (this->id != EF_THUNDER_PLAZMA_BLAST) {
     if (this->actor == 0) {
       return true;
     }
@@ -2077,7 +2078,7 @@ void CJupitelThunderHit::Render() {
 
 // OFFSET: 0x0071CCB0
 // FUNCTION: fn_07327
-CNewCloudKillEffect::CNewCloudKillEffect() : CEffect(1196), circleResetTime(0), cloudResetTime(0) {
+CNewCloudKillEffect::CNewCloudKillEffect() : CEffect(EF_NEW_CLOUD_KILL), circleResetTime(0), cloudResetTime(0) {
 }
 
 // OFFSET: 0x0071CE00
@@ -2342,7 +2343,7 @@ void CNewCloudKillEffect::OnProcess() {
 
 // OFFSET: 0x0071F5F0
 // FUNCTION: fn_07344
-CPetitioEffect::CPetitioEffect() : CEffect(1911) {
+CPetitioEffect::CPetitioEffect() : CEffect(EF_PETITIO) {
 }
 
 // OFFSET: 0x0071F750
@@ -2414,7 +2415,7 @@ void CPetitioEffect::Render() {
 
 // OFFSET: 0x0071FBF0
 // FUNCTION: fn_07351
-CPneumaticusProcellaEffect::CPneumaticusProcellaEffect() : CEffect(1957) {
+CPneumaticusProcellaEffect::CPneumaticusProcellaEffect() : CEffect(EF_PNEUMATICUS_PROCELLA) {
 }
 
 // OFFSET: 0x0071FE40
@@ -2538,7 +2539,7 @@ void CRandomHitEffect::Open() {
       reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
   if (this->emitter) {
     switch (this->id) {
-    case EF_UNK_2080: {
+    case EF_SECOND_FAITH_HIT: {
       AsParticle(this->emitter)->Load(std::string("4ig_secondfalth\\secondfalth_hit\\secondfalth_hit.str"));
       const int index = static_cast<int>(s_randomHitIndex);
       AsParticle(this->emitter)->m_angle = static_cast<float>(angles[index]);
@@ -2549,7 +2550,7 @@ void CRandomHitEffect::Open() {
       AsParticle(this->emitter)->m_delay = index * 200;
       break;
     }
-    case EF_UNK_2082: {
+    case EF_SECOND_JUDGEMENT: {
       AsParticle(this->emitter)->Load(std::string("4iq_secondjudgement\\secondjudgement\\secondjudgement.str"));
       const int index = static_cast<int>(s_randomHitIndex);
       AsParticle(this->emitter)->m_angle = static_cast<float>(angles[index]);
@@ -2644,7 +2645,7 @@ void CRandomOptEffect::Init() {
       particle->animationParameter = 0.0f;
 
       switch (this->id) {
-      case EF_UNK_1186:
+      case EF_DROPITEM_PINK:
         particle->SetColor(255, 200, 255);
         particle->speedParameter = 120.0f - level * 12.0f;
         particle->scale = level * 0.24f + 0.6f;
@@ -2795,7 +2796,7 @@ void CRandomOptEffect::Render() {
 
 // OFFSET: 0x00721560
 // FUNCTION: fn_07374
-CRichsCoinEffect::CRichsCoinEffect() : CEffect(1135), coinCount(0) {
+CRichsCoinEffect::CRichsCoinEffect() : CEffect(EF_RL_B_TRAP), coinCount(0) {
 }
 
 // OFFSET: 0x007218D0
@@ -2862,7 +2863,7 @@ void CRichsCoinEffect::Render() {
 
 // OFFSET: 0x00722070
 // FUNCTION: fn_07381
-CSavageImpactEffect::CSavageImpactEffect() : CEffect(1837) {
+CSavageImpactEffect::CSavageImpactEffect() : CEffect(EF_SAVAGE_IMPACT) {
   this->offset.x = 0.0f;
   this->offset.y = 0.0f;
   this->offset.z = 0.0f;
@@ -2907,7 +2908,7 @@ CServantWeaponEffect::CServantWeaponEffect() : CEffect(-1) {
 
 // OFFSET: 0x00722730
 // FUNCTION: fn_07390
-CServantWeaponNewEffect::CServantWeaponNewEffect() : CEffect(2460) {
+CServantWeaponNewEffect::CServantWeaponNewEffect() : CEffect(EF_DK_SERVANTWEAPON) {
 }
 
 // OFFSET: 0x00722830
@@ -3658,7 +3659,7 @@ void CSevereRainStorm::SpawnParticles() {
       this->SpawnCrystalRain();
     }
     break;
-  case EF_UNK_1276:
+  case EF_NEW_SEVERERAINSTORM:
     if (this->elapsedFrames % 3 == 0) {
       this->SpawnSevereRain();
     }
@@ -3692,12 +3693,12 @@ void CSevereRainStorm::SpawnParticles() {
       this->emitters.push_back(emitter);
     }
     break;
-  case EF_UNK_2348:
+  case EF_SKE_TWINKLING_GALAXY:
     if (this->ActorExists() && this->elapsedFrames % 15 == 0) {
       this->SpawnTwinklingGalaxy(this->elapsedFrames / 15 % 4);
     }
     break;
-  case EF_UNK_2462:
+  case EF_IG_CROSS_RAIN:
     if (this->elapsedFrames % (9 - this->effectLevel / 3) == 0) {
       this->SpawnCrossRain();
     }
@@ -3707,17 +3708,17 @@ void CSevereRainStorm::SpawnParticles() {
       this->SpawnGalaxyStar();
     }
     break;
-  case EF_UNK_2350:
+  case EF_SKE_STAR_CANNON:
     if (this->ActorExists() && this->elapsedFrames % 18 == 0) {
       this->SpawnStarCannon();
     }
     break;
-  case EF_UNK_2351:
+  case EF_NW_GRENADES_DROPPING:
     if (this->ActorExists() && this->elapsedFrames % 15 == 0) {
       this->SpawnGrenades();
     }
     break;
-  case EF_UNK_2354:
+  case EF_NW_MISSION_BOMBARD:
     if (this->ActorExists() && this->elapsedFrames % 15 == 0) {
       this->SpawnBombardHits();
     }
@@ -3837,7 +3838,7 @@ void CSevereRainStorm::SpawnSevereRain() {
   }
 
   CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&position, 1));
-  if (g_serviceOptions.Get(229)) {
+  if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
     particle->Open(std::string("mineffect\\new_severerainstorm\\new_severerainstorm\\new_severerainstorm.str"));
   } else {
     particle->Open(std::string("new_severerainstorm\\new_severerainstorm\\new_severerainstorm.str"));
@@ -3951,7 +3952,7 @@ void CSevereRainStorm::Close() {
 // FUNCTION: fn_07423
 void CSevereRainStorm::Open() {
   this->elapsedFrames = 0;
-  if (this->id == 2348) {
+  if (this->id == EF_SKE_TWINKLING_GALAXY) {
     this->retained = 1;
   }
 }
@@ -3962,9 +3963,9 @@ bool CSevereRainStorm::IsAlive() {
   switch (this->id) {
   case EF_UNK_1752:
   case EF_CROSS_RAIN:
-  case EF_UNK_2462:
+  case EF_IG_CROSS_RAIN:
     return this->ActorExists();
-  case EF_UNK_1276:
+  case EF_NEW_SEVERERAINSTORM:
     if (this->elapsedFrames > 240) {
       return false;
     }
@@ -3974,15 +3975,15 @@ bool CSevereRainStorm::IsAlive() {
       return false;
     }
     break;
-  case EF_UNK_2348:
+  case EF_SKE_TWINKLING_GALAXY:
   case EF_UNK_2349:
-  case EF_UNK_2350:
+  case EF_SKE_STAR_CANNON:
     if (this->ActorExists() != true && this->emitters.size() == 0) {
       return false;
     }
     break;
-  case EF_UNK_2351:
-  case EF_UNK_2354:
+  case EF_NW_GRENADES_DROPPING:
+  case EF_NW_MISSION_BOMBARD:
     if (this->ActorExists() != true && this->emitters.size() == 0) {
       return false;
     }
@@ -3998,7 +3999,7 @@ void CSevereRainStorm::OnProcess() {
   for (auto it = this->emitters.begin(); it != this->emitters.end();) {
     EZ2STREmitter* emitter = *it;
     if (emitter->lifetime >= 0.0f) {
-      if (this->id == 2348 && emitter) {
+      if (this->id == EF_SKE_TWINKLING_GALAXY && emitter) {
         const matrix& view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
         const matrix& inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse;
         const vector3d position = *reinterpret_cast<const vector3d*>(this->position);
@@ -4232,7 +4233,7 @@ void CSvgSpiritEffect::Open() {
 void CCurseOfCubeEffect::SpawnShock() {
   CEZ2STRParticle* particle;
   switch (this->id) {
-  case EF_UNK_2305: {
+  case EF_NPC_CURSE_OF_RED_CUBE: {
     particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
     if (!particle) {
       return;
@@ -4240,7 +4241,7 @@ void CCurseOfCubeEffect::SpawnShock() {
     particle->Open("NPC_CURSE_OF_RED_CUBE\\npc_cur_r_shock\\npc_cur_r_shock.str");
     break;
   }
-  case EF_UNK_2306: {
+  case EF_NPC_CURSE_OF_BLUE_CUBE: {
     particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
     if (!particle) {
       return;
@@ -4395,7 +4396,7 @@ void CDancingKnifeEffect::OnProcess() {
 // FUNCTION: fn_07173
 void CCurseOfCubeEffect::SpawnLoop() {
   switch (this->id) {
-  case EF_UNK_2305: {
+  case EF_NPC_CURSE_OF_RED_CUBE: {
     CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
     if (bottom) {
       bottom->Open("NPC_CURSE_OF_RED_CUBE\\npc_cur_r_cube\\npc_cur_r_cube_bottom_loop.str");
@@ -4410,7 +4411,7 @@ void CCurseOfCubeEffect::SpawnLoop() {
     }
     break;
   }
-  case EF_UNK_2306: {
+  case EF_NPC_CURSE_OF_BLUE_CUBE: {
     CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
     if (bottom) {
       bottom->Open("NPC_CURSE_OF_BLUE_CUBE\\npc_cur_b_cube\\npc_cur_b_cube_bottom_loop.str");
@@ -4432,7 +4433,7 @@ void CCurseOfCubeEffect::SpawnLoop() {
 // FUNCTION: fn_07174
 void CCurseOfCubeEffect::SpawnStart() {
   switch (this->id) {
-  case EF_UNK_2305: {
+  case EF_NPC_CURSE_OF_RED_CUBE: {
     CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
     EZ2STREmitter* bottomEmitter = reinterpret_cast<EZ2STREmitter*>(bottom);
     if (bottom) {
@@ -4447,7 +4448,7 @@ void CCurseOfCubeEffect::SpawnStart() {
     }
     break;
   }
-  case EF_UNK_2306: {
+  case EF_NPC_CURSE_OF_BLUE_CUBE: {
     CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
     EZ2STREmitter* bottomEmitter = reinterpret_cast<EZ2STREmitter*>(bottom);
     if (bottom) {

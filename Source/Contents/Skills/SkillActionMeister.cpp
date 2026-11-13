@@ -1,4 +1,5 @@
 #include "Contents/Actors/ActorEnums.h"
+#include "UI/GameSettings/TalkType.h"
 #include "Contents/Effects/Core/EffectTypes.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -246,7 +247,7 @@ void CSkillAction_MT_POWERFUL_SWING::OnSkillEffect(int level, CGameActor* source
     return;
   }
 
-  if (!g_serviceOptions.Get(229)) {
+  if (!g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
     EffectLists* effects = g_effectMgr;
     CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("powerful_swing_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {

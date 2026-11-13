@@ -1,4 +1,5 @@
 #include "Client/Mode/ModeMgr.h"
+#include "UI/GameSettings/TalkType.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Session/Session.h"
 #include "Contents/Actors/Pc.h"
@@ -168,7 +169,7 @@ bool CRenderObject::PrepareSprite(
   float lightRed = 1.0f;
   float lightGreen = 1.0f;
   float lightBlue = 1.0f;
-  if (this->render.useGroundLighting == 1 && g_serviceOptions.Get(0x77)) {
+  if (this->render.useGroundLighting == 1 && g_serviceOptions.Get(TT_LIGHTMAP_ON_OFF)) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     GroundGeometry* ground = mode->scene->ground;
     if (ground->IsNewVer()) {

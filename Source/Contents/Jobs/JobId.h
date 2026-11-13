@@ -4066,6 +4066,7 @@ enum JobId : int {
   JT_CH1_RA_1 = 22528,
   JT_CH1_MI_1 = 22546,
   JT_DARK_ILLUSION2 = 23000,
+  JT_EP18_ARMED_VILLAGER01 = 21292,
 };
 
 #endif

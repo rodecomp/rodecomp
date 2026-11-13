@@ -1,4 +1,5 @@
 #include "Client/Session/Session.h"
+#include "UI/GameSettings/TalkType.h"
 #include "Contents/Configuration/ServiceEnums.h"
 #include "Contents/Effects/Core/EffectTypes.h"
 #include "Client/Mode/ModeMessage.h"
@@ -2130,7 +2131,7 @@ int CSession::SetFriendOffline(std::uint32_t accountId, std::uint32_t characterI
   for (MessengerMember& member : this->m_friends) {
     if (member.accountId == accountId && member.characterId == characterId) {
       member.offline = offline;
-      if (g_serviceOptions.Get(165)) {
+      if (g_serviceOptions.Get(TT_LOGINOUT_ON_OFF)) {
         if (member.name.empty() && g_modeMgr.GetGameMode()) {
           member.name = LookupPlayerName(member.characterId);
         }

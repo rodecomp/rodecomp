@@ -1,4 +1,5 @@
 #include "Contents/Skills/SkillId.h"
+#include "UI/GameSettings/TalkType.h"
 #include "Client/Mode/ModeMessage.h"
 #include "Contents/Actors/ActorEnums.h"
 #include "UI/Window/UIEnums.h"
@@ -2611,11 +2612,11 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     } else if (angle >= 337.0f && angle <= 360.0f) {
       effectId = 0x527;
     }
-    if (g_serviceOptions.Get(0xE5)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       effectId += 0xA3;
     }
     g_effectMgr->Spawn(source->render.accountId, effectId, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-    g_effectMgr->Spawn(target->render.accountId, g_serviceOptions.Get(0xE5) ? 0x5C5 : 0x522, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(target->render.accountId, g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? 0x5C5 : 0x522, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effect = source->LaunchEffect(EF_STIN6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = vector3d{0.0f, static_cast<float>(target->render.accountId), 0.0f};
@@ -2694,7 +2695,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
       return;
     }
     g_soundMgr->PlayWave("arrowstorm.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    const int effectId = g_serviceOptions.Get(0xE5) ? 0x5B1 : 0x50D;
+    const int effectId = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? 0x5B1 : 0x50D;
     g_effectMgr->Spawn(target->render.accountId, effectId, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     vector3d position{0.0f, 0.0f, 0.0f};
     for (int delay = 600; delay < 1200; delay += 200) {
@@ -2767,7 +2768,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     break;
   case AB_ADORAMUS:
     g_soundMgr->PlayWave("effect\\AB_adoramus.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    if (g_serviceOptions.Get(0xE5)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       g_effectMgr->Spawn(
         target->render.accountId, EF_MINEFFECT_ADORAMUS, target->render.position, target->render.accountId, level, 0, 0
       );
@@ -2788,7 +2789,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
       "crimson_r.wav", target->render.position.x - source->render.position.x, 0.0f, target->render.position.z - source->render.position.z, 250, 40,
       1.0f, 0
     );
-    if (g_serviceOptions.Get(0xE5)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       g_effectMgr->Spawn(
         target->render.accountId, EF_MINEFFECT_CRIMSONROCK, target->render.position, target->render.accountId, level, 0, 0
       );
@@ -2896,7 +2897,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     }
     const int duration = static_cast<int>(source->render.speed * 100.0f + 100.0f);
     CEffect* spawned;
-    if (g_serviceOptions.Get(0xE5)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       spawned = g_effectMgr->Spawn(source->render.accountId, effectId + 0x86, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (spawned) {
         spawned->SetDelay(duration);
@@ -2920,7 +2921,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     if (spawned) {
       spawned->SetDelay(duration);
     }
-    if (g_serviceOptions.Get(0xE5)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       g_effectMgr->Spawn(source->render.accountId, EF_MINEFFECT_BANISHINGPOINT_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       g_effectMgr->Spawn(source->render.accountId, EF_MINEFFECT_BANISHINGPOINT_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     } else {
@@ -2955,7 +2956,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     } else if (angle >= 337.0f && angle <= 360.0f) {
       effectId = 0x57C;
     }
-    if (g_serviceOptions.Get(0xE5)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       if (!g_effectMgr->Find(source->render.accountId, EF_MINEFFECT_CANNON_SPEAR_BOTTOM)) {
         g_effectMgr->Spawn(source->render.accountId, EF_MINEFFECT_CANNON_SPEAR_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
         const int duration = static_cast<int>(source->render.speed * 100.0f + 100.0f);
@@ -3051,7 +3052,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
   case SC_TRIANGLESHOT: {
     const int duration = static_cast<int>(source->render.speed * 100.0f + 100.0f);
     CEffect* spawned;
-    if (g_serviceOptions.Get(0xE5)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       spawned = g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_TRIANGLESHOT, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (spawned) {
         spawned->SetDelay(duration);
@@ -3068,7 +3069,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
       spawned->SetDelay(duration);
     }
     spawned = g_effectMgr->Spawn(
-      0, 0x52C, source->render.position, target->render.accountId, -1, 0, 0
+      0, EF_NEW_TRIANGLESHOT_ARROW, source->render.position, target->render.accountId, -1, 0, 0
     );
     if (spawned) {
       spawned->SetDelay(duration);
@@ -3100,7 +3101,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     g_soundMgr->PlayWave("effect\\맹호경파산.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   case NC_AXETORNADO:
-    if (g_serviceOptions.Get(0xE5)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       if (g_effectMgr->Find(source->render.accountId, EF_MINEFFECT_AXETORNADO)) {
         return;
       }
@@ -3135,7 +3136,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
   }
   case NC_AXEBOOMERANG:
     g_effectMgr->Spawn(
-      source->render.accountId, 0x679, source->render.position, target->render.accountId, -1, 0, 0
+      source->render.accountId, EF_NEW_AXEBOOMERANG, source->render.position, target->render.accountId, -1, 0, 0
     );
     g_effectMgr->Spawn(target->render.accountId, EF_NEW_AXEBOOMERANG_HIT, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     break;
@@ -3150,7 +3151,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     g_soundMgr->PlayWave("effect\\SR_DRAGONCOMBO.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   case SR_TIGERCANNON:
-    g_effectMgr->Spawn(source->render.accountId, g_serviceOptions.Get(0xE5) ? 0x5FC : 0x52B, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? 0x5FC : 0x52B, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     target->LaunchEffect(EF_TEIHIT1T, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     g_soundMgr->PlayWave("effect\\SR_TIGERCANNON.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
@@ -3164,7 +3165,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     target->LaunchEffect(EF_QUAKEBODY3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case SR_RAMPAGEBLASTER:
-    if (g_serviceOptions.Get(0xE5)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       g_effectMgr->Spawn(source->render.accountId, EF_MINEFFECT_RAMPAGEBLASTER, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       g_effectMgr->Spawn(source->render.accountId, EF_MINEFFECT_RAMPAGEBLASTER_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       source->LaunchEffect(EF_NEW_MAGNUM_BREAK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -3210,7 +3211,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     );
     break;
   case MT_A_MACHINE: {
-    CEffect* machine = g_effectMgr->Find(source->render.accountId, 0x72F);
+    CEffect* machine = g_effectMgr->Find(source->render.accountId, EF_A_MACHINE);
     if (machine) {
       static_cast<CAMachineEffect*>(machine)->PlayAttack();
     }

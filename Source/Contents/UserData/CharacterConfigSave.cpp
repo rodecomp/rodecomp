@@ -1,4 +1,5 @@
 #include "Client/Session/Session.h"
+#include "UI/GameSettings/TalkType.h"
 #include "Client/Session/Session.h"
 #include "Contents/Async/AsyncWorkMgr.h"
 #include "Contents/UserData/CharacterLinkedUserDataMgr.h"
@@ -87,7 +88,7 @@ void CCharacterLinkedUserDataMgr::Save() {
     data["HomunSkillInfo"] = values;
   }
 
-  data["ItemComparison"] = g_serviceOptions.Get(264) != 0;
+  data["ItemComparison"] = g_serviceOptions.Get(TT_ITEM_COMPARE_ON_OFF) != 0;
   data["SortPrivateTab"] = g_session.m_sortPrivateTab;
   this->ExportNormalItemSlots(data);
 

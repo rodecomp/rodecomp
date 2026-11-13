@@ -1,4 +1,5 @@
 #include "Client/Mode/ModeMessage.h"
+#include "UI/GameSettings/TalkType.h"
 #include "Contents/Effects/Core/Effect.h"
 
 #include "Client/Session/Session.h"
@@ -104,7 +105,7 @@ void CEffect::SetEventFrame(int kind, int frame) {
 // OFFSET: 0x00B4E290
 // FUNCTION: fn_18989
 void CEffect::UpdateVisibility() {
-  if ((g_serviceOptions.Get(8) || this->forceRender) && this->IsVisible() && !this->outsideRange) {
+  if ((g_serviceOptions.Get(TT_EFFECT_ON_OFF) || this->forceRender) && this->IsVisible() && !this->outsideRange) {
     this->Render();
   }
 }

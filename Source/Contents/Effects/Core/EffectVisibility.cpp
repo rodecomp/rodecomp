@@ -1,4 +1,5 @@
 #include "Contents/Effects/Core/EffectActor.h"
+#include "UI/GameSettings/TalkType.h"
 #include "Contents/Effects/Core/RagEffect.h"
 #include "Contents/Effects/Core/RagEffectState.h"
 #include "Contents/Configuration/ServiceOptions.h"
@@ -10,7 +11,7 @@
 // OFFSET: 0x00C734B0
 // FUNCTION: fn_20327
 bool CRagEffect::PartyEffectVisible() {
-  if (g_serviceOptions.Get(8) == 0 && this->state.forceRender == 0) {
+  if (g_serviceOptions.Get(TT_EFFECT_ON_OFF) == 0 && this->state.forceRender == 0) {
     return false;
   }
 

@@ -953,7 +953,7 @@ void ApplyServiceOptionXmasWeather(int id, unsigned char value, bool notify, int
 
   const std::string mapName = mode->MapName();
   if (mapName == "xmas_fild01.rsw" || mapName == "xmas.rsw") {
-    if (g_serviceOptions.Get(8)) {
+    if (g_serviceOptions.Get(TT_EFFECT_ON_OFF)) {
       g_weatherEffect.Snow();
     } else {
       g_weatherEffect.ExtendEffect();
@@ -1063,7 +1063,7 @@ void ApplyServiceOptionCursorClip(int id, unsigned char value, bool notify, int 
 // OFFSET: 0x006C5DF0
 // FUNCTION: fn_06369
 void ApplyServiceOptionAskOnDisable(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
-  if (value == g_serviceOptions.Get(0x128)) {
+  if (value == g_serviceOptions.Get(TT_PETINFO_ALERT_ONOFF)) {
     return;
   }
 
@@ -1508,7 +1508,7 @@ void CSession::LoadOptionInfo() {
 
   Singleton<CGameSettingsMgr>::GetInstance();
   ::SetOption(LookupMessage(MSI_CHECK_LEVEL_BEFORE_REGISTER_AGENCY), this->GetOptionInteger(LookupMessage(MSI_CHECK_LEVEL_BEFORE_REGISTER_AGENCY), 0) != 0);
-  g_serviceOptionJitterScale = g_serviceOptions.Get(0xF1) ? 730.0f : g_jitterDistanceScale;
+  g_serviceOptionJitterScale = g_serviceOptions.Get(TT_EXPAND_SIGHT_ON_OFF) ? 730.0f : g_jitterDistanceScale;
 
   if (g_outdoorCameraPitch < -65.0f) {
     g_outdoorCameraPitch = -65.0f;
@@ -1525,7 +1525,7 @@ void CSession::LoadOptionInfo() {
   }
 
   g_skinInfo.m_name = this->GetOptionString("SkinName", "<Basic Skin>");
-  this->monsterInfoEnabled = g_serviceOptions.Get(0x2E);
+  this->monsterInfoEnabled = g_serviceOptions.Get(TT_ATTACK_SNAP_ON_OFF);
   g_session.m_showBattleFieldIcon = this->GetOptionInteger("ShowBattleFieldIcon", 1) != 0;
   Singleton<CGameSettingsMgr>::GetInstance()->ApplyScriptOption(ConfineCursor, "MouseExclusive");
 
@@ -1690,16 +1690,16 @@ void CSession::SaveOptionInfo() {
   this->WriteOptionInteger(output, "bItemDefaultSort", this->m_itemDefaultSort != 0);
   this->WriteOptionInteger(output, "bItemAscendingOrder", this->m_itemAscendingOrder != 0);
   this->WriteOptionInteger(output, "bItemDescendingOrder", this->m_itemDescendingOrder != 0);
-  this->WriteOptionInteger(output, LookupMessage(MSI_USESKILL_FAIL_NEED_EQUIPPED_WEAPONE), g_serviceOptions.Get(0xF3));
-  this->WriteOptionInteger(output, "bExtendDamage", g_serviceOptions.Get(0x10B));
-  this->WriteOptionInteger(output, "bShowMapName", g_serviceOptions.Get(0x10C));
-  this->WriteOptionInteger(output, "bShowOnlyMineFootprint", g_serviceOptions.Get(0x10D));
-  this->WriteOptionInteger(output, LookupMessage(MSI_CHECK_LEVEL_BEFORE_REGISTER_AGENCY), g_serviceOptions.Get(0xF1));
+  this->WriteOptionInteger(output, LookupMessage(MSI_USESKILL_FAIL_NEED_EQUIPPED_WEAPONE), g_serviceOptions.Get(TT_EMBLEM_FRAME_ON_OFF));
+  this->WriteOptionInteger(output, "bExtendDamage", g_serviceOptions.Get(TT_EXTEND_DAMAGE_ON_OFF));
+  this->WriteOptionInteger(output, "bShowMapName", g_serviceOptions.Get(TT_SHOW_MAP_NAME_ON_OFF));
+  this->WriteOptionInteger(output, "bShowOnlyMineFootprint", g_serviceOptions.Get(TT_HIDE_FOOTPRINT_ON_OFF));
+  this->WriteOptionInteger(output, LookupMessage(MSI_CHECK_LEVEL_BEFORE_REGISTER_AGENCY), g_serviceOptions.Get(TT_EXPAND_SIGHT_ON_OFF));
   this->WriteOptionInteger(output, "DamageSkin", this->m_damageSkinIndex);
   this->WriteOptionInteger(output, "DamageDir", this->m_damageSkinMode);
   this->WriteOptionInteger(output, "PriorityClass", this->m_priorityClass);
-  this->WriteOptionInteger(output, "bSummonTranslucent", g_serviceOptions.Get(0x10A));
-  this->WriteOptionInteger(output, "bHidePlayer", g_serviceOptions.Get(0x109));
-  this->WriteOptionInteger(output, "bQuickSlot", g_serviceOptions.Get(0x10E));
+  this->WriteOptionInteger(output, "bSummonTranslucent", g_serviceOptions.Get(TT_HIDE_SUMMON_ON_OFF));
+  this->WriteOptionInteger(output, "bHidePlayer", g_serviceOptions.Get(TT_HIDE_PLAYER_ON_OFF));
+  this->WriteOptionInteger(output, "bQuickSlot", g_serviceOptions.Get(TT_QUICK_SLOT_ON_OFF));
   output.Close();
 }

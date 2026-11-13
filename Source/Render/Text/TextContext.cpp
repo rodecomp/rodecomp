@@ -3,6 +3,7 @@
 #include "Render/Text/TextContext.h"
 #include "Client/Input/InputCharset.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Utility/Text/TextTokens.h"
 
 #include <algorithm>
@@ -66,12 +67,12 @@ void TextContext::SetFont(int family, int height, unsigned char bold, unsigned c
   if (family == 0) {
     switch (language) {
     case 1:
-      if (g_serviceType == 6) {
+      if (g_serviceType == ServiceIndonesia) {
         family = 8;
         height = (height + 2);
       } else {
         height = (height + 3);
-        if (g_serviceType == 14) {
+        if (g_serviceType == ServiceRussia) {
           family = 9;
         } else {
           family = 1;
@@ -98,9 +99,9 @@ void TextContext::SetFont(int family, int height, unsigned char bold, unsigned c
     case 8:
       family = 7;
       height = (height + 3);
-      if (g_serviceType == 12) {
+      if (g_serviceType == ServiceBrazil) {
         height = (height - 2);
-      } else if (g_serviceType == 18) {
+      } else if (g_serviceType == ServiceFrance) {
         if (31 == g_serverLanguage->alternateLanguage) {
           family = 6;
         } else {

@@ -1,4 +1,5 @@
 #include "Contents/Actors/Pc.h"
+#include "UI/GameSettings/TalkType.h"
 #include "Contents/Effects/Particles/EZ2STREffect.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -764,7 +765,7 @@ int GetHatEffectOffsetY(int id, CGameActor* actor) {
   case EF_NEW_VULCANARM_SHOTHOLE:
   case EF_NEW_D_MACHINE_CAST:
   case EF_NEW_D_MACHINE_CAST_BOTTOM:
-  case EF_UNK_1839:
+  case EF_A_MACHINE:
   case EF_A_MACHINE_CAST:
   case EF_A_MACHINE_HIT:
   case EF_ACIDIFIED_ZONE_FIRE_CAST:
@@ -1114,7 +1115,7 @@ bool CEZ2STRScreenEffect::IsAttachedToHead() const {
   case EF_NEW_REPARATIO_TARGET:
   case EF_NEW_REPARATIO_TARGET_BOTTOM:
   case EF_ETERNAL_SLASH_HIT_1:
-  case EF_UNK_1839:
+  case EF_A_MACHINE:
   case EF_A_MACHINE_CAST:
   case EF_A_MACHINE_HIT:
   case EF_EFFLIGO:
@@ -1624,7 +1625,7 @@ vector3d CEZ2STRScreenEffect::GetWindowOffset() {
 // OFFSET: 0x00B51D20
 // FUNCTION: fn_19035
 bool CEZ2STRScreenEffect::IsVisible() {
-  if (this->id != 0x76C) {
+  if (this->id != EF_WIND_SIGN_LOOP) {
     return CEffect::IsVisible();
   }
 
@@ -1701,7 +1702,7 @@ bool CEZ2STRScreenEffect::IsAlive() {
   case EF_ALL_BLOOM:
   case EF_ALL_BLOOM_BOTTOM:
   case EF_NEW_D_MACHINE:
-  case EF_UNK_1839:
+  case EF_A_MACHINE:
   case EF_DEEP_BLIND_TRAP:
   case EF_SWIFT_TRAP:
   case EF_SOLID_TRAP:
@@ -2393,7 +2394,7 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
     particle->Open("new_dragonbreath_water\\new_dragonbreath_water_11_clock\\new_dragonbreath_water_11_clock.str");
     break;
   case EF_NEW_COUNTER_SLASH:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_counter_slash\\new_counter_slash\\new_counter_slash.str");
     } else {
       particle->Open("new_counter_slash\\new_counter_slash\\new_counter_slash.str");
@@ -2469,14 +2470,14 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
     particle->Open("new_comet\\new_comet_cast\\new_comet_cast.str");
     break;
   case EF_NEW_RAYOFGENESIS:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_rayofgenesis\\new_rayofgenesis\\new_rayofgenesis.str");
     } else {
       particle->Open("new_rayofgenesis\\new_rayofgenesis\\new_rayofgenesis.str");
     }
     break;
   case EF_NEW_RAYOFGENESIS_CAST:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_rayofgenesis\\new_rayofgenesis_cast\\new_rayofgenesis_cast.str");
     } else {
       particle->Open("new_rayofgenesis\\new_rayofgenesis_cast\\new_rayofgenesis_cast.str");
@@ -2486,7 +2487,7 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
     particle->Open("new_rayofgenesis\\new_rayofgenesis_cast_bottom\\new_rayofgenesis_cast_bottom.str");
     break;
   case EF_NEW_RAYOFGENESIS_HIT:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_rayofgenesis\\new_rayofgenesis_hit\\new_rayofgenesis_hit.str");
     } else {
       particle->Open("new_rayofgenesis\\new_rayofgenesis_hit\\new_rayofgenesis_hit.str");
@@ -2598,21 +2599,21 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
     particle->Open("mineffect\\new_peintbomb\\new_peintbomb_bottom\\new_peintbomb_bottom.str");
     break;
   case EF_NEW_EARTHGRAVE_VISUAL:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_earthgrave\\new_earthgrave\\new_earthgrave.str");
     } else {
       particle->Open("new_earthgrave\\new_earthgrave\\new_earthgrave.str");
     }
     break;
   case EF_NEW_EARTHGRAVE_BOTTOM:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_earthgrave\\new_earthgrave_bottom\\new_earthgrave_bottom.str");
     } else {
       particle->Open("new_earthgrave\\new_earthgrave_bottom\\new_earthgrave_bottom.str");
     }
     break;
   case EF_NEW_EARTHGRAVE_HIT:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_earthgrave\\new_earthgrave_hit\\new_earthgrave_hit.str");
     } else {
       particle->Open("new_earthgrave\\new_earthgrave_hit\\new_earthgrave_hit.str");
@@ -2850,14 +2851,14 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
     particle->Open("mineffect\\new_jackfrost\\new_jackfrost_magicrune\\new_jackfrost_frost.str");
     break;
   case EF_NEW_POISONSMOKE_1:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_poisonsmoke\\new_poisonsmoke\\new_poisonsmoke_1.str");
     } else {
       particle->Open("new_poisonsmoke\\new_poisonsmoke\\new_poisonsmoke_1.str");
     }
     break;
   case EF_NEW_POISONSMOKE_2:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_poisonsmoke\\new_poisonsmoke\\new_poisonsmoke_2.str");
     } else {
       particle->Open("new_poisonsmoke\\new_poisonsmoke\\new_poisonsmoke_2.str");
@@ -2867,63 +2868,63 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
     particle->Open("new_poisonsmoke\\new_poisonsmoke_cast\\new_poisonsmoke_cast.str");
     break;
   case EF_NEW_FEARBREEZE:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_fearbreeze\\new_fearbreeze.str");
     } else {
       particle->Open("new_fearbreeze\\new_fearbreeze.str");
     }
     break;
   case EF_NEW_HELLINFERNO:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_hellInferno\\new_hellInferno\\new_hellInferno.str");
     } else {
       particle->Open("new_hellInferno\\new_hellInferno\\new_hellInferno.str");
     }
     break;
   case EF_NEW_HELLINFERNO_BOTTOM:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_hellInferno\\new_hellInferno_bottom\\new_hellInferno_bottom.str");
     } else {
       particle->Open("new_hellInferno\\new_hellInferno_bottom\\new_hellInferno_bottom.str");
     }
     break;
   case EF_NEW_HELLINFERNO_CAST_BOTTOM:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_hellInferno\\new_hellInferno_cast_bottom\\new_hellInferno_cast_bottom.str");
     } else {
       particle->Open("new_hellInferno\\new_hellInferno_cast_bottom\\new_hellInferno_cast_bottom.str");
     }
     break;
   case EF_NEW_HELLINFERNO_SUB:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_hellInferno\\new_hellInferno_sub\\new_hellInferno_sub.str");
     } else {
       particle->Open("new_hellInferno\\new_hellInferno_sub\\new_hellInferno_sub.str");
     }
     break;
   case EF_NEW_HELLINFERNO_SUB_BOTTOM:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_hellInferno\\new_hellInferno_sub_bottom\\new_hellInferno_sub_bottom.str");
     } else {
       particle->Open("new_hellInferno\\new_hellInferno_sub_bottom\\new_hellInferno_sub_bottom.str");
     }
     break;
   case EF_NEW_CLEARANCE:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_clearence\\new_clearence\\new_clearence.str");
     } else {
       particle->Open("new_clearence\\new_clearence\\new_clearence.str");
     }
     break;
   case EF_NEW_CLEARANCE_BOTTOM:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_clearence\\new_clearence_bottom\\new_clearence_bottom.str");
     } else {
       particle->Open("new_clearence\\new_clearence_bottom\\new_clearence_bottom.str");
     }
     break;
   case EF_NEW_CLEARANCE_CAST:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_clearence\\new_clearence_cast\\new_clearence_cast.str");
     } else {
       particle->Open("new_clearence\\new_clearence_cast\\new_clearence_cast.str");
@@ -2942,168 +2943,168 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
     particle->Open("new_varetyrspear\\new_varetyrspear_cast_bottom\\new_varetyrspear_cast_bottom.str");
     break;
   case EF_NEW_CROSSIMPACT:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_crossimpact\\new_crossimpact\\new_crossimpact.str");
     } else {
       particle->Open("new_crossimpact\\new_crossimpact\\new_crossimpact.str");
     }
     break;
   case EF_NEW_CROSSIMPACT_TARGET:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_crossimpact\\new_crossimpact_target\\new_crossimpact_target.str");
     } else {
       particle->Open("new_crossimpact\\new_crossimpact_target\\new_crossimpact_target.str");
     }
     break;
   case EF_NEW_REVERBERATION_HIT:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_reverberation\\new_reverberation_hit\\new_reverberation_hit.str");
     } else {
       particle->Open("new_reverberation\\new_reverberation_hit\\new_reverberation_hit.str");
     }
     break;
   case EF_NEW_FALLENEMPIRE:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_fallenempire\\new_fallenempire\\new_fallenempire.str");
     } else {
       particle->Open("new_fallenempire\\new_fallenempire\\new_fallenempire.str");
     }
     break;
   case EF_NEW_FALLENEMPIRE_BOTTOM:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_fallenempire\\new_fallenempire_bottom\\new_fallenempire_bottom.str");
     } else {
       particle->Open("new_fallenempire\\new_fallenempire_bottom\\new_fallenempire_bottom.str");
     }
     break;
   case EF_NEW_FALLENEMPIRE_HIT:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_fallenempire\\new_fallenempire_hit\\new_fallenempire_hit.str");
     } else {
       particle->Open("new_fallenempire\\new_fallenempire_hit\\new_fallenempire_hit.str");
     }
     break;
   case EF_NEW_GATEOFHELL_CAST:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_gateofhell\\new_gateofhell_cast\\new_gateofhell_cast.str");
     } else {
       particle->Open("new_gateofhell\\new_gateofhell_cast\\new_gateofhell_cast.str");
     }
     break;
   case EF_NEW_GATEOFHELL_TARGET:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_gateofhell\\new_gateofhell_target\\new_gateofhell_target.str");
     } else {
       particle->Open("new_gateofhell\\new_gateofhell_target\\new_gateofhell_target.str");
     }
     break;
   case EF_NEW_HOWLINGOFLION:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_howlingoflion\\new_howlingoflion\\new_howlingoflion.str");
     } else {
       particle->Open("new_howlingoflion\\new_howlingoflion\\new_howlingoflion.str");
     }
     break;
   case EF_NEW_HOWLINGOFLION_BOTTOM:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_howlingoflion\\new_howlingoflion_bottom\\new_howlingoflion_bottom.str");
     } else {
       particle->Open("new_howlingoflion\\new_howlingoflion_bottom\\new_howlingoflion_bottom.str");
     }
     break;
   case EF_NEW_HOWLINGOFLION_CAST:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_howlingoflion\\new_howlingoflion_cast\\new_howlingoflion_cast.str");
     } else {
       particle->Open("new_howlingoflion\\new_howlingoflion_cast\\new_howlingoflion_cast.str");
     }
     break;
   case EF_NEW_HOWLINGOFLION_CAST_BOTTOM:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_howlingoflion\\new_howlingoflion_cast_bottom\\new_howlingoflion_cast_bottom.str");
     } else {
       particle->Open("new_howlingoflion\\new_howlingoflion_cast_bottom\\new_howlingoflion_cast_bottom.str");
     }
     break;
   case EF_NEW_HOWLINGOFLION_HIT:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_howlingoflion\\new_howlingoflion_hit\\new_howlingoflion_hit.str");
     } else {
       particle->Open("new_howlingoflion\\new_howlingoflion_hit\\new_howlingoflion_hit.str");
     }
     break;
   case EF_NEW_METALLICSOUND:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_metalicsound\\new_metalicsound\\new_metalicsound.str");
     } else {
       particle->Open("new_metalicsound\\new_metalicsound\\new_metalicsound.str");
     }
     break;
   case EF_NEW_METALLICSOUND_BOTTOM:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_metalicsound\\new_metalicsound_bottom\\new_metalicsound_bottom.str");
     } else {
       particle->Open("new_metalicsound\\new_metalicsound_bottom\\new_metalicsound_bottom.str");
     }
     break;
   case EF_NEW_METALLICSOUND_HIT:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_metalicsound\\new_metalicsound_hit\\new_metalicsound_hit.str");
     } else {
       particle->Open("new_metalicsound\\new_metalicsound_hit\\new_metalicsound_hit.str");
     }
     break;
   case EF_NEW_REPRODUCE:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_reproduce\\new_reproduce\\new_reproduce.str");
     } else {
       particle->Open("new_reproduce\\new_reproduce\\new_reproduce.str");
     }
     break;
   case EF_NEW_REPRODUCE_BOTTOM:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_reproduce\\new_reproduce_bottom\\new_reproduce_bottom.str");
     } else {
       particle->Open("new_reproduce\\new_reproduce_bottom\\new_reproduce_bottom.str");
     }
     break;
   case EF_NEW_SOULEXPANSION_CAST:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_soulexpansion\\new_soulexpansion_cast\\new_soulexpansion_cast.str");
     } else {
       particle->Open("new_soulexpansion\\new_soulexpansion_cast\\new_soulexpansion_cast.str");
     }
     break;
   case EF_NEW_SOULEXPANSION_CAST_BOTTOM:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_soulexpansion\\new_soulexpansion_cast_bottom\\new_soulexpansion_cast_bottom.str");
     } else {
       particle->Open("new_soulexpansion\\new_soulexpansion_cast_bottom\\new_soulexpansion_cast_bottom.str");
     }
     break;
   case EF_NEW_SOULEXPANSION_LOOP:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_soulexpansion\\new_soulexpansion_loop\\new_soulexpansion_loop.str");
     } else {
       particle->Open("new_soulexpansion\\new_soulexpansion_loop\\new_soulexpansion_loop.str");
     }
     break;
   case EF_NEW_SOULEXPANSION_LOOP_BOTTOM:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_soulexpansion\\new_soulexpansion_loop_bottom\\new_soulexpansion_loop_bottom.str");
     } else {
       particle->Open("new_soulexpansion\\new_soulexpansion_loop_bottom\\new_soulexpansion_loop_bottom.str");
     }
     break;
   case EF_NEW_SOULEXPANSION_HIT:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_soulexpansion\\new_soulexpansion_hit\\new_soulexpansion_hit.str");
     } else {
       particle->Open("new_soulexpansion\\new_soulexpansion_hit\\new_soulexpansion_hit.str");
     }
     break;
   case EF_NEW_SOULEXPANSION_HIT_BOTTOM:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_soulexpansion\\new_soulexpansion_hit_bottom\\new_soulexpansion_hit_bottom.str");
     } else {
       particle->Open("new_soulexpansion\\new_soulexpansion_hit_bottom\\new_soulexpansion_hit_bottom.str");
@@ -3152,7 +3153,7 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
     particle->Open("red_wave\\ef_mon_explodngwave3.str");
     break;
   case EF_NEW_WALLOFTHORN_CAST:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_wallofthorn\\new_wallofthorn_cast\\new_wallofthorn_cast.str");
     } else {
       particle->Open("new_wallofthorn\\new_wallofthorn_cast\\new_wallofthorn_cast.str");
@@ -3162,14 +3163,14 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
     particle->Open("new_wallofthorn\\new_wallofthorn_cast_bottom\\new_wallofthorn_cast_bottom.str");
     break;
   case EF_NEW_IGNITIONBREAK:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_ignitionbreak\\new_ignitionbreak\\new_ignitionbreak.str");
     } else {
       particle->Open("new_ignitionbreak\\new_ignitionbreak\\new_ignitionbreak.str");
     }
     break;
   case EF_NEW_IGNITIONBREAK_BOTTOM:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_ignitionbreak\\new_ignitionbreak_bottom\\new_ignitionbreak_bottom.str");
     } else {
       particle->Open("new_ignitionbreak\\new_ignitionbreak_bottom\\new_ignitionbreak_bottom.str");
@@ -3179,196 +3180,196 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
     particle->Open("new_ignitionbreak\\new_ignitionbreak_cast\\new_ignitionbreak_cast.str");
     break;
   case EF_NEW_JUDEX_CAST:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_judex\\new_judex_cast\\new_judex_cast.str");
     } else {
       particle->Open("new_judex\\new_judex_cast\\new_judex_cast.str");
     }
     break;
   case EF_NEW_JUDEX_CAST_BOTTOM:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_judex\\new_judex_cast_bottom\\new_judex_cast_bottom.str");
     } else {
       particle->Open("new_judex\\new_judex_cast_bottom\\new_judex_cast_bottom.str");
     }
     break;
   case EF_NEW_JUDEX_CAST_LOOP:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_judex\\new_judex_cast_loop\\new_judex_cast_loop.str");
     } else {
       particle->Open("new_judex\\new_judex_cast_loop\\new_judex_cast_loop.str");
     }
     break;
   case EF_NEW_JUDEX_CAST_LOOP_BOTTOM:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_judex\\new_judex_cast_loop_bottom\\new_judex_cast_loop_bottom.str");
     } else {
       particle->Open("new_judex\\new_judex_cast_loop_bottom\\new_judex_cast_loop_bottom.str");
     }
     break;
   case EF_NEW_JUDEX_TARGET:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_judex\\new_judex_target\\new_judex_target.str");
     } else {
       particle->Open("new_judex\\new_judex_target\\new_judex_target.str");
     }
     break;
   case EF_NEW_JUDEX_TARGET_BOTTOM:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_judex\\new_judex_target_bottom\\new_judex_target_bottom.str");
     } else {
       particle->Open("new_judex\\new_judex_target_bottom\\new_judex_target_bottom.str");
     }
     break;
   case EF_NEW_JUDEX_LIGHT:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_judex\\new_judex_light\\new_judex_light.str");
     } else {
       particle->Open("new_judex\\new_judex_light\\new_judex_light.str");
     }
     break;
   case EF_NEW_JUDEX_LIGHT_BOTTOM:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_judex\\new_judex_light_bottom\\new_judex_light_bottom.str");
     } else {
       particle->Open("new_judex\\new_judex_light_bottom\\new_judex_light_bottom.str");
     }
     break;
   case EF_NEW_CHAINLIGHTNING_CAST:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_chainlightning\\new_chainlightning_cast\\new_chainlightning_cast.str");
     } else {
       particle->Open("new_chainlightning\\new_chainlightning_cast\\new_chainlightning_cast.str");
     }
     break;
   case EF_NEW_CHAINLIGHTNING_CAST_BOTTOM:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_chainlightning\\new_chainlightning_cast_bottom\\new_chainlightning_cast_bottom.str");
     } else {
       particle->Open("new_chainlightning\\new_chainlightning_cast_bottom\\new_chainlightning_cast_bottom.str");
     }
     break;
   case EF_NEW_CHAINLIGHTNING_LOCKON:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_chainlightning\\new_chainlightning_lockon\\new_chainlightning_lockon.str");
     } else {
       particle->Open("new_chainlightning\\new_chainlightning_lockon\\new_chainlightning_lockon.str");
     }
     break;
   case EF_NEW_CHAINLIGHTNING_TARGET:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_chainlightning\\new_chainlightning_target\\new_chainlightning_target.str");
     } else {
       particle->Open("new_chainlightning\\new_chainlightning_target\\new_chainlightning_target.str");
     }
     break;
   case EF_NEW_MANDRAGORA:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_mandragora\\new_mandragora\\new_mandragora.str");
     } else {
       particle->Open("new_mandragora\\new_mandragora\\new_mandragora.str");
     }
     break;
   case EF_NEW_MANDRAGORA_BOTTOM:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_mandragora\\new_mandragora_bottom\\new_mandragora_bottom.str");
     } else {
       particle->Open("new_mandragora\\new_mandragora_bottom\\new_mandragora_bottom.str");
     }
     break;
   case EF_NEW_MANDRAGORA_CAST:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_mandragora\\new_mandragora_cast\\new_mandragora_cast.str");
     } else {
       particle->Open("new_mandragora\\new_mandragora_cast\\new_mandragora_cast.str");
     }
     break;
   case EF_NEW_SOUNDOFDESTRUCTION_CAST:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_soundofdestruction\\new_soundofdestruction_cast\\new_soundofdestruction_cast.str");
     } else {
       particle->Open("new_soundofdestruction\\new_soundofdestruction_cast\\new_soundofdestruction_cast.str");
     }
     break;
   case EF_NEW_SOUNDOFDESTRUCTION_CAST_BOTTOM:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_soundofdestruction\\new_soundofdestruction_cast_bottom\\new_soundofdestruction_cast_bottom.str");
     } else {
       particle->Open("new_soundofdestruction\\new_soundofdestruction_cast_bottom\\new_soundofdestruction_cast_bottom.str");
     }
     break;
   case EF_NEW_SOUNDOFDESTRUCTION_TARGET:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_soundofdestruction\\new_soundofdestruction_target\\new_soundofdestruction_target.str");
     } else {
       particle->Open("new_soundofdestruction\\new_soundofdestruction_target\\new_soundofdestruction_target.str");
     }
     break;
   case EF_NEW_AIMEDBOLT_01:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_aimedbolt\\new_aimedbolt_attack_01clock\\new_aimedbolt_attack_01clock.str");
     } else {
       particle->Open("new_aimedbolt\\new_aimedbolt_attack_01clock\\new_aimedbolt_attack_01clock.str");
     }
     break;
   case EF_NEW_AIMEDBOLT_05:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_aimedbolt\\new_aimedbolt_attack_05clock\\new_aimedbolt_attack_05clock.str");
     } else {
       particle->Open("new_aimedbolt\\new_aimedbolt_attack_05clock\\new_aimedbolt_attack_05clock.str");
     }
     break;
   case EF_NEW_AIMEDBOLT_07:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_aimedbolt\\new_aimedbolt_attack_07clock\\new_aimedbolt_attack_07clock.str");
     } else {
       particle->Open("new_aimedbolt\\new_aimedbolt_attack_07clock\\new_aimedbolt_attack_07clock.str");
     }
     break;
   case EF_NEW_AIMEDBOLT_11:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_aimedbolt\\new_aimedbolt_attack_11clock\\new_aimedbolt_attack_11clock.str");
     } else {
       particle->Open("new_aimedbolt\\new_aimedbolt_attack_11clock\\new_aimedbolt_attack_11clock.str");
     }
     break;
   case EF_NEW_AIMEDBOLT_CAST_BOTTOM:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_aimedbolt\\new_aimedbolt_cast_bottom\\new_aimedbolt_cast_bottom.str");
     } else {
       particle->Open("new_aimedbolt\\new_aimedbolt_cast_bottom\\new_aimedbolt_cast_bottom.str");
     }
     break;
   case EF_NEW_AIMEDBOLT_END:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_aimedbolt\\new_aimedbolt_target_end\\new_aimedbolt_end.str");
     } else {
       particle->Open("new_aimedbolt\\new_aimedbolt_target_end\\new_aimedbolt_end.str");
     }
     break;
   case EF_NEW_AIMEDBOLT_TARGET_LOOP:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_aimedbolt\\new_aimedbolt_target_loop\\new_aimedbolt_target_loop.str");
     } else {
       particle->Open("new_aimedbolt\\new_aimedbolt_target_loop\\new_aimedbolt_target_loop.str");
     }
     break;
   case EF_NEW_UNLIMIT:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_unlimit\\new_unlimit\\new_unlimit.str");
     } else {
       particle->Open("new_unlimit\\new_unlimit\\new_unlimit.str");
     }
     break;
   case EF_NEW_UNLIMIT_BOTTOM:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_unlimit\\new_unlimit_bottom\\new_unlimit_bottom.str");
     } else {
       particle->Open("new_unlimit\\new_unlimit_bottom\\new_unlimit_bottom.str");
     }
     break;
   case EF_NEW_EPICLESIS:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_epiclesis\\new_epiclesis_combine.str");
     } else {
       particle->Open("new_epiclesis\\new_epiclesis_combine\\new_epiclesis_combine.str");
@@ -3381,7 +3382,7 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
     particle->Open("new_axeboomerang\\new_axeboomerang_cast_bottom\\new_axeboomerang_cast_bottom.str");
     break;
   case EF_NEW_AXEBOOMERANG_HIT:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_axeboomerang\\new_axeboomerang_hit\\new_axeboomerang_hit.str");
     } else {
       particle->Open("new_axeboomerang\\new_axeboomerang_hit\\new_axeboomerang_hit.str");
@@ -3397,35 +3398,35 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
     particle->Load("hackandslash\\hackandslash_hit\\hackandslash_hit.str");
     break;
   case EF_NEW_SPELLFIST_FIRE:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_spellfist\\new_spellfist_fire\\new_spellfist_fire.str");
     } else {
       particle->Open("new_spellfist\\new_spellfist_fire\\new_spellfist_fire.str");
     }
     break;
   case EF_NEW_SPELLFIST_FIRE_BOTTOM:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_spellfist\\new_spellfist_fire_bottom\\new_spellfist_fire_bottom.str");
     } else {
       particle->Open("new_spellfist\\new_spellfist_fire_bottom\\new_spellfist_fire_bottom.str");
     }
     break;
   case EF_NEW_SPELLFIST_WATER:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_spellfist\\new_spellfist_water\\new_spellfist_water.str");
     } else {
       particle->Open("new_spellfist\\new_spellfist_water\\new_spellfist_water.str");
     }
     break;
   case EF_NEW_SPELLFIST_WATER_BOTTOM:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_spellfist\\new_spellfist_water_bottom\\new_spellfist_water_bottom.str");
     } else {
       particle->Open("new_spellfist\\new_spellfist_water_bottom\\new_spellfist_water_bottom.str");
     }
     break;
   case EF_NEW_SPELLFIST_WIND:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_spellfist\\new_spellfist_wind\\new_spellfist_wind.str");
     } else {
       particle->Open("new_spellfist\\new_spellfist_wind\\new_spellfist_wind.str");
@@ -3447,77 +3448,77 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
     particle->Load("stormslash\\stormslash\\stormslash_5.str");
     break;
   case EF_NEW_CARTBOOST:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_cartboost\\new_cartboost\\new_cartboost.str");
     } else {
       particle->Open("new_cartboost\\new_cartboost\\new_cartboost.str");
     }
     break;
   case EF_NEW_CARTBOOST_BOTTOM:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_cartboost\\new_cartboost_bottom\\new_cartboost_bottom.str");
     } else {
       particle->Open("new_cartboost\\new_cartboost_bottom\\new_cartboost_bottom.str");
     }
     break;
   case EF_NEW_OVERBRAND_01:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_overbrand\\new_overbrand_01_clock\\new_overbrand_01_clock.str");
     } else {
       particle->Open("new_overbrand\\new_overbrand_01_clock\\new_overbrand_01_clock.str");
     }
     break;
   case EF_NEW_OVERBRAND_03:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_overbrand\\new_overbrand_03_clock\\new_overbrand_03_clock.str");
     } else {
       particle->Open("new_overbrand\\new_overbrand_03_clock\\new_overbrand_03_clock.str");
     }
     break;
   case EF_NEW_OVERBRAND_05:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_overbrand\\new_overbrand_05_clock\\new_overbrand_05_clock.str");
     } else {
       particle->Open("new_overbrand\\new_overbrand_05_clock\\new_overbrand_05_clock.str");
     }
     break;
   case EF_NEW_OVERBRAND_06:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_overbrand\\new_overbrand_06_clock\\new_overbrand_06_clock.str");
     } else {
       particle->Open("new_overbrand\\new_overbrand_06_clock\\new_overbrand_06_clock.str");
     }
     break;
   case EF_NEW_OVERBRAND_07:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_overbrand\\new_overbrand_07_clock\\new_overbrand_07_clock.str");
     } else {
       particle->Open("new_overbrand\\new_overbrand_07_clock\\new_overbrand_07_clock.str");
     }
     break;
   case EF_NEW_OVERBRAND_09:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_overbrand\\new_overbrand_09_clock\\new_overbrand_09_clock.str");
     } else {
       particle->Open("new_overbrand\\new_overbrand_09_clock\\new_overbrand_09_clock.str");
     }
     break;
   case EF_NEW_OVERBRAND_11:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_overbrand\\new_overbrand_11_clock\\new_overbrand_11_clock.str");
     } else {
       particle->Open("new_overbrand\\new_overbrand_11_clock\\new_overbrand_11_clock.str");
     }
     break;
   case EF_NEW_OVERBRAND_12:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_overbrand\\new_overbrand_12_clock\\new_overbrand_12_clock.str");
     } else {
       particle->Open("new_overbrand\\new_overbrand_12_clock\\new_overbrand_12_clock.str");
     }
     break;
   case EF_NEW_OVERBRAND_CAST:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_overbrand\\new_overbrand_cast\\new_overbrand_cast.str");
     } else {
       particle->Open("new_overbrand\\new_overbrand_cast\\new_overbrand_cast.str");
@@ -3527,35 +3528,35 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
     particle->Open("new_overbrand\\new_overbrand_cast_bottom\\new_overbrand_cast_bottom.str");
     break;
   case EF_NEW_OVERBRAND_HIT:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_overbrand\\new_overbrand_hit\\new_overbrand_hit.str");
     } else {
       particle->Open("new_overbrand\\new_overbrand_hit\\new_overbrand_hit.str");
     }
     break;
   case EF_NEW_WINDCUTTER:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_windcutter\\new_windcutter\\new_windcutter.str");
     } else {
       particle->Open("new_windcutter\\new_windcutter\\new_windcutter.str");
     }
     break;
   case EF_NEW_WINDCUTTER_BOTTOM_01:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_windcutter\\new_windcutter_bottom_01clock\\new_windcutter_bottom_01clock.str");
     } else {
       particle->Open("new_windcutter\\new_windcutter_bottom_01clock\\new_windcutter_bottom_01clock.str");
     }
     break;
   case EF_NEW_WINDCUTTER_BOTTOM_05:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_windcutter\\new_windcutter_bottom_05clock\\new_windcutter_bottom_05clock.str");
     } else {
       particle->Open("new_windcutter\\new_windcutter_bottom_05clock\\new_windcutter_bottom_05clock.str");
     }
     break;
   case EF_NEW_WINDCUTTER_TARGET:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_windcutter\\new_windcutter_target\\new_windcutter_target.str");
     } else {
       particle->Open("new_windcutter\\new_windcutter_target\\new_windcutter_target.str");
@@ -3571,77 +3572,77 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
     particle->Load("new_servantweapon\\new_servantweapon_shoot_bottom\\new_servantweapon_shoot_bottom.str");
     break;
   case EF_NEW_POWERSWING_01:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_powerswing\\new_powerswing_01_clock\\new_powerswing_01_clock.str");
     } else {
       particle->Open("new_powerswing\\new_powerwing_01_clock\\new_powerwing_01_clock.str");
     }
     break;
   case EF_NEW_POWERSWING_05:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_powerswing\\new_powerswing_05_clock\\new_powerswing_05_clock.str");
     } else {
       particle->Open("new_powerswing\\new_powerwing_05_clock\\new_powerwing_05_clock.str");
     }
     break;
   case EF_NEW_POWERSWING_07:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_powerswing\\new_powerswing_07_clock\\new_powerswing_07_clock.str");
     } else {
       particle->Open("new_powerswing\\new_powerwing_07_clock\\new_powerwing_07_clock.str");
     }
     break;
   case EF_NEW_POWERSWING_11:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_powerswing\\new_powerswing_11_clock\\new_powerswing_11_clock.str");
     } else {
       particle->Open("new_powerswing\\new_powerwing_11_clock\\new_powerwing_11_clock.str");
     }
     break;
   case EF_NEW_POWERSWING_BOTTOM:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_powerswing\\new_powerswing_bottom\\new_powerswing_bottom.str");
     } else {
       particle->Open("new_powerswing\\new_powerswing_bottom\\new_powerswing_bottom.str");
     }
     break;
   case EF_NEW_VULCANARM:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_vulcanarm\\new_vulcanarm\\new_vulcanarm.str");
     } else {
       particle->Open("new_vulcanarm\\new_vulcanarm\\new_vulcanarm.str");
     }
     break;
   case EF_NEW_VULCANARM_BOTTOM:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_vulcanarm\\new_vulcanarm_bottom\\new_vulcanarm_bottom.str");
     } else {
       particle->Open("new_vulcanarm\\new_vulcanarm_bottom\\new_vulcanarm_bottom.str");
     }
     break;
   case EF_NEW_VULCANARM_SHOTHOLE:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_vulcanarm\\new_vulcanarm_shothole\\new_vulcanarm_shothole.str");
     } else {
       particle->Open("new_vulcanarm\\new_vulcanarm_shothole\\new_vulcanarm_shothole.str");
     }
     break;
   case EF_NEW_EARTHDRIVE:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_earthdrive\\new_earthdrive\\new_earthdrive.str");
     } else {
       particle->Open("new_earthdrive\\new_earthdrive\\new_earthdrive.str");
     }
     break;
   case EF_NEW_EARTHDRIVE_BOTTOM:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_earthdrive\\new_earthdrive_bottom\\new_earthdrive_bottom.str");
     } else {
       particle->Open("new_earthdrive\\new_earthdrive_bottom\\new_earthdrive_bottom.str");
     }
     break;
   case EF_NEW_EARTHDRIVE_TARGET:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_earthdrive\\new_earthdrive_target\\new_earthdrive_target.str");
     } else {
       particle->Open("new_earthdrive\\new_earthdrive_target\\new_earthdrive_target.str");
@@ -3717,14 +3718,14 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
     particle->Load("vigor\\vigor_buff\\vigor_buff.str");
     break;
   case EF_NEW_AUTOSHADOWSPELL:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_autoshadowspell\\new_autoshadowspell\\new_autoshadowspell.str");
     } else {
       particle->Open("new_autoshadowspell\\new_autoshadowspell\\new_autoshadowspell.str");
     }
     break;
   case EF_NEW_AUTOSHADOWSPELL_BOTTOM:
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_autoshadowspell\\new_autoshadowspell_bottom\\new_autoshadowspell_bottom.str");
     } else {
       particle->Open("new_autoshadowspell\\new_autoshadowspell_bottom\\new_autoshadowspell_bottom.str");
@@ -4322,7 +4323,7 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
     particle->Load("4ig_judge\\judge_start\\judge_start.str");
     break;
   case EF_JUDGE_AURA:
-    if (!g_serviceOptions.Get(229)) {
+    if (!g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("4ig_judge\\judge_aura\\judge_aura.str");
     }
     break;
@@ -4363,7 +4364,7 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
     particle->Load("4ig_firstbrand\\firstbrand\\firstbrand.str");
     break;
   case EF_FIRST_BRAND_AURA:
-    if (!g_serviceOptions.Get(229)) {
+    if (!g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("4ig_firstbrand\\firstbrand_aura\\firstbrand_aura.str");
     }
     break;
@@ -4398,7 +4399,7 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
     particle->Load("sincerefaith\\sincerefaith\\sincerefaith.str");
     break;
   case EF_SINCERE_FAITH_BOTTOM:
-    if (!g_serviceOptions.Get(229)) {
+    if (!g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("sincerefaith\\sincerefaith_bottom\\sincerefaith_bottom.str");
     }
     break;
@@ -5390,7 +5391,7 @@ void CEZ2STRScreenEffect::OnProcess() {
   target->position.z = this->position[2];
 
   if (CEZ2STRParticle* particle = this->particle) {
-    if (this->ApplyHeadOffset(particle) || this->id == 0x584) {
+    if (this->ApplyHeadOffset(particle) || this->id == EF_NEW_RANGEDATTACK) {
       particle->Process(0.0f, 0.0f, 0.0f);
     } else {
       particle->Process(0.0f, -80.0f, 0.0f);
@@ -5398,7 +5399,7 @@ void CEZ2STRScreenEffect::OnProcess() {
   }
 
   ++this->particle->elapsedFrames;
-  if (this->id == 0x851) {
+  if (this->id == EF_ABYSS_SQUARE) {
     int frame = this->particle->elapsedFrames - 30;
     if (frame >= 0 && frame % 64 == 0) {
       CRenderObject* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
@@ -5671,7 +5672,7 @@ void CEZ2STRScreenEffect::Open() {
   case EF_ALL_BLOOM_BOTTOM:
   case EF_MEDIALE_VOTUM_LOOP:
   case EF_NEW_D_MACHINE:
-  case EF_UNK_1839:
+  case EF_A_MACHINE:
   case EF_COMPETENTIA_LOOP:
   case EF_COMPETENTIA_LOOP_BOTTOM:
   case EF_DEEP_BLIND_TRAP:

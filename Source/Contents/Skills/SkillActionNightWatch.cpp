@@ -562,7 +562,7 @@ int CSkillAction_NW_GRENADES_DROPPING::GetSkillScopeType() {
 // FUNCTION: fn_08713
 void CSkillObjectAction_NW_GRENADES_DROPPING::OnSkillObjectCreate(int argument, CRenderObject* object, CGameActor* source) {
   if (object) {
-    g_effectMgr->Spawn(object->render.accountId, 0x92F, object->render.position, 0, argument, 0, 0);
+    g_effectMgr->Spawn(object->render.accountId, EF_NW_GRENADES_DROPPING, object->render.position, 0, argument, 0, 0);
   }
 }
 
@@ -674,7 +674,7 @@ void CSkillObjectAction_NW_MISSION_BOMBARD::OnSkillObjectCreate(int argument, CR
     effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mission_bombard_fire"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effects = g_effectMgr;
     effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mission_bombard_fire_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-    g_effectMgr->Spawn(object->render.accountId, 0x932, object->render.position, 0, -1, 0, 0);
+    g_effectMgr->Spawn(object->render.accountId, EF_NW_MISSION_BOMBARD, object->render.position, 0, -1, 0, 0);
   }
 }
 

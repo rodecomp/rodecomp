@@ -1,4 +1,5 @@
 #include "Contents/Configuration/ServiceOptions.h"
+#include "UI/GameSettings/TalkType.h"
 #include "Contents/Sound/SoundConfiguration.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "Resource/ResourceMgr.h"
@@ -501,7 +502,7 @@ bool CSoundMgr::PlayData3D(const void* data, const float& x, const float& y, con
 void CSoundMgr::SetDefaultName(std::string name) {
   this->defaultName = name;
 
-  if (g_serviceOptions.Get(7)) {
+  if (g_serviceOptions.Get(TT_MUSIC_ON_OFF)) {
     this->PlayStream(nullptr, 0, false);
   }
 
@@ -604,7 +605,7 @@ void CSoundMgr::PlayStream(const char* name, int loopCount, bool fade) {
 // OFFSET: 0x0063A130
 // FUNCTION: fn_04764
 void CSoundMgr::PlayWave(const char* name, float x, float y, float z, int maximumDistance, int minimumDistance, float scale, int unused) {
-  const unsigned char enabled = g_serviceOptions.Get(11);
+  const unsigned char enabled = g_serviceOptions.Get(TT_EFFECT_SOUND_ON_OFF);
 
   if (g_soundConfiguration.mode == 0 || !enabled) {
     return;

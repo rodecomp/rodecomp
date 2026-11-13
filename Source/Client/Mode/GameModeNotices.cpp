@@ -1,4 +1,5 @@
 #include "UI/Chat/UINewChatWnd.h"
+#include "UI/GameSettings/TalkType.h"
 #include "Client/Mode/ModeMessage.h"
 #include "Contents/Actors/ActorEnums.h"
 #include "UI/Window/UIEnums.h"
@@ -991,7 +992,7 @@ void CGameMode::ReceiveToggle128(int enabled) {
 // OFFSET: 0x00D6E950
 // FUNCTION: fn_22108
 void CGameMode::ReceiveActorEffect347(const unsigned char* data) {
-  if (g_serviceOptions.Get(8)) {
+  if (g_serviceOptions.Get(TT_EFFECT_ON_OFF)) {
     const auto* packet = reinterpret_cast<const ActorPacket*>(data);
     CRenderObject* actor = packet->aid == g_session.m_aid ? this->scene->player : this->scene->GetGameActorByAID(packet->aid);
     if (actor && packet->aid) {
@@ -1215,7 +1216,7 @@ void CGameMode::NotifyMacroCheckRemovalResult(unsigned char result) {
 // OFFSET: 0x00D718D0
 // FUNCTION: fn_22138
 void CGameMode::ReceiveActorEffect228(const unsigned char* data) {
-  if (!g_serviceOptions.Get(8)) {
+  if (!g_serviceOptions.Get(TT_EFFECT_ON_OFF)) {
     return;
   }
 
@@ -3727,7 +3728,7 @@ void CGameMode::ReceiveNotifyEffect(const unsigned char* packet) {
     effectId = *reinterpret_cast<const int*>(packet + 6);
   }
 
-  if (g_serviceOptions.Get(0xE5)) {
+  if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
     switch (*reinterpret_cast<const int*>(packet + 6)) {
     case EF_LORD:
       effectId = 0x48A;
@@ -4108,7 +4109,7 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       }
       for (int delay = 0; count != 0; --count, delay += 500) {
         CEffect* effect;
-        if (g_serviceOptions.Get(0xE5)) {
+        if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
           effect = g_effectMgr->Spawn(0, EF_MINEFFECT_PSYCHICWAVE, position.x, position.y, position.z, 0, -1, 0, 0);
           if (effect) {
             effect->SetDelay(delay);
@@ -4318,7 +4319,7 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       }
       for (int delay = 0; count != 0; --count, delay += 500) {
         CEffect* effect;
-        if (g_serviceOptions.Get(0xE5)) {
+        if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
           effect = g_effectMgr->Spawn(0, EF_MINEFFECT_PSYCHICWAVE, position.x, position.y, position.z, 0, -1, 0, 0);
           if (effect) {
             effect->SetDelay(delay);
@@ -6993,7 +6994,7 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
       _snprintf_s(message, 256, LookupMessage(MSI_DK_CHARGINGPIERCE_OFF));
       break;
     case EFST_CLIMAX:
-      if (CEffect* effect = g_effectMgr->Find(packet->aid, 1800)) {
+      if (CEffect* effect = g_effectMgr->Find(packet->aid, EF_CLIMAX)) {
         g_effectMgr->Retire(effect, 1);
       }
       _snprintf_s(message, 256, LookupMessage(MSI_SHC_POTENT_VENOM_ON));

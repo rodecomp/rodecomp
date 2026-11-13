@@ -603,7 +603,7 @@ void CSkillAction_IG_SHIELD_SHOOTING::OnSkillEffect(int level, CGameActor* sourc
   }
 
   const vector3d position = source->render.position;
-  g_effectMgr->Spawn(source->render.accountId, 0x887, position, target->render.accountId, -1, 0, 0);
+  g_effectMgr->Spawn(source->render.accountId, EF_SHIELD_SHOOTING, position, target->render.accountId, -1, 0, 0);
 
   const vector3d& listener = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->render.position;
   const vector3d soundPosition = {target->render.position.x - listener.x, 0.0f, target->render.position.z - listener.z};
@@ -813,7 +813,7 @@ void CSkillObjectAction_IG_CROSS_RAIN::OnSkillObjectCreate(int argument, CRender
   if (object && source) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(object->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_cross_rain_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-    g_effectMgr->Spawn(object->render.accountId, 0x99E, object->render.position, 0, argument, 0, 0);
+    g_effectMgr->Spawn(object->render.accountId, EF_IG_CROSS_RAIN, object->render.position, 0, argument, 0, 0);
   }
 }
 

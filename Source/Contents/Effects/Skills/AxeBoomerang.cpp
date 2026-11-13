@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/AxeBoomerang.h"
+#include "UI/GameSettings/TalkType.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -38,7 +39,7 @@ void CAxeBoomerang::Close() {
 void CAxeBoomerang::Open() {
   CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->particlePosition, 5));
   if (this->id != 0x887) {
-    if (g_serviceOptions.Get(229)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       particle->Open("mineffect\\new_axeboomerang\\new_axeboomerang\\new_axeboomerang.str");
     } else {
       particle->Open("new_axeboomerang\\new_axeboomerang\\new_axeboomerang.str");

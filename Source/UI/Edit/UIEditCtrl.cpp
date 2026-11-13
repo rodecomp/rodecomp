@@ -1,4 +1,5 @@
 #include "UI/Window/WindowId.h"
+#include "UI/GameSettings/TalkType.h"
 #include "UI/Window/UIEnums.h"
 #include "Client/Mode/ModeMessage.h"
 #include "Render/Text/FontCache.h"
@@ -3050,7 +3051,7 @@ void UIItemWnd::OnProcess() {
 // FUNCTION: fn_45470
 void UIItemWnd::RefreshOptionBox() {
   UIWindow* optionBox = this->optionBox;
-  optionBox->geometry.state = g_serviceOptions.Get(0x108);
+  optionBox->geometry.state = g_serviceOptions.Get(TT_ITEM_COMPARE_ON_OFF);
   optionBox->Invalidate();
   this->Invalidate();
 }
@@ -8040,7 +8041,7 @@ void UIItemWnd::OnCreate(int width, int height) {
   static_cast<UICheckBox*>(this->optionBox)->SetBitmaps("유저인터페이스\\inventory\\item_compare_on.bmp", "유저인터페이스\\inventory\\item_compare_off.bmp");
   this->optionBox->SetId(456);
   this->optionBox->Move(103, height - 17);
-  static_cast<UICheckBox*>(this->optionBox)->SetChecked(g_serviceOptions.Get(264));
+  static_cast<UICheckBox*>(this->optionBox)->SetChecked(g_serviceOptions.Get(TT_ITEM_COMPARE_ON_OFF));
   static_cast<UICheckBox*>(this->optionBox)->SetTooltip(LookupMessage(MSI_CONNECT_SNS_WND));
   this->AddChild(this->optionBox);
 

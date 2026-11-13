@@ -1,4 +1,5 @@
 #include "Client/Session/Session.h"
+#include "UI/GameSettings/TalkType.h"
 #include "UI/Window/UIEnums.h"
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/Configuration/ServiceOptions.h"
@@ -22,7 +23,7 @@ void UIEmblemWnd::OnCreate(int, int) {
 void UIEmblemWnd::Paint() {
   this->ClearSurface(0xFFFF00FF);
 
-  const bool framed = g_serviceOptions.Get(243) != 0;
+  const bool framed = g_serviceOptions.Get(TT_EMBLEM_FRAME_ON_OFF) != 0;
   if (framed && g_session.GetSiegeMode() && !g_session.GetBattleFieldMode()) {
     CBitmapRes* frame = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\emblem_frame.bmp")));
     if (frame) {
@@ -44,7 +45,7 @@ void UIEmblemWnd::Paint() {
 // OFFSET: 0x0085FAF0
 // FUNCTION: fn_10883
 void UIEmblemWnd::OnProcess() {
-  if (g_serviceOptions.Get(243)) {
+  if (g_serviceOptions.Get(TT_EMBLEM_FRAME_ON_OFF)) {
     if (this->geometry.width == 24) {
       this->Resize(28, 28);
     }

@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/CartCannon.h"
+#include "UI/GameSettings/TalkType.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -38,7 +39,7 @@ void CCartCannon::Open() {
   this->currentPosition.z = this->position[2];
 
   CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->currentPosition, 5));
-  if (g_serviceOptions.Get(229)) {
+  if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
     particle->Open("mineffect\\new_cart_cannon\\new_cart_cannon\\new_cart_cannon.str");
   } else {
     particle->Open("new_cart_cannon\\new_cart_cannon\\new_cart_cannon.str");

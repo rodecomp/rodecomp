@@ -1,4 +1,5 @@
 #include "Render/DX7/RenderSystemDX7.h"
+#include "UI/GameSettings/TalkType.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Configuration/ServiceOptions.h"
@@ -201,7 +202,7 @@ void CRendererDX7::FlushRenderList() {
   this->device->SetRenderState(D3DRENDERSTATE_AMBIENT, 0xFFFFFFFF);
   this->device->SetRenderState(D3DRENDERSTATE_CULLMODE, D3DCULL_CW);
 
-  if (g_serviceOptions.Get(119)) {
+  if (g_serviceOptions.Get(TT_LIGHTMAP_ON_OFF)) {
     if (g_multitexture) {
       this->device->SetRenderState(D3DRENDERSTATE_COLORKEYENABLE, FALSE);
       this->device->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_MODULATEALPHA_ADDCOLOR);

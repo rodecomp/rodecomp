@@ -1,4 +1,5 @@
 #include "Client/Mode/CMode.h"
+#include "UI/GameSettings/TalkType.h"
 #include "Client/Mode/ModeMessage.h"
 #include "UI/Window/UIEnums.h"
 #include "Client/Mode/ModeMgr.h"
@@ -43,7 +44,7 @@ void UIMerchantShopTitle::Paint() {
 // OFFSET: 0x0085EC40
 // FUNCTION: fn_10843
 void UIMerchantShopTitle::OnLBtnDown(int, int) {
-  if (!g_serviceOptions.Get(167)) {
+  if (!g_serviceOptions.Get(TT_SHOPPING_ON_OFF)) {
     return;
   }
 
@@ -83,7 +84,7 @@ void UIMerchantShopTitle::ResetCursor(int x, int y) {
 // OFFSET: 0x0085FE20
 // FUNCTION: fn_10886
 void UIMerchantShopTitle::OnRBtnDown(int, int) {
-  if (g_serviceOptions.Get(167)) {
+  if (g_serviceOptions.Get(TT_SHOPPING_ON_OFF)) {
     g_modeMgr.gameMode->SendMsg(MM_RELEASE_QUEST_SH, 0, 0, 0, 0);
     g_session.ClearItems1760And1748();
   }

@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/StormGustEffect.h"
+#include "UI/GameSettings/TalkType.h"
 
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Effects/Core/EffectMemoryMgr.h"
@@ -22,7 +23,7 @@ void CStormGustEffect::Close() {
 // OFFSET: 0x00B7AA60
 // FUNCTION: fn_19212
 void CStormGustEffect::Open() {
-  if (g_serviceOptions.Get(229)) {
+  if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
     return;
   }
 

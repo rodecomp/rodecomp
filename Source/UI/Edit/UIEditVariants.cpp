@@ -202,7 +202,7 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     this->movingDown = 1;
     break;
   }
-  case 256:
+  case WM_KEYDOWN:
     scrolling[0] = 0;
     this->HandleInputMessage(a, b);
     return 3;
@@ -1144,7 +1144,7 @@ void UIShowAndEditTimeCtrl::OnCreate(int, int) {
     field->maximum = 2;
     field->Move(i * 38, 0);
     field->SetText("0");
-    field->SetId(184);
+    field->SetId(ID_OK);
     this->AddChild(field);
   }
 }

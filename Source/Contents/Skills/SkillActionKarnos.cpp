@@ -837,7 +837,7 @@ void CEfstAction_CHOP_CHOP::OnEfstEnd(int efstId, int argument2, int argument3, 
     return;
   }
 
-  while (CEffect* effect = g_effectMgr->Find(actor->render.accountId, 0x9A2)) {
+  while (CEffect* effect = g_effectMgr->Find(actor->render.accountId, EF_KR_CHOP_CHOP)) {
     g_effectMgr->Retire(effect, 1);
   }
   while (CEffect* effect = g_effectMgr->Find(actor->render.accountId, 0x98C)) {
@@ -974,7 +974,7 @@ void CSkillAction_SKID_KR_CHOP_CHOP::OnSkillEffect(int level, CGameActor* source
     return;
   }
 
-  if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, 0x9A2, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
+  if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, EF_KR_CHOP_CHOP, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
     effect->effectLifetime = 1;
   }
 

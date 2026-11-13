@@ -1724,10 +1724,10 @@ bool EffectLists::RegisterAllocators() {
   if (!this->RegisterAllocator(EF_SU_PICKYPECK, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_1104, new (std::nothrow) CEffectAllocator<CPowderingEffect>)) {
+  if (!this->RegisterAllocator(EF_SU_CN_POWDERING, new (std::nothrow) CEffectAllocator<CPowderingEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_1110, new (std::nothrow) CEffectAllocator<CRootTwistEffect>)) {
+  if (!this->RegisterAllocator(EF_SU_SV_ROOTTWIST, new (std::nothrow) CEffectAllocator<CRootTwistEffect>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_SU_BUNCHOFSHRIMP, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
@@ -1774,7 +1774,7 @@ bool EffectLists::RegisterAllocators() {
   if (!this->RegisterAllocator(EF_UNK_1144, new (std::nothrow) CEffectAllocator<CHealEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_1114, new (std::nothrow) CEffectAllocator<CWarningPlaneEffect>)) {
+  if (!this->RegisterAllocator(EF_WARNING_PLANE, new (std::nothrow) CEffectAllocator<CWarningPlaneEffect>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_BITE_SCAR, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
@@ -1888,7 +1888,7 @@ bool EffectLists::RegisterAllocators() {
   if (!this->RegisterAllocator(EF_RANDOM_OPT_YELLOW, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_1196, new (std::nothrow) CEffectAllocator<CNewCloudKillEffect>)) {
+  if (!this->RegisterAllocator(EF_NEW_CLOUD_KILL, new (std::nothrow) CEffectAllocator<CNewCloudKillEffect>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_LIGHTSPHERE_SUN, new (std::nothrow) CEffectAllocator<CLightSphereEffect>)) {
@@ -1912,7 +1912,7 @@ bool EffectLists::RegisterAllocators() {
   if (!this->RegisterAllocator(EF_STAR_EMPEROR, new (std::nothrow) CEffectAllocator<CStarEmperorEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_1211, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
+  if (!this->RegisterAllocator(EF_SUBJECT_AURA_1211, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_SUBJECT_AURA_1212, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
@@ -1921,19 +1921,19 @@ bool EffectLists::RegisterAllocators() {
   if (!this->RegisterAllocator(EF_SUBJECT_AURA_1213, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_1214, new (std::nothrow) CEffectAllocator<CSunStanceEffect>)) {
+  if (!this->RegisterAllocator(EF_SUN_STANCE, new (std::nothrow) CEffectAllocator<CSunStanceEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_1215, new (std::nothrow) CEffectAllocator<CSunStanceEffect>)) {
+  if (!this->RegisterAllocator(EF_LUNAR_STANCE, new (std::nothrow) CEffectAllocator<CSunStanceEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_1216, new (std::nothrow) CEffectAllocator<CSunStanceEffect>)) {
+  if (!this->RegisterAllocator(EF_STAR_STANCE, new (std::nothrow) CEffectAllocator<CSunStanceEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_1217, new (std::nothrow) CEffectAllocator<CSunStanceEffect>)) {
+  if (!this->RegisterAllocator(EF_UNIVERSE_STANCE, new (std::nothrow) CEffectAllocator<CSunStanceEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_1222, new (std::nothrow) CEffectAllocator<CSoulUnityEffect>)) {
+  if (!this->RegisterAllocator(EF_SOUL_UNITY, new (std::nothrow) CEffectAllocator<CSoulUnityEffect>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_SOLARBURST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
@@ -1951,13 +1951,13 @@ bool EffectLists::RegisterAllocators() {
   if (!this->RegisterAllocator(EF_STORMKICK8, new (std::nothrow) CEffectAllocator<CStormKickEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_1225, new (std::nothrow) CEffectAllocator<CSoulCollectEffect>)) {
+  if (!this->RegisterAllocator(EF_SOUL_COLLECT, new (std::nothrow) CEffectAllocator<CSoulCollectEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_1226, new (std::nothrow) CEffectAllocator<CLevel150Effect>)) {
+  if (!this->RegisterAllocator(EF_LEVEL185, new (std::nothrow) CEffectAllocator<CLevel150Effect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_1227, new (std::nothrow) CEffectAllocator<CLevel150SubEffect>)) {
+  if (!this->RegisterAllocator(EF_LEVEL185_SUB, new (std::nothrow) CEffectAllocator<CLevel150SubEffect>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_SOUL_GOLEM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
@@ -2087,7 +2087,7 @@ bool EffectLists::RegisterAllocators() {
   if (!this->RegisterAllocator(EF_NEW_CRIMSONROCK_SUB, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_1276, new (std::nothrow) CEffectAllocator<CSevereRainStorm>)) {
+  if (!this->RegisterAllocator(EF_NEW_SEVERERAINSTORM, new (std::nothrow) CEffectAllocator<CSevereRainStorm>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_NEW_SEVERERAINSTORM_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
@@ -2129,7 +2129,7 @@ bool EffectLists::RegisterAllocators() {
   if (!this->RegisterAllocator(EF_NEW_TRIANGLESHOT_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_1324, new (std::nothrow) CEffectAllocator<CTriangleShotArrow>)) {
+  if (!this->RegisterAllocator(EF_NEW_TRIANGLESHOT_ARROW, new (std::nothrow) CEffectAllocator<CTriangleShotArrow>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_NEW_RAMPAGEBLASTER, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
@@ -2243,7 +2243,7 @@ bool EffectLists::RegisterAllocators() {
   if (!this->RegisterAllocator(EF_NEW_ARMSCANNON_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_1357, new (std::nothrow) CEffectAllocator<CCartCannon>)) {
+  if (!this->RegisterAllocator(EF_NEW_CART_CANNON, new (std::nothrow) CEffectAllocator<CCartCannon>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_NEW_CART_CANNON_EXPLOSION, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
@@ -2828,7 +2828,7 @@ bool EffectLists::RegisterAllocators() {
   if (!this->RegisterAllocator(EF_NEW_VARETYRSPEAR_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_1555, new (std::nothrow) CEffectAllocator<CEvilLandEffect>)) {
+  if (!this->RegisterAllocator(EF_EVILLAND, new (std::nothrow) CEffectAllocator<CEvilLandEffect>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_NEW_CROSSIMPACT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
@@ -3053,7 +3053,7 @@ bool EffectLists::RegisterAllocators() {
   if (!this->RegisterAllocator(EF_NEW_EPICLESIS, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_1657, new (std::nothrow) CEffectAllocator<CAxeBoomerang>)) {
+  if (!this->RegisterAllocator(EF_NEW_AXEBOOMERANG, new (std::nothrow) CEffectAllocator<CAxeBoomerang>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_NEW_AXEBOOMERANG_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
@@ -3155,10 +3155,10 @@ bool EffectLists::RegisterAllocators() {
   if (!this->RegisterAllocator(EF_NEW_WINDCUTTER_TARGET, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_2460, new (std::nothrow) CEffectAllocator<CServantWeaponNewEffect>)) {
+  if (!this->RegisterAllocator(EF_DK_SERVANTWEAPON, new (std::nothrow) CEffectAllocator<CServantWeaponNewEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_1694, new (std::nothrow) CEffectAllocator<CServantWeaponEffect>)) {
+  if (!this->RegisterAllocator(EF_SERVANTWEAPON, new (std::nothrow) CEffectAllocator<CServantWeaponEffect>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_NEW_SERVANTWEAPON_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
@@ -3341,7 +3341,7 @@ bool EffectLists::RegisterAllocators() {
   if (!this->RegisterAllocator(EF_RAIN_OF_CRYSTAL_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_1755, new (std::nothrow) CEffectAllocator<CStormCannonEffect>)) {
+  if (!this->RegisterAllocator(EF_STORM_CANNON, new (std::nothrow) CEffectAllocator<CStormCannonEffect>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_CRIMSONARROW, new (std::nothrow) CEffectAllocator<CCrimsonArrowEffect>)) {
@@ -3371,10 +3371,10 @@ bool EffectLists::RegisterAllocators() {
   if (!this->RegisterAllocator(EF_VIOLENT_QUAKE_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_2461, new (std::nothrow) CEffectAllocator<CChargingPierceNewEffect>)) {
+  if (!this->RegisterAllocator(EF_DK_CHARGINGPIERCE, new (std::nothrow) CEffectAllocator<CChargingPierceNewEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_1764, new (std::nothrow) CEffectAllocator<CChargingPierceEffect>)) {
+  if (!this->RegisterAllocator(EF_NEW_CHARGINGPIERCE, new (std::nothrow) CEffectAllocator<CChargingPierceEffect>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_NEW_CHARGINGPIERCE_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
@@ -3386,7 +3386,7 @@ bool EffectLists::RegisterAllocators() {
   if (!this->RegisterAllocator(EF_NEW_CHARGINGPIERCE_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_1768, new (std::nothrow) CEffectAllocator<CAstralStrikeEffect>)) {
+  if (!this->RegisterAllocator(EF_ASTRAL_STRIKE, new (std::nothrow) CEffectAllocator<CAstralStrikeEffect>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_ASTRAL_STRIKE_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
@@ -3479,7 +3479,7 @@ bool EffectLists::RegisterAllocators() {
   if (!this->RegisterAllocator(EF_ALL_BLOOM_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_1800, new (std::nothrow) CEffectAllocator<CClimaxEffect>)) {
+  if (!this->RegisterAllocator(EF_CLIMAX, new (std::nothrow) CEffectAllocator<CClimaxEffect>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_CLIMAX_LIGHT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
@@ -3491,7 +3491,7 @@ bool EffectLists::RegisterAllocators() {
   if (!this->RegisterAllocator(EF_CLIMAX_CAST_LOOP, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_1804, new (std::nothrow) CEffectAllocator<CFloralFlareRoad>)) {
+  if (!this->RegisterAllocator(EF_FLORAL_FLARE_ROAD, new (std::nothrow) CEffectAllocator<CFloralFlareRoad>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_FLORAL_FLARE_ROAD_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
@@ -3554,7 +3554,7 @@ bool EffectLists::RegisterAllocators() {
   if (!this->RegisterAllocator(EF_NEW_D_MACHINE_END, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_1839, new (std::nothrow) CEffectAllocator<CAMachineEffect>)) {
+  if (!this->RegisterAllocator(EF_A_MACHINE, new (std::nothrow) CEffectAllocator<CAMachineEffect>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_A_MACHINE_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
@@ -3620,7 +3620,7 @@ bool EffectLists::RegisterAllocators() {
   if (!this->RegisterAllocator(EF_ARBITRIUM_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_1829, new (std::nothrow) CEffectAllocator<CDancingKnifeEffect>)) {
+  if (!this->RegisterAllocator(EF_DANCING_KNIFE, new (std::nothrow) CEffectAllocator<CDancingKnifeEffect>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_DANCING_KNIFE_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
@@ -3650,7 +3650,7 @@ bool EffectLists::RegisterAllocators() {
   if (!this->RegisterAllocator(EF_NEW_REPARATIO_TARGET_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_1837, new (std::nothrow) CEffectAllocator<CSavageImpactEffect>)) {
+  if (!this->RegisterAllocator(EF_SAVAGE_IMPACT, new (std::nothrow) CEffectAllocator<CSavageImpactEffect>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_ETERNAL_SLASH_HIT_1, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
@@ -3734,7 +3734,7 @@ bool EffectLists::RegisterAllocators() {
   if (!this->RegisterAllocator(EF_DROPITEM_PURPLE, new (std::nothrow) CEffectAllocator<CDropItemEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_1186, new (std::nothrow) CEffectAllocator<CDropItemEffect>)) {
+  if (!this->RegisterAllocator(EF_DROPITEM_PINK, new (std::nothrow) CEffectAllocator<CDropItemEffect>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_FLAME_TRAP, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
@@ -3746,13 +3746,13 @@ bool EffectLists::RegisterAllocators() {
   if (!this->RegisterAllocator(EF_FLAME_TRAP_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_2467, new (std::nothrow) CEffectAllocator<CShadowExceedNew>)) {
+  if (!this->RegisterAllocator(EF_SHC_SHADOW_EXCEED, new (std::nothrow) CEffectAllocator<CShadowExceedNew>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_SHADOW_EXCEED_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_1867, new (std::nothrow) CEffectAllocator<CShadowExceed>)) {
+  if (!this->RegisterAllocator(EF_SHADOW_EXCEED, new (std::nothrow) CEffectAllocator<CShadowExceed>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_DEEP_BLIND_TRAP_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
@@ -3860,13 +3860,13 @@ bool EffectLists::RegisterAllocators() {
   if (!this->RegisterAllocator(EF_HAWK_RUSH, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_1911, new (std::nothrow) CEffectAllocator<CPetitioEffect>)) {
+  if (!this->RegisterAllocator(EF_PETITIO, new (std::nothrow) CEffectAllocator<CPetitioEffect>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_PNEUMATICUS_PROCELLA_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_1957, new (std::nothrow) CEffectAllocator<CPneumaticusProcellaEffect>)) {
+  if (!this->RegisterAllocator(EF_PNEUMATICUS_PROCELLA, new (std::nothrow) CEffectAllocator<CPneumaticusProcellaEffect>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_NEW_PRAMEN_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
@@ -3893,10 +3893,10 @@ bool EffectLists::RegisterAllocators() {
   if (!this->RegisterAllocator(EF_NEW_DILECTIO_HEAL_TARGET_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_1912, new (std::nothrow) CEffectAllocator<CEternalSlashAttackEffect>)) {
+  if (!this->RegisterAllocator(EF_ETERNAL_SLASH, new (std::nothrow) CEffectAllocator<CEternalSlashAttackEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_1913, new (std::nothrow) CEffectAllocator<CEternalSlashCountEffect>)) {
+  if (!this->RegisterAllocator(EF_ETERNAL_SLASH_COUNT, new (std::nothrow) CEffectAllocator<CEternalSlashCountEffect>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_ETERNAL_SLASH_HIT_2, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
@@ -3917,7 +3917,7 @@ bool EffectLists::RegisterAllocators() {
   if (!this->RegisterAllocator(EF_CRESCIVEBOLT_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_1951, new (std::nothrow) CEffectAllocator<CCresciveBolt>)) {
+  if (!this->RegisterAllocator(EF_CRESCIVEBOLT, new (std::nothrow) CEffectAllocator<CCresciveBolt>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_CRESCIVEBOLT_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
@@ -3944,7 +3944,7 @@ bool EffectLists::RegisterAllocators() {
   if (!this->RegisterAllocator(EF_ABYSS_DAGGER_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_1968, new (std::nothrow) CEffectAllocator<CHawkVumerangEffect>)) {
+  if (!this->RegisterAllocator(EF_HAWK_BOOMERANG, new (std::nothrow) CEffectAllocator<CHawkVumerangEffect>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_HAWK_BOOMERANG_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
@@ -3959,7 +3959,7 @@ bool EffectLists::RegisterAllocators() {
   if (!this->RegisterAllocator(EF_GALE_STORM_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_1973, new (std::nothrow) CEffectAllocator<CGaleStorm>)) {
+  if (!this->RegisterAllocator(EF_GALE_STORM, new (std::nothrow) CEffectAllocator<CGaleStorm>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_GALE_STORM_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
@@ -4052,7 +4052,7 @@ bool EffectLists::RegisterAllocators() {
   if (!this->RegisterAllocator(EF_SECOND_FAITH_AURA, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_2080, new (std::nothrow) CEffectAllocator<CRandomHitEffect>)) {
+  if (!this->RegisterAllocator(EF_SECOND_FAITH_HIT, new (std::nothrow) CEffectAllocator<CRandomHitEffect>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_ABYSS_SLAYER, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
@@ -4085,7 +4085,7 @@ bool EffectLists::RegisterAllocators() {
   if (!this->RegisterAllocator(EF_SECOND_FLAME_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_2082, new (std::nothrow) CEffectAllocator<CRandomHitEffect>)) {
+  if (!this->RegisterAllocator(EF_SECOND_JUDGEMENT, new (std::nothrow) CEffectAllocator<CRandomHitEffect>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_THIRD_CONSECRATION, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
@@ -4562,7 +4562,7 @@ bool EffectLists::RegisterAllocators() {
   if (!this->RegisterAllocator(EF_ADVANCED_PROTECTION_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_2462, new (std::nothrow) CEffectAllocator<CSevereRainStorm>)) {
+  if (!this->RegisterAllocator(EF_IG_CROSS_RAIN, new (std::nothrow) CEffectAllocator<CSevereRainStorm>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_CROSS_RAIN, new (std::nothrow) CEffectAllocator<CSevereRainStorm>)) {
@@ -4619,7 +4619,7 @@ bool EffectLists::RegisterAllocators() {
   if (!this->RegisterAllocator(EF_HOLY_SHIELD_LOOP, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_2183, new (std::nothrow) CEffectAllocator<CAxeBoomerang>)) {
+  if (!this->RegisterAllocator(EF_SHIELD_SHOOTING, new (std::nothrow) CEffectAllocator<CAxeBoomerang>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_SHIELD_SHOOTING_CAST, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
@@ -4685,7 +4685,7 @@ bool EffectLists::RegisterAllocators() {
   if (!this->RegisterAllocator(EF_ACIDIFIED_ZONE_FIRE_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_2206, new (std::nothrow) CEffectAllocator<CAcidifiedThrow>)) {
+  if (!this->RegisterAllocator(EF_ACIDIFIED_ZONE_FIRE, new (std::nothrow) CEffectAllocator<CAcidifiedThrow>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_ACIDIFIED_ZONE_FIRE_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
@@ -4709,7 +4709,7 @@ bool EffectLists::RegisterAllocators() {
   if (!this->RegisterAllocator(EF_ACIDIFIED_ZONE_WATER_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_2214, new (std::nothrow) CEffectAllocator<CAcidifiedThrow>)) {
+  if (!this->RegisterAllocator(EF_ACIDIFIED_ZONE_WATER, new (std::nothrow) CEffectAllocator<CAcidifiedThrow>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_ACIDIFIED_ZONE_WATER_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
@@ -4733,7 +4733,7 @@ bool EffectLists::RegisterAllocators() {
   if (!this->RegisterAllocator(EF_ACIDIFIED_ZONE_WIND_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_2222, new (std::nothrow) CEffectAllocator<CAcidifiedThrow>)) {
+  if (!this->RegisterAllocator(EF_ACIDIFIED_ZONE_WIND, new (std::nothrow) CEffectAllocator<CAcidifiedThrow>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_ACIDIFIED_ZONE_WIND_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
@@ -4757,7 +4757,7 @@ bool EffectLists::RegisterAllocators() {
   if (!this->RegisterAllocator(EF_ACIDIFIED_ZONE_GROUND_CAST_BOTTOM, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_2230, new (std::nothrow) CEffectAllocator<CAcidifiedThrow>)) {
+  if (!this->RegisterAllocator(EF_ACIDIFIED_ZONE_GROUND, new (std::nothrow) CEffectAllocator<CAcidifiedThrow>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_ACIDIFIED_ZONE_GROUND_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
@@ -4844,7 +4844,7 @@ bool EffectLists::RegisterAllocators() {
   if (!this->RegisterAllocator(EF_STATE_FROSTBITE_FINISH, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_2272, new (std::nothrow) CEffectAllocator<CFullScreenEffect>)) {
+  if (!this->RegisterAllocator(EF_FROSTBITE_SCREEN, new (std::nothrow) CEffectAllocator<CFullScreenEffect>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_STATE_DEADLYPOISON, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
@@ -4853,10 +4853,10 @@ bool EffectLists::RegisterAllocators() {
   if (!this->RegisterAllocator(EF_STATE_CRYSTALLIZATION, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_2275, new (std::nothrow) CEffectAllocator<CLevel150Effect>)) {
+  if (!this->RegisterAllocator(EF_LEVEL4TH, new (std::nothrow) CEffectAllocator<CLevel150Effect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_2276, new (std::nothrow) CEffectAllocator<CLevel150SubEffect>)) {
+  if (!this->RegisterAllocator(EF_LEVEL4TH_SUB, new (std::nothrow) CEffectAllocator<CLevel150SubEffect>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_NPC_KILLING_AURA, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
@@ -4868,10 +4868,10 @@ bool EffectLists::RegisterAllocators() {
   if (!this->RegisterAllocator(EF_NPC_KILLING_AURA_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_2305, new (std::nothrow) CEffectAllocator<CCurseOfCubeEffect>)) {
+  if (!this->RegisterAllocator(EF_NPC_CURSE_OF_RED_CUBE, new (std::nothrow) CEffectAllocator<CCurseOfCubeEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_2306, new (std::nothrow) CEffectAllocator<CCurseOfCubeEffect>)) {
+  if (!this->RegisterAllocator(EF_NPC_CURSE_OF_BLUE_CUBE, new (std::nothrow) CEffectAllocator<CCurseOfCubeEffect>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_UNK_2307, new (std::nothrow) CEffectAllocator<CCaneOfEvilEyeEffect>)) {
@@ -4988,7 +4988,7 @@ bool EffectLists::RegisterAllocators() {
   if (!this->RegisterAllocator(EF_TEMPERING, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_2341, new (std::nothrow) CEffectAllocator<CBlastForge>)) {
+  if (!this->RegisterAllocator(EF_BLAST_FORGE, new (std::nothrow) CEffectAllocator<CBlastForge>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_BLAST_FORGE_HIT, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
@@ -5005,28 +5005,28 @@ bool EffectLists::RegisterAllocators() {
     }
   }
 
-  if (!this->RegisterAllocator(EF_UNK_2348, new (std::nothrow) CEffectAllocator<CSevereRainStorm>)) {
+  if (!this->RegisterAllocator(EF_SKE_TWINKLING_GALAXY, new (std::nothrow) CEffectAllocator<CSevereRainStorm>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_UNK_2349, new (std::nothrow) CEffectAllocator<CSevereRainStorm>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_2350, new (std::nothrow) CEffectAllocator<CSevereRainStorm>)) {
+  if (!this->RegisterAllocator(EF_SKE_STAR_CANNON, new (std::nothrow) CEffectAllocator<CSevereRainStorm>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_2351, new (std::nothrow) CEffectAllocator<CSevereRainStorm>)) {
+  if (!this->RegisterAllocator(EF_NW_GRENADES_DROPPING, new (std::nothrow) CEffectAllocator<CSevereRainStorm>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_2354, new (std::nothrow) CEffectAllocator<CSevereRainStorm>)) {
+  if (!this->RegisterAllocator(EF_NW_MISSION_BOMBARD, new (std::nothrow) CEffectAllocator<CSevereRainStorm>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_2352, new (std::nothrow) CEffectAllocator<CFuumaShouakuEffect>)) {
+  if (!this->RegisterAllocator(EF_SS_FUUMASHOUAKU, new (std::nothrow) CEffectAllocator<CFuumaShouakuEffect>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_UNK_2355, new (std::nothrow) CEffectAllocator<CTalismanMarkEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_2366, new (std::nothrow) CEffectAllocator<CJupitelThunderStormEffect>)) {
+  if (!this->RegisterAllocator(EF_HN_JUPITEL_THUNDER_STORM, new (std::nothrow) CEffectAllocator<CJupitelThunderStormEffect>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_TETRA_VORTEX_WATER_SUB_2, new (std::nothrow) CEffectAllocator<CEZ2STRScreenEffect>)) {
@@ -5140,7 +5140,7 @@ bool EffectLists::RegisterAllocators() {
   if (!this->RegisterAllocator(EF_UNK_2441, new (std::nothrow) CEffectAllocator<CThunderingOrb>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_2466, new (std::nothrow) CEffectAllocator<CChopChopClawMarks>)) {
+  if (!this->RegisterAllocator(EF_KR_CHOP_CHOP, new (std::nothrow) CEffectAllocator<CChopChopClawMarks>)) {
     return false;
   }
   if (!this->RegisterAllocator(EF_UNK_2468, new (std::nothrow) CEffectAllocator<CWindBomb>)) {
@@ -5155,7 +5155,7 @@ bool EffectLists::RegisterAllocators() {
   if (!this->RegisterAllocator(EF_S_BEELZEBUB_WING, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
     return false;
   }
-  if (!this->RegisterAllocator(EF_UNK_2443, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
+  if (!this->RegisterAllocator(EF_C_2025ROSFESTA, new (std::nothrow) CEffectAllocator<CSpriteEffect>)) {
     return false;
   }
 

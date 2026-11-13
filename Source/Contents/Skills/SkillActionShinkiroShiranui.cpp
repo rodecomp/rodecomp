@@ -1,4 +1,5 @@
 #include "Contents/Actors/ActorEnums.h"
+#include "UI/GameSettings/TalkType.h"
 #include "Contents/Effects/Core/EffectTypes.h"
 #include "Client/Mode/CGameMode.h"
 #include "Contents/CombatTypes.h"
@@ -752,7 +753,7 @@ void CSkillAction_SS_FUUMASHOUAKU::OnSkillCast(int level, CGameActor* source) {
 // FUNCTION: fn_08765
 void CSkillObjectAction_NPC_FUUMA::OnSkillObjectCreate(int argument, CRenderObject* object, CGameActor* source) {
   if (object && source) {
-    g_effectMgr->Spawn(object->render.accountId, 0x930, source->render.position,
+    g_effectMgr->Spawn(object->render.accountId, EF_SS_FUUMASHOUAKU, source->render.position,
                        object->render.accountId, -1, 0, 0);
   }
 }
@@ -863,7 +864,7 @@ void CSkillAction_SS_KUNAIKUSSETSU::OnSkillEffect(int level, CGameActor* source,
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("kunaikussetsu"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effects = g_effectMgr;
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("kunaikussetsu_end"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-    if (!g_serviceOptions.Get(229)) {
+    if (!g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       effects = g_effectMgr;
       effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("kunaikussetsu_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       effects = g_effectMgr;

@@ -1,4 +1,5 @@
 #include "Render/Renderer.h"
+#include "UI/GameSettings/TalkType.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session/Session.h"
@@ -165,7 +166,7 @@ timer:
     this->DrawBattleFieldIcon(system);
   }
 
-  if (!g_serviceOptions.Get(8) || g_screenShakeDuration <= 0 || g_screenShakeMode == 2 || !this->LockBackBuffer()) {
+  if (!g_serviceOptions.Get(TT_EFFECT_ON_OFF) || g_screenShakeDuration <= 0 || g_screenShakeMode == 2 || !this->LockBackBuffer()) {
     return;
   }
 

@@ -1,3 +1,4 @@
+#include "Contents/Configuration/ServiceEnums.h"
 #include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Chat/UISubChatHisWnd.h"
@@ -133,7 +134,7 @@ void UISubChatHisWnd::OnCreate(int width, int height) {
     this->m_stickButton->SetBitmap((name + "_b.bmp").c_str(), 2, 0);
     this->m_stickButton->SetSize(this->m_stickButton->BitmapWidth(), this->m_stickButton->BitmapHeight());
     this->m_stickButton->Move(this->m_inputWidth + 1, 4);
-    this->m_stickButton->SetId(357);
+    this->m_stickButton->SetId(ID_STICK_ON);
     this->AddChild(this->m_stickButton);
   }
 
@@ -146,7 +147,7 @@ void UISubChatHisWnd::OnCreate(int width, int height) {
     this->m_optionButton->SetBitmap((name + "_b.bmp").c_str(), 2, 0);
     this->m_optionButton->SetSize(this->m_optionButton->BitmapWidth(), this->m_optionButton->BitmapHeight());
     this->m_optionButton->Move(this->m_inputWidth + 15, 5);
-    this->m_optionButton->SetId(193);
+    this->m_optionButton->SetId(ID_OPTION);
     this->AddChild(this->m_optionButton);
   }
 
@@ -157,7 +158,7 @@ void UISubChatHisWnd::OnCreate(int width, int height) {
     this->m_miniButton->SetBitmap((name + "_b.bmp").c_str(), 1, 0);
     this->m_miniButton->SetBitmap((name + "_b.bmp").c_str(), 2, 0);
     this->m_miniButton->SetSize(this->m_miniButton->BitmapWidth(), this->m_miniButton->BitmapHeight());
-    this->m_miniButton->SetId(202);
+    this->m_miniButton->SetId(ID_MINI);
     this->AddChild(this->m_miniButton);
   }
 
@@ -216,15 +217,15 @@ UISubChatHisWnd::UISubChatHisWnd()
   this->m_inputWidth = 71;
   this->headerHeight = 15;
   switch (g_serviceType) {
-  case 10:
+  case ServiceGermany:
     this->m_inputWidth = 71;
     break;
-  case 18:
+  case ServiceFrance:
     this->m_inputWidth = 90;
     break;
-  case 1:
-  case 7:
-  case 11:
+  case ServiceAmerica:
+  case ServicePhilippine:
+  case ServiceIndia:
     this->m_inputWidth = 110;
     break;
   }

@@ -1,4 +1,5 @@
 #include "Contents/Actors/Npc.h"
+#include "UI/GameSettings/TalkType.h"
 #include "Client/Mode/ModeMessage.h"
 #include "Contents/Actors/ActorEnums.h"
 #include "Contents/Actors/ActorEnums.h"
@@ -185,7 +186,7 @@ void CRenderObject::ProcessMotion() {
   g_modeMgr.GetGameMode();
   const float frame = static_cast<float>(static_cast<double>(timeGetTime() - this->render.motionStartTime) / 24.0);
   CActRes* action = this->render.action;
-  if (this->render.state == 0x2D) {
+  if (this->render.state == ST_AB_SPECIAL) {
     action = static_cast<CActRes*>(ResourceMgr::Instance().Load("인간족\\몸통\\여\\아크비숍_여2.Act"));
   }
   if (action == nullptr) {
@@ -349,7 +350,7 @@ void CRenderObject::ProcessMotion() {
       motion = static_cast<int>(progress);
       break;
     case MT_STATIC: {
-      if (this->render.state != 2) {
+      if (this->render.state != ST_ATTACK) {
         return;
       }
       count = static_cast<int>(action->FrameCount(this->render.previousAnimation));
@@ -701,7 +702,7 @@ int CRenderObject::HoverHeight() {
 
   const short angle = this->render.hoverAngle;
   const int state = this->render.state;
-  if (state == 0 || state == 1 || (this->render.flags & 0x40000) != 0) {
+  if (state == ST_STAND || state == ST_MOVE || (this->render.flags & 0x40000) != 0) {
     if (this->render.hoverHeight < 20) {
       if (angle % 30 == 0) {
         ++this->render.hoverHeight;
@@ -709,7 +710,7 @@ int CRenderObject::HoverHeight() {
     } else if (this->render.hoverHeight > 20 && angle % 30 == 0) {
       --this->render.hoverHeight;
     }
-  } else if (state == 6) {
+  } else if (state == ST_SIT) {
     if (this->render.hoverHeight < 100) {
       if (angle % 30 == 0) {
         ++this->render.hoverHeight;
@@ -1038,14 +1039,14 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
     mode->LaunchDummyEffect(&position, 0x71, EffectLifetime(0x71) + 10, 0);
     break;
   case WZ_METEOR:
-    if (g_serviceOptions.Get(0xE5)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       g_effectMgr->Spawn(0, EF_METEOR_STORM_VISUAL, position.x, position.y, position.z, 0, -1, 0, 0);
     } else {
       mode->LaunchDummyEffect(&position, 0x5C, EffectLifetime(0x5C) + 10, 0);
     }
     break;
   case WZ_VERMILION:
-    if (g_serviceOptions.Get(0xE5)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       g_effectMgr->Spawn(0, EF_LORD_OF_VERMILLION_VISUAL, position.x, position.y, position.z, 0, -1, 0, 0);
     } else {
       mode->LaunchDummyEffect(&position, 0x5A, EffectLifetime(0x5A) + 10, 0);
@@ -1056,7 +1057,7 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
     break;
   case WZ_STORMGUST:
   case NPC_STORMGUST2: {
-    const int effect = g_serviceOptions.Get(0xE5) ? 0x2C4 : 0x59;
+    const int effect = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? 0x2C4 : 0x59;
     mode->LaunchDummyEffect(&position, effect, EffectLifetime(0x59) + 10, 0);
     break;
   }
@@ -1064,7 +1065,7 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
     mode->LaunchDummyEffect(&position, 0x8E, EffectLifetime(0x8E) + 10, 0);
     break;
   case WZ_QUAGMIRE:
-    if (g_serviceOptions.Get(0xE5)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       g_effectMgr->Spawn(0, EF_QUAGMIRE_VISUAL, position.x, position.y, position.z, 0, -1, 0, 0);
     } else {
       mode->LaunchDummyEffect(&position, 0x5F, EffectLifetime(0x5F) + 10, 0);
@@ -1176,7 +1177,7 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
   }
   case SO_DIAMONDDUST:
     g_soundMgr->PlayWave("effect\\wl_jackfrost.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    if (g_serviceOptions.Get(0xE5)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       g_effectMgr->Spawn(0, EF_MINEFFECT_DIAMONDDUST, position.x, position.y, position.z, 0, level, 0, 0);
       g_effectMgr->Spawn(0, EF_MINEFFECT_DIAMONDDUST_BOTTOM, position.x, position.y, position.z, 0, level, 0, 0);
     } else {
@@ -1281,12 +1282,12 @@ void CGameActor::SetState(int state, int resetPosition) {
   g_session.m_homunActionState = 0;
   g_session.m_mercenaryActionState = 0;
 
-  if (this->render.state == 3 || this->isTrickDead != 0 || state == -1) {
+  if (this->render.state == ST_DEAD || this->isTrickDead != 0 || state == -1) {
     return;
   }
 
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-  if (this->render.state == 4 && static_cast<unsigned char>(resetPosition) == 1) {
+  if (this->render.state == ST_DAMAGE && static_cast<unsigned char>(resetPosition) == 1) {
     this->render.position.x = this->damageDestX;
     this->render.position.z = this->damageDestZ;
     this->render.position.y = mode->scene->terrain->Height(this->damageDestX, this->damageDestZ);
@@ -1300,7 +1301,7 @@ void CGameActor::SetState(int state, int resetPosition) {
     isPlayer = false;
   }
 
-  if (state != static_cast<int>(this->render.state) && this->render.state == 1 && isPlayer) {
+  if (state != static_cast<int>(this->render.state) && this->render.state == ST_MOVE && isPlayer) {
     CellFloatPos pos;
     pos.x = this->render.position.x;
     pos.z = this->render.position.z;
@@ -1348,13 +1349,13 @@ void CGameActor::SetState(int state, int resetPosition) {
     break;
   }
   case ST_SKILL:
-    if (this->render.state == 6) {
+    if (this->render.state == ST_SIT) {
       return;
     }
   case ST_ATTACK:
   case ST_ATTACK2:
     this->SetAction(action, 3, this->shapeShift == 1 ? 2 : 1);
-    if (this->render.state != 9 && this->render.state != 2) {
+    if (this->render.state != ST_ATTACK2 && this->render.state != ST_ATTACK) {
       if (this->hitTargetAid == g_session.m_aid) {
         CRenderObject* target = mode->scene->player;
         if (this->render.accountId != this->hitTargetAid) {
@@ -1731,12 +1732,12 @@ void CGameActor::SetState(int state, int resetPosition) {
 
   this->render.previousAnimation = this->Get8Dir(this->render.angle) + this->render.animation;
   const int previous = this->render.state;
-  if (previous == 0 || previous == 6) {
+  if (previous == ST_STAND || previous == ST_SIT) {
     this->render.previousState = previous;
   }
   this->render.state = state;
-  if (state == 7 || state == 0x31) {
-    this->render.state = 7;
+  if (state == ST_SKILL || state == 0x31) {
+    this->render.state = ST_SKILL;
   }
   this->render.motionStartTime = timeGetTime();
 }
@@ -3200,8 +3201,8 @@ void CGameActor::ResetJobEffects() {
   this->SendMsg(this, AM_DELETE_EFFECT, EF_LEVEL150_SUB, 0, 0, 0, 0, 0);
   this->SendMsg(this, AM_DELETE_EFFECT, EF_LEVEL160, 0, 0, 0, 0, 0);
   this->SendMsg(this, AM_DELETE_EFFECT, EF_LEVEL160_SUB, 0, 0, 0, 0, 0);
-  this->SendMsg(this, AM_DELETE_EFFECT, 1226, 0, 0, 0, 0, 0);
-  this->SendMsg(this, AM_DELETE_EFFECT, 1227, 0, 0, 0, 0, 0);
+  this->SendMsg(this, AM_DELETE_EFFECT, EF_LEVEL185, 0, 0, 0, 0, 0);
+  this->SendMsg(this, AM_DELETE_EFFECT, EF_LEVEL185_SUB, 0, 0, 0, 0, 0);
   this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_CIRCLEPOWER, 0, 0, 0, 0, 0);
   this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_BEGINSPELL_150, 0, 0, 0, 0, 0);
   this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_LEVEL99, 0, 0, 0, 0, 0);
@@ -3501,32 +3502,32 @@ bool CGrannyCorpse3d::OnProcess() {
 // OFFSET: 0x00CC7D50
 // FUNCTION: fn_21188
 void C3dGrannyGameActor::SetAction(unsigned animation, int, int repeat) {
-  this->render.state = 0;
+  this->render.state = ST_STAND;
   switch (animation) {
     case 48:
-      this->render.state = 4;
+      this->render.state = ST_DAMAGE;
       break;
     case 80:
     case 88:
-      this->render.state = 2;
+      this->render.state = ST_ATTACK;
       break;
     case 64:
-      this->render.state = 3;
+      this->render.state = ST_DEAD;
       break;
     case 0:
-      this->render.state = 0;
+      this->render.state = ST_STAND;
       break;
     case 8:
-      this->render.state = 1;
+      this->render.state = ST_MOVE;
       break;
     case 24:
-      this->render.state = 5;
+      this->render.state = ST_PICKUP;
       break;
     case 32:
-      this->render.state = 11;
+      this->render.state = ST_ATTACKWAIT;
       break;
     case 40:
-      this->render.state = 12;
+      this->render.state = ST_THROW;
       break;
   }
 
@@ -3665,7 +3666,7 @@ void CGameActor::ProcessHitMessage(CGameObject*, const ActorHitInfo* info, int, 
 
       this->SetModifyFactorOfmotionSpeed(attackSpeed);
       if (info->targetAid != this->render.accountId) {
-        this->SetState(2, 1);
+        this->SetState(ST_ATTACK, 1);
       }
 
       this->Face(x, z);
@@ -3799,13 +3800,13 @@ void CGameActor::ProcessHitMessage(CGameObject*, const ActorHitInfo* info, int, 
       break;
     }
     case DMG_PICKUP_ITEM:
-      this->SetState(5, 1);
+      this->SetState(ST_PICKUP, 1);
       return;
     case DMG_SIT_DOWN:
-      this->SetState(6, 1);
+      this->SetState(ST_SIT, 1);
       return;
     case DMG_STAND_UP:
-      this->SetState(0, 1);
+      this->SetState(ST_STAND, 1);
       return;
   }
 }
@@ -3813,8 +3814,8 @@ void CGameActor::ProcessHitMessage(CGameObject*, const ActorHitInfo* info, int, 
 // OFFSET: 0x00CC5C70
 // FUNCTION: fn_21180
 void C3dGrannyGameActor::ProcessMotion() {
-  this->render.isMotionFinished = this->render.state != 2;
-  if (this->render.state != 2 || !(this->render.motionSpeed < 1.0f)) {
+  this->render.isMotionFinished = this->render.state != ST_ATTACK;
+  if (this->render.state != ST_ATTACK || !(this->render.motionSpeed < 1.0f)) {
     return;
   }
 
@@ -4315,7 +4316,7 @@ void CGameActor::SetCharm(int type, int count) {
 // OFFSET: 0x00CAA4D0
 // FUNCTION: fn_21017
 void CGameActor::UpdateMaxLevelAura() {
-  if (g_serviceOptions.Get(0x6b) != 0) {
+  if (g_serviceOptions.Get(TT_HIDE_AURA_ON_OFF) != 0) {
     return;
   }
 
@@ -4676,7 +4677,7 @@ void CGameActor::SpawnDamageDigits(int, int damage, std::uint32_t color, int typ
   const int value = damage >= 0 ? damage : 0;
   int remaining = value;
   int digit;
-  if (g_serviceOptions.Get(0x10B)) {
+  if (g_serviceOptions.Get(TT_EXTEND_DAMAGE_ON_OFF)) {
     if (value >= 100000000) {
       digit = 11;
       remaining = value / 1000000;
@@ -5416,8 +5417,8 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
     g_session.PlaySkillEffect(skillId, hitCount, this, static_cast<CGameActor*>(target));
   }
 
-  if (target != nullptr && target != this && !CSkillActionMgr::GetInstance()->KeepSkillAttackMotion(skillId, type) && this->render.state != 9 &&
-      this->render.state != 2) {
+  if (target != nullptr && target != this && !CSkillActionMgr::GetInstance()->KeepSkillAttackMotion(skillId, type) && this->render.state != ST_ATTACK2 &&
+      this->render.state != ST_ATTACK) {
     this->Face(targetPos.x, targetPos.z);
   }
 
@@ -5819,13 +5820,13 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
     } else if (skillId == CG_ARROWVULCAN) {
     } else if (skillId == WL_CRIMSONROCK) {
       message.effectId = 0x512;
-      if (g_serviceOptions.Get(229)) {
+      if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
         message.effectId = -1;
       }
     } else if (skillId == WL_COMET) {
       if (previous & 1) {
         message.hitEffect = -1;
-      } else if (g_serviceOptions.Get(229)) {
+      } else if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
         message.hitEffect = 0x601;
         message.effectId = 0x602;
       } else {

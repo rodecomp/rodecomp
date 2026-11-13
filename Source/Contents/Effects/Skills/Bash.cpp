@@ -1,4 +1,5 @@
 #include "Contents/Effects/Skills/Bash.h"
+#include "UI/GameSettings/TalkType.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -69,7 +70,7 @@ void CBash::Open() {
     ++index;
   }
 
-  int count = g_serviceOptions.Get(229) ? 10 : 20;
+  int count = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? 10 : 20;
   do {
     CParticle* particle = CreateParticle(&this->positionVector, 1);
     const int angle = rand() % 360;

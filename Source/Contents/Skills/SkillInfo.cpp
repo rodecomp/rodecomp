@@ -1,4 +1,5 @@
 #include "Client/Mode/ModeMgr.h"
+#include "UI/GameSettings/TalkType.h"
 #include "Contents/Effects/Core/EffectTypes.h"
 #include "Client/Session/Session.h"
 #include "Contents/Actors/ActorEnums.h"
@@ -1006,7 +1007,7 @@ void CEfstAction_UNLIMIT::OnEfstBegin(int, int, int, int, CRenderObject* actor, 
 
   EffectLists* effects = g_effectMgr;
   effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("unlimit_loop_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-  if (!g_serviceOptions.Get(229)) {
+  if (!g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
     effects = g_effectMgr;
     effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("unlimit_loop"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
@@ -2132,7 +2133,7 @@ void CSkillAction_DK_SERVANT_W_SIGN::OnTargetSkillCast(int argument1, int argume
   CGameActor* source = reinterpret_cast<CGameActor*>(argument1);
   CGameActor* targetActor = reinterpret_cast<CGameActor*>(argument2);
   if (source) {
-    if (CServantWeaponNewEffect* effect = static_cast<CServantWeaponNewEffect*>(g_effectMgr->Find(source->render.accountId, 0x99C))) {
+    if (CServantWeaponNewEffect* effect = static_cast<CServantWeaponNewEffect*>(g_effectMgr->Find(source->render.accountId, EF_DK_SERVANTWEAPON))) {
       effect->Shoot(0x1453);
     }
   }
@@ -2191,7 +2192,7 @@ void CSkillAction_DK_SERVANT_W_PHANTOM::OnSkillCast(int level, CGameActor* sourc
 // FUNCTION: fn_08467
 void CSkillAction_DK_SERVANT_W_PHANTOM::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Find(source->render.accountId, 0x99C);
+    g_effectMgr->Find(source->render.accountId, EF_DK_SERVANTWEAPON);
   }
 }
 
@@ -2236,7 +2237,7 @@ void CSkillAction_DK_SERVANT_W_PHANTOM::OnSkillHit(int caster, CGameActor* targe
 // FUNCTION: fn_08469
 void CSkillAction_DK_SERVANT_W_DEMOL::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Find(source->render.accountId, 0x99C);
+    g_effectMgr->Find(source->render.accountId, EF_DK_SERVANTWEAPON);
   }
 }
 
@@ -2471,7 +2472,7 @@ void CEfstAction_CHARGINGPIERCE_COUNT::OnEfstBegin(int efstId, int value, int ar
       );
     }
   } else if (actor) {
-    if (CEffect* effect = g_effectMgr->Spawn(actor->render.accountId, 0x99D, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
+    if (CEffect* effect = g_effectMgr->Spawn(actor->render.accountId, EF_DK_CHARGINGPIERCE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
       static_cast<CChargingPierceNewEffect*>(effect)->SetCount(value);
     }
   }
@@ -3037,7 +3038,7 @@ void CSkillAction_HN_SPIRAL_PIERCE_MAX::OnSkillEffect(int level, CGameActor* sou
     return;
   }
 
-  if (!g_serviceOptions.Get(229)) {
+  if (!g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("spiral_pierce_max_aura_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
@@ -3110,7 +3111,7 @@ void CSkillAction_HN_JUPITEL_THUNDER_STORM::OnSkillCast(int level, CGameActor* s
 void CSkillAction_HN_JUPITEL_THUNDER_STORM::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source && target) {
     static_cast<EffectActor*>(source)->LaunchEffect(EF_BEGINSPELL, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    g_effectMgr->Spawn(source->render.accountId, 0x93E, source->render.position, target->render.accountId, level, 0, 0);
+    g_effectMgr->Spawn(source->render.accountId, EF_HN_JUPITEL_THUNDER_STORM, source->render.position, target->render.accountId, level, 0, 0);
   }
 }
 
@@ -3135,7 +3136,7 @@ void CSkillAction_HN_JACK_FROST_NOVA::OnSkillCast(int level, CGameActor* source)
 
   static_cast<EffectActor*>(source)->LaunchEffect(EF_NEW_FROSTMISTY, level / 16);
   EffectLists* effects = g_effectMgr;
-  CEffect* effect = effects->Spawn(source->render.accountId, g_serviceOptions.Get(229) ? 1543 : 1446, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  CEffect* effect = effects->Spawn(source->render.accountId, g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? 1543 : 1446, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   if (effect) {
     effect->SetLifeTime(level);
   }

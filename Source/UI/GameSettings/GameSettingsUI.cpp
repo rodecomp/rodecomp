@@ -1,4 +1,5 @@
 #include "UI/Window/WindowId.h"
+#include "UI/GameSettings/TalkType.h"
 #include "UI/Window/UIEnums.h"
 #include "Client/Mode/ModeMessage.h"
 #include "UI/GameSettings/GameSettingsUI.h"
@@ -1500,7 +1501,7 @@ void CUIPage::OnInit() {
 // OFFSET: 0x00A3F360
 // FUNCTION: fn_15942
 void CUIGroupSound::SetBgmEnabled(bool enabled) {
-  const unsigned char previous = g_serviceOptions.Get(7);
+  const unsigned char previous = g_serviceOptions.Get(TT_MUSIC_ON_OFF);
   this->m_bgmSlider->SetTransparent(!enabled);
   CUIVScrollBar* const slider = this->m_bgmSlider;
   slider->dragging = !enabled;
@@ -1633,7 +1634,7 @@ void CUIGroupSound::OnEffectScroll(int position) {
 // OFFSET: 0x00A43650
 // FUNCTION: fn_16032
 void CUIGroupEmblem::Refresh() {
-  const bool enabled = g_serviceOptions.Get(0xF3);
+  const bool enabled = g_serviceOptions.Get(TT_EMBLEM_FRAME_ON_OFF);
   this->m_onButton->checked = enabled;
   this->m_onButton->Invalidate();
   this->m_offButton->checked = !enabled;
@@ -1655,10 +1656,10 @@ void CUIGroupFullscreen::Refresh() {
 // FUNCTION: fn_16036
 void CUIGroupLogInOut::Refresh() {
   auto* const onButton = this->m_onButton;
-  onButton->checked = g_serviceOptions.Get(0xA5);
+  onButton->checked = g_serviceOptions.Get(TT_LOGINOUT_ON_OFF);
   onButton->Invalidate();
   auto* const offButton = this->m_offButton;
-  offButton->checked = !g_serviceOptions.Get(0xA5);
+  offButton->checked = !g_serviceOptions.Get(TT_LOGINOUT_ON_OFF);
   offButton->Invalidate();
 }
 
@@ -1708,7 +1709,7 @@ void CUIGroupSound::Refresh() {
   this->m_bgmSlider->SetVisible(this->m_bgmSlider->PositionFromOffset(8));
   this->m_bgmSlider->SetPosition(CSoundMgr::Volume(g_soundMgr));
   this->m_bgmSlider->SetThumbTooltip(std::to_string(CSoundMgr::Volume(g_soundMgr)));
-  const bool bgmMuted = !g_serviceOptions.Get(7);
+  const bool bgmMuted = !g_serviceOptions.Get(TT_MUSIC_ON_OFF);
   this->m_bgmSlider->SetTransparent(bgmMuted);
   CUIVScrollBar* const bgmSlider = this->m_bgmSlider;
   bgmSlider->dragging = bgmMuted;
@@ -1721,7 +1722,7 @@ void CUIGroupSound::Refresh() {
   this->m_effectSlider->SetVisible(this->m_effectSlider->PositionFromOffset(8));
   this->m_effectSlider->SetPosition(g_soundMgr->sampleVolume);
   this->m_effectSlider->SetThumbTooltip(std::to_string(g_soundMgr->sampleVolume));
-  const bool effectMuted = !g_serviceOptions.Get(0xB);
+  const bool effectMuted = !g_serviceOptions.Get(TT_EFFECT_SOUND_ON_OFF);
   this->m_effectSlider->SetTransparent(effectMuted);
   CUIVScrollBar* const effectSlider = this->m_effectSlider;
   effectSlider->dragging = effectMuted;

@@ -1,4 +1,5 @@
 #include "UI/Window/WindowId.h"
+#include "UI/GameSettings/TalkType.h"
 #include "Contents/Configuration/ServiceEnums.h"
 #include "UI/Window/UIEnums.h"
 #include "Client/Mode/ModeMessage.h"
@@ -743,7 +744,7 @@ __declspec(noinline) void CGameMode::ReceiveActorSequenceDeadline(const unsigned
 void CGameMode::ReceiveDevotionList(const unsigned char* packet) {
   const auto* list = reinterpret_cast<const DevotionListPacket*>(packet);
 
-  if (!g_serviceOptions.Get(8)) {
+  if (!g_serviceOptions.Get(TT_EFFECT_ON_OFF)) {
     return;
   }
 
@@ -2697,7 +2698,7 @@ __declspec(noinline) void CGameMode::ReceiveWindow308TextEntries(unsigned char* 
 // OFFSET: 0x00D7B390
 // FUNCTION: fn_22202
 __declspec(noinline) void CGameMode::ReceiveActorStateValue(std::uint32_t aid, int unused, std::int16_t value) {
-  if (aid == 0 || !g_serviceOptions.Get(8)) {
+  if (aid == 0 || !g_serviceOptions.Get(TT_EFFECT_ON_OFF)) {
     return;
   }
 
@@ -2752,9 +2753,9 @@ __declspec(noinline) void CGameMode::ReceiveSoulEnergy(const unsigned char* data
     g_effectMgr->Retire(actor->render.accountId, 1225);
   }
 
-  CEffect* effect = g_effectMgr->Find(actor->render.accountId, 1225);
+  CEffect* effect = g_effectMgr->Find(actor->render.accountId, EF_SOUL_COLLECT);
   if (!effect) {
-    effect = g_effectMgr->Spawn(actor->render.accountId, 1225, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, EF_SOUL_COLLECT, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     if (!effect) {
       return;
     }
@@ -2980,7 +2981,7 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
       target->LaunchEffect(EF_SUI_EXPLOSION, origin, 0.0f);
       break;
     case WL_COMET:
-      if (g_serviceOptions.Get(0xE5)) {
+      if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
         g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_COMET, origin.x, origin.y, origin.z, 0, -1, 0, 0);
         effectId = 0x5FF;
       } else {
@@ -2996,7 +2997,7 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
       break;
     case GN_CARTCANNON: {
       CEffect* effect;
-      if (g_serviceOptions.Get(0xE5)) {
+      if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
         effect = g_effectMgr->Spawn(source->render.accountId, EF_MINEFFECT_CART_CANNON_FIRE_BOTTOM, origin.x, origin.y, origin.z, 0, -1, 0, 0);
         if (effect) {
           effect->SetDelay(200);
@@ -3082,7 +3083,7 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
       }
 
       CEffect* effect;
-      if (g_serviceOptions.Get(0xE5)) {
+      if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
         directionId += 0x8D;
         if (g_effectMgr->Find(source->render.accountId, directionId) == nullptr) {
           effect = g_effectMgr->Spawn(source->render.accountId, directionId, origin.x, origin.y, origin.z, 0, -1, 0, 0);
@@ -3132,7 +3133,7 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
       }
 
       CEffect* effect;
-      if (g_serviceOptions.Get(0xE5)) {
+      if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
         directionId += 0x8B;
         if (g_effectMgr->Find(source->render.accountId, directionId) == nullptr) {
           effect = g_effectMgr->Spawn(source->render.accountId, directionId, origin.x, origin.y, origin.z, 0, -1, 0, 0);
@@ -3186,7 +3187,7 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
         } else {
           id = (kind != 1) + 0x5A4;
         }
-        if (g_serviceOptions.Get(0xE5)) {
+        if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
           id += 0x61;
         }
         g_effectMgr->Spawn(0, id, position.x, position.y, position.z, 0, -1, 0, 0);
@@ -3240,7 +3241,7 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
         const vector3d position{static_cast<float>(dx) + x, y, static_cast<float>(dz) + z};
 
         CEffect* effect;
-        if (g_serviceOptions.Get(0xE5)) {
+        if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
           effect = g_effectMgr->Spawn(0, EF_MINEFFECT_ARMSCANNON_EXPLOSION, position.x, position.y, position.z, 0, -1, 0, 0);
           if (effect) {
             effect->SetDelay(duration);
@@ -3259,7 +3260,7 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
         }
       }
 
-      if (g_serviceOptions.Get(0xE5)) {
+      if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
         g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_ARMSCANNON_EXPLOSION, origin.x, origin.y, origin.z, 0, -1, 0, 0);
         effectId = 0x5D3;
       } else {
@@ -3271,7 +3272,7 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
       break;
     }
     case SC_FEINTBOMB:
-      if (g_serviceOptions.Get(0xE5)) {
+      if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
         g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_FEINTBOMB, origin.x, origin.y, origin.z, 0, -1, 0, 0);
         effectId = 0x5B8;
       } else {
@@ -3811,7 +3812,7 @@ void CGameMode::ShowSpecialPopup(int popupId) {
 // OFFSET: 0x00D7A690
 // FUNCTION: fn_22191
 void CGameMode::Zc_Spirits2(const unsigned char* data) {
-  if (!g_serviceOptions.Get(8)) {
+  if (!g_serviceOptions.Get(TT_EFFECT_ON_OFF)) {
     return;
   }
 
@@ -3935,7 +3936,7 @@ void CGameMode::UpdateActorSpiritCount(std::uint32_t aid, std::int16_t count) {
     case JT_DRAGON_KNIGHT:
     case JT_DRAGON_KNIGHT_RIDING:
     case JT_DRAGON_KNIGHT_CHICKEN:
-      g_effectMgr->Retire(g_effectMgr->Find(actor->render.accountId, 2460), 1);
+      g_effectMgr->Retire(g_effectMgr->Find(actor->render.accountId, EF_DK_SERVANTWEAPON), 1);
       return;
     case JT_ABYSS_CHASER:
       g_effectMgr->Retire(actor->render.accountId, 2109);
@@ -3968,7 +3969,7 @@ void CGameMode::UpdateActorSpiritCount(std::uint32_t aid, std::int16_t count) {
   case JT_DRAGON_KNIGHT_RIDING:
   case JT_DRAGON_KNIGHT_CHICKEN: {
     CServantWeaponNewEffect* weapons =
-      static_cast<CServantWeaponNewEffect*>(g_effectMgr->Spawn(actor->render.accountId, 2460, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0));
+      static_cast<CServantWeaponNewEffect*>(g_effectMgr->Spawn(actor->render.accountId, EF_DK_SERVANTWEAPON, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0));
     if (!weapons) {
       return;
     }
@@ -5117,7 +5118,7 @@ void CGameMode::ApplyStatusChange(
           g_effectMgr->Retire(player->render.accountId, 1467 + i);
         }
         g_effectMgr->Spawn(
-          player->render.accountId, g_serviceOptions.Get(229) ? value1 + 1466 : value1 + 1299, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0
+          player->render.accountId, g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? value1 + 1466 : value1 + 1299, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0
         );
         std::sprintf(message, "");
       }
@@ -7774,7 +7775,7 @@ void CGameMode::ReceiveBroadcastText(const unsigned char* data) {
     std::string masked("");
     g_forbiddenWords.Mask(text.data(), &masked);
   }
-  if (!g_serviceOptions.Get(0x94)) {
+  if (!g_serviceOptions.Get(TT_NOTALKMSG2_ON_OFF)) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.data()), 0xFF9DFF, 5, 0, 0);
     if (g_session.m_whisperRecord != 0) {
       this->WriteChatLog(text.data());
@@ -7799,7 +7800,7 @@ void CGameMode::ReceiveActorBroadcastText(const unsigned char* data) {
   const int aid = *reinterpret_cast<const int*>(data + 4);
   if (MonsterJobColor(aid)) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.data()), MonsterJobColor(aid), 0, 0, 0);
-  } else if (!g_serviceOptions.Get(0x72) && !g_serviceOptions.Get(0x94)) {
+  } else if (!g_serviceOptions.Get(TT_NOTALKMSG_ON_OFF) && !g_serviceOptions.Get(TT_NOTALKMSG2_ON_OFF)) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.data()), 0x9B00FF, 1, 0, 0);
   }
   if (CRenderObject* actor = this->scene->GetGameActorByAID(aid)) {
@@ -9145,7 +9146,7 @@ void CGameMode::ReceivePetChangeState(const unsigned char* data) {
     }
     break;
   case 7:
-    if (g_serviceOptions.Get(0x128) == 1) {
+    if (g_serviceOptions.Get(TT_PETINFO_ALERT_ONOFF) == 1) {
       g_windowMgr.AddMessageBox(LookupMessage(0x10F8), 0, true, 0, 0, LookupMessage(MSI_SHOW_NAME_OF_ENTERED_MAP), 0x118, 0x78, nullptr, false);
     }
     break;
@@ -9242,7 +9243,7 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
     return;
   }
 
-  const unsigned char showMessage = g_serviceOptions.Get(0x71);
+  const unsigned char showMessage = g_serviceOptions.Get(TT_SKILLFAIL_ON_OFF);
   char text[256];
   const char* notice;
   switch (packet->cause) {
@@ -9957,7 +9958,7 @@ void CGameMode::ReceiveActorChat(const unsigned char* data) {
       );
     } else if (MonsterJobColor(aid)) {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.data()), MonsterJobColor(aid), 0, 0, 0);
-    } else if (!g_serviceOptions.Get(0x72) && !g_serviceOptions.Get(0x94)) {
+    } else if (!g_serviceOptions.Get(TT_NOTALKMSG_ON_OFF) && !g_serviceOptions.Get(TT_NOTALKMSG2_ON_OFF)) {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.data()), 0xFFFFFF, 1, 0, 0);
     }
     if (CRenderObject* actor = this->scene->GetGameActorByAID(aid)) {
@@ -10195,7 +10196,7 @@ void CGameMode::ReceiveGuildChat(const unsigned char* data) {
     std::string masked("");
     g_forbiddenWords.Mask(text.data(), &masked);
   }
-  if (!g_serviceOptions.Get(0x94)) {
+  if (!g_serviceOptions.Get(TT_NOTALKMSG2_ON_OFF)) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.data()), 0xB4FFB4, 4, 0, 0);
     if (g_session.m_whisperRecord != 0) {
       this->WriteChatLog(text.data());
@@ -10260,7 +10261,7 @@ void CGameMode::ReceiveActorAction(
       g_session.GetMonsterTalkText(static_cast<CGameActor*>(actor)->GetEffectiveJob(-1), 0, 0, text, sourceAid);
       if (std::strcmp(text, "") != 0) {
         actor->SendMsg(nullptr, AM_CHAT, reinterpret_cast<int>(text), 0, 0, 0, 0, 0);
-        if (!g_serviceOptions.Get(114) && !g_serviceOptions.Get(148)) {
+        if (!g_serviceOptions.Get(TT_NOTALKMSG_ON_OFF) && !g_serviceOptions.Get(TT_NOTALKMSG2_ON_OFF)) {
           g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFAFAFA, 0, 0, 0);
         }
       }
@@ -10614,7 +10615,7 @@ void CGameMode::ReceiveGuildNotice(unsigned char* data) {
   packet->subject[59] = '\0';
   guildInfo->subject = packet->subject;
   guildInfo->notice = packet->notice;
-  if (!g_serviceOptions.Get(0xA5)) {
+  if (!g_serviceOptions.Get(TT_LOGINOUT_ON_OFF)) {
     return;
   }
 
@@ -15979,7 +15980,7 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     actor->LaunchEffect(EF_RECOGNIZED, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     return;
   case WL_TETRAVORTEX:
-    if (g_serviceOptions.Get(0xE5)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       effect = g_effectMgr->Spawn(actor->render.accountId, EF_MINEFFECT_TETRA_CORE_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetLifeTime(delay);
@@ -15997,7 +15998,7 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     }
     return;
   case WL_COMET:
-    if (g_serviceOptions.Get(0xE5)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       effect = g_effectMgr->Spawn(actor->render.accountId, EF_MINEFFECT_COMET_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetLifeTime(delay);
@@ -16015,7 +16016,7 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     }
     return;
   case WL_JACKFROST:
-    effect = g_effectMgr->Spawn(actor->render.accountId, g_serviceOptions.Get(0xE5) ? 0x607 : 0x5A6, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(actor->render.accountId, g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? 0x607 : 0x5A6, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
@@ -16082,7 +16083,7 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
       id = 0x547;
     }
 
-    if (g_serviceOptions.Get(0xE5)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       if (id == 0x545) {
         id = 0x5CF;
       } else if (id == 0x543) {
@@ -16116,7 +16117,7 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     vector3d position{0.0f, 0.0f, 0.0f};
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->CellCenter(x, y, position.x, position.z);
     position.y = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Height(position.x, position.z);
-    effect = g_effectMgr->Spawn(0, g_serviceOptions.Get(0xE5) ? 0x5AC : 0x504, position, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(0, g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? 0x5AC : 0x504, position, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
@@ -16127,14 +16128,14 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     vector3d position{0.0f, 0.0f, 0.0f};
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->CellCenter(x, y, position.x, position.z);
     position.y = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Height(position.x, position.z);
-    effect = g_effectMgr->Spawn(0, g_serviceOptions.Get(0xE5) ? 0x5B0 : 0x50A, position, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(0, g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? 0x5B0 : 0x50A, position, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
     }
     return;
   }
   case GN_CARTCANNON:
-    if (g_serviceOptions.Get(0xE5)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       effect = g_effectMgr->Spawn(actor->render.accountId, EF_MINEFFECT_CART_CANNON_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetLifeTime(delay);
@@ -16163,7 +16164,7 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     }
     return;
   case SO_VARETYR_SPEAR:
-    if (!g_serviceOptions.Get(0xE5)) {
+    if (!g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       effect = g_effectMgr->Spawn(actor->render.accountId, EF_NEW_VARETYRSPEAR_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetLifeTime(delay);
@@ -16208,7 +16209,7 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    if (g_serviceOptions.Get(0xE5)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       return;
     }
     effect = g_effectMgr->Spawn(actor->render.accountId, EF_NEW_WALLOFTHORN_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -16237,7 +16238,7 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    if (g_serviceOptions.Get(0xE5)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       return;
     }
     effect = g_effectMgr->Spawn(actor->render.accountId, EF_NEW_OVERBRAND_CAST_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -16432,7 +16433,7 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     if (effect) {
       effect->SetLifeTime(delay);
     }
-    if (g_serviceOptions.Get(0xE5)) {
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       return;
     }
     effect = g_effectMgr->Spawn(actor->render.accountId, EF_ARBITRIUM_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -16441,7 +16442,7 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     }
     return;
   case CD_COMPETENTIA: {
-    if (!g_serviceOptions.Get(0xE5)) {
+    if (!g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       effect = g_effectMgr->Spawn(actor->render.accountId, 0x73B, actor->render.position, 0, -1, 0, 0);
       if (effect) {
         effect->SetLifeTime(delay);
@@ -16525,7 +16526,7 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     }
     return;
   case CD_BENEDICTUM:
-    if (!g_serviceOptions.Get(0xE5)) {
+    if (!g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       effect = g_effectMgr->Spawn(actor->render.accountId, EF_BENEDICTUM_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetLifeTime(delay);
@@ -16543,7 +16544,7 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     }
     return;
   case CD_DILECTIO_HEAL:
-    if (!g_serviceOptions.Get(0xE5)) {
+    if (!g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
       effect = g_effectMgr->Spawn(actor->render.accountId, EF_NEW_DILECTIO_HEAL_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetLifeTime(delay);
@@ -17926,14 +17927,14 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
       g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
       g_soundMgr->PlayWave("effect\\mon_맹룡과강.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       g_effectMgr->Spawn(source->render.accountId, EF_NEW_COUNTER_SLASH, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      if (!g_serviceOptions.Get(0xE5)) {
+      if (!g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
         g_effectMgr->Spawn(source->render.accountId, EF_NEW_COUNTER_SLASH_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       }
     }
     break;
   case GC_ROLLINGCUTTER:
     if (source != nullptr) {
-      if (g_serviceOptions.Get(0xE5)) {
+      if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
         g_effectMgr->Spawn(source->render.accountId, EF_MINEFFECT_ROLLINGCUTTER_CAST, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
         LaunchRollingCutterEffect(source);
       } else {
@@ -17949,7 +17950,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
         g_soundMgr->PlayWave("effect\\hunter_blastmine.wav", target->render.position.x - source->render.position.x, 0.0f, target->render.position.z - source->render.position.z, 250, 40, 1.0f, 0);
         g_soundMgr->PlayWave("effect\\wl_tetravortex.wav", target->render.position.x - source->render.position.x, 0.0f, target->render.position.z - source->render.position.z, 250, 40, 1.0f, 0);
       }
-      if (g_serviceOptions.Get(0xE5)) {
+      if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
         g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_TETRA_FIRE_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
         g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_TETRA_FIRE, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       } else {
@@ -17983,7 +17984,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
         g_soundMgr->PlayWave("effect\\hunter_blastmine.wav", target->render.position.x - source->render.position.x, 0.0f, target->render.position.z - source->render.position.z, 250, 40, 1.0f, 0);
         g_soundMgr->PlayWave("effect\\wl_tetravortex.wav", target->render.position.x - source->render.position.x, 0.0f, target->render.position.z - source->render.position.z, 250, 40, 1.0f, 0);
       }
-      if (g_serviceOptions.Get(0xE5)) {
+      if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
         g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_TETRA_WATER_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
         g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_TETRA_WATER, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       } else {
@@ -18017,7 +18018,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
         g_soundMgr->PlayWave("effect\\hunter_blastmine.wav", target->render.position.x - source->render.position.x, 0.0f, target->render.position.z - source->render.position.z, 250, 40, 1.0f, 0);
         g_soundMgr->PlayWave("effect\\wl_tetravortex.wav", target->render.position.x - source->render.position.x, 0.0f, target->render.position.z - source->render.position.z, 250, 40, 1.0f, 0);
       }
-      if (g_serviceOptions.Get(0xE5)) {
+      if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
         g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_TETRA_WIND_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
         g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_TETRA_WIND, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       } else {
@@ -18051,7 +18052,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
         g_soundMgr->PlayWave("effect\\hunter_blastmine.wav", target->render.position.x - source->render.position.x, 0.0f, target->render.position.z - source->render.position.z, 250, 40, 1.0f, 0);
         g_soundMgr->PlayWave("effect\\wl_tetravortex.wav", target->render.position.x - source->render.position.x, 0.0f, target->render.position.z - source->render.position.z, 250, 40, 1.0f, 0);
       }
-      if (g_serviceOptions.Get(0xE5)) {
+      if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
         g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_TETRA_EARTH_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
         g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_TETRA_EARTH, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       } else {
@@ -18362,7 +18363,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case GN_CART_TORNADO:
     if (source != nullptr) {
       source->LaunchEffect(EF_NEW_CART_TORNADO, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      if (g_serviceOptions.Get(0xE5)) {
+      if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
         g_effectMgr->Spawn(source->render.accountId, EF_MINEFFECT_CART_TORNADO, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
         g_effectMgr->Spawn(source->render.accountId, EF_MINEFFECT_CART_TORNADO_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       } else {
@@ -18374,7 +18375,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case GN_CARTCANNON:
     if (source != nullptr && target != nullptr) {
       const std::uint32_t accountId = target->render.accountId;
-      CEffect* effect = g_effectMgr->Spawn(accountId, 0x54D, source->render.position.x, source->render.position.y, source->render.position.z, accountId, -1, 0, 0);
+      CEffect* effect = g_effectMgr->Spawn(accountId, EF_NEW_CART_CANNON, source->render.position.x, source->render.position.y, source->render.position.z, accountId, -1, 0, 0);
       if (effect) {
         effect->SetDelay(200);
       }
@@ -18802,7 +18803,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
           source->render.position.z - target->render.position.z, 250, 40, 1.0f, 0
         );
       }
-      if (g_serviceOptions.Get(0xE5)) {
+      if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
         g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_SECRAMENT, target->render.position.x, target->render.position.y, target->render.position.z, target->render.accountId, effectLevel, 0, 0);
       } else {
         g_effectMgr->Spawn(target->render.accountId, EF_NEW_SECRAMENT, target->render.position.x, target->render.position.y, target->render.position.z, target->render.accountId, effectLevel, 0, 0);
@@ -19249,7 +19250,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case CD_COMPETENTIA:
     if (target != nullptr) {
       g_effectMgr->Spawn(target->render.accountId, EF_COMPETENTIA, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      if (!g_serviceOptions.Get(0xE5)) {
+      if (!g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
         g_effectMgr->Spawn(target->render.accountId, EF_COMPETENTIA_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       }
     }
@@ -19284,7 +19285,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case AG_STORM_CANNON:
     if (source != nullptr && target != nullptr) {
       g_effectMgr->Spawn(
-        0, 0x6DB, source->render.position.x, source->render.position.y, source->render.position.z, target->render.accountId, -1, 0, 0
+        0, EF_STORM_CANNON, source->render.position.x, source->render.position.y, source->render.position.z, target->render.accountId, -1, 0, 0
       );
     }
     break;
@@ -19396,7 +19397,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case CD_REPARATIO: {
     if (source != nullptr) {
-      if (!g_serviceOptions.Get(0xE5)) {
+      if (!g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
         g_effectMgr->Spawn(source->render.accountId, EF_NEW_REPARATIO_CAST, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       }
       g_effectMgr->Spawn(source->render.accountId, EF_NEW_REPARATIO_CAST_BOTTOM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
@@ -19442,7 +19443,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case SHC_SAVAGE_IMPACT:
     if (source != nullptr && target != nullptr) {
       g_effectMgr->Spawn(
-        source->render.accountId, 0x72D, source->render.position.x, source->render.position.y, source->render.position.z,
+        source->render.accountId, EF_SAVAGE_IMPACT, source->render.position.x, source->render.position.y, source->render.position.z,
         target->render.accountId, -1, 0, 0
       );
     }
@@ -19484,13 +19485,13 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case CD_PETITIO:
     if (target != nullptr) {
-      g_effectMgr->Spawn(target->render.accountId, 0x777, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_PETITIO, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case SHC_ETERNAL_SLASH:
     if (source != nullptr) {
       LaunchRollingCutterEffect(source);
-      g_effectMgr->Spawn(source->render.accountId, 0x778, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_ETERNAL_SLASH, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
     }
     break;
   case SHC_POTENT_VENOM:
@@ -19605,7 +19606,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case BO_ACIDIFIED_ZONE_FIRE:
     if (source != nullptr && target != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, 0x89E, source->render.position.x, source->render.position.y, source->render.position.z, target->render.accountId, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_ACIDIFIED_ZONE_FIRE, source->render.position.x, source->render.position.y, source->render.position.z, target->render.accountId, -1, 0, 0);
     }
     break;
   case NPC_BO_THROWROCK:
@@ -19625,17 +19626,17 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case BO_ACIDIFIED_ZONE_WATER:
     if (source != nullptr && target != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, 0x8A6, source->render.position.x, source->render.position.y, source->render.position.z, target->render.accountId, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_ACIDIFIED_ZONE_WATER, source->render.position.x, source->render.position.y, source->render.position.z, target->render.accountId, -1, 0, 0);
     }
     break;
   case BO_ACIDIFIED_ZONE_WIND:
     if (source != nullptr && target != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, 0x8AE, source->render.position.x, source->render.position.y, source->render.position.z, target->render.accountId, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_ACIDIFIED_ZONE_WIND, source->render.position.x, source->render.position.y, source->render.position.z, target->render.accountId, -1, 0, 0);
     }
     break;
   case BO_ACIDIFIED_ZONE_GROUND:
     if (source != nullptr && target != nullptr) {
-      g_effectMgr->Spawn(source->render.accountId, 0x8B6, source->render.position.x, source->render.position.y, source->render.position.z, target->render.accountId, -1, 0, 0);
+      g_effectMgr->Spawn(source->render.accountId, EF_ACIDIFIED_ZONE_GROUND, source->render.position.x, source->render.position.y, source->render.position.z, target->render.accountId, -1, 0, 0);
     }
     break;
   case BO_RESEARCHREPORT:
@@ -21956,7 +21957,7 @@ void CGameMode::ProcessIncomingPackets() {
       break;
     }
     case ID_ZC_REQ_EXCHANGE_ITEM: {
-      if (g_serviceOptions.Get(136)) {
+      if (g_serviceOptions.Get(TT_NOTRADE_ON_OFF)) {
         g_modeMgr.gameMode->SendMsg(MM_ACK_EXCHANGE_ITEM, 4, 0, 0, 0);
         break;
       }
@@ -23204,7 +23205,7 @@ void CGameMode::ProcessIncomingPackets() {
       break;
     }
     case ID_ZC_REQ_EXCHANGE_ITEM2: {
-      if (g_serviceOptions.Get(136)) {
+      if (g_serviceOptions.Get(TT_NOTRADE_ON_OFF)) {
         g_modeMgr.gameMode->SendMsg(MM_ACK_EXCHANGE_ITEM, 4, 0, 0, 0);
         break;
       }
@@ -23288,7 +23289,7 @@ void CGameMode::ProcessIncomingPackets() {
       char name[25];
       strncpy(name, reinterpret_cast<const char *>(g_gameModePacketBuffer + 0xA), 24);
       name[24] = 0;
-      const unsigned char option = g_serviceOptions.Get(136);
+      const unsigned char option = g_serviceOptions.Get(TT_NOTRADE_ON_OFF);
       if (IsMonsterJob(g_session.m_aid) || option) {
         g_modeMgr.gameMode->SendMsg(MM_JOIN_FRIEND, *reinterpret_cast<const int *>(g_gameModePacketBuffer + 2), *reinterpret_cast<const int *>(g_gameModePacketBuffer + 6),
                                     0, 0);
@@ -23586,7 +23587,7 @@ void CGameMode::ProcessIncomingPackets() {
               reinterpret_cast<const char *>(g_gameModePacketBuffer + 2), job);
       if (g_windowMgr.chatRoomWnd) {
         g_windowMgr.SendNotice(UIM_PUSH_INTO_CHATROOM, reinterpret_cast<std::intptr_t>(message), 0x222222, 0, 0, 0);
-      } else if (!g_serviceOptions.Get(114) && !g_serviceOptions.Get(148)) {
+      } else if (!g_serviceOptions.Get(TT_NOTALKMSG_ON_OFF) && !g_serviceOptions.Get(TT_NOTALKMSG2_ON_OFF)) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFFFF00, 1, 0, 0);
       }
       if (g_session.m_whisperRecord) {

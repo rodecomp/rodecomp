@@ -1,4 +1,5 @@
 #include "Contents/Effects/Primitives/EffectPrimitiveMotion.h"
+#include "UI/GameSettings/TalkType.h"
 #include "Contents/Effects/Core/EffectTypes.h"
 #include "Client/Mode/ModeMessage.h"
 #include "Contents/Actors/ActorEnums.h"
@@ -5270,7 +5271,7 @@ void CEffectPrim::PrimExpandPulse() {
       if (slot.flag1[1] == 16) {
         slot.alphaB = static_cast<std::int16_t>(slot.alphaB + 15);
       } else if (slot.flag1[1] == 24) {
-        slot.alphaB = static_cast<std::int16_t>(slot.alphaB + (g_serviceOptions.Get(229) != 0 ? 8 : 15));
+        slot.alphaB = static_cast<std::int16_t>(slot.alphaB + (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? 8 : 15));
       } else {
         slot.alphaB = static_cast<std::int16_t>(slot.alphaB + 15);
       }
@@ -5517,7 +5518,7 @@ __declspec(noinline) void CEffectPrim::PrimWaveHeightsSlow() {
 
     if (slot.process < 30) {
       slot.alphaB = static_cast<std::int16_t>(slot.alphaB + 5);
-      const int limit = g_serviceOptions.Get(229) != 0 ? 80 : 150;
+      const int limit = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? 80 : 150;
       if (slot.alphaB > limit) {
         slot.alphaB = static_cast<std::int16_t>(limit);
       }
@@ -5708,7 +5709,7 @@ bool CEffectPrim::PrimDriftingRings() {
 
     if (process < 10) {
       slot.alphaB = static_cast<std::int16_t>(slot.alphaB + 25);
-      const int limit = g_serviceOptions.Get(229) != 0 ? 125 : 250;
+      const int limit = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? 125 : 250;
       if (slot.alphaB > limit) {
         slot.alphaB = static_cast<std::int16_t>(limit);
       }

@@ -1,4 +1,5 @@
 #include "UI/Window/UIEnums.h"
+#include "UI/GameSettings/TalkType.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Render/Textures/Surface.h"
 #include "UI/Layout/SnapMgr.h"
@@ -38,7 +39,7 @@ __declspec(noinline) void UIWindowMgr::Schedule(UIWindow* window) {
 // OFFSET: 0x00AA7250
 // FUNCTION: fn_17237
 void UIWindowMgr::Destroy(UIWindow* window) {
-  const bool snappingEnabled = g_serviceOptions.Get(141) != 0;
+  const bool snappingEnabled = g_serviceOptions.Get(TT_WINDOW_SNAP_ON_OFF) != 0;
 
   if (!window) {
     return;
@@ -47,7 +48,7 @@ void UIWindowMgr::Destroy(UIWindow* window) {
   const auto rendered = std::find(this->rendered.begin(), this->rendered.end(), window);
 
   if (rendered != this->rendered.end()) {
-    if (snappingEnabled && g_serviceOptions.Get(141) != 0) {
+    if (snappingEnabled && g_serviceOptions.Get(TT_WINDOW_SNAP_ON_OFF) != 0) {
       const auto snap = this->snapRectangles.find(window);
       if (snap != this->snapRectangles.end()) {
         this->snapRectangles.erase(snap);

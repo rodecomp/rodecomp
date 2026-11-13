@@ -153,7 +153,7 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
     particle->loopMode = 0;
     particle->frameDelay = 4.0f;
     break;
-  case EF_UNK_1211:
+  case EF_SUBJECT_AURA_1211:
   case EF_SUBJECT_AURA_1212:
   case EF_SUBJECT_AURA_1213:
     particle->SetSprite("이팩트\\subject_aura\\subject_aura.spr");
@@ -166,7 +166,7 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
       particle->animation = 0;
     } else if (this->id == EF_SUBJECT_AURA_1213) {
       particle->animation = 1;
-    } else if (this->id == EF_UNK_1211) {
+    } else if (this->id == EF_SUBJECT_AURA_1211) {
       particle->animation = 2;
     }
     break;
@@ -330,7 +330,7 @@ void CSpriteEffect::SetupParticle(CSpriteParticle* particle) {
     particle->loopMode = 0;
     particle->frameDelay = 8.0f;
     break;
-  case EF_UNK_2443: {
+  case EF_C_2025ROSFESTA: {
     particle->SetSprite(OBFUSCATE_TEXT("이팩트\\C_2025RosFesta.spr", 0xDB27CB557D038759ULL));
 
     particle->SetAction(OBFUSCATE_TEXT("이팩트\\C_2025RosFesta.act", 0x51BB39B763BBBD8DULL));
@@ -399,7 +399,7 @@ bool CSpriteEffect::IsAlive() {
   case EF_IMMUNE_PROPERTY_DARKNESS:
   case EF_IMMUNE_PROPERTY_TELEKINESIS:
   case EF_IMMUNE_PROPERTY_UNDEAD:
-  case EF_UNK_1211:
+  case EF_SUBJECT_AURA_1211:
   case EF_SUBJECT_AURA_1212:
   case EF_SUBJECT_AURA_1213:
   case EF_VALKYRIE_WING:
@@ -413,7 +413,7 @@ bool CSpriteEffect::IsAlive() {
   case EF_PERM_FROST_OBLIVION:
   case EF_C_GUIDE_OF_DEAD_TEXT:
   case EF_C_MEDJED_TEXT:
-  case EF_UNK_2443:
+  case EF_C_2025ROSFESTA:
   case EF_S_BEELZEBUB_WING:
     return this->ActorExists();
   }
@@ -480,7 +480,7 @@ void CSpriteEffect::OnProcess() {
       SetOffsetPosition(particle->position, this->position, offset);
       break;
     }
-    case EF_UNK_1211:
+    case EF_SUBJECT_AURA_1211:
     case EF_SUBJECT_AURA_1212:
     case EF_SUBJECT_AURA_1213: {
       CGameActor* actor = static_cast<CGameActor*>(FindRenderObject(this->actor));
@@ -568,7 +568,7 @@ void CSpriteEffect::OnProcess() {
       particle->position.y = this->position[1];
       particle->position.z = this->position[2];
       break;
-    case EF_UNK_2443:
+    case EF_C_2025ROSFESTA:
       particle->applyActorExtent = 1;
       particle->applyActorLift = 1;
       particle->screenOffsetY = 0.0f;
