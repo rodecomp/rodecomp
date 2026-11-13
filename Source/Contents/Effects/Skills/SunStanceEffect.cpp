@@ -39,7 +39,6 @@ void CSunStanceEffect::Open() {
 
     switch (this->id) {
     case 1214:
-    default:
       particle->SetTexture("effect\\sun_stance\\sun_stance.tga");
       break;
     case 1215:
@@ -56,6 +55,9 @@ void CSunStanceEffect::Open() {
       } else {
         particle->SetTexture("effect\\sun_stance\\star_stance.tga");
       }
+      break;
+    default:
+      particle->SetTexture("effect\\sun_stance\\sun_stance.tga");
       break;
     }
 
