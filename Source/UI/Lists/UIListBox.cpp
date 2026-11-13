@@ -25,6 +25,8 @@
 #include <cstring>
 #include <mbstring.h>
 
+template __declspec(noinline) std::pair<std::map<int, IdListLine>::iterator, bool> std::_Tree<std::_Tmap_traits<int, IdListLine, std::less<int>, std::allocator<std::pair<const int, IdListLine>>, false>>::insert(std::pair<const int, IdListLine>&&);
+
 // OFFSET: 0x0086D940
 // FUNCTION: fn_11055
 UIListBox::UIListBox() : UIWindow(0) {
@@ -536,7 +538,7 @@ void UIChatHisBox::CopyHistory(const UIChatHisBox& other) {
 // FUNCTION: fn_11200
 void UIComboBoxID::AddLine(const char* text, int id, int data) {
   const int index = static_cast<int>(this->lines.size());
-  this->lines.emplace(index, IdListLine{id, text});
+  this->lines.insert({index, {id, text}});
   const int width = this->TextWidth(text, 0, 0, 12, 0, 0);
   this->contentWidth = std::max(this->contentWidth, width);
   this->Refresh();
@@ -549,7 +551,7 @@ void UIComboBoxID::AddLine(const char* text, int id, int data) {
 // OFFSET: 0x00875DD0
 // FUNCTION: fn_11203
 void UIListBoxID::AddLine(const char* text, int id) {
-  this->lines.emplace(static_cast<int>(this->lines.size()), IdListLine{id, text});
+  this->lines.insert({static_cast<int>(this->lines.size()), {id, text}});
   const int width = this->TextWidth(text, 0, 0, 12, 0, 0);
   this->contentWidth = std::max(this->contentWidth, width);
   this->Refresh();
