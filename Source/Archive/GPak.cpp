@@ -318,15 +318,15 @@ bool CGPak::ReadTableV2() {
     return false;
   }
 
-  this->m_entries.resize(this->m_entryCount);
   const std::uint8_t* cursor = decoded.empty() ? nullptr : &decoded[0];
+  this->m_entries.resize(this->m_entryCount);
   std::uint32_t maximum = 0;
 
   for (std::uint32_t i = 0; i < this->m_entryCount; ++i) {
     const char* name = reinterpret_cast<const char*>(cursor);
-    const std::uint8_t* metadata = cursor + std::strlen(name) + 1;
-    const PakEntryFile* fileEntry = reinterpret_cast<const PakEntryFile*>(metadata);
-    cursor = metadata + sizeof(PakEntryFile);
+    cursor += std::strlen(name);
+    const PakEntryFile* fileEntry = reinterpret_cast<const PakEntryFile*>(cursor + 1);
+    cursor += sizeof(PakEntryFile) + 1;
 
     myGPack::PakEntry& entry = this->m_entries[i];
     entry.compressedSize = fileEntry->compressedSize;
