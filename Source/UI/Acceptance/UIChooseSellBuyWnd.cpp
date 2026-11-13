@@ -8412,11 +8412,11 @@ void UIPasswordWnd::OnCreate(int, int) {
   this->AddChild(this->m_edit);
   g_windowMgr.SetFocus(this->m_edit);
 
-  this->itemTitle = reinterpret_cast<std::uintptr_t>(new UIStaticText());
-  reinterpret_cast<UIStaticText*>(this->itemTitle)->SetSize(this->geometry.width - 30, 15);
-  reinterpret_cast<UIStaticText*>(this->itemTitle)->Move(15, 6);
-  reinterpret_cast<UIStaticText*>(this->itemTitle)->SetText(LookupMessage(MSI_ENTER_PASSWORD), 0);
-  this->AddChild(reinterpret_cast<UIStaticText*>(this->itemTitle));
+  this->itemTitle = new UIStaticText();
+  this->itemTitle->SetSize(this->geometry.width - 30, 15);
+  this->itemTitle->Move(15, 6);
+  this->itemTitle->SetText(LookupMessage(MSI_ENTER_PASSWORD), 0);
+  this->AddChild(this->itemTitle);
 
   {
     const std::string prefix("유저인터페이스\\");

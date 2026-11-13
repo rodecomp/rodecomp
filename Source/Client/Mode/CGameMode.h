@@ -143,7 +143,7 @@ public:
   /* 01C4 */ std::map<std::uint32_t, MiniMapPing> compassPosList;
   /* 01CC */ std::vector<int> actorMenuIds;
   /* 01D8 */ std::list<std::uint32_t> m_skillUnitIds;
-  /* 01E0 */ unsigned char windowInvalidateTick[4];
+  /* 01E0 */ std::uint32_t windowInvalidateTick;
   /* 01E4 */ std::vector<GameModeLoopSound> loopSounds;
   /* 01F0 */ std::map<std::uint32_t, MinimapMarker> minimapMarkers;
   /* 01F8 */ int hoveredStatusIconId;

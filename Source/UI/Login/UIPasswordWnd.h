@@ -12,7 +12,7 @@ public:
   UIItemDropCntWnd();
 
   /* 00B4 */ UIEditCtrl* m_edit;
-  /* 00B8 */ std::uint32_t itemTitle;
+  /* 00B8 */ UIStaticText* itemTitle;
 
   void Show(int visible) override;
   void Paint() override;

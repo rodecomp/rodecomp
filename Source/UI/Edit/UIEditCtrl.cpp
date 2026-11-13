@@ -1907,7 +1907,7 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
     return 0;
   case UM_SETTEXT:
     if (b != 0) {
-      reinterpret_cast<UIStaticText*>(this->itemTitle)->SetText(reinterpret_cast<const char*>(b), 0);
+      this->itemTitle->SetText(reinterpret_cast<const char*>(b), 0);
       this->Invalidate();
       return 0;
     }
@@ -11190,7 +11190,7 @@ void UIItemDropCntWnd::OnCreate(int, int) {
   }
 
   auto* title = new UIStaticText();
-  this->itemTitle = reinterpret_cast<std::uintptr_t>(title);
+  this->itemTitle = title;
   title->SetSize(100, 15);
   title->Move(15, 6);
   title->SetText(name.c_str(), 0);
@@ -11417,7 +11417,7 @@ void UIItemDropCntWnd::Show(int visible) {
       name = item.DisplayName(0);
     }
 
-    reinterpret_cast<UIStaticText*>(this->itemTitle)->SetTextFittedCodePage(name.c_str());
+    this->itemTitle->SetTextFittedCodePage(name.c_str());
     this->Invalidate();
     g_windowMgr.StoreSnapRectangle(this);
   } else {

@@ -7354,7 +7354,7 @@ void CGameMode::InitializeState() {
   this->syncRequestTick = timeGetTime();
   this->emotionRequestTick = timeGetTime();
   this->noMoveStartTick = timeGetTime();
-  *reinterpret_cast<std::uint32_t*>(this->windowInvalidateTick) = timeGetTime();
+  this->windowInvalidateTick = timeGetTime();
   this->broadcastBalloon = nullptr;
   this->chatRoomRequestTick = timeGetTime();
   this->merchantShopRequestTick = timeGetTime();
@@ -8933,9 +8933,9 @@ void CGameMode::ProcessInput() {
   this->ProcessRightButtonDrag();
   this->ProcessMouseWheel(handled);
 
-  if (timeGetTime() > *reinterpret_cast<std::uint32_t*>(this->windowInvalidateTick) + 1000) {
+  if (timeGetTime() > this->windowInvalidateTick + 1000) {
     g_windowMgr.InvalidateRegisteredWindows();
-    *reinterpret_cast<std::uint32_t*>(this->windowInvalidateTick) = timeGetTime();
+    this->windowInvalidateTick = timeGetTime();
   }
 
   if (handled == 2) {
