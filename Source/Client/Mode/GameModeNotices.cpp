@@ -1966,8 +1966,8 @@ void CGameMode::ReceiveRouletteClose(const unsigned char* packet) {
 // FUNCTION: fn_22059
 void CGameMode::ReceiveWindow227Result(const unsigned char* packet) {
   const auto* result = reinterpret_cast<const Window227ResultPacket*>(packet);
-  const unsigned short first = result->first;
-  const unsigned short second = result->second;
+  const int first = result->first;
+  const int second = result->second;
 
   switch (result->result) {
   case MERGE_ITEM_SUCCESS: {
