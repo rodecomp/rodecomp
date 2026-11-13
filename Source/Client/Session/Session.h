@@ -539,7 +539,7 @@ public:
   /* 56B4 */ int m_mercenaryActionState;
   /* 56B8 */ bool m_autoReplyEnabled;
   /* 56B9 */ unsigned char padding_56B9[3];
-  /* 56BC */ unsigned char autoReplyText[0x18];
+  /* 56BC */ std::string autoReplyText;
   /* 56D4 */ int m_storePasswordMode;
   /* 56D8 */ bool m_passwordInputAlternate;
   /* 56D9 */ unsigned char padding_56D9[0x7];
