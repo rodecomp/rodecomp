@@ -12,7 +12,11 @@ public:
   void Register(unsigned id, std::uint32_t duration, std::uint32_t start, std::uint32_t elapsed);
   void ClearReverseCommands();
 
-  CooldownState* Find(unsigned id);
+  // INLINED
+  CooldownState* Find(unsigned id) {
+    const auto entry = this->m_values.find(id);
+    return entry == this->m_values.end() ? nullptr : &entry->second;
+  }
   void Erase(unsigned id);
   // INLINED
   void Remove(unsigned id) {

@@ -30,12 +30,6 @@ void CooldownOwner::ClearReverseCommands() {
 }
 
 // INLINED
-CooldownState* CooldownOwner::Find(unsigned id) {
-  const auto entry = this->m_values.find(id);
-  return entry == this->m_values.end() ? nullptr : &entry->second;
-}
-
-// INLINED
 void CooldownOwner::Erase(unsigned id) {
   this->m_values.erase(id);
 }
