@@ -234,7 +234,7 @@ static_assert(sizeof(EquipmentProperties::CEquipmentPropertiesMgr) == 0x1FC);
 // FUNCTION: fn_17229
 void __fastcall RefreshItemWindows(UIWindowMgr* mgr) {
   if (mgr->itemWnd) {
-    reinterpret_cast<UIWindow*>(mgr->itemWnd)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+    static_cast<UIWindow*>(mgr->itemWnd)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
   if (mgr->shortCutWnd) {
     mgr->shortCutWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
@@ -738,7 +738,7 @@ bool CSession::AddMerchantPurchaseSavedItem(const ITEM_INFO& item, unsigned char
       if (!alternate) {
         value.quantity += item.quantity;
         if (refresh == 1) {
-          if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.merchantShopMakeWnd)) {
+          if (UIWindow* window = static_cast<UIWindow*>(g_windowMgr.merchantShopMakeWnd)) {
             window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
           }
         }
@@ -763,7 +763,7 @@ bool CSession::AddMerchantShopItem(const ITEM_INFO& item) {
   for (ITEM_INFO& value : this->merchantShopItems) {
     if (value.identity[1] == item.identity[1]) {
       value.quantity += item.quantity;
-      if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.merchantItemWnd)) {
+      if (UIWindow* window = static_cast<UIWindow*>(g_windowMgr.merchantItemWnd)) {
         window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       }
       return false;
@@ -771,7 +771,7 @@ bool CSession::AddMerchantShopItem(const ITEM_INFO& item) {
   }
 
   this->merchantShopItems.push_back(item);
-  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.merchantItemWnd)) {
+  if (UIWindow* window = static_cast<UIWindow*>(g_windowMgr.merchantItemWnd)) {
     window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
   return true;
@@ -1077,7 +1077,7 @@ bool CSession::OnItemEquipped(ITEM_INFO& item) {
   if (item.identity[3] != 0x8000) {
     this->RemoveInventoryItem(item.identity[1], 1);
   }
-  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.itemParamChangeDisplayWnd)) {
+  if (UIWindow* window = static_cast<UIWindow*>(g_windowMgr.itemParamChangeDisplayWnd)) {
     window->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
   return true;
@@ -1543,13 +1543,13 @@ bool CSession::RemoveMerchantShopItem(const ITEM_INFO& item) {
           break;
         }
       }
-      if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.merchantItemWnd)) {
+      if (UIWindow* window = static_cast<UIWindow*>(g_windowMgr.merchantItemWnd)) {
         window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       }
       return true;
     }
   }
-  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.merchantItemWnd)) {
+  if (UIWindow* window = static_cast<UIWindow*>(g_windowMgr.merchantItemWnd)) {
     window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
   return false;

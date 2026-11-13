@@ -1937,7 +1937,7 @@ void CSession::RefreshMessengerGroupWindow() {
 // OFFSET: 0x00DFF080
 // FUNCTION: fn_23607
 void CSession::RefreshItem1740Window() {
-  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.merchantItemWnd)) {
+  if (UIWindow* window = static_cast<UIWindow*>(g_windowMgr.merchantItemWnd)) {
     window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 }
@@ -2301,8 +2301,8 @@ void CSession::RefreshHpSpWindows() {
       return;
     }
 
-    reinterpret_cast<UIWindow*>(g_windowMgr.basicInfoWnd)->Invalidate();
-    reinterpret_cast<UIWindow*>(g_windowMgr.basicInfoWnd)->InvalidateChildren();
+    static_cast<UIWindow*>(g_windowMgr.basicInfoWnd)->Invalidate();
+    static_cast<UIWindow*>(g_windowMgr.basicInfoWnd)->InvalidateChildren();
   }
 
   static_cast<CGameMode*>(g_modeMgr.GetGameMode())->NotifyItemBounds();
@@ -2560,7 +2560,7 @@ void CSession::RefreshSkillTree() {
   }
 
   if (g_windowMgr.basicInfoWnd) {
-    UIBasicInfoWnd* info = reinterpret_cast<UIBasicInfoWnd*>(g_windowMgr.basicInfoWnd);
+    UIBasicInfoWnd* info = static_cast<UIBasicInfoWnd*>(g_windowMgr.basicInfoWnd);
     info->SetHeight(info->geometry.height);
   }
 }

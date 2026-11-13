@@ -408,7 +408,7 @@ void CSession::AddStackedItem(ITEM_INFO item) {
     }
   }
 
-  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.rodexComposeWnd)) {
+  if (UIWindow* window = static_cast<UIWindow*>(g_windowMgr.rodexComposeWnd)) {
     window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 }
@@ -942,7 +942,7 @@ void CSession::ReturnStackedItem(int index, int count) {
     }
   }
 
-  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.rodexComposeWnd)) {
+  if (UIWindow* window = static_cast<UIWindow*>(g_windowMgr.rodexComposeWnd)) {
     window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 }

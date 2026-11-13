@@ -392,7 +392,7 @@ void CRenderObject::PlayFrameSounds() {
           std::string sound = action->Sound(actionFrame.sound);
           if (sound.find(".wav", 0) != std::string::npos) {
             CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
-            const vector3d& player = reinterpret_cast<const CRenderObject*>(world->player)->render.position;
+            const vector3d& player = static_cast<const CRenderObject*>(world->player)->render.position;
             g_soundMgr->PlayWave(
               sound.c_str(), this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
             );
@@ -412,7 +412,7 @@ void CRenderObject::PlayFrameSounds() {
           std::string sound = action->Sound(actionFrame.sound);
           if (sound.find(".wav", 0) != std::string::npos) {
             CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
-            const vector3d& player = reinterpret_cast<const CRenderObject*>(world->player)->render.position;
+            const vector3d& player = static_cast<const CRenderObject*>(world->player)->render.position;
             g_soundMgr->PlayWave(
               sound.c_str(), this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
             );
@@ -425,7 +425,7 @@ void CRenderObject::PlayFrameSounds() {
           std::string sound = action->Sound(actionFrame.sound);
           if (sound.find(".wav") != std::string::npos) {
             CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
-            const vector3d& player = reinterpret_cast<const CRenderObject*>(world->player)->render.position;
+            const vector3d& player = static_cast<const CRenderObject*>(world->player)->render.position;
             g_soundMgr->PlayWave(
               sound.c_str(), this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
             );
@@ -3619,7 +3619,7 @@ void CGameActor::ProcessHitMessage(CGameObject*, const ActorHitInfo* info, int, 
 
   CGameActor* target;
   if (g_session.m_aid == info->targetAid) {
-    target = reinterpret_cast<CGameActor*>(mode->scene->player);
+    target = static_cast<CGameActor*>(mode->scene->player);
   } else {
     target = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(info->targetAid));
     if (target == nullptr) {
@@ -3630,7 +3630,7 @@ void CGameActor::ProcessHitMessage(CGameObject*, const ActorHitInfo* info, int, 
   float x;
   float z;
   if (target == nullptr) {
-    const CRenderObject* player = reinterpret_cast<const CRenderObject*>(mode->scene->player);
+    const CRenderObject* player = static_cast<const CRenderObject*>(mode->scene->player);
     x = this->render.position.x - (player->render.position.x - this->render.position.x);
     z = this->render.position.z - (player->render.position.z - this->render.position.z);
   } else {
@@ -3732,7 +3732,7 @@ void CGameActor::ProcessHitMessage(CGameObject*, const ActorHitInfo* info, int, 
           break;
       }
 
-      const CRenderObject* player = reinterpret_cast<const CRenderObject*>(mode->scene->player);
+      const CRenderObject* player = static_cast<const CRenderObject*>(mode->scene->player);
       int column;
       int row;
       mode->WorldCell(player->render.position.x, player->render.position.y, column, row);
@@ -4766,14 +4766,14 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
   unsigned char* const color = reinterpret_cast<unsigned char*>(&this->render.color);
 
   if (StateFlag00Changed(this->stateFlags, previousFlags) && StateFlag00(this->stateFlags) && world && world->player) {
-    const vector3d& player = reinterpret_cast<const CRenderObject*>(world->player)->render.position;
+    const vector3d& player = static_cast<const CRenderObject*>(world->player)->render.position;
     g_soundMgr->PlayWave(
       "effect\\EF_Sight.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
     );
   }
 
   if (StateFlag13Changed(this->stateFlags, previousFlags) && StateFlag13(this->stateFlags) && world && world->player) {
-    const vector3d& player = reinterpret_cast<const CRenderObject*>(world->player)->render.position;
+    const vector3d& player = static_cast<const CRenderObject*>(world->player)->render.position;
     g_soundMgr->PlayWave(
       "effect\\EF_Sight.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
     );
@@ -5119,7 +5119,7 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
 
   if (poisonSound && notify) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    const vector3d& player = reinterpret_cast<const CRenderObject*>(mode->scene->player)->render.position;
+    const vector3d& player = static_cast<const CRenderObject*>(mode->scene->player)->render.position;
     g_soundMgr->PlayWave(
       "_poison.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
     );
@@ -5171,7 +5171,7 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
     }
     if (notify) {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-      const vector3d& player = reinterpret_cast<const CRenderObject*>(mode->scene->player)->render.position;
+      const vector3d& player = static_cast<const CRenderObject*>(mode->scene->player)->render.position;
       g_soundMgr->PlayWave(
         "_blind.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
       );
@@ -5239,7 +5239,7 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
   CRenderObject* target;
   bool known = false;
   if (g_session.m_aid == info->targetAid) {
-    target = reinterpret_cast<CRenderObject*>(mode->scene->player);
+    target = static_cast<CRenderObject*>(mode->scene->player);
     known = true;
   } else {
     target = mode->scene->GetGameActorByAID(info->targetAid);
@@ -5259,7 +5259,7 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
     targetPos = target->render.position;
     static_cast<CGameActor*>(target)->GetEffectiveJob(-1);
   } else {
-    const CRenderObject* player = reinterpret_cast<const CRenderObject*>(mode->scene->player);
+    const CRenderObject* player = static_cast<const CRenderObject*>(mode->scene->player);
     targetPos.x = this->render.position.x - (player->render.position.x - this->render.position.x);
     targetPos.y = this->render.position.y - (player->render.position.y - this->render.position.y);
     targetPos.z = this->render.position.z - (player->render.position.z - this->render.position.z);
@@ -5424,7 +5424,7 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
     this->Face(targetPos.x, targetPos.z);
   }
 
-  const vector3d player = reinterpret_cast<const CRenderObject*>(mode->scene->player)->render.position;
+  const vector3d player = static_cast<const CRenderObject*>(mode->scene->player)->render.position;
   switch (skillId) {
   case ABR_BATTLE_BUSTER:
     g_soundMgr->PlayWave(

@@ -290,7 +290,7 @@ void CSession::SetJob(int job) {
   this->m_job = job;
   if (this->IsTreeGroupThree(previous) != this->IsTreeGroupThree(job)) {
     if (g_windowMgr.basicInfoWnd) {
-      reinterpret_cast<UIBasicInfoWnd*>(g_windowMgr.basicInfoWnd)->RefreshLayout();
+      static_cast<UIBasicInfoWnd*>(g_windowMgr.basicInfoWnd)->RefreshLayout();
     }
 
     if (g_modeMgr.GetGameMode()) {

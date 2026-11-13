@@ -69,7 +69,7 @@ template __declspec(noinline) void std::list<std::uint32_t>::push_back(const std
 // FUNCTION: fn_17667
 CRenderObject* CWorld::GetGameActorByAidIncludeMe(std::uint32_t aid) const {
   if (aid == g_session.m_aid) {
-    return reinterpret_cast<CRenderObject*>(this->player);
+    return static_cast<CRenderObject*>(this->player);
   }
 
   for (auto it = this->actors.begin(); it != this->actors.end(); ++it) {
@@ -378,7 +378,7 @@ CRenderObject* FindRenderObject(std::uint32_t aid) {
   CWorld* scene = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
 
   if (g_session.m_aid == aid) {
-    return reinterpret_cast<CRenderObject*>(scene->player);
+    return static_cast<CRenderObject*>(scene->player);
   }
 
   CRenderObject* actor = scene->GetGameActorByAID(aid);
@@ -483,7 +483,7 @@ void CGameMode::UpdateNameBalloon(CGameActor* actor) {
     const unsigned char framedEmblem = g_serviceOptions.Get(0xF3);
     std::string emblem = g_guildMgr->GetEmblemFilename(actor->GetGdid());
     this->nameBalloon->SetIcon(emblem.c_str(), static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->isSiegeMode == 1 && framedEmblem ? 1 : 0);
-  } else if (reinterpret_cast<CGameActor*>(this->scene->player) == actor) {
+  } else if (static_cast<CGameActor*>(this->scene->player) == actor) {
     char path[256];
     std::memset(path, 0, sizeof(path));
     if (g_clanInfo->m_hasClan == true && g_clanInfo->m_clanId) {

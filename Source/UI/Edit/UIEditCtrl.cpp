@@ -1111,7 +1111,7 @@ void UIItemWnd::DragAndDrop(int x, int y, std::intptr_t value) {
     g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, 6, 0, 0, 0);
     return;
   case 14: {
-    UIWindow* target = reinterpret_cast<UIWindow*>(g_windowMgr.makeTargetProcessWnd);
+    UIWindow* target = static_cast<UIWindow*>(g_windowMgr.makeTargetProcessWnd);
 
     if (target) {
       target->SendMsg(nullptr, UM_CLEAR_ITEM, reinterpret_cast<std::intptr_t>(drag->name.c_str()), 0, 0, 0);
@@ -1301,7 +1301,7 @@ void UIMerchantItemPurchaseWnd::OnRBtnDown(int x, int y) {
       if (g_windowMgr.merchantItemShopWnd) {
         item = g_session.FindItem1760ByItemId(item.itemId.c_str());
         mode->drag.BeginItem(g_windowMgr, 13, item, item.quantity, -1);
-        reinterpret_cast<UIWindow*>(g_windowMgr.merchantItemShopWnd)->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
+        static_cast<UIWindow*>(g_windowMgr.merchantItemShopWnd)->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
       }
     } else {
       g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND)->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
@@ -1327,7 +1327,7 @@ void UIMerchantItemShopWnd::OnRBtnDown(int x, int y) {
     if (HIBYTE(GetAsyncKeyState(VK_MENU))) {
       if (g_windowMgr.merchantItemPurchaseWnd) {
         mode->drag.BeginItem(g_windowMgr, 12, item, item.quantity, -1);
-        reinterpret_cast<UIWindow*>(g_windowMgr.merchantItemPurchaseWnd)->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
+        static_cast<UIWindow*>(g_windowMgr.merchantItemPurchaseWnd)->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
       }
     } else {
       g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND)->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
@@ -1377,11 +1377,11 @@ void UIMerchantMirrorItemWnd::OnRBtnDown(int x, int y) {
       if (g_windowMgr.merchantShopMakeWnd) {
         item = g_session.FindMerchantMyShopItem(item.identity[1]);
         mode->drag.BeginItem(g_windowMgr, 11, item, item.quantity, -1);
-        reinterpret_cast<UIWindow*>(g_windowMgr.merchantShopMakeWnd)->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
+        static_cast<UIWindow*>(g_windowMgr.merchantShopMakeWnd)->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
       } else if (g_windowMgr.buyingShopMakeWnd) {
         item = g_session.FindMerchantMyShopItem(item.identity[1]);
         mode->drag.BeginItem(g_windowMgr, 20, item, item.quantity, -1);
-        reinterpret_cast<UIWindow*>(g_windowMgr.buyingShopMakeWnd)->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
+        static_cast<UIWindow*>(g_windowMgr.buyingShopMakeWnd)->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
       }
     } else {
       g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND)->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
@@ -5319,7 +5319,7 @@ void UIItemShopWnd2::OnLBtnDblClk(int x, int y) {
     return;
   }
 
-  UIWindow* target = reinterpret_cast<UIWindow*>(g_windowMgr.itemSellWnd2);
+  UIWindow* target = static_cast<UIWindow*>(g_windowMgr.itemSellWnd2);
 
   if (target) {
     this->OnLBtnDown(x, y);
@@ -5336,7 +5336,7 @@ void UIItemShopWnd::OnLBtnDblClk(int x, int y) {
     return;
   }
 
-  UIWindow* target = reinterpret_cast<UIWindow*>(g_windowMgr.itemSellWnd);
+  UIWindow* target = static_cast<UIWindow*>(g_windowMgr.itemSellWnd);
 
   if (target) {
     this->OnLBtnDown(x, y);
@@ -6248,7 +6248,7 @@ int UIMerchantMirrorItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       lists->AddMerchantMyShopItem(item, this->mode, 1);
       lists->RemoveMerchantHopeToSellItem(item);
       if (g_windowMgr.buyingShopPurchaseWnd) {
-        reinterpret_cast<UIWindow*>(g_windowMgr.buyingShopPurchaseWnd)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+        static_cast<UIWindow*>(g_windowMgr.buyingShopPurchaseWnd)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       }
       break;
     }
@@ -6731,7 +6731,7 @@ int UIMerchantItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       item.Assign(reinterpret_cast<const RawItemData&>(mode->drag));
       g_session.RemoveMerchantHopeToSellItem(item);
       if (g_windowMgr.merchantItemPurchaseWnd) {
-        reinterpret_cast<UIWindow*>(g_windowMgr.merchantItemPurchaseWnd)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+        static_cast<UIWindow*>(g_windowMgr.merchantItemPurchaseWnd)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       }
 
       this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
@@ -10642,13 +10642,13 @@ void UIItemWnd::OnLBtnDown(int x, int y) {
       if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
         if (g_windowMgr.GetHoverWindow() && item.identified != 0) {
           if (g_windowMgr.GetHoverWindow()->geometry.id == 492) {
-            reinterpret_cast<UINpcTextEditDialogWnd*>(g_windowMgr.npcTextEditDialogWnd)->InsertItemTag(item);
+            static_cast<UINpcTextEditDialogWnd*>(g_windowMgr.npcTextEditDialogWnd)->InsertItemTag(item);
           } else if (g_windowMgr.GetHoverWindow()->geometry.id == 490) {
             static_cast<UIChatEditCtrl*>(g_windowMgr.GetHoverWindow())->InsertItemLink(item);
           } else if (g_windowMgr.GetHoverWindow()->geometry.id == 493) {
-            reinterpret_cast<UIChatEditCtrl*>(ChatWindow()->m_chatEdit)->InsertItemLink(item);
+            static_cast<UIChatEditCtrl*>(ChatWindow()->m_chatEdit)->InsertItemLink(item);
           } else if (g_windowMgr.GetHoverWindow()->geometry.id == 491) {
-            reinterpret_cast<UIRodexComposeWnd*>(g_windowMgr.rodexComposeWnd)->InsertItemTag(item);
+            static_cast<UIRodexComposeWnd*>(g_windowMgr.rodexComposeWnd)->InsertItemTag(item);
           } else if (g_windowMgr.GetHoverWindow()->geometry.id == 494) {
             static_cast<UIChatEditCtrl*>(g_windowMgr.GetHoverWindow())->InsertItemLink(item);
           }
@@ -10679,13 +10679,13 @@ void UIMerchantItemWnd::OnLBtnDown(int x, int y) {
     if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
       if (g_windowMgr.GetHoverWindow() && item.identified != 0) {
         if (g_windowMgr.GetHoverWindow()->geometry.id == 492) {
-          reinterpret_cast<UINpcTextEditDialogWnd*>(g_windowMgr.npcTextEditDialogWnd)->InsertItemTag(item);
+          static_cast<UINpcTextEditDialogWnd*>(g_windowMgr.npcTextEditDialogWnd)->InsertItemTag(item);
         } else if (g_windowMgr.GetHoverWindow()->geometry.id == 490) {
           static_cast<UIChatEditCtrl*>(g_windowMgr.GetHoverWindow())->InsertItemLink(item);
         } else if (g_windowMgr.GetHoverWindow()->geometry.id == 493) {
-          reinterpret_cast<UIChatEditCtrl*>(ChatWindow()->m_chatEdit)->InsertItemLink(item);
+          static_cast<UIChatEditCtrl*>(ChatWindow()->m_chatEdit)->InsertItemLink(item);
         } else if (g_windowMgr.GetHoverWindow()->geometry.id == 491) {
-          reinterpret_cast<UIRodexComposeWnd*>(g_windowMgr.rodexComposeWnd)->InsertItemTag(item);
+          static_cast<UIRodexComposeWnd*>(g_windowMgr.rodexComposeWnd)->InsertItemTag(item);
         } else if (g_windowMgr.GetHoverWindow()->geometry.id == 494) {
           static_cast<UIChatEditCtrl*>(g_windowMgr.GetHoverWindow())->InsertItemLink(item);
         }

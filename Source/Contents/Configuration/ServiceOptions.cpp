@@ -1153,7 +1153,7 @@ void ApplyServiceOptionNotifyWindow(int id, unsigned char value, bool notify, in
     }
   }
 
-  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.minimapZoomWnd)) {
+  if (UIWindow* window = static_cast<UIWindow*>(g_windowMgr.minimapZoomWnd)) {
     window->SendMsg(nullptr, UM_COMMAND, 0x1F6, 0, 0, 0);
   }
 }
@@ -1362,7 +1362,7 @@ void ShowPlayerLocation() {
     return;
   }
 
-  const auto* player = reinterpret_cast<const CRenderObject*>(mode->scene->player);
+  const auto* player = static_cast<const CRenderObject*>(mode->scene->player);
   if (!player) {
     return;
   }

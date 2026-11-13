@@ -416,7 +416,7 @@ bool CCashEmotionAction_Register::Execute(int packId, int emotionId) {
     return false;
   }
 
-  if (auto* emotionWnd = reinterpret_cast<UIEmotionWnd*>(g_windowMgr.emotionWnd)) {
+  if (auto* emotionWnd = static_cast<UIEmotionWnd*>(g_windowMgr.emotionWnd)) {
     emotionWnd->SetMacroText(name, -1);
   } else {
     UINewChatWnd* suggestions = ChatWindow();

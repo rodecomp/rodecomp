@@ -650,9 +650,9 @@ bool CNavigationManager::StartNavigation(std::string name, int type, unsigned ch
   }
 
   if (g_windowMgr.modal) {
-    reinterpret_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapSelection();
-    reinterpret_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapLevels();
-    reinterpret_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapMarks();
+    static_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapSelection();
+    static_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapLevels();
+    static_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapMarks();
   }
 
   this->displayMode = 1;
@@ -1313,8 +1313,8 @@ bool CNavigationManager::SetDestinationMap(std::string mapName, int x, int y) {
   }
 
   if (g_windowMgr.modal) {
-    reinterpret_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapSelection();
-    reinterpret_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapLevels();
+    static_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapSelection();
+    static_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapLevels();
   }
   return true;
 }

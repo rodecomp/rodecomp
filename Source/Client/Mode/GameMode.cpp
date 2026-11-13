@@ -448,7 +448,7 @@ std::string CGameMode::LocationText() {
 
   int column;
   int row;
-  const auto* player = reinterpret_cast<const CRenderObject*>(this->scene->player);
+  const auto* player = static_cast<const CRenderObject*>(this->scene->player);
   this->WorldCell(player->render.position.x, player->render.position.z, column, row);
 
   std::string name = this->mapName;
@@ -4586,7 +4586,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       std::strncpy(reinterpret_cast<char*>(packet + 4), reinterpret_cast<const char*>(argument1), 0x4F);
       packet[0x53] = 0;
       if (g_windowMgr.merchantShopMakeWnd != nullptr) {
-        const auto* shop = reinterpret_cast<const UIMerchantShopMakeWnd*>(g_windowMgr.merchantShopMakeWnd);
+        const auto* shop = static_cast<const UIMerchantShopMakeWnd*>(g_windowMgr.merchantShopMakeWnd);
         std::memcpy(packet + 0x54, &shop->selectedRow, 2);
         std::memcpy(packet + 0x56, &shop->selectedColumn, 2);
       }
@@ -8095,7 +8095,7 @@ void CGameMode::ShowActorNameBalloon(std::uint32_t id) {
 
   if (id == g_session.m_aid) {
     placed = 0;
-    this->UpdateNameBalloon(reinterpret_cast<CGameActor*>(this->scene->player));
+    this->UpdateNameBalloon(static_cast<CGameActor*>(this->scene->player));
     return;
   }
 
@@ -8454,9 +8454,9 @@ int CGameMode::ProcessGroundClick(int result) {
     }
   }
 
-  UIMerchantShopMakeWnd* shop = reinterpret_cast<UIMerchantShopMakeWnd*>(g_windowMgr.merchantShopMakeWnd);
+  UIMerchantShopMakeWnd* shop = static_cast<UIMerchantShopMakeWnd*>(g_windowMgr.merchantShopMakeWnd);
   if (!shop && g_windowMgr.buyingShopMakeWnd) {
-    shop = reinterpret_cast<UIMerchantShopMakeWnd*>(g_windowMgr.buyingShopMakeWnd);
+    shop = static_cast<UIMerchantShopMakeWnd*>(g_windowMgr.buyingShopMakeWnd);
   }
 
   bool shopSuspended = false;

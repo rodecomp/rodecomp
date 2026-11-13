@@ -1022,7 +1022,7 @@ void UIWindowMgr::ClearMapWindows() {
       continue;
     }
 
-    if (window == reinterpret_cast<UIWindow*>(this->memorialDunWnd) && g_session.memorialWindowOpen != 0) {
+    if (window == static_cast<UIWindow*>(this->memorialDunWnd) && g_session.memorialWindowOpen != 0) {
       g_session.memorialWindowX = window->geometry.x;
       g_session.memorialWindowY = window->geometry.y;
     }

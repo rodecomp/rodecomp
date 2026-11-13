@@ -165,11 +165,11 @@ public:
   // INLINED
   UIWindow* CompanionWindow() const {
     if (this->mode == 0) {
-      return reinterpret_cast<UIWindow*>(g_windowMgr.friendOptionWnd);
+      return static_cast<UIWindow*>(g_windowMgr.friendOptionWnd);
     }
-    UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.partyInvitationToWnd);
+    UIWindow* window = static_cast<UIWindow*>(g_windowMgr.partyInvitationToWnd);
     if (g_windowMgr.partySettingWnd) {
-      window = reinterpret_cast<UIWindow*>(g_windowMgr.partySettingWnd);
+      window = static_cast<UIWindow*>(g_windowMgr.partySettingWnd);
     }
     return window;
   }

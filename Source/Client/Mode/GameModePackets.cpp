@@ -3533,7 +3533,7 @@ void CGameMode::ReceiveDispel(const unsigned char* packet) {
 // FUNCTION: fn_21748
 __declspec(noinline) void CGameMode::ReceiveItem1758List(const unsigned char* packet) {
   if (g_replayAnimationScaling == 0) {
-    reinterpret_cast<UIMerchantShopMakeWnd*>(g_windowMgr.buyingShopMakeWnd)->PrintBuyList();
+    static_cast<UIMerchantShopMakeWnd*>(g_windowMgr.buyingShopMakeWnd)->PrintBuyList();
   }
 
   g_session.ClearMerchantPurchaseSavedItems();
@@ -4642,7 +4642,7 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
     }
     if (g_replayAnimationScaling == 0) {
       if (g_windowMgr.basicInfoWnd) {
-        reinterpret_cast<UIBasicInfoWnd*>(g_windowMgr.basicInfoWnd)->SetHeight(g_windowMgr.basicInfoWnd->geometry.height);
+        static_cast<UIBasicInfoWnd*>(g_windowMgr.basicInfoWnd)->SetHeight(g_windowMgr.basicInfoWnd->geometry.height);
       }
     }
     this->RefreshActorJobEffects(true);
@@ -4659,7 +4659,7 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
     if (g_replayAnimationScaling == 0) {
       g_windowMgr.EnsureWindow(WID_NOTIFYJOBLEVELUPWND);
       if (g_windowMgr.basicInfoWnd) {
-        reinterpret_cast<UIBasicInfoWnd*>(g_windowMgr.basicInfoWnd)->SetHeight(g_windowMgr.basicInfoWnd->geometry.height);
+        static_cast<UIBasicInfoWnd*>(g_windowMgr.basicInfoWnd)->SetHeight(g_windowMgr.basicInfoWnd->geometry.height);
       }
     }
     if (UIWindow* window = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
@@ -11533,12 +11533,12 @@ void CGameMode::ReceiveExpChange(const unsigned char* packet) {
     }
     exp = *reinterpret_cast<const int*>(packet + 4);
     g_session.InvalidateWindowFrames();
-    static_cast<UIINT64BarGraph*>(reinterpret_cast<UIBasicInfoWnd*>(g_windowMgr.basicInfoWnd)->baseExpBar)->SetValues(exp, nextExp);
+    static_cast<UIINT64BarGraph*>(static_cast<UIBasicInfoWnd*>(g_windowMgr.basicInfoWnd)->baseExpBar)->SetValues(exp, nextExp);
     break;
   case SP_JOBEXP:
     jobExp = *reinterpret_cast<const int*>(packet + 4);
     g_session.InvalidateWindowFrames();
-    static_cast<UIINT64BarGraph*>(reinterpret_cast<UIBasicInfoWnd*>(g_windowMgr.basicInfoWnd)->jobExpBar)->SetValues(jobExp, nextJobExp);
+    static_cast<UIINT64BarGraph*>(static_cast<UIBasicInfoWnd*>(g_windowMgr.basicInfoWnd)->jobExpBar)->SetValues(jobExp, nextJobExp);
     break;
   case SP_ZENY:
     if (this->isWaitingCancelExchangeItem) {
@@ -11552,12 +11552,12 @@ void CGameMode::ReceiveExpChange(const unsigned char* packet) {
   case SP_NEXTBASEEXP:
     nextExp = *reinterpret_cast<const int*>(packet + 4);
     g_session.InvalidateWindowFrames();
-    static_cast<UIINT64BarGraph*>(reinterpret_cast<UIBasicInfoWnd*>(g_windowMgr.basicInfoWnd)->baseExpBar)->SetValues(exp, nextExp);
+    static_cast<UIINT64BarGraph*>(static_cast<UIBasicInfoWnd*>(g_windowMgr.basicInfoWnd)->baseExpBar)->SetValues(exp, nextExp);
     break;
   case SP_NEXTJOBEXP:
     nextJobExp = *reinterpret_cast<const int*>(packet + 4);
     g_session.InvalidateWindowFrames();
-    static_cast<UIINT64BarGraph*>(reinterpret_cast<UIBasicInfoWnd*>(g_windowMgr.basicInfoWnd)->jobExpBar)->SetValues(jobExp, nextJobExp);
+    static_cast<UIINT64BarGraph*>(static_cast<UIBasicInfoWnd*>(g_windowMgr.basicInfoWnd)->jobExpBar)->SetValues(jobExp, nextJobExp);
     break;
   }
 }

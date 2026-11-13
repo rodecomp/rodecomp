@@ -3386,7 +3386,7 @@ void UINavigationV4Wnd::SelectRouteNode(int node) {
   list->selected = g_navigationManager.selectedPathNode;
   list->Invalidate();
   if (g_windowMgr.modal) {
-    reinterpret_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapSelection();
+    static_cast<UINavigationWnd*>(g_windowMgr.modal)->RefreshWorldMapSelection();
   }
   this->Invalidate();
 }

@@ -460,7 +460,7 @@ void CGameMode::DrawMiniMapMarker(
       if (g_windowMgr.miniMapWnd) {
         g_windowMgr.miniMapWnd->SendMsg(nullptr, UM_MINIMAP_SET_PLAYER_POS, x, y, 0, 0);
       }
-      if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.minimapZoomWnd)) {
+      if (UIWindow* window = static_cast<UIWindow*>(g_windowMgr.minimapZoomWnd)) {
         window->Invalidate();
       }
     }

@@ -2222,7 +2222,7 @@ bool CRagEffect::Signum() {
 // FUNCTION: fn_20104
 void CRagEffect::Snow() {
   CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
-  const vector3d& player = reinterpret_cast<const CRenderObject*>(world->player)->render.position;
+  const vector3d& player = static_cast<const CRenderObject*>(world->player)->render.position;
   this->render.position.x = player.x;
   this->render.position.y = player.y;
   this->render.position.z = player.z;
@@ -3942,7 +3942,7 @@ void CRagEffect::TrackTarget() {
 
   if (this->state.lastPrim->state.slots[0].height[0] > 0.0f) {
     if (this->state.lastPrim->state.slots[0].height[0] == static_cast<float>(g_session.m_aid)) {
-      target = reinterpret_cast<const CRenderObject*>(gameMode->scene->player);
+      target = static_cast<const CRenderObject*>(gameMode->scene->player);
     } else {
       target = gameMode->scene->GetGameActorByAID(static_cast<std::uint32_t>(this->state.lastPrim->state.slots[0].height[0]));
     }
@@ -3993,7 +3993,7 @@ void CRagEffect::TrackTargetWide() {
 
   if (this->state.lastPrim->state.slots[0].height[0] > 0.0f) {
     if (this->state.lastPrim->state.slots[0].height[0] == static_cast<float>(g_session.m_aid)) {
-      target = reinterpret_cast<const CRenderObject*>(gameMode->scene->player);
+      target = static_cast<const CRenderObject*>(gameMode->scene->player);
     } else {
       target = gameMode->scene->GetGameActorByAID(static_cast<std::uint32_t>(this->state.lastPrim->state.slots[0].height[0]));
     }
@@ -4050,7 +4050,7 @@ void CRagEffect::TrackCloud(char kind) {
 
   if (this->state.lastPrim->state.slots[0].height[0] > 0.0f) {
     if (this->state.lastPrim->state.slots[0].height[0] == static_cast<float>(g_session.m_aid)) {
-      target = reinterpret_cast<const CRenderObject*>(gameMode->scene->player);
+      target = static_cast<const CRenderObject*>(gameMode->scene->player);
     } else {
       target = gameMode->scene->GetGameActorByAID(static_cast<std::uint32_t>(this->state.lastPrim->state.slots[0].height[0]));
     }
@@ -7660,7 +7660,7 @@ bool CRagEffect::AgilityChange(char increase, const std::string& textureName) {
 
   if (this->state.stateCnt == 0) {
     CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
-    const auto* player = reinterpret_cast<const CRenderObject*>(world->player);
+    const auto* player = static_cast<const CRenderObject*>(world->player);
     this->state.lastPrim = CreateEffectParticle(*this, this->render, 0, 0.0f, 0.0f, 0.0f, world->objects);
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
     this->state.lastPrim->state.textures[0] = g_texMgr.Load(textureName.c_str(), 0, false, true, false);

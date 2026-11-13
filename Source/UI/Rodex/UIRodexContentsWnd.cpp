@@ -254,7 +254,7 @@ int UIRodexContentsWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       g_windowMgr.CloseWindow(WID_RODEXCONTENTSWND);
       g_rodexMailStore->currentMailId = 0;
       if (g_windowMgr.rodexInboxWnd) {
-        reinterpret_cast<UIWindow*>(g_windowMgr.rodexInboxWnd)->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
+        static_cast<UIWindow*>(g_windowMgr.rodexInboxWnd)->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
       }
       break;
     case ID_BUTTON1:

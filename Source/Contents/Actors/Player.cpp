@@ -2361,8 +2361,8 @@ void CPc::DrawLayers(const float* matrix, int blendMode, char blendVariant) {
 // OFFSET: 0x00DABF50
 // FUNCTION: fn_22589
 void CGrannyPc::UpdateGaugeWindow() {
-  if (reinterpret_cast<UIWindow*>(this->gaugeWindow) != nullptr) {
-    reinterpret_cast<UIWindow*>(this->gaugeWindow)->Move(
+  if (static_cast<UIWindow*>(this->gaugeWindow) != nullptr) {
+    static_cast<UIWindow*>(this->gaugeWindow)->Move(
       this->render.screenX - 30,
       static_cast<int>(static_cast<float>(g_renderer->viewport.height * 12 / 480) * this->render.distanceScale + static_cast<float>(this->render.screenY))
     );
@@ -2373,8 +2373,8 @@ void CGrannyPc::UpdateGaugeWindow() {
 // OFFSET: 0x00DABFC0
 // FUNCTION: fn_22590
 void CPc::UpdateGaugeWindow() {
-  if (reinterpret_cast<UIWindow*>(this->gaugeWindow) != nullptr) {
-    reinterpret_cast<UIWindow*>(this->gaugeWindow)->Move(
+  if (static_cast<UIWindow*>(this->gaugeWindow) != nullptr) {
+    static_cast<UIWindow*>(this->gaugeWindow)->Move(
       this->render.screenX - 30,
       static_cast<int>(static_cast<float>(g_renderer->viewport.height * 12 / 480) * this->render.distanceScale + static_cast<float>(this->render.screenY))
     );

@@ -1468,7 +1468,7 @@ bool CEffectPrim::PrimLineLink() {
 
   if (this->state.slots[0].height[0] > 0.0f) {
     if (this->state.slots[0].height[0] == static_cast<float>(g_session.m_aid)) {
-      target = reinterpret_cast<const CRenderObject*>(gameMode->scene->player);
+      target = static_cast<const CRenderObject*>(gameMode->scene->player);
     } else {
       target = gameMode->scene->GetGameActorByAID(static_cast<std::uint32_t>(this->state.slots[0].height[0]));
     }
@@ -3849,7 +3849,7 @@ void CEffectPrim::PrimSTIN4() {
     const CRenderObject* target;
 
     if (this->state.deltaPos.y == static_cast<float>(g_session.m_aid)) {
-      target = reinterpret_cast<const CRenderObject*>(gameMode->scene->player);
+      target = static_cast<const CRenderObject*>(gameMode->scene->player);
     } else {
       target = gameMode->scene->GetGameActorByAID(static_cast<std::uint32_t>(this->state.deltaPos.y));
     }
@@ -6994,7 +6994,7 @@ void CEffectPrim::PrimSTIN3() {
     const CRenderObject* target;
 
     if (this->state.deltaPos.y == static_cast<float>(g_session.m_aid)) {
-      target = reinterpret_cast<const CRenderObject*>(gameMode->scene->player);
+      target = static_cast<const CRenderObject*>(gameMode->scene->player);
     } else {
       target = gameMode->scene->GetGameActorByAID(static_cast<std::uint32_t>(this->state.deltaPos.y));
     }

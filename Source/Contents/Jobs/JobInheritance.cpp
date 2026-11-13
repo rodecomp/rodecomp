@@ -1876,7 +1876,7 @@ bool CSession::UnequipCostumeItem(int location) {
   }
 
   this->InvalidateWindowFrames();
-  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.itemParamChangeDisplayWnd)) {
+  if (UIWindow* window = static_cast<UIWindow*>(g_windowMgr.itemParamChangeDisplayWnd)) {
     window->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
   if (g_equipmentPropertiesMgr == nullptr) {

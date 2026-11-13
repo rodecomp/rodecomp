@@ -541,7 +541,7 @@ void CRenewQuestMgr::AddOngoingQuest(unsigned int id, RenewQuestOngoingInfo& inf
     info.m_iconTooltip = this->GetIconTooltip(info.m_icon);
   }
 
-  UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.basicInfoWnd);
+  UIWindow* window = static_cast<UIWindow*>(g_windowMgr.basicInfoWnd);
   if (window != nullptr) {
     info.m_title = window->FitDisplayText(250, info.m_title.c_str(), 0, 12, 1);
     info.summary = window->FitDisplayText(250, info.summary.c_str(), 0, 12, 0);

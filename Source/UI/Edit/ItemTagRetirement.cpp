@@ -119,7 +119,7 @@ bool UIItemTagOnMail::CanInsertTag(const std::string& name, int width) {
   tag += FitText(*this->geometry.surface, name, width / 2);
   tag += ">";
 
-  UIRodexEditCtrl3* contents = reinterpret_cast<UIRodexComposeWnd*>(g_windowMgr.rodexComposeWnd)->m_contents;
+  UIRodexEditCtrl3* contents = static_cast<UIRodexComposeWnd*>(g_windowMgr.rodexComposeWnd)->m_contents;
   const unsigned int maximum = contents->maximum;
   this->taggedText = contents->text;
   this->taggedText += tag;
@@ -314,9 +314,9 @@ bool UIItemTagOnMegaPhone::CanInsertTag(const std::string& name, int width) {
   tag += ">";
 
   unsigned bytes = 0;
-  this->textWidth = reinterpret_cast<UIItemTagCtrl*>(g_windowMgr.npcTextEditDialogWnd)->MeasureText(tag, bytes);
+  this->textWidth = static_cast<UIItemTagCtrl*>(g_windowMgr.npcTextEditDialogWnd)->MeasureText(tag, bytes);
 
-  UIEditCtrl* edit = reinterpret_cast<UINpcEditDialogWnd*>(g_windowMgr.npcTextEditDialogWnd)->edit;
+  UIEditCtrl* edit = static_cast<UINpcEditDialogWnd*>(g_windowMgr.npcTextEditDialogWnd)->edit;
   const unsigned int maximum = edit->maximum;
   this->taggedText = edit->text;
   this->taggedText += tag;

@@ -347,7 +347,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
           g_windowMgr.EnsureWindow(WID_PARTYSETTINGWND_PARTYCOUNT);
         }
         g_windowMgr.CloseWindow(WID_FRIENDOPTIONWND);
-        UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.partySettingWnd);
+        UIWindow* window = static_cast<UIWindow*>(g_windowMgr.partySettingWnd);
         if (window) {
           int x = 0;
           int y = 0;

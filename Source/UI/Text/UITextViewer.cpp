@@ -267,7 +267,7 @@ void UIItemTagCtrl::AddTagButton(UIWindow* button) {
 // OFFSET: 0x00874E10
 // FUNCTION: fn_11195
 void UIItemTagOnMail::AddTagButton(UIWindow* button) {
-  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.rodexComposeWnd)) {
+  if (UIWindow* window = static_cast<UIWindow*>(g_windowMgr.rodexComposeWnd)) {
     window->AddChild(button);
   }
 }
@@ -275,7 +275,7 @@ void UIItemTagOnMail::AddTagButton(UIWindow* button) {
 // OFFSET: 0x00874E30
 // FUNCTION: fn_11196
 void UIItemTagOnMegaPhone::AddTagButton(UIWindow* button) {
-  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.npcTextEditDialogWnd)) {
+  if (UIWindow* window = static_cast<UIWindow*>(g_windowMgr.npcTextEditDialogWnd)) {
     window->AddChild(button);
   }
 }

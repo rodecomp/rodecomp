@@ -1241,7 +1241,7 @@ void CGameMode::ReceiveServerRateNotice(const unsigned char* packet) {
   g_session.partyItemCollect = packet[6];
   g_session.partyItemDistribute = packet[7];
   if (g_windowMgr.partySettingWnd) {
-    reinterpret_cast<UIWindow*>(g_windowMgr.partySettingWnd)->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
+    static_cast<UIWindow*>(g_windowMgr.partySettingWnd)->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
 
   char text[128];
@@ -1916,7 +1916,7 @@ void CGameMode::ReceiveRodexMailDeleteResult(int mailId, int result) {
   int message;
   if (result == 0) {
     if (g_windowMgr.rodexContentsWnd) {
-      reinterpret_cast<UIWindow*>(g_windowMgr.rodexContentsWnd)->SendMsg(nullptr, UM_COMMAND, ID_CLOSE, 0, 0, 0);
+      static_cast<UIWindow*>(g_windowMgr.rodexContentsWnd)->SendMsg(nullptr, UM_COMMAND, ID_CLOSE, 0, 0, 0);
     }
 
     RodexMailStore* store = g_rodexMailStore;
@@ -1933,7 +1933,7 @@ void CGameMode::ReceiveRodexMailDeleteResult(int mailId, int result) {
 
       g_rodexMailStore->m_mails0.erase(mail);
       if (g_windowMgr.rodexInboxWnd) {
-        reinterpret_cast<UIRodexInboxWnd*>(g_windowMgr.rodexInboxWnd)->RemoveInboxMail(mailId);
+        static_cast<UIRodexInboxWnd*>(g_windowMgr.rodexInboxWnd)->RemoveInboxMail(mailId);
       }
     }
     message = 3865;
