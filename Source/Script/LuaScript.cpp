@@ -343,7 +343,7 @@ int SetMagicFloorInfo(lua_State* state) {
     effect->ResetParticles();
     break;
   case MSG_SET_AREA:
-    *reinterpret_cast<float*>(&effect->areaParameters[8]) = static_cast<float>(luaL_checknumber(state, 3));
+    effect->areaSize = static_cast<float>(luaL_checknumber(state, 3));
     break;
   case MSG_SET_SIZE2:
     effect->scaleParameter = static_cast<float>(luaL_checknumber(state, 3));
@@ -440,7 +440,7 @@ int SetOtherEffectInfo(lua_State* state) {
     effect->ResetParticles();
     break;
   case MSG_SET_AREA:
-    *reinterpret_cast<float*>(&effect->areaParameters[8]) = static_cast<float>(luaL_checknumber(state, 4));
+    effect->areaSize = static_cast<float>(luaL_checknumber(state, 4));
     break;
   case MSG_SET_SIZE2:
     effect->scaleParameter = static_cast<float>(luaL_checknumber(state, 4));
