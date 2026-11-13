@@ -3224,8 +3224,8 @@ void CEffectPrim::RenderFieldPanel(matrix& wtm) {
     const float rx = slot.distance * g_sinTable[static_cast<int>(slot.height[8])] * 0.05f + slot.distance;
     const int angle1 = slot.fullDisplayAngle;
     const int angle2 = angle1 + (angle1 < 270 ? 90 : -270);
-    const int angle3 = angle2 + (angle2 + 90 < 360 ? 90 : -270);
-    const int angle4 = angle3 + (angle3 + 90 < 360 ? 90 : -270);
+    const int angle3 = angle2 + (angle2 + 90 >= 360 ? -270 : 90);
+    const int angle4 = angle3 + (angle3 + 90 >= 360 ? -270 : 90);
     vec1 = {rx * g_cosTable[angle1], 0.0f, rx * g_sinTable[angle1]};
     vec2 = {rx * g_cosTable[angle2], 0.0f, rx * g_sinTable[angle2]};
     vec3 = {rx * g_cosTable[angle3], 0.0f, rx * g_sinTable[angle3]};
