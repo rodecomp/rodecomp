@@ -2260,7 +2260,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       std::sprintf(characterName, "%s", g_session.DecodePlayerName());
       Replay::Instance().SetHeaderInfo(key0, key1, characterName, g_session.m_navigationPlayerMap, g_session.m_aid,
                                      column, row, g_session.m_playerDir, g_serviceType, g_serviceMode, g_session.GetCurrentSex());
-      reinterpret_cast<Replay&>(ReplayFileList::Instance()).SetBaseFrame(reinterpret_cast<std::uint32_t>(&Replay::Instance()));
+      ReplayFileList::Instance().SetReplay(&Replay::Instance());
       int windowIds[0x100];
       const int windowCount = g_windowMgr.GetRenderedWindowIds(windowIds);
       const int result = ReplayFileList::Instance().Open(0x1F, windowCount, reinterpret_cast<int>(windowIds));

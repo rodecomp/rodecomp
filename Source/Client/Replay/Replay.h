@@ -131,7 +131,6 @@ public:
   float AnimationScale() const;
   __declspec(noinline) float DelayScale() const;
   bool SetState(int state);
-  bool SetBaseFrame(std::uint32_t baseFrame);
   void UpdateDuration();
   bool WriteFinalSection();
   bool RecordPacket(const std::vector<unsigned char>& packet, int event, std::uint32_t delay);
@@ -180,6 +179,7 @@ struct ReplayFileEntry {
 class ReplayFileList {
 public:
   static ReplayFileList& Instance();
+  bool SetReplay(Replay* value);
 
   /* 0000 */ int selected;
   /* 0004 */ std::vector<ReplayFileEntry> files;

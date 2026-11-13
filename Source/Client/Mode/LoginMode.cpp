@@ -3983,7 +3983,7 @@ void CLoginMode::OnChangeState(int value) {
     }
     const unsigned char flags = g_serviceOptions.Get(0x6C);
     g_session.SetServiceFlags(flags, flags);
-    reinterpret_cast<Replay&>(ReplayFileList::Instance()).SetBaseFrame(reinterpret_cast<std::uint32_t>(&Replay::Instance()));
+    ReplayFileList::Instance().SetReplay(&Replay::Instance());
     this->wallpaperName = std::string(OBFUSCATE_BYTES_TEXT("유저인터페이스\\login_interface\\warning2.bmp", 0x4F99DF03C3EF31B7ULL));
     g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     g_windowMgr.EnsureWindow(WID_NOTICECONFIRMWND)->SendMsg(nullptr, UM_SET_TARGET, 10026, 0, 0, 0);

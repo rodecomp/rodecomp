@@ -113,11 +113,11 @@ void UIWindow::RecordResponse(int response, std::intptr_t b, std::intptr_t c, st
 
 // OFFSET: 0x00B86AB0
 // FUNCTION: fn_19334
-bool Replay::SetBaseFrame(std::uint32_t baseFrame) {
-  if (!baseFrame) {
+bool ReplayFileList::SetReplay(Replay* value) {
+  if (!value) {
     return false;
   }
-  this->baseFrame = baseFrame;
+  this->replay = value;
   return true;
 }
 

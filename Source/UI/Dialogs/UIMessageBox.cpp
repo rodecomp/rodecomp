@@ -3012,7 +3012,7 @@ int UISelectServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   case UM_COMMAND:
     switch (a) {
     case ID_SELECT_REPLAY:
-      reinterpret_cast<Replay&>(ReplayFileList::Instance()).SetBaseFrame(reinterpret_cast<std::uint32_t>(&Replay::Instance()));
+      ReplayFileList::Instance().SetReplay(&Replay::Instance());
       ReplayFileList::Instance().selectionState = g_session.m_aid;
       ReplayFileList::Instance().dialogState = g_session.GetCurrentSex();
       g_modeMgr.gameMode->SendMsg(LMM_SELECT_REPLAY_DATA, 0, 0, 0, 0);
