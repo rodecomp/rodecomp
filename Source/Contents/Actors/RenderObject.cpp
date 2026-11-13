@@ -2650,7 +2650,7 @@ void CCharacterNpc::Render(int) {
 
   CCharacterRender* characterRender = this->characterRender;
   float bounds[5];
-  std::memcpy(bounds, characterRender->renderBounds, sizeof(bounds));
+  std::memcpy(bounds, &characterRender->renderBounds, sizeof(bounds));
   const float tlvertX = characterRender->screenX;
   const float tlvertY = characterRender->screenY;
   if (useBounds == 1) {

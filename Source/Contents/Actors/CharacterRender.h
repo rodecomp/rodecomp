@@ -1,6 +1,7 @@
 #ifndef RAGNAROK_SOURCE_CONTENTS_ACTORS_CHARACTERRENDER_H
 #define RAGNAROK_SOURCE_CONTENTS_ACTORS_CHARACTERRENDER_H
 
+#include "Contents/Actors/RenderObject.h"
 #include "Utility/Math/Vector3d.h"
 
 #include <cstddef>
@@ -72,7 +73,7 @@ public:
   /* 0088 */ float cameraUpX;
   /* 008C */ float cameraUpY;
   /* 0090 */ float cameraUpZ;
-  /* 0094 */ int renderBounds[5];
+  /* 0094 */ RenderBounds renderBounds;
   /* 00A8 */ float screenX;
   /* 00AC */ float screenY;
   /* 00B0 */ unsigned char drawShadow;

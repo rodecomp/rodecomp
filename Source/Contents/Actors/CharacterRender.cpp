@@ -95,7 +95,7 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
   int swapCount = 0;
   bool bodyDrawn = false;
   *boundsUpdated = 0;
-  RenderBounds& bounds = *reinterpret_cast<RenderBounds*>(this->renderBounds);
+  RenderBounds& bounds = this->renderBounds;
   bounds.Set(static_cast<float>(g_renderer->viewport.width), static_cast<float>(g_renderer->viewport.height), 0.0f, 0.0f, rhw);
 
   std::list<CharacterRenderDrawItem> commands;
