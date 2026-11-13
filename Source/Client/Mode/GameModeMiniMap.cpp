@@ -477,9 +477,8 @@ void CGameMode::DrawMiniMapMarker(
 // OFFSET: 0x00CD1C50
 // FUNCTION: fn_21258
 void CGameMode::DrawMiniMapCoordinates() {
-  const char* player = reinterpret_cast<const char*>(this->scene->player);
-  const int coordinateX = *reinterpret_cast<const int*>(player + 0x494);
-  const int coordinateY = *reinterpret_cast<const int*>(player + 0x498);
+  const int coordinateX = this->scene->player->pkRank;
+  const int coordinateY = this->scene->player->pkTotal;
   if (coordinateY <= 0 || coordinateX <= 0) {
     return;
   }
@@ -611,9 +610,8 @@ int g_timeAttackFrame;
 // OFFSET: 0x00CD1EE0
 // FUNCTION: fn_21259
 void CGameMode::DrawTimeAttackTimer() {
-  const char* player = reinterpret_cast<const char*>(this->scene->player);
-  const int coordinateX = *reinterpret_cast<const int*>(player + 0x494);
-  const int coordinateY = *reinterpret_cast<const int*>(player + 0x498);
+  const int coordinateX = this->scene->player->pkRank;
+  const int coordinateY = this->scene->player->pkTotal;
   if (coordinateY <= 0 || coordinateX <= 0) {
     return;
   }

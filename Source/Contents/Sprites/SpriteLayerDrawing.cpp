@@ -141,7 +141,7 @@ void SpriteLayerRenderer::Render(const float* matrix, int blendMode, char blendV
     if (sound.first == true) {
       this->pc->isPlayHitWave = 1;
       std::string name = sound.second;
-      char* buffer = reinterpret_cast<char*>(this->pc->hitWaveName);
+      char* buffer = this->pc->hitWaveName;
       StringFormat(buffer, 0x80, static_cast<std::size_t>(-1), "%s", name.size() == 0 ? buffer : name.c_str());
     }
 

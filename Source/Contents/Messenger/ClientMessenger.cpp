@@ -5580,7 +5580,7 @@ bool CGameMode::IsValidCell(int x, int y) {
     return false;
   }
   CPlayer* player = this->scene->player;
-  if (x == reinterpret_cast<const int&>(player->destCellX) && y == player->destCellZ) {
+  if (x == player->destCellX && y == player->destCellZ) {
     return false;
   }
   int column;

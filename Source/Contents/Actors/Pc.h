@@ -151,7 +151,7 @@ public:
   /* 04EC */ float extentRight;
   /* 04F0 */ float extentBottom;
   /* 04F4 */ int outlineColor;
-  /* 04F8 */ float destCellX;
+  union { /* 04F8 */ int destCellX; float motionY; };
   /* 04FC */ int destCellZ;
   /* 0500 */ int attackReqTime;
   /* 0504 */ std::uint32_t preMoveStartTick;

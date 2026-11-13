@@ -557,7 +557,7 @@ void CBlurPC::SendMsg(
         this->destCellZ = static_cast<int>(c) << 24;
         return;
       case BM_MOTIONY:
-        this->destCellX = *reinterpret_cast<const float*>(&b);
+        this->motionY = *reinterpret_cast<const float*>(&b);
         return;
       case BM_MOTION_FREEZE:
         this->render.isMotionFreezed = 1;
@@ -641,7 +641,7 @@ void CHalluPC2::SendMsg(
         this->destCellZ = static_cast<int>(c) << 24;
         return;
       case BM_MOTIONY:
-        this->destCellX = *reinterpret_cast<const float*>(&b);
+        this->motionY = *reinterpret_cast<const float*>(&b);
         return;
       case BM_MOTION_FREEZE:
         this->render.isMotionFreezed = 1;
@@ -666,7 +666,7 @@ void CHalluPC::SendMsg(
         this->destCellZ = static_cast<int>(c) << 24;
         return;
       case BM_MOTIONY:
-        this->destCellX = *reinterpret_cast<const float*>(&b);
+        this->motionY = *reinterpret_cast<const float*>(&b);
         return;
       case BM_MOTION_FREEZE:
         this->render.isMotionFreezed = 1;
@@ -1196,7 +1196,7 @@ CHalluPC2::CHalluPC2(CPc* source) {
   this->imfName = source->imfName;
   this->guildId = source->GetGdid();
   this->render.accountId = source->render.accountId;
-  this->destCellX = 0.0f;
+  this->motionY = 0.0f;
   this->preMoveOn = 0;
   this->destCellZ = 0x10000000;
   this->render.bodyPalette = source->render.bodyPalette;
@@ -1241,7 +1241,7 @@ CBlurPC::CBlurPC(CPc* source) {
   this->imfName = source->imfName;
   this->guildId = source->GetGdid();
   this->render.accountId = source->render.accountId;
-  this->destCellX = 0.0f;
+  this->motionY = 0.0f;
   this->destCellZ = 0x10000000;
   this->render.bodyPalette = source->render.bodyPalette;
   this->render.name = source->render.name;
@@ -1285,7 +1285,7 @@ CHalluPC::CHalluPC(CPc* source) {
   this->imfName = source->imfName;
   this->guildId = source->GetGdid();
   this->render.accountId = source->render.accountId;
-  this->destCellX = 0.0f;
+  this->motionY = 0.0f;
   this->preMoveOn = 0;
   this->destCellZ = 0x10000000;
   this->render.bodyPalette = source->render.bodyPalette;

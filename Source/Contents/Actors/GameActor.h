@@ -87,7 +87,7 @@ public:
   /* 0184 */ int isAsuraAttack;
   /* 0188 */ int sceneNameWindow;
   /* 018C */ int actorTitleWindow;
-  /* 0190 */ unsigned char hitWaveName[0x80];
+  /* 0190 */ char hitWaveName[0x80];
   /* 0210 */ std::uint16_t characterLevel;
   /* 0212 */ unsigned char padding_0212[0x02];
   /* 0214 */ vector3d accel;

@@ -8676,7 +8676,7 @@ int CGameMode::ProcessGroundClick(int result) {
   CPlayer* player = this->scene->player;
   const TerrainHeightCell* cell = this->scene->terrain->CellAt(column, row);
   if (cell && cell->type != 1 && cell->type != 5 &&
-      (column != *reinterpret_cast<const int*>(&player->destCellX) || row != player->destCellZ)) {
+      (column != player->destCellX || row != player->destCellZ)) {
     int startColumn;
     int startRow;
     int startSubColumn;

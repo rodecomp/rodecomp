@@ -2187,7 +2187,7 @@ bool CGrannyPc::OnProcess() {
     const vector3d& player =
       static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player)->render.position;
     g_soundMgr->PlayWave(
-      reinterpret_cast<const char*>(this->hitWaveName), this->render.position.x - player.x, 0.0f,
+      this->hitWaveName, this->render.position.x - player.x, 0.0f,
       this->render.position.z - player.z, 250, 40, 1.0f, 0
     );
     this->isPlayHitWave = 0;
@@ -2258,7 +2258,7 @@ bool CPc::OnProcess() {
     const vector3d& player =
       static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player)->render.position;
     g_soundMgr->PlayWave(
-      reinterpret_cast<const char*>(this->hitWaveName), this->render.position.x - player.x, 0.0f,
+      this->hitWaveName, this->render.position.x - player.x, 0.0f,
       this->render.position.z - player.z, 250, 40, 1.0f, 0
     );
     this->isPlayHitWave = 0;
@@ -2855,7 +2855,7 @@ bool CPlayer::OnProcess() {
       this->render.position.x, this->render.position.z, request.column, request.row, request.subColumn, request.subRow
     );
     request.serverTime = g_session.GetServerTime();
-    request.destinationX = reinterpret_cast<const int&>(this->destCellX);
+    request.destinationX = this->destCellX;
     request.destinationY = this->destCellZ;
     const long long address = reinterpret_cast<int>(&request);
     this->SendMsg(nullptr, AM_MOVE, address, 0, 0, 0, 0, 0);
@@ -2871,7 +2871,7 @@ bool CPlayer::OnProcess() {
     const vector3d& player =
       static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player)->render.position;
     g_soundMgr->PlayWave(
-      reinterpret_cast<const char*>(this->hitWaveName), this->render.position.x - player.x, 0.0f,
+      this->hitWaveName, this->render.position.x - player.x, 0.0f,
       this->render.position.z - player.z, 250, 40, 1.0f, 0
     );
     this->isPlayHitWave = 0;
@@ -2929,7 +2929,7 @@ void CPlayer::UpdatePendingAction() {
       target, target->CalcDist(this->render.position.x, this->render.position.y, this->render.position.z)
     );
     const bool inRange = static_cast<float>(g_session.storeItemLimit * 5) + 5.5f >= distance;
-    if ((reinterpret_cast<const int&>(this->destCellX) != column || this->destCellZ != row) && !inRange) {
+    if ((this->destCellX != column || this->destCellZ != row) && !inRange) {
       const std::uint32_t delay = this->proceedType != 5 ? 450 : 1200;
       const bool elapsed = timeGetTime() > this->tickOfMoveForAttack + delay;
       const int state = static_cast<int>(this->render.state);
@@ -2945,9 +2945,9 @@ void CPlayer::UpdatePendingAction() {
       }
       this->ApplyFollowOffset(target, x, z, &cellY, &cellX);
       mode->FindWalkableCellToward(this->render.position.x, this->render.position.z, x, z, cellX, cellY, g_session.storeItemLimit);
-      if ((reinterpret_cast<const int&>(this->destCellX) != cellX || this->destCellZ != cellY) && state != 2 &&
+      if ((this->destCellX != cellX || this->destCellZ != cellY) && state != 2 &&
           this->isAttackRequest == 0 && elapsed) {
-        reinterpret_cast<int&>(this->destCellX) = cellX;
+        this->destCellX = cellX;
         this->destCellZ = cellY;
         this->tickOfMoveForAttack = timeGetTime();
         this->SendMsg(nullptr, AM_REQ_MOVE_PRIMITIVE, cellX, cellY, 0, 0, 0, 0);
@@ -3000,19 +3000,19 @@ void CPlayer::UpdatePendingAction() {
       target, target->CalcDist(this->render.position.x, this->render.position.y, this->render.position.z)
     );
     const bool inRange = static_cast<float>(range * 5) + 5.5f >= distance;
-    if ((reinterpret_cast<const int&>(this->destCellX) == column && this->destCellZ == row) || inRange) {
+    if ((this->destCellX == column && this->destCellZ == row) || inRange) {
       this->SendMsg(nullptr, AM_REQ_SKILL, 0, 0, 0, 0, 0, 0);
       break;
     }
 
-    if (reinterpret_cast<const int&>(this->destCellX) == cellX && this->destCellZ == cellY) {
+    if (this->destCellX == cellX && this->destCellZ == cellY) {
       return;
     }
     if (this->render.state == 2) {
       return;
     }
     this->destCellZ = cellY;
-    reinterpret_cast<int&>(this->destCellX) = cellX;
+    this->destCellX = cellX;
     this->ApplyFollowOffset(target, x, z, &cellY, &cellX);
     this->SendMsg(nullptr, AM_REQ_MOVE_PRIMITIVE, cellX, cellY, 0, 0, 0, 0);
     return;
@@ -3035,19 +3035,19 @@ void CPlayer::UpdatePendingAction() {
 
     const float distance = this->CalcDist(x, this->render.position.y, z);
     const bool inRange = static_cast<float>(range * 5) + 5.5f >= distance;
-    if ((reinterpret_cast<const int&>(this->destCellX) == column && this->destCellZ == row) || inRange) {
+    if ((this->destCellX == column && this->destCellZ == row) || inRange) {
       this->SendMsg(nullptr, AM_REQ_GROUND_SKILL, 0, 0, 0, 0, 0, 0);
       break;
     }
 
-    if (reinterpret_cast<const int&>(this->destCellX) == groundX && this->destCellZ == groundY) {
+    if (this->destCellX == groundX && this->destCellZ == groundY) {
       return;
     }
     if (this->render.state == 2) {
       return;
     }
     this->destCellZ = groundY;
-    reinterpret_cast<int&>(this->destCellX) = groundX;
+    this->destCellX = groundX;
     this->SendMsg(nullptr, AM_REQ_MOVE_PRIMITIVE, groundX, groundY, 0, 0, 0, 0);
     return;
   }
@@ -3080,11 +3080,11 @@ void CPlayer::UpdatePendingAction() {
       break;
     }
 
-    if (reinterpret_cast<const int&>(this->destCellX) == itemX && this->destCellZ == itemY) {
+    if (this->destCellX == itemX && this->destCellZ == itemY) {
       return;
     }
     this->destCellZ = itemY;
-    reinterpret_cast<int&>(this->destCellX) = itemX;
+    this->destCellX = itemX;
     this->SendMsg(nullptr, AM_REQ_MOVE_PRIMITIVE, itemX, itemY, 0, 0, 0, 0);
     return;
   }
@@ -3115,8 +3115,8 @@ void CPlayer::UpdatePendingAction() {
 
     const float distance = this->CalcDist(x, this->render.position.y, z);
     const bool inRange = static_cast<float>(range * 5) + 5.5f >= distance;
-    if ((reinterpret_cast<const int&>(this->destCellX) != column || this->destCellZ != row) && !inRange) {
-      if (reinterpret_cast<const int&>(this->destCellX) == cellX && this->destCellZ == cellY) {
+    if ((this->destCellX != column || this->destCellZ != row) && !inRange) {
+      if (this->destCellX == cellX && this->destCellZ == cellY) {
         return;
       }
       if (this->render.state == 2 && skill->GetEffectiveJob(-1) != UNT_ICEWALL && skill->GetEffectiveJob(-1) != UNT_BLASTMINE &&
@@ -3124,7 +3124,7 @@ void CPlayer::UpdatePendingAction() {
         return;
       }
       this->destCellZ = cellY;
-      reinterpret_cast<int&>(this->destCellX) = cellX;
+      this->destCellX = cellX;
       this->SendMsg(nullptr, AM_REQ_MOVE_PRIMITIVE, cellX, cellY, 0, 0, 0, 0);
       return;
     }
@@ -3980,7 +3980,7 @@ void CPlayer::SendMsg(
   case AM_PREMOVE:
     this->preMoveOn = 1;
     this->preMoveStartTick = timeGetTime();
-    reinterpret_cast<int&>(this->destCellX) = static_cast<int>(b);
+    this->destCellX = static_cast<int>(b);
     this->destCellZ = static_cast<int>(c);
     break;
   case AM_MOVE: {
@@ -4064,7 +4064,7 @@ void CPlayer::SendMsg(
       this->proceedTargetGid = static_cast<int>(b);
       this->isAttackRequest = 0;
       this->totalAttackReqCnt = 0;
-      reinterpret_cast<int&>(this->destCellX) = -1;
+      this->destCellX = -1;
       this->destCellZ = -1;
     }
     break;
@@ -4272,7 +4272,7 @@ void CPlayer::Initialize() {
   this->render.position.y = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain
                               ->Height(this->render.position.x, this->render.position.z);
   static_cast<CGameMode*>(g_modeMgr.GetGameMode())
-    ->WorldCell(this->render.position.x, this->render.position.z, reinterpret_cast<int&>(this->destCellX), this->destCellZ);
+    ->WorldCell(this->render.position.x, this->render.position.z, this->destCellX, this->destCellZ);
 
   this->gSkillDx = 0;
   this->gSkillDy = 0;
@@ -5575,7 +5575,7 @@ void CPlayer::SetState(int state, int resetPosition) {
   }
 
   if (state != 1) {
-    reinterpret_cast<int&>(this->destCellX) = -1;
+    this->destCellX = -1;
     this->destCellZ = -1;
   }
 
