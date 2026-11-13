@@ -42,12 +42,13 @@ HWND __stdcall CreateApplicationWindow(
 // OFFSET: 0x00E57DD0
 // FUNCTION: fn_24360
 BOOL ClipApplicationCursor(HWND window) {
+  (void)window;
   RECT rectangle;
-  GetClientRect(window, &rectangle);
+  GetClientRect(hWnd, &rectangle);
   POINT first{rectangle.left, rectangle.top};
   POINT last{rectangle.right, rectangle.bottom};
-  ClientToScreen(window, &first);
-  ClientToScreen(window, &last);
+  ClientToScreen(hWnd, &first);
+  ClientToScreen(hWnd, &last);
 
   RECT clip{first.x, first.y, last.x, last.y};
   return ClipCursor(&clip);

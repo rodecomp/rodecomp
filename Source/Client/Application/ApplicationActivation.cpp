@@ -13,7 +13,7 @@ void SetApplicationActive(int value) {
   if (value != 0) {
     SetPriorityClass(GetCurrentProcess(), g_session.m_priorityClass);
     if (g_serviceOptions.Get(ServiceOption::ConfineCursor) != 0) {
-      ClipApplicationCursor(hWnd);
+      (reinterpret_cast<BOOL (*)()>(ClipApplicationCursor))();
     }
   } else {
     SetPriorityClass(GetCurrentProcess(), IDLE_PRIORITY_CLASS);
