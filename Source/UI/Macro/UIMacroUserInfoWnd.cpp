@@ -593,8 +593,8 @@ int UIMacroReporterWnd::SendMsg(
   switch (message) {
   case UM_SETINFO: {
     this->m_state = reinterpret_cast<MacroReporterState*>(argument1);
-    if (!reinterpret_cast<MacroReporterWndInfo*>(this->m_state)->IsValid()) {
-      reinterpret_cast<MacroReporterWndInfo*>(this->m_state)->Reset();
+    if (!this->m_state->IsValid()) {
+      this->m_state->Reset();
     }
     this->Resize(this->m_state->width, this->m_state->height);
     this->Move(this->m_state->x, this->m_state->y);

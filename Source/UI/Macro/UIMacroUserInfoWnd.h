@@ -1,6 +1,7 @@
 #ifndef RAGNAROK_SOURCE_UI_MACRO_UIMACROUSERINFOWND_H
 #define RAGNAROK_SOURCE_UI_MACRO_UIMACROUSERINFOWND_H
 
+#include "Contents/UserData/NormalItemSlots.h"
 #include "UI/Window/UIFrameWnd.h"
 
 #include <string>
@@ -35,11 +36,7 @@ struct MacroReporterEntry {
   /* 001C */ short reportValue;
 };
 
-struct MacroReporterState {
-  /* 0000 */ int width;
-  /* 0004 */ int height;
-  /* 0008 */ int x;
-  /* 000C */ int y;
+struct MacroReporterState : MacroReporterWndInfo {
   /* 0010 */ unsigned char padding_0010;
   /* 0011 */ bool activeOnly;
   /* 0014 */ std::vector<MacroReporterEntry> entries;
