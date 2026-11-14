@@ -1162,9 +1162,7 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
   case NPC_LOCKON_LASER_ATK: {
     CEffect* effect = g_effectMgr->Spawn(0, EF_HAMMER_OF_GOD, position.x, position.y, position.z, 0, -1, 0, 0);
     if (effect != nullptr) {
-      using SetFloat = void (CEffect::*)(float);
-      const SetFloat set = reinterpret_cast<SetFloat>(&CEffect::AdvanceFrame);
-      (effect->*set)(0.4f);
+      effect->AdvanceFrame(0.4f);
     }
     break;
   }

@@ -239,7 +239,7 @@ void CEffect::SetScale(float) {
 
 // OFFSET: 0x005A2510
 // FUNCTION: fn_03112
-void CEffect::AdvanceFrame(int) {
+void CEffect::AdvanceFrame(float) {
 }
 
 // OFFSET: 0x005A2520

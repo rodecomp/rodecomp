@@ -5573,9 +5573,9 @@ void CEZ2STRScreenEffect::SetScale(float argument) {
 
 // OFFSET: 0x00B66650
 // FUNCTION: fn_19055
-void CEZ2STRScreenEffect::AdvanceFrame(int argument) {
+void CEZ2STRScreenEffect::AdvanceFrame(float speed) {
   if (this->particle) {
-    this->particle->Advance(*reinterpret_cast<float*>(&argument));
+    this->particle->Advance(speed);
   }
 }
 

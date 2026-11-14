@@ -21,7 +21,7 @@ public:
   void Close() override;
   bool IsAlive() override;
   void InitEvents() override;
-  void AdvanceFrame(int argument) override;
+  void AdvanceFrame(float speed) override;
   void SetLifeTime(int argument) override;
   void SetRepeat(int argument) override;
   void SetDelay(int argument) override;

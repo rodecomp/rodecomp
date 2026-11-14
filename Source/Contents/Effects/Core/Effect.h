@@ -33,7 +33,7 @@ public:
   virtual void SetDestinationBlend(int argument);
   virtual void SetParticleTexture(std::string name);
   virtual void InitEvents();
-  virtual void AdvanceFrame(int argument);
+  virtual void AdvanceFrame(float speed);
   virtual void SetLifeTime(int argument);
   virtual void SetRepeat(int argument);
   virtual void SetDelay(int) {}
