@@ -1870,6 +1870,9 @@ bool UIItemTagCtrl::RemoveInvalidTag(std::list<ItemTagRecord>::iterator& entry) 
 
 #include <mbstring.h>
 
+template __declspec(noinline) std::size_t std::_Traits_find<std::char_traits<char>>(
+    const char* const, std::size_t, std::size_t, const char* const, std::size_t) noexcept;
+
 // GLOBAL: gl_24662
 std::string g_itemLinkTagBegin = "<ITEML>";
 // GLOBAL: gl_24663
