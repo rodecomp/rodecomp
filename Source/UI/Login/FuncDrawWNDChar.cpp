@@ -18,6 +18,8 @@
 #include "Script/LuaScript.h"
 #include "UI/Window/UIWindow.h"
 
+template __declspec(noinline) std::string::~basic_string() noexcept;
+
 // OFFSET: 0x007E3860
 // FUNCTION: fn_09724
 FuncDrawWNDChar::FuncDrawWNDChar(
