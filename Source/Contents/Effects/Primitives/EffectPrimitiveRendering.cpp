@@ -6423,6 +6423,7 @@ __declspec(safebuffers) void CEffectPrim::RenderChemical(matrix& wtm) {
       continue;
     }
 
+    const short alpha = slot.alphaB;
     vec1.Set(0.0f, 0.0f, 0.0f);
     vec4.Set(0.0f, 0.0f, 0.0f);
 
@@ -6439,7 +6440,7 @@ __declspec(safebuffers) void CEffectPrim::RenderChemical(matrix& wtm) {
     vec3.Set(g_cosTable[angle] * slot.distance, 0.0f, g_sinTable[angle] * slot.distance);
 
     this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
-    angle = static_cast<int>(slot.alphaB * 0.5f);
+    angle = static_cast<int>(alpha * g_depthAverageHalf);
     this->RenderTeiRect(&rpCnt, static_cast<short>(angle), vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
 
     vec4 = {0.0f, 0.0f, 0.0f};
