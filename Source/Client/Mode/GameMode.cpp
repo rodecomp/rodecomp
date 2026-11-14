@@ -94,6 +94,7 @@
 #include "File/ShortcutFilename.h"
 #include "UI/Dialogs/UICntWnd.h"
 #include "UI/Dialogs/UINormalMB.h"
+#include <bit>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -8411,7 +8412,7 @@ int CGameMode::ProcessMousePick(int result, ActorPickInfo* pick) {
         pickTarget = 0;
         return result;
       }
-      if (lockedPick != 0 && *reinterpret_cast<const int*>(&actor->render.motionFinishThreshold) == 3) {
+      if (lockedPick != 0 && std::bit_cast<int>(actor->render.motionFinishThreshold) == 3) {
         lockedPick = 0;
       }
       this->ProcessActorPick(result, pick, actor);

@@ -2641,7 +2641,7 @@ __declspec(noinline) void CGameMode::ReceiveRouletteBonusPoints(const unsigned c
 __declspec(noinline) void CGameMode::ReceiveActorCharm(const unsigned char* packet) {
   const std::uint32_t aid = *reinterpret_cast<const std::uint32_t*>(packet + 2);
   CRenderObject* actor;
-  if (aid == *reinterpret_cast<const std::uint32_t*>(reinterpret_cast<const void*>(&g_session.m_aid))) {
+  if (aid == g_session.m_aid) {
     actor = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
   } else {
     actor = g_session.FindGameActor(aid);
