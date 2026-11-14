@@ -479,9 +479,8 @@ void UICashShopWnd_Banner::Paint() {
     return;
   }
 
-  ResourceMgr& resources = ResourceMgr::Instance();
   this->DrawBitmap(
-    0, 0, static_cast<CBitmapRes*>(resources.Load(Resolve(("유저인터페이스\\cashshop\\" + this->m_entries[this->m_index].first).c_str()))),
+    0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(("유저인터페이스\\cashshop\\" + this->m_entries[this->m_index].first).c_str()))),
     false
   );
 }
