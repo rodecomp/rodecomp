@@ -3,6 +3,7 @@
 
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeDragState.h"
+#include "UI/Chat/UIChatRoomTitle.h"
 #include "Contents/Actors/ActorNameCard.h"
 
 #include <cstddef>
@@ -185,12 +186,7 @@ public:
   /* 02EC */ std::string menuTargetName;
   /* 0304 */ unsigned char padding_0304[0x04];
   /* 0308 */ ModeDragState drag;
-  /* 03C8 */ std::string chatRoomTitle;
-  /* 03E0 */ std::string chatRoomPassword;
-  /* 03F8 */ int chatRoomPublic;
-  /* 03FC */ int chatRoomMemberCount;
-  /* 0400 */ int chatRoomMemberLimit;
-  /* 0404 */ int chatRoomId;
+  /* 03C8 */ ChatRoomTitleInfo chatRoom;
   /* 0408 */ void* skillUseType;
   /* 040C */ int skillId;
   /* 0410 */ int skillAttackRange;

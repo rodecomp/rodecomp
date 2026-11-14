@@ -703,20 +703,20 @@ void CGameMode::RecordChatRoomSettings() {
 
   GameModeTextRecord record;
   std::memset(record.buffer, 0, sizeof(record.buffer));
-  const std::uint16_t length = static_cast<std::uint16_t>(this->chatRoomTitle.size() + offsetof(GameModeTextRecord, buffer) + this->chatRoomPassword.size());
-  const int titleLength = static_cast<int>(this->chatRoomTitle.size());
-  const int passwordLength = static_cast<int>(this->chatRoomPassword.size());
+  const std::uint16_t length = static_cast<std::uint16_t>(this->chatRoom.title.size() + offsetof(GameModeTextRecord, buffer) + this->chatRoom.password.size());
+  const int titleLength = static_cast<int>(this->chatRoom.title.size());
+  const int passwordLength = static_cast<int>(this->chatRoom.password.size());
   record.header = 0x038808AE;
   record.length = length;
   record.firstLength = titleLength;
   record.secondLength = passwordLength;
-  record.roomOptionA = this->chatRoomPublic;
-  record.roomOptionB = this->chatRoomMemberCount;
-  record.roomOptionC = this->chatRoomMemberLimit;
-  record.roomOptionD = this->chatRoomId;
+  record.roomOptionA = this->chatRoom.type;
+  record.roomOptionB = this->chatRoom.memberCount;
+  record.roomOptionC = this->chatRoom.memberLimit;
+  record.roomOptionD = this->chatRoom.id;
 
-  std::memcpy(record.buffer, this->chatRoomTitle.data(), titleLength);
-  std::memcpy(record.buffer + titleLength, this->chatRoomPassword.data(), passwordLength);
+  std::memcpy(record.buffer, this->chatRoom.title.data(), titleLength);
+  std::memcpy(record.buffer + titleLength, this->chatRoom.password.data(), passwordLength);
 
   Replay::Instance().Record(length, &record, 0x2A, 0);
 }
@@ -3279,12 +3279,12 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       return 0;
     case MM_CREATE_CHATROOM: {
       const ChatRoomSetting& setting = *reinterpret_cast<const ChatRoomSetting*>(argument1);
-      this->chatRoomTitle = setting.title;
-      this->chatRoomPublic = setting.isPublic;
-      this->chatRoomMemberCount = setting.memberCount;
-      this->chatRoomMemberLimit = setting.limit;
-      this->chatRoomId = setting.roomId;
-      this->chatRoomPassword = setting.password;
+      this->chatRoom.title = setting.title;
+      this->chatRoom.type = setting.isPublic;
+      this->chatRoom.memberCount = setting.memberCount;
+      this->chatRoom.memberLimit = setting.limit;
+      this->chatRoom.id = setting.roomId;
+      this->chatRoom.password = setting.password;
       unsigned char packet[0x800];
       const std::uint16_t packetId = 0xD5;
       const std::uint16_t packetLength = static_cast<std::uint16_t>(setting.title.size() + 15);
@@ -4228,12 +4228,12 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         return 0;
       }
       const ChatRoomSetting& settings = *reinterpret_cast<const ChatRoomSetting*>(argument1);
-      this->chatRoomTitle = settings.title;
-      this->chatRoomPublic = settings.isPublic;
-      this->chatRoomMemberCount = settings.memberCount;
-      this->chatRoomMemberLimit = settings.limit;
-      this->chatRoomId = settings.roomId;
-      this->chatRoomPassword = settings.password;
+      this->chatRoom.title = settings.title;
+      this->chatRoom.type = settings.isPublic;
+      this->chatRoom.memberCount = settings.memberCount;
+      this->chatRoom.memberLimit = settings.limit;
+      this->chatRoom.id = settings.roomId;
+      this->chatRoom.password = settings.password;
       unsigned char packet[0x800];
       const std::uint16_t header[3] = {
         0xDE, static_cast<std::uint16_t>(settings.title.size() + 15), static_cast<std::uint16_t>(settings.limit)
@@ -6194,14 +6194,14 @@ void CGameMode::ProcessUiMessage(unsigned char* message) {
     char buffer[200];
     std::memset(buffer, 0, sizeof(buffer));
     std::memcpy(buffer, values->text, values->values[0]);
-    this->chatRoomTitle = buffer;
+    this->chatRoom.title = buffer;
     std::memset(buffer, 0, sizeof(buffer));
     std::memcpy(buffer, values->text + values->values[0], values->values[1]);
-    this->chatRoomPassword = buffer;
-    this->chatRoomPublic = values->values[2];
-    this->chatRoomMemberCount = values->values[3];
-    this->chatRoomMemberLimit = values->values[4];
-    this->chatRoomId = values->values[5];
+    this->chatRoom.password = buffer;
+    this->chatRoom.type = values->values[2];
+    this->chatRoom.memberCount = values->values[3];
+    this->chatRoom.memberLimit = values->values[4];
+    this->chatRoom.id = values->values[5];
     break;
   }
   case 905:

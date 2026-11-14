@@ -9682,12 +9682,12 @@ void CGameMode::ReceiveChatRoomMemberList(const unsigned char* data) {
         window->SendMsg(nullptr, UM_ADDMEMBER, reinterpret_cast<std::intptr_t>(it->first.c_str()), it->second, 0, 0);
       }
 
-      this->chatRoomTitle = info.title;
-      this->chatRoomPassword = info.password;
-      this->chatRoomPublic = info.type;
-      this->chatRoomMemberCount = info.memberCount;
-      this->chatRoomMemberLimit = info.memberLimit;
-      this->chatRoomId = info.id;
+      this->chatRoom.title = info.title;
+      this->chatRoom.password = info.password;
+      this->chatRoom.type = info.type;
+      this->chatRoom.memberCount = info.memberCount;
+      this->chatRoom.memberLimit = info.memberLimit;
+      this->chatRoom.id = info.id;
     }
   }
 }
@@ -21868,8 +21868,8 @@ void CGameMode::ProcessIncomingPackets() {
         g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ROOM_IS_MADE)), 0xFFFF00, 0, 0, 0);
         UIWindow *window = g_windowMgr.EnsureWindow(WID_CHATROOMWND);
-        this->chatRoomMemberCount = 1;
-        window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->chatRoomTitle), 0, 0, 0);
+        this->chatRoom.memberCount = 1;
+        window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->chatRoom.title), 0, 0, 0);
         window->SendMsg(nullptr, UM_CLEARMEMBER, 0, 0, 0, 0);
         window->SendMsg(nullptr, UM_ADDMEMBER, reinterpret_cast<std::intptr_t>(g_session.DecodePlayerName()), 0, 0, 0);
         break;
