@@ -41,6 +41,8 @@ struct SpriteRleImage {
   /* 000C */ const std::uint8_t* runs;
 };
 
+__declspec(noinline) void DecodeSprite(const SpriteRleImage& image, const std::uint32_t* palette, void* pixels, int pitch);
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(SpriteFrameCell, imageType) == 0x20);
 static_assert(sizeof(SpriteRleImage) == 0x10);

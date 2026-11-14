@@ -498,31 +498,7 @@ void CTextureDX9::UploadSprite(int x, int y, int width, int height, const Sprite
     }
   }
 
-  const SpriteRleImage& image = *rawImage;
-  const std::uint8_t* input = image.runs;
-  int remaining = 0;
-
-  for (int row = 0; row < image.height; ++row) {
-    auto* output = static_cast<unsigned char*>(locked.pBits) + row * locked.Pitch;
-
-    for (int column = 0; column < image.width; ++column) {
-      if (remaining) {
-        --remaining;
-        const std::uint16_t color = 0;
-        std::memcpy(output + column * sizeof(color), &color, sizeof(color));
-      } else {
-        const unsigned value = *input++;
-        if (value) {
-          const std::uint16_t color = palette[value];
-          std::memcpy(output + column * sizeof(color), &color, sizeof(color));
-        } else {
-          const std::uint16_t color = 0;
-          std::memcpy(output + column * sizeof(color), &color, sizeof(color));
-          remaining = *input++ - 1;
-        }
-      }
-    }
-  }
+  DecodeSprite(*rawImage, palette, locked.pBits, locked.Pitch);
 
   if (SUCCEEDED(this->m_surface->UnlockRect())) {
     this->Filter();
