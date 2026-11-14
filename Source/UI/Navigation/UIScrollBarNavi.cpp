@@ -4,13 +4,6 @@
 #include "Resource/Bitmap/TextureNames.h"
 #include "UI/Navigation/UIScrollBarNavi.h"
 
-// OFFSET: 0x0086E6E0
-// FUNCTION: fn_11075
-UIScrollBar_Navi::UIScrollBar_Navi() : UIScrollBar() {
-  this->arrowLength = 7;
-  this->thickness = 7;
-}
-
 UIScrollBar_Navi::~UIScrollBar_Navi() = default;
 
 // OFFSET: 0x0088E930

@@ -85,6 +85,20 @@ void UIComboBoxEx::OnLBtnUp(int x, int y) {
   windows.CloseWindow(WID_COMBOBOXWND);
 }
 
+namespace {
+// INLINED
+__forceinline void SetBarRange(UIScrollBar* bar, int maximum, int visible, int total) {
+  bar->maximum = maximum;
+  bar->visible = visible;
+  bar->total = total;
+  bar->Invalidate();
+
+  if (bar->position > bar->maximum) {
+    bar->position = bar->maximum;
+  }
+}
+}
+
 // OFFSET: 0x00895C30
 // FUNCTION: fn_11510
 void UIComboBoxEx::Refresh() {
@@ -277,6 +291,13 @@ UIComboBoxEx2::UIComboBoxEx2() : UIComboBoxEx(), alignment(0) {
 // OFFSET: 0x008706D0
 // FUNCTION: fn_11102
 UIComboBoxEx2::~UIComboBoxEx2() = default;
+
+// OFFSET: 0x0086E6E0
+// FUNCTION: fn_11075
+UIScrollBar_Navi::UIScrollBar_Navi() : UIScrollBar() {
+  this->arrowLength = 7;
+  this->thickness = 7;
+}
 
 // OFFSET: 0x00885EE0
 // FUNCTION: fn_11320
