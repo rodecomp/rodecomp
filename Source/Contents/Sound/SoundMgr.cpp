@@ -37,6 +37,17 @@ extern "C" __declspec(dllimport) void __stdcall AIL_close_digital_driver(void* d
 extern "C" __declspec(dllimport) void __stdcall AIL_shutdown();
 extern "C" __declspec(dllimport) void __stdcall AIL_pause_stream(void* stream, int paused);
 extern "C" __declspec(dllimport) int __stdcall AIL_stream_volume(void* stream);
+extern "C" __declspec(dllimport) const char* __stdcall AIL_set_redist_directory(const char* directory);
+extern "C" __declspec(dllimport) int __stdcall AIL_startup();
+extern "C" __declspec(dllimport) int __stdcall AIL_set_preference(unsigned int preference, int value);
+extern "C" __declspec(dllimport) void* __stdcall AIL_open_digital_driver(unsigned int rate, int bits, int channels, unsigned int flags);
+extern "C" __declspec(dllimport) void* __stdcall AIL_allocate_sample_handle(void* driver);
+extern "C" __declspec(dllimport) int __stdcall AIL_enumerate_3D_providers(MilesEnumeration* enumerator, MilesProvider* provider, const char** name);
+extern "C" __declspec(dllimport) int __stdcall AIL_open_3D_provider(MilesProvider provider);
+extern "C" __declspec(dllimport) int __stdcall AIL_3D_speaker_type(MilesProvider provider);
+extern "C" __declspec(dllimport) void __stdcall AIL_set_3D_speaker_type(MilesProvider provider, int speakerType);
+extern "C" __declspec(dllimport) void* __stdcall AIL_open_3D_listener(MilesProvider provider);
+extern "C" __declspec(dllimport) void* __stdcall AIL_allocate_3D_sample_handle(MilesProvider provider);
 
 // STATIC: 0x0138BE7C
 // GLOBAL: gl_24457
@@ -46,7 +57,7 @@ namespace {
   // OFFSET: 0x00401090
   // FUNCTION: fn_45443
   void ShutdownMilesAtExit() {
-    MilesRuntime::Get().shutdown();
+    AIL_shutdown();
   }
 }
 
@@ -154,11 +165,10 @@ bool CSoundMgr::Initialize() {
     break;
   }
 
-  MilesRuntime& miles = MilesRuntime::Get();
-  miles.setRedistDirectory(".\\");
+  AIL_set_redist_directory(".\\");
 
   std::atexit(&ShutdownMilesAtExit);
-  miles.startup();
+  AIL_startup();
 
   this->channels = configuration.mode == 1 ? 1 : 2;
 
@@ -189,8 +199,8 @@ bool CSoundMgr::Initialize() {
     break;
   }
 
-  miles.setPreference(15, configuration.preference15);
-  this->driver = miles.openDigitalDriver(this->rate, this->bits, this->channels, 1);
+  AIL_set_preference(15, configuration.preference15);
+  this->driver = AIL_open_digital_driver(this->rate, this->bits, this->channels, 1);
 
   if (!this->driver) {
     return false;
@@ -200,7 +210,7 @@ bool CSoundMgr::Initialize() {
 
   if (configuration.mode == 1) {
     for (int i = 0; i < this->sampleCount; ++i) {
-      this->samples[i] = miles.allocateSample(this->driver);
+      this->samples[i] = AIL_allocate_sample_handle(this->driver);
 
       if (!this->samples[i]) {
         break;
@@ -218,7 +228,7 @@ bool CSoundMgr::Initialize() {
 
   int index = 0;
 
-  while (miles.enumerate3DProviders(&this->enumerator, &this->providers[index], &this->providerNames[index])) {
+  while (AIL_enumerate_3D_providers(&this->enumerator, &this->providers[index], &this->providerNames[index])) {
     if (std::strcmp(this->providerNames[index], configuration.providerName) == 0) {
       this->provider = this->providers[index];
       break;
@@ -231,22 +241,22 @@ bool CSoundMgr::Initialize() {
     return true;
   }
 
-  if (miles.open3DProvider(this->provider) != 0) {
+  if (AIL_open_3D_provider(this->provider) != 0) {
     return false;
   }
 
-  if (miles.speakerType(this->provider) != -1) {
-    miles.setSpeakerType(this->provider, configuration.speakerType);
+  if (AIL_3D_speaker_type(this->provider) != -1) {
+    AIL_set_3D_speaker_type(this->provider, configuration.speakerType);
   }
 
-  this->listener = miles.open3DListener(this->provider);
+  this->listener = AIL_open_3D_listener(this->provider);
 
   if (!this->listener) {
     return false;
   }
 
   for (int i = 0; i < this->sample3DCount; ++i) {
-    this->samples3D[i] = miles.allocate3DSample(this->provider);
+    this->samples3D[i] = AIL_allocate_3D_sample_handle(this->provider);
 
     if (!this->samples3D[i]) {
       break;
