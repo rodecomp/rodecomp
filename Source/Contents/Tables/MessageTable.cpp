@@ -4904,8 +4904,29 @@ void FillMessageBuckets(int* first, int* last, const int* value) {
   }
 }
 
+using MessageMap = std::unordered_map<int, std::string, MessageIdHash>;
+
 // OFFSET: 0x00B00130
 // FUNCTION: fn_18367
+template <> template <> std::pair<MessageMap::iterator, bool>
+MessageMap::_Mybase::emplace<int&, const char*&>(int& id, const char*& text) {
+  const auto hash = this->_Traitsobj(id);
+  auto target = this->_Find_last(id, hash);
+  if (target._Duplicate) {
+    return {this->_List._Make_iter(target._Duplicate), false};
+  }
+
+  this->_Check_max_size();
+  std::_List_node_emplace_op2<_Alnode> node(this->_List._Getal(), id, text);
+  if (this->_Check_rehash_required_1()) {
+    this->_Rehash_for_1();
+    target = this->_Find_last(node._Ptr->_Myval.first, hash);
+  }
+
+  return {this->_List._Make_iter(this->_Insert_new_node_before(hash, target._Insert_before, node._Release())), true};
+}
+
+// INLINED
 void InsertMessage(int id, const char* text) {
   g_messageStrings.emplace(id, text);
 }
