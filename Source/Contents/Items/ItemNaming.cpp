@@ -519,60 +519,6 @@ void __fastcall DestroyReplayTaggedRecordHeader(ReplayTaggedRecordHeader* value)
   value->bytes = 0;
 }
 
-__declspec(noinline) bool LoadItemMoveInfoTable(std::vector<int>& values, const char* name) {
-  values.clear();
-  CFile file;
-  if (g_serverLanguage != nullptr) {
-    name = g_serverLanguage->ServiceName(name);
-  }
-
-  if (!file.Open(name, 0, true, false)) {
-    MessageBoxA(nullptr, "Can't open file", "ErrorMessage", 0);
-    return false;
-  }
-
-  const int size = static_cast<int>(file.GetSize());
-  if (values.capacity() < static_cast<size_t>(size)) {
-    values.reserve(static_cast<size_t>(size));
-  }
-
-  char* buffer = new char[static_cast<size_t>(size) + 1];
-  file.Read(buffer, static_cast<std::uint32_t>(size));
-  buffer[size] = '\0';
-  file.Close();
-
-  char* token = buffer;
-  for (int index = 0; index < size; ++index) {
-    char value = buffer[index];
-    if (value == '/' && buffer[index + 1] == '/') {
-      do {
-        if (value == '\r' || index >= size) {
-          break;
-        }
-        value = buffer[index + 1];
-        ++index;
-      } while (value != '\n');
-      token = buffer + index + 1;
-    }
-
-    switch (value) {
-    case '\t':
-    case ' ':
-      buffer[index] = '\0';
-      values.push_back(std::atoi(token));
-      token = buffer + index + 1;
-      break;
-    case '\n':
-    case '\r':
-      token = buffer + index + 1;
-      break;
-    }
-  }
-
-  delete[] buffer;
-  return true;
-}
-
 // OFFSET: 0x006D78C0
 // FUNCTION: fn_06596
 __declspec(noinline) void LoadItemNameTables() {
@@ -659,8 +605,9 @@ __declspec(noinline) void LoadItemNameTables() {
     if (ResourceExists("EventNum2ItemDisplayNameTable.txt", 0)) {
       g_tableStorage.LoadTokens(tokens, "EventNum2ItemDisplayNameTable.txt", 0);
       for (std::vector<char*>::iterator token = tokens.begin(); token != tokens.end(); token += 2) {
+        ITEM_DESC& desc = EnsureItemDescription(std::atoi(*token), g_itemDescriptions);
         g_session.ConvertTooltipText(token[1], token[1]);
-        EnsureItemDescription(std::atoi(*token), g_itemDescriptions).unidentifiedName = token[1];
+        desc.unidentifiedName = token[1];
       }
     }
 
@@ -685,8 +632,9 @@ __declspec(noinline) void LoadItemNameTables() {
     if (ResourceExists("EventIdNum2ItemDisplayNameTable.txt", 0)) {
       g_tableStorage.LoadTokens(tokens, "EventIdNum2ItemDisplayNameTable.txt", 0);
       for (std::vector<char*>::iterator token = tokens.begin(); token != tokens.end(); token += 2) {
+        ITEM_DESC& desc = EnsureItemDescription(std::atoi(*token), g_itemDescriptions);
         g_session.ConvertTooltipText(token[1], token[1]);
-        EnsureItemDescription(std::atoi(*token), g_itemDescriptions).identifiedName = token[1];
+        desc.identifiedName = token[1];
       }
     }
 
@@ -795,7 +743,7 @@ __declspec(noinline) void LoadItemNameTables() {
   FindItemCardName(-1, g_itemCardNames) = sorry;
 
   std::vector<int> moveInfo;
-  if (LoadItemMoveInfoTable(moveInfo, "ItemMoveInfoV5.txt") && !moveInfo.empty()) {
+  if (LoadItemIntegerTable(moveInfo, "ItemMoveInfoV5.txt") && !moveInfo.empty()) {
     for (std::vector<int>::iterator value = moveInfo.begin(); value != moveInfo.end(); value += 9) {
       ItemMoveInfo flags;
       flags.itemId = value[0];
