@@ -1983,7 +1983,9 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
     break;
   case EF_PNEUMA: {
     int index = rand() % 3;
-    index = index < 0 ? 0 : index;
+    if (index < 0) {
+      index = 0;
+    }
     particle->Open(FormatOwnedString("Pneuma%d.str", index + 1));
     break;
   }
@@ -2020,7 +2022,9 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
   case EF_METEOR_STORM_VISUAL:
     {
       int index = rand() % 3;
-      index = index < 0 ? 0 : index;
+      if (index < 0) {
+        index = 0;
+      }
       particle->Open(FormatOwnedString("MeteorStorm\\meteor%d.str", index + 1).c_str());
       break;
     }

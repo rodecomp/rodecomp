@@ -557,7 +557,11 @@ void UISeekPartyWnd::OnProcess() {
   const std::uint32_t now = GetTickCount();
   this->m_frameElapsed = now - this->m_frameTick;
   if (this->m_frameElapsed > this->m_frameDuration) {
-    this->m_level = this->m_level < frameCounts[this->m_type] ? this->m_level + 1 : 0;
+    if (this->m_level < frameCounts[this->m_type]) {
+      this->m_level = this->m_level + 1;
+    } else {
+      this->m_level = 0;
+    }
     this->m_elapsed += this->m_frameDuration;
     this->m_frameTick = now;
     this->Invalidate();

@@ -853,7 +853,7 @@ void CExpandedBarterMarketItemMgr::LoadInventoryItems()
   for (int i = 0; i < count; ++i) {
     ITEM_INFO item = g_session.GetInventoryItemAt(i);
     if (item.identified) {
-      this->itemInfos.insert(std::make_pair(item.refiningLevel, item));
+      this->itemInfos.insert({item.refiningLevel, item});
     }
   }
 }

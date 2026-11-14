@@ -5165,7 +5165,7 @@ bool EffectLists::RegisterAllocators() {
 // OFFSET: 0x00B3A430
 // FUNCTION: fn_18787
 bool EffectLists::RegisterAllocator(int id, CAllocator* allocator) {
-  return this->allocators.insert(std::make_pair(id, allocator)).second;
+  return this->allocators.insert({id, allocator}).second;
 }
 
 // OFFSET: 0x00B3AF30

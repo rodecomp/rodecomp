@@ -70,10 +70,7 @@ const char* CItemInfoMgr::GetFileName() {
 // FUNCTION: fn_17981
 int CItemInfoMgr::GetPackageId(int id) {
   std::map<int, lcData>::iterator it = this->m_items.find(id);
-  if (this->m_items.end() != it) {
-    return it->second.packageId;
-  }
-  return 0;
+  return this->m_items.end() != it ? it->second.packageId : 0;
 }
 
 // OFFSET: 0x00ADFF90

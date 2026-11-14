@@ -643,7 +643,7 @@ void UIGraffiStrboxWnd::Paint() {
 }
 
 // INLINED
-static __forceinline void DrawParamChangeArrow(UIWindow& window, int x, int before, int after) {
+static __forceinline void DrawParamChangeArrow(UIWindow& window, int x, const int& before, const int& after) {
   if (before < after) {
     window.FillTriangleRegion(x + 4, 11, x, 19, x + 8, 19, 0xFF);
   } else if (before == after) {
@@ -2369,9 +2369,10 @@ bool UIStatusWnd::NeedsFrameRefresh() {
 void UINpcTextEditDialogWnd::InsertItemTag(const ITEM_INFO& item) {
   if (!this->m_tagCtrl) {
     this->m_tagCtrl = new UIItemTagOnMegaPhone;
-    if (!this->m_tagCtrl) {
-      return;
-    }
+  }
+
+  if (!this->m_tagCtrl) {
+    return;
   }
 
   if (!this->m_tagCtrl->CanInsertTag(item.DisplayName(0), this->edit->geometry.width)) {

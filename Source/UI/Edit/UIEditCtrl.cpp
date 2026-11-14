@@ -8944,9 +8944,10 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
 void UIChatEditCtrl::InsertItemLink(const ITEM_INFO& item) {
   if (!this->itemTags) {
     this->itemTags = new (std::nothrow) UIItemTagOnChat();
-    if (!this->itemTags) {
-      return;
-    }
+  }
+
+  if (!this->itemTags) {
+    return;
   }
 
   if (!this->itemTags->CanInsertTag(item.DisplayName(0), this->geometry.width)) {
