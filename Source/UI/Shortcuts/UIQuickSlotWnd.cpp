@@ -59,14 +59,14 @@ void UIQuickSlotWnd::OnLBtnDown(int x, int y) {
     CSkillInfo skill = g_session.LookupSkill(entry.id);
     if (skill.available && skill.level) {
       if (CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode())) {
-        mode->drag.BeginSkill(g_windowMgr, ResourceMgr::Instance(), 16, skill.id, skill.name, entry.count, index);
+        mode->BeginDragSkill(16, skill.id, skill.name, entry.count, index);
       }
     }
   } else if (entry.id != 0) {
     ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(entry.id), 1);
     if (item.identity[1] > 0) {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-      mode->drag.BeginItem(g_windowMgr, 16, item, item.quantity, -1);
+      mode->BeginDragItem(16, item, item.quantity, -1);
     }
   }
 }

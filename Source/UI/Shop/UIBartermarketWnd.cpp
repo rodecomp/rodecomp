@@ -797,7 +797,7 @@ void UIBarterItemPurchaseWnd::OnLBtnDown(int x, int y) {
   std::pair<bool, BarterMarketItem> found = this->GetBarterItemAt(x, y);
   if (found.first == true) {
     if (CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode())) {
-      mode->drag.BeginBarterItem(4, found.second, found.second.value, -1);
+      mode->BeginDragBarterItem(4, found.second, found.second.value, -1);
     }
   }
 }
@@ -840,7 +840,7 @@ void UIBartermarketWnd::OnLBtnDown(int x, int y) {
   std::pair<bool, BarterMarketItem> found = this->GetBarterItemAt(x, y);
   if (found.first) {
     if (CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode())) {
-      mode->drag.BeginBarterItem(31, found.second, 1, -1);
+      mode->BeginDragBarterItem(31, found.second, 1, -1);
     }
   }
 }
