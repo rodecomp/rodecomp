@@ -877,7 +877,7 @@ public:
   void SetPlayerNameKey(const unsigned char* key);
   // INLINED
   NormalItemSlot& SkillHotkey(int index) {
-    return reinterpret_cast<NormalItemSlot*>(reinterpret_cast<unsigned char*>(this) + offsetof(CSession, quickSlot))[index];
+    return (&this->quickSlot)[index];
   }
   void ResetCostumeItems();
   void ResetMercenaryStats();
