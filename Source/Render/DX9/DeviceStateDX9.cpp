@@ -167,7 +167,7 @@ HRESULT DeviceStateDX9::SetTextureStageState(UINT stage, D3DTEXTURESTAGESTATETYP
 
 // OFFSET: 0x00550B20
 // FUNCTION: fn_01992
-ScopedDeviceStateDX9::ScopedDeviceStateDX9(DeviceStateDX9& state) : m_state(&state) {
+void ScopedDeviceStateDX9::Save() {
   memcpy_s(this->m_render, sizeof(this->m_render), this->m_state->render, sizeof(this->m_render));
   memcpy_s(this->m_textureStage, sizeof(this->m_textureStage), this->m_state->textureStage, sizeof(this->m_textureStage));
   memcpy_s(this->m_sampler, sizeof(this->m_sampler), this->m_state->sampler, sizeof(this->m_sampler));

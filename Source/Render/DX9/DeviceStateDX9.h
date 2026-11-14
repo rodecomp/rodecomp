@@ -25,10 +25,16 @@ struct DeviceStateDX9 {
 
 class ScopedDeviceStateDX9 {
 public:
-  explicit ScopedDeviceStateDX9(DeviceStateDX9& state);
+  // INLINED
+  explicit ScopedDeviceStateDX9(DeviceStateDX9& state) : m_state(&state) {
+    this->Save();
+  }
+
   ~ScopedDeviceStateDX9();
   ScopedDeviceStateDX9(const ScopedDeviceStateDX9&) = delete;
   ScopedDeviceStateDX9& operator=(const ScopedDeviceStateDX9&) = delete;
+
+  void Save();
 
 private:
   /* 0000 */ DeviceStateDX9* m_state;
