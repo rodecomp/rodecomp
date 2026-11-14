@@ -5419,7 +5419,7 @@ void CEZ2STRScreenEffect::OnProcess() {
   }
 
   if (this->jobScaled == 1 && actor->GetMonsterTransformJob() <= 0) {
-    float factor = GetSkillFactor(actor->GetEffectiveJob(-1));
+    float factor = g_session.GetSkillFactor(actor->GetEffectiveJob(-1));
     if (this->fadePulse == 1) {
       actor->ScaleByFadePulse(factor);
     }

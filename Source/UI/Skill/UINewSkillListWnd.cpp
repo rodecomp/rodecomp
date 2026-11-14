@@ -480,7 +480,7 @@ void UINewSkillListWnd::InitTabs() {
   const char* jobTabs[4] = {};
   g_session.m_hotkeyScript->Call(func, "d>ssss", 0, &defaultTabs[0], &defaultTabs[1], &defaultTabs[2], &defaultTabs[3]);
 
-  const int baseJob = JobNames::BaseJob(g_session.GetDisplayJob());
+  const int baseJob = g_session.BaseJob(g_session.GetDisplayJob());
   int jobKey = baseJob;
   switch (baseJob) {
   case JT_NOVICE:

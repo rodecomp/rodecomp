@@ -16,7 +16,7 @@ int CSession::GetSpriteJob(int job, int costumeJob, bool spriteIndex) {
   }
 
   int mount;
-  if (g_session.GetRidingJob(JobNames::BaseJob(job)) == job) {
+  if (g_session.GetRidingJob(g_session.BaseJob(job)) == job) {
     mount = 1;
   } else {
     switch (job) {

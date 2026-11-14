@@ -56,7 +56,7 @@ void SpriteLayerRenderer::Render(const float* matrix, int blendMode, char blendV
   this->distanceScale = g_renderer->ScaleDistance(this->rhw);
   this->pc->render.distanceScale = this->distanceScale / g_heightScale;
   this->pc->ScaleByPulse(this->distanceScale);
-  this->distanceScale *= GetSkillFactor(this->pc->GetEffectiveJob(-1));
+  this->distanceScale *= g_session.GetSkillFactor(this->pc->GetEffectiveJob(-1));
   this->scale = g_renderer->UiScaleX() * (static_cast<float>(static_cast<int>(this->pc->render.spriteOffsetX)) * this->pc->render.scale) *
                 this->pc->render.distanceScale;
 

@@ -1138,7 +1138,7 @@ void CPc::ApplyLayerEffects(
     for (int step = 1, depth = 3; depth <= 6; ++step, depth += 3) {
       const unsigned char alpha = this->render.outlineAlpha;
       const float distanceScale = g_renderer->ScaleDistance(distance);
-      const float factor = GetSkillFactor(this->GetEffectiveJob(-1)) * distanceScale * (static_cast<float>(step) * 0.01f + 1.0f);
+      const float factor = g_session.GetSkillFactor(this->GetEffectiveJob(-1)) * distanceScale * (static_cast<float>(step) * 0.01f + 1.0f);
       const float shift =
         g_renderer->UiScaleX() * (static_cast<float>(static_cast<int>(this->render.spriteOffsetX)) * this->render.scale) * factor;
       const int boxTop = box->top;

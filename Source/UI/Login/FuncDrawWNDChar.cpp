@@ -145,7 +145,7 @@ void FuncDrawWNDChar::Draw(bool option) {
         g_renderer->atlas.Insert(image, palette, record);
       }
 
-      float scale = GetSkillFactor(this->m_job);
+      float scale = g_session.GetSkillFactor(this->m_job);
       int offsetX = static_cast<int>(static_cast<float>(offset.x) * scale);
       int offsetY = static_cast<int>(static_cast<float>(offset.y) * scale);
       UIWindow* window = this->m_window;
