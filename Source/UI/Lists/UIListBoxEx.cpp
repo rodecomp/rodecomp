@@ -140,7 +140,7 @@ void UIListBoxEx::Refresh() {
     bar->position = bar->maximum;
   }
 
-  bar->Invalidate();
+  this->verticalBar->Invalidate();
 }
 
 // OFFSET: 0x008905A0
