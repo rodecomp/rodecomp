@@ -470,9 +470,10 @@ void UIRefiningWnd::OnLBtnUp(int x, int y) {
       return;
     }
 
+    auto* const button = this->refiningButton;
     this->selectedMaterial = slot;
-    this->refiningButton->cost = this->SelectedMaterialValue();
-    this->refiningButton->Invalidate();
+    button->cost = this->SelectedMaterialValue();
+    button->Invalidate();
 
     if (this->materials[slot].successRate <= 99 && this->catalystEnabled == 0) {
       int message;
