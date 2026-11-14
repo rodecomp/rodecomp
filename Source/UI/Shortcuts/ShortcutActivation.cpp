@@ -19,9 +19,8 @@ void UIShortCutWnd::OnLBtnDblClk(int x, int y) {
     return;
   }
 
-  const NormalItemSlot& slot = *this->m_slots[index];
-  if (slot.enabled != 0 && g_session.m_automaticSkills.Contains(static_cast<std::uint16_t>(slot.itemId))) {
-    g_session.SetOption(g_session.m_automaticSkills.CancelOption(slot.itemId), 1, 0);
+  if (this->m_slots[index]->enabled != 0 && g_session.m_automaticSkills.Contains(static_cast<std::uint16_t>(this->m_slots[index]->itemId))) {
+    g_session.SetOption(g_session.m_automaticSkills.CancelOption(this->m_slots[index]->itemId), 1, 0);
   } else {
     g_session.m_automaticSkills.DisableAll();
   }
