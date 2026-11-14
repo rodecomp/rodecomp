@@ -103,7 +103,7 @@ int ClampTargetAttackRange(std::uint32_t aid, int distance) {
   CGameActor* actor = static_cast<CGameActor*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAID(aid));
   if (actor) {
     CGameActor* target = static_cast<CGameActor*>(
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t*>(&actor->homunMsg[5]))
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAID(static_cast<std::uint32_t>(actor->homunMsg.target))
     );
     if (target) {
       return distance < target->GetNpcLocationRadius() ? target->GetNpcLocationRadius() : distance;
@@ -840,19 +840,6 @@ void AiSetTableNumber(lua_State* state, int key, int value) {
 
 namespace {
 
-struct AiMessage {
-  /* 0000 */ int type;
-  /* 0004 */ int x;
-  /* 0008 */ int y;
-  /* 000C */ int level;
-  /* 0010 */ int skill;
-  /* 0014 */ int target;
-
-  AiMessage() : type(0), x(0), y(0), level(0), skill(0), target(0) {}
-};
-
-static_assert(sizeof(AiMessage) == 24);
-
 #pragma pack(push, 1)
 struct MoveToOwnerPacket {
   /* 0000 */ std::int16_t opcode;
@@ -892,7 +879,7 @@ int AiGetMsg(lua_State* state) {
     return 0;
   }
 
-  AiMessage message = *reinterpret_cast<const AiMessage*>(actor->GetMsg2AI(index));
+  AiMessage message = *actor->GetMsg2AI(index);
   lua_newtable(state);
   lua_pushnumber(state, 1);
   lua_pushnumber(state, message.type);
@@ -921,7 +908,7 @@ int AiGetMsg(lua_State* state) {
   }
 
   message.type = 0;
-  actor->SetMsg2AI(reinterpret_cast<const float*>(&message), index);
+  actor->SetMsg2AI(&message, index);
   return 1;
 }
 
@@ -943,7 +930,7 @@ int AiGetResMsg(lua_State* state) {
     return 0;
   }
 
-  AiMessage message = *reinterpret_cast<const AiMessage*>(actor->GetResMsg2AI(index));
+  AiMessage message = *actor->GetResMsg2AI(index);
   lua_newtable(state);
   lua_pushnumber(state, 1);
   lua_pushnumber(state, message.type);
@@ -972,7 +959,7 @@ int AiGetResMsg(lua_State* state) {
   }
 
   message.type = 0;
-  actor->SetResMsg2AI(reinterpret_cast<const float*>(&message), index);
+  actor->SetResMsg2AI(&message, index);
   return 1;
 }
 

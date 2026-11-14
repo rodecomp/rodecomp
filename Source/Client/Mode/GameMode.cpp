@@ -18,6 +18,7 @@
 #include "Client/Replay/Replay.h"
 #include "Client/Input/InputCharset.h"
 #include "Client/Session/Session.h"
+#include "Contents/Actors/GameActor.h"
 #include "Contents/Actors/Npc.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Camera/Camera.h"
@@ -3342,8 +3343,9 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(
           g_session.m_homunAid));
       if (actor != nullptr && actor->HasActiveHomunculusAI()) {
-        const int message[6] = {9, 0, 0, 0, 0, 0};
-        actor->SetMsg2AI(reinterpret_cast<const float*>(message), 0);
+        AiMessage message;
+        message.type = 9;
+        actor->SetMsg2AI(&message, 0);
       }
       return 0;
     }
@@ -3730,10 +3732,9 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         case MENUID_HOMUN_FOLLOW: {
           auto* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(g_session.m_homunAid));
           if (actor && actor->HasActiveHomunculusAI()) {
-            float value[6] = {};
-            const int type = 9;
-            std::memcpy(value, &type, sizeof(type));
-            actor->SetMsg2AI(value, 0);
+            AiMessage value;
+            value.type = 9;
+            actor->SetMsg2AI(&value, 0);
           }
           return 0;
         }
@@ -3746,10 +3747,9 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         case MENUID_MER_FOLLOW: {
           auto* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(g_session.m_mercenaryAid));
           if (actor && actor->merAI && actor->merAI->state) {
-            float value[6] = {};
-            const int type = 9;
-            std::memcpy(value, &type, sizeof(type));
-            actor->SetMsg2AI(value, 1);
+            AiMessage value;
+            value.type = 9;
+            actor->SetMsg2AI(&value, 1);
           }
           return 0;
         }
@@ -7735,17 +7735,6 @@ void CGameMode::ProcessMouseWheel(int requireControl) {
   this->camera->camera.desiredDistance = g_cameraDistance;
 }
 
-struct AiMessage {
-  /* 0000 */ int type;
-  /* 0004 */ int x;
-  /* 0008 */ int y;
-  /* 000C */ int level;
-  /* 0010 */ int skill;
-  /* 0014 */ int target;
-
-  AiMessage() : type(0), x(0), y(0), level(0), skill(0), target(0) {}
-};
-
 #pragma pack(push, 1)
 struct ContactNpcPacket {
   /* 0000 */ std::int16_t packetType;
@@ -8161,7 +8150,7 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
           AiMessage message = {};
           message.type = 3;
           message.target = actor->render.accountId;
-          homun->SetResMsg2AI(reinterpret_cast<const float*>(&message), 0);
+          homun->SetResMsg2AI(&message, 0);
         }
       } else if (g_session.attackHomunEnemy != 0 && g_session.homunEnemyGid == actor->render.accountId) {
         CGameActor* homun = static_cast<CGameActor*>(this->scene->GetGameActorByAID(homunAid));
@@ -8169,7 +8158,7 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
           AiMessage message = {};
           message.type = 3;
           message.target = g_session.homunEnemyGid;
-          homun->SetMsg2AI(reinterpret_cast<const float*>(&message), 0);
+          homun->SetMsg2AI(&message, 0);
         }
         g_session.attackHomunEnemy = 0;
       } else {
@@ -8191,7 +8180,7 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
         message.level = this->skillUseLevel;
         message.skill = this->skillId;
         message.target = actor->render.accountId;
-        homun->SetMsg2AI(reinterpret_cast<const float*>(&message), 0);
+        homun->SetMsg2AI(&message, 0);
       }
       return;
     }
@@ -8204,7 +8193,7 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
         AiMessage message = {};
         message.type = 3;
         message.target = actor->render.accountId;
-        mercenary->SetResMsg2AI(reinterpret_cast<const float*>(&message), 1);
+        mercenary->SetResMsg2AI(&message, 1);
       }
     } else if (g_session.attackMercenaryEnemy != 0 && g_session.mercenaryEnemyGid == actor->render.accountId) {
       CGameActor* mercenary = static_cast<CGameActor*>(this->scene->GetGameActorByAID(mercenaryAid));
@@ -8212,7 +8201,7 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
         AiMessage message = {};
         message.type = 3;
         message.target = g_session.mercenaryEnemyGid;
-        mercenary->SetMsg2AI(reinterpret_cast<const float*>(&message), 1);
+        mercenary->SetMsg2AI(&message, 1);
       }
       g_session.attackMercenaryEnemy = 0;
     } else {
@@ -8236,7 +8225,7 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
       message.level = this->skillUseLevel;
       message.skill = this->skillId;
       message.target = actor->render.accountId;
-      mercenary->SetMsg2AI(reinterpret_cast<const float*>(&message), 1);
+      mercenary->SetMsg2AI(&message, 1);
     }
     return;
   }
@@ -8513,7 +8502,7 @@ int CGameMode::ProcessGroundClick(int result) {
           message.type = 1;
           message.x = column;
           message.y = row;
-          homun->SetResMsg2AI(reinterpret_cast<const float*>(&message), 0);
+          homun->SetResMsg2AI(&message, 0);
         }
         return result;
       }
@@ -8527,7 +8516,7 @@ int CGameMode::ProcessGroundClick(int result) {
         message.type = 1;
         message.x = column;
         message.y = row;
-        homun->SetMsg2AI(reinterpret_cast<const float*>(&message), 0);
+        homun->SetMsg2AI(&message, 0);
       }
       g_session.moveHomunEnemy = 1;
       return result;
@@ -8552,7 +8541,7 @@ int CGameMode::ProcessGroundClick(int result) {
           message.type = 1;
           message.x = column;
           message.y = row;
-          mercenary->SetResMsg2AI(reinterpret_cast<const float*>(&message), 1);
+          mercenary->SetResMsg2AI(&message, 1);
         }
         return result;
       }
@@ -8566,7 +8555,7 @@ int CGameMode::ProcessGroundClick(int result) {
         message.type = 1;
         message.x = column;
         message.y = row;
-        mercenary->SetMsg2AI(reinterpret_cast<const float*>(&message), 1);
+        mercenary->SetMsg2AI(&message, 1);
       }
       g_session.moveMercenaryEnemy = 1;
       return result;
@@ -8586,7 +8575,7 @@ int CGameMode::ProcessGroundClick(int result) {
             message.level = this->skillUseLevel;
             message.skill = this->skillId;
             message.target = 0;
-            mercenary->SetMsg2AI(reinterpret_cast<const float*>(&message), 1);
+            mercenary->SetMsg2AI(&message, 1);
             return 1;
           }
         }
@@ -8608,7 +8597,7 @@ int CGameMode::ProcessGroundClick(int result) {
           message.level = this->skillUseLevel;
           message.skill = this->skillId;
           message.target = 0;
-          homun->SetMsg2AI(reinterpret_cast<const float*>(&message), 0);
+          homun->SetMsg2AI(&message, 0);
           return 1;
         }
       }
@@ -10201,7 +10190,7 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
         AiMessage message = {};
         message.type = 3;
         message.target = actor->render.accountId;
-        homun->SetResMsg2AI(reinterpret_cast<const float*>(&message), 0);
+        homun->SetResMsg2AI(&message, 0);
       }
     } else if (g_session.attackHomunEnemy != 0 && g_session.homunEnemyGid == actor->render.accountId) {
       CGameActor* homun = static_cast<CGameActor*>(this->scene->GetGameActorByAID(homunAid));
@@ -10209,7 +10198,7 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
         AiMessage message = {};
         message.type = 3;
         message.target = g_session.homunEnemyGid;
-        homun->SetMsg2AI(reinterpret_cast<const float*>(&message), 0);
+        homun->SetMsg2AI(&message, 0);
       }
       g_session.attackHomunEnemy = 0;
     } else {
@@ -10231,7 +10220,7 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
       message.level = this->skillUseLevel;
       message.skill = this->skillId;
       message.target = actor->render.accountId;
-      homun->SetMsg2AI(reinterpret_cast<const float*>(&message), 0);
+      homun->SetMsg2AI(&message, 0);
     }
     return;
   }
@@ -10243,7 +10232,7 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
         AiMessage message = {};
         message.type = 3;
         message.target = actor->render.accountId;
-        mercenary->SetResMsg2AI(reinterpret_cast<const float*>(&message), 1);
+        mercenary->SetResMsg2AI(&message, 1);
       }
     } else if (g_session.attackMercenaryEnemy != 0 && g_session.mercenaryEnemyGid == actor->render.accountId) {
       CGameActor* mercenary = static_cast<CGameActor*>(this->scene->GetGameActorByAID(mercenaryAid));
@@ -10251,7 +10240,7 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
         AiMessage message = {};
         message.type = 3;
         message.target = g_session.mercenaryEnemyGid;
-        mercenary->SetMsg2AI(reinterpret_cast<const float*>(&message), 1);
+        mercenary->SetMsg2AI(&message, 1);
       }
       g_session.attackMercenaryEnemy = 0;
     } else {
@@ -10273,7 +10262,7 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
       message.level = this->skillUseLevel;
       message.skill = this->skillId;
       message.target = actor->render.accountId;
-      mercenary->SetMsg2AI(reinterpret_cast<const float*>(&message), 1);
+      mercenary->SetMsg2AI(&message, 1);
     }
     return;
   }
@@ -10819,7 +10808,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
             AiMessage message = {};
             message.type = 3;
             message.target = pick->accountId;
-            homun->SetResMsg2AI(reinterpret_cast<const float*>(&message), 0);
+            homun->SetResMsg2AI(&message, 0);
           }
         } else if (g_session.attackHomunEnemy != 0 && g_session.homunEnemyGid == pick->accountId) {
           CGameActor* homun = static_cast<CGameActor*>(this->scene->GetGameActorByAID(homunAid));
@@ -10827,7 +10816,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
             AiMessage message = {};
             message.type = 3;
             message.target = g_session.homunEnemyGid;
-            homun->SetMsg2AI(reinterpret_cast<const float*>(&message), 0);
+            homun->SetMsg2AI(&message, 0);
           }
           g_session.attackHomunEnemy = 0;
         } else {
@@ -10851,7 +10840,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
           message.level = this->skillUseLevel;
           message.skill = this->skillId;
           message.target = pick->accountId;
-          homun->SetMsg2AI(reinterpret_cast<const float*>(&message), 0);
+          homun->SetMsg2AI(&message, 0);
         }
         return result;
       }
@@ -10863,7 +10852,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
             AiMessage message = {};
             message.type = 3;
             message.target = pick->accountId;
-            mercenary->SetResMsg2AI(reinterpret_cast<const float*>(&message), 1);
+            mercenary->SetResMsg2AI(&message, 1);
           }
         } else if (g_session.attackMercenaryEnemy != 0 && g_session.mercenaryEnemyGid == pick->accountId) {
           CGameActor* mercenary = static_cast<CGameActor*>(this->scene->GetGameActorByAID(mercenaryAid));
@@ -10871,7 +10860,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
             AiMessage message = {};
             message.type = 3;
             message.target = g_session.mercenaryEnemyGid;
-            mercenary->SetMsg2AI(reinterpret_cast<const float*>(&message), 1);
+            mercenary->SetMsg2AI(&message, 1);
           }
           g_session.attackMercenaryEnemy = 0;
         } else {
@@ -10895,7 +10884,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
           message.level = this->skillUseLevel;
           message.skill = this->skillId;
           message.target = pick->accountId;
-          mercenary->SetMsg2AI(reinterpret_cast<const float*>(&message), 1);
+          mercenary->SetMsg2AI(&message, 1);
         }
         return result;
       }
@@ -10956,7 +10945,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
           message.level = this->skillUseLevel;
           message.skill = this->skillId;
           message.target = pick->accountId;
-          companion->SetMsg2AI(reinterpret_cast<const float*>(&message), index);
+          companion->SetMsg2AI(&message, index);
           return result;
         }
       } else if (g_session.IsMercenarySkill(this->skillId) && g_session.mercenaryAlive) {
@@ -10970,7 +10959,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
           message.level = this->skillUseLevel;
           message.skill = this->skillId;
           message.target = pick->accountId;
-          companion->SetMsg2AI(reinterpret_cast<const float*>(&message), index);
+          companion->SetMsg2AI(&message, index);
           return result;
         }
       }

@@ -855,11 +855,11 @@ void CGameActor::SetImfFileName() {
 
 // OFFSET: 0x00CC27C0
 // FUNCTION: fn_21141
-void CGameActor::SetMsg2AI(const float* value, int index) {
+void CGameActor::SetMsg2AI(const AiMessage* value, int index) {
   if (index == 0) {
-    std::memcpy(this->homunMsg, value, sizeof(this->homunMsg));
+    std::memcpy(&this->homunMsg, value, sizeof(this->homunMsg));
   } else if (index == 1) {
-    std::memcpy(this->merMsg, value, sizeof(this->merMsg));
+    std::memcpy(&this->merMsg, value, sizeof(this->merMsg));
   }
 }
 
@@ -1230,11 +1230,11 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
 
 // OFFSET: 0x00CC2D50
 // FUNCTION: fn_21145
-void CGameActor::SetResMsg2AI(const float* value, int index) {
+void CGameActor::SetResMsg2AI(const AiMessage* value, int index) {
   if (index == 0) {
-    std::memcpy(this->homunResMsg, value, sizeof(this->homunResMsg));
+    std::memcpy(&this->homunResMsg, value, sizeof(this->homunResMsg));
   } else if (index == 1) {
-    std::memcpy(this->merResMsg, value, sizeof(this->merResMsg));
+    std::memcpy(&this->merResMsg, value, sizeof(this->merResMsg));
   }
 }
 
@@ -2184,24 +2184,24 @@ int CGameActor::GetAttackMotion() {
 
 // OFFSET: 0x00CACEF0
 // FUNCTION: fn_21048
-float* CGameActor::GetMsg2AI(int index) {
+AiMessage* CGameActor::GetMsg2AI(int index) {
   if (index == 0) {
-    return this->homunMsg;
+    return &this->homunMsg;
   }
   if (index == 1) {
-    return this->merMsg;
+    return &this->merMsg;
   }
   return nullptr;
 }
 
 // OFFSET: 0x00CAD480
 // FUNCTION: fn_21052
-float* CGameActor::GetResMsg2AI(int index) {
+AiMessage* CGameActor::GetResMsg2AI(int index) {
   if (index == 0) {
-    return this->homunResMsg;
+    return &this->homunResMsg;
   }
   if (index == 1) {
-    return this->merResMsg;
+    return &this->merResMsg;
   }
   return nullptr;
 }

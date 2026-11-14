@@ -45,6 +45,7 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/CGameMode.h"
+#include "Contents/Actors/GameActor.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/World/World.h"
 #include "Contents/Events/RouletteMgr.h"
@@ -282,22 +283,8 @@ struct ShortcutRotatePacket {
 };
 #pragma pack(pop)
 
-struct AiCommand {
-  /* 0000 */ int type;
-  /* 0004 */ int padding_0004;
-  /* 0008 */ int padding_0008;
-  /* 000C */ int padding_000C;
-  /* 0010 */ int padding_0010;
-  /* 0014 */ int padding_0014;
-
-  AiCommand() {
-    std::memset(this, 0, sizeof(*this));
-  }
-};
-
 static_assert(sizeof(BankingCheckPacket) == 6);
 static_assert(sizeof(ShortcutRotatePacket) == 5);
-static_assert(sizeof(AiCommand) == 0x18);
 static_assert(sizeof(AddFriendPacket) == 26);
 static_assert(offsetof(AddFriendPacket, name) == 2);
 }
@@ -4430,9 +4417,9 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
         CGameActor* actor = static_cast<CGameActor*>(static_cast<CGameMode*>(mode)->scene->GetGameActorByAID(aid));
         if (actor) {
           if (actor->HasActiveHomunculusAI()) {
-            AiCommand command;
+            AiMessage command;
             command.type = 9;
-            actor->SetMsg2AI(reinterpret_cast<const float*>(&command), 0);
+            actor->SetMsg2AI(&command, 0);
           }
         }
       }
@@ -4444,9 +4431,9 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
       if (CMode* mode = g_modeMgr.GetGameMode()) {
         CGameActor* actor = static_cast<CGameActor*>(static_cast<CGameMode*>(mode)->scene->GetGameActorByAID(g_session.m_mercenaryAid));
         if (actor && actor->HasActiveMercenaryAI()) {
-          AiCommand command;
+          AiMessage command;
           command.type = 9;
-          actor->SetMsg2AI(reinterpret_cast<const float*>(&command), 1);
+          actor->SetMsg2AI(&command, 1);
         }
       }
     }

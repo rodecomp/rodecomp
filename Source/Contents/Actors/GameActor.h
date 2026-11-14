@@ -68,6 +68,17 @@ struct ActorDamageMessage {
   /* 0034 */ int skillTarget;
 };
 
+struct AiMessage {
+  /* 0000 */ int type;
+  /* 0004 */ int x;
+  /* 0008 */ int y;
+  /* 000C */ int level;
+  /* 0010 */ int skill;
+  /* 0014 */ int target;
+
+  AiMessage() : type(0), x(0), y(0), level(0), skill(0), target(0) {}
+};
+
 class CMercenaryAI;
 class UIPcGage;
 
@@ -148,10 +159,10 @@ public:
   /* 0310 */ CMercenaryAI* merAI;
   /* 0314 */ unsigned char objectType;
   /* 0315 */ unsigned char padding_0315[3];
-  /* 0318 */ float homunMsg[6];
-  /* 0330 */ float homunResMsg[6];
-  /* 0348 */ float merMsg[6];
-  /* 0360 */ float merResMsg[6];
+  /* 0318 */ AiMessage homunMsg;
+  /* 0330 */ AiMessage homunResMsg;
+  /* 0348 */ AiMessage merMsg;
+  /* 0360 */ AiMessage merResMsg;
   /* 0378 */ float attackMotion;
   /* 037C */ CGameObject* statusEffects[13];
   /* 03B0 */ std::list<CGameObject*> msgEffectList;
@@ -214,10 +225,10 @@ public:
   virtual void SetGdid(int value);
   virtual void SetGuildInfo(int guildId, int version);
   virtual int GetGdid();
-  virtual float* GetMsg2AI(int index);
-  virtual void SetMsg2AI(const float* value, int index);
-  virtual float* GetResMsg2AI(int index);
-  virtual void SetResMsg2AI(const float* value, int index);
+  virtual AiMessage* GetMsg2AI(int index);
+  virtual void SetMsg2AI(const AiMessage* value, int index);
+  virtual AiMessage* GetResMsg2AI(int index);
+  virtual void SetResMsg2AI(const AiMessage* value, int index);
   virtual int GetMonsterTransformJob();
   virtual int GetMadogearType();
   virtual void SetMadogearType(int value);
@@ -306,6 +317,7 @@ extern int g_maxMoveSpeed;
 extern int g_multiHitInterval;
 
 #if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(AiMessage) == 0x18);
 static_assert(sizeof(CGameActor) == 0x410);
 static_assert(offsetof(CGameActor, route) == 0x220);
 static_assert(offsetof(CGameActor, isCounter) == 0x178);
