@@ -1378,11 +1378,11 @@ void UIMerchantMirrorItemWnd::OnRBtnDown(int x, int y) {
     if (HIBYTE(GetAsyncKeyState(VK_MENU))) {
       if (g_windowMgr.merchantShopMakeWnd) {
         item = g_session.FindMerchantMyShopItem(item.identity[1]);
-        mode->drag.BeginItem(g_windowMgr, 11, item, item.quantity, -1);
+        mode->BeginDragItem(11, item, item.quantity, -1);
         static_cast<UIWindow*>(g_windowMgr.merchantShopMakeWnd)->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
       } else if (g_windowMgr.buyingShopMakeWnd) {
         item = g_session.FindMerchantMyShopItem(item.identity[1]);
-        mode->drag.BeginItem(g_windowMgr, 20, item, item.quantity, -1);
+        mode->BeginDragItem(20, item, item.quantity, -1);
         static_cast<UIWindow*>(g_windowMgr.buyingShopMakeWnd)->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
       }
     } else {
@@ -2528,12 +2528,12 @@ void UIMerchantShopMakeWnd::OnRBtnDown(int x, int y) {
     if (HIBYTE(GetAsyncKeyState(VK_MENU))) {
       if (g_windowMgr.merchantMirrorItemWnd) {
         item = g_session.FindMerchantPurchaseSavedItem(item.identity[1]);
-        gameMode->drag.BeginItem(g_windowMgr, 10, item, item.quantity, -1);
+        gameMode->BeginDragItem(10, item, item.quantity, -1);
         g_windowMgr.merchantMirrorItemWnd->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
         g_windowMgr.SetFocus(nullptr);
       } else if (g_windowMgr.buyingShopMirrorItemWnd) {
         item = g_session.FindMerchantPurchaseSavedItem(item.identity[1]);
-        gameMode->drag.BeginItem(g_windowMgr, 19, item, item.quantity, -1);
+        gameMode->BeginDragItem(19, item, item.quantity, -1);
         g_windowMgr.buyingShopMirrorItemWnd->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
       }
     } else {
@@ -7257,11 +7257,11 @@ void UIMerchantMirrorItemWnd::OnLBtnDown(int x, int y) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     item = g_session.FindMerchantMyShopItem(item.identity[1]);
     if (this->mode == 1) {
-      mode->drag.BeginItem(g_windowMgr, 20, item, item.quantity, -1);
+      mode->BeginDragItem(20, item, item.quantity, -1);
     } else if (this->mode == 2) {
-      mode->drag.BeginItem(g_windowMgr, 22, item, item.quantity, -1);
+      mode->BeginDragItem(22, item, item.quantity, -1);
     } else {
-      mode->drag.BeginItem(g_windowMgr, 11, item, item.quantity, -1);
+      mode->BeginDragItem(11, item, item.quantity, -1);
     }
   }
 }
@@ -7284,9 +7284,9 @@ void UIMerchantShopMakeWnd::OnLBtnDown(int x, int y) {
     CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     item = g_session.FindMerchantPurchaseSavedItem(item.identity[1]);
     if (this->mode != 0) {
-      gameMode->drag.BeginItem(g_windowMgr, 19, item, item.quantity, -1);
+      gameMode->BeginDragItem(19, item, item.quantity, -1);
     } else {
-      gameMode->drag.BeginItem(g_windowMgr, 10, item, item.quantity, -1);
+      gameMode->BeginDragItem(10, item, item.quantity, -1);
     }
   }
 }
@@ -10635,7 +10635,7 @@ void UIItemWnd::OnLBtnDown(int x, int y) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     if (item.flags[2] == 0) {
       item = LookupClientItemByIdentity(g_session.m_inventoryItems, item.identity[1]);
-      mode->drag.BeginItem(g_windowMgr, 1, item, item.quantity, -1);
+      mode->BeginDragItem(1, item, item.quantity, -1);
 
       if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
         if (g_windowMgr.GetHoverWindow() && item.identified != 0) {
