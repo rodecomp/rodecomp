@@ -7046,7 +7046,7 @@ void UIItemSellWnd2::OnLBtnDown(int x, int y) {
   if (item.identity[1] > 0) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     item = g_session.FindStorageItem(item.identity[1]);
-    mode->drag.BeginItem(g_windowMgr, 5, item, item.quantity, -1);
+    mode->BeginDragItem(5, item, item.quantity, -1);
   }
 }
 
@@ -7081,7 +7081,7 @@ void UIItemSellWnd::OnLBtnDown(int x, int y) {
   if (item.identity[1] > 0) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     item = g_session.FindStorageItem(item.identity[1]);
-    mode->drag.BeginItem(g_windowMgr, 5, item, item.quantity, -1);
+    mode->BeginDragItem(5, item, item.quantity, -1);
   }
 }
 
@@ -7148,9 +7148,9 @@ void UIItemShopWnd::OnLBtnDown(int x, int y) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     const ITEM_INFO owned = LookupClientItemByIdentity(g_session.m_inventoryItems, item.identity[1]);
     if (owned.identity[1] > 0) {
-      mode->drag.BeginItem(g_windowMgr, 3, item, item.quantity, -1);
+      mode->BeginDragItem(3, item, item.quantity, -1);
     } else {
-      mode->drag.BeginItem(g_windowMgr, 3, item, 1, -1);
+      mode->BeginDragItem(3, item, 1, -1);
     }
   }
 }
@@ -7167,7 +7167,7 @@ void UIItemStoreFindWnd::OnLBtnDown(int x, int y) {
   if (item.identity[1] > 0 && item.flags[2] == 0) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     item = g_session.FindCartItem(item.identity[1]);
-    mode->drag.BeginItem(g_windowMgr, 6, item, item.quantity, -1);
+    mode->BeginDragItem(6, item, item.quantity, -1);
   }
 }
 
@@ -7183,7 +7183,7 @@ void UIItemStoreSubWnd::OnLBtnDown(int x, int y) {
   if (item.identity[1] > 0 && item.flags[2] == 0) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     item = g_session.FindCartItem(item.identity[1]);
-    mode->drag.BeginItem(g_windowMgr, 6, item, item.quantity, -1);
+    mode->BeginDragItem(6, item, item.quantity, -1);
   }
 }
 
@@ -7203,7 +7203,7 @@ void UIItemStoreWnd::OnLBtnDown(int x, int y) {
   if (item.identity[1] > 0 && item.flags[2] == 0) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     item = g_session.FindCartItem(item.identity[1]);
-    mode->drag.BeginItem(g_windowMgr, 6, item, item.quantity, -1);
+    mode->BeginDragItem(6, item, item.quantity, -1);
   }
 }
 
