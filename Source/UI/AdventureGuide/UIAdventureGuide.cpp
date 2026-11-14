@@ -32,6 +32,8 @@
 #include <regex>
 #include <utility>
 
+template __declspec(noinline) std::string std::sub_match<std::string::const_iterator>::str() const;
+
 template void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::UpdateScrollBar();
 template void CUIListBox<AdventureGuide::CUITab>::UpdateScrollBar();
 template void CUIListBox<AdventureGuide::CUISubTab>::UpdateScrollBar();
@@ -481,16 +483,16 @@ void CUIItemInfo::SetDescription(int type, const std::vector<const char*>& descr
       continue;
     }
 
-    std::cmatch match;
+    std::smatch match;
     std::regex pattern("\\^000000");
-    std::regex_search(text.c_str(), text.c_str() + text.size(), match, pattern);
+    std::regex_search(text, match, pattern);
     while (!match.empty()) {
       std::string line = match.prefix().str() + match[0].str();
       this->descriptionViewer->AddLine(line);
       ++lines;
       text = match.suffix().str();
       text.erase(0, text.find_first_not_of(" \r\n\t\v\f"));
-      std::regex_search(text.c_str(), text.c_str() + text.size(), match, pattern);
+      std::regex_search(text, match, pattern);
     }
   }
 }
