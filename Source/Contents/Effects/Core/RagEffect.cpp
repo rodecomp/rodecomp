@@ -1693,59 +1693,56 @@ void CRagEffect::Blessing() {
   if (this->state.stateCnt == 0) {
     PlayEffectWave(*this, "effect\\EF_Blessing.wav");
     this->state.lastPrim = CreateEffectParticle(*this, this->render, 12, 0.0f, 0.0f, 0.0f, WorldObjects());
-    EffectPrimitiveState& ring = this->state.lastPrim->state;
-    ring.duration = this->state.duration;
-    ring.pattern |= 1u;
-    ring.renderFlag |= 0x200u;
-    ring.radius = 10.0f;
-    ring.latitude = 90.0f;
-    ring.red = 32;
-    ring.green = 176;
-    ring.blue = 232;
-    ring.alpha = 0.0f;
-    ring.maxAlpha = 100.0f;
-    ring.alphaSpeed = ring.maxAlpha / 30.0f;
-    ring.fadeOutCnt = ring.duration - 30;
-    Owner(&ring).InitSegment();
-    ring.textures = new CTexture*[ring.totalTexture];
-    ring.textures[0] = g_texMgr.Load("effect\\alpha_down.tga", 0, false, true, false);
+    this->state.lastPrim->state.duration = this->state.duration;
+    this->state.lastPrim->state.pattern |= 1u;
+    this->state.lastPrim->state.renderFlag |= 0x200u;
+    this->state.lastPrim->state.radius = 10.0f;
+    this->state.lastPrim->state.latitude = 90.0f;
+    this->state.lastPrim->state.red = 32;
+    this->state.lastPrim->state.green = 176;
+    this->state.lastPrim->state.blue = 232;
+    this->state.lastPrim->state.alpha = 0.0f;
+    this->state.lastPrim->state.maxAlpha = 100.0f;
+    this->state.lastPrim->state.alphaSpeed = this->state.lastPrim->state.maxAlpha / 30.0f;
+    this->state.lastPrim->state.fadeOutCnt = this->state.lastPrim->state.duration - 30;
+    Owner(&this->state.lastPrim->state).InitSegment();
+    this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+    this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\alpha_down.tga", 0, false, true, false);
   }
 
   if (this->state.stateCnt % 3 == 0 && this->state.stateCnt < 10) {
     this->state.lastPrim = CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects());
-    EffectPrimitiveState& wing = this->state.lastPrim->state;
-    wing.duration = this->state.duration;
-    wing.animSpeed = 2;
-    wing.alpha = static_cast<float>(this->state.stateCnt * -6 + 200);
-    wing.deltaPos2 = {0.0f, -25.0f, 0.0f};
-    Owner(&wing).SetSpriteName("이팩트\\축복.spr");
-    Owner(&wing).SetActionName("이팩트\\축복.act");
-    Owner(&wing).InitSegment();
+    this->state.lastPrim->state.duration = this->state.duration;
+    this->state.lastPrim->state.animSpeed = 2;
+    this->state.lastPrim->state.alpha = static_cast<float>(this->state.stateCnt * -6 + 200);
+    this->state.lastPrim->state.deltaPos2 = {0.0f, -25.0f, 0.0f};
+    Owner(&this->state.lastPrim->state).SetSpriteName("이팩트\\축복.spr");
+    Owner(&this->state.lastPrim->state).SetActionName("이팩트\\축복.act");
+    Owner(&this->state.lastPrim->state).InitSegment();
   }
 
   if (this->state.stateCnt % 4 == 0) {
     this->state.lastPrim = CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects());
-    EffectPrimitiveState& spark = this->state.lastPrim->state;
-    spark.duration = 80;
-    spark.pattern |= 0x80u;
-    spark.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
-    const float* m = spark.transform.values;
+    this->state.lastPrim->state.duration = 80;
+    this->state.lastPrim->state.pattern |= 0x80u;
+    this->state.lastPrim->state.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
+    const float* m = this->state.lastPrim->state.transform.values;
     const float distance = static_cast<float>(ClampedRandom(7) + 2);
-    spark.deltaPos2 = {
+    this->state.lastPrim->state.deltaPos2 = {
       (m[0] * 0.0f - m[3] * 25.0f) + distance * m[6] + m[9],
       (m[1] * 0.0f - m[4] * 25.0f) + distance * m[7] + m[10],
       (m[2] * 0.0f - m[5] * 25.0f) + distance * m[8] + m[11]
     };
-    spark.transform.MakeXRotation(GetRadian(-90));
-    spark.speed = static_cast<float>(ClampedRandom(20) + 20) / 100.0f;
-    spark.accel = -(spark.speed / static_cast<float>(spark.duration)) * 0.5f;
-    spark.alpha = 0.0f;
-    spark.size = 0.5f;
-    spark.fadeOutCnt = spark.duration - spark.duration / 5;
-    spark.alphaSpeed = spark.maxAlpha / 10.0f;
-    Owner(&spark).SetActionName("이팩트\\particle6.act");
-    Owner(&spark).SetSpriteName("이팩트\\particle6.spr");
-    Owner(&spark).InitSegment();
+    this->state.lastPrim->state.transform.MakeXRotation(GetRadian(-90));
+    this->state.lastPrim->state.speed = static_cast<float>(ClampedRandom(20) + 20) / 100.0f;
+    this->state.lastPrim->state.accel = -(this->state.lastPrim->state.speed / static_cast<float>(this->state.lastPrim->state.duration)) * 0.5f;
+    this->state.lastPrim->state.alpha = 0.0f;
+    this->state.lastPrim->state.size = 0.5f;
+    this->state.lastPrim->state.fadeOutCnt = this->state.lastPrim->state.duration - this->state.lastPrim->state.duration / 5;
+    this->state.lastPrim->state.alphaSpeed = this->state.lastPrim->state.maxAlpha / 10.0f;
+    Owner(&this->state.lastPrim->state).SetActionName("이팩트\\particle6.act");
+    Owner(&this->state.lastPrim->state).SetSpriteName("이팩트\\particle6.spr");
+    Owner(&this->state.lastPrim->state).InitSegment();
   }
 }
 
