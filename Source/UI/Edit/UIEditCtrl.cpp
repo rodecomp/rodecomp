@@ -7626,11 +7626,16 @@ void UIMerchantItemShopWnd::OnMouseHover(int x, int y) {
 
     if (item.identified == 1 && item.optionCount != 0) {
       CMode* mode = g_modeMgr.gameMode;
-      mode->ShowTooltip(FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), item.DisplayName(0).c_str(), item.optionCount).c_str(), tooltipX, tooltipY,
-                        g_session.GetItemNameColor(item), 0, 1);
+      std::uint32_t color = g_session.GetItemNameColor(item);
+      int screenX = tooltipX;
+      int screenY = tooltipY;
+      mode->ShowTooltip(FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), item.DisplayName(0).c_str(), item.optionCount).c_str(), screenX, screenY, color, 0, 1);
     } else {
       CMode* mode = g_modeMgr.gameMode;
-      mode->ShowTooltip(item.DisplayName(0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+      std::uint32_t color = g_session.GetItemNameColor(item);
+      int screenX = tooltipX;
+      int screenY = tooltipY;
+      mode->ShowTooltip(item.DisplayName(0).c_str(), screenX, screenY, color, 0, 1);
     }
     return;
   }
@@ -7645,11 +7650,17 @@ void UIMerchantItemShopWnd::OnMouseHover(int x, int y) {
   this->ToScreen(tooltipX, tooltipY);
 
   if (item.identified == 1 && item.optionCount != 0) {
-    g_modeMgr.gameMode
-        ->ShowTooltip(FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), item.DisplayName(0).c_str(), item.optionCount).c_str(), tooltipX - 2, tooltipY + 24,
-               g_session.GetItemNameColor(item), 0, 1);
+    CMode* mode = g_modeMgr.gameMode;
+    std::uint32_t color = g_session.GetItemNameColor(item);
+    int screenX = tooltipX - 2;
+    int screenY = tooltipY + 24;
+    mode->ShowTooltip(FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), item.DisplayName(0).c_str(), item.optionCount).c_str(), screenX, screenY, color, 0, 1);
   } else {
-    g_modeMgr.gameMode->ShowTooltip(item.DisplayName(0).c_str(), tooltipX - 2, tooltipY + 24, g_session.GetItemNameColor(item), 0, 1);
+    CMode* mode = g_modeMgr.gameMode;
+    std::uint32_t color = g_session.GetItemNameColor(item);
+    int screenX = tooltipX - 2;
+    int screenY = tooltipY + 24;
+    mode->ShowTooltip(item.DisplayName(0).c_str(), screenX, screenY, color, 0, 1);
   }
 }
 
