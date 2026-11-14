@@ -99,8 +99,8 @@ void CGameMode::ReceiveEquipListPart(unsigned char listType, int count, const un
   switch (listType) {
   case INVTYPE_STORAGE:
   case INVTYPE_GUILD_STORAGE:
-    for (int i = 0; i < count; ++i) {
-      const EquipListRecord record = records[i];
+    for (int remaining = count; remaining > 0; --remaining, ++records) {
+      const EquipListRecord record = *records;
       if (record.location == 0x8000) {
         continue;
       }
@@ -113,8 +113,8 @@ void CGameMode::ReceiveEquipListPart(unsigned char listType, int count, const un
     }
     break;
   case INVTYPE_INVENTORY:
-    for (int i = 0; i < count; ++i) {
-      const EquipListRecord record = records[i];
+    for (int remaining = count; remaining > 0; --remaining, ++records) {
+      const EquipListRecord record = *records;
       EquipListOption options[5];
       std::memcpy(options, record.options, sizeof(options));
       ITEM_INFO item;
@@ -153,8 +153,8 @@ void CGameMode::ReceiveEquipListPart(unsigned char listType, int count, const un
     }
     break;
   case INVTYPE_CART:
-    for (int i = 0; i < count; ++i) {
-      const EquipListRecord record = records[i];
+    for (int remaining = count; remaining > 0; --remaining, ++records) {
+      const EquipListRecord record = *records;
       EquipListOption options[5];
       std::memcpy(options, record.options, sizeof(options));
       ITEM_INFO item;
