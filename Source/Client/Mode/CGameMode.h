@@ -207,9 +207,9 @@ public:
   /* 0464 */ int countdownStartTick;
   /* 0468 */ int recordChatCount;
   /* 046C */ std::string recordChat[11];
-  /* 0574 */ unsigned char recordChatTime[0x2C];
+  /* 0574 */ std::uint32_t recordChatTime[11];
   /* 05A0 */ int strikeCount;
-  /* 05A4 */ unsigned char strikeTime[0x0C];
+  /* 05A4 */ std::uint32_t strikeTime[3];
   /* 05B0 */ int forcedAttack;
   /* 05B4 */ int yggdrasilUsePending;
   /* 05B8 */ int lastPickItemTime;

@@ -1899,7 +1899,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
           shortenedPair[length - 1] = shortenedPair[length + 1];
         }
       }
-      auto* chatTicks = reinterpret_cast<std::uint32_t*>(this->recordChatTime);
+      std::uint32_t* chatTicks = this->recordChatTime;
       if (this->recordChatCount == 10) {
         for (int i = 0; i < 10; ++i) {
           this->recordChat[i] = this->recordChat[i + 1];
@@ -1971,7 +1971,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
              this->recordChat[i] == extendedByte || this->recordChat[i] == shortenedByte ||
              this->recordChat[i] == shortenedPair) &&
             chatTicks[0] < timeGetTime() && timeGetTime() - chatTicks[i] < 30000 && ++matches >= 3) {
-          auto* repeatTicks = reinterpret_cast<std::uint32_t*>(this->strikeTime);
+          std::uint32_t* repeatTicks = this->strikeTime;
           if (this->strikeCount == 3) {
             repeatTicks[0] = repeatTicks[1];
             repeatTicks[1] = repeatTicks[2];
