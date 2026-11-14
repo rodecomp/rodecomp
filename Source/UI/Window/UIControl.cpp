@@ -1191,9 +1191,9 @@ void CUITabButton::OnLBtnUp(int, int) {
 // OFFSET: 0x009F1690
 // FUNCTION: fn_14694
 void CUITabButton::LoadSkin(bool resolveSkin) {
-  this->normalColor = SkinPaletteColor(ResourceMgr::Instance(), this->normalCell, resolveSkin);
-  this->selectedColor = SkinPaletteColor(ResourceMgr::Instance(), this->selectedCell, resolveSkin);
-  this->borderColor = SkinPaletteColor(ResourceMgr::Instance(), this->borderCell, resolveSkin);
+  this->normalColor = SkinPaletteColor(this->normalCell, resolveSkin);
+  this->selectedColor = SkinPaletteColor(this->selectedCell, resolveSkin);
+  this->borderColor = SkinPaletteColor(this->borderCell, resolveSkin);
   this->CUIImageTextButton::LoadSkin(resolveSkin);
 }
 
