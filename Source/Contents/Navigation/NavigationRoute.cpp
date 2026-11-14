@@ -312,7 +312,7 @@ std::string CNavigationManager::RouteText() {
     }
   }
 
-  this->routeText.assign(buffer, std::strlen(buffer));
+  this->routeText = buffer;
   return this->routeText;
 }
 
