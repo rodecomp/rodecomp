@@ -340,7 +340,7 @@ void UINewSkillListWnd::DrawSkillList() {
             const std::uint32_t id = skill.id;
             for (const CSkillInfo& live : this->SkillList(this->m_tab, true)) {
               if (live.id == id && live.level != 0) {
-                const int amount = skill.UseSpAmount(*g_session.m_hotkeyScript, useLevel);
+                const int amount = skill.UseSpAmount(useLevel);
                 if (amount != 0 && useLevel <= skill.level) {
                   sp = amount;
                 }
@@ -350,10 +350,10 @@ void UINewSkillListWnd::DrawSkillList() {
             }
           }
           if (!found) {
-            sp = skill.UseSpAmount(*g_session.m_hotkeyScript, skill.level);
+            sp = skill.UseSpAmount(skill.level);
           }
 
-          const int ap = skill.UseApAmount(*g_session.m_hotkeyScript, useLevel > 0 ? useLevel : skill.level);
+          const int ap = skill.UseApAmount(useLevel > 0 ? useLevel : skill.level);
           if (SkillUsesPercentSp(static_cast<int>(skill.id))) {
             if (ap != 0) {
               std::sprintf(text, "Sp : %d%%, Ap : %d", sp, ap);
