@@ -24,6 +24,17 @@
 template <>
 CEnchantMgr* Singleton<CEnchantMgr>::s_instance = nullptr;
 
+namespace {
+// INLINED
+inline CEnchantMgr* EnchantManager() {
+  if (!Singleton<CEnchantMgr>::s_instance) {
+    Singleton<CEnchantMgr>::s_instance = new (std::nothrow) CEnchantMgr;
+  }
+
+  return Singleton<CEnchantMgr>::s_instance;
+}
+}
+
 // OFFSET: 0x009F9B40
 // FUNCTION: fn_14814
 // OFFSET: 0x009F9C10
@@ -242,21 +253,10 @@ void CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>::Resize(int width, int he
   this->rebind = 1;
 }
 
-// OFFSET: 0x006863F0
-// FUNCTION: fn_05565
-template <>
-CEnchantMgr* Singleton<CEnchantMgr>::GetInstance() {
-  if (!s_instance) {
-    s_instance = new (std::nothrow) CEnchantMgr;
-  }
-
-  return s_instance;
-}
-
 // OFFSET: 0x00A04860
 // FUNCTION: fn_14958
 __declspec(noinline) CUIEnchantUI::~CUIEnchantUI() {
-  CEnchantMgr::GetInstance()->SendCloseEnchant();
+  EnchantManager()->SendCloseEnchant();
 }
 
 namespace EnchantUI {
@@ -1000,7 +1000,7 @@ void CUINormalPerfect::RequestEnchant() {
     for (int i = list->selected; i > 0; --i) {
       ++it;
     }
-    CEnchantMgr::GetInstance()->RequestPerfectEnchant(
+    EnchantManager()->RequestPerfectEnchant(
       this->group, static_cast<int16_t>(this->gameItem->GetItemInfo()->identity[1]), static_cast<int16_t>(this->selectedSlot), it->itemId
     );
   }
@@ -1009,7 +1009,7 @@ void CUINormalPerfect::RequestEnchant() {
 // OFFSET: 0x00A04E60
 // FUNCTION: fn_14966
 void CUINormalRandom::RequestEnchant() {
-  CEnchantMgr::GetInstance()->RequestRandomEnchant(
+  EnchantManager()->RequestRandomEnchant(
     this->group, static_cast<int16_t>(this->gameItem->GetItemInfo()->identity[1]), static_cast<int16_t>(this->selectedSlot)
   );
 }
@@ -1017,14 +1017,14 @@ void CUINormalRandom::RequestEnchant() {
 // OFFSET: 0x00A04F10
 // FUNCTION: fn_14967
 void CUIReset::RequestEnchant() {
-  CEnchantMgr::GetInstance()->RequestResetEnchant(this->group, static_cast<int16_t>(this->gameItem->GetItemInfo()->identity[1]));
+  EnchantManager()->RequestResetEnchant(this->group, static_cast<int16_t>(this->gameItem->GetItemInfo()->identity[1]));
 }
 
 // OFFSET: 0x00A04FB0
 // FUNCTION: fn_14968
 void CUIUpgradePerfect::RequestEnchant() {
   if (this->isUpgrade) {
-    CEnchantMgr::GetInstance()->RequestUpgradeEnchant(
+    EnchantManager()->RequestUpgradeEnchant(
       this->group, static_cast<int16_t>(this->gameItem->GetItemInfo()->identity[1]), static_cast<int16_t>(this->selectedSlot)
     );
     return;
@@ -1034,7 +1034,7 @@ void CUIUpgradePerfect::RequestEnchant() {
   if (static_cast<int>(list->selected) >= 0 && list->selected < list->data.size()) {
     auto it = list->data.begin();
     std::advance(it, static_cast<int>(list->selected));
-    CEnchantMgr::GetInstance()->RequestUpgradePerfectEnchant(
+    EnchantManager()->RequestUpgradePerfectEnchant(
       this->group, static_cast<int16_t>(this->gameItem->GetItemInfo()->identity[1]), static_cast<int16_t>(this->selectedSlot), it->itemId
     );
   }
@@ -1043,7 +1043,7 @@ void CUIUpgradePerfect::RequestEnchant() {
 // OFFSET: 0x00A050E0
 // FUNCTION: fn_14969
 void CUIUpgradeRandom::RequestEnchant() {
-  CEnchantMgr::GetInstance()->RequestUpgradeRandomEnchant(
+  EnchantManager()->RequestUpgradeRandomEnchant(
     this->group, static_cast<int16_t>(this->gameItem->GetItemInfo()->identity[1]), static_cast<int16_t>(this->selectedSlot)
   );
 }
@@ -1052,7 +1052,7 @@ void CUIUpgradeRandom::RequestEnchant() {
 // OFFSET: 0x00A08110
 // FUNCTION: fn_15017
 bool CUIEnchantUI::CanHitTest() {
-  return !CEnchantMgr::GetInstance()->m_inputBlocked;
+  return !EnchantManager()->m_inputBlocked;
 }
 
 // OFFSET: 0x009F6D40
@@ -1089,7 +1089,7 @@ void CUIEnchantUI::OnSelectTarget(EnchantUI::CUITargetItem* item, const ITEM_INF
 // OFFSET: 0x00A06C40
 // FUNCTION: fn_15008
 void CUIEnchantUI::SetEnchantGroup(uint64_t group) {
-  this->enchantInfo = CEnchantMgr::GetInstance()->GetEnchantInfo(group);
+  this->enchantInfo = EnchantManager()->GetEnchantInfo(group);
   if (!this->enchantInfo) {
     g_windowMgr.CloseWindow(WID_ENCHANTUI);
     return;

@@ -16,6 +16,7 @@
 
 #include "Resource/MSGSTRINGID.h"
 #include <cstdint>
+#include <new>
 
 namespace {
 #pragma pack(push, 1)
@@ -65,6 +66,17 @@ CEnchantMgr::CEnchantMgr() {
 
 // INLINED
 CEnchantMgr::~CEnchantMgr() {
+}
+
+// OFFSET: 0x006863F0
+// FUNCTION: fn_05565
+template <>
+CEnchantMgr* Singleton<CEnchantMgr>::GetInstance() {
+  if (!s_instance) {
+    s_instance = new (std::nothrow) CEnchantMgr;
+  }
+
+  return s_instance;
 }
 
 
