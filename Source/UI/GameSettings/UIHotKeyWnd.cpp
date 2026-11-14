@@ -377,7 +377,7 @@ void UIHotKeyWnd::Paint() {
   this->m_buttonBarHeight = this->DrawButtonBar(2, 0, 1);
   this->DrawPanelBackground(this->m_titleHeight, 0, "");
 
-  const int count = HotkeyCount(*g_session.m_hotkeyScript, this->m_tab);
+  const int count = g_session.HotkeyCount(this->m_tab);
   int visibleRow = 0;
 
   for (int row = 0; row < count; ++row) {

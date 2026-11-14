@@ -182,7 +182,7 @@ void CUserHotkeyMgr::Capture() {
 
   for (int position = 0; position < 4; ++position) {
     const int tab = this->TabAt(position);
-    const int count = HotkeyCount(*g_session.m_hotkeyScript, tab);
+    const int count = g_session.HotkeyCount(tab);
 
     for (int row = 0; row < count; ++row) {
       const int index = HotkeyIndex(*g_session.m_hotkeyScript, tab, row);
