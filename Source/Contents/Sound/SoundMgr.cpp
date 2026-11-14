@@ -48,6 +48,11 @@ extern "C" __declspec(dllimport) int __stdcall AIL_3D_speaker_type(MilesProvider
 extern "C" __declspec(dllimport) void __stdcall AIL_set_3D_speaker_type(MilesProvider provider, int speakerType);
 extern "C" __declspec(dllimport) void* __stdcall AIL_open_3D_listener(MilesProvider provider);
 extern "C" __declspec(dllimport) void* __stdcall AIL_allocate_3D_sample_handle(MilesProvider provider);
+extern "C" __declspec(dllimport) unsigned int __stdcall AIL_sample_status(void* sample);
+extern "C" __declspec(dllimport) void __stdcall AIL_init_sample(void* sample);
+extern "C" __declspec(dllimport) int __stdcall AIL_set_sample_file(void* sample, const void* data, int block);
+extern "C" __declspec(dllimport) void __stdcall AIL_set_sample_volume(void* sample, int volume);
+extern "C" __declspec(dllimport) void __stdcall AIL_start_sample(void* sample);
 
 // STATIC: 0x0138BE7C
 // GLOBAL: gl_24457
@@ -543,21 +548,19 @@ bool CSoundMgr::PlayData2D(const void* data, const float& x, const float& y, con
   const float scaledVolume = static_cast<float>(volume) * scale;
   volume = static_cast<int>(scaledVolume);
 
-  MilesRuntime& miles = MilesRuntime::Get();
-
   for (int i = 0; i < this->sampleCount; ++i) {
     if (!this->samples[i]) {
       continue;
     }
 
-    if (miles.sampleStatus(this->samples[i]) != 2) {
+    if (AIL_sample_status(this->samples[i]) != 2) {
       continue;
     }
 
-    miles.initSample(this->samples[i]);
-    miles.setSampleFile(this->samples[i], data, 0);
-    miles.setSampleVolume(this->samples[i], volume);
-    miles.startSample(this->samples[i]);
+    AIL_init_sample(this->samples[i]);
+    AIL_set_sample_file(this->samples[i], data, 0);
+    AIL_set_sample_volume(this->samples[i], volume);
+    AIL_start_sample(this->samples[i]);
 
     return true;
   }
