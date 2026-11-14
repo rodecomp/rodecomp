@@ -440,8 +440,7 @@ public:
   /* 4F1CC */ UIWindow* miniMapWnd;
   /* 4F1D0 */ UIWindow* editCtrlWnd;
   /* 4F1D4 */ UIWindow* keyboardCommandRootWnd;
-  /* 4F1D8 */ int achievementTracingX;
-  /* 4F1DC */ int achievementTracingY;
+  /* 4F1D8 */ AchTracingWndInfo achTracingWndInfo;
   /* 4F1E0 */ int visible_276;
   /* 4F1E4 */ UIWindow* roundBoxTooltipWnd;
   /* 4F1E8 */ UIWindow* captchaRegisterWnd;
@@ -454,8 +453,7 @@ public:
   /* 4F210 */ bool macroReporterVisible;
   /* 4F211 */ bool padding_4F211;
   /* 4F214 */ std::vector<WindowTextRecord> padding_4F214;
-  /* 4F220 */ int previewEquipX;
-  /* 4F224 */ int previewEquipY;
+  /* 4F220 */ PreviewEquipWndInfo previewEquipWndInfo;
   /* 4F228 */ int swapEquipmentPlacement[4];
   /* 4F238 */ int miniPartyWidth;
   /* 4F23C */ int miniPartyHeight;

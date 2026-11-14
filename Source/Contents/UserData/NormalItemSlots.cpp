@@ -1143,9 +1143,9 @@ void UIWindowMgr::ResetUIRectInfo() {
   navigation->expanded = 1;
 
   this->miniMapWndInfo.Reset();
-  reinterpret_cast<AchTracingWndInfo*>(&this->achievementTracingX)->Reset();
+  this->achTracingWndInfo.Reset();
   this->macroReporterWndInfo.Reset();
-  reinterpret_cast<PreviewEquipWndInfo*>(&this->previewEquipX)->Reset();
+  this->previewEquipWndInfo.Reset();
 
   int* const swapEquipment = this->swapEquipmentPlacement;
   swapEquipment[0] = (g_renderer->viewport.width - 280) / 2;

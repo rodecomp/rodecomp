@@ -88,7 +88,10 @@ struct MacroReporterWndInfo : WindowPlacement {
   bool IsValid() const;
 };
 
-struct PreviewEquipWndInfo : WindowPlacement {
+struct PreviewEquipWndInfo {
+  /* 0000 */ int x;
+  /* 0004 */ int y;
+
   void Reset();
   bool IsValid() const;
 };
@@ -103,7 +106,10 @@ struct UnusedWndInfoD : WindowPlacement {
   void Reset();
 };
 
-struct AchTracingWndInfo : WindowPlacement {
+struct AchTracingWndInfo {
+  /* 0000 */ int x;
+  /* 0004 */ int y;
+
   void Reset();
   int IsValid() const;
 };

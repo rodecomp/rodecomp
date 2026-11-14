@@ -7025,7 +7025,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window->renderLayer = 5;
       this->AddRendered(window);
       this->rendered.sort(layerGreater);
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->achievementTracingX), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->achTracingWndInfo), 0, 0, 0);
     }
     break;
   case WID_MINIMAPWND:
@@ -7172,7 +7172,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window = new UIPreviewEquipWnd();
       window->SetSize(280, 260);
       window->Move(static_cast<int>((g_renderer->viewport.width - 280) * g_depthAverageHalf), static_cast<int>((g_renderer->viewport.height - 260) * g_depthAverageHalf));
-      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->previewEquipX), 0, 0, 0);
+      window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->previewEquipWndInfo), 0, 0, 0);
       this->AddRendered(window);
     } else {
       window = this->LookupWindow(WID_PREVIEWEQUIPWND);
