@@ -2351,11 +2351,11 @@ void CGameMode::ReceiveWhisperResult(unsigned char kind, int argument) {
     std::string message;
     if (g_windowMgr.IsFriend(this->lastWhisperName.c_str()) || g_session.IsGuildMemberName(this->lastWhisperName.c_str())) {
       message = "[ To " + copied + " (";
-      message += ShortcutFilename(static_cast<std::uint32_t>(argument));
+      message += g_session.ShortcutFilename(static_cast<std::uint32_t>(argument));
       message += ") ] : " + this->lastWhisper;
     } else {
       message = "( To " + copied + " (";
-      message += ShortcutFilename(static_cast<std::uint32_t>(argument));
+      message += g_session.ShortcutFilename(static_cast<std::uint32_t>(argument));
       message += ") : " + this->lastWhisper;
     }
 
