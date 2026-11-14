@@ -538,8 +538,8 @@ __declspec(noinline) void CGameMode::UpdatePetFriendlyNoticeIds(int id, bool add
 
 // OFFSET: 0x00CF0070
 // FUNCTION: fn_21410
-const char* CGameMode::RecordChat4Text() {
-  return reinterpret_cast<std::string*>(reinterpret_cast<char*>(this) + 0x4DC)->c_str();
+const char* UIWindowMgr::ChatInputText() {
+  return this->chatInputText.c_str();
 }
 
 // OFFSET: 0x00CF0320

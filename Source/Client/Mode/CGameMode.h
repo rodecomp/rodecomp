@@ -504,7 +504,6 @@ public:
   void ShowNoticeBalloon(const std::vector<std::string>* lines);
   void UpdateBalloons();
   void ChangeZoneServer(std::string mapName, int x, int y, int ip, int port, std::string host);
-  const char* RecordChat4Text();
   CPlayer* Player();
   MinimapMarker* FindMinimapMarker(std::uint32_t key);
   float CameraDesiredYaw();

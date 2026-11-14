@@ -594,6 +594,7 @@ public:
   int GetRenderedWindowIds(int* ids);
   void HideChatWnd();
   bool DropAt(int x, int y, ModeDragState* drag);
+  const char* ChatInputText();
   void FocusWindow01C8Edit();
   void SetFocus(UIWindow* value);
   void FocusFirst();
