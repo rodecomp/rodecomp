@@ -27,6 +27,8 @@ public:
   /* 00CC */ std::string m_message;
 };
 
+struct ActorPickInfo;
+
 struct MacroReporterEntry {
   MacroReporterEntry() = default;
   MacroReporterEntry(std::string name, int id, short padding_001C);
@@ -59,7 +61,7 @@ public:
   void UpdateScrollBar();
   bool ValidateTarget(unsigned char notify);
   bool ValidateNames(unsigned char notify);
-  void AddPickedActor(MacroReporterEntry* entry);
+  void AddPickedActor(ActorPickInfo* pick);
   void AddActorByAID(int aid);
   void AddActorRow(int aid, std::string name);
   std::string EllipsizeText(int maxWidth, const char* text, int font, int height, unsigned char bold);

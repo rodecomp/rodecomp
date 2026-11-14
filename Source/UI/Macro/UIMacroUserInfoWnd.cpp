@@ -1,4 +1,5 @@
 #include "UI/Macro/UIMacroUserInfoWnd.h"
+#include "Contents/Actors/ActorPickNode.h"
 #include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 
@@ -68,9 +69,9 @@ UIMacroUserInfoWnd::UIMacroUserInfoWnd()
 
 // OFFSET: 0x007EF2C0
 // FUNCTION: fn_09839
-void UIMacroReporterWnd::AddPickedActor(MacroReporterEntry* entry) {
-  if (entry) {
-    this->AddActorByAID(entry->id);
+void UIMacroReporterWnd::AddPickedActor(ActorPickInfo* pick) {
+  if (pick) {
+    this->AddActorByAID(pick->accountId);
   }
 }
 

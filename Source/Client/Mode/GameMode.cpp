@@ -8334,7 +8334,7 @@ int CGameMode::ProcessMousePick(int result, ActorPickInfo* pick) {
   if (g_mouse.buttons[0] == 1 && pick) {
     UIMacroReporterWnd* reporter = static_cast<UIMacroReporterWnd*>(g_windowMgr.LookupWindow(WID_MACROREPORTERWND));
     if (reporter && reporter->activeOnly == true && reporter->m_mode == 0) {
-      reporter->AddPickedActor(reinterpret_cast<MacroReporterEntry*>(pick));
+      reporter->AddPickedActor(pick);
       return -1;
     }
   }
