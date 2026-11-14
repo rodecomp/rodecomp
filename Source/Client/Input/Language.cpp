@@ -403,11 +403,6 @@ UIChatHisBox2::UIChatHisBox2()
 UIChatHisBox3::UIChatHisBox3() : UIChatHisBox2(), autoScroll(1), fontHeight(12) {
 }
 
-// OFFSET: 0x00999FF0
-// FUNCTION: fn_13536
-UIColoringTextViewer::UIColoringTextViewer() : UIListBox(), color(0), lineLimit(0) {
-}
-
 // OFFSET: 0x007ECF50
 // FUNCTION: fn_09805
 UIMacroDetectorWnd::UIMacroDetectorWnd()
