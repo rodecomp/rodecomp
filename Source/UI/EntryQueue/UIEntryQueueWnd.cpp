@@ -128,7 +128,7 @@ bool UIEntryQueueRequestWnd::Create() {
   this->m_viewer->Configure(10, 22, 280, 305, 0);
   unsigned red, green, blue;
   g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-  this->m_viewer->backgroundColor = 0xFF000000u | (blue << 16) | (green << 8) | red;
+  this->m_viewer->backgroundColor = RGB(red, green, blue) | 0xFF000000u;
   this->m_viewer->Invalidate();
   this->AddChild(this->m_viewer);
 
@@ -648,7 +648,7 @@ void UIEntryQueueHelpWnd::OnCreate(int width, int height) {
   this->m_viewer->Configure(10, 22, 270, 225, 0);
   unsigned red, green, blue;
   g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-  this->m_viewer->backgroundColor = 0xFF000000u | (blue << 16) | (green << 8) | red;
+  this->m_viewer->backgroundColor = RGB(red, green, blue) | 0xFF000000u;
   this->m_viewer->Invalidate();
   this->AddChild(this->m_viewer);
 
