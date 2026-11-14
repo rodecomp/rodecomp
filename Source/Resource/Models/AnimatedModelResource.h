@@ -46,7 +46,7 @@ struct AnimatedModelNode {
   /* 0044 */ int textureVertexCount;
   /* 0048 */ int faceCount;
   /* 004C */ int textureCount;
-  /* 0050 */ std::array<float, 3>* faceNormals;
+  /* 0050 */ std::array<std::uint32_t, 3>* faceColors;
   /* 0054 */ AnimatedModelFrame* frames;
   /* 0058 */ AnimatedModelFace* faces;
   /* 005C */ CTexture** textures;
@@ -91,7 +91,7 @@ static_assert(sizeof(AnimatedModelFrame) == 8);
 static_assert(offsetof(AnimatedModelFrame, textureVertices) == 0x04);
 static_assert(offsetof(AnimatedModelNode, vertexCount) == 0x40);
 static_assert(offsetof(AnimatedModelNode, textureCount) == 0x4C);
-static_assert(offsetof(AnimatedModelNode, faceNormals) == 0x50);
+static_assert(offsetof(AnimatedModelNode, faceColors) == 0x50);
 static_assert(offsetof(AnimatedModelNode, frames) == 0x54);
 static_assert(offsetof(AnimatedModelNode, faces) == 0x58);
 static_assert(offsetof(AnimatedModelNode, textures) == 0x5C);

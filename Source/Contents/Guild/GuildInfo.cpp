@@ -302,7 +302,7 @@ void GuildInfo::SetMasterCharacterId(int characterId) {
 
 // OFFSET: 0x00AE5090
 // FUNCTION: fn_18048
-void GuildInfo::UpdatePosition(Unknown00D4Entry entry) {
+void GuildInfo::UpdatePosition(GuildPositionEntry entry) {
   for (auto it = this->positions.begin(); it != this->positions.end(); ++it) {
     if (it->positionId == entry.positionId) {
       *it = entry;

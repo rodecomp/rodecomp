@@ -4,6 +4,7 @@
 #include "Render/DX7/RenderSystemDX7.h"
 #include "Render/DX7/TextureAllocationDX7.h"
 #include "Render/Textures/Surface.h"
+#include "Render/Renderer.h"
 #include "UI/GameSettings/GameSettingsUI.h"
 
 #include <cstring>
@@ -389,8 +390,8 @@ HRESULT DeviceOwnerDX7::Close() {
 
 // OFFSET: 0x0054A8B0
 // FUNCTION: fn_01898
-void DeviceOwnerDX7::DestroySurface(CSurface* surface) {
-  delete surface;
+void DeviceOwnerDX7::DestroyRenderer(CRenderer* renderer) {
+  delete renderer;
 }
 
 // OFFSET: 0x0054AAD0

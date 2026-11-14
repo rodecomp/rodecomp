@@ -2462,7 +2462,7 @@ int UIGuildPositionManageWnd::SendMsg(UIWindow* sender, int message, std::intptr
     return 0;
 
   case UM_REFRESH:
-    this->m_positions = reinterpret_cast<const std::list<GuildPositionEntry>&>(g_guildInfo.positions);
+    this->m_positions = g_guildInfo.positions;
     this->InvalidateChildren();
     if (g_guildInfo.isMaster && this->m_positionMap.size()) {
       this->m_button->Move(this->geometry.width - 61, this->geometry.height - 23);
@@ -2859,7 +2859,7 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
 // FUNCTION: fn_13063
 void UIGuildPositionManageWnd::OnCreate(int, int) {
   this->CreateTabs();
-  this->m_positions = reinterpret_cast<const std::list<GuildPositionEntry>&>(g_guildInfo.positions);
+  this->m_positions = g_guildInfo.positions;
   if (std::strcmp(g_guildInfo.masterName.c_str(), "") == 0) {
     g_modeMgr.gameMode->SendMsg(MM_REQ_GUILD_MENU, 0, 0, 0, 0);
   }

@@ -15,10 +15,10 @@ bool EffectActor::HasId(int id) const {
 
 // OFFSET: 0x00CADC40
 // FUNCTION: fn_21064
-bool EffectActor::Contains(const RagEffectState* effect) const {
+bool EffectActor::Contains(const CRagEffect* effect) const {
   if (this->state.effects.size() != 0) {
     for (const CRagEffect* current : this->state.effects) {
-      if (current == reinterpret_cast<const CRagEffect*>(effect)) {
+      if (current == effect) {
         return true;
       }
     }

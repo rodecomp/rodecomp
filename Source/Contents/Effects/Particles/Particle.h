@@ -1,6 +1,7 @@
 #ifndef RAGNAROK_SOURCE_CONTENTS_EFFECTS_PARTICLES_PARTICLE_H
 #define RAGNAROK_SOURCE_CONTENTS_EFFECTS_PARTICLES_PARTICLE_H
 
+#include "Contents/Effects/Core/Effect.h"
 #include "Render/Primitives/RenderPrimitive.h"
 #include "Resource/Effects/EZeffectResource.h"
 #include "UI/Window/UIControl.h"
@@ -40,16 +41,6 @@ struct StarParticleState {
   /* 0018 */ float baseScale;
   /* 001C */ float phase;
 };
-
-struct EZeffectData {
-  /* 0000 */ int maximumFrame;
-  /* 0004 */ int fps;
-  /* 0008 */ int clipCount;
-  /* 000C */ int padding_000C;
-  /* 0010 */ EZeffectClip clips[60];
-};
-
-typedef void (*ParticleSubmit)(RenderCommand* primitive, int flags);
 
 class CParticle {
 public:
@@ -205,7 +196,6 @@ static_assert(offsetof(StarParticleState, baseScale) == 0x18);
 static_assert(offsetof(StarParticleState, phase) == 0x1C);
 static_assert(sizeof(matrix) == 0x30);
 static_assert(alignof(matrix) == alignof(float));
-static_assert(offsetof(EZeffectData, clips) == 0x10);
 static_assert(offsetof(CParticle, texture) == 0x18);
 static_assert(offsetof(CParticle, red) == 0x3C);
 static_assert(offsetof(CParticle, alpha) == 0x44);

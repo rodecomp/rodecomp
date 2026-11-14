@@ -590,7 +590,7 @@ void CSession::UpdateAchievementRecord(const AchievementRecordPacket& packet) {
     std::memcpy(record.objectives, packet.objectives, sizeof(record.objectives));
     record.completedAt = packet.completedAt;
     record.rewarded = packet.rewarded;
-    record.SplitDate(packet.completedAt, reinterpret_cast<std::uint16_t&>(record.year), reinterpret_cast<std::uint16_t&>(record.month), reinterpret_cast<std::uint16_t&>(record.day));
+    record.SplitDate(packet.completedAt, record.year, record.month, record.day);
     return;
   }
 
@@ -600,7 +600,7 @@ void CSession::UpdateAchievementRecord(const AchievementRecordPacket& packet) {
   std::memcpy(record.objectives, packet.objectives, sizeof(record.objectives));
   record.completedAt = packet.completedAt;
   record.rewarded = packet.rewarded;
-  record.SplitDate(packet.completedAt, reinterpret_cast<std::uint16_t&>(record.year), reinterpret_cast<std::uint16_t&>(record.month), reinterpret_cast<std::uint16_t&>(record.day));
+  record.SplitDate(packet.completedAt, record.year, record.month, record.day);
   this->achievements.insert({packet.id, record});
 }
 

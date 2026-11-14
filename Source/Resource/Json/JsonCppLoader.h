@@ -220,6 +220,22 @@ inline const JsonObject* JsonValue::ObjectRange() const {
   }
 }
 
+struct JsonCppLoaderParsedValue : JsonValue {
+  // INLINED
+  JsonCppLoaderParsedValue& operator=(JsonCppLoaderParsedValue&& other) {
+    if (this != &other) {
+      reinterpret_cast<void(__thiscall*)(JsonValue*, JsonValue*)>(JsonSwap)(this, &other);
+    }
+
+    return *this;
+  }
+
+  // INLINED
+  ~JsonCppLoaderParsedValue() {
+    reinterpret_cast<void(__thiscall*)(JsonValue*)>(JsonDestroy)(this);
+  }
+};
+
 class JsonCppLoader {
 public:
   JsonCppLoader();
@@ -249,7 +265,7 @@ private:
   JsonCppLoader(const JsonCppLoader&) = delete;
 
 public:
-  /* 0008 */ JsonValue document;
+  /* 0008 */ JsonCppLoaderParsedValue document;
   /* 0018 */ std::string error;
   /* 0030 */ bool loaded;
   /* 0031 */ bool succeeded;
@@ -277,6 +293,7 @@ inline JsonValue& JsonCppLoader::GetValue(JsonValue& out, const std::string& key
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(JsonValue) == 0x10);
+static_assert(sizeof(JsonCppLoaderParsedValue) == 0x10);
 static_assert(offsetof(JsonValue, smallValue) == 0x02);
 static_assert(offsetof(JsonValue, pointer) == 0x04);
 static_assert(offsetof(JsonValue, integer) == 0x08);

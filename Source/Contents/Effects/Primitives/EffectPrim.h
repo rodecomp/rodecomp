@@ -258,7 +258,7 @@ struct CEffectPrim : CRenderObject {
 
 CEffectPrim* CreateEffectParticle(
   CRagEffect& master, const RenderObjectState& masterRender, int type, float x, float y, float z,
-  std::list<CRenderObject*>& worldObjects
+  std::list<CGameObject*>& worldObjects
 );
 
 #if defined(_WIN32) && !defined(_WIN64)

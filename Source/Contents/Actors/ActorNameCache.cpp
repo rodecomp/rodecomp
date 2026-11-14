@@ -83,7 +83,7 @@ std::size_t CActorNameCardHolder::Save(std::vector<char>& output) {
 
 // OFFSET: 0x005C05B0
 // FUNCTION: fn_03506
-std::size_t CActorNameCardHolder::Load(const std::vector<char>& input) {
+std::size_t CActorNameCardHolder::Load(const std::vector<unsigned char>& input) {
   if (input.empty()) {
     return 0;
   }
@@ -102,28 +102,28 @@ std::size_t CActorNameCardHolder::Load(const std::vector<char>& input) {
     std::memcpy(&length, input.data() + offset + 4, sizeof(length));
     offset += 8;
     if (length > 0) {
-      this->cards[id].name.assign(&input[offset], length);
+      this->cards[id].name.assign(reinterpret_cast<const char*>(&input[offset]), length);
       offset += length;
     }
 
     std::memcpy(&length, input.data() + offset, sizeof(length));
     offset += 4;
     if (length > 0) {
-      this->cards[id].partyName.assign(&input[offset], length);
+      this->cards[id].partyName.assign(reinterpret_cast<const char*>(&input[offset]), length);
       offset += length;
     }
 
     std::memcpy(&length, input.data() + offset, sizeof(length));
     offset += 4;
     if (length > 0) {
-      this->cards[id].guildName.assign(&input[offset], length);
+      this->cards[id].guildName.assign(reinterpret_cast<const char*>(&input[offset]), length);
       offset += length;
     }
 
     std::memcpy(&length, input.data() + offset, sizeof(length));
     offset += 4;
     if (length > 0) {
-      this->cards[id].clanName.assign(&input[offset], length);
+      this->cards[id].clanName.assign(reinterpret_cast<const char*>(&input[offset]), length);
       offset += length;
     }
   }

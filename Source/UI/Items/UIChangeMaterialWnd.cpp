@@ -44,6 +44,23 @@ template __declspec(noinline) std::vector<ChangeMaterialProduct>::vector(const s
 template __declspec(noinline) std::vector<MaterialReq>::vector(const std::vector<MaterialReq>&);
 template __declspec(noinline) std::vector<MaterialResult>::vector(const std::vector<MaterialResult>&);
 
+#pragma pack(push, 1)
+struct ChangeMaterialPacket {
+  /* 0000 */ std::uint16_t type;
+  /* 0002 */ std::int16_t length;
+  /* 0004 */ std::int32_t action;
+  /* 0008 */ std::int32_t source;
+};
+
+struct ChangeMaterialPacketItem {
+  /* 0000 */ std::uint16_t index;
+  /* 0002 */ std::uint16_t quantity;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(ChangeMaterialPacket) == 0xC);
+static_assert(sizeof(ChangeMaterialPacketItem) == 4);
+
 // INLINED
 inline const MaterialListEntry* UIChangeMaterialWnd_List::GetEntry(unsigned int index) const {
   if (index >= this->m_items.size()) {
@@ -328,25 +345,25 @@ void UIChangeMaterialWnd_List::RefreshVisibleEntries() {
 void UIChangeMaterialWnd::SendChangeMaterial() {
   const std::int16_t count = static_cast<std::int16_t>(this->m_materials.size());
   const int length = count * 4 + 0xC;
-  auto* packet = static_cast<unsigned char*>(STACK_ALLOC(static_cast<std::size_t>(length)));
+  auto* packet = static_cast<ChangeMaterialPacket*>(STACK_ALLOC(static_cast<std::size_t>(length)));
 
   if (!packet) {
     return;
   }
 
-  *reinterpret_cast<std::uint16_t*>(packet) = 0x7E4;
-  *reinterpret_cast<std::uint16_t*>(packet + 2) = static_cast<std::uint16_t>(length);
-  *reinterpret_cast<std::int32_t*>(packet + 4) = 0;
-  *reinterpret_cast<std::int32_t*>(packet + 8) = 1;
+  packet->type = 0x7E4;
+  packet->length = static_cast<std::int16_t>(length);
+  packet->action = 0;
+  packet->source = 1;
 
-  unsigned char* entry = packet + 0xC;
+  auto* entry = reinterpret_cast<ChangeMaterialPacketItem*>(packet + 1);
   for (auto it = this->m_materials.begin(); it != this->m_materials.end(); ++it) {
-    *reinterpret_cast<std::uint16_t*>(entry + 2) = static_cast<std::uint16_t>(it->quantity);
-    *reinterpret_cast<std::uint16_t*>(entry) = static_cast<std::uint16_t>(it->identity[1]);
-    entry += 4;
+    entry->quantity = static_cast<std::uint16_t>(it->quantity);
+    entry->index = static_cast<std::uint16_t>(it->identity[1]);
+    ++entry;
   }
 
-  GetRagConnection().Send(static_cast<int>(*reinterpret_cast<const std::int16_t*>(packet + 2)), packet);
+  GetRagConnection().Send(packet->length, packet);
   UIBitmapButton* const button = this->m_button;
   button->SetDisabled(1);
   button->Invalidate();
@@ -375,7 +392,7 @@ int UIChangeMaterialWnd::SendMsg(
     this->itemList->SendMsg(nullptr, UM_DOWNPUSH, 0, 0, 0, 0);
     break;
   case UM_DEFPUSH:
-    if (sender == reinterpret_cast<UIWindow*>(this->searchEdit) && reinterpret_cast<UIWindow*>(this->searchEdit) == g_windowMgr.GetHoverWindow()) {
+    if (sender == this->searchEdit && this->searchEdit == g_windowMgr.GetHoverWindow()) {
       this->itemList->SendMsg(nullptr, UM_COMMAND, ID_SEARCH, reinterpret_cast<std::intptr_t>(this->searchEdit->Text()), 0, 0);
     }
     break;

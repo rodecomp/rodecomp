@@ -1449,11 +1449,11 @@ void CGameMode::ReceiveItem1784List(const unsigned char* data) {
     ITEM_INFO item;
     item.identity[1] = -1;
     item.SetItemId(entry.itemId);
-    item.saleData[3] = entry.purchaseParameter;
+    item.saleData.purchaseCount = entry.purchaseParameter;
     item.quantity = entry.quantity;
     item.prices[0] = entry.price;
-    item.saleData[1] = entry.saleParameter1;
-    item.saleData[2] = entry.saleParameter2;
+    item.saleData.startTime = entry.saleParameter1;
+    item.saleData.endTime = entry.saleParameter2;
     item.bindOnEquip = 8;
     item.identified = 1;
     item.GetIdDisplayName(name, capacity, 0);
@@ -7144,10 +7144,10 @@ void CGameMode::ReceiveGuildPositionUpdate(const unsigned char* data) {
 
     guildInfo->m_positions[position.positionId] = name;
 
-    GuildInfo::Unknown00D4Entry entry;
+    GuildPositionEntry entry;
     entry.positionId = position.positionId;
     entry.name = guildInfo->m_positions[position.positionId];
-    entry.ranking = position.ranking;
+    entry.id = position.ranking;
     entry.tax = position.payRate;
     entry.canInvite = position.mode & 1;
     entry.canExpel = (position.mode >> 4) & 1;

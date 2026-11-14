@@ -28,7 +28,7 @@ void CStormGustEffect::Open() {
   }
 
   for (int index = 0; index < 2; ++index) {
-    CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 1);
+    CParticle* particle = CreateParticle(&this->positionVector, 1);
     if (!particle) {
       continue;
     }

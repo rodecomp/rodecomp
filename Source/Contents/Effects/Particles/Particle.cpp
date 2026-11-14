@@ -209,7 +209,7 @@ void CEZ2STRParticle::Restart() {
 
   this->m_finishedClips = 0;
   this->m_frame = 0;
-  this->m_data = reinterpret_cast<EZeffectData*>(&resource->maximumFrame);
+  this->m_data = &resource->data;
   this->m_clipLimit = this->m_data->clipCount;
   if (this->m_data->clips[0].frameCount == 0) {
     --this->m_clipLimit;

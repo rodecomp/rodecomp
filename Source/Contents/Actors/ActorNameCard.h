@@ -58,7 +58,7 @@ public:
   void SetValue4(std::uint32_t id, std::string value);
   const CActorNameCard& Lookup(std::uint32_t id);
   std::size_t Save(std::vector<char>& output);
-  std::size_t Load(const std::vector<char>& input);
+  std::size_t Load(const std::vector<unsigned char>& input);
   void Set(std::uint32_t id, std::string name, std::string value1, std::string value2, std::string value3, std::string value4, std::string value5,
            std::uint32_t value);
   std::uint32_t FindId(std::string name);

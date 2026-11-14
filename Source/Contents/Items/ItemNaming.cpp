@@ -14,6 +14,15 @@
 #include <vector>
 #include "Resource/MSGSTRINGID.h"
 
+#pragma pack(push, 1)
+struct ReplayTaggedRecordHeader {
+  /* 0000 */ std::uint16_t id;
+  /* 0002 */ std::uint32_t bytes;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(ReplayTaggedRecordHeader) == 6);
+
 // GLOBAL: gl_24725
 std::map<int, ItemMoveInfo> g_itemMoveInfo;
 
@@ -505,9 +514,9 @@ ItemMoveInfo& FindItemMoveInfo(int id) {
 
 // OFFSET: 0x006D5150
 // FUNCTION: fn_06567
-void __fastcall DestroyReplayTaggedRecordHeader(std::uint16_t* value) {
-  *value = 0;
-  *reinterpret_cast<std::uint32_t*>(value + 1) = 0;
+void __fastcall DestroyReplayTaggedRecordHeader(ReplayTaggedRecordHeader* value) {
+  value->id = 0;
+  value->bytes = 0;
 }
 
 __declspec(noinline) bool LoadItemMoveInfoTable(std::vector<int>& values, const char* name) {

@@ -378,9 +378,8 @@ namespace myGPack {
       }
     }
 
-    Block64* destination = reinterpret_cast<Block64*>(block);
-    destination->words[0] = result.words[0];
-    destination->words[1] = result.words[1];
+    std::memcpy(block, &result.words[0], sizeof(result.words[0]));
+    std::memcpy(block + sizeof(result.words[0]), &result.words[1], sizeof(result.words[1]));
     return static_cast<int>(result.words[1]);
   }
 
@@ -397,9 +396,8 @@ namespace myGPack {
       }
     }
 
-    Block64* destination = reinterpret_cast<Block64*>(block);
-    destination->words[0] = result.words[0];
-    destination->words[1] = result.words[1];
+    std::memcpy(block, &result.words[0], sizeof(result.words[0]));
+    std::memcpy(block + sizeof(result.words[0]), &result.words[1], sizeof(result.words[1]));
     return static_cast<int>(result.words[1]);
   }
 

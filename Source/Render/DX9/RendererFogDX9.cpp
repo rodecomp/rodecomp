@@ -11,7 +11,7 @@
 
 // INLINED
 static inline DWORD FtoDW(float value) {
-  return *reinterpret_cast<DWORD*>(&value);
+  return std::bit_cast<DWORD>(value);
 }
 
 // OFFSET: 0x00567E20

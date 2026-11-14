@@ -330,6 +330,21 @@ struct GameModePacketBB {
   /* 0002 */ std::uint16_t argument1;
   /* 0004 */ std::uint8_t argument2;
 };
+
+struct OpenStoreEntry {
+  /* 0000 */ std::uint16_t index;
+  /* 0002 */ std::uint16_t amount;
+  /* 0004 */ std::uint32_t price;
+};
+
+struct OpenStorePacket {
+  /* 0000 */ std::uint16_t packetId;
+  /* 0002 */ std::int16_t length;
+  /* 0004 */ char title[80];
+  /* 0054 */ unsigned char open;
+  /* 0055 */ OpenStoreEntry entries[2284];
+  /* 47B5 */ unsigned char padding_47B5[7];
+};
 #pragma pack(pop)
 
 static_assert(sizeof(GameModeReplayPacket) == 0xFE);
@@ -361,6 +376,9 @@ static_assert(sizeof(GameModePacketWordText16) == 20);
 static_assert(sizeof(GameModePacketText16Words) == 22);
 static_assert(sizeof(GameModePacketC5) == 7);
 static_assert(sizeof(GameModePacketBB) == 5);
+static_assert(sizeof(OpenStoreEntry) == 8);
+static_assert(offsetof(OpenStorePacket, entries) == 85);
+static_assert(sizeof(OpenStorePacket) == 0x47BC);
 
 // GLOBAL: gl_24661
 std::vector<ActiveSkillEffect> g_activeSkillEffects;
@@ -1751,7 +1769,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       this->partyPosList.clear();
       return 0;
     case MM_CANCEL_USE_SKILL:
-      this->skillUseType = nullptr;
+      this->skillUseType = 0;
       this->skillId = 0;
       this->skillUseLevel = 0;
       g_pickInvert = 0;
@@ -1760,7 +1778,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       this->guildPosList.clear();
       return 0;
     case MM_GET_SKILL_USE_TYPE:
-      return reinterpret_cast<int>(this->skillUseType);
+      return this->skillUseType;
     case MM_GET_SKILL_USE_LEVEL:
       return this->skillUseLevel;
     case MM_SEND_NUMBER_TO_NPC:
@@ -2879,7 +2897,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       if (g_windowMgr.LookupWindow(WID_COLLECTIONSYSTEMWND) != nullptr || g_windowMgr.merchantItemMyShopWnd != nullptr) {
         return 0;
       }
-      this->skillUseType = reinterpret_cast<void*>(argument1);
+      this->skillUseType = argument1;
       if (argument2 == 0) {
         return 0;
       }
@@ -3816,35 +3834,35 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
     }
     case MM_REQ_OPENSTORE: {
       const int count = g_session.GetList11Size();
-      unsigned char packet[0x47BC];
-      *reinterpret_cast<std::uint16_t*>(packet) = 0x1B2;
-      *reinterpret_cast<std::uint16_t*>(packet + 2) = static_cast<std::uint16_t>(85 + count * 8);
-      char* title = reinterpret_cast<char*>(packet + 4);
+      OpenStorePacket packet;
+      packet.packetId = 0x1B2;
+      packet.length = static_cast<std::int16_t>(85 + count * 8);
+      char* title = packet.title;
       if (argument2 == 1) {
         std::strncpy(title, reinterpret_cast<const char*>(argument1), 79);
         title[79] = 0;
-        packet[84] = 1;
+        packet.open = 1;
       } else {
         title[0] = 0;
-        packet[84] = 0;
+        packet.open = 0;
       }
       if (!g_replayAnimationScaling) {
         g_session.storeTitle = title;
       }
-      unsigned char* entry = packet + 85;
+      OpenStoreEntry* entry = packet.entries;
       for (int index = 0; index < count; ++index) {
         const ITEM_INFO item = g_session.GetItem1768At(index);
         if (item.identity[1]) {
-          *reinterpret_cast<std::uint16_t*>(entry) = static_cast<std::uint16_t>(item.identity[1]);
-          *reinterpret_cast<std::uint16_t*>(entry + 2) = static_cast<std::uint16_t>(item.quantity);
-          *reinterpret_cast<std::uint32_t*>(entry + 4) = item.prices[1];
-          entry += 8;
+          entry->index = static_cast<std::uint16_t>(item.identity[1]);
+          entry->amount = static_cast<std::uint16_t>(item.quantity);
+          entry->price = item.prices[1];
+          ++entry;
         }
       }
       if (count == 0) {
-        packet[84] = 0;
+        packet.open = 0;
       }
-      GetRagConnection().Send(*reinterpret_cast<std::int16_t*>(packet + 2), packet);
+      GetRagConnection().Send(packet.length, &packet);
       g_session.ClearMerchantPurchaseSavedItems();
       return 0;
     }
@@ -4617,7 +4635,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
 // OFFSET: 0x00CCD880
 // FUNCTION: fn_21217
 CGameMode::CGameMode()
-    : scene(nullptr), skillUseType(nullptr), skillId(0), skillAttackRange(0), skillUseLevel(0), ignoreSkillInterval(0), bossMonsterX(0), bossMonsterY(0),
+    : scene(nullptr), skillUseType(0), skillId(0), skillAttackRange(0), skillUseLevel(0), ignoreSkillInterval(0), bossMonsterX(0), bossMonsterY(0),
       broadcastBalloon(nullptr), noticeBalloon(nullptr), recordItemPickups(0) {
   this->isInitializing[0] = 0;
   this->camera = nullptr;
@@ -4630,8 +4648,7 @@ CGameMode::CGameMode()
 
 // OFFSET: 0x00CEFE70
 // FUNCTION: fn_21408
-void CGameMode::RemoveNotificationWindow(int window) {
-  UIWindow* target = reinterpret_cast<UIWindow*>(window);
+void CGameMode::RemoveNotificationWindow(UIWindow* target) {
   for (std::list<UIWindow*>::iterator it = this->notificationWindows.begin(); it != this->notificationWindows.end(); ++it) {
     if (*it == target) {
       this->notificationWindows.erase(it);
@@ -4776,7 +4793,7 @@ void CGameMode::RequestPlayerAction(int target, int argument) {
     }
   }
 
-  switch (reinterpret_cast<std::intptr_t>(this->skillUseType)) {
+  switch (this->skillUseType) {
   case SUT_NOSKILL:
     this->scene->player->SendMsg(nullptr, AM_PROCEEDATTACK, static_cast<std::uint32_t>(target), argument, 0, 0, 0, 0);
     break;
@@ -4813,7 +4830,7 @@ void CGameMode::UpdateLoopSounds() {
 
 // OFFSET: 0x00CE81C0
 // FUNCTION: fn_21340
-void CGameMode::AddSceneObject(CRenderObject* object) {
+void CGameMode::AddSceneObject(CGameObject* object) {
   if (this->scene && object) {
     this->scene->objects.push_back(object);
   }
@@ -5650,7 +5667,7 @@ void CGameMode::TargetActorByAid(int aid) {
   const unsigned char forceOption = g_serviceOptions.Get(TT_NOCTRL_ON_OFF);
   const int shiftHeld = HIBYTE(GetAsyncKeyState(VK_SHIFT));
   int force = shiftHeld;
-  const std::intptr_t mode = reinterpret_cast<std::intptr_t>(this->skillUseType);
+  const std::intptr_t mode = this->skillUseType;
   const bool skillMode = mode == 2 || mode == 4;
   const bool allowed = aid != static_cast<int>(g_session.m_aid) || mode == 4;
 
@@ -5790,7 +5807,7 @@ unsigned CGameMode::ReadReplayGuildInfo(const std::vector<unsigned char>& data) 
       case 13003:
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
-        this->nameCard.Load(reinterpret_cast<const std::vector<char>&>(record));
+        this->nameCard.Load(record);
         break;
       case 13004:
         std::memcpy(&guildId, data.data() + offset, header.size);
@@ -6607,7 +6624,7 @@ void CGameMode::UpdateBalloons() {
   UIWindow*& skillBalloon = this->skillBalloon;
   UIWindow*& hintBalloon = this->skillHintBalloon;
   int& shownSkill = this->shownSkillId;
-  if (this->skillUseType == nullptr) {
+  if (this->skillUseType == 0) {
     if (skillBalloon) {
       g_windowMgr.Schedule(skillBalloon);
       skillBalloon = nullptr;
@@ -7326,7 +7343,7 @@ void CGameMode::InitializeState() {
   this->sameChatRepeatCount = 0;
   this->serverTimeSyncCount = 0;
   this->lastChat = "";
-  this->skillUseType = nullptr;
+  this->skillUseType = 0;
   this->skillId = 0;
   g_pickInvert = 0;
   this->cardItemIndex = 0;
@@ -7614,7 +7631,7 @@ void CGameMode::ProcessMouseWheel(int requireControl) {
   }
 
   this->wheelTick = timeGetTime();
-  if (g_mouse.wheel == 0 || this->skillUseType != nullptr) {
+  if (g_mouse.wheel == 0 || this->skillUseType != 0) {
     return;
   }
 
@@ -8113,7 +8130,7 @@ void CGameMode::ShowActorNameBalloon(std::uint32_t id) {
 void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor* actor) {
   const unsigned char selfTargetOption = g_serviceOptions.Get(TT_NOSHIFT_ON_OFF);
   const unsigned char forceOption = g_serviceOptions.Get(TT_NOCTRL_ON_OFF);
-  const std::intptr_t mode = reinterpret_cast<std::intptr_t>(this->skillUseType);
+  const std::intptr_t mode = this->skillUseType;
 
   int attack;
   if (mode == 2 || mode == 4) {
@@ -8330,7 +8347,7 @@ int CGameMode::ProcessMousePick(int result, ActorPickInfo* pick) {
     }
   }
 
-  if (g_windowMgr.LookupWindow(WID_COLLECTIONSYSTEMWND) || reinterpret_cast<std::intptr_t>(this->skillUseType) == 1) {
+  if (g_windowMgr.LookupWindow(WID_COLLECTIONSYSTEMWND) || this->skillUseType == 1) {
     return result;
   }
 
@@ -8475,7 +8492,7 @@ int CGameMode::ProcessGroundClick(int result) {
     }
   }
 
-  const std::intptr_t mode = reinterpret_cast<std::intptr_t>(this->skillUseType);
+  const std::intptr_t mode = this->skillUseType;
   if (mode == 2 || mode == 3 || mode == 4) {
     return result;
   }
@@ -8563,7 +8580,7 @@ int CGameMode::ProcessGroundClick(int result) {
 
     if (g_session.mercenaryAlive != 0 && g_mouse.buttons[0] == 1) {
       g_session.ResetMercenaryStats();
-      if (reinterpret_cast<std::intptr_t>(this->skillUseType) == 1 && g_session.IsMercenarySkill(this->skillId)) {
+      if (this->skillUseType == 1 && g_session.IsMercenarySkill(this->skillId)) {
         CGameActor* mercenary = static_cast<CGameActor*>(this->scene->GetGameActorByAID(mercenaryAid));
         if (mercenary && mercenary->HasActiveMercenaryAI()) {
           const std::uint32_t state = mercenary->render.state;
@@ -8583,7 +8600,7 @@ int CGameMode::ProcessGroundClick(int result) {
     }
   }
 
-  if (reinterpret_cast<std::intptr_t>(this->skillUseType) == 1 && g_mouse.buttons[0] == 1 && (result == 0 || result == 2)) {
+  if (this->skillUseType == 1 && g_mouse.buttons[0] == 1 && (result == 0 || result == 2)) {
     result = 1;
     if (g_session.IsHomunculusSkill(this->skillId) == 1 && g_session.homunAlive == 1) {
       CGameActor* homun = static_cast<CGameActor*>(this->scene->GetGameActorByAID(homunAid));
@@ -8935,7 +8952,7 @@ void CGameMode::ProcessInput() {
     handled = 0;
   }
 
-  if (this->skillUseType != nullptr) {
+  if (this->skillUseType != 0) {
     if (g_session.m_mapTransitionFlag == 0) {
       if (g_mouse.wheel > 0) {
         this->SendMsg(MM_USESKILL_LEVEL_PLUS, 1, 0, 0, 0);
@@ -8972,7 +8989,7 @@ void CGameMode::ProcessInput() {
   this->cursorOffsetX = 0.0f;
   this->cursorOffsetY = 0.0f;
   if (handled == 0) {
-    const std::intptr_t mode = reinterpret_cast<std::intptr_t>(this->skillUseType);
+    const std::intptr_t mode = this->skillUseType;
     g_session.UpdateMonsterInfoEnabled(mode == 2 || mode == 4);
     if (pick) {
       bool offset;
@@ -9024,7 +9041,7 @@ void CGameMode::ProcessInput() {
   }
 
   if (handled == 0) {
-    if (this->skillUseType != nullptr) {
+    if (this->skillUseType != 0) {
       this->SetCursorAction(10);
     } else if (g_mouse.buttons[1] != 2) {
       int column = -1;
@@ -10079,7 +10096,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
 void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* actor) {
   const unsigned char selfTargetOption = g_serviceOptions.Get(TT_NOSHIFT_ON_OFF);
   const unsigned char forceOption = g_serviceOptions.Get(TT_NOCTRL_ON_OFF);
-  const std::intptr_t mode = reinterpret_cast<std::intptr_t>(this->skillUseType);
+  const std::intptr_t mode = this->skillUseType;
 
   int skillMode;
   int shiftHeld;
@@ -10500,7 +10517,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
       } else if (pick->job != JT_WARPNPC) {
         result = 1;
         if (IsPlayerJob(pick->job)) {
-          const std::intptr_t mode = reinterpret_cast<std::intptr_t>(this->skillUseType);
+          const std::intptr_t mode = this->skillUseType;
           int skillMode;
           int shift;
           int support;
@@ -10576,7 +10593,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
             result = 2;
           }
         } else if (g_session.IsMonsterClass(pick->job)) {
-          const std::intptr_t mode = reinterpret_cast<std::intptr_t>(this->skillUseType);
+          const std::intptr_t mode = this->skillUseType;
           int skillMode;
           int attack;
           if (mode == 2 || mode == 4) {
@@ -10672,10 +10689,10 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
         case UNT_SOLIDTRAP:
         case UNT_SWIFTTRAP:
         case UNT_FLAMETRAP:
-          action = reinterpret_cast<std::intptr_t>(this->skillUseType) == 5 ? 10 : 5;
+          action = this->skillUseType == 5 ? 10 : 5;
           break;
         default:
-          action = reinterpret_cast<std::intptr_t>(this->skillUseType) == 5 ? 10 : 0;
+          action = this->skillUseType == 5 ? 10 : 0;
           break;
         }
       } else {
@@ -10690,10 +10707,10 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
         case UNT_SOLIDTRAP:
         case UNT_SWIFTTRAP:
         case UNT_FLAMETRAP:
-          action = reinterpret_cast<std::intptr_t>(this->skillUseType) == 5 ? 10 : 5;
+          action = this->skillUseType == 5 ? 10 : 5;
           break;
         default:
-          action = reinterpret_cast<std::intptr_t>(this->skillUseType) == 5 ? 10 : 0;
+          action = this->skillUseType == 5 ? 10 : 0;
           break;
         }
       }
@@ -10785,7 +10802,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
 
     const int job = pick->job;
     if (g_session.IsMonsterClass(job)) {
-      const std::intptr_t mode = reinterpret_cast<std::intptr_t>(this->skillUseType);
+      const std::intptr_t mode = this->skillUseType;
       int attack;
       if (mode == 2 || mode == 4) {
         const int shift = HIBYTE(GetAsyncKeyState(VK_SHIFT));
@@ -10914,7 +10931,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
       break;
     }
 
-    const std::intptr_t mode = reinterpret_cast<std::intptr_t>(this->skillUseType);
+    const std::intptr_t mode = this->skillUseType;
     int attack;
     if (mode == 2 || mode == 4) {
       const int shift = HIBYTE(GetAsyncKeyState(VK_SHIFT));
@@ -11013,7 +11030,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
       return result;
     }
     default:
-      if (reinterpret_cast<std::intptr_t>(this->skillUseType) == 5) {
+      if (this->skillUseType == 5) {
         const long long skillUse = static_cast<long long>(reinterpret_cast<int>(this)) + offsetof(CGameMode, skillUseType);
         this->scene->player->SendMsg(nullptr, AM_PROCEEDTOUCHSKILL, pick->accountId, skillUse, 0, 0, 0, 0);
       }
@@ -11023,7 +11040,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
     this->SetCursorAction(0);
     return 0;
   case 1:
-    if (g_mouse.buttons[0] == 1 && reinterpret_cast<std::intptr_t>(this->skillUseType) == 0) {
+    if (g_mouse.buttons[0] == 1 && this->skillUseType == 0) {
       this->scene->player->SendMsg(nullptr, AM_PROCEEDPICKUPITEM, pick->accountId, 0, 0, 0, 0, 0);
     }
     break;
@@ -11042,7 +11059,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
       break;
     }
 
-    const std::intptr_t mode = reinterpret_cast<std::intptr_t>(this->skillUseType);
+    const std::intptr_t mode = this->skillUseType;
     int attack;
     if (mode == 2 || mode == 4) {
       const int shift = HIBYTE(GetAsyncKeyState(VK_SHIFT));

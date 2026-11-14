@@ -20,7 +20,7 @@ public:
   virtual std::uint32_t Width() = 0;
   virtual std::uint32_t Height() = 0;
   virtual CRenderer* CreateRenderer() = 0;
-  virtual void DestroySurface(CSurface* surface) = 0;
+  virtual void DestroyRenderer(CRenderer* renderer) = 0;
   virtual CSurface* CreateSurface(std::uint32_t width, std::uint32_t height) = 0;
   virtual CTexture* CreateTexture(std::uint32_t width, std::uint32_t height, std::int32_t format, bool option1, bool option2) = 0;
   virtual CSurface* CreateSurfaceOrTexture(std::uint32_t width, std::uint32_t height) = 0;

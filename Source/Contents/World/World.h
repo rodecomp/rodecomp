@@ -66,13 +66,13 @@ public:
   void AddPcPosUnindexed(std::uint32_t aid, const CellFloatPos& cell);
   void InitWorld();
   void InitializeSpatial();
-  void RemoveObject(CRenderObject* object);
+  void RemoveObject(CGameObject* object);
   void SendObjectMessage(CGameObject* sender, std::uint64_t identity, int message, int a, int b, int c, int d);
   static unsigned long __stdcall LoadDeferredModels(void* parameter);
   void FinishModelLoading();
 
   /* 0004 */ CGameMode* gameMode;
-  /* 0008 */ std::list<CRenderObject*> objects;
+  /* 0008 */ std::list<CGameObject*> objects;
   /* 0010 */ std::list<CRenderObject*> actors;
   /* 0018 */ std::list<CRenderObject*> items;
   /* 0020 */ std::list<CRenderObject*> skills;
@@ -81,7 +81,7 @@ public:
   /* 0030 */ C3dAttr* terrain;
   /* 0034 */ std::vector<C3dActor*> models;
   /* 0040 */ int published;
-  /* 0044 */ int pending;
+  /* 0044 */ long pending;
   /* 0048 */ int isPKZone;
   /* 004C */ int isSiegeMode;
   /* 0050 */ int isBattleFieldMode;

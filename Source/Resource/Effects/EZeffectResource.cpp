@@ -60,9 +60,9 @@ bool CEZeffectRes::Load(const char* name) {
   int version;
   file.Read(magic, sizeof(magic));
   file.Read(&version, sizeof(version));
-  file.Read(&this->fps, sizeof(this->fps));
-  file.Read(&this->maximumFrame, sizeof(this->maximumFrame));
-  file.Read(&this->clipCount, sizeof(this->clipCount));
+  file.Read(&this->data.fps, sizeof(this->data.fps));
+  file.Read(&this->data.maximumFrame, sizeof(this->data.maximumFrame));
+  file.Read(&this->data.clipCount, sizeof(this->data.clipCount));
   file.Seek(16, FILE_CURRENT);
 
   if (version != 148) {
@@ -71,8 +71,8 @@ bool CEZeffectRes::Load(const char* name) {
     return false;
   }
 
-  for (int index = 0; index < this->clipCount; ++index) {
-    EZeffectClip& clip = this->clips[index];
+  for (int index = 0; index < this->data.clipCount; ++index) {
+    EZeffectClip& clip = this->data.clips[index];
     file.Read(&clip.textureCount, sizeof(clip.textureCount));
 
     for (int texture = 0; texture < clip.textureCount; ++texture) {

@@ -68,6 +68,7 @@ extern "C" {
 #include <iterator>
 #include <map>
 #include <new>
+#include <utility>
 #include <windows.h>
 
 // STATIC: 0x013896C4
@@ -78,6 +79,11 @@ extern "C" long long _Xtime_get_ticks();
 
 template __declspec(noinline) std::unordered_map<std::string, CashEmotionCommand*>::iterator
 std::unordered_map<std::string, CashEmotionCommand*>::_Mybase::find<void>(const std::string&);
+
+template __declspec(noinline) std::pair<std::unordered_map<std::string, CashEmotionCommand*>::_Mybase::_Nodeptr, bool>
+std::unordered_map<std::string, CashEmotionCommand*>::_Mybase::_Try_emplace<const std::string&, CashEmotionCommand*&>(
+  const std::string&, CashEmotionCommand*&
+);
 
 class ICashEmotionAction {
 public:
@@ -572,7 +578,7 @@ void CCashEmotionMgr::ClearOwnedPacks() {
 // FUNCTION: fn_02936
 void CCashEmotionMgr::ClearCommands() {
   for (auto& entry : this->m_commands) {
-    delete reinterpret_cast<CashEmotionCommand*>(entry.second);
+    delete entry.second;
   }
 
   this->m_commands.clear();
@@ -647,12 +653,12 @@ void CCashEmotionMgr::RefreshCommands() {
         continue;
       }
 
-      auto it = this->m_commands.find(shortcut.first);
+      auto it = std::as_const(this->m_commands).find(shortcut.first);
       if (it == this->m_commands.end()) {
         CashEmotionCommand* command = new CashEmotionCommand(shortcut.first, packId, emotionId);
-        this->m_commands.try_emplace(shortcut.first, reinterpret_cast<int>(command));
+        this->m_commands.try_emplace(shortcut.first, std::move(command));
       } else {
-        reinterpret_cast<CashEmotionCommand*>(it->second)->Add(packId, emotionId);
+        it->second->Add(packId, emotionId);
       }
     }
   }
@@ -676,19 +682,19 @@ void CCashEmotionMgr::ProcessChatCommand(const char* command) {
     return;
   }
 
-  int actionId;
+  CashEmotionCommand* actionId;
   {
     ++command;
     std::string key(command);
     auto it = this->m_commands.find(key);
-    actionId = this->m_commands.end() != it ? it->second : 0;
+    actionId = this->m_commands.end() != it ? it->second : nullptr;
   }
 
   if (actionId == 0) {
     this->HideSuggestions();
   } else {
     chatWnd->ShowSuggestions(1);
-    static_cast<UICashEmotionMiniWnd*>(suggestions)->Select(reinterpret_cast<CashEmotionCommand*>(actionId));
+    static_cast<UICashEmotionMiniWnd*>(suggestions)->Select(actionId);
   }
 }
 

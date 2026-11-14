@@ -34,7 +34,7 @@ AnimatedModelFrame::~AnimatedModelFrame() {
 
 // INLINED
 AnimatedModelNode::AnimatedModelNode()
-    : model(nullptr), parent(nullptr), vertexCount(0), faceCount(0), faceNormals(nullptr), frames(nullptr), faces(nullptr), textures(nullptr) {
+    : model(nullptr), parent(nullptr), vertexCount(0), faceCount(0), faceColors(nullptr), frames(nullptr), faces(nullptr), textures(nullptr) {
 }
 
 // INLINED
@@ -49,9 +49,9 @@ AnimatedModelNode::~AnimatedModelNode() {
     this->faces = nullptr;
   }
 
-  if (this->faceNormals) {
-    delete[] this->faceNormals;
-    this->faceNormals = nullptr;
+  if (this->faceColors) {
+    delete[] this->faceColors;
+    this->faceColors = nullptr;
   }
 
   if (this->textures) {
@@ -204,7 +204,7 @@ bool C3dAnimModelRes::Load(const char* name) {
     }
 
     file.Read(&node->faceCount, 4);
-    node->faceNormals = new std::array<float, 3>[node->faceCount];
+    node->faceColors = new std::array<std::uint32_t, 3>[node->faceCount];
     node->faces = new AnimatedModelFace[node->faceCount];
     file.Read(node->faces, node->faceCount * 24);
     this->nodes.push_back(node);

@@ -174,7 +174,7 @@ void CEffect::Render() {
 
 // OFFSET: 0x005A2440
 // FUNCTION: fn_03099
-void CEffect::SetRenderFunc(int) {
+void CEffect::SetRenderFunc(ParticleSubmit) {
 }
 
 // OFFSET: 0x005A2450

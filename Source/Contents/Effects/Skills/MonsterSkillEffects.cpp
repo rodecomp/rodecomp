@@ -1809,8 +1809,7 @@ void CDropItemEffect::Open() {
   }
 
   for (int i = 0; i < this->emitterCount; ++i) {
-    CEZ2STRParticle* emitter =
-        static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->CEffect::position), 5));
+    CEZ2STRParticle* emitter = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->CEffect::positionVector, 5));
     if (!emitter) {
       return;
     }
@@ -4063,7 +4062,7 @@ void CCrimsonArrowEffect::Open() {
     return;
   }
 
-  vector3d to = *reinterpret_cast<const vector3d*>(this->sourcePosition);
+  vector3d to = this->sourcePositionVector;
   vector3d from = *&this->positionVector;
   float fromReciprocalDepth = 0.0f;
   float toReciprocalDepth = 0.0f;

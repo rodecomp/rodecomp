@@ -1205,7 +1205,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     break;
   case AM_DELETE_PROHIBITEFFECT:
     if (this->statusEffects[10] != 0) {
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->RemoveObject(static_cast<CRenderObject*>(this->statusEffects[10]));
+      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->RemoveObject(this->statusEffects[10]);
     }
     break;
   case AM_MSGEFFECT_DEAD:

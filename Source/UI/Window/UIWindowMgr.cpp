@@ -55,6 +55,7 @@
 #include "UI/Login/UINewSelectCharWnd.h"
 #include "UI/Events/UIRoulletteWnd.h"
 #include "Render/DeviceContext/DCSurface.h"
+#include "UI/Text/UIBroadcastBalloon.h"
 #include <algorithm>
 #include <cstddef>
 #include <cstdint>
@@ -296,10 +297,10 @@ CMiniPartyWndAreaMgr* g_miniPartyWndAreaMgr = nullptr;
 UIWindowMgr g_windowMgr;
 
 // GLOBAL: gl_24683
-int g_windowCloseValue;
+const int* g_windowCloseValue;
 
 // GLOBAL: gl_24684
-int g_savedWindowCloseValue;
+const int* g_savedWindowCloseValue;
 
 // STRING: st_04179
 static const char g_windowManagerDiagnosticFile[] = "C:\\repositories\\RagnarokClient\\RagnarokClient\\UIWindowMgr.cpp";
@@ -1768,7 +1769,7 @@ void UIWindowMgr::CycleWindowVisibility(int) {
 
     for (std::list<UIWindow*>::iterator it = this->rendered.begin(); it != this->rendered.end(); ++it) {
       UIWindow* window = *it;
-      if (window != reinterpret_cast<UIWindow*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->EnsureBroadcastBalloon())) {
+      if (window != static_cast<CGameMode*>(g_modeMgr.GetGameMode())->EnsureBroadcastBalloon()) {
         window->Show(0);
       }
     }
@@ -1782,7 +1783,7 @@ void UIWindowMgr::CycleWindowVisibility(int) {
   } else if (state == 2) {
     bool closed = false;
     for (std::list<UIWindow*>::iterator it = this->rendered.begin(); it != this->rendered.end(); ++it) {
-      if (*it != reinterpret_cast<UIWindow*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->EnsureBroadcastBalloon()) &&
+      if (*it != static_cast<CGameMode*>(g_modeMgr.GetGameMode())->EnsureBroadcastBalloon() &&
           *it != static_cast<CGameMode*>(g_modeMgr.GetGameMode())->achievementBalloon && (*it)->geometry.visible) {
         UIWindow* window = *it;
         if (std::find(this->hiddenWindows.begin(), this->hiddenWindows.end(), window) != this->hiddenWindows.end()) {

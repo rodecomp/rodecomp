@@ -286,7 +286,7 @@ int UILapineBoxWnd::AddIngredient(std::uint32_t id, int quantity) {
       char name[260];
       std::memset(name, 0, sizeof(name));
       char* highlight = nullptr;
-      std::size_t remaining = sizeof(name);
+      int remaining = sizeof(name);
       char* cursor = name;
       int highlightColor;
       this->BuildItemName(&item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);

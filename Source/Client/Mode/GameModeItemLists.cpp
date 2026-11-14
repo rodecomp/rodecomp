@@ -28,11 +28,7 @@ public:
 
 namespace {
 #pragma pack(push, 1)
-  struct EquipListOption {
-    /* 0000 */ std::int16_t id;
-    /* 0002 */ std::int16_t value;
-    /* 0004 */ unsigned char param;
-  };
+  using EquipListOption = ItemOptionRecord;
 
   struct EquipListRecord {
     /* 0000 */ std::int16_t index;
@@ -90,7 +86,7 @@ namespace {
     item.optionCount = CountEquipListOptions(options);
     item.grade = 0;
     for (int index = 0; index < item.optionCount; ++index) {
-      reinterpret_cast<EquipListOption*>(item.options)[index] = options[index];
+      item.options[index] = options[index];
     }
   }
 }

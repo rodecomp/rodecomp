@@ -35,6 +35,7 @@
 #include "Render/Drawing/SpriteGeometry.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Math/ScalarConversion.h"
+#include <cstring>
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
@@ -559,9 +560,12 @@ void CBlurPC::SendMsg(
         this->render.color &= (static_cast<int>(b) << 24) + 0xFFFFFF;
         this->destCellZ = static_cast<int>(c) << 24;
         return;
-      case BM_MOTIONY:
-        this->motionY = *reinterpret_cast<const float*>(&b);
+      case BM_MOTIONY: {
+        float motionY;
+        std::memcpy(&motionY, &b, sizeof(motionY));
+        this->motionY = motionY;
         return;
+      }
       case BM_MOTION_FREEZE:
         this->render.isMotionFreezed = 1;
         return;
@@ -618,9 +622,12 @@ void CHalluNPC::SendMsg(
         this->render.color &= (static_cast<int>(b) << 24) + 0xFFFFFF;
         this->fadeStep = static_cast<int>(c) << 24;
         return;
-      case BM_MOTIONY:
-        this->hallucinationOffset = *reinterpret_cast<const float*>(&b);
+      case BM_MOTIONY: {
+        float offset;
+        std::memcpy(&offset, &b, sizeof(offset));
+        this->hallucinationOffset = offset;
         return;
+      }
       case BM_MOTION_FREEZE:
         this->render.isMotionFreezed = 1;
         return;
@@ -643,9 +650,12 @@ void CHalluPC2::SendMsg(
         this->render.color &= (static_cast<int>(b) << 24) + 0xFFFFFF;
         this->destCellZ = static_cast<int>(c) << 24;
         return;
-      case BM_MOTIONY:
-        this->motionY = *reinterpret_cast<const float*>(&b);
+      case BM_MOTIONY: {
+        float motionY;
+        std::memcpy(&motionY, &b, sizeof(motionY));
+        this->motionY = motionY;
         return;
+      }
       case BM_MOTION_FREEZE:
         this->render.isMotionFreezed = 1;
         return;
@@ -668,9 +678,12 @@ void CHalluPC::SendMsg(
         this->render.color &= (static_cast<int>(b) << 24) + 0xFFFFFF;
         this->destCellZ = static_cast<int>(c) << 24;
         return;
-      case BM_MOTIONY:
-        this->motionY = *reinterpret_cast<const float*>(&b);
+      case BM_MOTIONY: {
+        float motionY;
+        std::memcpy(&motionY, &b, sizeof(motionY));
+        this->motionY = motionY;
         return;
+      }
       case BM_MOTION_FREEZE:
         this->render.isMotionFreezed = 1;
         return;

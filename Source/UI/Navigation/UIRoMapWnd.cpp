@@ -80,10 +80,10 @@ __declspec(noinline) void UIRoMapWnd::ClearRecords() {
 // OFFSET: 0x0091E0F0
 // FUNCTION: fn_12625
 void UIRoMapWnd::ResetKafraBounds() {
-  this->m_kafraTop = 0;
-  this->m_kafraBottom = 0;
-  this->m_kafraLeft = 0;
-  this->m_kafraRight = 0;
+  this->m_kafraBounds.top = 0;
+  this->m_kafraBounds.bottom = 0;
+  this->m_kafraBounds.left = 0;
+  this->m_kafraBounds.right = 0;
 }
 
 // OFFSET: 0x0091EBA0
@@ -596,10 +596,10 @@ void UIRoMapWnd::DrawKafraMarkers(float elapsed) {
   }
 
   this->m_kafraMarkers.Update(this, elapsed);
-  this->m_kafraTop = 0;
-  this->m_kafraBottom = 0;
-  this->m_kafraLeft = 0;
-  this->m_kafraRight = 0;
+  this->m_kafraBounds.top = 0;
+  this->m_kafraBounds.bottom = 0;
+  this->m_kafraBounds.left = 0;
+  this->m_kafraBounds.right = 0;
   if (this->m_kafraMarkers.markers.empty()) {
     return;
   }
@@ -667,10 +667,10 @@ UIRoMapWnd::UIRoMapWnd() : UIFrameWnd(0), previewTexture(nullptr) {
   this->m_comboHeight = 0x12;
   this->m_mouseX = 0;
   this->m_mouseY = 0;
-  this->m_kafraTop = 0;
-  this->m_kafraBottom = 0;
-  this->m_kafraLeft = 0;
-  this->m_kafraRight = 0;
+  this->m_kafraBounds.top = 0;
+  this->m_kafraBounds.bottom = 0;
+  this->m_kafraBounds.left = 0;
+  this->m_kafraBounds.right = 0;
 }
 
 // OFFSET: 0x009144B0

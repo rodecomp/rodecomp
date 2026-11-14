@@ -160,7 +160,7 @@ static void CopyVector(vector3d& to, const vector3d& from) {
 }
 
 // INLINED
-static std::list<CRenderObject*>& WorldObjects() {
+static std::list<CGameObject*>& WorldObjects() {
   return static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->objects;
 }
 

@@ -1075,7 +1075,7 @@ std::uint32_t CSession::ReadReplayEntryQueue(const std::vector<unsigned char>& d
       std::memset(queueName, 0, sizeof(queueName));
       std::memcpy(queueName, data.data() + offset, header.bytes);
       offset += header.bytes;
-      g_entryQueueMgr->SetQueueName(*reinterpret_cast<const EntryQueueName*>(queueName));
+      g_entryQueueMgr->SetQueueName(queueName);
       break;
     }
     case 6514: {
@@ -1083,7 +1083,7 @@ std::uint32_t CSession::ReadReplayEntryQueue(const std::vector<unsigned char>& d
       std::memset(characterName, 0, sizeof(characterName));
       std::memcpy(characterName, data.data() + offset, header.bytes);
       offset += header.bytes;
-      g_entryQueueMgr->SetCharacterName(*reinterpret_cast<const EntryQueueName*>(characterName));
+      g_entryQueueMgr->SetCharacterName(characterName);
       break;
     }
     case 6515: {

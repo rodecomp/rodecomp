@@ -334,6 +334,12 @@ namespace {
     /* 0006 */ ChatTextEntry entries[1];
   };
 
+  struct WindowTextEntriesPacket {
+    /* 0000 */ std::uint16_t packetType;
+    /* 0002 */ std::int16_t length;
+    /* 0004 */ ChatTextEntry entries[1];
+  };
+
   struct ActorValuePacket {
     /* 0000 */ std::uint16_t id;
     /* 0002 */ std::uint32_t accountId;
@@ -2602,8 +2608,7 @@ void __stdcall Nullsub479(int value) {
 
 // OFFSET: 0x00D64A40
 // FUNCTION: fn_21996
-int CountItemRandomOptions(const unsigned char* entries) {
-  const auto* options = reinterpret_cast<const StoreItemOption*>(entries);
+int CountItemRandomOptions(const ItemOptionRecord* options) {
   int count = 0;
   for (int index = 0; index < 5; ++index) {
     if (0 != options[index].id) {
@@ -2790,7 +2795,7 @@ __declspec(noinline) void CGameMode::Zc_Start_Baby(const unsigned char*) {
   this->skillId = 20001;
   this->skillAttackRange = 5;
   this->skillUseLevel = 0;
-  this->skillUseType = reinterpret_cast<void*>(2);
+  this->skillUseType = 2;
 }
 
 // OFFSET: 0x00D7AEE0
@@ -2799,7 +2804,7 @@ __declspec(noinline) void CGameMode::Zc_Start_Capture(const unsigned char*) {
   this->skillId = 10000;
   this->skillAttackRange = 5;
   this->skillUseLevel = 0;
-  this->skillUseType = reinterpret_cast<void*>(2);
+  this->skillUseType = 2;
 }
 
 // OFFSET: 0x00D7AF10
@@ -2808,7 +2813,7 @@ __declspec(noinline) void CGameMode::Zc_Start_Collection(const unsigned char*) {
   this->skillId = 40000;
   this->skillAttackRange = 1;
   this->skillUseLevel = 0;
-  this->skillUseType = reinterpret_cast<void*>(2);
+  this->skillUseType = 2;
 }
 
 // OFFSET: 0x00D7AF40
@@ -2817,7 +2822,7 @@ __declspec(noinline) void CGameMode::Zc_Start_Couple(const unsigned char*) {
   this->skillId = 20000;
   this->skillAttackRange = 5;
   this->skillUseLevel = 0;
-  this->skillUseType = reinterpret_cast<void*>(2);
+  this->skillUseType = 2;
 }
 
 // OFFSET: 0x00D591A0
@@ -3105,13 +3110,13 @@ __declspec(noinline) void CGameMode::ReceivePartyMemberInfoWithoutCharacterId(co
 
 // OFFSET: 0x00D79390
 // FUNCTION: fn_22165
-__declspec(noinline) void CGameMode::ReceiveLapineBoxIngredient(const unsigned char* packet) {
+__declspec(noinline) void CGameMode::ReceiveLapineBoxIngredient(int itemId) {
   if (g_windowMgr.LookupWindow(WID_LAPINEBOXWND) != nullptr) {
     return;
   }
 
   if (UIWindow* window = g_windowMgr.EnsureWindow(WID_LAPINEBOXWND)) {
-    static_cast<UILapineBoxWnd*>(window)->SetIngredient(static_cast<int>(reinterpret_cast<std::intptr_t>(packet)));
+    static_cast<UILapineBoxWnd*>(window)->SetIngredient(itemId);
   }
 }
 
@@ -3381,12 +3386,12 @@ __declspec(noinline) void CGameMode::ReceiveCashShopBanner(int value1, int value
 // OFFSET: 0x00D7A180
 // FUNCTION: fn_22188
 __declspec(noinline) void CGameMode::ReceiveWindow308TextEntries(unsigned char* packet) {
-  auto* p = reinterpret_cast<PacketLengthHeader*>(packet);
+  auto* p = reinterpret_cast<WindowTextEntriesPacket*>(packet);
   const int count = (p->length - 4) / 16;
   g_windowMgr.CloseWindow(WID_SHOWWARPWND);
   UIWindow* window = g_windowMgr.EnsureWindow(WID_SHOWWARPWND);
   for (int i = 0; i < count; ++i) {
-    char* text = reinterpret_cast<ChatTextEntry*>(p + 1)[i].text;
+    char* text = p->entries[i].text;
     text[15] = '\0';
     if (std::strlen(text) != 0) {
       window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
@@ -8659,11 +8664,11 @@ void CGameMode::ReceiveGuildPositionInfo(const unsigned char* packet) {
   const auto* entry = reinterpret_cast<const PACKET_ZC_POSITION_INFO_sub*>(p + 1);
   for (int index = 0; index < count; ++index, ++entry) {
     const int positionId = entry->positionId;
-    GuildInfo::Unknown00D4Entry position;
+    GuildPositionEntry position;
     position.name = guildInfo->m_positions[positionId];
 
     const unsigned int mode = entry->right;
-    position.ranking = entry->ranking;
+    position.id = entry->ranking;
     position.positionId = positionId;
     position.canInvite = mode & 1;
     position.canExpel = (mode >> 4) & 1;
@@ -8672,7 +8677,7 @@ void CGameMode::ReceiveGuildPositionInfo(const unsigned char* packet) {
     guildInfo->positions.push_back(position);
   }
 
-  guildInfo->positions.sort([](const GuildInfo::Unknown00D4Entry& left, const GuildInfo::Unknown00D4Entry& right) {
+  guildInfo->positions.sort([](const GuildPositionEntry& left, const GuildPositionEntry& right) {
     return left.positionId < right.positionId;
   });
   g_windowMgr.RefreshGuildWindows();
@@ -9506,6 +9511,10 @@ struct ItemCardSlots {
 
 namespace {
 #pragma pack(push, 1)
+  struct PickupItemOptions {
+    /* 0000 */ StoreItemOption options[5];
+  };
+
   struct ItemPickupAckPacket {
     /* 0000 */ std::uint16_t packetType;
     /* 0002 */ std::uint16_t index;
@@ -9559,16 +9568,19 @@ namespace {
     /* 000A */ unsigned char identified;
     /* 000B */ unsigned char damaged;
     /* 000C */ unsigned char refine;
-    /* 000D */ std::uint32_t cards[4];
+    /* 000D */ ItemCardSlots cards;
     /* 001D */ std::uint32_t location;
     /* 0021 */ unsigned char type;
     /* 0022 */ unsigned char result;
     /* 0023 */ std::uint32_t expireTime;
     /* 0027 */ std::uint16_t bindOnEquip;
-    /* 0029 */ StoreItemOption options[5];
+    /* 0029 */ PickupItemOptions options;
   };
 #pragma pack(pop)
 
+  static_assert(sizeof(PickupItemOptions) == 25);
+  static_assert(offsetof(ItemPickupAck7Packet, cards) == 0x0D);
+  static_assert(offsetof(ItemPickupAck7Packet, options) == 0x29);
   static_assert(sizeof(ItemPickupAckPacket) == 0x21);
   static_assert(sizeof(ItemPickupAck2Packet) == 0x25);
   static_assert(sizeof(ItemPickupAck3Packet) == 0x27);
@@ -10007,11 +10019,6 @@ void CGameMode::ReceiveItemPickupAck5(
 }
 
 namespace {
-#pragma pack(push, 1)
-  struct PickupItemOptions {
-    /* 0000 */ StoreItemOption options[5];
-  };
-#pragma pack(pop)
 
   // INLINED
   __forceinline void AddPickedUpItem(
@@ -10134,14 +10141,14 @@ void CGameMode::ReceiveItemPickupAck7(const unsigned char* data) {
   switch (packet->result) {
   case PICKUP_SUCCEED:
     AddPickedUpItem(
-      packet->index, packet->amount, packet->itemId, packet->identified, packet->damaged, packet->refine, *reinterpret_cast<const ItemCardSlots*>(packet->cards),
-      packet->location, packet->type, packet->expireTime, packet->bindOnEquip, *reinterpret_cast<const PickupItemOptions*>(packet->options)
+      packet->index, packet->amount, packet->itemId, packet->identified, packet->damaged, packet->refine, packet->cards,
+      packet->location, packet->type, packet->expireTime, packet->bindOnEquip, packet->options
     );
     break;
   case RECEIVE_ITEM:
     UpdateReceivedItem(
-      packet->index, packet->amount, packet->itemId, packet->identified, packet->damaged, packet->refine, *reinterpret_cast<const ItemCardSlots*>(packet->cards),
-      packet->location, packet->type, packet->expireTime, packet->bindOnEquip, *reinterpret_cast<const PickupItemOptions*>(packet->options)
+      packet->index, packet->amount, packet->itemId, packet->identified, packet->damaged, packet->refine, packet->cards,
+      packet->location, packet->type, packet->expireTime, packet->bindOnEquip, packet->options
     );
     break;
   default:
@@ -11085,13 +11092,13 @@ namespace {
     /* 000A */ unsigned char identified;
     /* 000B */ unsigned char damaged;
     /* 000C */ unsigned char refine;
-    /* 000D */ std::uint32_t cards[4];
+    /* 000D */ ItemCardSlots cards;
     /* 001D */ std::uint32_t location;
     /* 0021 */ unsigned char type;
     /* 0022 */ unsigned char result;
     /* 0023 */ std::uint32_t expireTime;
     /* 0027 */ std::uint16_t bindOnEquip;
-    /* 0029 */ StoreItemOption options[5];
+    /* 0029 */ PickupItemOptions options;
     /* 0042 */ unsigned char favorite;
     /* 0043 */ std::uint16_t look;
   };
@@ -11103,13 +11110,13 @@ namespace {
     /* 0006 */ int itemId;
     /* 000A */ unsigned char identified;
     /* 000B */ unsigned char damaged;
-    /* 000C */ std::uint32_t cards[4];
+    /* 000C */ ItemCardSlots cards;
     /* 001C */ std::uint32_t location;
     /* 0020 */ unsigned char type;
     /* 0021 */ unsigned char result;
     /* 0022 */ std::uint32_t expireTime;
     /* 0026 */ std::uint16_t bindOnEquip;
-    /* 0028 */ StoreItemOption options[5];
+    /* 0028 */ PickupItemOptions options;
     /* 0041 */ unsigned char favorite;
     /* 0042 */ std::uint16_t look;
     /* 0044 */ unsigned char refine;
@@ -11251,15 +11258,15 @@ void CGameMode::ReceiveItemPickupAck8(const unsigned char* data) {
   switch (packet->result) {
   case PICKUP_SUCCEED:
     AddPickedUpItemEx(
-      packet->index, packet->amount, packet->itemId, packet->identified, packet->damaged, packet->refine, *reinterpret_cast<const ItemCardSlots*>(packet->cards),
-      packet->location, packet->type, packet->expireTime, packet->bindOnEquip, *reinterpret_cast<const PickupItemOptions*>(packet->options), packet->favorite,
+      packet->index, packet->amount, packet->itemId, packet->identified, packet->damaged, packet->refine, packet->cards,
+      packet->location, packet->type, packet->expireTime, packet->bindOnEquip, packet->options, packet->favorite,
       packet->look, 0
     );
     break;
   case RECEIVE_ITEM:
     UpdateReceivedItemEx(
-      packet->index, packet->amount, packet->itemId, packet->identified, packet->damaged, packet->refine, *reinterpret_cast<const ItemCardSlots*>(packet->cards),
-      packet->location, packet->type, packet->expireTime, packet->bindOnEquip, *reinterpret_cast<const PickupItemOptions*>(packet->options), packet->favorite,
+      packet->index, packet->amount, packet->itemId, packet->identified, packet->damaged, packet->refine, packet->cards,
+      packet->location, packet->type, packet->expireTime, packet->bindOnEquip, packet->options, packet->favorite,
       packet->look, 0
     );
     break;
@@ -11278,8 +11285,8 @@ void CGameMode::ReceiveItemPickupAck9(const unsigned char* data) {
   switch (packet->result) {
   case PICKUP_SUCCEED:
     AddPickedUpItemEx(
-      packet->index, packet->amount, packet->itemId, packet->identified, packet->damaged, packet->refine, *reinterpret_cast<const ItemCardSlots*>(packet->cards),
-      packet->location, packet->type, packet->expireTime, packet->bindOnEquip, *reinterpret_cast<const PickupItemOptions*>(packet->options), packet->favorite,
+      packet->index, packet->amount, packet->itemId, packet->identified, packet->damaged, packet->refine, packet->cards,
+      packet->location, packet->type, packet->expireTime, packet->bindOnEquip, packet->options, packet->favorite,
       packet->look, packet->grade
     );
 
@@ -11294,8 +11301,8 @@ void CGameMode::ReceiveItemPickupAck9(const unsigned char* data) {
     break;
   case RECEIVE_ITEM:
     UpdateReceivedItemEx(
-      packet->index, packet->amount, packet->itemId, packet->identified, packet->damaged, packet->refine, *reinterpret_cast<const ItemCardSlots*>(packet->cards),
-      packet->location, packet->type, packet->expireTime, packet->bindOnEquip, *reinterpret_cast<const PickupItemOptions*>(packet->options), packet->favorite,
+      packet->index, packet->amount, packet->itemId, packet->identified, packet->damaged, packet->refine, packet->cards,
+      packet->location, packet->type, packet->expireTime, packet->bindOnEquip, packet->options, packet->favorite,
       packet->look, packet->grade
     );
     break;
@@ -17012,30 +17019,58 @@ void CGameMode::ReceiveRefineStatusGraded(const char* playerName, int itemId, un
   }
 }
 
+#pragma pack(push, 1)
+struct ItemObtainBroadcastPacket {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::uint16_t length;
+  /* 0004 */ unsigned char sourceType;
+  /* 0005 */ int itemId;
+  /* 0009 */ signed char nameLength;
+  /* 000A */ char name[1];
+};
+
+struct ItemObtainSourceTail {
+  /* 0000 */ unsigned char padding_0000[10];
+  /* 000A */ signed char length;
+  union {
+    /* 000B */ int itemId;
+    /* 000B */ char name[1];
+  };
+  /* 000F */ unsigned char unknown_000F;
+  /* 0010 */ int count;
+};
+#pragma pack(pop)
+static_assert(offsetof(ItemObtainBroadcastPacket, name) == 10);
+static_assert(sizeof(ItemObtainBroadcastPacket) == 11);
+static_assert(offsetof(ItemObtainSourceTail, itemId) == 11);
+static_assert(offsetof(ItemObtainSourceTail, count) == 16);
+static_assert(sizeof(ItemObtainSourceTail) == 20);
+
 // OFFSET: 0x00D23580
 // FUNCTION: fn_21662
 void CGameMode::ReceiveItemObtainBroadcast(const unsigned char* data, bool package) {
+  const auto* packet = reinterpret_cast<const ItemObtainBroadcastPacket*>(data);
   std::string name;
   std::string source;
-  name.assign(reinterpret_cast<const char*>(data + 10), static_cast<signed char>(data[9]));
-  const unsigned char* tail = data + static_cast<signed char>(data[9]);
-  if (data[4] == 0) {
+  name.assign(packet->name, packet->nameLength);
+  const auto* tail = reinterpret_cast<const ItemObtainSourceTail*>(data + packet->nameLength);
+  if (packet->sourceType == 0) {
     ITEM_INFO box;
-    box.SetItemId(*reinterpret_cast<const int*>(tail + 11));
+    box.SetItemId(tail->itemId);
     box.identified = 1;
     source = box.DisplayName(0);
-  } else if (data[4] == 1) {
-    source.assign(reinterpret_cast<const char*>(tail + 11), static_cast<signed char>(tail[10]));
+  } else if (packet->sourceType == 1) {
+    source.assign(tail->name, tail->length);
   }
 
   ITEM_INFO item;
-  item.SetItemId(*reinterpret_cast<const int*>(data + 5));
+  item.SetItemId(packet->itemId);
   item.identified = 1;
   std::string text;
-  if (data[4] == 2) {
+  if (packet->sourceType == 2) {
     text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_BROADCASTING_SPECIAL_ITEM_OBTAIN2), name.c_str(), item.DisplayName(0).c_str()));
-  } else if (package && data[4] == 0) {
-    const int count = *reinterpret_cast<const int*>(tail + 16);
+  } else if (package && packet->sourceType == 0) {
+    const int count = tail->count;
     if (count > 0) {
       text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_FAIL_ITEMCOMPOSITION_LIST), name.c_str(), source.c_str(), count, item.DisplayName(0).c_str()));
     } else {
@@ -27598,7 +27633,7 @@ void CGameMode::ProcessIncomingPackets() {
     }
     case ID_ZC_RANDOM_COMBINE_ITEM_UI_OPEN: {
       const auto* packet = reinterpret_cast<const ValuePacket*>(g_gameModePacketBuffer);
-      this->ReceiveLapineBoxIngredient(reinterpret_cast<const unsigned char *>(packet->value));
+      this->ReceiveLapineBoxIngredient(packet->value);
       break;
     }
     case ID_ZC_ACK_RANDOM_COMBINE_ITEM: {
@@ -27858,7 +27893,7 @@ void CGameMode::ProcessIncomingPackets() {
     }
     case ID_ZC_NOTIFY_HPSP_TO_GROUPM_R2: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_BATTLEFIELD_NOTIFY_HPSP*>(g_gameModePacketBuffer);
-      this->IgnoreRemovedPacket12(reinterpret_cast<const unsigned char *>(packet->aid),
+      this->IgnoreRemovedPacket12(packet->aid,
                                   packet->hp, packet->maxHp,
                                   packet->sp, packet->maxSp);
       break;

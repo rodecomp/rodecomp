@@ -1,6 +1,7 @@
 #include "Contents/Effects/Particles/EZ2STREffectEx.h"
 
 #include "Contents/Effects/Core/EffectMemoryMgr.h"
+#include "Contents/Effects/Particles/Particle.h"
 #include "Render/Renderer.h"
 #include "Utility/Math/AffineMatrix.h"
 
@@ -15,7 +16,7 @@ CEZ2STREffectEx::CEZ2STREffectEx() : CEffect(-1), emitter(nullptr), timed(0), fr
 // FUNCTION: fn_06964
 void CEZ2STREffectEx::Close() {
   if (this->emitter) {
-    FreeParticle(reinterpret_cast<CParticle*>(this->emitter));
+    FreeParticle(this->emitter);
     this->emitter = nullptr;
   }
 }

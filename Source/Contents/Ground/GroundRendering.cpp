@@ -29,7 +29,7 @@ namespace {
       vertices[corner].u = quad.vertices[corner].u;
       vertices[corner].v = quad.vertices[corner].v;
       vertices[corner].diffuse = quad.vertices[corner].color;
-      reinterpret_cast<SpriteColor&>(vertices[corner].diffuse).alpha = 0x80;
+      vertices[corner].diffuseChannels.alpha = 0x80;
     }
 
     RenderPrimitive* primitive = g_renderer->primitives.Acquire();

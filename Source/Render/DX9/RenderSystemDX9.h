@@ -17,7 +17,7 @@ public:
   std::uint32_t Width() override;
   std::uint32_t Height() override;
   CRenderer* CreateRenderer() override;
-  void DestroySurface(CSurface* surface) override;
+  void DestroyRenderer(CRenderer* renderer) override;
   CSurface* CreateSurface(std::uint32_t width, std::uint32_t height) override;
   CTexture* CreateTexture(std::uint32_t width, std::uint32_t height, std::int32_t format, bool dynamic, bool renderTarget) override;
   CSurface* CreateSurfaceOrTexture(std::uint32_t width, std::uint32_t height) override;

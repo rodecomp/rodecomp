@@ -292,7 +292,7 @@ void UILapineUpgradeBoxWnd::SetIngredient(int id) {
     char* cursor = name;
     ITEM_INFO item;
     item.SetItemId(id);
-    std::size_t remaining = sizeof(name);
+    int remaining = sizeof(name);
     int highlightColor;
     this->BuildItemName(&item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
     this->title = name;
@@ -547,7 +547,7 @@ __declspec(noinline) void UILapineUpgradeBox_IngredientInfoWnd::SetItem(std::uin
   char name[0x104];
   std::memset(name, 0, sizeof(name));
   char* highlight = nullptr;
-  std::size_t remaining = sizeof(name);
+  int remaining = sizeof(name);
   char* cursor = name;
   int highlightColor;
   this->BuildItemName(&this->item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
@@ -654,7 +654,7 @@ int UILapineUpgradeBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         std::memset(name, 0, sizeof(name));
         int highlightColor = 0;
         char* cursor = name;
-        std::size_t remaining = sizeof(name);
+        int remaining = sizeof(name);
         char* highlight = nullptr;
         this->BuildItemName(&owned, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
 

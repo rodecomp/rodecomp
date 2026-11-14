@@ -2,6 +2,6 @@
 
 #include <list>
 
-class CRenderObject;
+class CGameObject;
 
-extern template void std::list<CRenderObject*>::push_back(CRenderObject*&&);
+extern template void std::list<CGameObject*>::push_back(CGameObject*&&);

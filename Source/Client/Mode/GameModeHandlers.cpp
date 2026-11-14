@@ -208,11 +208,7 @@ struct HomunculusInfoPacket3 {
   /* 0053 */ std::int16_t attackRange;
 };
 
-struct ItemRewardOption {
-  /* 0000 */ std::int16_t id;
-  /* 0002 */ std::int16_t value;
-  /* 0004 */ unsigned char parameter;
-};
+using ItemRewardOption = ItemOptionRecord;
 
 struct ItemRewardPacket {
   /* 0000 */ std::int16_t id;
@@ -2524,7 +2520,7 @@ void CGameMode::ReceiveItemReward2(const unsigned char* data) {
     item.identity[2] = packet->expireTime;
     item.optionCount = count;
     for (std::int64_t index = 0; index < count; ++index) {
-      reinterpret_cast<ItemRewardOption*>(item.options)[index] = packet->options[index];
+      item.options[index] = packet->options[index];
     }
     item.flags[0] = packet->bound;
     item.grade = packet->grade;
@@ -2569,10 +2565,10 @@ void CGameMode::ReceiveItemReward(const unsigned char* data) {
     item.damaged = packet->damaged;
     item.refiningLevel = packet->refine;
     std::memcpy(item.cards, packet->cards, sizeof(packet->cards));
-    item.optionCount = CountItemRandomOptions(reinterpret_cast<const unsigned char*>(packet->options));
+    item.optionCount = CountItemRandomOptions(packet->options);
     item.identity[2] = packet->expireTime;
     for (int index = 0; index < item.optionCount; ++index) {
-      reinterpret_cast<ItemRewardOption*>(item.options)[index] = packet->options[index];
+      item.options[index] = packet->options[index];
     }
     item.flags[0] = packet->bound;
     g_session.AddStackedItem(item);
@@ -2625,7 +2621,7 @@ void CGameMode::EnsureWindow259(const unsigned char*) {
 
 // OFFSET: 0x00D66A50
 // FUNCTION: fn_22019
-void CGameMode::IgnoreRemovedPacket12(const unsigned char*, int, int, int, int) {
+void CGameMode::IgnoreRemovedPacket12(std::uint32_t, int, int, int, int) {
 }
 
 // OFFSET: 0x00D67670

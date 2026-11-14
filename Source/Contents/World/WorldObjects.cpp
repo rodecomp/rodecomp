@@ -88,7 +88,7 @@ CRenderObject* CWorld::GetGameActorByAidIncludeMe(std::uint32_t aid) const {
 
 // OFFSET: 0x00ACA4E0
 // FUNCTION: fn_17692
-__declspec(noinline) void CWorld::RemoveObject(CRenderObject* object) {
+__declspec(noinline) void CWorld::RemoveObject(CGameObject* object) {
   for (auto entry = this->objects.begin(); entry != this->objects.end(); ++entry) {
     if (*entry == object) {
       delete object;
@@ -141,7 +141,7 @@ void CWorld::OnProcess() {
     this->movies->Update();
   }
 
-  std::atomic_ref<int> pending(this->pending);
+  std::atomic_ref<long> pending(this->pending);
   const int ready = pending.load(std::memory_order_acquire);
   if (ready != 0) {
     const int end = this->published + ready;
@@ -154,14 +154,14 @@ void CWorld::OnProcess() {
         }
       }
 
-      _InterlockedDecrement(reinterpret_cast<volatile long*>(&this->pending));
+      _InterlockedDecrement(&this->pending);
       ++this->published;
     }
   }
 
   auto objectEntry = this->objects.begin();
   while (objectEntry != this->objects.end()) {
-    CRenderObject* object = *objectEntry;
+    CGameObject* object = *objectEntry;
     if (object->OnProcess()) {
       ++objectEntry;
       continue;
@@ -275,7 +275,7 @@ void CWorld::SendObjectMessage(CGameObject* sender, std::uint64_t identity, int 
     return;
   }
 
-  auto it = std::find_if(this->objects.begin(), this->objects.end(), [identity](CRenderObject* object) { return identity == object->identity; });
+  auto it = std::find_if(this->objects.begin(), this->objects.end(), [identity](CGameObject* object) { return identity == object->identity; });
 
   if (it != this->objects.end()) {
     (*it)->SendMsg(sender, message, a, b, c, d, 0, 0);

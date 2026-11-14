@@ -17,7 +17,7 @@ public:
   HRESULT CreateDevice(GUID* drawIdentity, const GUID* renderIdentity, const DDSURFACEDESC2* mode, DWORD flags);
   HRESULT CreateSurfaces(const DDSURFACEDESC2* mode, DWORD flags);
   HRESULT Close();
-  void DestroySurface(CSurface* surface);
+  void DestroyRenderer(CRenderer* renderer);
   HRESULT Clear(DWORD color);
   HRESULT ClearDepth();
   HRESULT Present(bool wait);
@@ -100,6 +100,9 @@ public:
 
 struct DeviceOwnerDX7Handle {
   /* 0000 */ DeviceOwnerDX7* owner;
+
+  // INLINED
+  explicit DeviceOwnerDX7Handle(DeviceOwnerDX7* value) : owner(value) {}
 
   unsigned int PackColor(int red, int green, int blue) const;
 };

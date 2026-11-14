@@ -9,6 +9,9 @@
 #include <vector>
 
 struct vector3d;
+struct RenderCommand;
+
+typedef void (*ParticleSubmit)(RenderCommand* primitive, int flags);
 
 struct EffectEvent {
   /* 0000 */ int kind;
@@ -20,7 +23,7 @@ struct EffectEvent {
 class CEffect {
 public:
   explicit CEffect(int id);
-  virtual void SetRenderFunc(int argument);
+  virtual void SetRenderFunc(ParticleSubmit argument);
   virtual void Open();
   virtual void CheckRange();
   virtual void OnProcess() {}

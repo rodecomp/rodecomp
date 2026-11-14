@@ -705,7 +705,7 @@ void CRagEffect::Init(EffectActor* parent, int id, vector3d deltaPos) {
       this->state.resource->Lock();
 
       auto* resource = static_cast<CEZeffectRes*>(this->state.resource);
-      this->state.resourceData = &resource->maximumFrame;
+      this->state.resourceData = &resource->data;
       this->state.endLayer = static_cast<EZeffectData*>(this->state.resourceData)->clipCount;
 
       if (static_cast<EZeffectData*>(this->state.resourceData)->clips[0].frameCount == 0) {

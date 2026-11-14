@@ -112,14 +112,14 @@ void DestroyEntryQueueMgr() {
 
 // OFFSET: 0x00BA2250
 // FUNCTION: fn_19665
-void CEntryQueueMgr::SetQueueName(const EntryQueueName& name) {
-  this->queueName = name;
+void CEntryQueueMgr::SetQueueName(const char* name) {
+  std::memcpy(this->queueName.text, name, sizeof(this->queueName.text));
 }
 
 // OFFSET: 0x00BA2270
 // FUNCTION: fn_19666
-void CEntryQueueMgr::SetCharacterName(const EntryQueueName& name) {
-  this->characterName = name;
+void CEntryQueueMgr::SetCharacterName(const char* name) {
+  std::memcpy(this->characterName.text, name, sizeof(this->characterName.text));
 }
 
 // OFFSET: 0x00BA2310

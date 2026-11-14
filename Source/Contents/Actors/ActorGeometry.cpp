@@ -195,11 +195,11 @@ bool CRenderObject::PrepareSprite(
   if (this->render.isSingleColor && this->render.overrideColor != 0xFFFF0000) {
     *color = this->render.overrideColor;
   } else {
-    SpriteColor& channels = *reinterpret_cast<SpriteColor*>(color);
-    channels.alpha = static_cast<std::uint8_t>(static_cast<int>((static_cast<float>((cell.color >> 24) & 0xFF) * alpha) / 255.0f));
-    channels.red = static_cast<std::uint8_t>(static_cast<int>((static_cast<float>(cell.color & 0xFF) * red) / 255.0f));
-    channels.green = static_cast<std::uint8_t>(static_cast<int>((static_cast<float>((cell.color >> 8) & 0xFF) * green) / 255.0f));
-    channels.blue = static_cast<std::uint8_t>(static_cast<int>((static_cast<float>((cell.color >> 16) & 0xFF) * blue) / 255.0f));
+    unsigned char* channels = reinterpret_cast<unsigned char*>(color);
+    channels[3] = static_cast<std::uint8_t>(static_cast<int>((static_cast<float>((cell.color >> 24) & 0xFF) * alpha) / 255.0f));
+    channels[2] = static_cast<std::uint8_t>(static_cast<int>((static_cast<float>(cell.color & 0xFF) * red) / 255.0f));
+    channels[1] = static_cast<std::uint8_t>(static_cast<int>((static_cast<float>((cell.color >> 8) & 0xFF) * green) / 255.0f));
+    channels[0] = static_cast<std::uint8_t>(static_cast<int>((static_cast<float>((cell.color >> 16) & 0xFF) * blue) / 255.0f));
   }
   quad->color = *color;
 

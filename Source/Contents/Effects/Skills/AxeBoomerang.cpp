@@ -30,7 +30,7 @@ CAxeBoomerang::CAxeBoomerang() : CEffect(-1) {
 // OFFSET: 0x006F5A60
 // FUNCTION: fn_06839
 void CAxeBoomerang::Close() {
-  FreeParticle(reinterpret_cast<CParticle*>(this->emitter));
+  FreeParticle(this->emitter);
 }
 
 // OFFSET: 0x006F5A70

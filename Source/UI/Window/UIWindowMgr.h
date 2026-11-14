@@ -649,8 +649,8 @@ public:
 extern UIWindowMgr g_windowMgr;
 extern int g_renderDiagnosticLine;
 extern const char* g_renderDiagnosticFile;
-extern int g_windowCloseValue;
-extern int g_savedWindowCloseValue;
+extern const int* g_windowCloseValue;
+extern const int* g_savedWindowCloseValue;
 
 void __fastcall RefreshItemWindows(UIWindowMgr* mgr);
 

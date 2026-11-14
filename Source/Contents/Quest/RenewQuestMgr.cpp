@@ -33,6 +33,10 @@ template __declspec(noinline) bool std::string_view::_Equal(const std::string_vi
 template __declspec(noinline) std::list<std::string>::const_iterator std::find<std::list<std::string>::const_iterator, std::string_view>(std::list<std::string>::const_iterator, const std::list<std::string>::const_iterator, const std::string_view&);
 
 #pragma pack(push, 1)
+struct RenewQuestReplayHeader {
+  /* 0000 */ unsigned int count;
+};
+
 struct RenewQuestOngoingRecord {
   /* 0000 */ unsigned int questId;
   /* 0004 */ unsigned char state;
@@ -81,6 +85,7 @@ struct PACKET_CZ_QUEST_STATUS_REQ_BUFFER {
 #pragma pack(pop)
 
 #if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(RenewQuestReplayHeader) == 4);
 static_assert(sizeof(RenewQuestOngoingRecord) == 0x18);
 static_assert(sizeof(RenewQuestHuntRecord) == 0x47);
 static_assert(sizeof(RenewQuestShortHuntRecord) == 0x2C);
@@ -417,7 +422,7 @@ RenewQuestRecommendedInfo* CRenewQuestMgr::FindRecommendedQuest(unsigned int id)
 // FUNCTION: fn_05447
 void CRenewQuestMgr::WriteOngoingQuests(char* buffer) {
   int offset = 4;
-  *reinterpret_cast<unsigned int*>(buffer) = this->m_ongoingQuests.size();
+  reinterpret_cast<RenewQuestReplayHeader*>(buffer)->count = this->m_ongoingQuests.size();
 
   for (auto it = this->m_ongoingQuests.begin(); it != this->m_ongoingQuests.end(); ++it) {
     const RenewQuestOngoingInfo& info = it->second;
@@ -722,7 +727,7 @@ bool CRenewQuestMgr::SetOngoingSimpleView(unsigned int id, bool simpleView) {
 // FUNCTION: fn_05465
 void CRenewQuestMgr::ReadOngoingQuests(const char* buffer, unsigned int) {
   int offset = 4;
-  const unsigned int count = *reinterpret_cast<const unsigned int*>(buffer);
+  const unsigned int count = reinterpret_cast<const RenewQuestReplayHeader*>(buffer)->count;
   for (unsigned int index = 0; index < count; ++index) {
     const RenewQuestOngoingRecord record = *reinterpret_cast<const RenewQuestOngoingRecord*>(buffer + offset);
     offset += sizeof(RenewQuestOngoingRecord);

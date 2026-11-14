@@ -11,9 +11,17 @@ struct JsonCppLoaderBsonOptions {
   void* storage[4];
 };
 
-struct JsonCppLoaderJsonOptions {
-  unsigned char storage[248];
+struct JsonCppLoaderCommonJsonOptions {
+  /* 0000 */ unsigned char storage[240];
 };
+
+struct JsonCppLoaderJsonOptions {
+  /* 0000 */ unsigned char padding_0000[8];
+  /* 0008 */ JsonCppLoaderCommonJsonOptions common;
+};
+
+static_assert(sizeof(JsonCppLoaderJsonOptions) == 248);
+static_assert(offsetof(JsonCppLoaderJsonOptions, common) == 8);
 
 struct JsonCppLoaderJsonHandler {
   unsigned char storage[40];
@@ -27,24 +35,6 @@ struct JsonCppLoaderJsonHandler {
 
   // INLINED
   ~JsonCppLoaderJsonHandler() {
-  }
-};
-
-struct JsonCppLoaderParsedValue {
-  JsonValue value;
-
-  // INLINED
-  JsonCppLoaderParsedValue& operator=(JsonCppLoaderParsedValue&& other) {
-    if (this != &other) {
-      reinterpret_cast<void(__thiscall*)(JsonValue*, JsonValue*)>(JsonSwap)(&this->value, &other.value);
-    }
-
-    return *this;
-  }
-
-  // INLINED
-  ~JsonCppLoaderParsedValue() {
-    reinterpret_cast<void(__thiscall*)(JsonValue*)>(JsonDestroy)(&this->value);
   }
 };
 

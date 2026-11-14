@@ -3,6 +3,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <ctime>
 #include <list>
 #include <string>
 #include <vector>
@@ -39,6 +40,13 @@ struct ItemOptionRecord {
   /* 0004 */ unsigned char parameter;
 };
 #pragma pack(pop)
+
+struct ItemSaleData {
+  /* 0000 */ std::uint32_t costume;
+  /* 0004 */ __time32_t startTime;
+  /* 0008 */ __time32_t endTime;
+  /* 000C */ std::uint32_t purchaseCount;
+};
 
 struct ITEM_INFO {
   ITEM_INFO();
@@ -86,11 +94,11 @@ struct ITEM_INFO {
   /* 0060 */ std::int32_t refiningLevel;
   /* 0064 */ std::uint16_t bindOnEquip;
   /* 0066 */ unsigned char durationInHours;
-  /* 0068 */ std::uint32_t expireTime;
+  /* 0068 */ __time32_t expireTime;
   /* 006C */ std::uint16_t priceFactor;
   /* 0070 */ std::int32_t sprite;
   /* 0074 */ unsigned char flags[4];
-  /* 0078 */ std::uint32_t saleData[4];
+  /* 0078 */ ItemSaleData saleData;
   /* 0088 */ std::int16_t grade;
   /* 0090 */ std::uint64_t productId;
   /* 0098 */ std::int32_t optionCount;
@@ -114,6 +122,11 @@ int ReadItemArray(ITEM_INFO* items, int offset, int size, const std::vector<unsi
 static_assert(sizeof(ITEM_INFO) == 248);
 static_assert(sizeof(ItemOption) == 6);
 static_assert(sizeof(ItemOptionRecord) == 5);
+static_assert(sizeof(ItemSaleData) == 0x10);
+static_assert(offsetof(ItemSaleData, startTime) == 0x04);
+static_assert(offsetof(ItemSaleData, endTime) == 0x08);
+static_assert(offsetof(ITEM_INFO, expireTime) == 0x68);
+static_assert(offsetof(ITEM_INFO, saleData) == 0x78);
 #endif
 
 #endif

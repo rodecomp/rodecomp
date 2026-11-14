@@ -92,7 +92,7 @@ ITEM_INFO::ITEM_INFO(const ITEM_INFO& other) : itemId(other.itemId), displayName
   this->priceFactor = other.priceFactor;
   this->sprite = other.sprite;
   std::memcpy(this->flags, other.flags, sizeof(this->flags));
-  std::memcpy(this->saleData, other.saleData, sizeof(this->saleData));
+  this->saleData = other.saleData;
   this->grade = other.grade;
   this->productId = other.productId;
   this->optionCount = other.optionCount;
@@ -129,10 +129,10 @@ __declspec(noinline) ITEM_INFO& ITEM_INFO::operator=(const ITEM_INFO& other) {
   this->optionCount = other.optionCount;
   memcpy_s(this->options, sizeof(this->options), other.options, sizeof(other.options));
   this->flags[3] = other.flags[3];
-  this->saleData[0] = other.saleData[0];
-  this->saleData[3] = other.saleData[3];
-  this->saleData[1] = other.saleData[1];
-  this->saleData[2] = other.saleData[2];
+  this->saleData.costume = other.saleData.costume;
+  this->saleData.purchaseCount = other.saleData.purchaseCount;
+  this->saleData.startTime = other.saleData.startTime;
+  this->saleData.endTime = other.saleData.endTime;
   this->grade = other.grade;
   this->productId = other.productId;
   return *this;
@@ -195,9 +195,10 @@ void ITEM_INFO::Reset() {
   for (int index = 0; index < 4; ++index) {
     this->flags[index] = 0;
   }
-  for (int index = 0; index < 4; ++index) {
-    this->saleData[index] = 0;
-  }
+  this->saleData.costume = 0;
+  this->saleData.startTime = 0;
+  this->saleData.endTime = 0;
+  this->saleData.purchaseCount = 0;
   this->grade = 0;
   this->productId = 0;
 }

@@ -119,16 +119,14 @@ private:
   /* 020C */ UIBitmapButton* m_searchButton;
   /* 0210 */ UIBitmapButton* m_searchListButton;
   /* 0214 */ UIEditCtrl* m_searchEdit;
-  /* 0218 */ int m_kafraLeft;
-  /* 021C */ int m_kafraTop;
-  /* 0220 */ int m_kafraRight;
-  /* 0224 */ int m_kafraBottom;
+  /* 0218 */ RECT m_kafraBounds;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(RoMapTooltipBox) == 0x14);
 static_assert(sizeof(CKafraMoveMapServiceInfo) == 0x68);
 static_assert(offsetof(CKafraMoveMapServiceInfo, markers) == 0x04);
+static_assert(sizeof(UIRoMapWnd) == 0x228);
 #endif
 
 #endif

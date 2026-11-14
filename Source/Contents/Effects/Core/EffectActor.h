@@ -8,7 +8,6 @@
 #include <list>
 
 struct CRagEffect;
-struct RagEffectState;
 
 struct EffectActorState {
   EffectActorState();
@@ -28,7 +27,7 @@ struct EffectActor : CRenderObject {
   void SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g) override;
   bool EffectVisible() const;
   bool HasId(int id) const;
-  bool Contains(const RagEffectState* effect) const;
+  bool Contains(const CRagEffect* effect) const;
   void ResetEffectState();
   CRagEffect* LaunchEffect(int effectId, vector3d deltaPos, float rotation);
   CRagEffect* LaunchEffect(int effectId, int duration);

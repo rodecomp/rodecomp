@@ -264,10 +264,10 @@ void UIRoMapWnd::DrawKafraIcon(float x, float y) {
   primitive->sourceBlend = 2;
   primitive->destinationBlend = 4;
   g_renderer->queues.Submit(primitive, 513, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
-  this->m_kafraTop = static_cast<int>(vertices[0].y);
-  this->m_kafraBottom = static_cast<int>(vertices[3].y);
-  this->m_kafraLeft = static_cast<int>(vertices[0].x);
-  this->m_kafraRight = static_cast<int>(vertices[3].x);
+  this->m_kafraBounds.top = static_cast<int>(vertices[0].y);
+  this->m_kafraBounds.bottom = static_cast<int>(vertices[3].y);
+  this->m_kafraBounds.left = static_cast<int>(vertices[0].x);
+  this->m_kafraBounds.right = static_cast<int>(vertices[3].x);
 }
 
 // OFFSET: 0x00917D70

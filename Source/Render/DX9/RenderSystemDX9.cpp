@@ -67,8 +67,8 @@ CRenderer* CRenderSystemDX9::CreateRenderer() {
 
 // OFFSET: 0x0056D720
 // FUNCTION: fn_02364
-void CRenderSystemDX9::DestroySurface(CSurface* surface) {
-  delete surface;
+void CRenderSystemDX9::DestroyRenderer(CRenderer* renderer) {
+  delete renderer;
 }
 
 // OFFSET: 0x0056D480

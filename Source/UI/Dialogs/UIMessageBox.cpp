@@ -4034,7 +4034,7 @@ void UIReplayControlWnd::OnCreate(int, int) {
   this->m_progress->m_plainColor = true;
   this->m_progress->SetSize(188, 11);
   this->m_progress->Move(5, 72);
-  this->m_progress->SetValues(reinterpret_cast<const int*>(&Replay::Instance().elapsed), reinterpret_cast<const int*>(&Replay::Instance().header.duration));
+  this->m_progress->SetValues(&Replay::Instance().elapsed, &Replay::Instance().header.duration);
   this->AddChild(this->m_progress);
 
   const int textPositions[4][2] = {{8, 26}, {8, 40}, {-100, -100}, {8, 54}};

@@ -897,7 +897,7 @@ void UIRefiningWnd::ApplyItem(int id, int count, const RefiningMaterial* materia
     char text[0x104];
     std::memset(text, 0, sizeof(text));
     char* highlight = nullptr;
-    std::size_t remaining = sizeof(text);
+    int remaining = sizeof(text);
     char* cursor = text;
     this->BuildItemName(&this->item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
     if (this->item.identified == 1 && this->item.optionCount != 0) {
@@ -955,7 +955,7 @@ void UIRefiningWnd::ApplyItem(int id, int count, const RefiningMaterial* materia
     char text[0x104];
     std::memset(text, 0, sizeof(text));
     char* cursor = nullptr;
-    std::size_t remaining = sizeof(text);
+    int remaining = sizeof(text);
     char* name = text;
     this->BuildItemName(&this->nextItem, &highlightColor, &breaks, &name, &remaining, &cursor, 1, 0);
     if (this->nextItem.identified == 1 && this->nextItem.optionCount != 0) {

@@ -225,17 +225,17 @@ __forceinline void C3dModelResV1::ReadNode(CFile& file, unsigned minor, const st
   int vertexCount = 0;
   file.Read(&vertexCount, 4);
   mesh.vertexCount = vertexCount;
-  ShadeVector* vertices = new ShadeVector[vertexCount];
+  auto* vertices = new std::array<float, 3>[vertexCount];
   file.Read(vertices, static_cast<unsigned>(vertexCount) * 12u);
-  mesh.vertices = reinterpret_cast<std::array<float, 3>*>(vertices);
+  mesh.vertices = vertices;
 
   for (int index = 0; index < vertexCount; ++index) {
-    ShadeVector& vertex = vertices[index];
-    const float y = ((vertex.x * matrix[1] + vertex.y * matrix[4]) + matrix[7] * vertex.z) + matrix[10];
-    const float z = ((vertex.x * matrix[2] + vertex.y * matrix[5]) + matrix[8] * vertex.z) + matrix[11];
-    vertex.x = ((vertex.x * matrix[0] + vertex.y * matrix[3]) + vertex.z * matrix[6]) + matrix[9];
-    vertex.y = y;
-    vertex.z = z;
+    std::array<float, 3>& vertex = vertices[index];
+    const float y = ((vertex[0] * matrix[1] + vertex[1] * matrix[4]) + matrix[7] * vertex[2]) + matrix[10];
+    const float z = ((vertex[0] * matrix[2] + vertex[1] * matrix[5]) + matrix[8] * vertex[2]) + matrix[11];
+    vertex[0] = ((vertex[0] * matrix[0] + vertex[1] * matrix[3]) + vertex[2] * matrix[6]) + matrix[9];
+    vertex[1] = y;
+    vertex[2] = z;
   }
 
   int textureVertexCount = 0;
@@ -827,7 +827,7 @@ void AnimatedModelNode::Shade(const float* matrix, int frame, const float* light
   // GLOBAL: gl_24736
   static ShadeVector vertexNormals[30000];
   std::list<int> groups[32];
-  auto faceColors = [this](int index) { return reinterpret_cast<std::uint32_t*>(this->faceNormals[index].data()); };
+  auto faceColors = [this](int index) { return this->faceColors[index].data(); };
 
   switch (shadeType) {
   case 0: {

@@ -44,7 +44,7 @@ __declspec(noinline) CCloudKillEffect::~CCloudKillEffect() {
 void CCloudKillEffect::AddSprites() {
   for (int z = -10; z <= 10; z += 4) {
     for (int x = -10; x <= 10; x += 4) {
-      CParticle* created = CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 1);
+      CParticle* created = CreateSpriteParticle(&this->positionVector, 1);
       CSpriteParticle* particle = static_cast<CSpriteParticle*>(created);
       matrix& rotation = particle->rotation;
       rotation.IsIdentity();
@@ -102,7 +102,7 @@ bool CCloudKillEffect::IsAlive() {
 // FUNCTION: fn_06930
 void CCloudKillEffect::OnProcess() {
   if (this->emitting && this->frame % 5 == 0) {
-    CParticle* created = CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 1);
+    CParticle* created = CreateSpriteParticle(&this->positionVector, 1);
     CSpriteParticle* particle = static_cast<CSpriteParticle*>(created);
     matrix& rotation = particle->rotation;
     rotation.IsIdentity();

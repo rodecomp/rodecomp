@@ -306,13 +306,14 @@ void UIRebirthWnd::Paint() {
 // OFFSET: 0x0092DE20
 // FUNCTION: fn_12674
 void UIRoMapWnd::Paint() {
+  static_assert(offsetof(UIRoMapWnd, m_kafraBounds) == 0x218);
   this->ClearSurface(0xFFFF00FF);
   this->DrawMapNames();
   this->DrawRecordBorders();
   this->DrawFieldLabels();
   this->DrawHoverTooltip();
   this->DrawSelectedMapPreview();
-  this->FillSurface(0xFFFF00FF, reinterpret_cast<const RECT*>(&this->m_kafraLeft));
+  this->FillSurface(0xFFFF00FF, &this->m_kafraBounds);
   this->DrawTitleBar(true, "", 0);
   this->FillRegion(0, 16, this->geometry.width, 2, 0xF7DFC6);
 }

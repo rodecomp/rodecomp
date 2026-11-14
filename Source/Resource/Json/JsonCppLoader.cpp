@@ -72,7 +72,7 @@ struct JsonCppLoaderJsonOptionsGuard {
 
   // INLINED
   ~JsonCppLoaderJsonOptionsGuard() {
-    reinterpret_cast<void(__thiscall*)(JsonCppLoaderJsonOptions*)>(JsonOptionsCommonDestroy)(reinterpret_cast<JsonCppLoaderJsonOptions*>(reinterpret_cast<unsigned char*>(this->options) + 8));
+    reinterpret_cast<void(__thiscall*)(JsonCppLoaderCommonJsonOptions*)>(JsonOptionsCommonDestroy)(&this->options->common);
   }
 };
 
@@ -87,7 +87,7 @@ bool JsonCppLoader::LoadBson(const std::string& path) {
 
     JsonCppLoaderBsonOptions optionStorage;
     JsonCppLoaderBsonOptions* options = reinterpret_cast<JsonCppLoaderBsonOptions*(__thiscall*)(JsonCppLoaderBsonOptions*, int)>(BsonDecodeOptionsConstruct)(&optionStorage, 1);
-    reinterpret_cast<JsonCppLoaderParsedValue&>(this->document) = JsonDecodeBsonStream(&file, options);
+    this->document = JsonDecodeBsonStream(&file, options);
     file.close();
   } catch (const std::exception& exception) {
     this->Fail("error : JsonCppLoader::LoadBson failed (reason : %s)", exception.what());
@@ -108,7 +108,7 @@ bool JsonCppLoader::LoadJson(const std::string& path) {
 
     JsonCppLoaderJsonOptions optionStorage;
     JsonCppLoaderJsonOptionsGuard options{reinterpret_cast<JsonCppLoaderJsonOptions*(__thiscall*)(JsonCppLoaderJsonOptions*, int)>(JsonDecodeOptionsConstruct)(&optionStorage, 1)};
-    reinterpret_cast<JsonCppLoaderParsedValue&>(this->document) = JsonParseStream(&file, options.options, JsonCppLoaderJsonHandler{});
+    this->document = JsonParseStream(&file, options.options, JsonCppLoaderJsonHandler{});
     file.close();
   } catch (const std::exception& exception) {
     this->Fail("error : JsonCppLoader::LoadJson failed (reason : %s)", exception.what());
@@ -152,7 +152,7 @@ __declspec(noinline) bool JsonCppLoader::LoadBson(std::vector<unsigned char>& bu
   try {
     JsonCppLoaderBsonOptions optionStorage;
     JsonCppLoaderBsonOptions* options = reinterpret_cast<JsonCppLoaderBsonOptions*(__thiscall*)(JsonCppLoaderBsonOptions*, int)>(BsonDecodeOptionsConstruct)(&optionStorage, 1);
-    reinterpret_cast<JsonCppLoaderParsedValue&>(this->document) = JsonDecodeBsonBuffer(&buffer, options);
+    this->document = JsonDecodeBsonBuffer(&buffer, options);
   } catch (const std::exception& exception) {
     this->Fail("error : JsonCppLoader::LoadBson failed (reason : %s)", exception.what());
     return false;
@@ -177,7 +177,7 @@ __declspec(noinline) bool JsonCppLoader::LoadJson(std::vector<unsigned char>& bu
   try {
     JsonCppLoaderJsonOptions optionStorage;
     JsonCppLoaderJsonOptionsGuard options{reinterpret_cast<JsonCppLoaderJsonOptions*(__thiscall*)(JsonCppLoaderJsonOptions*, int)>(JsonDecodeOptionsConstruct)(&optionStorage, 1)};
-    reinterpret_cast<JsonCppLoaderParsedValue&>(this->document) = JsonParseString(buffer.data(), options.options, JsonCppLoaderJsonHandler{});
+    this->document = JsonParseString(buffer.data(), options.options, JsonCppLoaderJsonHandler{});
   } catch (const std::exception& exception) {
     this->Fail("error : JsonCppLoader::LoadJson failed (reason : %s)", exception.what());
     return false;
@@ -188,13 +188,12 @@ __declspec(noinline) bool JsonCppLoader::LoadJson(std::vector<unsigned char>& bu
 
 // OFFSET: 0x004EEC60
 // FUNCTION: fn_00337
-JsonCppLoader::JsonCppLoader() : document(CopyNullJsonValue()), loaded(false), succeeded(true) {
+JsonCppLoader::JsonCppLoader() : document{CopyNullJsonValue()}, loaded(false), succeeded(true) {
 }
 
 // OFFSET: 0x004F2840
 // FUNCTION: fn_00446
 JsonCppLoader::~JsonCppLoader() {
-  reinterpret_cast<void(__thiscall*)(JsonValue*)>(JsonDestroy)(&this->document);
 }
 
 // OFFSET: 0x004F4180

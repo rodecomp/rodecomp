@@ -1,6 +1,8 @@
 #ifndef RAGNAROK_SOURCE_RENDER_PRIMITIVES_RENDERPRIMITIVE_H
 #define RAGNAROK_SOURCE_RENDER_PRIMITIVES_RENDERPRIMITIVE_H
 
+#include "Render/Drawing/SpriteGeometry.h"
+
 #include <cstddef>
 #include <cstdint>
 
@@ -11,7 +13,10 @@ struct RenderVertex {
   /* 0004 */ float y;
   /* 0008 */ float z;
   /* 000C */ float rhw;
-  /* 0010 */ std::uint32_t diffuse;
+  union {
+    /* 0010 */ std::uint32_t diffuse;
+    /* 0010 */ SpriteColor diffuseChannels;
+  };
   /* 0014 */ std::uint32_t specular;
   /* 0018 */ float u;
   /* 001C */ float v;
@@ -68,6 +73,8 @@ static_assert(sizeof(RenderCommand) == 40);
 static_assert(sizeof(RenderTriangle) == 108);
 static_assert(sizeof(RenderPrimitive) == 168);
 static_assert(offsetof(RenderVertex, rhw) == 0x000C);
+static_assert(offsetof(RenderVertex, diffuse) == 0x0010);
+static_assert(offsetof(RenderVertex, diffuseChannels) == 0x0010);
 static_assert(offsetof(RenderVertex, specular) == 0x0014);
 static_assert(offsetof(RenderVertex, u) == 0x0018);
 static_assert(offsetof(RenderVertex, v) == 0x001C);

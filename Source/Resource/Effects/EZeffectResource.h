@@ -56,6 +56,14 @@ struct EZeffectClip {
   /* 01C8 */ CTexture* textures[110];
 };
 
+struct EZeffectData {
+  /* 0000 */ int maximumFrame;
+  /* 0004 */ int fps;
+  /* 0008 */ int clipCount;
+  /* 000C */ int endLayerCount;
+  /* 0010 */ EZeffectClip clips[60];
+};
+
 class CEZeffectRes : public CRes {
 public:
   CEZeffectRes();
@@ -65,11 +73,7 @@ public:
   bool Load(const char* name) override;
   void Unload() override;
 
-  /* 0110 */ int maximumFrame;
-  /* 0114 */ int fps;
-  /* 0118 */ int clipCount;
-  /* 011C */ int endLayerCount;
-  /* 0120 */ EZeffectClip clips[60];
+  /* 0110 */ EZeffectData data;
 
 private:
   /* D320 */ std::uint32_t loadState;
@@ -82,6 +86,9 @@ static_assert(sizeof(EZeffectKeyFrame) == 124);
 static_assert(sizeof(EZeffectClip) == 896);
 static_assert(offsetof(EZeffectClip, names) == 0x10);
 static_assert(offsetof(EZeffectClip, textures) == 0x1C8);
+static_assert(sizeof(EZeffectData) == 0xD210);
+static_assert(offsetof(EZeffectData, clips) == 0x10);
+static_assert(offsetof(CEZeffectRes, data) == 0x110);
 static_assert(sizeof(CEZeffectRes) == 0xD350);
 #endif
 

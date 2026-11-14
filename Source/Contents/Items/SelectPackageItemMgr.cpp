@@ -169,7 +169,7 @@ int CSelectPackageItemMgr::LuaAddItem(lua_State* L) {
       item.expireTime = optionValue;
     }
     if (placeholder) {
-      *reinterpret_cast<short*>(item.options) = g_itemOptionPlaceholderId;
+      item.options[0].id = g_itemOptionPlaceholderId;
       item.optionCount = 3;
     }
   }

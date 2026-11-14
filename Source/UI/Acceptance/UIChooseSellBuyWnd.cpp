@@ -186,14 +186,6 @@ namespace {
   };
 #pragma pack(pop)
   static_assert(sizeof(FramedMessageHeader) == 6);
-#pragma pack(push, 1)
-  struct PackedItemOption {
-    /* 0000 */ std::int16_t id;
-    /* 0002 */ std::int16_t value;
-    /* 0004 */ unsigned char parameter;
-  };
-#pragma pack(pop)
-  static_assert(sizeof(PackedItemOption) == 5);
 }
 
 std::string CartTypeName(int type);
@@ -9315,7 +9307,7 @@ void UINotifyItemObtainWnd::Paint() {
   char* highlight = nullptr;
   char* cursor = text;
   std::vector<char*> breaks;
-  std::size_t remaining = sizeof(text);
+  int remaining = sizeof(text);
   int highlightColor;
   this->BuildItemName(&this->m_item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
 
@@ -11652,7 +11644,7 @@ void UITipboxWnd::PaintAnimations() {
 }
 
 // INLINED
-static __forceinline void AppendItemNameText(char*& cursor, std::size_t& remaining, const char* text) {
+static __forceinline void AppendItemNameText(char*& cursor, int& remaining, const char* text) {
   const int error = strncpy_s(cursor, remaining, text, _TRUNCATE);
   if (error == 0 || error == STRUNCATE) {
     const std::size_t bytes = strnlen_s(cursor, remaining);
@@ -11664,14 +11656,14 @@ static __forceinline void AppendItemNameText(char*& cursor, std::size_t& remaini
 // OFFSET: 0x008DA690
 // FUNCTION: fn_12148
 int UIFrameWnd::BuildItemName(
-  const ITEM_INFO* item, int* creatorColor, std::vector<char*>* breaks, char** cursor, std::size_t* remaining, char** creator,
+  const ITEM_INFO* item, int* creatorColor, std::vector<char*>* breaks, char** cursor, int* remaining, char** creator,
   char splitCreator, char withSlots
 ) {
   if (breaks->capacity() < 5) {
     breaks->reserve(5);
   }
 
-  int& capacity = reinterpret_cast<int&>(*remaining);
+  int& capacity = *remaining;
 
   if (item->identified) {
     const std::uint32_t* cards = item->cards;
@@ -12535,9 +12527,9 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
     this->m_cardTexts.clear();
     this->m_extraHeight = 0;
     if (this->m_item.identified == 1) {
-      const PackedItemOption* options = reinterpret_cast<const PackedItemOption*>(this->m_item.options);
+      const ItemOptionRecord* options = this->m_item.options;
       for (int index = 0; index < this->m_item.optionCount; ++index) {
-        const PackedItemOption& option = options[index];
+        const ItemOptionRecord& option = options[index];
         if (option.id == 0) {
           continue;
         }
@@ -12591,7 +12583,7 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
     char text[260];
     if (this->m_item.expireTime != 0) {
       char date[128];
-      std::strftime(date, sizeof(date), LookupMessage(MSI_TIME_TYPE2), _localtime32(reinterpret_cast<const __time32_t*>(&this->m_item.expireTime)));
+      std::strftime(date, sizeof(date), LookupMessage(MSI_TIME_TYPE2), _localtime32(&this->m_item.expireTime));
       int color = 32;
       std::memset(text, 0, sizeof(text));
       if (g_inlineCharset) {

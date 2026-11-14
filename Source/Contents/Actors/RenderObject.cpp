@@ -3596,7 +3596,7 @@ __declspec(noinline) void CGameMode::SpawnGrannyCorpse(float x, float y, float z
   corpse->position.y = y;
   corpse->position.z = z;
   corpse->angle = angle;
-  this->scene->objects.push_back(reinterpret_cast<CRenderObject*>(corpse));
+  this->scene->objects.push_back(corpse);
 }
 
 // OFFSET: 0x00CC8230
@@ -4498,7 +4498,7 @@ void CGameActor::SetActorJob(int job) {
 // FUNCTION: fn_21023
 void CGameActor::ClearSiegeNameWindow() {
   if (g_session.GetSiegeMode() != 0 && this->sceneNameWindow != nullptr) {
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->RemoveNotificationWindow(reinterpret_cast<int>(this->sceneNameWindow));
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->RemoveNotificationWindow(this->sceneNameWindow);
     g_windowMgr.Schedule(this->sceneNameWindow);
     this->sceneNameWindow = nullptr;
   }
@@ -4732,7 +4732,7 @@ void CGameActor::SpawnDamageDigits(int, int damage, std::uint32_t color, int typ
       effect->render.scale = 0.5f;
     }
     mode->AddSceneObject(effect);
-    this->msgEffectList.push_back(effect);
+    this->msgEffectList.emplace_back(effect);
   }
 }
 

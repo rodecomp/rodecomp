@@ -70,11 +70,25 @@ struct ReplayMetadataTag {
     std::memcpy(this, source, sizeof(*this));
   }
 };
+
+struct ReplayStatusPacket {
+  /* 0000 */ std::uint16_t id;
+  /* 0002 */ std::uint16_t status;
+  /* 0004 */ std::uint32_t accountId;
+  /* 0008 */ unsigned char enabled;
+  /* 0009 */ std::uint32_t remaining;
+  /* 000D */ std::uint32_t total;
+  /* 0011 */ std::uint32_t mode;
+  /* 0015 */ unsigned char padding_0015[8];
+};
+
 #pragma pack(pop)
 
 static_assert(sizeof(ReplayTaggedRecordHeader) == 6);
 static_assert(sizeof(ReplayMetadataTag) == 6);
 static_assert(sizeof(ReplayRecordHeader) == 10);
+static_assert(sizeof(ReplayStatusPacket) == 29);
+static_assert(offsetof(ReplayStatusPacket, mode) == 17);
 
 // OFFSET: 0x006DA340
 // FUNCTION: fn_06623
@@ -215,7 +229,6 @@ bool Replay::WriteSection(int id, const std::vector<unsigned char>& bytes, int e
 
   const std::uint32_t sectionBytes = this->sections[id].bytes;
   if (sectionBytes != 0) {
-    auto* words = reinterpret_cast<std::uint32_t*>(data);
     this->cipherBase = this->header.key0 >> 5;
     const int count = sectionBytes / 4;
     this->cipherIndex = 0;
@@ -223,7 +236,10 @@ bool Replay::WriteSection(int id, const std::vector<unsigned char>& bytes, int e
 
     for (int index = 0; index < count; ++index) {
       ++this->cipherIndex;
-      words[index] ^= (this->cipherBase + this->cipherIndex) * this->cipherKey;
+      std::uint32_t word;
+      std::memcpy(&word, data + index * sizeof(word), sizeof(word));
+      word ^= (this->cipherBase + this->cipherIndex) * this->cipherKey;
+      std::memcpy(data + index * sizeof(word), &word, sizeof(word));
     }
   }
 
@@ -927,14 +943,14 @@ void Replay::RestartClock() {
 // FUNCTION: fn_24196
 std::vector<unsigned char> CSession::BuildStatusReplayPacket() {
   std::vector<unsigned char> packet(29, 0);
-  unsigned char* data = packet.data();
-  *reinterpret_cast<std::uint16_t*>(data) = 0x983;
-  *reinterpret_cast<std::uint16_t*>(data + 2) = 0x2A1;
-  *reinterpret_cast<std::uint32_t*>(data + 9) = 9999;
-  *reinterpret_cast<std::uint32_t*>(data + 4) = this->m_aid;
-  data[8] = 1;
-  *reinterpret_cast<std::uint32_t*>(data + 13) = 9999;
-  *reinterpret_cast<std::uint32_t*>(data + 17) = this->replayPacketMode;
+  auto* data = reinterpret_cast<ReplayStatusPacket*>(packet.data());
+  data->id = 0x983;
+  data->status = 0x2A1;
+  data->remaining = 9999;
+  data->accountId = this->m_aid;
+  data->enabled = 1;
+  data->total = 9999;
+  data->mode = this->replayPacketMode;
   return packet;
 }
 

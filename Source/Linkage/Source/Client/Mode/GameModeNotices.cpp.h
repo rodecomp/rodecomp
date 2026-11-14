@@ -94,4 +94,4 @@
 #include <xtimec.h>
 #include "Resource/MSGSTRINGID.h"
 
-extern template void std::list<CRenderObject*>::push_back(CRenderObject*&&);
+extern template void std::list<CGameObject*>::push_back(CGameObject*&&);

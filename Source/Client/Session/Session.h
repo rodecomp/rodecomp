@@ -56,9 +56,9 @@ struct SessionRecord6144 {
   /* 002C */ int completedAt = 0;
   /* 0030 */ std::uint8_t rewarded = 0;
   /* 0031 */ std::uint8_t padding_0031;
-  /* 0032 */ std::int16_t year;
-  /* 0034 */ std::int16_t month;
-  /* 0036 */ std::int16_t day;
+  /* 0032 */ std::uint16_t year;
+  /* 0034 */ std::uint16_t month;
+  /* 0036 */ std::uint16_t day;
 
   void SplitDate(__time32_t time, std::uint16_t& year, std::uint16_t& month, std::uint16_t& day) const;
 };

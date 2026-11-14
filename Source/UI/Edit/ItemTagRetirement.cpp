@@ -20,14 +20,6 @@
 #include <cstring>
 #include <string>
 
-#pragma pack(push, 1)
-struct ItemLinkOption {
-  /* 0000 */ std::int16_t id;
-  /* 0002 */ std::int16_t value;
-  /* 0004 */ unsigned char parameter;
-};
-#pragma pack(pop)
-
 // OFFSET: 0x00896EB0
 // FUNCTION: fn_11519
 void UIItemTagCtrl::RemoveTagChild(UIWindow* child) {
@@ -271,7 +263,7 @@ void UIItemTagCtrl::AddItemTag(const ITEM_INFO& item, unsigned int color) {
     link += this->ItemLinkNumberText(index < 4 ? cards[index] : 0);
   }
 
-  const ItemLinkOption* options = reinterpret_cast<const ItemLinkOption*>(item.options);
+  const ItemOptionRecord* options = item.options;
   for (int index = 0; index < item.optionCount; ++index) {
     link += delimiters[9];
     link += this->ItemLinkNumberText(options[index].id);

@@ -14,7 +14,7 @@ class CGameActor;
 class CEZ2STRScreenEffect : public CEffect {
 public:
   CEZ2STRScreenEffect();
-  void SetRenderFunc(int argument) override;
+  void SetRenderFunc(ParticleSubmit argument) override;
   void Open() override;
   void OnProcess() override;
   void Render() override;

@@ -41,7 +41,7 @@ public:
   int DrawItemName(int x, int y, int width, const ITEM_INFO* item, int unused, int family, int height);
   int DrawWrappedItemName(int x, int y, int width, const ITEM_INFO* item, int unused, int family, int lineHeight);
   int BuildItemName(
-    const ITEM_INFO* item, int* highlightColor, std::vector<char*>* breaks, char** cursor, std::size_t* remaining, char** highlight, char withSlots,
+    const ITEM_INFO* item, int* highlightColor, std::vector<char*>* breaks, char** cursor, int* remaining, char** highlight, char withSlots,
     char withOptions
   );
   void DrawItemNameText(

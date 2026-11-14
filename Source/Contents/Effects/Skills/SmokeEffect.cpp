@@ -27,7 +27,7 @@ void CSmokeEffect::Close() {
 // FUNCTION: fn_19177
 void CSmokeEffect::Open() {
   for (int i = 0; i < 4; ++i) {
-    CSpriteParticle* particle = static_cast<CSpriteParticle*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 1));
+    CSpriteParticle* particle = static_cast<CSpriteParticle*>(CreateSpriteParticle(&this->positionVector, 1));
     if (particle) {
       particle->effectId = this->id;
       particle->columnIndex = i;

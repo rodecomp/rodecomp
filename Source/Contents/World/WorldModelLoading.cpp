@@ -124,7 +124,7 @@ DWORD WINAPI CWorld::LoadDeferredModels(void* parameter) {
     }
 
     world->models.push_back(model);
-    std::atomic_ref<int>(world->pending).fetch_add(1, std::memory_order_seq_cst);
+    std::atomic_ref<long>(world->pending).fetch_add(1, std::memory_order_seq_cst);
     Sleep(0);
   }
 
@@ -141,7 +141,7 @@ void CWorld::FinishModelLoading() {
   }
 
   g_deferredWorldModels.clear();
-  std::atomic_ref<int>(this->pending).store(0, std::memory_order_release);
+  std::atomic_ref<long>(this->pending).store(0, std::memory_order_release);
 }
 
 // OFFSET: 0x00AC94C0

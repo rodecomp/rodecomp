@@ -78,8 +78,8 @@ bool CGndRes::Parse() {
     this->legacyLightmaps = static_cast<const GroundLegacyLightmap*>(this->m_file.ReadPtr(40u * count));
   }
   this->m_file.Read(&this->tileCount, sizeof(this->tileCount));
-  this->tiles = static_cast<const unsigned char*>(this->m_file.ReadPtr(40u * static_cast<std::uint32_t>(this->tileCount)));
-  this->cells = static_cast<const unsigned char*>(this->m_file.ReadPtr(28u * static_cast<std::uint32_t>(this->width) * static_cast<std::uint32_t>(this->height)));
+  this->tiles = static_cast<const GroundTileRecord*>(this->m_file.ReadPtr(40u * static_cast<std::uint32_t>(this->tileCount)));
+  this->cells = static_cast<const GroundCellRecord*>(this->m_file.ReadPtr(28u * static_cast<std::uint32_t>(this->width) * static_cast<std::uint32_t>(this->height)));
 
   if (this->minor >= 8) {
     this->ReadWater();

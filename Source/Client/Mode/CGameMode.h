@@ -23,6 +23,7 @@ class CMousePointer;
 class CCorpse;
 class CMsgEffect;
 class CGameActor;
+class CGameObject;
 class CPlayer;
 class CRenderObject;
 struct ActorNameAllPacket;
@@ -188,7 +189,7 @@ public:
   /* 0304 */ unsigned char padding_0304[0x04];
   /* 0308 */ ModeDragState drag;
   /* 03C8 */ ChatRoomTitleInfo chatRoom;
-  /* 0408 */ void* skillUseType;
+  /* 0408 */ int skillUseType;
   /* 040C */ int skillId;
   /* 0410 */ int skillAttackRange;
   /* 0414 */ int skillUseLevel;
@@ -248,7 +249,7 @@ public:
   __declspec(noinline) std::string GetMapResource(unsigned int index);
   void RequestPlayerAction(int target, int argument);
   void UpdateLoopSounds();
-  void AddSceneObject(CRenderObject* object);
+  void AddSceneObject(CGameObject* object);
   void SendMousePointerPosition(float x, float y, int value);
   void WriteChatLog(const char* text);
   bool IsEffectId990Group(int id);
@@ -386,7 +387,7 @@ public:
   bool LaunchTargetEffect(int effectId, CGameActor* source, CGameActor* target, int argument);
   void UpdateNameBalloon(CGameActor* actor);
   void ShowGuildEmblem(CGameActor* actor, int guildId, int unused);
-  void RemoveNotificationWindow(int window);
+  void RemoveNotificationWindow(UIWindow* window);
   void DrawMiniMapNumber();
   void DrawTimeAttackTimer();
   void DrawTimeAttackCountdown(std::uint32_t value, int mode);
@@ -516,7 +517,7 @@ public:
   void ReceiveChangeZoneServerWithHost(const unsigned char* packet);
   void IgnoreRemovedPacket10(const unsigned char* packet);
   void IgnoreRemovedPacket11(const unsigned char* packet);
-  void IgnoreRemovedPacket12(const unsigned char* packet, int value1, int value2, int value3, int value4);
+  void IgnoreRemovedPacket12(std::uint32_t accountId, int value1, int value2, int value3, int value4);
   void ToggleWindow169(unsigned char enable);
   void RequestWindow169(unsigned char enable);
   void ShowNoticeText(std::string text);
@@ -703,7 +704,7 @@ public:
     const char* first, int second, const char* third, int fourth, unsigned char fifth, std::uint16_t sixth, std::uint16_t seventh,
     const char* eighth, unsigned char ninth, unsigned char tenth, int eleventh
   );
-  void ReceiveLapineBoxIngredient(const unsigned char* packet);
+  void ReceiveLapineBoxIngredient(int itemId);
   void ActivateMacroBlackListCheck(unsigned char state, int duration);
   void SetMacroDetectorCountdown(unsigned char count, std::uint32_t duration);
   void ReceiveCaptchaPreviewImage(const char* key, const void* data, unsigned short size);
@@ -1068,7 +1069,7 @@ void CloseWhisperRecord();
 extern unsigned char g_gameModePacketBuffer[0x10000];
 extern std::string g_gameModeNamelessTag;
 void __stdcall OpenWordDisplay(CGameActor* actor);
-int CountItemRandomOptions(const unsigned char* entries);
+int CountItemRandomOptions(const ItemOptionRecord* entries);
 void TraceSelection(int selection);
 void TraceSelectionRange(int first, int last);
 void WriteMyLog(const char* file, int line, const char* format, ...);

@@ -671,7 +671,7 @@ void CGameActor::ReleaseAttachments() {
   this->msgEffectList.erase(this->msgEffectList.begin(), this->msgEffectList.end());
 
   if (g_session.GetSiegeMode() && this->sceneNameWindow) {
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->RemoveNotificationWindow(reinterpret_cast<int>(this->sceneNameWindow));
+    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->RemoveNotificationWindow(this->sceneNameWindow);
     g_windowMgr.Schedule(this->sceneNameWindow);
     this->sceneNameWindow = nullptr;
   }

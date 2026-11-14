@@ -68,8 +68,8 @@ public:
   void SendApply(std::uint16_t type, const char* name);
   void SendCancel();
   void SendRankingRequest();
-  void SetQueueName(const EntryQueueName& name);
-  void SetCharacterName(const EntryQueueName& name);
+  void SetQueueName(const char* name);
+  void SetCharacterName(const char* name);
   void OnApplyResult(const EntryQueueApplyResult* packet);
   void OnCancelResult(const EntryQueueNotice* notice);
   void ResetCurrent(int unused);

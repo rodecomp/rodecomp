@@ -20,7 +20,13 @@ namespace {
     /* 0004 */ std::uint32_t tick;
     /* 0008 */ std::uint16_t bytes;
   };
+
+  struct ReplayCipherWord {
+    /* 0000 */ std::uint32_t value;
+  };
 #pragma pack(pop)
+static_assert(sizeof(RecordHeader) == 10);
+static_assert(sizeof(ReplayCipherWord) == 4);
 }
 
 // OFFSET: 0x00B86880
@@ -72,13 +78,13 @@ bool Replay::Record(std::uint16_t bytes, const void* packet, int event, std::uin
 
   std::memcpy(record.data() + 10, packet, bytes);
 
-  std::uint32_t* words = reinterpret_cast<std::uint32_t*>(record.data() + 10);
+  auto* words = reinterpret_cast<ReplayCipherWord*>(record.data() + 10);
   if (words) {
     this->cipherKey = this->header.key1 >> 3;
     this->cipherIndex = 0;
     this->cipherBase = this->header.key0 >> 5;
     for (int index = 0; index < bytes / 4; ++index) {
-      words[index] ^= this->cipherKey * (++this->cipherIndex + this->cipherBase);
+      words[index].value ^= this->cipherKey * (++this->cipherIndex + this->cipherBase);
     }
   }
 
@@ -189,13 +195,13 @@ bool Replay::RecordPacket(const std::vector<unsigned char>& packet, int event, s
 
   std::memcpy(record.data() + 10, data, bytes);
 
-  std::uint32_t* words = reinterpret_cast<std::uint32_t*>(record.data() + 10);
+  auto* words = reinterpret_cast<ReplayCipherWord*>(record.data() + 10);
   if (words) {
     this->cipherKey = this->header.key1 >> 3;
     this->cipherIndex = 0;
     this->cipherBase = this->header.key0 >> 5;
     for (int index = 0; index < bytes / 4; ++index) {
-      words[index] ^= this->cipherKey * (++this->cipherIndex + this->cipherBase);
+      words[index].value ^= this->cipherKey * (++this->cipherIndex + this->cipherBase);
     }
   }
 

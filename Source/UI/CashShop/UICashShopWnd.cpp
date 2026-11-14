@@ -557,17 +557,17 @@ void UICashShopWnd_Item::Paint() {
       this->DrawTextAt(0x53, 0x4C, LookupMessage(MSI_ZEROQUEST_QUESTVIEW_ON), 0, 0, 0xB, 0xFF, 0, 0);
     } else {
       std::string count;
-      if (static_cast<int>(this->m_item.saleData[3]) < 0) {
+      if (static_cast<int>(this->m_item.saleData.purchaseCount) < 0) {
         count = static_cast<const std::string&>(FormatOwnedString("%d/%d", 0, this->m_item.quantity));
       } else {
-        count = static_cast<const std::string&>(FormatOwnedString("%d/%d", this->m_item.saleData[3], this->m_item.quantity));
+        count = static_cast<const std::string&>(FormatOwnedString("%d/%d", this->m_item.saleData.purchaseCount, this->m_item.quantity));
       }
       this->DrawTextAt(0x53, 0x4C, LookupMessage(MSI_ACCOUNT_LIMITED_SALE_ITEM_SOLD_OUT), 0, 0, 0xB, 0x6E4B41, 0, 0);
       this->DrawCenteredOutlinedText(0x53, 0x5B, count.c_str(), 0x51, 0, 0xFFFFFF, 0xD29374, 0, 0x10, 1);
     }
 
-    __time32_t& start = reinterpret_cast<__time32_t&>(this->m_item.saleData[1]);
-    __time32_t& end = reinterpret_cast<__time32_t&>(this->m_item.saleData[2]);
+    __time32_t& start = this->m_item.saleData.startTime;
+    __time32_t& end = this->m_item.saleData.endTime;
     start = start < 0 ? 0 : start;
     end = end < 0 ? 0 : end;
 
@@ -866,7 +866,7 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
         }
 
         if (product != this->m_items.end()) {
-          const int stock = product->saleData[3];
+          const int stock = product->saleData.purchaseCount;
           if (stock <= 0) {
             g_windowMgr.Confirm(LookupMessage(MSI_HAVE_ITEMTAG), 0, true, false, 0, "Message", 0x118, 0x78, 0);
             mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
@@ -1150,7 +1150,7 @@ int UICashShopWnd_Cart::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       }
 
       ITEM_INFO entry(item);
-      const int limit = entry.saleData[3];
+      const int limit = entry.saleData.purchaseCount;
       if (limit != 0) {
         if (quantity > limit) {
           g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_BARGAINSALE_TOOLWND_CALL), limit).c_str(), 0, true, false, 0, "Message", 0x118, 0x78, 0);
@@ -1163,10 +1163,10 @@ int UICashShopWnd_Cart::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       this->m_cartItems.push_back(entry);
       this->SendMsg(this, UM_SCROLLVERT, 1, 0, 0, 0);
     } else {
-      const int limit = it->saleData[3];
+      const int limit = it->saleData.purchaseCount;
       if (limit != 0 && it->quantity + quantity > limit) {
         g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_BARGAINSALE_TOOLWND_CALL), limit).c_str(), 0, true, false, 0, "Message", 0x118, 0x78, 0);
-        quantity = it->saleData[3] - it->quantity;
+        quantity = it->saleData.purchaseCount - it->quantity;
         if (quantity == 0) {
           return -1;
         }
@@ -1322,7 +1322,7 @@ int UICashShopWnd_Item::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     this->m_soldOut->Show(0);
     this->m_largeLayout = argument2 == 9;
     if (argument2 == 9) {
-      if (static_cast<int>(this->m_item.saleData[3]) <= 0) {
+      if (static_cast<int>(this->m_item.saleData.purchaseCount) <= 0) {
         this->m_addButton->Move(0x53, 0x78);
         {
           auto* addButton = this->m_addButton;

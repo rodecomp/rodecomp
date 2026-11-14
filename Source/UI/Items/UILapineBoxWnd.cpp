@@ -559,7 +559,7 @@ void UIIngredientInfoWnd::SetIngredientItem(std::uint32_t id) {
   char name[260];
   std::memset(name, 0, sizeof(name));
   char* highlight = nullptr;
-  std::size_t remaining = sizeof(name);
+  int remaining = sizeof(name);
   char* cursor = name;
   int highlightColor;
   this->BuildItemName(&this->item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);

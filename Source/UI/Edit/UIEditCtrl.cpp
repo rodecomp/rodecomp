@@ -8443,10 +8443,10 @@ int UIItemStoreSubWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         continue;
       }
 
-      item.saleData[0] = g_itemInfoMgr->IsCostume(std::stoi(item.itemId));
+      item.saleData.costume = g_itemInfoMgr->IsCostume(std::stoi(item.itemId));
       const int type = static_cast<int>(item.identity[0]);
       bool matches = false;
-      if (item.saleData[0] != 0) {
+      if (item.saleData.costume != 0) {
         matches = this->tabIndex == 4;
       } else {
         switch (this->tabIndex) {
@@ -8778,10 +8778,10 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
         continue;
       }
 
-      item.saleData[0] = g_itemInfoMgr->IsCostume(std::stoi(item.itemId));
+      item.saleData.costume = g_itemInfoMgr->IsCostume(std::stoi(item.itemId));
       const int type = static_cast<int>(item.identity[0]);
       bool matches = false;
-      if (item.saleData[0] != 0) {
+      if (item.saleData.costume != 0) {
         matches = this->m_sortMode == 4;
       } else {
         switch (this->m_sortMode) {
@@ -10184,7 +10184,7 @@ bool UIItemStoreFindWnd::UpdateItemNames() {
     char* cursor = text;
     std::vector<char*> breaks;
     ITEM_INFO item = *it;
-    std::size_t remaining = 0x100;
+    int remaining = 0x100;
     int highlightColor;
     this->BuildItemName(&item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
     it->SetName(text);
@@ -10205,7 +10205,7 @@ bool UIItemStoreSubWnd::UpdateItemNames2() {
     char* cursor = text;
     std::vector<char*> breaks;
     ITEM_INFO item = *it;
-    std::size_t remaining = 0x100;
+    int remaining = 0x100;
     int highlightColor;
     this->BuildItemName(&item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
     it->SetName(text);
@@ -10226,7 +10226,7 @@ bool UIItemStoreWnd::UpdateItemNames() {
     char* cursor = text;
     std::vector<char*> breaks;
     ITEM_INFO item = *it;
-    std::size_t remaining = 0x100;
+    int remaining = 0x100;
     int highlightColor;
     this->BuildItemName(&item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
     it->SetName(text);

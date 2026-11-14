@@ -1618,7 +1618,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
   ResourceMgr::Instance().UnloadAll();
   g_texMgr.Clear();
   SaveDisplayDeviceSettings();
-  GetRenderSystemHolder()->DestroySurface(reinterpret_cast<CSurface*>(g_renderer));
+  GetRenderSystemHolder()->DestroyRenderer(g_renderer);
   GetRenderSystemHolder()->Close();
 
   MSG message;

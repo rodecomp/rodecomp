@@ -74,8 +74,7 @@ void UIWindowMgr::EnableRouletteWnd() {
 char UIWindowMgr::UpdateSnapRectangles() {
   this->snapRectangles.clear();
 
-  const ServiceOptions* options = reinterpret_cast<const ServiceOptions*>(this);
-  if (options->Get(141) == 0) {
+  if (ServiceOptions::Get(141) == 0) {
     return 0;
   }
 
@@ -95,7 +94,7 @@ char UIWindowMgr::UpdateSnapRectangles() {
       continue;
     }
 
-    if (options->Get(141) != 0 && window) {
+    if (ServiceOptions::Get(141) != 0 && window) {
       this->snapRectangles[window].Set(window->geometry.x, window->geometry.y, window->geometry.width, window->geometry.height);
     }
   }

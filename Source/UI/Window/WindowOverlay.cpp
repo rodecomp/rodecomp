@@ -109,7 +109,7 @@ int UIFrameWnd::DrawFittedItemName(int x, int y, const ITEM_INFO* item, std::uin
   char buffer[256];
   std::memset(buffer, 0, sizeof(buffer));
   char* highlight = nullptr;
-  std::size_t remaining = sizeof(buffer);
+  int remaining = sizeof(buffer);
   char* cursor = buffer;
   int highlightColor;
   this->BuildItemName(item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 0, option);
@@ -162,7 +162,7 @@ int UIFrameWnd::DrawItemName(int x, int y, int width, const ITEM_INFO* item, int
   char* highlight = nullptr;
   char* cursor = buffer;
   std::vector<char*> breaks;
-  std::size_t remaining = sizeof(buffer);
+  int remaining = sizeof(buffer);
   int highlightColor;
   this->BuildItemName(item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
 
@@ -184,7 +184,7 @@ int UIFrameWnd::DrawWrappedItemName(int x, int y, int width, const ITEM_INFO* it
   char* highlight = nullptr;
   char* cursor = buffer;
   std::vector<char*> breaks;
-  std::size_t remaining = sizeof(buffer);
+  int remaining = sizeof(buffer);
   int highlightColor;
   this->BuildItemName(item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
 

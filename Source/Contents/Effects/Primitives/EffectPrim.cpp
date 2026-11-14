@@ -150,7 +150,7 @@ void CEffectPrim::HandleMasterMessage(CGameObject*, int message, int a, int, int
 // FUNCTION: fn_20076
 CEffectPrim* CreateEffectParticle(
   CRagEffect& master, const RenderObjectState& masterRender, int type, float x, float y, float z,
-  std::list<CRenderObject*>& worldObjects
+  std::list<CGameObject*>& worldObjects
 ) {
   auto* particle = new CEffectPrim();
   if (!particle) {

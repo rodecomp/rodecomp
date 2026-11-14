@@ -25,7 +25,7 @@ struct RenderSystemHolder {
   CTexture* CreateTexture(std::uint32_t width, std::uint32_t height, std::int32_t format, bool dynamic, bool renderTarget);
   CSurface* CreateSurfaceOrTexture(std::uint32_t width, std::uint32_t height);
   HRESULT Close();
-  void DestroySurface(CSurface* surface);
+  void DestroyRenderer(CRenderer* renderer);
   void UpdateOption();
   void RestoreDisplayMode();
   void PrepareErrorDialog();

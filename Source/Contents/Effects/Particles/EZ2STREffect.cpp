@@ -5476,8 +5476,8 @@ draw:
 
 // OFFSET: 0x00B66460
 // FUNCTION: fn_19046
-void CEZ2STRScreenEffect::SetRenderFunc(int argument) {
-  this->particle->submit = reinterpret_cast<ParticleSubmit>(argument);
+void CEZ2STRScreenEffect::SetRenderFunc(ParticleSubmit argument) {
+  this->particle->submit = argument;
 }
 
 // OFFSET: 0x00B66480
@@ -5527,7 +5527,7 @@ void CEZ2STRScreenEffect::SetWindowOffset(int argument1, int argument2, int argu
     return;
   }
 
-  const vector3d offset = *reinterpret_cast<const vector3d*>(&argument1);
+  const vector3d offset = {std::bit_cast<float>(argument1), std::bit_cast<float>(argument2), std::bit_cast<float>(argument3)};
   particle->m_windowOffset.x = offset.x;
   particle->m_windowOffset.y = offset.y;
   particle->m_windowOffset.z = offset.z;

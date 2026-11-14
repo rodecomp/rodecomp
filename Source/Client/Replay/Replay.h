@@ -33,17 +33,22 @@ struct ReplayCachedPacket {
 
 #pragma pack(push, 1)
 struct ReplayOptions {
-  /* 0000 */ unsigned char padding_0000[6];
-  /* 0006 */ unsigned char recordRestricted;
-  /* 0007 */ unsigned char showItemSlots;
-  /* 0008 */ unsigned char padding_0008[22];
+  union {
+    struct {
+      /* 0000 */ unsigned char padding_0000[6];
+      /* 0006 */ unsigned char recordRestricted;
+      /* 0007 */ unsigned char showItemSlots;
+      /* 0008 */ unsigned char padding_0008[22];
+    };
+    /* 0000 */ unsigned char values[30];
+  };
 
   unsigned char Get(ReplayRecordOption option) const {
-    return reinterpret_cast<const unsigned char*>(this)[static_cast<std::size_t>(option)];
+    return this->values[static_cast<std::size_t>(option)];
   }
 
   void Set(ReplayRecordOption option, unsigned char value) {
-    reinterpret_cast<unsigned char*>(this)[static_cast<std::size_t>(option)] = value;
+    this->values[static_cast<std::size_t>(option)] = value;
   }
 };
 
@@ -60,7 +65,7 @@ struct ReplayHeader {
   /* 0070 */ int cellX;
   /* 0074 */ int cellY;
   /* 0078 */ int playerDirection;
-  /* 007C */ std::uint32_t duration;
+  /* 007C */ int duration;
   /* 0080 */ std::uint32_t records;
   /* 0084 */ std::uint32_t fileOffset;
   /* 0088 */ ReplayOptions options;
@@ -96,7 +101,7 @@ public:
   /* 0014 */ std::uint32_t started;
   /* 0018 */ std::uint32_t previousTick;
   /* 001C */ std::uint32_t frame;
-  /* 0020 */ std::uint32_t elapsed;
+  /* 0020 */ int elapsed;
   /* 0024 */ float speed;
   /* 0028 */ ReplayHeader header;
   /* 00D2 */ ReplaySection sections[26];

@@ -53,16 +53,6 @@ public:
     /* 0074 */ __time32_t lastOfflineTime;
   };
 
-  struct Unknown00D4Entry {
-    /* 0000 */ int ranking;
-    /* 0004 */ int positionId;
-    /* 0008 */ std::string name;
-    /* 0020 */ int canInvite;
-    /* 0024 */ int canExpel;
-    /* 0028 */ int tax;
-    /* 002C */ int canStorage;
-  };
-
   struct RelatedGuild {
     /* 0000 */ int guildId;
     /* 0004 */ int relation;
@@ -104,7 +94,7 @@ public:
   /* 00C8 */ int skillsRequested;
   /* 00CC */ int bansRequested;
   /* 00D0 */ std::uint32_t masterCharacterId;
-  /* 00D4 */ std::list<Unknown00D4Entry> positions;
+  /* 00D4 */ std::list<GuildPositionEntry> positions;
   /* 00DC */ std::list<Member> m_members;
   /* 00E4 */ std::list<RelatedGuild> relatedGuilds;
   /* 00EC */ std::list<Unknown00ECEntry> bannedMembers;
@@ -131,7 +121,7 @@ public:
   void UpdateMemberStatus(int accountId, int online, int characterId, short padding_002C, short padding_0020, short padding_0024);
   void SetMemberOnline(int accountId, int online);
   void SetMasterCharacterId(int characterId);
-  void UpdatePosition(Unknown00D4Entry entry);
+  void UpdatePosition(GuildPositionEntry entry);
   void AddAgitId(int value);
   void AddMember(const Member& member);
   void AddBannedMember(const Unknown00ECEntry& entry);
@@ -151,7 +141,7 @@ static_assert(offsetof(GuildInfo::Member, positionName) == 0x34);
 static_assert(offsetof(GuildInfo::Member, expRatio) == 0x68);
 static_assert(offsetof(GuildInfo::Member, online) == 0x70);
 
-static_assert(sizeof(GuildInfo::Unknown00D4Entry) == 0x30);
+static_assert(sizeof(GuildPositionEntry) == 0x30);
 
 static_assert(sizeof(GuildInfo::RelatedGuild) == 0x20);
 

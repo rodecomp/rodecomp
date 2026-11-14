@@ -65,9 +65,9 @@ HRESULT RenderSystemHolder::Close() {
 
 // OFFSET: 0x00569FA0
 // FUNCTION: fn_02279
-void RenderSystemHolder::DestroySurface(CSurface* surface) {
+void RenderSystemHolder::DestroyRenderer(CRenderer* renderer) {
   if (this->system) {
-    this->system->DestroySurface(surface);
+    this->system->DestroyRenderer(renderer);
   }
 }
 

@@ -384,7 +384,7 @@ void UIItemReformWnd::SelectItem(ITEM_INFO* item) {
     memcpy_s(this->resultItem.options, sizeof(this->resultItem.options), this->selectedItem->options, this->selectedItem->optionCount * 5);
   } else if (info->randomOptionCode != "G0") {
     this->resultItem.optionCount = 1;
-    *reinterpret_cast<short*>(this->resultItem.options) = g_itemOptionPlaceholderId;
+    this->resultItem.options[0].id = g_itemOptionPlaceholderId;
   }
   if (info->preserveSocketItem == 1) {
     std::memcpy(this->resultItem.cards, this->selectedItem->cards, sizeof(this->resultItem.cards));

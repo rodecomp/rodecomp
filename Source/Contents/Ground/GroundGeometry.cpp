@@ -41,27 +41,14 @@ namespace {
     result[2] = result[2] + value[2];
   }
 
-  struct GroundCellRecord {
-    /* 0000 */ float heights[4];
-    /* 0010 */ int tiles[3];
-  };
-
-  struct GroundTileRecord {
-    /* 0000 */ float u[4];
-    /* 0010 */ float v[4];
-    /* 0020 */ std::int16_t texture;
-    /* 0022 */ std::uint16_t lightmap;
-    /* 0024 */ std::uint32_t color;
-  };
-
   // INLINED
   __forceinline const GroundCellRecord& CellRecord(const CGndRes& resource, int index) {
-    return reinterpret_cast<const GroundCellRecord*>(resource.cells)[index];
+    return resource.cells[index];
   }
 
   // INLINED
   __forceinline const GroundTileRecord& TileRecord(const CGndRes& resource, int index) {
-    return reinterpret_cast<const GroundTileRecord*>(resource.tiles)[index];
+    return resource.tiles[index];
   }
 
   union VertexColor {
