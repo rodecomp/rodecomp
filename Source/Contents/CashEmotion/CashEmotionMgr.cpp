@@ -688,7 +688,7 @@ void CCashEmotionMgr::ProcessChatCommand(const char* command) {
     this->HideSuggestions();
   } else {
     chatWnd->ShowSuggestions(1);
-    reinterpret_cast<UICashEmotionMiniWnd*>(suggestions)->Select(reinterpret_cast<CashEmotionCommand*>(actionId));
+    static_cast<UICashEmotionMiniWnd*>(suggestions)->Select(reinterpret_cast<CashEmotionCommand*>(actionId));
   }
 }
 
