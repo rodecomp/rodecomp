@@ -8813,7 +8813,7 @@ void CGameMode::Update() {
     if (g_soundMgr->IsComplete() && g_soundMgr->secondaryEnabled != 0) {
       g_soundMgr->secondaryEnabled = 0;
       if (g_soundMgr->IsStopped()) {
-        CSoundMgr::Pause(g_soundMgr, 0);
+        g_soundMgr->Pause(0);
       } else {
         g_soundMgr->SetDefaultName(g_session.GetBgmFileName(this->MapName().c_str()));
       }
@@ -9450,7 +9450,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
   }
   case TT_BVOLUME: {
     const int volume = std::atoi(parts[0].c_str());
-    CSoundMgr::SetVolume(g_soundMgr, volume);
+    g_soundMgr->SetVolume(volume);
     g_soundMgr->SetTargetVolume(CSoundMgr::Volume(g_soundMgr));
     char text[120];
     std::sprintf(text, "%s %d", LookupMessage(MSI_VOLUME_OF_BGM), volume);

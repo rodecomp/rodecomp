@@ -1434,8 +1434,8 @@ void CSession::LoadOptionInfo() {
   g_textureFiltering = this->GetOptionInteger("Trilinear", 0);
 
   const int effectVolume = this->GetOptionInteger("Effect_Volume", 100);
-  CSoundMgr::SetVolume(g_soundMgr, this->GetOptionInteger("Bgm_Volume", 100));
-  g_soundMgr->SetTargetVolume(CSoundMgr::Volume(g_soundMgr));
+  g_soundMgr->SetVolume(this->GetOptionInteger("Bgm_Volume", 100));
+  g_soundMgr->SetTargetVolume(g_soundMgr->Volume());
   g_soundMgr->SetSampleVolume(effectVolume);
   g_soundMgr->Set3DVolume(effectVolume);
 

@@ -1515,7 +1515,7 @@ void CUIGroupSound::SetBgmEnabled(bool enabled) {
 // OFFSET: 0x00A3F3D0
 // FUNCTION: fn_15943
 void CUIGroupSound::SetBgmVolume(int volume) {
-  CSoundMgr::SetVolume(g_soundMgr, volume);
+  g_soundMgr->SetVolume(volume);
   g_soundMgr->SetTargetVolume(CSoundMgr::Volume(g_soundMgr));
   this->m_bgmSlider->SetThumbTooltip(std::to_string(CSoundMgr::Volume(g_soundMgr)));
 }
@@ -1707,8 +1707,8 @@ void CUIGroupSkin::Refresh() {
 void CUIGroupSound::Refresh() {
   this->m_bgmSlider->SetTotal(135);
   this->m_bgmSlider->SetVisible(this->m_bgmSlider->PositionFromOffset(8));
-  this->m_bgmSlider->SetPosition(CSoundMgr::Volume(g_soundMgr));
-  this->m_bgmSlider->SetThumbTooltip(std::to_string(CSoundMgr::Volume(g_soundMgr)));
+  this->m_bgmSlider->SetPosition(g_soundMgr->Volume());
+  this->m_bgmSlider->SetThumbTooltip(std::to_string(g_soundMgr->Volume()));
   const bool bgmMuted = !g_serviceOptions.Get(TT_MUSIC_ON_OFF);
   this->m_bgmSlider->SetTransparent(bgmMuted);
   CUIVScrollBar* const bgmSlider = this->m_bgmSlider;

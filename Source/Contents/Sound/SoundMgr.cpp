@@ -390,14 +390,14 @@ unsigned __stdcall CSoundMgr::FadeThread(void* direction) {
       }
 
       CSoundMgr* sound = g_soundMgr;
-      const int volume = CSoundMgr::Volume(sound);
+      const int volume = sound->Volume();
 
       if (sound->targetVolume <= volume) {
         break;
       }
 
       const int next = sound->streamVolume + 1;
-      CSoundMgr::SetVolume(sound, next);
+      sound->SetVolume(next);
       Sleep(10);
     }
   } else {
@@ -413,7 +413,7 @@ unsigned __stdcall CSoundMgr::FadeThread(void* direction) {
       }
 
       const int next = sound->streamVolume - 1;
-      CSoundMgr::SetVolume(sound, next);
+      sound->SetVolume(next);
       Sleep(10);
     }
   }
@@ -423,8 +423,12 @@ unsigned __stdcall CSoundMgr::FadeThread(void* direction) {
 
 // OFFSET: 0x00639A60
 // FUNCTION: fn_04756
-int CSoundMgr::Volume(const CSoundMgr* sound) {
-  return sound ? sound->streamVolume : 0;
+int CSoundMgr::Volume() const {
+  if (!this) {
+    return 0;
+  }
+
+  return this->streamVolume;
 }
 
 // OFFSET: 0x00639A70
@@ -458,17 +462,16 @@ void CSoundMgr::Unused(int, int) {
 
 // OFFSET: 0x00639AF0
 // FUNCTION: fn_04760
-void CSoundMgr::Pause(CSoundMgr* sound, int paused) {
-  if (!sound || !sound->stream) {
+void CSoundMgr::Pause(int paused) {
+  if (!this || !this->stream) {
     return;
   }
 
-  MilesRuntime& miles = MilesRuntime::Get();
-  miles.pauseStream(sound->stream, paused);
-  miles.streamVolume(sound->stream);
+  AIL_pause_stream(this->stream, paused);
+  AIL_stream_volume(this->stream);
 
   if (paused == 0) {
-    sound->currentName = sound->defaultName;
+    this->currentName = this->defaultName;
   }
 }
 
@@ -708,19 +711,18 @@ void CSoundMgr::SetRoom(int room) {
 
 // OFFSET: 0x0063A5A0
 // FUNCTION: fn_04769
-void CSoundMgr::SetVolume(CSoundMgr* sound, int volume) {
-  if (!sound) {
+void CSoundMgr::SetVolume(int volume) {
+  if (!this) {
     return;
   }
 
-  sound->streamVolume = volume > 127 ? 127 : (volume < 0 ? 0 : volume);
-  MilesRuntime& miles = MilesRuntime::Get();
+  this->streamVolume = volume > 127 ? 127 : (volume < 0 ? 0 : volume);
 
-  if (sound->stream) {
-    miles.setStreamVolume(sound->stream, sound->streamVolume);
+  if (this->stream) {
+    AIL_set_stream_volume(this->stream, this->streamVolume);
   }
 
-  if (sound->secondaryStream) {
-    miles.setStreamVolume(sound->secondaryStream, sound->streamVolume);
+  if (this->secondaryStream) {
+    AIL_set_stream_volume(this->secondaryStream, this->streamVolume);
   }
 }

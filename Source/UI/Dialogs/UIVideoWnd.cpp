@@ -33,7 +33,7 @@ UIVideoWnd::~UIVideoWnd() {
   delete this->m_movie;
 
   if (this->m_savedVolume != -1) {
-    CSoundMgr::SetVolume(g_soundMgr, this->m_savedVolume);
+    g_soundMgr->SetVolume(this->m_savedVolume);
   }
 }
 
@@ -134,8 +134,8 @@ int UIVideoWnd::SendMsg(
   case UM_SET_VIDEO_VOLUME:
     BinkSetVolume(this->m_movie->Handle(), 0, argument1 << 8);
     if (argument2 == 0) {
-      this->m_savedVolume = CSoundMgr::Volume(g_soundMgr);
-      CSoundMgr::SetVolume(g_soundMgr, 0);
+      this->m_savedVolume = g_soundMgr->Volume();
+      g_soundMgr->SetVolume(0);
     }
     break;
   case UM_TOGGLE_VIDEO_PAUSE: {

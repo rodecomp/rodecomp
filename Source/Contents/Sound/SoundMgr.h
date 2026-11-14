@@ -28,9 +28,13 @@ public:
   void Shutdown();
   void EndSamples();
 
-  static int Volume(const CSoundMgr* sound);
-  static void Pause(CSoundMgr* sound, int paused);
-  static void SetVolume(CSoundMgr* sound, int volume);
+  // INLINED
+  __declspec(noinline) static int Volume(const CSoundMgr* sound) {
+    return sound->Volume();
+  }
+  int Volume() const;
+  void Pause(int paused);
+  void SetVolume(int volume);
 
   bool IsComplete() const;
   bool IsStopped() const;
