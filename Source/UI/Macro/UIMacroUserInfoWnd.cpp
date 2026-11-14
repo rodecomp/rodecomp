@@ -637,21 +637,17 @@ int UIMacroReporterWnd::SendMsg(
         break;
       }
       this->activeOnly = argument2 != 0;
-      switch (this->m_mode) {
-      case 0:
-      case 1:
-        if (argument2) {
-          this->geometry.targetAlpha = 128;
-        } else {
-          this->geometry.targetAlpha = 255;
-        }
-        this->geometry.alphaStart = timeGetTime();
-        break;
-      case 2:
-      case 3:
+      if (this->m_mode == 2 || this->m_mode == 3) {
         this->m_namesValid = this->ValidateNames(1);
         this->m_targetValid = this->ValidateTarget(1);
-        break;
+      } else if (this->m_mode == 0 || this->m_mode == 1) {
+        if (argument2) {
+          this->geometry.targetAlpha = 128;
+          this->geometry.alphaStart = timeGetTime();
+        } else {
+          this->geometry.targetAlpha = 255;
+          this->geometry.alphaStart = timeGetTime();
+        }
       }
       break;
 
