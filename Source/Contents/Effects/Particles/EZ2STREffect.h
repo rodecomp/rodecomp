@@ -30,7 +30,7 @@ public:
   void SetFlags(int argument) override;
   void SetScale(float argument) override;
   void SetAlpha(float argument) override;
-  void SetWindowOffset(int argument1, int argument2, int argument3, int argument4, int argument5) override;
+  void SetWindowOffset(vector3d offset, int attachToWindow, int windowId) override;
   vector3d GetWindowOffset() override;
   int GetFrame() override;
   void SetId(int id) override;

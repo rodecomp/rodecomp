@@ -5521,19 +5521,18 @@ void CEZ2STRScreenEffect::SetId(int id) {
 
 // OFFSET: 0x00B66540
 // FUNCTION: fn_19049
-void CEZ2STRScreenEffect::SetWindowOffset(int argument1, int argument2, int argument3, int argument4, int argument5) {
+void CEZ2STRScreenEffect::SetWindowOffset(vector3d offset, int attachToWindow, int windowId) {
   CEZ2STRParticle* particle = this->particle;
   if (!particle) {
     return;
   }
 
-  const vector3d offset = {std::bit_cast<float>(argument1), std::bit_cast<float>(argument2), std::bit_cast<float>(argument3)};
   particle->m_windowOffset.x = offset.x;
   particle->m_windowOffset.y = offset.y;
   particle->m_windowOffset.z = offset.z;
-  if (static_cast<unsigned char>(argument4) == 1) {
+  if (static_cast<unsigned char>(attachToWindow) == 1) {
     this->particle->m_attachToWindow = true;
-    this->particle->m_windowId = argument5;
+    this->particle->m_windowId = windowId;
   }
 }
 

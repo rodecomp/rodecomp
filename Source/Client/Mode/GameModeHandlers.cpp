@@ -1976,8 +1976,7 @@ void CGameMode::ReceiveRuneRewardPacket(const unsigned char* packet) {
   case 0: {
     CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, EF_RUNE_BROKEN, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     const vector3d offset = {598.0f, 219.0f, 0.0f};
-    const int* words = reinterpret_cast<const int*>(&offset);
-    effect->SetWindowOffset(words[0], words[1], words[2], 1, 361);
+    effect->SetWindowOffset(offset, 1, 361);
     if (UIWindow* window = g_windowMgr.LookupWindow(WID_RUNESYSTEMWND)) {
       window->SendMsg(window, UM_REFRESH, 0, 0, 0, 0);
     }
@@ -2208,13 +2207,11 @@ void CGameMode::ReceiveRuneGradeResult(int result, int tagId, int type, std::int
     if (state == 2) {
       CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, EF_RUNESET_UPGRADE_SUCCESS, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       const vector3d offset = {784.0f, 161.0f, 0.0f};
-      const int* words = reinterpret_cast<const int*>(&offset);
-      effect->SetWindowOffset(words[0], words[1], words[2], 1, 361);
+      effect->SetWindowOffset(offset, 1, 361);
     } else if (state == 1) {
       CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, EF_RUNESET_UPGRADE_FAIL, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       const vector3d offset = {784.0f, 161.0f, 0.0f};
-      const int* words = reinterpret_cast<const int*>(&offset);
-      effect->SetWindowOffset(words[0], words[1], words[2], 1, 361);
+      effect->SetWindowOffset(offset, 1, 361);
     } else {
       CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, type != 0 ? 2395 : 2396, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
       vector3d offset = {0.0f, 0.0f, 0.0f};
@@ -2225,8 +2222,7 @@ void CGameMode::ReceiveRuneGradeResult(int result, int tagId, int type, std::int
         offset.x = 598.0f;
         offset.y = 271.0f;
       }
-      const int* words = reinterpret_cast<const int*>(&offset);
-      effect->SetWindowOffset(words[0], words[1], words[2], 1, 361);
+      effect->SetWindowOffset(offset, 1, 361);
     }
 
     if (RuneSetData* runeSet = g_runeSystemMgr->GetCurRuneSet()) {

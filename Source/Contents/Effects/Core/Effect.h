@@ -47,7 +47,7 @@ public:
   virtual void SetFlags(int argument);
   virtual void SetScale(float argument);
   virtual void SetAlpha(float argument);
-  virtual void SetWindowOffset(int argument1, int argument2, int argument3, int argument4, int argument5);
+  virtual void SetWindowOffset(vector3d offset, int attachToWindow, int windowId);
   virtual vector3d GetWindowOffset();
   virtual void SetFlipX(int argument);
   virtual void SetFlipY(int argument);

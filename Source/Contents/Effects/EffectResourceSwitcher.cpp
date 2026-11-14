@@ -184,7 +184,7 @@ void CEffect::SetAlpha(float) {
 
 // OFFSET: 0x005A2460
 // FUNCTION: fn_03101
-void CEffect::SetWindowOffset(int, int, int, int, int) {
+void CEffect::SetWindowOffset(vector3d, int, int) {
 }
 
 // OFFSET: 0x005A2470
