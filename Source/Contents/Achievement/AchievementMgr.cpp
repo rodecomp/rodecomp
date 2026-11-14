@@ -274,8 +274,7 @@ std::pair<bool, std::string> CAchievementMgr::InsertAchieveResource(int id, std:
   std::vector<AchievementReward>& rewards = found->second.rewards;
   const auto end = rewards.end();
   if (std::find_if(rewards.begin(), end, [text](const AchievementReward& reward) { return text.compare(reward.text) == 0; }) == end) {
-    const AchievementReward reward(text, targetCount, conditionId);
-    rewards.push_back(reward);
+    rewards.push_back(AchievementReward(text, targetCount, conditionId));
     return std::make_pair(true, "good");
   }
 
