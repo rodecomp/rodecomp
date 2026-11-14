@@ -719,7 +719,7 @@ CCreateLineInfo::CCreateLineInfo(
 )
     : m_align(align), m_newSegment(true), m_height(0) {
   if (parent && (this->m_parent = parent, text)) {
-    this->m_text.assign(text, std::strlen(text));
+    this->m_text = text;
     this->m_width = width;
     this->m_lineSpacing = lineSpacing;
     this->m_defaultColor = color;
