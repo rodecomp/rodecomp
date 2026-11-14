@@ -679,7 +679,10 @@ void UITagListBox::AppendTaggedLines(std::string text, std::vector<STagInfoV2>& 
       }
     }
 
-    const std::string line(start, buffer + next);
+    std::string line;
+    if (start != buffer + next) {
+      line.assign(start, next - position);
+    }
     this->AddLine(line.c_str());
     position = next;
   }
