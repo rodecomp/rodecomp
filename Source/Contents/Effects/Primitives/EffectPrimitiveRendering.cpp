@@ -4020,7 +4020,7 @@ __declspec(safebuffers) void CEffectPrim::RenderHaloLayers(matrix& wtm) {
     }
 
     for (int i = 10; i >= 1; --i) {
-      const char mode = this->state.slots[ec].flag1[4];
+      char mode = this->state.slots[ec].flag1[4];
       int angle1;
       int angle2;
       if (mode == 6 || mode == 7) {
@@ -4053,6 +4053,7 @@ __declspec(safebuffers) void CEffectPrim::RenderHaloLayers(matrix& wtm) {
       vec3.Set(this->state.slots[ec].height[0] + this->state.slots[ec].vecTNow.x, 0.0f, this->state.slots[ec].vecTNow.z);
       vec4.Set(this->state.slots[ec].height[0] + this->state.slots[ec].vecTPre.x, 0.0f, this->state.slots[ec].vecTPre.z);
       this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
+      mode = this->state.slots[ec].flag1[4];
       const float lift = mode == 2 || mode == 4 || mode == 6 || mode == 7 ? 40.0f : 30.0f;
       vec1.y -= lift;
       vec2.y -= lift;
@@ -4074,6 +4075,7 @@ __declspec(safebuffers) void CEffectPrim::RenderHaloLayers(matrix& wtm) {
         }
       }
 
+      mode = this->state.slots[ec].flag1[4];
       if (mode == 5 || mode == 6 || mode == 7) {
         this->state.slots[ec].vecBPre = {this->state.slots[ec].vecBPre.x * 1.1f, this->state.slots[ec].vecBPre.y * 1.1f, this->state.slots[ec].vecBPre.z * 1.1f};
         this->state.slots[ec].vecBNow = {this->state.slots[ec].vecBNow.x * 1.1f, this->state.slots[ec].vecBNow.y * 1.1f, this->state.slots[ec].vecBNow.z * 1.1f};
