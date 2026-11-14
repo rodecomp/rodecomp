@@ -183,7 +183,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     } else {
       actor = world->GetGameActorByAID(this->m_owner->GetMember().accountId);
       if (actor) {
-        UIPcGage* gauge = reinterpret_cast<UIPcGage*&>(static_cast<CPc*>(actor)->gaugeWindow);
+        UIPcGage* gauge = static_cast<UIPcGage*>(static_cast<CPc*>(actor)->gaugeWindow);
         if (gauge) {
           current = gauge->current;
           maximum = gauge->maximum;
