@@ -228,10 +228,6 @@ UIReplayRECControlWnd::~UIReplayRECControlWnd() {
   this->mode = 0;
 }
 
-// OFFSET: 0x008A5220
-// FUNCTION: fn_11680
-UIMessageBox::~UIMessageBox() = default;
-
 // OFFSET: 0x008B8E60
 // FUNCTION: fn_11768
 void UIMessageBox::Paint() {
@@ -3262,22 +3258,6 @@ UISelectServerWnd::UISelectServerWnd()
 // FUNCTION: fn_11673
 UITalkboxTrapInputWnd::UITalkboxTrapInputWnd()
     : UIFrameWnd(0) {
-}
-
-// OFFSET: 0x008A4E00
-// FUNCTION: fn_11677
-UICntWnd::~UICntWnd() = default;
-
-// OFFSET: 0x008A5050
-// FUNCTION: fn_11679
-__declspec(noinline) UILoginWnd::~UILoginWnd() = default;
-
-// OFFSET: 0x008A54C0
-// FUNCTION: fn_11681
-UIPetInfoWnd::~UIPetInfoWnd() {
-  if (this->feedConfirmationWnd) {
-    g_windowMgr.Schedule(this->feedConfirmationWnd);
-  }
 }
 
 // OFFSET: 0x008A5CC0

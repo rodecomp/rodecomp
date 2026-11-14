@@ -24,6 +24,9 @@
 #include "UI/Status/UIHomunInfoWnd.h"
 #include "UI/Login/UILoginOTPWnd.h"
 #include "UI/Login/UILoginWnd.h"
+#include "UI/Dialogs/UIMessageBox.h"
+#include "UI/Status/UIPetInfoWnd.h"
+#include "UI/Dialogs/UINormalMB.h"
 #include "UI/Monster/UIMonsterInfoWnd.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Mode/CGameMode.h"
@@ -70,9 +73,29 @@ UIFrameWnd::UIFrameWnd(unsigned char cached)
     : UIWindow(cached), m_dragX(0), m_dragY(0), m_message0(600), m_message1(600) {
 }
 
+// OFFSET: 0x008A4E00
+// FUNCTION: fn_11677
+UICntWnd::~UICntWnd() = default;
+
 // OFFSET: 0x008A4E90
 // FUNCTION: fn_11678
 UIFrameWnd::~UIFrameWnd() = default;
+
+// OFFSET: 0x008A5050
+// FUNCTION: fn_11679
+__declspec(noinline) UILoginWnd::~UILoginWnd() = default;
+
+// OFFSET: 0x008A5220
+// FUNCTION: fn_11680
+UIMessageBox::~UIMessageBox() = default;
+
+// OFFSET: 0x008A54C0
+// FUNCTION: fn_11681
+UIPetInfoWnd::~UIPetInfoWnd() {
+  if (this->feedConfirmationWnd) {
+    g_windowMgr.Schedule(this->feedConfirmationWnd);
+  }
+}
 
 // OFFSET: 0x005C4640
 // FUNCTION: fn_03570
