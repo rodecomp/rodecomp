@@ -29,6 +29,7 @@ class UITextViewer;
 struct ModeDragState;
 struct ITEM_INFO;
 class UIItemTagButton;
+struct PriceColors;
 
 class UIWindow : public UIRPData {
   friend class UIWindowMgr;
@@ -125,6 +126,7 @@ public:
   void FillRegion(int x, int y, int width, int height, std::uint32_t color);
   std::string FitTextToWidth(const std::string& text, int width);
   void DrawRectOutline(int x, int y, int width, int height, std::uint32_t color);
+  PriceColors PriceColor(std::int64_t amount);
   void DrawRoundedOutline(int x, int y, int width, int height, std::uint32_t color);
   void DrawFilledRoundedOutline(int x, int y, int width, int height, std::uint32_t color);
   void FillTriangleRegion(int x0, int y0, int x1, int y1, int x2, int y2, std::uint32_t color);

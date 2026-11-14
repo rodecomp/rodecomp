@@ -9702,7 +9702,7 @@ void UIMerchantShopMakeWnd::Paint() {
       const double rate = PriceCommission(price) * 0.01;
       price += static_cast<std::int64_t>(price * rate);
       FormatGroupedInteger(price, text, 24);
-      const PriceColors colors = PriceColor(price);
+      const PriceColors colors = ::PriceColor(price);
       if (colors.secondary == 0xFFFFFFFF) {
         this->DrawTextAt(width + x, y, text, 0, 0, 12, colors.primary, 0, 0);
       } else {
@@ -9765,7 +9765,7 @@ void UIMerchantShopMakeWnd::Paint() {
       const double rate = PriceCommission(price) * -0.01;
       price += static_cast<std::int64_t>(price * rate);
       FormatGroupedInteger(price, text, 24);
-      const PriceColors colors = PriceColor(price);
+      const PriceColors colors = ::PriceColor(price);
       if (colors.secondary == 0xFFFFFFFF) {
         this->DrawTextAt(width + x, y, text, 0, 0, 12, colors.primary, 0, 0);
       } else {
@@ -11540,7 +11540,7 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         --this->editIndex;
       }
       if (index == static_cast<int>(this->items.size())) {
-        const PriceColors colors = PriceColor(0);
+        const PriceColors colors = ::PriceColor(0);
         this->priceEdits[index]->TextColor(GetRValue(colors.primary), GetGValue(colors.primary), GetBValue(colors.primary), colors.secondary);
         this->priceEdits[index]->SetText("0");
         g_windowMgr.SetFocus(index == 0 ? this->titleEdit : this->priceEdits[index - 1]);
@@ -11558,12 +11558,12 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         UIEditCtrl* edit = this->priceEdits[index];
         std::sprintf(text, "%s ", edit->Text());
         g_session.IsNumberWithCommas(text);
-        const PriceColors colors = PriceColor(_atoi64(text));
+        const PriceColors colors = ::PriceColor(_atoi64(text));
         edit->TextColor(GetRValue(colors.primary), GetGValue(colors.primary), GetBValue(colors.primary), colors.secondary);
         UIEditCtrl* next = this->priceEdits[index + 1];
         std::sprintf(text, "%s ", next->Text());
         g_session.IsNumberWithCommas(text);
-        const PriceColors nextColors = PriceColor(_atoi64(text));
+        const PriceColors nextColors = ::PriceColor(_atoi64(text));
         next->TextColor(GetRValue(nextColors.primary), GetGValue(nextColors.primary), GetBValue(nextColors.primary), nextColors.secondary);
       }
       this->InvalidateChildren();
