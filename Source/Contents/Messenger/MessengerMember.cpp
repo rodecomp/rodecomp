@@ -1246,15 +1246,17 @@ void UIMessengerGroupWnd::OnMouseHover(int x, int y) {
   }
 
   const std::string fitted = this->FitDisplayText(static_cast<int>(this->geometry.width * 0.8 - 80.0), text, 0, 12, 1);
-  if (fitted.find(text, 0, std::strlen(text)) == std::string::npos) {
-    char level[64];
-    std::sprintf(level, "Lv.%d", member.level);
-    int tipX = this->TextWidth(level, std::strlen(level), 0, 12, 1, 0) +
-               this->iconPositions[this->iconIndex].x + 33;
-    int tipY = this->selected / this->columns * this->rowHeight + 22;
-    this->ToScreen(tipX, tipY);
-    mode->ShowTooltip(text, tipX, tipY, 0xFFFFFFFFu, 0, 1);
+  if (fitted.find(text, 0, std::strlen(text)) != std::string::npos) {
+    return;
   }
+
+  char level[64];
+  std::sprintf(level, "Lv.%d", member.level);
+  int tipX = this->TextWidth(level, std::strlen(level), 0, 12, 1, 0) +
+             this->iconPositions[this->iconIndex].x + 33;
+  int tipY = this->selected / this->columns * this->rowHeight + 22;
+  this->ToScreen(tipX, tipY);
+  mode->ShowTooltip(text, tipX, tipY, 0xFFFFFFFFu, 0, 1);
 }
 
 // OFFSET: 0x0073D3F0

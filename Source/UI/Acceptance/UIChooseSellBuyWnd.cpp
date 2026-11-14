@@ -10231,7 +10231,7 @@ int UIMakingArrowListWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::
 void UITipboxWnd::OnProcess() {
   if (this->refreshPending == true) {
     this->refreshPending = false;
-    const int index = g_itemTagOwner->paragraphIndex >= 0 ? g_itemTagOwner->paragraphIndex : 0;
+    const int index = g_itemTagOwner->paragraphIndex < 0 ? 0 : g_itemTagOwner->paragraphIndex;
     const std::string text = g_itemTagOwner->m_currentEntry.paragraphs[index];
     std::vector<std::string> lines;
     WrapPlainText(text.c_str(), lines, 1000);

@@ -492,11 +492,13 @@ void UILapineUpgradeBoxWnd::AddMaterial(int id) {
   std::vector<ITEM_INFO>& materials = this->ingredientList->materials;
   const auto found = std::find_if(materials.begin(), materials.end(), [id](ITEM_INFO material) { return id == std::atoi(material.itemId.c_str()); });
 
-  if (found == materials.end()) {
-    ITEM_INFO material;
-    material.SetItemId(id);
-    materials.push_back(material);
+  if (found != materials.end()) {
+    return;
   }
+
+  ITEM_INFO material;
+  material.SetItemId(id);
+  materials.push_back(material);
 }
 
 // OFFSET: 0x006052F0

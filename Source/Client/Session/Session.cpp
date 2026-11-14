@@ -3330,7 +3330,7 @@ struct ParameterNameLess {
 const std::vector<std::string>* CSession::GetFogParameters(const char* rswName, int* found) {
   *found = 0;
   // GLOBAL: gl_24841
-  static std::vector<std::string> s_defaultParameters(4);
+  static std::vector<std::string> s_defaultFogParameters(4);
 
   std::string name = rswName;
   const std::size_t position = name.rfind("@");
@@ -3345,13 +3345,12 @@ const std::vector<std::string>* CSession::GetFogParameters(const char* rswName, 
     return &it->second;
   }
 
-  return &s_defaultParameters;
+  return &s_defaultFogParameters;
 }
 
 // OFFSET: 0x00DE3410
 // FUNCTION: fn_23479
 const std::vector<std::string>* CSession::GetMapViewParameters(const char* rswName, int* found) {
-  std::vector<std::pair<std::string, std::vector<std::string>>>& parameters = this->m_mapViewParameters;
   *found = 0;
   // GLOBAL: gl_24993
   static std::vector<std::string> s_defaultParameters(9);
@@ -3363,8 +3362,8 @@ const std::vector<std::string>* CSession::GetMapViewParameters(const char* rswNa
   }
 
   const char* key = name.c_str();
-  auto it = std::lower_bound(parameters.begin(), parameters.end(), key, ParameterNameLess());
-  if (it != parameters.end() && std::strcmp(it->first.c_str(), name.c_str()) == 0) {
+  auto it = std::lower_bound(this->m_mapViewParameters.begin(), this->m_mapViewParameters.end(), key, ParameterNameLess());
+  if (it != this->m_mapViewParameters.end() && std::strcmp(it->first.c_str(), name.c_str()) == 0) {
     *found = 1;
     return &it->second;
   }

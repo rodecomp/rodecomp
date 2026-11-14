@@ -5224,18 +5224,20 @@ void EffectLists::LoadMapEffectScript(bool reload) {
   std::string directory = "Lua Files\\EffectTool\\";
   std::string name = CurrentMapScriptName();
   std::string path = directory + name;
-  if (HasEffectScript(path.c_str(), name) || g_session.m_hotkeyScript->Load(path.c_str(), true, false)) {
-    int version = 0;
-    std::string versionKey = EmitterKey(name, "effect_version");
-    g_session.m_hotkeyScript->Call("GetValue", "s>d", versionKey.c_str(), &version);
-    switch (version) {
-    case 0:
-    case 1:
-      ReadEffectScriptV1(name);
-      break;
-    case 2:
-      ReadEffectScriptV2(name);
-      break;
-    }
+  if (!HasEffectScript(path.c_str(), name) && !g_session.m_hotkeyScript->Load(path.c_str(), true, false)) {
+    return;
+  }
+
+  int version = 0;
+  std::string versionKey = EmitterKey(name, "effect_version");
+  g_session.m_hotkeyScript->Call("GetValue", "s>d", versionKey.c_str(), &version);
+  switch (version) {
+  case 0:
+  case 1:
+    ReadEffectScriptV1(name);
+    break;
+  case 2:
+    ReadEffectScriptV2(name);
+    break;
   }
 }

@@ -3366,7 +3366,7 @@ bool CEffectPrim::PrimAsuraCasting() {
         }
       }
 
-      if (this->state.slots[index].process > (this->state.slots[index].flag1[4] == 4 ? 25 : 140)) {
+      if (this->state.slots[index].process > (this->state.slots[index].flag1[4] != 4 ? 140 : 25)) {
         ShrinkLast(this->state.slots[index], 10, 1.01f);
       }
     }

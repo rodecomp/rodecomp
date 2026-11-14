@@ -374,8 +374,8 @@ const RenewQuestOngoingInfo& CRenewQuestMgr::GetOngoingQuest(unsigned int id) {
   }
 
   // GLOBAL: gl_24857
-  static RenewQuestOngoingInfo empty;
-  return empty;
+  static RenewQuestOngoingInfo emptyQuest;
+  return emptyQuest;
 }
 
 // OFFSET: 0x00679A00

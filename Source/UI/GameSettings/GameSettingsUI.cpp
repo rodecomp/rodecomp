@@ -1372,7 +1372,7 @@ void CUIGroupGraphics::LoadModes() {
 
   auto found = std::find_if(data.begin(), data.end(), [this](const DisplayMode& mode) { return this->m_pendingMode.Matches(mode); });
   if (found == data.end()) {
-    DisplayMode fallback{};
+    DisplayMode fallback;
     ScreenDimensions screen;
     const ScreenDimensions* resolution = DefaultResolution(&screen);
     fallback.width = resolution->width;
