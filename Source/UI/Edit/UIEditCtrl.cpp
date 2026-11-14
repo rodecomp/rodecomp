@@ -402,8 +402,7 @@ __forceinline void UIEditCtrl::InsertLink(const char* value) {
     return;
   }
 
-  std::string transformed;
-  DisplayNavigationLink(transformed, value);
+  std::string transformed = g_navigationLinkParser->DisplayNavigationLink(value);
   const std::string prospective = this->text + transformed;
 
   if (static_cast<unsigned>(this->maximum) < prospective.size()) {
@@ -411,8 +410,7 @@ __forceinline void UIEditCtrl::InsertLink(const char* value) {
   }
 
   if (!removed) {
-    std::string appended;
-    DisplayNavigationLink(appended, value);
+    std::string appended = g_navigationLinkParser->DisplayNavigationLink(value);
     this->text += appended;
   } else if (position != std::string::npos) {
     before += display;

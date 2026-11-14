@@ -171,8 +171,7 @@ __forceinline void UITextViewer::AppendText(char* text, int width, int carriageR
       display = g_windowMgr.chatWnd->ConvertChat(display);
     }
 
-    std::string navigation;
-    DisplayNavigationLink(navigation, display);
+    std::string navigation = g_navigationLinkParser->DisplayNavigationLink(display);
     display = DisplayQuestTextTag(navigation);
 
     if (pixels) {
@@ -257,8 +256,7 @@ int UITextViewer::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
         display = g_windowMgr.chatWnd->ConvertChat(display);
       }
 
-      std::string navigation;
-      DisplayNavigationLink(navigation, display);
+      std::string navigation = g_navigationLinkParser->DisplayNavigationLink(display);
       display = DisplayQuestTextTag(navigation);
 
       if (pixels) {

@@ -16991,8 +16991,7 @@ void CGameMode::ReceiveTaggedBroadcast(const unsigned char* data) {
   }
 
   message = g_windowMgr.chatWnd->ConvertChat(message);
-  std::string linked;
-  DisplayNavigationLink(linked, message);
+  std::string linked = g_navigationLinkParser->DisplayNavigationLink(message);
   message = std::move(linked);
 
   std::vector<std::string> lines;

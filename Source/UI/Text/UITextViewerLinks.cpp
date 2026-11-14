@@ -33,8 +33,7 @@ static const std::string g_viewerQuestTagEnd = "</QUEST>";
 // OFFSET: 0x0091B800
 // FUNCTION: fn_12605
 std::string UINewChatWnd::ConvertChat(std::string text) {
-  std::string converted;
-  DisplayNavigationLink(converted, text);
+  std::string converted = g_navigationLinkParser->DisplayNavigationLink(text);
   for (std::size_t index = 0; index < this->m_tabs.size(); ++index) {
     converted = this->m_tabs[0]->Convert(converted);
   }
@@ -75,8 +74,7 @@ bool UITextViewer::AddItemLinks(std::string text, unsigned addedLines) {
   }
 
   {
-    std::string navigation;
-    DisplayNavigationLink(navigation, parsed);
+    std::string navigation = g_navigationLinkParser->DisplayNavigationLink(parsed);
     parsed = std::move(navigation);
   }
   parsed = static_cast<const std::string&>(DisplayTipBoxTextTag(parsed));
@@ -121,8 +119,7 @@ bool UITextViewer::AddNaviLinks(std::string text, unsigned addedLines) {
 
   parsed = static_cast<const std::string&>(DisplayTipBoxTextTag(parsed));
   {
-    std::string navigation;
-    DisplayNavigationLink(navigation, parsed);
+    std::string navigation = g_navigationLinkParser->DisplayNavigationLink(parsed);
     parsed = std::move(navigation);
   }
   parsed = static_cast<const std::string&>(DisplayQuestTextTag(parsed));
@@ -223,8 +220,7 @@ bool UITextViewer::AddQuestLinks(std::string text, unsigned addedLines) {
   }
 
   {
-    std::string navigation;
-    DisplayNavigationLink(navigation, parsed);
+    std::string navigation = g_navigationLinkParser->DisplayNavigationLink(parsed);
     parsed = std::move(navigation);
   }
   parsed = static_cast<const std::string&>(DisplayTipBoxTextTag(parsed));
@@ -365,8 +361,7 @@ bool UITextViewer::AddUrlLinks(std::string text, unsigned addedLines) {
   }
 
   parsed = static_cast<const std::string&>(DisplayTipBoxTextTag(parsed));
-  std::string navigation;
-  DisplayNavigationLink(navigation, parsed);
+  std::string navigation = g_navigationLinkParser->DisplayNavigationLink(parsed);
   parsed = std::move(navigation);
   parsed = static_cast<const std::string&>(DisplayQuestTextTag(parsed));
 

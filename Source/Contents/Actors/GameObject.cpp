@@ -2199,8 +2199,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     if (g_windowMgr.chatWnd != nullptr) {
       text = g_windowMgr.chatWnd->ConvertChat(std::string(reinterpret_cast<const char*>(static_cast<std::intptr_t>(b))));
     }
-    std::string linked;
-    DisplayNavigationLink(linked, text);
+    std::string linked = g_navigationLinkParser->DisplayNavigationLink(text);
     text = std::move(linked);
     const char* message = reinterpret_cast<const char*>(static_cast<std::intptr_t>(b));
     if (text.size() != 0) {

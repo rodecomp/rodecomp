@@ -1507,8 +1507,7 @@ std::string UIWindow::FitVerticalDisplayText(int height, const char* text, int f
     display = g_windowMgr.chatWnd->ConvertChat(std::move(display));
   }
 
-  std::string navigation;
-  DisplayNavigationLink(navigation, display);
+  std::string navigation = g_navigationLinkParser->DisplayNavigationLink(display);
   display = std::move(navigation);
   display = static_cast<const std::string&>(DisplayQuestTextTag(display));
 

@@ -79,8 +79,7 @@ void UIQuestDisplay::Paint() {
     if (g_windowMgr.chatWnd) {
       description = g_windowMgr.chatWnd->ConvertChat(description);
     }
-    std::string navigation;
-    DisplayNavigationLink(navigation, description);
+    std::string navigation = g_navigationLinkParser->DisplayNavigationLink(description);
     description = std::move(navigation);
     description = static_cast<const std::string&>(DisplayQuestTextTag(description));
 
@@ -127,8 +126,7 @@ void UIQuestDisplay::Paint() {
         if (g_windowMgr.chatWnd) {
           description = g_windowMgr.chatWnd->ConvertChat(description);
         }
-        std::string huntNavigation;
-        DisplayNavigationLink(huntNavigation, description);
+        std::string huntNavigation = g_navigationLinkParser->DisplayNavigationLink(description);
         description = std::move(huntNavigation);
         description = static_cast<const std::string&>(DisplayQuestTextTag(description));
 

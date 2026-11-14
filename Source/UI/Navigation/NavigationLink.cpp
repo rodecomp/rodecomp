@@ -425,9 +425,9 @@ std::pair<bool, std::string> NavigationLinkParser::RemoveLineBreakTag(std::strin
 
 // OFFSET: 0x00833550
 // FUNCTION: fn_10411
-void DisplayNavigationLink(std::string& output, std::string value) {
+std::string NavigationLinkParser::DisplayNavigationLink(std::string value) {
   std::string text = value;
-  output = text;
+  std::string output = text;
   const auto begin = text.find(g_naviLinkTag);
 
   if (begin != std::string::npos) {
@@ -445,6 +445,13 @@ void DisplayNavigationLink(std::string& output, std::string value) {
       output += rest;
     }
   }
+
+  return output;
+}
+
+// INLINED
+void DisplayNavigationLink(std::string& output, std::string value) {
+  output = g_navigationLinkParser->DisplayNavigationLink(value);
 }
 
 // OFFSET: 0x00833A20
