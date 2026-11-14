@@ -172,14 +172,19 @@ void UIMerchantItemLogWnd::OnMouseHover(int x, int y) {
     int tooltipY = (y - 17) / 32 * 32 + 1;
     this->ToScreen(tooltipX, tooltipY);
 
+    CMode* gameMode = g_modeMgr.gameMode;
     if (item.identified == 1 && item.optionCount != 0) {
-      g_modeMgr.gameMode
-          ->ShowTooltip(FormatOwnedString(LookupMessage(MSI_FAIL_NEED_EQUIPPED_GUN_GATLING), item.DisplayName(0).c_str(), item.optionCount, item.quantity).c_str(), tooltipX, tooltipY,
-                 g_session.GetItemNameColor(item), 0, 1);
+      std::uint32_t color = g_session.GetItemNameColor(item);
+      int screenX = tooltipX;
+      int screenY = tooltipY;
+      gameMode->ShowTooltip(FormatOwnedString(LookupMessage(MSI_FAIL_NEED_EQUIPPED_GUN_GATLING), item.DisplayName(0).c_str(), item.optionCount, item.quantity).c_str(), screenX, screenY,
+                 color, 0, 1);
     } else {
-      g_modeMgr.gameMode
-          ->ShowTooltip(FormatOwnedString(LookupMessage(MSI_EA2), item.DisplayName(0).c_str(), item.quantity).c_str(), tooltipX, tooltipY,
-                 g_session.GetItemNameColor(item), 0, 1);
+      std::uint32_t color = g_session.GetItemNameColor(item);
+      int screenX = tooltipX;
+      int screenY = tooltipY;
+      gameMode->ShowTooltip(FormatOwnedString(LookupMessage(MSI_EA2), item.DisplayName(0).c_str(), item.quantity).c_str(), screenX, screenY,
+                 color, 0, 1);
     }
   }
 }
