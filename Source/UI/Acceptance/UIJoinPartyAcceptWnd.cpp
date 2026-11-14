@@ -33,12 +33,6 @@ struct FramedMessageHeader {
 static_assert(sizeof(FramedMessageHeader) == 6);
 }
 
-// OFFSET: 0x008C8240
-// FUNCTION: fn_11950
-UIJoinPartyAcceptWnd::UIJoinPartyAcceptWnd()
-    : UIExchangeAcceptWnd() {
-}
-
 UIJoinPartyAcceptWnd::~UIJoinPartyAcceptWnd() = default;
 
 // OFFSET: 0x008FE780

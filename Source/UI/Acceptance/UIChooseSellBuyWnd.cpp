@@ -231,6 +231,12 @@ UIExchangeAcceptWnd::UIExchangeAcceptWnd()
     : UIChooseSellBuyWnd(), saved(nullptr) {
 }
 
+// OFFSET: 0x008C8240
+// FUNCTION: fn_11950
+UIJoinPartyAcceptWnd::UIJoinPartyAcceptWnd()
+    : UIExchangeAcceptWnd() {
+}
+
 // OFFSET: 0x008C6FA0
 // FUNCTION: fn_11926
 UIBookWnd::UIBookWnd()
