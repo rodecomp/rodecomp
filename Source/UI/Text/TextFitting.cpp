@@ -31,8 +31,7 @@ std::string UIWindow::FitTextToWidth(const std::string& source, int width) {
 
     remaining.resize(length);
     ATL::CW2AEX<128> converted(remaining.c_str(), CP_THREAD_ACP);
-    text = converted;
-    text += "...";
+    text = std::string(converted) + "...";
     extent = this->TextWidth(text.c_str(), 0, 0, 12, 0, 0);
   }
 
