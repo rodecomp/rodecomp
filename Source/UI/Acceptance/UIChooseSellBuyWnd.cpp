@@ -9987,6 +9987,7 @@ void UIItemCollectionWnd::OnRBtnDown(int x, int y) {
       compareCard.identified = 1;
       compareCard.identity[0] = 6;
       compareCard.refiningLevel = 0;
+      std::memcpy(&compareId, &comparison->m_item.cards[index], sizeof(compareId));
       compareCard.SetItemId(compareId);
       UIWindow* compareWindow = g_windowMgr.EnsureWindow(WID_COMBINEDCARDITEMCOLLECTION_COMPARISONWND);
       compareWindow->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, compareCard.identified, 0, 0, 0);
