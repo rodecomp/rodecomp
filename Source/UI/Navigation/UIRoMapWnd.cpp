@@ -171,7 +171,7 @@ void UIRoMapWnd::DrawHoverTooltip() {
   }
 
   this->hoverTooltip = new RoMapTooltipBox(boxX, y, width, height);
-  DrawRoundedBorder(*this, boxX, y, width, height, 0xFFFFFF);
+  this->DrawRoundedOutline(boxX, y, width, height, 0xFFFFFF);
 }
 
 // INLINED
@@ -255,7 +255,7 @@ void UIRoMapWnd::DrawFieldLabels() {
       }
 
       const CWorldViewField* field = *fieldIt;
-      DrawRoundedBorder(*this, field->left, field->top, field->right - field->left, field->bottom - field->top, borderColor);
+      this->DrawRoundedOutline(field->left, field->top, field->right - field->left, field->bottom - field->top, borderColor);
       int y;
       int levelY;
       if (atBottom) {

@@ -1526,7 +1526,7 @@ void UITVTextButton::Paint() {
 
   if (this->drawBackground != 0) {
     if (this->m_border != 0) {
-      DrawRoundedBorder(*this, inset - 1, 0, this->geometry.width, this->geometry.height, this->m_borderColor);
+      this->DrawRoundedOutline(inset - 1, 0, this->geometry.width, this->geometry.height, this->m_borderColor);
     }
 
     if (this->m_fill != 0) {

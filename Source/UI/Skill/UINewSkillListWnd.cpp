@@ -870,8 +870,8 @@ void UINewSkillListWnd::Paint() {
   const int left = this->m_tabs->geometry.width;
   this->ClearSurface(0xFFFF00FF);
   this->FillRegion(left, this->m_topMargin, this->geometry.width - left, this->geometry.height - this->m_bottomMargin - this->m_topMargin, 0xFFFFFF);
-  DrawRoundedBorder(*this, left, 0, this->geometry.width - left, this->geometry.height, 0xC3C3C3);
-  DrawRoundedBorder(*this, left + 2, 2, this->geometry.width - left - 4, this->geometry.height - 4, 0xC3C3C3);
+  this->DrawRoundedOutline(left, 0, this->geometry.width - left, this->geometry.height, 0xC3C3C3);
+  this->DrawRoundedOutline(left + 2, 2, this->geometry.width - left - 4, this->geometry.height - 4, 0xC3C3C3);
 
   CBitmapRes* bitmap =
     static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\skill_upbar_left.bmp")));

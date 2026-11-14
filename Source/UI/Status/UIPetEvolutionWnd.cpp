@@ -80,7 +80,7 @@ void UIPetEvolutionWnd::Paint() {
       if (illust) {
         this->FillRegion(12, 29, illust->image.width, illust->image.height, 0x9B9B9B);
         this->DrawBitmap(10, 27, &illust->image, false);
-        DrawRectangleBorder(*this, 10, 27, illust->image.width, illust->image.height, 0);
+        this->DrawRectOutline(10, 27, illust->image.width, illust->image.height, 0);
       }
     }
 
@@ -102,7 +102,7 @@ void UIPetEvolutionWnd::Paint() {
       if (illust) {
         this->FillRegion(this->geometry.width - illust->image.width - 8, 29, illust->image.width, illust->image.height, 0x9B9B9B);
         this->DrawBitmap(this->geometry.width - illust->image.width - 10, 27, &illust->image, false);
-        DrawRectangleBorder(*this, this->geometry.width - illust->image.width - 10, 27, illust->image.width, illust->image.height, 0);
+        this->DrawRectOutline(this->geometry.width - illust->image.width - 10, 27, illust->image.width, illust->image.height, 0);
       }
     }
   }
