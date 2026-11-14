@@ -89,12 +89,12 @@ std::size_t CActorNameCardHolder::Load(const std::vector<unsigned char>& input) 
   }
 
   this->cards.clear();
+  std::size_t offset = 4;
   int count;
   std::memcpy(&count, input.data(), sizeof(count));
   std::string text;
-  std::size_t offset = 4;
   for (int index = 0; index < count; ++index) {
-    std::uint32_t id;
+    int id;
     std::memcpy(&id, input.data() + offset, sizeof(id));
     this->cards[id].Reset();
 
