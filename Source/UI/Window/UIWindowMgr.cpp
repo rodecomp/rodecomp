@@ -2378,11 +2378,7 @@ void UIWindowMgr::DrawLoginOverlay() {
         this->loginBottomPanelOffset.x += static_cast<short>(g_mouse.deltaY);
       }
     } else if (this->loginDragRegion == 5) {
-      if (g_serviceType == 0) {
-        if (this->loginSidePanelOffset.x + g_mouse.deltaX >= 0) {
-          this->loginSidePanelOffset.x += static_cast<short>(g_mouse.deltaX);
-        }
-      } else {
+      if (g_serviceType != 0 || this->loginSidePanelOffset.x + g_mouse.deltaX >= 0) {
         this->loginSidePanelOffset.x += static_cast<short>(g_mouse.deltaX);
       }
     }
