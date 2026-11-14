@@ -5139,6 +5139,57 @@ unsigned CGameMode::ReadReplayActors(const std::vector<unsigned char>& data) {
       }
 
       switch (header.type) {
+      case 0xD0:
+        std::memcpy(record.data(), data.data() + offset, header.size);
+        offset += header.size;
+        this->ReceiveActorMoveEntryNamed(record.data());
+        break;
+      case 0xD2:
+        std::memcpy(record.data(), data.data() + offset, header.size);
+        offset += header.size;
+        this->ReceiveActorStateEntryNamedOld(record.data());
+        break;
+      case 0xD4:
+        std::memcpy(record.data(), data.data() + offset, header.size);
+        offset += header.size;
+        this->ReceiveActorMoveEntryLegacy(record.data());
+        break;
+      case 0xD7:
+        std::memcpy(record.data(), data.data() + offset, header.size);
+        offset += header.size;
+        this->ReceiveActorStateEntryLegacy(record.data());
+        break;
+      case 0xD5:
+        std::memcpy(record.data(), data.data() + offset, header.size);
+        offset += header.size;
+        this->ReceiveActorMoveEntry(record.data());
+        break;
+      case 0xD8:
+        std::memcpy(record.data(), data.data() + offset, header.size);
+        offset += header.size;
+        this->ReceiveActorStateEntryNamed(record.data());
+        break;
+      case 0xD6:
+        std::memcpy(record.data(), data.data() + offset, header.size);
+        offset += header.size;
+        this->ReceiveActorMoveEntryBody(record.data());
+        break;
+      case 0xD9:
+        std::memcpy(record.data(), data.data() + offset, header.size);
+        offset += header.size;
+        this->ReceiveActorStateEntryNamedBody(record.data());
+        break;
+      case 0xDA: {
+        std::memcpy(record.data(), data.data() + offset, header.size);
+        offset += header.size;
+        const auto* stored = reinterpret_cast<const GameModeStoredRecord00DA*>(record.data());
+        this->SpawnStandingPc2(
+          stored->aid, stored->job, stored->cellX, stored->cellY, stored->sex, stored->head,
+          stored->weapon, stored->shield, stored->accessory, stored->accessory2, stored->accessory3, stored->headPalette,
+          stored->bodyPalette, stored->robe, stored->text, stored->bodyCostume
+        );
+        break;
+      }
       case 0xC9:
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
@@ -5159,57 +5210,6 @@ unsigned CGameMode::ReadReplayActors(const std::vector<unsigned char>& data) {
         offset += header.size;
         this->ReceiveActorText(record.data());
         break;
-      case 0xD0:
-        std::memcpy(record.data(), data.data() + offset, header.size);
-        offset += header.size;
-        this->ReceiveActorMoveEntryNamed(record.data());
-        break;
-      case 0xD2:
-        std::memcpy(record.data(), data.data() + offset, header.size);
-        offset += header.size;
-        this->ReceiveActorStateEntryNamedOld(record.data());
-        break;
-      case 0xD4:
-        std::memcpy(record.data(), data.data() + offset, header.size);
-        offset += header.size;
-        this->ReceiveActorMoveEntryLegacy(record.data());
-        break;
-      case 0xD5:
-        std::memcpy(record.data(), data.data() + offset, header.size);
-        offset += header.size;
-        this->ReceiveActorMoveEntry(record.data());
-        break;
-      case 0xD6:
-        std::memcpy(record.data(), data.data() + offset, header.size);
-        offset += header.size;
-        this->ReceiveActorMoveEntryBody(record.data());
-        break;
-      case 0xD7:
-        std::memcpy(record.data(), data.data() + offset, header.size);
-        offset += header.size;
-        this->ReceiveActorStateEntryLegacy(record.data());
-        break;
-      case 0xD8:
-        std::memcpy(record.data(), data.data() + offset, header.size);
-        offset += header.size;
-        this->ReceiveActorStateEntryNamed(record.data());
-        break;
-      case 0xD9:
-        std::memcpy(record.data(), data.data() + offset, header.size);
-        offset += header.size;
-        this->ReceiveActorStateEntryNamedBody(record.data());
-        break;
-      case 0xDA: {
-        std::memcpy(record.data(), data.data() + offset, header.size);
-        offset += header.size;
-        const auto* stored = reinterpret_cast<const GameModeStoredRecord00DA*>(record.data());
-        this->SpawnStandingPc2(
-          stored->aid, stored->job, stored->cellX, stored->cellY, stored->sex, stored->head,
-          stored->weapon, stored->shield, stored->accessory, stored->accessory2, stored->accessory3, stored->headPalette,
-          stored->bodyPalette, stored->robe, stored->text, stored->bodyCostume
-        );
-        break;
-      }
       case 0x191:
         std::memcpy(record.data(), data.data() + offset, header.size);
         offset += header.size;
