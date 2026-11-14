@@ -306,18 +306,16 @@ void CSoundMgr::Shutdown() {
     return;
   }
 
-  MilesRuntime& miles = MilesRuntime::Get();
-
   if (this->provider) {
     for (void*& sample : this->samples3D) {
       if (sample) {
-        miles.release3DSample(sample);
+        AIL_release_3D_sample_handle(sample);
         sample = nullptr;
       }
     }
 
-    miles.close3DListener(this->listener);
-    miles.close3DProvider(this->provider);
+    AIL_close_3D_listener(this->listener);
+    AIL_close_3D_provider(this->provider);
     this->provider = 0;
   }
 
@@ -325,17 +323,17 @@ void CSoundMgr::Shutdown() {
 
   for (void*& sample : this->samples) {
     if (sample) {
-      miles.releaseSample(sample);
+      AIL_release_sample_handle(sample);
       sample = nullptr;
     }
   }
 
   if (this->driver) {
-    miles.closeDigitalDriver(this->driver);
+    AIL_close_digital_driver(this->driver);
     this->driver = nullptr;
   }
 
-  miles.shutdown();
+  AIL_shutdown();
 }
 
 // OFFSET: 0x00639880
