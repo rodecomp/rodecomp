@@ -1807,13 +1807,12 @@ void CEffectPrim::RenderHermode(matrix& wtm) {
     vector3d vec4 = slot.vecTNow;
     vec4.y -= slot.distance;
 
-    const unsigned char shade = static_cast<unsigned char>(slot.flag1[0]);
-    this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBPre, slot.vecBNow, slot.vecTNow, slot.vecTPre, wtm, 0, 0, 0, shade, shade, 250, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBPre, slot.vecBNow, vec2, vec1, wtm, 0, 0, 0, shade, shade, 220, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBNow, slot.vecTNow, vec4, vec2, wtm, 0, 0, 0, shade, shade, 190, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecTNow, slot.vecTPre, vec3, vec4, wtm, 0, 0, 0, shade, shade, 130, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecTPre, slot.vecBPre, vec1, vec3, wtm, 0, 0, 0, shade, shade, 160, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec4, vec3, wtm, 0, 0, 0, shade, shade, 250, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBPre, slot.vecBNow, slot.vecTNow, slot.vecTPre, wtm, 0, 0, 0, static_cast<unsigned char>(slot.flag1[0]), static_cast<unsigned char>(slot.flag1[0]), 250, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBPre, slot.vecBNow, vec2, vec1, wtm, 0, 0, 0, static_cast<unsigned char>(slot.flag1[0]), static_cast<unsigned char>(slot.flag1[0]), 220, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBNow, slot.vecTNow, vec4, vec2, wtm, 0, 0, 0, static_cast<unsigned char>(slot.flag1[0]), static_cast<unsigned char>(slot.flag1[0]), 190, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecTNow, slot.vecTPre, vec3, vec4, wtm, 0, 0, 0, static_cast<unsigned char>(slot.flag1[0]), static_cast<unsigned char>(slot.flag1[0]), 130, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecTPre, slot.vecBPre, vec1, vec3, wtm, 0, 0, 0, static_cast<unsigned char>(slot.flag1[0]), static_cast<unsigned char>(slot.flag1[0]), 160, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec4, vec3, wtm, 0, 0, 0, static_cast<unsigned char>(slot.flag1[0]), static_cast<unsigned char>(slot.flag1[0]), 250, 0.0f, 1.0f, 0.0f, 1.0f, 0);
   }
 }
 
