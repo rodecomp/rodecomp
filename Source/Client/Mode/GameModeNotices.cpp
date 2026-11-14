@@ -7710,21 +7710,21 @@ void CGameMode::ProcessWhisper(int shortcutId, std::string name, std::string tex
     prefix = "[ Friend ";
     prefix.append(sender);
     if (shortcutId != 0) {
-      prefix.append(" (" + ShortcutFilename(static_cast<std::uint32_t>(shortcutId)) + ")");
+      prefix.append(" (" + g_session.ShortcutFilename(static_cast<std::uint32_t>(shortcutId)) + ")");
     }
     prefix = prefix + " ] : " + message.data();
   } else if (flag) {
     prefix = "[ ";
     prefix.append(sender);
     if (shortcutId != 0) {
-      prefix.append(" (" + ShortcutFilename(static_cast<std::uint32_t>(shortcutId)) + ")");
+      prefix.append(" (" + g_session.ShortcutFilename(static_cast<std::uint32_t>(shortcutId)) + ")");
     }
     prefix = prefix + " ] : " + message.data();
   } else if (g_session.IsGuildMemberName(name.c_str())) {
     prefix = "[ Member ";
     prefix.append(sender);
     if (shortcutId != 0) {
-      prefix.append(" (" + ShortcutFilename(static_cast<std::uint32_t>(shortcutId)) + ")");
+      prefix.append(" (" + g_session.ShortcutFilename(static_cast<std::uint32_t>(shortcutId)) + ")");
     }
     prefix = prefix + " ] : " + message.data();
   } else {
@@ -7739,7 +7739,7 @@ void CGameMode::ProcessWhisper(int shortcutId, std::string name, std::string tex
     prefix = "( From ";
     prefix.append(sender);
     if (shortcutId != 0) {
-      prefix.append(" [" + ShortcutFilename(static_cast<std::uint32_t>(shortcutId)) + "]");
+      prefix.append(" [" + g_session.ShortcutFilename(static_cast<std::uint32_t>(shortcutId)) + "]");
     }
     prefix = prefix + " ) : " + message.data();
   }
