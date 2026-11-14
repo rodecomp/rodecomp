@@ -400,7 +400,7 @@ int UIRodexComposeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
         mail.recipientId = this->m_recipientId;
         mail.recipient = this->m_confirmedRecipientEdit->Text();
         mail.title = this->m_titleEdit->Text();
-        mail.body = body;
+        mail.body.assign(body.c_str(), body.size());
         mail.zeny = static_cast<int>(zeny);
         g_modeMgr.GetGameMode()->SendMsg(MM_SEND_MAIL, reinterpret_cast<int>(&mail), 0, 0, 0);
         return 0;
@@ -532,6 +532,14 @@ void UIRodexComposeWnd::Paint() {
   }
 }
 
+namespace {
+// INLINED
+inline void SetButtonText(UIBmpTextButton* button, std::string value) {
+  button->text = value;
+  button->Invalidate();
+}
+}
+
 // OFFSET: 0x007FFB90
 // FUNCTION: fn_10005
 void UIRodexComposeWnd::OnCreate(int, int) {
@@ -587,7 +595,7 @@ void UIRodexComposeWnd::OnCreate(int, int) {
     this->m_confirmRecipientButton->AddTextStyle(2, 12, 0x313131, 0, 1, textX, textY);
     this->m_confirmRecipientButton->AddTextStyle(3, 12, 0xC2C2C2, 0, 0, textX, textY);
   }
-  this->m_confirmRecipientButton->SetText(LookupMessage(MSI_RODEX_TAB_RETURN));
+  SetButtonText(this->m_confirmRecipientButton, LookupMessage(MSI_RODEX_TAB_RETURN));
   this->m_confirmRecipientButton->Move(0xA2, 0x1A);
   this->m_confirmRecipientButton->SetId(0xD5);
   this->AddChild(this->m_confirmRecipientButton);
