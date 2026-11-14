@@ -469,27 +469,25 @@ bool CSoundMgr::PlayData3D(const void* data, const float& x, const float& y, con
     return this->PlayData2D(data, x, y, z, 250, 40, 1.0f);
   }
 
-  MilesRuntime& miles = MilesRuntime::Get();
-
   for (int i = 0; i < this->sample3DCount; ++i) {
     if (!this->samples3D[i]) {
       continue;
     }
 
-    if (miles.sample3DStatus(this->samples3D[i]) != 2) {
+    if (AIL_3D_sample_status(this->samples3D[i]) != 2) {
       continue;
     }
 
-    if (!miles.set3DSampleFile(this->samples3D[i], data)) {
+    if (!AIL_set_3D_sample_file(this->samples3D[i], data)) {
       return false;
     }
 
-    miles.set3DSampleEffectsLevel(this->samples3D[i], this->effectsEnabled ? 1.0f : 0.0f);
-    miles.set3DPosition(this->samples3D[i], x, y, z);
-    miles.set3DOrientation(this->samples3D[i], -x, -y, -z, 0.0f, 1.0f, 0.0f);
-    miles.set3DSampleVolume(this->samples3D[i], volume);
-    miles.set3DSampleDistances(this->samples3D[i], static_cast<float>(maximumDistance), static_cast<float>(minimumDistance));
-    miles.start3DSample(this->samples3D[i]);
+    AIL_set_3D_sample_effects_level(this->samples3D[i], this->effectsEnabled ? 1.0f : 0.0f);
+    AIL_set_3D_position(this->samples3D[i], x, y, z);
+    AIL_set_3D_orientation(this->samples3D[i], -x, -y, -z, 0.0f, 1.0f, 0.0f);
+    AIL_set_3D_sample_volume(this->samples3D[i], volume);
+    AIL_set_3D_sample_distances(this->samples3D[i], static_cast<float>(maximumDistance), static_cast<float>(minimumDistance));
+    AIL_start_3D_sample(this->samples3D[i]);
 
     return true;
   }
