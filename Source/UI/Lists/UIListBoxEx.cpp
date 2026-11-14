@@ -65,6 +65,21 @@ void UIListBoxEx::OnCreate(int width, int height) {
   this->AddChild(this->horizontalBar);
 }
 
+// OFFSET: 0x00897580
+// FUNCTION: fn_11530
+void UIComboBoxEx::Resize(int width, int height) {
+  this->UIListBoxEx::Resize(width, height);
+  this->topLine = 0;
+  this->verticalBar->position = this->topLine;
+
+  if (this->verticalOverflow != 0) {
+    this->verticalBar->Move((width - 13), 0);
+    this->verticalBar->Invalidate();
+  } else {
+    this->verticalBar->Move((width - 13), 0);
+  }
+}
+
 // OFFSET: 0x00897750
 // FUNCTION: fn_11533
 void UIListBoxEx::Resize(int width, int height) {

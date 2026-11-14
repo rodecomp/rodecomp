@@ -49,21 +49,6 @@ void UIComboBoxEx::OnCreate(int width, int height) {
   this->UIListBoxEx::OnCreate(width, height);
 }
 
-// OFFSET: 0x00897580
-// FUNCTION: fn_11530
-void UIComboBoxEx::Resize(int width, int height) {
-  this->UIListBoxEx::Resize(width, height);
-  this->topLine = 0;
-  this->verticalBar->position = this->topLine;
-
-  if (this->verticalOverflow != 0) {
-    this->verticalBar->Move((width - 13), 0);
-    this->verticalBar->Invalidate();
-  } else {
-    this->verticalBar->Move((width - 13), 0);
-  }
-}
-
 // OFFSET: 0x00890460
 // FUNCTION: fn_11414
 void UIComboBoxEx::OnLBtnDown(int, int) {
