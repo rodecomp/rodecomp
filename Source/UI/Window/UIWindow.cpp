@@ -1547,23 +1547,23 @@ const char* UIWindow::TruncateText(const char* text, int maxBytes) {
     const char* end = text + std::strlen(text);
     while (current < end) {
       const int previous = bytes;
-      const char* next = g_serverLanguage->NextChar(current, static_cast<int>(end - current));
-      bytes += static_cast<int>(next - current);
+      const char* last = current;
+      current = g_serverLanguage->NextChar(current, static_cast<int>(end - current));
+      bytes += static_cast<int>(current - last);
       if (bytes > maxBytes) {
         bytes = previous;
         break;
       }
-      current = next;
     }
 
     if (bytes > 0) {
-      char* buffer = static_cast<char*>(std::malloc(bytes + 1));
+      char* buffer = new char[bytes + 1];
       std::memcpy(buffer, text, bytes);
       buffer[bytes] = '\0';
       // GLOBAL: gl_25070
       static std::string truncated;
       truncated = buffer;
-      std::free(buffer);
+      delete[] buffer;
       return truncated.c_str();
     }
   }
@@ -2992,10 +2992,13 @@ void UINavigationRuideWnd::RefreshRoute() {
     std::sprintf(text, "%s (%d %d)", node->GetInfo()->GetName(), x, y);
 
     UIListBox_NaviSearch* list = this->routeList;
+    int icon;
     if (index == 0) {
-      list->icons.push_back(100);
+      icon = 100;
+      list->icons.push_back(icon);
     } else {
-      list->icons.push_back(200);
+      icon = 200;
+      list->icons.push_back(icon);
     }
     list->AddLine(text);
     list->Invalidate();
@@ -3013,7 +3016,8 @@ void UINavigationRuideWnd::RefreshRoute() {
   }
 
   UIListBox_NaviSearch* list = this->routeList;
-  list->icons.push_back(300);
+  int icon = 300;
+  list->icons.push_back(icon);
   list->AddLine(text);
   list->Invalidate();
 }
