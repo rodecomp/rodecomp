@@ -2402,7 +2402,6 @@ int UIReplayRECControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
   case UM_REFRESH:
     this->Invalidate();
     this->InvalidateChildren();
-    return 0;
   case UM_REPLAY_FRAMED_DATA:
   case 251:
     return 0;
@@ -3049,7 +3048,7 @@ int UISelectServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     break;
   case 89:
     this->m_okButton->Move(234, this->m_okButton->geometry.y);
-    break;
+    return 0;
   default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
