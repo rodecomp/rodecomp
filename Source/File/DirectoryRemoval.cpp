@@ -8,6 +8,8 @@
 #include <sys/stat.h>
 #include <windows.h>
 
+template __declspec(noinline) std::string::~basic_string() noexcept;
+
 // OFFSET: 0x00AF45E0
 // FUNCTION: fn_18245
 void RemoveDirectoryTree(const char* path) {
