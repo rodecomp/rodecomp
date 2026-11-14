@@ -4619,10 +4619,10 @@ void UIItemSellWnd2::OnCreate(int width, int height) {
 
   this->resizer = new UIResizer();
   this->resizer->SetSize(16, 16);
-  static_cast<UIResizer*>(this->resizer)->SetDirection(3);
-  static_cast<UIResizer*>(this->resizer)->SetBitmapName("유저인터페이스\\btn_resize.bmp");
+  this->resizer->SetDirection(3);
+  this->resizer->SetBitmapName("유저인터페이스\\btn_resize.bmp");
   this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
-  static_cast<UIResizer*>(this->resizer)->SetColors(0xFFFF00FF, 0xFFFF00FF);
+  this->resizer->SetColors(0xFFFF00FF, 0xFFFF00FF);
   this->AddChild(this->resizer);
 
   UIScrollBar* scrollBar = new UIScrollBar();
@@ -4636,7 +4636,7 @@ void UIItemSellWnd2::OnCreate(int width, int height) {
   int ids[2] = {184, 185};
   for (int index = 0; index < 2; ++index) {
     this->buttons[index] = new UIBitmapButton();
-    UIBitmapButton* button = static_cast<UIBitmapButton*>(this->buttons[index]);
+    UIBitmapButton* button = this->buttons[index];
     button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
     button->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
@@ -4671,10 +4671,10 @@ void UIItemSellWnd::OnCreate(int width, int height) {
 
   this->resizer = new UIResizer();
   this->resizer->SetSize(16, 16);
-  static_cast<UIResizer*>(this->resizer)->SetDirection(3);
-  static_cast<UIResizer*>(this->resizer)->SetBitmapName("유저인터페이스\\btn_resize.bmp");
+  this->resizer->SetDirection(3);
+  this->resizer->SetBitmapName("유저인터페이스\\btn_resize.bmp");
   this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
-  static_cast<UIResizer*>(this->resizer)->SetColors(0xFFFF00FF, 0xFFFF00FF);
+  this->resizer->SetColors(0xFFFF00FF, 0xFFFF00FF);
   this->AddChild(this->resizer);
 
   UIScrollBar* scrollBar = new UIScrollBar();
@@ -4688,7 +4688,7 @@ void UIItemSellWnd::OnCreate(int width, int height) {
   int ids[2] = {184, 185};
   for (int index = 0; index < 2; ++index) {
     this->buttons[index] = new UIBitmapButton();
-    UIBitmapButton* button = static_cast<UIBitmapButton*>(this->buttons[index]);
+    UIBitmapButton* button = this->buttons[index];
     button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
     button->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
@@ -4715,10 +4715,10 @@ void UIItemShopWnd2::OnCreate(int width, int height) {
 
   this->resizer = new UIResizer();
   this->resizer->SetSize(16, 16);
-  static_cast<UIResizer*>(this->resizer)->SetDirection(7);
-  static_cast<UIResizer*>(this->resizer)->SetBitmapName("유저인터페이스\\btn_resize.bmp");
+  this->resizer->SetDirection(7);
+  this->resizer->SetBitmapName("유저인터페이스\\btn_resize.bmp");
   this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
-  static_cast<UIResizer*>(this->resizer)->SetColors(0xFFFF00FF, 0xFFFF00FF);
+  this->resizer->SetColors(0xFFFF00FF, 0xFFFF00FF);
   this->AddChild(this->resizer);
 
   this->checkBox = new UICheckBox();
@@ -4750,10 +4750,10 @@ void UIItemShopWnd::OnCreate(int width, int height) {
 
   this->resizer = new UIResizer();
   this->resizer->SetSize(16, 16);
-  static_cast<UIResizer*>(this->resizer)->SetDirection(7);
-  static_cast<UIResizer*>(this->resizer)->SetBitmapName("유저인터페이스\\btn_resize.bmp");
+  this->resizer->SetDirection(7);
+  this->resizer->SetBitmapName("유저인터페이스\\btn_resize.bmp");
   this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
-  static_cast<UIResizer*>(this->resizer)->SetColors(0xFFFF00FF, 0xFFFF00FF);
+  this->resizer->SetColors(0xFFFF00FF, 0xFFFF00FF);
   this->AddChild(this->resizer);
 
   this->checkBox = new UICheckBox();
@@ -4777,7 +4777,7 @@ void UIItemShopWnd::OnCreate(int width, int height) {
 // FUNCTION: fn_13314
 void UIItemStoreFindWnd::OnCreate(int width, int height) {
   this->scrollBar = new UIScrollBar();
-  static_cast<UIScrollBar*>(this->scrollBar)->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - 38);
+  this->scrollBar->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - 38);
   this->AddChild(this->scrollBar);
 
   char text[64];
@@ -4805,7 +4805,7 @@ void UIItemStoreFindWnd::OnCreate(int width, int height) {
 // FUNCTION: fn_13315
 void UIItemStoreSubWnd::OnCreate(int width, int height) {
   this->scrollBar = new UIScrollBar();
-  static_cast<UIScrollBar*>(this->scrollBar)->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - 38);
+  this->scrollBar->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - 38);
   this->AddChild(this->scrollBar);
 
   char text[64];
@@ -4846,10 +4846,10 @@ void UIMerchantItemWnd::OnCreate(int width, int height) {
 
   this->resizer = new UIResizer();
   this->resizer->SetSize(16, 16);
-  static_cast<UIResizer*>(this->resizer)->SetDirection(7);
-  static_cast<UIResizer*>(this->resizer)->SetBitmapName("유저인터페이스\\btn_resize.bmp");
+  this->resizer->SetDirection(7);
+  this->resizer->SetBitmapName("유저인터페이스\\btn_resize.bmp");
   this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
-  static_cast<UIResizer*>(this->resizer)->SetColors(0xFFFF00FF, 0xFFFF00FF);
+  this->resizer->SetColors(0xFFFF00FF, 0xFFFF00FF);
   this->AddChild(this->resizer);
 
   UIScrollBar* scrollBar = new UIScrollBar();
@@ -4885,10 +4885,10 @@ void UIMerchantMirrorItemWnd::OnCreate(int width, int height) {
 
   this->resizer = new UIResizer();
   this->resizer->SetSize(16, 16);
-  static_cast<UIResizer*>(this->resizer)->SetDirection(7);
-  static_cast<UIResizer*>(this->resizer)->SetBitmapName("유저인터페이스\\btn_resize.bmp");
+  this->resizer->SetDirection(7);
+  this->resizer->SetBitmapName("유저인터페이스\\btn_resize.bmp");
   this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
-  static_cast<UIResizer*>(this->resizer)->SetColors(0xFFFF00FF, 0xFFFF00FF);
+  this->resizer->SetColors(0xFFFF00FF, 0xFFFF00FF);
   this->AddChild(this->resizer);
 
   UIScrollBar* scrollBar = new UIScrollBar();
@@ -5777,10 +5777,10 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
 void UISkillListWnd::OnCreate(int width, int height) {
   this->resizer = new UIResizer();
   this->resizer->SetSize(16, 16);
-  static_cast<UIResizer*>(this->resizer)->SetDirection(3);
-  static_cast<UIResizer*>(this->resizer)->SetBitmapName("유저인터페이스\\btn_resize.bmp");
+  this->resizer->SetDirection(3);
+  this->resizer->SetBitmapName("유저인터페이스\\btn_resize.bmp");
   this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
-  static_cast<UIResizer*>(this->resizer)->SetColors(0xFFFF00FF, 0xFFFF00FF);
+  this->resizer->SetColors(0xFFFF00FF, 0xFFFF00FF);
   this->AddChild(this->resizer);
 
   UIScrollBar* scrollBar = new UIScrollBar();
@@ -5881,7 +5881,7 @@ void UISkillListWnd::OnWheel(int value) {
 // OFFSET: 0x0098A6F0
 // FUNCTION: fn_13416
 void UISkillListWnd::UpdateScrollBar() {
-  UIScrollBar* bar = static_cast<UIScrollBar*>(this->scrollBar);
+  UIScrollBar* bar = this->scrollBar;
   if (!bar) {
     return;
   }
@@ -5908,7 +5908,7 @@ void UISkillListWnd::UpdateScrollBar() {
       position = last;
     }
 
-    static_cast<UIScrollBar*>(this->scrollBar)->SetPosition(position);
+    this->scrollBar->SetPosition(position);
   } else {
     this->scroll = 0;
     bar->SetRange(0, visible, rows);
@@ -5934,7 +5934,7 @@ void UIMerchantShopMakeWnd::UpdateLayout() {
 
   const int count = static_cast<int>(this->items.size());
   if (count >= this->minimumRows) {
-    UIScrollBar* bar = static_cast<UIScrollBar*>(this->scrollBar);
+    UIScrollBar* bar = this->scrollBar;
     if (count > rows) {
       this->scrollable = 1;
       bar->SetRange(count - rows, rows, count);
@@ -5950,7 +5950,7 @@ void UIMerchantShopMakeWnd::UpdateLayout() {
         position = last;
       }
 
-      static_cast<UIScrollBar*>(this->scrollBar)->SetPosition(position);
+      this->scrollBar->SetPosition(position);
     } else {
       this->scrollable = 0;
       this->scroll = 0;
@@ -6020,7 +6020,7 @@ void UIMerchantShopMakeWnd::OnWheel(int value) {
 // OFFSET: 0x0098A5A0
 // FUNCTION: fn_13415
 void UIItemBaseWnd::UpdateScrollBar() {
-  UIScrollBar* bar = static_cast<UIScrollBar*>(this->scrollBar);
+  UIScrollBar* bar = this->scrollBar;
   if (!bar) {
     return;
   }
@@ -6047,7 +6047,7 @@ void UIItemBaseWnd::UpdateScrollBar() {
       position = last;
     }
 
-    static_cast<UIScrollBar*>(this->scrollBar)->SetPosition(position);
+    this->scrollBar->SetPosition(position);
   } else {
     this->scroll = 0;
     bar->SetRange(0, visible, rows);
@@ -6843,7 +6843,7 @@ void UIMerchantItemPurchaseWnd::OnCreate(int width, int height) {
     const char* names[2][3] = {{"btn_sell", "btn_sell_a", "btn_sell_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
     for (int index = 0; index < 2; ++index) {
       this->buttons[index] = new UIBitmapButton();
-      UIBitmapButton* button = static_cast<UIBitmapButton*>(this->buttons[index]);
+      UIBitmapButton* button = this->buttons[index];
       button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
       button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
       button->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
@@ -6856,7 +6856,7 @@ void UIMerchantItemPurchaseWnd::OnCreate(int width, int height) {
     const char* names[2][3] = {{"btn_buy", "btn_buy_a", "btn_buy_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
     for (int index = 0; index < 2; ++index) {
       this->buttons[index] = new UIBitmapButton();
-      UIBitmapButton* button = static_cast<UIBitmapButton*>(this->buttons[index]);
+      UIBitmapButton* button = this->buttons[index];
       button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
       button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
       button->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
@@ -6895,10 +6895,10 @@ void UIMerchantItemMyShopWnd::OnCreate(int width, int height) {
 
   this->resizer = new UIResizer();
   this->resizer->SetSize(16, 16);
-  static_cast<UIResizer*>(this->resizer)->SetDirection(7);
-  static_cast<UIResizer*>(this->resizer)->SetBitmapName("유저인터페이스\\btn_resize.bmp");
+  this->resizer->SetDirection(7);
+  this->resizer->SetBitmapName("유저인터페이스\\btn_resize.bmp");
   this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
-  static_cast<UIResizer*>(this->resizer)->SetColors(0xFFFF00FF, 0xFFFF00FF);
+  this->resizer->SetColors(0xFFFF00FF, 0xFFFF00FF);
   this->AddChild(this->resizer);
 
   UIScrollBar* scrollBar = new UIScrollBar();
@@ -6920,7 +6920,7 @@ void UIMerchantItemMyShopWnd::OnCreate(int width, int height) {
   int ids[1] = {201};
   for (int index = 0; index < 1; ++index) {
     this->buttons[index] = new UIBitmapButton();
-    UIBitmapButton* button = static_cast<UIBitmapButton*>(this->buttons[index]);
+    UIBitmapButton* button = this->buttons[index];
     button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
     button->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
@@ -7893,10 +7893,10 @@ void UIItemStoreWnd::OnCreate(int width, int height) {
 
   this->resizer = new UIResizer();
   this->resizer->SetSize(16, 16);
-  static_cast<UIResizer*>(this->resizer)->SetDirection(3);
-  static_cast<UIResizer*>(this->resizer)->SetBitmapName("유저인터페이스\\btn_resize.bmp");
+  this->resizer->SetDirection(3);
+  this->resizer->SetBitmapName("유저인터페이스\\btn_resize.bmp");
   this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
-  static_cast<UIResizer*>(this->resizer)->SetColors(0xFFFF00FF, 0xFFFF00FF);
+  this->resizer->SetColors(0xFFFF00FF, 0xFFFF00FF);
   this->AddChild(this->resizer);
 
   this->tabBar = new UITab();
@@ -7925,7 +7925,7 @@ void UIItemStoreWnd::OnCreate(int width, int height) {
   int ids[2] = {201, 365};
   for (int index = 0; index < 2; ++index) {
     this->buttons[index] = new UIBitmapButton();
-    UIBitmapButton* button = static_cast<UIBitmapButton*>(this->buttons[index]);
+    UIBitmapButton* button = this->buttons[index];
     button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
     button->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
@@ -7996,10 +7996,10 @@ void UIItemStoreWnd::OnCreate(int width, int height) {
 void UIItemWnd::OnCreate(int width, int height) {
   this->resizer = new UIResizer();
   this->resizer->SetSize(16, 16);
-  static_cast<UIResizer*>(this->resizer)->SetDirection(7);
-  static_cast<UIResizer*>(this->resizer)->SetBitmapName("유저인터페이스\\btn_resize.bmp");
+  this->resizer->SetDirection(7);
+  this->resizer->SetBitmapName("유저인터페이스\\btn_resize.bmp");
   this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
-  static_cast<UIResizer*>(this->resizer)->SetColors(0xFFFF00FF, 0xFFFF00FF);
+  this->resizer->SetColors(0xFFFF00FF, 0xFFFF00FF);
   this->AddChild(this->resizer);
 
   UIScrollBar* scrollBar = new UIScrollBar();
@@ -8038,11 +8038,11 @@ void UIItemWnd::OnCreate(int width, int height) {
   UICheckBox* compare = new (std::nothrow) UICheckBox();
   this->optionBox = compare;
   compare->SetSize(12, 12);
-  static_cast<UICheckBox*>(this->optionBox)->SetBitmaps("유저인터페이스\\inventory\\item_compare_on.bmp", "유저인터페이스\\inventory\\item_compare_off.bmp");
+  this->optionBox->SetBitmaps("유저인터페이스\\inventory\\item_compare_on.bmp", "유저인터페이스\\inventory\\item_compare_off.bmp");
   this->optionBox->SetId(456);
   this->optionBox->Move(103, height - 17);
-  static_cast<UICheckBox*>(this->optionBox)->SetChecked(g_serviceOptions.Get(TT_ITEM_COMPARE_ON_OFF));
-  static_cast<UICheckBox*>(this->optionBox)->SetTooltip(LookupMessage(MSI_CONNECT_SNS_WND));
+  this->optionBox->SetChecked(g_serviceOptions.Get(TT_ITEM_COMPARE_ON_OFF));
+  this->optionBox->SetTooltip(LookupMessage(MSI_CONNECT_SNS_WND));
   this->AddChild(this->optionBox);
 
   this->countButton = new (std::nothrow) UIBitmapButton();
@@ -8058,9 +8058,9 @@ void UIItemWnd::OnCreate(int width, int height) {
   UIBitmapButton* lockDeal = new UIBitmapButton();
   this->dealLockButton = lockDeal;
   lockDeal->SetBitmap(g_session.m_blockPrivateTab != 1 ? "유저인터페이스\\inventory\\bt_itemDeal_lock_off.bmp" : "유저인터페이스\\inventory\\bt_itemdeal_lock_on.bmp", 0, 0);
-  static_cast<UIBitmapButton*>(this->dealLockButton)->SetBitmap("유저인터페이스\\inventory\\bt_itemDeal_lock_over.bmp", 1, 0);
-  static_cast<UIBitmapButton*>(this->dealLockButton)->SetBitmap("유저인터페이스\\inventory\\bt_itemDeal_lock_press.bmp", 2, 0);
-  this->dealLockButton->SetSize(static_cast<UIBitmapButton*>(this->dealLockButton)->BitmapWidth(), static_cast<UIBitmapButton*>(this->dealLockButton)->BitmapHeight());
+  this->dealLockButton->SetBitmap("유저인터페이스\\inventory\\bt_itemDeal_lock_over.bmp", 1, 0);
+  this->dealLockButton->SetBitmap("유저인터페이스\\inventory\\bt_itemDeal_lock_press.bmp", 2, 0);
+  this->dealLockButton->SetSize(this->dealLockButton->BitmapWidth(), this->dealLockButton->BitmapHeight());
   this->dealLockButton->Move(124, this->geometry.height - 19);
   this->dealLockButton->SetTooltip(LookupMessage(MSI_CONNECT_SNS_PART_SCREEN_SHOT));
   this->dealLockButton->SetId(507);
@@ -8068,7 +8068,7 @@ void UIItemWnd::OnCreate(int width, int height) {
 
   this->filterButton = new UIBitmapButton();
   this->RefreshSortButton();
-  this->filterButton->SetSize(static_cast<UIBitmapButton*>(this->filterButton)->BitmapWidth(), static_cast<UIBitmapButton*>(this->filterButton)->BitmapHeight());
+  this->filterButton->SetSize(this->filterButton->BitmapWidth(), this->filterButton->BitmapHeight());
   this->filterButton->Move(157, this->geometry.height - 19);
   this->filterButton->SetId(364);
   this->AddChild(this->filterButton);
@@ -8183,8 +8183,8 @@ int UIItemShopWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
   switch (message) {
   case UM_SETINFO:
     this->saved = reinterpret_cast<ItemShopWndInfo*>(a);
-    if (!static_cast<ItemShopWndInfo*>(this->saved)->IsValid()) {
-      static_cast<ItemShopWndInfo*>(this->saved)->Reset();
+    if (!this->saved->IsValid()) {
+      this->saved->Reset();
     }
 
     this->SendMsg(nullptr, UM_RESIZE, 7, this->saved->width, this->saved->height, 0);
@@ -8623,8 +8623,8 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       this->Sort();
       this->Invalidate();
       this->UpdateScrollBar();
-      static_cast<UIButton*>(this->buttons[1])->Enable(0);
-      static_cast<UIButton*>(this->buttons[3])->Enable(1);
+      this->buttons[1]->Enable(0);
+      this->buttons[3]->Enable(1);
       this->buttons[3]->Move(this->geometry.width - 48, this->geometry.height - 52);
       for (int id = 146; id < 153; ++id) {
         if (g_windowMgr.LookupWindow(id)) {
@@ -8640,8 +8640,8 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       break;
     case ID_PREV:
       this->m_searchFlags[0] = 0;
-      static_cast<UIButton*>(this->buttons[1])->Enable(1);
-      static_cast<UIButton*>(this->buttons[3])->Enable(0);
+      this->buttons[1]->Enable(1);
+      this->buttons[3]->Enable(0);
       this->buttons[1]->Move(this->geometry.width - 105, this->geometry.height - 24);
       this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       for (int index = 0; index < 7; ++index) {
@@ -9847,7 +9847,7 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
         over = "유저인터페이스\\inventory\\bt_itemDeal_lock_on_over.bmp";
         normal = "유저인터페이스\\inventory\\bt_itemDeal_lock_on.bmp";
       }
-      UIBitmapButton* button = static_cast<UIBitmapButton*>(this->dealLockButton);
+      UIBitmapButton* button = this->dealLockButton;
       button->SetBitmap(normal, 0, 0);
       button->SetBitmap(over, 1, 0);
       button->SetBitmap(press, 2, 0);
@@ -10071,9 +10071,9 @@ void UIItemWnd::RefreshSortButton() {
     name += "_off";
   }
 
-  static_cast<UIBitmapButton*>(this->filterButton)->SetBitmap(std::format("{}.bmp", name).c_str(), 0, 0);
-  static_cast<UIBitmapButton*>(this->filterButton)->SetBitmap(std::format("{}_over.bmp", name).c_str(), 1, 0);
-  static_cast<UIBitmapButton*>(this->filterButton)->SetBitmap(std::format("{}_press.bmp", name).c_str(), 2, 0);
+  this->filterButton->SetBitmap(std::format("{}.bmp", name).c_str(), 0, 0);
+  this->filterButton->SetBitmap(std::format("{}_over.bmp", name).c_str(), 1, 0);
+  this->filterButton->SetBitmap(std::format("{}_press.bmp", name).c_str(), 2, 0);
   this->filterButton->SetTooltip(std::format("{} {}", LookupMessage(MSI_BABY_INDEPENDENCE_RODEX_ERASED), g_session.m_sortPrivateTab ? "ON" : "OFF").c_str());
   this->Invalidate();
 }
@@ -11239,10 +11239,10 @@ void UIItemPurchaseWnd::OnCreate(int width, int height) {
 
   this->resizer = new UIResizer();
   this->resizer->SetSize(16, 16);
-  static_cast<UIResizer*>(this->resizer)->SetDirection(3);
-  static_cast<UIResizer*>(this->resizer)->SetBitmapName("유저인터페이스\\btn_resize.bmp");
+  this->resizer->SetDirection(3);
+  this->resizer->SetBitmapName("유저인터페이스\\btn_resize.bmp");
   this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
-  static_cast<UIResizer*>(this->resizer)->SetColors(0xFFFF00FF, 0xFFFF00FF);
+  this->resizer->SetColors(0xFFFF00FF, 0xFFFF00FF);
   this->AddChild(this->resizer);
 
   UIScrollBar* scrollBar = new UIScrollBar();
@@ -11256,7 +11256,7 @@ void UIItemPurchaseWnd::OnCreate(int width, int height) {
   int ids[2] = {184, 185};
   for (int index = 0; index < 2; ++index) {
     this->buttons[index] = new UIBitmapButton();
-    UIBitmapButton* button = static_cast<UIBitmapButton*>(this->buttons[index]);
+    UIBitmapButton* button = this->buttons[index];
     button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
     button->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
@@ -11586,7 +11586,7 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         const int count = static_cast<int>(this->items.size());
         const int maximum = std::max(count - this->maxVisibleRows, 0);
         this->scrollable = maximum != 0;
-        UIScrollBar* bar = static_cast<UIScrollBar*>(this->scrollBar);
+        UIScrollBar* bar = this->scrollBar;
         if (maximum != 0) {
           bar->SetRange(maximum, this->maxVisibleRows, count);
           if (this->scroll < 0) {

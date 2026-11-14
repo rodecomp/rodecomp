@@ -23,6 +23,11 @@ class CTexture;
 class UIListBox_NaviSearch;
 class UIStaticText;
 
+class UIBitmapButton;
+class UICheckBox;
+class UIComboBox_BmpWnd;
+class UIBitmapEditCtrl;
+
 class UINavigationV4Wnd : public UIFrameWnd {
 public:
   UINavigationV4Wnd();
@@ -50,25 +55,25 @@ public:
   void DrawTargetSprite(int x, int y, int width, int height, const CBitmapRes* background);
 
   /* 00B4 */ UIWindow* closeButton;
-  /* 00B8 */ UIWindow* expandedCloseButton;
+  /* 00B8 */ UIBitmapButton* expandedCloseButton;
   /* 00BC */ UIWindow* minimizeButton;
-  /* 00C0 */ UIWindow* helpButton;
-  /* 00C4 */ UIWindow* maximizeButton;
-  /* 00C8 */ UIWindow* roadIconButton;
-  /* 00CC */ UIWindow* dataButton;
-  /* 00D0 */ UIWindow* backButton;
-  /* 00D4 */ UIWindow* minimizeCheck;
-  /* 00D8 */ UIWindow* roadListButton;
-  /* 00DC */ UIWindow* searchType;
-  /* 00E0 */ UIWindow* searchEdit;
-  /* 00E4 */ UIWindow* searchButton;
+  /* 00C0 */ UIBitmapButton* helpButton;
+  /* 00C4 */ UIBitmapButton* maximizeButton;
+  /* 00C8 */ UIBitmapButton* roadIconButton;
+  /* 00CC */ UIBitmapButton* dataButton;
+  /* 00D0 */ UIBitmapButton* backButton;
+  /* 00D4 */ UICheckBox* minimizeCheck;
+  /* 00D8 */ UIBitmapButton* roadListButton;
+  /* 00DC */ UIComboBox_BmpWnd* searchType;
+  /* 00E0 */ UIBitmapEditCtrl* searchEdit;
+  /* 00E4 */ UIBitmapButton* searchButton;
   /* 00E8 */ UIStaticText* summaryLabel;
   /* 00EC */ UIListBox_NaviSearch* roadList;
   /* 00F0 */ UIListBox_NaviSearch* searchList;
-  /* 00F4 */ UIWindow* filterCheck;
-  /* 00F8 */ UIWindow* shareButton;
-  /* 00FC */ UIWindow* findButton;
-  /* 0100 */ UIWindow* moveButton;
+  /* 00F4 */ UICheckBox* filterCheck;
+  /* 00F8 */ UIBitmapButton* shareButton;
+  /* 00FC */ UIBitmapButton* findButton;
+  /* 0100 */ UIBitmapButton* moveButton;
   /* 0104 */ std::vector<std::string> routeFiles;
   /* 0110 */ NavigationWindowInfo* info;
   /* 0114 */ int padding_0114;

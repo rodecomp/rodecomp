@@ -10,11 +10,13 @@
 class UISpriteButton;
 class UITextViewer;
 
+class UITransBalloonText;
+
 class UIBookWnd : public UIFrameWnd {
 public:
   UIBookWnd();
   /* 00B4 */ UITextViewer* m_viewer;
-  /* 00B8 */ UIWindow* m_balloon;
+  /* 00B8 */ UITransBalloonText* m_balloon;
   /* 00BC */ char m_bookName[100];
   /* 0120 */ int m_lineCount;
   /* 0124 */ int m_pageCount;

@@ -10,6 +10,10 @@
 #include <list>
 #include <vector>
 
+class UIResizer;
+class UIScrollBar;
+class UIBitmapButton;
+
 class UISkillListWnd : public UIFrameWnd {
 public:
   UISkillListWnd();
@@ -32,9 +36,9 @@ public:
   void UpdateScrollBar();
   void UpdateRowButtons();
 
-  /* 00B4 */ UIWindow* resizer;
-  /* 00B8 */ UIWindow* scrollBar;
-  /* 00BC */ UIWindow* buttons[2];
+  /* 00B4 */ UIResizer* resizer;
+  /* 00B8 */ UIScrollBar* scrollBar;
+  /* 00BC */ UIBitmapButton* buttons[2];
   /* 00C4 */ UIWindow* upgradeButtons[7];
   /* 00E0 */ UIWindow* levelButtons[7];
   /* 00FC */ UIWindow* levelLabels[7];

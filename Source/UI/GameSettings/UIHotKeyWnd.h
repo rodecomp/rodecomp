@@ -8,7 +8,9 @@
 #include <map>
 
 class UIBalloonText;
+class UIBitmapButton;
 class UIButton;
+class UICheckBox;
 class UITabControl;
 class UIWindow;
 
@@ -49,13 +51,13 @@ public:
   /* 00FC */ UIBalloonText* m_balloon;
   /* 0100 */ UITabControl* m_tabs;
   /* 0104 */ int m_tab;
-  /* 0108 */ UIWindow* m_optionCheckBox;
+  /* 0108 */ UICheckBox* m_optionCheckBox;
   /* 010C */ int m_page;
   /* 0110 */ int m_pageCount;
   /* 0114 */ unsigned char m_paged;
   /* 0115 */ unsigned char padding_0115[0x3];
-  /* 0118 */ UIButton* m_prevButton;
-  /* 011C */ UIButton* m_nextButton;
+  /* 0118 */ UIBitmapButton* m_prevButton;
+  /* 011C */ UIBitmapButton* m_nextButton;
 };
 
 #endif

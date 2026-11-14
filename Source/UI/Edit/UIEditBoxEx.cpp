@@ -175,8 +175,8 @@ void CUIEditCtrlEx::UpdateScrollBar() {
   }
   this->scrollPosition = std::clamp(position, 0, this->scrollMaximum);
 
-  static_cast<UIScrollBar*>(this->scrollBar)->SetRange(this->scrollMaximum, this->visibleLines, total);
-  static_cast<UIScrollBar*>(this->scrollBar)->SetPosition(this->scrollPosition);
+  this->scrollBar->SetRange(this->scrollMaximum, this->visibleLines, total);
+  this->scrollBar->SetPosition(this->scrollPosition);
   this->scrollEnabled = this->scrollMaximum > 0;
 }
 
@@ -427,17 +427,17 @@ int CUIEditCtrlEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
   switch (message) {
   case UM_SCROLLVERT:
     this->scrollPosition = std::clamp(this->scrollPosition + a, 0, this->scrollMaximum);
-    static_cast<UIScrollBar*>(this->scrollBar)->SetPosition(this->scrollPosition);
+    this->scrollBar->SetPosition(this->scrollPosition);
     this->scrollEnabled = this->scrollMaximum > 0;
     return 0;
   case UM_SCROLLVERTPAGEUP:
     this->scrollPosition = std::clamp(this->scrollStep + this->scrollPosition, 0, this->scrollMaximum);
-    static_cast<UIScrollBar*>(this->scrollBar)->SetPosition(this->scrollPosition);
+    this->scrollBar->SetPosition(this->scrollPosition);
     this->scrollEnabled = this->scrollMaximum > 0;
     return 0;
   case UM_SCROLLVERTPAGEDOWN:
     this->scrollPosition = std::clamp(this->scrollPosition - this->scrollStep, 0, this->scrollMaximum);
-    static_cast<UIScrollBar*>(this->scrollBar)->SetPosition(this->scrollPosition);
+    this->scrollBar->SetPosition(this->scrollPosition);
     this->scrollEnabled = this->scrollMaximum > 0;
     return 0;
   case UM_DEFPUSH:

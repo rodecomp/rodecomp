@@ -1,4 +1,5 @@
 #include "Contents/Skills/ClientSkills.h"
+#include "Contents/Actors/GameActor.h"
 #include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 #include "Client/Mode/ModeMgr.h"
@@ -814,13 +815,13 @@ int CSession::SkillLevel(int id) const {
 
 // OFFSET: 0x00E094E0
 // FUNCTION: fn_23778
-CRenderObject* CSession::FindGameActor(std::uint32_t aid) const {
+CGameActor* CSession::FindGameActor(std::uint32_t aid) const {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
   if (mode == nullptr) {
     return nullptr;
   }
 
-  return mode->scene->GetGameActorByAID(aid);
+  return static_cast<CGameActor*>(mode->scene->GetGameActorByAID(aid));
 }
 
 // OFFSET: 0x00E07AA0

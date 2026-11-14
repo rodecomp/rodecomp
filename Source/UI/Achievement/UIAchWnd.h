@@ -231,7 +231,7 @@ public:
   /* 007C */ int visibleCount;
   /* 0080 */ std::vector<UICustomGageBar*> gauges;
   /* 008C */ std::vector<std::pair<int, AchievementInfo>> recent;
-  /* 0098 */ UIWindow* buttons[2];
+  /* 0098 */ UITextButton* buttons[2];
 
   __declspec(noinline) void UpdateInfo();
 

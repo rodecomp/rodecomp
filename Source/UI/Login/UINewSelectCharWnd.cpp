@@ -523,8 +523,8 @@ void UINewSelectCharWnd::Paint() {
 
     if (info->deleteDate != 0) {
       Timestamp deleteDate(info->deleteDate);
-      if (slot == this->m_pageSlot && deleteDate.IsBeforeNow() == 1 && static_cast<UIButton*>(this->m_window100)->Disabled() == 1) {
-        static_cast<UIButton*>(this->m_window100)->Enable(1);
+      if (slot == this->m_pageSlot && deleteDate.IsBeforeNow() == 1 && this->m_window100->Disabled() == 1) {
+        this->m_window100->Enable(1);
       }
       this->m_charSlotInfos[slot].actionBase = 16;
       this->m_charSlotInfos[slot].action = 16;
@@ -538,11 +538,11 @@ void UINewSelectCharWnd::Paint() {
   if (selected && selected->deleteDate > 0) {
     Timestamp deleteDate(selected->deleteDate);
     if (deleteDate.IsBeforeNow() == 1) {
-      static_cast<UIButton*>(this->m_window100)->SetDisabled(0);
-      static_cast<UIButton*>(this->m_window100)->Invalidate();
+      this->m_window100->SetDisabled(0);
+      this->m_window100->Invalidate();
     } else {
-      static_cast<UIButton*>(this->m_window100)->SetDisabled(1);
-      static_cast<UIButton*>(this->m_window100)->Invalidate();
+      this->m_window100->SetDisabled(1);
+      this->m_window100->Invalidate();
     }
   }
 }
@@ -620,9 +620,9 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         g_modeMgr.gameMode->SendMsg(MM_COMMAND, 0x2712, 0, 0, 0);
         this->m_gameStartPending = true;
         if (this->m_windowFC != nullptr) {
-          static_cast<UIBitmapButton*>(this->m_windowFC)->SetBitmap("유저인터페이스\\select_character_ver3\\bt_gameStart_on.bmp", 0, 0);
-          static_cast<UIBitmapButton*>(this->m_windowFC)->SetBitmap("유저인터페이스\\select_character_ver3\\bt_gameStart_on.bmp", 1, 0);
-          static_cast<UIBitmapButton*>(this->m_windowFC)->SetBitmap("유저인터페이스\\select_character_ver3\\bt_gameStart_on.bmp", 2, 0);
+          this->m_windowFC->SetBitmap("유저인터페이스\\select_character_ver3\\bt_gameStart_on.bmp", 0, 0);
+          this->m_windowFC->SetBitmap("유저인터페이스\\select_character_ver3\\bt_gameStart_on.bmp", 1, 0);
+          this->m_windowFC->SetBitmap("유저인터페이스\\select_character_ver3\\bt_gameStart_on.bmp", 2, 0);
         }
       } else {
         this->SendMsg(nullptr, UM_COMMAND, ID_MAKE, this->m_pageSlot, 0, 0);
@@ -1107,11 +1107,11 @@ __declspec(noinline) void UINewSelectCharWnd::UpdateDeleteButtons() {
   }
 
   if (this->m_slotStatus[slot] == 1) {
-    UIButton* button = static_cast<UIButton*>(this->m_windowC0);
+    UIButton* button = this->m_windowC0;
     button->SetDisabled(1);
     button->Invalidate();
-    static_cast<UIButton*>(this->m_windowC4)->Enable(0);
-    static_cast<UIButton*>(this->m_window100)->Enable(0);
+    this->m_windowC4->Enable(0);
+    this->m_window100->Enable(0);
     return;
   }
 
@@ -1121,23 +1121,23 @@ __declspec(noinline) void UINewSelectCharWnd::UpdateDeleteButtons() {
   }
 
   if (info->deleteDate > 0) {
-    UIButton* button = static_cast<UIButton*>(this->m_windowC0);
+    UIButton* button = this->m_windowC0;
     button->SetDisabled(1);
     button->Invalidate();
-    static_cast<UIButton*>(this->m_window100)->Enable(1);
-    static_cast<UIButton*>(this->m_windowC4)->Enable(1);
+    this->m_window100->Enable(1);
+    this->m_windowC4->Enable(1);
     Timestamp deleteDate(info->deleteDate);
     if (deleteDate.IsBeforeNow() == 1) {
-      static_cast<UIButton*>(this->m_window100)->Enable(1);
+      this->m_window100->Enable(1);
     } else {
-      static_cast<UIButton*>(this->m_window100)->Enable(0);
+      this->m_window100->Enable(0);
     }
   } else {
-    UIButton* button = static_cast<UIButton*>(this->m_windowC0);
+    UIButton* button = this->m_windowC0;
     button->SetDisabled(0);
     button->Invalidate();
-    static_cast<UIButton*>(this->m_window100)->Enable(0);
-    static_cast<UIButton*>(this->m_windowC4)->Enable(0);
+    this->m_window100->Enable(0);
+    this->m_windowC4->Enable(0);
   }
 }
 
@@ -1189,7 +1189,7 @@ void UINewSelectCharWnd::UpdateCharacterInfo() {
     }
   }
 
-  auto* button = static_cast<UIButton*>(this->m_windowFC);
+  auto* button = this->m_windowFC;
   if (this->m_slotStatus[current] == 1) {
     button->SetDisabled(1);
     button->Invalidate();

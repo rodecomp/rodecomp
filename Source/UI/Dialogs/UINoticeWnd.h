@@ -3,6 +3,8 @@
 
 #include "UI/Window/UIFrameWnd.h"
 
+class UIScrollBar;
+
 class UINoticeWnd : public UIFrameWnd {
 public:
   UINoticeWnd();
@@ -25,7 +27,7 @@ public:
   /* 011C */ int m_scrollPositions[10];
   /* 0144 */ int m_bottomPositions[10];
   /* 016C */ int m_scroll;
-  /* 0170 */ UIWindow* m_scrollBar;
+  /* 0170 */ UIScrollBar* m_scrollBar;
 };
 
 #endif

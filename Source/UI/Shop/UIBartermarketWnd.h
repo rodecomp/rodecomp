@@ -60,7 +60,7 @@ public:
   int GetEntryIndexAt(int x, int y);
 
   /* 00B4 */ std::list<BarterMarketEntry> entries;
-  /* 00BC */ UIWindow* resizer;
+  /* 00BC */ UIResizer* resizer;
   /* 00C0 */ UIScrollBar* scrollBar;
   /* 00C4 */ int firstRow;
   /* 00C8 */ int rowCount;

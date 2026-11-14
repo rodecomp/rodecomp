@@ -10,6 +10,9 @@
 
 class UIBitmapButton;
 class UIButton;
+class UICheckBox;
+class UIEditCtrl;
+class UIRadioBtn;
 class UIScrollBar;
 class UITextButton;
 
@@ -73,18 +76,18 @@ public:
   /* 00C8 */ int scrollBarWidth;
   /* 00CC */ int m_firstRow;
   /* 00D0 */ int m_visibleRows;
-  /* 00D4 */ UIWindow* activeCheckBox;
-  /* 00D8 */ UIButton* m_reportButton;
-  /* 00DC */ UIWindow* m_tabs[4];
+  /* 00D4 */ UICheckBox* activeCheckBox;
+  /* 00D8 */ UIBitmapButton* m_reportButton;
+  /* 00DC */ UIRadioBtn* m_tabs[4];
   /* 00EC */ int m_mode;
-  /* 00F0 */ UIWindow* m_edit;
+  /* 00F0 */ UIEditCtrl* m_edit;
   /* 00F4 */ int reportCount;
   /* 00F8 */ int maxReportCount;
   /* 00FC */ MacroReporterState* m_state;
   /* 0100 */ std::vector<MacroReporterEntry> m_entries;
   /* 010C */ bool activeOnly;
   /* 0110 */ std::vector<UIButton*> m_removedRows;
-  /* 011C */ UIWindow* m_fields[10];
+  /* 011C */ UIEditCtrl* m_fields[10];
   /* 0144 */ std::string m_names[10];
   /* 0234 */ std::string m_target;
   /* 024C */ bool m_namesValid;

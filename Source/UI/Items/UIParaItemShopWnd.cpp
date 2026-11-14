@@ -239,14 +239,14 @@ void UIParaResultWnd::OnCreate(int width, int height) {
 
   this->resizer = new UIResizer();
   this->resizer->SetSize(16, 16);
-  static_cast<UIResizer*>(this->resizer)->SetDirection(7);
-  static_cast<UIResizer*>(this->resizer)->SetBitmapName("유저인터페이스\\btn_resize.bmp");
+  this->resizer->SetDirection(7);
+  this->resizer->SetBitmapName("유저인터페이스\\btn_resize.bmp");
   this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
-  static_cast<UIResizer*>(this->resizer)->SetColors(0xFFFF00FF, 0xFFFF00FF);
+  this->resizer->SetColors(0xFFFF00FF, 0xFFFF00FF);
   this->AddChild(this->resizer);
 
   this->scrollBar = new UIScrollBar();
-  static_cast<UIScrollBar*>(this->scrollBar)->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - this->headerHeight - this->footerHeight - 17);
+  this->scrollBar->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - this->headerHeight - this->footerHeight - 17);
   this->AddChild(this->scrollBar);
 
   {
@@ -254,10 +254,10 @@ void UIParaResultWnd::OnCreate(int width, int height) {
     const int x = this->geometry.width - 61;
     const int y = this->geometry.height - 24;
     this->buttons[0] = new UIBitmapButton();
-    static_cast<UIBitmapButton*>(this->buttons[0])->SetBitmap((prefix + "btn_ok.bmp").c_str(), 0, 0);
-    static_cast<UIBitmapButton*>(this->buttons[0])->SetBitmap((prefix + "btn_ok_a.bmp").c_str(), 1, 0);
-    static_cast<UIBitmapButton*>(this->buttons[0])->SetBitmap((prefix + "btn_ok_b.bmp").c_str(), 2, 0);
-    this->buttons[0]->SetSize(static_cast<UIBitmapButton*>(this->buttons[0])->BitmapWidth(), static_cast<UIBitmapButton*>(this->buttons[0])->BitmapHeight());
+    this->buttons[0]->SetBitmap((prefix + "btn_ok.bmp").c_str(), 0, 0);
+    this->buttons[0]->SetBitmap((prefix + "btn_ok_a.bmp").c_str(), 1, 0);
+    this->buttons[0]->SetBitmap((prefix + "btn_ok_b.bmp").c_str(), 2, 0);
+    this->buttons[0]->SetSize(this->buttons[0]->BitmapWidth(), this->buttons[0]->BitmapHeight());
     this->buttons[0]->Move(x, y);
     this->buttons[0]->SetId(184);
     this->AddChild(this->buttons[0]);

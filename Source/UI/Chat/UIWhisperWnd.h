@@ -13,6 +13,9 @@ class UIChatEditCtrl;
 class UIChatHisBox;
 class UIResizer;
 
+class UIChatHisBox2;
+struct WhisperWndInfo;
+
 class UIWhisperWnd : public UIFrameWnd {
 public:
   UIWhisperWnd();
@@ -21,10 +24,10 @@ public:
   /* 00CC */ std::string m_name;
   /* 00E4 */ UIResizer* m_resizer;
   /* 00E8 */ UIChatEditCtrl* m_edit;
-  /* 00EC */ UIChatHisBox* m_chatHistory;
+  /* 00EC */ UIChatHisBox2* m_chatHistory;
   /* 00F0 */ UIBitmapButton* m_closeButton;
   /* 00F4 */ std::vector<MiniPartyInfoEntry> m_log;
-  /* 0100 */ WindowPlacement* placement;
+  /* 0100 */ WhisperWndInfo* placement;
   /* 0104 */ std::string m_code;
 
   void Move(int x, int y) override;

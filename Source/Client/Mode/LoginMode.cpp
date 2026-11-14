@@ -1000,7 +1000,7 @@ void CLoginMode::SubD97780(int value) {
     if (g_serviceType == ServiceThai || g_serviceType == ServicePhilippine) {
       if (static_cast<int>(timeGetTime()) > this->otpStarted + 0x3A98) {
         if (this->waitWnd == nullptr) {
-          this->waitWnd = g_windowMgr.EnsureWindow(WID_WAITWND);
+          this->waitWnd = static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND));
           if (this->waitWnd == nullptr) {
             break;
           }
@@ -2913,8 +2913,8 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
       StringFormat(packet->code, 10, static_cast<std::size_t>(-1), this->m_authCode);
       packet->length = 14;
       GetRagConnection().Send(packet->length, buffer);
-      this->waitWnd = g_windowMgr.EnsureWindow(WID_WAITWND);
-      static_cast<UIWaitWnd*>(this->waitWnd)->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
+      this->waitWnd = static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND));
+      this->waitWnd->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
       _freea(buffer);
     }
     return 0;
@@ -2984,8 +2984,8 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     packet.id = ID_CT_MOTP;
     memcpy_s(packet.code, sizeof(packet.code), this->m_authCode, sizeof(packet.code));
     GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
-    this->waitWnd = g_windowMgr.EnsureWindow(WID_WAITWND);
-    static_cast<UIWaitWnd*>(this->waitWnd)->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
+    this->waitWnd = static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND));
+    this->waitWnd->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
     return 0;
   }
   case LMM_CONNECT_TO_ACSVR:
@@ -3596,8 +3596,8 @@ void CLoginMode::OnChangeState(int value) {
     StringFormat(packet.extra, sizeof(packet.extra), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s", 0x39A39F87DD5F535BULL), reinterpret_cast<const char*>(this->loginExtra));
     GetRagConnection().Send(sizeof(packet), &packet);
     this->otpStarted = timeGetTime();
-    this->waitWnd = g_windowMgr.EnsureWindow(WID_WAITWND);
-    static_cast<UIWaitWnd*>(this->waitWnd)->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
+    this->waitWnd = static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND));
+    this->waitWnd->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
     break;
   }
   case 2:

@@ -9,6 +9,8 @@
 
 struct WindowPlacement;
 
+struct ItemParamChangeDisplayWndInfo;
+
 class UIItemParamChangeDisplayWnd : public UIFrameWnd {
 public:
   UIItemParamChangeDisplayWnd();
@@ -23,7 +25,7 @@ public:
   /* 00D0 */ int equippedSecondParam;
   /* 00D4 */ std::string m_label;
   /* 00EC */ int itemIndex;
-  /* 00F0 */ WindowPlacement* m_placement;
+  /* 00F0 */ ItemParamChangeDisplayWndInfo* m_placement;
 
   void StoreInfo() override;
   void OnCreate(int width, int height) override;

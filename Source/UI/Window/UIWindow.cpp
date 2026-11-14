@@ -2236,44 +2236,44 @@ void UIListBox_NaviSearch::Paint() {
 // FUNCTION: fn_03581
 void UINavigationV4Wnd::OnCreate(int, int) {
   this->expandedCloseButton = new UIBitmapButton();
-  static_cast<UIBitmapButton*>(this->expandedCloseButton)->SetBitmap("유저인터페이스\\navigation_interface3\\btn_close_normal.bmp", 0, 0);
-  static_cast<UIBitmapButton*>(this->expandedCloseButton)->SetBitmap("유저인터페이스\\navigation_interface3\\btn_close_over.bmp", 1, 0);
-  static_cast<UIBitmapButton*>(this->expandedCloseButton)->SetBitmap("유저인터페이스\\navigation_interface3\\btn_close_press.bmp", 2, 0);
-  this->expandedCloseButton->SetSize(static_cast<UIBitmapButton*>(this->expandedCloseButton)->BitmapWidth(), static_cast<UIBitmapButton*>(this->expandedCloseButton)->BitmapHeight());
+  this->expandedCloseButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_close_normal.bmp", 0, 0);
+  this->expandedCloseButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_close_over.bmp", 1, 0);
+  this->expandedCloseButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_close_press.bmp", 2, 0);
+  this->expandedCloseButton->SetSize(this->expandedCloseButton->BitmapWidth(), this->expandedCloseButton->BitmapHeight());
   this->expandedCloseButton->SetId(ID_CLOSE);
-  static_cast<UIBitmapButton*>(this->expandedCloseButton)->SetTooltip(LookupMessage(MSI_ZENY_LOTTO_BUY_10));
+  this->expandedCloseButton->SetTooltip(LookupMessage(MSI_ZENY_LOTTO_BUY_10));
   this->AddChild(this->expandedCloseButton);
 
   this->maximizeButton = new UIBitmapButton();
-  static_cast<UIBitmapButton*>(this->maximizeButton)->SetBitmap("유저인터페이스\\navigation_interface3\\btn_maximize_normal.bmp", 0, 0);
-  static_cast<UIBitmapButton*>(this->maximizeButton)->SetBitmap("유저인터페이스\\navigation_interface3\\btn_maximize_over.bmp", 1, 0);
-  static_cast<UIBitmapButton*>(this->maximizeButton)->SetBitmap("유저인터페이스\\navigation_interface3\\btn_maximize_press.bmp", 2, 0);
-  this->maximizeButton->SetSize(static_cast<UIBitmapButton*>(this->maximizeButton)->BitmapWidth(), static_cast<UIBitmapButton*>(this->maximizeButton)->BitmapHeight());
+  this->maximizeButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_maximize_normal.bmp", 0, 0);
+  this->maximizeButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_maximize_over.bmp", 1, 0);
+  this->maximizeButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_maximize_press.bmp", 2, 0);
+  this->maximizeButton->SetSize(this->maximizeButton->BitmapWidth(), this->maximizeButton->BitmapHeight());
   this->maximizeButton->SetId(ID_BASE);
-  static_cast<UIBitmapButton*>(this->maximizeButton)->SetTooltip(LookupMessage(MSI_NAVIGATION_ALL));
+  this->maximizeButton->SetTooltip(LookupMessage(MSI_NAVIGATION_ALL));
   this->AddChild(this->maximizeButton);
 
   this->minimizeCheck = new UICheckBox();
   this->minimizeCheck->SetSize(110, 12);
-  static_cast<UICheckBox*>(this->minimizeCheck)->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", "Minimize");
-  static_cast<UICheckBox*>(this->minimizeCheck)->SetChecked(0);
-  static_cast<UICheckBox*>(this->minimizeCheck)->SetTooltip(LookupMessage(MSI_NAVIGATION_MAP));
+  this->minimizeCheck->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", "Minimize");
+  this->minimizeCheck->SetChecked(0);
+  this->minimizeCheck->SetTooltip(LookupMessage(MSI_NAVIGATION_MAP));
   this->AddChild(this->minimizeCheck);
 
   this->roadIconButton = new UIBitmapButton();
   this->SetRoadIcon(g_navigationManager.viewIcon);
-  this->roadIconButton->SetSize(static_cast<UIBitmapButton*>(this->roadIconButton)->BitmapWidth(), static_cast<UIBitmapButton*>(this->roadIconButton)->BitmapHeight());
+  this->roadIconButton->SetSize(this->roadIconButton->BitmapWidth(), this->roadIconButton->BitmapHeight());
   this->roadIconButton->SetId(ID_BUTTON1);
-  static_cast<UIBitmapButton*>(this->roadIconButton)->SetTooltip(LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_NOTACTIVATED));
+  this->roadIconButton->SetTooltip(LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_NOTACTIVATED));
   this->AddChild(this->roadIconButton);
 
   this->roadListButton = new UIBitmapButton();
-  static_cast<UIBitmapButton*>(this->roadListButton)->SetBitmap("유저인터페이스\\navigation_interface3\\btn_roadlistwnd_normal.bmp", 0, 0);
-  static_cast<UIBitmapButton*>(this->roadListButton)->SetBitmap("유저인터페이스\\navigation_interface3\\btn_roadlistwnd_over.bmp", 1, 0);
-  static_cast<UIBitmapButton*>(this->roadListButton)->SetBitmap("유저인터페이스\\navigation_interface3\\btn_roadlistwnd_press.bmp", 2, 0);
-  this->roadListButton->SetSize(static_cast<UIBitmapButton*>(this->roadListButton)->BitmapWidth(), static_cast<UIBitmapButton*>(this->roadListButton)->BitmapHeight());
+  this->roadListButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_roadlistwnd_normal.bmp", 0, 0);
+  this->roadListButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_roadlistwnd_over.bmp", 1, 0);
+  this->roadListButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_roadlistwnd_press.bmp", 2, 0);
+  this->roadListButton->SetSize(this->roadListButton->BitmapWidth(), this->roadListButton->BitmapHeight());
   this->roadListButton->SetId(NAVI_BUTTON_ROAD_LIST);
-  static_cast<UIBitmapButton*>(this->roadListButton)->SetTooltip(LookupMessage(MSI_NAVIGATION_SEARCHTORUITE));
+  this->roadListButton->SetTooltip(LookupMessage(MSI_NAVIGATION_SEARCHTORUITE));
   this->AddChild(this->roadListButton);
 
   this->roadList = new UIListBox_NaviSearch();
@@ -2294,35 +2294,35 @@ void UINavigationV4Wnd::OnCreate(int, int) {
 
   this->filterCheck = new UICheckBox();
   this->filterCheck->SetSize(110, 12);
-  static_cast<UICheckBox*>(this->filterCheck)->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", "service");
+  this->filterCheck->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", "service");
   this->filterCheck->SetId(ID_CHECK);
-  static_cast<UICheckBox*>(this->filterCheck)->SetChecked(g_navigationManager.allowGates);
-  static_cast<UICheckBox*>(this->filterCheck)->SetTooltip(LookupMessage(MSI_NAVIGATION_V4_HELP));
+  this->filterCheck->SetChecked(g_navigationManager.allowGates);
+  this->filterCheck->SetTooltip(LookupMessage(MSI_NAVIGATION_V4_HELP));
   this->AddChild(this->filterCheck);
 
   this->shareButton = new UIBitmapButton();
-  static_cast<UIBitmapButton*>(this->shareButton)->SetBitmap("유저인터페이스\\private_airplane\\btn_share_normal.bmp", 0, 0);
-  static_cast<UIBitmapButton*>(this->shareButton)->SetBitmap("유저인터페이스\\private_airplane\\btn_share_over.bmp", 1, 0);
-  static_cast<UIBitmapButton*>(this->shareButton)->SetBitmap("유저인터페이스\\private_airplane\\btn_share_press.bmp", 2, 0);
-  this->shareButton->SetSize(static_cast<UIBitmapButton*>(this->shareButton)->BitmapWidth(), static_cast<UIBitmapButton*>(this->shareButton)->BitmapHeight());
+  this->shareButton->SetBitmap("유저인터페이스\\private_airplane\\btn_share_normal.bmp", 0, 0);
+  this->shareButton->SetBitmap("유저인터페이스\\private_airplane\\btn_share_over.bmp", 1, 0);
+  this->shareButton->SetBitmap("유저인터페이스\\private_airplane\\btn_share_press.bmp", 2, 0);
+  this->shareButton->SetSize(this->shareButton->BitmapWidth(), this->shareButton->BitmapHeight());
   this->shareButton->SetId(ID_PREVIEW);
-  static_cast<UIBitmapButton*>(this->shareButton)->SetTooltip(LookupMessage(MSI_NAVIGATION_SHARE_DESC));
+  this->shareButton->SetTooltip(LookupMessage(MSI_NAVIGATION_SHARE_DESC));
   this->AddChild(this->shareButton);
 
   this->findButton = new UIBitmapButton();
-  static_cast<UIBitmapButton*>(this->findButton)->SetBitmap("유저인터페이스\\private_airplane\\btn_find_normal.bmp", 0, 0);
-  static_cast<UIBitmapButton*>(this->findButton)->SetBitmap("유저인터페이스\\private_airplane\\btn_find_over.bmp", 1, 0);
-  static_cast<UIBitmapButton*>(this->findButton)->SetBitmap("유저인터페이스\\private_airplane\\btn_find_press.bmp", 2, 0);
-  this->findButton->SetSize(static_cast<UIBitmapButton*>(this->findButton)->BitmapWidth(), static_cast<UIBitmapButton*>(this->findButton)->BitmapHeight());
+  this->findButton->SetBitmap("유저인터페이스\\private_airplane\\btn_find_normal.bmp", 0, 0);
+  this->findButton->SetBitmap("유저인터페이스\\private_airplane\\btn_find_over.bmp", 1, 0);
+  this->findButton->SetBitmap("유저인터페이스\\private_airplane\\btn_find_press.bmp", 2, 0);
+  this->findButton->SetSize(this->findButton->BitmapWidth(), this->findButton->BitmapHeight());
   this->findButton->SetId(NAVI_BUTTON_FIND);
-  static_cast<UIBitmapButton*>(this->findButton)->SetTooltip(LookupMessage(MSI_NAVIGATION_VIEWCHANGE));
+  this->findButton->SetTooltip(LookupMessage(MSI_NAVIGATION_VIEWCHANGE));
   this->AddChild(this->findButton);
 
   this->moveButton = new UIBitmapButton();
-  static_cast<UIBitmapButton*>(this->moveButton)->SetBitmap("유저인터페이스\\private_airplane\\btn_move_normal.bmp", 0, 0);
-  static_cast<UIBitmapButton*>(this->moveButton)->SetBitmap("유저인터페이스\\private_airplane\\btn_move_over.bmp", 1, 0);
-  static_cast<UIBitmapButton*>(this->moveButton)->SetBitmap("유저인터페이스\\private_airplane\\btn_move_press.bmp", 2, 0);
-  this->moveButton->SetSize(static_cast<UIBitmapButton*>(this->moveButton)->BitmapWidth(), static_cast<UIBitmapButton*>(this->moveButton)->BitmapHeight());
+  this->moveButton->SetBitmap("유저인터페이스\\private_airplane\\btn_move_normal.bmp", 0, 0);
+  this->moveButton->SetBitmap("유저인터페이스\\private_airplane\\btn_move_over.bmp", 1, 0);
+  this->moveButton->SetBitmap("유저인터페이스\\private_airplane\\btn_move_press.bmp", 2, 0);
+  this->moveButton->SetSize(this->moveButton->BitmapWidth(), this->moveButton->BitmapHeight());
   this->moveButton->SetId(NAVI_BUTTON_PRIVATE_AIRPLANE);
   this->AddChild(this->moveButton);
 
@@ -2336,61 +2336,61 @@ void UINavigationV4Wnd::OnCreate(int, int) {
   this->minimizeButton = this->AddMinimizeButton(LookupMessage(MSI_NAVIGATION_MAP), 0);
 
   this->helpButton = new UIBitmapButton();
-  static_cast<UIBitmapButton*>(this->helpButton)->SetBitmap("유저인터페이스\\navigation_interface\\NaviHelp_off.bmp", 0, 0);
-  static_cast<UIBitmapButton*>(this->helpButton)->SetBitmap("유저인터페이스\\navigation_interface\\NaviHelp_on.bmp", 1, 0);
-  static_cast<UIBitmapButton*>(this->helpButton)->SetBitmap("유저인터페이스\\navigation_interface\\NaviHelp_on.bmp", 2, 0);
-  this->helpButton->SetSize(static_cast<UIBitmapButton*>(this->helpButton)->BitmapWidth(), static_cast<UIBitmapButton*>(this->helpButton)->BitmapHeight());
+  this->helpButton->SetBitmap("유저인터페이스\\navigation_interface\\NaviHelp_off.bmp", 0, 0);
+  this->helpButton->SetBitmap("유저인터페이스\\navigation_interface\\NaviHelp_on.bmp", 1, 0);
+  this->helpButton->SetBitmap("유저인터페이스\\navigation_interface\\NaviHelp_on.bmp", 2, 0);
+  this->helpButton->SetSize(this->helpButton->BitmapWidth(), this->helpButton->BitmapHeight());
   this->helpButton->SetId(ID_HELP);
-  static_cast<UIBitmapButton*>(this->helpButton)->SetTooltip(LookupMessage(MSI_NAVIGATION_NPC));
+  this->helpButton->SetTooltip(LookupMessage(MSI_NAVIGATION_NPC));
   this->AddChild(this->helpButton);
 
   this->dataButton = new UIBitmapButton();
-  static_cast<UIBitmapButton*>(this->dataButton)->SetBitmap("유저인터페이스\\navigation_interface3\\btn_Navidata_Open_normal.bmp", 0, 0);
-  static_cast<UIBitmapButton*>(this->dataButton)->SetBitmap("유저인터페이스\\navigation_interface3\\btn_Navidata_Open_over.bmp", 1, 0);
-  static_cast<UIBitmapButton*>(this->dataButton)->SetBitmap("유저인터페이스\\navigation_interface3\\btn_Navidata_Open_press.bmp", 2, 0);
-  this->dataButton->SetSize(static_cast<UIBitmapButton*>(this->dataButton)->BitmapWidth(), static_cast<UIBitmapButton*>(this->dataButton)->BitmapHeight());
+  this->dataButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_Navidata_Open_normal.bmp", 0, 0);
+  this->dataButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_Navidata_Open_over.bmp", 1, 0);
+  this->dataButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_Navidata_Open_press.bmp", 2, 0);
+  this->dataButton->SetSize(this->dataButton->BitmapWidth(), this->dataButton->BitmapHeight());
   this->dataButton->SetId(NAVI_BUTTON_DATA);
-  static_cast<UIBitmapButton*>(this->dataButton)->SetTooltip(LookupMessage(MSI_NAVIGATION_MINI));
+  this->dataButton->SetTooltip(LookupMessage(MSI_NAVIGATION_MINI));
   this->AddChild(this->dataButton);
 
   this->searchEdit = new UIBitmapEditCtrl;
   this->searchEdit->SetSize(113, 18);
-  static_cast<UIBitmapEditCtrl*>(this->searchEdit)->maximum = 30;
-  static_cast<UIBitmapEditCtrl*>(this->searchEdit)->SetBitmapName("유저인터페이스\\navigation_interface3\\bg_search.bmp");
+  this->searchEdit->maximum = 30;
+  this->searchEdit->SetBitmapName("유저인터페이스\\navigation_interface3\\bg_search.bmp");
   this->searchEdit->SetId(NAVI_SEARCH_EDIT);
   this->AddChild(this->searchEdit);
 
   this->searchButton = new UIBitmapButton();
-  static_cast<UIBitmapButton*>(this->searchButton)->SetBitmap("유저인터페이스\\navigation_interface3\\btn_searchbar_normal.bmp", 3, 0);
-  static_cast<UIBitmapButton*>(this->searchButton)->SetBitmap("유저인터페이스\\navigation_interface3\\btn_searchbar_normal.bmp", 0, 0);
-  static_cast<UIBitmapButton*>(this->searchButton)->SetBitmap("유저인터페이스\\navigation_interface3\\btn_searchbar_over.bmp", 1, 0);
-  static_cast<UIBitmapButton*>(this->searchButton)->SetBitmap("유저인터페이스\\navigation_interface3\\btn_searchbar_press.bmp", 2, 0);
-  this->searchButton->SetSize(static_cast<UIBitmapButton*>(this->searchButton)->BitmapWidth(), static_cast<UIBitmapButton*>(this->searchButton)->BitmapHeight());
+  this->searchButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_searchbar_normal.bmp", 3, 0);
+  this->searchButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_searchbar_normal.bmp", 0, 0);
+  this->searchButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_searchbar_over.bmp", 1, 0);
+  this->searchButton->SetBitmap("유저인터페이스\\navigation_interface3\\btn_searchbar_press.bmp", 2, 0);
+  this->searchButton->SetSize(this->searchButton->BitmapWidth(), this->searchButton->BitmapHeight());
   this->searchButton->SetId(ID_SEARCH);
-  static_cast<UIBitmapButton*>(this->searchButton)->SetTooltip(LookupMessage(MSI_NAVIGATION_SEARCHINFO));
+  this->searchButton->SetTooltip(LookupMessage(MSI_NAVIGATION_SEARCHINFO));
   this->AddChild(this->searchButton);
 
   this->backButton = new UIBitmapButton();
-  static_cast<UIBitmapButton*>(this->backButton)->SetBitmap("유저인터페이스\\navigation_interface3\\bt_back.bmp", 3, 0);
-  static_cast<UIBitmapButton*>(this->backButton)->SetBitmap("유저인터페이스\\navigation_interface3\\bt_back.bmp", 0, 0);
-  static_cast<UIBitmapButton*>(this->backButton)->SetBitmap("유저인터페이스\\navigation_interface3\\bt_back_on.bmp", 1, 0);
-  static_cast<UIBitmapButton*>(this->backButton)->SetBitmap("유저인터페이스\\navigation_interface3\\bt_back_on.bmp", 2, 0);
-  this->backButton->SetSize(static_cast<UIBitmapButton*>(this->backButton)->BitmapWidth(), static_cast<UIBitmapButton*>(this->backButton)->BitmapHeight());
+  this->backButton->SetBitmap("유저인터페이스\\navigation_interface3\\bt_back.bmp", 3, 0);
+  this->backButton->SetBitmap("유저인터페이스\\navigation_interface3\\bt_back.bmp", 0, 0);
+  this->backButton->SetBitmap("유저인터페이스\\navigation_interface3\\bt_back_on.bmp", 1, 0);
+  this->backButton->SetBitmap("유저인터페이스\\navigation_interface3\\bt_back_on.bmp", 2, 0);
+  this->backButton->SetSize(this->backButton->BitmapWidth(), this->backButton->BitmapHeight());
   this->backButton->SetId(ID_CHARGE);
-  static_cast<UIBitmapButton*>(this->backButton)->SetTooltip(LookupMessage(MSI_NAVIGATION_ICONTIP));
+  this->backButton->SetTooltip(LookupMessage(MSI_NAVIGATION_ICONTIP));
   this->AddChild(this->backButton);
 
   this->searchType = new UIComboBox_BmpWnd();
-  static_cast<UIComboBox_BmpWnd*>(this->searchType)->dropdownHeight = 67;
-  static_cast<UIComboBox_BmpWnd*>(this->searchType)->Create(61, 18, "유저인터페이스\\navigation_interface3\\dropdown_on", "유저인터페이스\\navigation_interface3\\bg_combo.bmp");
-  static_cast<UIComboBox_BmpWnd*>(this->searchType)->SetBorderColor(100, 100, 100);
-  static_cast<UIComboBox_BmpWnd*>(this->searchType)->SetColor(232, 232, 232);
+  this->searchType->dropdownHeight = 67;
+  this->searchType->Create(61, 18, "유저인터페이스\\navigation_interface3\\dropdown_on", "유저인터페이스\\navigation_interface3\\bg_combo.bmp");
+  this->searchType->SetBorderColor(100, 100, 100);
+  this->searchType->SetColor(232, 232, 232);
   this->AddChild(this->searchType);
-  static_cast<UIComboBox_BmpWnd*>(this->searchType)->AddOption(LookupMessage(MSI_NAVIGATION_MOB), 0);
-  static_cast<UIComboBox_BmpWnd*>(this->searchType)->AddOption(LookupMessage(MSI_NAVIGATION_SETSTRING), 0);
-  static_cast<UIComboBox_BmpWnd*>(this->searchType)->AddOption(LookupMessage(MSI_NAVIGATION_SCROLL), 0);
-  static_cast<UIComboBox_BmpWnd*>(this->searchType)->AddOption(LookupMessage(MSI_NAVIGATION_USESCROLL), 0);
-  static_cast<UIComboBox_BmpWnd*>(this->searchType)->Select(g_navigationManager.searchType);
+  this->searchType->AddOption(LookupMessage(MSI_NAVIGATION_MOB), 0);
+  this->searchType->AddOption(LookupMessage(MSI_NAVIGATION_SETSTRING), 0);
+  this->searchType->AddOption(LookupMessage(MSI_NAVIGATION_SCROLL), 0);
+  this->searchType->AddOption(LookupMessage(MSI_NAVIGATION_USESCROLL), 0);
+  this->searchType->Select(g_navigationManager.searchType);
 
   this->RefreshLayout();
 }
@@ -2609,8 +2609,8 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
       break;
     }
     case ID_SEARCH:
-      if (static_cast<UIEditCtrl*>(this->searchEdit)->Length() != 0 && !g_navigationManager.expandedMap) {
-        g_navigationManager.searchText = static_cast<UIEditCtrl*>(this->searchEdit)->Text();
+      if (this->searchEdit->Length() != 0 && !g_navigationManager.expandedMap) {
+        g_navigationManager.searchText = this->searchEdit->Text();
         g_navigationManager.UpdateSearchResults();
         this->searchList->Clear();
         this->searchList->Invalidate();
@@ -2849,7 +2849,7 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
     break;
 
   case UM_DEFPUSH:
-    if (sender == this->searchEdit && static_cast<UIEditCtrl*>(this->searchEdit)->Length() > 0) {
+    if (sender == this->searchEdit && this->searchEdit->Length() > 0) {
       this->SendMsg(this->searchEdit, UM_COMMAND, ID_SEARCH, 0, 0, 0);
     }
     break;
@@ -3493,9 +3493,9 @@ void UINavigationV4Wnd::SetRoadIcon(int slot) {
   std::sprintf(over, "유저인터페이스\\navigation_interface3\\btn_roadIocn_select%d_over.bmp", slot);
   std::sprintf(press, "유저인터페이스\\navigation_interface3\\btn_roadIocn_select%d_press.bmp", slot);
 
-  static_cast<UIBitmapButton*>(this->roadIconButton)->SetBitmap(normal, 0, 0);
-  static_cast<UIBitmapButton*>(this->roadIconButton)->SetBitmap(over, 1, 0);
-  static_cast<UIBitmapButton*>(this->roadIconButton)->SetBitmap(press, 2, 0);
+  this->roadIconButton->SetBitmap(normal, 0, 0);
+  this->roadIconButton->SetBitmap(over, 1, 0);
+  this->roadIconButton->SetBitmap(press, 2, 0);
   this->roadIconButton->Invalidate();
   g_navigationManager.BuildGridLabels();
 }

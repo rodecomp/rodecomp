@@ -39,7 +39,7 @@ ITEM_INFO CSession::GetEquippedItemAt(int index) const {
 // OFFSET: 0x00E3D290
 // FUNCTION: fn_24184
 __declspec(noinline) unsigned char CSession::IsAllyActor(std::uint32_t aid, int job) {
-  CGameActor* actor = static_cast<CGameActor*>(this->FindGameActor(aid));
+  CGameActor* actor = this->FindGameActor(aid);
   if (actor) {
     switch (actor->objectType) {
     case NPC_TYPE:

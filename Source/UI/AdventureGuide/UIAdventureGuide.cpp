@@ -1196,7 +1196,7 @@ void CUIQuestInfo::OnCreate(int width, int height) {
   this->stampImage->SetSize(85, 70);
   this->stampImage->Move(250, 10);
   {
-    CUIStaticImage* stamp = static_cast<CUIStaticImage*>(this->stampImage);
+    CUIStaticImage* stamp = this->stampImage;
     stamp->SetImage(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\stamp_completed.bmp", 0xF14F79170939C7F1ULL)));
   }
   this->AddChild(this->stampImage);

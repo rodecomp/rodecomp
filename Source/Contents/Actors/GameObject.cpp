@@ -315,7 +315,7 @@ void CRenderObject::DrawSprite(int argument, bool seasonal, float offset) {
     SpriteQuad quad;
     tagRECT box;
     std::uint32_t color;
-    if (!static_cast<CGameActor*>(this)->PrepareSprite(
+    if (!this->PrepareSprite(
           index, index, distanceScale, cell, x, y, position, scale, &bottomRhw, &topRhw, image, &quad, &box, &color, 0, 0, 0
         )) {
       continue;
@@ -3131,9 +3131,9 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
       }
       if (this->hpGaugeWindow) {
         if (on) {
-          static_cast<UIMonsterGage*>(this->hpGaugeWindow)->SetMode(0);
+          this->hpGaugeWindow->SetMode(0);
         } else {
-          static_cast<UIMonsterGage*>(this->hpGaugeWindow)->SetMode(1);
+          this->hpGaugeWindow->SetMode(1);
         }
       }
       break;

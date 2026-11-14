@@ -12,10 +12,12 @@
 
 class BinkMovies;
 class CItem;
+class CGameActor;
 class CGameMode;
 class CGameObject;
 class CPlayer;
 class CRenderObject;
+class CSkill;
 class GroundGeometry;
 
 struct CellFloatPos {
@@ -46,10 +48,10 @@ public:
   bool RemoveItem(std::uint32_t aid);
   bool FindActorInCell(const float* position, std::function<bool(std::uint32_t)> predicate) const;
   CRenderObject* GetGameActorByAID(std::uint32_t aid) const;
-  CRenderObject* GetGameActorByAidIncludeMe(std::uint32_t aid) const;
+  CGameActor* GetGameActorByAidIncludeMe(std::uint32_t aid) const;
   __declspec(noinline) CRenderObject* GetSkillByAID(std::uint32_t aid) const;
   CItem* GetItemByAID(std::uint32_t aid) const;
-  CRenderObject* GetActorByGID(int gid) const;
+  CGameActor* GetActorByGID(int gid) const;
   void RemovePcPos(std::uint32_t aid, bool notify);
   void RemovePcPosForMove(std::uint32_t aid, bool notify);
   void ClearActorCells();
@@ -74,7 +76,7 @@ public:
   /* 0004 */ CGameMode* gameMode;
   /* 0008 */ std::list<CGameObject*> objects;
   /* 0010 */ std::list<CRenderObject*> actors;
-  /* 0018 */ std::list<CRenderObject*> items;
+  /* 0018 */ std::list<CItem*> items;
   /* 0020 */ std::list<CRenderObject*> skills;
   /* 0028 */ GroundGeometry* ground;
   /* 002C */ CPlayer* player;

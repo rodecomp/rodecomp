@@ -6,6 +6,8 @@
 #include <cstddef>
 #include <string>
 
+class CGameActor;
+
 extern bool g_msgEffectShowSpecial;
 
 class CMsgEffect : public EffectActor {
@@ -21,7 +23,7 @@ public:
 
   /* 0158 */ bool m_visible;
   /* 0159 */ unsigned char padding_0159[0x03];
-  /* 015C */ CGameObject* m_owner;
+  /* 015C */ CGameActor* m_owner;
   /* 0160 */ vector3d m_drift;
   /* 016C */ vector3d origin;
   /* 0178 */ vector3d m_velocity;

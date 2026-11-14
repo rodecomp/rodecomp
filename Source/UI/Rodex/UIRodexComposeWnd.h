@@ -15,6 +15,7 @@ class UIEditCtrl_Currency;
 class UIBmpTextButton;
 class UIBasicButton;
 class UIStaticText;
+class UIItemTagOnMail;
 
 class UIRodexScrollBar : public UIScrollBar {
 public:
@@ -65,7 +66,7 @@ public:
   /* 00F0 */ int m_itemIndex;
   /* 00F4 */ int padding_00F4;
   /* 00F8 */ std::int64_t m_tax;
-  /* 0100 */ UIEditCtrl* m_tagCtrl;
+  /* 0100 */ UIItemTagOnMail* m_tagCtrl;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

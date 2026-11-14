@@ -254,7 +254,7 @@ public:
   /* 026C */ int modelCount;
   /* 0270 */ GrannyModelInstance* instance;
   /* 0274 */ int maxBoneCount;
-  /* 0278 */ void* localPose;
+  /* 0278 */ granny_local_pose* localPose;
   /* 027C */ int deformBufferSize;
   /* 0280 */ int animationMode;
   /* 0284 */ int padding_0284;

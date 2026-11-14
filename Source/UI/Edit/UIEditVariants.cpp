@@ -90,7 +90,7 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
       this->firstVisibleLine = last;
     }
 
-    static_cast<UIScrollBar*>(this->scrollBar)->SetPosition(this->firstVisibleLine);
+    this->scrollBar->SetPosition(this->firstVisibleLine);
     this->scrollBar->Invalidate();
     this->Invalidate();
     if (this->parent) {

@@ -1881,7 +1881,7 @@ bool CSession::IsPartyRecommendTarget(std::uint32_t aid) {
     return false;
   }
 
-  CGameActor* actor = static_cast<CGameActor*>(g_session.FindGameActor(aid));
+  CGameActor* actor = g_session.FindGameActor(aid);
 
   if (!actor) {
     return false;

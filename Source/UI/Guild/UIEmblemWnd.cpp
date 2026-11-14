@@ -1,4 +1,5 @@
 #include "Client/Session/Session.h"
+#include "Contents/Actors/GameActor.h"
 #include "UI/GameSettings/TalkType.h"
 #include "UI/Window/UIEnums.h"
 #include "Contents/Actors/RenderObject.h"

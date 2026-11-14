@@ -50,11 +50,11 @@ public:
   /* 0110 */ int expandedHeight;
   /* 0114 */ UICheckBox* lockDropBox;
   /* 0118 */ UITabControl* tabs;
-  /* 011C */ UIWindow* optionBox;
+  /* 011C */ UICheckBox* optionBox;
   /* 0120 */ UIBitmapButton* countButton;
-  /* 0124 */ UIButton* dealLockButton;
+  /* 0124 */ UIBitmapButton* dealLockButton;
   /* 0128 */ UIWindow* filterWindow;
-  /* 012C */ UIButton* filterButton;
+  /* 012C */ UIBitmapButton* filterButton;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

@@ -103,14 +103,14 @@ void UIRodexComposeWnd::InsertItemTag(const ITEM_INFO& item) {
     }
   }
 
-  if (!static_cast<UIItemTagOnMail*>(this->m_tagCtrl)->CanInsertTag(item.DisplayName(0), this->m_contents->geometry.width)) {
+  if (!this->m_tagCtrl->CanInsertTag(item.DisplayName(0), this->m_contents->geometry.width)) {
     return;
   }
 
-  static_cast<UIItemTagOnMail*>(this->m_tagCtrl)->taggedText = std::string(this->m_contents->Text());
-  this->m_contents->SetText(static_cast<UIItemTagOnMail*>(this->m_tagCtrl)->AppendTag(item.DisplayName(0)).c_str());
+  this->m_tagCtrl->taggedText = std::string(this->m_contents->Text());
+  this->m_contents->SetText(this->m_tagCtrl->AppendTag(item.DisplayName(0)).c_str());
   this->m_contents->MoveCursorToEnd();
-  static_cast<UIItemTagOnMail*>(this->m_tagCtrl)->AddItemTag(item, 0xd630a9);
+  this->m_tagCtrl->AddItemTag(item, 0xd630a9);
 }
 
 // OFFSET: 0x007FF940
@@ -123,7 +123,7 @@ void UIRodexComposeWnd::InsertSkillTag(int tagId) {
     }
   }
 
-  if (static_cast<UIItemTagOnMail*>(this->m_tagCtrl)->tags.size() >= 3) {
+  if (this->m_tagCtrl->tags.size() >= 3) {
     return;
   }
 
@@ -131,8 +131,8 @@ void UIRodexComposeWnd::InsertSkillTag(int tagId) {
     return;
   }
 
-  std::string tagText = static_cast<UIItemTagOnMail*>(this->m_tagCtrl)->AddSkillTag(tagId, 0xd630a9);
-  static_cast<UIItemTagOnMail*>(this->m_tagCtrl)->taggedText = std::string(this->m_contents->Text());
+  std::string tagText = this->m_tagCtrl->AddSkillTag(tagId, 0xd630a9);
+  this->m_tagCtrl->taggedText = std::string(this->m_contents->Text());
 
   this->m_contents->SetText((this->m_contents->Text() + tagText).c_str());
   this->m_contents->MoveCursorToEnd();
@@ -249,7 +249,7 @@ UIRodexComposeWnd::UIRodexComposeWnd()
 // INLINED
 UIRodexComposeWnd::~UIRodexComposeWnd() {
   if (this->m_tagCtrl) {
-    static_cast<UIItemTagCtrl*>(this->m_tagCtrl)->ClearTags();
+    this->m_tagCtrl->ClearTags();
     delete this->m_tagCtrl;
   }
 }
@@ -390,7 +390,7 @@ int UIRodexComposeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
           body = this->m_contents->TakePendingText();
         }
 
-        auto* tagCtrl = static_cast<UIItemTagOnMail*>(this->m_tagCtrl);
+        auto* tagCtrl = this->m_tagCtrl;
         if (tagCtrl && tagCtrl->linkedText.size() != 0) {
           body = tagCtrl->linkedText.c_str();
         }
@@ -518,12 +518,11 @@ void UIRodexComposeWnd::Paint() {
   }
 
   if (this->m_tagCtrl) {
-    auto* tagCtrl = static_cast<UIItemTagOnMail*>(this->m_tagCtrl);
+    auto* tagCtrl = this->m_tagCtrl;
     tagCtrl->SetLines(this->m_contents->wrappedLines);
     tagCtrl->SetTaggedText(this->m_contents->Text(), this->m_contents->geometry.width);
     tagCtrl->UpdateItemTags();
-    auto* editCtrl3 = static_cast<UIEditCtrl3*>(this->m_tagCtrl);
-    int diff = editCtrl3->verticalCursorStep - editCtrl3->lineHeight;
+    int diff = tagCtrl->linkedText.size() - tagCtrl->taggedText.size();
     this->m_contents->tagTextLength = std::max(0, diff);
     if (tagCtrl->previousTagCount == 0) {
       delete this->m_tagCtrl;

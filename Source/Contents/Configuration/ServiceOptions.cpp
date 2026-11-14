@@ -34,6 +34,7 @@
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowManagerWindows.h"
+#include "UI/Text/UITransBalloonText.h"
 #include "Script/LuaInstance.h"
 #include "Script/LuaScript.h"
 #include "Utility/Cipher/XorBytes.h"

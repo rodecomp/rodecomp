@@ -12,6 +12,7 @@
 
 #include "Utility/Math/Vector3d.h"
 
+class CGameActor;
 class CRenderObject;
 
 // VTABLE: vt_01629
@@ -50,7 +51,7 @@ public:
   void Clear();
   void ClearRetired();
   void Release();
-  void SpawnLevel99(CRenderObject* actor, unsigned char flag, int extra);
+  void SpawnLevel99(CGameActor* actor, unsigned char flag, int extra);
   bool RegisterAllocators();
   bool RegisterAllocator(int id, CAllocator* allocator);
   void Update();

@@ -5,6 +5,7 @@
 #include <string>
 
 class UIListBox;
+class UIServerListBox;
 
 class UISelectServerWnd : public UIFrameWnd {
 public:
@@ -15,7 +16,7 @@ public:
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
-  /* 00B4 */ UIListBox* m_serverList;
+  /* 00B4 */ UIServerListBox* m_serverList;
   /* 00B8 */ UIWindow* m_okButton;
   /* 00BC */ std::string m_valueName;
   /* 00D4 */ int m_selectedServer;

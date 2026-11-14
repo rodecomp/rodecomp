@@ -1245,12 +1245,12 @@ void UIAchSummaryWnd::OnCreate(int, int) {
   }
 
   int x = 62;
-  UIWindow** slot = this->buttons;
+  UITextButton** slot = this->buttons;
   for (; x < 694; x += 316) {
     UITextButton* button = new UITextButton();
     *slot = button;
     button->Configure("", 0x997836, 0, 12, 1, 0);
-    static_cast<UITextButton*>(*slot)->m_hoverColor = 0x635AA5;
+    (*slot)->m_hoverColor = 0x635AA5;
     (*slot)->Move(x, 325);
     (*slot)->SetId(-1);
     this->AddChild(*slot);
@@ -1377,25 +1377,25 @@ void UIAchSummaryWnd::UpdateInfo() {
       this->recent.push_back(std::make_pair(second, info));
     }
 
-    UITextButton* button = static_cast<UITextButton*>(this->buttons[1]);
+    UITextButton* button = this->buttons[1];
     {
       const std::string title = info.title.c_str();
       button->label = title;
     }
     this->buttons[1]->SetId(second);
-    static_cast<UITextButton*>(this->buttons[1])->ResizeToText();
+    this->buttons[1]->ResizeToText();
 
     if (g_achievementMgr->GetAchievement(info, first)) {
       this->recent.push_back(std::make_pair(first, info));
     }
 
-    button = static_cast<UITextButton*>(this->buttons[0]);
+    button = this->buttons[0];
     {
       const std::string title = info.title.c_str();
       button->label = title;
     }
     this->buttons[0]->SetId(first);
-    static_cast<UITextButton*>(this->buttons[0])->ResizeToText();
+    this->buttons[0]->ResizeToText();
   }
 
   for (int index = 0; index < this->visibleCount; ++index) {

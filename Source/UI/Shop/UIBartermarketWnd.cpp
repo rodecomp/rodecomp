@@ -1646,10 +1646,10 @@ bool UIExpandedBarterItemPurchaseWnd::Purchase() {
 void UIExpandedBartermarketWnd::OnCreate(int width, int height) {
   this->resizer = new UIResizer();
   this->resizer->SetSize(16, 16);
-  static_cast<UIResizer*>(this->resizer)->SetDirection(7);
-  static_cast<UIResizer*>(this->resizer)->SetBitmapName("유저인터페이스\\btn_resize.bmp");
+  this->resizer->SetDirection(7);
+  this->resizer->SetBitmapName("유저인터페이스\\btn_resize.bmp");
   this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
-  static_cast<UIResizer*>(this->resizer)->SetColors(0xFFFF00FF, 0xFFFF00FF);
+  this->resizer->SetColors(0xFFFF00FF, 0xFFFF00FF);
   this->AddChild(this->resizer);
 
   this->scrollBar = new UIScrollBar();

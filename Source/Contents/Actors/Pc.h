@@ -24,7 +24,7 @@ struct granny_control;
 struct granny_model_instance;
 struct CRagEffect;
 class CMsgEffect;
-class UIWindow;
+class UIPcGage;
 
 int GetSlotLayer(int slot);
 bool IsReadyOrAttackAction(int action);
@@ -38,6 +38,7 @@ public:
     CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g
   ) override;
   void Render(int argument) override;
+  void UpdateFootprints(int kind);
 
   bool ProcessState() override;
   void SetState(int state, int resetPosition) override;
@@ -132,7 +133,7 @@ public:
   /* 0468 */ vector3d footprintPosition;
   /* 0474 */ int renderWithoutLayer;
   /* 0478 */ std::string headPaletteName;
-  /* 0490 */ UIWindow* gaugeWindow;
+  /* 0490 */ UIPcGage* gaugeWindow;
   /* 0494 */ int pkRank;
   /* 0498 */ int pkTotal;
   /* 049C */ int robe;
@@ -217,7 +218,6 @@ public:
   void RegisterPos() override;
   void UnRegisterPos() override;
   void RefreshEffect164();
-  void UpdateFootprints(int kind);
   void UpdateMsgEffect(bool show);
   void ApplyFollowOffset(CGameActor* target, float x, float z, int* row, int* column);
   float AdjustFollowDistance(CGameActor* target, float distance);
@@ -312,7 +312,7 @@ public:
   /* 0454 */ int shield;
   /* 0458 */ unsigned char padding_0458[8];
   /* 0460 */ std::string headPaletteName;
-  /* 0478 */ UIWindow* gaugeWindow;
+  /* 0478 */ UIPcGage* gaugeWindow;
   /* 047C */ int pkRank;
   /* 0480 */ int pkTotal;
   /* 0484 */ C3dGrannyModelRes* model;

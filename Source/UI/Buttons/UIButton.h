@@ -29,6 +29,7 @@ class UIButton : public UIWindow {
   friend class UIPrivateAirplaneWnd; friend class UINewMakeCharWnd;
   friend class UIRodexInboxWnd; friend class UIMiniMapWnd;
   friend class UIMacroReporterWnd;
+  friend class UIStylingShopWnd;
 
 public:
   UIButton();

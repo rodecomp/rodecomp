@@ -5,6 +5,9 @@
 #include "UI/Window/UIFrameWnd.h"
 
 class UIStaticText;
+class UIBarGraphPlayer;
+class UIBarGraphPlayerAP;
+class UIINT64BarGraph;
 
 enum BasicInfoButtonId : int {
   BASICINFO_BUTTON_CHATROOM = 214,
@@ -39,12 +42,12 @@ public:
   /* 00C0 */ UIStaticText* nameText;
   /* 00C4 */ BasicInfoWndInfo* saved;
   /* 00C8 */ unsigned char padding_00C8[0x20];
-  /* 00E8 */ UIWindow* hpBar;
-  /* 00EC */ UIWindow* spBar;
-  /* 00F0 */ UIWindow* baseExpBar;
-  /* 00F4 */ UIWindow* jobExpBar;
+  /* 00E8 */ UIBarGraphPlayer* hpBar;
+  /* 00EC */ UIBarGraphPlayer* spBar;
+  /* 00F0 */ UIINT64BarGraph* baseExpBar;
+  /* 00F4 */ UIINT64BarGraph* jobExpBar;
   /* 00F8 */ int layoutOffset;
-  /* 00FC */ UIWindow* apBar;
+  /* 00FC */ UIBarGraphPlayerAP* apBar;
   /* 0100 */ int normalOffset;
   /* 0104 */ int normalCollapsedHeight;
   /* 0108 */ int normalExpandedHeight;

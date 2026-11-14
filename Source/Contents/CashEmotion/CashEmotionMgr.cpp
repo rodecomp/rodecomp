@@ -232,7 +232,7 @@ public:
   const char* Filter() override;
 
 protected:
-  /* 00B0 */ std::vector<UIWindow*> m_items;
+  /* 00B0 */ std::vector<UICashEmotionPiece*> m_items;
   /* 00BC */ ICashEmotionAction* m_selectAction;
   /* 00C0 */ ICashEmotionAction* m_playAction;
 };
@@ -283,7 +283,7 @@ public:
   const char* Filter() override;
 
 protected:
-  /* 00B0 */ std::vector<UICashEmotionPack*> m_items;
+  /* 00B0 */ std::vector<UICashEmotionPack_Unpurchase*> m_items;
   /* 00BC */ std::string m_filter;
 };
 
@@ -1808,7 +1808,7 @@ const char* UICashEmotionListChildWnd_Basic::Filter() {
 // OFFSET: 0x007C4110
 // FUNCTION: fn_09352
 __declspec(noinline) void UICashEmotionListChildWnd_Basic::Refresh(const char* filter) {
-  for (UIWindow* item : this->m_items) {
+  for (UICashEmotionPiece* item : this->m_items) {
     this->RemoveChild(item, 0);
   }
   this->scrollPosition = 0;
@@ -1818,7 +1818,7 @@ __declspec(noinline) void UICashEmotionListChildWnd_Basic::Refresh(const char* f
   std::vector<int> emotions = g_cashEmotionMgr->FindBaseEmotions(filter);
   int x = 15;
   int y = 4;
-  std::vector<UIWindow*> recycled(this->m_items);
+  std::vector<UICashEmotionPiece*> recycled(this->m_items);
   this->m_items.clear();
 
   CashEmotionTable* table = g_cashEmotionMgr->GetBasePackEmotions();
@@ -1830,7 +1830,7 @@ __declspec(noinline) void UICashEmotionListChildWnd_Basic::Refresh(const char* f
 
     UICashEmotionPiece* piece;
     if (!recycled.empty()) {
-      piece = static_cast<UICashEmotionPiece*>(recycled.back());
+      piece = recycled.back();
       recycled.pop_back();
     } else {
       piece = new (std::nothrow) UICashEmotionPiece();
@@ -1853,7 +1853,7 @@ __declspec(noinline) void UICashEmotionListChildWnd_Basic::Refresh(const char* f
     this->m_items.push_back(piece);
   }
 
-  for (UIWindow* item : recycled) {
+  for (UICashEmotionPiece* item : recycled) {
     delete item;
   }
   this->UpdateScrollBars();
@@ -1874,7 +1874,7 @@ void UICashEmotionListChildWnd_Basic::Paint() {
 // OFFSET: 0x007C4460
 // FUNCTION: fn_09355
 void UICashEmotionListChildWnd_Basic::OnProcess() {
-  for (UIWindow* item : this->m_items) {
+  for (UICashEmotionPiece* item : this->m_items) {
     if (item->geometry.visible) {
       item->OnProcess();
     }
@@ -2142,13 +2142,13 @@ const char* UICashEmotionListChildWnd_UnPurchased::Filter() {
 // FUNCTION: fn_09393
 __declspec(noinline) void UICashEmotionListChildWnd_UnPurchased::Refresh(const char* filter) {
   this->m_filter = filter ? filter : "";
-  for (UICashEmotionPack* item : this->m_items) {
+  for (UICashEmotionPack_Unpurchase* item : this->m_items) {
     this->RemoveChild(item, 0);
   }
   this->scrollPosition = 0;
   this->horizontalScrollPosition = 0;
 
-  std::list<UICashEmotionPack*> unused(this->m_items.begin(), this->m_items.end());
+  std::list<UICashEmotionPack_Unpurchase*> unused(this->m_items.begin(), this->m_items.end());
   this->m_items.clear();
 
   std::string endFormat = g_simpleStringMgr->GetString("EMSG_EMOTION_SALE_END_TIME");
@@ -2160,9 +2160,9 @@ __declspec(noinline) void UICashEmotionListChildWnd_UnPurchased::Refresh(const c
       continue;
     }
 
-    UICashEmotionPack* pack;
+    UICashEmotionPack_Unpurchase* pack;
     int height;
-    auto it = std::find_if(unused.begin(), unused.end(), [packId](UICashEmotionPack* item) { return item->packId == packId; });
+    auto it = std::find_if(unused.begin(), unused.end(), [packId](UICashEmotionPack_Unpurchase* item) { return item->packId == packId; });
     if (it != unused.end() && (pack = *it) != nullptr) {
       unused.remove(pack);
       height = pack->geometry.height;
@@ -2190,7 +2190,7 @@ __declspec(noinline) void UICashEmotionListChildWnd_UnPurchased::Refresh(const c
     this->m_items.push_back(pack);
   }
 
-  for (UICashEmotionPack* item : unused) {
+  for (UICashEmotionPack_Unpurchase* item : unused) {
     delete item;
   }
   unused.clear();
@@ -2217,9 +2217,8 @@ int UICashEmotionListChildWnd_UnPurchased::SendMsg(UIWindow* sender, int message
   }
   if (this->parent) {
     this->parent->SendMsg(sender, UM_TOGGLEPUSH, argument1, 0, 0, 0);
-    for (UICashEmotionPack* pack : this->m_items) {
-      UICashEmotionPack_Unpurchase* item = static_cast<UICashEmotionPack_Unpurchase*>(pack);
-      item->SetPressed(item->packId == argument1, false);
+    for (UICashEmotionPack_Unpurchase* pack : this->m_items) {
+      pack->SetPressed(pack->packId == argument1, false);
     }
   }
   return 0;

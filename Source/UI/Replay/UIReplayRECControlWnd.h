@@ -40,7 +40,7 @@ public:
     };
     /* 00BC */ UIBitmapButton* buttons[6];
   };
-  /* 00D4 */ UIWindow* tabs[5];
+  /* 00D4 */ UIStaticBitmap* tabs[5];
   union {
     struct {
       /* 00E8 */ UIStaticText* recordTimeText;
@@ -49,7 +49,7 @@ public:
     /* 00E8 */ UIStaticText* texts[2];
   };
   /* 00F0 */ std::uint32_t recordStart;
-  /* 00F4 */ UIWindow* options[10];
+  /* 00F4 */ UICheckBox* options[10];
   /* 011C */ unsigned char recordOptions[10];
   /* 0126 */ unsigned char padding_0126[2];
   union {

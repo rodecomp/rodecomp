@@ -51,21 +51,21 @@ void UIMerchantItemLogWnd::OnCreate(int width, int height) {
 
   this->resizer = new UIResizer();
   this->resizer->SetSize(16, 16);
-  static_cast<UIResizer*>(this->resizer)->SetDirection(3);
-  static_cast<UIResizer*>(this->resizer)->SetBitmapName("유저인터페이스\\btn_resize.bmp");
+  this->resizer->SetDirection(3);
+  this->resizer->SetBitmapName("유저인터페이스\\btn_resize.bmp");
   this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
-  static_cast<UIResizer*>(this->resizer)->SetColors(0xFFFF00FF, 0xFFFF00FF);
+  this->resizer->SetColors(0xFFFF00FF, 0xFFFF00FF);
   this->AddChild(this->resizer);
 
   this->scrollBar = new UIScrollBar();
-  static_cast<UIScrollBar*>(this->scrollBar)->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - 38);
+  this->scrollBar->Configure(this->geometry.width - 15, 14, 1, this->geometry.height - 38);
   this->AddChild(this->scrollBar);
 
   this->buttons[0] = new UIBitmapButton();
-  static_cast<UIBitmapButton*>(this->buttons[0])->SetBitmap("유저인터페이스\\btn_close.bmp", 0, 0);
-  static_cast<UIBitmapButton*>(this->buttons[0])->SetBitmap("유저인터페이스\\btn_close_a.bmp", 1, 0);
-  static_cast<UIBitmapButton*>(this->buttons[0])->SetBitmap("유저인터페이스\\btn_close_b.bmp", 2, 0);
-  this->buttons[0]->SetSize(static_cast<UIBitmapButton*>(this->buttons[0])->BitmapWidth(), static_cast<UIBitmapButton*>(this->buttons[0])->BitmapHeight());
+  this->buttons[0]->SetBitmap("유저인터페이스\\btn_close.bmp", 0, 0);
+  this->buttons[0]->SetBitmap("유저인터페이스\\btn_close_a.bmp", 1, 0);
+  this->buttons[0]->SetBitmap("유저인터페이스\\btn_close_b.bmp", 2, 0);
+  this->buttons[0]->SetSize(this->buttons[0]->BitmapWidth(), this->buttons[0]->BitmapHeight());
   this->buttons[0]->Move(this->geometry.width - 61, this->geometry.height - 24);
   this->buttons[0]->SetId(201);
   this->AddChild(this->buttons[0]);

@@ -180,7 +180,7 @@ public:
   /* 00B8 */ UIScrollBar* scrollBar;
   /* 00BC */ UIRadioBtn* tabs[2];
   /* 00C4 */ UIWindow* closeButton;
-  /* 00C8 */ UIWindow* buttons[11];
+  /* 00C8 */ UIBitmapButton* buttons[11];
   /* 00F4 */ UIWindow* resizeButton;
   /* 00F8 */ UIStaticText* titleText;
   /* 00FC */ std::list<MessengerMember> members;
@@ -195,7 +195,7 @@ public:
   /* 01C8 */ UIJobIconButton* jobIcons[40];
   /* 0268 */ int iconIndex;
   /* 026C */ std::vector<MessengerGroupIconPosition> iconPositions;
-  /* 0278 */ UIButton* iconModeButtons[2];
+  /* 0278 */ UIBitmapButton* iconModeButtons[2];
   /* 0280 */ unsigned char hiddenButtons[11];
   /* 028C */ int mode;
 };
@@ -777,11 +777,11 @@ void UIMessengerGroupWnd::OnCreate(int, int) {
 
   this->iconModeButtons[0] = this->AddMinimizeButton("", 0);
   this->iconModeButtons[1] = new UIBitmapButton();
-  static_cast<UIBitmapButton*>(this->iconModeButtons[1])->SetBitmap("유저인터페이스\\renewalparty\\btn_titlebar_maximum_out.bmp", 0, 0);
-  static_cast<UIBitmapButton*>(this->iconModeButtons[1])->SetBitmap("유저인터페이스\\renewalparty\\btn_titlebar_maximum_over.bmp", 1, 0);
-  static_cast<UIBitmapButton*>(this->iconModeButtons[1])->SetBitmap("유저인터페이스\\renewalparty\\btn_titlebar_maximum_press.bmp", 2, 0);
+  this->iconModeButtons[1]->SetBitmap("유저인터페이스\\renewalparty\\btn_titlebar_maximum_out.bmp", 0, 0);
+  this->iconModeButtons[1]->SetBitmap("유저인터페이스\\renewalparty\\btn_titlebar_maximum_over.bmp", 1, 0);
+  this->iconModeButtons[1]->SetBitmap("유저인터페이스\\renewalparty\\btn_titlebar_maximum_press.bmp", 2, 0);
   {
-    UIBitmapButton* maximize = static_cast<UIBitmapButton*>(this->iconModeButtons[1]);
+    UIBitmapButton* maximize = this->iconModeButtons[1];
     maximize->SetSize(maximize->BitmapWidth(), maximize->BitmapHeight());
   }
   this->iconModeButtons[1]->Move(this->geometry.width - 28, 3);
@@ -883,24 +883,24 @@ void UIMessengerGroupWnd::OnCreate(int, int) {
       }
 
       if (useDisabledImage == true) {
-        static_cast<UIBitmapButton*>(this->buttons[index])->SetBitmap((prefix + number + "_disable.bmp").c_str(), 0, 0);
-        static_cast<UIBitmapButton*>(this->buttons[index])->SetBitmap((prefix + number + "_disable.bmp").c_str(), 1, 0);
-        static_cast<UIBitmapButton*>(this->buttons[index])->SetBitmap((prefix + number + "_disable.bmp").c_str(), 2, 0);
+        this->buttons[index]->SetBitmap((prefix + number + "_disable.bmp").c_str(), 0, 0);
+        this->buttons[index]->SetBitmap((prefix + number + "_disable.bmp").c_str(), 1, 0);
+        this->buttons[index]->SetBitmap((prefix + number + "_disable.bmp").c_str(), 2, 0);
       } else {
-        static_cast<UIBitmapButton*>(this->buttons[index])->SetBitmap((prefix + number + ".bmp").c_str(), 0, 0);
-        static_cast<UIBitmapButton*>(this->buttons[index])->SetBitmap((prefix + number + "_a.bmp").c_str(), 1, 0);
-        static_cast<UIBitmapButton*>(this->buttons[index])->SetBitmap((prefix + number + "_b.bmp").c_str(), 2, 0);
+        this->buttons[index]->SetBitmap((prefix + number + ".bmp").c_str(), 0, 0);
+        this->buttons[index]->SetBitmap((prefix + number + "_a.bmp").c_str(), 1, 0);
+        this->buttons[index]->SetBitmap((prefix + number + "_b.bmp").c_str(), 2, 0);
       }
 
       this->buttons[index]->SetSize(
-        static_cast<UIBitmapButton*>(this->buttons[index])->BitmapWidth(),
-        static_cast<UIBitmapButton*>(this->buttons[index])->BitmapHeight()
+        this->buttons[index]->BitmapWidth(),
+        this->buttons[index]->BitmapHeight()
       );
       this->buttons[index]->Move(x, this->geometry.height - 40);
       this->buttons[index]->SetId(ids[index]);
-      static_cast<UIBitmapButton*>(this->buttons[index])->SetTooltip(this->mode == 0 ? friendTooltips[index] : partyTooltips[index]);
+      this->buttons[index]->SetTooltip(this->mode == 0 ? friendTooltips[index] : partyTooltips[index]);
       {
-        UIBitmapButton* button = static_cast<UIBitmapButton*>(this->buttons[index]);
+        UIBitmapButton* button = this->buttons[index];
         button->SetDisabled(disabled[index]);
         button->Invalidate();
       }
@@ -1518,27 +1518,27 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     int tooltip;
     if (this->mode == 0) {
       {
-        UIBitmapButton* button = static_cast<UIBitmapButton*>(this->buttons[0]);
+        UIBitmapButton* button = this->buttons[0];
         button->SetDisabled(1);
         button->Invalidate();
       }
-      static_cast<UIBitmapButton*>(this->buttons[0])->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_01_disable.bmp", 0, 0);
-      static_cast<UIBitmapButton*>(this->buttons[0])->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_01_disable.bmp", 1, 0);
-      static_cast<UIBitmapButton*>(this->buttons[0])->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_01_disable.bmp", 2, 0);
-      static_cast<UIBitmapButton*>(this->buttons[0])->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_01_disable.bmp", 3, 0);
+      this->buttons[0]->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_01_disable.bmp", 0, 0);
+      this->buttons[0]->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_01_disable.bmp", 1, 0);
+      this->buttons[0]->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_01_disable.bmp", 2, 0);
+      this->buttons[0]->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_01_disable.bmp", 3, 0);
       tooltip = 0x62;
     } else {
       {
-        UIBitmapButton* button = static_cast<UIBitmapButton*>(this->buttons[0]);
+        UIBitmapButton* button = this->buttons[0];
         button->SetDisabled(0);
         button->Invalidate();
       }
-      static_cast<UIBitmapButton*>(this->buttons[0])->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_partymaster_01.bmp", 0, 0);
-      static_cast<UIBitmapButton*>(this->buttons[0])->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_partymaster_01_a.bmp", 1, 0);
-      static_cast<UIBitmapButton*>(this->buttons[0])->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_partymaster_01_b.bmp", 2, 0);
+      this->buttons[0]->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_partymaster_01.bmp", 0, 0);
+      this->buttons[0]->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_partymaster_01_a.bmp", 1, 0);
+      this->buttons[0]->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_partymaster_01_b.bmp", 2, 0);
       tooltip = 0xDBA;
     }
-    static_cast<UIBitmapButton*>(this->buttons[0])->SetTooltip(LookupMessage(tooltip));
+    this->buttons[0]->SetTooltip(LookupMessage(tooltip));
     this->LayoutButtons();
     return 0;
   }
@@ -1783,8 +1783,8 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
         secondTip = 0x61;
         firstTip = 0x65;
       }
-      static_cast<UIButton*>(this->buttons[3])->SetTooltip(LookupMessage(firstTip));
-      static_cast<UIButton*>(this->buttons[4])->SetTooltip(LookupMessage(secondTip));
+      this->buttons[3]->SetTooltip(LookupMessage(firstTip));
+      this->buttons[4]->SetTooltip(LookupMessage(secondTip));
       if (this->mode != previous) {
         this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       }

@@ -7,6 +7,8 @@
 class UIEditCtrl;
 struct WindowPlacement;
 
+struct PartySettingWndInfo;
+
 class UIPartySettingWnd : public UIFrameWnd {
 public:
   UIPartySettingWnd();
@@ -18,7 +20,7 @@ public:
   /* 00C8 */ int m_itemShare;
   /* 00CC */ UIRadioBtn* m_itemDistributeButton;
   /* 00D0 */ int m_itemDistribute;
-  /* 00D4 */ WindowPlacement* m_placement;
+  /* 00D4 */ PartySettingWndInfo* m_placement;
   /* 00D8 */ UIEditCtrl* m_nameEdit;
   /* 00DC */ int m_mode;
 

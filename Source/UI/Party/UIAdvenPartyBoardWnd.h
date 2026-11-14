@@ -13,6 +13,7 @@ enum AdvenPartyBoardButtonId : int {
 };
 
 class UIStaticText;
+class UIBmpTextButton;
 class UIBasicButton;
 class UIEditCtrl;
 class UIJobSlotButton;
@@ -45,7 +46,7 @@ public:
   /* 00C0 */ UIEditCtrl* memo;
   /* 00C4 */ UIPartyInfoWnd* rows[10];
   /* 00EC */ UIPartyInfoWnd* ownParty;
-  /* 00F0 */ UIBitmapButton* recruit;
+  /* 00F0 */ UIBmpTextButton* recruit;
   /* 00F4 */ UIBasicButton* stop;
   /* 00F8 */ UIBitmapButton* previous;
   /* 00FC */ UIBitmapButton* next;

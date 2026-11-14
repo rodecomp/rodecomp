@@ -29,7 +29,7 @@ protected:
 public:
   /* 00F4 */ UICheckBox* checkBox;
   /* 00F8 */ int interactionDisabled;
-  /* 00FC */ WindowPlacement* saved;
+  /* 00FC */ ItemShopWndInfo* saved;
   /* 0100 */ int hovered;
   /* 0104 */ int bottomBarHeight;
   /* 0108 */ int extraBottomHeight;

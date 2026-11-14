@@ -1,4 +1,5 @@
 #include "UI/Chat/UINewChatWnd.h"
+#include "Contents/Actors/Skill.h"
 #include "UI/GameSettings/TalkType.h"
 #include "Client/Mode/ModeMessage.h"
 #include "Contents/Actors/ActorEnums.h"

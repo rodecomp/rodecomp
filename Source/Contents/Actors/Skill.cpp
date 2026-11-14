@@ -869,9 +869,9 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
       }
       return;
     default: {
-      CRenderObject* source = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAidIncludeMe(this->sourceActorId);
+      CGameActor* source = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAidIncludeMe(this->sourceActorId);
       CSkillActionMgr* actions = CSkillActionMgr::GetInstance();
-      actions->OnSkillObjectCreate(this->GetEffectiveJob(-1), unit->level, this, static_cast<CGameActor*>(source));
+      actions->OnSkillObjectCreate(this->GetEffectiveJob(-1), unit->level, this, source);
       return;
     }
     case JT_EP18_ARMED_VILLAGER01:

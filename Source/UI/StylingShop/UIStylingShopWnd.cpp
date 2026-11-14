@@ -672,12 +672,12 @@ void UIStylingShopWnd::SetBuyEnabled(bool enabled) {
   const char* hover;
   const char* pressed;
   if (enabled) {
-    this->m_buyButton->SetArgument(0);
+    this->m_buyButton->m_argument = 0;
     normal = "유저인터페이스\\styleshop\\btn_buy_out.bmp";
     hover = "유저인터페이스\\styleshop\\btn_buy_over.bmp";
     pressed = "유저인터페이스\\styleshop\\btn_buy_down.bmp";
   } else {
-    this->m_buyButton->SetArgument(1);
+    this->m_buyButton->m_argument = 1;
     pressed = "유저인터페이스\\styleshop\\btn_buy_disable.bmp";
     hover = pressed;
     normal = pressed;
@@ -1449,7 +1449,7 @@ int UIStylingShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     g_windowMgr.CloseWindow(WID_STYLINGSHOPWND);
     break;
   case ID_BUY:
-    if (this->m_buyButton->Argument() == 0 &&
+    if (this->m_buyButton->m_argument == 0 &&
         g_windowMgr.Confirm(LookupMessage(MSI_ASK_MOVE_BY_PRIVATE_AIRPLANE), 2, false, false, 0, "Message", 280, 120, 0) != 188) {
       for (std::map<UIWindow*, UIStylingshopTabParentWnd*>::iterator it = this->m_tabs.begin(); it != this->m_tabs.end(); ++it) {
         UIStylingshopTabParentWnd* tab = it->second;
@@ -1578,7 +1578,7 @@ void UIStylingShopWnd::OnCreate(int, int) {
   this->m_preview->Show(0);
   this->AddChild(this->m_preview);
 
-  this->m_buyButton = static_cast<UIStylingShopButton*>(new (std::nothrow) UIBitmapButton());
+  this->m_buyButton = new (std::nothrow) UIBitmapButton();
   this->m_buyButton->SetBitmap("유저인터페이스\\styleshop\\btn_buy_out.bmp", 0, 0);
   this->m_buyButton->SetBitmap("유저인터페이스\\styleshop\\btn_buy_over.bmp", 1, 0);
   this->m_buyButton->SetBitmap("유저인터페이스\\styleshop\\btn_buy_down.bmp", 2, 0);

@@ -5,6 +5,7 @@
 #include "UI/Window/UIFrameWnd.h"
 
 class UIBarGraph4;
+class UIBitmapButton;
 class UIStaticText;
 
 class UIReplayControlWnd : public UIFrameWnd {
@@ -21,7 +22,7 @@ public:
   /* 00B4 */ UIReplayButton* m_playButton;
   /* 00B8 */ UIReplayButton* m_pauseButton;
   /* 00BC */ bool m_paused;
-  /* 00C0 */ UIWindow* m_buttons[4];
+  /* 00C0 */ UIBitmapButton* m_buttons[4];
   /* 00D0 */ UIBarGraph4* m_progress;
   /* 00D4 */ UIStaticText* m_texts[4];
 };

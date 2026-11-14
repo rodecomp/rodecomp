@@ -40,7 +40,7 @@ MapNameDisplay::MapNameDisplay(std::string name, std::string subName, std::strin
 
     this->m_dc = CreateBitmapDC(this->m_width, this->m_height, false);
     this->m_dc->Fill(nullptr, 0);
-    static_cast<CDCBitmap*>(this->m_dc)->SetAlpha(true);
+    this->m_dc->SetAlpha(true);
 
     TextContext text(*this->m_dc);
     text.SetColor(0xFFFFFF);
@@ -60,7 +60,7 @@ MapNameDisplay::MapNameDisplay(std::string name, std::string subName, std::strin
       static_cast<int>(std::strlen(subName.c_str()))
     );
 
-    static_cast<CDCBitmap*>(this->m_dc)->SetAlpha(static_cast<unsigned char>(0xFF));
+    this->m_dc->SetAlpha(static_cast<unsigned char>(0xFF));
     this->m_startTime = timeGetTime();
   }
 }

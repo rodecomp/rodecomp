@@ -1038,7 +1038,7 @@ public:
   __declspec(noinline) int HomunSkillLevel(int skillId) const;
   __declspec(noinline) int UseLevel(int id) const;
   int SkillLevel(int id) const;
-  CRenderObject* FindGameActor(std::uint32_t aid) const;
+  CGameActor* FindGameActor(std::uint32_t aid) const;
   int GetPetTargetAid() const;
   const char* GetJobName(unsigned job, int sex);
   void InitJobNameTable();

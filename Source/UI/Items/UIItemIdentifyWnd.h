@@ -9,9 +9,11 @@
 
 struct WindowPlacement;
 
+class UIScrollBar;
+
 class UIItemIdentifyWnd : public UIFrameWnd {
 public:
-  /* 00B4 */ UIWindow* m_scrollBar;
+  /* 00B4 */ UIScrollBar* m_scrollBar;
   /* 00B8 */ int m_scroll;
   /* 00BC */ int m_selected;
   /* 00C0 */ int m_columns;

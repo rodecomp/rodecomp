@@ -6,7 +6,8 @@
 #include <cstddef>
 #include <cstdint>
 
-class UIWindow;
+class UIPcGage;
+class UIPlayerGage;
 
 class CNpc : public CGameActor {
 public:
@@ -37,8 +38,8 @@ public:
   /* 0420 */ int npcState;
   /* 0424 */ std::uint32_t effectTick;
   /* 0428 */ int appearanceInitialized;
-  /* 042C */ UIWindow* playerGaugeWindow;
-  /* 0430 */ UIWindow* pcGaugeWindow;
+  /* 042C */ UIPlayerGage* playerGaugeWindow;
+  /* 0430 */ UIPcGage* pcGaugeWindow;
   /* 0434 */ CGameObject* attachedEffect;
   union {
     /* 0438 */ int attachedEffectId;

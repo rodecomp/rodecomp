@@ -13,6 +13,9 @@ class UIButton;
 class UIEditCtrl;
 class UIStaticText;
 
+struct NCashWndInfo;
+class UIBitmapButton;
+
 class UInCashWnd : public UIItemBaseWnd {
 public:
   UInCashWnd();
@@ -32,8 +35,8 @@ public:
   /* 00F0 */ UIEditCtrl* m_pointEdit;
   /* 00F4 */ UIEditCtrl* m_searchEdit;
   /* 00F8 */ std::list<ITEM_INFO> m_otherItems;
-  /* 0100 */ WindowPlacement* m_placement;
-  /* 0104 */ UIButton* m_buttons[19];
+  /* 0100 */ NCashWndInfo* m_placement;
+  /* 0104 */ UIBitmapButton* m_buttons[19];
   /* 0150 */ UIScrollBar* m_otherScroll;
   /* 0154 */ UIStaticText* m_title;
   /* 0158 */ int m_firstOther;

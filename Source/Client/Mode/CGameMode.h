@@ -19,6 +19,8 @@
 class CView;
 class UIBroadcastBalloon;
 class UINameBalloonText;
+class UIAchBalloonText;
+class UIPlayerGage;
 class CMousePointer;
 class CCorpse;
 class CMsgEffect;
@@ -171,9 +173,9 @@ public:
   /* 0294 */ char coupleName[0x18];
   /* 02AC */ UINameBalloonText* nameBalloon;
   /* 02B0 */ UINameBalloonText* itemNameBalloon;
-  /* 02B4 */ UIWindow* itemWindow;
-  /* 02B8 */ UIWindow* skillBalloon;
-  /* 02BC */ UIWindow* skillHintBalloon;
+  /* 02B4 */ UIPlayerGage* itemWindow;
+  /* 02B8 */ UITransBalloonText* skillBalloon;
+  /* 02BC */ UITransBalloonText* skillHintBalloon;
   /* 02C0 */ int unknown_02C0;
   /* 02C4 */ int isNameBalloonPlaced;
   /* 02C8 */ int isItemNameBalloonPlaced;
@@ -218,7 +220,7 @@ public:
   /* 05CC */ unsigned char bossAlarmAndCopyNameFlags[0x02];
   /* 05CE */ unsigned char inventoryChanged;
   /* 05CF */ unsigned char padding_05CF;
-  /* 05D0 */ UIWindow* statusIconTooltip;
+  /* 05D0 */ UITransBalloonText* statusIconTooltip;
   /* 05D4 */ std::list<unsigned long> periodicTicks;
   /* 05DC */ std::map<int, std::string> miniMapTooltipWindows;
   /* 05E4 */ std::uint32_t wheelTick;
@@ -226,7 +228,7 @@ public:
   /* 05EC */ unsigned char replayDragState[0x08];
   /* 05F4 */ int mouseRollCount;
   /* 05F8 */ int mouseRollMax;
-  /* 05FC */ UIWindow* achievementBalloon;
+  /* 05FC */ UIAchBalloonText* achievementBalloon;
   /* 0600 */ std::uint32_t achievementBalloonTick;
   /* 0604 */ std::list<UIWindow*> notificationWindows;
   /* 060C */ unsigned char sameMapMove[0x4];

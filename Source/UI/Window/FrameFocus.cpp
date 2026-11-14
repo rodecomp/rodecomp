@@ -1,4 +1,5 @@
 #include "UI/Window/WindowId.h"
+#include "Contents/Actors/GameActor.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
 #include "UI/Window/UIWindow.h"

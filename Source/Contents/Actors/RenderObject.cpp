@@ -35,6 +35,7 @@
 #include "Contents/Jobs/JobInheritance.h"
 #include "Contents/Messenger/ClientMessenger.h"
 #include "Contents/Skills/ClientSkills.h"
+#include "Contents/Actors/Skill.h"
 #include "Contents/Skills/SkillInfo.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "Contents/World/World.h"
@@ -2017,10 +2018,9 @@ void CRenderObject::DrawSpriteEffects(
     }
   }
 
-  CGameActor* actor = static_cast<CGameActor*>(this);
-  actor->RenderBlur(cell, box, offset, bottomRhw, topRhw, palette, image, static_cast<float>(box->bottom - box->top) * 0.05f, 0);
-  actor->RenderAura(quad, cell, box, offset, bottomRhw, topRhw, palette, image, *blend, 0);
-  actor->ApplySpriteJitter(quad, box, offset, 21, 10);
+  this->RenderBlur(cell, box, offset, bottomRhw, topRhw, palette, image, static_cast<float>(box->bottom - box->top) * 0.05f, 0);
+  this->RenderAura(quad, cell, box, offset, bottomRhw, topRhw, palette, image, *blend, 0);
+  this->ApplySpriteJitter(quad, box, offset, 21, 10);
 
   if ((this->render.flags & 0x100000) != 0) {
     short angle = static_cast<short>(cell->rotation) + static_cast<short>(this->render.spriteAngle) + 60;

@@ -1,7 +1,7 @@
 #ifndef RAGNAROK_SOURCE_CONTENTS_MAP_MAPINFOMGR_H
 #define RAGNAROK_SOURCE_CONTENTS_MAP_MAPINFOMGR_H
 
-#include "Render/DeviceContext/DeviceContext.h"
+#include "Render/DeviceContext/DCBitmap.h"
 
 #include <map>
 #include <string>
@@ -26,7 +26,7 @@ struct MapInfo {
 
 struct MapNameDisplay {
   /* 0000 */ CTexture* m_texture;
-  /* 0004 */ CDC* m_dc;
+  /* 0004 */ CDCBitmap* m_dc;
   /* 0008 */ unsigned short m_width;
   /* 000A */ unsigned short m_height;
   /* 000C */ DWORD m_startTime;

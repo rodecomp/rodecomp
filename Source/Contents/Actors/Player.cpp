@@ -36,6 +36,7 @@
 #include "Contents/Map/MapSkyMgr.h"
 #include "Contents/Tables/MessageTable.h"
 #include "Contents/Skills/ClientSkills.h"
+#include "Contents/Actors/Skill.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Contents/Sound/SoundMgr.h"
 #include "Contents/Sprites/SpriteLayerDrawing.h"
@@ -2288,10 +2289,10 @@ bool CPc::OnProcess() {
 void CPc::Render(int argument) {
   bool hasEffect = false;
   if (StateFlag14(this->stateFlags)) {
-    static_cast<CPlayer*>(this)->UpdateFootprints(1);
+    this->UpdateFootprints(1);
   }
   if ((this->render.flags & 0x8000) != 0) {
-    static_cast<CPlayer*>(this)->UpdateFootprints(2);
+    this->UpdateFootprints(2);
   }
 
   for (const ActiveSkillEffect& effect : g_activeSkillEffects) {
@@ -2359,8 +2360,8 @@ void CPc::DrawLayers(const float* matrix, int blendMode, char blendVariant) {
 // OFFSET: 0x00DABF50
 // FUNCTION: fn_22589
 void CGrannyPc::UpdateGaugeWindow() {
-  if (static_cast<UIWindow*>(this->gaugeWindow) != nullptr) {
-    static_cast<UIWindow*>(this->gaugeWindow)->Move(
+  if (this->gaugeWindow != nullptr) {
+    this->gaugeWindow->Move(
       this->render.screenX - 30,
       static_cast<int>(static_cast<float>(g_renderer->viewport.height * 12 / 480) * this->render.distanceScale + static_cast<float>(this->render.screenY))
     );
@@ -2371,8 +2372,8 @@ void CGrannyPc::UpdateGaugeWindow() {
 // OFFSET: 0x00DABFC0
 // FUNCTION: fn_22590
 void CPc::UpdateGaugeWindow() {
-  if (static_cast<UIWindow*>(this->gaugeWindow) != nullptr) {
-    static_cast<UIWindow*>(this->gaugeWindow)->Move(
+  if (this->gaugeWindow != nullptr) {
+    this->gaugeWindow->Move(
       this->render.screenX - 30,
       static_cast<int>(static_cast<float>(g_renderer->viewport.height * 12 / 480) * this->render.distanceScale + static_cast<float>(this->render.screenY))
     );
@@ -4774,8 +4775,8 @@ void CPc::SendMsg(
       this->gaugeWindow->SetSize(60, 5);
       g_windowMgr.AddRenderedFront(this->gaugeWindow);
     }
-    static_cast<UIPcGage*>(this->gaugeWindow)->SetValues(static_cast<int>(b), static_cast<int>(c));
-    static_cast<UIPcGage*>(this->gaugeWindow)->SetLimits(0, 0);
+    this->gaugeWindow->SetValues(static_cast<int>(b), static_cast<int>(c));
+    this->gaugeWindow->SetLimits(0, 0);
     this->gaugeWindow->Move(this->render.screenX - 30, ScaleByScreenHeight(12) + this->render.screenY);
     break;
   case AM_STANDENTRY: {
@@ -5196,8 +5197,8 @@ void CGrannyPc::SendMsg(
       this->gaugeWindow->SetSize(60, 5);
       g_windowMgr.AddRenderedFront(this->gaugeWindow);
     }
-    static_cast<UIPcGage*>(this->gaugeWindow)->SetValues(static_cast<int>(b), static_cast<int>(c));
-    static_cast<UIPcGage*>(this->gaugeWindow)->SetLimits(0, 0);
+    this->gaugeWindow->SetValues(static_cast<int>(b), static_cast<int>(c));
+    this->gaugeWindow->SetLimits(0, 0);
     this->gaugeWindow->Move(this->render.screenX - 30, ScaleByScreenHeight(12) + this->render.screenY);
     break;
   case AM_STANDENTRY: {

@@ -121,30 +121,30 @@ void UIHotKeyWnd::OnCreate(int, int) {
 
   this->m_optionCheckBox = new UICheckBox();
   this->m_optionCheckBox->SetSize(150, 12);
-  static_cast<UICheckBox*>(this->m_optionCheckBox)->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(MSI_CHATMODE_ONOFF));
+  this->m_optionCheckBox->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(MSI_CHATMODE_ONOFF));
   this->m_optionCheckBox->Move(80, this->geometry.height - 22);
-  static_cast<UICheckBox*>(this->m_optionCheckBox)->SetChecked(g_windowMgr.chatModeChanged);
+  this->m_optionCheckBox->SetChecked(g_windowMgr.chatModeChanged);
   this->AddChild(this->m_optionCheckBox);
 
   this->m_prevButton = new UIBitmapButton();
-  static_cast<UIBitmapButton*>(this->m_prevButton)->SetBitmap("유저인터페이스\\basic_interface\\arw_left.bmp", 0, 0);
-  static_cast<UIBitmapButton*>(this->m_prevButton)->SetBitmap("유저인터페이스\\basic_interface\\arw_left.bmp", 1, 0);
-  static_cast<UIBitmapButton*>(this->m_prevButton)->SetBitmap("유저인터페이스\\basic_interface\\arw_left.bmp", 2, 0);
-  this->m_prevButton->SetSize(static_cast<UIBitmapButton*>(this->m_prevButton)->BitmapWidth(), static_cast<UIBitmapButton*>(this->m_prevButton)->BitmapHeight());
+  this->m_prevButton->SetBitmap("유저인터페이스\\basic_interface\\arw_left.bmp", 0, 0);
+  this->m_prevButton->SetBitmap("유저인터페이스\\basic_interface\\arw_left.bmp", 1, 0);
+  this->m_prevButton->SetBitmap("유저인터페이스\\basic_interface\\arw_left.bmp", 2, 0);
+  this->m_prevButton->SetSize(this->m_prevButton->BitmapWidth(), this->m_prevButton->BitmapHeight());
   this->m_prevButton->Move(this->geometry.width - 80, 25);
   this->m_prevButton->Enable(0);
-  static_cast<UIBitmapButton*>(this->m_prevButton)->SetTooltip(LookupMessage(MSI_PREV_PAGE));
+  this->m_prevButton->SetTooltip(LookupMessage(MSI_PREV_PAGE));
   this->m_prevButton->SetId(316);
   this->AddChild(this->m_prevButton);
 
   this->m_nextButton = new UIBitmapButton();
-  static_cast<UIBitmapButton*>(this->m_nextButton)->SetBitmap("유저인터페이스\\basic_interface\\arw_right.bmp", 0, 0);
-  static_cast<UIBitmapButton*>(this->m_nextButton)->SetBitmap("유저인터페이스\\basic_interface\\arw_right.bmp", 1, 0);
-  static_cast<UIBitmapButton*>(this->m_nextButton)->SetBitmap("유저인터페이스\\basic_interface\\arw_right.bmp", 2, 0);
-  this->m_nextButton->SetSize(static_cast<UIBitmapButton*>(this->m_nextButton)->BitmapWidth(), static_cast<UIBitmapButton*>(this->m_nextButton)->BitmapHeight());
+  this->m_nextButton->SetBitmap("유저인터페이스\\basic_interface\\arw_right.bmp", 0, 0);
+  this->m_nextButton->SetBitmap("유저인터페이스\\basic_interface\\arw_right.bmp", 1, 0);
+  this->m_nextButton->SetBitmap("유저인터페이스\\basic_interface\\arw_right.bmp", 2, 0);
+  this->m_nextButton->SetSize(this->m_nextButton->BitmapWidth(), this->m_nextButton->BitmapHeight());
   this->m_nextButton->Move(this->geometry.width - 20, 25);
   this->m_nextButton->Enable(0);
-  static_cast<UIBitmapButton*>(this->m_nextButton)->SetTooltip(LookupMessage(MSI_NEXT_PAGE));
+  this->m_nextButton->SetTooltip(LookupMessage(MSI_NEXT_PAGE));
   this->m_nextButton->SetId(317);
   this->AddChild(this->m_nextButton);
 }

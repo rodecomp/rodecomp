@@ -8,13 +8,13 @@
 // OFFSET: 0x008BB0D0
 // FUNCTION: fn_11795
 void UINoticeWnd::LoadNotice() {
-  UIScrollBar* scrollBar = static_cast<UIScrollBar*>(this->m_scrollBar);
+  UIScrollBar* scrollBar = this->m_scrollBar;
   const int lines = this->m_bottomPositions[this->m_index] - this->m_scrollPositions[this->m_index];
   scrollBar->SetRange(lines - 19, 19, lines);
   if (this->m_bottomPositions[this->m_index] - this->m_scrollPositions[this->m_index] < 19) {
-    static_cast<UIScrollBar*>(this->m_scrollBar)->SetRange(0, 19, 19);
+    this->m_scrollBar->SetRange(0, 19, 19);
   }
-  static_cast<UIScrollBar*>(this->m_scrollBar)->SetPosition(this->m_scroll - this->m_scrollPositions[this->m_index]);
+  this->m_scrollBar->SetPosition(this->m_scroll - this->m_scrollPositions[this->m_index]);
   this->m_scrollBar->Invalidate();
 
   FILE* file = std::fopen(this->m_patchFile, "r");

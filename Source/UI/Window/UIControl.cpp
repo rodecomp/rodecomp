@@ -1354,7 +1354,7 @@ void CUITitleBar::SetSecondButton(CUIButton* button) {
 
   const char* behavior = nullptr;
   if (g_session.m_hotkeyScript->Call("GetBeHaviorOfWindow", "d>s", this->parent->geometry.id, &behavior) && behavior) {
-    CUIButton* second = static_cast<CUIButton*>(this->secondButton);
+    CUIButton* second = this->secondButton;
     const std::string text = behavior;
     second->tooltip = text;
   }

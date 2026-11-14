@@ -224,16 +224,16 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     return 0;
   case UM_DELETE_WHISPER_NAME: {
     std::string name(reinterpret_cast<const char*>(a));
-    const int count = static_cast<int>(static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit)->history.size());
+    const int count = static_cast<int>(this->m_whisperEdit->history.size());
     int index = 0;
-    for (std::vector<std::string>::iterator it = static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit)->history.begin(); it != static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit)->history.end(); ++it, ++index) {
+    for (std::vector<std::string>::iterator it = this->m_whisperEdit->history.begin(); it != this->m_whisperEdit->history.end(); ++it, ++index) {
       if (*it == name) {
-        UIWhisperEditCtrl* whisper = static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit);
+        UIWhisperEditCtrl* whisper = this->m_whisperEdit;
         whisper->history.erase(it);
-        if (static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit)->historyIndex == index) {
-          static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit)->historyIndex = count - 1;
-        } else if (static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit)->historyIndex > index) {
-          static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit)->historyIndex = static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit)->historyIndex - 1;
+        if (this->m_whisperEdit->historyIndex == index) {
+          this->m_whisperEdit->historyIndex = count - 1;
+        } else if (this->m_whisperEdit->historyIndex > index) {
+          this->m_whisperEdit->historyIndex = this->m_whisperEdit->historyIndex - 1;
         }
         return 0;
       }
@@ -246,34 +246,34 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       g_session.m_chatTarget = a;
       switch (a) {
       case 0:
-        static_cast<UIChatEditCtrl*>(this->m_chatEdit)->TextColor(0, 0, 0, 0xFFFFFFFF);
+        this->m_chatEdit->TextColor(0, 0, 0, 0xFFFFFFFF);
         break;
       case 1:
-        static_cast<UIChatEditCtrl*>(this->m_chatEdit)->TextColor(0x80, 0, 0x80, 0xFFFFFFFF);
+        this->m_chatEdit->TextColor(0x80, 0, 0x80, 0xFFFFFFFF);
         break;
       case 2:
-        static_cast<UIChatEditCtrl*>(this->m_chatEdit)->TextColor(0, 0x80, 0x80, 0xFFFFFFFF);
+        this->m_chatEdit->TextColor(0, 0x80, 0x80, 0xFFFFFFFF);
         break;
       case 4:
-        static_cast<UIChatEditCtrl*>(this->m_chatEdit)->TextColor(0x94, 0, 0xD3, 0xFFFFFFFF);
+        this->m_chatEdit->TextColor(0x94, 0, 0xD3, 0xFFFFFFFF);
         break;
       }
       this->Invalidate();
       return 0;
     case 0: {
-      const int count = static_cast<int>(static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit)->history.size());
+      const int count = static_cast<int>(this->m_whisperEdit->history.size());
       if (a >= 0 && a <= count) {
-        static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit)->SetText(a == count ? "" : static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit)->history[a].c_str());
-        static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit)->historyIndex = a;
+        this->m_whisperEdit->SetText(a == count ? "" : this->m_whisperEdit->history[a].c_str());
+        this->m_whisperEdit->historyIndex = a;
       }
-      g_windowMgr.SetFocus(static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit));
+      g_windowMgr.SetFocus(this->m_whisperEdit);
       break;
     }
     default:
       return 0;
     }
   case UM_GET_EDIT_FOCUS:
-    g_windowMgr.SetFocus(static_cast<UIChatEditCtrl*>(this->m_chatEdit));
+    g_windowMgr.SetFocus(this->m_chatEdit);
     return 0;
   case UM_ADDCHAT:
   case UM_ADDCHAT2:
@@ -415,18 +415,18 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       if (g_windowMgr.comboBoxWnd != nullptr) {
         g_windowMgr.CloseWindow(WID_COMBOBOXWND);
       }
-      const int count = static_cast<int>(static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit)->history.size());
+      const int count = static_cast<int>(this->m_whisperEdit->history.size());
       if (count != 0) {
         UIWindow* menu = g_windowMgr.EnsureWindow(WID_COMBOBOXWND);
         for (int i = 0; i < count; ++i) {
-          menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit)->history[i].c_str()), 0, 0, 0);
+          menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(this->m_whisperEdit->history[i].c_str()), 0, 0, 0);
         }
         menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(""), 0, 0, 0);
         int height = (count + 1) * 16;
         if (height > 0x50) {
           height = 0x50;
         }
-        menu->SendMsg(nullptr, UM_SETCURITEM, static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit)->historyIndex, 0, 0, 0);
+        menu->SendMsg(nullptr, UM_SETCURITEM, this->m_whisperEdit->historyIndex, 0, 0, 0);
         menu->Resize(0x70, height);
         menu->SendMsg(nullptr, UM_SET_CALLER_WID, 1, 0, 0, 0);
         int x = 0;
@@ -446,44 +446,44 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
 
       char buffer[0x16A];
       std::memset(buffer, 0, sizeof(buffer));
-      std::string text(static_cast<UIChatEditCtrl*>(this->m_chatEdit)->Text());
+      std::string text(this->m_chatEdit->Text());
       const std::size_t lineEnd = text.find('\n', 0);
       if (lineEnd != std::string::npos) {
         text = text.substr(0, lineEnd);
       }
 
-      UIChatEditCtrl* edit = static_cast<UIChatEditCtrl*>(this->m_chatEdit);
+      UIChatEditCtrl* edit = this->m_chatEdit;
       bool rejected = HasItemLinkTag(std::string(edit->Text()));
       if (!rejected) {
-        UIItemTagOnChat* tags = static_cast<UIChatEditCtrl*>(this->m_chatEdit)->itemTags;
+        UIItemTagOnChat* tags = this->m_chatEdit->itemTags;
         if (tags != nullptr && tags->linkedText.size() != 0) {
           text = std::string(tags->linkedText);
-          static_cast<UIChatEditCtrl*>(this->m_chatEdit)->itemTags->linkedText.clear();
-          static_cast<UIChatEditCtrl*>(this->m_chatEdit)->itemTags->ClearTags();
-          rejected = static_cast<UIChatEditCtrl*>(this->m_chatEdit)->LinkedText().size() != 0;
+          this->m_chatEdit->itemTags->linkedText.clear();
+          this->m_chatEdit->itemTags->ClearTags();
+          rejected = this->m_chatEdit->LinkedText().size() != 0;
         }
       }
       if (rejected) {
-        static_cast<UIChatEditCtrl*>(this->m_chatEdit)->SetText("");
+        this->m_chatEdit->SetText("");
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CLOSE)), 0xFF, 0, 0, 0);
         return 0;
       }
 
-      if (static_cast<UIChatEditCtrl*>(this->m_chatEdit)->LinkedText().size() != 0) {
-        text = static_cast<UIChatEditCtrl*>(this->m_chatEdit)->LinkedText();
+      if (this->m_chatEdit->LinkedText().size() != 0) {
+        text = this->m_chatEdit->LinkedText();
       }
-      edit = static_cast<UIChatEditCtrl*>(this->m_chatEdit);
+      edit = this->m_chatEdit;
       if (HasNaviLinkTag(std::string(edit->Text())) != 0) {
-        static_cast<UIChatEditCtrl*>(this->m_chatEdit)->SetText("");
+        this->m_chatEdit->SetText("");
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CLOSE)), 0xFF, 0, 0, 0);
         return 0;
       }
 
       StringFormat(buffer, sizeof(buffer), static_cast<std::size_t>(-1), "%s", text.c_str());
-      static_cast<UIChatEditCtrl*>(this->m_chatEdit)->PushHistory();
-      this->m_inputEdit = static_cast<UIChatEditCtrl*>(this->m_chatEdit);
-      g_windowMgr.SetFocus(static_cast<UIChatEditCtrl*>(this->m_chatEdit));
-      static_cast<UIChatEditCtrl*>(this->m_chatEdit)->linkedText.clear();
+      this->m_chatEdit->PushHistory();
+      this->m_inputEdit = this->m_chatEdit;
+      g_windowMgr.SetFocus(this->m_chatEdit);
+      this->m_chatEdit->linkedText.clear();
       if (std::strlen(buffer) == 0) {
         return 0;
       }
@@ -493,9 +493,9 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
         return 0;
       }
 
-      if (static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit)->Length() != 0 && buffer[0] != '/') {
+      if (this->m_whisperEdit->Length() != 0 && buffer[0] != '/') {
         g_windowMgr.chatInputText = buffer;
-        g_modeMgr.gameMode->SendMsg(MM_WHISPERMSG, reinterpret_cast<int>(static_cast<UIWhisperEditCtrl*>(this->m_whisperEdit)->Text()), 0, 0, 0);
+        g_modeMgr.gameMode->SendMsg(MM_WHISPERMSG, reinterpret_cast<int>(this->m_whisperEdit->Text()), 0, 0, 0);
         return 0;
       }
 

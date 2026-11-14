@@ -127,7 +127,7 @@ public:
   void SetTip(int id);
   void SetViewerLines(const std::vector<std::string>& lines);
 
-  /* 00E8 */ UIWindow* stampImage;
+  /* 00E8 */ CUIStaticImage* stampImage;
   /* 00EC */ CUITextViewer* titleViewer;
   /* 00F0 */ CUITextViewer* linesViewer;
   /* 00F4 */ CUITextViewer* statusViewer;

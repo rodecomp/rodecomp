@@ -227,11 +227,11 @@ public:
   void OnEffectScroll(int position);
 
   /* 0084 */ CUIStaticText* m_bgmText;
-  /* 0088 */ CUIVScrollBar* m_bgmSlider;
+  /* 0088 */ CUIHScrollBar* m_bgmSlider;
   /* 008C */ CUICheckBox* m_bgmMute;
   /* 0090 */ CUIStaticText* m_bgmMuteText;
   /* 0094 */ CUIStaticText* m_effectText;
-  /* 0098 */ CUIVScrollBar* m_effectSlider;
+  /* 0098 */ CUIHScrollBar* m_effectSlider;
   /* 009C */ CUICheckBox* m_effectMute;
   /* 00A0 */ CUIStaticText* m_effectMuteText;
 };
@@ -244,7 +244,7 @@ public:
   void Paint() override;
   void Refresh() override;
 
-  /* 0084 */ CUIVScrollBar* m_slider;
+  /* 0084 */ CUIHScrollBar* m_slider;
 };
 
 class CUIGroupTextureDetailLevel : public CUIGroup {
@@ -255,7 +255,7 @@ public:
   void Paint() override;
   void Refresh() override;
 
-  /* 0084 */ CUIVScrollBar* m_slider;
+  /* 0084 */ CUIHScrollBar* m_slider;
 };
 
 class CUIGroupTrilinear : public CUIGroup {

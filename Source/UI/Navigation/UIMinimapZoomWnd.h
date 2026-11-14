@@ -8,6 +8,8 @@
 
 struct TownInfo;
 
+class UIBitmapButton;
+
 class UIMinimapZoomWnd : public UIFrameWnd {
 public:
   UIMinimapZoomWnd();
@@ -18,8 +20,8 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void AddTownButton(int index, TownInfo town);
 
-  /* 00B4 */ std::map<int, UIWindow*> m_zoom;
-  /* 00BC */ std::vector<UIWindow*> m_buttons;
+  /* 00B4 */ std::map<int, UIBitmapButton*> m_zoom;
+  /* 00BC */ std::vector<UIBitmapButton*> m_buttons;
 };
 
 #endif

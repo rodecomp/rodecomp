@@ -90,7 +90,7 @@ public:
   /* 00B8 */ UIScrollBar* scrollBar;
   /* 00BC */ UIWindow* tabs[2];
   /* 00C4 */ UIWindow* closeButton;
-  /* 00C8 */ UIWindow* buttons[11];
+  /* 00C8 */ UIBitmapButton* buttons[11];
   /* 00F4 */ UIWindow* resizeButton;
   /* 00F8 */ UIStaticText* titleText;
   /* 00FC */ std::list<MessengerMember> members;
@@ -105,7 +105,7 @@ public:
   /* 01C8 */ UIJobIconButton* jobIcons[40];
   /* 0268 */ int iconIndex;
   /* 026C */ std::vector<MiniPartyIconPosition> iconPositions;
-  /* 0278 */ UIButton* iconModeButtons[2];
+  /* 0278 */ UIBitmapButton* iconModeButtons[2];
   /* 0280 */ unsigned char hiddenButtons[11];
   /* 028C */ int mode;
 };

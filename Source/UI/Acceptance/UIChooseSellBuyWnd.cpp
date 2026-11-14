@@ -768,7 +768,7 @@ void UIMinimapZoomWnd::OnCreate(int, int) {
   this->m_buttons.clear();
   for (int i = 0; i < 5; ++i) {
     const std::string name = prefix + names[i];
-    UIWindow* button = AddNumberedButtonInline(this, ids[i], xs[i], ys[i], name.c_str(), tooltips[i], true);
+    UIBitmapButton* button = AddNumberedButtonInline(this, ids[i], xs[i], ys[i], name.c_str(), tooltips[i], true);
     this->m_buttons.push_back(button);
   }
 
@@ -874,7 +874,7 @@ void UIMinimapZoomWnd::AddTownButton(int index, TownInfo town) {
   button->SetId(index + 1000);
   button->SetTooltip(town.name.c_str());
   this->AddChild(button);
-  this->m_zoom.insert(std::make_pair(index, static_cast<UIWindow*>(button)));
+  this->m_zoom.insert(std::make_pair(index, button));
 }
 
 // OFFSET: 0x008EF1A0
@@ -1223,9 +1223,9 @@ int UIPartySettingWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       return 0;
     }
   case UM_SETINFO:
-    this->m_placement = reinterpret_cast<WindowPlacement*>(a);
-    if (!static_cast<PartySettingWndInfo*>(this->m_placement)->IsValid()) {
-      static_cast<PartySettingWndInfo*>(this->m_placement)->Reset();
+    this->m_placement = reinterpret_cast<PartySettingWndInfo*>(a);
+    if (!this->m_placement->IsValid()) {
+      this->m_placement->Reset();
     }
     this->Move(this->m_placement->x, this->m_placement->y);
     break;
@@ -2997,7 +2997,7 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
           this->swapWindow->geometry.state = 0;
           this->SendMsg(nullptr, UM_COMMAND, 508, 0, 0, 0);
         }
-        static_cast<UISwapEquipmentWnd*>(this->swapWindow)->equipmentPage = this->m_page + 1;
+        this->swapWindow->equipmentPage = this->m_page + 1;
         this->swapWindow->Invalidate();
       }
     }
@@ -3218,9 +3218,9 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
         this->swapWindow = created;
         created->SetSize(280, 179);
         if (this->m_page == 0) {
-          static_cast<UISwapEquipmentWnd*>(this->swapWindow)->equipmentPage = 1;
+          this->swapWindow->equipmentPage = 1;
         } else if (this->m_page == 1) {
-          static_cast<UISwapEquipmentWnd*>(this->swapWindow)->equipmentPage = 2;
+          this->swapWindow->equipmentPage = 2;
         }
         this->AddChild(this->swapWindow);
       }
@@ -3291,7 +3291,7 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
     if (this->m_firstSlot > last) {
       this->m_firstSlot = last;
     }
-    static_cast<UIScrollBar*>(this->m_scrollBar)->SetPosition(this->m_firstSlot);
+    this->m_scrollBar->SetPosition(this->m_firstSlot);
     this->m_scrollBar->Invalidate();
     this->Invalidate();
     return this->m_firstSlot - previous;
@@ -4602,7 +4602,7 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     WhisperWndInfo* info = reinterpret_cast<WhisperWndInfo*>(a);
     this->placement = info;
     if (info->IsValid() == 0) {
-      static_cast<WhisperWndInfo*>(this->placement)->Reset();
+      this->placement->Reset();
     }
     this->SendMsg(nullptr, UM_RESIZE, 7, this->placement->width, this->placement->height, 0);
     this->Move(this->placement->x, this->placement->y);
@@ -5080,8 +5080,8 @@ int UISayDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     this->m_responseMessage = static_cast<int>(a);
     return 0;
   case UM_SETINFO:
-    this->m_placement = reinterpret_cast<WindowPlacement*>(a);
-    static_cast<SayDialogWndInfo*>(this->m_placement)->IsValid();
+    this->m_placement = reinterpret_cast<SayDialogWndInfo*>(a);
+    this->m_placement->IsValid();
     this->Move(this->m_placement->x, this->m_placement->y);
     return 0;
   case UM_UPPUSH:
@@ -5118,7 +5118,7 @@ int UISayDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
   case UM_SETSAYDIALOG:
     if (a != 0) {
       if (this->m_responsePending != 0) {
-        static_cast<UITagTextViewer*>(this->m_viewer)->Clear();
+        this->m_viewer->Clear();
         this->m_responsePending = 0;
       }
       this->m_viewer->SendMsg(nullptr, UM_SETTEXT, a, c, 1, 0);
@@ -5199,7 +5199,7 @@ int UISayDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     return 0;
   }
   case UM_CLEAR_ITEM:
-    static_cast<UITagTextViewer*>(this->m_viewer)->Clear();
+    this->m_viewer->Clear();
     return 0;
   default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
@@ -5564,10 +5564,10 @@ int UINpcTextEditDialogWnd::MeasureText(const std::string& text, const unsigned&
 void UISayDialogWnd::OnCreate(int width, int height) {
   this->m_viewer = new UITagTextViewer();
   this->m_viewer->SetSize(width - 20, height - 40);
-  UITagTextViewer* viewer = static_cast<UITagTextViewer*>(this->m_viewer);
+  UITagTextViewer* viewer = this->m_viewer;
   viewer->m_backgroundColor = 0xFFF2F2F2;
   viewer->Invalidate();
-  static_cast<UITagTextViewer*>(this->m_viewer)->m_textWidth = width - 65;
+  this->m_viewer->m_textWidth = width - 65;
   this->m_viewer->Move(10, 10);
   this->AddChild(this->m_viewer);
   this->m_responseId = 0;
@@ -6049,7 +6049,7 @@ void UIItemIdentifyWnd::UpdateScroll() {
   this->m_scrollable = maximum != 0;
 
   if (maximum) {
-    static_cast<UIScrollBar*>(this->m_scrollBar)->SetRange(maximum, visible, total);
+    this->m_scrollBar->SetRange(maximum, visible, total);
     int top = this->m_scroll;
     if (top < 0) {
       this->m_scroll = 0;
@@ -6060,10 +6060,10 @@ void UIItemIdentifyWnd::UpdateScroll() {
       this->m_scroll = limit;
       top = limit;
     }
-    static_cast<UIScrollBar*>(this->m_scrollBar)->SetPosition(top);
+    this->m_scrollBar->SetPosition(top);
   } else {
     this->m_scroll = 0;
-    static_cast<UIScrollBar*>(this->m_scrollBar)->SetRange(0, visible, total);
+    this->m_scrollBar->SetRange(0, visible, total);
   }
 
   this->m_scrollBar->Invalidate();
@@ -6341,16 +6341,16 @@ void UInCashWnd::OnCreate(int width, int height) {
     this->m_buttons[index] = button;
     if (index < 15) {
       button->SetBitmap((interfacePrefix + names[index][0] + ".bmp").c_str(), 0, 0);
-      static_cast<UIBitmapButton*>(this->m_buttons[index])->SetBitmap((interfacePrefix + names[index][1] + ".bmp").c_str(), 1, 0);
-      static_cast<UIBitmapButton*>(this->m_buttons[index])->SetBitmap((interfacePrefix + names[index][2] + ".bmp").c_str(), 2, 0);
-      static_cast<UIBitmapButton*>(this->m_buttons[index])->SetBitmap((interfacePrefix + names[index][1] + ".bmp").c_str(), 3, 0);
+      this->m_buttons[index]->SetBitmap((interfacePrefix + names[index][1] + ".bmp").c_str(), 1, 0);
+      this->m_buttons[index]->SetBitmap((interfacePrefix + names[index][2] + ".bmp").c_str(), 2, 0);
+      this->m_buttons[index]->SetBitmap((interfacePrefix + names[index][1] + ".bmp").c_str(), 3, 0);
     } else {
       button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
-      static_cast<UIBitmapButton*>(this->m_buttons[index])->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
-      static_cast<UIBitmapButton*>(this->m_buttons[index])->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
-      static_cast<UIBitmapButton*>(this->m_buttons[index])->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 3, 0);
+      this->m_buttons[index]->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
+      this->m_buttons[index]->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
+      this->m_buttons[index]->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 3, 0);
     }
-    this->m_buttons[index]->SetSize(static_cast<UIBitmapButton*>(this->m_buttons[index])->BitmapWidth(), static_cast<UIBitmapButton*>(this->m_buttons[index])->BitmapHeight());
+    this->m_buttons[index]->SetSize(this->m_buttons[index]->BitmapWidth(), this->m_buttons[index]->BitmapHeight());
     this->m_buttons[index]->Move(positions[index][0], positions[index][1]);
     this->m_buttons[index]->SetId(ids[index]);
 
@@ -6427,9 +6427,9 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
 
   switch (message) {
   case UM_SETINFO:
-    this->m_placement = reinterpret_cast<WindowPlacement*>(argument1);
-    if (!static_cast<NCashWndInfo*>(this->m_placement)->IsValid()) {
-      static_cast<NCashWndInfo*>(this->m_placement)->Reset();
+    this->m_placement = reinterpret_cast<NCashWndInfo*>(argument1);
+    if (!this->m_placement->IsValid()) {
+      this->m_placement->Reset();
     }
     this->Move(this->m_placement->x, this->m_placement->y);
     return 0;
@@ -7977,8 +7977,8 @@ int UICoupleAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 int UIItemParamChangeDisplayWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
   case UM_SETINFO: {
-    this->m_placement = reinterpret_cast<WindowPlacement*>(a);
-    auto* info = static_cast<ItemParamChangeDisplayWndInfo*>(this->m_placement);
+    this->m_placement = reinterpret_cast<ItemParamChangeDisplayWndInfo*>(a);
+    auto* info = this->m_placement;
     if (!info->IsValid()) {
       info->Reset();
     }
@@ -9355,9 +9355,9 @@ void UIWhisperWnd::OnCreate(int, int) {
   history->Configure(0, 0, this->geometry.width - 2, this->geometry.height - 38, 1);
   this->m_chatHistory->Move(1, 17);
   this->m_chatHistory->SetId(184);
-  static_cast<UIChatHisBox2*>(this->m_chatHistory)->backgroundRed = 255;
-  static_cast<UIChatHisBox2*>(this->m_chatHistory)->backgroundGreen = 0;
-  static_cast<UIChatHisBox2*>(this->m_chatHistory)->backgroundBlue = 255;
+  this->m_chatHistory->backgroundRed = 255;
+  this->m_chatHistory->backgroundGreen = 0;
+  this->m_chatHistory->backgroundBlue = 255;
   this->AddChild(this->m_chatHistory);
 
   this->m_closeButton = this->AddCloseButton("/q", 0);
@@ -9824,7 +9824,7 @@ std::vector<unsigned char> UIExchangeWnd::GetReplayData() {
 std::vector<unsigned char> UISayDialogWnd::GetReplayData() {
   std::vector<unsigned char> records;
   AppendReplayRecord(records, MakeReplayTaggedRecord(22500, nullptr, 0));
-  const std::vector<std::string>& texts = static_cast<UITagTextViewer*>(this->m_viewer)->m_texts;
+  const std::vector<std::string>& texts = this->m_viewer->m_texts;
   for (auto text = texts.begin(); text != texts.end(); ++text) {
     AppendReplayRecord(records, MakeReplayTaggedRecord(22503, text->c_str(), text->size()));
   }
@@ -11601,7 +11601,7 @@ void UIBookWnd::OnProcess() {
     }
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(this->StripColorCodes(this->m_lines[this->m_autoLine].c_str())), 0xE1E4FF, 0, 0, 0);
-    UIWindow* balloon = this->m_balloon;
+    UITransBalloonText* balloon = this->m_balloon;
     if (balloon == nullptr) {
       balloon = new UITransBalloonText();
       this->m_balloon = balloon;
@@ -11610,9 +11610,9 @@ void UIBookWnd::OnProcess() {
       balloon = this->m_balloon;
     }
     const char* stripped = this->StripColorCodes(this->m_lines[this->m_autoLine].c_str());
-    static_cast<UITransBalloonText*>(balloon)->SetText(stripped, 100);
+    balloon->SetText(stripped, 100);
     this->m_balloon->Move((g_renderer->viewport.width - 640) / 2 - this->m_balloon->geometry.width / 2 + 320, 81);
-    UITransBalloonText* shown = static_cast<UITransBalloonText*>(this->m_balloon);
+    UITransBalloonText* shown = this->m_balloon;
     shown->m_textColor = 0xE1E4FF;
     shown->m_outlineColor = 0;
     ++this->m_autoLine;
@@ -12457,8 +12457,8 @@ void UIExchangeWnd::Paint() {
 int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
   case UM_SETINFO: {
-    this->m_placement = reinterpret_cast<WindowPlacement*>(argument1);
-    ItemCollectionWndInfo* placement = static_cast<ItemCollectionWndInfo*>(this->m_placement);
+    this->m_placement = reinterpret_cast<ItemCollectionWndInfo*>(argument1);
+    ItemCollectionWndInfo* placement = this->m_placement;
     if (!placement->IsValid()) {
       placement->Reset();
       this->Move((g_renderer->viewport.width - 640) / 2 + this->m_placement->x, this->m_placement->y * g_renderer->viewport.height / 480);

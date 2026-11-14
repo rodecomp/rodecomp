@@ -5,6 +5,7 @@
 #include "UI/Window/InputFocus.h"
 #include "UI/Edit/UIItemTagCtrl.h"
 #include "UI/Edit/UIEditCtrl.h"
+#include "UI/Window/UIResizer.h"
 #include "Client/Session/Session.h"
 #include "UI/Lists/UIChatHisBox.h"
 #include "UI/Lists/UITabControl.h"
@@ -221,7 +222,7 @@ void UINewChatWnd::ToggleInput() {
     g_windowMgr.SetPressedWindowRoot(this->m_inputEdit);
   }
 
-  if (UIItemTagOnChat* tags = static_cast<UIChatEditCtrl*>(this->m_chatEdit)->itemTags) {
+  if (UIItemTagOnChat* tags = this->m_chatEdit->itemTags) {
     tags->ClearTags();
   }
 }

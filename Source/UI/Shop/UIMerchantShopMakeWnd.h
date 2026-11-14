@@ -14,6 +14,8 @@
 class UIBasicButton;
 class UIEditCtrl;
 
+class UIScrollBar;
+
 class UIMerchantShopMakeWnd : public UIFrameWnd {
 public:
   explicit UIMerchantShopMakeWnd(int mode);
@@ -51,7 +53,7 @@ public:
   /* 0128 */ UIEditCtrl* zenyLimitEdit;
   /* 012C */ int slotCount;
   /* 0130 */ int mode;
-  /* 0134 */ UIWindow* scrollBar;
+  /* 0134 */ UIScrollBar* scrollBar;
   /* 0138 */ int scroll;
   /* 013C */ int columns;
   /* 0140 */ int minimumRows;

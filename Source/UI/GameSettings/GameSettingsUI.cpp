@@ -3053,9 +3053,9 @@ void GameSettingsUI::CUIGroupSound::OnCreate(int width, int height) {
   this->m_bgmSlider->SetTotal(128);
   this->m_bgmSlider->SetVisible(128);
   this->m_bgmSlider->step = 1;
-  static_cast<CUIHScrollBar*>(this->m_bgmSlider)->SetButtonImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1left.bmp", 0xBD2BA1C11B01E73BULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1right.bmp", 0x4B755DB19953E311ULL)));
+  this->m_bgmSlider->SetButtonImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1left.bmp", 0xBD2BA1C11B01E73BULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1right.bmp", 0x4B755DB19953E311ULL)));
   this->m_bgmSlider->SetBackground(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1mid.bmp", 0xFD69A9B3F311818DULL)));
-  static_cast<CUIHScrollBar*>(this->m_bgmSlider)->SetThumbImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_left.bmp", 0x7F2DFFC1ABE91F2BULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_mid.bmp", 0xD98F5345098D630DULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_right.bmp", 0x9B0F234DEFDF7593ULL)));
+  this->m_bgmSlider->SetThumbImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_left.bmp", 0x7F2DFFC1ABE91F2BULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_mid.bmp", 0xD98F5345098D630DULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_right.bmp", 0x9B0F234DEFDF7593ULL)));
   this->AddChild(this->m_bgmSlider);
   this->m_bgmMute = new CUICheckBox();
   this->m_bgmMute->SetSize(10, 10);
@@ -3100,9 +3100,9 @@ void GameSettingsUI::CUIGroupSound::OnCreate(int width, int height) {
   this->m_effectSlider->SetTotal(128);
   this->m_effectSlider->SetVisible(128);
   this->m_effectSlider->step = 1;
-  static_cast<CUIHScrollBar*>(this->m_effectSlider)->SetButtonImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1left.bmp", 0xB7A96F8701BB4B6BULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1right.bmp", 0xA31F69E7EFED01C9ULL)));
+  this->m_effectSlider->SetButtonImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1left.bmp", 0xB7A96F8701BB4B6BULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1right.bmp", 0xA31F69E7EFED01C9ULL)));
   this->m_effectSlider->SetBackground(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1mid.bmp", 0xB127A19D775BF751ULL)));
-  static_cast<CUIHScrollBar*>(this->m_effectSlider)->SetThumbImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_left.bmp", 0x0F61499B4973EB5DULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_mid.bmp", 0x85E1F5A7A5755B7FULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_right.bmp", 0xAD6153019F93A527ULL)));
+  this->m_effectSlider->SetThumbImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_left.bmp", 0x0F61499B4973EB5DULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_mid.bmp", 0x85E1F5A7A5755B7FULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_right.bmp", 0xAD6153019F93A527ULL)));
   this->AddChild(this->m_effectSlider);
   this->m_effectMute = new CUICheckBox();
   this->m_effectMute->SetSize(10, 10);
@@ -3152,9 +3152,9 @@ void GameSettingsUI::CUIGroupSpriteDetailLevel::OnCreate(int width, int height) 
   this->m_slider->SetTotal(128);
   this->m_slider->SetVisible(128);
   this->m_slider->step = 1;
-  static_cast<CUIHScrollBar*>(this->m_slider)->SetButtonImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1left.bmp", 0xD1538513DF975701ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1right.bmp", 0x91E147EBBD47C39FULL)));
+  this->m_slider->SetButtonImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1left.bmp", 0xD1538513DF975701ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1right.bmp", 0x91E147EBBD47C39FULL)));
   this->m_slider->SetBackground(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1mid.bmp", 0xAFA5617F178B6185ULL)));
-  static_cast<CUIHScrollBar*>(this->m_slider)->SetThumbImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_left.bmp", 0x078143534999254DULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_mid.bmp", 0x17FFC98B398FAF61ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_right.bmp", 0x9B5B959B954D9333ULL)));
+  this->m_slider->SetThumbImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_left.bmp", 0x078143534999254DULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_mid.bmp", 0x17FFC98B398FAF61ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_right.bmp", 0x9B5B959B954D9333ULL)));
   this->AddChild(this->m_slider);
 }
 
@@ -3181,9 +3181,9 @@ void GameSettingsUI::CUIGroupTextureDetailLevel::OnCreate(int width, int height)
   this->m_slider->SetTotal(128);
   this->m_slider->SetVisible(128);
   this->m_slider->step = 1;
-  static_cast<CUIHScrollBar*>(this->m_slider)->SetButtonImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1left.bmp", 0x3F5315DFE32B4FAFULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1right.bmp", 0xE50B2935073DD3E9ULL)));
+  this->m_slider->SetButtonImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1left.bmp", 0x3F5315DFE32B4FAFULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1right.bmp", 0xE50B2935073DD3E9ULL)));
   this->m_slider->SetBackground(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1mid.bmp", 0x393D916561BDC391ULL)));
-  static_cast<CUIHScrollBar*>(this->m_slider)->SetThumbImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_left.bmp", 0x31956551B311FD95ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_mid.bmp", 0xFF7D83CB791339D9ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_right.bmp", 0xED5143E7C1B39315ULL)));
+  this->m_slider->SetThumbImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_left.bmp", 0x31956551B311FD95ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_mid.bmp", 0xFF7D83CB791339D9ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll1bar_right.bmp", 0xED5143E7C1B39315ULL)));
   this->AddChild(this->m_slider);
 }
 

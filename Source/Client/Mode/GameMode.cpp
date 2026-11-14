@@ -4410,7 +4410,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       if (this->itemWindow == nullptr) {
         return 0;
       }
-      UIPlayerGage* gauge = static_cast<UIPlayerGage*>(this->itemWindow);
+      UIPlayerGage* gauge = this->itemWindow;
       gauge->SetFirstValues(
         [] { return static_cast<std::int64_t>(g_session.hp); },
         [] { return static_cast<std::int64_t>(g_session.maxHp); }
@@ -6622,8 +6622,8 @@ void CGameMode::UpdateBalloons() {
     }
   }
 
-  UIWindow*& skillBalloon = this->skillBalloon;
-  UIWindow*& hintBalloon = this->skillHintBalloon;
+  UITransBalloonText*& skillBalloon = this->skillBalloon;
+  UITransBalloonText*& hintBalloon = this->skillHintBalloon;
   int& shownSkill = this->shownSkillId;
   if (this->skillUseType == 0) {
     if (skillBalloon) {
@@ -6660,7 +6660,7 @@ void CGameMode::UpdateBalloons() {
         text = CSkillInfo::DisplayName(*g_session.m_hotkeyScript, shownSkill);
       }
 
-      UITransBalloonText* balloon = static_cast<UITransBalloonText*>(skillBalloon);
+      UITransBalloonText* balloon = skillBalloon;
       balloon->SetText(text.c_str(), 35);
       balloon->Move((g_renderer->viewport.width - 640) / 2 - balloon->geometry.width / 2 + 320, 46 * g_renderer->viewport.height / 480);
       balloon->m_textColor = 0x32FF32;
@@ -6672,10 +6672,10 @@ void CGameMode::UpdateBalloons() {
       hintBalloon = balloon;
       balloon->SetSize(8, 8);
       g_windowMgr.AddRendered(hintBalloon);
-      static_cast<UITransBalloonText*>(hintBalloon)->SetText(LookupMessage(MSI_SELECTTARGET), 35);
+      hintBalloon->SetText(LookupMessage(MSI_SELECTTARGET), 35);
       hintBalloon->Move((g_renderer->viewport.width - 640) / 2 - hintBalloon->geometry.width / 2 + 320, 400 * g_renderer->viewport.height / 480);
       {
-        UITransBalloonText* hint = static_cast<UITransBalloonText*>(hintBalloon);
+        UITransBalloonText* hint = hintBalloon;
         hint->m_textColor = 0x32FF32;
         hint->m_outlineColor = 0;
       }
@@ -10371,7 +10371,7 @@ void CGameMode::ProcessStatusIconTooltip(int x, int y) {
   if (id == -1) {
     hoveredId = -1;
     if (this->statusIconTooltip) {
-      static_cast<UIBalloonText*>(this->statusIconTooltip)->SetText(" ", 35);
+      this->statusIconTooltip->SetText(" ", 35);
     }
     return;
   }
@@ -10395,13 +10395,13 @@ void CGameMode::ProcessStatusIconTooltip(int x, int y) {
       this->statusIconTooltip = new UITransBalloonText();
       this->statusIconTooltip->SetSize(50, 50);
       g_windowMgr.AddRendered(this->statusIconTooltip);
-      static_cast<UITransBalloonText*>(this->statusIconTooltip)->SetFontHeight(11);
-      static_cast<UITransBalloonText*>(this->statusIconTooltip)->m_borderColor = 0xC0C0C0;
+      this->statusIconTooltip->SetFontHeight(11);
+      this->statusIconTooltip->m_borderColor = 0xC0C0C0;
     } else {
-      static_cast<UIBalloonText*>(this->statusIconTooltip)->SetText(" ", 35);
+      this->statusIconTooltip->SetText(" ", 35);
     }
 
-    UITransBalloonText* balloon = static_cast<UITransBalloonText*>(this->statusIconTooltip);
+    UITransBalloonText* balloon = this->statusIconTooltip;
     std::string extra;
     int line = 1;
     std::uint32_t color = 0;
@@ -10490,7 +10490,7 @@ void CGameMode::ProcessStatusIconTooltip(int x, int y) {
     if (g_session.m_hotkeyScript->Call("GetStateIconDescript", "dd>s", activeId, limitLine, &text)) {
       std::string description(text);
       description = static_cast<const std::string&>(FormatOwnedString(description.c_str(), timeText.c_str()));
-      static_cast<UITransBalloonText*>(this->statusIconTooltip)->ChangeText(description.c_str(), limitLine - 1);
+      this->statusIconTooltip->ChangeText(description.c_str(), limitLine - 1);
     }
   }
 }

@@ -17,6 +17,8 @@ class UIItemTagButton;
 struct ITEM_INFO;
 class UIItemTagOnChat;
 
+class UIScrollBar;
+
 class UIEditCtrl : public UIWindow {
   friend class UIMacroDetectorWnd;
 
@@ -139,7 +141,7 @@ public:
 
   /* 011C */ std::list<std::vector<UIItemTagButton*>> entries;
   /* 0124 */ std::vector<std::string> pendingText;
-  /* 0130 */ UIWindow* scrollBar;
+  /* 0130 */ UIScrollBar* scrollBar;
   /* 0134 */ unsigned char scrollEnabled;
   /* 0138 */ int lineHeight;
   /* 013C */ int lineCount;

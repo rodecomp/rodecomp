@@ -1417,13 +1417,13 @@ void CRagEffect::EnergyDrain2() {
 void CRagEffect::InitEZ2STRFrame() {
   this->state.currentLayer = 0;
   this->state.stateCnt = 0;
-  this->state.endLayer = static_cast<EZeffectData*>(this->state.resourceData)->clipCount;
+  this->state.endLayer = this->state.resourceData->clipCount;
 
-  if (static_cast<EZeffectData*>(this->state.resourceData)->clips[0].frameCount == 0) {
+  if (this->state.resourceData->clips[0].frameCount == 0) {
     --this->state.endLayer;
   }
 
-  for (int layer = 0; layer < static_cast<EZeffectData*>(this->state.resourceData)->clipCount; ++layer) {
+  for (int layer = 0; layer < this->state.resourceData->clipCount; ++layer) {
     this->state.currentKey[layer] = 0;
   }
 }
@@ -1455,9 +1455,9 @@ bool CRagEffect::ProcessEZ2STR(float x, float y, float z) {
 
   float ratio;
 
-  for (int layer = 0; layer < static_cast<EZeffectData*>(state.resourceData)->clipCount; ++layer) {
+  for (int layer = 0; layer < state.resourceData->clipCount; ++layer) {
     state.layerDrawn[layer] = false;
-    const EZeffectClip& clip = static_cast<EZeffectData*>(state.resourceData)->clips[layer];
+    const EZeffectClip& clip = state.resourceData->clips[layer];
 
     if (clip.frameCount == 0 || state.currentKey[layer] == -1) {
       continue;
@@ -14906,9 +14906,9 @@ void CRagEffect::Render(int argument) {
   }
 
   int index = 0;
-  for (int layer = 1; layer < static_cast<EZeffectData*>(this->state.resourceData)->clipCount; ++layer) {
+  for (int layer = 1; layer < this->state.resourceData->clipCount; ++layer) {
     if (this->state.layerDrawn[layer]) {
-      this->RenderAniClip(&static_cast<EZeffectData*>(this->state.resourceData)->clips[layer], &this->state.transforms[layer], index, view);
+      this->RenderAniClip(&this->state.resourceData->clips[layer], &this->state.transforms[layer], index, view);
       index += 2;
     }
   }
@@ -17203,7 +17203,7 @@ void CRagEffect::SuperSlashSpread(char count, char value) {
 
 // OFFSET: 0x00C627C0
 // FUNCTION: fn_20251
-void CPlayer::UpdateFootprints(int kind) {
+void CPc::UpdateFootprints(int kind) {
   const int interval = kind != 1 ? 7 : 12;
 
   if (g_updateTick <= 0) {

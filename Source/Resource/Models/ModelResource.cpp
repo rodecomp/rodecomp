@@ -1063,8 +1063,8 @@ granny_world_pose* C3dGrannyModelRes::Animate(float seconds, granny_model_instan
   granny_skeleton* skeleton = GrannyGetSourceSkeleton(instance);
   const std::int32_t boneCount = skeleton->boneCount;
   GrannySetModelClock(instance, seconds);
-  GrannySampleModelAnimations(instance, 0, boneCount, static_cast<granny_local_pose*>(this->localPose));
-  GrannyBuildWorldPose(skeleton, 0, boneCount, static_cast<granny_local_pose*>(this->localPose), nullptr, model->worldPose);
+  GrannySampleModelAnimations(instance, 0, boneCount, this->localPose);
+  GrannyBuildWorldPose(skeleton, 0, boneCount, this->localPose, nullptr, model->worldPose);
   GrannyFreeCompletedModelControls(instance);
   return model->worldPose;
 }
@@ -1096,7 +1096,7 @@ void C3dGrannyModelRes::Release() {
   }
 
   delete[] this->textures;
-  GrannyFreeLocalPose(static_cast<granny_local_pose*>(this->localPose));
+  GrannyFreeLocalPose(this->localPose);
   GrannyFreeFile(this->file);
   delete this->instance;
   this->instance = nullptr;

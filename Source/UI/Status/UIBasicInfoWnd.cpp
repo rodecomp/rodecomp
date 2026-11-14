@@ -546,44 +546,44 @@ void UIBasicInfoWnd::OnCreate(int width, int height) {
   this->AddChild(this->nameText);
 
   this->hpBar = new UIBarGraphPlayer();
-  static_cast<UIBarGraphPlayer*>(this->hpBar)->SetValues(
+  this->hpBar->SetValues(
     []() -> std::int64_t { return g_session.hp; },
     []() -> std::int64_t { return g_session.maxHp; }
   );
-  static_cast<UIBarGraphPlayer*>(this->hpBar)->SetSize(135, 9);
-  static_cast<UIBarGraphPlayer*>(this->hpBar)->Move(-100, -100);
+  this->hpBar->SetSize(135, 9);
+  this->hpBar->Move(-100, -100);
   this->AddChild(this->hpBar);
 
   this->spBar = new UIBarGraphPlayer();
-  static_cast<UIBarGraphPlayer*>(this->spBar)->SetValues(
+  this->spBar->SetValues(
     []() -> std::int64_t { return g_session.m_sp; },
     []() -> std::int64_t { return g_session.m_maxSp; }
   );
-  static_cast<UIBarGraphPlayer*>(this->spBar)->SetSize(135, 9);
-  static_cast<UIBarGraphPlayer*>(this->spBar)->Move(-100, -100);
+  this->spBar->SetSize(135, 9);
+  this->spBar->Move(-100, -100);
   this->AddChild(this->spBar);
 
   this->apBar = new UIBarGraphPlayerAP();
-  static_cast<UIBarGraphPlayerAP*>(this->apBar)->SetValues(
+  this->apBar->SetValues(
     []() -> std::int64_t { return g_session.GetTraitStat(232); },
     []() -> std::int64_t { return g_session.GetTraitStat(233); }
   );
-  static_cast<UIBarGraphPlayerAP*>(this->apBar)->SetSize(135, 9);
-  static_cast<UIBarGraphPlayerAP*>(this->apBar)->Move(-100, -100);
+  this->apBar->SetSize(135, 9);
+  this->apBar->Move(-100, -100);
   this->AddChild(this->apBar);
 
   this->baseExpBar = new UIINT64BarGraph();
-  static_cast<UIINT64BarGraph*>(this->baseExpBar)->m_plainColor = 1;
-  static_cast<UIINT64BarGraph*>(this->baseExpBar)->SetSize(112, 6);
-  static_cast<UIINT64BarGraph*>(this->baseExpBar)->Move(84, this->layoutOffset + 76);
-  static_cast<UIINT64BarGraph*>(this->baseExpBar)->SetValues(BaseExpCurrent(), BaseExpMaximum());
+  this->baseExpBar->m_plainColor = 1;
+  this->baseExpBar->SetSize(112, 6);
+  this->baseExpBar->Move(84, this->layoutOffset + 76);
+  this->baseExpBar->SetValues(BaseExpCurrent(), BaseExpMaximum());
   this->AddChild(this->baseExpBar);
 
   this->jobExpBar = new UIINT64BarGraph();
-  static_cast<UIINT64BarGraph*>(this->jobExpBar)->m_plainColor = 1;
-  static_cast<UIINT64BarGraph*>(this->jobExpBar)->SetSize(112, 6);
-  static_cast<UIINT64BarGraph*>(this->jobExpBar)->Move(84, this->layoutOffset + 86);
-  static_cast<UIINT64BarGraph*>(this->jobExpBar)->SetValues(JobExpCurrent(), JobExpMaximum());
+  this->jobExpBar->m_plainColor = 1;
+  this->jobExpBar->SetSize(112, 6);
+  this->jobExpBar->Move(84, this->layoutOffset + 86);
+  this->jobExpBar->SetValues(JobExpCurrent(), JobExpMaximum());
   this->AddChild(this->jobExpBar);
 
   this->SetHeight(height);

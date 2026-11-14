@@ -1774,13 +1774,13 @@ void UINoticeWnd::OnCreate(int, int) {
   }
 
   this->m_scrollBar = new UIScrollBar();
-  static_cast<UIScrollBar*>(this->m_scrollBar)->Configure(583, 18, 1, this->geometry.height - 48);
+  this->m_scrollBar->Configure(583, 18, 1, this->geometry.height - 48);
   const int total = this->m_bottomPositions[this->m_index] - this->m_scrollPositions[this->m_index];
-  static_cast<UIScrollBar*>(this->m_scrollBar)->SetRange(total - 19, 19, total);
+  this->m_scrollBar->SetRange(total - 19, 19, total);
   if (this->m_bottomPositions[this->m_index] - this->m_scrollPositions[this->m_index] < 19) {
-    static_cast<UIScrollBar*>(this->m_scrollBar)->SetRange(0, 19, 19);
+    this->m_scrollBar->SetRange(0, 19, 19);
   }
-  static_cast<UIScrollBar*>(this->m_scrollBar)->SetPosition(this->m_scroll);
+  this->m_scrollBar->SetPosition(this->m_scroll);
   this->AddChild(this->m_scrollBar);
 
   FILE* source = std::fopen(this->m_patchFile, "r");
@@ -1856,7 +1856,7 @@ void UIReplayRECControlWnd::OnCreate(int, int) {
 
   for (int index = 0; index < 5; ++index) {
     this->tabs[index] = new UIStaticBitmap();
-    static_cast<UIStaticBitmap*>(this->tabs[index])->SetBitmap((prefix + names[index + 6] + ".bmp").c_str());
+    this->tabs[index]->SetBitmap((prefix + names[index + 6] + ".bmp").c_str());
     this->tabs[index]->SetSize(this->tabs[index]->geometry.width, this->tabs[index]->geometry.height);
     this->tabs[index]->Move(-100, -100);
     this->tabs[index]->SetId(reinterpret_cast<int>(tooltips[index]));
@@ -1881,9 +1881,9 @@ void UIReplayRECControlWnd::OnCreate(int, int) {
   for (int index = 0; index < 10; ++index) {
     this->options[index] = new UICheckBox();
     this->options[index]->SetSize(70, 12);
-    static_cast<UICheckBox*>(this->options[index])->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", optionNames[index]);
+    this->options[index]->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", optionNames[index]);
     this->options[index]->Move(-100, -100);
-    static_cast<UICheckBox*>(this->options[index])->SetChecked(Replay::Instance().header.options.Get(static_cast<ReplayRecordOption>(index)));
+    this->options[index]->SetChecked(Replay::Instance().header.options.Get(static_cast<ReplayRecordOption>(index)));
     this->AddChild(this->options[index]);
   }
 
@@ -2295,7 +2295,7 @@ int UIReplayRECControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       g_modeMgr.gameMode->SendMsg(MM_STOP_REPLAY_RECORDING, 0, 0, 0, 0);
       return 0;
     case ID_CONFIRM_REPLAY_RECORDING_PATH: {
-      auto* edit = static_cast<UIEditCtrl*>(this->filenameEdit);
+      auto* edit = this->filenameEdit;
       if (edit->Length() <= 0) {
         g_windowMgr.Confirm(LookupMessage(MSI_REPLAY_ENTERTHEFILENAME), 0, true, false, 0, "Message", 280, 120, 0);
         return 0;
@@ -2350,7 +2350,7 @@ int UIReplayRECControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
           for (int index = 0; index < 10; ++index) {
             if (index != 9) {
               this->recordOptions[index] = 1;
-              static_cast<UICheckBox*>(this->options[index])->SetChecked(1);
+              this->options[index]->SetChecked(1);
             }
           }
         }
@@ -2360,7 +2360,7 @@ int UIReplayRECControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         if (b == 0) {
           for (int index = 1; index < 10; ++index) {
             this->recordOptions[index] = 0;
-            static_cast<UICheckBox*>(this->options[index])->SetChecked(0);
+            this->options[index]->SetChecked(0);
           }
         }
 
@@ -2368,11 +2368,11 @@ int UIReplayRECControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       } else {
         if (b == 1) {
           if (this->options[0]->geometry.state == 0) {
-            static_cast<UICheckBox*>(this->options[0])->SetChecked(1);
+            this->options[0]->SetChecked(1);
             this->recordOptions[0] = 1;
           }
         } else if (this->options[9]->geometry.state == 1) {
-          static_cast<UICheckBox*>(this->options[9])->SetChecked(0);
+          this->options[9]->SetChecked(0);
           this->recordOptions[9] = 0;
         }
 
@@ -3973,7 +3973,7 @@ void UIReplayControlWnd::OnCreate(int, int) {
 
   for (int i = 0; i < 4; ++i) {
     this->m_buttons[i] = new UIBitmapButton();
-    UIBitmapButton* button = static_cast<UIBitmapButton*>(this->m_buttons[i]);
+    UIBitmapButton* button = this->m_buttons[i];
     button->SetBitmap((prefix + names[i] + "a.bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + names[i] + "a.bmp").c_str(), 1, 0);
     button->SetBitmap((prefix + names[i] + "b.bmp").c_str(), 2, 0);
@@ -4006,9 +4006,9 @@ void UIReplayControlWnd::OnCreate(int, int) {
   this->m_playButton->SetTooltip(hotkey.text.c_str());
   this->m_pauseButton->SetTooltip(hotkey.text.c_str());
   hotkey = g_session.GetHotkeyInfo(1, 40);
-  static_cast<UIButton*>(this->m_buttons[2])->SetTooltip(hotkey.text.c_str());
+  this->m_buttons[2]->SetTooltip(hotkey.text.c_str());
   hotkey = g_session.GetHotkeyInfo(1, 41);
-  static_cast<UIButton*>(this->m_buttons[3])->SetTooltip(hotkey.text.c_str());
+  this->m_buttons[3]->SetTooltip(hotkey.text.c_str());
 
   this->m_progress = new UIBarGraph4();
   this->m_progress->m_plainColor = true;

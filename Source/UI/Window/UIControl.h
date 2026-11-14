@@ -314,7 +314,7 @@ public:
   /* 00D8 */ unsigned char padding_00D8[0x04];
   /* 00DC */ class CUIStaticText* titleText;
   /* 00E0 */ UIWindow* firstButton;
-  /* 00E4 */ UIWindow* secondButton;
+  /* 00E4 */ CUIButton* secondButton;
 };
 
 class CUIEditCtrl;

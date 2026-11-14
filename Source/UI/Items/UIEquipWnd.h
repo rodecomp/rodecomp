@@ -10,6 +10,9 @@ class UIListBoxTitle;
 class UIBitmapButton;
 class UICheckBox;
 
+class UISwapEquipmentWnd;
+class UIScrollBar;
+
 class UIEquipWnd : public UIFrameWnd {
 public:
   UIEquipWnd();
@@ -37,11 +40,11 @@ public:
   /* 0118 */ int robeId;
   /* 011C */ int costumeJob;
   /* 0120 */ UIListBoxTitle* m_titleList;
-  /* 0124 */ UIWindow* swapWindow;
+  /* 0124 */ UISwapEquipmentWnd* swapWindow;
   /* 0128 */ int swapState;
   /* 012C */ UIBitmapButton* swapButton;
   /* 0130 */ UIBitmapButton* unequipButton;
-  /* 0134 */ UIWindow* m_scrollBar;
+  /* 0134 */ UIScrollBar* m_scrollBar;
   /* 0138 */ UIWindow* damageSkinButtons[6];
   /* 0150 */ int padding_0150;
   /* 0154 */ int m_firstSlot;

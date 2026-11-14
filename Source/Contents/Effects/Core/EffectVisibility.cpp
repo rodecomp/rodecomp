@@ -1,4 +1,5 @@
 #include "Contents/Effects/Core/EffectActor.h"
+#include "Contents/Actors/GameActor.h"
 #include "UI/GameSettings/TalkType.h"
 #include "Contents/Effects/Core/RagEffect.h"
 #include "Contents/Effects/Core/RagEffectState.h"

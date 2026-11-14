@@ -18,10 +18,10 @@ void UIEditCtrl3::UpdateScrollBar() {
   }
   this->scrollEnabled = maximum > 0;
   if (maximum > 0) {
-    static_cast<UIScrollBar*>(this->scrollBar)->SetRange(maximum, visible, total);
-    static_cast<UIScrollBar*>(this->scrollBar)->SetPosition(this->firstVisibleLine);
+    this->scrollBar->SetRange(maximum, visible, total);
+    this->scrollBar->SetPosition(this->firstVisibleLine);
   } else {
-    static_cast<UIScrollBar*>(this->scrollBar)->SetRange(0, visible, total);
+    this->scrollBar->SetRange(0, visible, total);
     this->firstVisibleLine = 0;
   }
 

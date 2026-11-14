@@ -2436,10 +2436,10 @@ void CGameMode::ReceiveAchievementUpdate(
     AchievementInfo info;
     g_achievementMgr->GetAchievement(info, id);
     const std::string text = FormatOwnedString(LookupMessage(MSI_NOTICE_NEXT_ROULLETE_STAGE), info.title.c_str());
-    static_cast<UIBalloonText*>(this->achievementBalloon)->WrapText(text.c_str(), 72);
-    static_cast<UIBalloonText*>(this->achievementBalloon)->m_fontHeight = 20;
+    this->achievementBalloon->WrapText(text.c_str(), 72);
+    this->achievementBalloon->m_fontHeight = 20;
     {
-      UIBalloonText* balloon = static_cast<UIBalloonText*>(this->achievementBalloon);
+      UIBalloonText* balloon = this->achievementBalloon;
       balloon->m_textColor = 0xFFFFFF;
       balloon->m_outlineColor = 0;
     }

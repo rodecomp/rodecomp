@@ -8,6 +8,7 @@
 #include "Contents/Effects/Core/EffectActor.h"
 #include "Contents/Effects/Core/EffectLists.h"
 #include "Contents/Effects/Core/RagEffect.h"
+#include "Contents/Effects/Skills/CloudEffect.h"
 #include "Contents/World/World.h"
 #include "File/MapName.h"
 #include "Render/Renderer.h"
@@ -18,27 +19,6 @@
 #include <cctype>
 #include <cstdlib>
 #include <new>
-
-struct MapSkyCloud : CEffect {
-  /* 00CC */ unsigned char padding_00CC[0x28];
-  /* 00F4 */ unsigned char colorR;
-  /* 00F5 */ unsigned char colorG;
-  /* 00F6 */ unsigned char colorB;
-  /* 00F7 */ unsigned char padding_00F7;
-  /* 00F8 */ float velocityX;
-  /* 00FC */ float velocityY;
-  /* 0100 */ float velocityZ;
-  /* 0104 */ float scriptFloatParameterA;
-  /* 0108 */ float scriptFloatParameterB;
-  /* 010C */ int scriptIntegerParameterA;
-  /* 0110 */ int scriptIntegerParameterB;
-  /* 0114 */ int scriptIntegerParameterC;
-  /* 0118 */ int scriptIntegerParameterD;
-  /* 011C */ float scriptFloatParameterC;
-  /* 0120 */ float spanX;
-  /* 0124 */ float spanZ;
-  /* 0128 */ unsigned char flag;
-};
 
 // GLOBAL: gl_24482
 CWeatherEffect g_weatherEffect;
@@ -300,27 +280,27 @@ static int ClampedRandom(int range) {
 }
 
 // INLINED
-static void SetCloudColor(MapSkyCloud* cloud, unsigned char red, unsigned char green, unsigned char blue) {
-  cloud->colorR = red;
-  cloud->colorB = blue;
-  cloud->colorG = green;
+static void SetCloudColor(CCloud* cloud, unsigned char red, unsigned char green, unsigned char blue) {
+  cloud->red = red;
+  cloud->blue = blue;
+  cloud->green = green;
 }
 
 // INLINED
-static void SetCloudVelocity(MapSkyCloud* cloud, float x, float y, float z) {
-  cloud->velocityX = x;
-  cloud->velocityY = y;
-  cloud->velocityZ = z;
+static void SetCloudVelocity(CCloud* cloud, float x, float y, float z) {
+  cloud->scaleBase = x;
+  cloud->scaleRange = y;
+  cloud->scaleAmplitude = z;
 }
 
 // INLINED
-static void SetCloudScriptParameters(MapSkyCloud* cloud, int integerA, int integerB, float floatA, int integerC, int integerD, float floatB) {
-  cloud->scriptIntegerParameterA = integerA;
-  cloud->scriptIntegerParameterB = integerB;
-  cloud->scriptIntegerParameterD = integerD;
-  cloud->scriptIntegerParameterC = integerC;
-  cloud->scriptFloatParameterA = floatA;
-  cloud->scriptFloatParameterB = floatB;
+static void SetCloudScriptParameters(CCloud* cloud, int integerA, int integerB, float floatA, int integerC, int integerD, float floatB) {
+  cloud->fadeInBase = integerA;
+  cloud->fadeInRange = integerB;
+  cloud->fadeOutRange = integerD;
+  cloud->fadeOutBase = integerC;
+  cloud->fadeInStep = floatA;
+  cloud->fadeOutStep = floatB;
 }
 
 // OFFSET: 0x005B90F0
@@ -394,15 +374,15 @@ void CMapSkyMgr::CreateClouds(const std::string& mapName) {
         continue;
       }
 
-      auto* cloud = static_cast<MapSkyCloud*>(spawned);
+      auto* cloud = static_cast<CCloud*>(spawned);
       cloud->range = range;
       SetCloudColor(cloud, static_cast<unsigned char>(red), static_cast<unsigned char>(green), static_cast<unsigned char>(blue));
       SetCloudVelocity(cloud, static_cast<float>(velX), static_cast<float>(velY), static_cast<float>(velZ));
       SetCloudScriptParameters(cloud, param0, param1, static_cast<float>(param2), param3, param4, static_cast<float>(param5));
-      cloud->scriptFloatParameterC = static_cast<float>(param7);
-      cloud->spanX = spanX;
-      cloud->spanZ = spanZ;
-      cloud->flag = flag;
+      cloud->offsetRangeY = static_cast<float>(param7);
+      cloud->offsetRangeX = spanX;
+      cloud->offsetRangeZ = spanZ;
+      cloud->renderFlag = flag;
       cloud->ResetParticles();
     }
   }

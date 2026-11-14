@@ -485,12 +485,12 @@ bool CreateEffectMgr() {
 
 // OFFSET: 0x00B24DE0
 // FUNCTION: fn_18775
-void EffectLists::SpawnLevel99(CRenderObject* actor, unsigned char flag, int extra) {
+void EffectLists::SpawnLevel99(CGameActor* actor, unsigned char flag, int extra) {
   if (!actor || extra != 0) {
     return;
   }
 
-  static_cast<CGameActor*>(actor)->ResetJobEffects();
+  actor->ResetJobEffects();
 
   if (!flag) {
     return;

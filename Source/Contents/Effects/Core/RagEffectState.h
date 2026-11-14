@@ -41,7 +41,7 @@ struct RagEffectState {
   /* 0006C */ std::list<EffectPrimitiveState*> primList;
   /* 00074 */ RagEffectSegment objSeg[20];
   /* 006B4 */ CRes* resource;
-  /* 006B8 */ void* resourceData;
+  /* 006B8 */ EZeffectData* resourceData;
   /* 006BC */ EZeffectTransform transforms[128];
   /* 040BC */ unsigned char vertices[55296];
   /* 118BC */ int currentLayer;

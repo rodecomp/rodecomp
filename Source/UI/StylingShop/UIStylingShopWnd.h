@@ -142,7 +142,7 @@ class UIStylingShopWnd : public UIFrameWnd {
 public:
   UIStylingShopWnd();
 
-  /* 00B4 */ UIStylingShopButton* m_buyButton;
+  /* 00B4 */ UIBitmapButton* m_buyButton;
   /* 00B8 */ UIDisplayCharacter* m_preview;
   /* 00BC */ std::map<UIWindow*, UIStylingshopTabParentWnd*> m_tabs;
 

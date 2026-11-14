@@ -307,7 +307,7 @@ void UIAdvenPartyBoardWnd::Registration(bool value) {
     DisableButton(this->ownParty, 1);
     this->recruit->Enable(1);
     DisableButton(this->recruit, 1);
-    static_cast<UIBmpTextButton*>(this->recruit)->SetText(std::string());
+    this->recruit->SetText(std::string());
   }
 
   this->InvalidateChildren();

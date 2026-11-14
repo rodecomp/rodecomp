@@ -70,13 +70,13 @@ template __declspec(noinline) void std::list<std::uint32_t>::push_back(const std
 
 // OFFSET: 0x00AC8220
 // FUNCTION: fn_17667
-CRenderObject* CWorld::GetGameActorByAidIncludeMe(std::uint32_t aid) const {
+CGameActor* CWorld::GetGameActorByAidIncludeMe(std::uint32_t aid) const {
   if (aid == g_session.m_aid) {
-    return static_cast<CRenderObject*>(this->player);
+    return this->player;
   }
 
   for (auto it = this->actors.begin(); it != this->actors.end(); ++it) {
-    CRenderObject* actor = *it;
+    CGameActor* actor = static_cast<CGameActor*>(*it);
 
     if (actor->render.accountId == aid) {
       return actor;
@@ -338,7 +338,7 @@ CCorpse* CGameMode::SpawnCorpse(float x, float y, float z, const char* action, c
 // FUNCTION: fn_17669
 CItem* CWorld::GetItemByAID(std::uint32_t aid) const {
   for (auto it = this->items.begin(); it != this->items.end(); ++it) {
-    CItem* item = static_cast<CItem*>(*it);
+    CItem* item = *it;
 
     if (item->itemAid == aid) {
       return item;
@@ -350,14 +350,14 @@ CItem* CWorld::GetItemByAID(std::uint32_t aid) const {
 
 // OFFSET: 0x00AC8380
 // FUNCTION: fn_17670
-CRenderObject* CWorld::GetActorByGID(int gid) const {
+CGameActor* CWorld::GetActorByGID(int gid) const {
   auto it = std::find_if(this->actors.begin(), this->actors.end(), [gid](CRenderObject* object) {
     CGameActor* actor = static_cast<CGameActor*>(object);
     return !actor->objectType && gid == actor->GetPkState();
   });
 
   if (it != this->actors.end()) {
-    return *it;
+    return static_cast<CGameActor*>(*it);
   }
 
   return nullptr;
@@ -488,7 +488,7 @@ void CGameMode::UpdateNameBalloon(CGameActor* actor) {
     const unsigned char framedEmblem = g_serviceOptions.Get(TT_EMBLEM_FRAME_ON_OFF);
     std::string emblem = g_guildMgr->GetEmblemFilename(actor->GetGdid());
     this->nameBalloon->SetIcon(emblem.c_str(), static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->isSiegeMode == 1 && framedEmblem ? 1 : 0);
-  } else if (static_cast<CGameActor*>(this->scene->player) == actor) {
+  } else if (this->scene->player == actor) {
     char path[256];
     std::memset(path, 0, sizeof(path));
     if (g_clanInfo->m_hasClan == true && g_clanInfo->m_clanId) {
@@ -888,8 +888,8 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
 // FUNCTION: fn_17693
 bool CWorld::RemoveGroundItem(std::uint32_t aid) {
   for (auto item = this->items.begin(); item != this->items.end(); ++item) {
-    if (static_cast<CItem*>(*item)->itemAid == aid) {
-      CRenderObject* object = *item;
+    if ((*item)->itemAid == aid) {
+      CItem* object = *item;
 
       for (auto entry = this->objects.begin(); entry != this->objects.end(); ++entry) {
         if (*entry == object) {

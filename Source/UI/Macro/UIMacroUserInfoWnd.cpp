@@ -473,20 +473,20 @@ void UIMacroReporterWnd::OnCreate(int, int) {
   this->AddChild(this->m_scrollBar);
 
   this->activeCheckBox = new UICheckBox();
-  static_cast<UICheckBox*>(this->activeCheckBox)->SetSize(42, 20);
-  static_cast<UICheckBox*>(this->activeCheckBox)->SetBitmaps("유저인터페이스\\btn_q_active_a.bmp", "유저인터페이스\\btn_q_active.bmp");
-  static_cast<UICheckBox*>(this->activeCheckBox)->Move(202, 27);
-  static_cast<UICheckBox*>(this->activeCheckBox)->SetChecked(0);
+  this->activeCheckBox->SetSize(42, 20);
+  this->activeCheckBox->SetBitmaps("유저인터페이스\\btn_q_active_a.bmp", "유저인터페이스\\btn_q_active.bmp");
+  this->activeCheckBox->Move(202, 27);
+  this->activeCheckBox->SetChecked(0);
   this->AddChild(this->activeCheckBox);
 
   this->m_reportButton = new UIBitmapButton();
-  static_cast<UIBitmapButton*>(this->m_reportButton)->SetBitmap("유저인터페이스\\btn_ok.bmp", 0, 0);
-  static_cast<UIBitmapButton*>(this->m_reportButton)->SetBitmap("유저인터페이스\\btn_ok_a.bmp", 1, 0);
-  static_cast<UIBitmapButton*>(this->m_reportButton)->SetBitmap("유저인터페이스\\btn_ok_b.bmp", 2, 0);
-  static_cast<UIBitmapButton*>(this->m_reportButton)->SetBitmap("유저인터페이스\\btn_ok_c.bmp", 3, 0);
-  static_cast<UIBitmapButton*>(this->m_reportButton)->SetSize(static_cast<UIBitmapButton*>(this->m_reportButton)->BitmapWidth(), static_cast<UIBitmapButton*>(this->m_reportButton)->BitmapHeight());
-  static_cast<UIBitmapButton*>(this->m_reportButton)->Move(202, 285);
-  static_cast<UIBitmapButton*>(this->m_reportButton)->SetId(ID_SEND);
+  this->m_reportButton->SetBitmap("유저인터페이스\\btn_ok.bmp", 0, 0);
+  this->m_reportButton->SetBitmap("유저인터페이스\\btn_ok_a.bmp", 1, 0);
+  this->m_reportButton->SetBitmap("유저인터페이스\\btn_ok_b.bmp", 2, 0);
+  this->m_reportButton->SetBitmap("유저인터페이스\\btn_ok_c.bmp", 3, 0);
+  this->m_reportButton->SetSize(this->m_reportButton->BitmapWidth(), this->m_reportButton->BitmapHeight());
+  this->m_reportButton->Move(202, 285);
+  this->m_reportButton->SetId(ID_SEND);
   this->AddChild(this->m_reportButton);
 
   std::string labels[4] = {LookupMessage(MSI_MACRO_REPORTER_TOOLTIP_CELL), LookupMessage(MSI_MACRO_REPORTER_TOOLTIP_RANGE), LookupMessage(MSI_MACRO_REPORTER_TOOLTIP_QUIZ), LookupMessage(MSI_MACRO_REPORTER_UNKNWON_MAP)};
@@ -495,27 +495,27 @@ void UIMacroReporterWnd::OnCreate(int, int) {
   int index = 0;
   for (; index < 2; ++index) {
     this->m_tabs[index] = new UIRadioBtn();
-    static_cast<UIRadioBtn*>(this->m_tabs[index])->SetSize(50, 12);
-    static_cast<UIRadioBtn*>(this->m_tabs[index])->Move(14 + index * 55, 31);
-    static_cast<UIRadioBtn*>(this->m_tabs[index])->SetText(labels[index].c_str());
-    static_cast<UIRadioBtn*>(this->m_tabs[index])->SetId(ID_RADIOBTN);
-    static_cast<UIRadioBtn*>(this->m_tabs[index])->value = index;
-    static_cast<UIRadioBtn*>(this->m_tabs[index])->SendMsg(this, UM_SETSTATE, index == this->m_mode, 0, 0, 0);
+    this->m_tabs[index]->SetSize(50, 12);
+    this->m_tabs[index]->Move(14 + index * 55, 31);
+    this->m_tabs[index]->SetText(labels[index].c_str());
+    this->m_tabs[index]->SetId(ID_RADIOBTN);
+    this->m_tabs[index]->value = index;
+    this->m_tabs[index]->SendMsg(this, UM_SETSTATE, index == this->m_mode, 0, 0, 0);
     if (const char* tooltip = tooltips[index].c_str()) {
-      static_cast<UIRadioBtn*>(this->m_tabs[index])->tooltip = tooltip;
+      this->m_tabs[index]->tooltip = tooltip;
     }
     this->AddChild(this->m_tabs[index]);
   }
   for (; index < 4; ++index) {
     this->m_tabs[index] = new UIRadioBtn();
-    static_cast<UIRadioBtn*>(this->m_tabs[index])->SetSize(50, 12);
-    static_cast<UIRadioBtn*>(this->m_tabs[index])->Move(70 + index * 30, 31);
-    static_cast<UIRadioBtn*>(this->m_tabs[index])->SetText(labels[index].c_str());
-    static_cast<UIRadioBtn*>(this->m_tabs[index])->SetId(ID_RADIOBTN);
-    static_cast<UIRadioBtn*>(this->m_tabs[index])->value = index;
-    static_cast<UIRadioBtn*>(this->m_tabs[index])->SendMsg(this, UM_SETSTATE, index == this->m_mode, 0, 0, 0);
+    this->m_tabs[index]->SetSize(50, 12);
+    this->m_tabs[index]->Move(70 + index * 30, 31);
+    this->m_tabs[index]->SetText(labels[index].c_str());
+    this->m_tabs[index]->SetId(ID_RADIOBTN);
+    this->m_tabs[index]->value = index;
+    this->m_tabs[index]->SendMsg(this, UM_SETSTATE, index == this->m_mode, 0, 0, 0);
     if (const char* tooltip = tooltips[index].c_str()) {
-      static_cast<UIRadioBtn*>(this->m_tabs[index])->tooltip = tooltip;
+      this->m_tabs[index]->tooltip = tooltip;
     }
     this->AddChild(this->m_tabs[index]);
   }
@@ -523,16 +523,16 @@ void UIMacroReporterWnd::OnCreate(int, int) {
   int y = 56;
   for (int row = 0; row < this->m_visibleRows; ++row) {
     this->m_fields[row] = new UIEditCtrl();
-    static_cast<UIEditCtrl*>(this->m_fields[row])->SetSize(214, 18);
-    static_cast<UIEditCtrl*>(this->m_fields[row])->Move(14, y);
-    static_cast<UIEditCtrl*>(this->m_fields[row])->flat = 0;
-    static_cast<UIEditCtrl*>(this->m_fields[row])->Border(125, 125, 125);
-    static_cast<UIEditCtrl*>(this->m_fields[row])->preserveInput = 1;
-    static_cast<UIEditCtrl*>(this->m_fields[row])->invalidatesParent = 1;
-    static_cast<UIEditCtrl*>(this->m_fields[row])->disabled = 1;
-    static_cast<UIEditCtrl*>(this->m_fields[row])->Invalidate();
+    this->m_fields[row]->SetSize(214, 18);
+    this->m_fields[row]->Move(14, y);
+    this->m_fields[row]->flat = 0;
+    this->m_fields[row]->Border(125, 125, 125);
+    this->m_fields[row]->preserveInput = 1;
+    this->m_fields[row]->invalidatesParent = 1;
+    this->m_fields[row]->disabled = 1;
+    this->m_fields[row]->Invalidate();
     if (const char* tooltip = LookupMessage(MSI_MACRO_BLACKLIST_USER_CHCEK_RESULT_FAIL_MAPNAME)) {
-      static_cast<UIEditCtrl*>(this->m_fields[row])->tooltip = tooltip;
+      this->m_fields[row]->tooltip = tooltip;
     }
     this->AddChild(this->m_fields[row]);
     this->m_names[row] = "";
@@ -541,21 +541,21 @@ void UIMacroReporterWnd::OnCreate(int, int) {
   this->m_target = "";
 
   this->m_edit = new UIEditCtrl();
-  static_cast<UIEditCtrl*>(this->m_edit)->SetSize(15, 14);
-  static_cast<UIEditCtrl*>(this->m_edit)->Move(this->TextWidth(labels[1].c_str(), 0, 0, 12, 0, 0) + 83, 30);
-  static_cast<UIEditCtrl*>(this->m_edit)->flat = 0;
-  static_cast<UIEditCtrl*>(this->m_edit)->Border(125, 125, 125);
-  static_cast<UIEditCtrl*>(this->m_edit)->maximum = 1;
-  static_cast<UIEditCtrl*>(this->m_edit)->preserveInput = 1;
-  static_cast<UIEditCtrl*>(this->m_edit)->invalidatesParent = 1;
-  static_cast<UIEditCtrl*>(this->m_edit)->SetText(IntToString(this->reportCount, 0).c_str());
+  this->m_edit->SetSize(15, 14);
+  this->m_edit->Move(this->TextWidth(labels[1].c_str(), 0, 0, 12, 0, 0) + 83, 30);
+  this->m_edit->flat = 0;
+  this->m_edit->Border(125, 125, 125);
+  this->m_edit->maximum = 1;
+  this->m_edit->preserveInput = 1;
+  this->m_edit->invalidatesParent = 1;
+  this->m_edit->SetText(IntToString(this->reportCount, 0).c_str());
   if (const char* tooltip = LookupMessage(MSI_TAIWANSS_PERSONALINFO_DEATHMSG)) {
-    static_cast<UIEditCtrl*>(this->m_edit)->tooltip = tooltip;
+    this->m_edit->tooltip = tooltip;
   }
   this->AddChild(this->m_edit);
   if (this->m_mode != 1) {
-    static_cast<UIEditCtrl*>(this->m_edit)->disabled = 1;
-    static_cast<UIEditCtrl*>(this->m_edit)->Invalidate();
+    this->m_edit->disabled = 1;
+    this->m_edit->Invalidate();
   }
 
   this->m_entries.clear();
@@ -592,7 +592,7 @@ int UIMacroReporterWnd::SendMsg(
     this->Resize(this->m_state->width, this->m_state->height);
     this->Move(this->m_state->x, this->m_state->y);
     this->activeOnly = this->m_state->activeOnly;
-    static_cast<UICheckBox*>(this->activeCheckBox)->SetChecked(this->activeOnly);
+    this->activeCheckBox->SetChecked(this->activeOnly);
     this->m_entries.clear();
     for (unsigned int index = 0; index < this->m_state->entries.size(); ++index) {
       const MacroReporterEntry& entry = this->m_state->entries[index];
@@ -718,13 +718,13 @@ int UIMacroReporterWnd::SendMsg(
         case 0:
         case 1:
           if (argument2 == 2 || argument2 == 3) {
-            static_cast<UICheckBox*>(this->activeCheckBox)->SetChecked(0);
+            this->activeCheckBox->SetChecked(0);
           }
           break;
         case 2:
         case 3:
           if (argument2 == 0 || argument2 == 1) {
-            static_cast<UICheckBox*>(this->activeCheckBox)->SetChecked(0);
+            this->activeCheckBox->SetChecked(0);
           }
           break;
         }
@@ -742,7 +742,7 @@ int UIMacroReporterWnd::SendMsg(
       }
       sender->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
 
-      UIEditCtrl* edit = static_cast<UIEditCtrl*>(this->m_edit);
+      UIEditCtrl* edit = this->m_edit;
       if (sender == this->m_tabs[1]) {
         edit->disabled = 0;
       } else {
@@ -753,7 +753,7 @@ int UIMacroReporterWnd::SendMsg(
       if (sender == this->m_tabs[0] || sender == this->m_tabs[1]) {
         g_windowMgr.SetFocus(nullptr);
         for (int index = 0; index < this->m_visibleRows; ++index) {
-          UIEditCtrl* field = static_cast<UIEditCtrl*>(this->m_fields[index]);
+          UIEditCtrl* field = this->m_fields[index];
           field->disabled = 1;
           field->Invalidate();
           field->SetText("");
@@ -776,7 +776,7 @@ int UIMacroReporterWnd::SendMsg(
           it->second->Enable(0);
         }
         for (int index = 0; index < this->m_visibleRows; ++index) {
-          UIEditCtrl* field = static_cast<UIEditCtrl*>(this->m_fields[index]);
+          UIEditCtrl* field = this->m_fields[index];
           field->disabled = 0;
           field->Invalidate();
           if (sender == this->m_tabs[2]) {
@@ -803,10 +803,10 @@ int UIMacroReporterWnd::SendMsg(
       }
     } else if (this->m_mode == 3) {
       if (sender && sender == this->m_fields[0]) {
-        this->m_target = static_cast<UIEditCtrl*>(this->m_fields[0])->Text();
+        this->m_target = this->m_fields[0]->Text();
       }
     } else if (sender == this->m_edit) {
-      UIEditCtrl* edit = static_cast<UIEditCtrl*>(this->m_edit);
+      UIEditCtrl* edit = this->m_edit;
       std::string text = edit->Text();
       if (text.size() > 1) {
         edit->SetText(IntToString(this->reportCount, 0).c_str());

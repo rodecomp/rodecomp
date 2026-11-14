@@ -7,6 +7,10 @@
 #include <cstddef>
 #include <list>
 
+class UIResizer;
+class UIScrollBar;
+class UIBitmapButton;
+
 class UIItemBaseWnd : public UIFrameWnd {
 public:
   UIItemBaseWnd();
@@ -25,9 +29,9 @@ public:
 
   /* 00B4 */ int showQuantity;
   /* 00B8 */ int alternateButtonBar;
-  /* 00BC */ UIWindow* resizer;
-  /* 00C0 */ UIWindow* scrollBar;
-  /* 00C4 */ UIWindow* buttons[5];
+  /* 00BC */ UIResizer* resizer;
+  /* 00C0 */ UIScrollBar* scrollBar;
+  /* 00C4 */ UIBitmapButton* buttons[5];
   /* 00D8 */ int scroll;
   /* 00DC */ int visibleRows;
   /* 00E0 */ int columns;

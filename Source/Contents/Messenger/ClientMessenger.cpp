@@ -18,11 +18,13 @@
 #include "Script/LuaInstance.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Party/UIMiniPartyWnd.h"
 #include "UI/Buttons/UITextButton.h"
 #include "Resource/World/TerrainResource.h"
 #include "Contents/Actors/Pc.h"
 #include "Client/Application/ErrorDialog.h"
 #include "UI/CashShop/UIMileageWnd.h"
+#include "UI/Gauges/UIPcGage.h"
 #include "Network/TextEncoding.h"
 #include "Utility/Text/StringUtil.h"
 #include "Contents/World/World.h"
@@ -5203,18 +5205,13 @@ void CSession::SetPartyLeader(std::uint32_t accountId, int leader) {
   }
 }
 
-struct ItemNotificationWindow : UIWindow {
-  /* 007C */ unsigned char padding_007C[0x38];
-  /* 00B4 */ MessengerMember member;
-};
-
 // OFFSET: 0x00AAAF10
 // FUNCTION: fn_17276
 __declspec(noinline) void UIWindowMgr::NotifyItemWindows(int accountId, int lower, int upper) {
   for (UIWindow* window : this->snapExcluded) {
     bool matches;
     {
-      MessengerMember member = static_cast<ItemNotificationWindow*>(window)->member;
+      MessengerMember member = static_cast<UIMiniPartyWnd*>(window)->m_member;
       matches = member.accountId == accountId;
     }
     if (matches) {
@@ -6001,7 +5998,7 @@ UIWindow* UIWindowMgr::FindItemWindow(int accountId) {
   for (UIWindow* window : this->snapExcluded) {
     bool matches;
     {
-      MessengerMember member = static_cast<ItemNotificationWindow*>(window)->member;
+      MessengerMember member = static_cast<UIMiniPartyWnd*>(window)->m_member;
       matches = member.accountId == accountId;
     }
     if (matches) {
@@ -6020,7 +6017,7 @@ void UIWindowMgr::NotifyMemberWindows(const MessengerMember* target) {
   for (UIWindow* window : this->snapExcluded) {
     bool matches;
     {
-      MessengerMember member = static_cast<ItemNotificationWindow*>(window)->member;
+      MessengerMember member = static_cast<UIMiniPartyWnd*>(window)->m_member;
       matches = target->accountId == member.accountId;
     }
     if (matches) {

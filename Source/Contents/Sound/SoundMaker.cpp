@@ -751,37 +751,37 @@ void CNpc::SendMsg(
         this->playerGaugeWindow = new UIPlayerGage();
         switch (this->objectType) {
           case NPC_HO_TYPE: {
-            static_cast<UIPlayerGage*>(this->playerGaugeWindow)->SetFirstValues(
+            this->playerGaugeWindow->SetFirstValues(
               [] { return static_cast<std::int64_t>(g_session.m_homunHp); },
               [] { return static_cast<std::int64_t>(g_session.m_homunMaxHp); }
             );
-            static_cast<UIPlayerGage*>(this->playerGaugeWindow)->SetSecondValues(
+            this->playerGaugeWindow->SetSecondValues(
               [] { return static_cast<std::int64_t>(g_session.m_homunSp); },
               [] { return static_cast<std::int64_t>(g_session.homunMaxSp); }
             );
-            static_cast<UIPlayerGage*>(this->playerGaugeWindow)->SetThirdValues(
+            this->playerGaugeWindow->SetThirdValues(
               [] { return static_cast<std::int64_t>(g_session.homunHunger); },
               [] { return static_cast<std::int64_t>(g_session.homunMaxHunger); }
             );
             this->playerGaugeWindow->SetSize(60, 13);
-            static_cast<UIPlayerGage*>(this->playerGaugeWindow)->actorKind = 8;
+            this->playerGaugeWindow->actorKind = 8;
             break;
           }
           case 7: {
-            static_cast<UIPlayerGage*>(this->playerGaugeWindow)->SetThirdValues(
+            this->playerGaugeWindow->SetThirdValues(
               [] { return static_cast<std::int64_t>(g_session.petHunger); },
               [] { return static_cast<std::int64_t>(g_session.m_petMaxHunger); }
             );
             this->playerGaugeWindow->SetSize(60, 5);
-            static_cast<UIPlayerGage*>(this->playerGaugeWindow)->actorKind = 7;
+            this->playerGaugeWindow->actorKind = 7;
             break;
           }
           case NPC_MERSOL_TYPE: {
-            static_cast<UIPlayerGage*>(this->playerGaugeWindow)->SetFirstValues(
+            this->playerGaugeWindow->SetFirstValues(
               [] { return static_cast<std::int64_t>(g_session.m_mercenaryHp); },
               [] { return static_cast<std::int64_t>(g_session.m_mercenaryMaxHp); }
             );
-            static_cast<UIPlayerGage*>(this->playerGaugeWindow)->SetSecondValues(
+            this->playerGaugeWindow->SetSecondValues(
               [] { return static_cast<std::int64_t>(g_session.m_mercenarySp); },
               [] { return static_cast<std::int64_t>(g_session.m_mercenaryMaxSp); }
             );
@@ -789,11 +789,11 @@ void CNpc::SendMsg(
             break;
           }
           case NPC_ELEMENTAL_TYPE: {
-            static_cast<UIPlayerGage*>(this->playerGaugeWindow)->SetFirstValues(
+            this->playerGaugeWindow->SetFirstValues(
               [] { return static_cast<std::int64_t>(g_session.elementalHp); },
               [] { return static_cast<std::int64_t>(g_session.elementalMaxHp); }
             );
-            static_cast<UIPlayerGage*>(this->playerGaugeWindow)->SetSecondValues(
+            this->playerGaugeWindow->SetSecondValues(
               [] { return static_cast<std::int64_t>(g_session.elementalSp); },
               [] { return static_cast<std::int64_t>(g_session.elementalMaxSp); }
             );
@@ -801,21 +801,21 @@ void CNpc::SendMsg(
             break;
           }
           case NPC_ABR_TYPE: {
-            static_cast<UIPlayerGage*>(this->playerGaugeWindow)->SetFirstValues(
+            this->playerGaugeWindow->SetFirstValues(
               [this] { return g_session.FindSummonHp(this->render.accountId); },
               [this] { return g_session.FindSummonMaxHp(this->render.accountId); }
             );
             this->playerGaugeWindow->SetSize(60, 5);
-            static_cast<UIPlayerGage*>(this->playerGaugeWindow)->actorKind = 13;
+            this->playerGaugeWindow->actorKind = 13;
             break;
           }
           case NPC_BIONIC_TYPE: {
-            static_cast<UIPlayerGage*>(this->playerGaugeWindow)->SetFirstValues(
+            this->playerGaugeWindow->SetFirstValues(
               [this] { return g_session.FindSummonHp(this->render.accountId); },
               [this] { return g_session.FindSummonMaxHp(this->render.accountId); }
             );
             this->playerGaugeWindow->SetSize(60, 5);
-            static_cast<UIPlayerGage*>(this->playerGaugeWindow)->actorKind = 14;
+            this->playerGaugeWindow->actorKind = 14;
             break;
           }
         }
@@ -842,8 +842,8 @@ void CNpc::SendMsg(
         return;
       }
     }
-    static_cast<UIPcGage*>(this->pcGaugeWindow)->SetValues(static_cast<int>(b), static_cast<int>(c));
-    static_cast<UIPcGage*>(this->pcGaugeWindow)->SetLimits(0, 0);
+    this->pcGaugeWindow->SetValues(static_cast<int>(b), static_cast<int>(c));
+    this->pcGaugeWindow->SetLimits(0, 0);
     const int y = this->render.screenY + ScaleByScreenHeight(12);
     this->pcGaugeWindow->Move(this->render.screenX - 30, y);
     return;
@@ -1628,7 +1628,7 @@ void CNpc::SetState(int state, int) {
     case JT_HIDDEN_WARP_NPC:
       break;
     default: {
-      CGameActor* actor = static_cast<CGameActor*>(g_session.FindGameActor(this->render.accountId));
+      CGameActor* actor = g_session.FindGameActor(this->render.accountId);
       bool isDisguised = false;
       if (actor && actor->objectType == 12) {
         isDisguised = true;
