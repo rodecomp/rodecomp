@@ -77,11 +77,12 @@ struct GameSettingsOption {
   /* 0060 */ int disabledMessage = 4698;
 };
 
-class CGameSettingsMgr : public Singleton<CGameSettingsMgr>, public CLuaInstance {
+class CGameSettingsMgr : public Singleton<CGameSettingsMgr> {
 public:
   CGameSettingsMgr();
   ~CGameSettingsMgr() override;
 
+  /* 0004 */ CLuaInstance script;
   /* 000C */ std::vector<GameSettingsOption> options;
   /* 0018 */ std::unordered_map<int, std::function<void(int, unsigned char, bool, int, int)>> actions;
   /* 0038 */ std::unordered_map<int, std::function<void()>> functions;
@@ -516,18 +517,18 @@ std::list<int> GameSettings::GetOptionIds(int tab) {
 // OFFSET: 0x006C1180
 // FUNCTION: fn_06317
 bool CGameSettingsMgr::LoadSettings() {
-  this->SetGlobal("EFFECT", 1.0);
-  this->SetGlobal("CONTROL", 2.0);
-  this->SetGlobal("ETC", 4.0);
-  this->SetGlobal("ONOFF", 0.0);
-  this->SetGlobal("EXE", 1.0);
+  this->script.SetGlobal("EFFECT", 1.0);
+  this->script.SetGlobal("CONTROL", 2.0);
+  this->script.SetGlobal("ETC", 4.0);
+  this->script.SetGlobal("ONOFF", 0.0);
+  this->script.SetGlobal("EXE", 1.0);
   for (int i = 0; i < 300; ++i) {
-    this->SetGlobal(g_serviceOptionNames[i], static_cast<double>(i));
+    this->script.SetGlobal(g_serviceOptionNames[i], static_cast<double>(i));
   }
 
   this->Init_Func();
 
-  if (!this->LoadFile(OBFUSCATE_ARRAY_TEXT("LuaFiles514\\Lua Files\\OptionInfo\\GameSettings.lub", 0x0F41EBBDA32D1B17ULL, char))) {
+  if (!this->script.LoadFile(OBFUSCATE_ARRAY_TEXT("LuaFiles514\\Lua Files\\OptionInfo\\GameSettings.lub", 0x0F41EBBDA32D1B17ULL, char))) {
     return false;
   }
   return this->ReadOptionTable();
@@ -558,7 +559,7 @@ bool IsServiceOption(int id) {
 // OFFSET: 0x006C19D0
 // FUNCTION: fn_06321
 bool GameSettings::ReadOptionTable() {
-  lua_State* state = this->m_state;
+  lua_State* state = this->script.GetState();
   if (!state) {
     return false;
   }
@@ -857,7 +858,6 @@ void RotatePlayerDirection(bool clockwise) {
   mode->SendMsg(MM_CHANGE_DIRECTION, (static_cast<int>(angle) + 180) / 45 % 8, 0, 0, 0);
 }
 
-#pragma inline_depth(0)
 // OFFSET: 0x006C41B0
 // FUNCTION: fn_06351
 void SendConfigServiceOption(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
@@ -869,9 +869,7 @@ void SendConfigServiceOption(int id, unsigned char value, bool notify, int enabl
     GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
   }
 }
-#pragma inline_depth()
 
-#pragma inline_depth(0)
 // OFFSET: 0x006C4220
 // FUNCTION: fn_06352
 void ApplyServiceOptionFlags(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
@@ -884,9 +882,7 @@ void ApplyServiceOptionFlags(int id, unsigned char value, bool notify, int enabl
 
   g_session.SetServiceFlags(value, value);
 }
-#pragma inline_depth()
 
-#pragma inline_depth(0)
 // OFFSET: 0x006C4270
 // FUNCTION: fn_06353
 void ApplyServiceOption(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
@@ -897,7 +893,6 @@ void ApplyServiceOption(int id, unsigned char value, bool notify, int enabledMes
     }
   }
 }
-#pragma inline_depth()
 
 // OFFSET: 0x006C42B0
 // FUNCTION: fn_06354
@@ -935,7 +930,6 @@ void ToggleSitStand() {
   }
 }
 
-#pragma inline_depth(0)
 // OFFSET: 0x006C44A0
 // FUNCTION: fn_06355
 void ApplyServiceOptionXmasWeather(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
@@ -960,9 +954,7 @@ void ApplyServiceOptionXmasWeather(int id, unsigned char value, bool notify, int
     }
   }
 }
-#pragma inline_depth()
 
-#pragma inline_depth(0)
 // OFFSET: 0x006C4660
 // FUNCTION: fn_06357
 void ApplyServiceOptionMapFog(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
@@ -975,9 +967,7 @@ void ApplyServiceOptionMapFog(int id, unsigned char value, bool notify, int enab
 
   static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ApplyMapFog(value);
 }
-#pragma inline_depth()
 
-#pragma inline_depth(0)
 // OFFSET: 0x006C46C0
 // FUNCTION: fn_06358
 void ApplyServiceOptionWithNotice(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
@@ -994,9 +984,7 @@ void ApplyServiceOptionWithNotice(int id, unsigned char value, bool notify, int 
     }
   }
 }
-#pragma inline_depth()
 
-#pragma inline_depth(0)
 // OFFSET: 0x006C48F0
 // FUNCTION: fn_06360
 void ApplyServiceOptionActorRefresh(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
@@ -1009,7 +997,6 @@ void ApplyServiceOptionActorRefresh(int id, unsigned char value, bool notify, in
 
   static_cast<CGameMode*>(g_modeMgr.GetGameMode())->RefreshActorJobEffects(false);
 }
-#pragma inline_depth()
 
 // OFFSET: 0x006C4750
 // FUNCTION: fn_06359
@@ -1025,7 +1012,6 @@ void ShowHelpMessages() {
   }
 }
 
-#pragma inline_depth(0)
 // OFFSET: 0x006C5D10
 // FUNCTION: fn_06366
 void ApplyServiceOptionSessionFlag(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
@@ -1038,9 +1024,7 @@ void ApplyServiceOptionSessionFlag(int id, unsigned char value, bool notify, int
 
   g_session.m_serviceOption229 = value;
 }
-#pragma inline_depth()
 
-#pragma inline_depth(0)
 // OFFSET: 0x006C5D60
 // FUNCTION: fn_06367
 void ApplyServiceOptionCursorClip(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
@@ -1057,9 +1041,7 @@ void ApplyServiceOptionCursorClip(int id, unsigned char value, bool notify, int 
     ReleaseApplicationCursor();
   }
 }
-#pragma inline_depth()
 
-#pragma inline_depth(0)
 // OFFSET: 0x006C5DF0
 // FUNCTION: fn_06369
 void ApplyServiceOptionAskOnDisable(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
@@ -1076,9 +1058,7 @@ void ApplyServiceOptionAskOnDisable(int id, unsigned char value, bool notify, in
 
   g_session.SendClientOption(value);
 }
-#pragma inline_depth()
 
-#pragma inline_depth(0)
 // OFFSET: 0x006C5FC0
 // FUNCTION: fn_06371
 void ApplyServiceOptionWindow159(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
@@ -1093,9 +1073,7 @@ void ApplyServiceOptionWindow159(int id, unsigned char value, bool notify, int e
     window->Show(value);
   }
 }
-#pragma inline_depth()
 
-#pragma inline_depth(0)
 // OFFSET: 0x006C60F0
 // FUNCTION: fn_06375
 void ApplyServiceOptionWindow190(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
@@ -1110,9 +1088,7 @@ void ApplyServiceOptionWindow190(int id, unsigned char value, bool notify, int e
     window->Show(value);
   }
 }
-#pragma inline_depth()
 
-#pragma inline_depth(0)
 // OFFSET: 0x006C6150
 // FUNCTION: fn_06376
 void ApplyServiceOptionWindow267(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
@@ -1127,9 +1103,7 @@ void ApplyServiceOptionWindow267(int id, unsigned char value, bool notify, int e
     window->Show(value);
   }
 }
-#pragma inline_depth()
 
-#pragma inline_depth(0)
 // OFFSET: 0x006C61B0
 // FUNCTION: fn_06377
 void ApplyServiceOptionWindows189(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
@@ -1142,9 +1116,7 @@ void ApplyServiceOptionWindows189(int id, unsigned char value, bool notify, int 
 
   g_windowMgr.SetWindows189Visible(value);
 }
-#pragma inline_depth()
 
-#pragma inline_depth(0)
 // OFFSET: 0x006C6200
 // FUNCTION: fn_06378
 void ApplyServiceOptionNotifyWindow(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
@@ -1159,9 +1131,7 @@ void ApplyServiceOptionNotifyWindow(int id, unsigned char value, bool notify, in
     window->SendMsg(nullptr, UM_COMMAND, 0x1F6, 0, 0, 0);
   }
 }
-#pragma inline_depth()
 
-#pragma inline_depth(0)
 // OFFSET: 0x006C6260
 // FUNCTION: fn_06379
 void ApplyServiceOptionWindow268(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
@@ -1176,9 +1146,7 @@ void ApplyServiceOptionWindow268(int id, unsigned char value, bool notify, int e
     window->Show(value);
   }
 }
-#pragma inline_depth()
 
-#pragma inline_depth(0)
 // OFFSET: 0x006C6300
 // FUNCTION: fn_06380
 void ApplyServiceOptionHideWindow(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
@@ -1194,7 +1162,6 @@ void ApplyServiceOptionHideWindow(int id, unsigned char value, bool notify, int 
     mode->statusIconTooltip->Show(0);
   }
 }
-#pragma inline_depth()
 
 // OFFSET: 0x006C6380
 // FUNCTION: fn_06381
@@ -1223,7 +1190,6 @@ void SendWhisperBlockPacket() {
   GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
 }
 
-#pragma inline_depth(0)
 // OFFSET: 0x006C6450
 // FUNCTION: fn_06384
 void ApplyServiceOptionAndSnap(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
@@ -1236,9 +1202,7 @@ void ApplyServiceOptionAndSnap(int id, unsigned char value, bool notify, int ena
 
   g_windowMgr.UpdateSnapRectangles();
 }
-#pragma inline_depth()
 
-#pragma inline_depth(0)
 // OFFSET: 0x006C5A80
 // FUNCTION: fn_06363
 void ApplyServiceOptionWeatherFlag(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
@@ -1251,7 +1215,6 @@ void ApplyServiceOptionWeatherFlag(int id, unsigned char value, bool notify, int
 
   g_weatherEffect.enabled = value ^ 1;
 }
-#pragma inline_depth()
 
 // OFFSET: 0x006C5AD0
 // FUNCTION: fn_06364
@@ -1287,7 +1250,6 @@ CGameSettingsMgr* Singleton<CGameSettingsMgr>::GetInstance() {
   return s_instance;
 }
 
-#pragma inline_depth(0)
 // OFFSET: 0x006C45F0
 // FUNCTION: fn_06356
 void ApplyServiceOptionJitterScale(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
@@ -1304,7 +1266,6 @@ void ApplyServiceOptionJitterScale(int id, unsigned char value, bool notify, int
     g_serviceOptionJitterScale = g_jitterDistanceScale;
   }
 }
-#pragma inline_depth()
 
 // OFFSET: 0x006C45D0
 // FUNCTION: fn_45463
@@ -1314,7 +1275,6 @@ void RequestModeAction48() {
   }
 }
 
-#pragma inline_depth(0)
 // OFFSET: 0x006C5A10
 // FUNCTION: fn_06362
 void ApplyItemWndServiceOption(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
@@ -1329,7 +1289,6 @@ void ApplyItemWndServiceOption(int id, unsigned char value, bool notify, int ena
     static_cast<UIItemWnd*>(g_windowMgr.itemWnd)->RefreshOptionBox();
   }
 }
-#pragma inline_depth()
 
 // OFFSET: 0x006C5A60
 // FUNCTION: fn_45464
