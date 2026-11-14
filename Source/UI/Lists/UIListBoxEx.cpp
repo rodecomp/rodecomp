@@ -7,10 +7,16 @@
 #include "Contents/Skin/SkinMgr.h"
 #include "UI/Text/ColoredText.h"
 #include "UI/Lists/UIListBox.h"
+#include "UI/Lists/UIComboBoxEx.h"
 #include "UI/Lists/UIListBoxEx.h"
 #include "UI/Lists/UIScrollBar.h"
 
 #include <algorithm>
+
+// OFFSET: 0x0086CD40
+// FUNCTION: fn_11037
+UIComboBoxEx::UIComboBoxEx() : UIListBoxEx(), targetId(10041) {
+}
 
 // OFFSET: 0x0086DA90
 // FUNCTION: fn_11056

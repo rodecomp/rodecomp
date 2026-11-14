@@ -29,11 +29,6 @@ namespace {
   }
 }
 
-// OFFSET: 0x0086CD40
-// FUNCTION: fn_11037
-UIComboBoxEx::UIComboBoxEx() : UIListBoxEx(), targetId(10041) {
-}
-
 // OFFSET: 0x00872C00
 // FUNCTION: fn_11136
 UIComboBoxEx::~UIComboBoxEx() = default;
