@@ -1959,6 +1959,18 @@ const std::string& UITextButton::GetLine(std::size_t index) const {
   }
 }
 
+// OFFSET: 0x0086E410
+// FUNCTION: fn_11070
+UIScrollBar2::UIScrollBar2() : UIScrollBar() {
+  this->arrowLength = 10;
+}
+
+// OFFSET: 0x0086E470
+// FUNCTION: fn_11071
+UIScrollBar3::UIScrollBar3() : UIScrollBar() {
+  this->arrowLength = 9;
+}
+
 // OFFSET: 0x0088D750
 // FUNCTION: fn_11378
 void UIScrollBar2::Paint() {
