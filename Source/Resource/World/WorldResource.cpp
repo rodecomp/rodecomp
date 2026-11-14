@@ -133,8 +133,8 @@ bool C3dWorldRes::Load(const char* name) {
   }
 
   unsigned char major = 0;
-  unsigned char minor = 0;
   input.Read(&major, 1);
+  unsigned char minor = 0;
   input.Read(&minor, 1);
 
   char message[256];
