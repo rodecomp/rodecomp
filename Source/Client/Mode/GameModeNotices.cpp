@@ -4977,14 +4977,14 @@ void CGameMode::ReceiveStovePurchaseResult(const unsigned char* data) {
   case 1:
     message = static_cast<const std::string&>(FormatOwnedString("Stove 유저가 아닙니다."));
     break;
-  case 3:
-  case 4:
-    message = LookupMessage(MSI_ANOTHER_WORKING);
-    break;
   case 5:
   case 6:
   case 7:
     message = static_cast<const std::string&>(FormatOwnedString("아이템 수령 실패"));
+    break;
+  case 3:
+  case 4:
+    message = LookupMessage(MSI_ANOTHER_WORKING);
     break;
   default:
     message = static_cast<const std::string&>(FormatOwnedString("Unknown Error (Stove:%d)", packet->result));
