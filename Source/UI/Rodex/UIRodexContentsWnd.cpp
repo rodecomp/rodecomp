@@ -228,10 +228,18 @@ void UIRodexContentsWnd::OnMouseHover(int x, int y) {
     int tooltipY = 290;
     this->ToScreen(tooltipX, tooltipY);
     if (item.identified == 1 && item.optionCount != 0) {
-      g_modeMgr.gameMode->ShowTooltip(FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), item.DisplayName(0).c_str(), item.optionCount).c_str(), tooltipX, tooltipY,
-                    g_session.GetItemNameColor(item), 0, 1);
+      CMode* gameMode = g_modeMgr.gameMode;
+      std::uint32_t color = g_session.GetItemNameColor(item);
+      int screenX = tooltipX;
+      int screenY = tooltipY;
+      gameMode->ShowTooltip(FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), item.DisplayName(0).c_str(), item.optionCount).c_str(), screenX, screenY,
+                    color, 0, 1);
     } else {
-      g_modeMgr.gameMode->ShowTooltip(item.DisplayName(0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+      CMode* gameMode = g_modeMgr.gameMode;
+      std::uint32_t color = g_session.GetItemNameColor(item);
+      int screenX = tooltipX;
+      int screenY = tooltipY;
+      gameMode->ShowTooltip(item.DisplayName(0).c_str(), screenX, screenY, color, 0, 1);
     }
   }
 }
