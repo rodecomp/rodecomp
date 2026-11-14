@@ -11,6 +11,7 @@
 
 struct EffectActor;
 class TextureCache;
+class CEffectPrim;
 struct matrix;
 
 struct CRagEffect : CRenderObject {
@@ -102,7 +103,7 @@ struct CRagEffect : CRenderObject {
   void TexturedHalo(const char* name, char kind);
   void TexturedFlare(const char* name, char size, int, int);
   void TexturedSwirl(unsigned char clockwise, const char* name);
-  void TexturedBeams(const char* name, char flag);
+  __declspec(noinline) void TexturedBeams(const char* name, char flag);
   void TexturedSlashWave(const char* name, char kind);
   void HealRingSparkle(const char* name, char type);
   void TexturedSprayKind(const char* name, float spin, char kind);
@@ -126,15 +127,15 @@ struct CRagEffect : CRenderObject {
   void TexturedFourRing(const char* name, char kind);
   void TexturedSkillIcon(const char* name, std::int16_t level, std::int16_t mode);
   void TexturedDoubleRing(const char* name, char level);
-  void WaterOut();
+  __declspec(noinline) void WaterOut();
   void BlackMaximize(const char* name);
-  void TexturedPair(const char* name);
+  __declspec(noinline) void TexturedPair(const char* name);
   __declspec(noinline) void PurpleSlash(std::int16_t angle);
   void TexturedDrop(const char* name, char flag);
   __declspec(noinline) void TexturedDualSpin(const char* first, const char* second, int unused);
   __declspec(noinline) void TexturedScatterLow(const char* name, char flag);
   __declspec(noinline) void TexturedScatter(const char* name, char flag);
-  void TexturedSpiralFade(const char* name, int unused1, int unused2);
+  __declspec(noinline) void TexturedSpiralFade(const char* name, int unused1, int unused2);
   __declspec(noinline) void TexturedSpiralTall(const char* name, int unused1, int unused2);
   __declspec(noinline) void TexturedSpiralSmall(const char* name, int unused1, int unused2);
   void TexturedBeam(char flag, const char* name);
@@ -160,13 +161,13 @@ struct CRagEffect : CRenderObject {
   void Map_MagicZone(const char* name, char type);
   __declspec(noinline) void Demonstration();
   void NpcStop(char type);
-  void Bubble_Drop();
+  __declspec(noinline) void Bubble_Drop();
   void Ghost(char type);
   void Bottom_Out(const char* name, char kind);
   __declspec(noinline) void POISON(char flag);
   __declspec(noinline) void Rainbow(const char* name, int unused);
   __declspec(noinline) void BLIND(char flag);
-  void TexturedTwinSpin(const char* name, char kind);
+  __declspec(noinline) void TexturedTwinSpin(const char* name, char kind);
   void TexturedScatterSphere(const char* name, char flag, int unused);
   __declspec(noinline) void DigitalSpace(int effectId);
   void TexturedFloatingDust(const char* name, int unused);
@@ -353,6 +354,7 @@ struct CRagEffect : CRenderObject {
   virtual void Init(EffectActor* parent, int id, vector3d deltaPos);
   virtual int GetDuration();
   virtual void SetStateDuration(int duration);
+  CEffectPrim* LaunchEffectPrim(int type, vector3d position);
 
   /* 0138 */ RagEffectState state;
 };

@@ -1,5 +1,8 @@
 #include "Contents/Effects/Primitives/EffectPrim.h"
 #include "Contents/Effects/Core/RagEffect.h"
+#include "Contents/World/World.h"
+#include "Client/Mode/ModeMgr.h"
+#include "Client/Mode/CGameMode.h"
 
 #include <cstring>
 
@@ -162,4 +165,11 @@ CEffectPrim* CreateEffectParticle(
   worldObjects.push_back(particle);
 
   return particle;
+}
+
+// INLINED
+CEffectPrim* CRagEffect::LaunchEffectPrim(int type, vector3d position) {
+  return CreateEffectParticle(
+    *this, this->render, type, position.x, position.y, position.z, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->objects
+  );
 }
