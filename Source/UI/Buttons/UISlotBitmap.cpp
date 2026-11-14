@@ -1,15 +1,36 @@
 #include "UI/Buttons/UISlotBitmap.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Buttons/UIBitmapButton.h"
+#include "Resource/Bitmap/BitmapResource.h"
+#include "Resource/ResourceMgr.h"
+#include "Resource/Bitmap/TextureNames.h"
+
+namespace {
+struct SlotAddButton : UIBitmapButton {
+  // INLINED
+  __forceinline void LoadState(int state, const char* name) {
+    CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
+    if (bitmap) {
+      if (bitmap->image.width > this->m_bitmapWidth) {
+        this->m_bitmapWidth = bitmap->image.width;
+      }
+      if (bitmap->image.height > this->m_bitmapHeight) {
+        this->m_bitmapHeight = bitmap->image.height;
+      }
+      this->m_names[state] = name;
+    }
+  }
+};
+}
 
 // OFFSET: 0x0085ADA0
 // FUNCTION: fn_10789
 void UISlotBitmap::OnCreate(int, int) {
   if (this->showAddButton == 1) {
     this->addButton = new UIBitmapButton();
-    this->addButton->SetBitmap("유저인터페이스\\select_character\\btn_add_out.bmp", 0, 0);
-    this->addButton->SetBitmap("유저인터페이스\\select_character\\btn_add_over.bmp", 1, 0);
-    this->addButton->SetBitmap("유저인터페이스\\select_character\\btn_add_press.bmp", 2, 0);
+    static_cast<SlotAddButton*>(this->addButton)->LoadState(0, "유저인터페이스\\select_character\\btn_add_out.bmp");
+    static_cast<SlotAddButton*>(this->addButton)->LoadState(1, "유저인터페이스\\select_character\\btn_add_over.bmp");
+    static_cast<SlotAddButton*>(this->addButton)->LoadState(2, "유저인터페이스\\select_character\\btn_add_press.bmp");
     this->addButton->SetSize(this->addButton->BitmapWidth(), this->addButton->BitmapHeight());
     this->addButton->Move(
       static_cast<int>((this->geometry.width - this->addButton->geometry.width) * 0.5),
