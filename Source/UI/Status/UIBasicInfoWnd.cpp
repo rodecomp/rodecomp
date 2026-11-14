@@ -445,7 +445,7 @@ void UIBasicInfoWnd::DrawCollapsed() {
     g_skinInfo.PaletteChannels(2, 2, red, green, blue);
     this->FillRegion(1, 17, this->geometry.width - 2, this->geometry.height - 18, RGB(red, green, blue));
     g_skinInfo.PaletteChannels(14, 6, red, green, blue);
-    DrawRoundedBorder(*this, 0, 14, this->geometry.width, this->geometry.height - 14, RGB(red, green, blue));
+    this->DrawRoundedOutline(0, 14, this->geometry.width, this->geometry.height - 14, RGB(red, green, blue));
   }
   this->DrawTitleBar(false, "", 0);
 
