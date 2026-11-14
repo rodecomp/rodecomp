@@ -7991,10 +7991,8 @@ void CGameMode::Initialize(const char* name) {
   g_equipmentPropertiesMgr->RefreshShop();
 
   if (g_session.GetOption(0xB) == 1) {
-    for (const std::string& blocked : g_whisperBlockMgr->Names()) {
-      std::string arguments[1] = {blocked};
-      this->ExecuteTalkType(0x12, arguments);
-    }
+    const std::set<std::string>& names = g_whisperBlockMgr->Names();
+    std::for_each(names.begin(), names.end(), [this](std::string name) { this->ExecuteTalkType(0x12, &name); });
     g_session.SetOption(0xB, 0, 0);
   }
 
@@ -8362,19 +8360,7 @@ int CGameMode::ProcessMousePick(int result, ActorPickInfo* pick) {
   int& pickTarget = this->lastPcGid;
   int& clickTarget = this->lastMonGid;
 
-  if (this->lockOnMouse == 0) {
-    if (!pick) {
-      if (lockedPick != 0 || g_mouse.buttons[0] == 1) {
-        return result;
-      }
-      if (this->oldMouseX == g_mouse.x && this->oldMouseY == g_mouse.y) {
-        return result;
-      }
-      pickTarget = 0;
-      clickTarget = 0;
-      return result;
-    }
-  } else {
+  if (this->lockOnMouse != 0) {
     this->SetCursorAction(5);
     if (lockedPick != 0) {
       if (g_mouse.buttons[0] == 1) {
@@ -8394,6 +8380,16 @@ int CGameMode::ProcessMousePick(int result, ActorPickInfo* pick) {
         this->lockOnMouse = 0;
       }
     }
+  } else if (!pick) {
+    if (lockedPick != 0 || g_mouse.buttons[0] == 1) {
+      return result;
+    }
+    if (this->oldMouseX == g_mouse.x && this->oldMouseY == g_mouse.y) {
+      return result;
+    }
+    pickTarget = 0;
+    clickTarget = 0;
+    return result;
   }
 
   if (lockedPick == 0) {
