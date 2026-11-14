@@ -9479,9 +9479,9 @@ void UIItemStoreWnd::Paint() {
     unsigned fillRed, fillGreen, fillBlue;
     g_skinInfo.PaletteChannels(2, 2, fillRed, fillGreen, fillBlue);
     this->FillRegion(40, 17, columns * 32, slotRows * 32, RGB(fillRed, fillGreen, fillBlue));
-    DrawRoundedBorder(*this, 55, 131, 187, 139, 0xCE9484);
-    DrawFilledRoundedBorder(*this, 56, 132, 185, 137, 0xFFE7DE);
-    DrawFilledRoundedBorder(*this, 61, 137, 175, 127, 0xFFFFFF);
+    this->DrawRoundedOutline(55, 131, 187, 139, 0xCE9484);
+    this->DrawFilledRoundedOutline(56, 132, 185, 137, 0xFFE7DE);
+    this->DrawFilledRoundedOutline(61, 137, 175, 127, 0xFFFFFF);
     auto* poring = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\notice_poring.bmp")));
     this->DrawBitmap(116, 151, poring, true);
     this->DrawCenteredText(20, 210, LookupMessage(MSI_RODEX_BUTTON_ANSWER), 257, 0, 12, 0, 0);
