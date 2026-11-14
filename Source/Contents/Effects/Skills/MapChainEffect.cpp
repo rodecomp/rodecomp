@@ -92,19 +92,17 @@ void CMapChainEffect::Open() {
 // OFFSET: 0x00B4B0A0
 // FUNCTION: fn_18950
 void CMapChainEffect::ResetParticles() {
-  const char* base = reinterpret_cast<const char*>(this);
-
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     particle->flags = 5;
     particle->position.x = this->position[0];
     particle->position.y = this->position[1];
     particle->position.z = this->position[2];
-    particle->speedParameter = *reinterpret_cast<const float*>(base + 0x44);
-    particle->scale = *reinterpret_cast<const float*>(base + 0x48);
-    particle->alpha = *reinterpret_cast<const int*>(base + 0x54);
-    particle->animationParameter = *reinterpret_cast<const float*>(base + 0x5C);
-    particle->animationParameters[0] = *reinterpret_cast<const float*>(base + 0x60);
+    particle->speedParameter = this->areaSize;
+    particle->scale = this->scaleParameter;
+    particle->alpha = this->baseAlpha;
+    particle->animationParameter = this->heights[0];
+    particle->animationParameters[0] = this->heights[1];
     particle->sourceBlend = 5;
     particle->destinationBlend = 7;
     particle->InitParticleQuad(particle->vertices);
