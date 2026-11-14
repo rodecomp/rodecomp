@@ -77,8 +77,8 @@ const char* CLanguageBase::DisplayText() const {
 const char* CLanguageTC::DisplayText() const {
   char bytes[9] = {};
 
-  for (std::uint8_t key : this->keys) {
-    const auto& mapping = this->mappings[key];
+  for (auto key = this->keys.begin(); key != this->keys.end(); ++key) {
+    const auto& mapping = this->mappings[*key];
 
     if (mapping.category < 4) {
       std::memcpy(&bytes[2 * mapping.category], mapping.bytes, 2);
