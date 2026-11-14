@@ -171,9 +171,9 @@ done:
 // OFFSET: 0x00B8A720
 // FUNCTION: fn_19394
 void CNaviData::ResetLinkDepths() {
-  for (CNaviInfo*& destination : this->destinations) {
-    std::vector<CNavi_Link*>::const_iterator end = destination->LinksEnd();
-    for (std::vector<CNavi_Link*>::const_iterator it = destination->LinksBegin(); it != end; ++it) {
+  for (std::vector<CNaviInfo*>::iterator destination = this->destinations.begin(); destination != this->destinations.end(); ++destination) {
+    std::vector<CNavi_Link*>::const_iterator end = (*destination)->LinksEnd();
+    for (std::vector<CNavi_Link*>::const_iterator it = (*destination)->LinksBegin(); it != end; ++it) {
       (*it)->SetDepth(-1);
     }
   }
