@@ -57,11 +57,12 @@ void UIIngredientInfoWnd::OnLBtnDblClk(int, int) {
     return;
   }
 
+  const int quantity = this->quantity;
   UILapineBox_IngredientListWnd* list = static_cast<UILapineBox_IngredientListWnd*>(this->parent);
   UILapineBoxWnd* box = static_cast<UILapineBoxWnd*>(list->parent);
   if (box->items.size() < static_cast<std::size_t>(box->maxItems)) {
     if (list->SendMsg(list, UM_DECITEM, id, 0, 0, 0) >= 0) {
-      box->AddIngredient(id, this->quantity);
+      static_cast<UILapineBoxWnd*>(list->parent)->AddIngredient(id, quantity);
     }
   }
 }
