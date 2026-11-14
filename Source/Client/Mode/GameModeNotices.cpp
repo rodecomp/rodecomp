@@ -5308,14 +5308,10 @@ void CGameMode::ReceiveGradeEnchantBroadcast(const unsigned char* data) {
   }
 
   std::string text;
-  if (packet->success == 1) {
-    text = static_cast<const std::string&>(
-      FormatOwnedString(LookupMessage(MSI_CHANGE_MATERIAL), name.c_str(), grade.c_str(), itemName.c_str())
-    );
-  } else {
-    text = static_cast<const std::string&>(
-      FormatOwnedString(LookupMessage(MSI_CHANGE_MATERIAL_SORT), name.c_str(), grade.c_str(), itemName.c_str())
-    );
+  {
+    const std::string formatted = FormatOwnedString(
+      LookupMessage(packet->success == 1 ? MSI_CHANGE_MATERIAL : MSI_CHANGE_MATERIAL_SORT), name.c_str(), grade.c_str(), itemName.c_str());
+    text = formatted;
   }
 
   if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
