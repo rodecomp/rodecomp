@@ -44,6 +44,11 @@ struct EquipSlots {
   /* 0000 */ int values[3];
 };
 
+struct BlockedCharacter {
+  /* 0000 */ std::uint32_t gid;
+  /* 0004 */ char expireDate[20];
+};
+
 struct SessionRecord6144 {
   /* 0000 */ std::uint16_t completionFlags = 0;
   /* 0004 */ std::uint32_t objectives[10] = {};
@@ -243,7 +248,8 @@ public:
     };
   };
   /* 07B4 */ unsigned char m_playerNameKey[0x40];
-  /* 07F4 */ unsigned char characterSelectionData[0x6A0];
+  /* 07F4 */ char m_selectedAccountText[0x40];
+  /* 0834 */ BlockedCharacter m_blockedCharacters[68];
   /* 0E94 */ int characterCount;
   /* 0E98 */ int cachedSex;
   /* 0E9C */ int m_sex;
@@ -1359,6 +1365,7 @@ void __fastcall RefreshPartyWindows(CSession* session);
 std::vector<unsigned char> SerializeMessengerMembers(const std::list<MessengerMember>& members);
 
 #if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(BlockedCharacter) == 0x18);
 static_assert(sizeof(SessionRecord6144) == 0x38);
 static_assert(sizeof(SessionRecord6178) == 0x2C);
 static_assert(sizeof(ProhibitionLogEntry) == 0x54);

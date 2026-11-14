@@ -3221,7 +3221,7 @@ void CSession::ResetCharacterState() {
   GlobalMemoryStatus(&memoryStatus);
   this->lowMemory = memoryStatus.dwTotalPhys < 0x9B72EC0 ? 1 : 0;
 
-  std::memset(&this->characterSelectionData[0x40], 0, 0x660);
+  std::memset(this->m_blockedCharacters, 0, sizeof(this->m_blockedCharacters));
   this->replayPacketMode = 0;
 
   std::map<int, int>& traitStats = this->m_traits.stats;

@@ -245,11 +245,6 @@ struct LoginMessagePacket {
   /* 0004 */ char text[1];
 };
 
-struct BlockedCharacter {
-  /* 0000 */ std::uint32_t gid;
-  /* 0004 */ char expireDate[20];
-};
-
 struct BlockedCharacterPacket {
   /* 0000 */ std::int16_t id;
   /* 0002 */ std::uint16_t length;
@@ -2506,7 +2501,7 @@ void CLoginMode::PollNetworkStatus() {
     }
     case ID_HC_BLOCK_CHARACTER: {
       const BlockedCharacterPacket* packet = reinterpret_cast<const BlockedCharacterPacket*>(g_gameModePacketBuffer);
-      BlockedCharacter* blocked = reinterpret_cast<BlockedCharacter*>(&g_session.characterSelectionData[0x40]);
+      BlockedCharacter* blocked = g_session.m_blockedCharacters;
       g_session.blockedCharacterCount = (packet->length - offsetof(BlockedCharacterPacket, characters)) / sizeof(BlockedCharacter);
       memset(blocked, 0, g_session.blockedCharacterCount * sizeof(BlockedCharacter));
       memcpy(blocked, packet->characters, g_session.blockedCharacterCount * sizeof(BlockedCharacter));
@@ -3028,7 +3023,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     return 0;
   case LMM_ID:
     strcpy(this->m_accountId, reinterpret_cast<const char*>(argument1));
-    strcpy(reinterpret_cast<char*>(g_session.characterSelectionData), reinterpret_cast<const char*>(argument1));
+    strcpy(g_session.m_selectedAccountText, reinterpret_cast<const char*>(argument1));
     return 0;
   case LMM_SET_AUTH_CODE:
     strcpy(this->m_authCode, reinterpret_cast<const char*>(argument1));

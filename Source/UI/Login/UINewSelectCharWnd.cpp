@@ -48,11 +48,6 @@ unsigned char g_selectedSlotIndex;
 
 
 #pragma pack(push, 1)
-struct BlockedCharacterEntry {
-  /* 0000 */ std::uint32_t gid;
-  /* 0004 */ char expireDate[20];
-};
-
 struct CharacterGidPacket {
   /* 0000 */ std::int16_t id;
   /* 0002 */ std::uint32_t gid;
@@ -66,7 +61,6 @@ struct CharacterMovePacket {
 };
 #pragma pack(pop)
 
-static_assert(sizeof(BlockedCharacterEntry) == 0x18);
 static_assert(sizeof(CharacterGidPacket) == 6);
 static_assert(sizeof(CharacterMovePacket) == 8);
 
@@ -606,7 +600,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
           g_session.SetFlag(static_cast<char>(info->sex));
         }
         this->m_navigationBlocked = true;
-        const BlockedCharacterEntry* blocked = reinterpret_cast<const BlockedCharacterEntry*>(&g_session.characterSelectionData[0x40]);
+        const BlockedCharacter* blocked = g_session.m_blockedCharacters;
         for (int index = 0; index < g_session.blockedCharacterCount; ++index) {
           if (info->gid == blocked[index].gid) {
             char text[260];
@@ -668,7 +662,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
 
       const CharacterInfo* info =
         reinterpret_cast<const CharacterInfo*>(g_modeMgr.gameMode->SendMsg(MM_QUERYCHARICTORINFO, static_cast<unsigned char>(g_selectedSlotIndex), 0, 0, 0));
-      const BlockedCharacterEntry* blocked = reinterpret_cast<const BlockedCharacterEntry*>(&g_session.characterSelectionData[0x40]);
+      const BlockedCharacter* blocked = g_session.m_blockedCharacters;
       for (int index = 0; index < g_session.blockedCharacterCount; ++index) {
         if (info->gid == blocked[index].gid) {
           char text[260];
