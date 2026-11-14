@@ -1,6 +1,8 @@
 #include "Render/DeviceContext/DeviceContext.h"
 #include "UI/Lists/UIDropDownBox.h"
+#include "UI/Navigation/UINavigationV4Wnd.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Window/WindowId.h"
 #include "UI/Window/WindowBorder.h"
 
 #include <algorithm>
@@ -65,6 +67,46 @@ void CUIDropDownBox::Paint() {
   this->DrawRectOutline(0, 0, this->geometry.width, this->geometry.height, border);
 }
 
+namespace {
+// INLINED
+inline void PromoteWindow(UIWindowMgr* manager, UIWindow* window) {
+  if (!window || (manager->modal != nullptr && manager->navigationWnd != window)) {
+    return;
+  }
+
+  if (manager->LookupWindow(WID_NEWMAKECHARWND) || manager->LookupWindow(WID_MAKECHARWND) || manager->LookupWindow(WID_SECONDPASSWORDINPUTWND) || manager->LookupWindow(WID_SECONDPASSWORDEDITWND)) {
+    return;
+  }
+
+  int companion = -1;
+
+  if (window->geometry.id == 12) {
+    companion = 234;
+  }
+  if (window->geometry.id == 82) {
+    companion = 250;
+  }
+
+  if (companion != -1) {
+    for (auto it = manager->rendered.begin(); it != manager->rendered.end(); ++it) {
+      if ((*it)->geometry.id == companion) {
+        UIWindow* value = *it;
+        manager->rendered.erase(it);
+        manager->rendered.push_back(value);
+        break;
+      }
+    }
+  }
+
+  const auto entry = std::find(manager->rendered.begin(), manager->rendered.end(), window);
+
+  if (entry != manager->rendered.end()) {
+    manager->rendered.erase(entry);
+    manager->rendered.push_back(window);
+  }
+}
+}
+
 // OFFSET: 0x00AA27B0
 // FUNCTION: fn_17217
 void UIWindowMgr::ShowDropDown(UIWindow* owner, UIWindow* child, int x, int y) {
@@ -85,7 +127,7 @@ void UIWindowMgr::ShowDropDown(UIWindow* owner, UIWindow* child, int x, int y) {
   if (std::find(rendered.begin(), rendered.end(), popup) == rendered.end()) {
     rendered.push_back(popup);
   } else {
-    this->Promote(popup);
+    PromoteWindow(this, popup);
   }
 
   popup->Show(1);
