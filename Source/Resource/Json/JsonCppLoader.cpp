@@ -16,6 +16,20 @@ struct JsonValueLocal {
   }
 };
 
+struct JsonCopiedValue {
+  JsonValue value;
+
+  // INLINED
+  explicit JsonCopiedValue(const JsonValue& other) {
+    reinterpret_cast<void(__thiscall*)(JsonValue*, const JsonValue*)>(JsonCopyConstruct)(&this->value, &other);
+  }
+
+  // INLINED
+  ~JsonCopiedValue() {
+    reinterpret_cast<void(__thiscall*)(JsonValue*)>(JsonDestroy)(&this->value);
+  }
+};
+
 // OFFSET: 0x00509940
 // FUNCTION: fn_00891
 bool JsonCppLoader::GetMapStringBoolValue(const JsonValue& node, const std::string& key, std::map<std::string, bool>* out) {
@@ -29,13 +43,14 @@ bool JsonCppLoader::GetMapStringBoolValue(const JsonValue& node, const std::stri
   const JsonObject& members = value.value.GetObject();
   for (JsonObject::const_iterator member = members.begin(); member != members.end(); ++member) {
     std::string name = member->first;
-    JsonValue element = member->second;
-    if (element.GetType() != JsonValue::BOOL_VALUE) {
+    JsonCopiedValue element(member->second);
+    if (element.value.GetType() != JsonValue::BOOL_VALUE) {
       this->Fail("잘못된 데이터가 입력되었습니다. boolValue 가 입력되어야 합니다. (keyName : %s)", key.c_str());
       return false;
     }
 
-    if (!out->insert(std::make_pair(name, element.AsBool())).second) {
+    const std::pair<std::string, bool> item(name, element.value.AsBool());
+    if (!out->insert(item).second) {
       this->Fail("중복키가 입력되었습니다. (keyName : %s)", key.c_str());
       return false;
     }
