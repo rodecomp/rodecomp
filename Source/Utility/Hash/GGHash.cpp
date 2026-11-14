@@ -76,8 +76,8 @@ BOOL CGGHash::Load(const wchar_t* filename) {
 
       DWORD count = keys[4] ^ encryptedCount;
       if (count != 0) {
-        this->m_data = static_cast<BYTE*>(::operator new(4 * (2 * count + 1)));
-        DWORD* table = reinterpret_cast<DWORD*>(this->m_data);
+        this->m_data = static_cast<DWORD*>(::operator new(4 * (2 * count + 1)));
+        DWORD* table = this->m_data;
         this->m_size = count;
 
         DWORD checksum = keys[5] ^ encryptedChecksum;
@@ -127,7 +127,7 @@ int CGGHash::Check() {
     return 0;
   }
 
-  const DWORD* table = reinterpret_cast<const DWORD*>(this->m_data);
+  const DWORD* table = this->m_data;
   DWORD running = 0xFFFFFFFF;
   for (DWORD i = 0; i < count; ++i) {
     running ^= table[i];
@@ -156,7 +156,7 @@ int CGGHash::VerifyHash(const wchar_t* name, DWORD hash) {
   MD5 md5;
   std::uint32_t nameHash = md5.HashStringLower(name);
   DWORD count = this->m_size;
-  const DWORD* table = reinterpret_cast<const DWORD*>(this->m_data);
+  const DWORD* table = this->m_data;
 
   if (FindHash(table, count, hash ^ nameHash) != nullptr) {
     return 1;

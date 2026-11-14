@@ -33,7 +33,7 @@ protected:
 
   /* 0004 */ DWORD m_error;
   /* 0008 */ DWORD m_size;
-  /* 000C */ BYTE* m_data;
+  /* 000C */ DWORD* m_data;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
