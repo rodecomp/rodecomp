@@ -3645,7 +3645,7 @@ UICashEmotionScrollBar::UICashEmotionScrollBar() : UIScrollBar() {
 void UICashEmotionScrollBar::Paint() {
   this->ClearSurface(0xFFFF00FF);
   const int height = this->geometry.height;
-  DrawRectangleBorder(*this, 0, 0, this->geometry.width, height, 0xDECEBD);
+  this->DrawRectOutline(0, 0, this->geometry.width, height, 0xDECEBD);
 
   bool disabled;
   const char* name;
