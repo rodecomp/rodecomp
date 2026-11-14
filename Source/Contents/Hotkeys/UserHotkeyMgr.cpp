@@ -69,9 +69,9 @@ namespace {
 
 // OFFSET: 0x00E0A4C0
 // FUNCTION: fn_23797
-int HotkeyCount(LuaScript& script, int tab) {
+int CSession::HotkeyCount(int tab) const {
   int count = 0;
-  if (script.Call("GetOriginalHotKeyListSize", "d>d", tab + 1, &count)) {
+  if (g_session.m_hotkeyScript->Call("GetOriginalHotKeyListSize", "d>d", tab + 1, &count)) {
     int hidden = 0;
     if (tab == 1) {
       for (int index = HK_FIRST_HIDDEN; index < count; ++index) {
@@ -85,11 +85,6 @@ int HotkeyCount(LuaScript& script, int tab) {
   }
 
   return count;
-}
-
-// INLINED
-int CSession::HotkeyCount(int tab) const {
-  return ::HotkeyCount(*g_session.m_hotkeyScript, tab);
 }
 
 // STATIC: 0x013898E4
