@@ -11991,13 +11991,17 @@ int UIChooseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 // FUNCTION: fn_12331
 int UIChoose3Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   const char* text = reinterpret_cast<const char*>(a);
-  if (message != UM_SETCHOOSE || text == nullptr || std::strlen(text) == 0 || std::strcmp(text, LookupMessage(MSI_REF_UNEQUIP)) == 0) {
+  if (message != UM_SETCHOOSE || text == nullptr) {
+    return this->UIChooseWnd::SendMsg(sender, message, a, b, c, d);
+  }
+  const std::size_t textLength = std::strlen(text);
+  if (textLength == 0 || std::strcmp(text, LookupMessage(MSI_REF_UNEQUIP)) == 0) {
     return this->UIChooseWnd::SendMsg(sender, message, a, b, c, d);
   }
   int length = 0;
   int itemId = 0;
   const char* line = text;
-  if (ParseItemIdTag(text, text + std::strlen(text), length, itemId) == 1 && itemId > 0) {
+  if (ParseItemIdTag(text, text + textLength, length, itemId) == 1 && itemId > 0) {
     line = FindItemDescription(itemId).identifiedName;
   }
   this->m_list->AddLine(line);
