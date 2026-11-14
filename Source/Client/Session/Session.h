@@ -842,6 +842,7 @@ public:
   int GetSiegeMode() const;
   int IsPlayerJobId(int job) const;
   bool IsVisibleJob(int job) const;
+  float AttackMotionLength(int job, int appearance, int equipment, int attackMode) const;
   int GetRealWeaponId(int weapon) const;
   int GetBattleFieldMode() const;
   bool IsShadowItemType(int type) const;

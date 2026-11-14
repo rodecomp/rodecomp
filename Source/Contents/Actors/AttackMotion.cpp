@@ -1,10 +1,11 @@
 #include "Contents/Actors/AttackMotion.h"
+#include "Client/Session/Session.h"
 #include "Contents/Items/WeaponType.h"
 #include "Contents/Jobs/JobId.h"
 
 // OFFSET: 0x00DDFB50
 // FUNCTION: fn_23444
-float AttackMotionLength(int job, int appearance, int equipment, int attackMode) {
+float CSession::AttackMotionLength(int job, int appearance, int equipment, int attackMode) const {
   switch (attackMode) {
   case 0:
     switch (job) {
@@ -47,4 +48,9 @@ float AttackMotionLength(int job, int appearance, int equipment, int attackMode)
     break;
   }
   return 6.0f;
+}
+
+// INLINED
+float AttackMotionLength(int job, int appearance, int equipment, int attackMode) {
+  return g_session.AttackMotionLength(job, appearance, equipment, attackMode);
 }
