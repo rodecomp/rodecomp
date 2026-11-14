@@ -14731,7 +14731,7 @@ void CGameMode::ReceiveActorMoveEntryOld2(const unsigned char* data) {
         g_session.petAccessory = entry.accessory;
       }
       if (entry.accessory && !actor->GetGdid()) {
-        actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
+        actor->SetActionName(g_session.GetPetAccActName(entry.accessory));
       }
     }
     if (g_session.GetSiegeMode() && packet->objectType != NPC_PET_TYPE && actor->sceneNameWindow == nullptr &&
@@ -14771,7 +14771,7 @@ void CGameMode::ReceiveActorMoveEntryOld2(const unsigned char* data) {
         g_session.petAccessory = entry.accessory;
       }
       if (entry.accessory) {
-        actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
+        actor->SetActionName(g_session.GetPetAccActName(entry.accessory));
       }
     }
     actor->characterLevel = packet->level;
@@ -14878,7 +14878,7 @@ void CGameMode::ReceiveActorMoveEntryNamed(const unsigned char* data) {
         g_session.petAccessory = entry.accessory;
       }
       if (entry.accessory && !actor->GetGdid()) {
-        actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
+        actor->SetActionName(g_session.GetPetAccActName(entry.accessory));
       }
     }
     if (g_session.GetSiegeMode() && packet->objectType == NPC_PET_TYPE && actor->sceneNameWindow == nullptr &&
@@ -14918,7 +14918,7 @@ void CGameMode::ReceiveActorMoveEntryNamed(const unsigned char* data) {
         g_session.petAccessory = entry.accessory;
       }
       if (entry.accessory) {
-        actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
+        actor->SetActionName(g_session.GetPetAccActName(entry.accessory));
       }
     }
     actor->objectType = packet->objectType;
@@ -15506,7 +15506,7 @@ void CGameMode::ReceiveActorStandEntryNamedOld(const unsigned char* data) {
         g_session.petAccessory = entry.accessory;
       }
       if (entry.accessory) {
-        actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
+        actor->SetActionName(g_session.GetPetAccActName(entry.accessory));
       }
     } else if (packet->objectType == NPC_HO_TYPE && g_session.IsHomunAid(packet->aid)) {
       g_session.homunAlive = 1;
@@ -16169,7 +16169,7 @@ void CGameMode::ReceiveActorStateEntryNamedOld(const unsigned char* data) {
         g_session.petAccessory = entry.accessory;
       }
       if (entry.accessory) {
-        actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
+        actor->SetActionName(g_session.GetPetAccActName(entry.accessory));
       }
     } else if (packet->objectType == NPC_HO_TYPE && g_session.IsHomunAid(packet->aid)) {
       g_session.homunAlive = 1;
