@@ -6,6 +6,9 @@
 #include <windows.h>
 #include <utility>
 
+template __declspec(noinline) std::string::size_type
+std::string::find(const std::string&, std::string::size_type) const noexcept;
+
 namespace {
   // INLINED
   bool Hex(unsigned char value) {
@@ -75,8 +78,14 @@ void ExtractUrlTextLinks(const std::string& text, std::vector<TextLink>& links) 
 // OFFSET: 0x00A81A70
 // FUNCTION: fn_16980
 bool HasTextLinks(const std::string& text) {
-  return text.find(g_urlTagBegin) != std::string::npos || text.find(g_itemTagBegin) != std::string::npos || text.find(g_tipBoxTagBegin) != std::string::npos ||
-         text.find(g_naviTagBegin) != std::string::npos || text.find(g_itemLinkTagOpen) != std::string::npos || text.find(g_questTagBegin) != std::string::npos;
+  const bool hasUrl = text.find(g_urlTagBegin) != std::string::npos;
+  if (text.find(g_itemTagBegin) != std::string::npos || text.find(g_tipBoxTagBegin) != std::string::npos) {
+    return true;
+  }
+
+  bool hasLink = hasUrl;
+  hasLink |= text.find(g_naviTagBegin) != std::string::npos;
+  return text.find(g_itemLinkTagOpen) != std::string::npos || text.find(g_questTagBegin) != std::string::npos || hasLink;
 }
 
 // OFFSET: 0x008791E0
@@ -140,7 +149,7 @@ const std::string __stdcall DisplayTextTag(const std::string& source, const std:
 
     const int content = position + static_cast<int>(begin.size());
     std::string tail = text.substr(content);
-    const int close = static_cast<int>(tail.find(end));
+    const int close = static_cast<int>(tail.find(end.data(), 0, end.size()));
 
     if (close == -1) {
       position = content;
@@ -201,11 +210,11 @@ const std::string RemoveTextLinkInfo(const std::string& source) {
       result += text.substr(0, position);
     }
 
-    const int close = static_cast<int>(text.find(g_infoTagEnd));
+    const int close = static_cast<int>(text.find(g_infoTagEnd.data(), 0, g_infoTagEnd.size()));
 
     if (close != -1) {
       text = text.substr(close + g_infoTagEnd.size());
-      position = static_cast<int>(text.find(g_infoTagBegin));
+      position = static_cast<int>(text.find(g_infoTagBegin.data(), 0, g_infoTagBegin.size()));
     }
   } while (position != -1);
 
@@ -233,7 +242,7 @@ void __stdcall ExtractTextLinks(const std::string& source, const std::string& be
   do {
     const auto content = position + begin.size();
     std::string tail = text.substr(content);
-    const auto close = tail.find(end);
+    const auto close = tail.find(end.data(), 0, end.size());
 
     if (close == std::string::npos) {
       position = content;
@@ -242,7 +251,7 @@ void __stdcall ExtractTextLinks(const std::string& source, const std::string& be
 
     std::string display = tail.substr(0, close);
     std::string metadata;
-    const auto info = display.find(g_infoTagBegin);
+    const auto info = display.find(g_infoTagBegin.data(), 0, g_infoTagBegin.size());
 
     if (info != std::string::npos) {
       display = tail.substr(0, info);
