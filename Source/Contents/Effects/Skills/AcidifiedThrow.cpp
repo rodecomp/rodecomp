@@ -42,10 +42,10 @@ void CAcidifiedThrow::Close() {
 // OFFSET: 0x006F37D0
 // FUNCTION: fn_06824
 void CAcidifiedThrow::Open() {
-  this->projectileEmitter = reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
-  this->impactEmitters[0] = reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
-  this->impactEmitters[1] = reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
-  this->impactEmitters[2] = reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+  this->projectileEmitter = reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(&this->positionVector, 5));
+  this->impactEmitters[0] = reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(&this->positionVector, 5));
+  this->impactEmitters[1] = reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(&this->positionVector, 13));
+  this->impactEmitters[2] = reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(&this->positionVector, 5));
 
   if (!this->projectileEmitter || !this->impactEmitters[0] || !this->impactEmitters[1] || !this->impactEmitters[2]) {
     return;

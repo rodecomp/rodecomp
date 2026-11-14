@@ -341,7 +341,7 @@ CSpriteMableEffect::CSpriteMableEffect() : CEffect(EF_SPRITEMABLE) {
 void CSpriteMableEffect::Open() {
   for (int i = 0; i < 3; ++i) {
     CSpriteParticle* particle =
-        static_cast<CSpriteParticle*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 1));
+        static_cast<CSpriteParticle*>(CreateSpriteParticle(&this->positionVector, 1));
     if (!particle) {
       continue;
     }
@@ -403,7 +403,7 @@ CStemSpearEffect::CStemSpearEffect() : CEffect(1100) {
 void CStemSpearEffect::Open() {
   for (int i = 0; i < 4; ++i) {
     CSpriteParticle* particle =
-        static_cast<CSpriteParticle*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 0x101));
+        static_cast<CSpriteParticle*>(CreateSpriteParticle(&this->positionVector, 0x101));
     if (!particle) {
       continue;
     }
@@ -617,7 +617,7 @@ CWarningPlaneEffect::CWarningPlaneEffect() : CEffect(EF_WARNING_PLANE), fadingIn
 // OFFSET: 0x0070F240
 // FUNCTION: fn_07183
 void CWarningPlaneEffect::AddPlane(vector3d position) {
-  CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+  CParticle* particle = CreateParticle(&this->positionVector, 5);
   if (particle) {
     particle->SetTexture("warning_plane.tga");
     particle->effectId = this->id;
@@ -666,7 +666,7 @@ CCylinderEffect::CCylinderEffect() : CEffect(-1) {
 void CCylinderEffect::Open() {
   this->startTime = timeGetTime();
   for (long long i = 0; i < 21; ++i) {
-    CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+    CParticle* particle = CreateParticle(&this->positionVector, 5);
     CParticle* created = particle;
     if (!particle) {
       continue;
@@ -797,7 +797,7 @@ CEternalSlashAttackEffect::CEternalSlashAttackEffect() : CEffect(-1) {
 // FUNCTION: fn_07209
 void CEternalSlashAttackEffect::Open() {
   EZ2STREmitter* bottom =
-      reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+      reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(&this->positionVector, 13));
   if (bottom) {
     AsParticle(bottom)->Load(std::string("eternal_slash\\eternal_slash_bottom\\eternal_slash_bottom.str"));
     bottom->offset.x = 0.0f;
@@ -807,7 +807,7 @@ void CEternalSlashAttackEffect::Open() {
   }
 
   EZ2STREmitter* slash =
-      reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+      reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(&this->positionVector, 5));
   if (slash) {
     AsParticle(slash)->Load(std::string("eternal_slash\\eternal_slash\\eternal_slash.str"));
     slash->offset.x = 0.0f;
@@ -870,7 +870,7 @@ void CEternalSlashCountEffect::Open() {
   }
 
   CEZ2STRParticle* particle =
-      static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+      static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
   if (!particle) {
     return;
   }
@@ -932,7 +932,7 @@ CFallenAngelEffect::CFallenAngelEffect() : CEffect(EF_FALLEN_ANGEL), emitter(nul
 // FUNCTION: fn_07223
 void CFallenAngelEffect::Open() {
   if (!this->emitter) {
-    CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+    CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
     this->emitter = reinterpret_cast<EZ2STREmitter*>(particle);
     particle->Open("RL_fallen_angel\\Penne.str");
   } else {
@@ -1003,12 +1003,12 @@ CFloralFlareRoad::CFloralFlareRoad() : CEffect(EF_FLORAL_FLARE_ROAD) {
 // OFFSET: 0x00711A70
 // FUNCTION: fn_07231
 void CFloralFlareRoad::Open() {
-  CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+  CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 13));
   this->emitter = reinterpret_cast<EZ2STREmitter*>(bottom);
   bottom->Load(std::string("froral_flareroad\\froral_flareroad_bottom\\froral_flareroad_bottom.str"));
 
   for (int delay = 0; delay < 4500; delay += 300) {
-    vector3d position = *reinterpret_cast<const vector3d*>(this->position);
+    vector3d position = *&this->positionVector;
     const int distanceX = ClampedRandom(20);
     const int angleX = ClampedRandom(360);
     position.x = ClientSine(angleX) * static_cast<float>(distanceX) + position.x;
@@ -1133,7 +1133,7 @@ CParticle* CFootprintEffect::SpawnFootprint() {
     return nullptr;
   }
 
-  CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 1);
+  CParticle* particle = CreateParticle(&this->positionVector, 1);
   if (!particle) {
     return particle;
   }
@@ -1434,7 +1434,7 @@ void CFromTheAbyssEffect::OnProcess() {
 
 // INLINED
 static __forceinline void FollowAbyssOwner(const CFromTheAbyssEffect* effect, EZ2STREmitter* emitter) {
-  const vector3d origin = *reinterpret_cast<const vector3d*>(effect->position);
+  const vector3d origin = *&effect->positionVector;
   const matrix& view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
   const vector3d viewPosition = {origin.x * view.values[0] + origin.y * view.values[3] + origin.z * view.values[6] + view.values[9],
                                  origin.x * view.values[1] + origin.y * view.values[4] + origin.z * view.values[7] + view.values[10],
@@ -1479,7 +1479,7 @@ void CFromTheAbyssEffect::UpdateParticle(long long key, AbyssParticle particle) 
       const vector3d offset = emitter->offset;
       FreeParticle(AsParticle(emitter));
       EZ2STREmitter* dying =
-          reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+          reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(&this->positionVector, 5));
       if (dying) {
         AsParticle(dying)->Load("from_the_abyss\\from_the_abyss_shadowball\\from_the_abyss_shadowball.str");
         dying->looping = 1;
@@ -1527,7 +1527,7 @@ void CFromTheAbyssEffect::SetLevel(long long level) {
       }
 
       EZ2STREmitter* emitter =
-          reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+          reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(&this->positionVector, 5));
       if (emitter) {
         AsParticle(emitter)->Load("from_the_abyss\\from_the_abyss_shadowball_create\\from_the_abyss_shadowball_create.str");
         AsParticle(emitter)->m_scale = this->waves[i].scale;
@@ -1548,7 +1548,7 @@ void CFromTheAbyssEffect::SetLevel(long long level) {
         const vector3d offset = previous->offset;
         FreeParticle(AsParticle(previous));
         EZ2STREmitter* emitter =
-            reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+            reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(&this->positionVector, 5));
         if (emitter) {
           AsParticle(emitter)->Load("from_the_abyss\\from_the_abyss_shadowball_die\\from_the_abyss_shadowball_die.str");
           AsParticle(emitter)->m_scale = static_cast<float>(scale);
@@ -1580,7 +1580,7 @@ void CFullScreenEffect::Open() {
     texture = "effect\\state_effect\\frostbite\\frostbite_screen\\frostbite_screen.tga";
     this->retained = 1;
     for (long long i = 0; i < 4; ++i) {
-      CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 0x201);
+      CParticle* particle = CreateParticle(&this->positionVector, 0x201);
       if (!particle) {
         this->loaded = 0;
         return;
@@ -1956,7 +1956,7 @@ void CJupitelThunderHit::SpawnHit() {
     break;
   }
 
-  CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 0x203);
+  CParticle* particle = CreateParticle(&this->positionVector, 0x203);
   particle->elapsedFrames = -10;
   particle->scale = 7.5f;
   particle->animationState = 0;
@@ -1977,7 +1977,7 @@ void CJupitelThunderHit::SpawnSpark() {
     break;
   }
 
-  CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 0x203);
+  CParticle* particle = CreateParticle(&this->positionVector, 0x203);
   particle->SetTexture(texture);
   particle->speedParameter = 2.5f;
   this->emitters.push_back(particle);
@@ -2358,12 +2358,12 @@ void CPetitioEffect::Close() {
 // OFFSET: 0x0071F7A0
 // FUNCTION: fn_07347
 void CPetitioEffect::Open() {
-  CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+  CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 13));
   EZ2STREmitter* bottomEmitter = reinterpret_cast<EZ2STREmitter*>(bottom);
   bottom->Load(std::string("petitio\\petitio_bottom\\petitio_bottom.str"));
   this->emitters.push_back(bottomEmitter);
 
-  CEZ2STRParticle* petitio = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+  CEZ2STRParticle* petitio = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
   EZ2STREmitter* petitioEmitter = reinterpret_cast<EZ2STREmitter*>(petitio);
   petitio->Load(std::string("petitio\\petitio\\petitio.str"));
   this->emitters.push_back(petitioEmitter);
@@ -2442,7 +2442,7 @@ void CPneumaticusProcellaEffect::Open() {
   }
 
   this->emitter =
-      reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+      reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(&this->positionVector, 13));
   if (this->emitter) {
     AsParticle(this->emitter)
         ->Load(std::string("pneumaticusprocella\\pneumaticusprocella_target\\pneumaticusprocella_target.str"));
@@ -2459,7 +2459,7 @@ void CPneumaticusProcellaEffect::Open() {
     const int delay = ClampedRandom(200) + (i + i / 10 * 20) * 100;
 
     EZ2STREmitter* emitter =
-        reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+        reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(&this->positionVector, 5));
     if (emitter) {
       char name[260] = {};
       StringFormat(name, sizeof(name), static_cast<std::size_t>(-1),
@@ -2536,7 +2536,7 @@ void CRandomHitEffect::Open() {
   const double angles[3] = {0.0, 320.0, 40.0};
 
   this->emitter =
-      reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+      reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(&this->positionVector, 5));
   if (this->emitter) {
     switch (this->id) {
     case EF_SECOND_FAITH_HIT: {
@@ -2622,7 +2622,7 @@ void CRandomOptEffect::Init() {
   int baseAngle = 0;
   for (int alpha = 50; alpha > 20; alpha -= 10) {
     for (int i = 0; i <= 21; ++i) {
-      CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+      CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (!particle) {
         continue;
       }
@@ -2808,7 +2808,7 @@ void CRichsCoinEffect::Open() {
   }
 
   for (int i = 0; i < count; ++i) {
-    CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+    CParticle* particle = CreateParticle(&this->positionVector, 5);
     if (particle) {
       particle->SetTexture("effect\\rl_richs_coin_b\\rcoin1.bmp");
       particle->animationParameter = static_cast<float>(360 / count * i) / 180.0f * 3.141592f - 10.0f;
@@ -2821,7 +2821,7 @@ void CRichsCoinEffect::Open() {
   if (this->coinCount > 5) {
     const int lights = this->coinCount - 5;
     for (int i = 0; i < lights; ++i) {
-      CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+      CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (particle) {
         particle->SetTexture("effect\\rl_richs_coin_b\\light.bmp");
         particle->animationParameter = static_cast<float>(i * 72) / 180.0f * 3.141592f - 10.0f;
@@ -2926,7 +2926,7 @@ void CServantWeaponNewEffect::AddWeapon() {
     }
 
     CEZ2STRParticle* particle =
-        static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+        static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
     if (particle) {
       particle->Load(std::string("DRAGON_KNIGHT\\DK_SERVANTWEAPON\\servantweapon_cast\\servantweapon_cast.str"));
       particle->m_scale = 0.12f;
@@ -2941,7 +2941,7 @@ void CServantWeaponNewEffect::AddWeapon() {
 // FUNCTION: fn_07395
 void CServantWeaponEffect::SetShoot(int column) {
   EZ2STREmitter* emitter =
-      reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+      reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(&this->positionVector, 13));
   AsParticle(emitter)->Load(std::string("servantweapon\\servantweapon_shoot\\servantweapon_shoot.str"));
   if (this->emitters[2][column] != nullptr) {
     FreeParticle(AsParticle(this->emitters[2][column]));
@@ -2954,7 +2954,7 @@ void CServantWeaponEffect::SetShoot(int column) {
 void CServantWeaponEffect::SetPhantomShot(long long column) {
   if (column < 5) {
     EZ2STREmitter* emitter =
-        reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+        reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(&this->positionVector, 13));
     if (emitter) {
       AsParticle(emitter)->Load(std::string("servant_phantom\\servant_phantom_shot\\servant_phantom_shot.str"));
       if (this->emitters[2][column] != nullptr) {
@@ -2969,7 +2969,7 @@ void CServantWeaponEffect::SetPhantomShot(long long column) {
 // FUNCTION: fn_07397
 void CServantWeaponEffect::SetSignShot(int column) {
   EZ2STREmitter* emitter =
-      reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+      reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(&this->positionVector, 13));
   AsParticle(emitter)->Load(std::string("servant_sign\\servant_sign_shot\\servant_sign_shot.str"));
   if (this->emitters[2][column] != nullptr) {
     FreeParticle(AsParticle(this->emitters[2][column]));
@@ -3014,7 +3014,7 @@ void CServantWeaponEffect::Open() {
       }
 
       EZ2STREmitter* emitter =
-          reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+          reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(&this->positionVector, 13));
       AsParticle(emitter)->Load(std::string("servantweapon\\servantweapon_cast\\servantweapon_cast.str"));
       this->emitters[1][column] = emitter;
     }
@@ -3043,7 +3043,7 @@ bool CServantWeaponNewEffect::IsAlive() {
 // FUNCTION: fn_07404
 EZ2STREmitter* CServantWeaponNewEffect::CreateShot(float angle, int skill) {
   CEZ2STRParticle* particle =
-      static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+      static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
   if (!particle) {
     return nullptr;
   }
@@ -3085,7 +3085,7 @@ static __forceinline void PlaceServantEmitter(CServantWeaponEffect* effect, EZ2S
     return;
   }
 
-  const vector3d position = *reinterpret_cast<const vector3d*>(effect->position);
+  const vector3d position = *&effect->positionVector;
   const matrix view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
   const matrix& inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse;
   const vector3d& offset = effect->offsets[column];
@@ -3120,7 +3120,7 @@ void CServantWeaponEffect::OnProcess() {
         this->emitters[1][column] = nullptr;
         if (this->emitters[0][column] == nullptr) {
           CEZ2STRParticle* particle =
-              static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+              static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 13));
           particle->Load(std::string("servantweapon\\servantweapon\\servantweapon.str"));
           particle->m_loop = true;
           this->emitters[0][column] = reinterpret_cast<EZ2STREmitter*>(particle);
@@ -3157,7 +3157,7 @@ void CServantWeaponNewEffect::OnProcess() {
     if (!AsParticle(*it)->Process(0.0f, 0.0f, 0.0f)) {
       const float angle = (*it)->angle;
       CEZ2STRParticle* particle =
-          static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+          static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
       if (particle) {
         particle->Load(std::string("DRAGON_KNIGHT\\DK_SERVANTWEAPON\\servantweapon\\servantweapon.str"));
         particle->m_loop = true;
@@ -3268,7 +3268,7 @@ void CNewCloudKillEffect::Open() {
   this->circleResetTime = static_cast<int>(timeGetTime());
   this->cloudResetTime = static_cast<int>(timeGetTime());
 
-  CParticle* circle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+  CParticle* circle = CreateParticle(&this->positionVector, 5);
   EZ2STREmitter* circleEmitter = reinterpret_cast<EZ2STREmitter*>(circle);
   if (circle) {
     circle->SetTexture("effect\\new_cloud_kill\\ef_cloud_circle.tga");
@@ -3286,7 +3286,7 @@ void CNewCloudKillEffect::Open() {
   }
 
   for (int i = 0; i < 100; ++i) {
-    CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+    CParticle* particle = CreateParticle(&this->positionVector, 5);
     EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(particle);
     if (particle) {
       particle->effectId = this->id;
@@ -3300,7 +3300,7 @@ void CNewCloudKillEffect::Open() {
   }
 
   for (int i = 0; i < 30; ++i) {
-    CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+    CParticle* particle = CreateParticle(&this->positionVector, 5);
     EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(particle);
     if (particle) {
       particle->effectId = this->id;
@@ -3314,7 +3314,7 @@ void CNewCloudKillEffect::Open() {
     }
   }
 
-  CParticle* lightning = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+  CParticle* lightning = CreateParticle(&this->positionVector, 5);
   EZ2STREmitter* lightningEmitter = reinterpret_cast<EZ2STREmitter*>(lightning);
   if (lightning) {
     lightning->effectId = this->id;
@@ -3330,7 +3330,7 @@ void CNewCloudKillEffect::Open() {
   }
 
   for (int i = 0; i < 30; ++i) {
-    CParticle* particle = CreateParticle(reinterpret_cast<const vector3d*>(this->position), 5);
+    CParticle* particle = CreateParticle(&this->positionVector, 5);
     EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(particle);
     if (particle) {
       particle->effectId = this->id;
@@ -3731,7 +3731,7 @@ void CSevereRainStorm::SpawnParticles() {
 void CSevereRainStorm::SpawnCrossRain() {
   const int ranges[10] = {3, 3, 3, 5, 5, 5, 7, 7, 7, 9};
   const int index = std::max(0, std::min(this->effectLevel - 1, 9));
-  vector3d position = *reinterpret_cast<const vector3d*>(this->position);
+  vector3d position = *&this->positionVector;
   const int spread = ranges[index] * 50;
 
   const int range = spread + 1;
@@ -3759,7 +3759,7 @@ void CSevereRainStorm::SpawnGrenades() {
     position.x = (static_cast<float>(ClampedRandom((static_cast<int>(spread) + 1))) - half) * 0.1f + base.x;
     position.z = (static_cast<float>(ClampedRandom((static_cast<int>(spread) + 1))) - half) * 0.1f + base.z;
 
-    CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+    CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 13));
     if (particle) {
       particle->Load(std::string("NIGHT_WATCH\\NW_GRENADES_DROPPING\\grenades_dropping_bottom\\grenades_dropping_bottom.str"));
       particle->position.x = position.x;
@@ -3768,7 +3768,7 @@ void CSevereRainStorm::SpawnGrenades() {
       this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
     }
 
-    particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+    particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
     if (particle) {
       particle->Load(std::string("NIGHT_WATCH\\NW_GRENADES_DROPPING\\grenades_dropping\\grenades_dropping.str"));
       particle->position.x = position.x;
@@ -3788,7 +3788,7 @@ void CSevereRainStorm::SpawnBombardHits() {
     position.x = (static_cast<float>(ClampedRandom(451)) - 225.0f) * 0.1f + base.x;
     position.z = (static_cast<float>(ClampedRandom(451)) - 225.0f) * 0.1f + base.z;
 
-    CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+    CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
     if (particle) {
       particle->Load(std::string("NIGHT_WATCH\\NW_MISSION_BOMBARD\\mission_bombard\\mission_bombard_hit.str"));
       particle->position = position;
@@ -3824,7 +3824,7 @@ void CSevereRainStorm::SpawnCrystalRain() {
 // OFFSET: 0x00726BE0
 // FUNCTION: fn_07418
 void CSevereRainStorm::SpawnSevereRain() {
-  vector3d position = *reinterpret_cast<const vector3d*>(this->position);
+  vector3d position = *&this->positionVector;
   position.z += 10.0f;
   if (ClampedRandom(10) >= 5) {
     position.x = static_cast<float>(ClampedRandom(251)) * 0.1f + position.x;
@@ -3850,7 +3850,7 @@ void CSevereRainStorm::SpawnSevereRain() {
 // OFFSET: 0x00726E30
 // FUNCTION: fn_07419
 void CSevereRainStorm::SpawnTwinklingGalaxy(int index) {
-  EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+  EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(&this->positionVector, 13));
   if (emitter) {
     AsParticle(emitter)->Load(std::string("SKY_EMPEROR\\SKE_TWINKLING_GALAXY\\twinkling_galaxy_bottom\\ske_twinkling_galaxy_bottom.str"));
     emitter->offset.x = 0.2f;
@@ -3859,7 +3859,7 @@ void CSevereRainStorm::SpawnTwinklingGalaxy(int index) {
     this->emitters.push_back(emitter);
   }
 
-  emitter = reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+  emitter = reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(&this->positionVector, 5));
   if (emitter) {
     AsParticle(emitter)->Load(FormatOwnedString("SKY_EMPEROR\\SKE_TWINKLING_GALAXY\\twinkling_galaxy\\ske_twinkling_galaxy%02d.str", index));
     emitter->offset.x = 0.2f;
@@ -3884,7 +3884,7 @@ void CSevereRainStorm::SpawnStarCannon() {
   position.x = (static_cast<float>(offsetX) - half) * 0.1f + base.x;
   position.z = (static_cast<float>(ClampedRandom(range)) - half) * 0.1f + base.z;
 
-  CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+  CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 13));
   if (particle) {
     particle->Load(std::string("SKY_EMPEROR\\SKE_STAR_CANNON\\star_cannon_bottom\\ske_star_cannon_bottom.str"));
     particle->position.x = position.x;
@@ -3893,7 +3893,7 @@ void CSevereRainStorm::SpawnStarCannon() {
     this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
   }
 
-  particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+  particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
   if (particle) {
     particle->Load(std::string("SKY_EMPEROR\\SKE_STAR_CANNON\\star_cannon\\ske_star_cannon.str"));
     particle->position.x = position.x;
@@ -3918,7 +3918,7 @@ void CSevereRainStorm::SpawnGalaxyStar() {
   position.x = (static_cast<float>(offsetX) - half) * 0.1f + base.x;
   position.z = (static_cast<float>(ClampedRandom(range)) - half) * 0.1f + base.z;
 
-  CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+  CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 13));
   if (particle) {
     particle->Load(std::string("SKY_EMPEROR\\SKE_TWINKLING_GALAXY\\twinkling_galaxy_bottom\\ske_twinkling_galaxy_bottom.str"));
     particle->position.x = position.x;
@@ -3927,7 +3927,7 @@ void CSevereRainStorm::SpawnGalaxyStar() {
     this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(particle));
   }
 
-  particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+  particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
   if (particle) {
     particle->Load(std::string("SKY_EMPEROR\\SKE_TWINKLING_GALAXY\\twinkling_galaxy\\ske_twinkling_galaxy03.str"));
     particle->position.x = position.x;
@@ -4002,7 +4002,7 @@ void CSevereRainStorm::OnProcess() {
       if (this->id == EF_SKE_TWINKLING_GALAXY && emitter) {
         const matrix& view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
         const matrix& inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse;
-        const vector3d position = *reinterpret_cast<const vector3d*>(this->position);
+        const vector3d position = *&this->positionVector;
 
         const float vx = position.y * view.values[3] + position.x * view.values[0] + position.z * view.values[6] + view.values[9] +
                          emitter->offset.x;
@@ -4058,13 +4058,13 @@ void CCrimsonArrowEffect::Close() {
 // OFFSET: 0x0070B970
 // FUNCTION: fn_07122
 void CCrimsonArrowEffect::Open() {
-  CEZ2STRParticle* arrow = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+  CEZ2STRParticle* arrow = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
   if (!arrow) {
     return;
   }
 
   vector3d to = *reinterpret_cast<const vector3d*>(this->sourcePosition);
-  vector3d from = *reinterpret_cast<const vector3d*>(this->position);
+  vector3d from = *&this->positionVector;
   float fromReciprocalDepth = 0.0f;
   float toReciprocalDepth = 0.0f;
   float fromX;
@@ -4125,7 +4125,7 @@ void CCrimsonArrowEffect::Open() {
 // FUNCTION: fn_07166
 void CTunaPartyEffect::Open() {
   CSpriteParticle* created =
-      static_cast<CSpriteParticle*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 0x101));
+      static_cast<CSpriteParticle*>(CreateSpriteParticle(&this->positionVector, 0x101));
   if (!created) {
     return;
   }
@@ -4178,7 +4178,7 @@ void CTunaPartyEffect::OnProcess() {
 // FUNCTION: fn_07129
 void CRootTwistEffect::Open() {
   CSpriteParticle* created =
-      static_cast<CSpriteParticle*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 0x101));
+      static_cast<CSpriteParticle*>(CreateSpriteParticle(&this->positionVector, 0x101));
   if (created) {
     CSpriteParticle* particle = created;
     particle->effectId = this->id;
@@ -4198,7 +4198,7 @@ void CRootTwistEffect::Open() {
 // OFFSET: 0x0070D9B0
 // FUNCTION: fn_07159
 void CSvgSpiritEffect::Open() {
-  this->emitter = reinterpret_cast<EZ2STREmitter*>(CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 0x101));
+  this->emitter = reinterpret_cast<EZ2STREmitter*>(CreateSpriteParticle(&this->positionVector, 0x101));
   if (!this->emitter) {
     return;
   }
@@ -4234,7 +4234,7 @@ void CCurseOfCubeEffect::SpawnShock() {
   CEZ2STRParticle* particle;
   switch (this->id) {
   case EF_NPC_CURSE_OF_RED_CUBE: {
-    particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+    particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
     if (!particle) {
       return;
     }
@@ -4242,7 +4242,7 @@ void CCurseOfCubeEffect::SpawnShock() {
     break;
   }
   case EF_NPC_CURSE_OF_BLUE_CUBE: {
-    particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+    particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
     if (!particle) {
       return;
     }
@@ -4323,11 +4323,11 @@ void CNewCloudKillEffect::Render() {
 // OFFSET: 0x00710270
 // FUNCTION: fn_07199
 void CDancingKnifeEffect::SpawnFirstStrike() {
-  CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+  CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 13));
   bottom->Load(std::string("dancing_knife\\dancing_knife_bottom\\dancing_knife_skill_bottom_01.str"));
   this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(bottom));
 
-  CEZ2STRParticle* knife = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+  CEZ2STRParticle* knife = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
   knife->Load(std::string("dancing_knife\\dancing_knife\\dancing_knife_skill_01.str"));
   this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(knife));
 }
@@ -4337,13 +4337,13 @@ void CDancingKnifeEffect::SpawnFirstStrike() {
 void CDancingKnifeEffect::SpawnSecondStrike() {
   this->secondStrike = 1;
 
-  CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+  CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 13));
   bottom->Load(std::string("dancing_knife\\dancing_knife_bottom\\dancing_knife_skill_bottom_02.str"));
   bottom->m_loop = true;
   bottom->m_actorId = this->actor;
   this->secondStrikeEmitters.push_back(reinterpret_cast<EZ2STREmitter*>(bottom));
 
-  CEZ2STRParticle* knife = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+  CEZ2STRParticle* knife = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
   knife->Load(std::string("dancing_knife\\dancing_knife\\dancing_knife_skill_02.str"));
   knife->m_loop = true;
   knife->m_actorId = this->actor;
@@ -4397,13 +4397,13 @@ void CDancingKnifeEffect::OnProcess() {
 void CCurseOfCubeEffect::SpawnLoop() {
   switch (this->id) {
   case EF_NPC_CURSE_OF_RED_CUBE: {
-    CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+    CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 13));
     if (bottom) {
       bottom->Open("NPC_CURSE_OF_RED_CUBE\\npc_cur_r_cube\\npc_cur_r_cube_bottom_loop.str");
       bottom->m_loop = true;
       this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(bottom));
     }
-    CEZ2STRParticle* cube = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+    CEZ2STRParticle* cube = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
     if (cube) {
       cube->Open("NPC_CURSE_OF_RED_CUBE\\npc_cur_r_cube\\npc_cur_r_cube_loop.str");
       cube->m_loop = true;
@@ -4412,13 +4412,13 @@ void CCurseOfCubeEffect::SpawnLoop() {
     break;
   }
   case EF_NPC_CURSE_OF_BLUE_CUBE: {
-    CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+    CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 13));
     if (bottom) {
       bottom->Open("NPC_CURSE_OF_BLUE_CUBE\\npc_cur_b_cube\\npc_cur_b_cube_bottom_loop.str");
       bottom->m_loop = true;
       this->emitters.push_back(reinterpret_cast<EZ2STREmitter*>(bottom));
     }
-    CEZ2STRParticle* cube = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+    CEZ2STRParticle* cube = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
     if (cube) {
       cube->Open("NPC_CURSE_OF_BLUE_CUBE\\npc_cur_b_cube\\npc_cur_b_cube_loop.str");
       cube->m_loop = true;
@@ -4434,13 +4434,13 @@ void CCurseOfCubeEffect::SpawnLoop() {
 void CCurseOfCubeEffect::SpawnStart() {
   switch (this->id) {
   case EF_NPC_CURSE_OF_RED_CUBE: {
-    CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+    CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 13));
     EZ2STREmitter* bottomEmitter = reinterpret_cast<EZ2STREmitter*>(bottom);
     if (bottom) {
       bottom->Open("NPC_CURSE_OF_RED_CUBE\\npc_cur_r_cube\\npc_cur_r_cube_bottom_start.str");
       this->emitters.push_back(bottomEmitter);
     }
-    CEZ2STRParticle* cube = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+    CEZ2STRParticle* cube = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
     EZ2STREmitter* cubeEmitter = reinterpret_cast<EZ2STREmitter*>(cube);
     if (cube) {
       cube->Open("NPC_CURSE_OF_RED_CUBE\\npc_cur_r_cube\\npc_cur_r_cube_start.str");
@@ -4449,13 +4449,13 @@ void CCurseOfCubeEffect::SpawnStart() {
     break;
   }
   case EF_NPC_CURSE_OF_BLUE_CUBE: {
-    CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 13));
+    CEZ2STRParticle* bottom = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 13));
     EZ2STREmitter* bottomEmitter = reinterpret_cast<EZ2STREmitter*>(bottom);
     if (bottom) {
       bottom->Open("NPC_CURSE_OF_BLUE_CUBE\\npc_cur_b_cube\\npc_cur_b_cube_bottom_start.str");
       this->emitters.push_back(bottomEmitter);
     }
-    CEZ2STRParticle* cube = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+    CEZ2STRParticle* cube = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
     EZ2STREmitter* cubeEmitter = reinterpret_cast<EZ2STREmitter*>(cube);
     if (cube) {
       cube->Open("NPC_CURSE_OF_BLUE_CUBE\\npc_cur_b_cube\\npc_cur_b_cube_start.str");
@@ -4473,7 +4473,7 @@ void CCurseOfCubeEffect::OnProcess() {
     EZ2STREmitter* emitter = *it;
     if (IsEmitterAlive(emitter)) {
       if (emitter) {
-        const vector3d position = *reinterpret_cast<const vector3d*>(this->position);
+        const vector3d position = *&this->positionVector;
         const matrix& view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
         const vector3d viewPosition = {
             position.x * view.values[0] + position.y * view.values[3] + position.z * view.values[6] + view.values[9],
@@ -4511,7 +4511,7 @@ void CCurseOfCubeEffect::OnProcess() {
 // OFFSET: 0x0070C750
 // FUNCTION: fn_07136
 void CSprArrowEffect::Open() {
-  const vector3d* position = reinterpret_cast<const vector3d*>(this->position);
+  const vector3d* position = &this->positionVector;
   this->spriteParticle = static_cast<CSpriteParticle*>(CreateSpriteParticle(position, 0x101));
   if (!this->spriteParticle) {
     return;
@@ -4695,7 +4695,7 @@ void CGravityControlEffect::OnProcess() {
 // OFFSET: 0x00717850
 // FUNCTION: fn_07282
 void CGaleStorm::SpawnArrow() {
-  vector3d position = *reinterpret_cast<const vector3d*>(this->position);
+  vector3d position = *&this->positionVector;
   const int spanX = static_cast<int>(this->count) * 5 + 1;
   const int offsetX = spanX == 0 ? 0 : ClampedRandom(spanX);
   position.x = static_cast<float>(offsetX) - static_cast<float>(this->count * 5) * 0.5f + position.x;
@@ -4765,7 +4765,7 @@ void CGaleStorm::OnProcess() {
 void CGravityControlEffect::Open() {
   switch (this->id) {
   case EF_UNK_1201: {
-    CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+    CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
     if (particle) {
       particle->m_loop = true;
       particle->Open("WL_TELEKINESIS_INTENSE.str");
@@ -4804,7 +4804,7 @@ void CHawkVumerangEffect::Open() {
   }
 
   for (long long i = 0; i < this->count; ++i) {
-    CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+    CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
     particle->Open("hawkvumerang\\hawkvumerang\\hawkvumerang.str");
     particle->m_angle = 360.0f - static_cast<float>(this->startAngle) / 3.141592f * 180.0f;
     particle->m_loop = true;
@@ -4870,7 +4870,7 @@ void CRichsCoinEffect::OnProcess() {
 // OFFSET: 0x007221C0
 // FUNCTION: fn_07384
 void CSavageImpactEffect::Open() {
-  this->emitter = reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+  this->emitter = reinterpret_cast<EZ2STREmitter*>(CreateEZ2STRParticle(&this->positionVector, 5));
   float toReciprocalDepth = 0.0f;
   float fromReciprocalDepth = 0.0f;
   this->offset.x = this->sourcePosition[0] - this->position[0];
