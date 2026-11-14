@@ -91,7 +91,7 @@ int UIExchangeAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     text += LookupMessage(MSI_SUGGEST_DEAL);
     this->viewer->Clear();
     this->viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text.c_str()), 138, 0, 0);
-    const std::string code = std::format("C-Code : {}     {}{}", ShortcutFilename(static_cast<std::uint32_t>(b)), g_serviceType == 12 ? "Nv." : "Lv.", c);
+    const std::string code = std::format("C-Code : {}     {}{}", g_session.ShortcutFilename(static_cast<std::uint32_t>(b)), g_serviceType == 12 ? "Nv." : "Lv.", c);
     this->viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(code.c_str()), 138, 0, 0);
     return 0;
   }

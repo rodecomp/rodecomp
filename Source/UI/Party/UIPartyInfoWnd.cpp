@@ -147,6 +147,6 @@ void UIPartyInfoWnd::OnRBtnUp(int, int) {
   }
 
   std::string code("");
-  code = ShortcutFilename(this->info.characterId);
+  code = g_session.ShortcutFilename(this->info.characterId);
   g_windowMgr.SendNotice(UIM_MAKE_WHISPER_WINDOW, reinterpret_cast<std::intptr_t>(name.c_str()), reinterpret_cast<std::intptr_t>(relationship), reinterpret_cast<std::intptr_t>(code.c_str()), 0, 0);
 }
