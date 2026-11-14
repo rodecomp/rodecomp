@@ -493,7 +493,9 @@ void UIQuickSlotWnd::OnCreate(int, int) {}
 // OFFSET: 0x00930610
 // FUNCTION: fn_12686
 void UIQuickSlotWnd::OnLBtnDblClk(int x, int y) {
-  if (g_session.GetOption(5) > 0 || static_cast<unsigned>(y) > 23) {
+  const auto& options = g_session.m_options.Values();
+  const auto option = options.find(5);
+  if (static_cast<int>(option == options.end() ? 0 : option->second) > 0 || static_cast<unsigned>(y) > 23) {
     return;
   }
 
