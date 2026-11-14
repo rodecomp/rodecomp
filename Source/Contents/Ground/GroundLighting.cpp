@@ -57,7 +57,7 @@ void GroundGeometry::DrawLightmapped(const float* matrix, const GroundQuad& quad
       channels.red = static_cast<std::uint8_t>(channels.red * scales[0]);
       channels.green = static_cast<std::uint8_t>(channels.green * scales[1]);
       channels.blue = static_cast<std::uint8_t>(channels.blue * scales[2]);
-      vertices[corner].diffuse = color;
+      vertices[corner].diffuse = std::bit_cast<std::uint32_t>(channels);
     }
   }
 
