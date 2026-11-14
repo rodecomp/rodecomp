@@ -20,6 +20,24 @@ CSnapMgr g_snapMgr;
 
 template __declspec(noinline) void std::list<SnapObject*>::push_back(SnapObject* const&);
 
+namespace {
+// INLINED
+__forceinline void RemoveLink(SnapObject& self, SnapObject* object) {
+  if (!object) {
+    return;
+  }
+
+  for (int side = 0; side < 4; ++side) {
+    for (auto node = self.edges[side].begin(); node != self.edges[side].end(); ++node) {
+      if (*node == object) {
+        self.edges[side].erase(node);
+        break;
+      }
+    }
+  }
+}
+}
+
 // OFFSET: 0x007E2DB0
 // FUNCTION: fn_09714
 bool SnapObject::ContainsUpward(SnapObject* target) {
@@ -160,8 +178,8 @@ void CSnapMgr::UpdateLinks(SnapObject* object) {
   for (auto entry = this->objects.begin(); entry != this->objects.end(); ++entry) {
     SnapObject* existing = *entry;
     const int side = object->AdjacentSide(*existing);
-    object->Remove(existing);
-    existing->Remove(object);
+    RemoveLink(*object, existing);
+    RemoveLink(*existing, object);
 
     if (side != -1) {
       object->edges[side].push_back(existing);
