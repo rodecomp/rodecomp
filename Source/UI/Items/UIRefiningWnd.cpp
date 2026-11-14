@@ -877,7 +877,7 @@ int UIRefiningWnd::SendMsg(
 
 // OFFSET: 0x007F87B0
 // FUNCTION: fn_09924
-void UIRefiningWnd::ApplyItem(int id, int count, RefiningMaterial* materials, int catalystCount) {
+void UIRefiningWnd::ApplyItem(int id, int count, const RefiningMaterial* materials, int catalystCount) {
   switch (this->state) {
   case REFINING_STATE_WAIT:
   case REFINING_STATE_READY: {

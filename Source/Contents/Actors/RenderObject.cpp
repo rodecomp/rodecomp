@@ -544,18 +544,18 @@ void CRenderObject::SetAction(unsigned animation, int, int repeat) {
 // OFFSET: 0x00CBFC00
 // FUNCTION: fn_21119
 void CRenderObject::SetColor(int alpha, int red, int green, int blue) {
-  unsigned char* channels = reinterpret_cast<unsigned char*>(&this->render.color);
+  SpriteColor& channels = this->render.colorChannels;
   if (alpha != -1) {
-    channels[3] = static_cast<unsigned char>(alpha);
+    channels.alpha = static_cast<unsigned char>(alpha);
   }
   if (red != -1) {
-    channels[2] = static_cast<unsigned char>(red);
+    channels.red = static_cast<unsigned char>(red);
   }
   if (green != -1) {
-    channels[1] = static_cast<unsigned char>(green);
+    channels.green = static_cast<unsigned char>(green);
   }
   if (blue != -1) {
-    channels[0] = static_cast<unsigned char>(blue);
+    channels.blue = static_cast<unsigned char>(blue);
   }
 }
 
@@ -563,15 +563,15 @@ void CRenderObject::SetColor(int alpha, int red, int green, int blue) {
 // FUNCTION: fn_21078
 void CRenderObject::ModifyArgb(int alpha, int red, int green, int blue) {
   if (this->render.colorLocked == 0) {
-    unsigned char* argb = reinterpret_cast<unsigned char*>(&this->render.color);
-    int newAlpha = argb[3] + alpha;
-    int newRed = argb[2] + red;
-    int newGreen = argb[1] + green;
-    int newBlue = argb[0] + blue;
-    argb[3] = static_cast<unsigned char>(std::min(std::max(newAlpha, 0), 255));
-    argb[2] = static_cast<unsigned char>(std::min(std::max(newRed, 0), 255));
-    argb[1] = static_cast<unsigned char>(std::min(std::max(newGreen, 0), 255));
-    argb[0] = static_cast<unsigned char>(std::min(std::max(newBlue, 0), 255));
+    SpriteColor& argb = this->render.colorChannels;
+    int newAlpha = argb.alpha + alpha;
+    int newRed = argb.red + red;
+    int newGreen = argb.green + green;
+    int newBlue = argb.blue + blue;
+    argb.alpha = static_cast<unsigned char>(std::min(std::max(newAlpha, 0), 255));
+    argb.red = static_cast<unsigned char>(std::min(std::max(newRed, 0), 255));
+    argb.green = static_cast<unsigned char>(std::min(std::max(newGreen, 0), 255));
+    argb.blue = static_cast<unsigned char>(std::min(std::max(newBlue, 0), 255));
   }
 }
 
@@ -3444,7 +3444,7 @@ void C3dGrannyGameActor::SetSprAct(int job, int value, int) {
   this->instance = GrannyInstantiateModel(this->model->model);
   for (int mesh = 0; mesh < this->model->instance->meshCount; ++mesh) {
     RenderCommand* previous = this->commands[mesh];
-    RenderCommand* command = reinterpret_cast<RenderCommand*>(new ModelRenderCommand());
+    RenderCommand* command = new ModelRenderCommand();
     this->commands[mesh] = command;
     command->AllocateTriangles(this->model->GetTriangleCount(mesh));
     if (previous != nullptr) {
@@ -3561,7 +3561,7 @@ CGrannyCorpse3d::CGrannyCorpse3d(const char* name) {
   this->model = static_cast<C3dGrannyModelRes*>(ResourceMgr::Instance().Load(this->name));
   this->instance = GrannyInstantiateModel(this->model->model);
   for (int mesh = 0; mesh < this->model->instance->meshCount; ++mesh) {
-    this->commands[mesh] = reinterpret_cast<RenderCommand*>(new ModelRenderCommand());
+    this->commands[mesh] = new ModelRenderCommand();
     this->commands[mesh]->AllocateTriangles(this->model->GetTriangleCount(mesh));
     this->vertices[mesh] = new RenderVertex[this->model->GetTriangleCount(mesh) * 3];
     std::memset(this->vertices[mesh], 0, this->model->GetTriangleCount(mesh) * 3 * sizeof(RenderVertex));
@@ -4759,7 +4759,7 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
   this->stateFlags = stateFlags;
   this->effectState = effectState;
   CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
-  unsigned char* const color = reinterpret_cast<unsigned char*>(&this->render.color);
+  SpriteColor& color = this->render.colorChannels;
 
   if (StateFlag00Changed(this->stateFlags, previousFlags) && StateFlag00(this->stateFlags) && world && world->player) {
     const vector3d& player = static_cast<const CRenderObject*>(world->player)->render.position;
@@ -5004,9 +5004,9 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
       this->render.isMotionFinished = true;
       this->render.isMotionFreezed = false;
       this->render.colorLocked = 0;
-      color[1] = 0xFF;
-      color[2] = 0xFF;
-      color[0] = 0xFF;
+      color.green = 0xFF;
+      color.red = 0xFF;
+      color.blue = 0xFF;
       static_cast<CGameMode*>(g_modeMgr.GetGameMode())->waitingUseItemAck = 0;
       break;
     }
@@ -5035,18 +5035,18 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
       this->render.isMotionFinished = true;
       this->render.isMotionFreezed = true;
       this->render.colorLocked = 1;
-      color[1] = 0x40;
-      color[2] = 0x40;
-      color[0] = 0x40;
+      color.green = 0x40;
+      color.red = 0x40;
+      color.blue = 0x40;
       break;
     case OPT1_FREEZE:
       this->SendMsg(nullptr, AM_MAKE_ICEEFFECT, 0, 0, 0, 0, 0, 0);
       this->render.isMotionFinished = true;
       this->render.isMotionFreezed = true;
       this->render.colorLocked = 1;
-      color[1] = 0x80;
-      color[2] = 0x00;
-      color[0] = 0xFF;
+      color.green = 0x80;
+      color.red = 0x00;
+      color.blue = 0xFF;
       if (notify) {
         const vector3d& player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player)->render.position;
         g_soundMgr->PlayWave(
@@ -5068,9 +5068,9 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
       break;
     case OPT1_STONEWAIT:
       this->render.colorLocked = 1;
-      color[1] = 0x80;
-      color[2] = 0x80;
-      color[0] = 0x80;
+      color.green = 0x80;
+      color.red = 0x80;
+      color.blue = 0x80;
       break;
     case OPT1_BURNING:
       this->SendMsg(nullptr, AM_MAKE_BURNING_EFFECT, 0, 0, 0, 0, 0, 0);
@@ -5091,9 +5091,9 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
       g_playerPoisoned = 1;
     }
     this->render.colorLocked = 1;
-    color[1] = 0x32;
-    color[2] = 0xFF;
-    color[0] = 0xFF;
+    color.green = 0x32;
+    color.red = 0xFF;
+    color.blue = 0xFF;
     poisonSound = true;
   } else if (this->effectState & 0x01) {
     if (this->render.accountId == g_session.m_aid) {
@@ -5101,9 +5101,9 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
     }
     if (!this->HasId(EF_BLACKBODY)) {
       this->render.colorLocked = 1;
-      color[1] = 0x80;
-      color[2] = 0xFF;
-      color[0] = 0xFF;
+      color.green = 0x80;
+      color.red = 0xFF;
+      color.blue = 0xFF;
     }
     poisonSound = true;
   } else if (this->render.accountId == g_session.m_aid) {
@@ -5127,9 +5127,9 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
   if (this->effectState & 0x02) {
     this->SendMsg(nullptr, AM_MAKE_CURSE_EFFECT, 0, 0, 0, 0, 0, 0);
     this->render.colorLocked = 1;
-    color[1] = 0x32;
-    color[2] = 0xC8;
-    color[0] = 0x32;
+    color.green = 0x32;
+    color.red = 0xC8;
+    color.blue = 0x32;
     if (notify) {
       const vector3d& player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player)->render.position;
       g_soundMgr->PlayWave(
@@ -5193,9 +5193,9 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
       static_cast<int>(this->GetInstant(13)) != 1 && static_cast<int>(this->GetInstant(14)) != 1 &&
       static_cast<int>(this->GetInstant(15)) != 1) {
     this->render.colorLocked = 0;
-    color[1] = 0xFF;
-    color[2] = 0xFF;
-    color[0] = 0xFF;
+    color.green = 0xFF;
+    color.red = 0xFF;
+    color.blue = 0xFF;
   }
 
   if (this->render.accountId == g_session.m_aid && g_statusRefreshSuppressed == 0) {

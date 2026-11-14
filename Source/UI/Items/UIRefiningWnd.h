@@ -103,7 +103,7 @@ public:
   std::uint32_t SelectedMaterialValue();
   void ApplyResult();
   void SetState(int state, int result);
-  void ApplyItem(int id, int count, RefiningMaterial* materials, int catalystCount);
+  void ApplyItem(int id, int count, const RefiningMaterial* materials, int catalystCount);
 
   /* 00B4 */ UIRefining_BtnRefining* refiningButton;
   /* 00B8 */ UIRefining_BtnReturn* returnButton;

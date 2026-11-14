@@ -1,6 +1,8 @@
 #ifndef RAGNAROK_SOURCE_RENDER_PRIMITIVES_LIGHTMAPPEDPRIMITIVE_H
 #define RAGNAROK_SOURCE_RENDER_PRIMITIVES_LIGHTMAPPEDPRIMITIVE_H
 
+#include "Render/Primitives/RenderPrimitive.h"
+
 #include <cstddef>
 #include <cstdint>
 #include <deque>
@@ -41,20 +43,8 @@ struct LightmappedCommand {
   /* 0018 */ std::uint32_t primitiveType;
 };
 
-struct ModelRenderCommand {
+struct ModelRenderCommand : RenderCommand {
   ModelRenderCommand();
-
-  /* 0000 */ void* vertices;
-  /* 0004 */ std::int32_t vertexCount;
-  /* 0008 */ CTexture* texture;
-  /* 000C */ std::uint16_t* indices;
-  /* 0010 */ std::uint32_t indexCount;
-  /* 0014 */ std::uint16_t renderEnabled;
-  /* 0016 */ std::uint16_t padding_0016;
-  /* 0018 */ std::uint32_t renderStateA;
-  /* 001C */ std::uint32_t renderStateB;
-  /* 0020 */ std::uint32_t renderStateC;
-  /* 0024 */ std::uint32_t primitiveType;
 };
 
 struct LightmappedPrimitive : LightmappedCommand {

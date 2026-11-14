@@ -23,6 +23,7 @@
 #include "Contents/Pet/PetEvolutionMgr.h"
 #include "Contents/World/World.h"
 #include "UI/Items/UIEquipWnd.h"
+#include "UI/Items/UIItemStoreWnd.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
@@ -669,7 +670,7 @@ void CGameMode::RefreshItemListWindow(unsigned char listType, bool partial) {
   case INVTYPE_GUILD_STORAGE:
     if (UIWindow* window = g_windowMgr.itemStoreWnd) {
       window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
-      reinterpret_cast<unsigned char*>(window)[0x190] = 1;
+      static_cast<UIItemStoreWnd*>(window)->m_hideCapacity = 1;
     }
     break;
   case INVTYPE_INVENTORY:

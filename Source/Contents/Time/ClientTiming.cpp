@@ -554,7 +554,7 @@ void CSession::RefreshTrackedAchievement(int id) {
 
   AchievementInfo info;
   g_achievementMgr->GetAchievement(info, id);
-  found->completed = reinterpret_cast<const unsigned char*>(&progress.completionFlags)[1];
+  found->completed = progress.completed;
 
   for (unsigned int i = 0; i < info.rewards.size(); ++i) {
     if (info.progressMode == 0) {

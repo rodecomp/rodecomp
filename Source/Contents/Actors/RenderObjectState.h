@@ -2,6 +2,7 @@
 #define RAGNAROK_SOURCE_CONTENTS_ACTORS_RENDEROBJECTSTATE_H
 
 #include "Contents/InstantVar.h"
+#include "Render/Drawing/SpriteGeometry.h"
 #include "Utility/Math/Vector3d.h"
 
 #include <cstddef>
@@ -11,6 +12,15 @@
 class ResourceMgr;
 class CSprRes;
 class CActRes;
+
+struct ActorTintColor {
+  /* 0000 */ std::uint8_t alpha;
+  /* 0001 */ std::uint8_t red;
+  /* 0002 */ std::uint8_t green;
+  /* 0003 */ std::uint8_t blue;
+};
+
+static_assert(sizeof(ActorTintColor) == 4);
 
 struct RenderObjectState {
   RenderObjectState();
@@ -44,9 +54,18 @@ struct RenderObjectState {
   /* 0084 */ std::uint32_t overrideColor;
   /* 0088 */ std::uint32_t started;
   /* 008C */ std::uint32_t motionStartTime;
-  /* 0090 */ std::uint32_t savedTintColor;
-  /* 0094 */ std::uint32_t targetTintColor;
-  /* 0098 */ std::uint32_t color;
+  union {
+    /* 0090 */ std::uint32_t savedTintColor;
+    /* 0090 */ ActorTintColor savedTintChannels;
+  };
+  union {
+    /* 0094 */ std::uint32_t targetTintColor;
+    /* 0094 */ ActorTintColor targetTintChannels;
+  };
+  union {
+    /* 0098 */ std::uint32_t color;
+    /* 0098 */ SpriteColor colorChannels;
+  };
   /* 009C */ bool isLieOnGround;
   /* 009D */ bool isMotionFinished;
   /* 009E */ bool isMotionFreezed;
@@ -123,6 +142,12 @@ struct RenderObjectState {
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(RenderObjectState) == 296);
+static_assert(offsetof(RenderObjectState, savedTintColor) == 0x80);
+static_assert(offsetof(RenderObjectState, savedTintChannels) == 0x80);
+static_assert(offsetof(RenderObjectState, targetTintColor) == 0x84);
+static_assert(offsetof(RenderObjectState, targetTintChannels) == 0x84);
+static_assert(offsetof(RenderObjectState, color) == 0x88);
+static_assert(offsetof(RenderObjectState, colorChannels) == 0x88);
 static_assert(offsetof(RenderObjectState, sequenceAnimation) == 0xA5);
 static_assert(offsetof(RenderObjectState, sequenceAnimations) == 0xA7);
 static_assert(offsetof(RenderObjectState, sequenceFrames) == 0xAC);

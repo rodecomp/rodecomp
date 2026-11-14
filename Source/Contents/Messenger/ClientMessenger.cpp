@@ -382,7 +382,7 @@ namespace EquipmentProperties {
     void AddExpansion(const int& kind, const int& itemId, bool notify);
     void RemoveExpansion(const int& kind, const int& itemId);
     void RefreshExpansion(const int& kind, const int& itemId);
-    void RefreshWearable(const int& key);
+    void RefreshWearable(const std::uint32_t& key);
     int GetGradeBonus(const int& first, const int& second, const int& third);
     void LoadADSkill();
     void LoadCombiitem();
@@ -6403,7 +6403,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::UnequipWearable(const int& ma
 
 // OFFSET: 0x006B71F0
 // FUNCTION: fn_06205
-void EquipmentProperties::CEquipmentPropertiesMgr::RefreshWearable(const int& key) {
+void EquipmentProperties::CEquipmentPropertiesMgr::RefreshWearable(const std::uint32_t& key) {
   const int index = key;
   auto found = this->properties1.find(index);
   if (found == this->properties1.end()) {

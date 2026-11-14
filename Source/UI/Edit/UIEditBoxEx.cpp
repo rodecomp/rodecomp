@@ -198,7 +198,7 @@ void CUIEditCtrlEx::Synchronize() {
   const std::string fullText = prefix + this->text;
   std::vector<std::string> lines;
   std::vector<bool> breaks;
-  if (reinterpret_cast<const unsigned char*>(&this->editFlags)[1] != 0) {
+  if (this->multiline != 0) {
     int wrapWidth = this->geometry.width - this->scrollBar->geometry.width - this->horizontalPadding;
     this->WrapTextWithBreaks(fullText.c_str(), &lines, &breaks, wrapWidth);
     this->WrapLines(lines);
@@ -441,7 +441,7 @@ int CUIEditCtrlEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     this->scrollEnabled = this->scrollMaximum > 0;
     return 0;
   case UM_DEFPUSH:
-    if (reinterpret_cast<const unsigned char*>(&this->editFlags)[1] != 0 && HIBYTE(GetKeyState(VK_SHIFT))) {
+    if (this->multiline != 0 && HIBYTE(GetKeyState(VK_SHIFT))) {
       g_serverLanguage->Insert("\r\n");
       return 0;
     }
@@ -631,7 +631,7 @@ void CUIEditBoxEx::Create(int width, int height, bool withScrollBar) {
   this->edit = new CUIEditCtrlEx();
   this->edit->SetSize(width, height);
   if (withScrollBar) {
-    reinterpret_cast<unsigned char*>(&this->edit->editFlags)[1] = 1;
+    this->edit->multiline = 1;
   }
   this->AddChild(this->edit);
   this->SetSize(width, height);
@@ -647,7 +647,7 @@ void CUIEditCtrlEx::PaintText() {
     this->selectedAll = 0;
   }
 
-  const int width = reinterpret_cast<const unsigned char*>(&this->editFlags)[1] != 0 ? this->geometry.width - this->scrollBar->geometry.width : this->geometry.width;
+  const int width = this->multiline != 0 ? this->geometry.width - this->scrollBar->geometry.width : this->geometry.width;
 
   if (this->lines.empty()) {
     int x = this->horizontalPadding;

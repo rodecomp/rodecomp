@@ -27,7 +27,7 @@ CConnection::~CConnection() = default;
 
 // OFFSET: 0x00C7C1C0
 // FUNCTION: fn_20383
-CRagConnection::CRagConnection() : padding_006C(0) {
+CRagConnection::CRagConnection() : m_replayMode(0) {
 }
 
 // INLINED

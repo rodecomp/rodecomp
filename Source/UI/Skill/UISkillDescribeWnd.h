@@ -3,6 +3,7 @@
 
 #include "UI/Window/UIFrameWnd.h"
 
+#include <cstddef>
 #include <string>
 
 class UIBitmapButton;
@@ -27,5 +28,9 @@ public:
   void DrawTransBox() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 };
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(offsetof(UISkillDescribeWnd, m_skillId) == 0x104);
+#endif
 
 #endif

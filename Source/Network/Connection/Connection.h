@@ -64,8 +64,7 @@ public:
   short GetPacketType(const char* packet);
   int GetPacketSize(int id);
 
-private:
-  /* 006C */ unsigned char padding_006C;
+  /* 006C */ unsigned char m_replayMode;
 };
 
 CRagConnection& GetRagConnection();
@@ -74,6 +73,7 @@ CRagConnection& GetRagConnection();
 static_assert(offsetof(ConnectionEndpoint, port) == 0x10);
 static_assert(offsetof(ConnectionEndpoint, overrideAddress) == 0x14);
 static_assert(sizeof(CConnection) == 0x6C);
+static_assert(offsetof(CRagConnection, m_replayMode) == 0x6C);
 static_assert(sizeof(CRagConnection) == 0x70);
 #endif
 

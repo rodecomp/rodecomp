@@ -41,6 +41,7 @@ struct ItemCardSlots;
 struct ItemSlotOptions;
 struct ReputePointEntry;
 struct GuildStorageLogItem;
+struct RefiningMaterial;
 
 struct MiniMapMember {
   /* 0000 */ int x;
@@ -932,7 +933,7 @@ public:
   void ProcessMouseWheel(int requireControl);
   void ReceiveEquipItemList34(const unsigned char* packet);
   void ReceiveEquipItemList38(const unsigned char* packet);
-  void ApplyRefiningMaterial(short itemId, unsigned char count, const unsigned char* materials, unsigned char catalystCount);
+  void ApplyRefiningMaterial(short itemId, unsigned char count, const RefiningMaterial* materials, unsigned char catalystCount);
   void ReceiveAddRelatedGuild(const unsigned char* data);
   void ReceiveEquipItemResult(const unsigned char* packet);
   void ReceiveGuildMemberAdd4(const unsigned char* data);

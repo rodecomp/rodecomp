@@ -668,14 +668,16 @@ void CGameActor::RenderMercenary(const float* matrix, int job) {
       float topRhw;
       SpriteQuad quad;
       int box[4];
-      std::uint32_t color;
+      union {
+        std::uint32_t color;
+        SpriteColor colorChannels;
+      };
       if (!this->PrepareSprite(index, index, distanceScale, cell, x, y, position, scale, &bottomRhw, &topRhw, image, &quad, box, &color, offsetX, offsetY, 0)) {
         continue;
       }
 
-      const unsigned char* argb = reinterpret_cast<const unsigned char*>(&color);
       int blend = 0x101;
-      if (argb[3] < 0xFF) {
+      if (colorChannels.alpha < 0xFF) {
         blend = 1;
       }
       drawn = true;
@@ -2997,12 +2999,11 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
         shade = 0xFF;
         frozen = false;
       }
-      unsigned char* const argb = reinterpret_cast<unsigned char*>(&this->render.color);
       this->render.isMotionFreezed = frozen;
       this->render.colorLocked = frozen;
-      argb[2] = shade;
-      argb[1] = shade;
-      argb[0] = shade;
+      this->render.colorChannels.red = shade;
+      this->render.colorChannels.green = shade;
+      this->render.colorChannels.blue = shade;
       break;
     }
     case EFST_STRIKING:
@@ -4333,19 +4334,19 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
   }
   case AM_CHANGE_COLOR: {
     this->render.colorLocked = 1;
-    unsigned char* const saved = reinterpret_cast<unsigned char*>(&this->render.savedTintColor);
-    if (saved[0] == 0 && saved[1] == 0 && saved[2] == 0 && saved[3] == 0) {
-      const unsigned char* const argb = reinterpret_cast<const unsigned char*>(&this->render.color);
-      saved[0] = argb[3];
-      saved[1] = argb[2];
-      saved[2] = argb[1];
-      saved[3] = argb[0];
+    ActorTintColor& saved = this->render.savedTintChannels;
+    if (saved.alpha == 0 && saved.red == 0 && saved.green == 0 && saved.blue == 0) {
+      const SpriteColor& argb = this->render.colorChannels;
+      saved.alpha = argb.alpha;
+      saved.red = argb.red;
+      saved.green = argb.green;
+      saved.blue = argb.blue;
     }
-    unsigned char* const target = reinterpret_cast<unsigned char*>(&this->render.targetTintColor);
-    target[0] = 0xFF;
-    target[1] = static_cast<unsigned char>(b);
-    target[2] = static_cast<unsigned char>(c);
-    target[3] = static_cast<unsigned char>(d);
+    ActorTintColor& target = this->render.targetTintChannels;
+    target.alpha = 0xFF;
+    target.red = static_cast<unsigned char>(b);
+    target.green = static_cast<unsigned char>(c);
+    target.blue = static_cast<unsigned char>(d);
     const std::int64_t red = b;
     const std::int64_t green = c;
     this->render.color = static_cast<std::uint32_t>(red << 16 | green << 8 | static_cast<std::uint32_t>(d) | 0xFF000000);

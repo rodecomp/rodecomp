@@ -171,13 +171,13 @@ static int BlendTintChannel(unsigned char tint, float value) {
 
 // INLINED
 static bool HasTint(const EffectActor& parent) {
-  return reinterpret_cast<const unsigned char&>(parent.render.savedTintColor) != 0;
+  return parent.render.savedTintChannels.alpha != 0;
 }
 
 // INLINED
 static void SetBlendedTint(CRenderObject& target, const EffectActor& parent, const vector3d& color) {
-  const unsigned char* tint = reinterpret_cast<const unsigned char*>(&parent.render.targetTintColor);
-  target.SetColor(-1, BlendTintChannel(tint[1], color.x), BlendTintChannel(tint[2], color.y), BlendTintChannel(tint[3], color.z));
+  const ActorTintColor& tint = parent.render.targetTintChannels;
+  target.SetColor(-1, BlendTintChannel(tint.red, color.x), BlendTintChannel(tint.green, color.y), BlendTintChannel(tint.blue, color.z));
 }
 
 // INLINED

@@ -13106,10 +13106,10 @@ void CGameMode::ReceiveEquipItemList38(const unsigned char* packet) {
 
 // OFFSET: 0x00D79500
 // FUNCTION: fn_22169
-__declspec(noinline) void CGameMode::ApplyRefiningMaterial(short itemId, unsigned char count, const unsigned char* materials, unsigned char catalystCount) {
+__declspec(noinline) void CGameMode::ApplyRefiningMaterial(short itemId, unsigned char count, const RefiningMaterial* materials, unsigned char catalystCount) {
   UIRefiningWnd* window = static_cast<UIRefiningWnd*>(g_windowMgr.LookupWindow(WID_REFININGWND));
   if (window) {
-    window->ApplyItem(itemId, count, reinterpret_cast<RefiningMaterial*>(const_cast<unsigned char*>(materials)), catalystCount);
+    window->ApplyItem(itemId, count, materials, catalystCount);
   }
 }
 
@@ -28109,7 +28109,7 @@ void CGameMode::ProcessIncomingPackets() {
       const auto* packet = reinterpret_cast<const PACKET_ZC_REFINING_MATERIAL_LIST*>(g_gameModePacketBuffer);
       this->ApplyRefiningMaterial(packet->index,
                                   static_cast<unsigned int>(packet->length - 7) / 9,
-                                  reinterpret_cast<const unsigned char*>(packet + 1), packet->blessing);
+                                  reinterpret_cast<const RefiningMaterial*>(packet + 1), packet->blessing);
       break;
     }
     case 0xBE3: {

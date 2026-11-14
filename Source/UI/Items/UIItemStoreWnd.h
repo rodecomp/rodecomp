@@ -60,6 +60,7 @@ public:
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(UIItemStoreWnd, tabs) == 0x100);
 static_assert(offsetof(UIItemStoreWnd, saved) == 0x164);
+static_assert(offsetof(UIItemStoreWnd, m_hideCapacity) == 0x190);
 #endif
 
 #endif

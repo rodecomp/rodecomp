@@ -110,7 +110,7 @@ namespace EquipmentProperties {
 class CEquipmentPropertiesMgr {
 public:
   static CEquipmentPropertiesMgr* GetInstance();
-  void RefreshWearable(const int& key);
+  void RefreshWearable(const std::uint32_t& key);
 };
 }
 
@@ -2066,7 +2066,7 @@ void CSession::UpdateFriendName(std::uint32_t characterId, const char* name) {
 void CSession::SetCostumeItem(unsigned int index, const ITEM_INFO& item) {
   if (index <= 9) {
     this->costumeItems[index] = item;
-    EquipmentProperties::CEquipmentPropertiesMgr::GetInstance()->RefreshWearable(reinterpret_cast<const int&>(item.identity[3]));
+    EquipmentProperties::CEquipmentPropertiesMgr::GetInstance()->RefreshWearable(item.identity[3]);
   }
 }
 
@@ -2121,7 +2121,7 @@ void CSession::SetEquippedArrowIndex(std::uint32_t value) {
 void CSession::SetEquippedItem(unsigned int index, const ITEM_INFO& item) {
   if (index <= 9) {
     this->equippedItems[index] = item;
-    EquipmentProperties::CEquipmentPropertiesMgr::GetInstance()->RefreshWearable(reinterpret_cast<const int&>(item.identity[3]));
+    EquipmentProperties::CEquipmentPropertiesMgr::GetInstance()->RefreshWearable(item.identity[3]);
   }
 }
 

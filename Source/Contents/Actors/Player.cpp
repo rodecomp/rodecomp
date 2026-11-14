@@ -2642,8 +2642,8 @@ void CGrannyPc::SetSprActFull(int first, int second, int third, int fourth, int 
   this->instance = GrannyInstantiateModel(this->model->model);
   for (int mesh = 0; mesh < this->model->instance->meshCount; ++mesh) {
     ModelRenderCommand* command = new ModelRenderCommand;
-    this->commands[mesh] = reinterpret_cast<RenderCommand*>(command);
-    reinterpret_cast<RenderCommand*>(command)->AllocateTriangles(this->model->GetTriangleCount(mesh));
+    this->commands[mesh] = command;
+    command->AllocateTriangles(this->model->GetTriangleCount(mesh));
     this->vertices[mesh] = new RenderVertex[this->model->GetTriangleCount(mesh) * 3];
     std::memset(this->vertices[mesh], 0, this->model->GetTriangleCount(mesh) * 3 * sizeof(RenderVertex));
   }
@@ -2673,8 +2673,8 @@ void CGrannyPc::SetSprActFull(int first, int second, int third, int fourth, int 
   this->layerModels[1] = static_cast<C3dGrannyModelRes*>(ResourceMgr::Instance().Load(name));
   for (int mesh = 0; mesh < this->layerModels[1]->instance->meshCount; ++mesh) {
     ModelRenderCommand* command = new ModelRenderCommand;
-    this->layerCommands[1][mesh] = reinterpret_cast<RenderCommand*>(command);
-    reinterpret_cast<RenderCommand*>(command)->AllocateTriangles(this->layerModels[1]->GetTriangleCount(mesh));
+    this->layerCommands[1][mesh] = command;
+    command->AllocateTriangles(this->layerModels[1]->GetTriangleCount(mesh));
     this->layerVertices[1][mesh] = new RenderVertex[this->layerModels[1]->GetTriangleCount(mesh) * 3];
     std::memset(this->layerVertices[1][mesh], 0, this->layerModels[1]->GetTriangleCount(mesh) * 3 * sizeof(RenderVertex));
   }
@@ -2685,8 +2685,8 @@ void CGrannyPc::SetSprActFull(int first, int second, int third, int fourth, int 
   this->layerModels[2]->RebindMeshes(*this->model);
   for (int mesh = 0; mesh < this->layerModels[2]->instance->meshCount; ++mesh) {
     ModelRenderCommand* command = new ModelRenderCommand;
-    this->layerCommands[2][mesh] = reinterpret_cast<RenderCommand*>(command);
-    reinterpret_cast<RenderCommand*>(command)->AllocateTriangles(this->layerModels[2]->GetTriangleCount(mesh));
+    this->layerCommands[2][mesh] = command;
+    command->AllocateTriangles(this->layerModels[2]->GetTriangleCount(mesh));
     this->layerVertices[2][mesh] = new RenderVertex[this->layerModels[2]->GetTriangleCount(mesh) * 3];
     std::memset(this->layerVertices[2][mesh], 0, this->layerModels[2]->GetTriangleCount(mesh) * 3 * sizeof(RenderVertex));
   }
@@ -2697,8 +2697,8 @@ void CGrannyPc::SetSprActFull(int first, int second, int third, int fourth, int 
   this->layerModels[3]->RebindMeshes(*this->model);
   for (int mesh = 0; mesh < this->layerModels[3]->instance->meshCount; ++mesh) {
     ModelRenderCommand* command = new ModelRenderCommand;
-    this->layerCommands[3][mesh] = reinterpret_cast<RenderCommand*>(command);
-    reinterpret_cast<RenderCommand*>(command)->AllocateTriangles(this->layerModels[3]->GetTriangleCount(mesh));
+    this->layerCommands[3][mesh] = command;
+    command->AllocateTriangles(this->layerModels[3]->GetTriangleCount(mesh));
     this->layerVertices[3][mesh] = new RenderVertex[this->layerModels[3]->GetTriangleCount(mesh) * 3];
     std::memset(this->layerVertices[3][mesh], 0, this->layerModels[3]->GetTriangleCount(mesh) * 3 * sizeof(RenderVertex));
   }
@@ -2709,8 +2709,8 @@ void CGrannyPc::SetSprActFull(int first, int second, int third, int fourth, int 
   this->layerModels[4]->RebindMeshes(*this->model);
   for (int mesh = 0; mesh < this->layerModels[4]->instance->meshCount; ++mesh) {
     ModelRenderCommand* command = new ModelRenderCommand;
-    this->layerCommands[4][mesh] = reinterpret_cast<RenderCommand*>(command);
-    reinterpret_cast<RenderCommand*>(command)->AllocateTriangles(this->layerModels[4]->GetTriangleCount(mesh));
+    this->layerCommands[4][mesh] = command;
+    command->AllocateTriangles(this->layerModels[4]->GetTriangleCount(mesh));
     this->layerVertices[4][mesh] = new RenderVertex[this->layerModels[4]->GetTriangleCount(mesh) * 3];
     std::memset(this->layerVertices[4][mesh], 0, this->layerModels[4]->GetTriangleCount(mesh) * 3 * sizeof(RenderVertex));
   }

@@ -179,7 +179,7 @@ void UIWindow::AddRotatedSpriteCellOverlay(
   const float centerY = static_cast<float>(y + top) + halfHeight;
   const float angle = static_cast<float>(cell->rotation) / 180.0f * 3.141592f;
 
-  const unsigned char* rgba = reinterpret_cast<const unsigned char*>(&cell->color);
+  const SpriteCellColor& rgba = cell->colorChannels;
   RenderVertex* vertices = primitive->quad;
   for (unsigned int i = 0; i < 4; ++i) {
     const float cornerX = corners[i][0];
@@ -188,7 +188,7 @@ void UIWindow::AddRotatedSpriteCellOverlay(
     vertices[i].y = ClientCos(angle) * cornerY + ClientSin(angle) * cornerX + centerY + 0.5f;
     vertices[i].z = 0.000001f;
     vertices[i].rhw = 0.999999f;
-    vertices[i].diffuse = (((((rgba[3] << 8) | rgba[0]) << 8) | rgba[1]) << 8) | rgba[2];
+    vertices[i].diffuse = (((((rgba.alpha << 8) | rgba.red) << 8) | rgba.green) << 8) | rgba.blue;
   }
   vertices[0].u = record.u0;
   vertices[0].v = record.v0;

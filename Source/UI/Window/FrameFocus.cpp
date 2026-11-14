@@ -7,6 +7,7 @@
 #include "UI/Party/UIMiniPartyWnd.h"
 #include <algorithm>
 #include "Client/Session/Session.h"
+#include "Contents/Messenger/MessengerWindows.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/RenderObject.h"
@@ -162,7 +163,7 @@ int UIWindowMgr::Window4F250Ready() {
   if (window == nullptr) {
     return false;
   }
-  if (*reinterpret_cast<void**>(reinterpret_cast<char*>(window) + 0xB4) == nullptr) {
+  if (static_cast<UIDragMiniPartyWnd*>(window)->member.valid == 0) {
     return false;
   }
   if (window->geometry.state != 0) {

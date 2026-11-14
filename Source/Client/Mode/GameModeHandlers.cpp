@@ -2175,7 +2175,7 @@ void CGameMode::ReceiveAchievementUpdate(
   __time32_t completedAt, unsigned char rewarded
 ) {
   const SessionRecord6144 previous = g_session.FindAchievementRecord(id);
-  if (reinterpret_cast<const unsigned char*>(&previous.completionFlags)[1] == 0 && achieved == 1) {
+  if (previous.completed == 0 && achieved == 1) {
     this->achievementBalloonTick = timeGetTime();
     if (!this->achievementBalloon) {
       UIAchBalloonText* balloon =

@@ -4494,7 +4494,7 @@ void UIEditCtrl3::SetLinkedText(const char* value) {
   this->WrapLines(lines);
 
   this->lineCount = static_cast<int>(lines.size());
-  if (reinterpret_cast<const unsigned char*>(&this->editFlags)[1] != 0) {
+  if (this->multiline != 0) {
     this->lineCount = static_cast<int>(lines.size()) + 1;
   }
   this->UpdateScrollBar();

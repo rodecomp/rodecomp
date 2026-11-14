@@ -1500,9 +1500,9 @@ void CMsgEffect::FollowOwner() {
 // FUNCTION: fn_24288
 bool CSummonActorEffect::OnProcess() {
   const bool result = this->CMsgEffect::OnProcess();
-  const unsigned char* color = reinterpret_cast<const unsigned char*>(&this->render.color);
+  const SpriteColor& color = this->render.colorChannels;
   const int alpha = g_serviceOptions.Get(TT_HIDE_SUMMON_ON_OFF) != 0 ? 0x32 : 0xFF;
-  this->SetColor(alpha, color[2], color[1], color[0]);
+  this->SetColor(alpha, color.red, color.green, color.blue);
   return result;
 }
 

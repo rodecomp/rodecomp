@@ -363,13 +363,12 @@ void UIAchListWnd::Paint() {
 
     const AchievementInfo& info = found->second;
     const SessionRecord6144 record = g_session.FindAchievementRecord(found->first);
-    const unsigned char* flags = reinterpret_cast<const unsigned char*>(&record.completionFlags);
     if (this->selectedIndex == this->firstRow + row) {
       this->DrawBitmap(
         0, this->rowHeight * row,
-        AchievementBitmap(flags[1] == 1 ? "유저인터페이스\\achievement_re\\list_complete_press.bmp" : "유저인터페이스\\achievement_re\\list_press.bmp"), false
+        AchievementBitmap(record.completed == 1 ? "유저인터페이스\\achievement_re\\list_complete_press.bmp" : "유저인터페이스\\achievement_re\\list_press.bmp"), false
       );
-    } else if (flags[1] == 1) {
+    } else if (record.completed == 1) {
       this->DrawBitmap(0, this->rowHeight * row, AchievementBitmap("유저인터페이스\\achievement_re\\list_complete_out.bmp"), false);
     } else {
       this->DrawBitmap(0, this->rowHeight * row, AchievementBitmap("유저인터페이스\\achievement_re\\list_out.bmp"), false);
@@ -387,19 +386,19 @@ void UIAchListWnd::Paint() {
     this->DrawTextAt(53, this->rowHeight * row + 14, info.title.c_str(), 0, 0, 12, 0xA55239, 1, 0);
     this->DrawCenteredText(258, this->rowHeight * row + 14, FormatOwnedString("%3d", info.points).c_str(), 40, 0, 12, 0xA55239, 1);
     this->DrawTextAt(10, this->rowHeight * row + 54, info.summaryText.c_str(), 0, 0, 12, 0xA55239, 0, 0);
-    if (flags[1] == 1) {
+    if (record.completed == 1) {
       this->DrawBitmap(250, this->rowHeight * row + 5, AchievementBitmap("유저인터페이스\\achievement_re\\badge_complete.bmp"), true);
     }
 
     if (HasReward(info) == true && record.rewarded == 0) {
-      if (flags[1] == 1) {
+      if (record.completed == 1) {
         this->DrawBitmap(263, this->rowHeight * row + 49, AchievementBitmap("유저인터페이스\\achievement_re\\list_rewardbox_not_receive.bmp"), true);
       } else {
         this->DrawBitmap(263, this->rowHeight * row + 49, AchievementBitmap("유저인터페이스\\achievement_re\\list_rewardbox_default.bmp"), true);
       }
     }
 
-    if (flags[1] == 1) {
+    if (record.completed == 1) {
       const std::string date = FormatOwnedString("%4d.%2d.%2d", record.year, record.month, record.day);
       this->DrawOutlinedText(
         static_cast<int>(276.0 - this->TextWidth(date.c_str(), 0, 0, 10, 0, 0) * 0.5), this->rowHeight * row + 55, date.c_str(), 0, 0x635AA5,
@@ -592,7 +591,7 @@ void UIAchViewWnd::Paint() {
     return;
   }
 
-  if (static_cast<unsigned char>(g_session.FindAchievementRecord(this->achievementId).completionFlags >> 8) == 1) {
+  if (g_session.FindAchievementRecord(this->achievementId).completed == 1) {
     this->DrawBitmap(264, 3, AchievementBitmap("유저인터페이스\\achievement_re\\detail_stamp.bmp"), true);
   }
 
@@ -946,28 +945,28 @@ void UIAchListWnd::SetAchievements(std::map<int, AchievementInfo>* achievements,
 
   if (mode == 0) {
     for (auto it = achievements->begin(); it != achievements->end(); ++it) {
-      if (static_cast<unsigned char>(g_session.FindAchievementRecord(it->first).completionFlags >> 8) == 1) {
+      if (g_session.FindAchievementRecord(it->first).completed == 1) {
         this->ids.push_back(it->first);
       }
       std::sort(this->ids.begin(), this->ids.end(), byProgress);
     }
 
     for (auto it = achievements->begin(); it != achievements->end(); ++it) {
-      if (static_cast<unsigned char>(g_session.FindAchievementRecord(it->first).completionFlags >> 8) == 0) {
+      if (g_session.FindAchievementRecord(it->first).completed == 0) {
         this->ids.push_back(it->first);
       }
     }
   } else if (mode == 1) {
     for (auto it = achievements->begin(); it != achievements->end(); ++it) {
       SessionRecord6144 record = g_session.FindAchievementRecord(it->first);
-      if (reinterpret_cast<const unsigned char*>(&record.completionFlags)[1] == 1 && g_achievementMgr->HasReward(it->first) == 1 && record.rewarded == 0) {
+      if (record.completed == 1 && g_achievementMgr->HasReward(it->first) == 1 && record.rewarded == 0) {
         this->ids.push_back(it->first);
       }
       std::sort(this->ids.begin(), this->ids.end(), byProgress);
     }
 
     for (auto it = achievements->begin(); it != achievements->end(); ++it) {
-      if (static_cast<unsigned char>(g_session.FindAchievementRecord(it->first).completionFlags >> 8) == 0) {
+      if (g_session.FindAchievementRecord(it->first).completed == 0) {
         this->ids.push_back(it->first);
       }
     }
@@ -1434,7 +1433,7 @@ void UIAchViewWnd::UpdateInfo() {
       UIBitmapButton* button = this->receiveButton;
       button->SetDisabled(1);
       button->Invalidate();
-      if (static_cast<unsigned char>(record.completionFlags >> 8) == 1) {
+      if (record.completed == 1) {
         button = this->receiveButton;
         button->SetDisabled(0);
         button->Invalidate();

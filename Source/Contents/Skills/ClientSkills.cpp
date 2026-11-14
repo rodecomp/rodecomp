@@ -586,7 +586,7 @@ void CSession::UpdateAchievementRecord(const AchievementRecordPacket& packet) {
   auto found = this->achievements.find(packet.id);
   if (found != this->achievements.end()) {
     SessionRecord6144& record = found->second;
-    reinterpret_cast<unsigned char*>(&record.completionFlags)[1] = packet.completed;
+    record.completed = packet.completed;
     std::memcpy(record.objectives, packet.objectives, sizeof(record.objectives));
     record.completedAt = packet.completedAt;
     record.rewarded = packet.rewarded;
@@ -595,8 +595,8 @@ void CSession::UpdateAchievementRecord(const AchievementRecordPacket& packet) {
   }
 
   SessionRecord6144 record;
-  reinterpret_cast<unsigned char*>(&record.completionFlags)[0] = 1;
-  reinterpret_cast<unsigned char*>(&record.completionFlags)[1] = packet.completed;
+  record.registered = 1;
+  record.completed = packet.completed;
   std::memcpy(record.objectives, packet.objectives, sizeof(record.objectives));
   record.completedAt = packet.completedAt;
   record.rewarded = packet.rewarded;
@@ -1027,7 +1027,7 @@ void CSession::FindLatestCompletedAchievements(int* second, int* first) {
   int bestValue = -1;
   int secondValue;
   for (auto it = this->achievements.begin(); it != this->achievements.end(); ++it) {
-    if (reinterpret_cast<const unsigned char*>(&it->second.completionFlags)[1]) {
+    if (it->second.completed) {
       const int value = it->second.completedAt;
       if (bestValue < value) {
         secondValue = bestValue;

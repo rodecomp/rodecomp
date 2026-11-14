@@ -3644,7 +3644,7 @@ void CUIEditBox::OnCreate(int width, int height) {
   this->edit = new CUIEditCtrl;
   this->edit->SetSize(width, height);
   this->edit->invalidatesParent = 1;
-  reinterpret_cast<unsigned char*>(&this->edit->editFlags)[1] = 1;
+  this->edit->multiline = 1;
   this->AddChild(this->edit);
 }
 

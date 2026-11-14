@@ -138,7 +138,7 @@ bool CGameActor::ProcessState() {
       return false;
     }
     const unsigned int alpha = (static_cast<std::uint32_t>(this->vanishTime) - timeGetTime()) >> 1;
-    reinterpret_cast<unsigned char*>(&this->render.color)[3] = alpha > 255 ? 255 : static_cast<unsigned char>(alpha);
+    this->render.colorChannels.alpha = alpha > 255 ? 255 : static_cast<unsigned char>(alpha);
   }
 
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
@@ -755,7 +755,7 @@ bool CGameActor::UpdateFadeOut() {
     }
 
     const std::uint32_t remaining = (static_cast<std::uint32_t>(this->vanishTime) - timeGetTime()) / 2;
-    reinterpret_cast<unsigned char*>(&this->render.color)[3] = static_cast<unsigned char>(remaining > 0xFF ? 0xFF : remaining);
+    this->render.colorChannels.alpha = static_cast<unsigned char>(remaining > 0xFF ? 0xFF : remaining);
   }
 
   return true;
@@ -1192,12 +1192,13 @@ void __stdcall CreateHallucinationPc(
   hallu->render.position.x = position->x;
   hallu->render.position.y = position->y;
   hallu->render.position.z = position->z;
-  unsigned char* const argb = reinterpret_cast<unsigned char*>(&hallu->render.color);
+  SpriteColor& argb = hallu->render.colorChannels;
   if (alpha != -1) {
-    argb[3] = static_cast<unsigned char>(alpha);
+    argb.alpha = static_cast<unsigned char>(alpha);
   }
-  *reinterpret_cast<std::uint16_t*>(argb + 1) = 0xFFFF;
-  argb[0] = 0xFF;
+  argb.green = 0xFF;
+  argb.red = 0xFF;
+  argb.blue = 0xFF;
 
   static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->objects.push_back(hallu);
   delete pc;

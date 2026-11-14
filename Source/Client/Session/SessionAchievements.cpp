@@ -65,7 +65,7 @@ bool CSession::ToggleTrackedAchievement(int id) {
   } else {
     const std::pair<int, SessionRecord6144> entry(id, SessionRecord6144());
     this->achievements.insert(entry);
-    reinterpret_cast<unsigned char*>(&this->achievements[id].completionFlags)[0] = 1;
+    this->achievements[id].registered = 1;
     progress = &this->achievements[id];
   }
 
@@ -86,7 +86,7 @@ bool CSession::ToggleTrackedAchievement(int id) {
 
     SessionRecord6178 entry;
     entry.id = id;
-    entry.completed = reinterpret_cast<const unsigned char*>(&progress->completionFlags)[1];
+    entry.completed = progress->completed;
     entry.title = info.title;
 
     for (unsigned int i = 0; i < info.rewards.size(); ++i) {

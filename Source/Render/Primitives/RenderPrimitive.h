@@ -42,6 +42,9 @@ struct RenderCommand {
   /* 0024 */ std::uint32_t primitiveType;
 
   RenderCommand();
+  // INLINED
+  explicit RenderCommand(int) {
+  }
   void ApplyDepthAlpha();
   void FreeVertices();
   void AllocateTriangles(std::uint32_t triangleCount);

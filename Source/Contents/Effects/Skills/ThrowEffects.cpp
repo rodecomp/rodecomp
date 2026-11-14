@@ -369,7 +369,7 @@ void CThrowItemEffect::OnProcess() {
           CRenderObject* object = FindRenderObject(this->actor);
 
           if (object != nullptr) {
-            float& objectAngle = *reinterpret_cast<float*>(reinterpret_cast<unsigned char*>(object) + 0x4C);
+            float& objectAngle = object->render.angle;
             objectAngle = static_cast<float>(static_cast<int>(objectAngle + 45.0f) % 360);
           }
         }

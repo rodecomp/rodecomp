@@ -405,7 +405,7 @@ void UIRodexContentsWnd::SetMailContents(std::string title, std::string sender, 
   UIRodexEditCtrl3* contents = this->m_contents;
   contents->disabled = 1;
   contents->Invalidate();
-  reinterpret_cast<unsigned char*>(&this->m_contents->editFlags)[1] = 1;
+  this->m_contents->multiline = 1;
   this->m_contents->SetId(504);
 
   if (text.find("<NAVIL>") == std::string::npos && text.find("</NAVIL>") == std::string::npos) {

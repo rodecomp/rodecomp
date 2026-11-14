@@ -57,12 +57,10 @@ int UIEditCtrl2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 // FUNCTION: fn_10912
 int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   using NextCharHandler = const char*(__thiscall*)(InputCharset*, const char*, int);
-  unsigned char* const scrolling = reinterpret_cast<unsigned char*>(&this->scrollFlags);
-  unsigned char* const lineMove = reinterpret_cast<unsigned char*>(&this->editFlags);
 
   switch (message) {
   case UM_DEFPUSH:
-    if (lineMove[1] == 0 || HIBYTE(GetKeyState(VK_SHIFT)) != 0 || lineMove[1] == 0) {
+    if (this->multiline == 0 || HIBYTE(GetKeyState(VK_SHIFT)) != 0 || this->multiline == 0) {
       char newline[3] = {'\r', '\n', '\0'};
       g_serverLanguage->Insert(newline);
     } else {
@@ -73,7 +71,7 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
   case UM_SCROLLVERTPAGEUP:
   case UM_SCROLLVERTPAGEDOWN: {
     const int previous = this->firstVisibleLine;
-    scrolling[0] = 1;
+    this->manualScroll = 1;
 
     if (message == UM_SCROLLVERTPAGEUP) {
       this->firstVisibleLine = previous - this->geometry.height / this->lineHeight + 1;
@@ -102,7 +100,7 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     return this->firstVisibleLine - previous;
   }
   case UM_UPPUSH: {
-    lineMove[0] = 0;
+    this->caretAtLineEnd = 0;
 
     const unsigned count = this->wrappedLines.size();
     if (count <= 1 && (count != 1 || !this->lineBreaks[0])) {
@@ -110,7 +108,7 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     }
 
     g_serverLanguage->Selection(this->anchor, this->cursor);
-    if (this->verticalCursorStep <= 0 || this->previousCursor != this->cursor || scrolling[1] != 0) {
+    if (this->verticalCursorStep <= 0 || this->previousCursor != this->cursor || this->movingUp != 0) {
       const char* current = this->previousLineText;
       this->movingDown = 0;
       int bytes = 0;
@@ -147,12 +145,12 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     }
 
     g_serverLanguage->RetreatCursor(this->verticalCursorStep);
-    scrolling[1] = 1;
-    lineMove[0] = 1;
+    this->movingUp = 1;
+    this->caretAtLineEnd = 1;
     break;
   }
   case UM_DOWNPUSH: {
-    lineMove[0] = 0;
+    this->caretAtLineEnd = 0;
 
     const unsigned count = this->wrappedLines.size();
     if ((count <= 1 || static_cast<unsigned>(this->textY) >= count - 1) && (count != 1 || !this->lineBreaks[0] || this->nextLineLength <= 0)) {
@@ -161,7 +159,7 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 
     g_serverLanguage->Selection(this->anchor, this->cursor);
     if (this->verticalCursorStep <= 0 || this->previousCursor != this->cursor || this->movingDown != 0) {
-      scrolling[1] = 0;
+      this->movingUp = 0;
       int bytes = 0;
       int width = 0;
       int column = 0;
@@ -203,7 +201,7 @@ int UIEditCtrl3::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     break;
   }
   case WM_KEYDOWN:
-    scrolling[0] = 0;
+    this->manualScroll = 0;
     this->HandleInputMessage(a, b);
     return 3;
   default:
@@ -275,7 +273,7 @@ void UIEditCtrl3::HandleInputMessage(unsigned key, std::intptr_t data) {
       g_serverLanguage->AdvanceCursor(this->lineBreaks[this->textY] ? length - offset - 2 : length - offset);
       g_serverLanguage->Selection(this->anchor, this->cursor);
     }
-    reinterpret_cast<unsigned char*>(&this->editFlags)[0] = 1;
+    this->caretAtLineEnd = 1;
     return;
   case VK_BACK:
     if (this->wrappedLines.size() != 0) {
@@ -314,9 +312,11 @@ UIEditCtrl3::UIEditCtrl3() : UIEditCtrl2() {
   this->verticalCursorStep = 0;
   this->previousCursor = 0;
   this->firstVisibleLine = 0;
-  this->scrollFlags = 0;
+  this->manualScroll = 0;
+  this->movingUp = 0;
   this->movingDown = 0;
-  this->editFlags = 0;
+  this->caretAtLineEnd = 0;
+  this->multiline = 0;
   this->previousLineText = 0;
   this->nextLineText = 0;
 }
@@ -337,11 +337,11 @@ UIEditCtrl3::UIEditCtrl3(const UIEditCtrl3& other) : UIEditCtrl2(other) {
   this->verticalCursorStep = other.verticalCursorStep;
   this->previousCursor = other.previousCursor;
   this->firstVisibleLine = other.firstVisibleLine;
-  reinterpret_cast<unsigned char*>(&this->scrollFlags)[0] = reinterpret_cast<const unsigned char*>(&other.scrollFlags)[0];
-  reinterpret_cast<unsigned char*>(&this->scrollFlags)[1] = reinterpret_cast<const unsigned char*>(&other.scrollFlags)[1];
+  this->manualScroll = other.manualScroll;
+  this->movingUp = other.movingUp;
   this->movingDown = other.movingDown;
-  reinterpret_cast<unsigned char*>(&this->editFlags)[0] = reinterpret_cast<const unsigned char*>(&other.editFlags)[0];
-  reinterpret_cast<unsigned char*>(&this->editFlags)[1] = reinterpret_cast<const unsigned char*>(&other.editFlags)[1];
+  this->caretAtLineEnd = other.caretAtLineEnd;
+  this->multiline = other.multiline;
 
   char* first = other.previousLineText;
   if (first != this->previousLineText) {
@@ -479,7 +479,7 @@ void UIEditCtrl3::PaintText() {
   }
 
   this->lineCount = static_cast<int>(this->wrappedLines.size());
-  if (reinterpret_cast<const unsigned char*>(&this->editFlags)[1] != 0) {
+  if (this->multiline != 0) {
     ++this->lineCount;
   }
 
@@ -597,7 +597,7 @@ void UIEditCtrl3::PaintText() {
   for (std::size_t index = 0; index < this->wrappedLines.size(); ++index) {
     remaining -= static_cast<int>(std::strlen(this->wrappedLines[index].c_str()));
     this->textY = static_cast<int>(index);
-    if (remaining < 0 || (static_cast<unsigned char>(this->editFlags) != 0 && remaining == 0)) {
+    if (remaining < 0 || (this->caretAtLineEnd != 0 && remaining == 0)) {
       break;
     }
   }
@@ -605,7 +605,7 @@ void UIEditCtrl3::PaintText() {
   if (g_windowMgr.GetHoverWindow() == this) {
     int caretLine = this->textY;
     if (this->caretLineLength != static_cast<int>(std::strlen(this->wrappedLines[caretLine].c_str()))) {
-      reinterpret_cast<unsigned char*>(&this->scrollFlags)[0] = 0;
+      this->manualScroll = 0;
       this->caretLineLength = static_cast<int>(std::strlen(this->wrappedLines[caretLine].c_str()));
     }
 
@@ -667,9 +667,8 @@ void UIEditCtrl3::PaintText() {
     if ((timeGetTime() / 500 & 1) == 0 && (!g_windowMgr.IsHoverOnWindow01C8Button() || g_windowMgr.inputSuggestionsEnabled)) {
       this->DrawTextAt(x - 2 + caretX, (wrapped - first + this->textY) * this->lineHeight, "|", 0, 0, 12, color, 0, 0);
 
-      const unsigned char* scroll = reinterpret_cast<const unsigned char*>(&this->scrollFlags);
-      if (scroll[0] == 0) {
-        if (scroll[1] != 0) {
+      if (this->manualScroll == 0) {
+        if (this->movingUp != 0) {
           const int current = this->textY;
           if (current - wrapped < this->firstVisibleLine) {
             if (current >= this->lineCount - rows) {
@@ -690,7 +689,7 @@ void UIEditCtrl3::PaintText() {
         } else {
           const int top = this->lineCount <= rows ? this->textY : this->lineCount - rows + wrapped;
           this->firstVisibleLine = top;
-          if (reinterpret_cast<const unsigned char*>(&this->editFlags)[1] != 0 && top > 0) {
+          if (this->multiline != 0 && top > 0) {
             this->firstVisibleLine = top - 1;
           }
         }

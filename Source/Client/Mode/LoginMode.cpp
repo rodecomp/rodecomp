@@ -3242,7 +3242,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     }
   }
   case LMM_SELECT_REPLAY_DATA:
-    reinterpret_cast<unsigned char*>(&GetRagConnection())[0x6C] = 1;
+    GetRagConnection().m_replayMode = 1;
     this->pendingCursorType = 27;
     return 0;
   case LMM_START_REPLAY:
@@ -3250,7 +3250,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     this->pendingCursorType = 28;
     return 0;
   case LMM_REPLAY_SELECT_SERVER:
-    reinterpret_cast<unsigned char*>(&GetRagConnection())[0x6C] = 0;
+    GetRagConnection().m_replayMode = 0;
     g_session.m_aid = ReplayFileList::Instance().selectionState;
     g_session.SetFlag(static_cast<char>(ReplayFileList::Instance().dialogState));
     this->pendingCursorType = 6;

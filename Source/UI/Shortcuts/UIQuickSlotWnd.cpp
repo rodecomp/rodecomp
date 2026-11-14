@@ -24,6 +24,7 @@
 #include "Contents/Actors/PlayerNameDictionary.h"
 #include "UI/Window/UIBasicCtrl.h"
 #include "UI/Login/UINewSelectCharWnd.h"
+#include "UI/Skill/UISkillDescribeWnd.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 
@@ -145,7 +146,7 @@ void UIQuickSlotWnd::OnRBtnDown(int x, int y) {
     WindowManagerWindows& windows = g_windowMgr;
     UIWindow* detail = windows.EnsureWindow(WID_SKILLDESCRIBEWND);
     if (detail) {
-      if (*reinterpret_cast<std::uint32_t*>(reinterpret_cast<char*>(detail) + 0x104) == id) {
+      if (static_cast<std::uint32_t>(static_cast<UISkillDescribeWnd*>(detail)->m_skillId) == id) {
         windows.CloseWindow(WID_SKILLDESCRIBEWND);
       } else {
         detail->SendMsg(nullptr, UM_SKILLDESCRIBE, id, 0, 0, 0);

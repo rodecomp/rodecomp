@@ -50,7 +50,8 @@ struct BlockedCharacter {
 };
 
 struct SessionRecord6144 {
-  /* 0000 */ std::uint16_t completionFlags = 0;
+  /* 0000 */ unsigned char registered = 0;
+  /* 0001 */ unsigned char completed = 0;
   /* 0004 */ std::uint32_t objectives[10] = {};
   /* 002C */ int completedAt = 0;
   /* 0030 */ std::uint8_t rewarded = 0;
@@ -1384,6 +1385,9 @@ static_assert(offsetof(CSession, m_subChatWnds) == 0x744);
 static_assert(offsetof(CSession, m_prohibitionLog) == 0x754);
 static_assert(offsetof(CSession, m_mapPositions) == 0x5310);
 static_assert(offsetof(CSession, m_mapPosListCount) == 0x5328);
+static_assert(offsetof(SessionRecord6144, registered) == 0x0);
+static_assert(offsetof(SessionRecord6144, completed) == 0x1);
+static_assert(offsetof(SessionRecord6144, objectives) == 0x4);
 static_assert(offsetof(SessionRecord6144, completedAt) == 0x2C);
 static_assert(offsetof(SessionRecord6144, rewarded) == 0x30);
 static_assert(offsetof(CSession, m_additionalSkills) == 0x4);

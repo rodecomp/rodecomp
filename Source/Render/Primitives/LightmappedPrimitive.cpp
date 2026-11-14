@@ -16,9 +16,17 @@ LightmappedCommand::LightmappedCommand()
 
 // OFFSET: 0x00569090
 // FUNCTION: fn_02247
-ModelRenderCommand::ModelRenderCommand()
-    : vertices(nullptr), vertexCount(0), texture(nullptr), indices(nullptr), indexCount(0), renderEnabled(1), renderStateA(0), renderStateB(0), renderStateC(0),
-      primitiveType(D3DPT_TRIANGLELIST) {
+ModelRenderCommand::ModelRenderCommand() : RenderCommand(0) {
+  this->vertices = nullptr;
+  this->vertexCount = 0;
+  this->texture = nullptr;
+  this->indices = nullptr;
+  this->indexCount = 0;
+  this->depthFlags = 1;
+  this->sourceBlend = 0;
+  this->destinationBlend = 0;
+  this->textureMode = 0;
+  this->primitiveType = D3DPT_TRIANGLELIST;
 }
 
 struct LightmappedBuffer {
