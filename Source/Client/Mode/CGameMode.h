@@ -638,6 +638,7 @@ public:
   void SpawnArrowEffect64(const vector3d* source, const vector3d* target, float speed);
   void UnusedArrowStub(int a, int b, int c, int d, int e, int f, int g, int h, int i, int j);
   bool UpdateReplayPause(bool resume);
+  void SendSyncRequest(bool force);
   void ReceiveCharacterRenameResult(const unsigned char* packet);
   void ReceiveLapineUpgradeResult(std::int16_t result);
   void ReceiveLapineBoxResult(std::uint16_t result);
@@ -1070,6 +1071,7 @@ extern char g_pendingWhisperCount;
 void CloseWhisperRecord();
 extern unsigned char g_gameModePacketBuffer[0x10000];
 extern std::string g_gameModeNamelessTag;
+extern std::uint32_t g_gameTickInterval;
 void __stdcall OpenWordDisplay(CGameActor* actor);
 int CountItemRandomOptions(const ItemOptionRecord* entries);
 void TraceSelection(int selection);
