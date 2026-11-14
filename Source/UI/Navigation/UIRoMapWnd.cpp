@@ -130,7 +130,8 @@ void UIRoMapWnd::DrawHoverTooltip() {
   const int lineHeight = this->TextHeight(" ", 0, 0, 12, 1, 0) + 3;
   const WorldViewRecord* record = this->hoveredRecord;
   const WorldViewArea* anchor = this->previewArea;
-  const RECT rect = reinterpret_cast<const RECT&>(record->left);
+  RECT rect;
+  std::memcpy(&rect, &record->area, sizeof(rect));
   int x;
   if (anchor->right < rect.right) {
     leftSide = true;
@@ -487,7 +488,7 @@ bool UIRoMapWnd::LocateRecord(WorldViewRecord& record) {
   for (unsigned int index = 0; index < g_worldViewMgr.worlds.size(); ++index) {
     if (CWorldViewField* field = g_worldViewMgr.worlds[index]->FindField(name.c_str())) {
       record.worldIndex = index;
-      reinterpret_cast<WorldViewArea&>(record.left) = reinterpret_cast<const WorldViewArea&>(*field);
+      record.area = field->area;
       return true;
     }
   }
@@ -540,10 +541,10 @@ void UIRoMapWnd::OnMouseMove(int x, int y) {
   this->selectedRecord->worldIndex = g_worldViewMgr.currentWorld;
   this->selectedRecord->mapIndex = mapId;
   this->selectedRecord->name = field->name;
-  reinterpret_cast<WorldViewArea&>(this->selectedRecord->left) = reinterpret_cast<const WorldViewArea&>(*field);
+  this->selectedRecord->area = field->area;
 
   CWorldViewMap* map = world->maps[mapIndex];
-  reinterpret_cast<WorldViewArea&>(this->selectedRecord->screenLeft) = reinterpret_cast<const WorldViewArea&>(map->left);
+  this->selectedRecord->screenArea = map->area;
   this->Invalidate();
 }
 
@@ -556,7 +557,7 @@ void CKafraMoveMapServiceInfo::Build(std::string mapName) {
     CWorldViewField* field = g_worldViewMgr.worlds[0]->FindField(it->c_str());
     if (field) {
       std::string name = field->name;
-      WorldViewArea area = reinterpret_cast<const WorldViewArea&>(*field);
+      WorldViewArea area = field->area;
       RoMapMarker marker;
       SetRoMapMarker(name, area, marker);
       this->markers.push_back(marker);
@@ -572,7 +573,7 @@ void CKafraMoveMapServiceInfo::Update(UIRoMapWnd* wnd, float elapsed) {
     if (this->mapName != record->name) {
       this->mapName = record->name;
       this->Build(record->name);
-      SetRoMapMarker(record->name, reinterpret_cast<const WorldViewArea&>(record->left), this->current);
+      SetRoMapMarker(record->name, record->area, this->current);
       this->blend = 0.0f;
     }
 

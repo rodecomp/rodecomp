@@ -22,11 +22,16 @@ class CWorldViewField {
 public:
   CWorldViewField(WorldViewArea area, const char* name, const char* fieldName, const char* description);
 
-  /* 0000 */ int left = 0;
-  /* 0004 */ int top = 0;
-  /* 0008 */ int right = 0;
-  /* 000C */ int bottom = 0;
-  /* 0010 */ int areaFlags = 0;
+  union {
+    /* 0000 */ WorldViewArea area = {0, 0, 0, 0, 0};
+    struct {
+      /* 0000 */ int left;
+      /* 0004 */ int top;
+      /* 0008 */ int right;
+      /* 000C */ int bottom;
+      /* 0010 */ int areaFlags;
+    };
+  };
   /* 0014 */ std::string name;
   /* 002C */ std::string fieldName;
   /* 0044 */ std::string description;
@@ -47,11 +52,16 @@ public:
   /* 0000 */ std::string name;
   /* 0018 */ std::string displayName;
   /* 0030 */ int id = 0;
-  /* 0034 */ int left = 0;
-  /* 0038 */ int top = 0;
-  /* 003C */ int right = 0;
-  /* 0040 */ int bottom = 0;
-  /* 0044 */ int areaFlags = 0;
+  union {
+    /* 0034 */ WorldViewArea area = {0, 0, 0, 0, 0};
+    struct {
+      /* 0034 */ int left;
+      /* 0038 */ int top;
+      /* 003C */ int right;
+      /* 0040 */ int bottom;
+      /* 0044 */ int areaFlags;
+    };
+  };
   /* 0048 */ std::vector<CWorldViewField*> fields;
 };
 
@@ -79,17 +89,27 @@ struct WorldViewRecord {
   /* 0000 */ int worldIndex;
   /* 0004 */ int mapIndex;
   /* 0008 */ int level;
-  /* 000C */ int screenLeft = 0;
-  /* 0010 */ int screenTop = 0;
-  /* 0014 */ int screenRight = 0;
-  /* 0018 */ int screenBottom = 0;
-  /* 001C */ int padding_001C = 0;
+  union {
+    /* 000C */ WorldViewArea screenArea = {0, 0, 0, 0, 0};
+    struct {
+      /* 000C */ int screenLeft;
+      /* 0010 */ int screenTop;
+      /* 0014 */ int screenRight;
+      /* 0018 */ int screenBottom;
+      /* 001C */ int screenAreaFlags;
+    };
+  };
   /* 0020 */ std::string name;
-  /* 0038 */ int left = 0;
-  /* 003C */ int top = 0;
-  /* 0040 */ int right = 0;
-  /* 0044 */ int bottom = 0;
-  /* 0048 */ int areaFlags = 0;
+  union {
+    /* 0038 */ WorldViewArea area = {0, 0, 0, 0, 0};
+    struct {
+      /* 0038 */ int left;
+      /* 003C */ int top;
+      /* 0040 */ int right;
+      /* 0044 */ int bottom;
+      /* 0048 */ int areaFlags;
+    };
+  };
   /* 004C */ std::list<std::string> relatedNames;
 };
 
