@@ -1133,9 +1133,10 @@ void CUIEnchantItem::SetFrozen(bool frozen) {
 // OFFSET: 0x00A05860
 // FUNCTION: fn_14977
 void CUIEnchantPage::UpdateEnchantItem(CUIEnchantItem* item, const CEnchantItemData& data) {
+  const int itemId = data.itemId;
   {
     ITEM_INFO info;
-    info.SetItemId(data.itemId);
+    info.SetItemId(itemId);
     info.identified = 1;
     item->itemIcon->SetItem(info);
     item->name->SetText(info.DisplayName(0));
