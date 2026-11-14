@@ -689,13 +689,14 @@ void CEffectPrim::RenderFanSlice(matrix& wtm) {
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
-    if (this->state.slots[ec].life != 1 || this->state.slots[ec].alphaB <= 0) {
+    EffectPrimitiveSlot& slot = this->state.slots[ec];
+    if (slot.life != 1 || slot.alphaB <= 0) {
       continue;
     }
 
-    const int angle = this->state.slots[ec].riseAngle;
-    const float dist = this->state.slots[ec].distance;
-    const float base = this->state.slots[ec].height[0];
+    const int angle = slot.riseAngle;
+    const float dist = slot.distance;
+    const float base = slot.height[0];
     int leftAngle = angle - 5;
     if (leftAngle < 0) {
       leftAngle += 360;
@@ -704,11 +705,11 @@ void CEffectPrim::RenderFanSlice(matrix& wtm) {
     if (rightAngle >= 360) {
       rightAngle -= 360;
     }
-    left.x = dist * g_cosTable[leftAngle] * g_cosTable[this->state.slots[ec].rotStart];
-    left.y = dist * g_cosTable[leftAngle] * g_sinTable[this->state.slots[ec].rotStart] + base;
+    left.x = dist * g_cosTable[leftAngle] * g_cosTable[slot.rotStart];
+    left.y = dist * g_cosTable[leftAngle] * g_sinTable[slot.rotStart] + base;
     left.z = dist * g_sinTable[leftAngle];
-    right.x = dist * g_cosTable[rightAngle] * g_cosTable[this->state.slots[ec].rotStart];
-    right.y = dist * g_cosTable[rightAngle] * g_sinTable[this->state.slots[ec].rotStart] + base;
+    right.x = dist * g_cosTable[rightAngle] * g_cosTable[slot.rotStart];
+    right.y = dist * g_cosTable[rightAngle] * g_sinTable[slot.rotStart] + base;
     right.z = dist * g_sinTable[rightAngle];
     center.x = 0.0f;
     center.y = base;
@@ -717,7 +718,7 @@ void CEffectPrim::RenderFanSlice(matrix& wtm) {
     center2.y = base;
     center2.z = 0.0f;
 
-    this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, left, right, center, center2, wtm, 0, 0, 0, 0, 0, 255, 0.0f, 1.0f, 0.0f, 1.0f, 1);
+    this->RenderTeiRect(&rpCnt, slot.alphaB, left, right, center, center2, wtm, 0, 0, 0, 0, 0, 255, 0.0f, 1.0f, 0.0f, 1.0f, 1);
   }
 }
 
