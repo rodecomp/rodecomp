@@ -16,15 +16,12 @@ struct EnchantPerfectInfo {
   /* 0008 */ std::map<int, int> materials;
 };
 
-struct EnchantRandomUpgradeInfo {
-  /* 0000 */ uint64_t cost;
-  /* 0008 */ std::map<int, int> materials;
+struct EnchantRandomUpgradeInfo : EnchantPerfectInfo {
   /* 0010 */ std::map<int, uint64_t> rates;
 };
 
 struct EnchantOptionInfo {
-  /* 0000 */ uint64_t requireCost;
-  /* 0008 */ std::map<int, int> requireMaterials;
+  /* 0000 */ EnchantPerfectInfo require;
   /* 0010 */ uint64_t successRate;
   /* 0018 */ std::map<uint32_t, uint64_t> gradeBonus;
   /* 0020 */ std::map<uint32_t, std::map<int, uint64_t>> enchants;
@@ -43,8 +40,7 @@ struct EnchantInfo {
   /* 0024 */ uint8_t padding_0024[0x4];
   /* 0028 */ bool resetEnabled;
   /* 0030 */ uint64_t resetRate;
-  /* 0038 */ uint64_t resetCost;
-  /* 0040 */ std::map<int, int> resetMaterials;
+  /* 0038 */ EnchantPerfectInfo reset;
   /* 0048 */ std::string caution;
   /* 0060 */ std::map<uint32_t, EnchantOptionInfo> options;
 };
@@ -108,10 +104,8 @@ int L_SetSuccessRate(lua_State* L);
 static_assert(sizeof(EnchantRandomUpgradeInfo) == 0x18);
 static_assert(sizeof(EnchantPerfectInfo) == 0x10);
 static_assert(offsetof(EnchantPerfectInfo, materials) == 0x08);
-static_assert(offsetof(EnchantRandomUpgradeInfo, materials) == 0x08);
 static_assert(offsetof(EnchantRandomUpgradeInfo, rates) == 0x10);
 static_assert(sizeof(EnchantOptionInfo) == 0x48);
-static_assert(offsetof(EnchantOptionInfo, requireMaterials) == 0x08);
 static_assert(offsetof(EnchantOptionInfo, successRate) == 0x10);
 static_assert(offsetof(EnchantOptionInfo, gradeBonus) == 0x18);
 static_assert(offsetof(EnchantOptionInfo, enchants) == 0x20);
@@ -126,8 +120,7 @@ static_assert(offsetof(EnchantInfo, approveRandomOption) == 0x14);
 static_assert(offsetof(EnchantInfo, slots) == 0x18);
 static_assert(offsetof(EnchantInfo, resetEnabled) == 0x28);
 static_assert(offsetof(EnchantInfo, resetRate) == 0x30);
-static_assert(offsetof(EnchantInfo, resetCost) == 0x38);
-static_assert(offsetof(EnchantInfo, resetMaterials) == 0x40);
+static_assert(offsetof(EnchantInfo, reset) == 0x38);
 static_assert(offsetof(EnchantInfo, caution) == 0x48);
 static_assert(offsetof(EnchantInfo, options) == 0x60);
 static_assert(sizeof(CEnchantMgr) == 0x38);

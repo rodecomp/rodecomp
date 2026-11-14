@@ -1390,7 +1390,7 @@ void CUIUpgradePerfect::OnSelectEnchant(CUIEnchantItem* item, const CEnchantItem
 // OFFSET: 0x00A072E0
 // FUNCTION: fn_15011
 bool CUIReset::LoadEnchantList() {
-  this->SetCost(*reinterpret_cast<const EnchantPerfectInfo*>(&this->enchantInfo->resetCost));
+  this->SetCost(this->enchantInfo->reset);
   if (!this->enchantInfo->resetEnabled) {
     {
       CUIImageButton* button = this->enchantButton;
@@ -1529,7 +1529,7 @@ bool CUINormalRandom::LoadEnchantList() {
   }
 
   this->enchantList->UpdateScrollBar();
-  this->SetCost(*reinterpret_cast<const EnchantPerfectInfo*>(*option));
+  this->SetCost((*option)->require);
   return true;
 }
 
@@ -1560,7 +1560,7 @@ bool CUIUpgradeRandom::LoadEnchantList() {
   }
 
   this->enchantList->UpdateScrollBar();
-  this->SetCost(*reinterpret_cast<const EnchantPerfectInfo*>(&base->second));
+  this->SetCost(base->second);
   return true;
 }
 

@@ -960,8 +960,8 @@ int L_SetRequire(lua_State* L) {
   }
 
   CEnchantMgr* mgr = CEnchantMgr::GetInstance();
-  mgr->m_enchants[static_cast<uint64_t>(id)].options[optionKey].requireCost = cost;
-  mgr->m_enchants[static_cast<uint64_t>(id)].options[optionKey].requireMaterials = mgr->ConvertMaterials(materials);
+  mgr->m_enchants[static_cast<uint64_t>(id)].options[optionKey].require.cost = cost;
+  mgr->m_enchants[static_cast<uint64_t>(id)].options[optionKey].require.materials = mgr->ConvertMaterials(materials);
   return 2;
 }
 
@@ -1013,7 +1013,7 @@ int L_SetReset(lua_State* L) {
   CEnchantMgr* mgr = CEnchantMgr::GetInstance();
   mgr->m_enchants[id].resetEnabled = enabled;
   mgr->m_enchants[id].resetRate = rate;
-  mgr->m_enchants[id].resetCost = cost;
-  mgr->m_enchants[id].resetMaterials = mgr->ConvertMaterials(materials);
+  mgr->m_enchants[id].reset.cost = cost;
+  mgr->m_enchants[id].reset.materials = mgr->ConvertMaterials(materials);
   return 2;
 }
