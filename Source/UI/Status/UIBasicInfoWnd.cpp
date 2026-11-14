@@ -610,7 +610,7 @@ void UIBasicInfoWnd::Paint() {
       unsigned green;
       unsigned blue;
       g_skinInfo.PaletteChannels(14, 6, red, green, blue);
-      DrawRoundedBorder(*this, 0, 17, this->geometry.width, this->geometry.height - 17, RGB(red, green, blue));
+      this->DrawRoundedOutline(0, 17, this->geometry.width, this->geometry.height - 17, RGB(red, green, blue));
       this->FillRegion(0, 17, this->geometry.width, 5, RGB(red, green, blue));
       g_skinInfo.PaletteChannels(2, 2, red, green, blue);
       this->FillRegion(1, 17, this->geometry.width - 2, this->geometry.height - 19, RGB(red, green, blue));

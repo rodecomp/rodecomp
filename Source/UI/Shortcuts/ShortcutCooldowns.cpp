@@ -844,9 +844,9 @@ void UISerachStoreInfoWnd::Paint() {
   this->DrawRightAlignedText(this->geometry.width - 60, 60, FormatOwnedString(LookupMessage(MSI_SSI_REST_OF_NUMBER_OF_SEARCHES), g_session.storeSearchCount).c_str(), 0, 0, 12, 0, 0);
 
   this->FillRegion(5, 80, this->geometry.width - 10, 20, 0xDFFFFE);
-  DrawRoundedBorder(*this, 5, 80, this->geometry.width - 10, this->m_rowHeight * 10 + 21, 0xC0C0C0);
-  DrawRectangleBorder(*this, 50, 80, 110, 21, 0xC0C0C0);
-  DrawRectangleBorder(*this, 330, 80, 30, 21, 0xC0C0C0);
+  this->DrawRoundedOutline(5, 80, this->geometry.width - 10, this->m_rowHeight * 10 + 21, 0xC0C0C0);
+  this->DrawRectOutline(50, 80, 110, 21, 0xC0C0C0);
+  this->DrawRectOutline(330, 80, 30, 21, 0xC0C0C0);
   this->FillRegion(5, 100, this->geometry.width - 10, 1, 0xC0C0C0);
 
   int x = (110 - this->TextWidth(LookupMessage(MSI_STORE_NAME), 0, 0, 12, 0, 0)) / 2 + 50;
@@ -876,8 +876,8 @@ void UISerachStoreInfoWnd::Paint() {
     if (this->m_hoverRow == row) {
       this->FillRegion(5, this->m_rowHeight * row + 100, this->geometry.width - 10, this->m_rowHeight, 0xFBDFCA);
     }
-    DrawRectangleBorder(*this, 50, this->m_rowHeight * row + 100, 110, this->m_rowHeight + 1, 0xC0C0C0);
-    DrawRectangleBorder(*this, 330, this->m_rowHeight * row + 100, 30, this->m_rowHeight + 1, 0xC0C0C0);
+    this->DrawRectOutline(50, this->m_rowHeight * row + 100, 110, this->m_rowHeight + 1, 0xC0C0C0);
+    this->DrawRectOutline(330, this->m_rowHeight * row + 100, 30, this->m_rowHeight + 1, 0xC0C0C0);
 
     const int next = row + 1;
     if (next < 10) {

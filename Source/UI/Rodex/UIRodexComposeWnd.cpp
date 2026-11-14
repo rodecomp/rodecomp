@@ -465,7 +465,7 @@ void UIRodexComposeWnd::Paint() {
   this->DrawRightAlignedText(244, 316, FormatOwnedString("%d", static_cast<std::int16_t>(g_session.achievementResult)).c_str(), 0, 0, 11, 0x737373, 0);
 
   this->FillRegion(35, 347, 95, 16, 0xFFFFFF);
-  DrawRectangleBorder(*this, 35, 347, 95, 16, 0xA6A6A6);
+  this->DrawRectOutline(35, 347, 95, 16, 0xA6A6A6);
 
   this->DrawBitmap(19, 342, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\icon_zeny.bmp"))), true);
 

@@ -131,13 +131,13 @@ void UIReputeWnd::Paint() {
   this->ClearSurface(0xFFFFFFFF);
   const int titleHeight = this->DrawTitleBar(false, LookupMessage(MSI_REPUTE_NOW_LOADING), 0);
   const int barHeight = this->DrawButtonBar(2, 0, 1);
-  DrawRectangleBorder(*this, 0, titleHeight - 1, this->geometry.width, this->geometry.height - barHeight - titleHeight + 2, 0xC6C6C6);
-  DrawRectangleBorder(*this, 0, titleHeight, this->geometry.width, 1, 0);
+  this->DrawRectOutline(0, titleHeight - 1, this->geometry.width, this->geometry.height - barHeight - titleHeight + 2, 0xC6C6C6);
+  this->DrawRectOutline(0, titleHeight, this->geometry.width, 1, 0);
 
   if (Singleton<CReputeMgr>::GetInstance()->m_waitingForPoints == true) {
-    DrawRoundedBorder(*this, 225, 155, 190, 140, 0xCE9484);
-    DrawFilledRoundedBorder(*this, 226, 156, 188, 138, 0xFFE7DE);
-    DrawFilledRoundedBorder(*this, 231, 161, 178, 128, 0xFFFFFF);
+    this->DrawRoundedOutline(225, 155, 190, 140, 0xCE9484);
+    this->DrawFilledRoundedOutline(226, 156, 188, 138, 0xFFE7DE);
+    this->DrawFilledRoundedOutline(231, 161, 178, 128, 0xFFFFFF);
     this->DrawBitmap(288, 182, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\notice_poring.bmp"))), true);
     this->DrawCenteredText(225, 260, LookupMessage(MSI_ENCHANT_TAB_GENERAL), 190, 0, 15, 0xC89482, 1);
     return;
@@ -192,7 +192,7 @@ void UIReputeWnd::Paint() {
 
   if (this->m_groupSelected) {
     this->FillRegion(375, 26, 256, 16, 0xEFEFEF);
-    DrawRectangleBorder(*this, 374, 25, 258, 18, 0x636363);
+    this->DrawRectOutline(374, 25, 258, 18, 0x636363);
     this->DrawTextAt(377, 29, "GROUP :", 0, 0, 12, 0, 1, 0);
     this->DrawRightAlignedText(627, 29, FormatOwnedString("%I64d P", this->m_totalPoints).c_str(), 0, 0, 12, 0, 1);
 

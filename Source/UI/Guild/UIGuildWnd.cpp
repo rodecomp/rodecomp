@@ -2499,7 +2499,7 @@ void UIGuildMemberManageWnd::Paint() {
 
   unsigned red, green, blue;
   g_skinInfo.PaletteChannels(14, 6, red, green, blue);
-  DrawRectangleBorder(*this, 5, 46, 377, this->m_rowSpacing / 2 + 237, RGB(red, green, blue));
+  this->DrawRectOutline(5, 46, 377, this->m_rowSpacing / 2 + 237, RGB(red, green, blue));
   this->FillRegion(5, 66, 377, 1, RGB(red, green, blue));
   const int rows = 6 - this->m_rowSpacing * 6 / 36;
   for (int row = 1; row <= rows; ++row) {

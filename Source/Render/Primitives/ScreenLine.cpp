@@ -351,15 +351,14 @@ void UIRoMapWnd::DrawSelectedMapPreview() {
 
   if (this->selectedRecord->mapIndex < 100) {
     const WorldViewRecord* record = this->selectedRecord;
-    DrawRoundedBorder(
-      *this, record->screenLeft, record->screenTop, record->screenRight - record->screenLeft, record->screenBottom - record->screenTop,
+    this->DrawRoundedOutline(record->screenLeft, record->screenTop, record->screenRight - record->screenLeft, record->screenBottom - record->screenTop,
       g_worldMapNameColor
     );
   }
 
   {
     const WorldViewRecord* record = this->selectedRecord;
-    DrawRoundedBorder(*this, record->left, record->top, record->right - record->left, record->bottom - record->top, g_worldMapNameColor);
+    this->DrawRoundedOutline(record->left, record->top, record->right - record->left, record->bottom - record->top, g_worldMapNameColor);
   }
 
   WorldViewRecord* record = this->selectedRecord;

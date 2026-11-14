@@ -928,7 +928,7 @@ void UIMessengerGroupWnd::Paint() {
     g_skinInfo.PaletteChannels(2, 2, red, green, blue);
     this->FillRegion(0, 17, this->geometry.width, this->geometry.height - 38, RGB(red, green, blue));
   }
-  DrawRectangleBorder(*this, 0, 17, this->geometry.width, this->geometry.height - 38, 0xC0C0C0);
+  this->DrawRectOutline(0, 17, this->geometry.width, this->geometry.height - 38, 0xC0C0C0);
   this->DrawButtonBar(0, 0, 1);
 
   auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\mesbtn_left.bmp")));

@@ -2414,8 +2414,8 @@ void UINavigationroadiconWnd::OnCreate(int, int) {
 // FUNCTION: fn_03588
 void UINavigationV4Wnd::Paint() {
   if (g_navigationManager.expandedMap == true) {
-    DrawFilledRoundedBorder(*this, 0, 0, 0x86, 0x3d, 0xffffff);
-    DrawFilledRoundedBorder(*this, 1, 0x11, 0x84, 0x2b, 0);
+    this->DrawFilledRoundedOutline(0, 0, 0x86, 0x3d, 0xffffff);
+    this->DrawFilledRoundedOutline(1, 0x11, 0x84, 0x2b, 0);
     this->DrawTextAt(3, 3, LookupMessage(MSI_NAVIGATION_MOB_S_S), 0, 0, 12, 0, 0, 0);
     if (g_navigationManager.destinationText.size() != 0) {
       this->DrawBitmap(

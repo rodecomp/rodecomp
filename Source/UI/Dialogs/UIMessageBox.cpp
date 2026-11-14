@@ -3547,7 +3547,7 @@ void UIHomunInfoWnd::OnCreate(int, int) {
 void UIHomunInfoWnd::Paint() {
   auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\homuninfo_bg.bmp")));
   this->DrawBitmap(0, 0, background, false);
-  DrawFilledRoundedBorder(*this, 0, this->geometry.height - 40, this->geometry.width, 40, 0xFFFFFF);
+  this->DrawFilledRoundedOutline(0, this->geometry.height - 40, this->geometry.width, 40, 0xFFFFFF);
   char title[32];
   std::sprintf(title, LookupMessage(MSI_HOMUN_INFO));
   this->DrawTextAt(5, 2, title, 0, 0, 12, 0, 0, 0);

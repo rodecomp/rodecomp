@@ -466,7 +466,7 @@ void UIHotKeyWnd::Paint() {
   const int innerHeight =
     this->geometry.height - 2 * this->m_verticalMargin - this->m_tabHeight - this->m_titleHeight - this->m_buttonBarHeight;
 
-  DrawRectangleBorder(*this, this->m_horizontalMargin, bottomY, innerWidth, innerHeight, 0xC0C0C0);
+  this->DrawRectOutline(this->m_horizontalMargin, bottomY, innerWidth, innerHeight, 0xC0C0C0);
   this->FillRegion(this->geometry.width / 2, bottomY, 1, innerHeight, 0xC0C0C0);
   this->FillRegion(this->m_horizontalMargin, bottomY - 3, 1, 3, 0xC0C0C0);
   this->FillRegion(this->geometry.width - this->m_horizontalMargin - 1, bottomY - 3, 1, 3, 0xC0C0C0);
