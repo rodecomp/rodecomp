@@ -220,7 +220,7 @@ int UIRefiningWnd::SlotAt(int x, int y) {
 
 // OFFSET: 0x007F55A0
 // FUNCTION: fn_09906
-__declspec(safebuffers) void UIRefiningWnd::ApplyResult() {
+void UIRefiningWnd::ApplyResult() {
   this->notice->SetNotice("", 0, 0);
   this->item = this->nextItem;
   this->refiningButton->Enable(0);
@@ -296,13 +296,10 @@ __declspec(safebuffers) void UIRefiningWnd::ApplyResult() {
   } else {
     bool same = true;
     if (this->materials.size() == count) {
-      for (auto it = this->materials.begin(); it != this->materials.end(); ++it) {
-        auto found = this->nextMaterials.begin();
-        for (; found != this->nextMaterials.end(); ++found) {
-          if (it->itemId == found->itemId) {
-            break;
-          }
-        }
+      for (const RefiningMaterial& material : this->materials) {
+        auto found = std::find_if(this->nextMaterials.begin(), this->nextMaterials.end(), [&material](const RefiningMaterial& next) {
+          return material.itemId == next.itemId;
+        });
         if (found == this->nextMaterials.end()) {
           same = false;
           break;
@@ -314,12 +311,10 @@ __declspec(safebuffers) void UIRefiningWnd::ApplyResult() {
 
     this->materials = this->nextMaterials;
 
-    unsigned char level = 0;
-    if (this->item.identity[1] > 0 && this->materials.size() > 0 && this->selectedMaterial >= 0 &&
-        this->materials.size() > static_cast<unsigned>(this->selectedMaterial)) {
-      level = this->materials[this->selectedMaterial].successRate;
-    }
-    this->againButton->remainingCount = level;
+    this->againButton->remainingCount = this->item.identity[1] > 0 && this->materials.size() > 0 && this->selectedMaterial >= 0 &&
+        this->materials.size() > static_cast<unsigned>(this->selectedMaterial)
+      ? this->materials[this->selectedMaterial].successRate
+      : 0;
     this->againButton->Invalidate();
 
     if (!same) {
@@ -1074,9 +1069,9 @@ void UIRefining_Notice::SetNotice(const char* value, int duration, unsigned char
 
 // OFFSET: 0x007F6280
 // FUNCTION: fn_09908
-__declspec(safebuffers) void UIRefiningWnd::Paint() {
+void UIRefiningWnd::Paint() {
   this->ClearSurface(0xFFFF00FF);
-  DrawRectangleBorder(*this, 0, 17, 264, 302, 0xC2C2C2);
+  this->DrawRectOutline(0, 17, 264, 302, 0xC2C2C2);
 
   std::string background;
   switch (this->state) {
@@ -1087,7 +1082,7 @@ __declspec(safebuffers) void UIRefiningWnd::Paint() {
     background = static_cast<const std::string&>(FormatOwnedString("유저인터페이스\\refining_renewal\\bg_refining%s_ready_%02d.bmp", this->catalystCount > 0 ? "A" : "B", this->frame));
     break;
   case REFINING_STATE_PROCESS:
-    if (this->frame < 9) {
+    if (this->frame <= 8) {
       background = static_cast<const std::string&>(FormatOwnedString("유저인터페이스\\refining_renewal\\bg_refining%s_process_%02d.bmp", this->catalystEnabled == 1 ? "A" : "B", this->frame));
     } else {
       background = static_cast<const std::string&>(FormatOwnedString("유저인터페이스\\refining_renewal\\bg_refining_process_%02d.bmp", this->frame));
@@ -1103,9 +1098,7 @@ __declspec(safebuffers) void UIRefiningWnd::Paint() {
     break;
   }
 
-  CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background.c_str())));
-  this->DrawBitmap(1, 17, bitmap, false);
-
+  this->DrawBitmap(1, 17, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background.c_str()))), false);
 
   if (this->state == REFINING_STATE_READY) {
     if (this->selectedMaterial >= 0) {
@@ -1115,8 +1108,7 @@ __declspec(safebuffers) void UIRefiningWnd::Paint() {
     }
 
     if (this->catalystEnabled == 1) {
-      bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\refining_renewal\\slot_select_red.bmp")));
-      this->DrawBitmap(207, 55, bitmap, false);
+      this->DrawBitmap(207, 55, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\refining_renewal\\slot_select_red.bmp"))), false);
     }
 
     const char* color = "^CA152E";
