@@ -7,6 +7,7 @@
 
 #include <cstdlib>
 #include <strstream>
+#include <string_view>
 
 // OFFSET: 0x007461C0
 // FUNCTION: fn_07770
@@ -48,11 +49,11 @@ bool CRmaRes::Load(const char* name) {
       continue;
     }
 
-    if (tokenizer[0] == rsxNameTag) {
+    if (tokenizer[0] == std::string_view(rsxNameTag, 8)) {
       ++model;
       this->models.resize(model + 1);
       this->models[model] = tokenizer[1];
-    } else if (tokenizer[0] == actionTag) {
+    } else if (tokenizer[0] == std::string_view(actionTag, 7)) {
       const unsigned int action = std::atoi(tokenizer[1].c_str());
       if (action >= this->actions.size()) {
         this->actions.resize(action + 1);
