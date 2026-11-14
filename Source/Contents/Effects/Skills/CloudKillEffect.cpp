@@ -149,8 +149,8 @@ void CCloudKillEffect::OnProcess() {
       }
       particle->animationParameter = fade;
       const float level = fade + static_cast<float>(particle->alpha);
-      const float positive = 0.0f <= level ? level : 0.0f;
-      particle->alpha = static_cast<int>(positive <= 254.0f ? positive : 254.0f);
+      const float positive = level < 0.0f ? 0.0f : level;
+      particle->alpha = static_cast<int>(positive > 254.0f ? 254.0f : positive);
       particle->elapsedFrames = age + 1;
       ++it;
     }
@@ -187,8 +187,8 @@ void CCloudKillEffect::OnProcess() {
       }
       particle->animationParameter = fade;
       const float level = fade + static_cast<float>(particle->alpha);
-      const float positive = 0.0f <= level ? level : 0.0f;
-      particle->alpha = static_cast<int>(positive <= 254.0f ? positive : 254.0f);
+      const float positive = level < 0.0f ? 0.0f : level;
+      particle->alpha = static_cast<int>(positive > 254.0f ? 254.0f : positive);
       particle->elapsedFrames = age + 1;
       ++it;
     }
