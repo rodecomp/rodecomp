@@ -2797,7 +2797,7 @@ void CEffectPrim::RenderColorPanel(matrix& wtm) {
 
     const int angle = slot.rotStart;
     const float size = slot.height[2];
-    const float half = size * 0.5f;
+    const float half = size * g_depthAverageHalf;
     const int opposite = angle < 180 ? angle + 180 : angle - 180;
     const float top = half - slot.height[4];
     const float preX = half * g_cosTable[angle] - g_sinTable[angle] * 0.0f;
