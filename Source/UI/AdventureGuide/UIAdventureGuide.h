@@ -52,10 +52,7 @@ public:
 
 class CUICharacterInfo : public CUIControl {
 public:
-  // OFFSET: 0x009D8F50
-  // FUNCTION: fn_14273
-  __declspec(noinline) explicit CUICharacterInfo() : CUIControl(), jobIcon(nullptr), level(nullptr), jobLevel(nullptr), name(nullptr) {
-  }
+  explicit CUICharacterInfo();
 
   void OnCreate(int width, int height) override;
   void OnInit() override;
@@ -68,10 +65,7 @@ public:
 
 class CUIIntro : public CUIPage {
 public:
-  // OFFSET: 0x009D8FE0
-  // FUNCTION: fn_14274
-  __declspec(noinline) explicit CUIIntro() : CUIPage(), banner(nullptr), image(nullptr), contents(nullptr) {
-  }
+  explicit CUIIntro();
 
   void OnCreate(int width, int height) override;
   void OnInit() override;

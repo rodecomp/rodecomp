@@ -928,6 +928,16 @@ void CUIAdventureGuide::OnSelectTab(AdventureGuide::CUITab* tab) {
 
 namespace AdventureGuide {
 
+// OFFSET: 0x009D8F50
+// FUNCTION: fn_14273
+__declspec(noinline) CUICharacterInfo::CUICharacterInfo() : CUIControl(), jobIcon(nullptr), level(nullptr), jobLevel(nullptr), name(nullptr) {
+}
+
+// OFFSET: 0x009D8FE0
+// FUNCTION: fn_14274
+__declspec(noinline) CUIIntro::CUIIntro() : CUIPage(), banner(nullptr), image(nullptr), contents(nullptr) {
+}
+
 // OFFSET: 0x009C5400
 // FUNCTION: fn_14000
 void CUICharacterInfo::OnCreate(int width, int height) {
