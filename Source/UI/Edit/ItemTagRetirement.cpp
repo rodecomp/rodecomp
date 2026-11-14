@@ -312,7 +312,7 @@ bool UIItemTagOnMegaPhone::CanInsertTag(const std::string& name, int width) {
   tag += ">";
 
   unsigned bytes = 0;
-  this->textWidth = static_cast<UIItemTagCtrl*>(g_windowMgr.npcTextEditDialogWnd)->MeasureText(tag, bytes);
+  this->textWidth = static_cast<UINpcTextEditDialogWnd*>(g_windowMgr.npcTextEditDialogWnd)->MeasureText(tag, bytes);
 
   UIEditCtrl* edit = static_cast<UINpcEditDialogWnd*>(g_windowMgr.npcTextEditDialogWnd)->edit;
   const unsigned int maximum = edit->maximum;

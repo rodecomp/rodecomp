@@ -137,21 +137,23 @@ struct SessionParameterNameLess {
   }
 };
 
-struct SessionEntry5BD4 {
-  SessionEntry5BD4() : item() {}
-  SessionEntry5BD4(const SessionEntry5BD4& other) {
-    std::memcpy(this->storeIdentity, other.storeIdentity, sizeof(this->storeIdentity));
+struct SearchStoreResult {
+  SearchStoreResult() : item() {}
+  SearchStoreResult(const SearchStoreResult& other) {
+    this->storeId = other.storeId;
+    this->accountId = other.accountId;
     std::memcpy(this->storeName, other.storeName, sizeof(this->storeName));
     this->price = other.price;
     this->quantity = other.quantity;
     new (&this->item) ITEM_INFO(other.item);
   }
-  ~SessionEntry5BD4() {
+  ~SearchStoreResult() {
     this->item.displayName.~basic_string();
     this->item.itemId.~basic_string();
   }
 
-  /* 0000 */ unsigned char storeIdentity[8];
+  /* 0000 */ int storeId;
+  /* 0004 */ int accountId;
   /* 0008 */ char storeName[80];
   /* 0058 */ int price;
   /* 005C */ std::uint16_t quantity;
@@ -160,7 +162,8 @@ struct SessionEntry5BD4 {
   };
 };
 
-static_assert(sizeof(SessionEntry5BD4) == 0x158);
+static_assert(sizeof(SearchStoreResult) == 0x158);
+static_assert(offsetof(SearchStoreResult, item) == 0x60);
 
 struct SubChatWndInfo {
   /* 0000 */ std::string name;
@@ -606,7 +609,7 @@ public:
   /* 5BC8 */ int elementalSp;
   /* 5BCC */ int elementalMaxHp;
   /* 5BD0 */ int elementalMaxSp;
-  /* 5BD4 */ std::vector<SessionEntry5BD4> storeSearchResults;
+  /* 5BD4 */ std::vector<SearchStoreResult> storeSearchResults;
   /* 5BE0 */ int storeSearchCount;
   union {
     /* 5BE4 */ int storeSearchPageFlags;

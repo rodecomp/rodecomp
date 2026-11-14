@@ -22,7 +22,6 @@ public:
 
   void ClearTags();
   std::string AppendTag(const std::string& name);
-  int MeasureText(const std::string& text, const unsigned& bytes);
   bool SyncTagsWithText();
   bool RemoveInvalidTag(std::list<ItemTagRecord>::iterator& entry);
   void SetTaggedText(const std::string& text, int width);

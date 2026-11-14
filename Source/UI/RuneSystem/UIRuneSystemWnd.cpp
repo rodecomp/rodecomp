@@ -494,14 +494,14 @@ void UIRuneSetList::OnWheel(int delta) {
 
 // OFFSET: 0x0081D460
 // FUNCTION: fn_10220
-void UIRuneSet_Info::UpdateActivation() {
+void UIRune_Info::UpdateActivation() {
   this->m_activeWnd->Show(0);
   this->m_activateButton->Enable(0);
-  if (this->m_runeSet && !this->m_runeSet->IsActive()) {
+  if (this->m_rune && !this->m_rune->IsActive()) {
     this->m_activeWnd->Show(1);
     this->m_activateButton->Enable(1);
     UIBitmapButton* button = this->m_activateButton;
-    button->SetDisabled(!CRuneSystemMgr::GetInstance()->HasRequiredItems(this->m_runeSet->GetActiveType()));
+    button->SetDisabled(!CRuneSystemMgr::GetInstance()->HasRequiredItems(this->m_rune->GetActiveType()));
     button->Invalidate();
   }
   this->Invalidate();
@@ -909,7 +909,7 @@ int UIRune_Info::SendMsg(UIWindow* sender, int message, std::intptr_t argument1,
   case UM_REFRESH:
     this->m_activeWnd->Invalidate();
     this->m_activateButton->Invalidate();
-    reinterpret_cast<UIRuneSet_Info*>(this)->UpdateActivation();
+    this->UpdateActivation();
     break;
   }
 
@@ -2288,7 +2288,7 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
           info->m_rune = rune;
           info->m_activeWnd->m_listId = rune->GetActiveType();
           info->m_activeWnd->Invalidate();
-          reinterpret_cast<UIRuneSet_Info*>(info)->UpdateActivation();
+          info->UpdateActivation();
           info->Invalidate();
         }
         this->m_runeInfo->Invalidate();

@@ -81,7 +81,7 @@
 #include "Utility/Cipher/CryptName.h"
 #include "Utility/Cipher/Obfuscate.h"
 
-template __declspec(noinline) void std::vector<SessionEntry5BD4>::_Destroy(SessionEntry5BD4*, SessionEntry5BD4*);
+template __declspec(noinline) void std::vector<SearchStoreResult>::_Destroy(SearchStoreResult*, SearchStoreResult*);
 
 // STATIC: 0x01732638
 // GLOBAL: gl_24474

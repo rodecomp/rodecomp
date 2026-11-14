@@ -228,7 +228,6 @@ public:
   void OnLBtnDblClk(int x, int y) override;
   void OnMouseHover(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
-  __declspec(noinline) void UpdateActivation();
   __declspec(noinline) void UpdateRewards();
   __declspec(noinline) void Refresh();
   __declspec(noinline) void RefreshDescription();
@@ -254,6 +253,7 @@ public:
   void OnCreate(int width, int height) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
+  __declspec(noinline) void UpdateActivation();
 
   /* 007C */ RuneData* m_rune;
   /* 0080 */ UIRuneSystem_ActiveWnd* m_activeWnd;

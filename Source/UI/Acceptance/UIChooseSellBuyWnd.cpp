@@ -5556,7 +5556,7 @@ int UILoadingWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::
 
 // OFFSET: 0x008CED00
 // FUNCTION: fn_12071
-int UIItemTagCtrl::MeasureText(const std::string& text, const unsigned& bytes) {
+int UINpcTextEditDialogWnd::MeasureText(const std::string& text, const unsigned& bytes) {
   return this->TextWidth(text.c_str(), bytes, 0, 12, 0, 0);
 }
 

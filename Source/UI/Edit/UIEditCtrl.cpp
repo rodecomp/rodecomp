@@ -1085,7 +1085,7 @@ void UIItemWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   switch (drag->source) {
   case 1:
-    if (reinterpret_cast<UITabControl*>(drag->sourceWindow) == this->tabs) {
+    if (drag->sourceWindow == this->tabs) {
       PACKET_CZ_INVENTORY_TAB packet;
       packet.packetType = ID_CZ_INVENTORY_TAB;
       packet.index = static_cast<unsigned short>(drag->id);

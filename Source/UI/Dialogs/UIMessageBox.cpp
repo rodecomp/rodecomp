@@ -1411,7 +1411,7 @@ void UINoticeWnd::OnWheel(int delta) {
 // OFFSET: 0x008A8AD0
 // FUNCTION: fn_11715
 void UIPayConfirmWnd::Configure(const std::string& text, int itemId) {
-  reinterpret_cast<UIMessageBox*>(this)->Configure(text.c_str(), 2, 187, 0, LookupMessage(MSI_TITLE_QUEST_BOARD_INFO), 0xDC, 0x85, 1, nullptr);
+  UIMessageBox::Configure(text.c_str(), 2, 187, 0, LookupMessage(MSI_TITLE_QUEST_BOARD_INFO), 0xDC, 0x85, 1, nullptr);
 
   this->viewer->Resize(0xA5, 0x50);
   this->viewer->Move(7, 0x17);

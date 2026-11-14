@@ -45,15 +45,6 @@ struct SearchStoreQueryPacket {
 
 static_assert(offsetof(SearchStoreQueryPacket, ids) == 0xF);
 
-struct SearchStoreResult {
-  /* 0000 */ int storeId;
-  /* 0004 */ int accountId;
-  /* 0008 */ unsigned char padding_0008[0x58];
-  /* 0060 */ ITEM_INFO item;
-};
-
-static_assert(sizeof(SearchStoreResult) == sizeof(SessionEntry5BD4));
-
 // OFFSET: 0x009121F0
 // FUNCTION: fn_12527
 UISerachStoreInfoWnd::UISerachStoreInfoWnd()
@@ -78,9 +69,9 @@ ITEM_INFO UISerachStoreInfoWnd::ItemAt(int x, int y) {
       return item;
     }
 
-    std::vector<SessionEntry5BD4>::iterator it = g_session.storeSearchResults.begin() + index;
+    std::vector<SearchStoreResult>::iterator it = g_session.storeSearchResults.begin() + index;
     if (it != g_session.storeSearchResults.end()) {
-      item = reinterpret_cast<const SearchStoreResult&>(*it).item;
+      item = it->item;
     }
   }
   return item;
@@ -431,7 +422,7 @@ void UISerachStoreInfoWnd::OnLBtnDblClk(int x, int y) {
   }
 
   const unsigned int index = this->m_hoverRow + (this->m_page - 1) * 10;
-  std::vector<SessionEntry5BD4>::iterator it = g_session.storeSearchResults.begin() + index;
+  std::vector<SearchStoreResult>::iterator it = g_session.storeSearchResults.begin() + index;
   if (it == g_session.storeSearchResults.end()) {
     return;
   }
@@ -441,7 +432,7 @@ void UISerachStoreInfoWnd::OnLBtnDblClk(int x, int y) {
     return;
   }
 
-  const SearchStoreResult* entry = reinterpret_cast<const SearchStoreResult*>(&*it);
+  const SearchStoreResult* entry = &*it;
 
   g_session.storeSearchX = -1;
   g_session.storeSearchY = -1;

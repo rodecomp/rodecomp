@@ -348,7 +348,7 @@ void UISerachStoreInfoWnd::OnMouseHover(int x, int y) {
     if (static_cast<unsigned int>(x - 51) <= 108) {
       const auto entry = g_session.storeSearchResults.begin() + ((this->m_page - 1) * 10 + this->m_hoverRow);
       if (entry != g_session.storeSearchResults.end()) {
-        text.assign(reinterpret_cast<const char*>(&entry->storeIdentity[8]));
+        text.assign(entry->storeName);
         const std::size_t end = text.find('\r');
         if (end != std::string::npos) {
           text = text.substr(0, end);

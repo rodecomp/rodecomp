@@ -104,14 +104,6 @@ found:
   this->UpdateScrollBar();
 }
 
-struct AccessibleButton : public UIButton {
-  using UIButton::m_argument;
-};
-
-struct AccessibleTextButton : public UITextButton {
-  using UITextButton::m_hoverColor;
-};
-
 // OFFSET: 0x007EF430
 // FUNCTION: fn_09841
 void UIMacroReporterWnd::AddActorRow(int aid, std::string name) {
@@ -127,14 +119,14 @@ void UIMacroReporterWnd::AddActorRow(int aid, std::string name) {
   btn1->SetBitmap("유저인터페이스\\basic_interface\\que_close_off.bmp", 2, 0);
   btn1->SetSize(btn1->BitmapWidth(), btn1->BitmapHeight());
   btn1->SetId(ID_DELETE);
-  reinterpret_cast<AccessibleButton*>(btn1)->m_argument = aid;
+  btn1->m_argument = aid;
   btn1->Enable(0);
   this->AddChild(btn1);
 
   std::string truncated = this->EllipsizeText(0x8E, name.c_str(), 0, 13, 0);
   auto* btn2 = new UITextButton();
   btn2->Configure("", 0, 0, 13, 0, 1);
-  static_cast<AccessibleTextButton*>(btn2)->m_hoverColor = 0x2D2D2D;
+  btn2->m_hoverColor = 0x2D2D2D;
   btn2->SetLabel(truncated);
   btn2->ResizeToText();
   btn2->SetTooltip(name.c_str());

@@ -20,6 +20,7 @@ class UITextButton : public UIButton {
   friend class UISeekPartyListWnd;
   friend class UIRodexInboxWnd;
   friend class UIChatHisBox;
+  friend class UIMacroReporterWnd;
 
 public:
   friend void OpenTextButtonLink(UITextButton* button);

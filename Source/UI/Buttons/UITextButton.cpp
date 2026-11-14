@@ -2849,7 +2849,7 @@ void UIItemTagOnMail::PlaceTagButton(UIWindow* button, const std::string& name, 
 // OFFSET: 0x00884C40
 // FUNCTION: fn_11312
 void UIItemTagOnMegaPhone::PlaceTagButton(UIWindow* button, const std::string& name, const int& x, int) {
-  UINpcEditDialogWnd* owner = static_cast<UINpcEditDialogWnd*>(g_windowMgr.npcTextEditDialogWnd);
+  UINpcTextEditDialogWnd* owner = static_cast<UINpcTextEditDialogWnd*>(g_windowMgr.npcTextEditDialogWnd);
   if (!owner || owner->edit->geometry.id != 492) {
     return;
   }
@@ -2858,7 +2858,7 @@ void UIItemTagOnMegaPhone::PlaceTagButton(UIWindow* button, const std::string& n
   const int top = owner->edit->geometry.y;
   const int position = x;
   unsigned bytes = 0;
-  const int width = reinterpret_cast<UIItemTagCtrl*>(owner)->MeasureText(name.c_str(), bytes);
+  const int width = owner->MeasureText(name.c_str(), bytes);
   button->Move(
     this->textWidth + width > static_cast<UINpcEditDialogWnd*>(g_windowMgr.npcTextEditDialogWnd)->edit->geometry.width ? 1000
     : position != 0                                                                                                     ? position

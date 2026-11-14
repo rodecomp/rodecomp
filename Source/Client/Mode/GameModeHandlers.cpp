@@ -2979,7 +2979,8 @@ struct SearchStoreOption {
 };
 
 struct SearchStoreItemPacket {
-  /* 0000 */ unsigned char storeIdentity[8];
+  /* 0000 */ int storeId;
+  /* 0004 */ int accountId;
   /* 0008 */ char storeName[80];
   /* 0058 */ int itemId;
   /* 005C */ unsigned char kind;
@@ -2998,7 +2999,8 @@ struct SearchStoreItemPacketOld {
     SecureZeroMemory(this->options, sizeof(this->options));
   }
 
-  /* 0000 */ unsigned char storeIdentity[8];
+  /* 0000 */ int storeId;
+  /* 0004 */ int accountId;
   /* 0008 */ char storeName[80];
   /* 0058 */ int itemId;
   /* 005C */ unsigned char kind;
@@ -3030,8 +3032,9 @@ void CGameMode::ReceiveSearchStoreItems(const unsigned char* packet) {
   const unsigned int count = (header->length - 7) / sizeof(SearchStoreItemPacket);
   for (long long i = 0; i < count; ++i) {
     const SearchStoreItemPacket record = items[i];
-    SessionEntry5BD4 entry;
-    std::memcpy(entry.storeIdentity, record.storeIdentity, sizeof(entry.storeIdentity));
+    SearchStoreResult entry;
+    entry.storeId = record.storeId;
+    entry.accountId = record.accountId;
     std::memcpy(entry.storeName, record.storeName, sizeof(entry.storeName));
     entry.price = record.price;
     entry.quantity = record.quantity;
@@ -3078,8 +3081,9 @@ void CGameMode::ReceiveSearchStoreItemsOld(const unsigned char* packet) {
   for (int i = 0; i < count; ++i, ++next) {
     SearchStoreItemPacketOld record;
     std::memcpy(&record, next, sizeof(record));
-    SessionEntry5BD4 entry;
-    std::memcpy(entry.storeIdentity, record.storeIdentity, sizeof(entry.storeIdentity));
+    SearchStoreResult entry;
+    entry.storeId = record.storeId;
+    entry.accountId = record.accountId;
     std::memcpy(entry.storeName, record.storeName, sizeof(entry.storeName));
     entry.price = record.price;
     entry.quantity = record.quantity;

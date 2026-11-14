@@ -7,6 +7,7 @@
 #include "Contents/Items/ItemInfo.h"
 #include "UI/Window/WindowManagerWindows.h"
 class ResourceMgr;
+class UIWindow;
 struct ITEM_INFO;
 struct BarterMarketItem;
 struct BarterMarketEntry;
@@ -27,7 +28,7 @@ struct ModeDragState {
   /* 0374 */ int skillLevel;
   /* 0378 */ std::uint32_t cards[4];
   /* 0388 */ unsigned char skill;
-  /* 038C */ std::uint32_t sourceWindow;
+  /* 038C */ UIWindow* sourceWindow;
   /* 0390 */ int optionCount;
   /* 0394 */ ItemOptionRecord options[5];
   /* 03B0 */ int barterId;
