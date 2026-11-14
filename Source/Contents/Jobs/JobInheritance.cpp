@@ -1608,15 +1608,14 @@ int CSession::SetHotkeyEntry(char enabled, int id, int value, int slot) {
     }
   }
 
-  NormalItemSlot& target = this->SkillHotkey(slot);
   if (id != 0) {
-    target.enabled = static_cast<unsigned char>(enabled);
-    target.itemId = static_cast<std::uint32_t>(id);
-    target.value = static_cast<std::int16_t>(value);
+    this->SkillHotkey(slot).value = static_cast<std::int16_t>(value);
+    this->SkillHotkey(slot).enabled = static_cast<unsigned char>(enabled);
+    this->SkillHotkey(slot).itemId = static_cast<std::uint32_t>(id);
   } else {
-    target.enabled = 0;
-    target.itemId = 0;
-    target.value = 0;
+    this->SkillHotkey(slot).value = 0;
+    this->SkillHotkey(slot).enabled = 0;
+    this->SkillHotkey(slot).itemId = 0;
   }
 
   return g_modeMgr.GetGameMode()->SendMsg(MM_SHORTCUT_KEY_CHANGE, slot + 36, 0, 0, 0);
