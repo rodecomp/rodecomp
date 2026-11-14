@@ -873,7 +873,7 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
     menu->SendMsg(nullptr, UM_ADDBOUNDARY, 0, 0, 0, 0);
 
     if (CPc* pc = dynamic_cast<CPc*>(static_cast<CGameActor*>(this->scene->GetGameActorByAID(pick->accountId)))) {
-      const std::string code = std::string("[C-Code] : ") + ShortcutFilename(pc->GetPkState());
+      const std::string code = std::string("[C-Code] : ") + g_session.ShortcutFilename(pc->GetPkState());
       this->actorMenuIds.push_back(0x39);
       menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(code.c_str()), 0, 0, 0);
     }
