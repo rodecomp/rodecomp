@@ -26,6 +26,8 @@
 #include <cstdlib>
 #include <shellapi.h>
 
+template __declspec(noinline) std::string::~basic_string() noexcept;
+
 // INLINED
 __forceinline void UITextViewer::Activate(UITextButton* button, int id) {
   switch (id) {
