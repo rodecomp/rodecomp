@@ -3464,11 +3464,11 @@ void CEffectPrim::RenderFanBeam(matrix& wtm) {
       continue;
     }
 
-    const float mode = slot.height[4];
-    const float length = slot.distance;
-    const float lift = slot.height[0];
-    const float rotCos = g_cosTable[slot.rotStart];
-    const float rotSin = g_sinTable[slot.rotStart];
+    float mode = slot.height[4];
+    float length = slot.distance;
+    float lift = slot.height[0];
+    float rotCos = g_cosTable[slot.rotStart];
+    float rotSin = g_sinTable[slot.rotStart];
     vec3.Set(0.0f, lift, 0.0f);
     vec4.Set(0.0f, lift, 0.0f);
 
@@ -3496,6 +3496,13 @@ void CEffectPrim::RenderFanBeam(matrix& wtm) {
       this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 0, 250, 250, 0.0f, 1.0f, 0.0f, 1.0f, 0);
     }
 
+    mode = slot.height[4];
+    length = slot.distance;
+    lift = slot.height[0];
+    rotCos = g_cosTable[slot.rotStart];
+    rotSin = g_sinTable[slot.rotStart];
+    vec3.Set(0.0f, lift, 0.0f);
+    vec4.Set(0.0f, lift, 0.0f);
     spread = mode == 2.0f ? 2 : 5;
     left = slot.riseAngle - spread;
     if (left < 0) {
