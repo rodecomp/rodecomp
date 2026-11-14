@@ -20,7 +20,7 @@ class CSkillAction_SOA_TALISMAN_OF_SOUL_STEALING : public CSkillAction {
 public:
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
-  void OnSkillHit(int argument1, CGameActor* argument2, CGameActor* argument3) override;
+  void OnSkillHit(CGameActor* source, CGameActor* target, CRenderObject* targetSkill) override;
 };
 
 class CSkillAction_SOA_EXORCISM_OF_MALICIOUS_SOUL : public CSkillAction {
@@ -196,9 +196,7 @@ void CSkillAction_SOA_TALISMAN_OF_SOUL_STEALING::OnSkillEffect(int level, CGameA
 
 // OFFSET: 0x0079BC20
 // FUNCTION: fn_08879
-void CSkillAction_SOA_TALISMAN_OF_SOUL_STEALING::OnSkillHit(int argument1, CGameActor* argument2, CGameActor* argument3) {
-  CGameActor* source = reinterpret_cast<CGameActor*>(argument1);
-  CGameActor* target = argument2;
+void CSkillAction_SOA_TALISMAN_OF_SOUL_STEALING::OnSkillHit(CGameActor* source, CGameActor* target, CRenderObject* targetSkill) {
   if (source) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("talisman_of_soul_stealing"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);

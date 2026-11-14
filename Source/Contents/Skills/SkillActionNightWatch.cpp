@@ -63,8 +63,8 @@ class CSkillAction_NW_ONLY_ONE_BULLET : public CSkillAction {
 public:
   int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
-  void OnTargetSkillCast(int argument1, int argument2, int argument3) override;
-  void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
+  void OnTargetSkillCast(CGameActor* source, CGameActor* target, int delay) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
 };
 
 class CSkillAction_NW_SPIRAL_SHOOTING : public CSkillAction {
@@ -158,7 +158,7 @@ public:
   int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
-  void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
 };
 
 class CSkillAction_NW_MIDNIGHT_FALLEN : public CSkillAction {
@@ -167,7 +167,7 @@ public:
   bool KeepSkillAttackMotion(int argument) override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnGroundSkillEffect(vector3d position, int argument2, int argument3) override;
-  void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
   int GetSkillScopeType() override;
 };
 
@@ -359,24 +359,23 @@ void CSkillAction_NW_ONLY_ONE_BULLET::OnSkillCast(int level, CGameActor* source)
 
 // OFFSET: 0x0078F990
 // FUNCTION: fn_08688
-void CSkillAction_NW_ONLY_ONE_BULLET::OnTargetSkillCast(int argument1, int argument2, int argument3) {
-  if (CGameActor* source = reinterpret_cast<CGameActor*>(argument2)) {
+void CSkillAction_NW_ONLY_ONE_BULLET::OnTargetSkillCast(CGameActor* source, CGameActor* target, int delay) {
+  if (target) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("only_one_bullet"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("only_one_bullet"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
 // OFFSET: 0x0078FB00
 // FUNCTION: fn_08689
-void CSkillAction_NW_ONLY_ONE_BULLET::OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
-  CGameActor* origin = reinterpret_cast<CGameActor*>(level);
-  if (!origin || !source) {
+void CSkillAction_NW_ONLY_ONE_BULLET::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+  if (!source || !target) {
     return;
   }
 
-  const float angle = ScreenAngle(&origin->render.position.x, &source->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values);
+  const float angle = ScreenAngle(&source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values);
   EffectLists* effects = g_effectMgr;
-  CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("only_one_bullet_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  CEffect* effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("only_one_bullet_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   if (effect) {
     effect->SetAngle(angle);
   }
@@ -733,15 +732,15 @@ void CSkillAction_NW_WILD_SHOT::OnSkillEffect(int level, CGameActor* source, CGa
 
 // OFFSET: 0x00791950
 // FUNCTION: fn_08731
-void CSkillAction_NW_WILD_SHOT::OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
-  if (!source) {
+void CSkillAction_NW_WILD_SHOT::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+  if (!target) {
     return;
   }
 
   EffectLists* effects = g_effectMgr;
-  effects->Retire(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("wild_shot_hit"));
+  effects->Retire(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("wild_shot_hit"));
   effects = g_effectMgr;
-  CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("wild_shot_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  CEffect* effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("wild_shot_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   if (effect) {
     effect->SetScale(0.8f);
   }
@@ -795,12 +794,12 @@ void CSkillAction_NW_MIDNIGHT_FALLEN::OnGroundSkillEffect(vector3d position, int
 
 // OFFSET: 0x00791FD0
 // FUNCTION: fn_08736
-void CSkillAction_NW_MIDNIGHT_FALLEN::OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
-  if (source) {
+void CSkillAction_NW_MIDNIGHT_FALLEN::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+  if (target) {
     EffectLists* effects = g_effectMgr;
-    effects->Retire(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("midnight_fallen_hit"));
+    effects->Retire(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("midnight_fallen_hit"));
     effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("midnight_fallen_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("midnight_fallen_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 

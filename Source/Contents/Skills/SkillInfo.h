@@ -49,7 +49,8 @@ public:
   }
   virtual void OnSkillCast(int level, CGameActor* source) {
   }
-  virtual void OnTargetSkillCast(int argument1, int argument2, int argument3) {
+  // INLINED
+  virtual void OnTargetSkillCast(CGameActor* source, CGameActor* target, int delay) {
   }
   virtual void OnGroundSkillCast(int level, CGameActor* source, int argument3, int argument4, int argument5) {
   }
@@ -63,9 +64,11 @@ public:
   virtual int GetSkillScopeType() {
     return 0;
   }
-  virtual void OnSkillHit(int level, CGameActor* source, CGameActor* target) {
+  // INLINED
+  virtual void OnSkillHit(CGameActor* source, CGameActor* target, CRenderObject* targetSkill) {
   }
-  virtual void OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
+  // INLINED
+  virtual void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
   }
 };
 
@@ -210,14 +213,14 @@ public:
   bool SuppressSupportSkillArrow(int skillId);
   bool UseGroundSkillLastFrame(int skillId);
   bool KeepSkillAttackSpeed(int skillId);
-  bool OnSkillDamage(int skillId, int level, CGameActor* source, CGameActor* target);
+  bool OnSkillDamage(int skillId, CGameActor* source, CGameActor* target, CGameActor* hitIndex);
   bool OnEfstBegin(int efstId, int value1, int value2, int value3, CRenderObject* actor, bool flag);
   bool OnSkillCast(int skillId, int level, CGameActor* source);
-  bool OnTargetSkillCast(int skillId, int source, int target, int delay);
+  bool OnTargetSkillCast(int skillId, CGameActor* source, CGameActor* target, int delay);
   bool OnGroundSkillCast(int skillId, int castDelay, CGameActor* target, short column, short row);
   bool OnEfstEnd(int efstId, int value1, int value2, int value3, CRenderObject* actor);
   bool OnGroundSkillEffect(int skillId, int column, int row, int level, int actor);
-  bool OnSkillHit(int skillId, int level, CGameActor* source, CGameActor* target);
+  bool OnSkillHit(int skillId, CGameActor* source, CGameActor* target, CRenderObject* targetSkill);
   bool OnEfstUpdate(int efstId, int value, int statusValue2, int statusValue3, CRenderObject* actor);
   bool OnSkillObjectRemove(int skillId, CRenderObject* object);
   bool OnSkillObjectCreate(int skillId, int level, CRenderObject* object, CGameActor* source);

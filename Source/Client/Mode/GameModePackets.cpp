@@ -3727,7 +3727,7 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
   }
 
   CSkillActionMgr::GetInstance()->OnSkillHit(
-    skillId, reinterpret_cast<int>(source), target, static_cast<CGameActor*>(targetSkill)
+    skillId, source, target, targetSkill
   );
 
   const vector3d origin{0.0f, 0.0f, 0.0f};
@@ -12767,7 +12767,7 @@ void CGameMode::NotifySkillCasting(
       g_effectMgr->Spawn(source->render.accountId, EF_OLEUM_SANCTUM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
 
-    CSkillActionMgr::GetInstance()->OnTargetSkillCast(skillId, reinterpret_cast<int>(source), reinterpret_cast<int>(target), delay);
+    CSkillActionMgr::GetInstance()->OnTargetSkillCast(skillId, source, target, delay);
     if (delay == 0) {
       return;
     }

@@ -43,18 +43,18 @@ public:
 
 class CSkillAction_DamageWereRaptorForm : public CSkillAction_AnimalForm, public CSkillAction_Direction {
 public:
-  void SpawnAttack00Effect(int sourceActor, CGameActor* target);
-  __declspec(noinline) void SpawnAttack01Effect(int level, CGameActor* source);
-  __declspec(noinline) void SpawnAttack02Effect(int level, CGameActor* source);
+  void SpawnAttack00Effect(CGameActor* source, CGameActor* target);
+  __declspec(noinline) void SpawnAttack01Effect(CGameActor* source, CGameActor* target);
+  __declspec(noinline) void SpawnAttack02Effect(CGameActor* source, CGameActor* target);
   void SpawnDirectionalEffect(CGameActor* source, CGameActor* target, std::string_view name);
-  void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
   bool IsInForm(CGameActor* actor) override;
   void PlayFormAttackEffect(CGameActor* actor) override;
 };
 
 class CSkillAction_DamageWereWolfForm : public CSkillAction_AnimalForm {
 public:
-  void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
   bool IsInForm(CGameActor* actor) override;
   void PlayFormAttackEffect(CGameActor* actor) override;
 };
@@ -64,7 +64,7 @@ public:
   int GetSkillCastMotion() override;
   int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
-  void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
 };
 
 class CSkillAction_Icing : public CSkillAction {
@@ -72,7 +72,7 @@ public:
   int GetSkillCastMotion() override;
   int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
-  void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
   void SpawnIcing(CGameActor* target);
 };
 
@@ -81,7 +81,7 @@ public:
   int GetSkillCastMotion() override;
   int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
-  void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
   virtual void PlayThunderEffect(CGameActor* source) = 0;
 };
 
@@ -155,7 +155,7 @@ public:
   int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
-  void OnSkillHit(int level, CGameActor* source, CGameActor* target) override;
+  void OnSkillHit(CGameActor* source, CGameActor* target, CRenderObject* targetSkill) override;
 };
 
 class CSkillAction_AT_QUILL_SPEAR : public CSkillAction_DamageWereRaptorForm {
@@ -191,7 +191,7 @@ public:
   int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
-  void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
 };
 
 class CSkillAction_AT_CHILLING_BLAST : public CSkillAction_Icing {
@@ -519,38 +519,38 @@ bool CSkillAction_Direction::IsValidDirection(unsigned int direction) {
 
 // OFFSET: 0x005A5EA0
 // FUNCTION: fn_03172
-void CSkillAction_DamageWereRaptorForm::OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
-  this->PlayFormAttackEffect(source);
+void CSkillAction_DamageWereRaptorForm::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+  this->PlayFormAttackEffect(target);
 }
 
 // OFFSET: 0x005A5EB0
 // FUNCTION: fn_03173
-void CSkillAction_DamageWereWolfForm::OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
-  this->PlayFormAttackEffect(source);
+void CSkillAction_DamageWereWolfForm::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+  this->PlayFormAttackEffect(target);
 }
 
 // OFFSET: 0x005A5EC0
 // FUNCTION: fn_03174
-void CSkillAction_Earthing::OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
-  if (!source) {
+void CSkillAction_Earthing::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+  if (!target) {
     return;
   }
 
-  if (CRagEffect* effect = source->LaunchEffect(EF_HIT1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
-    effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&source->render.position), 0, 0, 0, 0);
+  if (CRagEffect* effect = target->LaunchEffect(EF_HIT1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+    effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&target->render.position), 0, 0, 0, 0);
   }
 }
 
 // OFFSET: 0x005A5F30
 // FUNCTION: fn_03175
-void CSkillAction_Icing::OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
-  this->SpawnIcing(source);
+void CSkillAction_Icing::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+  this->SpawnIcing(target);
 }
 
 // OFFSET: 0x005A5F40
 // FUNCTION: fn_03176
-void CSkillAction_Thundering::OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
-  this->PlayThunderEffect(source);
+void CSkillAction_Thundering::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+  this->PlayThunderEffect(target);
 }
 
 // OFFSET: 0x005A5F50
@@ -785,8 +785,8 @@ void CSkillAction_AT_PINION_SHOT::OnSkillEffect(int level, CGameActor* source, C
 
 // OFFSET: 0x005A7180
 // FUNCTION: fn_03201
-void CSkillAction_AT_PINION_SHOT::OnSkillHit(int level, CGameActor* source, CGameActor* target) {
-  this->SpawnAttack01Effect(level, source);
+void CSkillAction_AT_PINION_SHOT::OnSkillHit(CGameActor* source, CGameActor* target, CRenderObject* targetSkill) {
+  this->SpawnAttack01Effect(source, target);
 }
 
 // OFFSET: 0x005A71A0
@@ -909,10 +909,10 @@ void CSkillAction_AT_GRAVITY_HOLE::OnSkillCast(int level, CGameActor* source) {
 
 // OFFSET: 0x005A7A60
 // FUNCTION: fn_03216
-void CSkillAction_AT_GRAVITY_HOLE::OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
-  if (source) {
-    if (CRagEffect* effect = source->LaunchEffect(EF_HIT1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
-      effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&source->render.position), 0, 0, 0, 0);
+void CSkillAction_AT_GRAVITY_HOLE::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+  if (target) {
+    if (CRagEffect* effect = target->LaunchEffect(EF_HIT1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
+      effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&target->render.position), 0, 0, 0, 0);
     }
   }
 }
@@ -1574,7 +1574,7 @@ void __stdcall OnSkillCast(int a, int b) {
 
 // OFFSET: 0x005AF090
 // FUNCTION: fn_03291
-void __stdcall OnTargetSkillCast(int a, int b, int c) {
+void __stdcall OnTargetSkillCast(CGameActor* source, CGameActor* target, int delay) {
 }
 
 // OFFSET: 0x005AF0A0
@@ -1606,12 +1606,12 @@ int GetSkillScopeType() {
 
 // OFFSET: 0x005AF0F0
 // FUNCTION: fn_03297
-void __stdcall OnSkillHit(int a, int b, int c) {
+void __stdcall OnSkillHit(CGameActor* source, CGameActor* target, CRenderObject* targetSkill) {
 }
 
 // OFFSET: 0x005AF100
 // FUNCTION: fn_03298
-void __stdcall OnSkillDamage(int a, int b, int c) {
+void __stdcall OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
 }
 
 // OFFSET: 0x005AF110
@@ -1691,8 +1691,7 @@ const float g_featherOffsets[3] = {0.0f, 0.1f, -0.1f};
 
 // OFFSET: 0x005A4760
 // FUNCTION: fn_03152
-void CSkillAction_DamageWereRaptorForm::SpawnAttack00Effect(int sourceActor, CGameActor* target) {
-  CGameActor* source = reinterpret_cast<CGameActor*>(sourceActor);
+void CSkillAction_DamageWereRaptorForm::SpawnAttack00Effect(CGameActor* source, CGameActor* target) {
   if (source && target) {
     const std::string effectName = OBFUSCATE_TEXT("attack_00", 0x2FF3C5036D070127ULL);
     this->SpawnDirectionalEffect(source, target, effectName);
@@ -1701,8 +1700,7 @@ void CSkillAction_DamageWereRaptorForm::SpawnAttack00Effect(int sourceActor, CGa
 
 // OFFSET: 0x005A4930
 // FUNCTION: fn_03153
-void CSkillAction_DamageWereRaptorForm::SpawnAttack01Effect(int sourceActor, CGameActor* target) {
-  CGameActor* source = reinterpret_cast<CGameActor*>(sourceActor);
+void CSkillAction_DamageWereRaptorForm::SpawnAttack01Effect(CGameActor* source, CGameActor* target) {
   if (source && target) {
     const std::string effectName = OBFUSCATE_TEXT("attack_01", 0x17359BF953C367B3ULL);
     this->SpawnDirectionalEffect(source, target, effectName);
@@ -1711,8 +1709,7 @@ void CSkillAction_DamageWereRaptorForm::SpawnAttack01Effect(int sourceActor, CGa
 
 // OFFSET: 0x005A4B00
 // FUNCTION: fn_03154
-void CSkillAction_DamageWereRaptorForm::SpawnAttack02Effect(int sourceActor, CGameActor* target) {
-  CGameActor* source = reinterpret_cast<CGameActor*>(sourceActor);
+void CSkillAction_DamageWereRaptorForm::SpawnAttack02Effect(CGameActor* source, CGameActor* target) {
   if (!target || !source) {
     return;
   }

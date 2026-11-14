@@ -1814,7 +1814,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
           if (this->render.angle > 360.0f) {
             this->render.angle -= 360.0f;
           }
-        } else if (!CSkillActionMgr::GetInstance()->OnSkillDamage(damageMessage->skillId, reinterpret_cast<int>(attacker), this, reinterpret_cast<CGameActor*>(damageMessage->skillTarget))) {
+        } else if (!CSkillActionMgr::GetInstance()->OnSkillDamage(damageMessage->skillId, attacker, this, reinterpret_cast<CGameActor*>(damageMessage->skillTarget))) {
           if (g_effectMgr->Spawn(this->render.accountId, skillEffect, offset, 0, -1, 0, 0) == nullptr) {
             CRagEffect* effect = this->LaunchEffect(skillEffect, offset, 0.0f);
             if (effect != nullptr) {

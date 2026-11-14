@@ -16,7 +16,7 @@ public:
   int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
-  void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
 };
 
 class CSkillAction_WH_CALAMITYGALE : public CSkillAction {
@@ -41,15 +41,15 @@ public:
   bool SuppressSupportSkillArrow() override;
   bool SuppressAttackSkillArrow() override;
   void OnSkillCast(int level, CGameActor* source) override;
-  void OnSkillHit(int sourceActor, CGameActor* target, CGameActor* argument3) override;
-  void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
+  void OnSkillHit(CGameActor* source, CGameActor* target, CRenderObject* targetSkill) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
 };
 
 class CSkillAction_WH_WILD_WALK : public CSkillAction {
 public:
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
-  void OnSkillDamage(int level, CGameActor* source, CGameActor* target) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
 };
 
 // OFFSET: 0x007A5A70
@@ -79,10 +79,10 @@ void CSkillAction_WH_GALESTORM::OnSkillEffect(int level, CGameActor* source, CGa
 
 // OFFSET: 0x007A5C40
 // FUNCTION: fn_09025
-void CSkillAction_WH_GALESTORM::OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
-  if (source) {
+void CSkillAction_WH_GALESTORM::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+  if (target) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("galestorm_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("galestorm_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -181,8 +181,7 @@ void CSkillAction_WH_CRESCIVE_BOLT::OnSkillCast(int level, CGameActor* source) {
 
 // OFFSET: 0x007A65A0
 // FUNCTION: fn_45492
-void CSkillAction_WH_CRESCIVE_BOLT::OnSkillHit(int sourceActor, CGameActor* target, CGameActor* argument3) {
-  CGameActor* source = reinterpret_cast<CGameActor*>(sourceActor);
+void CSkillAction_WH_CRESCIVE_BOLT::OnSkillHit(CGameActor* source, CGameActor* target, CRenderObject* targetSkill) {
   if (source && target) {
     EffectLists* effects = g_effectMgr;
     if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("crescivebolt"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
@@ -196,10 +195,10 @@ void CSkillAction_WH_CRESCIVE_BOLT::OnSkillHit(int sourceActor, CGameActor* targ
 
 // OFFSET: 0x007A6780
 // FUNCTION: fn_09038
-void CSkillAction_WH_CRESCIVE_BOLT::OnSkillDamage(int level, CGameActor* source, CGameActor* target) {
-  if (source) {
+void CSkillAction_WH_CRESCIVE_BOLT::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+  if (target) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("crescivebolt_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("crescivebolt_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -231,8 +230,7 @@ void CSkillAction_WH_WILD_WALK::OnSkillEffect(int level, CGameActor* source, CGa
 
 // OFFSET: 0x007A6D20
 // FUNCTION: fn_09041
-void CSkillAction_WH_WILD_WALK::OnSkillDamage(int sourceActor, CGameActor* target, CGameActor* argument3) {
-  CGameActor* source = reinterpret_cast<CGameActor*>(sourceActor);
+void CSkillAction_WH_WILD_WALK::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
   if (source && target) {
     EffectLists* effects = g_effectMgr;
     if (CEffect* effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("wild_walk_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
