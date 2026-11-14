@@ -2807,17 +2807,6 @@ __declspec(noinline) CUIQuestInfo::CUIQuestInfo()
     : CUIListItem(), stampImage(nullptr), titleViewer(nullptr), linesViewer(nullptr), statusViewer(nullptr), title(), questId(0) {
 }
 
-// OFFSET: 0x009D94D0
-// FUNCTION: fn_14281
-CUISubTab::CUISubTab() : CUIListItem(), labelText(nullptr), stampImage(nullptr), id(0), questId(0) {
-}
-
-// OFFSET: 0x009D9550
-// FUNCTION: fn_14282
-CUITab::CUITab()
-    : CUIListItem(), labelText(nullptr), subTabs(nullptr), title(), type(7), page(nullptr), collapsedHeight(0) {
-}
-
 // OFFSET: 0x009D9600
 // FUNCTION: fn_14283
 CUITabInfo::CUITabInfo() : CUIListItem(), titleText(nullptr), descriptionText(nullptr) {

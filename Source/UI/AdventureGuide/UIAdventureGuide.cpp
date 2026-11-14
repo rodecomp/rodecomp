@@ -1511,6 +1511,21 @@ static bool s_registered = [] {
   return true;
 }();
 
+namespace AdventureGuide {
+
+// OFFSET: 0x009D94D0
+// FUNCTION: fn_14281
+CUISubTab::CUISubTab() : CUIListItem(), labelText(nullptr), stampImage(nullptr), id(0), questId(0) {
+}
+
+// OFFSET: 0x009D9550
+// FUNCTION: fn_14282
+CUITab::CUITab()
+    : CUIListItem(), labelText(nullptr), subTabs(nullptr), title(), type(7), page(nullptr), collapsedHeight(0) {
+}
+
+}
+
 // OFFSET: 0x009DB280
 // FUNCTION: fn_14306
 template <>
