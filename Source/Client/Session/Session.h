@@ -194,6 +194,8 @@ class CSession {
 public:
   void IconPath(char* output, const char* id, int identified);
   ITEM_INFO LookupClientItemByIdentity(std::uint32_t id) const;
+  float GetSkillFactor(int job) const;
+  unsigned BaseJob(unsigned job) const;
   HotkeyInfo GetHotkeyInfo(int tab, int index) const;
   int HotkeyCount(int tab) const;
   std::string ShortcutFilename(std::uint32_t identifier) const;

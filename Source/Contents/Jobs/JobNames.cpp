@@ -348,3 +348,8 @@ const char* CSession::GetJobName(unsigned job, int sex) {
 
   return this->m_jobNameTable[base];
 }
+
+// INLINED
+unsigned CSession::BaseJob(unsigned job) const {
+  return JobNames::BaseJob(job);
+}

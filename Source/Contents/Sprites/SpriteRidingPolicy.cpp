@@ -6,7 +6,7 @@
 // OFFSET: 0x00DAB2C0
 // FUNCTION: fn_22583
 bool IsIgnoredRidingState(int id, int job, int effectState, bool force) {
-  if (!force && job == JobNames::BaseJob(job)) {
+  if (!force && job == g_session.BaseJob(job)) {
     return false;
   }
 

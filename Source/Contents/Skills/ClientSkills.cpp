@@ -764,7 +764,7 @@ void CSession::ResetCostumeItems() {
 
 // OFFSET: 0x00E08B40
 // FUNCTION: fn_23770
-float GetSkillFactor(int job) {
+float CSession::GetSkillFactor(int job) const {
   if ((job < JT_NOVICE_B || job > JT_THIEF_B) && job != JT_SUPERNOVICE_B && job != JT_SUPERNOVICE2_B &&
       static_cast<unsigned>(job - JT_KNIGHT_B) > JT_CHICKEN2_B - JT_KNIGHT_B && static_cast<unsigned>(job - JT_RUNE_KNIGHT_B) > JT_MADOGEAR_B - JT_RUNE_KNIGHT_B &&
       static_cast<unsigned>(job - JT_PORING_NOVICE_B) > JT_DOG_CHASER_B - JT_PORING_NOVICE_B && (job < JT_SHEEP_PRIEST_B || job > JT_PIG_BLACKSMITH_B) &&
@@ -783,6 +783,11 @@ float GetSkillFactor(int job) {
   }
 
   return 0.82f;
+}
+
+// INLINED
+float GetSkillFactor(int job) {
+  return g_session.GetSkillFactor(job);
 }
 
 // OFFSET: 0x00E084B0
