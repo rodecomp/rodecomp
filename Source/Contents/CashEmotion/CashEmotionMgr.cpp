@@ -2083,7 +2083,7 @@ __declspec(noinline) void UICashEmotionListChildWnd_Search::Refresh(const char* 
   this->horizontalBar = nullptr;
   this->scrollBar = nullptr;
   if (filter && std::strlen(filter) >= 1) {
-    this->m_filter.assign(filter, std::strlen(filter));
+    this->m_filter = filter;
   } else {
     this->m_filter.assign("", 0);
   }
