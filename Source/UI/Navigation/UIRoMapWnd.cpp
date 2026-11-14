@@ -337,13 +337,16 @@ void UIRoMapWnd::DrawDungeonLinks() {
       const float endX = static_cast<float>(mapWidth) * g_depthAverageHalf + static_cast<float>(map->left);
       const float endY = static_cast<float>(mapHeight) * g_depthAverageHalf + static_cast<float>(map->top) + 1.0f;
       CTexture* const lineTexture = g_texMgr.Default();
+      std::uint32_t color;
       if (isSelected) {
         DrawScreenLine(ScreenPoint{startX, startY}, ScreenPoint{endX, endY}, 1, lineTexture, (selectColor & 0xFFFFFF) - 0x1000000);
+        color = 0xFFFFFFFF;
       } else {
         DrawScreenLine(ScreenPoint{startX, startY}, ScreenPoint{endX, endY}, 1, lineTexture, lineColor);
+        color = rectColor;
       }
 
-      DrawTexturedRectangle(map->left, map->top, mapWidth, mapHeight, isSelected ? 0xFFFFFFFF : rectColor, positionTexture);
+      DrawTexturedRectangle(map->left, map->top, mapWidth, mapHeight, color, positionTexture);
       x = field->left;
       y = field->top;
     } else {
