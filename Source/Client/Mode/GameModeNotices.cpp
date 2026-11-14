@@ -4632,7 +4632,19 @@ struct SpriteChange2Packet {
 void CGameMode::ReceiveSpriteChange(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const SpriteChangePacket*>(data);
   CGameActor* actor;
-  if (packet->aid == g_session.m_aid) {
+  if (packet->aid != g_session.m_aid) {
+    actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(packet->aid));
+    if (!actor) {
+      CRenderObject* skill = this->scene->GetSkillByAID(packet->aid);
+      if (!skill) {
+        return;
+      }
+      if (packet->type == LOOK_BASE) {
+        skill->SendMsg(nullptr, AM_SETJOB, packet->value, 0, 0, 0, 0, 0);
+      }
+      return;
+    }
+  } else {
     actor = this->scene->player;
     switch (packet->type) {
     case LOOK_BASE:
@@ -4665,18 +4677,6 @@ void CGameMode::ReceiveSpriteChange(const unsigned char* data) {
       break;
     }
     if (!actor) {
-      return;
-    }
-  } else {
-    actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(packet->aid));
-    if (!actor) {
-      CRenderObject* skill = this->scene->GetSkillByAID(packet->aid);
-      if (!skill) {
-        return;
-      }
-      if (packet->type == LOOK_BASE) {
-        skill->SendMsg(nullptr, AM_SETJOB, packet->value, 0, 0, 0, 0, 0);
-      }
       return;
     }
   }
