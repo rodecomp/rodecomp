@@ -12377,7 +12377,7 @@ void UIExchangeWnd::Paint() {
     if (g_serviceType == 6) {
       std::sprintf(partner, "%s  Lv%d", this->partnerName.c_str(), this->partnerLevel);
     } else {
-      const std::string identifier = ShortcutFilename(this->partnerId);
+      const std::string identifier = g_session.ShortcutFilename(this->partnerId);
       std::sprintf(partner, "%s  Lv%d (%s)", this->partnerName.c_str(), this->partnerLevel, identifier.c_str());
     }
   } else {
