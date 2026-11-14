@@ -1,3 +1,4 @@
+#include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Window/UIEnums.h"
 #include "Client/Mode/ModeMessage.h"
 #include "Client/Replay/Replay.h"
@@ -30,6 +31,10 @@ UIButton::UIButton() : UIWindow(0) {
 // OFFSET: 0x00851340
 // FUNCTION: fn_10690
 UIButton::~UIButton() = default;
+
+// OFFSET: 0x008511B0
+// FUNCTION: fn_10689
+UIBitmapButton::~UIBitmapButton() = default;
 
 // OFFSET: 0x00851C70
 // FUNCTION: fn_10698

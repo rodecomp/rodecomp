@@ -12,10 +12,6 @@ UIBitmapButton::UIBitmapButton()
   this->m_invalidateParent = 0;
 }
 
-// OFFSET: 0x008511B0
-// FUNCTION: fn_10689
-UIBitmapButton::~UIBitmapButton() = default;
-
 // OFFSET: 0x008657A0
 // FUNCTION: fn_10931
 bool UIBitmapButton::SetBitmap(const char* name, int state, unsigned char exactSize) {
