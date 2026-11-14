@@ -104,12 +104,12 @@ __forceinline void SetBarRange(UIScrollBar* bar, int maximum, int visible, int t
 void UIComboBoxEx::Refresh() {
   const int visible = this->geometry.height / this->lineHeight;
   const int count = static_cast<int>(this->lines.size());
-  const int overflow = std::max((count - visible), 0);
+  const int overflow = std::ranges::max(count - visible, 0);
   this->verticalOverflow = overflow != 0;
   auto* bar = this->verticalBar;
 
   if (overflow != 0) {
-    bar->SetRange((this->bottomMargin + overflow), visible, count);
+    SetBarRange(bar, (this->bottomMargin + overflow), visible, count);
 
     if (this->selected < this->topLine) {
       this->topLine = this->selected;
@@ -127,7 +127,7 @@ void UIComboBoxEx::Refresh() {
 
     this->verticalBar->position = this->topLine;
   } else {
-    bar->SetRange(0, visible, count);
+    SetBarRange(bar, 0, visible, count);
   }
 
   this->verticalBar->Invalidate();
