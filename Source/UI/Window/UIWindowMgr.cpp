@@ -1610,6 +1610,7 @@ bool UIWindowMgr::ProcessKeyDown(int key, int keyData, int pressed) {
       }
     }
 
+    bool forward = false;
     if (hoverOnButton) {
       if (this->modifierKey == 0) {
         switch (this->keyCode) {
@@ -1634,40 +1635,42 @@ bool UIWindowMgr::ProcessKeyDown(int key, int keyData, int pressed) {
         case VK_F12:
           break;
         default:
-          return this->ProcessHotkeyAction(key, pressed);
+          forward = true;
+          break;
         }
       } else if (this->modifierKey == 0x10) {
-        return this->ProcessHotkeyAction(key, pressed);
+        forward = true;
       } else if (this->modifierKey == 0x11) {
         switch (this->keyCode) {
         case 0x41:
         case 0x43:
         case 0x56:
         case 0x58:
-          return this->ProcessHotkeyAction(key, pressed);
+          forward = true;
+          break;
         }
       }
     }
 
-    int& lastKey = g_session.m_currentHotkey;
-    if (lastKey != key) {
-      if (pressed == 0) {
-        return this->ProcessHotkeyAction(key, pressed);
-      }
-      g_session.m_automaticSkills.DisableAll();
-    }
-    lastKey = key;
+    if (!forward) {
+      int& lastKey = g_session.m_currentHotkey;
+      if (lastKey == key || pressed != 0) {
+        if (lastKey != key) {
+          g_session.m_automaticSkills.DisableAll();
+        }
+        lastKey = key;
 
-    if ((key == 0x0D || key == 0x20) && this->ProcessEnterKey()) {
-      return true;
+        if ((key == 0x0D || key == 0x20) && this->ProcessEnterKey()) {
+          return true;
+        }
+        if (this->ProcessShortcutKey(action)) {
+          if (this->IsHoverParentVisible() || this->IsHoverOnWindow01C8Button()) {
+            this->imeInputActive = 1;
+          }
+          return true;
+        }
+      }
     }
-    if (!this->ProcessShortcutKey(action)) {
-      return this->ProcessHotkeyAction(key, pressed);
-    }
-    if (this->IsHoverParentVisible() || this->IsHoverOnWindow01C8Button()) {
-      this->imeInputActive = 1;
-    }
-    return true;
   }
 
   return this->ProcessHotkeyAction(key, pressed);
@@ -1723,12 +1726,11 @@ void UIWindowMgr::SendEmotionHotkey(int index) {
 // FUNCTION: fn_17225
 void UIWindowMgr::CycleWindowVisibility(int) {
   for (std::list<UIWindow*>::iterator it = this->hiddenWindows.begin(); it != this->hiddenWindows.end();) {
-    std::list<UIWindow*>::iterator next = it;
-    ++next;
-    if (std::find(this->rendered.begin(), this->rendered.end(), *it) == this->rendered.end()) {
-      this->hiddenWindows.erase(it);
+    if (this->rendered.end() == std::find(this->rendered.begin(), this->rendered.end(), *it)) {
+      it = this->hiddenWindows.erase(it);
+    } else {
+      ++it;
     }
-    it = next;
   }
 
   const int state = this->windowVisibilityState;
@@ -1751,7 +1753,7 @@ void UIWindowMgr::CycleWindowVisibility(int) {
       if (window->geometry.visible) {
         const int id = window->geometry.id;
         if (this->IsOrderFixed(id)) {
-          if (std::find(this->hiddenWindows.begin(), this->hiddenWindows.end(), window) == this->hiddenWindows.end()) {
+          if (this->hiddenWindows.end() == std::find(this->hiddenWindows.begin(), this->hiddenWindows.end(), window)) {
             this->hiddenWindows.push_back(*it);
           }
         } else {
@@ -1786,7 +1788,7 @@ void UIWindowMgr::CycleWindowVisibility(int) {
       if (*it != static_cast<CGameMode*>(g_modeMgr.GetGameMode())->EnsureBroadcastBalloon() &&
           *it != static_cast<CGameMode*>(g_modeMgr.GetGameMode())->achievementBalloon && (*it)->geometry.visible) {
         UIWindow* window = *it;
-        if (std::find(this->hiddenWindows.begin(), this->hiddenWindows.end(), window) != this->hiddenWindows.end()) {
+        if (this->hiddenWindows.end() != std::find(this->hiddenWindows.begin(), this->hiddenWindows.end(), window)) {
           window->Show(0);
         } else {
           this->CloseWindow(window->geometry.id);
