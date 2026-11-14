@@ -507,7 +507,7 @@ void UILapineBoxWnd::SetIngredient(int id) {
     std::memset(name, 0, sizeof(name));
     int capacity = 0x104;
     item.GetIdDisplayName(name, capacity, 0);
-    this->title.assign(name, std::strlen(name));
+    this->title = name;
   }
 
   g_session.m_hotkeyScript->CallTable("tblLapineDdukddakBox", "set_resource_item_list", "d", id);
@@ -526,7 +526,7 @@ void UILapineBoxWnd::SetIngredient(int id) {
 
   const char* source = nullptr;
   g_session.m_hotkeyScript->CallTable("tblLapineDdukddakBox", "get_need_source_string", "d>s", id, &source);
-  this->description.assign(source, std::strlen(source));
+  this->description = source;
 }
 
 // OFFSET: 0x00601BC0
