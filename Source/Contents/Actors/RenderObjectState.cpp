@@ -91,6 +91,5 @@ void RenderObjectState::Reset() {
   this->useGroundLighting = 1;
   this->instant.Clear();
   this->blendFlags = 0;
-  this->hoverOffsetLow = 0;
-  this->hoverOffsetHigh = 0;
+  this->hoverOffset = 0;
 }

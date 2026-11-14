@@ -165,7 +165,7 @@ __declspec(safebuffers) void CEffectPrim::RenderGroundSprite(matrix& wtm) {
     const double factor = distanceScale;
     const float left = static_cast<float>(cell.x * factor * cell.scaleX + screenX);
     const float right = static_cast<float>(((static_cast<short>(image->doubleWidth) + 1) * image->width + cell.x) * factor * cell.scaleX + screenX + 1.0);
-    const float lift = static_cast<float>(static_cast<double>(*reinterpret_cast<const std::int64_t*>(&this->state.spriteLiftLow)));
+    const float lift = static_cast<float>(static_cast<double>(this->state.spriteLift));
     const float top = static_cast<float>(cell.y * factor * cell.scaleY + screenY) - lift;
     const float bottom = static_cast<float>(((static_cast<short>(image->doubleHeight) + 1) * image->height + cell.y) * factor * cell.scaleY + screenY + 1.0) - lift;
     if (top >= static_cast<float>(g_renderer->viewport.height) || bottom <= 0.0f || left >= static_cast<float>(g_renderer->viewport.width) ||

@@ -6490,8 +6490,7 @@ void CRagEffect::DigitalSpace(int effectId) {
   }
 
   if (this->state.parent && this->state.currentPrimitive) {
-    this->state.lastPrim->state.spriteLiftLow = this->state.parent->render.hoverOffsetLow;
-    this->state.lastPrim->state.spriteLiftHigh = this->state.parent->render.hoverOffsetHigh;
+    this->state.lastPrim->state.spriteLift = this->state.parent->render.hoverOffset;
   }
 
   if (this->state.parent && this->state.currentPrimitive) {

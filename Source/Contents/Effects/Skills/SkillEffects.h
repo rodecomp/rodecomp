@@ -13,7 +13,7 @@ class CSpriteParticle;
 
 class CMeteorEffect : public CEffect {
 public:
-  CMeteorEffect() : CEffect(-1), quakeFrameLow(12), quakeFrameHigh(0) {}
+  CMeteorEffect() : CEffect(-1), quakeFrame(12) {}
 
   void Open() override;
   void OnProcess() override;
@@ -23,8 +23,7 @@ public:
   ~CMeteorEffect() override;
 
   /* 00CC */ std::vector<CParticle*> particles;
-  /* 00D8 */ int quakeFrameLow;
-  /* 00DC */ int quakeFrameHigh;
+  /* 00D8 */ long long quakeFrame;
 };
 
 class CShadowExceedNew : public CEffect {
@@ -75,7 +74,7 @@ public:
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CMeteorEffect) == 0xE0);
-static_assert(offsetof(CMeteorEffect, quakeFrameLow) == 0xD8);
+static_assert(offsetof(CMeteorEffect, quakeFrame) == 0xD8);
 static_assert(sizeof(CShadowExceedNew) == 0xE0);
 static_assert(offsetof(CShadowExceedNew, backEmitters) == 0xD8);
 static_assert(sizeof(CSprArrowEffect) == 0x100);

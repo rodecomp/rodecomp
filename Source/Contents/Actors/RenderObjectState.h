@@ -117,8 +117,7 @@ struct RenderObjectState {
   /* 0115 */ unsigned char padding_0115[3];
   /* 0118 */ CInstantVar instant;
   /* 0124 */ std::uint32_t blendFlags;
-  /* 0128 */ std::uint32_t hoverOffsetLow;
-  /* 012C */ std::uint32_t hoverOffsetHigh;
+  /* 0128 */ std::int64_t hoverOffset;
   /* 0130 */ unsigned char translucentOther[8];
 };
 

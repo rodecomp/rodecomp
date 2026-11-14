@@ -241,7 +241,7 @@ void CSpriteParticle::Draw(char mode) {
           offsetY += p[1];
         }
         if (this->applyActorLift != 0) {
-          offsetY -= static_cast<float>(static_cast<double>(*reinterpret_cast<const long long*>(&renderObject->render.hoverOffsetLow)));
+          offsetY -= static_cast<float>(static_cast<double>(renderObject->render.hoverOffset));
         }
       }
       offsetX *= scaleDistance;

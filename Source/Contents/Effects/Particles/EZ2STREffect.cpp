@@ -5428,7 +5428,7 @@ void CEZ2STRScreenEffect::OnProcess() {
     particle->m_shiftY = shiftY;
   }
 
-  this->particle->m_lift = *reinterpret_cast<const long long*>(&actor->render.hoverOffsetLow);
+  this->particle->m_lift = actor->render.hoverOffset;
 }
 
 // OFFSET: 0x00B661B0

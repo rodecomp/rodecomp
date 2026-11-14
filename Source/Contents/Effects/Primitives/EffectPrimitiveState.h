@@ -165,8 +165,13 @@ struct EffectPrimitiveState {
   /* 03E8 */ EffectPrimitiveSlot slots[4];
   /* 06B8 */ EffectPrimitiveRecord records[50];
   /* 2210 */ RenderTriangle triangles[512];
-  /* FA10 */ std::uint32_t spriteLiftLow;
-  /* FA14 */ std::uint32_t spriteLiftHigh;
+  union {
+    /* FA10 */ std::int64_t spriteLift;
+    struct {
+      /* FA10 */ std::uint32_t spriteLiftLow;
+      /* FA14 */ std::uint32_t spriteLiftHigh;
+    };
+  };
 };
 
 class CActRes;
