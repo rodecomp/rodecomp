@@ -25,7 +25,7 @@ unsigned char g_hexDigits[256] = {
 
 // OFFSET: 0x00A7CA20
 // FUNCTION: fn_16948
-const char* SegmentEnd(const char* text, const char* end) {
+const char* UIWindow::SegmentEnd(const char* text, const char* end) {
   if (text == nullptr) {
     return nullptr;
   }
@@ -56,20 +56,20 @@ const char* SegmentEnd(const char* text, const char* end) {
 
 // OFFSET: 0x00A81BA0
 // FUNCTION: fn_16982
-const char* ParseColorCode(const char* text, std::uint32_t& color) {
+const char* UIWindow::ParseColorCode(const char* text, std::uint32_t& color) {
   if (text == nullptr) {
     return nullptr;
   }
 
-  if (*text != '^') {
-    return text;
+  if (*text == '^') {
+    std::uint32_t value = static_cast<unsigned char>(g_hexDigits[text[5]] * 16 + g_hexDigits[text[6]]);
+    value = (value << 8) | static_cast<unsigned char>(g_hexDigits[text[3]] * 16 + g_hexDigits[text[4]]);
+    value = (value << 8) | static_cast<unsigned char>(g_hexDigits[text[1]] * 16 + g_hexDigits[text[2]]);
+    color = value;
+    return text + 7;
   }
 
-  const unsigned char red = static_cast<unsigned char>(g_hexDigits[text[1]] * 16 + g_hexDigits[text[2]]);
-  const unsigned char green = static_cast<unsigned char>(g_hexDigits[text[3]] * 16 + g_hexDigits[text[4]]);
-  const unsigned char blue = static_cast<unsigned char>(g_hexDigits[text[5]] * 16 + g_hexDigits[text[6]]);
-  color = red | (green << 8) | (blue << 16);
-  return text + 7;
+  return text;
 }
 
 // OFFSET: 0x00A84E30
@@ -278,4 +278,34 @@ std::string StripColorCodes(const char* text, unsigned bytes) {
 // FUNCTION: fn_17063
 bool ContainsValue(const std::deque<int>& values, const int& value) {
   return values.end() != std::find(values.begin(), values.end(), value);
+}
+
+// INLINED
+__declspec(noinline) const char* SegmentEnd(const char* text, const char* end) {
+  if (text == nullptr) {
+    return nullptr;
+  }
+
+  const char* current = text;
+
+  while (current < end) {
+    if (*current == '^' && end - current >= 6) {
+      bool color = true;
+
+      for (int index = 1; index <= 6; ++index) {
+        if (!g_colorHexDigit[current[index]]) {
+          color = false;
+          break;
+        }
+      }
+
+      if (color) {
+        return current;
+      }
+    }
+
+    current = CharNextExA(static_cast<WORD>(g_textCodePage), current, 0);
+  }
+
+  return current;
 }

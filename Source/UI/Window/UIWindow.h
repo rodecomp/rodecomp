@@ -133,6 +133,8 @@ public:
   int TextWidth(const char* text, unsigned bytes, int family, int height, unsigned char bold, unsigned char italic);
   void WrapPixelText(const char* text, std::vector<std::string>& lines, int width);
   int ColoredTextWidth(const char* text, unsigned bytes, int family, int height, unsigned char bold);
+  const char* SegmentEnd(const char* text, const char* end);
+  const char* ParseColorCode(const char* text, std::uint32_t& color);
   void DrawTextAt(int x, int y, const char* text, int bytes, int family, int height, std::uint32_t color, unsigned char bold,
     unsigned char italic
   );
