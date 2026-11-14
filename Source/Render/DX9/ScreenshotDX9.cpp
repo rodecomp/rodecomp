@@ -20,16 +20,15 @@ namespace {
 // OFFSET: 0x005680A0
 // FUNCTION: fn_02236
 bool CRendererDX9::SaveScreenshot(const char* filename, int format, CTexture* overlay, const tagRECT* rectangle) {
-  DeviceOwnerDX9& owner = *this->device;
   if (overlay) {
-    unsigned x = rectangle ? static_cast<unsigned>(rectangle->right) : owner.backBufferDescription.Width;
-    unsigned y = rectangle ? static_cast<unsigned>(rectangle->bottom) : owner.backBufferDescription.Height;
+    unsigned x = rectangle ? static_cast<unsigned>(rectangle->right) : this->device->backBufferDescription.Width;
+    unsigned y = rectangle ? static_cast<unsigned>(rectangle->bottom) : this->device->backBufferDescription.Height;
     x -= overlay->Width();
     y -= overlay->Height();
     ScreenshotOverlay drawing;
     drawing.Draw(std::bit_cast<std::int32_t>(x), std::bit_cast<std::int32_t>(y), overlay, 0xFFFFFFFFu, 0, 0, false);
 
-    if (owner.Begin()) {
+    if (this->device->Begin()) {
       ScopedDeviceStateDX9 restore(this->device->state);
       this->device->state.SetRenderState(D3DRS_ZENABLE, D3DZB_FALSE);
       this->device->state.SetRenderState(D3DRS_FOGENABLE, 0);
@@ -42,9 +41,9 @@ bool CRendererDX9::SaveScreenshot(const char* filename, int format, CTexture* ov
         this->DrawPrimitive(command);
       }
 
-      owner.End();
+      this->device->End();
     }
   }
 
-  return SUCCEEDED(D3DXSaveSurfaceToFileA(filename, format, owner.backBuffer, nullptr, rectangle));
+  return SUCCEEDED(D3DXSaveSurfaceToFileA(filename, format, this->device->backBuffer, nullptr, rectangle));
 }
