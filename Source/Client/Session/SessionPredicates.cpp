@@ -13,6 +13,10 @@
 template __declspec(noinline) SessionRecord6178Entry* std::allocator<SessionRecord6178Entry>::allocate(std::size_t);
 template __declspec(noinline) std::vector<SessionRecord6178Entry>::~vector() noexcept;
 
+template __declspec(noinline)
+std::_Tree_find_result<std::map<std::int64_t, std::int64_t>::_Mybase::_Nodeptr>
+std::map<std::int64_t, std::int64_t>::_Mybase::_Find_lower_bound<std::int64_t>(const std::int64_t&) const;
+
 // OFFSET: 0x00E1D6B0
 // FUNCTION: fn_23850
 int CSession::IsState291To303(int state) const {
