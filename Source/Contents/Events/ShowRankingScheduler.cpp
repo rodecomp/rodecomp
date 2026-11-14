@@ -27,7 +27,7 @@ std::string g_namelessName;
 // FUNCTION: fn_04735
 CShowRankingScheduler::CShowRankingScheduler(const std::uint64_t& timestamp, const std::int64_t& interval, int scheduleType)
     : CSchedule(timestamp, interval, scheduleType, ++g_schedulerSerial, 0) {
-  std::memset(this->rankingData, 0, sizeof(this->rankingData));
+  std::memset(&this->rankingData, 0, sizeof(this->rankingData));
   if (this->rankingList.capacity() < 16) {
     this->rankingList.reserve(16);
   }
@@ -36,7 +36,7 @@ CShowRankingScheduler::CShowRankingScheduler(const std::uint64_t& timestamp, con
 // OFFSET: 0x00637C60
 // FUNCTION: fn_04739
 void CShowRankingScheduler::Process(const std::uint64_t& now) {
-  if (0 != *reinterpret_cast<const std::int16_t*>(this->rankingData)) {
+  if (0 != this->rankingData.packetType) {
     const std::int64_t count = this->delay;
     if (count != 0 && count > 0) {
       const std::int64_t due = static_cast<std::int64_t>(this->timestamp) + count * 10000;
@@ -44,7 +44,7 @@ void CShowRankingScheduler::Process(const std::uint64_t& now) {
         this->Show();
       } else {
         bool complete = true;
-        const auto* ids = reinterpret_cast<const std::uint32_t*>(this->rankingData + 4);
+        const auto* ids = this->rankingData.ids;
         for (int index = 0; index < 10; ++index) {
           std::string name("");
           if (ids[index] == 0) {
@@ -90,13 +90,13 @@ std::map<int, RankingBoardStyle> RankingBoardStyles() {
 // OFFSET: 0x006380A0
 // FUNCTION: fn_04740
 void CShowRankingScheduler::SetData(const void* data) {
-  memcpy_s(this->rankingData, sizeof(this->rankingData), data, sizeof(this->rankingData));
+  memcpy_s(&this->rankingData, sizeof(this->rankingData), data, sizeof(this->rankingData));
 }
 
 // OFFSET: 0x00638110
 // FUNCTION: fn_04741
 void CShowRankingScheduler::Show() {
-  const int kind = *reinterpret_cast<const std::int16_t*>(this->rankingData + 2);
+  const int kind = this->rankingData.kind;
   // GLOBAL: gl_25055
   static const std::map<int, RankingBoardStyle> styles = RankingBoardStyles();
 
@@ -115,8 +115,8 @@ void CShowRankingScheduler::Show() {
   }
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(title), color, 0, 0, 0);
 
-  const auto* ids = reinterpret_cast<const std::uint32_t*>(this->rankingData + 4);
-  const auto* points = reinterpret_cast<const int*>(this->rankingData + 44);
+  const auto* ids = this->rankingData.ids;
+  const auto* points = this->rankingData.points;
   for (int index = 0; index < 10; ++index) {
     std::string name;
     if (ids[index] != 0) {
@@ -143,7 +143,7 @@ void CShowRankingScheduler::Show() {
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>("==========================================="), color, 0, 0, 0);
   g_windowMgr.SendNotice(
     UIM_PUSHINTOCHATHISTORY,
-    reinterpret_cast<std::intptr_t>(FormatOwnedString("MY POINT    :  %4d POINT ", *reinterpret_cast<const int*>(this->rankingData + 84)).c_str()), background, 0, 0, 0
+    reinterpret_cast<std::intptr_t>(FormatOwnedString("MY POINT    :  %4d POINT ", this->rankingData.myPoint).c_str()), background, 0, 0, 0
   );
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>("==========================================="), color, 0, 0, 0);
 }
