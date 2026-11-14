@@ -290,18 +290,8 @@ struct ChangeCharacterNamePacket {
 };
 #pragma pack(pop)
 
-struct CharServerEndpoint {
-  /* 0000 */ char ip[16];
-  /* 0010 */ int port;
-  /* 0014 */ char host[129];
-};
-
-#if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(CharServerEndpoint) == 0x98);
-#endif
-
 // GLOBAL: gl_25386
-CharServerEndpoint g_charServerEndpoint;
+ConnectionEndpoint g_charServerEndpoint;
 
 // GLOBAL: gl_25387
 std::uint32_t g_charServerIp;
@@ -3186,11 +3176,11 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     g_session.m_accountName = servers[argument1].address.name;
     const int selected = this->selectedServer;
     const std::uint32_t ip = servers[selected].address.ip;
-    CharServerEndpoint endpoint;
-    wsprintfA(endpoint.ip, OBFUSCATE_BYTES_TEXT("%d.%d.%d.%d", 0xF161095D0DE18F95ULL), ip & 0xFF, (ip >> 8) & 0xFF, (ip >> 16) & 0xFF, ip >> 24);
+    ConnectionEndpoint endpoint;
+    wsprintfA(endpoint.address, OBFUSCATE_BYTES_TEXT("%d.%d.%d.%d", 0xF161095D0DE18F95ULL), ip & 0xFF, (ip >> 8) & 0xFF, (ip >> 16) & 0xFF, ip >> 24);
     const int selected2 = this->selectedServer;
     endpoint.port = servers[selected2].address.port;
-    StringFormat(endpoint.host, sizeof(endpoint.host), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s", 0x2BAD156DE3E1F9D9ULL), servers[selected2].domain);
+    StringFormat(endpoint.overrideAddress, sizeof(endpoint.overrideAddress), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s", 0x2BAD156DE3E1F9D9ULL), servers[selected2].domain);
     g_charServerEndpoint = endpoint;
     g_charServerIp = servers[this->selectedServer].address.ip;
     g_session.m_serverName = servers[this->selectedServer].address.name;
@@ -3569,22 +3559,22 @@ void CLoginMode::OnChangeState(int value) {
     this->SendMsg(LMM_RESET_TO_LOGIN, 0, 0, 0, 0);
     break;
   case 38: {
-    CharServerEndpoint endpoint;
+    ConnectionEndpoint endpoint;
     std::memset(&endpoint, 0, sizeof(endpoint));
     if (!std::strstr(g_session.m_launchServerName, "Dev")) {
       const int port = rand() % 3 + 6951;
       const std::array<std::uint8_t, 26> hostSource = OBFUSCATE_SOURCE_BYTES(26, "kro-agency.ragnarok.co.kr", 0x7941D76335CFA14FULL);
       thread_local EncryptedName<sizeof(hostSource), 0x7941D76335CFA14FULL> host(hostSource);
       const char* hostText = host.Text();
-      StringFormat(endpoint.host, sizeof(endpoint.host), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s:%d", 0x7321C3814F8799E1ULL), hostText, port);
+      StringFormat(endpoint.overrideAddress, sizeof(endpoint.overrideAddress), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s:%d", 0x7321C3814F8799E1ULL), hostText, port);
     } else {
       const std::array<std::uint8_t, 34> hostSource = OBFUSCATE_SOURCE_BYTES(34, "kro-qm-agency.ragnarok.co.kr:6951", 0x7115D9F973F913C9ULL);
       thread_local EncryptedName<sizeof(hostSource), 0x7115D9F973F913C9ULL> host(hostSource);
       const char* hostText = host.Text();
-      StringFormat(endpoint.host, sizeof(endpoint.host), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s", 0xCB1D253B7FE1F563ULL), hostText);
+      StringFormat(endpoint.overrideAddress, sizeof(endpoint.overrideAddress), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s", 0xCB1D253B7FE1F563ULL), hostText);
     }
 
-    this->connectionReady = GetRagConnection().Connect(*reinterpret_cast<const ConnectionEndpoint*>(&endpoint));
+    this->connectionReady = GetRagConnection().Connect(endpoint);
     if (!this->connectionReady) {
       GetRagConnection().Close();
       if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 1, true, true, 0, "Message", 280, 120, 0) != 0x10D) {
@@ -3798,24 +3788,24 @@ void CLoginMode::OnChangeState(int value) {
       OBFUSCATE_BYTES_TEXT("%s", 0x6BA1C1132F033B75ULL);
     }
 
-    CharServerEndpoint endpoint;
-    endpoint.ip[0] = '\0';
+    ConnectionEndpoint endpoint;
+    endpoint.address[0] = '\0';
     endpoint.port = 0;
-    endpoint.host[0] = '\0';
+    endpoint.overrideAddress[0] = '\0';
     const char* address = g_clientInfoAddress;
     const char* port = g_clientInfoPort;
     const char* domain = g_clientInfoDomain;
     if (address) {
-      std::strcpy(endpoint.ip, address);
+      std::strcpy(endpoint.address, address);
     }
     if (domain || address) {
-      std::strcpy(endpoint.host, domain ? domain : address);
+      std::strcpy(endpoint.overrideAddress, domain ? domain : address);
     }
     if (port) {
       endpoint.port = atoi(port);
     }
 
-    this->connectionReady = GetRagConnection().Connect(*reinterpret_cast<const ConnectionEndpoint*>(&endpoint));
+    this->connectionReady = GetRagConnection().Connect(endpoint);
     if (!this->connectionReady) {
       GetRagConnection().Close();
       if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 1, true, true, 0, "Message", 280, 120, 0) != 0x10D) {
@@ -3853,7 +3843,7 @@ void CLoginMode::OnChangeState(int value) {
     g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     g_session.m_partyBooking.Reset();
     GetRagConnection().Close();
-    this->connectionReady = GetRagConnection().Connect(*reinterpret_cast<const ConnectionEndpoint*>(&g_charServerEndpoint));
+    this->connectionReady = GetRagConnection().Connect(g_charServerEndpoint);
     if (!this->connectionReady) {
       GetRagConnection().Close();
       if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 1, true, true, 0, "Message", 280, 120, 0) != 0x10D) {

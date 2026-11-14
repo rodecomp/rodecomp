@@ -101,6 +101,8 @@ struct GrannyPNT332Vertex {
   /* 0018 */ float uv[2];
 };
 
+static_assert(sizeof(GrannyPNT332Vertex) == 0x20);
+
 struct granny_system_clock {
   /* 0000 */ std::uint32_t data[4];
 };
@@ -232,7 +234,7 @@ public:
   granny_control* PlayAnimation(unsigned action, granny_model_instance* instance, granny_control* control, int loopCount);
   bool ProjectBounds(float* rect, const matrix& view, const matrix& world, const float* eye) const;
   int GetTriangleCount(int mesh) const;
-  unsigned char* GetRigidVertices(int mesh) const;
+  const void* GetRigidVertices(int mesh) const;
   const void* GetMeshRenderData(
     int mesh, CTexture** texture, std::uint16_t** indices, int* triangleCount, matrix* transform, granny_world_pose* pose
   );

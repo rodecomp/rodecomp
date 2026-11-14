@@ -3,6 +3,7 @@
 #include "Client/Replay/ReplayRecordOption.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Lists/UIDropDownBox.h"
 
 // OFFSET: 0x00A81C90
 // FUNCTION: fn_16985

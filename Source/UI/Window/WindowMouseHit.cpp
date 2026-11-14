@@ -291,7 +291,7 @@ int UIWindowMgr::ProcessMouse() {
           PromoteWindow(this, root);
         }
 
-        CUIDropDownBox* popup = static_cast<CUIDropDownBox*>(this->dropDownBoxWnd);
+        CUIDropDownBox* popup = this->dropDownBoxWnd;
         if (popup && window != popup && root != popup && !popup->HasOwnerChild(window)) {
           this->CloseDropDown();
         }

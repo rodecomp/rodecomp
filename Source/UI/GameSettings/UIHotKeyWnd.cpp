@@ -65,15 +65,6 @@ namespace {
     script.Call("GetOriginalHotKeyListSize", "d>d", tab + 1, &count);
     return index >= count ? -1 : index;
   }
-
-  void SetWindowText(UIWindow* window, const char* text) {
-    if (!window) {
-      return;
-    }
-    using SetTextFn = void(__thiscall*)(UIWindow*, const char*);
-    void** vtable = *reinterpret_cast<void***>(window);
-    reinterpret_cast<SetTextFn>(vtable[53])(window, text);
-  }
 }
 
 // OFFSET: 0x0091FFD0

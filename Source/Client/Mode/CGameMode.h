@@ -593,7 +593,7 @@ public:
   __declspec(noinline) unsigned ReadReplayGroundItems(const std::vector<unsigned char>& data);
   unsigned ReadReplayActors(const std::vector<unsigned char>& data);
   unsigned ReadReplayGroundSkills(const std::vector<unsigned char>& data);
-  void Zc_Skill_Entry2(const unsigned char* record);
+  void Zc_Skill_Entry2(unsigned char* record);
   void ReceiveGroundSkill8(const unsigned char* record);
   void ReceiveGroundSkill32(const unsigned char* record);
   void ReceiveGroundSkillExtended(const unsigned char* record);
@@ -613,7 +613,7 @@ public:
   void ReceiveWhisper2(const unsigned char* data);
   void ProcessWhisper(int padding_0004, std::string name, std::string text, bool flag);
   void SpawnGroundSkill(std::uint32_t aid, std::uint32_t owner, int value, std::int16_t x, std::int16_t y, int type, signed char level, unsigned char visible, unsigned char flags);
-  void Zc_Skill_Entry(const unsigned char* record);      
+  void Zc_Skill_Entry(unsigned char* record);
   void ReceiveStatusChangeEntry(const unsigned char* record);
   void ReceiveBroadcastBalloonNotice(const unsigned char* packet);
   void ReceivePartyMemberInfoWithCharacterId(const unsigned char* packet);

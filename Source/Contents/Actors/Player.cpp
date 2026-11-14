@@ -1925,12 +1925,12 @@ void CGrannyPc::RenderCached(const matrix& view, int layer, C3dGrannyModelRes* m
   }
 
   for (int mesh = 0; mesh < model->instance->meshCount; ++mesh) {
-    const GrannyPNT332Vertex* source = reinterpret_cast<const GrannyPNT332Vertex*>(model->GetRigidVertices(mesh));
+    const GrannyPNT332Vertex* source = static_cast<const GrannyPNT332Vertex*>(model->GetRigidVertices(mesh));
     if (!source) {
       if (layer == 0) {
-        source = reinterpret_cast<const GrannyPNT332Vertex*>(this->vertices[mesh]);
+        source = this->vertices[mesh];
       } else {
-        source = reinterpret_cast<const GrannyPNT332Vertex*>(this->layerVertices[layer][mesh]);
+        source = this->layerVertices[layer][mesh];
       }
 
       if (!source) {
@@ -2644,8 +2644,8 @@ void CGrannyPc::SetSprActFull(int first, int second, int third, int fourth, int 
     ModelRenderCommand* command = new ModelRenderCommand;
     this->commands[mesh] = command;
     command->AllocateTriangles(this->model->GetTriangleCount(mesh));
-    this->vertices[mesh] = new RenderVertex[this->model->GetTriangleCount(mesh) * 3];
-    std::memset(this->vertices[mesh], 0, this->model->GetTriangleCount(mesh) * 3 * sizeof(RenderVertex));
+    this->vertices[mesh] = new GrannyPNT332Vertex[this->model->GetTriangleCount(mesh) * 3];
+    std::memset(this->vertices[mesh], 0, this->model->GetTriangleCount(mesh) * 3 * sizeof(GrannyPNT332Vertex));
   }
 
   this->lastClock = GrannyGetSystemSeconds();
@@ -2675,8 +2675,8 @@ void CGrannyPc::SetSprActFull(int first, int second, int third, int fourth, int 
     ModelRenderCommand* command = new ModelRenderCommand;
     this->layerCommands[1][mesh] = command;
     command->AllocateTriangles(this->layerModels[1]->GetTriangleCount(mesh));
-    this->layerVertices[1][mesh] = new RenderVertex[this->layerModels[1]->GetTriangleCount(mesh) * 3];
-    std::memset(this->layerVertices[1][mesh], 0, this->layerModels[1]->GetTriangleCount(mesh) * 3 * sizeof(RenderVertex));
+    this->layerVertices[1][mesh] = new GrannyPNT332Vertex[this->layerModels[1]->GetTriangleCount(mesh) * 3];
+    std::memset(this->layerVertices[1][mesh], 0, this->layerModels[1]->GetTriangleCount(mesh) * 3 * sizeof(GrannyPNT332Vertex));
   }
 
   tag[1] = 'b';
@@ -2687,8 +2687,8 @@ void CGrannyPc::SetSprActFull(int first, int second, int third, int fourth, int 
     ModelRenderCommand* command = new ModelRenderCommand;
     this->layerCommands[2][mesh] = command;
     command->AllocateTriangles(this->layerModels[2]->GetTriangleCount(mesh));
-    this->layerVertices[2][mesh] = new RenderVertex[this->layerModels[2]->GetTriangleCount(mesh) * 3];
-    std::memset(this->layerVertices[2][mesh], 0, this->layerModels[2]->GetTriangleCount(mesh) * 3 * sizeof(RenderVertex));
+    this->layerVertices[2][mesh] = new GrannyPNT332Vertex[this->layerModels[2]->GetTriangleCount(mesh) * 3];
+    std::memset(this->layerVertices[2][mesh], 0, this->layerModels[2]->GetTriangleCount(mesh) * 3 * sizeof(GrannyPNT332Vertex));
   }
 
   tag[1] = 'p';
@@ -2699,8 +2699,8 @@ void CGrannyPc::SetSprActFull(int first, int second, int third, int fourth, int 
     ModelRenderCommand* command = new ModelRenderCommand;
     this->layerCommands[3][mesh] = command;
     command->AllocateTriangles(this->layerModels[3]->GetTriangleCount(mesh));
-    this->layerVertices[3][mesh] = new RenderVertex[this->layerModels[3]->GetTriangleCount(mesh) * 3];
-    std::memset(this->layerVertices[3][mesh], 0, this->layerModels[3]->GetTriangleCount(mesh) * 3 * sizeof(RenderVertex));
+    this->layerVertices[3][mesh] = new GrannyPNT332Vertex[this->layerModels[3]->GetTriangleCount(mesh) * 3];
+    std::memset(this->layerVertices[3][mesh], 0, this->layerModels[3]->GetTriangleCount(mesh) * 3 * sizeof(GrannyPNT332Vertex));
   }
 
   tag[1] = 'l';
@@ -2711,8 +2711,8 @@ void CGrannyPc::SetSprActFull(int first, int second, int third, int fourth, int 
     ModelRenderCommand* command = new ModelRenderCommand;
     this->layerCommands[4][mesh] = command;
     command->AllocateTriangles(this->layerModels[4]->GetTriangleCount(mesh));
-    this->layerVertices[4][mesh] = new RenderVertex[this->layerModels[4]->GetTriangleCount(mesh) * 3];
-    std::memset(this->layerVertices[4][mesh], 0, this->layerModels[4]->GetTriangleCount(mesh) * 3 * sizeof(RenderVertex));
+    this->layerVertices[4][mesh] = new GrannyPNT332Vertex[this->layerModels[4]->GetTriangleCount(mesh) * 3];
+    std::memset(this->layerVertices[4][mesh], 0, this->layerModels[4]->GetTriangleCount(mesh) * 3 * sizeof(GrannyPNT332Vertex));
   }
 
   if (this->layerModels[1]) {

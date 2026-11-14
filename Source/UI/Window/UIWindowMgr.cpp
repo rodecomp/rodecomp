@@ -933,7 +933,7 @@ void UIWindowMgr::Shutdown() {
   }
 
   if (this->dropDownBoxWnd && this->dropDownBoxWnd->geometry.visible) {
-    static_cast<CUIDropDownBox*>(this->dropDownBoxWnd)->Detach();
+    this->dropDownBoxWnd->Detach();
     this->dropDownBoxWnd->Show(0);
   }
 
@@ -991,7 +991,7 @@ void UIWindowMgr::ClearMapWindows() {
   }
 
   if (this->dropDownBoxWnd && this->dropDownBoxWnd->geometry.visible) {
-    static_cast<CUIDropDownBox*>(this->dropDownBoxWnd)->Detach();
+    this->dropDownBoxWnd->Detach();
     this->dropDownBoxWnd->Show(0);
   }
 
@@ -2164,7 +2164,7 @@ bool UIWindowMgr::CloseDropDown() {
     return false;
   }
 
-  static_cast<CUIDropDownBox*>(this->dropDownBoxWnd)->Detach();
+  this->dropDownBoxWnd->Detach();
   this->dropDownBoxWnd->Show(0);
   return true;
 }

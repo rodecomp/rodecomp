@@ -16,6 +16,7 @@
 #include <vector>
 
 class UIWindow;
+class CUIDropDownBox;
 class UIMessageBox;
 class CBitmapRes;
 class CSurface;
@@ -422,7 +423,7 @@ public:
   /* 0A00 */ RegisterPartyWndInfo registerPartyWndInfo;
   /* 0A10 */ ApplyForPartyWndInfo applyForPartyWndInfo;
   /* 0A20 */ AdvenPartyBoardWndInfo advenPartyBoardWndInfo;
-  /* 0A30 */ UIWindow* dropDownBoxWnd;
+  /* 0A30 */ CUIDropDownBox* dropDownBoxWnd;
   /* 0A34 */ WindowPolicyEntry policy[10041];
   /* 4F154 */ ReplayRECControlWndInfo replayRecControlWndInfo;
   /* 4F164 */ UIWindow* replayRecordControlWnd;

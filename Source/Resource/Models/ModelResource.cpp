@@ -592,7 +592,7 @@ int C3dGrannyModelRes::GetTriangleCount(int mesh) const {
 
 // OFFSET: 0x007597E0
 // FUNCTION: fn_08016
-unsigned char* C3dGrannyModelRes::GetRigidVertices(int mesh) const {
+const void* C3dGrannyModelRes::GetRigidVertices(int mesh) const {
   const GrannyMeshEntry& entry = this->instance->meshes[mesh];
 
   if (GrannyMeshIsRigid(entry.mesh)) {

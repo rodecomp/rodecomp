@@ -99,7 +99,7 @@ bool UIWindowMgr::IsDropDownChild(const UIWindow* window) {
     return false;
   }
 
-  return static_cast<CUIDropDownBox*>(this->dropDownBoxWnd)->HasChild(window);
+  return this->dropDownBoxWnd->HasChild(window);
 }
 
 // OFFSET: 0x00A96E60

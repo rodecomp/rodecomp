@@ -320,8 +320,8 @@ public:
   /* 04B0 */ granny_model_instance* instance;
   /* 04B4 */ RenderCommand* commands[30];
   /* 052C */ RenderCommand* layerCommands[10][30];
-  /* 09DC */ RenderVertex* vertices[30];
-  /* 0A54 */ RenderVertex* layerVertices[10][30];
+  /* 09DC */ GrannyPNT332Vertex* vertices[30];
+  /* 0A54 */ GrannyPNT332Vertex* layerVertices[10][30];
   /* 0F04 */ granny_system_clock clock;
   /* 0F14 */ granny_system_clock lastClock;
   /* 0F24 */ float animationTime;

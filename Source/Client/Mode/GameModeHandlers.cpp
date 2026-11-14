@@ -2894,8 +2894,8 @@ void CGameMode::UpdateSkillCooldown(std::uint16_t skill, std::uint32_t remaining
 
 // OFFSET: 0x00D41250
 // FUNCTION: fn_21823
-void CGameMode::Zc_Skill_Entry(const unsigned char* record) {
-  GroundSkillPacket& packet = *reinterpret_cast<GroundSkillPacket*>(const_cast<unsigned char*>(record));
+void CGameMode::Zc_Skill_Entry(unsigned char* record) {
+  GroundSkillPacket& packet = *reinterpret_cast<GroundSkillPacket*>(record);
   GroundSkillArgumentData arguments;
   GroundSkillSpawnData& data = arguments.extended.skill;
   data.aid = packet.aid;
@@ -2936,8 +2936,8 @@ void CGameMode::Zc_Skill_Entry(const unsigned char* record) {
 
 // OFFSET: 0x00D40730
 // FUNCTION: fn_21819
-void CGameMode::Zc_Skill_Entry2(const unsigned char* record) {
-  GroundSkillPacket& packet = *reinterpret_cast<GroundSkillPacket*>(const_cast<unsigned char*>(record));
+void CGameMode::Zc_Skill_Entry2(unsigned char* record) {
+  GroundSkillPacket& packet = *reinterpret_cast<GroundSkillPacket*>(record);
   GroundSkillArgumentData arguments;
   GroundSkillSpawnData& data = arguments.extended.skill;
   data.aid = packet.aid;
@@ -3254,12 +3254,6 @@ struct SearchStorePacketHeader {
   /* 0006 */ unsigned char count;
 };
 
-struct SearchStoreOption {
-  /* 0000 */ std::int16_t id;
-  /* 0002 */ std::int16_t value;
-  /* 0004 */ unsigned char parameter;
-};
-
 struct SearchStoreItemPacket {
   /* 0000 */ int storeId;
   /* 0004 */ int accountId;
@@ -3269,7 +3263,7 @@ struct SearchStoreItemPacket {
   /* 005D */ int price;
   /* 0061 */ std::uint16_t quantity;
   /* 0063 */ std::uint32_t cards[4];
-  /* 0073 */ SearchStoreOption options[5];
+  /* 0073 */ ItemOptionRecord options[5];
   /* 008C */ unsigned char refine;
   /* 008D */ unsigned char grade;
 };
@@ -3290,7 +3284,7 @@ struct SearchStoreItemPacketOld {
   /* 0061 */ std::uint16_t quantity;
   /* 0063 */ unsigned char refine;
   /* 0064 */ unsigned char cards[16];
-  /* 0074 */ unsigned char options[25];
+  /* 0074 */ ItemOptionRecord options[5];
 };
 #pragma pack(pop)
 
@@ -3332,7 +3326,7 @@ void CGameMode::ReceiveSearchStoreItems(const unsigned char* packet) {
     }
     entry.item.optionCount = optionCount;
     for (long long j = 0; j < optionCount; ++j) {
-      reinterpret_cast<SearchStoreOption*>(entry.item.options)[j] = record.options[j];
+      entry.item.options[j] = record.options[j];
     }
     for (long long j = 0; j < 4; ++j) {
       entry.item.cards[j] = record.cards[j];
@@ -3373,16 +3367,15 @@ void CGameMode::ReceiveSearchStoreItemsOld(const unsigned char* packet) {
     entry.item.refiningLevel = record.refine;
     entry.item.identity[0] = record.kind;
     entry.item.identified = 1;
-    const SearchStoreOption* options = reinterpret_cast<const SearchStoreOption*>(record.options);
     int optionCount = 0;
     for (int j = 0; j < 5; ++j) {
-      if (0 != options[j].id) {
+      if (0 != record.options[j].id) {
         ++optionCount;
       }
     }
     entry.item.optionCount = optionCount;
     for (int j = 0; j < entry.item.optionCount; ++j) {
-      reinterpret_cast<SearchStoreOption*>(entry.item.options)[j] = options[j];
+      entry.item.options[j] = record.options[j];
     }
     std::memcpy(entry.item.cards, record.cards, sizeof(record.cards));
     g_session.storeSearchResults.push_back(entry);
