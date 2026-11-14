@@ -5669,7 +5669,8 @@ void CGameMode::TargetActorByAid(int aid) {
   int force = shiftHeld;
   const std::intptr_t mode = this->skillUseType;
   const bool skillMode = mode == 2 || mode == 4;
-  const bool allowed = aid != static_cast<int>(g_session.m_aid) || mode == 4;
+  const bool isSelf = aid == static_cast<int>(g_session.m_aid);
+  const bool allowed = (isSelf && mode == 4) || !isSelf;
 
   if (skillMode == true) {
     const bool support = IsSupportSkill(this->skillId);
