@@ -5,9 +5,11 @@
 
 #include <cstddef>
 
+class CEZ2STRParticle;
+
 class CGravityControlEffect : public CEffect {
 public:
-  CGravityControlEffect() : CEffect(-1), target(0), heightOffset(0), minimumHeightOffset(-20.0f) {}
+  CGravityControlEffect() : CEffect(-1), target(nullptr), heightOffset(0), minimumHeightOffset(-20.0f) {}
 
   void Open() override;
   void OnProcess() override;
@@ -16,7 +18,7 @@ public:
   bool IsAlive() override;
   ~CGravityControlEffect() override;
 
-  /* 00CC */ int target;
+  /* 00CC */ CEZ2STRParticle* target;
   /* 00D0 */ float heightOffset;
   /* 00D4 */ float minimumHeightOffset;
 };

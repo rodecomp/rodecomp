@@ -54,7 +54,7 @@ void CSmokeEffect::OnProcess() {
     position.y = this->position[1];
     position.z = this->position[2];
     if (particle) {
-      matrix& rotation = *reinterpret_cast<matrix*>(particle->rotationStorage);
+      matrix& rotation = particle->rotation;
       float& angle = particle->angle;
       float& spin = particle->spin;
       if (particle->elapsedFrames < 50) {

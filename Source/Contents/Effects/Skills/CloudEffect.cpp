@@ -169,7 +169,7 @@ void CCloud::Drift() {
   StepDrift(this->driftZ, this->driftTargetZ);
 
   CParticle* particle = this->particle;
-  vector3d offset = *reinterpret_cast<const vector3d*>(&particle->offsetX);
+  vector3d offset = particle->offset;
   offset.x = g_sinTable[this->driftX] * 0.05f + offset.x;
   offset.z = g_sinTable[this->driftZ] * 0.05f + offset.z;
   particle->offsetX = offset.x;

@@ -25,7 +25,7 @@ public:
   /* 02C8 */ vector3d velocity;
   /* 02D4 */ float spin;
   /* 02D8 */ float frameDelay;
-  /* 02DC */ unsigned char accelerationStorage[4];
+  /* 02DC */ float acceleration;
   /* 02E0 */ CSprRes* sprite;
   /* 02E4 */ CActRes* action;
   /* 02E8 */ int animation;
@@ -37,6 +37,9 @@ public:
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(CSpriteParticle, velocity) == 0x2C8);
 static_assert(offsetof(CSpriteParticle, frameDelay) == 0x2D8);
+static_assert(offsetof(CSpriteParticle, acceleration) == 0x2DC);
+static_assert(sizeof(CSpriteParticle::acceleration) == 4);
+static_assert(offsetof(CSpriteParticle, sprite) == 0x2E0);
 static_assert(offsetof(CSpriteParticle, loopMode) == 0x2F0);
 static_assert(sizeof(CSpriteParticle) == 0x2F8);
 #endif

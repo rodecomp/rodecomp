@@ -5,7 +5,7 @@
 
 #include <cstddef>
 
-struct EZ2STREmitter;
+struct CEZ2STRParticle;
 
 class CEZ2STREffectEx : public CEffect {
 public:
@@ -30,7 +30,7 @@ public:
   unsigned char IsFinished();
   void EndLoop(unsigned char fadeOut);
 
-  /* 00CC */ EZ2STREmitter* emitter;
+  /* 00CC */ CEZ2STRParticle* emitter;
   /* 00D0 */ unsigned char timed;
   /* 00D1 */ unsigned char padding_00D1[3];
   /* 00D4 */ int frameStep;

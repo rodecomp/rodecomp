@@ -46,7 +46,7 @@ void CCloudKillEffect::AddSprites() {
     for (int x = -10; x <= 10; x += 4) {
       CParticle* created = CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 1);
       CSpriteParticle* particle = static_cast<CSpriteParticle*>(created);
-      matrix& rotation = *reinterpret_cast<matrix*>(particle->rotationStorage);
+      matrix& rotation = particle->rotation;
       rotation.IsIdentity();
       rotation.MakeYRotation(GetRadian(ClampedRandom(360)));
       const float distance = static_cast<float>(ClampedRandom(6) + 2);
@@ -59,7 +59,7 @@ void CCloudKillEffect::AddSprites() {
       const float acceleration = -(speed / 40.0f) * g_depthAverageHalf;
       const int size = ClampedRandom(50);
       particle->frameDelay = speed;
-      reinterpret_cast<float&>(particle->accelerationStorage) = acceleration;
+      particle->acceleration = acceleration;
       particle->scale = static_cast<float>(size + 40) / 170.0f;
       particle->spin = 3.0f;
       particle->alpha = 0;
@@ -104,13 +104,13 @@ void CCloudKillEffect::OnProcess() {
   if (this->emitting && this->frame % 5 == 0) {
     CParticle* created = CreateSpriteParticle(reinterpret_cast<const vector3d*>(this->position), 1);
     CSpriteParticle* particle = static_cast<CSpriteParticle*>(created);
-    matrix& rotation = *reinterpret_cast<matrix*>(particle->rotationStorage);
+    matrix& rotation = particle->rotation;
     rotation.IsIdentity();
     rotation.MakeYRotation(GetRadian(ClampedRandom(360)));
     rotation.MakeXRotation(GetRadian(90));
     const float speed = static_cast<float>(ClampedRandom(20) + 20) / 80.0f;
     particle->frameDelay = speed;
-    reinterpret_cast<float&>(particle->accelerationStorage) = -(speed / 10.0f) * g_depthAverageHalf;
+    particle->acceleration = -(speed / 10.0f) * g_depthAverageHalf;
     particle->scale = 0.8f;
     particle->spin = 3.0f;
     particle->alpha = 70;
@@ -128,9 +128,9 @@ void CCloudKillEffect::OnProcess() {
       FreeParticle(particle);
       it = this->particles.erase(it);
     } else {
-      const float* values = reinterpret_cast<matrix*>(particle->rotationStorage)->values;
+      const float* values = particle->rotation.values;
       float& angle = particle->angle;
-      const float speed = reinterpret_cast<float&>(particle->accelerationStorage) + particle->frameDelay;
+      const float speed = particle->acceleration + particle->frameDelay;
       particle->frameDelay = speed;
       const float x = values[3] * 0.0f + values[0] * 0.0f + speed * values[6] + values[9] + particle->velocity.x;
       const float y = values[4] * 0.0f + values[1] * 0.0f + speed * values[7] + values[10] + particle->velocity.y;
@@ -166,9 +166,9 @@ void CCloudKillEffect::OnProcess() {
       FreeParticle(particle);
       it = this->sprites.erase(it);
     } else {
-      const float* values = reinterpret_cast<matrix*>(particle->rotationStorage)->values;
+      const float* values = particle->rotation.values;
       float& angle = particle->angle;
-      const float speed = reinterpret_cast<float&>(particle->accelerationStorage) + particle->frameDelay;
+      const float speed = particle->acceleration + particle->frameDelay;
       particle->frameDelay = speed;
       const float x = values[3] * 0.0f + values[0] * 0.0f + speed * values[6] + values[9] + particle->velocity.x;
       const float y = values[4] * 0.0f + values[1] * 0.0f + speed * values[7] + values[10] + particle->velocity.y;

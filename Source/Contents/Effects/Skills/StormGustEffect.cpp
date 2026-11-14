@@ -54,7 +54,7 @@ void CStormGustEffect::Open() {
     const int scaleRoll = rand() % 100;
     particle->scale = static_cast<float>((scaleRoll >= 0 ? scaleRoll : 0) + 400) / 100.0f;
 
-    matrix& rotation = *reinterpret_cast<matrix*>(particle->rotationStorage);
+    matrix& rotation = particle->rotation;
     rotation.IsIdentity();
     rotation.MakeXRotation(100.0f / 180.0f * 3.141592f);
     const int yawRoll = rand() % 360;
@@ -84,7 +84,7 @@ void CStormGustEffect::OnProcess() {
       }
 
       const float speed = particle->speedParameter;
-      const matrix& rotation = *reinterpret_cast<const matrix*>(particle->rotationStorage);
+      const matrix& rotation = particle->rotation;
       const float* values = rotation.values;
       const float moveX = values[3] * 0.0f + values[0] * 0.0f + speed * values[6] + values[9];
       const float moveY = values[4] * 0.0f + values[1] * 0.0f + speed * values[7] + values[10];

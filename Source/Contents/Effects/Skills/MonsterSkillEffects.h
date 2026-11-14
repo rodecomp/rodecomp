@@ -2,7 +2,7 @@
 #define RAGNAROK_SOURCE_CONTENTS_EFFECTS_SKILLS_MONSTERSKILLEFFECTS_H
 
 #include "Contents/Effects/Core/Effect.h"
-#include "Contents/Effects/Particles/EffectEmitter.h"
+#include "Contents/Effects/Particles/Particle.h"
 
 #include <cstddef>
 #include <list>
@@ -23,7 +23,7 @@ public:
   void Close() override;
   bool IsAlive() override;
 
-  /* 00CC */ EZ2STREmitter* emitter;
+  /* 00CC */ CEZ2STRParticle* emitter;
 };
 
 class CRootTwistEffect : public CEffect {
@@ -72,7 +72,7 @@ public:
   bool IsAlive() override;
   void Close() override;
 
-  /* 00CC */ EZ2STREmitter* emitter;
+  /* 00CC */ CSpriteParticle* emitter;
 };
 
 class CTunaPartyEffect : public CEffect {
@@ -100,7 +100,7 @@ public:
   virtual void SpawnShock();
   void Restart();
 
-  /* 00CC */ std::vector<EZ2STREmitter*> emitters;
+  /* 00CC */ std::vector<CEZ2STRParticle*> emitters;
   /* 00D8 */ int spawnPhase;
   /* 00DC */ float viewOffsetX;
   /* 00E0 */ float viewOffsetY;
@@ -147,8 +147,8 @@ public:
   void SpawnFirstStrike();
   void SpawnSecondStrike();
 
-  /* 00CC */ std::vector<EZ2STREmitter*> emitters;
-  /* 00D8 */ std::vector<EZ2STREmitter*> secondStrikeEmitters;
+  /* 00CC */ std::vector<CEZ2STRParticle*> emitters;
+  /* 00D8 */ std::vector<CEZ2STRParticle*> secondStrikeEmitters;
   /* 00E4 */ unsigned char secondStrike;
   /* 00E5 */ unsigned char padding_00E5[3];
 };
@@ -162,7 +162,7 @@ public:
   bool IsAlive() override;
   void Close() override;
 
-  /* 00CC */ std::vector<EZ2STREmitter*> emitters;
+  /* 00CC */ std::vector<CEZ2STRParticle*> emitters;
 };
 
 class CEternalSlashCountEffect : public CEffect {
@@ -174,7 +174,7 @@ public:
   bool IsAlive() override;
   void Close() override;
 
-  /* 00CC */ EZ2STREmitter* emitter;
+  /* 00CC */ CEZ2STRParticle* emitter;
 };
 
 class CFallenAngelEffect : public CEffect {
@@ -187,7 +187,7 @@ public:
   void Close() override;
   void SetPosition(vector3d position);
 
-  /* 00CC */ EZ2STREmitter* emitter;
+  /* 00CC */ CEZ2STRParticle* emitter;
   /* 00D0 */ float startX;
   /* 00D4 */ float startY;
   /* 00D8 */ float startZ;
@@ -202,8 +202,8 @@ public:
   bool IsAlive() override;
   void Close() override;
 
-  /* 00CC */ EZ2STREmitter* emitter;
-  /* 00D0 */ std::vector<EZ2STREmitter*> emitters;
+  /* 00CC */ CEZ2STRParticle* emitter;
+  /* 00D0 */ std::vector<CEZ2STRParticle*> emitters;
 };
 
 class CFootprintEffect : public CEffect {
@@ -217,7 +217,7 @@ public:
   void Close() override;
   CParticle* SpawnFootprint();
 
-  /* 00CC */ std::list<EZ2STREmitter*> emitters;
+  /* 00CC */ std::list<CParticle*> emitters;
   /* 00D4 */ std::string leftTexture;
   /* 00EC */ std::string rightTexture;
   /* 0104 */ int padding_0104;
@@ -240,8 +240,8 @@ public:
   void Close() override;
   void SpawnFootprint();
 
-  /* 00CC */ std::list<EZ2STREmitter*> emitters;
-  /* 00D4 */ std::list<EZ2STREmitter*> topEmitters;
+  /* 00CC */ std::list<CEZ2STRParticle*> emitters;
+  /* 00D4 */ std::list<CEZ2STRParticle*> topEmitters;
   /* 00DC */ std::string leftBottomFile;
   /* 00F4 */ std::string rightBottomFile;
   /* 010C */ std::string leftTopFile;
@@ -260,7 +260,7 @@ class CFromTheAbyssEffect : public CEffect {
 public:
   struct AbyssParticle {
     /* 0000 */ int kind;
-    /* 0004 */ EZ2STREmitter* emitter;
+    /* 0004 */ CEZ2STRParticle* emitter;
   };
 
   struct AbyssWave {
@@ -311,7 +311,7 @@ public:
   void Close() override;
   bool IsAlive() override;
 
-  /* 00CC */ std::vector<EZ2STREmitter*> emitters;
+  /* 00CC */ std::vector<CEZ2STRParticle*> emitters;
 };
 
 class CPneumaticusProcellaEffect : public CEffect {
@@ -322,8 +322,8 @@ public:
   void Render() override;
   void Close() override;
 
-  /* 00CC */ EZ2STREmitter* emitter;
-  /* 00D0 */ std::vector<EZ2STREmitter*> emitters;
+  /* 00CC */ CEZ2STRParticle* emitter;
+  /* 00D0 */ std::vector<CEZ2STRParticle*> emitters;
 };
 
 class CRandomHitEffect : public CEffect {
@@ -340,7 +340,7 @@ public:
 
   /* 00CC */ bool active;
   /* 00CD */ unsigned char padding_00CD[3];
-  /* 00D0 */ EZ2STREmitter* emitter;
+  /* 00D0 */ CEZ2STRParticle* emitter;
 };
 
 class CRandomOptEffect : public CEffect {
@@ -382,7 +382,7 @@ public:
   bool IsAlive() override;
   void Close() override;
 
-  /* 00CC */ EZ2STREmitter* emitter;
+  /* 00CC */ CEZ2STRParticle* emitter;
   /* 00D0 */ vector3d offset;
 };
 
@@ -399,7 +399,7 @@ public:
   void SetSignShot(int column);
 
   /* 00CC */ vector3d offsets[5];
-  /* 0108 */ EZ2STREmitter* emitters[3][5];
+  /* 0108 */ CEZ2STRParticle* emitters[3][5];
 };
 
 class CServantWeaponNewEffect : public CEffect {
@@ -412,11 +412,11 @@ public:
   void Render() override;
   void Close() override;
   void AddWeapon();
-  EZ2STREmitter* CreateShot(float angle, int skill);
+  CEZ2STRParticle* CreateShot(float angle, int skill);
   void Shoot(int skill);
 
-  /* 00CC */ std::list<EZ2STREmitter*> emitters;
-  /* 00D4 */ std::list<EZ2STREmitter*> trails;
+  /* 00CC */ std::list<CEZ2STRParticle*> emitters;
+  /* 00D4 */ std::list<CEZ2STRParticle*> trails;
 };
 
 class CSevereRainStorm : public CEffect {
@@ -435,11 +435,11 @@ public:
   void SpawnBombardHits();
   void SpawnCrystalRain();
   void SpawnSevereRain();
-  void SpawnTwinklingGalaxy(int index);
+  __declspec(noinline) void SpawnTwinklingGalaxy(int index);
   void SpawnStarCannon();
   void SpawnGalaxyStar();
 
-  /* 00CC */ std::list<EZ2STREmitter*> emitters;
+  /* 00CC */ std::list<CEZ2STRParticle*> emitters;
   /* 00D4 */ int elapsedFrames;
 };
 
@@ -454,7 +454,7 @@ public:
   void SpawnArrow();
   void SpawnStorm();
 
-  /* 00CC */ std::vector<EZ2STREmitter*> emitters;
+  /* 00CC */ std::vector<CEZ2STRParticle*> emitters;
   union {
     struct {
       /* 00D8 */ int countLow;
@@ -494,11 +494,11 @@ public:
   void ResetLightning(CParticle* particle);
   void ResetSmokeParticle(CParticle* particle);
 
-  /* 00CC */ std::list<EZ2STREmitter*> circleEmitters;
-  /* 00D4 */ std::list<EZ2STREmitter*> cloudEmitters;
-  /* 00DC */ std::list<EZ2STREmitter*> smokeEmitters;
-  /* 00E4 */ std::list<EZ2STREmitter*> lightningEmitters;
-  /* 00EC */ std::list<EZ2STREmitter*> mistEmitters;
+  /* 00CC */ std::list<CParticle*> circleEmitters;
+  /* 00D4 */ std::list<CParticle*> cloudEmitters;
+  /* 00DC */ std::list<CParticle*> smokeEmitters;
+  /* 00E4 */ std::list<CParticle*> lightningEmitters;
+  /* 00EC */ std::list<CParticle*> mistEmitters;
   /* 00F4 */ int circleResetTime;
   /* 00F8 */ int cloudResetTime;
 };
@@ -517,7 +517,7 @@ public:
 
   /* 00CC */ int padding_00CC;
   /* 00D0 */ int emitterCount;
-  /* 00D4 */ std::vector<EZ2STREmitter*> emitters;
+  /* 00D4 */ std::vector<CEZ2STRParticle*> emitters;
   /* 00E0 */ std::string soundPath;
   /* 00F8 */ std::string soundName;
   /* 0110 */ vector3d position;

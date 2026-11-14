@@ -6,7 +6,7 @@
 
 #include <cstddef>
 
-struct EZ2STREmitter;
+struct CEZ2STRParticle;
 
 class CAcidifiedThrow : public CEffect {
 public:
@@ -18,8 +18,8 @@ public:
   void Close() override;
   bool IsAlive() override;
 
-  /* 00CC */ EZ2STREmitter* projectileEmitter;
-  /* 00D0 */ EZ2STREmitter* impactEmitters[3];
+  /* 00CC */ CEZ2STRParticle* projectileEmitter;
+  /* 00D0 */ CEZ2STRParticle* impactEmitters[3];
   /* 00DC */ bool active;
   /* 00DD */ unsigned char padding_00DD[3];
   /* 00E0 */ float trajectoryTime;

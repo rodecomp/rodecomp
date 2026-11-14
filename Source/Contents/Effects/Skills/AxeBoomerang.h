@@ -6,7 +6,7 @@
 
 #include <cstddef>
 
-struct EZ2STREmitter;
+struct CEZ2STRParticle;
 
 class CAxeBoomerang : public CEffect {
 public:
@@ -18,7 +18,7 @@ public:
   void Close() override;
   bool IsAlive() override;
 
-  /* 00CC */ EZ2STREmitter* emitter;
+  /* 00CC */ CEZ2STRParticle* emitter;
   /* 00D0 */ unsigned char alive;
   /* 00D1 */ unsigned char returning;
   /* 00D2 */ unsigned char padding_00D2[2];

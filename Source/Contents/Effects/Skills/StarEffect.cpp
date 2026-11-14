@@ -25,16 +25,6 @@ __forceinline int Random(int range) {
   return value >= 0 ? value : 0;
 }
 
-struct StarParticleState {
-  /* 0000 */ float angles[4];
-  /* 0010 */ float lifetime;
-  /* 0014 */ float texture;
-  /* 0018 */ float baseScale;
-  /* 001C */ float phase;
-};
-
-static_assert(sizeof(StarParticleState) == 0x20);
-
 }
 
 // OFFSET: 0x00B79ED0
@@ -71,7 +61,7 @@ void CStarEffect::Open() {
 // OFFSET: 0x00B79FA0
 // FUNCTION: fn_19205
 void CStarEffect::SetupParticle(CParticle* particle) {
-  StarParticleState& state = *reinterpret_cast<StarParticleState*>(&particle->animationParameter);
+  StarParticleState& state = particle->starState;
 
   particle->elapsedFrames = 0;
   particle->alpha = 0;
@@ -128,7 +118,7 @@ void CStarEffect::UpdateParticle(CParticle* particle) {
     return;
   }
 
-  StarParticleState& state = *reinterpret_cast<StarParticleState*>(&particle->animationParameter);
+  StarParticleState& state = particle->starState;
   const int frame = particle->elapsedFrames;
   if (frame % 14 == 0) {
     int texture = static_cast<int>(state.texture) + 1;
@@ -173,7 +163,7 @@ void CStarEffect::UpdateParticle(CParticle* particle) {
     angle += 2;
   }
 
-  const vector3d offset = *reinterpret_cast<const vector3d*>(&particle->offsetX);
+  const vector3d offset = particle->offset;
   particle->offsetY = offset.y;
   particle->offsetX = g_sinTable[static_cast<int>(state.angles[0])] * 0.05f + offset.x;
   particle->offsetZ = g_sinTable[static_cast<int>(state.angles[2])] * 0.05f + offset.z;

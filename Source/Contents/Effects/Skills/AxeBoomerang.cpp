@@ -6,7 +6,6 @@
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/Camera/Camera.h"
 #include "Contents/Configuration/ServiceOptions.h"
-#include "Contents/Effects/Particles/EffectEmitter.h"
 #include "Contents/Effects/Core/EffectMemoryMgr.h"
 #include "Contents/Effects/Particles/Particle.h"
 #include "Contents/World/World.h"
@@ -49,7 +48,7 @@ void CAxeBoomerang::Open() {
   }
 
   particle->m_loop = true;
-  this->emitter = reinterpret_cast<EZ2STREmitter*>(particle);
+  this->emitter = static_cast<CEZ2STRParticle*>(particle);
   this->alive = 1;
   this->returning = 0;
   this->processCount = 0;
@@ -65,7 +64,7 @@ bool CAxeBoomerang::IsAlive() {
 // OFFSET: 0x006F5CE0
 // FUNCTION: fn_06842
 void CAxeBoomerang::OnProcess() {
-  if (EZ2STREmitter* emitter = this->emitter) {
+  if (CEZ2STRParticle* emitter = this->emitter) {
     CRenderObject* actor = FindRenderObject(this->actor);
     if (!actor) {
       this->alive = 0;
@@ -126,7 +125,7 @@ void CAxeBoomerang::OnProcess() {
       emitter->position.x = this->particlePosition.x;
       emitter->position.y = this->particlePosition.y;
       emitter->position.z = this->particlePosition.z;
-      reinterpret_cast<CEZ2STRParticle*>(emitter)->Process(0.0f, 0.0f, 0.0f);
+      static_cast<CEZ2STRParticle*>(emitter)->Process(0.0f, 0.0f, 0.0f);
     }
   }
 
@@ -136,7 +135,7 @@ void CAxeBoomerang::OnProcess() {
 // OFFSET: 0x006F63F0
 // FUNCTION: fn_06843
 void CAxeBoomerang::Render() {
-  CEZ2STRParticle* particle = reinterpret_cast<CEZ2STRParticle*>(this->emitter);
+  CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(this->emitter);
   if (particle) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     particle->DrawScreen(mode->camera->frame.view);

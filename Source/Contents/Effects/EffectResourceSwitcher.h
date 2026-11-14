@@ -3,7 +3,7 @@
 
 #include "Contents/Effects/Particles/EZ2STREffectEx.h"
 #include "Contents/Effects/Core/Effect.h"
-#include "Contents/Effects/Particles/EffectEmitter.h"
+#include "Contents/Effects/Particles/Particle.h"
 #include "Utility/Math/Vector3d.h"
 #include "Utility/Singleton.h"
 
@@ -83,11 +83,6 @@ static_assert(sizeof(CEZ2STREffectMgr) == 0xC);
 static_assert(sizeof(EZ2STREffectRecord) == 0x58);
 static_assert(offsetof(EZ2STREffectRecord, soundPath) == 0x2C);
 static_assert(offsetof(EZ2STREffectRecord, toGround) == 0x50);
-static_assert(offsetof(EZ2STREmitter, currentFrame) == 0x3CC4);
-static_assert(offsetof(EZ2STREmitter, looping) == 0x3F5C);
-static_assert(offsetof(EZ2STREmitter, lifetimeLimit) == 0x3F98);
-static_assert(offsetof(EZ2STREmitter, remainingTime) == 0x3FB4);
-static_assert(offsetof(EZ2STREmitter, flipY) == 0x3FE9);
 static_assert(offsetof(EffectResourceSwitcher, effect) == 0xD0);
 static_assert(offsetof(EffectResourceSwitcher, targetName) == 0xF8);
 static_assert(sizeof(EffectResourceSwitcher) == 0x110);

@@ -273,7 +273,7 @@ __declspec(noinline) unsigned char CEZ2STREffectEx::IsFinished() {
     return false;
   }
 
-  return this->emitter->currentFrame >= this->emitter->frameCount;
+  return this->emitter->m_finishedClips >= this->emitter->m_clipLimit;
 }
 
 // OFFSET: 0x006FFA20
@@ -284,7 +284,7 @@ void CEZ2STREffectEx::Open() {
     return;
   }
 
-  CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(reinterpret_cast<const vector3d*>(this->position), 5));
+  CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
   if (!particle) {
     return;
   }
@@ -293,16 +293,16 @@ void CEZ2STREffectEx::Open() {
   particle->m_actorId = this->actor;
   particle->Load(info->name);
 
-  EZ2STREmitter* emitter = reinterpret_cast<EZ2STREmitter*>(particle);
-  emitter->offset.x = info->offsetX;
-  emitter->offset.y = info->offsetY;
-  emitter->offset.z = 0.0f;
+  CEZ2STRParticle* emitter = static_cast<CEZ2STRParticle*>(particle);
+  emitter->offsetX = info->offsetX;
+  emitter->offsetY = info->offsetY;
+  emitter->offsetZ = 0.0f;
   if (info->flags & 1) {
     this->retained = 1;
-    emitter->looping = 1;
+    emitter->m_loop = 1;
   }
 
-  emitter->duration = info->delays[1];
+  emitter->m_delay = info->delays[1];
   this->frameStep = info->delays[1] / 16;
   if (!info->soundPath.empty()) {
     this->AddEvent(0, info->soundPath.c_str(), this->frameStep + 1, 0);
@@ -320,32 +320,32 @@ void CEZ2STREffectEx::Open() {
     particle->flags = 0x205;
   }
 
-  emitter->repeatFrame = (info->flags >> 3) & 1;
-  emitter->followGround = (info->flags >> 4) & 1;
+  emitter->m_repeatFrame = (info->flags >> 3) & 1;
+  emitter->m_followGround = (info->flags >> 4) & 1;
   this->emitter = emitter;
 }
 
 // OFFSET: 0x006FFBF0
 // FUNCTION: fn_06969
 bool CEZ2STREffectEx::IsAlive() {
-  EZ2STREmitter* emitter = this->emitter;
+  CEZ2STRParticle* emitter = this->emitter;
   if (!emitter) {
     return false;
   }
 
   if (this->timed == 1) {
-    return emitter->remainingTime > 0.0f;
+    return emitter->m_alpha > 0.0f;
   }
 
-  if (emitter->looping == 1) {
+  if (emitter->m_loop == 1) {
     return this->ActorExists();
   }
 
-  if (0.0f == emitter->lifetime) {
+  if (0.0f == emitter->life) {
     return true;
   }
 
-  return static_cast<float>(emitter->elapsed) < emitter->lifetime * 60.0f;
+  return static_cast<float>(emitter->elapsedFrames) < emitter->life * 60.0f;
 }
 
 // OFFSET: 0x006FFC60
@@ -356,36 +356,36 @@ void CEZ2STREffectEx::OnProcess() {
   }
 
   if (this->timed == 1) {
-    this->emitter->remainingTime -= 0.05f;
+    this->emitter->m_alpha -= 0.05f;
   }
 
-  if (this->emitter->followGround) {
+  if (this->emitter->m_followGround) {
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     this->position[1] = mode->scene->terrain->Height(this->position[0], this->position[2]);
   }
 
-  if (EZ2STREmitter* emitter = this->emitter) {
+  if (CEZ2STRParticle* emitter = this->emitter) {
     const float* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values;
     const float* inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse.values;
 
     const float x = this->position[0];
     const float y = this->position[1];
     const float z = this->position[2];
-    const float viewX = x * view[0] + y * view[3] + z * view[6] + view[9] + emitter->offset.x;
-    const float viewY = x * view[1] + y * view[4] + z * view[7] + view[10] - emitter->offset.y;
+    const float viewX = x * view[0] + y * view[3] + z * view[6] + view[9] + emitter->offsetX;
+    const float viewY = x * view[1] + y * view[4] + z * view[7] + view[10] - emitter->offsetY;
     const float viewZ = x * view[2] + y * view[5] + z * view[8] + view[11];
 
     emitter->position.x = viewX * inverse[0] + viewY * inverse[3] + viewZ * inverse[6] + inverse[9];
     emitter->position.y = viewX * inverse[1] + viewY * inverse[4] + viewZ * inverse[7] + inverse[10];
     emitter->position.z = viewX * inverse[2] + viewY * inverse[5] + viewZ * inverse[8] + inverse[11];
-    reinterpret_cast<CEZ2STRParticle*>(emitter)->Process(0.0f, 0.0f, 0.0f);
+    static_cast<CEZ2STRParticle*>(emitter)->Process(0.0f, 0.0f, 0.0f);
   }
 
-  if (this->emitter->repeatFrame == 1 && this->emitter->playbackState == 1) {
+  if (this->emitter->m_repeatFrame == 1 && this->emitter->m_frame == 1) {
     this->frame = this->frameStep;
   }
 
-  ++this->emitter->elapsed;
+  ++this->emitter->elapsedFrames;
 }
 
 // OFFSET: 0x006FFEA0
@@ -396,9 +396,9 @@ void CEZ2STREffectEx::Render() {
   }
 
   if (this->alternateRender) {
-    reinterpret_cast<CEZ2STRParticle*>(this->emitter)->DrawGround(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+    static_cast<CEZ2STRParticle*>(this->emitter)->DrawGround(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
   } else {
-    reinterpret_cast<CEZ2STRParticle*>(this->emitter)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+    static_cast<CEZ2STRParticle*>(this->emitter)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
   }
 }
 
@@ -406,7 +406,7 @@ void CEZ2STREffectEx::Render() {
 // FUNCTION: fn_06972
 void CEZ2STREffectEx::SetAlpha(float argument) {
   if (this->emitter) {
-    this->emitter->remainingTime = argument;
+    this->emitter->m_alpha = argument;
   }
 }
 
@@ -414,7 +414,7 @@ void CEZ2STREffectEx::SetAlpha(float argument) {
 // FUNCTION: fn_06973
 void CEZ2STREffectEx::SetFlipX(int argument) {
   if (this->emitter) {
-    this->emitter->flipX = static_cast<unsigned char>(argument);
+    this->emitter->m_flipX = static_cast<unsigned char>(argument);
   }
 }
 
@@ -422,7 +422,7 @@ void CEZ2STREffectEx::SetFlipX(int argument) {
 // FUNCTION: fn_06974
 void CEZ2STREffectEx::SetFlipY(int argument) {
   if (this->emitter) {
-    this->emitter->flipY = static_cast<unsigned char>(argument);
+    this->emitter->m_flipY = static_cast<unsigned char>(argument);
   }
 }
 
@@ -430,8 +430,8 @@ void CEZ2STREffectEx::SetFlipY(int argument) {
 // FUNCTION: fn_06975
 __declspec(noinline) void CEZ2STREffectEx::EndLoop(unsigned char fadeOut) {
   if (this->emitter) {
-    this->emitter->looping = 0;
-    this->emitter->fadeOut = fadeOut;
+    this->emitter->m_loop = 0;
+    this->emitter->m_hold = fadeOut;
   }
 }
 
@@ -445,7 +445,7 @@ void CEZ2STREffectEx::EnableGroundRender() {
 // FUNCTION: fn_06977
 void CEZ2STREffectEx::SetLifeTime(int argument) {
   if (this->emitter) {
-    this->emitter->lifetimeLimit = argument;
+    this->emitter->m_lifeTime = argument;
   }
 }
 
@@ -453,7 +453,7 @@ void CEZ2STREffectEx::SetLifeTime(int argument) {
 // FUNCTION: fn_06978
 void CEZ2STREffectEx::SetAngle(float argument) {
   if (this->emitter) {
-    this->emitter->rotationAngle = argument;
+    this->emitter->m_angle = argument;
   }
 }
 
@@ -461,7 +461,7 @@ void CEZ2STREffectEx::SetAngle(float argument) {
 // FUNCTION: fn_06979
 void CEZ2STREffectEx::SetPitch(float argument) {
   if (this->emitter) {
-    this->emitter->pitch = argument;
+    this->emitter->m_pitch = argument;
   }
 }
 
@@ -469,7 +469,7 @@ void CEZ2STREffectEx::SetPitch(float argument) {
 // FUNCTION: fn_06980
 void CEZ2STREffectEx::SetYaw(float argument) {
   if (this->emitter) {
-    this->emitter->yaw = argument;
+    this->emitter->m_yaw = argument;
   }
 }
 
@@ -477,7 +477,7 @@ void CEZ2STREffectEx::SetYaw(float argument) {
 // FUNCTION: fn_06981
 void CEZ2STREffectEx::SetScale(float argument) {
   if (this->emitter) {
-    this->emitter->scale = argument;
+    this->emitter->m_scale = argument;
   }
 }
 
@@ -485,7 +485,7 @@ void CEZ2STREffectEx::SetScale(float argument) {
 // FUNCTION: fn_06982
 void CEZ2STREffectEx::SetDelay(int argument) {
   if (this->emitter) {
-    this->emitter->duration = argument;
+    this->emitter->m_delay = argument;
   }
 
   this->frameStep = argument / 16;
