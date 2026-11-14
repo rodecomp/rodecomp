@@ -406,6 +406,14 @@ void UICashShopWnd_CartItem::OnCreate(int, int) {
   this->AddChild(minus);
 }
 
+namespace {
+// INLINED
+inline void SetButtonText(UIBmpTextButton* button, std::string value) {
+  button->text = value;
+  button->Invalidate();
+}
+}
+
 // OFFSET: 0x007CFD20
 // FUNCTION: fn_09538
 void UICashShopWnd_Item::OnCreate(int, int) {
@@ -415,7 +423,7 @@ void UICashShopWnd_Item::OnCreate(int, int) {
   this->m_addButton->SetBitmap("유저인터페이스\\cashshop\\btn_add_press.bmp", 2, 0);
   this->m_addButton->SetBitmap("유저인터페이스\\cashshop\\btn_add_disable.bmp", 3, 0);
   this->m_addButton->SetSize(this->m_addButton->BitmapWidth(), this->m_addButton->BitmapHeight());
-  this->m_addButton->SetText(LookupMessage(MSI_BUY));
+  SetButtonText(this->m_addButton, LookupMessage(MSI_BUY));
   this->m_addButton->Move(0x53, 0x55);
   this->m_addButton->SetId(0xE0);
   this->AddChild(this->m_addButton);
