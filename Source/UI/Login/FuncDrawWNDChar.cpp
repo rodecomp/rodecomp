@@ -36,10 +36,6 @@ FuncDrawWNDChar::FuncDrawWNDChar(
   this->m_layers[6] = this->m_robe;
 }
 
-// OFFSET: 0x007D4840
-// FUNCTION: fn_09582
-FuncDrawWNDChar::~FuncDrawWNDChar() = default;
-
 // OFFSET: 0x007E3E60
 // FUNCTION: fn_09727
 void FuncDrawWNDChar::Draw(bool option) {

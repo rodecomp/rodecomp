@@ -110,6 +110,10 @@ UINewSelectCharWnd::~UINewSelectCharWnd() = default;
 // FUNCTION: fn_09578
 CharSlotInfo::CharSlotInfo() = default;
 
+// OFFSET: 0x007D4840
+// FUNCTION: fn_09582
+FuncDrawWNDChar::~FuncDrawWNDChar() = default;
+
 // OFFSET: 0x007D4A00
 // FUNCTION: fn_09583
 CharSlotInfo::~CharSlotInfo() = default;
