@@ -41,6 +41,7 @@ public:
   void OffsetLayerDepth(int layer, SpriteQuad& quad, float bottomDepth, float topDepth) const;
   void OffsetAccessoryLayerDepth(int layer, SpriteQuad& quad, float bottomDepth, float topDepth) const;
   RenderPrimitive* DrawShadow(const float* matrix, float scale) const;
+  RenderPrimitive* BuildSpriteQuad(const SpriteQuad& quad, const std::uint32_t* palette, int blend, float offsetX, float offsetY) const;
 
   /* 0004 */ vector3d position;
   /* 0010 */ int job;

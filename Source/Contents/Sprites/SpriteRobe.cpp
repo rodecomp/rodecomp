@@ -80,7 +80,7 @@ void CCharacterRender::RenderRobe(
       }
 
       quad.image = image;
-      RenderPrimitive* primitive = BuildSpriteQuad(*GetRenderSystemHolder()->system, quad, sprite->palette, this->bodyBlend, 0.0f, 0.0f);
+      RenderPrimitive* primitive = this->BuildSpriteQuad(quad, sprite->palette, this->bodyBlend, 0.0f, 0.0f);
       primitives.push_back(primitive);
     }
   }

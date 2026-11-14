@@ -69,5 +69,5 @@ __declspec(safebuffers) RenderPrimitive* CCharacterRender::DrawShadow(const floa
   quad.angle = static_cast<float>(cell.rotation);
   quad.image = image;
 
-  return BuildSpriteQuad(*GetRenderSystemHolder()->system, quad, sprite->palette, 257, 0.0f, 0.0f);
+  return this->BuildSpriteQuad(quad, sprite->palette, 257, 0.0f, 0.0f);
 }

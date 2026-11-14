@@ -87,7 +87,7 @@ void CCharacterRender::RenderRobeCommands(
       quad.image = image;
       CharacterRenderDrawItem item;
       item.flags = 1;
-      item.command = BuildSpriteQuad(*GetRenderSystemHolder()->system, quad, sprite->palette, 1, 0.0f, 0.0f);
+      item.command = this->BuildSpriteQuad(quad, sprite->palette, 1, 0.0f, 0.0f);
       commands.push_back(item);
     }
   }
