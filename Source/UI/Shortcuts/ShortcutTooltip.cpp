@@ -58,9 +58,9 @@ void UIShortCutWnd::OnMouseHover(int x, int y) {
   HotkeyInfo hotkey;
   const int bank = g_session.GetOption(10);
   if (bank == 0) {
-    hotkey = GetHotkeyInfo(*g_session.m_hotkeyScript, 0, index);
+    hotkey = g_session.GetHotkeyInfo(0, index);
   } else if (bank == 1) {
-    hotkey = GetHotkeyInfo(*g_session.m_hotkeyScript, 3, index);
+    hotkey = g_session.GetHotkeyInfo(3, index);
   }
 
   if (!hotkey.description.empty()) {

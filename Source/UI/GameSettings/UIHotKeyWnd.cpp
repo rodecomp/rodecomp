@@ -256,7 +256,7 @@ void UIHotKeyWnd::OnLBtnDown(int x, int y) {
   const int previous = this->m_selectedRow;
   this->m_selectedRow = this->RowFromPoint(x, y);
 
-  const int count = HotkeyCount(*g_session.m_hotkeyScript, this->m_tab);
+  const int count = g_session.HotkeyCount(this->m_tab);
 
   if (this->m_selectedRow + (this->m_page * 9 - 9) * 4 < count) {
     if (this->m_selectedRow > -1) {
