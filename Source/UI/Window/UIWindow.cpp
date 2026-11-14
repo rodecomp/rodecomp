@@ -1160,8 +1160,8 @@ void UIWindow::DrawEmboldenedText(int x, int y, const char* text, std::uint32_t 
 // OFFSET: 0x00A7C470
 // FUNCTION: fn_16944
 void UIWindow::FlushPrimitives() {
-  for (RenderPrimitive* primitive : this->m_overlayPrimitives) {
-    static_cast<CRendererDX9*>(g_renderer)->Submit(primitive, 513);
+  for (auto it = this->m_overlayPrimitives.begin(); it != this->m_overlayPrimitives.end(); ++it) {
+    static_cast<CRendererDX9*>(g_renderer)->Submit(*it, 513);
   }
 
   this->m_overlayPrimitives.clear();
