@@ -457,7 +457,7 @@ void CGrannyPc::SetState(int state, int resetPosition) {
       (static_cast<std::int64_t>(this->secondaryWeapon) << 32) | static_cast<std::uint32_t>(this->weapon)
     );
     CGameActor::SetState(weaponAllowed ? 9 : 2, resetPosition);
-    this->attackMotion = AttackMotionLength(this->GetEffectiveJob(-1), this->sex, this->weapon, weaponAllowed);
+    this->attackMotion = g_session.AttackMotionLength(this->GetEffectiveJob(-1), this->sex, this->weapon, weaponAllowed);
     bool usesArrow = false;
     g_session.m_hotkeyScript->Call("IsItemUsingArrow", "d>b", this->weapon, &usesArrow);
     if (usesArrow == true) {
@@ -477,7 +477,7 @@ void CGrannyPc::SetState(int state, int resetPosition) {
       (static_cast<std::int64_t>(this->secondaryWeapon) << 32) | static_cast<std::uint32_t>(this->weapon)
     );
     CGameActor::SetState(weaponAllowed ? 9 : 2, resetPosition);
-    this->attackMotion = AttackMotionLength(this->GetEffectiveJob(-1), this->sex, this->weapon, weaponAllowed);
+    this->attackMotion = g_session.AttackMotionLength(this->GetEffectiveJob(-1), this->sex, this->weapon, weaponAllowed);
     if ((this->weapon == 14 && this->secondaryWeapon == 0) || (this->weapon == 13 && this->secondaryWeapon == 0)) {
       CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
       mode->SpawnArrowEffect(&this->render.position, this->hitTargetAid, this->attackMotion * this->render.speed, 0);
