@@ -19,13 +19,14 @@
 
 template __declspec(noinline) std::_List_node<UIWindow*, void*>* std::list<UIWindow*>::_Emplace<UIWindow* const&>(std::_List_node<UIWindow*, void*>* const, UIWindow* const&);
 
-// OFFSET: 0x007435C0
-// FUNCTION: fn_07745
-CMiniPartyWndAreaMgr* CMiniPartyWndAreaMgr::Instance() {
+namespace {
+// INLINED
+inline CMiniPartyWndAreaMgr* MiniPartyArea() {
   if (!g_miniPartyWndAreaMgr) {
     g_miniPartyWndAreaMgr = new (std::nothrow) CMiniPartyWndAreaMgr;
   }
   return g_miniPartyWndAreaMgr;
+}
 }
 
 // OFFSET: 0x00AA9ED0
@@ -35,14 +36,14 @@ void UIWindowMgr::SetScreenSize(int width, int height) {
   this->screenHeight = height;
   this->chatWndX = 0;
   this->chatWndY = height - this->chatWndHeight;
-  CMiniPartyWndAreaMgr::Instance()->BuildAvailableCells();
+  MiniPartyArea()->BuildAvailableCells();
 }
 
 // OFFSET: 0x00AA2510
 // FUNCTION: fn_17214
 void UIWindowMgr::ArrangeMiniPartyWindows() {
   for (UIWindow* window : this->snapExcluded) {
-    const MiniPartyGridPoint position = CMiniPartyWndAreaMgr::Instance()
+    const MiniPartyGridPoint position = MiniPartyArea()
       ->GetCellPosition(static_cast<UIMiniPartyWnd*>(window)->m_cell);
     window->Move(position.x, position.y);
   }

@@ -29,6 +29,7 @@
 #include "UI/Party/UIPartySettingWnd.h"
 #include <windows.h>
 #include <timeapi.h>
+#include <new>
 
 #include <cstdio>
 #include <cstring>
@@ -525,6 +526,15 @@ int UIMiniPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
   }
 
   return 0;
+}
+
+// OFFSET: 0x007435C0
+// FUNCTION: fn_07745
+CMiniPartyWndAreaMgr* CMiniPartyWndAreaMgr::Instance() {
+  if (!g_miniPartyWndAreaMgr) {
+    g_miniPartyWndAreaMgr = new (std::nothrow) CMiniPartyWndAreaMgr;
+  }
+  return g_miniPartyWndAreaMgr;
 }
 
 // OFFSET: 0x00740300
