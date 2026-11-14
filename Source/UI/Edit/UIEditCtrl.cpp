@@ -7611,12 +7611,15 @@ void UIMerchantItemPurchaseWnd::OnMouseHover(int x, int y) {
     int tooltipY = (y - 17) / 32 * 32 + 1;
     this->ToScreen(tooltipX, tooltipY);
 
+    CMode* mode = g_modeMgr.gameMode;
+    std::uint32_t color = g_session.GetItemNameColor(item);
+    int screenX = tooltipX;
+    int screenY = tooltipY;
     char price[64];
-    g_modeMgr.gameMode
-        ->ShowTooltip(FormatOwnedString("%s %d %s %s Zeny", item.DisplayName(0).c_str(), item.quantity, LookupMessage(MSI_EA4),
+    mode->ShowTooltip(FormatOwnedString("%s %d %s %s Zeny", item.DisplayName(0).c_str(), item.quantity, LookupMessage(MSI_EA4),
                                  FormatGroupedInteger(static_cast<int>(item.prices[1]), price, 64))
                    .c_str(),
-               tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+               screenX, screenY, color, 0, 1);
   }
 }
 
