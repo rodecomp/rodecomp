@@ -678,7 +678,7 @@ void CPc::LoadEquipAction(int slot, const char* name) {
 
   const int baseJob = JobNames::BaseJob(this->GetEffectiveJob(-1));
   const int costumeJob = this->GetBodyCostume();
-  const std::string actionName = g_equipmentResourceMgr->GetBodyResourceName(0, baseJob, this->sex, costumeJob, 0);
+  const std::string actionName = g_session.GetBodyActionResourceName(baseJob, this->sex, costumeJob, 0);
   CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load(actionName));
   if (!action) {
     return;
@@ -4657,8 +4657,8 @@ void CGrannyPc::RenderShadow(int argument, vector3d lightDirection, bool cached)
   GroundGeometry* ground = mode->scene->ground;
   column -= 2;
   row -= 2;
-  const float groundSine = std::sin(0.0f);
-  const float groundCosine = std::cos(0.0f);
+  const float groundSine = ClientSin(0.0f);
+  const float groundCosine = ClientCos(0.0f);
 
 
   for (int i = 0; i < 5; ++i) {
