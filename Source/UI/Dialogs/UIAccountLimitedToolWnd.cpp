@@ -332,7 +332,7 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       break;
     }
     case 561: {
-      if (std::atoi(this->m_edits[1]->Text()) < 1) {
+      if (std::atoi(this->m_edits[1]->Text()) <= 0) {
         this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARGAINSALE_TOOLWND_INPUT_PERIODTIME_MSG)), 60, 0, 0);
         UITextViewer* viewer = this->m_viewer;
         if (viewer->verticalOverflow != 0) {
@@ -344,7 +344,7 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       }
 
       const AccountLimitedRange ranges[5] = {{23, 999}, {1, 12}, {1, 31}, {0, 23}, {0, 59}};
-      for (int i = 2; i < 12; ++i) {
+      for (int i = 2; i <= 11; ++i) {
         if (this->m_edits[i]->Length() == 0) {
           this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARGAINSALE_TOOLWND_INPUT_ITEMDBNAME_MSG)), 60, 0, 0);
           UITextViewer* viewer = this->m_viewer;
@@ -400,7 +400,7 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       __time32_t period = _time32(nullptr);
       tm* periodDate = _localtime32(&period);
       const time_t days = std::atoi(this->m_edits[12]->Text());
-      periodDate->tm_mday = days != 0 ? static_cast<int>(days) : 15;
+      periodDate->tm_mday = days == 0 ? 15 : static_cast<int>(days);
       periodDate->tm_hour = std::atoi(this->m_edits[13]->Text());
       periodDate->tm_min = std::atoi(this->m_edits[14]->Text());
       periodDate->tm_sec = 0;
