@@ -107,6 +107,14 @@ UICheckAttendanceWnd_Banner::UICheckAttendanceWnd_Banner()
 UICheckAttendanceWnd_Banner::~UICheckAttendanceWnd_Banner() {
 }
 
+namespace {
+// INLINED
+inline void SetButtonText(UIBmpTextButton* button, std::string value) {
+  button->text = value;
+  button->Invalidate();
+}
+}
+
 // OFFSET: 0x007DCF50
 // FUNCTION: fn_09639
 void UICheckAttendanceWnd::OnCreate(int, int) {
@@ -128,7 +136,7 @@ void UICheckAttendanceWnd::OnCreate(int, int) {
   this->m_notice->SetBitmap("유저인터페이스\\check_attendance\\bt_ok_normal.bmp", 1, 0);
   this->m_notice->SetBitmap("유저인터페이스\\check_attendance\\bt_ok_press.bmp", 2, 0);
   this->m_notice->SetSize(this->m_notice->BitmapWidth(), this->m_notice->BitmapHeight());
-  this->m_notice->SetText(LookupMessage(MSI_ZENY_LOTTO_BUY_10));
+  SetButtonText(this->m_notice, LookupMessage(MSI_ZENY_LOTTO_BUY_10));
   this->m_notice->AddTextStyle(0, 14, 0x313131, 1, 1, -1000, -1000);
   this->m_notice->AddTextStyle(1, 14, 0x313131, 1, 1, -1000, -1000);
   this->m_notice->AddTextStyle(2, 14, 0x313131, 1, 1, -1000, -1000);
