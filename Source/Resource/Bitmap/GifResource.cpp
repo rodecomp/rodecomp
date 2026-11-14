@@ -240,7 +240,7 @@ bool CGifRes::DecodeGif(const void* data, int bytes, bool iconOnly) {
 
   std::uint8_t transparent = 0;
   std::uint8_t transparentIndex = 0;
-  std::uint16_t delay = 0;
+  unsigned int delay = 0;
   while (bytes > cursor - start) {
     std::uint8_t blockType;
     memcpy_s(&blockType, sizeof(blockType), cursor, sizeof(blockType));
@@ -259,7 +259,7 @@ bool CGifRes::DecodeGif(const void* data, int bytes, bool iconOnly) {
         cursor += sizeof(control);
         transparentIndex = control.transparentIndex;
         transparent = control.flags & 1;
-        delay = std::max<std::uint16_t>(10, control.delay);
+        delay = std::max<unsigned int>(10, control.delay);
         break;
       }
       case 0xFF: {
