@@ -814,12 +814,12 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
     this->m_items.clear();
     for (int index = 0; index < lists.GetInventoryCategorySize(this->m_selectedTab); ++index) {
       ITEM_INFO item = g_session.GetItem1784At(this->m_selectedTab, index);
-      if (item.identity[1] != 0) {
+      if (item.identity[1] > 0) {
         this->m_items.push_back(item);
       }
     }
 
-    this->m_itemsPerPage = this->m_selectedTab == 9 ? 6 : 9;
+    this->m_itemsPerPage = this->m_selectedTab != 9 ? 9 : 6;
     if (argument1 == 0) {
       this->m_page = 0;
     }
@@ -848,14 +848,12 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
       return 0;
     }
 
-    if (drag->source == 4) {
+    switch (drag->source) {
+    case 4: {
       std::vector<ITEM_INFO>& cartItems = this->m_cart->m_cartItems;
-      std::vector<ITEM_INFO>::iterator entry = cartItems.begin();
-      for (; entry != cartItems.end(); ++entry) {
-        if (atoi(entry->itemId.c_str()) == atoi(drag->name.c_str())) {
-          break;
-        }
-      }
+      std::vector<ITEM_INFO>::iterator entry = std::find_if(cartItems.begin(), cartItems.end(), [drag](const ITEM_INFO& item) {
+        return atoi(drag->name.c_str()) == atoi(item.itemId.c_str());
+      });
 
       if (entry != cartItems.end()) {
         if (entry->quantity > drag->quantity) {
@@ -864,31 +862,26 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
           this->m_cart->SendMsg(this, UM_DECITEM, entry->GetItemId(), 0, 0, 0);
         }
       }
-    } else if (drag->source == 6) {
+      break;
+    }
+    case 6: {
       if (this->m_selectedTab == 9) {
-        std::list<ITEM_INFO>::iterator product = this->m_items.begin();
-        for (; product != this->m_items.end(); ++product) {
-          if (atoi(product->itemId.c_str()) == atoi(drag->name.c_str())) {
-            break;
-          }
-        }
+        std::list<ITEM_INFO>::iterator product = std::find_if(this->m_items.begin(), this->m_items.end(), [drag](const ITEM_INFO& item) {
+          return atoi(drag->name.c_str()) == atoi(item.itemId.c_str());
+        });
 
         if (product != this->m_items.end()) {
           const int stock = product->saleData.purchaseCount;
           if (stock <= 0) {
             g_windowMgr.Confirm(LookupMessage(MSI_HAVE_ITEMTAG), 0, true, false, 0, "Message", 0x118, 0x78, 0);
             mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
-            mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
-            return 0;
+            break;
           }
 
           std::vector<ITEM_INFO>& cartItems = this->m_cart->m_cartItems;
-          std::vector<ITEM_INFO>::iterator entry = cartItems.begin();
-          for (; entry != cartItems.end(); ++entry) {
-            if (atoi(entry->itemId.c_str()) == atoi(drag->name.c_str())) {
-              break;
-            }
-          }
+          std::vector<ITEM_INFO>::iterator entry = std::find_if(cartItems.begin(), cartItems.end(), [drag](const ITEM_INFO& item) {
+            return atoi(drag->name.c_str()) == atoi(item.itemId.c_str());
+          });
 
           if (entry != cartItems.end() && stock < drag->quantity + entry->quantity) {
             drag->quantity = stock - entry->quantity;
@@ -896,16 +889,15 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
         }
       }
 
-      std::list<ITEM_INFO>::iterator product = this->m_items.begin();
-      for (; product != this->m_items.end(); ++product) {
-        if (atoi(product->itemId.c_str()) == atoi(drag->name.c_str())) {
-          break;
-        }
-      }
+      std::list<ITEM_INFO>::iterator product = std::find_if(this->m_items.begin(), this->m_items.end(), [drag](const ITEM_INFO& item) {
+        return atoi(drag->name.c_str()) == atoi(item.itemId.c_str());
+      });
 
       if (product != this->m_items.end()) {
         this->m_cart->SendMsg(this, UM_ADDITEM, reinterpret_cast<std::intptr_t>(&*product), drag->quantity, 0, 0);
       }
+      break;
+    }
     }
 
     mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
@@ -914,6 +906,13 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
 
   case UM_COMMAND:
     switch (argument1) {
+    case 0x182:
+      this->m_totalPrice = 0;
+      this->m_cart->m_cartItems.clear();
+      this->m_cart->SendMsg(this->m_cart, UM_SCROLLVERT, 0, 0, 0, 0);
+      this->m_cart->Invalidate();
+      this->Invalidate();
+      return 0;
     case ID_CLOSE:
       if (g_session.m_launchPassCommandLine) {
         g_modeMgr.GetGameMode()->SendMsg(MM_STOVE_AUTHENTICATION, 5, 0, 0, 0);
@@ -947,6 +946,65 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
       RegCloseKey(key);
       return 0;
     }
+    case ID_SEARCH: {
+      std::string query(this->m_searchEdit->Text());
+      if (query.size() != 0 && query.compare(LookupMessage(MSI_CASHSHOP_CASH_POINT)) != 0) {
+        itemLists.ClearInventoryCategoryItems(10);
+        for (int list = 0; list < 11; ++list) {
+          if (list == 10 || list == 8 || list == 9) {
+            continue;
+          }
+
+          for (int index = 0; index < lists.GetInventoryCategorySize(list); ++index) {
+            ITEM_INFO item = g_session.GetItem1784At(list, index);
+            std::string name(item.displayName);
+            if (name.find(query) != std::string::npos && !g_session.HasInventorySearchItem(atoi(item.itemId.c_str()))) {
+              g_session.inventoryCategories[10].push_back(item);
+            }
+          }
+        }
+
+        if (lists.GetInventoryCategorySize(10) > 0) {
+          this->m_items.clear();
+          for (int index = 0; index < lists.GetInventoryCategorySize(10); ++index) {
+            this->m_items.push_back(g_session.GetItem1784At(10, index));
+          }
+
+          this->m_selectedTab = 10;
+          this->m_page = 0;
+          this->m_pageCount = this->m_items.size() / this->m_itemsPerPage + (this->m_items.size() % this->m_itemsPerPage != 0);
+          for (std::map<int, UIWindow*>::iterator tab = this->m_tabButtons.begin(); tab != this->m_tabButtons.end(); ++tab) {
+            if (tab->second != nullptr) {
+              tab->second->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
+            }
+          }
+          this->LayoutPage();
+          return 0;
+        }
+
+        g_windowMgr.Confirm(LookupMessage(MSI_NOTHING_SEARCH_ITEM), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+      }
+      return 0;
+    }
+    case ID_CHARGE:
+      ShellExecuteA(nullptr, "OPEN", LookupMessage(MSI_CASHSHOP_FREE_POINT_TO_USE), LookupMessage(MSI_CASHSHOP_FREE_POINT_TO_USE), nullptr, SW_SHOW);
+      return 0;
+    case 0x183:
+      this->m_page = 0;
+      this->LayoutPage();
+      return 0;
+    case ID_PREV_PAGE:
+      this->m_page = std::max(this->m_page - 1, 0);
+      this->LayoutPage();
+      return 0;
+    case ID_NEXT_PAGE:
+      this->m_page = std::min(this->m_page + 1, this->m_pageCount - 1);
+      this->LayoutPage();
+      return 0;
+    case 0x184:
+      this->m_page = this->m_pageCount - 1;
+      this->LayoutPage();
+      return 0;
     case ID_BUY: {
       std::vector<ITEM_INFO>& cartItems = this->m_cart->m_cartItems;
       const int count = cartItems.size();
@@ -1010,72 +1068,6 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
       GetRagConnection().Send(static_cast<short>(length), &packet);
       return 0;
     }
-    case ID_CHARGE:
-      ShellExecuteA(nullptr, "OPEN", LookupMessage(MSI_CASHSHOP_FREE_POINT_TO_USE), LookupMessage(MSI_CASHSHOP_FREE_POINT_TO_USE), nullptr, SW_SHOW);
-      return 0;
-    case ID_PREV_PAGE:
-      this->m_page = std::max(this->m_page - 1, 0);
-      this->LayoutPage();
-      return 0;
-    case ID_NEXT_PAGE:
-      this->m_page = std::min(this->m_page + 1, this->m_pageCount - 1);
-      this->LayoutPage();
-      return 0;
-    case ID_SEARCH: {
-      std::string query(this->m_searchEdit->Text());
-      if (query.size() != 0 && strcmp(query.c_str(), LookupMessage(MSI_CASHSHOP_CASH_POINT)) != 0) {
-        itemLists.ClearInventoryCategoryItems(10);
-        for (int list = 0; list < 11; ++list) {
-          if (list == 10 || list == 8 || list == 9) {
-            continue;
-          }
-
-          for (int index = 0; index < lists.GetInventoryCategorySize(list); ++index) {
-            ITEM_INFO item = g_session.GetItem1784At(list, index);
-            std::string name(item.displayName);
-            if (name.find(query) != std::string::npos && !g_session.HasInventorySearchItem(atoi(item.itemId.c_str()))) {
-              g_session.inventoryCategories[10].push_back(item);
-            }
-          }
-        }
-
-        if (lists.GetInventoryCategorySize(10) > 0) {
-          this->m_items.clear();
-          for (int index = 0; index < lists.GetInventoryCategorySize(10); ++index) {
-            this->m_items.push_back(g_session.GetItem1784At(10, index));
-          }
-
-          this->m_selectedTab = 10;
-          this->m_page = 0;
-          this->m_pageCount = this->m_items.size() / this->m_itemsPerPage + (this->m_items.size() % this->m_itemsPerPage != 0);
-          for (std::map<int, UIWindow*>::iterator tab = this->m_tabButtons.begin(); tab != this->m_tabButtons.end(); ++tab) {
-            if (tab->second != nullptr) {
-              tab->second->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
-            }
-          }
-          this->LayoutPage();
-          return 0;
-        }
-
-        g_windowMgr.Confirm(LookupMessage(MSI_NOTHING_SEARCH_ITEM), 0, true, false, 0, "Message", 0x118, 0x78, 0);
-      }
-      return 0;
-    }
-    case 0x182:
-      this->m_totalPrice = 0;
-      this->m_cart->m_cartItems.clear();
-      this->m_cart->SendMsg(this->m_cart, UM_SCROLLVERT, 0, 0, 0, 0);
-      this->m_cart->Invalidate();
-      this->Invalidate();
-      return 0;
-    case 0x183:
-      this->m_page = 0;
-      this->LayoutPage();
-      return 0;
-    case 0x184:
-      this->m_page = this->m_pageCount - 1;
-      this->LayoutPage();
-      return 0;
     case ID_PARTY_RELOAD_FIRST_PAGE:
       g_modeMgr.GetGameMode()->SendMsg(MM_GET_ACCOUNT_LIMITED_SALE_LIST, 0, 0, 0, 0);
       return 0;
@@ -1128,19 +1120,15 @@ int UICashShopWnd_Cart::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     }
 
     const ITEM_INFO& item = *reinterpret_cast<const ITEM_INFO*>(argument1);
-    int quantity = argument2;
-    if (quantity == 0) {
+    if (argument2 == 0) {
       g_windowMgr.Confirm(LookupMessage(MSI_HAVE_ITEMTAG), 0, true, false, 0, "Message", 0x118, 0x78, 0);
       return -1;
     }
 
-    std::vector<ITEM_INFO>::iterator it = this->m_cartItems.begin();
-    const std::vector<ITEM_INFO>::iterator last = this->m_cartItems.end();
-    for (; it != last; ++it) {
-      if (atoi(it->itemId.c_str()) == atoi(item.itemId.c_str())) {
-        break;
-      }
-    }
+    std::vector<ITEM_INFO>::iterator it = std::find_if(this->m_cartItems.begin(), this->m_cartItems.end(), [&item](const ITEM_INFO& entry) {
+      const int itemId = atoi(entry.itemId.c_str());
+      return itemId == atoi(item.itemId.c_str());
+    });
 
     if (it == this->m_cartItems.end()) {
       if (g_session.m_launchPassCommandLine && !this->m_cartItems.empty()) {
@@ -1160,32 +1148,32 @@ int UICashShopWnd_Cart::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       ITEM_INFO entry(item);
       const int limit = entry.saleData.purchaseCount;
       if (limit != 0) {
-        if (quantity > limit) {
+        if (argument2 > limit) {
           g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_BARGAINSALE_TOOLWND_CALL), limit).c_str(), 0, true, false, 0, "Message", 0x118, 0x78, 0);
         }
-        if (quantity > limit) {
-          quantity = limit;
+        if (argument2 > limit) {
+          argument2 = limit;
         }
       }
-      entry.quantity = quantity;
+      entry.quantity = argument2;
       this->m_cartItems.push_back(entry);
       this->SendMsg(this, UM_SCROLLVERT, 1, 0, 0, 0);
     } else {
       const int limit = it->saleData.purchaseCount;
-      if (limit != 0 && it->quantity + quantity > limit) {
+      if (limit != 0 && it->quantity + argument2 > limit) {
         g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_BARGAINSALE_TOOLWND_CALL), limit).c_str(), 0, true, false, 0, "Message", 0x118, 0x78, 0);
-        quantity = it->saleData.purchaseCount - it->quantity;
-        if (quantity == 0) {
+        argument2 = it->saleData.purchaseCount - it->quantity;
+        if (argument2 == 0) {
           return -1;
         }
       }
 
-      const int total = it->quantity + quantity;
+      const int total = it->quantity + argument2;
       if (total > 100) {
         g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_LIMIT_BUY_ITEM2), 100).c_str(), 0, true, false, 0, "Message", 0x118, 0x78, 0);
         it->quantity = 100;
       } else {
-        it->quantity = total > 0 ? total : 1;
+        it->quantity = total <= 0 ? 1 : total;
       }
       this->SendMsg(this, UM_SCROLLVERT, 0, 0, 0, 0);
     }
@@ -1198,20 +1186,16 @@ int UICashShopWnd_Cart::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       this->parent->SendMsg(this, UM_SET_CASHSHOP_TOTAL_PRICE, price, 0, 0, 0);
     }
     this->Invalidate();
-    return UIWindow::SendMsg(sender, message, argument1, quantity, argument3, argument4);
+    break;
   }
   case UM_DECITEM: {
     if (sender == nullptr) {
       break;
     }
 
-    std::vector<ITEM_INFO>::iterator it = this->m_cartItems.begin();
-    const std::vector<ITEM_INFO>::iterator last = this->m_cartItems.end();
-    for (; it != last; ++it) {
-      if (atoi(it->itemId.c_str()) == argument1) {
-        break;
-      }
-    }
+    std::vector<ITEM_INFO>::iterator it = std::find_if(this->m_cartItems.begin(), this->m_cartItems.end(), [argument1](const ITEM_INFO& entry) {
+      return atoi(entry.itemId.c_str()) == argument1;
+    });
     if (it == this->m_cartItems.end()) {
       break;
     }
@@ -1236,10 +1220,7 @@ int UICashShopWnd_Cart::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       break;
     }
 
-    int maximum = count - this->m_visibleCount;
-    if (maximum < 0) {
-      maximum = 0;
-    }
+    const int maximum = std::max(count - this->m_visibleCount, 0);
 
     UIScrollBar* scrollBar = static_cast<UIScrollBar*>(this->m_scrollBar);
     if (maximum == 0) {
@@ -1252,16 +1233,13 @@ int UICashShopWnd_Cart::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     }
 
     const int index = argument1 + this->m_scrollIndex;
-    if (index < 0) {
-      if (index <= maximum) {
-        this->Invalidate();
-        break;
-      }
-      this->m_scrollIndex = maximum;
+    if (index >= 0 && index <= maximum) {
+      this->m_scrollIndex = index;
     } else if (index > maximum) {
       this->m_scrollIndex = maximum;
     } else {
-      this->m_scrollIndex = index;
+      this->Invalidate();
+      break;
     }
 
     scrollBar->SetRange(maximum, this->m_visibleCount, this->m_cartItems.size());
