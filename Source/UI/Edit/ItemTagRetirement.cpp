@@ -110,7 +110,7 @@ bool UIItemTagOnMail::CanInsertTag(const std::string& name, int width) {
   tag += this->FitTextToWidth(name, width / 2);
   tag += ">";
 
-  UIRodexEditCtrl3* contents = static_cast<UIRodexComposeWnd*>(g_windowMgr.rodexComposeWnd)->m_contents;
+  UIRodexEditCtrl3* contents = g_windowMgr.rodexComposeWnd->m_contents;
   const unsigned int maximum = contents->maximum;
   this->taggedText = contents->text;
   this->taggedText += tag;
@@ -304,9 +304,9 @@ bool UIItemTagOnMegaPhone::CanInsertTag(const std::string& name, int width) {
   tag += ">";
 
   unsigned bytes = 0;
-  this->textWidth = static_cast<UINpcTextEditDialogWnd*>(g_windowMgr.npcTextEditDialogWnd)->MeasureText(tag, bytes);
+  this->textWidth = g_windowMgr.npcTextEditDialogWnd->MeasureText(tag, bytes);
 
-  UIEditCtrl* edit = static_cast<UINpcEditDialogWnd*>(g_windowMgr.npcTextEditDialogWnd)->edit;
+  UIEditCtrl* edit = g_windowMgr.npcTextEditDialogWnd->edit;
   const unsigned int maximum = edit->maximum;
   this->taggedText = edit->text;
   this->taggedText += tag;
@@ -368,7 +368,7 @@ void UIItemTagCtrl::UpdateItemTags() {
         this->PlaceTagButton(entry->child, visible, x, 0);
 
         const int bytes = static_cast<int>(std::strlen(fitted.c_str()));
-        if (!g_windowMgr.rodexComposeWnd || static_cast<UIRodexComposeWnd*>(g_windowMgr.rodexComposeWnd)->m_contents == g_windowMgr.GetHoverWindow()) {
+        if (!g_windowMgr.rodexComposeWnd || g_windowMgr.rodexComposeWnd->m_contents == g_windowMgr.GetHoverWindow()) {
           const int cursor = g_serverLanguage->cursor;
           const int start = static_cast<int>(prefix.size());
           const int end = start + bytes + 2;

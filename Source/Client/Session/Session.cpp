@@ -80,6 +80,14 @@
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Cipher/CryptName.h"
 #include "Utility/Cipher/Obfuscate.h"
+#include "Contents/Messenger/MessengerWindows.h"
+#include "UI/Items/UIEquipWnd.h"
+#include "UI/Items/UIItemStoreWnd.h"
+#include "UI/Shop/UIMerchantItemWnd.h"
+#include "UI/Shop/UIMerchantMirrorItemWnd.h"
+#include "UI/Skill/UINewSkillListWnd.h"
+#include "UI/Status/UIHomunInfoWnd.h"
+#include "UI/Status/UIMerInfoWnd.h"
 
 template __declspec(noinline) void std::vector<SearchStoreResult>::_Destroy(SearchStoreResult*, SearchStoreResult*);
 
@@ -2563,7 +2571,7 @@ void CSession::RefreshSkillTree() {
   }
 
   if (g_windowMgr.basicInfoWnd) {
-    UIBasicInfoWnd* info = static_cast<UIBasicInfoWnd*>(g_windowMgr.basicInfoWnd);
+    UIBasicInfoWnd* info = g_windowMgr.basicInfoWnd;
     info->SetHeight(info->geometry.height);
   }
 }

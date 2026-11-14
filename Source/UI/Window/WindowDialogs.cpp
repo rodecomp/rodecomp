@@ -7,6 +7,7 @@
 #include "UI/Dialogs/UIMessageBox.h"
 #include "UI/Login/UINewSelectCharWnd.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Shortcuts/UIShortCutWnd.h"
 
 
 

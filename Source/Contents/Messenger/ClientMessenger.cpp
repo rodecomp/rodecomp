@@ -44,6 +44,7 @@
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Cipher/CryptName.h"
 #include "Utility/Cipher/Obfuscate.h"
+#include "Contents/Messenger/MessengerWindows.h"
 
 #include <algorithm>
 #include <array>

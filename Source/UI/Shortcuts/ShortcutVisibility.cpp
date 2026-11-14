@@ -6,6 +6,12 @@
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UIWindowMgr.inl"
+#include "UI/Chat/UINewChatWnd.h"
+#include "UI/Login/UIPasswordWnd.h"
+#include "UI/Navigation/UINavigationV4Wnd.h"
+#include "UI/Shortcuts/UIShortCutWnd.h"
+#include "UI/Skill/UISkillDescribeWnd.h"
+#include "UI/Text/UIRoundBoxTooltipWnd.h"
 
 #include <algorithm>
 

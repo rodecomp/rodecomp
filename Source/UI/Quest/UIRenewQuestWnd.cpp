@@ -39,6 +39,7 @@
 
 #include "Resource/MSGSTRINGID.h"
 #include "Network/Packets/PacketId.h"
+#include "UI/Quest/UIQuestDisplay.h"
 #include <cstddef>
 #include <cstring>
 

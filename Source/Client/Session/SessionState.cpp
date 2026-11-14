@@ -24,6 +24,7 @@
 #include "Utility/Text/FormatString.h"
 
 #include "Resource/MSGSTRINGID.h"
+#include "UI/Chat/UINewChatWnd.h"
 extern "C" {
 #include <lua.h>
 }
@@ -214,7 +215,7 @@ bool CSession::EquipSwapCostumeItem(const ITEM_INFO& item) {
   }
 
   if (g_windowMgr.equipWnd) {
-    static_cast<UIEquipWnd*>(g_windowMgr.equipWnd)->NotifyEquipmentChanged();
+    g_windowMgr.equipWnd->NotifyEquipmentChanged();
   }
   RefreshItemWindows(&g_windowMgr);
   return true;
@@ -244,7 +245,7 @@ void CSession::UnequipSwapEquippedItem(const ITEM_INFO& item) {
   }
 
   if (g_windowMgr.equipWnd) {
-    static_cast<UIEquipWnd*>(g_windowMgr.equipWnd)->NotifyEquipmentChanged();
+    g_windowMgr.equipWnd->NotifyEquipmentChanged();
   }
   RefreshItemWindows(&g_windowMgr);
 }
@@ -278,7 +279,7 @@ void CSession::UnequipSwapCostumeItem(const ITEM_INFO& item) {
   }
 
   if (g_windowMgr.equipWnd) {
-    static_cast<UIEquipWnd*>(g_windowMgr.equipWnd)->NotifyEquipmentChanged();
+    g_windowMgr.equipWnd->NotifyEquipmentChanged();
   }
   RefreshItemWindows(&g_windowMgr);
 }
@@ -290,7 +291,7 @@ void CSession::SetJob(int job) {
   this->m_job = job;
   if (this->IsTreeGroupThree(previous) != this->IsTreeGroupThree(job)) {
     if (g_windowMgr.basicInfoWnd) {
-      static_cast<UIBasicInfoWnd*>(g_windowMgr.basicInfoWnd)->RefreshLayout();
+      g_windowMgr.basicInfoWnd->RefreshLayout();
     }
 
     if (g_modeMgr.GetGameMode()) {

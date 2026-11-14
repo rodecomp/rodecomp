@@ -18,6 +18,8 @@
 #include "UI/Text/UITextViewer.h"
 #include "UI/Achievement/UIAchWnd.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Dialogs/UINpcEditDialogWnd.h"
+#include "UI/Rodex/UIRodexComposeWnd.h"
 
 #include <algorithm>
 #include <new>

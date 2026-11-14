@@ -9979,7 +9979,7 @@ void UIItemCollectionWnd::OnRBtnDown(int x, int y) {
   window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, card.identified, 0, 0, 0);
   window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&card), index >= ItemSlotsCount(this->m_item), 0, 0);
 
-  if (UIItemCollectionWnd* comparison = static_cast<UIItemCollectionWnd*>(g_windowMgr.itemCollectionComparisonWnd)) {
+  if (UIItemCollectionWnd* comparison = g_windowMgr.itemCollectionComparisonWnd) {
     int compareId;
     std::memcpy(&compareId, &comparison->m_item.cards[index], sizeof(compareId));
     if (compareId != 0 && compareId != 254 && compareId != 255) {
@@ -10046,13 +10046,13 @@ void UIEquipWnd::OnLBtnDown(int x, int y) {
   if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
     if (g_windowMgr.GetHoverWindow() && item.identified != 0) {
       if (g_windowMgr.GetHoverWindow()->geometry.id == 492) {
-        static_cast<UINpcTextEditDialogWnd*>(g_windowMgr.npcTextEditDialogWnd)->InsertItemTag(item);
+        g_windowMgr.npcTextEditDialogWnd->InsertItemTag(item);
       } else if (g_windowMgr.GetHoverWindow()->geometry.id == 490) {
         static_cast<UIChatEditCtrl*>(g_windowMgr.GetHoverWindow())->InsertItemLink(item);
       } else if (g_windowMgr.GetHoverWindow()->geometry.id == 493) {
         static_cast<UIChatEditCtrl*>(ChatWindow()->m_chatEdit)->InsertItemLink(item);
       } else if (g_windowMgr.GetHoverWindow()->geometry.id == 491) {
-        static_cast<UIRodexComposeWnd*>(g_windowMgr.rodexComposeWnd)->InsertItemTag(item);
+        g_windowMgr.rodexComposeWnd->InsertItemTag(item);
       } else if (g_windowMgr.GetHoverWindow()->geometry.id == 494) {
         static_cast<UIChatEditCtrl*>(g_windowMgr.GetHoverWindow())->InsertItemLink(item);
       }
@@ -12151,10 +12151,10 @@ int UITipboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
       const int id = g_itemTagOwner->currentTipId;
       switch (g_windowMgr.GetHoverWindow()->geometry.id) {
       case 0x1EC:
-        static_cast<UINpcTextEditDialogWnd*>(g_windowMgr.npcTextEditDialogWnd)->InsertSkillTag(id);
+        g_windowMgr.npcTextEditDialogWnd->InsertSkillTag(id);
         break;
       case 0x1EB:
-        static_cast<UIRodexComposeWnd*>(g_windowMgr.rodexComposeWnd)->InsertSkillTag(id);
+        g_windowMgr.rodexComposeWnd->InsertSkillTag(id);
         break;
       case 0x1EA:
       case 0x1ED:

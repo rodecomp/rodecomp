@@ -9,6 +9,7 @@
 #include "Contents/Items/ItemNaming.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Shop/UIMerchantMirrorItemWnd.h"
 
 #include <cstdlib>
 #include <cstring>

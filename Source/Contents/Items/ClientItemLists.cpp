@@ -28,6 +28,13 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
 #include "Resource/MSGSTRINGID.h"
+#include "UI/Items/UIItemParamChangeDisplayWnd.h"
+#include "UI/Items/UIItemWnd.h"
+#include "UI/Shop/UIBartermarketWnd.h"
+#include "UI/Shop/UIMerchantItemWnd.h"
+#include "UI/Shop/UIMerchantMirrorItemWnd.h"
+#include "UI/Shop/UIMerchantShopMakeWnd.h"
+#include "UI/Shortcuts/UIShortCutWnd.h"
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>
@@ -1704,7 +1711,7 @@ bool CSession::EquipSwapEquipmentItem(const ITEM_INFO& item) {
   }
 
   if (g_windowMgr.equipWnd) {
-    static_cast<UIEquipWnd*>(g_windowMgr.equipWnd)->NotifyEquipmentChanged();
+    g_windowMgr.equipWnd->NotifyEquipmentChanged();
   }
   RefreshItemWindows(&g_windowMgr);
   return true;

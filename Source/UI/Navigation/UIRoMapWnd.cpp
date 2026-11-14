@@ -767,8 +767,8 @@ int UIRoMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
       g_navigationManager.expandedMap = false;
       g_navigationManager.SearchNavigation(name, 0, false);
       if (g_windowMgr.LookupWindow(WID_NAVIGATIONV4WND)) {
-        static_cast<UINavigationV4Wnd*>(g_windowMgr.navigationWnd)->SelectRoute(0);
-        static_cast<UINavigationV4Wnd*>(g_windowMgr.navigationWnd)->SelectRouteNode(0);
+        g_windowMgr.navigationWnd->SelectRoute(0);
+        g_windowMgr.navigationWnd->SelectRouteNode(0);
       }
       this->UpdateNavigationButtons();
       }

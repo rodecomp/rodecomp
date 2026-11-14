@@ -38,6 +38,13 @@ __declspec(noinline) RenderSystemHolder* GetRenderSystemHolder();
 #include "UI/Window/UIWindow.h"
 #include "UI/Chat/UINewChatWnd.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Dialogs/UIChooseWnd.h"
+#include "UI/Dialogs/UISayDialogWnd.h"
+#include "UI/Guild/UIGuildWnd.h"
+#include "UI/Items/UIMakeTargetListWnd.h"
+#include "UI/Lists/UIComboBoxWnd.h"
+#include "UI/Login/UIPasswordWnd.h"
+#include "UI/Navigation/UIChooseWarpWnd.h"
 #include <algorithm>
 #include <cstddef>
 #include <cstdint>
@@ -682,7 +689,7 @@ void UIWindowMgr::SaveVisibleWindowIds() {
 // OFFSET: 0x00AAB8A0
 // FUNCTION: fn_17282
 void UIWindowMgr::UpdateNavigationList() {
-  if (this->navigationWnd && !g_navigationManager.expandedMap && static_cast<UINavigationV4Wnd*>(this->navigationWnd)->IsListShown()) {
+  if (this->navigationWnd && !g_navigationManager.expandedMap && this->navigationWnd->IsListShown()) {
     this->navigationWnd->SendMsg(nullptr, UM_COMMAND, ID_MINI, 0, 0, 0);
   }
 }
@@ -1027,11 +1034,11 @@ void UIWindowMgr::SaveUIRectInfo() {
 // FUNCTION: fn_17264
 void UIWindowMgr::RefreshWindow01C8Edits() {
   if (this->chatWnd) {
-    if (this->hoverWindow == static_cast<UINewChatWnd*>(this->chatWnd)->m_chatEdit) {
-      static_cast<UINewChatWnd*>(this->chatWnd)->m_chatEdit->SetText("");
+    if (this->hoverWindow == this->chatWnd->m_chatEdit) {
+      this->chatWnd->m_chatEdit->SetText("");
     }
 
-    UIEditCtrl* edit = static_cast<UIEditCtrl*>(static_cast<UINewChatWnd*>(this->chatWnd)->m_whisperEdit);
+    UIEditCtrl* edit = static_cast<UIEditCtrl*>(this->chatWnd->m_whisperEdit);
     if (this->hoverWindow == edit) {
       edit->SetText(edit->Text());
     }
@@ -1130,7 +1137,7 @@ void UIWindowMgr::FocusWindow01C8Edit() {
     return;
   }
 
-  UIWindow* edit = static_cast<UINewChatWnd*>(this->chatWnd)->m_chatEdit;
+  UIWindow* edit = this->chatWnd->m_chatEdit;
   if (this->hoverWindow) {
     this->hoverWindow->OnFinishEdit(!edit ? false : edit->GetEditWindow() == this->hoverWindow);
   }

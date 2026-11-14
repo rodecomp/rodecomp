@@ -29,6 +29,7 @@
 #include "UI/Window/UIRegisterMgr.h"
 
 #include "Resource/MSGSTRINGID.h"
+#include "UI/Login/UIPasswordWnd.h"
 #include <cstddef>
 #include <cstdint>
 #include <cstdio>

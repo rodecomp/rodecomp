@@ -16,6 +16,9 @@
 #include "Resource/World/TerrainResource.h"
 #include "UI/Chat/UIChatRoomTitle.h"
 #include "UI/Shop/UIMerchantShopTitle.h"
+#include "UI/Chat/UINewChatWnd.h"
+#include "UI/Dialogs/UIBookWnd.h"
+#include "UI/Login/UIChangeNameWnd.h"
 #include <typeinfo>
 
 // STATIC: 0x014576A0
@@ -231,7 +234,7 @@ bool UIWindowMgr::HasTitleAtActorCell(std::uint32_t aid) {
 // OFFSET: 0x00A97490
 // FUNCTION: fn_17204
 void UIWindowMgr::CancelActiveDialog() {
-  UIWindow* window = this->changeNameWnd ? this->changeNameWnd : this->bookWnd;
+  UIWindow* window = this->changeNameWnd ? static_cast<UIWindow*>(this->changeNameWnd) : this->bookWnd;
   if (window) {
     window->SendMsg(nullptr, UM_LEFTPUSH, 0, 0, 0, 0);
     return;

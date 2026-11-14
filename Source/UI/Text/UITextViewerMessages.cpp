@@ -168,7 +168,7 @@ __forceinline void UITextViewer::AppendText(char* text, int width, int carriageR
     display = RemoveTextLinkInfo(display);
 
     if (g_windowMgr.chatWnd) {
-      display = static_cast<UINewChatWnd*>(g_windowMgr.chatWnd)->ConvertChat(display);
+      display = g_windowMgr.chatWnd->ConvertChat(display);
     }
 
     std::string navigation;
@@ -254,7 +254,7 @@ int UITextViewer::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
       display = RemoveTextLinkInfo(display);
 
       if (g_windowMgr.chatWnd) {
-        display = static_cast<UINewChatWnd*>(g_windowMgr.chatWnd)->ConvertChat(display);
+        display = g_windowMgr.chatWnd->ConvertChat(display);
       }
 
       std::string navigation;

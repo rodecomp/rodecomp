@@ -74,6 +74,11 @@
 #include <timeapi.h>
 #include "Resource/MSGSTRINGID.h"
 #include "Network/Packets/PacketId.h"
+#include "UI/Items/UIItemShopWnd.h"
+#include "UI/Navigation/UIMiniMapWnd.h"
+#include "UI/Party/UIPartySettingWnd.h"
+#include "UI/Rodex/UIRodexContentsWnd.h"
+#include "UI/Skill/UISkillListWnd.h"
 template __declspec(noinline) void std::list<ShortcutCooldownRecord>::push_back(const ShortcutCooldownRecord&);
 
 #pragma pack(push, 1)
@@ -1222,7 +1227,7 @@ void CGameMode::ReceiveHomunculusInfo3(const unsigned char* data) {
   }
 
   g_session.m_homunAttackRange = packet->attackRange;
-  if (UIHomunInfoWnd* window = static_cast<UIHomunInfoWnd*>(g_windowMgr.homunInfoWnd)) {
+  if (UIHomunInfoWnd* window = g_windowMgr.homunInfoWnd) {
     window->expBar->FillBackground(0xFFFFFF);
     window->expBar->SetValues(g_session.m_homunExp, g_session.m_homunMaxExp);
     window->intimacyBar->SetValues(&g_session.homunHunger, &g_session.homunMaxHunger);
@@ -2186,7 +2191,7 @@ void CGameMode::ReceiveRodexMailDeleteResult(int mailId, int result) {
 
       g_rodexMailStore->m_mails0.erase(mail);
       if (g_windowMgr.rodexInboxWnd) {
-        static_cast<UIRodexInboxWnd*>(g_windowMgr.rodexInboxWnd)->RemoveInboxMail(mailId);
+        g_windowMgr.rodexInboxWnd->RemoveInboxMail(mailId);
       }
     }
     message = 3865;

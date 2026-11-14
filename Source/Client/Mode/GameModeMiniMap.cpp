@@ -26,6 +26,9 @@
 #include "Utility/Cipher/LocalEncryptedName.h"
 #include "Utility/Cipher/CryptName.h"
 #include "Utility/Cipher/Obfuscate.h"
+#include "UI/Items/UIIllustWnd.h"
+#include "UI/Navigation/UIMiniMapWnd.h"
+#include "UI/Navigation/UIMinimapZoomWnd.h"
 
 #include <cstdint>
 #include <cstdio>

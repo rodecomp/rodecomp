@@ -14,6 +14,7 @@
 #include "UI/EntryQueue/UIEntryQueueWnd.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Items/UIEquipWnd.h"
 
 #include <cstdint>
 #include <cstring>

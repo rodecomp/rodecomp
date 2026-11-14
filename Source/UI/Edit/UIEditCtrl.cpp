@@ -120,6 +120,8 @@
 #include "UI/Edit/UIEditPaint.inl"
 
 #include "Resource/MSGSTRINGID.h"
+#include "UI/Edit/UICandidateWnd.h"
+#include "UI/Items/UIMakeTargetProcessWnd.h"
 // GLOBAL: gl_24653
 int g_skillTooltipActive;
 
@@ -6582,7 +6584,7 @@ int UIMerchantItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intpt
             sum += static_cast<int>(it->prices[1]) * it->quantity;
           }
         }
-        if (sum > static_cast<UIMerchantItemShopWnd*>(g_windowMgr.buyingShopItemsWnd)->buyingZeny) {
+        if (sum > g_windowMgr.buyingShopItemsWnd->buyingZeny) {
           g_windowMgr.Confirm(LookupMessage(MSI_BUYINGSTORE_SELLWND_LACKBUYERZENY), 0, true, false, 0, "Message", 280, 120, 0);
           return 0;
         }
@@ -10638,13 +10640,13 @@ void UIItemWnd::OnLBtnDown(int x, int y) {
       if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
         if (g_windowMgr.GetHoverWindow() && item.identified != 0) {
           if (g_windowMgr.GetHoverWindow()->geometry.id == 492) {
-            static_cast<UINpcTextEditDialogWnd*>(g_windowMgr.npcTextEditDialogWnd)->InsertItemTag(item);
+            g_windowMgr.npcTextEditDialogWnd->InsertItemTag(item);
           } else if (g_windowMgr.GetHoverWindow()->geometry.id == 490) {
             static_cast<UIChatEditCtrl*>(g_windowMgr.GetHoverWindow())->InsertItemLink(item);
           } else if (g_windowMgr.GetHoverWindow()->geometry.id == 493) {
             static_cast<UIChatEditCtrl*>(ChatWindow()->m_chatEdit)->InsertItemLink(item);
           } else if (g_windowMgr.GetHoverWindow()->geometry.id == 491) {
-            static_cast<UIRodexComposeWnd*>(g_windowMgr.rodexComposeWnd)->InsertItemTag(item);
+            g_windowMgr.rodexComposeWnd->InsertItemTag(item);
           } else if (g_windowMgr.GetHoverWindow()->geometry.id == 494) {
             static_cast<UIChatEditCtrl*>(g_windowMgr.GetHoverWindow())->InsertItemLink(item);
           }
@@ -10675,13 +10677,13 @@ void UIMerchantItemWnd::OnLBtnDown(int x, int y) {
     if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
       if (g_windowMgr.GetHoverWindow() && item.identified != 0) {
         if (g_windowMgr.GetHoverWindow()->geometry.id == 492) {
-          static_cast<UINpcTextEditDialogWnd*>(g_windowMgr.npcTextEditDialogWnd)->InsertItemTag(item);
+          g_windowMgr.npcTextEditDialogWnd->InsertItemTag(item);
         } else if (g_windowMgr.GetHoverWindow()->geometry.id == 490) {
           static_cast<UIChatEditCtrl*>(g_windowMgr.GetHoverWindow())->InsertItemLink(item);
         } else if (g_windowMgr.GetHoverWindow()->geometry.id == 493) {
           static_cast<UIChatEditCtrl*>(ChatWindow()->m_chatEdit)->InsertItemLink(item);
         } else if (g_windowMgr.GetHoverWindow()->geometry.id == 491) {
-          static_cast<UIRodexComposeWnd*>(g_windowMgr.rodexComposeWnd)->InsertItemTag(item);
+          g_windowMgr.rodexComposeWnd->InsertItemTag(item);
         } else if (g_windowMgr.GetHoverWindow()->geometry.id == 494) {
           static_cast<UIChatEditCtrl*>(g_windowMgr.GetHoverWindow())->InsertItemLink(item);
         }

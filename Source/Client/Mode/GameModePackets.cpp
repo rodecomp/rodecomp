@@ -150,6 +150,21 @@
 #include "Utility/Cipher/LocalEncryptedName.h"
 #include "Utility/Cipher/CryptName.h"
 #include "Utility/Cipher/Obfuscate.h"
+#include "Contents/Messenger/MessengerWindows.h"
+#include "UI/Dialogs/UISayDialogWnd.h"
+#include "UI/Guild/UIGuildWnd.h"
+#include "UI/Items/UIEquipWnd.h"
+#include "UI/Items/UIItemWnd.h"
+#include "UI/Navigation/UIMemorialDunWnd.h"
+#include "UI/Party/UIPartySettingWnd.h"
+#include "UI/Quest/UIQuestDisplay.h"
+#include "UI/Replay/UIReplayControlWnd.h"
+#include "UI/Replay/UIReplayRECControlWnd.h"
+#include "UI/Shop/UIMerchantItemPurchaseWnd.h"
+#include "UI/Shop/UIMerchantItemWnd.h"
+#include "UI/Shop/UIMerchantMirrorItemWnd.h"
+#include "UI/Skill/UISkillListWnd.h"
+#include "UI/Status/UIPetTamingDeceiveWnd.h"
 #include <new>
 
 template __declspec(noinline) decltype(auto) std::list<BroadcastBalloonLine>::emplace_back<std::string&, const int&>(std::string&, const int&);
@@ -1121,7 +1136,7 @@ __declspec(noinline) void CGameMode::ReceiveHomunculusProperty64(const unsigned 
   case SP_BASEEXP:
     g_session.m_homunExp = packet->value;
     g_session.RefreshHomunculusInfo();
-    if (UIHomunInfoWnd* window = static_cast<UIHomunInfoWnd*>(g_windowMgr.homunInfoWnd)) {
+    if (UIHomunInfoWnd* window = g_windowMgr.homunInfoWnd) {
       window->expBar->SetValues(g_session.m_homunExp, g_session.m_homunMaxExp);
     }
     break;
@@ -4388,7 +4403,7 @@ namespace {
 __declspec(noinline) void CGameMode::ReceiveItem1758List(const unsigned char* packet) {
   const auto* p = reinterpret_cast<const PACKET_ZC_MYITEMLIST_BUYING_STORE*>(packet);
   if (g_replayAnimationScaling == 0) {
-    static_cast<UIMerchantShopMakeWnd*>(g_windowMgr.buyingShopMakeWnd)->PrintBuyList();
+    g_windowMgr.buyingShopMakeWnd->PrintBuyList();
   }
 
   g_session.ClearMerchantPurchaseSavedItems();
@@ -5610,7 +5625,7 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
     }
     if (g_replayAnimationScaling == 0) {
       if (g_windowMgr.basicInfoWnd) {
-        static_cast<UIBasicInfoWnd*>(g_windowMgr.basicInfoWnd)->SetHeight(g_windowMgr.basicInfoWnd->geometry.height);
+        g_windowMgr.basicInfoWnd->SetHeight(g_windowMgr.basicInfoWnd->geometry.height);
       }
     }
     this->RefreshActorJobEffects(true);
@@ -5627,7 +5642,7 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
     if (g_replayAnimationScaling == 0) {
       g_windowMgr.EnsureWindow(WID_NOTIFYJOBLEVELUPWND);
       if (g_windowMgr.basicInfoWnd) {
-        static_cast<UIBasicInfoWnd*>(g_windowMgr.basicInfoWnd)->SetHeight(g_windowMgr.basicInfoWnd->geometry.height);
+        g_windowMgr.basicInfoWnd->SetHeight(g_windowMgr.basicInfoWnd->geometry.height);
       }
     }
     if (UIWindow* window = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
@@ -5797,7 +5812,7 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
   case SP_MAXAP:
     g_session.SetTraitStat(packet->type, packet->value);
     if (g_windowMgr.statusWnd) {
-      static_cast<UIStatusWnd*>(g_windowMgr.statusWnd)->ValidatePlacement();
+      g_windowMgr.statusWnd->ValidatePlacement();
     }
     g_session.InvalidateWindowFrames();
     break;
@@ -7639,7 +7654,7 @@ __declspec(noinline) void CGameMode::OpenBuyingStoreMake(unsigned char slotCount
   if (!g_windowMgr.chatRoomWnd && !g_windowMgr.chatRoomMakeWnd && !g_windowMgr.merchantShopMakeWnd) {
     g_windowMgr.EnsureWindow(WID_MERCHANTSHOPMAKEWND_MODE_1);
     if (g_windowMgr.buyingShopMakeWnd) {
-      static_cast<UIMerchantShopMakeWnd*>(g_windowMgr.buyingShopMakeWnd)->SetItems(0, nullptr);
+      g_windowMgr.buyingShopMakeWnd->SetItems(0, nullptr);
     }
     return;
   }
@@ -7670,7 +7685,7 @@ __declspec(noinline) void CGameMode::OpenVendingMake(unsigned char slotCount, in
   if (!g_windowMgr.chatRoomWnd && !g_windowMgr.chatRoomMakeWnd) {
     g_windowMgr.EnsureWindow(WID_MERCHANTSHOPMAKEWND);
     if (g_windowMgr.merchantShopMakeWnd) {
-      static_cast<UIMerchantShopMakeWnd*>(g_windowMgr.merchantShopMakeWnd)->SetItems(itemCount, items);
+      g_windowMgr.merchantShopMakeWnd->SetItems(itemCount, items);
     }
     return;
   }
@@ -10447,7 +10462,7 @@ void CGameMode::ReceivePetChangeState(const unsigned char* data) {
     if (actor) {
       g_session.petJob = actor->GetEffectiveJob(-1);
     }
-    if (UIPetInfoWnd* window = static_cast<UIPetInfoWnd*>(g_windowMgr.petInfoWnd)) {
+    if (UIPetInfoWnd* window = g_windowMgr.petInfoWnd) {
       window->UpdateFriendlyGauge();
     }
     if (g_session.GetDisplayJob() >= 0xFD2 && g_session.GetDisplayJob() <= 0xFD4 && packet->value < 100 && g_session.petHunger < 30) {
@@ -11788,7 +11803,7 @@ void CGameMode::ReceiveActorDisappear(const unsigned char* data) {
     if (CRenderObject* actor = this->scene->GetGameActorByAID(packet->aid)) {
       this->LaunchDummyEffect(&actor->render.position, 0x13A, 600, 0);
     }
-    if (g_windowMgr.merchantItemShopWnd && static_cast<UIMerchantItemShopWnd*>(g_windowMgr.merchantItemShopWnd)->ownerAid == static_cast<int>(packet->aid)) {
+    if (g_windowMgr.merchantItemShopWnd && g_windowMgr.merchantItemShopWnd->ownerAid == static_cast<int>(packet->aid)) {
       this->SendMsg(MM_RELEASE_QUEST_SH, 0, 0, 0, 0);
       g_session.ClearItems1760And1748();
     }
@@ -12846,12 +12861,12 @@ void CGameMode::ReceiveExpChange(const unsigned char* packet) {
     }
     exp = p->value;
     g_session.InvalidateWindowFrames();
-    static_cast<UIINT64BarGraph*>(static_cast<UIBasicInfoWnd*>(g_windowMgr.basicInfoWnd)->baseExpBar)->SetValues(exp, nextExp);
+    static_cast<UIINT64BarGraph*>(g_windowMgr.basicInfoWnd->baseExpBar)->SetValues(exp, nextExp);
     break;
   case SP_JOBEXP:
     jobExp = p->value;
     g_session.InvalidateWindowFrames();
-    static_cast<UIINT64BarGraph*>(static_cast<UIBasicInfoWnd*>(g_windowMgr.basicInfoWnd)->jobExpBar)->SetValues(jobExp, nextJobExp);
+    static_cast<UIINT64BarGraph*>(g_windowMgr.basicInfoWnd->jobExpBar)->SetValues(jobExp, nextJobExp);
     break;
   case SP_ZENY:
     if (this->isWaitingCancelExchangeItem) {
@@ -12865,12 +12880,12 @@ void CGameMode::ReceiveExpChange(const unsigned char* packet) {
   case SP_NEXTBASEEXP:
     nextExp = p->value;
     g_session.InvalidateWindowFrames();
-    static_cast<UIINT64BarGraph*>(static_cast<UIBasicInfoWnd*>(g_windowMgr.basicInfoWnd)->baseExpBar)->SetValues(exp, nextExp);
+    static_cast<UIINT64BarGraph*>(g_windowMgr.basicInfoWnd->baseExpBar)->SetValues(exp, nextExp);
     break;
   case SP_NEXTJOBEXP:
     nextJobExp = p->value;
     g_session.InvalidateWindowFrames();
-    static_cast<UIINT64BarGraph*>(static_cast<UIBasicInfoWnd*>(g_windowMgr.basicInfoWnd)->jobExpBar)->SetValues(jobExp, nextJobExp);
+    static_cast<UIINT64BarGraph*>(g_windowMgr.basicInfoWnd->jobExpBar)->SetValues(jobExp, nextJobExp);
     break;
   }
 }
@@ -16864,7 +16879,7 @@ void CGameMode::ReceiveColorBroadcast(const unsigned char* data) {
     const int color = (p->fontColor[0] << 16) | (p->fontColor[1] << 8) | p->fontColor[2];
     BroadcastBalloonMessage balloonMessage;
     balloonMessage.fontHeight = p->fontSize;
-    message = static_cast<UINewChatWnd*>(g_windowMgr.chatWnd)->ConvertChat(message);
+    message = g_windowMgr.chatWnd->ConvertChat(message);
     balloonMessage.lines.emplace_back(message, color);
     balloon->AddMessage(0, balloonMessage);
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
@@ -16975,7 +16990,7 @@ void CGameMode::ReceiveTaggedBroadcast(const unsigned char* data) {
     );
   }
 
-  message = static_cast<UINewChatWnd*>(g_windowMgr.chatWnd)->ConvertChat(message);
+  message = g_windowMgr.chatWnd->ConvertChat(message);
   std::string linked;
   DisplayNavigationLink(linked, message);
   message = std::move(linked);
@@ -24715,7 +24730,7 @@ void CGameMode::ProcessIncomingPackets() {
       this->nameCard.SetName(packet->aid, std::string(packet->name, sizeof(packet->name)).c_str());
       if (packet->aid == g_session.petGid) {
         sprintf(g_session.petName, packet->name);
-        if (UIPetInfoWnd *window = static_cast<UIPetInfoWnd *>(g_windowMgr.petInfoWnd)) {
+        if (UIPetInfoWnd *window = g_windowMgr.petInfoWnd) {
           window->nameEdit->SetText(packet->name);
         }
       }
@@ -25140,7 +25155,7 @@ void CGameMode::ProcessIncomingPackets() {
       if (CRenderObject *actor = this->scene->GetGameActorByAID(this->chatRoomActorIds[roomId])) {
         actor->SendMsg(nullptr, AM_DELETE_CHAT_TITLE, 0, 0, 0, 0, 0, 0);
       }
-      if (g_windowMgr.chatRoomWnd && static_cast<UIChatRoomWnd *>(g_windowMgr.chatRoomWnd)->roomStatus.roomId == static_cast<int>(roomId)) {
+      if (g_windowMgr.chatRoomWnd && g_windowMgr.chatRoomWnd->roomStatus.roomId == static_cast<int>(roomId)) {
         g_windowMgr.CloseWindow(WID_CHATROOMWND);
         g_windowMgr.CloseWindow(WID_CHATROOMCHANGEWND);
       }
@@ -26181,7 +26196,7 @@ void CGameMode::ProcessIncomingPackets() {
       g_session.petHunger = packet->fullness;
       g_session.m_petFriendly = packet->relationship;
       g_session.petAccessory = packet->itemId;
-      if (UIPetInfoWnd *window = static_cast<UIPetInfoWnd *>(g_windowMgr.petInfoWnd)) {
+      if (UIPetInfoWnd *window = g_windowMgr.petInfoWnd) {
         window->UpdateFriendlyGauge();
         window->nameEdit->SetText(g_session.petName);
         window->Invalidate();

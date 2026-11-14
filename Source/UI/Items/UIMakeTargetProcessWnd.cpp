@@ -19,6 +19,7 @@
 #include "UI/Window/WindowManagerWindows.h"
 
 #include "Resource/MSGSTRINGID.h"
+#include "UI/Items/UIItemWnd.h"
 #include <cstdint>
 #include <cstring>
 #include <vector>

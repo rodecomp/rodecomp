@@ -14,6 +14,17 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Layout/WindowCoordinates.h"
 #include "UI/Window/WindowManagerWindows.h"
+#include "UI/CashEmotion/UICashEmotionListWnd.h"
+#include "UI/Dialogs/UIMessageBox.h"
+#include "UI/Guild/UIGuildWnd.h"
+#include "UI/Items/UIEquipWnd.h"
+#include "UI/Items/UISecondCostumeWnd.h"
+#include "UI/Lists/UIComboBoxWnd.h"
+#include "UI/Login/UINewSelectCharWnd.h"
+#include "UI/Login/UISelCharForUServerWnd.h"
+#include "UI/Navigation/UINavigationV4Wnd.h"
+#include "UI/Shop/UInCash_CallWnd.h"
+#include "UI/Skill/UINewSkillListWnd.h"
 
 #include <algorithm>
 
@@ -198,7 +209,7 @@ int UIWindowMgr::ProcessMouse() {
   this->closedMiniPartyIds.clear();
 
   if (g_mouse.buttons[0] == 1 && this->chatWnd) {
-    UINewChatWnd* suggestions = static_cast<UINewChatWnd*>(this->chatWnd);
+    UINewChatWnd* suggestions = this->chatWnd;
     if (suggestions->SuggestionsVisible() == 1) {
       int left;
       int top;

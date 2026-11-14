@@ -59,14 +59,14 @@ bool UIEditCtrl::RemoveInvalidLink(int type, std::list<UIWindow*>::iterator& ent
 
     if (before.find("<") != std::string::npos && after.find(">") == std::string::npos) {
       if (g_windowMgr.rodexComposeWnd &&
-          static_cast<UIRodexComposeWnd*>(g_windowMgr.rodexComposeWnd)->m_contents != g_windowMgr.GetHoverWindow()) {
+          g_windowMgr.rodexComposeWnd->m_contents != g_windowMgr.GetHoverWindow()) {
         continue;
       }
 
       boundary = position + bytes;
     } else if (before.find("<") == std::string::npos && after.find(">") != std::string::npos) {
       if (g_windowMgr.rodexComposeWnd &&
-          static_cast<UIRodexComposeWnd*>(g_windowMgr.rodexComposeWnd)->m_contents != g_windowMgr.GetHoverWindow()) {
+          g_windowMgr.rodexComposeWnd->m_contents != g_windowMgr.GetHoverWindow()) {
         continue;
       }
 
@@ -116,7 +116,7 @@ void UIEditCtrl::MoveCursorToEnd() {
 // OFFSET: 0x008550E0
 // FUNCTION: fn_10750
 void UIEditCtrl::SnapLinkSelection(const std::string& prefix, const int& bytes) {
-  if (g_windowMgr.rodexComposeWnd && static_cast<UIRodexComposeWnd*>(g_windowMgr.rodexComposeWnd)->m_contents != g_windowMgr.GetHoverWindow()) {
+  if (g_windowMgr.rodexComposeWnd && g_windowMgr.rodexComposeWnd->m_contents != g_windowMgr.GetHoverWindow()) {
     return;
   }
 

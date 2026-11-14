@@ -22,6 +22,10 @@
 #include "UI/Window/WindowManagerWindows.h"
 #include "Utility/Text/Tokenizer.h"
 #include "Contents/Messenger/ClientMessenger.h"
+#include "UI/Rodex/UIRodexComposeWnd.h"
+#include "UI/Shortcuts/UIShortCutWnd.h"
+#include "UI/Skill/UINewSkillListWnd.h"
+#include "UI/Skill/UISkillListWnd.h"
 #include <algorithm>
 #include <cstdlib>
 #include <cstring>

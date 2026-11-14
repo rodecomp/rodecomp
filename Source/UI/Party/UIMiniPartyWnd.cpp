@@ -26,6 +26,7 @@
 #include "Client/Mode/CMode.h"
 
 #include "Resource/MSGSTRINGID.h"
+#include "UI/Party/UIPartySettingWnd.h"
 #include <windows.h>
 #include <timeapi.h>
 

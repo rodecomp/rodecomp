@@ -34,8 +34,7 @@ UIWindow* UIWindowMgr::CreateLayoutWindow(int id) {
   if (window == nullptr) {
     switch (id) {
     case WID_HOTKEYWND:
-      window = new UIHotKeyWnd();
-      this->hotkeyWnd = window;
+      window = this->hotkeyWnd = new UIHotKeyWnd();
       break;
     case WID_JOINTO_BATTLEFIELDWND:
       window = new UIEntryQueueWnd();

@@ -35,6 +35,7 @@
 
 #include "Resource/MSGSTRINGID.h"
 #include "Network/Packets/PacketId.h"
+#include "UI/Login/UISecondPasswordEditWnd.h"
 #include <windows.h>
 #include <mmsystem.h>
 #include <algorithm>

@@ -45,6 +45,7 @@
 
 #include "Resource/MSGSTRINGID.h"
 #include "Network/Packets/PacketId.h"
+#include "UI/Navigation/UIMinimapZoomWnd.h"
 extern "C" {
 #include <lua.h>
 }
@@ -1287,7 +1288,7 @@ void ApplyItemWndServiceOption(int id, unsigned char value, bool notify, int ena
   }
 
   if (g_windowMgr.itemWnd) {
-    static_cast<UIItemWnd*>(g_windowMgr.itemWnd)->RefreshOptionBox();
+    g_windowMgr.itemWnd->RefreshOptionBox();
   }
 }
 

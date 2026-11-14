@@ -264,7 +264,7 @@ int UIEditctrlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
         std::fwrite(text.c_str(), text.size(), 1, file);
         std::fclose(file);
         if (g_windowMgr.miniMapWnd) {
-          static_cast<UIMiniMapWnd*>(g_windowMgr.miniMapWnd)->LoadMemos();
+          g_windowMgr.miniMapWnd->LoadMemos();
         }
         g_windowMgr.CloseWindow(WID_EDITCTRLWND);
       }

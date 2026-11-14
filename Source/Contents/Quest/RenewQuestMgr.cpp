@@ -17,6 +17,8 @@
 #include "Client/Session/Session.h"
 
 #include "Resource/MSGSTRINGID.h"
+#include "UI/Quest/UIQuestDisplay.h"
+#include "UI/Status/UIBasicInfoWnd.h"
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>

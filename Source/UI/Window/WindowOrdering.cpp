@@ -5,6 +5,9 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/WindowManagerWindows.h"
+#include "UI/Clan/UIClanWnd.h"
+#include "UI/Guild/UIGuildWnd.h"
+#include "UI/Navigation/UINavigationV4Wnd.h"
 
 #include <algorithm>
 

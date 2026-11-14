@@ -6,6 +6,7 @@
 #include "Resource/ResourceMgr.h"
 #include "Utility/Text/FormatString.h"
 #include "UI/Navigation/UINavigationWnd.h"
+#include "UI/Navigation/UINavigationV4Wnd.h"
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>

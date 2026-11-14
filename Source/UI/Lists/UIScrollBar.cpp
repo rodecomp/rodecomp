@@ -1808,10 +1808,10 @@ bool UIItemTagCtrl::RemoveInvalidTag(std::list<ItemTagRecord>::iterator& entry) 
 
     bool atCursor;
     if (before.find("<") != std::string::npos && after.find(">") == std::string::npos) {
-      atCursor = (!g_windowMgr.rodexComposeWnd || static_cast<UIRodexComposeWnd*>(g_windowMgr.rodexComposeWnd)->m_contents == g_windowMgr.GetHoverWindow()) &&
+      atCursor = (!g_windowMgr.rodexComposeWnd || g_windowMgr.rodexComposeWnd->m_contents == g_windowMgr.GetHoverWindow()) &&
                  absolute + bytes == g_serverLanguage->cursor;
     } else if (before.find("<") == std::string::npos && after.find(">") != std::string::npos) {
-      atCursor = (!g_windowMgr.rodexComposeWnd || static_cast<UIRodexComposeWnd*>(g_windowMgr.rodexComposeWnd)->m_contents == g_windowMgr.GetHoverWindow()) &&
+      atCursor = (!g_windowMgr.rodexComposeWnd || g_windowMgr.rodexComposeWnd->m_contents == g_windowMgr.GetHoverWindow()) &&
                  absolute == g_serverLanguage->cursor;
     } else if (before.find("<") != std::string::npos && after.find(">") != std::string::npos) {
       ++count;

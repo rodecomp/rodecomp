@@ -2817,7 +2817,7 @@ void UIItemTagOnMail::PlaceTagButton(UIWindow* button, const std::string& name, 
 
   unsigned line = 0;
   int consumed = 0;
-  UIRodexComposeWnd* compose = static_cast<UIRodexComposeWnd*>(g_windowMgr.rodexComposeWnd);
+  UIRodexComposeWnd* compose = g_windowMgr.rodexComposeWnd;
   const int left = compose->m_contents->geometry.x;
   const int top = compose->m_contents->geometry.y;
   const int lineHeight = compose->m_contents->lineHeight;
@@ -2849,7 +2849,7 @@ void UIItemTagOnMail::PlaceTagButton(UIWindow* button, const std::string& name, 
 // OFFSET: 0x00884C40
 // FUNCTION: fn_11312
 void UIItemTagOnMegaPhone::PlaceTagButton(UIWindow* button, const std::string& name, const int& x, int) {
-  UINpcTextEditDialogWnd* owner = static_cast<UINpcTextEditDialogWnd*>(g_windowMgr.npcTextEditDialogWnd);
+  UINpcTextEditDialogWnd* owner = g_windowMgr.npcTextEditDialogWnd;
   if (!owner || owner->edit->geometry.id != 492) {
     return;
   }
@@ -2860,7 +2860,7 @@ void UIItemTagOnMegaPhone::PlaceTagButton(UIWindow* button, const std::string& n
   unsigned bytes = 0;
   const int width = owner->MeasureText(name.c_str(), bytes);
   button->Move(
-    this->textWidth + width > static_cast<UINpcEditDialogWnd*>(g_windowMgr.npcTextEditDialogWnd)->edit->geometry.width ? 1000
+    this->textWidth + width > g_windowMgr.npcTextEditDialogWnd->edit->geometry.width ? 1000
     : position != 0                                                                                                     ? position
                                                                                                                         : left + 2 + width,
     top + 1

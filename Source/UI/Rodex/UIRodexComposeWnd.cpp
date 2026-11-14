@@ -41,6 +41,7 @@
 
 #include "Resource/MSGSTRINGID.h"
 #include "Network/Packets/PacketId.h"
+#include "UI/Login/UIPasswordWnd.h"
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>

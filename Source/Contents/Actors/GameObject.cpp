@@ -2197,7 +2197,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
   case AM_CHAT: {
     std::string text(reinterpret_cast<const char*>(static_cast<std::intptr_t>(b)));
     if (g_windowMgr.chatWnd != nullptr) {
-      text = static_cast<UINewChatWnd*>(g_windowMgr.chatWnd)->ConvertChat(std::string(reinterpret_cast<const char*>(static_cast<std::intptr_t>(b))));
+      text = g_windowMgr.chatWnd->ConvertChat(std::string(reinterpret_cast<const char*>(static_cast<std::intptr_t>(b))));
     }
     std::string linked;
     DisplayNavigationLink(linked, text);

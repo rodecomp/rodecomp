@@ -6,6 +6,7 @@
 #include "Contents/Configuration/ServiceOptions.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Shortcuts/UIShortCutWnd.h"
 
 // INLINED
 inline bool UIWindowMgr::ShowShortcutWindow(int value) {

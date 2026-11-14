@@ -108,6 +108,12 @@
 #include "Utility/Cipher/LocalEncryptedName.h"
 #include "Utility/Cipher/CryptName.h"
 #include "Utility/Cipher/Obfuscate.h"
+#include "UI/Chat/UIChatRoomWnd.h"
+#include "UI/Dialogs/UIChooseWnd.h"
+#include "UI/Login/UIPasswordWnd.h"
+#include "UI/Navigation/UIMiniMapWnd.h"
+#include "UI/Replay/UIReplayControlWnd.h"
+#include "UI/Replay/UIReplayRECControlWnd.h"
 
 extern "C" long long _Xtime_get_ticks();
 
@@ -2592,7 +2598,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       std::strncpy(reinterpret_cast<char*>(packet + 12), reinterpret_cast<const char*>(argument1), 79);
       packet[91] = 0;
       if (g_windowMgr.buyingShopMakeWnd) {
-        const auto* window = static_cast<const UIMerchantShopMakeWnd*>(g_windowMgr.buyingShopMakeWnd);
+        const auto* window = g_windowMgr.buyingShopMakeWnd;
         std::memcpy(packet + 92, &window->selectedRow, sizeof(window->selectedRow));
         std::memcpy(packet + 94, &window->selectedColumn, sizeof(window->selectedColumn));
       }
@@ -4608,7 +4614,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       std::strncpy(reinterpret_cast<char*>(packet + 4), reinterpret_cast<const char*>(argument1), 0x4F);
       packet[0x53] = 0;
       if (g_windowMgr.merchantShopMakeWnd != nullptr) {
-        const auto* shop = static_cast<const UIMerchantShopMakeWnd*>(g_windowMgr.merchantShopMakeWnd);
+        const auto* shop = g_windowMgr.merchantShopMakeWnd;
         std::memcpy(packet + 0x54, &shop->selectedRow, 2);
         std::memcpy(packet + 0x56, &shop->selectedColumn, 2);
       }
@@ -6263,7 +6269,7 @@ void CGameMode::ProcessUiMessage(unsigned char* message) {
     g_windowMgr.CloseWindow(WID_COMBOBOXWND);
     g_navigationManager.LoadStates(states);
     if (g_windowMgr.navigationWnd != nullptr) {
-      static_cast<UINavigationV4Wnd*>(g_windowMgr.navigationWnd)->FillRouteGroups();
+      g_windowMgr.navigationWnd->FillRouteGroups();
     }
     break;
   }
@@ -7510,7 +7516,7 @@ void CGameMode::ProcessRightButtonDrag() {
       return;
     }
 
-    UIShortCutWnd* shortcuts = static_cast<UIShortCutWnd*>(g_windowMgr.shortCutWnd);
+    UIShortCutWnd* shortcuts = g_windowMgr.shortCutWnd;
     if (!shortcuts) {
       return;
     }
@@ -7678,7 +7684,7 @@ void CGameMode::ProcessMouseWheel(int requireControl) {
   }
 
   if (g_serviceOptions.Get(TT_QUICKSPELL2_ON_OFF)) {
-    UIShortCutWnd* shortcuts = static_cast<UIShortCutWnd*>(g_windowMgr.shortCutWnd);
+    UIShortCutWnd* shortcuts = g_windowMgr.shortCutWnd;
     g_session.m_mapTransitionFlag = 1;
     AutomaticSkills* automatic = &g_session.m_automaticSkills;
     if (g_mouse.wheel > 0) {
@@ -8466,9 +8472,9 @@ int CGameMode::ProcessGroundClick(int result) {
     }
   }
 
-  UIMerchantShopMakeWnd* shop = static_cast<UIMerchantShopMakeWnd*>(g_windowMgr.merchantShopMakeWnd);
+  UIMerchantShopMakeWnd* shop = g_windowMgr.merchantShopMakeWnd;
   if (!shop && g_windowMgr.buyingShopMakeWnd) {
-    shop = static_cast<UIMerchantShopMakeWnd*>(g_windowMgr.buyingShopMakeWnd);
+    shop = g_windowMgr.buyingShopMakeWnd;
   }
 
   bool shopSuspended = false;
@@ -8969,7 +8975,7 @@ void CGameMode::ProcessInput() {
       this->scene->player->SendMsg(nullptr, AM_ATTACKCLICKUP, 0, 0, 0, 0, 0, 0);
     }
     this->SendMsg(MM_DROP, g_mouse.x, g_mouse.y, 0, 0);
-    UIMenuWnd* menu = static_cast<UIMenuWnd*>(g_windowMgr.menuWnd);
+    UIMenuWnd* menu = g_windowMgr.menuWnd;
     if (menu) {
       if (menu->m_menuFlags) {
         menu->m_menuFlags = 0;

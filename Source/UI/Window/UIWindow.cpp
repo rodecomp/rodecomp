@@ -1448,7 +1448,7 @@ std::string UIWindow::FitDisplayText(int width, const char* text, int family, in
   display = RemoveTextLinkInfo(display);
 
   if (g_windowMgr.chatWnd) {
-    display = static_cast<UINewChatWnd*>(g_windowMgr.chatWnd)->ConvertChat(std::move(display));
+    display = g_windowMgr.chatWnd->ConvertChat(std::move(display));
   }
 
   std::string navigation;
@@ -1502,7 +1502,7 @@ std::string UIWindow::FitVerticalDisplayText(int height, const char* text, int f
   display = static_cast<const std::string&>(RemoveTextLinkInfo(display));
 
   if (g_windowMgr.chatWnd) {
-    display = static_cast<UINewChatWnd*>(g_windowMgr.chatWnd)->ConvertChat(std::move(display));
+    display = g_windowMgr.chatWnd->ConvertChat(std::move(display));
   }
 
   std::string navigation;

@@ -36,6 +36,7 @@
 #include "Utility/Text/FormatString.h"
 
 #include "Resource/MSGSTRINGID.h"
+#include "UI/Login/UIPasswordWnd.h"
 #include <algorithm>
 #include <array>
 #include <cstdarg>

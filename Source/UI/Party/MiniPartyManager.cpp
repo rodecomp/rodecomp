@@ -11,6 +11,10 @@
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/WindowManagerWindows.h"
+#include "UI/Login/UIChangeNameWnd.h"
+#include "UI/Login/UINewSelectCharWnd.h"
+#include "UI/Login/UISelCharForUServerWnd.h"
+#include "UI/Login/UIWaitDBSaveWnd.h"
 #include <new>
 
 template __declspec(noinline) std::_List_node<UIWindow*, void*>* std::list<UIWindow*>::_Emplace<UIWindow* const&>(std::_List_node<UIWindow*, void*>* const, UIWindow* const&);
@@ -143,7 +147,7 @@ void UIWindowMgr::RebuildMiniPartyWindows() {
     window->SendMsg(nullptr, UM_REFRESHITEM, reinterpret_cast<std::intptr_t>(&member), 0, 0, 0);
     g_session.AddMiniPartyRecord(record.id, record.cell);
 
-    UIMenuWnd* drag = static_cast<UIMenuWnd*>(this->menuWnd);
+    UIMenuWnd* drag = this->menuWnd;
     if (drag != nullptr && drag->m_menuId == 301 && drag->m_targetWindowId == record.cell) {
       const int x = drag->geometry.x;
       const int y = drag->geometry.y;

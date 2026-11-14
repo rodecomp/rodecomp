@@ -18,6 +18,7 @@
 #include "UI/Buttons/UISpriteButton.h"
 
 #include "Resource/MSGSTRINGID.h"
+#include "UI/Status/UIBasicInfoWnd.h"
 #include <cstring>
 
 // OFFSET: 0x0084EDD0

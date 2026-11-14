@@ -718,8 +718,8 @@ void UIRoMapWnd::OnLBtnUp(int x, int y) {
     g_navigationManager.expandedMap = false;
     g_navigationManager.SearchNavigation(name, 0, false);
     if (g_windowMgr.navigationWnd) {
-      static_cast<UINavigationV4Wnd*>(g_windowMgr.navigationWnd)->SelectRoute(0);
-      static_cast<UINavigationV4Wnd*>(g_windowMgr.navigationWnd)->SelectRouteNode(0);
+      g_windowMgr.navigationWnd->SelectRoute(0);
+      g_windowMgr.navigationWnd->SelectRouteNode(0);
     }
     this->UpdateNavigationButtons();
   }

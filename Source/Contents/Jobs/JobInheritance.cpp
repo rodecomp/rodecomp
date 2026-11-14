@@ -38,6 +38,7 @@
 #include "Utility/Math/AffineMatrix.h"
 
 #include "Resource/MSGSTRINGID.h"
+#include "UI/Items/UIItemParamChangeDisplayWnd.h"
 #include <cstring>
 #include <list>
 #include <new>

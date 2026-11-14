@@ -422,7 +422,7 @@ bool CCashEmotionAction_Register::Execute(int packId, int emotionId) {
     return false;
   }
 
-  if (auto* emotionWnd = static_cast<UIEmotionWnd*>(g_windowMgr.emotionWnd)) {
+  if (auto* emotionWnd = g_windowMgr.emotionWnd) {
     emotionWnd->SetMacroText(name, -1);
   } else {
     UINewChatWnd* suggestions = ChatWindow();
@@ -447,7 +447,7 @@ bool CCashEmotionAction_SelectedUnPurchasedPack::Execute(int packId, int) {
     suggestions->ToggleInput();
   }
 
-  UICashEmotionListWnd* listWnd = static_cast<UICashEmotionListWnd*>(g_windowMgr.cashEmotionListWnd);
+  UICashEmotionListWnd* listWnd = g_windowMgr.cashEmotionListWnd;
   if (!listWnd) {
     listWnd = static_cast<UICashEmotionListWnd*>(g_windowMgr.EnsureWindow(WID_CASHEMOTIONLISTWND));
   }
@@ -1293,7 +1293,7 @@ bool CCashEmotionMgr::IsOwnedPack(int packId) {
 // OFFSET: 0x0059C5A0
 // FUNCTION: fn_02977
 bool CCashEmotionMgr::RemoveExpiredPacks() {
-  auto* listWnd = static_cast<UICashEmotionListWnd*>(g_windowMgr.cashEmotionListWnd);
+  auto* listWnd = g_windowMgr.cashEmotionListWnd;
   bool expired = false;
   const __time32_t now = _time32(nullptr) - this->serverTimeOffset - this->intendedDelay;
 
@@ -1329,7 +1329,7 @@ void CCashEmotionMgr::RemoveOwnedPack(int packId, bool refresh, bool clearExpiry
   }
 
   if (refresh) {
-    if (auto* listWnd = static_cast<UICashEmotionListWnd*>(g_windowMgr.cashEmotionListWnd)) {
+    if (auto* listWnd = g_windowMgr.cashEmotionListWnd) {
       listWnd->RefreshPackLists();
     }
   }
@@ -1465,7 +1465,7 @@ void CCashEmotionMgr::AcquirePack(int packId, unsigned int expiry) {
   this->SetOwnedPack(packId, expiry);
   this->selectedPackId = -1;
 
-  UICashEmotionListWnd* listWnd = static_cast<UICashEmotionListWnd*>(g_windowMgr.cashEmotionListWnd);
+  UICashEmotionListWnd* listWnd = g_windowMgr.cashEmotionListWnd;
   if (listWnd) {
     listWnd->ResetLists();
     listWnd->RefreshSelection();
@@ -1476,7 +1476,7 @@ void CCashEmotionMgr::AcquirePack(int packId, unsigned int expiry) {
 // OFFSET: 0x0059D2C0
 // FUNCTION: fn_02986
 bool CCashEmotionMgr::UpdatePurchasedPackExpiry() {
-  auto* listWnd = static_cast<UICashEmotionListWnd*>(g_windowMgr.cashEmotionListWnd);
+  auto* listWnd = g_windowMgr.cashEmotionListWnd;
   if (listWnd) {
     for (auto it = this->m_expiry.begin(); it != this->m_expiry.end();) {
       if (it->second.IsBeforeNow()) {

@@ -87,6 +87,8 @@
 #include "Utility/Cipher/Obfuscate.h"
 
 #include "Resource/MSGSTRINGID.h"
+#include "UI/Dialogs/UIMenuWnd.h"
+#include "UI/Login/UISecondPasswordEditWnd.h"
 #include <algorithm>
 #include <array>
 #include <chrono>
@@ -2684,7 +2686,7 @@ void CLoginMode::PollNetworkStatus() {
       case 0:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
         g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWDRD_NOT_AVAILABLE_SUCCESS), 0, true, false, 0, "Message", 280, 120, 0);
-        static_cast<UINewSelectCharWnd*>(g_windowMgr.newSelectCharWnd)->EnableButtonById(0x1A2);
+        g_windowMgr.newSelectCharWnd->EnableButtonById(0x1A2);
         g_session.m_passwordWndMode = 1;
         break;
       case 1:
@@ -2700,7 +2702,7 @@ void CLoginMode::PollNetworkStatus() {
       case 0:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
         g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWDRD_AVAILABLE_SUCCESS), 0, true, false, 0, "Message", 280, 120, 0);
-        static_cast<UINewSelectCharWnd*>(g_windowMgr.newSelectCharWnd)->DisableButtonById(0x1A2);
+        g_windowMgr.newSelectCharWnd->DisableButtonById(0x1A2);
         break;
       case 1:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);

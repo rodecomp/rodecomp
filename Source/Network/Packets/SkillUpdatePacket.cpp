@@ -4,6 +4,8 @@
 #include "Client/Session/Session.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
+#include "UI/Guild/UIGuildWnd.h"
+#include "UI/Shortcuts/UIShortCutWnd.h"
 
 #include <cstring>
 

@@ -93,6 +93,13 @@
 #include <vector>
 #include <xtimec.h>
 #include "Resource/MSGSTRINGID.h"
+#include "UI/Guild/UIGuildWnd.h"
+#include "UI/Items/UIEquipWnd.h"
+#include "UI/Navigation/UIMiniMapWnd.h"
+#include "UI/Quest/UIQuestDisplay.h"
+#include "UI/Replay/UIReplayRECControlWnd.h"
+#include "UI/Shop/UIMerchantMirrorItemWnd.h"
+#include "UI/Shortcuts/UIShortCutWnd.h"
 
 // GLOBAL: gl_25441
 static const std::string g_whisperItemLinkTag = "<ITEML>";
@@ -2022,7 +2029,7 @@ void CGameMode::ReceiveRodexOpen(const unsigned char* packet) {
       g_windowMgr.EnsureWindow(WID_RODEXCOMPOSEWND);
       const char* text = open->text;
       if (text) {
-        static_cast<UIRodexContentsWnd*>(g_windowMgr.rodexComposeWnd)->SetContentsText(text);
+        static_cast<UIRodexContentsWnd*>(static_cast<UIWindow*>(g_windowMgr.rodexComposeWnd))->SetContentsText(text);
       }
     }
   } else {
@@ -2074,7 +2081,7 @@ void CGameMode::ReceiveStackedItemReturn(const unsigned char* packet) {
 void CGameMode::ReceiveRodexRecipient(int id, unsigned short job, unsigned short level, const char* name) {
   if (id) {
     if (g_windowMgr.rodexComposeWnd) {
-      static_cast<UIRodexComposeWnd*>(g_windowMgr.rodexComposeWnd)->SetRecipient(id, job, level, name);
+      g_windowMgr.rodexComposeWnd->SetRecipient(id, job, level, name);
     }
   } else {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_TAIWAN_PERSONALINFO_DEATHMSG)), 0x64FFFF, 0, 0, 0);
@@ -2488,7 +2495,7 @@ void CGameMode::ReceiveTypedNotice(const unsigned char* data) {
 // FUNCTION: fn_22076
 void CGameMode::ReceiveRodexMailReturn(const unsigned char* data) {
   if (g_windowMgr.rodexContentsWnd) {
-    static_cast<UIRodexContentsWnd*>(g_windowMgr.rodexContentsWnd)->SetZenyButtonDisabled(0);
+    g_windowMgr.rodexContentsWnd->SetZenyButtonDisabled(0);
   }
 
   const auto* packet = reinterpret_cast<const RodexMailReturnPacket*>(data);
@@ -2521,7 +2528,7 @@ void CGameMode::ReceiveRodexMailReturn(const unsigned char* data) {
     }
 
     if (g_windowMgr.rodexContentsWnd) {
-      static_cast<UIRodexContentsWnd*>(g_windowMgr.rodexContentsWnd)->DisableZenyButton();
+      g_windowMgr.rodexContentsWnd->DisableZenyButton();
     }
     break;
   }
@@ -2680,7 +2687,7 @@ void CGameMode::ReceiveWindow348Result(unsigned char result, std::int16_t index)
 // FUNCTION: fn_22056
 void CGameMode::ReceiveRodexItemReturn(const unsigned char* data) {
   if (g_windowMgr.rodexContentsWnd) {
-    static_cast<UIRodexContentsWnd*>(g_windowMgr.rodexContentsWnd)->SetItemButtonDisabled(0);
+    g_windowMgr.rodexContentsWnd->SetItemButtonDisabled(0);
   }
 
   const auto* packet = reinterpret_cast<const RodexMailReturnPacket*>(data);
@@ -2715,7 +2722,7 @@ void CGameMode::ReceiveRodexItemReturn(const unsigned char* data) {
 
     if (g_windowMgr.rodexContentsWnd) {
       g_windowMgr.rodexContentsWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
-      static_cast<UIRodexContentsWnd*>(g_windowMgr.rodexContentsWnd)->DisableItemButton();
+      g_windowMgr.rodexContentsWnd->DisableItemButton();
     }
     if (g_windowMgr.rodexInboxWnd) {
       static_cast<UIWindow*>(g_windowMgr.rodexInboxWnd)->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
@@ -3658,8 +3665,8 @@ void CGameMode::ReceiveLongParChange(const unsigned char* data) {
     g_session.InvalidateWindowFrames();
   }
 
-  static_cast<UIINT64BarGraph*>(static_cast<UIBasicInfoWnd*>(g_windowMgr.basicInfoWnd)->baseExpBar)->SetValues(exp, nextExp);
-  static_cast<UIINT64BarGraph*>(static_cast<UIBasicInfoWnd*>(g_windowMgr.basicInfoWnd)->jobExpBar)->SetValues(jobExp, nextJobExp);
+  static_cast<UIINT64BarGraph*>(g_windowMgr.basicInfoWnd->baseExpBar)->SetValues(exp, nextExp);
+  static_cast<UIINT64BarGraph*>(g_windowMgr.basicInfoWnd->jobExpBar)->SetValues(jobExp, nextJobExp);
 }
 
 // OFFSET: 0x00D73A10
@@ -3939,7 +3946,7 @@ void CGameMode::ReceiveTraitStatusChangeAck(unsigned char result, unsigned short
   if (result == 1) {
     std::map<int, int>& traitStats = g_session.m_traits.stats;
     traitStats[statusId] = value;
-    if (UIStatusWnd* window = static_cast<UIStatusWnd*>(g_windowMgr.statusWnd)) {
+    if (UIStatusWnd* window = g_windowMgr.statusWnd) {
       window->ValidatePlacement();
     }
   }
@@ -5472,8 +5479,8 @@ void CGameMode::ReceiveRodexMailListRefresh(const unsigned char* data) {
   }
 
   if (g_windowMgr.rodexInboxWnd) {
-    static_cast<UIRodexInboxWnd*>(g_windowMgr.rodexInboxWnd)->InitializeMailActions();
-    static_cast<UIRodexInboxWnd*>(g_windowMgr.rodexInboxWnd)->SetButtonsDisabled(0);
+    g_windowMgr.rodexInboxWnd->InitializeMailActions();
+    g_windowMgr.rodexInboxWnd->SetButtonsDisabled(0);
   }
 }
 
@@ -5721,9 +5728,9 @@ void CGameMode::ReceiveRodexMailListAppend(const unsigned char* data) {
   }
 
   if (g_windowMgr.rodexInboxWnd) {
-    static_cast<UIRodexInboxWnd*>(g_windowMgr.rodexInboxWnd)->RefreshMailLists();
-    static_cast<UIRodexInboxWnd*>(g_windowMgr.rodexInboxWnd)->SetButtonsDisabled(0);
-    static_cast<UIRodexInboxWnd*>(g_windowMgr.rodexInboxWnd)->ClearChecks();
+    g_windowMgr.rodexInboxWnd->RefreshMailLists();
+    g_windowMgr.rodexInboxWnd->SetButtonsDisabled(0);
+    g_windowMgr.rodexInboxWnd->ClearChecks();
   }
 }
 
@@ -7691,7 +7698,7 @@ void CGameMode::ProcessWhisper(int shortcutId, std::string name, std::string tex
           body = std::move(linked);
         }
         if (std::strstr(message.data(), g_whisperItemLinkTag.c_str()) != nullptr) {
-          body = static_cast<UINewChatWnd*>(g_windowMgr.chatWnd)->ConvertChat(body);
+          body = g_windowMgr.chatWnd->ConvertChat(body);
           header = header + " ] : " + body;
         } else {
           header = header + " ] : " + message.data();
@@ -7752,7 +7759,7 @@ void CGameMode::ProcessWhisper(int shortcutId, std::string name, std::string tex
     if (flag) {
       if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
         if (prefix.find(g_whisperItemLinkTag) != std::string::npos) {
-          prefix = static_cast<UINewChatWnd*>(g_windowMgr.chatWnd)->ConvertChat(prefix);
+          prefix = g_windowMgr.chatWnd->ConvertChat(prefix);
         }
         {
           std::string linked;

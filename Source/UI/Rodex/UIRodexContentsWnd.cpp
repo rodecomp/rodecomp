@@ -37,6 +37,7 @@
 
 #include "Resource/MSGSTRINGID.h"
 #include "Network/Packets/PacketId.h"
+#include "UI/Rodex/UIRodexInboxWnd.h"
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
