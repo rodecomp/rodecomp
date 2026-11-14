@@ -574,8 +574,8 @@ public:
   /* 594C */ int memorialReplayValue;
   /* 5950 */ std::string memorialDungeonName;
   /* 5968 */ int memorialQueuePosition;
-  /* 596C */ int memorialCreationTime;
-  /* 5970 */ int memorialExpirationTime;
+  /* 596C */ __time32_t memorialCreationTime;
+  /* 5970 */ __time32_t memorialExpirationTime;
   /* 5974 */ int m_allowEquipView;
   /* 5978 */ int m_equipViewLook[10];
   /* 59A0 */ char m_equipViewName[24];
