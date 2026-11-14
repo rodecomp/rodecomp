@@ -564,7 +564,7 @@ void UIEquipWnd::Paint() {
 
   if (this->m_page == 2) {
     this->FillRegion(1, this->m_contentTop + 15, this->geometry.width - 2, 131, 0xFFFFFF);
-    DrawRectangleBorder(*this, 2, this->m_contentTop + 38, this->geometry.width - 4, 107, 0x646464);
+    this->DrawRectOutline(2, this->m_contentTop + 38, this->geometry.width - 4, 107, 0x646464);
     const std::string jobTitle = GetJobTitleString(g_session.jobTitle);
     this->DrawCenteredText(1, this->m_contentTop + 20, jobTitle.c_str(), this->geometry.width - 2, 0, 13, 0, 1);
   }
