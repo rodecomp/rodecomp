@@ -39,7 +39,7 @@ void CGameMode::ApplySkillUpdatePacket(const void* packet) {
   value.spCost = static_cast<std::int32_t>(Read<std::int16_t>(bytes + 6));
   value.upgradable = bytes[10];
   value.range = static_cast<std::int32_t>(Read<std::int16_t>(bytes + 8));
-  value.apCost = value.UseApAmount(*g_session.m_hotkeyScript, value.level);
+  value.apCost = value.UseApAmount(value.level);
   g_session.m_skillBundle.ApplyLevelChange(value);
 
   if (Read<std::uint16_t>(bytes) == ID_ZC_SKILLINFO_UPDATE) {
@@ -95,7 +95,7 @@ void CGameMode::ApplyAdditionalSkillPacket(const void* packet) {
     value.type = Read<std::uint32_t>(record + 2);
     value.upgradable = record[36];
     value.name = value.IdName();
-    value.apCost = value.UseApAmount(*g_session.m_hotkeyScript, Read<std::int16_t>(record + 6));
+    value.apCost = value.UseApAmount(Read<std::int16_t>(record + 6));
 
     if (value.id - 10000u <= 19u) {
       g_session.UpdateAdditionalSkill(value, 1);
