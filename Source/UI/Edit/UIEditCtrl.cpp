@@ -1149,12 +1149,12 @@ void UIItemStoreFindWnd::OnRBtnDown(int x, int y) {
 
     if (HIBYTE(GetAsyncKeyState(VK_MENU))) {
       if (g_windowMgr.itemWnd) {
-        if (mode->bossAlarmAndCopyNameFlags[2]) {
-          mode->bossAlarmAndCopyNameFlags[2] = 0;
+        if (mode->inventoryChanged) {
+          mode->inventoryChanged = 0;
           mode->SendMsg(MM_MOVE_ITEM_FROM_STORE_TO_BODY, static_cast<int>(item.identity[1]), item.quantity, 0, 0);
         }
-      } else if (g_windowMgr.merchantItemWnd && mode->bossAlarmAndCopyNameFlags[2]) {
-        mode->bossAlarmAndCopyNameFlags[2] = 0;
+      } else if (g_windowMgr.merchantItemWnd && mode->inventoryChanged) {
+        mode->inventoryChanged = 0;
         mode->SendMsg(MM_MOVE_ITEM_FROM_STORE_TO_CART, static_cast<int>(item.identity[1]), item.quantity, 0, 0);
       }
     } else if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
@@ -1177,12 +1177,12 @@ void UIItemStoreSubWnd::OnRBtnDown(int x, int y) {
 
     if (HIBYTE(GetAsyncKeyState(VK_MENU))) {
       if (g_windowMgr.itemWnd) {
-        if (mode->bossAlarmAndCopyNameFlags[2]) {
-          mode->bossAlarmAndCopyNameFlags[2] = 0;
+        if (mode->inventoryChanged) {
+          mode->inventoryChanged = 0;
           mode->SendMsg(MM_MOVE_ITEM_FROM_STORE_TO_BODY, static_cast<int>(item.identity[1]), item.quantity, 0, 0);
         }
-      } else if (g_windowMgr.merchantItemWnd && mode->bossAlarmAndCopyNameFlags[2]) {
-        mode->bossAlarmAndCopyNameFlags[2] = 0;
+      } else if (g_windowMgr.merchantItemWnd && mode->inventoryChanged) {
+        mode->inventoryChanged = 0;
         mode->SendMsg(MM_MOVE_ITEM_FROM_STORE_TO_CART, static_cast<int>(item.identity[1]), item.quantity, 0, 0);
       }
     } else if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
@@ -1205,12 +1205,12 @@ void UIItemStoreWnd::OnRBtnDown(int x, int y) {
 
     if (HIBYTE(GetAsyncKeyState(VK_MENU))) {
       if (g_windowMgr.itemWnd) {
-        if (mode->bossAlarmAndCopyNameFlags[2]) {
-          mode->bossAlarmAndCopyNameFlags[2] = 0;
+        if (mode->inventoryChanged) {
+          mode->inventoryChanged = 0;
           mode->SendMsg(MM_MOVE_ITEM_FROM_STORE_TO_BODY, static_cast<int>(item.identity[1]), item.quantity, 0, 0);
         }
-      } else if (g_windowMgr.merchantItemWnd && mode->bossAlarmAndCopyNameFlags[2]) {
-        mode->bossAlarmAndCopyNameFlags[2] = 0;
+      } else if (g_windowMgr.merchantItemWnd && mode->inventoryChanged) {
+        mode->inventoryChanged = 0;
         mode->SendMsg(MM_MOVE_ITEM_FROM_STORE_TO_CART, static_cast<int>(item.identity[1]), item.quantity, 0, 0);
       }
     } else if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
@@ -1346,12 +1346,12 @@ void UIMerchantItemWnd::OnRBtnDown(int x, int y) {
     if (HIBYTE(GetAsyncKeyState(VK_MENU))) {
       if (!g_windowMgr.LookupWindow(WID_EXCHANGEUI) && !g_windowMgr.merchantShopMakeWnd) {
         if (g_windowMgr.itemStoreWnd) {
-          if (mode->bossAlarmAndCopyNameFlags[2]) {
-            mode->bossAlarmAndCopyNameFlags[2] = 0;
+          if (mode->inventoryChanged) {
+            mode->inventoryChanged = 0;
             mode->SendMsg(MM_MOVE_ITEM_FROM_CART_TO_STORE, static_cast<int>(item.identity[1]), item.quantity, 0, 0);
           }
-        } else if (g_windowMgr.itemWnd && mode->bossAlarmAndCopyNameFlags[2]) {
-          mode->bossAlarmAndCopyNameFlags[2] = 0;
+        } else if (g_windowMgr.itemWnd && mode->inventoryChanged) {
+          mode->inventoryChanged = 0;
           mode->SendMsg(MM_MOVE_ITEM_FROM_CART_TO_BODY, static_cast<int>(item.identity[1]), item.quantity, 0, 0);
         }
       }

@@ -7778,7 +7778,8 @@ void CGameMode::Initialize(const char* name) {
   g_playerNameDictionary->Set(g_session.m_gid, g_session.DecodePlayerName());
   this->bossMonsterX = -1;
   this->bossMonsterY = -1;
-  *reinterpret_cast<std::uint16_t*>(this->bossAlarmAndCopyNameFlags) = 0;
+  this->bossAlarmAndCopyNameFlags[0] = 0;
+  this->bossAlarmAndCopyNameFlags[1] = 0;
 
   if (Replay::Instance().state == 6) {
     const std::vector<unsigned char> data = Replay::Instance().ReadSection(0x12);
