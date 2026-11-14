@@ -184,7 +184,26 @@ struct NaviObjectRecord {
   /* 0010 */ std::int16_t nameLength;
   /* 0012 */ char name[1];
 };
+
+struct NaviStringRecord {
+  /* 0000 */ std::int16_t length;
+};
+
+struct NaviLinkedMapRecord {
+  /* 0000 */ int cellX;
+  /* 0004 */ int cellY;
+  /* 0008 */ std::int16_t nameLength;
+};
+
+struct NaviTargetRecord {
+  /* 0000 */ int type;
+};
 #pragma pack(pop)
+
+static_assert(sizeof(NaviObjectRecord) == 0x13);
+static_assert(sizeof(NaviStringRecord) == 2);
+static_assert(sizeof(NaviLinkedMapRecord) == 0xA);
+static_assert(sizeof(NaviTargetRecord) == 4);
 
 CNavi_Object* FindNaviObjectByName(const char* name, const std::vector<CNavi_Object*>& objects);
 

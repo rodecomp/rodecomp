@@ -1417,9 +1417,15 @@ struct ReplaySettingHeader {
     std::memcpy(this, source, sizeof(*this));
   }
 };
+
+struct ReplaySettingValue {
+  /* 0000 */ ReplaySettingHeader header;
+  /* 0006 */ int value;
+};
 #pragma pack(pop)
 
 static_assert(sizeof(ReplaySettingHeader) == 6);
+static_assert(sizeof(ReplaySettingValue) == 10);
 
 }
 
@@ -1438,7 +1444,7 @@ static __forceinline std::vector<unsigned char> MakeReplayValue(std::int16_t tag
   ReplaySettingHeader* header = reinterpret_cast<ReplaySettingHeader*>(chunk.data());
   header->tag = tag;
   header->size = sizeof(value);
-  std::memcpy(&chunk[sizeof(ReplaySettingHeader)], &value, sizeof(value));
+  std::memcpy(&reinterpret_cast<ReplaySettingValue*>(chunk.data())->value, &value, sizeof(value));
   return chunk;
 }
 

@@ -1743,7 +1743,7 @@ void CGameActor::SetState(int state, int resetPosition) {
 // OFFSET: 0x00CA9E50
 // FUNCTION: fn_21013
 void CRenderObject::RenderBlur(
-  const SpriteFrameCell* cell, const int* box, float offset, float bottomRhw, float topRhw, const std::uint32_t* palette,
+  const SpriteFrameCell* cell, const tagRECT* box, float offset, float bottomRhw, float topRhw, const std::uint32_t* palette,
   const SpriteRleImage* image, float scale, short shift
 ) {
   if ((this->render.flags & 0x1000) == 0) {
@@ -1764,25 +1764,25 @@ void CRenderObject::RenderBlur(
 
     const float spread = 400.0f / mode->camera->camera.desiredDistance * distance;
     if (direction == 1) {
-      quad.top = static_cast<float>(box[1]);
-      quad.left = static_cast<float>(box[0]) + offset + spread;
-      quad.bottom = static_cast<float>(box[3]);
-      quad.right = static_cast<float>(box[2]) + offset + spread;
+      quad.top = static_cast<float>(box->top);
+      quad.left = static_cast<float>(box->left) + offset + spread;
+      quad.bottom = static_cast<float>(box->bottom);
+      quad.right = static_cast<float>(box->right) + offset + spread;
     } else if (direction == 2) {
-      quad.top = static_cast<float>(box[1]);
-      quad.left = static_cast<float>(box[0]) + offset - spread;
-      quad.bottom = static_cast<float>(box[3]);
-      quad.right = static_cast<float>(box[2]) + offset - spread;
+      quad.top = static_cast<float>(box->top);
+      quad.left = static_cast<float>(box->left) + offset - spread;
+      quad.bottom = static_cast<float>(box->bottom);
+      quad.right = static_cast<float>(box->right) + offset - spread;
     } else if (direction == 3) {
-      quad.top = static_cast<float>(box[1]) + spread;
-      quad.bottom = static_cast<float>(box[3]) + spread;
-      quad.left = static_cast<float>(box[0]) + offset;
-      quad.right = static_cast<float>(box[2]) + offset;
+      quad.top = static_cast<float>(box->top) + spread;
+      quad.bottom = static_cast<float>(box->bottom) + spread;
+      quad.left = static_cast<float>(box->left) + offset;
+      quad.right = static_cast<float>(box->right) + offset;
     } else if (direction == 4) {
-      quad.top = static_cast<float>(box[1]) - spread;
-      quad.bottom = static_cast<float>(box[3]) - spread;
-      quad.left = static_cast<float>(box[0]) + offset;
-      quad.right = static_cast<float>(box[2]) + offset;
+      quad.top = static_cast<float>(box->top) - spread;
+      quad.bottom = static_cast<float>(box->bottom) - spread;
+      quad.left = static_cast<float>(box->left) + offset;
+      quad.right = static_cast<float>(box->right) + offset;
     }
 
     quad.color = (alpha << 24) + 0xFFFFFF;
@@ -1798,7 +1798,7 @@ void CRenderObject::RenderBlur(
 
 // OFFSET: 0x00CAA1F0
 // FUNCTION: fn_21015
-void CRenderObject::ApplySpriteJitter(SpriteQuad* quad, const int* input, float offset, int spread, int base) {
+void CRenderObject::ApplySpriteJitter(SpriteQuad* quad, const tagRECT* input, float offset, int spread, int base) {
   if ((this->render.flags & 0x2000) == 0) {
     return;
   }
@@ -1817,16 +1817,16 @@ void CRenderObject::ApplySpriteJitter(SpriteQuad* quad, const int* input, float 
     jitter[index] = 400.0f / mode->camera->camera.desiredDistance * static_cast<float>(value - base);
   }
 
-  quad->top = static_cast<float>(input[1]) + jitter[0];
-  quad->bottom = static_cast<float>(input[3]) + jitter[1];
-  quad->left = static_cast<float>(input[0]) + offset + jitter[2];
-  quad->right = static_cast<float>(input[2]) + offset + jitter[3];
+  quad->top = static_cast<float>(input->top) + jitter[0];
+  quad->bottom = static_cast<float>(input->bottom) + jitter[1];
+  quad->left = static_cast<float>(input->left) + offset + jitter[2];
+  quad->right = static_cast<float>(input->right) + offset + jitter[3];
 }
 
 // OFFSET: 0x00CAA2E0
 // FUNCTION: fn_21016
 void CRenderObject::RenderAura(
-  SpriteQuad* quad, const SpriteFrameCell* cell, const int* box, float offset, float bottomRhw, float topRhw,
+  SpriteQuad* quad, const SpriteFrameCell* cell, const tagRECT* box, float offset, float bottomRhw, float topRhw,
   const std::uint32_t* palette, const SpriteRleImage* image, int blend, short shift
 ) {
   if ((this->render.flags & 0x200) == 0) {
@@ -1850,10 +1850,10 @@ void CRenderObject::RenderAura(
     const float spread = 400.0f / mode->camera->camera.desiredDistance * phase;
 
     SpriteQuad trail;
-    trail.top = static_cast<float>(box[1]) - spread - static_cast<float>(shift);
-    trail.bottom = static_cast<float>(box[3]) + spread - static_cast<float>(shift);
-    float left = static_cast<float>(box[0]) + offset;
-    float right = static_cast<float>(box[2]) + offset;
+    trail.top = static_cast<float>(box->top) - spread - static_cast<float>(shift);
+    trail.bottom = static_cast<float>(box->bottom) + spread - static_cast<float>(shift);
+    float left = static_cast<float>(box->left) + offset;
+    float right = static_cast<float>(box->right) + offset;
     if (left > right) {
       left += spread;
       right -= spread;
@@ -1879,7 +1879,7 @@ void CRenderObject::RenderAura(
 // OFFSET: 0x00CAA0A0
 // FUNCTION: fn_21014
 void CRenderObject::DrawPulseOutline(
-  const SpriteFrameCell& cell, const int* box, float offset, float bottomRhw, float topRhw,
+  const SpriteFrameCell& cell, const tagRECT* box, float offset, float bottomRhw, float topRhw,
   const std::uint32_t* palette, const SpriteRleImage* image, std::uint32_t color
 ) {
   if ((this->render.flags & 8) == 0) {
@@ -1897,10 +1897,10 @@ void CRenderObject::DrawPulseOutline(
   const float spread = 400.0f / mode->camera->camera.desiredDistance * pulse;
 
   SpriteQuad outline;
-  outline.top = static_cast<float>(box[1]) - spread;
-  outline.bottom = static_cast<float>(box[3]) + spread;
-  float left = static_cast<float>(box[0]) + offset;
-  float right = static_cast<float>(box[2]) + offset;
+  outline.top = static_cast<float>(box->top) - spread;
+  outline.bottom = static_cast<float>(box->bottom) + spread;
+  float left = static_cast<float>(box->left) + offset;
+  float right = static_cast<float>(box->right) + offset;
   if (left > right) {
     left += spread;
     right -= spread;
@@ -1921,7 +1921,7 @@ void CRenderObject::DrawPulseOutline(
 // OFFSET: 0x00CAB180
 // FUNCTION: fn_21025
 void CRenderObject::DrawSpriteEffects(
-  SpriteQuad* quad, const SpriteFrameCell* cell, const int* box, float offset, float bottomRhw, float topRhw,
+  SpriteQuad* quad, const SpriteFrameCell* cell, const tagRECT* box, float offset, float bottomRhw, float topRhw,
   const std::uint32_t* palette, const SpriteRleImage* image, int* blend, std::uint32_t color
 ) {
   for (const ActiveSkillEffect& effect : g_activeSkillEffects) {
@@ -1962,10 +1962,10 @@ void CRenderObject::DrawSpriteEffects(
       const float spread = 400.0f / mode->camera->camera.desiredDistance * static_cast<float>(distance);
 
       SpriteQuad shadow;
-      shadow.top = static_cast<float>(box[1]) - spread;
-      shadow.bottom = static_cast<float>(box[3]) + spread;
-      float left = static_cast<float>(box[0]) + offset;
-      float right = static_cast<float>(box[2]) + offset;
+      shadow.top = static_cast<float>(box->top) - spread;
+      shadow.bottom = static_cast<float>(box->bottom) + spread;
+      float left = static_cast<float>(box->left) + offset;
+      float right = static_cast<float>(box->right) + offset;
       if (left > right) {
         left += spread;
         right -= spread;
@@ -1991,10 +1991,10 @@ void CRenderObject::DrawSpriteEffects(
       const float spread = 400.0f / mode->camera->camera.desiredDistance * static_cast<float>(distance);
 
       SpriteQuad glow;
-      glow.top = static_cast<float>(box[1]) - spread;
-      glow.bottom = static_cast<float>(box[3]) + spread;
-      float left = static_cast<float>(box[0]) + offset;
-      float right = static_cast<float>(box[2]) + offset;
+      glow.top = static_cast<float>(box->top) - spread;
+      glow.bottom = static_cast<float>(box->bottom) + spread;
+      float left = static_cast<float>(box->left) + offset;
+      float right = static_cast<float>(box->right) + offset;
       if (left > right) {
         left += spread;
         right -= spread;
@@ -2018,7 +2018,7 @@ void CRenderObject::DrawSpriteEffects(
   }
 
   CGameActor* actor = static_cast<CGameActor*>(this);
-  actor->RenderBlur(cell, box, offset, bottomRhw, topRhw, palette, image, static_cast<float>(box[3] - box[1]) * 0.05f, 0);
+  actor->RenderBlur(cell, box, offset, bottomRhw, topRhw, palette, image, static_cast<float>(box->bottom - box->top) * 0.05f, 0);
   actor->RenderAura(quad, cell, box, offset, bottomRhw, topRhw, palette, image, *blend, 0);
   actor->ApplySpriteJitter(quad, box, offset, 21, 10);
 

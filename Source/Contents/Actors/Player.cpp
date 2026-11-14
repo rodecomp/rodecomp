@@ -874,13 +874,13 @@ void CPc::RenderBodyOutline(int layer, const float* position, float x, float y, 
     tagRECT box;
     std::uint32_t quadColor;
     if (this->GetMonsterTransformJob() != JT_THANATOS) {
-      this->PrepareSprite(layer, layer, distanceScale, *cell, x, y, position, scale, &bottomRhw, &topRhw, image, &quad, reinterpret_cast<int*>(&box), &quadColor, 0, 0, 0);
+      this->PrepareSprite(layer, layer, distanceScale, *cell, x, y, position, scale, &bottomRhw, &topRhw, image, &quad, &box, &quadColor, 0, 0, 0);
       if (g_cameraDistance >= 320.0f) {
         quad.bottomRhw = bottomRhw - 0.0000025f;
         quad.topRhw = topRhw - 0.0000025f;
       }
     } else {
-      this->PrepareSprite(index, index, distanceScale, *cell, x, y, position, scale, &bottomRhw, &topRhw, image, &quad, reinterpret_cast<int*>(&box), &quadColor, 0, 0, 0);
+      this->PrepareSprite(index, index, distanceScale, *cell, x, y, position, scale, &bottomRhw, &topRhw, image, &quad, &box, &quadColor, 0, 0, 0);
       if (this->render.state == ST_STAND && index == 1) {
         quad.bottomRhw = bottomRhw + 0.000008f;
         quad.topRhw = topRhw + 0.00008f;
@@ -1040,7 +1040,7 @@ const ActionFrame& CPc::SelectStanceFrame(int layer, CActRes* actRes, int* anima
 // OFFSET: 0x00DA99A0
 // FUNCTION: fn_22569
 void CPc::ApplyLayerEffects(
-  SpriteQuad* quad, const SpriteFrameCell* cell, int layer, const int* box, float shiftX, float distance, float bottomRhw, float topRhw,
+  SpriteQuad* quad, const SpriteFrameCell* cell, int layer, const tagRECT* box, float shiftX, float distance, float bottomRhw, float topRhw,
   float screenX, float screenY, const std::uint32_t* palette, const SpriteRleImage* image, int* blend, int offsetX, int offsetY
 ) {
   for (const ActiveSkillEffect& effect : g_activeSkillEffects) {
@@ -1086,10 +1086,10 @@ void CPc::ApplyLayerEffects(
     float wave = g_sinTable[this->render.effectPhaseBytes[2]] + 3.0f;
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     float spread = 400.0f / mode->camera->camera.desiredDistance * wave;
-    jitter.top = static_cast<float>(box[1]) - spread - static_cast<float>(hover);
-    jitter.bottom = static_cast<float>(box[3]) + spread - static_cast<float>(hover);
-    float left = static_cast<float>(box[0]) + shiftX;
-    float right = static_cast<float>(box[2]) + shiftX;
+    jitter.top = static_cast<float>(box->top) - spread - static_cast<float>(hover);
+    jitter.bottom = static_cast<float>(box->bottom) + spread - static_cast<float>(hover);
+    float left = static_cast<float>(box->left) + shiftX;
+    float right = static_cast<float>(box->right) + shiftX;
     if (left > right) {
       left += spread;
       right -= spread;
@@ -1111,10 +1111,10 @@ void CPc::ApplyLayerEffects(
     wave = g_sinTable[this->render.effectPhaseBytes[2]];
     mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     spread = 400.0f / mode->camera->camera.desiredDistance * (wave + wave + 5.0f);
-    jitter.top = static_cast<float>(box[1]) - spread - static_cast<float>(hover);
-    jitter.bottom = static_cast<float>(box[3]) + spread - static_cast<float>(hover);
-    left = static_cast<float>(box[0]) + shiftX;
-    right = static_cast<float>(box[2]) + shiftX;
+    jitter.top = static_cast<float>(box->top) - spread - static_cast<float>(hover);
+    jitter.bottom = static_cast<float>(box->bottom) + spread - static_cast<float>(hover);
+    left = static_cast<float>(box->left) + shiftX;
+    right = static_cast<float>(box->right) + shiftX;
     if (left > right) {
       left += spread;
       right -= spread;
@@ -1140,7 +1140,7 @@ void CPc::ApplyLayerEffects(
       const float factor = GetSkillFactor(this->GetEffectiveJob(-1)) * distanceScale * (static_cast<float>(step) * 0.01f + 1.0f);
       const float shift =
         g_renderer->UiScaleX() * (static_cast<float>(static_cast<int>(this->render.spriteOffsetX)) * this->render.scale) * factor;
-      const int boxTop = box[1];
+      const int boxTop = box->top;
       const float top = static_cast<float>(static_cast<double>(cell->y + offsetY) * factor * cell->scaleY * scale + screenY);
       const float bottom = static_cast<float>(
         static_cast<double>((static_cast<short>(image->doubleHeight) + 1) * image->height + cell->y + offsetY) * factor * cell->scaleY *
@@ -1153,11 +1153,11 @@ void CPc::ApplyLayerEffects(
       if ((cell->mirrored & 1) != 0) {
         left = static_cast<double>((static_cast<short>(image->doubleWidth) + 1) * image->width + cell->x + offsetX) * factor * cell->scaleX;
         right = static_cast<double>(offsetX + cell->x) * factor * cell->scaleX;
-        if (boxTop >= g_renderer->viewport.height || boxTop <= 0 || box[2] >= g_renderer->viewport.width || box[0] <= 0) {
+        if (boxTop >= g_renderer->viewport.height || boxTop <= 0 || box->right >= g_renderer->viewport.width || box->left <= 0) {
           continue;
         }
       } else {
-        if (boxTop >= g_renderer->viewport.height || box[3] <= 0 || box[0] >= g_renderer->viewport.width || box[2] <= 0) {
+        if (boxTop >= g_renderer->viewport.height || box->bottom <= 0 || box->left >= g_renderer->viewport.width || box->right <= 0) {
           continue;
         }
         left = static_cast<double>(cell->x + offsetX) * factor * cell->scaleX;
@@ -1193,8 +1193,8 @@ void CPc::ApplyLayerEffects(
     const short alpha = static_cast<short>(255 - level * 20);
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     const float rise = 400.0f / mode->camera->camera.desiredDistance * static_cast<float>(level * 20);
-    quad->top = static_cast<float>(box[1]) - rise;
-    quad->bottom = static_cast<float>(box[3]) - rise;
+    quad->top = static_cast<float>(box->top) - rise;
+    quad->bottom = static_cast<float>(box->bottom) - rise;
     quad->color = (std::max<short>(alpha, 0) << 24) + 0xFFFFFF;
   }
 
@@ -1206,9 +1206,9 @@ void CPc::ApplyLayerEffects(
       alpha = 255;
     }
     const float rise = std::max(400.0f / mode->camera->camera.desiredDistance * static_cast<float>(riseUnits), 0.0f);
-    quad->top = static_cast<float>(box[1]) - rise;
+    quad->top = static_cast<float>(box->top) - rise;
     quad->color = (std::max<short>(alpha, 0) << 24) + 0xFFFFFF;
-    quad->bottom = static_cast<float>(box[3]) - rise;
+    quad->bottom = static_cast<float>(box->bottom) - rise;
   }
 
   if (hover != 0) {
@@ -1224,8 +1224,8 @@ void CPc::ApplyLayerEffects(
 
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     const float sink = 24000.0f / mode->camera->camera.desiredDistance;
-    quad->top = static_cast<float>(box[1]) + sink;
-    quad->bottom = static_cast<float>(box[3]) + sink;
+    quad->top = static_cast<float>(box->top) + sink;
+    quad->bottom = static_cast<float>(box->bottom) + sink;
   }
 }
 
@@ -2032,13 +2032,13 @@ void CPc::DrawBody(int, int layer, const float* position, float x, float y, floa
     tagRECT box;
     std::uint32_t color;
     if (this->GetMonsterTransformJob() != JT_THANATOS) {
-      this->PrepareSprite(layer, layer, distanceScale, *cell, x, y, position, scale, &bottomRhw, &topRhw, image, &quad, reinterpret_cast<int*>(&box), &color, 0, 0, 0);
+      this->PrepareSprite(layer, layer, distanceScale, *cell, x, y, position, scale, &bottomRhw, &topRhw, image, &quad, &box, &color, 0, 0, 0);
       if (g_cameraDistance <= 320.0f) {
         quad.bottomRhw = bottomRhw - 0.0000025f;
         quad.topRhw = topRhw - 0.0000025f;
       }
     } else {
-      this->PrepareSprite(index, index, distanceScale, *cell, x, y, position, scale, &bottomRhw, &topRhw, image, &quad, reinterpret_cast<int*>(&box), &color, 0, 0, 0);
+      this->PrepareSprite(index, index, distanceScale, *cell, x, y, position, scale, &bottomRhw, &topRhw, image, &quad, &box, &color, 0, 0, 0);
       if (this->render.state == ST_STAND && index == 1) {
         quad.bottomRhw = bottomRhw + 0.000008f;
         quad.topRhw = topRhw + 0.00008f;
@@ -2061,7 +2061,7 @@ void CPc::DrawBody(int, int layer, const float* position, float x, float y, floa
       palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->render.name.c_str()))->palette;
     }
 
-    this->ApplyLayerEffects(&quad, cell, 0, reinterpret_cast<const int*>(&box), scale, bottomRhw, bottomRhw, topRhw, x, y, palette, image, &blend, 0, 0);
+    this->ApplyLayerEffects(&quad, cell, 0, &box, scale, bottomRhw, bottomRhw, topRhw, x, y, palette, image, &blend, 0, 0);
     if (IsScreenShakeActive()) {
       this->DrawFlippedQuad(quad, palette, 0x101, x, y, 0);
     } else {
@@ -2128,9 +2128,9 @@ void CPc::RenderOverlaySprite(const float* matrix, int) {
     float bottomRhw;
     float topRhw;
     SpriteQuad quad;
-    int box[4];
+    tagRECT box;
     std::uint32_t color;
-    if (!this->PrepareSprite(0, count, distanceScale, cell, x, y, position, scale, &bottomRhw, &topRhw, image, &quad, box, &color, 0, 0, 0)) {
+    if (!this->PrepareSprite(0, count, distanceScale, cell, x, y, position, scale, &bottomRhw, &topRhw, image, &quad, &box, &color, 0, 0, 0)) {
       continue;
     }
 

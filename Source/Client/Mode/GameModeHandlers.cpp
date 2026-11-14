@@ -328,6 +328,213 @@ struct GroundSkillPacketExtended {
   /* 0016 */ unsigned char flags;
   /* 0017 */ char text[1];
 };
+
+struct PACKET_ZC_GROUP_LIST3 {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ std::int16_t packetLength;
+  /* 0004 */ char partyName[24];
+  /* 001C */ PartyRosterEntry members[1];
+};
+
+struct PACKET_ZC_PARTY_BOOKING_ACK_DELETE {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ std::int16_t result;
+};
+
+struct PACKET_ZC_PARTY_BOOKING_ACK_REGISTER {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ std::int16_t result;
+};
+
+struct PACKET_ZC_PARTY_BOOKING_ACK_SEARCH {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ std::int16_t packetLength;
+  /* 0004 */ bool moreResults;
+  /* 0005 */ PARTY_BOOKING_AD_INFO entries[1];
+};
+
+struct PACKET_ZC_PARTY_BOOKING_NOTIFY_DELETE {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ int index;
+};
+
+struct PACKET_ZC_PARTY_BOOKING_NOTIFY_INSERT {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ PARTY_BOOKING_AD_INFO entry;
+};
+
+struct PACKET_ZC_PARTY_BOOKING_NOTIFY_UPDATE {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ int index;
+  /* 0006 */ short jobs[6];
+};
+
+struct PACKET_ZC_PC_CASH_POINT_UPDATE {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ int cashPoints;
+  /* 0006 */ int kafraPoints;
+  /* 000A */ std::int16_t result;
+};
+
+struct PACKET_ZC_PC_PURCHASE_ITEMLIST2 {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ std::int16_t packetLength;
+  /* 0004 */ Item1718BasicRecord items[1];
+};
+
+struct PACKET_ZC_PC_SELL_ITEMLIST {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ std::int16_t packetLength;
+  /* 0004 */ Item1718IndexRecord items[1];
+};
+
+struct PACKET_ZC_PET_ACT {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ std::uint32_t GID;
+  /* 0006 */ int data;
+};
+
+struct PlayerMessage82Packet {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ std::uint32_t unknown_0002;
+  /* 0006 */ int rechargeTime;
+};
+
+struct PACKET_ZC_READ_BOOK {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ int bookId;
+  /* 0006 */ int page;
+};
+
+struct PACKET_ZC_REPLY_REMAINTIME {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ int type;
+  /* 0006 */ __time32_t expireTime;
+  /* 000A */ int remainingTime;
+};
+
+struct PACKET_ZC_REQ_GROUPINFO_CHANGE_V2 {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ int expOption;
+  /* 0006 */ unsigned char itemPickupRule;
+  /* 0007 */ unsigned char itemShareRule;
+};
+
+struct PACKET_ZC_ROOM_NEWENTRY {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ std::int16_t packetLength;
+  /* 0004 */ std::uint32_t owner;
+  /* 0008 */ std::uint32_t id;
+  /* 000C */ std::int16_t limit;
+  /* 000E */ std::int16_t users;
+  /* 0010 */ unsigned char type;
+  /* 0011 */ char title[1];
+};
+
+struct PACKET_ZC_SE_PC_BUY_CASHITEM_RESULT {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ int itemId;
+  /* 0006 */ std::int16_t result;
+  /* 0008 */ int cashPoints;
+  /* 000C */ int kafraPoints;
+};
+
+struct PACKET_ZC_SKILLMSG {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ int messageId;
+};
+
+struct PACKET_ZC_RESULT_PACKAGE_ITEM_TEST {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ std::int16_t packetLength;
+  /* 0004 */ int itemId;
+  /* 0008 */ PackageItemTestEntry entries[1];
+};
+
+struct PACKET_ZC_ACK_REQNAMEALL2 {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ std::uint32_t gid;
+  /* 0006 */ char name[24];
+  /* 001E */ char partyName[24];
+  /* 0036 */ char guildName[24];
+  /* 004E */ char positionName[24];
+  /* 0066 */ int titleId;
+};
+
+struct PACKET_ZC_GRADE_ENCHANT_ACK {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ std::int16_t index;
+  /* 0004 */ std::int16_t grade;
+  /* 0006 */ int result;
+};
+
+struct PACKET_ZC_PCBANG_EFFECT {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ int exp;
+  /* 0006 */ int drop;
+  /* 000A */ int death;
+};
+
+struct PACKET_ZC_ADD_MEMBER_TO_GROUP4 {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ int accountId;
+  /* 0006 */ int characterId;
+  /* 000A */ int leader;
+  /* 000E */ std::uint16_t job;
+  /* 0010 */ std::uint16_t level;
+  /* 0012 */ short x;
+  /* 0014 */ short y;
+  /* 0016 */ unsigned char offline;
+  /* 0017 */ char partyName[24];
+  /* 002F */ char memberName[24];
+  /* 0047 */ char mapName[16];
+  /* 0057 */ unsigned char itemPickupRule;
+  /* 0058 */ unsigned char itemShareRule;
+};
+
+struct PACKET_ZC_EFST_SET_ENTER2 {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ std::uint32_t targetId;
+  /* 0006 */ std::int16_t type;
+  /* 0008 */ std::uint32_t duration;
+  /* 000C */ std::uint32_t remainingTime;
+  /* 0010 */ int value1;
+  /* 0014 */ int value2;
+  /* 0018 */ int value3;
+};
+
+struct PACKET_ZC_MSG_STATE_CHANGE3 {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ std::int16_t type;
+  /* 0004 */ std::uint32_t targetId;
+  /* 0008 */ unsigned char state;
+  /* 0009 */ std::uint32_t duration;
+  /* 000D */ std::uint32_t remainingTime;
+  /* 0011 */ int value1;
+  /* 0015 */ int value2;
+  /* 0019 */ int value3;
+};
+
+struct PACKET_ZC_NOTIFY_EFFECT4 {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ std::uint32_t aid;
+  /* 0006 */ int type;
+  /* 000A */ std::int64_t value;
+};
+
+struct PACKET_ZC_SELECTCART {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ std::int16_t packetLength;
+  /* 0004 */ int identity;
+  /* 0008 */ unsigned char types[1];
+};
+
+struct PACKET_ZC_NOTIFY_CLAN_CHAT {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ std::int16_t packetLength;
+  /* 0004 */ char memberName[24];
+  /* 001C */ char message[1];
+};
 #pragma pack(pop)
 
 #if defined(_WIN32) && !defined(_WIN64)
@@ -348,6 +555,35 @@ public:
   void RefreshExpansion(const int& kind, const int& itemId);
 };
 }
+
+static_assert(sizeof(PACKET_ZC_GROUP_LIST3) == 0x52);
+static_assert(sizeof(PACKET_ZC_PARTY_BOOKING_ACK_DELETE) == 4);
+static_assert(sizeof(PACKET_ZC_PARTY_BOOKING_ACK_REGISTER) == 4);
+static_assert(sizeof(PACKET_ZC_PARTY_BOOKING_ACK_SEARCH) == 0x35);
+static_assert(sizeof(PACKET_ZC_PARTY_BOOKING_NOTIFY_DELETE) == 6);
+static_assert(sizeof(PACKET_ZC_PARTY_BOOKING_NOTIFY_INSERT) == 0x32);
+static_assert(sizeof(PACKET_ZC_PARTY_BOOKING_NOTIFY_UPDATE) == 0x12);
+static_assert(sizeof(PACKET_ZC_PC_CASH_POINT_UPDATE) == 0xC);
+static_assert(sizeof(PACKET_ZC_PC_PURCHASE_ITEMLIST2) == 0x17);
+static_assert(sizeof(PACKET_ZC_PC_SELL_ITEMLIST) == 0xE);
+static_assert(sizeof(PACKET_ZC_PET_ACT) == 0xA);
+static_assert(sizeof(PlayerMessage82Packet) == 0xA);
+static_assert(sizeof(PACKET_ZC_READ_BOOK) == 0xA);
+static_assert(sizeof(PACKET_ZC_REPLY_REMAINTIME) == 0xE);
+static_assert(sizeof(PACKET_ZC_REQ_GROUPINFO_CHANGE_V2) == 8);
+static_assert(sizeof(PACKET_ZC_ROOM_NEWENTRY) == 0x12);
+static_assert(sizeof(PACKET_ZC_SE_PC_BUY_CASHITEM_RESULT) == 0x10);
+static_assert(sizeof(PACKET_ZC_SKILLMSG) == 6);
+static_assert(sizeof(PACKET_ZC_RESULT_PACKAGE_ITEM_TEST) == 0x12);
+static_assert(sizeof(PACKET_ZC_ACK_REQNAMEALL2) == 0x6A);
+static_assert(sizeof(PACKET_ZC_GRADE_ENCHANT_ACK) == 0xA);
+static_assert(sizeof(PACKET_ZC_PCBANG_EFFECT) == 0xE);
+static_assert(sizeof(PACKET_ZC_ADD_MEMBER_TO_GROUP4) == 0x59);
+static_assert(sizeof(PACKET_ZC_EFST_SET_ENTER2) == 0x1C);
+static_assert(sizeof(PACKET_ZC_MSG_STATE_CHANGE3) == 0x1D);
+static_assert(sizeof(PACKET_ZC_NOTIFY_EFFECT4) == 0x12);
+static_assert(sizeof(PACKET_ZC_SELECTCART) == 9);
+static_assert(sizeof(PACKET_ZC_NOTIFY_CLAN_CHAT) == 0x1D);
 
 struct GroundSkillSpawnData {
   /* 0000 */ std::uint32_t aid;
@@ -377,13 +613,14 @@ static_assert(sizeof(GroundSkillArgumentData) == 0x24);
 // OFFSET: 0x00D66230
 // FUNCTION: fn_22010
 void CGameMode::ReceivePartyRoster(const unsigned char* packet) {
+  const auto* value = reinterpret_cast<const PACKET_ZC_GROUP_LIST3*>(packet);
   std::vector<PartyRosterEntry> members;
-  const int count = (*reinterpret_cast<const std::int16_t*>(packet + 2) - 28) / sizeof(PartyRosterEntry);
-  const PartyRosterEntry* entries = reinterpret_cast<const PartyRosterEntry*>(packet + 28);
+  const int count = (value->packetLength - 28) / sizeof(PartyRosterEntry);
+  const PartyRosterEntry* entries = value->members;
   for (int i = 0; i < count; ++i) {
     members.push_back(entries[i]);
   }
-  this->SetPartyMemberList(reinterpret_cast<const char*>(packet + 4), &members);
+  this->SetPartyMemberList(value->partyName, &members);
 }
 
 // OFFSET: 0x00D40E40
@@ -501,7 +738,8 @@ struct GameOptionEntry {
 // OFFSET: 0x00D3B690
 // FUNCTION: fn_21781
 void CGameMode::ReceivePartyBookingRegisterResult(const unsigned char* packet) {
-  switch (*reinterpret_cast<const std::int16_t*>(packet + 2)) {
+  const auto* value = reinterpret_cast<const PACKET_ZC_PARTY_BOOKING_ACK_DELETE*>(packet);
+  switch (value->result) {
   case 2:
     g_windowMgr.Confirm(LookupMessage(MSI_PARTY_AD_DELETE_FAILED), 0, true, false, 0, "Message", 280, 120, 0);
     break;
@@ -518,7 +756,8 @@ void CGameMode::ReceivePartyBookingRegisterResult(const unsigned char* packet) {
 // OFFSET: 0x00D3B730
 // FUNCTION: fn_21782
 void CGameMode::ReceivePartyBookingUpdateResult(const unsigned char* packet) {
-  const std::int16_t result = *reinterpret_cast<const std::int16_t*>(packet + 2);
+  const auto* value = reinterpret_cast<const PACKET_ZC_PARTY_BOOKING_ACK_REGISTER*>(packet);
+  const std::int16_t result = value->result;
   if (result == 0) {
     g_session.m_partyBooking.registeredTick = GetTickCount();
     g_windowMgr.EnsureWindow(WID_SEEKPARTYWND);
@@ -540,10 +779,11 @@ void CGameMode::ReceivePartyBookingUpdateResult(const unsigned char* packet) {
 // OFFSET: 0x00D3B7F0
 // FUNCTION: fn_21783
 void CGameMode::ReceivePartyBookingSearchResult(const unsigned char* packet) {
-  const int size = *reinterpret_cast<const std::int16_t*>(packet + 2) - 5;
+  const auto* value = reinterpret_cast<const PACKET_ZC_PARTY_BOOKING_ACK_SEARCH*>(packet);
+  const int size = value->packetLength - 5;
   const int count = size / sizeof(PARTY_BOOKING_AD_INFO);
   PARTY_BOOKING_AD_INFO* infos = new PARTY_BOOKING_AD_INFO[count];
-  std::memcpy(infos, packet + 5, size);
+  std::memcpy(infos, value->entries, size);
   g_session.m_partyBooking.m_filterEnabled = true;
   UIWindow* window = g_windowMgr.LookupWindow(WID_SEEKPARTYLISTWND);
   if (!window) {
@@ -557,14 +797,15 @@ void CGameMode::ReceivePartyBookingSearchResult(const unsigned char* packet) {
     return;
   }
 
-  g_session.m_partyBooking.AddEntries(infos, count, *reinterpret_cast<const bool*>(packet + 4));
+  g_session.m_partyBooking.AddEntries(infos, count, value->moreResults);
   window->Invalidate();
 }
 
 // OFFSET: 0x00D3B8D0
 // FUNCTION: fn_21784
 void CGameMode::ReceivePartyBookingDelete(const unsigned char* packet) {
-  g_session.m_partyBooking.Remove(*reinterpret_cast<const int*>(packet + 2));
+  const auto* value = reinterpret_cast<const PACKET_ZC_PARTY_BOOKING_NOTIFY_DELETE*>(packet);
+  g_session.m_partyBooking.Remove(value->index);
   if (UIWindow* window = g_windowMgr.LookupWindow(WID_SEEKPARTYLISTWND)) {
     window->Invalidate();
   }
@@ -573,7 +814,8 @@ void CGameMode::ReceivePartyBookingDelete(const unsigned char* packet) {
 // OFFSET: 0x00D3B910
 // FUNCTION: fn_21785
 void CGameMode::ReceivePartyBookingInsert(const unsigned char* packet) {
-  g_session.m_partyBooking.OnAdvertisement(*reinterpret_cast<const PARTY_BOOKING_AD_INFO*>(packet + 2));
+  const auto* value = reinterpret_cast<const PACKET_ZC_PARTY_BOOKING_NOTIFY_INSERT*>(packet);
+  g_session.m_partyBooking.OnAdvertisement(value->entry);
   if (UIWindow* window = g_windowMgr.LookupWindow(WID_SEEKPARTYLISTWND)) {
     window->Invalidate();
   }
@@ -582,7 +824,8 @@ void CGameMode::ReceivePartyBookingInsert(const unsigned char* packet) {
 // OFFSET: 0x00D3B960
 // FUNCTION: fn_21786
 void CGameMode::ReceivePartyBookingUpdate(const unsigned char* packet) {
-  g_session.m_partyBooking.SetJobs(*reinterpret_cast<const int*>(packet + 2), reinterpret_cast<const short*>(packet + 6));
+  const auto* value = reinterpret_cast<const PACKET_ZC_PARTY_BOOKING_NOTIFY_UPDATE*>(packet);
+  g_session.m_partyBooking.SetJobs(value->index, value->jobs);
   if (UIWindow* window = g_windowMgr.LookupWindow(WID_SEEKPARTYLISTWND)) {
     window->Invalidate();
   }
@@ -599,17 +842,18 @@ void CGameMode::ReceiveToggleNotice(const unsigned char* packet) {
 // OFFSET: 0x00D3BF00
 // FUNCTION: fn_21791
 void CGameMode::ReceivePendingResult(const unsigned char* packet) {
+  const auto* value = reinterpret_cast<const PACKET_ZC_PC_CASH_POINT_UPDATE*>(packet);
   std::string text;
   std::uint32_t color = 0xFF;
-  switch (*reinterpret_cast<const std::int16_t*>(packet + 10)) {
+  switch (value->result) {
   case ERROR_TYPE_NONE:
   case 8:
-    g_session.m_pendingAid = *reinterpret_cast<const int*>(packet + 2);
-    g_session.m_pendingGid = *reinterpret_cast<const int*>(packet + 6);
+    g_session.m_pendingAid = value->cashPoints;
+    g_session.m_pendingGid = value->kafraPoints;
     if (g_windowMgr.itemShopWnd) {
       g_windowMgr.itemShopWnd->Invalidate();
     }
-    if (*reinterpret_cast<const std::int16_t*>(packet + 10) == 8) {
+    if (value->result == 8) {
       text = LookupMessage(MSI_CASH_FAILED_BUY_SOME);
     } else {
       color = 0xFFFF00;
@@ -651,10 +895,11 @@ void CGameMode::ReceivePendingResult(const unsigned char* packet) {
 // OFFSET: 0x00D3C1C0
 // FUNCTION: fn_21792
 void CGameMode::ReceiveItem1718BasicList(const unsigned char* packet) {
+  const auto* value = reinterpret_cast<const PACKET_ZC_PC_PURCHASE_ITEMLIST2*>(packet);
   g_session.ClearTradeItems();
 
-  const std::int64_t count = (static_cast<std::int64_t>(*reinterpret_cast<const std::int16_t*>(packet + 2)) - 4) / 19;
-  const Item1718BasicRecord* records = reinterpret_cast<const Item1718BasicRecord*>(packet + 4);
+  const std::int64_t count = (static_cast<std::int64_t>(value->packetLength) - 4) / 19;
+  const Item1718BasicRecord* records = value->items;
 
   for (std::int64_t index = 0; index < count; ++index) {
     Item1718BasicRecord record;
@@ -736,10 +981,11 @@ void CGameMode::ReceiveItem1718Result(const unsigned char* packet) {
 // OFFSET: 0x00D3C710
 // FUNCTION: fn_21794
 void CGameMode::ReceiveItem1718IndexList(const unsigned char* packet) {
+  const auto* value = reinterpret_cast<const PACKET_ZC_PC_SELL_ITEMLIST*>(packet);
   g_session.ClearTradeItems();
 
-  const int count = (*reinterpret_cast<const std::int16_t*>(packet + 2) - 4) / sizeof(Item1718IndexRecord);
-  const Item1718IndexRecord* records = reinterpret_cast<const Item1718IndexRecord*>(packet + 4);
+  const int count = (value->packetLength - 4) / sizeof(Item1718IndexRecord);
+  const Item1718IndexRecord* records = value->items;
   for (int i = 0; i < count; ++i) {
     const Item1718IndexRecord record = records[i];
     ITEM_INFO owned = g_session.LookupClientItemByIdentity(record.index);
@@ -764,14 +1010,14 @@ void CGameMode::ReceiveItem1718IndexList(const unsigned char* packet) {
 // OFFSET: 0x00D3CC10
 // FUNCTION: fn_21796
 void CGameMode::ReceivePetAct(unsigned char* packet) {
-  CRenderObject* actor = this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t*>(packet + 2));
+  auto* pet = reinterpret_cast<PACKET_ZC_PET_ACT*>(packet);
+  CRenderObject* actor = this->scene->GetGameActorByAID(pet->GID);
   if (!actor) {
     return;
   }
 
-  int* data = reinterpret_cast<int*>(packet + 6);
-  const int kind = *data % 10;
-  const int value = *data / 10;
+  const int kind = pet->data % 10;
+  const int value = pet->data / 10;
   if (kind == 2) {
     const std::int64_t emotion = value;
     const std::int64_t basePack = g_cashEmotionMgr->BasePackId();
@@ -779,13 +1025,13 @@ void CGameMode::ReceivePetAct(unsigned char* packet) {
     return;
   }
 
-  *data = value / 10;
+  pet->data = value / 10;
   char talk[256];
   std::memset(talk, 0, sizeof(talk));
-  g_session.GetPetTalkText(*data / 10, value % 10, *data % 10, talk);
+  g_session.GetPetTalkText(pet->data / 10, value % 10, pet->data % 10, talk);
   if (talk[0]) {
     char speech[256];
-    g_session.FormatMonsterSpeech(talk, speech, *reinterpret_cast<const std::uint32_t*>(packet + 2), 1 - kind);
+    g_session.FormatMonsterSpeech(talk, speech, pet->GID, 1 - kind);
     if (std::strcmp(speech, "") != 0) {
       const std::int64_t text = reinterpret_cast<std::intptr_t>(speech);
       actor->SendMsg(nullptr, AM_CHAT, text, 0, 0, 0, 0, 0);
@@ -872,12 +1118,13 @@ void CGameMode::IgnoreRemovedPacket1(const unsigned char*) {
 // OFFSET: 0x00D3D2F0
 // FUNCTION: fn_21801
 void CGameMode::ReceivePlayerMessage82(const unsigned char* packet) {
+  const auto* value = reinterpret_cast<const PlayerMessage82Packet*>(packet);
   CPlayer* player = this->scene->player;
   if (!player) {
     return;
   }
 
-  player->SendMsg(nullptr, AM_MAKE_SKILL_RECHARGEGAGE, static_cast<std::uint32_t>(*reinterpret_cast<const int*>(packet + 6) * 1000), 0, 0, 0, 0, 0);
+  player->SendMsg(nullptr, AM_MAKE_SKILL_RECHARGEGAGE, static_cast<std::uint32_t>(value->rechargeTime * 1000), 0, 0, 0, 0, 0);
   g_session.m_playerMessage82Pending = true;
 }
 
@@ -1060,8 +1307,9 @@ void CGameMode::ReceiveMinimapMarker(const unsigned char* data) {
 // OFFSET: 0x00D3DD20
 // FUNCTION: fn_21806
 void CGameMode::ReceiveBookOpen(const unsigned char* packet) {
+  const auto* value = reinterpret_cast<const PACKET_ZC_READ_BOOK*>(packet);
   char number[12];
-  _itoa(*reinterpret_cast<const int*>(packet + 2), number, 10);
+  _itoa(value->bookId, number, 10);
 
   char path[260];
   if (g_serviceType == ServiceGermany) {
@@ -1075,7 +1323,7 @@ void CGameMode::ReceiveBookOpen(const unsigned char* packet) {
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>("책이 없습니다"), 0xFF, 0, 0, 0);
   } else {
-    g_windowMgr.EnsureWindow(WID_BOOKWND)->SendMsg(nullptr, UM_GETBOOKCONTENTS, reinterpret_cast<std::intptr_t>(number), 287, *reinterpret_cast<const int*>(packet + 6), 0);
+    g_windowMgr.EnsureWindow(WID_BOOKWND)->SendMsg(nullptr, UM_GETBOOKCONTENTS, reinterpret_cast<std::intptr_t>(number), 287, value->page, 0);
     file.Close();
   }
 }
@@ -1125,17 +1373,18 @@ void CGameMode::IgnoreRemovedPacket2(const unsigned char*) {
 // OFFSET: 0x00D3E0C0
 // FUNCTION: fn_21809
 void CGameMode::ReceiveBillingInfo(const unsigned char* packet) {
+  const auto* value = reinterpret_cast<const PACKET_ZC_REPLY_REMAINTIME*>(packet);
   char text[512];
   std::memset(text, 0, sizeof(text));
   if (g_serviceType == ServiceChina) {
-    switch (*reinterpret_cast<const int*>(packet + 2)) {
+    switch (value->type) {
     case 1:
-      std::sprintf(text, LookupMessage(MSI_BILLING_1), *reinterpret_cast<const int*>(packet + 6) / 86400 + 1);
+      std::sprintf(text, LookupMessage(MSI_BILLING_1), value->expireTime / 86400 + 1);
       break;
     case 2:
       std::sprintf(
-        text, LookupMessage(MSI_BILLING_2), *reinterpret_cast<const int*>(packet + 10) / 3600,
-        *reinterpret_cast<const int*>(packet + 10) % 3600 / 60, *reinterpret_cast<const int*>(packet + 10) % 60
+        text, LookupMessage(MSI_BILLING_2), value->remainingTime / 3600,
+        value->remainingTime % 3600 / 60, value->remainingTime % 60
       );
       break;
     }
@@ -1143,9 +1392,9 @@ void CGameMode::ReceiveBillingInfo(const unsigned char* packet) {
     __time32_t now;
     _time32(&now);
     _localtime32(&now);
-    const __time32_t* expireTime = reinterpret_cast<const __time32_t*>(packet + 6);
+    const __time32_t* expireTime = &value->expireTime;
     const tm* expire = _localtime32(expireTime);
-    const int type = *reinterpret_cast<const int*>(packet + 2);
+    const int type = value->type;
     if (type >= 0x8000 && type <= 0x80FF) {
       if (type & 0x20) {
         std::strcat(text, "(PC방-실버) ");
@@ -1173,18 +1422,18 @@ void CGameMode::ReceiveBillingInfo(const unsigned char* packet) {
 
           char period[256];
           std::memset(period, 0, sizeof(period));
-          const int remaining = *reinterpret_cast<const int*>(packet + 10);
+          const int remaining = value->remainingTime;
           if (*expireTime > now) {
             if (remaining > 0) {
               std::sprintf(
                 period, " (종료일시 : %04d/%02d/%02d , 남은시간 : %d 시간 %d 분 %d 초)", expire->tm_year + 1900, expire->tm_mon + 1,
-                expire->tm_mday, remaining / 3600, *reinterpret_cast<const int*>(packet + 10) / 60 % 60, *reinterpret_cast<const int*>(packet + 10) % 60
+                expire->tm_mday, remaining / 3600, value->remainingTime / 60 % 60, value->remainingTime % 60
               );
             } else if (remaining == 0) {
               std::sprintf(period, " (종료일시 : %04d/%02d/%02d )", expire->tm_year + 1900, expire->tm_mon + 1, expire->tm_mday);
             }
           } else if (remaining > 0) {
-            std::sprintf(period, " (남은시간 : %d 시간 %d 분 %d 초)", remaining / 3600, *reinterpret_cast<const int*>(packet + 10) / 60 % 60, *reinterpret_cast<const int*>(packet + 10) % 60);
+            std::sprintf(period, " (남은시간 : %d 시간 %d 분 %d 초)", remaining / 3600, value->remainingTime / 60 % 60, value->remainingTime % 60);
           }
           std::strcat(text, period);
         }
@@ -1192,12 +1441,12 @@ void CGameMode::ReceiveBillingInfo(const unsigned char* packet) {
     } else {
       switch (type) {
       case 100: {
-        const int remaining = *reinterpret_cast<const int*>(packet + 10);
+        const int remaining = value->remainingTime;
         if (*expireTime > now) {
           if (remaining > 0) {
             std::sprintf(
               text, "귀하는 혼합요금제 사용자 입니다. (종료일시 : %04d/%02d/%02d , 남은시간 : %d 시간 %d 분 %d 초)",
-              expire->tm_year + 1900, expire->tm_mon + 1, expire->tm_mday, remaining / 3600, *reinterpret_cast<const int*>(packet + 10) / 60 % 60, *reinterpret_cast<const int*>(packet + 10) % 60
+              expire->tm_year + 1900, expire->tm_mon + 1, expire->tm_mday, remaining / 3600, value->remainingTime / 60 % 60, value->remainingTime % 60
             );
           } else if (remaining == 0) {
             std::sprintf(
@@ -1207,7 +1456,7 @@ void CGameMode::ReceiveBillingInfo(const unsigned char* packet) {
           }
         } else if (remaining > 0) {
           std::sprintf(
-            text, "귀하는 정량요금제 사용자 입니다. (남은시간 : %d 시간 %d 분 %d 초)", remaining / 3600, *reinterpret_cast<const int*>(packet + 10) / 60 % 60, *reinterpret_cast<const int*>(packet + 10) % 60
+            text, "귀하는 정량요금제 사용자 입니다. (남은시간 : %d 시간 %d 분 %d 초)", remaining / 3600, value->remainingTime / 60 % 60, value->remainingTime % 60
           );
         }
         break;
@@ -1240,9 +1489,10 @@ struct ActorMessage32 {
 // OFFSET: 0x00D3E8B0
 // FUNCTION: fn_21810
 void CGameMode::ReceiveServerRateNotice(const unsigned char* packet) {
-  g_session.partyExpShare = *reinterpret_cast<const int*>(packet + 2);
-  g_session.partyItemCollect = packet[6];
-  g_session.partyItemDistribute = packet[7];
+  const auto* value = reinterpret_cast<const PACKET_ZC_REQ_GROUPINFO_CHANGE_V2*>(packet);
+  g_session.partyExpShare = value->expOption;
+  g_session.partyItemCollect = value->itemPickupRule;
+  g_session.partyItemDistribute = value->itemShareRule;
   if (g_windowMgr.partySettingWnd) {
     static_cast<UIWindow*>(g_windowMgr.partySettingWnd)->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
@@ -1293,18 +1543,19 @@ void CGameMode::ReceiveServerRateNotice(const unsigned char* packet) {
 // OFFSET: 0x00D3F130
 // FUNCTION: fn_21811
 void CGameMode::ReceiveActorMessage32(const unsigned char* packet) {
-  this->chatRoomActorIds[*reinterpret_cast<const std::uint32_t*>(packet + 8)] = *reinterpret_cast<const std::uint32_t*>(packet + 4);
-  CRenderObject* actor = this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t*>(packet + 4));
+  const auto* value = reinterpret_cast<const PACKET_ZC_ROOM_NEWENTRY*>(packet);
+  this->chatRoomActorIds[value->id] = value->owner;
+  CRenderObject* actor = this->scene->GetGameActorByAID(value->owner);
   if (!actor) {
     return;
   }
 
   ActorMessage32 message;
-  message.text.assign(reinterpret_cast<const char*>(packet + 17), *reinterpret_cast<const std::int16_t*>(packet + 2) - 17);
-  message.flags = packet[16];
-  message.userCount = *reinterpret_cast<const std::int16_t*>(packet + 14);
-  message.maxUsers = *reinterpret_cast<const std::int16_t*>(packet + 12);
-  message.chatId = *reinterpret_cast<const int*>(packet + 8);
+  message.text.assign(value->title, value->packetLength - 17);
+  message.flags = value->type;
+  message.userCount = value->users;
+  message.maxUsers = value->limit;
+  message.chatId = value->id;
   if (message.text.size() > 60) {
     message.text.resize(60);
   }
@@ -1316,15 +1567,16 @@ void CGameMode::ReceiveActorMessage32(const unsigned char* packet) {
 // OFFSET: 0x00D3F3E0
 // FUNCTION: fn_21812
 void CGameMode::ReceiveRequestResult(const unsigned char* packet) {
+  const auto* value = reinterpret_cast<const PACKET_ZC_SE_PC_BUY_CASHITEM_RESULT*>(packet);
   std::string text("");
-  switch (*reinterpret_cast<const std::int16_t*>(packet + 6)) {
+  switch (value->result) {
   case 0:
   case 8: {
     UIWindow* window = g_windowMgr.LookupWindow(WID_CASHSHOP_WND);
     if (window) {
-      window->SendMsg(nullptr, UM_UPDATE_CASHSHOP_BALANCE, *reinterpret_cast<const int*>(packet + 8), *reinterpret_cast<const int*>(packet + 12), 0, 0);
+      window->SendMsg(nullptr, UM_UPDATE_CASHSHOP_BALANCE, value->cashPoints, value->kafraPoints, 0, 0);
     }
-    if (8 == *reinterpret_cast<const std::int16_t*>(packet + 6)) {
+    if (8 == value->result) {
       text = LookupMessage(MSI_CASH_FAILED_BUY_SOME);
     }
     break;
@@ -1363,8 +1615,9 @@ void CGameMode::ReceiveRequestResult(const unsigned char* packet) {
 // OFFSET: 0x00D3F760
 // FUNCTION: fn_21813
 void CGameMode::ReceiveStatusNotice(const unsigned char* packet) {
+  const auto* value = reinterpret_cast<const PACKET_ZC_SKILLMSG*>(packet);
   const char* message;
-  switch (*reinterpret_cast<const int*>(packet + 2)) {
+  switch (value->messageId) {
   case 21:
     message = LookupMessage(MSI_GOSPEL1);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0x9B9BFF, 8, 0, 0);
@@ -1490,11 +1743,12 @@ void CGameMode::ReceiveWhisperFilterResult(const unsigned char* packet) {
 // OFFSET: 0x00D652E0
 // FUNCTION: fn_21998
 void CGameMode::ReceivePackageItemTest(const unsigned char* packet) {
-  const PackageItemTestEntry* entry = reinterpret_cast<const PackageItemTestEntry*>(packet + 8);
+  const auto* value = reinterpret_cast<const PACKET_ZC_RESULT_PACKAGE_ITEM_TEST*>(packet);
+  const PackageItemTestEntry* entry = value->entries;
   char packageName[260];
   std::memset(packageName, 0, sizeof(packageName));
   ITEM_INFO item;
-  item.SetItemId(*reinterpret_cast<const int*>(packet + 4));
+  item.SetItemId(value->itemId);
   int capacity = sizeof(packageName);
   item.GetIdDisplayName(packageName, capacity, 0);
 
@@ -1520,7 +1774,7 @@ void CGameMode::ReceivePackageItemTest(const unsigned char* packet) {
   }
 
   int total = 0;
-  const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t*>(packet + 2) - 8) / sizeof(PackageItemTestEntry);
+  const int count = static_cast<unsigned int>(value->packetLength - 8) / sizeof(PackageItemTestEntry);
   std::fprintf(file, "============================START============================\n");
   for (int i = 0; i < count; ++i) {
     char itemName[260];
@@ -1608,13 +1862,14 @@ void CGameMode::ReceiveClanLeave(const unsigned char* packet) {
 // OFFSET: 0x00D657D0
 // FUNCTION: fn_22002
 void CGameMode::ReceiveActorNameCard(const unsigned char* packet) {
+  const auto* value = reinterpret_cast<const PACKET_ZC_ACK_REQNAMEALL2*>(packet);
   char name[25] = "";
 
-  memcpy_s(name, 24, packet + 6, 24);
+  memcpy_s(name, 24, value->name, 24);
   name[24] = '\0';
   this->SetActorNameCard(
-    *reinterpret_cast<const std::uint32_t*>(packet + 2), name, reinterpret_cast<const char*>(packet + 0x1E), reinterpret_cast<const char*>(packet + 0x36),
-    reinterpret_cast<const char*>(packet + 0x4E), *reinterpret_cast<const int*>(packet + 0x66)
+    value->gid, name, value->partyName, value->guildName,
+    value->positionName, value->titleId
   );
 }
 
@@ -2134,22 +2389,23 @@ void CGameMode::ReceiveServiceRequest(unsigned char type, int value) {
 // OFFSET: 0x00D679E0
 // FUNCTION: fn_22037
 void CGameMode::ReceiveGradeEnchantResult(const unsigned char* packet) {
-  ITEM_INFO item = g_session.LookupClientItemByIdentity(*reinterpret_cast<const std::int16_t*>(packet + 2));
+  const auto* value = reinterpret_cast<const PACKET_ZC_GRADE_ENCHANT_ACK*>(packet);
+  ITEM_INFO item = g_session.LookupClientItemByIdentity(value->index);
   if (item.identity[1] > 0) {
-    const int result = *reinterpret_cast<const int*>(packet + 6);
+    const int result = value->result;
     if (result == ENCHANTGRADE_UPGRADE_SUCCESS) {
       item.refiningLevel = 0;
-      item.grade = *reinterpret_cast<const std::int16_t*>(packet + 4);
+      item.grade = value->grade;
       g_session.UpdateInventoryItem(item, 1);
     } else if (result == ENCHANTGRADE_UPGRADE_DOWNGRADE) {
-      item.grade = *reinterpret_cast<const std::int16_t*>(packet + 4);
+      item.grade = value->grade;
       g_session.UpdateInventoryItem(item, 1);
     }
   }
 
   auto* window = static_cast<UIGradeEnchantWnd*>(g_windowMgr.LookupWindow(WID_GRADEENCHANTWND));
   if (window) {
-    const int result = *reinterpret_cast<const int*>(packet + 6);
+    const int result = value->result;
     switch (result) {
     case ENCHANTGRADE_UPGRADE_SUCCESS:
       window->SetResult(2, 0);
@@ -2421,13 +2677,25 @@ struct DdukddakBoxTestEntry {
   /* 0004 */ int count;
 };
 
+#pragma pack(push, 1)
+struct PACKET_ZC_RESULT_DDUKDDAKBOX_TEST {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ std::int16_t packetLength;
+  /* 0004 */ int itemId;
+  /* 0008 */ DdukddakBoxTestEntry entries[1];
+};
+#pragma pack(pop)
+
+static_assert(sizeof(PACKET_ZC_RESULT_DDUKDDAKBOX_TEST) == 0x10);
+
 // OFFSET: 0x00D64A90
 // FUNCTION: fn_21997
 void CGameMode::ReceiveDdukddakBoxTest(const unsigned char* packet) {
+  const auto* value = reinterpret_cast<const PACKET_ZC_RESULT_DDUKDDAKBOX_TEST*>(packet);
   std::map<int, int> counts;
-  const DdukddakBoxTestEntry* source = reinterpret_cast<const DdukddakBoxTestEntry*>(packet + 8);
+  const DdukddakBoxTestEntry* source = value->entries;
   int total = 0;
-  const int count = static_cast<unsigned int>(*reinterpret_cast<const std::int16_t*>(packet + 2) - 8) / sizeof(DdukddakBoxTestEntry);
+  const int count = static_cast<unsigned int>(value->packetLength - 8) / sizeof(DdukddakBoxTestEntry);
   for (int i = 0; i < count; ++i) {
     DdukddakBoxTestEntry entry;
     memcpy_s(&entry, sizeof(entry), source, sizeof(entry));
@@ -2450,7 +2718,7 @@ void CGameMode::ReceiveDdukddakBoxTest(const unsigned char* packet) {
   char name[64];
   std::memset(name, 0, sizeof(name));
   ITEM_INFO box;
-  box.SetItemId(*reinterpret_cast<const int*>(packet + 4));
+  box.SetItemId(value->itemId);
   int capacity = sizeof(name);
   box.GetIdDisplayName(name, capacity, 0);
 
@@ -2483,10 +2751,11 @@ void CGameMode::ReceiveDdukddakBoxTest(const unsigned char* packet) {
 // OFFSET: 0x00D3C9B0
 // FUNCTION: fn_21795
 void CGameMode::ReceiveBroadcastBalloonNotice(const unsigned char* packet) {
+  const auto* value = reinterpret_cast<const PACKET_ZC_PCBANG_EFFECT*>(packet);
   std::uint32_t color = 0x62B0FF;
   std::string text = FormatOwnedString(
-    LookupMessage(MSI_PCBANG_EVENT), *reinterpret_cast<const int*>(packet + 2), *reinterpret_cast<const int*>(packet + 6),
-    *reinterpret_cast<const int*>(packet + 10)
+    LookupMessage(MSI_PCBANG_EVENT), value->exp, value->drop,
+    value->death
   );
   if (g_serviceType == ServiceBrazil) {
     text = LookupMessage(MSI_BILLING_2);
@@ -2507,57 +2776,62 @@ void CGameMode::ReceiveBroadcastBalloonNotice(const unsigned char* packet) {
 // OFFSET: 0x00D65870
 // FUNCTION: fn_22003
 void CGameMode::ReceivePartyMemberInfoWithCharacterId(const unsigned char* packet) {
+  const auto* value = reinterpret_cast<const PACKET_ZC_ADD_MEMBER_TO_GROUP4*>(packet);
   this->UpdatePartyMemberInfo(
-    reinterpret_cast<const char*>(packet + 0x2F), *reinterpret_cast<const int*>(packet + 2), reinterpret_cast<const char*>(packet + 0x47),
-    *reinterpret_cast<const int*>(packet + 10), packet[0x16], *reinterpret_cast<const std::uint16_t*>(packet + 0x0E),
-    *reinterpret_cast<const std::uint16_t*>(packet + 0x10), reinterpret_cast<const char*>(packet + 0x17), packet[0x57], packet[0x58],
-    *reinterpret_cast<const int*>(packet + 6)
+    value->memberName, value->accountId, value->mapName,
+    value->leader, value->offline, value->job,
+    value->level, value->partyName, value->itemPickupRule, value->itemShareRule,
+    value->characterId
   );
 }
 
 // OFFSET: 0x00D65FC0
 // FUNCTION: fn_22007
 void CGameMode::ReceiveStatusChangeEntry(const unsigned char* record) {
+  const auto* value = reinterpret_cast<const PACKET_ZC_EFST_SET_ENTER2*>(record);
   this->ApplyStatusChange(
-    *reinterpret_cast<const std::uint32_t*>(record + 2), 1, *reinterpret_cast<const std::int16_t*>(record + 6),
-    *reinterpret_cast<const std::uint32_t*>(record + 0x0C), *reinterpret_cast<const int*>(record + 0x10),
-    *reinterpret_cast<const int*>(record + 0x14), *reinterpret_cast<const int*>(record + 0x18), 1,
-    *reinterpret_cast<const std::uint32_t*>(record + 8)
+    value->targetId, 1, value->type,
+    value->remainingTime, value->value1,
+    value->value2, value->value3, 1,
+    value->duration
   );
 }
 
 // OFFSET: 0x00D66810
 // FUNCTION: fn_22014
 void CGameMode::ReceiveStatusChangeEffect2(const unsigned char* packet) {
+  const auto* value = reinterpret_cast<const PACKET_ZC_MSG_STATE_CHANGE3*>(packet);
   this->ApplyStatusChange(
-    *reinterpret_cast<const std::uint32_t*>(packet + 4), packet[8], *reinterpret_cast<const std::int16_t*>(packet + 2),
-    *reinterpret_cast<const std::uint32_t*>(packet + 0x0D), *reinterpret_cast<const int*>(packet + 0x11),
-    *reinterpret_cast<const int*>(packet + 0x15), *reinterpret_cast<const int*>(packet + 0x19), 0,
-    *reinterpret_cast<const std::uint32_t*>(packet + 9)
+    value->targetId, value->state, value->type,
+    value->remainingTime, value->value1,
+    value->value2, value->value3, 0,
+    value->duration
   );
 }
 
 // OFFSET: 0x00D66A30
 // FUNCTION: fn_22018
 void CGameMode::ReceiveActorStatusValuePacket2(const unsigned char* packet) {
+  const auto* value = reinterpret_cast<const PACKET_ZC_NOTIFY_EFFECT4*>(packet);
   this->ReceiveActorStatusValue(
-    *reinterpret_cast<const std::uint32_t*>(packet + 2), *reinterpret_cast<const int*>(packet + 6), *reinterpret_cast<const std::int64_t*>(packet + 10)
+    value->aid, value->type, value->value
   );
 }
 
 // OFFSET: 0x00D676C0
 // FUNCTION: fn_22032
 void CGameMode::ReceiveWindow95Data(const unsigned char* packet) {
-  const int size = *reinterpret_cast<const std::int16_t*>(packet + 2) - 8;
+  const auto* value = reinterpret_cast<const PACKET_ZC_SELECTCART*>(packet);
+  const int size = value->packetLength - 8;
   if (size == 0) {
     return;
   }
 
-  const unsigned char* const source = packet + 8;
+  const unsigned char* const source = value->types;
   std::vector<unsigned char> data;
   data.insert(data.end(), source, source + size);
   if (UIWindow* window = g_windowMgr.EnsureWindow(WID_SELECTCARTWND)) {
-    window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(data.data()), size, *reinterpret_cast<const int*>(packet + 4), 0);
+    window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(data.data()), size, value->identity, 0);
   }
 }
 
@@ -2846,14 +3120,15 @@ struct SpriteChange2RelayPacket {
 // OFFSET: 0x00D67850
 // FUNCTION: fn_22034
 void CGameMode::ReceiveSpriteChange2Mirrored(const unsigned char* packet) {
+  const auto* value = reinterpret_cast<const SpriteChange2RelayPacket*>(packet);
   this->ReceiveSpriteChange2(packet);
-  if (*reinterpret_cast<const std::uint32_t*>(packet + 2) == g_session.m_aid) {
+  if (value->aid == g_session.m_aid) {
     for (std::uint32_t aid : this->spriteMirrorActorIds) {
       SpriteChange2RelayPacket relay;
       relay.id = ID_ZC_SPRITE_CHANGE2;
       relay.aid = aid;
-      relay.type = packet[6];
-      relay.value = *reinterpret_cast<const std::int64_t*>(packet + 7);
+      relay.type = value->type;
+      relay.value = value->value;
       this->ReceiveSpriteChange2(reinterpret_cast<const unsigned char*>(&relay));
     }
   }
@@ -2869,9 +3144,18 @@ struct Item1718PendingRecord {
   /* 000F */ std::uint32_t location;
   /* 0013 */ unsigned char padding_0013[6];
 };
+
+struct PACKET_ZC_PC_CASH_POINT_ITEMLIST {
+  /* 0000 */ std::int16_t packetType;
+  /* 0002 */ std::int16_t packetLength;
+  /* 0004 */ int cashPoints;
+  /* 0008 */ int kafraPoints;
+  /* 000C */ Item1718PendingRecord items[1];
+};
 #pragma pack(pop)
 
 static_assert(sizeof(Item1718PendingRecord) == 0x19);
+static_assert(sizeof(PACKET_ZC_PC_CASH_POINT_ITEMLIST) == 0x25);
 
 struct Unknown015D4818Values {
   /* 0000 */ std::uint32_t padding_0000[2];
@@ -2896,6 +3180,7 @@ Unknown015D4818* g_pendingCashItemList;
 // OFFSET: 0x00D3BD40
 // FUNCTION: fn_21790
 void CGameMode::ReceivePendingItem1718List(const unsigned char* packet) {
+  const auto* value = reinterpret_cast<const PACKET_ZC_PC_CASH_POINT_ITEMLIST*>(packet);
   if (g_windowMgr.nCashWnd || g_windowMgr.LookupWindow(WID_CASHSHOP_WND)) {
     return;
   }
@@ -2907,8 +3192,8 @@ void CGameMode::ReceivePendingItem1718List(const unsigned char* packet) {
     return;
   }
 
-  const int count = (*reinterpret_cast<const std::int16_t*>(packet + 2) - 12) / sizeof(Item1718PendingRecord);
-  const Item1718PendingRecord* record = reinterpret_cast<const Item1718PendingRecord*>(packet + 12);
+  const int count = (value->packetLength - 12) / sizeof(Item1718PendingRecord);
+  const Item1718PendingRecord* record = value->items;
   for (int i = 0; i < count; ++i) {
     const Item1718PendingRecord entry = *record;
     RawItemBasic item = {};
@@ -2927,8 +3212,8 @@ void CGameMode::ReceivePendingItem1718List(const unsigned char* packet) {
     ++record;
   }
 
-  g_session.m_pendingAid = *reinterpret_cast<const int*>(packet + 4);
-  g_session.m_pendingGid = *reinterpret_cast<const int*>(packet + 8);
+  g_session.m_pendingAid = value->cashPoints;
+  g_session.m_pendingGid = value->kafraPoints;
   this->isOnQuest = 1;
 
   UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMSHOPWND);
@@ -2942,7 +3227,8 @@ void CGameMode::ReceivePendingItem1718List(const unsigned char* packet) {
 // OFFSET: 0x00D66860
 // FUNCTION: fn_22016
 void CGameMode::ReceiveClanChat(const unsigned char* packet) {
-  const int messageLength = *reinterpret_cast<const std::int16_t*>(packet + 2) - 28;
+  const auto* value = reinterpret_cast<const PACKET_ZC_NOTIFY_CLAN_CHAT*>(packet);
+  const int messageLength = value->packetLength - 28;
 
   if (static_cast<unsigned int>(messageLength) > 220) {
     return;
@@ -2951,7 +3237,7 @@ void CGameMode::ReceiveClanChat(const unsigned char* packet) {
   char message[220];
 
   std::memset(message, 0, sizeof(message));
-  strcpy_s(message, sizeof(message), reinterpret_cast<const char*>(packet + 28));
+  strcpy_s(message, sizeof(message), value->message);
 
   if (g_forbiddenWords.Contains(message) == true) {
     std::string masked("");

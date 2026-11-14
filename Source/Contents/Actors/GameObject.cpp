@@ -313,10 +313,10 @@ void CRenderObject::DrawSprite(int argument, bool seasonal, float offset) {
     float bottomRhw;
     float topRhw;
     SpriteQuad quad;
-    int box[4];
+    tagRECT box;
     std::uint32_t color;
     if (!static_cast<CGameActor*>(this)->PrepareSprite(
-          index, index, distanceScale, cell, x, y, position, scale, &bottomRhw, &topRhw, image, &quad, box, &color, 0, 0, 0
+          index, index, distanceScale, cell, x, y, position, scale, &bottomRhw, &topRhw, image, &quad, &box, &color, 0, 0, 0
         )) {
       continue;
     }
@@ -346,7 +346,7 @@ void CRenderObject::DrawSprite(int argument, bool seasonal, float offset) {
     }
 
     int blend = 257;
-    this->DrawSpriteEffects(&quad, &cell, box, scale, bottomRhw, topRhw, palette, image, &blend, color);
+    this->DrawSpriteEffects(&quad, &cell, &box, scale, bottomRhw, topRhw, palette, image, &blend, color);
 
     if (this->render.spriteJob == 0x235) {
       quad.bottomRhw = bottomRhw - 0.0000003f;
@@ -667,12 +667,12 @@ void CGameActor::RenderMercenary(const float* matrix, int job) {
       float bottomRhw;
       float topRhw;
       SpriteQuad quad;
-      int box[4];
+      tagRECT box;
       union {
         std::uint32_t color;
         SpriteColor colorChannels;
       };
-      if (!this->PrepareSprite(index, index, distanceScale, cell, x, y, position, scale, &bottomRhw, &topRhw, image, &quad, box, &color, offsetX, offsetY, 0)) {
+      if (!this->PrepareSprite(index, index, distanceScale, cell, x, y, position, scale, &bottomRhw, &topRhw, image, &quad, &box, &color, offsetX, offsetY, 0)) {
         continue;
       }
 
@@ -713,7 +713,7 @@ void CGameActor::RenderMercenary(const float* matrix, int job) {
       }
 
       if (layer <= 1) {
-        this->DrawPulseOutline(cell, box, scale, bottomRhw, topRhw, palette, image, color);
+        this->DrawPulseOutline(cell, &box, scale, bottomRhw, topRhw, palette, image, color);
       }
 
       if (IsScreenShakeActive()) {
@@ -1081,10 +1081,11 @@ void EffectActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_
       }
       break;
 
-    case AM_IS_HAVE_EFFECT:
+    case AM_IS_HAVE_EFFECT: {
+      int* effectId = reinterpret_cast<int*>(b);
       if (g_effectMgr->HasAllocator(static_cast<int>(b)) == true && sender) {
         if (g_effectMgr->Has(static_cast<CRenderObject*>(sender)->render.accountId, static_cast<int>(b)) == true) {
-          *reinterpret_cast<int*>(static_cast<std::intptr_t>(b)) = -1;
+          *effectId = -1;
         }
         return;
       }
@@ -1093,12 +1094,13 @@ void EffectActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_
         CRagEffect* const effect = *it;
         if (!effect) {
           this->state.effects.erase(it);
-        } else if (*reinterpret_cast<int*>(static_cast<std::intptr_t>(b)) == effect->state.type) {
-          *reinterpret_cast<int*>(static_cast<std::intptr_t>(b)) = -1;
+        } else if (*effectId == effect->state.type) {
+          *effectId = -1;
           return;
         }
       }
       break;
+    }
   }
 }
 

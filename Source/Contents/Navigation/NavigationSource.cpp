@@ -426,7 +426,7 @@ __forceinline NaviCell CNavigationManager::ParseCell(const char* text) {
 // FUNCTION: fn_19565
 NavigationTarget CNavigationManager::ReadTarget(const char* data, int size) {
   NavigationTarget target;
-  target.type = *reinterpret_cast<const int*>(data);
+  target.type = reinterpret_cast<const NaviTargetRecord*>(data)->type;
   std::vector<char> buffer(size - 3, '\0');
   if (target.type == 1 || target.type == 0) {
     std::memcpy(buffer.data(), data + 4, size - 4);
@@ -458,12 +458,12 @@ CNavi_Object* CNavigationManager::ReadTargetObject(const char* record) {
   std::string name(record + offset, record + offset + length);
   offset += length;
 
-  length = *reinterpret_cast<const std::int16_t*>(record + offset);
+  length = reinterpret_cast<const NaviStringRecord*>(record + offset)->length;
   offset += 2;
   std::string title(record + offset, record + offset + length);
   offset += length;
 
-  length = *reinterpret_cast<const std::int16_t*>(record + offset);
+  length = reinterpret_cast<const NaviStringRecord*>(record + offset)->length;
   offset += 2;
   std::string map(record + offset, record + offset + length);
 
@@ -496,7 +496,7 @@ std::vector<char> CNavigationManager::WriteTarget(NavigationTarget target) {
   }
 
   buffer.resize(sizeof(int), '\0');
-  *reinterpret_cast<int*>(buffer.data()) = target.type;
+  reinterpret_cast<NaviTargetRecord*>(buffer.data())->type = target.type;
 
   if (target.type == 1 || target.type == 0) {
     std::string name = static_cast<CNaviInfo*>(target.object)->GetName();
@@ -537,12 +537,12 @@ __declspec(noinline) std::vector<char> CNavigationManager::WriteObject(CNavi_Obj
     std::memcpy(buffer.data() + 0x12, name.c_str(), length);
     std::size_t offset = length + 0x12;
     length = static_cast<std::int16_t>(title.size());
-    *reinterpret_cast<std::int16_t*>(buffer.data() + offset) = length;
+    reinterpret_cast<NaviStringRecord*>(buffer.data() + offset)->length = length;
     offset += 2;
     std::memcpy(buffer.data() + offset, title.c_str(), length);
     offset += length;
     length = static_cast<std::int16_t>(map.size());
-    *reinterpret_cast<std::int16_t*>(buffer.data() + offset) = length;
+    reinterpret_cast<NaviStringRecord*>(buffer.data() + offset)->length = length;
     std::memcpy(buffer.data() + offset + 2, map.c_str(), length);
   }
 
@@ -576,19 +576,19 @@ CNavi_Link* CNavigationManager::ReadObject(const char* record) {
   std::string name(record + offset, record + offset + length);
   offset += length;
 
-  length = *reinterpret_cast<const std::int16_t*>(record + offset);
+  length = reinterpret_cast<const NaviStringRecord*>(record + offset)->length;
   offset += 2;
   std::string title(record + offset, record + offset + length);
   offset += length;
 
-  length = *reinterpret_cast<const std::int16_t*>(record + offset);
+  length = reinterpret_cast<const NaviStringRecord*>(record + offset)->length;
   offset += 2;
   std::string map(record + offset, record + offset + length);
   offset += length;
 
-  const int linkedCellX = *reinterpret_cast<const int*>(record + offset);
-  const int linkedCellY = *reinterpret_cast<const int*>(record + offset + 4);
-  length = *reinterpret_cast<const std::int16_t*>(record + offset + 8);
+  const int linkedCellX = reinterpret_cast<const NaviLinkedMapRecord*>(record + offset)->cellX;
+  const int linkedCellY = reinterpret_cast<const NaviLinkedMapRecord*>(record + offset)->cellY;
+  length = reinterpret_cast<const NaviLinkedMapRecord*>(record + offset)->nameLength;
   offset += 10;
   std::string linkedMap(record + offset, record + offset + length);
 

@@ -83,7 +83,7 @@ public:
   bool IsDrawOnTop();
   const ActionFrame& SelectStanceFrame(int layer, CActRes* actRes, int* animation, int* frame, bool* replaced);
   void ApplyLayerEffects(
-    SpriteQuad* quad, const SpriteFrameCell* cell, int layer, const int* box, float shiftX, float distance, float bottomRhw,
+    SpriteQuad* quad, const SpriteFrameCell* cell, int layer, const tagRECT* box, float shiftX, float distance, float bottomRhw,
     float topRhw, float screenX, float screenY, const std::uint32_t* palette, const SpriteRleImage* image, int* blend, int offsetX,
     int offsetY
   );

@@ -17,6 +17,14 @@
 #include <cstdlib>
 #include <windows.h>
 
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(tagRECT) == 0x10);
+static_assert(offsetof(tagRECT, left) == 0x0);
+static_assert(offsetof(tagRECT, top) == 0x4);
+static_assert(offsetof(tagRECT, right) == 0x8);
+static_assert(offsetof(tagRECT, bottom) == 0xC);
+#endif
+
 // OFFSET: 0x00CA9580
 // FUNCTION: fn_21007
 float __stdcall CRenderObject::Heading(float x, float z, float targetX, float targetZ) {
@@ -75,7 +83,7 @@ float CRenderObject::CalcDist(float x, float y, float z) const {
 // FUNCTION: fn_21011
 bool CRenderObject::PrepareSprite(
   int unused, int layer, float scale, const SpriteFrameCell& cell, float x, float y, const float* position, float shift, float* bottomDepth,
-  float* topDepth, const SpriteRleImage* image, SpriteQuad* quad, int* bounds, std::uint32_t* color, int offsetX, int offsetY, int flags
+  float* topDepth, const SpriteRleImage* image, SpriteQuad* quad, tagRECT* bounds, std::uint32_t* color, int offsetX, int offsetY, int flags
 ) {
   const float depthBias = this->render.distanceScale * g_cameraScaleX;
   const double scaleY = static_cast<double>(scale * cell.scaleY * this->render.scale);
@@ -161,10 +169,10 @@ bool CRenderObject::PrepareSprite(
   quad->bottomRhw = *bottomDepth;
   quad->topRhw = *topDepth;
   quad->angle = static_cast<float>(cell.rotation + static_cast<int>(this->render.spriteAngle));
-  bounds[0] = static_cast<int>(left);
-  bounds[1] = static_cast<int>(top);
-  bounds[2] = static_cast<int>(right);
-  bounds[3] = static_cast<int>(bottom);
+  bounds->left = static_cast<int>(left);
+  bounds->top = static_cast<int>(top);
+  bounds->right = static_cast<int>(right);
+  bounds->bottom = static_cast<int>(bottom);
 
   float lightRed = 1.0f;
   float lightGreen = 1.0f;

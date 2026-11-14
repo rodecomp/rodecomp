@@ -257,11 +257,11 @@ void SpriteLayerRenderer::DrawLayerOutlines(std::uint32_t color) {
     float bottomRhw = 0.0f;
     float topRhw = 0.0f;
     SpriteQuad quad;
-    int box[4];
+    tagRECT box;
     std::uint32_t quadColor;
     if (!this->pc->PrepareSprite(
           layer, this->layerShift, this->distanceScale, *resolved.cell, this->x, this->y, &this->position.x, this->scale, &bottomRhw,
-          &topRhw, resolved.image, &quad, box, &quadColor, itemOffset.first, itemOffset.second, 0
+          &topRhw, resolved.image, &quad, &box, &quadColor, itemOffset.first, itemOffset.second, 0
         )) {
       continue;
     }
@@ -381,7 +381,7 @@ void SpriteLayerRenderer::DrawRobe(bool drawOnTop) {
     std::uint32_t quadColor;
     this->pc->PrepareSprite(
       this->layerShift, this->layerShift, this->distanceScale, cell, this->x, this->y, &this->position.x, this->scale, &bottomRhw, &topRhw,
-      image, &quad, reinterpret_cast<int*>(&box), &quadColor, 0, 0, !drawOnTop
+      image, &quad, &box, &quadColor, 0, 0, !drawOnTop
     );
     if (this->pc->render.translucentOther[0] == 1) {
       quad.color = static_cast<std::uint32_t>(static_cast<unsigned char>(static_cast<int>(static_cast<float>(quad.color >> 24) * (70.0f / 255.0f)))) << 24 |
@@ -391,7 +391,7 @@ void SpriteLayerRenderer::DrawRobe(bool drawOnTop) {
     quad.image = image;
     int blend = this->pc->blend;
     this->pc->ApplyLayerEffects(
-      &quad, &cell, 0, reinterpret_cast<const int*>(&box), this->scale, bottomRhw, bottomRhw, topRhw, this->x, this->y, sprite->palette, image, &blend, 0, 0
+      &quad, &cell, 0, &box, this->scale, bottomRhw, bottomRhw, topRhw, this->x, this->y, sprite->palette, image, &blend, 0, 0
     );
     if (drawOnTop && g_session.IsTopLayerRobe(this->pc->robe)) {
       SpriteLayerQuad entry;
@@ -630,11 +630,11 @@ void SpriteLayerRenderer::DrawLayer(
     float bottomRhw = 0.0f;
     float topRhw = 0.0f;
     SpriteQuad quad;
-    int box[4];
+    tagRECT box;
     std::uint32_t quadColor;
     if (!this->pc->PrepareSprite(
           index, this->layerShift, this->distanceScale, *resolved.cell, this->x, this->y, &this->position.x, this->scale, &bottomRhw, &topRhw,
-          resolved.image, &quad, box, &quadColor, offsetX, offsetY, 0
+          resolved.image, &quad, &box, &quadColor, offsetX, offsetY, 0
         )) {
       continue;
     }
@@ -698,7 +698,7 @@ void SpriteLayerRenderer::DrawLayer(
 
     this->alternateLayerRendering = true;
     this->pc->ApplyLayerEffects(
-      &quad, resolved.cell, layer, box, this->scale, this->rhw, bottomRhw, topRhw, this->x, this->y, palette, resolved.image, &blend, offsetX,
+      &quad, resolved.cell, layer, &box, this->scale, this->rhw, bottomRhw, topRhw, this->x, this->y, palette, resolved.image, &blend, offsetX,
       offsetY
     );
     this->QueueQuad(layer, &quad, palette, blend);

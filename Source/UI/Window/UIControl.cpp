@@ -2837,7 +2837,7 @@ void CUIVScrollBar::ScrollBy(int value) {
 // OFFSET: 0x009F0A70
 // FUNCTION: fn_14670
 void CUIStaticText::OnMouseHover(int x, int y) {
-  if (this->Tooltip().empty()) {
+  if (this->tooltip.empty()) {
     CUIControl::OnMouseHover(x, y);
     return;
   }
@@ -2845,17 +2845,17 @@ void CUIStaticText::OnMouseHover(int x, int y) {
   x = -6;
   y = -4;
   this->ToScreen(x, y);
-  g_modeMgr.gameMode->ShowTooltip(this->Tooltip().c_str(), x, y, 0xFFFFFFFFu, 0, 1);
+  g_modeMgr.gameMode->ShowTooltip(this->tooltip.c_str(), x, y, 0xFFFFFFFFu, 0, 1);
 }
 
 // OFFSET: 0x009F0AE0
 // FUNCTION: fn_14671
 void CUIStaticText::UpdateText() {
-  this->Tooltip().clear();
+  this->tooltip.clear();
   if (this->fitText) {
     this->displayText = this->FitDisplayText(this->geometry.width, this->text.c_str(), this->fontIndex, this->fontHeight, this->bold);
     if (this->displayText != this->text) {
-      this->Tooltip() = this->text;
+      this->tooltip = this->text;
     }
   } else {
     this->displayText = this->text;
@@ -2929,7 +2929,7 @@ void CUIStaticText::SetText(std::string_view value) {
 // OFFSET: 0x009F0E80
 // FUNCTION: fn_14681
 void CUIStaticText::SetTooltip(std::string_view value) {
-  this->Tooltip().assign(value.data(), value.size());
+  this->tooltip.assign(value.data(), value.size());
 }
 
 // OFFSET: 0x009F1D20
@@ -3585,10 +3585,9 @@ void CUIVScrollBar::OnCreate(int, int) {
 // OFFSET: 0x009BE1A0
 // FUNCTION: fn_13946
 CUIStaticText::CUIStaticText()
-    : CUIControl(), displayText(), tooltipStorage(), scrollBar(nullptr), tooltipTailStorage(), fitText(false), horizontalAlign(0),
+    : CUIControl(), text(), displayText(), tooltip(), fitText(false), horizontalAlign(0),
       verticalAlign(0), fontIndex(0), fontHeight(12), bold(0), color(0), shadow(false), shadowColor(0xFFFFFF), outline(false), outlineColor(0xFFFFFF), textX(0),
-      textY(0), text() {
-  new (&this->Tooltip()) std::string();
+      textY(0) {
 }
 
 // OFFSET: 0x009DA310

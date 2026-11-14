@@ -107,6 +107,15 @@
 #include <timeapi.h>
 
 #pragma pack(push, 1)
+struct CharacterAuthCodePacket {
+  /* 0000 */ std::int16_t id;
+  /* 0002 */ std::int16_t length;
+  /* 0004 */ int authChallengeId;
+  /* 0008 */ char code[10];
+};
+
+static_assert(sizeof(CharacterAuthCodePacket) == 0x12);
+
 struct CharacterSlotsPacket {
   /* 0000 */ std::int16_t id;
   /* 0002 */ std::uint16_t length;
@@ -2908,11 +2917,12 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
         : nullptr
     );
     if (buffer) {
-      *reinterpret_cast<std::int16_t*>(buffer) = 0x9A3;
-      *reinterpret_cast<int*>(buffer + 4) = this->authChallengeId;
-      StringFormat(reinterpret_cast<char*>(buffer + 8), 10, static_cast<std::size_t>(-1), this->m_authCode);
-      *reinterpret_cast<std::int16_t*>(buffer + 2) = 14;
-      GetRagConnection().Send(*reinterpret_cast<std::int16_t*>(buffer + 2), buffer);
+      CharacterAuthCodePacket* packet = reinterpret_cast<CharacterAuthCodePacket*>(buffer);
+      packet->id = 0x9A3;
+      packet->authChallengeId = this->authChallengeId;
+      StringFormat(packet->code, 10, static_cast<std::size_t>(-1), this->m_authCode);
+      packet->length = 14;
+      GetRagConnection().Send(packet->length, buffer);
       this->waitWnd = g_windowMgr.EnsureWindow(WID_WAITWND);
       static_cast<UIWaitWnd*>(this->waitWnd)->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
       _freea(buffer);

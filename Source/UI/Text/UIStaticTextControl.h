@@ -8,8 +8,6 @@
 #include <string>
 #include <string_view>
 
-class CUIVScrollBar;
-
 class CUIStaticText : public CUIControl {
 public:
   CUIStaticText();
@@ -36,16 +34,9 @@ public:
     this->SetTooltip(std::string_view(value, length));
   }
 
-  std::string& Tooltip() {
-    return *reinterpret_cast<std::string*>(this->tooltipStorage);
-  }
-
-
   /* 0080 */ std::string text;
   /* 0098 */ std::string displayText;
-  /* 00B0 */ unsigned char tooltipStorage[0x10];
-  /* 00C0 */ CUIVScrollBar* scrollBar;
-  /* 00C4 */ unsigned char tooltipTailStorage[0x04];
+  /* 00B0 */ std::string tooltip;
   /* 00C8 */ bool fitText;
   /* 00CC */ int horizontalAlign;
   /* 00D0 */ int verticalAlign;
@@ -63,8 +54,11 @@ public:
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CUIStaticText) == 0xFC);
+static_assert(sizeof(std::string) == 0x18);
+static_assert(offsetof(CUIStaticText, text) == 0x80);
 static_assert(offsetof(CUIStaticText, displayText) == 0x98);
-static_assert(offsetof(CUIStaticText, scrollBar) == 0xC0);
+static_assert(offsetof(CUIStaticText, tooltip) == 0xB0);
+static_assert(offsetof(CUIStaticText, fitText) == 0xC8);
 static_assert(offsetof(CUIStaticText, color) == 0xE0);
 static_assert(offsetof(CUIStaticText, outlineColor) == 0xF0);
 #endif
