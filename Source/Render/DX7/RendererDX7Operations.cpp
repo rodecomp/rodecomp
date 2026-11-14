@@ -101,7 +101,7 @@ void CRendererDX7::DrawLightmappedPrimitive(LightmappedPrimitive* primitive) {
 
 // OFFSET: 0x0055AD50
 // FUNCTION: fn_02084
-void CRendererDX7::DrawAuxiliaryPrimitive(LightmappedPrimitive* primitive) {
+void CRendererDX7::DrawAuxiliaryPrimitive(LightmappedCommand* primitive) {
   if (primitive->vertexCount <= 0) {
     return;
   }

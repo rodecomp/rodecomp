@@ -307,7 +307,7 @@ bool CEffectPrim::MoveEffectPrimitive() {
     this->state.blue = this->state.blue > 255 ? 255 : this->state.blue < 0 ? 0 : this->state.blue;
   }
 
-  this->state.ProcessAlpha();
+  this->ProcessAlpha();
 
   if (this->state.stateCnt % this->state.animSpeed == 0) {
     const auto next = this->render.curMotion + 1u;
@@ -476,7 +476,7 @@ bool CEffectPrim::Prim3DCylinder() {
     this->state.outerSpeed = -(this->state.outerSize / static_cast<float>(this->state.duration - this->state.stateCnt + 1));
   }
 
-  this->state.ProcessAlpha();
+  this->ProcessAlpha();
 
   if (this->state.stateCnt % this->state.animSpeed == 0) {
     const auto next = this->render.curMotion + 1u;
@@ -529,7 +529,7 @@ bool CEffectPrim::Prim3DCylinderHalf() {
     this->state.outerSpeed = -(this->state.outerSize / static_cast<float>(this->state.duration - this->state.stateCnt + 1));
   }
 
-  this->state.ProcessAlpha();
+  this->ProcessAlpha();
 
   if (this->state.stateCnt % this->state.animSpeed == 0) {
     const auto next = this->render.curMotion + 1u;
@@ -578,7 +578,7 @@ __declspec(noinline) void CEffectPrim::AdvanceEffectPrimitive() {
       this->state.accel = this->state.changeAccel3d.y;
     }
   } else {
-    this->state.ProcessAlpha();
+    this->ProcessAlpha();
   }
 }
 
@@ -865,7 +865,7 @@ void CEffectPrim::Prim3DCircle() {
   }
 
   this->state.size = scale;
-  this->state.ProcessAlpha();
+  this->ProcessAlpha();
   this->ShiftSegment();
 }
 
@@ -1737,7 +1737,7 @@ bool CEffectPrim::PrimKouenka() {
     this->state.roll = this->render.angle - static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw;
   }
 
-  this->state.ProcessAlpha();
+  this->ProcessAlpha();
   this->ShiftSegment();
   return this->AnimMotion();
 }
@@ -1799,7 +1799,7 @@ bool CEffectPrim::PrimSakura() {
     this->state.roll = this->render.angle - static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw;
   }
 
-  this->state.ProcessAlpha();
+  this->ProcessAlpha();
   this->ShiftSegment();
   return this->AnimMotion();
 }
@@ -2183,7 +2183,7 @@ bool CEffectPrim::PrimGhost() {
   this->render.position.x = this->state.deltaPos.x;
   this->render.position.y = this->state.deltaPos.y;
   this->render.position.z = this->state.deltaPos.z;
-  this->state.ProcessAlpha();
+  this->ProcessAlpha();
   this->ShiftSegment();
   return this->AnimMotion();
 }
@@ -2469,7 +2469,7 @@ bool CEffectPrim::Prim3DParticle() {
     this->state.roll = this->render.angle - static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw;
   }
 
-  this->state.ProcessAlpha();
+  this->ProcessAlpha();
   this->ShiftSegment();
   return this->AnimMotion();
 }
@@ -2510,7 +2510,7 @@ bool CEffectPrim::Prim3DParticleGravity() {
     }
   }
 
-  this->state.ProcessAlpha();
+  this->ProcessAlpha();
   this->ShiftSegment();
   return this->AnimMotion();
 }
@@ -2709,7 +2709,7 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
     particle.blue = particle.blue > 255 ? 255 : particle.blue < 0 ? 0 : particle.blue;
   }
 
-  particle.ProcessAlpha();
+  this->ProcessAlpha();
 
   if (particle.stateCnt % particle.animSpeed == 0) {
     const auto next = this->render.curMotion + 1u;
@@ -2818,7 +2818,7 @@ bool CEffectPrim::Prim3DParticleNoMaster() {
     this->state.roll = this->render.angle - static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw;
   }
 
-  this->state.ProcessAlpha();
+  this->ProcessAlpha();
   this->ShiftSegment();
   return this->AnimMotion();
 }
@@ -2882,7 +2882,7 @@ bool CEffectPrim::Prim3DParticleOrbit() {
   this->state.latitude = rotation;
   this->state.transform.AppendZRotation(rotation);
 
-  this->state.ProcessAlpha();
+  this->ProcessAlpha();
   this->ShiftSegment();
   return this->AnimMotion();
 }
@@ -2921,7 +2921,7 @@ bool CEffectPrim::Prim3DParticleSpline() {
   this->render.position.y = this->state.deltaPos.y + this->state.orgPos.y + this->state.deltaPos3.y;
   this->render.position.z = this->state.deltaPos.z + this->state.orgPos.z + this->state.deltaPos3.z;
 
-  this->state.ProcessAlpha();
+  this->ProcessAlpha();
   this->ShiftSegment();
   return this->AnimMotion();
 }
@@ -5067,7 +5067,7 @@ __declspec(noinline) bool CEffectPrim::PrimFadeAlpha() {
     }
   }
 
-  reinterpret_cast<EffectPrimitiveState*>(this)->ProcessAlpha();
+  this->ProcessAlpha();
   this->ShiftSegment();
   return this->AnimMotion();
 }
@@ -5904,7 +5904,7 @@ bool CEffectPrim::Prim3DSlotParticle() {
     this->state.roll = this->render.angle - static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw;
   }
 
-  this->state.ProcessAlpha();
+  this->ProcessAlpha();
   this->ShiftSegment();
   if (!this->AnimMotion()) {
     return false;
@@ -6208,7 +6208,7 @@ bool CEffectPrim::PrimWanderingSlots() {
     g_modeMgr.GetGameMode();
   }
 
-  this->state.ProcessAlpha();
+  this->ProcessAlpha();
   this->ShiftSegment();
   return this->AnimMotion();
 }
@@ -7737,7 +7737,7 @@ bool CEffectPrim::Move2DPrimitive() {
     particle.chCnt = ClampedRandom(10) + 10;
   }
 
-  particle.ProcessAlpha();
+  this->ProcessAlpha();
 
   if (particle.stateCnt % particle.animSpeed == 0) {
     ++this->render.curMotion;
@@ -7975,7 +7975,7 @@ bool CEffectPrim::OnProcess() {
       this->state.heightSize = this->state.heightSpeed + this->state.heightSize;
       this->render.position.x = ClientSine(static_cast<int>(this->state.longitude)) * this->state.radius + this->state.orgPos.x;
       this->render.position.y = this->state.orgPos.y - ClientCosine(static_cast<int>(this->state.longitude)) * this->state.radius;
-      this->state.ProcessAlpha();
+      this->ProcessAlpha();
 
       if (this->state.stateCnt % this->state.animSpeed == 0) {
         const auto next = this->render.curMotion + 1u;
@@ -8013,7 +8013,7 @@ bool CEffectPrim::OnProcess() {
       this->state.longitude = this->state.longSpeed + this->state.longitude;
       this->state.heightSize = this->state.heightSpeed + this->state.heightSize;
       this->state.arcAngle = this->state.widthSpeed + this->state.arcAngle;
-      this->state.ProcessAlpha();
+      this->ProcessAlpha();
     } break;
     case PP_2DCIRCLE: {
       this->render.position.x = this->state.deltaPos2.x + this->state.master->state.tlvertX;
@@ -8027,7 +8027,7 @@ bool CEffectPrim::OnProcess() {
         this->state.size = this->state.innerSize;
       }
 
-      this->state.ProcessAlpha();
+      this->ProcessAlpha();
     } break;
     case PP_3DPARTICLE:
       if (!this->Prim3DParticle()) {
@@ -8083,7 +8083,7 @@ bool CEffectPrim::OnProcess() {
       this->render.position.x = this->state.orgPos.x + this->state.deltaPos.x;
       this->render.position.y = this->state.deltaPos.y + this->state.orgPos.y;
       this->render.position.z = this->state.deltaPos.z + this->state.orgPos.z;
-      this->state.ProcessAlpha();
+      this->ProcessAlpha();
     } break;
     case PP_3DCIRCLE:
       this->Prim3DCircle();
@@ -8101,7 +8101,7 @@ bool CEffectPrim::OnProcess() {
       this->state.radiusSpeed = this->state.radiusAccel + this->state.radiusSpeed;
       this->state.radius = this->state.radiusSpeed + this->state.radius;
       this->state.longitude = this->state.longSpeed + this->state.longitude;
-      this->state.ProcessAlpha();
+      this->ProcessAlpha();
     } break;
     case PP_3DCYLINDERHALF:
       this->Prim3DCylinderHalf();
@@ -8131,7 +8131,7 @@ bool CEffectPrim::OnProcess() {
       this->state.arcAngle = this->state.widthSpeed + this->state.arcAngle;
       this->state.longitude = this->state.longSpeed + this->state.longitude;
       this->state.heightSize = this->state.heightSpeed + this->state.heightSize;
-      this->state.ProcessAlpha();
+      this->ProcessAlpha();
     } break;
     case PP_3DSPLINE:
     case PP_3DSPIRAL: {
@@ -8152,7 +8152,7 @@ bool CEffectPrim::OnProcess() {
       this->state.segPos[1] = {x1, y1 + this->state.heightSpeed, z1};
       this->state.segPos[2] = {x0, y0 - this->state.size, z0};
       this->state.segPos[3] = {x1, (y1 + this->state.heightSpeed) - this->state.size, z1};
-      this->state.ProcessAlpha();
+      this->ProcessAlpha();
       this->ShiftSegment();
       this->state.longitude = this->state.longitude + this->state.longSpeed;
       this->state.deltaPos2.y = this->state.deltaPos2.y + this->state.heightSpeed;
@@ -9667,7 +9667,7 @@ bool CEffectPrim::OnProcess() {
         this->state.roll = this->render.angle - static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw;
       }
 
-      this->state.ProcessAlpha();
+      this->ProcessAlpha();
       this->ShiftSegment();
       this->AnimMotion();
     } break;
@@ -10021,7 +10021,7 @@ bool CEffectPrim::OnProcess() {
         this->state.roll = this->render.angle - static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw;
       }
 
-      this->state.ProcessAlpha();
+      this->ProcessAlpha();
       this->ShiftSegment();
       this->AnimMotion();
     } break;

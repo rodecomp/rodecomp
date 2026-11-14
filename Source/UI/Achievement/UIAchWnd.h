@@ -21,11 +21,6 @@ class CBitmapRes;
 class UIBitmapButton;
 class UITextButton;
 
-struct UIAchListInfo {
-  /* 0000 */ int treeHead;
-  /* 0004 */ int count;
-};
-
 class UIAchScrollBar : public UIScrollBar {
 public:
   UIAchScrollBar();
@@ -64,7 +59,7 @@ public:
   /* 0098 */ unsigned char scrollable;
   /* 009C */ int listState;
   /* 00A0 */ std::vector<int> ids;
-  /* 00AC */ UIAchListInfo* achievementList;
+  /* 00AC */ std::map<int, AchievementInfo>* achievementList;
 
   void Create(int width, int height, int rows);
   void SelectAchievement(int index);

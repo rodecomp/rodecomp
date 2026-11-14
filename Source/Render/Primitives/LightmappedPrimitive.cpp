@@ -43,7 +43,7 @@ void LightmappedBuffer::Clear() {
 
 // OFFSET: 0x00569020
 // FUNCTION: fn_02246
-LightmappedPrimitive::LightmappedPrimitive() {
+LightmappedPrimitive::LightmappedPrimitive() : LightmappedCommand(0) {
   this->vertices = this->quad;
   this->vertexCount = 4;
   this->indices = nullptr;
@@ -53,7 +53,7 @@ LightmappedPrimitive::LightmappedPrimitive() {
 
 // OFFSET: 0x00568F90
 // FUNCTION: fn_02245
-LightmappedPrimitive::LightmappedPrimitive(const LightmappedPrimitive& other) {
+LightmappedPrimitive::LightmappedPrimitive(const LightmappedPrimitive& other) : LightmappedCommand(0) {
   this->vertices = this->quad;
   this->vertexCount = 4;
   this->indices = nullptr;
@@ -70,6 +70,6 @@ void LightmappedPrimitive::DrawLightmapped(int unused) {
 
 // OFFSET: 0x00569490
 // FUNCTION: fn_02259
-void LightmappedPrimitive::DrawAuxiliary(int unused) {
+void LightmappedCommand::DrawAuxiliary(int unused) {
   g_renderer->DrawAuxiliaryPrimitive(this);
 }

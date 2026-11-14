@@ -31,7 +31,7 @@ public:
   virtual float FPS() const = 0;
   virtual bool CaptureBackBuffer() = 0;
   virtual bool RestoreBackBuffer() = 0;
-  virtual void DrawAuxiliaryPrimitive(LightmappedPrimitive* primitive) = 0;
+  virtual void DrawAuxiliaryPrimitive(LightmappedCommand* primitive) = 0;
   virtual void DrawLightmappedPrimitive(LightmappedPrimitive* primitive) = 0;
   virtual void DrawPrimitive(RenderCommand* primitive) = 0;
   virtual bool RenderToTexture(int width, int height, const std::list<RenderPrimitive*>& primitives, CTexture*& texture) = 0;
@@ -49,7 +49,7 @@ public:
   float UiScaleX() const;
   float UiScaleY() const;
   std::uint32_t BlendColor(std::uint32_t base, std::uint32_t overlay);
-  void SubmitAuxiliaryPrimitive(LightmappedPrimitive* primitive);
+  void SubmitAuxiliaryPrimitive(LightmappedCommand* primitive);
   void DrawBattleFieldIcon(CRenderSystemBase& system);
   void DrawOverlays(CRenderSystemBase& system);
   __declspec(noinline) void ClearFrame();

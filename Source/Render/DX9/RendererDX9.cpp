@@ -48,7 +48,7 @@ bool CRendererDX9::RestoreBackBuffer() {
 
 // OFFSET: 0x00565860
 // FUNCTION: fn_02220
-void CRendererDX9::DrawAuxiliaryPrimitive(LightmappedPrimitive* primitive) {
+void CRendererDX9::DrawAuxiliaryPrimitive(LightmappedCommand* primitive) {
   if (primitive->vertexCount <= 0) {
     return;
   }

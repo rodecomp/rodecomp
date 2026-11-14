@@ -26,6 +26,11 @@ struct LightmappedVertex {
 };
 struct LightmappedCommand {
   LightmappedCommand();
+  // INLINED
+  explicit LightmappedCommand(int) {
+  }
+  void DrawAuxiliary(int unused);
+  void ApplyAuxiliaryDepthAlpha();
 
   /* 0000 */ LightmappedVertex* vertices;
   /* 0004 */ std::int32_t vertexCount;
@@ -52,21 +57,12 @@ struct ModelRenderCommand {
   /* 0024 */ std::uint32_t primitiveType;
 };
 
-struct LightmappedPrimitive {
+struct LightmappedPrimitive : LightmappedCommand {
   LightmappedPrimitive();
   LightmappedPrimitive(const LightmappedPrimitive& other);
-  void DrawAuxiliary(int unused);
   void DrawLightmapped(int unused);
   void ApplyDepthAlpha();
-  void ApplyAuxiliaryDepthAlpha();
 
-  /* 0000 */ LightmappedVertex* vertices;
-  /* 0004 */ std::int32_t vertexCount;
-  /* 0008 */ std::uint16_t* indices;
-  /* 000C */ std::uint32_t indexCount;
-  /* 0010 */ CTexture* texture;
-  /* 0014 */ CTexture* lightmap;
-  /* 0018 */ std::uint32_t primitiveType;
   /* 001C */ LightmappedVertex quad[4];
 };
 

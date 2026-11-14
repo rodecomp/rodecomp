@@ -332,7 +332,7 @@ namespace EquipmentProperties {
     /* 0010 */ int padding_0010;
     /* 0014 */ int shopId;
     /* 0018 */ EquipmentPropertyStore* store;
-    /* 001C */ int currentEquipment;
+    /* 001C */ CEquipment* currentEquipment;
     /* 0020 */ UIWindow* notifyWindow;
     /* 0024 */ std::unordered_map<int, CEquipmentWearable*> properties1;
     /* 0044 */ std::unordered_map<unsigned int, CEquipmentExpansion*> properties2;
@@ -359,7 +359,7 @@ namespace EquipmentProperties {
     void Clear();
     void SetWindow(UIWindow* window);
     const int& GetConstantValue(const int& key);
-    int GetCurrentEquipment();
+    CEquipment* GetCurrentEquipment();
     CEquipmentWearable* FindProperty1(const int& key);
     CEquipmentInfo* FindEquipmentInfo(const int& key);
     CLuaInstance& GetScript();
@@ -1335,7 +1335,7 @@ __declspec(noinline) const int& EquipmentProperties::CEquipmentPropertiesMgr::Ge
 
 // OFFSET: 0x006AC3B0
 // FUNCTION: fn_06174
-int EquipmentProperties::CEquipmentPropertiesMgr::GetCurrentEquipment() {
+EquipmentProperties::CEquipment* EquipmentProperties::CEquipmentPropertiesMgr::GetCurrentEquipment() {
   return this->currentEquipment;
 }
 
@@ -4007,7 +4007,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::ApplyProperty(const char* nam
   }
 
   if (this->currentEquipment != 0) {
-    reinterpret_cast<CEquipment*>(this->currentEquipment)->AddProperty(text, name, index, value, key);
+    this->currentEquipment->AddProperty(text, name, index, value, key);
   }
 }
 
@@ -4274,7 +4274,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::Rebuild() {
 // FUNCTION: fn_06208
 void EquipmentProperties::CEquipmentPropertiesMgr::SetCurrentEquipment(CEquipment* equipment) {
   this->displayValues.clear();
-  this->currentEquipment = reinterpret_cast<int>(equipment);
+  this->currentEquipment = equipment;
 }
 
 // OFFSET: 0x006B7770
@@ -4733,13 +4733,6 @@ int GetCategoryJob(lua_State* state) {
   return 1;
 }
 
-struct EquipLocationSource {
-  virtual void Destroy();
-  virtual void Load();
-  virtual void Clear();
-  virtual int GetLocation();
-};
-
 // OFFSET: 0x006BD3C0
 // FUNCTION: fn_06277
 int GetEquipArmorLv(lua_State* state) {
@@ -4790,7 +4783,7 @@ int GetLocation(lua_State* state) {
   int index = 0;
   EquipmentProperties::CEquipmentPropertiesMgr* mgr = EquipmentProperties::CEquipmentPropertiesMgr::GetInstance();
   if (mgr->currentEquipment != 0) {
-    const int location = reinterpret_cast<EquipLocationSource*>(mgr->currentEquipment)->GetLocation();
+    const int location = mgr->currentEquipment->GetType();
     index = GetEquipLocationIndex(location);
   }
   lua_pushnumber(state, index);

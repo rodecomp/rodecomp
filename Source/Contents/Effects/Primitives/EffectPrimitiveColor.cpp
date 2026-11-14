@@ -1,60 +1,61 @@
-#include "Contents/Effects/Primitives/EffectPrimitiveState.h"
+#include "Contents/Effects/Primitives/EffectPrim.h"
 #include "Contents/Effects/Core/RagEffect.h"
 #include "Utility/Math/ScalarConversion.h"
 
 // OFFSET: 0x00BC5E00
 // FUNCTION: fn_19849
-void EffectPrimitiveState::ProcessAlpha() {
-  if (this->changeFlags.z != 0) {
-    int index = this->colorCycleIndex;
+void CEffectPrim::ProcessAlpha() {
+  if (this->state.changeFlags.z != 0) {
+    int index = this->state.colorCycleIndex;
 
-    if (index < 0 || static_cast<std::uint32_t>(index) > this->chPoint.size() - 1) {
-      this->colorCycleIndex = 0;
+    if (index < 0 || static_cast<std::uint32_t>(index) > this->state.chPoint.size() - 1) {
+      this->state.colorCycleIndex = 0;
       index = 0;
     }
 
-    if (static_cast<float>(this->stateCnt) == this->chPoint[index]) {
-      this->alpha = this->chVal1[index];
-      this->maxAlpha = this->chVal2[index];
-      this->colorCycleIndex = index + 1;
+    if (static_cast<float>(this->state.stateCnt) == this->state.chPoint[index]) {
+      this->state.alpha = this->state.chVal1[index];
+      this->state.maxAlpha = this->state.chVal2[index];
+      this->state.colorCycleIndex = index + 1;
     }
-  } else if (this->changeFlags.y != 0) {
-    int index = this->colorCycleIndex;
+  } else if (this->state.changeFlags.y != 0) {
+    int index = this->state.colorCycleIndex;
 
-    if (index < 0 || static_cast<std::uint32_t>(index) >= this->chPoint.size()) {
-      this->colorCycleIndex = 0;
+    if (index < 0 || static_cast<std::uint32_t>(index) >= this->state.chPoint.size()) {
+      this->state.colorCycleIndex = 0;
       index = 0;
     }
 
-    if (static_cast<float>(this->stateCnt) == this->chPoint[index]) {
-      this->alphaSpeed = this->chVal1[index];
-      this->colorCycleIndex = index + 1;
+    if (static_cast<float>(this->state.stateCnt) == this->state.chPoint[index]) {
+      this->state.alphaSpeed = this->state.chVal1[index];
+      this->state.colorCycleIndex = index + 1;
     }
   }
 
-  if ((this->pattern & 0x80u) != 0) {
-    if (this->alphaSpeed < 0.0f ? this->alpha <= this->minAlpha : this->alpha >= this->maxAlpha) {
-      this->alphaSpeed *= -1.0f;
+  if ((this->state.pattern & 0x80u) != 0) {
+    if (this->state.alphaSpeed < 0.0f ? this->state.alpha <= this->state.minAlpha : this->state.alpha >= this->state.maxAlpha) {
+      this->state.alphaSpeed *= -1.0f;
     }
   }
 
-  if (this->isDisappear == 0 && this->duration - this->stateCnt > this->master->state.duration - this->master->state.stateCnt + 1) {
-    this->isDisappear = 1;
-    this->pattern &= ~0x80u;
-    this->alphaSpeed = -(this->alpha / static_cast<float>(this->master->state.duration - this->master->state.stateCnt));
+  if (this->state.isDisappear == 0 && this->state.duration - this->state.stateCnt > this->state.master->state.duration - this->state.master->state.stateCnt + 1) {
+    this->state.isDisappear = 1;
+    this->state.pattern &= ~0x80u;
+    this->state.alphaSpeed = -(this->state.alpha / static_cast<float>(this->state.master->state.duration - this->state.master->state.stateCnt));
   }
 
-  if (this->stateCnt == this->fadeOutCnt) {
-    this->pattern &= ~0x80u;
-    this->alphaSpeed = -(this->alpha / static_cast<float>(this->duration - this->stateCnt)) * this->alphaDelta;
+  if (this->state.stateCnt == this->state.fadeOutCnt) {
+    this->state.pattern &= ~0x80u;
+    this->state.alphaSpeed = -(this->state.alpha / static_cast<float>(this->state.duration - this->state.stateCnt)) * this->state.alphaDelta;
   }
 
-  const float sum = this->alphaSpeed + this->alpha;
-  const float minimum = this->minAlpha > sum ? this->minAlpha : sum;
-  const float bounded = this->maxAlpha < minimum ? this->maxAlpha : minimum;
-  this->alpha = bounded;
+  const float sum = this->state.alphaSpeed + this->state.alpha;
+  const float minimum = this->state.minAlpha > sum ? this->state.minAlpha : sum;
+  const float bounded = this->state.maxAlpha < minimum ? this->state.maxAlpha : minimum;
+  this->state.alpha = bounded;
   const int alpha = static_cast<int>(bounded);
   const auto color =
-    ((alpha * 256u + static_cast<unsigned char>(this->red)) * 256u + static_cast<unsigned char>(this->green)) * 256u + static_cast<unsigned char>(this->blue);
-  this->argb = color;
+    ((alpha * 256u + static_cast<unsigned char>(this->state.red)) * 256u + static_cast<unsigned char>(this->state.green)) * 256u +
+    static_cast<unsigned char>(this->state.blue);
+  this->state.argb = color;
 }

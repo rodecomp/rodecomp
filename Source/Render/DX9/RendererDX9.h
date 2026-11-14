@@ -23,7 +23,7 @@ public:
   float FPS() const override;
   bool CaptureBackBuffer() override;
   bool RestoreBackBuffer() override;
-  void DrawAuxiliaryPrimitive(LightmappedPrimitive* primitive) override;
+  void DrawAuxiliaryPrimitive(LightmappedCommand* primitive) override;
   void DrawLightmappedPrimitive(LightmappedPrimitive* primitive) override;
   void DrawPrimitive(RenderCommand* primitive) override;
   bool RenderToTexture(int width, int height, const std::list<RenderPrimitive*>& primitives, CTexture*& texture) override;

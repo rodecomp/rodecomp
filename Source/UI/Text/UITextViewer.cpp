@@ -115,7 +115,7 @@ void UIAchListWnd::OnLBtnDown(int x, int y) {
   }
 
   const int row = y / this->rowHeight;
-  if (static_cast<unsigned>(this->achievementList->count) <= static_cast<unsigned>(row)) {
+  if (static_cast<unsigned>(this->achievementList->size()) <= static_cast<unsigned>(row)) {
     return;
   }
 

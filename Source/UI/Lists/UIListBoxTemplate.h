@@ -85,6 +85,7 @@ public:
   void OnRBtnDown(int x, int y) override;
 
   void SetDescription(int type, const std::vector<const char*>& description);
+  void SetStatusLines(bool first, bool second, bool third);
 
   union {
     /* 00E8 */ unsigned char headerControls[0x08];
@@ -124,7 +125,6 @@ public:
   void OnInit() override;
   void SetTitle(int id);
   void SetTip(int id);
-  void SetStatusLines(bool first, bool second, bool third);
   void SetViewerLines(const std::vector<std::string>& lines);
 
   /* 00E8 */ UIWindow* stampImage;

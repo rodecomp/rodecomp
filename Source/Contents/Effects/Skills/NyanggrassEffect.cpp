@@ -117,7 +117,7 @@ void CMultiTexParticle::Render(int column, int row) {
     this->command.vertices[i].lightV = lightV;
   }
 
-  g_renderer->SubmitAuxiliaryPrimitive(reinterpret_cast<LightmappedPrimitive*>(&this->command));
+  g_renderer->SubmitAuxiliaryPrimitive(&this->command);
 }
 
 // OFFSET: 0x00708260

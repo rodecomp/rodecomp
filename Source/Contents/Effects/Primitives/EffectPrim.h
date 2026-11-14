@@ -154,6 +154,7 @@ struct CEffectPrim : CRenderObject {
   void Tei_TowardScreen(vector3d& vec1, vector3d& vec2, vector3d& vec3, vector3d& vec4, short rot0, short rot1);
 
   unsigned char AnimMotion();
+  void ProcessAlpha();
   bool IsPartyVisible();
   unsigned char FollowMasterAndAdvance();
   void FollowMasterAndTickSlots();

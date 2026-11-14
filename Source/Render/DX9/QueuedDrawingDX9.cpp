@@ -19,7 +19,7 @@ void CRendererDX9::DrawAuxiliaryQueue() {
   }
 
   ScopedDeviceStateDX9 restore(this->device->state);
-  std::sort(queue.begin(), queue.end(), [](const LightmappedPrimitive* left, const LightmappedPrimitive* right) {
+  std::sort(queue.begin(), queue.end(), [](const LightmappedCommand* left, const LightmappedCommand* right) {
     const auto first = reinterpret_cast<std::uintptr_t>(left->texture);
     const auto second = reinterpret_cast<std::uintptr_t>(right->texture);
 
@@ -44,7 +44,7 @@ void CRendererDX9::DrawAuxiliaryQueue() {
   this->device->state.SetSamplerState(1, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
   this->device->state.SetSamplerState(1, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
 
-  for (LightmappedPrimitive*& command : queue) {
+  for (LightmappedCommand*& command : queue) {
     if (command->vertexCount > 0) {
       this->device->state.SetTexture(0, command->texture ? static_cast<CTextureDX9*>(command->texture)->NativeTexture() : nullptr);
       this->device->state.SetTexture(1, command->lightmap ? static_cast<CTextureDX9*>(command->lightmap)->NativeTexture() : nullptr);

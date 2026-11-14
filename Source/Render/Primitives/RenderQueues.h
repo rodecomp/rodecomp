@@ -30,7 +30,7 @@ struct RenderQueues {
   /* 021C */ std::vector<DepthPrimitive> queue_021C;
   /* 0228 */ std::vector<DepthPrimitive> queue_0228;
   /* 0234 */ std::vector<DepthPrimitive> queue_0234;
-  /* 0240 */ std::vector<LightmappedPrimitive*> queue_0240;
+  /* 0240 */ std::vector<LightmappedCommand*> queue_0240;
 
   // INLINED
   __forceinline RenderQueues() {

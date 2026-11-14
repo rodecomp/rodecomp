@@ -355,7 +355,7 @@ void UIAchListWnd::Paint() {
       continue;
     }
 
-    std::map<int, AchievementInfo>* achievements = reinterpret_cast<std::map<int, AchievementInfo>*>(this->achievementList);
+    std::map<int, AchievementInfo>* achievements = this->achievementList;
     const auto found = achievements->find(this->ids[index]);
     if (found == achievements->end()) {
       continue;
@@ -717,7 +717,7 @@ void UIAchievementWnd::SelectAchievement(int id) {
   if (index < list->rowCount) {
     list->firstRow = 0;
   } else {
-    const unsigned limit = static_cast<unsigned>(list->achievementList->count - list->rowCount);
+    const unsigned limit = list->achievementList->size() - list->rowCount;
     list->firstRow = static_cast<unsigned>(index) > limit ? limit : index;
   }
 
@@ -766,20 +766,20 @@ void UIAchTab::OnWheel(int delta) {
 // OFFSET: 0x007B7E10
 // FUNCTION: fn_09241
 void UIAchListWnd::UpdateScroll() {
-  UIAchListInfo* info = this->achievementList;
+  std::map<int, AchievementInfo>* info = this->achievementList;
   if (!info || !this->scrollBar) {
     return;
   }
 
   const int rows = this->rowCount;
-  int overflow = info->count - rows;
+  int overflow = static_cast<int>(info->size()) - rows;
   if (overflow < 0) {
     overflow = 0;
   }
   this->scrollable = overflow > 0;
 
   if (overflow > 0) {
-    this->scrollBar->SetRange(overflow, rows, info->count);
+    this->scrollBar->SetRange(overflow, rows, info->size());
     if (this->firstRow < 0) {
       this->firstRow = 0;
     } else if (this->firstRow > overflow) {
@@ -788,14 +788,14 @@ void UIAchListWnd::UpdateScroll() {
     this->scrollBar->SetPosition(this->firstRow);
   } else {
     this->firstRow = 0;
-    this->scrollBar->SetRange(0, rows, info->count);
+    this->scrollBar->SetRange(0, rows, info->size());
   }
 
   this->scrollBar->Invalidate();
 
   for (int index = 0; index < this->rowCount; ++index) {
     UIButton* button = this->buttons[index];
-    if (static_cast<unsigned>(this->firstRow + index) >= static_cast<unsigned>(this->achievementList->count)) {
+    if (static_cast<unsigned>(this->firstRow + index) >= this->achievementList->size()) {
       button->SetDisabled(1);
       button->Invalidate();
     } else {
@@ -973,7 +973,7 @@ void UIAchListWnd::SetAchievements(std::map<int, AchievementInfo>* achievements,
     }
   }
 
-  this->achievementList = reinterpret_cast<UIAchListInfo*>(achievements);
+  this->achievementList = achievements;
   this->selectedIndex = 0;
   this->firstRow = 0;
   this->UpdateScroll();

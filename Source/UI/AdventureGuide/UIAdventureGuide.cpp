@@ -355,7 +355,7 @@ void CUIItem::BindItem(CUIItemInfo* item, const CItemData& data) {
   const std::string image = "유저인터페이스\\collection\\" + std::string(desc.identifiedResource) + ".bmp";
   item->nameText->SetText(std::string(desc.identifiedName));
   item->image->SetImage(image);
-  reinterpret_cast<CUIQuestInfo*>(item)->SetStatusLines(data.first, data.second, data.third);
+  item->SetStatusLines(data.first, data.second, data.third);
   item->SetDescription(data.type, info.Description());
   item->sourcesViewer->Clear();
   for (const std::string& value : data.values) {
@@ -590,28 +590,28 @@ void CUIQuestInfo::SetTitle(int id) {
 
 // OFFSET: 0x009DFAD0
 // FUNCTION: fn_14359
-void CUIQuestInfo::SetStatusLines(bool first, bool second, bool third) {
-  this->statusViewer->Clear();
+void CUIItemInfo::SetStatusLines(bool first, bool second, bool third) {
+  this->optionsViewer->Clear();
   if (first == true) {
-    this->statusViewer->SetTextColor(0xC86464u);
-    this->statusViewer->AddLine(FormatOwnedString(LookupMessage(MSI_ENCHANT_IMPOSSIBLE)));
+    this->optionsViewer->SetTextColor(0xC86464u);
+    this->optionsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_ENCHANT_IMPOSSIBLE)));
   } else {
-    this->statusViewer->SetTextColor(0x6464C8u);
-    this->statusViewer->AddLine(FormatOwnedString(LookupMessage(MSI_GRADE_ENCHANT_POSSIBLE)));
+    this->optionsViewer->SetTextColor(0x6464C8u);
+    this->optionsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_GRADE_ENCHANT_POSSIBLE)));
   }
   if (second == true) {
-    this->statusViewer->SetTextColor(0xC86464u);
-    this->statusViewer->AddLine(FormatOwnedString(LookupMessage(MSI_GRADE_ENCHANT_IMPOSSIBLE)));
+    this->optionsViewer->SetTextColor(0xC86464u);
+    this->optionsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_GRADE_ENCHANT_IMPOSSIBLE)));
   } else {
-    this->statusViewer->SetTextColor(0x6464C8u);
-    this->statusViewer->AddLine(FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_EQUIP_OUT)));
+    this->optionsViewer->SetTextColor(0x6464C8u);
+    this->optionsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_EQUIP_OUT)));
   }
   if (third == true) {
-    this->statusViewer->SetTextColor(0xC86464u);
-    this->statusViewer->AddLine(FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_EQUIP_NOTPUT)));
+    this->optionsViewer->SetTextColor(0xC86464u);
+    this->optionsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_EQUIP_NOTPUT)));
   } else {
-    this->statusViewer->SetTextColor(0x6464C8u);
-    this->statusViewer->AddLine(FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_RUNESET_TITLE)));
+    this->optionsViewer->SetTextColor(0x6464C8u);
+    this->optionsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_RUNESET_TITLE)));
   }
 }
 

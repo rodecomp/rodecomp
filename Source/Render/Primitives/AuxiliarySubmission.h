@@ -2,8 +2,8 @@
 #define RAGNAROK_SOURCE_RENDER_PRIMITIVES_AUXILIARYSUBMISSION_H
 
 class CRenderer;
-struct LightmappedPrimitive;
+struct LightmappedCommand;
 
-void SubmitAuxiliaryPrimitive(CRenderer& renderer, LightmappedPrimitive* primitive, const float& depthStart, const float& depthEnd, int reserved = 0);
+void SubmitAuxiliaryPrimitive(CRenderer& renderer, LightmappedCommand* primitive, const float& depthStart, const float& depthEnd, int reserved = 0);
 
 #endif

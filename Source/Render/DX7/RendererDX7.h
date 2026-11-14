@@ -48,7 +48,7 @@ public:
   float FPS() const override;
   bool CaptureBackBuffer() override;
   bool RestoreBackBuffer() override;
-  void DrawAuxiliaryPrimitive(LightmappedPrimitive* primitive) override;
+  void DrawAuxiliaryPrimitive(LightmappedCommand* primitive) override;
   void CleanupTextures() override;
   void DrawDepthSortedQueue();
   void DrawAlphaQueues();
