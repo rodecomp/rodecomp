@@ -233,7 +233,7 @@ CNavigationManager::CNavigationManager() {
   for (int i = 0; i < 8; ++i) {
     std::memset(buffer, 0, sizeof(buffer));
     std::sprintf(buffer, "유저인터페이스\\navigation_interface3\\navi_grid%d_%d.tga", this->viewIcon, i);
-    this->labels[i].assign(buffer, std::strlen(buffer));
+    this->labels[i] = buffer;
   }
 
   this->drawDestination = false;
