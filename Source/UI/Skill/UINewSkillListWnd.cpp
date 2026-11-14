@@ -354,7 +354,7 @@ void UINewSkillListWnd::DrawSkillList() {
           }
 
           const int ap = skill.UseApAmount(useLevel > 0 ? useLevel : skill.level);
-          if (SkillUsesPercentSp(static_cast<int>(skill.id))) {
+          if (g_session.SkillUsesPercentSp(static_cast<int>(skill.id))) {
             if (ap != 0) {
               std::sprintf(text, "Sp : %d%%, Ap : %d", sp, ap);
             } else {

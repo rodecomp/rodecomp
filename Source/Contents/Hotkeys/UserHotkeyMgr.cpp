@@ -293,3 +293,8 @@ void CAccountLinkedUserDataMgr::ExportUserHotkey(Json::Value& data) {
   data["UserHotkey_V2"] = version2;
   data["UserHotkey"] = Json::Value();
 }
+
+// INLINED
+bool SkillUsesPercentSp(int id) {
+  return g_session.SkillUsesPercentSp(id);
+}

@@ -42,7 +42,7 @@ HotkeyInfo GetHotkeyInfo(LuaScript& script, int tab, int index) {
 
 // OFFSET: 0x00E1DFD0
 // FUNCTION: fn_23890
-bool SkillUsesPercentSp(int id) {
+bool CSession::SkillUsesPercentSp(int id) const {
   return id == 2039 || id == 2464 || id == 6528;
 }
 
