@@ -3873,7 +3873,7 @@ void CGameMode::ReceiveVendingItemList(
     UIWindow* window = g_windowMgr.EnsureWindow(WID_MERCHANTITEMPURCHASEWND_MODE_1);
     window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
     window->SendMsg(nullptr, UM_SETNAID, aid, storeId, 0, 0);
-    UIWindow* list = reinterpret_cast<UIWindow*>(g_windowMgr.purchaseMirrorItemWnd);
+    UIWindow* list = g_windowMgr.purchaseMirrorItemWnd;
     if (!list) {
       list = g_windowMgr.EnsureWindow(WID_MERCHANTMIRRORITEMWND_MODE_2);
     } else {

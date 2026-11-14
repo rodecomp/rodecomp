@@ -719,7 +719,7 @@ bool CSession::RemoveMerchantMyShopItem(const ITEM_INFO& item, int type, unsigne
       }
 
       if (refresh == 1) {
-        std::uint32_t window;
+        UIWindow* window;
         if (type == 1) {
           window = g_windowMgr.buyingShopMirrorItemWnd;
         } else {
@@ -727,7 +727,7 @@ bool CSession::RemoveMerchantMyShopItem(const ITEM_INFO& item, int type, unsigne
         }
 
         if (window) {
-          reinterpret_cast<UIWindow*>(window)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+          window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
         }
       }
       return true;
@@ -735,7 +735,7 @@ bool CSession::RemoveMerchantMyShopItem(const ITEM_INFO& item, int type, unsigne
   }
 
   if (refresh == 1) {
-    std::uint32_t window;
+    UIWindow* window;
     if (type == 1) {
       window = g_windowMgr.buyingShopMirrorItemWnd;
     } else {
@@ -743,7 +743,7 @@ bool CSession::RemoveMerchantMyShopItem(const ITEM_INFO& item, int type, unsigne
     }
 
     if (window) {
-      reinterpret_cast<UIWindow*>(window)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+      window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
     }
   }
   return false;

@@ -1948,7 +1948,7 @@ void CSession::RefreshItem1740Window() {
 // OFFSET: 0x00DFF0A0
 // FUNCTION: fn_23608
 void CSession::RefreshItem1750Window(int type) {
-  std::uint32_t window;
+  UIWindow* window;
   if (type == 1) {
     window = g_windowMgr.buyingShopMirrorItemWnd;
   } else {
@@ -1956,7 +1956,7 @@ void CSession::RefreshItem1750Window(int type) {
   }
 
   if (window) {
-    reinterpret_cast<UIWindow*>(window)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+    window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
 }
 

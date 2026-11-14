@@ -708,7 +708,7 @@ void UIWindowMgr::ResetWindows() {
   this->shortCutWnd = nullptr;
   this->tipOfTheDayWnd = 0;
   this->merchantItemWnd = 0;
-  this->merchantMirrorItemWnd = 0;
+  this->merchantMirrorItemWnd = nullptr;
   this->merchantShopMakeWnd = 0;
   this->merchantItemShopWnd = 0;
   this->merchantItemPurchaseWnd = 0;
@@ -762,9 +762,9 @@ void UIWindowMgr::ResetWindows() {
   this->newSelectCharWnd = nullptr;
   this->selCharForUServerWnd = nullptr;
   this->rebirthWnd = 0;
-  this->subChatHistoryWnd = 0;
-  this->secondSubChatHistoryWnd = 0;
-  this->subChatMiniWnd = 0;
+  this->subChatHistoryWnd = nullptr;
+  this->secondSubChatHistoryWnd = nullptr;
+  this->subChatMiniWnd = nullptr;
   this->battleMsgOptionWnd = 0;
   this->memorialDunWnd = 0;
   this->otherEquipWnd = 0;
@@ -772,7 +772,7 @@ void UIWindowMgr::ResetWindows() {
   this->hotkeyWnd = 0;
   this->escOptionWnd = 0;
   this->buyingShopMakeWnd = 0;
-  this->buyingShopMirrorItemWnd = 0;
+  this->buyingShopMirrorItemWnd = nullptr;
   this->buyingShopMyItemsWnd = 0;
   this->buyingShopItemsWnd = 0;
   this->buyingShopPurchaseWnd = 0;
@@ -831,7 +831,7 @@ void UIWindowMgr::ResetWindows() {
   this->advenPartyBoardWnd = nullptr;
   this->requestJoinPartyWnd = nullptr;
   this->applyForPartyWnd = nullptr;
-  this->purchaseMirrorItemWnd = 0;
+  this->purchaseMirrorItemWnd = nullptr;
   this->createGuildAlternateWnd = 0;
   this->loginOTPWnd = nullptr;
   this->combinedCardItemCollectionComparisonWnd = 0;
@@ -1058,15 +1058,15 @@ void UIWindowMgr::ClearMapWindows() {
     }
   }
 
-  std::uint32_t savedSubChatHistoryWnd = 0;
+  UIWindow* savedSubChatHistoryWnd = nullptr;
   if (this->subChatHistoryWnd) {
     savedSubChatHistoryWnd = this->subChatHistoryWnd;
   }
-  std::uint32_t savedSecondSubChatHistoryWnd = 0;
+  UIWindow* savedSecondSubChatHistoryWnd = nullptr;
   if (this->secondSubChatHistoryWnd) {
     savedSecondSubChatHistoryWnd = this->secondSubChatHistoryWnd;
   }
-  std::uint32_t savedSubChatMiniWnd = 0;
+  UIWindow* savedSubChatMiniWnd = nullptr;
   if (this->subChatMiniWnd) {
     savedSubChatMiniWnd = this->subChatMiniWnd;
   }
@@ -3176,8 +3176,8 @@ bool UIWindowMgr::CloseWindow(int id) {
     break;
   case WID_MERCHANTMIRRORITEMWND:
     if (this->merchantMirrorItemWnd) {
-      this->Schedule(reinterpret_cast<UIWindow*>(this->merchantMirrorItemWnd));
-      this->merchantMirrorItemWnd = 0;
+      this->Schedule(this->merchantMirrorItemWnd);
+      this->merchantMirrorItemWnd = nullptr;
       closed = true;
     }
     break;
@@ -3689,17 +3689,17 @@ bool UIWindowMgr::CloseWindow(int id) {
     break;
   case WID_SUBCHATHISWND:
     if (this->subChatHistoryWnd) {
-      reinterpret_cast<UIWindow*>(this->subChatHistoryWnd)->StoreInfo();
-      this->Schedule(reinterpret_cast<UIWindow*>(this->subChatHistoryWnd));
-      this->subChatHistoryWnd = 0;
+      this->subChatHistoryWnd->StoreInfo();
+      this->Schedule(this->subChatHistoryWnd);
+      this->subChatHistoryWnd = nullptr;
       closed = true;
     }
     break;
   case WID_SUBCHATHISWND2:
     if (this->secondSubChatHistoryWnd) {
-      reinterpret_cast<UIWindow*>(this->secondSubChatHistoryWnd)->StoreInfo();
-      this->Schedule(reinterpret_cast<UIWindow*>(this->secondSubChatHistoryWnd));
-      this->secondSubChatHistoryWnd = 0;
+      this->secondSubChatHistoryWnd->StoreInfo();
+      this->Schedule(this->secondSubChatHistoryWnd);
+      this->secondSubChatHistoryWnd = nullptr;
       closed = true;
     }
     break;
@@ -3712,8 +3712,8 @@ bool UIWindowMgr::CloseWindow(int id) {
     break;
   case WID_SUBCHATMINIWND:
     if (this->subChatMiniWnd) {
-      this->Schedule(reinterpret_cast<UIWindow*>(this->subChatMiniWnd));
-      this->subChatMiniWnd = 0;
+      this->Schedule(this->subChatMiniWnd);
+      this->subChatMiniWnd = nullptr;
       closed = true;
     }
     break;
@@ -3858,8 +3858,8 @@ bool UIWindowMgr::CloseWindow(int id) {
     break;
   case WID_MERCHANTMIRRORITEMWND_MODE_1:
     if (this->buyingShopMirrorItemWnd) {
-      this->Schedule(reinterpret_cast<UIWindow*>(this->buyingShopMirrorItemWnd));
-      this->buyingShopMirrorItemWnd = 0;
+      this->Schedule(this->buyingShopMirrorItemWnd);
+      this->buyingShopMirrorItemWnd = nullptr;
       closed = true;
     }
     break;
@@ -3886,8 +3886,8 @@ bool UIWindowMgr::CloseWindow(int id) {
     break;
   case WID_MERCHANTMIRRORITEMWND_MODE_2:
     if (this->purchaseMirrorItemWnd) {
-      this->Schedule(reinterpret_cast<UIWindow*>(this->purchaseMirrorItemWnd));
-      this->purchaseMirrorItemWnd = 0;
+      this->Schedule(this->purchaseMirrorItemWnd);
+      this->purchaseMirrorItemWnd = nullptr;
       closed = true;
     }
     break;
@@ -5128,10 +5128,10 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     this->EnsureWindow(WID_MERCHANTMIRRORITEMWND);
     break;
   case WID_MERCHANTMIRRORITEMWND:
-    window = reinterpret_cast<UIWindow*>(this->merchantMirrorItemWnd);
+    window = this->merchantMirrorItemWnd;
     if (window == nullptr) {
       window = new UIMerchantMirrorItemWnd(0);
-      this->merchantMirrorItemWnd = reinterpret_cast<std::uint32_t>(window);
+      this->merchantMirrorItemWnd = window;
       window->SetSize(280, 120);
       window->Move(CenterOnViewportX(0), ScaleByScreenHeight(120));
       this->AddRendered(window);
@@ -6490,26 +6490,26 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     window->Show(1);
     break;
   case WID_SUBCHATHISWND:
-    window = reinterpret_cast<UIWindow*>(this->subChatHistoryWnd);
+    window = this->subChatHistoryWnd;
     if (window == nullptr) {
       window = new UISubChatHisWnd();
-      this->subChatHistoryWnd = reinterpret_cast<std::uint32_t>(window);
+      this->subChatHistoryWnd = window;
       window->SetSize(300, 95);
       this->AddRendered(window);
-      reinterpret_cast<UIWindow*>(this->subChatHistoryWnd)->SetId(130);
-      reinterpret_cast<UIWindow*>(this->subChatHistoryWnd)->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->subChatHisWndInfo[0].x), 0, 0, 0);
+      this->subChatHistoryWnd->SetId(130);
+      this->subChatHistoryWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->subChatHisWndInfo[0].x), 0, 0, 0);
     }
     window->Show(0);
     break;
   case WID_SUBCHATHISWND2:
-    window = reinterpret_cast<UIWindow*>(this->secondSubChatHistoryWnd);
+    window = this->secondSubChatHistoryWnd;
     if (window == nullptr) {
       window = new UISubChatHisWnd();
-      this->secondSubChatHistoryWnd = reinterpret_cast<std::uint32_t>(window);
+      this->secondSubChatHistoryWnd = window;
       window->SetSize(300, 95);
       this->AddRendered(window);
-      reinterpret_cast<UIWindow*>(this->secondSubChatHistoryWnd)->SetId(131);
-      reinterpret_cast<UIWindow*>(this->secondSubChatHistoryWnd)->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->subChatHisWndInfo[1].x), 0, 0, 0);
+      this->secondSubChatHistoryWnd->SetId(131);
+      this->secondSubChatHistoryWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->subChatHisWndInfo[1].x), 0, 0, 0);
     }
     window->Show(0);
     break;
@@ -6525,10 +6525,10 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     window->Show(1);
     break;
   case WID_SUBCHATMINIWND:
-    window = reinterpret_cast<UIWindow*>(this->subChatMiniWnd);
+    window = this->subChatMiniWnd;
     if (window == nullptr) {
       window = new UISubChatMiniWnd();
-      this->subChatMiniWnd = reinterpret_cast<std::uint32_t>(window);
+      this->subChatMiniWnd = window;
       window->SetSize(5, 5);
       this->AddRendered(window);
     }
@@ -6661,10 +6661,10 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     this->EnsureWindow(WID_MERCHANTMIRRORITEMWND_MODE_1);
     break;
   case WID_MERCHANTMIRRORITEMWND_MODE_1:
-    window = reinterpret_cast<UIWindow*>(this->buyingShopMirrorItemWnd);
+    window = this->buyingShopMirrorItemWnd;
     if (window == nullptr) {
       window = new UIMerchantMirrorItemWnd(1);
-      this->buyingShopMirrorItemWnd = reinterpret_cast<std::uint32_t>(window);
+      this->buyingShopMirrorItemWnd = window;
       window->SetSize(280, 120);
       window->Move(CenterOnViewportX(0), ScaleByScreenHeight(120));
       this->AddRendered(window);
@@ -6709,10 +6709,10 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     window->Show(1);
     break;
   case WID_MERCHANTMIRRORITEMWND_MODE_2:
-    window = reinterpret_cast<UIWindow*>(this->purchaseMirrorItemWnd);
+    window = this->purchaseMirrorItemWnd;
     if (window == nullptr) {
       window = new UIMerchantMirrorItemWnd(2);
-      this->purchaseMirrorItemWnd = reinterpret_cast<std::uint32_t>(window);
+      this->purchaseMirrorItemWnd = window;
       window->SetSize(280, 120);
       window->Move(300, 0);
       this->AddRendered(window);

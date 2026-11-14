@@ -781,14 +781,14 @@ bool CSession::AddMerchantMyShopItem(const ITEM_INFO& item, int type, unsigned c
     if (value.identity[1] == item.identity[1]) {
       value.quantity += item.quantity;
       if (refresh == 1) {
-        std::uint32_t window;
+        UIWindow* window;
         if (type == 1) {
           window = g_windowMgr.buyingShopMirrorItemWnd;
         } else {
           window = type == 2 ? g_windowMgr.purchaseMirrorItemWnd : g_windowMgr.merchantMirrorItemWnd;
         }
         if (window) {
-          reinterpret_cast<UIWindow*>(window)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+          window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
         }
       }
       return false;
@@ -797,14 +797,14 @@ bool CSession::AddMerchantMyShopItem(const ITEM_INFO& item, int type, unsigned c
 
   this->merchantMyShopItems.push_back(item);
   if (refresh == 1) {
-    std::uint32_t window;
+    UIWindow* window;
     if (type == 1) {
       window = g_windowMgr.buyingShopMirrorItemWnd;
     } else {
       window = type == 2 ? g_windowMgr.purchaseMirrorItemWnd : g_windowMgr.merchantMirrorItemWnd;
     }
     if (window) {
-      reinterpret_cast<UIWindow*>(window)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+      window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
     }
   }
   return true;

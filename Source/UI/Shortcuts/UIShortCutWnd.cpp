@@ -498,7 +498,7 @@ void UINewChatWnd::Move(int x, int y) {
   this->m_inputX = screenX + 3;
   this->m_inputY = this->m_inputOffsetY + screenY;
 
-  if (UIWindow* window = reinterpret_cast<UIWindow*>(g_windowMgr.subChatMiniWnd)) {
+  if (UIWindow* window = g_windowMgr.subChatMiniWnd) {
     window->SendMsg(this, UM_COMMAND, ID_DIALOG, this->geometry.width + x, this->geometry.height + y, 0);
   }
 }

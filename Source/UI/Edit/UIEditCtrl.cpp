@@ -2146,7 +2146,7 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
         quantity = 1;
       }
       mode->drag.quantity = quantity <= owned ? quantity : owned;
-      window = reinterpret_cast<UIWindow*>(g_windowMgr.merchantMirrorItemWnd);
+      window = g_windowMgr.merchantMirrorItemWnd;
       goto notify;
     }
     case 11: {
@@ -2220,7 +2220,7 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
         quantity = 1;
       }
       mode->drag.quantity = quantity <= owned ? quantity : owned;
-      window = reinterpret_cast<UIWindow*>(g_windowMgr.purchaseMirrorItemWnd);
+      window = g_windowMgr.purchaseMirrorItemWnd;
       goto notify;
     }
     case 19:
@@ -2527,12 +2527,12 @@ void UIMerchantShopMakeWnd::OnRBtnDown(int x, int y) {
       if (g_windowMgr.merchantMirrorItemWnd) {
         item = g_session.FindMerchantPurchaseSavedItem(item.identity[1]);
         gameMode->drag.BeginItem(g_windowMgr, 10, item, item.quantity, -1);
-        reinterpret_cast<UIWindow*>(g_windowMgr.merchantMirrorItemWnd)->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
+        g_windowMgr.merchantMirrorItemWnd->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
         g_windowMgr.SetFocus(nullptr);
       } else if (g_windowMgr.buyingShopMirrorItemWnd) {
         item = g_session.FindMerchantPurchaseSavedItem(item.identity[1]);
         gameMode->drag.BeginItem(g_windowMgr, 19, item, item.quantity, -1);
-        reinterpret_cast<UIWindow*>(g_windowMgr.buyingShopMirrorItemWnd)->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
+        g_windowMgr.buyingShopMirrorItemWnd->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
       }
     } else {
       g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND)->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
@@ -3733,7 +3733,7 @@ void UISkillListWnd::StoreInfo() {
 // OFFSET: 0x00994840
 // FUNCTION: fn_13437
 void UIMerchantShopMakeWnd::SetSuspended(unsigned char suspend) {
-  UIWindow* window = reinterpret_cast<UIWindow*>(this->mode == 1 ? g_windowMgr.buyingShopMirrorItemWnd : g_windowMgr.merchantMirrorItemWnd);
+  UIWindow* window = this->mode == 1 ? g_windowMgr.buyingShopMirrorItemWnd : g_windowMgr.merchantMirrorItemWnd;
   if (!window) {
     return;
   }
@@ -3760,10 +3760,10 @@ void UIMerchantShopMakeWnd::SetItems(int count, const short* ids) {
 
   UIWindow* window;
   if (this->mode == 1) {
-    window = reinterpret_cast<UIWindow*>(g_windowMgr.buyingShopMirrorItemWnd);
+    window = g_windowMgr.buyingShopMirrorItemWnd;
   } else {
     g_session.SetMerchantMyShopItems(count, ids);
-    window = reinterpret_cast<UIWindow*>(g_windowMgr.merchantMirrorItemWnd);
+    window = g_windowMgr.merchantMirrorItemWnd;
   }
 
   if (window) {
@@ -6556,7 +6556,7 @@ int UIMerchantItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intpt
           g_session.RemoveMerchantMyShopItem(item, 2, 1);
           this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
           if (g_windowMgr.purchaseMirrorItemWnd) {
-            reinterpret_cast<UIWindow*>(g_windowMgr.purchaseMirrorItemWnd)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+            g_windowMgr.purchaseMirrorItemWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
           }
         }
       } else if (g_session.m_zeny >= static_cast<long long>(price) * item.quantity + pending) {

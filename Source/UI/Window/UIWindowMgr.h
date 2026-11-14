@@ -230,7 +230,7 @@ public:
   /* 02EC */ UIWindow* allyGuildAcceptWnd;
   /* 02F0 */ UIWindow* tipOfTheDayWnd;
   /* 02F4 */ UIWindow* merchantItemWnd;
-  /* 02F8 */ std::uint32_t merchantMirrorItemWnd;
+  /* 02F8 */ UIWindow* merchantMirrorItemWnd;
   /* 02FC */ UIWindow* merchantShopMakeWnd;
   /* 0300 */ UIWindow* merchantItemShopWnd;
   /* 0304 */ UIWindow* merchantItemMyShopWnd;
@@ -280,10 +280,10 @@ public:
   /* 03D8 */ UIWindow* selCharForUServerWnd;
   /* 03DC */ UIWindow* changeNameWnd;
   /* 03E0 */ UIWindow* rebirthWnd;
-  /* 03E4 */ std::uint32_t subChatHistoryWnd;
-  /* 03E8 */ std::uint32_t secondSubChatHistoryWnd;
+  /* 03E4 */ UIWindow* subChatHistoryWnd;
+  /* 03E8 */ UIWindow* secondSubChatHistoryWnd;
   /* 03EC */ UIWindow* battleMsgOptionWnd;
-  /* 03F0 */ std::uint32_t subChatMiniWnd;
+  /* 03F0 */ UIWindow* subChatMiniWnd;
   /* 03F4 */ unsigned char chatWndStickOn;
   /* 03F5 */ unsigned char onStSubChat;
   /* 03F6 */ unsigned char battleSubChatEnabled;
@@ -294,11 +294,11 @@ public:
   /* 0404 */ UIWindow* hotkeyWnd;
   /* 0408 */ UIWindow* escOptionWnd;
   /* 040C */ UIWindow* buyingShopMakeWnd;
-  /* 0410 */ std::uint32_t buyingShopMirrorItemWnd;
+  /* 0410 */ UIWindow* buyingShopMirrorItemWnd;
   /* 0414 */ UIWindow* buyingShopMyItemsWnd;
   /* 0418 */ UIWindow* buyingShopItemsWnd;
   /* 041C */ UIWindow* buyingShopPurchaseWnd;
-  /* 0420 */ std::uint32_t purchaseMirrorItemWnd;
+  /* 0420 */ UIWindow* purchaseMirrorItemWnd;
   /* 0424 */ UIWindow* monsterDisplayWnd;
   /* 0428 */ UIWindow* questDisplayWnd;
   /* 042C */ UIWindow* partyInvitationToWnd;

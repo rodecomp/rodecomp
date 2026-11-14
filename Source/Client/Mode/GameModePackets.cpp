@@ -4048,7 +4048,7 @@ void CGameMode::ReceiveBuyingStoreItemList(const unsigned char* packet) {
   window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   window->SendMsg(nullptr, UM_SETNAID, *reinterpret_cast<const std::int32_t*>(packet + 4), *reinterpret_cast<const std::int32_t*>(packet + 8), 0, 0);
 
-  window = reinterpret_cast<UIWindow*>(g_windowMgr.purchaseMirrorItemWnd);
+  window = g_windowMgr.purchaseMirrorItemWnd;
   if (!window) {
     window = g_windowMgr.EnsureWindow(WID_MERCHANTMIRRORITEMWND_MODE_2);
   } else {
