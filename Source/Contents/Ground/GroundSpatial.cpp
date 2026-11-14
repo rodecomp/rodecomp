@@ -6,11 +6,11 @@
 // FUNCTION: fn_17548
 GroundQuad::GroundQuad() {
   int remaining = 4;
-  float (*vertex)[8] = this->vertices;
+  GroundVertex* vertex = this->vertices;
   do {
-    (*vertex)[0] = 0.0f;
-    (*vertex)[1] = 0.0f;
-    (*vertex)[2] = 0.0f;
+    vertex->position[0] = 0.0f;
+    vertex->position[1] = 0.0f;
+    vertex->position[2] = 0.0f;
     ++vertex;
   } while (--remaining);
   this->texture = nullptr;
@@ -69,10 +69,10 @@ void GroundGeometry::HeightBounds(const int* rectangle, float& minimum, float& m
       const GroundQuad* top = this->cells[column + row * this->width].top;
 
       if (top) {
-        const float height0 = top->vertices[0][1];
-        const float height1 = top->vertices[1][1];
-        const float height2 = top->vertices[2][1];
-        const float height3 = top->vertices[3][1];
+        const float height0 = top->vertices[0].position[1];
+        const float height1 = top->vertices[1].position[1];
+        const float height2 = top->vertices[2].position[1];
+        const float height3 = top->vertices[3].position[1];
 
         if (height0 > maximum) {
           maximum = height0;

@@ -6,7 +6,6 @@
 #include "Render/Drawing/SpriteGeometry.h"
 #include "Render/Primitives/TextureQuad.h"
 
-#include <bit>
 #include <cstring>
 
 namespace {
@@ -19,7 +18,7 @@ namespace {
     }
 
     for (unsigned corner = 0; corner < 4; ++corner) {
-      g_renderer->viewport.Project(quad.vertices[corner], matrix, vertices[corner]);
+      g_renderer->viewport.Project(quad.vertices[corner].position, matrix, vertices[corner]);
     }
 
     if (clip && !GroundQuadVisible(vertices)) {
@@ -27,9 +26,9 @@ namespace {
     }
 
     for (unsigned corner = 0; corner < 4; ++corner) {
-      vertices[corner].u = quad.vertices[corner][4];
-      vertices[corner].v = quad.vertices[corner][5];
-      vertices[corner].diffuse = std::bit_cast<std::uint32_t>(quad.vertices[corner][3]);
+      vertices[corner].u = quad.vertices[corner].u;
+      vertices[corner].v = quad.vertices[corner].v;
+      vertices[corner].diffuse = quad.vertices[corner].color;
       reinterpret_cast<SpriteColor&>(vertices[corner].diffuse).alpha = 0x80;
     }
 

@@ -8,10 +8,19 @@
 class CTexture;
 struct GroundLightmap;
 
+struct GroundVertex {
+  /* 0000 */ float position[3];
+  /* 000C */ std::uint32_t color;
+  /* 0010 */ float u;
+  /* 0014 */ float v;
+  /* 0018 */ float lightU;
+  /* 001C */ float lightV;
+};
+
 struct GroundQuad {
   GroundQuad();
 
-  /* 0000 */ float vertices[4][8];
+  /* 0000 */ GroundVertex vertices[4];
   /* 0080 */ std::uint32_t vertexOffset;
   /* 0084 */ CTexture* texture;
   /* 0088 */ CTexture* lightmapTexture;
@@ -35,6 +44,7 @@ struct GroundCell {
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
+static_assert(sizeof(GroundVertex) == 0x20);
 static_assert(sizeof(GroundQuad) == 156);
 static_assert(offsetof(GroundQuad, texture) == 0x84);
 static_assert(offsetof(GroundQuad, lightmap) == 0x8C);

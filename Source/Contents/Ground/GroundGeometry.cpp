@@ -192,20 +192,20 @@ void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const
         GroundQuad& tile = this->tiles[topIndex];
         tile.color = tileRecord.color;
         tile.texture = g_texMgr.Load(resource.textureNames[tileRecord.texture], 0, false, true, false);
-        SetPoint(tile.vertices[0], static_cast<float>(column - this->width / 2) * this->cellSize, cell.heights[0],
+        SetPoint(tile.vertices[0].position, static_cast<float>(column - this->width / 2) * this->cellSize, cell.heights[0],
                  static_cast<float>(row - this->height / 2) * this->cellSize);
-        SetPoint(tile.vertices[1], static_cast<float>(column - this->width / 2 + 1) * this->cellSize, cell.heights[1],
+        SetPoint(tile.vertices[1].position, static_cast<float>(column - this->width / 2 + 1) * this->cellSize, cell.heights[1],
                  static_cast<float>(row - this->height / 2) * this->cellSize);
-        SetPoint(tile.vertices[2], static_cast<float>(column - this->width / 2) * this->cellSize, cell.heights[2],
+        SetPoint(tile.vertices[2].position, static_cast<float>(column - this->width / 2) * this->cellSize, cell.heights[2],
                  static_cast<float>(row - this->height / 2 + 1) * this->cellSize);
-        SetPoint(tile.vertices[3], static_cast<float>(column - this->width / 2 + 1) * this->cellSize, cell.heights[3],
+        SetPoint(tile.vertices[3].position, static_cast<float>(column - this->width / 2 + 1) * this->cellSize, cell.heights[3],
                  static_cast<float>(row - this->height / 2 + 1) * this->cellSize);
         const float scaleU = static_cast<float>(tile.texture->ImageWidth()) / static_cast<float>(tile.texture->TextureWidth());
         const float scaleV = static_cast<float>(tile.texture->ImageHeight()) / static_cast<float>(tile.texture->TextureHeight());
 
         for (int corner = 0; corner < 4; ++corner) {
-          tile.vertices[corner][4] = scaleU * tileRecord.u[corner];
-          tile.vertices[corner][5] = scaleV * tileRecord.v[corner];
+          tile.vertices[corner].u = scaleU * tileRecord.u[corner];
+          tile.vertices[corner].v = scaleV * tileRecord.v[corner];
         }
 
         GroundLightmap* lightmap = &this->lightmapSet.lightmaps[tileRecord.lightmap];
@@ -213,8 +213,8 @@ void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const
         tile.lightmapTexture = lightmap->texture;
 
         for (int corner = 0; corner < 4; ++corner) {
-          tile.vertices[corner][6] = lightmap->uv[corner][0];
-          tile.vertices[corner][7] = lightmap->uv[corner][1];
+          tile.vertices[corner].lightU = lightmap->uv[corner][0];
+          tile.vertices[corner].lightV = lightmap->uv[corner][1];
         }
 
         for (int channel = 0; channel < 3; ++channel) {
@@ -243,20 +243,20 @@ void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const
           GroundQuad& tile = this->tiles[sideIndex];
           tile.color = tileRecord.color;
           tile.texture = g_texMgr.Load(resource.textureNames[tileRecord.texture], 0, false, true, false);
-          SetPoint(tile.vertices[0], static_cast<float>(column - this->width / 2) * this->cellSize, record.heights[2],
+          SetPoint(tile.vertices[0].position, static_cast<float>(column - this->width / 2) * this->cellSize, record.heights[2],
                    static_cast<float>(row - this->height / 2 + 1) * this->cellSize);
-          SetPoint(tile.vertices[1], static_cast<float>(column - this->width / 2 + 1) * this->cellSize, record.heights[3],
+          SetPoint(tile.vertices[1].position, static_cast<float>(column - this->width / 2 + 1) * this->cellSize, record.heights[3],
                    static_cast<float>(row - this->height / 2 + 1) * this->cellSize);
-          SetPoint(tile.vertices[2], static_cast<float>(column - this->width / 2) * this->cellSize, below.heights[0],
+          SetPoint(tile.vertices[2].position, static_cast<float>(column - this->width / 2) * this->cellSize, below.heights[0],
                    static_cast<float>(row - this->height / 2 + 1) * this->cellSize);
-          SetPoint(tile.vertices[3], static_cast<float>(column - this->width / 2 + 1) * this->cellSize, below.heights[1],
+          SetPoint(tile.vertices[3].position, static_cast<float>(column - this->width / 2 + 1) * this->cellSize, below.heights[1],
                    static_cast<float>(row - this->height / 2 + 1) * this->cellSize);
           const float scaleU = static_cast<float>(tile.texture->ImageWidth()) / static_cast<float>(tile.texture->TextureWidth());
           const float scaleV = static_cast<float>(tile.texture->ImageHeight()) / static_cast<float>(tile.texture->TextureHeight());
 
           for (int corner = 0; corner < 4; ++corner) {
-            tile.vertices[corner][4] = scaleU * tileRecord.u[corner];
-            tile.vertices[corner][5] = scaleV * tileRecord.v[corner];
+            tile.vertices[corner].u = scaleU * tileRecord.u[corner];
+            tile.vertices[corner].v = scaleV * tileRecord.v[corner];
           }
 
           GroundLightmap* lightmap = &this->lightmapSet.lightmaps[tileRecord.lightmap];
@@ -264,8 +264,8 @@ void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const
           tile.lightmapTexture = lightmap->texture;
 
           for (int corner = 0; corner < 4; ++corner) {
-            tile.vertices[corner][6] = lightmap->uv[corner][0];
-            tile.vertices[corner][7] = lightmap->uv[corner][1];
+            tile.vertices[corner].lightU = lightmap->uv[corner][0];
+            tile.vertices[corner].lightV = lightmap->uv[corner][1];
           }
 
           SetPoint(cellNormals.side2.values, 0.0f, 0.0f, below.heights[0] > record.heights[2] ? -1.0f : 1.0f);
@@ -282,20 +282,20 @@ void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const
           GroundQuad& tile = this->tiles[sideIndex];
           tile.color = tileRecord.color;
           tile.texture = g_texMgr.Load(resource.textureNames[tileRecord.texture], 0, false, true, false);
-          SetPoint(tile.vertices[0], static_cast<float>(column - this->width / 2 + 1) * this->cellSize, record.heights[3],
+          SetPoint(tile.vertices[0].position, static_cast<float>(column - this->width / 2 + 1) * this->cellSize, record.heights[3],
                    static_cast<float>(row - this->height / 2 + 1) * this->cellSize);
-          SetPoint(tile.vertices[1], static_cast<float>(column - this->width / 2 + 1) * this->cellSize, record.heights[1],
+          SetPoint(tile.vertices[1].position, static_cast<float>(column - this->width / 2 + 1) * this->cellSize, record.heights[1],
                    static_cast<float>(row - this->height / 2) * this->cellSize);
-          SetPoint(tile.vertices[2], static_cast<float>(column - this->width / 2 + 1) * this->cellSize, right.heights[2],
+          SetPoint(tile.vertices[2].position, static_cast<float>(column - this->width / 2 + 1) * this->cellSize, right.heights[2],
                    static_cast<float>(row - this->height / 2 + 1) * this->cellSize);
-          SetPoint(tile.vertices[3], static_cast<float>(column - this->width / 2 + 1) * this->cellSize, right.heights[0],
+          SetPoint(tile.vertices[3].position, static_cast<float>(column - this->width / 2 + 1) * this->cellSize, right.heights[0],
                    static_cast<float>(row - this->height / 2) * this->cellSize);
           const float scaleU = static_cast<float>(tile.texture->ImageWidth()) / static_cast<float>(tile.texture->TextureWidth());
           const float scaleV = static_cast<float>(tile.texture->ImageHeight()) / static_cast<float>(tile.texture->TextureHeight());
 
           for (int corner = 0; corner < 4; ++corner) {
-            tile.vertices[corner][4] = scaleU * tileRecord.u[corner];
-            tile.vertices[corner][5] = scaleV * tileRecord.v[corner];
+            tile.vertices[corner].u = scaleU * tileRecord.u[corner];
+            tile.vertices[corner].v = scaleV * tileRecord.v[corner];
           }
 
           GroundLightmap* lightmap = &this->lightmapSet.lightmaps[tileRecord.lightmap];
@@ -303,8 +303,8 @@ void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const
           tile.lightmapTexture = lightmap->texture;
 
           for (int corner = 0; corner < 4; ++corner) {
-            tile.vertices[corner][6] = lightmap->uv[corner][0];
-            tile.vertices[corner][7] = lightmap->uv[corner][1];
+            tile.vertices[corner].lightU = lightmap->uv[corner][0];
+            tile.vertices[corner].lightV = lightmap->uv[corner][1];
           }
 
           cell.frame = 0xFFFFFFFFu;
@@ -510,7 +510,7 @@ void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const
           }
 
           Shade(color, red, green, blue);
-          reinterpret_cast<std::uint32_t&>(cell.top->vertices[corner][3]) = color.value;
+          cell.top->vertices[corner].color = color.value;
         }
       }
 
@@ -542,7 +542,7 @@ void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const
           }
 
           Shade(color, red, green, blue);
-          reinterpret_cast<std::uint32_t&>(cell.side2->vertices[corner][3]) = color.value;
+          cell.side2->vertices[corner].color = color.value;
         }
       }
 
@@ -574,7 +574,7 @@ void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const
           }
 
           Shade(color, red, green, blue);
-          reinterpret_cast<std::uint32_t&>(cell.side1->vertices[corner][3]) = color.value;
+          cell.side1->vertices[corner].color = color.value;
         }
       }
     }

@@ -51,7 +51,7 @@ void GroundGeometry::DrawWaterCell(
   bool above = false;
 
   for (unsigned corner = 0; corner < 4; ++corner) {
-    if (cell.top->vertices[corner][1] > middle) {
+    if (cell.top->vertices[corner].position[1] > middle) {
       above = true;
       break;
     }

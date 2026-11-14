@@ -18,7 +18,8 @@ void GroundGeometry::CellBounds(int column, int row, float& minimum, float& maxi
   const GroundQuad* quad = this->cells[static_cast<unsigned>(column) + static_cast<unsigned>(row) * static_cast<unsigned>(this->width)].top;
 
   if (quad) {
-    const float heights[4] = {quad->vertices[0][1], quad->vertices[1][1], quad->vertices[2][1], quad->vertices[3][1]};
+    const float heights[4] = {quad->vertices[0].position[1], quad->vertices[1].position[1],
+                              quad->vertices[2].position[1], quad->vertices[3].position[1]};
     float high = -999999.0f;
 
     for (unsigned corner = 0; corner < 4; ++corner) {
@@ -80,7 +81,7 @@ bool GroundGeometry::CellVertices(float* vertices, int column, int row) const {
 
   for (unsigned corner = 0; corner < 4; ++corner) {
     for (unsigned axis = 0; axis < 3; ++axis) {
-      vertices[corner * 3 + axis] = quad->vertices[corner][axis];
+      vertices[corner * 3 + axis] = quad->vertices[corner].position[axis];
     }
   }
 
@@ -97,9 +98,9 @@ static __forceinline void MarkQuadRay(const float* ray, GroundQuad* const& quad,
   float vertices[4][3] = {};
 
   for (unsigned corner = 0; corner < 4; ++corner) {
-    vertices[corner][0] = quad->vertices[corner][0];
-    vertices[corner][1] = quad->vertices[corner][1];
-    vertices[corner][2] = quad->vertices[corner][2];
+    vertices[corner][0] = quad->vertices[corner].position[0];
+    vertices[corner][1] = quad->vertices[corner].position[1];
+    vertices[corner][2] = quad->vertices[corner].position[2];
   }
 
   float u;
