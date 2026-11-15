@@ -2705,9 +2705,7 @@ void CRagEffect::SMA(char flag) {
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.totalTexture = 0;
     this->state.lastPrim->state.size = 0.0f;
-    this->state.lastPrim->state.deltaPos.x = this->state.deltaPos[0];
-    this->state.lastPrim->state.deltaPos.y = this->state.deltaPos[1];
-    this->state.lastPrim->state.deltaPos.z = this->state.deltaPos[2];
+    this->state.lastPrim->state.deltaPos = *reinterpret_cast<const vector3d*>(this->state.deltaPos);
     CopyVector(this->state.lastPrim->render.position, this->render.position);
 
     for (int i = 0; i < 4; ++i) {
@@ -3656,7 +3654,8 @@ void CRagEffect::TexturedDoubleRing(const char* name, char level) {
   this->state.lastPrim->state.slots[1].life = 1;
   this->state.lastPrim->state.slots[2].life = 0;
   this->state.lastPrim->state.slots[3].life = 0;
-  this->state.lastPrim->state.slots[0].distance = level == 3 ? 24.0f : 15.0f;
+  float& distance = this->state.lastPrim->state.slots[0].distance;
+  distance = level == 3 ? 24.0f : 15.0f;
   this->state.lastPrim->state.slots[1].distance = this->state.lastPrim->state.slots[0].distance;
   this->state.lastPrim->state.slots[0].riseAngle = 0;
   this->state.lastPrim->state.slots[1].riseAngle = 180;
@@ -4113,9 +4112,7 @@ void CRagEffect::TexturedSpray(const char* name) {
 
   for (int index = 0; index < 4; ++index) {
     this->state.lastPrim->state.slots[index].life = 1;
-    this->state.lastPrim->state.slots[index].vecBNow.x = this->state.deltaPos[0];
-    this->state.lastPrim->state.slots[index].vecBNow.y = this->state.deltaPos[1];
-    this->state.lastPrim->state.slots[index].vecBNow.z = this->state.deltaPos[2];
+    this->state.lastPrim->state.slots[index].vecBNow = *reinterpret_cast<const vector3d*>(this->state.deltaPos);
     this->state.lastPrim->state.slots[index].process = -18 - ClampedRandom(30);
     this->state.lastPrim->state.slots[index].distance = 12.0f;
     this->state.lastPrim->state.slots[index].height[0] = 1.5f;
@@ -4683,9 +4680,7 @@ void CRagEffect::TexturedSprayKind(const char* name, float spin, char kind) {
   for (int index = 0; index < 4; ++index) {
     this->state.lastPrim->state.slots[index].life = 1;
     vector3d& target = this->state.lastPrim->state.slots[index].vecBNow;
-    target.x = this->state.deltaPos[0];
-    target.y = this->state.deltaPos[1];
-    target.z = this->state.deltaPos[2];
+    target = *reinterpret_cast<const vector3d*>(this->state.deltaPos);
     this->state.lastPrim->state.slots[index].process = -18 - ClampedRandom(30);
     this->state.lastPrim->state.slots[index].distance = 12.0f;
     this->state.lastPrim->state.slots[index].height[0] = 1.0f;
@@ -5751,7 +5746,7 @@ void CRagEffect::TexturedCrossStaged(const char* name, char level) {
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
 
-  if (level < 2) {
+  if (level <= 1) {
     this->state.lastPrim->state.size = 4.0f;
   } else if (level == 2) {
     this->state.lastPrim->state.size = 7.0f;
@@ -5893,9 +5888,7 @@ void CRagEffect::WhiteSpray(char kind) {
 
   for (int index = 0; index < 4; ++index) {
     this->state.lastPrim->state.slots[index].life = 1;
-    this->state.lastPrim->state.slots[index].vecBNow.x = this->state.deltaPos[0];
-    this->state.lastPrim->state.slots[index].vecBNow.y = this->state.deltaPos[1];
-    this->state.lastPrim->state.slots[index].vecBNow.z = this->state.deltaPos[2];
+    this->state.lastPrim->state.slots[index].vecBNow = reinterpret_cast<const vector3d&>(this->state.deltaPos);
 
     if (kind == 2) {
       this->state.lastPrim->state.slots[index].process = ClampedRandom(26) * -2;
@@ -6275,7 +6268,8 @@ void CRagEffect::TexturedTwinSpin(const char* name, char kind) {
   this->state.lastPrim->state.slots[1].life = 1;
   this->state.lastPrim->state.slots[2].life = 0;
   this->state.lastPrim->state.slots[3].life = 0;
-  this->state.lastPrim->state.slots[0].distance = kind == 3 ? 24.0f : 15.0f;
+  float& distance = this->state.lastPrim->state.slots[0].distance;
+  distance = kind == 3 ? 24.0f : 15.0f;
   this->state.lastPrim->state.slots[1].distance = this->state.lastPrim->state.slots[0].distance;
   this->state.lastPrim->state.slots[0].process = 0;
   this->state.lastPrim->state.slots[1].process = 0;
@@ -9288,21 +9282,15 @@ bool CRagEffect::ProcessEZ2STRAtTarget() {
   this->state.deltaPos2[0] = parent.position.x;
   this->state.deltaPos2[1] = parent.position.y;
   this->state.deltaPos2[2] = parent.position.z;
-  parent.position.x = this->state.deltaPos[0];
-  parent.position.y = this->state.deltaPos[1];
-  parent.position.z = this->state.deltaPos[2];
+  parent.position = *reinterpret_cast<const vector3d*>(this->state.deltaPos);
   if (!this->ProcessEZ2STR(0.0f, -80.0f, 0.0f)) {
     RenderObjectState& restored = this->state.parent->render;
-    restored.position.x = this->state.deltaPos2[0];
-    restored.position.y = this->state.deltaPos2[1];
-    restored.position.z = this->state.deltaPos2[2];
+    restored.position = *reinterpret_cast<const vector3d*>(this->state.deltaPos2);
     return false;
   }
 
   RenderObjectState& restored = this->state.parent->render;
-  restored.position.x = this->state.deltaPos2[0];
-  restored.position.y = this->state.deltaPos2[1];
-  restored.position.z = this->state.deltaPos2[2];
+  restored.position = *reinterpret_cast<const vector3d*>(this->state.deltaPos2);
   return true;
 }
 

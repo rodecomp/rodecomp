@@ -186,7 +186,8 @@ vector3d PlayerPosition() {
 // OFFSET: 0x00B4E510
 // FUNCTION: fn_18994
 void CEffect::CheckRange() {
-  const vector3d player = PlayerPosition();
+  vector3d player;
+  player = PlayerPosition();
   const float x = player.x - this->position[0];
   const float y = player.y - this->position[1];
   const float z = player.z - this->position[2];

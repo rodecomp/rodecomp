@@ -829,7 +829,7 @@ public:
   bool LoadExceptionMinimapNameTable();
   bool LoadMapNameTable();
   bool LoadMapPosTable();
-  bool ScaleMapPositions();
+  BOOL ScaleMapPositions();
   bool LoadFogParameters();
   void SetCostumeItem(unsigned int index, const ITEM_INFO& item);
   void SetEquippedItem(unsigned int index, const ITEM_INFO& item);

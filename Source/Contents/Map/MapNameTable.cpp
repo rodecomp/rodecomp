@@ -147,7 +147,7 @@ static __forceinline void ScaleMapRect(MapPosRect* rect) {
 
 // OFFSET: 0x00DE4FF0
 // FUNCTION: fn_45471
-bool CSession::ScaleMapPositions() {
+BOOL CSession::ScaleMapPositions() {
   for (int index = 0; index < this->m_mapPosListCount; ++index) {
     for (std::map<std::string, MapPosEntry>::iterator it = this->m_mapPosLists[index].begin(); it != this->m_mapPosLists[index].end(); ++it) {
       ScaleMapRect(&it->second.rect);
@@ -158,5 +158,5 @@ bool CSession::ScaleMapPositions() {
     ScaleMapRect(&it->second.rect);
   }
 
-  return true;
+  return TRUE;
 }
