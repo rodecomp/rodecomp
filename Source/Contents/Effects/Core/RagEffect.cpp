@@ -1596,7 +1596,7 @@ bool CRagEffect::Aspersio() {
   }
 
   if (this->state.stateCnt % 5 == 0 && this->state.stateCnt > 60 && this->state.stateCnt < 140) {
-    this->state.lastPrim = CreateEffectParticle(*this, this->render, 7, 0.0f, 0.0f, 0.0f, WorldObjects());
+    this->state.lastPrim = this->LaunchEffectPrim(7, vector3d{0.0f, 0.0f, 0.0f});
     this->state.duration = 400;
     this->state.lastPrim->state.duration = 40;
     this->state.lastPrim->state.radius = 1.5f;
