@@ -57,7 +57,6 @@ struct EffectPrimitiveSlot {
 struct EffectPrimitiveState {
   explicit EffectPrimitiveState(RenderObjectState& render);
   ~EffectPrimitiveState();
-  void GetColorOverride(unsigned char* red, unsigned char* green, unsigned char* blue);
 
   /* 0138 */ std::uint32_t changePointReached;
   /* 013C */ std::uint32_t isChangeProcessed;

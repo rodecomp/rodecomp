@@ -252,6 +252,7 @@ struct CEffectPrim : CRenderObject {
   void RenderSegmentSpriteTrail(matrix& wtm);
 
   void Initialize(CRagEffect& master, int type, float x, float y, float z);
+  void GetColorOverride(unsigned char* red, unsigned char* green, unsigned char* blue);
 
   /* 0138 */ EffectPrimitiveState state;
 };
