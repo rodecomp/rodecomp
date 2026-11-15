@@ -202,7 +202,7 @@ void CRagEffect::Endure() {
   if (this->state.stateCnt == 0) {
     PlayEffectWave(*this, "effect\\EF_Endure.wav");
 
-    this->state.lastPrim = CreateEffectParticle(*this, this->render, 0, 0.0f, 0.0f, 0.0f, WorldObjects());
+    this->state.lastPrim = this->LaunchEffectPrim(0, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.pattern |= 2;
     this->state.lastPrim->state.deltaPos2.y = -20.0f;
@@ -227,7 +227,7 @@ void CRagEffect::Endure() {
     return;
   }
 
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 0, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(0, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 40;
   const float heading = static_cast<float>(ClampedRandom(360));
   this->state.lastPrim->state.roll = heading;
@@ -258,7 +258,7 @@ void CRagEffect::BloodDrain() {
   }
 
   for (int angle = -90; angle < 180; angle += 90) {
-    this->state.lastPrim = CreateEffectParticle(*this, this->render, 8, 0.0f, 0.0f, 0.0f, WorldObjects());
+    this->state.lastPrim = this->LaunchEffectPrim(8, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 60;
     this->state.lastPrim->state.deltaPos2 = {0.0f, -10.0f, 0.0f};
     this->state.lastPrim->state.radius = this->state.lastPrim->CalcDist(this->state.deltaPos[0], this->state.deltaPos[2]);
@@ -300,7 +300,7 @@ void CRagEffect::FireBall() {
   }
 
   PlayEffectWave(*this, "effect\\EF_FireBall.wav");
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 20;
   this->state.lastPrim->state.pattern |= 0x120u;
   this->state.lastPrim->state.deltaPos2 = {0.0f, -15.0f, 0.0f};
@@ -674,7 +674,7 @@ void CRagEffect::IncAgility() {
 
   if (this->state.stateCnt == 0) {
     PlayEffectWave(*this, "effect\\EF_IncAgility.wav");
-    this->state.lastPrim = CreateEffectParticle(*this, this->render, 0, 0.0f, 0.0f, 0.0f, WorldObjects());
+    this->state.lastPrim = this->LaunchEffectPrim(0, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.longitude = 0.0f;
     this->state.lastPrim->state.speed = 1.5f;
@@ -694,7 +694,7 @@ void CRagEffect::IncAgility() {
     return;
   }
 
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 16, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(16, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 50;
   this->state.lastPrim->state.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
   EffectPrimitiveState& moving = this->state.lastPrim->state;
@@ -825,7 +825,7 @@ void CRagEffect::Hit2(int option) {
   int index = 0;
 
   for (float degree = 0.0f; degree < 360.0f; degree += 45.0f, ++index) {
-    this->state.lastPrim = CreateEffectParticle(*this, this->render, 0, 0.0f, 0.0f, 0.0f, WorldObjects());
+    this->state.lastPrim = this->LaunchEffectPrim(0, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.pattern = 1;
     this->state.lastPrim->state.duration = ClampedRandom(20) + 10;
     const float heading = (degree - 15.0f) + static_cast<float>(ClampedRandom(30));
@@ -959,7 +959,7 @@ void CRagEffect::Hit4() {
   PlayEffectWave(*this, "effect\\EF_hit4.wav");
   const int facing = static_cast<int>(180.0f - this->state.parent->render.angle);
   const int direction = facing < 0 ? facing + 360 : facing;
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 13, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(13, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 15;
   this->state.lastPrim->state.longitude = static_cast<float>(direction);
   this->state.lastPrim->state.latitude = -90.0f;
@@ -981,7 +981,7 @@ void CRagEffect::Hit4() {
   this->state.lastPrim->state.textures[0] = texture;
 
   for (int count = 5; count != 0; --count) {
-    this->state.lastPrim = CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects());
+    this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.longitude = static_cast<float>(direction - 40 + ClampedRandom(80));
     this->state.lastPrim->state.latitude = static_cast<float>(ClampedRandom(100) - 50);
     EffectPrimitiveState& yaw = this->state.lastPrim->state;
@@ -1101,7 +1101,7 @@ void CRagEffect::SpearBmr() {
   }
 
   PlayEffectWave(*this, "effect\\EF_FireBall.wav");
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 15;
   this->state.lastPrim->state.pattern |= 0x120u;
   this->state.lastPrim->state.deltaPos2 = {0.0f, -15.0f, 0.0f};
@@ -1212,7 +1212,7 @@ void CRagEffect::WaterBall2() {
   }
 
   PlayEffectWave(*this, "effect\\wizard_waterball_chulung.wav");
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 8, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(8, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->SetSpriteName("이팩트\\Waterball.spr");
   this->state.lastPrim->SetActionName("이팩트\\Waterball.act");
   this->state.lastPrim->state.duration = 40;
@@ -1643,7 +1643,7 @@ void CRagEffect::Bash() {
 
   PlayEffectWave(*this, "effect\\EF_Bash.wav");
 
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 4, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(4, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 40;
   this->state.lastPrim->state.pattern |= 1;
   this->state.lastPrim->state.deltaPos2.y = -40.0f;
@@ -1658,7 +1658,7 @@ void CRagEffect::Bash() {
   const int sparkCount = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? 10 : 20;
 
   for (int spark = 0; spark < sparkCount; ++spark) {
-    this->state.lastPrim = CreateEffectParticle(*this, this->render, 3, 0.0f, 0.0f, 0.0f, WorldObjects());
+    this->state.lastPrim = this->LaunchEffectPrim(3, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 40;
     this->state.lastPrim->state.deltaPos2.y = -40.0f;
     this->state.lastPrim->state.longitude = static_cast<float>(ClampedRandom(360));
@@ -2114,7 +2114,7 @@ void CRagEffect::GrimToothAtk() {
   }
 
   for (int index = 0; index < 3; ++index) {
-    this->state.lastPrim = CreateEffectParticle(*this, this->render, 9, 0.0f, 0.0f, 0.0f, WorldObjects());
+    this->state.lastPrim = this->LaunchEffectPrim(9, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.pattern |= 1u;
     this->state.lastPrim->state.renderFlag |= 0x200u;
     this->state.duration = 1000;
@@ -2182,7 +2182,7 @@ bool CRagEffect::Signum() {
       "effect\\EF_Bash.wav", this->render.position.x - player->render.position.x, 0.0f, this->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
     );
 
-    this->state.lastPrim = CreateEffectParticle(*this, this->render, 4, 0.0f, 0.0f, 0.0f, WorldObjects());
+    this->state.lastPrim = this->LaunchEffectPrim(4, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 40;
     this->state.lastPrim->state.pattern |= 1;
     this->state.lastPrim->state.deltaPos2.y = -40.0f;
@@ -2195,7 +2195,7 @@ bool CRagEffect::Signum() {
     this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\alpha_down.tga", 0, false, true, false);
 
     for (int ray = 0; ray < 20; ++ray) {
-      this->state.lastPrim = CreateEffectParticle(*this, this->render, 3, 0.0f, 0.0f, 0.0f, WorldObjects());
+      this->state.lastPrim = this->LaunchEffectPrim(3, vector3d{0.0f, 0.0f, 0.0f});
       this->state.lastPrim->state.duration = 35;
       this->state.lastPrim->state.deltaPos2.y = -40.0f;
       this->state.lastPrim->state.alpha = 0.0f;
@@ -2413,7 +2413,7 @@ void CRagEffect::SonicBlowHit() {
   const int spreadX = rand() % 10;
   const int spreadY = rand() % 20;
   rand();
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 13, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(13, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 12;
   this->state.lastPrim->state.longitude = static_cast<float>(facing < 0 ? facing + 360 : facing);
   this->state.lastPrim->state.latitude = -90.0f;
@@ -2951,7 +2951,7 @@ void CRagEffect::RingStack(char white) {
   }
 
   for (int index = 1; index <= 3; ++index) {
-    this->state.lastPrim = CreateEffectParticle(*this, this->render, 13, 0.0f, 0.0f, 0.0f, WorldObjects());
+    this->state.lastPrim = this->LaunchEffectPrim(13, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.longSpeed = -3.0f;
     this->state.lastPrim->state.outerSize = static_cast<float>(index + 3);
@@ -6308,7 +6308,7 @@ void CRagEffect::WeddingBurst(const char* name, char silent) {
     PlayEffectWave(*this, "effect\\wedding.wav");
   }
 
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 78, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(78, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 5;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 1;
@@ -6345,7 +6345,7 @@ void CRagEffect::TexturedOrbitDust(const char* name, char rise, char kind) {
     return;
   }
 
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 27, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(27, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 5;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -6631,7 +6631,7 @@ void CRagEffect::BubbleFanSweep(const char*, char rising) {
   this->render.position.x = parent.position.x;
   this->render.position.y = parent.position.y;
   this->render.position.z = parent.position.z;
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 146, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(146, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 5;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 13;
@@ -7699,7 +7699,7 @@ bool CRagEffect::AgilityChange(char increase, const std::string& textureName) {
     return true;
   }
 
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 16, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(16, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ac_center2.tga", 0, false, true, false);
   if (this->state.lastPrim->state.textures[0] == nullptr) {
@@ -8204,7 +8204,7 @@ void CRagEffect::RocketPunch() {
     return;
   }
 
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 20;
   this->state.lastPrim->state.pattern |= 0x100u;
   this->state.lastPrim->state.deltaPos2 = {0.0f, -15.0f, 0.0f};
@@ -9086,7 +9086,7 @@ void CRagEffect::WhiteLightSparkle(char kind) {
     return;
   }
 
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 130, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(130, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 0;
   this->state.lastPrim->state.renderFlag |= 1u;
   this->state.lastPrim->state.renderFlag |= 5u;
@@ -9334,7 +9334,7 @@ bool CRagEffect::Coin() {
     const int coinCount = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? 2 : 5;
 
     for (int coin = 0; coin < coinCount; ++coin) {
-      this->state.lastPrim = CreateEffectParticle(*this, this->render, 6, 0.0f, 0.0f, 0.0f, WorldObjects());
+      this->state.lastPrim = this->LaunchEffectPrim(6, vector3d{0.0f, 0.0f, 0.0f});
       this->state.lastPrim->state.duration = ClampedRandom(30) + 40;
       this->state.lastPrim->state.longitude = static_cast<float>(ClampedRandom(12) * 30);
 
@@ -9375,7 +9375,7 @@ void CRagEffect::ColdHit() {
     int index = 0;
 
     for (float degree = 0.0f; degree < 360.0f; degree += 40.0f, ++index) {
-      this->state.lastPrim = CreateEffectParticle(*this, this->render, 2, 0.0f, 0.0f, 0.0f, WorldObjects());
+      this->state.lastPrim = this->LaunchEffectPrim(2, vector3d{0.0f, 0.0f, 0.0f});
       this->state.lastPrim->state.duration = 15;
       const float heading = (degree - 15.0f) + static_cast<float>(ClampedRandom(60));
       this->state.lastPrim->state.roll = heading;
@@ -9425,7 +9425,7 @@ void CRagEffect::ColdHit() {
     return;
   }
 
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 0, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(0, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 25;
   this->state.lastPrim->state.speed = 0.85f;
   this->state.lastPrim->state.longitude = static_cast<float>(ClampedRandom(40) - 20);
@@ -10587,7 +10587,7 @@ void CRagEffect::SkyCloud(char kind) {
     return;
   }
 
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 33, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(33, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 0;
   this->state.lastPrim->state.renderFlag |= 1u;
   this->state.lastPrim->state.renderFlag |= 5u;
@@ -11104,7 +11104,7 @@ bool CRagEffect::GlassWall() {
     const float* m = rotation.values;
     for (int side = 1; side > -2; side -= 2) {
       const float along = static_cast<float>(side) * 2.6f;
-      this->state.lastPrim = CreateEffectParticle(*this, this->render, 15, 0.0f, 0.0f, 0.0f, WorldObjects());
+      this->state.lastPrim = this->LaunchEffectPrim(15, vector3d{0.0f, 0.0f, 0.0f});
       this->state.lastPrim->state.duration = this->state.duration;
       this->state.lastPrim->state.pattern = 40;
       this->state.lastPrim->state.type = 50;
@@ -11120,7 +11120,7 @@ bool CRagEffect::GlassWall() {
       this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
       this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ring_blue.tga", 0, false, true, false);
       const float across = static_cast<float>(side) * 3.0f;
-      this->state.lastPrim = CreateEffectParticle(*this, this->render, 15, 0.0f, 0.0f, 0.0f, WorldObjects());
+      this->state.lastPrim = this->LaunchEffectPrim(15, vector3d{0.0f, 0.0f, 0.0f});
       this->state.lastPrim->state.duration = this->state.duration;
       this->state.lastPrim->state.pattern = 40;
       this->state.lastPrim->state.type = 50;
@@ -11366,7 +11366,7 @@ void CRagEffect::EarthSpike(char type) {
   float blue = 0.2f;
   mode->SendMsg(MM_SETQUAKEINFO, reinterpret_cast<int>(&red), reinterpret_cast<int>(&green), reinterpret_cast<int>(&blue), 0);
 
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 9, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(9, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 240;
   this->state.lastPrim->state.pattern = 1;
   this->state.lastPrim->state.pattern |= 2u;
@@ -11398,7 +11398,7 @@ void CRagEffect::EarthSpike(char type) {
 
   for (int step = 60; step < 420; step += 60) {
     const int offset = step != 0 ? ClampedRandom(step) : 0;
-    this->state.lastPrim = CreateEffectParticle(*this, this->render, 9, 0.0f, 0.0f, 0.0f, WorldObjects());
+    this->state.lastPrim = this->LaunchEffectPrim(9, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 240;
     this->state.lastPrim->state.pattern |= 1u;
     const int angle = ClampedRandom(360);
@@ -11893,7 +11893,7 @@ void CRagEffect::Map_MagicZone(const char* name, char type) {
     return;
   }
 
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 26, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(26, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 5;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -13043,7 +13043,7 @@ void CRagEffect::HasteUp() {
 
   if (this->state.stateCnt == 0) {
     for (int index = 0; index < 20; ++index) {
-      this->state.lastPrim = CreateEffectParticle(*this, this->render, 3, 0.0f, 0.0f, 0.0f, WorldObjects());
+      this->state.lastPrim = this->LaunchEffectPrim(3, vector3d{0.0f, 0.0f, 0.0f});
       this->state.lastPrim->state.duration = 80;
       this->state.lastPrim->state.deltaPos2.y = -40.0f;
       this->state.lastPrim->state.longitude = static_cast<float>(ClampedRandom(360));
@@ -13062,7 +13062,7 @@ void CRagEffect::HasteUp() {
 
     if (this->state.stateCnt == 0) {
       for (int index = 0; index < 4; ++index) {
-        this->state.lastPrim = CreateEffectParticle(*this, this->render, 7, 0.0f, 0.0f, 0.0f, WorldObjects());
+        this->state.lastPrim = this->LaunchEffectPrim(7, vector3d{0.0f, 0.0f, 0.0f});
         this->state.lastPrim->state.duration = 100;
         this->state.lastPrim->state.radius = 7.0f;
         this->state.lastPrim->state.gravSpeed = -0.1f;
@@ -13164,7 +13164,7 @@ void CRagEffect::RedParticleSpray(int count) {
   }
 
   for (int angle = -90; count > 0; angle += 90, --count) {
-    this->state.lastPrim = CreateEffectParticle(*this, this->render, 8, 0.0f, 0.0f, 0.0f, WorldObjects());
+    this->state.lastPrim = this->LaunchEffectPrim(8, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 60;
     this->state.lastPrim->state.deltaPos2 = {0.0f, -10.0f, 0.0f};
     this->state.lastPrim->state.radius = this->state.lastPrim->CalcDist(this->state.deltaPos[0], this->state.deltaPos[2]);
@@ -13541,7 +13541,7 @@ void CRagEffect::StoneSpike() {
 
   for (int z = -10; z < 15; z += 5) {
     for (int x = -10; x < 15; x += 5) {
-      this->state.lastPrim = CreateEffectParticle(*this, this->render, 9, 0.0f, 0.0f, 0.0f, WorldObjects());
+      this->state.lastPrim = this->LaunchEffectPrim(9, vector3d{0.0f, 0.0f, 0.0f});
       this->state.lastPrim->state.duration = ClampedRandom(30) + this->state.duration - 10;
       this->state.lastPrim->state.pattern = 1;
       this->state.lastPrim->state.pattern |= 2u;
@@ -13718,7 +13718,7 @@ void CRagEffect::ElementalOrbit(char kind) {
   int angle = 0;
 
   for (int index = 0; index < count; ++index) {
-    this->state.lastPrim = CreateEffectParticle(*this, this->render, 32, 0.0f, 0.0f, 0.0f, WorldObjects());
+    this->state.lastPrim = this->LaunchEffectPrim(32, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = 5;
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.slots[0].life = 1;
@@ -14607,7 +14607,7 @@ void CRagEffect::CHIMTO(char flag) {
     PlayEffectWave(*this, "effect\\mon_\uce68\ud22c\uacbd.wav");
   }
 
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 46, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(46, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.slots[0].life = 1;
   this->state.lastPrim->state.slots[0].maxHeight = 0.0f;
@@ -14984,7 +14984,7 @@ void CRagEffect::SandScatter() {
     return;
   }
 
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 0, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(0, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.pattern = 8;
   this->state.lastPrim->state.duration = this->state.duration - ClampedRandom(100);
   this->state.lastPrim->state.speed = static_cast<float>(ClampedRandom(300) + 260) / 100.0f;
@@ -15141,7 +15141,7 @@ void CRagEffect::Sight() {
   const float cosine = ClientCosine(angle);
   GetRadian(angle);
 
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 20;
   this->state.lastPrim->state.deltaPos2.x = sine * 15.0f;
   this->state.lastPrim->state.deltaPos2.y = -20.0f;
@@ -15156,7 +15156,7 @@ void CRagEffect::Sight() {
   this->state.lastPrim->SetActionName("이팩트\\Sight.act");
   this->state.lastPrim->InitSegment();
 
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 20;
   this->state.lastPrim->state.deltaPos2.x = sine * 15.0f;
   this->state.lastPrim->state.deltaPos2.y = 0.0f;
@@ -15349,7 +15349,7 @@ bool CRagEffect::StormGust() {
     for (int count = 2; count != 0; --count) {
       const int longitudeAngle = rand() % 360;
       const int radius = ClampedRandom(25) + 3;
-      this->state.lastPrim = CreateEffectParticle(*this, this->render, 9, 0.0f, 0.0f, 0.0f, WorldObjects());
+      this->state.lastPrim = this->LaunchEffectPrim(9, vector3d{0.0f, 0.0f, 0.0f});
       EffectPrimitiveState& particle = this->state.lastPrim->state;
       particle.duration = 215 - this->state.stateCnt;
       particle.pattern |= 1u;
@@ -15399,7 +15399,7 @@ void CRagEffect::DecAgility() {
   if (this->state.stateCnt == 0) {
     PlayEffectWave(*this, "effect\\EF_DecAgility.wav");
 
-    this->state.lastPrim = CreateEffectParticle(*this, this->render, 0, 0.0f, 0.0f, 0.0f, WorldObjects());
+    this->state.lastPrim = this->LaunchEffectPrim(0, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.deltaPos2.y -= 80.0f;
     this->state.lastPrim->state.longitude = 180.0f;
@@ -15421,7 +15421,7 @@ void CRagEffect::DecAgility() {
     return;
   }
 
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 16, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(16, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 50;
 
   EffectPrimitiveState& streak = this->state.lastPrim->state;
@@ -16242,7 +16242,7 @@ void CRagEffect::Cloud11Burst(char kind) {
     return;
   }
 
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 62, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(62, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 5;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -16698,7 +16698,7 @@ void CRagEffect::IncAgilityCenter(char kind) {
     return;
   }
 
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 16, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(16, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 50;
   EffectPrimitiveState& particle = this->state.lastPrim->state;
   particle.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
@@ -16732,7 +16732,7 @@ void CRagEffect::SonicSlashFan(char kind) {
   }
 
   for (int angle = -90; angle < 180; angle += 90) {
-    this->state.lastPrim = CreateEffectParticle(*this, this->render, 8, 0.0f, 0.0f, 0.0f, WorldObjects());
+    this->state.lastPrim = this->LaunchEffectPrim(8, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 60;
     this->state.lastPrim->state.deltaPos2 = {0.0f, -10.0f, 0.0f};
     this->state.lastPrim->state.radius = this->state.lastPrim->CalcDist(this->render.position.x, this->render.position.z);
@@ -17106,7 +17106,7 @@ void CRagEffect::SuperSlashFan(char count, char value) {
     return;
   }
 
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 35, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(35, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 5;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 5;
