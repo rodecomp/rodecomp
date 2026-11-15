@@ -51,8 +51,7 @@ void CLanguageBase::DeleteSelection() {
   }
 
   const int begin = std::min(this->anchor, this->cursor);
-  const int length = std::abs(this->cursor - this->anchor);
-  this->text.erase(static_cast<std::size_t>(begin), length);
+  this->text.erase(static_cast<std::size_t>(begin), std::abs(this->cursor - this->anchor));
   this->anchor = begin;
   this->cursor = begin;
 
