@@ -1172,11 +1172,13 @@ std::string EquipmentProperties::CEquipmentProperties2Dim::Describe(bool detaile
     }
     switch (hash) {
     case 0xA2AF91ED: {
-      const int& skillId = CEquipmentPropertiesMgr::GetInstance()->GetConstantValue(entry->first);
+      CEquipmentPropertiesMgr* manager = CEquipmentPropertiesMgr::GetInstance();
+      const int key = entry->first;
+      const int skillId = manager->GetConstantValue(key);
       if (skillId == 0) {
         continue;
       }
-      argument = CSkillInfo::DisplayName(*g_session.m_hotkeyScript, skillId);
+      argument = CSkillInfo::DisplayName(skillId);
       if (argument.size() == 0) {
         continue;
       }
@@ -1193,7 +1195,7 @@ std::string EquipmentProperties::CEquipmentProperties2Dim::Describe(bool detaile
           if (argument.size() != 0) {
             argument += ", ";
           }
-          argument += CSkillInfo::DisplayName(*g_session.m_hotkeyScript, skillId);
+          argument += CSkillInfo::DisplayName(skillId);
         }
         if (argument.size() != 0) {
           argument += " ";
@@ -1201,7 +1203,7 @@ std::string EquipmentProperties::CEquipmentProperties2Dim::Describe(bool detaile
       }
       break;
     case 0x78BA6385:
-      argument = CSkillInfo::DisplayName(*g_session.m_hotkeyScript, entry->first);
+      argument = CSkillInfo::DisplayName(entry->first);
       if (argument.size() == 0) {
         continue;
       }
@@ -1252,7 +1254,7 @@ std::string EquipmentProperties::CEquipmentProperties2Dim::Describe(bool detaile
                                                         std::make_wformat_args(DecodeText(g_textCodePage, number), DecodeText(g_textCodePage, argument))));
         break;
       case 2: {
-        const int index = negative == true ? nonPositive ^ 1 : nonPositive;
+        const int index = negative != true ? nonPositive : nonPositive ^ 1;
         if (index == 1) {
           text += "{~}";
         }
