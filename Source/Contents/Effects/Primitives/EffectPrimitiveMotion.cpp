@@ -5403,7 +5403,9 @@ __declspec(noinline) void CEffectPrim::PrimWaveHeights() {
 // FUNCTION: fn_19939
 __declspec(noinline) void CEffectPrim::PrimWaveHeightsSlow() {
   const CRagEffect* master = this->state.master;
-  this->render.position = master->render.position;
+  this->render.position.x = master->render.position.x;
+  this->render.position.y = master->render.position.y;
+  this->render.position.z = master->render.position.z;
 
   int steps = 360;
   int phase = 0;
@@ -5722,8 +5724,12 @@ bool CEffectPrim::Prim3DSlotParticle() {
   this->state.orgPos = {this->state.deltaPos2.x + anchor.x, anchor.y + this->state.deltaPos2.y, anchor.z + this->state.deltaPos2.z};
 
   if (this->state.stateCnt == this->state.changePoint) {
-    this->state.speed3d = this->state.changeSpeed3d;
-    this->state.deltaPosAccel = this->state.changeAccel3d;
+    this->state.speed3d.x = this->state.changeSpeed3d.x;
+    this->state.speed3d.y = this->state.changeSpeed3d.y;
+    this->state.speed3d.z = this->state.changeSpeed3d.z;
+    this->state.deltaPosAccel.x = this->state.changeAccel3d.x;
+    this->state.deltaPosAccel.y = this->state.changeAccel3d.y;
+    this->state.deltaPosAccel.z = this->state.changeAccel3d.z;
   }
 
   this->state.speed = this->state.accel + this->state.speed;
