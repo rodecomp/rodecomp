@@ -6161,7 +6161,7 @@ struct GameModeUiDragMessage {
   /* 001E */ std::uint32_t realPrice;
   /* 0022 */ int quantity;
   /* 0026 */ int slot;
-  /* 002A */ std::uint32_t itemType;
+  /* 002A */ int itemType;
   /* 002E */ std::uint32_t refine;
   /* 0032 */ unsigned char identified;
   /* 0033 */ char resource[100];
