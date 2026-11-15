@@ -1159,7 +1159,7 @@ int UIWindowMgr::ShowWhisperFrom(const char* name, const char* text, int color, 
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ID_WARNING_GUILD)), 0xFFFF, 0, 0, 0);
     }
 
-    shown = this->SendNotice(UIM_MAKE_WHISPER_WINDOW, reinterpret_cast<std::intptr_t>(name), reinterpret_cast<std::intptr_t>(label), reinterpret_cast<std::intptr_t>(ShortcutFilename(accountId).c_str()), 0, 0);
+    shown = this->SendNotice(UIM_MAKE_WHISPER_WINDOW, reinterpret_cast<std::intptr_t>(name), reinterpret_cast<std::intptr_t>(label), reinterpret_cast<std::intptr_t>(g_session.ShortcutFilename(accountId).c_str()), 0, 0);
     if (shown) {
       if (ResourceMgr::Instance().Exists(g_newWhisperWave)) {
         g_soundMgr->PlayWave(g_newWhisperWave, 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
@@ -1174,7 +1174,7 @@ int UIWindowMgr::ShowWhisperFrom(const char* name, const char* text, int color, 
   }
 
   if (g_session.m_autoOpenWhisperWindow != 0 && shown) {
-    this->AddWhisperName(name);
+    g_windowMgr.AddWhisperName(name);
   }
 
   const auto entry = this->namedWindows.find(std::string(name));
