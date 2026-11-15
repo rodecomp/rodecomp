@@ -4,7 +4,6 @@
 #include <cstddef>
 #include <cstdint>
 
-class CRenderSystemBase;
 struct RenderPrimitive;
 struct SpriteRleImage;
 
@@ -22,8 +21,6 @@ struct SpriteQuad {
   /* 0028 */ std::int32_t v;
   /* 002C */ const SpriteRleImage* image;
 };
-
-RenderPrimitive* BuildSpriteQuad(CRenderSystemBase& system, const SpriteQuad& quad, const std::uint32_t* palette, int blend, float offsetX, float offsetY);
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(offsetof(SpriteQuad, angle) == 0x001C);

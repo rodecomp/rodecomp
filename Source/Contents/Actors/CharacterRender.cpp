@@ -391,7 +391,7 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
       default: {
         CharacterRenderDrawItem item;
         item.flags = blend;
-        item.command = ::BuildSpriteQuad(*GetRenderSystemHolder()->system, quad, palette, blend, 0.0f, 0.0f);
+        item.command = this->BuildSpriteQuad(quad, palette, blend, 0.0f, 0.0f);
         commands.push_back(item);
         break;
       }
@@ -422,7 +422,7 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
     SpriteLayerQuad& entry = it->second;
     entry.quad.bottomRhw = depthBias + maxBottom;
     entry.quad.topRhw = depthBias + maxTop;
-    commands.push_back({entry.blend, ::BuildSpriteQuad(*GetRenderSystemHolder()->system, entry.quad, entry.palette, entry.blend, 0.0f, 0.0f)});
+    commands.push_back({entry.blend, this->BuildSpriteQuad(entry.quad, entry.palette, entry.blend, 0.0f, 0.0f)});
     depthBias += 0.000001f;
   }
 
