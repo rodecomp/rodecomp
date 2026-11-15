@@ -616,7 +616,8 @@ void UIMessageBox::Configure(
   this->SetSize(width, height);
   this->OnCreate(width, height);
   this->OnSize(width, height);
-  this->Move((g_renderer->viewport.width - 640) / 2 + 185, (g_renderer->viewport.height - 480) / 2 + 180);
+  int x = (g_renderer->viewport.width - 640) / 2 + 185;
+  this->Move(x, (g_renderer->viewport.height - 480) / 2 + 180);
   int inset = 0;
 
   if (icon) {
@@ -632,37 +633,38 @@ void UIMessageBox::Configure(
   this->viewer->Configure(inset + 10, 22, width - inset - 20, height - 55, 0);
   unsigned red, green, blue;
   g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-  this->viewer->backgroundColor = 0xFF000000u | RGB(red, green, blue);
-  this->viewer->Invalidate();
+  this->viewer->SetBackgroundColor(RGB(red, green, blue) | 0xFF000000u);
   this->AddChild(this->viewer);
   this->viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(this->messageText.data()), static_cast<int>(static_cast<double>(width) / 7.5), 0, 0);
-  this->m_message0 = type == 2 ? 188 : 185;
+  this->m_message0 = type != 2 ? 185 : 188;
 
   const std::string prefix("유저인터페이스\\");
-  int positions[3][2] = {{189, height - 24}, {189, height - 24}, {234, height - 24}};
   const char* names[3][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
   int ids[3] = {184, 187, 188};
+  int positions[3][2] = {{189, height - 24}, {189, height - 24}, {234, height - 24}};
 
   switch (type) {
   case 4: {
+    int x = width - 46;
     auto* button = new UIBitmapButton();
     button->SetBitmap((prefix + names[2][0] + ".bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + names[2][1] + ".bmp").c_str(), 1, 0);
     button->SetBitmap((prefix + names[2][2] + ".bmp").c_str(), 2, 0);
     button->SetSize(button->BitmapWidth(), button->BitmapHeight());
-    button->Move(width - 46, height - 24);
+    button->Move(x, height - 24);
     button->SetId(ID_CANCEL);
     this->AddChild(button);
     this->m_message0 = ID_CANCEL;
     break;
   }
   case 0: {
+    int x = width - 46;
     auto* button = new UIBitmapButton();
     button->SetBitmap((prefix + names[0][0] + ".bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + names[0][1] + ".bmp").c_str(), 1, 0);
     button->SetBitmap((prefix + names[0][2] + ".bmp").c_str(), 2, 0);
     button->SetSize(button->BitmapWidth(), button->BitmapHeight());
-    button->Move(width - 46, height - 24);
+    button->Move(x, height - 24);
     button->SetId(ID_OK);
     this->AddChild(button);
     this->m_message0 = ID_OK;
@@ -689,12 +691,13 @@ void UIMessageBox::Configure(
     break;
   }
   case 5: {
+    int x = width - 46;
     auto* button = new UIBitmapButton();
     button->SetBitmap((prefix + names[0][0] + ".bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + names[0][1] + ".bmp").c_str(), 1, 0);
     button->SetBitmap((prefix + names[0][2] + ".bmp").c_str(), 2, 0);
     button->SetSize(button->BitmapWidth(), button->BitmapHeight());
-    button->Move(width - 46, height - 24);
+    button->Move(x, height - 24);
     button->SetId(ID_OK);
     this->AddChild(button);
     this->m_message0 = ID_OK;
