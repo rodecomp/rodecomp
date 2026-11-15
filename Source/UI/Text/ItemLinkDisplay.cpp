@@ -1,5 +1,6 @@
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Items/ItemLink.h"
+#include "UI/Navigation/NavigationLink.h"
 #include "Contents/Items/ItemNaming.h"
 #include "Contents/Tables/TipBoxTitles.h"
 #include "UI/Lists/UIChatHisBox.h"
@@ -10,7 +11,7 @@
 // FUNCTION: fn_11299
 bool UIChatHisBox::Name(const std::string& encoded, std::string& output) {
   if (encoded.substr(0, 6) == "00000T") {
-    const int id = ItemLinkMessageId(encoded);
+    const int id = g_navigationLinkParser->ItemLinkMessageId(encoded);
 
     if (g_itemTagOwner->maxTipId >= id) {
       std::string abbreviated;

@@ -1899,7 +1899,7 @@ std::string UIChatHisBox::RenderItemLinks(const char* lineText, std::string& sou
     result += prefix;
 
     if (encoded.substr(0, 6) == "00000T") {
-      const int titleId = ItemLinkMessageId(encoded);
+      const int titleId = g_navigationLinkParser->ItemLinkMessageId(encoded);
       if (g_itemTagOwner->maxTipId >= titleId) {
         std::string label;
         const std::string title = g_itemTagOwner->Title(titleId, &label, 17);

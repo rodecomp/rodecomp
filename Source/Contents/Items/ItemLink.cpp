@@ -260,9 +260,14 @@ bool ItemFromLinkFields(const std::vector<std::int32_t>& fields, ITEM_INFO& item
   return true;
 }
 
+// INLINED
+int ItemLinkMessageId(const std::string& text) {
+  return g_navigationLinkParser->ItemLinkMessageId(text);
+}
+
 // OFFSET: 0x008345F0
 // FUNCTION: fn_10416
-int ItemLinkMessageId(const std::string& text) {
+int NavigationLinkParser::ItemLinkMessageId(const std::string& text) {
   char delimiters[] = "!#$%&'()*+,-/";
   char* buffer = new char[text.size() + 1];
   strcpy_s(buffer, text.size() + 1, text.c_str());
