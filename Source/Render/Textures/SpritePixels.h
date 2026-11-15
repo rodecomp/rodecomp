@@ -35,8 +35,8 @@ static_assert(offsetof(SpriteFrameCell, colorChannels) == 0x10);
 struct SpriteRleImage {
   /* 0000 */ std::int16_t width;
   /* 0002 */ std::int16_t height;
-  /* 0004 */ std::uint16_t doubleWidth;
-  /* 0006 */ std::uint16_t doubleHeight;
+  /* 0004 */ std::int16_t doubleWidth;
+  /* 0006 */ std::int16_t doubleHeight;
   /* 0008 */ const void* surface;
   /* 000C */ const std::uint8_t* runs;
 };
