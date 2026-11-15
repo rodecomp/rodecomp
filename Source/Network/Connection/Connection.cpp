@@ -250,14 +250,14 @@ int CConnection::Read(void* output, int bytes, unsigned char exact) {
 
 // OFFSET: 0x00C7CCE0
 // FUNCTION: fn_20402
-bool CConnection::ReadPacket(void* output, unsigned short* bytes, const PacketLengths& lengths) {
+bool CConnection::ReadPacket(void* output, unsigned short* bytes) {
   unsigned short id;
   if (!this->m_input.PeekData(2, &id)) {
     return false;
   }
 
   unsigned short size;
-  if (lengths.Lookup(id).kind == 1) {
+  if (g_packetLengths.Lookup(id).kind == 1) {
     size = static_cast<unsigned short>(static_cast<CRagConnection*>(this)->GetPacketSize(id));
   } else {
     unsigned header;

@@ -27,6 +27,7 @@ public:
   int Status() const;
   void Send(int bytes, const void* data);
   int Read(void* output, int bytes, unsigned char exact);
+  bool ReadPacket(void* output, unsigned short* bytes);
   bool ReadPacket(void* output, unsigned short* bytes, const PacketLengths& lengths);
   void Prepend(int bytes, const void* data);
   void ResetDeferred();

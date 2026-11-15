@@ -56,3 +56,10 @@ void Cleanup() {
   WSACleanup();
   FreeLibrary(ws2Module);
 }
+
+#include "Network/Connection/Connection.h"
+
+// INLINED
+bool CConnection::ReadPacket(void* output, unsigned short* bytes, const PacketLengths& lengths) {
+  return this->ReadPacket(output, bytes);
+}
