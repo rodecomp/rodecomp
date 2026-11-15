@@ -284,7 +284,7 @@ void CItemReformMgr::LoadReformItemList() {
     while (lua_next(state, -2) != 0) {
       const std::uint64_t reformId = static_cast<std::uint32_t>(lua_tointeger(state, -1));
       if (this->m_reformInfo.find(reformId) == this->m_reformInfo.end()) {
-        ShowErrorDialog(FormatOwnedString("ReformItemList[ %s ] : Can't find [ %I64u ] in ReformInfo", itemName.c_str(), reformId), 0);
+        ShowErrorDialog(FormatOwnedString("ReformItemList[ %s ] : Can't find [ %I64u ] in ReformInfo", itemName.c_str(), reformId).c_str(), 0);
       } else {
         this->m_reformItemList[itemId].push_back(reformId);
       }

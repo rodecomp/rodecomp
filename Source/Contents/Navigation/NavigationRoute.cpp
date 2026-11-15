@@ -541,7 +541,7 @@ std::string CNavigationManager::DestinationTitle() {
   if (this->viewMode == 2) {
     NaviCell cell;
     this->data.GetCell(&cell);
-    CNaviInfo* info = this->data.info;
+    CNaviInfo* info = this->data.GetInfo();
     if (info != nullptr) {
       this->destinationTitle.assign(info->GetTitle());
     }
