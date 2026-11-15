@@ -45,6 +45,7 @@
 #include "Utility/Cipher/CryptName.h"
 #include "Utility/Cipher/Obfuscate.h"
 #include "Contents/Messenger/MessengerWindows.h"
+#include "Contents/Messenger/EquipmentPropertyStore.h"
 
 #include <algorithm>
 #include <array>
@@ -127,20 +128,6 @@ struct EquipmentPropertyGroup {
   std::map<std::int64_t, EquipmentPropertyDefinition*>& GetDefinitions();
 };
 
-struct EquipmentPropertyStore {
-  /* 0000 */ std::map<unsigned int, std::map<unsigned int, EquipmentProperty*>> properties;
-  /* 0008 */ std::unordered_map<std::string, std::string> names;
-
-  EquipmentPropertyStore();
-  ~EquipmentPropertyStore();
-  void Clear();
-  std::map<unsigned int, std::map<unsigned int, EquipmentProperty*>>& GetProperties();
-  int GetCount();
-  std::unordered_map<std::string, std::string>& GetNames();
-  EquipmentPropertyStore& operator+=(EquipmentPropertyStore& other);
-  EquipmentPropertyStore& operator+=(EquipmentProperty* property);
-  void RemoveDuplicateNames();
-};
 
 namespace EquipmentProperties {
   class CEquipmentProperties {

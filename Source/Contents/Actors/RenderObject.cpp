@@ -762,7 +762,7 @@ void CRenderObject::DrawStatusOverlays(SpriteQuad quad, const std::uint32_t* pal
 // FUNCTION: fn_21123
 void CRenderObject::ScaleByPulse(float& scale) const {
   if ((this->render.flags & 0x10) != 0) {
-    const unsigned phase = this->render.pulsePhases[0] * 4u + 90u;
+    const unsigned phase = this->render.shrinkPhase * 4u + 90u;
     const unsigned index = phase >= 90u ? phase : 90u;
     if (index < 270) {
       scale = ((g_sinTable[index] + 1.0f) * 0.25f + 0.5f) * scale;
@@ -772,7 +772,7 @@ void CRenderObject::ScaleByPulse(float& scale) const {
   }
 
   if ((this->render.flags & 0x400) != 0) {
-    const unsigned phase = this->render.pulsePhases[1] * 4u + 90u;
+    const unsigned phase = this->render.growPhase * 4u + 90u;
     const unsigned index = phase >= 90u ? phase : 90u;
     if (index < 270) {
       scale = (1.5f - (g_sinTable[index] + 1.0f) * 0.25f) * scale;
@@ -867,7 +867,7 @@ void CGameActor::SetMsg2AI(const AiMessage* value, int index) {
 // OFFSET: 0x00CC2820
 // FUNCTION: fn_21143
 void CGameActor::SetRenderInfo(const float* bounds, float x, float y) {
-  if (this->render.visibilityOptions[1] != 0) {
+  if (this->render.trackBounds != 0) {
     // GLOBAL: gl_25185
     static int s_minPickSize = static_cast<int>(g_renderer->UiScaleX() * 40.0f);
 
@@ -1834,7 +1834,7 @@ void CRenderObject::RenderAura(
     return;
   }
 
-  unsigned char& phaseTick = this->render.effectPhaseBytes[3];
+  unsigned char& phaseTick = this->render.trailPhase;
   ++phaseTick;
   if (phaseTick >= 200) {
     phaseTick -= 200;
@@ -1887,7 +1887,7 @@ void CRenderObject::DrawPulseOutline(
     return;
   }
 
-  unsigned char& phase = this->render.effectPhaseBytes[2];
+  unsigned char& phase = this->render.wavePhase;
   ++phase;
   if (phase > 180) {
     phase = 0;
@@ -2642,7 +2642,7 @@ void CCharacterNpc::Render(int) {
 
   char useBounds = 0;
   std::list<CharacterRenderDrawItem> drawList =
-    this->characterRender->BuildDrawList(this->render.visibilityOptions[1], &useBounds);
+    this->characterRender->BuildDrawList(this->render.trackBounds, &useBounds);
 
   CCharacterRender* characterRender = this->characterRender;
   float bounds[5];
@@ -2930,7 +2930,7 @@ void CGameActor::SetMonsterTransformJob(int value) {
 // FUNCTION: fn_21038
 void CRenderObject::ScaleByFadePulse(float& scale) const {
   if ((this->render.flags & 0x10) != 0) {
-    const unsigned index = this->render.pulsePhases[0] * 4u + 90u;
+    const unsigned index = this->render.shrinkPhase * 4u + 90u;
     if (index > 270) {
       scale = scale * 0.5f;
     } else {
@@ -4792,7 +4792,7 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
 
       this->render.enabled = 0;
       if (this->render.accountId != g_session.m_aid && g_session.IsAdminSubMode(7) == 0) {
-        this->render.visibilityOptions[0] = 0;
+        this->render.shadowVisible = 0;
         this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_TOPRANK, 0, 0, 0, 0, 0);
         this->SendMsg(nullptr, AM_REMOVEGAGE, 0, 0, 0, 0, 0, 0);
       }
@@ -4820,7 +4820,7 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
 
       this->render.enabled = 1;
       if (this->render.accountId != g_session.m_aid) {
-        this->render.visibilityOptions[0] = 1;
+        this->render.shadowVisible = 1;
       }
       if (this->maxHp > 0) {
         this->SendMsg(nullptr, AM_MAKE_CART, 0, 0, 0, 0, 0, 0);
@@ -4847,7 +4847,7 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
       this->render.visible = 0;
       this->render.enabled = 0;
       if (this->render.accountId != g_session.m_aid && g_session.IsAdminSubMode(7) == 0) {
-        this->render.visibilityOptions[0] = 0;
+        this->render.shadowVisible = 0;
         this->SendMsg(nullptr, AM_REMOVEGAGE, 0, 0, 0, 0, 0, 0);
         this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_TOPRANK, 0, 0, 0, 0, 0);
       }
@@ -4871,7 +4871,7 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
       this->render.visible = 1;
       this->render.enabled = 1;
       if (this->render.accountId != g_session.m_aid) {
-        this->render.visibilityOptions[0] = 1;
+        this->render.shadowVisible = 1;
       }
       if (this->maxHp > 0) {
         this->SendMsg(nullptr, AM_MAKE_CART, 0, 0, 0, 0, 0, 0);
@@ -4927,7 +4927,7 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
     this->ResetJobEffects();
     if (StateFlag06(this->stateFlags)) {
       const int admin = g_session.IsAdminSubMode(8);
-      this->render.visibilityOptions[0] = 0;
+      this->render.shadowVisible = 0;
       if (admin == 0) {
         this->render.visible = 0;
         this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_TOPRANK, 0, 0, 0, 0, 0);
@@ -4957,9 +4957,9 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
       }
     } else {
       this->render.visible = 1;
-      this->render.visibilityOptions[0] = 1;
+      this->render.shadowVisible = 1;
       if (!this->render.enabled && this->render.accountId != g_session.m_aid) {
-        this->render.visibilityOptions[0] = 0;
+        this->render.shadowVisible = 0;
       }
       if (this->msgEffectList.size() != 0) {
         for (CGameObject* object : this->msgEffectList) {

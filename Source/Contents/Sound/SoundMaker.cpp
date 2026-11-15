@@ -68,7 +68,7 @@ CGndRiser::CGndRiser() {
 // FUNCTION: fn_22356
 CHalluNPC::CHalluNPC(CGameActor* source) {
   this->render.visible = 1;
-  this->render.visibilityOptions[0] = 0;
+  this->render.shadowVisible = 0;
   this->render.motionStartTime = timeGetTime();
   this->SetSexBit(source->sex);
   this->SetActorJob(source->GetEffectiveJob(-1));
@@ -104,7 +104,7 @@ CHalluNPC::CHalluNPC(CGameActor* source) {
 // FUNCTION: fn_22359
 CHalluPlant::CHalluPlant() {
   this->render.visible = 1;
-  this->render.visibilityOptions[0] = 0;
+  this->render.shadowVisible = 0;
   this->render.motionStartTime = timeGetTime();
   this->SetSexBit(0);
   this->SetActorJob(1079);
@@ -312,7 +312,7 @@ bool CBlurPC::OnProcess() {
     const CRenderObject* owner = scene->GetGameActorByAidIncludeMe(this->render.accountId);
     if (owner && 0 != (owner->render.flags & 0x10)) {
       this->render.flags = 0x10;
-      this->render.pulsePhases[0] = 45;
+      this->render.shrinkPhase = 45;
     }
   }
 
@@ -332,7 +332,7 @@ bool CHalluPC2::OnProcess() {
     const CRenderObject* owner = scene->GetGameActorByAidIncludeMe(this->render.accountId);
     if (owner && 0 != (owner->render.flags & 0x10)) {
       this->render.flags = 0x10;
-      this->render.pulsePhases[0] = 45;
+      this->render.shrinkPhase = 45;
     }
   }
 
@@ -1183,7 +1183,7 @@ void CNpc::UpdateBubblePositions() {
 CHalluPC2::CHalluPC2(CPc* source) {
   this->sourcePc = source;
   this->render.visible = 1;
-  this->render.visibilityOptions[0] = 0;
+  this->render.shadowVisible = 0;
   this->render.motionStartTime = timeGetTime();
   this->SetSexBit(source->sex);
   this->SetActorJob(source->GetEffectiveJob(-1));
@@ -1228,7 +1228,7 @@ CHalluPC2::CHalluPC2(CPc* source) {
 CBlurPC::CBlurPC(CPc* source) {
   this->blurSource = source;
   this->render.visible = 1;
-  this->render.visibilityOptions[0] = 0;
+  this->render.shadowVisible = 0;
   this->render.motionStartTime = timeGetTime();
   this->SetSexBit(source->sex);
   this->SetActorJob(source->GetEffectiveJob(-1));
@@ -1272,7 +1272,7 @@ CBlurPC::CBlurPC(CPc* source) {
 CHalluPC::CHalluPC(CPc* source) {
   this->sourcePc = source;
   this->render.visible = 1;
-  this->render.visibilityOptions[0] = 0;
+  this->render.shadowVisible = 0;
   this->render.motionStartTime = timeGetTime();
   this->SetSexBit(source->sex);
   this->SetActorJob(source->GetEffectiveJob(-1));
@@ -1546,7 +1546,7 @@ void CHalluPC::Render(int argument) {
     CRenderObject* source = scene->GetGameActorByAidIncludeMe(this->render.accountId);
     if (source && (source->render.flags & 0x10) != 0) {
       this->render.flags = 0x10;
-      this->render.pulsePhases[0] = 45;
+      this->render.shrinkPhase = 45;
     }
   }
 
@@ -1648,7 +1648,7 @@ void CNpc::SetState(int state, int) {
       switch (state) {
         case ST_STAND:
           this->render.isLieOnGround = false;
-          this->render.visibilityOptions[1] = 1;
+          this->render.trackBounds = 1;
           this->SetAction(0, 4, 0);
           if (this->healthState != 0) {
             int hungerLevel = g_session.GetPetHungryState(g_session.petHunger);
@@ -1771,7 +1771,7 @@ void CNpc::SetState(int state, int) {
           }
           this->render.isLieOnGround = true;
           this->render.isMotionFreezed = false;
-          this->render.visibilityOptions[1] = 0;
+          this->render.trackBounds = 0;
           if (this->GetEffectiveJob(-1) >= 6017 && this->GetEffectiveJob(-1) <= 6046) {
             this->SetAction(64, 4, 1);
             this->UnRegisterPos();

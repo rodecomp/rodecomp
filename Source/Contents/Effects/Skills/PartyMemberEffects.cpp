@@ -72,9 +72,9 @@ bool CRollingCutterRagEffect::OnProcess() {
     return false;
   }
 
-  if (g_updateTick > 0 && this->state.parent->render.effectPhaseBytes[0] == 1) {
+  if (g_updateTick > 0 && this->state.parent->render.flagsResetPending == 1) {
     this->state.parent->render.flags = 0;
-    this->state.parent->render.effectPhaseBytes[0] = 0;
+    this->state.parent->render.flagsResetPending = 0;
   }
 
   const vector3d& parentPosition = this->state.parent->render.position;

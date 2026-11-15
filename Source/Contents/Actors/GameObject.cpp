@@ -323,7 +323,7 @@ void CRenderObject::DrawSprite(int argument, bool seasonal, float offset) {
 
     drawn = true;
     quad.image = image;
-    if (this->render.visibilityOptions[1] != 0) {
+    if (this->render.trackBounds != 0) {
       const float minX = quad.left < quad.right ? quad.left : quad.right;
       const float maxX = quad.left > quad.right ? quad.left : quad.right;
       if (bounds.left > minX) {
@@ -394,7 +394,7 @@ void CRenderObject::DrawSprite(int argument, bool seasonal, float offset) {
     this->SetTlvert(x, y);
   }
 
-  this->render.effectPhaseBytes[0] = 1;
+  this->render.flagsResetPending = 1;
 }
 
 // OFFSET: 0x00CB2830
@@ -690,7 +690,7 @@ void CGameActor::RenderMercenary(const float* matrix, int job) {
         quad.topRhw += bias;
       }
 
-      if (this->render.visibilityOptions[1] != 0) {
+      if (this->render.trackBounds != 0) {
         const float minX = quad.left < quad.right ? quad.left : quad.right;
         const float maxX = quad.left > quad.right ? quad.left : quad.right;
         if (bounds[0] > minX) {
@@ -730,13 +730,13 @@ void CGameActor::RenderMercenary(const float* matrix, int job) {
     }
   }
 
-  this->render.effectPhaseBytes[0] = 1;
+  this->render.flagsResetPending = 1;
 }
 
 // OFFSET: 0x00CB35F0
 // FUNCTION: fn_21105
 void CRenderObject::DrawShadow(int argument, float scale) {
-  if (this->render.spriteJob == 565 || this->render.visibilityOptions[0] == 0 || this->render.shadowScale == 0.0f || scale == 0.0f) {
+  if (this->render.spriteJob == 565 || this->render.shadowVisible == 0 || this->render.shadowScale == 0.0f || scale == 0.0f) {
     return;
   }
 
@@ -921,7 +921,7 @@ void CGameActor::ApplySavedShapeShift() {
   this->shapeShift = pending;
   this->savedShapeShift = 0;
   this->render.isLieOnGround = false;
-  this->render.visibilityOptions[1] = 1;
+  this->render.trackBounds = 1;
   this->render.isMotionFreezed = false;
   this->render.specialMotionLocked = 0;
 
@@ -2293,14 +2293,14 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
   case AM_RESURRECTION:
     this->render.state = ST_STAND;
     this->render.isLieOnGround = false;
-    this->render.visibilityOptions[1] = 1;
+    this->render.trackBounds = 1;
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->waitingUseItemAck = 0;
     this->SetState(ST_STAND, 1);
     break;
   case AM_OUTOFSIGHT:
     this->render.accountId = 0xFFFFFFFF;
     this->levelAuraType = 0;
-    this->render.visibilityOptions[0] = 0;
+    this->render.shadowVisible = 0;
     this->vanishTime = static_cast<int>(timeGetTime() + 510);
     if (this->vanishTime == 0) {
       this->vanishTime = 1;
@@ -2830,7 +2830,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
         this->isTrickDead = 0;
         this->render.state = ST_STAND;
         this->render.isLieOnGround = false;
-        this->render.visibilityOptions[1] = 1;
+        this->render.trackBounds = 1;
         this->SetState(ST_STAND, 1);
         this->render.isMotionFreezed = false;
       }
@@ -3655,7 +3655,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
       } else {
         this->render.state = ST_STAND;
         this->render.isLieOnGround = false;
-        this->render.visibilityOptions[1] = 1;
+        this->render.trackBounds = 1;
         this->SetState(ST_STAND, 1);
         this->render.isMotionFreezed = false;
         this->render.specialMotionLocked = 0;

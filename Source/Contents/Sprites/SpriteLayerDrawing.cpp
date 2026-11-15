@@ -185,7 +185,7 @@ void SpriteLayerRenderer::Render(const float* matrix, int blendMode, char blendV
     this->pc->SetTlvert(this->x, this->y);
   }
 
-  this->pc->render.effectPhaseBytes[0] = 1;
+  this->pc->render.flagsResetPending = 1;
 }
 
 // OFFSET: 0x0063FC90
@@ -692,7 +692,7 @@ void SpriteLayerRenderer::DrawLayer(
         break;
     }
 
-    if ((layer == 0 || layer == 1) && this->pc->render.visibilityOptions[1] == 1) {
+    if ((layer == 0 || layer == 1) && this->pc->render.trackBounds == 1) {
       this->bounds.Include(&quad.top);
     }
 

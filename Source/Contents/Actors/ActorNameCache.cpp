@@ -1,5 +1,6 @@
 #include "Contents/Actors/ActorNameCard.h"
 
+#include <cstddef>
 #include <cstring>
 
 #pragma pack(push, 1)
@@ -95,12 +96,12 @@ std::size_t CActorNameCardHolder::Load(const std::vector<unsigned char>& input) 
   std::string text;
   for (int index = 0; index < count; ++index) {
     int id;
-    std::memcpy(&id, input.data() + offset, sizeof(id));
+    std::memcpy(&id, input.data() + offset + offsetof(ActorNameCardRecord, id), sizeof(id));
     this->cards[id].Reset();
 
     int length;
-    std::memcpy(&length, input.data() + offset + 4, sizeof(length));
-    offset += 8;
+    std::memcpy(&length, input.data() + offset + offsetof(ActorNameCardRecord, nameLength), sizeof(length));
+    offset += sizeof(ActorNameCardRecord);
     if (length > 0) {
       this->cards[id].name.assign(reinterpret_cast<const char*>(&input[offset]), length);
       offset += length;

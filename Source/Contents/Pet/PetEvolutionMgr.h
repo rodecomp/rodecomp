@@ -28,7 +28,7 @@ public:
   // INLINED
   virtual ~CPetEvolutionMgr() {
     this->m_recipes.clear();
-    this->padding_0010.clear();
+    this->m_notes.clear();
     this->m_autoFeeding.clear();
   }
 
@@ -46,7 +46,7 @@ public:
 
   /* 0004 */ bool m_isValid;
   /* 0008 */ std::map<int, std::vector<PetEvolutionRecipe>> m_recipes;
-  /* 0010 */ std::map<int, PetEvolutionNote> padding_0010;
+  /* 0010 */ std::map<int, PetEvolutionNote> m_notes;
   /* 0018 */ std::vector<int> m_autoFeeding;
 };
 

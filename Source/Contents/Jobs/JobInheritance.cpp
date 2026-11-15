@@ -12,6 +12,7 @@
 #include "Contents/Items/WeaponType.h"
 #include "Contents/Tables/MessageTable.h"
 #include "Contents/Messenger/ClientMessenger.h"
+#include "Contents/Messenger/EquipmentPropertyStore.h"
 #include "Contents/Skills/SkillInfo.h"
 #include "Client/Session/Session.h"
 #include "Contents/Actors/GameActor.h"
@@ -1784,7 +1785,7 @@ public:
 
   /* 0004 */ int m_id;
   /* 0008 */ void* m_info;
-  /* 000C */ unsigned char m_properties[0x28];
+  /* 000C */ EquipmentPropertyStore m_properties;
   /* 0034 */ bool m_pretend;
 };
 

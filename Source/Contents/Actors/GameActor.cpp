@@ -455,7 +455,7 @@ void CGameActor::ResetState() {
   this->render.state = ST_STAND;
   this->render.motionType = 0;
   this->render.speed = 1.0f;
-  this->render.visibilityOptions[0] = 1;
+  this->render.shadowVisible = 1;
   this->accel.x = 0.0f;
   this->accel.y = 0.0f;
   this->accel.z = 0.0f;
@@ -475,7 +475,7 @@ void CGameActor::ResetState() {
   this->hitTargetAid = 0;
   this->attackMotion = -1.0f;
   this->pathStartCell = -1;
-  this->render.visibilityOptions[1] = 1;
+  this->render.trackBounds = 1;
   this->render.motionStartTime = timeGetTime();
   this->petEmotionStartTick = 0;
   this->skillRechargeEndTick = timeGetTime() - 5000;
@@ -685,9 +685,9 @@ void CGameActor::ReleaseAttachments() {
 // OFFSET: 0x00CB0220
 // FUNCTION: fn_21092
 void CGameActor::UpdateStateEffects() {
-  if (g_updateTick > 0 && this->render.effectPhaseBytes[0] == 1) {
+  if (g_updateTick > 0 && this->render.flagsResetPending == 1) {
     this->render.flags = 0;
-    this->render.effectPhaseBytes[0] = 0;
+    this->render.flagsResetPending = 0;
   }
 
   if (StateFlagsClear(this->stateFlags)) {
@@ -916,7 +916,7 @@ CGameObject* CGameActor::GetEffectCounter(int effectId) {
 float CGameActor::GetNameOffset() {
   float scale = 1.0f;
   if ((this->render.flags & 0x10) != 0) {
-    const unsigned int angle = this->render.pulsePhases[0] * 4 + 90;
+    const unsigned int angle = this->render.shrinkPhase * 4 + 90;
     if (angle > 270) {
       scale = 0.5f;
     } else {

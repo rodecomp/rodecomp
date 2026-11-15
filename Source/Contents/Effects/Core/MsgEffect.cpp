@@ -1611,7 +1611,7 @@ void CMsgEffect::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
         case 31:
           this->render.flatDepth = 0;
           this->render.depthLayer = 0;
-          this->render.visibilityOptions[0] = 1;
+          this->render.shadowVisible = 1;
           this->render.shadowScale = 1.0f;
           break;
 
@@ -1639,7 +1639,7 @@ void CMsgEffect::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
         case 27:
           this->render.flatDepth = 0;
           this->render.depthLayer = 0;
-          this->render.visibilityOptions[0] = 1;
+          this->render.shadowVisible = 1;
           this->render.shadowScale = 2.0f;
           break;
       }

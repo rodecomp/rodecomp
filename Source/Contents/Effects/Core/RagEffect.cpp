@@ -8107,7 +8107,7 @@ void CRagEffect::AssassinCloakingClear() {
   }
 
   this->state.parent->SetColor(50, 0, 0, 0);
-  this->render.visibilityOptions[0] = 0;
+  this->render.shadowVisible = 0;
 }
 
 // OFFSET: 0x00C710C0
@@ -9837,7 +9837,7 @@ void CRagEffect::AssassinCloaking() {
   }
 
   this->state.parent->SetColor(50, -1, -1, -1);
-  this->render.visibilityOptions[0] = 0;
+  this->render.shadowVisible = 0;
 }
 
 // OFFSET: 0x00C1E4A0
@@ -21418,7 +21418,7 @@ bool CRagEffect::OnProcess3() {
   case EF_BABYBODY_BACK:
     if (this->state.stateCnt <= 15 && (this->state.parent->render.flags & 16) == 0) {
       this->state.parent->render.flags += 16;
-      this->state.parent->render.pulsePhases[0] = static_cast<unsigned char>(45 - this->state.stateCnt * 3);
+      this->state.parent->render.shrinkPhase = static_cast<unsigned char>(45 - this->state.stateCnt * 3);
     }
     break;
   case EF_THROWITEM4:
@@ -23147,9 +23147,9 @@ bool CRagEffect::OnProcess() {
     break;
   }
 
-  if (g_updateTick > 0 && this->state.parent->render.effectPhaseBytes[0] == 1) {
+  if (g_updateTick > 0 && this->state.parent->render.flagsResetPending == 1) {
     this->state.parent->render.flags = 0;
-    this->state.parent->render.effectPhaseBytes[0] = 0;
+    this->state.parent->render.flagsResetPending = 0;
   }
 
   if (this->state.type >= 300 && this->state.type <= 373) {
@@ -25082,7 +25082,7 @@ bool CRagEffect::OnProcess() {
       if ((this->state.parent->render.flags & 0x10) == 0) {
         this->state.parent->render.flags += 0x10;
         if (this->state.stateCnt <= 45) {
-          this->state.parent->render.pulsePhases[0] = static_cast<unsigned char>(this->state.stateCnt);
+          this->state.parent->render.shrinkPhase = static_cast<unsigned char>(this->state.stateCnt);
         }
       }
       break;
@@ -25092,21 +25092,21 @@ bool CRagEffect::OnProcess() {
       }
       if ((this->state.parent->render.flags & 0x10) == 0) {
         this->state.parent->render.flags += 0x10;
-        this->state.parent->render.pulsePhases[0] = 45;
+        this->state.parent->render.shrinkPhase = 45;
       }
       break;
     case EF_GIANTBODY:
       if ((this->state.parent->render.flags & 0x400) == 0) {
         this->state.parent->render.flags += 0x400;
         if (this->state.stateCnt <= 45) {
-          this->state.parent->render.pulsePhases[1] = static_cast<unsigned char>(this->state.stateCnt);
+          this->state.parent->render.growPhase = static_cast<unsigned char>(this->state.stateCnt);
         }
       }
       break;
     case EF_GIANTBODY2:
       if ((this->state.parent->render.flags & 0x400) == 0) {
         this->state.parent->render.flags += 0x400;
-        this->state.parent->render.pulsePhases[1] = 45;
+        this->state.parent->render.growPhase = 45;
       }
       break;
     case EF_ASURABODY:

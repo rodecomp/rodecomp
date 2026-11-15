@@ -895,7 +895,7 @@ void CPc::RenderBodyOutline(int layer, const float* position, float x, float y, 
       quad.color = color & 0xFFFFFF | 0x46000000;
     }
 
-    if (this->render.visibilityOptions[1] != 0) {
+    if (this->render.trackBounds != 0) {
       bounds.Include(&quad.top);
     }
 
@@ -1062,11 +1062,11 @@ void CPc::ApplyLayerEffects(
   }
 
   if ((this->render.flags & 4) != 0 && layer == 5) {
-    if (!this->render.effectPhaseBytes[1]) {
+    if (!this->render.blinkSkipped) {
       this->DrawQuad(*quad, palette, layer, 0.0f, 0.0f, 0);
-      this->render.effectPhaseBytes[1] = 1;
+      this->render.blinkSkipped = 1;
     } else {
-      this->render.effectPhaseBytes[1] = 0;
+      this->render.blinkSkipped = 0;
     }
   }
 
@@ -1080,11 +1080,11 @@ void CPc::ApplyLayerEffects(
 
   SpriteQuad jitter;
   if ((this->render.flags & 8) != 0 && layer <= 4 && (this->render.flags & 0x30000) == 0) {
-    if (++this->render.effectPhaseBytes[2] > 180) {
-      this->render.effectPhaseBytes[2] = 0;
+    if (++this->render.wavePhase > 180) {
+      this->render.wavePhase = 0;
     }
 
-    float wave = g_sinTable[this->render.effectPhaseBytes[2]] + 3.0f;
+    float wave = g_sinTable[this->render.wavePhase] + 3.0f;
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     float spread = 400.0f / mode->camera->camera.desiredDistance * wave;
     jitter.top = static_cast<float>(box->top) - spread - static_cast<float>(hover);
@@ -1109,7 +1109,7 @@ void CPc::ApplyLayerEffects(
     jitter.image = image;
     this->DrawQuad(jitter, palette, 5, 0.0f, 0.0f, 0);
 
-    wave = g_sinTable[this->render.effectPhaseBytes[2]];
+    wave = g_sinTable[this->render.wavePhase];
     mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
     spread = 400.0f / mode->camera->camera.desiredDistance * (wave + wave + 5.0f);
     jitter.top = static_cast<float>(box->top) - spread - static_cast<float>(hover);
@@ -2052,7 +2052,7 @@ void CPc::DrawBody(int, int layer, const float* position, float x, float y, floa
     }
 
     quad.image = image;
-    if (this->render.visibilityOptions[1] != 0) {
+    if (this->render.trackBounds != 0) {
       bounds.Include(&quad.top);
     }
 
@@ -2073,7 +2073,7 @@ void CPc::DrawBody(int, int layer, const float* position, float x, float y, floa
   }
 
   this->SetRenderInfo(&bounds.left, x, y);
-  this->render.effectPhaseBytes[0] = 1;
+  this->render.flagsResetPending = 1;
 }
 
 // OFFSET: 0x00DAD4D0
@@ -2138,7 +2138,7 @@ void CPc::RenderOverlaySprite(const float* matrix, int) {
     ++count;
     drawn = true;
     quad.image = image;
-    if (this->render.visibilityOptions[1] != 0) {
+    if (this->render.trackBounds != 0) {
       bounds.Include(&quad.top);
     }
 
@@ -4286,7 +4286,7 @@ void CPlayer::Initialize() {
   this->totalAttackReqCnt = 0;
   this->isAttackRequest = 0;
   this->proceedTargetGid = 0;
-  this->render.visibilityOptions[1] = 1;
+  this->render.trackBounds = 1;
   this->skillId = 0;
   this->skillUseLevel = 0;
   this->tickOfMoveForAttack = timeGetTime() - 1200;

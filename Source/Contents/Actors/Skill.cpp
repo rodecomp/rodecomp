@@ -78,7 +78,7 @@ CSkill::CSkill(std::uint32_t aid) {
   this->skillAid = aid;
   this->SetActorJob(0x7E);
   this->m_effectTimer = 0x8CA0;
-  this->render.visibilityOptions[1] = 0;
+  this->render.trackBounds = 0;
   this->render.enabled = 0;
   this->actorWindows[0] = 0;
   this->m_model = nullptr;
@@ -255,7 +255,7 @@ __declspec(safebuffers) void CSkill::LaunchGroundEffects(int effectId, int, int 
 // OFFSET: 0x00E55100
 // FUNCTION: fn_24303
 void CSkill::SetRenderInfo(const float* box, float x, float y) {
-  if (this->render.visibilityOptions[1] != 0) {
+  if (this->render.trackBounds != 0) {
     // GLOBAL: gl_25171
     static int minimum = static_cast<int>(g_renderer->UiScaleX() * 34.0f);
     ActorPickInfo* info = new ActorPickInfo;
@@ -495,54 +495,54 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
     const vector3d& position = this->render.position;
     switch (this->GetEffectiveJob(-1)) {
     case UNT_ICEWALL:
-      this->render.visibilityOptions[1] = 1;
+      this->render.trackBounds = 1;
       return;
     case UNT_FIREWALL:
     case UNT_FIRE_MANTLE: {
       const vector3d& player = mode->scene->player->render.position;
       g_soundMgr->PlayWave("effect\\EF_FireWall.wav", position.x - player.x, 0.0f, position.z - player.z, 250, 40, 1.0f, 0);
-      this->render.visibilityOptions[1] = 0;
+      this->render.trackBounds = 0;
       return;
     }
     case UNT_TATAMIGAESHI:
     case UNT_FIREWALK:
     case UNT_ELECTRICWALK:
     case UNT_VACUUM_EXTREME:
-      this->render.visibilityOptions[1] = 0;
+      this->render.trackBounds = 0;
       return;
     case UNT_GROUNDDRIFT_WIND:
       this->m_effectId = 0x6B;
-      this->render.visibilityOptions[1] = 0;
+      this->render.trackBounds = 0;
       return;
     case UNT_WALLOFTHORN:
       this->m_effectId = 0x6A;
-      this->render.visibilityOptions[1] = 1;
+      this->render.trackBounds = 1;
       return;
     case UNT_WARMER:
       this->m_effectId = 0x6A;
-      this->render.visibilityOptions[1] = 0;
+      this->render.trackBounds = 0;
       return;
     case UNT_GROUNDDRIFT_DARK:
     case UNT_GROUNDDRIFT_FIRE:
     case UNT_GROUNDDRIFT_NEUTRAL:
       this->m_effectId = 0x63;
-      this->render.visibilityOptions[1] = 0;
+      this->render.trackBounds = 0;
       return;
     case UNT_GROUNDDRIFT_POISON:
       this->m_effectId = 0x8B;
-      this->render.visibilityOptions[1] = 0;
+      this->render.trackBounds = 0;
       return;
     case UNT_MAGENTATRAP:
     case UNT_COBALTTRAP:
     case UNT_MAIZETRAP:
     case UNT_VERDURETRAP:
       this->m_effectId = 0x8B;
-      this->render.visibilityOptions[1] = 0;
+      this->render.trackBounds = 0;
       this->ShowModel(this->GetTrapModelName());
       return;
     case UNT_ELECTRICSHOCKER:
       this->m_effectId = 0x6B;
-      this->render.visibilityOptions[1] = 0;
+      this->render.trackBounds = 0;
       this->ShowModel(this->GetTrapModelName());
       if (!this->HasId(EF_SHOCKWAVE)) {
         this->LaunchEffect(EF_SHOCKWAVE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -551,37 +551,37 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
     case UNT_FIRINGTRAP:
     case UNT_CLUSTERBOMB:
       this->m_effectId = 0x6B;
-      this->render.visibilityOptions[1] = 0;
+      this->render.trackBounds = 0;
       this->ShowModel(this->GetTrapModelName());
       return;
     case UNT_ICEBOUNDTRAP:
       this->m_effectId = 0x6C;
-      this->render.visibilityOptions[1] = 0;
+      this->render.trackBounds = 0;
       this->ShowModel(this->GetTrapModelName());
       return;
     case UNT_GROUNDDRIFT_WATER:
       this->m_effectId = 0x6C;
-      this->render.visibilityOptions[1] = 0;
+      this->render.trackBounds = 0;
       return;
     case UNT_KAEN:
       if (rand() % 8 == 0) {
         const vector3d& player = mode->scene->player->render.position;
         g_soundMgr->PlayWave("effect\\화염진.wav", position.x - player.x, 0.0f, position.z - player.z, 250, 40, 1.0f, 0);
       }
-      this->render.visibilityOptions[1] = 0;
+      this->render.trackBounds = 0;
       return;
     case UNT_TRAP:
-      this->render.visibilityOptions[1] = 1;
+      this->render.trackBounds = 1;
       this->ShowModel(this->GetTrapModelName());
       return;
     case UNT_BLASTMINE:
-      this->render.visibilityOptions[1] = 1;
+      this->render.trackBounds = 1;
       this->m_effectId = 0x6A;
       this->ShowModel(this->GetTrapModelName());
       return;
     case UNT_REVERBERATION:
     case UNT_NETHERWORLD:
-      this->render.visibilityOptions[1] = 1;
+      this->render.trackBounds = 1;
       this->m_effectId = 0x1D0;
       return;
     case UNT_SKIDTRAP:
@@ -589,31 +589,31 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
     case UNT_LANDMINE:
     case UNT_TALKIEBOX:
     case UNT_THORNS_TRAP:
-      this->render.visibilityOptions[1] = 1;
+      this->render.trackBounds = 1;
       this->ShowModel(this->GetTrapModelName());
       return;
     case UNT_SANDMAN:
-      this->render.visibilityOptions[1] = 1;
+      this->render.trackBounds = 1;
       this->m_effectId = 0x8B;
       this->ShowModel(this->GetTrapModelName());
       return;
     case UNT_FLASHER:
-      this->render.visibilityOptions[1] = 1;
+      this->render.trackBounds = 1;
       this->m_effectId = 0x63;
       this->ShowModel(this->GetTrapModelName());
       return;
     case UNT_FREEZINGTRAP:
-      this->render.visibilityOptions[1] = 1;
+      this->render.trackBounds = 1;
       this->m_effectId = 0x6C;
       this->ShowModel(this->GetTrapModelName());
       return;
     case UNT_CLAYMORETRAP:
-      this->render.visibilityOptions[1] = 1;
+      this->render.trackBounds = 1;
       this->m_effectId = 0x6B;
       this->ShowModel(this->GetTrapModelName());
       return;
     case UNT_SHOCKWAVE:
-      this->render.visibilityOptions[1] = 1;
+      this->render.trackBounds = 1;
       this->ShowModel(this->GetTrapModelName());
       if (this->render.enabled && !this->HasId(EF_SHOCKWAVE)) {
         this->LaunchEffect(EF_SHOCKWAVE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -637,13 +637,13 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
     case UNT_KINGS_GRACE: {
       const vector3d& player = mode->scene->player->render.position;
       g_soundMgr->PlayWave("effect\\lg_kings_grace.wav", position.x - player.x, 0.0f, position.z - player.z, 250, 40, 1.0f, 0);
-      this->render.visibilityOptions[1] = 0;
+      this->render.trackBounds = 0;
       return;
     }
     case UNT_MAGMA_ERUPTION: {
       const vector3d& player = mode->scene->player->render.position;
       g_soundMgr->PlayWave("effect\\NC_MAGMA_ERUPTION.wav", position.x - player.x, 0.0f, position.z - player.z, 250, 40, 1.0f, 0);
-      this->render.visibilityOptions[1] = 0;
+      this->render.trackBounds = 0;
       return;
     }
     case UNT_PNEUMA:
@@ -841,28 +841,28 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
       g_effectMgr->Spawn(this->render.accountId, 0x903, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       return;
     case UNT_DEEPBLINDTRAP:
-      this->render.visibilityOptions[1] = 1;
+      this->render.trackBounds = 1;
       this->ShowModel(this->GetTrapModelName());
       if (this->render.enabled) {
         g_effectMgr->Spawn(this->render.accountId, EF_DEEP_BLIND_TRAP, position, 0, -1, 0, 0);
       }
       return;
     case UNT_SWIFTTRAP:
-      this->render.visibilityOptions[1] = 1;
+      this->render.trackBounds = 1;
       this->ShowModel(this->GetTrapModelName());
       if (this->render.enabled) {
         g_effectMgr->Spawn(this->render.accountId, EF_SWIFT_TRAP, position, 0, -1, 0, 0);
       }
       return;
     case UNT_SOLIDTRAP:
-      this->render.visibilityOptions[1] = 1;
+      this->render.trackBounds = 1;
       this->ShowModel(this->GetTrapModelName());
       if (this->render.enabled) {
         g_effectMgr->Spawn(this->render.accountId, EF_SOLID_TRAP, position, 0, -1, 0, 0);
       }
       return;
     case UNT_FLAMETRAP:
-      this->render.visibilityOptions[1] = 1;
+      this->render.trackBounds = 1;
       this->ShowModel(this->GetTrapModelName());
       if (this->render.enabled) {
         g_effectMgr->Spawn(this->render.accountId, EF_FLAME_TRAP, position, 0, -1, 0, 0);

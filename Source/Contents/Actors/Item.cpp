@@ -47,7 +47,7 @@ struct ItemFallEntry {
 void CItem::SetRenderInfo(const float* bounds, float x, float y) {
   enum { ItemPickJob = 32003 };
 
-  if (this->render.visibilityOptions[1]) {
+  if (this->render.trackBounds) {
     // GLOBAL: gl_25149
     static const int minimumSize = static_cast<int>(g_renderer->UiScaleX() * 34.0f);
     ActorPickInfo* info = new ActorPickInfo;
@@ -96,8 +96,8 @@ void CItem::SubD8B5A0() {
 // OFFSET: 0x00D8B5B0
 // FUNCTION: fn_22249
 void CItem::SubD8B5B0() {
-  this->render.visibilityOptions[0] = 1;
-  this->render.visibilityOptions[1] = 1;
+  this->render.shadowVisible = 1;
+  this->render.trackBounds = 1;
   this->render.scale = 1.0f;
   this->render.overrideColor = 0xFFFFFF00;
 }

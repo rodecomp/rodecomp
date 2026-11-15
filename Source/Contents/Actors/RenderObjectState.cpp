@@ -77,7 +77,7 @@ void RenderObjectState::Reset() {
   this->hoverAngle = 0;
   this->hoverHeight = 0;
   this->fontSequenceState = 0;
-  this->padding_0100 = 0;
+  this->sequenceReset = 0;
   this->accountId = 0;
   this->specialMotionLocked = 0;
   this->frameSequenceActive = 0;
