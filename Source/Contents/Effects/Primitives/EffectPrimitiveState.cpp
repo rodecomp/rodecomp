@@ -11,7 +11,9 @@
 // FUNCTION: fn_19762
 EffectPrimitiveSlot::EffectPrimitiveSlot() {
   for (int i = 0; i < 4; ++i) {
-    this->vectors[i] = {0.0f, 0.0f, 0.0f};
+    this->vectors[i].x = 0.0f;
+    this->vectors[i].y = 0.0f;
+    this->vectors[i].z = 0.0f;
   }
 }
 

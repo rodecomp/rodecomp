@@ -17565,7 +17565,9 @@ void CRagEffect::TexturedFireWall(const char* name, int unused) {
 // FUNCTION: fn_20184
 void CRagEffect::TeleportSpiral(const char* name) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position = parent.position;
+  this->render.position.x = parent.position.x;
+  this->render.position.y = parent.position.y;
+  this->render.position.z = parent.position.z;
 
   if (this->state.stateCnt != 0) {
     return;

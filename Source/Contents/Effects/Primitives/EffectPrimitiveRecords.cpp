@@ -9,9 +9,13 @@
 void CEffectPrim::InitSegment() {
   for (int index = 0; index < this->state.numSegment; ++index) {
     EffectPrimitiveRecord& record = this->state.records[index];
-    record.position = this->render.position;
+    record.position.x = this->render.position.x;
+    record.position.y = this->render.position.y;
+    record.position.z = this->render.position.z;
     for (int corner = 0; corner < 4; ++corner) {
-      record.corners[corner] = this->state.segPos[corner];
+      record.corners[corner].x = this->state.segPos[corner].x;
+      record.corners[corner].y = this->state.segPos[corner].y;
+      record.corners[corner].z = this->state.segPos[corner].z;
     }
     record.radius = this->state.radius;
     record.scale = this->state.size;
