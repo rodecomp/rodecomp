@@ -418,28 +418,64 @@ void UINewSelectCharWnd::OnCreate(int width, int height) {
     }
     slotInfo.frame = 0;
 
-    slotInfo.actionNames[0] = g_session.GetBodyActionResourceName(character->job, character->sex, character->bodyCostume, 0);
-    slotInfo.spriteNames[0] = g_session.GetBodySprName(character->job, character->sex, character->bodyCostume, 0);
+    {
+      const std::string name = g_session.GetBodyActionResourceName(character->job, character->sex, character->bodyCostume, 0);
+      slotInfo.actionNames[0] = name;
+    }
+    {
+      const std::string name = g_session.GetBodySprName(character->job, character->sex, character->bodyCostume, 0);
+      slotInfo.spriteNames[0] = name;
+    }
     int head = character->head;
-    slotInfo.actionNames[1] = g_session.GetHeadActName(character->job, character->sex, &head);
-    slotInfo.spriteNames[1] = g_session.GetHeadSprName(character->job, character->sex, &head);
-    slotInfo.actionNames[2] = g_session.GetAccessoryActName(character->job, character->sex, head, character->accessory3);
-    slotInfo.spriteNames[2] = g_session.GetAccessorySprName(character->job, character->sex, head, character->accessory3);
+    {
+      const std::string name = g_session.GetHeadActName(character->job, character->sex, &head);
+      slotInfo.actionNames[1] = name;
+    }
+    {
+      const std::string name = g_session.GetHeadSprName(character->job, character->sex, &head);
+      slotInfo.spriteNames[1] = name;
+    }
+    {
+      const std::string name = g_session.GetAccessoryActName(character->job, character->sex, head, character->accessory3);
+      slotInfo.actionNames[2] = name;
+    }
+    {
+      const std::string name = g_session.GetAccessorySprName(character->job, character->sex, head, character->accessory3);
+      slotInfo.spriteNames[2] = name;
+    }
     character->head = static_cast<std::int16_t>(head);
-    slotInfo.actionNames[3] = g_session.GetAccessoryActName(character->job, character->sex, head, character->accessory2);
-    slotInfo.spriteNames[3] = g_session.GetAccessorySprName(character->job, character->sex, head, character->accessory2);
+    {
+      const std::string name = g_session.GetAccessoryActName(character->job, character->sex, head, character->accessory2);
+      slotInfo.actionNames[3] = name;
+    }
+    {
+      const std::string name = g_session.GetAccessorySprName(character->job, character->sex, head, character->accessory2);
+      slotInfo.spriteNames[3] = name;
+    }
     this->m_slotShorts[slot] = character->accessory2;
-    slotInfo.actionNames[4] = g_session.GetAccessoryActName(character->job, character->sex, head, character->accessory);
-    slotInfo.spriteNames[4] = g_session.GetAccessorySprName(character->job, character->sex, head, character->accessory);
+    {
+      const std::string name = g_session.GetAccessoryActName(character->job, character->sex, head, character->accessory);
+      slotInfo.actionNames[4] = name;
+    }
+    {
+      const std::string name = g_session.GetAccessorySprName(character->job, character->sex, head, character->accessory);
+      slotInfo.spriteNames[4] = name;
+    }
 
     slotInfo.bodyPalette = g_session.GetBodyStyle(character->job, character->bodyStyle, character->bodyCostume);
     if (slotInfo.bodyPalette != 0) {
-      slotInfo.bodyPaletteName = g_session.GetBodyPalName(character->job, character->sex, slotInfo.bodyPalette, character->bodyCostume, 0, 0);
+      {
+        const std::string name = g_session.GetBodyPalName(character->job, character->sex, slotInfo.bodyPalette, character->bodyCostume, 0, 0);
+        slotInfo.bodyPaletteName = name;
+      }
     }
 
     slotInfo.headPalette = character->headPalette;
     if (slotInfo.headPalette != 0) {
-      slotInfo.headPaletteName = g_session.GetHeadPalName(head, character->job, character->sex, slotInfo.headPalette);
+      {
+        const std::string name = g_session.GetHeadPalName(head, character->job, character->sex, slotInfo.headPalette);
+        slotInfo.headPaletteName = name;
+      }
     }
 
     slotInfo.imfName = g_session.GetBodyImfName(character->job, character->sex, character->head, character->bodyCostume);
