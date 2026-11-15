@@ -947,9 +947,8 @@ void CSession::AddStorageItem(const ITEM_INFO& item) {
   if (owned.identity[1] > 0) {
     for (ITEM_INFO& value : this->storageItems) {
       if (value.identity[1] == item.identity[1]) {
-        const int quantity = value.quantity + item.quantity;
-        if (owned.quantity >= quantity) {
-          value.quantity = quantity;
+        if (owned.quantity >= value.quantity + item.quantity) {
+          value.quantity += item.quantity;
         }
         return;
       }
