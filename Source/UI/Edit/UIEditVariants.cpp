@@ -906,7 +906,7 @@ int UIEditCtrl5::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 void UIEditCtrl3::Paint() {
   const bool selected = g_skinInfo.Selected();
   const SkinPaletteCell cell = {1, 2};
-  const std::uint32_t color = SkinPaletteColor(cell, selected);
+  const std::uint32_t color = g_skinInfo.PaletteColor(cell, selected);
   this->red = GetRValue(color);
   this->green = GetGValue(color);
   this->blue = GetBValue(color);

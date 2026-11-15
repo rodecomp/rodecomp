@@ -385,7 +385,7 @@ int L_GetSlotCount(lua_State* L) {
     if (itemId != 0) {
       ITEM_INFO item;
       item.SetItemId(itemId);
-      lua_pushnumber(L, ItemSlotsCount(item));
+      lua_pushnumber(L, item.SlotCount());
       return 1;
     }
   }

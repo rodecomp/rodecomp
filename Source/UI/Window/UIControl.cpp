@@ -9,6 +9,7 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
+#include "Contents/Skin/SkinMgr.h"
 #include "Resource/Bitmap/TextureNames.h"
 #include "UI/Login/UINewSelectCharWnd.h"
 #include "UI/Window/UIWindowMgr.h"
@@ -1191,9 +1192,9 @@ void CUITabButton::OnLBtnUp(int, int) {
 // OFFSET: 0x009F1690
 // FUNCTION: fn_14694
 void CUITabButton::LoadSkin(bool resolveSkin) {
-  this->normalColor = SkinPaletteColor(this->normalCell, resolveSkin);
-  this->selectedColor = SkinPaletteColor(this->selectedCell, resolveSkin);
-  this->borderColor = SkinPaletteColor(this->borderCell, resolveSkin);
+  this->normalColor = g_skinInfo.PaletteColor(this->normalCell, resolveSkin);
+  this->selectedColor = g_skinInfo.PaletteColor(this->selectedCell, resolveSkin);
+  this->borderColor = g_skinInfo.PaletteColor(this->borderCell, resolveSkin);
   this->CUIImageTextButton::LoadSkin(resolveSkin);
 }
 

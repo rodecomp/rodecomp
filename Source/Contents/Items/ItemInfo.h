@@ -60,6 +60,9 @@ struct ITEM_INFO {
   bool SetName(const char* name);
   std::string DisplayName(unsigned char detailed) const;
   bool HasCards() const;
+  bool IsEquipment() const;
+  const char* ResourcePath() const;
+  int SlotCount() const;
   int Grade(char* output, int& capacity, unsigned char consume) const;
   int Creator(char* output, int& capacity, unsigned char consume) const;
   int Prefixes(char* output, int& capacity, unsigned char consume) const;

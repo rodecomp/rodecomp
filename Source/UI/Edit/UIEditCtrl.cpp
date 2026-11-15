@@ -2599,7 +2599,7 @@ void UIItemBaseWnd::Paint() {
     if (this->showQuantity != 0) {
       DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, top + 21, *it, 0, 0);
     } else {
-      DrawItemIcon(*this, ResourceMgr::Instance(), x, top + 21, *it, 0);
+      this->DrawItemIcon(x, top + 21, *it, 0);
     }
 
     if (0 < it->grade) {
@@ -8052,8 +8052,7 @@ void UIItemWnd::OnCreate(int width, int height) {
   for (int index = 0; index < 4; ++index) {
     this->tabs->AddTab(labels[index], "");
   }
-  const SkinPaletteCell cell = {5, 2};
-  this->tabs->colors[3] = SkinPaletteColor(cell, g_skinInfo.Selected());
+  this->tabs->colors[3] = g_skinInfo.PaletteColor(SkinPaletteCell{5, 2}, g_skinInfo.Selected());
   this->tabs->Invalidate();
 
   this->lockDropBox = new (std::nothrow) UICheckBox();
@@ -10471,7 +10470,7 @@ void UIMerchantItemShopWnd::Paint() {
                             this->TextWidth(price, 0, 0, 12, 0, 0) - 18;
       this->DrawTextAt(quantityX, top + 29, price, 0, 0, 12, 0xFF, 0, 0);
       x = left + 4;
-      DrawItemIcon(*this, ResourceMgr::Instance(), x, top + 21, *it, 0);
+      this->DrawItemIcon(x, top + 21, *it, 0);
     } else {
       x = column + 44;
       DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, top + 21, *it, 0, 0);

@@ -39,13 +39,13 @@ void DrawItemWithQuantityAuxiliary(
 
 // OFFSET: 0x008A8EE0
 // FUNCTION: fn_11717
-void DrawItemIcon(UIWindow& window, ResourceMgr& resources, int x, int y, const ITEM_INFO& item, unsigned char identified) {
+void UIWindow::DrawItemIcon(int x, int y, const ITEM_INFO& item, unsigned char identified) {
   char path[128];
   g_session.IconPath(item.itemId.c_str(), path, item.identified != 0 || identified != 0);
   CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
 
   if (bitmap) {
-    window.DrawBitmap(x, y, bitmap, true);
+    this->DrawBitmap(x, y, bitmap, true);
   }
 }
 
@@ -74,7 +74,7 @@ void DrawItemWithQuantity(
   UIWindow& window, ResourceMgr& resources, int x, int y, const ITEM_INFO& item,
   unsigned char identified, unsigned char plain
 ) {
-  DrawItemIcon(window, resources, x, y, item, identified);
+  window.DrawItemIcon(x, y, item, identified);
   if (item.quantity == -1 || item.quantity == 0) {
     return;
   }

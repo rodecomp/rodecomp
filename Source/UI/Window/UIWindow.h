@@ -184,6 +184,7 @@ public:
   void DrawBitmapRegion(int x, int y, CBitmapRes* bitmap, bool transparent, bool whole, int left, int top, int right, int bottom);
   void DrawAuxiliaryScaled(int mode, int x, int y, int width, int height, CBitmapRes* bitmap, int option, bool rebuild);
   void DrawAuxiliary(int mode, int x, int y, CBitmapRes* bitmap, bool transparent, bool rebuild);
+  void DrawItemIcon(int x, int y, const ITEM_INFO& item, unsigned char identified);
   void DrawAmount(int amount, std::string text, int x, int y);
   int TextHeight(const char* text, unsigned bytes, int family, int height, unsigned char bold, unsigned char italic);
   int VerticalTextHeight(const char* text, unsigned bytes, int family, int height, unsigned char bold);

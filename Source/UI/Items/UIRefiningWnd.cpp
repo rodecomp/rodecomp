@@ -1119,11 +1119,11 @@ void UIRefiningWnd::Paint() {
       ITEM_INFO icon;
       icon.SetItemId(material->itemId);
       const int owned = LookupClientItem(g_session.m_inventoryItems, material->itemId, 0).quantity;
-      DrawItemIcon(*this, ResourceMgr::Instance(), x + 12, 69, icon, 0);
+      this->DrawItemIcon(x + 12, 69, icon, 0);
       const std::string count = FormatOwnedString("%s%d^000000/1", owned != 0 ? "" : color, owned);
       this->DrawFormattedText(x, 107, count, 48, 6, 0, 12, 0, 0);
       if (index == this->selectedMaterial && (this->state == REFINING_STATE_READY || (this->state == REFINING_STATE_PROCESS && this->frame == 0))) {
-        DrawItemIcon(*this, ResourceMgr::Instance(), 81, 150, icon, 0);
+        this->DrawItemIcon(81, 150, icon, 0);
       }
       ++index;
       x += 49;
@@ -1133,17 +1133,17 @@ void UIRefiningWnd::Paint() {
       ITEM_INFO icon;
       icon.SetItemId(this->catalystItemId);
       const int owned = LookupClientItem(g_session.m_inventoryItems, this->catalystItemId, 0).quantity;
-      DrawItemIcon(*this, ResourceMgr::Instance(), 218, 69, icon, 0);
+      this->DrawItemIcon(218, 69, icon, 0);
       const std::string count = FormatOwnedString("%s%d^000000/%d", this->catalystCount <= owned ? "" : color, owned, this->catalystCount);
       this->DrawFormattedText(206, 107, count, 48, 6, 0, 12, 0, 0);
       if (this->catalystEnabled == 1 && (this->state == REFINING_STATE_READY || (this->state == REFINING_STATE_PROCESS && this->frame < 13))) {
-        DrawItemIcon(*this, ResourceMgr::Instance(), 161, 150, icon, 0);
+        this->DrawItemIcon(161, 150, icon, 0);
       }
     }
   }
 
   if (this->item.identity[1] > 0) {
-    DrawItemIcon(*this, ResourceMgr::Instance(), 120, 212, this->item, 0);
+    this->DrawItemIcon(120, 212, this->item, 0);
     if (0 < this->item.grade) {
       this->DrawBitmap(120, 224,
         static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", this->item.grade).c_str()))),

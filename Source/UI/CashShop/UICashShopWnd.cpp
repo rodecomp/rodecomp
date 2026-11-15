@@ -520,7 +520,7 @@ void UICashShopWnd_CartItem::Paint() {
   this->DrawTextAt(0x30, 0xC, name.c_str(), 0, 0, 0xB, 0x902418, 0, 0);
 
   CBitmapRes* icon = static_cast<CBitmapRes*>(
-    ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\collection\\%s.bmp", ItemResourcePath(this->m_item)).c_str()))
+    ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\collection\\%s.bmp", this->m_item.ResourcePath()).c_str()))
   );
   if (icon != nullptr) {
     this->DrawBitmapScaled(4, 0, static_cast<int>(icon->image.width * 0.5), static_cast<int>(icon->image.height * 0.5), icon, 1);
@@ -554,7 +554,7 @@ void UICashShopWnd_Item::Paint() {
       this->DrawBitmap(
         5, 0x34,
         static_cast<CBitmapRes*>(
-          ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\collection\\%s.bmp", ItemResourcePath(this->m_item)).c_str()))
+          ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\collection\\%s.bmp", this->m_item.ResourcePath()).c_str()))
         ),
         true
       );
@@ -604,7 +604,7 @@ void UICashShopWnd_Item::Paint() {
       this->DrawBitmap(
         5, 0x17,
         static_cast<CBitmapRes*>(
-          ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\collection\\%s.bmp", ItemResourcePath(this->m_item)).c_str()))
+          ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\collection\\%s.bmp", this->m_item.ResourcePath()).c_str()))
         ),
         true
       );

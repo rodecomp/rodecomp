@@ -24,7 +24,7 @@ UIListBoxEx::UIListBoxEx()
     : UIWindow(0), backgroundRed(255), backgroundGreen(255), backgroundBlue(255), selected(0), topLine(0), horizontalOffset(0), contentWidth(0),
       verticalOverflow(0), bottomMargin(0), verticalBar(nullptr), horizontalBar(nullptr), transparent(0), lineHeight(16), selectionColor(0) {
   const SkinPaletteCell cell = {2, 2};
-  this->selectionColor = SkinPaletteColor(cell, g_skinInfo.Selected());
+  this->selectionColor = g_skinInfo.PaletteColor(cell, g_skinInfo.Selected());
 }
 
 // OFFSET: 0x00873710

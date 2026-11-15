@@ -142,7 +142,7 @@ void UILapineUpgradeBox_IngredientInfoWnd::Paint() {
     this->DrawBitmap(32, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\lapine\\list_selected_item.bmp"))), false);
   }
 
-  DrawItemIcon(*this, ResourceMgr::Instance(), 4, 3, this->item, 0);
+  this->DrawItemIcon(4, 3, this->item, 0);
 
   this->DrawShadowedText(36, 9, this->FitDisplayText(100, this->item.displayName.c_str(), 0, 12, 0).c_str(), 0, 0, 0xE0E0E0, 0, 12, 0);
 }
@@ -160,7 +160,7 @@ void UILapineUpgradeBoxWnd::Paint() {
   this->DrawCenteredText(35, 63, this->description.c_str(), 156, 0, 11, 0x844A42, 0);
 
   if (this->item.identity[1] > 0) {
-    DrawItemIcon(*this, ResourceMgr::Instance(), 101, 165, this->item, 0);
+    this->DrawItemIcon(101, 165, this->item, 0);
   }
 
   if (this->noticeTick + this->noticeDuration > timeGetTime()) {
@@ -592,7 +592,7 @@ bool UILapineUpgradeBox_IngredientListWnd::CanUseIngredient(std::uint32_t identi
     this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEMSHOP_CURRENCY)), 0, 0, 0);
   }
 
-  if (Equipment(item) == true && !item.IsApprenticeItem() && !item.HasSpecialCard()) {
+  if (item.IsEquipment() == true && !item.IsApprenticeItem() && !item.HasSpecialCard()) {
     const std::uint32_t* cards = item.cards;
     const std::uint32_t* cardsEnd = cards + 4;
     if (std::find_if(cards, cardsEnd, [](std::uint32_t card) { return card != 0; }) != cardsEnd) {

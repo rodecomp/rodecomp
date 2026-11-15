@@ -233,7 +233,7 @@ void UIItemTagCtrl::AddItemTag(const ITEM_INFO& item, unsigned int color) {
 
   link += this->ItemLinkNumberText(item.identity[2]);
 
-  link += Equipment(item) ? "1" : "0";
+  link += item.IsEquipment() ? "1" : "0";
   link += this->ItemLinkNumberText(std::atoi(item.itemId.c_str()));
 
   if (item.refiningLevel != 0) {
@@ -247,7 +247,7 @@ void UIItemTagCtrl::AddItemTag(const ITEM_INFO& item, unsigned int color) {
   link += this->ItemLinkNumberText(item.grade);
 
   const std::uint32_t* cards = item.cards;
-  int slots = ItemSlotsCount(item);
+  int slots = item.SlotCount();
   if (slots == 0) {
     slots = 4;
   }

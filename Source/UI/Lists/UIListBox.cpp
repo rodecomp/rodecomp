@@ -46,7 +46,7 @@ UIListBox::UIListBox() : UIWindow(0) {
   this->backgroundGreen = 255;
   this->backgroundBlue = 255;
   const SkinPaletteCell cell = {3, 2};
-  this->selectionColor = SkinPaletteColor(ResourceMgr::Instance(), cell, g_skinInfo.Selected());
+  this->selectionColor = g_skinInfo.PaletteColor(cell, g_skinInfo.Selected());
   this->selectable = 1;
   this->centerVertically = 0;
 }

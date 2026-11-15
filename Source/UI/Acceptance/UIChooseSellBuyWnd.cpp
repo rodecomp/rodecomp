@@ -613,7 +613,7 @@ void UIEquipWnd::Paint() {
       if (this->m_page == 0) {
         ITEM_INFO dragItem = g_session.LookupClientItemByIdentity(g_session.equippedArrowIndex);
         if (dragItem.identity[1] != 0) {
-          DrawItemIcon(*this, ResourceMgr::Instance(), this->geometry.width / 2 - 25, this->m_contentTop + 44, dragItem, 0);
+          this->DrawItemIcon(this->geometry.width / 2 - 25, this->m_contentTop + 44, dragItem, 0);
           this->DrawItemName(this->geometry.width / 2 - 25, this->m_contentTop + 68, 40, &dragItem, 0, 0, 12);
         }
         this->m_otherButton->Enable(1);
@@ -2005,7 +2005,7 @@ void UIItemCollectionWnd::OnMouseHover(int x, int y) {
 
   CMode* tooltip = g_modeMgr.gameMode;
   std::uint32_t color = 0xFFFFFFFF;
-  if (index >= ItemSlotsCount(this->m_item)) {
+  if (index >= this->m_item.SlotCount()) {
     color = ItemCardColor(&this->m_item);
   }
 
@@ -4031,7 +4031,7 @@ void UICombinedCardItemCollection_ComparisonWnd::OnCreate(int width, int height)
   this->m_closeButton->Enable(0);
   this->m_kind = 250;
   const SkinPaletteCell cell = {7, 1};
-  this->m_viewer->backgroundColor = SkinPaletteColor(ResourceMgr::Instance(), cell, g_skinInfo.Selected()) | 0xFF000000u;
+  this->m_viewer->backgroundColor = g_skinInfo.PaletteColor(cell, g_skinInfo.Selected()) | 0xFF000000u;
   this->m_viewer->Invalidate();
 }
 
@@ -4322,7 +4322,7 @@ void UIItemIdentifyWnd::Paint() {
       this->FillRegion(5, y - 3, this->geometry.width - 24, 30, RGB(red, green, blue));
     }
 
-    DrawItemIcon(*this, ResourceMgr::Instance(), 8, y, *it, 0);
+    this->DrawItemIcon(8, y, *it, 0);
     this->DrawFittedItemName(40, y, &*it, 0, 0, 12, 0);
     if (0 < it->grade) {
       this->DrawBitmap(
@@ -4367,7 +4367,7 @@ void UInCashWnd::DrawItems() {
 
     const int x = row >= 4 ? 257 : 71;
     const int y = (row >= 4 ? row - 4 : row) * this->m_rowHeight + this->m_listTop;
-    const std::string path = "유저인터페이스\\collection\\" + std::string(ItemResourcePath(*it)) + ".bmp";
+    const std::string path = "유저인터페이스\\collection\\" + std::string(it->ResourcePath()) + ".bmp";
     if (!path.empty()) {
       this->DrawBitmap(x, y, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str()))), true);
     }
@@ -4395,7 +4395,7 @@ void UInCashWnd::DrawItems() {
       continue;
     }
 
-    const std::string path = "유저인터페이스\\collection\\" + std::string(ItemResourcePath(*it)) + ".bmp";
+    const std::string path = "유저인터페이스\\collection\\" + std::string(it->ResourcePath()) + ".bmp";
     if (!path.empty()) {
       this->DrawBitmap(453, y, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str()))), true);
     }
@@ -6821,8 +6821,8 @@ __declspec(noinline) int UIItemCollectionWnd::CardSlotAt(int x, int y, int* slot
   }
 
   int left = 0;
-  int slots = ItemSlotsCount(this->m_item);
-  if (Equipment(this->m_item) && !this->m_item.IsApprenticeItem() && !this->m_item.HasSpecialCard()) {
+  int slots = this->m_item.SlotCount();
+  if (this->m_item.IsEquipment() && !this->m_item.IsApprenticeItem() && !this->m_item.HasSpecialCard()) {
     slots = 4;
   } else if (slots <= 0) {
     return -1;
@@ -9613,10 +9613,10 @@ void UIItemCollectionWnd::Paint() {
         if (card < 1) {
           CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\empty_card_slot.bmp")));
           if (this->m_kind == 234) {
-            const char* name = slot < ItemSlotsCount(this->m_item) ? "유저인터페이스\\basic_interface\\comparison_empty_card_slot.bmp"
+            const char* name = slot < this->m_item.SlotCount() ? "유저인터페이스\\basic_interface\\comparison_empty_card_slot.bmp"
                                                                    : "유저인터페이스\\basic_interface\\comparison_disable_card_slot.bmp";
             bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
-          } else if (ItemSlotsCount(this->m_item) <= slot) {
+          } else if (this->m_item.SlotCount() <= slot) {
             bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\disable_card_slot.bmp")));
           }
           this->DrawBitmap(x, y, bitmap, true);
@@ -9915,10 +9915,10 @@ void UIEquipWnd::DrawEquipSlots() {
     if (item.quantity == 1) {
       const unsigned row = slot & 3;
       if (slot < 8) {
-        DrawItemIcon(*this, ResourceMgr::Instance(), iconX[slot / 4], this->m_contentTop + 44 + row * 26, item, 0);
+        this->DrawItemIcon(iconX[slot / 4], this->m_contentTop + 44 + row * 26, item, 0);
         this->DrawItemName(nameX[slot / 4] + 5, this->m_contentTop + rowOffsets[row] + 51, 70, &item, 0, 0, 12);
       } else {
-        DrawItemIcon(*this, ResourceMgr::Instance(), iconX[row], this->m_contentTop + 18, item, 0);
+        this->DrawItemIcon(iconX[row], this->m_contentTop + 18, item, 0);
         this->DrawItemName(nameX[slot - 8] + 5, this->m_contentTop + 25, 70, &item, 0, 0, 12);
       }
     }
@@ -9977,7 +9977,7 @@ void UIItemCollectionWnd::OnRBtnDown(int x, int y) {
   card.SetItemId(cardId);
   UIWindow* window = g_windowMgr.EnsureWindow(WID_COMBINEDCARDITEMCOLLECTIONWND);
   window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, card.identified, 0, 0, 0);
-  window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&card), index >= ItemSlotsCount(this->m_item), 0, 0);
+  window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&card), index >= this->m_item.SlotCount(), 0, 0);
 
   if (UIItemCollectionWnd* comparison = g_windowMgr.itemCollectionComparisonWnd) {
     int compareId;
@@ -10015,7 +10015,7 @@ void UIItemCollection_ComparisonWnd::OnRBtnDown(int x, int y) {
   card.SetItemId(cardId);
   UIWindow* window = g_windowMgr.EnsureWindow(WID_COMBINEDCARDITEMCOLLECTIONWND);
   window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, card.identified, 0, 0, 0);
-  window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&card), index >= ItemSlotsCount(this->m_item), 0, 0);
+  window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&card), index >= this->m_item.SlotCount(), 0, 0);
 }
 
 // OFFSET: 0x008F3660
@@ -11722,7 +11722,7 @@ int UIFrameWnd::BuildItemName(
         }
         breaks->push_back(*cursor);
       }
-    } else if (Equipment(*item)) {
+    } else if (item->IsEquipment()) {
       if (item->refiningLevel > 0) {
         *cursor += item->Refine(*cursor, capacity, 1);
         breaks->push_back(*cursor);
@@ -12562,7 +12562,7 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
       }
     }
     this->m_item.expireTime = item->expireTime;
-    this->m_compare = this->m_item.identified == 1 && !this->m_item.IsApprenticeItem() && Equipment(this->m_item);
+    this->m_compare = this->m_item.identified == 1 && !this->m_item.IsApprenticeItem() && this->m_item.IsEquipment();
     this->m_optionCount = this->m_item.optionCount;
     if (this->m_compare) {
       if (this->geometry.height != 144) {
@@ -12573,7 +12573,7 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
       this->SetHeight(this->m_extraHeight + 120);
       this->RefreshSnap();
     }
-    this->m_bitmapName = "유저인터페이스\\collection\\" + std::string(ItemResourcePath(this->m_item)) + ".bmp";
+    this->m_bitmapName = "유저인터페이스\\collection\\" + std::string(this->m_item.ResourcePath()) + ".bmp";
     const std::vector<const char*>& descriptions = this->m_item.Description();
     this->m_viewButton->Move(6, argument2 != 0 ? -100 : IsItemCard(std::atoi(this->m_item.itemId.c_str())) * 100 - 94);
     CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());

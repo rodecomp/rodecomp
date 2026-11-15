@@ -85,7 +85,7 @@ void UIShortCutWnd::Paint() {
   if (grid.row != -1 && grid.hovered != -1) {
     const SkinPaletteCell cell{2, 2};
     window.FillRegion(((grid.hovered * 29) + 16), 5 + 33 * static_cast<unsigned>(g_session.m_hotkeyPage), 24, 24,
-                      SkinPaletteColor(resources, cell, g_skinInfo.Selected()));
+                      g_skinInfo.PaletteColor(cell, g_skinInfo.Selected()));
   }
 
   g_session.m_mainCooldownIcons.clear();
@@ -134,7 +134,7 @@ void UIShortCutWnd::Paint() {
           continue;
         }
 
-        DrawItemIcon(window, resources, x, y, item, item.identified);
+        window.DrawItemIcon(x, y, item, item.identified);
         if (item.quantity != 0) {
           Count(window, x + 27, (y + 17), item.quantity);
         }
@@ -161,7 +161,7 @@ void UIShortCutWnd::Paint() {
       }
 
       const int x = 16 + 29 * column;
-      DrawItemIcon(window, resources, x, y, item, item.identified);
+      window.DrawItemIcon(x, y, item, item.identified);
       if (item.quantity != 0) {
         Count(window, x + 27, (y + 17), item.quantity);
       }

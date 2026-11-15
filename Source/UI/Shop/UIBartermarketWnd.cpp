@@ -1798,7 +1798,7 @@ void UIBartermarketWnd::Paint() {
     }
 
     if (it->flag_38 == true) {
-      DrawItemIcon(*this, ResourceMgr::Instance(), x + 44, y + 21, it->ToItemInfo(), 0);
+      this->DrawItemIcon(x + 44, y + 21, it->ToItemInfo(), 0);
     } else {
       DrawItemWithQuantity(*this, ResourceMgr::Instance(), x + 44, y + 21, it->ToItemInfo(), 0, 0);
     }
@@ -1962,7 +1962,7 @@ void UIExpandedBartermarketWnd::Paint() {
     }
 
     if (it->flag_30 == true) {
-      DrawItemIcon(*this, ResourceMgr::Instance(), 44, y + 21, it->ToItemInfo(), 0);
+      this->DrawItemIcon(44, y + 21, it->ToItemInfo(), 0);
     } else if (it->value == 0) {
       DrawItemWithQuantityAuxiliary(*this, 1, 44, y + 21, it->ToItemInfo(), 1, 0);
     } else {

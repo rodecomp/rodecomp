@@ -1660,7 +1660,7 @@ void UIRune_Decom::SetItem(int itemId) {
       const ItemCardName card = FindItemCardName(std::atoi(item.itemId.c_str()));
       resource = card.name;
     } else {
-      resource = ItemResourcePath(item);
+      resource = item.ResourcePath();
     }
 
     this->m_itemImagePath = static_cast<const std::string&>(FormatOwnedString("유저인터페이스\\Illust\\%s.bmp", resource.c_str()));
@@ -2055,7 +2055,7 @@ void UIRuneSet_Info::Paint() {
       }
 
       item.SetItemId(static_cast<int>(this->m_runeSet->m_reward.values[7]));
-      const char* resource = ItemResourcePath(item);
+      const char* resource = item.ResourcePath();
       const std::string collection = std::format("유저인터페이스\\collection\\{}.bmp", resource);
       this->DrawBitmap(0x188, 0xE1, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(collection.c_str()))), true);
       if (0 != this->m_runeSet->m_reward.values[0]) {

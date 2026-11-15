@@ -125,7 +125,7 @@ void UISwapEquipmentWnd::DrawEquipmentSlots() {
         const int row = slot & 3;
         if (slot < 8) {
           const int iconY = row * 26 + 48;
-          DrawItemIcon(*this, ResourceMgr::Instance(), xCoords[slot / 4 + 2], iconY, item, 0);
+          this->DrawItemIcon(xCoords[slot / 4 + 2], iconY, item, 0);
           this->DrawItemName(xCoords[slot / 4], yCoords[row], 70, &item, 0, 0, 12);
           if (0 < item.grade) {
             this->DrawBitmap(
@@ -135,7 +135,7 @@ void UISwapEquipmentWnd::DrawEquipmentSlots() {
             );
           }
         } else {
-          DrawItemIcon(*this, ResourceMgr::Instance(), xCoords[row + 2], 22, item, 0);
+          this->DrawItemIcon(xCoords[row + 2], 22, item, 0);
           this->DrawItemName(xCoords[slot - 8], 30, 70, &item, 0, 0, 12);
         }
       } else {
@@ -386,7 +386,7 @@ void UISwapEquipmentWnd::Paint() {
   if (g_session.swapArrowIndex != 0) {
     ITEM_INFO dragItem = g_session.LookupClientItemByIdentity(g_session.swapArrowIndex);
     if (dragItem.identity[1] > 0) {
-      DrawItemIcon(*this, ResourceMgr::Instance(), this->geometry.width / 2 - 24, 27, dragItem, 0);
+      this->DrawItemIcon(this->geometry.width / 2 - 24, 27, dragItem, 0);
       this->DrawFittedItemName(this->geometry.width / 2 - 24, 51, &dragItem, 0, 0, 12, 0);
     }
   }

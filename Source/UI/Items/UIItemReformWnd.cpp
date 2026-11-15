@@ -203,7 +203,7 @@ void UIItemReformWnd_Item::Paint() {
   this->ClearSurface(0xFFFF00FF);
   if (this->item) {
     ResourceMgr& resources = ResourceMgr::Instance();
-    this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(resources.Load(Resolve(FormatOwnedString("유저인터페이스\\item\\%s.bmp", ItemResourcePath(*this->item)).c_str()))), true);
+    this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(resources.Load(Resolve(FormatOwnedString("유저인터페이스\\item\\%s.bmp", this->item->ResourcePath()).c_str()))), true);
   }
 }
 
@@ -222,7 +222,7 @@ void UIItemReformWnd_List::Paint() {
       }
       this->DrawBitmap(0, this->itemHeight * row, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(image))), true);
       const ITEM_INFO& item = this->items[this->scrollPosition + row];
-      DrawItemIcon(*this, ResourceMgr::Instance(), 15, this->itemHeight * row + 4, item, 1);
+      this->DrawItemIcon(15, this->itemHeight * row + 4, item, 1);
       this->DrawTextAt(42, this->itemHeight * row + 10, this->FitDisplayText(160, item.DisplayName(0).c_str(), 0, 12, 0).c_str(), 0, 0,
         12, 0, 0, 0
       );
@@ -543,7 +543,7 @@ int UIItemReformWnd_List::SendMsg(
         }
         bool emptySocket = true;
         if (info->isEmptySocket == 1) {
-          for (unsigned int slot = std::min(ItemSlotsCount(item), 4); slot < 4; ++slot) {
+          for (unsigned int slot = std::min(item.SlotCount(), 4); slot < 4; ++slot) {
             if (static_cast<int>(slot) < 4 && static_cast<int>(item.cards[slot]) > 0) {
               emptySocket = false;
               break;

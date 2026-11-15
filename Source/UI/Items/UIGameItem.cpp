@@ -142,9 +142,9 @@ void CUIGameItem::SetItem(const ITEM_INFO& item) {
 
   std::string path;
   if (this->mode == 0) {
-    path = std::format("유저인터페이스\\item\\{}.bmp", ItemResourcePath(this->itemInfo));
+    path = std::format("유저인터페이스\\item\\{}.bmp", this->itemInfo.ResourcePath());
   } else if (this->mode == 1) {
-    path = std::format("유저인터페이스\\collection\\{}.bmp", ItemResourcePath(this->itemInfo));
+    path = std::format("유저인터페이스\\collection\\{}.bmp", this->itemInfo.ResourcePath());
   } else {
     return;
   }

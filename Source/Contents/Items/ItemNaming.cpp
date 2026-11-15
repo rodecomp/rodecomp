@@ -37,8 +37,8 @@ std::map<int, std::vector<const char*>> g_bookItemNames;
 
 // OFFSET: 0x006D8810
 // FUNCTION: fn_06597
-bool Equipment(const ITEM_INFO& item) {
-  switch (item.identity[0]) {
+bool ITEM_INFO::IsEquipment() const {
+  switch (this->identity[0]) {
   case TYPE_ARMOR:
   case TYPE_WEAPON:
   case TYPE_BOW:
@@ -94,7 +94,7 @@ bool ITEM_INFO::HasCards() const {
   const bool first = g_itemCardNames.contains(CardId(*this, 0));
   const unsigned id = static_cast<unsigned>(std::atoi(this->itemId.c_str()));
 
-  if (id - 9001u <= 498 || id - 10000u <= 999 || CardId(*this, 0) == 254 || CardId(*this, 0) == 255 || Equipment(*this) != true) {
+  if (id - 9001u <= 498 || id - 10000u <= 999 || CardId(*this, 0) == 254 || CardId(*this, 0) == 255 || this->IsEquipment() != true) {
     return first;
   }
 
@@ -336,7 +336,7 @@ std::string ITEM_INFO::DisplayName(unsigned char detailed) const {
         AppendName(*this, result, text, capacity);
       }
     } else {
-      if (!Equipment(*this) && detailed == 0) {
+      if (!this->IsEquipment() && detailed == 0) {
         AppendName(*this, result, text, capacity);
       } else {
         if (this->refiningLevel > 0) {
@@ -459,18 +459,18 @@ bool IsItemCard(int id) {
 
 // OFFSET: 0x006D7660
 // FUNCTION: fn_06591
-const char* ItemResourcePath(const ITEM_INFO& item) {
-  if (item.identified == 1) {
-    return FindItemDescription(std::atoi(item.itemId.c_str())).identifiedResource;
+const char* ITEM_INFO::ResourcePath() const {
+  if (this->identified == 1) {
+    return FindItemDescription(std::atoi(this->itemId.c_str())).identifiedResource;
   }
 
-  return FindItemDescription(std::atoi(item.itemId.c_str())).unidentifiedResource;
+  return FindItemDescription(std::atoi(this->itemId.c_str())).unidentifiedResource;
 }
 
 // OFFSET: 0x006D76B0
 // FUNCTION: fn_06592
-int ItemSlotsCount(const ITEM_INFO& item) {
-  int id = std::atoi(item.itemId.c_str());
+int ITEM_INFO::SlotCount() const {
+  int id = std::atoi(this->itemId.c_str());
   return FindItemDescription(id).slots;
 }
 

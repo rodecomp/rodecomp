@@ -406,9 +406,8 @@ void UIRodexContentsWnd::SetMailContents(std::string title, std::string sender, 
   this->m_contents->Move(15, 81);
   this->m_contents->maximum = 1000;
 
-  const bool selected = g_skinInfo.Selected();
   const SkinPaletteCell cell = {1, 2};
-  const std::uint32_t color = SkinPaletteColor(cell, selected);
+  const std::uint32_t color = g_skinInfo.PaletteColor(cell, g_skinInfo.Selected());
   this->m_contents->Background(color & 0xFF, (color & 0xFFFF) >> 8, (color >> 16) & 0xFF);
   this->m_contents->TextColor(0x31, 0x31, 0x31, 0xFFFFFFFF);
   UIRodexEditCtrl3* contents = this->m_contents;

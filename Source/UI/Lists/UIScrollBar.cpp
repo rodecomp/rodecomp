@@ -7,6 +7,7 @@
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
+#include "Contents/Skin/SkinMgr.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Lists/UIScrollBar.h"
 #include "UI/Lists/UIScrollBarVariants.h"
@@ -2176,7 +2177,7 @@ UIListBoxID::UIListBoxID()
   background[1] = 255;
   background[2] = 255;
   const SkinPaletteCell cell = {3, 2};
-  this->selectionColor = SkinPaletteColor(ResourceMgr::Instance(), cell, g_skinInfo.Selected());
+  this->selectionColor = g_skinInfo.PaletteColor(cell, g_skinInfo.Selected());
 }
 
 // OFFSET: 0x0087C2A0

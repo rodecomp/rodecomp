@@ -4,6 +4,7 @@
 #include "Client/Session/Session.h"
 #include "Contents/Tables/MessageTable.h"
 #include "Resource/ResourceMgr.h"
+#include "Contents/Skin/SkinMgr.h"
 #include "Resource/Bitmap/SkinPalette.h"
 #include "Script/LuaScript.h"
 #include "Utility/Text/StringUtil.h"
@@ -438,8 +439,8 @@ namespace SkillDelayInfo {
 // OFFSET: 0x00A77CE0
 // FUNCTION: fn_16882
 void CUIDelayItem::Paint() {
-  this->backgroundColor = SkinPaletteColor(ResourceMgr::Instance(), SkinPaletteCell{0, 2}, true);
-  this->borderColor = SkinPaletteColor(ResourceMgr::Instance(), SkinPaletteCell{6, 2}, true);
+  this->backgroundColor = g_skinInfo.PaletteColor(SkinPaletteCell{0, 2}, true);
+  this->borderColor = g_skinInfo.PaletteColor(SkinPaletteCell{6, 2}, true);
   this->DrawRectOutline(0, 0, 325, 22, this->borderColor);
   this->FillRegion(1, 0, 43, 21, this->backgroundColor);
   this->FillRegion(44, 0, 280, 21, 0xFFFFFF);
@@ -458,8 +459,8 @@ void CUITime::Paint() {
 // OFFSET: 0x00A77F10
 // FUNCTION: fn_16885
 void CUIDelayItem::OnInit() {
-  this->backgroundColor = SkinPaletteColor(ResourceMgr::Instance(), SkinPaletteCell{0, 2}, true);
-  this->borderColor = SkinPaletteColor(ResourceMgr::Instance(), SkinPaletteCell{6, 2}, true);
+  this->backgroundColor = g_skinInfo.PaletteColor(SkinPaletteCell{0, 2}, true);
+  this->borderColor = g_skinInfo.PaletteColor(SkinPaletteCell{6, 2}, true);
 }
 
 // OFFSET: 0x00A78180
@@ -541,8 +542,8 @@ void CUISkillDelayInfo::SetSkill(int skillId) {
 // FUNCTION: fn_16883
 void CUISkillDelayInfo::Paint() {
   CUIFrameWnd::Paint();
-  this->backgroundColor = SkinPaletteColor(ResourceMgr::Instance(), SkinPaletteCell{0, 2}, true);
-  this->borderColor = SkinPaletteColor(ResourceMgr::Instance(), SkinPaletteCell{6, 2}, true);
+  this->backgroundColor = g_skinInfo.PaletteColor(SkinPaletteCell{0, 2}, true);
+  this->borderColor = g_skinInfo.PaletteColor(SkinPaletteCell{6, 2}, true);
   this->FillRegion(11, 28, 323, 23, this->backgroundColor);
   this->DrawRectOutline(10, 27, 325, 25, this->borderColor);
   this->DrawRectOutline(10, 58, 325, 46, this->borderColor);
@@ -557,8 +558,8 @@ void CUISkillDelayInfo::Paint() {
 // OFFSET: 0x00A77F70
 // FUNCTION: fn_16886
 void CUISkillDelayInfo::OnInit() {
-  this->backgroundColor = SkinPaletteColor(ResourceMgr::Instance(), SkinPaletteCell{0, 2}, true);
-  this->borderColor = SkinPaletteColor(ResourceMgr::Instance(), SkinPaletteCell{6, 2}, true);
+  this->backgroundColor = g_skinInfo.PaletteColor(SkinPaletteCell{0, 2}, true);
+  this->borderColor = g_skinInfo.PaletteColor(SkinPaletteCell{6, 2}, true);
 
   this->titleBar->SetTitle(LookupMessage(4254));
   this->columns[0]->SetText(LookupMessage(4255));

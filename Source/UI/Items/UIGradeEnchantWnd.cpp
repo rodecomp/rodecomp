@@ -280,7 +280,7 @@ void UIGradeEnchantWnd::Paint() {
       ITEM_INFO itemInfo;
       itemInfo.SetItemId(material->itemId);
       itemInfo.GetIdDisplayName(description, capacity, 0);
-      DrawItemIcon(*this, ResourceMgr::Instance(), 170, y - 9, itemInfo, 0);
+      this->DrawItemIcon(170, y - 9, itemInfo, 0);
       std::string text = FormatOwnedString(LookupMessage(MSI_NO_ITEM_FOR_EXCHANGE), description, material->amount);
       this->DrawAlignedText(203, y, text, 180, 0, 0, 0, 0, 11, 0, 0);
       y += 40;
@@ -290,7 +290,7 @@ void UIGradeEnchantWnd::Paint() {
       ITEM_INFO itemInfo;
       itemInfo.SetItemId(this->info.blessingItemId);
       itemInfo.GetIdDisplayName(description, capacity, 0);
-      DrawItemIcon(*this, ResourceMgr::Instance(), 195, 228, itemInfo, 0);
+      this->DrawItemIcon(195, 228, itemInfo, 0);
       std::string text = FormatOwnedString(LookupMessage(MSI_NO_ITEM_FOR_EXCHANGE), description, this->blessingAmount);
       this->DrawAlignedText(228, 237, text, 160, 0, 0xFFFFFF, 0, 0, 11, 1, 1);
     }
@@ -324,7 +324,7 @@ void UIGradeEnchantWnd::Paint() {
   }
 
   if (this->item.identity[1] > 0) {
-    DrawItemIcon(*this, ResourceMgr::Instance(), 64, 125, this->item, 0);
+    this->DrawItemIcon(64, 125, this->item, 0);
     if (this->item.grade > 0) {
       this->DrawBitmap(64, 137, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", this->item.grade).c_str()))), true);
     }

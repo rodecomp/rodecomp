@@ -17,7 +17,7 @@ std::uint32_t SkinPaletteColor(ResourceMgr& resources, const SkinPaletteCell& ce
 
 // OFFSET: 0x007E0F40
 // FUNCTION: fn_09684
-std::uint32_t __stdcall SkinPaletteColor(const SkinPaletteCell& cell, bool resolveSkin) {
+std::uint32_t CSkinMgr::PaletteColor(const SkinPaletteCell& cell, bool resolveSkin) {
   return SkinPaletteColor(ResourceMgr::Instance(), cell, resolveSkin);
 }
 
