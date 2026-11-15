@@ -801,18 +801,10 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
 
   if (f1 == 0) {
     const vector3d& position = this->render.position;
-    vec1.x += position.x;
-    vec1.y += position.y;
-    vec1.z += position.z;
-    vec2.x += position.x;
-    vec2.y += position.y;
-    vec2.z += position.z;
-    vec3.x += position.x;
-    vec3.y += position.y;
-    vec3.z += position.z;
-    vec4.x += position.x;
-    vec4.y += position.y;
-    vec4.z += position.z;
+    vec1 += position;
+    vec2 += position;
+    vec3 += position;
+    vec4 += position;
   }
 
   alignas(16) RenderVertex vertex;
@@ -1205,18 +1197,10 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
   }
 
   const vector3d& position = this->render.position;
-  vec1.x += position.x;
-  vec1.y += position.y;
-  vec1.z += position.z;
-  vec2.x += position.x;
-  vec2.y += position.y;
-  vec2.z += position.z;
-  vec3.x += position.x;
-  vec3.y += position.y;
-  vec3.z += position.z;
-  vec4.x += position.x;
-  vec4.y += position.y;
-  vec4.z += position.z;
+  vec1 += position;
+  vec2 += position;
+  vec3 += position;
+  vec4 += position;
 
   alignas(16) RenderVertex vertex;
   this->state.triangles[*rpCnt].sourceBlend = 5;
@@ -1300,18 +1284,10 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
   const float bottom = static_cast<float>(texPart + 1) / 21.0f;
 
   const vector3d& position = this->render.position;
-  vec1.x += position.x;
-  vec1.y += position.y;
-  vec1.z += position.z;
-  vec2.x += position.x;
-  vec2.y += position.y;
-  vec2.z += position.z;
-  vec3.x += position.x;
-  vec3.y += position.y;
-  vec3.z += position.z;
-  vec4.x += position.x;
-  vec4.y += position.y;
-  vec4.z += position.z;
+  vec1 += position;
+  vec2 += position;
+  vec3 += position;
+  vec4 += position;
 
   alignas(16) RenderVertex vertex;
   this->state.triangles[*rpCnt].sourceBlend = 5;
@@ -1855,12 +1831,8 @@ void CEffectPrim::RenderHitLine3(matrix& wtm) {
 
       std::int16_t angle;
       Get_Angle(vecA.x - vecB.x, vecA.z - vecB.z, &angle);
-      vecA.x += slot.vecBNow.x;
-      vecA.y += slot.vecBNow.y;
-      vecA.z += slot.vecBNow.z;
-      vecB.x += slot.vecBNow.x;
-      vecB.y += slot.vecBNow.y;
-      vecB.z += slot.vecBNow.z;
+      vecA += slot.vecBNow;
+      vecB += slot.vecBNow;
       angle += 90;
 
       if (angle >= 360) {
@@ -1988,12 +1960,8 @@ void CEffectPrim::RenderHitLine(matrix& wtm) {
 
       std::int16_t angle;
       Get_Angle(vecA.x - vecB.x, vecA.z - vecB.z, &angle);
-      vecA.x += slot.vecBNow.x;
-      vecA.y += slot.vecBNow.y;
-      vecA.z += slot.vecBNow.z;
-      vecB.x += slot.vecBNow.x;
-      vecB.y += slot.vecBNow.y;
-      vecB.z += slot.vecBNow.z;
+      vecA += slot.vecBNow;
+      vecB += slot.vecBNow;
       angle = static_cast<std::int16_t>((angle + 90) % 360);
 
       for (int i = 0; i <= 3; ++i) {
@@ -7124,18 +7092,10 @@ void CEffectPrim::RenderSphere(matrix& wtm) {
       vec4.z = m4[5] * 0.0f + m4[2] * 0.0f + this->state.radius * m4[8] + m4[11];
 
       const vector3d& position = this->render.position;
-      vec1.x += position.x;
-      vec1.y += position.y;
-      vec1.z += position.z;
-      vec2.x += position.x;
-      vec2.y += position.y;
-      vec2.z += position.z;
-      vec3.x += position.x;
-      vec3.y += position.y;
-      vec3.z += position.z;
-      vec4.x += position.x;
-      vec4.y += position.y;
-      vec4.z += position.z;
+      vec1 += position;
+      vec2 += position;
+      vec3 += position;
+      vec4 += position;
 
       const float nextU = u + uStep;
       const float nextV = v + vStep;
@@ -7289,18 +7249,10 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiFacingSlots(matrix& wtm) {
     this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
 
     const vector3d& base = slot.vecBNow;
-    vec1.x += base.x;
-    vec1.y += base.y;
-    vec1.z += base.z;
-    vec2.x += base.x;
-    vec2.y += base.y;
-    vec2.z += base.z;
-    vec3.x += base.x;
-    vec3.y += base.y;
-    vec3.z += base.z;
-    vec4.x += base.x;
-    vec4.y += base.y;
-    vec4.z += base.z;
+    vec1 += base;
+    vec2 += base;
+    vec3 += base;
+    vec4 += base;
 
     switch (kind) {
     case 0:

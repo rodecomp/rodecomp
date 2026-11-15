@@ -41,14 +41,6 @@
 
 namespace {
   // INLINED
-  vector3d& operator+=(vector3d& target, const vector3d& offset) {
-    target.x += offset.x;
-    target.y += offset.y;
-    target.z += offset.z;
-    return target;
-  }
-
-  // INLINED
   __forceinline int ClampedRandom(int range) {
     const int value = rand() % range;
     return value >= 0 ? value : 0;

@@ -391,14 +391,6 @@ static __forceinline vector3d ZeroVector() {
   return vector3d();
 }
 
-// INLINED
-static __forceinline vector3d& operator+=(vector3d& target, const vector3d& offset) {
-  target.x += offset.x;
-  target.y += offset.y;
-  target.z += offset.z;
-  return target;
-}
-
 // OFFSET: 0x00BF4110
 // FUNCTION: fn_19994
 void CEffectPrim::RenderArcWalls(matrix& wtm) {
@@ -564,12 +556,8 @@ void CEffectPrim::RenderJitterSweeps(matrix& wtm) {
       end.z = g_sinTable[this->state.slots[layer].riseAngle] * radius2 + jitterZ[i + 1];
       short facing = static_cast<short>(height2);
       Get_Angle(start.x - end.x, start.z - end.z, &facing);
-      start.x += this->state.slots[layer].vecBNow.x;
-      start.y += this->state.slots[layer].vecBNow.y;
-      start.z += this->state.slots[layer].vecBNow.z;
-      end.x += this->state.slots[layer].vecBNow.x;
-      end.y += this->state.slots[layer].vecBNow.y;
-      end.z += this->state.slots[layer].vecBNow.z;
+      start += this->state.slots[layer].vecBNow;
+      end += this->state.slots[layer].vecBNow;
       facing += 90;
       if (facing > 359) {
         facing -= 360;

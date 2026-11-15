@@ -70,9 +70,7 @@ void CCartCannon::Open() {
 
   if (length < 40.0f) {
     this->speed = 40.0f / length;
-    this->stepDelta.x *= this->speed;
-    this->stepDelta.y *= this->speed;
-    this->stepDelta.z *= this->speed;
+    this->stepDelta *= this->speed;
   }
 
   const float dx = target.x - this->currentPosition.x;

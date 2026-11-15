@@ -67,9 +67,7 @@ void CTriangleShotArrow::Open() {
   this->direction.z *= 0.125f;
   if (length < 40.0f) {
     this->speed = 40.0f / length;
-    this->direction.x *= this->speed;
-    this->direction.y *= this->speed;
-    this->direction.z *= this->speed;
+    this->direction *= this->speed;
   }
 
   const float dx = target.x - this->current.x;

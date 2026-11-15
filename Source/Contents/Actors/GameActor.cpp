@@ -38,14 +38,6 @@
 #include <windows.h>
 #include <timeapi.h>
 
-// INLINED
-static vector3d& operator+=(vector3d& target, const vector3d& offset) {
-  target.x += offset.x;
-  target.y += offset.y;
-  target.z += offset.z;
-  return target;
-}
-
 // OFFSET: 0x00CB1930
 // FUNCTION: fn_21099
 void CGameActor::ProcessDamageMessages() {

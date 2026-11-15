@@ -143,9 +143,7 @@ void CLensFlare::Update(const float* matrix, vector3d eye, vector3d target) {
   view.y = target.y - eye.y;
   view.z = target.z - eye.z;
   float inverse = 1.0f / SquareRoot(view.y * view.y + view.x * view.x + view.z * view.z);
-  view.x *= inverse;
-  view.y *= inverse;
-  view.z *= inverse;
+  view *= inverse;
 
   vector3d light;
   light.x = this->m_position.x - target.x;

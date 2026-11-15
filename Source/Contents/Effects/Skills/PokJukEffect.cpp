@@ -216,9 +216,7 @@ void CPokJukEffect::Render() {
         const vector3d& base = this->trails[index][layer];
 
         for (int corner = 0; corner < 4; ++corner) {
-          corners[corner].x += base.x;
-          corners[corner].y += base.y;
-          corners[corner].z += base.z;
+          corners[corner] += base;
         }
 
         particle->vertices[0].x = corners[3].x;

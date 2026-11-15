@@ -4154,9 +4154,7 @@ void C3dGrannyGameActor::RenderShadowed(int argument) {
   light.y = direction.y * view.values[4] + direction.x * view.values[1] + direction.z * view.values[7] + view.values[10];
   light.z = direction.y * view.values[5] + direction.x * view.values[2] + direction.z * view.values[8] + view.values[11];
   const float scale = 1.0f / SquareRoot(light.y * light.y + light.x * light.x + light.z * light.z);
-  light.x *= scale;
-  light.y *= scale;
-  light.z *= scale;
+  light *= scale;
 
   float screenX;
   float screenY;
