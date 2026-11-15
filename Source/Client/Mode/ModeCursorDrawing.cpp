@@ -1,3 +1,4 @@
+#include <new>
 #include "Client/Input/Mouse.h"
 #include "Client/Mode/CMode.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
@@ -19,6 +20,25 @@
 
 // GLOBAL: gl_24570
 CMouse g_mouse;
+
+namespace {
+struct PrimitivePoolAccess : RenderPrimitivePool {
+  // INLINED
+  inline RenderPrimitive* AcquireLocal() {
+    if (this->m_current == this->m_commands.end()) {
+      this->m_commands.emplace_back();
+      this->m_current = this->m_commands.end();
+      return &this->m_commands.back();
+    }
+
+    RenderPrimitive* command = &*this->m_current;
+    ++this->m_current;
+    new (command) RenderPrimitive;
+
+    return command;
+  }
+};
+}
 
 // OFFSET: 0x00AD5520
 // FUNCTION: fn_17824
@@ -89,7 +109,7 @@ void CMode::DrawCursor() {
   SpriteAtlasRecord record{};
   const ActionFrame& frame = action->Frame(this->cursorAction, this->cursorActionFrame);
   for (int index = 0; index < frame.cellCount; ++index) {
-    RenderPrimitive* primitive = g_renderer->primitives.Acquire();
+    RenderPrimitive* primitive = static_cast<PrimitivePoolAccess&>(g_renderer->primitives).AcquireLocal();
     const SpriteFrameCell& cell = frame.Cell(index);
     if (cell.image == -1) {
       continue;
