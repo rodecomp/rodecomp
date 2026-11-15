@@ -37,7 +37,7 @@ void BinkMovie::Close() {
 bool BinkMovie::Open(const char* name, int loop, bool memory) {
   this->Close();
 
-  if (memory) {
+  if (memory == true) {
     this->m_file = new (std::nothrow) CFile;
     if (!this->m_file || !this->m_file->Open(name, 0, true, false)) {
       return false;
