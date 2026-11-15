@@ -187,3 +187,13 @@ void UIEmotionWnd::StoreInfo() {
 
   g_accountLinkedUserDataMgr->Save();
 }
+
+// INLINED
+void EmotionHotkeys::Save(std::uint32_t accountId, CRenderSystemBase* renderSystem) const {
+  g_session.SaveEmotionHotkeys();
+}
+
+// INLINED
+bool EmotionHotkeys::LoadDefaults(std::uint32_t accountId) {
+  return g_session.LoadEmotionHotkeyDefaults();
+}

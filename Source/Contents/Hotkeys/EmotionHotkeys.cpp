@@ -45,15 +45,15 @@ bool EmotionHotkeys::HasChanges() const {
 
 // OFFSET: 0x00E48460
 // FUNCTION: fn_24220
-void EmotionHotkeys::Save(std::uint32_t accountId, CRenderSystemBase*) const {
-  if (this->current.empty()) {
+void CSession::SaveEmotionHotkeys() const {
+  if (this->m_emotionHotkeys.current.empty()) {
     return;
   }
 
   std::string output;
   output += "tbl = \r\n";
   output += "{\r\n";
-  for (const std::string& entry : this->current) {
+  for (const std::string& entry : this->m_emotionHotkeys.current) {
     output += std::format("\t[=[{}]=],\r\n", entry);
   }
   output += "}\r\n";
@@ -65,7 +65,7 @@ void EmotionHotkeys::Save(std::uint32_t accountId, CRenderSystemBase*) const {
     }
 
     CFile file;
-    if (file.Open(std::format("{}\\{}.lua", directory, ShortcutFilename(accountId)).c_str(), 0x1001, false, true)) {
+    if (file.Open(std::format("{}\\{}.lua", directory, this->ShortcutFilename(this->m_aid)).c_str(), 0x1001, false, true)) {
       file.Write(output.data(), static_cast<std::uint32_t>(output.size()));
       file.Close();
     }
@@ -74,22 +74,22 @@ void EmotionHotkeys::Save(std::uint32_t accountId, CRenderSystemBase*) const {
 
 // OFFSET: 0x00E3D4D0
 // FUNCTION: fn_24191
-bool EmotionHotkeys::LoadDefaults(std::uint32_t accountId) {
-  this->current.clear();
-  this->current.emplace_back(LookupMessage(MSI_EMOTION_SURPRISE));
-  this->current.emplace_back(LookupMessage(MSI_EMOTION_QUESTION));
-  this->current.emplace_back(LookupMessage(MSI_EMOTION_DELIGHT));
-  this->current.emplace_back(LookupMessage(MSI_EMOTION_THROB));
-  this->current.emplace_back(LookupMessage(MSI_EMOTION_SWEAT));
-  this->current.emplace_back(LookupMessage(MSI_EMOTION_AHA));
-  this->current.emplace_back(LookupMessage(MSI_EMOTION_FRET));
-  this->current.emplace_back(LookupMessage(MSI_EMOTION_ANGER));
-  this->current.emplace_back(LookupMessage(MSI_EMOTION_MONEY));
-  this->current.emplace_back(LookupMessage(MSI_EMOTION_THINK));
+bool CSession::LoadEmotionHotkeyDefaults() {
+  this->m_emotionHotkeys.current.clear();
+  this->m_emotionHotkeys.current.emplace_back(LookupMessage(MSI_EMOTION_SURPRISE));
+  this->m_emotionHotkeys.current.emplace_back(LookupMessage(MSI_EMOTION_QUESTION));
+  this->m_emotionHotkeys.current.emplace_back(LookupMessage(MSI_EMOTION_DELIGHT));
+  this->m_emotionHotkeys.current.emplace_back(LookupMessage(MSI_EMOTION_THROB));
+  this->m_emotionHotkeys.current.emplace_back(LookupMessage(MSI_EMOTION_SWEAT));
+  this->m_emotionHotkeys.current.emplace_back(LookupMessage(MSI_EMOTION_AHA));
+  this->m_emotionHotkeys.current.emplace_back(LookupMessage(MSI_EMOTION_FRET));
+  this->m_emotionHotkeys.current.emplace_back(LookupMessage(MSI_EMOTION_ANGER));
+  this->m_emotionHotkeys.current.emplace_back(LookupMessage(MSI_EMOTION_MONEY));
+  this->m_emotionHotkeys.current.emplace_back(LookupMessage(MSI_EMOTION_THINK));
 
   CLuaInstance script;
-  const bool loaded = script.LoadFile(std::format("savedata\\shortcutlist\\{}.lua", ShortcutFilename(accountId)), false);
-  return loaded && script.ReadStrings(this->current, "tbl") == 0 && this->current.size() == 10;
+  const bool loaded = script.LoadFile(std::format("savedata\\shortcutlist\\{}.lua", this->ShortcutFilename(this->m_aid)), false);
+  return loaded && script.ReadStrings(this->m_emotionHotkeys.current, "tbl") == 0 && this->m_emotionHotkeys.current.size() == 10;
 }
 
 // INLINED

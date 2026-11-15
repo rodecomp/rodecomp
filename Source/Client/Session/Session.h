@@ -232,6 +232,8 @@ public:
   int HotkeyIndex(int tab, int index) const;
   bool SkillUsesPercentSp(int id) const;
   std::string ShortcutFilename(std::uint32_t identifier) const;
+  void SaveEmotionHotkeys() const;
+  bool LoadEmotionHotkeyDefaults();
   const char* ItemDragResource(const char* id, int identified);
   const char* SkillDragResource(const char* name);
   /* 0000 */ std::uint32_t mapPropertyId;
