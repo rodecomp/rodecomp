@@ -5526,7 +5526,9 @@ void CEZ2STRScreenEffect::SetWindowOffset(vector3d offset, int attachToWindow, i
     return;
   }
 
-  particle->m_windowOffset = offset;
+  particle->m_windowOffset.x = offset.x;
+  particle->m_windowOffset.y = offset.y;
+  particle->m_windowOffset.z = offset.z;
   if (static_cast<unsigned char>(attachToWindow) == 1) {
     this->particle->m_attachToWindow = true;
     this->particle->m_windowId = windowId;

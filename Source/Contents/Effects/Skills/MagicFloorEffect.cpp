@@ -246,8 +246,12 @@ void CMagicFloorEffect::OnProcess() {
         particle->vertices[2].z = this->lastPoints[0].z;
       }
 
-      this->lastPoints[0] = points[0];
-      this->lastPoints[1] = points[1];
+      this->lastPoints[0].x = points[0].x;
+      this->lastPoints[0].y = points[0].y;
+      this->lastPoints[0].z = points[0].z;
+      this->lastPoints[1].x = points[1].x;
+      this->lastPoints[1].y = points[1].y;
+      this->lastPoints[1].z = points[1].z;
     }
 
     ++particle->elapsedFrames;

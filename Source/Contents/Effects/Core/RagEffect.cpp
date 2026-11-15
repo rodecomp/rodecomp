@@ -9553,7 +9553,9 @@ void CRagEffect::SevereRainstormCylinder(int, const char*, char alpha, float dis
   char name[128];
 
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position = parent.position;
+  this->render.position.x = parent.position.x;
+  this->render.position.y = parent.position.y;
+  this->render.position.z = parent.position.z;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -10831,7 +10833,9 @@ void CRagEffect::Waterfall(const char* name, char flag, char tall, char variant)
   }
 
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position = parent.position;
+  this->render.position.x = parent.position.x;
+  this->render.position.y = parent.position.y;
+  this->render.position.z = parent.position.z;
   this->state.lastPrim = this->LaunchEffectPrim(79, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 5;
   this->state.lastPrim->state.duration = this->state.duration;
@@ -13663,7 +13667,9 @@ void CRagEffect::WhiteRingWave() {
 // FUNCTION: fn_20217
 void CRagEffect::TripleRingStack(const char* name, char large) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position = parent.position;
+  this->render.position.x = parent.position.x;
+  this->render.position.y = parent.position.y;
+  this->render.position.z = parent.position.z;
 
   if (this->state.stateCnt == 99999998) {
     this->state.stateCnt = 0;
@@ -15631,7 +15637,9 @@ void CRagEffect::TexturedMagicRing(char type) {
 // FUNCTION: fn_20137
 void CRagEffect::TexturedRisingRing(const char* name) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position = parent.position;
+  this->render.position.x = parent.position.x;
+  this->render.position.y = parent.position.y;
+  this->render.position.z = parent.position.z;
 
   if (this->state.stateCnt == 1) {
     this->state.lastPrim = this->LaunchEffectPrim(107, vector3d{0.0f, 0.0f, 0.0f});
@@ -17041,7 +17049,9 @@ void CPlayer::RefreshEffect164() {
 // OFFSET: 0x00C4FAB0
 // FUNCTION: fn_20183
 void CRagEffect::PortalRings() {
-  this->render.position = this->state.parent->render.position;
+  this->render.position.x = this->state.parent->render.position.x;
+  this->render.position.y = this->state.parent->render.position.y;
+  this->render.position.z = this->state.parent->render.position.z;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -17327,7 +17337,9 @@ bool CRagEffect::GlassWallRising(const char* name) {
 // FUNCTION: fn_20253
 void CRagEffect::TexturedQuadRingSized(std::int16_t baseAlpha, const char* name, char kind) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position = parent.position;
+  this->render.position.x = parent.position.x;
+  this->render.position.y = parent.position.y;
+  this->render.position.z = parent.position.z;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -17494,7 +17506,9 @@ void CRagEffect::TexturedFireWall(const char* name, int unused) {
   PlayEffectWave(*this, "effect\\EF_FireWall.wav");
 
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position = parent.position;
+  this->render.position.x = parent.position.x;
+  this->render.position.y = parent.position.y;
+  this->render.position.z = parent.position.z;
 
   this->state.lastPrim = this->LaunchEffectPrim(118, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 5;

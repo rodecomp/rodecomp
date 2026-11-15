@@ -341,13 +341,21 @@ __declspec(safebuffers) void CEffectPrim::RenderGlowSquare(matrix& wtm) {
     this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
 
     vector3d base1;
-    base1 = vec1;
+    base1.x = vec1.x;
+    base1.y = vec1.y;
+    base1.z = vec1.z;
     vector3d base2;
-    base2 = vec2;
+    base2.x = vec2.x;
+    base2.y = vec2.y;
+    base2.z = vec2.z;
     vector3d base3;
-    base3 = vec3;
+    base3.x = vec3.x;
+    base3.y = vec3.y;
+    base3.z = vec3.z;
     vector3d base4;
-    base4 = vec4;
+    base4.x = vec4.x;
+    base4.y = vec4.y;
+    base4.z = vec4.z;
     vec1.x = slot.vecBNow.x + vec1.x;
     vec1.y = slot.vecBNow.y + vec1.y;
     vec1.z = slot.vecBNow.z + vec1.z;

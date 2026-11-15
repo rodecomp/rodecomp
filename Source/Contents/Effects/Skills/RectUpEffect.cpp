@@ -100,8 +100,12 @@ void CRectUpEffect::Render() {
         particle->vertices[2].y = this->previousEdge[0].y;
         particle->vertices[2].z = this->previousEdge[0].z;
       }
-      this->previousEdge[0] = edge[0];
-      this->previousEdge[1] = edge[1];
+      this->previousEdge[0].x = edge[0].x;
+      this->previousEdge[0].y = edge[0].y;
+      this->previousEdge[0].z = edge[0].z;
+      this->previousEdge[1].x = edge[1].x;
+      this->previousEdge[1].y = edge[1].y;
+      this->previousEdge[1].z = edge[1].z;
 
       if (previous) {
         particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
