@@ -543,7 +543,7 @@ void UIBasicSkillCtrl::OnMouseHover(int, int) {
   const int ap = skill.UseApAmount(script, skill.level);
   std::string text;
 
-  if (SkillUsesPercentSp(static_cast<int>(skill.id))) {
+  if (g_session.SkillUsesPercentSp(static_cast<int>(skill.id))) {
     text = SkillUseTextPercent(skill.DisplayName(), skill.level, sp, ap);
   } else {
     text = SkillUseTextFlat(skill.DisplayName(), skill.level, sp, ap);
