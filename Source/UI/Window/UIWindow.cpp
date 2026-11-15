@@ -1470,9 +1470,7 @@ std::string UIWindow::FitDisplayText(int width, const char* text, int family, in
     display = g_windowMgr.chatWnd->ConvertChat(std::move(display));
   }
 
-  std::string navigation;
-  DisplayNavigationLink(navigation, display);
-  display = std::move(navigation);
+  display = g_navigationLinkParser->DisplayNavigationLink(display);
   display = DisplayQuestTextTag(display);
 
   const int textWidth = this->TextWidth(display.c_str(), 0, family, height, bold, 0);
