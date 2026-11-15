@@ -130,7 +130,7 @@ public:
   void Unload() override;
   ModelNode* FindNode(const char* name) const;
   void ForEachRootName(std::function<void(const std::string&)> callback) const;
-  void RegisterMovies(class BinkMovies& movies, const float* position) const;
+  void RegisterMovies(struct MoviePosition position) const;
 
   /* 0110 */ int major;
   /* 0114 */ std::list<ModelNode*> nodes;
