@@ -43,6 +43,7 @@ public:
   void LoadMapEffects();
   void CellOrigin(int column, int row, float& x, float& z) const;
   void Clear();
+  void ClearChildren();
   void OnExitFrame();
   void OnProcess();
   bool RemoveItem(std::uint32_t aid);

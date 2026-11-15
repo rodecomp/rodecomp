@@ -120,7 +120,7 @@ void CWorld::OnExitFrame() {
 
   g_deferredWorldModels.clear();
   this->pending = 0;
-  this->spatial.ClearChildren();
+  this->ClearChildren();
   this->Clear();
 
   for (auto model = this->models.begin(); model != this->models.end(); ++model) {

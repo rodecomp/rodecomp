@@ -62,10 +62,12 @@ WorldSpatialTree::~WorldSpatialTree() {
 
 // OFFSET: 0x00AC80C0
 // FUNCTION: fn_17664
-void WorldSpatialTree::ClearChildren() {
+void CWorld::ClearChildren() {
   for (int index = 0; index < 4; ++index) {
-    delete this->children[index];
-    this->children[index] = nullptr;
+    if (this->spatial.children[index]) {
+      delete this->spatial.children[index];
+      this->spatial.children[index] = nullptr;
+    }
   }
 }
 

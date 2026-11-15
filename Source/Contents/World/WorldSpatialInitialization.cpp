@@ -10,7 +10,7 @@
 // OFFSET: 0x00AC79C0
 // FUNCTION: fn_17660
 void CWorld::InitializeSpatial() {
-  this->spatial.ClearChildren();
+  this->ClearChildren();
   const int halfWidth = this->ground->width / 2;
   const int halfHeight = this->ground->height / 2;
   this->spatial.minimum[0] = static_cast<float>(-halfWidth) * this->ground->cellSize;

@@ -16,7 +16,6 @@ struct WorldSpatialTree {
   WorldSpatialTree& operator=(const WorldSpatialTree&) = delete;
   void Subdivide(int depth);
   void ReadBounds(CFile& input, int depth);
-  void ClearChildren();
   void BindTerrain(C3dAttr& resource, int depth);
   void BindGround(GroundGeometry& resource, int depth);
   void CopyBounds(int depth, const WorldSpatialTree& source);
