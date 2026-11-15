@@ -2143,14 +2143,14 @@ void UIChatHisBox::AddItemLinkLine(const char* text, std::uint32_t& color, int& 
 // OFFSET: 0x0089E0F0
 // FUNCTION: fn_11599
 void UIChatHisBox::AddNavigationLinkLine(const char* text, std::uint32_t& color, int& mode) {
-  if (!g_navigationLinkParser->HasLink(text)) {
+  NavigationLinkParser* const parser = g_navigationLinkParser;
+  if (!parser->HasLink(text)) {
     this->UIListBox::AddLine(text);
     return;
   }
 
   std::vector<std::string> wrapped;
-  std::string display;
-  DisplayNavigationLink(display, text);
+  std::string display = parser->DisplayNavigationLink(text);
   this->WrapLinkText(&mode, &wrapped, display);
   this->RewrapLinkLines(wrapped, mode);
   std::string source = text;
