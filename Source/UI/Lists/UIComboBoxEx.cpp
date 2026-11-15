@@ -76,7 +76,7 @@ void UIComboBoxEx::OnLBtnUp(int x, int y) {
   this->selected = this->LineAt(x, y);
   auto& windows = g_windowMgr;
 
-  if (UIWindow* target = windows.LookupWindow(this->targetId)) {
+  if (UIWindow* target = windows.LookupWindow(static_cast<WindowId>(this->targetId))) {
     target->SendMsg(nullptr, UM_COMBOBOX_SELECTED, this->selected, 0, 0, 0);
   } else if (this->parent) {
     this->parent->SendMsg(nullptr, UM_COMBOBOX_SELECTED, this->selected, 0, 0, 0);
@@ -142,7 +142,7 @@ void UIComboBoxEx::Refresh() {
 int UIComboBoxEx::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
   case UM_DEFPUSH:
-    if (UIWindow* target = g_windowMgr.LookupWindow(this->targetId)) {
+    if (UIWindow* target = g_windowMgr.LookupWindow(static_cast<WindowId>(this->targetId))) {
       target->SendMsg(nullptr, UM_COMBOBOX_SELECTED, this->selected, 0, 0, 0);
     }
 

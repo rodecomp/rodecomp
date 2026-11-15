@@ -3,6 +3,7 @@
 
 #include "Contents/UserData/NormalItemSlots.h"
 #include "UI/Layout/SnapRectangle.h"
+#include "UI/Window/WindowId.h"
 
 #include <windows.h>
 #include <cstddef>
@@ -221,7 +222,7 @@ class UIWindowMgr {
 public:
   int SendNotice(int selector, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d, std::intptr_t e);
   /* 0004 */ int activeWindowId;
-  /* 0008 */ std::map<int, UIWindow*> windows;
+  /* 0008 */ std::map<WindowId, UIWindow*> windows;
   /* 0010 */ int keyCode;
   /* 0014 */ int modifierKey;
   /* 0018 */ std::list<int> windowHistory;
@@ -665,7 +666,7 @@ public:
   void LoadUIRectInfo();
   void SaveUIRectInfo();
   void ResetUIRectInfo();
-  UIWindow* LookupWindow(int id);
+  UIWindow* LookupWindow(WindowId id);
   void Promote(UIWindow* window);
   void InvalidateFrames();
   UIWindow* FindRenderedUid(std::uint32_t uid);

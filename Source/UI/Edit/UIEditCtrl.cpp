@@ -2360,7 +2360,7 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       goto lookup;
     }
     lookup:
-      window = g_windowMgr.LookupWindow(windowId);
+      window = g_windowMgr.LookupWindow(static_cast<WindowId>(windowId));
       if (window) {
         window->SendMsg(nullptr, UM_DROP, quantity, 0, 0, 0);
       } else {
@@ -8655,8 +8655,8 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       this->buttons[3]->Enable(1);
       this->buttons[3]->Move(this->geometry.width - 48, this->geometry.height - 52);
       for (int id = 146; id < 153; ++id) {
-        if (g_windowMgr.LookupWindow(id)) {
-          g_windowMgr.LookupWindow(id)->SendMsg(nullptr, UM_SORT_ITEMS, 0, 0, 0, 0);
+        if (g_windowMgr.LookupWindow(static_cast<WindowId>(id))) {
+          g_windowMgr.LookupWindow(static_cast<WindowId>(id))->SendMsg(nullptr, UM_SORT_ITEMS, 0, 0, 0, 0);
         }
       }
       if (g_windowMgr.LookupWindow(WID_ITEMSTORESUBWND_TAB_7)) {
@@ -8869,7 +8869,7 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
         this->Invalidate();
         this->UpdateScrollBar();
         for (int index = 0; index < 7; ++index) {
-          UIWindow* window = g_windowMgr.LookupWindow(index + WID_ITEMSTORESUBWND_TAB_0);
+          UIWindow* window = g_windowMgr.LookupWindow(static_cast<WindowId>(index + WID_ITEMSTORESUBWND_TAB_0));
           if (window) {
             window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
           }
@@ -8885,7 +8885,7 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       }
     } else {
       for (int index = 0; index < 7; ++index) {
-        UIWindow* window = g_windowMgr.LookupWindow(index + WID_ITEMSTORESUBWND_TAB_0);
+        UIWindow* window = g_windowMgr.LookupWindow(static_cast<WindowId>(index + WID_ITEMSTORESUBWND_TAB_0));
         if (window) {
           window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
         }

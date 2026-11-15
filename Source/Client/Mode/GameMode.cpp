@@ -2413,7 +2413,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       }
       if (this->drag.source == 0x10 || this->drag.source == 7) {
         if (this->drag.skill) {
-          UIWindow* window = g_windowMgr.LookupWindow(this->drag.source == 0x10 ? 0x9F : 0x24);
+          UIWindow* window = g_windowMgr.LookupWindow(this->drag.source == 0x10 ? WID_QUIKSLOTWND : WID_SHORTCUTWND);
           if (window) {
             window->RecordDrop(argument1, argument2, this->drag, -1);
             window->DragAndDrop(argument1, argument2, reinterpret_cast<std::intptr_t>(&this->drag));
@@ -6193,7 +6193,7 @@ void CGameMode::ProcessUiMessage(unsigned char* message) {
         break;
       }
     }
-    UIWindow* window = g_windowMgr.LookupWindow(values->values[0]);
+    UIWindow* window = g_windowMgr.LookupWindow(static_cast<WindowId>(values->values[0]));
     if (window != nullptr) {
       window->SendMsg(nullptr, UM_COMMAND, values->values[1], values->values[2], values->values[3], values->values[4]);
     }
@@ -6203,7 +6203,7 @@ void CGameMode::ProcessUiMessage(unsigned char* message) {
     this->ReceiveUiDragMessage(message);
     break;
   case 902: {
-    UIWindow* window = g_windowMgr.LookupWindow(values->values[0]);
+    UIWindow* window = g_windowMgr.LookupWindow(static_cast<WindowId>(values->values[0]));
     if (window != nullptr) {
       window->RestoreEditTexts(reinterpret_cast<const unsigned char*>(&values->values[1]));
     }
@@ -6283,7 +6283,7 @@ void CGameMode::ProcessUiMessage(unsigned char* message) {
         break;
       }
     }
-    UIWindow* window = g_windowMgr.LookupWindow(values->values[0]);
+    UIWindow* window = g_windowMgr.LookupWindow(static_cast<WindowId>(values->values[0]));
     if (window != nullptr) {
       window->SendMsg(nullptr, values->values[5], values->values[1], values->values[2], values->values[3], values->values[4]);
     }
@@ -6324,7 +6324,7 @@ void CGameMode::ReceiveUiDragMessage(const unsigned char* message) {
     std::memcpy(&drag.options[index], &packet->options[index * 5], sizeof(drag.options[index]));
   }
 
-  UIWindow* window = g_windowMgr.LookupWindow(packet->windowId);
+  UIWindow* window = g_windowMgr.LookupWindow(static_cast<WindowId>(packet->windowId));
   this->drag = drag;
 
   if (this->drag.quantity != 1) {

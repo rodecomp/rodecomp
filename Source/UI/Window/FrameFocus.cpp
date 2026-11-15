@@ -37,7 +37,7 @@ bool UIWindowMgr::IsOrderFixed(int id) {
   case WID_MACROREPORTERWND: case WID_VIEWCAMERAINFOWND: case WID_REFININGWND: case WID_MINIPARTYWND: case WID_MENUICONWND: case WID_RPIMAGEWND2: case WID_DISCONNECTEDSERVERMSGWND: case WID_GRADEENCHANTWND: case WID_BALLOONOPENBTN: case WID_MACROBLACKLISTCHECKWND: case 600: case WID_EXCHANGEUI: case WID_DEBUFFREMOVEWND:
     return true;
   case 145: {
-    UIWindow* window = g_windowMgr.LookupWindow(145);
+    UIWindow* window = g_windowMgr.LookupWindow(static_cast<WindowId>(145));
     if (window && window->geometry.visible) {
       return false;
     }

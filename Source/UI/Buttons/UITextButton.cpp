@@ -2918,7 +2918,7 @@ void UIItemTagButton::OnLBtnDown(int x, int y) {
 // FUNCTION: fn_11433
 void UIComboBox::OnLBtnUp(int x, int y) {
   this->selected = this->LineAt(x, y);
-  if (UIWindow* target = g_windowMgr.LookupWindow(this->targetId)) {
+  if (UIWindow* target = g_windowMgr.LookupWindow(static_cast<WindowId>(this->targetId))) {
     target->SendMsg(nullptr, UM_COMBOBOX_SELECTED, this->selected, 0, 0, 0);
     g_windowMgr.CloseWindow(WID_COMBOBOXWND);
     return;
@@ -2945,7 +2945,7 @@ void UIComboBoxID::OnLBtnUp(int x, int y) {
 
   this->selected = line;
 
-  if (UIWindow* target = g_windowMgr.LookupWindow(this->targetId)) {
+  if (UIWindow* target = g_windowMgr.LookupWindow(static_cast<WindowId>(this->targetId))) {
     const auto found = this->lineData.find(this->selected);
     if (found != this->lineData.end()) {
       target->SendMsg(nullptr, UM_COMBOBOX_SELECTED, this->lines[this->selected].id, found->second, 0, 0);
@@ -3265,7 +3265,7 @@ void UIRechargeGage::Paint() {
 void UIImgMenu::OnLBtnUp(int x, int y) {
   this->hovered = this->ItemAt(x, y);
   if (this->hovered != -1 && !this->disabledItems[this->hovered]) {
-    if (UIWindow* target = g_windowMgr.LookupWindow(this->callerWindowId)) {
+    if (UIWindow* target = g_windowMgr.LookupWindow(static_cast<WindowId>(this->callerWindowId))) {
       target->SendMsg(nullptr, UM_MENU_SELECTED, this->hovered, this->geometry.id, 0, 0);
     }
     g_windowMgr.CloseWindow(0x7A);

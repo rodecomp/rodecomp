@@ -420,7 +420,7 @@ __declspec(safebuffers) void CEZ2STRParticle::UpdatePosition(float x, float y, f
     this->m_screen.y =
       (static_cast<float>(g_renderer->viewport.centerY) - static_cast<float>(g_renderer->viewport.centerY) * 0.2f) + this->m_windowOffset.y;
     if (this->m_attachToWindow == true) {
-      UIWindow* window = g_windowMgr.LookupWindow(this->m_windowId);
+      UIWindow* window = g_windowMgr.LookupWindow(static_cast<WindowId>(this->m_windowId));
       if (window) {
         this->m_visible = true;
         this->m_screen.x = static_cast<float>(window->geometry.x) + this->m_windowOffset.x;

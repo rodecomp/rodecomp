@@ -28,7 +28,7 @@ UIWindow* UIWindowMgr::CreateLayoutWindow(int id) {
   x = g_renderer->viewport.width * x / 1024;
   y = g_renderer->viewport.height * y / 768;
 
-  UIWindow* window = this->LookupWindow(id);
+  UIWindow* window = this->LookupWindow(static_cast<WindowId>(id));
   std::string yKey;
   std::string xKey;
   if (window == nullptr) {

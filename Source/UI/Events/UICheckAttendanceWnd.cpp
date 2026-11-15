@@ -263,7 +263,7 @@ void UICheckAttendanceWnd_Banner::OnLBtnUp(int x, int y) {
     return;
   }
 
-  if (g_windowMgr.LookupWindow(this->m_entries[this->m_current].action)) {
+  if (g_windowMgr.LookupWindow(static_cast<WindowId>(this->m_entries[this->m_current].action))) {
     return;
   }
 

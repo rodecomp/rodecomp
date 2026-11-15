@@ -14,7 +14,7 @@ void UIMiniBtnWnd::Paint() {
     return;
   }
 
-  UIWindow* window = g_windowMgr.LookupWindow(this->m_windowId);
+  UIWindow* window = g_windowMgr.LookupWindow(static_cast<WindowId>(this->m_windowId));
   if (window && window->geometry.visible != 0) {
     auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_activeImage.c_str())));
     this->DrawBitmap(0, 0, bitmap, false);
@@ -28,7 +28,7 @@ void UIMiniBtnWnd::Paint() {
 // FUNCTION: fn_12694
 void UIMiniBtnWnd::OnLBtnDown(int, int) {
   bool visible;
-  UIWindow* window = g_windowMgr.LookupWindow(this->m_windowId);
+  UIWindow* window = g_windowMgr.LookupWindow(static_cast<WindowId>(this->m_windowId));
   if (window) {
     visible = window->geometry.visible == 0;
   } else {
@@ -47,7 +47,7 @@ void UIMiniBtnWnd::OnLBtnDown(int, int) {
 // FUNCTION: fn_12789
 void UIMiniBtnWnd::Toggle() {
   bool visible;
-  UIWindow* window = g_windowMgr.LookupWindow(this->m_windowId);
+  UIWindow* window = g_windowMgr.LookupWindow(static_cast<WindowId>(this->m_windowId));
   if (window) {
     visible = window->geometry.visible == 0;
   } else {

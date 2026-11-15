@@ -1976,7 +1976,7 @@ void UIMenuWnd::OnLBtnUp(int x, int y) {
 
   const int choice = (index - separators) / 2;
   UIWindow* target = this->m_menuId == 301 ? g_windowMgr.FindSnapExcludedWindow(static_cast<int>(this->m_targetWindowId))
-                                           : g_windowMgr.LookupWindow(this->m_menuId);
+                                           : g_windowMgr.LookupWindow(static_cast<WindowId>(this->m_menuId));
   if (target) {
     target->SendMsg(nullptr, UM_MENU_SELECTED, choice, 0, 0, 0);
   } else if (this->m_menuId == 10041) {

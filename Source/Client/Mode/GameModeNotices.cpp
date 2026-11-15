@@ -1901,7 +1901,7 @@ void CGameMode::ReceiveAchievementList(int count, int score, short achievementLe
 void CGameMode::OpenServiceWindow(unsigned char type) {
   switch (type) {
   case 0:
-    if (!g_windowMgr.LookupWindow(251)) {
+    if (!g_windowMgr.LookupWindow(static_cast<WindowId>(251))) {
       AccountRequestPacket request;
       request.id = ID_CZ_REQ_BANKING_CHECK;
       request.aid = g_session.m_aid;

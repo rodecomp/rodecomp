@@ -543,7 +543,7 @@ void UIWindowMgr::InitializeWindowPolicy() {
 
 // OFFSET: 0x00AA5F70
 // FUNCTION: fn_17227
-UIWindow* UIWindowMgr::LookupWindow(int id) {
+UIWindow* UIWindowMgr::LookupWindow(WindowId id) {
   if (g_replayAnimationScaling != 0 && id == 600) {
     return this->replayMessageBoxWnd;
   }
@@ -2509,7 +2509,7 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
 
     if (g_windowMgr.CloseWindow(WID_ILLUSTWND)) {
       g_modeMgr.GetGameMode()->SendMsg(MM_SHOW_IMAGE, reinterpret_cast<int>(""), -1, 1, 0);
-    } else if (UIWindow* window = g_windowMgr.LookupWindow(id)) {
+    } else if (UIWindow* window = g_windowMgr.LookupWindow(static_cast<WindowId>(id))) {
       switch (id) {
       case WID_ITEMSHOPWND:
       case WID_ITEMPURCHASEWND:
@@ -2698,7 +2698,7 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
 // OFFSET: 0x00A8CF20
 // FUNCTION: fn_17143
 bool UIWindowMgr::CloseWindow(int id) {
-  UIWindow* window = this->LookupWindow(id);
+  UIWindow* window = this->LookupWindow(static_cast<WindowId>(id));
   if (window) {
     if (this->savedRectangles.find(id) != this->savedRectangles.end()) {
       this->savedRectangles[id]->x = window->geometry.x;
@@ -2716,7 +2716,7 @@ bool UIWindowMgr::CloseWindow(int id) {
     return false;
   }
 
-  if (this->LookupWindow(id) == this->keyboardCommandRootWnd) {
+  if (this->LookupWindow(static_cast<WindowId>(id)) == this->keyboardCommandRootWnd) {
     this->keyboardCommandRootWnd = nullptr;
   }
 
@@ -2763,7 +2763,7 @@ bool UIWindowMgr::CloseWindow(int id) {
     }
     break;
   case WID_RUNESYSTEMWND:
-    if (UIWindow* found = this->LookupWindow(id)) {
+    if (UIWindow* found = this->LookupWindow(static_cast<WindowId>(id))) {
       this->CloseWindow(WID_RUNESYSTEM_DECOMRESULTWND);
       this->Schedule(found);
       closed = true;
@@ -3820,8 +3820,8 @@ bool UIWindowMgr::CloseWindow(int id) {
     }
     break;
   case WID_HOTKEYWND: case WID_RELOADLUASCRIPTWND: case WID_QUIKSLOTWND: case WID_BATTLEFIELD_DESCRIBEWND: case WID_BATTLEFIELD_STATUSWND: case WID_BATTLEFIELD_HELPWND: case 171: case WID_SEARCH_STORE_INFO: case WID_SHOWINFO_TESTLAYER: case WID_EXMACRO_SETUPWND:
-    if (this->LookupWindow(id)) {
-      if (UIWindow* found = this->LookupWindow(id)) {
+    if (this->LookupWindow(static_cast<WindowId>(id))) {
+      if (UIWindow* found = this->LookupWindow(static_cast<WindowId>(id))) {
         switch (id) {
         case WID_HOTKEYWND:
           this->Schedule(this->hotkeyWnd);
@@ -3848,7 +3848,7 @@ bool UIWindowMgr::CloseWindow(int id) {
     }
     break;
   default:
-    if (UIWindow* found = this->LookupWindow(id)) {
+    if (UIWindow* found = this->LookupWindow(static_cast<WindowId>(id))) {
       this->Schedule(found);
       closed = true;
     }
@@ -4054,7 +4054,7 @@ bool UIWindowMgr::CloseWindow(int id) {
     }
     break;
   case WID_LOGINOTPWND:
-    if (UIWindow* found = this->LookupWindow(id)) {
+    if (UIWindow* found = this->LookupWindow(static_cast<WindowId>(id))) {
       this->Schedule(found);
       this->loginOTPWnd = nullptr;
       closed = true;
@@ -4077,7 +4077,7 @@ bool UIWindowMgr::CloseWindow(int id) {
     }
     break;
   case WID_RENEWQUESTWND:
-    if (UIWindow* found = this->LookupWindow(id)) {
+    if (UIWindow* found = this->LookupWindow(static_cast<WindowId>(id))) {
       this->Schedule(found);
       this->questWndVisible = 0;
       closed = true;
@@ -4129,7 +4129,7 @@ bool UIWindowMgr::CloseWindow(int id) {
     break;
   }
 
-  auto entry = this->windows.find(id);
+  auto entry = this->windows.find(static_cast<WindowId>(id));
   if (entry != this->windows.end()) {
     this->windows.erase(entry);
   }
@@ -6726,7 +6726,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     break;
   case WID_MERCHANTITEMLOGWND_MODE_0:
   case WID_MERCHANTITEMLOGWND_MODE_1:
-    window = this->LookupWindow(id);
+    window = this->LookupWindow(static_cast<WindowId>(id));
     if (window == nullptr) {
       if (id == WID_MERCHANTITEMLOGWND_MODE_1) {
         window = new UIMerchantItemLogWnd(1);
@@ -7112,7 +7112,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     break;
   case WID_RENEWQUESTWND:
     this->RecordWindowPacket(321);
-    window = this->LookupWindow(id);
+    window = this->LookupWindow(static_cast<WindowId>(id));
     if (window == nullptr) {
       window = new UIRenewQuestWnd();
       window->SetSize(381, 466);
@@ -7127,7 +7127,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     break;
   case WID_RENEWDETAILQUESTINFOWND:
     this->RecordWindowPacket(321);
-    window = this->LookupWindow(id);
+    window = this->LookupWindow(static_cast<WindowId>(id));
     if (window == nullptr) {
       window = new UIRenewDetailQuestInfoWnd();
       window->SetSize(342, 412);
@@ -7383,7 +7383,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     break;
   default:
     if (Singleton<CUIRegisterMgr>::GetInstance()->IsRegistered(id)) {
-      window = this->LookupWindow(id);
+      window = this->LookupWindow(static_cast<WindowId>(id));
       if (window == nullptr) {
         window = Singleton<CUIRegisterMgr>::GetInstance()->Create(id);
         if (window == nullptr) {
@@ -7397,7 +7397,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
 
   if (window) {
     window->SetId(id);
-    this->windows[id] = window;
+    this->windows[static_cast<WindowId>(id)] = window;
     UIWindow* root = window;
     while (root->parent) {
       root = root->parent;

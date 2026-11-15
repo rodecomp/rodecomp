@@ -26,7 +26,7 @@ inline bool UIWindowMgr::ShowShortcutWindow(int value) {
     g_windowMgr.EnsureWindow(159);
   }
 
-  UIWindow* companion = g_windowMgr.LookupWindow(159);
+  UIWindow* companion = g_windowMgr.LookupWindow(WID_QUIKSLOTWND);
 
   if (companion) {
     companion->Show(value);
