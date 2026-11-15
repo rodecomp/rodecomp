@@ -154,3 +154,16 @@ void CGraffiSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64
 
   this->CGameActor::SendMsg(sender, message, b, c, d, 0, 0, 0);
 }
+
+#include "Contents/Skills/SkillInfo.h"
+#include "Contents/UserData/NormalItemSlots.h"
+
+// INLINED
+bool CSkillInfo::MatchesShortcut(const NormalItemSlot* slot) const {
+  if (!slot || !this->IsValid()) {
+    return false;
+  }
+
+  const auto requested = slot->value;
+  return requested != 0 && (this->id != slot->itemId || this->level >= requested);
+}

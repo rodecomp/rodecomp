@@ -105,7 +105,7 @@ void UIShortCutWnd::Paint() {
       const int x = 16 + 29 * column;
       if (slot.enabled != 0) {
         CSkillInfo skill = g_session.LookupSkill(slot.itemId);
-        if (!skill.MatchesShortcut(&slot)) {
+        if (!this->MatchesShortcut(skill, &slot)) {
           continue;
         }
 

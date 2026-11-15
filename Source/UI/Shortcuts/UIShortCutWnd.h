@@ -8,6 +8,7 @@ struct ModeDragState;
 class UICheckBox;
 class UIBitmapButton;
 struct NormalItemSlot;
+class CSkillInfo;
 struct NormalItemSlotWindow;
 
 enum ShortCutButtonId : int {
@@ -34,6 +35,7 @@ public:
   void OnMouseHover(int x, int y) override;
   void OnLBtnUp(int x, int y) override;
   void OnRBtnDown(int x, int y) override;
+  bool MatchesShortcut(const CSkillInfo& skill, const NormalItemSlot* slot);
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
   friend class CGameMode;

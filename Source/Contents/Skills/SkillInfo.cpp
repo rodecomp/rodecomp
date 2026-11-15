@@ -1,3 +1,4 @@
+#include "UI/Shortcuts/UIShortCutWnd.h"
 #include "Client/Mode/ModeMgr.h"
 #include "UI/GameSettings/TalkType.h"
 #include "Contents/Effects/Core/EffectTypes.h"
@@ -550,13 +551,13 @@ int CSkillAction_DK_HACKANDSLASHER::GetSkillAttackMotion() {
 
 // OFFSET: 0x008AC440
 // FUNCTION: fn_11732
-bool CSkillInfo::MatchesShortcut(const NormalItemSlot* slot) const {
-  if (!slot || !this->IsValid()) {
+bool UIShortCutWnd::MatchesShortcut(const CSkillInfo& skill, const NormalItemSlot* slot) {
+  if (!slot || !skill.IsValid()) {
     return false;
   }
 
   const auto requested = slot->value;
-  return requested != 0 && (this->id != slot->itemId || this->level >= requested);
+  return requested != 0 && (skill.id != slot->itemId || skill.level >= requested);
 }
 
 // OFFSET: 0x00773550
