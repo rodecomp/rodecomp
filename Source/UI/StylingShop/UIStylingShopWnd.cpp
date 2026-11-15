@@ -1950,7 +1950,7 @@ void UIAccessoryShowCase::AddAccessories(int& loaded, int& skipped, const char* 
     char path[128] = {};
     char id[32] = {};
     std::sprintf(id, "%d", itemId);
-    g_session.IconPath(path, id, 1);
+    g_session.IconPath(id, path, 1);
 
     UIAccBitmapButton* button = new (std::nothrow) UIAccBitmapButton();
     button->SetBitmap(path, 0, 0);

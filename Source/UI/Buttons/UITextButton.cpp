@@ -1500,7 +1500,7 @@ void UITabControl::FillTab(int index, int x, int y, int width, int height, std::
 void UIStaticItem::Paint() {
   char path[260];
   std::memset(path, 0, sizeof(path));
-  g_session.IconPath(path, this->m_item.itemId.c_str(), this->m_item.identified);
+  g_session.IconPath(this->m_item.itemId.c_str(), path, this->m_item.identified);
 
   auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
   if (!bitmap) {
@@ -3503,7 +3503,7 @@ void UIString::Paint() {
   if (!this->image.empty()) {
     char path[128];
     std::memset(path, 0, sizeof(path));
-    g_session.IconPath(path, this->image.c_str(), 0);
+    g_session.IconPath(this->image.c_str(), path, 0);
     CRes* res = ResourceMgr::Instance().Load(Resolve(path));
     if (!res) {
       return;

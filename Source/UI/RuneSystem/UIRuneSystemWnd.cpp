@@ -1061,7 +1061,7 @@ void UIDecomlist::Paint() {
     ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, itemId, 0);
     char text[128];
     std::memset(text, 0, sizeof(text));
-    g_session.IconPath(text, item.itemId.c_str(), 1);
+    g_session.IconPath(item.itemId.c_str(), text, 1);
     CBitmapRes* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text)));
     if (!icon) {
       icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\item\\사과.bmp")));
@@ -1313,7 +1313,7 @@ void UIRuneSystem_ActiveWnd::Paint() {
       item.SetItemId(itemId);
       char path[128];
       std::memset(path, 0, sizeof(path));
-      g_session.IconPath(path, item.itemId.c_str(), 1);
+      g_session.IconPath(item.itemId.c_str(), path, 1);
       CBitmapRes* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
       if (!icon) {
         icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\item\\사과.bmp")));
@@ -1355,7 +1355,7 @@ void UIRuneSystem_DecomItemWnd::Paint() {
       item.SetItemId(itemId);
       char path[128];
       std::memset(path, 0, sizeof(path));
-      g_session.IconPath(path, item.itemId.c_str(), 1);
+      g_session.IconPath(item.itemId.c_str(), path, 1);
       CBitmapRes* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
       if (!icon) {
         icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\item\\사과.bmp")));
@@ -1397,7 +1397,7 @@ void UIRuneSystem_DecomResultWnd::Paint() {
       item.identified = 1;
       char path[128];
       std::memset(path, 0, sizeof(path));
-      g_session.IconPath(path, item.itemId.c_str(), 1);
+      g_session.IconPath(item.itemId.c_str(), path, 1);
       CBitmapRes* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
       if (!icon) {
         icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\item\\사과.bmp")));
@@ -2047,7 +2047,7 @@ void UIRuneSet_Info::Paint() {
         item.SetItemId(static_cast<int>(itemId));
         char iconPath[128];
         std::memset(iconPath, 0, sizeof(iconPath));
-        g_session.IconPath(iconPath, item.itemId.c_str(), 1);
+        g_session.IconPath(item.itemId.c_str(), iconPath, 1);
         CBitmapRes* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(iconPath)));
         if (icon) {
           this->DrawBitmap(rewardX[index], rewardY[index], static_cast<CBitmapRes*>(icon), true);
@@ -2135,7 +2135,7 @@ void UIRune_Decom::Paint() {
       item.SetItemId((*this->m_decomList)[index].m_itemId);
       char iconPath[128];
       std::memset(iconPath, 0, sizeof(iconPath));
-      g_session.IconPath(iconPath, item.itemId.c_str(), 1);
+      g_session.IconPath(item.itemId.c_str(), iconPath, 1);
       CBitmapRes* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(iconPath)));
       if (!icon) {
         icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\item\\사과.bmp")));

@@ -31,7 +31,7 @@ namespace {
 
 // OFFSET: 0x0055D860
 // FUNCTION: fn_02109
-bool CRendererDX7::SaveBitmap(const char* filename, CBitmapRes* overlay) {
+int CRendererDX7::SaveBitmap(const char* filename, CBitmapRes* overlay) {
   if (!this->LockBackBuffer()) {
     return false;
   }
@@ -144,7 +144,7 @@ bool CRendererDX7::SaveBitmap(const char* filename, CBitmapRes* overlay) {
 
 // OFFSET: 0x0055DDF0
 // FUNCTION: fn_02110
-bool CRendererDX7::SaveJpeg(const char* filename, CBitmapRes* overlay) {
+int CRendererDX7::SaveJpeg(const char* filename, CBitmapRes* overlay) {
   if (!this->LockBackBuffer()) {
     return false;
   }

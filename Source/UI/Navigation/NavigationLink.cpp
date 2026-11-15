@@ -710,7 +710,7 @@ void UIItemImage::Paint() {
 
   this->ClearSurface(0xFFFF00FF);
   char path[128] = {};
-  g_session.IconPath(path, this->m_itemId.c_str(), 1);
+  g_session.IconPath(this->m_itemId.c_str(), path, 1);
   CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
 
   if (bitmap) {

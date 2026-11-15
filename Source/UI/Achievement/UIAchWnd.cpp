@@ -665,7 +665,7 @@ void UIToolTipBitmapWnd::Paint() {
     info.SetItemId(item);
     char path[260];
     std::memset(path, 0, sizeof(path));
-    g_session.IconPath(path, info.itemId.c_str(), 1);
+    g_session.IconPath(info.itemId.c_str(), path, 1);
     CBitmapRes* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
     if (icon) {
       this->DrawBitmap(20, 15, icon, true);

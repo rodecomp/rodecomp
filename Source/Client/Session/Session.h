@@ -192,7 +192,7 @@ static_assert(sizeof(SessionTraits) == 0x50);
 
 class CSession {
 public:
-  void IconPath(char* output, const char* id, int identified);
+  void IconPath(const char* id, char* output, int identified);
   ITEM_INFO LookupClientItemByIdentity(std::uint32_t id) const;
   float GetSkillFactor(int job) const;
   unsigned BaseJob(unsigned job) const;

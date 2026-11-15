@@ -798,7 +798,7 @@ void UIBasicItemCtrl::DrawItemIcon(int x, int y, int, bool compact) {
   }
 
   char path[128];
-  g_session.IconPath(path, FormatOwnedString("%d", id).c_str(), this->m_item.identified);
+  g_session.IconPath(FormatOwnedString("%d", id).c_str(), path, this->m_item.identified);
   auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
   if (bitmap) {
     this->DrawBitmap(x, y, bitmap, true);

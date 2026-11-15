@@ -152,7 +152,7 @@ void UISwapEquipmentWnd::DrawEquipmentSlots() {
             const char* id = item.itemId.c_str();
             const int iconX = xCoords[slot / 4 + 2];
             std::memset(path, 0, sizeof(path));
-            g_session.IconPath(path, id, 1);
+            g_session.IconPath(id, path, 1);
             CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
             const int row = slot & 3;
             if (bitmap) {
@@ -170,7 +170,7 @@ void UISwapEquipmentWnd::DrawEquipmentSlots() {
             const char* id = item.itemId.c_str();
             const int iconX = xCoords[(slot & 3) + 2];
             std::memset(path, 0, sizeof(path));
-            g_session.IconPath(path, id, 1);
+            g_session.IconPath(id, path, 1);
             CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
             if (bitmap) {
               this->DrawAuxiliary(1, iconX, 22, bitmap, true, false);

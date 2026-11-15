@@ -81,13 +81,13 @@ bool CRendererDX9::SaveBitmapResource(const char* filename, int format, CBitmapR
 
 // OFFSET: 0x00567FC0
 // FUNCTION: fn_02234
-bool CRendererDX9::SaveBitmap(const char* filename, CBitmapRes* overlay) {
+int CRendererDX9::SaveBitmap(const char* filename, CBitmapRes* overlay) {
   return this->SaveBitmapResource(filename, 0, overlay);
 }
 
 // OFFSET: 0x00568030
 // FUNCTION: fn_02235
-bool CRendererDX9::SaveJpeg(const char* filename, CBitmapRes* overlay) {
+int CRendererDX9::SaveJpeg(const char* filename, CBitmapRes* overlay) {
   return this->SaveBitmapResource(filename, 1, overlay);
 }
 

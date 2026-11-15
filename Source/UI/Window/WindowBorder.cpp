@@ -137,11 +137,6 @@ int UIWindow::DrawButtonBar(int style, int width, int rows) {
 }
 
 // INLINED
-void DrawRectangleBorder(UIWindow& window, int x, int y, int width, int height, std::uint32_t color) {
-  window.DrawRectOutline(x, y, width, height, color);
-}
-
-// INLINED
 void DrawRoundedBorder(UIWindow& window, int x, int y, int width, int height, std::uint32_t color) {
   window.DrawRoundedOutline(x, y, width, height, color);
 }

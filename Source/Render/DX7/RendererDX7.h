@@ -40,8 +40,8 @@ public:
   void DrawLightmappedPrimitive(LightmappedPrimitive* primitive);
   void SetTextureMode(int mode);
   bool RenderToTexture(int width, int height, const std::list<RenderPrimitive*>& primitives, CTexture*& texture);
-  bool SaveBitmap(const char* filename, CBitmapRes* overlay) override;
-  bool SaveJpeg(const char* filename, CBitmapRes* overlay) override;
+  int SaveBitmap(const char* filename, CBitmapRes* overlay) override;
+  int SaveJpeg(const char* filename, CBitmapRes* overlay) override;
   bool SaveLogo(std::string filename) override;
   void SetTexture(unsigned stage, CTextureDX7* texture);
   HRESULT Present(int option) override;

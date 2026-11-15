@@ -16,7 +16,7 @@ void DrawItemWithQuantityAuxiliary(
   unsigned char identified, unsigned char plain
 ) {
   char text[128] = {};
-  g_session.IconPath(text, item.itemId.c_str(), identified);
+  g_session.IconPath(item.itemId.c_str(), text, identified);
   CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text)));
   window.DrawAuxiliary(mode, x, y, bitmap, true, false);
 
@@ -41,7 +41,7 @@ void DrawItemWithQuantityAuxiliary(
 // FUNCTION: fn_11717
 void DrawItemIcon(UIWindow& window, ResourceMgr& resources, int x, int y, const ITEM_INFO& item, unsigned char identified) {
   char path[128];
-  g_session.IconPath(path, item.itemId.c_str(), item.identified != 0 || identified != 0);
+  g_session.IconPath(item.itemId.c_str(), path, item.identified != 0 || identified != 0);
   CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
 
   if (bitmap) {
@@ -53,7 +53,7 @@ void DrawItemIcon(UIWindow& window, ResourceMgr& resources, int x, int y, const 
 // FUNCTION: fn_11718
 void DrawItemIconById(UIWindow& window, int x, int y, const char* id, unsigned char identified) {
   char path[128];
-  g_session.IconPath(path, id, identified);
+  g_session.IconPath(id, path, identified);
   CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
 
   if (bitmap) {

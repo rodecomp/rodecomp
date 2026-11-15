@@ -81,7 +81,7 @@ ITEM_DESC& EnsureItemDescription(int id, std::map<int, ITEM_DESC>& values) {
 
 // OFFSET: 0x00DDD280
 // FUNCTION: fn_23382
-void CSession::IconPath(char* output, const char* id, int identified) {
+void CSession::IconPath(const char* id, char* output, int identified) {
   const ITEM_DESC& value = FindItemDescription(std::atoi(id));
   const char* resource = identified != 0 ? value.identifiedResource : value.unidentifiedResource;
   std::sprintf(output, "유저인터페이스\\item\\%s.bmp", resource);
