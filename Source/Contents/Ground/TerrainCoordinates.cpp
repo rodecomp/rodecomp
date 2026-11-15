@@ -15,10 +15,11 @@ void CWorld::CellOrigin(int column, int row, float& x, float& z) const {
 // OFFSET: 0x00CD36E0
 // FUNCTION: fn_21270
 void CGameMode::CellCenter(int column, int row, float& x, float& z) const {
+  const float offset = static_cast<float>(this->scene->terrain->cellSize) * 8.0f * 0.0625f;
   x = (static_cast<float>(column) - static_cast<float>(this->scene->terrain->width) * 0.5f) * static_cast<float>(this->scene->terrain->cellSize) +
-    static_cast<float>(this->scene->terrain->cellSize) * 8.0f * 0.0625f;
+    offset;
   z = (static_cast<float>(row) - static_cast<float>(this->scene->terrain->height) * 0.5f) * static_cast<float>(this->scene->terrain->cellSize) +
-    static_cast<float>(this->scene->terrain->cellSize) * 8.0f * 0.0625f;
+    offset;
 }
 
 // OFFSET: 0x00CD3620
