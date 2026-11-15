@@ -4031,8 +4031,10 @@ void UICombinedCardItemCollection_ComparisonWnd::OnCreate(int width, int height)
   this->m_closeButton->Enable(0);
   this->m_kind = 250;
   const SkinPaletteCell cell = {7, 1};
-  this->m_viewer->backgroundColor = g_skinInfo.PaletteColor(cell, g_skinInfo.Selected()) | 0xFF000000u;
-  this->m_viewer->Invalidate();
+  const unsigned color = g_skinInfo.PaletteColor(cell, g_skinInfo.Selected()) | 0xFF000000u;
+  UITextViewer* viewer = this->m_viewer;
+  viewer->backgroundColor = color;
+  viewer->Invalidate();
 }
 
 // OFFSET: 0x008E24C0
