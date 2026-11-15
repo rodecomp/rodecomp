@@ -27,9 +27,8 @@ void CEffectPrim::RenderFoldingRibbon(matrix& wtm) {
   ZeroVector3d vec[4];
   int rpCnt = 0;
 
-  EffectPrimitiveSlot* slotIt = this->state.slots;
-  for (int ec = 4; ec != 0; --ec, ++slotIt) {
-    EffectPrimitiveSlot& slot = *slotIt;
+  for (int ec = 0; ec < 4; ++ec) {
+    EffectPrimitiveSlot& slot = this->state.slots[ec];
     if (slot.life != 1 || slot.alphaB <= 0) {
       continue;
     }
