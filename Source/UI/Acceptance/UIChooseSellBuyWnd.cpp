@@ -6812,8 +6812,8 @@ int UISayDialogWnd::ButtonX(UIBitmapButton* button) {
 // OFFSET: 0x008D76B0
 // FUNCTION: fn_12122
 __declspec(noinline) int UIItemCollectionWnd::CardSlotAt(int x, int y, int* slotX, int* slotY) {
-  const int localX = x - 3;
-  *slotX = localX / 25 * 25 + 4;
+  x -= 3;
+  *slotX = x / 25 * 25 + 4;
   *slotY = this->geometry.height - 50;
   this->ToScreen(*slotX, *slotY);
   if (y <= this->geometry.height - 26) {
@@ -6829,7 +6829,7 @@ __declspec(noinline) int UIItemCollectionWnd::CardSlotAt(int x, int y, int* slot
   }
 
   for (int index = 0; index < slots; ++index, left += 25) {
-    if (left < localX && localX < left + 25) {
+    if (left < x && x < left + 25) {
       int cardId;
       std::memcpy(&cardId, &this->m_item.cards[index], sizeof(cardId));
       if (cardId == 0) {
