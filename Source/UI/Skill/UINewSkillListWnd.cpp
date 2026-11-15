@@ -78,6 +78,15 @@ static int SkillTabOf(int skillId) {
   return 1;
 }
 
+namespace {
+// INLINED
+inline int SessionOption(int id) {
+  const auto entry = g_session.m_options.Values().find(static_cast<int>(id));
+  const std::int64_t value = entry == g_session.m_options.Values().end() ? 0 : entry->second;
+  return static_cast<int>(value);
+}
+}
+
 // OFFSET: 0x009B3E70
 // FUNCTION: fn_13826
 void UINewSkillListWnd::StoreInfo() {
@@ -927,7 +936,7 @@ void UINewSkillListWnd::Paint() {
 // OFFSET: 0x009B2590
 // FUNCTION: fn_13816
 void UINewSkillListWnd::OnLBtnDblClk(int x, int y) {
-  if (g_session.GetOption(5) > 0) {
+  if (SessionOption(5) > 0) {
     return;
   }
 
