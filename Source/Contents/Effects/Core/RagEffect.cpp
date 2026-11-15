@@ -3997,10 +3997,10 @@ void CRagEffect::TrackCloud(char kind) {
     }
   }
 
-  if (target == nullptr) {
-    this->state.lastPrim->state.slots[0].life = 0;
-  } else {
+  if (target != nullptr) {
     this->state.lastPrim->state.slots[0].vecTPre = target->render.position;
+  } else {
+    this->state.lastPrim->state.slots[0].life = 0;
   }
 
   this->state.lastPrim->state.slots[1].life = 0;
