@@ -29,7 +29,8 @@ namespace {
 
 // OFFSET: 0x00565DA0
 // FUNCTION: fn_02224
-void CRendererDX9::DrawAlphaQueues(RenderQueues& queues, unsigned char twoPass) {
+void CRendererDX9::DrawAlphaQueues() {
+  RenderQueues& queues = this->queues;
   ScopedDeviceStateDX9 restore(this->device->state);
   const auto before = [](const DepthPrimitive& left, const DepthPrimitive& right) {
     return Before(left, right);
@@ -44,7 +45,7 @@ void CRendererDX9::DrawAlphaQueues(RenderQueues& queues, unsigned char twoPass) 
   this->device->state.SetRenderState(D3DRS_ALPHAREF, 1);
   this->device->state.SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL);
 
-  if (twoPass == 1) {
+  if (this->twoPass == 1) {
     const auto drawAlphaTested = [this](const DepthPrimitive& entry) {
       RenderCommand* command = entry.primitive;
       this->device->state.SetRenderState(D3DRS_ALPHAREF, WritesDepth(*command) ? 1 : 240);

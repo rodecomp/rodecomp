@@ -82,3 +82,13 @@ void CRendererDX9::DrawGroundQueues() {
   this->device->state.SetRenderState(D3DRS_AMBIENT, 0);
   this->device->state.SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
 }
+
+// INLINED
+void CRendererDX9::DrawOpaqueQueues(RenderQueues& queues) {
+  this->DrawOpaqueQueues();
+}
+
+// INLINED
+void CRendererDX9::DrawAlphaQueues(RenderQueues& queues, unsigned char twoPass) {
+  this->DrawAlphaQueues();
+}

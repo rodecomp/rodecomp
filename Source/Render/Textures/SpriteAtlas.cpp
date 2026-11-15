@@ -242,8 +242,8 @@ CTexture* SpriteAtlas::Insert(const SpriteRleImage* image, const std::uint32_t* 
 
 // OFFSET: 0x0056FE60
 // FUNCTION: fn_02412
-void SpriteAtlas::ClearExpired(std::uint32_t reuseDelay) {
-  const std::uint32_t threshold = timeGetTime() - reuseDelay;
+void SpriteAtlas::ClearExpired() {
+  const std::uint32_t threshold = timeGetTime() - g_resourceReuseDelay;
 
   for (std::forward_list<SpriteAtlasPage>& pages : this->m_classes) {
     auto previous = pages.before_begin();

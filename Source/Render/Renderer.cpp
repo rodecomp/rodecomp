@@ -44,7 +44,7 @@ float CRenderer::UiScaleY() const {
 
 // OFFSET: 0x0055A920
 // FUNCTION: fn_02081
-void CRenderer::DrawBattleFieldIcon(CRenderSystemBase& system) {
+void CRenderer::DrawBattleFieldIcon() {
   if (g_session.m_score1 < 0 || g_session.m_score2 < 0) {
     return;
   }
@@ -109,7 +109,7 @@ void CRenderer::DrawBattleFieldIcon(CRenderSystemBase& system) {
 
 // OFFSET: 0x0055E840
 // FUNCTION: fn_02112
-void CRenderer::DrawOverlays(CRenderSystemBase& system) {
+void CRenderer::DrawOverlays() {
   // GLOBAL: gl_24883
   static char s_bannerState;
   // GLOBAL: gl_24885
@@ -164,7 +164,7 @@ timer:
   }
 
   if (g_session.GetBattleFieldMode() == 1) {
-    this->DrawBattleFieldIcon(system);
+    this->DrawBattleFieldIcon();
   }
 
   if (!g_serviceOptions.Get(TT_EFFECT_ON_OFF) || g_screenShakeDuration <= 0 || g_screenShakeMode == 2 || !this->LockBackBuffer()) {

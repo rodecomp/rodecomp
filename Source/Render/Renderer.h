@@ -50,7 +50,8 @@ public:
   float UiScaleY() const;
   std::uint32_t BlendColor(std::uint32_t base, std::uint32_t overlay);
   void SubmitAuxiliaryPrimitive(LightmappedCommand* primitive);
-  void DrawBattleFieldIcon(CRenderSystemBase& system);
+  void DrawBattleFieldIcon();
+  void DrawOverlays();
   void DrawOverlays(CRenderSystemBase& system);
   __declspec(noinline) void ClearFrame();
 

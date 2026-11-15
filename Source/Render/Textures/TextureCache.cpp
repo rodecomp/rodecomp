@@ -233,3 +233,16 @@ void TextureCache::ClearUnused() {
 
   GetRenderSystemHolder()->RestoreDisplayMode();
 }
+
+#include "Render/Renderer.h"
+#include "Render/Textures/SpriteAtlas.h"
+
+// INLINED
+void CRenderer::DrawOverlays(CRenderSystemBase& system) {
+  this->DrawOverlays();
+}
+
+// INLINED
+void SpriteAtlas::ClearExpired(std::uint32_t reuseDelay) {
+  this->ClearExpired();
+}
