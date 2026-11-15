@@ -10,7 +10,7 @@ HWND __stdcall CreateApplicationWindow(
   HINSTANCE instance, void* parameter
 );
 
-BOOL ClipApplicationCursor(HWND window);
+BOOL ClipApplicationCursor();
 BOOL ReleaseApplicationCursor();
 LRESULT CALLBACK WindowProc(HWND window, UINT message, WPARAM wParam, LPARAM lParam);
 

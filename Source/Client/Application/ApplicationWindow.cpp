@@ -41,8 +41,7 @@ HWND __stdcall CreateApplicationWindow(
 
 // OFFSET: 0x00E57DD0
 // FUNCTION: fn_24360
-BOOL ClipApplicationCursor(HWND window) {
-  (void)window;
+BOOL ClipApplicationCursor() {
   RECT rectangle;
   GetClientRect(hWnd, &rectangle);
   POINT first{rectangle.left, rectangle.top};
