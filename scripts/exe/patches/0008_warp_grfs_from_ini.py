@@ -44,6 +44,14 @@ def apply(image):
         raise PatchError(f"import {missing} not found") from None
     registry, add = image.symbol(REGISTRY), image.symbol(ADD)
 
+    start, end = image.function(WINMAIN)
+    sites = image.find_all(start, end, "56 b9 " + registry.to_bytes(4, "little").hex(" ") + " e8 ?? ?? ?? ??")
+    if not sites:
+        return "skipped (WinMain already reads DATA.INI; no g_pakRegistry.Add(\"data.grf\") site)"
+    if len(sites) != 1:
+        raise PatchError(f"g_pakRegistry.Add call pattern matched {len(sites)} times in {WINMAIN}, expected 1")
+    site = sites[0]
+
     base = image.allocate(len(LOADER) + len(KERNEL32))
     code = bytearray(LOADER + KERNEL32)
     fixups = {6: base + len(LOADER), 12: get_module, 26: get_proc, 130: base + INI, 146: base + DATA,
@@ -53,8 +61,6 @@ def apply(image):
     struct.pack_into("<i", code, CALL_ADD + 1, add - (base + CALL_ADD + 5))
     image.write(base, bytes(code), expect=bytes(len(code)), relocs=tuple(fixups))
 
-    start, end = image.function(WINMAIN)
-    site = image.find(start, end, "56 b9 " + registry.to_bytes(4, "little").hex(" ") + " e8 ?? ?? ?? ??")
     target = site + 11 + struct.unpack("<i", image.read(site + 7, 4))[0]
     if target != add:
         raise PatchError(f"{site:#x}: the call goes to {target:#x}, not PakRegistry::Add")

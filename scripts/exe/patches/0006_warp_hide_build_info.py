@@ -14,6 +14,9 @@ FORMAT = b"build : %s - %s"
 
 
 def apply(image):
+    rdata = image.section(".rdata")
+    if not image.find_all(*rdata, (FORMAT + b"\0").hex(" ")):
+        return "skipped (source already prints an empty build line; no build format string)"
     fmt = image.find_string(FORMAT)
     start, end = image.section(".text")
     pushes = image.find_all(start, end, "68 ?? ?? ?? ?? 68 ?? ?? ?? ?? 68 " + fmt.to_bytes(4, "little").hex(" "))

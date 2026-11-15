@@ -24,7 +24,7 @@ def apply(image):
     for reg in (0x0D, 0x15, 0x1D, 0x2D, 0x35, 0x3D):  # mov ecx/edx/ebx/ebp/esi/edi, [disp32]
         sites += [va + 2 for va in image.find_all(start, end, f"8b {reg:02x} " + address)]
     if not sites:
-        raise PatchError(f"no read of {VERSION} in {SYMBOL}")
+        return f"skipped (no read of {VERSION} in {SYMBOL}; source already sends g_patchedClientVersion)"
     flags = image.add(struct.pack("<I", FLAGS), align=4)
     for site in sites:
         image.write(site, struct.pack("<I", flags), expect=image.read(site, 4), relocs=(0,))

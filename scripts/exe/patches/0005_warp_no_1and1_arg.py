@@ -24,7 +24,12 @@ CHECK = "85 c0 0f 85 ?? ?? ?? ??"
 def apply(image):
     start, end = image.function(SYMBOL)
     key = image.find(start, end, KEY)
-    test = image.find(key, key + 0x40, CHECK)
+    tests = image.find_all(key, key + 0x40, CHECK)
+    if not tests:
+        return "skipped (WinMain discards the 1rag1 strstr result; no argument check to remove)"
+    if len(tests) != 1:
+        raise PatchError(f"pattern '{CHECK}' matched {len(tests)} times after the 1rag1 key, expected 1")
+    test = tests[0]
     jnz = test + 2
     rel = int.from_bytes(image.read(jnz + 2, 4), "little", signed=True)
     target = jnz + 6 + rel
