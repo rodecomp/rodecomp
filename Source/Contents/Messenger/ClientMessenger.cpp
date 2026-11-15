@@ -2627,9 +2627,10 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadRefiningBonus() {
     while (lua_next(state, -2) != 0) {
       if (this->loadValid) {
         std::string key;
-        int result = 0;
+        int result;
         int type = lua_type(this->script.GetState(), -2);
         if (type == LUA_TSTRING) {
+          result = 0;
           key = lua_tolstring(this->script.GetState(), -2, nullptr);
         } else {
           result = (type != LUA_TNIL) + 1;
@@ -2646,11 +2647,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadRefiningBonus() {
           }
           if (this->loadValid) {
             int kind = 0;
-            unsigned int hash = 5381;
-            for (const char* character = key.c_str(); *character != '\0'; ++character) {
-              hash = hash * 33 + *character;
-            }
-            switch (hash) {
+            switch (HashName(key.c_str())) {
             case 0xC3B9E8CE:
               kind = 1;
               break;
