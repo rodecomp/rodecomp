@@ -50,6 +50,7 @@
 #include "UI/Emotion/UIEmotionWnd.h"
 #include "Client/Mode/CMode.h"
 
+#include "Network/Packets/PacketId.h"
 #include "Resource/MSGSTRINGID.h"
 extern "C" {
 #include <lauxlib.h>
@@ -2586,7 +2587,7 @@ int UICashEmotionListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       g_windowMgr.AddRendered(box);
       if (g_windowMgr.RunModal(box) == 187) {
         CashEmotionPurchasePacket packet;
-        packet.id = 0xBEC;
+        packet.id = ID_CZ_REQ_BUY_EMOTION_EXPANSION;
         packet.packId = g_cashEmotionMgr->selectedPackId;
         packet.itemId = g_cashEmotionMgr->purchaseItemId;
         packet.price = g_cashEmotionMgr->GetPackPrice(packet.packId);

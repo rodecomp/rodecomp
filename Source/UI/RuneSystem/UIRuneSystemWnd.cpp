@@ -11,6 +11,7 @@
 #include "Utility/Text/FormatString.h"
 #include "Client/Mode/CMode.h"
 
+#include "Network/Packets/PacketId.h"
 #include "Resource/MSGSTRINGID.h"
 
 template __declspec(noinline) bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
@@ -223,7 +224,7 @@ void UIRuneSet_Info::OnLBtnDblClk(int x, int y) {
     const int tagId = runeSet->GetTagId();
     if (tagId != CRuneSystemMgr::GetInstance()->GetSelectTag()) {
       CRuneSystemMgr::GetInstance()->SetSelectTag(this->m_runeSet->GetTagId());
-      CRuneSystemMgr::GetInstance()->SendRequest(0xBCB, nullptr, -1);
+      CRuneSystemMgr::GetInstance()->SendRequest(ID_CZ_RUNE_REQ_TAG_INFO, nullptr, -1);
     }
     this->parent->SendMsg(this, 0xA9, 1, static_cast<std::intptr_t>(this->m_runeSet->m_slots[slot]->GetId()), 0, 0);
   }
@@ -288,7 +289,7 @@ void UIRuneSystem_tagListWnd::OnLBtnDown(int x, int) {
     CTagData* tag = CRuneSystemMgr::GetInstance()->GetTagByIndex(index);
     if (tag) {
       CRuneSystemMgr::GetInstance()->SetSelectTag(tag->m_id);
-      CRuneSystemMgr::GetInstance()->SendRequest(0xBCB, nullptr, -1);
+      CRuneSystemMgr::GetInstance()->SendRequest(ID_CZ_RUNE_REQ_TAG_INFO, nullptr, -1);
       this->parent->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
       this->Invalidate();
     }
@@ -903,7 +904,7 @@ int UIRune_Info::SendMsg(UIWindow* sender, int message, std::intptr_t argument1,
   switch (message) {
   case UM_COMMAND:
     if (argument1 == RUNE_BUTTON_ACTIVATE && (!this->parent || this->parent->SendMsg(this, 0x6A, 3000, 0, 0, 0) != 0) && this->m_rune) {
-      CRuneSystemMgr::GetInstance()->SendRequest(0xBCE, this->m_rune, -1);
+      CRuneSystemMgr::GetInstance()->SendRequest(ID_CZ_RUNE_REQ_ACTIVATE, this->m_rune, -1);
     }
     [[fallthrough]];
   case UM_REFRESH:
@@ -1496,7 +1497,7 @@ UIRuneSystemTab::UIRuneSystemTab() : UIWindow(0), m_count(4), m_label("유저인
 // FUNCTION: fn_10137
 UIRuneSystemWnd::UIRuneSystemWnd() : UIFrameWnd(0), m_nextTick(0) {
   RuneSystemOpenPacket packet;
-  packet.id = 0x0BE0;
+  packet.id = ID_CZ_RUNE_UI_OPEN;
   packet.open = 1;
   GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
 }
@@ -1616,21 +1617,21 @@ int UIRuneSet_Info::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       if (!this->m_runeSet->IsRewardStep(argument1 - RUNE_BUTTON_REWARD_1)) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_REWARD_TITLE)), 0xFF, 0, 0, 0);
       } else {
-        CRuneSystemMgr::GetInstance()->SendRequest(0xC16, this->m_runeSet, argument1 - 0x24D);
+        CRuneSystemMgr::GetInstance()->SendRequest(ID_CZ_RUNESET_REQ_REWARD, this->m_runeSet, argument1 - 0x24D);
       }
       break;
     case RUNE_BUTTON_ACTIVATE:
       if (!this->m_runeSet) {
         g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_EQUIP_NOT), 0, true, false, 0, "Message", 280, 120, 0);
       } else if (!this->parent || this->parent->SendMsg(this, 0x6A, 100, 0, 0, 0) != 0) {
-        CRuneSystemMgr::GetInstance()->SendRequest(0xBD0, this->m_runeSet, -1);
+        CRuneSystemMgr::GetInstance()->SendRequest(ID_CZ_RUNESET_REQ_ACTIVATE, this->m_runeSet, -1);
       }
       break;
     case RUNE_BUTTON_GRADE:
       if (!this->m_runeSet) {
         g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_EQUIP_NOT), 0, true, false, 0, "Message", 280, 120, 0);
       } else if (!this->parent || this->parent->SendMsg(this, 0x6A, 100, 0, 0, 0) != 0) {
-        CRuneSystemMgr::GetInstance()->SendRequest(0xBD2, this->m_runeSet, -1);
+        CRuneSystemMgr::GetInstance()->SendRequest(ID_CZ_RUNESET_REQ_UPGRADE, this->m_runeSet, -1);
       }
       break;
     }
@@ -1736,7 +1737,7 @@ int UIRune_Decom::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
         } else {
           ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, this->m_itemId, 0);
           RuneDecomRequestPacket packet;
-          packet.id = 0x0BD8;
+          packet.id = ID_CZ_RUNE_REQ_DECOMPOSE;
           packet.itemId = item.GetItemId();
           packet.itemIndex = item.identity[1];
           packet.decomType = this->m_decomType + 1;
@@ -2308,7 +2309,7 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       } else {
         RuneData* rune = reinterpret_cast<RuneData*>(argument2);
         RuneSetEquipPacket packet;
-        packet.id = 0x0BD6;
+        packet.id = ID_CZ_RUNESET_REQ_EQUIP;
         packet.runeId = static_cast<int>(rune->GetId());
         packet.tagId = static_cast<std::uint16_t>(rune->GetTagId());
         GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
@@ -2319,7 +2320,7 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_DURING_CANNOT_OPEN_RODEX), 0, true, false, 0, "Message", 280, 120, 0);
       } else if (g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_RUNE_TITLE), 2, true, false, 0, "Message", 280, 120, 0) != 0xBC) {
         RuneSetEquipPacket packet;
-        packet.id = 0x0BD6;
+        packet.id = ID_CZ_RUNESET_REQ_EQUIP;
         packet.tagId = static_cast<std::uint16_t>(runeSet->GetTagId());
         packet.runeId = 0;
         GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);

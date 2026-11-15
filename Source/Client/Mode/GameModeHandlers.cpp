@@ -2325,7 +2325,7 @@ void CGameMode::ApplyRuneSetResultWithRequest(int result, int tagId, int runeSet
     g_runeSystemMgr->SetCurRuneSet(tagId, runeSetId, grade, slotCount);
   }
 
-  g_runeSystemMgr->SendRequest(0x0BCB, nullptr, tagId);
+  g_runeSystemMgr->SendRequest(ID_CZ_RUNE_REQ_TAG_INFO, nullptr, tagId);
 
   UIWindow* window = g_windowMgr.LookupWindow(WID_RUNESYSTEMWND);
   if (window) {
@@ -2653,7 +2653,7 @@ void CGameMode::RequestWindow169(unsigned char enable) {
   if (enable != 0) {
     if (!window) {
       RequestWindow169Packet packet;
-      packet.id = 0x0BE0;
+      packet.id = ID_CZ_RUNE_UI_OPEN;
       packet.flags = 0;
       GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
     }

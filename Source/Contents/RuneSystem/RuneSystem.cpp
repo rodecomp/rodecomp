@@ -3,6 +3,7 @@
 #include "Client/Session/Session.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketId.h"
 #include "Network/Packets/PacketLengths.h"
 #include "Script/LuaFileOperations.h"
 #include "Script/LuaScript.h"
@@ -651,7 +652,7 @@ int CRuneSystemMgr::SendRequest(int packetId, RuneData* rune, int value) {
   }
 
   switch (packetId) {
-  case 0x0C16: {
+  case ID_CZ_RUNESET_REQ_REWARD: {
     RuneSelectPacket packet;
     packet.id = static_cast<std::uint16_t>(packetId);
     packet.tagId = static_cast<std::uint16_t>(rune->m_tagId);
@@ -660,7 +661,7 @@ int CRuneSystemMgr::SendRequest(int packetId, RuneData* rune, int value) {
     GetRagConnection().Send(GetRagConnection().GetPacketSize(packetId), &packet);
     break;
   }
-  case 0x0BCB: {
+  case ID_CZ_RUNE_REQ_TAG_INFO: {
     CTagData* tag = this->GetTag(value);
     if (!tag) {
       return 4;
@@ -676,8 +677,8 @@ int CRuneSystemMgr::SendRequest(int packetId, RuneData* rune, int value) {
     GetRagConnection().Send(GetRagConnection().GetPacketSize(packetId), &packet);
     break;
   }
-  case 0x0BCE:
-  case 0x0BD0: {
+  case ID_CZ_RUNE_REQ_ACTIVATE:
+  case ID_CZ_RUNESET_REQ_ACTIVATE: {
     if (!this->HasRequiredItems(rune->m_activeType)) {
       return 0;
     }
@@ -690,7 +691,7 @@ int CRuneSystemMgr::SendRequest(int packetId, RuneData* rune, int value) {
     this->m_requestPending = true;
     break;
   }
-  case 0x0BD2: {
+  case ID_CZ_RUNESET_REQ_UPGRADE: {
     if (!this->HasRequiredItems(static_cast<RuneSetData*>(rune)->GetGradeValue())) {
       return 0;
     }
@@ -703,13 +704,13 @@ int CRuneSystemMgr::SendRequest(int packetId, RuneData* rune, int value) {
     this->m_requestPending = true;
     break;
   }
-  case 0x0BD4: {
+  case ID_CZ_RUNE_REQ_LIST: {
     RuneHeaderPacket packet;
     packet.id = static_cast<std::uint16_t>(packetId);
     GetRagConnection().Send(GetRagConnection().GetPacketSize(packetId), &packet);
     break;
   }
-  case 0x0BD6: {
+  case ID_CZ_RUNESET_REQ_EQUIP: {
     RuneIdPacket packet;
     packet.id = static_cast<std::uint16_t>(packetId);
     packet.runeId = static_cast<int>(rune->m_id);

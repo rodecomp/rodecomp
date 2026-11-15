@@ -455,7 +455,7 @@ void UIMacroReporterWnd::SendMacroUserInfoPacket(std::uint16_t first, std::uint1
     std::uint16_t first;
     std::uint16_t second;
     std::uint8_t third;
-  } packet{0x0A6C, first, second, third};
+  } packet{ID_CZ_REQ_PLAYER_AID_IN_RANGE, first, second, third};
 
   CRagConnection* connection = &GetRagConnection();
   const int length = GetRagConnection().GetPacketSize(packet.id);
@@ -657,7 +657,7 @@ int UIMacroReporterWnd::SendMsg(
         this->m_targetValid = this->ValidateTarget(1);
         if (this->m_namesValid == true && this->m_targetValid == true) {
           PACKET_CZ_MACRO_REPORT_HEADER header;
-          header.packetType = 0xBDA;
+          header.packetType = ID_CZ_MACRO_REPORT_USER;
           strncpy_s(header.target, sizeof(header.target), this->m_target.c_str(), _TRUNCATE);
           header.count = static_cast<std::uint8_t>(this->m_nameCount);
           const int length = this->m_nameCount * 16 + sizeof(header);

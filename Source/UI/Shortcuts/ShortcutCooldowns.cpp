@@ -26,6 +26,7 @@
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketId.h"
 #include "Network/Packets/PacketLengths.h"
 #include "Utility/Text/FormatString.h"
 #include "UI/Shortcuts/ShortcutCooldowns.h"
@@ -601,7 +602,7 @@ int UISeekPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     switch (argument1) {
     case ID_CLOSE: {
       SeekPartyClosePacket packet;
-      packet.id = 0x806;
+      packet.id = ID_CZ_PARTY_BOOKING_REQ_DELETE;
       GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
       g_windowMgr.CloseWindow(WID_JOBLISTWND);
       break;

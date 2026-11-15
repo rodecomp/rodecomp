@@ -5238,7 +5238,7 @@ void CGameMode::RequestLocalMapMove(const char* mapName, std::uint16_t x, std::u
   } packet;
 
   g_session.m_localMapMove = 1;
-  packet.id = 0x91;
+  packet.id = ID_ZC_NPCACK_MAPMOVE;
   strcpy_s(packet.mapName, sizeof(packet.mapName), mapName);
   packet.x = x;
   packet.y = y;

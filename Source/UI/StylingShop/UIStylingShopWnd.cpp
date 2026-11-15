@@ -9,6 +9,7 @@
 #include "UI/StylingShop/UIStylingShopWnd.h"
 #include "Client/Mode/ModeEvents.h"
 #include "Client/Session/Session.h"
+#include "Network/Packets/PacketId.h"
 #include "Contents/Jobs/JobId.h"
 #include "Contents/Tables/MessageTable.h"
 #include "File/File.h"
@@ -1830,9 +1831,9 @@ void UIShowInfoWnd::Paint() {
 // FUNCTION: fn_10318
 bool UIShowInfoWnd::SendStyleChange() {
   char packet[2048];
-  StyleChangeHeader header = {0xBF7, 0, 0};
+  StyleChangeHeader header = {ID_CZ_REQ_STYLE_CHANGE_V3, 0, 0};
   SecureZeroMemory(&header, sizeof(header));
-  header.packetType = 0xBF7;
+  header.packetType = ID_CZ_REQ_STYLE_CHANGE_V3;
   const unsigned short count = static_cast<unsigned short>(this->m_list.size());
   const short length = count * 8 + 6;
   header.packetLength = length;

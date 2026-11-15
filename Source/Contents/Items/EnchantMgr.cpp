@@ -141,8 +141,8 @@ void CEnchantMgr::HandleEnchantResult(int messageId, int itemId) {
       effect = EF_UI_ENCHANT_SUCCESS;
       break;
     case ID_CZ_REQUEST_UPGRADE_ENCHANT:
-    case 0xBF0:
-    case 0xBF1:
+    case ID_CZ_REQ_UPGRADE_RANDOM_ENCHANT:
+    case ID_CZ_REQ_UPGRADE_PERFECT_ENCHANT:
       effect = EF_UI_LEVELUP_SUCCESS;
       break;
     case ID_CZ_REQUEST_RESET_ENCHANT:
@@ -157,8 +157,8 @@ void CEnchantMgr::HandleEnchantResult(int messageId, int itemId) {
     case ID_CZ_REQUEST_RANDOM_ENCHANT:
     case ID_CZ_REQUEST_PERFECT_ENCHANT:
     case ID_CZ_REQUEST_UPGRADE_ENCHANT:
-    case 0xBF0:
-    case 0xBF1:
+    case ID_CZ_REQ_UPGRADE_RANDOM_ENCHANT:
+    case ID_CZ_REQ_UPGRADE_PERFECT_ENCHANT:
       effect = EF_UI_ENCHANT_FAIL;
       break;
     case ID_CZ_REQUEST_RESET_ENCHANT:
@@ -235,14 +235,14 @@ void CEnchantMgr::RequestUpgradePerfectEnchant(uint64_t group, int16_t index, in
   }
 
   UpgradePerfectEnchantPacket packet;
-  packet.packetType = 0xBF1;
+  packet.packetType = ID_CZ_REQ_UPGRADE_PERFECT_ENCHANT;
   packet.group = group;
   packet.index = index;
   packet.slot = slot;
   packet.itemId = itemId;
   GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
   m_inputBlocked = true;
-  m_request = EnchantRequest{0xBF1, group, index, slot};
+  m_request = EnchantRequest{ID_CZ_REQ_UPGRADE_PERFECT_ENCHANT, group, index, slot};
 }
 
 // OFFSET: 0x00683FF0
@@ -272,13 +272,13 @@ void CEnchantMgr::RequestUpgradeRandomEnchant(uint64_t group, int16_t index, int
   }
 
   UpgradeEnchantPacket packet;
-  packet.packetType = 0xBF0;
+  packet.packetType = ID_CZ_REQ_UPGRADE_RANDOM_ENCHANT;
   packet.group = group;
   packet.index = index;
   packet.slot = slot;
   GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
   m_inputBlocked = true;
-  m_request = EnchantRequest{0xBF0, group, index, slot};
+  m_request = EnchantRequest{ID_CZ_REQ_UPGRADE_RANDOM_ENCHANT, group, index, slot};
 }
 
 // OFFSET: 0x00686BF0

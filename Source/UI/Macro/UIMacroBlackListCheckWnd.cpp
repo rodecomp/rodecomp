@@ -4,6 +4,7 @@
 #include "Contents/Tables/MessageTable.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketId.h"
 #include "Network/Packets/PacketLengths.h"
 #include "Render/Text/FontCache.h"
 #include "Render/Text/TextContext.h"
@@ -203,7 +204,7 @@ int UIMacroBlackListCheckWnd::SendMsg(
   case ID_OK:
     if (static_cast<unsigned>(this->inputLength - 4) <= 4) {
       MacroBlackListCheckPacket packet;
-      packet.id = 0x0BDC;
+      packet.id = ID_CZ_MACRO_BLACKLIST_CHECK;
       strncpy_s(packet.text, sizeof(packet.text), this->input, _TRUNCATE);
       GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
       this->inputLength = 0;

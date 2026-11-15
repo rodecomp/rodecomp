@@ -8,6 +8,7 @@
 #include "UI/Window/WindowBorder.h"
 #include "Contents/Tables/MessageTable.h"
 #include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketId.h"
 #include "Network/Packets/PacketLengths.h"
 #include "Utility/Text/FormatString.h"
 
@@ -65,7 +66,7 @@ void UIMacroDetectorWnd::AddImageData(const void* data, int size) {
     }
 
     MacroDetectorImageReceivedPacket packet;
-    packet.id = 0xA5A;
+    packet.id = ID_CZ_COMPLETE_APPLY_MACRO_DETECTOR_CAPTCHA;
     GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
   }
 }

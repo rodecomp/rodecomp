@@ -10371,7 +10371,7 @@ namespace {
 // FUNCTION: fn_21704
 void CGameMode::ReceiveFeedResult(const unsigned char* data) {
   const FeedResultPacket* packet = reinterpret_cast<const FeedResultPacket*>(data);
-  if (packet->packetType == 0x1A3) {
+  if (packet->packetType == ID_ZC_FEED_PET) {
     if (packet->result != 0) {
       const int friendlyLevel = g_session.GetPetFriendlyState(g_session.m_petFriendly);
       const int hungerLevel = g_session.GetPetHungryState(g_session.petPreviousHunger);
@@ -10396,7 +10396,7 @@ void CGameMode::ReceiveFeedResult(const unsigned char* data) {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0x1E1EF5, 0, 0, 0);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY2, reinterpret_cast<std::intptr_t>(text.c_str()), 0x1E1EF5, 0, 0, 0);
     }
-  } else if (packet->packetType == 0x22F) {
+  } else if (packet->packetType == ID_ZC_FEED_MER) {
     if (packet->result != 0) {
       g_session.m_homunActionState = 0x1D;
 
@@ -27020,384 +27020,384 @@ void CGameMode::ProcessIncomingPackets() {
       this->ProcessSkillUsePacket(g_gameModePacketBuffer, 1);
       break;
     case ID_ZC_REASSEMBLY_AUTH01: {
-      std::uint16_t packetType = 0x884;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH01;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH02: {
-      std::uint16_t packetType = 0x885;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH02;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH03: {
-      std::uint16_t packetType = 0x886;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH03;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH04: {
-      std::uint16_t packetType = 0x887;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH04;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH05: {
-      std::uint16_t packetType = 0x888;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH05;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH06:
-      SendPacketHeader(0x889);
+      SendPacketHeader(ID_CZ_REASSEMBLY_AUTH06);
       break;
     case ID_ZC_REASSEMBLY_AUTH07: {
-      std::uint16_t packetType = 0x88A;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH07;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH08:
-      SendPacketHeader2(0x88B);
+      SendPacketHeader2(ID_CZ_REASSEMBLY_AUTH08);
       break;
     case ID_ZC_REASSEMBLY_AUTH09: {
-      std::uint16_t packetType = 0x88C;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH09;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH10:
-      SendPacketHeader2(0x88D);
+      SendPacketHeader2(ID_CZ_REASSEMBLY_AUTH10);
       break;
     case ID_ZC_REASSEMBLY_AUTH11: {
-      std::uint16_t packetType = 0x88E;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH11;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH12: {
-      std::uint16_t packetType = 0x88F;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH12;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH13: {
-      std::uint16_t packetType = 0x890;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH13;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH14: {
-      std::uint16_t packetType = 0x891;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH14;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH15: {
-      std::uint16_t packetType = 0x892;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH15;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH16: {
-      std::uint16_t packetType = 0x893;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH16;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH17: {
-      std::uint16_t packetType = 0x894;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH17;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH18: {
-      std::uint16_t packetType = 0x895;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH18;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH19: {
-      std::uint16_t packetType = 0x896;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH19;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH20: {
-      std::uint16_t packetType = 0x897;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH20;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH21: {
-      std::uint16_t packetType = 0x898;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH21;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH22: {
-      std::uint16_t packetType = 0x899;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH22;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH23: {
-      std::uint16_t packetType = 0x89A;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH23;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH24: {
-      std::uint16_t packetType = 0x89B;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH24;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH25: {
-      std::uint16_t packetType = 0x89C;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH25;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH26: {
-      std::uint16_t packetType = 0x89D;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH26;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH27: {
-      std::uint16_t packetType = 0x89E;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH27;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH28: {
-      std::uint16_t packetType = 0x89F;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH28;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH29: {
-      std::uint16_t packetType = 0x8A0;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH29;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH30: {
-      std::uint16_t packetType = 0x8A1;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH30;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH31:
-      SendPacketHeader(0x8A2);
+      SendPacketHeader(ID_CZ_REASSEMBLY_AUTH31);
       break;
     case ID_ZC_REASSEMBLY_AUTH32: {
-      std::uint16_t packetType = 0x8A3;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH32;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH33: {
-      std::uint16_t packetType = 0x8A4;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH33;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH34:
-      SendPacketHeader2(0x8A5);
+      SendPacketHeader2(ID_CZ_REASSEMBLY_AUTH34);
       break;
     case ID_ZC_REASSEMBLY_AUTH35: {
-      std::uint16_t packetType = 0x8A6;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH35;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH36: {
-      std::uint16_t packetType = 0x8A7;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH36;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH37: {
-      std::uint16_t packetType = 0x8A8;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH37;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH38: {
-      std::uint16_t packetType = 0x8A9;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH38;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH39: {
-      std::uint16_t packetType = 0x8AA;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH39;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH40: {
-      std::uint16_t packetType = 0x8AB;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH40;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH41:
-      SendPacketHeader(0x8AC);
+      SendPacketHeader(ID_CZ_REASSEMBLY_AUTH41);
       break;
     case ID_ZC_REASSEMBLY_AUTH42: {
-      std::uint16_t packetType = 0x8AD;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH42;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH43:
-      SendPacketHeader2(0x941);
+      SendPacketHeader2(ID_CZ_REASSEMBLY_AUTH43);
       break;
     case ID_ZC_REASSEMBLY_AUTH44: {
-      std::uint16_t packetType = 0x942;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH44;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH45: {
-      std::uint16_t packetType = 0x943;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH45;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH46: {
-      std::uint16_t packetType = 0x944;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH46;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH47:
-      SendPacketHeader2(0x945);
+      SendPacketHeader2(ID_CZ_REASSEMBLY_AUTH47);
       break;
     case ID_ZC_REASSEMBLY_AUTH48:
-      SendPacketHeader(0x946);
+      SendPacketHeader(ID_CZ_REASSEMBLY_AUTH48);
       break;
     case ID_ZC_REASSEMBLY_AUTH49: {
-      std::uint16_t packetType = 0x947;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH49;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH50: {
-      std::uint16_t packetType = 0x948;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH50;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH51: {
-      std::uint16_t packetType = 0x949;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH51;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH52: {
-      std::uint16_t packetType = 0x94A;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH52;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH53:
-      SendPacketHeader(0x94B);
+      SendPacketHeader(ID_CZ_REASSEMBLY_AUTH53);
       break;
     case ID_ZC_REASSEMBLY_AUTH54: {
-      std::uint16_t packetType = 0x94C;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH54;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH55: {
-      std::uint16_t packetType = 0x94D;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH55;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH56: {
-      std::uint16_t packetType = 0x94E;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH56;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH57:
-      SendPacketHeader2(0x94F);
+      SendPacketHeader2(ID_CZ_REASSEMBLY_AUTH57);
       break;
     case ID_ZC_REASSEMBLY_AUTH58: {
-      std::uint16_t packetType = 0x950;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH58;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH59: {
-      std::uint16_t packetType = 0x951;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH59;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH60: {
-      std::uint16_t packetType = 0x952;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH60;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH61: {
-      std::uint16_t packetType = 0x953;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH61;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH62: {
-      std::uint16_t packetType = 0x954;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH62;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH63:
-      SendPacketHeader(0x955);
+      SendPacketHeader(ID_CZ_REASSEMBLY_AUTH63);
       break;
     case ID_ZC_REASSEMBLY_AUTH64: {
-      std::uint16_t packetType = 0x956;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH64;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH65:
-      SendPacketHeader2(0x957);
+      SendPacketHeader2(ID_CZ_REASSEMBLY_AUTH65);
       break;
     case ID_ZC_REASSEMBLY_AUTH66: {
-      std::uint16_t packetType = 0x958;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH66;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH67:
-      SendPacketHeader(0x959);
+      SendPacketHeader(ID_CZ_REASSEMBLY_AUTH67);
       break;
     case ID_ZC_REASSEMBLY_AUTH68: {
-      std::uint16_t packetType = 0x95A;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH68;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH69:
-      SendPacketHeader2(0x95B);
+      SendPacketHeader2(ID_CZ_REASSEMBLY_AUTH69);
       break;
     case ID_ZC_REASSEMBLY_AUTH70: {
-      std::uint16_t packetType = 0x95C;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH70;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH71:
-      SendPacketHeader2(0x95D);
+      SendPacketHeader2(ID_CZ_REASSEMBLY_AUTH71);
       break;
     case ID_ZC_REASSEMBLY_AUTH72:
-      SendPacketHeader2(0x95E);
+      SendPacketHeader2(ID_CZ_REASSEMBLY_AUTH72);
       break;
     case ID_ZC_REASSEMBLY_AUTH73: {
-      std::uint16_t packetType = 0x95F;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH73;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH74: {
-      std::uint16_t packetType = 0x960;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH74;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH75: {
-      std::uint16_t packetType = 0x961;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH75;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH76: {
-      std::uint16_t packetType = 0x962;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH76;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH77: {
-      std::uint16_t packetType = 0x963;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH77;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH78:
-      SendPacketHeader(0x964);
+      SendPacketHeader(ID_CZ_REASSEMBLY_AUTH78);
       break;
     case ID_ZC_REASSEMBLY_AUTH79:
-      SendPacketHeader(0x965);
+      SendPacketHeader(ID_CZ_REASSEMBLY_AUTH79);
       break;
     case ID_ZC_REASSEMBLY_AUTH80: {
-      std::uint16_t packetType = 0x966;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH80;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH81: {
-      std::uint16_t packetType = 0x967;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH81;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH82: {
-      std::uint16_t packetType = 0x968;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH82;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH83: {
-      std::uint16_t packetType = 0x969;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH83;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
     case ID_ZC_REASSEMBLY_AUTH84: {
-      std::uint16_t packetType = 0x96A;
+      std::uint16_t packetType = ID_CZ_REASSEMBLY_AUTH84;
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }

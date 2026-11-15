@@ -9,6 +9,7 @@
 #include "Contents/Tables/MessageTable.h"
 #include "Client/Session/Session.h"
 #include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketId.h"
 #include "Network/Packets/PacketLengths.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UICheckBox.h"
@@ -157,7 +158,7 @@ int UISelCharForUServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
 
     if (count != 0) {
       PACKET_CZ_SELECT_CHARACTERS packet;
-      packet.id = 0x28C;
+      packet.id = ID_CH_SELECT_CHAR_GOINGTOBEUSED;
       packet.accountId = g_session.m_aid;
       packet.count = count;
       std::memcpy(packet.characterIds, characterIds, sizeof(packet.characterIds));

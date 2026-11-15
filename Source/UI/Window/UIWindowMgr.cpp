@@ -7342,7 +7342,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
   case WID_RUNESYSTEMWND:
     window = this->LookupWindow(WID_RUNESYSTEMWND);
     if (window == nullptr) {
-      g_runeSystemMgr->SendRequest(0xBCB, nullptr, -1);
+      g_runeSystemMgr->SendRequest(ID_CZ_RUNE_REQ_TAG_INFO, nullptr, -1);
       if (this->rodexInboxWnd) {
         this->CloseWindow(WID_RODEXCOMPOSEWND);
         this->CloseWindow(WID_RODEXCONTENTSWND);

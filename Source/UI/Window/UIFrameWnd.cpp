@@ -7,6 +7,7 @@
 #include "Client/Session/Session.h"
 #include "Contents/Tables/MessageTable.h"
 #include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketId.h"
 #include "Network/Packets/PacketLengths.h"
 #include "UI/Window/InputFocus.h"
 #include "UI/Shop/UIBank_NewWnd.h"
@@ -568,7 +569,7 @@ int UIBank_NewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       this->m_status = LookupMessage(MSI_BANK_6_MINI);
     } else {
       packet.amount = static_cast<int>(amount);
-      packet.id = 0x9A7;
+      packet.id = ID_CZ_REQ_BANKING_DEPOSIT;
       packet.aid = g_session.m_aid;
       GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
       this->m_status.clear();
@@ -593,7 +594,7 @@ int UIBank_NewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       this->m_status = LookupMessage(MSI_ITEMMOVEINFO_CART);
     } else {
       packet.amount = static_cast<int>(amount);
-      packet.id = 0x9A9;
+      packet.id = ID_CZ_REQ_BANKING_WITHDRAW;
       packet.aid = g_session.m_aid;
       GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
       this->m_status.clear();
