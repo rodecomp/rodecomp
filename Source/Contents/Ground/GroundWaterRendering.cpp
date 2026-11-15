@@ -77,7 +77,7 @@ void GroundGeometry::DrawWaterCell(
     return;
   }
 
-  RenderPrimitive* primitive = g_renderer->primitives.Acquire();
+  RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
   primitive->SetPosition(0, &vertices[0].x);
   primitive->SetPosition(1, &vertices[1].x);
   primitive->SetPosition(2, &vertices[2].x);

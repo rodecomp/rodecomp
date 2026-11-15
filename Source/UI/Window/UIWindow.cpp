@@ -590,7 +590,7 @@ RenderPrimitive* UIWindow::DrawPrimitive() {
     static_cast<CDCBitmap*>(this->geometry.surface)->UploadTexture(this->m_texture);
   }
 
-  RenderPrimitive* primitive = g_renderer->primitives.Acquire();
+  RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
   primitive->texture = this->m_texture;
   const float width = static_cast<float>(static_cast<std::int32_t>(this->m_texture->TextureWidth()));
   const float height = static_cast<float>(static_cast<std::int32_t>(this->m_texture->TextureHeight()));

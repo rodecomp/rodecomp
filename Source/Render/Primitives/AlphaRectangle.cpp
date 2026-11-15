@@ -12,7 +12,7 @@ void DrawAlphaRectangle(int x, int y, int width, int height, std::uint32_t color
     return;
   }
 
-  RenderPrimitive* primitive = g_renderer->primitives.Acquire();
+  RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
   primitive->texture = g_texMgr.Default();
   const float left = static_cast<float>(x);
   const float top = static_cast<float>(y);

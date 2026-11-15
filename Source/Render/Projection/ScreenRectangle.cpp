@@ -13,7 +13,7 @@ void DrawBlendedRectangle(int x, int y, int width, int height, std::uint32_t col
     return;
   }
 
-  RenderPrimitive* primitive = g_renderer->primitives.Acquire();
+  RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
   primitive->texture = g_texMgr.Default();
   primitive->quad[0].x = static_cast<float>(x);
   primitive->quad[0].y = static_cast<float>(y);
@@ -55,7 +55,7 @@ void DrawTexturedRectangle(int x, int y, int width, int height, std::uint32_t co
     return;
   }
 
-  RenderPrimitive* primitive = g_renderer->primitives.Acquire();
+  RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
   primitive->texture = texture ? texture : g_texMgr.Default();
   primitive->quad[0].x = static_cast<float>(x);
   primitive->quad[0].y = static_cast<float>(y);
@@ -95,7 +95,7 @@ void DrawTextureRegion(float x, float y, float width, float height, std::uint32_
     return;
   }
 
-  RenderPrimitive* primitive = g_renderer->primitives.Acquire();
+  RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
   primitive->texture = texture ? texture : g_texMgr.Default();
   primitive->quad[0].x = x;
   primitive->quad[0].y = y;

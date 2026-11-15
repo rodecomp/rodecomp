@@ -20,6 +20,7 @@ class CRenderer {
 public:
   CRenderer();
   virtual ~CRenderer();
+  RenderPrimitive* AcquirePrimitive();
   virtual void SetCamera(const float* eye, const float* target, const float* up) = 0;
   virtual void SetLighting(const float* direction, const float* diffuse, const float* ambient) = 0;
   virtual void SetClearColor(unsigned color) = 0;

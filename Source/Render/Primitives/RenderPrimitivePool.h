@@ -6,6 +6,8 @@
 #include <deque>
 
 class RenderPrimitivePool {
+  friend class CRenderer;
+
 public:
   // INLINED
   __forceinline RenderPrimitivePool() {

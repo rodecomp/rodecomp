@@ -19,7 +19,7 @@ void UIWindow::AddSpriteCellOverlay(
   y += this->geometry.y;
 
   SpriteAtlasRecord record{};
-  RenderPrimitive* primitive = g_renderer->primitives.Acquire();
+  RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
 
   float left = static_cast<float>(cell->x) * scale * cell->scaleX;
   float right = static_cast<float>((static_cast<std::int16_t>(image->doubleWidth) + 1) * image->width + cell->x - 1) * scale * cell->scaleX * extentScale;

@@ -28,7 +28,7 @@ RenderPrimitive* CCharacterRender::BuildSpriteQuad(const SpriteQuad& quad, const
 
   const float bottomZ = RhwToDepth(quad.bottomRhw);
   const float topZ = RhwToDepth(quad.topRhw);
-  RenderPrimitive* primitive = g_renderer->primitives.Acquire();
+  RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
   RenderVertex* vertices = primitive->vertices;
   primitive->texture = texture;
 

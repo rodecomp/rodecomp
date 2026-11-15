@@ -226,7 +226,7 @@ void UIRoMapWnd::DrawKafraIcon(float x, float y) {
 
   const int height = static_cast<int>(static_cast<float>(image->height) * scale);
   const int halfWidth = static_cast<int>(static_cast<float>(image->width) * scale * g_depthAverageHalf);
-  RenderPrimitive* primitive = g_renderer->primitives.Acquire();
+  RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
   RenderVertex* vertices = primitive->vertices;
   const float left = x - static_cast<float>(halfWidth);
   const float right = static_cast<float>(halfWidth) + x;

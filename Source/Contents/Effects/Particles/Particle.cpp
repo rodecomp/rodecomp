@@ -464,7 +464,7 @@ void CEZ2STRParticle::DrawScreen(const matrix& view) {
 // OFFSET: 0x00B3E270
 // FUNCTION: fn_18825
 void CEZ2STRParticle::RenderBillboard(EZeffectClip* clip, EZeffectTransform* transform, const matrix& view, int index) {
-  RenderPrimitive* primitive = g_renderer->primitives.Acquire();
+  RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
   RenderVertex* vertices = primitive->vertices;
   SetClipCorners(vertices, *transform);
 
@@ -512,7 +512,7 @@ void CEZ2STRParticle::RenderBillboard(EZeffectClip* clip, EZeffectTransform* tra
 // OFFSET: 0x00B3E6E0
 // FUNCTION: fn_18826
 void CEZ2STRParticle::RenderScreen(EZeffectClip* clip, EZeffectTransform* transform, const matrix& view, int index) {
-  RenderPrimitive* primitive = g_renderer->primitives.Acquire();
+  RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
   RenderVertex* vertices = primitive->vertices;
   SetClipCorners(vertices, *transform);
 
@@ -624,7 +624,7 @@ void CEZ2STRParticle::RenderScreen(EZeffectClip* clip, EZeffectTransform* transf
 // OFFSET: 0x00B3F050
 // FUNCTION: fn_18827
 void CEZ2STRParticle::RenderGround(EZeffectClip* clip, EZeffectTransform* transform, const matrix& view, int index) {
-  RenderPrimitive* primitive = g_renderer->primitives.Acquire();
+  RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
   RenderVertex* vertices = primitive->vertices;
   SetClipCorners(vertices, *transform);
 

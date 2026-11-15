@@ -22,7 +22,7 @@ __declspec(noinline) float RhwToDepth(float rhw) {
 // OFFSET: 0x00AD5FA0
 // FUNCTION: fn_17826
 void CMode::DrawTexture(const RECT& rect, int angle, float rhw, std::uint32_t color, CTexture* texture, TextureRegion region) {
-  RenderPrimitive* primitive = g_renderer->primitives.Acquire();
+  RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
   RenderVertex* vertices = primitive->vertices;
   primitive->texture = texture;
   const float bottomZ = RhwToDepth(rhw);
