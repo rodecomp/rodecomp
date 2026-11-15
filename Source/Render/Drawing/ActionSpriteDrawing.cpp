@@ -1,3 +1,5 @@
+#include "Render/Primitives/RenderPrimitivePool.h"
+#include <new>
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Client/Mode/CMode.h"
 #include "Render/Renderer.h"
@@ -7,6 +9,25 @@
 #include "Resource/Sprites/ActionResource.h"
 #include "Resource/Sprites/SpriteResource.h"
 #include "Utility/Math/AffineMatrix.h"
+
+namespace {
+struct PrimitivePoolAccess : RenderPrimitivePool {
+  // INLINED
+  inline RenderPrimitive* AcquireLocal() {
+    if (this->m_current == this->m_commands.end()) {
+      this->m_commands.emplace_back();
+      this->m_current = this->m_commands.end();
+      return &this->m_commands.back();
+    }
+
+    RenderPrimitive* command = &*this->m_current;
+    ++this->m_current;
+    new (command) RenderPrimitive;
+
+    return command;
+  }
+};
+}
 
 // OFFSET: 0x00AD5A70
 // FUNCTION: fn_17825
@@ -21,7 +42,7 @@ void CMode::DrawActionSprite(
   const ActionFrame& current = action->Frame(animation, frame);
 
   for (int index = 0; index < current.cellCount; ++index) {
-    RenderPrimitive* primitive = g_renderer->primitives.Acquire();
+    RenderPrimitive* primitive = static_cast<PrimitivePoolAccess&>(g_renderer->primitives).AcquireLocal();
     const SpriteFrameCell& cell = current.Cell(index);
     if (cell.image == -1) {
       continue;
