@@ -33,6 +33,11 @@ const char* ResourceMgr::Resolve(const char* name) const {
   return entry->second.c_str();
 }
 
+// INLINED
+std::string AddResourcePrefix(const char* name, const char* prefix) {
+  return ResourceMgr::Instance().AddResourcePrefix(name, prefix);
+}
+
 // OFFSET: 0x00AEFAE0
 // FUNCTION: fn_18184
 std::string ResourceMgr::AddResourcePrefix(const char* name, const char* prefix) const {

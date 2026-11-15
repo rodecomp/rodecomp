@@ -5,4 +5,5 @@
 
 std::string AddResourcePrefix(const char* name, const char* prefix);
 
+
 #endif
