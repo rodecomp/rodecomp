@@ -368,3 +368,13 @@ void UIWindow::RecordText(int event, const char* text) {
   std::memcpy(packet.text, text, std::min(static_cast<int>(std::strlen(text)), 100));
   Replay::Instance().Record(packet.bytes, &packet, 42, 0);
 }
+
+// INLINED
+std::vector<unsigned char> BuildEntryQueueReplayRecords() {
+  return g_session.BuildEntryQueueReplayRecords();
+}
+
+// INLINED
+std::vector<unsigned char> BuildRenewQuestReplayRecords() {
+  return g_session.BuildRenewQuestReplayRecords();
+}

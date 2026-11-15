@@ -139,7 +139,7 @@ template <class Record> static void AppendRecord(std::vector<unsigned char>& rec
 
 // OFFSET: 0x00E3DBA0
 // FUNCTION: fn_24195
-std::vector<unsigned char> BuildEntryQueueReplayRecords() {
+std::vector<unsigned char> CSession::BuildEntryQueueReplayRecords() {
   std::vector<unsigned char> records;
   AppendRecord(records, MakeReplayRecord(6500, nullptr, 0));
   if (g_entryQueueMgr->current != nullptr) {
@@ -997,7 +997,7 @@ std::vector<unsigned char> BuildSkillInfoListPacket(std::uint16_t id, const std:
 
 // OFFSET: 0x00E44640
 // FUNCTION: fn_24205
-std::vector<unsigned char> BuildRenewQuestReplayRecords() {
+std::vector<unsigned char> CSession::BuildRenewQuestReplayRecords() {
   std::vector<unsigned char> records;
   AppendRecord(records, MakeReplayRecord(3500, nullptr, 0));
   {
