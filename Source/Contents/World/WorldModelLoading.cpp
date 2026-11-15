@@ -154,15 +154,15 @@ void CWorld::InitWorld() {
   modeBounds[2] = worldRes->bounds[0];
   modeBounds[3] = worldRes->bounds[1];
 
-  g_worldLightDirection[0] = worldRes->lightDirection[0];
-  g_worldLightDirection[1] = worldRes->lightDirection[1];
-  g_worldLightDirection[2] = worldRes->lightDirection[2];
-  g_worldDiffuse[0] = worldRes->diffuse[0];
-  g_worldDiffuse[1] = worldRes->diffuse[1];
-  g_worldDiffuse[2] = worldRes->diffuse[2];
-  g_worldAmbient[0] = worldRes->ambient[0];
-  g_worldAmbient[1] = worldRes->ambient[1];
-  g_worldAmbient[2] = worldRes->ambient[2];
+  g_worldLightDirection[0] = worldRes->lightDirection.x;
+  g_worldLightDirection[1] = worldRes->lightDirection.y;
+  g_worldLightDirection[2] = worldRes->lightDirection.z;
+  g_worldDiffuse[0] = worldRes->diffuse.x;
+  g_worldDiffuse[1] = worldRes->diffuse.y;
+  g_worldDiffuse[2] = worldRes->diffuse.z;
+  g_worldAmbient[0] = worldRes->ambient.x;
+  g_worldAmbient[1] = worldRes->ambient.y;
+  g_worldAmbient[2] = worldRes->ambient.z;
 
   g_renderer->twoPass = worldRes->flag;
   g_renderer->SetLighting(g_worldLightDirection, g_worldDiffuse, g_worldAmbient);

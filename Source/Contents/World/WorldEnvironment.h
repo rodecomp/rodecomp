@@ -5,9 +5,9 @@
 #include "Resource/World/WorldResource.h"
 
 struct WorldEnvironmentLighting {
-  float direction[3];
-  float diffuse[3];
-  float ambient[3];
+  vector3d direction;
+  vector3d diffuse;
+  vector3d ambient;
 };
 
 // INLINED

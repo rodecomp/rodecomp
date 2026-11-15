@@ -3,13 +3,14 @@
 
 #include <cstddef>
 #include <list>
+#include "Utility/Math/Vector3d.h"
 
 struct WorldSpatialTree;
 
 struct WorldRayQuery {
   /* 0000 */ std::list<WorldSpatialTree*> nodes;
-  /* 0008 */ float origin[3];
-  /* 0014 */ float direction[3];
+  /* 0008 */ vector3d origin;
+  /* 0014 */ vector3d direction;
   /* 0020 */ float limit;
 
   WorldRayQuery();

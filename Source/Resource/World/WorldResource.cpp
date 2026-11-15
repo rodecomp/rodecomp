@@ -203,19 +203,14 @@ bool C3dWorldRes::Load(const char* name) {
   if (IsWorldVersionAtLeast(major, minor, 1, 5)) {
     input.Read(&this->longitude, sizeof(this->longitude));
     input.Read(&this->latitude, sizeof(this->latitude));
-    input.Read(this->diffuse, sizeof(this->diffuse));
-    input.Read(this->ambient, sizeof(this->ambient));
+    input.Read(&this->diffuse, sizeof(this->diffuse));
+    input.Read(&this->ambient, sizeof(this->ambient));
   } else {
     this->latitude = 45;
     this->longitude = 45;
 
-    for (float& value : this->diffuse) {
-      value = 1.0f;
-    }
-
-    for (float& value : this->ambient) {
-      value = 0.3f;
-    }
+    this->diffuse.x = this->diffuse.y = this->diffuse.z = 1.0f;
+    this->ambient.x = this->ambient.y = this->ambient.z = 0.3f;
   }
 
   constexpr float pi = 3.141592f;
@@ -224,7 +219,7 @@ bool C3dWorldRes::Load(const char* name) {
   matrix.AppendYRotation((static_cast<float>(this->longitude) / 180.0f) * pi);
 
   for (unsigned component = 0; component < 3; ++component) {
-    this->lightDirection[component] =
+    (&this->lightDirection.x)[component] =
       ((matrix.values[component] * 0.0f + matrix.values[component + 3]) + matrix.values[component + 6] * 0.0f) + matrix.values[component + 9];
   }
 
@@ -369,9 +364,9 @@ bool C3dWorldRes::Load(const char* name) {
   }
 
   input.Close();
-  std::memcpy(g_worldLighting.ambient, this->ambient, sizeof(this->ambient));
-  std::memcpy(g_worldLighting.diffuse, this->diffuse, sizeof(this->diffuse));
-  std::memcpy(g_worldLighting.secondaryDiffuse, this->diffuse, sizeof(this->diffuse));
+  std::memcpy(g_worldLighting.ambient, &this->ambient, sizeof(this->ambient));
+  std::memcpy(g_worldLighting.diffuse, &this->diffuse, sizeof(this->diffuse));
+  std::memcpy(g_worldLighting.secondaryDiffuse, &this->diffuse, sizeof(this->diffuse));
 
   return true;
 }

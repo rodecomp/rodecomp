@@ -7,12 +7,12 @@
 // OFFSET: 0x00AC6450
 // FUNCTION: fn_17650
 WorldRayQuery::WorldRayQuery() {
-  this->origin[0] = 0.0f;
-  this->origin[1] = 0.0f;
-  this->origin[2] = 0.0f;
-  this->direction[0] = 0.0f;
-  this->direction[1] = 0.0f;
-  this->direction[2] = 0.0f;
+  this->origin.x = 0.0f;
+  this->origin.y = 0.0f;
+  this->origin.z = 0.0f;
+  this->direction.x = 0.0f;
+  this->direction.y = 0.0f;
+  this->direction.z = 0.0f;
 }
 
 // OFFSET: 0x00AC7C50
@@ -22,10 +22,10 @@ int WorldRayQuery::Intersects(const float* bounds) const {
   float exit = 999999.0f;
   const vector3d center = {(bounds[3] + bounds[0]) * 0.5f, (bounds[4] + bounds[1]) * 0.5f, (bounds[5] + bounds[2]) * 0.5f};
   const vector3d extent = {bounds[3] - center.x, bounds[4] - center.y, bounds[5] - center.z};
-  const vector3d offset = {center.x - this->origin[0], center.y - this->origin[1], center.z - this->origin[2]};
+  const vector3d offset = {center.x - this->origin.x, center.y - this->origin.y, center.z - this->origin.z};
 
-  if (std::fabs(this->direction[0]) > 0.00001f) {
-    const float inverse = 1.0f / this->direction[0];
+  if (std::fabs(this->direction.x) > 0.00001f) {
+    const float inverse = 1.0f / this->direction.x;
     const float first = (offset.x + extent.x) * inverse;
     const float second = (offset.x - extent.x) * inverse;
 
@@ -66,8 +66,8 @@ int WorldRayQuery::Intersects(const float* bounds) const {
     }
   }
 
-  if (std::fabs(this->direction[1]) > 0.00001f) {
-    const float inverse = 1.0f / this->direction[1];
+  if (std::fabs(this->direction.y) > 0.00001f) {
+    const float inverse = 1.0f / this->direction.y;
     const float first = (offset.y + extent.y) * inverse;
     const float second = (offset.y - extent.y) * inverse;
 
@@ -108,8 +108,8 @@ int WorldRayQuery::Intersects(const float* bounds) const {
     }
   }
 
-  if (std::fabs(this->direction[2]) > 0.00001f) {
-    const float inverse = 1.0f / this->direction[2];
+  if (std::fabs(this->direction.z) > 0.00001f) {
+    const float inverse = 1.0f / this->direction.z;
     const float first = (offset.z + extent.z) * inverse;
     const float second = (offset.z - extent.z) * inverse;
 
@@ -164,11 +164,11 @@ int WorldRayQuery::Intersects(const float* bounds) const {
 // OFFSET: 0x00AC7750
 // FUNCTION: fn_17658
 void WorldRayQuery::Collect(const float* ray, WorldSpatialTree* root) {
-  auto* target = this->direction;
+  auto* target = &this->direction.x;
   target[0] = ray[3];
   target[1] = ray[4];
   target[2] = ray[5];
-  auto* target2 = this->origin;
+  auto* target2 = &this->origin.x;
   target2[0] = ray[0];
   target2[1] = ray[1];
   target2[2] = ray[2];

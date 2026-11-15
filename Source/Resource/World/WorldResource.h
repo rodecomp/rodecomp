@@ -77,9 +77,9 @@ public:
   /* 0188 */ int waterAnimation;
   /* 018C */ int longitude;
   /* 0190 */ int latitude;
-  /* 0194 */ float lightDirection[3];
-  /* 01A0 */ float diffuse[3];
-  /* 01AC */ float ambient[3];
+  /* 0194 */ vector3d lightDirection;
+  /* 01A0 */ vector3d diffuse;
+  /* 01AC */ vector3d ambient;
   /* 01B8 */ unsigned char major;
   /* 01B9 */ unsigned char minor;
   /* 01BA */ unsigned char padding_01BA[2];
