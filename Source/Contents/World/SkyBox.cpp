@@ -1,3 +1,5 @@
+#include "Render/Primitives/RenderPrimitivePool.h"
+#include <new>
 #include "Contents/World/SkyBox.h"
 
 #include "Contents/Map/MapSkyMgr.h"
@@ -8,6 +10,25 @@
 #include "Utility/Math/AffineMatrix.h"
 
 #include <cstdio>
+
+namespace {
+struct PrimitivePoolAccess : RenderPrimitivePool {
+  // INLINED
+  inline RenderPrimitive* AcquireLocal() {
+    if (this->m_current == this->m_commands.end()) {
+      this->m_commands.emplace_back();
+      this->m_current = this->m_commands.end();
+      return &this->m_commands.back();
+    }
+
+    RenderPrimitive* command = &*this->m_current;
+    ++this->m_current;
+    new (command) RenderPrimitive;
+
+    return command;
+  }
+};
+}
 
 // OFFSET: 0x0075DC00
 // FUNCTION: fn_08044
@@ -173,7 +194,7 @@ void CLensFlare::Render(const float* matrix, vector3d eye, vector3d target) {
     const float dot = inverseView * view.y * (position.y * inversePosition) + inverseView * view.x * (position.x * inversePosition) +
                       inverseView * view.z * (position.z * inversePosition);
     if (dot < 0.0f) {
-      RenderPrimitive* primitive = g_renderer->primitives.Acquire();
+      RenderPrimitive* primitive = static_cast<PrimitivePoolAccess&>(g_renderer->primitives).AcquireLocal();
       RenderVertex* vertices = primitive->vertices;
       g_renderer->viewport.Project(&element.position.x, matrix, vertices[0]);
       vertices[3] = vertices[0];
