@@ -572,8 +572,8 @@ void UIEditCtrl::TextColor(std::uint32_t primary, std::uint32_t secondary) {
 
 // OFFSET: 0x00868570
 // FUNCTION: fn_10960
-__declspec(noinline) void UIEditCtrl::TextColor(unsigned char red, unsigned char green, unsigned char blue, std::uint32_t secondary) {
-  this->textColor = static_cast<std::uint32_t>(red) | (static_cast<std::uint32_t>(green) << 8) | (static_cast<std::uint32_t>(blue) << 16);
+__declspec(noinline) void UIEditCtrl::TextColor(int red, int green, int blue, std::uint32_t secondary) {
+  this->textColor = RGB(red, green, blue);
   this->secondColor = secondary;
   this->Invalidate();
 }

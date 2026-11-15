@@ -2600,7 +2600,7 @@ void UILoginWnd::LoadLogin() {
     this->saveId = saveId;
 
     if (saveId != 0) {
-      unsigned char shade;
+      int shade;
       bool placeholder = std::strcmp("", id) == 0;
       if (!placeholder) {
         EncryptedName<3, 0x83EFBFBB37EDBDBDULL>& compareName = OBFUSCATE_STRING("ID", 0x83EFBFBB37EDBDBDULL);
