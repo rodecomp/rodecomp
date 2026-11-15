@@ -157,7 +157,7 @@ public:
 
 class UIToolTipBitmapWnd : public UIWindow {
 public:
-  UIToolTipBitmapWnd(WindowManagerWindows& managed);
+  UIToolTipBitmapWnd();
 
   /* 007C */ std::string tooltip;
   /* 0094 */ CBitmapRes* bitmap;

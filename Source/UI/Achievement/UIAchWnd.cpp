@@ -338,7 +338,7 @@ void UIAchViewWnd::OnCreate(int, int) {
   }
 
   for (UIToolTipBitmapWnd*& reward : this->rewards) {
-    reward = new (std::nothrow) UIToolTipBitmapWnd(g_windowMgr);
+    reward = new (std::nothrow) UIToolTipBitmapWnd();
     reward->Show(0);
     this->AddChild(reward);
   }
@@ -1568,6 +1568,6 @@ UICustomGageBar::UICustomGageBar()
 
 // OFFSET: 0x007B25B0
 // FUNCTION: fn_09188
-UIToolTipBitmapWnd::UIToolTipBitmapWnd(WindowManagerWindows&)
+UIToolTipBitmapWnd::UIToolTipBitmapWnd()
     : UIWindow(0), bitmap(nullptr), itemId(0), iconX(0), iconY(0) {
 }
