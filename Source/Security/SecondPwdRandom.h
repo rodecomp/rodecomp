@@ -9,7 +9,10 @@ public:
   // INLINED
   explicit CSecondPwdRandom(unsigned int seed) : m_seed(seed), m_multiplier(0x3498), m_increment(0x881234), m_count(1) {
   }
-  virtual ~CSecondPwdRandom();
+  // OFFSET: 0x008CA2D0
+  // FUNCTION: fn_11993
+  virtual ~CSecondPwdRandom() {
+  }
 
   // INLINED
   static constexpr result_type(min)() {

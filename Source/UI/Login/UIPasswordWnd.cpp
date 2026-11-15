@@ -39,62 +39,67 @@ void UISecondPasswordInputWnd::CreateKeypad(unsigned int seed) {
     this->m_digits[i] = static_cast<unsigned char>(i);
   }
 
-  std::shuffle(this->m_digits, this->m_digits + 10, CSecondPwdRandom(seed));
+  CSecondPwdRandom random(seed);
+  std::shuffle(this->m_digits, this->m_digits + 10, random);
 
   std::string prefix = "유저인터페이스\\";
-  const char* const commandNames[5][5] = {
-    {"btn_big_ok", "btn_big_ok_a", "btn_big_ok_b", "btn_big_ok_b", nullptr},
-    {"btn_big_change", "btn_big_change_a", "btn_big_change_b", "btn_big_change_c", nullptr},
-    {"btn_big_unused", "btn_big_unused_a", "btn_big_unused_b", "btn_big_unused_c", nullptr},
-    {"btn_big_next", "btn_big_next_a", "btn_big_next_b", "btn_big_next_b", nullptr},
-    {"btn_big_cancel", "btn_big_cancel_a", "btn_big_cancel_b", "btn_big_cancel_b", nullptr},
-  };
-  const int commandIds[5] = {184, 292, 419, 218, 185};
-  const int commandPositions[5][2] = {{414, 192}, {414, 220}, {414, 248}, {414, 192}, {414, 276}};
+  {
+    const char* const commandNames[5][5] = {
+      {"btn_big_ok", "btn_big_ok_a", "btn_big_ok_b", "btn_big_ok_b", nullptr},
+      {"btn_big_change", "btn_big_change_a", "btn_big_change_b", "btn_big_change_c", nullptr},
+      {"btn_big_unused", "btn_big_unused_a", "btn_big_unused_b", "btn_big_unused_c", nullptr},
+      {"btn_big_next", "btn_big_next_a", "btn_big_next_b", "btn_big_next_b", nullptr},
+      {"btn_big_cancel", "btn_big_cancel_a", "btn_big_cancel_b", "btn_big_cancel_b", nullptr},
+    };
+    const int commandIds[5] = {184, 292, 419, 218, 185};
+    const int commandPositions[5][2] = {{414, 192}, {414, 220}, {414, 248}, {414, 192}, {414, 276}};
 
-  for (int i = 0; i < 5; ++i) {
-    this->actionButtons[i] = new UIBitmapButton();
-    this->actionButtons[i]->SetBitmap((prefix + commandNames[i][0] + ".bmp").c_str(), 0, 0);
-    this->actionButtons[i]->SetBitmap((prefix + commandNames[i][1] + ".bmp").c_str(), 1, 0);
-    this->actionButtons[i]->SetBitmap((prefix + commandNames[i][2] + ".bmp").c_str(), 2, 0);
-    this->actionButtons[i]->SetBitmap((prefix + commandNames[i][3] + ".bmp").c_str(), 3, 0);
-    this->actionButtons[i]->SetSize(this->actionButtons[i]->BitmapWidth(), this->actionButtons[i]->BitmapHeight());
-    this->actionButtons[i]->Move(commandPositions[i][0], commandPositions[i][1]);
-    this->actionButtons[i]->SetId(commandIds[i]);
-    this->AddChild(this->actionButtons[i]);
+    for (int i = 0; i < 5; ++i) {
+      this->actionButtons[i] = new UIBitmapButton();
+      this->actionButtons[i]->SetBitmap((prefix + commandNames[i][0] + ".bmp").c_str(), 0, 0);
+      this->actionButtons[i]->SetBitmap((prefix + commandNames[i][1] + ".bmp").c_str(), 1, 0);
+      this->actionButtons[i]->SetBitmap((prefix + commandNames[i][2] + ".bmp").c_str(), 2, 0);
+      this->actionButtons[i]->SetBitmap((prefix + commandNames[i][3] + ".bmp").c_str(), 3, 0);
+      this->actionButtons[i]->SetSize(this->actionButtons[i]->BitmapWidth(), this->actionButtons[i]->BitmapHeight());
+      this->actionButtons[i]->Move(commandPositions[i][0], commandPositions[i][1]);
+      this->actionButtons[i]->SetId(commandIds[i]);
+      this->AddChild(this->actionButtons[i]);
+    }
   }
 
   prefix = "유저인터페이스\\basic_interface\\";
-  const int keyIds[11] = {293, 294, 295, 296, 297, 298, 299, 300, 301, 302, 303};
-  const char* const keyNames[11][3] = {
-    {"0-a", "0-b", "0-c"}, {"1-a", "1-b", "1-c"}, {"2-a", "2-b", "2-c"}, {"3-a", "3-b", "3-c"},
-    {"4-a", "4-b", "4-c"}, {"5-a", "5-b", "5-c"}, {"6-a", "6-b", "6-c"}, {"7-a", "7-b", "7-c"},
-    {"8-a", "8-b", "8-c"}, {"9-a", "9-b", "9-c"}, {"reset-a", "reset-b", "reset-c"},
-  };
-  const int keyPositions[11][2] = {
-    {219, 78}, {279, 78}, {339, 78}, {219, 138}, {279, 138}, {339, 138}, {219, 198}, {279, 198}, {339, 198}, {219, 258}, {279, 258},
-  };
+  {
+    const int keyIds[11] = {293, 294, 295, 296, 297, 298, 299, 300, 301, 302, 303};
+    const char* const keyNames[11][3] = {
+      {"0-a", "0-b", "0-c"}, {"1-a", "1-b", "1-c"}, {"2-a", "2-b", "2-c"}, {"3-a", "3-b", "3-c"},
+      {"4-a", "4-b", "4-c"}, {"5-a", "5-b", "5-c"}, {"6-a", "6-b", "6-c"}, {"7-a", "7-b", "7-c"},
+      {"8-a", "8-b", "8-c"}, {"9-a", "9-b", "9-c"}, {"reset-a", "reset-b", "reset-c"},
+    };
+    const int keyPositions[11][2] = {
+      {219, 78}, {279, 78}, {339, 78}, {219, 138}, {279, 138}, {339, 138}, {219, 198}, {279, 198}, {339, 198}, {219, 258}, {279, 258},
+    };
 
-  for (int i = 0; i < 10; ++i) {
-    const int digit = this->m_digits[i];
-    this->keypadButtons[i] = new UIBitmapButton();
-    this->keypadButtons[i]->SetBitmap((prefix + keyNames[digit][0] + ".bmp").c_str(), 0, 0);
-    this->keypadButtons[i]->SetBitmap((prefix + keyNames[digit][1] + ".bmp").c_str(), 1, 0);
-    this->keypadButtons[i]->SetBitmap((prefix + keyNames[digit][2] + ".bmp").c_str(), 2, 0);
-    this->keypadButtons[i]->SetSize(this->keypadButtons[i]->BitmapWidth(), this->keypadButtons[i]->BitmapHeight());
-    this->keypadButtons[i]->Move(keyPositions[i][0], keyPositions[i][1]);
-    this->keypadButtons[i]->SetId(keyIds[digit]);
-    this->AddChild(this->keypadButtons[i]);
+    for (int i = 0; i < 10; ++i) {
+      const int digit = this->m_digits[i];
+      this->keypadButtons[i] = new UIBitmapButton();
+      this->keypadButtons[i]->SetBitmap((prefix + keyNames[digit][0] + ".bmp").c_str(), 0, 0);
+      this->keypadButtons[i]->SetBitmap((prefix + keyNames[digit][1] + ".bmp").c_str(), 1, 0);
+      this->keypadButtons[i]->SetBitmap((prefix + keyNames[digit][2] + ".bmp").c_str(), 2, 0);
+      this->keypadButtons[i]->SetSize(this->keypadButtons[i]->BitmapWidth(), this->keypadButtons[i]->BitmapHeight());
+      this->keypadButtons[i]->Move(keyPositions[i][0], keyPositions[i][1]);
+      this->keypadButtons[i]->SetId(keyIds[digit]);
+      this->AddChild(this->keypadButtons[i]);
+    }
+
+    this->keypadButtons[10] = new UIBitmapButton();
+    this->keypadButtons[10]->SetBitmap((prefix + keyNames[10][0] + ".bmp").c_str(), 0, 0);
+    this->keypadButtons[10]->SetBitmap((prefix + keyNames[10][1] + ".bmp").c_str(), 1, 0);
+    this->keypadButtons[10]->SetBitmap((prefix + keyNames[10][2] + ".bmp").c_str(), 2, 0);
+    this->keypadButtons[10]->SetSize(this->keypadButtons[10]->BitmapWidth(), this->keypadButtons[10]->BitmapHeight());
+    this->keypadButtons[10]->Move(keyPositions[10][0], keyPositions[10][1]);
+    this->keypadButtons[10]->SetId(keyIds[10]);
+    this->AddChild(this->keypadButtons[10]);
   }
-
-  this->keypadButtons[10] = new UIBitmapButton();
-  this->keypadButtons[10]->SetBitmap((prefix + keyNames[10][0] + ".bmp").c_str(), 0, 0);
-  this->keypadButtons[10]->SetBitmap((prefix + keyNames[10][1] + ".bmp").c_str(), 1, 0);
-  this->keypadButtons[10]->SetBitmap((prefix + keyNames[10][2] + ".bmp").c_str(), 2, 0);
-  this->keypadButtons[10]->SetSize(this->keypadButtons[10]->BitmapWidth(), this->keypadButtons[10]->BitmapHeight());
-  this->keypadButtons[10]->Move(keyPositions[10][0], keyPositions[10][1]);
-  this->keypadButtons[10]->SetId(keyIds[10]);
-  this->AddChild(this->keypadButtons[10]);
 
   this->actionButtons[0]->Enable(0);
 
