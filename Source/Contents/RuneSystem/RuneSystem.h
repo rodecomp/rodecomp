@@ -42,7 +42,7 @@ public:
 
   bool IsSame(const RuneData& other) const;
   std::int64_t GetId() const;
-  bool IsActive() const;
+  int IsActive() const;
   std::uint8_t GetActiveState() const;
   const char* GetName() const;
   const char* GetResName() const;

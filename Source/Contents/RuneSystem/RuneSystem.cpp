@@ -302,7 +302,7 @@ std::int64_t RuneData::GetId() const {
 
 // OFFSET: 0x00766E50
 // FUNCTION: fn_08131
-bool RuneData::IsActive() const {
+int RuneData::IsActive() const {
   return this->m_active != 0;
 }
 
