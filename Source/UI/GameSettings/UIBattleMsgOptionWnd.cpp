@@ -202,16 +202,16 @@ void UIBattleMsgOptionWnd::Paint() {
 
   const int leftHeight = this->geometry.height - 42;
   const int leftCount = leftHeight / 8 + (leftHeight % 8 != 0);
-  for (int i = 0, y = 19; i < leftCount; ++i, y += 8) {
+  for (int i = 0; i < leftCount; ++i) {
     auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
-    this->DrawBitmap(0, y, left, false);
+    this->DrawBitmap(0, 19 + i * 8, left, false);
   }
 
   const int rightHeight = this->geometry.height - 38;
   const int rightCount = rightHeight / 8 + (rightHeight % 8 != 0);
-  for (int i = 0, y = 17; i < rightCount; ++i, y += 8) {
+  for (int i = 0; i < rightCount; ++i) {
     auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
-    this->DrawBitmap(this->geometry.width - right->image.width, y, right, false);
+    this->DrawBitmap(this->geometry.width - right->image.width, 17 + i * 8, right, false);
   }
 
   unsigned red, green, blue;
@@ -237,7 +237,7 @@ void UIBattleMsgOptionWnd::Paint() {
     this->DrawTextAt(50, y, *it, 0, 0, 12, 0, 0, 0);
     const bool online = this->optionStates[index] != 0;
     auto* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
-      Resolve(online ? "유저인터페이스\\basic_interface\\grp_online.bmp" : "유저인터페이스\\basic_interface\\grp_offline.bmp")
+      Resolve(!online ? "유저인터페이스\\basic_interface\\grp_offline.bmp" : "유저인터페이스\\basic_interface\\grp_online.bmp")
     ));
     this->DrawBitmap(27, y, icon, true);
 
