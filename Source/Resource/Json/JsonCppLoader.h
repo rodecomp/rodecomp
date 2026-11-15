@@ -222,6 +222,11 @@ inline const JsonObject* JsonValue::ObjectRange() const {
 
 struct JsonCppLoaderParsedValue : JsonValue {
   // INLINED
+  JsonCppLoaderParsedValue() {
+    reinterpret_cast<void(__thiscall*)(JsonValue*, const JsonValue*)>(JsonCopyConstruct)(this, static_cast<const JsonValue*>(JsonNull()));
+  }
+
+  // INLINED
   JsonCppLoaderParsedValue& operator=(JsonCppLoaderParsedValue&& other) {
     if (this != &other) {
       reinterpret_cast<void(__thiscall*)(JsonValue*, JsonValue*)>(JsonSwap)(this, &other);

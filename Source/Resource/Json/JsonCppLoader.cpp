@@ -75,13 +75,6 @@ bool JsonCppLoader::GetStringValue(const JsonValue& node, const std::string& key
 }
 
 
-// INLINED
-static JsonValue CopyNullJsonValue() {
-  JsonValue value;
-  reinterpret_cast<void(__thiscall*)(JsonValue*, const JsonValue*)>(JsonCopyConstruct)(&value, static_cast<const JsonValue*>(JsonNull()));
-  return value;
-}
-
 struct JsonCppLoaderJsonOptionsGuard {
   JsonCppLoaderJsonOptions* options;
 
@@ -203,7 +196,7 @@ __declspec(noinline) bool JsonCppLoader::LoadJson(std::vector<unsigned char>& bu
 
 // OFFSET: 0x004EEC60
 // FUNCTION: fn_00337
-JsonCppLoader::JsonCppLoader() : document{CopyNullJsonValue()}, loaded(false), succeeded(true) {
+JsonCppLoader::JsonCppLoader() : loaded(false), succeeded(true) {
 }
 
 // OFFSET: 0x004F2840
