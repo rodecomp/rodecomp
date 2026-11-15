@@ -131,9 +131,7 @@ void CJupitelThunderStormEffect::OnProcess() {
       } else {
         position = this->sourcePositionVector;
       }
-      particle->position.x = position.x;
-      particle->position.y = position.y;
-      particle->position.z = position.z;
+      particle->position = position;
       static_cast<CEZ2STRParticle*>(this->particle)->Process(0.0f, 0.0f, 0.0f);
     }
   }

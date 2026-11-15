@@ -127,9 +127,7 @@ __declspec(safebuffers) void CEffectPrim::RenderLaunchEffects(matrix&) {
 // FUNCTION: fn_19998
 __declspec(safebuffers) void CEffectPrim::RenderGroundSprite(matrix& wtm) {
   if (this->state.master) {
-    this->render.position.x = this->state.master->render.position.x;
-    this->render.position.y = this->state.master->render.position.y;
-    this->render.position.z = this->state.master->render.position.z;
+    this->render.position = this->state.master->render.position;
   }
 
   const float z = this->render.position.z;

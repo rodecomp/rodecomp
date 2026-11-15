@@ -71,9 +71,7 @@ void CAxeBoomerang::OnProcess() {
     } else {
       CRenderObject* sourceActor = FindRenderObject(this->sourceActor);
       if (sourceActor) {
-        this->launchPosition.x = sourceActor->render.position.x;
-        this->launchPosition.y = sourceActor->render.position.y;
-        this->launchPosition.z = sourceActor->render.position.z;
+        this->launchPosition = sourceActor->render.position;
       }
 
       float scale;
@@ -122,9 +120,7 @@ void CAxeBoomerang::OnProcess() {
         this->alive = 0;
       }
 
-      emitter->position.x = this->particlePosition.x;
-      emitter->position.y = this->particlePosition.y;
-      emitter->position.z = this->particlePosition.z;
+      emitter->position = this->particlePosition;
       static_cast<CEZ2STRParticle*>(emitter)->Process(0.0f, 0.0f, 0.0f);
     }
   }

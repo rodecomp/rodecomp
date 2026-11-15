@@ -122,15 +122,9 @@ void CPokJukEffect::OnProcess() {
 
       if (age > 0) {
         if (age % 3 == 0) {
-          this->trails[index][3].x = this->trails[index][2].x;
-          this->trails[index][3].y = this->trails[index][2].y;
-          this->trails[index][3].z = this->trails[index][2].z;
-          this->trails[index][2].x = this->trails[index][1].x;
-          this->trails[index][2].y = this->trails[index][1].y;
-          this->trails[index][2].z = this->trails[index][1].z;
-          this->trails[index][1].x = this->trails[index][0].x;
-          this->trails[index][1].y = this->trails[index][0].y;
-          this->trails[index][1].z = this->trails[index][0].z;
+          this->trails[index][3] = this->trails[index][2];
+          this->trails[index][2] = this->trails[index][1];
+          this->trails[index][1] = this->trails[index][0];
         }
 
         const int delay = this->delays[index];

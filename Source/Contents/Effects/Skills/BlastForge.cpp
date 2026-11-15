@@ -31,9 +31,7 @@ static __forceinline void PlaceParticle(CEZ2STRParticle* particle, const float* 
   vector3d viewPos = TransformPoint(view, pos);
   viewPos.y -= 8.0f;
   const vector3d worldPos = TransformPoint(inverse, viewPos);
-  particle->position.x = worldPos.x;
-  particle->position.y = worldPos.y;
-  particle->position.z = worldPos.z;
+  particle->position = worldPos;
 
   particle->Process(0.0f, 0.0f, 0.0f);
 }

@@ -687,9 +687,7 @@ __forceinline static void SelectRagEffectResource(RagEffectState& effect, Servic
 void CRagEffect::Init(EffectActor* parent, int id, vector3d deltaPos) {
   this->state.type = id;
   this->state.parent = parent;
-  this->render.position.x = parent->render.position.x;
-  this->render.position.y = parent->render.position.y;
-  this->render.position.z = parent->render.position.z;
+  this->render.position = parent->render.position;
   this->state.longitude = parent->render.angle;
   this->SetStateDuration(EffectLifetime(this->state.type));
   this->state.deltaPos[0] = deltaPos.x;

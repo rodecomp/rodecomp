@@ -120,9 +120,7 @@ void CTriangleShotArrow::OnProcess() {
     this->position[0] = this->current.x;
     this->position[1] = this->current.y;
     this->position[2] = this->current.z;
-    arrow->position.x = this->current.x;
-    arrow->position.y = this->current.y;
-    arrow->position.z = this->current.z;
+    arrow->position = this->current;
     arrow->Process(0.0f, 0.0f, 0.0f);
   }
 

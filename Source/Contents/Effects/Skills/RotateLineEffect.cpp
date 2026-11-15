@@ -149,12 +149,8 @@ void CRotateLineEffect::OnProcess() {
         particle->vertices[2].y = this->previous[0].y;
         particle->vertices[2].z = this->previous[0].z;
       }
-      this->previous[0].x = points[0].x;
-      this->previous[0].y = points[0].y;
-      this->previous[0].z = points[0].z;
-      this->previous[1].x = points[1].x;
-      this->previous[1].y = points[1].y;
-      this->previous[1].z = points[1].z;
+      this->previous[0] = points[0];
+      this->previous[1] = points[1];
     }
     ++particle->elapsedFrames;
   }

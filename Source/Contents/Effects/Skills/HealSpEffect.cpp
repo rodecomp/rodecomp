@@ -177,9 +177,7 @@ void CHealSp::OnProcess() {
       }
 
       params[2] = lift;
-      sprite->velocity.x = velocity.x;
-      sprite->velocity.y = velocity.y;
-      sprite->velocity.z = velocity.z;
+      sprite->velocity = velocity;
       sprite->alpha = static_cast<int>(level);
       params[5] = fade;
       sprite->position.x = x;

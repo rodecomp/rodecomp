@@ -158,9 +158,7 @@ void CMandraAttackEffect::SendMsg(CGameObject* sender, std::int64_t message, std
   this->SetActionName(action);
   vector3d target{0.0f, 0.0f, 0.0f};
   this->GetTargetPos(static_cast<std::uint32_t>(b), target);
-  this->render.position.x = target.x;
-  this->render.position.y = target.y;
-  this->render.position.z = target.z;
+  this->render.position = target;
   this->render.visible = 1;
   this->render.motionStartTime = timeGetTime();
   this->SetAnimationSpeed(this->GetActRes()->Speed(0));

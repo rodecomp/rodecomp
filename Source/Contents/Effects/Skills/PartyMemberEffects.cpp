@@ -78,9 +78,7 @@ bool CRollingCutterRagEffect::OnProcess() {
   }
 
   const vector3d& parentPosition = this->state.parent->render.position;
-  this->render.position.x = parentPosition.x;
-  this->render.position.y = parentPosition.y;
-  this->render.position.z = parentPosition.z;
+  this->render.position = parentPosition;
 
   if (this->elapsed == 0) {
     const vector3d& player = g_modeMgr.GetGameMode()->scene->player->render.position;

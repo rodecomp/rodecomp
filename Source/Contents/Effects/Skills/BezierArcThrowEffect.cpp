@@ -127,7 +127,5 @@ void CBezierArcThrowEffect::Render() {
 // OFFSET: 0x007AB830
 // FUNCTION: fn_09112
 void CBezierArcThrowEffect::SetTarget(const vector3d& target) {
-  this->m_target.x = target.x;
-  this->m_target.y = target.y;
-  this->m_target.z = target.z;
+  this->m_target = target;
 }

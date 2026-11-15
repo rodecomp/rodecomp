@@ -112,9 +112,7 @@ namespace {
       trail.alphaB = 0;
     }
 
-    trail.vecBNow.x = previous.vecBNow.x;
-    trail.vecBNow.y = previous.vecBNow.y;
-    trail.vecBNow.z = previous.vecBNow.z;
+    trail.vecBNow = previous.vecBNow;
     trail.fullDisplayAngle = previous.fullDisplayAngle;
     trail.flag1[0] = previous.flag1[0];
   }
@@ -123,9 +121,7 @@ namespace {
 // INLINED
 static void FollowMaster(CEffectPrim& particle) {
   const CRagEffect* master = particle.state.master;
-  particle.render.position.x = master->render.position.x;
-  particle.render.position.y = master->render.position.y;
-  particle.render.position.z = master->render.position.z;
+  particle.render.position = master->render.position;
 }
 
 // OFFSET: 0x00BB8C50
@@ -326,9 +322,7 @@ bool CEffectPrim::MoveEffectPrimitive() {
 // FUNCTION: fn_19773
 bool CEffectPrim::Prim3DCasting4() {
   const vector3d& parent = this->state.master->render.position;
-  this->render.position.x = parent.x;
-  this->render.position.y = parent.y;
-  this->render.position.z = parent.z;
+  this->render.position = parent;
 
   for (int index = 0; index < 4; ++index) {
     EffectPrimitiveSlot& slot = this->state.slots[index];
@@ -378,9 +372,7 @@ bool CEffectPrim::Prim3DCasting4() {
 // FUNCTION: fn_19774
 bool CEffectPrim::Prim3DCasting5() {
   const vector3d& parent = this->state.master->render.position;
-  this->render.position.x = parent.x;
-  this->render.position.y = parent.y;
-  this->render.position.z = parent.z;
+  this->render.position = parent;
 
   for (int index = 0; index < 4; ++index) {
     if (this->state.slots[index].life != 1) {
@@ -612,9 +604,7 @@ unsigned char CEffectPrim::AnimMotion() {
 // OFFSET: 0x00BB5E80
 // FUNCTION: fn_19772
 bool CEffectPrim::UpdateFireWall() {
-  this->render.position.x = this->state.master->render.position.x;
-  this->render.position.y = this->state.master->render.position.y;
-  this->render.position.z = this->state.master->render.position.z;
+  this->render.position = this->state.master->render.position;
 
   for (int index = 0; index < 4; ++index) {
     if (this->state.size == 3.0f && index < 3) {
@@ -736,9 +726,7 @@ bool CEffectPrim::UpdateFireWall() {
 // FUNCTION: fn_19775
 bool CEffectPrim::UpdateStoneCurse() {
   const CRagEffect* master = this->state.master;
-  this->render.position.x = master->render.position.x;
-  this->render.position.y = master->render.position.y;
-  this->render.position.z = master->render.position.z;
+  this->render.position = master->render.position;
 
   for (int index = 0; index < 4; ++index) {
     if (this->state.size == 3.0f && index < 3) {
@@ -872,9 +860,7 @@ void CEffectPrim::Prim3DCircle() {
 // FUNCTION: fn_19790
 void CEffectPrim::PrimBottom2() {
   const CRagEffect* master = this->state.master;
-  this->render.position.x = master->render.position.x;
-  this->render.position.y = master->render.position.y;
-  this->render.position.z = master->render.position.z;
+  this->render.position = master->render.position;
 
   for (int index = 0; index < 4; ++index) {
     EffectPrimitiveSlot& slot = this->state.slots[index];
@@ -906,9 +892,7 @@ void CEffectPrim::PrimBottom() {
   FaceCamera(slots);
 
   const CRagEffect* master = this->state.master;
-  this->render.position.x = master->render.position.x;
-  this->render.position.y = master->render.position.y;
-  this->render.position.z = master->render.position.z;
+  this->render.position = master->render.position;
 
   EffectPrimitiveSlot& slot = slots[0];
 
@@ -933,9 +917,7 @@ void CEffectPrim::PrimBottom() {
           trail.alphaB = 0;
         }
 
-        trail.vecBNow.x = previous.vecBNow.x;
-        trail.vecBNow.y = previous.vecBNow.y;
-        trail.vecBNow.z = previous.vecBNow.z;
+        trail.vecBNow = previous.vecBNow;
         trail.fullDisplayAngle = previous.fullDisplayAngle;
         trail.flag1[0] = previous.flag1[0];
         trail.flag1[2] = 2;
@@ -976,9 +958,7 @@ void CEffectPrim::PrimBottomOut() {
   FaceCamera(this->state.slots);
 
   const CRagEffect* master = this->state.master;
-  this->render.position.x = master->render.position.x;
-  this->render.position.y = master->render.position.y;
-  this->render.position.z = master->render.position.z;
+  this->render.position = master->render.position;
 
   for (int index = 0; index < 4; ++index) {
     EffectPrimitiveSlot& slot = this->state.slots[index];
@@ -1026,9 +1006,7 @@ void CEffectPrim::PrimBubbleDrop() {
   FaceCamera(slots);
 
   const CRagEffect* master = this->state.master;
-  this->render.position.x = master->render.position.x;
-  this->render.position.y = master->render.position.y;
-  this->render.position.z = master->render.position.z;
+  this->render.position = master->render.position;
 
   EffectPrimitiveSlot& slot = slots[0];
 
@@ -1084,9 +1062,7 @@ void CEffectPrim::PrimChemical2() {
   FaceCamera(this->state.slots);
 
   const CRagEffect* master = this->state.master;
-  this->render.position.x = master->render.position.x;
-  this->render.position.y = master->render.position.y;
-  this->render.position.z = master->render.position.z;
+  this->render.position = master->render.position;
 
   for (int index = 0; index < 4; ++index) {
     EffectPrimitiveSlot& slot = this->state.slots[index];
@@ -1221,9 +1197,7 @@ void CEffectPrim::PrimEffectTexture_Ani() {
   FaceCamera(this->state.slots);
 
   const CRagEffect* master = this->state.master;
-  this->render.position.x = master->render.position.x;
-  this->render.position.y = master->render.position.y;
-  this->render.position.z = master->render.position.z;
+  this->render.position = master->render.position;
 
   EffectPrimitiveSlot& slot = this->state.slots[0];
 
@@ -1262,9 +1236,7 @@ void CEffectPrim::PrimFirstAid() {
   FaceCamera(this->state.slots);
 
   const CRagEffect* master = this->state.master;
-  this->render.position.x = master->render.position.x;
-  this->render.position.y = master->render.position.y;
-  this->render.position.z = master->render.position.z;
+  this->render.position = master->render.position;
 
   EffectPrimitiveSlot& slot = this->state.slots[0];
 
@@ -1348,9 +1320,7 @@ __declspec(noinline) void CEffectPrim::PrimPoison() {
   FaceCamera(this->state.slots);
 
   const CRagEffect* master = this->state.master;
-  this->render.position.x = master->render.position.x;
-  this->render.position.y = master->render.position.y;
-  this->render.position.z = master->render.position.z;
+  this->render.position = master->render.position;
 
   for (int index = 0; index < 4; ++index) {
     EffectPrimitiveSlot& slot = this->state.slots[index];
@@ -1385,9 +1355,7 @@ __declspec(noinline) void CEffectPrim::PrimPoison() {
 // FUNCTION: fn_19813
 void CEffectPrim::PrimGuard() {
   const CRagEffect* master = this->state.master;
-  this->render.position.x = master->render.position.x;
-  this->render.position.y = master->render.position.y;
-  this->render.position.z = master->render.position.z;
+  this->render.position = master->render.position;
 
   for (int index = 0; index < 4; ++index) {
     EffectPrimitiveSlot& slot = this->state.slots[index];
@@ -1432,15 +1400,11 @@ bool CEffectPrim::PrimLineLink() {
   CGameMode* gameMode = g_modeMgr.GetGameMode();
   const CRenderObject* target = nullptr;
 
-  this->render.position.x = this->state.master->render.position.x;
-  this->render.position.y = this->state.master->render.position.y;
-  this->render.position.z = this->state.master->render.position.z;
+  this->render.position = this->state.master->render.position;
 
   ++this->state.slots[0].process;
 
-  this->state.slots[0].vecTNow.x = this->render.position.x;
-  this->state.slots[0].vecTNow.y = this->render.position.y;
-  this->state.slots[0].vecTNow.z = this->render.position.z;
+  this->state.slots[0].vecTNow = this->render.position;
   this->state.slots[0].vecTNow.y -= 8.0f;
 
   if (this->state.slots[0].height[4] == 2.0f) {
@@ -1479,9 +1443,7 @@ bool CEffectPrim::PrimLineLink() {
     this->state.slots[0].life = 0;
     this->state.slots[0].alphaB = 0;
   } else {
-    this->state.slots[0].vecTPre.x = target->render.position.x;
-    this->state.slots[0].vecTPre.y = target->render.position.y;
-    this->state.slots[0].vecTPre.z = target->render.position.z;
+    this->state.slots[0].vecTPre = target->render.position;
     this->state.slots[0].vecTPre.y -= 8.0f;
   }
 
@@ -1520,9 +1482,7 @@ void CEffectPrim::PrimShieldBoomerang3() {
   FaceCamera(slots);
 
   const CRagEffect* master = this->state.master;
-  this->render.position.x = master->render.position.x;
-  this->render.position.y = master->render.position.y;
-  this->render.position.z = master->render.position.z;
+  this->render.position = master->render.position;
 
   EffectPrimitiveSlot& slot = slots[0];
 
@@ -1807,9 +1767,7 @@ bool CEffectPrim::PrimSakura() {
 // FUNCTION: fn_19843
 void CEffectPrim::PrimTeiHit2() {
   FaceCamera(this->state.slots);
-  this->render.position.x = this->state.master->render.position.x;
-  this->render.position.y = this->state.master->render.position.y;
-  this->render.position.z = this->state.master->render.position.z;
+  this->render.position = this->state.master->render.position;
 
   for (int ec = 0; ec < 4; ++ec) {
     if (this->state.slots[ec].life != 1) {
@@ -1861,9 +1819,7 @@ void CEffectPrim::PrimTeiHit2() {
 // OFFSET: 0x00BC3C70
 // FUNCTION: fn_19840
 __declspec(noinline) bool CEffectPrim::PrimSuperAngel() {
-  this->render.position.x = this->state.master->render.position.x;
-  this->render.position.y = this->state.master->render.position.y;
-  this->render.position.z = this->state.master->render.position.z;
+  this->render.position = this->state.master->render.position;
 
   if (this->state.slots[0].life == 1) {
     ++this->state.slots[0].process;
@@ -1992,9 +1948,7 @@ __declspec(noinline) bool CEffectPrim::PrimSuperAngel() {
     }
   }
 
-  this->render.position.x = this->state.deltaPos.x;
-  this->render.position.y = this->state.deltaPos.y;
-  this->render.position.z = this->state.deltaPos.z;
+  this->render.position = this->state.deltaPos;
   this->ShiftSegment();
   return true;
 }
@@ -2005,9 +1959,7 @@ void CEffectPrim::PrimTanji2() {
   FaceCamera(this->state.slots);
 
   const CRagEffect* master = this->state.master;
-  this->render.position.x = master->render.position.x;
-  this->render.position.y = master->render.position.y;
-  this->render.position.z = master->render.position.z;
+  this->render.position = master->render.position;
 
   if (this->state.slots[0].life != 1) {
     return;
@@ -2124,9 +2076,7 @@ bool CEffectPrim::PrimGhost() {
       slot.rotStart -= 360;
     }
 
-    slot.vecBPre.x = slot.vecBNow.x;
-    slot.vecBPre.y = slot.vecBNow.y;
-    slot.vecBPre.z = slot.vecBNow.z;
+    slot.vecBPre = slot.vecBNow;
 
     if (slot.flag1[2] == 2) {
       int angle = slot.rotStart * 2;
@@ -2143,9 +2093,7 @@ bool CEffectPrim::PrimGhost() {
     }
 
     slot.vecBPre.y += slot.maxHeight * g_sinTable[slot.riseAngle];
-    this->state.deltaPos.x = slot.vecBPre.x;
-    this->state.deltaPos.y = slot.vecBPre.y;
-    this->state.deltaPos.z = slot.vecBPre.z;
+    this->state.deltaPos = slot.vecBPre;
 
     const CView* view = g_modeMgr.GetGameMode()->camera;
     int angle = slot.rotStart + static_cast<int>(view->camera.yaw);
@@ -2179,9 +2127,7 @@ bool CEffectPrim::PrimGhost() {
     }
   }
 
-  this->render.position.x = this->state.deltaPos.x;
-  this->render.position.y = this->state.deltaPos.y;
-  this->render.position.z = this->state.deltaPos.z;
+  this->render.position = this->state.deltaPos;
   this->ProcessAlpha();
   this->ShiftSegment();
   return this->AnimMotion();
@@ -2194,9 +2140,7 @@ void CEffectPrim::PrimThrowItem() {
   FaceCamera(slots);
 
   const CRagEffect* master = this->state.master;
-  this->render.position.x = master->render.position.x;
-  this->render.position.y = master->render.position.y;
-  this->render.position.z = master->render.position.z;
+  this->render.position = master->render.position;
 
   EffectPrimitiveSlot& slot = slots[0];
 
@@ -2378,12 +2322,8 @@ bool CEffectPrim::Prim3DParticle() {
   const int frame = this->state.stateCnt;
 
   if (frame == this->state.changePoint) {
-    this->state.speed3d.x = this->state.changeSpeed3d.x;
-    this->state.speed3d.y = this->state.changeSpeed3d.y;
-    this->state.speed3d.z = this->state.changeSpeed3d.z;
-    this->state.deltaPosAccel.x = this->state.changeAccel3d.x;
-    this->state.deltaPosAccel.y = this->state.changeAccel3d.y;
-    this->state.deltaPosAccel.z = this->state.changeAccel3d.z;
+    this->state.speed3d = this->state.changeSpeed3d;
+    this->state.deltaPosAccel = this->state.changeAccel3d;
   }
 
   float vertical = this->state.accel + this->state.speed;
@@ -2733,12 +2673,8 @@ bool CEffectPrim::Prim3DParticleNoMaster() {
   const int frame = this->state.stateCnt;
 
   if (frame == this->state.changePoint) {
-    this->state.speed3d.x = this->state.changeSpeed3d.x;
-    this->state.speed3d.y = this->state.changeSpeed3d.y;
-    this->state.speed3d.z = this->state.changeSpeed3d.z;
-    this->state.deltaPosAccel.x = this->state.changeAccel3d.x;
-    this->state.deltaPosAccel.y = this->state.changeAccel3d.y;
-    this->state.deltaPosAccel.z = this->state.changeAccel3d.z;
+    this->state.speed3d = this->state.changeSpeed3d;
+    this->state.deltaPosAccel = this->state.changeAccel3d;
   }
 
   float vertical = this->state.accel + this->state.speed;
@@ -2933,14 +2869,10 @@ void CEffectPrim::ShiftSegment() {
   for (int index = count - 1; index > 0; --index) {
     EffectPrimitiveRecord& record = this->state.records[index];
     const EffectPrimitiveRecord& previous = this->state.records[index - 1];
-    record.position.x = previous.position.x;
-    record.position.y = previous.position.y;
-    record.position.z = previous.position.z;
+    record.position = previous.position;
 
     for (int corner = 0; corner < 4; ++corner) {
-      record.corners[corner].x = previous.corners[corner].x;
-      record.corners[corner].y = previous.corners[corner].y;
-      record.corners[corner].z = previous.corners[corner].z;
+      record.corners[corner] = previous.corners[corner];
     }
 
     record.radius = previous.radius;
@@ -2956,14 +2888,10 @@ void CEffectPrim::ShiftSegment() {
   }
 
   EffectPrimitiveRecord& first = this->state.records[0];
-  first.position.x = this->render.position.x;
-  first.position.y = this->render.position.y;
-  first.position.z = this->render.position.z;
+  first.position = this->render.position;
 
   for (int corner = 0; corner < 4; ++corner) {
-    first.corners[corner].x = this->state.segPos[corner].x;
-    first.corners[corner].y = this->state.segPos[corner].y;
-    first.corners[corner].z = this->state.segPos[corner].z;
+    first.corners[corner] = this->state.segPos[corner];
   }
 
   first.radius = this->state.radius;
@@ -3761,15 +3689,9 @@ void CEffectPrim::PrimPokJuk() {
     }
 
     if (process % trailPeriod == 0) {
-      slot.vecTPre.x = slot.vecTNow.x;
-      slot.vecTPre.y = slot.vecTNow.y;
-      slot.vecTPre.z = slot.vecTNow.z;
-      slot.vecTNow.x = slot.vecBPre.x;
-      slot.vecTNow.y = slot.vecBPre.y;
-      slot.vecTNow.z = slot.vecBPre.z;
-      slot.vecBPre.x = slot.vecBNow.x;
-      slot.vecBPre.y = slot.vecBNow.y;
-      slot.vecBPre.z = slot.vecBNow.z;
+      slot.vecTPre = slot.vecTNow;
+      slot.vecTNow = slot.vecBPre;
+      slot.vecBPre = slot.vecBNow;
     }
 
     const int delay = slot.flag1[2];
@@ -3824,9 +3746,7 @@ void CEffectPrim::PrimPokJuk() {
       slot.flag1[1] = 0;
       const int heading = std::rand() % 360;
       slot.riseAngle = static_cast<std::int16_t>(heading >= 0 ? heading : 0);
-      slot.vecBNow.x = this->render.position.x;
-      slot.vecBNow.y = this->render.position.y;
-      slot.vecBNow.z = this->render.position.z;
+      slot.vecBNow = this->render.position;
       slot.vecBNow.x = this->render.position.x - 15.0f;
       const int spread = std::rand() % 100;
       slot.distance = static_cast<float>(spread >= 0 ? spread : 0) * 0.004f + 0.4f;
@@ -3948,9 +3868,7 @@ void CEffectPrim::PrimSTIN4() {
 
     if (slot.process % 3 == 0) {
       for (int trail = 2; trail >= 0; --trail) {
-        slots[trail + 1].vecBNow.x = slots[trail].vecBNow.x;
-        slots[trail + 1].vecBNow.y = slots[trail].vecBNow.y;
-        slots[trail + 1].vecBNow.z = slots[trail].vecBNow.z;
+        slots[trail + 1].vecBNow = slots[trail].vecBNow;
         slots[trail + 1].alphaB = static_cast<std::int16_t>(static_cast<int>(static_cast<float>(slots[trail].alphaB) * 0.8f));
         slots[trail + 1].riseAngle = slots[trail].riseAngle;
       }
@@ -4431,9 +4349,7 @@ bool CEffectPrim::PrimDriftingSquares() {
     this->state.slots[1].alphaT = anglePitch - 360;
   }
 
-  this->render.position.x = this->state.master->render.position.x;
-  this->render.position.y = this->state.master->render.position.y;
-  this->render.position.z = this->state.master->render.position.z;
+  this->render.position = this->state.master->render.position;
 
   for (int ec = 0; ec < 4; ++ec) {
     EffectPrimitiveSlot& slot = this->state.slots[ec];
@@ -5185,9 +5101,7 @@ void CEffectPrim::PrimTrailShift() {
 // FUNCTION: fn_19812
 void CEffectPrim::PrimGrowFollow() {
   const CRagEffect* master = this->state.master;
-  this->render.position.x = master->render.position.x;
-  this->render.position.y = master->render.position.y;
-  this->render.position.z = master->render.position.z;
+  this->render.position = master->render.position;
 
   for (int index = 0; index < 4; ++index) {
     EffectPrimitiveSlot& slot = this->state.slots[index];
@@ -5497,9 +5411,7 @@ __declspec(noinline) void CEffectPrim::PrimWaveHeights() {
 // FUNCTION: fn_19939
 __declspec(noinline) void CEffectPrim::PrimWaveHeightsSlow() {
   const CRagEffect* master = this->state.master;
-  this->render.position.x = master->render.position.x;
-  this->render.position.y = master->render.position.y;
-  this->render.position.z = master->render.position.z;
+  this->render.position = master->render.position;
 
   int steps = 360;
   int phase = 0;
@@ -5818,12 +5730,8 @@ bool CEffectPrim::Prim3DSlotParticle() {
   this->state.orgPos = {this->state.deltaPos2.x + anchor.x, anchor.y + this->state.deltaPos2.y, anchor.z + this->state.deltaPos2.z};
 
   if (this->state.stateCnt == this->state.changePoint) {
-    this->state.speed3d.x = this->state.changeSpeed3d.x;
-    this->state.speed3d.y = this->state.changeSpeed3d.y;
-    this->state.speed3d.z = this->state.changeSpeed3d.z;
-    this->state.deltaPosAccel.x = this->state.changeAccel3d.x;
-    this->state.deltaPosAccel.y = this->state.changeAccel3d.y;
-    this->state.deltaPosAccel.z = this->state.changeAccel3d.z;
+    this->state.speed3d = this->state.changeSpeed3d;
+    this->state.deltaPosAccel = this->state.changeAccel3d;
   }
 
   this->state.speed = this->state.accel + this->state.speed;
@@ -5915,9 +5823,7 @@ bool CEffectPrim::Prim3DSlotParticle() {
 // FUNCTION: fn_19799
 bool CEffectPrim::PrimFieldFireflies() {
   FaceCamera(this->state.slots);
-  this->render.position.x = this->state.master->render.position.x;
-  this->render.position.y = this->state.master->render.position.y;
-  this->render.position.z = this->state.master->render.position.z;
+  this->render.position = this->state.master->render.position;
 
   for (int index = 0; index < 4; ++index) {
     EffectPrimitiveSlot& slot = this->state.slots[index];
@@ -6035,9 +5941,7 @@ bool CEffectPrim::PrimFieldFireflies() {
 // FUNCTION: fn_19959
 void CEffectPrim::PrimSpiralCollapse() {
   const CRagEffect* master = this->state.master;
-  this->render.position.x = master->render.position.x;
-  this->render.position.y = master->render.position.y;
-  this->render.position.z = master->render.position.z;
+  this->render.position = master->render.position;
 
   for (int index = 0; index < 4; ++index) {
     if (this->state.slots[index].life != 1) {
@@ -6284,9 +6188,7 @@ bool CEffectPrim::PrimRisingFan() {
 
   if (this->state.slots[0].flag1[4] == 1) {
     const CRagEffect* master = this->state.master;
-    this->render.position.x = master->render.position.x;
-    this->render.position.y = master->render.position.y;
-    this->render.position.z = master->render.position.z;
+    this->render.position = master->render.position;
   }
 
   for (int index = 0; index < 4; ++index) {
@@ -6339,9 +6241,7 @@ bool CEffectPrim::PrimRisingFan2() {
 
   if (this->state.slots[0].flag1[4] == 1) {
     const CRagEffect* master = this->state.master;
-    this->render.position.x = master->render.position.x;
-    this->render.position.y = master->render.position.y;
-    this->render.position.z = master->render.position.z;
+    this->render.position = master->render.position;
   }
 
   for (int index = 0; index < 4; ++index) {
@@ -6399,9 +6299,7 @@ bool CEffectPrim::PrimFloatingBubbles() {
   FaceCamera(this->state.slots);
 
   const CRagEffect* master = this->state.master;
-  this->render.position.x = master->render.position.x;
-  this->render.position.y = master->render.position.y;
-  this->render.position.z = master->render.position.z;
+  this->render.position = master->render.position;
 
   for (int index = 0; index < 4; ++index) {
     if (this->state.slots[index].life != 1) {
@@ -6454,9 +6352,7 @@ bool CEffectPrim::PrimPulsingColumns() {
     this->state.slots[2].alphaT = static_cast<std::int16_t>(360 - static_cast<int>(view->camera.yaw));
   }
 
-  this->render.position.x = this->state.master->render.position.x;
-  this->render.position.y = this->state.master->render.position.y;
-  this->render.position.z = this->state.master->render.position.z;
+  this->render.position = this->state.master->render.position;
 
   for (int index = 0; index < 4; ++index) {
     if (this->state.slots[index].life != 1) {
@@ -6548,9 +6444,7 @@ bool CEffectPrim::PrimPulsingColumns() {
 // FUNCTION: fn_19826
 bool CEffectPrim::PrimRippleRings() {
   const CRagEffect* master = this->state.master;
-  this->render.position.x = master->render.position.x;
-  this->render.position.y = master->render.position.y;
-  this->render.position.z = master->render.position.z;
+  this->render.position = master->render.position;
 
   EffectPrimitiveSlot& control = this->state.slots[3];
 
@@ -6734,9 +6628,7 @@ void CEffectPrim::PrimFadingColumns() {
   }
 
   const CRagEffect* master = this->state.master;
-  this->render.position.x = master->render.position.x;
-  this->render.position.y = master->render.position.y;
-  this->render.position.z = master->render.position.z;
+  this->render.position = master->render.position;
 }
 
 // OFFSET: 0x00BBCC20
@@ -6754,9 +6646,7 @@ void CEffectPrim::PrimAuraGlow() {
   }
 
   const CRagEffect* master = this->state.master;
-  this->render.position.x = master->render.position.x;
-  this->render.position.y = master->render.position.y;
-  this->render.position.z = master->render.position.z;
+  this->render.position = master->render.position;
 
   EffectPrimitiveSlot& slot = slots[0];
 
@@ -6883,9 +6773,7 @@ void CEffectPrim::PrimBubbleSwirl() {
   FaceCamera(slots);
 
   const CRagEffect* master = this->state.master;
-  this->render.position.x = master->render.position.x;
-  this->render.position.y = master->render.position.y;
-  this->render.position.z = master->render.position.z;
+  this->render.position = master->render.position;
 
   EffectPrimitiveSlot& slot = slots[0];
 
@@ -7095,9 +6983,7 @@ void CEffectPrim::PrimSTIN3() {
 
     if (slot.process % 3 == 0) {
       for (int trail = 2; trail >= 0; --trail) {
-        slots[trail + 1].vecBNow.x = slots[trail].vecBNow.x;
-        slots[trail + 1].vecBNow.y = slots[trail].vecBNow.y;
-        slots[trail + 1].vecBNow.z = slots[trail].vecBNow.z;
+        slots[trail + 1].vecBNow = slots[trail].vecBNow;
         slots[trail + 1].alphaB = static_cast<std::int16_t>(static_cast<int>(static_cast<float>(slots[trail].alphaB) * 0.8f));
         slots[trail + 1].riseAngle = slots[trail].riseAngle;
       }
@@ -7112,9 +6998,7 @@ bool CEffectPrim::PrimDriftingSparks() {
   FaceCamera(slots);
 
   const CRagEffect* master = this->state.master;
-  this->render.position.x = master->render.position.x;
-  this->render.position.y = master->render.position.y;
-  this->render.position.z = master->render.position.z;
+  this->render.position = master->render.position;
 
   EffectPrimitiveSlot& slot = slots[0];
 
@@ -7353,9 +7237,7 @@ bool CEffectPrim::PrimDriftingOrbs() {
   FaceCamera(slots);
 
   const CRagEffect* master = this->state.master;
-  this->render.position.x = master->render.position.x;
-  this->render.position.y = master->render.position.y;
-  this->render.position.z = master->render.position.z;
+  this->render.position = master->render.position;
 
   EffectPrimitiveSlot& slot = slots[0];
 
@@ -7937,9 +7819,7 @@ bool CEffectPrim::OnProcess() {
     case 161:
     case 171:
     case 173:
-      this->render.position.x = this->state.master->render.position.x;
-      this->render.position.y = this->state.master->render.position.y;
-      this->render.position.z = this->state.master->render.position.z;
+      this->render.position = this->state.master->render.position;
       [[fallthrough]];
     default:
       if (g_updateTick == 0) {
@@ -8094,9 +7974,7 @@ bool CEffectPrim::OnProcess() {
       this->state.orgPos.x = this->state.master->render.position.x + this->state.deltaPos2.x;
       this->state.orgPos.y = this->state.master->render.position.y + this->state.deltaPos2.y;
       this->state.orgPos.z = this->state.master->render.position.z + this->state.deltaPos2.z;
-      this->render.position.x = this->state.orgPos.x;
-      this->render.position.y = this->state.orgPos.y;
-      this->render.position.z = this->state.orgPos.z;
+      this->render.position = this->state.orgPos;
       this->state.radiusSpeed = this->state.radiusAccel + this->state.radiusSpeed;
       this->state.radius = this->state.radiusSpeed + this->state.radius;
       this->state.longitude = this->state.longSpeed + this->state.longitude;
@@ -8185,9 +8063,7 @@ bool CEffectPrim::OnProcess() {
       this->PrimWaveHeightsSlow();
       break;
     case PP_3DCASTING_2: {
-      this->render.position.x = this->state.master->render.position.x;
-      this->render.position.y = this->state.master->render.position.y;
-      this->render.position.z = this->state.master->render.position.z;
+      this->render.position = this->state.master->render.position;
 
       for (int index = 0; index < 4; ++index) {
         EffectPrimitiveSlot& slot = this->state.slots[index];
@@ -8248,9 +8124,7 @@ bool CEffectPrim::OnProcess() {
       break;
     case PP_MAGNUM2: {
       const vector3d& parent = this->state.master->render.position;
-      this->render.position.x = parent.x;
-      this->render.position.y = parent.y;
-      this->render.position.z = parent.z;
+      this->render.position = parent;
 
       for (int index = 0; index < 4; ++index) {
         EffectPrimitiveSlot& slot = this->state.slots[index];
@@ -8370,9 +8244,7 @@ bool CEffectPrim::OnProcess() {
           slot.flag1[value] = slot.flag1[value - 1];
         }
 
-        slot.vecBNow.x = this->state.master->render.position.x;
-        slot.vecBNow.y = this->state.master->render.position.y;
-        slot.vecBNow.z = this->state.master->render.position.z;
+        slot.vecBNow = this->state.master->render.position;
       }
     } break;
     case 103:
@@ -8548,9 +8420,7 @@ bool CEffectPrim::OnProcess() {
       break;
     case PP_SPHEREWIND: {
       const vector3d& parent = this->state.master->render.position;
-      this->render.position.x = parent.x;
-      this->render.position.y = parent.y;
-      this->render.position.z = parent.z;
+      this->render.position = parent;
 
       for (int index = 0; index < 4; ++index) {
         EffectPrimitiveSlot& slot = this->state.slots[index];
@@ -8621,9 +8491,7 @@ bool CEffectPrim::OnProcess() {
       this->PrimRippleRings();
       break;
     case 28: {
-      this->render.position.x = this->state.master->render.position.x;
-      this->render.position.y = this->state.master->render.position.y;
-      this->render.position.z = this->state.master->render.position.z;
+      this->render.position = this->state.master->render.position;
       this->state.slots[0].riseAngle += 3;
 
       if (this->state.slots[0].riseAngle >= 360) {
@@ -8649,9 +8517,7 @@ bool CEffectPrim::OnProcess() {
       this->PrimTwinSpin();
       break;
     case 26: {
-      this->render.position.x = this->state.master->render.position.x;
-      this->render.position.y = this->state.master->render.position.y;
-      this->render.position.z = this->state.master->render.position.z;
+      this->render.position = this->state.master->render.position;
 
       if (this->state.slots[0].height[4] == 14.0f) {
         --this->state.slots[0].rotStart;
@@ -8759,9 +8625,7 @@ bool CEffectPrim::OnProcess() {
       this->PrimFallingPetals2();
       break;
     case 30: {
-      this->render.position.x = this->state.master->render.position.x;
-      this->render.position.y = this->state.master->render.position.y;
-      this->render.position.z = this->state.master->render.position.z;
+      this->render.position = this->state.master->render.position;
 
       for (int index = 0; index < 4; ++index) {
         EffectPrimitiveSlot& slot = this->state.slots[index];
@@ -8822,9 +8686,7 @@ bool CEffectPrim::OnProcess() {
       this->PrimGI3();
       break;
     case 36: {
-      this->render.position.x = this->state.master->render.position.x;
-      this->render.position.y = this->state.master->render.position.y;
-      this->render.position.z = this->state.master->render.position.z;
+      this->render.position = this->state.master->render.position;
 
       for (int index = 0; index < 4; ++index) {
         EffectPrimitiveSlot& slot = this->state.slots[index];
@@ -8863,9 +8725,7 @@ bool CEffectPrim::OnProcess() {
     } break;
     case 50: {
       const vector3d& parent = this->state.master->render.position;
-      this->render.position.x = parent.x;
-      this->render.position.y = parent.y;
-      this->render.position.z = parent.z;
+      this->render.position = parent;
 
       for (int index = 0; index < 4; ++index) {
         EffectPrimitiveSlot& slot = this->state.slots[index];
@@ -8939,9 +8799,7 @@ bool CEffectPrim::OnProcess() {
       break;
     case 41: {
       const vector3d& parent = this->state.master->render.position;
-      this->render.position.x = parent.x;
-      this->render.position.y = parent.y;
-      this->render.position.z = parent.z;
+      this->render.position = parent;
 
       for (int index = 0; index < 4; ++index) {
         EffectPrimitiveSlot& slot = this->state.slots[index];
@@ -9118,9 +8976,7 @@ bool CEffectPrim::OnProcess() {
     } break;
     case PP_SLASH1: {
       const vector3d& parent = this->state.master->render.position;
-      this->render.position.x = parent.x;
-      this->render.position.y = parent.y;
-      this->render.position.z = parent.z;
+      this->render.position = parent;
 
       for (int index = 0; index < 4; ++index) {
         EffectPrimitiveSlot& slot = this->state.slots[index];
@@ -9557,9 +9413,7 @@ bool CEffectPrim::OnProcess() {
       this->PrimFloatingBubbles();
       break;
     case 39: {
-      this->render.position.x = this->state.master->render.position.x;
-      this->render.position.y = this->state.master->render.position.y;
-      this->render.position.z = this->state.master->render.position.z;
+      this->render.position = this->state.master->render.position;
 
       for (int index = 0; index < 2; ++index) {
         EffectPrimitiveSlot& slot = this->state.slots[index];
@@ -9627,9 +9481,7 @@ bool CEffectPrim::OnProcess() {
     } break;
     case 67: {
       const vector3d& parent = this->state.master->render.position;
-      this->render.position.x = parent.x;
-      this->render.position.y = parent.y;
-      this->render.position.z = parent.z;
+      this->render.position = parent;
 
       EffectPrimitiveSlot& slot = this->state.slots[0];
       ++slot.process;
@@ -9652,9 +9504,7 @@ bool CEffectPrim::OnProcess() {
       break;
     case 46: {
       const vector3d& parent = this->state.master->render.position;
-      this->render.position.x = parent.x;
-      this->render.position.y = parent.y;
-      this->render.position.z = parent.z;
+      this->render.position = parent;
 
       if (this->state.slots[0].life == 1) {
         this->state.deltaPos = this->state.slots[0].vecBPre;
@@ -9907,9 +9757,7 @@ bool CEffectPrim::OnProcess() {
       break;
     case 74: {
       const vector3d& parent = this->state.master->render.position;
-      this->render.position.x = parent.x;
-      this->render.position.y = parent.y;
-      this->render.position.z = parent.z;
+      this->render.position = parent;
 
       for (int index = 0; index < 4; ++index) {
         EffectPrimitiveSlot& slot = this->state.slots[index];

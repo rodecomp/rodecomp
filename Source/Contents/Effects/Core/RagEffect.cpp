@@ -168,9 +168,7 @@ static int ClampedRandom(int range) {
 
 // INLINED
 static void CopyVector(vector3d& to, const vector3d& from) {
-  to.x = from.x;
-  to.y = from.y;
-  to.z = from.z;
+  to = from;
 }
 
 // INLINED
@@ -659,9 +657,7 @@ void CRagEffect::IncAgiDex() {
   EffectPrimitiveState& moving = this->state.lastPrim->state;
   const float distance = static_cast<float>(ClampedRandom(7) + 2);
   const vector3d step = RotatedForward(moving.transform.values, distance);
-  moving.deltaPos2.x = step.x;
-  moving.deltaPos2.y = step.y;
-  moving.deltaPos2.z = step.z;
+  moving.deltaPos2 = step;
   this->state.lastPrim->state.transform.MakeXRotation(GetRadian(90));
   this->state.lastPrim->state.speed = static_cast<float>(ClampedRandom(50) + 20) / 100.0f;
   this->state.lastPrim->state.widthSize = static_cast<float>(ClampedRandom(60) + 30) / 10.0f;
@@ -714,9 +710,7 @@ void CRagEffect::IncAgility() {
   EffectPrimitiveState& moving = this->state.lastPrim->state;
   const float distance = static_cast<float>(ClampedRandom(7) + 2);
   const vector3d step = RotatedForward(moving.transform.values, distance);
-  moving.deltaPos2.x = step.x;
-  moving.deltaPos2.y = step.y;
-  moving.deltaPos2.z = step.z;
+  moving.deltaPos2 = step;
   this->state.lastPrim->state.transform.MakeXRotation(GetRadian(90));
   this->state.lastPrim->state.speed = static_cast<float>(ClampedRandom(50) + 20) / 100.0f;
   this->state.lastPrim->state.widthSize = static_cast<float>(ClampedRandom(60) + 30) / 10.0f;
@@ -1182,9 +1176,7 @@ void CRagEffect::SprayPond() {
       yaw.transform.MakeYRotation(GetRadian(static_cast<int>(static_cast<float>(angle) + 22.5f)));
       EffectPrimitiveState& moving = this->state.lastPrim->state;
       const vector3d edge = RotatedForward(moving.transform.values, 13.8f);
-      moving.deltaPos2.x = edge.x;
-      moving.deltaPos2.y = edge.y;
-      moving.deltaPos2.z = edge.z;
+      moving.deltaPos2 = edge;
       EffectPrimitiveState& roll = this->state.lastPrim->state;
       roll.rotTransform.MakeZRotation(GetRadian(90));
       EffectPrimitiveState& facing = this->state.lastPrim->state;
@@ -1335,9 +1327,7 @@ void CRagEffect::Yufitel(char F1) {
 void CRagEffect::AirTexture(const char* name) {
   const int frame = this->state.stateCnt;
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (frame != 0) {
     return;
@@ -1700,9 +1690,7 @@ void __stdcall Nullsub432() {
 // FUNCTION: fn_20019
 void CRagEffect::Blessing() {
   const EffectActor& parent = *this->state.parent;
-  this->render.position.x = parent.render.position.x;
-  this->render.position.y = parent.render.position.y;
-  this->render.position.z = parent.render.position.z;
+  this->render.position = parent.render.position;
 
   if (this->state.stateCnt == 0) {
     PlayEffectWave(*this, "effect\\EF_Blessing.wav");
@@ -1985,9 +1973,7 @@ void CRagEffect::Fireworks() {
 // FUNCTION: fn_20133
 void CRagEffect::AttackEnergy2(const char* name) {
   const EffectActor& parent = *this->state.parent;
-  this->render.position.x = parent.render.position.x;
-  this->render.position.y = parent.render.position.y;
-  this->render.position.z = parent.render.position.z;
+  this->render.position = parent.render.position;
 
   if (this->state.stateCnt != 0 && this->state.stateCnt != 4) {
     return;
@@ -2083,9 +2069,7 @@ void CRagEffect::RemoveTrap() {
 // FUNCTION: fn_20108
 void CRagEffect::Sphere() {
   const EffectActor& parent = *this->state.parent;
-  this->render.position.x = parent.render.position.x;
-  this->render.position.y = parent.render.position.y;
-  this->render.position.z = parent.render.position.z;
+  this->render.position = parent.render.position;
 
   if (this->state.stateCnt % 10 != 0) {
     return;
@@ -2235,9 +2219,7 @@ bool CRagEffect::Signum() {
 void CRagEffect::Snow() {
   CWorld* world = g_modeMgr.GetGameMode()->scene;
   const vector3d& player = static_cast<const CRenderObject*>(world->player)->render.position;
-  this->render.position.x = player.x;
-  this->render.position.y = player.y;
-  this->render.position.z = player.z;
+  this->render.position = player;
 
   if (this->GetDuration() - this->state.stateCnt <= 160) {
     return;
@@ -2903,9 +2885,7 @@ void CRagEffect::BLIND(char flag) {
 // FUNCTION: fn_20160
 void CRagEffect::ShockwaveRing(std::int16_t angle) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -2931,9 +2911,7 @@ void CRagEffect::ShockwaveRing(std::int16_t angle) {
 // FUNCTION: fn_20202
 void CRagEffect::TexturedPulse(const char* name) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -2986,9 +2964,7 @@ void CRagEffect::RingStack(char white) {
 // FUNCTION: fn_20134
 void CRagEffect::TexturedBurst(const char* name) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -3018,9 +2994,7 @@ void CRagEffect::TexturedBurst(const char* name) {
 // FUNCTION: fn_20188
 void CRagEffect::TexturedRise(const char* name, char large) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -3078,9 +3052,7 @@ void CRagEffect::TexturedSpiral(const char* name, int, int) {
 // FUNCTION: fn_20147
 void CRagEffect::TexturedSpin(const char* name) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -3108,9 +3080,7 @@ void CRagEffect::TexturedSpin(const char* name) {
 // FUNCTION: fn_20254
 void CRagEffect::ColoredFlash(unsigned char flag, unsigned char red, unsigned char green, unsigned char blue) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt == 99999998) {
     this->state.stateCnt = 0;
@@ -3142,9 +3112,7 @@ void CRagEffect::ColoredFlash(unsigned char flag, unsigned char red, unsigned ch
 // FUNCTION: fn_20309
 void CRagEffect::TexturedBeam(char flag, const char* name) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -3176,9 +3144,7 @@ void CRagEffect::TexturedBeam(char flag, const char* name) {
 // FUNCTION: fn_20314
 void CRagEffect::TexturedSpiralSmall(const char* name, int, int) {
   const vector3d& origin = this->state.parent->render.position;
-  this->render.position.x = origin.x;
-  this->render.position.y = origin.y;
-  this->render.position.z = origin.z;
+  this->render.position = origin;
 
   if (this->state.stateCnt > 2) {
     return;
@@ -3211,9 +3177,7 @@ void CRagEffect::TexturedSpiralSmall(const char* name, int, int) {
 // FUNCTION: fn_20315
 void CRagEffect::TexturedSpiralTall(const char* name, int, int) {
   const vector3d& origin = this->state.parent->render.position;
-  this->render.position.x = origin.x;
-  this->render.position.y = origin.y;
-  this->render.position.z = origin.z;
+  this->render.position = origin;
 
   if (this->state.stateCnt > 2) {
     return;
@@ -3247,9 +3211,7 @@ void CRagEffect::TexturedSpiralTall(const char* name, int, int) {
 // FUNCTION: fn_20316
 void CRagEffect::TexturedSpiralFade(const char* name, int, int) {
   const vector3d& origin = this->state.parent->render.position;
-  this->render.position.x = origin.x;
-  this->render.position.y = origin.y;
-  this->render.position.z = origin.z;
+  this->render.position = origin;
 
   if (this->state.stateCnt > 2) {
     return;
@@ -3284,9 +3246,7 @@ void CRagEffect::TexturedSpiralFade(const char* name, int, int) {
 // FUNCTION: fn_20278
 void CRagEffect::TexturedScatter(const char* name, char flag) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -3321,9 +3281,7 @@ void CRagEffect::TexturedScatterLow(const char* name, char flag) {
   }
 
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
   this->state.lastPrim = this->LaunchEffectPrim(44, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 5;
   this->state.lastPrim->state.duration = this->state.duration;
@@ -3415,9 +3373,7 @@ void CRagEffect::TorchDustRing(const char* name, char kind, std::int16_t angle) 
 // FUNCTION: fn_20303
 void CRagEffect::TexturedDualSpin(const char* first, const char* second, int) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -3450,9 +3406,7 @@ void CRagEffect::TexturedDualSpin(const char* first, const char* second, int) {
 // FUNCTION: fn_20304
 void CRagEffect::TexturedDrop(const char* name, char flag) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -3557,9 +3511,7 @@ void CRagEffect::TexturedPair(const char* name) {
 // FUNCTION: fn_20199
 void CRagEffect::BlackMaximize(const char* name) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -3674,9 +3626,7 @@ void CRagEffect::WaterOut() {
 // FUNCTION: fn_20218
 void CRagEffect::TexturedDoubleRing(const char* name, char level) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt == 99999998) {
     this->state.stateCnt = 0;
@@ -3758,9 +3708,7 @@ void CRagEffect::TexturedQuadSpin(const char* name, char phase, char kind) {
 // FUNCTION: fn_45478
 void CRagEffect::TexturedFourRing(const char* name, char kind) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -3928,9 +3876,7 @@ void CRagEffect::TrackTarget() {
   CGameMode* gameMode = g_modeMgr.GetGameMode();
   const CRenderObject* target = nullptr;
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -3947,9 +3893,7 @@ void CRagEffect::TrackTarget() {
   this->state.lastPrim->state.slots[0].distance = 0.0f;
   this->state.lastPrim->state.slots[0].maxHeight = 0.2f;
   this->state.lastPrim->state.slots[0].height[4] = 2.0f;
-  this->state.lastPrim->state.slots[0].vecTNow.x = this->render.position.x;
-  this->state.lastPrim->state.slots[0].vecTNow.y = this->render.position.y;
-  this->state.lastPrim->state.slots[0].vecTNow.z = this->render.position.z;
+  this->state.lastPrim->state.slots[0].vecTNow = this->render.position;
   this->state.lastPrim->state.slots[0].height[0] = this->state.deltaPos[1];
 
   if (this->state.lastPrim->state.slots[0].height[0] > 0.0f) {
@@ -3963,9 +3907,7 @@ void CRagEffect::TrackTarget() {
   if (target == nullptr) {
     this->state.lastPrim->state.slots[0].life = 0;
   } else {
-    this->state.lastPrim->state.slots[0].vecTPre.x = target->render.position.x;
-    this->state.lastPrim->state.slots[0].vecTPre.y = target->render.position.y;
-    this->state.lastPrim->state.slots[0].vecTPre.z = target->render.position.z;
+    this->state.lastPrim->state.slots[0].vecTPre = target->render.position;
   }
 
   this->state.lastPrim->state.slots[1].life = 0;
@@ -3979,9 +3921,7 @@ void CRagEffect::TrackTargetWide() {
   CGameMode* gameMode = g_modeMgr.GetGameMode();
   const CRenderObject* target = nullptr;
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -3998,9 +3938,7 @@ void CRagEffect::TrackTargetWide() {
   this->state.lastPrim->state.slots[0].distance = 0.0f;
   this->state.lastPrim->state.slots[0].maxHeight = 0.7f;
   this->state.lastPrim->state.slots[0].height[4] = 3.0f;
-  this->state.lastPrim->state.slots[0].vecTNow.x = this->render.position.x;
-  this->state.lastPrim->state.slots[0].vecTNow.y = this->render.position.y;
-  this->state.lastPrim->state.slots[0].vecTNow.z = this->render.position.z;
+  this->state.lastPrim->state.slots[0].vecTNow = this->render.position;
   this->state.lastPrim->state.slots[0].height[0] = this->state.deltaPos[1];
 
   if (this->state.lastPrim->state.slots[0].height[0] > 0.0f) {
@@ -4014,9 +3952,7 @@ void CRagEffect::TrackTargetWide() {
   if (target == nullptr) {
     this->state.lastPrim->state.slots[0].life = 0;
   } else {
-    this->state.lastPrim->state.slots[0].vecTPre.x = target->render.position.x;
-    this->state.lastPrim->state.slots[0].vecTPre.y = target->render.position.y;
-    this->state.lastPrim->state.slots[0].vecTPre.z = target->render.position.z;
+    this->state.lastPrim->state.slots[0].vecTPre = target->render.position;
   }
 
   this->state.lastPrim->state.slots[1].life = 0;
@@ -4031,9 +3967,7 @@ void CRagEffect::TrackCloud(char kind) {
   CGameMode* gameMode = g_modeMgr.GetGameMode();
   const CRenderObject* target = nullptr;
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -4055,9 +3989,7 @@ void CRagEffect::TrackCloud(char kind) {
   }
 
   this->state.lastPrim->state.slots[0].height[4] = scale;
-  this->state.lastPrim->state.slots[0].vecTNow.x = this->render.position.x;
-  this->state.lastPrim->state.slots[0].vecTNow.y = this->render.position.y;
-  this->state.lastPrim->state.slots[0].vecTNow.z = this->render.position.z;
+  this->state.lastPrim->state.slots[0].vecTNow = this->render.position;
   this->state.lastPrim->state.slots[0].height[0] = this->state.deltaPos[1];
 
   if (this->state.lastPrim->state.slots[0].height[0] > 0.0f) {
@@ -4071,9 +4003,7 @@ void CRagEffect::TrackCloud(char kind) {
   if (target == nullptr) {
     this->state.lastPrim->state.slots[0].life = 0;
   } else {
-    this->state.lastPrim->state.slots[0].vecTPre.x = target->render.position.x;
-    this->state.lastPrim->state.slots[0].vecTPre.y = target->render.position.y;
-    this->state.lastPrim->state.slots[0].vecTPre.z = target->render.position.z;
+    this->state.lastPrim->state.slots[0].vecTPre = target->render.position;
   }
 
   this->state.lastPrim->state.slots[1].life = 0;
@@ -4085,9 +4015,7 @@ void CRagEffect::TrackCloud(char kind) {
 // FUNCTION: fn_20261
 void CRagEffect::TexturedSlashFan(const char* name) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -4102,9 +4030,7 @@ void CRagEffect::TexturedSlashFan(const char* name) {
   this->state.lastPrim->state.size = 0.0f;
   this->state.lastPrim->state.deltaPos = {this->state.deltaPos[0], this->state.deltaPos[1], this->state.deltaPos[2]};
   RenderObjectState& primRender = this->state.lastPrim->render;
-  primRender.position.x = this->render.position.x;
-  primRender.position.y = this->render.position.y;
-  primRender.position.z = this->render.position.z;
+  primRender.position = this->render.position;
 
   for (int index = 0; index < 4; ++index) {
     this->state.lastPrim->state.slots[index].life = 1;
@@ -4126,9 +4052,7 @@ void CRagEffect::TexturedSlashFan(const char* name) {
 // FUNCTION: fn_20274
 void CRagEffect::TexturedMark(const char* name, char kind) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -4179,9 +4103,7 @@ void CRagEffect::TexturedSpray(const char* name) {
   }
 
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
   this->state.lastPrim = this->LaunchEffectPrim(43, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 5;
   this->state.lastPrim->state.duration = this->state.duration;
@@ -4211,9 +4133,7 @@ void CRagEffect::TexturedSpray(const char* name) {
 // FUNCTION: fn_20198
 void CRagEffect::TexturedLevelRing(const char* name, int process, char level) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -4262,9 +4182,7 @@ finish:
 // FUNCTION: fn_20158
 void CRagEffect::SlashFan(std::int16_t reverse) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 40) {
     return;
@@ -4303,9 +4221,7 @@ void CRagEffect::SlashFan(std::int16_t reverse) {
 // FUNCTION: fn_20272
 void CRagEffect::FeatherBurst(const char* name, std::int16_t angle, char) {
   const vector3d& origin = this->state.parent->render.position;
-  this->render.position.x = origin.x;
-  this->render.position.y = origin.y;
-  this->render.position.z = origin.z;
+  this->render.position = origin;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -4376,9 +4292,7 @@ void CRagEffect::FeatherRing(const char* name, std::int16_t angle, char large) {
 // FUNCTION: fn_20297
 void CRagEffect::TexturedSlam(const char* name, std::int16_t kind, char) {
   const vector3d& origin = this->state.parent->render.position;
-  this->render.position.x = origin.x;
-  this->render.position.y = origin.y;
-  this->render.position.z = origin.z;
+  this->render.position = origin;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -4424,9 +4338,7 @@ void CRagEffect::BubbleSpiral(std::int16_t angle, const char*, char flag) {
   char name[64];
 
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -4512,9 +4424,7 @@ void CRagEffect::BubbleSpiralKind(int angle, const char*, char kind) {
   char name[64];
 
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -4619,9 +4529,7 @@ void CRagEffect::BubbleSpiralKind(int angle, const char*, char kind) {
 // FUNCTION: fn_20200
 void CRagEffect::KyrieGuard(const char* name, char kind) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -4720,9 +4628,7 @@ void CRagEffect::TexturedColumn(const char* name, char kind) {
 // FUNCTION: fn_20220
 void CRagEffect::TexturedSparkle(const char* name) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -4806,9 +4712,7 @@ void CRagEffect::TexturedSprayKind(const char* name, float spin, char kind) {
 // FUNCTION: fn_20259
 void CRagEffect::TexturedSlashWave(const char* name, char kind) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -4823,9 +4727,7 @@ void CRagEffect::TexturedSlashWave(const char* name, char kind) {
   this->state.lastPrim->state.size = 0.0f;
   this->state.lastPrim->state.deltaPos = {this->state.deltaPos[0], this->state.deltaPos[1], this->state.deltaPos[2]};
   RenderObjectState& primRender = this->state.lastPrim->render;
-  primRender.position.x = this->render.position.x;
-  primRender.position.y = this->render.position.y;
-  primRender.position.z = this->render.position.z;
+  primRender.position = this->render.position;
 
   for (int index = 0; index < 4; ++index) {
     this->state.lastPrim->state.slots[index].life = 1;
@@ -4859,9 +4761,7 @@ void CRagEffect::TexturedBeams(const char* name, char flag) {
   }
 
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
   this->state.lastPrim = this->LaunchEffectPrim(129, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 5;
   this->state.lastPrim->state.duration = this->state.duration;
@@ -4880,9 +4780,7 @@ void CRagEffect::TexturedBeams(const char* name, char flag) {
     this->state.lastPrim->state.slots[index].maxHeight = static_cast<float>(index) * 0.5f + 3.0f;
     this->state.lastPrim->state.slots[index].height[0] = this->state.lastPrim->state.slots[index].maxHeight;
     this->state.lastPrim->state.slots[index].rotStart = static_cast<std::int16_t>(index * 25);
-    this->state.lastPrim->state.slots[index].vecTNow.x = this->render.position.x;
-    this->state.lastPrim->state.slots[index].vecTNow.y = this->render.position.y;
-    this->state.lastPrim->state.slots[index].vecTNow.z = this->render.position.z;
+    this->state.lastPrim->state.slots[index].vecTNow = this->render.position;
     this->state.deltaPos[0] = this->render.position.x;
     this->state.deltaPos[1] = this->render.position.y;
     this->state.deltaPos[2] = this->render.position.z;
@@ -4932,9 +4830,7 @@ void CRagEffect::TexturedSwirl(unsigned char clockwise, const char* name) {
 // FUNCTION: fn_20155
 void CRagEffect::TexturedFlare(const char* name, char size, int, int) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -4969,9 +4865,7 @@ void CRagEffect::TexturedFlare(const char* name, char size, int, int) {
 // FUNCTION: fn_20148
 void CRagEffect::TexturedHalo(const char* name, char kind) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -5036,9 +4930,7 @@ void CRagEffect::TexturedSlashCross(const char* name) {
   this->state.lastPrim->state.size = 0.0f;
   this->state.lastPrim->state.deltaPos = {this->state.deltaPos[0], this->state.deltaPos[1], this->state.deltaPos[2]};
   RenderObjectState& primRender = this->state.lastPrim->render;
-  primRender.position.x = this->render.position.x;
-  primRender.position.y = this->render.position.y;
-  primRender.position.z = this->render.position.z;
+  primRender.position = this->render.position;
 
   for (int index = 0; index < 4; ++index) {
     this->state.lastPrim->state.slots[index].life = 1;
@@ -5082,9 +4974,7 @@ void CRagEffect::TexturedSlashCross(const char* name) {
 // FUNCTION: fn_20270
 void CRagEffect::TexturedOrbit(const char* name) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -5162,9 +5052,7 @@ void CRagEffect::TexturedCross(const char* name, char kind) {
 // FUNCTION: fn_20258
 void CRagEffect::TexturedSlashLevel(const char* name, char kind) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -5179,9 +5067,7 @@ void CRagEffect::TexturedSlashLevel(const char* name, char kind) {
   this->state.lastPrim->state.size = 0.0f;
   this->state.lastPrim->state.deltaPos = {this->state.deltaPos[0], this->state.deltaPos[1], this->state.deltaPos[2]};
   RenderObjectState& primRender = this->state.lastPrim->render;
-  primRender.position.x = this->render.position.x;
-  primRender.position.y = this->render.position.y;
-  primRender.position.z = this->render.position.z;
+  primRender.position = this->render.position;
 
   for (int index = 0; index < 4; ++index) {
     this->state.lastPrim->state.slots[index].life = 1;
@@ -5443,9 +5329,7 @@ void CRagEffect::TexturedCrossFade(const char* name) {
 // FUNCTION: fn_20234
 void CRagEffect::TexturedRain(const char* name, char kind) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -5533,9 +5417,7 @@ void CRagEffect::SonicWave(char sonic) {
   this->state.lastPrim->state.size = 0.0f;
   this->state.lastPrim->state.deltaPos = {this->state.deltaPos[0], this->state.deltaPos[1], this->state.deltaPos[2]};
   RenderObjectState& primRender = this->state.lastPrim->render;
-  primRender.position.x = this->render.position.x;
-  primRender.position.y = this->render.position.y;
-  primRender.position.z = this->render.position.z;
+  primRender.position = this->render.position;
 
   for (int index = 0; index < 4; ++index) {
     this->state.lastPrim->state.slots[index].life = 1;
@@ -5556,9 +5438,7 @@ void CRagEffect::SonicWave(char sonic) {
 // FUNCTION: fn_20232
 void CRagEffect::ThunderSparks() {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -5571,9 +5451,7 @@ void CRagEffect::ThunderSparks() {
   this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\thunder_center.bmp", 0, false, true, false);
   this->state.lastPrim->state.size = 0.0f;
   RenderObjectState& primRender = this->state.lastPrim->render;
-  primRender.position.x = this->render.position.x;
-  primRender.position.y = this->render.position.y;
-  primRender.position.z = this->render.position.z;
+  primRender.position = this->render.position;
 
   for (int index = 0; index < 4; ++index) {
     this->state.lastPrim->state.slots[index].life = 1;
@@ -5599,9 +5477,7 @@ void CRagEffect::ThunderSparks() {
 // FUNCTION: fn_20289
 void CRagEffect::TexturedCrossKind(const char* name, char level) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -5648,9 +5524,7 @@ void CRagEffect::TexturedCrossKind(const char* name, char level) {
 // FUNCTION: fn_20149
 void CRagEffect::TexturedGlow(const char* name, char size) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -5822,9 +5696,7 @@ void CRagEffect::LineStreakKind(std::int16_t kind) {
 // FUNCTION: fn_20266
 void CRagEffect::TexturedShieldThrow(const char* name) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -5947,9 +5819,7 @@ void CRagEffect::ElectricArc(char kind, std::int16_t) {
     this->state.lastPrim->state.slots[index].distance = 0.0f;
     this->state.lastPrim->state.slots[index].height[0] = static_cast<float>(index < 2 ? index * 180 : index * 180 - 360);
     this->state.lastPrim->state.slots[index].vecTNow.x = static_cast<float>(ClampedRandom(6)) * 0.01f + 0.2f;
-    this->state.lastPrim->state.slots[index].vecBNow.x = this->render.position.x;
-    this->state.lastPrim->state.slots[index].vecBNow.y = this->render.position.y;
-    this->state.lastPrim->state.slots[index].vecBNow.z = this->render.position.z;
+    this->state.lastPrim->state.slots[index].vecBNow = this->render.position;
     this->state.lastPrim->state.slots[index].vecTNow.y = 20.0f;
 
     for (int height = 1; height < 21; ++height) {
@@ -6009,9 +5879,7 @@ void CRagEffect::WhiteSpray(char kind) {
   }
 
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
   this->state.lastPrim = this->LaunchEffectPrim(43, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 5;
   this->state.lastPrim->state.duration = this->state.duration;
@@ -6087,9 +5955,7 @@ void CRagEffect::TexturedComet(const char* name, char kind) {
   this->state.lastPrim->state.textures[1] = g_texMgr.Load(second, 0, false, true, false);
   this->state.lastPrim->state.size = 0.0f;
   RenderObjectState& primRender = this->state.lastPrim->render;
-  primRender.position.x = this->render.position.x;
-  primRender.position.y = this->render.position.y;
-  primRender.position.z = this->render.position.z;
+  primRender.position = this->render.position;
 
   for (int index = 0; index < 4; ++index) {
     this->state.lastPrim->state.slots[index].life = 1;
@@ -6123,9 +5989,7 @@ void CRagEffect::TexturedComet(const char* name, char kind) {
 // FUNCTION: fn_20240
 void CRagEffect::PokBurst() {
   const auto* player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player);
-  this->render.position.x = player->render.position.x;
-  this->render.position.y = player->render.position.y;
-  this->render.position.z = player->render.position.z;
+  this->render.position = player->render.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -6165,9 +6029,7 @@ void CRagEffect::PokBurst() {
 // FUNCTION: fn_20236
 void CRagEffect::TexturedTumble(const char* name, char) {
   const vector3d& origin = this->state.parent->render.position;
-  this->render.position.x = origin.x;
-  this->render.position.y = origin.y;
-  this->render.position.z = origin.z;
+  this->render.position = origin;
 
   if (this->state.stateCnt != 30) {
     return;
@@ -6255,9 +6117,7 @@ void CRagEffect::LineStreakTextured(std::int16_t kind, const char* name) {
 // FUNCTION: fn_20310
 void CRagEffect::ThunderFreeze(int) {
   const vector3d& origin = this->state.parent->render.position;
-  this->render.position.x = origin.x;
-  this->render.position.y = origin.y;
-  this->render.position.z = origin.z;
+  this->render.position = origin;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -6348,9 +6208,7 @@ void CRagEffect::WeddingBurst(const char* name, char silent) {
 // FUNCTION: fn_20228
 void CRagEffect::TexturedOrbitDust(const char* name, char rise, char kind) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -6389,9 +6247,7 @@ void CRagEffect::TexturedOrbitDust(const char* name, char rise, char kind) {
 // FUNCTION: fn_20335
 void CRagEffect::TexturedTwinSpin(const char* name, char kind) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -6435,9 +6291,7 @@ void CRagEffect::TexturedTwinSpin(const char* name, char kind) {
 // FUNCTION: fn_20336
 void CRagEffect::TexturedScatterSphere(const char* name, char flag, int) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -6477,9 +6331,7 @@ void CRagEffect::TexturedScatterSphere(const char* name, char flag, int) {
 void CRagEffect::DigitalSpace(int effectId) {
   if (this->state.parent) {
     const RenderObjectState& parent = this->state.parent->render;
-    this->render.position.x = parent.position.x;
-    this->render.position.y = parent.position.y;
-    this->render.position.z = parent.position.z;
+    this->render.position = parent.position;
   }
 
   if (this->state.stateCnt == 0) {
@@ -6639,9 +6491,7 @@ void CRagEffect::BubbleFanSweep(const char*, char rising) {
   }
 
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
   this->state.lastPrim = this->LaunchEffectPrim(146, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 5;
   this->state.lastPrim->state.duration = this->state.duration;
@@ -6681,9 +6531,7 @@ void CRagEffect::BubbleFanSweep(const char*, char rising) {
 // FUNCTION: fn_20342
 void CRagEffect::TexturedDoubleSpiral(const char* name, int, int) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt >= 2) {
     return;
@@ -6744,9 +6592,7 @@ void CRagEffect::TexturedDoubleSpiral(const char* name, int, int) {
 // FUNCTION: fn_20344
 void CRagEffect::SnowFall(const char*, char kind) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (static_cast<std::uint32_t>(this->state.stateCnt) > 100 || this->state.stateCnt % 8 != 0) {
     return;
@@ -6760,9 +6606,7 @@ void CRagEffect::SnowFall(const char*, char kind) {
   this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\E9_snow03.tga", 0, false, true, false);
   this->state.lastPrim->state.textures[1] = g_texMgr.Load("effect\\E9_snow02.tga", 0, false, true, false);
   this->state.lastPrim->state.size = 0.0f;
-  this->state.lastPrim->render.position.x = this->render.position.x;
-  this->state.lastPrim->render.position.y = this->render.position.y;
-  this->state.lastPrim->render.position.z = this->render.position.z;
+  this->state.lastPrim->render.position = this->render.position;
 
   for (int index = 0; index < 4; ++index) {
     this->state.lastPrim->state.slots[index].life = 1;
@@ -6858,9 +6702,7 @@ void CRagEffect::ElectricFan(const char*, std::int16_t fade) {
 // FUNCTION: fn_20346
 void CRagEffect::TexturedTumbleOrb(const char* name, char flag) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -7119,9 +6961,7 @@ void CRagEffect::TexturedSpreadFlat(const char* name, char kind) {
   }
 
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
   this->state.lastPrim = this->LaunchEffectPrim(137, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 5;
   this->state.lastPrim->state.duration = this->state.duration;
@@ -7213,9 +7053,7 @@ void CRagEffect::RisingSparkles(char colorMode) {
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if ((this->state.stateCnt & 1) != 0) {
     return;
@@ -7397,9 +7235,7 @@ void CRagEffect::TexturedRisingOrbs(const char* name, char kind) {
 // FUNCTION: fn_20343
 void CRagEffect::TexturedForkBolt(const char* name, char flag) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt >= 30 || this->state.stateCnt % 10 != 0) {
     return;
@@ -7461,9 +7297,7 @@ void CRagEffect::TexturedForkBolt(const char* name, char flag) {
 void CRagEffect::MonsterSpriteBurst(char kind) {
   auto stored = [&]() -> CEffectPrim* { return this->state.lastPrim; };
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   int limit;
   if (kind == 13 || kind == 14) {
@@ -7662,9 +7496,7 @@ bool CRagEffect::AgilityChange(char increase, const std::string& textureName) {
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt == 0) {
     CWorld* world = g_modeMgr.GetGameMode()->scene;
@@ -7752,9 +7584,7 @@ bool CRagEffect::AgilityChange(char increase, const std::string& textureName) {
 // FUNCTION: fn_20351
 void CRagEffect::TexturedDescendingRings(const char* name, char flag) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -7836,9 +7666,7 @@ void CRagEffect::TexturedQuadSpiral(const char* name) {
 // FUNCTION: fn_20355
 void CRagEffect::TexturedRisingPillar(const char* name, char) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -7984,9 +7812,7 @@ void CRagEffect::FrostSplash(int, int) {
   }
 
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
   CEffectPrim* particle = this->LaunchEffectPrim(150, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim = particle;
   auto stored = [&]() -> CEffectPrim* { return this->state.lastPrim; };
@@ -8119,9 +7945,7 @@ void CRagEffect::TintedRisingSparkles(char) {
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if ((this->state.stateCnt & 1) != 0) {
     return;
@@ -8154,9 +7978,7 @@ void CRagEffect::TintedRisingSparkles(char) {
 // FUNCTION: fn_20321
 void CRagEffect::SpriteRing(char kind) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt > 1) {
     return;
@@ -8318,9 +8140,7 @@ void CRagEffect::GreenRocketPunch() {
 // FUNCTION: fn_20311
 void CRagEffect::TexturedQuadRing(std::int16_t baseAlpha, const char* name, char kind) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -8452,9 +8272,7 @@ static __forceinline void LaunchTwinkleRing(CRagEffect& effect, const char* name
 // FUNCTION: fn_20312
 void CRagEffect::TexturedTwinkleRing(const char* name, char level) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt == 0) {
     LaunchTwinkleRing(*this, name, level);
@@ -8819,9 +8637,7 @@ void CRagEffect::NotifyGameMode(char value) {
 // FUNCTION: fn_20287
 void CRagEffect::ScatterItemIcons(char kind) {
   const auto* player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player);
-  this->render.position.x = player->render.position.x;
-  this->render.position.y = player->render.position.y;
-  this->render.position.z = player->render.position.z;
+  this->render.position = player->render.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -8881,9 +8697,7 @@ void CRagEffect::ScatterItemIcons(char kind) {
 void CRagEffect::Vallentine(char kind) {
   auto stored = [&]() -> CEffectPrim* { return this->state.lastPrim; };
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -8924,9 +8738,7 @@ void CRagEffect::Vallentine(char kind) {
 // FUNCTION: fn_20296
 void CRagEffect::TexturedSpinShards(const char* name, char kind) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt >= 30 || this->state.stateCnt % 10 != 0) {
     return;
@@ -9084,9 +8896,7 @@ void CRagEffect::HealCloudRings() {
 // FUNCTION: fn_20295
 void CRagEffect::WhiteLightSparkle(char kind) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt == 99999998) {
     this->state.stateCnt = 0;
@@ -9202,9 +9012,7 @@ void CRagEffect::FrostScatter(char swapAxes, char narrow) {
   }
 
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
   this->state.lastPrim = this->LaunchEffectPrim(80, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 5;
   this->state.lastPrim->state.duration = this->state.duration;
@@ -9255,9 +9063,7 @@ static __forceinline void SetupRippleSlot(CRagEffect& effect, int slot, std::int
 // INLINED
 static __forceinline void LaunchRippleRings(CRagEffect& effect, const char* name, char kind, float smallSize, int turn, float growth) {
   const RenderObjectState& parent = effect.state.parent->render;
-  effect.render.position.x = parent.position.x;
-  effect.render.position.y = parent.position.y;
-  effect.render.position.z = parent.position.z;
+  effect.render.position = parent.position;
   effect.state.lastPrim = effect.LaunchEffectPrim(65, vector3d{0.0f, 0.0f, 0.0f});
   effect.state.lastPrim->state.renderFlag = 5;
   effect.state.lastPrim->state.duration = effect.state.duration;
@@ -9608,9 +9414,7 @@ bool CRagEffect::TwoHandQuicken() {
 void CRagEffect::SageMagicRod() {
   if (this->state.stateCnt == 0) {
     const RenderObjectState& parent = this->state.parent->render;
-    this->render.position.x = parent.position.x;
-    this->render.position.y = parent.position.y;
-    this->render.position.z = parent.position.z;
+    this->render.position = parent.position;
     PlayEffectWave(*this, "effect\\sage_magic rod.wav");
   }
 }
@@ -9660,9 +9464,7 @@ void CRagEffect::BeginSpellSwirl(int, const char*, char alpha) {
   char name[64];
 
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -9751,9 +9553,7 @@ void CRagEffect::SevereRainstormCylinder(int, const char*, char alpha, float dis
   char name[128];
 
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -9850,9 +9650,7 @@ bool CRagEffect::ProcessEZ2STRRaised() {
 // FUNCTION: fn_20079
 void CRagEffect::LockOnMarker() {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt == 0) {
     this->state.lastPrim = this->LaunchEffectPrim(15, vector3d{0.0f, 0.0f, 0.0f});
@@ -10585,9 +10383,7 @@ void CRagEffect::StoneCurseRing() {
 // FUNCTION: fn_20166
 void CRagEffect::SkyCloud(char kind) {
   const auto* player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player);
-  this->render.position.x = player->render.position.x;
-  this->render.position.y = player->render.position.y;
-  this->render.position.z = player->render.position.z;
+  this->render.position = player->render.position;
 
   if (this->state.stateCnt == 99999998) {
     this->state.stateCnt = 0;
@@ -10752,9 +10548,7 @@ void CRagEffect::SkyCloud(char kind) {
 // FUNCTION: fn_20167
 void CRagEffect::SnowDrift(char flag) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -10832,9 +10626,7 @@ void CRagEffect::ElectricRingEarly(char kind, std::int16_t angle) {
     this->state.lastPrim->state.slots[index].distance = 0.0f;
     this->state.lastPrim->state.slots[index].height[0] = 0.0f;
     this->state.lastPrim->state.slots[index].vecTNow.x = static_cast<float>(ClampedRandom(11)) * 0.01f;
-    this->state.lastPrim->state.slots[index].vecBNow.x = this->render.position.x;
-    this->state.lastPrim->state.slots[index].vecBNow.y = this->render.position.y;
-    this->state.lastPrim->state.slots[index].vecBNow.z = this->render.position.z;
+    this->state.lastPrim->state.slots[index].vecBNow = this->render.position;
     this->state.lastPrim->state.slots[index].vecBNow.y -= 5.0f;
     this->state.lastPrim->state.slots[index].vecTNow.y = 20.0f;
 
@@ -10853,9 +10645,7 @@ void CRagEffect::ElectricRingEarly(char kind, std::int16_t angle) {
 // FUNCTION: fn_20179
 void CRagEffect::ElectricRing(char kind, std::int16_t angle) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (static_cast<unsigned>(this->state.stateCnt - 11) >= 4) {
     return;
@@ -10884,9 +10674,7 @@ void CRagEffect::ElectricRing(char kind, std::int16_t angle) {
     this->state.lastPrim->state.slots[index].distance = 0.0f;
     this->state.lastPrim->state.slots[index].height[0] = 0.0f;
     this->state.lastPrim->state.slots[index].vecTNow.x = static_cast<float>(ClampedRandom(11)) * 0.01f;
-    this->state.lastPrim->state.slots[index].vecBNow.x = this->render.position.x;
-    this->state.lastPrim->state.slots[index].vecBNow.y = this->render.position.y;
-    this->state.lastPrim->state.slots[index].vecBNow.z = this->render.position.z;
+    this->state.lastPrim->state.slots[index].vecBNow = this->render.position;
     this->state.lastPrim->state.slots[index].vecTNow.y = 20.0f;
 
     for (int height = 20; height > 0; --height) {
@@ -10904,9 +10692,7 @@ void CRagEffect::ElectricRing(char kind, std::int16_t angle) {
 // FUNCTION: fn_20180
 void CRagEffect::ElectricRingLate(char kind, std::int16_t angle) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (static_cast<unsigned>(this->state.stateCnt - 20) >= 4) {
     return;
@@ -10935,9 +10721,7 @@ void CRagEffect::ElectricRingLate(char kind, std::int16_t angle) {
     this->state.lastPrim->state.slots[index].distance = 0.0f;
     this->state.lastPrim->state.slots[index].height[0] = 0.0f;
     this->state.lastPrim->state.slots[index].vecTNow.x = static_cast<float>(ClampedRandom(11)) * 0.01f;
-    this->state.lastPrim->state.slots[index].vecBNow.x = this->render.position.x;
-    this->state.lastPrim->state.slots[index].vecBNow.y = this->render.position.y;
-    this->state.lastPrim->state.slots[index].vecBNow.z = this->render.position.z;
+    this->state.lastPrim->state.slots[index].vecBNow = this->render.position;
     this->state.lastPrim->state.slots[index].vecTNow.y = 20.0f;
 
     for (int height = 20; height > 0; --height) {
@@ -10984,9 +10768,7 @@ void CRagEffect::WhiteSparks(char kind) {
     this->state.lastPrim->state.slots[index].distance = static_cast<float>(ClampedRandom(8)) + 6.0f;
     this->state.lastPrim->state.slots[index].flag1[0] = 0;
     this->state.lastPrim->state.slots[index].height[0] = 0.0f;
-    this->state.lastPrim->state.slots[index].vecBNow.x = this->render.position.x;
-    this->state.lastPrim->state.slots[index].vecBNow.y = this->render.position.y;
-    this->state.lastPrim->state.slots[index].vecBNow.z = this->render.position.z;
+    this->state.lastPrim->state.slots[index].vecBNow = this->render.position;
 
     for (int height = 20; height > 0; --height) {
       this->state.lastPrim->state.slots[index].height[height] = 0.0f;
@@ -11001,9 +10783,7 @@ void CRagEffect::WhiteSparks(char kind) {
 // FUNCTION: fn_20282
 void CRagEffect::AlphaCenterTrail() {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt >= 4) {
     return;
@@ -11051,9 +10831,7 @@ void CRagEffect::Waterfall(const char* name, char flag, char tall, char variant)
   }
 
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
   this->state.lastPrim = this->LaunchEffectPrim(79, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 5;
   this->state.lastPrim->state.duration = this->state.duration;
@@ -11274,9 +11052,7 @@ void CRagEffect::YufitelHit(char kind) {
 // FUNCTION: fn_20150
 void CRagEffect::TexturedPulseKind(const char* name, char kind) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -11691,9 +11467,7 @@ void CRagEffect::WaterBubble(int) {
 // FUNCTION: fn_20044
 void CRagEffect::FireArrow() {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt == 12) {
     char waveName[52];
@@ -11806,9 +11580,7 @@ void CRagEffect::BlitzBeat() {
   }
 
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt == 0) {
     g_blitzBeatCount = this->state.stateCnt;
@@ -13636,9 +13408,7 @@ void CRagEffect::WhiteSparkRing(char kind) {
     this->state.lastPrim->state.slots[index].distance = static_cast<float>(ClampedRandom(7)) + 6.0f;
     this->state.lastPrim->state.slots[index].height[0] = 0.0f;
     this->state.lastPrim->state.slots[index].vecTNow.x = static_cast<float>(ClampedRandom(7)) * 0.1f + 0.8f;
-    this->state.lastPrim->state.slots[index].vecBNow.x = this->render.position.x;
-    this->state.lastPrim->state.slots[index].vecBNow.y = this->render.position.y;
-    this->state.lastPrim->state.slots[index].vecBNow.z = this->render.position.z;
+    this->state.lastPrim->state.slots[index].vecBNow = this->render.position;
     this->state.lastPrim->state.slots[index].vecTNow.y = 3.0f;
 
     for (int height = 20; height > 0; --height) {
@@ -13893,9 +13663,7 @@ void CRagEffect::WhiteRingWave() {
 // FUNCTION: fn_20217
 void CRagEffect::TripleRingStack(const char* name, char large) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt == 99999998) {
     this->state.stateCnt = 0;
@@ -14005,9 +13773,7 @@ void CRagEffect::SpawnLightBlur() {
 // FUNCTION: fn_20226
 void CRagEffect::WideTripleRingStack(const char* name) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -14076,9 +13842,7 @@ void CRagEffect::WideTripleRingStack(const char* name) {
 // FUNCTION: fn_20140
 void CRagEffect::SoulLink(int) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt == 1) {
     this->state.lastPrim = this->LaunchEffectPrim(68, vector3d{0.0f, 0.0f, 0.0f});
@@ -14202,9 +13966,7 @@ void CRagEffect::WhiteSparkStreak(char kind) {
 
     this->state.lastPrim->state.slots[index].height[0] = 0.0f;
     this->state.lastPrim->state.slots[index].vecTNow.x = static_cast<float>(ClampedRandom(7)) * 0.1f + 0.6f;
-    this->state.lastPrim->state.slots[index].vecBNow.x = this->render.position.x;
-    this->state.lastPrim->state.slots[index].vecBNow.y = this->render.position.y;
-    this->state.lastPrim->state.slots[index].vecBNow.z = this->render.position.z;
+    this->state.lastPrim->state.slots[index].vecBNow = this->render.position;
 
     for (int height = 1; height < 21; ++height) {
       this->state.lastPrim->state.slots[index].height[height] = 0.0f;
@@ -14835,9 +14597,7 @@ void CRagEffect::ForestLight(const char* name, char flag) {
 
     this->state.lastPrim->state.slots[i].height[0] = this->state.lastPrim->state.slots[i].maxHeight;
     this->state.lastPrim->state.slots[i].rotStart = static_cast<std::int16_t>(i * 25);
-    this->state.lastPrim->state.slots[i].vecTNow.x = this->render.position.x;
-    this->state.lastPrim->state.slots[i].vecTNow.y = this->render.position.y;
-    this->state.lastPrim->state.slots[i].vecTNow.z = this->render.position.z;
+    this->state.lastPrim->state.slots[i].vecTNow = this->render.position;
     this->state.deltaPos[0] = this->render.position.x;
     this->state.deltaPos[1] = this->render.position.y;
     this->state.deltaPos[2] = this->render.position.z;
@@ -15438,9 +15198,7 @@ void CRagEffect::DecAgility() {
 
   EffectPrimitiveState& placed = this->state.lastPrim->state;
   const vector3d offset = RotatedForward(placed.transform.values, static_cast<float>(ClampedRandom(7) + 2));
-  placed.deltaPos2.x = offset.x;
-  placed.deltaPos2.y = offset.y;
-  placed.deltaPos2.z = offset.z;
+  placed.deltaPos2 = offset;
   this->state.lastPrim->state.deltaPos2.y -= 20.0f;
 
   EffectPrimitiveState& upright = this->state.lastPrim->state;
@@ -15870,9 +15628,7 @@ void CRagEffect::TexturedMagicRing(char type) {
 // FUNCTION: fn_20137
 void CRagEffect::TexturedRisingRing(const char* name) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt == 1) {
     this->state.lastPrim = this->LaunchEffectPrim(107, vector3d{0.0f, 0.0f, 0.0f});
@@ -16311,9 +16067,7 @@ void CRagEffect::Cloud11Burst(char kind) {
 // FUNCTION: fn_20207
 void CRagEffect::White02Burst(char kind) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (static_cast<unsigned>(this->state.stateCnt - 6) >= 4) {
     return;
@@ -16341,9 +16095,7 @@ void CRagEffect::White02Burst(char kind) {
     this->state.lastPrim->state.slots[index].distance = static_cast<float>(ClampedRandom(6)) + 6.0f;
     this->state.lastPrim->state.slots[index].height[0] = 0.0f;
     this->state.lastPrim->state.slots[index].vecTNow.x = static_cast<float>(ClampedRandom(7)) * 0.1f + 0.8f;
-    this->state.lastPrim->state.slots[index].vecBNow.x = this->render.position.x;
-    this->state.lastPrim->state.slots[index].vecBNow.y = this->render.position.y;
-    this->state.lastPrim->state.slots[index].vecBNow.z = this->render.position.z;
+    this->state.lastPrim->state.slots[index].vecBNow = this->render.position;
     this->state.lastPrim->state.slots[index].vecTNow.y = 4.0f;
 
     for (int height = 20; height > 0; --height) {
@@ -16695,9 +16447,7 @@ void CRagEffect::IncAgilityCenter(char kind) {
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt == 0) {
     PlayEffectWave(*this, kind == 3 ? "effect\\소울 체인지.wav" : "effect\\EF_IncAgility.wav");
@@ -17288,9 +17038,7 @@ void CPlayer::RefreshEffect164() {
 // OFFSET: 0x00C4FAB0
 // FUNCTION: fn_20183
 void CRagEffect::PortalRings() {
-  this->render.position.x = this->state.parent->render.position.x;
-  this->render.position.y = this->state.parent->render.position.y;
-  this->render.position.z = this->state.parent->render.position.z;
+  this->render.position = this->state.parent->render.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -17383,9 +17131,7 @@ void CRagEffect::PortalRings() {
 // OFFSET: 0x00C46860
 // FUNCTION: fn_20154
 void CRagEffect::TexturedGroundRing(const char* name, char flag, int unused1, int unused2) {
-  this->render.position.x = this->state.parent->render.position.x;
-  this->render.position.y = this->state.parent->render.position.y;
-  this->render.position.z = this->state.parent->render.position.z;
+  this->render.position = this->state.parent->render.position;
 
   if (this->state.stateCnt > 3) {
     return;
@@ -17578,9 +17324,7 @@ bool CRagEffect::GlassWallRising(const char* name) {
 // FUNCTION: fn_20253
 void CRagEffect::TexturedQuadRingSized(std::int16_t baseAlpha, const char* name, char kind) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -17747,9 +17491,7 @@ void CRagEffect::TexturedFireWall(const char* name, int unused) {
   PlayEffectWave(*this, "effect\\EF_FireWall.wav");
 
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   this->state.lastPrim = this->LaunchEffectPrim(118, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 5;
@@ -17823,9 +17565,7 @@ void CRagEffect::TexturedFireWall(const char* name, int unused) {
 // FUNCTION: fn_20184
 void CRagEffect::TeleportSpiral(const char* name) {
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -18290,9 +18030,7 @@ void CRagEffect::HealRingSparkle(const char* name, char type) {
 // OFFSET: 0x00C56940
 // FUNCTION: fn_20204
 void CRagEffect::HealBurst(const char* name, char flag) {
-  this->render.position.x = this->state.parent->render.position.x;
-  this->render.position.y = this->state.parent->render.position.y;
-  this->render.position.z = this->state.parent->render.position.z;
+  this->render.position = this->state.parent->render.position;
 
   const int limit = flag != 0 ? 25 : 50;
 
@@ -18437,9 +18175,7 @@ void CRagEffect::HealBurst(const char* name, char flag) {
 // OFFSET: 0x00C5A760
 // FUNCTION: fn_20219
 void CRagEffect::FreezingCircle(char kind) {
-  this->render.position.x = this->state.parent->render.position.x;
-  this->render.position.y = this->state.parent->render.position.y;
-  this->render.position.z = this->state.parent->render.position.z;
+  this->render.position = this->state.parent->render.position;
 
   if (this->state.stateCnt == 99999998) {
     this->state.stateCnt = 0;

@@ -618,9 +618,7 @@ void CWarningPlaneEffect::AddPlane(vector3d position) {
     particle->scale = 2.5f;
     particle->alpha = 150;
     particle->SetColor(255, 0, 0);
-    particle->position.x = position.x;
-    particle->position.y = position.y;
-    particle->position.z = position.z;
+    particle->position = position;
     particle->InitParticleQuad(particle->vertices);
     this->emitters.push_back(particle);
   }
@@ -981,9 +979,7 @@ void CFallenAngelEffect::SetPosition(vector3d position) {
   this->position[0] = target.x;
   this->position[1] = target.y;
   this->position[2] = target.z;
-  emitter->position.x = target.x;
-  emitter->position.y = target.y;
-  emitter->position.z = target.z;
+  emitter->position = target;
 }
 
 // OFFSET: 0x007118C0
@@ -1522,9 +1518,7 @@ void CFromTheAbyssEffect::SetLevel(long long level) {
       if (emitter) {
         emitter->Load("from_the_abyss\\from_the_abyss_shadowball_create\\from_the_abyss_shadowball_create.str");
         emitter->m_scale = this->waves[i].scale;
-        emitter->offset.x = this->waves[i].offset.x;
-        emitter->offset.y = this->waves[i].offset.y;
-        emitter->offset.z = this->waves[i].offset.z;
+        emitter->offset = this->waves[i].offset;
         AbyssParticle& entry = this->particles[i];
         entry.emitter = emitter;
         entry.kind = 1;
@@ -1543,9 +1537,7 @@ void CFromTheAbyssEffect::SetLevel(long long level) {
         if (emitter) {
           emitter->Load("from_the_abyss\\from_the_abyss_shadowball_die\\from_the_abyss_shadowball_die.str");
           emitter->m_scale = static_cast<float>(scale);
-          emitter->offset.x = offset.x;
-          emitter->offset.y = offset.y;
-          emitter->offset.z = offset.z;
+          emitter->offset = offset;
         }
 
         AbyssParticle& entry = this->particles[i];
@@ -1827,9 +1819,7 @@ void CDropItemEffect::Open() {
   for (std::size_t i = 0; i < this->emitters.size(); ++i) {
     CEZ2STRParticle* emitter = this->emitters[i];
     if (emitter) {
-      emitter->position.x = this->position.x;
-      emitter->position.y = this->position.y;
-      emitter->position.z = this->position.z;
+      emitter->position = this->position;
     }
   }
 }
@@ -2389,9 +2379,7 @@ void CPetitioEffect::OnProcess() {
 
     CEZ2STRParticle* particle = emitter;
     const vector3d position = {this->position[0] + 0.0f, this->position[1] - 12.0f, this->position[2] + 0.0f};
-    particle->position.x = position.x;
-    particle->position.y = position.y;
-    particle->position.z = position.z;
+    particle->position = position;
     particle->Process(0.0f, 0.0f, 0.0f);
   }
 }
@@ -2877,9 +2865,7 @@ bool CSavageImpactEffect::IsAlive() {
 void CSavageImpactEffect::OnProcess() {
   CEZ2STRParticle* particle = this->emitter;
   const vector3d position = {this->position[0] + 0.0f, this->position[1] - 12.0f, this->position[2] + 0.0f};
-  particle->position.x = position.x;
-  particle->position.y = position.y;
-  particle->position.z = position.z;
+  particle->position = position;
   particle->Process(0.0f, 0.0f, 0.0f);
 }
 
@@ -3756,18 +3742,14 @@ void CSevereRainStorm::SpawnGrenades() {
     CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 13));
     if (particle) {
       particle->Load(std::string("NIGHT_WATCH\\NW_GRENADES_DROPPING\\grenades_dropping_bottom\\grenades_dropping_bottom.str"));
-      particle->position.x = position.x;
-      particle->position.y = position.y;
-      particle->position.z = position.z;
+      particle->position = position;
       this->emitters.push_back(std::move(particle));
     }
 
     particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
     if (particle) {
       particle->Load(std::string("NIGHT_WATCH\\NW_GRENADES_DROPPING\\grenades_dropping\\grenades_dropping.str"));
-      particle->position.x = position.x;
-      particle->position.y = position.y;
-      particle->position.z = position.z;
+      particle->position = position;
       this->emitters.push_back(std::move(particle));
     }
   }
@@ -3882,9 +3864,7 @@ void CSevereRainStorm::SpawnStarCannon() {
   CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 13));
   if (particle) {
     particle->Load(std::string("SKY_EMPEROR\\SKE_STAR_CANNON\\star_cannon_bottom\\ske_star_cannon_bottom.str"));
-    particle->position.x = position.x;
-    particle->position.y = position.y;
-    particle->position.z = position.z;
+    particle->position = position;
     CEZ2STRParticle* emitter = particle;
     this->emitters.push_back(std::move(emitter));
   }
@@ -3892,9 +3872,7 @@ void CSevereRainStorm::SpawnStarCannon() {
   particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
   if (particle) {
     particle->Load(std::string("SKY_EMPEROR\\SKE_STAR_CANNON\\star_cannon\\ske_star_cannon.str"));
-    particle->position.x = position.x;
-    particle->position.y = position.y;
-    particle->position.z = position.z;
+    particle->position = position;
     CEZ2STRParticle* emitter = particle;
     this->emitters.push_back(std::move(emitter));
   }
@@ -3918,9 +3896,7 @@ void CSevereRainStorm::SpawnGalaxyStar() {
   CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 13));
   if (particle) {
     particle->Load(std::string("SKY_EMPEROR\\SKE_TWINKLING_GALAXY\\twinkling_galaxy_bottom\\ske_twinkling_galaxy_bottom.str"));
-    particle->position.x = position.x;
-    particle->position.y = position.y;
-    particle->position.z = position.z;
+    particle->position = position;
     CEZ2STRParticle* emitter = particle;
     this->emitters.push_back(std::move(emitter));
   }
@@ -3928,9 +3904,7 @@ void CSevereRainStorm::SpawnGalaxyStar() {
   particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
   if (particle) {
     particle->Load(std::string("SKY_EMPEROR\\SKE_TWINKLING_GALAXY\\twinkling_galaxy\\ske_twinkling_galaxy03.str"));
-    particle->position.x = position.x;
-    particle->position.y = position.y;
-    particle->position.z = position.z;
+    particle->position = position;
     CEZ2STRParticle* emitter = particle;
     this->emitters.push_back(std::move(emitter));
   }
@@ -4153,9 +4127,7 @@ void CTunaPartyEffect::OnProcess() {
     const float cosine = ClientCos(phase) * 10.0f;
     const float sine = ClientSin(phase) * 10.0f;
     const vector3d position = {this->position[0] + sine, this->position[1] - 10.0f, this->position[2] + cosine};
-    particle->position.x = position.x;
-    particle->position.y = position.y;
-    particle->position.z = position.z;
+    particle->position = position;
     float angle = phase / 3.141592f * 180.0f;
     if (angle > 360.0f) {
       angle -= static_cast<float>(static_cast<int>(angle / 360.0f) * 360);
@@ -4620,9 +4592,7 @@ void CSpriteMableEffect::OnProcess() {
     const float offsetY = ClientSin(bob) * 3.0f - 6.0f;
     const float offsetZ = ClientCos(yaw) * 6.0f;
     const vector3d vectorValue = {offsetX + this->position[0], offsetY + this->position[1], offsetZ + this->position[2]};
-    particle->position.x = vectorValue.x;
-    particle->position.y = vectorValue.y;
-    particle->position.z = vectorValue.z;
+    particle->position = vectorValue;
 
     int angle = static_cast<int>(static_cast<float>(static_cast<int>(yaw / 3.141592f * 180.0f) % 360) -
                                  g_modeMgr.GetGameMode()->camera->camera.yaw);

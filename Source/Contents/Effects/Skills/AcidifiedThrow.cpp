@@ -108,9 +108,7 @@ void CAcidifiedThrow::OnProcess() {
 
   CRenderObject* sourceActor = FindRenderObject(this->sourceActor);
   if (sourceActor) {
-    this->impactPosition.x = sourceActor->render.position.x;
-    this->impactPosition.y = sourceActor->render.position.y;
-    this->impactPosition.z = sourceActor->render.position.z;
+    this->impactPosition = sourceActor->render.position;
   }
 
   if (this->projectileEmitter) {

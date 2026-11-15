@@ -250,9 +250,7 @@ void CChargingPierceNewEffect::OnProcess() {
     worldPos.x = viewPos.y * inverse.values[3] + viewPos.x * inverse.values[0] + viewPos.z * inverse.values[6] + inverse.values[9];
     worldPos.y = viewPos.y * inverse.values[4] + viewPos.x * inverse.values[1] + viewPos.z * inverse.values[7] + inverse.values[10];
     worldPos.z = viewPos.y * inverse.values[5] + viewPos.x * inverse.values[2] + viewPos.z * inverse.values[8] + inverse.values[11];
-    particle->position.x = worldPos.x;
-    particle->position.y = worldPos.y;
-    particle->position.z = worldPos.z;
+    particle->position = worldPos;
     particle->Process(0.0f, 0.0f, 0.0f);
   }
 }

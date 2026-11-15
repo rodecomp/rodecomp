@@ -74,9 +74,7 @@ CHalluNPC::CHalluNPC(CGameActor* source) {
   this->SetActorJob(source->GetEffectiveJob(-1));
   this->isRiding = source->isRiding;
   this->SetMonsterTransformJob(source->GetMonsterTransformJob());
-  this->render.position.x = source->render.position.x;
-  this->render.position.y = source->render.position.y;
-  this->render.position.z = source->render.position.z;
+  this->render.position = source->render.position;
   this->render.distanceScale = source->render.distanceScale;
   this->render.spriteOffsetX = source->render.spriteOffsetX;
   this->render.scale = source->render.scale;

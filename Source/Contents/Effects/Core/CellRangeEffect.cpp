@@ -112,9 +112,7 @@ void CCellRangeEffect::OnProcess() {
       position.z = static_cast<float>(particle->rowIndex) * this->cellSize + position.z;
       CGameMode* mode = g_modeMgr.GetGameMode();
       position.y = mode->scene->terrain->Height(position.x, position.z) - 1.2f;
-      particle->position.x = position.x;
-      particle->position.y = position.y;
-      particle->position.z = position.z;
+      particle->position = position;
 
       matrix rotation;
       std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));

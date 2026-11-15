@@ -131,9 +131,7 @@ void CCartCannon::OnProcess() {
     this->position[1] = this->currentPosition.y;
     this->position[2] = this->currentPosition.z;
 
-    particle->position.x = this->currentPosition.x;
-    particle->position.y = this->currentPosition.y;
-    particle->position.z = this->currentPosition.z;
+    particle->position = this->currentPosition;
     particle->Process(0.0f, 0.0f, 0.0f);
   }
 

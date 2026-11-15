@@ -2691,9 +2691,7 @@ static CCharacterRender* NpcCharacterRender(CCharacterNpc* self) {
 static __forceinline void FillCharacterNpcRenderPrimary(CCharacterNpc* self, CharacterNpcViewInfo* info) {
   {
     CCharacterRender* render = NpcCharacterRender(self);
-    render->position.x = self->render.position.x;
-    render->position.y = self->render.position.y;
-    render->position.z = self->render.position.z;
+    render->position = self->render.position;
   }
   NpcCharacterRender(self)->job = self->job;
   NpcCharacterRender(self)->appearance[0] = self->sex;
@@ -2711,9 +2709,7 @@ static __forceinline void FillCharacterNpcRenderPrimary(CCharacterNpc* self, Cha
 static __forceinline void FillCharacterNpcRenderSecondary(CCharacterNpc* self, CharacterNpcViewInfo* info) {
   {
     CCharacterRender* render = NpcCharacterRender(self);
-    render->position.x = self->render.position.x;
-    render->position.y = self->render.position.y;
-    render->position.z = self->render.position.z;
+    render->position = self->render.position;
   }
   NpcCharacterRender(self)->job = self->job;
   NpcCharacterRender(self)->appearance[0] = self->sex;

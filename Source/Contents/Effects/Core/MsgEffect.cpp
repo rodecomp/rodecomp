@@ -1246,9 +1246,7 @@ void CMsgEffect::FollowOwner() {
     case MET_ANGELUS_EFFECT:
       if (this->m_owner != nullptr) {
         const CRenderObject* owner = this->m_owner;
-        this->render.position.x = owner->render.position.x;
-        this->render.position.y = owner->render.position.y;
-        this->render.position.z = owner->render.position.z;
+        this->render.position = owner->render.position;
         this->render.position.y -= 15.0f;
       }
       break;
@@ -1256,9 +1254,7 @@ void CMsgEffect::FollowOwner() {
     case MET_CRUSIS_EFFECT:
       if (this->m_owner != nullptr) {
         const CRenderObject* owner = this->m_owner;
-        this->render.position.x = owner->render.position.x;
-        this->render.position.y = owner->render.position.y;
-        this->render.position.z = owner->render.position.z;
+        this->render.position = owner->render.position;
         this->render.position.y -= 20.0f;
       }
       break;
@@ -1266,9 +1262,7 @@ void CMsgEffect::FollowOwner() {
     case MET_ICEEFFECT:
       if (this->m_owner != nullptr) {
         const CRenderObject* owner = this->m_owner;
-        this->render.position.x = owner->render.position.x;
-        this->render.position.y = owner->render.position.y;
-        this->render.position.z = owner->render.position.z;
+        this->render.position = owner->render.position;
       }
       break;
 
@@ -1280,9 +1274,7 @@ void CMsgEffect::FollowOwner() {
     case 0x24:
       if (this->m_owner != nullptr) {
         const CRenderObject* owner = this->m_owner;
-        this->render.position.x = owner->render.position.x;
-        this->render.position.y = owner->render.position.y;
-        this->render.position.z = owner->render.position.z;
+        this->render.position = owner->render.position;
         if (this->render.state == 10000) {
           this->render.position.y -= 10.0f;
         } else {
@@ -1295,9 +1287,7 @@ void CMsgEffect::FollowOwner() {
     case 0x21:
       if (this->m_owner != nullptr) {
         const CRenderObject* owner = this->m_owner;
-        this->render.position.x = owner->render.position.x;
-        this->render.position.y = owner->render.position.y;
-        this->render.position.z = owner->render.position.z;
+        this->render.position = owner->render.position;
         this->render.position.y = this->render.position.y - static_cast<float>(this->m_owner->transformPriority) - 10.0f;
       }
       break;
@@ -1305,9 +1295,7 @@ void CMsgEffect::FollowOwner() {
     case 0x20:
       if (this->m_owner != nullptr) {
         const CRenderObject* owner = this->m_owner;
-        this->render.position.x = owner->render.position.x;
-        this->render.position.y = owner->render.position.y;
-        this->render.position.z = owner->render.position.z;
+        this->render.position = owner->render.position;
         this->render.position.y -= 25.0f;
       }
       break;
@@ -1321,9 +1309,7 @@ void CMsgEffect::FollowOwner() {
     case 0x26:
       if (this->m_owner != nullptr) {
         const CRenderObject* owner = this->m_owner;
-        this->render.position.x = owner->render.position.x;
-        this->render.position.y = owner->render.position.y;
-        this->render.position.z = owner->render.position.z;
+        this->render.position = owner->render.position;
         if (this->render.state == 10000) {
           this->render.position.y -= 10.0f;
         } else {
@@ -1335,9 +1321,7 @@ void CMsgEffect::FollowOwner() {
     case MET_CURSE_EFFECT:
       if (this->m_owner != nullptr) {
         const CRenderObject* owner = this->m_owner;
-        this->render.position.x = owner->render.position.x;
-        this->render.position.y = owner->render.position.y;
-        this->render.position.z = owner->render.position.z;
+        this->render.position = owner->render.position;
         this->render.position.y -= 15.0f;
         this->render.angle = owner->render.angle;
         const int dir = this->Get8Dir(this->render.angle);
@@ -1479,9 +1463,7 @@ void CMsgEffect::FollowOwner() {
       }
       {
         const CRenderObject* owner = this->m_owner;
-        this->render.position.x = owner->render.position.x;
-        this->render.position.y = owner->render.position.y;
-        this->render.position.z = owner->render.position.z;
+        this->render.position = owner->render.position;
         this->render.position.y -= 20.0f;
       }
     default:
@@ -1595,9 +1577,7 @@ void CMsgEffect::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
         case MET_ICEBREAKEFFECT:
           if (sender != nullptr) {
             const CRenderObject* owner = static_cast<const CRenderObject*>(sender);
-            this->render.position.x = owner->render.position.x;
-            this->render.position.y = owner->render.position.y;
-            this->render.position.z = owner->render.position.z;
+            this->render.position = owner->render.position;
           }
           break;
       }

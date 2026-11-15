@@ -228,13 +228,9 @@ bool CRenderObject::GetTargetPos(std::uint32_t targetAid, vector3d& targetPos) c
 
   if (targetAid == g_session.m_aid) {
     const vector3d& playerPos = mode->scene->player->render.position;
-    targetPos.x = playerPos.x;
-    targetPos.y = playerPos.y;
-    targetPos.z = playerPos.z;
+    targetPos = playerPos;
   } else if (const CRenderObject* actor = mode->scene->GetGameActorByAID(targetAid)) {
-    targetPos.x = actor->render.position.x;
-    targetPos.y = actor->render.position.y;
-    targetPos.z = actor->render.position.z;
+    targetPos = actor->render.position;
   } else {
     found = false;
     const vector3d& playerPos = mode->scene->player->render.position;

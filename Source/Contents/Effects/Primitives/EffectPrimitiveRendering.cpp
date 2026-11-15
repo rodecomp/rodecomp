@@ -748,9 +748,7 @@ void CEffectPrim::Render(int argument) {
       RenderVertex bottom{0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
       g_renderer->viewport.Project(position, wtm.values, bottom);
       this->state.triangles[0].vertices[0].x = top.x;
-      this->state.triangles[0].vertices[2].x = bottom.x;
-      this->state.triangles[0].vertices[2].y = bottom.y;
-      this->state.triangles[0].vertices[2].z = bottom.z;
+      this->state.triangles[0].vertices[2] = bottom;
       this->state.triangles[0].vertices[0].y = top.y;
       this->state.triangles[0].vertices[0].z = top.z;
       this->state.triangles[0].vertices[0].rhw = 0.999999f;

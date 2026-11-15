@@ -870,9 +870,7 @@ bool CWhirlwindEffect::OnProcess() {
     return false;
   }
 
-  this->render.position.x = this->state.parent->render.position.x;
-  this->render.position.y = this->state.parent->render.position.y;
-  this->render.position.z = this->state.parent->render.position.z;
+  this->render.position = this->state.parent->render.position;
 
   const std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
   const int remaining = std::max(static_cast<int>(std::chrono::duration_cast<std::chrono::milliseconds>(this->endTime - now).count()), 0);
