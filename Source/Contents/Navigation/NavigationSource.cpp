@@ -478,12 +478,11 @@ CNavi_Object* CNavigationManager::ReadTargetObject(const char* record) {
     if (npc != nullptr && std::strcmp(npc->GetName(), name.c_str()) == 0) {
       return npc;
     }
-    return nullptr;
-  }
-
-  CNavi_Object* mob = info->FindMobByName(name.c_str());
-  if (mob != nullptr) {
-    return mob;
+  } else {
+    CNavi_Object* mob = info->FindMobByName(name.c_str());
+    if (mob != nullptr) {
+      return mob;
+    }
   }
   return nullptr;
 }
