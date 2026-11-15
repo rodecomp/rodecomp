@@ -685,7 +685,7 @@ void UITextViewEX::SetText(std::string text) {
   auto link = first;
   const auto last = this->extraLinks.end();
   for (; link != last; ++link) {
-    UIString* label = static_cast<UIString*>(*link);
+    UIString* label = *link;
     const std::string caption = label->text;
     x += label->geometry.width + 5;
     if (x + 15 > this->geometry.width || caption == "\n") {

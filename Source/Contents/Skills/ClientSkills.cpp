@@ -830,7 +830,7 @@ CGameActor* CSession::FindGameActor(std::uint32_t aid) const {
     return nullptr;
   }
 
-  return static_cast<CGameActor*>(mode->scene->GetGameActorByAID(aid));
+  return mode->scene->GetGameActorByAID(aid);
 }
 
 // OFFSET: 0x00E07AA0

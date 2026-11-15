@@ -5052,7 +5052,7 @@ __declspec(safebuffers) void CEffectPrim::RenderSoulLink(matrix& wtm) {
 
       if (static_cast<float>(g_session.m_aid) == slot.height[10]) {
         effect = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(EF_SOULLIGHT, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      } else if (auto* actor = static_cast<CGameActor*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAID(static_cast<std::uint32_t>(slot.height[10])))) {
+      } else if (auto* actor = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAID(static_cast<std::uint32_t>(slot.height[10]))) {
         effect = actor->LaunchEffect(EF_SOULLIGHT, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
 
@@ -7000,7 +7000,7 @@ void CEffectPrim::Render2DPrimitive() {
 // OFFSET: 0x00BCB660
 // FUNCTION: fn_19861
 void CEffectPrim::RenderSegmentSprites2(matrix& wtm) {
-  CSprRes* sprite = static_cast<CGameActor*>(static_cast<CRenderObject*>(this))->GetSprite();
+  CSprRes* sprite = this->GetSprite();
   CActRes* action = this->GetActRes();
   if (this->state.numSegment <= 0) {
     return;

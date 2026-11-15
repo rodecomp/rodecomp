@@ -25,9 +25,7 @@ void GroundGeometry::ImportWater(const CGndRes& resource) {
     this->waterRows = resource.waterHeight;
     this->waterLevels.assign(resource.waterHeights.begin(), resource.waterHeights.end());
 
-    static_assert(sizeof(GroundWaterSurface) == sizeof(GroundWater));
-    const GroundWaterSurface* const surfaces = reinterpret_cast<const GroundWaterSurface*>(resource.water.data());
-    this->waterSurfaces.assign(surfaces, surfaces + resource.water.size());
+    this->waterSurfaces.assign(resource.water.begin(), resource.water.end());
 
     this->waterAnimation = resource.waterDefault.animation;
     this->waterPitch = static_cast<int>(resource.waterDefault.pitch);
@@ -36,8 +34,11 @@ void GroundGeometry::ImportWater(const CGndRes& resource) {
     this->waterHeight = resource.waterDefault.height;
   } else {
     this->waterSurfaces.push_back(
-      {this->waterLevel, this->waterType, this->waterHeight, static_cast<float>(this->waterPhase), static_cast<float>(this->waterPitch),
-       this->waterAnimation, 0, 0.0f, nullptr}
+      {{this->waterLevel, this->waterType, this->waterHeight, static_cast<float>(this->waterPhase), static_cast<float>(this->waterPitch),
+        this->waterAnimation},
+       0,
+       0.0f,
+       nullptr}
     );
     this->waterLevels.push_back(this->waterLevel);
   }
@@ -71,18 +72,18 @@ void GroundGeometry::UpdateWater() {
   char name[32]{};
 
   for (auto it = this->waterSurfaces.begin(); it != this->waterSurfaces.end(); ++it) {
-    GroundWaterSurface& surface = *it;
+    GroundWater& surface = *it;
     ++surface.frame;
-    const int end = surface.animation * 32;
+    const int end = surface.parameters.animation * 32;
 
     if (end <= surface.frame) {
       surface.frame = 0;
     }
 
-    const int image = (surface.frame / surface.animation) % 32;
-    StringFormat(name, sizeof(name), _TRUNCATE, format, surface.type, image);
+    const int image = (surface.frame / surface.parameters.animation) % 32;
+    StringFormat(name, sizeof(name), _TRUNCATE, format, surface.parameters.type, image);
     surface.texture = g_texMgr.Load(name, 0, false, true, false);
-    const float phase = surface.speed + surface.phase;
+    const float phase = surface.parameters.speed + surface.phase;
     surface.phase = phase;
 
     if (phase > 180.0f) {

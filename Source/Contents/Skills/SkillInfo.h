@@ -68,7 +68,7 @@ public:
   virtual void OnSkillHit(CGameActor* source, CGameActor* target, CRenderObject* targetSkill) {
   }
   // INLINED
-  virtual void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+  virtual void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   }
 };
 
@@ -172,7 +172,7 @@ public:
   }
 
   /* 0004 */ std::int32_t available;
-  /* 0008 */ std::uint32_t id;
+  /* 0008 */ std::int32_t id;
   /* 000C */ std::uint32_t type;
   /* 0010 */ std::int32_t level;
   /* 0014 */ std::uint32_t spCost;
@@ -213,7 +213,7 @@ public:
   bool SuppressSupportSkillArrow(int skillId);
   bool UseGroundSkillLastFrame(int skillId);
   bool KeepSkillAttackSpeed(int skillId);
-  bool OnSkillDamage(int skillId, CGameActor* source, CGameActor* target, CGameActor* hitIndex);
+  bool OnSkillDamage(int skillId, CGameActor* source, CGameActor* target, int hitIndex);
   bool OnEfstBegin(int efstId, int value1, int value2, int value3, CRenderObject* actor, bool flag);
   bool OnSkillCast(int skillId, int level, CGameActor* source);
   bool OnTargetSkillCast(int skillId, CGameActor* source, CGameActor* target, int delay);

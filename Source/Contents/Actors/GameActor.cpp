@@ -1083,13 +1083,13 @@ float CGameActor::GetNameHeight() {
 
 // OFFSET: 0x00CAD990
 // FUNCTION: fn_21055
-CSprRes* CGameActor::GetSprite() {
+CSprRes* CRenderObject::GetSprite() {
   return this->render.sprite;
 }
 
 // OFFSET: 0x00CAD9A0
 // FUNCTION: fn_21056
-__declspec(noinline) float CGameActor::GetElapsedFrames() {
+__declspec(noinline) float CRenderObject::GetElapsedFrames() {
   return static_cast<float>(static_cast<double>(timeGetTime() - this->render.motionStartTime) / 24.0);
 }
 

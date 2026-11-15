@@ -18,7 +18,7 @@ __declspec(noinline) UIStaticText::UIStaticText() : UIWindow(0) {
   this->fontFamily = 0;
   this->bold = 0;
   this->background = 0xFFFF00FFu;
-  reinterpret_cast<UIWindow*>(this)->Invalidate();
+  static_cast<UIWindow*>(this)->Invalidate();
 
   this->tooltipEnabled = 0;
   this->shadow = 0;

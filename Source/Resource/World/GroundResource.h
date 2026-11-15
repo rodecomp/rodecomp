@@ -7,6 +7,8 @@
 #include <cstdint>
 #include <vector>
 
+class CTexture;
+
 struct GroundCellRecord {
   /* 0000 */ float heights[4];
   /* 0010 */ int tiles[3];
@@ -31,7 +33,9 @@ struct GroundWaterParameters {
 
 struct GroundWater {
   /* 0000 */ GroundWaterParameters parameters;
-  /* 0018 */ std::uint32_t reserved[3];
+  /* 0018 */ int frame;
+  /* 001C */ float phase;
+  /* 0020 */ CTexture* texture;
 };
 
 struct GroundLegacyLightmap {
@@ -81,6 +85,7 @@ private:
 
 static_assert(sizeof(GroundWaterParameters) == 24);
 static_assert(sizeof(GroundWater) == 36);
+static_assert(offsetof(GroundWater, texture) == 0x20);
 static_assert(sizeof(GroundCellRecord) == 28);
 static_assert(offsetof(GroundCellRecord, tiles) == 0x10);
 static_assert(sizeof(GroundTileRecord) == 40);

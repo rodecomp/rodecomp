@@ -76,7 +76,7 @@ CGameActor* CWorld::GetGameActorByAidIncludeMe(std::uint32_t aid) const {
   }
 
   for (auto it = this->actors.begin(); it != this->actors.end(); ++it) {
-    CGameActor* actor = static_cast<CGameActor*>(*it);
+    CGameActor* actor = *it;
 
     if (actor->render.accountId == aid) {
       return actor;
@@ -183,15 +183,15 @@ void CWorld::OnProcess() {
 
   for (auto idEntry = this->pendingActorIds.begin(); idEntry != this->pendingActorIds.end(); ++idEntry) {
     std::uint32_t aid = *idEntry;
-    auto skillEntry = std::find_if(this->skills.begin(), this->skills.end(), [aid](CRenderObject* entry) {
-      return static_cast<CSkill*>(entry)->skillAid == aid;
+    auto skillEntry = std::find_if(this->skills.begin(), this->skills.end(), [aid](CSkill* entry) {
+      return entry->skillAid == aid;
     });
 
     if (skillEntry == this->skills.end()) {
       continue;
     }
 
-    CSkill* skill = static_cast<CSkill*>(*skillEntry);
+    CSkill* skill = *skillEntry;
     if (skill == nullptr) {
       continue;
     }
@@ -217,7 +217,7 @@ void CWorld::OnProcess() {
 // OFFSET: 0x00ACA200
 // FUNCTION: fn_17690
 bool CWorld::RemoveItem(std::uint32_t aid) {
-  auto actorEntry = std::find_if(this->actors.begin(), this->actors.end(), [aid](CRenderObject* actor) {
+  auto actorEntry = std::find_if(this->actors.begin(), this->actors.end(), [aid](CGameActor* actor) {
     return actor->render.accountId == aid;
   });
 
@@ -228,7 +228,7 @@ bool CWorld::RemoveItem(std::uint32_t aid) {
   this->RemovePcPos(aid, true);
   this->RemovePcPosForMove((*actorEntry)->render.accountId, true);
 
-  CRenderObject* actor = *actorEntry;
+  CGameActor* actor = *actorEntry;
 
   for (auto objectEntry = this->objects.begin(); objectEntry != this->objects.end(); ++objectEntry) {
     if (*objectEntry == actor) {
@@ -351,13 +351,12 @@ CItem* CWorld::GetItemByAID(std::uint32_t aid) const {
 // OFFSET: 0x00AC8380
 // FUNCTION: fn_17670
 CGameActor* CWorld::GetActorByGID(int gid) const {
-  auto it = std::find_if(this->actors.begin(), this->actors.end(), [gid](CRenderObject* object) {
-    CGameActor* actor = static_cast<CGameActor*>(object);
+  auto it = std::find_if(this->actors.begin(), this->actors.end(), [gid](CGameActor* actor) {
     return !actor->objectType && gid == actor->GetPkState();
   });
 
   if (it != this->actors.end()) {
-    return static_cast<CGameActor*>(*it);
+    return *it;
   }
 
   return nullptr;
@@ -365,9 +364,9 @@ CGameActor* CWorld::GetActorByGID(int gid) const {
 
 // OFFSET: 0x00AC8440
 // FUNCTION: fn_17671
-CRenderObject* CWorld::GetSkillByAID(std::uint32_t aid) const {
+CSkill* CWorld::GetSkillByAID(std::uint32_t aid) const {
   for (auto it = this->skills.begin(); it != this->skills.end(); ++it) {
-    CSkill* skill = static_cast<CSkill*>(*it);
+    CSkill* skill = *it;
 
     if (skill->skillAid == aid) {
       return skill;
@@ -652,7 +651,7 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
   const int job = pick->job;
   if ((job >= 45 && job < 1000) || g_session.IsMonsterClass(job) || g_session.IsCompanionJob(job) ||
       pick->kind == 4) {
-    CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(pick->accountId));
+    CGameActor* actor = this->scene->GetGameActorByAID(pick->accountId);
     if (actor != nullptr) {
       if (g_session.IsHomunAid(actor->render.accountId)) {
         if (g_windowMgr.menuWnd != nullptr) {
@@ -742,7 +741,7 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
     return;
   }
 
-  CGameActor* target = static_cast<CGameActor*>(this->scene->GetGameActorByAID(pick->accountId));
+  CGameActor* target = this->scene->GetGameActorByAID(pick->accountId);
   if (target == nullptr) {
     return;
   }
@@ -813,7 +812,7 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
     }
 
     if (g_guildInfo.m_guildId != 0) {
-      CGameActor* member = static_cast<CGameActor*>(this->scene->GetGameActorByAID(pick->accountId));
+      CGameActor* member = this->scene->GetGameActorByAID(pick->accountId);
       const std::uint32_t guildId = member != nullptr ? member->GetGdid() : 0;
       if (g_guildInfo.canInvite != 0 && guildId == 0) {
         this->actorMenuIds.push_back(0x16);
@@ -872,7 +871,7 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
     menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MACRO_USER_REPORT_COOLTIME)), 0xFF, 0, 0);
     menu->SendMsg(nullptr, UM_ADDBOUNDARY, 0, 0, 0, 0);
 
-    if (CPc* pc = dynamic_cast<CPc*>(static_cast<CGameActor*>(this->scene->GetGameActorByAID(pick->accountId)))) {
+    if (CPc* pc = dynamic_cast<CPc*>(this->scene->GetGameActorByAID(pick->accountId))) {
       const std::string code = std::string("[C-Code] : ") + g_session.ShortcutFilename(pc->GetPkState());
       this->actorMenuIds.push_back(0x39);
       menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(code.c_str()), 0, 0, 0);
@@ -911,8 +910,8 @@ bool CWorld::RemoveGroundItem(std::uint32_t aid) {
 // FUNCTION: fn_17697
 bool CWorld::RemoveSkill(std::uint32_t aid) {
   for (auto entry = this->skills.begin(); entry != this->skills.end(); ++entry) {
-    if (static_cast<CSkill*>(*entry)->skillAid == aid) {
-      CSkill* skill = static_cast<CSkill*>(*entry);
+    if ((*entry)->skillAid == aid) {
+      CSkill* skill = *entry;
 
       if (!skill) {
         return false;

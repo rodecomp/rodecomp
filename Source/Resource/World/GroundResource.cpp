@@ -113,18 +113,18 @@ void CGndRes::ReadWater() {
       this->waterHeights.push_back(level);
       parameters.level = level;
       entry.parameters = parameters;
-      entry.reserved[0] = 0;
-      entry.reserved[1] = 0;
-      entry.reserved[2] = 0;
+      entry.frame = 0;
+      entry.phase = 0.0f;
+      entry.texture = nullptr;
       this->water.push_back(entry);
     }
   } else if (this->minor == 9) {
     for (int index = 0; static_cast<float>(index) < count; ++index) {
       this->m_file.Read(&parameters, sizeof(parameters));
       entry.parameters = parameters;
-      entry.reserved[0] = 0;
-      entry.reserved[1] = 0;
-      entry.reserved[2] = 0;
+      entry.frame = 0;
+      entry.phase = 0.0f;
+      entry.texture = nullptr;
       this->water.push_back(entry);
       this->waterHeights.push_back(parameters.level);
     }

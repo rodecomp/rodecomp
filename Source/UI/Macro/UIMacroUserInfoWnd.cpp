@@ -79,7 +79,7 @@ void UIMacroReporterWnd::AddPickedActor(ActorPickInfo* pick) {
 // FUNCTION: fn_09840
 void UIMacroReporterWnd::AddActorByAID(int aid) {
   CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-  CGameActor* actor = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(aid));
+  CGameActor* actor = mode->scene->GetGameActorByAID(aid);
   if (!actor) {
     return;
   }

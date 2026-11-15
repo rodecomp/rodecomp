@@ -5,13 +5,20 @@
 
 namespace myGPack {
 
+  union Block64 {
+    /* 0000 */ std::uint8_t bytes[8];
+    /* 0000 */ std::uint32_t words[2];
+  };
+
+  static_assert(sizeof(Block64) == 8);
+
   class PakCipher {
   public:
     PakCipher();
     explicit PakCipher(const std::uint8_t* key);
     ~PakCipher();
-    int DecodeBlock(int rounds, const std::uint8_t (*roundKeys)[8], std::uint32_t inputLow, std::uint32_t inputHigh, std::uint8_t* output) const;
-    int EncodeBlock(int rounds, const std::uint8_t (*roundKeys)[8], std::uint32_t inputLow, std::uint32_t inputHigh, std::uint8_t* output) const;
+    int DecodeBlock(int rounds, const std::uint8_t (*roundKeys)[8], Block64 input, Block64* output) const;
+    int EncodeBlock(int rounds, const std::uint8_t (*roundKeys)[8], Block64 input, Block64* output) const;
     int Decode(const std::uint8_t* input, int length, std::uint8_t* output, int* outputLength, int cycle) const;
     int DecodePrefix(const std::uint8_t* input, int length, std::uint8_t* output, int* outputLength) const;
 

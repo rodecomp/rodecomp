@@ -21,6 +21,7 @@ enum TextLinkButtonId : int {
   LINK_BUTTON_QUEST = 539,
 };
 
+class UIString;
 class UITextButton;
 
 class UITextViewer : public UIListBox {
@@ -78,7 +79,7 @@ public:
   void AddLineLinks(UITextButton* const* first, UITextButton* const* last);
   int AddWords(std::string text, int attached, int red, int green, int blue);
 
-  std::vector<UIWindow*> extraLinks;
+  std::vector<UIString*> extraLinks;
   std::vector<std::vector<UITextButton*>> lineLinks;
 };
 

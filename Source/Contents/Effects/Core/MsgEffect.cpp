@@ -108,7 +108,7 @@ bool CMsgEffect::UsesMsgEffect(int type) {
 
 // INLINED
 static float MsgEffectElapsedFrames(CMsgEffect* effect) {
-  return static_cast<CGameActor*>(static_cast<CRenderObject*>(effect))->GetElapsedFrames();
+  return effect->GetElapsedFrames();
 }
 
 // INLINED

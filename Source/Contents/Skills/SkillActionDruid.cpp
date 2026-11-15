@@ -42,14 +42,14 @@ public:
 class CSkillAction_DamageWereRaptorForm : public CSkillAction_AnimalForm, public CSkillAction_Direction {
 public:
   void SpawnAttack00Effect(CGameActor* source, CGameActor* target);
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
   bool IsInForm(CGameActor* actor) override;
   void PlayFormAttackEffect(CGameActor* actor) override;
 };
 
 class CSkillAction_DamageWereWolfForm : public CSkillAction_AnimalForm {
 public:
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
   bool IsInForm(CGameActor* actor) override;
   void PlayFormAttackEffect(CGameActor* actor) override;
 };
@@ -202,7 +202,7 @@ public:
   int GetSkillCastMotion() override;
   int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CSkillAction_Icing : public CSkillAction {
@@ -210,7 +210,7 @@ public:
   int GetSkillCastMotion() override;
   int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CEfstAction_NATURE_PROTECTION : public CEfstAction_BasicAction {
@@ -283,7 +283,7 @@ public:
   int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CSkillAction_DR_WIND_BOMB : public CSkillAction {
@@ -292,7 +292,7 @@ public:
   int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CSkillAction_DR_AROUND_FLOWER : public CSkillAction_Earthing {
@@ -985,7 +985,7 @@ void CSkillAction_DR_CUTTING_WIND::OnSkillEffect(int level, CGameActor* source, 
 
 // OFFSET: 0x00623F70
 // FUNCTION: fn_04541
-void CSkillAction_DR_CUTTING_WIND::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_DR_CUTTING_WIND::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (!target) {
     return;
   }
@@ -1040,7 +1040,7 @@ void CSkillAction_DR_WIND_BOMB::OnSkillEffect(int level, CGameActor* source, CGa
 
 // OFFSET: 0x00624430
 // FUNCTION: fn_04546
-void CSkillAction_DR_WIND_BOMB::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_DR_WIND_BOMB::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (!target) {
     return;
   }

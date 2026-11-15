@@ -53,7 +53,7 @@ class CEfstAction_ChangeSizeNPC : public CEfstAction_ChangeSize {
 
 class CSkillAction_CD_DIVINUS_FLOS : public CSkillAction {
 public:
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
 };
@@ -111,7 +111,7 @@ class CSkillAction_SHC_SHADOW_STAB : public CSkillAction {
 public:
   int GetSkillAttackMotion() override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CSkillAction_SHC_SHADOW_EXCEED : public CSkillAction {
@@ -134,7 +134,7 @@ public:
   int GetSkillAttackMotion() override;
   bool SuppressAttackSkillArrow() override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CSkillAction_ABC_CHASING_SHOT : public CSkillAction {
@@ -144,14 +144,14 @@ public:
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
   void OnSkillHit(CGameActor* source, CGameActor* target, CRenderObject* targetSkill) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CSkillAction_ABC_ABYSS_FLAME_ATK : public CSkillAction {
 public:
   bool KeepSkillAttackMotion(int argument) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CSkillAction_AG_ENERGY_CONVERSION : public CSkillAction {
@@ -169,41 +169,41 @@ class CSkillAction_SHC_IMPACT_CRATER : public CSkillAction {
 public:
   int GetSkillAttackMotion() override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CSkillAction_SHC_CROSS_SLASH : public CSkillAction {
 public:
   int GetSkillAttackMotion() override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CSkillAction_SHC_DANCING_KNIFE : public CSkillAction {
 public:
   int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CSkillAction_ABC_HIT_AND_SLIDING : public CSkillAction {
 public:
   int GetSkillAttackMotion() override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CSkillAction_ABC_ABYSS_FLAME : public CSkillAction {
 public:
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CSkillAction_EM_PSYCHIC_STREAM : public CSkillAction {
 public:
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CSkillAction_IQ_BLAZING_FLAME_BLAST : public CSkillAction {
@@ -211,7 +211,7 @@ public:
   int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CSkillAction_BO_MAYHEMIC_THORNS : public CSkillAction {
@@ -231,7 +231,7 @@ public:
 class CSkillAction_BO_MYSTERY_POWDER : public CSkillAction {
 public:
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CEfstAction_MYSTERY_POWDER : public CEfstAction {
@@ -244,7 +244,7 @@ public:
 class CSkillAction_BO_DUST_EXPLOSION : public CSkillAction {
 public:
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CSkillAction_DK_VIGOR : public CSkillAction {
@@ -264,7 +264,7 @@ class CSkillAction_DK_SERVANTWEAPON_ATK : public CSkillAction {
 public:
   int GetSkillAttackMotion() override;
   void OnSkillHit(CGameActor* source, CGameActor* target, CRenderObject* targetSkill) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CEfstAction_SERVANTWEAPON : public CEfstAction {
@@ -298,7 +298,7 @@ class CSkillAction_DK_SERVANT_W_DEMOL : public CSkillAction {
 public:
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
   void OnSkillHit(CGameActor* source, CGameActor* target, CRenderObject* targetSkill) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CSkillAction_DK_STORMSLASH : public CSkillAction {
@@ -312,7 +312,7 @@ public:
   int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   bool IsSkillWithoutMotion() override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CSkillAction_DK_DRAGONIC_PIERCE : public CSkillAction {
@@ -320,7 +320,7 @@ public:
   int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CSkillAction_DK_DRAGONIC_BREATH : public CSkillAction {
@@ -353,13 +353,13 @@ class CSkillAction_DK_HACKANDSLASHER : public CSkillAction {
 public:
   int GetSkillAttackMotion() override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CSkillAction_DK_HACKANDSLASHER_ATK : public CSkillAction {
 public:
   int GetSkillAttackMotion() override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CSkillAction_NPC_BLOCK_EXPLOSION : public CSkillAction {
@@ -372,7 +372,7 @@ class CSkillAction_NPC_FROST_FIELD : public CSkillAction {
 public:
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CEfstAction_FROST_STORM : public CEfstAction {
@@ -925,7 +925,7 @@ void CEfstAction_ChangeSize::OnEfstBegin(int, int value, int, int, CRenderObject
 
 // OFFSET: 0x007760D0
 // FUNCTION: fn_08344
-void CSkillAction_CD_DIVINUS_FLOS::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_CD_DIVINUS_FLOS::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("divinus_flos_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -1276,7 +1276,7 @@ void CSkillAction_SHC_IMPACT_CRATER::OnSkillEffect(int level, CGameActor* source
 
 // OFFSET: 0x007767C0
 // FUNCTION: fn_08350
-void CSkillAction_SHC_IMPACT_CRATER::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_SHC_IMPACT_CRATER::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("impact_crater_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -1294,7 +1294,7 @@ void CSkillAction_SHC_CROSS_SLASH::OnSkillEffect(int level, CGameActor* source, 
 
 // OFFSET: 0x00776AC0
 // FUNCTION: fn_08353
-void CSkillAction_SHC_CROSS_SLASH::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_SHC_CROSS_SLASH::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("cross_slash_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -1318,7 +1318,7 @@ void CSkillAction_SHC_DANCING_KNIFE::OnSkillCast(int level, CGameActor* source) 
 
 // OFFSET: 0x00776EF0
 // FUNCTION: fn_08356
-void CSkillAction_SHC_DANCING_KNIFE::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_SHC_DANCING_KNIFE::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("dancing_knife_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -1338,7 +1338,7 @@ void CSkillAction_SHC_SHADOW_EXCEED::OnSkillCast(int level, CGameActor* source) 
 
 // OFFSET: 0x007783F0
 // FUNCTION: fn_08373
-void CSkillAction_ABC_CHASING_BREAK::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_ABC_CHASING_BREAK::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("chasing_break_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -1414,7 +1414,7 @@ void CSkillAction_ABC_CHASING_SHOT::OnSkillHit(CGameActor* source, CGameActor* t
 
 // OFFSET: 0x00778C50
 // FUNCTION: fn_08379
-void CSkillAction_ABC_CHASING_SHOT::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_ABC_CHASING_SHOT::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("chasing_shot_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -1423,7 +1423,7 @@ void CSkillAction_ABC_CHASING_SHOT::OnSkillDamage(CGameActor* source, CGameActor
 
 // OFFSET: 0x00778DD0
 // FUNCTION: fn_08381
-void CSkillAction_ABC_HIT_AND_SLIDING::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_ABC_HIT_AND_SLIDING::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hit_and_sliding_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -1456,7 +1456,7 @@ void CSkillAction_ABC_ABYSS_FLAME::OnSkillEffect(int level, CGameActor* source, 
 
 // OFFSET: 0x00779360
 // FUNCTION: fn_08384
-void CSkillAction_ABC_ABYSS_FLAME::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_ABC_ABYSS_FLAME::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("abyss_flame_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -1474,7 +1474,7 @@ void CSkillAction_ABC_ABYSS_FLAME_ATK::OnSkillEffect(int level, CGameActor* sour
 
 // OFFSET: 0x00779660
 // FUNCTION: fn_08387
-void CSkillAction_ABC_ABYSS_FLAME_ATK::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_ABC_ABYSS_FLAME_ATK::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("abyss_flame_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -1505,7 +1505,7 @@ void CSkillAction_EM_PSYCHIC_STREAM::OnSkillEffect(int level, CGameActor* source
 
 // OFFSET: 0x00779C80
 // FUNCTION: fn_08390
-void CSkillAction_EM_PSYCHIC_STREAM::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_EM_PSYCHIC_STREAM::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("psychic_stream_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -1529,7 +1529,7 @@ void CSkillAction_IQ_BLAZING_FLAME_BLAST::OnSkillCast(int level, CGameActor* sou
 
 // OFFSET: 0x0077A2A0
 // FUNCTION: fn_08394
-void CSkillAction_IQ_BLAZING_FLAME_BLAST::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_IQ_BLAZING_FLAME_BLAST::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("blazing_flame_blast_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -1647,7 +1647,7 @@ void CSkillAction_SHC_SHADOW_STAB::OnSkillEffect(int level, CGameActor* source, 
 
 // OFFSET: 0x00777B00
 // FUNCTION: fn_08362
-void CSkillAction_SHC_SHADOW_STAB::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_SHC_SHADOW_STAB::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (!target) {
     return;
   }
@@ -1731,7 +1731,7 @@ bool CSkillActionMgr::KeepSkillAttackSpeed(int skillId) {
 
 // OFFSET: 0x0077B860
 // FUNCTION: fn_08418
-bool CSkillActionMgr::OnSkillDamage(int skillId, CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+bool CSkillActionMgr::OnSkillDamage(int skillId, CGameActor* source, CGameActor* target, int hitIndex) {
   std::unique_ptr<CSkillAction> action(CreateAction(this->m_skillActions, skillId));
   if (!action) {
     return false;
@@ -1942,7 +1942,7 @@ void CSkillAction_BO_MYSTERY_POWDER::OnSkillEffect(int level, CGameActor* source
 
 // OFFSET: 0x0077D310
 // FUNCTION: fn_08443
-void CSkillAction_BO_MYSTERY_POWDER::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_BO_MYSTERY_POWDER::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("mistery_powder_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -1999,7 +1999,7 @@ void CSkillAction_BO_DUST_EXPLOSION::OnSkillEffect(int level, CGameActor* source
 
 // OFFSET: 0x0077D9E0
 // FUNCTION: fn_08448
-void CSkillAction_BO_DUST_EXPLOSION::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_BO_DUST_EXPLOSION::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("dust_explosion_hit_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -2099,7 +2099,7 @@ void CSkillAction_DK_SERVANTWEAPON_ATK::OnSkillHit(CGameActor* source, CGameActo
 
 // OFFSET: 0x0077E530
 // FUNCTION: fn_08457
-void CSkillAction_DK_SERVANTWEAPON_ATK::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_DK_SERVANTWEAPON_ATK::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servantweapon_hit_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -2264,7 +2264,7 @@ void CSkillAction_DK_SERVANT_W_DEMOL::OnSkillHit(CGameActor* source, CGameActor*
 
 // OFFSET: 0x0077F9B0
 // FUNCTION: fn_08471
-void CSkillAction_DK_SERVANT_W_DEMOL::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_DK_SERVANT_W_DEMOL::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_demolition_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -2308,7 +2308,7 @@ void CSkillAction_DK_MADNESS_CRUSHER::OnSkillCast(int level, CGameActor* source)
 
 // OFFSET: 0x0077FD90
 // FUNCTION: fn_08477
-void CSkillAction_DK_MADNESS_CRUSHER::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_DK_MADNESS_CRUSHER::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("madness_crusher_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -2377,7 +2377,7 @@ void CSkillAction_DK_DRAGONIC_PIERCE::OnSkillEffect(int level, CGameActor* sourc
 
 // OFFSET: 0x007805A0
 // FUNCTION: fn_08481
-void CSkillAction_DK_DRAGONIC_PIERCE::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_DK_DRAGONIC_PIERCE::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("dragonic_pierce_hit_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -2496,7 +2496,7 @@ void CSkillAction_DK_HACKANDSLASHER::OnSkillEffect(int level, CGameActor* source
 
 // OFFSET: 0x007815A0
 // FUNCTION: fn_08494
-void CSkillAction_DK_HACKANDSLASHER::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_DK_HACKANDSLASHER::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hackandslash_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -2511,7 +2511,7 @@ int CSkillAction_DK_HACKANDSLASHER_ATK::GetSkillAttackMotion() {
 
 // OFFSET: 0x00781720
 // FUNCTION: fn_08496
-void CSkillAction_DK_HACKANDSLASHER_ATK::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_DK_HACKANDSLASHER_ATK::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hackandslash_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -2562,7 +2562,7 @@ void CSkillAction_NPC_FROST_FIELD::OnSkillEffect(int level, CGameActor* source, 
 
 // OFFSET: 0x00781DB0
 // FUNCTION: fn_08501
-void CSkillAction_NPC_FROST_FIELD::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_NPC_FROST_FIELD::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
     g_effectMgr->Spawn(target->render.accountId, EF_NEW_RAMPAGEBLASTER, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
@@ -2594,7 +2594,7 @@ class CSkillAction_NPC_LIGHTNING_JUDGEMENT : public CSkillAction {
 public:
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CEfstAction_GROGGY : public CEfstAction {
@@ -2621,7 +2621,7 @@ public:
   int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CSkillAction_NPC_BLAZING_ERUPTION : public CSkillAction {
@@ -2647,7 +2647,7 @@ public:
   int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CSkillAction_HN_MEGA_SONIC_BLOW : public CSkillAction {
@@ -2789,7 +2789,7 @@ void CSkillAction_NPC_LIGHTNING_JUDGEMENT::OnSkillEffect(int level, CGameActor* 
 
 // OFFSET: 0x007820B0
 // FUNCTION: fn_08507
-void CSkillAction_NPC_LIGHTNING_JUDGEMENT::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_NPC_LIGHTNING_JUDGEMENT::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
     g_effectMgr->Spawn(target->render.accountId, 0x4E8, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
@@ -2877,7 +2877,7 @@ void CSkillAction_NPC_AIMED_SHOWER::OnSkillEffect(int level, CGameActor* source,
 
 // OFFSET: 0x00782950
 // FUNCTION: fn_08518
-void CSkillAction_NPC_AIMED_SHOWER::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_NPC_AIMED_SHOWER::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
     g_effectMgr->Spawn(target->render.accountId, EF_NEW_PRAMEN_REUSE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
@@ -2969,7 +2969,7 @@ void CSkillAction_HN_DOUBLEBOWLINGBASH::OnSkillEffect(int level, CGameActor* sou
 
 // OFFSET: 0x007834A0
 // FUNCTION: fn_08528
-void CSkillAction_HN_DOUBLEBOWLINGBASH::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_HN_DOUBLEBOWLINGBASH::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
     static_cast<EffectActor*>(target)->LaunchEffect(EF_BOWLINGBASH, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
   }

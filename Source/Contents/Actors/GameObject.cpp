@@ -1688,7 +1688,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     if (g_session.m_aid == attackerAid) {
       attacker = mode->scene->player;
     } else {
-      attacker = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(attackerAid));
+      attacker = mode->scene->GetGameActorByAID(attackerAid);
     }
     if (attacker != nullptr) {
       job = attacker->GetEffectiveJob(-1);
@@ -1814,7 +1814,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
           if (this->render.angle > 360.0f) {
             this->render.angle -= 360.0f;
           }
-        } else if (!CSkillActionMgr::GetInstance()->OnSkillDamage(damageMessage->skillId, attacker, this, reinterpret_cast<CGameActor*>(damageMessage->skillTarget))) {
+        } else if (!CSkillActionMgr::GetInstance()->OnSkillDamage(damageMessage->skillId, attacker, this, damageMessage->skillTarget)) {
           if (g_effectMgr->Spawn(this->render.accountId, skillEffect, offset, 0, -1, 0, 0) == nullptr) {
             CRagEffect* effect = this->LaunchEffect(skillEffect, offset, 0.0f);
             if (effect != nullptr) {
@@ -3811,7 +3811,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     case EFST_SOUND_OF_DESTRUCTION: {
       CGameActor* actor = this;
       if (actor->render.accountId != g_session.m_aid) {
-        actor = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(actor->render.accountId));
+        actor = mode->scene->GetGameActorByAID(actor->render.accountId);
       }
       if (!actor) {
         break;
@@ -3825,7 +3825,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     case EFST_EARTHSHAKER: {
       CGameActor* actor = this;
       if (actor->render.accountId != g_session.m_aid) {
-        actor = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(actor->render.accountId));
+        actor = mode->scene->GetGameActorByAID(actor->render.accountId);
       }
       if (actor->HasId(0x576)) {
         actor->SendMsg(nullptr, AM_DELETE_EFFECT, 0x576, 0, 0, 0, 0, 0);
@@ -3838,7 +3838,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     case EFST_MAGIC_POISON: {
       CGameActor* actor = this;
       if (actor->render.accountId != g_session.m_aid) {
-        actor = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(actor->render.accountId));
+        actor = mode->scene->GetGameActorByAID(actor->render.accountId);
       }
       if (actor->HasId(EF_PINKBODY)) {
         actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_PINKBODY, 0, 0, 0, 0, 0);
@@ -3851,7 +3851,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     case EFST_MISTY_FROST: {
       CGameActor* actor = this;
       if (actor->render.accountId != g_session.m_aid) {
-        actor = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(actor->render.accountId));
+        actor = mode->scene->GetGameActorByAID(actor->render.accountId);
       }
       if (actor->HasId(EF_NEW_GRANDCROSS)) {
         actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_NEW_GRANDCROSS, 0, 0, 0, 0, 0);
@@ -3864,7 +3864,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     case EFST_PRISON: {
       CGameActor* actor = this;
       if (actor->render.accountId != g_session.m_aid) {
-        actor = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(actor->render.accountId));
+        actor = mode->scene->GetGameActorByAID(actor->render.accountId);
       }
       if (actor->HasId(EF_WHITEIMPRISON_STATE)) {
         actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_WHITEIMPRISON_STATE, 0, 0, 0, 0, 0);
@@ -3877,7 +3877,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     case EFST_MADOGEAR_TYPE: {
       CGameActor* target = this;
       if (this->render.accountId != g_session.m_aid) {
-        target = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(this->render.accountId));
+        target = mode->scene->GetGameActorByAID(this->render.accountId);
       }
       if (!target) {
         break;
@@ -3907,7 +3907,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     case EFST_RELIEVE_DAMAGE: {
       CGameActor* actor = this;
       if (actor->render.accountId != g_session.m_aid) {
-        actor = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(actor->render.accountId));
+        actor = mode->scene->GetGameActorByAID(actor->render.accountId);
       }
       if (!actor) {
         break;
@@ -3921,7 +3921,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     case EFST_LOCKON_LASER: {
       CGameActor* actor = this;
       if (actor->render.accountId != g_session.m_aid) {
-        actor = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(actor->render.accountId));
+        actor = mode->scene->GetGameActorByAID(actor->render.accountId);
       }
       if (!actor) {
         break;
@@ -3937,7 +3937,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     case EFST_HELLS_PLANT_ARMOR: {
       CGameActor* actor = this;
       if (actor->render.accountId != g_session.m_aid) {
-        actor = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(actor->render.accountId));
+        actor = mode->scene->GetGameActorByAID(actor->render.accountId);
       }
       if (!actor) {
         break;
@@ -4073,7 +4073,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     case EFST_DRAGONIC_AURA: {
       CGameActor* actor = this;
       if (actor->render.accountId != g_session.m_aid) {
-        actor = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(actor->render.accountId));
+        actor = mode->scene->GetGameActorByAID(actor->render.accountId);
       }
       if (!actor) {
         break;

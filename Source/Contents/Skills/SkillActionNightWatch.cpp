@@ -64,7 +64,7 @@ public:
   int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnTargetSkillCast(CGameActor* source, CGameActor* target, int delay) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CSkillAction_NW_SPIRAL_SHOOTING : public CSkillAction {
@@ -158,7 +158,7 @@ public:
   int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CSkillAction_NW_MIDNIGHT_FALLEN : public CSkillAction {
@@ -167,7 +167,7 @@ public:
   bool KeepSkillAttackMotion(int argument) override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnGroundSkillEffect(vector3d position, int argument2, int argument3) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
   int GetSkillScopeType() override;
 };
 
@@ -368,7 +368,7 @@ void CSkillAction_NW_ONLY_ONE_BULLET::OnTargetSkillCast(CGameActor* source, CGam
 
 // OFFSET: 0x0078FB00
 // FUNCTION: fn_08689
-void CSkillAction_NW_ONLY_ONE_BULLET::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_NW_ONLY_ONE_BULLET::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (!source || !target) {
     return;
   }
@@ -732,7 +732,7 @@ void CSkillAction_NW_WILD_SHOT::OnSkillEffect(int level, CGameActor* source, CGa
 
 // OFFSET: 0x00791950
 // FUNCTION: fn_08731
-void CSkillAction_NW_WILD_SHOT::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_NW_WILD_SHOT::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (!target) {
     return;
   }
@@ -794,7 +794,7 @@ void CSkillAction_NW_MIDNIGHT_FALLEN::OnGroundSkillEffect(vector3d position, int
 
 // OFFSET: 0x00791FD0
 // FUNCTION: fn_08736
-void CSkillAction_NW_MIDNIGHT_FALLEN::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_NW_MIDNIGHT_FALLEN::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
     EffectLists* effects = g_effectMgr;
     effects->Retire(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("midnight_fallen_hit"));

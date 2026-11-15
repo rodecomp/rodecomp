@@ -48,14 +48,14 @@ public:
   __declspec(noinline) void SpawnAttack01Effect(CGameActor* source, CGameActor* target);
   __declspec(noinline) void SpawnAttack02Effect(CGameActor* source, CGameActor* target);
   void SpawnDirectionalEffect(CGameActor* source, CGameActor* target, std::string_view name);
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
   bool IsInForm(CGameActor* actor) override;
   void PlayFormAttackEffect(CGameActor* actor) override;
 };
 
 class CSkillAction_DamageWereWolfForm : public CSkillAction_AnimalForm {
 public:
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
   bool IsInForm(CGameActor* actor) override;
   void PlayFormAttackEffect(CGameActor* actor) override;
 };
@@ -65,7 +65,7 @@ public:
   int GetSkillCastMotion() override;
   int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CSkillAction_Icing : public CSkillAction {
@@ -73,7 +73,7 @@ public:
   int GetSkillCastMotion() override;
   int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
   void SpawnIcing(CGameActor* target);
 };
 
@@ -82,7 +82,7 @@ public:
   int GetSkillCastMotion() override;
   int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
   virtual void PlayThunderEffect(CGameActor* source) = 0;
 };
 
@@ -132,7 +132,7 @@ class CSkillAction_KR_GROUND_BLOOM : public CSkillAction {
 public:
   int GetSkillAttackMotion() override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CSkillAction_KR_THUNDERING_CALL : public CSkillAction_ThunderingBasic {
@@ -352,7 +352,7 @@ int CSkillAction_KR_GROUND_BLOOM::GetSkillAttackMotion() {
 
 // OFFSET: 0x005B15A0
 // FUNCTION: fn_03353
-void CSkillAction_KR_GROUND_BLOOM::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_KR_GROUND_BLOOM::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (!target) {
     return;
   }

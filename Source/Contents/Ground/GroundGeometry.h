@@ -2,7 +2,7 @@
 #define RAGNAROK_SOURCE_CONTENTS_GROUND_GROUNDGEOMETRY_H
 
 #include "Contents/Ground/GroundSpatial.h"
-#include "Contents/Ground/GroundWaterState.h"
+#include "Resource/World/GroundResource.h"
 
 #include <cstddef>
 #include <array>
@@ -116,7 +116,7 @@ public:
   /* 0088 */ int waterColumns;
   /* 008C */ int waterRows;
   /* 0090 */ std::vector<float> waterLevels;
-  /* 009C */ std::vector<GroundWaterSurface> waterSurfaces;
+  /* 009C */ std::vector<GroundWater> waterSurfaces;
   /* 00A8 */ bool waterPartitioned;
 };
 

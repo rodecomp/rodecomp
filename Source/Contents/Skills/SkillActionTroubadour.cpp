@@ -18,12 +18,12 @@ public:
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
   void OnSkillHit(CGameActor* source, CGameActor* target, CRenderObject* targetSkill) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CSkillAction_TR_ROSEBLOSSOM_ATK : public CSkillAction {
 public:
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CSkillAction_TR_KVASIR_SONATA : public CSkillAction {
@@ -94,7 +94,7 @@ class CSkillAction_TR_RHYTHMICAL_WAVE : public CSkillAction {
 public:
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CSkillAction_TR_METALIC_FURY : public CSkillAction {
@@ -142,7 +142,7 @@ void CSkillAction_TR_ROSEBLOSSOM::OnSkillHit(CGameActor* source, CGameActor* tar
 
 // OFFSET: 0x007A2120
 // FUNCTION: fn_08976
-void CSkillAction_TR_ROSEBLOSSOM::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_TR_ROSEBLOSSOM::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("roseblossom_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -151,7 +151,7 @@ void CSkillAction_TR_ROSEBLOSSOM::OnSkillDamage(CGameActor* source, CGameActor* 
 
 // OFFSET: 0x007A2290
 // FUNCTION: fn_08977
-void CSkillAction_TR_ROSEBLOSSOM_ATK::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_TR_ROSEBLOSSOM_ATK::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("roseblossom_rose"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -421,7 +421,7 @@ void CSkillAction_TR_RHYTHMICAL_WAVE::OnSkillEffect(int level, CGameActor* sourc
 
 // OFFSET: 0x007A4010
 // FUNCTION: fn_09004
-void CSkillAction_TR_RHYTHMICAL_WAVE::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_TR_RHYTHMICAL_WAVE::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rhythmical_wave_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);

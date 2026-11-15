@@ -93,7 +93,7 @@ __declspec(safebuffers) void CEffectPrim::RenderLaunchEffects(matrix&) {
         }
       } else {
         CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-        if (auto* actor = static_cast<CGameActor*>(gameMode->scene->GetGameActorByAID(static_cast<std::uint32_t>(slot.height[10])))) {
+        if (auto* actor = gameMode->scene->GetGameActorByAID(static_cast<std::uint32_t>(slot.height[10]))) {
           CRagEffect* effect = actor->LaunchEffect(EF_SOULLIGHT2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
           if (effect) {
             vector3d position{baseX, baseY, baseZ};
@@ -111,7 +111,7 @@ __declspec(safebuffers) void CEffectPrim::RenderLaunchEffects(matrix&) {
         }
       } else {
         CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-        if (auto* actor = static_cast<CGameActor*>(gameMode->scene->GetGameActorByAID(static_cast<std::uint32_t>(slot.height[10])))) {
+        if (auto* actor = gameMode->scene->GetGameActorByAID(static_cast<std::uint32_t>(slot.height[10]))) {
           CRagEffect* effect = actor->LaunchEffect(EF_SOULLIGHT3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
           if (effect) {
             vector3d position{baseX, baseY, baseZ};
@@ -151,7 +151,7 @@ __declspec(safebuffers) void CEffectPrim::RenderGroundSprite(matrix& wtm) {
     master->state.parent->ScaleByFadePulse(distanceScale);
   }
 
-  CSprRes* sprite = static_cast<CGameActor*>(static_cast<CRenderObject*>(this))->GetSprite();
+  CSprRes* sprite = this->GetSprite();
   CActRes* action = this->GetActRes();
   const ActionFrame& frame = action->Frame(this->render.previousAnimation, this->render.curMotion);
 
@@ -211,7 +211,7 @@ static __declspec(safebuffers) __forceinline void DrawTrailSpriteQuad(
 // OFFSET: 0x00BF6170
 // FUNCTION: fn_19999
 void CEffectPrim::RenderSegmentSpriteTrail(matrix& wtm) {
-  CSprRes* sprite = static_cast<CGameActor*>(static_cast<CRenderObject*>(this))->GetSprite();
+  CSprRes* sprite = this->GetSprite();
   CActRes* action = this->GetActRes();
   const short alpha = static_cast<short>(this->state.alpha);
 

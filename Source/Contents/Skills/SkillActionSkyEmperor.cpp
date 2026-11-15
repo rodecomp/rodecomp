@@ -38,7 +38,7 @@ class CSkillAction_SKE_SKY_SUN : public CSkillAction {
 public:
   int GetSkillAttackMotion() override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CSkillAction_SKE_SKY_MOON : public CSkillAction {
@@ -46,13 +46,13 @@ public:
   int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CSkillAction_SKE_STAR_LIGHT_KICK : public CSkillAction {
 public:
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CSkillAction_SKE_RISING_SUN : public CSkillAction {
@@ -267,7 +267,7 @@ void CSkillAction_SKE_SKY_SUN::OnSkillEffect(int level, CGameActor* source, CGam
 
 // OFFSET: 0x007980C0
 // FUNCTION: fn_08825
-void CSkillAction_SKE_SKY_SUN::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_SKE_SKY_SUN::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("sky_sun_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -318,7 +318,7 @@ void CSkillAction_SKE_SKY_MOON::OnSkillEffect(int level, CGameActor* source, CGa
 
 // OFFSET: 0x00798770
 // FUNCTION: fn_08829
-void CSkillAction_SKE_SKY_MOON::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_SKE_SKY_MOON::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("sky_moon_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -341,7 +341,7 @@ void CSkillAction_SKE_STAR_LIGHT_KICK::OnSkillEffect(int level, CGameActor* sour
 
 // OFFSET: 0x00798B90
 // FUNCTION: fn_08831
-void CSkillAction_SKE_STAR_LIGHT_KICK::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_SKE_STAR_LIGHT_KICK::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("star_light_kick_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);

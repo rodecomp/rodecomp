@@ -2108,7 +2108,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       }
     }
     case MM_REQ_JOIN_GUILD: {
-      CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(argument1));
+      CGameActor* actor = this->scene->GetGameActorByAID(argument1);
       if (actor == nullptr || actor->hasSp != 0) {
         return 0;
       }
@@ -2681,7 +2681,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         if (static_cast<std::uint32_t>(argument2) == g_session.petGid) {
           return 0;
         }
-        const CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(argument2));
+        const CGameActor* actor = this->scene->GetGameActorByAID(argument2);
         if (actor != nullptr && actor->objectType == PC_TYPE) {
           return 0;
         }
@@ -3363,8 +3363,8 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       return 0;
     }
     case MM_HOMUN_WAIT: {
-      CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(
-          g_session.m_homunAid));
+      CGameActor* actor = this->scene->GetGameActorByAID(
+          g_session.m_homunAid);
       if (actor != nullptr && actor->HasActiveHomunculusAI()) {
         AiMessage message;
         message.type = 9;
@@ -3753,7 +3753,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
           }
           return 0;
         case MENUID_HOMUN_FOLLOW: {
-          auto* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(g_session.m_homunAid));
+          auto* actor = this->scene->GetGameActorByAID(g_session.m_homunAid);
           if (actor && actor->HasActiveHomunculusAI()) {
             AiMessage value;
             value.type = 9;
@@ -3768,7 +3768,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
           }
           return 0;
         case MENUID_MER_FOLLOW: {
-          auto* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(g_session.m_mercenaryAid));
+          auto* actor = this->scene->GetGameActorByAID(g_session.m_mercenaryAid);
           if (actor && actor->merAI && actor->merAI->state) {
             AiMessage value;
             value.type = 9;
@@ -5028,7 +5028,7 @@ bool CGameMode::RecordReplayMessage(int message, int value, int first, int secon
 // FUNCTION: fn_21364
 void CGameMode::UpdateReplayActionSpeeds() {
   this->scene->player->SetActionSpeed(Replay::Instance().AnimationScale());
-  for (CRenderObject* actor : this->scene->actors) {
+  for (CGameActor* actor : this->scene->actors) {
     const float speed = Replay::Instance().AnimationScale();
     actor->SetActionSpeed(speed);
   }
@@ -5690,7 +5690,7 @@ void CGameMode::TargetActorByAid(int aid) {
     CWorld* scene = this->scene;
     if (scene->isPKZone == 0 && scene->isEventPVPMode == 0) {
       if (scene->isSiegeMode != 0) {
-        CGameActor* actor = static_cast<CGameActor*>(scene->GetGameActorByAID(aid));
+        CGameActor* actor = scene->GetGameActorByAID(aid);
         if (actor != nullptr && !g_session.IsLocalPlayerAid(actor->GetGdid())) {
           GuildInfo* guildInfo = &g_guildInfo;
           if (!guildInfo->HasRelatedGuild(actor->GetGdid())) {
@@ -5751,8 +5751,7 @@ std::vector<unsigned char> CGameMode::WriteReplaySkillState() {
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
-  for (CRenderObject* object : this->scene->skills) {
-    CSkill* skill = static_cast<CSkill*>(object);
+  for (CSkill* skill : this->scene->skills) {
     SkillEntryPacket packet;
     packet.packetType = ID_ZC_SKILL_ENTRY;
     packet.aid = skill->skillAid;
@@ -5874,8 +5873,7 @@ std::vector<unsigned char> CGameMode::SaveNameCardState() {
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
-  for (CRenderObject* object : this->scene->actors) {
-    CGameActor* actor = static_cast<CGameActor*>(object);
+  for (CGameActor* actor : this->scene->actors) {
     if (this->AppendGuildEmblem(buffer, names, actor->GetGdid(), g_guildMgr->GetEmblemVersion(actor->GetGdid()))) {
       const std::vector<unsigned char> chunk = MakeDataChunk(13002, buffer);
       data.insert(data.end(), chunk.begin(), chunk.end());
@@ -5946,24 +5944,24 @@ std::vector<unsigned char> CGameMode::SaveActorStates() {
   }
 
   std::vector<char> scratch;
-  for (std::list<CRenderObject*>::iterator it = this->scene->actors.begin(); it != this->scene->actors.end(); ++it) {
-    if (static_cast<CGameActor*>(*it)->storedActorEntry == 0) {
-      if (static_cast<CGameActor*>(*it)->render.state == 1) {
-        const std::vector<unsigned char> chunk = MakeDataChunk(0xD6, this->BuildActorEntryPacket(static_cast<CGameActor*>(*it), 0x9FD));
+  for (std::list<CGameActor*>::iterator it = this->scene->actors.begin(); it != this->scene->actors.end(); ++it) {
+    if ((*it)->storedActorEntry == 0) {
+      if ((*it)->render.state == 1) {
+        const std::vector<unsigned char> chunk = MakeDataChunk(0xD6, this->BuildActorEntryPacket(*it, 0x9FD));
         data.insert(data.end(), chunk.begin(), chunk.end());
       } else {
-        const std::vector<unsigned char> chunk = MakeDataChunk(0xD9, this->BuildActorEntryPacket(static_cast<CGameActor*>(*it), 0x9FF));
+        const std::vector<unsigned char> chunk = MakeDataChunk(0xD9, this->BuildActorEntryPacket(*it, 0x9FF));
         data.insert(data.end(), chunk.begin(), chunk.end());
       }
     }
 
-    UIChatRoomTitle* room = static_cast<UIChatRoomTitle*>(static_cast<CGameActor*>(*it)->actorWindows[1]);
+    UIChatRoomTitle* room = static_cast<UIChatRoomTitle*>((*it)->actorWindows[1]);
     if (room != nullptr) {
       scratch.resize(sizeof(ChatRoomEntryPacket), 0);
       auto* packet = reinterpret_cast<ChatRoomEntryPacket*>(scratch.data());
       packet->type = 0xD7;
       packet->packetLength = static_cast<std::uint16_t>(room->title.size() + sizeof(ChatRoomEntryPacket));
-      packet->aid = static_cast<CGameActor*>(*it)->render.accountId;
+      packet->aid = (*it)->render.accountId;
       packet->roomId = room->roomId;
       packet->maxCount = static_cast<std::uint16_t>(room->memberLimit);
       packet->curCount = static_cast<std::uint16_t>(room->memberCount);
@@ -5974,7 +5972,7 @@ std::vector<unsigned char> CGameMode::SaveActorStates() {
       data.insert(data.end(), chunk.begin(), chunk.end());
     }
 
-    CGameActor* actor = static_cast<CGameActor*>(*it);
+    CGameActor* actor = *it;
     if (actor->storedActorEntry == 1) {
       CPc* pc = static_cast<CPc*>(actor);
       std::vector<char> record;
@@ -6005,42 +6003,42 @@ std::vector<unsigned char> CGameMode::SaveActorStates() {
       data.insert(data.end(), chunk.begin(), chunk.end());
     }
 
-    UIMerchantShopTitle* shop = static_cast<UIMerchantShopTitle*>(static_cast<CGameActor*>(*it)->actorWindows[2]);
+    UIMerchantShopTitle* shop = static_cast<UIMerchantShopTitle*>((*it)->actorWindows[2]);
     if (shop != nullptr) {
       scratch.resize(sizeof(ShopEntryPacket), 0);
       auto* packet = reinterpret_cast<ShopEntryPacket*>(scratch.data());
       packet->packetType = ID_ZC_STORE_ENTRY;
-      packet->aid = static_cast<CGameActor*>(*it)->render.accountId;
+      packet->aid = (*it)->render.accountId;
       std::memcpy(packet->name, shop->label->tooltip.c_str(), sizeof(packet->name));
 
       const std::vector<unsigned char> chunk = MakeDataChunk(0xCA, scratch);
       data.insert(data.end(), chunk.begin(), chunk.end());
     }
 
-    if (static_cast<CGameActor*>(*it)->actorWindows[3] != 0) {
+    if ((*it)->actorWindows[3] != 0) {
       scratch.resize(sizeof(ProgressPacket), 0);
       auto* packet = reinterpret_cast<ProgressPacket*>(scratch.data());
       packet->color = 0;
       packet->packetType = ID_ZC_PROGRESS;
-      packet->seconds = (static_cast<CGameActor*>(*it)->skillRechargeEndTick - static_cast<CGameActor*>(*it)->skillRechargeStartTick) / 1000;
+      packet->seconds = ((*it)->skillRechargeEndTick - (*it)->skillRechargeStartTick) / 1000;
 
       const std::vector<unsigned char> chunk = MakeDataChunk(0xCB, scratch);
       data.insert(data.end(), chunk.begin(), chunk.end());
     }
 
-    UIMerchantShopTitle* buyingShop = static_cast<UIMerchantShopTitle*>(static_cast<CGameActor*>(*it)->actorWindows[4]);
+    UIMerchantShopTitle* buyingShop = static_cast<UIMerchantShopTitle*>((*it)->actorWindows[4]);
     if (buyingShop != nullptr) {
       scratch.resize(sizeof(ShopEntryPacket), 0);
       auto* packet = reinterpret_cast<ShopEntryPacket*>(scratch.data());
       packet->packetType = ID_ZC_BUYING_STORE_ENTRY;
-      packet->aid = static_cast<CGameActor*>(*it)->render.accountId;
+      packet->aid = (*it)->render.accountId;
       std::memcpy(packet->name, buyingShop->label->tooltip.c_str(), sizeof(packet->name));
 
       const std::vector<unsigned char> chunk = MakeDataChunk(0xCC, scratch);
       data.insert(data.end(), chunk.begin(), chunk.end());
     }
 
-    const int count = static_cast<CGameActor*>(*it)->GetMadogearType();
+    const int count = (*it)->GetMadogearType();
     if (count > 0) {
       GameModeStoredRecord0191 record;
       record.remaining = 9999;
@@ -6048,7 +6046,7 @@ std::vector<unsigned char> CGameMode::SaveActorStates() {
       record.count = count;
       record.value2 = 0;
       record.total = 9999;
-      record.aid = static_cast<CGameActor*>(*it)->render.accountId;
+      record.aid = (*it)->render.accountId;
       record.statusType = 0x47D;
       record.value3 = 0;
 
@@ -8166,7 +8164,7 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
   if (g_session.homunAlive != 0) {
     if (g_mouse.buttons[1] == 1 && HIBYTE(GetAsyncKeyState(VK_MENU))) {
       if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
-        CGameActor* homun = static_cast<CGameActor*>(this->scene->GetGameActorByAID(homunAid));
+        CGameActor* homun = this->scene->GetGameActorByAID(homunAid);
         if (homun && homun->HasActiveHomunculusAI()) {
           AiMessage message = {};
           message.type = 3;
@@ -8174,7 +8172,7 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
           homun->SetResMsg2AI(&message, 0);
         }
       } else if (g_session.attackHomunEnemy != 0 && g_session.homunEnemyGid == actor->render.accountId) {
-        CGameActor* homun = static_cast<CGameActor*>(this->scene->GetGameActorByAID(homunAid));
+        CGameActor* homun = this->scene->GetGameActorByAID(homunAid);
         if (homun && homun->HasActiveHomunculusAI()) {
           AiMessage message = {};
           message.type = 3;
@@ -8194,7 +8192,7 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
     }
 
     if (g_session.homunAlive != 0 && g_mouse.buttons[0] == 1 && g_session.IsHomunculusSkill(this->skillId)) {
-      CGameActor* homun = static_cast<CGameActor*>(this->scene->GetGameActorByAID(homunAid));
+      CGameActor* homun = this->scene->GetGameActorByAID(homunAid);
       if (homun && homun->HasActiveHomunculusAI()) {
         AiMessage message = {};
         message.type = 7;
@@ -8209,7 +8207,7 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
 
   if (g_session.mercenaryAlive != 0 && g_mouse.buttons[0] == 1 && HIBYTE(GetAsyncKeyState(VK_MENU))) {
     if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
-      CGameActor* mercenary = static_cast<CGameActor*>(this->scene->GetGameActorByAID(mercenaryAid));
+      CGameActor* mercenary = this->scene->GetGameActorByAID(mercenaryAid);
       if (mercenary && mercenary->HasActiveMercenaryAI()) {
         AiMessage message = {};
         message.type = 3;
@@ -8217,7 +8215,7 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
         mercenary->SetResMsg2AI(&message, 1);
       }
     } else if (g_session.attackMercenaryEnemy != 0 && g_session.mercenaryEnemyGid == actor->render.accountId) {
-      CGameActor* mercenary = static_cast<CGameActor*>(this->scene->GetGameActorByAID(mercenaryAid));
+      CGameActor* mercenary = this->scene->GetGameActorByAID(mercenaryAid);
       if (mercenary && mercenary->HasActiveMercenaryAI()) {
         AiMessage message = {};
         message.type = 3;
@@ -8239,7 +8237,7 @@ void CGameMode::ProcessActorClick(int& handled, ActorPickInfo* pick, CGameActor*
   int& targetAid = this->lastMonGid;
   int& forced = this->forcedAttack;
   if (attack != 0 && g_session.mercenaryAlive != 0 && g_mouse.buttons[0] == 1 && g_session.IsMercenarySkill(this->skillId)) {
-    CGameActor* mercenary = static_cast<CGameActor*>(this->scene->GetGameActorByAID(mercenaryAid));
+    CGameActor* mercenary = this->scene->GetGameActorByAID(mercenaryAid);
     if (mercenary && mercenary->HasActiveMercenaryAI()) {
       AiMessage message = {};
       message.type = 7;
@@ -8405,7 +8403,7 @@ int CGameMode::ProcessMousePick(int result, ActorPickInfo* pick) {
         }
       }
 
-      CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(clickTarget));
+      CGameActor* actor = this->scene->GetGameActorByAID(clickTarget);
       if (!actor) {
         clickTarget = 0;
         return result;
@@ -8415,7 +8413,7 @@ int CGameMode::ProcessMousePick(int result, ActorPickInfo* pick) {
     }
 
     if (pickTarget != 0) {
-      CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(pickTarget));
+      CGameActor* actor = this->scene->GetGameActorByAID(pickTarget);
       if (!actor) {
         pickTarget = 0;
         return result;
@@ -8514,7 +8512,7 @@ int CGameMode::ProcessGroundClick(int result) {
         return result;
       }
 
-      CGameActor* homun = static_cast<CGameActor*>(this->scene->GetGameActorByAID(homunAid));
+      CGameActor* homun = this->scene->GetGameActorByAID(homunAid);
       if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
         if (homun && homun->HasActiveHomunculusAI()) {
           AiMessage message = {};
@@ -8553,7 +8551,7 @@ int CGameMode::ProcessGroundClick(int result) {
         return result;
       }
 
-      CGameActor* mercenary = static_cast<CGameActor*>(this->scene->GetGameActorByAID(mercenaryAid));
+      CGameActor* mercenary = this->scene->GetGameActorByAID(mercenaryAid);
       if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
         if (mercenary && mercenary->HasActiveMercenaryAI()) {
           AiMessage message = {};
@@ -8583,7 +8581,7 @@ int CGameMode::ProcessGroundClick(int result) {
     if (g_session.mercenaryAlive != 0 && g_mouse.buttons[0] == 1) {
       g_session.ResetMercenaryStats();
       if (this->skillUseType == 1 && g_session.IsMercenarySkill(this->skillId)) {
-        CGameActor* mercenary = static_cast<CGameActor*>(this->scene->GetGameActorByAID(mercenaryAid));
+        CGameActor* mercenary = this->scene->GetGameActorByAID(mercenaryAid);
         if (mercenary && mercenary->HasActiveMercenaryAI()) {
           const std::uint32_t state = mercenary->render.state;
           if (state == 1 || state == 0 || state == 4) {
@@ -8605,7 +8603,7 @@ int CGameMode::ProcessGroundClick(int result) {
   if (this->skillUseType == 1 && g_mouse.buttons[0] == 1 && (result == 0 || result == 2)) {
     result = 1;
     if (g_session.IsHomunculusSkill(this->skillId) == 1 && g_session.homunAlive == 1) {
-      CGameActor* homun = static_cast<CGameActor*>(this->scene->GetGameActorByAID(homunAid));
+      CGameActor* homun = this->scene->GetGameActorByAID(homunAid);
       if (homun && homun->HasActiveHomunculusAI() == true) {
         const std::uint32_t state = homun->render.state;
         if (state == 0 || state == 1 || state == 4) {
@@ -9081,7 +9079,7 @@ void CGameMode::UpdateHoverNameBalloon() {
       return;
     }
 
-    actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(this->lastLockOnMonGid));
+    actor = this->scene->GetGameActorByAID(this->lastLockOnMonGid);
     if (!actor) {
       return;
     }
@@ -10147,7 +10145,7 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
         case NPC_ELEMENTAL_TYPE:
         case NPC_ABR_TYPE:
         case NPC_BIONIC_TYPE: {
-          CGameActor* summoner = static_cast<CGameActor*>(scene->GetGameActorByAID(actor->emblemVersion));
+          CGameActor* summoner = scene->GetGameActorByAID(actor->emblemVersion);
           if (summoner) {
             if (!g_session.IsLocalPlayerAid(summoner->GetGdid())) {
               friendly = guildInfo->HasRelatedGuild(summoner->GetGdid());
@@ -10204,7 +10202,7 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
   const std::uint32_t& mercenaryAid = g_session.m_mercenaryAid;
   if ((attack || this->scene->isSiegeMode != 0) && actor->render.state != 3 && !skillMode && g_session.homunAlive != 0 && g_mouse.buttons[1] == 1 && HIBYTE(GetAsyncKeyState(VK_MENU))) {
     if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
-      CGameActor* homun = static_cast<CGameActor*>(this->scene->GetGameActorByAID(homunAid));
+      CGameActor* homun = this->scene->GetGameActorByAID(homunAid);
       if (homun && homun->HasActiveHomunculusAI()) {
         AiMessage message = {};
         message.type = 3;
@@ -10212,7 +10210,7 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
         homun->SetResMsg2AI(&message, 0);
       }
     } else if (g_session.attackHomunEnemy != 0 && g_session.homunEnemyGid == actor->render.accountId) {
-      CGameActor* homun = static_cast<CGameActor*>(this->scene->GetGameActorByAID(homunAid));
+      CGameActor* homun = this->scene->GetGameActorByAID(homunAid);
       if (homun && homun->HasActiveHomunculusAI()) {
         AiMessage message = {};
         message.type = 3;
@@ -10232,7 +10230,7 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
   }
 
   if (g_session.homunAlive != 0 && g_mouse.buttons[0] == 1 && g_session.IsHomunculusSkill(this->skillId)) {
-    CGameActor* homun = static_cast<CGameActor*>(this->scene->GetGameActorByAID(homunAid));
+    CGameActor* homun = this->scene->GetGameActorByAID(homunAid);
     if (homun && homun->HasActiveHomunculusAI()) {
       AiMessage message = {};
       message.type = 7;
@@ -10246,7 +10244,7 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
 
   if ((attack || this->scene->isSiegeMode != 0) && actor->render.state != 3 && !skillMode && g_session.mercenaryAlive != 0 && g_mouse.buttons[0] == 1 && HIBYTE(GetAsyncKeyState(VK_MENU))) {
     if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
-      CGameActor* mercenary = static_cast<CGameActor*>(this->scene->GetGameActorByAID(mercenaryAid));
+      CGameActor* mercenary = this->scene->GetGameActorByAID(mercenaryAid);
       if (mercenary && mercenary->HasActiveMercenaryAI()) {
         AiMessage message = {};
         message.type = 3;
@@ -10254,7 +10252,7 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
         mercenary->SetResMsg2AI(&message, 1);
       }
     } else if (g_session.attackMercenaryEnemy != 0 && g_session.mercenaryEnemyGid == actor->render.accountId) {
-      CGameActor* mercenary = static_cast<CGameActor*>(this->scene->GetGameActorByAID(mercenaryAid));
+      CGameActor* mercenary = this->scene->GetGameActorByAID(mercenaryAid);
       if (mercenary && mercenary->HasActiveMercenaryAI()) {
         AiMessage message = {};
         message.type = 3;
@@ -10274,7 +10272,7 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
   }
 
   if (attack != 0 && g_session.mercenaryAlive != 0 && g_mouse.buttons[0] == 1 && g_session.IsMercenarySkill(this->skillId)) {
-    CGameActor* mercenary = static_cast<CGameActor*>(this->scene->GetGameActorByAID(mercenaryAid));
+    CGameActor* mercenary = this->scene->GetGameActorByAID(mercenaryAid);
     if (mercenary && mercenary->HasActiveMercenaryAI()) {
       AiMessage message = {};
       message.type = 7;
@@ -10541,7 +10539,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
           }
 
           CWorld* scene = this->scene;
-          CGameActor* actor = static_cast<CGameActor*>(scene->GetGameActorByAID(pick->accountId));
+          CGameActor* actor = scene->GetGameActorByAID(pick->accountId);
           if (scene->isBattleFieldMode == 0) {
             if (g_session.GetMapProperty07()) {
               if (!g_session.IsPartyMember(pick->accountId, true)) {
@@ -10614,7 +10612,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
             attack = 1;
           }
 
-          CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(pick->accountId));
+          CGameActor* actor = this->scene->GetGameActorByAID(pick->accountId);
           if (g_session.GetMapProperty08() && actor != nullptr && g_session.IsLocalPlayerAid(actor->GetGdid())) {
             attack = 0;
           }
@@ -10736,7 +10734,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
     case 4: {
       result = 0;
       this->SetCursorAction(0);
-      CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(pick->accountId));
+      CGameActor* actor = this->scene->GetGameActorByAID(pick->accountId);
       if (actor != nullptr && actor->render.state != 3) {
         if (g_session.m_aid == static_cast<std::uint32_t>(actor->emblemVersion)) {
           if (actor->objectType == NPC_HO_TYPE && this->skillId == AM_POTIONPITCHER) {
@@ -10748,7 +10746,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
           CWorld* scene = this->scene;
           if (scene->isPKZone == 1 || siegeMode == 1 || scene->isSiegeMode == 1) {
             if (scene->isSiegeMode == 1) {
-              CGameActor* owner = static_cast<CGameActor*>(scene->GetGameActorByAID(actor->emblemVersion));
+              CGameActor* owner = scene->GetGameActorByAID(actor->emblemVersion);
               if (owner == nullptr || g_session.IsLocalPlayerAid(owner->GetGdid()) == 1 || guildInfo->HasRelatedGuild(owner->GetGdid()) == true) {
                 break;
               }
@@ -10783,7 +10781,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
         return result;
       }
 
-      CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(pick->accountId));
+      CGameActor* actor = this->scene->GetGameActorByAID(pick->accountId);
       int column;
       int row;
       this->WorldCell(actor->render.position.x, actor->render.position.z, column, row);
@@ -10822,7 +10820,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
 
       if (g_session.homunAlive && g_mouse.buttons[1] == 1 && HIBYTE(GetAsyncKeyState(VK_MENU))) {
         if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
-          CGameActor* homun = static_cast<CGameActor*>(this->scene->GetGameActorByAID(homunAid));
+          CGameActor* homun = this->scene->GetGameActorByAID(homunAid);
           if (homun != nullptr && homun->HasActiveHomunculusAI()) {
             AiMessage message = {};
             message.type = 3;
@@ -10830,7 +10828,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
             homun->SetResMsg2AI(&message, 0);
           }
         } else if (g_session.attackHomunEnemy != 0 && g_session.homunEnemyGid == pick->accountId) {
-          CGameActor* homun = static_cast<CGameActor*>(this->scene->GetGameActorByAID(homunAid));
+          CGameActor* homun = this->scene->GetGameActorByAID(homunAid);
           if (homun != nullptr && homun->HasActiveHomunculusAI()) {
             AiMessage message = {};
             message.type = 3;
@@ -10850,7 +10848,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
       }
 
       if (g_session.homunAlive && g_mouse.buttons[0] == 1 && g_session.IsHomunculusSkill(this->skillId)) {
-        CGameActor* homun = static_cast<CGameActor*>(this->scene->GetGameActorByAID(homunAid));
+        CGameActor* homun = this->scene->GetGameActorByAID(homunAid);
         if (homun != nullptr && homun->HasActiveHomunculusAI()) {
           AiMessage message;
           message.type = 7;
@@ -10866,7 +10864,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
 
       if (g_session.mercenaryAlive && g_mouse.buttons[0] == 1 && HIBYTE(GetAsyncKeyState(VK_MENU))) {
         if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
-          CGameActor* mercenary = static_cast<CGameActor*>(this->scene->GetGameActorByAID(mercenaryAid));
+          CGameActor* mercenary = this->scene->GetGameActorByAID(mercenaryAid);
           if (mercenary != nullptr && mercenary->HasActiveMercenaryAI()) {
             AiMessage message = {};
             message.type = 3;
@@ -10874,7 +10872,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
             mercenary->SetResMsg2AI(&message, 1);
           }
         } else if (g_session.attackMercenaryEnemy != 0 && g_session.mercenaryEnemyGid == pick->accountId) {
-          CGameActor* mercenary = static_cast<CGameActor*>(this->scene->GetGameActorByAID(mercenaryAid));
+          CGameActor* mercenary = this->scene->GetGameActorByAID(mercenaryAid);
           if (mercenary != nullptr && mercenary->HasActiveMercenaryAI()) {
             AiMessage message = {};
             message.type = 3;
@@ -10894,7 +10892,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
       }
 
       if (attack && g_session.mercenaryAlive && g_mouse.buttons[0] == 1 && g_session.IsMercenarySkill(this->skillId)) {
-        CGameActor* mercenary = static_cast<CGameActor*>(this->scene->GetGameActorByAID(mercenaryAid));
+        CGameActor* mercenary = this->scene->GetGameActorByAID(mercenaryAid);
         if (mercenary != nullptr && mercenary->HasActiveMercenaryAI()) {
           AiMessage message;
           message.type = 7;
@@ -10955,7 +10953,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
       int index = 0;
       CGameActor* companion;
       if (g_session.IsHomunculusSkill(this->skillId) && g_session.homunAlive) {
-        companion = static_cast<CGameActor*>(this->scene->GetGameActorByAID(homunAid));
+        companion = this->scene->GetGameActorByAID(homunAid);
         if (companion != nullptr && companion->HasActiveHomunculusAI()) {
           AiMessage message;
           message.type = 7;
@@ -10968,7 +10966,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
           return result;
         }
       } else if (g_session.IsMercenarySkill(this->skillId) && g_session.mercenaryAlive) {
-        companion = static_cast<CGameActor*>(this->scene->GetGameActorByAID(mercenaryAid));
+        companion = this->scene->GetGameActorByAID(mercenaryAid);
         if (companion != nullptr && companion->HasActiveMercenaryAI()) {
           index = 1;
           AiMessage message;

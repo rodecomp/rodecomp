@@ -36,12 +36,12 @@ namespace {
   }
 
   // INLINED
-  __forceinline std::list<ShortcutCooldownRecord>::iterator FindCooldownRecord(std::list<ShortcutCooldownRecord>& records, const std::uint32_t& id) {
+  __forceinline std::list<ShortcutCooldownRecord>::iterator FindCooldownRecord(std::list<ShortcutCooldownRecord>& records, const int& id) {
     if (!g_session.IsHomunculusSkill(id) && !g_session.IsMercenarySkill(id)) {
       return std::find_if(records.begin(), records.end(), [&](const ShortcutCooldownRecord& entry) { return entry.id == id; });
     }
 
-    const std::uint32_t group = 9999;
+    const int group = 9999;
     return std::find_if(records.begin(), records.end(), [&](const ShortcutCooldownRecord& entry) { return entry.id == group; });
   }
 

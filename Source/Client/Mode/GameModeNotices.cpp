@@ -557,7 +557,7 @@ void CGameMode::ReceiveStatusChangeAck(const unsigned char* data) {
 // OFFSET: 0x00D45E30
 // FUNCTION: fn_21842
 void CGameMode::StopActorMove(std::uint32_t aid, std::int16_t x, std::int16_t y, unsigned char flag) {
-  CRenderObject* actor;
+  CGameActor* actor;
   if (aid == g_session.m_aid) {
     actor = this->scene->player;
   } else {
@@ -2127,7 +2127,7 @@ void CGameMode::ReceiveBuyingStoreResult(const BuyingStoreResultPacket* packet) 
 // OFFSET: 0x00D18BA0
 // FUNCTION: fn_21600
 void CGameMode::SetActorGroupMemberVisible(std::uint32_t aid, int value) {
-  CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(aid));
+  CGameActor* actor = this->scene->GetGameActorByAID(aid);
   if (actor) {
     actor->SetGroupMemberVisible(value);
   }
@@ -4023,7 +4023,7 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       job = actor->GetEffectiveJob(-1);
     }
   } else {
-    CGameActor* gameActor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t*>(packet + 4)));
+    CGameActor* gameActor = this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t*>(packet + 4));
     if (gameActor != nullptr) {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&message);
       gameActor->SendMsg(nullptr, AM_GROUNDSKILL, value, 0, 0, 0, 0, 0);
@@ -4633,9 +4633,9 @@ void CGameMode::ReceiveSpriteChange(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const SpriteChangePacket*>(data);
   CGameActor* actor;
   if (packet->aid != g_session.m_aid) {
-    actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(packet->aid));
+    actor = this->scene->GetGameActorByAID(packet->aid);
     if (!actor) {
-      CRenderObject* skill = this->scene->GetSkillByAID(packet->aid);
+      CSkill* skill = this->scene->GetSkillByAID(packet->aid);
       if (!skill) {
         return;
       }
@@ -4782,9 +4782,9 @@ void CGameMode::ReceiveSpriteChange2(const unsigned char* data) {
       return;
     }
   } else {
-    actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(packet->aid));
+    actor = this->scene->GetGameActorByAID(packet->aid);
     if (!actor) {
-      CRenderObject* skill = this->scene->GetSkillByAID(packet->aid);
+      CSkill* skill = this->scene->GetSkillByAID(packet->aid);
       if (!skill) {
         return;
       }
@@ -5323,21 +5323,6 @@ void CGameMode::ReceiveGradeEnchantBroadcast(const unsigned char* data) {
 }
 
 #pragma pack(push, 1)
-struct RodexMailItem {
-  /* 0000 */ std::uint16_t quantity;
-  /* 0002 */ int itemId;
-  /* 0006 */ unsigned char identified;
-  /* 0007 */ unsigned char damaged;
-  /* 0008 */ std::uint32_t cards[4];
-  /* 0018 */ std::uint32_t expireTime;
-  /* 001C */ unsigned char type;
-  /* 001D */ std::uint16_t bindType;
-  /* 001F */ std::uint16_t wearState;
-  /* 0021 */ ItemSlotOption options[5];
-  /* 003A */ unsigned char refine;
-  /* 003B */ unsigned char grade;
-};
-
 struct RodexReadMailPacket {
   /* 0000 */ std::int16_t id;
   /* 0002 */ std::int16_t length;
@@ -5390,7 +5375,7 @@ void CGameMode::ReceiveRodexReadMail(const unsigned char* data) {
   mail.zeny = packet->zeny;
   mail.isRead = 1;
 
-  auto* mailItems = reinterpret_cast<RodexMailItem*>(mail.attachments.data());
+  RodexMailItem* mailItems = mail.attachments.items;
   const auto* packetItems = reinterpret_cast<const RodexMailItem*>(packet->text + packet->textLength);
   for (long long i = 0; i < packet->itemCount; ++i) {
     RodexMailItem& record = mailItems[i];
@@ -6909,7 +6894,7 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
       if (packet->aid == g_session.m_aid) {
         actor = this->scene->player;
       } else {
-        actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(packet->aid));
+        actor = this->scene->GetGameActorByAID(packet->aid);
       }
       if (!actor) {
         break;

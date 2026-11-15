@@ -47,7 +47,7 @@ public:
   int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CSkillAction_SS_KINRYUUHOU : public CSkillAction {
@@ -56,7 +56,7 @@ public:
   int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CSkillAction_SS_ANTENPOU : public CSkillAction {
@@ -153,7 +153,7 @@ void CSkillAction_SS_RAIDENPOU::OnSkillEffect(int level, CGameActor* source, CGa
 
 // OFFSET: 0x00795860
 // FUNCTION: fn_08790
-void CSkillAction_SS_RAIDENPOU::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_SS_RAIDENPOU::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_raidenpou_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -194,7 +194,7 @@ void CSkillAction_SS_KINRYUUHOU::OnSkillEffect(int level, CGameActor* source, CG
 
 // OFFSET: 0x00795BD0
 // FUNCTION: fn_08795
-void CSkillAction_SS_KINRYUUHOU::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_SS_KINRYUUHOU::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("kinryuuhou_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);

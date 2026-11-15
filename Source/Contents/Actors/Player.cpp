@@ -2895,7 +2895,7 @@ void CPlayer::UpdatePendingAction() {
   switch (this->proceedType) {
   case PT_ATTACK:
   case PT_ATTACK_2: {
-    CGameActor* target = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(this->proceedTargetGid));
+    CGameActor* target = mode->scene->GetGameActorByAID(this->proceedTargetGid);
     if (target == nullptr) {
       break;
     }
@@ -2975,7 +2975,7 @@ void CPlayer::UpdatePendingAction() {
     if (this->proceedTargetGid == g_session.m_aid) {
       target = this;
     } else {
-      target = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(this->proceedTargetGid));
+      target = mode->scene->GetGameActorByAID(this->proceedTargetGid);
     }
     if (target == nullptr) {
       break;
@@ -3088,7 +3088,7 @@ void CPlayer::UpdatePendingAction() {
     return;
   }
   case PT_TOUCH_SKILL: {
-    CGameActor* skill = static_cast<CGameActor*>(mode->scene->GetSkillByAID(this->proceedTargetGid));
+    CGameActor* skill = mode->scene->GetSkillByAID(this->proceedTargetGid);
     if (skill == nullptr) {
       break;
     }

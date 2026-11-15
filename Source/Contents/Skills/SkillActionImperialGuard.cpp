@@ -58,7 +58,7 @@ public:
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
   void OnSkillHit(CGameActor* source, CGameActor* target, CRenderObject* targetSkill) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CSkillAction_IG_OVERSLASH : public CSkillAction {
@@ -66,7 +66,7 @@ public:
   int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CSkillAction_IG_REBOUND_SHIELD : public CSkillAction {
@@ -98,7 +98,7 @@ class CSkillAction_IG_IMPERIAL_CROSS : public CSkillAction {
 public:
   int GetSkillAttackMotion() override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CSkillAction_IG_RADIANT_SPEAR : public CSkillAction {
@@ -106,14 +106,14 @@ public:
   int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CSkillAction_IG_IMPERIAL_PRESSURE : public CSkillAction {
 public:
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CSkillAction_IG_SHIELD_SHOOTING : public CSkillAction {
@@ -121,7 +121,7 @@ public:
   int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CSkillAction_IG_ATTACK_STANCE : public CSkillAction {
@@ -332,7 +332,7 @@ void CSkillAction_IG_JUDGEMENT_CROSS::OnSkillHit(CGameActor* source, CGameActor*
 
 // OFFSET: 0x00789260
 // FUNCTION: fn_08607
-void CSkillAction_IG_JUDGEMENT_CROSS::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_IG_JUDGEMENT_CROSS::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_judgement_cross_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -373,7 +373,7 @@ void CSkillAction_IG_OVERSLASH::OnSkillEffect(int level, CGameActor* source, CGa
 
 // OFFSET: 0x00789800
 // FUNCTION: fn_08611
-void CSkillAction_IG_OVERSLASH::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_IG_OVERSLASH::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_overslash_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -486,7 +486,7 @@ void CSkillAction_IG_IMPERIAL_CROSS::OnSkillEffect(int level, CGameActor* source
 
 // OFFSET: 0x0078A6A0
 // FUNCTION: fn_08623
-void CSkillAction_IG_IMPERIAL_CROSS::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_IG_IMPERIAL_CROSS::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("imperial_cross_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -536,7 +536,7 @@ void CSkillAction_IG_RADIANT_SPEAR::OnSkillEffect(int level, CGameActor* source,
 
 // OFFSET: 0x0078AC80
 // FUNCTION: fn_08627
-void CSkillAction_IG_RADIANT_SPEAR::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_IG_RADIANT_SPEAR::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("radiant_spear_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -571,7 +571,7 @@ void CSkillAction_IG_IMPERIAL_PRESSURE::OnSkillEffect(int level, CGameActor* sou
 
 // OFFSET: 0x0078B210
 // FUNCTION: fn_08630
-void CSkillAction_IG_IMPERIAL_PRESSURE::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_IG_IMPERIAL_PRESSURE::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("imperial_pressure_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -612,7 +612,7 @@ void CSkillAction_IG_SHIELD_SHOOTING::OnSkillEffect(int level, CGameActor* sourc
 
 // OFFSET: 0x0078B5E0
 // FUNCTION: fn_08634
-void CSkillAction_IG_SHIELD_SHOOTING::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_IG_SHIELD_SHOOTING::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("shield_shooting_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);

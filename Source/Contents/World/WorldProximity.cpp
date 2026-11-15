@@ -96,14 +96,13 @@ __declspec(noinline) bool CWorld::FindActorInCell(const float* position, std::fu
 // OFFSET: 0x00AC8BA0
 // FUNCTION: fn_17679
 bool CWorld::IsGuildMaster(std::uint32_t aid) {
-  for (CRenderObject* actor : this->actors) {
+  for (CGameActor* actor : this->actors) {
     if (actor->render.accountId == aid) {
-      CGameActor* gameActor = static_cast<CGameActor*>(actor);
-      if (!gameActor) {
+      if (!actor) {
         return false;
       }
 
-      return gameActor->GetPkState() == static_cast<int>(g_guildInfo.masterCharacterId);
+      return actor->GetPkState() == static_cast<int>(g_guildInfo.masterCharacterId);
     }
   }
 
@@ -225,14 +224,14 @@ bool WorldProximityRejectB() {
 // FUNCTION: fn_17719
 bool WorldProximityGuildMasterCallback::Invoke(const std::uint32_t& aidRef) {
   const std::uint32_t aid = aidRef;
-  auto it = std::find_if(this->world->actors.begin(), this->world->actors.end(), [aid](CRenderObject* actor) {
+  auto it = std::find_if(this->world->actors.begin(), this->world->actors.end(), [aid](CGameActor* actor) {
     return actor->render.accountId == aid;
   });
   if (it == this->world->actors.end()) {
     return false;
   }
 
-  CGameActor* gameActor = static_cast<CGameActor*>(*it);
+  CGameActor* gameActor = *it;
   if (!gameActor) {
     return false;
   }

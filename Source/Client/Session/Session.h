@@ -344,7 +344,8 @@ public:
   /* 1600 */ int m_monsterTalkId;
   /* 1604 */ std::uint32_t m_aid;
   /* 1608 */ std::uint32_t m_gid;
-  /* 160C */ char m_navigationPlayerMap[0x1C];
+  /* 160C */ char m_navigationPlayerMap[0x14];
+  /* 1620 */ float unknown_1620[2];
   /* 1628 */ int m_job;
   /* 162C */ unsigned char padding_162C[4];
   /* 1630 */ std::int64_t m_exp;

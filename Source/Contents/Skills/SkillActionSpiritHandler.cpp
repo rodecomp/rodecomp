@@ -125,14 +125,14 @@ public:
   int GetSkillAttackMotion() override;
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CSkillAction_SH_HYUN_ROK_SPIRIT_POWER : public CSkillAction {
 public:
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 // OFFSET: 0x0079EB70
@@ -536,12 +536,13 @@ void CSkillAction_SH_CHUL_HO_BATTERING::OnSkillEffect(int level, CGameActor* sou
 
 // OFFSET: 0x007A1630
 // FUNCTION: fn_08971
-void CSkillAction_SH_CHUL_HO_BATTERING::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_SH_CHUL_HO_BATTERING::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
-    if (CEffect* effect = g_effectMgr->Spawn(
+    EffectLists* effects = g_effectMgr;
+    if (CEffect* effect = effects->Spawn(
           target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("chul_ho_battering_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0
         )) {
-      effect->SetFlipX(static_cast<bool>(reinterpret_cast<std::uintptr_t>(hitIndex) & 1));
+      effect->SetFlipX(static_cast<bool>(hitIndex & 1));
     }
   }
 }
@@ -578,7 +579,7 @@ void CSkillAction_SH_HYUN_ROK_SPIRIT_POWER::OnSkillEffect(int level, CGameActor*
 
 // OFFSET: 0x007A1D10
 // FUNCTION: fn_08974
-void CSkillAction_SH_HYUN_ROK_SPIRIT_POWER::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_SH_HYUN_ROK_SPIRIT_POWER::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("hyun_rok_spirit_power_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);

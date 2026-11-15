@@ -899,7 +899,7 @@ void CGameMode::ReceiveDevotionList(const unsigned char* packet) {
   if (list->aid == g_session.m_aid) {
     actor = this->scene->player;
   } else {
-    actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(list->aid));
+    actor = this->scene->GetGameActorByAID(list->aid);
   }
 
   if (actor != nullptr) {
@@ -2844,7 +2844,7 @@ __declspec(noinline) void CGameMode::Zc_Start_Couple(const unsigned char*) {
 // OFFSET: 0x00D591A0
 // FUNCTION: fn_21959
 void CGameMode::ApplyActorStatusEffects(std::uint32_t aid, int state, int flag, int options) {
-  CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(aid));
+  CGameActor* actor = this->scene->GetGameActorByAID(aid);
   if (!actor) {
     return;
   }
@@ -3426,7 +3426,7 @@ __declspec(noinline) void CGameMode::ReceiveActorStateValue(std::uint32_t aid, i
   if (aid == g_session.m_aid) {
     actor = this->scene->player;
   } else {
-    actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(aid));
+    actor = this->scene->GetGameActorByAID(aid);
   }
   if (actor == nullptr) {
     return;
@@ -3714,7 +3714,7 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
   if (targetAid == g_session.m_aid) {
     target = this->scene->player;
   } else {
-    target = static_cast<CGameActor*>(this->scene->GetGameActorByAID(targetAid));
+    target = this->scene->GetGameActorByAID(targetAid);
   }
 
   if (sourceAid == g_session.m_aid) {
@@ -3723,7 +3723,7 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
     source = this->scene->player;
     job = source->GetEffectiveJob(-1);
   } else {
-    gameActor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(sourceAid));
+    gameActor = this->scene->GetGameActorByAID(sourceAid);
     if (gameActor != nullptr) {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&message);
       gameActor->SendMsg(nullptr, AM_SKILL, value, 0, 0, 0, 0, 0);
@@ -4230,7 +4230,7 @@ void CGameMode::ReceiveActorSkillAction(const unsigned char* packet) {
     actor = this->scene->player;
     job = actor->GetEffectiveJob(-1);
   } else {
-    gameActor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(p->aid));
+    gameActor = this->scene->GetGameActorByAID(p->aid);
     if (gameActor != nullptr) {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&message);
       gameActor->SendMsg(nullptr, AM_SKILL, value, 0, 0, 0, 0, 0);
@@ -4305,7 +4305,7 @@ void CGameMode::ReceiveActorSkillMessage(const unsigned char* packet) {
     actor->SendMsg(nullptr, AM_SKILL, value, 0, 0, 0, 0, 0);
     job = actor->GetEffectiveJob(-1);
   } else {
-    actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(p->aid));
+    actor = this->scene->GetGameActorByAID(p->aid);
     if (actor != nullptr) {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&message);
       actor->SendMsg(nullptr, AM_SKILL, value, 0, 0, 0, 0, 0);
@@ -4370,7 +4370,7 @@ void CGameMode::ReceiveDispel(const unsigned char* packet) {
     return;
   }
 
-  CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(dispel->aid));
+  CGameActor* actor = this->scene->GetGameActorByAID(dispel->aid);
   if (actor == nullptr) {
     return;
   }
@@ -4549,7 +4549,7 @@ void CGameMode::ReceiveActorStatusValue(std::uint32_t aid, int status, std::int6
   if (aid == g_session.m_aid) {
     actor = this->scene->player;
   } else {
-    actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(aid));
+    actor = this->scene->GetGameActorByAID(aid);
   }
   if (actor == nullptr) {
     return;
@@ -4722,7 +4722,7 @@ void CGameMode::Zc_Spirits2(const unsigned char* data) {
   if (packet->accountId == g_session.m_aid) {
     actor = this->scene->player;
   } else {
-    actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(packet->accountId));
+    actor = this->scene->GetGameActorByAID(packet->accountId);
   }
 
   if (!actor) {
@@ -6681,7 +6681,7 @@ void CGameMode::ApplyStatusChange(
       if (aid == g_session.m_aid) {
         actor = this->scene->player;
       } else {
-        actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(aid));
+        actor = this->scene->GetGameActorByAID(aid);
       }
       if (!actor) {
         break;
@@ -7858,7 +7858,7 @@ namespace {
 void CGameMode::ReceiveHomunculusChange(const unsigned char* packet) {
   const auto* p = reinterpret_cast<const PACKET_ZC_CHANGESTATE_MER*>(packet);
   char text[256];
-  CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(p->gid));
+  CGameActor* actor = this->scene->GetGameActorByAID(p->gid);
   switch (p->state) {
   case HO_PRE_INIT:
     g_session.m_homunAid = p->gid;
@@ -10440,7 +10440,7 @@ namespace {
 // FUNCTION: fn_21678
 void CGameMode::ReceivePetChangeState(const unsigned char* data) {
   const PetChangeStatePacket* packet = reinterpret_cast<const PetChangeStatePacket*>(data);
-  CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(packet->aid));
+  CGameActor* actor = this->scene->GetGameActorByAID(packet->aid);
   switch (packet->type) {
   case CHANGESTATEPET_INIT:
     g_session.petGid = packet->aid;
@@ -11036,7 +11036,7 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
 void CGameMode::ReceiveChatRoomMemberList(const unsigned char* data) {
   const ChatRoomMemberListPacket* packet = reinterpret_cast<const ChatRoomMemberListPacket*>(data);
   this->isWaitingEnterRoom = 0;
-  CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(this->chatRoomActorIds[packet->roomId]));
+  CGameActor* actor = this->scene->GetGameActorByAID(this->chatRoomActorIds[packet->roomId]);
 
   ChatRoomTitleInfo info;
   bool joined = false;
@@ -11348,7 +11348,7 @@ void CGameMode::ReceiveActorChat(const unsigned char* data) {
   std::vector<char> text(length + 1, 0);
   memcpy_s(text.data(), text.size(), p + 1, length);
   const std::uint32_t& aid = p->gid;
-  CGameActor* speaker = static_cast<CGameActor*>(this->scene->GetGameActorByAID(aid));
+  CGameActor* speaker = this->scene->GetGameActorByAID(aid);
   if (speaker && !speaker->objectType && g_forbiddenWords.Contains(text.data()) == true) {
     std::string masked("");
     g_forbiddenWords.Mask(text.data(), &masked);
@@ -11471,7 +11471,7 @@ void CGameMode::ReceiveEffectNumber(const unsigned char* data) {
     this->scene->player->pkTotal = packet->value;
     this->scene->player->pkRank = packet->count;
   } else {
-    actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(packet->aid));
+    actor = this->scene->GetGameActorByAID(packet->aid);
     const std::uint32_t state = actor->GetStateFlags();
     if (StateFlag02(state) || StateFlag01(state) || StateFlag06(state)) {
       return;
@@ -11726,7 +11726,7 @@ void CGameMode::ReceiveActorDisappear(const unsigned char* data) {
     }
     break;
   case CLR_DEAD: {
-    if (CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(packet->aid))) {
+    if (CGameActor* actor = this->scene->GetGameActorByAID(packet->aid)) {
       CPlayer* player = this->scene->player;
       if (packet->aid == static_cast<std::uint32_t>(player->proceedTargetGid)) {
         player->proceedTargetGid = 0;
@@ -11807,7 +11807,7 @@ void CGameMode::ReceiveActorDisappear(const unsigned char* data) {
     }
     break;
   case CLR_TELEPORT:
-    if (CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(packet->aid))) {
+    if (CGameActor* actor = this->scene->GetGameActorByAID(packet->aid)) {
       if (!StateFlag06(actor->GetStateFlags())) {
         this->LaunchDummyEffect(&actor->render.position, 0x130, 300, 0);
       }
@@ -13330,7 +13330,7 @@ void CGameMode::SpawnStandingPc(
     this->nameCard.SetName(aid, name);
   }
 
-  CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(aid));
+  CGameActor* actor = this->scene->GetGameActorByAID(aid);
   if (actor) {
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
     actor->SendMsg(nullptr, AM_STANDENTRY2, value, 0, 0, 0, 0, 0);
@@ -13372,7 +13372,7 @@ void CGameMode::SpawnStandingPc2(
     this->nameCard.SetName(aid, name);
   }
 
-  CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(aid));
+  CGameActor* actor = this->scene->GetGameActorByAID(aid);
   if (actor) {
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
     actor->SendMsg(nullptr, AM_STANDENTRY2, value, 0, 0, 0, 0, 0);
@@ -13403,7 +13403,7 @@ static_assert(sizeof(MirrorSkillSpawnData) == 0x1C);
 // FUNCTION: fn_21975
 void CGameMode::SpawnMirrorActor(std::uint32_t aid, std::uint32_t owner, short x, short y) {
   if (owner == g_session.m_aid) {
-    CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(aid));
+    CGameActor* actor = this->scene->GetGameActorByAID(aid);
     if (!actor) {
       ActorStandEntry entry;
       entry.cellX = x;
@@ -13593,7 +13593,7 @@ void CGameMode::ReceivePartyMemberLeft(const unsigned char* data) {
   }
 
   RefreshPartyWindows(&g_session);
-  if (CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(packet->aid))) {
+  if (CGameActor* actor = this->scene->GetGameActorByAID(packet->aid)) {
     actor->SetGroupMemberVisible(0);
   }
 }
@@ -13801,7 +13801,7 @@ void CGameMode::ReceiveActorStandEntry(const unsigned char* data) {
   entry.direction = packet->posDir[2] & 0x0F;
   entry.cellY = ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4);
 
-  CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(entry.aid));
+  CGameActor* actor = this->scene->GetGameActorByAID(entry.aid);
   if (actor) {
     if (entry.head == 0x2E) {
       if (g_session.petGid == packet->aid) {
@@ -13894,7 +13894,7 @@ void CGameMode::ReceiveActorStandEntryFont(const unsigned char* data) {
   entry.direction = packet->posDir[2] & 0x0F;
   entry.cellY = ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4);
 
-  CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(entry.aid));
+  CGameActor* actor = this->scene->GetGameActorByAID(entry.aid);
   if (actor) {
     actor->render.font = packet->font;
     if (entry.head == 0x2E) {
@@ -13990,7 +13990,7 @@ void CGameMode::ReceiveActorTypedEntry(const unsigned char* data) {
   entry.direction = packet->posDir[2] & 0x0F;
   entry.cellY = ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4);
 
-  CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(entry.aid));
+  CGameActor* actor = this->scene->GetGameActorByAID(entry.aid);
   if (actor) {
     const int actorJob = actor->GetEffectiveJob(-1);
     if ((actorJob > JT_WARPNPC && actorJob < 1000) || (actorJob > 1000 && actorJob < 3999) || static_cast<unsigned>(actorJob - 20021) <= 11978) {
@@ -14092,7 +14092,7 @@ void CGameMode::ReceiveNpcStandEntry(const unsigned char* data) {
   entry.direction = packet->posDir[2] & 0x0F;
   entry.cellY = ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4);
 
-  CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(entry.aid));
+  CGameActor* actor = this->scene->GetGameActorByAID(entry.aid);
   if (actor) {
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
     actor->SendMsg(nullptr, AM_STANDENTRY, value, 0, 0, 0, 0, 0);
@@ -14313,7 +14313,7 @@ void CGameMode::ReceiveActorMoveEntryLegacy(const unsigned char* data) {
   DecodeSrcDst(packet->moveData, &entry.srcX, &entry.srcY, &entry.dstX, &entry.dstY, &entry.subX, &entry.subY);
   g_session.SyncServerTime(entry.moveStartTime);
 
-  CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(packet->aid));
+  CGameActor* actor = this->scene->GetGameActorByAID(packet->aid);
   if (actor) {
     if (actor->isGroupMemberVisible) {
       auto member = this->partyPosList.find(actor->render.accountId);
@@ -14340,9 +14340,9 @@ void CGameMode::ReceiveActorMoveEntryLegacy(const unsigned char* data) {
     }
 
     created->objectType = packet->objectType;
+    actor = created;
     this->scene->objects.push_back(created);
     this->scene->actors.push_back(created);
-    actor = created;
     if (actor->objectType == PC_TYPE) {
       if (this->partyPosList.find(entry.aid) != this->partyPosList.end() || this->guildPosList.find(entry.aid) != this->guildPosList.end()) {
         actor->SetGroupMemberVisible(1);
@@ -14444,7 +14444,7 @@ void CGameMode::SpawnMovingActor(
   DecodeSrcDst(moveData, &entry.srcX, &entry.srcY, &entry.dstX, &entry.dstY, &entry.subX, &entry.subY);
   g_session.SyncServerTime(entry.moveStartTime);
 
-  CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(aid));
+  CGameActor* actor = this->scene->GetGameActorByAID(aid);
   if (actor) {
     if (actor->isGroupMemberVisible) {
       auto member = this->partyPosList.find(actor->render.accountId);
@@ -14471,9 +14471,9 @@ void CGameMode::SpawnMovingActor(
     }
 
     created->objectType = objectType;
+    actor = created;
     this->scene->objects.push_back(created);
     this->scene->actors.push_back(created);
-    actor = created;
     if (actor->objectType == PC_TYPE) {
       if (this->partyPosList.find(entry.aid) != this->partyPosList.end() || this->guildPosList.find(entry.aid) != this->guildPosList.end()) {
         actor->SetGroupMemberVisible(1);
@@ -14598,7 +14598,7 @@ void CGameMode::ReceiveActorMoveEntryOld(const unsigned char* data) {
   DecodeSrcDst(packet->moveData, &entry.srcX, &entry.srcY, &entry.dstX, &entry.dstY, &entry.subX, &entry.subY);
   g_session.SyncServerTime(entry.moveStartTime);
 
-  CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(packet->aid));
+  CGameActor* actor = this->scene->GetGameActorByAID(packet->aid);
   if (actor) {
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
     actor->SendMsg(nullptr, AM_MOVEENTRY2, value, 0, 0, 0, 0, 0);
@@ -14731,7 +14731,7 @@ void CGameMode::ReceiveActorMoveEntryOld2(const unsigned char* data) {
   DecodeSrcDst(packet->moveData, &entry.srcX, &entry.srcY, &entry.dstX, &entry.dstY, &entry.subX, &entry.subY);
   g_session.SyncServerTime(entry.moveStartTime);
 
-  CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(packet->aid));
+  CGameActor* actor = this->scene->GetGameActorByAID(packet->aid);
   if (actor) {
     actor->characterLevel = packet->level;
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
@@ -14878,7 +14878,7 @@ void CGameMode::ReceiveActorMoveEntryNamed(const unsigned char* data) {
   DecodeSrcDst(packet->moveData, &entry.srcX, &entry.srcY, &entry.dstX, &entry.dstY, &entry.subX, &entry.subY);
   g_session.SyncServerTime(entry.moveStartTime);
 
-  CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(packet->aid));
+  CGameActor* actor = this->scene->GetGameActorByAID(packet->aid);
   if (actor) {
     actor->characterLevel = packet->level;
     actor->render.font = packet->font;
@@ -15015,7 +15015,7 @@ void CGameMode::ReceiveActorMoveEntryOld0(const unsigned char* data) {
   DecodeSrcDst(packet->moveData, &entry.srcX, &entry.srcY, &entry.dstX, &entry.dstY, &entry.subX, &entry.subY);
   g_session.SyncServerTime(entry.moveStartTime);
 
-  CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(packet->aid));
+  CGameActor* actor = this->scene->GetGameActorByAID(packet->aid);
   if (actor) {
     actor->SendMsg(nullptr, AM_MOVEENTRY, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
     const int actorJob = actor->GetEffectiveJob(-1);
@@ -15311,7 +15311,7 @@ void CGameMode::ReceiveActorStandEntryLegacy(const unsigned char* data) {
   entry.direction = packet->posDir[2] & 0x0F;
   entry.cellY = ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4);
 
-  CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(entry.aid));
+  CGameActor* actor = this->scene->GetGameActorByAID(entry.aid);
   if (actor) {
     if (packet->objectType == PC_TYPE) {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
@@ -15480,7 +15480,7 @@ void CGameMode::ReceiveActorStandEntryNamedOld(const unsigned char* data) {
   entry.cellY = ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4);
 
   int created = 0;
-  CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(entry.aid));
+  CGameActor* actor = this->scene->GetGameActorByAID(entry.aid);
   if (!actor) {
     created = 1;
     if (packet->objectType == PC_TYPE) {
@@ -15616,7 +15616,7 @@ void CGameMode::ReceiveActorStandEntryOld(const unsigned char* data) {
   entry.cellY = ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4);
   entry.state = 0;
 
-  CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(packet->aid));
+  CGameActor* actor = this->scene->GetGameActorByAID(packet->aid);
   if (actor) {
     if (entry.head == 0x2E) {
       if (g_session.petGid == packet->aid) {
@@ -15740,7 +15740,7 @@ void CGameMode::ReceiveActorStandEntryOld2(const unsigned char* data) {
   entry.cellY = ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4);
   entry.state = 0;
 
-  CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(packet->aid));
+  CGameActor* actor = this->scene->GetGameActorByAID(packet->aid);
   if (actor) {
     if (entry.head == 0x2E) {
       if (g_session.petGid == packet->aid) {
@@ -15867,7 +15867,7 @@ void CGameMode::ReceiveActorStandEntryOld3(const unsigned char* data) {
   entry.cellY = ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4);
   entry.state = 0;
 
-  CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(packet->aid));
+  CGameActor* actor = this->scene->GetGameActorByAID(packet->aid);
   if (actor) {
     actor->render.font = packet->font;
     actor->characterLevel = packet->level;
@@ -15997,7 +15997,7 @@ void CGameMode::ReceiveActorStandEntryOld0(const unsigned char* data) {
   entry.cellY = ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4);
   entry.state = 0;
 
-  CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(packet->aid));
+  CGameActor* actor = this->scene->GetGameActorByAID(packet->aid);
   if (actor) {
     const int actorJob = actor->GetEffectiveJob(-1);
     if ((actorJob > 45 && actorJob < 1000) || (actorJob > 1000 && actorJob < 3999) || static_cast<unsigned int>(actorJob - 20021) <= 11978) {
@@ -16106,6 +16106,7 @@ static_assert(sizeof(ActorStateEntryNamedOldPacket) == 0x45);
 void CGameMode::ReceiveActorStateEntryNamedOld(const unsigned char* data) {
   const ActorStateEntryNamedOldPacket* packet = reinterpret_cast<const ActorStateEntryNamedOldPacket*>(data);
   ActorStandEntry entry;
+  entry.robe = packet->robe;
   const int nameLength = packet->packetLength - static_cast<int>(sizeof(ActorStateEntryNamedOldPacket));
   if (nameLength > 0) {
     const char* nameBegin = reinterpret_cast<const char*>(packet + 1);
@@ -16135,7 +16136,6 @@ void CGameMode::ReceiveActorStateEntryNamedOld(const unsigned char* data) {
   entry.honor = packet->honor;
   entry.virtue = packet->virtue;
   entry.guildVersion = packet->guildVersion;
-  entry.robe = packet->robe;
   entry.aid = packet->aid;
   if (packet->objectType != PC_TYPE) {
     entry.shieldAppearance = entry.guildVersion;
@@ -16144,10 +16144,9 @@ void CGameMode::ReceiveActorStateEntryNamedOld(const unsigned char* data) {
   entry.direction = packet->posDir[2] & 0x0F;
   entry.cellY = ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4);
 
-  int created = 0;
-  CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(entry.aid));
+  CGameActor* actor = this->scene->GetGameActorByAID(entry.aid);
+  const int created = !actor;
   if (!actor) {
-    created = 1;
     if (packet->objectType == PC_TYPE) {
       actor = new CPc;
     } else {
@@ -16282,7 +16281,7 @@ void CGameMode::ReceiveActorStateEntryOld(const unsigned char* data) {
   entry.direction = packet->posDir[2] & 0x0F;
   entry.cellY = ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4);
 
-  CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(packet->aid));
+  CGameActor* actor = this->scene->GetGameActorByAID(packet->aid);
   if (actor) {
     if (entry.head == 0x2E) {
       if (g_session.petGid == packet->aid) {
@@ -16388,7 +16387,7 @@ void CGameMode::SpawnStandingActor(
   entry.direction = posDir[2] & 0x0F;
   entry.cellY = ((posDir[1] & 0x3F) << 4) | (posDir[2] >> 4);
 
-  CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(entry.aid));
+  CGameActor* actor = this->scene->GetGameActorByAID(entry.aid);
   if (actor) {
     if (objectType == 0) {
       actor->SendMsg(nullptr, AM_STANDENTRY2, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
@@ -16659,7 +16658,7 @@ void CGameMode::SpawnStateActor(
   entry.direction = posDir[2] & 0x0F;
   entry.cellY = ((posDir[1] & 0x3F) << 4) | (posDir[2] >> 4);
 
-  CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(entry.aid));
+  CGameActor* actor = this->scene->GetGameActorByAID(entry.aid);
   if (actor) {
     if (objectType == 0) {
       actor->SendMsg(nullptr, AM_STANDENTRY2, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
@@ -17102,6 +17101,7 @@ void CGameMode::ReceiveItemObtainBroadcast(const unsigned char* data, bool packa
 // FUNCTION: fn_21992
 void CGameMode::ReceiveActorStateEntryLegacy(const unsigned char* data) {
   const ActorStateEntryLegacyPacket* packet = reinterpret_cast<const ActorStateEntryLegacyPacket*>(data);
+  std::int64_t bossFlag = 0;
   ActorStandEntry entry;
   const int nameLength = packet->packetLength - static_cast<int>(sizeof(ActorStateEntryLegacyPacket));
   if (nameLength > 0) {
@@ -17141,7 +17141,7 @@ void CGameMode::ReceiveActorStateEntryLegacy(const unsigned char* data) {
   entry.direction = packet->posDir[2] & 0x0F;
   entry.cellY = ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4);
 
-  CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(entry.aid));
+  CGameActor* actor = this->scene->GetGameActorByAID(entry.aid);
   if (actor) {
     if (packet->objectType == PC_TYPE) {
       actor->SendMsg(nullptr, AM_STANDENTRY2, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
@@ -17149,20 +17149,18 @@ void CGameMode::ReceiveActorStateEntryLegacy(const unsigned char* data) {
       actor->SendMsg(nullptr, AM_STANDENTRY, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
     }
   } else {
-    CGameActor* created;
     if (packet->objectType == PC_TYPE) {
-      created = new CPc;
+      actor = new CPc;
     } else {
-      created = this->NewActor(packet->job);
+      actor = this->NewActor(packet->job);
     }
-    if (!created) {
+    if (!actor) {
       return;
     }
 
-    created->objectType = packet->objectType;
-    this->scene->objects.push_back(created);
-    this->scene->actors.push_back(created);
-    actor = created;
+    actor->objectType = packet->objectType;
+    this->scene->objects.push_back(actor);
+    this->scene->actors.push_back(actor);
     if (packet->objectType == PC_TYPE) {
       if (this->partyPosList.find(packet->aid) != this->partyPosList.end() || this->guildPosList.find(packet->aid) != this->guildPosList.end()) {
         actor->SetGroupMemberVisible(1);
@@ -17175,7 +17173,6 @@ void CGameMode::ReceiveActorStateEntryLegacy(const unsigned char* data) {
     g_championMonsterMgr->ApplyEffects(entry.job, actor, entry.aid);
   }
 
-  std::int64_t bossFlag = 0;
   if (packet->isBoss && actor->hpGaugeFlags == 0) {
     actor->hpGaugeFlags = packet->isBoss;
     bossFlag = 1;
@@ -18232,7 +18229,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   if (sourceAid == g_session.m_aid) {
     source = this->scene->player;
   } else {
-    source = static_cast<CGameActor*>(this->scene->GetGameActorByAID(sourceAid));
+    source = this->scene->GetGameActorByAID(sourceAid);
   }
 
   int action = -1;
@@ -18295,7 +18292,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   if (targetAid == g_session.m_aid) {
     target = this->scene->player;
   } else {
-    target = static_cast<CGameActor*>(this->scene->GetGameActorByAID(targetAid));
+    target = this->scene->GetGameActorByAID(targetAid);
   }
 
   switch (skillId) {

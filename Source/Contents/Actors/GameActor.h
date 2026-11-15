@@ -298,8 +298,6 @@ public:
   float GetNameOffset();
   float GetNameHeight();
   void SetStackedEffect(int effectId, bool on);
-  CSprRes* GetSprite();
-  float GetElapsedFrames();
   int GetGaugeCurrent();
   int GetGaugeMaximum();
   void ResetTransformJobs();

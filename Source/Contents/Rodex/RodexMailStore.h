@@ -8,6 +8,27 @@
 #include <map>
 #include <string>
 
+#include "Contents/Items/ItemInfo.h"
+
+#pragma pack(push, 1)
+struct RodexMailItem {
+  /* 0000 */ std::uint16_t quantity;
+  /* 0002 */ int itemId;
+  /* 0006 */ unsigned char identified;
+  /* 0007 */ unsigned char damaged;
+  /* 0008 */ std::uint32_t cards[4];
+  /* 0018 */ std::uint32_t expireTime;
+  /* 001C */ unsigned char type;
+  /* 001D */ std::uint16_t bindType;
+  /* 001F */ std::uint16_t wearState;
+  /* 0021 */ ItemOptionRecord options[5];
+  /* 003A */ unsigned char refine;
+  /* 003B */ unsigned char grade;
+};
+#pragma pack(pop)
+
+static_assert(sizeof(RodexMailItem) == 0x3C);
+
 struct RodexMail {
   /* 0000 */ unsigned char isRead;
   /* 0001 */ unsigned char type;
@@ -18,7 +39,10 @@ struct RodexMail {
   /* 0024 */ std::string title;
   /* 003C */ std::string body;
   /* 0054 */ unsigned char hasItem;
-  /* 0055 */ std::array<std::byte, 0x133> attachments;
+  /* 0055 */ struct RodexMailAttachments {
+    /* 0000 */ RodexMailItem items[5];
+    /* 012C */ unsigned char unknown_012C[7];
+  } attachments;
   /* 0188 */ std::int64_t zeny;
   /* 0190 */ std::uint8_t isReturned = 0;
   /* 0191 */ std::array<std::byte, 3> padding_0191;

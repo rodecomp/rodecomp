@@ -668,7 +668,7 @@ void CGameMode::ReceiveGroundSkillExtended(const unsigned char* record) {
     this->m_skillUnitIds.push_back(packet.aid);
   }
 
-  CSkill* skill = static_cast<CSkill*>(this->scene->GetSkillByAID(packet.aid));
+  CSkill* skill = this->scene->GetSkillByAID(packet.aid);
   if (!skill) {
     const int type = packet.type;
     if (!((type >= 45 && type < 1000) || (type > 1000 && type < 3999) ||
@@ -710,7 +710,7 @@ void CGameMode::SpawnGroundSkill(std::uint32_t aid, std::uint32_t owner, int val
     } else if (visible) {
       this->m_skillUnitIds.push_back(aid);
     }
-    CSkill* skill = static_cast<CSkill*>(this->scene->GetSkillByAID(aid));
+    CSkill* skill = this->scene->GetSkillByAID(aid);
     if (!skill) {
       if (!((type >= 45 && type < 1000) || (type > 1000 && type < 3999) ||
             static_cast<unsigned>(type) - 20021u <= 11978u)) {
@@ -2909,7 +2909,7 @@ void CGameMode::Zc_Skill_Entry(unsigned char* record) {
   data.level = 0;
   packet.visible = 1;
 
-  CSkill* skill = static_cast<CSkill*>(this->scene->GetSkillByAID(data.aid));
+  CSkill* skill = this->scene->GetSkillByAID(data.aid);
   if (data.owner != g_session.m_aid && !data.visible) {
 
     const auto found = std::find(this->m_skillUnitIds.begin(), this->m_skillUnitIds.end(), packet.aid);
@@ -2961,7 +2961,7 @@ void CGameMode::Zc_Skill_Entry2(unsigned char* record) {
     return;
   }
 
-  CSkill* skill = static_cast<CSkill*>(this->scene->GetSkillByAID(data.aid));
+  CSkill* skill = this->scene->GetSkillByAID(data.aid);
   if (data.owner != g_session.m_aid && !data.visible) {
     const auto found = std::find(this->m_skillUnitIds.begin(), this->m_skillUnitIds.end(), packet.aid);
     if (found != this->m_skillUnitIds.end()) {
@@ -3028,7 +3028,7 @@ void CGameMode::ReceiveGroundSkill8(const unsigned char* record) {
     this->m_skillUnitIds.push_back(packet.aid);
   }
 
-  CSkill* skill = static_cast<CSkill*>(this->scene->GetSkillByAID(packet.aid));
+  CSkill* skill = this->scene->GetSkillByAID(packet.aid);
   if (!skill) {
     if (packet.type < 45) {
       return;
@@ -3073,21 +3073,21 @@ void CGameMode::ReceiveGroundSkill32(const unsigned char* record) {
   data.y = packet.y;
   data.visible = packet.visible;
   data.level = packet.level;
-  if (data.owner == g_session.m_aid) {
+  if (data.owner != g_session.m_aid) {
     if (data.visible) {
       this->m_skillUnitIds.push_back(packet.aid);
+    } else {
+      const auto found = std::find(this->m_skillUnitIds.begin(), this->m_skillUnitIds.end(), data.aid);
+      if (found != this->m_skillUnitIds.end()) {
+        this->m_skillUnitIds.erase(found);
+        data.visible = 0;
+      }
     }
-  } else if (!data.visible) {
-    const auto found = std::find(this->m_skillUnitIds.begin(), this->m_skillUnitIds.end(), data.aid);
-    if (found != this->m_skillUnitIds.end()) {
-      this->m_skillUnitIds.erase(found);
-      data.visible = 0;
-    }
-  } else {
+  } else if (data.visible) {
     this->m_skillUnitIds.push_back(packet.aid);
   }
 
-  CSkill* skill = static_cast<CSkill*>(this->scene->GetSkillByAID(packet.aid));
+  CSkill* skill = this->scene->GetSkillByAID(packet.aid);
   if (!skill) {
     const int type = packet.type;
     if (!((type >= 45 && type < 1000) || (type > 1000 && type < 3999) ||

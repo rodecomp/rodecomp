@@ -75,11 +75,6 @@ namespace myGPack {
       2,  11, 1,  4,  14, 1,  7,  9,  4,  12, 10, 14, 8,  2,  13, 0,  15, 6,  12, 10, 9,  13, 0,  15, 3,  3,  5,  5,  6,  8,  11,
     };
 
-    union Block64 {
-      std::uint8_t bytes[8];
-      std::uint32_t words[2];
-    };
-
     // INLINED
     std::uint8_t SubstituteLastByte(std::uint8_t value) {
       switch (value) {
@@ -205,10 +200,10 @@ namespace myGPack {
 
   // OFFSET: 0x00AE8E70
   // FUNCTION: fn_18101
-  int PakCipher::DecodeBlock(int rounds, const std::uint8_t (*roundKeys)[8], std::uint32_t inputLow, std::uint32_t inputHigh, std::uint8_t* output) const {
-    std::memcpy(output, &inputLow, sizeof(inputLow));
-    std::memcpy(output + 4, &inputHigh, sizeof(inputHigh));
-    InitialPermutation(output);
+  int PakCipher::DecodeBlock(int rounds, const std::uint8_t (*roundKeys)[8], Block64 input, Block64* output) const {
+    output->words[0] = input.words[0];
+    output->words[1] = input.words[1];
+    InitialPermutation(output->bytes);
 
     for (std::uint8_t round = 0; round < rounds; ++round) {
       Block64 key;
@@ -219,7 +214,7 @@ namespace myGPack {
 
       for (std::uint8_t i = 0; i < 48; ++i) {
         const std::uint8_t bit = s_expansion[i] + 31;
-        if (output[bit >> 3] & s_bitMasks[bit & 7]) {
+        if (output->bytes[bit >> 3] & s_bitMasks[bit & 7]) {
           permuted.bytes[i / 6] |= s_bitMasks[i % 6];
         }
       }
@@ -248,23 +243,17 @@ namespace myGPack {
         }
       }
 
-      std::uint32_t left;
-      std::uint32_t right;
-      std::memcpy(&left, output, sizeof(left));
-      std::memcpy(&right, output + 4, sizeof(right));
-      std::memcpy(output, &right, sizeof(right));
-      left ^= permuted.words[0];
-      std::memcpy(output + 4, &left, sizeof(left));
+      const std::uint32_t left = output->words[0];
+      output->words[0] = output->words[1];
+      output->words[1] = left ^ permuted.words[0];
     }
 
-    std::uint32_t low;
-    std::uint32_t high;
-    std::memcpy(&low, output, sizeof(low));
-    std::memcpy(&high, output + 4, sizeof(high));
-    std::memcpy(output + 4, &low, sizeof(low));
-    std::memcpy(output, &high, sizeof(high));
+    const std::uint32_t low = output->words[0];
+    const std::uint32_t high = output->words[1];
+    output->words[1] = low;
+    output->words[0] = high;
 
-    FinalPermutation(output);
+    FinalPermutation(output->bytes);
     return 1;
   }
 
@@ -292,19 +281,15 @@ namespace myGPack {
 
     do {
       if (block < 20 || block % cycle == 0) {
-        std::uint8_t blockInput[8];
-        std::uint8_t blockOutput[8];
+        Block64 blockInput;
+        Block64 blockOutput;
         for (int i = 0; i < 8; ++i) {
-          blockInput[i] = input[offset + i];
+          blockInput.bytes[i] = input[offset + i];
         }
 
-        std::uint32_t low;
-        std::uint32_t high;
-        std::memcpy(&low, blockInput, sizeof(low));
-        std::memcpy(&high, blockInput + 4, sizeof(high));
-        this->DecodeBlock(1, this->m_roundKeys, low, high, blockOutput);
+        this->DecodeBlock(1, this->m_roundKeys, blockInput, &blockOutput);
         for (int i = 0; i < 8; ++i) {
-          output[offset + i] = blockOutput[i];
+          output[offset + i] = blockOutput.bytes[i];
         }
       } else {
         if (shuffled != 7) {
@@ -344,18 +329,14 @@ namespace myGPack {
     std::memcpy(output, input, static_cast<std::uint32_t>(length));
 
     for (int block = 0; block < 20; ++block) {
-      std::uint8_t blockInput[8];
-      std::uint8_t decoded[8];
+      Block64 blockInput;
+      Block64 decoded;
       for (int i = 0; i < 8; ++i) {
-        blockInput[i] = input[8 * block + i];
+        blockInput.bytes[i] = input[8 * block + i];
       }
-      std::uint32_t low;
-      std::uint32_t high;
-      std::memcpy(&low, blockInput, sizeof(low));
-      std::memcpy(&high, blockInput + 4, sizeof(high));
-      this->DecodeBlock(1, this->m_roundKeys, low, high, decoded);
+      this->DecodeBlock(1, this->m_roundKeys, blockInput, &decoded);
       for (int i = 0; i < 8; ++i) {
-        output[8 * block + i] = decoded[i];
+        output[8 * block + i] = decoded.bytes[i];
       }
       if (8 * (block + 1) >= length) {
         break;
@@ -403,10 +384,10 @@ namespace myGPack {
 
   // OFFSET: 0x00AE9020
   // FUNCTION: fn_18102
-  int PakCipher::EncodeBlock(int rounds, const std::uint8_t (*roundKeys)[8], std::uint32_t inputLow, std::uint32_t inputHigh, std::uint8_t* output) const {
-    std::memcpy(output, &inputLow, sizeof(inputLow));
-    std::memcpy(output + 4, &inputHigh, sizeof(inputHigh));
-    InitialPermutation(output);
+  int PakCipher::EncodeBlock(int rounds, const std::uint8_t (*roundKeys)[8], Block64 input, Block64* output) const {
+    output->words[0] = input.words[0];
+    output->words[1] = input.words[1];
+    InitialPermutation(output->bytes);
 
     for (std::uint8_t round = 0; round < rounds; ++round) {
       Block64 key;
@@ -417,7 +398,7 @@ namespace myGPack {
 
       for (std::uint8_t i = 0; i < 48; ++i) {
         const std::uint8_t bit = s_expansion[i] + 31;
-        if (output[bit >> 3] & s_bitMasks[bit & 7]) {
+        if (output->bytes[bit >> 3] & s_bitMasks[bit & 7]) {
           permuted.bytes[i / 6] |= s_bitMasks[i % 6];
         }
       }
@@ -446,23 +427,17 @@ namespace myGPack {
         }
       }
 
-      std::uint32_t left;
-      std::uint32_t right;
-      std::memcpy(&left, output, sizeof(left));
-      std::memcpy(&right, output + 4, sizeof(right));
-      std::memcpy(output, &right, sizeof(right));
-      left ^= permuted.words[0];
-      std::memcpy(output + 4, &left, sizeof(left));
+      const std::uint32_t left = output->words[0];
+      output->words[0] = output->words[1];
+      output->words[1] = left ^ permuted.words[0];
     }
 
-    std::uint32_t low;
-    std::uint32_t high;
-    std::memcpy(&low, output, sizeof(low));
-    std::memcpy(&high, output + 4, sizeof(high));
-    std::memcpy(output, &high, sizeof(high));
-    std::memcpy(output + 4, &low, sizeof(low));
+    const std::uint32_t low = output->words[0];
+    const std::uint32_t high = output->words[1];
+    output->words[0] = high;
+    output->words[1] = low;
 
-    FinalPermutation(output);
+    FinalPermutation(output->bytes);
     return 1;
   }
 

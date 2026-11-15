@@ -1184,7 +1184,7 @@ void UIMessengerGroupWnd::OnLBtnDown(int x, int y) {
           if (index >= this->scrollTop * this->columns && entry.valid && entry.accountId == selectedMember.accountId) {
             CGameActor* actor = entry.accountId == g_session.m_aid
                                   ? gameMode->scene->player
-                                  : static_cast<CGameActor*>(gameMode->scene->GetGameActorByAID(entry.accountId));
+                                  : gameMode->scene->GetGameActorByAID(entry.accountId);
             if (actor) {
               window->SetGaugeValues(this->gauges[index]->current, this->gauges[index]->maximum);
             } else {
@@ -1391,7 +1391,7 @@ void UIMessengerGroupWnd::UpdateGauges() {
       if (it->accountId == g_session.m_aid) {
         pc = gameMode->scene->player;
       } else {
-        pc = dynamic_cast<CPc*>(static_cast<CGameActor*>(gameMode->scene->GetGameActorByAID(it->accountId)));
+        pc = dynamic_cast<CPc*>(gameMode->scene->GetGameActorByAID(it->accountId));
       }
 
       const int y = shown / this->columns * this->rowHeight + 17;

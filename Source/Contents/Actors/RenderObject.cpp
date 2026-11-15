@@ -3617,9 +3617,9 @@ void CGameActor::ProcessHitMessage(CGameObject*, const ActorHitInfo* info, int, 
   if (g_session.m_aid == info->targetAid) {
     target = static_cast<CGameActor*>(mode->scene->player);
   } else {
-    target = static_cast<CGameActor*>(mode->scene->GetGameActorByAID(info->targetAid));
+    target = mode->scene->GetGameActorByAID(info->targetAid);
     if (target == nullptr) {
-      target = static_cast<CGameActor*>(mode->scene->GetSkillByAID(this->hitTargetAid));
+      target = mode->scene->GetSkillByAID(this->hitTargetAid);
     }
   }
 

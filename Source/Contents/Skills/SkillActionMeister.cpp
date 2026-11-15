@@ -44,21 +44,21 @@ public:
   void OnSkillCast(int level, CGameActor* source) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
   void OnSkillHit(CGameActor* source, CGameActor* target, CRenderObject* targetSkill) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CSkillAction_MT_RUSH_STRIKE : public CSkillAction {
 public:
   int GetSkillAttackMotion() override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CSkillAction_MT_POWERFUL_SWING : public CSkillAction {
 public:
   int GetSkillAttackMotion() override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
-  void OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) override;
+  void OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) override;
 };
 
 class CEfstAction_GRADUAL_GRAVITY : public CEfstAction {
@@ -193,7 +193,7 @@ void CSkillAction_MT_ENERGY_CANNONADE::OnSkillHit(CGameActor* source, CGameActor
 
 // OFFSET: 0x0078D810
 // FUNCTION: fn_08665
-void CSkillAction_MT_ENERGY_CANNONADE::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_MT_ENERGY_CANNONADE::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("energy_cannonade_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -227,7 +227,7 @@ void CSkillAction_MT_RUSH_STRIKE::OnSkillEffect(int level, CGameActor* source, C
 
 // OFFSET: 0x0078DCA0
 // FUNCTION: fn_08668
-void CSkillAction_MT_RUSH_STRIKE::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_MT_RUSH_STRIKE::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rush_strike_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -263,7 +263,7 @@ void CSkillAction_MT_POWERFUL_SWING::OnSkillEffect(int level, CGameActor* source
 
 // OFFSET: 0x0078E130
 // FUNCTION: fn_08671
-void CSkillAction_MT_POWERFUL_SWING::OnSkillDamage(CGameActor* source, CGameActor* target, CGameActor* hitIndex) {
+void CSkillAction_MT_POWERFUL_SWING::OnSkillDamage(CGameActor* source, CGameActor* target, int hitIndex) {
   if (target) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("powerful_swing_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);

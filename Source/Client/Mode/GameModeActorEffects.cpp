@@ -8,10 +8,10 @@ void CGameMode::RefreshActorJobEffects(bool playerOnly) {
   this->scene->player->ResetJobEffects();
   this->scene->player->UpdateMaxLevelAura();
   if (!playerOnly) {
-    for (std::list<CRenderObject*>::iterator it = this->scene->actors.begin(); it != this->scene->actors.end(); ++it) {
-      if (static_cast<CGameActor*>(*it)->hasLevelAura != 0) {
-        static_cast<CGameActor*>(*it)->ResetJobEffects();
-        static_cast<CGameActor*>(*it)->UpdateMaxLevelAura();
+    for (std::list<CGameActor*>::iterator it = this->scene->actors.begin(); it != this->scene->actors.end(); ++it) {
+      if ((*it)->hasLevelAura != 0) {
+        (*it)->ResetJobEffects();
+        (*it)->UpdateMaxLevelAura();
       }
     }
   }

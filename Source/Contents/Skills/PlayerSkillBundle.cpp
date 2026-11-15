@@ -11,8 +11,8 @@
 bool IsIndexedSkill(int id);
 
 // INLINED
-std::size_t SkillIdHash::operator()(std::uint32_t id) const {
-  return std::hash<std::uint32_t>()(id);
+std::size_t SkillIdHash::operator()(int id) const {
+  return std::hash<int>()(id);
 }
 
 // INLINED
@@ -174,7 +174,7 @@ void CPlayerSkillBundle::ClearExtra() {
 // OFFSET: 0x007713E0
 // FUNCTION: fn_08274
 void CPlayerSkillBundle::AddExtra(const CSkillInfo& value) {
-  this->extraIds.push_back(reinterpret_cast<const int&>(value.id));
+  this->extraIds.push_back(value.id);
   if (UIWindow* window = g_windowMgr.LookupWindow(WID_SKILLLISTWND)) {
     window->SendMsg(nullptr, UM_REFRESH_EXTRA_SKILL_TAB, 0, 0, 0, 0);
   }
@@ -302,7 +302,7 @@ std::pair<bool, int> CPlayerSkillBundle::PreviousLevel(int id) const {
 // OFFSET: 0x00771FC0
 // FUNCTION: fn_08295
 void CPlayerSkillBundle::ApplyLevelChange(CSkillInfo& value) {
-  const int& id = reinterpret_cast<const int&>(value.id);
+  const int& id = value.id;
   const auto entry = this->levelChanges.find(id);
   if (entry != this->levelChanges.end()) {
     lcEXCInfo& change = entry->second;

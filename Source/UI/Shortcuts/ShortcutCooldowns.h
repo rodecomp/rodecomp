@@ -7,14 +7,14 @@
 #include <list>
 
 struct ShortcutCooldownIcon {
-  /* 0000 */ unsigned id;
+  /* 0000 */ int id;
   /* 0004 */ int slot;
   /* 0008 */ int x;
   /* 000C */ int y;
 };
 
 struct ShortcutCooldownRecord {
-  /* 0000 */ unsigned id;
+  /* 0000 */ int id;
   /* 0004 */ std::uint32_t end;
   /* 0008 */ std::uint32_t duration;
   /* 000C */ std::list<CooldownState> main;

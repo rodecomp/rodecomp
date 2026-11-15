@@ -3132,7 +3132,7 @@ void CSession::Init() {
 // OFFSET: 0x00DF7C40
 // FUNCTION: fn_23508
 void CSession::ResetCharacterState() {
-  *reinterpret_cast<float*>(&this->m_navigationPlayerMap[0x18]) = SquareRoot(50.0f);
+  this->unknown_1620[1] = SquareRoot(50.0f);
 
   const int roll = std::rand() % 1024;
   const int randomValue = (roll >= 0 ? roll : 0) + 1;

@@ -78,6 +78,8 @@ public:
   void ModifyArgb(int alpha, int red, int green, int blue);
   void SetSequenceDeadline(std::uint32_t duration);
   __declspec(noinline) void SetSequenceInterval(unsigned char interval);
+  CSprRes* GetSprite();
+  float GetElapsedFrames();
   void SetAnimationSequence(
     unsigned char animation0, unsigned char frame0, unsigned char animation1, unsigned char frame1,
     unsigned char animation2, unsigned char frame2, unsigned char animation3, unsigned char frame3,

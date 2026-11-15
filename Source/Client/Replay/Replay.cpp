@@ -82,9 +82,26 @@ struct ReplayStatusPacket {
   /* 0015 */ unsigned char padding_0015[8];
 };
 
+struct ReplaySkillInfo {
+  /* 0000 */ std::uint16_t id;
+  /* 0002 */ int type;
+  /* 0006 */ std::int16_t level;
+  /* 0008 */ std::int16_t spCost;
+  /* 000A */ std::int16_t range;
+  /* 000C */ char name[24];
+  /* 0024 */ unsigned char upgradable;
+};
+
+struct ReplaySkillInfoListHeader {
+  /* 0000 */ std::uint16_t id;
+  /* 0002 */ std::uint16_t bytes;
+};
+
 #pragma pack(pop)
 
 static_assert(sizeof(ReplayTaggedRecordHeader) == 6);
+static_assert(sizeof(ReplaySkillInfo) == 0x25);
+static_assert(sizeof(ReplaySkillInfoListHeader) == 4);
 static_assert(sizeof(ReplayMetadataTag) == 6);
 static_assert(sizeof(ReplayRecordHeader) == 10);
 static_assert(sizeof(ReplayStatusPacket) == 29);
@@ -957,23 +974,23 @@ std::vector<unsigned char> CSession::BuildStatusReplayPacket() {
 // OFFSET: 0x00E31240
 // FUNCTION: fn_24172
 std::vector<unsigned char> BuildSkillInfoListPacket(std::uint16_t id, const std::list<CSkillInfo>& skills) {
-  const int bytes = static_cast<int>(skills.size()) * 37 + 4;
+  const int bytes = static_cast<int>(skills.size()) * sizeof(ReplaySkillInfo) + sizeof(ReplaySkillInfoListHeader);
   std::vector<unsigned char> packet(bytes, 0);
-  unsigned char* data = packet.data();
-  *reinterpret_cast<std::uint16_t*>(data) = id;
-  *reinterpret_cast<std::uint16_t*>(data + 2) = static_cast<std::uint16_t>(bytes);
-  unsigned char* record = data + 4;
+  ReplaySkillInfoListHeader* header = reinterpret_cast<ReplaySkillInfoListHeader*>(packet.data());
+  header->id = id;
+  header->bytes = static_cast<std::uint16_t>(bytes);
+  ReplaySkillInfo* record = reinterpret_cast<ReplaySkillInfo*>(header + 1);
   for (const CSkillInfo& skill : skills) {
-    *reinterpret_cast<std::uint16_t*>(record) = static_cast<std::uint16_t>(skill.id);
-    *reinterpret_cast<std::uint32_t*>(record + 2) = skill.type;
-    *reinterpret_cast<std::uint16_t*>(record + 6) = static_cast<std::uint16_t>(skill.level);
-    *reinterpret_cast<std::uint16_t*>(record + 8) = static_cast<std::uint16_t>(skill.spCost);
-    record[36] = skill.upgradable != 0;
-    *reinterpret_cast<std::uint16_t*>(record + 10) = static_cast<std::uint16_t>(skill.range);
+    record->id = static_cast<std::uint16_t>(skill.id);
+    record->type = skill.type;
+    record->level = static_cast<std::int16_t>(skill.level);
+    record->spCost = static_cast<std::int16_t>(skill.spCost);
+    record->upgradable = skill.upgradable != 0;
+    record->range = static_cast<std::int16_t>(skill.range);
     const char* name = skill.name;
-    std::memcpy(record + 12, name, (std::min)(std::strlen(name), std::size_t{24}));
-    record[35] = 0;
-    record += 37;
+    std::memcpy(record->name, name, (std::min)(std::strlen(name), sizeof(record->name)));
+    record->name[sizeof(record->name) - 1] = 0;
+    ++record;
   }
   return packet;
 }
@@ -1206,8 +1223,8 @@ std::vector<unsigned char> CSession::BuildCharacterReplayRecords() {
   AppendRecord(records, MakeReplayRecord(1000, nullptr, 0));
   AppendRecord(records, MakeReplayRecord(1010, &this->m_aid, sizeof(this->m_aid)));
   AppendRecord(records, MakeReplayRecord(1011, &this->m_gid, sizeof(this->m_gid)));
-  AppendRecord(records, MakeReplayRecord(1012, &this->m_navigationPlayerMap[0x14], 4));
-  AppendRecord(records, MakeReplayRecord(1013, &this->m_navigationPlayerMap[0x18], 4));
+  AppendRecord(records, MakeReplayRecord(1012, &this->unknown_1620[0], sizeof(this->unknown_1620[0])));
+  AppendRecord(records, MakeReplayRecord(1013, &this->unknown_1620[1], sizeof(this->unknown_1620[1])));
   AppendRecord(records, MakeReplayRecord(1014, &this->m_job, sizeof(this->m_job)));
   AppendRecord(records, MakeReplayRecord(1015, &this->m_exp, 8));
   AppendRecord(records, MakeReplayRecord(1016, &this->m_level, sizeof(this->m_level)));

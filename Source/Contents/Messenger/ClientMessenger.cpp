@@ -5530,7 +5530,7 @@ bool CGameMode::IsWithinRange(const int& x1, const int& y1, const int& x2, const
 bool CGameMode::IsRegisterCell(int x, int y) {
   for (auto it = this->actorPosList.begin(); it != this->actorPosList.end(); ++it) {
     if (it->second.first == x && it->second.second == y) {
-      CGameActor* actor = static_cast<CGameActor*>(this->scene->GetGameActorByAID(it->first));
+      CGameActor* actor = this->scene->GetGameActorByAID(it->first);
       if (actor == nullptr) {
         return true;
       }

@@ -12,7 +12,7 @@
 #include "UI/Window/WindowManagerWindows.h"
 
 struct SkillIdHash {
-  std::size_t operator()(std::uint32_t id) const;
+  std::size_t operator()(int id) const;
 };
 
 class CPlayerSkillBundle {
@@ -57,7 +57,7 @@ public:
   void SetSkillValue(int id, int value);
 
   /* 0004 */ std::list<CSkillInfo> skills;
-  /* 000C */ std::unordered_map<std::uint32_t, CSkillInfo*, SkillIdHash> index;
+  /* 000C */ std::unordered_map<int, CSkillInfo*, SkillIdHash> index;
   /* 002C */ std::map<int, std::list<CSkillInfo>> groups;
   /* 0034 */ std::list<CSkillInfo> extra;
   /* 003C */ std::vector<int> extraIds;

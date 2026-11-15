@@ -48,9 +48,9 @@ public:
   void OnProcess();
   bool RemoveItem(std::uint32_t aid);
   bool FindActorInCell(const float* position, std::function<bool(std::uint32_t)> predicate) const;
-  CRenderObject* GetGameActorByAID(std::uint32_t aid) const;
+  CGameActor* GetGameActorByAID(std::uint32_t aid) const;
   CGameActor* GetGameActorByAidIncludeMe(std::uint32_t aid) const;
-  __declspec(noinline) CRenderObject* GetSkillByAID(std::uint32_t aid) const;
+  __declspec(noinline) CSkill* GetSkillByAID(std::uint32_t aid) const;
   CItem* GetItemByAID(std::uint32_t aid) const;
   CGameActor* GetActorByGID(int gid) const;
   void RemovePcPos(std::uint32_t aid, bool notify);
@@ -76,9 +76,9 @@ public:
 
   /* 0004 */ CGameMode* gameMode;
   /* 0008 */ std::list<CGameObject*> objects;
-  /* 0010 */ std::list<CRenderObject*> actors;
+  /* 0010 */ std::list<CGameActor*> actors;
   /* 0018 */ std::list<CItem*> items;
-  /* 0020 */ std::list<CRenderObject*> skills;
+  /* 0020 */ std::list<CSkill*> skills;
   /* 0028 */ GroundGeometry* ground;
   /* 002C */ CPlayer* player;
   /* 0030 */ C3dAttr* terrain;

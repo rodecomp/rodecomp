@@ -1154,11 +1154,11 @@ std::uint32_t CSession::ReadReplayCharacter(const std::vector<unsigned char>& da
       offset += header.bytes;
       break;
     case 1012:
-      std::memcpy(&this->m_navigationPlayerMap[0x14], data.data() + offset, header.bytes);
+      std::memcpy(&this->unknown_1620[0], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1013:
-      std::memcpy(&this->m_navigationPlayerMap[0x18], data.data() + offset, header.bytes);
+      std::memcpy(&this->unknown_1620[1], data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1014:
