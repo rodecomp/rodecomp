@@ -703,7 +703,7 @@ void UIParaItemShopWnd::Paint() {
   const int footer = this->showFooter == 1 ? this->footerHeight : 0;
   const int rows = (height - footer) / 32;
   for (int row = 0; row < rows; ++row) {
-    DrawItemSlotBackground(*this, 30, titleHeight + row * 32);
+    this->DrawItemSlotFrame(30, titleHeight + row * 32);
   }
 
   int index = 0;
@@ -726,9 +726,9 @@ void UIParaItemShopWnd::Paint() {
     }
 
     if (this->sellMode == 1 || it->quantity != 0) {
-      DrawItemWithQuantity(*this, ResourceMgr::Instance(), 34, top + 4, *it, 0, 0);
+      this->DrawItemAndQuantity(34, top + 4, *it, 0, 0);
     } else {
-      DrawItemWithQuantityAuxiliary(*this, 1, 34, top + 4, *it, 0, 0);
+      this->DrawItemAndQuantityAuxiliary(1, 34, top + 4, *it, 0, 0);
     }
 
     this->DrawWrappedItemName(70, top + 12, 120, &*it, 0, 0, 12);

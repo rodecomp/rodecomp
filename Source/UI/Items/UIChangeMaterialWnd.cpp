@@ -556,13 +556,13 @@ void UIChangeMaterialWnd::Paint() {
   int slot = 0;
   for (auto it = this->m_materials.begin(); it != this->m_materials.end(); ++it, ++slot) {
     if (it->identified == 1) {
-      DrawItemWithQuantity(*this, ResourceMgr::Instance(), this->m_materialPos[slot].x, this->m_materialPos[slot].y, *it, 1, 0);
+      this->DrawItemAndQuantity(this->m_materialPos[slot].x, this->m_materialPos[slot].y, *it, 1, 0);
     } else {
-      DrawItemWithQuantityAuxiliary(*this, 1, this->m_materialPos[slot].x, this->m_materialPos[slot].y, *it, 1, 0);
+      this->DrawItemAndQuantityAuxiliary(1, this->m_materialPos[slot].x, this->m_materialPos[slot].y, *it, 1, 0);
     }
   }
 
-  DrawItemWithQuantity(*this, ResourceMgr::Instance(), this->m_resultX, this->m_resultY, this->m_resultItem, 1, 0);
+  this->DrawItemAndQuantity(this->m_resultX, this->m_resultY, this->m_resultItem, 1, 0);
 
   {
     const std::string amount = FormatOwnedString(LookupMessage(MSI_IQ_POWERFUL_FAITH_OFF), this->m_resultAmount / 10);
@@ -607,11 +607,11 @@ void UIChangeMaterialWnd_List::Paint() {
       }
 
       if (entry->state == 1) {
-        DrawItemWithQuantity(*this, ResourceMgr::Instance(), 0, this->rowHeight * row, item, 1, 0);
+        this->DrawItemAndQuantity(0, this->rowHeight * row, item, 1, 0);
         this->DrawTextAt(30, this->rowHeight * row + 6, name.c_str(), 0, 0, 12, 0, 0, 0);
         this->DrawRightAlignedText(163, this->rowHeight * row + 6, FormatOwnedString(LookupMessage(MSI_EA), item.quantity).c_str(), 0, 0, 12, 0, 0);
       } else {
-        DrawItemWithQuantityAuxiliary(*this, 1, 0, this->rowHeight * row, item, 1, 0);
+        this->DrawItemAndQuantityAuxiliary(1, 0, this->rowHeight * row, item, 1, 0);
         this->DrawTextAt(30, this->rowHeight * row + 6, name.c_str(), 0, 0, 12, 0xAAAAAA, 0, 0);
         this->DrawRightAlignedText(163, this->rowHeight * row + 6, FormatOwnedString(LookupMessage(MSI_EA), item.quantity).c_str(), 0, 0, 12, 0xAAAAAA, 0);
       }

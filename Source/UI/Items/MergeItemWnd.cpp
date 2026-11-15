@@ -141,7 +141,7 @@ void CMergeItemWnd::Paint() {
 
   for (int index = 0; index < this->m_visibleCount; ++index) {
     const int columns = (this->geometry.width - this->m_marginRight - this->m_gridLeft) / this->m_cellSize;
-    DrawItemSlotBackground(*this, this->m_cellSize * (index % columns) + this->m_gridLeft, this->m_cellSize * (index / columns) + this->m_gridTop);
+    this->DrawItemSlotFrame(this->m_cellSize * (index % columns) + this->m_gridLeft, this->m_cellSize * (index / columns) + this->m_gridTop);
   }
 
   const int first = this->m_scrollRow * this->m_columns;
@@ -163,8 +163,7 @@ void CMergeItemWnd::Paint() {
       if (item.identity[1] != 0) {
         box->SetHidden(false);
         box->Move(this->m_checkOffsetX + x, this->m_checkOffsetY + y);
-        DrawItemWithQuantity(
-          *this, ResourceMgr::Instance(), this->m_slotOffsetX + x, this->m_slotOffsetY + y, item, 0, 0
+        this->DrawItemAndQuantity(this->m_slotOffsetX + x, this->m_slotOffsetY + y, item, 0, 0
         );
       }
     }

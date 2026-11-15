@@ -133,7 +133,7 @@ void UIMakeTargetProcessWnd::Paint() {
     const ITEM_INFO* material = this->materials;
     for (int x = 8; x < 104; x += 32, ++material) {
       auto* bar = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\btnbar_right2.bmp")));
-      DrawItemSlotBackground(*this, x - 4, this->geometry.height - bar->image.height - 32);
+      this->DrawItemSlotFrame(x - 4, this->geometry.height - bar->image.height - 32);
       if (material->identity[1] > 0) {
         this->DrawItemIcon(x, this->geometry.height - bar->image.height - 28, *material, 0);
       }

@@ -508,9 +508,9 @@ void UIRodexComposeWnd::Paint() {
   for (const auto& item : this->m_items) {
     this->DrawBitmap(itemX - 4, 319, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\shadow_item_on.bmp"))), true);
     if (this->m_tax <= g_session.m_zeny) {
-      DrawItemWithQuantity(*this, ResourceMgr::Instance(), itemX, 309, item, 0, 0);
+      this->DrawItemAndQuantity(itemX, 309, item, 0, 0);
     } else {
-      DrawItemWithQuantityAuxiliary(*this, 2, itemX, 309, item, item.identified, 0);
+      this->DrawItemAndQuantityAuxiliary(2, itemX, 309, item, item.identified, 0);
     }
     if (item.grade > 0) {
       this->DrawBitmap(itemX, 321, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", static_cast<int>(item.grade)).c_str()))), true);

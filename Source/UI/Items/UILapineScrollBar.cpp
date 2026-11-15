@@ -236,9 +236,9 @@ void UIIngredientInfoWnd::Paint() {
 
   std::uint32_t color = 0;
   if (this->insufficient == 0) {
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), 4, 3, this->item, 0, 0);
+    this->DrawItemAndQuantity(4, 3, this->item, 0, 0);
   } else {
-    DrawItemWithQuantityAuxiliary(*this, 2, 4, 3, this->item, this->item.identified, 0);
+    this->DrawItemAndQuantityAuxiliary(2, 4, 3, this->item, this->item.identified, 0);
     color = 0x969696;
   }
 
@@ -264,7 +264,7 @@ void UILapineBoxWnd::Paint() {
     int position[2];
     this->MaterialPosition(position, index);
     this->DrawBitmap(position[0] - 4, position[1] + 11, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\lapine\\shadow_item_off.bmp"))), true);
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), position[0], position[1], this->items[index], 0, 0);
+    this->DrawItemAndQuantity(position[0], position[1], this->items[index], 0, 0);
   }
 
   if (timeGetTime() < this->noticeTick + this->noticeDuration) {

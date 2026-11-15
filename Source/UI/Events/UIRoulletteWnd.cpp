@@ -206,18 +206,18 @@ void UIRoulletteWnd::Paint() {
     const int x = (row + column) * 36 + 159;
     const int y = 344 - row * 40;
     if (g_rouletteMgr->m_stage == row && (g_rouletteMgr->m_resultShown != 0 || g_rouletteMgr->m_spinning != 0)) {
-      DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, y, it->second, 0, 0);
+      this->DrawItemAndQuantity(x, y, it->second, 0, 0);
     } else {
-      DrawItemWithQuantityAuxiliary(*this, 1, x, y, it->second, 0, 0);
+      this->DrawItemAndQuantityAuxiliary(1, x, y, it->second, 0, 0);
     }
   }
 
   if (g_rouletteMgr->m_resultShown == 1 && g_rouletteMgr->m_resultItem.quantity != 0) {
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), 189, 145, g_rouletteMgr->m_resultItem, 0, 0);
+    this->DrawItemAndQuantity(189, 145, g_rouletteMgr->m_resultItem, 0, 0);
   }
 
   if (g_rouletteMgr->m_additionItem.quantity != 0) {
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), 60, 135, g_rouletteMgr->m_additionItem, 0, 0);
+    this->DrawItemAndQuantity(60, 135, g_rouletteMgr->m_additionItem, 0, 0);
   }
 }
 

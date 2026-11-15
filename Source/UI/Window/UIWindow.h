@@ -185,6 +185,10 @@ public:
   void DrawAuxiliaryScaled(int mode, int x, int y, int width, int height, CBitmapRes* bitmap, int option, bool rebuild);
   void DrawAuxiliary(int mode, int x, int y, CBitmapRes* bitmap, bool transparent, bool rebuild);
   void DrawItemIcon(int x, int y, const ITEM_INFO& item, unsigned char identified);
+  void DrawItemIconFromId(int x, int y, const char* id, unsigned char identified);
+  void DrawItemSlotFrame(int x, int y);
+  void DrawItemAndQuantity(int x, int y, const ITEM_INFO& item, unsigned char identified, unsigned char plain);
+  void DrawItemAndQuantityAuxiliary(int mode, int x, int y, const ITEM_INFO& item, unsigned char identified, unsigned char plain);
   void DrawAmount(int amount, std::string text, int x, int y);
   int TextHeight(const char* text, unsigned bytes, int family, int height, unsigned char bold, unsigned char italic);
   int VerticalTextHeight(const char* text, unsigned bytes, int family, int height, unsigned char bold);

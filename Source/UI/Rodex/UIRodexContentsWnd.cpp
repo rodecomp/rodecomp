@@ -200,7 +200,7 @@ void UIRodexContentsWnd::Paint() {
     this->DrawBitmap(
       x - 4, 319, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\shadow_item_on.bmp"))), true
     );
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, 309, *item, 0, 0);
+    this->DrawItemAndQuantity(x, 309, *item, 0, 0);
     if (0 < item->grade) {
       this->DrawBitmap(
         x, 321, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item->grade).c_str()))),

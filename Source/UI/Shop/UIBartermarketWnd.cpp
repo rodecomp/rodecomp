@@ -1769,7 +1769,7 @@ void UIBartermarketWnd::Paint() {
   const int columns = (this->geometry.width - 40) / 32;
   const int rows = (this->geometry.height - this->footerHeight - this->bottomPadding - 17) / 32;
   for (int row = 0; row < rows; ++row) {
-    DrawItemSlotBackground(*this, 40, row * 32 + 17);
+    this->DrawItemSlotFrame(40, row * 32 + 17);
   }
   unsigned slotRed;
   unsigned slotGreen;
@@ -1800,7 +1800,7 @@ void UIBartermarketWnd::Paint() {
     if (it->flag_38 == true) {
       this->DrawItemIcon(x + 44, y + 21, it->ToItemInfo(), 0);
     } else {
-      DrawItemWithQuantity(*this, ResourceMgr::Instance(), x + 44, y + 21, it->ToItemInfo(), 0, 0);
+      this->DrawItemAndQuantity(x + 44, y + 21, it->ToItemInfo(), 0, 0);
     }
     {
       const ITEM_INFO item = it->ToItemInfo();
@@ -1808,7 +1808,7 @@ void UIBartermarketWnd::Paint() {
     }
     char iconId[64];
     StringFormat(iconId, sizeof(iconId), static_cast<std::size_t>(-1), "%d", it->currencyItemId);
-    DrawItemIconById(*this, this->geometry.width - 70, y + 21, iconId, 1);
+    this->DrawItemIconFromId(this->geometry.width - 70, y + 21, iconId, 1);
     if (it->currencyAmount > 0) {
       char amount[64];
       const int bytes = StringFormat(amount, sizeof(amount), static_cast<std::size_t>(-1), "%d", it->currencyAmount);
@@ -1855,9 +1855,9 @@ void UIExpandedBarterItemPurchaseWnd::Paint() {
     }
 
     const int y = visible * 64;
-    DrawItemSlotBackground(*this, 40, y + 17);
+    this->DrawItemSlotFrame(40, y + 17);
     for (unsigned slot = 0; slot < it->chunks.size(); ++slot) {
-      DrawItemSlotBackground(*this, 72 + slot * 42, y + 49);
+      this->DrawItemSlotFrame(72 + slot * 42, y + 49);
     }
     if (this->hoveredRow == index) {
       unsigned hoverRed;
@@ -1867,7 +1867,7 @@ void UIExpandedBarterItemPurchaseWnd::Paint() {
       this->FillRegion(72, y + 19, this->geometry.width - 0x5A, 0x3C, RGB(hoverRed, hoverGreen, hoverBlue));
     }
 
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), 44, y + 21, it->ToItemInfo(), 0, 0);
+    this->DrawItemAndQuantity(44, y + 21, it->ToItemInfo(), 0, 0);
     {
       const ITEM_INFO item = it->ToItemInfo();
       this->DrawWrappedItemName(76, y + 29, 100, &item, 0, 0, 12);
@@ -1888,7 +1888,7 @@ void UIExpandedBarterItemPurchaseWnd::Paint() {
       chunkItem.itemId = itemId;
       chunkItem.refiningLevel = chunk->field_4;
       const int chunkX = 84 + chunkIndex * 42;
-      DrawItemWithQuantity(*this, ResourceMgr::Instance(), chunkX - 8, y + 49, chunkItem, 1, 0);
+      this->DrawItemAndQuantity(chunkX - 8, y + 49, chunkItem, 1, 0);
       if (chunkItem.refiningLevel > 0) {
         char chunkAmount[16] = {};
         StringFormat(chunkAmount, sizeof(chunkAmount), static_cast<std::size_t>(-1), "+%d", chunkItem.refiningLevel);
@@ -1909,9 +1909,9 @@ void UIExpandedBarterItemPurchaseWnd::Paint() {
   }
 
   for (int row = index; row < this->rowCount; ++row) {
-    DrawItemSlotBackground(*this, 40, row * 64 + 17);
+    this->DrawItemSlotFrame(40, row * 64 + 17);
     for (int x = 72; x < 156; x += 42) {
-      DrawItemSlotBackground(*this, x, row * 64 + 49);
+      this->DrawItemSlotFrame(x, row * 64 + 49);
     }
   }
 }
@@ -1949,9 +1949,9 @@ void UIExpandedBartermarketWnd::Paint() {
     }
 
     const int y = visible * 64;
-    DrawItemSlotBackground(*this, 40, y + 17);
+    this->DrawItemSlotFrame(40, y + 17);
     for (unsigned slot = 0; slot < it->chunks.size(); ++slot) {
-      DrawItemSlotBackground(*this, 72 + slot * 42, y + 49);
+      this->DrawItemSlotFrame(72 + slot * 42, y + 49);
     }
     if (this->hoveredRow == index) {
       unsigned hoverRed;
@@ -1964,9 +1964,9 @@ void UIExpandedBartermarketWnd::Paint() {
     if (it->flag_30 == true) {
       this->DrawItemIcon(44, y + 21, it->ToItemInfo(), 0);
     } else if (it->value == 0) {
-      DrawItemWithQuantityAuxiliary(*this, 1, 44, y + 21, it->ToItemInfo(), 1, 0);
+      this->DrawItemAndQuantityAuxiliary(1, 44, y + 21, it->ToItemInfo(), 1, 0);
     } else {
-      DrawItemWithQuantity(*this, ResourceMgr::Instance(), 44, y + 21, it->ToItemInfo(), 1, 0);
+      this->DrawItemAndQuantity(44, y + 21, it->ToItemInfo(), 1, 0);
     }
     {
       const ITEM_INFO item = it->ToItemInfo();
@@ -1988,9 +1988,9 @@ void UIExpandedBartermarketWnd::Paint() {
       chunkItem.refiningLevel = chunk->field_4;
       const int chunkX = 76 + chunkIndex * 42;
       if (it->value == 0) {
-        DrawItemWithQuantityAuxiliary(*this, 1, chunkX, y + 49, chunkItem, 1, 0);
+        this->DrawItemAndQuantityAuxiliary(1, chunkX, y + 49, chunkItem, 1, 0);
       } else {
-        DrawItemWithQuantity(*this, ResourceMgr::Instance(), chunkX, y + 49, chunkItem, 1, 0);
+        this->DrawItemAndQuantity(chunkX, y + 49, chunkItem, 1, 0);
       }
       if (chunkItem.refiningLevel != 0) {
         char chunkAmount[16] = {};
@@ -2012,9 +2012,9 @@ void UIExpandedBartermarketWnd::Paint() {
   }
 
   for (int row = index; row < this->rowCount; ++row) {
-    DrawItemSlotBackground(*this, 40, row * 64 + 17);
+    this->DrawItemSlotFrame(40, row * 64 + 17);
     for (int x = 72; x < 156; x += 42) {
-      DrawItemSlotBackground(*this, x, row * 64 + 49);
+      this->DrawItemSlotFrame(x, row * 64 + 49);
     }
   }
 }

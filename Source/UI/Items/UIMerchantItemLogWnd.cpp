@@ -104,7 +104,7 @@ void UIMerchantItemLogWnd::Paint() {
   int slots = (this->geometry.height - 38) / 32;
   y = 17;
   for (int i = 0; i < slots; ++i, y += 32) {
-    DrawItemSlotBackground(*this, 40, y);
+    this->DrawItemSlotFrame(40, y);
   }
 
   auto it = this->items.begin();
@@ -125,7 +125,7 @@ void UIMerchantItemLogWnd::Paint() {
 
     const int top = visible / this->columns * 32;
     const int x = visible % this->columns * 32 + 44;
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, top + 21, *it, 0, 0);
+    this->DrawItemAndQuantity(x, top + 21, *it, 0, 0);
 
     if (0 < it->grade) {
       this->DrawBitmap(
