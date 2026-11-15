@@ -3,98 +3,98 @@
 #include "Contents/Items/ItemLink.h"
 #include "Network/TextEncoding.h"
 #include "UI/Edit/UIItemTagCtrl.h"
+#include "UI/Lists/UIChatHisBox.h"
 #include "UI/Navigation/NavigationLink.h"
 #include "UI/Text/UITextViewer.h"
 
 #include <cstring>
 
-namespace {
-  // OFFSET: 0x0087A700
-  // FUNCTION: fn_11236
-  int __stdcall Number(std::string text) {
-    char digits[] = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    int result = 0;
-    const int size = static_cast<int>(text.size()) + 1;
-    char* buffer = new char[size];
-    strcpy_s(buffer, size, text.c_str());
-    const int length = size - 1;
+// OFFSET: 0x0087A700
+// FUNCTION: fn_11236
+int UIChatHisBox::Number(std::string text) {
+  char digits[] = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  int result = 0;
+  const int size = static_cast<int>(text.size()) + 1;
+  char* buffer = new char[size];
+  strcpy_s(buffer, size, text.c_str());
+  const int length = size - 1;
 
-    for (int index = 0; index < length; ++index) {
-      for (int digit = 0; digit < 62; ++digit) {
-        if (digits[digit] == buffer[index]) {
-          int place = 1;
+  for (int index = 0; index < length; ++index) {
+    for (int digit = 0; digit < 62; ++digit) {
+      if (digits[digit] == buffer[index]) {
+        int place = 1;
 
-          for (int exponent = 1; exponent < length - index; ++exponent) {
-            place *= 62;
-          }
-
-          result += place * digit;
-          break;
-        }
-      }
-    }
-
-    if (buffer) {
-      delete[] buffer;
-    }
-
-    return result;
-  }
-
-  // OFFSET: 0x00893AE0
-  // FUNCTION: fn_11507
-  int DecodeCards(std::vector<std::int32_t>& fields, const char* text, int& position, const char& delimiter, const int& length, int field) {
-    std::string value("");
-    std::vector<std::int32_t> cards;
-    int count = 1;
-
-    while (++position < length + 1) {
-      const char byte = text[position];
-
-      if (byte >= '0') {
-        value += byte;
-      } else if (byte == delimiter) {
-        ++count;
-        cards.push_back(Number(value));
-        value.clear();
-      } else {
-        --position;
-        cards.push_back(Number(value));
-        fields[field] = count;
-
-        for (std::size_t index = 0; index < cards.size(); ++index) {
-          fields[field + 1 + index] = cards[index];
+        for (int exponent = 1; exponent < length - index; ++exponent) {
+          place *= 62;
         }
 
+        result += place * digit;
         break;
       }
     }
-
-    return count;
   }
 
-  // OFFSET: 0x00893720
-  // FUNCTION: fn_11506
-  void DecodeOptions(std::vector<std::int32_t>& options, const char* text, int& position, const int& length, const char& separator,
-                     const char& recordSeparator) {
-    std::string value("");
+  if (buffer) {
+    delete[] buffer;
+  }
 
-    while (++position < length + 1) {
-      const char byte = text[position];
+  return result;
+}
 
-      if (byte >= '0') {
-        value += byte;
-      } else if (byte == separator || byte == recordSeparator) {
-        options.push_back(Number(value));
-        value.clear();
-      } else {
-        --position;
-        options.push_back(Number(value));
-        break;
+// OFFSET: 0x00893AE0
+// FUNCTION: fn_11507
+int UIChatHisBox::DecodeCards(std::vector<std::int32_t>& fields, const char* text, int& position, const char& delimiter, const int& length, int field) {
+  std::string value("");
+  std::vector<std::int32_t> cards;
+  int count = 1;
+
+  while (++position < length + 1) {
+    const char byte = text[position];
+
+    if (byte >= '0') {
+      value += byte;
+    } else if (byte == delimiter) {
+      ++count;
+      cards.push_back(this->Number(value));
+      value.clear();
+    } else {
+      --position;
+      cards.push_back(this->Number(value));
+      fields[field] = count;
+
+      for (std::size_t index = 0; index < cards.size(); ++index) {
+        fields[field + 1 + index] = cards[index];
       }
+
+      break;
+    }
+  }
+
+  return count;
+}
+
+// OFFSET: 0x00893720
+// FUNCTION: fn_11506
+void UIChatHisBox::DecodeOptions(std::vector<std::int32_t>& options, const char* text, int& position, const int& length, const char& separator,
+                                 const char& recordSeparator) {
+  std::string value("");
+
+  while (++position < length + 1) {
+    const char byte = text[position];
+
+    if (byte >= '0') {
+      value += byte;
+    } else if (byte == separator || byte == recordSeparator) {
+      options.push_back(this->Number(value));
+      value.clear();
+    } else {
+      --position;
+      options.push_back(this->Number(value));
+      break;
     }
   }
 }
+
 
 // OFFSET: 0x0087A810
 // FUNCTION: fn_11237
@@ -121,7 +121,7 @@ std::string UIItemTagCtrl::ItemLinkNumberText(int value) {
 
 // OFFSET: 0x0087F7D0
 // FUNCTION: fn_11274
-void DecodeItemLinkFields(const std::string& text, std::vector<std::int32_t>& fields) {
+void UIChatHisBox::DecodeItemLinkFields(const std::string& text, std::vector<std::int32_t>& fields) {
   char delimiters[] = "!#$%&'()*+,-/";
   const int size = static_cast<int>(text.size()) + 1;
 
@@ -144,10 +144,10 @@ void DecodeItemLinkFields(const std::string& text, std::vector<std::int32_t>& fi
   value += buffer[3];
   value += buffer[4];
 
-  fields[0] = Number(value);
+  fields[0] = this->Number(value);
   value.clear();
   value += buffer[5];
-  fields[1] = Number(value);
+  fields[1] = this->Number(value);
   value.clear();
   int field = 2;
 
@@ -165,23 +165,23 @@ void DecodeItemLinkFields(const std::string& text, std::vector<std::int32_t>& fi
       switch (delimiter) {
       case 7:
         if (!value.empty()) {
-          fields[field] = Number(value);
+          fields[field] = this->Number(value);
         }
 
-        cardCount = DecodeCards(fields, buffer, position, delimiters[7], static_cast<int>(text.size()), 6);
+        cardCount = this->DecodeCards(fields, buffer, position, delimiters[7], static_cast<int>(text.size()), 6);
         break;
       case 9:
         ++optionCount;
 
         if (!value.empty()) {
-          fields[field] = Number(value);
+          fields[field] = this->Number(value);
         }
 
-        DecodeOptions(options, buffer, position, static_cast<int>(text.size()), delimiters[10], delimiters[11]);
+        this->DecodeOptions(options, buffer, position, static_cast<int>(text.size()), delimiters[10], delimiters[11]);
         break;
       default:
         if (!value.empty()) {
-          fields[field] = Number(value);
+          fields[field] = this->Number(value);
         }
 
         break;

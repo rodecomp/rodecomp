@@ -1917,7 +1917,7 @@ std::string UIChatHisBox::RenderItemLinks(const char* lineText, std::string& sou
     }
 
     std::vector<std::int32_t> fields;
-    DecodeItemLinkFields(encoded, fields);
+    this->DecodeItemLinkFields(encoded, fields);
     ITEM_INFO item;
     if (ItemFromLinkFields(fields, item)) {
       const std::string label = this->BracketName(item.DisplayName(0));

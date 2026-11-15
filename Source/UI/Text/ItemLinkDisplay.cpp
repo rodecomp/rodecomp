@@ -26,7 +26,7 @@ bool UIChatHisBox::Name(const std::string& encoded, std::string& output) {
   }
 
   std::vector<std::int32_t> fields;
-  DecodeItemLinkFields(encoded, fields);
+  this->DecodeItemLinkFields(encoded, fields);
   ITEM_INFO item;
 
   if (ItemFromLinkFields(fields, item)) {

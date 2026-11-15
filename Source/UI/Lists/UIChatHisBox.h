@@ -3,6 +3,7 @@
 
 #include "UI/Lists/UIListBox.h"
 
+#include <cstdint>
 #include <list>
 #include <string>
 #include <vector>
@@ -51,6 +52,11 @@ public:
   bool Next(std::string& remaining, std::string& encoded, unsigned& position, const char* original);
   std::string Convert(const std::string& text);
   const std::string BracketName(const std::string& name);
+  int Number(std::string text);
+  int DecodeCards(std::vector<std::int32_t>& fields, const char* text, int& position, const char& delimiter, const int& length, int field);
+  void DecodeOptions(std::vector<std::int32_t>& options, const char* text, int& position, const int& length, const char& separator,
+                     const char& recordSeparator);
+  void DecodeItemLinkFields(const std::string& text, std::vector<std::int32_t>& fields);
 
   /* 00D4 */ std::list<std::vector<UIItemTagButton*>> itemTags;
 
