@@ -4564,9 +4564,10 @@ void CGameActor::ApplyNatureProtection() {
   this->SetSprJob(this->job);
   const int costume = this->GetMadogearType();
   const int costumeJob = this->GetBodyCostume();
-  this->render.name = g_equipmentResourceMgr->GetBodyPalName(
+  const std::string paletteName = g_session.GetBodyPalName(
     this->GetEffectiveJob(-1), this->sex, static_cast<int>(this->render.bodyPalette), costumeJob, costume, 0
   );
+  this->render.name = paletteName;
 }
 
 __declspec(noinline) void CGameActor::ProcessViewCheck() {
