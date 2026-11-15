@@ -1,7 +1,6 @@
 #ifndef RAGNAROK_SOURCE_CONTENTS_CONFIGURATION_GAMESETTINGSMGR_H
 #define RAGNAROK_SOURCE_CONTENTS_CONFIGURATION_GAMESETTINGSMGR_H
 
-#include "Contents/Skills/PlayerSkillBundle.h"
 #include "Script/LuaInstance.h"
 #include "Utility/Singleton.h"
 
@@ -28,16 +27,16 @@ struct GameSettingsOption {
   /* 0060 */ int disabledMessage = 4698;
 };
 
-class CGameSettingsMgr : public Singleton<CGameSettingsMgr>, public CLuaInstance {
+class CGameSettingsMgr : public Singleton<CGameSettingsMgr> {
 public:
   CGameSettingsMgr();
   ~CGameSettingsMgr() override;
 
+  /* 0004 */ CLuaInstance script;
   /* 000C */ std::vector<GameSettingsOption> options;
-  /* 0018 */ std::unordered_map<std::uint32_t, std::function<void(int, unsigned char, bool, int, int)>, SkillIdHash> actions;
-  /* 0038 */ std::unordered_map<std::uint32_t, std::function<void()>, SkillIdHash> functions;
+  /* 0018 */ std::unordered_map<int, std::function<void(int, unsigned char, bool, int, int)>> actions;
+  /* 0038 */ std::unordered_map<int, std::function<void()>> functions;
 
-  bool Load();
   bool LoadSettings();
   bool ReadOptionTable();
   void ResetToDefaults();
@@ -47,6 +46,9 @@ public:
   bool RunFunction(int id);
   std::optional<GameSettingsOption*> FindOption(int id);
   std::list<int> GetOptionIds(int tab);
+
+private:
+  void Init_Func();
 };
 
 using GameSettings = CGameSettingsMgr;
