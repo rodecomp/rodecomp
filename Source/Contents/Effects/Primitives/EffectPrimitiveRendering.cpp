@@ -6992,7 +6992,7 @@ void CEffectPrim::Render2DPrimitive() {
     if (g_overrideColor == 1) {
       g_cooldownOwner->ClearReverseCommands();
     } else {
-      g_cooldownOwner->Drawing().SubmitReverse(g_renderer->queues, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+      g_cooldownOwner->Drawing().SubmitReverse();
     }
   }
 }

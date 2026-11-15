@@ -16,7 +16,7 @@ struct CooldownDrawing {
     int centerX, int centerY, int radiusX, int radiusY, CooldownState& value, int limit, int offsetX, int offsetY
   );
   void SubmitNormal();
-  void SubmitReverse(RenderQueues& queues, bool depthAlpha, float depthStart, float depthEnd);
+  void SubmitReverse();
 
 private:
   __declspec(noinline) void DrawReverse(CooldownState& value);
