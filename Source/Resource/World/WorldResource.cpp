@@ -309,9 +309,9 @@ bool C3dWorldRes::Load(const char* name) {
         record->animationSpeed = speed;
         record->animation = animation;
         record->animationType = animationType;
-        std::memcpy(record->position, wire.position, sizeof(record->position));
-        std::memcpy(record->rotation, wire.rotation, sizeof(record->rotation));
-        std::memcpy(record->scale, wire.scale, sizeof(record->scale));
+        std::memcpy(&record->position, wire.position, sizeof(record->position));
+        std::memcpy(&record->rotation, wire.rotation, sizeof(record->rotation));
+        std::memcpy(&record->scale, wire.scale, sizeof(record->scale));
         record->flag = flag != 0;
         record->index = modelIndex;
         this->models.push_back(record);

@@ -31,6 +31,18 @@ public:
     this->dirty = 1;
   }
 
+  // INLINED
+  void SetRotation(const vector3d& value) {
+    this->rotation = value;
+    this->dirty = 1;
+  }
+
+  // INLINED
+  void SetScale(const vector3d& value) {
+    this->scale = value;
+    this->dirty = 1;
+  }
+
   /* 0004 */ vector3d position;
   /* 0010 */ vector3d rotation;
   /* 001C */ vector3d scale;

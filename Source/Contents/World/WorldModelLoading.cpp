@@ -62,7 +62,7 @@ namespace {
 
   // INLINED
   inline C3dActor* CreateWorldModel(const WorldModelRecord& placement, C3dModelRes& resource, BinkMovies& movies) {
-    resource.RegisterMovies({placement.position[0], placement.position[1], placement.position[2]});
+    resource.RegisterMovies({placement.position.x, placement.position.y, placement.position.z});
 
     if (!resource.FindNode(placement.node) && resource.nodes.front() == nullptr) {
       return nullptr;
@@ -80,18 +80,9 @@ namespace {
     actor->occlusionEnabled = 0;
     actor->SetSpeed(placement.animationSpeed);
     actor->playback = placement.animation;
-    actor->position.x = placement.position[0];
-    actor->position.y = placement.position[1];
-    actor->position.z = placement.position[2];
-    actor->dirty = 1;
-    actor->rotation.x = placement.rotation[0];
-    actor->rotation.y = placement.rotation[1];
-    actor->rotation.z = placement.rotation[2];
-    actor->dirty = 1;
-    actor->scale.x = placement.scale[0];
-    actor->scale.y = placement.scale[1];
-    actor->scale.z = placement.scale[2];
-    actor->dirty = 1;
+    actor->SetPosition(placement.position);
+    actor->SetRotation(placement.rotation);
+    actor->SetScale(placement.scale);
     actor->commandMode = placement.flag;
     actor->color = static_cast<std::uint32_t>(placement.index);
     actor->Assign(resource);
@@ -252,9 +243,9 @@ void CWorld::InitWorld() {
     g_modeMgr.GetGameMode()
       ->CellCenter(g_session.m_playerX, g_session.m_playerY, g_worldLoadCenter[0], g_worldLoadCenter[2]);
 
-    const float dx = placement->position[0] - g_worldLoadCenter[0];
-    const float dy = placement->position[1] - g_worldLoadCenter[1];
-    const float dz = placement->position[2] - g_worldLoadCenter[2];
+    const float dx = placement->position.x - g_worldLoadCenter[0];
+    const float dy = placement->position.y - g_worldLoadCenter[1];
+    const float dz = placement->position.z - g_worldLoadCenter[2];
     const float squared = dy * dy + dx * dx + dz * dz;
     const float distance = SquareRoot(squared);
 
