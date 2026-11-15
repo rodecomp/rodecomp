@@ -47,16 +47,18 @@ MapNameDisplay::MapNameDisplay(std::string name, std::string subName, std::strin
     const int family = g_serviceType == 0 ? 29 : 0;
 
     text.SetFont(family, static_cast<int>(scale * 16.0f), 1, 0);
-    SIZE size = text.Measure(name.c_str(), static_cast<int>(std::strlen(name.c_str())));
+    SIZE nameSize;
+    text.Measure(name.c_str(), static_cast<int>(std::strlen(name.c_str())), &nameSize);
     text.Draw(
-      static_cast<int>(static_cast<float>(this->m_width - size.cx) * 0.5f), static_cast<int>(scale * 72.0f), name.c_str(),
+      static_cast<int>(static_cast<float>(this->m_width - nameSize.cx) * 0.5f), static_cast<int>(scale * 72.0f), name.c_str(),
       static_cast<int>(std::strlen(name.c_str()))
     );
 
     text.SetFont(family, static_cast<int>(scale * 44.0f), 1, 0);
-    size = text.Measure(subName.c_str(), static_cast<int>(std::strlen(subName.c_str())));
+    SIZE subNameSize;
+    text.Measure(subName.c_str(), static_cast<int>(std::strlen(subName.c_str())), &subNameSize);
     text.Draw(
-      static_cast<int>(static_cast<float>(this->m_width - size.cx) * 0.5f), static_cast<int>(scale * 95.0f), subName.c_str(),
+      static_cast<int>(static_cast<float>(this->m_width - subNameSize.cx) * 0.5f), static_cast<int>(scale * 95.0f), subName.c_str(),
       static_cast<int>(std::strlen(subName.c_str()))
     );
 

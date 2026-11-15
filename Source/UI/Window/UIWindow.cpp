@@ -906,7 +906,9 @@ int UIWindow::TextWidth(const char* text, unsigned bytes, int family, int height
 
   TextContext context(*this->geometry.surface);
   context.SetFont(family, height, bold, italic);
-  return context.Measure(text, bytes).cx;
+  SIZE size;
+  context.Measure(text, bytes, &size);
+  return size.cx;
 }
 
 // OFFSET: 0x00A7D760
@@ -926,10 +928,7 @@ int UIWindow::ColoredTextWidth(const char* text, unsigned bytes, int family, int
   int width = this->TextWidth(text, bytes, family, height, bold, 0);
   std::uint32_t color = 0;
   if (ParseColorCode(SegmentEnd(text, text + bytes), color) && color) {
-    TextContext context(*this->geometry.surface);
-    context.SetFont(0, 12, 0, 0);
-    const int marker = context.Measure("^000000", 7).cx;
-    width += (3 - marker) * 2;
+    width += (3 - this->TextWidth("^000000", 7, 0, 12, 0, 0)) * 2;
   }
 
   return width;
@@ -965,7 +964,8 @@ void UIWindow::DrawVerticalText(int x, int y, const char* text, unsigned bytes, 
   context.SetColor(color);
   for (const char* current = text; current < end;) {
     const char* const next = CharNextExA(static_cast<WORD>(g_textCodePage), current, 0);
-    const SIZE size = context.Measure(current, static_cast<int>(next - current));
+    SIZE size;
+    context.Measure(current, static_cast<int>(next - current), &size);
     current = next;
     if (widest < size.cx) {
       widest = size.cx;
@@ -978,7 +978,8 @@ void UIWindow::DrawVerticalText(int x, int y, const char* text, unsigned bytes, 
 
   for (const char* current = text; current < end;) {
     const char* const next = CharNextExA(static_cast<WORD>(g_textCodePage), current, 0);
-    const SIZE size = context.Measure(text, static_cast<int>(next - text));
+    SIZE size;
+    context.Measure(text, static_cast<int>(next - text), &size);
     context.Draw(x + (widest - size.cx) / 2, y, text, static_cast<int>(next - text));
     current = next;
     text = next;
@@ -994,7 +995,9 @@ void UIWindow::DrawCenteredText(int x, int y, const char* text, int width, int f
   context.SetColor(color);
   const int bytes = static_cast<int>(std::strlen(text));
   if (width) {
-    const int extent = context.Measure(text, bytes).cx;
+    SIZE size;
+    context.Measure(text, bytes, &size);
+    const int extent = size.cx;
     context.Draw(static_cast<int>((width - extent) * 0.5 + x), y, text, static_cast<int>(std::strlen(text)));
   } else {
     context.Draw(x, y, text, bytes);
@@ -1012,7 +1015,8 @@ void UIWindow::DrawCenteredOutlinedText(
 
   TextContext context(*this->geometry.surface);
   context.SetFont(family, height, bold, 0);
-  const SIZE size = context.Measure(text, static_cast<int>(std::strlen(text)));
+  SIZE size;
+  context.Measure(text, static_cast<int>(std::strlen(text)), &size);
   const int left = static_cast<int>((width - size.cx) * 0.5f + x);
   context.SetColor(outline);
   context.Draw(left - 1, y, text, bytes);
@@ -1034,7 +1038,8 @@ void UIWindow::DrawVerticalOutlinedText(
 
   TextContext context(*this->geometry.surface);
   context.SetFont(family, height, bold, 0);
-  const SIZE size = context.Measure(text, bytes);
+  SIZE size;
+  context.Measure(text, bytes, &size);
   context.SetColor(outline);
   context.Draw(x + size.cy - 1, y, text, bytes);
   context.Draw(x + size.cy + 1, y, text, bytes);
@@ -1053,7 +1058,8 @@ void UIWindow::DrawRightAlignedText(int right, int y, const char* text, int byte
 
   TextContext context(*this->geometry.surface);
   context.SetFont(family, height, bold, 0);
-  const SIZE size = context.Measure(text, static_cast<int>(std::strlen(text)));
+  SIZE size;
+  context.Measure(text, static_cast<int>(std::strlen(text)), &size);
   context.SetColor(color);
   context.Draw(right - size.cx, y, text, bytes);
 }
@@ -1301,7 +1307,9 @@ int UIWindow::TextHeight(const char* text, unsigned bytes, int family, int heigh
 
   TextContext context(*this->geometry.surface);
   context.SetFont(family, height, bold, italic);
-  return context.Measure(text, bytes).cy;
+  SIZE size;
+  context.Measure(text, bytes, &size);
+  return size.cy;
 }
 
 // OFFSET: 0x00A80230
@@ -1329,7 +1337,9 @@ int UIWindow::VerticalTextHeight(const char* text, unsigned bytes, int family, i
 
   while (text < end) {
     const char* next = CharNextExA(static_cast<WORD>(g_textCodePage), text, 0);
-    total += context.Measure(text, static_cast<int>(next - text)).cy;
+    SIZE size;
+    context.Measure(text, static_cast<int>(next - text), &size);
+    total += size.cy;
     text = next;
   }
 
@@ -1340,7 +1350,9 @@ int UIWindow::VerticalTextHeight(const char* text, unsigned bytes, int family, i
 // FUNCTION: fn_16973
 SIZE UIWindow::TextSize(const char* text, unsigned bytes, int family, int height, unsigned char bold, unsigned char italic
 ) {
-  SIZE size = {};
+  SIZE size;
+  size.cx = 0;
+  size.cy = 0;
   if (!text) {
     return size;
   }
@@ -1354,7 +1366,7 @@ SIZE UIWindow::TextSize(const char* text, unsigned bytes, int family, int height
 
   TextContext context(*this->geometry.surface);
   context.SetFont(family, height, bold, italic);
-  size = context.Measure(text, bytes);
+  context.Measure(text, bytes, &size);
   return size;
 }
 
@@ -1362,7 +1374,9 @@ SIZE UIWindow::TextSize(const char* text, unsigned bytes, int family, int height
 // FUNCTION: fn_16974
 SIZE UIWindow::VerticalTextSize(const char* text, unsigned bytes, int family, int height, unsigned char bold, unsigned char italic
 ) {
-  SIZE size = {};
+  SIZE size;
+  size.cx = 0;
+  size.cy = 0;
   if (!text) {
     return size;
   }
@@ -1384,7 +1398,10 @@ SIZE UIWindow::VerticalTextSize(const char* text, unsigned bytes, int family, in
 
   while (text < end) {
     const char* next = CharNextExA(static_cast<WORD>(g_textCodePage), text, 0);
-    const SIZE part = context.Measure(text, static_cast<int>(next - text));
+    SIZE part;
+    part.cx = 0;
+    part.cy = 0;
+    context.Measure(text, static_cast<int>(next - text), &part);
     if (size.cx < part.cx) {
       size.cx = part.cx;
     }
@@ -3962,7 +3979,9 @@ std::list<int> UIWindow::WrapText(std::string text, std::list<std::string>* line
       if (bytes) {
         TextContext context(*this->geometry.surface);
         context.SetFont(family, height, bold, 0);
-        characterWidth = context.Measure(measured, bytes).cx;
+        SIZE size;
+        context.Measure(measured, bytes, &size);
+        characterWidth = size.cx;
       }
     }
 

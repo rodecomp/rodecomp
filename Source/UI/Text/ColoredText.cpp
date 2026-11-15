@@ -111,7 +111,9 @@ void UIWindow::DrawColoredText(
 
       context.SetColor(color);
       context.Draw(x, y, segment.c_str(), static_cast<int>(segment.size()));
-      x = (x + context.Measure(current, static_cast<int>(next - current)).cx);
+      SIZE size;
+      context.Measure(current, static_cast<int>(next - current), &size);
+      x = (x + size.cx);
     }
 
     current = next;
@@ -161,7 +163,9 @@ void UIWindow::DrawStyledColoredText(
 
       context.SetColor(color);
       context.Draw(x, y, segment.c_str(), static_cast<int>(segment.size()));
-      x = (x + context.Measure(current, static_cast<int>(next - current)).cx);
+      SIZE size;
+      context.Measure(current, static_cast<int>(next - current), &size);
+      x = (x + size.cx);
     }
 
     current = next;
@@ -238,7 +242,9 @@ void UIWindow::DrawOutlinedColoredText(
       context.Draw(x, (y + 1), segment.c_str(), length);
       context.SetColor(color);
       context.Draw(x, y, segment.c_str(), length);
-      x = (x + context.Measure(current, static_cast<int>(next - current)).cx);
+      SIZE size;
+      context.Measure(current, static_cast<int>(next - current), &size);
+      x = (x + size.cx);
     }
 
     current = next;

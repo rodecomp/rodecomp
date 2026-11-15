@@ -36,7 +36,9 @@ namespace {
 
     TextContext context(*window.geometry.surface);
     context.SetFont(family, height, 0, 0);
-    return context.Measure(text.c_str(), static_cast<int>(text.size()));
+    SIZE size;
+    context.Measure(text.c_str(), static_cast<int>(text.size()), &size);
+    return size;
   }
 }
 

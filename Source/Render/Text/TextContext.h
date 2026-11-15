@@ -21,7 +21,7 @@ public:
   void SetBackgroundColor(COLORREF color);
   void SetBackgroundMode(int mode);
   void SetBackground(COLORREF color, int mode);
-  SIZE Measure(const char* text, int bytes);
+  void Measure(const char* text, int bytes, SIZE* size);
   void Draw(int x, int y, const char* text, int bytes);
   static unsigned CodePage(unsigned charset);
   static unsigned Marker(const char* text, unsigned bytes);

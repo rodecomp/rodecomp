@@ -289,16 +289,14 @@ void TextContext::DrawPart(int x, int y, const char* text, int bytes, unsigned c
 
 // OFFSET: 0x0054FD00
 // FUNCTION: fn_01961
-SIZE TextContext::Measure(const char* text, int bytes) {
+void TextContext::Measure(const char* text, int bytes, SIZE* size) {
   const int first = Marker(text, bytes);
-  SIZE result = this->MeasurePart(text, first, this->m_charset);
+  *size = this->MeasurePart(text, first, this->m_charset);
   if (first < bytes) {
     SIZE second = this->MeasurePart(text + first + 3, bytes - first - 3, InlineCharset(text + first));
-    result.cx = (result.cx + second.cx);
-    result.cy = std::max(result.cy, second.cy);
+    size->cx = (size->cx + second.cx);
+    size->cy = std::max(size->cy, second.cy);
   }
-
-  return result;
 }
 
 // OFFSET: 0x00550190

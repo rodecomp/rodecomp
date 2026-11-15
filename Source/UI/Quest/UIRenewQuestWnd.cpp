@@ -239,7 +239,8 @@ void UIOngoingQuestScrollWnd::RefreshHuntTexts() {
       }
     }
 
-    const SIZE size = context.Measure(text.c_str(), static_cast<int>(text.size()));
+    SIZE size;
+    context.Measure(text.c_str(), static_cast<int>(text.size()), &size);
     this->m_huntTexts[index]->Resize(size.cx + 4, 14);
     this->m_huntTexts[index]->SetText(text.c_str(), 0);
   }
@@ -275,6 +276,7 @@ void UIOngoingQuestScrollWnd::SetQuest(unsigned int questId) {
   this->m_huntTexts.clear();
   this->m_questId = questId;
   TextContext context(*this->geometry.surface);
+  SIZE size;
 
   UIStaticBitmap* bitmap = new UIStaticBitmap();
   bitmap->SetBitmap("유저인터페이스\\renew_questui\\img_poring.bmp");
@@ -284,7 +286,8 @@ void UIOngoingQuestScrollWnd::SetQuest(unsigned int questId) {
 
   UIStaticText* label = new UIStaticText();
   context.SetFont(0, 12, 1, 0);
-  label->SetSize(context.Measure(LookupMessage(MSI_RENEW_QUEST_DETAIL_EXP), static_cast<int>(std::strlen(LookupMessage(MSI_RENEW_QUEST_DETAIL_EXP)))).cx + 4, 12);
+  context.Measure(LookupMessage(MSI_RENEW_QUEST_DETAIL_EXP), static_cast<int>(std::strlen(LookupMessage(MSI_RENEW_QUEST_DETAIL_EXP))), &size);
+  label->SetSize(size.cx + 4, 12);
   label->SetText(LookupMessage(MSI_RENEW_QUEST_DETAIL_EXP), 0);
   label->Move(24, 9);
   this->AddScrollChild(label);
@@ -321,7 +324,8 @@ void UIOngoingQuestScrollWnd::SetQuest(unsigned int questId) {
   this->AddScrollChild(bitmap);
 
   label = new UIStaticText();
-  label->SetSize(context.Measure(LookupMessage(MSI_RENEW_QUEST_DETAIL_JEXP), static_cast<int>(std::strlen(LookupMessage(MSI_RENEW_QUEST_DETAIL_JEXP)))).cx + 4, 12);
+  context.Measure(LookupMessage(MSI_RENEW_QUEST_DETAIL_JEXP), static_cast<int>(std::strlen(LookupMessage(MSI_RENEW_QUEST_DETAIL_JEXP))), &size);
+  label->SetSize(size.cx + 4, 12);
   label->SetText(LookupMessage(MSI_RENEW_QUEST_DETAIL_JEXP), 0);
   label->Move(24, y);
   this->AddScrollChild(label);
@@ -361,20 +365,23 @@ void UIOngoingQuestScrollWnd::SetQuest(unsigned int questId) {
   this->AddScrollChild(bitmap);
 
   label = new UIStaticText();
-  label->SetSize(context.Measure(LookupMessage(MSI_RENEW_QUEST_DETAIL_ITEM), static_cast<int>(std::strlen(LookupMessage(MSI_RENEW_QUEST_DETAIL_ITEM)))).cx + 4, 12);
+  context.Measure(LookupMessage(MSI_RENEW_QUEST_DETAIL_ITEM), static_cast<int>(std::strlen(LookupMessage(MSI_RENEW_QUEST_DETAIL_ITEM))), &size);
+  label->SetSize(size.cx + 4, 12);
   label->SetText(LookupMessage(MSI_RENEW_QUEST_DETAIL_ITEM), 0);
   label->Move(24, y);
   this->AddScrollChild(label);
   y += 22;
 
   label = new UIStaticText();
-  label->SetSize(context.Measure(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP1_ITEM), static_cast<int>(std::strlen(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP1_ITEM)))).cx + 4, 12);
+  context.Measure(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP1_ITEM), static_cast<int>(std::strlen(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP1_ITEM))), &size);
+  label->SetSize(size.cx + 4, 12);
   label->SetText(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP1_ITEM), 0);
   label->Move(32, y);
   this->AddScrollChild(label);
 
   label = new UIStaticText();
-  label->SetSize(context.Measure(quest.baseExpReward.c_str(), static_cast<int>(quest.baseExpReward.size())).cx + 4, 12);
+  context.Measure(quest.baseExpReward.c_str(), static_cast<int>(quest.baseExpReward.size()), &size);
+  label->SetSize(size.cx + 4, 12);
   label->SetText(quest.baseExpReward.c_str(), 0);
   label->SetColor(29, 85, 160);
   label->Move(109, y);
@@ -382,13 +389,15 @@ void UIOngoingQuestScrollWnd::SetQuest(unsigned int questId) {
   y += 20;
 
   label = new UIStaticText();
-  label->SetSize(context.Measure(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP2_ITEM), static_cast<int>(std::strlen(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP2_ITEM)))).cx + 4, 12);
+  context.Measure(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP2_ITEM), static_cast<int>(std::strlen(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP2_ITEM))), &size);
+  label->SetSize(size.cx + 4, 12);
   label->SetText(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP2_ITEM), 0);
   label->Move(32, y);
   this->AddScrollChild(label);
 
   label = new UIStaticText();
-  label->SetSize(context.Measure(quest.jobExpReward.c_str(), static_cast<int>(quest.jobExpReward.size())).cx + 4, 12);
+  context.Measure(quest.jobExpReward.c_str(), static_cast<int>(quest.jobExpReward.size()), &size);
+  label->SetSize(size.cx + 4, 12);
   label->SetText(quest.jobExpReward.c_str(), 0);
   label->SetColor(29, 85, 160);
   label->Move(109, y);
@@ -396,7 +405,8 @@ void UIOngoingQuestScrollWnd::SetQuest(unsigned int questId) {
   y += 20;
 
   label = new UIStaticText();
-  label->SetSize(context.Measure(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP3_ITEM), static_cast<int>(std::strlen(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP3_ITEM)))).cx + 4, 12);
+  context.Measure(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP3_ITEM), static_cast<int>(std::strlen(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP3_ITEM))), &size);
+  label->SetSize(size.cx + 4, 12);
   label->SetText(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP3_ITEM), 0);
   label->Move(32, y);
   this->AddScrollChild(label);
@@ -419,7 +429,8 @@ void UIOngoingQuestScrollWnd::SetQuest(unsigned int questId) {
       this->AddScrollChild(item);
 
       UIStaticText* name = new UIStaticText();
-      name->SetSize(context.Measure(description.identifiedName, static_cast<int>(std::strlen(description.identifiedName))).cx + 4, 12);
+      context.Measure(description.identifiedName, static_cast<int>(std::strlen(description.identifiedName)), &size);
+      name->SetSize(size.cx + 4, 12);
       name->SetText(description.identifiedName, 0);
       name->SetColor(0, 0, 0);
       name->Move(154, y + 5);
@@ -427,7 +438,8 @@ void UIOngoingQuestScrollWnd::SetQuest(unsigned int questId) {
 
       UIStaticText* count = new UIStaticText();
       const std::string countText = FormatOwnedString(LookupMessage(MSI_EA), quest.m_rewards[index].second);
-      count->SetSize(context.Measure(countText.c_str(), static_cast<int>(countText.size())).cx + 4, 12);
+      context.Measure(countText.c_str(), static_cast<int>(countText.size()), &size);
+      count->SetSize(size.cx + 4, 12);
       count->SetText(countText.c_str(), 0);
       count->SetColor(29, 85, 160);
       count->Move(154, y + 20);

@@ -52,7 +52,9 @@ void UIWindow::DrawRightOutlinedText(
 
   TextContext context(*this->geometry.surface);
   context.SetFont(family, height, bold, 0);
-  const int left = right - context.Measure(text, static_cast<int>(std::strlen(text))).cx;
+  SIZE size;
+  context.Measure(text, static_cast<int>(std::strlen(text)), &size);
+  const int left = right - size.cx;
   context.SetColor(outline);
   context.Draw(left - 1, y, text, bytes);
   context.Draw(left + 1, y, text, bytes);

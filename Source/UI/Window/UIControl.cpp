@@ -3356,7 +3356,9 @@ inline int MeasureTextWidth(UIWindow* window, const char* text, unsigned bytes, 
 
   TextContext context(*window->geometry.surface);
   context.SetFont(family, height, bold, italic);
-  return context.Measure(text, bytes).cx;
+  SIZE size;
+  context.Measure(text, bytes, &size);
+  return size.cx;
 }
 }
 
@@ -3372,7 +3374,9 @@ const char* UIWindow::ClipTextToWidth(const char* text, int maxWidth, int family
   {
     TextContext context(*this->geometry.surface);
     context.SetFont(family, height, bold, 0);
-    ellipsisWidth = context.Measure("...", 3).cx;
+    SIZE size;
+    context.Measure("...", 3, &size);
+    ellipsisWidth = size.cx;
   }
 
   if (width > maxWidth) {
