@@ -151,25 +151,15 @@ void CEffectPrim::HandleMasterMessage(CGameObject*, int message, int a, int, int
 
 // OFFSET: 0x00C1DE70
 // FUNCTION: fn_20076
-CEffectPrim* CreateEffectParticle(
-  CRagEffect& master, const RenderObjectState& masterRender, int type, float x, float y, float z,
-  std::list<CGameObject*>& worldObjects
-) {
+CEffectPrim* CRagEffect::LaunchEffectPrim(int type, vector3d deltaPos) {
   auto* particle = new CEffectPrim();
   if (!particle) {
     return nullptr;
   }
 
-  particle->Initialize(master, type, x, y, z);
-  master.state.primList.push_back(&particle->state);
-  worldObjects.push_back(particle);
+  particle->Initialize(*this, type, deltaPos.x, deltaPos.y, deltaPos.z);
+  this->state.primList.push_back(&particle->state);
+  static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->objects.push_back(particle);
 
   return particle;
-}
-
-// INLINED
-CEffectPrim* CRagEffect::LaunchEffectPrim(int type, vector3d position) {
-  return CreateEffectParticle(
-    *this, this->render, type, position.x, position.y, position.z, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->objects
-  );
 }

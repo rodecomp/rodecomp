@@ -256,11 +256,6 @@ struct CEffectPrim : CRenderObject {
   /* 0138 */ EffectPrimitiveState state;
 };
 
-CEffectPrim* CreateEffectParticle(
-  CRagEffect& master, const RenderObjectState& masterRender, int type, float x, float y, float z,
-  std::list<CGameObject*>& worldObjects
-);
-
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CEffectPrim) == 0xFA18);
 static_assert(offsetof(CEffectPrim, state) == 0x138);

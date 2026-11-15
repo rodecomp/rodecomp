@@ -133,12 +133,6 @@ static vector3d RotatedForward(const float* matrix, float distance) {
 }
 
 // INLINED
-static void AllocateTextures(EffectPrimitiveState& particle) {
-  const auto bytes = particle.totalTexture >> 30 != 0 ? std::numeric_limits<std::size_t>::max() : static_cast<std::size_t>(4u * particle.totalTexture);
-  particle.textures = static_cast<CTexture**>(::operator new(bytes));
-}
-
-// INLINED
 static void PlayEffectWave(const CRagEffect& effect, const char* name) {
   const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
   g_soundMgr->PlayWave(
@@ -729,80 +723,80 @@ void CRagEffect::Hit1() {
     facing += 360;
   }
 
-  this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 13, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-  this->state.currentPrimitive->duration = 10;
-  this->state.currentPrimitive->longitude = static_cast<float>(facing);
-  this->state.currentPrimitive->latitude = -90.0f;
-  EffectPrimitiveState& flat = *this->state.currentPrimitive;
+  this->state.lastPrim = this->LaunchEffectPrim(13, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim->state.duration = 10;
+  this->state.lastPrim->state.longitude = static_cast<float>(facing);
+  this->state.lastPrim->state.latitude = -90.0f;
+  EffectPrimitiveState& flat = this->state.lastPrim->state;
   flat.transform.MakeXRotation(GetRadian(static_cast<int>(flat.latitude)));
-  EffectPrimitiveState& facingRing = *this->state.currentPrimitive;
+  EffectPrimitiveState& facingRing = this->state.lastPrim->state;
   facingRing.transform.AppendYRotation(GetRadian(static_cast<int>(facingRing.longitude)));
-  this->state.currentPrimitive->deltaPos2 = {0.0f, -10.0f, 0.0f};
-  this->state.currentPrimitive->speed = 0.7f;
-  EffectPrimitiveState& expanding = *this->state.currentPrimitive;
+  this->state.lastPrim->state.deltaPos2 = {0.0f, -10.0f, 0.0f};
+  this->state.lastPrim->state.speed = 0.7f;
+  EffectPrimitiveState& expanding = this->state.lastPrim->state;
   expanding.accel = -(expanding.speed / static_cast<float>(expanding.duration)) * g_depthAverageHalf;
-  this->state.currentPrimitive->outerSize = 10.0f;
-  this->state.currentPrimitive->innerSize = 5.0f;
-  this->state.currentPrimitive->heightSize = 3.5f;
-  this->state.currentPrimitive->fadeOutCnt = this->state.currentPrimitive->duration - this->state.currentPrimitive->duration / 2;
-  this->state.currentPrimitive->textures = new CTexture*[this->state.currentPrimitive->totalTexture];
-  this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\ring_blue.tga", 0, false, true, false);
+  this->state.lastPrim->state.outerSize = 10.0f;
+  this->state.lastPrim->state.innerSize = 5.0f;
+  this->state.lastPrim->state.heightSize = 3.5f;
+  this->state.lastPrim->state.fadeOutCnt = this->state.lastPrim->state.duration - this->state.lastPrim->state.duration / 2;
+  this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+  this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ring_blue.tga", 0, false, true, false);
 
   if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0) {
     return;
   }
 
   for (int count = 0; count < 2; ++count) {
-    this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-    this->state.currentPrimitive->longitude = static_cast<float>(std::max(rand() % 80, 0) + (facing - 40));
-    this->state.currentPrimitive->latitude = static_cast<float>(std::max(rand() % 100, 0) - 50);
-    EffectPrimitiveState& aimed = *this->state.currentPrimitive;
+    this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim->state.longitude = static_cast<float>(std::max(rand() % 80, 0) + (facing - 40));
+    this->state.lastPrim->state.latitude = static_cast<float>(std::max(rand() % 100, 0) - 50);
+    EffectPrimitiveState& aimed = this->state.lastPrim->state;
     aimed.transform.MakeYRotation(GetRadian(static_cast<int>(aimed.longitude)));
-    EffectPrimitiveState& pitched = *this->state.currentPrimitive;
+    EffectPrimitiveState& pitched = this->state.lastPrim->state;
     pitched.transform.AppendXRotation(GetRadian(static_cast<int>(pitched.latitude)));
-    EffectPrimitiveState& launched = *this->state.currentPrimitive;
+    EffectPrimitiveState& launched = this->state.lastPrim->state;
     launched.deltaPos3 = RotatedForward(launched.transform.values, static_cast<float>(std::max(rand() % 4, 0) + 4));
-    EffectPrimitiveState& placed = *this->state.currentPrimitive;
+    EffectPrimitiveState& placed = this->state.lastPrim->state;
     placed.deltaPos2 = {placed.deltaPos3.x + 0.0f, placed.deltaPos3.y - 10.0f, placed.deltaPos3.z + 0.0f};
-    this->state.currentPrimitive->speed = static_cast<float>(std::max(rand() % 90, 0) + 60) / 100.0f;
-    this->state.currentPrimitive->duration = std::max(rand() % 24, 0) + 6;
-    EffectPrimitiveState& braking = *this->state.currentPrimitive;
+    this->state.lastPrim->state.speed = static_cast<float>(std::max(rand() % 90, 0) + 60) / 100.0f;
+    this->state.lastPrim->state.duration = std::max(rand() % 24, 0) + 6;
+    EffectPrimitiveState& braking = this->state.lastPrim->state;
     braking.accel = -(braking.speed / static_cast<float>(braking.duration)) * g_depthAverageHalf;
-    this->state.currentPrimitive->size = static_cast<float>(std::max(rand() % 100, 0) + 60) / 100.0f;
-    this->state.currentPrimitive->fadeOutCnt = 0;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle1.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\particle1.act");
-    this->state.currentPrimitive->numSegment = 3;
-    Owner(this->state.currentPrimitive).InitSegment();
+    this->state.lastPrim->state.size = static_cast<float>(std::max(rand() % 100, 0) + 60) / 100.0f;
+    this->state.lastPrim->state.fadeOutCnt = 0;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle1.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\particle1.act");
+    this->state.lastPrim->state.numSegment = 3;
+    this->state.lastPrim->InitSegment();
   }
 
   for (int count = 0; count < 2; ++count) {
-    this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 6, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-    this->state.currentPrimitive->longitude = static_cast<float>(std::max(rand() % 80, 0) + (facing + 140));
-    this->state.currentPrimitive->latitude = static_cast<float>(std::max(rand() % 100, 0) - 50);
-    EffectPrimitiveState& aimed = *this->state.currentPrimitive;
+    this->state.lastPrim = this->LaunchEffectPrim(6, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim->state.longitude = static_cast<float>(std::max(rand() % 80, 0) + (facing + 140));
+    this->state.lastPrim->state.latitude = static_cast<float>(std::max(rand() % 100, 0) - 50);
+    EffectPrimitiveState& aimed = this->state.lastPrim->state;
     aimed.transform.MakeYRotation(GetRadian(static_cast<int>(aimed.longitude)));
-    EffectPrimitiveState& pitched = *this->state.currentPrimitive;
+    EffectPrimitiveState& pitched = this->state.lastPrim->state;
     pitched.transform.AppendXRotation(GetRadian(static_cast<int>(pitched.latitude)));
-    EffectPrimitiveState& launched = *this->state.currentPrimitive;
+    EffectPrimitiveState& launched = this->state.lastPrim->state;
     launched.deltaPos3 = RotatedForward(launched.transform.values, static_cast<float>(std::max(rand() % 4, 0) + 4));
-    EffectPrimitiveState& placed = *this->state.currentPrimitive;
+    EffectPrimitiveState& placed = this->state.lastPrim->state;
     placed.deltaPos2 = {placed.deltaPos3.x + 0.0f, placed.deltaPos3.y - 10.0f, placed.deltaPos3.z + 0.0f};
-    EffectPrimitiveState& level = *this->state.currentPrimitive;
+    EffectPrimitiveState& level = this->state.lastPrim->state;
     level.transform.MakeYRotation(GetRadian(static_cast<int>(level.longitude)));
-    this->state.currentPrimitive->duration = std::max(rand() % 24, 0) + 6;
-    this->state.currentPrimitive->speed = static_cast<float>(std::max(rand() % 90, 0) + 60) / 100.0f;
-    EffectPrimitiveState& braking = *this->state.currentPrimitive;
+    this->state.lastPrim->state.duration = std::max(rand() % 24, 0) + 6;
+    this->state.lastPrim->state.speed = static_cast<float>(std::max(rand() % 90, 0) + 60) / 100.0f;
+    EffectPrimitiveState& braking = this->state.lastPrim->state;
     braking.accel = -(braking.speed / static_cast<float>(braking.duration)) * g_depthAverageHalf;
-    this->state.currentPrimitive->gravSpeed = -static_cast<float>(std::max(rand() % 90, 0) + 30) / 100.0f;
-    EffectPrimitiveState& falling = *this->state.currentPrimitive;
+    this->state.lastPrim->state.gravSpeed = -static_cast<float>(std::max(rand() % 90, 0) + 30) / 100.0f;
+    EffectPrimitiveState& falling = this->state.lastPrim->state;
     falling.gravAccel = -(falling.gravSpeed / static_cast<float>(falling.duration) * 2.0f);
-    this->state.currentPrimitive->size = static_cast<float>(std::max(rand() % 100, 0) + 60) / 100.0f;
-    this->state.currentPrimitive->fadeOutCnt = 0;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle1.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\particle1.act");
-    this->state.currentPrimitive->numSegment = 3;
-    Owner(this->state.currentPrimitive).InitSegment();
+    this->state.lastPrim->state.size = static_cast<float>(std::max(rand() % 100, 0) + 60) / 100.0f;
+    this->state.lastPrim->state.fadeOutCnt = 0;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle1.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\particle1.act");
+    this->state.lastPrim->state.numSegment = 3;
+    this->state.lastPrim->InitSegment();
   }
 }
 
@@ -878,7 +872,7 @@ void CRagEffect::Hit3() {
     facing += 360;
   }
 
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 13, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(13, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 15;
   this->state.lastPrim->state.longitude = static_cast<float>(facing);
   this->state.lastPrim->state.latitude = -90.0f;
@@ -898,7 +892,7 @@ void CRagEffect::Hit3() {
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\lens2.tga", 0, false, true, false);
 
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 13, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(13, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 15;
   this->state.lastPrim->state.longitude = static_cast<float>(facing);
   this->state.lastPrim->state.latitude = -90.0f;
@@ -919,7 +913,7 @@ void CRagEffect::Hit3() {
   this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\lens2.tga", 0, false, true, false);
 
   for (int count = 0; count < 8; ++count) {
-    this->state.lastPrim = CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects());
+    this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.longitude = static_cast<float>(ClampedRandom(80) + (facing - 40));
     this->state.lastPrim->state.latitude = static_cast<float>(ClampedRandom(100) - 50);
     this->state.lastPrim->state.transform.MakeYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
@@ -1063,7 +1057,7 @@ void CRagEffect::SoulStrike(char F1) {
 
   const int index = frame / 11;
   PlayEffectWave(*this, "effect\\EF_SoulStrike.wav");
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 8, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(8, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 40;
   this->state.lastPrim->state.deltaPos2 = {0.0f, -10.0f, 0.0f};
   this->state.lastPrim->state.radius = this->state.lastPrim->CalcDist(this->state.deltaPos[0], this->state.deltaPos[2]);
@@ -1140,67 +1134,67 @@ void CRagEffect::SpearBmr() {
 void CRagEffect::SprayPond() {
   if (this->state.stateCnt == 0) {
     for (int angle = 0; angle < 360; angle += 45) {
-      this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 15, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-      this->state.currentPrimitive->pattern = 2;
-      this->state.currentPrimitive->duration = 130;
-      EffectPrimitiveState& yaw = *this->state.currentPrimitive;
+      this->state.lastPrim = this->LaunchEffectPrim(15, vector3d{0.0f, 0.0f, 0.0f});
+      this->state.lastPrim->state.pattern = 2;
+      this->state.lastPrim->state.duration = 130;
+      EffectPrimitiveState& yaw = this->state.lastPrim->state;
       yaw.transform.MakeYRotation(GetRadian(static_cast<int>(static_cast<float>(angle) + 22.5f)));
-      EffectPrimitiveState& moving = *this->state.currentPrimitive;
+      EffectPrimitiveState& moving = this->state.lastPrim->state;
       const vector3d edge = RotatedForward(moving.transform.values, 12.2f);
       moving.deltaPos2.x = edge.x + 0.0f;
       moving.deltaPos2.y = edge.y - 2.0f;
       moving.deltaPos2.z = edge.z + 0.0f;
-      EffectPrimitiveState& facing = *this->state.currentPrimitive;
+      EffectPrimitiveState& facing = this->state.lastPrim->state;
       facing.rotTransform.MakeYRotation(GetRadian(static_cast<int>(static_cast<float>(angle + 90) + 22.5f)));
-      this->state.currentPrimitive->alpha = 120.0f;
-      this->state.currentPrimitive->widthSize = 5.0f;
-      this->state.currentPrimitive->heightSize = 2.7f;
-      this->state.currentPrimitive->textures = new CTexture*[this->state.currentPrimitive->totalTexture];
-      this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\pond_water.bmp", 0, false, true, false);
+      this->state.lastPrim->state.alpha = 120.0f;
+      this->state.lastPrim->state.widthSize = 5.0f;
+      this->state.lastPrim->state.heightSize = 2.7f;
+      this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+      this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\pond_water.bmp", 0, false, true, false);
     }
   }
 
   if (this->state.stateCnt % 10 == 0) {
     for (int angle = 0; angle < 360; angle += 45) {
-      this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 15, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-      this->state.currentPrimitive->duration = 30;
-      EffectPrimitiveState& yaw = *this->state.currentPrimitive;
+      this->state.lastPrim = this->LaunchEffectPrim(15, vector3d{0.0f, 0.0f, 0.0f});
+      this->state.lastPrim->state.duration = 30;
+      EffectPrimitiveState& yaw = this->state.lastPrim->state;
       yaw.transform.MakeYRotation(GetRadian(static_cast<int>(static_cast<float>(angle) + 22.5f)));
-      EffectPrimitiveState& moving = *this->state.currentPrimitive;
+      EffectPrimitiveState& moving = this->state.lastPrim->state;
       const vector3d edge = RotatedForward(moving.transform.values, 13.8f);
       moving.deltaPos2.x = edge.x;
       moving.deltaPos2.y = edge.y;
       moving.deltaPos2.z = edge.z;
-      EffectPrimitiveState& roll = *this->state.currentPrimitive;
+      EffectPrimitiveState& roll = this->state.lastPrim->state;
       roll.rotTransform.MakeZRotation(GetRadian(90));
-      EffectPrimitiveState& facing = *this->state.currentPrimitive;
+      EffectPrimitiveState& facing = this->state.lastPrim->state;
       facing.rotTransform.AppendYRotation(GetRadian(static_cast<int>(static_cast<float>(angle + 90) + 22.5f)));
-      this->state.currentPrimitive->alpha = 100.0f;
-      this->state.currentPrimitive->fadeOutCnt = 0;
-      this->state.currentPrimitive->widthSize = 5.5f;
-      this->state.currentPrimitive->heightSize = 1.0f;
-      this->state.currentPrimitive->textures = new CTexture*[this->state.currentPrimitive->totalTexture];
-      this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\alpha_down.tga", 0, false, true, false);
+      this->state.lastPrim->state.alpha = 100.0f;
+      this->state.lastPrim->state.fadeOutCnt = 0;
+      this->state.lastPrim->state.widthSize = 5.5f;
+      this->state.lastPrim->state.heightSize = 1.0f;
+      this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+      this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\alpha_down.tga", 0, false, true, false);
     }
   }
 
   if (this->state.stateCnt % 20 == 0) {
-    this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 12, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-    this->state.currentPrimitive->duration = 25;
-    this->state.currentPrimitive->radius = 13.0f;
-    this->state.currentPrimitive->arcAngle = 10.0f;
-    this->state.currentPrimitive->size = 1.25f;
-    this->state.currentPrimitive->latitude = 90.0f;
-    EffectPrimitiveState& tilt = *this->state.currentPrimitive;
+    this->state.lastPrim = this->LaunchEffectPrim(12, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim->state.duration = 25;
+    this->state.lastPrim->state.radius = 13.0f;
+    this->state.lastPrim->state.arcAngle = 10.0f;
+    this->state.lastPrim->state.size = 1.25f;
+    this->state.lastPrim->state.latitude = 90.0f;
+    EffectPrimitiveState& tilt = this->state.lastPrim->state;
     tilt.transform.MakeXRotation(GetRadian(static_cast<int>(tilt.latitude)));
-    this->state.currentPrimitive->radiusSpeed = 0.25f;
-    EffectPrimitiveState& growing = *this->state.currentPrimitive;
+    this->state.lastPrim->state.radiusSpeed = 0.25f;
+    EffectPrimitiveState& growing = this->state.lastPrim->state;
     growing.radiusAccel = -(growing.radiusSpeed / growing.duration);
-    this->state.currentPrimitive->alpha = 100.0f;
-    this->state.currentPrimitive->fadeOutCnt = 0;
-    Owner(this->state.currentPrimitive).InitSegment();
-    this->state.currentPrimitive->textures = new CTexture*[this->state.currentPrimitive->totalTexture];
-    this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\alpha_center.tga", 0, false, true, false);
+    this->state.lastPrim->state.alpha = 100.0f;
+    this->state.lastPrim->state.fadeOutCnt = 0;
+    this->state.lastPrim->InitSegment();
+    this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+    this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\alpha_center.tga", 0, false, true, false);
   }
 }
 
@@ -1885,7 +1879,7 @@ void CRagEffect::Steal() {
   PlayEffectWave(*this, "effect\\EF_Steal.wav");
 
   for (int count = 0; count < 10; ++count) {
-    this->state.lastPrim = CreateEffectParticle(*this, this->render, 6, 0.0f, 0.0f, 0.0f, WorldObjects());
+    this->state.lastPrim = this->LaunchEffectPrim(6, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.longitude = static_cast<float>(ClampedRandom(360));
     this->state.lastPrim->state.latitude = static_cast<float>(ClampedRandom(100) - 50);
     EffectPrimitiveState& aimed = this->state.lastPrim->state;
@@ -2042,7 +2036,7 @@ void CRagEffect::RemoveTrap() {
   }
 
   for (int count = 12; count != 0; --count) {
-    this->state.lastPrim = CreateEffectParticle(*this, this->render, 7, 0.0f, 0.0f, 0.0f, WorldObjects());
+    this->state.lastPrim = this->LaunchEffectPrim(7, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 50;
     this->state.lastPrim->state.radiusSpeed = 0.2f;
     rand();
@@ -2077,7 +2071,7 @@ void CRagEffect::Sphere() {
     return;
   }
 
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 7, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(7, vector3d{0.0f, 0.0f, 0.0f});
   this->state.duration = 500 - this->state.stateCnt;
   this->state.lastPrim->state.duration = 300;
   this->state.lastPrim->state.radius = 0.1f;
@@ -2230,7 +2224,7 @@ void CRagEffect::Snow() {
   }
 
   for (int count = 2; count != 0; --count) {
-    this->state.lastPrim = CreateEffectParticle(*this, this->render, 21, 0.0f, 0.0f, 0.0f, WorldObjects());
+    this->state.lastPrim = this->LaunchEffectPrim(21, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.orgPos = this->render.position;
     this->state.lastPrim->state.duration = 320;
     this->state.lastPrim->state.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
@@ -3245,7 +3239,7 @@ void CRagEffect::TexturedSpiralFade(const char* name, int, int) {
   this->state.lastPrim->state.renderFlag = 5;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 1;
-  AllocateTextures(this->state.lastPrim->state);
+  this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
 
   for (int slot = 0; slot < 4; ++slot) {
@@ -3752,11 +3746,11 @@ void CRagEffect::TexturedFourRing(const char* name, char kind) {
     return;
   }
 
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 90, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(90, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 1;
   this->state.lastPrim->state.renderFlag |= 5u;
   this->state.lastPrim->state.duration = this->state.duration;
-  AllocateTextures(this->state.lastPrim->state);
+  this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
   this->state.lastPrim->state.size = 0.0f;
   this->state.lastPrim->state.slots[0].life = 0;
@@ -4205,7 +4199,7 @@ void CRagEffect::TexturedLevelRing(const char* name, int process, char level) {
     return;
   }
 
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 88, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(88, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 0;
   this->state.lastPrim->state.renderFlag |= 1;
   this->state.lastPrim->state.renderFlag |= 5;
@@ -4510,7 +4504,7 @@ void CRagEffect::BubbleSpiralKind(int angle, const char*, char kind) {
     this->state.duration = 100;
   }
 
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 144, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(144, vector3d{0.0f, 0.0f, 0.0f});
   stored()->state.renderFlag = 5;
   stored()->state.duration = this->state.duration;
 
@@ -4714,11 +4708,8 @@ void CRagEffect::TexturedSparkle(const char* name) {
     return;
   }
 
-  const RenderObjectState& origin = this->state.parent->render;
-  this->render.position.x = origin.position.x;
-  this->render.position.y = origin.position.y;
-  this->render.position.z = origin.position.z;
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 81, 0.0f, 0.0f, 0.0f, WorldObjects());
+  CopyVector(this->render.position, this->state.parent->render.position);
+  this->state.lastPrim = this->LaunchEffectPrim(81, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 5;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 2;
@@ -6437,7 +6428,7 @@ void CRagEffect::TexturedScatterSphere(const char* name, char flag, int) {
   auto stored = [&]() -> CEffectPrim* { return this->state.lastPrim; };
   stored()->state.renderFlag = 5;
   stored()->state.duration = this->state.duration;
-  AllocateTextures(particle->state);
+  particle->state.textures = new CTexture*[particle->state.totalTexture];
   stored()->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
 
   for (int index = 0; index < 4; ++index) {
@@ -6896,7 +6887,7 @@ void CRagEffect::TexturedSpread(const char* name, char kind) {
   this->state.lastPrim = this->LaunchEffectPrim(137, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 5;
   this->state.lastPrim->state.duration = this->state.duration;
-  AllocateTextures(this->state.lastPrim->state);
+  this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
 
   if (kind < 2) {
@@ -7467,7 +7458,7 @@ void CRagEffect::MonsterSpriteBurst(char kind) {
     return;
   }
 
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 153, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(153, vector3d{0.0f, 0.0f, 0.0f});
   stored()->state.duration = this->state.duration - this->state.stateCnt;
   for (int i = 0; i < 4; ++i) {
     stored()->state.slots[i].life = 0;
@@ -7658,7 +7649,7 @@ bool CRagEffect::AgilityChange(char increase, const std::string& textureName) {
   if (this->state.stateCnt == 0) {
     CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
     const auto* player = static_cast<const CRenderObject*>(world->player);
-    this->state.lastPrim = CreateEffectParticle(*this, this->render, 0, 0.0f, 0.0f, 0.0f, world->objects);
+    this->state.lastPrim = this->LaunchEffectPrim(0, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
     this->state.lastPrim->state.textures[0] = g_texMgr.Load(textureName.c_str(), 0, false, true, false);
     CTexture* texture = this->state.lastPrim->state.textures[0];
@@ -7749,10 +7740,8 @@ void CRagEffect::TexturedDescendingRings(const char* name, char flag) {
     return;
   }
 
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 141, 0.0f, 0.0f, 0.0f, WorldObjects());
+  CopyVector(this->render.position, this->state.parent->render.position);
+  this->state.lastPrim = this->LaunchEffectPrim(141, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 5;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -7874,7 +7863,7 @@ void CRagEffect::CloudBurst() {
     this->state.lastPrim = this->LaunchEffectPrim(69, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = 5;
     this->state.lastPrim->state.duration = this->state.duration;
-    AllocateTextures(this->state.lastPrim->state);
+    this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
     this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\cloud11.tga", 0, false, true, false);
     this->state.lastPrim->state.size = 0.0f;
     this->state.lastPrim->state.deltaPos.x = this->state.deltaPos[0];
@@ -7926,7 +7915,7 @@ void CRagEffect::CloudSpread() {
     this->state.lastPrim = this->LaunchEffectPrim(69, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = 5;
     this->state.lastPrim->state.duration = this->state.duration;
-    AllocateTextures(this->state.lastPrim->state);
+    this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
     this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\cloud11.tga", 0, false, true, false);
     this->state.lastPrim->state.size = 0.0f;
     this->state.lastPrim->state.deltaPos.x = this->state.deltaPos[0];
@@ -7978,13 +7967,13 @@ void CRagEffect::FrostSplash(int, int) {
   this->render.position.x = parent.position.x;
   this->render.position.y = parent.position.y;
   this->render.position.z = parent.position.z;
-  CEffectPrim* particle = CreateEffectParticle(*this, this->render, 150, 0.0f, 0.0f, 0.0f, WorldObjects());
+  CEffectPrim* particle = this->LaunchEffectPrim(150, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim = particle;
   auto stored = [&]() -> CEffectPrim* { return this->state.lastPrim; };
   stored()->state.renderFlag = 5;
   stored()->state.duration = this->state.duration;
   stored()->state.totalTexture = 1;
-  AllocateTextures(stored()->state);
+  stored()->state.textures = new CTexture*[stored()->state.totalTexture];
 
   CTexture* texture;
   bool water;
@@ -8153,7 +8142,7 @@ void CRagEffect::SpriteRing(char kind) {
     return;
   }
 
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 167, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(167, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.deltaPos2.y = 0.0f;
   this->state.lastPrim->state.renderFlag = 5;
@@ -8256,7 +8245,7 @@ void CRagEffect::GreenRocketPunch() {
     return;
   }
 
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 5;
   this->state.lastPrim->state.duration = 20;
   this->state.lastPrim->state.pattern |= 0x100u;
@@ -8418,7 +8407,7 @@ void CRagEffect::TexturedQuadRing(std::int16_t baseAlpha, const char* name, char
 
 // INLINED
 static __forceinline void LaunchTwinkleRing(CRagEffect& effect, const char* name, char level) {
-  effect.state.lastPrim = CreateEffectParticle(effect, effect.render, 132, 0.0f, 0.0f, 0.0f, WorldObjects());
+  effect.state.lastPrim = effect.LaunchEffectPrim(132, vector3d{0.0f, 0.0f, 0.0f});
   effect.state.lastPrim->state.renderFlag = 0;
   effect.state.lastPrim->state.renderFlag |= 1u;
   effect.state.lastPrim->state.renderFlag |= 5u;
@@ -8554,7 +8543,7 @@ void CRagEffect::TetraVortexPillar(char kind) {
 
 // INLINED
 static __forceinline void LaunchFireballVolley(CRagEffect& effect, float turn, int shade, int fade) {
-  CEffectPrim* particle = CreateEffectParticle(effect, effect.render, 5, 0.0f, 0.0f, 0.0f, WorldObjects());
+  CEffectPrim* particle = effect.LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
   effect.state.lastPrim = particle;
   effect.state.lastPrim->state.renderFlag = 5;
   effect.state.lastPrim->state.duration = 20;
@@ -8711,7 +8700,7 @@ void CRagEffect::AlphaCenterStream() {
   this->state.lastPrim = this->LaunchEffectPrim(69, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 5;
   this->state.lastPrim->state.duration = this->state.duration;
-  AllocateTextures(this->state.lastPrim->state);
+  this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\alpha_center.tga", 0, false, true, false);
   this->state.lastPrim->state.size = 0.0f;
   this->state.lastPrim->state.deltaPos.x = this->state.deltaPos[0];
@@ -8753,7 +8742,7 @@ void CRagEffect::CloudDrift() {
     this->state.lastPrim = this->LaunchEffectPrim(69, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = 5;
     this->state.lastPrim->state.duration = this->state.duration;
-    AllocateTextures(this->state.lastPrim->state);
+    this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
     this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\cloud11.tga", 0, false, true, false);
     this->state.lastPrim->state.size = 0.0f;
     this->state.lastPrim->state.deltaPos.x = this->state.deltaPos[0];
@@ -8932,7 +8921,7 @@ void CRagEffect::TexturedSpinShards(const char* name, char kind) {
   particle.renderFlag = 5;
   particle.duration = this->state.duration;
   if (static_cast<int>(particle.totalTexture) > 0) {
-    AllocateTextures(particle);
+    particle.textures = new CTexture*[particle.totalTexture];
     if (particle.textures != nullptr) {
       particle.textures[0] = g_texMgr.Load(name, 0, false, true, false);
     }
@@ -9249,10 +9238,10 @@ static __forceinline void LaunchRippleRings(CRagEffect& effect, const char* name
   effect.render.position.x = parent.position.x;
   effect.render.position.y = parent.position.y;
   effect.render.position.z = parent.position.z;
-  effect.state.lastPrim = CreateEffectParticle(effect, effect.render, 65, 0.0f, 0.0f, 0.0f, WorldObjects());
+  effect.state.lastPrim = effect.LaunchEffectPrim(65, vector3d{0.0f, 0.0f, 0.0f});
   effect.state.lastPrim->state.renderFlag = 5;
   effect.state.lastPrim->state.duration = effect.state.duration;
-  AllocateTextures(effect.state.lastPrim->state);
+  effect.state.lastPrim->state.textures = new CTexture*[effect.state.lastPrim->state.totalTexture];
   effect.state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
   if (kind == 0) {
     effect.state.lastPrim->state.size = smallSize;
@@ -9282,7 +9271,7 @@ void CRagEffect::AlphaDownRipples(const char* name, char kind) {
   }
 
   if (this->state.stateCnt == 0) {
-    this->state.lastPrim = CreateEffectParticle(*this, this->render, 12, 0.0f, 0.0f, 0.0f, WorldObjects());
+    this->state.lastPrim = this->LaunchEffectPrim(12, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 99999999;
     this->state.lastPrim->state.pattern |= 1u;
     this->state.lastPrim->state.radius = 15.0f;
@@ -9293,7 +9282,7 @@ void CRagEffect::AlphaDownRipples(const char* name, char kind) {
     this->state.lastPrim->state.alphaSpeed = this->state.lastPrim->state.maxAlpha / 10.0f;
     this->state.lastPrim->state.fadeOutCnt = this->state.lastPrim->state.duration - 10;
     this->state.lastPrim->InitSegment();
-    AllocateTextures(this->state.lastPrim->state);
+    this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
     this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\alpha_down.tga", 0, false, true, false);
   }
 
@@ -9301,7 +9290,7 @@ void CRagEffect::AlphaDownRipples(const char* name, char kind) {
     return;
   }
 
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 7, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(7, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.radius = static_cast<float>(ClampedRandom(200) / 100) * 0.75f + 4.5f;
   this->state.lastPrim->state.radiusSpeed = 0.0005f;
   this->state.lastPrim->state.duration = 70;
@@ -9622,7 +9611,7 @@ void CRagEffect::SakuraFireArrow() {
     return;
   }
 
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 124, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(124, vector3d{0.0f, 0.0f, 0.0f});
   stored()->state.duration = this->state.duration;
   stored()->state.slots[0].life = 1;
   stored()->state.slots[0].maxHeight = static_cast<float>(ClampedRandom(3) + 2) * 0.15f;
@@ -9861,7 +9850,7 @@ void CRagEffect::LockOnMarker() {
     this->state.lastPrim->state.changePoint = 20;
     this->state.lastPrim->state.changeWidthSpeed = 0.0f;
     this->state.lastPrim->state.changeHeightSpeed = 0.0f;
-    AllocateTextures(this->state.lastPrim->state);
+    this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
     this->state.lastPrim->state.RGBCycleDelay = 20;
     this->state.lastPrim->state.red = 250;
     this->state.lastPrim->state.blue = 150;
@@ -9891,7 +9880,7 @@ void CRagEffect::LockOnMarker() {
     this->state.lastPrim->state.blueSpeed = -15;
     this->state.lastPrim->state.green = 150;
     this->state.lastPrim->state.greenSpeed = -15;
-    AllocateTextures(this->state.lastPrim->state);
+    this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
     this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\LockOn128.tga", 0, false, true, false);
   }
 
@@ -10516,22 +10505,22 @@ bool CRagEffect::OnProcess2() {
   case EF_DRAGONSMOKE:
     this->render.position = this->state.parent->render.position;
     if (this->state.stateCnt == 0) {
-      this->state.currentPrimitive =
-        &CreateEffectParticle(*this, this->render, 5, this->state.deltaPos[0], this->state.deltaPos[1], this->state.deltaPos[2], WorldObjects())->state;
-      this->state.currentPrimitive->duration = this->state.duration;
-      this->state.currentPrimitive->rollSpeed = 0.75f;
-      EffectPrimitiveState& tilted = *this->state.currentPrimitive;
+      this->state.lastPrim =
+        this->LaunchEffectPrim(5, vector3d{this->state.deltaPos[0], this->state.deltaPos[1], this->state.deltaPos[2]});
+      this->state.lastPrim->state.duration = this->state.duration;
+      this->state.lastPrim->state.rollSpeed = 0.75f;
+      EffectPrimitiveState& tilted = this->state.lastPrim->state;
       tilted.transform.MakeXRotation(GetRadian(std::max(rand() % 30, 0) + 75));
-      EffectPrimitiveState& turned = *this->state.currentPrimitive;
+      EffectPrimitiveState& turned = this->state.lastPrim->state;
       turned.transform.AppendYRotation(GetRadian(std::max(rand() % 360, 0)));
-      this->state.currentPrimitive->deltaPos2.y = -9.0f;
-      this->state.currentPrimitive->speed = static_cast<float>(std::max(rand() % 3, 0) + 3) / 10.0f;
-      this->state.currentPrimitive->size = 1.5f;
-      EffectPrimitiveState& fade = *this->state.currentPrimitive;
+      this->state.lastPrim->state.deltaPos2.y = -9.0f;
+      this->state.lastPrim->state.speed = static_cast<float>(std::max(rand() % 3, 0) + 3) / 10.0f;
+      this->state.lastPrim->state.size = 1.5f;
+      EffectPrimitiveState& fade = this->state.lastPrim->state;
       fade.fadeOutCnt = fade.duration - fade.duration / 3;
-      Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\굴뚝연기.spr");
-      Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\굴뚝연기.act");
-      Owner(this->state.currentPrimitive).InitSegment();
+      this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\굴뚝연기.spr");
+      this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\굴뚝연기.act");
+      this->state.lastPrim->InitSegment();
     }
     break;
   }
@@ -10751,7 +10740,7 @@ void CRagEffect::SnowDrift(char flag) {
     return;
   }
 
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 134, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(134, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 5;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 4;
@@ -11538,90 +11527,90 @@ void CRagEffect::RingBurstSparks() {
 
   const int facing = static_cast<int>(180.0f - this->state.parent->render.angle);
   const int direction = facing < 0 ? facing + 360 : facing;
-  this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 13, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-  this->state.currentPrimitive->duration = 15;
-  this->state.currentPrimitive->longitude = static_cast<float>(direction);
-  this->state.currentPrimitive->latitude = -90.0f;
-  EffectPrimitiveState& tilt = *this->state.currentPrimitive;
+  this->state.lastPrim = this->LaunchEffectPrim(13, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim->state.duration = 15;
+  this->state.lastPrim->state.longitude = static_cast<float>(direction);
+  this->state.lastPrim->state.latitude = -90.0f;
+  EffectPrimitiveState& tilt = this->state.lastPrim->state;
   tilt.transform.MakeXRotation(GetRadian(static_cast<int>(tilt.latitude)));
-  EffectPrimitiveState& turn = *this->state.currentPrimitive;
+  EffectPrimitiveState& turn = this->state.lastPrim->state;
   turn.transform.AppendYRotation(GetRadian(static_cast<int>(turn.longitude)));
-  this->state.currentPrimitive->deltaPos2 = {0.0f, -10.0f, 0.0f};
-  this->state.currentPrimitive->speed = 0.7f;
-  EffectPrimitiveState& slow = *this->state.currentPrimitive;
+  this->state.lastPrim->state.deltaPos2 = {0.0f, -10.0f, 0.0f};
+  this->state.lastPrim->state.speed = 0.7f;
+  EffectPrimitiveState& slow = this->state.lastPrim->state;
   slow.accel = -(slow.speed / slow.duration) * 0.5f;
-  this->state.currentPrimitive->outerSize = static_cast<float>(this->state.stateCnt * 0.1 + 11.0);
-  this->state.currentPrimitive->innerSize = static_cast<float>(this->state.stateCnt * 0.1 + 6.0);
-  this->state.currentPrimitive->heightSize = 2.5f;
-  const int lifetime = this->state.currentPrimitive->duration;
-  this->state.currentPrimitive->fadeOutCnt = lifetime - lifetime / 2;
-  AllocateTextures(*this->state.currentPrimitive);
-  this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\ring_yellow.tga", 0, false, true, false);
+  this->state.lastPrim->state.outerSize = static_cast<float>(this->state.stateCnt * 0.1 + 11.0);
+  this->state.lastPrim->state.innerSize = static_cast<float>(this->state.stateCnt * 0.1 + 6.0);
+  this->state.lastPrim->state.heightSize = 2.5f;
+  const int lifetime = this->state.lastPrim->state.duration;
+  this->state.lastPrim->state.fadeOutCnt = lifetime - lifetime / 2;
+  this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+  this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ring_yellow.tga", 0, false, true, false);
 
   if (this->state.stateCnt <= 0) {
     return;
   }
 
   for (int count = 4; count != 0; --count) {
-    this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-    this->state.currentPrimitive->longitude = static_cast<float>(std::max(rand() % 80, 0) + direction - 40);
-    this->state.currentPrimitive->latitude = static_cast<float>(std::max(rand() % 100, 0) - 50);
-    EffectPrimitiveState& yaw = *this->state.currentPrimitive;
+    this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim->state.longitude = static_cast<float>(std::max(rand() % 80, 0) + direction - 40);
+    this->state.lastPrim->state.latitude = static_cast<float>(std::max(rand() % 100, 0) - 50);
+    EffectPrimitiveState& yaw = this->state.lastPrim->state;
     yaw.transform.MakeYRotation(GetRadian(static_cast<int>(yaw.longitude)));
-    EffectPrimitiveState& pitch = *this->state.currentPrimitive;
+    EffectPrimitiveState& pitch = this->state.lastPrim->state;
     pitch.transform.AppendXRotation(GetRadian(static_cast<int>(pitch.latitude)));
-    EffectPrimitiveState& spark = *this->state.currentPrimitive;
+    EffectPrimitiveState& spark = this->state.lastPrim->state;
     spark.deltaPos3 = RotatedForward(spark.transform.values, static_cast<float>(std::max(rand() % 4, 0) + 4));
-    EffectPrimitiveState& moving = *this->state.currentPrimitive;
+    EffectPrimitiveState& moving = this->state.lastPrim->state;
     moving.deltaPos2.x = moving.deltaPos3.x + 0.0f;
     moving.deltaPos2.y = moving.deltaPos3.y - 10.0f;
     moving.deltaPos2.z = moving.deltaPos3.z + 0.0f;
-    this->state.currentPrimitive->speed = static_cast<float>(std::max(rand() % 90, 0) + 60) / 100.0f;
-    this->state.currentPrimitive->duration = std::max(rand() % 24, 0) + 6;
-    EffectPrimitiveState& fading = *this->state.currentPrimitive;
+    this->state.lastPrim->state.speed = static_cast<float>(std::max(rand() % 90, 0) + 60) / 100.0f;
+    this->state.lastPrim->state.duration = std::max(rand() % 24, 0) + 6;
+    EffectPrimitiveState& fading = this->state.lastPrim->state;
     fading.accel = -(fading.speed / fading.duration) * 0.5f;
-    this->state.currentPrimitive->size = static_cast<float>(std::max(rand() % 100, 0) + 60) / 100.0f;
-    EffectPrimitiveState& shrinking = *this->state.currentPrimitive;
+    this->state.lastPrim->state.size = static_cast<float>(std::max(rand() % 100, 0) + 60) / 100.0f;
+    EffectPrimitiveState& shrinking = this->state.lastPrim->state;
     shrinking.sizeSpeed = -(shrinking.size / shrinking.duration);
-    this->state.currentPrimitive->fadeOutCnt = 0;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle1.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\particle1.act");
-    this->state.currentPrimitive->numSegment = 3;
-    Owner(this->state.currentPrimitive).InitSegment();
+    this->state.lastPrim->state.fadeOutCnt = 0;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle1.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\particle1.act");
+    this->state.lastPrim->state.numSegment = 3;
+    this->state.lastPrim->InitSegment();
   }
 
   for (int count = 4; count != 0; --count) {
-    this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 6, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-    this->state.currentPrimitive->longitude = static_cast<float>(std::max(rand() % 80, 0) + direction + 140);
-    this->state.currentPrimitive->latitude = static_cast<float>(std::max(rand() % 100, 0) - 50);
-    EffectPrimitiveState& yaw = *this->state.currentPrimitive;
+    this->state.lastPrim = this->LaunchEffectPrim(6, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim->state.longitude = static_cast<float>(std::max(rand() % 80, 0) + direction + 140);
+    this->state.lastPrim->state.latitude = static_cast<float>(std::max(rand() % 100, 0) - 50);
+    EffectPrimitiveState& yaw = this->state.lastPrim->state;
     yaw.transform.MakeYRotation(GetRadian(static_cast<int>(yaw.longitude)));
-    EffectPrimitiveState& pitch = *this->state.currentPrimitive;
+    EffectPrimitiveState& pitch = this->state.lastPrim->state;
     pitch.transform.AppendXRotation(GetRadian(static_cast<int>(pitch.latitude)));
-    EffectPrimitiveState& spark = *this->state.currentPrimitive;
+    EffectPrimitiveState& spark = this->state.lastPrim->state;
     spark.deltaPos3 = RotatedForward(spark.transform.values, static_cast<float>(std::max(rand() % 4, 0) + 4));
-    EffectPrimitiveState& moving = *this->state.currentPrimitive;
+    EffectPrimitiveState& moving = this->state.lastPrim->state;
     moving.deltaPos2.x = moving.deltaPos3.x + 0.0f;
     moving.deltaPos2.y = moving.deltaPos3.y - 10.0f;
     moving.deltaPos2.z = moving.deltaPos3.z + 0.0f;
-    EffectPrimitiveState& facingYaw = *this->state.currentPrimitive;
+    EffectPrimitiveState& facingYaw = this->state.lastPrim->state;
     facingYaw.transform.MakeYRotation(GetRadian(static_cast<int>(facingYaw.longitude)));
-    this->state.currentPrimitive->duration = std::max(rand() % 24, 0) + 6;
-    this->state.currentPrimitive->speed = static_cast<float>(std::max(rand() % 90, 0) + 60) / 100.0f;
-    EffectPrimitiveState& fading = *this->state.currentPrimitive;
+    this->state.lastPrim->state.duration = std::max(rand() % 24, 0) + 6;
+    this->state.lastPrim->state.speed = static_cast<float>(std::max(rand() % 90, 0) + 60) / 100.0f;
+    EffectPrimitiveState& fading = this->state.lastPrim->state;
     fading.accel = -(fading.speed / fading.duration) * 0.5f;
-    this->state.currentPrimitive->gravSpeed = -static_cast<float>(std::max(rand() % 90, 0) + 30) / 100.0f;
-    EffectPrimitiveState& falling = *this->state.currentPrimitive;
+    this->state.lastPrim->state.gravSpeed = -static_cast<float>(std::max(rand() % 90, 0) + 30) / 100.0f;
+    EffectPrimitiveState& falling = this->state.lastPrim->state;
     const float fall = falling.gravSpeed / falling.duration;
     falling.gravAccel = -(fall + fall);
-    this->state.currentPrimitive->size = static_cast<float>(std::max(rand() % 100, 0) + 60) / 100.0f;
-    EffectPrimitiveState& shrinking = *this->state.currentPrimitive;
+    this->state.lastPrim->state.size = static_cast<float>(std::max(rand() % 100, 0) + 60) / 100.0f;
+    EffectPrimitiveState& shrinking = this->state.lastPrim->state;
     shrinking.sizeSpeed = -(shrinking.size / shrinking.duration);
-    this->state.currentPrimitive->fadeOutCnt = 0;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle1.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\particle1.act");
-    this->state.currentPrimitive->numSegment = 3;
-    Owner(this->state.currentPrimitive).InitSegment();
+    this->state.lastPrim->state.fadeOutCnt = 0;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle1.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\particle1.act");
+    this->state.lastPrim->state.numSegment = 3;
+    this->state.lastPrim->InitSegment();
   }
 }
 
@@ -11695,10 +11684,10 @@ void CRagEffect::FireArrow() {
 
   const int frame = this->state.stateCnt;
   if (frame >= 12 && (frame - 12) % 10 == 0 && frame - 12 < static_cast<int>(this->state.count)) {
-    this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 16, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-    this->state.currentPrimitive->duration = 70;
-    this->state.currentPrimitive->pattern = 0x14;
-    EffectPrimitiveState& arrow = *this->state.currentPrimitive;
+    this->state.lastPrim = this->LaunchEffectPrim(16, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim->state.duration = 70;
+    this->state.lastPrim->state.pattern = 0x14;
+    EffectPrimitiveState& arrow = this->state.lastPrim->state;
     const int spreadZ = std::max(rand() % 10, 0);
     const int spreadX = std::max(rand() % 10, 0);
     arrow.deltaPos2.y = -60.0f;
@@ -11707,58 +11696,58 @@ void CRagEffect::FireArrow() {
     const int aimZ = std::max(rand() % 4, 0);
     const int aimX = std::max(rand() % 4, 0);
     const float heading = CRenderObject::Heading(
-      this->state.currentPrimitive->deltaPos2.x, this->state.currentPrimitive->deltaPos2.z, static_cast<float>(aimX - 2), static_cast<float>(aimZ - 2)
+      this->state.lastPrim->state.deltaPos2.x, this->state.lastPrim->state.deltaPos2.z, static_cast<float>(aimX - 2), static_cast<float>(aimZ - 2)
     );
-    this->state.currentPrimitive->longitude = -heading;
+    this->state.lastPrim->state.longitude = -heading;
     this->state.longitude = -heading;
-    const float dx = std::fabs(this->state.currentPrimitive->deltaPos2.x);
-    const float dz = std::fabs(this->state.currentPrimitive->deltaPos2.z);
+    const float dx = std::fabs(this->state.lastPrim->state.deltaPos2.x);
+    const float dz = std::fabs(this->state.lastPrim->state.deltaPos2.z);
     const float run = SquareRoot(dx * dx + dz * dz);
-    const float pitch = CRenderObject::Heading(-std::fabs(this->state.currentPrimitive->deltaPos2.y), run, 0.0f, 0.0f);
-    this->state.currentPrimitive->latitude = pitch;
+    const float pitch = CRenderObject::Heading(-std::fabs(this->state.lastPrim->state.deltaPos2.y), run, 0.0f, 0.0f);
+    this->state.lastPrim->state.latitude = pitch;
     this->state.latitude = pitch;
-    EffectPrimitiveState& tilt = *this->state.currentPrimitive;
+    EffectPrimitiveState& tilt = this->state.lastPrim->state;
     tilt.transform.MakeXRotation(GetRadian(static_cast<int>(tilt.latitude)));
-    EffectPrimitiveState& turn = *this->state.currentPrimitive;
+    EffectPrimitiveState& turn = this->state.lastPrim->state;
     turn.transform.AppendYRotation(GetRadian(static_cast<int>(turn.longitude)));
-    this->state.currentPrimitive->speed = -2.75f;
-    this->state.currentPrimitive->widthSize = 14.0f;
-    this->state.currentPrimitive->heightSize = 3.5f;
-    this->state.currentPrimitive->fadeOutCnt = this->state.currentPrimitive->duration - 20;
-    this->state.currentPrimitive->totalTexture = 6;
-    this->state.currentPrimitive->animSpeed = 1;
-    this->state.currentPrimitive->textures = new CTexture*[this->state.currentPrimitive->totalTexture];
-    this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\불화살1.tga", 0, false, true, false);
-    this->state.currentPrimitive->textures[1] = g_texMgr.Load("effect\\불화살2.tga", 0, false, true, false);
-    this->state.currentPrimitive->textures[2] = g_texMgr.Load("effect\\불화살3.tga", 0, false, true, false);
-    this->state.currentPrimitive->textures[3] = g_texMgr.Load("effect\\불화살4.tga", 0, false, true, false);
-    this->state.currentPrimitive->textures[4] = g_texMgr.Load("effect\\불화살5.tga", 0, false, true, false);
-    this->state.currentPrimitive->textures[5] = g_texMgr.Load("effect\\불화살6.tga", 0, false, true, false);
-    this->state.currentPrimitive->slots[0].life = 0;
+    this->state.lastPrim->state.speed = -2.75f;
+    this->state.lastPrim->state.widthSize = 14.0f;
+    this->state.lastPrim->state.heightSize = 3.5f;
+    this->state.lastPrim->state.fadeOutCnt = this->state.lastPrim->state.duration - 20;
+    this->state.lastPrim->state.totalTexture = 6;
+    this->state.lastPrim->state.animSpeed = 1;
+    this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+    this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\불화살1.tga", 0, false, true, false);
+    this->state.lastPrim->state.textures[1] = g_texMgr.Load("effect\\불화살2.tga", 0, false, true, false);
+    this->state.lastPrim->state.textures[2] = g_texMgr.Load("effect\\불화살3.tga", 0, false, true, false);
+    this->state.lastPrim->state.textures[3] = g_texMgr.Load("effect\\불화살4.tga", 0, false, true, false);
+    this->state.lastPrim->state.textures[4] = g_texMgr.Load("effect\\불화살5.tga", 0, false, true, false);
+    this->state.lastPrim->state.textures[5] = g_texMgr.Load("effect\\불화살6.tga", 0, false, true, false);
+    this->state.lastPrim->state.slots[0].life = 0;
   }
 
   if (this->state.stateCnt > 0 && this->state.stateCnt % 4 == 0) {
-    this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-    this->state.currentPrimitive->duration = std::max(rand() % 24, 0) + 6;
-    this->state.currentPrimitive->longitude = static_cast<float>(std::max(rand() % 40, 0)) + (this->state.longitude - 20.0f);
-    this->state.currentPrimitive->latitude = static_cast<float>(std::max(rand() % 20, 0)) + (this->state.latitude - 10.0f);
-    EffectPrimitiveState& tilt = *this->state.currentPrimitive;
+    this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim->state.duration = std::max(rand() % 24, 0) + 6;
+    this->state.lastPrim->state.longitude = static_cast<float>(std::max(rand() % 40, 0)) + (this->state.longitude - 20.0f);
+    this->state.lastPrim->state.latitude = static_cast<float>(std::max(rand() % 20, 0)) + (this->state.latitude - 10.0f);
+    EffectPrimitiveState& tilt = this->state.lastPrim->state;
     tilt.transform.MakeXRotation(GetRadian(static_cast<int>(tilt.latitude)));
-    EffectPrimitiveState& turn = *this->state.currentPrimitive;
+    EffectPrimitiveState& turn = this->state.lastPrim->state;
     turn.transform.AppendYRotation(GetRadian(static_cast<int>(turn.longitude)));
-    this->state.currentPrimitive->deltaPos2.x = this->state.deltaPos[0];
-    this->state.currentPrimitive->deltaPos2.y = this->state.deltaPos[1];
-    this->state.currentPrimitive->deltaPos2.z = this->state.deltaPos[2];
-    this->state.currentPrimitive->speed = static_cast<float>(std::max(rand() % 90, 0) + 60) / 100.0f;
-    EffectPrimitiveState& slowing = *this->state.currentPrimitive;
+    this->state.lastPrim->state.deltaPos2.x = this->state.deltaPos[0];
+    this->state.lastPrim->state.deltaPos2.y = this->state.deltaPos[1];
+    this->state.lastPrim->state.deltaPos2.z = this->state.deltaPos[2];
+    this->state.lastPrim->state.speed = static_cast<float>(std::max(rand() % 90, 0) + 60) / 100.0f;
+    EffectPrimitiveState& slowing = this->state.lastPrim->state;
     slowing.accel = -(slowing.speed / slowing.duration) / 1.5f;
-    this->state.currentPrimitive->size = static_cast<float>(std::max(rand() % 30, 0) + 20) / 100.0f;
-    EffectPrimitiveState& shrinking = *this->state.currentPrimitive;
+    this->state.lastPrim->state.size = static_cast<float>(std::max(rand() % 30, 0) + 20) / 100.0f;
+    EffectPrimitiveState& shrinking = this->state.lastPrim->state;
     shrinking.sizeSpeed = -(shrinking.size / shrinking.duration);
-    this->state.currentPrimitive->fadeOutCnt = 0;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle4.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\particle4.act");
-    Owner(this->state.currentPrimitive).InitSegment();
+    this->state.lastPrim->state.fadeOutCnt = 0;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle4.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\particle4.act");
+    this->state.lastPrim->InitSegment();
   }
 
   if (this->state.flag == 0) {
@@ -11766,20 +11755,20 @@ void CRagEffect::FireArrow() {
   }
 
   this->state.flag = 0;
-  this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 12, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-  this->state.currentPrimitive->duration = 30;
-  this->state.currentPrimitive->latitude = 90.0f;
-  this->state.currentPrimitive->radiusSpeed = 1.2f;
-  EffectPrimitiveState& ring = *this->state.currentPrimitive;
+  this->state.lastPrim = this->LaunchEffectPrim(12, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim->state.duration = 30;
+  this->state.lastPrim->state.latitude = 90.0f;
+  this->state.lastPrim->state.radiusSpeed = 1.2f;
+  EffectPrimitiveState& ring = this->state.lastPrim->state;
   const float slowdown = -(ring.radiusSpeed / (ring.duration + 40));
   ring.radiusAccel = slowdown + slowdown;
-  this->state.currentPrimitive->innerSize = 10.0f;
-  this->state.currentPrimitive->alpha = 0.0f;
-  this->state.currentPrimitive->alphaSpeed = this->state.currentPrimitive->maxAlpha / 10.0f;
-  this->state.currentPrimitive->fadeOutCnt = this->state.currentPrimitive->duration - 10;
-  Owner(this->state.currentPrimitive).InitSegment();
-  this->state.currentPrimitive->textures = new CTexture*[this->state.currentPrimitive->totalTexture];
-  this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\ring_yellow.tga", 0, false, true, false);
+  this->state.lastPrim->state.innerSize = 10.0f;
+  this->state.lastPrim->state.alpha = 0.0f;
+  this->state.lastPrim->state.alphaSpeed = this->state.lastPrim->state.maxAlpha / 10.0f;
+  this->state.lastPrim->state.fadeOutCnt = this->state.lastPrim->state.duration - 10;
+  this->state.lastPrim->InitSegment();
+  this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+  this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ring_yellow.tga", 0, false, true, false);
 }
 
 // GLOBAL: gl_24762
@@ -11804,40 +11793,40 @@ void CRagEffect::BlitzBeat() {
   if (this->state.stateCnt == 0) {
     g_blitzBeatCount = this->state.stateCnt;
     for (int count = 10; count != 0; --count) {
-      this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 16, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-      this->state.currentPrimitive->duration = 20;
-      this->state.currentPrimitive->renderFlag |= 0x200u;
-      this->state.currentPrimitive->longitude = this->state.parent->render.angle;
-      EffectPrimitiveState& facing = *this->state.currentPrimitive;
+      this->state.lastPrim = this->LaunchEffectPrim(16, vector3d{0.0f, 0.0f, 0.0f});
+      this->state.lastPrim->state.duration = 20;
+      this->state.lastPrim->state.renderFlag |= 0x200u;
+      this->state.lastPrim->state.longitude = this->state.parent->render.angle;
+      EffectPrimitiveState& facing = this->state.lastPrim->state;
       facing.transform.MakeYRotation(GetRadian(static_cast<int>(facing.longitude)));
       const float spin = static_cast<float>(ClampedRandom(360));
       const float sine = ClientSine(static_cast<int>(spin));
       const float cosine = ClientCosine(static_cast<int>(spin));
-      EffectPrimitiveState& moving = *this->state.currentPrimitive;
+      EffectPrimitiveState& moving = this->state.lastPrim->state;
       moving.speed3d = RotatedForward(moving.transform.values, 15.0f);
-      EffectPrimitiveState& origin = *this->state.currentPrimitive;
+      EffectPrimitiveState& origin = this->state.lastPrim->state;
       origin.deltaPos.x = origin.deltaPos.x + origin.speed3d.x;
       origin.deltaPos.y = origin.speed3d.y + origin.deltaPos.y;
       origin.deltaPos.z = origin.speed3d.z + origin.deltaPos.z;
-      this->state.currentPrimitive->deltaPos2.y = -7.0f;
-      this->state.currentPrimitive->deltaPos2.x = sine * 3.5f;
-      this->state.currentPrimitive->deltaPos2.z = cosine * -3.5f;
-      this->state.currentPrimitive->speed = -1.2f;
-      this->state.currentPrimitive->accel = -0.1f;
-      this->state.currentPrimitive->widthSize = static_cast<float>(ClampedRandom(40) + 20) / 10.0f;
-      this->state.currentPrimitive->heightSize = 0.2f;
-      this->state.currentPrimitive->widthSpeed = 0.1f;
-      this->state.currentPrimitive->widthAccel = -0.01f;
-      this->state.currentPrimitive->alpha = 0.0f;
-      this->state.currentPrimitive->maxAlpha = 250.0f;
-      this->state.currentPrimitive->changePoint = 10;
-      this->state.currentPrimitive->changeSpeed = -0.3f;
-      this->state.currentPrimitive->changeAccel = 0.001f;
-      this->state.currentPrimitive->alphaSpeed = this->state.currentPrimitive->maxAlpha * 0.5f;
-      this->state.currentPrimitive->fadeOutCnt = this->state.currentPrimitive->duration - 2;
-      this->state.currentPrimitive->textures = new CTexture*[this->state.currentPrimitive->totalTexture];
-      this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\ac_center2.tga", 0, false, true, false);
-      this->state.currentPrimitive->slots[0].life = 0;
+      this->state.lastPrim->state.deltaPos2.y = -7.0f;
+      this->state.lastPrim->state.deltaPos2.x = sine * 3.5f;
+      this->state.lastPrim->state.deltaPos2.z = cosine * -3.5f;
+      this->state.lastPrim->state.speed = -1.2f;
+      this->state.lastPrim->state.accel = -0.1f;
+      this->state.lastPrim->state.widthSize = static_cast<float>(ClampedRandom(40) + 20) / 10.0f;
+      this->state.lastPrim->state.heightSize = 0.2f;
+      this->state.lastPrim->state.widthSpeed = 0.1f;
+      this->state.lastPrim->state.widthAccel = -0.01f;
+      this->state.lastPrim->state.alpha = 0.0f;
+      this->state.lastPrim->state.maxAlpha = 250.0f;
+      this->state.lastPrim->state.changePoint = 10;
+      this->state.lastPrim->state.changeSpeed = -0.3f;
+      this->state.lastPrim->state.changeAccel = 0.001f;
+      this->state.lastPrim->state.alphaSpeed = this->state.lastPrim->state.maxAlpha * 0.5f;
+      this->state.lastPrim->state.fadeOutCnt = this->state.lastPrim->state.duration - 2;
+      this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+      this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ac_center2.tga", 0, false, true, false);
+      this->state.lastPrim->state.slots[0].life = 0;
     }
   }
 
@@ -11849,40 +11838,40 @@ void CRagEffect::BlitzBeat() {
   const int driftX = rand();
   const int driftY = rand();
   rand();
-  this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 13, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-  this->state.currentPrimitive->duration = 12;
-  this->state.currentPrimitive->longitude = static_cast<float>(static_cast<int>(facing));
-  this->state.currentPrimitive->latitude = -90.0f;
-  EffectPrimitiveState& tilt = *this->state.currentPrimitive;
+  this->state.lastPrim = this->LaunchEffectPrim(13, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim->state.duration = 12;
+  this->state.lastPrim->state.longitude = static_cast<float>(static_cast<int>(facing));
+  this->state.lastPrim->state.latitude = -90.0f;
+  EffectPrimitiveState& tilt = this->state.lastPrim->state;
   tilt.transform.MakeXRotation(GetRadian(static_cast<int>(tilt.latitude)));
-  EffectPrimitiveState& turn = *this->state.currentPrimitive;
+  EffectPrimitiveState& turn = this->state.lastPrim->state;
   turn.transform.AppendYRotation(GetRadian(static_cast<int>(turn.longitude)));
-  EffectPrimitiveState& thrust = *this->state.currentPrimitive;
+  EffectPrimitiveState& thrust = this->state.lastPrim->state;
   const float* m = thrust.transform.values;
   thrust.speed3d = {
     (m[0] * 0.0f - m[3] * 2.0f) + m[6] + m[9],
     (m[1] * 0.0f - m[4] * 2.0f) + m[7] + m[10],
     (m[2] * 0.0f - m[5] * 2.0f) + m[8] + m[11]
   };
-  EffectPrimitiveState& origin = *this->state.currentPrimitive;
+  EffectPrimitiveState& origin = this->state.lastPrim->state;
   origin.deltaPos.x = origin.speed3d.x + origin.deltaPos.x;
   origin.deltaPos.y = origin.speed3d.y + origin.deltaPos.y;
   origin.deltaPos.z = origin.speed3d.z + origin.deltaPos.z;
-  this->state.currentPrimitive->deltaPos2.z = 0.0f;
-  this->state.currentPrimitive->deltaPos2.x = static_cast<float>((std::max(driftX % 10, 0) + 1) / 5);
-  this->state.currentPrimitive->deltaPos2.y = static_cast<float>((std::max(driftY % 20, 0) + 1) / 2 - 12);
-  this->state.currentPrimitive->speed = 0.4f;
-  EffectPrimitiveState& slowing = *this->state.currentPrimitive;
+  this->state.lastPrim->state.deltaPos2.z = 0.0f;
+  this->state.lastPrim->state.deltaPos2.x = static_cast<float>((std::max(driftX % 10, 0) + 1) / 5);
+  this->state.lastPrim->state.deltaPos2.y = static_cast<float>((std::max(driftY % 20, 0) + 1) / 2 - 12);
+  this->state.lastPrim->state.speed = 0.4f;
+  EffectPrimitiveState& slowing = this->state.lastPrim->state;
   slowing.accel = -(slowing.speed / slowing.duration) * 0.5f;
-  this->state.currentPrimitive->outerSize = 1.5f;
-  this->state.currentPrimitive->innerSize = 0.5f;
-  this->state.currentPrimitive->heightSize = 3.5f;
-  const int lifetime = this->state.currentPrimitive->duration;
-  this->state.currentPrimitive->fadeOutCnt = lifetime - lifetime / 2;
-  this->state.currentPrimitive->textures = new CTexture*[this->state.currentPrimitive->totalTexture];
+  this->state.lastPrim->state.outerSize = 1.5f;
+  this->state.lastPrim->state.innerSize = 0.5f;
+  this->state.lastPrim->state.heightSize = 3.5f;
+  const int lifetime = this->state.lastPrim->state.duration;
+  this->state.lastPrim->state.fadeOutCnt = lifetime - lifetime / 2;
+  this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   CTexture* texture = g_texMgr.Load("effect\\magic_green.tga", 0, false, true, false);
   ++g_blitzBeatCount;
-  this->state.currentPrimitive->textures[0] = texture;
+  this->state.lastPrim->state.textures[0] = texture;
 }
 
 // OFFSET: 0x00C5C450
@@ -12115,7 +12104,7 @@ void CRagEffect::Bottom_Out(const char* name, char kind) {
     return;
   }
 
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 49, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(49, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 5;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -12304,7 +12293,7 @@ void CRagEffect::ParticleTime(const char* name, char kind) {
     return;
   }
 
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 59, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(59, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 5;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 2;
@@ -12449,7 +12438,7 @@ void CRagEffect::Bottom_Music(const char* name, char kind) {
     return;
   }
 
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 47, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(47, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 5;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -12568,82 +12557,82 @@ void CRagEffect::HitDark() {
     facing += 360;
   }
 
-  this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 13, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-  this->state.currentPrimitive->duration = 10;
-  this->state.currentPrimitive->longitude = static_cast<float>(facing);
-  this->state.currentPrimitive->latitude = -90.0f;
-  EffectPrimitiveState& flat = *this->state.currentPrimitive;
+  this->state.lastPrim = this->LaunchEffectPrim(13, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim->state.duration = 10;
+  this->state.lastPrim->state.longitude = static_cast<float>(facing);
+  this->state.lastPrim->state.latitude = -90.0f;
+  EffectPrimitiveState& flat = this->state.lastPrim->state;
   flat.transform.MakeXRotation(GetRadian(static_cast<int>(flat.latitude)));
-  EffectPrimitiveState& facingRing = *this->state.currentPrimitive;
+  EffectPrimitiveState& facingRing = this->state.lastPrim->state;
   facingRing.transform.AppendYRotation(GetRadian(static_cast<int>(facingRing.longitude)));
-  this->state.currentPrimitive->deltaPos2 = {0.0f, -10.0f, 0.0f};
-  this->state.currentPrimitive->speed = 0.7f;
-  EffectPrimitiveState& expanding = *this->state.currentPrimitive;
+  this->state.lastPrim->state.deltaPos2 = {0.0f, -10.0f, 0.0f};
+  this->state.lastPrim->state.speed = 0.7f;
+  EffectPrimitiveState& expanding = this->state.lastPrim->state;
   expanding.accel = -(expanding.speed / static_cast<float>(expanding.duration)) * g_depthAverageHalf;
-  this->state.currentPrimitive->outerSize = 10.0f;
-  this->state.currentPrimitive->innerSize = 5.0f;
-  this->state.currentPrimitive->heightSize = 3.5f;
-  this->state.currentPrimitive->fadeOutCnt = this->state.currentPrimitive->duration - this->state.currentPrimitive->duration / 2;
-  this->state.currentPrimitive->textures = new CTexture*[this->state.currentPrimitive->totalTexture];
-  this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\ring_blue.tga", 0, false, true, false);
+  this->state.lastPrim->state.outerSize = 10.0f;
+  this->state.lastPrim->state.innerSize = 5.0f;
+  this->state.lastPrim->state.heightSize = 3.5f;
+  this->state.lastPrim->state.fadeOutCnt = this->state.lastPrim->state.duration - this->state.lastPrim->state.duration / 2;
+  this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+  this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ring_blue.tga", 0, false, true, false);
 
   for (int count = 0; count < 2; ++count) {
-    this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-    this->state.currentPrimitive->longitude = static_cast<float>(std::max(rand() % 80, 0) + (facing - 40));
-    this->state.currentPrimitive->latitude = static_cast<float>(std::max(rand() % 100, 0) - 50);
-    EffectPrimitiveState& aimed = *this->state.currentPrimitive;
+    this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim->state.longitude = static_cast<float>(std::max(rand() % 80, 0) + (facing - 40));
+    this->state.lastPrim->state.latitude = static_cast<float>(std::max(rand() % 100, 0) - 50);
+    EffectPrimitiveState& aimed = this->state.lastPrim->state;
     aimed.transform.MakeYRotation(GetRadian(static_cast<int>(aimed.longitude)));
-    EffectPrimitiveState& pitched = *this->state.currentPrimitive;
+    EffectPrimitiveState& pitched = this->state.lastPrim->state;
     pitched.transform.AppendXRotation(GetRadian(static_cast<int>(pitched.latitude)));
-    EffectPrimitiveState& launched = *this->state.currentPrimitive;
+    EffectPrimitiveState& launched = this->state.lastPrim->state;
     launched.deltaPos3 = RotatedForward(launched.transform.values, static_cast<float>(std::max(rand() % 4, 0) + 4));
-    EffectPrimitiveState& placed = *this->state.currentPrimitive;
+    EffectPrimitiveState& placed = this->state.lastPrim->state;
     placed.deltaPos2 = {placed.deltaPos3.x + 0.0f, placed.deltaPos3.y - 10.0f, placed.deltaPos3.z + 0.0f};
-    this->state.currentPrimitive->speed = static_cast<float>(std::max(rand() % 90, 0) + 60) / 100.0f;
-    this->state.currentPrimitive->duration = std::max(rand() % 24, 0) + 6;
-    EffectPrimitiveState& braking = *this->state.currentPrimitive;
+    this->state.lastPrim->state.speed = static_cast<float>(std::max(rand() % 90, 0) + 60) / 100.0f;
+    this->state.lastPrim->state.duration = std::max(rand() % 24, 0) + 6;
+    EffectPrimitiveState& braking = this->state.lastPrim->state;
     braking.accel = -(braking.speed / static_cast<float>(braking.duration)) * g_depthAverageHalf;
-    this->state.currentPrimitive->size = static_cast<float>(std::max(rand() % 100, 0) + 60) / 100.0f;
-    this->state.currentPrimitive->red = 20;
-    this->state.currentPrimitive->green = 20;
-    this->state.currentPrimitive->blue = 20;
-    this->state.currentPrimitive->fadeOutCnt = 0;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle1.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\particle1.act");
-    this->state.currentPrimitive->numSegment = 3;
-    Owner(this->state.currentPrimitive).InitSegment();
+    this->state.lastPrim->state.size = static_cast<float>(std::max(rand() % 100, 0) + 60) / 100.0f;
+    this->state.lastPrim->state.red = 20;
+    this->state.lastPrim->state.green = 20;
+    this->state.lastPrim->state.blue = 20;
+    this->state.lastPrim->state.fadeOutCnt = 0;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle1.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\particle1.act");
+    this->state.lastPrim->state.numSegment = 3;
+    this->state.lastPrim->InitSegment();
   }
 
   for (int count = 0; count < 2; ++count) {
-    this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 6, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-    this->state.currentPrimitive->longitude = static_cast<float>(std::max(rand() % 80, 0) + (facing + 140));
-    this->state.currentPrimitive->latitude = static_cast<float>(std::max(rand() % 100, 0) - 50);
-    EffectPrimitiveState& aimed = *this->state.currentPrimitive;
+    this->state.lastPrim = this->LaunchEffectPrim(6, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim->state.longitude = static_cast<float>(std::max(rand() % 80, 0) + (facing + 140));
+    this->state.lastPrim->state.latitude = static_cast<float>(std::max(rand() % 100, 0) - 50);
+    EffectPrimitiveState& aimed = this->state.lastPrim->state;
     aimed.transform.MakeYRotation(GetRadian(static_cast<int>(aimed.longitude)));
-    EffectPrimitiveState& pitched = *this->state.currentPrimitive;
+    EffectPrimitiveState& pitched = this->state.lastPrim->state;
     pitched.transform.AppendXRotation(GetRadian(static_cast<int>(pitched.latitude)));
-    EffectPrimitiveState& launched = *this->state.currentPrimitive;
+    EffectPrimitiveState& launched = this->state.lastPrim->state;
     launched.deltaPos3 = RotatedForward(launched.transform.values, static_cast<float>(std::max(rand() % 4, 0) + 4));
-    EffectPrimitiveState& placed = *this->state.currentPrimitive;
+    EffectPrimitiveState& placed = this->state.lastPrim->state;
     placed.deltaPos2 = {placed.deltaPos3.x + 0.0f, placed.deltaPos3.y - 10.0f, placed.deltaPos3.z + 0.0f};
-    EffectPrimitiveState& level = *this->state.currentPrimitive;
+    EffectPrimitiveState& level = this->state.lastPrim->state;
     level.transform.MakeYRotation(GetRadian(static_cast<int>(level.longitude)));
-    this->state.currentPrimitive->duration = std::max(rand() % 24, 0) + 6;
-    this->state.currentPrimitive->speed = static_cast<float>(std::max(rand() % 90, 0) + 60) / 100.0f;
-    EffectPrimitiveState& braking = *this->state.currentPrimitive;
+    this->state.lastPrim->state.duration = std::max(rand() % 24, 0) + 6;
+    this->state.lastPrim->state.speed = static_cast<float>(std::max(rand() % 90, 0) + 60) / 100.0f;
+    EffectPrimitiveState& braking = this->state.lastPrim->state;
     braking.accel = -(braking.speed / static_cast<float>(braking.duration)) * g_depthAverageHalf;
-    this->state.currentPrimitive->gravSpeed = -static_cast<float>(std::max(rand() % 90, 0) + 30) / 100.0f;
-    EffectPrimitiveState& falling = *this->state.currentPrimitive;
+    this->state.lastPrim->state.gravSpeed = -static_cast<float>(std::max(rand() % 90, 0) + 30) / 100.0f;
+    EffectPrimitiveState& falling = this->state.lastPrim->state;
     falling.gravAccel = -(falling.gravSpeed / static_cast<float>(falling.duration) * 2.0f);
-    this->state.currentPrimitive->size = static_cast<float>(std::max(rand() % 100, 0) + 60) / 100.0f;
-    this->state.currentPrimitive->red = 20;
-    this->state.currentPrimitive->green = 20;
-    this->state.currentPrimitive->blue = 20;
-    this->state.currentPrimitive->fadeOutCnt = 0;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle1.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\particle1.act");
-    this->state.currentPrimitive->numSegment = 3;
-    Owner(this->state.currentPrimitive).InitSegment();
+    this->state.lastPrim->state.size = static_cast<float>(std::max(rand() % 100, 0) + 60) / 100.0f;
+    this->state.lastPrim->state.red = 20;
+    this->state.lastPrim->state.green = 20;
+    this->state.lastPrim->state.blue = 20;
+    this->state.lastPrim->state.fadeOutCnt = 0;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle1.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\particle1.act");
+    this->state.lastPrim->state.numSegment = 3;
+    this->state.lastPrim->InitSegment();
   }
 }
 
@@ -12740,7 +12729,7 @@ void CRagEffect::Flasher() {
   this->state.tlvertY = vertex.y;
 
   if (this->state.stateCnt == 0) {
-    this->state.lastPrim = CreateEffectParticle(*this, this->render, 15, 0.0f, 0.0f, 0.0f, WorldObjects());
+    this->state.lastPrim = this->LaunchEffectPrim(15, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 70;
     this->state.lastPrim->state.pattern = 65;
     this->state.lastPrim->state.renderFlag |= 2;
@@ -12765,7 +12754,7 @@ void CRagEffect::Flasher() {
     this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\thunder_center.bmp", 0, false, true, false);
 
     for (int i = 0; i < 20; ++i) {
-      this->state.lastPrim = CreateEffectParticle(*this, this->render, 3, 0.0f, 0.0f, 0.0f, WorldObjects());
+      this->state.lastPrim = this->LaunchEffectPrim(3, vector3d{0.0f, 0.0f, 0.0f});
       this->state.lastPrim->state.duration = 70;
       this->state.lastPrim->state.deltaPos2.y = -40.0f;
       this->state.lastPrim->state.longitude = static_cast<float>(ClampedRandom(360));
@@ -13319,7 +13308,7 @@ void CRagEffect::StoneWall() {
 
 // INLINED
 static __forceinline void LaunchTintedFireballVolley(CRagEffect& effect, float turn, int red, int green, int blue, int fade) {
-  CEffectPrim* particle = CreateEffectParticle(effect, effect.render, 5, 0.0f, 0.0f, 0.0f, WorldObjects());
+  CEffectPrim* particle = effect.LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
   effect.state.lastPrim = particle;
   effect.state.lastPrim->state.duration = 20;
   effect.state.lastPrim->state.pattern |= 0x120u;
@@ -13649,7 +13638,7 @@ void CRagEffect::WhiteLightTrail(const char* name, char kind) {
     return;
   }
 
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 96, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(96, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 5;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -14072,7 +14061,7 @@ void CRagEffect::SoulLink(int) {
   this->render.position.z = parent.position.z;
 
   if (this->state.stateCnt == 1) {
-    this->state.lastPrim = CreateEffectParticle(*this, this->render, 68, 0.0f, 0.0f, 0.0f, WorldObjects());
+    this->state.lastPrim = this->LaunchEffectPrim(68, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = 5;
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.totalTexture = 4;
@@ -14101,7 +14090,7 @@ void CRagEffect::SoulLink(int) {
       }
     }
   } else if (this->state.stateCnt == 21) {
-    this->state.lastPrim = CreateEffectParticle(*this, this->render, 68, 0.0f, 0.0f, 0.0f, WorldObjects());
+    this->state.lastPrim = this->LaunchEffectPrim(68, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = 5;
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.totalTexture = 4;
@@ -14487,14 +14476,14 @@ void CRagEffect::QuadRingStackSized(const char* name, char kind) {
 
   if (kind == 33) {
     kind = 0;
-    this->state.lastPrim = CreateEffectParticle(*this, this->render, 25, 0.0f, 0.0f, 0.0f, WorldObjects());
+    this->state.lastPrim = this->LaunchEffectPrim(25, vector3d{0.0f, 0.0f, 0.0f});
   } else {
-    this->state.lastPrim = CreateEffectParticle(*this, this->render, 23, 0.0f, 0.0f, 0.0f, WorldObjects());
+    this->state.lastPrim = this->LaunchEffectPrim(23, vector3d{0.0f, 0.0f, 0.0f});
   }
 
   this->state.lastPrim->state.renderFlag = 5;
   this->state.lastPrim->state.duration = this->state.duration;
-  AllocateTextures(this->state.lastPrim->state);
+  this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
   this->state.lastPrim->state.size = static_cast<float>(kind);
 
@@ -14689,7 +14678,7 @@ void CRagEffect::TANJI() {
   }
 
   PlayEffectWave(*this, "effect\\mon_\ud0c4\uc9c0\uc2e0\ud1b5.wav");
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 42, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(42, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 5;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -14763,7 +14752,7 @@ void CRagEffect::Gravitation() {
         this->state.lastPrim->state.changeSpeed = -1.2f;
         this->state.lastPrim->state.changeAccel = 0.0f;
         this->state.lastPrim->state.fadeOutCnt = this->state.lastPrim->state.duration - 10;
-        AllocateTextures(this->state.lastPrim->state);
+        this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
         this->state.lastPrim->state.textures[0] = g_texMgr.Load(i < 2 ? "effect\\stone.bmp" : "effect\\ice.tga", 0, false, true, false);
       }
     }
@@ -15116,7 +15105,7 @@ void CRagEffect::SendMsg(
     break;
   case AM_EFFECT_LOOP_COUNT:
     if (first == 735 || first == 736 || first == 737 || first == 738) {
-      this->state.currentPrimitive->isChangeProcessed = static_cast<std::uint32_t>(second);
+      this->state.lastPrim->state.isChangeProcessed = static_cast<std::uint32_t>(second);
     }
     break;
   }
@@ -15303,7 +15292,7 @@ void CRagEffect::StatusIconColumn() {
         continue;
       }
 
-      this->state.lastPrim = CreateEffectParticle(*this, this->render, 0, 0.0f, 0.0f, 0.0f, WorldObjects());
+      this->state.lastPrim = this->LaunchEffectPrim(0, vector3d{0.0f, 0.0f, 0.0f});
       this->state.lastPrim->state.renderFlag = 0x201;
       this->state.lastPrim->state.useRenderFlag[0] = 1;
       this->state.lastPrim->state.pattern = 4;
@@ -15536,10 +15525,10 @@ void CRagEffect::TexturedSkillAura(char type) {
 // FUNCTION: fn_20242
 void CRagEffect::VioletRingCloud(char type) {
   if (this->state.stateCnt == 0) {
-    this->state.lastPrim = CreateEffectParticle(*this, this->render, 60, 0.0f, 0.0f, 0.0f, WorldObjects());
+    this->state.lastPrim = this->LaunchEffectPrim(60, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = 5;
     this->state.lastPrim->state.duration = this->state.duration;
-    AllocateTextures(this->state.lastPrim->state);
+    this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
     if (type == 3) {
       this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ring_red.tga", 0, false, true, false);
       this->state.lastPrim->state.size = 10.0f;
@@ -15598,10 +15587,10 @@ void CRagEffect::VioletRingCloud(char type) {
 
   if (this->state.stateCnt == 1) {
     this->render.position = this->state.parent->render.position;
-    this->state.lastPrim = CreateEffectParticle(*this, this->render, 63, 0.0f, 0.0f, 0.0f, WorldObjects());
+    this->state.lastPrim = this->LaunchEffectPrim(63, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = 5;
     this->state.lastPrim->state.duration = this->state.duration;
-    AllocateTextures(this->state.lastPrim->state);
+    this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
     if (type == 3) {
       this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ring_red.tga", 0, false, true, false);
       this->state.lastPrim->state.size = 10.0f;
@@ -15661,10 +15650,10 @@ void CRagEffect::VioletRingCloud(char type) {
   }
 
   if (this->state.stateCnt == 2) {
-    this->state.lastPrim = CreateEffectParticle(*this, this->render, 62, 0.0f, 0.0f, 0.0f, WorldObjects());
+    this->state.lastPrim = this->LaunchEffectPrim(62, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = 5;
     this->state.lastPrim->state.duration = this->state.duration;
-    AllocateTextures(this->state.lastPrim->state);
+    this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
     this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\cloud11.tga", 0, false, true, false);
     this->state.lastPrim->state.size = type == 3 ? 10.0f : 4.0f;
 
@@ -15730,129 +15719,129 @@ void CRagEffect::VioletRingCloud(char type) {
 // FUNCTION: fn_20243
 void CRagEffect::TexturedMagicRing(char type) {
   if (this->state.stateCnt == 0) {
-    this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 60, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-    this->state.currentPrimitive->renderFlag = 5;
-    this->state.currentPrimitive->duration = this->state.duration;
-    AllocateTextures(*this->state.currentPrimitive);
+    this->state.lastPrim = this->LaunchEffectPrim(60, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim->state.renderFlag = 5;
+    this->state.lastPrim->state.duration = this->state.duration;
+    this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
 
     if (type == 3) {
-      this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\ring_red.tga", 0, false, true, false);
-      this->state.currentPrimitive->size = 10.0f;
+      this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ring_red.tga", 0, false, true, false);
+      this->state.lastPrim->state.size = 10.0f;
     } else {
-      this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\magic_violet.tga", 0, false, true, false);
-      this->state.currentPrimitive->size = 4.0f;
+      this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\magic_violet.tga", 0, false, true, false);
+      this->state.lastPrim->state.size = 4.0f;
     }
 
-    this->state.currentPrimitive->slots[0].life = 1;
-    this->state.currentPrimitive->slots[0].process = 0;
-    this->state.currentPrimitive->slots[0].fullDisplayAngle = 360;
-    this->state.currentPrimitive->slots[0].maxHeight = 80.0f;
-    this->state.currentPrimitive->slots[0].rotStart = static_cast<std::int16_t>(std::max(rand() % 360, 0));
-    this->state.currentPrimitive->slots[0].alphaB = 0;
-    this->state.currentPrimitive->slots[0].distance = 7.0f;
-    this->state.currentPrimitive->slots[0].riseAngle = 90;
-    this->state.currentPrimitive->slots[0].alphaT = static_cast<std::int16_t>(type == 1 ? -1 : 1400);
-    this->state.currentPrimitive->slots[0].vecBNow.y = 0.0f;
+    this->state.lastPrim->state.slots[0].life = 1;
+    this->state.lastPrim->state.slots[0].process = 0;
+    this->state.lastPrim->state.slots[0].fullDisplayAngle = 360;
+    this->state.lastPrim->state.slots[0].maxHeight = 80.0f;
+    this->state.lastPrim->state.slots[0].rotStart = static_cast<std::int16_t>(std::max(rand() % 360, 0));
+    this->state.lastPrim->state.slots[0].alphaB = 0;
+    this->state.lastPrim->state.slots[0].distance = 7.0f;
+    this->state.lastPrim->state.slots[0].riseAngle = 90;
+    this->state.lastPrim->state.slots[0].alphaT = static_cast<std::int16_t>(type == 1 ? -1 : 1400);
+    this->state.lastPrim->state.slots[0].vecBNow.y = 0.0f;
     for (int i = 0; i < 21; ++i) {
-      this->state.currentPrimitive->slots[0].height[i] = 0.0f;
-      this->state.currentPrimitive->slots[0].flag1[i] = 3;
+      this->state.lastPrim->state.slots[0].height[i] = 0.0f;
+      this->state.lastPrim->state.slots[0].flag1[i] = 3;
     }
 
-    this->state.currentPrimitive->slots[1].life = 1;
-    this->state.currentPrimitive->slots[1].process = 0;
-    this->state.currentPrimitive->slots[1].fullDisplayAngle = 360;
-    this->state.currentPrimitive->slots[1].maxHeight = 80.0f;
-    this->state.currentPrimitive->slots[1].rotStart = static_cast<std::int16_t>(std::max(rand() % 360, 0));
-    this->state.currentPrimitive->slots[1].alphaB = 0;
-    this->state.currentPrimitive->slots[1].distance = 5.5f;
-    this->state.currentPrimitive->slots[1].riseAngle = 90;
-    this->state.currentPrimitive->slots[1].alphaT = static_cast<std::int16_t>(type == 1 ? -1 : 1400);
-    this->state.currentPrimitive->slots[1].vecBNow.y = 0.0f;
+    this->state.lastPrim->state.slots[1].life = 1;
+    this->state.lastPrim->state.slots[1].process = 0;
+    this->state.lastPrim->state.slots[1].fullDisplayAngle = 360;
+    this->state.lastPrim->state.slots[1].maxHeight = 80.0f;
+    this->state.lastPrim->state.slots[1].rotStart = static_cast<std::int16_t>(std::max(rand() % 360, 0));
+    this->state.lastPrim->state.slots[1].alphaB = 0;
+    this->state.lastPrim->state.slots[1].distance = 5.5f;
+    this->state.lastPrim->state.slots[1].riseAngle = 90;
+    this->state.lastPrim->state.slots[1].alphaT = static_cast<std::int16_t>(type == 1 ? -1 : 1400);
+    this->state.lastPrim->state.slots[1].vecBNow.y = 0.0f;
     for (int i = 0; i < 21; ++i) {
-      this->state.currentPrimitive->slots[1].height[i] = 0.0f;
-      this->state.currentPrimitive->slots[1].flag1[i] = 3;
+      this->state.lastPrim->state.slots[1].height[i] = 0.0f;
+      this->state.lastPrim->state.slots[1].flag1[i] = 3;
     }
 
-    this->state.currentPrimitive->slots[2].life = 1;
-    this->state.currentPrimitive->slots[2].process = 0;
-    this->state.currentPrimitive->slots[2].fullDisplayAngle = 360;
-    this->state.currentPrimitive->slots[2].maxHeight = 80.0f;
-    this->state.currentPrimitive->slots[2].rotStart = static_cast<std::int16_t>(std::max(rand() % 360, 0));
-    this->state.currentPrimitive->slots[2].alphaB = 0;
-    this->state.currentPrimitive->slots[2].distance = 4.0f;
-    this->state.currentPrimitive->slots[2].riseAngle = 90;
-    this->state.currentPrimitive->slots[2].alphaT = static_cast<std::int16_t>(type == 1 ? -1 : 1400);
-    this->state.currentPrimitive->slots[2].vecBNow.y = 0.0f;
+    this->state.lastPrim->state.slots[2].life = 1;
+    this->state.lastPrim->state.slots[2].process = 0;
+    this->state.lastPrim->state.slots[2].fullDisplayAngle = 360;
+    this->state.lastPrim->state.slots[2].maxHeight = 80.0f;
+    this->state.lastPrim->state.slots[2].rotStart = static_cast<std::int16_t>(std::max(rand() % 360, 0));
+    this->state.lastPrim->state.slots[2].alphaB = 0;
+    this->state.lastPrim->state.slots[2].distance = 4.0f;
+    this->state.lastPrim->state.slots[2].riseAngle = 90;
+    this->state.lastPrim->state.slots[2].alphaT = static_cast<std::int16_t>(type == 1 ? -1 : 1400);
+    this->state.lastPrim->state.slots[2].vecBNow.y = 0.0f;
     for (int i = 0; i < 21; ++i) {
-      this->state.currentPrimitive->slots[2].height[i] = 0.0f;
-      this->state.currentPrimitive->slots[2].flag1[i] = 3;
+      this->state.lastPrim->state.slots[2].height[i] = 0.0f;
+      this->state.lastPrim->state.slots[2].flag1[i] = 3;
     }
 
-    this->state.currentPrimitive->slots[3].life = 0;
+    this->state.lastPrim->state.slots[3].life = 0;
   }
 
   if (this->state.stateCnt == 2) {
-    this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 62, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-    this->state.currentPrimitive->renderFlag = 5;
-    this->state.currentPrimitive->duration = this->state.duration;
-    AllocateTextures(*this->state.currentPrimitive);
-    this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\cloud11.tga", 0, false, true, false);
-    this->state.currentPrimitive->size = type == 3 ? 10.0f : 4.0f;
+    this->state.lastPrim = this->LaunchEffectPrim(62, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim->state.renderFlag = 5;
+    this->state.lastPrim->state.duration = this->state.duration;
+    this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+    this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\cloud11.tga", 0, false, true, false);
+    this->state.lastPrim->state.size = type == 3 ? 10.0f : 4.0f;
 
-    this->state.currentPrimitive->slots[0].life = 1;
-    this->state.currentPrimitive->slots[0].process = 0;
-    this->state.currentPrimitive->slots[0].fullDisplayAngle = 30;
-    this->state.currentPrimitive->slots[0].maxHeight = 2.5f;
-    this->state.currentPrimitive->slots[0].rotStart = 0;
-    this->state.currentPrimitive->slots[0].alphaB = 0;
-    this->state.currentPrimitive->slots[0].distance = 13.0f;
-    this->state.currentPrimitive->slots[0].riseAngle = 90;
-    this->state.currentPrimitive->slots[0].alphaT = 3;
+    this->state.lastPrim->state.slots[0].life = 1;
+    this->state.lastPrim->state.slots[0].process = 0;
+    this->state.lastPrim->state.slots[0].fullDisplayAngle = 30;
+    this->state.lastPrim->state.slots[0].maxHeight = 2.5f;
+    this->state.lastPrim->state.slots[0].rotStart = 0;
+    this->state.lastPrim->state.slots[0].alphaB = 0;
+    this->state.lastPrim->state.slots[0].distance = 13.0f;
+    this->state.lastPrim->state.slots[0].riseAngle = 90;
+    this->state.lastPrim->state.slots[0].alphaT = 3;
     for (int i = 0; i < 21; ++i) {
-      this->state.currentPrimitive->slots[0].height[i] = 1.5f;
-      this->state.currentPrimitive->slots[0].flag1[i] = 0;
+      this->state.lastPrim->state.slots[0].height[i] = 1.5f;
+      this->state.lastPrim->state.slots[0].flag1[i] = 0;
     }
 
-    this->state.currentPrimitive->slots[1].life = 1;
-    this->state.currentPrimitive->slots[1].process = 0;
-    this->state.currentPrimitive->slots[1].fullDisplayAngle = 30;
-    this->state.currentPrimitive->slots[1].maxHeight = 5.0f;
-    this->state.currentPrimitive->slots[1].rotStart = 90;
-    this->state.currentPrimitive->slots[1].alphaB = 0;
-    this->state.currentPrimitive->slots[1].distance = 11.0f;
-    this->state.currentPrimitive->slots[1].riseAngle = 90;
-    this->state.currentPrimitive->slots[1].alphaT = 3;
+    this->state.lastPrim->state.slots[1].life = 1;
+    this->state.lastPrim->state.slots[1].process = 0;
+    this->state.lastPrim->state.slots[1].fullDisplayAngle = 30;
+    this->state.lastPrim->state.slots[1].maxHeight = 5.0f;
+    this->state.lastPrim->state.slots[1].rotStart = 90;
+    this->state.lastPrim->state.slots[1].alphaB = 0;
+    this->state.lastPrim->state.slots[1].distance = 11.0f;
+    this->state.lastPrim->state.slots[1].riseAngle = 90;
+    this->state.lastPrim->state.slots[1].alphaT = 3;
     for (int i = 0; i < 21; ++i) {
-      this->state.currentPrimitive->slots[1].height[i] = 1.5f;
-      this->state.currentPrimitive->slots[1].flag1[i] = 0;
+      this->state.lastPrim->state.slots[1].height[i] = 1.5f;
+      this->state.lastPrim->state.slots[1].flag1[i] = 0;
     }
 
-    this->state.currentPrimitive->slots[2].life = 1;
-    this->state.currentPrimitive->slots[2].process = 0;
-    this->state.currentPrimitive->slots[2].fullDisplayAngle = 30;
-    this->state.currentPrimitive->slots[2].maxHeight = 7.5f;
-    this->state.currentPrimitive->slots[2].rotStart = 180;
-    this->state.currentPrimitive->slots[2].alphaB = 0;
-    this->state.currentPrimitive->slots[2].distance = 9.0f;
-    this->state.currentPrimitive->slots[2].riseAngle = 90;
-    this->state.currentPrimitive->slots[2].alphaT = 3;
+    this->state.lastPrim->state.slots[2].life = 1;
+    this->state.lastPrim->state.slots[2].process = 0;
+    this->state.lastPrim->state.slots[2].fullDisplayAngle = 30;
+    this->state.lastPrim->state.slots[2].maxHeight = 7.5f;
+    this->state.lastPrim->state.slots[2].rotStart = 180;
+    this->state.lastPrim->state.slots[2].alphaB = 0;
+    this->state.lastPrim->state.slots[2].distance = 9.0f;
+    this->state.lastPrim->state.slots[2].riseAngle = 90;
+    this->state.lastPrim->state.slots[2].alphaT = 3;
     for (int i = 0; i < 21; ++i) {
-      this->state.currentPrimitive->slots[2].height[i] = 1.5f;
-      this->state.currentPrimitive->slots[2].flag1[i] = 0;
+      this->state.lastPrim->state.slots[2].height[i] = 1.5f;
+      this->state.lastPrim->state.slots[2].flag1[i] = 0;
     }
 
-    this->state.currentPrimitive->slots[3].life = 1;
-    this->state.currentPrimitive->slots[3].process = 0;
-    this->state.currentPrimitive->slots[3].fullDisplayAngle = 30;
-    this->state.currentPrimitive->slots[3].maxHeight = 10.0f;
-    this->state.currentPrimitive->slots[3].rotStart = 270;
-    this->state.currentPrimitive->slots[3].alphaB = 0;
-    this->state.currentPrimitive->slots[3].distance = 8.0f;
-    this->state.currentPrimitive->slots[3].riseAngle = 90;
-    this->state.currentPrimitive->slots[3].alphaT = 3;
+    this->state.lastPrim->state.slots[3].life = 1;
+    this->state.lastPrim->state.slots[3].process = 0;
+    this->state.lastPrim->state.slots[3].fullDisplayAngle = 30;
+    this->state.lastPrim->state.slots[3].maxHeight = 10.0f;
+    this->state.lastPrim->state.slots[3].rotStart = 270;
+    this->state.lastPrim->state.slots[3].alphaB = 0;
+    this->state.lastPrim->state.slots[3].distance = 8.0f;
+    this->state.lastPrim->state.slots[3].riseAngle = 90;
+    this->state.lastPrim->state.slots[3].alphaT = 3;
     for (int i = 0; i < 21; ++i) {
-      this->state.currentPrimitive->slots[3].height[i] = 1.5f;
-      this->state.currentPrimitive->slots[3].flag1[i] = 0;
+      this->state.lastPrim->state.slots[3].height[i] = 1.5f;
+      this->state.lastPrim->state.slots[3].flag1[i] = 0;
     }
   }
 }
@@ -16003,10 +15992,10 @@ bool CRagEffect::TexturedRisingRingStages(const char* name, char level) {
   this->render.position = this->state.parent->render.position;
 
   if (this->state.stateCnt == 0) {
-    this->state.lastPrim = CreateEffectParticle(*this, this->render, 60, 0.0f, 0.0f, 0.0f, WorldObjects());
+    this->state.lastPrim = this->LaunchEffectPrim(60, vector3d{0.0f, 0.0f, 0.0f});
     stored()->state.renderFlag = 5;
     stored()->state.duration = this->state.duration;
-    AllocateTextures(stored()->state);
+    stored()->state.textures = new CTexture*[stored()->state.totalTexture];
     stored()->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
     stored()->state.size = 16.0f;
 
@@ -16061,10 +16050,10 @@ bool CRagEffect::TexturedRisingRingStages(const char* name, char level) {
   if (level == 1) {
     if (this->state.stateCnt == 30) {
       PlayEffectWave(*this, "effect\\EF_GlassWall.wav");
-      this->state.lastPrim = CreateEffectParticle(*this, this->render, 60, 0.0f, 0.0f, 0.0f, WorldObjects());
+      this->state.lastPrim = this->LaunchEffectPrim(60, vector3d{0.0f, 0.0f, 0.0f});
       stored()->state.renderFlag = 5;
       stored()->state.duration = this->state.duration;
-      AllocateTextures(stored()->state);
+      stored()->state.textures = new CTexture*[stored()->state.totalTexture];
       stored()->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
       stored()->state.size = 16.0f;
 
@@ -16118,10 +16107,10 @@ bool CRagEffect::TexturedRisingRingStages(const char* name, char level) {
   } else {
     if (this->state.stateCnt == 30) {
       PlayEffectWave(*this, "effect\\EF_GlassWall.wav");
-      this->state.lastPrim = CreateEffectParticle(*this, this->render, 60, 0.0f, 0.0f, 0.0f, WorldObjects());
+      this->state.lastPrim = this->LaunchEffectPrim(60, vector3d{0.0f, 0.0f, 0.0f});
       stored()->state.renderFlag = 5;
       stored()->state.duration = this->state.duration;
-      AllocateTextures(stored()->state);
+      stored()->state.textures = new CTexture*[stored()->state.totalTexture];
       stored()->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
       stored()->state.size = 16.0f;
 
@@ -16174,10 +16163,10 @@ bool CRagEffect::TexturedRisingRingStages(const char* name, char level) {
     }
 
     if (this->state.stateCnt == 60) {
-      this->state.lastPrim = CreateEffectParticle(*this, this->render, 60, 0.0f, 0.0f, 0.0f, WorldObjects());
+      this->state.lastPrim = this->LaunchEffectPrim(60, vector3d{0.0f, 0.0f, 0.0f});
       stored()->state.renderFlag = 5;
       stored()->state.duration = this->state.duration;
-      AllocateTextures(stored()->state);
+      stored()->state.textures = new CTexture*[stored()->state.totalTexture];
       stored()->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
       stored()->state.size = 16.0f;
 
@@ -17387,7 +17376,7 @@ void CRagEffect::TexturedGroundRing(const char* name, char flag, int unused1, in
   auto stored = [&]() -> CEffectPrim* { return this->state.lastPrim; };
   stored()->state.renderFlag = 5;
   stored()->state.duration = this->state.duration;
-  AllocateTextures(stored()->state);
+  stored()->state.textures = new CTexture*[stored()->state.totalTexture];
   stored()->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
   stored()->state.size = static_cast<float>(flag);
 
@@ -18068,108 +18057,108 @@ void CRagEffect::HealRingSparkle(const char* name, char type) {
   this->render.position = this->state.parent->render.position;
 
   if (this->state.stateCnt == 0) {
-    this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 60, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-    this->state.currentPrimitive->renderFlag = 5;
-    this->state.currentPrimitive->duration = this->state.duration;
-    this->state.currentPrimitive->textures = new CTexture*[this->state.currentPrimitive->totalTexture];
-    this->state.currentPrimitive->textures[0] = g_texMgr.Load(name, 0, false, true, false);
-    this->state.currentPrimitive->size = type == 2 ? 4.0f : 9.0f;
+    this->state.lastPrim = this->LaunchEffectPrim(60, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim->state.renderFlag = 5;
+    this->state.lastPrim->state.duration = this->state.duration;
+    this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+    this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
+    this->state.lastPrim->state.size = type == 2 ? 4.0f : 9.0f;
 
-    this->state.currentPrimitive->slots[0].life = 1;
-    this->state.currentPrimitive->slots[0].process = 0;
-    this->state.currentPrimitive->slots[0].fullDisplayAngle = 360;
-    this->state.currentPrimitive->slots[0].maxHeight = 60.0f;
-    this->state.currentPrimitive->slots[0].rotStart = 0;
-    this->state.currentPrimitive->slots[0].alphaB = 0;
-    this->state.currentPrimitive->slots[0].distance = 4.6f;
-    this->state.currentPrimitive->slots[0].riseAngle = 90;
-    this->state.currentPrimitive->slots[0].vecBNow.y = 0.0f;
-    this->state.currentPrimitive->slots[0].alphaT = type != 0 ? 40 : 60;
+    this->state.lastPrim->state.slots[0].life = 1;
+    this->state.lastPrim->state.slots[0].process = 0;
+    this->state.lastPrim->state.slots[0].fullDisplayAngle = 360;
+    this->state.lastPrim->state.slots[0].maxHeight = 60.0f;
+    this->state.lastPrim->state.slots[0].rotStart = 0;
+    this->state.lastPrim->state.slots[0].alphaB = 0;
+    this->state.lastPrim->state.slots[0].distance = 4.6f;
+    this->state.lastPrim->state.slots[0].riseAngle = 90;
+    this->state.lastPrim->state.slots[0].vecBNow.y = 0.0f;
+    this->state.lastPrim->state.slots[0].alphaT = type != 0 ? 40 : 60;
     for (int i = 0; i < 21; ++i) {
-      this->state.currentPrimitive->slots[0].height[i] = 0.0f;
-      this->state.currentPrimitive->slots[0].flag1[i] = 0;
+      this->state.lastPrim->state.slots[0].height[i] = 0.0f;
+      this->state.lastPrim->state.slots[0].flag1[i] = 0;
     }
 
-    this->state.currentPrimitive->slots[1].life = 1;
-    this->state.currentPrimitive->slots[1].process = 0;
-    this->state.currentPrimitive->slots[1].fullDisplayAngle = 360;
-    this->state.currentPrimitive->slots[1].maxHeight = 60.0f;
-    this->state.currentPrimitive->slots[1].rotStart = 180;
-    this->state.currentPrimitive->slots[1].alphaB = 0;
-    this->state.currentPrimitive->slots[1].distance = 5.0f;
-    this->state.currentPrimitive->slots[1].riseAngle = 90;
-    this->state.currentPrimitive->slots[1].vecBNow.y = 0.0f;
-    this->state.currentPrimitive->slots[1].alphaT = type != 0 ? 40 : 60;
+    this->state.lastPrim->state.slots[1].life = 1;
+    this->state.lastPrim->state.slots[1].process = 0;
+    this->state.lastPrim->state.slots[1].fullDisplayAngle = 360;
+    this->state.lastPrim->state.slots[1].maxHeight = 60.0f;
+    this->state.lastPrim->state.slots[1].rotStart = 180;
+    this->state.lastPrim->state.slots[1].alphaB = 0;
+    this->state.lastPrim->state.slots[1].distance = 5.0f;
+    this->state.lastPrim->state.slots[1].riseAngle = 90;
+    this->state.lastPrim->state.slots[1].vecBNow.y = 0.0f;
+    this->state.lastPrim->state.slots[1].alphaT = type != 0 ? 40 : 60;
     for (int i = 0; i < 21; ++i) {
-      this->state.currentPrimitive->slots[1].height[i] = 0.0f;
-      this->state.currentPrimitive->slots[1].flag1[i] = 0;
+      this->state.lastPrim->state.slots[1].height[i] = 0.0f;
+      this->state.lastPrim->state.slots[1].flag1[i] = 0;
     }
 
-    this->state.currentPrimitive->slots[2].life = 1;
-    this->state.currentPrimitive->slots[2].process = 0;
-    this->state.currentPrimitive->slots[2].fullDisplayAngle = 360;
-    this->state.currentPrimitive->slots[2].maxHeight = type != 0 ? 18.0f : 12.0f;
-    this->state.currentPrimitive->slots[2].rotStart = static_cast<std::int16_t>(std::max(rand() % 360, 0));
-    this->state.currentPrimitive->slots[2].alphaB = 0;
-    this->state.currentPrimitive->slots[2].distance = 5.0f;
-    this->state.currentPrimitive->slots[2].riseAngle = 50;
-    this->state.currentPrimitive->slots[2].vecBNow.y = 0.0f;
-    this->state.currentPrimitive->slots[2].alphaT = type != 0 ? 40 : 60;
+    this->state.lastPrim->state.slots[2].life = 1;
+    this->state.lastPrim->state.slots[2].process = 0;
+    this->state.lastPrim->state.slots[2].fullDisplayAngle = 360;
+    this->state.lastPrim->state.slots[2].maxHeight = type != 0 ? 18.0f : 12.0f;
+    this->state.lastPrim->state.slots[2].rotStart = static_cast<std::int16_t>(std::max(rand() % 360, 0));
+    this->state.lastPrim->state.slots[2].alphaB = 0;
+    this->state.lastPrim->state.slots[2].distance = 5.0f;
+    this->state.lastPrim->state.slots[2].riseAngle = 50;
+    this->state.lastPrim->state.slots[2].vecBNow.y = 0.0f;
+    this->state.lastPrim->state.slots[2].alphaT = type != 0 ? 40 : 60;
     for (int i = 0; i < 21; ++i) {
-      this->state.currentPrimitive->slots[2].height[i] = 0.0f;
-      this->state.currentPrimitive->slots[2].flag1[i] = 0;
+      this->state.lastPrim->state.slots[2].height[i] = 0.0f;
+      this->state.lastPrim->state.slots[2].flag1[i] = 0;
     }
 
-    this->state.currentPrimitive->slots[3].life = 1;
-    this->state.currentPrimitive->slots[3].process = 0;
-    this->state.currentPrimitive->slots[3].fullDisplayAngle = 360;
-    this->state.currentPrimitive->slots[3].maxHeight = type == 0 ? 12.0f : 18.0f;
-    this->state.currentPrimitive->slots[3].rotStart = static_cast<std::int16_t>(std::max(rand() % 360, 0));
-    this->state.currentPrimitive->slots[3].alphaB = 0;
-    this->state.currentPrimitive->slots[3].distance = 5.2f;
-    this->state.currentPrimitive->slots[3].riseAngle = 48;
-    this->state.currentPrimitive->slots[3].vecBNow.y = 0.0f;
-    this->state.currentPrimitive->slots[3].alphaT = type != 0 ? 40 : 60;
+    this->state.lastPrim->state.slots[3].life = 1;
+    this->state.lastPrim->state.slots[3].process = 0;
+    this->state.lastPrim->state.slots[3].fullDisplayAngle = 360;
+    this->state.lastPrim->state.slots[3].maxHeight = type == 0 ? 12.0f : 18.0f;
+    this->state.lastPrim->state.slots[3].rotStart = static_cast<std::int16_t>(std::max(rand() % 360, 0));
+    this->state.lastPrim->state.slots[3].alphaB = 0;
+    this->state.lastPrim->state.slots[3].distance = 5.2f;
+    this->state.lastPrim->state.slots[3].riseAngle = 48;
+    this->state.lastPrim->state.slots[3].vecBNow.y = 0.0f;
+    this->state.lastPrim->state.slots[3].alphaT = type != 0 ? 40 : 60;
     for (int i = 0; i < 21; ++i) {
-      this->state.currentPrimitive->slots[3].height[i] = 0.0f;
-      this->state.currentPrimitive->slots[3].flag1[i] = 0;
+      this->state.lastPrim->state.slots[3].height[i] = 0.0f;
+      this->state.lastPrim->state.slots[3].flag1[i] = 0;
     }
 
     if (type < 2) {
       PlayEffectWave(*this, "_heal_effect.wav");
     }
   } else if (this->state.stateCnt <= 50 && this->state.stateCnt % 6 == 0 && type < 2) {
-    this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 59, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-    this->state.currentPrimitive->renderFlag = 5;
-    this->state.currentPrimitive->duration = this->state.duration;
-    this->state.currentPrimitive->totalTexture = 2;
-    this->state.currentPrimitive->textures = new CTexture*[this->state.currentPrimitive->totalTexture];
-    this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\pok1.tga", 0, false, true, false);
-    this->state.currentPrimitive->textures[1] = g_texMgr.Load("effect\\pok3.tga", 0, false, true, false);
-    this->state.currentPrimitive->size = 0.0f;
-    Owner(this->state.currentPrimitive).render.position = this->render.position;
+    this->state.lastPrim = this->LaunchEffectPrim(59, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim->state.renderFlag = 5;
+    this->state.lastPrim->state.duration = this->state.duration;
+    this->state.lastPrim->state.totalTexture = 2;
+    this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+    this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\pok1.tga", 0, false, true, false);
+    this->state.lastPrim->state.textures[1] = g_texMgr.Load("effect\\pok3.tga", 0, false, true, false);
+    this->state.lastPrim->state.size = 0.0f;
+    this->state.lastPrim->render.position = this->render.position;
 
     for (int i = 0; i < 4; ++i) {
-      this->state.currentPrimitive->slots[i].life = 1;
-      this->state.currentPrimitive->slots[i].process = 0;
-      this->state.currentPrimitive->slots[i].distance = static_cast<float>(std::max(rand() % 10, 0)) * 0.1f + 2.0f;
-      this->state.currentPrimitive->slots[i].height[8] = 0.0f;
-      this->state.currentPrimitive->slots[i].alphaB = 0;
-      this->state.currentPrimitive->slots[i].vecBNow.x = static_cast<float>(std::max(rand() % 13, 0)) + this->render.position.x - 6.0f;
-      this->state.currentPrimitive->slots[i].vecBNow.z = static_cast<float>(std::max(rand() % 13, 0)) + this->render.position.z - 6.0f;
-      this->state.currentPrimitive->slots[i].vecBNow.y = this->render.position.y;
-      this->state.currentPrimitive->slots[i].rotStart = 0;
-      this->state.currentPrimitive->slots[i].height[1] = 0.0f;
+      this->state.lastPrim->state.slots[i].life = 1;
+      this->state.lastPrim->state.slots[i].process = 0;
+      this->state.lastPrim->state.slots[i].distance = static_cast<float>(std::max(rand() % 10, 0)) * 0.1f + 2.0f;
+      this->state.lastPrim->state.slots[i].height[8] = 0.0f;
+      this->state.lastPrim->state.slots[i].alphaB = 0;
+      this->state.lastPrim->state.slots[i].vecBNow.x = static_cast<float>(std::max(rand() % 13, 0)) + this->render.position.x - 6.0f;
+      this->state.lastPrim->state.slots[i].vecBNow.z = static_cast<float>(std::max(rand() % 13, 0)) + this->render.position.z - 6.0f;
+      this->state.lastPrim->state.slots[i].vecBNow.y = this->render.position.y;
+      this->state.lastPrim->state.slots[i].rotStart = 0;
+      this->state.lastPrim->state.slots[i].height[1] = 0.0f;
       if (type == 0) {
-        this->state.currentPrimitive->slots[i].height[2] = static_cast<float>(std::max(rand() % 40, 0)) * 0.01f + 0.4f;
+        this->state.lastPrim->state.slots[i].height[2] = static_cast<float>(std::max(rand() % 40, 0)) * 0.01f + 0.4f;
       } else {
-        this->state.currentPrimitive->slots[i].height[2] = static_cast<float>(std::max(rand() % 40, 0)) * 0.01f + 0.6f;
+        this->state.lastPrim->state.slots[i].height[2] = static_cast<float>(std::max(rand() % 40, 0)) * 0.01f + 0.6f;
       }
-      this->state.currentPrimitive->slots[i].fullDisplayAngle = 0;
-      this->state.currentPrimitive->slots[i].flag1[0] = 0;
-      this->state.currentPrimitive->slots[i].flag1[1] = 1;
-      this->state.currentPrimitive->slots[i].flag1[2] = 11;
-      this->state.currentPrimitive->slots[i].height[7] = 0.0f;
+      this->state.lastPrim->state.slots[i].fullDisplayAngle = 0;
+      this->state.lastPrim->state.slots[i].flag1[0] = 0;
+      this->state.lastPrim->state.slots[i].flag1[1] = 1;
+      this->state.lastPrim->state.slots[i].flag1[2] = 11;
+      this->state.lastPrim->state.slots[i].height[7] = 0.0f;
     }
   }
 
@@ -18178,102 +18167,102 @@ void CRagEffect::HealRingSparkle(const char* name, char type) {
   }
 
   if (this->state.stateCnt == 1) {
-    this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 60, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-    this->state.currentPrimitive->renderFlag = 5;
-    this->state.currentPrimitive->duration = this->state.duration;
-    this->state.currentPrimitive->textures = new CTexture*[this->state.currentPrimitive->totalTexture];
-    this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\alpha_down.tga", 0, false, true, false);
-    this->state.currentPrimitive->size = 9.0f;
+    this->state.lastPrim = this->LaunchEffectPrim(60, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim->state.renderFlag = 5;
+    this->state.lastPrim->state.duration = this->state.duration;
+    this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+    this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\alpha_down.tga", 0, false, true, false);
+    this->state.lastPrim->state.size = 9.0f;
 
-    this->state.currentPrimitive->slots[0].life = 1;
-    this->state.currentPrimitive->slots[0].process = 0;
-    this->state.currentPrimitive->slots[0].fullDisplayAngle = 360;
-    this->state.currentPrimitive->slots[0].maxHeight = 90.0f;
-    this->state.currentPrimitive->slots[0].rotStart = 0;
-    this->state.currentPrimitive->slots[0].alphaB = 0;
-    this->state.currentPrimitive->slots[0].distance = 4.2f;
-    this->state.currentPrimitive->slots[0].riseAngle = 90;
-    this->state.currentPrimitive->slots[0].alphaT = 40;
-    this->state.currentPrimitive->slots[0].vecBNow.y = 0.0f;
+    this->state.lastPrim->state.slots[0].life = 1;
+    this->state.lastPrim->state.slots[0].process = 0;
+    this->state.lastPrim->state.slots[0].fullDisplayAngle = 360;
+    this->state.lastPrim->state.slots[0].maxHeight = 90.0f;
+    this->state.lastPrim->state.slots[0].rotStart = 0;
+    this->state.lastPrim->state.slots[0].alphaB = 0;
+    this->state.lastPrim->state.slots[0].distance = 4.2f;
+    this->state.lastPrim->state.slots[0].riseAngle = 90;
+    this->state.lastPrim->state.slots[0].alphaT = 40;
+    this->state.lastPrim->state.slots[0].vecBNow.y = 0.0f;
     for (int i = 0; i < 21; ++i) {
-      this->state.currentPrimitive->slots[0].height[i] = 0.0f;
-      this->state.currentPrimitive->slots[0].flag1[i] = 0;
+      this->state.lastPrim->state.slots[0].height[i] = 0.0f;
+      this->state.lastPrim->state.slots[0].flag1[i] = 0;
     }
 
-    this->state.currentPrimitive->slots[1].life = 1;
-    this->state.currentPrimitive->slots[1].process = 0;
-    this->state.currentPrimitive->slots[1].fullDisplayAngle = 360;
-    this->state.currentPrimitive->slots[1].maxHeight = 90.0f;
-    this->state.currentPrimitive->slots[1].rotStart = 90;
-    this->state.currentPrimitive->slots[1].alphaB = 0;
-    this->state.currentPrimitive->slots[1].distance = 4.3f;
-    this->state.currentPrimitive->slots[1].riseAngle = 90;
-    this->state.currentPrimitive->slots[1].alphaT = 40;
-    this->state.currentPrimitive->slots[1].vecBNow.y = 0.0f;
+    this->state.lastPrim->state.slots[1].life = 1;
+    this->state.lastPrim->state.slots[1].process = 0;
+    this->state.lastPrim->state.slots[1].fullDisplayAngle = 360;
+    this->state.lastPrim->state.slots[1].maxHeight = 90.0f;
+    this->state.lastPrim->state.slots[1].rotStart = 90;
+    this->state.lastPrim->state.slots[1].alphaB = 0;
+    this->state.lastPrim->state.slots[1].distance = 4.3f;
+    this->state.lastPrim->state.slots[1].riseAngle = 90;
+    this->state.lastPrim->state.slots[1].alphaT = 40;
+    this->state.lastPrim->state.slots[1].vecBNow.y = 0.0f;
     for (int i = 0; i < 21; ++i) {
-      this->state.currentPrimitive->slots[1].height[i] = 0.0f;
-      this->state.currentPrimitive->slots[1].flag1[i] = 0;
+      this->state.lastPrim->state.slots[1].height[i] = 0.0f;
+      this->state.lastPrim->state.slots[1].flag1[i] = 0;
     }
 
-    this->state.currentPrimitive->slots[2].life = 1;
-    this->state.currentPrimitive->slots[2].process = 0;
-    this->state.currentPrimitive->slots[2].fullDisplayAngle = 360;
-    this->state.currentPrimitive->slots[2].maxHeight = 10.0f;
-    this->state.currentPrimitive->slots[2].rotStart = static_cast<std::int16_t>(std::max(rand() % 360, 0));
-    this->state.currentPrimitive->slots[2].alphaB = 0;
-    this->state.currentPrimitive->slots[2].distance = 5.3f;
-    this->state.currentPrimitive->slots[2].riseAngle = 46;
-    this->state.currentPrimitive->slots[2].alphaT = 30;
-    this->state.currentPrimitive->slots[2].vecBNow.y = 0.0f;
+    this->state.lastPrim->state.slots[2].life = 1;
+    this->state.lastPrim->state.slots[2].process = 0;
+    this->state.lastPrim->state.slots[2].fullDisplayAngle = 360;
+    this->state.lastPrim->state.slots[2].maxHeight = 10.0f;
+    this->state.lastPrim->state.slots[2].rotStart = static_cast<std::int16_t>(std::max(rand() % 360, 0));
+    this->state.lastPrim->state.slots[2].alphaB = 0;
+    this->state.lastPrim->state.slots[2].distance = 5.3f;
+    this->state.lastPrim->state.slots[2].riseAngle = 46;
+    this->state.lastPrim->state.slots[2].alphaT = 30;
+    this->state.lastPrim->state.slots[2].vecBNow.y = 0.0f;
     for (int i = 0; i < 21; ++i) {
-      this->state.currentPrimitive->slots[2].height[i] = 0.0f;
-      this->state.currentPrimitive->slots[2].flag1[i] = 0;
+      this->state.lastPrim->state.slots[2].height[i] = 0.0f;
+      this->state.lastPrim->state.slots[2].flag1[i] = 0;
     }
 
-    this->state.currentPrimitive->slots[3].life = 1;
-    this->state.currentPrimitive->slots[3].process = 0;
-    this->state.currentPrimitive->slots[3].fullDisplayAngle = 360;
-    this->state.currentPrimitive->slots[3].maxHeight = 10.0f;
-    this->state.currentPrimitive->slots[3].rotStart = static_cast<std::int16_t>(std::max(rand() % 360, 0));
-    this->state.currentPrimitive->slots[3].alphaB = 0;
-    this->state.currentPrimitive->slots[3].distance = 5.4f;
-    this->state.currentPrimitive->slots[3].riseAngle = 44;
-    this->state.currentPrimitive->slots[3].alphaT = 30;
-    this->state.currentPrimitive->slots[3].vecBNow.y = 0.0f;
+    this->state.lastPrim->state.slots[3].life = 1;
+    this->state.lastPrim->state.slots[3].process = 0;
+    this->state.lastPrim->state.slots[3].fullDisplayAngle = 360;
+    this->state.lastPrim->state.slots[3].maxHeight = 10.0f;
+    this->state.lastPrim->state.slots[3].rotStart = static_cast<std::int16_t>(std::max(rand() % 360, 0));
+    this->state.lastPrim->state.slots[3].alphaB = 0;
+    this->state.lastPrim->state.slots[3].distance = 5.4f;
+    this->state.lastPrim->state.slots[3].riseAngle = 44;
+    this->state.lastPrim->state.slots[3].alphaT = 30;
+    this->state.lastPrim->state.slots[3].vecBNow.y = 0.0f;
     for (int i = 0; i < 21; ++i) {
-      this->state.currentPrimitive->slots[3].height[i] = 0.0f;
-      this->state.currentPrimitive->slots[3].flag1[i] = 0;
+      this->state.lastPrim->state.slots[3].height[i] = 0.0f;
+      this->state.lastPrim->state.slots[3].flag1[i] = 0;
     }
   }
 
   if (this->state.stateCnt <= 50 && this->state.stateCnt % 9 == 2) {
-    this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 59, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-    this->state.currentPrimitive->renderFlag = 5;
-    this->state.currentPrimitive->duration = this->state.duration;
-    this->state.currentPrimitive->totalTexture = 2;
-    this->state.currentPrimitive->textures = new CTexture*[this->state.currentPrimitive->totalTexture];
-    this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\pok1.tga", 0, false, true, false);
-    this->state.currentPrimitive->textures[1] = g_texMgr.Load("effect\\pok3.tga", 0, false, true, false);
-    this->state.currentPrimitive->size = 0.0f;
-    Owner(this->state.currentPrimitive).render.position = this->render.position;
+    this->state.lastPrim = this->LaunchEffectPrim(59, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim->state.renderFlag = 5;
+    this->state.lastPrim->state.duration = this->state.duration;
+    this->state.lastPrim->state.totalTexture = 2;
+    this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+    this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\pok1.tga", 0, false, true, false);
+    this->state.lastPrim->state.textures[1] = g_texMgr.Load("effect\\pok3.tga", 0, false, true, false);
+    this->state.lastPrim->state.size = 0.0f;
+    this->state.lastPrim->render.position = this->render.position;
 
     for (int i = 0; i < 4; ++i) {
-      this->state.currentPrimitive->slots[i].life = 1;
-      this->state.currentPrimitive->slots[i].process = 0;
-      this->state.currentPrimitive->slots[i].distance = static_cast<float>(std::max(rand() % 10, 0)) * 0.1f + 2.4f;
-      this->state.currentPrimitive->slots[i].height[8] = 0.0f;
-      this->state.currentPrimitive->slots[i].alphaB = 0;
-      this->state.currentPrimitive->slots[i].vecBNow.x = static_cast<float>(std::max(rand() % 13, 0)) + this->render.position.x - 6.0f;
-      this->state.currentPrimitive->slots[i].vecBNow.z = static_cast<float>(std::max(rand() % 13, 0)) + this->render.position.z - 6.0f;
-      this->state.currentPrimitive->slots[i].vecBNow.y = this->render.position.y;
-      this->state.currentPrimitive->slots[i].rotStart = 0;
-      this->state.currentPrimitive->slots[i].height[1] = 0.0f;
-      this->state.currentPrimitive->slots[i].height[2] = static_cast<float>(std::max(rand() % 40, 0)) * 0.01f + 0.4f;
-      this->state.currentPrimitive->slots[i].fullDisplayAngle = 0;
-      this->state.currentPrimitive->slots[i].flag1[0] = 0;
-      this->state.currentPrimitive->slots[i].flag1[1] = 1;
-      this->state.currentPrimitive->slots[i].flag1[2] = 11;
-      this->state.currentPrimitive->slots[i].height[7] = 0.0f;
+      this->state.lastPrim->state.slots[i].life = 1;
+      this->state.lastPrim->state.slots[i].process = 0;
+      this->state.lastPrim->state.slots[i].distance = static_cast<float>(std::max(rand() % 10, 0)) * 0.1f + 2.4f;
+      this->state.lastPrim->state.slots[i].height[8] = 0.0f;
+      this->state.lastPrim->state.slots[i].alphaB = 0;
+      this->state.lastPrim->state.slots[i].vecBNow.x = static_cast<float>(std::max(rand() % 13, 0)) + this->render.position.x - 6.0f;
+      this->state.lastPrim->state.slots[i].vecBNow.z = static_cast<float>(std::max(rand() % 13, 0)) + this->render.position.z - 6.0f;
+      this->state.lastPrim->state.slots[i].vecBNow.y = this->render.position.y;
+      this->state.lastPrim->state.slots[i].rotStart = 0;
+      this->state.lastPrim->state.slots[i].height[1] = 0.0f;
+      this->state.lastPrim->state.slots[i].height[2] = static_cast<float>(std::max(rand() % 40, 0)) * 0.01f + 0.4f;
+      this->state.lastPrim->state.slots[i].fullDisplayAngle = 0;
+      this->state.lastPrim->state.slots[i].flag1[0] = 0;
+      this->state.lastPrim->state.slots[i].flag1[1] = 1;
+      this->state.lastPrim->state.slots[i].flag1[2] = 11;
+      this->state.lastPrim->state.slots[i].height[7] = 0.0f;
     }
   }
 }
@@ -18462,110 +18451,91 @@ void CRagEffect::FreezingCircle(char kind) {
   }
 
   for (int i = 0; i < 4; ++i) {
-    if (kind == 3) {
-      if (i < 1) {
-        this->state.lastPrim->state.slots[i].life = 1;
-      } else {
-        this->state.lastPrim->state.slots[i].life = 0;
-      }
-
-      this->state.lastPrim->state.slots[i].maxHeight = 0.15f;
-      this->state.lastPrim->state.slots[i].distance = 3.2f;
-      this->state.lastPrim->state.slots[i].maxHeight = 0.6f;
-      this->state.lastPrim->state.slots[i].vecBPre.x = static_cast<float>(std::max(0, rand() % 15) - 8);
-      this->state.lastPrim->state.slots[i].vecBPre.z = static_cast<float>(std::max(0, rand() % 15) - 8);
-    } else if (kind == 7 || kind == 8) {
-      if (i < 2) {
-        this->state.lastPrim->state.slots[i].life = 1;
-      } else {
-        this->state.lastPrim->state.slots[i].life = 0;
-      }
-
-      this->state.lastPrim->state.slots[i].maxHeight = 0.15f;
-
-      if (kind == 7) {
-        this->state.lastPrim->state.slots[i].distance = 0.8f;
-      } else {
-        this->state.lastPrim->state.slots[i].distance = 2.4f;
-      }
-
-      this->state.lastPrim->state.slots[i].vecBPre.x = 0.0f;
-      this->state.lastPrim->state.slots[i].vecBPre.z = 0.0f;
+    if ((kind == 3 && i >= 1) || ((kind == 7 || kind == 8) && i >= 2)) {
+      this->state.lastPrim->state.slots[i].life = 0;
     } else {
       this->state.lastPrim->state.slots[i].life = 1;
-      this->state.lastPrim->state.slots[i].maxHeight = 0.15f;
-
-      if (kind == 6) {
-        this->state.lastPrim->state.slots[i].distance = 2.4f;
-        this->state.lastPrim->state.slots[i].vecBPre.x = static_cast<float>(std::max(0, rand() % 35) - 17);
-        this->state.lastPrim->state.slots[i].vecBPre.z = 0.0f;
-      } else if (kind == 1 || kind == 4 || kind == 5 || kind >= 8) {
-        this->state.lastPrim->state.slots[i].distance = 2.4f;
-        this->state.lastPrim->state.slots[i].vecBPre.x = 0.0f;
-        this->state.lastPrim->state.slots[i].vecBPre.z = 0.0f;
-      } else {
-        this->state.lastPrim->state.slots[i].distance = 0.8f;
-        this->state.lastPrim->state.slots[i].vecBPre.x = 0.0f;
-        this->state.lastPrim->state.slots[i].vecBPre.z = 0.0f;
-      }
     }
 
-    this->state.lastPrim->state.slots[i].vecBPre.y = static_cast<float>(std::max(0, rand() % 100));
-    this->state.lastPrim->state.slots[i].height[0] = static_cast<float>(std::max(0, rand() % 360));
-    this->state.lastPrim->state.slots[i].height[1] = static_cast<float>(std::max(0, rand() % 360));
-    this->state.lastPrim->state.slots[i].height[2] = static_cast<float>(std::max(0, rand() % 360));
-    this->state.lastPrim->state.slots[i].height[3] = static_cast<float>(std::max(0, rand() % 360));
+    this->state.lastPrim->state.slots[i].maxHeight = 0.15f;
 
     if (kind == 3) {
-      this->state.lastPrim->state.slots[i].vecBNow.x = static_cast<float>(std::max(0, rand() % 15) - 8);
-      this->state.lastPrim->state.slots[i].vecBNow.z = static_cast<float>(std::max(0, rand() % 15) - 8);
+      this->state.lastPrim->state.slots[i].distance = 3.2f;
+      this->state.lastPrim->state.slots[i].maxHeight = 0.6f;
+      this->state.lastPrim->state.slots[i].vecBPre.x = static_cast<float>(ClampedRandom(15) - 8);
+      this->state.lastPrim->state.slots[i].vecBPre.z = static_cast<float>(ClampedRandom(15) - 8);
+    } else {
+      if (kind == 1 || kind == 4 || kind == 5 || kind == 6 || kind >= 8) {
+        this->state.lastPrim->state.slots[i].distance = 2.4f;
+      } else {
+        this->state.lastPrim->state.slots[i].distance = 0.8f;
+      }
+
+      if (kind == 6) {
+        this->state.lastPrim->state.slots[i].vecBPre.x = static_cast<float>(ClampedRandom(35) - 17);
+      } else {
+        this->state.lastPrim->state.slots[i].vecBPre.x = 0.0f;
+      }
+
+      this->state.lastPrim->state.slots[i].vecBPre.z = 0.0f;
+    }
+
+    this->state.lastPrim->state.slots[i].vecBPre.y = static_cast<float>(ClampedRandom(100));
+    this->state.lastPrim->state.slots[i].height[0] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[i].height[1] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[i].height[2] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[i].height[3] = static_cast<float>(ClampedRandom(360));
+
+    if (kind == 3) {
+      this->state.lastPrim->state.slots[i].vecBNow.x = static_cast<float>(ClampedRandom(15) - 8);
+      this->state.lastPrim->state.slots[i].vecBNow.z = static_cast<float>(ClampedRandom(15) - 8);
     } else if (kind == 6) {
-      this->state.lastPrim->state.slots[i].vecBNow.x = static_cast<float>(std::max(0, rand() % 35) - 17);
+      this->state.lastPrim->state.slots[i].vecBNow.x = static_cast<float>(ClampedRandom(35) - 17);
       this->state.lastPrim->state.slots[i].vecBNow.z = 0.0f;
     } else {
       this->state.lastPrim->state.slots[i].vecBNow.x = 0.0f;
       this->state.lastPrim->state.slots[i].vecBNow.z = 0.0f;
     }
 
-    this->state.lastPrim->state.slots[i].vecBNow.y = static_cast<float>(std::max(0, rand() % 100));
-    this->state.lastPrim->state.slots[i].height[4] = static_cast<float>(std::max(0, rand() % 360));
-    this->state.lastPrim->state.slots[i].height[5] = static_cast<float>(std::max(0, rand() % 360));
-    this->state.lastPrim->state.slots[i].height[6] = static_cast<float>(std::max(0, rand() % 360));
-    this->state.lastPrim->state.slots[i].height[7] = static_cast<float>(std::max(0, rand() % 360));
+    this->state.lastPrim->state.slots[i].vecBNow.y = static_cast<float>(ClampedRandom(100));
+    this->state.lastPrim->state.slots[i].height[4] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[i].height[5] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[i].height[6] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[i].height[7] = static_cast<float>(ClampedRandom(360));
 
     if (kind == 3) {
-      this->state.lastPrim->state.slots[i].vecTPre.x = static_cast<float>(std::max(0, rand() % 15) - 8);
-      this->state.lastPrim->state.slots[i].vecTPre.z = static_cast<float>(std::max(0, rand() % 15) - 8);
+      this->state.lastPrim->state.slots[i].vecTPre.x = static_cast<float>(ClampedRandom(15) - 8);
+      this->state.lastPrim->state.slots[i].vecTPre.z = static_cast<float>(ClampedRandom(15) - 8);
     } else if (kind == 6) {
-      this->state.lastPrim->state.slots[i].vecTPre.x = static_cast<float>(std::max(0, rand() % 35) - 17);
+      this->state.lastPrim->state.slots[i].vecTPre.x = static_cast<float>(ClampedRandom(35) - 17);
       this->state.lastPrim->state.slots[i].vecTPre.z = 0.0f;
     } else {
       this->state.lastPrim->state.slots[i].vecTPre.x = 0.0f;
       this->state.lastPrim->state.slots[i].vecTPre.z = 0.0f;
     }
 
-    this->state.lastPrim->state.slots[i].vecTPre.y = static_cast<float>(std::max(0, rand() % 100));
-    this->state.lastPrim->state.slots[i].height[8] = static_cast<float>(std::max(0, rand() % 360));
-    this->state.lastPrim->state.slots[i].height[9] = static_cast<float>(std::max(0, rand() % 360));
-    this->state.lastPrim->state.slots[i].height[10] = static_cast<float>(std::max(0, rand() % 360));
-    this->state.lastPrim->state.slots[i].height[11] = static_cast<float>(std::max(0, rand() % 360));
+    this->state.lastPrim->state.slots[i].vecTPre.y = static_cast<float>(ClampedRandom(100));
+    this->state.lastPrim->state.slots[i].height[8] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[i].height[9] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[i].height[10] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[i].height[11] = static_cast<float>(ClampedRandom(360));
 
     if (kind == 3) {
-      this->state.lastPrim->state.slots[i].vecTNow.x = static_cast<float>(std::max(0, rand() % 15) - 8);
-      this->state.lastPrim->state.slots[i].vecTNow.z = static_cast<float>(std::max(0, rand() % 15) - 8);
+      this->state.lastPrim->state.slots[i].vecTNow.x = static_cast<float>(ClampedRandom(15) - 8);
+      this->state.lastPrim->state.slots[i].vecTNow.z = static_cast<float>(ClampedRandom(15) - 8);
     } else if (kind == 6) {
-      this->state.lastPrim->state.slots[i].vecTNow.x = static_cast<float>(std::max(0, rand() % 35) - 17);
+      this->state.lastPrim->state.slots[i].vecTNow.x = static_cast<float>(ClampedRandom(35) - 17);
       this->state.lastPrim->state.slots[i].vecTNow.z = 0.0f;
     } else {
       this->state.lastPrim->state.slots[i].vecTNow.x = 0.0f;
       this->state.lastPrim->state.slots[i].vecTNow.z = 0.0f;
     }
 
-    this->state.lastPrim->state.slots[i].vecTNow.y = static_cast<float>(std::max(0, rand() % 100));
-    this->state.lastPrim->state.slots[i].height[12] = static_cast<float>(std::max(0, rand() % 360));
-    this->state.lastPrim->state.slots[i].height[13] = static_cast<float>(std::max(0, rand() % 360));
-    this->state.lastPrim->state.slots[i].height[14] = static_cast<float>(std::max(0, rand() % 360));
-    this->state.lastPrim->state.slots[i].height[15] = static_cast<float>(std::max(0, rand() % 360));
+    this->state.lastPrim->state.slots[i].vecTNow.y = static_cast<float>(ClampedRandom(100));
+    this->state.lastPrim->state.slots[i].height[12] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[i].height[13] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[i].height[14] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[i].height[15] = static_cast<float>(ClampedRandom(360));
 
     if (kind == 4) {
       this->state.lastPrim->state.slots[i].vecBPre.y = -40.0f;
@@ -18574,10 +18544,10 @@ void CRagEffect::FreezingCircle(char kind) {
       this->state.lastPrim->state.slots[i].vecTNow.y = -70.0f;
       this->state.lastPrim->state.slots[i].flag1[0] = 14;
     } else if (kind == 6) {
-      this->state.lastPrim->state.slots[i].vecBPre.y = static_cast<float>(-40 - std::max(0, rand() % 40));
-      this->state.lastPrim->state.slots[i].vecBNow.y = static_cast<float>(-40 - std::max(0, rand() % 40));
-      this->state.lastPrim->state.slots[i].vecTPre.y = static_cast<float>(-40 - std::max(0, rand() % 40));
-      this->state.lastPrim->state.slots[i].vecTNow.y = static_cast<float>(-40 - std::max(0, rand() % 40));
+      this->state.lastPrim->state.slots[i].vecBPre.y = static_cast<float>(-40 - ClampedRandom(40));
+      this->state.lastPrim->state.slots[i].vecBNow.y = static_cast<float>(-40 - ClampedRandom(40));
+      this->state.lastPrim->state.slots[i].vecTPre.y = static_cast<float>(-40 - ClampedRandom(40));
+      this->state.lastPrim->state.slots[i].vecTNow.y = static_cast<float>(-40 - ClampedRandom(40));
       this->state.lastPrim->state.slots[i].flag1[0] = 16;
     } else {
       if (kind == 5 || kind == 7) {
@@ -18616,13 +18586,13 @@ void CRagEffect::TorchDust(char kind) {
   }
 
   this->render.position = this->state.parent->render.position;
-  this->state.lastPrim = CreateEffectParticle(*this, this->render, 128, 0.0f, 0.0f, 0.0f, WorldObjects());
+  this->state.lastPrim = this->LaunchEffectPrim(128, vector3d{0.0f, 0.0f, 0.0f});
   stored()->state.renderFlag = 5;
   stored()->state.duration = this->state.duration;
 
   if (kind == 0) {
     stored()->state.totalTexture = 9;
-    AllocateTextures(stored()->state);
+    stored()->state.textures = new CTexture*[stored()->state.totalTexture];
     stored()->state.textures[0] = g_texMgr.Load("effect\\dust01.bmp", 0, false, true, false);
     stored()->state.textures[1] = g_texMgr.Load("effect\\dust02.bmp", 0, false, true, false);
     stored()->state.textures[2] = g_texMgr.Load("effect\\dust03.bmp", 0, false, true, false);
@@ -18634,7 +18604,7 @@ void CRagEffect::TorchDust(char kind) {
     stored()->state.textures[8] = g_texMgr.Load("effect\\dust09.bmp", 0, false, true, false);
   } else if (kind == 2) {
     stored()->state.totalTexture = 13;
-    AllocateTextures(stored()->state);
+    stored()->state.textures = new CTexture*[stored()->state.totalTexture];
     stored()->state.textures[0] = g_texMgr.Load("effect\\torch_green01.bmp", 0, false, true, false);
     stored()->state.textures[1] = g_texMgr.Load("effect\\torch_green02.bmp", 0, false, true, false);
     stored()->state.textures[2] = g_texMgr.Load("effect\\torch_green03.bmp", 0, false, true, false);
@@ -18650,7 +18620,7 @@ void CRagEffect::TorchDust(char kind) {
     stored()->state.textures[12] = g_texMgr.Load("effect\\torch_green13.bmp", 0, false, true, false);
   } else if (kind == 1) {
     stored()->state.totalTexture = 13;
-    AllocateTextures(stored()->state);
+    stored()->state.textures = new CTexture*[stored()->state.totalTexture];
     stored()->state.textures[0] = g_texMgr.Load("effect\\torch_red01.bmp", 0, false, true, false);
     stored()->state.textures[1] = g_texMgr.Load("effect\\torch_red02.bmp", 0, false, true, false);
     stored()->state.textures[2] = g_texMgr.Load("effect\\torch_red03.bmp", 0, false, true, false);
@@ -18666,7 +18636,7 @@ void CRagEffect::TorchDust(char kind) {
     stored()->state.textures[12] = g_texMgr.Load("effect\\torch_red13.bmp", 0, false, true, false);
   } else if (kind == 3) {
     stored()->state.totalTexture = 13;
-    AllocateTextures(stored()->state);
+    stored()->state.textures = new CTexture*[stored()->state.totalTexture];
     stored()->state.textures[0] = g_texMgr.Load("effect\\torch_violet01.bmp", 0, false, true, false);
     stored()->state.textures[1] = g_texMgr.Load("effect\\torch_violet02.bmp", 0, false, true, false);
     stored()->state.textures[2] = g_texMgr.Load("effect\\torch_violet03.bmp", 0, false, true, false);
@@ -18682,7 +18652,7 @@ void CRagEffect::TorchDust(char kind) {
     stored()->state.textures[12] = g_texMgr.Load("effect\\torch_violet13.bmp", 0, false, true, false);
   } else if (kind == 4) {
     stored()->state.totalTexture = 11;
-    AllocateTextures(stored()->state);
+    stored()->state.textures = new CTexture*[stored()->state.totalTexture];
     stored()->state.textures[0] = g_texMgr.Load("effect\\lord_stick_a.bmp", 0, false, true, false);
     stored()->state.textures[1] = g_texMgr.Load("effect\\lord_stick_b.bmp", 0, false, true, false);
     stored()->state.textures[2] = g_texMgr.Load("effect\\lord_stick_c.bmp", 0, false, true, false);
@@ -18813,57 +18783,57 @@ void CRagEffect::TexturedClassChange(char kind) {
     return;
   }
 
-  this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-  this->state.currentPrimitive->duration = this->state.duration;
-  this->state.currentPrimitive->deltaPos2.y = 0.0f;
-  this->state.currentPrimitive->renderFlag |= 0x200u;
-  this->state.currentPrimitive->pattern |= 0x200u;
-  this->state.currentPrimitive->animSpeed = 2;
-  this->state.currentPrimitive->repeatAnim = 0;
-  this->state.currentPrimitive->alphaSpeed = 0.0f;
+  this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim->state.duration = this->state.duration;
+  this->state.lastPrim->state.deltaPos2.y = 0.0f;
+  this->state.lastPrim->state.renderFlag |= 0x200u;
+  this->state.lastPrim->state.pattern |= 0x200u;
+  this->state.lastPrim->state.animSpeed = 2;
+  this->state.lastPrim->state.repeatAnim = 0;
+  this->state.lastPrim->state.alphaSpeed = 0.0f;
 
   switch (kind) {
   case 0:
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\캐슬링.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\캐슬링.act");
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\캐슬링.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\캐슬링.act");
     break;
   case 1:
     PlayEffectWave(*this, "effect\\h_blood_lust.wav");
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\블러드러스트.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\블러드러스트.act");
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\블러드러스트.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\블러드러스트.act");
     break;
   case 2:
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\item_thunder.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\item_thunder.act");
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\item_thunder.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\item_thunder.act");
     break;
   case 3:
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\item_cloud.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\item_cloud.act");
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\item_cloud.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\item_cloud.act");
     break;
   case 4:
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\item_curse.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\item_curse.act");
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\item_curse.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\item_curse.act");
     break;
   case 5:
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\item_zzz.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\item_zzz.act");
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\item_zzz.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\item_zzz.act");
     break;
   case 6:
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\item_rain.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\item_rain.act");
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\item_rain.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\item_rain.act");
     break;
   case 7:
     PlayEffectWave(*this, "effect\\ef_firehit.wav");
-    this->state.currentPrimitive->animSpeed = 3;
-    this->state.currentPrimitive->pattern = 0;
-    this->state.currentPrimitive->alpha = 220.0f;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\m_ef01.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\m_ef01.act");
+    this->state.lastPrim->state.animSpeed = 3;
+    this->state.lastPrim->state.pattern = 0;
+    this->state.lastPrim->state.alpha = 220.0f;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\m_ef01.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\m_ef01.act");
     break;
   case 8: {
-    this->state.currentPrimitive->animSpeed = 4;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\m_ef02.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\m_ef02.act");
+    this->state.lastPrim->state.animSpeed = 4;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\m_ef02.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\m_ef02.act");
     std::int16_t angle;
     Get_Angle(this->render.position.x - this->state.deltaPos[0], this->render.position.z - this->state.deltaPos[2], &angle);
     const CView* camera = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera;
@@ -18873,152 +18843,152 @@ void CRagEffect::TexturedClassChange(char kind) {
     }
 
     if (direction >= 180 && direction < 270) {
-      Owner(this->state.currentPrimitive).SetAction(2, 16, 1);
+      this->state.lastPrim->SetAction(2, 16, 1);
     } else if (direction >= 90 && direction < 180) {
-      Owner(this->state.currentPrimitive).SetAction(3, 16, 1);
+      this->state.lastPrim->SetAction(3, 16, 1);
     } else if (direction >= 0 && direction < 90) {
-      Owner(this->state.currentPrimitive).SetAction(0, 16, 1);
+      this->state.lastPrim->SetAction(0, 16, 1);
     } else {
-      Owner(this->state.currentPrimitive).SetAction(1, 16, 1);
+      this->state.lastPrim->SetAction(1, 16, 1);
     }
     break;
   }
   case 9:
-    this->state.currentPrimitive->animSpeed = 4;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\m_ef03.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\m_ef03.act");
+    this->state.lastPrim->state.animSpeed = 4;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\m_ef03.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\m_ef03.act");
     break;
   case 10:
-    this->state.currentPrimitive->animSpeed = 4;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\m_ef04.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\m_ef04.act");
-    this->state.currentPrimitive->repeatAnim = 1;
+    this->state.lastPrim->state.animSpeed = 4;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\m_ef04.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\m_ef04.act");
+    this->state.lastPrim->state.repeatAnim = 1;
     break;
   case 11:
-    this->state.currentPrimitive->animSpeed = 4;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\m_ef05.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\m_ef05.act");
+    this->state.lastPrim->state.animSpeed = 4;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\m_ef05.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\m_ef05.act");
     break;
   case 12:
-    this->state.currentPrimitive->animSpeed = 4;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\m_ef06.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\m_ef06.act");
+    this->state.lastPrim->state.animSpeed = 4;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\m_ef06.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\m_ef06.act");
     break;
   case 13:
-    this->state.currentPrimitive->animSpeed = 4;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\m_ef07.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\m_ef07.act");
+    this->state.lastPrim->state.animSpeed = 4;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\m_ef07.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\m_ef07.act");
     break;
   case 14:
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\합격_.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\합격_.act");
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\합격_.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\합격_.act");
     break;
   case 15:
-    this->state.currentPrimitive->animSpeed = 4;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\그림자베기.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\그림자베기.act");
+    this->state.lastPrim->state.animSpeed = 4;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\그림자베기.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\그림자베기.act");
     if (std::max(rand() % 2, 0) == 0) {
-      Owner(this->state.currentPrimitive).SetAction(4, 16, 1);
+      this->state.lastPrim->SetAction(4, 16, 1);
     } else {
-      Owner(this->state.currentPrimitive).SetAction(0, 16, 1);
+      this->state.lastPrim->SetAction(0, 16, 1);
     }
     break;
   case 16:
-    this->state.currentPrimitive->deltaPos2.y = -6.0f;
-    this->state.currentPrimitive->renderFlag = 1;
-    this->state.currentPrimitive->animSpeed = 6;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\다다미.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\다다미.act");
-    Owner(this->state.currentPrimitive).SetAction(0, 16, 1);
+    this->state.lastPrim->state.deltaPos2.y = -6.0f;
+    this->state.lastPrim->state.renderFlag = 1;
+    this->state.lastPrim->state.animSpeed = 6;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\다다미.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\다다미.act");
+    this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 17:
-    this->state.currentPrimitive->animSpeed = 4;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\안개베기.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\안개베기.act");
+    this->state.lastPrim->state.animSpeed = 4;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\안개베기.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\안개베기.act");
     if (std::max(rand() % 2, 0) == 0) {
-      Owner(this->state.currentPrimitive).SetAction(2, 16, 1);
+      this->state.lastPrim->SetAction(2, 16, 1);
     } else {
-      Owner(this->state.currentPrimitive).SetAction(0, 16, 1);
+      this->state.lastPrim->SetAction(0, 16, 1);
     }
     break;
   case 18:
-    this->state.currentPrimitive->deltaPos2.y = -6.0f;
-    this->state.currentPrimitive->animSpeed = 2;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\일섬.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\일섬.act");
-    Owner(this->state.currentPrimitive).SetAction(0, 16, 1);
+    this->state.lastPrim->state.deltaPos2.y = -6.0f;
+    this->state.lastPrim->state.animSpeed = 2;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\일섬.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\일섬.act");
+    this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 19:
-    this->state.currentPrimitive->deltaPos2.y = -1.0f;
-    this->state.currentPrimitive->renderFlag = 1;
-    this->state.currentPrimitive->animSpeed = std::max(rand() % 5, 0) + 3;
-    this->state.currentPrimitive->repeatAnim = 1;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\화염진.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\화염진.act");
-    Owner(this->state.currentPrimitive).SetAction(0, 16, 1);
+    this->state.lastPrim->state.deltaPos2.y = -1.0f;
+    this->state.lastPrim->state.renderFlag = 1;
+    this->state.lastPrim->state.animSpeed = std::max(rand() % 5, 0) + 3;
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\화염진.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\화염진.act");
+    this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 20:
-    this->state.currentPrimitive->animSpeed = 4;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\데스페라도.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\데스페라도.act");
-    Owner(this->state.currentPrimitive).SetAction(0, 16, 1);
+    this->state.lastPrim->state.animSpeed = 4;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\데스페라도.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\데스페라도.act");
+    this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 21:
-    this->state.currentPrimitive->deltaPos2.y = -1.0f;
-    this->state.currentPrimitive->renderFlag = 1;
-    this->state.currentPrimitive->repeatAnim = 1;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\라이트닝스피어.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\라이트닝스피어.act");
-    Owner(this->state.currentPrimitive).SetAction(0, 16, 1);
+    this->state.lastPrim->state.deltaPos2.y = -1.0f;
+    this->state.lastPrim->state.renderFlag = 1;
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\라이트닝스피어.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\라이트닝스피어.act");
+    this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 22:
-    this->state.currentPrimitive->deltaPos2.y = -1.0f;
-    this->state.currentPrimitive->renderFlag = 1;
-    this->state.currentPrimitive->repeatAnim = 1;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\블라인드스피어.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\블라인드스피어.act");
-    Owner(this->state.currentPrimitive).SetAction(0, 16, 1);
+    this->state.lastPrim->state.deltaPos2.y = -1.0f;
+    this->state.lastPrim->state.renderFlag = 1;
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\블라인드스피어.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\블라인드스피어.act");
+    this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 23:
-    this->state.currentPrimitive->deltaPos2.y = -1.0f;
-    this->state.currentPrimitive->renderFlag = 1;
-    this->state.currentPrimitive->repeatAnim = 1;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\포이즌스피어.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\포이즌스피어.act");
-    Owner(this->state.currentPrimitive).SetAction(0, 16, 1);
+    this->state.lastPrim->state.deltaPos2.y = -1.0f;
+    this->state.lastPrim->state.renderFlag = 1;
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\포이즌스피어.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\포이즌스피어.act");
+    this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 24:
-    this->state.currentPrimitive->deltaPos2.y = -1.0f;
-    this->state.currentPrimitive->renderFlag = 1;
-    this->state.currentPrimitive->repeatAnim = 1;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\프리징스피어.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\프리징스피어.act");
-    Owner(this->state.currentPrimitive).SetAction(0, 16, 1);
+    this->state.lastPrim->state.deltaPos2.y = -1.0f;
+    this->state.lastPrim->state.renderFlag = 1;
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\프리징스피어.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\프리징스피어.act");
+    this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 25:
-    this->state.currentPrimitive->deltaPos2.y = -1.0f;
-    this->state.currentPrimitive->renderFlag = 1;
-    this->state.currentPrimitive->repeatAnim = 1;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\플레어스피어.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\플레어스피어.act");
-    Owner(this->state.currentPrimitive).SetAction(0, 16, 1);
+    this->state.lastPrim->state.deltaPos2.y = -1.0f;
+    this->state.lastPrim->state.renderFlag = 1;
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\플레어스피어.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\플레어스피어.act");
+    this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 26:
-    this->state.currentPrimitive->animSpeed = 4;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\래피드샤워.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\래피드샤워.act");
-    Owner(this->state.currentPrimitive).SetAction(0, 16, 1);
+    this->state.lastPrim->state.animSpeed = 4;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\래피드샤워.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\래피드샤워.act");
+    this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 27:
-    this->state.currentPrimitive->animSpeed = 2;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\매지컬불릿.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\매지컬불릿.act");
-    Owner(this->state.currentPrimitive).SetAction(0, 16, 1);
+    this->state.lastPrim->state.animSpeed = 2;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\매지컬불릿.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\매지컬불릿.act");
+    this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 28: {
-    this->state.currentPrimitive->animSpeed = 4;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\스프레드.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\스프레드.act");
+    this->state.lastPrim->state.animSpeed = 4;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\스프레드.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\스프레드.act");
     std::int16_t angle;
     Get_Angle(this->render.position.x - this->state.deltaPos[0], this->render.position.z - this->state.deltaPos[2], &angle);
     const CView* camera = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera;
@@ -19028,422 +18998,422 @@ void CRagEffect::TexturedClassChange(char kind) {
     }
 
     if (direction >= 180 && direction < 270) {
-      Owner(this->state.currentPrimitive).SetAction(4, 16, 1);
+      this->state.lastPrim->SetAction(4, 16, 1);
     } else if (direction >= 90 && direction < 180) {
-      Owner(this->state.currentPrimitive).SetAction(6, 16, 1);
+      this->state.lastPrim->SetAction(6, 16, 1);
     } else if (direction >= 0 && direction < 90) {
-      Owner(this->state.currentPrimitive).SetAction(0, 16, 1);
+      this->state.lastPrim->SetAction(0, 16, 1);
     } else {
-      Owner(this->state.currentPrimitive).SetAction(2, 16, 1);
+      this->state.lastPrim->SetAction(2, 16, 1);
     }
     break;
   }
   case 29:
-    this->state.currentPrimitive->animSpeed = 2;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\트래킹.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\트래킹.act");
-    Owner(this->state.currentPrimitive).SetAction(0, 16, 1);
+    this->state.lastPrim->state.animSpeed = 2;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\트래킹.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\트래킹.act");
+    this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 30:
-    this->state.currentPrimitive->animSpeed = 2;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\트리플액션.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\트리플액션.act");
-    Owner(this->state.currentPrimitive).SetAction(0, 16, 1);
+    this->state.lastPrim->state.animSpeed = 2;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\트리플액션.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\트리플액션.act");
+    this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 31:
-    this->state.currentPrimitive->animSpeed = 4;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\어스퀘이크.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\어스퀘이크.act");
-    Owner(this->state.currentPrimitive).SetAction(0, 16, 1);
+    this->state.lastPrim->state.animSpeed = 4;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\어스퀘이크.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\어스퀘이크.act");
+    this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 32:
-    this->state.currentPrimitive->animSpeed = 4;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\폭죽_러브.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\폭죽_러브.act");
-    Owner(this->state.currentPrimitive).SetAction(0, 16, 1);
+    this->state.lastPrim->state.animSpeed = 4;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\폭죽_러브.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\폭죽_러브.act");
+    this->state.lastPrim->SetAction(0, 16, 1);
     g_soundMgr->PlayWave("effect\\itempokjuk.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   case 33:
-    this->state.currentPrimitive->animSpeed = 4;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\폭죽_화이트데이.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\폭죽_화이트데이.act");
-    Owner(this->state.currentPrimitive).SetAction(0, 16, 1);
+    this->state.lastPrim->state.animSpeed = 4;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\폭죽_화이트데이.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\폭죽_화이트데이.act");
+    this->state.lastPrim->SetAction(0, 16, 1);
     g_soundMgr->PlayWave("effect\\itempokjuk.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   case 34:
-    this->state.currentPrimitive->animSpeed = 4;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\폭죽_발렌타인.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\폭죽_발렌타인.act");
-    Owner(this->state.currentPrimitive).SetAction(0, 16, 1);
+    this->state.lastPrim->state.animSpeed = 4;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\폭죽_발렌타인.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\폭죽_발렌타인.act");
+    this->state.lastPrim->SetAction(0, 16, 1);
     g_soundMgr->PlayWave("effect\\itempokjuk.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   case 35:
-    this->state.currentPrimitive->animSpeed = 4;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\폭죽_생일.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\폭죽_생일.act");
-    Owner(this->state.currentPrimitive).SetAction(0, 16, 1);
+    this->state.lastPrim->state.animSpeed = 4;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\폭죽_생일.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\폭죽_생일.act");
+    this->state.lastPrim->SetAction(0, 16, 1);
     g_soundMgr->PlayWave("effect\\itempokjuk.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   case 36:
-    this->state.currentPrimitive->animSpeed = 4;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\폭죽_크리스마스.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\폭죽_크리스마스.act");
-    Owner(this->state.currentPrimitive).SetAction(0, 16, 1);
+    this->state.lastPrim->state.animSpeed = 4;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\폭죽_크리스마스.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\폭죽_크리스마스.act");
+    this->state.lastPrim->SetAction(0, 16, 1);
     g_soundMgr->PlayWave("effect\\itempokjuk.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   case 37:
-    this->state.currentPrimitive->animSpeed = 4;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\mobile_ef04.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\mobile_ef04.act");
-    Owner(this->state.currentPrimitive).SetAction(0, 16, 1);
+    this->state.lastPrim->state.animSpeed = 4;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\mobile_ef04.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\mobile_ef04.act");
+    this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 38:
-    this->state.currentPrimitive->animSpeed = 4;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\mashofa.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\mashofa.act");
-    Owner(this->state.currentPrimitive).SetAction(0, 16, 1);
+    this->state.lastPrim->state.animSpeed = 4;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\mashofa.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\mashofa.act");
+    this->state.lastPrim->SetAction(0, 16, 1);
     g_soundMgr->PlayWave("effect\\t_에너지방출.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   case 39:
-    this->state.currentPrimitive->animSpeed = 4;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\soule.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\soule.act");
-    Owner(this->state.currentPrimitive).SetAction(0, 16, 1);
+    this->state.lastPrim->state.animSpeed = 4;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\soule.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\soule.act");
+    this->state.lastPrim->SetAction(0, 16, 1);
     g_soundMgr->PlayWave("effect\\매직 크래쉬.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   case 50:
-    this->state.currentPrimitive->deltaPos2.y = -1.0f;
-    this->state.currentPrimitive->renderFlag = 1;
-    this->state.currentPrimitive->repeatAnim = 1;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\기본트랩.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\기본트랩.act");
-    Owner(this->state.currentPrimitive).SetAction(0, 16, 1);
+    this->state.lastPrim->state.deltaPos2.y = -1.0f;
+    this->state.lastPrim->state.renderFlag = 1;
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\기본트랩.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\기본트랩.act");
+    this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 51:
-    this->state.currentPrimitive->deltaPos2.y = -1.0f;
-    this->state.currentPrimitive->renderFlag = 1;
-    this->state.currentPrimitive->repeatAnim = 1;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\담황색트랩.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\담황색트랩.act");
-    Owner(this->state.currentPrimitive).SetAction(0, 16, 1);
+    this->state.lastPrim->state.deltaPos2.y = -1.0f;
+    this->state.lastPrim->state.renderFlag = 1;
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\담황색트랩.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\담황색트랩.act");
+    this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 52:
-    this->state.currentPrimitive->deltaPos2.y = -1.0f;
-    this->state.currentPrimitive->renderFlag = 1;
-    this->state.currentPrimitive->repeatAnim = 1;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\암청색트랩.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\암청색트랩.act");
-    Owner(this->state.currentPrimitive).SetAction(0, 16, 1);
+    this->state.lastPrim->state.deltaPos2.y = -1.0f;
+    this->state.lastPrim->state.renderFlag = 1;
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\암청색트랩.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\암청색트랩.act");
+    this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 53:
-    this->state.currentPrimitive->deltaPos2.y = -1.0f;
-    this->state.currentPrimitive->renderFlag = 1;
-    this->state.currentPrimitive->repeatAnim = 1;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\자홍색트랩.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\자홍색트랩.act");
-    Owner(this->state.currentPrimitive).SetAction(0, 16, 1);
+    this->state.lastPrim->state.deltaPos2.y = -1.0f;
+    this->state.lastPrim->state.renderFlag = 1;
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\자홍색트랩.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\자홍색트랩.act");
+    this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 54:
-    this->state.currentPrimitive->deltaPos2.y = -1.0f;
-    this->state.currentPrimitive->renderFlag = 1;
-    this->state.currentPrimitive->repeatAnim = 1;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\청록색트랩.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\청록색트랩.act");
-    Owner(this->state.currentPrimitive).SetAction(0, 16, 1);
+    this->state.lastPrim->state.deltaPos2.y = -1.0f;
+    this->state.lastPrim->state.renderFlag = 1;
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\청록색트랩.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\청록색트랩.act");
+    this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 60:
-    this->state.currentPrimitive->animSpeed = 4;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "몬스터\\stapo.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "몬스터\\stapo.act");
-    this->state.currentPrimitive->deltaPos2.y = -8.0f;
+    this->state.lastPrim->state.animSpeed = 4;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "몬스터\\stapo.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "몬스터\\stapo.act");
+    this->state.lastPrim->state.deltaPos2.y = -8.0f;
     if (rand() % 2 == 0) {
-      Owner(this->state.currentPrimitive).SetAction(0, 16, 1);
+      this->state.lastPrim->SetAction(0, 16, 1);
     } else {
-      Owner(this->state.currentPrimitive).SetAction(7, 16, 1);
+      this->state.lastPrim->SetAction(7, 16, 1);
     }
     break;
   case 61:
-    this->state.currentPrimitive->deltaPos2.y = -1.0f;
-    this->state.currentPrimitive->renderFlag = 5;
-    this->state.currentPrimitive->repeatAnim = 1;
-    this->state.currentPrimitive->animSpeed = std::max(rand() % 3, 0) + 8;
-    this->state.currentPrimitive->pattern = 0;
-    this->state.currentPrimitive->alpha = static_cast<float>(rand() % 71 + 70);
-    this->state.currentPrimitive->size = static_cast<float>(rand() % 11) * 0.04f + 0.4f;
-    this->state.currentPrimitive->red = 85;
-    this->state.currentPrimitive->green = 255;
-    this->state.currentPrimitive->blue = 85;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "몬스터\\Ancient_tree.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "몬스터\\Ancient_tree.act");
-    Owner(this->state.currentPrimitive).SetAction(rand() % 8, 16, 1);
+    this->state.lastPrim->state.deltaPos2.y = -1.0f;
+    this->state.lastPrim->state.renderFlag = 5;
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->state.animSpeed = std::max(rand() % 3, 0) + 8;
+    this->state.lastPrim->state.pattern = 0;
+    this->state.lastPrim->state.alpha = static_cast<float>(rand() % 71 + 70);
+    this->state.lastPrim->state.size = static_cast<float>(rand() % 11) * 0.04f + 0.4f;
+    this->state.lastPrim->state.red = 85;
+    this->state.lastPrim->state.green = 255;
+    this->state.lastPrim->state.blue = 85;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "몬스터\\Ancient_tree.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "몬스터\\Ancient_tree.act");
+    this->state.lastPrim->SetAction(rand() % 8, 16, 1);
     break;
   case 62:
-    this->state.currentPrimitive->deltaPos2.y = -1.0f;
-    this->state.currentPrimitive->renderFlag = 5;
-    this->state.currentPrimitive->repeatAnim = 1;
-    this->state.currentPrimitive->animSpeed = std::max(rand() % 3, 0) + 8;
-    this->state.currentPrimitive->pattern = 0;
-    this->state.currentPrimitive->alpha = static_cast<float>(rand() % 71 + 70);
-    this->state.currentPrimitive->size = static_cast<float>(rand() % 11) * 0.04f + 0.4f;
-    this->state.currentPrimitive->red = 85;
-    this->state.currentPrimitive->green = 255;
-    this->state.currentPrimitive->blue = 85;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "몬스터\\ifrit.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "몬스터\\ifrit.act");
-    Owner(this->state.currentPrimitive).SetAction(rand() % 8 + 0x20, 16, 1);
+    this->state.lastPrim->state.deltaPos2.y = -1.0f;
+    this->state.lastPrim->state.renderFlag = 5;
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->state.animSpeed = std::max(rand() % 3, 0) + 8;
+    this->state.lastPrim->state.pattern = 0;
+    this->state.lastPrim->state.alpha = static_cast<float>(rand() % 71 + 70);
+    this->state.lastPrim->state.size = static_cast<float>(rand() % 11) * 0.04f + 0.4f;
+    this->state.lastPrim->state.red = 85;
+    this->state.lastPrim->state.green = 255;
+    this->state.lastPrim->state.blue = 85;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "몬스터\\ifrit.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "몬스터\\ifrit.act");
+    this->state.lastPrim->SetAction(rand() % 8 + 0x20, 16, 1);
     break;
   case 63:
-    this->state.currentPrimitive->deltaPos2.y = -12.0f;
-    this->state.currentPrimitive->renderFlag = 5;
-    this->state.currentPrimitive->repeatAnim = 1;
-    this->state.currentPrimitive->animSpeed = 6;
-    this->state.currentPrimitive->pattern = 0;
-    this->state.currentPrimitive->alpha = 255.0f;
-    this->state.currentPrimitive->size = 0.7f;
-    this->state.currentPrimitive->red = 155;
-    this->state.currentPrimitive->green = 255;
-    this->state.currentPrimitive->blue = 155;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "몬스터\\mavka_bullet.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "몬스터\\mavka_bullet.act");
-    Owner(this->state.currentPrimitive).SetAction(rand() % 8, 16, 1);
+    this->state.lastPrim->state.deltaPos2.y = -12.0f;
+    this->state.lastPrim->state.renderFlag = 5;
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->state.animSpeed = 6;
+    this->state.lastPrim->state.pattern = 0;
+    this->state.lastPrim->state.alpha = 255.0f;
+    this->state.lastPrim->state.size = 0.7f;
+    this->state.lastPrim->state.red = 155;
+    this->state.lastPrim->state.green = 255;
+    this->state.lastPrim->state.blue = 155;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "몬스터\\mavka_bullet.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "몬스터\\mavka_bullet.act");
+    this->state.lastPrim->SetAction(rand() % 8, 16, 1);
     break;
   case 64:
-    this->state.currentPrimitive->deltaPos2.y = -1.0f;
-    this->state.currentPrimitive->renderFlag = 5;
-    this->state.currentPrimitive->repeatAnim = 1;
-    this->state.currentPrimitive->animSpeed = 3;
-    this->state.currentPrimitive->pattern = 0;
-    this->state.currentPrimitive->alpha = 205.0f;
-    this->state.currentPrimitive->size = 2.5f;
-    this->state.currentPrimitive->red = 155;
-    this->state.currentPrimitive->green = 155;
-    this->state.currentPrimitive->blue = 155;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "몬스터\\breeze.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "몬스터\\breeze.act");
-    Owner(this->state.currentPrimitive).SetAction(0, 16, 1);
+    this->state.lastPrim->state.deltaPos2.y = -1.0f;
+    this->state.lastPrim->state.renderFlag = 5;
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->state.animSpeed = 3;
+    this->state.lastPrim->state.pattern = 0;
+    this->state.lastPrim->state.alpha = 205.0f;
+    this->state.lastPrim->state.size = 2.5f;
+    this->state.lastPrim->state.red = 155;
+    this->state.lastPrim->state.green = 155;
+    this->state.lastPrim->state.blue = 155;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "몬스터\\breeze.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "몬스터\\breeze.act");
+    this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 65:
-    this->state.currentPrimitive->deltaPos2.y = -1.0f;
-    this->state.currentPrimitive->renderFlag = 5;
-    this->state.currentPrimitive->repeatAnim = 1;
-    this->state.currentPrimitive->animSpeed = 2;
-    this->state.currentPrimitive->pattern = 0;
-    this->state.currentPrimitive->alpha = 205.0f;
-    this->state.currentPrimitive->size = 2.5f;
-    this->state.currentPrimitive->red = 155;
-    this->state.currentPrimitive->green = 155;
-    this->state.currentPrimitive->blue = 155;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "몬스터\\breeze.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "몬스터\\breeze.act");
-    Owner(this->state.currentPrimitive).SetAction(4, 16, 1);
+    this->state.lastPrim->state.deltaPos2.y = -1.0f;
+    this->state.lastPrim->state.renderFlag = 5;
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->state.animSpeed = 2;
+    this->state.lastPrim->state.pattern = 0;
+    this->state.lastPrim->state.alpha = 205.0f;
+    this->state.lastPrim->state.size = 2.5f;
+    this->state.lastPrim->state.red = 155;
+    this->state.lastPrim->state.green = 155;
+    this->state.lastPrim->state.blue = 155;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "몬스터\\breeze.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "몬스터\\breeze.act");
+    this->state.lastPrim->SetAction(4, 16, 1);
     break;
   case 70:
-    this->state.currentPrimitive->repeatAnim = 1;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\거스트.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\거스트.act");
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\거스트.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\거스트.act");
     break;
   case 71:
-    this->state.currentPrimitive->repeatAnim = 1;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\블래스트.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\블래스트.act");
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\블래스트.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\블래스트.act");
     break;
   case 72:
-    this->state.currentPrimitive->repeatAnim = 1;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\아쿠아플레이.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\아쿠아플레이.act");
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\아쿠아플레이.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\아쿠아플레이.act");
     break;
   case 73:
-    this->state.currentPrimitive->repeatAnim = 1;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\업히벌.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\업히벌.act");
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\업히벌.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\업히벌.act");
     break;
   case 74:
-    this->state.currentPrimitive->repeatAnim = 1;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\와일드스톰.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\와일드스톰.act");
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\와일드스톰.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\와일드스톰.act");
     break;
   case 75:
-    this->state.currentPrimitive->repeatAnim = 1;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\칠리에어.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\칠리에어.act");
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\칠리에어.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\칠리에어.act");
     break;
   case 76:
-    this->state.currentPrimitive->repeatAnim = 1;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\커즈드소일.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\커즈드소일.act");
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\커즈드소일.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\커즈드소일.act");
     break;
   case 77:
-    this->state.currentPrimitive->repeatAnim = 1;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\쿨러.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\쿨러.act");
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\쿨러.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\쿨러.act");
     break;
   case 78:
-    this->state.currentPrimitive->repeatAnim = 1;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\트로픽.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\트로픽.act");
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\트로픽.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\트로픽.act");
     break;
   case 79:
-    this->state.currentPrimitive->repeatAnim = 1;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\파이로테크닉.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\파이로테크닉.act");
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\파이로테크닉.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\파이로테크닉.act");
     break;
   case 80:
-    this->state.currentPrimitive->repeatAnim = 1;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\페트롤로지.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\페트롤로지.act");
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\페트롤로지.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\페트롤로지.act");
     break;
   case 81:
-    this->state.currentPrimitive->repeatAnim = 1;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\히터.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\히터.act");
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\히터.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\히터.act");
     break;
   case 82:
-    this->state.currentPrimitive->animSpeed = 4;
-    this->state.currentPrimitive->repeatAnim = 1;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\silent_brz.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\silent_brz.act");
+    this->state.lastPrim->state.animSpeed = 4;
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\silent_brz.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\silent_brz.act");
     break;
   case 83:
-    this->state.currentPrimitive->animSpeed = 4;
-    this->state.currentPrimitive->repeatAnim = 0;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\magma_flow.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\magma_flow.act");
+    this->state.lastPrim->state.animSpeed = 4;
+    this->state.lastPrim->state.repeatAnim = 0;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\magma_flow.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\magma_flow.act");
     break;
   case 84:
-    this->state.currentPrimitive->deltaPos2.y = -1.0f;
-    this->state.currentPrimitive->renderFlag = 1;
-    this->state.currentPrimitive->animSpeed = 10;
-    this->state.currentPrimitive->repeatAnim = 1;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\icemine.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\icemine.act");
+    this->state.lastPrim->state.deltaPos2.y = -1.0f;
+    this->state.lastPrim->state.renderFlag = 1;
+    this->state.lastPrim->state.animSpeed = 10;
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\icemine.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\icemine.act");
     break;
   case 85:
-    this->state.currentPrimitive->deltaPos2.y = -1.0f;
-    this->state.currentPrimitive->renderFlag = 1;
-    this->state.currentPrimitive->animSpeed = 10;
-    this->state.currentPrimitive->repeatAnim = 0;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\icemine_.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\icemine_.act");
-    Owner(this->state.currentPrimitive).SetAction(0, 10, 1);
+    this->state.lastPrim->state.deltaPos2.y = -1.0f;
+    this->state.lastPrim->state.renderFlag = 1;
+    this->state.lastPrim->state.animSpeed = 10;
+    this->state.lastPrim->state.repeatAnim = 0;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\icemine_.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\icemine_.act");
+    this->state.lastPrim->SetAction(0, 10, 1);
     break;
   case 86:
-    this->state.currentPrimitive->animSpeed = 4;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\RK_DRAGONBREATH_WATER.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\RK_DRAGONBREATH_WATER.act");
+    this->state.lastPrim->state.animSpeed = 4;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\RK_DRAGONBREATH_WATER.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\RK_DRAGONBREATH_WATER.act");
     break;
   case 87:
-    this->state.currentPrimitive->animSpeed = 4;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\wideweb.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\wideweb.act");
+    this->state.lastPrim->state.animSpeed = 4;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\wideweb.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\wideweb.act");
     break;
   case 88:
-    this->state.currentPrimitive->animSpeed = 4;
-    this->state.currentPrimitive->repeatAnim = 1;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\burnt.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\burnt.act");
+    this->state.lastPrim->state.animSpeed = 4;
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\burnt.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\burnt.act");
     break;
   case 90:
-    this->state.currentPrimitive->deltaPos2.y = -1.0f;
-    this->state.currentPrimitive->renderFlag = 1;
-    this->state.currentPrimitive->repeatAnim = 1;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\그라운드드리프트.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\그라운드드리프트.act");
-    Owner(this->state.currentPrimitive).SetAction(0, 16, 1);
+    this->state.lastPrim->state.deltaPos2.y = -1.0f;
+    this->state.lastPrim->state.renderFlag = 1;
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\그라운드드리프트.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\그라운드드리프트.act");
+    this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 91:
-    this->state.currentPrimitive->repeatAnim = 1;
-    this->state.currentPrimitive->animSpeed = 4;
-    this->state.currentPrimitive->deltaPos2.y = -4.0f;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\나뭇잎_완성.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\나뭇잎_완성.act");
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->state.animSpeed = 4;
+    this->state.lastPrim->state.deltaPos2.y = -4.0f;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\나뭇잎_완성.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\나뭇잎_완성.act");
     break;
   case 94:
-    this->state.currentPrimitive->repeatAnim = 1;
-    this->state.currentPrimitive->animSpeed = 4;
-    this->state.currentPrimitive->deltaPos2.y = -4.0f;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\Black_Thunder\\Black_Thunder.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\Black_Thunder\\Black_Thunder.act");
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->state.animSpeed = 4;
+    this->state.lastPrim->state.deltaPos2.y = -4.0f;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\Black_Thunder\\Black_Thunder.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\Black_Thunder\\Black_Thunder.act");
     break;
   case 95:
-    this->state.currentPrimitive->repeatAnim = 1;
-    this->state.currentPrimitive->animSpeed = 4;
-    this->state.currentPrimitive->deltaPos2.y = -4.0f;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\Black_Thunder\\Black_Thunder_Dark.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\Black_Thunder\\Black_Thunder_Dark.act");
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->state.animSpeed = 4;
+    this->state.lastPrim->state.deltaPos2.y = -4.0f;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\Black_Thunder\\Black_Thunder_Dark.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\Black_Thunder\\Black_Thunder_Dark.act");
     break;
   case 96:
-    this->state.currentPrimitive->repeatAnim = 1;
-    this->state.currentPrimitive->renderFlag = 0xd;
-    this->state.currentPrimitive->animSpeed = 4;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Angel_Magic_Circle.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Angel_Magic_Circle.act");
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->state.renderFlag = 0xd;
+    this->state.lastPrim->state.animSpeed = 4;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Angel_Magic_Circle.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Angel_Magic_Circle.act");
     break;
   case 97:
-    this->state.currentPrimitive->repeatAnim = 1;
-    this->state.currentPrimitive->renderFlag = 0xd;
-    this->state.currentPrimitive->animSpeed = 4;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Animal_Magic_Circle.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Animal_Magic_Circle.act");
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->state.renderFlag = 0xd;
+    this->state.lastPrim->state.animSpeed = 4;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Animal_Magic_Circle.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Animal_Magic_Circle.act");
     break;
   case 98:
-    this->state.currentPrimitive->repeatAnim = 1;
-    this->state.currentPrimitive->renderFlag = 0xd;
-    this->state.currentPrimitive->animSpeed = 4;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Devil_Magic_Circle.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Devil_Magic_Circle.act");
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->state.renderFlag = 0xd;
+    this->state.lastPrim->state.animSpeed = 4;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Devil_Magic_Circle.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Devil_Magic_Circle.act");
     break;
   case 99:
-    this->state.currentPrimitive->repeatAnim = 1;
-    this->state.currentPrimitive->renderFlag = 0xd;
-    this->state.currentPrimitive->animSpeed = 4;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Dragon_Magic_Circle.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Dragon_Magic_Circle.act");
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->state.renderFlag = 0xd;
+    this->state.lastPrim->state.animSpeed = 4;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Dragon_Magic_Circle.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Dragon_Magic_Circle.act");
     break;
   case 100:
-    this->state.currentPrimitive->repeatAnim = 1;
-    this->state.currentPrimitive->renderFlag = 0xd;
-    this->state.currentPrimitive->animSpeed = 4;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Fish_Magic_Circle.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Fish_Magic_Circle.act");
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->state.renderFlag = 0xd;
+    this->state.lastPrim->state.animSpeed = 4;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Fish_Magic_Circle.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Fish_Magic_Circle.act");
     break;
   case 101:
-    this->state.currentPrimitive->repeatAnim = 1;
-    this->state.currentPrimitive->renderFlag = 0xd;
-    this->state.currentPrimitive->animSpeed = 4;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Human_Magic_Circle.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Human_Magic_Circle.act");
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->state.renderFlag = 0xd;
+    this->state.lastPrim->state.animSpeed = 4;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Human_Magic_Circle.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Human_Magic_Circle.act");
     break;
   case 102:
-    this->state.currentPrimitive->repeatAnim = 1;
-    this->state.currentPrimitive->renderFlag = 0xd;
-    this->state.currentPrimitive->animSpeed = 4;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Insect_Magic_Circle.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Insect_Magic_Circle.act");
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->state.renderFlag = 0xd;
+    this->state.lastPrim->state.animSpeed = 4;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Insect_Magic_Circle.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Insect_Magic_Circle.act");
     break;
   case 103:
-    this->state.currentPrimitive->repeatAnim = 1;
-    this->state.currentPrimitive->renderFlag = 0xd;
-    this->state.currentPrimitive->animSpeed = 4;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Nothing_Magic_Circle.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Nothing_Magic_Circle.act");
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->state.renderFlag = 0xd;
+    this->state.lastPrim->state.animSpeed = 4;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Nothing_Magic_Circle.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Nothing_Magic_Circle.act");
     break;
   case 104:
-    this->state.currentPrimitive->repeatAnim = 1;
-    this->state.currentPrimitive->renderFlag = 0xd;
-    this->state.currentPrimitive->animSpeed = 4;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Plant_Magic_Circle.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Plant_Magic_Circle.act");
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->state.renderFlag = 0xd;
+    this->state.lastPrim->state.animSpeed = 4;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Plant_Magic_Circle.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Plant_Magic_Circle.act");
     break;
   case 105:
-    this->state.currentPrimitive->repeatAnim = 1;
-    this->state.currentPrimitive->renderFlag = 0xd;
-    this->state.currentPrimitive->animSpeed = 4;
-    Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Undead_Magic_Circle.spr");
-    Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Undead_Magic_Circle.act");
+    this->state.lastPrim->state.repeatAnim = 1;
+    this->state.lastPrim->state.renderFlag = 0xd;
+    this->state.lastPrim->state.animSpeed = 4;
+    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Undead_Magic_Circle.spr");
+    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Undead_Magic_Circle.act");
     break;
   }
 
-  Owner(this->state.currentPrimitive).InitSegment();
+  this->state.lastPrim->InitSegment();
 }
 
 // OFFSET: 0x00C213C0
@@ -21210,16 +21180,16 @@ bool CRagEffect::OnProcess3() {
     this->render.position = this->state.parent->render.position;
     if (this->state.stateCnt == 0) {
       PlayEffectWave(*this, "effect\\EF_ThunderStorm.wav");
-      this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-      this->state.currentPrimitive->duration = this->state.duration;
-      this->state.currentPrimitive->renderFlag |= 0x200;
-      this->state.currentPrimitive->pattern |= 0x200;
-      this->state.currentPrimitive->deltaPos2.y = -4.5f;
-      this->state.currentPrimitive->animSpeed = 2;
-      this->state.currentPrimitive->size = 2.5f;
-      Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\썬더스톰.spr");
-      Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\썬더스톰.act");
-      Owner(this->state.currentPrimitive).InitSegment();
+      this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+      this->state.lastPrim->state.duration = this->state.duration;
+      this->state.lastPrim->state.renderFlag |= 0x200;
+      this->state.lastPrim->state.pattern |= 0x200;
+      this->state.lastPrim->state.deltaPos2.y = -4.5f;
+      this->state.lastPrim->state.animSpeed = 2;
+      this->state.lastPrim->state.size = 2.5f;
+      this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\썬더스톰.spr");
+      this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\썬더스톰.act");
+      this->state.lastPrim->InitSegment();
     }
     break;
   case EF_STIN4:
@@ -21342,20 +21312,20 @@ bool CRagEffect::OnProcess3() {
         const float sine = ClientSine(angle);
         const float cosine = ClientCosine(angle);
         GetRadian(angle);
-        this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-        this->state.currentPrimitive->duration = 20;
-        this->state.currentPrimitive->deltaPos2.x = sine * 15.0f;
-        this->state.currentPrimitive->deltaPos2.y = -20.0f;
-        this->state.currentPrimitive->deltaPos2.z = cosine * -15.0f;
-        this->state.currentPrimitive->deltaPosAccel.y = 0.1f;
-        this->state.currentPrimitive->animSpeed = 3;
-        this->state.currentPrimitive->size = 2.5f;
-        this->state.currentPrimitive->sizeSpeed = -0.1f;
-        this->state.currentPrimitive->alpha = 50.0f;
-        this->state.currentPrimitive->alphaSpeed = -3.0f;
-        Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\Sight.spr");
-        Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\Sight.act");
-        Owner(this->state.currentPrimitive).InitSegment();
+        this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+        this->state.lastPrim->state.duration = 20;
+        this->state.lastPrim->state.deltaPos2.x = sine * 15.0f;
+        this->state.lastPrim->state.deltaPos2.y = -20.0f;
+        this->state.lastPrim->state.deltaPos2.z = cosine * -15.0f;
+        this->state.lastPrim->state.deltaPosAccel.y = 0.1f;
+        this->state.lastPrim->state.animSpeed = 3;
+        this->state.lastPrim->state.size = 2.5f;
+        this->state.lastPrim->state.sizeSpeed = -0.1f;
+        this->state.lastPrim->state.alpha = 50.0f;
+        this->state.lastPrim->state.alphaSpeed = -3.0f;
+        this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\Sight.spr");
+        this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\Sight.act");
+        this->state.lastPrim->InitSegment();
       }
     }
     break;
@@ -22157,28 +22127,28 @@ bool CRagEffect::OnProcess3() {
     if (this->state.stateCnt == 0) {
       const vector3d offset = {0.0f, 0.0f, 0.0f};
       for (int angle = 0; angle < 1440; angle += 360) {
-        this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 171, offset.x, offset.y, offset.z, WorldObjects())->state;
-        this->state.currentPrimitive->renderFlag = 5;
-        this->state.currentPrimitive->duration = this->state.duration;
-        this->state.currentPrimitive->slots[0].life = 1;
-        this->state.currentPrimitive->slots[0].height[0] = 0.0f;
-        this->state.currentPrimitive->slots[0].height[1] = 0.0f;
-        this->state.currentPrimitive->slots[0].height[2] = 0.0f;
-        this->state.currentPrimitive->slots[0].height[3] = 0.0f;
-        this->state.currentPrimitive->slots[0].height[4] = 0.0f;
-        this->state.currentPrimitive->slots[0].height[5] = 0.0f;
-        this->state.currentPrimitive->slots[0].height[6] = static_cast<float>(angle / 4);
-        this->state.currentPrimitive->slots[0].height[7] = -8.0f;
-        this->state.currentPrimitive->slots[0].height[8] = 0.0f;
-        this->state.currentPrimitive->slots[0].height[9] = 0.0f;
-        this->state.currentPrimitive->slots[0].height[10] = 0.0f;
-        this->state.currentPrimitive->slots[0].distance = 8.0f;
-        this->state.currentPrimitive->slots[0].flag1[0] = 1;
-        this->state.currentPrimitive->slots[0].alphaB = 0;
-        this->state.currentPrimitive->slots[0].process = 0;
-        this->state.currentPrimitive->totalTexture = 1;
-        this->state.currentPrimitive->textures = new CTexture*[this->state.currentPrimitive->totalTexture];
-        this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\lg_kings_grace.tga", 0, false, true, false);
+        this->state.lastPrim = this->LaunchEffectPrim(171, vector3d{offset.x, offset.y, offset.z});
+        this->state.lastPrim->state.renderFlag = 5;
+        this->state.lastPrim->state.duration = this->state.duration;
+        this->state.lastPrim->state.slots[0].life = 1;
+        this->state.lastPrim->state.slots[0].height[0] = 0.0f;
+        this->state.lastPrim->state.slots[0].height[1] = 0.0f;
+        this->state.lastPrim->state.slots[0].height[2] = 0.0f;
+        this->state.lastPrim->state.slots[0].height[3] = 0.0f;
+        this->state.lastPrim->state.slots[0].height[4] = 0.0f;
+        this->state.lastPrim->state.slots[0].height[5] = 0.0f;
+        this->state.lastPrim->state.slots[0].height[6] = static_cast<float>(angle / 4);
+        this->state.lastPrim->state.slots[0].height[7] = -8.0f;
+        this->state.lastPrim->state.slots[0].height[8] = 0.0f;
+        this->state.lastPrim->state.slots[0].height[9] = 0.0f;
+        this->state.lastPrim->state.slots[0].height[10] = 0.0f;
+        this->state.lastPrim->state.slots[0].distance = 8.0f;
+        this->state.lastPrim->state.slots[0].flag1[0] = 1;
+        this->state.lastPrim->state.slots[0].alphaB = 0;
+        this->state.lastPrim->state.slots[0].process = 0;
+        this->state.lastPrim->state.totalTexture = 1;
+        this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+        this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\lg_kings_grace.tga", 0, false, true, false);
       }
     }
     break;
@@ -22449,26 +22419,26 @@ bool CRagEffect::OnProcess3() {
         }
       }
       if (this->state.stateCnt == 0) {
-        this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 15, offset.x, offset.y, offset.z, WorldObjects())->state;
-        this->state.currentPrimitive->duration = this->state.duration;
-        this->state.currentPrimitive->pattern |= 0x800;
-        this->state.currentPrimitive->longitude = 0.0f;
-        this->state.currentPrimitive->longSpeed = 2.5f;
-        this->state.currentPrimitive->roll = 90.0f;
-        this->state.currentPrimitive->changeWidthAccel = 0.0f;
-        this->state.currentPrimitive->changeHeightAccel = 0.0f;
-        this->state.currentPrimitive->widthSize = 40.0f;
-        this->state.currentPrimitive->heightSize = 40.0f;
-        this->state.currentPrimitive->widthSpeed = -1.0f;
-        this->state.currentPrimitive->heightSpeed = -1.0f;
-        this->state.currentPrimitive->changePoint = 20;
-        this->state.currentPrimitive->changeWidthSpeed = 0.0f;
-        this->state.currentPrimitive->changeHeightSpeed = 0.0f;
-        this->state.currentPrimitive->textures = new CTexture*[this->state.currentPrimitive->totalTexture];
-        this->state.currentPrimitive->red = 254;
-        this->state.currentPrimitive->blue = 254;
-        this->state.currentPrimitive->green = 254;
-        this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\new_jackfrost\\new_jackfrost_magicrune\\jack_magic_rune.tga", 0, false, true, false);
+        this->state.lastPrim = this->LaunchEffectPrim(15, vector3d{offset.x, offset.y, offset.z});
+        this->state.lastPrim->state.duration = this->state.duration;
+        this->state.lastPrim->state.pattern |= 0x800;
+        this->state.lastPrim->state.longitude = 0.0f;
+        this->state.lastPrim->state.longSpeed = 2.5f;
+        this->state.lastPrim->state.roll = 90.0f;
+        this->state.lastPrim->state.changeWidthAccel = 0.0f;
+        this->state.lastPrim->state.changeHeightAccel = 0.0f;
+        this->state.lastPrim->state.widthSize = 40.0f;
+        this->state.lastPrim->state.heightSize = 40.0f;
+        this->state.lastPrim->state.widthSpeed = -1.0f;
+        this->state.lastPrim->state.heightSpeed = -1.0f;
+        this->state.lastPrim->state.changePoint = 20;
+        this->state.lastPrim->state.changeWidthSpeed = 0.0f;
+        this->state.lastPrim->state.changeHeightSpeed = 0.0f;
+        this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+        this->state.lastPrim->state.red = 254;
+        this->state.lastPrim->state.blue = 254;
+        this->state.lastPrim->state.green = 254;
+        this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\new_jackfrost\\new_jackfrost_magicrune\\jack_magic_rune.tga", 0, false, true, false);
       }
     }
     break;
@@ -23295,72 +23265,72 @@ bool CRagEffect::OnProcess() {
         float cosine = ClientCosine(angle);
         GetRadian(angle);
 
-        this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-        this->state.currentPrimitive->duration = 25;
+        this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+        this->state.lastPrim->state.duration = 25;
         sine *= 15.0f;
-        this->state.currentPrimitive->deltaPos2.x = sine;
-        this->state.currentPrimitive->deltaPos2.y = -10.0f;
+        this->state.lastPrim->state.deltaPos2.x = sine;
+        this->state.lastPrim->state.deltaPos2.y = -10.0f;
         cosine *= -15.0f;
-        this->state.currentPrimitive->deltaPos2.z = cosine;
-        Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle2.spr");
-        Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\particle2.act");
-        this->state.currentPrimitive->size = 3.0f;
-        this->state.currentPrimitive->sizeSpeed = -0.1f;
-        this->state.currentPrimitive->alpha = 250.0f;
-        this->state.currentPrimitive->alphaSpeed = -3.0f;
-        this->state.currentPrimitive->fadeOutCnt = this->state.currentPrimitive->duration - 6;
-        Owner(this->state.currentPrimitive).InitSegment();
+        this->state.lastPrim->state.deltaPos2.z = cosine;
+        this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle2.spr");
+        this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\particle2.act");
+        this->state.lastPrim->state.size = 3.0f;
+        this->state.lastPrim->state.sizeSpeed = -0.1f;
+        this->state.lastPrim->state.alpha = 250.0f;
+        this->state.lastPrim->state.alphaSpeed = -3.0f;
+        this->state.lastPrim->state.fadeOutCnt = this->state.lastPrim->state.duration - 6;
+        this->state.lastPrim->InitSegment();
 
-        this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-        this->state.currentPrimitive->duration = 25;
-        this->state.currentPrimitive->deltaPos2.x = sine;
-        this->state.currentPrimitive->deltaPos2.y = 0.0f;
-        this->state.currentPrimitive->deltaPos2.z = cosine;
-        Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "Shadow.spr");
-        Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "Shadow.act");
-        this->state.currentPrimitive->animSpeed = 2;
-        this->state.currentPrimitive->size = 1.5f;
-        this->state.currentPrimitive->sizeSpeed = -0.06f;
-        this->state.currentPrimitive->alpha = 150.0f;
-        this->state.currentPrimitive->alphaSpeed = -2.5f;
-        this->state.currentPrimitive->fadeOutCnt = this->state.currentPrimitive->duration - 6;
-        Owner(this->state.currentPrimitive).InitSegment();
+        this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+        this->state.lastPrim->state.duration = 25;
+        this->state.lastPrim->state.deltaPos2.x = sine;
+        this->state.lastPrim->state.deltaPos2.y = 0.0f;
+        this->state.lastPrim->state.deltaPos2.z = cosine;
+        this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "Shadow.spr");
+        this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "Shadow.act");
+        this->state.lastPrim->state.animSpeed = 2;
+        this->state.lastPrim->state.size = 1.5f;
+        this->state.lastPrim->state.sizeSpeed = -0.06f;
+        this->state.lastPrim->state.alpha = 150.0f;
+        this->state.lastPrim->state.alphaSpeed = -2.5f;
+        this->state.lastPrim->state.fadeOutCnt = this->state.lastPrim->state.duration - 6;
+        this->state.lastPrim->InitSegment();
       }
       break;
     case EF_TELEPORTATION:
       if (this->state.stateCnt == 0) {
         PlayEffectWave(*this, "effect\\EF_Teleportation.wav");
-        this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 13, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-        this->state.currentPrimitive->duration = 60;
-        this->state.currentPrimitive->pattern |= 1;
-        this->state.currentPrimitive->outerSize = 4.0f;
-        this->state.currentPrimitive->innerSize = 4.0f;
-        this->state.currentPrimitive->heightSpeed = 5.0f;
-        this->state.currentPrimitive->heightAccel = 0.25f;
-        this->state.currentPrimitive->longSpeed = 2.0f;
-        this->state.currentPrimitive->fadeOutCnt = 0;
-        AllocateTextures(*this->state.currentPrimitive);
-        this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\ring_blue.tga", 0, false, true, false);
+        this->state.lastPrim = this->LaunchEffectPrim(13, vector3d{0.0f, 0.0f, 0.0f});
+        this->state.lastPrim->state.duration = 60;
+        this->state.lastPrim->state.pattern |= 1;
+        this->state.lastPrim->state.outerSize = 4.0f;
+        this->state.lastPrim->state.innerSize = 4.0f;
+        this->state.lastPrim->state.heightSpeed = 5.0f;
+        this->state.lastPrim->state.heightAccel = 0.25f;
+        this->state.lastPrim->state.longSpeed = 2.0f;
+        this->state.lastPrim->state.fadeOutCnt = 0;
+        this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+        this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ring_blue.tga", 0, false, true, false);
       }
       break;
     case EF_READYPORTAL:
       if (this->state.stateCnt % 14 == 0) {
         PlayEffectWave(*this, "effect\\EF_ReadyPortal.wav");
-        this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 12, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-        this->state.currentPrimitive->duration = 30;
-        this->state.currentPrimitive->deltaPos2.y = -1.0f;
-        this->state.currentPrimitive->innerSize = 8.0f;
-        this->state.currentPrimitive->latitude = 90.0f;
-        EffectPrimitiveState& tilted = *this->state.currentPrimitive;
+        this->state.lastPrim = this->LaunchEffectPrim(12, vector3d{0.0f, 0.0f, 0.0f});
+        this->state.lastPrim->state.duration = 30;
+        this->state.lastPrim->state.deltaPos2.y = -1.0f;
+        this->state.lastPrim->state.innerSize = 8.0f;
+        this->state.lastPrim->state.latitude = 90.0f;
+        EffectPrimitiveState& tilted = this->state.lastPrim->state;
         tilted.transform.MakeXRotation(GetRadian(static_cast<int>(tilted.latitude)));
-        this->state.currentPrimitive->radiusSpeed = 1.0f;
-        EffectPrimitiveState& ring = *this->state.currentPrimitive;
+        this->state.lastPrim->state.radiusSpeed = 1.0f;
+        EffectPrimitiveState& ring = this->state.lastPrim->state;
         ring.radiusAccel = -(ring.radiusSpeed / static_cast<float>(ring.duration)) * g_depthAverageHalf;
-        EffectPrimitiveState& fade = *this->state.currentPrimitive;
+        EffectPrimitiveState& fade = this->state.lastPrim->state;
         fade.fadeOutCnt = fade.duration - fade.duration / 2;
-        Owner(this->state.currentPrimitive).InitSegment();
-        AllocateTextures(*this->state.currentPrimitive);
-        this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\ring_blue.tga", 0, false, true, false);
+        this->state.lastPrim->InitSegment();
+        this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+        this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ring_blue.tga", 0, false, true, false);
       }
       break;
     case EF_PORTAL:
@@ -23376,14 +23346,14 @@ bool CRagEffect::OnProcess() {
       this->render.position = this->state.parent->render.position;
       if (this->state.stateCnt == 0) {
         PlayEffectWave(*this, "effect\\EF_Aqua.wav");
-        this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-        this->state.currentPrimitive->duration = this->state.duration;
-        this->state.currentPrimitive->deltaPos2.y = -20.0f;
-        this->state.currentPrimitive->animSpeed = 2;
-        this->state.currentPrimitive->repeatAnim = 0;
-        Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\성수뜨기.spr");
-        Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\성수뜨기.act");
-        Owner(this->state.currentPrimitive).InitSegment();
+        this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+        this->state.lastPrim->state.duration = this->state.duration;
+        this->state.lastPrim->state.deltaPos2.y = -20.0f;
+        this->state.lastPrim->state.animSpeed = 2;
+        this->state.lastPrim->state.repeatAnim = 0;
+        this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\성수뜨기.spr");
+        this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\성수뜨기.act");
+        this->state.lastPrim->InitSegment();
       }
       break;
     case EF_SIGNUM:
@@ -23410,21 +23380,21 @@ bool CRagEffect::OnProcess() {
       if (this->state.stateCnt == 0) {
         const int count = std::max(rand() % 4, 0) + 1;
         for (int index = 0; index < count; ++index) {
-          this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-          this->state.currentPrimitive->duration = this->state.duration;
-          EffectPrimitiveState& tilted = *this->state.currentPrimitive;
+          this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+          this->state.lastPrim->state.duration = this->state.duration;
+          EffectPrimitiveState& tilted = this->state.lastPrim->state;
           tilted.transform.MakeXRotation(GetRadian(std::max(rand() % 30, 0) + 75));
-          EffectPrimitiveState& turned = *this->state.currentPrimitive;
+          EffectPrimitiveState& turned = this->state.lastPrim->state;
           turned.transform.AppendYRotation(GetRadian(std::max(rand() % 360, 0)));
-          this->state.currentPrimitive->deltaPos2.y = -9.0f;
-          this->state.currentPrimitive->rollSpeed = 0.75f;
-          this->state.currentPrimitive->speed = static_cast<float>(std::max(rand() % 3, 0) + 3) / 10.0f;
-          this->state.currentPrimitive->size = 1.5f;
-          EffectPrimitiveState& fade = *this->state.currentPrimitive;
+          this->state.lastPrim->state.deltaPos2.y = -9.0f;
+          this->state.lastPrim->state.rollSpeed = 0.75f;
+          this->state.lastPrim->state.speed = static_cast<float>(std::max(rand() % 3, 0) + 3) / 10.0f;
+          this->state.lastPrim->state.size = 1.5f;
+          EffectPrimitiveState& fade = this->state.lastPrim->state;
           fade.fadeOutCnt = fade.duration - fade.duration / 3;
-          Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\굴뚝연기.spr");
-          Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\굴뚝연기.act");
-          Owner(this->state.currentPrimitive).InitSegment();
+          this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\굴뚝연기.spr");
+          this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\굴뚝연기.act");
+          this->state.lastPrim->InitSegment();
         }
       }
       break;
@@ -23437,21 +23407,21 @@ bool CRagEffect::OnProcess() {
     case EF_TORCH:
       this->render.position = this->state.parent->render.position;
       if (this->state.stateCnt == 0) {
-        this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-        this->state.currentPrimitive->pattern |= 0x200;
-        this->state.currentPrimitive->duration = this->state.duration;
-        this->state.currentPrimitive->deltaPos2.y = -10.0f;
+        this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+        this->state.lastPrim->state.pattern |= 0x200;
+        this->state.lastPrim->state.duration = this->state.duration;
+        this->state.lastPrim->state.deltaPos2.y = -10.0f;
         if (this->state.param[0] <= 0.0f) {
           this->state.param[0] = 1.0f;
         }
         if (this->state.param[1] < 1.0f) {
           this->state.param[1] = 1.0f;
         }
-        this->state.currentPrimitive->size = this->state.param[0];
-        this->state.currentPrimitive->animSpeed = static_cast<int>(this->state.param[1]);
-        Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\torch_01.spr");
-        Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\torch_01.act");
-        Owner(this->state.currentPrimitive).InitSegment();
+        this->state.lastPrim->state.size = this->state.param[0];
+        this->state.lastPrim->state.animSpeed = static_cast<int>(this->state.param[1]);
+        this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\torch_01.spr");
+        this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\torch_01.act");
+        this->state.lastPrim->InitSegment();
       }
       break;
     case EF_SPRAYPOND:
@@ -23478,22 +23448,22 @@ bool CRagEffect::OnProcess() {
       this->state.tlvertY = vertex.y;
       const int roll = rand() % 360;
       if (this->state.stateCnt == 0) {
-        this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 0, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-        this->state.currentPrimitive->duration = 30;
-        this->state.currentPrimitive->deltaPos2.y = -20.0f;
-        this->state.currentPrimitive->widthSize = 10.0f;
-        this->state.currentPrimitive->heightSize = 10.0f;
-        this->state.currentPrimitive->widthSpeed = 5.7f;
-        this->state.currentPrimitive->heightSpeed = 5.7f;
-        this->state.currentPrimitive->roll = static_cast<float>(std::max(roll, 0));
-        this->state.currentPrimitive->rollSpeed = -18.0f;
-        EffectPrimitiveState& spin = *this->state.currentPrimitive;
+        this->state.lastPrim = this->LaunchEffectPrim(0, vector3d{0.0f, 0.0f, 0.0f});
+        this->state.lastPrim->state.duration = 30;
+        this->state.lastPrim->state.deltaPos2.y = -20.0f;
+        this->state.lastPrim->state.widthSize = 10.0f;
+        this->state.lastPrim->state.heightSize = 10.0f;
+        this->state.lastPrim->state.widthSpeed = 5.7f;
+        this->state.lastPrim->state.heightSpeed = 5.7f;
+        this->state.lastPrim->state.roll = static_cast<float>(std::max(roll, 0));
+        this->state.lastPrim->state.rollSpeed = -18.0f;
+        EffectPrimitiveState& spin = this->state.lastPrim->state;
         spin.rollAccel = -(spin.rollSpeed / static_cast<float>(spin.duration)) / 2.5f;
-        EffectPrimitiveState& fade = *this->state.currentPrimitive;
+        EffectPrimitiveState& fade = this->state.lastPrim->state;
         fade.fadeOutCnt = fade.duration - fade.duration / 2;
-        AllocateTextures(*this->state.currentPrimitive);
-        this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\FireRing.tga", 0, false, true, false);
-        this->state.currentPrimitive->slots[0].life = 0;
+        this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+        this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\FireRing.tga", 0, false, true, false);
+        this->state.lastPrim->state.slots[0].life = 0;
       }
       break;
     }
@@ -23547,15 +23517,15 @@ bool CRagEffect::OnProcess() {
       break;
     case EF_POISONHIT:
       if (this->state.stateCnt == 0) {
-        this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-        this->state.currentPrimitive->duration = this->state.duration;
-        this->state.currentPrimitive->size = 1.5f;
-        this->state.currentPrimitive->animSpeed = 2;
-        this->state.currentPrimitive->pattern |= 0x200;
-        this->state.currentPrimitive->repeatAnim = 0;
-        Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\PoisonHit.spr");
-        Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\PoisonHit.act");
-        Owner(this->state.currentPrimitive).InitSegment();
+        this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+        this->state.lastPrim->state.duration = this->state.duration;
+        this->state.lastPrim->state.size = 1.5f;
+        this->state.lastPrim->state.animSpeed = 2;
+        this->state.lastPrim->state.pattern |= 0x200;
+        this->state.lastPrim->state.repeatAnim = 0;
+        this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\PoisonHit.spr");
+        this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\PoisonHit.act");
+        this->state.lastPrim->InitSegment();
       }
       break;
     case EF_BEGINSPELL2:
@@ -23612,14 +23582,14 @@ bool CRagEffect::OnProcess() {
       break;
     case EF_BARRIER:
       if (this->state.stateCnt == 0) {
-        this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 14, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-        this->state.currentPrimitive->duration = 250;
-        this->state.currentPrimitive->radius = 13.5f;
-        this->state.currentPrimitive->deltaPos2.y = -10.0f;
-        this->state.currentPrimitive->longitude = 2.0f;
-        this->state.currentPrimitive->alpha = 100.0f;
-        AllocateTextures(*this->state.currentPrimitive);
-        this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\대폭발.tga", 0, false, true, false);
+        this->state.lastPrim = this->LaunchEffectPrim(14, vector3d{0.0f, 0.0f, 0.0f});
+        this->state.lastPrim->state.duration = 250;
+        this->state.lastPrim->state.radius = 13.5f;
+        this->state.lastPrim->state.deltaPos2.y = -10.0f;
+        this->state.lastPrim->state.longitude = 2.0f;
+        this->state.lastPrim->state.alpha = 100.0f;
+        this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+        this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\대폭발.tga", 0, false, true, false);
       }
       break;
     case EF_INVENOM:
@@ -23667,28 +23637,28 @@ bool CRagEffect::OnProcess() {
       break;
     case EF_CONE:
       if (this->state.stateCnt % 130 == 0) {
-        this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 7, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
+        this->state.lastPrim = this->LaunchEffectPrim(7, vector3d{0.0f, 0.0f, 0.0f});
         this->state.duration = 200;
-        this->state.currentPrimitive->duration = 300;
-        this->state.currentPrimitive->radius = 0.1f;
-        this->state.currentPrimitive->radiusSpeed = 0.2f;
-        this->state.currentPrimitive->gravSpeed = 0.1f;
-        this->state.currentPrimitive->gravAccel = 0.005f;
-        this->state.currentPrimitive->longitude = 2.0f;
-        this->state.currentPrimitive->longSpeed = 15.0f;
-        this->state.currentPrimitive->longAccel = -0.01f;
-        this->state.currentPrimitive->size = 1.2f;
-        EffectPrimitiveState& turned = *this->state.currentPrimitive;
+        this->state.lastPrim->state.duration = 300;
+        this->state.lastPrim->state.radius = 0.1f;
+        this->state.lastPrim->state.radiusSpeed = 0.2f;
+        this->state.lastPrim->state.gravSpeed = 0.1f;
+        this->state.lastPrim->state.gravAccel = 0.005f;
+        this->state.lastPrim->state.longitude = 2.0f;
+        this->state.lastPrim->state.longSpeed = 15.0f;
+        this->state.lastPrim->state.longAccel = -0.01f;
+        this->state.lastPrim->state.size = 1.2f;
+        EffectPrimitiveState& turned = this->state.lastPrim->state;
         turned.transform.MakeYRotation(GetRadian(static_cast<int>(turned.longitude)));
-        EffectPrimitiveState& orbit = *this->state.currentPrimitive;
+        EffectPrimitiveState& orbit = this->state.lastPrim->state;
         const float* transform = orbit.transform.values;
         const float radius = orbit.radius;
         orbit.deltaPos2.x = (transform[0] * 0.0f - transform[3] * 30.0f) + radius * transform[6] + transform[9];
         orbit.deltaPos2.y = (transform[1] * 0.0f - transform[4] * 30.0f) + radius * transform[7] + transform[10];
         orbit.deltaPos2.z = (transform[2] * 0.0f - transform[5] * 30.0f) + radius * transform[8] + transform[11];
-        Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle1.spr");
-        Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\particle1.act");
-        Owner(this->state.currentPrimitive).InitSegment();
+        this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle1.spr");
+        this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\particle1.act");
+        this->state.lastPrim->InitSegment();
       }
       break;
     case EF_SPHERE:
@@ -24002,18 +23972,18 @@ bool CRagEffect::OnProcess() {
         PlayEffectWave(*this, "effect\\wizard_fire_ivy.wav");
       }
       if (this->state.stateCnt == 0) {
-        this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 15, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-        this->state.currentPrimitive->duration = this->state.duration;
-        this->state.currentPrimitive->pattern = 0x40;
-        this->state.currentPrimitive->pattern |= 0x100;
-        this->state.currentPrimitive->renderFlag |= 2;
-        this->state.currentPrimitive->widthSize = 3.5f;
-        this->state.currentPrimitive->heightSize = 3.5f;
-        EffectPrimitiveState& rise = *this->state.currentPrimitive;
+        this->state.lastPrim = this->LaunchEffectPrim(15, vector3d{0.0f, 0.0f, 0.0f});
+        this->state.lastPrim->state.duration = this->state.duration;
+        this->state.lastPrim->state.pattern = 0x40;
+        this->state.lastPrim->state.pattern |= 0x100;
+        this->state.lastPrim->state.renderFlag |= 2;
+        this->state.lastPrim->state.widthSize = 3.5f;
+        this->state.lastPrim->state.heightSize = 3.5f;
+        EffectPrimitiveState& rise = this->state.lastPrim->state;
         rise.speed3d.y = -(25.0f / static_cast<float>(rise.duration));
-        this->state.currentPrimitive->deltaPos2.y = -5.0f;
-        AllocateTextures(*this->state.currentPrimitive);
-        this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\fire_ivy.bmp", 0, false, true, false);
+        this->state.lastPrim->state.deltaPos2.y = -5.0f;
+        this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+        this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\fire_ivy.bmp", 0, false, true, false);
       }
       break;
     case EF_DETECTING:
@@ -24031,17 +24001,17 @@ bool CRagEffect::OnProcess() {
       this->state.tlvertY = vertex.y;
       if (this->state.stateCnt == 0) {
         PlayEffectWave(*this, "effect\\EF_StoneCurse.wav");
-        this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 4, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-        this->state.currentPrimitive->duration = this->state.duration;
-        this->state.currentPrimitive->fadeOutCnt = 0;
-        this->state.currentPrimitive->deltaPos2.y = -20.0f;
-        this->state.currentPrimitive->arcAngle = 10.0f;
-        this->state.currentPrimitive->innerSize = 10.0f;
-        this->state.currentPrimitive->radiusSpeed = 7.0f;
-        EffectPrimitiveState& ring = *this->state.currentPrimitive;
+        this->state.lastPrim = this->LaunchEffectPrim(4, vector3d{0.0f, 0.0f, 0.0f});
+        this->state.lastPrim->state.duration = this->state.duration;
+        this->state.lastPrim->state.fadeOutCnt = 0;
+        this->state.lastPrim->state.deltaPos2.y = -20.0f;
+        this->state.lastPrim->state.arcAngle = 10.0f;
+        this->state.lastPrim->state.innerSize = 10.0f;
+        this->state.lastPrim->state.radiusSpeed = 7.0f;
+        EffectPrimitiveState& ring = this->state.lastPrim->state;
         ring.radiusAccel = -(ring.radiusSpeed / static_cast<float>(ring.duration + 40)) * 2.0f;
-        AllocateTextures(*this->state.currentPrimitive);
-        this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\alpha_center.tga", 0, false, true, false);
+        this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+        this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\alpha_center.tga", 0, false, true, false);
       }
       break;
     }
@@ -24107,34 +24077,34 @@ bool CRagEffect::OnProcess() {
       break;
     case EF_REVIVE:
       if (this->state.stateCnt % 25 == 0) {
-        this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 13, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-        this->state.currentPrimitive->duration = 60;
-        this->state.currentPrimitive->longSpeed = 1.5f;
-        this->state.currentPrimitive->longAccel = 0.03f;
-        this->state.currentPrimitive->outerSize = 10.5f;
-        this->state.currentPrimitive->innerSpeed = -0.12f;
-        this->state.currentPrimitive->innerAccel = 0.003f;
-        this->state.currentPrimitive->outerSpeed = -0.12f;
-        this->state.currentPrimitive->outerAccel = 0.003f;
-        this->state.currentPrimitive->innerSize = 7.5f;
-        this->state.currentPrimitive->heightSize = 7.5f;
-        this->state.currentPrimitive->alpha = 240.0f;
-        EffectPrimitiveState& fade = *this->state.currentPrimitive;
+        this->state.lastPrim = this->LaunchEffectPrim(13, vector3d{0.0f, 0.0f, 0.0f});
+        this->state.lastPrim->state.duration = 60;
+        this->state.lastPrim->state.longSpeed = 1.5f;
+        this->state.lastPrim->state.longAccel = 0.03f;
+        this->state.lastPrim->state.outerSize = 10.5f;
+        this->state.lastPrim->state.innerSpeed = -0.12f;
+        this->state.lastPrim->state.innerAccel = 0.003f;
+        this->state.lastPrim->state.outerSpeed = -0.12f;
+        this->state.lastPrim->state.outerAccel = 0.003f;
+        this->state.lastPrim->state.innerSize = 7.5f;
+        this->state.lastPrim->state.heightSize = 7.5f;
+        this->state.lastPrim->state.alpha = 240.0f;
+        EffectPrimitiveState& fade = this->state.lastPrim->state;
         fade.fadeOutCnt = fade.duration - fade.duration / 2;
         if (this->state.stateCnt == 0) {
-          this->state.currentPrimitive->duration = this->state.duration;
-          this->state.currentPrimitive->innerSpeed = 0.0f;
-          this->state.currentPrimitive->innerAccel = 0.0f;
-          this->state.currentPrimitive->longSpeed = 1.5f;
-          this->state.currentPrimitive->outerSize = 11.0f;
-          this->state.currentPrimitive->innerSize = 7.5f;
-          this->state.currentPrimitive->outerSpeed = 0.0f;
-          this->state.currentPrimitive->outerAccel = 0.0f;
-          EffectPrimitiveState& late = *this->state.currentPrimitive;
+          this->state.lastPrim->state.duration = this->state.duration;
+          this->state.lastPrim->state.innerSpeed = 0.0f;
+          this->state.lastPrim->state.innerAccel = 0.0f;
+          this->state.lastPrim->state.longSpeed = 1.5f;
+          this->state.lastPrim->state.outerSize = 11.0f;
+          this->state.lastPrim->state.innerSize = 7.5f;
+          this->state.lastPrim->state.outerSpeed = 0.0f;
+          this->state.lastPrim->state.outerAccel = 0.0f;
+          EffectPrimitiveState& late = this->state.lastPrim->state;
           late.fadeOutCnt = late.duration - late.duration / 10;
         }
-        AllocateTextures(*this->state.currentPrimitive);
-        this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\ring_yellow.tga", 0, false, true, false);
+        this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+        this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ring_yellow.tga", 0, false, true, false);
       }
       break;
     case EF_HEAVENSDRIVE:
@@ -24173,24 +24143,24 @@ bool CRagEffect::OnProcess() {
         this->state.stateCnt = 0;
       }
       if (this->state.stateCnt == 0) {
-        this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 15, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-        this->state.currentPrimitive->duration = 9999;
-        this->state.currentPrimitive->longitude = 0.0f;
-        this->state.currentPrimitive->longSpeed = 4.5f;
-        this->state.currentPrimitive->roll = 90.0f;
-        this->state.currentPrimitive->widthSize = 4.0f;
-        this->state.currentPrimitive->heightSize = 4.0f;
+        this->state.lastPrim = this->LaunchEffectPrim(15, vector3d{0.0f, 0.0f, 0.0f});
+        this->state.lastPrim->state.duration = 9999;
+        this->state.lastPrim->state.longitude = 0.0f;
+        this->state.lastPrim->state.longSpeed = 4.5f;
+        this->state.lastPrim->state.roll = 90.0f;
+        this->state.lastPrim->state.widthSize = 4.0f;
+        this->state.lastPrim->state.heightSize = 4.0f;
         if (this->state.count == 11) {
-          this->state.currentPrimitive->red = 0;
-          this->state.currentPrimitive->blue = 0;
-          this->state.currentPrimitive->green = 250;
+          this->state.lastPrim->state.red = 0;
+          this->state.lastPrim->state.blue = 0;
+          this->state.lastPrim->state.green = 250;
         } else {
-          this->state.currentPrimitive->red = 250;
-          this->state.currentPrimitive->blue = (10 - this->state.count) * 25;
-          this->state.currentPrimitive->green = (10 - this->state.count) * 25;
+          this->state.lastPrim->state.red = 250;
+          this->state.lastPrim->state.blue = (10 - this->state.count) * 25;
+          this->state.lastPrim->state.green = (10 - this->state.count) * 25;
         }
-        AllocateTextures(*this->state.currentPrimitive);
-        this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\LockOn128.tga", 0, false, true, false);
+        this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+        this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\LockOn128.tga", 0, false, true, false);
       }
       CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
       this->render.position.y = world->terrain->Height(this->render.position.x, this->render.position.z) - 2.0f;
@@ -24203,17 +24173,17 @@ bool CRagEffect::OnProcess() {
         this->state.stateCnt = 0;
       }
       if (this->state.stateCnt == 0) {
-        this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 15, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-        this->state.currentPrimitive->duration = 9999;
-        this->state.currentPrimitive->longitude = 0.0f;
-        this->state.currentPrimitive->roll = 90.0f;
-        this->state.currentPrimitive->widthSize = 4.0f;
-        this->state.currentPrimitive->heightSize = 4.0f;
-        this->state.currentPrimitive->red = 50;
-        this->state.currentPrimitive->blue = 253;
-        this->state.currentPrimitive->green = 50;
-        AllocateTextures(*this->state.currentPrimitive);
-        this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\party.tga", 0, false, true, false);
+        this->state.lastPrim = this->LaunchEffectPrim(15, vector3d{0.0f, 0.0f, 0.0f});
+        this->state.lastPrim->state.duration = 9999;
+        this->state.lastPrim->state.longitude = 0.0f;
+        this->state.lastPrim->state.roll = 90.0f;
+        this->state.lastPrim->state.widthSize = 4.0f;
+        this->state.lastPrim->state.heightSize = 4.0f;
+        this->state.lastPrim->state.red = 50;
+        this->state.lastPrim->state.blue = 253;
+        this->state.lastPrim->state.green = 50;
+        this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+        this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\party.tga", 0, false, true, false);
       }
       CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
       this->render.position.y = world->terrain->Height(this->render.position.x, this->render.position.z) - 2.0f;
@@ -24231,23 +24201,23 @@ bool CRagEffect::OnProcess() {
     case EF_BANJJAKII:
       this->render.position = this->state.parent->render.position;
       if (this->state.stateCnt == 0) {
-        this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-        this->state.currentPrimitive->pattern |= 0x200;
-        this->state.currentPrimitive->duration = 125;
-        this->state.currentPrimitive->deltaPos2.y = -10.0f;
+        this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+        this->state.lastPrim->state.pattern |= 0x200;
+        this->state.lastPrim->state.duration = 125;
+        this->state.lastPrim->state.deltaPos2.y = -10.0f;
         if (this->state.param[0] <= 0.0f) {
           this->state.param[0] = 1.0f;
         }
         if (this->state.param[1] < 1.0f) {
           this->state.param[1] = 1.0f;
         }
-        this->state.currentPrimitive->animSpeed = static_cast<int>(this->state.param[1]);
-        Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\크리스마스.spr");
-        Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\크리스마스.act");
+        this->state.lastPrim->state.animSpeed = static_cast<int>(this->state.param[1]);
+        this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\크리스마스.spr");
+        this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\크리스마스.act");
         const int kind = rand() % 10;
-        this->state.currentPrimitive->size = kind % 3 == 1 ? 0.01f : 1.0f;
-        Owner(this->state.currentPrimitive).SetAction(kind / 2, 1, 1);
-        Owner(this->state.currentPrimitive).InitSegment();
+        this->state.lastPrim->state.size = kind % 3 == 1 ? 0.01f : 1.0f;
+        this->state.lastPrim->SetAction(kind / 2, 1, 1);
+        this->state.lastPrim->InitSegment();
       }
       break;
     case EF_MAKEBLUR:
@@ -24260,24 +24230,24 @@ bool CRagEffect::OnProcess() {
       break;
     case EF_VENOMDUST2:
       if (this->state.stateCnt % 5 == 0) {
-        this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-        this->state.currentPrimitive->duration = 10;
-        EffectPrimitiveState& turned = *this->state.currentPrimitive;
+        this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+        this->state.lastPrim->state.duration = 10;
+        EffectPrimitiveState& turned = this->state.lastPrim->state;
         turned.transform.MakeYRotation(GetRadian(std::max(rand() % 360, 0)));
-        EffectPrimitiveState& tilted = *this->state.currentPrimitive;
+        EffectPrimitiveState& tilted = this->state.lastPrim->state;
         tilted.transform.MakeXRotation(GetRadian(90));
-        this->state.currentPrimitive->speed = static_cast<float>(std::max(rand() % 20, 0) + 20) / 80.0f;
-        EffectPrimitiveState& moving = *this->state.currentPrimitive;
+        this->state.lastPrim->state.speed = static_cast<float>(std::max(rand() % 20, 0) + 20) / 80.0f;
+        EffectPrimitiveState& moving = this->state.lastPrim->state;
         moving.accel = -(moving.speed / static_cast<float>(moving.duration)) * g_depthAverageHalf;
-        this->state.currentPrimitive->size = 0.8f;
-        this->state.currentPrimitive->rollSpeed = 3.0f;
-        this->state.currentPrimitive->alpha = 70.0f;
-        this->state.currentPrimitive->alphaSpeed = this->state.currentPrimitive->maxAlpha / 10.0f;
-        EffectPrimitiveState& fade = *this->state.currentPrimitive;
+        this->state.lastPrim->state.size = 0.8f;
+        this->state.lastPrim->state.rollSpeed = 3.0f;
+        this->state.lastPrim->state.alpha = 70.0f;
+        this->state.lastPrim->state.alphaSpeed = this->state.lastPrim->state.maxAlpha / 10.0f;
+        EffectPrimitiveState& fade = this->state.lastPrim->state;
         fade.fadeOutCnt = fade.duration - fade.duration / 5;
-        Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle3.spr");
-        Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\particle3.act");
-        Owner(this->state.currentPrimitive).InitSegment();
+        this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle3.spr");
+        this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\particle3.act");
+        this->state.lastPrim->InitSegment();
       }
       break;
     case EF_CHANGEDARK:
@@ -24354,15 +24324,15 @@ bool CRagEffect::OnProcess() {
     }
     case EF_CURSEATTACK:
       if (this->state.stateCnt == 0) {
-        this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 15, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-        this->state.currentPrimitive->duration = 9999;
-        this->state.currentPrimitive->longitude = 0.0f;
-        this->state.currentPrimitive->longSpeed = 4.5f;
-        this->state.currentPrimitive->deltaPos2.y -= 30.0f;
-        this->state.currentPrimitive->widthSize = 4.0f;
-        this->state.currentPrimitive->heightSize = 4.0f;
-        AllocateTextures(*this->state.currentPrimitive);
-        this->state.currentPrimitive->textures[0] = g_texMgr.Load("effect\\curse.bmp", 0, false, true, false);
+        this->state.lastPrim = this->LaunchEffectPrim(15, vector3d{0.0f, 0.0f, 0.0f});
+        this->state.lastPrim->state.duration = 9999;
+        this->state.lastPrim->state.longitude = 0.0f;
+        this->state.lastPrim->state.longSpeed = 4.5f;
+        this->state.lastPrim->state.deltaPos2.y -= 30.0f;
+        this->state.lastPrim->state.widthSize = 4.0f;
+        this->state.lastPrim->state.heightSize = 4.0f;
+        this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+        this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\curse.bmp", 0, false, true, false);
       }
       break;
     case EF_LEVEL99:
@@ -24405,18 +24375,18 @@ bool CRagEffect::OnProcess() {
       break;
     case EF_DARKBREATH:
       if (this->state.stateCnt == 0) {
-        this->state.currentPrimitive = &CreateEffectParticle(*this, this->render, 5, 0.0f, 0.0f, 0.0f, WorldObjects())->state;
-        this->state.currentPrimitive->duration = 65;
-        this->state.currentPrimitive->renderFlag |= 0x200;
-        this->state.currentPrimitive->deltaPos2.y -= 20.0f;
-        this->state.currentPrimitive->size = 0.8f;
-        this->state.currentPrimitive->animSpeed = 1;
-        this->state.currentPrimitive->green = 0;
-        this->state.currentPrimitive->blue = 0;
-        this->state.currentPrimitive->fadeOutCnt = 60;
-        Owner(this->state.currentPrimitive).SetSpriteName(ResourceMgr::Instance(), "이팩트\\DarkBreath.spr");
-        Owner(this->state.currentPrimitive).SetActionName(ResourceMgr::Instance(), "이팩트\\DarkBreath.act");
-        Owner(this->state.currentPrimitive).InitSegment();
+        this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
+        this->state.lastPrim->state.duration = 65;
+        this->state.lastPrim->state.renderFlag |= 0x200;
+        this->state.lastPrim->state.deltaPos2.y -= 20.0f;
+        this->state.lastPrim->state.size = 0.8f;
+        this->state.lastPrim->state.animSpeed = 1;
+        this->state.lastPrim->state.green = 0;
+        this->state.lastPrim->state.blue = 0;
+        this->state.lastPrim->state.fadeOutCnt = 60;
+        this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\DarkBreath.spr");
+        this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\DarkBreath.act");
+        this->state.lastPrim->InitSegment();
       }
       break;
     case EF_SUMMONSLAVE:

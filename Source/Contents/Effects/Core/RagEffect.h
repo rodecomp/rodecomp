@@ -19,6 +19,8 @@ struct CRagEffect : CRenderObject {
   ~CRagEffect() override;
   bool OnProcess() override;
 
+  CEffectPrim* LaunchEffectPrim(int type, vector3d deltaPos);
+
   void InitEZ2STRFrame();
   void SpawnBlurAfterimage();
   void SpawnHallucinationOnce();
@@ -354,7 +356,6 @@ struct CRagEffect : CRenderObject {
   virtual void Init(EffectActor* parent, int id, vector3d deltaPos);
   virtual int GetDuration();
   virtual void SetStateDuration(int duration);
-  CEffectPrim* LaunchEffectPrim(int type, vector3d position);
 
   /* 0138 */ RagEffectState state;
 };
