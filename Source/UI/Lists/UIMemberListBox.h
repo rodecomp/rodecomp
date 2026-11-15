@@ -23,7 +23,7 @@ public:
   void Paint() override;
   void OnCreate(int width, int height) override;
   void Resize(int width, int height) override;
-  virtual void AddText(const char* text, int color);
+  virtual void AddText(const char* text, std::uint32_t color);
 
   /* 0130 */ int autoScroll;
   /* 0134 */ int fontHeight;

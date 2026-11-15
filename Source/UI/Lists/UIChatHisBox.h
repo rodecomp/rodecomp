@@ -26,10 +26,10 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void Configure(int x, int y, int width, int height, unsigned char transparent) override;
   void Clear() override;
-  virtual void AddText(const char* text, int color, const char* style);
-  void AddTextWrapped(const char* text, int color, const char* style);
-  void AddItemLinkLine(const char* text, int& color, int& mode);
-  void AddNavigationLinkLine(const char* text, int& color, int& mode);
+  virtual void AddText(const char* text, std::uint32_t color, const char* style);
+  void AddTextWrapped(const char* text, std::uint32_t color, const char* style);
+  void AddItemLinkLine(const char* text, std::uint32_t& color, int& mode);
+  void AddNavigationLinkLine(const char* text, std::uint32_t& color, int& mode);
   std::string RenderItemLinks(const char* lineText, std::string& source);
   std::string RenderNavigationLinks(const char* text, std::string& source);
   void RewrapLinkLines(std::vector<std::string>& wrapped, int& mode);
@@ -40,7 +40,7 @@ public:
   void ShiftNaviLinks();
   void ClearNaviLinks();
   void DropOldestRecords();
-  void AddLinkRecord(const char* name, int value, const char* detail);
+  void AddLinkRecord(const char* name, std::uint32_t value, const char* detail);
   virtual void ResetContents();
   void ShiftItemTags();
   __declspec(noinline) void PlaceItemTags(int line);
@@ -61,11 +61,11 @@ public:
   /* 00D4 */ std::list<std::vector<UIItemTagButton*>> itemTags;
 
   /* 00DC */ std::list<std::vector<UINaviLinkButton*>> naviLinks;
-  /* 00E4 */ std::vector<int> lineColors;
+  /* 00E4 */ std::vector<std::uint32_t> lineColors;
   /* 00F0 */ int maxLines;
   /* 00F4 */ std::vector<std::string> history;
   /* 0100 */ std::vector<std::string> historyTexts;
-  /* 010C */ std::vector<int> historyColors;
+  /* 010C */ std::vector<std::uint32_t> historyColors;
   /* 0118 */ std::vector<std::string> historyItemIds;
 };
 

@@ -2118,7 +2118,7 @@ void UIChatHisBox::RewrapLinkLines(std::vector<std::string>& wrapped, int& mode)
 
 // OFFSET: 0x0089DC30
 // FUNCTION: fn_11598
-void UIChatHisBox::AddItemLinkLine(const char* text, int& color, int& mode) {
+void UIChatHisBox::AddItemLinkLine(const char* text, std::uint32_t& color, int& mode) {
   if (!_mbsstr(reinterpret_cast<const unsigned char*>(text), reinterpret_cast<const unsigned char*>(g_itemLinkTagBegin.c_str())) ||
       !_mbsstr(reinterpret_cast<const unsigned char*>(text), reinterpret_cast<const unsigned char*>(g_itemLinkTagEnd.c_str()))) {
     this->UIListBox::AddLine(text);
@@ -2142,7 +2142,7 @@ void UIChatHisBox::AddItemLinkLine(const char* text, int& color, int& mode) {
 
 // OFFSET: 0x0089E0F0
 // FUNCTION: fn_11599
-void UIChatHisBox::AddNavigationLinkLine(const char* text, int& color, int& mode) {
+void UIChatHisBox::AddNavigationLinkLine(const char* text, std::uint32_t& color, int& mode) {
   if (!g_navigationLinkParser->HasLink(text)) {
     this->UIListBox::AddLine(text);
     return;

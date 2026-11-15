@@ -135,7 +135,7 @@ void UIListBox::Resize(int width, int height) {
 
 // OFFSET: 0x008750D0
 // FUNCTION: fn_11197
-void UIChatHisBox::AddTextWrapped(const char* text, int color, const char* style) {
+void UIChatHisBox::AddTextWrapped(const char* text, std::uint32_t color, const char* style) {
   std::vector<std::string> lines;
   const int width = this->verticalBar ? (this->geometry.width - 16) : this->geometry.width;
 
@@ -158,7 +158,7 @@ void UIChatHisBox::AddTextWrapped(const char* text, int color, const char* style
 
 // OFFSET: 0x008752F0
 // FUNCTION: fn_11198
-void UIChatHisBox3::AddText(const char* text, int color) {
+void UIChatHisBox3::AddText(const char* text, std::uint32_t color) {
   bool atBottom;
   if (this->verticalOverflow != 0) {
     atBottom = this->topLine == ((static_cast<int>(this->lines.size()) - this->geometry.height / this->lineHeight) + this->bottomMargin);
@@ -196,7 +196,7 @@ void UIChatHisBox3::AddText(const char* text, int color) {
 
 // OFFSET: 0x00875520
 // FUNCTION: fn_11199
-void UIChatHisBox::AddText(const char* text, int color, const char* style) {
+void UIChatHisBox::AddText(const char* text, std::uint32_t color, const char* style) {
   bool atBottom;
   if (this->verticalOverflow != 0) {
     atBottom = this->topLine == ((static_cast<int>(this->lines.size()) - this->geometry.height / this->lineHeight) + this->bottomMargin);

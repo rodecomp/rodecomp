@@ -154,7 +154,7 @@ bool UITextViewer::AddNaviLinks(std::string text, unsigned addedLines) {
 
 // OFFSET: 0x00876D50
 // FUNCTION: fn_11207
-void UIChatHisBox::AddLinkRecord(const char* name, int value, const char* detail) {
+void UIChatHisBox::AddLinkRecord(const char* name, std::uint32_t value, const char* detail) {
   if (this->historyTexts.size() >= static_cast<unsigned int>(this->maxLines)) {
     this->DropOldestRecords();
   }
