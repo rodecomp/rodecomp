@@ -38,7 +38,7 @@ void CView::Update() {
   this->camera.desiredTarget[0] = position.x;
   this->camera.desiredTarget[1] = position.y;
   this->camera.desiredTarget[2] = position.z;
-  this->camera.Smooth();
+  this->Smooth();
   this->Apply();
   this->Refresh();
 }

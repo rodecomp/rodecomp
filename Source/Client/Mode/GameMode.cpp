@@ -7554,7 +7554,7 @@ void CGameMode::ProcessRightButtonDrag() {
         }
         this->camera->camera.desiredYaw = yaw;
       } else {
-        this->camera->camera.AddYaw(static_cast<float>(g_mouse.x - this->oldMouseX));
+        this->camera->AddYaw(static_cast<float>(g_mouse.x - this->oldMouseX));
       }
 
       g_soundMgr->SetListenerYaw(this->camera->camera.desiredYaw);

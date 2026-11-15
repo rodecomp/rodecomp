@@ -23,8 +23,6 @@ struct CameraState {
       this->target[axis] = this->desiredTarget[axis] = 0;
     }
   }
-  void AddYaw(float delta);
-  void Smooth();
 };
 
 struct CameraShake {

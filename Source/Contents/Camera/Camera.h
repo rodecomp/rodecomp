@@ -39,6 +39,8 @@ public:
   void SetAmplitudes(float horizontal, float distance, float pitch);
   void AddDistance(float delta);
   void AddPitch(float delta);
+  void AddYaw(float delta);
+  void Smooth();
 
   /* 0004 */ CameraShake shake;
   /* 0020 */ CameraState camera;

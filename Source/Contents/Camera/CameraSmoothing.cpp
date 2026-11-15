@@ -22,22 +22,22 @@ void CView::AddPitch(float delta) {
 
 // OFFSET: 0x00ADB0B0
 // FUNCTION: fn_17918
-void CameraState::AddYaw(float delta) {
-  this->desiredYaw = delta + this->desiredYaw;
+void CView::AddYaw(float delta) {
+  this->camera.desiredYaw = delta + this->camera.desiredYaw;
 }
 
 // OFFSET: 0x00ADBCD0
 // FUNCTION: fn_17926
-void CameraState::Smooth() {
-  while (this->desiredYaw >= 360.0f) {
-    this->desiredYaw = this->desiredYaw - 360.0f;
+void CView::Smooth() {
+  while (this->camera.desiredYaw >= 360.0f) {
+    this->camera.desiredYaw = this->camera.desiredYaw - 360.0f;
   }
 
-  while (this->desiredYaw < 0.0f) {
-    this->desiredYaw = this->desiredYaw + 360.0f;
+  while (this->camera.desiredYaw < 0.0f) {
+    this->camera.desiredYaw = this->camera.desiredYaw + 360.0f;
   }
 
-  float difference = this->desiredYaw - this->yaw;
+  float difference = this->camera.desiredYaw - this->camera.yaw;
 
   while (difference >= 180.0f) {
     difference = difference - 360.0f;
@@ -47,40 +47,40 @@ void CameraState::Smooth() {
     difference = difference + 360.0f;
   }
 
-  this->yaw = difference / 10.0f + this->yaw;
+  this->camera.yaw = difference / 10.0f + this->camera.yaw;
 
-  while (this->yaw >= 360.0f) {
-    this->yaw = this->yaw - 360.0f;
+  while (this->camera.yaw >= 360.0f) {
+    this->camera.yaw = this->camera.yaw - 360.0f;
   }
 
-  while (this->yaw < 0.0f) {
-    this->yaw = this->yaw + 360.0f;
+  while (this->camera.yaw < 0.0f) {
+    this->camera.yaw = this->camera.yaw + 360.0f;
   }
 
-  this->pitch = (this->desiredPitch - this->pitch) / 10.0f + this->pitch;
-  this->distance = (this->desiredDistance - this->distance) / 10.0f + this->distance;
+  this->camera.pitch = (this->camera.desiredPitch - this->camera.pitch) / 10.0f + this->camera.pitch;
+  this->camera.distance = (this->camera.desiredDistance - this->camera.distance) / 10.0f + this->camera.distance;
   const bool immediate = g_serviceOptions.Get(TT_FIXED_CAMERA_ON_OFF) != 0;
-  float next[3] = {this->desiredTarget[0], this->desiredTarget[1], this->desiredTarget[2]};
+  float next[3] = {this->camera.desiredTarget[0], this->camera.desiredTarget[1], this->camera.desiredTarget[2]};
 
   if (!immediate) {
     for (unsigned axis = 0; axis < 3; ++axis) {
-      next[axis] = (next[axis] - this->target[axis]) / 10.0f + this->target[axis];
+      next[axis] = (next[axis] - this->camera.target[axis]) / 10.0f + this->camera.target[axis];
     }
   }
 
-  this->target[2] = next[2];
-  this->target[1] = next[1];
-  this->target[0] = next[0];
+  this->camera.target[2] = next[2];
+  this->camera.target[1] = next[1];
+  this->camera.target[0] = next[0];
 
-  const float tangent = ClientSine(static_cast<int>(-this->pitch)) / ClientCosine(static_cast<int>(-this->pitch));
-  const float cotangent = ClientCosine(static_cast<int>(-this->pitch)) / ClientSine(static_cast<int>(-this->pitch));
+  const float tangent = ClientSine(static_cast<int>(-this->camera.pitch)) / ClientCosine(static_cast<int>(-this->camera.pitch));
+  const float cotangent = ClientCosine(static_cast<int>(-this->camera.pitch)) / ClientSine(static_cast<int>(-this->camera.pitch));
 
   const float scaledTangent = tangent * g_projectionScale;
   g_tangent = scaledTangent / g_renderer->UiScaleY();
   const float scaledCotangent = cotangent * g_projectionScale;
   g_cotangent = scaledCotangent / g_renderer->UiScaleY();
 
-  const float relativeSine = ClientSine(static_cast<int>(-this->pitch)) / ClientSine(45) * 0.000009f;
-  g_cameraScaleY = (g_cameraBaseDistance / this->distance) * relativeSine;
-  g_cameraScaleX = (g_cameraBaseDistance / this->distance) * 0.000036f;
+  const float relativeSine = ClientSine(static_cast<int>(-this->camera.pitch)) / ClientSine(45) * 0.000009f;
+  g_cameraScaleY = (g_cameraBaseDistance / this->camera.distance) * relativeSine;
+  g_cameraScaleX = (g_cameraBaseDistance / this->camera.distance) * 0.000036f;
 }
