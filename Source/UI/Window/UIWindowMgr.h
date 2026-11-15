@@ -787,6 +787,7 @@ public:
   void DrawWindows();
   void RefreshWindow01C8Edits();
   void SetBackgroundSurface(CBitmapRes* bitmap);
+  void DrawBitmapResource(int x, int y, const CBitmapRes* bitmap);
   void SendFlagEffect(int hotkey);
   void RestoreHiddenWindows();
   std::vector<unsigned char> SaveReplaySettings();

@@ -2,6 +2,7 @@ struct RenderSystemHolder;
 __declspec(noinline) RenderSystemHolder* GetRenderSystemHolder();
 
 #include "Client/Mode/ModeMessage.h"
+#include "Render/Drawing/BitmapDrawing.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
 #include "Contents/Hotkeys/InterfaceHotkey.h"
@@ -1263,4 +1264,9 @@ int UIWindowMgr::RunEmailAddress() {
 
   this->RestoreInput();
   return response;
+}
+
+// INLINED
+void DrawBitmapResource(int x, int y, const CBitmapRes* bitmap) {
+  g_windowMgr.DrawBitmapResource(x, y, bitmap);
 }

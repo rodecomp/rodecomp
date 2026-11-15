@@ -1,10 +1,11 @@
 #include "Render/Drawing/BitmapDrawing.h"
 #include "Render/DeviceContext/DCBitmap.h"
 #include "Resource/Bitmap/BitmapResource.h"
+#include "UI/Window/UIWindowMgr.h"
 
 // OFFSET: 0x00A8FC30
 // FUNCTION: fn_17148
-void DrawBitmapResource(int x, int y, const CBitmapRes* bitmap) {
+void UIWindowMgr::DrawBitmapResource(int x, int y, const CBitmapRes* bitmap) {
   if (!bitmap) {
     return;
   }
