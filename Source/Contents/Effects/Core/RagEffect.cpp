@@ -3436,7 +3436,7 @@ void CRagEffect::TexturedDrop(const char* name, char flag) {
 
 // OFFSET: 0x00C65330
 // FUNCTION: fn_20268
-void CRagEffect::PurpleSlash(std::int16_t angle) {
+void CRagEffect::PurpleSlash(int angle) {
   CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt != 0) {
@@ -24751,7 +24751,7 @@ bool CRagEffect::OnProcess() {
         this->state.parent->SetColor(-1, 255, 0, 255);
       }
       for (int angle = 0; angle < 360; angle += 45) {
-        this->PurpleSlash(static_cast<std::int16_t>(angle));
+        this->PurpleSlash(angle);
       }
       break;
     case EF_RAINBOW:

@@ -132,7 +132,7 @@ struct CRagEffect : CRenderObject {
   __declspec(noinline) void WaterOut();
   void BlackMaximize(const char* name);
   __declspec(noinline) void TexturedPair(const char* name);
-  __declspec(noinline) void PurpleSlash(std::int16_t angle);
+  __declspec(noinline) void PurpleSlash(int angle);
   void TexturedDrop(const char* name, char flag);
   __declspec(noinline) void TexturedDualSpin(const char* first, const char* second, int unused);
   __declspec(noinline) void TexturedScatterLow(const char* name, char flag);
