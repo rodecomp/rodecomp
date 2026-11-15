@@ -1,3 +1,4 @@
+#include <new>
 #include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 #include "Client/Mode/CGameMode.h"
@@ -61,6 +62,25 @@ __forceinline const char* TimeFontSpriteName() {
 
 // GLOBAL: gl_25107
 CFile g_whisperFile;
+
+namespace {
+struct PrimitivePoolAccess : RenderPrimitivePool {
+  // INLINED
+  inline RenderPrimitive* AcquireLocal() {
+    if (this->m_current == this->m_commands.end()) {
+      this->m_commands.emplace_back();
+      this->m_current = this->m_commands.end();
+      return &this->m_commands.back();
+    }
+
+    RenderPrimitive* command = &*this->m_current;
+    ++this->m_current;
+    new (command) RenderPrimitive;
+
+    return command;
+  }
+};
+}
 
 // OFFSET: 0x00CCFCE0
 // FUNCTION: fn_21246
@@ -298,7 +318,7 @@ void CGameMode::DrawMiniMap() {
 // OFFSET: 0x00CD1450
 // FUNCTION: fn_21256
 void CGameMode::DrawMiniMapTriangle(float x, float y, float size, std::uint32_t color) {
-  RenderPrimitive* primitive = g_renderer->primitives.Acquire();
+  RenderPrimitive* primitive = static_cast<PrimitivePoolAccess&>(g_renderer->primitives).AcquireLocal();
   primitive->texture = g_texMgr.Default();
   RenderVertex* vertices = primitive->vertices;
   const float bottomZ = RhwToDepth(0.0999f);
