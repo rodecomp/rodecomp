@@ -1182,6 +1182,16 @@ void UISubChatHisWnd::Resize(int width, int height) {
 #include <mbstring.h>
 
 template __declspec(noinline) char* std::allocator<char>::allocate(const std::size_t);
+template __declspec(noinline) std::map<int, SubChatWndInfo>::iterator std::map<int, SubChatWndInfo>::_Mybase::find(const int&);
+template __declspec(noinline) std::map<int, SubChatWndInfo>::iterator std::map<int, SubChatWndInfo>::_Mybase::erase(std::map<int, SubChatWndInfo>::iterator) noexcept;
+template __declspec(noinline) std::map<int, SubChatWndInfo>::map(const std::map<int, SubChatWndInfo>&);
+template __declspec(noinline) void std::map<int, SubChatWndInfo>::_Mybase::clear() noexcept;
+template __declspec(noinline) std::map<int, SubChatWndInfo>::_Mybase::~_Tree() noexcept;
+template __declspec(noinline) SubChatWndInfo& std::map<int, SubChatWndInfo>::operator[](const int&);
+template __declspec(noinline) std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const int, SubChatWndInfo>>>, std::_Iterator_base0>& std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const int, SubChatWndInfo>>>, std::_Iterator_base0>::operator++() noexcept;
+template __declspec(noinline) std::map<int, UIWindow*>::map(const std::map<int, UIWindow*>&);
+template __declspec(noinline) void std::map<int, UIWindow*>::_Mybase::clear() noexcept;
+template __declspec(noinline) std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const int, UIWindow*>>>, std::_Iterator_base0>& std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const int, UIWindow*>>>, std::_Iterator_base0>::operator++() noexcept;
 
 // OFFSET: 0x0093C210
 // FUNCTION: fn_12761
@@ -1264,9 +1274,8 @@ int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         const std::map<int, SubChatWndInfo> saved(names);
         names.clear();
         int index = 0;
-        for (const auto& entry : saved) {
-          names[index] = entry.second;
-          ++index;
+        for (std::map<int, SubChatWndInfo>::const_iterator it = saved.begin(); it != saved.end(); ++it, ++index) {
+          names[index] = it->second;
         }
       }
       g_windowMgr.ReleaseRetainedWindow(this->m_index);
@@ -1278,10 +1287,9 @@ int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         const std::map<int, UIWindow*> saved(retained);
         retained.clear();
         int index = 0;
-        for (const auto& entry : saved) {
-          static_cast<UISubChatHisWnd*>(entry.second)->m_index = index;
-          retained[index] = entry.second;
-          ++index;
+        for (std::map<int, UIWindow*>::const_iterator it = saved.begin(); it != saved.end(); ++it, ++index) {
+          static_cast<UISubChatHisWnd*>(it->second)->m_index = index;
+          retained[index] = it->second;
         }
       }
       return 0;
