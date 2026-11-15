@@ -835,7 +835,7 @@ int AddCheckAttendanceBanner(lua_State* state) {
 int AddItmeTokafraServiceMapList(lua_State* state) {
   std::string mapName = luaL_checkstring(state, 1);
   std::string serviceMapName = luaL_checkstring(state, 2);
-  g_kafraServiceMapList[mapName].push_back(serviceMapName);
+  g_kafraServiceMapList[mapName].emplace_back(serviceMapName);
   return 0;
 }
 
