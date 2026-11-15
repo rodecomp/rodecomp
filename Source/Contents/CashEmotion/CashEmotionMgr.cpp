@@ -990,7 +990,8 @@ void CCashEmotionMgr::Search(
 // OFFSET: 0x0059A7C0
 // FUNCTION: fn_02961
 void CCashEmotionMgr::AddSearchResult(std::vector<std::pair<int, int>>& results, const std::pair<int, int>& entry) {
-  if (std::find(results.begin(), results.end(), entry) == results.end()) {
+  auto found = std::find(results.begin(), results.end(), entry);
+  if (results.end() == found) {
     results.push_back(entry);
   }
 }

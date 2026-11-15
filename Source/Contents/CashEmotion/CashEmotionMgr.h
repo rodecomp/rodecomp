@@ -161,7 +161,7 @@ public:
   void AddShortcut(const std::string& name, int packId, int emotionId);
   bool PlaySearchedEmotion(const std::string& name);
   bool IsChatProhibitEmotion(int emotionId);
-  bool IsPackAvailable(unsigned int now, int packId);
+  __declspec(noinline) bool IsPackAvailable(unsigned int now, int packId);
   bool IsOwnedPack(int packId);
   void RemoveOwnedPack(int packId, bool refresh, bool clearExpiry);
   CashEmotionPackRefresh RefreshUnownedPacks();
