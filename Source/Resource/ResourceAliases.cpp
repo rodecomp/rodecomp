@@ -35,7 +35,7 @@ const char* ResourceMgr::Resolve(const char* name) const {
 
 // OFFSET: 0x00AEFAE0
 // FUNCTION: fn_18184
-std::string AddResourcePrefix(const char* name, const char* prefix) {
+std::string ResourceMgr::AddResourcePrefix(const char* name, const char* prefix) const {
   if (std::strncmp(name, prefix, std::strlen(prefix)) != 0) {
     return std::string(prefix) + std::string(name);
   }

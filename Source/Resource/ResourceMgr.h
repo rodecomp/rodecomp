@@ -45,6 +45,7 @@ public:
   void UpdateTransient();
   const char* Resolve(const char* name) const;
   std::string ResolveMapName(const char* name) const;
+  std::string AddResourcePrefix(const char* name, const char* prefix) const;
   void LoadAliases(int option);
 
 private:

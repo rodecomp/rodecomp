@@ -9,3 +9,8 @@ void ResourceMgr::UpdateTransient() {
     (*it)->OnProcess();
   }
 }
+
+// INLINED
+std::string AddResourcePrefix(const char* name, const char* prefix) {
+  return ResourceMgr::Instance().AddResourcePrefix(name, prefix);
+}
