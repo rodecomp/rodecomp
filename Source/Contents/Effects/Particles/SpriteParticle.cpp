@@ -1,3 +1,5 @@
+#include "Render/Primitives/RenderPrimitivePool.h"
+#include <new>
 #include "Contents/Effects/Particles/SpriteParticle.h"
 #include "Contents/Actors/ActorEnums.h"
 #include "Client/Mode/CGameMode.h"
@@ -34,6 +36,25 @@ static __forceinline bool IsParticleActive(const CSpriteParticle* particle) {
     return true;
   }
   return particle->life * 60.0f > static_cast<float>(particle->elapsedFrames);
+}
+
+namespace {
+struct PrimitivePoolAccess : RenderPrimitivePool {
+  // INLINED
+  inline RenderPrimitive* AcquireLocal() {
+    if (this->m_current == this->m_commands.end()) {
+      this->m_commands.emplace_back();
+      this->m_current = this->m_commands.end();
+      return &this->m_commands.back();
+    }
+
+    RenderPrimitive* command = &*this->m_current;
+    ++this->m_current;
+    new (command) RenderPrimitive;
+
+    return command;
+  }
+};
 }
 
 // OFFSET: 0x00B40B60
@@ -151,7 +172,7 @@ void CSpriteParticle::Draw(char mode) {
 
     this->SetQuad(this->vertices, record.v1, record.v0, (cell.mirrored & 1) == 0 ? record.u0 : record.u1, (cell.mirrored & 1) == 0 ? record.u1 : record.u0);
 
-    RenderPrimitive* primitive = g_renderer->primitives.Acquire();
+    RenderPrimitive* primitive = static_cast<PrimitivePoolAccess&>(g_renderer->primitives).AcquireLocal();
     std::memcpy(primitive->vertices, this->vertices, sizeof(this->vertices));
     primitive->texture = texture;
 
