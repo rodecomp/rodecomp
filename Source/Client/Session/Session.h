@@ -188,7 +188,23 @@ struct SubChatWndInfo {
   /* 0038 */ int y;
   /* 003C */ int width;
   /* 0040 */ int height;
+
+  SubChatWndInfo& operator=(const SubChatWndInfo& other);
 };
+
+// OFFSET: 0x00914AD0
+// FUNCTION: fn_12545
+inline SubChatWndInfo& SubChatWndInfo::operator=(const SubChatWndInfo& other) {
+  this->name = other.name;
+  for (int index = 0; index < 25; ++index) {
+    this->options[index] = other.options[index];
+  }
+  this->x = other.x;
+  this->y = other.y;
+  this->width = other.width;
+  this->height = other.height;
+  return *this;
+}
 
 struct SessionEntry00A4 {
   /* 0000 */ std::string name;
