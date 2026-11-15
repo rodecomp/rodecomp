@@ -328,7 +328,7 @@ public:
   /* 01CC */ UILoginWnd* loginWnd;
   /* 01D0 */ UILoginOTPWnd* loginOTPWnd;
   /* 01D4 */ UIItemWnd* itemWnd;
-  /* 01D8 */ std::uint32_t padding_01D8;
+  /* 01D8 */ std::uint32_t unknown_01D8;
   /* 01DC */ UIBasicInfoWnd* basicInfoWnd;
   /* 01E0 */ UIEquipWnd* equipWnd;
   /* 01E4 */ UInCashWnd* nCashWnd;
@@ -470,7 +470,7 @@ public:
   /* 0434 */ UIGuildTipWnd* guildTipWnd;
   /* 0438 */ UICreateGuildWnd* createGuildWnd;
   /* 043C */ UICreateGuildWnd* createGuildAlternateWnd;
-  /* 0440 */ std::uint32_t padding_0440;
+  /* 0440 */ std::uint32_t unknown_0440;
   /* 0444 */ UIClanInfoManageWnd* clanInfoManageWnd;
   /* 0448 */ UIBank_NewWnd* bankNewWnd;
   /* 044C */ UIGuild_Storage_Log* guildStorageLogWnd;
@@ -504,8 +504,8 @@ public:
   /* 04CC */ std::list<std::string> padding_04CC;
   /* 04D4 */ std::list<std::string> padding_04D4;
   /* 04DC */ std::string chatInputText;
-  /* 04F4 */ int padding_04F4;
-  /* 04F8 */ int padding_04F8;
+  /* 04F4 */ int unknown_04F4;
+  /* 04F8 */ int unknown_04F8;
   /* 04FC */ int framesInvalidated;
   /* 0500 */ std::map<std::string, UIWindow*> namedWindows;
   /* 0508 */ int windowVisibilityState;

@@ -111,18 +111,18 @@ void C3dNodeV1::Draw(const float* matrix, unsigned char reversed, bool clip, uns
 
           if (g_overrideColor) {
             for (int corner = 0; corner < 3; ++corner) {
-              SpriteColor color = std::bit_cast<SpriteColor>(state->colors[corner]);
+              SpriteColor color = state->colorChannels[corner];
               color.alpha = alpha;
               color.red = static_cast<std::uint8_t>(color.red * ambient[0]);
               color.green = static_cast<std::uint8_t>(color.green * ambient[1]);
               color.blue = static_cast<std::uint8_t>(color.blue * ambient[2]);
-              output[corner].diffuse = std::bit_cast<std::uint32_t>(color);
+              output[corner].diffuseChannels = color;
             }
           } else if (this->overrideColors) {
             for (int corner = 0; corner < 3; ++corner) {
-              SpriteColor color = std::bit_cast<SpriteColor>(state->colors[corner]);
+              SpriteColor color = state->colorChannels[corner];
               color.alpha = 0x80;
-              output[corner].diffuse = std::bit_cast<std::uint32_t>(color);
+              output[corner].diffuseChannels = color;
             }
           } else if (g_weatherEffect.enabled) {
             const int faceIndex = static_cast<int>(state - (this->faceState.empty() ? nullptr : &this->faceState[0]));
@@ -134,16 +134,16 @@ void C3dNodeV1::Draw(const float* matrix, unsigned char reversed, bool clip, uns
               color.red = static_cast<std::uint8_t>(values[0] * lightColor[0]);
               color.green = static_cast<std::uint8_t>(values[1] * lightColor[1]);
               color.blue = static_cast<std::uint8_t>(values[2] * lightColor[2]);
-              output[corner].diffuse = std::bit_cast<std::uint32_t>(color);
+              output[corner].diffuseChannels = color;
             }
           } else {
             for (int corner = 0; corner < 3; ++corner) {
-              SpriteColor color = std::bit_cast<SpriteColor>(state->colors[corner]);
+              SpriteColor color = state->colorChannels[corner];
               color.alpha = alpha;
               color.red = static_cast<std::uint8_t>(color.red * lightColor[0]);
               color.green = static_cast<std::uint8_t>(color.green * lightColor[1]);
               color.blue = static_cast<std::uint8_t>(color.blue * lightColor[2]);
-              output[corner].diffuse = std::bit_cast<std::uint32_t>(color);
+              output[corner].diffuseChannels = color;
             }
           }
 
@@ -245,18 +245,18 @@ void C3dNodeV2::Draw(const float* matrix, unsigned char reversed, bool clip, uns
 
           if (g_overrideColor) {
             for (int corner = 0; corner < 3; ++corner) {
-              SpriteColor color = std::bit_cast<SpriteColor>(state->colors[corner]);
+              SpriteColor color = state->colorChannels[corner];
               color.alpha = alpha;
               color.red = static_cast<std::uint8_t>(color.red * ambient[0]);
               color.green = static_cast<std::uint8_t>(color.green * ambient[1]);
               color.blue = static_cast<std::uint8_t>(color.blue * ambient[2]);
-              output[corner].diffuse = std::bit_cast<std::uint32_t>(color);
+              output[corner].diffuseChannels = color;
             }
           } else if (this->overrideColors) {
             for (int corner = 0; corner < 3; ++corner) {
-              SpriteColor color = std::bit_cast<SpriteColor>(state->colors[corner]);
+              SpriteColor color = state->colorChannels[corner];
               color.alpha = 0x80;
-              output[corner].diffuse = std::bit_cast<std::uint32_t>(color);
+              output[corner].diffuseChannels = color;
             }
           } else if (g_weatherEffect.enabled) {
             const int faceIndex = static_cast<int>(state - (this->faceState.empty() ? nullptr : &this->faceState[0]));
@@ -268,16 +268,16 @@ void C3dNodeV2::Draw(const float* matrix, unsigned char reversed, bool clip, uns
               color.red = static_cast<std::uint8_t>(values[0] * lightColor[0]);
               color.green = static_cast<std::uint8_t>(values[1] * lightColor[1]);
               color.blue = static_cast<std::uint8_t>(values[2] * lightColor[2]);
-              output[corner].diffuse = std::bit_cast<std::uint32_t>(color);
+              output[corner].diffuseChannels = color;
             }
           } else {
             for (int corner = 0; corner < 3; ++corner) {
-              SpriteColor color = std::bit_cast<SpriteColor>(state->colors[corner]);
+              SpriteColor color = state->colorChannels[corner];
               color.alpha = alpha;
               color.red = static_cast<std::uint8_t>(color.red * lightColor[0]);
               color.green = static_cast<std::uint8_t>(color.green * lightColor[1]);
               color.blue = static_cast<std::uint8_t>(color.blue * lightColor[2]);
-              output[corner].diffuse = std::bit_cast<std::uint32_t>(color);
+              output[corner].diffuseChannels = color;
             }
           }
 

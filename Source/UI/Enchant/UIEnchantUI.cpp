@@ -263,7 +263,7 @@ namespace EnchantUI {
 // OFFSET: 0x009F70C0
 // FUNCTION: fn_14768
 CUIEnchantPage::CUIEnchantPage()
-    : CUIControl(), backgroundStorage{}, gameItem(nullptr), slots(), ingredients(), enchantList(nullptr), costText{}, enchantInfo(nullptr),
+    : CUIControl(), background(nullptr), gameItem(nullptr), slots(), ingredients(), enchantList(nullptr), costText{}, enchantInfo(nullptr),
       group(0), selectedSlot(-1) {
 }
 

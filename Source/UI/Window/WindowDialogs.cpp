@@ -151,7 +151,7 @@ int UIWindowMgr::Confirm(
   const char* text, int type, int defaultAccept, bool replace, int timeout, const char* caption, int width, int height, unsigned char protect
 ) {
   CMode* gameMode = g_modeMgr.GetGameMode();
-  if (gameMode && static_cast<CGameMode*>(gameMode)->isInitializing[0] == 1) {
+  if (gameMode && static_cast<CGameMode*>(gameMode)->isInitializing == 1) {
     return 185;
   }
 

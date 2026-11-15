@@ -246,15 +246,10 @@ public:
   /* 0798 */ int m_serverTimeAdjustCount;
   /* 079C */ int m_timeAttackMode;
   /* 07A0 */ std::uint32_t m_averagePing;
-  union {
-    /* 07A4 */ unsigned char timeAttackState[0x10];
-    struct {
-      /* 07A4 */ std::uint32_t m_timeAttackCountdown;
-      /* 07A8 */ std::uint32_t m_timeAttackStart;
-      /* 07AC */ int m_timeAttackVisible;
-      /* 07B0 */ int unknown_07B0;
-    };
-  };
+  /* 07A4 */ std::uint32_t m_timeAttackCountdown;
+  /* 07A8 */ std::uint32_t m_timeAttackStart;
+  /* 07AC */ int m_timeAttackVisible;
+  /* 07B0 */ int m_timeAttackEnd;
   /* 07B4 */ unsigned char m_playerNameKey[0x40];
   /* 07F4 */ char m_selectedAccountText[0x40];
   /* 0834 */ BlockedCharacter m_blockedCharacters[68];
@@ -294,7 +289,8 @@ public:
   /* 0F18 */ int m_playerX;
   /* 0F1C */ int m_playerY;
   /* 0F20 */ int m_playerDir;
-  /* 0F24 */ unsigned char playerTeam[0x04];
+  /* 0F24 */ unsigned char playerTeam;
+  /* 0F25 */ unsigned char padding_0F25[3];
   /* 0F28 */ int m_score1;
   /* 0F2C */ int m_score2;
   /* 0F30 */ std::int8_t chatFont;
@@ -452,10 +448,10 @@ public:
   /* 5338 */ int randomStatIndexD;
   /* 533C */ int randomStatIndexE;
   /* 5340 */ int randomStatValues[12];
-  /* 5370 */ unsigned char replayStatValuesA[0x30];
-  /* 53A0 */ unsigned char replayStatValuesB[0x30];
-  /* 53D0 */ unsigned char replayStatValuesC[0x30];
-  /* 5400 */ unsigned char replayStatValuesD[0x30];
+  /* 5370 */ int replayStatValuesA[12];
+  /* 53A0 */ int replayStatValuesB[12];
+  /* 53D0 */ int replayStatValuesC[12];
+  /* 5400 */ int replayStatValuesD[12];
   /* 5430 */ CCommonObject m_tableLoader;
   /* 5440 */ std::list<ShortcutCooldownRecord> m_requestTimers;
   /* 5448 */ int showTimer;
@@ -481,7 +477,7 @@ public:
   /* 5490 */ unsigned char unknown_5490[4];
   /* 5494 */ DWORD m_itemSendTick;
   /* 5498 */ int m_chatTarget;
-  /* 549C */ int unknown_549C;
+  /* 549C */ int m_replayValue1093;
   /* 54A0 */ int partyExpShare;
   /* 54A4 */ int partyItemCollect;
   /* 54A8 */ int partyItemDistribute;
@@ -496,7 +492,7 @@ public:
   /* 5558 */ int currentSex;
   /* 555C */ unsigned char padding_555C[4];
   /* 5560 */ std::uint32_t m_loginAcceptTime;
-  /* 5564 */ std::uint16_t unknown_5564;
+  /* 5564 */ std::uint16_t m_playerMessage82Arg;
   /* 5566 */ bool m_playerMessage82Pending;
   /* 5567 */ unsigned char padding_5567;
   /* 5568 */ int hp;
@@ -596,17 +592,12 @@ public:
   /* 59D0 */ int blockedCharacterCount;
   /* 59D4 */ int m_validSlotCount;
   /* 59D8 */ LuaScript* m_hotkeyScript;
-  union {
-    /* 59DC */ unsigned char mouseAndChannelOptions[0x19C];
-    struct {
-      /* 59DC */ bool m_showBattleFieldIcon;
+  /* 59DC */ bool m_showBattleFieldIcon;
   /* 59DD */ unsigned char padding_59DD[3];
   /* 59E0 */ int m_statusIconIds[100];
-      /* 5B70 */ bool m_lockMouse;
-      /* 5B71 */ unsigned char padding_5B71[3];
-      /* 5B74 */ int m_channelCopId;
-    };
-  };
+  /* 5B70 */ bool m_lockMouse;
+  /* 5B71 */ unsigned char padding_5B71[3];
+  /* 5B74 */ int m_channelCopId;
   /* 5B78 */ PartyBookingMgr m_partyBooking;
   /* 5BBC */ int m_partyBookingLevelLimit;
   /* 5BC0 */ int elementalGid;
@@ -724,7 +715,7 @@ public:
   /* 7F75 */ unsigned char padding_7F75[3];
   /* 7F78 */ unsigned long m_swapEquipmentTick;
   /* 7F7C */ bool m_homunculusAutoFeed;
-  /* 7F80 */ int unknown_7F80;
+  /* 7F80 */ int m_selectedIndex;
   /* 7F84 */ int m_overweightThresholdPercent;
   /* 7F88 */ bool m_loginModeFlag;
   /* 7F8C */ int m_priorityClass;
@@ -1385,6 +1376,13 @@ static_assert(offsetof(SubChatWndInfo, x) == 0x34);
 static_assert(offsetof(CSession, m_timeAttackCountdown) == 0x7A4);
 static_assert(offsetof(CSession, m_timeAttackStart) == 0x7A8);
 static_assert(offsetof(CSession, m_timeAttackVisible) == 0x7AC);
+static_assert(offsetof(CSession, m_timeAttackEnd) == 0x7B0);
+static_assert(offsetof(CSession, playerTeam) == 0xF24);
+static_assert(offsetof(CSession, replayStatValuesA) == 0x5370);
+static_assert(offsetof(CSession, replayStatValuesD) == 0x5400);
+static_assert(offsetof(CSession, m_replayValue1093) == 0x549C);
+static_assert(offsetof(CSession, m_playerMessage82Arg) == 0x5564);
+static_assert(offsetof(CSession, m_showBattleFieldIcon) == 0x59DC);
 static_assert(offsetof(CSession, m_whisperRecord) == 0x5554);
 static_assert(offsetof(CSession, m_noSubChatWnds) == 0x73C);
 static_assert(offsetof(CSession, m_subChatWnds) == 0x744);
@@ -1448,7 +1446,7 @@ static_assert(offsetof(CSession, m_monsterInfoActorId) == 0x5C18);
 static_assert(offsetof(CSession, replayPacketMode) == 0x5C1C);
 static_assert(offsetof(CSession, m_buyingStoreMode) == 0x5C30);
 static_assert(offsetof(CSession, selectionItems) == 0x5C68);
-static_assert(offsetof(CSession, unknown_7F80) == 0x7F80);
+static_assert(offsetof(CSession, m_selectedIndex) == 0x7F80);
 static_assert(offsetof(CSession, m_loginModeFlag) == 0x7F88);
 static_assert(offsetof(CSession, m_priorityClass) == 0x7F8C);
 static_assert(offsetof(CSession, storeItemLimit) == 0xF4C);

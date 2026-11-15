@@ -1162,7 +1162,7 @@ std::vector<unsigned char> CSession::BuildCompanionReplayRecords() {
 namespace {
 #pragma pack(push, 1)
 struct ReplayShopNameRecord {
-  /* 0000 */ std::int16_t padding_0000;
+  /* 0000 */ std::int16_t reserved;
   /* 0002 */ char name[16];
   /* 0012 */ int shopId;
 };
@@ -1276,7 +1276,7 @@ std::vector<unsigned char> CSession::BuildCharacterReplayRecords() {
   AppendRecord(records, MakeReplayRecord(1079, &this->m_equipViewLook[7], 4));
   AppendRecord(records, MakeReplayRecord(1080, &this->m_equipViewLook[8], 4));
   AppendRecord(records, MakeReplayRecord(1081, this->m_equipViewName, 0x18));
-  AppendRecord(records, MakeReplayRecord(1082, this->playerTeam, 1));
+  AppendRecord(records, MakeReplayRecord(1082, &this->playerTeam, 1));
   AppendRecord(records, MakeReplayRecord(1083, &this->m_score1, sizeof(this->m_score1)));
   AppendRecord(records, MakeReplayRecord(1084, &this->m_score2, sizeof(this->m_score2)));
   AppendRecord(records, MakeReplayRecord(1085, &this->chatFont, 1));
@@ -1287,7 +1287,7 @@ std::vector<unsigned char> CSession::BuildCharacterReplayRecords() {
   AppendRecord(records, MakeReplayRecord(1090, &this->m_vendingSlotCount, 4));
   AppendRecord(records, MakeReplayRecord(1091, &this->m_buyingStoreSlotCount, 4));
   AppendRecord(records, MakeReplayRecord(1092, &this->m_chatTarget, sizeof(this->m_chatTarget)));
-  AppendRecord(records, MakeReplayRecord(1093, &this->unknown_549C, sizeof(this->unknown_549C)));
+  AppendRecord(records, MakeReplayRecord(1093, &this->m_replayValue1093, sizeof(this->m_replayValue1093)));
   AppendRecord(records, MakeReplayRecord(1094, &this->partyExpShare, sizeof(this->partyExpShare)));
   AppendRecord(records, MakeReplayRecord(1095, &this->partyItemCollect, sizeof(this->partyItemCollect)));
   AppendRecord(records, MakeReplayRecord(1096, &this->partyItemDistribute, sizeof(this->partyItemDistribute)));
@@ -1308,7 +1308,7 @@ std::vector<unsigned char> CSession::BuildShopReplayRecords() {
   AppendRecord(records, MakeReplayRecord(7500, nullptr, 0));
   for (auto it = this->m_nameToId.begin(); it != this->m_nameToId.end(); ++it) {
     ReplayShopNameRecord value;
-    value.padding_0000 = 0;
+    value.reserved = 0;
     value.shopId = it->second;
     std::memset(value.name, 0, sizeof(value.name));
     const std::size_t length = it->first.size();

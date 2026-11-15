@@ -13,8 +13,8 @@ struct EffectActorState {
   EffectActorState();
   ~EffectActorState();
 
-  /* 0138 */ int padding_0138;
-  /* 013C */ std::uint32_t padding_013C;
+  /* 0138 */ int effectId;
+  /* 013C */ int skillLevel;
   /* 0140 */ std::uint32_t effectLaunched;
   /* 0144 */ std::list<CRagEffect*> effects;
   /* 014C */ CRagEffect* first;
@@ -40,6 +40,8 @@ struct EffectActor : CRenderObject {
 static_assert(sizeof(EffectActorState) == 28);
 static_assert(sizeof(EffectActor) == 0x158);
 static_assert(offsetof(EffectActor, state) == 0x138);
+static_assert(offsetof(EffectActorState, skillLevel) == 0x4);
+static_assert(offsetof(EffectActorState, effectLaunched) == 0x8);
 #endif
 
 #endif

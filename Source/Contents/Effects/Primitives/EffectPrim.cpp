@@ -15,9 +15,9 @@ __forceinline EffectPrimitiveState::EffectPrimitiveState(RenderObjectState& rend
   this->count = 0;
   this->pattern = 0;
   this->renderFlag = 1;
-  this->changeFlags.x = 0;
-  this->changeFlags.y = 0;
-  this->changeFlags.z = 0;
+  this->masterReached = 0;
+  this->alphaSpeedCycle = 0;
+  this->alphaCycle = 0;
   this->chRadiSpeed = 0;
   this->isDisappear = 0;
   this->changePointReached = 0;

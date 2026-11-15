@@ -63,6 +63,7 @@
 #include "Contents/Events/SpecialPopupMgr.h"
 #include "UI/Text/TextMarkup.h"
 #include "UI/Items/UIItemStoreWnd.h"
+#include "UI/Items/UIItemRepairWnd.h"
 #include "UI/Text/UIStaticText.h"
 #include "UI/Cooldowns/CooldownOwner.h"
 #include "UI/Gauges/UIBarGraph.h"
@@ -4673,7 +4674,7 @@ void ReceiveTradeItems(int count, const TradeItemRecord* records) {
 // OFFSET: 0x00D7A2F0
 // FUNCTION: fn_22190
 void CGameMode::ShowSpecialPopup(int popupId) {
-  if (this->sameMapMove[0]) {
+  if (this->sameMapMove) {
     return;
   }
 
@@ -7414,12 +7415,6 @@ void CGameMode::ApplyStatusChange(
   }
 }
 
-#pragma pack(push, 1)
-struct Window107Entry {
-  /* 0000 */ unsigned char repairItemData[0x18];
-};
-#pragma pack(pop)
-
 // OFFSET: 0x00D79540
 // FUNCTION: fn_22170
 __declspec(noinline) void CGameMode::ReceiveObjectsDisappear(int count, const std::uint32_t* aids) {
@@ -7439,7 +7434,7 @@ __declspec(noinline) void CGameMode::ReceiveObjectsDisappear(int count, const st
 // FUNCTION: fn_22171
 __declspec(noinline) void CGameMode::ReceiveWindow107List(const unsigned char* packet) {
   const auto* p = reinterpret_cast<const PacketLengthHeader*>(packet);
-  const std::int64_t count = (p->length - 4) / sizeof(Window107Entry);
+  const std::int64_t count = (p->length - 4) / sizeof(UIItemRepairEntry);
   if (count == 0) {
     g_windowMgr.Confirm(LookupMessage(MSI_CANT_MAKE_ITEM), 0, true, false, 0, "Message", 280, 120, 0);
     return;
@@ -7447,7 +7442,7 @@ __declspec(noinline) void CGameMode::ReceiveWindow107List(const unsigned char* p
 
   g_windowMgr.CloseWindow(WID_ITEMREPAIRWND);
   UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMREPAIRWND);
-  const Window107Entry* entry = reinterpret_cast<const Window107Entry*>(p + 1);
+  const UIItemRepairEntry* entry = reinterpret_cast<const UIItemRepairEntry*>(p + 1);
   for (int i = 0; i < count; ++i) {
     if (window) {
       window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(entry), 0, 0, 0);
@@ -8972,16 +8967,16 @@ void CGameMode::ReceiveBarterMarketItemList(const unsigned char* data) {
     char itemName[33] = {};
     _itoa(record.itemId, itemName, 10);
     item.name = itemName;
-    item.field_1c = record.type;
-    item.field_2c = record.currencyItemId;
-    item.field_28 = record.currencyAmount;
+    item.itemType = record.type;
+    item.currencyItemId = record.currencyItemId;
+    item.currencyAmount = record.currencyAmount;
     item.amount = record.weight / 10;
     item.value = record.amount;
     item.flag_24 = true;
     item.flag_38 = record.amount == -1;
     item.id = record.index;
-    item.field_40 = record.location;
-    item.field_44 = record.viewSprite;
+    item.location = record.location;
+    item.viewSprite = record.viewSprite;
     g_barterMarketItemMgr->items.push_back(item);
   }
 
@@ -10299,9 +10294,9 @@ void CGameMode::ReceiveExpandedBarterMarketItemList2(const unsigned char* data) 
     entry.factor = static_cast<float>(record.price / 10);
     entry.id = record.index;
     entry.field_8 = record.weight;
-    entry.field_38 = record.location;
-    entry.field_3c = record.viewSprite;
-    entry.field_28 = record.currency;
+    entry.location = record.location;
+    entry.viewSprite = record.viewSprite;
+    entry.refine = record.currency;
     for (std::int64_t j = 0; j < record.chunkCount; ++j) {
       ExpandedBarterChunkRecord source;
       memcpy_s(&source, sizeof(source), cursor, sizeof(source));
@@ -12429,7 +12424,7 @@ void CGameMode::ReceiveMapMove(const unsigned char* data) {
     FadeOutMode(*g_renderer, *GetRenderSystemHolder()->system, ResourceMgr::Instance(), 0, false, 0.0f, 0.0f);
     sameMap = 1;
   }
-  this->sameMapMove[0] = sameMap;
+  this->sameMapMove = sameMap;
 
   for (std::vector<ActiveSkillEffect>::iterator it = g_activeSkillEffects.begin(); it != g_activeSkillEffects.end(); ++it) {
     if (it->id == 200 || it->id == 201 || it->id == 4) {
@@ -26796,13 +26791,13 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_BATTLEFIELD_NOTIFY_CAMPINFO: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_BATTLEFIELD_NOTIFY_CAMPINFO*>(g_gameModePacketBuffer);
       if (packet->aid == g_session.m_aid) {
-        g_session.playerTeam[0] = packet->camp;
+        g_session.playerTeam = packet->camp;
         break;
       }
       if (CGameActor *actor = static_cast<CGameActor *>(this->scene->GetGameActorByAID(packet->aid))) {
         const unsigned char team = packet->camp;
         actor->render.battleTeam = team;
-        if (team != g_session.playerTeam[0]) {
+        if (team != g_session.playerTeam) {
           OpenWordDisplay(actor);
         } else if (actor->actorTitleWindow) {
           g_windowMgr.Schedule(actor->actorTitleWindow);
@@ -28764,10 +28759,10 @@ void CGameMode::ProcessIncomingPackets() {
         char itemName[33] = {};
         _itoa(record->nameId, itemName, 10);
         item.name.assign(itemName, strlen(itemName));
-        item.field_1c = record->type;
+        item.itemType = record->type;
         item.value = record->amount;
-        item.field_2c = record->currencyNameId;
-        item.field_28 = record->currencyAmount;
+        item.currencyItemId = record->currencyNameId;
+        item.currencyAmount = record->currencyAmount;
         item.flag_24 = true;
         item.amount = record->weight / 10;
         item.flag_38 = record->amount == -1;

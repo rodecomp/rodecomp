@@ -3342,7 +3342,7 @@ void CNewCloudKillEffect::Open() {
 // OFFSET: 0x0071DB70
 // FUNCTION: fn_07337
 void CNewCloudKillEffect::ResetCloudParticle(CParticle* particle) {
-  particle->frameParameters[0] = ClampedRandom(2);
+  particle->frameIndex = ClampedRandom(2);
 
   const int angle = ClampedRandom(360);
   const float x = g_cosTable[angle] * 18.0f;
@@ -3362,7 +3362,7 @@ void CNewCloudKillEffect::ResetCloudParticle(CParticle* particle) {
 void CNewCloudKillEffect::ResetLightning(CParticle* particle) {
   particle->scale = static_cast<float>(ClampedRandom(5)) + 10.0f;
   particle->animationState = 10;
-  particle->frameParameters[0] = ClampedRandom(4);
+  particle->frameIndex = ClampedRandom(4);
   particle->phaseParameter = ClampedRandom(50) + 10;
   particle->angle = static_cast<float>(ClampedRandom(360));
   particle->offsetZ = static_cast<float>(ClampedRandom(10)) - 5.0f;
@@ -3389,7 +3389,7 @@ void CNewCloudKillEffect::ResetSmokeParticle(CParticle* particle) {
   particle->offsetZ = offset.z;
   particle->offsetX = offset.x;
 
-  particle->frameParameters[0] = ClampedRandom(4);
+  particle->frameIndex = ClampedRandom(4);
   particle->effectParameter = ClampedRandom(151) + 50;
   particle->speedParameter = static_cast<float>(ClampedRandom(10)) * 0.01f + 0.05f;
 }
@@ -4274,7 +4274,7 @@ void CNewCloudKillEffect::Render() {
       continue;
     }
 
-    const int frame = static_cast<signed char>(particle->frameParameters[0]);
+    const int frame = particle->frameIndex;
     const ParticleQuad quad = {false, 0.5f, 0.75f, static_cast<float>(frame + 1) * 0.25f, static_cast<float>(frame + 2) * 0.25f, false, true};
     particle->Render(quad);
   }
@@ -4285,7 +4285,7 @@ void CNewCloudKillEffect::Render() {
       continue;
     }
 
-    const int frame = static_cast<signed char>(particle->frameParameters[0]);
+    const int frame = particle->frameIndex;
     const ParticleQuad quad = {false, 0.0f, 0.25f, static_cast<float>(frame) * 0.25f, static_cast<float>(frame + 1) * 0.25f, false, true};
     particle->Render(quad);
   }
@@ -4296,7 +4296,7 @@ void CNewCloudKillEffect::Render() {
       continue;
     }
 
-    const int frame = static_cast<signed char>(particle->frameParameters[0]);
+    const int frame = particle->frameIndex;
     const int column = frame % 2;
     const int row = frame / 2;
     const ParticleQuad quad = {false,

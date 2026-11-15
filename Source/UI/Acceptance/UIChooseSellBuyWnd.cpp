@@ -4425,7 +4425,7 @@ void UInCashWnd::DrawItems() {
 // OFFSET: 0x008E3C80
 // FUNCTION: fn_12183
 void UIMonsterDisplayWnd::OnCreate(int, int) {
-  this->padding_00E4 = 0;
+  this->unknown_00E4 = 0;
   this->titleText = LookupMessage(MSI_ITEM_NAME);
   this->AddCloseButton("", 0);
 }

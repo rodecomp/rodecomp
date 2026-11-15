@@ -57,7 +57,7 @@ public:
   virtual void EnableTimeLimit();
   virtual void EnableGroundRender();
   virtual bool IsVisible();
-  void AddEvent(int kind, const char* text, int frame, int argument);
+  void AddEvent(int kind, const char* text, int frame, float argument);
   void SetActor(std::uint32_t aid);
   void SetSourceActor(std::uint32_t aid);
   void SetEventFrame(int kind, int frame);
@@ -85,7 +85,7 @@ public:
   /* 0034 */ unsigned char outsideRange;
   /* 0035 */ unsigned char padding_0035[3];
   /* 0038 */ int range;
-  /* 003C */ unsigned char areaParameters[8];
+  /* 003C */ unsigned char padding_003C[8];
   /* 0044 */ float areaSize;
   /* 0048 */ float scaleParameter;
   /* 004C */ int baseAngle;

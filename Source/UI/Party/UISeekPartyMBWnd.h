@@ -23,6 +23,8 @@ struct SeekPartyRegistration {
 #pragma pack(pop)
 
 class UISeekPartyMBWnd : public UIFrameWnd {
+  friend class CGameMode;
+
 public:
   UISeekPartyMBWnd();
   ~UISeekPartyMBWnd() override;

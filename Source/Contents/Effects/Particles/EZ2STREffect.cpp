@@ -20,7 +20,6 @@
 #include "Script/LuaScript.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Text/FormatString.h"
-#include <bit>
 #include <cmath>
 #include <cstdlib>
 #include <string>
@@ -5850,7 +5849,7 @@ void CEZ2STRScreenEffect::InitEvents() {
       random = 0;
     }
     if (random == 0) {
-      this->AddEvent(0, "effect\\wizard_quagmire.wav", 0, std::bit_cast<int>(-100.0f));
+      this->AddEvent(0, "effect\\wizard_quagmire.wav", 0, -100.0f);
     }
     break;
   }

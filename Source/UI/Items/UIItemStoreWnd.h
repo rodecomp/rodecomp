@@ -51,7 +51,8 @@ public:
   /* 0178 */ int m_sortOptionD;
   /* 017C */ int m_sortOptionE;
   /* 0180 */ int m_sortMode;
-  /* 0184 */ unsigned char m_searchFlags[0x04];
+  /* 0184 */ unsigned char m_nextPage;
+  /* 0185 */ unsigned char padding_0185[0x03];
   /* 0188 */ int m_itemCount;
   /* 018C */ int m_capacity;
   /* 0190 */ unsigned char m_hideCapacity;

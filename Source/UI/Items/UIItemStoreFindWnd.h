@@ -39,7 +39,7 @@ public:
   /* 0114 */ UIResizer* resizeHandle;
   /* 0118 */ UIStaticText* title;
   /* 011C */ unsigned char padding_011C[0x4];
-  /* 0120 */ int padding_0120;
+  /* 0120 */ int unknown_0120;
   /* 0124 */ std::string statusText;
   /* 013C */ std::string searchText;
   /* 0154 */ ItemStoreFindWndInfo* saved;

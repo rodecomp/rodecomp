@@ -36,7 +36,7 @@ public:
   /* 0110 */ UIResizer* resizeHandle;
   /* 0114 */ UIStaticText* title;
   /* 0118 */ unsigned char padding_0118[0x04];
-  /* 011C */ int padding_011C;
+  /* 011C */ int unknown_011C;
   /* 0120 */ std::string footerText;
   /* 0138 */ std::string nameFilter;
   /* 0150 */ ItemStoreFindSlotInfo* saved;

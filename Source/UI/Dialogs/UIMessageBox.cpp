@@ -2650,7 +2650,7 @@ UINoticeWnd::UINoticeWnd() : UIFrameWnd(0) {
     this->m_texts[i] = new UIStaticText();
   }
   this->lineCount = 20;
-  this->padding_010C = 0;
+  this->unknown_010C = 0;
   this->m_noticeCount = 0;
   this->m_index = 0;
   this->m_scrollPositions[0] = 0;

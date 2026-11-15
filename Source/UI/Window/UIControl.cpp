@@ -2792,7 +2792,7 @@ namespace AdventureGuide {
 // OFFSET: 0x009D9150
 // FUNCTION: fn_14276
 __declspec(noinline) CUIItemInfo::CUIItemInfo()
-    : CUIListItem(), headerControls(), descriptionViewer(nullptr), optionsViewer(nullptr), sourcesViewer(nullptr), itemId(-1), type(21), location(-1),
+    : CUIListItem(), image(nullptr), nameText(nullptr), descriptionViewer(nullptr), optionsViewer(nullptr), sourcesViewer(nullptr), itemId(-1), type(21), location(-1),
       description() {
 }
 

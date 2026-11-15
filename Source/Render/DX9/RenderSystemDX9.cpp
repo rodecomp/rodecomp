@@ -2,7 +2,6 @@
 #include "UI/GameSettings/GameSettingsUI.h"
 #include "Render/Primitives/TextureQuad.h"
 
-#include <bit>
 #include <new>
 
 template __declspec(noinline) std::shared_ptr<CSurface>& std::shared_ptr<CSurface>::operator=(std::shared_ptr<CSurface>&&) noexcept;
@@ -58,9 +57,7 @@ std::uint32_t CRenderSystemDX9::Height() {
 // FUNCTION: fn_02359
 CRenderer* CRenderSystemDX9::CreateRenderer() {
   auto* renderer = new CRendererDX9(*this->m_device);
-  renderer->viewport.SetSize(
-    std::bit_cast<std::int32_t>(this->CRenderSystemDX9::Width()), std::bit_cast<std::int32_t>(this->CRenderSystemDX9::Height())
-  );
+  renderer->viewport.SetSize(this->CRenderSystemDX9::Width(), this->CRenderSystemDX9::Height());
 
   return renderer;
 }
@@ -74,14 +71,14 @@ void CRenderSystemDX9::DestroyRenderer(CRenderer* renderer) {
 // OFFSET: 0x0056D480
 // FUNCTION: fn_02360
 CSurface* CRenderSystemDX9::CreateSurface(std::uint32_t width, std::uint32_t height) {
-  return new (std::nothrow) CSurfaceDX9(*this->m_device, std::bit_cast<std::int32_t>(width), std::bit_cast<std::int32_t>(height));
+  return new (std::nothrow) CSurfaceDX9(*this->m_device, width, height);
 }
 
 // OFFSET: 0x0056D510
 // FUNCTION: fn_02361
 CTexture* CRenderSystemDX9::CreateTexture(std::uint32_t width, std::uint32_t height, std::int32_t format, bool dynamic, bool renderTarget) {
   return new (std::nothrow)
-    CTextureDX9(*this->m_device, std::bit_cast<std::int32_t>(width), std::bit_cast<std::int32_t>(height), format, dynamic, renderTarget);
+    CTextureDX9(*this->m_device, width, height, format, dynamic, renderTarget);
 }
 
 // OFFSET: 0x0056D5B0

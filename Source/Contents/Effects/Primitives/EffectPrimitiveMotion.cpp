@@ -31,7 +31,6 @@
 #include "Render/Primitives/RenderPrimitive.h"
 
 #include <algorithm>
-#include <bit>
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
@@ -213,7 +212,7 @@ bool CEffectPrim::MoveEffectPrimitive() {
 
   if ((this->state.pattern & 0x400u) != 0) {
     if (3.0f >= this->CalcDist(this->state.master->state.deltaPos[0], this->state.master->state.deltaPos[2])) {
-      this->state.changeFlags.x = std::bit_cast<float>(1u);
+      this->state.masterReached = 1;
       return false;
     }
 
@@ -2599,7 +2598,7 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
 
   if ((particle.pattern & 0x400u) != 0) {
     if (3.0f >= this->CalcDist(particle.master->state.deltaPos[0], particle.master->state.deltaPos[2])) {
-      particle.changeFlags.x = std::bit_cast<float>(1u);
+      particle.masterReached = 1;
       return false;
     }
 

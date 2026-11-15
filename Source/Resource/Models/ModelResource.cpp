@@ -375,10 +375,10 @@ bool C3dModelResV1::Load(const char* name) {
       for (int index = 0; index < volumeCount; ++index) {
         auto* volume = new ModelVolume;
         std::memset(volume, 0, 132);
-        unsigned char record[40]{};
-        file.Read(record, sizeof(record));
-        std::memcpy(&volume->flag, record + 36, 4);
-        std::memcpy(volume, record, 36);
+        ModelVolumeRecord record{};
+        file.Read(&record, sizeof(record));
+        volume->flag = record.flag;
+        std::memcpy(volume, &record, sizeof(ModelVolumeRecordV1));
 
         if (volume->flag == 0) {
           volume->size[0] = volume->size[0] + 3.0f;
@@ -391,10 +391,10 @@ bool C3dModelResV1::Load(const char* name) {
       for (int index = 0; index < volumeCount; ++index) {
         auto* volume = new ModelVolume;
         std::memset(volume, 0, 132);
-        unsigned char record[36]{};
-        file.Read(record, sizeof(record));
+        ModelVolumeRecordV1 record{};
+        file.Read(&record, sizeof(record));
         volume->flag = 0;
-        std::memcpy(volume, record, 36);
+        std::memcpy(volume, &record, sizeof(record));
         this->volumes.push_back(volume);
       }
     }

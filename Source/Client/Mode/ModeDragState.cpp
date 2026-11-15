@@ -91,8 +91,8 @@ void CGameMode::BeginDragBarterItem(int sourceValue, const BarterMarketItem& ite
   this->drag.skill = 0;
   this->drag.resource = g_session.ItemDragResource(item.name.c_str(), item.flag_24);
   this->drag.name = item.name.c_str();
-  this->drag.itemValue = item.field_20;
-  this->drag.type = item.field_1c;
+  this->drag.itemValue = item.price;
+  this->drag.type = item.itemType;
   this->drag.identified = item.flag_24;
   this->drag.slot = slotValue;
   this->drag.barterId = item.id;
@@ -112,7 +112,7 @@ void CGameMode::BeginDragBarterEntry(int sourceValue, const BarterMarketEntry& e
   this->drag.type = entry.field_0;
   this->drag.identified = entry.flag_24;
   this->drag.slot = slotValue;
-  this->drag.refine = entry.field_28;
+  this->drag.refine = entry.refine;
   this->drag.barterId = entry.id;
 }
 
@@ -195,8 +195,8 @@ void ModeDragState::BeginBarterItem(int sourceValue, const BarterMarketItem& ite
   this->skill = 0;
   this->resource = g_session.ItemDragResource(item.name.c_str(), item.flag_24);
   this->name = item.name.c_str();
-  this->itemValue = item.field_20;
-  this->type = item.field_1c;
+  this->itemValue = item.price;
+  this->type = item.itemType;
   this->identified = item.flag_24;
   this->slot = slotValue;
   this->barterId = item.id;
@@ -215,6 +215,6 @@ void ModeDragState::BeginBarterEntry(int sourceValue, const BarterMarketEntry& e
   this->type = entry.field_0;
   this->identified = entry.flag_24;
   this->slot = slotValue;
-  this->refine = entry.field_28;
+  this->refine = entry.refine;
   this->barterId = entry.id;
 }

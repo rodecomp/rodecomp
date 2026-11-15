@@ -64,7 +64,9 @@ struct EffectPrimitiveState {
   /* 0140 */ CRagEffect* master;
   /* 0144 */ CTexture** textures;
   /* 0148 */ std::uint32_t playWaveName;
-  /* 014C */ vector3d changeFlags;
+  /* 014C */ std::uint32_t masterReached;
+  /* 0150 */ std::uint32_t alphaSpeedCycle;
+  /* 0154 */ std::uint32_t alphaCycle;
   /* 0158 */ std::uint32_t chRadiSpeed;
   /* 015C */ std::uint32_t isDisappear;
   /* 0160 */ matrix transform;
@@ -195,6 +197,8 @@ static_assert(offsetof(EffectPrimitiveRecord, color) == 0x88);
 static_assert(offsetof(EffectPrimitiveSlot, height) == 0x14);
 static_assert(offsetof(EffectPrimitiveSlot, flag1) == 0x68);
 static_assert(offsetof(EffectPrimitiveSlot, vecBNow) == 0x84);
+static_assert(offsetof(EffectPrimitiveState, masterReached) == 0x14);
+static_assert(offsetof(EffectPrimitiveState, alphaCycle) == 0x1C);
 static_assert(sizeof(EffectPrimitiveState) == 0xF8E0);
 #endif
 

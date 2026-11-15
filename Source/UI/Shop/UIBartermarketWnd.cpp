@@ -154,9 +154,9 @@ std::pair<bool, BarterMarketItem> UIBarterItemPurchaseWnd::GetBarterItemOrPriceA
         BarterMarketItem price;
         char buffer[100];
         std::memset(buffer, 0, sizeof(buffer));
-        _itoa(it->field_2c, buffer, 10);
+        _itoa(it->currencyItemId, buffer, 10);
         price.name = buffer;
-        price.field_1c = 20;
+        price.itemType = 20;
         return std::make_pair(true, price);
       }
       ++visible;
@@ -186,9 +186,9 @@ std::pair<bool, BarterMarketItem> UIBartermarketWnd::GetBarterItemOrPriceAt(int 
         BarterMarketItem price;
         char buffer[100];
         std::memset(buffer, 0, sizeof(buffer));
-        _itoa(it->field_2c, buffer, 10);
+        _itoa(it->currencyItemId, buffer, 10);
         price.name = buffer;
-        price.field_1c = 20;
+        price.itemType = 20;
         return std::make_pair(true, price);
       }
       ++visible;
@@ -327,7 +327,7 @@ std::pair<bool, BarterMarketEntry> UIExpandedBarterItemPurchaseWnd::GetEntryOrCh
           for (std::vector<BarterChunk16>::iterator chunk = it->chunks.begin(); chunk != it->chunks.end(); ++chunk) {
             if (x > right - 42 && x < right) {
               entry.field_0 = chunk->field_c;
-              entry.field_28 = chunk->field_4;
+              entry.refine = chunk->field_4;
               char buffer[16] = {};
               entry.name = _itoa(chunk->field_0, buffer, 10);
               return std::pair<bool, BarterMarketEntry>(true, entry);
@@ -365,7 +365,7 @@ std::pair<bool, BarterMarketEntry> UIExpandedBartermarketWnd::GetEntryOrChunkAt(
           int right = 114;
           for (std::vector<BarterChunk16>::iterator chunk = it->chunks.begin(); chunk != it->chunks.end(); ++chunk) {
             if (x > right - 42 && x < right) {
-              entry.field_28 = chunk->field_4;
+              entry.refine = chunk->field_4;
               char buffer[16] = {};
               entry.name = _itoa(chunk->field_0, buffer, 10);
               entry.field_0 = chunk->field_c;
@@ -755,13 +755,13 @@ int UIExpandedBartermarketWnd::SendMsg(UIWindow* sender, int message, std::intpt
 // FUNCTION: fn_18076
 __declspec(noinline) ITEM_INFO BarterMarketItem::ToItemInfo() const {
   ITEM_INFO item;
-  item.identity[0] = this->field_1c;
+  item.identity[0] = this->itemType;
   item.quantity = this->value;
-  item.prices[0] = this->field_20;
+  item.prices[0] = this->price;
   item.itemId = this->name;
   item.identified = 1;
-  item.identity[2] = this->field_40;
-  item.sprite = this->field_44;
+  item.identity[2] = this->location;
+  item.sprite = this->viewSprite;
   return item;
 }
 
@@ -773,11 +773,11 @@ __declspec(noinline) ITEM_INFO BarterMarketEntry::ToItemInfo() const {
   item.quantity = this->value;
   item.prices[0] = this->field_8;
   item.itemId = this->name;
-  item.refiningLevel = this->field_28;
+  item.refiningLevel = this->refine;
   item.identified = 1;
   item.priceFactor = static_cast<std::uint16_t>(this->factor);
-  item.identity[2] = this->field_38;
-  item.sprite = this->field_3c;
+  item.identity[2] = this->location;
+  item.sprite = this->viewSprite;
   return item;
 }
 
@@ -992,8 +992,8 @@ void UIBarterItemPurchaseWnd::OnMouseHover(int x, int y) {
     this->ToScreen(tooltipX, tooltipY);
     std::string text;
     BarterMarketItem item = found.second;
-    ITEM_DESC description = FindItemDescription(item.field_2c);
-    text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_NO_ITEM_FOR_EXCHANGE), description.identifiedName, item.field_28 * item.value));
+    ITEM_DESC description = FindItemDescription(item.currencyItemId);
+    text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_NO_ITEM_FOR_EXCHANGE), description.identifiedName, item.currencyAmount * item.value));
     CMode* tooltip = g_modeMgr.gameMode;
     ITEM_INFO info = item.ToItemInfo();
     if (tooltip) {
@@ -1011,8 +1011,8 @@ void UIBartermarketWnd::OnMouseHover(int x, int y) {
     int tooltipY = (y - 17) / 32 * 32 + 1;
     this->ToScreen(tooltipX, tooltipY);
     std::string text;
-    ITEM_DESC description = FindItemDescription(found.second.field_2c);
-    text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_NO_ITEM_FOR_EXCHANGE), description.identifiedName, found.second.field_28));
+    ITEM_DESC description = FindItemDescription(found.second.currencyItemId);
+    text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_NO_ITEM_FOR_EXCHANGE), description.identifiedName, found.second.currencyAmount));
     CMode* tooltip = g_modeMgr.gameMode;
     ITEM_INFO info = found.second.ToItemInfo();
     if (tooltip) {
@@ -1185,7 +1185,7 @@ bool UIBarterItemPurchaseWnd::Purchase() {
       totals.insert(std::make_pair(it->name, it->value));
     }
 
-    if (g_session.IsEquipItemType(it->field_1c) == true || g_session.IsShadowItemType(it->field_1c) == true) {
+    if (g_session.IsEquipItemType(it->itemType) == true || g_session.IsShadowItemType(it->itemType) == true) {
       ++count;
     } else if (this->GetInventoryItemCount(std::atoi(it->name.c_str())) == 0) {
       ++count;
@@ -1297,7 +1297,7 @@ int UIBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     }
 
     found.second.value = mode->drag.quantity;
-    if (g_session.HasItemId(found.second.field_2c)) {
+    if (g_session.HasItemId(found.second.currencyItemId)) {
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MONSTER_MONSTERINFO)), 255, 0, 0, 0);
       mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
@@ -1721,11 +1721,11 @@ void UIBarterItemPurchaseWnd::Paint() {
     DrawItemWithQuantity(*this, ResourceMgr::Instance(), x + 44, y + 21, item, 0, 0);
     this->DrawWrappedItemName(x + 76, y + 29, 100, &item, 0, 0, 12);
     char iconId[64] = {};
-    StringFormat(iconId, sizeof(iconId), static_cast<std::size_t>(-1), "%d", it->field_2c);
+    StringFormat(iconId, sizeof(iconId), static_cast<std::size_t>(-1), "%d", it->currencyItemId);
     DrawItemIconById(*this, this->geometry.width - 70, y + 21, iconId, 1);
     char amount[64] = {};
-    if (it->field_28 > 0) {
-      const int bytes = StringFormat(amount, sizeof(amount), static_cast<std::size_t>(-1), "%d", it->value * it->field_28);
+    if (it->currencyAmount > 0) {
+      const int bytes = StringFormat(amount, sizeof(amount), static_cast<std::size_t>(-1), "%d", it->value * it->currencyAmount);
       this->DrawRightAlignedText(this->geometry.width - 25, y + 29, amount, bytes, 0, 12, 0, 0);
     }
 
@@ -1807,11 +1807,11 @@ void UIBartermarketWnd::Paint() {
       this->DrawWrappedItemName(x + 76, y + 29, 120, &item, 0, 0, 12);
     }
     char iconId[64];
-    StringFormat(iconId, sizeof(iconId), static_cast<std::size_t>(-1), "%d", it->field_2c);
+    StringFormat(iconId, sizeof(iconId), static_cast<std::size_t>(-1), "%d", it->currencyItemId);
     DrawItemIconById(*this, this->geometry.width - 70, y + 21, iconId, 1);
-    if (it->field_28 > 0) {
+    if (it->currencyAmount > 0) {
       char amount[64];
-      const int bytes = StringFormat(amount, sizeof(amount), static_cast<std::size_t>(-1), "%d", it->field_28);
+      const int bytes = StringFormat(amount, sizeof(amount), static_cast<std::size_t>(-1), "%d", it->currencyAmount);
       this->DrawRightAlignedText(this->geometry.width - 25, y + 29, amount, bytes, 0, 12, 0, 0);
     }
 
@@ -1873,9 +1873,9 @@ void UIExpandedBarterItemPurchaseWnd::Paint() {
       this->DrawWrappedItemName(76, y + 29, 100, &item, 0, 0, 12);
     }
 
-    if (it->field_28 > 0) {
+    if (it->refine > 0) {
       std::uint32_t color = 0xFFFFFF;
-      const std::string quantity = std::format("+{}", it->field_28);
+      const std::string quantity = std::format("+{}", it->refine);
       this->DrawOutlinedColoredText(50, y + 18, quantity.c_str(), quantity.size(), color, 200, 0, 12, 1);
     }
 
@@ -1972,9 +1972,9 @@ void UIExpandedBartermarketWnd::Paint() {
       const ITEM_INFO item = it->ToItemInfo();
       this->DrawWrappedItemName(76, y + 29, 100, &item, 0, 0, 12);
     }
-    if (it->field_28 > 0) {
+    if (it->refine > 0) {
       std::uint32_t color = 0xFFFFFF;
-      const std::string quantity = std::format("+{}", it->field_28);
+      const std::string quantity = std::format("+{}", it->refine);
       this->DrawOutlinedColoredText(50, y + 18, quantity.c_str(), quantity.size(), color, 200, 0, 12, 1);
     }
 

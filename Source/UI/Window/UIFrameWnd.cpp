@@ -1163,10 +1163,10 @@ UILoginOTPWnd::UILoginOTPWnd()
 UILoginWnd::UILoginWnd() : UIFrameWnd(0), savedAccounts(), loginTypeCombo(0), loginExtra("G000") {
   this->idEdit = nullptr;
   this->passwordEdit = nullptr;
-  this->padding_00C4 = 0;
+  this->unknown_00C4 = 0;
   this->saveId = 0;
-  this->padding_00CC = 1;
-  this->padding_00D0 = 0;
-  this->padding_00D4 = 0;
+  this->unknown_00CC = 1;
+  this->unknown_00D0 = 0;
+  this->unknown_00D4 = 0;
   this->backgroundWindow = nullptr;
 }

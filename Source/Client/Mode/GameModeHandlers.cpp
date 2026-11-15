@@ -52,6 +52,7 @@
 #include "UI/Items/UIGradeEnchantWnd.h"
 #include "UI/Status/UIHomunInfoWnd.h"
 #include "UI/Party/UISeekPartyWnd.h"
+#include "UI/Party/UISeekPartyMBWnd.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Math/Vector3d.h"
@@ -764,9 +765,9 @@ void CGameMode::ReceivePartyBookingUpdateResult(const unsigned char* packet) {
     g_windowMgr.EnsureWindow(WID_SEEKPARTYWND);
     UISeekPartyWnd* seekWindow = static_cast<UISeekPartyWnd*>(g_windowMgr.LookupWindow(WID_SEEKPARTYWND));
     if (seekWindow) {
-      UIWindow* jobWindow = g_windowMgr.LookupWindow(WID_SEEKPARTYMBWND);
+      UISeekPartyMBWnd* jobWindow = static_cast<UISeekPartyMBWnd*>(g_windowMgr.LookupWindow(WID_SEEKPARTYMBWND));
       if (jobWindow) {
-        seekWindow->SetJobs(reinterpret_cast<const std::int16_t*>(reinterpret_cast<const unsigned char*>(jobWindow) + 0x16D));
+        seekWindow->SetJobs(jobWindow->m_registration.detail.job);
         g_windowMgr.CloseWindow(WID_SEEKPARTYMBWND);
       }
     }

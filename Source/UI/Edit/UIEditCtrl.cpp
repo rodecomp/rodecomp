@@ -1925,7 +1925,7 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
     this->RecordResponse(184, 100, quantity, this->geometry.state);
     if (g_replayAnimationScaling != 0 && b == 100) {
       this->geometry.state = d;
-      mode->replayDragState[0] = 0;
+      mode->isDragAllowed = 0;
       quantity = static_cast<int>(c);
     }
 
@@ -7871,7 +7871,7 @@ UIItemStoreFindWnd::UIItemStoreFindWnd() : UIItemBaseWnd() {
   this->columns = 1;
   this->visibleRows = 3;
   this->scrollOverflow = 0;
-  this->padding_0120 = 18;
+  this->unknown_0120 = 18;
 }
 
 // OFFSET: 0x0096EB70
@@ -7883,7 +7883,7 @@ UIItemStoreSubWnd::UIItemStoreSubWnd() : UIItemBaseWnd() {
   this->columns = 1;
   this->visibleRows = 3;
   this->scrollOverflow = 0;
-  this->padding_011C = 18;
+  this->unknown_011C = 18;
 }
 
 // OFFSET: 0x0096EC60
@@ -8667,7 +8667,7 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       }
       break;
     case ID_PREV:
-      this->m_searchFlags[0] = 0;
+      this->m_nextPage = 0;
       this->buttons[1]->Enable(1);
       this->buttons[3]->Enable(0);
       this->buttons[1]->Move(this->geometry.width - 105, this->geometry.height - 24);

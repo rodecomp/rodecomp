@@ -74,7 +74,7 @@ __declspec(noinline) void UIRoMapWnd::ClearRecords() {
   this->previewArea = nullptr;
   this->selectedRecord = 0;
   this->hoveredRecord = 0;
-  this->padding_00CC = 0;
+  this->unknown_00CC = 0;
 }
 
 // OFFSET: 0x0091E0F0

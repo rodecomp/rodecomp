@@ -14,6 +14,15 @@
 #include <cstring>
 #include <string>
 
+struct SpritePixel {
+  /* 0000 */ std::uint8_t alpha;
+  /* 0001 */ std::uint8_t blue;
+  /* 0002 */ std::uint8_t green;
+  /* 0003 */ std::uint8_t red;
+};
+
+static_assert(sizeof(SpritePixel) == 4);
+
 // INLINED
 CSprRes::CSprRes() : indexedCount(0) {
 }
@@ -171,9 +180,9 @@ bool CSprRes::Load(const char* name) {
 
       for (int y = image->height - 1; y >= 0; --y) {
         for (int x = 0; x < image->width; ++x) {
-          std::uint8_t pixel[4];
-          file.Read(pixel, sizeof(pixel));
-          pixels[y * image->width + x] = pixel[1] | (pixel[2] << 8) | (pixel[3] << 16) | (static_cast<std::uint32_t>(pixel[0]) << 24);
+          SpritePixel pixel;
+          file.Read(&pixel, sizeof(pixel));
+          pixels[y * image->width + x] = pixel.blue | (pixel.green << 8) | (pixel.red << 16) | (static_cast<std::uint32_t>(pixel.alpha) << 24);
         }
       }
 

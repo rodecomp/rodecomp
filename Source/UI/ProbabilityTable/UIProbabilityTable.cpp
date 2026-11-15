@@ -402,7 +402,7 @@ void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::Selec
 // OFFSET: 0x00A4D6A0
 // FUNCTION: fn_16191
 CUIProbabilityTable::CUIProbabilityTable()
-    : m_titleBar(nullptr), m_nameHeader(nullptr), m_searchEdit(nullptr), m_searchButtonStorage{}, m_itemName(nullptr), m_probabilityHeader(nullptr), m_list(nullptr),
+    : m_titleBar(nullptr), m_nameHeader(nullptr), m_searchEdit(nullptr), m_searchButton(nullptr), m_itemName(nullptr), m_probabilityHeader(nullptr), m_list(nullptr),
       m_itemId(0) {
 }
 

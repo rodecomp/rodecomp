@@ -42,9 +42,9 @@ void GroundGeometry::DrawLightmapped(const float* matrix, const GroundQuad& quad
       lightUV[corner][0] = quad.vertices[corner].lightU;
       lightUV[corner][1] = quad.vertices[corner].lightV;
 
-      SpriteColor color = std::bit_cast<SpriteColor>(quad.vertices[corner].color);
+      SpriteColor color = quad.vertices[corner].colorChannels;
       color.alpha = 0x80;
-      vertices[corner].diffuse = std::bit_cast<std::uint32_t>(color);
+      vertices[corner].diffuseChannels = color;
     }
   } else {
     for (unsigned corner = 0; corner < 4; ++corner) {
@@ -53,11 +53,11 @@ void GroundGeometry::DrawLightmapped(const float* matrix, const GroundQuad& quad
       lightUV[corner][0] = quad.vertices[corner].lightU;
       lightUV[corner][1] = quad.vertices[corner].lightV;
 
-      SpriteColor channels = std::bit_cast<SpriteColor>(quad.vertices[corner].color);
+      SpriteColor channels = quad.vertices[corner].colorChannels;
       channels.red = static_cast<std::uint8_t>(channels.red * scales[0]);
       channels.green = static_cast<std::uint8_t>(channels.green * scales[1]);
       channels.blue = static_cast<std::uint8_t>(channels.blue * scales[2]);
-      vertices[corner].diffuse = std::bit_cast<std::uint32_t>(channels);
+      vertices[corner].diffuseChannels = channels;
     }
   }
 

@@ -55,9 +55,16 @@ struct granny_material_binding {
   /* 0000 */ granny_material* material;
 };
 
+struct granny_vertex_data;
+struct granny_morph_target;
+struct granny_tri_topology;
+
 struct granny_mesh {
   /* 0000 */ const char* name;
-  /* 0004 */ unsigned char vertexAndTopologyData[0x10];
+  /* 0004 */ granny_vertex_data* primaryVertexData;
+  /* 0008 */ std::int32_t morphTargetCount;
+  /* 000C */ granny_morph_target* morphTargets;
+  /* 0010 */ granny_tri_topology* primaryTopology;
   /* 0014 */ std::int32_t materialBindingCount;
   /* 0018 */ granny_material_binding* materialBindings;
 };

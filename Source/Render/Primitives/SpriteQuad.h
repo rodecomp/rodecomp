@@ -1,6 +1,8 @@
 #ifndef RAGNAROK_SOURCE_RENDER_PRIMITIVES_SPRITEQUAD_H
 #define RAGNAROK_SOURCE_RENDER_PRIMITIVES_SPRITEQUAD_H
 
+#include "Render/Drawing/SpriteGeometry.h"
+
 #include <cstddef>
 #include <cstdint>
 
@@ -14,7 +16,10 @@ struct SpriteQuad {
   /* 000C */ float right;
   /* 0010 */ float bottomRhw;
   /* 0014 */ float topRhw;
-  /* 0018 */ std::uint32_t color;
+  union {
+    /* 0018 */ std::uint32_t color;
+    /* 0018 */ SpriteColor colorChannels;
+  };
   /* 001C */ float angle;
   /* 0020 */ std::int32_t cacheTextureIndex;
   /* 0024 */ std::int32_t u;
@@ -23,6 +28,7 @@ struct SpriteQuad {
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
+static_assert(offsetof(SpriteQuad, colorChannels) == 0x0018);
 static_assert(offsetof(SpriteQuad, angle) == 0x001C);
 static_assert(offsetof(SpriteQuad, image) == 0x002C);
 #endif

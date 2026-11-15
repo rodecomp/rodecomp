@@ -12,17 +12,17 @@
 struct BarterMarketItem {
   /* 0000 */ std::string name;
   /* 0018 */ int value = 0;
-  /* 001C */ int field_1c = 0;
-  /* 0020 */ int field_20 = 0;
+  /* 001C */ int itemType = 0;
+  /* 0020 */ int price = 0;
   /* 0024 */ bool flag_24 = true;
-  /* 0028 */ int field_28 = 0;
-  /* 002C */ int field_2c = 0;
+  /* 0028 */ int currencyAmount = 0;
+  /* 002C */ int currencyItemId = 0;
   /* 0030 */ int amount = 0;
   /* 0034 */ int field_34 = 0;
   /* 0038 */ bool flag_38 = false;
   /* 003C */ int id = -1;
-  /* 0040 */ int field_40 = 0;
-  /* 0044 */ int field_44 = 0;
+  /* 0040 */ int location = 0;
+  /* 0044 */ int viewSprite = 0;
 
   // OFFSET: 0x00AE73A0
   // FUNCTION: fn_18072
@@ -78,12 +78,12 @@ struct BarterMarketEntry {
   /* 0008 */ int field_8 = 0;
   /* 000C */ std::string name;
   /* 0024 */ bool flag_24 = true;
-  /* 0028 */ int field_28 = 0;
+  /* 0028 */ int refine = 0;
   /* 002C */ float factor = 0.0f;
   /* 0030 */ bool flag_30 = false;
   /* 0034 */ int id = 0;
-  /* 0038 */ int field_38 = 0;
-  /* 003C */ int field_3c = 0;
+  /* 0038 */ int location = 0;
+  /* 003C */ int viewSprite = 0;
   /* 0040 */ std::vector<BarterChunk16> chunks;
 
   // OFFSET: 0x00AE7450

@@ -1516,9 +1516,9 @@ void UINewChatWnd::OnCreate(int width, int height) {
   this->m_inputX = screenX + 3;
   this->m_listColor = 0x66000000;
   this->m_inputY = screenY + this->m_inputOffsetY;
-  std::memset(this->m_secondaryStateStorage, 0, sizeof(this->m_secondaryStateStorage));
+  this->m_listFlags = 0;
   this->m_listWidth = this->geometry.width - 6;
-  std::memset(this->m_primaryStateStorage, 0, sizeof(this->m_primaryStateStorage));
+  this->m_listBorderStyle = 0;
   this->m_listHeight = this->geometry.height - this->m_inputOffsetY - this->m_inputAreaHeight;
 
   if (!g_windowMgr.chatModeChanged) {

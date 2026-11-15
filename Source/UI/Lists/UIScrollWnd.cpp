@@ -250,8 +250,8 @@ RenderPrimitive* UIScrollWnd::DrawPrimitive() {
 RenderPrimitive* UIScrollWnd::BuildPrimitive(int x, int y, int sourceX, int sourceY, int width, int height, CTexture* texture, std::uint32_t color) {
   RenderPrimitive* primitive = static_cast<PrimitivePoolAccess&>(g_renderer->primitives).AcquireLocal();
   primitive->texture = texture;
-  const std::int32_t textureWidth = std::bit_cast<std::int32_t>(texture->TextureWidth());
-  const std::int32_t textureHeight = std::bit_cast<std::int32_t>(texture->TextureHeight());
+  const std::int32_t textureWidth = static_cast<std::int32_t>(texture->TextureWidth());
+  const std::int32_t textureHeight = static_cast<std::int32_t>(texture->TextureHeight());
   primitive->quad[0].x = static_cast<float>(x);
   primitive->quad[0].y = static_cast<float>(y);
   primitive->quad[0].u = (static_cast<float>(sourceX) + g_textureOffsetX) / static_cast<float>(textureWidth);

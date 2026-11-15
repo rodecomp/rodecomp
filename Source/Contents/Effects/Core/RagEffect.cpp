@@ -41,7 +41,6 @@
 #include "Render/DeviceContext/DCSurface.h"
 #include <algorithm>
 #include <atomic>
-#include <bit>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -382,7 +381,7 @@ void CRagEffect::FireSparks() {
   this->state.lastPrim->state.alpha = 0.0f;
   this->state.lastPrim->state.maxAlpha = 80.0f;
   this->state.lastPrim->state.alphaSpeed = this->state.lastPrim->state.maxAlpha / 1.5f;
-  this->state.lastPrim->state.changeFlags.z = std::bit_cast<float>(1u);
+  this->state.lastPrim->state.alphaCycle = 1;
   this->state.lastPrim->state.colorCycleIndex = 0;
   this->state.lastPrim->state.chPoint.push_back(40.0f);
   this->state.lastPrim->state.chVal1.push_back(120.0f);

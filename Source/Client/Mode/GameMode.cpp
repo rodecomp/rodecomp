@@ -95,7 +95,6 @@
 #include "File/ShortcutFilename.h"
 #include "UI/Dialogs/UICntWnd.h"
 #include "UI/Dialogs/UINormalMB.h"
-#include <bit>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -1747,7 +1746,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       }
       return 0;
     case MM_CANCEL_DRAG:
-      if (g_replayAnimationScaling == 0 || this->replayDragState[0] == 0) {
+      if (g_replayAnimationScaling == 0 || this->isDragAllowed == 0) {
         this->drag.source = 0;
         this->drag.id = 0;
         this->drag.quantity = 0;
@@ -2148,7 +2147,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       unsigned char* output = packet + sizeof(header);
       for (const BarterMarketItem& item : *g_barterMarketItemMgr->GetAllItems()) {
         const int id = std::atoi(item.name.c_str());
-        const std::uint16_t index = static_cast<std::uint16_t>(g_session.FindInventoryIndexByItemId(item.field_2c));
+        const std::uint16_t index = static_cast<std::uint16_t>(g_session.FindInventoryIndexByItemId(item.currencyItemId));
         std::memcpy(output, &id, 4);
         std::memcpy(output + 4, &item.value, 4);
         std::memcpy(output + 8, &index, 2);
@@ -4643,13 +4642,13 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
 CGameMode::CGameMode()
     : scene(nullptr), skillUseType(0), skillId(0), skillAttackRange(0), skillUseLevel(0), ignoreSkillInterval(0), bossMonsterX(0), bossMonsterY(0),
       broadcastBalloon(nullptr), noticeBalloon(nullptr), recordItemPickups(0) {
-  this->isInitializing[0] = 0;
+  this->isInitializing = 0;
   this->camera = nullptr;
   this->mousePointer = nullptr;
   this->replayPauseTick = 0;
-  this->replayDragState[0] = 0;
+  this->isDragAllowed = 0;
   this->itemWindow = nullptr;
-  this->sameMapMove[0] = 0;
+  this->sameMapMove = 0;
 }
 
 // OFFSET: 0x00CEFE70
@@ -4923,7 +4922,7 @@ bool CGameMode::ConfirmDraggedItemUse() {
     ITEM_INFO item = g_session.LookupClientItemByIdentity(this->drag.id);
     if (item.identity[1] > 0) {
       if (g_replayAnimationScaling) {
-        this->replayDragState[0] = 0;
+        this->isDragAllowed = 0;
       }
       g_modeMgr.GetGameMode()->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
       g_windowMgr.Confirm(LookupMessage(MSI_UNEQUIP_ARROW), 0, true, false, 0, "Message", 280, 120, 0);
@@ -6331,16 +6330,16 @@ void CGameMode::ReceiveUiDragMessage(const unsigned char* message) {
   this->drag = drag;
 
   if (this->drag.quantity != 1) {
-    this->replayDragState[0] = this->IsAllowedPair(packet->windowId, packet->source);
+    this->isDragAllowed = this->IsAllowedPair(packet->windowId, packet->source);
   } else {
     const int kind = packet->windowId;
     if (kind == 0x17 || kind == 0x2C) {
       if (packet->itemType <= 3 || packet->itemType == 7) {
-        this->replayDragState[0] = this->IsAllowedPair(kind, packet->source);
+        this->isDragAllowed = this->IsAllowedPair(kind, packet->source);
       }
     } else if (kind == 0x16) {
       if (packet->itemType <= 3 || packet->itemType == 7) {
-        this->replayDragState[0] = this->IsAllowedPair(0x16, packet->source);
+        this->isDragAllowed = this->IsAllowedPair(0x16, packet->source);
       }
     }
   }
@@ -6351,8 +6350,8 @@ void CGameMode::ReceiveUiDragMessage(const unsigned char* message) {
 
   const int kind = packet->windowId;
   if (kind == 0x24 || kind == 0x9F) {
-    this->replayDragState[0] = 0;
-  } else if (this->replayDragState[0] == 1 && g_windowMgr.itemDropCntWnd != nullptr) {
+    this->isDragAllowed = 0;
+  } else if (this->isDragAllowed == 1 && g_windowMgr.itemDropCntWnd != nullptr) {
     if (drag.type != 6) {
       const ITEM_DESC description = FindItemDescription(std::atoi(drag.name.c_str()));
       g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETTEXT, 0, reinterpret_cast<std::intptr_t>(description.identifiedName), 0, 0);
@@ -7321,7 +7320,7 @@ void CGameMode::InitializeState() {
   this->itemNameBalloon = nullptr;
   this->skillBalloon = nullptr;
   this->skillHintBalloon = nullptr;
-  this->unknown_02C0 = 0;
+  this->isSkillBalloonPlaced = 0;
   this->itemWindow = nullptr;
   this->statusIconTooltip = nullptr;
   this->hoveredStatusIconId = -1;
@@ -7387,7 +7386,7 @@ void CGameMode::InitializeState() {
   this->chatRoomRequestTick = timeGetTime();
   this->merchantShopRequestTick = timeGetTime();
   this->inventoryChanged = 1;
-  std::memset(&this->replayDragState[1], 0, 6);
+  std::memset(this->pendingStatPoints, 0, sizeof(this->pendingStatPoints));
   this->mouseRollCount = 0;
   this->mouseRollMax = 0;
   g_soundMgr->SetListenerYaw(this->camera->camera.desiredYaw);
@@ -7786,7 +7785,7 @@ static_assert(sizeof(EquipmentProperties::CEquipmentPropertiesMgr) == 0x1FC);
 // OFFSET: 0x00CDDA50
 // FUNCTION: fn_21320
 void CGameMode::Initialize(const char* name) {
-  this->isInitializing[0] = 1;
+  this->isInitializing = 1;
   this->recordChatCount = 0;
   this->nameCard.SetName(g_session.m_aid, g_session.DecodePlayerName());
   g_playerNameDictionary->Set(g_session.m_gid, g_session.DecodePlayerName());
@@ -7997,7 +7996,7 @@ void CGameMode::Initialize(const char* name) {
   }
 
   g_session.SetOption(0x14, 0, 0);
-  this->isInitializing[0] = 0;
+  this->isInitializing = 0;
 }
 
 // OFFSET: 0x00D07030
@@ -8421,7 +8420,7 @@ int CGameMode::ProcessMousePick(int result, ActorPickInfo* pick) {
         pickTarget = 0;
         return result;
       }
-      if (lockedPick != 0 && std::bit_cast<int>(actor->render.motionFinishThreshold) == 3) {
+      if (lockedPick != 0 && actor->render.state == ST_DEAD) {
         lockedPick = 0;
       }
       this->ProcessActorPick(result, pick, actor);
@@ -8907,7 +8906,7 @@ void CGameMode::Update() {
   this->TakeScreenshot();
 
   for (int index = 0; index < 6; ++index) {
-    unsigned char& pending = this->replayDragState[1 + index];
+    unsigned char& pending = this->pendingStatPoints[index];
     if (pending == 0) {
       continue;
     }
@@ -10185,7 +10184,7 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
           attack = 1;
         }
       }
-    } else if (actor && g_session.playerTeam[0] != actor->render.battleTeam) {
+    } else if (actor && g_session.playerTeam != actor->render.battleTeam) {
       attack = 1;
     }
   }
@@ -10574,7 +10573,7 @@ int CGameMode::HandleActorPick(ActorPickInfo* pick, int result) {
                 attack = 1;
               }
             }
-          } else if (actor != nullptr && g_session.playerTeam[0] != actor->render.battleTeam) {
+          } else if (actor != nullptr && g_session.playerTeam != actor->render.battleTeam) {
             attack = 1;
           }
 

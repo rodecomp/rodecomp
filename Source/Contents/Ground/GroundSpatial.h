@@ -1,6 +1,8 @@
 #ifndef RAGNAROK_SOURCE_CONTENTS_GROUND_GROUNDSPATIAL_H
 #define RAGNAROK_SOURCE_CONTENTS_GROUND_GROUNDSPATIAL_H
 
+#include "Render/Drawing/SpriteGeometry.h"
+
 #include <cstddef>
 #include <cstdint>
 #include <vector>
@@ -10,7 +12,10 @@ struct GroundLightmap;
 
 struct GroundVertex {
   /* 0000 */ float position[3];
-  /* 000C */ std::uint32_t color;
+  union {
+    /* 000C */ std::uint32_t color;
+    /* 000C */ SpriteColor colorChannels;
+  };
   /* 0010 */ float u;
   /* 0014 */ float v;
   /* 0018 */ float lightU;
@@ -45,6 +50,7 @@ struct GroundCell {
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(GroundVertex) == 0x20);
+static_assert(offsetof(GroundVertex, colorChannels) == 0x0C);
 static_assert(sizeof(GroundQuad) == 156);
 static_assert(offsetof(GroundQuad, texture) == 0x84);
 static_assert(offsetof(GroundQuad, lightmap) == 0x8C);

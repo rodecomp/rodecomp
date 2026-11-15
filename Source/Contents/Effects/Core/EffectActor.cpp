@@ -3,7 +3,7 @@
 #include "Contents/Effects/Core/RagEffect.h"
 
 // INLINED
-EffectActorState::EffectActorState() : padding_0138(-1), padding_013C(0), effectLaunched(0), first(nullptr), second(nullptr) {
+EffectActorState::EffectActorState() : effectId(-1), skillLevel(0), effectLaunched(0), first(nullptr), second(nullptr) {
 }
 
 // INLINED
@@ -35,8 +35,8 @@ EffectActor::~EffectActor() {
 // OFFSET: 0x00CAF4B0
 // FUNCTION: fn_21083
 void EffectActor::ResetEffectState() {
-  this->state.padding_0138 = -1;
-  this->state.padding_013C = 0;
+  this->state.effectId = -1;
+  this->state.skillLevel = 0;
   this->state.effectLaunched = 0;
   this->state.first = nullptr;
   this->state.second = nullptr;

@@ -113,10 +113,7 @@ class CUIEnchantPage : public CUIControl {
 public:
   CUIEnchantPage();
 
-  union {
-    /* 0080 */ unsigned char backgroundStorage[0x4];
-    /* 0080 */ CUIStaticImage* background;
-  };
+  /* 0080 */ CUIStaticImage* background;
   /* 0084 */ CUIGameItem* gameItem;
   /* 0088 */ std::map<int, CUISlot*> slots;
   /* 0090 */ std::list<CUIIngredient*> ingredients;

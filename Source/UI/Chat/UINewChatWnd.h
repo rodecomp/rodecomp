@@ -51,9 +51,9 @@ public:
   /* 00C8 */ int m_inputY;
   /* 00CC */ int m_listWidth;
   /* 00D0 */ int m_listHeight;
-  /* 00D4 */ unsigned char m_primaryStateStorage[0x4];
+  /* 00D4 */ std::uint32_t m_listBorderStyle;
   /* 00D8 */ std::uint32_t m_listColor;
-  /* 00DC */ unsigned char m_secondaryStateStorage[0x4];
+  /* 00DC */ std::uint32_t m_listFlags;
   /* 00E0 */ UIWindow* m_inputButtons[3];
   /* 00EC */ unsigned char padding_00EC[0x4];
   /* 00F0 */ int m_menuMode;

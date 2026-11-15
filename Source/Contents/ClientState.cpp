@@ -1434,7 +1434,7 @@ std::uint32_t CSession::ReadReplayCharacter(const std::vector<unsigned char>& da
       offset += header.bytes;
       break;
     case 1082:
-      std::memcpy(this->playerTeam, data.data() + offset, header.bytes);
+      std::memcpy(&this->playerTeam, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1083:
@@ -1478,7 +1478,7 @@ std::uint32_t CSession::ReadReplayCharacter(const std::vector<unsigned char>& da
       offset += header.bytes;
       break;
     case 1093:
-      std::memcpy(&this->unknown_549C, data.data() + offset, header.bytes);
+      std::memcpy(&this->m_replayValue1093, data.data() + offset, header.bytes);
       offset += header.bytes;
       break;
     case 1094:

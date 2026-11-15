@@ -86,11 +86,12 @@ protected:
   /* 01A8 */ int m_hoverIndex;
   /* 01AC */ int m_columnCount;
   /* 01B0 */ int m_visibleRows;
-  /* 01B4 */ int padding_01B4;
+  /* 01B4 */ int unknown_01B4;
   /* 01B8 */ int m_scrollable;
   /* 01BC */ int m_restoreHeight;
   /* 01C0 */ unsigned char m_minimized;
-  /* 01C1 */ unsigned char padding_01C1[0x3];
+  /* 01C1 */ unsigned char unknown_01C1;
+  /* 01C2 */ unsigned char padding_01C2[0x2];
   /* 01C4 */ short m_filterLevel;
   /* 01C6 */ short m_filterMap;
   /* 01C8 */ short m_filterJob;

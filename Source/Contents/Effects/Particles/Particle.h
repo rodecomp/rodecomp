@@ -85,7 +85,8 @@ public:
     /* 0054 */ float animationValues[21];
   };
   /* 00A8 */ unsigned char animationState;
-  /* 00A9 */ unsigned char frameParameters[0x17];
+  /* 00A9 */ signed char frameIndex;
+  /* 00AA */ unsigned char padding_00AA[0x16];
   /* 00C0 */ float speedParameter;
   /* 00C4 */ float angle;
   /* 00C8 */ int auxiliaryParameter;
@@ -205,6 +206,8 @@ static_assert(offsetof(CParticle, starState) == 0x54);
 static_assert(offsetof(CParticle, animationValues) == 0x54);
 static_assert(sizeof(CParticle::animationValues) == 0x54);
 static_assert(offsetof(CParticle, animationState) == 0xA8);
+static_assert(offsetof(CParticle, frameIndex) == 0xA9);
+static_assert(offsetof(CParticle, speedParameter) == 0xC0);
 static_assert(offsetof(CParticle, life) == 0xCC);
 static_assert(offsetof(CParticle, offset) == 0xD0);
 static_assert(offsetof(CParticle, offsetX) == 0xD0);

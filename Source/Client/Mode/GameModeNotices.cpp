@@ -5471,7 +5471,7 @@ void CGameMode::ReceiveRodexMailListRefresh(const unsigned char* data) {
     if (mails->find(entry->mailId) == mails->end()) {
       mails->insert(std::pair<std::int64_t, RodexMail>(entry->mailId, mail));
     }
-    entry = reinterpret_cast<const RodexMailPageEntry*>(reinterpret_cast<const char*>(entry) + 0x2C + entry->titleLength);
+    entry = reinterpret_cast<const RodexMailPageEntry*>(entry->title + entry->titleLength);
   }
 
   if (g_windowMgr.rodexInboxWnd) {
@@ -5719,7 +5719,7 @@ void CGameMode::ReceiveRodexMailListAppend(const unsigned char* data) {
         }
         break;
       }
-      entry = reinterpret_cast<const RodexMailPageEntry*>(reinterpret_cast<const char*>(entry) + 0x2C + entry->titleLength);
+      entry = reinterpret_cast<const RodexMailPageEntry*>(entry->title + entry->titleLength);
     }
   }
 
@@ -7454,27 +7454,54 @@ void CGameMode::RefreshInventoryOrEquipItem2(const unsigned char* data) {
   }
 }
 
+#pragma pack(push, 1)
+struct PACKET_ZC_WHISPER {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::uint16_t length;
+  /* 0004 */ char sender[24];
+  /* 001C */ int isAdmin;
+  /* 0020 */ char message[1];
+};
+
+struct PACKET_ZC_WHISPER02 {
+  /* 0000 */ std::uint16_t packetType;
+  /* 0002 */ std::uint16_t length;
+  /* 0004 */ std::uint32_t senderGid;
+  /* 0008 */ char sender[24];
+  /* 0020 */ bool isAdmin;
+  /* 0021 */ char message[1];
+};
+#pragma pack(pop)
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(offsetof(PACKET_ZC_WHISPER, isAdmin) == 0x1C);
+static_assert(offsetof(PACKET_ZC_WHISPER, message) == 0x20);
+static_assert(offsetof(PACKET_ZC_WHISPER02, isAdmin) == 0x20);
+static_assert(offsetof(PACKET_ZC_WHISPER02, message) == 0x21);
+#endif
+
 // OFFSET: 0x00D48530
 // FUNCTION: fn_21853
 void CGameMode::ReceiveWhisper(const unsigned char* data) {
-  const auto* packet = reinterpret_cast<const GuildPacketText*>(data);
+  const auto* packet = reinterpret_cast<const PACKET_ZC_WHISPER*>(data);
   char nameBuffer[24] = {};
-  StringFormat(nameBuffer, sizeof(nameBuffer), static_cast<std::size_t>(-1), "%s", reinterpret_cast<const char*>(data) + 4);
+  StringFormat(nameBuffer, sizeof(nameBuffer), static_cast<std::size_t>(-1), "%s", packet->sender);
 
-  std::string text(reinterpret_cast<const char*>(data) + 0x20, reinterpret_cast<const char*>(data) + packet->length);
-  this->ProcessWhisper(0, std::string(nameBuffer), text, *reinterpret_cast<const int*>(data + 0x1C) != 0);
+  std::string text(packet->message, reinterpret_cast<const char*>(data) + packet->length);
+  this->ProcessWhisper(0, std::string(nameBuffer), text, packet->isAdmin != 0);
 }
 
 // OFFSET: 0x00D1A330
 // FUNCTION: fn_21617
 void CGameMode::ReceiveWhisper2(const unsigned char* data) {
+  const auto* packet = reinterpret_cast<const PACKET_ZC_WHISPER02*>(data);
   char nameBuffer[24];
   std::memset(nameBuffer, 0, sizeof(nameBuffer));
-  StringFormat(nameBuffer, sizeof(nameBuffer), static_cast<std::size_t>(-1), "%s", reinterpret_cast<const char*>(data) + 8);
+  StringFormat(nameBuffer, sizeof(nameBuffer), static_cast<std::size_t>(-1), "%s", packet->sender);
 
-  std::string text(reinterpret_cast<const char*>(data) + 0x21, reinterpret_cast<const char*>(data) + *reinterpret_cast<const std::uint16_t*>(data + 2));
+  std::string text(packet->message, reinterpret_cast<const char*>(data) + packet->length);
 
-  this->ProcessWhisper(static_cast<int>(*reinterpret_cast<const std::uint32_t*>(data + 4)), std::string(nameBuffer), text, *reinterpret_cast<const bool*>(data + 0x20));
+  this->ProcessWhisper(static_cast<int>(packet->senderGid), std::string(nameBuffer), text, packet->isAdmin);
 }
 
 #include "Contents/Events/ShowRankingScheduler.h"

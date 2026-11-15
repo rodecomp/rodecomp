@@ -1,6 +1,5 @@
 #include "Resource/Bitmap/BitmapResource.h"
 
-#include <bit>
 #include <cstdlib>
 #include <cstring>
 #include <windows.h>
@@ -18,11 +17,6 @@ namespace {
     std::uint32_t value;
     std::memcpy(&value, data, sizeof(value));
     return value;
-  }
-
-  // INLINED
-  int Signed(std::uint32_t value) {
-    return std::bit_cast<std::int32_t>(value);
   }
 
   // INLINED

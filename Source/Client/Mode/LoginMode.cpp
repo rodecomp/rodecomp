@@ -608,7 +608,7 @@ void CLoginMode::ReceiveCharacterSlots(const CharacterSlotsPacket* packet) {
   SecureZeroMemory(this->characters, sizeof(this->characters));
   g_session.characterSlotState = 0;
   this->receivedCharacterCount = 0;
-  this->padding_01DC = 0;
+  this->receivedCharacterPages = 0;
 
   this->slotExtension = packet->extension;
   this->slotExtension.code = htonl(this->slotExtension.code);
@@ -2158,7 +2158,7 @@ CLoginMode::CLoginMode() : wallpaperName(), noticeCommands(), padding_6F2C(), ac
   this->passwordRetryCount = 0;
   SecureZeroMemory(this->characters, sizeof(this->characters));
   this->receivedCharacterCount = 0;
-  this->padding_01DC = 0;
+  this->receivedCharacterPages = 0;
   this->characterDeleted = false;
 }
 
@@ -2999,7 +2999,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     return reinterpret_cast<int>(this->billingInfo);
   case LMM_SET_EMAIL_ADDRESS:
     g_windowMgr.InvalidateAll();
-    strcpy(reinterpret_cast<char*>(this->billingInfo), reinterpret_cast<const char*>(argument1));
+    strcpy(this->billingInfo, reinterpret_cast<const char*>(argument1));
     return 0;
   case LMM_GET_MAKING_CHAR_NAME:
     return reinterpret_cast<int>(&this->makingCharNameFirstByte);
@@ -3091,7 +3091,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
         g_session.InvalidateWindowFrames();
         g_session.m_jobLevel = this->characters[i].jobLevel;
         g_session.InvalidateWindowFrames();
-        g_session.m_characterFlags = this->characters[i].characterFlags[0];
+        g_session.m_characterFlags = this->characters[i].characterFlags;
         g_session.m_head = this->characters[i].head;
         g_session.m_weapon = 0;
         g_session.m_weaponLeft = 0;
@@ -3152,7 +3152,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     this->pendingCursorType = 3;
     return 0;
   case LMM_SET_LOGIN_EXTRA:
-    strcpy(reinterpret_cast<char*>(this->loginExtra), reinterpret_cast<const char*>(argument1));
+    strcpy(this->loginExtra, reinterpret_cast<const char*>(argument1));
     return 0;
   case LMM_DISCONNECT_ACSVR:
     GetRagConnection().Close();
@@ -3595,7 +3595,7 @@ void CLoginMode::OnChangeState(int value) {
     char password[33] = {};
     StringFormat(password, sizeof(password), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s", 0xEF6D1D893F2B2DC5ULL), this->m_password);
     DecryptRijndael256(password, packet.password);
-    StringFormat(packet.extra, sizeof(packet.extra), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s", 0x39A39F87DD5F535BULL), reinterpret_cast<const char*>(this->loginExtra));
+    StringFormat(packet.extra, sizeof(packet.extra), static_cast<std::size_t>(-1), OBFUSCATE_BYTES_TEXT("%s", 0x39A39F87DD5F535BULL), this->loginExtra);
     GetRagConnection().Send(sizeof(packet), &packet);
     this->otpStarted = timeGetTime();
     this->waitWnd = static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND));
@@ -3891,7 +3891,7 @@ void CLoginMode::OnChangeState(int value) {
     g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     DeleteCharacterPacket packet;
     packet.id = ID_CH_DELETE_CHAR3;
-    std::strncpy(packet.code, reinterpret_cast<const char*>(this->billingInfo), sizeof(packet.code));
+    std::strncpy(packet.code, this->billingInfo, sizeof(packet.code));
     const CharacterInfo* character = reinterpret_cast<const CharacterInfo*>(this->SendMsg(MM_QUERYCHARICTORINFO, static_cast<unsigned char>(g_selectedSlotIndex), 0, 0, 0));
     packet.gid = character->gid;
     if (g_serviceType == ServiceKorea) {
@@ -3903,7 +3903,7 @@ void CLoginMode::OnChangeState(int value) {
       DeleteCharacterEmailPacket email;
       email.gid = character->gid;
       email.id = ID_CH_DELETE_CHAR2;
-      std::strncpy(email.code, reinterpret_cast<const char*>(this->billingInfo), sizeof(email.code));
+      std::strncpy(email.code, this->billingInfo, sizeof(email.code));
       email.code[49] = '\0';
       GetRagConnection().Send(GetRagConnection().GetPacketSize(email.id), &email);
     } else {

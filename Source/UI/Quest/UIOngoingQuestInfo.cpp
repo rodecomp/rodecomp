@@ -687,7 +687,7 @@ CUIContents::CUIContents() : CUIControl(), icon(nullptr), title(nullptr), textVi
 // OFFSET: 0x00A54D90
 // FUNCTION: fn_16290
 CUIOngoingQuestInfo::CUIOngoingQuestInfo()
-    : titleBar(nullptr), backgroundStorage{}, titleText(nullptr), scrollWindow(nullptr), dateText(nullptr), closeButtonStorage{}, questId(0) {
+    : titleBar(nullptr), background(nullptr), titleText(nullptr), scrollWindow(nullptr), dateText(nullptr), closeButton(nullptr), questId(0) {
 }
 
 namespace OngoingQuestInfo {

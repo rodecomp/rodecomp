@@ -17,7 +17,6 @@
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Math/Vector3d.h"
 
-#include <bit>
 
 // OFFSET: 0x00B4DAE0
 // FUNCTION: fn_18979
@@ -40,12 +39,12 @@ void CEffect::Close() {}
 
 // OFFSET: 0x00B4DE40
 // FUNCTION: fn_18984
-void CEffect::AddEvent(int kind, const char* text, int frame, int argument) {
+void CEffect::AddEvent(int kind, const char* text, int frame, float argument) {
   EffectEvent event;
   event.kind = kind;
   event.text = text ? text : "";
   event.frame = frame;
-  event.argument = std::bit_cast<float>(argument);
+  event.argument = argument;
   this->events.push_back(event);
 }
 

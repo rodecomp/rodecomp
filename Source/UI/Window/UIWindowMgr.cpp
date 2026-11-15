@@ -786,10 +786,10 @@ void UIWindowMgr::ResetWindows() {
   this->partyBookingHelpWnd = 0;
   this->collectionSystemWnd = nullptr;
   this->replayRecordControlWnd = nullptr;
-  this->padding_01D8 = 0;
+  this->unknown_01D8 = 0;
   this->questDisplayWnd = nullptr;
   this->navigationWnd = nullptr;
-  this->padding_0440 = 0;
+  this->unknown_0440 = 0;
   this->clanInfoManageWnd = nullptr;
   this->bankNewWnd = nullptr;
   this->messageBoxes.clear();
@@ -874,8 +874,8 @@ UIWindowMgr::UIWindowMgr()
   this->minimapMarkersVisible = 1;
   this->minimapColor = 0xAAFFFFFFu;
   this->drawCompass = 1;
-  this->padding_04F8 = 0;
-  this->padding_04F4 = 0;
+  this->unknown_04F8 = 0;
+  this->unknown_04F4 = 0;
   this->framesInvalidated = 0;
   this->chatWndStickOn = 1;
   this->onStSubChat = 0;

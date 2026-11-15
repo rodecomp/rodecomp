@@ -4,7 +4,6 @@
 #include "Render/DeviceContext/DCSurface.h"
 #include "Render/Primitives/UIRPData.h"
 
-#include <bit>
 #include <cstdint>
 
 namespace {
@@ -26,7 +25,7 @@ bool CRendererDX9::SaveScreenshot(const char* filename, int format, CTexture* ov
     x -= overlay->Width();
     y -= overlay->Height();
     ScreenshotOverlay drawing;
-    drawing.Draw(std::bit_cast<std::int32_t>(x), std::bit_cast<std::int32_t>(y), overlay, 0xFFFFFFFFu, 0, 0, false);
+    drawing.Draw(x, y, overlay, 0xFFFFFFFFu, 0, 0, false);
 
     if (this->device->Begin()) {
       ScopedDeviceStateDX9 restore(this->device->state);

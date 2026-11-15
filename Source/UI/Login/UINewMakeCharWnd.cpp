@@ -53,64 +53,64 @@ UINewMakeCharWnd::UINewMakeCharWnd()
   this->geometry.animationFrame = 0;
 
   const int* preset = reinterpret_cast<const int*>(g_modeMgr.gameMode->SendMsg(LMM_GET_CHAR_PARAM, 0, 0, 0, 0));
-  this->m_stats[0] = static_cast<unsigned char>(preset[0]);
-  this->m_stats[1] = static_cast<unsigned char>(preset[1]);
-  this->m_stats[2] = static_cast<unsigned char>(preset[2]);
-  this->m_stats[3] = static_cast<unsigned char>(preset[3]);
-  this->m_stats[4] = static_cast<unsigned char>(preset[4]);
-  this->m_stats[5] = static_cast<unsigned char>(preset[5]);
-  this->m_headPalette = static_cast<short>(preset[6]);
-  this->m_head = static_cast<short>(preset[7]);
+  this->m_character.stats[0] = static_cast<unsigned char>(preset[0]);
+  this->m_character.stats[1] = static_cast<unsigned char>(preset[1]);
+  this->m_character.stats[2] = static_cast<unsigned char>(preset[2]);
+  this->m_character.stats[3] = static_cast<unsigned char>(preset[3]);
+  this->m_character.stats[4] = static_cast<unsigned char>(preset[4]);
+  this->m_character.stats[5] = static_cast<unsigned char>(preset[5]);
+  this->m_character.headPalette = static_cast<short>(preset[6]);
+  this->m_character.head = static_cast<short>(preset[7]);
 
-  this->m_name[0] = 0;
-  this->m_job = 0;
-  this->m_level = 1;
-  this->m_skillPoint = 1;
-  this->m_status.jobPoint = 0;
-  this->m_status.hp = 100;
-  this->m_status.maxHp = 100;
-  this->m_status.sp = 100;
-  this->m_status.maxSp = 100;
-  this->m_status.exp = 0;
-  this->m_slot = g_selectedSlotIndex;
-  this->m_headPalette = 0;
-  this->m_bodyPalette = 0;
-  this->m_shield = 0;
-  this->accessory2 = 0;
-  this->accessory3 = 0;
-  this->m_costumeJob = 0;
-  this->m_sex = static_cast<unsigned char>(g_session.m_sex);
+  this->m_character.name[0] = 0;
+  this->m_character.job = 0;
+  this->m_character.level = 1;
+  this->m_character.skillPoint = 1;
+  this->m_character.jobPoint = 0;
+  this->m_character.hp = 100;
+  this->m_character.maxHp = 100;
+  this->m_character.sp = 100;
+  this->m_character.maxSp = 100;
+  this->m_character.exp = 0;
+  this->m_character.slot = g_selectedSlotIndex;
+  this->m_character.headPalette = 0;
+  this->m_character.bodyStyle = 0;
+  this->m_character.shield = 0;
+  this->m_character.accessory2 = 0;
+  this->m_character.accessory3 = 0;
+  this->m_character.bodyCostume = 0;
+  this->m_character.sex = static_cast<unsigned char>(g_session.m_sex);
   this->m_viewX = 500;
   this->m_viewY = 228;
   this->actionBase = 0;
   this->m_action = 0;
   this->m_frame = 0;
 
-  this->m_raceActions[0].assign(static_cast<const std::string&>(g_session.GetBodyActionResourceName(this->m_job, this->m_sex, 0, 0)));
-  this->m_raceSprites[0].assign(static_cast<const std::string&>(g_session.GetBodySprName(this->m_job, this->m_sex, 0, 0)));
+  this->m_raceActions[0].assign(static_cast<const std::string&>(g_session.GetBodyActionResourceName(this->m_character.job, this->m_character.sex, 0, 0)));
+  this->m_raceSprites[0].assign(static_cast<const std::string&>(g_session.GetBodySprName(this->m_character.job, this->m_character.sex, 0, 0)));
 
-  if (!g_session.IsDoramJob(this->m_job) && this->m_sex == 1 && 13 == this->m_head) {
-    this->m_head = 14;
+  if (!g_session.IsDoramJob(this->m_character.job) && this->m_character.sex == 1 && 13 == this->m_character.head) {
+    this->m_character.head = 14;
   }
 
-  int head = this->m_head;
-  this->m_raceActions[1].assign(static_cast<const std::string&>(g_session.GetHeadActName(this->m_job, this->m_sex, &head)));
-  this->m_raceSprites[1].assign(static_cast<const std::string&>(g_session.GetHeadSprName(this->m_job, this->m_sex, &head)));
+  int head = this->m_character.head;
+  this->m_raceActions[1].assign(static_cast<const std::string&>(g_session.GetHeadActName(this->m_character.job, this->m_character.sex, &head)));
+  this->m_raceSprites[1].assign(static_cast<const std::string&>(g_session.GetHeadSprName(this->m_character.job, this->m_character.sex, &head)));
 
-  const int bodyPalette = this->m_bodyPalette;
-  this->m_head = static_cast<short>(head);
+  const int bodyPalette = this->m_character.bodyStyle;
+  this->m_character.head = static_cast<short>(head);
   this->m_racePaletteEnabled[1] = bodyPalette;
   if (bodyPalette > 0) {
-    this->m_racePalettes[1].assign(static_cast<const std::string&>(g_session.GetBodyPalName(this->m_job, this->m_sex, bodyPalette, 0, 0, 0)));
+    this->m_racePalettes[1].assign(static_cast<const std::string&>(g_session.GetBodyPalName(this->m_character.job, this->m_character.sex, bodyPalette, 0, 0, 0)));
   }
 
-  const int headPalette = this->m_headPalette;
+  const int headPalette = this->m_character.headPalette;
   this->m_racePaletteEnabled[0] = headPalette;
   if (headPalette > 0) {
-    this->m_racePalettes[0].assign(static_cast<const std::string&>(g_session.GetHeadPalName(head, this->m_job, this->m_sex, headPalette)));
+    this->m_racePalettes[0].assign(static_cast<const std::string&>(g_session.GetHeadPalName(head, this->m_character.job, this->m_character.sex, headPalette)));
   }
 
-  this->m_raceOffsets = g_session.GetBodyImfName(this->m_job, this->m_sex, this->m_head, this->m_costumeJob);
+  this->m_raceOffsets = g_session.GetBodyImfName(this->m_character.job, this->m_character.sex, this->m_character.head, this->m_character.bodyCostume);
 
   this->previewState = 0;
   this->m_startTime = timeGetTime();
@@ -332,26 +332,26 @@ void UIHairStyleButton::OnCreate(int width, int height) {
 // OFFSET: 0x007DBFD0
 // FUNCTION: fn_09626
 void UINewMakeCharWnd::UpdatePreviewResources() {
-  this->m_raceActions[0] = static_cast<const std::string&>(g_session.GetBodyActionResourceName(this->m_job, this->m_sex, this->m_job, 0));
-  this->m_raceSprites[0] = static_cast<const std::string&>(g_session.GetBodySprName(this->m_job, this->m_sex, this->m_job, 0));
-  int head = this->m_head;
-  this->m_raceActions[1] = static_cast<const std::string&>(g_session.GetHeadActName(this->m_job, this->m_sex, &head));
-  this->m_raceSprites[1] = static_cast<const std::string&>(g_session.GetHeadSprName(this->m_job, this->m_sex, &head));
+  this->m_raceActions[0] = static_cast<const std::string&>(g_session.GetBodyActionResourceName(this->m_character.job, this->m_character.sex, this->m_character.job, 0));
+  this->m_raceSprites[0] = static_cast<const std::string&>(g_session.GetBodySprName(this->m_character.job, this->m_character.sex, this->m_character.job, 0));
+  int head = this->m_character.head;
+  this->m_raceActions[1] = static_cast<const std::string&>(g_session.GetHeadActName(this->m_character.job, this->m_character.sex, &head));
+  this->m_raceSprites[1] = static_cast<const std::string&>(g_session.GetHeadSprName(this->m_character.job, this->m_character.sex, &head));
 
-  const int bodyPalette = this->m_bodyPalette;
-  this->m_head = static_cast<short>(head);
+  const int bodyPalette = this->m_character.bodyStyle;
+  this->m_character.head = static_cast<short>(head);
   this->m_racePaletteEnabled[1] = bodyPalette;
   if (bodyPalette > 0) {
-    this->m_racePalettes[1] = static_cast<const std::string&>(g_session.GetBodyPalName(this->m_job, this->m_sex, bodyPalette, this->m_job, 0, 0));
+    this->m_racePalettes[1] = static_cast<const std::string&>(g_session.GetBodyPalName(this->m_character.job, this->m_character.sex, bodyPalette, this->m_character.job, 0, 0));
   }
 
-  const int headPalette = this->m_headPalette;
+  const int headPalette = this->m_character.headPalette;
   this->m_racePaletteEnabled[0] = headPalette;
   if (headPalette > 0) {
-    this->m_racePalettes[0] = static_cast<const std::string&>(g_session.GetHeadPalName(head, this->m_job, this->m_sex, headPalette));
+    this->m_racePalettes[0] = static_cast<const std::string&>(g_session.GetHeadPalName(head, this->m_character.job, this->m_character.sex, headPalette));
   }
 
-  this->m_raceOffsets = g_session.GetBodyImfName(this->m_job, this->m_sex, this->m_head, this->m_costumeJob);
+  this->m_raceOffsets = g_session.GetBodyImfName(this->m_character.job, this->m_character.sex, this->m_character.head, this->m_character.bodyCostume);
 }
 
 // OFFSET: 0x007DA340
@@ -451,9 +451,9 @@ void UINewMakeCharWnd::OnCreate(int width, int height) {
   this->m_genderButtons[0]->SetId(MAKECHAR_BUTTON_GENDER);
   this->AddChild(this->m_genderButtons[0]);
 
-  if (this->m_sex == 1) {
+  if (this->m_character.sex == 1) {
     this->m_genderButtons[1]->SetBitmap("유저인터페이스\\make_character_ver2\\bt_male_on.bmp", 0, 0);
-  } else if (this->m_sex == 0) {
+  } else if (this->m_character.sex == 0) {
     this->m_genderButtons[0]->SetBitmap("유저인터페이스\\make_character_ver2\\bt_female_on.bmp", 0, 0);
   }
 
@@ -488,7 +488,7 @@ void UINewMakeCharWnd::OnCreate(int width, int height) {
   this->AddChild(hairStyleTitle);
 
   for (int index = 0; index < 24; ++index) {
-    this->m_hairStyleButtons[index] = new UIHairStyleButton(index, this->m_sex);
+    this->m_hairStyleButtons[index] = new UIHairStyleButton(index, this->m_character.sex);
     this->m_hairStyleButtons[index]->SetBitmap("유저인터페이스\\make_character_ver2\\bt_hairStyle_normal.bmp", 0, 0);
     this->m_hairStyleButtons[index]->SetBitmap("유저인터페이스\\make_character_ver2\\bt_hairStyle_over.bmp", 1, 0);
     this->m_hairStyleButtons[index]->SetBitmap("유저인터페이스\\make_character_ver2\\bt_hairStyle_select.bmp", 2, 0);
@@ -542,7 +542,7 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
   case UM_DEFPUSH: {
     char name[25] = {};
     strcpy(name, this->m_nameEdit->Text());
-    memcpy(this->m_name, name, sizeof(this->m_name));
+    memcpy(this->m_character.name, name, sizeof(this->m_character.name));
     this->SendMsg(nullptr, UM_COMMAND, this->m_message0, 0, 0, 0);
     return 0;
   }
@@ -591,8 +591,8 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
 
       char name[24] = {};
       strcpy(name, this->m_nameEdit->Text());
-      memcpy(this->m_name, name, sizeof(this->m_name));
-      memcpy_s(&g_charInfo, sizeof(g_charInfo), this->characterData, sizeof(g_charInfo));
+      memcpy(this->m_character.name, name, sizeof(this->m_character.name));
+      memcpy_s(&g_charInfo, sizeof(g_charInfo), &this->m_character, sizeof(g_charInfo));
       if (strstr(g_charInfo.name, "\xB1\xD7\xB6\xF3\xBA\xF1\xC6\xBC") != nullptr) {
         return 0;
       }
@@ -622,14 +622,14 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     CMode* mode = g_modeMgr.gameMode;
     mode->SendMsg(LMM_SET_MAKING_CHAR_NAME, reinterpret_cast<int>(this->m_nameEdit->Text()), 0, 0, 0);
     int payload[8];
-    payload[0] = this->m_stats[0];
-    payload[1] = this->m_stats[1];
-    payload[2] = this->m_stats[2];
-    payload[3] = this->m_stats[3];
-    payload[4] = this->m_stats[4];
-    payload[5] = this->m_stats[5];
-    payload[6] = this->m_headPalette;
-    payload[7] = this->m_head;
+    payload[0] = this->m_character.stats[0];
+    payload[1] = this->m_character.stats[1];
+    payload[2] = this->m_character.stats[2];
+    payload[3] = this->m_character.stats[3];
+    payload[4] = this->m_character.stats[4];
+    payload[5] = this->m_character.stats[5];
+    payload[6] = this->m_character.headPalette;
+    payload[7] = this->m_character.head;
     mode->SendMsg(LMM_SET_CHAR_PARAM, reinterpret_cast<int>(payload), 0, 0, 0);
     return 0;
   }
@@ -652,7 +652,7 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
       }
 
       if (sender == this->m_raceViews[this->m_race]) {
-        this->m_head = 1;
+        this->m_character.head = 1;
         for (int index = 0; index < 24; ++index) {
           this->m_hairStyleButtons[index]->SendMsg(this, UM_SETSTATE, index == 0, 0, 0, 0);
           this->m_hairStyleButtons[index]->m_race = this->m_race;
@@ -660,9 +660,9 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
         }
 
         if (this->m_race == 0) {
-          this->m_job = 0;
+          this->m_character.job = 0;
         } else if (this->m_race == 1) {
-          this->m_job = 0x107A;
+          this->m_character.job = 0x107A;
         }
         this->UpdatePreviewResources();
       }
@@ -674,9 +674,9 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
       for (int index = 0; index < 9; ++index) {
         if (sender == this->m_hairColorButtons[index]) {
           this->m_hairColorButtons[index]->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
-          this->m_headPalette = static_cast<short>(index);
-          if (this->m_headPalette < 0) {
-            this->m_headPalette = 8;
+          this->m_character.headPalette = static_cast<short>(index);
+          if (this->m_character.headPalette < 0) {
+            this->m_character.headPalette = 8;
           }
           this->UpdatePreviewResources();
         } else {
@@ -709,13 +709,13 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
   case MAKECHAR_BUTTON_HAIR_STYLE:
     for (int index = 0; index < 24; ++index) {
       if (sender == this->m_hairStyleButtons[index]) {
-        if (index >= (g_session.IsDoramJob(this->m_job) == true ? 6 : 0x17)) {
+        if (index >= (g_session.IsDoramJob(this->m_character.job) == true ? 6 : 0x17)) {
           return 0;
         }
         this->m_hairStyleButtons[index]->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
-        this->m_head = static_cast<short>(index + 1);
-        if (this->m_head < 0) {
-          this->m_head = 0;
+        this->m_character.head = static_cast<short>(index + 1);
+        if (this->m_character.head < 0) {
+          this->m_character.head = 0;
         }
         this->UpdatePreviewResources();
       } else {
@@ -727,10 +727,10 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
   case MAKECHAR_BUTTON_GENDER:
     for (int index = 0; index < 2; ++index) {
       if (sender == this->m_genderButtons[index]) {
-        if (index == this->m_sex) {
+        if (index == this->m_character.sex) {
           return 0;
         }
-        this->m_sex = static_cast<unsigned char>(index);
+        this->m_character.sex = static_cast<unsigned char>(index);
         if (index == 1) {
           this->m_genderButtons[1]->SetBitmap("유저인터페이스\\make_character_ver2\\bt_male_on.bmp", 0, 0);
         } else if (index == 0) {
@@ -738,14 +738,14 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
         }
       } else if (index == 1) {
         this->m_genderButtons[index]->SetBitmap("유저인터페이스\\make_character_ver2\\bt_male_off.bmp", 0, 0);
-      } else if (this->m_sex == 0) {
+      } else if (this->m_character.sex == 0) {
         this->m_genderButtons[index]->SetBitmap("유저인터페이스\\make_character_ver2\\bt_female_off.bmp", 0, 0);
       }
       this->m_genderButtons[index]->Invalidate();
     }
 
     for (int index = 0; index < 24; ++index) {
-      this->m_hairStyleButtons[index]->m_sex = this->m_sex;
+      this->m_hairStyleButtons[index]->m_sex = this->m_character.sex;
       this->m_hairStyleButtons[index]->SendMsg(nullptr, UM_SETCURITEM, 0, 0, 0, 0);
     }
     this->UpdatePreviewResources();

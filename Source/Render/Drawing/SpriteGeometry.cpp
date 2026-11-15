@@ -64,7 +64,7 @@ bool CCharacterRender::ProjectCell(
   color.red = static_cast<std::uint8_t>(GetRValue(cell.color) * 255.0f / 255.0f);
   color.green = static_cast<std::uint8_t>(GetGValue(cell.color) * 255.0f / 255.0f);
   color.blue = static_cast<std::uint8_t>(GetBValue(cell.color) * 255.0f / 255.0f);
-  quad.color = std::bit_cast<std::uint32_t>(color);
+  quad.colorChannels = color;
 
   return true;
 }

@@ -7,7 +7,10 @@ class C3dNode;
 struct ModelTextureTransform;
 
 struct ModelFaceState {
-  /* 0000 */ std::uint32_t colors[3];
+  union {
+    /* 0000 */ std::uint32_t colors[3];
+    /* 0000 */ SpriteColor colorChannels[3];
+  };
   /* 000C */ float uv[3][2];
 };
 
@@ -15,5 +18,6 @@ bool ModelTriangleVisible(const RenderVertex* a, const RenderVertex* b, const Re
 void TransformModelUV(float& u, float& v, const ModelTextureTransform& transform);
 
 static_assert(sizeof(ModelFaceState) == 36);
+static_assert(offsetof(ModelFaceState, uv) == 0x0C);
 
 #endif

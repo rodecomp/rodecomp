@@ -76,12 +76,12 @@ void CBarterMarketItemMgr::RefreshTotals()
 {
   this->totals.clear();
   for (std::list<BarterMarketItem>::iterator it = this->allItems.begin(); it != this->allItems.end(); ++it) {
-    std::map<int, int>::iterator found = this->totals.find(it->field_2c);
-    int total = it->field_28 * it->value;
+    std::map<int, int>::iterator found = this->totals.find(it->currencyItemId);
+    int total = it->currencyAmount * it->value;
     if (found != this->totals.end()) {
       found->second += total;
     } else {
-      this->totals.insert(std::make_pair(it->field_2c, total));
+      this->totals.insert(std::make_pair(it->currencyItemId, total));
     }
   }
 }
@@ -632,10 +632,10 @@ void CExpandedBarterMarketItemMgr::AddItem(const BarterMarketEntry& source)
   entry.value = source.value;
   entry.field_0 = source.field_0;
   entry.name = source.name;
-  entry.field_38 = source.field_38;
-  entry.field_3c = source.field_3c;
+  entry.location = source.location;
+  entry.viewSprite = source.viewSprite;
   entry.flag_24 = true;
-  entry.field_28 = source.field_28;
+  entry.refine = source.refine;
   for (std::vector<BarterChunk16>::const_iterator it = source.chunks.begin(); it != source.chunks.end(); ++it) {
     BarterChunk16 chunk;
     chunk.field_0 = it->field_0;

@@ -5,7 +5,7 @@
 // OFFSET: 0x00BC5E00
 // FUNCTION: fn_19849
 void CEffectPrim::ProcessAlpha() {
-  if (this->state.changeFlags.z != 0) {
+  if (this->state.alphaCycle != 0) {
     int index = this->state.colorCycleIndex;
 
     if (index < 0 || static_cast<std::uint32_t>(index) > this->state.chPoint.size() - 1) {
@@ -18,7 +18,7 @@ void CEffectPrim::ProcessAlpha() {
       this->state.maxAlpha = this->state.chVal2[index];
       this->state.colorCycleIndex = index + 1;
     }
-  } else if (this->state.changeFlags.y != 0) {
+  } else if (this->state.alphaSpeedCycle != 0) {
     int index = this->state.colorCycleIndex;
 
     if (index < 0 || static_cast<std::uint32_t>(index) >= this->state.chPoint.size()) {

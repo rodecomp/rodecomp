@@ -226,7 +226,7 @@ void UISeekPartyListWnd::OnCreate(int width, int height) {
   this->m_columnCount = 1;
   this->m_visibleRows = 5;
   this->m_scrollable = 0;
-  this->padding_01B4 = 0;
+  this->unknown_01B4 = 0;
   this->InitRegionFilter();
   this->InitJobFilter();
   this->UpdateScrollBar();
@@ -694,6 +694,6 @@ UISeekPartyListWnd::UISeekPartyListWnd()
       m_findButton(nullptr), m_okButton(nullptr), m_chatButton(nullptr), m_scrollBar(nullptr), padding_010C(), m_regionMaps(), m_jobOptions(), m_region(0),
       m_jobCategory(0), m_jobCategoryChanged(0), padding_0194(0), m_menuItems(), m_restoreHeight(0), m_minimized(0), m_filterLevel(-5), m_filterMap(-5), m_filterJob(-5),
       padding_01CA() {
-  this->padding_01C1[0] = 1;
+  this->unknown_01C1 = 1;
   this->m_refreshButton = nullptr;
 }

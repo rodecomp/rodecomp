@@ -31,11 +31,11 @@ public:
   /* 00C0 */ bool idPlaceholder;
   /* 00C1 */ bool passwordPlaceholder;
   /* 00C2 */ unsigned char padding_00C2[0x2];
-  /* 00C4 */ int padding_00C4;
+  /* 00C4 */ int unknown_00C4;
   /* 00C8 */ int saveId;
-  /* 00CC */ int padding_00CC;
-  /* 00D0 */ int padding_00D0;
-  /* 00D4 */ int padding_00D4;
+  /* 00CC */ int unknown_00CC;
+  /* 00D0 */ int unknown_00D0;
+  /* 00D4 */ int unknown_00D4;
   /* 00D8 */ std::vector<std::string> savedAccounts;
   /* 00E4 */ int accountListOpen;
   /* 00E8 */ UIComboBoxDef2Wnd* loginTypeCombo;

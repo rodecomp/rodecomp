@@ -592,8 +592,8 @@ RenderPrimitive* UIWindow::DrawPrimitive() {
 
   RenderPrimitive* primitive = g_renderer->primitives.Acquire();
   primitive->texture = this->m_texture;
-  const float width = static_cast<float>(std::bit_cast<std::int32_t>(this->m_texture->TextureWidth()));
-  const float height = static_cast<float>(std::bit_cast<std::int32_t>(this->m_texture->TextureHeight()));
+  const float width = static_cast<float>(static_cast<std::int32_t>(this->m_texture->TextureWidth()));
+  const float height = static_cast<float>(static_cast<std::int32_t>(this->m_texture->TextureHeight()));
   primitive->quad[0].x = static_cast<float>(this->geometry.x);
   primitive->quad[0].y = static_cast<float>(this->geometry.y);
   primitive->quad[0].u = g_textureOffsetX / width;

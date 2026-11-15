@@ -2972,7 +2972,7 @@ void CSession::Init() {
   this->m_whisperOption0 = 0;
   this->m_timeAttackStart = 0;
   this->m_timeAttackCountdown = 0;
-  this->unknown_07B0 = 0;
+  this->m_timeAttackEnd = 0;
   this->m_timeAttackVisible = 0;
   this->m_serviceOption229 = 0;
   this->m_isSiegeZone = 0;
@@ -3122,7 +3122,7 @@ void CSession::Init() {
   this->m_itemDescendingOrder = false;
   this->m_showMenuIcon = true;
   this->m_homunculusAutoFeed = false;
-  this->unknown_7F80 = -1;
+  this->m_selectedIndex = -1;
   this->m_overweightThresholdPercent = 50;
   this->m_loginModeFlag = false;
   this->m_showRankingSchedule = -1;
@@ -3200,7 +3200,7 @@ void CSession::ResetCharacterState() {
   this->cartMaxWeight = 0;
   this->m_vendingSlotCount = 13;
   this->m_buyingStoreSlotCount = 5;
-  this->playerTeam[0] = 0;
+  this->playerTeam = 0;
   this->m_score1 = -1;
   this->m_score2 = -1;
   this->chatFont = 0;
@@ -3217,12 +3217,12 @@ void CSession::ResetCharacterState() {
   this->quitAllowed = 0;
   this->sessionFlag = 0;
   g_session.m_mapTransitionFlag = 0;
-  this->unknown_5564 = 0;
+  this->m_playerMessage82Arg = 0;
   this->adoptionSkillAvailable = 0;
   this->m_randomLoadingScreen = 1;
   this->guildLeader = 0;
   this->showTimer = 0;
-  this->mouseAndChannelOptions[0] = 1;
+  this->m_showBattleFieldIcon = true;
 
   MEMORYSTATUS memoryStatus = {};
   memoryStatus.dwLength = sizeof(memoryStatus);

@@ -87,13 +87,8 @@ public:
   void SetDescription(int type, const std::vector<const char*>& description);
   void SetStatusLines(bool first, bool second, bool third);
 
-  union {
-    /* 00E8 */ unsigned char headerControls[0x08];
-    struct {
-      /* 00E8 */ CUIStaticImage* image;
-      /* 00EC */ CUIStaticText* nameText;
-    };
-  };
+  /* 00E8 */ CUIStaticImage* image;
+  /* 00EC */ CUIStaticText* nameText;
   /* 00F0 */ CUITextViewer* descriptionViewer;
   /* 00F4 */ CUITextViewer* optionsViewer;
   /* 00F8 */ CUITextViewer* sourcesViewer;
