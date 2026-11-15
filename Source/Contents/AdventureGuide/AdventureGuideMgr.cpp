@@ -1689,5 +1689,5 @@ bool AdventureGuideEntry::IsAvailable(int itemId) const {
   if (!CJobCodeForItem::s_instance) {
     CJobCodeForItem::s_instance = new (std::nothrow) CJobCodeForItem;
   }
-  return CJobCodeForItem::s_instance->IsJobAllowed(g_session.m_job, code);
+  return CJobCodeForItem::s_instance->IsJobAllowed(static_cast<JobId>(g_session.m_job), code);
 }

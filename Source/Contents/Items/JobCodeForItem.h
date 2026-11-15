@@ -1,6 +1,7 @@
 #ifndef RAGNAROK_SOURCE_CONTENTS_ITEMS_JOBCODEFORITEM_H
 #define RAGNAROK_SOURCE_CONTENTS_ITEMS_JOBCODEFORITEM_H
 
+#include "Contents/Jobs/JobId.h"
 #include "Utility/Singleton.h"
 
 #include <map>
@@ -8,8 +9,8 @@
 
 class CJobCodeForItem : public Singleton<CJobCodeForItem> {
 public:
-  /* 0004 */ std::map<unsigned int, std::set<int>> m_jobGroups;
-  /* 000C */ std::map<unsigned long, std::set<int>> m_jobCodes;
+  /* 0004 */ std::map<unsigned int, std::set<JobId>> m_jobGroups;
+  /* 000C */ std::map<unsigned long, std::set<JobId>> m_jobCodes;
 
   template <typename... Groups>
   void AddJobCodeFromGroups(unsigned long code, Groups... groups);
@@ -21,7 +22,7 @@ public:
   void InitJobGroups();
   void InitJobCodes();
   void Init();
-  bool IsJobAllowed(int job, unsigned long code);
+  bool IsJobAllowed(JobId job, unsigned long code);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

@@ -27,11 +27,11 @@ void CJobCodeForItem::AddJobCodeFromGroups(unsigned long code, Groups... groups)
   if (groupSet.empty()) {
     return;
   }
-  std::set<int> jobs;
+  std::set<JobId> jobs;
   for (const unsigned int& group : groupSet) {
     auto groupIt = this->m_jobGroups.find(group);
     if (this->m_jobGroups.end() != groupIt) {
-      jobs.merge(std::set<int>(groupIt->second));
+      jobs.merge(std::set<JobId>(groupIt->second));
     }
   }
 
@@ -69,7 +69,7 @@ template void CJobCodeForItem::AddJobCodeFromGroups(unsigned long, int);
 // FUNCTION: fn_06436
 template <typename... Jobs>
 void CJobCodeForItem::AddJobCode(unsigned long code, Jobs... jobs) {
-  std::set<int> jobSet = {jobs...};
+  std::set<JobId> jobSet = {jobs...};
   if (jobSet.empty()) {
     return;
   }
@@ -107,7 +107,7 @@ template void CJobCodeForItem::AddJobCode(unsigned long, JobId);
 // FUNCTION: fn_06444
 template <typename... Jobs>
 void CJobCodeForItem::AddJobGroup(unsigned int group, Jobs... jobs) {
-  std::set<int> jobSet = {jobs...};
+  std::set<JobId> jobSet = {jobs...};
   if (jobSet.empty()) {
     return;
   }
@@ -431,7 +431,7 @@ void CJobCodeForItem::Init() {
 
 // OFFSET: 0x006CCBE0
 // FUNCTION: fn_06467
-bool CJobCodeForItem::IsJobAllowed(int job, unsigned long code) {
+bool CJobCodeForItem::IsJobAllowed(JobId job, unsigned long code) {
   switch (code) {
   case 0xFFFFE: {
     auto group = this->m_jobGroups.find(0);
