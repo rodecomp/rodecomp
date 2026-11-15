@@ -43,6 +43,7 @@ public:
   bool IsSame(const RuneData& other) const;
   std::int64_t GetId() const;
   bool IsActive() const;
+  std::uint8_t GetActiveState() const;
   const char* GetName() const;
   const char* GetResName() const;
   int GetTagId() const;
@@ -151,7 +152,6 @@ public:
   void AddRune(int tagId, int type, std::int64_t id, const std::string& resName, int activeType);
   int GetTagCount() const;
   int GetOwnedDecomItemCount() const;
-  bool IsInitialized() const;
   CTagData* GetTag(int tagId);
   CTagData* GetTagByIndex(int index);
   int GetDecomItem(unsigned int index) const;

@@ -422,7 +422,7 @@ void UIRuneSetList::OnMouseHover(int x, int y) {
 // OFFSET: 0x0081C6F0
 // FUNCTION: fn_10208
 void UIRuneSet_Info::OnMouseHover(int x, int y) {
-  if (!this->m_runeSet || !this->m_runeSet->IsActive()) {
+  if (!this->m_runeSet || !this->m_runeSet->GetActiveState()) {
     return;
   }
 
@@ -497,7 +497,7 @@ void UIRuneSetList::OnWheel(int delta) {
 void UIRune_Info::UpdateActivation() {
   this->m_activeWnd->Show(0);
   this->m_activateButton->Enable(0);
-  if (this->m_rune && !this->m_rune->IsActive()) {
+  if (this->m_rune && !this->m_rune->GetActiveState()) {
     this->m_activeWnd->Show(1);
     this->m_activateButton->Enable(1);
     UIBitmapButton* button = this->m_activateButton;
@@ -730,7 +730,7 @@ void UIRuneSet_Info::UpdateRewards() {
         if (index < this->m_runeSet->m_rewardStep) {
           this->m_rewards[index]->SendMsg(this, UM_SETID, 3, static_cast<std::intptr_t>(itemId), 0, 0);
         } else if (index == 0) {
-          this->m_rewards[0]->SendMsg(this, UM_SETID, this->m_runeSet->IsActive() ? 2 : 1, static_cast<std::intptr_t>(itemId), 0, 0);
+          this->m_rewards[0]->SendMsg(this, UM_SETID, this->m_runeSet->GetActiveState() ? 2 : 1, static_cast<std::intptr_t>(itemId), 0, 0);
         } else {
           int state = 2;
           if ((index != 6 && this->m_runeSet->CountActiveSlots() <= index) || this->m_runeSet->FindLastReward(index + 1) > this->m_runeSet->m_rewardStep) {
@@ -762,7 +762,7 @@ void UIRuneSet_Info::Refresh() {
   this->UpdateRewards();
 
   if (this->m_runeSet) {
-    if (this->m_runeSet->IsActive()) {
+    if (this->m_runeSet->GetActiveState()) {
       if (this->m_runeSet == CRuneSystemMgr::GetInstance()->GetCurRuneSet()) {
         this->m_unequipButton->Enable(1);
       } else {
@@ -1099,7 +1099,7 @@ void UIEquipRuneSetWnd::Paint() {
     CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name.c_str())));
     if (bitmap) {
       this->DrawBitmap(x, 35, bitmap, false);
-      if (!runeSet->m_slots[index]->IsActive()) {
+      if (!runeSet->m_slots[index]->GetActiveState()) {
         this->geometry.surface->Dim(x, 35, bitmap->image.width, bitmap->image.height, 55);
       }
     }
@@ -1443,7 +1443,7 @@ void UIRune_Info::Paint() {
   ResourceMgr& resources = ResourceMgr::Instance();
   CBitmapRes* bitmap =
     static_cast<CBitmapRes*>(resources.Load(Resolve(FormatOwnedString("유저인터페이스\\runesystem\\rune\\%s.bmp", this->m_rune->GetResName()).c_str())));
-  if (this->m_rune->IsActive()) {
+  if (this->m_rune->GetActiveState()) {
     this->DrawBitmap(225, 134, bitmap, true);
     this->DrawBitmap(214, 123, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\card_stone_frame.bmp"))), true);
   } else {
@@ -1583,7 +1583,7 @@ int UIRuneSet_Info::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     if (!this->m_runeSet) {
       break;
     }
-    if (!this->m_runeSet->IsActive()) {
+    if (!this->m_runeSet->GetActiveState()) {
       UIRuneSystemTab* tab = this->m_tab;
       tab->geometry.state = 0;
       tab->Invalidate();
@@ -1986,7 +1986,7 @@ void UIRuneSet_Info::Paint() {
   this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_runeset_center.bmp"))), true);
   std::string path = FormatOwnedString("유저인터페이스\\runesystem\\runeset\\%s.bmp", this->m_runeSet->GetResName());
   CBitmapRes* runeSetBitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str())));
-  if (this->m_runeSet->IsActive()) {
+  if (this->m_runeSet->GetActiveState()) {
     this->DrawBitmap(0x76, 0xBF, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_runeset.bmp"))), true);
     this->DrawBitmap(0x76, 0xBF, static_cast<CBitmapRes*>(runeSetBitmap), true);
     for (int slot = 0; slot < 6; ++slot) {
@@ -2009,7 +2009,7 @@ void UIRuneSet_Info::Paint() {
         this->geometry.surface->DrawScaledSurface(
           g_runeSetSlotX[slot], g_runeSetSlotY[slot], 90, 120, texture, texture->Width(), texture->Height(), scale, scale, 0xFFFFFFFF, false, 0, 0, 0, 0
         );
-        if (!this->m_runeSet->m_slots[slot]->IsActive()) {
+        if (!this->m_runeSet->m_slots[slot]->GetActiveState()) {
           this->geometry.surface->Dim(g_runeSetSlotX[slot], g_runeSetSlotY[slot], 90, 120, 55);
         }
       }
@@ -2270,7 +2270,7 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
           if (index < runeSet->m_rewardStep) {
             info->m_rewards[index]->SendMsg(info, UM_SETID, 3, itemId, 0, 0);
           } else if (index == 0) {
-            info->m_rewards[0]->SendMsg(info, UM_SETID, runeSet->IsActive() ? 2 : 1, itemId, 0, 0);
+            info->m_rewards[0]->SendMsg(info, UM_SETID, runeSet->GetActiveState() ? 2 : 1, itemId, 0, 0);
           } else if (index == 6) {
             info->m_rewards[6]->SendMsg(info, UM_SETID, slotCount == activeCount ? 2 : 1, itemId, 0, 0);
           } else {

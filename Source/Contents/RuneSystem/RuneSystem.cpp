@@ -189,12 +189,6 @@ int CRuneSystemMgr::GetOwnedDecomItemCount() const {
   return static_cast<int>(this->m_ownedDecomItems.size());
 }
 
-// OFFSET: 0x00766B10
-// FUNCTION: fn_08119
-bool CRuneSystemMgr::IsInitialized() const {
-  return this->m_initialized;
-}
-
 // OFFSET: 0x00766B20
 // FUNCTION: fn_08120
 CTagData* CRuneSystemMgr::GetTag(int tagId) {
@@ -310,6 +304,12 @@ std::int64_t RuneData::GetId() const {
 // FUNCTION: fn_08131
 bool RuneData::IsActive() const {
   return this->m_active != 0;
+}
+
+// OFFSET: 0x00766B10
+// FUNCTION: fn_08119
+std::uint8_t RuneData::GetActiveState() const {
+  return this->m_active;
 }
 
 // OFFSET: 0x00766E60
