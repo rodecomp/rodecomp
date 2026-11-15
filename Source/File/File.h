@@ -61,4 +61,9 @@ static_assert(sizeof(CFile) == 44);
 
 extern CFile g_whisperFile;
 
+// OFFSET: 0x00755710
+// FUNCTION: fn_07986
+inline CFile::CFile() : m_handle(INVALID_HANDLE_VALUE), m_data(nullptr), m_position(0), m_size(0) {
+}
+
 #endif
