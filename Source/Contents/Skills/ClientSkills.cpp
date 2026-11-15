@@ -992,6 +992,12 @@ bool CSession::EquipCostumeItem(const ITEM_INFO& item, const char* name) {
   return true;
 }
 
+// OFFSET: 0x00E098F0
+// FUNCTION: fn_23784
+int CSession::GetBodyStyleJob(int job) {
+  return job;
+}
+
 // OFFSET: 0x00E09900
 // FUNCTION: fn_23785
 ITEM_INFO CSession::GetSelectionItemAt(int index) const {

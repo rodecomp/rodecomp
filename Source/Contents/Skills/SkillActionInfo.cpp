@@ -13,13 +13,13 @@
 
 // OFFSET: 0x00E13A20
 // FUNCTION: fn_23824
-std::string CSession::GetRobeActName(int job, int sex, int robe, bool riding, int unused, int costumeJob) {
+std::string CSession::GetRobeActName(int job, int unused, int sex, int robe, bool riding, int costumeJob) {
   return g_equipmentResourceMgr->GetRobeResourceName(0, job, sex, robe, riding, unused, costumeJob);
 }
 
 // OFFSET: 0x00E13A90
 // FUNCTION: fn_23825
-std::string CSession::GetRobeSprName(int job, int sex, int robe, bool riding, int unused, int costumeJob) {
+std::string CSession::GetRobeSprName(int job, int unused, int sex, int robe, bool riding, int costumeJob) {
   return g_equipmentResourceMgr->GetRobeResourceName(1, job, sex, robe, riding, unused, costumeJob);
 }
 

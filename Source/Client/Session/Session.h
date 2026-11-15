@@ -1225,8 +1225,8 @@ public:
   std::string GetAccessorySprName(int job, int sex, int head, int accessory);
   std::string GetShieldActName(int job, int sex, int shield, int costumeJob);
   std::string GetShieldSprName(int job, int sex, int shield, int costumeJob);
-  std::string GetRobeActName(int job, int sex, int robe, bool riding, int unused, int costumeJob);
-  std::string GetRobeSprName(int job, int sex, int robe, bool riding, int unused, int costumeJob);
+  std::string GetRobeActName(int job, int unused, int sex, int robe, bool riding, int costumeJob);
+  std::string GetRobeSprName(int job, int unused, int sex, int robe, bool riding, int costumeJob);
   std::string GetRobeName(unsigned int robe);
   std::string GetBodyPalName(int job, int sex, int palette, int costumeJob, int costume, int unused);
   std::string GetBodySprName(int job, int sex, int costumeJob, int costume);
@@ -1307,6 +1307,7 @@ public:
   void RefreshMerchantMyShopItems();
   bool IsPartyRecommendTarget(std::uint32_t aid);
   int GetBodyStyle(int job, int style, int renderJob);
+  int GetBodyStyleJob(int job);
   int GetSessionIndex() const;
   void RefreshMessengerGroupWindow();
   void RefreshItem1740Window();

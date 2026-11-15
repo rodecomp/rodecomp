@@ -958,7 +958,7 @@ void CSession::UpdateBodyStyle(int job, int style, int renderJob) {
   } else if (static_cast<unsigned>(job - 4001) <= 21) {
     this->m_bodyStyle = job <= 4007;
   } else {
-    this->m_bodyStyle = static_cast<unsigned>(job - 4001) <= 6;
+    this->m_bodyStyle = static_cast<unsigned>(g_session.GetBodyStyleJob(job) - 4001) <= 6;
   }
 }
 

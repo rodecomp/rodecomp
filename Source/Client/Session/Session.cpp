@@ -1915,7 +1915,7 @@ int CSession::GetBodyStyle(int job, int style, int renderJob) {
     return job <= JT_THIEF_H;
   }
 
-  return static_cast<unsigned>(job - JT_NOVICE_H) <= 6;
+  return static_cast<unsigned>(g_session.GetBodyStyleJob(job) - JT_NOVICE_H) < 7;
 }
 
 // OFFSET: 0x00E2F920
