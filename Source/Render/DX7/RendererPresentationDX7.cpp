@@ -77,7 +77,7 @@ void CRendererDX7::CleanupTextures() {
 
 // OFFSET: 0x0055FAD0
 // FUNCTION: fn_02121
-int DrawBackBufferText(int x, int y, const char* text, COLORREF color) {
+int CRenderer::DrawBackBufferText(int x, int y, const char* text, COLORREF color) {
   CDCSurface surface(GetRenderSystemHolder()->BackBufferSurface());
   TextContext context(surface);
   context.SetFont(0, 12, 0, 0);

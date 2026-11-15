@@ -40,7 +40,6 @@ struct RenderSystemHolder {
   std::shared_ptr<CSurface> BackBufferSurface() const;
 };
 
-int DrawBackBufferText(int x, int y, const char* text, COLORREF color);
 
 // OFFSET: 0x0055D340
 // FUNCTION: fn_02102

@@ -102,11 +102,11 @@ void CMode::TakeScreenshot() {
     }
   }
 
-  DrawBackBufferText(5, g_renderer->viewport.height - 16, text, 0);
-  DrawBackBufferText(3, g_renderer->viewport.height - 16, text, 0);
-  DrawBackBufferText(4, g_renderer->viewport.height - 15, text, 0);
-  DrawBackBufferText(4, g_renderer->viewport.height - 17, text, 0);
-  DrawBackBufferText(4, g_renderer->viewport.height - 16, text, 0xFFFFFF);
+  g_renderer->DrawBackBufferText(5, g_renderer->viewport.height - 16, text, 0);
+  g_renderer->DrawBackBufferText(3, g_renderer->viewport.height - 16, text, 0);
+  g_renderer->DrawBackBufferText(4, g_renderer->viewport.height - 15, text, 0);
+  g_renderer->DrawBackBufferText(4, g_renderer->viewport.height - 17, text, 0);
+  g_renderer->DrawBackBufferText(4, g_renderer->viewport.height - 16, text, 0xFFFFFF);
 
   this->screenshotRequested = 0;
 

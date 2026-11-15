@@ -54,6 +54,7 @@ public:
   void DrawOverlays();
   void DrawOverlays(CRenderSystemBase& system);
   __declspec(noinline) void ClearFrame();
+  int DrawBackBufferText(int x, int y, const char* text, COLORREF color);
 
   /* 0004 */ RendererViewport viewport;
   /* 0038 */ unsigned frame;
