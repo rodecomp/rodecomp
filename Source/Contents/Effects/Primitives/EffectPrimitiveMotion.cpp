@@ -199,7 +199,7 @@ bool CEffectPrim::MoveEffectPrimitive() {
   }
 
   if ((this->state.pattern & 0x400u) != 0) {
-    if (3.0f >= this->CalcDist(this->state.master->state.deltaPos[0], this->state.master->state.deltaPos[2])) {
+    if (3.0f >= this->CalcDist(this->state.master->state.deltaPos.x, this->state.master->state.deltaPos.z)) {
       this->state.masterReached = 1;
       return false;
     }
@@ -249,9 +249,9 @@ bool CEffectPrim::MoveEffectPrimitive() {
   }
 
   if ((this->state.pattern & 0x10u) != 0) {
-    this->state.master->state.deltaPos[0] = this->state.deltaPos2.x + this->state.deltaPos.x;
-    this->state.master->state.deltaPos[1] = this->state.deltaPos.y + this->state.deltaPos2.y;
-    this->state.master->state.deltaPos[2] = this->state.deltaPos.z + this->state.deltaPos2.z;
+    this->state.master->state.deltaPos.x = this->state.deltaPos2.x + this->state.deltaPos.x;
+    this->state.master->state.deltaPos.y = this->state.deltaPos.y + this->state.deltaPos2.y;
+    this->state.master->state.deltaPos.z = this->state.deltaPos.z + this->state.deltaPos2.z;
   }
 
   if ((this->state.pattern & 4u) != 0 && this->render.position.y > g_modeMgr.GetGameMode()->scene->terrain->Height(this->render.position.x, this->render.position.z)) {
@@ -2391,7 +2391,7 @@ bool CEffectPrim::Prim3DParticle() {
   };
 
   if ((this->state.pattern & 0x100u) != 0) {
-    if (3.0f >= this->CalcDist(this->state.master->state.deltaPos[0], this->state.master->state.deltaPos[2])) {
+    if (3.0f >= this->CalcDist(this->state.master->state.deltaPos.x, this->state.master->state.deltaPos.z)) {
       return false;
     }
   }
@@ -2529,7 +2529,7 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
   }
 
   if ((particle.pattern & 0x400u) != 0) {
-    if (3.0f >= this->CalcDist(particle.master->state.deltaPos[0], particle.master->state.deltaPos[2])) {
+    if (3.0f >= this->CalcDist(particle.master->state.deltaPos.x, particle.master->state.deltaPos.z)) {
       particle.masterReached = 1;
       return false;
     }
@@ -2588,9 +2588,9 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
     const float masterY = particle.deltaPos.y + particle.deltaPos2.y;
     const float masterZ = particle.deltaPos.z + particle.deltaPos2.z;
     CRagEffect* master = particle.master;
-    master->state.deltaPos[0] = masterX;
-    master->state.deltaPos[1] = masterY;
-    master->state.deltaPos[2] = masterZ;
+    master->state.deltaPos.x = masterX;
+    master->state.deltaPos.y = masterY;
+    master->state.deltaPos.z = masterZ;
   }
 
   if ((particle.pattern & 4u) != 0) {
@@ -5795,7 +5795,7 @@ bool CEffectPrim::Prim3DSlotParticle() {
 
   this->render.position = {this->state.orgPos.x + this->state.deltaPos.x, this->state.orgPos.y + this->state.deltaPos.y, this->state.orgPos.z + this->state.deltaPos.z};
 
-  if ((this->state.pattern & 0x100u) != 0 && 3.0f >= this->CalcDist(this->state.master->state.deltaPos[0], this->state.master->state.deltaPos[2])) {
+  if ((this->state.pattern & 0x100u) != 0 && 3.0f >= this->CalcDist(this->state.master->state.deltaPos.x, this->state.master->state.deltaPos.z)) {
     return false;
   }
 

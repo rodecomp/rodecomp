@@ -5480,18 +5480,18 @@ void CGameMode::InitializeCamera() {
     const float y = this->scene->player->render.position.y;
     const float x = this->scene->player->render.position.x;
     CView* view = this->camera;
-    view->camera.target[0] = x;
-    view->camera.target[1] = y;
-    view->camera.target[2] = z;
+    view->camera.target.x = x;
+    view->camera.target.y = y;
+    view->camera.target.z = z;
   }
   {
     const float z = this->scene->player->render.position.z;
     const float y = this->scene->player->render.position.y;
     const float x = this->scene->player->render.position.x;
     CView* view = this->camera;
-    view->camera.desiredTarget[0] = x;
-    view->camera.desiredTarget[1] = y;
-    view->camera.desiredTarget[2] = z;
+    view->camera.desiredTarget.x = x;
+    view->camera.desiredTarget.y = y;
+    view->camera.desiredTarget.z = z;
   }
   this->hasViewParameters = 0;
 
@@ -6775,9 +6775,10 @@ void CGameMode::ReloadScene() {
   const float z = this->scene->player->render.position.z;
   const float y = this->scene->player->render.position.y;
   const float x = this->scene->player->render.position.x;
-  this->camera->camera.target[0] = x;
-  this->camera->camera.target[1] = y;
-  this->camera->camera.target[2] = z;
+  CView* view = this->camera;
+  view->camera.target.x = x;
+  view->camera.target.y = y;
+  view->camera.target.z = z;
 }
 
 // OFFSET: 0x00CDBEB0

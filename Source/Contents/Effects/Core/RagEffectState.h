@@ -5,6 +5,7 @@
 
 #include <cstddef>
 #include <list>
+#include "Utility/Math/Vector3d.h"
 
 class CRes;
 struct EffectPrimitiveState;
@@ -35,9 +36,9 @@ struct RagEffectState {
   /* 0003C */ std::uint32_t count;
   /* 00040 */ std::int32_t stateCnt;
   /* 00044 */ int duration;
-  /* 00048 */ float deltaPos[3];
-  /* 00054 */ float deltaPos2[3];
-  /* 00060 */ float deltaPos3[3];
+  /* 00048 */ vector3d deltaPos;
+  /* 00054 */ vector3d deltaPos2;
+  /* 00060 */ vector3d deltaPos3;
   /* 0006C */ std::list<EffectPrimitiveState*> primList;
   /* 00074 */ RagEffectSegment objSeg[20];
   /* 006B4 */ CRes* resource;

@@ -109,14 +109,14 @@ __forceinline void C3dActor::FinishBounds(const float* bounds, bool modern) {
   }
 
   for (unsigned axis = 0; axis < 3; ++axis) {
-    this->oriented.halfSize[axis] = Absolute((bounds[axis + 3] - bounds[axis]) * this->scale[axis]) * 0.5f;
+    this->oriented.halfSize[axis] = Absolute((bounds[axis + 3] - bounds[axis]) * (&this->scale.x)[axis]) * 0.5f;
   }
 
   matrix axes;
-  axes.SetScale(this->scale[0], this->scale[1], this->scale[2]);
-  axes.AppendYRotation(Radians(this->rotation[1]));
-  axes.AppendXRotation(Radians(this->rotation[0]));
-  axes.AppendZRotation(Radians(this->rotation[2]));
+  axes.SetScale(this->scale.x, this->scale.y, this->scale.z);
+  axes.AppendYRotation(Radians(this->rotation.y));
+  axes.AppendXRotation(Radians(this->rotation.x));
+  axes.AppendZRotation(Radians(this->rotation.z));
 
   SetAxis(this->oriented.axes[0], axes.values);
   SetAxis(this->oriented.axes[1], axes.values + 3);
@@ -153,15 +153,15 @@ void C3dActorV1::UpdateBounds() {
   matrix identity;
   std::memcpy(identity.values, g_identityMatrix, sizeof(identity.values));
   this->root->AccumulateBounds(bounds.data(), identity.values);
-  this->offset[0] = -(bounds[3] + bounds[0]) * 0.5f;
-  this->offset[1] = -bounds[4];
-  this->offset[2] = -(bounds[5] + bounds[2]) * 0.5f;
-  this->transform.MakeTranslate(this->offset[0], this->offset[1], this->offset[2]);
-  this->transform.AppendScale(this->scale[0], this->scale[1], this->scale[2]);
-  this->transform.AppendYRotation(Radians(this->rotation[1]));
-  this->transform.AppendXRotation(Radians(this->rotation[0]));
-  this->transform.AppendZRotation(Radians(this->rotation[2]));
-  this->transform.AppendTranslate(this->position);
+  this->offset.x = -(bounds[3] + bounds[0]) * 0.5f;
+  this->offset.y = -bounds[4];
+  this->offset.z = -(bounds[5] + bounds[2]) * 0.5f;
+  this->transform.MakeTranslate(this->offset.x, this->offset.y, this->offset.z);
+  this->transform.AppendScale(this->scale.x, this->scale.y, this->scale.z);
+  this->transform.AppendYRotation(Radians(this->rotation.y));
+  this->transform.AppendXRotation(Radians(this->rotation.x));
+  this->transform.AppendZRotation(Radians(this->rotation.z));
+  this->transform.AppendTranslate(&this->position.x);
   this->FinishBounds(bounds.data(), false);
 }
 

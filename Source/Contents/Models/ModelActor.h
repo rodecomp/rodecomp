@@ -27,16 +27,14 @@ public:
 
   // INLINED
   void SetPosition(const vector3d& value) {
-    this->position[0] = value.x;
-    this->position[1] = value.y;
-    this->position[2] = value.z;
+    this->position = value;
     this->dirty = 1;
   }
 
-  /* 0004 */ float position[3];
-  /* 0010 */ float rotation[3];
-  /* 001C */ float scale[3];
-  /* 0028 */ float offset[3];
+  /* 0004 */ vector3d position;
+  /* 0010 */ vector3d rotation;
+  /* 001C */ vector3d scale;
+  /* 0028 */ vector3d offset;
   /* 0034 */ matrix transform;
   /* 0064 */ matrix inverseTransform;
   /* 0094 */ unsigned char dirty;

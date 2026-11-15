@@ -15,9 +15,9 @@ namespace {
 C3dActor::C3dActor()
     : position{0.0f, 0.0f, 0.0f}, rotation{0.0f, 0.0f, 0.0f}, scale{0.0f, 0.0f, 0.0f}, offset{0.0f, 0.0f, 0.0f}, dirty(1), oriented{{0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {{0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}}}, corners{}, minimum{0.0f, 0.0f, 0.0f}, maximum{0.0f, 0.0f, 0.0f}, enabled(1), renderFrame(0), occlusionEnabled(0),
       occluded(0), alpha(255), commandMode(0), color(0xFFFFFFFFu), playback(2), speed(0), shade(0) {
-  this->scale[0] = 1.0f;
-  this->scale[1] = 1.0f;
-  this->scale[2] = 1.0f;
+  this->scale.x = 1.0f;
+  this->scale.y = 1.0f;
+  this->scale.z = 1.0f;
 }
 
 // OFFSET: 0x00AB6420
@@ -102,12 +102,12 @@ void C3dActorV2::Assign(const C3dModelRes& resource) {
 // OFFSET: 0x00ABB890
 // FUNCTION: fn_17516
 void C3dActor::UpdateMatrix() {
-  this->transform.MakeTranslate(this->offset[0], this->offset[1], this->offset[2]);
-  this->transform.AppendScale(this->scale[0], this->scale[1], this->scale[2]);
-  this->transform.AppendYRotation(Radians(this->rotation[1]));
-  this->transform.AppendXRotation(Radians(this->rotation[0]));
-  this->transform.AppendZRotation(Radians(this->rotation[2]));
-  this->transform.AppendTranslate(this->position);
+  this->transform.MakeTranslate(this->offset.x, this->offset.y, this->offset.z);
+  this->transform.AppendScale(this->scale.x, this->scale.y, this->scale.z);
+  this->transform.AppendYRotation(Radians(this->rotation.y));
+  this->transform.AppendXRotation(Radians(this->rotation.x));
+  this->transform.AppendZRotation(Radians(this->rotation.z));
+  this->transform.AppendTranslate(&this->position.x);
   this->inverseTransform.MakeInverse(this->transform);
   this->dirty = 0;
 }
@@ -117,11 +117,11 @@ void C3dActor::UpdateMatrix() {
 void C3dActorV2::UpdateMatrix() {
   this->transform.Identity();
   this->transform.values[4] = -1.0f;
-  this->transform.AppendScale(this->scale[0], this->scale[1], this->scale[2]);
-  this->transform.AppendYRotation(Radians(this->rotation[1]));
-  this->transform.AppendXRotation(Radians(this->rotation[0]));
-  this->transform.AppendZRotation(Radians(this->rotation[2]));
-  this->transform.AppendTranslate(this->position);
+  this->transform.AppendScale(this->scale.x, this->scale.y, this->scale.z);
+  this->transform.AppendYRotation(Radians(this->rotation.y));
+  this->transform.AppendXRotation(Radians(this->rotation.x));
+  this->transform.AppendZRotation(Radians(this->rotation.z));
+  this->transform.AppendTranslate(&this->position.x);
   this->inverseTransform.MakeInverse(this->transform);
   this->dirty = 0;
 }
@@ -235,12 +235,12 @@ void C3dActor::CopyVolumes(const std::list<ModelVolume*>& source) {
 // INLINED
 bool C3dActor::Reversed() const {
   bool result = false;
-  if (this->scale[0] < 0.0f) {
+  if (this->scale.x < 0.0f) {
     result = true;
   }
-  result = this->scale[1] < 0.0f ? !result : result;
+  result = this->scale.y < 0.0f ? !result : result;
 
-  if (this->scale[2] < 0.0f) {
+  if (this->scale.z < 0.0f) {
     result = !result;
   }
 

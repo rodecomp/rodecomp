@@ -176,12 +176,12 @@ int g_worldViewDrawn;
 // OFFSET: 0x00ADAC70
 // FUNCTION: fn_17912
 CView::CView() {
-  this->camera.target[0] = 0.0f;
-  this->camera.target[1] = 0.0f;
-  this->camera.target[2] = 0.0f;
-  this->camera.desiredTarget[0] = 0.0f;
-  this->camera.desiredTarget[1] = 0.0f;
-  this->camera.desiredTarget[2] = 0.0f;
+  this->camera.target.x = 0.0f;
+  this->camera.target.y = 0.0f;
+  this->camera.target.z = 0.0f;
+  this->camera.desiredTarget.x = 0.0f;
+  this->camera.desiredTarget.y = 0.0f;
+  this->camera.desiredTarget.z = 0.0f;
   this->backupCurrentTarget[0] = 0.0f;
   this->backupCurrentTarget[1] = 0.0f;
   this->backupCurrentTarget[2] = 0.0f;

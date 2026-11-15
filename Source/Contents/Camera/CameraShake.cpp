@@ -53,9 +53,7 @@ void CView::Apply() {
   }
 
   if (timeGetTime() >= this->shake.start + this->shake.duration) {
-    this->camera.target[0] = this->camera.desiredTarget[0];
-    this->camera.target[1] = this->camera.desiredTarget[1];
-    this->camera.target[2] = this->camera.desiredTarget[2];
+    this->camera.target = this->camera.desiredTarget;
     this->camera.distance = this->camera.desiredDistance;
     this->shake.enabled = 0;
     this->camera.pitch = this->camera.desiredPitch;
@@ -71,10 +69,10 @@ void CView::Apply() {
 
   // GLOBAL: gl_24565
   static float horizontal = this->shake.horizontal;
-  this->camera.target[0] += (Jitter(10.0f) + horizontal) * ClientCosine(static_cast<int>(this->camera.yaw));
+  this->camera.target.x += (Jitter(10.0f) + horizontal) * ClientCosine(static_cast<int>(this->camera.yaw));
   const float offsetZ = (Jitter(10.0f) + horizontal) * -ClientSine(static_cast<int>(this->camera.yaw));
   horizontal = -horizontal;
-  this->camera.target[2] += offsetZ;
+  this->camera.target.z += offsetZ;
   // GLOBAL: gl_24566
   static float distance = this->shake.distance;
   const float distanceDelta = Jitter(10.0f) + distance;

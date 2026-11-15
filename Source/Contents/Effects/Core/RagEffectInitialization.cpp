@@ -690,9 +690,7 @@ void CRagEffect::Init(EffectActor* parent, int id, vector3d deltaPos) {
   this->render.position = parent->render.position;
   this->state.longitude = parent->render.angle;
   this->SetStateDuration(EffectLifetime(this->state.type));
-  this->state.deltaPos[0] = deltaPos.x;
-  this->state.deltaPos[1] = deltaPos.y;
-  this->state.deltaPos[2] = deltaPos.z;
+  this->state.deltaPos = deltaPos;
   char name[64];
   SelectRagEffectResource(this->state, g_serviceOptions, name);
 

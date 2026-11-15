@@ -17,27 +17,25 @@ void CView::Refresh() {
   const float distance = -this->camera.distance;
   this->frame.eye[1] = ((orbit.values[4] * 0.0f + orbit.values[1] * 0.0f) + distance * orbit.values[7]) + orbit.values[10];
   this->frame.eye[2] = ((orbit.values[5] * 0.0f + orbit.values[2] * 0.0f) + distance * orbit.values[8]) + orbit.values[11];
-  this->frame.eye[0] = (((orbit.values[3] * 0.0f + orbit.values[0] * 0.0f) + distance * orbit.values[6]) + orbit.values[9]) + this->camera.target[0];
-  this->frame.eye[1] = this->camera.target[1] + this->frame.eye[1];
-  this->frame.eye[2] = this->camera.target[2] + this->frame.eye[2];
+  this->frame.eye[0] = (((orbit.values[3] * 0.0f + orbit.values[0] * 0.0f) + distance * orbit.values[6]) + orbit.values[9]) + this->camera.target.x;
+  this->frame.eye[1] = this->camera.target.y + this->frame.eye[1];
+  this->frame.eye[2] = this->camera.target.z + this->frame.eye[2];
   const float height = g_modeMgr.GetGameMode()->scene->terrain->Height(this->frame.eye[0], this->frame.eye[2]);
 
   if (this->frame.eye[1] > height) {
     this->frame.eye[1] = height;
   }
 
-  this->frame.view.LookAt(this->frame.eye, this->camera.target, this->frame.up);
+  this->frame.view.LookAt(this->frame.eye, &this->camera.target.x, this->frame.up);
   this->frame.inverse.MakeInverse(this->frame.view);
-  g_renderer->SetCamera(this->frame.eye, this->camera.target, this->frame.up);
+  g_renderer->SetCamera(this->frame.eye, &this->camera.target.x, this->frame.up);
 }
 
 // OFFSET: 0x00ADBF60
 // FUNCTION: fn_17927
 void CView::Update() {
   const vector3d& position = this->scene->player->render.position;
-  this->camera.desiredTarget[0] = position.x;
-  this->camera.desiredTarget[1] = position.y;
-  this->camera.desiredTarget[2] = position.z;
+  this->camera.desiredTarget = position;
   this->Smooth();
   this->Apply();
   this->Refresh();
@@ -45,9 +43,9 @@ void CView::Update() {
 
 // INLINED
 void CameraFrame::Forward(const CameraState& camera, float* output) const {
-  const float y = camera.target[1] - this->eye[1];
-  const float x = camera.target[0] - this->eye[0];
-  const float z = camera.target[2] - this->eye[2];
+  const float y = camera.target.y - this->eye[1];
+  const float x = camera.target.x - this->eye[0];
+  const float z = camera.target.z - this->eye[2];
 
   output[1] = y;
   output[0] = x;

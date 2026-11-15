@@ -9,9 +9,9 @@
 // OFFSET: 0x00ADBAC0
 // FUNCTION: fn_17924
 void CView::Forward(float* output) const {
-  const float y = this->camera.target[1] - this->frame.eye[1];
-  const float x = this->camera.target[0] - this->frame.eye[0];
-  const float z = this->camera.target[2] - this->frame.eye[2];
+  const float y = this->camera.target.y - this->frame.eye[1];
+  const float x = this->camera.target.x - this->frame.eye[0];
+  const float z = this->camera.target.z - this->frame.eye[2];
 
   output[1] = y;
   output[0] = x;
@@ -32,9 +32,9 @@ matrix CView::AlternateView(float yaw) const {
   orbit.AppendYRotation((yaw / 180.0f) * pi);
   const float point[3] = {0.0f, 0.0f, -this->camera.distance};
   float eye[3];
-  eye[0] = (((orbit.values[3] * point[1] + orbit.values[0] * point[0]) + point[2] * orbit.values[6]) + orbit.values[9]) + this->camera.target[0];
-  eye[1] = (((orbit.values[4] * point[1] + orbit.values[1] * point[0]) + point[2] * orbit.values[7]) + orbit.values[10]) + this->camera.target[1];
-  eye[2] = (((orbit.values[5] * point[1] + orbit.values[2] * point[0]) + point[2] * orbit.values[8]) + orbit.values[11]) + this->camera.target[2];
+  eye[0] = (((orbit.values[3] * point[1] + orbit.values[0] * point[0]) + point[2] * orbit.values[6]) + orbit.values[9]) + this->camera.target.x;
+  eye[1] = (((orbit.values[4] * point[1] + orbit.values[1] * point[0]) + point[2] * orbit.values[7]) + orbit.values[10]) + this->camera.target.y;
+  eye[2] = (((orbit.values[5] * point[1] + orbit.values[2] * point[0]) + point[2] * orbit.values[8]) + orbit.values[11]) + this->camera.target.z;
   const float height = g_modeMgr.GetGameMode()->scene->terrain->Height(eye[0], eye[2]);
 
   if (eye[1] > height) {
@@ -42,6 +42,6 @@ matrix CView::AlternateView(float yaw) const {
   }
 
   matrix output;
-  output.LookAt(eye, this->camera.target, this->frame.up);
+  output.LookAt(eye, &this->camera.target.x, this->frame.up);
   return output;
 }

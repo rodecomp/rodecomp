@@ -60,17 +60,17 @@ void CView::Smooth() {
   this->camera.pitch = (this->camera.desiredPitch - this->camera.pitch) / 10.0f + this->camera.pitch;
   this->camera.distance = (this->camera.desiredDistance - this->camera.distance) / 10.0f + this->camera.distance;
   const bool immediate = g_serviceOptions.Get(TT_FIXED_CAMERA_ON_OFF) != 0;
-  float next[3] = {this->camera.desiredTarget[0], this->camera.desiredTarget[1], this->camera.desiredTarget[2]};
+  float next[3] = {this->camera.desiredTarget.x, this->camera.desiredTarget.y, this->camera.desiredTarget.z};
 
   if (!immediate) {
     for (unsigned axis = 0; axis < 3; ++axis) {
-      next[axis] = (next[axis] - this->camera.target[axis]) / 10.0f + this->camera.target[axis];
+      next[axis] = (next[axis] - (&this->camera.target.x)[axis]) / 10.0f + (&this->camera.target.x)[axis];
     }
   }
 
-  this->camera.target[2] = next[2];
-  this->camera.target[1] = next[1];
-  this->camera.target[0] = next[0];
+  this->camera.target.z = next[2];
+  this->camera.target.y = next[1];
+  this->camera.target.x = next[0];
 
   const float tangent = ClientSine(static_cast<int>(-this->camera.pitch)) / ClientCosine(static_cast<int>(-this->camera.pitch));
   const float cotangent = ClientCosine(static_cast<int>(-this->camera.pitch)) / ClientSine(static_cast<int>(-this->camera.pitch));

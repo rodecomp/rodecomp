@@ -263,9 +263,9 @@ void CView::Render() {
   g_effectMgr->Render();
 
   CRenderer* const renderer = g_renderer;
-  const float x = this->camera.target[0] - this->frame.eye[0];
-  const float y = this->camera.target[1] - this->frame.eye[1];
-  const float z = this->camera.target[2] - this->frame.eye[2];
+  const float x = this->camera.target.x - this->frame.eye[0];
+  const float y = this->camera.target.y - this->frame.eye[1];
+  const float z = this->camera.target.z - this->frame.eye[2];
   renderer->viewDirectionX = x;
   renderer->viewDirectionY = y;
   renderer->viewDirectionZ = z;

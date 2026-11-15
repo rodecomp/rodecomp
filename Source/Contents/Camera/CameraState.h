@@ -1,14 +1,15 @@
 #ifndef RAGNAROK_SOURCE_CONTENTS_CAMERA_CAMERASTATE_H
 #define RAGNAROK_SOURCE_CONTENTS_CAMERA_CAMERASTATE_H
 
+#include "Utility/Math/Vector3d.h"
 struct ServiceOptions;
 
 struct CameraState {
-  /* 0020 */ float target[3];
+  /* 0020 */ vector3d target;
   /* 002C */ float pitch;
   /* 0030 */ float yaw;
   /* 0034 */ float distance;
-  /* 0038 */ float desiredTarget[3];
+  /* 0038 */ vector3d desiredTarget;
   /* 0044 */ float desiredPitch;
   /* 0048 */ float desiredYaw;
   /* 004C */ float desiredDistance;
@@ -20,7 +21,7 @@ struct CameraState {
     this->pitch = this->desiredPitch = -45;
 
     for (unsigned axis = 0; axis < 3; ++axis) {
-      this->target[axis] = this->desiredTarget[axis] = 0;
+      (&this->target.x)[axis] = (&this->desiredTarget.x)[axis] = 0;
     }
   }
 };
