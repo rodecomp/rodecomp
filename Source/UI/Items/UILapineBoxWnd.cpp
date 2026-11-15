@@ -122,7 +122,7 @@ void UILapineBoxWnd::OnLBtnDown(int x, int y) {
 
   const ITEM_INFO item = this->ReadMaterial(x, y);
 
-  if (item.identity[1] != 0) {
+  if (item.identity[1] > 0) {
     static_cast<CGameMode*>(g_modeMgr.GetGameMode())->BeginDragItem(0x1A, item, item.quantity, -1);
   }
 }
