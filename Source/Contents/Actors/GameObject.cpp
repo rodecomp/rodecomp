@@ -1751,7 +1751,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
               case JT_ABYSS_CHASER:
                 view = static_cast<int>(weapon);
                 if (view > 1000) {
-                  view = GetWeaponViewValue(view);
+                  view = g_session.GetWeaponViewValue(view);
                 }
                 genericWeapon = false;
                 break;
@@ -1770,7 +1770,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
             if (genericWeapon) {
               std::int64_t weaponView = weapon;
               if (weaponView > 1000) {
-                weaponView = GetWeaponViewValue(static_cast<int>(weaponView));
+                weaponView = g_session.GetWeaponViewValue(static_cast<int>(weaponView));
               }
               view = static_cast<int>(weaponView);
             }

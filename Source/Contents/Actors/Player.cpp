@@ -558,7 +558,7 @@ void CPc::SetModifyFactorOfmotionSpeed(int value) {
   int speed = value;
 
   if (weapon > 105) {
-    weapon = GetWeaponViewValue(weapon);
+    weapon = g_session.GetWeaponViewValue(weapon);
   }
 
   if (weapon != 11) {
@@ -1330,7 +1330,7 @@ void CPc::SetSprWeapon2(int first, int second) {
     return;
   }
 
-  if (GetWeaponViewValue(shieldItem) > 0) {
+  if (g_session.GetWeaponViewValue(shieldItem) > 0) {
     int weaponType = this->GetDualWieldWeaponType(weaponItem, shieldItem);
     switch (this->GetEffectiveJob(-1)) {
       case JT_ASSASSIN:
@@ -1384,7 +1384,7 @@ void CPc::SetSprWeapon2(int first, int second) {
     return;
   }
 
-  int viewType = GetWeaponViewValue(this->weapon);
+  int viewType = g_session.GetWeaponViewValue(this->weapon);
   const std::string actName = g_session.GetWeaponActName(viewJob, this->sex, viewType, weaponItem, this->bodyStyle);
   if (ResourceMgr::Instance().Exists(actName.c_str())) {
     this->LoadEquipAction(5, actName.c_str());
@@ -1392,7 +1392,7 @@ void CPc::SetSprWeapon2(int first, int second) {
     this->LoadEquipSprite(5, sprName.c_str());
     viewType = this->MapMotion(viewType);
   } else {
-    viewType = GetWeaponViewValue(weaponItem);
+    viewType = g_session.GetWeaponViewValue(weaponItem);
     if (viewType == -1 || viewType == 0 || weaponItem == 1599) {
       return;
     }
@@ -2438,7 +2438,7 @@ void CPc::SetSprAct2(int first, int second, int third, int fourth, int fifth, in
   this->accessory = sixth;
   this->accessory2 = seventh;
   this->accessory3 = eighth;
-  this->shield = GetWeaponViewValue(fifth) < 0 ? fifth : 0;
+  this->shield = g_session.GetWeaponViewValue(fifth) < 0 ? fifth : 0;
   this->headPalette = ninth;
   this->render.bodyPalette = tenth;
   this->render.bodyPalette = g_session.GetBodyStyle(first, tenth, this->bodyStyle);

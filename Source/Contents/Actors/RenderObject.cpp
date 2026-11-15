@@ -3268,7 +3268,7 @@ int CGameActor::WeaponActionBase(int weaponType) {
   int base = 0;
   switch (weaponType) {
   case ST_AUTOCOUNTER:
-    base = IsJobWeaponAllowed(this->GetEffectiveJob(-1), this->sex, this->GetWeapon()) ? 88 : 80;
+    base = g_session.IsJobWeaponAllowed(this->GetEffectiveJob(-1), this->sex, this->GetWeapon()) ? 88 : 80;
     break;
   case ST_A_COUNTER:
     switch (this->GetEffectiveJob(-1)) {

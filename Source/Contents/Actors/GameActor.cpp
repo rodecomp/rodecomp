@@ -143,7 +143,7 @@ bool CGameActor::ProcessState() {
     if (this->isCounter == 0) {
       this->isCounter = 1;
       if (g_session.IsPlayerJobId(this->GetEffectiveJob(-1)) != 0) {
-        if (IsJobWeaponAllowed(this->GetEffectiveJob(-1), this->sex, this->GetWeapon())) {
+        if (g_session.IsJobWeaponAllowed(this->GetEffectiveJob(-1), this->sex, this->GetWeapon())) {
           this->SetAction(0x58, 4, 1);
         } else {
           this->SetAction(0x50, 4, 1);

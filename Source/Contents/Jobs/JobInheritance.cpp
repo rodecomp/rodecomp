@@ -788,13 +788,23 @@ int CSession::GetRealWeaponId(int weapon) const {
   return weapon;
 }
 
+// INLINED
+int __stdcall GetWeaponViewValue(int weapon) {
+  return g_session.GetWeaponViewValue(weapon);
+}
+
+// INLINED
+bool __stdcall IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) {
+  return g_session.IsJobWeaponAllowed(job, slot, weapon);
+}
+
 // OFFSET: 0x00DFB4B0
 // FUNCTION: fn_23583
-bool __stdcall IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) {
+bool CSession::IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) const {
   if (weapon >= 105) {
     if (job == JT_ASSASSIN || job == JT_ASSASSIN_H || job == JT_ASSASSIN_B || job == JT_GUILLOTINE_CROSS || job == JT_GUILLOTINE_CROSS_H ||
       job == JT_GUILLOTINE_CROSS_B || job == JT_SHADOW_CROSS) {
-      if (GetWeaponViewValue(static_cast<int>(weapon >> 32)) > 0) {
+      if (g_session.GetWeaponViewValue(static_cast<int>(weapon >> 32)) > 0) {
         weapon = GetDualWieldWeaponType(static_cast<int>(weapon), static_cast<int>(weapon >> 32));
       } else {
         weapon = GetWeaponViewValue(static_cast<int>(weapon));
@@ -1226,7 +1236,7 @@ std::string GetJobTitleString(int job) {
 
 // OFFSET: 0x00E19530
 // FUNCTION: fn_23841
-__declspec(noinline) int __stdcall GetWeaponViewValue(int weapon) {
+__declspec(noinline) int CSession::GetWeaponViewValue(int weapon) const {
   const int value = FindItemDescription(weapon).viewId;
 
   if (weapon > 2100 && weapon < 2200 || static_cast<unsigned>(weapon - 28901) <= 0x61 || static_cast<unsigned>(weapon - 460000) <= 0x270F) {
@@ -1238,7 +1248,7 @@ __declspec(noinline) int __stdcall GetWeaponViewValue(int weapon) {
 
 // OFFSET: 0x00E248F0
 // FUNCTION: fn_23898
-int __stdcall GetDualWieldWeaponType(int first, int second) {
+int CSession::GetDualWieldWeaponType(int first, int second) const {
   int main = first;
   int result = 0;
   int sub;

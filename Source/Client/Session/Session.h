@@ -855,6 +855,9 @@ public:
   bool IsVisibleJob(int job) const;
   float AttackMotionLength(int job, int appearance, int equipment, int attackMode) const;
   int GetRealWeaponId(int weapon) const;
+  int GetWeaponViewValue(int weapon) const;
+  int GetDualWieldWeaponType(int first, int second) const;
+  bool IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) const;
   int GetBattleFieldMode() const;
   bool IsShadowItemType(int type) const;
   bool IsConsumableItemType(int type) const;
