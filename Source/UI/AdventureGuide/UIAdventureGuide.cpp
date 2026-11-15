@@ -33,6 +33,8 @@
 #include <utility>
 
 template __declspec(noinline) std::string std::sub_match<std::string::const_iterator>::str() const;
+template __declspec(noinline) void CUIListBox<AdventureGuide::CUISubTab>::UpdateScrollBar();
+template __declspec(noinline) void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::UpdateScrollBar();
 
 template void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::UpdateScrollBar();
 template void CUIListBox<AdventureGuide::CUITab>::UpdateScrollBar();
