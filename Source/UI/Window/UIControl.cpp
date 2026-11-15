@@ -3340,6 +3340,26 @@ CUIRegisterMgr* Singleton<CUIRegisterMgr>::GetInstance() {
   return s_instance;
 }
 
+namespace {
+// INLINED
+inline int MeasureTextWidth(UIWindow* window, const char* text, unsigned bytes, int family, int height, unsigned char bold, unsigned char italic) {
+  if (!text) {
+    return 0;
+  }
+
+  if (!bytes) {
+    bytes = static_cast<unsigned>(std::strlen(text));
+    if (!bytes) {
+      return 0;
+    }
+  }
+
+  TextContext context(*window->geometry.surface);
+  context.SetFont(family, height, bold, italic);
+  return context.Measure(text, bytes).cx;
+}
+}
+
 // OFFSET: 0x00A829D0
 // FUNCTION: fn_16994
 const char* UIWindow::ClipTextToWidth(const char* text, int maxWidth, int family, int height, unsigned char bold) {
@@ -3367,7 +3387,7 @@ const char* UIWindow::ClipTextToWidth(const char* text, int maxWidth, int family
         const char* start = current;
         current = g_serverLanguage->NextChar(start, static_cast<int>(end - start));
         const int step = static_cast<int>(current - start);
-        total += this->TextWidth(start, step, family, height, bold, 0);
+        total += MeasureTextWidth(this, start, step, family, height, bold, 0);
         bytes += step;
         if (total > maxWidth) {
           bytes = previous;
