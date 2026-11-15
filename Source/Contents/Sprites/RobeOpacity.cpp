@@ -19,16 +19,11 @@ int CSession::GetRobeAlpha(int robeId) {
 
   const int base = to < alpha.from ? to : alpha.from;
   const int half = static_cast<int>(static_cast<float>(period) * 0.5f);
-  int phase = timeGetTime() % period;
-  if (phase > half) {
-    phase = period - phase;
-  }
+  const int elapsed = timeGetTime() % period;
+  const int phase = elapsed > half ? period - elapsed : elapsed;
 
   const int value = static_cast<int>(static_cast<float>(phase) / static_cast<float>(half) * static_cast<float>(range) + static_cast<float>(base));
-  int result = 0;
-  if (value >= 0) {
-    result = value;
-  }
+  int result = value >= 0 ? value : 0;
   if (result > 255) {
     result = 255;
   }
