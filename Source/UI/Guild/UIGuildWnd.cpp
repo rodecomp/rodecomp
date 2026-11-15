@@ -290,7 +290,7 @@ UIGuildBanishedMemberWnd::UIGuildBanishedMemberWnd()
 // OFFSET: 0x009539C0
 // FUNCTION: fn_12997
 UIGuildInfoManageWnd::UIGuildInfoManageWnd()
-    : UIGuildWnd(), emblemFiles(), emblemMenuEntries(), padding_00EC(0), padding_00F0(0), m_guildId(g_guildInfo.m_guildId) {
+    : UIGuildWnd(), emblemFiles(), emblemMenuEntries(), unknown_00EC(0), unknown_00F0(0), m_guildId(g_guildInfo.m_guildId) {
 }
 
 // OFFSET: 0x00953B00

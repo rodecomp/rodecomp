@@ -31,7 +31,7 @@ public:
 
   /* 0004 */ HMODULE m_module;
   /* 0008 */ int padding_0008;
-  /* 000C */ int padding_000C;
+  /* 000C */ int unknown_000C;
   /* 0010 */ char m_rootUrl[256];
 };
 

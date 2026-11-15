@@ -34,15 +34,15 @@ template __declspec(noinline) std::_Tree_find_result<std::map<int, RobeAlpha>::_
 int g_serviceMode;
 
 struct NaviUnknownBlock {
-  /* 0000 */ int padding_0000;
-  /* 0004 */ int padding_0004;
-  /* 0008 */ int padding_0008;
-  /* 000C */ int padding_000C;
-  /* 0010 */ int padding_0010;
-  /* 0014 */ int padding_0014;
-  /* 0018 */ int padding_0018;
-  /* 001C */ int padding_001C;
-  /* 0020 */ int padding_0020;
+  /* 0000 */ int unknown_0000;
+  /* 0004 */ int unknown_0004;
+  /* 0008 */ int unknown_0008;
+  /* 000C */ int unknown_000C;
+  /* 0010 */ int unknown_0010;
+  /* 0014 */ int unknown_0014;
+  /* 0018 */ int unknown_0018;
+  /* 001C */ int unknown_001C;
+  /* 0020 */ int unknown_0020;
 
   NaviUnknownBlock();
 };
@@ -63,8 +63,8 @@ CNavi_Object::CNavi_Object()
 // OFFSET: 0x00B8C990
 // FUNCTION: fn_19427
 NaviUnknownBlock::NaviUnknownBlock()
-    : padding_0000(0), padding_0004(0), padding_0008(0), padding_000C(0), padding_0010(0), padding_0014(0), padding_0018(0), padding_001C(0),
-      padding_0020(0) {
+    : unknown_0000(0), unknown_0004(0), unknown_0008(0), unknown_000C(0), unknown_0010(0), unknown_0014(0), unknown_0018(0), unknown_001C(0),
+      unknown_0020(0) {
 }
 
 // OFFSET: 0x00B8C710

@@ -10,23 +10,6 @@
 class UIStaticText;
 class UITabControl;
 
-struct GuildStorageLogEntry {
-  /* 0000 */ int logId = 0;
-  /* 0004 */ int quantity = 0;
-  /* 0008 */ unsigned char operation = 0;
-  /* 0009 */ char characterName[24] = {};
-  /* 0021 */ char timestamp[24] = {};
-  /* 003C */ std::string itemName;
-  /* 0054 */ unsigned char identified = 0;
-  /* 0058 */ int itemType = 0;
-  /* 005C */ int refineLevel = 0;
-  /* 0060 */ unsigned char cards[16] = {};
-  /* 0070 */ unsigned char category = 0;
-  /* 0072 */ std::int16_t grade = 0;
-};
-
-extern std::vector<GuildStorageLogEntry> g_guildStorageLogs[3];
-
 class UIGuild_Storage_Log : public UIFrameWnd {
 public:
   UIGuild_Storage_Log();

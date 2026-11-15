@@ -14,8 +14,8 @@ struct UIDescriptRaceText {
   /* 00F8 */ std::string title;
   /* 0110 */ int padding_0110;
   /* 0114 */ int padding_0114;
-  /* 0118 */ std::string padding_0118;
-  /* 0130 */ std::string padding_0130;
+  /* 0118 */ std::string unknown_0118;
+  /* 0130 */ std::string unknown_0130;
 };
 
 // VTABLE: vt_00998

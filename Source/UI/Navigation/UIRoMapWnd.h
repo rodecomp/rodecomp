@@ -23,14 +23,14 @@ class UIEditCtrl;
 
 struct RoMapTooltipBox {
   // INLINED
-  RoMapTooltipBox(int x, int y, int width, int height) : x(x), y(y), width(width), height(height), padding_0010(1) {
+  RoMapTooltipBox(int x, int y, int width, int height) : x(x), y(y), width(width), height(height), unknown_0010(1) {
   }
 
   /* 0000 */ int x;
   /* 0004 */ int y;
   /* 0008 */ int width;
   /* 000C */ int height;
-  /* 0010 */ int padding_0010;
+  /* 0010 */ int unknown_0010;
 };
 
 void SetRoMapMarker(std::string name, const WorldViewArea& area, RoMapMarker& marker);

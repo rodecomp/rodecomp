@@ -39,7 +39,7 @@ public:
   /* 01B8 */ UISpriteButton* m_readButtons[2];
   /* 01C0 */ std::uint32_t m_previewTick;
   /* 01C4 */ std::string m_bitmapName;
-  /* 01DC */ std::string padding_01DC;
+  /* 01DC */ std::string unknown_01DC;
   /* 01F4 */ unsigned char padding_01F4[0x4];
   /* 01F8 */ int m_kind;
   /* 01FC */ int m_optionCount;

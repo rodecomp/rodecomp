@@ -51,19 +51,19 @@ public:
   /* 00F8 */ UIBitmapButton* previous;
   /* 00FC */ UIBitmapButton* next;
   /* 0100 */ int padding_0100;
-  /* 0104 */ int padding_0104;
-  /* 0108 */ int padding_0108;
+  /* 0104 */ int unknown_0104;
+  /* 0108 */ int unknown_0108;
   /* 010C */ int page;
   /* 0110 */ int totalPages;
-  /* 0114 */ unsigned char padding_0114;
-  /* 0118 */ int padding_0118;
+  /* 0114 */ unsigned char unknown_0114;
+  /* 0118 */ int unknown_0118;
   /* 011C */ std::uint32_t padding_011C;
   /* 0120 */ AdvenPartyBoardWndInfo* saved;
   /* 0124 */ UIEditCtrl* minimum;
   /* 0128 */ UIEditCtrl* maximum;
   /* 012C */ UIJobSlotButton* jobs[4];
   /* 013C */ UIComboBoxDef2Wnd* types;
-  /* 0140 */ std::vector<ExtendedListLine> padding_0140;
+  /* 0140 */ std::vector<ExtendedListLine> unknown_0140;
   /* 014C */ int selectedType;
   /* 0150 */ unsigned char searching;
 

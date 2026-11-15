@@ -12476,7 +12476,7 @@ void CGameMode::ApplyGuildStorageLog(std::uint16_t result, const std::vector<Gui
     std::memcpy(entry.cards, it->item.cards, sizeof(entry.cards));
     entry.category = it->logFlags;
     entry.grade = it->item.grade;
-    g_guildStorageLogs[0].push_back(entry);
+    g_session.guildStorageLogs[0].push_back(entry);
   }
 
   if (0 == result) {
@@ -12485,14 +12485,14 @@ void CGameMode::ApplyGuildStorageLog(std::uint16_t result, const std::vector<Gui
 
   if (1 == result) {
     GuildStorageLogEntry pivot;
-    std::sort(g_guildStorageLogs[0].begin(), g_guildStorageLogs[0].end(), [&pivot](const GuildStorageLogEntry& left, const GuildStorageLogEntry& right) {
+    std::sort(g_session.guildStorageLogs[0].begin(), g_session.guildStorageLogs[0].end(), [&pivot](const GuildStorageLogEntry& left, const GuildStorageLogEntry& right) {
       return std::strcmp(left.timestamp, right.timestamp) > 0;
     });
-    for (std::vector<GuildStorageLogEntry>::iterator it = g_guildStorageLogs[0].begin(); it != g_guildStorageLogs[0].end(); ++it) {
+    for (std::vector<GuildStorageLogEntry>::iterator it = g_session.guildStorageLogs[0].begin(); it != g_session.guildStorageLogs[0].end(); ++it) {
       if (it->operation != 1) {
-        g_guildStorageLogs[2].push_back(*it);
+        g_session.guildStorageLogs[2].push_back(*it);
       } else {
-        g_guildStorageLogs[1].push_back(*it);
+        g_session.guildStorageLogs[1].push_back(*it);
       }
     }
     g_windowMgr.EnsureWindow(WID_GUILD_STORAGE_LOG);
@@ -12510,9 +12510,9 @@ void CGameMode::ApplyGuildStorageLog(std::uint16_t result, const std::vector<Gui
   }
   sprintf_s(text, sizeof(text), LookupMessage(messageId));
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
-  g_guildStorageLogs[0].clear();
-  g_guildStorageLogs[1].clear();
-  g_guildStorageLogs[2].clear();
+  g_session.guildStorageLogs[0].clear();
+  g_session.guildStorageLogs[1].clear();
+  g_session.guildStorageLogs[2].clear();
 }
 
 // OFFSET: 0x00D5E930

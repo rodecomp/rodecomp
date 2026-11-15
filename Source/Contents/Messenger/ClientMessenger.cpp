@@ -319,7 +319,7 @@ namespace EquipmentProperties {
     /* 0004 */ CLuaInstance script;
     /* 000C */ bool loadValid;
     /* 000D */ bool m_dirty = false;
-    /* 0010 */ int padding_0010;
+    /* 0010 */ int unknown_0010;
     /* 0014 */ int shopId;
     /* 0018 */ EquipmentPropertyStore* store;
     /* 001C */ CEquipment* currentEquipment;
@@ -573,7 +573,7 @@ __declspec(noinline) std::map<std::int64_t, EquipmentPropertyDefinition*>& Equip
 // OFFSET: 0x006A1AA0
 // FUNCTION: fn_06013
 EquipmentProperties::CEquipmentPropertiesMgr::CEquipmentPropertiesMgr()
-    : loadValid(1), padding_0010(-1), shopId(-1), store(new EquipmentPropertyStore), currentEquipment(0), notifyWindow(0) {
+    : loadValid(1), unknown_0010(-1), shopId(-1), store(new EquipmentPropertyStore), currentEquipment(0), notifyWindow(0) {
 }
 
 // OFFSET: 0x006ABE90

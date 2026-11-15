@@ -100,7 +100,7 @@ CRenewQuestMgr* g_renewQuestMgr;
 // OFFSET: 0x006765C0
 // FUNCTION: fn_05420
 RenewQuestInfo::RenewQuestInfo()
-    : m_state(1), m_title(""), m_icon(""), m_iconTooltip(""), summary(""), padding_0064(""), npcSprite(""), destinationMap(""),
+    : m_state(1), m_title(""), m_icon(""), m_iconTooltip(""), summary(""), unknown_0064(""), npcSprite(""), destinationMap(""),
       destinationX(0), destinationY(0) {}
 
 // OFFSET: 0x00676770

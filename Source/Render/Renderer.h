@@ -62,7 +62,7 @@ public:
   /* 0044 */ float viewDirectionZ;
   /* 0048 */ unsigned char twoPass;
   /* 0049 */ unsigned char padding_0049[3];
-  /* 004C */ int padding_004C;
+  /* 004C */ int unknown_004C;
   /* 0050 */ RenderCommandPool commands;
   /* 0070 */ RenderPrimitivePool primitives;
   /* 0090 */ LightmappedPrimitivePool lightmapped;

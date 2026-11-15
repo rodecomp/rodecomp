@@ -10,8 +10,8 @@ public:
   void Process(const std::uint64_t& now) override;
   __declspec(noinline) void UpdateNotice();
 
-  /* 0030 */ void* padding_0030;
-  /* 0034 */ std::uint32_t padding_0034;
+  /* 0030 */ void* ownedTimestamp;
+  /* 0034 */ std::uint32_t embeddedTimestamp;
   /* 0038 */ int seconds;
   /* 003C */ int noticeIndex;
 };

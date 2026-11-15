@@ -49,6 +49,21 @@ struct BlockedCharacter {
   /* 0004 */ char expireDate[20];
 };
 
+struct GuildStorageLogEntry {
+  /* 0000 */ int logId = 0;
+  /* 0004 */ int quantity = 0;
+  /* 0008 */ unsigned char operation = 0;
+  /* 0009 */ char characterName[24] = {};
+  /* 0021 */ char timestamp[24] = {};
+  /* 003C */ std::string itemName;
+  /* 0054 */ unsigned char identified = 0;
+  /* 0058 */ int itemType = 0;
+  /* 005C */ int refineLevel = 0;
+  /* 0060 */ unsigned char cards[16] = {};
+  /* 0070 */ unsigned char category = 0;
+  /* 0072 */ std::int16_t grade = 0;
+};
+
 struct SessionRecord6144 {
   /* 0000 */ unsigned char registered = 0;
   /* 0001 */ unsigned char completed = 0;
@@ -634,7 +649,9 @@ public:
   /* 5C30 */ int m_buyingStoreMode;
   /* 5C34 */ int m_buyingStoreDbNumber;
   /* 5C38 */ int m_buyingStoreNoPermission;
-  /* 5C3C */ unsigned char padding_5C3C[0x2C];
+  /* 5C3C */ unsigned char padding_5C3C[0x04];
+  /* 5C40 */ std::vector<GuildStorageLogEntry> guildStorageLogs[3];
+  /* 5C64 */ unsigned char padding_5C64[0x04];
   /* 5C68 */ ITEM_INFO selectionItems[5];
   /* 6140 */ std::uint16_t achievementResult;
   /* 6144 */ std::map<int, SessionRecord6144> achievements;
@@ -1333,7 +1350,6 @@ public:
   void SetSwapArrowIndex(std::uint32_t value);
   void ResolvePendingActorName(std::uint32_t id, const char* name);
   void HiFriends(char* text);
-  void sub_DE4FF0();
   std::pair<int, int> GetShopEntry(unsigned int index, int key);
   bool HasCharacterName(std::string name);
   void SetEquippedArrowIndex(std::uint32_t value);
@@ -1446,6 +1462,7 @@ static_assert(offsetof(CSession, m_mileageWndActive) == 0x5C04);
 static_assert(offsetof(CSession, m_monsterInfoActorId) == 0x5C18);
 static_assert(offsetof(CSession, replayPacketMode) == 0x5C1C);
 static_assert(offsetof(CSession, m_buyingStoreMode) == 0x5C30);
+static_assert(offsetof(CSession, guildStorageLogs) == 0x5C40);
 static_assert(offsetof(CSession, selectionItems) == 0x5C68);
 static_assert(offsetof(CSession, m_selectedIndex) == 0x7F80);
 static_assert(offsetof(CSession, m_loginModeFlag) == 0x7F88);
@@ -1585,28 +1602,5 @@ static_assert(offsetof(CSession, m_loginAccountId) == 0x56E4);
 static_assert(offsetof(CSession, m_passwordWndAccountId) == 0x56E8);
 static_assert(offsetof(CSession, m_partyBookingLevelLimit) == 0x5BBC);
 #endif
-
-
-// INLINED
-inline __declspec(noinline) void CSession::sub_DE4FF0() {
-  const float scaleX = static_cast<float>(g_renderer->viewport.width) / 1280.0f;
-  const float scaleY = static_cast<float>(g_renderer->viewport.height - 17) / 1024.0f;
-
-  for (int i = 0; i < this->m_mapPosListCount; ++i) {
-    for (std::pair<const std::string, MapPosEntry>& entry : this->m_mapPosLists[i]) {
-      entry.second.rect.left = static_cast<int>(static_cast<float>(entry.second.rect.left) * scaleX + 0.5);
-      entry.second.rect.top = static_cast<int>(static_cast<float>(entry.second.rect.top) * scaleY + 0.5) + 17;
-      entry.second.rect.right = static_cast<int>(static_cast<float>(entry.second.rect.right) * scaleX + 0.5);
-      entry.second.rect.bottom = static_cast<int>(static_cast<float>(entry.second.rect.bottom) * scaleY + 0.5) + 17;
-    }
-  }
-
-  for (std::pair<const int, MapPosEntry>& entry : this->m_mapPosBounds) {
-    entry.second.rect.left = static_cast<int>(static_cast<float>(entry.second.rect.left) * scaleX + 0.5);
-    entry.second.rect.top = static_cast<int>(static_cast<float>(entry.second.rect.top) * scaleY + 0.5) + 17;
-    entry.second.rect.right = static_cast<int>(static_cast<float>(entry.second.rect.right) * scaleX + 0.5);
-    entry.second.rect.bottom = static_cast<int>(static_cast<float>(entry.second.rect.bottom) * scaleY + 0.5) + 17;
-  }
-}
 
 #endif

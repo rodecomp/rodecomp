@@ -3235,7 +3235,7 @@ void CGameMode::ReceiveGuildStorageLog(const unsigned char* data) {
       entry.refineLevel = item.refiningLevel;
       std::memcpy(entry.cards, item.cards, sizeof(entry.cards));
       entry.category = source.highlighted;
-      g_guildStorageLogs[0].push_back(entry);
+      g_session.guildStorageLogs[0].push_back(entry);
     }
   } else if (1 == packet->result) {
     for (int i = 0; i < packet->count; ++i) {
@@ -3264,17 +3264,17 @@ void CGameMode::ReceiveGuildStorageLog(const unsigned char* data) {
       entry.refineLevel = item.refiningLevel;
       std::memcpy(entry.cards, item.cards, sizeof(entry.cards));
       entry.category = source.highlighted;
-      g_guildStorageLogs[0].push_back(entry);
+      g_session.guildStorageLogs[0].push_back(entry);
     }
     GuildStorageLogEntry pivot;
-    std::sort(g_guildStorageLogs[0].begin(), g_guildStorageLogs[0].end(), [&pivot](const GuildStorageLogEntry& left, const GuildStorageLogEntry& right) {
+    std::sort(g_session.guildStorageLogs[0].begin(), g_session.guildStorageLogs[0].end(), [&pivot](const GuildStorageLogEntry& left, const GuildStorageLogEntry& right) {
       return std::strcmp(left.timestamp, right.timestamp) > 0;
     });
-    for (auto it = g_guildStorageLogs[0].begin(); it != g_guildStorageLogs[0].end(); ++it) {
+    for (auto it = g_session.guildStorageLogs[0].begin(); it != g_session.guildStorageLogs[0].end(); ++it) {
       if (it->operation == 1) {
-        g_guildStorageLogs[1].push_back(*it);
+        g_session.guildStorageLogs[1].push_back(*it);
       } else {
-        g_guildStorageLogs[2].push_back(*it);
+        g_session.guildStorageLogs[2].push_back(*it);
       }
     }
     g_windowMgr.EnsureWindow(WID_GUILD_STORAGE_LOG);
@@ -3288,9 +3288,9 @@ void CGameMode::ReceiveGuildStorageLog(const unsigned char* data) {
       std::sprintf(text, LookupMessage(MSI_RESULT_FAIL_UNKNOWN));
     }
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
-    g_guildStorageLogs[0].clear();
-    g_guildStorageLogs[1].clear();
-    g_guildStorageLogs[2].clear();
+    g_session.guildStorageLogs[0].clear();
+    g_session.guildStorageLogs[1].clear();
+    g_session.guildStorageLogs[2].clear();
   }
 }
 

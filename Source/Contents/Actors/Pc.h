@@ -140,7 +140,7 @@ public:
   /* 04A0 */ int blend;
   /* 04A4 */ int layerCellX;
   /* 04A8 */ int layerCellY;
-  /* 04AC */ std::map<int, std::pair<int, int>> padding_04AC;
+  /* 04AC */ std::map<int, std::pair<int, int>> unknown_04AC;
   /* 04B4 */ std::vector<CSprRes*> equipSprites;
   /* 04C0 */ std::vector<CActRes*> equipActions;
   /* 04CC */ int pkState;

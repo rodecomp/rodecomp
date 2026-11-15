@@ -59,7 +59,7 @@ protected:
   /* 00C8 */ UIStaticText* m_filterLabel1;
   /* 00CC */ UIStaticText* m_filterLabel2;
   /* 00D0 */ UIStaticText* m_filterLabel3;
-  /* 00D4 */ UIWindow* padding_00D4;
+  /* 00D4 */ UIWindow* unknown_00D4;
   /* 00D8 */ UIStaticText* m_footerText;
   /* 00DC */ UIEditCtrl* m_searchEdit;
   /* 00E0 */ UIComboBoxDefWnd* m_regionCombo;
@@ -73,14 +73,14 @@ protected:
   /* 0100 */ UITextButton* m_refreshButton;
   /* 0104 */ UIBitmapButton* m_tabButton;
   /* 0108 */ UIScrollBar* m_scrollBar;
-  /* 010C */ unsigned char padding_010C[0x4];
+  /* 010C */ unsigned char unknown_010C[0x4];
   /* 0110 */ std::map<int, std::vector<SeekPartyMapEntry>> m_regionMaps;
   /* 0118 */ std::vector<std::string> m_jobOptions[9];
   /* 0184 */ int m_region;
   /* 0188 */ int m_mapIndex;
   /* 018C */ int m_jobCategory;
   /* 0190 */ int m_jobCategoryChanged;
-  /* 0194 */ int padding_0194;
+  /* 0194 */ int unknown_0194;
   /* 0198 */ std::vector<MiniPartyInfoEntry> m_menuItems;
   /* 01A4 */ int m_firstRow;
   /* 01A8 */ int m_hoverIndex;
@@ -95,7 +95,7 @@ protected:
   /* 01C4 */ short m_filterLevel;
   /* 01C6 */ short m_filterMap;
   /* 01C8 */ short m_filterJob;
-  /* 01CA */ unsigned char padding_01CA[6];
+  /* 01CA */ unsigned char unknown_01CA[6];
   /* 01D0 */ SeekPartyListWndInfo* m_saved;
 };
 

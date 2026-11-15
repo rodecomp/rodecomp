@@ -461,7 +461,7 @@ void UIOngoingQuestScrollWnd::SetQuest(unsigned int questId) {
 // OFFSET: 0x007FAF70
 // FUNCTION: fn_09949
 UIRecommededQuestScrollWnd::UIRecommededQuestScrollWnd(int width, int height)
-    : UIScrollWnd(width, height, 0), m_questId(0), padding_00B4(14) {
+    : UIScrollWnd(width, height, 0), m_questId(0), unknown_00B4(14) {
   this->OnCreate(width, height);
 }
 

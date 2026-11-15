@@ -288,7 +288,7 @@ class CUITitleBar : public CUIControl {
 public:
   // INLINED
   explicit CUITitleBar()
-      : CUIControl(), resizable(1), left(), middle(), right(), leftName(), middleName(), rightName(), padding_00D8(), titleText(nullptr),
+      : CUIControl(), resizable(1), left(), middle(), right(), leftName(), middleName(), rightName(), unknown_00D8(), titleText(nullptr),
         firstButton(nullptr), secondButton(nullptr) {
   }
 
@@ -311,7 +311,7 @@ public:
   /* 0090 */ std::string leftName;
   /* 00A8 */ std::string middleName;
   /* 00C0 */ std::string rightName;
-  /* 00D8 */ unsigned char padding_00D8[0x04];
+  /* 00D8 */ unsigned char unknown_00D8[0x04];
   /* 00DC */ class CUIStaticText* titleText;
   /* 00E0 */ UIWindow* firstButton;
   /* 00E4 */ CUIButton* secondButton;

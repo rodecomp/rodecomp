@@ -77,7 +77,7 @@ C3dAnimModelRes::C3dAnimModelRes() {
   this->origin.x = 0.0f;
   this->origin.y = 0.0f;
   this->origin.z = 0.0f;
-  this->padding_0150 = 0;
+  this->unknown_0150 = 0;
   this->alpha = 255;
 }
 

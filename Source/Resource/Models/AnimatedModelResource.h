@@ -79,7 +79,7 @@ public:
   /* 0144 */ int frameCount;
   /* 0148 */ int animationLength;
   /* 014C */ float speed;
-  /* 0150 */ std::uint32_t padding_0150;
+  /* 0150 */ std::uint32_t unknown_0150;
   /* 0154 */ AnimatedModelOrigin origin;
   /* 0160 */ std::uint32_t alpha;
 };

@@ -1,4 +1,5 @@
 #include "UI/Guild/UIGuild_Storage_Log.h"
+#include "Client/Session/Session.h"
 #include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 #include "Contents/Tables/MessageTable.h"
@@ -15,9 +16,6 @@
 #include <cstdlib>
 #include <cstring>
 
-// GLOBAL: gl_25103
-std::vector<GuildStorageLogEntry> g_guildStorageLogs[3];
-
 // OFFSET: 0x009469D0
 // FUNCTION: fn_12849
 UIGuild_Storage_Log::UIGuild_Storage_Log() : UIFrameWnd(0) {
@@ -25,11 +23,11 @@ UIGuild_Storage_Log::UIGuild_Storage_Log() : UIFrameWnd(0) {
   this->m_offset = 0;
   this->m_state = 1;
   this->m_logTextHeight = 0;
-  const int first = static_cast<int>(g_guildStorageLogs[0].size());
+  const int first = static_cast<int>(g_session.guildStorageLogs[0].size());
   this->m_categoryCounts[0] = first;
-  const int second = static_cast<int>(g_guildStorageLogs[1].size());
+  const int second = static_cast<int>(g_session.guildStorageLogs[1].size());
   this->m_categoryCounts[1] = second;
-  const int third = static_cast<int>(g_guildStorageLogs[2].size());
+  const int third = static_cast<int>(g_session.guildStorageLogs[2].size());
   this->m_page = 1;
   this->m_categoryCounts[2] = third;
   this->m_pageCounts[0] = (first + 9) / 10;
@@ -123,7 +121,7 @@ int UIGuild_Storage_Log::SendMsg(UIWindow* sender, int message, std::intptr_t a,
 
 // INLINED
 __forceinline void UIGuild_Storage_Log::FillLogRows(int index) {
-  const std::vector<GuildStorageLogEntry>& logs = g_guildStorageLogs[index];
+  const std::vector<GuildStorageLogEntry>& logs = g_session.guildStorageLogs[index];
   char number[256];
   std::memset(number, 0, 255);
   for (auto it = logs.begin(); it != logs.end(); ++this->m_state, ++it, ++this->m_offset) {

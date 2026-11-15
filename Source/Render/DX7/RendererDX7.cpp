@@ -13,7 +13,7 @@ CRendererDX7::CRendererDX7() {
   this->boundLightmap = nullptr;
   this->fog.enabled = 0;
   this->fog.supported = 0;
-  this->padding_004C = 0;
+  this->unknown_004C = 0;
 
   if (this->queues.lightmapped.first.capacity() < 1000) {
     this->queues.lightmapped.first.reserve(1000);

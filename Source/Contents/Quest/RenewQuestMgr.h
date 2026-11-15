@@ -22,7 +22,7 @@ struct RenewQuestInfo {
   /* 001C */ std::string m_icon;
   /* 0034 */ std::string m_iconTooltip;
   /* 004C */ std::string summary;
-  /* 0064 */ std::string padding_0064;
+  /* 0064 */ std::string unknown_0064;
   /* 007C */ std::string npcSprite;
   /* 0094 */ std::string destinationMap;
   /* 00AC */ int destinationX;
@@ -39,8 +39,8 @@ struct RenewQuestOngoingInfo : RenewQuestInfo {
   /* 00C8 */ short m_day;
   /* 00CA */ short m_hour;
   /* 00CC */ unsigned short m_minute;
-  /* 00CE */ short padding_00CE;
-  /* 00D0 */ short padding_00D0;
+  /* 00CE */ short unknown_00CE;
+  /* 00D0 */ short unknown_00D0;
   /* 00D2 */ char m_huntCount;
   /* 00D4 */ int m_huntMobId[3];
   /* 00E0 */ short m_huntKillCount[3];

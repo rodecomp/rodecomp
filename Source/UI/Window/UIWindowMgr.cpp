@@ -859,7 +859,7 @@ void UIWindowMgr::ResetWindows() {
 // FUNCTION: fn_17086
 UIWindowMgr::UIWindowMgr()
     : activeWindowId(0), retainedPersistentWindow(false), changeNameWnd(nullptr), previousMouseX(-1), previousMouseY(-1),
-      dropDownBoxWnd(nullptr), macroReporterVisible(false), padding_4F211(false), waitDBSaveWnd(nullptr) {
+      dropDownBoxWnd(nullptr), macroReporterVisible(false), unknown_4F211(false), waitDBSaveWnd(nullptr) {
   this->ResetWindows();
   this->backgroundSurface = nullptr;
   this->screenWidth = 0;
