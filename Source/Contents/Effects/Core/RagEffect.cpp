@@ -15499,6 +15499,7 @@ void CRagEffect::VioletRingCloud(char type) {
 // FUNCTION: fn_20243
 void CRagEffect::TexturedMagicRing(char type) {
   if (this->state.stateCnt == 0) {
+    g_modeMgr.GetGameMode();
     this->state.lastPrim = this->LaunchEffectPrim(60, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = 5;
     this->state.lastPrim->state.duration = this->state.duration;
