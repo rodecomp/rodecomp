@@ -1985,7 +1985,7 @@ void CGrannyPc::RenderCached(const matrix& view, int layer, C3dGrannyModelRes* m
   }
 
   if (model == this->model) {
-    if (this->model->ProjectBounds(bounds, view, rotation, camera->frame.eye)) {
+    if (this->model->ProjectBounds(bounds, view, rotation, &camera->frame.eye.x)) {
       this->SetRenderInfo(bounds, screenX, screenY);
     } else {
       this->SetTlvert(screenX, screenY);
@@ -4249,7 +4249,7 @@ void CGrannyPc::RenderModel(
   }
 
   if (model == this->model) {
-    if (this->model->ProjectBounds(bounds, view, rotation, g_modeMgr.GetGameMode()->camera->frame.eye)) {
+    if (this->model->ProjectBounds(bounds, view, rotation, &g_modeMgr.GetGameMode()->camera->frame.eye.x)) {
       this->SetRenderInfo(bounds, screenX, screenY);
     } else {
       this->SetTlvert(screenX, screenY);

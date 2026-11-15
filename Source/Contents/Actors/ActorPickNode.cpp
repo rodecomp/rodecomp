@@ -182,18 +182,18 @@ CView::CView() {
   this->camera.desiredTarget.x = 0.0f;
   this->camera.desiredTarget.y = 0.0f;
   this->camera.desiredTarget.z = 0.0f;
-  this->backupCurrentTarget[0] = 0.0f;
-  this->backupCurrentTarget[1] = 0.0f;
-  this->backupCurrentTarget[2] = 0.0f;
-  this->backupDesiredTarget[0] = 0.0f;
-  this->backupDesiredTarget[1] = 0.0f;
-  this->backupDesiredTarget[2] = 0.0f;
-  this->frame.eye[0] = 0.0f;
-  this->frame.eye[1] = 0.0f;
-  this->frame.eye[2] = 0.0f;
-  this->frame.up[0] = 0.0f;
-  this->frame.up[1] = 0.0f;
-  this->frame.up[2] = 0.0f;
+  this->backupCurrentTarget.x = 0.0f;
+  this->backupCurrentTarget.y = 0.0f;
+  this->backupCurrentTarget.z = 0.0f;
+  this->backupDesiredTarget.x = 0.0f;
+  this->backupDesiredTarget.y = 0.0f;
+  this->backupDesiredTarget.z = 0.0f;
+  this->frame.eye.x = 0.0f;
+  this->frame.eye.y = 0.0f;
+  this->frame.eye.z = 0.0f;
+  this->frame.up.x = 0.0f;
+  this->frame.up.y = 0.0f;
+  this->frame.up.z = 0.0f;
   this->camera.yaw = 0.0f;
   this->shake.enabled = 0;
   this->skyBox = nullptr;
@@ -211,9 +211,9 @@ CView::~CView() {
 // FUNCTION: fn_17928
 void CView::Reset() {
   this->camera.Reset();
-  this->frame.up[0] = 0;
-  this->frame.up[1] = 1;
-  this->frame.up[2] = 0;
+  this->frame.up.x = 0;
+  this->frame.up.y = 1;
+  this->frame.up.z = 0;
 }
 
 // OFFSET: 0x00ADC1D0

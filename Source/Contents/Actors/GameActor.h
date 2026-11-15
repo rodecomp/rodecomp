@@ -264,7 +264,6 @@ public:
   __declspec(noinline) int ActionBase(int state);
   void SetMonsterTransformJob(int value);
   void SetShapeShift(int value);
-  void SetMotionTintState(const std::uint32_t* value);
   bool FindRoute(int startX, int startY, int fractionX, int fractionY, int destX, int destY, int speed);
   std::string GetShapeShiftName();
   int MountType();

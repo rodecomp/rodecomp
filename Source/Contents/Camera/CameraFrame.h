@@ -5,12 +5,13 @@
 #include "Utility/Math/AffineMatrix.h"
 
 #include <cstddef>
+#include "Utility/Math/Vector3d.h"
 
 class CRenderer;
 
 struct CameraFrame {
-  /* 0080 */ float eye[3];
-  /* 008C */ float up[3];
+  /* 0080 */ vector3d eye;
+  /* 008C */ vector3d up;
   /* 0098 */ matrix view;
   /* 00C8 */ matrix inverse;
 

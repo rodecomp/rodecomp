@@ -9,9 +9,9 @@
 // OFFSET: 0x00ADBAC0
 // FUNCTION: fn_17924
 void CView::Forward(float* output) const {
-  const float y = this->camera.target.y - this->frame.eye[1];
-  const float x = this->camera.target.x - this->frame.eye[0];
-  const float z = this->camera.target.z - this->frame.eye[2];
+  const float y = this->camera.target.y - this->frame.eye.y;
+  const float x = this->camera.target.x - this->frame.eye.x;
+  const float z = this->camera.target.z - this->frame.eye.z;
 
   output[1] = y;
   output[0] = x;
@@ -42,6 +42,6 @@ matrix CView::AlternateView(float yaw) const {
   }
 
   matrix output;
-  output.LookAt(eye, &this->camera.target.x, this->frame.up);
+  output.LookAt(eye, &this->camera.target.x, &this->frame.up.x);
   return output;
 }

@@ -21,7 +21,7 @@ void CGameMode::MarkWorldOcclusion() {
   const int screenY = static_cast<int>(static_cast<float>(this->scene->player->render.screenY) - g_renderer->viewport.uiScaleY * 23.0f);
   WorldRayQuery query;
   float ray[6]{};
-  g_renderer->viewport.Ray(screenX, screenY, this->camera->frame.eye, this->camera->frame.inverse.values, ray);
+  g_renderer->viewport.Ray(screenX, screenY, &this->camera->frame.eye.x, this->camera->frame.inverse.values, ray);
 
   float actorRay[7];
   actorRay[0] = ray[0];

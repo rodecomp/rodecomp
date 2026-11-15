@@ -2842,17 +2842,13 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
           g_screenShakeMode = 2;
           CGameMode* gameMode = g_modeMgr.GetGameMode();
           if (gameMode) {
-            gameMode->camera->frame.up[0] = 0.0f;
-            gameMode->camera->frame.up[1] = -1.0f;
-            gameMode->camera->frame.up[2] = 0.0f;
+            gameMode->camera->SetUp(vector3d{0.0f, -1.0f, 0.0f});
           }
         } else {
           g_screenShakeDuration = 0;
           CGameMode* gameMode = g_modeMgr.GetGameMode();
           if (gameMode) {
-            gameMode->camera->frame.up[0] = 0.0f;
-            gameMode->camera->frame.up[1] = 1.0f;
-            gameMode->camera->frame.up[2] = 0.0f;
+            gameMode->camera->SetUp(vector3d{0.0f, 1.0f, 0.0f});
           }
         }
       }

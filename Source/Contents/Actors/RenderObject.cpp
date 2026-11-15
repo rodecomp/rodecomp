@@ -2895,14 +2895,6 @@ void CGameActor::SetShapeShift(int value) {
   this->shapeShift = value;
 }
 
-// OFFSET: 0x00CC3DE0
-// FUNCTION: fn_21155
-void CGameActor::SetMotionTintState(const std::uint32_t* value) {
-  this->render.motionStartTime = value[0];
-  this->render.savedTintColor = value[1];
-  this->render.targetTintColor = value[2];
-}
-
 // OFFSET: 0x00CC41E0
 // FUNCTION: fn_21159
 void CGameActor::UnRegisterPos() {
@@ -4116,7 +4108,7 @@ void C3dGrannyGameActor::RenderLit(int argument, const GrannyActorLight& light) 
     this->meshTransforms[mesh] = transform;
   }
 
-  if (this->model->ProjectBounds(bounds, view, rotation, g_modeMgr.GetGameMode()->camera->frame.eye)) {
+  if (this->model->ProjectBounds(bounds, view, rotation, &g_modeMgr.GetGameMode()->camera->frame.eye.x)) {
     this->SetRenderInfo(bounds, screenX, screenY);
   } else {
     this->SetTlvert(screenX, screenY);
@@ -4235,7 +4227,7 @@ void C3dGrannyGameActor::RenderShadowed(int argument) {
     }
   }
 
-  if (this->model->ProjectBounds(bounds, view, rotation, g_modeMgr.GetGameMode()->camera->frame.eye)) {
+  if (this->model->ProjectBounds(bounds, view, rotation, &g_modeMgr.GetGameMode()->camera->frame.eye.x)) {
     this->SetRenderInfo(bounds, screenX, screenY);
   } else {
     this->SetTlvert(screenX, screenY);
