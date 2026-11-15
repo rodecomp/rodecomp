@@ -85,14 +85,14 @@ __declspec(safebuffers) void CEffectPrim::RenderLaunchEffects(matrix&) {
 
     if (slot.flag1[0] == 0) {
       if (static_cast<float>(g_session.m_aid) == slot.height[10]) {
-        CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+        CGameMode* gameMode = g_modeMgr.GetGameMode();
         CRagEffect* effect = gameMode->scene->player->LaunchEffect(EF_SOULLIGHT2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         if (effect) {
           vector3d position{baseX, baseY, baseZ};
           effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
         }
       } else {
-        CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+        CGameMode* gameMode = g_modeMgr.GetGameMode();
         if (auto* actor = gameMode->scene->GetGameActorByAID(static_cast<std::uint32_t>(slot.height[10]))) {
           CRagEffect* effect = actor->LaunchEffect(EF_SOULLIGHT2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
           if (effect) {
@@ -103,14 +103,14 @@ __declspec(safebuffers) void CEffectPrim::RenderLaunchEffects(matrix&) {
       }
     } else {
       if (static_cast<float>(g_session.m_aid) == slot.height[10]) {
-        CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+        CGameMode* gameMode = g_modeMgr.GetGameMode();
         CRagEffect* effect = gameMode->scene->player->LaunchEffect(EF_SOULLIGHT3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         if (effect) {
           vector3d position{baseX, baseY, baseZ};
           effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
         }
       } else {
-        CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+        CGameMode* gameMode = g_modeMgr.GetGameMode();
         if (auto* actor = gameMode->scene->GetGameActorByAID(static_cast<std::uint32_t>(slot.height[10]))) {
           CRagEffect* effect = actor->LaunchEffect(EF_SOULLIGHT3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
           if (effect) {
@@ -133,7 +133,7 @@ __declspec(safebuffers) void CEffectPrim::RenderGroundSprite(matrix& wtm) {
   }
 
   const float z = this->render.position.z;
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   float position[3];
   position[0] = this->render.position.x;
   position[1] = mode->scene->terrain->Height(this->render.position.x, this->render.position.z);

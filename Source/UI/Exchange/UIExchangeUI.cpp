@@ -188,7 +188,7 @@ int CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::AddData(const Exch
 // OFFSET: 0x00A172E0
 // FUNCTION: fn_45474
 void CUIExchangeUI::Cancel() {
-  CMode* mode = g_modeMgr.GetGameMode();
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (!mode) {
     return;
   }
@@ -202,14 +202,14 @@ void CUIExchangeUI::Cancel() {
 // OFFSET: 0x00A17320
 // FUNCTION: fn_15287
 void CUIExchangeUI::Conclude() {
-  CMode* mode = g_modeMgr.GetGameMode();
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (!mode) {
     return;
   }
 
   if (this->logCheckBox->checked) {
     std::string text = FormatOwnedString(LookupMessage(MSI_SCREENSHOT_FOR_EXCHANGE_CHARNAME), this->partnerName.c_str());
-    g_modeMgr.gameMode->SendMsg(MM_SCREENSHOT, reinterpret_cast<int>(text.c_str()), 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_SCREENSHOT, reinterpret_cast<int>(text.c_str()), 0, 0, 0);
   }
 
   mode->SendMsg(MM_EXEC_EXCHANGE_ITEM, 0, 0, 0, 0);
@@ -221,7 +221,7 @@ void CUIExchangeUI::Conclude() {
 // OFFSET: 0x00A17420
 // FUNCTION: fn_15288
 void CUIExchangeUI::SubmitZeny() {
-  CMode* mode = g_modeMgr.GetGameMode();
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (!mode) {
     return;
   }
@@ -262,7 +262,7 @@ void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::ClearData() {
 // OFFSET: 0x00A175C0
 // FUNCTION: fn_15291
 void CUIExchangeUI::DragAndDrop(int x, int y, std::intptr_t value) {
-  CMode* mode = g_modeMgr.GetGameMode();
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (mode == nullptr) {
     return;
   }
@@ -484,7 +484,7 @@ int CUIExchangeUI::SendMsg(UIWindow* sender, int message, std::intptr_t argument
     this->secondList->UpdateScrollBar();
     break;
   case UM_DROP: {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     if (mode != nullptr) {
       mode->SendMsg(MM_ADD_EXCHANGE_ITEM, mode->drag.id, mode->drag.quantity, 0, 0);
       mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);

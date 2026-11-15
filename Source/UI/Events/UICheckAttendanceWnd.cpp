@@ -270,7 +270,7 @@ void UICheckAttendanceWnd_Banner::OnLBtnUp(int x, int y) {
   if (this->m_current < this->m_entries.size()) {
     const AttendanceBanner& entry = this->m_entries[this->m_current];
     if (entry.action == 318) {
-      g_modeMgr.gameMode->SendMsg(MM_REQUEST_CASH_SHOP, entry.argument, 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_REQUEST_CASH_SHOP, entry.argument, 0, 0, 0);
     } else {
       g_windowMgr.EnsureWindow(entry.action);
     }
@@ -297,14 +297,14 @@ void UICheckAttendanceWnd::OnMouseHover(int x, int y) {
     int tipX = 0;
     int tipY = -20;
     this->ToScreen(tipX, tipY);
-    g_modeMgr.gameMode->ShowTooltip(name, tipX + x, tipY + y, 0xFFFFFFFFu, 0, 1);
+    g_modeMgr.currentMode->ShowTooltip(name, tipX + x, tipY + y, 0xFFFFFFFFu, 0, 1);
   }
 }
 
 // OFFSET: 0x007DDEF0
 // FUNCTION: fn_09646
 void UICheckAttendanceWnd_Banner::ResetCursor(int, int) {
-  g_modeMgr.gameMode->SetCursorAction(2);
+  g_modeMgr.currentMode->SetCursorAction(2);
 }
 
 // OFFSET: 0x007DDF00

@@ -799,7 +799,7 @@ void CGameMode::ReceiveNamedResult(std::uint32_t, std::string name, int result) 
   case 1: {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_MACRO_USER_REPORT_PENALTY_COUNTMAX), name.c_str()).c_str()), 0x64FFFF, 0, 0, 0);
 
-    CWorld* scene = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+    CWorld* scene = g_modeMgr.GetGameMode()->scene;
     if (scene) {
       scene->player->LaunchEffect(EF_ANGELUS, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
@@ -1084,7 +1084,7 @@ void CGameMode::ReceiveFastMove(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const ActorPointPacket*>(data);
   CRenderObject* actor;
   if (packet->aid == g_session.m_aid) {
-    actor = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+    actor = g_modeMgr.GetGameMode()->scene->player;
   } else {
     actor = g_session.FindGameActor(packet->aid);
   }
@@ -1542,15 +1542,15 @@ void CGameMode::ReceiveRefineResult(const unsigned char* data) {
 
   switch (packet->result) {
   case ITEMREFINING_SUCCESS:
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(EF_REFINEOK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    g_modeMgr.GetGameMode()->scene->player->LaunchEffect(EF_REFINEOK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_REFINING_SUCCEESS)), 0xFFFF00, 0, 0, 0);
     break;
   case ITEMREFINING_FAILURE:
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(EF_REFINEFAIL, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    g_modeMgr.GetGameMode()->scene->player->LaunchEffect(EF_REFINEFAIL, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_REFINING_FAIL)), 0xFFFF00, 0, 0, 0);
     break;
   case ITEMREFINING_DOWNGRADE:
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(EF_REFINEFAIL, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    g_modeMgr.GetGameMode()->scene->player->LaunchEffect(EF_REFINEFAIL, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_REFINING_DOWNGRADE)), 0xFFFF00, 0, 0, 0);
     break;
   }
@@ -1571,46 +1571,46 @@ void CGameMode::ReceiveItemEffectResult(const unsigned char* data) {
 
   switch (packet->type) {
   case 0:
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(EF_REFINEOK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    g_modeMgr.GetGameMode()->scene->player->LaunchEffect(EF_REFINEOK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_MAKE_TARGET_SUCCEESS_MSG), item.DisplayName(0).c_str()));
     break;
   case 1:
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(EF_REFINEFAIL, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    g_modeMgr.GetGameMode()->scene->player->LaunchEffect(EF_REFINEFAIL, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_MAKE_TARGET_FAIL_MSG), item.DisplayName(0).c_str()));
     break;
   case 2:
-    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->HasId(EF_PHARMACY_OK)) {
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_PHARMACY_OK, 0, 0, 0, 0, 0);
+    if (g_modeMgr.GetGameMode()->scene->player->HasId(EF_PHARMACY_OK)) {
+      g_modeMgr.GetGameMode()->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_PHARMACY_OK, 0, 0, 0, 0, 0);
     }
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(EF_PHARMACY_OK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    g_modeMgr.GetGameMode()->scene->player->LaunchEffect(EF_PHARMACY_OK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     text = FormatOwnedString(LookupMessage(MSI_MAKE_TARGET_SUCCEESS_MSG), item.DisplayName(0).c_str()).c_str();
     break;
   case 3:
-    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->HasId(EF_PHARMACY_FAIL)) {
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_PHARMACY_FAIL, 0, 0, 0, 0, 0);
+    if (g_modeMgr.GetGameMode()->scene->player->HasId(EF_PHARMACY_FAIL)) {
+      g_modeMgr.GetGameMode()->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_PHARMACY_FAIL, 0, 0, 0, 0, 0);
     }
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(EF_PHARMACY_FAIL, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    g_modeMgr.GetGameMode()->scene->player->LaunchEffect(EF_PHARMACY_FAIL, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     text = FormatOwnedString(LookupMessage(MSI_MAKE_TARGET_FAIL_MSG), item.DisplayName(0).c_str()).c_str();
     break;
   case 4:
-    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->HasId(EF_RUN_MAKE_OK)) {
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_RUN_MAKE_OK, 0, 0, 0, 0, 0);
+    if (g_modeMgr.GetGameMode()->scene->player->HasId(EF_RUN_MAKE_OK)) {
+      g_modeMgr.GetGameMode()->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_RUN_MAKE_OK, 0, 0, 0, 0, 0);
     }
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(EF_RUN_MAKE_OK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    g_modeMgr.GetGameMode()->scene->player->LaunchEffect(EF_RUN_MAKE_OK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     text = FormatOwnedString(LookupMessage(MSI_MAKE_TARGET_SUCCEESS_MSG), item.DisplayName(0).c_str()).c_str();
     break;
   case 5:
-    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->HasId(EF_RUN_MAKE_FAILURE)) {
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_RUN_MAKE_FAILURE, 0, 0, 0, 0, 0);
+    if (g_modeMgr.GetGameMode()->scene->player->HasId(EF_RUN_MAKE_FAILURE)) {
+      g_modeMgr.GetGameMode()->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_RUN_MAKE_FAILURE, 0, 0, 0, 0, 0);
     }
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(EF_RUN_MAKE_FAILURE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    g_modeMgr.GetGameMode()->scene->player->LaunchEffect(EF_RUN_MAKE_FAILURE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     text = FormatOwnedString(LookupMessage(MSI_MAKE_TARGET_FAIL_MSG), item.DisplayName(0).c_str()).c_str();
     break;
   case 6: {
-    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->HasId(EF_MIRESULT_MAKE_OK)) {
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_MIRESULT_MAKE_OK, 0, 0, 0, 0, 0);
+    if (g_modeMgr.GetGameMode()->scene->player->HasId(EF_MIRESULT_MAKE_OK)) {
+      g_modeMgr.GetGameMode()->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_MIRESULT_MAKE_OK, 0, 0, 0, 0, 0);
     }
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(EF_MIRESULT_MAKE_OK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    g_modeMgr.GetGameMode()->scene->player->LaunchEffect(EF_MIRESULT_MAKE_OK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     text = FormatOwnedString(LookupMessage(MSI_MAKE_TARGET_FAIL_MSG), item.DisplayName(0).c_str()).c_str();
     UIWindow* window = g_windowMgr.LookupWindow(WID_CHANGEMATERIALWND);
     if (window) {
@@ -1619,10 +1619,10 @@ void CGameMode::ReceiveItemEffectResult(const unsigned char* data) {
     break;
   }
   case 7: {
-    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->HasId(EF_MIRESULT_MAKE_FAIL)) {
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_MIRESULT_MAKE_FAIL, 0, 0, 0, 0, 0);
+    if (g_modeMgr.GetGameMode()->scene->player->HasId(EF_MIRESULT_MAKE_FAIL)) {
+      g_modeMgr.GetGameMode()->scene->player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_MIRESULT_MAKE_FAIL, 0, 0, 0, 0, 0);
     }
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(EF_MIRESULT_MAKE_FAIL, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    g_modeMgr.GetGameMode()->scene->player->LaunchEffect(EF_MIRESULT_MAKE_FAIL, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     text = FormatOwnedString(LookupMessage(MSI_MAKE_TARGET_FAIL_MSG), item.DisplayName(0).c_str()).c_str();
     UIWindow* window = g_windowMgr.LookupWindow(WID_CHANGEMATERIALWND);
     if (window) {
@@ -1782,12 +1782,12 @@ void CGameMode::ReceiveMacroBlackListResult(int result) {
   case MCD_TIMEOUT:
     g_windowMgr.Confirm(LookupMessage(MSI_MACRO_INPUT_ANSWER), 0, true, false, 0, "Message", 280, 120, 0);
     GetRagConnection().Close();
-    g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
     break;
   case MCD_INCORRECT:
     g_windowMgr.Confirm(LookupMessage(MSI_MACRO_CHECK_ANSWER), 0, true, false, 0, "Message", 280, 120, 0);
     GetRagConnection().Close();
-    g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
     break;
   case MCD_GOOD:
     g_windowMgr.CloseWindow(WID_MACROBLACKLISTCHECKWND);
@@ -1803,12 +1803,12 @@ void CGameMode::ReceiveMacroDetectorResult(int result) {
   case MCD_TIMEOUT:
     g_windowMgr.Confirm(LookupMessage(MSI_MACRO_INPUT_ANSWER), 0, true, false, 0, "Message", 280, 120, 0);
     GetRagConnection().Close();
-    g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
     break;
   case MCD_INCORRECT:
     g_windowMgr.Confirm(LookupMessage(MSI_MACRO_CHECK_ANSWER), 0, true, false, 0, "Message", 280, 120, 0);
     GetRagConnection().Close();
-    g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
     break;
   case MCD_GOOD:
     g_windowMgr.CloseWindow(WID_MACRODETECTORWND);
@@ -2158,7 +2158,7 @@ void CGameMode::IgnoreRemovedPacket16(const unsigned char*) {
 void CGameMode::ReceiveItemSlotAddOptions(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const ItemSlotAddOptionsPacket*>(data);
   if (packet->slot < 0) {
-    g_modeMgr.gameMode->SendMsg(MM_CANCEL_EXCHANGE_ITEM, 0, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_CANCEL_EXCHANGE_ITEM, 0, 0, 0, 0);
   }
 
   if (packet->itemId == 0) {
@@ -2189,7 +2189,7 @@ void CGameMode::ReceiveItemSlotAddOptions(const unsigned char* data) {
 void CGameMode::ReceiveItemSlotAddGrade(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const ItemSlotAddGradePacket*>(data);
   if (packet->slot < 0) {
-    g_modeMgr.gameMode->SendMsg(MM_CANCEL_EXCHANGE_ITEM, 0, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_CANCEL_EXCHANGE_ITEM, 0, 0, 0, 0);
   }
 
   if (packet->itemId == 0) {
@@ -4043,7 +4043,7 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       g_soundMgr->PlayWave("effect\\바실리카.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       break;
     case AC_SHOWER: {
-      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      CGameMode* mode = g_modeMgr.GetGameMode();
       if (actor == nullptr) {
         return;
       }
@@ -4065,7 +4065,7 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       break;
     }
     case NJ_RAIGEKISAI: {
-      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      CGameMode* mode = g_modeMgr.GetGameMode();
       float x;
       float z;
       mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
@@ -4082,7 +4082,7 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       g_soundMgr->PlayWave("effect\\S클라우드킬.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       break;
     case WL_FROSTMISTY: {
-      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      CGameMode* mode = g_modeMgr.GetGameMode();
       float x;
       float z;
       mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
@@ -4095,7 +4095,7 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
     }
     case NPC_PSYCHIC_WAVE:
     case SO_PSYCHIC_WAVE: {
-      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      CGameMode* mode = g_modeMgr.GetGameMode();
       g_soundMgr->PlayWave("effect\\S사이킥웨이브.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       actor->LaunchEffect(EF_GUMGANG5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       float x;
@@ -4133,7 +4133,7 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       break;
     }
     case SO_EARTHGRAVE: {
-      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      CGameMode* mode = g_modeMgr.GetGameMode();
       g_soundMgr->PlayWave("effect\\G가시나무덫.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       actor->LaunchEffect(EF_GUMGANG5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       float x;
@@ -4164,7 +4164,7 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       break;
     }
     case GN_CRAZYWEED: {
-      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      CGameMode* mode = g_modeMgr.GetGameMode();
       g_soundMgr->PlayWave("effect\\G가시나무덫.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       float x;
       float z;
@@ -4177,7 +4177,7 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       break;
     }
     case LG_OVERBRAND: {
-      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      CGameMode* mode = g_modeMgr.GetGameMode();
       if (actor == nullptr) {
         return;
       }
@@ -4210,7 +4210,7 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       break;
     }
     case SR_RIDEINLIGHTNING: {
-      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      CGameMode* mode = g_modeMgr.GetGameMode();
       actor->LaunchEffect(EF_GUMGANG5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       float x;
       float z;
@@ -4231,7 +4231,7 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       if (effect == nullptr) {
         return;
       }
-      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      CGameMode* mode = g_modeMgr.GetGameMode();
       float x;
       float z;
       mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
@@ -4247,7 +4247,7 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       if (effect == nullptr) {
         return;
       }
-      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      CGameMode* mode = g_modeMgr.GetGameMode();
       float x;
       float z;
       mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
@@ -4305,7 +4305,7 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       actor->LaunchEffect(EF_SOULBREAKER2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     if (*reinterpret_cast<const std::uint16_t*>(packet + 2) == 0x2E0) {
-      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      CGameMode* mode = g_modeMgr.GetGameMode();
       g_soundMgr->PlayWave("effect\\S사이킥웨이브.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       actor->LaunchEffect(EF_GUMGANG5, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       float x;
@@ -7691,7 +7691,7 @@ void CGameMode::ProcessWhisper(int shortcutId, std::string name, std::string tex
         std::string reply(LookupMessage(MSI_AUTO_MSG2));
         reply.append(g_session.autoReplyText.c_str());
         g_windowMgr.SetChatInputText(reply.c_str());
-        g_modeMgr.gameMode->SendMsg(MM_WHISPERMSG, reinterpret_cast<int>(name.c_str()), 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(MM_WHISPERMSG, reinterpret_cast<int>(name.c_str()), 0, 0, 0);
       }
     }
 
@@ -7798,7 +7798,7 @@ void CGameMode::ProcessWhisper(int shortcutId, std::string name, std::string tex
       std::string reply(LookupMessage(MSI_AUTO_MSG2));
       reply.append(g_session.autoReplyText.c_str());
       g_windowMgr.SetChatInputText(reply.c_str());
-      g_modeMgr.gameMode->SendMsg(MM_WHISPERMSG, reinterpret_cast<int>(name.c_str()), 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_WHISPERMSG, reinterpret_cast<int>(name.c_str()), 0, 0, 0);
     }
   }
 }

@@ -1203,7 +1203,7 @@ void UICustomGageBar::OnMouseHover(int x, int y) {
   int tipX = 0;
   int tipY = -20;
   this->ToScreen(tipX, tipY);
-  g_modeMgr.gameMode->ShowTooltip(label.c_str(), tipX, tipY, 0xFFFFFFFFu, 0, 1);
+  g_modeMgr.currentMode->ShowTooltip(label.c_str(), tipX, tipY, 0xFFFFFFFFu, 0, 1);
 }
 
 // OFFSET: 0x007B7AF0
@@ -1214,7 +1214,7 @@ void UIToolTipBitmapWnd::OnMouseHover(int x, int y) {
     x = 0;
     y = -20;
     this->ToScreen(x, y);
-    g_modeMgr.gameMode->ShowTooltip(this->tooltip.c_str(), x, y, 0xFFFFFFFFu, 0, 1);
+    g_modeMgr.currentMode->ShowTooltip(this->tooltip.c_str(), x, y, 0xFFFFFFFFu, 0, 1);
   }
 }
 

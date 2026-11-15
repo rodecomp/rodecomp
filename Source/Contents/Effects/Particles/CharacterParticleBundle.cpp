@@ -43,8 +43,8 @@ __declspec(noinline) CharacterParticleBundle::~CharacterParticleBundle() {
 // FUNCTION: fn_03129
 void CChopChopClawMarks::UpdateParticlePosition(CEZ2STRParticle* particle) {
   if (particle) {
-    const float* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values;
-    const float* inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse.values;
+    const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
+    const float* inverse = g_modeMgr.GetGameMode()->camera->frame.inverse.values;
     const vector3d origin = this->positionVector;
     const float x = origin.x;
     const float y = origin.y;
@@ -224,6 +224,6 @@ void CharacterParticleBundle::Render() {
 // FUNCTION: fn_03142
 void CharacterParticleBundle::RenderParticle(CEZ2STRParticle* particle) {
   if (particle) {
-    particle->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+    particle->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
   }
 }

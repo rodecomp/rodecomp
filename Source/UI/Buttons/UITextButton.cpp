@@ -284,7 +284,7 @@ void UIBmpRadioBtn::OnMouseHover(int, int) {
     int screenX = 0, screenY = -20;
     this->ToScreen(screenX, screenY);
 
-    g_modeMgr.gameMode->ShowTooltip(this->m_tooltip.c_str(), screenX, screenY, -1, false, true);
+    g_modeMgr.currentMode->ShowTooltip(this->m_tooltip.c_str(), screenX, screenY, -1, false, true);
   }
 }
 
@@ -403,7 +403,7 @@ void UICaptchaImage::OnMouseHover(int, int) {
     int screenX = 0, screenY = -20;
     this->ToScreen(screenX, screenY);
 
-    g_modeMgr.gameMode->ShowTooltip(this->m_tooltip.c_str(), screenX, screenY, -1, false, true);
+    g_modeMgr.currentMode->ShowTooltip(this->m_tooltip.c_str(), screenX, screenY, -1, false, true);
   }
 }
 
@@ -422,7 +422,7 @@ void UIBarGraph4::OnMouseHover(int, int) {
   std::memset(text, 0, sizeof(text));
   const int permille = static_cast<int>(static_cast<float>(*this->m_current) / static_cast<float>(*this->m_maximum) * 1000.0f);
   std::sprintf(text, "%.1f %%", static_cast<float>(permille) * 0.1f);
-  g_modeMgr.gameMode->ShowTooltip(text, screenX, screenY, -1, false, true);
+  g_modeMgr.currentMode->ShowTooltip(text, screenX, screenY, -1, false, true);
 }
 
 // OFFSET: 0x008918D0
@@ -440,7 +440,7 @@ void UIINT64BarGraph::OnMouseHover(int, int) {
   std::memset(text, 0, sizeof(text));
   const int permille = static_cast<int>(static_cast<double>(this->m_current) / static_cast<double>(this->m_maximum) * 1000.0);
   std::sprintf(text, "%.1f %%", static_cast<float>(permille) * 0.1f);
-  g_modeMgr.gameMode->ShowTooltip(text, screenX, screenY, -1, false, true);
+  g_modeMgr.currentMode->ShowTooltip(text, screenX, screenY, -1, false, true);
 }
 
 // OFFSET: 0x00891A40
@@ -477,7 +477,7 @@ void UITabControl::OnMouseHover(int x, int y) {
   x = TabOffset(*this, index);
   y = -20;
   this->ToScreen(x, y);
-  g_modeMgr.gameMode->ShowTooltip(this->tooltips[index].c_str(), x, y, -1, false, true);
+  g_modeMgr.currentMode->ShowTooltip(this->tooltips[index].c_str(), x, y, -1, false, true);
 }
 
 // OFFSET: 0x00822660
@@ -522,7 +522,7 @@ void UIBasicItemCtrl::OnMouseHover(int, int) {
   this->ToScreen(screenX, screenY);
 
   if (!text.empty()) {
-    g_modeMgr.gameMode->ShowTooltip(text.c_str(), screenX, screenY, -1, false, true);
+    g_modeMgr.currentMode->ShowTooltip(text.c_str(), screenX, screenY, -1, false, true);
   }
 }
 
@@ -550,7 +550,7 @@ void UIBasicSkillCtrl::OnMouseHover(int, int) {
   }
 
   if (!text.empty()) {
-    g_modeMgr.gameMode->ShowTooltip(text.c_str(), screenX, screenY, -1, false, true);
+    g_modeMgr.currentMode->ShowTooltip(text.c_str(), screenX, screenY, -1, false, true);
   }
 }
 
@@ -611,7 +611,7 @@ void UIMemberListBox::OnMouseHover(int, int y) {
   int screenX = -4;
   y -= y % this->lineHeight;
   this->ToScreen(screenX, y);
-  g_modeMgr.gameMode->ShowTooltip(this->lines[line].c_str(), screenX, y, -1, false, true);
+  g_modeMgr.currentMode->ShowTooltip(this->lines[line].c_str(), screenX, y, -1, false, true);
 }
 
 // OFFSET: 0x00891E40
@@ -630,7 +630,7 @@ void UIStaticItem::OnMouseHover(int, int) {
 
   this->ToScreen(screenX, screenY);
 
-  g_modeMgr.gameMode->ShowTooltip(text, screenX, screenY, -1, false, true);
+  g_modeMgr.currentMode->ShowTooltip(text, screenX, screenY, -1, false, true);
 }
 
 // OFFSET: 0x00892040
@@ -1028,14 +1028,14 @@ void UITreeView::OnMouseMove(int x, int y) {
 // OFFSET: 0x00892560
 // FUNCTION: fn_11473
 void UIImgMenu::ResetCursor(int, int) {
-  g_modeMgr.gameMode->SetCursorAction(2);
+  g_modeMgr.currentMode->SetCursorAction(2);
 }
 
 // OFFSET: 0x008925A0
 // FUNCTION: fn_11475
 void UIString::ResetCursor(int, int) {
   if (!this->link.empty() || !this->image.empty()) {
-    g_modeMgr.gameMode->SetCursorAction(2);
+    g_modeMgr.currentMode->SetCursorAction(2);
   }
 }
 
@@ -1054,7 +1054,7 @@ void UITVTextButton::ResetCursor(int x, int y) {
   if (this->m_disabled != 0) {
     UIWindow::ResetCursor(x, y);
   } else {
-    g_modeMgr.gameMode->SetCursorAction(0);
+    g_modeMgr.currentMode->SetCursorAction(0);
   }
 }
 
@@ -2989,7 +2989,7 @@ void UISlotBmpButton::SetSlot(int slot, int fallback) {
     return;
   }
 
-  const CharacterInfo* info = reinterpret_cast<const CharacterInfo*>(g_modeMgr.gameMode->SendMsg(MM_QUERYCHARICTORINFO, this->m_slot, 0, 0, 0));
+  const CharacterInfo* info = reinterpret_cast<const CharacterInfo*>(g_modeMgr.currentMode->SendMsg(MM_QUERYCHARICTORINFO, this->m_slot, 0, 0, 0));
   if (!info) {
     this->icon->Show(0);
     return;
@@ -3591,7 +3591,7 @@ void UISlotBmpButton::Paint() {
   }
 
   if (this->m_slot >= 0) {
-    CharacterInfo* info = reinterpret_cast<CharacterInfo*>(g_modeMgr.gameMode->SendMsg(MM_QUERYCHARICTORINFO, this->m_slot, 0, 0, 0));
+    CharacterInfo* info = reinterpret_cast<CharacterInfo*>(g_modeMgr.currentMode->SendMsg(MM_QUERYCHARICTORINFO, this->m_slot, 0, 0, 0));
     if (info) {
       if (info->nameChangeCount > 0 || info->slotChangeCount > 0) {
         if (this->m_inRange) {

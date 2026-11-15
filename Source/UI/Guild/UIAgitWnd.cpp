@@ -3,6 +3,7 @@
 #include "UI/Guild/UIAgitWnd.h"
 #include "UI/Window/UIEnums.h"
 #include "Client/Mode/CMode.h"
+#include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Replay/Replay.h"
 #include "Client/Session/Session.h"
@@ -182,7 +183,7 @@ int UIListBoxAgitMenu::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     break;
   }
   case 1: {
-    CMode* mode = g_modeMgr.GetGameMode();
+    CGameMode* mode = g_modeMgr.GetGameMode();
     uint16_t agitId = static_cast<uint16_t>((&g_guildInfo)->GetAgitId(this->m_agitIndex));
     mode->SendMsg(MM_REQ_AGIT_INVESTMENT, agitId, 0, 0, 0);
     break;

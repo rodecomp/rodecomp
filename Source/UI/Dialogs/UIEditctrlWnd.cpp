@@ -62,7 +62,7 @@ UIMiniMapWnd::UIMiniMapWnd()
 // OFFSET: 0x0099B540
 // FUNCTION: fn_13554
 void UIMiniMapWnd::AddTownMarks() {
-  std::string mapName = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->mapName;
+  std::string mapName = g_modeMgr.GetGameMode()->mapName;
   this->warpMarks.clear();
 
   for (int index = 0;; ++index) {
@@ -180,8 +180,8 @@ void UIEditctrlWnd::OnCreate(int, int) {
 // FUNCTION: fn_13557
 void UIMiniMapWnd::OnCreate(int width, int height) {
   const int bottom = this->geometry.height;
-  const float terrainWidth = static_cast<float>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->TerrainWidth());
-  const float terrainHeight = static_cast<float>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->TerrainHeight());
+  const float terrainWidth = static_cast<float>(g_modeMgr.GetGameMode()->TerrainWidth());
+  const float terrainHeight = static_cast<float>(g_modeMgr.GetGameMode()->TerrainHeight());
   this->originX = 2.0f;
   this->originY = 531.0f;
   this->scale = 512.0f / std::max(terrainWidth, terrainHeight);
@@ -199,7 +199,7 @@ void UIMiniMapWnd::OnCreate(int width, int height) {
   this->AddNumberedButton(356, this->geometry.width - 120, bottom - 23, "minimap\\memo_ready", LookupMessage(MSI_MINIMAP_MSG_11), true);
   this->AddTownMarks();
   this->bossButton = this->AddNumberedButton(205, -100, -100, "minimap\\boss", LookupMessage(MSI_MINIMAP_MSG_12), true);
-  static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ResendMinimapMarkers();
+  g_modeMgr.GetGameMode()->ResendMinimapMarkers();
   for (int index = 0; index < 20; ++index) {
     this->memoButtons[index] = this->AddNumberedButton(index + 601, -100, -100, "minimap\\memopoint", nullptr, true);
   }
@@ -243,9 +243,9 @@ void UIMiniMapWnd::OnLBtnDown(int x, int y) {
 // FUNCTION: fn_13561
 void UIMiniMapWnd::ResetCursor(int, int) {
   if (this->dragging) {
-    g_modeMgr.gameMode->SetCursorAction(1);
+    g_modeMgr.currentMode->SetCursorAction(1);
   } else {
-    g_modeMgr.gameMode->SetCursorAction(0);
+    g_modeMgr.currentMode->SetCursorAction(0);
   }
 }
 
@@ -328,7 +328,7 @@ void UIMiniMapWnd::StoreInfo() {
 void UIMiniMapWnd::Paint() {
   int column = 0;
   int row = 0;
-  static_cast<CGameMode*>(g_modeMgr.GetGameMode())->PlayerCell(&column, &row);
+  g_modeMgr.GetGameMode()->PlayerCell(&column, &row);
   const std::string title =
     FormatOwnedString("%s ( %s ) %d %d", g_session.GetPlayerMapDisplayName(), g_session.m_navigationPlayerMap, column, row);
   this->DrawPanelBackground(this->DrawTitleBar(true, title.c_str(), 0), 0, "");
@@ -432,7 +432,7 @@ int UIMiniMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
       }
 
       if (argument1 >= 1000 && argument1 < 2000) {
-        std::string mapName = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->MapName();
+        std::string mapName = g_modeMgr.GetGameMode()->MapName();
         TownInfo town = g_townInfoMgr->GetTownInfo(mapName, argument1 - 1000);
         if (!town.image.empty()) {
           const std::size_t extension = mapName.find_first_of(".");
@@ -445,7 +445,7 @@ int UIMiniMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
       }
 
       if (argument1 > 2000) {
-        std::string mapName = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->MapName();
+        std::string mapName = g_modeMgr.GetGameMode()->MapName();
         const auto mark = this->questMarks.find(argument1);
         const std::size_t extension = mapName.find_first_of(".");
         if (extension != std::string::npos) {

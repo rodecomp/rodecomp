@@ -181,7 +181,7 @@ void CStarEffect::UpdateParticle(CParticle* particle) {
 
   matrix rotation;
   std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
-  rotation.MakeXRotation(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch / 180.0f * 3.141592f);
+  rotation.MakeXRotation(g_modeMgr.GetGameMode()->camera->camera.pitch / 180.0f * 3.141592f);
   matrix scale;
   std::memcpy(scale.values, g_identityMatrix, sizeof(scale.values));
   scale.SetScale(particle->scale, particle->scale, 1.0f);

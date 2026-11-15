@@ -83,7 +83,7 @@ bool CRollingCutterRagEffect::OnProcess() {
   this->render.position.z = parentPosition.z;
 
   if (this->elapsed == 0) {
-    const vector3d& player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->render.position;
+    const vector3d& player = g_modeMgr.GetGameMode()->scene->player->render.position;
     const vector3d soundPosition = {this->render.position.x - player.x, -100.0f, this->render.position.z - player.z};
     g_soundMgr->PlayWave("effect\\EF_BeginSpell.wav", soundPosition.x, soundPosition.y, soundPosition.z, 250, 40, 1.0f, 0);
   }
@@ -159,7 +159,7 @@ CRagEffect* EffectActor::LaunchEffect(int effectId, vector3d deltaPos, float rot
   }
 
   effect->Init(this, effectId, deltaPos);
-  static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->objects.push_back(effect);
+  g_modeMgr.GetGameMode()->scene->objects.push_back(effect);
   this->state.effects.push_back(effect);
   return effect;
 }

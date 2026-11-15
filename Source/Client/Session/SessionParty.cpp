@@ -23,7 +23,7 @@ int CSession::IsPartyMember(std::uint32_t aid, bool onlineOnly) {
 // FUNCTION: fn_24185
 bool CSession::IsPvpMap() {
   if (g_modeMgr.GetGameMode()) {
-    CWorld* scene = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+    CWorld* scene = g_modeMgr.GetGameMode()->scene;
     if (scene) {
       return scene->partyRestricted;
     }

@@ -160,13 +160,13 @@ void CAstralStrikeEffect::OnProcess() {
 void CAstralStrikeEffect::Render() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     if (*it) {
-      (*it)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+      (*it)->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
     }
   }
 
   for (auto it = this->strikes.begin(); it != this->strikes.end(); ++it) {
     if (*it) {
-      (*it)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+      (*it)->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
     }
   }
 }

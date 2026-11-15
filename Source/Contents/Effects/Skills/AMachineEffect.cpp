@@ -66,8 +66,8 @@ void CAMachineEffect::OnProcess() {
   const float x = source.x;
   const float y = source.y;
   const float z = source.z;
-  const matrix view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
-  const float* inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse.values;
+  const matrix view = g_modeMgr.GetGameMode()->camera->frame.view;
+  const float* inverse = g_modeMgr.GetGameMode()->camera->frame.inverse.values;
   float viewX = view.values[0] * x + view.values[3] * y + view.values[6] * z + view.values[9] + 0.0f;
   float viewY = view.values[1] * x + view.values[4] * y + view.values[7] * z + view.values[10] - 8.0f;
   float viewZ = view.values[2] * x + view.values[5] * y + view.values[8] * z + view.values[11] + 0.0f;
@@ -93,7 +93,7 @@ void CAMachineEffect::Render() {
     return;
   }
 
-  particle->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+  particle->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
 }
 
 // OFFSET: 0x006F6DA0

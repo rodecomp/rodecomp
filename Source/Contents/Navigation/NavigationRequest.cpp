@@ -112,7 +112,7 @@ __declspec(noinline) bool CNaviData::SetDestination(CNaviInfo* info, int cellX, 
 // OFFSET: 0x00BA1260
 // FUNCTION: fn_19638
 bool CNavigationManager::UpdateGround() {
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (mode == nullptr) {
     return false;
   }
@@ -217,7 +217,7 @@ int CNavigationManager::RequestRoute(int cellX, int cellY) {
 
   int startX = 0;
   int startY = 0;
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (mode != nullptr) {
     mode->PlayerCell(&startX, &startY);
     this->UpdateGround();

@@ -5,6 +5,7 @@
 #include "UI/Window/UIEnums.h"
 
 #include "Client/Input/InputCharset.h"
+#include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Replay/Replay.h"
 #include "Client/Session/Session.h"

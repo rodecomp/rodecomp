@@ -2,6 +2,7 @@
 #include "Client/Mode/ModeMessage.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
+#include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Tables/ForbiddenWords.h"
 #include "Contents/Tables/MessageTable.h"
@@ -40,7 +41,7 @@ void UIChatRoomTitle::OnCreate(int, int) {
 // OFFSET: 0x0085E8C0
 // FUNCTION: fn_10831
 void UIChatRoomTitle::OnLBtnDblClk(int, int) {
-  CMode* mode = g_modeMgr.GetGameMode();
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (this->roomType != 0) {
     if (this->roomType != 3) {
       mode->SendMsg(MM_REQ_ENTER_ROOM, this->roomId, 0, 0, 0);
@@ -89,9 +90,9 @@ void UIChatRoomTitle::Paint() {
 // FUNCTION: fn_10876
 void UIChatRoomTitle::ResetCursor(int x, int y) {
   if (x >= 0 && x < this->geometry.width && y >= 0 && y <= this->geometry.height) {
-    g_modeMgr.gameMode->SetCursorAction(2);
+    g_modeMgr.currentMode->SetCursorAction(2);
   } else {
-    g_modeMgr.gameMode->SetCursorAction(0);
+    g_modeMgr.currentMode->SetCursorAction(0);
   }
 }
 

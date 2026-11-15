@@ -4,6 +4,7 @@
 #include "UI/Window/UIEnums.h"
 #include "Script/LuaScript.h"
 #include "Client/Mode/CMode.h"
+#include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session/Session.h"
 #include "Contents/Map/MapSkyMgr.h"

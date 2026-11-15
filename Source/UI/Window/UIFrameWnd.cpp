@@ -456,7 +456,7 @@ void UIReplayButton::OnLBtnUp(int x, int y) {
       this->parent->SendMsg(this, UM_COMMAND, this->geometry.id, this->m_argument, 0, 0);
       this->parent->SendMsg(nullptr, UM_REFRESHBUTTON, 0, 0, 0, 0);
     } else {
-      g_modeMgr.gameMode->SendMsg(MM_COMMAND, this->geometry.id, this->m_argument, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_COMMAND, this->geometry.id, this->m_argument, 0, 0);
     }
   }
 
@@ -474,14 +474,14 @@ void UIMonsterInfoWnd::OnMouseHover(int x, int y) {
   int screenX = 0;
   int screenY = 0;
   this->ToScreen(screenX, screenY);
-  std::string name = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ActorName(g_session.m_monsterInfoActorId);
+  std::string name = g_modeMgr.GetGameMode()->ActorName(g_session.m_monsterInfoActorId);
   const std::size_t mark = name.find("#", 0);
   if (mark != std::string::npos) {
     name.erase(mark, name.size());
   }
 
   if (this->TextWidth(name.c_str(), 0, 0, 12, 0, 0) > 100) {
-    g_modeMgr.gameMode->ShowTooltip(name.c_str(), screenX + x, screenY + y, -1, false, true);
+    g_modeMgr.currentMode->ShowTooltip(name.c_str(), screenX + x, screenY + y, -1, false, true);
   }
 }
 
@@ -493,11 +493,11 @@ int UIAllyGuildAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     switch (a) {
     case ID_OK:
       g_windowMgr.CloseWindow(WID_ALLYGUILDACCEPTWND);
-      g_modeMgr.gameMode->SendMsg(MM_ALLY_GUILD, this->identity, 1, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_ALLY_GUILD, this->identity, 1, 0, 0);
       break;
     case ID_CANCEL:
       g_windowMgr.CloseWindow(WID_ALLYGUILDACCEPTWND);
-      g_modeMgr.gameMode->SendMsg(MM_ALLY_GUILD, this->identity, 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_ALLY_GUILD, this->identity, 0, 0, 0);
       break;
     }
 
@@ -552,7 +552,7 @@ int UIBank_NewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     return 0;
   case BANK_BUTTON_DEPOSIT: {
     PACKET_CZ_BANK_TRANSACTION packet;
-    if (g_modeMgr.GetGameMode() && static_cast<CGameMode*>(g_modeMgr.GetGameMode())->IsMenuWindowOpen() == true) {
+    if (g_modeMgr.GetGameMode() && g_modeMgr.GetGameMode()->IsMenuWindowOpen() == true) {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_WRONG_GUN)), 255, 0, 0, 0);
       return 0;
     }
@@ -577,7 +577,7 @@ int UIBank_NewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
   }
   case BANK_BUTTON_WITHDRAW: {
     PACKET_CZ_BANK_TRANSACTION packet;
-    if (g_modeMgr.GetGameMode() && static_cast<CGameMode*>(g_modeMgr.GetGameMode())->IsMenuWindowOpen() == true) {
+    if (g_modeMgr.GetGameMode() && g_modeMgr.GetGameMode()->IsMenuWindowOpen() == true) {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_WRONG_GUN)), 255, 0, 0, 0);
       return 0;
     }
@@ -641,7 +641,7 @@ int UICntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intpt
     return 0;
   case UM_COMMAND:
     if (a == ID_OK) {
-      CMode* mode = g_modeMgr.gameMode;
+      CMode* mode = g_modeMgr.currentMode;
       mode->SendMsg(this->m_event, std::atoi(this->m_edit->Text()), 0, 0, 0);
     }
     g_windowMgr.Schedule(this);
@@ -750,12 +750,12 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
           } else if (talkType == 51) {
             talkType = 52;
           }
-          g_modeMgr.gameMode->SendMsg(MM_PROCESS_TALK_TYPE, talkType, reinterpret_cast<int>(parts), 0, 0);
+          g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, talkType, reinterpret_cast<int>(parts), 0, 0);
         }
       } else {
         g_windowMgr.chatInputText = buffer;
         const std::string name = this->memberList->lines[this->memberList->selected];
-        g_modeMgr.gameMode->SendMsg(MM_WHISPERMSG, reinterpret_cast<int>(name.c_str()), 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(MM_WHISPERMSG, reinterpret_cast<int>(name.c_str()), 0, 0, 0);
       }
 
       this->edit->PushHistory();
@@ -764,7 +764,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       return 0;
     }
     case ID_CLOSE:
-      g_modeMgr.gameMode->SendMsg(MM_REQ_EXIT_ROOM, 0, 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_REQ_EXIT_ROOM, 0, 0, 0, 0);
       return 0;
     case ID_NAME:
       g_windowMgr.SelectWhisperName(reinterpret_cast<const char*>(b));
@@ -773,7 +773,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       return 0;
     }
   case UM_MENU_SELECTED: {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     switch (this->menuCommands[a].second) {
     case MENUID_EXPEL: {
       if (this->memberList->selected == -1) {
@@ -1060,7 +1060,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     if (header.tag == 0x5014) {
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ROOM_IS_MADE)), 0xFFFF00, 0, 0, 0);
-      ChatRoomTitleInfo* settings = &static_cast<CGameMode*>(g_modeMgr.GetGameMode())->chatRoom;
+      ChatRoomTitleInfo* settings = &g_modeMgr.GetGameMode()->chatRoom;
       unsigned offset = 6;
       while (offset < size) {
         std::memcpy(&header, data + offset, sizeof(header));

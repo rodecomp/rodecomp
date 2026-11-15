@@ -512,7 +512,7 @@ void CSession::EraseSummonHp(std::int64_t key) {
 int CSession::CountProhibitionLog(std::uint32_t aid) {
   int matches = 0;
   const int count = static_cast<int>(this->m_prohibitionLog.size());
-  const CRenderObject* actor = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAID(aid);
+  const CRenderObject* actor = g_modeMgr.GetGameMode()->scene->GetGameActorByAID(aid);
   if (!actor) {
     return -1;
   }
@@ -825,7 +825,7 @@ int CSession::SkillLevel(int id) const {
 // OFFSET: 0x00E094E0
 // FUNCTION: fn_23778
 CGameActor* CSession::FindGameActor(std::uint32_t aid) const {
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (mode == nullptr) {
     return nullptr;
   }
@@ -836,13 +836,13 @@ CGameActor* CSession::FindGameActor(std::uint32_t aid) const {
 // OFFSET: 0x00E07AA0
 // FUNCTION: fn_23749
 void CSession::AddProhibitionLog(std::uint32_t aid, std::uint32_t minutes) {
-  const CRenderObject* actor = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAID(aid);
+  const CRenderObject* actor = g_modeMgr.GetGameMode()->scene->GetGameActorByAID(aid);
   if (!actor) {
     return;
   }
 
   std::uint32_t accountId = actor->render.accountId;
-  const std::string actorName = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ActorName(aid);
+  const std::string actorName = g_modeMgr.GetGameMode()->ActorName(aid);
 
   ProhibitionLogEntry entry;
   std::strcpy(entry.name, actorName.c_str());

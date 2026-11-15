@@ -159,10 +159,10 @@ void UIStylingShopButton::OnLBtnUp(int, int) {
   if (this->parent) {
     if (g_windowMgr.WindowPolicy(3, this->parent->geometry.id) != 0) {
       int id = this->geometry.id;
-      if (id == ID_CANCEL && g_modeMgr.gameMode && g_modeMgr.gameMode->cursorType == 2) {
+      if (id == ID_CANCEL && g_modeMgr.currentMode && g_modeMgr.currentMode->cursorType == 2) {
         const char* text = LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT);
         if (g_windowMgr.Confirm(text, 2, true, false, 0, "Message", 280, 120, 0) == 187) {
-          g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
+          g_modeMgr.currentMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
         }
       } else {
         if (id == ID_OK || id == ID_SEARCH) {
@@ -174,7 +174,7 @@ void UIStylingShopButton::OnLBtnUp(int, int) {
       }
     }
   } else {
-    g_modeMgr.gameMode->SendMsg(MM_COMMAND, this->geometry.id, this->m_argument, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_COMMAND, this->geometry.id, this->m_argument, 0, 0);
   }
 
   this->Invalidate();
@@ -191,7 +191,7 @@ void UIStylingShopButton::OnMouseHover(int, int) {
   int screenX = 0;
   int screenY = -20;
   this->ToScreen(screenX, screenY);
-  g_modeMgr.gameMode->ShowTooltip("No Color", screenX, screenY, -1, false, true);
+  g_modeMgr.currentMode->ShowTooltip("No Color", screenX, screenY, -1, false, true);
 }
 
 // OFFSET: 0x0082A210
@@ -1611,7 +1611,7 @@ void UIDisplayCharacter::Paint() {
     this->DrawBitmap(this->shadowX, this->shadowY, shadow, false);
   }
 
-  CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+  CPlayer* player = g_modeMgr.GetGameMode()->scene->player;
   if (!player) {
     return;
   }

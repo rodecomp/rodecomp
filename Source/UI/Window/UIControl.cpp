@@ -532,7 +532,7 @@ void CUIHThumb::OnMouseMove(int x, int) {
 // OFFSET: 0x009F24F0
 // FUNCTION: fn_14714
 void CUIThumb::ResetCursor(int, int) {
-  g_modeMgr.gameMode->SetCursorAction(2);
+  g_modeMgr.currentMode->SetCursorAction(2);
 }
 
 // OFFSET: 0x009F2450
@@ -542,7 +542,7 @@ void CUIThumb::OnMouseHover(int, int) {
     int screenX = 0;
     int screenY = -20;
     this->ToScreen(screenX, screenY);
-    g_modeMgr.gameMode->ShowTooltip(this->tooltip.c_str(), screenX, screenY, 0xFFFFFFFFu, 0, 1);
+    g_modeMgr.currentMode->ShowTooltip(this->tooltip.c_str(), screenX, screenY, 0xFFFFFFFFu, 0, 1);
   }
 }
 
@@ -846,7 +846,7 @@ void CUIButton::OnMouseHover(int, int) {
 
   this->ToScreen(screenX, screenY);
 
-  g_modeMgr.gameMode->ShowTooltip(this->tooltip.c_str(), screenX, screenY, 0xFFFFFFFFu, 0, 1);
+  g_modeMgr.currentMode->ShowTooltip(this->tooltip.c_str(), screenX, screenY, 0xFFFFFFFFu, 0, 1);
 }
 
 // OFFSET: 0x009EEA70
@@ -859,9 +859,9 @@ void CUIButton::OnMouseLeave() {
 // FUNCTION: fn_14633
 void CUIButton::ResetCursor(int, int) {
   if (this->disabled) {
-    g_modeMgr.gameMode->SetCursorAction(0);
+    g_modeMgr.currentMode->SetCursorAction(0);
   } else {
-    g_modeMgr.gameMode->SetCursorAction(2);
+    g_modeMgr.currentMode->SetCursorAction(2);
   }
 }
 
@@ -914,12 +914,12 @@ void CUITextButton::OnMouseHover(int, int) {
     int screenX = 0;
     int screenY = -20;
     this->ToScreen(screenX, screenY);
-    g_modeMgr.gameMode->ShowTooltip(this->tooltipText.c_str(), screenX, screenY, 0xFFFFFFFFu, 0, 1);
+    g_modeMgr.currentMode->ShowTooltip(this->tooltipText.c_str(), screenX, screenY, 0xFFFFFFFFu, 0, 1);
   } else {
     int screenX = -6;
     int screenY = -4;
     this->ToScreen(screenX, screenY);
-    g_modeMgr.gameMode->ShowTooltip(this->fullText.c_str(), screenX, screenY, 0xFFFFFFFFu, 0, 1);
+    g_modeMgr.currentMode->ShowTooltip(this->fullText.c_str(), screenX, screenY, 0xFFFFFFFFu, 0, 1);
   }
 }
 
@@ -1249,7 +1249,7 @@ void CUIStaticImage::OnMouseHover(int, int) {
   int x = 0;
   int y = -8;
   this->ToScreen(x, y);
-  g_modeMgr.gameMode->ShowTooltip(this->tooltip.c_str(), x, y, 0xFFFFFFFFu, 0, 1);
+  g_modeMgr.currentMode->ShowTooltip(this->tooltip.c_str(), x, y, 0xFFFFFFFFu, 0, 1);
 }
 
 // OFFSET: 0x009F08A0
@@ -2575,7 +2575,7 @@ void CUIResizer::OnMouseMove(int x, int y) {
 // OFFSET: 0x009E96B0
 // FUNCTION: fn_14507
 void CUIResizer::ResetCursor(int, int) {
-  g_modeMgr.gameMode->SetCursorAction(2);
+  g_modeMgr.currentMode->SetCursorAction(2);
 }
 
 // OFFSET: 0x009E96C0
@@ -2835,7 +2835,7 @@ void CUIStaticText::OnMouseHover(int x, int y) {
   x = -6;
   y = -4;
   this->ToScreen(x, y);
-  g_modeMgr.gameMode->ShowTooltip(this->tooltip.c_str(), x, y, 0xFFFFFFFFu, 0, 1);
+  g_modeMgr.currentMode->ShowTooltip(this->tooltip.c_str(), x, y, 0xFFFFFFFFu, 0, 1);
 }
 
 // OFFSET: 0x009F0AE0

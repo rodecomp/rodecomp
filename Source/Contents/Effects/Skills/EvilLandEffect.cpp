@@ -97,7 +97,7 @@ void CEvilLandEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CMultiTexParticle* particle = static_cast<CMultiTexParticle*>(*it);
     if (particle) {
-      CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      CGameMode* gameMode = g_modeMgr.GetGameMode();
       if (gameMode) {
         int column = 0;
         int row = 0;

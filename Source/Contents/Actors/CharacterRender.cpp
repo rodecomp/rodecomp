@@ -74,7 +74,7 @@ CCharacterRender::~CCharacterRender() = default;
 // OFFSET: 0x008105A0
 // FUNCTION: fn_10108
 std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char trackBounds, char* boundsUpdated) {
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   const float* origin = &this->position.x;
   const float* view = mode->camera->frame.view.values;
   float position[3];

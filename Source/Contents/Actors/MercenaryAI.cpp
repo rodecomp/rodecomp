@@ -64,7 +64,7 @@ bool IsMercenaryAid(std::uint32_t aid) {
 
 // INLINED
 bool IsLocalPlayerAid(std::uint32_t aid) {
-  CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+  CPlayer* player = g_modeMgr.GetGameMode()->scene->player;
   if (!player) {
     return false;
   }
@@ -100,10 +100,10 @@ CMercenaryAI::~CMercenaryAI() {
 // OFFSET: 0x00D9E500
 // FUNCTION: fn_22330
 int ClampTargetAttackRange(std::uint32_t aid, int distance) {
-  CGameActor* actor = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAID(aid);
+  CGameActor* actor = g_modeMgr.GetGameMode()->scene->GetGameActorByAID(aid);
   if (actor) {
     CGameActor* target = static_cast<CGameActor*>(
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAID(static_cast<std::uint32_t>(actor->homunMsg.target))
+      g_modeMgr.GetGameMode()->scene->GetGameActorByAID(static_cast<std::uint32_t>(actor->homunMsg.target))
     );
     if (target) {
       return distance < target->GetNpcLocationRadius() ? target->GetNpcLocationRadius() : distance;
@@ -158,7 +158,7 @@ int CMercenaryAI::Load(const char* path) {
 int CMercenaryAI::Process(std::uint32_t aid) {
   char message[1024];
 
-  CGameActor* actor = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAID(aid);
+  CGameActor* actor = g_modeMgr.GetGameMode()->scene->GetGameActorByAID(aid);
   if (actor->render.state == 2 || actor->render.state == 7) {
     if (!actor->render.isMotionFinished) {
       return 0;
@@ -278,7 +278,7 @@ int AiHomunAttack(lua_State* state) {
     return 0;
   }
 
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   CGameActor* actor = mode->scene->GetGameActorByAID(aid);
   CGameActor* targetActor = mode->scene->GetGameActorByAID(target);
   if (!actor || !targetActor) {
@@ -315,7 +315,7 @@ int AiMercenaryAttack(lua_State* state) {
     return 0;
   }
 
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   CGameActor* actor = mode->scene->GetGameActorByAID(aid);
   CGameActor* targetActor = mode->scene->GetGameActorByAID(target);
   if (!actor || !targetActor) {
@@ -343,7 +343,7 @@ int AiMercenaryAttack(lua_State* state) {
 // OFFSET: 0x00D9EE10
 // FUNCTION: fn_22337
 int AiGetActors(lua_State* state) {
-  CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+  CWorld* world = g_modeMgr.GetGameMode()->scene;
   lua_newtable(state);
 
   int index = 1;
@@ -372,7 +372,7 @@ int AiGetTick(lua_State* state) {
 // OFFSET: 0x00D9F2B0
 // FUNCTION: fn_22341
 int AiHomunGetV(lua_State* state) {
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   int property = static_cast<int>(luaL_checknumber(state, 1));
   std::uint32_t aid = static_cast<std::uint32_t>(luaL_checknumber(state, 2));
 
@@ -404,14 +404,14 @@ int AiHomunGetV(lua_State* state) {
 
         std::uint32_t homunAid = g_session.m_homunAid;
         if (actor->render.accountId != g_session.m_aid && !g_session.IsCompanionAid(actor->render.accountId)) {
-          CGameActor* targetActor = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAID(homunAid);
+          CGameActor* targetActor = g_modeMgr.GetGameMode()->scene->GetGameActorByAID(homunAid);
           if (targetActor) {
             int targetX, targetY;
-            static_cast<CGameMode*>(g_modeMgr.GetGameMode())->WorldCell(targetActor->render.position.x, targetActor->render.position.z, targetX, targetY);
+            g_modeMgr.GetGameMode()->WorldCell(targetActor->render.position.x, targetActor->render.position.z, targetX, targetY);
 
             int range = 0;
             if (skillId != 0) {
-              range = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->GetSkillAttackRange(skillId, skillLevel);
+              range = g_modeMgr.GetGameMode()->GetSkillAttackRange(skillId, skillLevel);
             }
 
             int clamped = ClampTargetAttackRange(g_session.m_homunAid, range);
@@ -423,8 +423,8 @@ int AiHomunGetV(lua_State* state) {
               const float sine = ClientSin(angle);
               cellY = static_cast<int>(static_cast<float>(cellY) + -sine * static_cast<float>(clamped));
 
-              if (!static_cast<CGameMode*>(g_modeMgr.GetGameMode())->IsValidCell(cellX, cellY)) {
-                if (!static_cast<CGameMode*>(g_modeMgr.GetGameMode())->GetClosestValidCell(&cellX, &cellY)) {
+              if (!g_modeMgr.GetGameMode()->IsValidCell(cellX, cellY)) {
+                if (!g_modeMgr.GetGameMode()->GetClosestValidCell(&cellX, &cellY)) {
                   cellX = targetX;
                   cellY = targetY;
                 }
@@ -486,7 +486,7 @@ int AiHomunGetV(lua_State* state) {
       int range = skill.range;
       if (property == 14) {
         int level = static_cast<int>(luaL_checknumber(state, 4));
-        range = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->GetSkillAttackRange(skillId, level);
+        range = g_modeMgr.GetGameMode()->GetSkillAttackRange(skillId, level);
       }
       std::uint32_t homunAid = g_session.m_homunAid;
       result = static_cast<double>(ClampTargetAttackRange(homunAid, range));
@@ -560,7 +560,7 @@ int AiHomunGetV(lua_State* state) {
 // OFFSET: 0x00D9F8E0
 // FUNCTION: fn_22342
 int AiMercenaryGetV(lua_State* state) {
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   int property = static_cast<int>(luaL_checknumber(state, 1));
   std::uint32_t aid = static_cast<std::uint32_t>(luaL_checknumber(state, 2));
 
@@ -592,14 +592,14 @@ int AiMercenaryGetV(lua_State* state) {
 
         std::uint32_t mercAid = g_session.m_mercenaryAid;
         if (actor->render.accountId != g_session.m_aid && !g_session.IsCompanionAid(actor->render.accountId)) {
-          CGameActor* targetActor = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAID(mercAid);
+          CGameActor* targetActor = g_modeMgr.GetGameMode()->scene->GetGameActorByAID(mercAid);
           if (targetActor) {
             int targetX, targetY;
-            static_cast<CGameMode*>(g_modeMgr.GetGameMode())->WorldCell(targetActor->render.position.x, targetActor->render.position.z, targetX, targetY);
+            g_modeMgr.GetGameMode()->WorldCell(targetActor->render.position.x, targetActor->render.position.z, targetX, targetY);
 
             int range = 0;
             if (skillId != 0) {
-              range = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->GetSkillAttackRange(skillId, skillLevel);
+              range = g_modeMgr.GetGameMode()->GetSkillAttackRange(skillId, skillLevel);
             }
 
             int clamped = ClampTargetAttackRange(g_session.m_homunAid, range);
@@ -612,8 +612,8 @@ int AiMercenaryGetV(lua_State* state) {
               const float sine = ClientSin(angle);
               cellY = static_cast<int>(static_cast<float>(cellY) + -sine * static_cast<float>(clamped));
 
-              if (!static_cast<CGameMode*>(g_modeMgr.GetGameMode())->IsValidCell(cellX, cellY)) {
-                if (!static_cast<CGameMode*>(g_modeMgr.GetGameMode())->GetClosestValidCell(&cellX, &cellY)) {
+              if (!g_modeMgr.GetGameMode()->IsValidCell(cellX, cellY)) {
+                if (!g_modeMgr.GetGameMode()->GetClosestValidCell(&cellX, &cellY)) {
                   cellX = targetX;
                   cellY = targetY;
                 }
@@ -675,7 +675,7 @@ int AiMercenaryGetV(lua_State* state) {
       int range = skill.range;
       if (property == 14) {
         int level = static_cast<int>(luaL_checknumber(state, 4));
-        range = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->GetSkillAttackRange(skillId, level);
+        range = g_modeMgr.GetGameMode()->GetSkillAttackRange(skillId, level);
       }
       std::uint32_t mercAid = g_session.m_mercenaryAid;
       result = static_cast<double>(ClampTargetAttackRange(mercAid, range));
@@ -874,7 +874,7 @@ int AiGetMsg(lua_State* state) {
     return 0;
   }
 
-  CGameActor* actor = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAID(aid);
+  CGameActor* actor = g_modeMgr.GetGameMode()->scene->GetGameActorByAID(aid);
   if (!actor) {
     return 0;
   }
@@ -925,7 +925,7 @@ int AiGetResMsg(lua_State* state) {
     return 0;
   }
 
-  CGameActor* actor = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAID(aid);
+  CGameActor* actor = g_modeMgr.GetGameMode()->scene->GetGameActorByAID(aid);
   if (!actor) {
     return 0;
   }
@@ -967,7 +967,7 @@ int AiGetResMsg(lua_State* state) {
 // FUNCTION: fn_22343
 int AiIsMonster(lua_State* state) {
   std::uint32_t aid = static_cast<std::uint32_t>(lua_tonumber(state, 1));
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   CGameActor* actor = mode->scene->GetGameActorByAID(aid);
   double result = 0.0;
   if (actor) {
@@ -1023,14 +1023,14 @@ int AiMove(lua_State* state) {
     return 0;
   }
 
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   CGameActor* actor = mode->scene->GetGameActorByAID(aid);
   if (!actor) {
     return 0;
   }
 
-  if (!static_cast<CGameMode*>(g_modeMgr.GetGameMode())->IsValidCell(x, y)) {
-    if (!static_cast<CGameMode*>(g_modeMgr.GetGameMode())->GetClosestValidCell(&x, &y)) {
+  if (!g_modeMgr.GetGameMode()->IsValidCell(x, y)) {
+    if (!g_modeMgr.GetGameMode()->GetClosestValidCell(&x, &y)) {
       return 0;
     }
   }
@@ -1070,7 +1070,7 @@ int AiMoveToOwner(lua_State* state) {
   }
 
   MoveToOwnerPacket packet;
-  if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAID(aid)) {
+  if (g_modeMgr.GetGameMode()->scene->GetGameActorByAID(aid)) {
     packet.opcode = ID_CZ_REQUEST_MOVETOOWNER;
     packet.aid = aid;
     GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.opcode), &packet);
@@ -1096,7 +1096,7 @@ int AiSkillGround(lua_State* state) {
     return 0;
   }
 
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   CGameActor* actor = mode->scene->GetGameActorByAID(aid);
   if (actor->render.state == 1 || actor->render.state == 0 || actor->render.state == 4) {
     mode->SendMsg(MM_USE_SKILL_TOGROUND, reinterpret_cast<int>(skillArgs), 0, 0, 0);
@@ -1126,7 +1126,7 @@ int AiSkillObject(lua_State* state) {
     return 0;
   }
 
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   CGameActor* targetActor = nullptr;
   if (target == g_session.m_aid) {
     targetActor = mode->scene->player;

@@ -116,8 +116,8 @@ void CShadowExceed::OnProcess() {
     if (IsParticleActive(*it) == true) {
       if (emitter) {
         const vector3d position = {this->position[0], this->position[1], this->position[2]};
-        const matrix view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
-        const matrix& inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse;
+        const matrix view = g_modeMgr.GetGameMode()->camera->frame.view;
+        const matrix& inverse = g_modeMgr.GetGameMode()->camera->frame.inverse;
         vector3d viewPos = TransformPoint(view, position);
         viewPos.x += emitter->offsetX;
         viewPos.y += emitter->offsetY;
@@ -149,7 +149,7 @@ void CShadowExceed::OnProcess() {
 void CShadowExceed::Render() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     if (*it) {
-      (*it)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+      (*it)->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
     }
   }
 }

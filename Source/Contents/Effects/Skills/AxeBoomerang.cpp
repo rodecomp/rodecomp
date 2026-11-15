@@ -137,7 +137,7 @@ void CAxeBoomerang::OnProcess() {
 void CAxeBoomerang::Render() {
   CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(this->emitter);
   if (particle) {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     particle->DrawScreen(mode->camera->frame.view);
   }
 }

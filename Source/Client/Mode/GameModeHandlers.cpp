@@ -1940,7 +1940,7 @@ void CGameMode::SpawnSkillWarningPlanes(std::uint32_t aid, std::uint16_t skillId
     for (int row = 0; row < height; ++row) {
       vector3d position = {0.0f, 0.0f, 0.0f};
       this->CellCenter(x - width / 2 + column, y - height / 2 + row, position.x, position.z);
-      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      CGameMode* mode = g_modeMgr.GetGameMode();
       position.y = mode->scene->terrain->Height(position.x, position.z);
       effect->AddPlane(position);
       effect->expireTime = timeGetTime() + duration;

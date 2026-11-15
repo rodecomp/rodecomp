@@ -373,7 +373,7 @@ void CSkillAction_NW_ONLY_ONE_BULLET::OnSkillDamage(CGameActor* source, CGameAct
     return;
   }
 
-  const float angle = ScreenAngle(&source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values);
+  const float angle = ScreenAngle(&source->render.position.x, &target->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values);
   EffectLists* effects = g_effectMgr;
   CEffect* effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("only_one_bullet_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   if (effect) {

@@ -1119,16 +1119,16 @@ std::pair<bool, int> CSkillActionMgr::GetSkillCastMotion(int skillId) {
 // OFFSET: 0x0077AD90
 // FUNCTION: fn_08405
 vector3d CellWorldPosition(int column, int row) {
-  if (!g_modeMgr.GetGameMode() || !static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene ||
-      !static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain) {
+  if (!g_modeMgr.GetGameMode() || !g_modeMgr.GetGameMode()->scene ||
+      !g_modeMgr.GetGameMode()->scene->terrain) {
     return vector3d{0.0f, 0.0f, 0.0f};
   }
 
   float z = 0.0f;
   float y = 0.0f;
   float x = 0.0f;
-  static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->CellOrigin(column, row, x, z);
-  y = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Height(x, z);
+  g_modeMgr.GetGameMode()->scene->CellOrigin(column, row, x, z);
+  y = g_modeMgr.GetGameMode()->scene->terrain->Height(x, z);
   return vector3d{x + 2.5f, y + 0.0f, z + 2.5f};
 }
 
@@ -1637,7 +1637,7 @@ void CSkillAction_SHC_SHADOW_STAB::OnSkillEffect(int level, CGameActor* source, 
   }
 
   const float angle = ScreenAngle(
-    &source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values
+    &source->render.position.x, &target->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values
   );
   EffectLists* effects = g_effectMgr;
   if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("shadow_stab"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
@@ -2336,7 +2336,7 @@ void CSkillAction_DK_DRAGONIC_PIERCE::OnSkillEffect(int level, CGameActor* sourc
   }
 
   const float angle = ScreenAngle(
-    &source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values
+    &source->render.position.x, &target->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values
   );
   int direction;
   if (angle > 60.0f && angle <= 120.0f) {
@@ -2459,10 +2459,10 @@ EfstActionMessage CEfstAction_CHARGINGPIERCE::GetEfstEndMessage() {
 void CEfstAction_CHARGINGPIERCE_COUNT::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (argument3) {
     this->OnEfstEnd(efstId, value, argument3, 0, actor);
-    if (CRenderObject* target = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAidIncludeMe(argument3)) {
+    if (CRenderObject* target = g_modeMgr.GetGameMode()->scene->GetGameActorByAidIncludeMe(argument3)) {
       EffectLists* effects = g_effectMgr;
       effects->Spawn(argument3, CEZ2STREffectMgr::GetInstance()->EffectId("chargingpierce_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-      const CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+      const CPlayer* player = g_modeMgr.GetGameMode()->scene->player;
       g_soundMgr->PlayWave(
         "effect\\DK_CHARGINGPIERCE3.wav", target->render.position.x - player->render.position.x, 0.0f, target->render.position.z - player->render.position.z, 250, 40, 1.0f,
         0
@@ -2551,7 +2551,7 @@ void CSkillAction_NPC_FROST_FIELD::OnSkillEffect(int level, CGameActor* source, 
   if (source) {
     g_effectMgr->Spawn(source->render.accountId, EF_DESTRUCTIVE_HURRICANE_BOTTOM_REUSE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     g_effectMgr->Spawn(source->render.accountId, EF_CRYSTAL_IMPACT_BOTTOM_REUSE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-    const CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+    const CPlayer* player = g_modeMgr.GetGameMode()->scene->player;
     const vector3d position = {target->render.position.x - player->render.position.x, 0.0f, target->render.position.z - player->render.position.z};
     g_soundMgr->PlayWave("effect\\NPC_FROST_FIELD.wav", position.x, position.y, position.z, 250, 40, 1.0f, 0);
   }
@@ -2781,7 +2781,7 @@ void CSkillAction_NPC_LIGHTNING_JUDGEMENT::OnSkillEffect(int level, CGameActor* 
   if (source) {
     EffectLists* effects = g_effectMgr;
     effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("spark_blaster_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-    const vector3d& listener = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->render.position;
+    const vector3d& listener = g_modeMgr.GetGameMode()->scene->player->render.position;
     const vector3d position = {target->render.position.x - listener.x, 0.0f, target->render.position.z - listener.z};
     g_soundMgr->PlayWave("effect\\NPC_LIGHTNING_JUDGEMENT.wav", position.x, position.y, position.z, 250, 40, 1.0f, 0);
   }
@@ -2824,7 +2824,7 @@ void CEfstAction_GROGGY::OnEfstUpdate(int efstId, int value, int argument3, int 
 void CSkillAction_NPC_RESET_EFST::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     g_effectMgr->Spawn(source->render.accountId, EF_NEW_JUDEX_TARGET_REUSE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-    const vector3d& listener = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->render.position;
+    const vector3d& listener = g_modeMgr.GetGameMode()->scene->player->render.position;
     const vector3d position = {target->render.position.x - listener.x, 0.0f, target->render.position.z - listener.z};
     g_soundMgr->PlayWave("effect\\NPC_RESET_EFST.wav", position.x, position.y, position.z, 250, 40, 1.0f, 0);
   }
@@ -2869,7 +2869,7 @@ void CSkillAction_NPC_AIMED_SHOWER::OnSkillCast(int level, CGameActor* source) {
 void CSkillAction_NPC_AIMED_SHOWER::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     g_effectMgr->Spawn(source->render.accountId, EF_TETRA_VORTEX_WIND_EXP, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-    const vector3d& listener = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->render.position;
+    const vector3d& listener = g_modeMgr.GetGameMode()->scene->player->render.position;
     const vector3d position = {target->render.position.x - listener.x, 0.0f, target->render.position.z - listener.z};
     g_soundMgr->PlayWave("effect\\NPC_AIMED_SHOWER.wav", position.x, position.y, position.z, 250, 40, 1.0f, 0);
   }
@@ -2898,7 +2898,7 @@ void CSkillAction_NPC_BLAZING_ERUPTION::OnSkillEffect(int level, CGameActor* sou
     g_effectMgr->Spawn(source->render.accountId, EF_TETRA_VORTEX_FIRE_GROUND, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     g_effectMgr->Spawn(source->render.accountId, EF_TETRA_VORTEX_FIRE_EXP, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     static_cast<EffectActor*>(source)->LaunchEffect(EF_VOLCANO, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-    const vector3d& listener = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->render.position;
+    const vector3d& listener = g_modeMgr.GetGameMode()->scene->player->render.position;
     const vector3d position = {target->render.position.x - listener.x, 0.0f, target->render.position.z - listener.z};
     g_soundMgr->PlayWave("effect\\NPC_BLAZING_ERUPTION.wav", position.x, position.y, position.z, 250, 40, 1.0f, 0);
   }
@@ -3041,7 +3041,7 @@ void CSkillAction_HN_SPIRAL_PIERCE_MAX::OnSkillEffect(int level, CGameActor* sou
   }
   EffectLists* effects = g_effectMgr;
   effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("spiral_pierce_max_aura"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-  const float angle = ScreenAngle(&source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values);
+  const float angle = ScreenAngle(&source->render.position.x, &target->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values);
   const vector3d position = source->render.position;
   effects = g_effectMgr;
   CEffect* effect = effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("spiral_pierce_max"), position, 0, -1, 0, 0);
@@ -3142,9 +3142,9 @@ void CSkillAction_HN_JACK_FROST_NOVA::OnSkillCast(int level, CGameActor* source)
 // OFFSET: 0x007842D0
 // FUNCTION: fn_08548
 void CSkillAction_HN_JACK_FROST_NOVA::OnGroundSkillCast(int level, CGameActor* source, int argument3, int argument4, int argument5) {
-  CMode* mode = g_modeMgr.GetGameMode();
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (mode) {
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->LaunchDummyEffect(reinterpret_cast<const vector3d*>(&argument3), 0x5A8, level / 24, 0);
+    g_modeMgr.GetGameMode()->LaunchDummyEffect(reinterpret_cast<const vector3d*>(&argument3), 0x5A8, level / 24, 0);
   }
 }
 

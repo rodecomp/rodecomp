@@ -430,7 +430,7 @@ void CSkillAction_ThunderingExpand::PlayThunderEffect(CGameActor* source) {
 // FUNCTION: fn_03160
 void CSkillAction_DamageWereRaptorForm::SpawnDirectionalEffect(CGameActor* source, CGameActor* target, std::string_view name) {
   const float angle = ScreenAngle(
-    &source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values
+    &source->render.position.x, &target->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values
   );
   const int direction = this->GetDirection(angle);
   if (!this->IsValidDirection(direction)) {
@@ -737,7 +737,7 @@ void CSkillAction_AT_FRENZY_FANG::OnSkillEffect(int level, CGameActor* source, C
   EffectLists* effects = g_effectMgr;
   if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("frenzy_fang", 0x17359BF953C367B3ULL)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
     const float angle = ScreenAngle(
-      &source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values
+      &source->render.position.x, &target->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values
     );
     effect->SetFlipX(angle < 90.0f || angle > 270.0f);
   }
@@ -777,7 +777,7 @@ void CSkillAction_AT_PINION_SHOT::OnSkillEffect(int level, CGameActor* source, C
   EffectLists* effects = g_effectMgr;
   if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("pinion_shot", 0xC52FB5FBB94FF917ULL)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
     const float angle = ScreenAngle(
-      &source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values
+      &source->render.position.x, &target->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values
     );
     effect->SetAngle(angle);
   }
@@ -819,7 +819,7 @@ void CSkillAction_AT_QUILL_SPEAR::OnSkillEffect(int level, CGameActor* source, C
   const int effectId = CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("quill_spear_3x7", 0x93E7A3A1F587CDC5ULL, char));
   if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, effectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
     const float angle = ScreenAngle(
-      &source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values
+      &source->render.position.x, &target->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values
     );
     effect->SetAngle(angle);
     if (CRagEffect* ragEffect = source->LaunchEffect(EF_QUILL_SPEAR_LINE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
@@ -838,7 +838,7 @@ void CSkillAction_AT_QUILL_SPEAR_S::OnSkillEffect(int level, CGameActor* source,
   const int effectId = CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("quill_spear_5x7", 0x3FAF85D995034FD7ULL, char));
   if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, effectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
     const float angle = ScreenAngle(
-      &source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values
+      &source->render.position.x, &target->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values
     );
     effect->SetAngle(angle);
     if (CRagEffect* ragEffect = source->LaunchEffect(EF_QUILL_SPEAR_LINE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
@@ -1092,7 +1092,7 @@ void CSkillAction_AT_ROARING_PIERCER::OnSkillEffect(int level, CGameActor* sourc
   const int effectId = CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("roaring_piercer_g", 0x078333BB9725B7C9ULL));
   if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, effectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
     const float angle = ScreenAngle(
-      &target->render.position.x, &source->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values
+      &target->render.position.x, &source->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values
     );
     effect->SetAngle(angle);
   }
@@ -1112,7 +1112,7 @@ void CSkillAction_AT_ROARING_PIERCER_S::OnSkillEffect(int level, CGameActor* sou
   const int effectId = CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("roaring_piercer_y", 0x8F1B5BFD5F6175B5ULL));
   if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, effectId, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0)) {
     const float angle = ScreenAngle(
-      &target->render.position.x, &source->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values
+      &target->render.position.x, &source->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values
     );
     effect->SetAngle(angle);
   }
@@ -1715,7 +1715,7 @@ void CSkillAction_DamageWereRaptorForm::SpawnAttack02Effect(CGameActor* source, 
   }
 
   const float angle = ScreenAngle(
-    &source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values
+    &source->render.position.x, &target->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values
   );
   const int direction = this->GetDirection(angle);
   if (!this->IsValidDirection(direction)) {

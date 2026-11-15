@@ -1508,7 +1508,7 @@ void CUIGroupSound::SetBgmEnabled(bool enabled) {
   slider->Invalidate();
   g_serviceOptions.Set(7, enabled);
   if (previous != enabled) {
-    g_modeMgr.gameMode->SendMsg(MM_REFRESH_MUSIC, 0, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_REFRESH_MUSIC, 0, 0, 0, 0);
   }
 }
 
@@ -3506,8 +3506,8 @@ void GameSettingsUI::CUIGraphicsPage::ApplySettings() {
     g_configuredFullscreen = this->m_fullscreen->m_onButton->checked;
     g_restartClient = true;
     GetRagConnection().Close();
-    if (g_modeMgr.gameMode) {
-      g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
+    if (g_modeMgr.currentMode) {
+      g_modeMgr.currentMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
     }
     return;
   }

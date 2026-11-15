@@ -122,7 +122,7 @@ void UICashShopWnd::DragAndDrop(int x, int y, std::intptr_t value) {
     return;
   }
 
-  CMode* mode = g_modeMgr.GetGameMode();
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (mode == nullptr) {
     return;
   }
@@ -152,7 +152,7 @@ void UICashShopWnd_Cart::DragAndDrop(int x, int y, std::intptr_t value) {
     return;
   }
 
-  CMode* mode = g_modeMgr.GetGameMode();
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (mode == nullptr) {
     return;
   }
@@ -623,7 +623,7 @@ void UICashShopWnd_CartItem::OnLBtnDblClk(int, int) {
 // FUNCTION: fn_09545
 void UICashShopWnd_CartItem::OnLBtnDown(int, int) {
   if (this->m_item.identity[1] > 0) {
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())
+    g_modeMgr.GetGameMode()
       ->BeginDragItem(4, this->m_item, this->m_item.quantity, -1);
   }
 }
@@ -632,7 +632,7 @@ void UICashShopWnd_CartItem::OnLBtnDown(int, int) {
 // FUNCTION: fn_09546
 void UICashShopWnd_Item::OnLBtnDown(int, int) {
   if (this->m_item.identity[1] > 0) {
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->BeginDragItem(6, this->m_item, 1, -1);
+    g_modeMgr.GetGameMode()->BeginDragItem(6, this->m_item, 1, -1);
   }
 }
 
@@ -654,7 +654,7 @@ void UICashShopWnd_CartItem::OnMouseHover(int x, int y) {
     int screenX = 0;
     int screenY = -10;
     this->ToScreen(screenX, screenY);
-    g_modeMgr.gameMode->ShowTooltip(this->m_item.displayName.c_str(), screenX, screenY, 0xFFFFFFFFu, 0, 1);
+    g_modeMgr.currentMode->ShowTooltip(this->m_item.displayName.c_str(), screenX, screenY, 0xFFFFFFFFu, 0, 1);
   }
 }
 
@@ -665,14 +665,14 @@ void UICashShopWnd_Item::OnMouseHover(int x, int y) {
     int screenX = 0;
     int screenY = -20;
     this->ToScreen(screenX, screenY);
-    g_modeMgr.gameMode->ShowTooltip(this->m_item.displayName.c_str(), screenX, screenY, 0xFFFFFFFFu, 0, 1);
+    g_modeMgr.currentMode->ShowTooltip(this->m_item.displayName.c_str(), screenX, screenY, 0xFFFFFFFFu, 0, 1);
   }
 }
 
 // OFFSET: 0x007D1230
 // FUNCTION: fn_09550
 void UICashShopWnd_Banner::ResetCursor(int, int) {
-  g_modeMgr.gameMode->SetCursorAction(2);
+  g_modeMgr.currentMode->SetCursorAction(2);
 }
 
 // OFFSET: 0x007D1240
@@ -838,7 +838,7 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
     return 0;
 
   case UM_DROP: {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     if (mode == nullptr) {
       return 0;
     }

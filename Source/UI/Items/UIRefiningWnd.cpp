@@ -443,7 +443,7 @@ void UIRefiningWnd::OnLBtnDown(int x, int y) {
   }
 
   if (this->state == REFINING_STATE_READY && this->item.identity[1] > 0 && static_cast<unsigned>(x - 109) <= 46 && static_cast<unsigned>(y - 201) <= 46) {
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->BeginDragItem(28, this->item, 1, -1);
+    g_modeMgr.GetGameMode()->BeginDragItem(28, this->item, 1, -1);
   }
 }
 
@@ -554,7 +554,7 @@ void UIRefiningWnd::OnMouseHover(int x, int y) {
     int tipX = 81;
     int tipY = 150;
     this->ToScreen(tipX, tipY);
-    g_modeMgr.gameMode->ShowTooltip(name, tipX, tipY - 20, -1, false, true);
+    g_modeMgr.currentMode->ShowTooltip(name, tipX, tipY - 20, -1, false, true);
     return;
   }
 
@@ -566,7 +566,7 @@ void UIRefiningWnd::OnMouseHover(int x, int y) {
     int tipX = 161;
     int tipY = 150;
     this->ToScreen(tipX, tipY);
-    g_modeMgr.gameMode->ShowTooltip(name, tipX, tipY - 20, -1, false, true);
+    g_modeMgr.currentMode->ShowTooltip(name, tipX, tipY - 20, -1, false, true);
     return;
   }
 
@@ -595,7 +595,7 @@ void UIRefiningWnd::OnMouseHover(int x, int y) {
     int tipX = slot * 49 + 11;
     int tipY = 35;
     this->ToScreen(tipX, tipY);
-    g_modeMgr.gameMode->ShowTooltip(name, tipX, tipY, -1, false, true);
+    g_modeMgr.currentMode->ShowTooltip(name, tipX, tipY, -1, false, true);
   }
 }
 

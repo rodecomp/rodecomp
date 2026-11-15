@@ -214,7 +214,7 @@ void UIBasicInfoWnd::OnMouseHover(int x, int y) {
     int screenX = 0;
     int screenY = top - 19;
     this->ToScreen(screenX, screenY);
-    g_modeMgr.gameMode->ShowTooltip(text, screenX, screenY, -1, false, true);
+    g_modeMgr.currentMode->ShowTooltip(text, screenX, screenY, -1, false, true);
   }
 }
 

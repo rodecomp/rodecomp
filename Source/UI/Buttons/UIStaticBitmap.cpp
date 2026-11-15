@@ -82,7 +82,7 @@ void UIStaticBitmap::OnMouseHover(int x, int y) {
     int screenX = this->tooltipX;
     int screenY = this->tooltipY;
     this->ToScreen(screenX, screenY);
-    g_modeMgr.gameMode->ShowTooltip(this->tooltip.c_str(), screenX, screenY, -1, false, true);
+    g_modeMgr.currentMode->ShowTooltip(this->tooltip.c_str(), screenX, screenY, -1, false, true);
   }
 }
 

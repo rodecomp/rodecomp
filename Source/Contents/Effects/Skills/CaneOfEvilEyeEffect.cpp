@@ -210,12 +210,12 @@ void CCaneOfEvilEyeEffect::UpdateEyes() {
       const float y = this->position[1] + eye->offsetY;
       const float z = this->position[2] + eye->offsetZ;
 
-      const float* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values;
+      const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
       const float viewX = y * view[3] + x * view[0] + z * view[6] + view[9];
       const float viewY = y * view[4] + x * view[1] + z * view[7] + view[10];
       const float viewZ = y * view[5] + x * view[2] + z * view[8] + view[11];
 
-      const float* inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse.values;
+      const float* inverse = g_modeMgr.GetGameMode()->camera->frame.inverse.values;
       const float worldX = viewY * inverse[3] + viewX * inverse[0] + viewZ * inverse[6] + inverse[9];
       const float worldY = viewY * inverse[4] + viewX * inverse[1] + viewZ * inverse[7] + inverse[10];
       const float worldZ = viewY * inverse[5] + viewX * inverse[2] + viewZ * inverse[8] + inverse[11];
@@ -275,8 +275,8 @@ void CCaneOfEvilEyeEffect::UpdateLights() {
       float fromY;
       float toX;
       float toY;
-      g_renderer->ProjectViewport(&from.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, &fromX, &fromY, &fromReciprocalDepth);
-      g_renderer->ProjectViewport(this->position, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, &toX, &toY, &toReciprocalDepth);
+      g_renderer->ProjectViewport(&from.x, g_modeMgr.GetGameMode()->camera->frame.view.values, &fromX, &fromY, &fromReciprocalDepth);
+      g_renderer->ProjectViewport(this->position, g_modeMgr.GetGameMode()->camera->frame.view.values, &toX, &toY, &toReciprocalDepth);
 
       const float dx = toX - fromX;
       const float dy = toY - fromY;
@@ -293,12 +293,12 @@ void CCaneOfEvilEyeEffect::UpdateLights() {
       const float y = light->offsetY + this->position[1];
       const float z = light->offsetZ + this->position[2];
 
-      const float* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values;
+      const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
       const float viewX = y * view[3] + x * view[0] + z * view[6] + view[9];
       const float viewY = y * view[4] + x * view[1] + z * view[7] + view[10];
       const float viewZ = y * view[5] + x * view[2] + z * view[8] + view[11];
 
-      const float* inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse.values;
+      const float* inverse = g_modeMgr.GetGameMode()->camera->frame.inverse.values;
       const float worldX = viewY * inverse[3] + viewX * inverse[0] + viewZ * inverse[6] + inverse[9];
       const float worldY = viewY * inverse[4] + viewX * inverse[1] + viewZ * inverse[7] + inverse[10];
       const float worldZ = viewY * inverse[5] + viewX * inverse[2] + viewZ * inverse[8] + inverse[11];
@@ -315,13 +315,13 @@ void CCaneOfEvilEyeEffect::UpdateLights() {
 void CCaneOfEvilEyeEffect::Render() {
   for (auto it = this->eyes.begin(); it != this->eyes.end(); ++it) {
     if (*it) {
-      (*it)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+      (*it)->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
     }
   }
 
   for (auto it = this->lights.begin(); it != this->lights.end(); ++it) {
     if (*it) {
-      (*it)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+      (*it)->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
     }
   }
 }

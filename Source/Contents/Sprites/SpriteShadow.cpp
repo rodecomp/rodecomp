@@ -17,11 +17,11 @@
 // OFFSET: 0x00811C10
 // FUNCTION: fn_10109
 __declspec(safebuffers) RenderPrimitive* CCharacterRender::DrawShadow(const float* matrix, float scale) const {
-  if (0.0f == scale || !g_modeMgr.GetGameMode() || !static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene) {
+  if (0.0f == scale || !g_modeMgr.GetGameMode() || !g_modeMgr.GetGameMode()->scene) {
     return nullptr;
   }
 
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   const float* origin = &this->position.x;
   const float height = mode->scene->terrain->Height(origin[0], origin[2]);
   float position[3];

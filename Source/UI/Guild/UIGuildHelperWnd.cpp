@@ -4,6 +4,7 @@
 #include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 #include "Client/Mode/CMode.h"
+#include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Tables/MessageTable.h"
 #include "Contents/UserData/NormalItemSlots.h"
@@ -168,7 +169,7 @@ int UICreateGuildWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, s
 
   switch (a1) {
   case ID_OK: {
-    CMode* mode = g_modeMgr.GetGameMode();
+    CGameMode* mode = g_modeMgr.GetGameMode();
     std::string name = "";
     name = this->m_nameEdit->Text();
     this->m_nameEdit->SelectAll();
@@ -206,7 +207,7 @@ int UIGuildBanReasonDescWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     switch (a1) {
     case ID_OK: {
       g_windowMgr.CloseWindow(WID_GUILDBANREASONDESCWND);
-      CMode* mode = g_modeMgr.gameMode;
+      CMode* mode = g_modeMgr.currentMode;
       mode->SendMsg(MM_REQ_BAN_GUILD, reinterpret_cast<int>(&this->m_target), reinterpret_cast<int>(this->m_reasonEdit->Text()), 0, 0);
       break;
     }

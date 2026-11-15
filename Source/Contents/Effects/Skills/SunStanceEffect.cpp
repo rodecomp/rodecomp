@@ -91,7 +91,7 @@ void CSunStanceEffect::OnProcess() {
     }
 
     matrix rotation;
-    rotation.MakeXRotation(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch / 180.0f * 3.141592f);
+    rotation.MakeXRotation(g_modeMgr.GetGameMode()->camera->camera.pitch / 180.0f * 3.141592f);
     matrix scaling;
     scaling.SetScale(particle->scale, particle->scale, 1.0f);
     matrix result;

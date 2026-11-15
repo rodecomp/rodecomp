@@ -45,11 +45,11 @@ int UIJoinPartyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     switch (a) {
     case ID_OK:
       g_windowMgr.CloseWindow(WID_JOINPARTYACCEPTWND);
-      g_modeMgr.gameMode->SendMsg(MM_JOIN_GROUP, this->identity, 1, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_JOIN_GROUP, this->identity, 1, 0, 0);
       break;
     case ID_CANCEL:
       g_windowMgr.CloseWindow(WID_JOINPARTYACCEPTWND);
-      g_modeMgr.gameMode->SendMsg(MM_JOIN_GROUP, this->identity, 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_JOIN_GROUP, this->identity, 0, 0, 0);
       break;
     }
 

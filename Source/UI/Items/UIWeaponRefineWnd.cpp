@@ -109,7 +109,7 @@ int UIWeaponRefineWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 
       UIListBox* list = this->m_list;
       if (list->LineCount() == 0) {
-        g_modeMgr.gameMode->SendMsg(MM_REFINEITEM_SELECT_FROM_LIST, -1, 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(MM_REFINEITEM_SELECT_FROM_LIST, -1, 0, 0, 0);
         g_windowMgr.CloseWindow(WID_WEAPONREFINEWND);
         g_windowMgr.CloseWindow(WID_WEAPONREFINEWND);
         return 0;
@@ -117,14 +117,14 @@ int UIWeaponRefineWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 
       const int selected = list->selected;
       if (selected >= 0) {
-        g_modeMgr.gameMode->SendMsg(MM_REFINEITEM_SELECT_FROM_LIST, this->indices[selected], 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(MM_REFINEITEM_SELECT_FROM_LIST, this->indices[selected], 0, 0, 0);
         g_windowMgr.CloseWindow(WID_WEAPONREFINEWND);
         return 0;
       }
       break;
     }
     case ID_CANCEL:
-      g_modeMgr.gameMode->SendMsg(MM_REFINEITEM_SELECT_FROM_LIST, -1, 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_REFINEITEM_SELECT_FROM_LIST, -1, 0, 0, 0);
       g_windowMgr.CloseWindow(WID_WEAPONREFINEWND);
       return 0;
     }

@@ -71,7 +71,7 @@ void UIRadioBtn::OnMouseHover(int x, int y) {
     x = 10;
     y = -20;
     this->ToScreen(x, y);
-    g_modeMgr.gameMode->ShowTooltip(this->tooltip.c_str(), x, y, 0xFFFFFFFFu, 0, 1);
+    g_modeMgr.currentMode->ShowTooltip(this->tooltip.c_str(), x, y, 0xFFFFFFFFu, 0, 1);
   }
 }
 

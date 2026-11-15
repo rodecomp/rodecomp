@@ -94,7 +94,7 @@ void UIBartermarketWnd::DragAndDrop(int x, int y, std::intptr_t value) {
 
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   if (drag->source != 4) {
-    if (CMode* mode = g_modeMgr.GetGameMode()) {
+    if (CGameMode* mode = g_modeMgr.GetGameMode()) {
       mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
     }
     return;
@@ -236,7 +236,7 @@ int UIBarterItemPurchaseWnd::GetInventoryItemCount(int itemId) {
 // OFFSET: 0x00845940
 // FUNCTION: fn_10576
 void UIExpandedBarterItemPurchaseWnd::DragAndDrop(int x, int y, std::intptr_t value) {
-  CMode* mode = g_modeMgr.GetGameMode();
+  CGameMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   if (drag->source == 31) {
     if (g_session.IsEquipItemType(drag->type) == true || g_session.IsShadowItemType(drag->type) == true) {
@@ -494,7 +494,7 @@ void UIExpandedBartermarketWnd::UpdateScrollBar() {
 int UIExpandedBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
   case UM_DROP: {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     std::pair<bool, BarterMarketEntry> found = g_expandedBarterMarketItemMgr->FindItem(mode->drag.barterId);
     if (!found.first) {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_OUT_OF_STOCK)), 255, 0, 0, 0);
@@ -589,7 +589,7 @@ int UIExpandedBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std:
   }
 
   case UM_COMMAND: {
-    CMode* mode = g_modeMgr.GetGameMode();
+    CGameMode* mode = g_modeMgr.GetGameMode();
     if (a == ID_OK) {
       if (this->Purchase()) {
         mode->SendMsg(MM_NPC_EXPANDED_BARTER_MARKET_PURCHASE, 0, 0, 0, 0);
@@ -672,7 +672,7 @@ int UIExpandedBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std:
 int UIExpandedBartermarketWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
   case UM_DROP: {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     std::pair<bool, BarterMarketEntry> found = g_expandedBarterMarketItemMgr->FindEntry(mode->drag.barterId);
     if (found.first) {
       found.second.value = mode->drag.quantity;
@@ -796,7 +796,7 @@ void UIBarterItemPurchaseWnd::OnLBtnDown(int x, int y) {
 
   std::pair<bool, BarterMarketItem> found = this->GetBarterItemAt(x, y);
   if (found.first == true) {
-    if (CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode())) {
+    if (CGameMode* mode = g_modeMgr.GetGameMode()) {
       mode->BeginDragBarterItem(4, found.second, found.second.value, -1);
     }
   }
@@ -839,7 +839,7 @@ void UIBartermarketWnd::OnLBtnDown(int x, int y) {
 
   std::pair<bool, BarterMarketItem> found = this->GetBarterItemAt(x, y);
   if (found.first) {
-    if (CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode())) {
+    if (CGameMode* mode = g_modeMgr.GetGameMode()) {
       mode->BeginDragBarterItem(31, found.second, 1, -1);
     }
   }
@@ -906,7 +906,7 @@ void UIExpandedBarterItemPurchaseWnd::OnLBtnDown(int x, int y) {
 
   std::pair<bool, BarterMarketEntry> found = this->GetEntryAt(x, y);
   if (found.first == true) {
-    if (CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode())) {
+    if (CGameMode* mode = g_modeMgr.GetGameMode()) {
       mode->BeginDragBarterEntry(32, found.second, found.second.value, -1);
     }
   }
@@ -950,7 +950,7 @@ void UIExpandedBartermarketWnd::OnLBtnDown(int x, int y) {
     if (found.second.value == 0) {
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_INVENTORY_EXTEND_OF_BODYITEM)), 255, 0, 0, 0);
-    } else if (CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode())) {
+    } else if (CGameMode* mode = g_modeMgr.GetGameMode()) {
       mode->BeginDragBarterEntry(31, found.second, 1, -1);
     }
   }
@@ -994,7 +994,7 @@ void UIBarterItemPurchaseWnd::OnMouseHover(int x, int y) {
     BarterMarketItem item = found.second;
     ITEM_DESC description = FindItemDescription(item.currencyItemId);
     text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_NO_ITEM_FOR_EXCHANGE), description.identifiedName, item.currencyAmount * item.value));
-    CMode* tooltip = g_modeMgr.gameMode;
+    CMode* tooltip = g_modeMgr.currentMode;
     ITEM_INFO info = item.ToItemInfo();
     if (tooltip) {
       tooltip->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(info), 0, 1);
@@ -1013,7 +1013,7 @@ void UIBartermarketWnd::OnMouseHover(int x, int y) {
     std::string text;
     ITEM_DESC description = FindItemDescription(found.second.currencyItemId);
     text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_NO_ITEM_FOR_EXCHANGE), description.identifiedName, found.second.currencyAmount));
-    CMode* tooltip = g_modeMgr.gameMode;
+    CMode* tooltip = g_modeMgr.currentMode;
     ITEM_INFO info = found.second.ToItemInfo();
     if (tooltip) {
       tooltip->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(info), 0, 1);
@@ -1046,7 +1046,7 @@ void UIExpandedBarterItemPurchaseWnd::OnMouseHover(int x, int y) {
         text += "\n";
       }
     }
-    CMode* tooltip = g_modeMgr.GetGameMode();
+    CGameMode* tooltip = g_modeMgr.GetGameMode();
     ITEM_INFO info = found.second.ToItemInfo();
     if (tooltip) {
       tooltip->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(info), 0, 1);
@@ -1079,7 +1079,7 @@ void UIExpandedBartermarketWnd::OnMouseHover(int x, int y) {
         text += "\n";
       }
     }
-    CMode* tooltip = g_modeMgr.GetGameMode();
+    CGameMode* tooltip = g_modeMgr.GetGameMode();
     ITEM_INFO info = found.second.ToItemInfo();
     if (tooltip) {
       tooltip->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(info), 0, 1);
@@ -1111,7 +1111,7 @@ void UIPurchaseButton::OnMouseHover(int x, int y) {
   int tooltipX = 0;
   int tooltipY = -4 - count * 16;
   this->ToScreen(tooltipX, tooltipY);
-  CMode* tooltip = g_modeMgr.gameMode;
+  CMode* tooltip = g_modeMgr.currentMode;
   if (tooltip) {
     tooltip->ShowTooltip(text.c_str(), tooltipX, tooltipY, 0xFFFFFFFF, 0, 1);
   }
@@ -1159,7 +1159,7 @@ void UIExpandedBarterPurchaseButton::OnMouseHover(int x, int y) {
     int tooltipX = 0;
     int tooltipY = -4 - index * 16;
     this->ToScreen(tooltipX, tooltipY);
-    CMode* tooltip = g_modeMgr.gameMode;
+    CMode* tooltip = g_modeMgr.currentMode;
     if (tooltip) {
       tooltip->ShowTooltip(text.c_str(), tooltipX, tooltipY, 0xFFFFFFFF, 0, 1);
     }
@@ -1284,7 +1284,7 @@ int UIBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_
   }
 
   case UM_DROP: {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     if (!mode) {
       return 0;
     }
@@ -1356,7 +1356,7 @@ int UIBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_
   }
 
   case UM_COMMAND: {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     if (!mode) {
       return 0;
     }
@@ -1487,7 +1487,7 @@ int UIBartermarketWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   }
 
   case UM_DROP: {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     if (!mode) {
       return 0;
     }

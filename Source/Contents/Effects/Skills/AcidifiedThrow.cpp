@@ -115,7 +115,7 @@ void CAcidifiedThrow::OnProcess() {
 
   if (this->projectileEmitter) {
     const vector3d actorPos = actor->render.position;
-    const matrix& view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
+    const matrix& view = g_modeMgr.GetGameMode()->camera->frame.view;
 
     float actorViewX = actorPos.x * view.values[0] + actorPos.y * view.values[3] + actorPos.z * view.values[6] + view.values[9];
     float actorViewY = actorPos.x * view.values[1] + actorPos.y * view.values[4] + actorPos.z * view.values[7] + view.values[10];
@@ -132,7 +132,7 @@ void CAcidifiedThrow::OnProcess() {
 
     actorViewY -= 10.0f;
 
-    const matrix& inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse;
+    const matrix& inverse = g_modeMgr.GetGameMode()->camera->frame.inverse;
     float worldX = actorViewX * inverse.values[0] + actorViewY * inverse.values[3] + actorViewZ * inverse.values[6] + inverse.values[9];
     float worldY = actorViewX * inverse.values[1] + actorViewY * inverse.values[4] + actorViewZ * inverse.values[7] + inverse.values[10];
     float worldZ = actorViewX * inverse.values[2] + actorViewY * inverse.values[5] + actorViewZ * inverse.values[8] + inverse.values[11];
@@ -180,7 +180,7 @@ void CAcidifiedThrow::OnProcess() {
     FreeParticle(this->projectileEmitter);
     this->projectileEmitter = nullptr;
 
-    CRenderObject* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+    CRenderObject* player = g_modeMgr.GetGameMode()->scene->player;
     float soundX = player->render.position.x - this->impactPosition.x;
     float soundZ = player->render.position.z - this->impactPosition.z;
 
@@ -230,13 +230,13 @@ void CAcidifiedThrow::OnProcess() {
 // FUNCTION: fn_06827
 void CAcidifiedThrow::Render() {
   if (this->projectileEmitter) {
-    this->projectileEmitter->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+    this->projectileEmitter->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
     return;
   }
 
   for (__int64 i = 0; i < 3; ++i) {
     if (this->impactEmitters[i]) {
-      this->impactEmitters[i]->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+      this->impactEmitters[i]->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
     }
   }
 }

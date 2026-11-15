@@ -537,7 +537,7 @@ void CSkillAction_TR_RHYTHMSHOOTING::OnSkillEffect(int level, CGameActor* source
   EffectLists* effects = g_effectMgr;
   CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("rhythmshooting_shot"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   if (effect) {
-    const float angle = ScreenAngle(&source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values);
+    const float angle = ScreenAngle(&source->render.position.x, &target->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values);
     effect->SetAngle(angle + 180.0f);
   }
 }
@@ -608,7 +608,7 @@ void CSkillAction_TR_ROSEBLOSSOM::OnSkillEffect(int level, CGameActor* source, C
           source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("roseblossom_shot"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0
         )) {
       const float angle = ScreenAngle(
-        &source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values
+        &source->render.position.x, &target->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values
       );
       effect->SetAngle(angle + 180.0f);
     }

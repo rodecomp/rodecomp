@@ -148,7 +148,7 @@ void UIApplyForPartyWnd::OnMouseHover(int x, int y) {
     int screenX = static_cast<int>(left);
     int screenY = 75;
     this->ToScreen(screenX, screenY);
-    g_modeMgr.gameMode->ShowTooltip(label.c_str(), screenX, screenY, -1, false, true);
+    g_modeMgr.currentMode->ShowTooltip(label.c_str(), screenX, screenY, -1, false, true);
   }
 }
 

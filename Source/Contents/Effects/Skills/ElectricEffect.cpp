@@ -89,7 +89,7 @@ void CElectricEffect::OnProcess() {
   }
 
   if (this->tick == 25) {
-    CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+    CWorld* world = g_modeMgr.GetGameMode()->scene;
     const vector3d& player = world->player->render.position;
     g_soundMgr->PlayWave("effect\\T_전기.wav", this->position[0] - player.x, 0.0f, this->position[2] - player.z, 250, 40, 1.0f, 0);
   }
@@ -114,7 +114,7 @@ void CElectricEffect::OnProcess() {
 
     matrix rotation;
     std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
-    rotation.MakeYRotation(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw / -180.0f * 3.141592f);
+    rotation.MakeYRotation(g_modeMgr.GetGameMode()->camera->camera.yaw / -180.0f * 3.141592f);
     particle->transform = rotation;
 
     const int segment = particle->columnIndex;

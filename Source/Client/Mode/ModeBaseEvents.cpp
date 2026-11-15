@@ -15,15 +15,15 @@ int CMode::SendMsg(int event, int argument1, int, int, int) {
   switch (event) {
   case MM_QUIT:
     g_accountLinkedUserDataMgr->Save();
-    if (g_modeMgr.state == 1 && g_modeMgr.gameMode) {
+    if (g_modeMgr.state == 1 && g_modeMgr.currentMode) {
       g_characterLinkedUserDataMgr->Save();
-      if (g_modeMgr.state == 1 && g_modeMgr.gameMode) {
+      if (g_modeMgr.state == 1 && g_modeMgr.currentMode) {
         g_adventurerAgencyMgr->RequestStop();
       }
     }
 
-    if (g_modeMgr.gameMode) {
-      g_modeMgr.gameMode->running = 0;
+    if (g_modeMgr.currentMode) {
+      g_modeMgr.currentMode->running = 0;
     }
 
     if (g_serviceType == ServiceIndia) {

@@ -226,6 +226,6 @@ void CLoginMode::ReceiveNotifyBan(const unsigned char* data) {
   if (g_session.m_loginModeFlag == true) {
     this->pendingCursorType = 3;
   } else {
-    g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
   }
 }

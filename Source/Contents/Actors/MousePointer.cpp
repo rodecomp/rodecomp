@@ -29,7 +29,7 @@ void CMousePointer::SendMsg(CGameObject*, std::int64_t message, std::int64_t b, 
     const float* const position = reinterpret_cast<const float*>(static_cast<std::intptr_t>(b));
     this->render.position.x = position[0];
     this->render.position.z = position[1];
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     this->render.position.y = mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
     this->render.visible = 1;
     this->m_remainingFrames = 0;

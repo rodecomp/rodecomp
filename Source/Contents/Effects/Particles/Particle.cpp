@@ -408,7 +408,7 @@ bool CEZ2STRParticle::Process(float x, float y, float z) {
 // OFFSET: 0x00B3E010
 // FUNCTION: fn_18822
 __declspec(safebuffers) void CEZ2STRParticle::UpdatePosition(float x, float y, float z) {
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   RenderVertex screen = {0, 0, 0, 0, 0, 0xFF000000, 0, 0};
   g_renderer->viewport.Project(&this->position.x, mode->camera->frame.view.values, screen);
   this->m_screen.x = screen.x + x;
@@ -484,8 +484,8 @@ void CEZ2STRParticle::RenderBillboard(EZeffectClip* clip, EZeffectTransform* tra
   const float scaleX = this->m_flipX ? scale * -1.0f : scale;
   world.AppendScale(scaleX, scaleY, 1.0f);
   world.AppendZRotation(ToRadians(this->m_angle));
-  world.AppendXRotation(ToRadians(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch));
-  world.AppendYRotation(ToRadians(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw));
+  world.AppendXRotation(ToRadians(g_modeMgr.GetGameMode()->camera->camera.pitch));
+  world.AppendYRotation(ToRadians(g_modeMgr.GetGameMode()->camera->camera.yaw));
   world.AppendTranslate(&this->position.x);
 
   matrix combined;
@@ -644,7 +644,7 @@ void CEZ2STRParticle::RenderGround(EZeffectClip* clip, EZeffectTransform* transf
   const float scaleX = this->m_flipX ? scale * -1.0f : scale;
   world.AppendScale(scaleX, scaleY, 1.0f);
   world.AppendXRotation(ToRadians(-90.0f));
-  world.AppendYRotation(ToRadians(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw + this->m_angle));
+  world.AppendYRotation(ToRadians(g_modeMgr.GetGameMode()->camera->camera.yaw + this->m_angle));
   world.AppendTranslate(&this->position.x);
 
   const float* values = world.values;
@@ -655,7 +655,7 @@ void CEZ2STRParticle::RenderGround(EZeffectClip* clip, EZeffectTransform* transf
     point.x = x * values[0] + y * values[3] + z * values[6] + values[9];
     point.y = x * values[1] + y * values[4] + z * values[7] + values[10];
     point.z = x * values[2] + y * values[5] + z * values[8] + values[11];
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     point.y = mode->scene->terrain->PlaneHeight(point.x, point.z) - 2.0f;
     if (this->m_groundHeight != -1000.0f && point.y - this->m_groundHeight > 5.0f) {
       point.y = this->m_groundHeight;
@@ -850,7 +850,7 @@ void CParticle::Render(bool billboard, float top, float bottom, float left, floa
   }
 
   RenderVertex* output = this->primitive.vertices;
-  const matrix& view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
+  const matrix& view = g_modeMgr.GetGameMode()->camera->frame.view;
   const matrix* local;
   matrix placed;
   if (!billboard) {
@@ -859,7 +859,7 @@ void CParticle::Render(bool billboard, float top, float bottom, float left, floa
     translation.MakeTranslate(this->position.x, this->position.y, this->position.z);
     matrix rotation;
     rotation.Identity();
-    rotation.AppendYRotation(ToRadians(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw));
+    rotation.AppendYRotation(ToRadians(g_modeMgr.GetGameMode()->camera->camera.yaw));
     matrix facing;
     facing.Compose(rotation, translation);
     placed.Compose(this->transform, facing);

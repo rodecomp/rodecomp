@@ -240,7 +240,7 @@ bool CSoundMaker::OnProcess() {
     return true;
   }
 
-  const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+  const auto* player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player);
   if (!player) {
     return true;
   }
@@ -307,7 +307,7 @@ float* CPc::GetExtent(float* extent) const {
 // OFFSET: 0x00DA2FA0
 // FUNCTION: fn_22397
 bool CBlurPC::OnProcess() {
-  CWorld* scene = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+  CWorld* scene = g_modeMgr.GetGameMode()->scene;
   if (scene) {
     const CRenderObject* owner = scene->GetGameActorByAidIncludeMe(this->render.accountId);
     if (owner && 0 != (owner->render.flags & 0x10)) {
@@ -327,7 +327,7 @@ bool CBlurPC::OnProcess() {
 // OFFSET: 0x00DA3240
 // FUNCTION: fn_22401
 bool CHalluPC2::OnProcess() {
-  CWorld* scene = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+  CWorld* scene = g_modeMgr.GetGameMode()->scene;
   if (scene) {
     const CRenderObject* owner = scene->GetGameActorByAidIncludeMe(this->render.accountId);
     if (owner && 0 != (owner->render.flags & 0x10)) {
@@ -448,7 +448,7 @@ void CMasterChaser::ClearChaseState() {
 // OFFSET: 0x00DA3F50
 // FUNCTION: fn_22408
 void CNpc::RegisterPos() {
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   int column;
   int row;
   mode->WorldCell(this->render.position.x, this->render.position.z, column, row);
@@ -504,7 +504,7 @@ bool CGndRiser::OnProcess() {
     return false;
   }
 
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (mode) {
     GroundGeometry* ground = mode->scene->ground;
     const float half = static_cast<float>(this->lifetime / 2);
@@ -596,7 +596,7 @@ void CGndRiser::SendMsg(
     this->render.motionStartTime = timeGetTime();
     this->lifetime = 30;
 
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     if (mode) {
       mode->WorldCell(this->render.position.x, this->render.position.z, this->screenX, this->screenY);
       this->screenX /= 2;
@@ -1321,7 +1321,7 @@ void CNpc::UpdateMinimapMarker() {
     return;
   }
 
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   MinimapMarker* marker = mode->FindMinimapMarker(this->render.accountId);
   if (marker && marker->effectType != 9999) {
     if (this->attachedEffect && marker->effectType == this->minimapMarkerCell[0] && marker->questIconId == this->minimapMarkerCell[1]) {
@@ -1541,7 +1541,7 @@ void CHalluPC2::Render(int argument) {
 // FUNCTION: fn_22414
 void CHalluPC::Render(int argument) {
   const float* matrix = reinterpret_cast<const float*>(argument);
-  CWorld* scene = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+  CWorld* scene = g_modeMgr.GetGameMode()->scene;
   if (scene) {
     CRenderObject* source = scene->GetGameActorByAidIncludeMe(this->render.accountId);
     if (source && (source->render.flags & 0x10) != 0) {

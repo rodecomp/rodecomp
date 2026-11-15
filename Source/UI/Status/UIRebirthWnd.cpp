@@ -4,6 +4,7 @@
 #include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 
+#include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Window/UIWindowMgr.h"
@@ -43,7 +44,7 @@ void UIRebirthWnd::OnCreate(int width, int height) {
 // OFFSET: 0x00938E30
 // FUNCTION: fn_12753
 int UIRebirthWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  CMode* mode = g_modeMgr.GetGameMode();
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (message != UM_COMMAND) {
     return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }

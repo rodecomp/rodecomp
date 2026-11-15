@@ -135,7 +135,7 @@ UIMakeCharWnd::UIMakeCharWnd()
   this->m_nameEdit = nullptr;
   this->m_info.sex = static_cast<unsigned char>(g_session.m_sex);
 
-  const int* preset = reinterpret_cast<const int*>(g_modeMgr.gameMode->SendMsg(LMM_GET_CHAR_PARAM, 0, 0, 0, 0));
+  const int* preset = reinterpret_cast<const int*>(g_modeMgr.currentMode->SendMsg(LMM_GET_CHAR_PARAM, 0, 0, 0, 0));
   this->m_info.stats[0] = static_cast<unsigned char>(preset[0]);
   this->m_info.stats[1] = static_cast<unsigned char>(preset[1]);
   this->m_info.stats[2] = static_cast<unsigned char>(preset[2]);
@@ -955,7 +955,7 @@ int UIMerInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
 
       return 0;
     case ID_FIRE_MER: {
-      CMode* mode = g_modeMgr.GetGameMode();
+      CGameMode* mode = g_modeMgr.GetGameMode();
 
       if (g_windowMgr.Confirm(LookupMessage(MSI_DELETE_MER), 2, false, false, 0, "Message", 280, 120, 0) == ID_YES) {
         mode->SendMsg(MM_COMMAND_MER, 2, 0, 0, 0);
@@ -1589,7 +1589,7 @@ void UIMakeCharWnd::InitHairControls() {
 // OFFSET: 0x008B0B60
 // FUNCTION: fn_11743
 void UIMakeCharWnd::OnCreate(int, int) {
-  g_modeMgr.gameMode->SendMsg(LMM_GET_MAKING_CHAR_NAME, 0, 0, 0, 0);
+  g_modeMgr.currentMode->SendMsg(LMM_GET_MAKING_CHAR_NAME, 0, 0, 0, 0);
   this->m_nameEdit = new UIBitmapEditCtrl;
   this->m_nameEdit->SetBitmapName("유저인터페이스\\login_interface\\name-edit.bmp");
   this->m_nameEdit->SetSize(this->m_nameEdit->geometry.width, this->m_nameEdit->geometry.height);
@@ -2033,7 +2033,7 @@ void UIMessageBoxAutoreturn::Paint() {
 // OFFSET: 0x008BA670
 // FUNCTION: fn_11788
 void UILoginOTPWnd::OnProcess() {
-  auto* login = static_cast<CLoginMode*>(g_modeMgr.GetLoginMode());
+  auto* login = g_modeMgr.GetLoginMode();
   if (login == nullptr) {
     return;
   }
@@ -2281,7 +2281,7 @@ int UIReplayRECControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     case ID_START_REPLAY_RECORDING:
       if (!this->replayPathEnabled) {
         this->mode = 1;
-        g_modeMgr.gameMode->SendMsg(MM_START_REPLAY_RECORDING, 0, 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(MM_START_REPLAY_RECORDING, 0, 0, 0, 0);
         this->ApplyMode();
         return 0;
       }
@@ -2292,7 +2292,7 @@ int UIReplayRECControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     case ID_STOP_REPLAY_RECORDING:
       this->mode = 0;
       this->ApplyMode();
-      g_modeMgr.gameMode->SendMsg(MM_STOP_REPLAY_RECORDING, 0, 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_STOP_REPLAY_RECORDING, 0, 0, 0, 0);
       return 0;
     case ID_CONFIRM_REPLAY_RECORDING_PATH: {
       auto* edit = this->filenameEdit;
@@ -2310,7 +2310,7 @@ int UIReplayRECControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       ReplayFileList::Instance().SetPath(edit->Text());
       g_windowMgr.SetFocus(nullptr);
       edit->SetText("");
-      g_modeMgr.gameMode->SendMsg(MM_START_REPLAY_RECORDING, 0, 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_START_REPLAY_RECORDING, 0, 0, 0, 0);
 
       if (Replay::Instance().state == 1) {
         return 0;
@@ -2724,26 +2724,26 @@ int UIReplayControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
   case UM_COMMAND:
     switch (argument1) {
     case ID_PAUSE_REPLAY:
-      g_modeMgr.gameMode->SendMsg(MM_PAUSE_REPLAY, 0, 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_PAUSE_REPLAY, 0, 0, 0, 0);
       return 0;
     case ID_RESUME_REPLAY:
-      g_modeMgr.gameMode->SendMsg(MM_RESUME_REPLAY, 0, 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_RESUME_REPLAY, 0, 0, 0, 0);
       return 0;
     case ID_RESTART_REPLAY:
-      g_modeMgr.gameMode->SendMsg(MM_RESTART_REPLAY, 0, 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_RESTART_REPLAY, 0, 0, 0, 0);
       Replay::Instance().speed = 1.0f;
       return 0;
     case ID_EXIT_REPLAY:
       g_windowMgr.Schedule(this);
-      g_modeMgr.gameMode->SendMsg(MM_EXIT_REPLAY, 0, 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_EXIT_REPLAY, 0, 0, 0, 0);
       Replay::Instance().speed = 1.0f;
       return 0;
     case ID_DECREASE_REPLAY_SPEED:
-      g_modeMgr.gameMode->SendMsg(MM_DECREASE_REPLAY_SPEED, 0, 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_DECREASE_REPLAY_SPEED, 0, 0, 0, 0);
       this->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
       return 0;
     case ID_INCREASE_REPLAY_SPEED:
-      g_modeMgr.gameMode->SendMsg(MM_INCREASE_REPLAY_SPEED, 0, 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_INCREASE_REPLAY_SPEED, 0, 0, 0, 0);
       this->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
       return 0;
     }
@@ -2810,8 +2810,8 @@ bool UIReplayControlWnd::RefreshInfo() {
   this->m_texts[1]->SetTextFitted(text);
 
   std::string location;
-  if (g_modeMgr.gameMode != nullptr) {
-    location = static_cast<CGameMode*>(g_modeMgr.gameMode)->LocationText();
+  if (g_modeMgr.currentMode != nullptr) {
+    location = static_cast<CGameMode*>(g_modeMgr.currentMode)->LocationText();
   }
   this->m_texts[3]->SetTextFitted(location.c_str());
   this->Invalidate();
@@ -2844,7 +2844,7 @@ int UISelectReplayDataWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     case ID_SELECT_REPLAY:
       Replay::Instance().SetState(1);
       g_windowMgr.Schedule(this);
-      g_modeMgr.gameMode->SendMsg(LMM_REPLAY_SELECT_SERVER, 0, 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(LMM_REPLAY_SELECT_SERVER, 0, 0, 0, 0);
       return 0;
     case ID_OK:
       if (this->m_list->selected != -1) {
@@ -2852,7 +2852,7 @@ int UISelectReplayDataWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         this->Invalidate();
         if (ReplayFileList::Instance().Open(32, 0, 0) == 1) {
           if (Replay::Instance().MatchesService(g_serviceMode)) {
-            g_modeMgr.gameMode->SendMsg(LMM_START_REPLAY, 0, 0, 0, 0);
+            g_modeMgr.currentMode->SendMsg(LMM_START_REPLAY, 0, 0, 0, 0);
             g_windowMgr.Schedule(this);
             g_soundMgr->PlayWave("버튼소리.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
             return 0;
@@ -2866,7 +2866,7 @@ int UISelectReplayDataWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       break;
     case ID_EXIT:
       if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT), 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
-        g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
         g_windowMgr.Schedule(this);
         return 0;
       }
@@ -3010,13 +3010,13 @@ int UISelectServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       ReplayFileList::Instance().SetReplay(&Replay::Instance());
       ReplayFileList::Instance().selectionState = g_session.m_aid;
       ReplayFileList::Instance().dialogState = g_session.GetCurrentSex();
-      g_modeMgr.gameMode->SendMsg(LMM_SELECT_REPLAY_DATA, 0, 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(LMM_SELECT_REPLAY_DATA, 0, 0, 0, 0);
       g_windowMgr.Schedule(this);
       return 0;
     case ID_OK:
       if (this->m_serverList->selected != -1) {
         g_windowMgr.Schedule(this);
-        g_modeMgr.gameMode->SendMsg(this->m_event, this->m_serverList->selected, 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(this->m_event, this->m_serverList->selected, 0, 0, 0);
         g_soundMgr->PlayWave("버튼소리.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
         const char* name = this->m_valueName.c_str();
         this->m_selectedServer = this->m_serverList->selected;
@@ -3031,11 +3031,11 @@ int UISelectServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       break;
     case ID_CANCEL:
       g_windowMgr.Schedule(this);
-      g_modeMgr.gameMode->SendMsg(LMM_CANCEL, 0, 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(LMM_CANCEL, 0, 0, 0, 0);
       return 0;
     case ID_EXIT:
       if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT), 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
-        g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
         g_windowMgr.Schedule(this);
         return 0;
       }
@@ -3191,7 +3191,7 @@ void UIMonsterInfoWnd::OnCreate(int, int) {
 
   this->actorId = g_session.m_monsterInfoActorId;
   {
-    const std::string actorName = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ActorName(g_session.m_monsterInfoActorId);
+    const std::string actorName = g_modeMgr.GetGameMode()->ActorName(g_session.m_monsterInfoActorId);
     this->name = actorName;
   }
   const std::size_t separator = this->name.find("#");
@@ -3311,11 +3311,11 @@ int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
     case ID_LOGIN: {
       g_soundMgr->PlayWave(OBFUSCATE_TEXT_NAMED("버튼소리.wav", 0x452FEF0D7FC95565ULL, soundName), 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       if (this->passwordEdit->Length() >= 6 && this->idEdit->Length() >= 4) {
-        g_modeMgr.gameMode->SendMsg(LMM_CONNECT_TO_ACSVR, 0, 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(LMM_CONNECT_TO_ACSVR, 0, 0, 0, 0);
         StringFormat(g_launchAccountPassword, 24, static_cast<std::size_t>(-1), "%s", this->idEdit->Text());
-        g_modeMgr.gameMode->SendMsg(LMM_PASSWORD, reinterpret_cast<int>(this->passwordEdit->Text()), 0, 0, 0);
-        g_modeMgr.gameMode->SendMsg(LMM_ID, reinterpret_cast<int>(this->idEdit->Text()), 0, 0, 0);
-        g_modeMgr.gameMode->SendMsg(LMM_SET_LOGIN_EXTRA, reinterpret_cast<int>(this->loginExtra), 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(LMM_PASSWORD, reinterpret_cast<int>(this->passwordEdit->Text()), 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(LMM_ID, reinterpret_cast<int>(this->idEdit->Text()), 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(LMM_SET_LOGIN_EXTRA, reinterpret_cast<int>(this->loginExtra), 0, 0, 0);
         g_windowMgr.CloseWindow(WID_LOGINWND);
         this->SaveLogin();
       } else if (this->idEdit->Length() < 4) {
@@ -3327,7 +3327,7 @@ int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
     }
     case ID_CANCEL:
       g_loginCancelRequested = 1;
-      g_modeMgr.gameMode->SendMsg(LMM_GOTOSELECTACCOUNT, 0, 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(LMM_GOTOSELECTACCOUNT, 0, 0, 0, 0);
       break;
     case ID_EXIT:
       this->SaveLogin();
@@ -3379,7 +3379,7 @@ int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
   }
 
 quit:
-  g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
+  g_modeMgr.currentMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
   g_windowMgr.Schedule(this);
   return 0;
 }
@@ -3392,7 +3392,7 @@ int UILoginOTPWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     switch (a) {
     case ID_CANCEL:
       if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT), 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
-        g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
         g_windowMgr.Schedule(this);
       }
       break;
@@ -3404,8 +3404,8 @@ int UILoginOTPWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       thread_local EncryptedName<sizeof(soundSource), 0x7321C3814F8799E1ULL> soundName(soundSource);
       soundMgr->PlayWave(soundName.Text(), 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       if (this->authCodeEdit->Length() == 8) {
-        g_modeMgr.gameMode->SendMsg(LMM_SET_AUTH_CODE, reinterpret_cast<int>(this->authCodeEdit->Text()), 0, 0, 0);
-        g_modeMgr.gameMode->SendMsg(LMM_SEND_LOGIN_AUTH_CODE, 0, 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(LMM_SET_AUTH_CODE, reinterpret_cast<int>(this->authCodeEdit->Text()), 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(LMM_SEND_LOGIN_AUTH_CODE, 0, 0, 0, 0);
         g_windowMgr.CloseWindow(WID_LOGINOTPWND);
       } else {
         g_windowMgr.Confirm(LookupMessage(MSI_FAIL_SERVICE_CHECKING_ERROR), 0, true, false, 0, "Message", 280, 120, 0);
@@ -3653,7 +3653,7 @@ int UIHomunInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       g_windowMgr.AddRendered(this->feedConfirmation);
       return 0;
     case ID_DELETE_HOMUN: {
-      CMode* mode = g_modeMgr.GetGameMode();
+      CGameMode* mode = g_modeMgr.GetGameMode();
       if (g_windowMgr.Confirm(LookupMessage(MSI_DELETE_HOMUN), 2, false, false, 0, "Message", 280, 120, 0) == ID_YES) {
         mode->SendMsg(MM_COMMAND_HOMUN, 2, 0, 0, 0);
         g_windowMgr.CloseWindow(WID_HOMUNINFOWND);
@@ -3664,7 +3664,7 @@ int UIHomunInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       return 0;
     }
     case 488: {
-      CMode* mode = g_modeMgr.GetGameMode();
+      CGameMode* mode = g_modeMgr.GetGameMode();
       if (sender == this->feedConfirmation && b == ID_YES) {
         if (g_windowMgr.LookupWindow(WID_EXCHANGEUI)) {
           g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_EXCHANGED_FAILED)), 255, 0, 0, 0);
@@ -3768,7 +3768,7 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
   case UM_DEFPUSH:
     return 0;
   case UM_COMBOBOX_SELECTED: {
-    CMode* mode = g_modeMgr.GetGameMode();
+    CGameMode* mode = g_modeMgr.GetGameMode();
     switch (a) {
     case 467:
       if (g_windowMgr.rodexComposeWnd) {
@@ -3889,7 +3889,7 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       return 0;
     }
     case 488: {
-      CMode* mode = g_modeMgr.GetGameMode();
+      CGameMode* mode = g_modeMgr.GetGameMode();
       if (sender == this->feedConfirmationWnd && b == ID_YES) {
         if (g_windowMgr.LookupWindow(WID_EXCHANGEUI)) {
           g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARTERITEM_NAME_COUNT)), 255, 0, 0, 0);
@@ -4221,12 +4221,12 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
             return 0;
           }
 
-          g_modeMgr.gameMode->SendMsg(LMM_SENDCHARINFO, 0, 0, 0, 0);
+          g_modeMgr.currentMode->SendMsg(LMM_SENDCHARINFO, 0, 0, 0, 0);
           g_windowMgr.Schedule(this);
         }
       }
 
-      g_modeMgr.gameMode->SendMsg(LMM_SET_MAKING_CHAR_NAME, reinterpret_cast<int>(this->m_nameEdit->Text()), 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(LMM_SET_MAKING_CHAR_NAME, reinterpret_cast<int>(this->m_nameEdit->Text()), 0, 0, 0);
       int values[8];
       values[0] = this->m_info.stats[0];
       values[1] = this->m_info.stats[1];
@@ -4236,12 +4236,12 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       values[5] = this->m_info.stats[5];
       values[6] = this->m_info.headPalette;
       values[7] = this->m_info.head;
-      g_modeMgr.gameMode->SendMsg(LMM_SET_CHAR_PARAM, reinterpret_cast<int>(values), 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(LMM_SET_CHAR_PARAM, reinterpret_cast<int>(values), 0, 0, 0);
       return 0;
     }
     case ID_CANCEL:
       g_windowMgr.Schedule(this);
-      g_modeMgr.gameMode->SendMsg(MM_COMMAND, 10004, 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_COMMAND, 10004, 0, 0, 0);
       return 0;
     case ID_LEFT: {
       int action = this->m_view.action + 1;

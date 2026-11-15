@@ -109,7 +109,7 @@ void CCrimsonArrowEffect::OnProcess() {
 // FUNCTION: fn_07125
 void CCrimsonArrowEffect::Render() {
   if (this->emitter) {
-    this->emitter->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+    this->emitter->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
   }
 }
 
@@ -212,7 +212,7 @@ void CSprArrowEffect::OnProcess() {
   }
 
   this->spriteParticle->angle =
-      this->heading - static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw;
+      this->heading - g_modeMgr.GetGameMode()->camera->camera.yaw;
   this->spriteParticle->position.x = time * this->velocityX + this->startX + this->spriteParticle->velocity.x;
   this->spriteParticle->position.y = this->velocityY * time + this->startY + this->spriteParticle->velocity.y;
   this->spriteParticle->position.z = this->velocityZ * time + this->startZ + this->spriteParticle->velocity.z;
@@ -461,7 +461,7 @@ void CStemSpearEffect::OnProcess() {
     CSpriteParticle* emitter = *it;
     if (emitter->elapsedFrames >= 0) {
       this->SetSourceActor(this->sourceActor);
-      emitter->angle = static_cast<float>(emitter->angleParameter) - static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw;
+      emitter->angle = static_cast<float>(emitter->angleParameter) - g_modeMgr.GetGameMode()->camera->camera.yaw;
 
       const float dy = this->sourcePosition[1] - this->position[1];
       const float dx = this->sourcePosition[0] - this->position[0];
@@ -507,7 +507,7 @@ void CSvgSpiritEffect::OnProcess() {
   if (this->emitter->elapsedFrames >= 0) {
     this->SetSourceActor(this->sourceActor);
     CSpriteParticle* spirit = this->emitter;
-    spirit->angle = static_cast<float>(spirit->angleParameter) - static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw;
+    spirit->angle = static_cast<float>(spirit->angleParameter) - g_modeMgr.GetGameMode()->camera->camera.yaw;
 
     const float dy = this->sourcePosition[1] - this->position[1];
     const float dx = this->sourcePosition[0] - this->position[0];
@@ -596,7 +596,7 @@ bool CCurseOfCubeEffect::IsAlive() {
 // FUNCTION: fn_07180
 void CCurseOfCubeEffect::Render() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
-    (*it)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+    (*it)->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
   }
 }
 
@@ -691,7 +691,7 @@ void CWarningPlaneEffect::OnProcess() {
       matrix rotation;
       std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
       rotation.MakeXRotation(1.570796f);
-      rotation.AppendYRotation(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw / -180.0f * 3.141592f);
+      rotation.AppendYRotation(g_modeMgr.GetGameMode()->camera->camera.yaw / -180.0f * 3.141592f);
 
       matrix scale;
       std::memcpy(scale.values, g_identityMatrix, sizeof(scale.values));
@@ -768,13 +768,13 @@ bool CDancingKnifeEffect::IsAlive() {
 void CDancingKnifeEffect::Render() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     if (*it) {
-      (*it)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+      (*it)->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
     }
   }
 
   for (auto it = this->secondStrikeEmitters.begin(); it != this->secondStrikeEmitters.end(); ++it) {
     if (*it) {
-      (*it)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+      (*it)->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
     }
   }
 }
@@ -843,7 +843,7 @@ void CEternalSlashAttackEffect::OnProcess() {
 void CEternalSlashAttackEffect::Render() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     if (*it) {
-      (*it)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+      (*it)->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
     }
   }
 }
@@ -910,7 +910,7 @@ void CEternalSlashCountEffect::OnProcess() {
 // FUNCTION: fn_07219
 void CEternalSlashCountEffect::Render() {
   if (this->emitter) {
-    this->emitter->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+    this->emitter->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
   }
 }
 
@@ -967,7 +967,7 @@ void CFallenAngelEffect::OnProcess() {
 // FUNCTION: fn_07226
 void CFallenAngelEffect::Render() {
   if (this->emitter) {
-    this->emitter->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+    this->emitter->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
   }
 }
 
@@ -1048,12 +1048,12 @@ void CFloralFlareRoad::OnProcess() {
 void CFloralFlareRoad::Render() {
   if (this->emitter) {
     this->emitter
-      ->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+      ->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
   }
 
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     if (*it) {
-      (*it)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+      (*it)->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
     }
   }
 }
@@ -1138,19 +1138,19 @@ CParticle* CFootprintEffect::SpawnFootprint() {
   particle->InitParticleQuad(particle->vertices);
 
   const float angle =
-    ScreenAngle(&this->lastPosition.x, this->position, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values) + 90.0f;
+    ScreenAngle(&this->lastPosition.x, this->position, g_modeMgr.GetGameMode()->camera->frame.view.values) + 90.0f;
   const float scale = this->scaleParameter;
   matrix world;
   world.SetScale(scale, scale, 0.0f);
   world.AppendXRotation(1.570796f);
-  world.AppendYRotation((angle + static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw) / 180.0f * 3.141592f);
+  world.AppendYRotation((angle + g_modeMgr.GetGameMode()->camera->camera.yaw) / 180.0f * 3.141592f);
   world.AppendTranslate(this->position);
 
   for (int i = 0; i < 4; ++i) {
     RenderVertex& vertex = particle->vertices[i];
     const float x = vertex.x * world.values[0] + vertex.y * world.values[3] + 0.0f * world.values[6] + world.values[9];
     const float z = vertex.x * world.values[2] + vertex.y * world.values[5] + 0.0f * world.values[8] + world.values[11];
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     float y = mode->scene->terrain->PlaneHeight(x, z) - 2.0f;
     if (this->lastGroundHeight != -1000.0f && y - this->lastGroundHeight > 5.0f) {
       y = this->lastGroundHeight;
@@ -1297,7 +1297,7 @@ void CFootprintStrEffect::SpawnFootprint() {
   point.z =
     (direction.x * rotation.values[2] + direction.y * rotation.values[5] + direction.z * rotation.values[8] + rotation.values[11]) * gap * side +
     this->position[2];
-  point.y = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Height(point.x, point.z);
+  point.y = g_modeMgr.GetGameMode()->scene->terrain->Height(point.x, point.z);
   vector3d spawn = point;
 
   const std::string& bottom = this->leftFoot ? this->leftBottomFile : this->rightBottomFile;
@@ -1307,7 +1307,7 @@ void CFootprintStrEffect::SpawnFootprint() {
     if (particle) {
       float angle;
       if (this->adjustAngle) {
-        angle = ScreenAngle(&this->lastPosition.x, &spawn.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values) + 90.0f;
+        angle = ScreenAngle(&this->lastPosition.x, &spawn.x, g_modeMgr.GetGameMode()->camera->frame.view.values) + 90.0f;
       } else {
         angle = 0.0f;
       }
@@ -1374,11 +1374,11 @@ void CFootprintStrEffect::OnProcess() {
 // FUNCTION: fn_07253
 void CFootprintStrEffect::Render() {
   for (CEZ2STRParticle* emitter : this->emitters) {
-    emitter->DrawGround(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+    emitter->DrawGround(g_modeMgr.GetGameMode()->camera->frame.view);
   }
 
   for (CEZ2STRParticle* emitter : this->topEmitters) {
-    emitter->DrawBillboards(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+    emitter->DrawBillboards(g_modeMgr.GetGameMode()->camera->frame.view);
   }
 }
 
@@ -1426,11 +1426,11 @@ void CFromTheAbyssEffect::OnProcess() {
 // INLINED
 static __forceinline void FollowAbyssOwner(const CFromTheAbyssEffect* effect, CEZ2STRParticle* emitter) {
   const vector3d origin = *&effect->positionVector;
-  const matrix& view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
+  const matrix& view = g_modeMgr.GetGameMode()->camera->frame.view;
   const vector3d viewPosition = {origin.x * view.values[0] + origin.y * view.values[3] + origin.z * view.values[6] + view.values[9],
                                  origin.x * view.values[1] + origin.y * view.values[4] + origin.z * view.values[7] + view.values[10],
                                  origin.x * view.values[2] + origin.y * view.values[5] + origin.z * view.values[8] + view.values[11]};
-  const matrix& inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse;
+  const matrix& inverse = g_modeMgr.GetGameMode()->camera->frame.inverse;
   const float viewX = viewPosition.x + emitter->offset.x;
   const float viewY = viewPosition.y + emitter->offset.y;
   const float viewZ = viewPosition.z + emitter->offset.z;
@@ -1498,7 +1498,7 @@ void CFromTheAbyssEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CEZ2STRParticle* emitter = it->second.emitter;
     if (emitter) {
-      emitter->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+      emitter->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
     }
   }
 }
@@ -1687,7 +1687,7 @@ bool CGaleStorm::IsAlive() {
 void CGaleStorm::Render() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     if (*it) {
-      (*it)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+      (*it)->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
     }
   }
 }
@@ -1700,7 +1700,7 @@ void CGravityControlEffect::Render() {
   }
 
   this->target
-      ->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+      ->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
 }
 
 // OFFSET: 0x007184D0
@@ -1789,7 +1789,7 @@ void CHawkVumerangEffect::Render() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     CEZ2STRParticle* particle = *it;
     if (particle) {
-      particle->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+      particle->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
     }
   }
 }
@@ -1804,7 +1804,7 @@ CDropItemEffect::CDropItemEffect()
 // OFFSET: 0x00719400
 // FUNCTION: fn_07307
 void CDropItemEffect::Open() {
-  if (!static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene) {
+  if (!g_modeMgr.GetGameMode()->scene) {
     return;
   }
 
@@ -1820,7 +1820,7 @@ void CDropItemEffect::Open() {
 
   this->OpenEmitters();
   this->InitEvents();
-  static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetItemByAID(this->actor);
+  g_modeMgr.GetGameMode()->scene->GetItemByAID(this->actor);
   this->position.x = this->CEffect::position[0];
   this->position.y = this->CEffect::position[1];
   this->position.z = this->CEffect::position[2];
@@ -1854,7 +1854,7 @@ bool CDropItemEffect::IsAlive() {
     return false;
   }
 
-  if (!static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetItemByAID(this->actor)) {
+  if (!g_modeMgr.GetGameMode()->scene->GetItemByAID(this->actor)) {
     return false;
   }
 
@@ -1914,7 +1914,7 @@ void CDropItemEffect::OnProcess() {
 void CDropItemEffect::Render() {
   for (std::size_t i = 0; i < this->emitters.size(); ++i) {
     if (this->emitters[i]) {
-      this->emitters[i]->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+      this->emitters[i]->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
     }
   }
 }
@@ -2009,7 +2009,7 @@ void CJupitelThunderHit::OnProcess() {
       } else {
         const float scale = static_cast<float>(particle->elapsedFrames) * particle->speedParameter;
         matrix rotation;
-        rotation.MakeXRotation(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch / 180.0f * 3.141592f);
+        rotation.MakeXRotation(g_modeMgr.GetGameMode()->camera->camera.pitch / 180.0f * 3.141592f);
         matrix scaling;
         scaling.SetScale(scale, scale, 1.0f);
         matrix transform;
@@ -2035,7 +2035,7 @@ void CJupitelThunderHit::OnProcess() {
       particle->SetTexture(this->textures[index]);
       particle->animationState = static_cast<unsigned char>(index);
       matrix rotation;
-      rotation.MakeXRotation(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch / 180.0f * 3.141592f);
+      rotation.MakeXRotation(g_modeMgr.GetGameMode()->camera->camera.pitch / 180.0f * 3.141592f);
       matrix scaling;
       scaling.SetScale(particle->scale, particle->scale, 1.0f);
       matrix transform;
@@ -2183,7 +2183,7 @@ void CNewCloudKillEffect::OnProcess() {
         matrix rotation;
         rotation.MakeZRotation(static_cast<float>(angle) / 180.0f * 3.141592f);
         rotation.AppendXRotation(
-            static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch / 180.0f * 3.141592f
+            g_modeMgr.GetGameMode()->camera->camera.pitch / 180.0f * 3.141592f
         );
 
         matrix scale;
@@ -2238,7 +2238,7 @@ void CNewCloudKillEffect::OnProcess() {
 
     matrix rotation;
     rotation.MakeXRotation(
-        static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch / 180.0f * 3.141592f
+        g_modeMgr.GetGameMode()->camera->camera.pitch / 180.0f * 3.141592f
     );
 
     matrix transform;
@@ -2261,7 +2261,7 @@ void CNewCloudKillEffect::OnProcess() {
       matrix rotation;
       rotation.MakeZRotation(particle->angle / 180.0f * 3.141592f);
       rotation.AppendXRotation(
-          static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch / 180.0f * 3.141592f
+          g_modeMgr.GetGameMode()->camera->camera.pitch / 180.0f * 3.141592f
       );
 
       matrix transform;
@@ -2270,7 +2270,7 @@ void CNewCloudKillEffect::OnProcess() {
 
       matrix yaw;
       yaw.MakeYRotation(
-          static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw / 180.0f * 3.141592f
+          g_modeMgr.GetGameMode()->camera->camera.yaw / 180.0f * 3.141592f
       );
 
       const float offsetX = particle->offsetX;
@@ -2325,7 +2325,7 @@ void CNewCloudKillEffect::OnProcess() {
 
     matrix rotation;
     rotation.MakeXRotation(
-        static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch / 180.0f * 3.141592f
+        g_modeMgr.GetGameMode()->camera->camera.pitch / 180.0f * 3.141592f
     );
 
     matrix transform;
@@ -2401,7 +2401,7 @@ void CPetitioEffect::OnProcess() {
 void CPetitioEffect::Render() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     if (*it) {
-      (*it)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+      (*it)->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
     }
   }
 }
@@ -2473,12 +2473,12 @@ void CPneumaticusProcellaEffect::Open() {
 // FUNCTION: fn_07356
 void CPneumaticusProcellaEffect::Render() {
   if (this->emitter) {
-    this->emitter->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+    this->emitter->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
   }
 
   for (auto it = this->emitters.begin(); it < this->emitters.end(); ++it) {
     if (*it) {
-      (*it)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+      (*it)->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
     }
   }
 }
@@ -2583,7 +2583,7 @@ void CRandomHitEffect::OnProcess() {
 // FUNCTION: fn_07363
 void CRandomHitEffect::Render() {
   if (this->emitter) {
-    this->emitter->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+    this->emitter->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
   }
 }
 
@@ -2724,7 +2724,7 @@ bool CRandomOptEffect::IsAlive() {
     return false;
   }
 
-  CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+  CWorld* world = g_modeMgr.GetGameMode()->scene;
   if (!world) {
     return false;
   }
@@ -2886,7 +2886,7 @@ void CSavageImpactEffect::OnProcess() {
 // OFFSET: 0x00722560
 // FUNCTION: fn_07387
 void CSavageImpactEffect::Render() {
-  this->emitter->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+  this->emitter->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
 }
 
 // OFFSET: 0x007226A0
@@ -3080,8 +3080,8 @@ static __forceinline void PlaceServantEmitter(CServantWeaponEffect* effect, CEZ2
   }
 
   const vector3d position = *&effect->positionVector;
-  const matrix view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
-  const matrix& inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse;
+  const matrix view = g_modeMgr.GetGameMode()->camera->frame.view;
+  const matrix& inverse = g_modeMgr.GetGameMode()->camera->frame.inverse;
   const vector3d& offset = effect->offsets[column];
   const float viewX =
       position.x * view.values[0] + position.y * view.values[3] + position.z * view.values[6] + view.values[9] + offset.x;
@@ -3187,13 +3187,13 @@ void CServantWeaponNewEffect::OnProcess() {
 void CServantWeaponEffect::Render() {
   for (int column = 0; column < 5; ++column) {
     if (this->emitters[0][column] != nullptr) {
-      this->emitters[0][column]->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+      this->emitters[0][column]->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
     }
     if (this->emitters[1][column] != nullptr) {
-      this->emitters[1][column]->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+      this->emitters[1][column]->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
     }
     if (this->emitters[2][column] != nullptr) {
-      this->emitters[2][column]->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+      this->emitters[2][column]->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
     }
   }
 }
@@ -3202,11 +3202,11 @@ void CServantWeaponEffect::Render() {
 // FUNCTION: fn_07408
 void CServantWeaponNewEffect::Render() {
   for (CEZ2STRParticle* emitter : this->emitters) {
-    emitter->DrawBillboards(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+    emitter->DrawBillboards(g_modeMgr.GetGameMode()->camera->frame.view);
   }
 
   for (CEZ2STRParticle* trail : this->trails) {
-    trail->DrawBillboards(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+    trail->DrawBillboards(g_modeMgr.GetGameMode()->camera->frame.view);
   }
 }
 
@@ -3999,8 +3999,8 @@ void CSevereRainStorm::OnProcess() {
     CEZ2STRParticle* emitter = *it;
     if (emitter->life >= 0.0f) {
       if (this->id == EF_SKE_TWINKLING_GALAXY && emitter) {
-        const matrix& view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
-        const matrix& inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse;
+        const matrix& view = g_modeMgr.GetGameMode()->camera->frame.view;
+        const matrix& inverse = g_modeMgr.GetGameMode()->camera->frame.inverse;
         const vector3d position = *&this->positionVector;
 
         const float vx = position.y * view.values[3] + position.x * view.values[0] + position.z * view.values[6] + view.values[9] +
@@ -4035,7 +4035,7 @@ void CSevereRainStorm::Render() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     CEZ2STRParticle* emitter = *it;
     if (emitter) {
-      emitter->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+      emitter->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
     }
   }
 }
@@ -4070,8 +4070,8 @@ void CCrimsonArrowEffect::Open() {
   float fromY;
   float toX;
   float toY;
-  g_renderer->ProjectViewport(&from.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, &fromX, &fromY, &fromReciprocalDepth);
-  g_renderer->ProjectViewport(&to.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, &toX, &toY, &toReciprocalDepth);
+  g_renderer->ProjectViewport(&from.x, g_modeMgr.GetGameMode()->camera->frame.view.values, &fromX, &fromY, &fromReciprocalDepth);
+  g_renderer->ProjectViewport(&to.x, g_modeMgr.GetGameMode()->camera->frame.view.values, &toX, &toY, &toReciprocalDepth);
 
   const float dx = toX - fromX;
   const float dy = toY - fromY;
@@ -4160,7 +4160,7 @@ void CTunaPartyEffect::OnProcess() {
     if (angle > 360.0f) {
       angle -= static_cast<float>(static_cast<int>(angle / 360.0f) * 360);
     }
-    angle -= static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw;
+    angle -= g_modeMgr.GetGameMode()->camera->camera.yaw;
     if (angle < 0.0f) {
       angle += 360.0f;
     }
@@ -4474,12 +4474,12 @@ void CCurseOfCubeEffect::OnProcess() {
     if (IsEmitterAlive(emitter)) {
       if (emitter) {
         const vector3d position = *&this->positionVector;
-        const matrix& view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
+        const matrix& view = g_modeMgr.GetGameMode()->camera->frame.view;
         const vector3d viewPosition = {
             position.x * view.values[0] + position.y * view.values[3] + position.z * view.values[6] + view.values[9],
             position.x * view.values[1] + position.y * view.values[4] + position.z * view.values[7] + view.values[10],
             position.x * view.values[2] + position.y * view.values[5] + position.z * view.values[8] + view.values[11]};
-        const matrix& inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse;
+        const matrix& inverse = g_modeMgr.GetGameMode()->camera->frame.inverse;
 
         const float vx = viewPosition.x + this->viewOffsetX;
         const float vy = viewPosition.y + this->viewOffsetY;
@@ -4625,7 +4625,7 @@ void CSpriteMableEffect::OnProcess() {
     particle->position.z = vectorValue.z;
 
     int angle = static_cast<int>(static_cast<float>(static_cast<int>(yaw / 3.141592f * 180.0f) % 360) -
-                                 static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw);
+                                 g_modeMgr.GetGameMode()->camera->camera.yaw);
     if (angle < 0) {
       angle += 360;
     }
@@ -4649,13 +4649,13 @@ void CGravityControlEffect::Close() {
     return;
   }
 
-  actor->render.position.y = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Height(actor->render.position.x, actor->render.position.z);
+  actor->render.position.y = g_modeMgr.GetGameMode()->scene->terrain->Height(actor->render.position.x, actor->render.position.z);
   actor->positionDelta.x = 0.0f;
   actor->positionDelta.y = 0.0f;
   actor->positionDelta.z = 0.0f;
 
   if (this->id == 0x4B1) {
-    CRenderObject* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+    CRenderObject* player = g_modeMgr.GetGameMode()->scene->player;
     const vector3d playerPosition = player->render.position;
     g_soundMgr->PlayWave("effect\\t_공격력.wav", this->position[0] - playerPosition.x, 0.0f, this->position[2] - playerPosition.z, 250, 40, 1.0f, 0);
   }
@@ -4671,7 +4671,7 @@ void CGravityControlEffect::OnProcess() {
 
   this->heightOffset = std::max(this->heightOffset - g_depthAverageHalf, this->minimumHeightOffset);
 
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   const float z = actor->render.position.z;
   const float x = actor->render.position.x;
   const float height = mode->scene->terrain->Height(x, z);
@@ -4834,7 +4834,7 @@ void CRichsCoinEffect::OnProcess() {
       particle->position.x = sine + this->position[0];
       particle->position.y = this->position[1] - 10.0f;
 
-      float degrees = angle / 3.141592f * 180.0f - static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw;
+      float degrees = angle / 3.141592f * 180.0f - g_modeMgr.GetGameMode()->camera->camera.yaw;
       if (degrees > 360.0f) {
         degrees = static_cast<float>(static_cast<int>(degrees) % 360);
       }
@@ -4881,8 +4881,8 @@ void CSavageImpactEffect::Open() {
   float fromY;
   float toX;
   float toY;
-  g_renderer->ProjectViewport(this->position, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, &fromX, &fromY, &fromReciprocalDepth);
-  g_renderer->ProjectViewport(this->sourcePosition, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, &toX, &toY, &toReciprocalDepth);
+  g_renderer->ProjectViewport(this->position, g_modeMgr.GetGameMode()->camera->frame.view.values, &fromX, &fromY, &fromReciprocalDepth);
+  g_renderer->ProjectViewport(this->sourcePosition, g_modeMgr.GetGameMode()->camera->frame.view.values, &toX, &toY, &toReciprocalDepth);
 
   const float dx = toX - fromX;
   const float dy = toY - fromY;

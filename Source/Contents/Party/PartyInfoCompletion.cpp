@@ -81,7 +81,7 @@ void CAdventurerAgencyMgr::CompletePartyInfo(AsyncDiagnostic diagnostic, std::st
   } else if (g_session.PartyCount() > 0) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_YOU_ARE_ALREADY_IN_PARTY)), 0xFF, 0, 0, 0);
   } else {
-    g_modeMgr.gameMode->SendMsg(MM_PARTY_REQ_MASTER_TO_JOIN, reinterpret_cast<int>(&info.accountId), reinterpret_cast<int>(&info.characterId), 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_PARTY_REQ_MASTER_TO_JOIN, reinterpret_cast<int>(&info.accountId), reinterpret_cast<int>(&info.characterId), 0, 0);
     g_windowMgr.CloseWindow(WID_APPLYFORPARTYWND);
   }
 }

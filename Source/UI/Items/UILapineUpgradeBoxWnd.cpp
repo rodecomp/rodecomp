@@ -172,7 +172,7 @@ void UILapineUpgradeBoxWnd::Paint() {
 // OFFSET: 0x006035E0
 // FUNCTION: fn_04194
 void UILapineUpgradeBoxWnd::DragAndDrop(int x, int y, std::intptr_t value) {
-  CMode* mode = g_modeMgr.GetGameMode();
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (this->item.identity[1] > 0) {
     mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
     return;
@@ -221,7 +221,7 @@ void UILapineUpgradeBoxWnd::OnLBtnDown(int x, int y) {
     UIFrameWnd::OnLBtnDown(x, y);
   }
   if (static_cast<unsigned>(x - 101) <= 24 && static_cast<unsigned>(y - 165) <= 24 && this->item.identity[1] > 0) {
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->BeginDragItem(26, this->item, 1, -1);
+    g_modeMgr.GetGameMode()->BeginDragItem(26, this->item, 1, -1);
   }
 }
 
@@ -229,7 +229,7 @@ void UILapineUpgradeBoxWnd::OnLBtnDown(int x, int y) {
 // FUNCTION: fn_04206
 void UILapineUpgradeBox_IngredientInfoWnd::OnLBtnDown(int x, int y) {
   if (this->item.identity[1] > 0) {
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->BeginDragItem(27, this->item, this->quantity, -1);
+    g_modeMgr.GetGameMode()->BeginDragItem(27, this->item, this->quantity, -1);
   }
 }
 
@@ -317,7 +317,7 @@ void UILapineUpgradeBoxWnd::SetIngredient(int id) {
 // OFFSET: 0x00603680
 // FUNCTION: fn_04196
 void UILapineUpgradeBox_IngredientListWnd::DragAndDrop(int x, int y, std::intptr_t value) {
-  CMode* mode = g_modeMgr.GetGameMode();
+  CGameMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   if (drag->source == 26) {
     this->SendMsg(this, UM_ADDITEM, drag->id, 0, 0, 0);
@@ -469,7 +469,7 @@ void UILapineUpgradeBox_IngredientInfoWnd::OnMouseHover(int x, int y) {
     int tipX = 0;
     int tipY = -20;
     this->ToScreen(tipX, tipY);
-    g_modeMgr.gameMode->ShowTooltip(this->tooltip.c_str(), tipX, tipY, -1, false, true);
+    g_modeMgr.currentMode->ShowTooltip(this->tooltip.c_str(), tipX, tipY, -1, false, true);
   }
 }
 
@@ -482,7 +482,7 @@ void UILapineUpgradeBoxWnd::OnMouseHover(int x, int y) {
     int tipX = 101;
     int tipY = 145;
     this->ToScreen(tipX, tipY);
-    g_modeMgr.gameMode->ShowTooltip(this->item.displayName.c_str(), tipX, tipY, -1, false, true);
+    g_modeMgr.currentMode->ShowTooltip(this->item.displayName.c_str(), tipX, tipY, -1, false, true);
   }
 }
 

@@ -132,7 +132,7 @@ void CLevel99Orb1Effect::OnProcess() {
 
       matrix rotation;
       std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
-      rotation.MakeXRotation(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch / 180.0f * 3.141592f);
+      rotation.MakeXRotation(g_modeMgr.GetGameMode()->camera->camera.pitch / 180.0f * 3.141592f);
 
       matrix translation;
       std::memcpy(translation.values, g_identityMatrix, sizeof(translation.values));

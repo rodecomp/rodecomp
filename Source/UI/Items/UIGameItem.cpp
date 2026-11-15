@@ -105,13 +105,13 @@ void CUIGameItem::OnMouseHover(int x, int y) {
   int screenY = y - 20;
   this->ToScreen(screenX, screenY);
   if (this->itemInfo.optionCount > 0) {
-    CMode* tooltip = g_modeMgr.gameMode;
+    CMode* tooltip = g_modeMgr.currentMode;
     tooltip->ShowTooltip(
       FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), this->name.c_str(), this->itemInfo.optionCount).c_str(),
       screenX, screenY, g_session.GetItemNameColor(this->itemInfo), 0, 1
     );
   } else {
-    CMode* tooltip = g_modeMgr.gameMode;
+    CMode* tooltip = g_modeMgr.currentMode;
     tooltip->ShowTooltip(this->name.c_str(), screenX, screenY, g_session.GetItemNameColor(this->itemInfo), 0, 1);
   }
 }

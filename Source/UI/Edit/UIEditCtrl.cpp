@@ -354,7 +354,7 @@ void UIEditCtrl::OnMouseHover(int x, int y) {
     x = 10;
     y = -20;
     this->ToScreen(x, y);
-    g_modeMgr.gameMode->ShowTooltip(this->tooltip.c_str(), x, y, -1, false, true);
+    g_modeMgr.currentMode->ShowTooltip(this->tooltip.c_str(), x, y, -1, false, true);
   }
 }
 
@@ -1001,7 +1001,7 @@ void UIItemStoreSubWnd::DragAndDrop(int x, int y, std::intptr_t value) {
     return;
   }
 
-  CMode* mode = g_modeMgr.GetGameMode();
+  CGameMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   switch (drag->source) {
   case 1:
@@ -1050,7 +1050,7 @@ void UIItemStoreWnd::DragAndDrop(int x, int y, std::intptr_t value) {
     return;
   }
 
-  CMode* mode = g_modeMgr.GetGameMode();
+  CGameMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   switch (drag->source) {
   case 1:
@@ -1145,7 +1145,7 @@ void UIItemStoreFindWnd::OnRBtnDown(int x, int y) {
   ITEM_INFO item = this->GetItemAt(x, y);
 
   if (item.identity[1] > 0) {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
 
     if (HIBYTE(GetAsyncKeyState(VK_MENU))) {
       if (g_windowMgr.itemWnd) {
@@ -1173,7 +1173,7 @@ void UIItemStoreSubWnd::OnRBtnDown(int x, int y) {
   ITEM_INFO item = this->GetItemAt(x, y);
 
   if (item.identity[1] > 0) {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
 
     if (HIBYTE(GetAsyncKeyState(VK_MENU))) {
       if (g_windowMgr.itemWnd) {
@@ -1201,7 +1201,7 @@ void UIItemStoreWnd::OnRBtnDown(int x, int y) {
   ITEM_INFO item = this->GetItemAt(x, y);
 
   if (item.identity[1] > 0) {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
 
     if (HIBYTE(GetAsyncKeyState(VK_MENU))) {
       if (g_windowMgr.itemWnd) {
@@ -1227,7 +1227,7 @@ void UIItemWnd::OnRBtnDown(int x, int y) {
   ITEM_INFO item = this->GetItemAt(x, y);
 
   if (item.identity[1] > 0) {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
 
     if (HIBYTE(GetAsyncKeyState(VK_MENU))) {
       if (g_windowMgr.sayDialogWnd || g_windowMgr.choose3Wnd) {
@@ -1295,7 +1295,7 @@ void UIMerchantItemPurchaseWnd::OnRBtnDown(int x, int y) {
   ITEM_INFO item = this->GetItemByIndex(this->hovered);
 
   if (item.identity[1] > 0) {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
 
     if (HIBYTE(GetAsyncKeyState(VK_MENU))) {
       if (g_windowMgr.merchantItemShopWnd) {
@@ -1322,7 +1322,7 @@ void UIMerchantItemShopWnd::OnRBtnDown(int x, int y) {
   ITEM_INFO item = this->GetItemByIndex(this->hovered);
 
   if (item.identity[1] > 0) {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
 
     if (HIBYTE(GetAsyncKeyState(VK_MENU))) {
       if (g_windowMgr.merchantItemPurchaseWnd) {
@@ -1341,7 +1341,7 @@ void UIMerchantItemWnd::OnRBtnDown(int x, int y) {
   ITEM_INFO item = this->GetItemAt(x, y);
 
   if (item.identity[1] > 0) {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
 
     if (HIBYTE(GetAsyncKeyState(VK_MENU))) {
       if (!g_windowMgr.LookupWindow(WID_EXCHANGEUI) && !g_windowMgr.merchantShopMakeWnd) {
@@ -1371,7 +1371,7 @@ void UIMerchantMirrorItemWnd::OnRBtnDown(int x, int y) {
   ITEM_INFO item = this->GetItemAt(x, y);
 
   if (item.identity[1] > 0) {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
 
     if (HIBYTE(GetAsyncKeyState(VK_MENU))) {
       if (g_windowMgr.merchantShopMakeWnd) {
@@ -1469,11 +1469,11 @@ int UIMerchantItemMyShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     }
     break;
   case UM_COMMAND: {
-    CMode* mode = g_modeMgr.gameMode;
+    CMode* mode = g_modeMgr.currentMode;
     this->RecordResponse(static_cast<int>(a), b, c, d);
     switch (a) {
     case ID_CLOSE: {
-      mode = g_modeMgr.gameMode;
+      mode = g_modeMgr.currentMode;
       int windowId;
       if (this->buyingShop != 0) {
         if (this->shopOpen == 1) {
@@ -1631,7 +1631,7 @@ int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     this->Move(this->saved->x, this->saved->y);
     return 0;
   case UM_DROP: {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     ModeDragState& drag = mode->drag;
     switch (drag.type) {
     case TYPE_ARMOR:
@@ -1697,7 +1697,7 @@ int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   }
   case UM_COMMAND: {
     this->RecordResponse(static_cast<int>(a), b, c, d);
-    CMode* mode = g_modeMgr.gameMode;
+    CMode* mode = g_modeMgr.currentMode;
     if (a == ID_OK) {
       if (!this->cashShopMode) {
         mode->SendMsg(MM_REQ_PURCHASE, 0, 0, 0, 0);
@@ -1917,7 +1917,7 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       return 0;
     }
 
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     if (g_windowMgr.hoverWindow == this->m_edit) {
       this->m_edit->Synchronize();
     }
@@ -2521,7 +2521,7 @@ void UIMerchantShopMakeWnd::OnRBtnDown(int x, int y) {
   ITEM_INFO item = this->GetItemAt(x, y);
 
   if (item.identity[1] > 0) {
-    CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* gameMode = g_modeMgr.GetGameMode();
 
     if (HIBYTE(GetAsyncKeyState(VK_MENU))) {
       if (g_windowMgr.merchantMirrorItemWnd) {
@@ -2914,7 +2914,7 @@ void UIItemSellWnd2::OnLBtnDblClk(int x, int y) {
 
   if (target) {
     this->OnLBtnDown(x, y);
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     this->RecordDrop(x, y, mode->drag, 160);
     target->DragAndDrop(x, y, reinterpret_cast<std::intptr_t>(&mode->drag));
   }
@@ -2931,7 +2931,7 @@ void UIItemSellWnd::OnLBtnDblClk(int x, int y) {
 
   if (target) {
     this->OnLBtnDown(x, y);
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     this->RecordDrop(x, y, mode->drag, 22);
     target->DragAndDrop(x, y, reinterpret_cast<std::intptr_t>(&mode->drag));
   }
@@ -2966,7 +2966,7 @@ void UIItemWnd::OnLBtnDblClk(int x, int y) {
     return;
   }
 
-  CMode* mode = g_modeMgr.GetGameMode();
+  CGameMode* mode = g_modeMgr.GetGameMode();
   switch (item.identity[0]) {
   case 0:
   case 1:
@@ -4107,7 +4107,7 @@ void UIMerchantShopMakeWnd::PrintBuyList() {
 // OFFSET: 0x00972100
 // FUNCTION: fn_13266
 void UIItemBaseWnd::DragAndDrop(int, int, std::intptr_t) {
-  g_modeMgr.gameMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+  g_modeMgr.currentMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x00972120
@@ -4118,7 +4118,7 @@ void UIItemPurchaseWnd::DragAndDrop(int x, int y, std::intptr_t value) {
     return;
   }
 
-  CMode* mode = g_modeMgr.GetGameMode();
+  CGameMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   if (drag->source == 3) {
     switch (drag->type) {
@@ -4151,7 +4151,7 @@ void UIItemSellWnd2::DragAndDrop(int x, int y, std::intptr_t value) {
     return;
   }
 
-  CMode* mode = g_modeMgr.GetGameMode();
+  CGameMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   if (drag->source == 3) {
     if (drag->quantity != 1 && g_windowMgr.dragAllItems == 0) {
@@ -4173,7 +4173,7 @@ void UIItemSellWnd::DragAndDrop(int x, int y, std::intptr_t value) {
     return;
   }
 
-  CMode* mode = g_modeMgr.GetGameMode();
+  CGameMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   if (drag->source == 3) {
     if (drag->quantity != 1 && g_windowMgr.dragAllItems == 0) {
@@ -4218,7 +4218,7 @@ void UIMerchantItemWnd::DragAndDrop(int x, int y, std::intptr_t value) {
     return;
   }
 
-  CMode* mode = g_modeMgr.GetGameMode();
+  CGameMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   switch (drag->source) {
   case 1:
@@ -5064,7 +5064,7 @@ void UIMerchantItemPurchaseWnd::DragAndDrop(int x, int y, std::intptr_t value) {
     return;
   }
 
-  CMode* mode = g_modeMgr.GetGameMode();
+  CGameMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   if (drag->source == 12) {
     switch (drag->type) {
@@ -5115,7 +5115,7 @@ void UIMerchantMirrorItemWnd::DragAndDrop(int x, int y, std::intptr_t value) {
     return;
   }
 
-  CMode* mode = g_modeMgr.GetGameMode();
+  CGameMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   switch (drag->source) {
   case 10:
@@ -5321,7 +5321,7 @@ void UIItemShopWnd2::OnLBtnDblClk(int x, int y) {
 
   if (target) {
     this->OnLBtnDown(x, y);
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     this->RecordDrop(x, y, mode->drag, 161);
     target->DragAndDrop(x, y, reinterpret_cast<std::intptr_t>(&mode->drag));
   }
@@ -5338,7 +5338,7 @@ void UIItemShopWnd::OnLBtnDblClk(int x, int y) {
 
   if (target) {
     this->OnLBtnDown(x, y);
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     this->RecordDrop(x, y, mode->drag, 24);
     target->DragAndDrop(x, y, reinterpret_cast<std::intptr_t>(&mode->drag));
   }
@@ -5362,7 +5362,7 @@ void UISkillListWnd::OnLBtnDown(int x, int y) {
   CSkillInfo skill = this->GetSkillAt(x, y);
 
   if (skill.available && skill.level && skill.type) {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
 
     if (mode) {
       mode->BeginDragSkill(8, skill.id, skill.name, g_session.SkillLevel(skill.id), -1);
@@ -5405,7 +5405,7 @@ void UIMerchantItemShopWnd::OnLBtnDown(int x, int y) {
     ITEM_INFO item = this->GetItemByIndex(this->hovered);
 
     if (item.identity[1] > 0) {
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->BeginDragItem(12, item, 1, -1);
+      g_modeMgr.GetGameMode()->BeginDragItem(12, item, 1, -1);
     }
   }
 }
@@ -5518,7 +5518,7 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
   case UM_USESKILL: {
     const CSkillInfo* skill = reinterpret_cast<const CSkillInfo*>(a);
     if (skill->level != 0) {
-      CMode* mode = g_modeMgr.gameMode;
+      CMode* mode = g_modeMgr.currentMode;
       int level = 0;
       if (this->skillTab == 0) {
         level = g_session.HomunSkillLevel(skill->id);
@@ -5572,12 +5572,12 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
         CSkillInfo skill = this->GetSkillByIndex(index);
         g_skillUpgradeId = skill.id;
         if (skill.available != 0) {
-          g_modeMgr.gameMode->SendMsg(MM_UPGRADE_SKILLLEVEL, skill.id, 0, 0, 0);
+          g_modeMgr.currentMode->SendMsg(MM_UPGRADE_SKILLLEVEL, skill.id, 0, 0, 0);
         }
       } else {
         CSkillInfo skill = this->GetSkillByIndex(index);
         if (g_skillUpgradeId == static_cast<int>(skill.id) && skill.available != 0) {
-          g_modeMgr.gameMode->SendMsg(MM_UPGRADE_SKILLLEVEL, skill.id, 0, 0, 0);
+          g_modeMgr.currentMode->SendMsg(MM_UPGRADE_SKILLLEVEL, skill.id, 0, 0, 0);
         }
       }
       return 0;
@@ -6149,7 +6149,7 @@ int UIMerchantItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     }
     break;
   case UM_DROP: {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     if (mode->drag.source == 1) {
       mode->SendMsg(MM_MOVE_ITEM_FROM_BODY_TO_CART, mode->drag.id, mode->drag.quantity, 0, 0);
     } else if (mode->drag.source == 6) {
@@ -6221,7 +6221,7 @@ int UIMerchantItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 int UIMerchantMirrorItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
   case UM_DROP: {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     ModeDragState& drag = mode->drag;
     ITEM_INFO item;
     item.Assign(drag);
@@ -6343,7 +6343,7 @@ int UIItemSellWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     this->Move(this->saved->x, this->saved->y);
     return 0;
   case UM_DROP: {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     ModeDragState& drag = mode->drag;
     ITEM_INFO item;
     item.Assign(drag);
@@ -6363,7 +6363,7 @@ int UIItemSellWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
   }
   case UM_COMMAND: {
     const int count = g_session.GetList4Size();
-    CMode* mode = g_modeMgr.gameMode;
+    CMode* mode = g_modeMgr.currentMode;
     if (a == ID_OK) {
       if (count > 0) {
         const int result = g_windowMgr.Confirm(LookupMessage(MSI_MIX_ACCEPT), 2, true, false, 0, "Message", 280, 120, 0);
@@ -6495,7 +6495,7 @@ int UIMerchantItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intpt
     this->merchantId = a;
     return 0;
   case UM_DROP: {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     ModeDragState& drag = mode->drag;
     ITEM_INFO item;
     item.Assign(drag);
@@ -6573,7 +6573,7 @@ int UIMerchantItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intpt
   }
   case UM_COMMAND: {
     this->RecordResponse(static_cast<int>(a), b, c, d);
-    CMode* mode = g_modeMgr.gameMode;
+    CMode* mode = g_modeMgr.currentMode;
     if (a == ID_OK) {
       if (this->buyingStore) {
         int sum = 0;
@@ -6720,7 +6720,7 @@ int UIMerchantItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     this->titleText->SetTextAutoWidth(LookupMessage(MSI_SHOPITEMS));
     return 0;
   case UM_DROP: {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     if (this->buyingShop == 0) {
       ITEM_INFO item;
       item.Assign(mode->drag);
@@ -7009,7 +7009,7 @@ void UIItemPurchaseWnd::OnLBtnDown(int x, int y) {
   ITEM_INFO item = this->GetItemByIndex(this->hovered);
 
   if (item.identity[1] > 0) {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     item = g_session.FindItem1720ByItemId(item.itemId.c_str());
     mode->BeginDragItem(4, item, item.quantity, -1);
   }
@@ -7044,7 +7044,7 @@ void UIItemSellWnd2::OnLBtnDown(int x, int y) {
   }
 
   if (item.identity[1] > 0) {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     item = g_session.FindStorageItem(item.identity[1]);
     mode->BeginDragItem(5, item, item.quantity, -1);
   }
@@ -7079,7 +7079,7 @@ void UIItemSellWnd::OnLBtnDown(int x, int y) {
   }
 
   if (item.identity[1] > 0) {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     item = g_session.FindStorageItem(item.identity[1]);
     mode->BeginDragItem(5, item, item.quantity, -1);
   }
@@ -7114,7 +7114,7 @@ void UIItemShopWnd2::OnLBtnDown(int x, int y) {
   }
 
   if (item.identity[1] > 0) {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     const ITEM_INFO owned = LookupClientItemByIdentity(g_session.m_inventoryItems, item.identity[1]);
     if (owned.identity[1] > 0) {
       mode->drag.BeginItem(g_windowMgr, 3, item, item.quantity, -1);
@@ -7145,7 +7145,7 @@ void UIItemShopWnd::OnLBtnDown(int x, int y) {
   ITEM_INFO item = this->GetItemByIndex(this->hovered);
 
   if (item.identity[1] > 0) {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     const ITEM_INFO owned = LookupClientItemByIdentity(g_session.m_inventoryItems, item.identity[1]);
     if (owned.identity[1] > 0) {
       mode->BeginDragItem(3, item, item.quantity, -1);
@@ -7165,7 +7165,7 @@ void UIItemStoreFindWnd::OnLBtnDown(int x, int y) {
   ITEM_INFO item = this->GetItemAt(x, y);
 
   if (item.identity[1] > 0 && item.flags[2] == 0) {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     item = g_session.FindCartItem(item.identity[1]);
     mode->BeginDragItem(6, item, item.quantity, -1);
   }
@@ -7181,7 +7181,7 @@ void UIItemStoreSubWnd::OnLBtnDown(int x, int y) {
   ITEM_INFO item = this->GetItemAt(x, y);
 
   if (item.identity[1] > 0 && item.flags[2] == 0) {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     item = g_session.FindCartItem(item.identity[1]);
     mode->BeginDragItem(6, item, item.quantity, -1);
   }
@@ -7201,7 +7201,7 @@ void UIItemStoreWnd::OnLBtnDown(int x, int y) {
   ITEM_INFO item = this->GetItemAt(x, y);
 
   if (item.identity[1] > 0 && item.flags[2] == 0) {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     item = g_session.FindCartItem(item.identity[1]);
     mode->BeginDragItem(6, item, item.quantity, -1);
   }
@@ -7228,7 +7228,7 @@ void UIMerchantItemPurchaseWnd::OnLBtnDown(int x, int y) {
   ITEM_INFO item = this->GetItemByIndex(this->hovered);
 
   if (item.identity[1] > 0) {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     item = g_session.FindItem1760ByItemId(item.itemId.c_str());
     if (this->buyingStore != 0) {
       mode->BeginDragItem(21, item, item.quantity, -1);
@@ -7252,7 +7252,7 @@ void UIMerchantMirrorItemWnd::OnLBtnDown(int x, int y) {
   ITEM_INFO item = this->GetItemAt(x, y);
 
   if (item.identity[1] > 0) {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     item = g_session.FindMerchantMyShopItem(item.identity[1]);
     if (this->mode == 1) {
       mode->BeginDragItem(20, item, item.quantity, -1);
@@ -7279,7 +7279,7 @@ void UIMerchantShopMakeWnd::OnLBtnDown(int x, int y) {
   ITEM_INFO item = this->GetItemAt(x, y);
 
   if (item.identity[1] > 0) {
-    CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* gameMode = g_modeMgr.GetGameMode();
     item = g_session.FindMerchantPurchaseSavedItem(item.identity[1]);
     if (this->mode != 0) {
       gameMode->BeginDragItem(19, item, item.quantity, -1);
@@ -7324,7 +7324,7 @@ void UIItemPurchaseWnd::OnMouseHover(int x, int y) {
                                FormatGroupedInteger(static_cast<int>(item.prices[1]), price, 64), currency));
     }
 
-    g_modeMgr.gameMode->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+    g_modeMgr.currentMode->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
   }
 }
 
@@ -7347,7 +7347,7 @@ void UIItemSellWnd2::OnMouseHover(int x, int y) {
                                FormatGroupedInteger(static_cast<int>(item.prices[1]), price, 64)));
     }
 
-    g_modeMgr.gameMode->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+    g_modeMgr.currentMode->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
   }
 }
 
@@ -7383,7 +7383,7 @@ void UIItemSellWnd::OnMouseHover(int x, int y) {
     }
   }
 
-  g_modeMgr.gameMode->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+  g_modeMgr.currentMode->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
 }
 
 // OFFSET: 0x009865C0
@@ -7417,7 +7417,7 @@ void UIItemShopWnd2::OnMouseHover(int x, int y) {
     }
   }
 
-  g_modeMgr.gameMode->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+  g_modeMgr.currentMode->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
 }
 
 // OFFSET: 0x00986970
@@ -7485,7 +7485,7 @@ void UIItemShopWnd::OnMouseHover(int x, int y) {
       }
     }
 
-    g_modeMgr.gameMode->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+    g_modeMgr.currentMode->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
   }
 }
 
@@ -7499,11 +7499,11 @@ void UIItemStoreFindWnd::OnMouseHover(int x, int y) {
     this->ToScreen(tooltipX, tooltipY);
 
     if (item.identified == 1 && item.optionCount != 0) {
-      CMode* mode = g_modeMgr.gameMode;
+      CMode* mode = g_modeMgr.currentMode;
       mode->ShowTooltip(FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), item.DisplayName(0).c_str(), item.optionCount).c_str(), tooltipX, tooltipY,
                         g_session.GetItemNameColor(item), 0, 1);
     } else {
-      CMode* mode = g_modeMgr.gameMode;
+      CMode* mode = g_modeMgr.currentMode;
       mode->ShowTooltip(item.DisplayName(0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
     }
   }
@@ -7519,11 +7519,11 @@ void UIItemStoreSubWnd::OnMouseHover(int x, int y) {
     this->ToScreen(tooltipX, tooltipY);
 
     if (item.identified == 1 && item.optionCount != 0) {
-      CMode* mode = g_modeMgr.gameMode;
+      CMode* mode = g_modeMgr.currentMode;
       mode->ShowTooltip(FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), item.DisplayName(0).c_str(), item.optionCount).c_str(), tooltipX, tooltipY,
                         g_session.GetItemNameColor(item), 0, 1);
     } else {
-      CMode* mode = g_modeMgr.gameMode;
+      CMode* mode = g_modeMgr.currentMode;
       mode->ShowTooltip(item.DisplayName(0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
     }
   }
@@ -7539,11 +7539,11 @@ void UIItemStoreWnd::OnMouseHover(int x, int y) {
     this->ToScreen(tooltipX, tooltipY);
 
     if (item.identified == 1 && item.optionCount != 0) {
-      CMode* mode = g_modeMgr.gameMode;
+      CMode* mode = g_modeMgr.currentMode;
       mode->ShowTooltip(FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), item.DisplayName(0).c_str(), item.optionCount).c_str(), tooltipX, tooltipY,
                         g_session.GetItemNameColor(item), 0, 1);
     } else {
-      CMode* mode = g_modeMgr.gameMode;
+      CMode* mode = g_modeMgr.currentMode;
       mode->ShowTooltip(item.DisplayName(0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
     }
   }
@@ -7558,7 +7558,7 @@ void UIItemWnd::OnMouseHover(int x, int y) {
     int tooltipY = (y - 17) / 32 * 32 + 1;
     this->ToScreen(tooltipX, tooltipY);
 
-    CMode* gameMode = g_modeMgr.gameMode;
+    CMode* gameMode = g_modeMgr.currentMode;
     if (item.identified == 1 && item.optionCount != 0) {
       std::uint32_t color = g_session.GetItemNameColor(item);
       int screenX = tooltipX;
@@ -7598,7 +7598,7 @@ void UIMerchantItemMyShopWnd::OnMouseHover(int x, int y) {
       }
     }
 
-    g_modeMgr.gameMode->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+    g_modeMgr.currentMode->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
   }
 }
 
@@ -7611,7 +7611,7 @@ void UIMerchantItemPurchaseWnd::OnMouseHover(int x, int y) {
     int tooltipY = (y - 17) / 32 * 32 + 1;
     this->ToScreen(tooltipX, tooltipY);
 
-    CMode* mode = g_modeMgr.gameMode;
+    CMode* mode = g_modeMgr.currentMode;
     std::uint32_t color = g_session.GetItemNameColor(item);
     int screenX = tooltipX;
     int screenY = tooltipY;
@@ -7633,13 +7633,13 @@ void UIMerchantItemShopWnd::OnMouseHover(int x, int y) {
     this->ToScreen(tooltipX, tooltipY);
 
     if (item.identified == 1 && item.optionCount != 0) {
-      CMode* mode = g_modeMgr.gameMode;
+      CMode* mode = g_modeMgr.currentMode;
       std::uint32_t color = g_session.GetItemNameColor(item);
       int screenX = tooltipX;
       int screenY = tooltipY;
       mode->ShowTooltip(FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), item.DisplayName(0).c_str(), item.optionCount).c_str(), screenX, screenY, color, 0, 1);
     } else {
-      CMode* mode = g_modeMgr.gameMode;
+      CMode* mode = g_modeMgr.currentMode;
       std::uint32_t color = g_session.GetItemNameColor(item);
       int screenX = tooltipX;
       int screenY = tooltipY;
@@ -7658,13 +7658,13 @@ void UIMerchantItemShopWnd::OnMouseHover(int x, int y) {
   this->ToScreen(tooltipX, tooltipY);
 
   if (item.identified == 1 && item.optionCount != 0) {
-    CMode* mode = g_modeMgr.gameMode;
+    CMode* mode = g_modeMgr.currentMode;
     std::uint32_t color = g_session.GetItemNameColor(item);
     int screenX = tooltipX - 2;
     int screenY = tooltipY + 24;
     mode->ShowTooltip(FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), item.DisplayName(0).c_str(), item.optionCount).c_str(), screenX, screenY, color, 0, 1);
   } else {
-    CMode* mode = g_modeMgr.gameMode;
+    CMode* mode = g_modeMgr.currentMode;
     std::uint32_t color = g_session.GetItemNameColor(item);
     int screenX = tooltipX - 2;
     int screenY = tooltipY + 24;
@@ -7681,7 +7681,7 @@ void UIMerchantItemWnd::OnMouseHover(int x, int y) {
     int tooltipY = (y - 17) / 32 * 32 + 1;
     this->ToScreen(tooltipX, tooltipY);
 
-    CMode* gameMode = g_modeMgr.gameMode;
+    CMode* gameMode = g_modeMgr.currentMode;
     if (item.identified == 1 && item.optionCount != 0) {
       std::uint32_t color = g_session.GetItemNameColor(item);
       int screenX = tooltipX;
@@ -7707,7 +7707,7 @@ void UIMerchantMirrorItemWnd::OnMouseHover(int x, int y) {
     int tooltipY = (y - 17) / 32 * 32 + 1;
     this->ToScreen(tooltipX, tooltipY);
 
-    CMode* gameMode = g_modeMgr.gameMode;
+    CMode* gameMode = g_modeMgr.currentMode;
     if (item.identified == 1 && item.optionCount != 0) {
       std::uint32_t color = g_session.GetItemNameColor(item);
       int screenX = tooltipX;
@@ -8227,7 +8227,7 @@ int UIItemShopWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
   case UM_DROP:
     switch (a) {
     case 0: {
-      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      CGameMode* mode = g_modeMgr.GetGameMode();
       ITEM_INFO item;
       item.Assign(mode->drag);
       g_session.RemoveItem1720ByName(item);
@@ -8240,7 +8240,7 @@ int UIItemShopWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       return 0;
     }
     case 1: {
-      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      CGameMode* mode = g_modeMgr.GetGameMode();
       ITEM_INFO item;
       item.Assign(mode->drag);
       CSession* lists = &g_session;
@@ -8339,7 +8339,7 @@ int UIItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
   }
   case UM_DROP:
     if (a == 0) {
-      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      CGameMode* mode = g_modeMgr.GetGameMode();
       ITEM_INFO item;
       item.Assign(mode->drag);
       g_session.RemoveItem1720ByName(item);
@@ -8352,7 +8352,7 @@ int UIItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       return 0;
     }
     if (a == 1) {
-      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      CGameMode* mode = g_modeMgr.GetGameMode();
       ITEM_INFO item;
       item.Assign(mode->drag);
       CSession* lists = &g_session;
@@ -8452,7 +8452,7 @@ int UIItemStoreSubWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     this->SendMsg(nullptr, UM_RESIZE, 3, this->saved->width, this->saved->height, 0);
     return 0;
   case UM_DROP: {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     if (mode->drag.source == 1) {
       mode->SendMsg(MM_ADD_ITEM_TO_STORE, mode->drag.id, mode->drag.quantity, 0, 0);
     } else if (mode->drag.source == 9) {
@@ -8642,8 +8642,8 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       this->saved->openTabs = openTabs;
       g_windowMgr.CloseWindow(WID_ITEMSTOREFINDWND);
       this->m_searchWindow = nullptr;
-      if (g_modeMgr.gameMode) {
-        g_modeMgr.gameMode->SendMsg(MM_CLOSE_STORE, 0, 0, 0, 0);
+      if (g_modeMgr.currentMode) {
+        g_modeMgr.currentMode->SendMsg(MM_CLOSE_STORE, 0, 0, 0, 0);
       }
       break;
     }
@@ -8755,7 +8755,7 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     }
     return 0;
   case UM_DROP: {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     if (mode->drag.source == 1) {
       mode->SendMsg(MM_ADD_ITEM_TO_STORE, mode->drag.id, mode->drag.quantity, 0, 0);
     } else if (mode->drag.source == 9) {
@@ -9884,7 +9884,7 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
       return 0;
     }
     case ID_EXTEND_INVENTORY:
-      if (CMode* mode = g_modeMgr.GetGameMode()) {
+      if (CGameMode* mode = g_modeMgr.GetGameMode()) {
         mode->SendMsg(MM_REQ_OPEN_MSGBOX_EXTEND_BODYITEM_SIZE, 0, 0, 0, 0);
       }
       return 0;
@@ -10054,7 +10054,7 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
     this->Move(this->saved->x, this->saved->y);
     return 0;
   case UM_DROP: {
-    CMode* mode = g_modeMgr.GetGameMode();
+    CGameMode* mode = g_modeMgr.GetGameMode();
     ModeDragState& drag = static_cast<CGameMode*>(mode)->drag;
     switch (drag.source) {
     case 2:
@@ -10115,7 +10115,7 @@ int UIMerchantItemPurchaseMSGWnd::SendMsg(UIWindow* sender, int message, std::in
 
   switch (a) {
   case ID_OK:
-    g_modeMgr.gameMode->SendMsg(MM_PC_PURCHASE_ITEMLIST_FROMMC, this->purchaseIndex, this->purchaseAmount, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_PC_PURCHASE_ITEMLIST_FROMMC, this->purchaseIndex, this->purchaseAmount, 0, 0);
   case ID_CANCEL:
     g_windowMgr.CloseWindow(WID_MERCHANTITEMPURCHASEMSGWND);
     g_session.ClearItems1760And1748();
@@ -10432,7 +10432,7 @@ void UIMerchantItemShopWnd::Paint() {
   this->FillRegion(72, 17, columns * 32 - 32, slotRows * 32, RGB(fillRed, fillGreen, fillBlue));
 
   {
-    std::string actor = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ActorName(this->ownerAid);
+    std::string actor = g_modeMgr.GetGameMode()->ActorName(this->ownerAid);
     const char* label = LookupMessage(this->buyingShop == 0 ? MSI_ITEM_MERCHANT_STORE : MSI_BUYINGSTORE_SHOPWND_TITLE);
     char title[128];
     if (!actor.empty()) {
@@ -10658,7 +10658,7 @@ void UIItemWnd::OnLBtnDown(int x, int y) {
   ITEM_INFO item = this->GetItemAt(x, y);
 
   if (item.identity[1] > 0) {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     if (item.flags[2] == 0) {
       item = LookupClientItemByIdentity(g_session.m_inventoryItems, item.identity[1]);
       mode->BeginDragItem(1, item, item.quantity, -1);
@@ -10696,7 +10696,7 @@ void UIMerchantItemWnd::OnLBtnDown(int x, int y) {
   ITEM_INFO item = this->GetItemAt(x, y);
 
   if (item.identity[1] > 0 && !g_windowMgr.merchantShopMakeWnd && item.flags[2] == 0) {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     item = g_session.FindMerchantShopItem(item.identity[1]);
     mode->BeginDragItem(9, item, item.quantity, -1);
 
@@ -10738,7 +10738,7 @@ void UISkillListWnd::OnMouseHover(int x, int y) {
     int tooltipX = 112;
     if (this->TextWidth(name, 0, 0, 12, 0, 0) > this->geometry.width - 132 && x > tooltipX) {
       this->ToScreen(tooltipX, tooltipY);
-      g_modeMgr.gameMode->ShowTooltip(name, tooltipX - 8, tooltipY, 0xFFFFFFFF, 0, 1);
+      g_modeMgr.currentMode->ShowTooltip(name, tooltipX - 8, tooltipY, 0xFFFFFFFF, 0, 1);
     }
   }
 }
@@ -10913,7 +10913,7 @@ int UIItemSellWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     this->Move(this->saved->x, this->saved->y);
     return 0;
   case UM_DROP: {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     ModeDragState& drag = mode->drag;
     ITEM_INFO item;
     item.Assign(drag);
@@ -10933,7 +10933,7 @@ int UIItemSellWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
   }
   case UM_COMMAND: {
     this->RecordResponse(static_cast<int>(a), b, c, d);
-    CMode* mode = g_modeMgr.gameMode;
+    CMode* mode = g_modeMgr.currentMode;
     if (a == ID_OK) {
       if (g_session.HasRequiredItems()) {
         mode->SendMsg(MM_REQ_SELL, 0, 0, 0, 0);
@@ -11201,7 +11201,7 @@ void UIItemDropCntWnd::OnCreate(int, int) {
   this->m_edit->Background(232, 232, 232);
   this->AddChild(this->m_edit);
 
-  CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* gameMode = g_modeMgr.GetGameMode();
   char text[40];
   std::sprintf(text, "%d", gameMode->drag.quantity);
   this->m_edit->SetText(text);
@@ -11370,7 +11370,7 @@ int UIItemStoreFindWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
     }
     return 0;
   case UM_DROP: {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     switch (mode->drag.source) {
     case 1:
       mode->SendMsg(MM_ADD_ITEM_TO_STORE, mode->drag.id, mode->drag.quantity, 0, 0);
@@ -11429,7 +11429,7 @@ int UIItemStoreFindWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
 void UIItemDropCntWnd::Show(int visible) {
   this->geometry.visible = visible;
   if (visible) {
-    CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* gameMode = g_modeMgr.GetGameMode();
     char text[40];
     std::sprintf(text, "%d", gameMode->drag.quantity);
     this->m_edit->SetText(text);
@@ -11470,7 +11470,7 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     this->Move(this->saved->x, this->saved->y);
     break;
   case UM_DROP: {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     ITEM_INFO item;
     item.Assign(mode->drag);
     if (mode->drag.source == 20) {
@@ -11663,7 +11663,7 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
   case UM_COMMAND:
     switch (a) {
     case ID_CANCEL: {
-      CMode* mode = g_modeMgr.GetGameMode();
+      CGameMode* mode = g_modeMgr.GetGameMode();
       if (this->mode != 0) {
         if (this->itemsSet == 1) {
           if (this->suspended == 1) {
@@ -11689,7 +11689,7 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       break;
     }
     case ID_OK: {
-      CMode* mode = g_modeMgr.GetGameMode();
+      CGameMode* mode = g_modeMgr.GetGameMode();
       if (g_windowMgr.HasTitleAtActorCell(g_session.m_aid)) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SWAP_EQUIPITEM_EQUIPMENTSET)), 0xFF, 0, 0, 0);
         break;

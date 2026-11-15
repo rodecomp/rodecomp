@@ -4,6 +4,7 @@
 #include "UI/Window/UIEnums.h"
 
 #include "Client/Mode/ModeDragState.h"
+#include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Replay/Replay.h"
 #include "Client/Session/Session.h"
@@ -70,7 +71,7 @@ void UIMakeTargetProcessWnd::DragAndDrop(int x, int y, std::intptr_t value) {
     }
   }
 
-  g_modeMgr.gameMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+  g_modeMgr.currentMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x009A0690
@@ -162,7 +163,7 @@ void UIMakeTargetProcessWnd::Paint() {
 void UIMakeTargetProcessWnd::OnLBtnDown(int x, int y) {
   ITEM_INFO item = this->GetItemAt(x, y);
   if (item.identity[1] > 0) {
-    g_modeMgr.gameMode->SendMsg(MM_BEGIN_DRAG_FROM_METALPROCESSWND, reinterpret_cast<int>(item.itemId.c_str()), 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_BEGIN_DRAG_FROM_METALPROCESSWND, reinterpret_cast<int>(item.itemId.c_str()), 0, 0, 0);
   } else {
     this->UIFrameWnd::OnLBtnDown(x, y);
   }

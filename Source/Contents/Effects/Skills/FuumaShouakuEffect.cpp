@@ -61,7 +61,7 @@ void CFuumaShouakuEffect::Open() {
   this->velocityY = scale * this->velocityY * 2.0f;
   this->velocityZ = scale * this->velocityZ * 2.0f;
 
-  this->first->m_angle = ScreenAngle(origin, target, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values);
+  this->first->m_angle = ScreenAngle(origin, target, g_modeMgr.GetGameMode()->camera->frame.view.values);
 }
 
 // OFFSET: 0x00702CC0
@@ -107,10 +107,10 @@ void CFuumaShouakuEffect::OnProcess() {
 // FUNCTION: fn_07013
 void CFuumaShouakuEffect::Render() {
   if (this->first) {
-    this->first->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+    this->first->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
   }
 
   if (this->second) {
-    this->second->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+    this->second->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
   }
 }

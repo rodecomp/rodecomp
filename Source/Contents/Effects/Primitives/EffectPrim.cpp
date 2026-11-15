@@ -159,7 +159,7 @@ CEffectPrim* CRagEffect::LaunchEffectPrim(int type, vector3d deltaPos) {
 
   particle->Initialize(*this, type, deltaPos.x, deltaPos.y, deltaPos.z);
   this->state.primList.push_back(&particle->state);
-  static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->objects.push_back(particle);
+  g_modeMgr.GetGameMode()->scene->objects.push_back(particle);
 
   return particle;
 }

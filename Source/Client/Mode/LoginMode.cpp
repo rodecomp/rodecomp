@@ -1311,7 +1311,7 @@ void CLoginMode::ReceiveLoginErrorDetail(const LoginErrorDetailPacket* packet) {
     memcpy_s(g_session.m_loginErrorText, sizeof(g_session.m_loginErrorText), packet->text,
       std::min<std::size_t>(sizeof(g_session.m_loginErrorText), length));
     GetRagConnection().Close();
-    g_modeMgr.gameMode->SendMsg(LMM_CONNECT_TO_ACSVR, 0, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(LMM_CONNECT_TO_ACSVR, 0, 0, 0, 0);
     break;
   }
   case 400:
@@ -1336,7 +1336,7 @@ void CLoginMode::ReceiveLoginErrorDetail(const LoginErrorDetailPacket* packet) {
     const char* parametersText = OBFUSCATE_ARRAY_TEXT("http://ro.gnjoy.com/", 0x8783C33941E15117ULL, char);
     const char* fileText = OBFUSCATE_ARRAY_TEXT("http://ro.gnjoy.com/", 0x1767DDE18D779D8BULL, char);
     ShellExecuteA(nullptr, OBFUSCATE_ARRAY_TEXT("OPEN", 0xC1BB8111EDD183E1ULL, char), fileText, parametersText, nullptr, SW_SHOW);
-    g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
     return;
   }
   case 1200:
@@ -1385,7 +1385,7 @@ void CLoginMode::ReceiveLoginError(const LoginErrorPacket* packet) {
     memcpy_s(g_session.m_loginErrorText, sizeof(g_session.m_loginErrorText), packet->text,
       std::min<std::size_t>(sizeof(g_session.m_loginErrorText), length));
     GetRagConnection().Close();
-    g_modeMgr.gameMode->SendMsg(LMM_CONNECT_TO_ACSVR, 0, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(LMM_CONNECT_TO_ACSVR, 0, 0, 0, 0);
     break;
   }
   case 400:
@@ -1516,7 +1516,7 @@ ConnectionEndpoint g_zoneServerEndpoint;
 // FUNCTION: fn_22290
 void CLoginMode::ConnectZoneServer(std::uint32_t gid, std::string mapName, std::uint32_t ip, int port, std::string host) {
   g_session.m_gid = gid;
-  g_modeMgr.gameMode->SendMsg(LMM_SELECT_CHARACTER, static_cast<unsigned char>(g_selectedSlotIndex), 0, 0, 0);
+  g_modeMgr.currentMode->SendMsg(LMM_SELECT_CHARACTER, static_cast<unsigned char>(g_selectedSlotIndex), 0, 0, 0);
   if (g_windowMgr.newSelectCharWnd) {
     g_windowMgr.Schedule(g_windowMgr.newSelectCharWnd);
   }
@@ -2328,7 +2328,7 @@ void CLoginMode::PollNetworkStatus() {
 
   memset(g_gameModePacketBuffer, 0, sizeof(g_gameModePacketBuffer));
   if (!GetRagConnection().Update()) {
-    g_modeMgr.gameMode->SendMsg(MM_SOCKETERROR, 0, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_SOCKETERROR, 0, 0, 0, 0);
   }
 
   if (g_charServerAccountIdPending == 1) {
@@ -2865,7 +2865,7 @@ void CLoginMode::PollNetworkStatus() {
     }
     case ID_HC_UPDATE_CHARINFO2: {
       const CharacterInfoPacket* packet = reinterpret_cast<const CharacterInfoPacket*>(g_gameModePacketBuffer);
-      CharacterInfo* character = reinterpret_cast<CharacterInfo*>(g_modeMgr.gameMode->SendMsg(MM_QUERYCHARICTORINFO, packet->info.slot, 0, 0, 0));
+      CharacterInfo* character = reinterpret_cast<CharacterInfo*>(g_modeMgr.currentMode->SendMsg(MM_QUERYCHARICTORINFO, packet->info.slot, 0, 0, 0));
       if (character && character->gid == g_session.m_renameGid) {
         *character = packet->info;
         StringFormat(character->mapName, sizeof(character->mapName), static_cast<std::size_t>(-1), "%s", g_session.GatName2RswName(character->mapName));
@@ -3113,7 +3113,7 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
   }
   case LMM_GOTOSELECTACCOUNT:
     if (argument2 == 201) {
-      g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
       return 0;
     }
     this->pendingCursorType = 2;

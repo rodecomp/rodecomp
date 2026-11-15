@@ -100,7 +100,7 @@ void UIPreviewEquipWnd::OnCreate(int width, int height) {
   title->Move(18, 3);
   this->AddChild(title);
 
-  if (!g_modeMgr.GetGameMode() || !static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene) {
+  if (!g_modeMgr.GetGameMode() || !g_modeMgr.GetGameMode()->scene) {
     return;
   }
 
@@ -147,7 +147,7 @@ void UIPreviewEquipWnd::Paint() {
 void UIPreviewEquipWnd::SyncFromPlayer() {
   this->m_render->drawShadow = 0;
 
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   CPlayer* player = mode->scene->player;
   if (player == nullptr) {
     return;

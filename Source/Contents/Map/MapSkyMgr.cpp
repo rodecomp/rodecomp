@@ -96,7 +96,7 @@ __declspec(noinline) void CWeatherEffect::Play(char kind) {
     return;
   }
 
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   this->actor = mode->scene->player;
 
   if (kind == 0) {
@@ -135,7 +135,7 @@ void CWeatherEffect::StartDarken() {
 // OFFSET: 0x00C7B9F0
 // FUNCTION: fn_20369
 void CWeatherEffect::Fireworks() {
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   this->actor = mode->scene->player;
   static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_POKJUK_SOUND, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
 
@@ -151,7 +151,7 @@ void CWeatherEffect::Snow() {
     return;
   }
 
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   this->actor = mode->scene->player;
   this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_SNOW, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
 }
@@ -222,18 +222,18 @@ void CWeatherEffect::ApplyMapWeather(std::string mapName) {
 
     if (entry->second == "snow") {
       if (!this->effect || this->effect->GetDuration() - this->effect->state.stateCnt > 300) {
-        CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+        CGameMode* mode = g_modeMgr.GetGameMode();
         this->actor = mode->scene->player;
         this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_SNOW, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
     } else if (entry->second == "sakura") {
       if (!this->effect || this->effect->GetDuration() - this->effect->state.stateCnt > 300) {
-        CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+        CGameMode* mode = g_modeMgr.GetGameMode();
         this->actor = mode->scene->player;
         this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_SAKURA, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
     } else if (entry->second == "pokjuk") {
-      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      CGameMode* mode = g_modeMgr.GetGameMode();
       this->actor = mode->scene->player;
       static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_POKJUK_SOUND, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
 
@@ -310,9 +310,9 @@ void CMapSkyMgr::CreateClouds(const std::string& mapName) {
   this->m_script->Call("GetCloudTypeNum", "s>d", mapName.c_str(), &typeCount);
 
   const int mapWidth =
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->width * static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->cellSize;
+    g_modeMgr.GetGameMode()->scene->terrain->width * g_modeMgr.GetGameMode()->scene->terrain->cellSize;
   const int mapHeight =
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->height * static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->cellSize;
+    g_modeMgr.GetGameMode()->scene->terrain->height * g_modeMgr.GetGameMode()->scene->terrain->cellSize;
 
   for (int type = 1; type <= typeCount; ++type) {
     int count = 0;
@@ -428,7 +428,7 @@ void CMapSkyMgr::Apply(const std::string& mapName) {
   bool fog = false;
   this->m_script->Call("IsBackGroundFog", "s>b", sky.c_str(), &fog);
   if (fog == true) {
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->backgroundFog = fog;
+    g_modeMgr.GetGameMode()->scene->backgroundFog = fog;
   }
 }
 

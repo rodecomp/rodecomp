@@ -61,7 +61,7 @@ void CRectUpEffect::OnProcess() {
 
     matrix rotation;
     std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
-    rotation.AppendYRotation(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw / -180.0f * 3.141592f);
+    rotation.AppendYRotation(g_modeMgr.GetGameMode()->camera->camera.yaw / -180.0f * 3.141592f);
     ++particle->elapsedFrames;
     particle->transform = rotation;
   }

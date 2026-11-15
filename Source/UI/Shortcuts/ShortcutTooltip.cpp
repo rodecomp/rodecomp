@@ -47,8 +47,8 @@ void UIShortCutWnd::OnMouseHover(int x, int y) {
     const std::string text = FormatOwnedString(LookupMessage(MSI_EA2), item.DisplayName(0).c_str(), item.quantity);
     window.ToScreen(tooltipX, tooltipY);
 
-    if (g_modeMgr.gameMode) {
-      g_modeMgr.gameMode->ShowTooltip(text.c_str(), tooltipX, tooltipY, -1, 0, 1);
+    if (g_modeMgr.currentMode) {
+      g_modeMgr.currentMode->ShowTooltip(text.c_str(), tooltipX, tooltipY, -1, 0, 1);
     }
 
     return;
@@ -100,5 +100,5 @@ void UIShortCutWnd::OnMouseHover(int x, int y) {
     }
   }
 
-  g_modeMgr.gameMode->ShowTooltip(text.c_str(), tooltipX, tooltipY, -1, 0, 1);
+  g_modeMgr.currentMode->ShowTooltip(text.c_str(), tooltipX, tooltipY, -1, 0, 1);
 }

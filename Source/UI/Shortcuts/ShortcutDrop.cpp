@@ -66,20 +66,20 @@ void UIShortCutWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
 
     if (column != -1) {
       if (9 * g_session.m_hotkeyPage + column == value.slot) {
-        g_modeMgr.gameMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
         return;
       }
 
       CSkillInfo skill = g_session.LookupSkill(id);
       const int index = 9 * g_session.m_hotkeyPage + column;
       if (skill.level == 0 && skill.available == 0) {
-        g_modeMgr.gameMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
         return;
       }
 
       if (grid.rows <= g_session.m_hotkeyPage) {
-        if (g_modeMgr.gameMode) {
-          g_modeMgr.gameMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+        if (g_modeMgr.currentMode) {
+          g_modeMgr.currentMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
         }
 
         return;
@@ -125,18 +125,18 @@ void UIShortCutWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
       Refresh(window);
     }
 
-    g_modeMgr.gameMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
     return;
   }
 
   if (value.source == 6 || value.source == 9) {
-    g_modeMgr.gameMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
     return;
   }
 
   ITEM_INFO item = g_session.LookupClientItemByIdentity(value.id);
   if (item.identity[1] == 0 || item.identified == 0) {
-    g_modeMgr.gameMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
     return;
   }
 
@@ -153,8 +153,8 @@ void UIShortCutWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
         Refresh(window);
       }
 
-      if (g_modeMgr.gameMode) {
-        g_modeMgr.gameMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+      if (g_modeMgr.currentMode) {
+        g_modeMgr.currentMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
       }
 
       return;
@@ -186,8 +186,8 @@ void UIShortCutWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
     if (column != -1) {
       const int index = 9 * g_session.m_hotkeyPage + column;
       if (grid.rows <= g_session.m_hotkeyPage) {
-        if (g_modeMgr.gameMode) {
-          g_modeMgr.gameMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+        if (g_modeMgr.currentMode) {
+          g_modeMgr.currentMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
         }
 
         return;
@@ -205,7 +205,7 @@ void UIShortCutWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
   }
   }
 
-  g_modeMgr.gameMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+  g_modeMgr.currentMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
 }
 
 namespace {
@@ -313,6 +313,6 @@ void UIQuickSlotWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
     }
   }
 
-  g_modeMgr.gameMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+  g_modeMgr.currentMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
 }
 

@@ -207,7 +207,7 @@ std::uint32_t CSession::ReadReplayStats(const std::vector<unsigned char>& data) 
     case 2052: {
       std::memcpy(&this->madogearType, data.data() + offset, header.bytes);
       offset += header.bytes;
-      CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+      CPlayer* player = g_modeMgr.GetGameMode()->scene->player;
       if (player) {
         player->SetMadogearType(this->madogearType);
         if (this->madogearType) {

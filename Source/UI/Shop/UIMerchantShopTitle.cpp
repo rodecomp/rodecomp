@@ -2,6 +2,7 @@
 #include "UI/GameSettings/TalkType.h"
 #include "Client/Mode/ModeMessage.h"
 #include "UI/Window/UIEnums.h"
+#include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session/Session.h"
 #include "Contents/Configuration/ServiceOptions.h"
@@ -48,7 +49,7 @@ void UIMerchantShopTitle::OnLBtnDown(int, int) {
     return;
   }
 
-  CMode* mode = g_modeMgr.GetGameMode();
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (this->buyingShop != 0) {
     if (g_windowMgr.merchantItemPurchaseWnd == 0) {
       mode->SendMsg(MM_REQ_CLICK_TO_BUYING_STORE, this->ownerAid, 0, 0, 0);
@@ -61,7 +62,7 @@ void UIMerchantShopTitle::OnLBtnDown(int, int) {
 // OFFSET: 0x0085E920
 // FUNCTION: fn_10832
 void UIMerchantShopTitle::OnLBtnDblClk(int, int) {
-  CMode* mode = g_modeMgr.GetGameMode();
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (this->buyingShop != 0) {
     if (g_windowMgr.merchantItemPurchaseWnd == 0) {
       mode->SendMsg(MM_REQ_CLICK_TO_BUYING_STORE, this->ownerAid, 0, 0, 0);
@@ -75,9 +76,9 @@ void UIMerchantShopTitle::OnLBtnDblClk(int, int) {
 // FUNCTION: fn_10878
 void UIMerchantShopTitle::ResetCursor(int x, int y) {
   if (x >= 0 && x < this->geometry.width && y >= 0 && y <= this->geometry.height) {
-    g_modeMgr.gameMode->SetCursorAction(2);
+    g_modeMgr.currentMode->SetCursorAction(2);
   } else {
-    g_modeMgr.gameMode->SetCursorAction(0);
+    g_modeMgr.currentMode->SetCursorAction(0);
   }
 }
 
@@ -85,7 +86,7 @@ void UIMerchantShopTitle::ResetCursor(int x, int y) {
 // FUNCTION: fn_10886
 void UIMerchantShopTitle::OnRBtnDown(int, int) {
   if (g_serviceOptions.Get(TT_SHOPPING_ON_OFF)) {
-    g_modeMgr.gameMode->SendMsg(MM_RELEASE_QUEST_SH, 0, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_RELEASE_QUEST_SH, 0, 0, 0, 0);
     g_session.ClearItems1760And1748();
   }
 }

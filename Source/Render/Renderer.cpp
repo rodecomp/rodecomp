@@ -1,6 +1,7 @@
 #include "Render/Renderer.h"
 #include "UI/GameSettings/TalkType.h"
 #include "Client/Mode/CMode.h"
+#include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
@@ -55,7 +56,7 @@ void CRenderer::DrawBattleFieldIcon() {
   rect.top = 26;
   rect.right = this->viewport.width - 232;
   rect.bottom = 74;
-  CMode* mode = g_modeMgr.GetGameMode();
+  CGameMode* mode = g_modeMgr.GetGameMode();
   mode->DrawTexture(rect, 0, 0.0999f, 0xCDFFFFFF, g_texMgr.Load("effect\\사자(A).bmp", 0, false, true, false), region);
 
   rect.left = this->viewport.width - 280;

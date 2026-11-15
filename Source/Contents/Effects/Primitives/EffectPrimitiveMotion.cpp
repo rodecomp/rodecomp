@@ -89,7 +89,7 @@ namespace {
 
   // INLINED
   __forceinline void FaceCamera(EffectPrimitiveSlot* slots) {
-    const CView* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera;
+    const CView* view = g_modeMgr.GetGameMode()->camera;
     slots[0].alphaT = static_cast<std::int16_t>(view->camera.yaw);
     slots[0].alphaT = 360 - slots[0].alphaT;
 
@@ -235,10 +235,10 @@ bool CEffectPrim::MoveEffectPrimitive() {
   struct matrix& matrix = this->state.rotTransform;
 
   if ((this->state.pattern & 0x200u) != 0) {
-    matrix.MakeZRotation(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch);
+    matrix.MakeZRotation(g_modeMgr.GetGameMode()->camera->camera.pitch);
   } else if ((this->state.pattern & 0x40u) != 0) {
-    this->state.longitude = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw + 90.0f;
-    this->state.roll = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch;
+    this->state.longitude = g_modeMgr.GetGameMode()->camera->camera.yaw + 90.0f;
+    this->state.roll = g_modeMgr.GetGameMode()->camera->camera.pitch;
     matrix.MakeXRotation(GetRadian(static_cast<int>(this->state.latitude)));
     matrix.AppendZRotation(GetRadian(static_cast<int>(this->state.roll)));
   } else {
@@ -266,7 +266,7 @@ bool CEffectPrim::MoveEffectPrimitive() {
     this->state.master->state.deltaPos[2] = this->state.deltaPos.z + this->state.deltaPos2.z;
   }
 
-  if ((this->state.pattern & 4u) != 0 && this->render.position.y > static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Height(this->render.position.x, this->render.position.z)) {
+  if ((this->state.pattern & 4u) != 0 && this->render.position.y > g_modeMgr.GetGameMode()->scene->terrain->Height(this->render.position.x, this->render.position.z)) {
     this->state.pattern &= ~4u;
     this->state.stateCnt = this->state.duration - 25;
     this->state.speed = 0;
@@ -1429,7 +1429,7 @@ void CEffectPrim::PrimGuard() {
 // OFFSET: 0x00BBFAA0
 // FUNCTION: fn_19818
 bool CEffectPrim::PrimLineLink() {
-  CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* gameMode = g_modeMgr.GetGameMode();
   const CRenderObject* target = nullptr;
 
   this->render.position.x = this->state.master->render.position.x;
@@ -1733,7 +1733,7 @@ bool CEffectPrim::PrimKouenka() {
   this->render.position = this->state.deltaPos;
 
   if ((this->state.pattern & 0x20) != 0) {
-    this->state.roll = this->render.angle - static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw;
+    this->state.roll = this->render.angle - g_modeMgr.GetGameMode()->camera->camera.yaw;
   }
 
   this->ProcessAlpha();
@@ -1795,7 +1795,7 @@ bool CEffectPrim::PrimSakura() {
   this->render.position = this->state.deltaPos;
 
   if ((this->state.pattern & 0x20) != 0) {
-    this->state.roll = this->render.angle - static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw;
+    this->state.roll = this->render.angle - g_modeMgr.GetGameMode()->camera->camera.yaw;
   }
 
   this->ProcessAlpha();
@@ -2061,7 +2061,7 @@ void CEffectPrim::PrimTanji2() {
   this->state.slots[0].vecBNow.z += this->state.slots[0].height[1] * g_sinTable[this->state.slots[0].rotStart];
 
   if (this->state.slots[0].process % 4 == 0) {
-    CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* gameMode = g_modeMgr.GetGameMode();
     CRagEffect* effect = gameMode->scene->player->LaunchEffect(EF_AIRTEXTURE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
 
     if (effect) {
@@ -2147,7 +2147,7 @@ bool CEffectPrim::PrimGhost() {
     this->state.deltaPos.y = slot.vecBPre.y;
     this->state.deltaPos.z = slot.vecBPre.z;
 
-    const CView* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera;
+    const CView* view = g_modeMgr.GetGameMode()->camera;
     int angle = slot.rotStart + static_cast<int>(view->camera.yaw);
 
     if (angle < 0) {
@@ -2465,7 +2465,7 @@ bool CEffectPrim::Prim3DParticle() {
   }
 
   if ((this->state.pattern & 0x20u) != 0) {
-    this->state.roll = this->render.angle - static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw;
+    this->state.roll = this->render.angle - g_modeMgr.GetGameMode()->camera->camera.yaw;
   }
 
   this->ProcessAlpha();
@@ -2476,7 +2476,7 @@ bool CEffectPrim::Prim3DParticle() {
 // OFFSET: 0x00BB75B0
 // FUNCTION: fn_19780
 bool CEffectPrim::Prim3DParticleGravity() {
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   const CRagEffect* master = this->state.master;
   this->state.orgPos.z = master->render.position.z + this->state.deltaPos2.z;
   this->state.orgPos.y = master->render.position.y + this->state.deltaPos2.y;
@@ -2502,7 +2502,7 @@ bool CEffectPrim::Prim3DParticleGravity() {
     if (this->state.playWaveType == 1) {
       char name[52];
       std::sprintf(name, "effect\\EF_Coin%d.wav", ClampedRandom(3) + 1);
-      const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+      const auto* player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player);
       g_soundMgr->PlayWave(
         name, this->render.position.x - player->render.position.x, 0.0f, this->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
       );
@@ -2622,12 +2622,12 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
   float angle;
 
   if ((particle.pattern & 0x200u) != 0) {
-    const CView* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera;
+    const CView* view = g_modeMgr.GetGameMode()->camera;
     rotation.MakeZRotation(view->camera.pitch);
     angle = this->render.angle;
   } else {
     if ((particle.pattern & 0x40u) != 0) {
-      const CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      const CGameMode* mode = g_modeMgr.GetGameMode();
       particle.longitude = mode->camera->camera.yaw + 90.0f;
       particle.roll = mode->camera->camera.pitch;
       rotation.MakeXRotation(GetRadian(static_cast<int>(particle.latitude)));
@@ -2662,7 +2662,7 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
   }
 
   if ((particle.pattern & 4u) != 0) {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
 
     if (this->render.position.y > mode->scene->terrain->Height(this->render.position.x, this->render.position.z)) {
       particle.pattern &= ~4u;
@@ -2814,7 +2814,7 @@ bool CEffectPrim::Prim3DParticleNoMaster() {
   this->render.position.z = positionZ + this->state.deltaPos.z;
 
   if ((flags & 0x20u) != 0) {
-    this->state.roll = this->render.angle - static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw;
+    this->state.roll = this->render.angle - g_modeMgr.GetGameMode()->camera->camera.yaw;
   }
 
   this->ProcessAlpha();
@@ -3837,7 +3837,7 @@ void CEffectPrim::PrimPokJuk() {
 // OFFSET: 0x00BC1F80
 // FUNCTION: fn_19832
 void CEffectPrim::PrimSTIN4() {
-  CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* gameMode = g_modeMgr.GetGameMode();
   EffectPrimitiveSlot* slots = this->state.slots;
 
   for (int index = 0; index < 1; ++index) {
@@ -3979,10 +3979,10 @@ void CEffectPrim::PrimSaintWing() {
     this->state.slots[index].fullDisplayAngle = static_cast<std::int16_t>(static_cast<int>(g_sinTable[this->state.slots[index].riseAngle] * 20.0f + 20.0f));
 
     if (index == 0 || index == 2) {
-      const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+      const auto* player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player);
       this->state.slots[index].rotStart = static_cast<std::int16_t>(static_cast<int>(player->render.angle + 135.0f));
     } else if (index == 1 || index == 3) {
-      const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+      const auto* player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player);
       this->state.slots[index].rotStart = static_cast<std::int16_t>(static_cast<int>(player->render.angle + 45.0f));
     }
   }
@@ -4423,7 +4423,7 @@ namespace {
 // OFFSET: 0x00BC5580
 // FUNCTION: fn_19848
 bool CEffectPrim::PrimDriftingSquares() {
-  const CView* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera;
+  const CView* view = g_modeMgr.GetGameMode()->camera;
   this->state.slots[0].alphaT = static_cast<std::int16_t>(360 - static_cast<short>(view->camera.yaw));
   const short anglePitch = static_cast<short>(450 - static_cast<short>(view->camera.pitch));
   this->state.slots[1].alphaT = anglePitch;
@@ -5900,7 +5900,7 @@ bool CEffectPrim::Prim3DSlotParticle() {
   }
 
   if ((this->state.pattern & 0x20u) != 0) {
-    this->state.roll = this->render.angle - static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw;
+    this->state.roll = this->render.angle - g_modeMgr.GetGameMode()->camera->camera.yaw;
   }
 
   this->ProcessAlpha();
@@ -5977,13 +5977,13 @@ bool CEffectPrim::PrimFieldFireflies() {
         } else if (respawn == 3.0f) {
           slot.vecBNow.x = static_cast<float>(ClampedRandom(300) - 150);
           slot.vecBNow.z = static_cast<float>(ClampedRandom(300) - 150);
-          const C3dAttr* grid = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain;
+          const C3dAttr* grid = g_modeMgr.GetGameMode()->scene->terrain;
           const int sink = ClampedRandom(5);
           slot.vecBNow.y = grid->Height(this->render.position.x + slot.vecBNow.x, this->render.position.z + slot.vecBNow.z) - 20.0f - static_cast<float>(sink);
         } else {
           slot.vecBNow.x = static_cast<float>(ClampedRandom(200) + 25);
           slot.vecBNow.z = static_cast<float>(ClampedRandom(200) + 25);
-          if (std::string(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->mapName) == "ecl_fild01.rsw") {
+          if (std::string(g_modeMgr.GetGameMode()->mapName) == "ecl_fild01.rsw") {
             slot.vecBNow.x = static_cast<float>(ClampedRandom(400) + 25);
             slot.vecBNow.z = static_cast<float>(ClampedRandom(400) + 25);
           }
@@ -6448,7 +6448,7 @@ bool CEffectPrim::PrimFloatingBubbles() {
 // OFFSET: 0x00BBEE90
 // FUNCTION: fn_19815
 bool CEffectPrim::PrimPulsingColumns() {
-  const CView* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera;
+  const CView* view = g_modeMgr.GetGameMode()->camera;
 
   if (this->state.slots[0].flag1[0] == 33) {
     this->state.slots[2].alphaT = static_cast<std::int16_t>(360 - static_cast<int>(view->camera.yaw));
@@ -6743,7 +6743,7 @@ void CEffectPrim::PrimFadingColumns() {
 // FUNCTION: fn_19801
 void CEffectPrim::PrimAuraGlow() {
   EffectPrimitiveSlot* slots = this->state.slots;
-  const CView* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera;
+  const CView* view = g_modeMgr.GetGameMode()->camera;
   const short yaw = static_cast<short>(static_cast<int>(view->camera.yaw));
   const short pitch = static_cast<short>(-static_cast<int>(view->camera.pitch));
   slots[0].alphaT = static_cast<short>(360 - yaw);
@@ -6929,7 +6929,7 @@ void CEffectPrim::PrimBubbleSwirl() {
 
     if (slot.vecBPre.y >= -60.0f && static_cast<unsigned short>(slot.fullDisplayAngle - 250) <= 30) {
       slot.flag1[4] = 0;
-      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      CGameMode* mode = g_modeMgr.GetGameMode();
       mode->SendMsg(MM_QUAKE, 0, 0, 0, 0);
     }
   } else if (slot.process <= 32) {
@@ -6948,7 +6948,7 @@ void CEffectPrim::PrimBubbleSwirl() {
     };
   } else {
     if (slot.flag1[4] == 0 && slot.process == 33) {
-      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      CGameMode* mode = g_modeMgr.GetGameMode();
       mode->SendMsg(MM_QUAKE, 0, 0, 0, 0);
     }
 
@@ -6963,7 +6963,7 @@ void CEffectPrim::PrimBubbleSwirl() {
 // OFFSET: 0x00BC1B50
 // FUNCTION: fn_19831
 void CEffectPrim::PrimSTIN3() {
-  CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* gameMode = g_modeMgr.GetGameMode();
   EffectPrimitiveSlot* slots = this->state.slots;
 
   for (int index = 0; index < 1; ++index) {
@@ -9663,7 +9663,7 @@ bool CEffectPrim::OnProcess() {
       this->render.position = this->state.deltaPos;
 
       if ((this->state.pattern & 0x20u) != 0) {
-        this->state.roll = this->render.angle - static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw;
+        this->state.roll = this->render.angle - g_modeMgr.GetGameMode()->camera->camera.yaw;
       }
 
       this->ProcessAlpha();
@@ -10017,7 +10017,7 @@ bool CEffectPrim::OnProcess() {
       }
 
       if ((this->state.pattern & 0x20) != 0) {
-        this->state.roll = this->render.angle - static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw;
+        this->state.roll = this->render.angle - g_modeMgr.GetGameMode()->camera->camera.yaw;
       }
 
       this->ProcessAlpha();

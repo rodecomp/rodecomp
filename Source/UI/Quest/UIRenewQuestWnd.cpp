@@ -143,7 +143,7 @@ void UINpcSprWnd::OnLBtnUp(int, int) {
 // OFFSET: 0x007F97F0
 // FUNCTION: fn_09936
 void UINpcSprWnd::ResetCursor(int, int) {
-  g_modeMgr.gameMode->SetCursorAction(2);
+  g_modeMgr.currentMode->SetCursorAction(2);
 }
 
 // OFFSET: 0x007F9800

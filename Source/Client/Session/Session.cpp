@@ -680,7 +680,7 @@ int CSession::IsFriendName(const char* name) const {
 // OFFSET: 0x00E1DFB0
 // FUNCTION: fn_23889
 int CSession::GetSiegeMode() const {
-  return static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->isSiegeMode;
+  return g_modeMgr.GetGameMode()->scene->isSiegeMode;
 }
 
 // OFFSET: 0x00DDB4D0
@@ -1808,7 +1808,7 @@ void CSession::RemovePartyMemberByName(const char* name) {
       continue;
     }
 
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     if (mode == nullptr) {
       return;
     }
@@ -1895,7 +1895,7 @@ bool CSession::IsPartyRecommendTarget(std::uint32_t aid) {
     return false;
   }
 
-  const std::string name = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ActorName(aid);
+  const std::string name = g_modeMgr.GetGameMode()->ActorName(aid);
   if (g_session.PartyByName(name.c_str()).valid == 0) {
     return false;
   }
@@ -2055,7 +2055,7 @@ void CSession::UpdateFriendName(std::uint32_t characterId, const char* name) {
   for (auto it = this->m_friends.begin(); it != this->m_friends.end(); ++it) {
     if (it->characterId == characterId) {
       if (std::strlen(name) == 0) {
-        g_modeMgr.gameMode->SendMsg(MM_DELETE_FRIEND, it->accountId, it->characterId, 0, 0);
+        g_modeMgr.currentMode->SendMsg(MM_DELETE_FRIEND, it->accountId, it->characterId, 0, 0);
         this->m_friends.erase(it);
       } else {
         it->name = name;
@@ -2100,7 +2100,7 @@ void CSession::SetEquippedArrowIndex(std::uint32_t value) {
   this->equippedArrowIndex = value;
   this->InvalidateWindowFrames();
 
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (!mode) {
     return;
   }
@@ -2316,7 +2316,7 @@ void CSession::RefreshHpSpWindows() {
     static_cast<UIWindow*>(g_windowMgr.basicInfoWnd)->InvalidateChildren();
   }
 
-  static_cast<CGameMode*>(g_modeMgr.GetGameMode())->NotifyItemBounds();
+  g_modeMgr.GetGameMode()->NotifyItemBounds();
 }
 
 // OFFSET: 0x00DF9460
@@ -2646,7 +2646,7 @@ void CSession::HiFriends(char* text) {
 
   for (auto it = this->m_friends.begin(); it != this->m_friends.end(); ++it) {
     g_windowMgr.chatInputText = greeting.c_str();
-    g_modeMgr.gameMode->SendMsg(MM_WHISPERMSG, reinterpret_cast<int>(it->name.c_str()), 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_WHISPERMSG, reinterpret_cast<int>(it->name.c_str()), 0, 0, 0);
     if (++g_pendingWhisperCount > 40) {
       g_pendingWhisperCount = 40;
     }
@@ -3283,7 +3283,7 @@ void CSession::ClearItemContainers() {
   g_session.m_skillBundle.skills.clear();
   this->m_friends.erase(this->m_friends.begin(), this->m_friends.end());
 
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (mode != nullptr) {
     for (std::list<MessengerMember>::iterator it = this->m_partyMembers.begin(); it != this->m_partyMembers.end(); ++it) {
       CRenderObject* actor = mode->scene->GetGameActorByAidIncludeMe(it->accountId);

@@ -695,7 +695,7 @@ void UIBasicButton::SetText(std::string value) {
 // OFFSET: 0x00807690
 // FUNCTION: fn_10053
 void UIRodexInboxWnd::RequestMailAttachments(int type, std::int64_t mailId) {
-  if (g_modeMgr.GetGameMode() != nullptr && static_cast<CGameMode*>(g_modeMgr.GetGameMode())->IsMenuWindowOpen() == true) {
+  if (g_modeMgr.GetGameMode() != nullptr && g_modeMgr.GetGameMode()->IsMenuWindowOpen() == true) {
     return;
   }
 
@@ -844,7 +844,7 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     return 0;
   }
 
-  CMode* mode = g_modeMgr.GetGameMode();
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (g_rodexMailStore->isPageComplete == false && !(message == UM_COMMAND && argument1 == ID_CLOSE)) {
     return 0;
   }

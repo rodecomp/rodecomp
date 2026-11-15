@@ -97,7 +97,7 @@ void CSaintCastingEffect::Close() {
 // OFFSET: 0x00B752B0
 // FUNCTION: fn_19163
 void CSaintCastingEffect::Open() {
-  CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+  CWorld* world = g_modeMgr.GetGameMode()->scene;
   const vector3d& player = world->player->render.position;
 
   switch (this->id) {

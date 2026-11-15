@@ -82,7 +82,7 @@ void CBindTrapEffect::OnProcess() {
       matrix rotation;
       std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
       rotation.MakeXRotation(1.570796f);
-      rotation.AppendYRotation(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw / -180.0f * 3.141592f);
+      rotation.AppendYRotation(g_modeMgr.GetGameMode()->camera->camera.yaw / -180.0f * 3.141592f);
 
       matrix scale;
       std::memcpy(scale.values, g_identityMatrix, sizeof(scale.values));

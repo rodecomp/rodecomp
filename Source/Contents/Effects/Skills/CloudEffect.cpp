@@ -147,7 +147,7 @@ void CCloud::OnProcess() {
   matrix scale;
   scale.SetScale(this->particle->scale, this->particle->scale, 1.0f);
   matrix rotation;
-  rotation.MakeXRotation(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch / 180.0f * 3.141592f);
+  rotation.MakeXRotation(g_modeMgr.GetGameMode()->camera->camera.pitch / 180.0f * 3.141592f);
   matrix transform;
   transform.Compose(scale, rotation);
   this->particle->transform = transform;

@@ -150,7 +150,7 @@ void UIWindowMgr::RestoreInput() {
 int UIWindowMgr::Confirm(
   const char* text, int type, int defaultAccept, bool replace, int timeout, const char* caption, int width, int height, unsigned char protect
 ) {
-  CMode* gameMode = g_modeMgr.GetGameMode();
+  CGameMode* gameMode = g_modeMgr.GetGameMode();
   if (gameMode && static_cast<CGameMode*>(gameMode)->isInitializing == 1) {
     return 185;
   }
@@ -195,7 +195,7 @@ int UIWindowMgr::Confirm(
   int response = 184;
 
   if (g_modalImmediate == 0) {
-    CMode* pump = g_modeMgr.gameMode;
+    CMode* pump = g_modeMgr.currentMode;
 
     for (;;) {
       if (this->activeWindowId != 0) {
@@ -228,7 +228,7 @@ int UIWindowMgr::Confirm(
 
       if (pump) {
         pump->Update();
-        pump = g_modeMgr.gameMode;
+        pump = g_modeMgr.currentMode;
       }
 
       if (g_session.GetOption(20) > 0) {
@@ -303,7 +303,7 @@ int UIWindowMgr::RunModal(UIWindow* window) {
   int response = 184;
 
   if (g_modalImmediate == 0) {
-    CMode* pump = g_modeMgr.gameMode;
+    CMode* pump = g_modeMgr.currentMode;
 
     for (;;) {
       if (this->activeWindowId != 0) {
@@ -336,7 +336,7 @@ int UIWindowMgr::RunModal(UIWindow* window) {
 
       if (pump) {
         pump->Update();
-        pump = g_modeMgr.gameMode;
+        pump = g_modeMgr.currentMode;
       }
 
       if (g_session.GetOption(20) > 0) {

@@ -59,7 +59,7 @@ void CJupitelThunderStormEffect::Open() {
   this->step.y = scale * this->step.y * speed;
   this->step.z = scale * this->step.z * speed;
 
-  const float angle = ScreenAngle(this->position, this->sourcePosition, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values);
+  const float angle = ScreenAngle(this->position, this->sourcePosition, g_modeMgr.GetGameMode()->camera->frame.view.values);
   CEZ2STRParticle* ball = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
   this->particle = ball;
   if (ball) {
@@ -149,12 +149,12 @@ void CJupitelThunderStormEffect::OnProcess() {
 // FUNCTION: fn_07046
 void CJupitelThunderStormEffect::Render() {
   if (this->particle) {
-    static_cast<CEZ2STRParticle*>(this->particle)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+    static_cast<CEZ2STRParticle*>(this->particle)->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
   }
 
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
     if (*it) {
-      static_cast<CEZ2STRParticle*>(*it)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+      static_cast<CEZ2STRParticle*>(*it)->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
     }
   }
 }

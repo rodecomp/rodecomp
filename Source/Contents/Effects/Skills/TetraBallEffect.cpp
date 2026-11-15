@@ -109,7 +109,7 @@ void CTetraBallEffect::Render() {
   for (int index = 0; index < 5; ++index) {
     CEZ2STRParticle* ball = this->balls[index];
     if (ball) {
-      ball->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+      ball->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
     }
   }
 }

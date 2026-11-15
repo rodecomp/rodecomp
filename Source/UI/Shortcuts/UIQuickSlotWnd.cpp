@@ -58,14 +58,14 @@ void UIQuickSlotWnd::OnLBtnDown(int x, int y) {
   if (entry.skill) {
     CSkillInfo skill = g_session.LookupSkill(entry.id);
     if (skill.available && skill.level) {
-      if (CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode())) {
+      if (CGameMode* mode = g_modeMgr.GetGameMode()) {
         mode->BeginDragSkill(16, skill.id, skill.name, entry.count, index);
       }
     }
   } else if (entry.id != 0) {
     ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(entry.id), 1);
     if (item.identity[1] > 0) {
-      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      CGameMode* mode = g_modeMgr.GetGameMode();
       mode->BeginDragItem(16, item, item.quantity, -1);
     }
   }
@@ -117,7 +117,7 @@ void UIQuickSlotWnd::OnMouseHover(int x, int y) {
   }
 
   if (!text.empty()) {
-    g_modeMgr.gameMode->ShowTooltip(text.c_str(), screenX, screenY, -1, 0, 1);
+    g_modeMgr.currentMode->ShowTooltip(text.c_str(), screenX, screenY, -1, 0, 1);
   }
 }
 
@@ -264,7 +264,7 @@ int UIQuickSlotWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
 
       ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(entry.id), 1);
       if (item.identity[1] != 0) {
-        CMode* mode = g_modeMgr.GetGameMode();
+        CGameMode* mode = g_modeMgr.GetGameMode();
         switch (item.identity[0]) {
         case UM_DEFPUSH:
         case UM_CANCELPUSH:
@@ -299,7 +299,7 @@ int UIQuickSlotWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
 
     CSkillInfo skill = g_session.LookupSkill(entry.id);
     if (skill.level != 0 && skill.available != 0) {
-      g_modeMgr.gameMode->SendMsg(MM_USING_SKILL, reinterpret_cast<int>(&skill), entry.count, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_USING_SKILL, reinterpret_cast<int>(&skill), entry.count, 0, 0);
     }
     return 0;
   }

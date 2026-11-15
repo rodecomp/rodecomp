@@ -100,7 +100,7 @@ CSkill::~CSkill() {
   this->ReleaseModel();
   for (std::vector<std::uint64_t>::iterator it = this->m_targets.begin(); it != this->m_targets.end(); ++it) {
     std::uint64_t target = *it;
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->SendObjectMessage(this, target, 24, 0, 0, 0, 0);
+    g_modeMgr.GetGameMode()->scene->SendObjectMessage(this, target, 24, 0, 0, 0, 0);
   }
 
   this->m_targets.clear();
@@ -172,7 +172,7 @@ void CSkill::ReleaseModel() {
     return;
   }
 
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   WorldSpatialTree* spatial = &mode->scene->spatial;
   if (spatial != nullptr) {
     spatial->RemoveModel(this->m_model, 0);
@@ -237,7 +237,7 @@ __declspec(safebuffers) void CSkill::LaunchGroundEffects(int effectId, int, int 
     for (int row = -range; row <= range; ++row) {
       const float x = static_cast<float>(column * 6) + this->render.position.x + static_cast<float>(rand() % 11) * 0.2f - 1.0f;
       const float z = static_cast<float>(row * 6) + this->render.position.z + static_cast<float>(rand() % 11) * 0.2f - 1.0f;
-      float y = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Height(x, z);
+      float y = g_modeMgr.GetGameMode()->scene->terrain->Height(x, z);
       if (effectId == 0x3BF || effectId == 0x3CF) {
         y += 20.0f;
       }
@@ -247,7 +247,7 @@ __declspec(safebuffers) void CSkill::LaunchGroundEffects(int effectId, int, int 
       position.x = x;
       position.y = y;
       position.z = z;
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->LaunchDummyEffect(&position, effectId, interval + 20, 0);
+      g_modeMgr.GetGameMode()->LaunchDummyEffect(&position, effectId, interval + 20, 0);
     }
   }
 }
@@ -317,13 +317,13 @@ __declspec(safebuffers) void CSkill::ShowModel(const char* modelName) {
   this->m_model->occlusionEnabled = 0;
   this->m_model->playback = 0;
   this->m_model->Prepare(diffuse, white, ambient);
-  static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->spatial.InsertModel(*this->m_model, 0);
+  g_modeMgr.GetGameMode()->scene->spatial.InsertModel(*this->m_model, 0);
 }
 
 // OFFSET: 0x00E51BD0
 // FUNCTION: fn_24302
 void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g) {
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
 
   switch (message) {
   case AM_CHAT: {
@@ -622,9 +622,9 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
     case UNT_FEINTBOMB: {
       CPc* source;
       if (unit->owner == g_session.m_aid) {
-        source = static_cast<CPc*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+        source = static_cast<CPc*>(g_modeMgr.GetGameMode()->scene->player);
       } else {
-        source = static_cast<CPc*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAID(this->sourceActorId));
+        source = static_cast<CPc*>(g_modeMgr.GetGameMode()->scene->GetGameActorByAID(this->sourceActorId));
       }
       if (source != nullptr) {
         CreateHallucinationPc(
@@ -668,14 +668,14 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
       g_effectMgr->Spawn(this->render.accountId, EF_SU_CN_POWDERING, position, 0, unit->level, 0, 0);
       return;
     case UNT_NYANGGRASS: {
-      const vector3d& player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->render.position;
+      const vector3d& player = g_modeMgr.GetGameMode()->scene->player->render.position;
       g_soundMgr->PlayWave("effect\\su_nyanggrass.wav", position.x - player.x, 0.0f, position.z - player.z, 250, 40, 1.0f, 0);
       g_effectMgr->Spawn(this->render.accountId, EF_SU_LOPE, position, 0, unit->level, 0, 0);
       return;
     }
     case UNT_CREATINGSTAR: {
       g_effectMgr->Spawn(this->render.accountId, EF_THUNDER_PLAZMA_BLAST, position, 0, -1, 0, 0);
-      const vector3d& player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->render.position;
+      const vector3d& player = g_modeMgr.GetGameMode()->scene->player->render.position;
       g_soundMgr->PlayWave("effect\\g카트토네이도.wav", position.x - player.x, 0.0f, position.z - player.z, 250, 40, 1.0f, 0);
       return;
     }
@@ -869,7 +869,7 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
       }
       return;
     default: {
-      CGameActor* source = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAidIncludeMe(this->sourceActorId);
+      CGameActor* source = g_modeMgr.GetGameMode()->scene->GetGameActorByAidIncludeMe(this->sourceActorId);
       CSkillActionMgr* actions = CSkillActionMgr::GetInstance();
       actions->OnSkillObjectCreate(this->GetEffectiveJob(-1), unit->level, this, source);
       return;
@@ -883,7 +883,7 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
     this->SetActorJob(static_cast<int>(b));
     switch (this->GetEffectiveJob(-1)) {
     case UNT_WARP_WAITING: {
-      const vector3d& player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->render.position;
+      const vector3d& player = g_modeMgr.GetGameMode()->scene->player->render.position;
       g_soundMgr->PlayWave(
         "effect\\EF_Portal.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
       );

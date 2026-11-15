@@ -247,7 +247,7 @@ void UIRoulletteWnd::OnMouseHover(int x, int y) {
 
   if (item.quantity != 0) {
     this->ToScreen(tooltipX, tooltipY);
-    CMode* tooltip = g_modeMgr.gameMode;
+    CMode* tooltip = g_modeMgr.currentMode;
     if (item.identified == 1 && item.optionCount != 0) {
       tooltip->ShowTooltip(FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), item.DisplayName(0).c_str(), item.optionCount).c_str(), tooltipX, tooltipY,
                     g_session.GetItemNameColor(item), 0, 1);
@@ -310,7 +310,7 @@ void UIRoulletteWnd::OnProcess() {
     this->m_prizeButton->SetState(2);
   }
 
-  if (g_modeMgr.gameMode->cursorAction != 2 || g_rouletteMgr->m_spinning == 1) {
+  if (g_modeMgr.currentMode->cursorAction != 2 || g_rouletteMgr->m_spinning == 1) {
     this->m_startSprite->Move(-100, -100);
     this->m_prizeSprite->Move(-100, -100);
     this->m_stageArrow->Move(-100, -100);

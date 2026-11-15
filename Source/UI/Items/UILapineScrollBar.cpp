@@ -7,6 +7,7 @@
 
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeDragState.h"
+#include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session/Session.h"
 #include "Contents/Items/ItemDescription.h"
@@ -139,7 +140,7 @@ UILapineBox_IngredientListWnd::UILapineBox_IngredientListWnd(int width, int heig
 // OFFSET: 0x005FF820
 // FUNCTION: fn_04150
 void UILapineBoxWnd::DragAndDrop(int, int, std::intptr_t value) {
-  CMode* mode = g_modeMgr.GetGameMode();
+  CGameMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   if (this->items.size() < static_cast<unsigned>(this->maxItems) && drag->source == 27) {
     const int result = this->ingredientList->SendMsg(this, UM_DECITEM, drag->id, 0, 0, 0);
@@ -153,7 +154,7 @@ void UILapineBoxWnd::DragAndDrop(int, int, std::intptr_t value) {
 // OFFSET: 0x005FF8B0
 // FUNCTION: fn_04151
 void UILapineBox_IngredientListWnd::DragAndDrop(int, int, std::intptr_t value) {
-  CMode* mode = g_modeMgr.GetGameMode();
+  CGameMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   if (drag->source == 26) {
     if (this->AddIngredient(drag->id) == 1) {

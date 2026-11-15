@@ -377,7 +377,7 @@ bool CSpriteEffect::IsAlive() {
       return false;
     }
 
-    CWorld* scene = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+    CWorld* scene = g_modeMgr.GetGameMode()->scene;
     if (!scene) {
       return false;
     }

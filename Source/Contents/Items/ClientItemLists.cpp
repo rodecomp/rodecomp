@@ -356,7 +356,7 @@ static __forceinline void AddExchangePacketItem(int itemId, unsigned char type, 
                                                 std::uint32_t card2, std::uint32_t card3, std::uint32_t card4,
                                                 ItemRandomOptions options) {
   if (slot < 0) {
-    g_modeMgr.gameMode->SendMsg(MM_CANCEL_EXCHANGE_ITEM, 0, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_CANCEL_EXCHANGE_ITEM, 0, 0, 0, 0);
   }
 
   if (itemId == 0) {
@@ -1098,7 +1098,7 @@ bool CSession::UnequipItem(int location, std::uint32_t identity) {
     this->equippedArrowIndex = 0;
     g_windowMgr.InvalidateFrames();
 
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     if (mode != nullptr) {
       auto it = std::find_if(g_activeSkillEffects.begin(), g_activeSkillEffects.end(), [](const ActiveSkillEffect& effect) { return effect.id == 0x2B7; });
       if (it != g_activeSkillEffects.end()) {
@@ -1305,7 +1305,7 @@ void CSession::ResetEquipped() {
 // OFFSET: 0x00DD8AF0
 // FUNCTION: fn_23325
 void CSession::ClearPartyMembers() {
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
 
   if (mode) {
     for (auto member = this->m_partyMembers.begin(); member != this->m_partyMembers.end(); ++member) {

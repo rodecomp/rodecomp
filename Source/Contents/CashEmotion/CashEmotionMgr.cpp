@@ -395,7 +395,7 @@ bool CCashEmotionAction_Play::Execute(int packId, int emotionId) {
     return false;
   }
 
-  CMode* mode = g_modeMgr.gameMode;
+  CMode* mode = g_modeMgr.currentMode;
   if (!mode) {
     return false;
   }
@@ -3907,7 +3907,7 @@ void UICashEmotionSprBtn::OnMouseHover(int x, int y) {
     int screenY = -20;
     this->ToScreen(screenX, screenY);
 
-    if (CMode* mode = g_modeMgr.gameMode) {
+    if (CMode* mode = g_modeMgr.currentMode) {
       mode->ShowTooltip(this->m_tooltip.c_str(), screenX, screenY, -1, false, false);
     }
   }

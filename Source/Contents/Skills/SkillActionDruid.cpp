@@ -579,7 +579,7 @@ void CSkillAction_DR_LOW_FLIGHT::OnSkillEffect(int level, CGameActor* source, CG
   }
 
   const float angle = ScreenAngle(
-    &source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values
+    &source->render.position.x, &target->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values
   );
   const int direction = this->GetDirection(angle);
   if (!this->IsValidDirection(direction)) {
@@ -979,7 +979,7 @@ void CSkillAction_DR_CUTTING_WIND::OnSkillEffect(int level, CGameActor* source, 
     thread_local EncryptedName<sizeof(bytes), 0x4F1791FB1503C713ULL> name(bytes);
     return name.Text();
   }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
-    effect->SetAngle(ScreenAngle(&target->render.position.x, &source->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values));
+    effect->SetAngle(ScreenAngle(&target->render.position.x, &source->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values));
   }
 }
 
@@ -1271,7 +1271,7 @@ void CSkillAction_DR_SHOOTING_FEATHER::OnSkillEffect(int level, CGameActor* sour
     thread_local EncryptedName<sizeof(bytes), 0x93E7A3A1F587CDC5ULL> name(bytes);
     return name.Text();
   }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
-    effect->SetAngle(ScreenAngle(&source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values));
+    effect->SetAngle(ScreenAngle(&source->render.position.x, &target->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values));
   }
 }
 

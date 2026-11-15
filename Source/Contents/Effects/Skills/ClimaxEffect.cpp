@@ -84,8 +84,8 @@ void CClimaxEffect::OnProcess() {
     if (climax) {
       if (FindRenderObject(this->actor)) {
         const vector3d position = climax->position;
-        const float* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values;
-        const float* inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse.values;
+        const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
+        const float* inverse = g_modeMgr.GetGameMode()->camera->frame.inverse.values;
         const float viewZ = position.y * view[5] + position.x * view[2] + position.z * view[8] + view[11];
         const float viewX = position.y * view[3] + position.x * view[0] + position.z * view[6] + view[9] + 0.0f;
         const float viewY = position.y * view[4] + position.x * view[1] + position.z * view[7] + view[10] - 10.0f;
@@ -111,7 +111,7 @@ void CClimaxEffect::Render() {
   for (int index = 0; index < 2; ++index) {
     CParticle* particle = this->particles[index];
     if (particle) {
-      static_cast<CEZ2STRParticle*>(particle)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+      static_cast<CEZ2STRParticle*>(particle)->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
     }
   }
 }

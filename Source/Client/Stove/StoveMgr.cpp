@@ -227,11 +227,11 @@ void ShutdownCallback::operator()(Stove::PCSDK::CallbackResult callbackResult, S
       const auto& captionSource = captionSourceText.data;
       const char* caption = OBFUSCATE_DECRYPT(0x91E147EBBD47C39FULL, captionSource);
       MessageBoxA(hWnd, message.c_str(), caption, MB_OK);
-      g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
     } else if (g_modeMgr.state == 0) {
       g_windowMgr.Confirm(message.c_str(), 0, true, true, 0, "Message", 280, 120, 0);
     } else {
-      UIBroadcastBalloon* balloonWindow = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->EnsureBroadcastBalloon();
+      UIBroadcastBalloon* balloonWindow = g_modeMgr.GetGameMode()->EnsureBroadcastBalloon();
       if (balloonWindow != nullptr) {
         BroadcastBalloonMessage balloon;
         balloon.lines.push_back(BroadcastBalloonLine{message, 0x62B0FF, 0});

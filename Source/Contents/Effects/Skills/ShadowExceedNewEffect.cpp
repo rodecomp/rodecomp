@@ -141,11 +141,11 @@ void CShadowExceedNew::OnProcess() {
 void CShadowExceedNew::Render() {
   if (this->drawBackEmitters) {
     for (CEZ2STRParticle* emitter : this->backEmitters) {
-      emitter->DrawBillboards(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+      emitter->DrawBillboards(g_modeMgr.GetGameMode()->camera->frame.view);
     }
   } else {
     for (CEZ2STRParticle* emitter : this->frontEmitters) {
-      emitter->DrawBillboards(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+      emitter->DrawBillboards(g_modeMgr.GetGameMode()->camera->frame.view);
     }
   }
 }

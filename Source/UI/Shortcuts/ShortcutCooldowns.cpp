@@ -713,7 +713,7 @@ void UISelCharForUServerWnd::Paint() {
       int offsetX = 0;
       int offsetY = 0;
       if (g_session.IsDoramJob(slot.job) == true) {
-        const auto* info = reinterpret_cast<const CharacterInfo*>(g_modeMgr.gameMode->SendMsg(MM_QUERYCHARICTORINFO, index, 0, 0, 0));
+        const auto* info = reinterpret_cast<const CharacterInfo*>(g_modeMgr.currentMode->SendMsg(MM_QUERYCHARICTORINFO, index, 0, 0, 0));
         int x = 0;
         int y = 0;
         int item = 0;

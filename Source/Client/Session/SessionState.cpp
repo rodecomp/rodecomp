@@ -110,7 +110,7 @@ void CSession::LoadSkillDelayList(int skillId, std::vector<std::map<int, int>>& 
     }
 
     CGameActor* actor = static_cast<CGameActor*>(
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAID(this->elementalGid)
+      g_modeMgr.GetGameMode()->scene->GetGameActorByAID(this->elementalGid)
     );
     int delay;
     if (actor) {
@@ -309,7 +309,7 @@ void CSession::SetSwapArrowIndex(std::uint32_t value) {
   this->swapArrowIndex = value;
   this->InvalidateWindowFrames();
 
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (!mode) {
     return;
   }

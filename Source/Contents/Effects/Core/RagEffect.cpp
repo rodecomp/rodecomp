@@ -154,7 +154,7 @@ static vector3d RotatedForward(const float* matrix, float distance) {
 
 // INLINED
 static void PlayEffectWave(const CRagEffect& effect, const char* name) {
-  const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+  const auto* player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player);
   g_soundMgr->PlayWave(
     name, effect.render.position.x - player->render.position.x, 0.0f, effect.render.position.z - player->render.position.z, 250, 40, 1.0f, 0
   );
@@ -175,7 +175,7 @@ static void CopyVector(vector3d& to, const vector3d& from) {
 
 // INLINED
 static std::list<CGameObject*>& WorldObjects() {
-  return static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->objects;
+  return g_modeMgr.GetGameMode()->scene->objects;
 }
 
 // INLINED
@@ -208,7 +208,7 @@ static __forceinline void SendAfterimageColor(CGameObject& target, CRagEffect& s
 void CRagEffect::Endure() {
   RenderVertex screen{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
   g_renderer->viewport.Project(
-    &this->state.parent->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, screen
+    &this->state.parent->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values, screen
   );
   this->state.tlvertX = screen.x;
   this->state.tlvertY = screen.y;
@@ -623,7 +623,7 @@ void CRagEffect::IceWall() {
 void CRagEffect::IncAgiDex() {
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
   g_renderer->viewport.Project(
-    &this->state.parent->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, vertex
+    &this->state.parent->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values, vertex
   );
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
@@ -680,7 +680,7 @@ void CRagEffect::IncAgiDex() {
 void CRagEffect::IncAgility() {
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
   g_renderer->viewport.Project(
-    &this->state.parent->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, vertex
+    &this->state.parent->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values, vertex
   );
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
@@ -825,7 +825,7 @@ void CRagEffect::Hit1() {
 void CRagEffect::Hit2(int option) {
   RenderVertex screen{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
   g_renderer->viewport.Project(
-    &this->state.parent->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, screen
+    &this->state.parent->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values, screen
   );
   this->state.tlvertX = screen.x;
   this->state.tlvertY = screen.y;
@@ -962,7 +962,7 @@ void CRagEffect::Hit3() {
 // FUNCTION: fn_20066
 void CRagEffect::Hit4() {
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
-  g_renderer->viewport.Project(&this->state.parent->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, vertex);
+  g_renderer->viewport.Project(&this->state.parent->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values, vertex);
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
 
@@ -1461,7 +1461,7 @@ bool CRagEffect::ProcessEZ2STR(float x, float y, float z) {
     this->InitEZ2STRFrame();
   }
 
-  const RenderVertex vertex = TransformVert(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view, state.parent->render.position);
+  const RenderVertex vertex = TransformVert(g_modeMgr.GetGameMode()->camera->frame.view, state.parent->render.position);
   state.tlvertX = vertex.x + x;
   state.tlvertY = vertex.y + y;
   state.tlvertZ = vertex.z + z;
@@ -1647,7 +1647,7 @@ void CRagEffect::Bash() {
     return;
   }
 
-  const RenderVertex screen = TransformVert(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view, this->state.parent->render.position);
+  const RenderVertex screen = TransformVert(g_modeMgr.GetGameMode()->camera->frame.view, this->state.parent->render.position);
   this->state.tlvertX = screen.x;
   this->state.tlvertY = screen.y;
 
@@ -2182,13 +2182,13 @@ void CRagEffect::SetStateDuration(int duration) {
 bool CRagEffect::Signum() {
   RenderVertex screen{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
   g_renderer->viewport.Project(
-    &this->state.parent->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, screen
+    &this->state.parent->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values, screen
   );
   this->state.tlvertX = screen.x;
   this->state.tlvertY = screen.y;
 
   if (this->state.stateCnt == 30) {
-    const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+    const auto* player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player);
     g_soundMgr->PlayWave(
       "effect\\EF_Signum.wav", this->render.position.x - player->render.position.x, 0.0f, this->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
     );
@@ -2233,7 +2233,7 @@ bool CRagEffect::Signum() {
 // OFFSET: 0x00C3A920
 // FUNCTION: fn_20104
 void CRagEffect::Snow() {
-  CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+  CWorld* world = g_modeMgr.GetGameMode()->scene;
   const vector3d& player = static_cast<const CRenderObject*>(world->player)->render.position;
   this->render.position.x = player.x;
   this->render.position.y = player.y;
@@ -2842,7 +2842,7 @@ void CRagEffect::POISON(char flag) {
 // FUNCTION: fn_20248
 void CRagEffect::Rainbow(const char* name, int unused) {
   if (this->state.stateCnt == 0) {
-    const CView* camera = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera;
+    const CView* camera = g_modeMgr.GetGameMode()->camera;
     CopyVector(this->render.position, this->state.parent->render.position);
     this->state.lastPrim = this->LaunchEffectPrim(93, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = 5;
@@ -3925,7 +3925,7 @@ void CRagEffect::TexturedSkillIcon(const char* name, std::int16_t level, std::in
 // OFFSET: 0x00C59960
 // FUNCTION: fn_20214
 void CRagEffect::TrackTarget() {
-  CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* gameMode = g_modeMgr.GetGameMode();
   const CRenderObject* target = nullptr;
   const RenderObjectState& parent = this->state.parent->render;
   this->render.position.x = parent.position.x;
@@ -3976,7 +3976,7 @@ void CRagEffect::TrackTarget() {
 // OFFSET: 0x00C59B80
 // FUNCTION: fn_20215
 void CRagEffect::TrackTargetWide() {
-  CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* gameMode = g_modeMgr.GetGameMode();
   const CRenderObject* target = nullptr;
   const RenderObjectState& parent = this->state.parent->render;
   this->render.position.x = parent.position.x;
@@ -4028,7 +4028,7 @@ void CRagEffect::TrackTargetWide() {
 // FUNCTION: fn_20216
 void CRagEffect::TrackCloud(char kind) {
   float scale = 0.0f;
-  CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* gameMode = g_modeMgr.GetGameMode();
   const CRenderObject* target = nullptr;
   const RenderObjectState& parent = this->state.parent->render;
   this->render.position.x = parent.position.x;
@@ -5259,7 +5259,7 @@ void CRagEffect::FirstAid() {
     return;
   }
 
-  const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+  const auto* player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player);
   g_soundMgr->PlayWave(
     "_heal_effect.wav", this->render.position.x - player->render.position.x, 150.0f, this->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
   );
@@ -6122,7 +6122,7 @@ void CRagEffect::TexturedComet(const char* name, char kind) {
 // OFFSET: 0x00C5EC40
 // FUNCTION: fn_20240
 void CRagEffect::PokBurst() {
-  const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+  const auto* player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player);
   this->render.position.x = player->render.position.x;
   this->render.position.y = player->render.position.y;
   this->render.position.z = player->render.position.z;
@@ -7208,7 +7208,7 @@ void CRagEffect::TexturedSpreadFlat(const char* name, char kind) {
 // FUNCTION: fn_20332
 void CRagEffect::RisingSparkles(char colorMode) {
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
-  const float* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values;
+  const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   g_renderer->viewport.Project(&this->state.parent->render.position.x, view, vertex);
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
@@ -7322,7 +7322,7 @@ void CRagEffect::TexturedRisingOrbs(const char* name, char kind) {
   CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt == 0) {
-    const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+    const auto* player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player);
     if (kind == 0) {
       g_soundMgr->PlayWave(
         "_heal_effect.wav", this->render.position.x - player->render.position.x, -40.0f, this->render.position.z - player->render.position.z, 250, 40,
@@ -7558,7 +7558,7 @@ void CRagEffect::MonsterSpriteBurst(char kind) {
   Owner(&stored()->state).render.position = stored()->state.master->render.position;
   Owner(&stored()->state).render.position.x = radius * g_sinTable[angle] + Owner(&stored()->state).render.position.x;
   Owner(&stored()->state).render.position.z = radius * g_cosTable[angle] + Owner(&stored()->state).render.position.z;
-  CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+  CWorld* world = g_modeMgr.GetGameMode()->scene;
   Owner(&stored()->state).render.position.y =
     world->terrain->Height(Owner(&stored()->state).render.position.x, Owner(&stored()->state).render.position.z);
 
@@ -7657,7 +7657,7 @@ void CRagEffect::MonsterSpriteBurst(char kind) {
 // FUNCTION: fn_20350
 bool CRagEffect::AgilityChange(char increase, const std::string& textureName) {
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
-  const float* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values;
+  const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   g_renderer->viewport.Project(&this->state.parent->render.position.x, view, vertex);
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
@@ -7667,7 +7667,7 @@ bool CRagEffect::AgilityChange(char increase, const std::string& textureName) {
   this->render.position.z = parent.position.z;
 
   if (this->state.stateCnt == 0) {
-    CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+    CWorld* world = g_modeMgr.GetGameMode()->scene;
     const auto* player = static_cast<const CRenderObject*>(world->player);
     this->state.lastPrim = this->LaunchEffectPrim(0, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -8114,7 +8114,7 @@ void CRagEffect::AssassinCloakingClear() {
 // FUNCTION: fn_20318
 void CRagEffect::TintedRisingSparkles(char) {
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
-  const float* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values;
+  const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   g_renderer->viewport.Project(&this->state.parent->render.position.x, view, vertex);
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
@@ -8238,7 +8238,7 @@ void CRagEffect::RocketPunch() {
   this->state.lastPrim->SetActionName("이팩트\\남_로켓트펀치.act");
   std::int16_t angle;
   Get_Angle(this->render.position.x - this->state.deltaPos[0], this->render.position.z - this->state.deltaPos[2], &angle);
-  const CView* camera = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera;
+  const CView* camera = g_modeMgr.GetGameMode()->camera;
   std::int16_t direction = static_cast<std::int16_t>(static_cast<int>(camera->camera.yaw) + angle) % 360;
   if (direction < 0) {
     direction += 360;
@@ -8291,7 +8291,7 @@ void CRagEffect::GreenRocketPunch() {
   this->state.lastPrim->SetActionName("이팩트\\남_로켓트펀치.act");
   std::int16_t angle;
   Get_Angle(this->render.position.x - this->state.deltaPos[0], this->render.position.z - this->state.deltaPos[2], &angle);
-  const CView* camera = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera;
+  const CView* camera = g_modeMgr.GetGameMode()->camera;
   std::int16_t direction = static_cast<std::int16_t>(static_cast<int>(camera->camera.yaw) + angle) % 360;
   if (direction < 0) {
     direction += 360;
@@ -8470,7 +8470,7 @@ void CRagEffect::TexturedTwinkleRing(const char* name, char level) {
 void CRagEffect::TetraVortexPillar(char kind) {
   CopyVector(this->render.position, this->state.parent->render.position);
 
-  const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+  const auto* player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player);
   switch (this->state.stateCnt) {
   case 0:
     g_soundMgr->PlayWave(
@@ -8811,14 +8811,14 @@ void CRagEffect::CloudDrift() {
 // FUNCTION: fn_20285
 void CRagEffect::NotifyGameMode(char value) {
   if (this->state.stateCnt == 0) {
-    g_modeMgr.gameMode->SendMsg(MM_SONG_TALK, value, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_SONG_TALK, value, 0, 0, 0);
   }
 }
 
 // OFFSET: 0x00C68F20
 // FUNCTION: fn_20287
 void CRagEffect::ScatterItemIcons(char kind) {
-  const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+  const auto* player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player);
   this->render.position.x = player->render.position.x;
   this->render.position.y = player->render.position.y;
   this->render.position.z = player->render.position.z;
@@ -8857,7 +8857,7 @@ void CRagEffect::ScatterItemIcons(char kind) {
     this->state.lastPrim->state.slots[i].rotStart = static_cast<std::int16_t>(static_cast<std::int16_t>(this->state.duration) - 50);
     this->state.lastPrim->state.slots[i].vecBNow.x = static_cast<float>(ClampedRandom(160) - 80);
     this->state.lastPrim->state.slots[i].vecBNow.z = static_cast<float>(ClampedRandom(160) - 80);
-    CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+    CWorld* world = g_modeMgr.GetGameMode()->scene;
     const int drop = rand() % 66;
     this->state.lastPrim->state.slots[i].vecBNow.y =
       world->terrain->Height(
@@ -9425,7 +9425,7 @@ void CRagEffect::ColdHit() {
 
   RenderVertex screen{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
   g_renderer->viewport.Project(
-    &this->state.parent->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, screen
+    &this->state.parent->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values, screen
   );
   this->state.tlvertX = screen.x;
   this->state.tlvertY = screen.y;
@@ -9509,7 +9509,7 @@ void CRagEffect::TurnUndead() {
 
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
   g_renderer->viewport.Project(
-    &this->state.parent->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, vertex
+    &this->state.parent->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values, vertex
   );
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
@@ -9668,7 +9668,7 @@ void CRagEffect::BeginSpellSwirl(int, const char*, char alpha) {
     return;
   }
 
-  const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+  const auto* player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player);
   g_soundMgr->PlayWave(
     "effect\\EF_BeginSpell.wav", this->render.position.x - player->render.position.x, -100.0f, this->render.position.z - player->render.position.z, 250, 40,
     1.0f, 0
@@ -9759,7 +9759,7 @@ void CRagEffect::SevereRainstormCylinder(int, const char*, char alpha, float dis
     return;
   }
 
-  const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+  const auto* player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player);
   g_soundMgr->PlayWave(
     "effect\\EF_BeginSpell.wav", this->render.position.x - player->render.position.x, -100.0f, this->render.position.z - player->render.position.z, 250, 40,
     1.0f, 0
@@ -9904,7 +9904,7 @@ void CRagEffect::LockOnMarker() {
     this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\LockOn128.tga", 0, false, true, false);
   }
 
-  CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+  CWorld* world = g_modeMgr.GetGameMode()->scene;
   this->render.position.y = world->terrain->Height(this->render.position.x, this->render.position.z) - 2.0f;
 }
 
@@ -10129,7 +10129,7 @@ void CRagEffect::SpawnActorHallucination() {
 void CRagEffect::NapalmFragments() {
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
   g_renderer->viewport.Project(
-    &this->state.parent->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, vertex
+    &this->state.parent->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values, vertex
   );
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
@@ -10556,7 +10556,7 @@ void CRagEffect::StoneCurseRing() {
   }
 
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
-  const float* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values;
+  const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   g_renderer->viewport.Project(&this->state.parent->render.position.x, view, vertex);
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
@@ -10584,7 +10584,7 @@ void CRagEffect::StoneCurseRing() {
 // OFFSET: 0x00C49300
 // FUNCTION: fn_20166
 void CRagEffect::SkyCloud(char kind) {
-  const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+  const auto* player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player);
   this->render.position.x = player->render.position.x;
   this->render.position.y = player->render.position.y;
   this->render.position.z = player->render.position.z;
@@ -10668,7 +10668,7 @@ void CRagEffect::SkyCloud(char kind) {
     } else if (kind == 3) {
       this->state.lastPrim->state.slots[index].vecBNow.x = static_cast<float>(ClampedRandom(300) - 150);
       this->state.lastPrim->state.slots[index].vecBNow.z = static_cast<float>(ClampedRandom(300) - 150);
-      const CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      const CGameMode* mode = g_modeMgr.GetGameMode();
       const EffectPrimitiveSlot& slot = this->state.lastPrim->state.slots[index];
       this->state.lastPrim->state.slots[index].vecBNow.y =
         mode->scene->terrain->Height(slot.vecBNow.x + this->render.position.x, this->render.position.z + slot.vecBNow.z) - 20.0f -
@@ -10682,7 +10682,7 @@ void CRagEffect::SkyCloud(char kind) {
       this->state.lastPrim->state.slots[index].vecBNow.x = static_cast<float>(ClampedRandom(200) + 25);
       this->state.lastPrim->state.slots[index].vecBNow.z = static_cast<float>(ClampedRandom(200) + 25);
 
-      if (std::string(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->mapName) == "ecl_fild01.rsw") {
+      if (std::string(g_modeMgr.GetGameMode()->mapName) == "ecl_fild01.rsw") {
         this->state.lastPrim->state.slots[index].vecBNow.x = static_cast<float>(ClampedRandom(400) + 25);
         this->state.lastPrim->state.slots[index].vecBNow.z = static_cast<float>(ClampedRandom(400) + 25);
       }
@@ -11368,7 +11368,7 @@ void CRagEffect::EarthSpike(char type) {
     textureName = "effect\\ice.tga";
   }
 
-  CMode* mode = g_modeMgr.GetGameMode();
+  CGameMode* mode = g_modeMgr.GetGameMode();
   mode->SendMsg(MM_QUAKE, 1, 0, 0, 0);
   float red = 1.0f;
   float green = 0.24f;
@@ -11448,7 +11448,7 @@ static void SetVector(vector3d& v, float x, float y, float z) {
 // FUNCTION: fn_20102
 void CRagEffect::Sightrasher() {
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
-  const float* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values;
+  const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   g_renderer->viewport.Project(&this->state.parent->render.position.x, view, vertex);
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
@@ -12742,7 +12742,7 @@ void CRagEffect::Flasher() {
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
   g_renderer->viewport.Project(
     &this->state.parent->render.position.x,
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values,
+    g_modeMgr.GetGameMode()->camera->frame.view.values,
     vertex
   );
   this->state.tlvertX = vertex.x;
@@ -13045,7 +13045,7 @@ void CRagEffect::HasteUp() {
 
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
   g_renderer->viewport.Project(
-    &this->state.parent->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, vertex
+    &this->state.parent->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values, vertex
   );
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
@@ -13210,7 +13210,7 @@ void CRagEffect::RedParticleSpray(int count) {
 void CRagEffect::Hit5() {
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
   g_renderer->viewport.Project(
-    &this->state.parent->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, vertex
+    &this->state.parent->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values, vertex
   );
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
@@ -13249,7 +13249,7 @@ void CRagEffect::Hit5() {
 void CRagEffect::Hit6() {
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
   g_renderer->viewport.Project(
-    &this->state.parent->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, vertex
+    &this->state.parent->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values, vertex
   );
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
@@ -14662,7 +14662,7 @@ void CRagEffect::CHIMTO(char flag) {
 
   std::int16_t angle;
   Get_Angle(this->render.position.x - this->state.deltaPos[0], this->render.position.z - this->state.deltaPos[2], &angle);
-  const CView* camera = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera;
+  const CView* camera = g_modeMgr.GetGameMode()->camera;
   std::int16_t direction = static_cast<std::int16_t>(static_cast<int>(camera->camera.yaw) + angle) % 360;
   if (direction < 0) {
     direction += 360;
@@ -14984,7 +14984,7 @@ void CRagEffect::RenderAniClip(EZeffectClip* clip, const EZeffectTransform* tran
 // FUNCTION: fn_20099
 void CRagEffect::SandScatter() {
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
-  const float* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values;
+  const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   g_renderer->viewport.Project(&this->state.parent->render.position.x, view, vertex);
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
@@ -15136,7 +15136,7 @@ void CRagEffect::SendMsg(
 void CRagEffect::Sight() {
   CopyVector(this->render.position, this->state.parent->render.position);
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
-  const float* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values;
+  const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   g_renderer->viewport.Project(&this->state.parent->render.position.x, view, vertex);
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
@@ -15183,7 +15183,7 @@ void CRagEffect::Sight() {
 // FUNCTION: fn_20115
 void CRagEffect::AlphaCenterRise() {
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
-  const float* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values;
+  const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   g_renderer->viewport.Project(&this->state.parent->render.position.x, view, vertex);
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
@@ -15399,7 +15399,7 @@ bool CRagEffect::StormGust() {
 void CRagEffect::DecAgility() {
   RenderVertex screen{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
   g_renderer->viewport.Project(
-    &this->state.parent->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, screen
+    &this->state.parent->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values, screen
   );
   this->state.tlvertX = screen.x;
   this->state.tlvertY = screen.y;
@@ -15465,7 +15465,7 @@ void CRagEffect::TexturedSkillAura(char type) {
     return;
   }
 
-  const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+  const auto* player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player);
   if (type == 0) {
     g_soundMgr->PlayWave(
       "effect\\hunter_detecting.wav", this->render.position.x - player->render.position.x, 0.0f, this->render.position.z - player->render.position.z,
@@ -16690,7 +16690,7 @@ void CRagEffect::TexturedMagicRing(const char* name, char kind) {
 // FUNCTION: fn_20163
 void CRagEffect::IncAgilityCenter(char kind) {
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
-  const float* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values;
+  const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   g_renderer->viewport.Project(&this->state.parent->render.position.x, view, vertex);
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
@@ -17237,7 +17237,7 @@ void CPc::UpdateFootprints(int kind) {
     return;
   }
 
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   const float dx = this->render.position.x - this->footprintPosition.x;
   const float dz = this->render.position.z - this->footprintPosition.z;
   CopyVector(this->footprintPosition, this->render.position);
@@ -17296,7 +17296,7 @@ void CRagEffect::PortalRings() {
     return;
   }
 
-  const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+  const auto* player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player);
   g_soundMgr->PlayWave(
     "effect\\EF_Portal.wav",
     this->render.position.x - player->render.position.x,
@@ -18733,7 +18733,7 @@ void CRagEffect::BlueSpellRings() {
   CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt == 0) {
-    const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+    const auto* player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player);
     g_soundMgr->PlayWave(
       "effect\\EF_BeginSpell.wav", this->render.position.x - player->render.position.x, -100.0f, this->render.position.z - player->render.position.z, 250, 40,
       1.0f, 0
@@ -18749,7 +18749,7 @@ void CRagEffect::WhiteSpellRings() {
   CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt == 0) {
-    const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+    const auto* player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player);
     g_soundMgr->PlayWave(
       "effect\\EF_BeginSpell.wav", this->render.position.x - player->render.position.x, -100.0f, this->render.position.z - player->render.position.z, 250, 40,
       1.0f, 0
@@ -18778,7 +18778,7 @@ void CRagEffect::BlackSpellRings(char silent) {
 
   if (this->state.stateCnt == 0) {
     if (silent == 0) {
-      const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+      const auto* player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player);
       g_soundMgr->PlayWave(
         "effect\\EF_BeginSpell.wav", this->render.position.x - player->render.position.x, 0.0f, this->render.position.z - player->render.position.z, 250, 40,
         1.0f, 0
@@ -18856,7 +18856,7 @@ void CRagEffect::TexturedClassChange(char kind) {
     this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\m_ef02.act");
     std::int16_t angle;
     Get_Angle(this->render.position.x - this->state.deltaPos[0], this->render.position.z - this->state.deltaPos[2], &angle);
-    const CView* camera = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera;
+    const CView* camera = g_modeMgr.GetGameMode()->camera;
     std::int16_t direction = static_cast<std::int16_t>(static_cast<int>(camera->camera.yaw) + angle) % 360;
     if (direction < 0) {
       direction += 360;
@@ -19011,7 +19011,7 @@ void CRagEffect::TexturedClassChange(char kind) {
     this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\스프레드.act");
     std::int16_t angle;
     Get_Angle(this->render.position.x - this->state.deltaPos[0], this->render.position.z - this->state.deltaPos[2], &angle);
-    const CView* camera = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera;
+    const CView* camera = g_modeMgr.GetGameMode()->camera;
     std::int16_t direction = static_cast<std::int16_t>(static_cast<int>(camera->camera.yaw) + angle) % 360;
     if (direction < 0) {
       direction += 360;
@@ -20735,7 +20735,7 @@ bool CRagEffect::OnProcess3() {
   case EF_CHIMTO2:
     {
       this->render.position = this->state.parent->render.position;
-      const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+      const auto* player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player);
       if (this->state.stateCnt == 0) {
         g_soundMgr->PlayWave(
           "hundred.wav", this->render.position.x - player->render.position.x, 0.0f, this->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
@@ -21324,7 +21324,7 @@ bool CRagEffect::OnProcess3() {
   case EF_SIGHT2:
     {
       this->render.position = this->state.parent->render.position;
-      const RenderVertex vertex = TransformVert(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view, this->state.parent->render.position);
+      const RenderVertex vertex = TransformVert(g_modeMgr.GetGameMode()->camera->frame.view, this->state.parent->render.position);
       this->state.tlvertX = vertex.x;
       this->state.tlvertY = vertex.y;
       if (this->state.stateCnt % 2 == 0) {
@@ -21631,7 +21631,7 @@ bool CRagEffect::OnProcess3() {
   case EF_SOULLINK:
     {
       this->render.position = this->state.parent->render.position;
-      const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+      const auto* player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player);
       if (this->state.stateCnt == 0) {
         g_soundMgr->PlayWave(
           "effect\\T_캐스팅.wav", this->render.position.x - player->render.position.x, 0.0f, this->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
@@ -22487,7 +22487,7 @@ bool CRagEffect::OnProcess3() {
     this->render.position = this->state.parent->render.position;
     if (this->state.stateCnt == 0) {
       {
-        const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+        const auto* player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player);
         g_soundMgr->PlayWave(
           "effect\\EF_BeginSpell.wav", this->render.position.x - player->render.position.x, -100.0f, this->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
         );
@@ -22500,7 +22500,7 @@ bool CRagEffect::OnProcess3() {
     this->render.position = this->state.parent->render.position;
     if (this->state.stateCnt == 0) {
       {
-        const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+        const auto* player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player);
         g_soundMgr->PlayWave(
           "effect\\EF_BeginSpell.wav", this->render.position.x - player->render.position.x, -100.0f, this->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
         );
@@ -22513,7 +22513,7 @@ bool CRagEffect::OnProcess3() {
     this->render.position = this->state.parent->render.position;
     if (this->state.stateCnt == 0) {
       {
-        const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+        const auto* player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player);
         g_soundMgr->PlayWave(
           "effect\\EF_BeginSpell.wav", this->render.position.x - player->render.position.x, -100.0f, this->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
         );
@@ -22678,7 +22678,7 @@ bool CRagEffect::OnProcess3() {
     this->render.position = this->state.parent->render.position;
     if (this->state.stateCnt == 0) {
       {
-        const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+        const auto* player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player);
         g_soundMgr->PlayWave(
           "effect\\EF_BeginSpell.wav", this->render.position.x - player->render.position.x, -100.0f, this->render.position.z - player->render.position.z, 250, 40, 1.0f, 0
         );
@@ -23037,7 +23037,7 @@ bool CRagEffect::OnProcess3() {
 
 // INLINED
 static void PlayEffectWaveAt(const CRagEffect& effect, const char* name, float height) {
-  const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+  const auto* player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player);
   g_soundMgr->PlayWave(
     name, effect.render.position.x - player->render.position.x, height, effect.render.position.z - player->render.position.z, 250, 40, 1.0f, 0
   );
@@ -23449,7 +23449,7 @@ bool CRagEffect::OnProcess() {
       break;
     case EF_FIREHIT:
       if (this->state.stateCnt == 0) {
-        const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+        const auto* player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player);
         g_soundMgr->PlayWave(
           g_session.GetEnemyHitWaveName(3), this->render.position.x - player->render.position.x, 0.0f, this->render.position.z - player->render.position.z, 250,
           40, 1.0f, 0
@@ -23462,7 +23462,7 @@ bool CRagEffect::OnProcess() {
     case EF_FIRESPLASHHIT:
     {
       RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
-      const float* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values;
+      const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
       g_renderer->viewport.Project(&this->state.parent->render.position.x, view, vertex);
       this->state.tlvertX = vertex.x;
       this->state.tlvertY = vertex.y;
@@ -23783,7 +23783,7 @@ bool CRagEffect::OnProcess() {
       break;
     case EF_LORD:
     {
-      const auto* player = static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player);
+      const auto* player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player);
       switch (this->state.stateCnt) {
       case 0:
         g_soundMgr->PlayWave(
@@ -24015,7 +24015,7 @@ bool CRagEffect::OnProcess() {
     case EF_SONICBLOW:
     {
       RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
-      const float* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values;
+      const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
       g_renderer->viewport.Project(&this->state.parent->render.position.x, view, vertex);
       this->state.tlvertX = vertex.x;
       this->state.tlvertY = vertex.y;
@@ -24182,7 +24182,7 @@ bool CRagEffect::OnProcess() {
         this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
         this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\LockOn128.tga", 0, false, true, false);
       }
-      CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+      CWorld* world = g_modeMgr.GetGameMode()->scene;
       this->render.position.y = world->terrain->Height(this->render.position.x, this->render.position.z) - 2.0f;
       break;
     }
@@ -24205,7 +24205,7 @@ bool CRagEffect::OnProcess() {
         this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
         this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\party.tga", 0, false, true, false);
       }
-      CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+      CWorld* world = g_modeMgr.GetGameMode()->scene;
       this->render.position.y = world->terrain->Height(this->render.position.x, this->render.position.z) - 2.0f;
       break;
     }

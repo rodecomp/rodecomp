@@ -130,7 +130,7 @@ void UINewSkillListWnd::ApplySkillPoints() {
       CSkillInfo* skill = g_session.m_skillBundle.FindGrouped(id);
       if (skill != nullptr && skill->available != 0) {
         for (int level = skill->learnedLevel + 1; level <= value; ++level) {
-          g_modeMgr.gameMode->SendMsg(MM_UPGRADE_SKILLLEVEL, id, 0, 0, 0);
+          g_modeMgr.currentMode->SendMsg(MM_UPGRADE_SKILLLEVEL, id, 0, 0, 0);
         }
       }
     }
@@ -142,7 +142,7 @@ void UINewSkillListWnd::ApplySkillPoints() {
     for (auto it = pending.begin(); it != pending.end(); ++it, ++current) {
       if (current->available != 0 && current->id == it->id && current->level < it->level) {
         for (int i = 0; i < it->level - current->level; ++i) {
-          g_modeMgr.gameMode->SendMsg(MM_UPGRADE_SKILLLEVEL, current->id, 0, 0, 0);
+          g_modeMgr.currentMode->SendMsg(MM_UPGRADE_SKILLLEVEL, current->id, 0, 0, 0);
         }
       }
     }
@@ -983,7 +983,7 @@ void UINewSkillListWnd::OnLBtnDown(int x, int y) {
   if (this->IsSkillArea(x, y) && !this->m_locked && this->m_selectedSkill != -1 && g_replayAnimationScaling == 0) {
     CSkillInfo skill = this->SkillAt(this->m_selectedSkill, false);
     if (skill.available != 0 && skill.level != 0 && skill.type != 0) {
-      CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      CGameMode* gameMode = g_modeMgr.GetGameMode();
       if (gameMode) {
         int level = g_session.UseLevel(skill.id);
         if (level == 0) {
@@ -1034,7 +1034,7 @@ void UINewSkillListWnd::OnMouseHover(int x, int y) {
       int tooltipX = -10;
       int tooltipY = -20;
       this->ToScreen(tooltipX, tooltipY);
-      CMode* mode = g_modeMgr.gameMode;
+      CMode* mode = g_modeMgr.currentMode;
       mode->ShowTooltip((*skill)->DisplayName(), tooltipX + x, tooltipY + y, -1, 0, 1);
     }
   }
@@ -1458,7 +1458,7 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   case UM_USESKILL: {
     const CSkillInfo* skill = reinterpret_cast<const CSkillInfo*>(a);
     if (skill->level != 0) {
-      CMode* gameMode = g_modeMgr.gameMode;
+      CMode* gameMode = g_modeMgr.currentMode;
       gameMode->SendMsg(MM_USING_SKILL, a, g_session.UseLevel(skill->id), 0, 0);
       return 0;
     }

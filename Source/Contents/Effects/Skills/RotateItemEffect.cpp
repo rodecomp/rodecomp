@@ -91,7 +91,7 @@ void CRotateItemEffect::OnProcess() {
         if (particle->alpha > 0) {
           matrix rotation;
           std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
-          CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+          CGameMode* mode = g_modeMgr.GetGameMode();
           rotation.MakeXRotation(mode->camera->camera.pitch / 180.0f * 3.141592f);
           rotation.AppendYRotation(static_cast<float>(static_cast<int>(particleAngle + 45.0f) % 360) / 180.0f * 3.141592f);
           matrix scale;

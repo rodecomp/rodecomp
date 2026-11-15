@@ -14,7 +14,7 @@ int UIEmailAddressWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 
   g_windowMgr.modalResponse = static_cast<int>(a);
   if (a == 184) {
-    CMode* mode = g_modeMgr.gameMode;
+    CMode* mode = g_modeMgr.currentMode;
     mode->SendMsg(LMM_SET_EMAIL_ADDRESS, reinterpret_cast<int>(this->m_edit->Text()), 0, 0, 0);
   }
 

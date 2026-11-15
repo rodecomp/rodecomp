@@ -110,7 +110,7 @@ bool CItem::OnProcess() {
 
   if (this->isFalling) {
     this->render.position.y = (elapsed * 0.083f + this->fallVelocity) * elapsed + this->fallOrigin;
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     if (this->render.position.y > mode->scene->terrain->Height(this->render.position.x, this->render.position.z)) {
       this->render.position.y = mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
       this->isFalling = 0;
@@ -132,7 +132,7 @@ void CItem::Render(int argument) {
 // OFFSET: 0x00D8B720
 // FUNCTION: fn_22252
 void CItem::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g) {
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (message != 4) {
     this->EffectActor::SendMsg(sender, message, b, c, d, e, 0, 0);
     return;

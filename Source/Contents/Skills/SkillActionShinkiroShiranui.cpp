@@ -184,7 +184,7 @@ void CSkillAction_SS_KINRYUUHOU::OnSkillCast(int level, CGameActor* source) {
 // FUNCTION: fn_08794
 void CSkillAction_SS_KINRYUUHOU::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source && target) {
-    const float angle = ScreenAngle(&source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values);
+    const float angle = ScreenAngle(&source->render.position.x, &target->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values);
     EffectLists* effects = g_effectMgr;
     if (CEffect* effect = effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("kinryuuhou"), source->render.position, 0, -1, 0, 0)) {
       effect->SetAngle(angle);
@@ -809,7 +809,7 @@ void CSkillAction_SS_KUNAIWAIKYOKU::OnSkillCast(int level, CGameActor* source) {
 void CSkillAction_SS_KUNAIWAIKYOKU::OnGroundSkillEffect(vector3d position, int argument2, int argument3) {
   CGameActor* shadow = reinterpret_cast<CGameActor*>(argument3);
   if (shadow) {
-    const float angle = ScreenAngle(&shadow->render.position.x, &position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values);
+    const float angle = ScreenAngle(&shadow->render.position.x, &position.x, g_modeMgr.GetGameMode()->camera->frame.view.values);
     const vector3d spot = shadow->render.position;
     EffectLists* effects = g_effectMgr;
     if (CEffect* effect = effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("kunaiwaikyoku"), spot.x, spot.y, spot.z, 0, -1, 0, 0)) {

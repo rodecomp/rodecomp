@@ -8,8 +8,8 @@
 // OFFSET: 0x00AD67E0
 // FUNCTION: fn_17845
 void CModeMgr::Quit() {
-  if (this->gameMode) {
-    this->gameMode->running = 0;
+  if (this->currentMode) {
+    this->currentMode->running = 0;
   }
 
   if (g_serviceType == 11) {
@@ -21,7 +21,7 @@ void CModeMgr::Quit() {
 // OFFSET: 0x00AD7620
 // FUNCTION: fn_17851
 void CModeMgr::Switch(int mode, const char* name) {
-  this->gameMode->running = 0;
+  this->currentMode->running = 0;
   std::strcpy(this->nextModeName, name);
   this->nextState = mode;
 }

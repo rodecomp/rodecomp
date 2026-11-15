@@ -78,7 +78,7 @@ void UIMacroReporterWnd::AddPickedActor(ActorPickInfo* pick) {
 // OFFSET: 0x007EF2E0
 // FUNCTION: fn_09840
 void UIMacroReporterWnd::AddActorByAID(int aid) {
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   CGameActor* actor = mode->scene->GetGameActorByAID(aid);
   if (!actor) {
     return;
@@ -88,7 +88,7 @@ void UIMacroReporterWnd::AddActorByAID(int aid) {
     return;
   }
 
-  mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  mode = g_modeMgr.GetGameMode();
   std::string name = mode->ActorName(aid);
 
   for (auto it = this->m_entries.begin(); it != this->m_entries.end(); ++it) {

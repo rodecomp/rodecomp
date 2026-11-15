@@ -178,7 +178,7 @@ bool CRenderObject::PrepareSprite(
   float lightGreen = 1.0f;
   float lightBlue = 1.0f;
   if (this->render.useGroundLighting == 1 && g_serviceOptions.Get(TT_LIGHTMAP_ON_OFF)) {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     GroundGeometry* ground = mode->scene->ground;
     if (ground->IsNewVer()) {
       int column = 0;
@@ -223,7 +223,7 @@ bool CRenderObject::PrepareSprite(
 // OFFSET: 0x00CAD9E0
 // FUNCTION: fn_21057
 bool CRenderObject::GetTargetPos(std::uint32_t targetAid, vector3d& targetPos) const {
-  const CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  const CGameMode* mode = g_modeMgr.GetGameMode();
   bool found = true;
 
   if (targetAid == g_session.m_aid) {

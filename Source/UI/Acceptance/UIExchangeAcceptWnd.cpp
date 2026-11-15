@@ -100,11 +100,11 @@ int UIExchangeAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     switch (a) {
     case ID_OK:
       g_windowMgr.CloseWindow(WID_EXCHANGEACCEPTWND);
-      g_modeMgr.gameMode->SendMsg(MM_ACK_EXCHANGE_ITEM, 3, 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_ACK_EXCHANGE_ITEM, 3, 0, 0, 0);
       return 0;
     case ID_CANCEL:
       g_windowMgr.CloseWindow(WID_EXCHANGEACCEPTWND);
-      g_modeMgr.gameMode->SendMsg(MM_ACK_EXCHANGE_ITEM, 4, 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_ACK_EXCHANGE_ITEM, 4, 0, 0, 0);
       return 0;
     }
     return 0;
@@ -126,7 +126,7 @@ int UIExchangeAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
           offset += header.length;
           this->SendMsg(nullptr, UM_SET_EXCHANGE_CHAR_NAME, reinterpret_cast<std::intptr_t>(text), 0, 0, 0);
           const std::string name = text;
-          CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+          CGameMode* mode = g_modeMgr.GetGameMode();
           SetExchangeName(mode, name);
           break;
         }

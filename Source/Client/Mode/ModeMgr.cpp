@@ -12,14 +12,14 @@ CModeMgr g_modeMgr = {1};
 
 // OFFSET: 0x00AD6450
 // FUNCTION: fn_17831
-CMode* CModeMgr::GetGameMode() {
-  return this->state == 1 ? this->gameMode : nullptr;
+CGameMode* CModeMgr::GetGameMode() {
+  return this->state == 1 ? static_cast<CGameMode*>(this->currentMode) : nullptr;
 }
 
 // OFFSET: 0x00AD6460
 // FUNCTION: fn_17832
-CMode* CModeMgr::GetLoginMode() {
-  return this->state == 0 ? this->gameMode : nullptr;
+CLoginMode* CModeMgr::GetLoginMode() {
+  return this->state == 0 ? static_cast<CLoginMode*>(this->currentMode) : nullptr;
 }
 
 // OFFSET: 0x00AD6820
@@ -34,18 +34,18 @@ void CModeMgr::Run(int mode, const char* name) {
     std::strcpy(this->modeName, this->nextModeName);
     switch (this->state) {
     case MT_LOGIN:
-      this->gameMode = new CLoginMode();
+      this->currentMode = new CLoginMode();
       break;
     case MT_GAME:
-      this->gameMode = new CGameMode();
+      this->currentMode = new CGameMode();
       break;
     }
 
-    this->gameMode->Initialize(this->modeName);
-    this->gameMode->Run();
-    this->gameMode->End();
-    delete this->gameMode;
-    this->gameMode = nullptr;
+    this->currentMode->Initialize(this->modeName);
+    this->currentMode->Run();
+    this->currentMode->End();
+    delete this->currentMode;
+    this->currentMode = nullptr;
   }
 }
 

@@ -126,9 +126,9 @@ void UICheckBox::OnMouseHover(int x, int y) {
   this->ToScreen(screenX, screenY);
 
   if (this->geometry.state != 0 || this->m_uncheckedTooltip.empty()) {
-    g_modeMgr.gameMode->ShowTooltip(this->m_tooltip.c_str(), screenX, screenY, -1, false, true);
+    g_modeMgr.currentMode->ShowTooltip(this->m_tooltip.c_str(), screenX, screenY, -1, false, true);
   } else {
-    g_modeMgr.gameMode->ShowTooltip(this->m_uncheckedTooltip.c_str(), screenX, screenY, -1, false, true);
+    g_modeMgr.currentMode->ShowTooltip(this->m_uncheckedTooltip.c_str(), screenX, screenY, -1, false, true);
   }
 }
 
@@ -136,7 +136,7 @@ void UICheckBox::OnMouseHover(int x, int y) {
 // FUNCTION: fn_10877
 void UICheckBox::ResetCursor(int, int) {
   if (this->m_disabled == 0) {
-    g_modeMgr.gameMode->SetCursorAction(2);
+    g_modeMgr.currentMode->SetCursorAction(2);
   }
 }
 

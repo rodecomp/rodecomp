@@ -205,7 +205,7 @@ void CLightSphereEffect::OnProcess() {
 
       matrix rotation;
       std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
-      rotation.MakeXRotation(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch / 180.0f * 3.141592f);
+      rotation.MakeXRotation(g_modeMgr.GetGameMode()->camera->camera.pitch / 180.0f * 3.141592f);
 
       matrix scaling;
       std::memcpy(scaling.values, g_identityMatrix, sizeof(scaling.values));

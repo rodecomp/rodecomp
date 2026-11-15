@@ -128,7 +128,7 @@ void CEnergyOrbEffect::OnProcess() {
       if (particle->alpha > 0) {
         matrix rotation;
         std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
-        rotation.MakeXRotation(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch / 180.0f * 3.141592f);
+        rotation.MakeXRotation(g_modeMgr.GetGameMode()->camera->camera.pitch / 180.0f * 3.141592f);
         rotation.AppendXRotation(3.141592f);
 
         const float scale = particle->scale;

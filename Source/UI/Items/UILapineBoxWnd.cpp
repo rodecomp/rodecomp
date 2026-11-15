@@ -71,7 +71,7 @@ void UIIngredientInfoWnd::OnLBtnDblClk(int, int) {
 // FUNCTION: fn_04162
 void UIIngredientInfoWnd::OnLBtnDown(int x, int y) {
   if (this->insufficient != 1 && this->item.identity[1] > 0) {
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->BeginDragItem(27, this->item, this->quantity, -1);
+    g_modeMgr.GetGameMode()->BeginDragItem(27, this->item, this->quantity, -1);
   }
 }
 
@@ -97,7 +97,7 @@ void UIIngredientInfoWnd::OnMouseHover(int x, int y) {
     int tipX = 0;
     int tipY = -20;
     this->ToScreen(tipX, tipY);
-    g_modeMgr.gameMode->ShowTooltip(this->tooltip.c_str(), tipX, tipY, -1, 0, 1);
+    g_modeMgr.currentMode->ShowTooltip(this->tooltip.c_str(), tipX, tipY, -1, 0, 1);
   }
 }
 
@@ -123,7 +123,7 @@ void UILapineBoxWnd::OnLBtnDown(int x, int y) {
   const ITEM_INFO item = this->ReadMaterial(x, y);
 
   if (item.identity[1] > 0) {
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->BeginDragItem(0x1A, item, item.quantity, -1);
+    g_modeMgr.GetGameMode()->BeginDragItem(0x1A, item, item.quantity, -1);
   }
 }
 
@@ -148,7 +148,7 @@ void UILapineBoxWnd::OnMouseHover(int x, int y) {
     }
 
     this->ToScreen(tipX, tipY);
-    g_modeMgr.gameMode->ShowTooltip(item.displayName.c_str(), tipX, tipY, -1, 0, 1);
+    g_modeMgr.currentMode->ShowTooltip(item.displayName.c_str(), tipX, tipY, -1, 0, 1);
   }
 }
 

@@ -23,7 +23,7 @@ void CRainbowEffect::Close() {
 // OFFSET: 0x00B70CF0
 // FUNCTION: fn_19129
 void CRainbowEffect::Open() {
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   const int angle = (360 - static_cast<int>(mode->camera->camera.yaw)) % 360;
   for (int row = 0; row < 7; ++row) {
     for (int column = 0; column < 21; ++column) {
@@ -85,7 +85,7 @@ void CRainbowEffect::OnProcess() {
 
       matrix rotation;
       std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
-      rotation.MakeYRotation(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw / -180.0f * 3.141592f);
+      rotation.MakeYRotation(g_modeMgr.GetGameMode()->camera->camera.yaw / -180.0f * 3.141592f);
       particle->transform = rotation;
 
       const int band = particle->rowIndex;

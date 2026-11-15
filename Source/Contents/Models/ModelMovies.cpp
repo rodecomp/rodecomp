@@ -8,7 +8,7 @@
 // FUNCTION: fn_08028
 void C3dModelRes::RegisterMovies(MoviePosition position) const {
   for (auto name = this->movieNames.begin(); name != this->movieNames.end(); ++name) {
-    if (NamedBinkMovie* movie = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->movies->Get(*name, 1)) {
+    if (NamedBinkMovie* movie = g_modeMgr.GetGameMode()->scene->movies->Get(*name, 1)) {
       movie->AddPosition(position);
     }
   }

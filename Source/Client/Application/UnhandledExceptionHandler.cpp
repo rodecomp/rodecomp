@@ -281,7 +281,7 @@ LONG WINAPI TopLevelExceptionFilter(EXCEPTION_POINTERS* exceptionInfo) {
 
     sprintf(&g_crashString[strlen(g_crashString)], "\r\nJob : %s\r\n", g_session.GetJobName(g_session.GetDisplayJob(), -1));
 
-    CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* gameMode = g_modeMgr.GetGameMode();
     gameMode != nullptr && sprintf(&g_crashString[strlen(g_crashString)], "%s %d %d\r\n", std::string(gameMode->mapName).c_str(), g_session.m_playerX, g_session.m_playerY);
 
     sprintf(&g_crashString[strlen(g_crashString)], "\r\n%I64d - %I64d", g_session.m_startTimeTicks / 10000000LL, g_session.m_loginTimeTicks / 10000000LL);

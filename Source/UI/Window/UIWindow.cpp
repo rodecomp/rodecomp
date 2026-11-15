@@ -266,7 +266,7 @@ bool UIWindow::CanHitTest() {
 // OFFSET: 0x00A7BB00
 // FUNCTION: fn_16933
 void UIWindow::DragAndDrop(int, int, std::intptr_t) {
-  g_modeMgr.gameMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+  g_modeMgr.currentMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x005CA0F0
@@ -369,7 +369,7 @@ void UIWindow::OnMouseCheck(int, int) {
 // OFFSET: 0x00A81D60
 // FUNCTION: fn_16988
 void UIWindow::ResetCursor(int, int) {
-  g_modeMgr.gameMode->SetCursorAction(0);
+  g_modeMgr.currentMode->SetCursorAction(0);
 }
 
 // OFFSET: 0x005C7240
@@ -2936,7 +2936,7 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
           window->SendMsg(nullptr, UM_RESOLVE_PLAYER_TAGS, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_TO_BLOCK_WHISPER_FAILED1)), 0, 0, 0);
         }
 
-        std::string mapName = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->MapName();
+        std::string mapName = g_modeMgr.GetGameMode()->MapName();
         mapName = mapName.substr(0, mapName.find(".rsw")) + ".gat";
         if (!g_privateAirplaneItems->IsStartableMap(mapName)) {
           window->SendMsg(nullptr, UM_RESOLVE_PLAYER_TAGS, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ENTER_ONE_LINE_WITHOUT_LINE_BREAKS)), 0, 0, 0);
@@ -2954,9 +2954,9 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
           window->SendMsg(nullptr, UM_REFRESHBUTTON, 0, 0, 0, 0);
         }
 
-        CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-        if (mode->scene && static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player &&
-            static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->render.state == 3) {
+        CGameMode* mode = g_modeMgr.GetGameMode();
+        if (mode->scene && g_modeMgr.GetGameMode()->scene->player &&
+            g_modeMgr.GetGameMode()->scene->player->render.state == 3) {
           window->SendMsg(nullptr, UM_RESOLVE_PLAYER_TAGS, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_REGISTER_ADVENTURER_AGENCY2)), 0, 0, 0);
           window->SendMsg(nullptr, UM_REFRESHBUTTON, 0, 0, 0, 0);
         }

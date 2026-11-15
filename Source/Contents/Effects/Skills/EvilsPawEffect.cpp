@@ -89,7 +89,7 @@ void CEvilsPawEffect::OnProcess() {
       matrix rotation;
       std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
       rotation.MakeZRotation(3.141592f);
-      const CView* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera;
+      const CView* view = g_modeMgr.GetGameMode()->camera;
       rotation.AppendXRotation(view->camera.pitch / 180.0f * 3.141592f);
 
       matrix scale;

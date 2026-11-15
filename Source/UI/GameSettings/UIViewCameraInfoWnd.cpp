@@ -29,7 +29,7 @@ void UIViewCameraInfoWnd::OnCreate(int, int) {
 // FUNCTION: fn_16896
 void UIViewCameraInfoWnd::Paint() {
   this->ClearSurface(0xFFFF00FF);
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (!mode || !mode->scene || !mode->scene->player) {
     return;
   }

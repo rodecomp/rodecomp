@@ -4,6 +4,7 @@
 #include "UI/Window/UIEnums.h"
 #include "UI/Items/UICollectionSystemWnd.h"
 
+#include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "Render/DeviceContext/DeviceContext.h"

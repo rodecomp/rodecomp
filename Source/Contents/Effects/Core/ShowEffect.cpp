@@ -15,7 +15,7 @@ namespace {
       return nullptr;
     }
 
-    CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+    CWorld* world = g_modeMgr.GetGameMode()->scene;
     if (!world) {
       return nullptr;
     }
@@ -48,7 +48,7 @@ void CShowEffect::Add(int tag, int effectId) {
       return;
     }
 
-    CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+    CWorld* world = g_modeMgr.GetGameMode()->scene;
     if (actorId == g_session.m_aid) {
       EffectActor* player = world->player;
       if (!player || !player->LaunchTaggedEffect(effectId, tag)) {

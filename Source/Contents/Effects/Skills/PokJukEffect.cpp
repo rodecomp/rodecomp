@@ -269,8 +269,8 @@ void CPokJukEffect::Render() {
 // OFFSET: 0x00B70540
 // FUNCTION: fn_19126
 void CPokJukEffect::FaceCamera(vector3d* corners) {
-  const int yaw = 360 - static_cast<int>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw);
-  const int pitch = (450 - static_cast<int>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch)) % 360;
+  const int yaw = 360 - static_cast<int>(g_modeMgr.GetGameMode()->camera->camera.yaw);
+  const int pitch = (450 - static_cast<int>(g_modeMgr.GetGameMode()->camera->camera.pitch)) % 360;
 
   for (int corner = 0; corner < 4; ++corner) {
     const float z = corners[corner].z;

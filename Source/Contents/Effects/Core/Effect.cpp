@@ -140,7 +140,7 @@ void CEffect::Update(std::uint32_t aid) {
     return;
   }
 
-  const vector3d player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->render.position;
+  const vector3d player = g_modeMgr.GetGameMode()->scene->player->render.position;
   for (auto event = this->events.begin(); this->events.end() != event; ++event) {
     if (this->frame != event->frame) {
       continue;
@@ -170,7 +170,7 @@ vector3d PlayerPosition() {
   position.z = 0.0f;
   position.x = 0.0f;
   position.y = 0.0f;
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (CPlayer* player = mode->scene->player) {
     position.x = player->render.position.x;
     position.y = player->render.position.y;
@@ -178,9 +178,9 @@ vector3d PlayerPosition() {
     return position;
   }
 
-  mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  mode = g_modeMgr.GetGameMode();
   mode->CellCenter(g_session.m_playerX, g_session.m_playerY, position.x, position.z);
-  mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  mode = g_modeMgr.GetGameMode();
   position.y = mode->scene->terrain->Height(position.x, position.z);
   return position;
 }

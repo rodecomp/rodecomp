@@ -35,7 +35,7 @@ matrix CView::AlternateView(float yaw) const {
   eye[0] = (((orbit.values[3] * point[1] + orbit.values[0] * point[0]) + point[2] * orbit.values[6]) + orbit.values[9]) + this->camera.target[0];
   eye[1] = (((orbit.values[4] * point[1] + orbit.values[1] * point[0]) + point[2] * orbit.values[7]) + orbit.values[10]) + this->camera.target[1];
   eye[2] = (((orbit.values[5] * point[1] + orbit.values[2] * point[0]) + point[2] * orbit.values[8]) + orbit.values[11]) + this->camera.target[2];
-  const float height = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Height(eye[0], eye[2]);
+  const float height = g_modeMgr.GetGameMode()->scene->terrain->Height(eye[0], eye[2]);
 
   if (eye[1] > height) {
     eye[1] = height;

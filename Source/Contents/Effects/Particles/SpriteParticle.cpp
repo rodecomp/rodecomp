@@ -136,7 +136,7 @@ void CSpriteParticle::Draw(char mode) {
     return;
   }
 
-  const float* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values;
+  const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   float screenX;
   float screenY;
   float distance;
@@ -223,8 +223,8 @@ void CSpriteParticle::Draw(char mode) {
     worldScale.SetScale(this->scale, this->scale, 1.0f);
     matrix worldRotation;
     worldRotation.MakeZRotation(ToRadians(this->angle));
-    worldRotation.AppendXRotation(ToRadians(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch));
-    worldRotation.AppendYRotation(ToRadians(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw));
+    worldRotation.AppendXRotation(ToRadians(g_modeMgr.GetGameMode()->camera->camera.pitch));
+    worldRotation.AppendYRotation(ToRadians(g_modeMgr.GetGameMode()->camera->camera.yaw));
     matrix worldTranslate;
     worldTranslate.MakeTranslate(this->position.x, this->position.y, this->position.z);
 

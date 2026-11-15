@@ -25,7 +25,7 @@ void UIWordDisplayWnd::Paint() {
 void UIWordDisplayWnd::OnProcess() {
   CRenderObject* actor = g_session.FindGameActor(this->aid);
   if (this->aid == g_session.m_aid) {
-    actor = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+    actor = g_modeMgr.GetGameMode()->scene->player;
   }
 
   if (!actor) {

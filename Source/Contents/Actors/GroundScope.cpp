@@ -132,7 +132,7 @@ void CGroundScope::Render(int argument) {
   const int cellX = this->m_cellX;
   const int cellY = this->m_cellY;
   g_modeMgr.GetGameMode();
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   GroundGeometry* ground = mode->scene->ground;
   const float center = static_cast<float>(this->m_size) * 0.5f;
   const int half = this->m_size / 2;

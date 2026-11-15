@@ -82,8 +82,8 @@ void CUIMacroReport::OnInit() {
   this->Move((g_renderer->viewport.width - this->geometry.width) / 2, (g_renderer->viewport.height - this->geometry.height) / 2);
 
   if (g_modeMgr.GetGameMode()) {
-    this->targetId = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->menuTargetAid;
-    this->targetName = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->menuTargetName;
+    this->targetId = g_modeMgr.GetGameMode()->menuTargetAid;
+    this->targetName = g_modeMgr.GetGameMode()->menuTargetName;
   }
 }
 

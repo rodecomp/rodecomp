@@ -72,7 +72,7 @@ void UIEscOptionWnd::LayoutButtons() {
 // FUNCTION: fn_12512
 UIEscOptionWnd::UIEscOptionWnd()
     : UIFrameWnd(0), m_titleHeight(17) {
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (mode->isPlayerDead != 0) {
     this->m_mode = !mode->HasResurrectionItem() && !g_session.HasSkillEffect(580) ? 1 : 2;
   } else {
@@ -87,7 +87,7 @@ UIEscOptionWnd::UIEscOptionWnd()
 // OFFSET: 0x00934FA0
 // FUNCTION: fn_12744
 int UIEscOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  CMode* mode = g_modeMgr.GetGameMode();
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (message != UM_COMMAND) {
     return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }

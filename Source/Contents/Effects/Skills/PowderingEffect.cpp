@@ -219,7 +219,7 @@ void CPowderingEffect::OnProcess() {
     matrix scaleMat;
     scaleMat.SetScale(scale, scale, 1.0f);
 
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     matrix rotation;
     rotation.MakeXRotation(mode->camera->camera.pitch / 180.0f * 3.141592f);
 

@@ -129,7 +129,7 @@ void CSoulCollectEffect::OnProcess() {
 
       matrix rotationMatrix;
       rotationMatrix.MakeZRotation(3.141592f);
-      rotationMatrix.AppendXRotation(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch / 180.0f * 3.141592f);
+      rotationMatrix.AppendXRotation(g_modeMgr.GetGameMode()->camera->camera.pitch / 180.0f * 3.141592f);
       matrix scaling;
       scaling.SetScale(particle->scale, particle->scale, 1.0f);
       matrix result;

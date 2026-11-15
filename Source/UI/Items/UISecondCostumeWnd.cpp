@@ -45,7 +45,7 @@ static int FindEntryIndex(const std::vector<SecondCostumeEntry>& entries, const 
 // OFFSET: 0x00948D20
 // FUNCTION: fn_12882
 void UISecondCostumeWnd::DrawCharacterPreview(int x, int y) {
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   const unsigned char flags = mode->scene->player->isRiding;
   const std::uint32_t time = this->m_previewStartTime;
   const int action = this->m_page;

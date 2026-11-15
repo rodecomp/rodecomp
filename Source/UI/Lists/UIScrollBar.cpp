@@ -362,7 +362,7 @@ void UIScrollBar::ResetCursor(int x, int y) {
   if (this->maximum == 0) {
     UIWindow::ResetCursor(x, y);
   } else {
-    g_modeMgr.gameMode->SetCursorAction(2);
+    g_modeMgr.currentMode->SetCursorAction(2);
   }
 }
 
@@ -937,7 +937,7 @@ void UIBasicItemCtrl::DragAndDrop(int, int, std::intptr_t argument3) {
       }
     }
   }
-  g_modeMgr.gameMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+  g_modeMgr.currentMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x0087E080
@@ -958,7 +958,7 @@ void UIBasicSkillCtrl::DragAndDrop(int, int, std::intptr_t argument3) {
       }
     }
   }
-  g_modeMgr.gameMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+  g_modeMgr.currentMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x0087E190
@@ -1527,7 +1527,7 @@ int UITreeView::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
     }
     break;
   case UM_MOUSE_HOVER_BTN:
-    g_modeMgr.gameMode->SetCursorAction(0);
+    g_modeMgr.currentMode->SetCursorAction(0);
     if (this->dragNode && this->dragNode->id != a) {
       UITreeNode* target = reinterpret_cast<UITreeNode*>(a);
       this->dropNode = target;
@@ -1551,7 +1551,7 @@ int UITreeView::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
         break;
       }
 
-      g_modeMgr.gameMode->SetCursorAction(2);
+      g_modeMgr.currentMode->SetCursorAction(2);
       UITreeNode* node = this->dragNode;
       UITVTextButton* label = node->labelButton;
       this->RemoveChildNode(node->parent, node->id, true);

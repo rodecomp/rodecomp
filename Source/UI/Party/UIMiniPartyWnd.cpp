@@ -104,7 +104,7 @@ void UIMiniPartyInfoWnd::OnLBtnDown(int x, int y) {
   }
 
   if (this->m_owner->GetMember().valid && this->m_owner->GetMember().offline == 0) {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     if (mode) {
       mode->TargetActorByAid(this->m_owner->GetMember().accountId);
     }
@@ -122,7 +122,7 @@ void UIMiniPartyInfoWnd::OnLBtnUp(int x, int y) {
 // OFFSET: 0x00740D40
 // FUNCTION: fn_07733
 void UIMiniPartyInfoWnd::OnMouseHover(int, int) {
-  CMode* mode = g_modeMgr.GetGameMode();
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (!mode) {
     return;
   }
@@ -167,7 +167,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     if (this->m_owner->GetMember().valid && !this->m_owner->GetMember().valid) {
       return 0;
     }
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     if (this->m_owner->GetMember().offline) {
       this->m_gauge->Move(-100, -100);
       return 0;
@@ -277,7 +277,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       return 0;
     case MENUID_INVITE_IN_PARTY:
       if (this->m_owner->m_cell != -1 && this->m_owner->GetMember().valid) {
-        g_modeMgr.gameMode->SendMsg(MM_REQ_JOIN_GROUP, reinterpret_cast<int>(this->m_owner->GetMember().name.c_str()), 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(MM_REQ_JOIN_GROUP, reinterpret_cast<int>(this->m_owner->GetMember().name.c_str()), 0, 0, 0);
         return 0;
       }
       break;
@@ -285,7 +285,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       if (this->m_owner->m_cell != -1) {
         if (this->m_owner->GetMember().valid && this->m_owner->GetMember().offline == 0) {
           if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_YIELD_PARTYMASTER), 2, false, false, 0, "Message", 280, 120, 0) == ID_YES) {
-            g_modeMgr.gameMode->SendMsg(MM_GROUP_CHANGE_MASTER, this->m_owner->GetMember().accountId, 0, 0, 0);
+            g_modeMgr.currentMode->SendMsg(MM_GROUP_CHANGE_MASTER, this->m_owner->GetMember().accountId, 0, 0, 0);
             return 0;
           }
         } else {
@@ -297,7 +297,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       break;
     case MENUID_WRITE_RODEX:
       if (this->m_owner->GetMember().valid) {
-        g_modeMgr.gameMode->SendMsg(MM_OPEN_WRITE_RODEX, reinterpret_cast<int>(this->m_owner->GetMember().name.c_str()), 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(MM_OPEN_WRITE_RODEX, reinterpret_cast<int>(this->m_owner->GetMember().name.c_str()), 0, 0, 0);
         return 0;
       }
       break;
@@ -363,7 +363,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       if (!g_session.m_lockMouse && this->m_owner->GetMember().valid) {
         if (!(this->m_owner->GetMember().name == g_session.DecodePlayerName())) {
           if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_EXPEL), 2, false, false, 0, "Message", 280, 120, 0) == 187) {
-            g_modeMgr.gameMode->SendMsg(MM_REQ_EXPEL_GROUP_MEMBER, reinterpret_cast<int>(this->m_owner->GetMember().name.c_str()), 0, 0, 0);
+            g_modeMgr.currentMode->SendMsg(MM_REQ_EXPEL_GROUP_MEMBER, reinterpret_cast<int>(this->m_owner->GetMember().name.c_str()), 0, 0, 0);
             return 0;
           }
         }
@@ -373,14 +373,14 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       if (!g_session.m_lockMouse) {
         if (this->m_owner->GetMember().valid && this->m_owner->GetMember().name == g_session.DecodePlayerName()) {
           if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_LEAVE), 2, false, false, 0, "Message", 280, 120, 0) == ID_YES) {
-            g_modeMgr.gameMode->SendMsg(MM_REQ_LEAVE_GROUP, 0, 0, 0, 0);
+            g_modeMgr.currentMode->SendMsg(MM_REQ_LEAVE_GROUP, 0, 0, 0, 0);
             return 0;
           }
         }
       }
       break;
     case 34: {
-      CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+      CWorld* world = g_modeMgr.GetGameMode()->scene;
       CRenderObject* actor;
       if (static_cast<std::uint32_t>(argument2) == g_session.m_aid) {
         actor = world->player;
@@ -552,7 +552,7 @@ void UIMiniPartyInfoWnd::Paint() {
   if (this->m_owner->GetMember().dead == 1) {
     dead = 1;
   } else if (g_session.m_aid == this->m_owner->GetMember().accountId) {
-    dead = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->isPlayerDead == 1;
+    dead = g_modeMgr.GetGameMode()->isPlayerDead == 1;
   }
 
   const int leader = this->m_owner->GetMember().leader;

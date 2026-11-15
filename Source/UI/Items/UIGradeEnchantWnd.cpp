@@ -375,7 +375,7 @@ void UIGradeEnchantWnd::OnLBtnDown(int x, int y) {
   }
 
   if (this->state == 1 && this->item.identity[1] > 0 && x >= 64 && x <= 110 && y >= 125 && y <= 171) {
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->BeginDragItem(33, this->item, 1, -1);
+    g_modeMgr.GetGameMode()->BeginDragItem(33, this->item, 1, -1);
   }
 }
 
@@ -418,7 +418,7 @@ void UIGradeEnchant_BtnEnhancedUp::OnMouseHover(int x, int y) {
     return;
   }
 
-  CMode* mode = g_modeMgr.GetGameMode();
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (mode == nullptr) {
     return;
   }

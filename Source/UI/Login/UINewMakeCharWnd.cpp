@@ -52,7 +52,7 @@ UINewMakeCharWnd::UINewMakeCharWnd()
   this->m_raceViews[1] = nullptr;
   this->geometry.animationFrame = 0;
 
-  const int* preset = reinterpret_cast<const int*>(g_modeMgr.gameMode->SendMsg(LMM_GET_CHAR_PARAM, 0, 0, 0, 0));
+  const int* preset = reinterpret_cast<const int*>(g_modeMgr.currentMode->SendMsg(LMM_GET_CHAR_PARAM, 0, 0, 0, 0));
   this->m_character.stats[0] = static_cast<unsigned char>(preset[0]);
   this->m_character.stats[1] = static_cast<unsigned char>(preset[1]);
   this->m_character.stats[2] = static_cast<unsigned char>(preset[2]);
@@ -605,7 +605,7 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
         return 0;
       }
 
-      g_modeMgr.gameMode->SendMsg(LMM_SENDCHARINFO, 0, 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(LMM_SENDCHARINFO, 0, 0, 0, 0);
       g_windowMgr.Schedule(this);
     } else {
       if (hasControlCharacter || allowed == 0) {
@@ -619,7 +619,7 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
       }
     }
 
-    CMode* mode = g_modeMgr.gameMode;
+    CMode* mode = g_modeMgr.currentMode;
     mode->SendMsg(LMM_SET_MAKING_CHAR_NAME, reinterpret_cast<int>(this->m_nameEdit->Text()), 0, 0, 0);
     int payload[8];
     payload[0] = this->m_character.stats[0];
@@ -636,7 +636,7 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
 
   case ID_CANCEL:
     g_windowMgr.Schedule(this);
-    g_modeMgr.gameMode->SendMsg(MM_COMMAND, 0x2714, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_COMMAND, 0x2714, 0, 0, 0);
     return 0;
 
   case ID_SLOT:

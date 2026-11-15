@@ -318,7 +318,7 @@ void UIHotKeyWnd::OnMouseHover(int x, int y) {
 
   const HotkeyEntry entry = this->GetHotkey(this->m_tab, index + (this->m_page * 9 - 9) * 4, true);
   if (entry.info.description.size() > 0) {
-    g_modeMgr.gameMode->ShowTooltip(entry.info.description.c_str(), x0 + screenX, y0 + screenY, 0xFFFFFFFF, 0, 1);
+    g_modeMgr.currentMode->ShowTooltip(entry.info.description.c_str(), x0 + screenX, y0 + screenY, 0xFFFFFFFF, 0, 1);
   }
 }
 
@@ -345,14 +345,14 @@ void UISerachStoreInfoWnd::OnMouseHover(int x, int y) {
           text = text.substr(0, end);
         }
 
-        g_modeMgr.gameMode->SetCursorAction(2);
+        g_modeMgr.currentMode->SetCursorAction(2);
       }
     } else {
       text = item.DisplayName(0);
     }
 
     if (text.size() != 0) {
-      g_modeMgr.gameMode->ShowTooltip(text.c_str(), screenX, screenY, g_session.GetItemNameColor(item), 0, 1);
+      g_modeMgr.currentMode->ShowTooltip(text.c_str(), screenX, screenY, g_session.GetItemNameColor(item), 0, 1);
     }
   }
 

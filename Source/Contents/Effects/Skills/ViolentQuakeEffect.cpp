@@ -113,8 +113,8 @@ void CViolentQuakeEffect::OnProcess() {
     }
 
     const vector3d origin = this->positionVector;
-    const matrix view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
-    const matrix& inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse;
+    const matrix view = g_modeMgr.GetGameMode()->camera->frame.view;
+    const matrix& inverse = g_modeMgr.GetGameMode()->camera->frame.inverse;
 
     const float viewX = view.values[0] * origin.x + view.values[3] * origin.y + view.values[6] * origin.z + view.values[9] + emitter->offsetX;
     const float viewY = view.values[1] * origin.x + view.values[4] * origin.y + view.values[7] * origin.z + view.values[10] + emitter->offsetY;
@@ -132,7 +132,7 @@ void CViolentQuakeEffect::OnProcess() {
 void CViolentQuakeEffect::Render() {
   for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
     if (*it) {
-      (*it)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+      (*it)->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
     }
   }
 }

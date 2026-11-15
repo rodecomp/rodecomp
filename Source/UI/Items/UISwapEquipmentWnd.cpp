@@ -58,7 +58,7 @@ void UISwapEquipmentWnd::DragAndDrop(int x, int y, std::intptr_t value) {
     return;
   }
 
-  CMode* mode = g_modeMgr.GetGameMode();
+  CGameMode* mode = g_modeMgr.GetGameMode();
   ITEM_INFO item(0);
   unsigned char equipped = 0;
   switch (drag->source) {
@@ -93,7 +93,7 @@ void UISwapEquipmentWnd::DragAndDrop(int x, int y, std::intptr_t value) {
     }
   }
 
-  g_modeMgr.gameMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+  g_modeMgr.currentMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x0082FD90
@@ -212,7 +212,7 @@ int UISwapEquipmentWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SWAP_EQUIPITEM_FAIL_CHAT)), 0xFF, 0, 0, 0);
         return 1;
       }
-      if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->isPlayerDead) {
+      if (g_modeMgr.GetGameMode()->isPlayerDead) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SWAP_EQUIPITEM_FAIL_MERCHANTSHOP)), 0xFF, 0, 0, 0);
         return 1;
       }
@@ -228,7 +228,7 @@ int UISwapEquipmentWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MDUNGEON_CREATE_FAIL_PARTY_ONLINE)), 0xFF, 0, 0, 0);
         return 1;
       }
-      if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->actorWindows[3]) {
+      if (g_modeMgr.GetGameMode()->scene->player->actorWindows[3]) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SWAP_EQUIPITEM_FAIL_USE_NPC)), 0xFF, 0, 0, 0);
         return 1;
       }
@@ -402,7 +402,7 @@ void UISwapEquipmentWnd::OnLBtnDblClk(int x, int y) {
   ITEM_INFO item = this->ItemAtPoint(x, y);
   if (item.identity[1] > 0 && item.quantity > 0) {
     const EquipSlots slots = g_session.GetEquipSlots(item.identity[3]);
-    CMode* mode = g_modeMgr.gameMode;
+    CMode* mode = g_modeMgr.currentMode;
     if (GetAsyncKeyState(VK_CONTROL)) {
       mode->SendMsg(MM_SWAP_EQUIPMENT_BY_INDEX, reinterpret_cast<int>(&item), 0, 0, 0);
     } else {
@@ -420,7 +420,7 @@ void UISwapEquipmentWnd::OnLBtnDown(int x, int y) {
   }
 
   const EquipSlots slots = g_session.GetEquipSlots(item.identity[3]);
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   mode->drag.BeginItem(g_windowMgr, this->equipmentPage == 2 ? 18 : 17, item, item.quantity, slots.values[2]);
 
   if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
@@ -479,7 +479,7 @@ void UISwapEquipmentWnd::OnMouseHover(int x, int y) {
   this->hoverSecondarySlot = -1;
   this->hoverTertiarySlot = -1;
 
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (mode->drag.source == 1) {
     if (!((x >= 6 && x < 30) || (x >= 251 && x < 275))) {
       return;

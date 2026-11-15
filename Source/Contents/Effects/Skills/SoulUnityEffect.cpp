@@ -68,8 +68,8 @@ void CSoulUnityEffect::OnProcess() {
     }
 
     matrix rotation;
-    rotation.MakeXRotation(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch / 180.0f * 3.141592f);
-    rotation.AppendYRotation(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw / 180.0f * 3.141592f);
+    rotation.MakeXRotation(g_modeMgr.GetGameMode()->camera->camera.pitch / 180.0f * 3.141592f);
+    rotation.AppendYRotation(g_modeMgr.GetGameMode()->camera->camera.yaw / 180.0f * 3.141592f);
 
     const float x = 0.0f;
     const float y = height;
@@ -82,8 +82,8 @@ void CSoulUnityEffect::OnProcess() {
     matrix scaling;
     scaling.SetScale(particle->scale, particle->scale, 1.0f);
     matrix billboard;
-    billboard.MakeXRotation(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch / 180.0f * 3.141592f);
-    billboard.AppendYRotation(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw / 180.0f * 3.141592f);
+    billboard.MakeXRotation(g_modeMgr.GetGameMode()->camera->camera.pitch / 180.0f * 3.141592f);
+    billboard.AppendYRotation(g_modeMgr.GetGameMode()->camera->camera.yaw / 180.0f * 3.141592f);
     vector3d world;
     world.x = rotated.x + this->position[0];
     world.y = rotated.y + this->position[1];

@@ -117,7 +117,7 @@ void BinkMovies::Update() {
       continue;
     }
 
-    CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+    CPlayer* player = g_modeMgr.GetGameMode()->scene->player;
     if (player) {
       const float* playerPosition = &player->render.position.x;
       float nearest = 250.0f;

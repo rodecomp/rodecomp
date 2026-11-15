@@ -38,7 +38,7 @@ void UIShortCutWnd::OnLBtnDown(int x, int y) {
 
     ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(this->m_itemSlots[column]->itemId), 1);
     if (item.identity[1] > 0) {
-      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      CGameMode* mode = g_modeMgr.GetGameMode();
       if (mode) {
         mode->BeginDragItem(7, item, item.quantity, -1);
       }
@@ -51,7 +51,7 @@ void UIShortCutWnd::OnLBtnDown(int x, int y) {
     if (this->m_slots[index]->enabled != 0) {
       CSkillInfo skill = g_session.LookupSkill(this->m_slots[index]->itemId);
       if (skill.MatchesShortcut(this->m_slots[index])) {
-        CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+        CGameMode* mode = g_modeMgr.GetGameMode();
         if (mode) {
           mode->BeginDragSkill(7, skill.id, skill.name, this->m_slots[index]->value, index);
         }
@@ -59,7 +59,7 @@ void UIShortCutWnd::OnLBtnDown(int x, int y) {
     } else {
       ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(this->m_slots[index]->itemId), 1);
       if (item.identity[1] > 0) {
-        CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+        CGameMode* mode = g_modeMgr.GetGameMode();
         mode->BeginDragItem(7, item, item.quantity, -1);
       }
     }

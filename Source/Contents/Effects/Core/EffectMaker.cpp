@@ -49,7 +49,7 @@ void CEffectMaker::Reset() {
 // OFFSET: 0x00E4C210
 // FUNCTION: fn_24282
 bool CEffectMaker::OnProcess() {
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   CPlayer* player = mode->scene->player;
   if (this->CalcDist(player->render.position.x, player->render.position.z) < 130.0f && this->elapsedFrames >= this->spawnInterval) {
     this->elapsedFrames = 0;

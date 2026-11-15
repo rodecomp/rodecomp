@@ -4785,7 +4785,7 @@ int GetLocation(lua_State* state) {
 int GetMapName(lua_State* state) {
   std::string mapName;
   if (g_modeMgr.GetGameMode() != nullptr) {
-    mapName = std::string(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->mapName);
+    mapName = std::string(g_modeMgr.GetGameMode()->mapName);
   }
   mapName = mapName.substr(0, mapName.find(".rsw"));
   lua_pushstring(state, mapName.c_str());
@@ -5052,7 +5052,7 @@ void CSession::AddPartyMember(MessengerMember& member) {
   member.color = MemberColor(index);
   this->m_partyMembers.push_back(member);
 
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (mode && (mode->scene->isPKZone != 0 || mode->scene->isEventPVPMode != 0)) {
     EffectActor* actor = static_cast<EffectActor*>(mode->scene->GetGameActorByAID(member.accountId));
     if (actor && !actor->HasId(EF_PARTY)) {

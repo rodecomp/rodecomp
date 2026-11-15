@@ -495,7 +495,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
 
       if (this->m_whisperEdit->Length() != 0 && buffer[0] != '/') {
         g_windowMgr.chatInputText = buffer;
-        g_modeMgr.gameMode->SendMsg(MM_WHISPERMSG, reinterpret_cast<int>(this->m_whisperEdit->Text()), 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(MM_WHISPERMSG, reinterpret_cast<int>(this->m_whisperEdit->Text()), 0, 0, 0);
         return 0;
       }
 
@@ -516,7 +516,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       if (offset != -1) {
         g_windowMgr.SetChatInputText(buffer + offset);
       }
-      g_modeMgr.gameMode->SendMsg(MM_PROCESS_TALK_TYPE, talkType, reinterpret_cast<int>(parts), 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, talkType, reinterpret_cast<int>(parts), 0, 0);
       return 0;
     }
     case ID_HIS:

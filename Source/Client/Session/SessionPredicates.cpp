@@ -82,7 +82,7 @@ int CSession::IsLocalPlayerAid(std::uint32_t aid) const {
     return 0;
   }
 
-  CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+  CPlayer* player = g_modeMgr.GetGameMode()->scene->player;
   if (player && aid == static_cast<std::uint32_t>(player->GetGdid())) {
     return 1;
   }

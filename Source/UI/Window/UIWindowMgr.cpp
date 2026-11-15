@@ -837,7 +837,7 @@ void UIWindowMgr::ResetWindows() {
   this->loginOTPWnd = nullptr;
   this->combinedCardItemCollectionComparisonWnd = 0;
   if (hadNpcMarketWnd) {
-    if (CMode* mode = g_modeMgr.GetGameMode()) {
+    if (CGameMode* mode = g_modeMgr.GetGameMode()) {
       mode->SendMsg(MM_NPC_MARKET_CLOSE, 0, 0, 0, 0);
     }
   }
@@ -1263,7 +1263,7 @@ __declspec(noinline) void UIWindowMgr::RegisterNamedWindow(std::string name, UIW
 // OFFSET: 0x00AA9B00
 // FUNCTION: fn_17254
 void UIWindowMgr::NotifyMode() {
-  if (CMode* mode = g_modeMgr.GetGameMode()) {
+  if (CGameMode* mode = g_modeMgr.GetGameMode()) {
     mode->SendMsg(MM_NPC_MARKET_CLOSE, 0, 0, 0, 0);
   }
 }
@@ -1691,7 +1691,7 @@ void UIWindowMgr::SendEmotionHotkey(int index) {
     }
   }
 
-  CMode* mode = g_modeMgr.gameMode;
+  CMode* mode = g_modeMgr.currentMode;
   if (text[0] != '/') {
     g_windowMgr.chatInputText = text;
     const int& chatTarget = g_session.m_chatTarget;
@@ -1718,7 +1718,7 @@ void UIWindowMgr::SendEmotionHotkey(int index) {
     if (offset != -1) {
       g_windowMgr.chatInputText = text + offset;
     }
-    g_modeMgr.gameMode->SendMsg(MM_PROCESS_TALK_TYPE, talkType, reinterpret_cast<int>(parts), 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, talkType, reinterpret_cast<int>(parts), 0, 0);
   }
 }
 
@@ -1771,12 +1771,12 @@ void UIWindowMgr::CycleWindowVisibility(int) {
 
     for (std::list<UIWindow*>::iterator it = this->rendered.begin(); it != this->rendered.end(); ++it) {
       UIWindow* window = *it;
-      if (window != static_cast<CGameMode*>(g_modeMgr.GetGameMode())->EnsureBroadcastBalloon()) {
+      if (window != g_modeMgr.GetGameMode()->EnsureBroadcastBalloon()) {
         window->Show(0);
       }
     }
     this->CloseWindow(WID_MINIMAPZOOMWND);
-    CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+    CPlayer* player = g_modeMgr.GetGameMode()->scene->player;
     if (player) {
       player->SendMsg(nullptr, AM_DELETE_EFFECT, EF_STATUS_STATE, 0, 0, 0, 0, 0);
       player->skillEffect = 0;
@@ -1785,8 +1785,8 @@ void UIWindowMgr::CycleWindowVisibility(int) {
   } else if (state == 2) {
     bool closed = false;
     for (std::list<UIWindow*>::iterator it = this->rendered.begin(); it != this->rendered.end(); ++it) {
-      if (*it != static_cast<CGameMode*>(g_modeMgr.GetGameMode())->EnsureBroadcastBalloon() &&
-          *it != static_cast<CGameMode*>(g_modeMgr.GetGameMode())->achievementBalloon && (*it)->geometry.visible) {
+      if (*it != g_modeMgr.GetGameMode()->EnsureBroadcastBalloon() &&
+          *it != g_modeMgr.GetGameMode()->achievementBalloon && (*it)->geometry.visible) {
         UIWindow* window = *it;
         if (this->hiddenWindows.end() != std::find(this->hiddenWindows.begin(), this->hiddenWindows.end(), window)) {
           window->Show(0);
@@ -1816,11 +1816,11 @@ void UIWindowMgr::CycleWindowVisibility(int) {
         }
       }
     }
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     if (mode && mode->canRotateView == 1) {
       this->EnsureWindow(WID_MINIMAPZOOMWND);
     }
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->RefreshEffect164();
+    g_modeMgr.GetGameMode()->scene->player->RefreshEffect164();
     this->windowVisibilityState = 1;
   }
 }
@@ -2580,14 +2580,14 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
 
     if (this->LookupWindow(WID_NEWSELECTCHARWND) && g_session.m_loginModeFlag == 1) {
       if (g_windowMgr.Confirm(LookupMessage(MSI_ENST_ANGELUS2), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
-        g_modeMgr.gameMode->SendMsg(LMM_GOTO_LOGIN, 0, 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(LMM_GOTO_LOGIN, 0, 0, 0, 0);
       }
       return false;
     }
 
     if (this->Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
       GetRagConnection().Close();
-      g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
     }
     return false;
   }
@@ -2666,7 +2666,7 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
   case VK_SNAPSHOT:
   case VK_SCROLL:
     if (pressed) {
-      g_modeMgr.gameMode->SendMsg(MM_SCREENSHOT, 0, 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_SCREENSHOT, 0, 0, 0, 0);
       return false;
     }
     break;
@@ -2895,7 +2895,7 @@ bool UIWindowMgr::CloseWindow(int id) {
     break;
   case WID_CHOOSESELLBUYWND:
     if (this->chooseSellBuyWnd) {
-      g_modeMgr.gameMode->SendMsg(MM_NPC_TRADE_QUIT, 0, 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_NPC_TRADE_QUIT, 0, 0, 0, 0);
       this->Schedule(this->chooseSellBuyWnd);
       this->chooseSellBuyWnd = nullptr;
       closed = true;
@@ -2903,7 +2903,7 @@ bool UIWindowMgr::CloseWindow(int id) {
     break;
   case WID_ITEMSELLWND:
     if (this->itemSellWnd) {
-      g_modeMgr.gameMode->SendMsg(MM_NPC_TRADE_QUIT, 0, 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_NPC_TRADE_QUIT, 0, 0, 0, 0);
       this->Schedule(this->itemSellWnd);
       this->itemSellWnd = nullptr;
       closed = true;
@@ -2925,7 +2925,7 @@ bool UIWindowMgr::CloseWindow(int id) {
     break;
   case WID_ITEMPURCHASEWND:
     if (this->itemPurchaseWnd) {
-      g_modeMgr.gameMode->SendMsg(MM_NPC_TRADE_QUIT, 0, 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_NPC_TRADE_QUIT, 0, 0, 0, 0);
       this->Schedule(this->itemPurchaseWnd);
       this->itemPurchaseWnd = nullptr;
       closed = true;
@@ -2991,8 +2991,8 @@ bool UIWindowMgr::CloseWindow(int id) {
     break;
   case WID_BARTERITEMPURCHASEWND:
     if (this->barterItemPurchaseWnd) {
-      if (g_modeMgr.gameMode) {
-        g_modeMgr.gameMode->SendMsg(MM_NPC_BARTER_MARKET_CLOSE, 0, 0, 0, 0);
+      if (g_modeMgr.currentMode) {
+        g_modeMgr.currentMode->SendMsg(MM_NPC_BARTER_MARKET_CLOSE, 0, 0, 0, 0);
       }
       this->Schedule(this->barterItemPurchaseWnd);
       this->barterItemPurchaseWnd = nullptr;
@@ -3011,8 +3011,8 @@ bool UIWindowMgr::CloseWindow(int id) {
     break;
   case WID_EXPANDEDBARTERITEMPURCHASEWND:
     if (this->expandedBarterItemPurchaseWnd) {
-      if (g_modeMgr.gameMode) {
-        g_modeMgr.gameMode->SendMsg(MM_NPC_EXPANDED_BARTER_MARKET_CLOSE, 0, 0, 0, 0);
+      if (g_modeMgr.currentMode) {
+        g_modeMgr.currentMode->SendMsg(MM_NPC_EXPANDED_BARTER_MARKET_CLOSE, 0, 0, 0, 0);
       }
       this->Schedule(this->expandedBarterItemPurchaseWnd);
       closed = true;
@@ -3550,7 +3550,7 @@ bool UIWindowMgr::CloseWindow(int id) {
       this->Schedule(this->petEggListWnd);
       this->petEggListWnd = nullptr;
       closed = true;
-      g_modeMgr.gameMode->SendMsg(MM_PETEGG_SELECT_FROM_LIST, -1, 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_PETEGG_SELECT_FROM_LIST, -1, 0, 0, 0);
     }
     break;
   case WID_PETTAMINGDECEIVEWND:
@@ -4332,12 +4332,12 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
     }
     break;
   case HK_SITORSTAND + 100:
-    if (g_modeMgr.gameMode) {
-      g_modeMgr.gameMode->SendMsg(MM_PROCESS_TALK_TYPE, 0x16, 0, 0, 0);
+    if (g_modeMgr.currentMode) {
+      g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, 0x16, 0, 0, 0);
     }
     break;
   case HK_MINIMAP_ONOFF + 100:
-    if (g_windowMgr.modal == nullptr && static_cast<CGameMode*>(g_modeMgr.GetGameMode())->canRotateView != 0) {
+    if (g_windowMgr.modal == nullptr && g_modeMgr.GetGameMode()->canRotateView != 0) {
       if (this->minimapColor == 0xFFFFFFFF) {
         this->minimapColor = 0xAAFFFFFF;
         return true;
@@ -4385,12 +4385,12 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
     }
     break;
   case HK_GAGE_ONOFF + 100:
-    if (g_modeMgr.gameMode) {
-      g_modeMgr.gameMode->SendMsg(MM_TOGGLE_PLAYERGAGE, 0, 0, 0, 0);
+    if (g_modeMgr.currentMode) {
+      g_modeMgr.currentMode->SendMsg(MM_TOGGLE_PLAYERGAGE, 0, 0, 0, 0);
     }
     break;
   case HK_SNAPSHOT + 100:
-    g_modeMgr.gameMode->SendMsg(MM_SCREENSHOT, 0, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_SCREENSHOT, 0, 0, 0, 0);
     break;
   case HK_MEMORIALWND_ONOFF + 100:
     if (UIWindow* window = this->memorialDunWnd) {
@@ -4417,7 +4417,7 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
   case HK_HOMUN_FOLLOW + 100:
     if (g_session.homunAlive != 0) {
       g_session.ClearHomunStatus();
-      if (CMode* mode = g_modeMgr.GetGameMode()) {
+      if (CGameMode* mode = g_modeMgr.GetGameMode()) {
         const std::uint32_t aid = g_session.m_homunAid;
         CGameActor* actor = static_cast<CGameMode*>(mode)->scene->GetGameActorByAID(aid);
         if (actor) {
@@ -4433,7 +4433,7 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
   case HK_MER_FOLLOW + 100:
     if (g_session.mercenaryAlive != 0) {
       g_session.ResetMercenaryStats();
-      if (CMode* mode = g_modeMgr.GetGameMode()) {
+      if (CGameMode* mode = g_modeMgr.GetGameMode()) {
         CGameActor* actor = static_cast<CGameMode*>(mode)->scene->GetGameActorByAID(g_session.m_mercenaryAid);
         if (actor && actor->HasActiveMercenaryAI()) {
           AiMessage command;
@@ -4550,7 +4550,7 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
     }
     break;
   case HK_SINGLEMAP_ONOFF + 100:
-    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->canRotateView != 0) {
+    if (g_modeMgr.GetGameMode()->canRotateView != 0) {
       if (!g_session.IsNavigationAllowed()) {
         g_windowMgr.Confirm(LookupMessage(MSI_BANK_0_MONEY), 0, true, false, 0, "Message", 280, 120, 0);
       } else if (!g_windowMgr.CloseWindow(WID_MINIMAPWND)) {
@@ -4612,7 +4612,7 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
   case HK_MACRO_8 + 200:
   case HK_MACRO_9 + 200:
   case HK_MACRO_10 + 200:
-    if (g_modeMgr.gameMode) {
+    if (g_modeMgr.currentMode) {
       this->SendEmotionHotkey(hotkey - 200);
     }
     break;
@@ -4735,7 +4735,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       }
       this->RebuildMiniPartyWindows();
     }
-    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->canRotateView) {
+    if (g_modeMgr.GetGameMode()->canRotateView) {
       this->EnsureWindow(WID_MINIMAPZOOMWND);
     }
     this->ShowWindowById(WID_CHATWND, this->chatWndVisible);

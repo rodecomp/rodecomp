@@ -2307,7 +2307,7 @@ __declspec(safebuffers) void CEffectPrim::RenderSMA3(matrix&) {
 
   if (slot.flag1[0] == 0) {
     if (slot.process % 8 == 0) {
-      CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      CGameMode* gameMode = g_modeMgr.GetGameMode();
       CRagEffect* effect = gameMode->scene->player->LaunchEffect(EF_SMA2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (effect) {
         vector3d position = slot.vecBNow;
@@ -2316,7 +2316,7 @@ __declspec(safebuffers) void CEffectPrim::RenderSMA3(matrix&) {
       }
     }
   } else if (slot.flag1[0] == 1) {
-    CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* gameMode = g_modeMgr.GetGameMode();
     CRagEffect* effect = gameMode->scene->player->LaunchEffect(EF_SMA3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = slot.vecBNow;
@@ -2324,7 +2324,7 @@ __declspec(safebuffers) void CEffectPrim::RenderSMA3(matrix&) {
     }
   } else if (slot.flag1[0] == 99) {
     if (slot.process % 8 == 0) {
-      CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      CGameMode* gameMode = g_modeMgr.GetGameMode();
       CRagEffect* effect = gameMode->scene->player->LaunchEffect(EF_SMA_BLACK2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (effect) {
         vector3d position = slot.vecBNow;
@@ -3212,7 +3212,7 @@ void CEffectPrim::RenderFieldPanel(matrix& wtm) {
       continue;
     }
 
-    const bool field = std::string(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->mapName) == "ecl_fild01.rsw";
+    const bool field = std::string(g_modeMgr.GetGameMode()->mapName) == "ecl_fild01.rsw";
     if (field && slot.alphaB > 100) {
       slot.alphaB = 100;
     }
@@ -5051,8 +5051,8 @@ __declspec(safebuffers) void CEffectPrim::RenderSoulLink(matrix& wtm) {
       CRagEffect* effect = nullptr;
 
       if (static_cast<float>(g_session.m_aid) == slot.height[10]) {
-        effect = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(EF_SOULLIGHT, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      } else if (auto* actor = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAID(static_cast<std::uint32_t>(slot.height[10]))) {
+        effect = g_modeMgr.GetGameMode()->scene->player->LaunchEffect(EF_SOULLIGHT, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      } else if (auto* actor = g_modeMgr.GetGameMode()->scene->GetGameActorByAID(static_cast<std::uint32_t>(slot.height[10]))) {
         effect = actor->LaunchEffect(EF_SOULLIGHT, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
 
@@ -6839,8 +6839,8 @@ void CEffectPrim::RenderMagicTarget(matrix& wtm) {
       continue;
     }
 
-    CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
-    const GroundGeometry* ground = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->ground;
+    CGameMode* gameMode = g_modeMgr.GetGameMode();
+    const GroundGeometry* ground = g_modeMgr.GetGameMode()->scene->ground;
     int column;
     int row;
     gameMode->WorldCell(this->render.position.x, this->render.position.z, column, row);

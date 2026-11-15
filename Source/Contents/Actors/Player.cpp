@@ -422,7 +422,7 @@ void CGrannyPc::SetState(int state, int resetPosition) {
     if (current == ST_DAMAGE || current == ST_ATTACK || this->healthState != 0 || current == ST_BEGIN_SKILL) {
       this->SetAction(0x20, 4, 0);
     }
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->waitingUseItemAck = 0;
+    g_modeMgr.GetGameMode()->waitingUseItemAck = 0;
     break;
   case ST_SKILL:
     if (current == ST_SIT) {
@@ -461,7 +461,7 @@ void CGrannyPc::SetState(int state, int resetPosition) {
     bool usesArrow = false;
     g_session.m_hotkeyScript->Call("IsItemUsingArrow", "d>b", this->weapon, &usesArrow);
     if (usesArrow == true) {
-      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      CGameMode* mode = g_modeMgr.GetGameMode();
       mode->SpawnArrowEffect(&this->render.position, this->hitTargetAid, this->attackMotion * this->render.speed, 0);
       this->attackMotion = 8.0f / this->render.speed + this->attackMotion;
     }
@@ -479,7 +479,7 @@ void CGrannyPc::SetState(int state, int resetPosition) {
     CGameActor::SetState(weaponAllowed ? 9 : 2, resetPosition);
     this->attackMotion = g_session.AttackMotionLength(this->GetEffectiveJob(-1), this->sex, this->weapon, weaponAllowed);
     if ((this->weapon == 14 && this->secondaryWeapon == 0) || (this->weapon == 13 && this->secondaryWeapon == 0)) {
-      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      CGameMode* mode = g_modeMgr.GetGameMode();
       mode->SpawnArrowEffect(&this->render.position, this->hitTargetAid, this->attackMotion * this->render.speed, 0);
       this->attackMotion = 8.0f / this->render.speed + this->attackMotion;
     }
@@ -1085,7 +1085,7 @@ void CPc::ApplyLayerEffects(
     }
 
     float wave = g_sinTable[this->render.wavePhase] + 3.0f;
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     float spread = 400.0f / mode->camera->camera.desiredDistance * wave;
     jitter.top = static_cast<float>(box->top) - spread - static_cast<float>(hover);
     jitter.bottom = static_cast<float>(box->bottom) + spread - static_cast<float>(hover);
@@ -1110,7 +1110,7 @@ void CPc::ApplyLayerEffects(
     this->DrawQuad(jitter, palette, 5, 0.0f, 0.0f, 0);
 
     wave = g_sinTable[this->render.wavePhase];
-    mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    mode = g_modeMgr.GetGameMode();
     spread = 400.0f / mode->camera->camera.desiredDistance * (wave + wave + 5.0f);
     jitter.top = static_cast<float>(box->top) - spread - static_cast<float>(hover);
     jitter.bottom = static_cast<float>(box->bottom) + spread - static_cast<float>(hover);
@@ -1192,7 +1192,7 @@ void CPc::ApplyLayerEffects(
   if ((this->render.flags & 0x10000) != 0) {
     const short level = this->render.effectPhase;
     const short alpha = static_cast<short>(255 - level * 20);
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     const float rise = 400.0f / mode->camera->camera.desiredDistance * static_cast<float>(level * 20);
     quad->top = static_cast<float>(box->top) - rise;
     quad->bottom = static_cast<float>(box->bottom) - rise;
@@ -1201,7 +1201,7 @@ void CPc::ApplyLayerEffects(
 
   if ((this->render.flags & 0x20000) != 0) {
     const int riseUnits = (25 - this->render.tintPhase) * 20;
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     short alpha = static_cast<short>((this->render.tintPhase - 10) * 17);
     if (alpha > 255) {
       alpha = 255;
@@ -1223,7 +1223,7 @@ void CPc::ApplyLayerEffects(
       *blend = 5;
     }
 
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     const float sink = 24000.0f / mode->camera->camera.desiredDistance;
     quad->top = static_cast<float>(box->top) + sink;
     quad->bottom = static_cast<float>(box->bottom) + sink;
@@ -1895,7 +1895,7 @@ void CGrannyPc::RenderCached(const matrix& view, int layer, C3dGrannyModelRes* m
 
   this->brightness = (this->alpha << 24) + 0xFFFFFF;
   g_modeMgr.GetGameMode();
-  CView* camera = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera;
+  CView* camera = g_modeMgr.GetGameMode()->camera;
   bool attached = false;
   matrix rotation;
   rotation.MakeXRotation(1.570796f);
@@ -2184,7 +2184,7 @@ bool CGrannyPc::OnProcess() {
 
   if (this->isPlayHitWave != 0) {
     const vector3d& player =
-      static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player)->render.position;
+      static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player)->render.position;
     g_soundMgr->PlayWave(
       this->hitWaveName, this->render.position.x - player.x, 0.0f,
       this->render.position.z - player.z, 250, 40, 1.0f, 0
@@ -2255,7 +2255,7 @@ bool CPc::OnProcess() {
 
   if (this->isPlayHitWave != 0) {
     const vector3d& player =
-      static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player)->render.position;
+      static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player)->render.position;
     g_soundMgr->PlayWave(
       this->hitWaveName, this->render.position.x - player.x, 0.0f,
       this->render.position.z - player.z, 250, 40, 1.0f, 0
@@ -2267,7 +2267,7 @@ bool CPc::OnProcess() {
   if (!StateFlag02(this->stateFlags) && !StateFlag06(this->stateFlags) && !StateFlag01(this->stateFlags)) {
     if (show) {
       if (!this->msgEffect) {
-        CMsgEffect* effect = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->SpawnMsgEffect(44, &this->render.position, this->render.accountId, true);
+        CMsgEffect* effect = g_modeMgr.GetGameMode()->SpawnMsgEffect(44, &this->render.position, this->render.accountId, true);
         this->AddMsgEffect(effect);
         effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
         this->msgEffect = effect;
@@ -2596,7 +2596,7 @@ __declspec(noinline) void CPlayer::UpdateMsgEffect(bool show) {
   if (!StateFlag02(this->stateFlags) && !StateFlag06(this->stateFlags) && !StateFlag01(this->stateFlags)) {
     if (show) {
       if (!this->msgEffect) {
-        CMsgEffect* effect = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->SpawnMsgEffect(44, &this->render.position, this->render.accountId, true);
+        CMsgEffect* effect = g_modeMgr.GetGameMode()->SpawnMsgEffect(44, &this->render.position, this->render.accountId, true);
         this->AddMsgEffect(effect);
         effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
         this->msgEffect = effect;
@@ -2847,7 +2847,7 @@ bool CPlayer::OnProcess() {
     this->ModifyArgb(8, 8, 8, 8);
   }
 
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (this->preMoveOn != 0 && timeGetTime() > (g_session.m_averagePing >> 1) + this->preMoveStartTick) {
     PlayerMoveRequest request;
     mode->WorldSubcell(
@@ -2868,7 +2868,7 @@ bool CPlayer::OnProcess() {
 
   if (this->isPlayHitWave != 0) {
     const vector3d& player =
-      static_cast<const CRenderObject*>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player)->render.position;
+      static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player)->render.position;
     g_soundMgr->PlayWave(
       this->hitWaveName, this->render.position.x - player.x, 0.0f,
       this->render.position.z - player.z, 250, 40, 1.0f, 0
@@ -2891,7 +2891,7 @@ bool CPlayer::OnProcess() {
 // OFFSET: 0x00DB5980
 // FUNCTION: fn_22667
 void CPlayer::UpdatePendingAction() {
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   switch (this->proceedType) {
   case PT_ATTACK:
   case PT_ATTACK_2: {
@@ -3841,7 +3841,7 @@ struct PlayerSkillRequest {
 void CPlayer::SendMsg(
   CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g
 ) {
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   switch (message) {
   case AM_REQ_GROUND_SKILL: {
     PlayerSkillRequest request;
@@ -3859,7 +3859,7 @@ void CPlayer::SendMsg(
       int row = 0;
       int subColumn = 0;
       int subRow = 0;
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())
+      g_modeMgr.GetGameMode()
         ->WorldSubcell(this->render.position.x, this->render.position.z, column, row, subColumn, subRow);
       MovementRouteInterpolation route;
       if (g_pathFinder.FindPath(timeGetTime(), column, row, subColumn, subRow, this->gSkillDx, this->gSkillDy, 150, route, 15) == true) {
@@ -4249,7 +4249,7 @@ void CGrannyPc::RenderModel(
   }
 
   if (model == this->model) {
-    if (this->model->ProjectBounds(bounds, view, rotation, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.eye)) {
+    if (this->model->ProjectBounds(bounds, view, rotation, g_modeMgr.GetGameMode()->camera->frame.eye)) {
       this->SetRenderInfo(bounds, screenX, screenY);
     } else {
       this->SetTlvert(screenX, screenY);
@@ -4266,11 +4266,11 @@ CPlayer::CPlayer() {
 // OFFSET: 0x00DB5340
 // FUNCTION: fn_22665
 void CPlayer::Initialize() {
-  static_cast<CGameMode*>(g_modeMgr.GetGameMode())
+  g_modeMgr.GetGameMode()
     ->CellCenter(g_session.m_playerX, g_session.m_playerY, this->render.position.x, this->render.position.z);
-  this->render.position.y = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain
+  this->render.position.y = g_modeMgr.GetGameMode()->scene->terrain
                               ->Height(this->render.position.x, this->render.position.z);
-  static_cast<CGameMode*>(g_modeMgr.GetGameMode())
+  g_modeMgr.GetGameMode()
     ->WorldCell(this->render.position.x, this->render.position.z, this->destCellX, this->destCellZ);
 
   this->gSkillDx = 0;
@@ -4401,8 +4401,8 @@ void CPc::SetState(int state, int resetPosition) {
       case JT_STAR_EMPEROR:
       case JT_STAR_EMPEROR_B:
       case JT_SKY_EMPEROR:
-        if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.desiredDistance > g_serviceOptionJitterScale) {
-          static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.desiredDistance = g_serviceOptionJitterScale;
+        if (g_modeMgr.GetGameMode()->camera->camera.desiredDistance > g_serviceOptionJitterScale) {
+          g_modeMgr.GetGameMode()->camera->camera.desiredDistance = g_serviceOptionJitterScale;
         }
         break;
       }
@@ -4443,7 +4443,7 @@ void CPc::SetState(int state, int resetPosition) {
       }
       break;
     }
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->waitingUseItemAck = 0;
+    g_modeMgr.GetGameMode()->waitingUseItemAck = 0;
     break;
   case ST_SKILL:
     if (this->render.specialMotionLocked == 1 || this->render.state == ST_SIT) {
@@ -4528,14 +4528,14 @@ void CPc::SetState(int state, int resetPosition) {
       if (this->IsArrowEffectSuppressed() == true) {
         this->SetArrowEffectSuppressed(false);
       } else {
-        CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+        CGameMode* mode = g_modeMgr.GetGameMode();
         mode->SpawnArrowEffect(&this->render.position, this->hitTargetAid, this->render.speed * this->attackMotion, 0);
       }
       this->attackMotion = 8.0f / this->render.speed + this->attackMotion;
     }
 
     if (g_session.IsDoramJob(this->GetEffectiveJob(-1)) == true && this->alternateDoramAppearance[0] == 1) {
-      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      CGameMode* mode = g_modeMgr.GetGameMode();
       mode->SpawnArrowEffect(&this->render.position, this->hitTargetAid, this->attackMotion * this->render.speed, this->GetEffectiveJob(-1));
       this->attackMotion = 8.0f / this->render.speed + this->attackMotion;
     }
@@ -4552,7 +4552,7 @@ void CPc::SetState(int state, int resetPosition) {
     CGameActor::SetState(weaponAllowed ? 9 : 2, resetPosition);
     this->attackMotion = AttackMotionLength(this->GetEffectiveJob(-1), this->sex, this->weapon, weaponAllowed);
     if ((this->weapon == 14 && this->secondaryWeapon == 0) || (this->weapon == 13 && this->secondaryWeapon == 0)) {
-      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      CGameMode* mode = g_modeMgr.GetGameMode();
       mode->SpawnArrowEffect(&this->render.position, this->hitTargetAid, this->attackMotion * this->render.speed, 0);
       this->attackMotion = 8.0f / this->render.speed + this->attackMotion;
     }
@@ -4617,7 +4617,7 @@ void CGrannyPc::Render(int argument) {
 // OFFSET: 0x00DADA40
 // FUNCTION: fn_22600
 void CGrannyPc::RenderShadow(int argument, vector3d lightDirection, bool cached) {
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   const float sine = ClientSine(static_cast<int>(this->angle) + 90);
   const float cosine = ClientCosine(static_cast<int>(this->angle) + 90);
   lightDirection.x = -18.0f;
@@ -4756,7 +4756,7 @@ struct PcMoveEntry {
 void CPc::SendMsg(
   CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g
 ) {
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   switch (message) {
   case AM_SET_HEAD_DIR:
     if (this->render.state == ST_STAND || this->render.state == ST_SIT) {
@@ -4875,7 +4875,7 @@ void CPc::SendMsg(
   case AM_INITSTANDENTRY: {
     PcStandEntry* entry = reinterpret_cast<PcStandEntry*>(static_cast<std::intptr_t>(b));
     this->render.accountId = entry->aid;
-    CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* gameMode = g_modeMgr.GetGameMode();
     gameMode->CellCenter(entry->cellX, entry->cellY, this->render.position.x, this->render.position.z);
     this->render.position.y =
       gameMode->scene->terrain->Height(this->render.position.x, this->render.position.z);
@@ -4920,7 +4920,7 @@ void CPc::SendMsg(
     PcStandEntry* entry = reinterpret_cast<PcStandEntry*>(static_cast<std::intptr_t>(b));
     this->bodyStyle = entry->bodyStyle;
     this->render.accountId = entry->aid;
-    CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* gameMode = g_modeMgr.GetGameMode();
     gameMode->CellCenter(entry->cellX, entry->cellY, this->render.position.x, this->render.position.z);
     this->render.position.y =
       gameMode->scene->terrain->Height(this->render.position.x, this->render.position.z);
@@ -5178,7 +5178,7 @@ void CPc::SendMsg(
 void CGrannyPc::SendMsg(
   CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g
 ) {
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   switch (message) {
   case AM_SET_HEAD_DIR:
     if (this->render.state == ST_STAND || this->render.state == ST_SIT) {
@@ -5290,7 +5290,7 @@ void CGrannyPc::SendMsg(
   case AM_INITSTANDENTRY2: {
     PcStandEntry* entry = reinterpret_cast<PcStandEntry*>(static_cast<std::intptr_t>(b));
     this->render.accountId = entry->aid;
-    CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* gameMode = g_modeMgr.GetGameMode();
     gameMode->CellCenter(entry->cellX, entry->cellY, this->render.position.x, this->render.position.z);
     this->render.position.y =
       gameMode->scene->terrain->Height(this->render.position.x, this->render.position.z);
@@ -5451,7 +5451,7 @@ bool CGrannyPc::ProcessState() {
     this->ProcessMotion();
     const int frames = static_cast<int>(this->GetElapsedFrames());
     if (this->hitTargetAid != 0 && frames % 34 == 0) {
-      CRenderObject* target = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAID(this->hitTargetAid);
+      CRenderObject* target = g_modeMgr.GetGameMode()->scene->GetGameActorByAID(this->hitTargetAid);
       if (target) {
         this->Face(target->render.position.x, target->render.position.z);
       }
@@ -5502,7 +5502,7 @@ bool CPc::ProcessState() {
     this->ProcessMotion();
     const int frames = static_cast<int>(this->GetElapsedFrames());
     if (this->hitTargetAid != 0 && frames % 34 == 0) {
-      CRenderObject* target = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAID(this->hitTargetAid);
+      CRenderObject* target = g_modeMgr.GetGameMode()->scene->GetGameActorByAID(this->hitTargetAid);
       if (target) {
         this->Face(target->render.position.x, target->render.position.z);
       }
@@ -5586,7 +5586,7 @@ void CPlayer::SetState(int state, int resetPosition) {
   }
 
   if (state == ST_DEAD) {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     mode->SendMsg(MM_HIDEMOUSEPOINTER, 0, 0, 0, 0);
     mode->LaunchDummyEffect(&this->render.position, 0x174, 300, 0);
     g_screenShakeDuration = 0;

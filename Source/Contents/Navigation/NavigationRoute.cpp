@@ -56,7 +56,7 @@ void CNavigationManager::DrawRoute(const float* matrix) {
 
   int playerX = 0;
   int playerY = 0;
-  if (CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode())) {
+  if (CGameMode* mode = g_modeMgr.GetGameMode()) {
     mode->PlayerCell(&playerX, &playerY);
   }
 
@@ -86,7 +86,7 @@ void CNavigationManager::DrawRoute(const float* matrix) {
       }
     }
 
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     if (mode && mode->scene && mode->scene->ground) {
       GroundGeometry* ground = mode->scene->ground;
       ground->DrawTerrainOverlay(
@@ -1705,7 +1705,7 @@ __declspec(noinline) int CNavigationManager::Navigate(int cellX, int cellY) {
     }
 
     if (sameMap) {
-      if (CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode())) {
+      if (CGameMode* mode = g_modeMgr.GetGameMode()) {
         int playerX;
         int playerY;
         mode->PlayerCell(&playerX, &playerY);
@@ -1884,7 +1884,7 @@ int CNavigationManager::LoadReplayState(const std::vector<unsigned char>& data) 
           }
         }
 
-        CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+        CGameMode* mode = g_modeMgr.GetGameMode();
         if (mode) {
           CWorld* scene = mode->scene;
           if (scene) {

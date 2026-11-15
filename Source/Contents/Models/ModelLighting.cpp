@@ -225,7 +225,7 @@ void C3dNode::Prepare(const float* matrix, const float* direction, const float* 
     }
   }
 
-  this->SampleGroundColors(g_renderer, combined.values, *static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->ground);
+  this->SampleGroundColors(g_renderer, combined.values, *g_modeMgr.GetGameMode()->scene->ground);
 
   for (std::list<C3dNode*>::iterator it = this->children.begin(); it != this->children.end(); ++it) {
     (*it)->Prepare(combined.values, direction, diffuse, ambient, shade);

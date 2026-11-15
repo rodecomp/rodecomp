@@ -193,7 +193,7 @@ void UIRodexComposeWnd::OnLBtnDown(int x, int y) {
 
   ITEM_INFO item = this->GetItemAtPoint(x, y);
   if (item.identity[1] > 0) {
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->BeginDragItem(15, item, item.quantity, -1);
+    g_modeMgr.GetGameMode()->BeginDragItem(15, item, item.quantity, -1);
   }
 }
 
@@ -205,7 +205,7 @@ void UIRodexComposeWnd::OnMouseHover(int x, int y) {
     int tooltipX = this->m_itemIndex * 34 + 30;
     int tooltipY = 290;
     this->ToScreen(tooltipX, tooltipY);
-    CMode* tooltip = g_modeMgr.gameMode;
+    CMode* tooltip = g_modeMgr.currentMode;
     if (item.identified == 1 && item.optionCount != 0) {
       std::uint32_t color = g_session.GetItemNameColor(item);
       tooltip->ShowTooltip(
@@ -285,7 +285,7 @@ void UIRodexComposeWnd::DragAndDrop(int x, int y, std::intptr_t value) {
     return;
   }
 
-  CMode* mode = g_modeMgr.GetGameMode();
+  CGameMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   if (drag->source == 1) {
     if (drag->quantity == 1) {
@@ -422,7 +422,7 @@ int UIRodexComposeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
     this->Invalidate();
     return 0;
   case UM_DROP: {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     g_modeMgr.GetGameMode()->SendMsg(MM_ADD_MAIL_ITEM, mode->drag.id, mode->drag.quantity, 0, 0);
     g_modeMgr.GetGameMode()->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
     return 0;
@@ -436,7 +436,7 @@ int UIRodexComposeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
     }
     return 0;
   case UM_DECITEM: {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     g_modeMgr.GetGameMode()->SendMsg(MM_REMOVE_RODEX_ITEM, mode->drag.id, mode->drag.quantity, 0, 0);
     g_modeMgr.GetGameMode()->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
     return 0;

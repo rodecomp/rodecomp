@@ -193,7 +193,7 @@ void UIChangeMaterialWnd::OnMouseHover(int x, int y) {
   this->ToScreen(screenX, screenY);
   const int itemId = std::atoi(item->itemId.c_str());
   const std::string name = ItemDisplayName(itemId);
-  CMode* const mode = g_modeMgr.gameMode;
+  CMode* const mode = g_modeMgr.currentMode;
   mode->ShowTooltip(name.c_str(), screenX + 5, screenY - 5, -1, 0, 1);
 }
 
@@ -684,7 +684,7 @@ void UIChangeMaterialWnd_List::OnMouseHover(int x, int y) {
   this->ToScreen(screenX, screenY);
 
   const std::string text = FormatOwnedString(LookupMessage(MSI_EA2), ItemDisplayName(entry->results.front().id).c_str(), entry->results.front().quantity);
-  CMode* const mode = g_modeMgr.gameMode;
+  CMode* const mode = g_modeMgr.currentMode;
   mode->ShowTooltip(text.c_str(), screenX + 5, screenY - 5, -1, 0, 1);
 }
 

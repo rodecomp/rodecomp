@@ -347,7 +347,7 @@ void CThrowItemEffect::OnProcess() {
       if (target->alpha > 0) {
         matrix view;
         std::memcpy(view.values, g_identityMatrix, sizeof(view.values));
-        view.MakeXRotation(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch / 180.0f * 3.141592f);
+        view.MakeXRotation(g_modeMgr.GetGameMode()->camera->camera.pitch / 180.0f * 3.141592f);
         view.AppendYRotation(rotation / 180.0f * 3.141592f);
 
         matrix scale;

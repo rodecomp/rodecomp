@@ -332,7 +332,7 @@ void UIEquipRuneSetWnd::OnMouseHover(int x, int y) {
     int screenX = 6;
     int screenY = -15;
     this->ToScreen(screenX, screenY);
-    CMode* const mode = g_modeMgr.gameMode;
+    CMode* const mode = g_modeMgr.currentMode;
     if (!mode) {
       return;
     }
@@ -361,7 +361,7 @@ void UIEquipRuneSetWnd::OnMouseHover(int x, int y) {
   int screenX = column * 40 + 21;
   int screenY = 12;
   this->ToScreen(screenX, screenY);
-  CMode* const mode = g_modeMgr.gameMode;
+  CMode* const mode = g_modeMgr.currentMode;
   if (!mode) {
     return;
   }
@@ -407,7 +407,7 @@ void UIRuneSetList::OnMouseHover(int x, int y) {
   int screenX = column * 40 + 17;
   int screenY = row * this->m_itemHeight + 4;
   this->ToScreen(screenX, screenY);
-  CMode* const mode = g_modeMgr.gameMode;
+  CMode* const mode = g_modeMgr.currentMode;
   if (!mode) {
     return;
   }
@@ -435,7 +435,7 @@ void UIRuneSet_Info::OnMouseHover(int x, int y) {
       int screenX = g_runeSetSlotX[index] - 6;
       int screenY = g_runeSetSlotY[index] - 24;
       this->ToScreen(screenX, screenY);
-      CMode* mode = g_modeMgr.gameMode;
+      CMode* mode = g_modeMgr.currentMode;
       if (mode) {
         mode->ShowTooltip(this->m_runeSet->m_slots[index]->GetName(), screenX, screenY, 0xFFFFFF, 0, 1);
       }
@@ -457,8 +457,8 @@ void UIRuneSystem_tagListWnd::OnMouseHover(int x, int) {
       int screenX = index * 24 + 19;
       int screenY = -18;
       this->ToScreen(screenX, screenY);
-      if (g_modeMgr.gameMode) {
-        g_modeMgr.gameMode->ShowTooltip(name.c_str(), screenX, screenY, 0xFFFFFF, 0, 1);
+      if (g_modeMgr.currentMode) {
+        g_modeMgr.currentMode->ShowTooltip(name.c_str(), screenX, screenY, 0xFFFFFF, 0, 1);
       }
     }
   }
@@ -1227,7 +1227,7 @@ void UIRuneSetReWard::OnMouseHover(int, int) {
   int x = 0;
   int y = 0;
   this->ToScreen(x, y);
-  CMode* tooltip = g_modeMgr.gameMode;
+  CMode* tooltip = g_modeMgr.currentMode;
   if (tooltip) {
     tooltip->ShowTooltip(item.DisplayName(0).c_str(), x, y - 10, 0xFFFFFF, 0, 1);
   }
@@ -1256,7 +1256,7 @@ void UIRuneSystem_ActiveWnd::OnMouseHover(int x, int y) {
   int tipX = index % 4 * 54 + 14;
   int tipY = index > 3 ? 44 : -10;
   this->ToScreen(tipX, tipY);
-  CMode* tooltip = g_modeMgr.gameMode;
+  CMode* tooltip = g_modeMgr.currentMode;
   if (tooltip) {
     tooltip->ShowTooltip(item.DisplayName(0).c_str(), tipX, tipY, 0xFFFFFF, 0, 1);
   }
@@ -1280,7 +1280,7 @@ void UIRune_Decom::OnMouseHover(int x, int y) {
   int tipX = index % 4 * 54 + 211;
   int tipY = index > 3 ? 387 : 333;
   this->ToScreen(tipX, tipY);
-  CMode* tooltip = g_modeMgr.gameMode;
+  CMode* tooltip = g_modeMgr.currentMode;
   if (tooltip) {
     tooltip->ShowTooltip(item.DisplayName(0).c_str(), tipX, tipY, 0xFFFFFF, 0, 1);
   }

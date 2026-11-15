@@ -86,7 +86,7 @@ void CMultiTexParticle::AllocateVertices(int count) {
 // OFFSET: 0x007080F0
 // FUNCTION: fn_07069
 void CMultiTexParticle::Render(int column, int row) {
-  GroundGeometry* ground = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->ground;
+  GroundGeometry* ground = g_modeMgr.GetGameMode()->scene->ground;
   if (!ground) {
     return;
   }
@@ -100,7 +100,7 @@ void CMultiTexParticle::Render(int column, int row) {
   this->command.texture = this->texture1;
   this->command.lightmap = this->texture2;
 
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   const float* cameraMatrix = mode->camera->frame.view.values;
 
   for (int i = 0; i < 4; ++i) {

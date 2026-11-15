@@ -650,7 +650,7 @@ int CNavigationManager::RouteFromPlayer() {
   NaviCell player;
   player.x = 0;
   player.y = 0;
-  if (CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode())) {
+  if (CGameMode* mode = g_modeMgr.GetGameMode()) {
     mode->PlayerCell(&player.x, &player.y);
   }
 
@@ -703,7 +703,7 @@ int CNavigationManager::RouteFromPlayer() {
     return result;
   }
 
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (mode && mode->scene && mode->scene->terrain) {
     this->ground = mode->scene->ground;
     this->pathFinder.attr = mode->scene->terrain;

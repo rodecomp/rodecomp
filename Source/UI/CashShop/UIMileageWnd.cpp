@@ -80,7 +80,7 @@ void UIMileageWnd::OnMouseHover(int x, int y) {
   int tipX = 10;
   int tipY = -20;
   this->ToScreen(tipX, tipY);
-  g_modeMgr.gameMode->ShowTooltip(this->m_tooltip.c_str(), tipX, tipY, -1, false, true);
+  g_modeMgr.currentMode->ShowTooltip(this->m_tooltip.c_str(), tipX, tipY, -1, false, true);
 }
 
 // OFFSET: 0x0094F040

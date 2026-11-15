@@ -26,7 +26,7 @@ void CNyanggrassEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
     if (particle != nullptr) {
-      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      CGameMode* mode = g_modeMgr.GetGameMode();
       static_cast<CEZ2STRParticle*>(particle)->DrawScreen(mode->camera->frame.view);
     }
   }
@@ -55,7 +55,7 @@ void CCompetentia::Open() {
     const vector2d point = RandomDiscPoint(pos.x, pos.z, 50);
     pos.x = point.x;
     pos.z = point.y;
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     pos.y = mode->scene->terrain->Height(pos.x, pos.z);
 
     CParticle* particle = CreateEZ2STRParticle(&pos, 5);
@@ -98,7 +98,7 @@ void CCompetentia::Render() {
   for (auto current = this->particles.begin(); current != this->particles.end(); ++current) {
     CParticle* particle = *current;
     if (particle) {
-      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      CGameMode* mode = g_modeMgr.GetGameMode();
       static_cast<CEZ2STRParticle*>(particle)->DrawScreen(mode->camera->frame.view);
     }
   }

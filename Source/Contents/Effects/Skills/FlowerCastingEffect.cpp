@@ -102,7 +102,7 @@ void CFlowerCastingEffect::Close() {
 void CFlowerCastingEffect::Open() {
   this->effectLifetime = 400;
 
-  CWorld* world = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+  CWorld* world = g_modeMgr.GetGameMode()->scene;
   const vector3d& player = world->player->render.position;
   g_soundMgr->PlayWave("effect\\T_안락한마법.wav", this->position[0] - player.x, 0.0f, this->position[2] - player.z, 250, 40, 1.0f, 0);
 

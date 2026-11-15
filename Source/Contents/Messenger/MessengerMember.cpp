@@ -350,7 +350,7 @@ void UIDragMiniPartyWnd::Paint() {
     if (this->member.dead == 1) {
       dead = 1;
     } else if (g_session.m_aid == this->member.accountId) {
-      if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->isPlayerDead == 1) {
+      if (g_modeMgr.GetGameMode()->isPlayerDead == 1) {
         dead = 1;
       }
     }
@@ -1158,7 +1158,7 @@ void UIMessengerGroupWnd::OnLBtnDown(int x, int y) {
     return;
   }
 
-  CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* gameMode = g_modeMgr.GetGameMode();
   if (!gameMode) {
     return;
   }
@@ -1222,7 +1222,7 @@ void UIMessengerGroupWnd::OnMouseHover(int x, int y) {
     return;
   }
 
-  CMode* mode = g_modeMgr.GetGameMode();
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (!mode) {
     return;
   }
@@ -1370,7 +1370,7 @@ void UIMessengerGroupWnd::LayoutButtons() {
 // OFFSET: 0x0073D800
 // FUNCTION: fn_07717
 void UIMessengerGroupWnd::UpdateGauges() {
-  CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* gameMode = g_modeMgr.GetGameMode();
   if (!gameMode || !this->mode) {
     return;
   }
@@ -1454,7 +1454,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     }
     }
 
-    CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* gameMode = g_modeMgr.GetGameMode();
     if (gameMode && this->mode != 0) {
       int index = 0;
       for (auto it = this->members.begin(); it != this->members.end(); ++it, ++index) {
@@ -1617,7 +1617,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       if (this->selected != -1) {
         MessengerMember target = this->MemberAtIndex(this->selected);
         if (target.valid) {
-          g_modeMgr.gameMode->SendMsg(MM_REQ_JOIN_GROUP, reinterpret_cast<int>(target.name.c_str()), 0, 0, 0);
+          g_modeMgr.currentMode->SendMsg(MM_REQ_JOIN_GROUP, reinterpret_cast<int>(target.name.c_str()), 0, 0, 0);
         }
       }
       return 0;
@@ -1638,7 +1638,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
         MessengerMember target = this->MemberAtIndex(this->selected);
         if (target.valid && !target.offline) {
           if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_YIELD_PARTYMASTER), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
-            g_modeMgr.gameMode->SendMsg(MM_GROUP_CHANGE_MASTER, target.accountId, 0, 0, 0);
+            g_modeMgr.currentMode->SendMsg(MM_GROUP_CHANGE_MASTER, target.accountId, 0, 0, 0);
           }
         } else {
           g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
@@ -1649,7 +1649,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     case 0x3A: {
       MessengerMember target = this->MemberAtIndex(this->selected);
       if (target.valid) {
-        g_modeMgr.gameMode->SendMsg(MM_OPEN_WRITE_RODEX, reinterpret_cast<int>(target.name.c_str()), 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(MM_OPEN_WRITE_RODEX, reinterpret_cast<int>(target.name.c_str()), 0, 0, 0);
       }
       return 0;
     }
@@ -1737,11 +1737,11 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
         if (member.valid) {
           if (this->mode == 0) {
             if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_DELETE), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
-              g_modeMgr.gameMode->SendMsg(MM_DELETE_FRIEND, member.accountId, member.characterId, 0, 0);
+              g_modeMgr.currentMode->SendMsg(MM_DELETE_FRIEND, member.accountId, member.characterId, 0, 0);
             }
           } else if (!(member.name == g_session.DecodePlayerName())) {
             if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_EXPEL), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
-              g_modeMgr.gameMode->SendMsg(MM_REQ_EXPEL_GROUP_MEMBER, reinterpret_cast<int>(member.name.c_str()), 0, 0, 0);
+              g_modeMgr.currentMode->SendMsg(MM_REQ_EXPEL_GROUP_MEMBER, reinterpret_cast<int>(member.name.c_str()), 0, 0, 0);
             }
           }
         }
@@ -1755,7 +1755,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
         MessengerMember member = this->MemberAtIndex(this->selected);
         if (member.valid && member.name == g_session.DecodePlayerName()) {
           if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_LEAVE), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
-            g_modeMgr.gameMode->SendMsg(MM_REQ_LEAVE_GROUP, 0, 0, 0, 0);
+            g_modeMgr.currentMode->SendMsg(MM_REQ_LEAVE_GROUP, 0, 0, 0, 0);
           }
         }
       }
@@ -1793,7 +1793,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       return 0;
     }
     case 0x22: {
-      CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      CGameMode* gameMode = g_modeMgr.GetGameMode();
       if (!gameMode || this->mode == 0) {
         return 0;
       }
@@ -1870,7 +1870,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     case ID_LEAVE_PARTY:
       if (!g_session.m_lockMouse) {
         if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_LEAVE), 2, false, false, 0, "Message", 0x118, 0x78, 0) == 0xBB) {
-          g_modeMgr.gameMode->SendMsg(MM_REQ_LEAVE_GROUP, 0, 0, 0, 0);
+          g_modeMgr.currentMode->SendMsg(MM_REQ_LEAVE_GROUP, 0, 0, 0, 0);
           if (g_windowMgr.partyInvitationToWnd) {
             g_windowMgr.CloseWindow(WID_PARTYINVITATIONTOWND);
           }

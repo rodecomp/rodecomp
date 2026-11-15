@@ -106,7 +106,7 @@ __declspec(noinline) void CSphereWindEffect::UpdateParticle(CParticle* particle)
 
   matrix transform;
   std::memcpy(transform.values, g_identityMatrix, sizeof(transform.values));
-  transform.MakeYRotation(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw / -180.0f * 3.141592f);
+  transform.MakeYRotation(g_modeMgr.GetGameMode()->camera->camera.yaw / -180.0f * 3.141592f);
   particle->transform = transform;
 
   const int segment = particle->columnIndex;

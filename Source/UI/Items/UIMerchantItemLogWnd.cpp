@@ -172,7 +172,7 @@ void UIMerchantItemLogWnd::OnMouseHover(int x, int y) {
     int tooltipY = (y - 17) / 32 * 32 + 1;
     this->ToScreen(tooltipX, tooltipY);
 
-    CMode* gameMode = g_modeMgr.gameMode;
+    CMode* gameMode = g_modeMgr.currentMode;
     if (item.identified == 1 && item.optionCount != 0) {
       std::uint32_t color = g_session.GetItemNameColor(item);
       int screenX = tooltipX;

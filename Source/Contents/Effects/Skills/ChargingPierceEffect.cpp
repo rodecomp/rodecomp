@@ -159,8 +159,8 @@ void CChargingPierceEffect::OnProcess() {
       }
 
       matrix rotation;
-      rotation.MakeXRotation(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch / 180.0f * 3.141592f);
-      rotation.AppendYRotation(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw / 180.0f * 3.141592f);
+      rotation.MakeXRotation(g_modeMgr.GetGameMode()->camera->camera.pitch / 180.0f * 3.141592f);
+      rotation.AppendYRotation(g_modeMgr.GetGameMode()->camera->camera.yaw / 180.0f * 3.141592f);
 
       const float x = offset.x + 0.0f;
       const float y = height + offset.y;
@@ -172,8 +172,8 @@ void CChargingPierceEffect::OnProcess() {
       matrix scaling;
       scaling.SetScale(spark->scale, spark->scale, 1.0f);
       matrix billboard;
-      billboard.MakeXRotation(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch / 180.0f * 3.141592f);
-      billboard.AppendYRotation(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw / 180.0f * 3.141592f);
+      billboard.MakeXRotation(g_modeMgr.GetGameMode()->camera->camera.pitch / 180.0f * 3.141592f);
+      billboard.AppendYRotation(g_modeMgr.GetGameMode()->camera->camera.yaw / 180.0f * 3.141592f);
       matrix translation;
       translation.MakeTranslate(rotatedX + this->position[0], rotatedY + this->position[1], rotatedZ + this->position[2]);
       matrix first;
@@ -195,8 +195,8 @@ void CChargingPierceEffect::OnProcess() {
           const float x = origin.x;
           const float y = origin.y;
           const float z = origin.z;
-          const float* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values;
-          const float* inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse.values;
+          const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
+          const float* inverse = g_modeMgr.GetGameMode()->camera->frame.inverse.values;
           const float viewZ = y * view[5] + x * view[2] + z * view[8] + view[11];
           const float viewX = y * view[3] + x * view[0] + z * view[6] + view[9] + offset.x;
           const float viewY = y * view[4] + x * view[1] + z * view[7] + view[10] + (height + offset.y);
@@ -235,13 +235,13 @@ void CChargingPierceNewEffect::OnProcess() {
   for (CEZ2STRParticle* particle : this->emitters) {
     const vector3d origin = this->positionVector;
 
-    const matrix& view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
+    const matrix& view = g_modeMgr.GetGameMode()->camera->frame.view;
     vector3d viewPos;
     viewPos.x = origin.y * view.values[3] + origin.x * view.values[0] + origin.z * view.values[6] + view.values[9];
     viewPos.y = origin.x * view.values[1] + origin.y * view.values[4] + origin.z * view.values[7] + view.values[10];
     viewPos.z = origin.x * view.values[2] + origin.y * view.values[5] + origin.z * view.values[8] + view.values[11];
 
-    const matrix& inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse;
+    const matrix& inverse = g_modeMgr.GetGameMode()->camera->frame.inverse;
     viewPos.x += particle->offsetX;
     viewPos.y += particle->offsetY;
     viewPos.z += particle->offsetZ;
@@ -271,7 +271,7 @@ void CChargingPierceEffect::Render() {
     }
 
     if (this->emitters[index]) {
-      this->emitters[index]->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+      this->emitters[index]->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
     }
   }
 }
@@ -280,6 +280,6 @@ void CChargingPierceEffect::Render() {
 // FUNCTION: fn_07033
 void CChargingPierceNewEffect::Render() {
   for (CEZ2STRParticle* particle : this->emitters) {
-    particle->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+    particle->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
   }
 }

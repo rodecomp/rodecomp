@@ -760,7 +760,7 @@ void NotifyServiceOption(unsigned char enabled, int enabledMessage, int disabled
 // OFFSET: 0x006C6050
 // FUNCTION: fn_06372
 void NotifyGameModeOption() {
-  if (CMode* mode = g_modeMgr.GetGameMode()) {
+  if (CGameMode* mode = g_modeMgr.GetGameMode()) {
     mode->SendMsg(MM_REQ_RANKING, 0, 0, 0, 0);
   }
 }
@@ -768,7 +768,7 @@ void NotifyGameModeOption() {
 // OFFSET: 0x006C6080
 // FUNCTION: fn_06373
 void NotifyGameModeOptionAlt() {
-  if (CMode* mode = g_modeMgr.GetGameMode()) {
+  if (CGameMode* mode = g_modeMgr.GetGameMode()) {
     mode->SendMsg(MM_REQ_RANKING, 2, 0, 0, 0);
   }
 }
@@ -776,7 +776,7 @@ void NotifyGameModeOptionAlt() {
 // OFFSET: 0x006C60B0
 // FUNCTION: fn_06374
 void NotifyGameModeMenu() {
-  if (CMode* mode = g_modeMgr.GetGameMode()) {
+  if (CGameMode* mode = g_modeMgr.GetGameMode()) {
     mode->SendMsg(MM_REMEMBER_WARPPOINT, 0, 0, 0, 0);
   }
 }
@@ -784,7 +784,7 @@ void NotifyGameModeMenu() {
 // OFFSET: 0x006C40C0
 // FUNCTION: fn_06350
 void RotatePlayerDirection(bool clockwise) {
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (!mode) {
     return;
   }
@@ -857,7 +857,7 @@ void ToggleSitStand() {
     return;
   }
 
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (!mode) {
     return;
   }
@@ -896,7 +896,7 @@ void ApplyServiceOptionXmasWeather(int id, unsigned char value, bool notify, int
     }
   }
 
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (!mode) {
     return;
   }
@@ -921,7 +921,7 @@ void ApplyServiceOptionMapFog(int id, unsigned char value, bool notify, int enab
     }
   }
 
-  static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ApplyMapFog(value);
+  g_modeMgr.GetGameMode()->ApplyMapFog(value);
 }
 
 // OFFSET: 0x006C46C0
@@ -934,7 +934,7 @@ void ApplyServiceOptionWithNotice(int id, unsigned char value, bool notify, int 
       return;
     }
 
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->RefreshActorJobEffects(false);
+    g_modeMgr.GetGameMode()->RefreshActorJobEffects(false);
     if (notify) {
       NotifyServiceOption(value, enabledMessage, disabledMessage, 0x64FFFF);
     }
@@ -951,7 +951,7 @@ void ApplyServiceOptionActorRefresh(int id, unsigned char value, bool notify, in
     }
   }
 
-  static_cast<CGameMode*>(g_modeMgr.GetGameMode())->RefreshActorJobEffects(false);
+  g_modeMgr.GetGameMode()->RefreshActorJobEffects(false);
 }
 
 // OFFSET: 0x006C4750
@@ -1113,7 +1113,7 @@ void ApplyServiceOptionHideWindow(int id, unsigned char value, bool notify, int 
     }
   }
 
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (mode && mode->statusIconTooltip && !g_serviceOptions.Get(id)) {
     mode->statusIconTooltip->Show(0);
   }
@@ -1181,7 +1181,7 @@ void ApplyServiceOptionWindow27() {
   }
 
   if (g_windowMgr.merchantShopMakeWnd != 0) {
-    CMode* mode = g_modeMgr.GetGameMode();
+    CGameMode* mode = g_modeMgr.GetGameMode();
     if (mode) {
       mode->SendMsg(MM_REQ_OPENSTORE, 0, 0, 0, 0);
     }
@@ -1226,7 +1226,7 @@ void ApplyServiceOptionJitterScale(int id, unsigned char value, bool notify, int
 // OFFSET: 0x006C45D0
 // FUNCTION: fn_45463
 void RequestModeAction48() {
-  if (CMode* mode = g_modeMgr.GetGameMode()) {
+  if (CGameMode* mode = g_modeMgr.GetGameMode()) {
     mode->SendMsg(MM_REQ_EXIT_ROOM, 0, 0, 0, 0);
   }
 }
@@ -1249,7 +1249,7 @@ void ApplyItemWndServiceOption(int id, unsigned char value, bool notify, int ena
 // OFFSET: 0x006C5A60
 // FUNCTION: fn_45464
 void RequestModeAction61() {
-  if (CMode* mode = g_modeMgr.GetGameMode()) {
+  if (CGameMode* mode = g_modeMgr.GetGameMode()) {
     mode->SendMsg(MM_REQ_LEAVE_GROUP, 0, 0, 0, 0);
   }
 }
@@ -1257,7 +1257,7 @@ void RequestModeAction61() {
 // OFFSET: 0x006C6020
 // FUNCTION: fn_45465
 void NotifyGameModeOptionFirst() {
-  if (CMode* mode = g_modeMgr.GetGameMode()) {
+  if (CGameMode* mode = g_modeMgr.GetGameMode()) {
     mode->SendMsg(MM_REQ_RANKING, 1, 0, 0, 0);
   }
 }
@@ -1265,7 +1265,7 @@ void NotifyGameModeOptionFirst() {
 // OFFSET: 0x006C62C0
 // FUNCTION: fn_45462
 void RequestPlayerAction31() {
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (CPlayer* player = mode->scene->player) {
     player->SendMsg(nullptr, AM_REQ_SIT, 0, 0, 0, 0, 0, 0);
   }
@@ -1274,7 +1274,7 @@ void RequestPlayerAction31() {
 // OFFSET: 0x006C5B40
 // FUNCTION: fn_06365
 void ShowPlayerLocation() {
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (!mode) {
     return;
   }

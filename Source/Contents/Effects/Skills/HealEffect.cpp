@@ -260,7 +260,7 @@ void CHealEffect::UpdateParticleVertices(CParticle* particle) {
     return;
   }
 
-  CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* gameMode = g_modeMgr.GetGameMode();
   if (std::string(gameMode->mapName) == "ecl_fild01.rsw" && particle->alpha > 100) {
     particle->alpha = 100;
   }
@@ -638,8 +638,8 @@ void CHealEffect::Render() {
 // OFFSET: 0x00B69E30
 // FUNCTION: fn_19078
 void CHealEffect::RotateToCamera(EffectPoint* points) {
-  const int yaw = 360 - static_cast<int>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw);
-  const int pitch = (450 - static_cast<int>(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.pitch)) % 360;
+  const int yaw = 360 - static_cast<int>(g_modeMgr.GetGameMode()->camera->camera.yaw);
+  const int pitch = (450 - static_cast<int>(g_modeMgr.GetGameMode()->camera->camera.pitch)) % 360;
 
   for (int i = 0; i < 4; ++i) {
     const float z = points[i].z;

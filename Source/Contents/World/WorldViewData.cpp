@@ -2,6 +2,7 @@
 #include "Contents/World/WorldViewData.h"
 #include "Client/Application/ApplicationWindow.h"
 #include "Client/Mode/CMode.h"
+#include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session/Session.h"
 #include "Contents/Tables/MessageTable.h"
@@ -351,7 +352,7 @@ void CWorldViewMgr::LoadTextures() {
 unsigned int CWorldViewMgr::FindWorld(int mapId) {
   std::string name;
   if (mapId == -1) {
-    CMode* mode = g_modeMgr.GetGameMode();
+    CGameMode* mode = g_modeMgr.GetGameMode();
     if (!mode) {
       return 0;
     }

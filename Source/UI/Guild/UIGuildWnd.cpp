@@ -603,7 +603,7 @@ __declspec(noinline) void UIGuildWnd::CreateTabs() {
   }
 
   if (g_guildInfo.guildTabBitmask == -1) {
-    g_modeMgr.gameMode->SendMsg(MM_REQ_GUILD_MENUINTERFACE, 0, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_REQ_GUILD_MENUINTERFACE, 0, 0, 0, 0);
   }
 
   const char* names[6];
@@ -883,11 +883,11 @@ int UIGuildTotalInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1
 void UIGuildTotalInfoWnd::OnCreate(int, int) {
   this->CreateTabs();
   if (std::strcmp(g_guildInfo.masterName.c_str(), "") == 0) {
-    g_modeMgr.gameMode->SendMsg(MM_REQ_GUILD_MENU, 0, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_REQ_GUILD_MENU, 0, 0, 0, 0);
   }
 
   g_guildInfo.masterCharacterId = 1;
-  g_modeMgr.gameMode->SendMsg(MM_REQ_GUILD_MENU, 5, 0, 0, 0);
+  g_modeMgr.currentMode->SendMsg(MM_REQ_GUILD_MENU, 5, 0, 0, 0);
   this->m_scrollTop = 0;
   this->m_hoverRow = 0;
   this->m_columns = 1;
@@ -913,11 +913,11 @@ void UIGuildTotalInfoWnd::OnCreate(int, int) {
 void UIGuildBanishedMemberWnd::OnCreate(int, int) {
   this->CreateTabs();
   if (std::strcmp(g_guildInfo.masterName.c_str(), "") == 0) {
-    g_modeMgr.gameMode->SendMsg(MM_REQ_GUILD_MENU, 0, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_REQ_GUILD_MENU, 0, 0, 0, 0);
   }
 
   g_guildInfo.bansRequested = 1;
-  g_modeMgr.gameMode->SendMsg(MM_REQ_GUILD_MENU, 4, 0, 0, 0);
+  g_modeMgr.currentMode->SendMsg(MM_REQ_GUILD_MENU, 4, 0, 0, 0);
   this->m_scrollTop = 0;
   this->m_hoverRow = 0;
   this->m_columns = 1;
@@ -951,15 +951,15 @@ void UIGuildInfoManageWnd::OnCreate(int, int) {
   this->m_allyRow = -1;
   this->m_hostileRow = -1;
   if (std::strcmp(g_guildInfo.masterName.c_str(), "") == 0) {
-    g_modeMgr.gameMode->SendMsg(MM_REQ_GUILD_MENU, 0, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_REQ_GUILD_MENU, 0, 0, 0, 0);
   }
 
   g_guildInfo.bansRequested = 1;
-  g_modeMgr.gameMode->SendMsg(MM_REQ_GUILD_MENU, 4, 0, 0, 0);
+  g_modeMgr.currentMode->SendMsg(MM_REQ_GUILD_MENU, 4, 0, 0, 0);
   g_guildInfo.infoRequested = 1;
-  g_modeMgr.gameMode->SendMsg(MM_REQ_GUILD_MENU, 0, 0, 0, 0);
+  g_modeMgr.currentMode->SendMsg(MM_REQ_GUILD_MENU, 0, 0, 0, 0);
   g_guildInfo.membersRequested = 1;
-  g_modeMgr.gameMode->SendMsg(MM_REQ_GUILD_MENU, 1, 0, 0, 0);
+  g_modeMgr.currentMode->SendMsg(MM_REQ_GUILD_MENU, 1, 0, 0, 0);
 
   {
     const std::string prefix("유저인터페이스\\");
@@ -1090,7 +1090,7 @@ int UIGuildLeaveReasonDescWnd::SendMsg(UIWindow* sender, int message, std::intpt
 
   switch (a1) {
   case ID_OK: {
-    CMode* gameMode = g_modeMgr.gameMode;
+    CMode* gameMode = g_modeMgr.currentMode;
     gameMode->SendMsg(MM_REQ_LEAVE_GUILD, reinterpret_cast<int>(this->m_reasonEdit->Text()), 0, 0, 0);
     g_windowMgr.CloseWindow(WID_GUILDLEAVEREASONDESCWND);
     break;
@@ -1586,7 +1586,7 @@ void UIGuildSkillWnd::OnLBtnDown(int x, int y) {
   if (g_replayAnimationScaling == 0) {
     CSkillInfo skill = this->SkillAt(this->m_hoverIndex);
     if (skill.available != 0 && skill.level != 0 && skill.type != 0) {
-      CGameMode* gameMode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      CGameMode* gameMode = g_modeMgr.GetGameMode();
       if (gameMode) {
         int level = g_session.UseLevel(skill.id);
         if (level == 0) {
@@ -1676,11 +1676,11 @@ void UIGuildTotalInfoWnd::Paint() {
 void UIGuildMemberManageWnd::OnCreate(int, int) {
   this->CreateTabs();
   if (std::strcmp(g_guildInfo.masterName.c_str(), "") == 0) {
-    g_modeMgr.gameMode->SendMsg(MM_REQ_GUILD_MENU, 0, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_REQ_GUILD_MENU, 0, 0, 0, 0);
   }
 
   g_guildInfo.membersRequested = 1;
-  g_modeMgr.gameMode->SendMsg(MM_REQ_GUILD_MENU, 1, 0, 0, 0);
+  g_modeMgr.currentMode->SendMsg(MM_REQ_GUILD_MENU, 1, 0, 0, 0);
   this->m_members = g_guildInfo.m_members;
   this->m_rowSpacing += 8;
 
@@ -1971,7 +1971,7 @@ void UIGuildNoticeWnd::OnCreate(int, int) {
   this->CreateTabs();
 
   if (std::strcmp(g_guildInfo.masterName.c_str(), "") == 0) {
-    g_modeMgr.gameMode->SendMsg(MM_REQ_GUILD_MENU, 0, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_REQ_GUILD_MENU, 0, 0, 0, 0);
   }
 
   this->m_titleEdit = new UIEditCtrlVarId();
@@ -2025,7 +2025,7 @@ int UIGuildNoticeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, s
         return 0;
       }
       if (g_guildInfo.isMaster) {
-        CMode* gameMode = g_modeMgr.gameMode;
+        CMode* gameMode = g_modeMgr.currentMode;
         gameMode->SendMsg(MM_GUILD_NOTICE, g_guildInfo.m_guildId, reinterpret_cast<int>(this->m_titleEdit->Text()), reinterpret_cast<int>(body.c_str()), 0);
       }
       this->InvalidateChildren();
@@ -2071,7 +2071,7 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
       if (g_session.m_guildSkillPoint != 0) {
         CSkillInfo skill = this->SkillAt(this->m_scrollTop + a1 - 239);
         if (skill.available != 0) {
-          g_modeMgr.gameMode->SendMsg(MM_UPGRADE_SKILLLEVEL, skill.id, 0, 0, 0);
+          g_modeMgr.currentMode->SendMsg(MM_UPGRADE_SKILLLEVEL, skill.id, 0, 0, 0);
         }
         return 0;
       }
@@ -2212,7 +2212,7 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
   case UM_USESKILL: {
     const CSkillInfo* skill = reinterpret_cast<const CSkillInfo*>(a1);
     if (skill->level != 0) {
-      g_modeMgr.gameMode->SendMsg(MM_USING_SKILL, a1, g_session.UseLevel(skill->id), 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_USING_SKILL, a1, g_session.UseLevel(skill->id), 0, 0);
     }
     break;
   }
@@ -2246,11 +2246,11 @@ UIListBoxAgitMenu::UIListBoxAgitMenu() : UIListBox() {
 void UIGuildSkillWnd::OnCreate(int, int height) {
   this->CreateTabs();
   if (std::strcmp(g_guildInfo.masterName.c_str(), "") == 0) {
-    g_modeMgr.gameMode->SendMsg(MM_REQ_GUILD_MENU, 0, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_REQ_GUILD_MENU, 0, 0, 0, 0);
   }
 
   g_guildInfo.skillsRequested = 1;
-  g_modeMgr.gameMode->SendMsg(MM_REQ_GUILD_MENU, 3, 0, 0, 0);
+  g_modeMgr.currentMode->SendMsg(MM_REQ_GUILD_MENU, 3, 0, 0, 0);
   this->m_scrollBar = new UIScrollBar();
   this->m_scrollBar->Configure(this->geometry.width - 15, 41, 1, this->geometry.height - 70);
   this->AddChild(this->m_scrollBar);
@@ -2359,7 +2359,7 @@ int UIGuildPositionManageWnd::SendMsg(UIWindow* sender, int message, std::intptr
     case ID_OK:
       if (this->m_positionMap.size() != 0) {
         g_guildInfo.pendingPositionChanges = this->m_positionMap;
-        g_modeMgr.gameMode->SendMsg(MM_REQ_CHANGE_GUILD_POSITIONINFO, 0, 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(MM_REQ_CHANGE_GUILD_POSITIONINFO, 0, 0, 0, 0);
         this->m_positionMap.clear();
         this->m_button->Move(-200, -200);
         this->m_button->SetDisabled(1);
@@ -2587,7 +2587,7 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     case ID_OK:
       if (!this->membersByCharacterId.empty()) {
         g_guildInfo.pendingMemberPositions = this->membersByCharacterId;
-        g_modeMgr.gameMode->SendMsg(MM_REQ_CHANGE_MEMBERPOS, 0, 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(MM_REQ_CHANGE_MEMBERPOS, 0, 0, 0, 0);
         this->membersByCharacterId.clear();
         UIButton* button = this->m_button;
         button->SetDisabled(1);
@@ -2751,14 +2751,14 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     case MENUID_VIEW_GUILD_MEMBER_INFO: {
       GuildInfo::Member target;
       if (this->GetMember(this->m_hoverRow, target)) {
-        g_modeMgr.gameMode->SendMsg(MM_REQ_OPEN_MEMBER_INFO, target.accountId, 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(MM_REQ_OPEN_MEMBER_INFO, target.accountId, 0, 0, 0);
       }
       break;
     }
     case MENUID_INVITE_IN_PARTY: {
       GuildInfo::Member target;
       if (this->GetMember(this->m_hoverRow, target)) {
-        g_modeMgr.gameMode->SendMsg(MM_REQ_JOIN_GROUP, reinterpret_cast<int>(target.name.c_str()), 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(MM_REQ_JOIN_GROUP, reinterpret_cast<int>(target.name.c_str()), 0, 0, 0);
       }
       break;
     }
@@ -2861,11 +2861,11 @@ void UIGuildPositionManageWnd::OnCreate(int, int) {
   this->CreateTabs();
   this->m_positions = g_guildInfo.positions;
   if (std::strcmp(g_guildInfo.masterName.c_str(), "") == 0) {
-    g_modeMgr.gameMode->SendMsg(MM_REQ_GUILD_MENU, 0, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_REQ_GUILD_MENU, 0, 0, 0, 0);
   }
 
   g_guildInfo.positionsRequested = 1;
-  g_modeMgr.gameMode->SendMsg(MM_REQ_GUILD_MENU, 2, 0, 0, 0);
+  g_modeMgr.currentMode->SendMsg(MM_REQ_GUILD_MENU, 2, 0, 0, 0);
   this->m_scrollTop = 0;
   this->m_hoverIndex = 0;
   this->m_columns = 1;
@@ -2979,7 +2979,7 @@ void UIGuildPositionManageWnd::OnCreate(int, int) {
 int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, std::intptr_t a2, std::intptr_t a3, std::intptr_t a4) {
   switch (message) {
   case UM_MENU_SELECTED: {
-    CMode* gameMode = g_modeMgr.GetGameMode();
+    CGameMode* gameMode = g_modeMgr.GetGameMode();
     if (this->emblemMenuEntries[a1].value != 27) {
       break;
     }

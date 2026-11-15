@@ -273,7 +273,7 @@ void CLevel150Effect::OnProcess() {
       const float size = particle->animationParameters[0];
       const float scale = size * 0.1f * g_sinTable[tilt] + 1.0f + size * 0.8f;
       const int segment = particle->columnIndex;
-      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      CGameMode* mode = g_modeMgr.GetGameMode();
       const int yaw = static_cast<int>(mode->camera->camera.yaw);
 
       matrix rotation;
@@ -420,7 +420,7 @@ void CLevel150SubEffect::OnProcess() {
       particle->animationParameter = size;
 
       const int angle = static_cast<int>(particle->angle);
-      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      CGameMode* mode = g_modeMgr.GetGameMode();
       const int yaw = static_cast<int>(mode->camera->camera.yaw);
       const float scale = particle->animationParameter;
       const float height = particle->animationParameters[0];

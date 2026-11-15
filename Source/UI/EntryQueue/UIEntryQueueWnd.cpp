@@ -471,7 +471,7 @@ int UIEntryQueueWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
     case 0:
       if (g_session.GetMapProperty13() == 1) {
         error = 0x86B;
-      } else if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->IsActiveSkillEffectId(0x29C)) {
+      } else if (g_modeMgr.GetGameMode()->IsActiveSkillEffectId(0x29C)) {
         error = 0x86C;
       } else {
         if (this->ConfirmApply(LookupMessage(MSI_BATTLEFIELD_LIST2))) {
@@ -483,7 +483,7 @@ int UIEntryQueueWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
     case 1:
       if (g_session.GetMapProperty13() == 1) {
         error = 0x86B;
-      } else if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->IsActiveSkillEffectId(0x29C)) {
+      } else if (g_modeMgr.GetGameMode()->IsActiveSkillEffectId(0x29C)) {
         error = 0x86C;
       } else if (g_session.PartyCount() == 0) {
         error = 0x86D;
@@ -503,7 +503,7 @@ int UIEntryQueueWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
       GuildInfo* guild = &g_guildInfo;
       if (g_session.GetMapProperty13() == 1) {
         error = 0x86B;
-      } else if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->IsActiveSkillEffectId(0x29C)) {
+      } else if (g_modeMgr.GetGameMode()->IsActiveSkillEffectId(0x29C)) {
         error = 0x86C;
       } else if (guild->m_guildId < 1) {
         error = 0x870;

@@ -174,7 +174,7 @@ void CSkillAction_MT_ENERGY_CANNONADE::OnSkillEffect(int level, CGameActor* sour
     return;
   }
 
-  const float angle = ScreenAngle(&source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values);
+  const float angle = ScreenAngle(&source->render.position.x, &target->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values);
   EffectLists* effects = g_effectMgr;
   CEffect* effect = effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("energy_cannonade"), source->render.position, 0, -1, 0, 0);
   if (effect) {
@@ -251,7 +251,7 @@ void CSkillAction_MT_POWERFUL_SWING::OnSkillEffect(int level, CGameActor* source
     EffectLists* effects = g_effectMgr;
     CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("powerful_swing_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
-      effect->SetAngle(ScreenAngle(&source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values) + 180.0f);
+      effect->SetAngle(ScreenAngle(&source->render.position.x, &target->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values) + 180.0f);
     }
   }
   EffectLists* effects = g_effectMgr;

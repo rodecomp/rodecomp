@@ -908,7 +908,7 @@ void CSkillAction_KR_NASTY_SLASH::OnSkillEffect(int level, CGameActor* source, C
     return;
   }
 
-  const float angle = ScreenAngle(&source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values);
+  const float angle = ScreenAngle(&source->render.position.x, &target->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values);
   constexpr std::array<std::uint8_t, 12> effectSourceArray = OBFUSCATE_SOURCE("nasty_slash", 0x2FF3C5036D070127ULL);
   const std::uint8_t (&effectSource)[12] = effectSourceArray._Elems;
   thread_local EncryptedName<sizeof(effectSource), 0x2FF3C5036D070127ULL> effectName(effectSource);
@@ -939,7 +939,7 @@ void CSkillAction_KR_SHARPEN_GUST::OnSkillEffect(int level, CGameActor* source, 
     return;
   }
 
-  const float angle = ScreenAngle(&source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values);
+  const float angle = ScreenAngle(&source->render.position.x, &target->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values);
   EffectLists* effects = g_effectMgr;
   if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("sharpen_gust", 0x3F557BE333F95F6DULL)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
     effect->SetAngle(angle);

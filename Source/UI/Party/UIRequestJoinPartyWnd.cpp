@@ -111,7 +111,7 @@ int UIRequestJoinPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       this->SendMsg(nullptr, UM_COMMAND, REQUESTJOIN_BUTTON_REJECT, 0, 0, 0);
       break;
     case REQUESTJOIN_BUTTON_ACCEPT:
-      g_modeMgr.gameMode->SendMsg(MM_PARTY_REQ_ACK_MASTER_TO_JOIN, this->characterId, 1, reinterpret_cast<std::intptr_t>(&this->accountId), 0);
+      g_modeMgr.currentMode->SendMsg(MM_PARTY_REQ_ACK_MASTER_TO_JOIN, this->characterId, 1, reinterpret_cast<std::intptr_t>(&this->accountId), 0);
       g_requestJoinPartyMgr->Advance();
       this->block->SetChecked(0);
       break;
@@ -120,7 +120,7 @@ int UIRequestJoinPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         g_requestJoinPartyMgr->Block(this->accountId);
       }
 
-      g_modeMgr.gameMode->SendMsg(MM_PARTY_REQ_ACK_MASTER_TO_JOIN, this->characterId, 0, reinterpret_cast<std::intptr_t>(&this->accountId), 0);
+      g_modeMgr.currentMode->SendMsg(MM_PARTY_REQ_ACK_MASTER_TO_JOIN, this->characterId, 0, reinterpret_cast<std::intptr_t>(&this->accountId), 0);
       g_requestJoinPartyMgr->Advance();
       this->block->SetChecked(0);
       break;

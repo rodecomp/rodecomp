@@ -17,7 +17,7 @@ bool CRagEffect::PartyEffectVisible() {
   }
 
   if (this->state.type == 232) {
-    CWorld* scene = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+    CWorld* scene = g_modeMgr.GetGameMode()->scene;
     const EffectActor* target = static_cast<const EffectActor*>(scene->GetGameActorByAidIncludeMe(static_cast<std::uint32_t>(this->state.deltaPos[1])));
 
     if (!target) {

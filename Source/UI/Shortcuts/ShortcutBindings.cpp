@@ -1,5 +1,6 @@
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/ModeMessage.h"
+#include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session/Session.h"
 #include "Contents/Skills/SkillInfo.h"
@@ -33,7 +34,7 @@ int CSession::RotateShortcut(int index, int bank) const {
 void CSession::AssignShortcut(unsigned char type, std::uint32_t id, int level, int slot, int bank) {
   const int rowStart = this->RotateShortcut(9 * this->m_hotkeyPage, bank);
   const int destination = this->RotateShortcut(slot, bank);
-  CMode* modeEvents = g_modeMgr.GetGameMode();
+  CGameMode* modeEvents = g_modeMgr.GetGameMode();
   std::list<ShortcutCooldownRecord>& cooldowns = g_session.m_requestTimers;
   if (id == 0) {
     if (type != 0) {

@@ -9,6 +9,7 @@
 #include "Client/Mode/ModeDragState.h"
 #include "Client/Mode/ModeEvents.h"
 #include "Client/Mode/CMode.h"
+#include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "UI/Shortcuts/ShortcutActivation.h"
 #include "Contents/Skills/ClientSkills.h"
@@ -338,7 +339,7 @@ __forceinline void UseShortcutSlot(const NormalItemSlot& slot) {
   if (slot.enabled != 0) {
     CSkillInfo skill = g_session.LookupSkill(slot.itemId);
     if (skill.MatchesShortcut(&slot)) {
-      CMode* mode = g_modeMgr.gameMode;
+      CMode* mode = g_modeMgr.currentMode;
       int level = slot.value;
       if (IsIndexedSkill(static_cast<int>(skill.id))) {
         level = (std::min)(static_cast<int>(slot.value), skill.level);
@@ -355,7 +356,7 @@ __forceinline void UseShortcutSlot(const NormalItemSlot& slot) {
     return;
   }
 
-  CMode* mode = g_modeMgr.GetGameMode();
+  CGameMode* mode = g_modeMgr.GetGameMode();
   switch (item.identity[0]) {
   case TYPE_HEAL:
   case TYPE_SCHANGE:

@@ -33,8 +33,8 @@ void CCresciveBolt::Open() {
   float fromY;
   float toX;
   float toY;
-  g_renderer->ProjectViewport(this->position, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, &fromX, &fromY, &fromReciprocalDepth);
-  g_renderer->ProjectViewport(this->sourcePosition, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, &toX, &toY, &toReciprocalDepth);
+  g_renderer->ProjectViewport(this->position, g_modeMgr.GetGameMode()->camera->frame.view.values, &fromX, &fromY, &fromReciprocalDepth);
+  g_renderer->ProjectViewport(this->sourcePosition, g_modeMgr.GetGameMode()->camera->frame.view.values, &toX, &toY, &toReciprocalDepth);
 
   const float dx = toX - fromX;
   const float dy = toY - fromY;
@@ -90,6 +90,6 @@ void CCresciveBolt::OnProcess() {
 // FUNCTION: fn_07112
 void CCresciveBolt::Render() {
   if (this->particle) {
-    this->particle->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+    this->particle->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
   }
 }

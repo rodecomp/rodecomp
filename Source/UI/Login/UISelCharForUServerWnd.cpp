@@ -78,7 +78,7 @@ void UISelCharForUServerWnd::OnCreate(int, int) {
   }
 
   for (int index = 0; index < g_session.characterCount; ++index) {
-    CharacterInfo* info = reinterpret_cast<CharacterInfo*>(g_modeMgr.gameMode->SendMsg(MM_QUERYCHARICTORINFO, index, 0, 0, 0));
+    CharacterInfo* info = reinterpret_cast<CharacterInfo*>(g_modeMgr.currentMode->SendMsg(MM_QUERYCHARICTORINFO, index, 0, 0, 0));
     if (!info) {
       continue;
     }
@@ -147,7 +147,7 @@ int UISelCharForUServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     int count = 0;
     for (int index = 0; index < g_session.characterCount; ++index) {
       if (this->m_checkBoxes[index]->geometry.state != 0) {
-        CMode* mode = g_modeMgr.gameMode;
+        CMode* mode = g_modeMgr.currentMode;
         const int* character = reinterpret_cast<const int*>(mode->SendMsg(MM_QUERYCHARICTORINFO, index, 0, 0, 0));
         if (character) {
           characterIds[count++] = *character;
@@ -203,7 +203,7 @@ void UISelCharForUServerWnd::UpdateCharInfoBalloon(int x, int y, std::uint32_t c
   this->characterInfoLines.clear();
   if (x > 26 && x < this->geometry.width - 26 && static_cast<unsigned>(y - 95) < 270 && (y > 249 || y < 211)) {
     const int index = (y - 95) / 135 * this->m_columns + (x - 27) / 81;
-    CharacterInfo* info = reinterpret_cast<CharacterInfo*>(g_modeMgr.gameMode->SendMsg(MM_QUERYCHARICTORINFO, index, 0, 0, 0));
+    CharacterInfo* info = reinterpret_cast<CharacterInfo*>(g_modeMgr.currentMode->SendMsg(MM_QUERYCHARICTORINFO, index, 0, 0, 0));
     if (info) {
       char name[25];
       std::memcpy(name, info->name, sizeof(info->name));

@@ -1736,8 +1736,8 @@ void UIItemImage::OnMouseHover(int, int) {
   int y = -17;
   this->ToScreen(x, y);
 
-  if (g_modeMgr.gameMode) {
-    CMode* tooltip = g_modeMgr.gameMode;
+  if (g_modeMgr.currentMode) {
+    CMode* tooltip = g_modeMgr.currentMode;
     const std::uint32_t color = g_session.GetItemNameColor(item);
     tooltip->ShowTooltip(item.DisplayName(0).c_str(), x, y, color, 0, 1);
   }
@@ -1870,5 +1870,5 @@ void RequestTextButtonService(UITextButton* button) {
   }
 
   const int value = std::atoi(button->GetLine(0).c_str());
-  static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ReceiveServiceRequest(6, value);
+  g_modeMgr.GetGameMode()->ReceiveServiceRequest(6, value);
 }

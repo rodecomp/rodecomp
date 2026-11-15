@@ -63,7 +63,7 @@ void __fastcall InitializeSignBoardManager(CSignBoardMgr* manager) {
 void CSignBoardMgr::Initialize() {
   std::string mapName;
   if (g_modeMgr.GetGameMode() != nullptr) {
-    mapName = std::string(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->mapName);
+    mapName = std::string(g_modeMgr.GetGameMode()->mapName);
   }
   mapName = mapName.substr(0, mapName.find(".rsw"));
 
@@ -85,26 +85,26 @@ void CSignBoardMgr::Initialize() {
         object->SetWindowImage(image);
 
         vector3d position = {0.0f, 0.0f, 0.0f};
-        static_cast<CGameMode*>(g_modeMgr.GetGameMode())->CellCenter(it->column, it->row, position.x, position.z);
-        position.y = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Height(position.x, position.z) -
+        g_modeMgr.GetGameMode()->CellCenter(it->column, it->row, position.x, position.z);
+        position.y = g_modeMgr.GetGameMode()->scene->terrain->Height(position.x, position.z) -
           static_cast<float>(it->offset);
         object->render.position.x = position.x;
         object->render.position.y = position.y;
         object->render.position.z = position.z;
-        static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->objects.push_back(object);
+        g_modeMgr.GetGameMode()->scene->objects.push_back(object);
         break;
       }
       case 2: {
         CIcon* icon = new CIcon();
         vector3d position = {0.0f, 0.0f, 0.0f};
-        static_cast<CGameMode*>(g_modeMgr.GetGameMode())->CellCenter(it->column, it->row, position.x, position.z);
-        position.y = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Height(position.x, position.z) -
+        g_modeMgr.GetGameMode()->CellCenter(it->column, it->row, position.x, position.z);
+        position.y = g_modeMgr.GetGameMode()->scene->terrain->Height(position.x, position.z) -
           static_cast<float>(it->offset);
         icon->render.position.x = position.x;
         icon->render.position.y = position.y;
         icon->render.position.z = position.z;
         icon->Load(std::string(it->image));
-        static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->objects.push_back(icon);
+        g_modeMgr.GetGameMode()->scene->objects.push_back(icon);
         break;
       }
       case 3: {
@@ -120,13 +120,13 @@ void CSignBoardMgr::Initialize() {
         object->SetBoard(std::string(it->text), std::string(it->color));
 
         vector3d position = {0.0f, 0.0f, 0.0f};
-        static_cast<CGameMode*>(g_modeMgr.GetGameMode())->CellCenter(it->column, it->row, position.x, position.z);
-        position.y = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Height(position.x, position.z) -
+        g_modeMgr.GetGameMode()->CellCenter(it->column, it->row, position.x, position.z);
+        position.y = g_modeMgr.GetGameMode()->scene->terrain->Height(position.x, position.z) -
           static_cast<float>(it->offset);
         object->render.position.x = position.x;
         object->render.position.y = position.y;
         object->render.position.z = position.z;
-        static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->objects.push_back(object);
+        g_modeMgr.GetGameMode()->scene->objects.push_back(object);
         break;
       }
       }

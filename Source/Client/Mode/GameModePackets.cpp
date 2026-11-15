@@ -1681,8 +1681,8 @@ __declspec(noinline) void CGameMode::ReceiveCharViewResult(const unsigned char* 
   const auto* p = reinterpret_cast<const PACKET_ZC_ACK_DO_SWAP_EQUIPITEM*>(packet);
   switch (p->result) {
   case 0: {
-    CMode* mode = g_modeMgr.gameMode;
-    CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+    CMode* mode = g_modeMgr.currentMode;
+    CPlayer* player = g_modeMgr.GetGameMode()->scene->player;
     if (player->render.state != 0 && mode != nullptr) {
       mode->SendMsg(MM_REQUEST_ACT, 3, player->proceedTargetGid, 0, 0);
     }
@@ -3365,7 +3365,7 @@ __declspec(noinline) void CGameMode::ReceiveActorCharm(const unsigned char* pack
   const std::uint32_t aid = p->aid;
   CRenderObject* actor;
   if (aid == g_session.m_aid) {
-    actor = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+    actor = g_modeMgr.GetGameMode()->scene->player;
   } else {
     actor = g_session.FindGameActor(aid);
   }
@@ -3394,7 +3394,7 @@ __declspec(noinline) void CGameMode::ReceiveCashShopBanner(int value1, int value
       window->SendMsg(nullptr, UM_SELECT_CASHSHOP_TAB, value3, 0, 0, 0);
       window->SendMsg(nullptr, UM_SET_CASHSHOP_BALANCE, value1, value2, 0, 0);
     } else {
-      g_modeMgr.gameMode->SendMsg(MM_REQUEST_CASH_SHOP, value3, 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_REQUEST_CASH_SHOP, value3, 0, 0, 0);
     }
   }
 }
@@ -3839,7 +3839,7 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
       );
       break;
     case MH_GLANZEN_SPIES: {
-      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      CGameMode* mode = g_modeMgr.GetGameMode();
       const vector3d from = source->render.position;
       const vector3d to = target->render.position;
       const float yaw = mode->CameraDesiredYaw();
@@ -3867,7 +3867,7 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
       break;
     case NPC_DRAGONBREATH:
     case RK_DRAGONBREATH: {
-      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      CGameMode* mode = g_modeMgr.GetGameMode();
       if (mode == nullptr || source == nullptr) {
         break;
       }
@@ -3917,7 +3917,7 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
       break;
     }
     case RK_DRAGONBREATH_WATER: {
-      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      CGameMode* mode = g_modeMgr.GetGameMode();
       if (mode == nullptr || source == nullptr) {
         break;
       }
@@ -5415,7 +5415,7 @@ namespace {
 // FUNCTION: fn_21778
 __declspec(noinline) void CGameMode::ReceiveOpenStore(const unsigned char* packet) {
   const auto* p = reinterpret_cast<const PACKET_ZC_OPEN_BUYING_STORE*>(packet);
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (mode) {
     const ModeDragState* drag = &mode->drag;
     if (drag && drag->source) {
@@ -7630,7 +7630,7 @@ void CGameMode::ReceiveResultNotice4327(const unsigned char* packet) {
 // OFFSET: 0x00D78130
 // FUNCTION: fn_22159
 __declspec(noinline) void CGameMode::OpenBuyingStoreMake(unsigned char slotCount) {
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (mode) {
     const ModeDragState* drag = &mode->drag;
     if (drag && drag->source) {
@@ -7661,7 +7661,7 @@ __declspec(noinline) void CGameMode::OpenBuyingStoreMake(unsigned char slotCount
 // OFFSET: 0x00D78210
 // FUNCTION: fn_22160
 __declspec(noinline) void CGameMode::OpenVendingMake(unsigned char slotCount, int itemCount, const short* items) {
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (mode) {
     const ModeDragState* drag = &mode->drag;
     if (drag && drag->source) {
@@ -9937,7 +9937,7 @@ void CGameMode::ReceiveItemPickupAck5(
         item.options[option] = options[option];
       }
       if (std::atoi(item.itemId.c_str()) == 607) {
-        static_cast<CGameMode*>(g_modeMgr.GetGameMode())->lastPickItemTime = 0;
+        g_modeMgr.GetGameMode()->lastPickItemTime = 0;
       }
       if (type == 10 || type == 16 || type == 17 || type == 19) {
         item.identity[3] = 0x8000;
@@ -9980,7 +9980,7 @@ void CGameMode::ReceiveItemPickupAck5(
       item.options[option] = options[option];
     }
     if (std::atoi(item.itemId.c_str()) == 607) {
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->lastPickItemTime = 0;
+      g_modeMgr.GetGameMode()->lastPickItemTime = 0;
     }
     if (type == 10 || type == 16 || type == 17 || type == 19) {
       item.identity[3] = 0x8000;
@@ -10012,8 +10012,8 @@ void CGameMode::ReceiveItemPickupAck5(
     window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, item.identified, 0, 0, 0);
     window->SendMsg(nullptr, UM_SETTITLE, 0, count, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
     window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
-    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->isWaitingCancelExchangeItem != 0) {
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->isWaitingCancelExchangeItem = 0;
+    if (g_modeMgr.GetGameMode()->isWaitingCancelExchangeItem != 0) {
+      g_modeMgr.GetGameMode()->isWaitingCancelExchangeItem = 0;
       g_session.ResetSlots();
     }
     g_session.UpdateInventoryItem(item, 1);
@@ -10056,7 +10056,7 @@ namespace {
       item.options[option] = options.options[option];
     }
     if (std::atoi(item.itemId.c_str()) == 607) {
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->lastPickItemTime = 0;
+      g_modeMgr.GetGameMode()->lastPickItemTime = 0;
     }
     if (type == 10 || type == 16 || type == 17 || type == 19) {
       item.identity[3] = 0x8000;
@@ -10102,7 +10102,7 @@ namespace {
       item.options[option] = options.options[option];
     }
     if (std::atoi(item.itemId.c_str()) == 607) {
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->lastPickItemTime = 0;
+      g_modeMgr.GetGameMode()->lastPickItemTime = 0;
     }
     if (type == 10 || type == 16 || type == 17 || type == 19) {
       item.identity[3] = 0x8000;
@@ -10131,8 +10131,8 @@ namespace {
     window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, item.identified, 0, 0, 0);
     window->SendMsg(nullptr, UM_SETTITLE, 0, count, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
     window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
-    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->isWaitingCancelExchangeItem != 0) {
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->isWaitingCancelExchangeItem = 0;
+    if (g_modeMgr.GetGameMode()->isWaitingCancelExchangeItem != 0) {
+      g_modeMgr.GetGameMode()->isWaitingCancelExchangeItem = 0;
       g_session.ResetSlots();
     }
     g_session.UpdateInventoryItem(item, 1);
@@ -11167,7 +11167,7 @@ namespace {
     }
     item.flags[0] = favorite;
     if (std::atoi(item.itemId.c_str()) == 607) {
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->lastPickItemTime = 0;
+      g_modeMgr.GetGameMode()->lastPickItemTime = 0;
     }
     if (type == 10 || type == 16 || type == 17 || type == 19) {
       item.identity[3] = 0x8000;
@@ -11217,7 +11217,7 @@ namespace {
     }
     item.flags[0] = favorite;
     if (std::atoi(item.itemId.c_str()) == 607) {
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->lastPickItemTime = 0;
+      g_modeMgr.GetGameMode()->lastPickItemTime = 0;
     }
     if (type == 10 || type == 16 || type == 17 || type == 19) {
       item.identity[3] = 0x8000;
@@ -11248,8 +11248,8 @@ namespace {
     window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, item.identified, 0, 0, 0);
     window->SendMsg(nullptr, UM_SETTITLE, 0, count, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
     window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
-    if (static_cast<CGameMode*>(g_modeMgr.GetGameMode())->isWaitingCancelExchangeItem != 0) {
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->isWaitingCancelExchangeItem = 0;
+    if (g_modeMgr.GetGameMode()->isWaitingCancelExchangeItem != 0) {
+      g_modeMgr.GetGameMode()->isWaitingCancelExchangeItem = 0;
       g_session.ResetSlots();
     }
     g_session.UpdateInventoryItem(item, 1);
@@ -12525,7 +12525,7 @@ void LaunchSkillCastEffect(CGameMode* mode, CGameActor* source, CGameActor* targ
     float worldZ = 0.0f;
     const int column = x;
     const int row = y;
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->CellCenter(column, row, worldX, worldZ);
+    g_modeMgr.GetGameMode()->CellCenter(column, row, worldX, worldZ);
     source->Face(worldX, worldZ);
 
     CGroundScope* scope = new (std::nothrow) CGroundScope;
@@ -12676,20 +12676,20 @@ void NoticeSkillUse(CGameActor* target, CGameActor* source, std::uint16_t skillI
   std::string message;
   if (partyMember) {
     color = 17;
-    std::string name = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ActorName(target->render.accountId);
+    std::string name = g_modeMgr.GetGameMode()->ActorName(target->render.accountId);
     name = LookupMessage(MSI_WHO_IS);
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(MSI_NOTIFY_WHO), name.c_str());
     message += text;
   }
 
   if (source) {
-    std::string name = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ActorName(source->render.accountId);
+    std::string name = g_modeMgr.GetGameMode()->ActorName(source->render.accountId);
     const std::size_t mark = name.find('#');
     if (mark != std::string::npos) {
       name.resize(mark);
     }
     if (name.empty()) {
-      const CActorNameCard& card = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->LookupNameCard(source->render.accountId);
+      const CActorNameCard& card = g_modeMgr.GetGameMode()->LookupNameCard(source->render.accountId);
       name = card.displayName.empty() ? std::string(LookupMessage(MSI_WHO_IS)) : card.displayName;
     }
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(MSI_NOTIFY_TARGET_WHO), name.c_str());
@@ -12942,7 +12942,7 @@ void CGameMode::ReceiveParaResultList(const unsigned char* packet) {
   }
 
   if (count <= 0) {
-    if (CMode* mode = g_modeMgr.GetGameMode()) {
+    if (CGameMode* mode = g_modeMgr.GetGameMode()) {
       mode->SendMsg(MM_NPC_MARKET_CLOSE, 0, 0, 0, 0);
     }
     return;
@@ -17626,7 +17626,7 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     }
     return;
   case NC_ARMSCANNON: {
-    float angle = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->CameraDesiredYaw() + actor->render.angle;
+    float angle = g_modeMgr.GetGameMode()->CameraDesiredYaw() + actor->render.angle;
     if (angle >= 360.0f) {
       angle -= 360.0f;
     }
@@ -17674,8 +17674,8 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
   }
   case SO_DIAMONDDUST: {
     vector3d position{0.0f, 0.0f, 0.0f};
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->CellCenter(x, y, position.x, position.z);
-    position.y = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Height(position.x, position.z);
+    g_modeMgr.GetGameMode()->CellCenter(x, y, position.x, position.z);
+    position.y = g_modeMgr.GetGameMode()->scene->terrain->Height(position.x, position.z);
     effect = g_effectMgr->Spawn(0, g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? 0x5AC : 0x504, position, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
@@ -17685,8 +17685,8 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
   case NPC_PSYCHIC_WAVE:
   case SO_PSYCHIC_WAVE: {
     vector3d position{0.0f, 0.0f, 0.0f};
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->CellCenter(x, y, position.x, position.z);
-    position.y = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Height(position.x, position.z);
+    g_modeMgr.GetGameMode()->CellCenter(x, y, position.x, position.z);
+    position.y = g_modeMgr.GetGameMode()->scene->terrain->Height(position.x, position.z);
     effect = g_effectMgr->Spawn(0, g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? 0x5B0 : 0x50A, position, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(delay);
@@ -18015,13 +18015,13 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
 
     int column;
     int row;
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->WorldCell(actor->render.position.x, actor->render.position.z, column, row);
+    g_modeMgr.GetGameMode()->WorldCell(actor->render.position.x, actor->render.position.z, column, row);
     scope->SendMsg(nullptr, AM_SETMASTERGID, static_cast<std::uint32_t>(actor->render.accountId), 0, 0, 0, 0, 0);
     scope->SendMsg(nullptr, AM_SETPOS, column, row, 0, 0, 0, 0);
     scope->SendMsg(nullptr, AM_SETTIME, static_cast<std::uint32_t>(timeGetTime() + delay), 0, 0, 0, 0, 0);
     const int id = skillId;
     scope->SendMsg(nullptr, AM_SET_SKILL, id, 0, 0, 0, 0, 0);
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->objects.push_back(scope);
+    g_modeMgr.GetGameMode()->scene->objects.push_back(scope);
     return;
   }
   case AG_CRYSTAL_IMPACT:
@@ -18617,7 +18617,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     if (target != nullptr) {
       if (sourceAid == g_session.m_aid) {
         char notice[512];
-        std::sprintf(notice, LookupMessage(MSI_NOTIFY_STEAL_COIN), static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ActorName(target->render.accountId).c_str(), level);
+        std::sprintf(notice, LookupMessage(MSI_NOTIFY_STEAL_COIN), g_modeMgr.GetGameMode()->ActorName(target->render.accountId).c_str(), level);
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(notice), 0xC8C8FF, 0x10, 0, 0);
       }
       if (CRagEffect* effect = target->LaunchEffect(EF_RG_COIN, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
@@ -19708,7 +19708,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case RK_WINDCUTTER:
     if (source != nullptr) {
-      float angle = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->CameraDesiredYaw() + source->render.angle;
+      float angle = g_modeMgr.GetGameMode()->CameraDesiredYaw() + source->render.angle;
       if (angle >= 360.0f) {
         angle -= 360.0f;
       }
@@ -20545,7 +20545,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case WL_TELEKINESIS_INTENSE:
     if (source != nullptr) {
-      CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+      CPlayer* player = g_modeMgr.GetGameMode()->scene->player;
       g_soundMgr->PlayWave(
         "effect\\Wl_Telekinesis_Intense.wav", player->render.position.x - source->render.position.x, 0.0f,
         player->render.position.z - source->render.position.z, 250, 40, 1.0f, 0
@@ -21089,7 +21089,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
           target->render.accountId, -1, 0, 0
         );
       }
-      CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+      CPlayer* player = g_modeMgr.GetGameMode()->scene->player;
       g_soundMgr->PlayWave(
         "effect\\ABC_CHAIN_REACTION_SHOT.wav", player->render.position.x - target->render.position.x, 0.0f,
         player->render.position.z - target->render.position.z, 250, 40, 1.0f, 0
@@ -21217,19 +21217,19 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     break;
   case IQ_SECOND_JUDGEMENT:
     if (target != nullptr) {
-      CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+      CPlayer* player = g_modeMgr.GetGameMode()->scene->player;
       g_soundMgr->PlayWave("effect\\IQ_SECOND_JUDGEMENT.wav", player->render.position.x - target->render.position.x, 0.0f, player->render.position.z - target->render.position.z, 250, 40, 1.0f, 0);
     }
     break;
   case ABC_UNLUCKY_RUSH:
     if (target != nullptr) {
-      CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+      CPlayer* player = g_modeMgr.GetGameMode()->scene->player;
       g_soundMgr->PlayWave("effect\\ABC_UNLUCKY_RUSH.wav", player->render.position.x - target->render.position.x, 0.0f, player->render.position.z - target->render.position.z, 250, 40, 1.0f, 0);
     }
     break;
   case ABC_ABYSS_SLAYER:
     if (source != nullptr) {
-      CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+      CPlayer* player = g_modeMgr.GetGameMode()->scene->player;
       g_soundMgr->PlayWave("effect\\ABC_ABYSS_SLAYER.wav", player->render.position.x - source->render.position.x, 0.0f, player->render.position.z - source->render.position.z, 250, 40, 1.0f, 0);
     }
     break;
@@ -21408,7 +21408,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     CRenderObject* summoner = this->scene->GetGameActorByAidIncludeMe(target->emblemVersion);
     if (summoner != nullptr) {
       g_effectMgr->Spawn(summoner->render.accountId, EF_SERPENS_SHIELD, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+      CPlayer* player = g_modeMgr.GetGameMode()->scene->player;
       g_soundMgr->PlayWave("effect\\EM_SUMMON_ELEMENTAL_SERPENS_1.wav", player->render.position.x - summoner->render.position.x, 0.0f, player->render.position.z - summoner->render.position.z, 250, 40, 1.0f, 0);
     }
     break;
@@ -21426,7 +21426,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     CRenderObject* summoner = this->scene->GetGameActorByAidIncludeMe(target->emblemVersion);
     if (summoner != nullptr) {
       g_effectMgr->Spawn(summoner->render.accountId, EF_DILUVIO_ARMOR, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+      CPlayer* player = g_modeMgr.GetGameMode()->scene->player;
       g_soundMgr->PlayWave("effect\\EM_SUMMON_ELEMENTAL_DILUVIO_1.wav", player->render.position.x - summoner->render.position.x, 0.0f, player->render.position.z - summoner->render.position.z, 250, 40, 1.0f, 0);
     }
     break;
@@ -21444,7 +21444,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     CRenderObject* summoner = this->scene->GetGameActorByAidIncludeMe(target->emblemVersion);
     if (summoner != nullptr) {
       g_effectMgr->Spawn(summoner->render.accountId, EF_ARDOR_FLAMEARMOR, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+      CPlayer* player = g_modeMgr.GetGameMode()->scene->player;
       g_soundMgr->PlayWave("effect\\EM_SUMMON_ELEMENTAL_ARDOR_1.wav", player->render.position.x - summoner->render.position.x, 0.0f, player->render.position.z - summoner->render.position.z, 250, 40, 1.0f, 0);
     }
     break;
@@ -21456,7 +21456,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     CRenderObject* summoner = this->scene->GetGameActorByAidIncludeMe(target->emblemVersion);
     if (summoner != nullptr) {
       g_effectMgr->Spawn(summoner->render.accountId, EF_PROCELLA_STORM, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+      CPlayer* player = g_modeMgr.GetGameMode()->scene->player;
       g_soundMgr->PlayWave("effect\\EM_SUMMON_ELEMENTAL_PROCELLA_1.wav", player->render.position.x - summoner->render.position.x, 0.0f, player->render.position.z - summoner->render.position.z, 250, 40, 1.0f, 0);
     }
     break;
@@ -21474,7 +21474,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
     CRenderObject* summoner = this->scene->GetGameActorByAidIncludeMe(target->emblemVersion);
     if (summoner != nullptr) {
       g_effectMgr->Spawn(summoner->render.accountId, EF_TERREMOTUS_PROTECT, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
-      CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+      CPlayer* player = g_modeMgr.GetGameMode()->scene->player;
       g_soundMgr->PlayWave("effect\\EM_SUMMON_ELEMENTAL_TERREMOTUS_1.wav", player->render.position.x - summoner->render.position.x, 0.0f, player->render.position.z - summoner->render.position.z, 250, 40, 1.0f, 0);
     }
     break;
@@ -23375,7 +23375,7 @@ void CGameMode::ProcessIncomingPackets() {
   if (!g_replayAnimationScaling) {
     const std::uint32_t elapsedHours = (timeGetTime() - g_session.m_loginAcceptTime) / 3600000;
     if (!GetRagConnection().Update()) {
-      g_modeMgr.gameMode->SendMsg(MM_SOCKETERROR, 0, 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_SOCKETERROR, 0, 0, 0, 0);
     }
 
     if (g_charServerAccountIdPending == 1) {
@@ -25211,7 +25211,7 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_REQ_EXCHANGE_ITEM: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_REQ_EXCHANGE_ITEM*>(g_gameModePacketBuffer);
       if (g_serviceOptions.Get(TT_NOTRADE_ON_OFF)) {
-        g_modeMgr.gameMode->SendMsg(MM_ACK_EXCHANGE_ITEM, 4, 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(MM_ACK_EXCHANGE_ITEM, 4, 0, 0, 0);
         break;
       }
 
@@ -25611,7 +25611,7 @@ void CGameMode::ProcessIncomingPackets() {
     }
     case ID_ZC_OPENSTORE: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_OPENSTORE*>(g_gameModePacketBuffer);
-      CGameMode *mode = static_cast<CGameMode *>(g_modeMgr.GetGameMode());
+      CGameMode *mode = g_modeMgr.GetGameMode();
       if (mode && mode->drag.source != 0) {
         this->SendMsg(MM_REQ_CLOSESTORE, 0, 0, 0, 0);
         break;
@@ -25926,11 +25926,11 @@ void CGameMode::ProcessIncomingPackets() {
       this->scene->player->SetGuildInfo(guildId, packet->emblemVersion);
       if (g_guildInfo.skillsRequested == 0) {
         g_guildInfo.skillsRequested = 1;
-        g_modeMgr.gameMode->SendMsg(MM_REQ_GUILD_MENU, 3, 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(MM_REQ_GUILD_MENU, 3, 0, 0, 0);
       }
       if (g_guildInfo.membersRequested == 0) {
         g_guildInfo.membersRequested = 1;
-        g_modeMgr.gameMode->SendMsg(MM_REQ_GUILD_MENU, 1, 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(MM_REQ_GUILD_MENU, 1, 0, 0, 0);
       }
       break;
     }
@@ -26124,7 +26124,7 @@ void CGameMode::ProcessIncomingPackets() {
     }
     case ID_ZC_UPDATE_MAPINFO: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_UPDATE_MAPINFO*>(g_gameModePacketBuffer);
-      CGameMode *mode = static_cast<CGameMode *>(g_modeMgr.GetGameMode());
+      CGameMode *mode = g_modeMgr.GetGameMode();
       const int column = packet->xPos;
       const int row = packet->yPos;
       const_cast<TerrainHeightCell *>(mode->scene->terrain->CellAt(column, row))->type = packet->type;
@@ -26421,7 +26421,7 @@ void CGameMode::ProcessIncomingPackets() {
         g_serviceOptions.Set(229, 1);
       }
       if (!g_statusRefreshSuppressed) {
-        static_cast<CGameMode *>(g_modeMgr.GetGameMode())->scene->player->ReapplySkillEffects();
+        g_modeMgr.GetGameMode()->scene->player->ReapplySkillEffects();
       }
       switch (packet->type) {
       case MAPTYPE_PENALTY_FREEPKZONE:
@@ -26564,7 +26564,7 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_REQ_EXCHANGE_ITEM2: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_REQ_EXCHANGE_ITEM2*>(g_gameModePacketBuffer);
       if (g_serviceOptions.Get(TT_NOTRADE_ON_OFF)) {
-        g_modeMgr.gameMode->SendMsg(MM_ACK_EXCHANGE_ITEM, 4, 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(MM_ACK_EXCHANGE_ITEM, 4, 0, 0, 0);
         break;
       }
 
@@ -26617,7 +26617,7 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_HIGHJUMP: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_NOTIFY_POSITION_TO_GROUPM*>(g_gameModePacketBuffer);
       vector3d position{0.0f, 0.0f, 0.0f};
-      static_cast<CGameMode *>(g_modeMgr.GetGameMode())
+      g_modeMgr.GetGameMode()
           ->CellCenter(packet->xPos, packet->yPos,
                        position.x, position.z);
       position.y = this->scene->terrain->Height(position.x, position.z);
@@ -26658,7 +26658,7 @@ void CGameMode::ProcessIncomingPackets() {
       name[24] = 0;
       const unsigned char option = g_serviceOptions.Get(TT_NOTRADE_ON_OFF);
       if (IsMonsterJob(g_session.m_aid) || option) {
-        g_modeMgr.gameMode->SendMsg(MM_JOIN_FRIEND, static_cast<int>(packet->aid), static_cast<int>(packet->gid),
+        g_modeMgr.currentMode->SendMsg(MM_JOIN_FRIEND, static_cast<int>(packet->aid), static_cast<int>(packet->gid),
                                     0, 0);
       } else {
         g_windowMgr.EnsureWindow(WID_JOINFRIENDACCEPTWND)->SendMsg(nullptr, UM_SET_JOIN_FRIEND_MSG, static_cast<int>(packet->aid),
@@ -26952,11 +26952,11 @@ void CGameMode::ProcessIncomingPackets() {
       this->scene->player->SetGuildInfo(static_cast<int>(packet->guildId), packet->emblemVersion);
       if (!g_guildInfo.skillsRequested) {
         g_guildInfo.skillsRequested = 1;
-        g_modeMgr.gameMode->SendMsg(MM_REQ_GUILD_MENU, 3, 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(MM_REQ_GUILD_MENU, 3, 0, 0, 0);
       }
       if (!g_guildInfo.membersRequested) {
         g_guildInfo.membersRequested = 1;
-        g_modeMgr.gameMode->SendMsg(MM_REQ_GUILD_MENU, 1, 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(MM_REQ_GUILD_MENU, 1, 0, 0, 0);
       }
       break;
     }

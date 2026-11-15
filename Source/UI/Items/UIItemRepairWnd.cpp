@@ -267,7 +267,7 @@ int UIItemRepairWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
 
       UIListBox* list = this->m_list;
       if (list->LineCount() == 0) {
-        g_modeMgr.gameMode->SendMsg(MM_REPAIRITEM_SELECT_FROM_LIST, -1, 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(MM_REPAIRITEM_SELECT_FROM_LIST, -1, 0, 0, 0);
         g_windowMgr.CloseWindow(WID_ITEMREPAIRWND);
         g_windowMgr.CloseWindow(WID_ITEMREPAIRWND);
         return 0;
@@ -277,7 +277,7 @@ int UIItemRepairWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
       if (selected >= 0) {
         for (UIItemRepairEntry& entry : this->entries) {
           if (entry.index == this->indices[selected]) {
-            g_modeMgr.gameMode->SendMsg(MM_REPAIRITEM_SELECT_FROM_LIST, reinterpret_cast<int>(&entry), 0, 0, 0);
+            g_modeMgr.currentMode->SendMsg(MM_REPAIRITEM_SELECT_FROM_LIST, reinterpret_cast<int>(&entry), 0, 0, 0);
             break;
           }
         }
@@ -289,7 +289,7 @@ int UIItemRepairWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
     }
 
     case ID_CANCEL:
-      g_modeMgr.gameMode->SendMsg(MM_REPAIRITEM_SELECT_FROM_LIST, -1, 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_REPAIRITEM_SELECT_FROM_LIST, -1, 0, 0, 0);
       g_windowMgr.CloseWindow(WID_ITEMREPAIRWND);
       return 0;
     }

@@ -521,7 +521,7 @@ void CSkillAction_IG_RADIANT_SPEAR::OnSkillEffect(int level, CGameActor* source,
     return;
   }
 
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   const float angle = ScreenAngle(&source->render.position.x, &target->render.position.x, mode->camera->frame.view.values);
   const char* direction = "left";
   if (angle > 90.0f && angle < 270.0f) {
@@ -605,7 +605,7 @@ void CSkillAction_IG_SHIELD_SHOOTING::OnSkillEffect(int level, CGameActor* sourc
   const vector3d position = source->render.position;
   g_effectMgr->Spawn(source->render.accountId, EF_SHIELD_SHOOTING, position, target->render.accountId, -1, 0, 0);
 
-  const vector3d& listener = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->render.position;
+  const vector3d& listener = g_modeMgr.GetGameMode()->scene->player->render.position;
   const vector3d soundPosition = {target->render.position.x - listener.x, 0.0f, target->render.position.z - listener.z};
   g_soundMgr->PlayWave("effect\\IG_SHIELD_SHOOTING.wav", soundPosition.x, soundPosition.y, soundPosition.z, 250, 40, 1.0f, 0);
 }

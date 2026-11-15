@@ -27,7 +27,7 @@ bool CNavigationManager::CollectStartLinks() {
     return false;
   }
 
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (mode == nullptr) {
     return false;
   }

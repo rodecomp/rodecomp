@@ -116,9 +116,9 @@ int GuildInfo::GetAgitCount() {
 void GuildInfo::Init() {
   this->m_guildId = 0;
   if (g_modeMgr.GetGameMode() &&
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene &&
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player) {
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->SetGdid(0);
+      g_modeMgr.GetGameMode()->scene &&
+      g_modeMgr.GetGameMode()->scene->player) {
+    g_modeMgr.GetGameMode()->scene->player->SetGdid(0);
   }
 
   this->canInvite = 0;
@@ -192,8 +192,8 @@ void GuildInfo::UpdateMemberExpRatios() {
 int GuildInfo::DeleteMemberByCharacterId(int characterId) {
   for (auto it = this->m_members.begin(); it != this->m_members.end(); ++it) {
     if (it->characterId == characterId) {
-      if (g_modeMgr.GetGameMode() && static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene) {
-        CGameActor* actor = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetActorByGID(it->characterId);
+      if (g_modeMgr.GetGameMode() && g_modeMgr.GetGameMode()->scene) {
+        CGameActor* actor = g_modeMgr.GetGameMode()->scene->GetActorByGID(it->characterId);
         if (actor != nullptr) {
           actor->SetGdid(0);
         }
@@ -327,8 +327,8 @@ void GuildInfo::AddAgitId(int value) {
 // FUNCTION: fn_18028
 void GuildInfo::AddMember(const Member& member) {
   this->m_members.push_back(member);
-  if (g_modeMgr.GetGameMode() && static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene) {
-    CGameActor* actor = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetActorByGID(member.characterId);
+  if (g_modeMgr.GetGameMode() && g_modeMgr.GetGameMode()->scene) {
+    CGameActor* actor = g_modeMgr.GetGameMode()->scene->GetActorByGID(member.characterId);
     if (actor != nullptr) {
       actor->SetGdid(this->m_guildId);
     }

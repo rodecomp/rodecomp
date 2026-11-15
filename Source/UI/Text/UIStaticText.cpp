@@ -178,7 +178,7 @@ void UIStaticText::OnMouseHover(int, int) {
   int y = -4;
   this->ToScreen(x, y);
 
-  g_modeMgr.gameMode->ShowTooltip(this->tooltip.c_str(), x, y, -1, false, true);
+  g_modeMgr.currentMode->ShowTooltip(this->tooltip.c_str(), x, y, -1, false, true);
 }
 
 // OFFSET: 0x0085FAB0

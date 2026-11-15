@@ -147,7 +147,7 @@ __forceinline static void MsgEffectDrift(CMsgEffect* effect, float elapsed) {
         effect->m_drift.z = -0.8f;
       }
 
-      CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+      CGameMode* mode = g_modeMgr.GetGameMode();
       float yaw = 0.0f;
       if (mode != nullptr) {
         yaw = mode->camera->camera.desiredYaw;
@@ -278,7 +278,7 @@ bool CMsgEffect::OnProcess() {
       elapsed = MsgEffectElapsedFrames(this);
       this->render.previousAnimation = this->render.animation;
       if (this->render.curMotion == 0) {
-        CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+        CPlayer* player = g_modeMgr.GetGameMode()->scene->player;
         g_soundMgr->PlayWave("effect\\kyrie_guard.wav", this->render.position.x - player->render.position.x, 0.0f,
                              this->render.position.z - player->render.position.z, 250, 40, 1.0f, 0);
       }
@@ -1359,7 +1359,7 @@ void CMsgEffect::FollowOwner() {
     case 0x1B:
     case 0x1F:
       if (this->m_owner != nullptr) {
-        CWorld* scene = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+        CWorld* scene = g_modeMgr.GetGameMode()->scene;
         const float dist = this->m_owner->CalcDist(this->render.position.x, this->render.position.z);
         const int dir = this->Get8Dir2(this->render.angle, 1);
         CRenderObject* owner = this->m_owner;
@@ -1398,7 +1398,7 @@ void CMsgEffect::FollowOwner() {
 
     case MET_CART:
       if (this->m_owner != nullptr) {
-        CWorld* scene = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+        CWorld* scene = g_modeMgr.GetGameMode()->scene;
         const float dist = this->m_owner->CalcDist(this->render.position.x, this->render.position.z);
         const int dir = this->Get8Dir2(this->render.angle, 1);
         CRenderObject* owner = this->m_owner;
@@ -1425,7 +1425,7 @@ void CMsgEffect::FollowOwner() {
 
     case MET_BIRD:
       if (this->m_owner != nullptr && this->activeMotion == 0) {
-        CWorld* scene = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+        CWorld* scene = g_modeMgr.GetGameMode()->scene;
         const float dist = this->m_owner->CalcDist(this->render.position.x, this->render.position.z);
         const int dir = this->Get8Dir2(this->render.angle, 1);
         CRenderObject* owner = this->m_owner;

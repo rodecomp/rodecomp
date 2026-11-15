@@ -194,12 +194,12 @@ void CTalismanMarkEffect::UpdateParticle(CEZ2STRParticle* particle) {
   }
 
   const vector3d center = this->positionVector;
-  const float* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values;
+  const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   const float viewX = center.x * view[0] + center.y * view[3] + center.z * view[6] + view[9];
   const float viewY = center.x * view[1] + center.y * view[4] + center.z * view[7] + view[10];
   const float viewZ = center.x * view[2] + center.y * view[5] + center.z * view[8] + view[11];
 
-  const float* inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse.values;
+  const float* inverse = g_modeMgr.GetGameMode()->camera->frame.inverse.values;
   int angle = particle->phaseParameter;
   if (particle->animationState == 1) {
     angle = (angle + 1) % 360;
@@ -227,7 +227,7 @@ void CTalismanMarkEffect::Render() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CEZ2STRParticle* particle = *it;
     if (particle) {
-      particle->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+      particle->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
     }
   }
 }

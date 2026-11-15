@@ -455,7 +455,7 @@ void UIDisconnectedServerMsgWnd::OnCreate(int width, int height) {
 // OFFSET: 0x008DE6D0
 // FUNCTION: fn_12170
 void UIEmailAddressWnd::OnCreate(int, int) {
-  g_modeMgr.gameMode->SendMsg(LMM_GET_EMAIL_ADDRESS, 0, 0, 0, 0);
+  g_modeMgr.currentMode->SendMsg(LMM_GET_EMAIL_ADDRESS, 0, 0, 0, 0);
   this->m_edit = new UIEditCtrl();
   this->m_edit->SetSize(this->geometry.width - 77, 16);
   this->m_edit->Move(15, 22);
@@ -726,7 +726,7 @@ void UIMinimapZoomWnd::Paint() {
   this->ClearSurface(0xFFFF00FF);
   int column = 0;
   int row = 0;
-  static_cast<CGameMode*>(g_modeMgr.GetGameMode())->PlayerCell(&column, &row);
+  g_modeMgr.GetGameMode()->PlayerCell(&column, &row);
   const std::string text = FormatOwnedString(" %d  %d", column, row);
   this->DrawTextAt(19, 128, text.c_str(), 0, 0, 12, 0, 0, 0);
   this->DrawTextAt(20, 128, text.c_str(), 0, 0, 12, 0xFFFFFF, 0, 0);
@@ -775,7 +775,7 @@ void UIMinimapZoomWnd::OnCreate(int, int) {
   this->SendMsg(this, UM_COMMAND, 502, 0, 0, 0);
 
   for (int index = 0;; ++index) {
-    TownInfo town = g_townInfoMgr->GetTownInfo(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->MapName(), index);
+    TownInfo town = g_townInfoMgr->GetTownInfo(g_modeMgr.GetGameMode()->MapName(), index);
     if (town.image.empty()) {
       break;
     }
@@ -849,7 +849,7 @@ int UIMinimapZoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
   }
   }
 
-  std::string mapName = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->MapName();
+  std::string mapName = g_modeMgr.GetGameMode()->MapName();
   TownInfo town = g_townInfoMgr->GetTownInfo(mapName, static_cast<unsigned int>(argument1 - 1000));
   if (!town.image.empty()) {
     const std::size_t extension = mapName.find_first_of(".");
@@ -1010,7 +1010,7 @@ int UINpcEditDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
   case UM_COMMAND: {
     this->RecordResponse(static_cast<int>(argument1), argument2, argument3, argument4);
     if (argument1 == ID_OK && this->edit->Length()) {
-      CMode* mode = g_modeMgr.gameMode;
+      CMode* mode = g_modeMgr.currentMode;
       const int number = std::atoi(this->edit->Text());
       mode->SendMsg(MM_SEND_NUMBER_TO_NPC, this->npcId, number, 0, 0);
       g_windowMgr.CloseWindow(WID_NPCEDITDIALOGWND);
@@ -1065,7 +1065,7 @@ int UINpcTextEditDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     return 0;
   }
 
-  CMode* mode = g_modeMgr.gameMode;
+  CMode* mode = g_modeMgr.currentMode;
   if (g_navigationLinkParser->HasLink(std::string(this->edit->Text()))
       || (!this->edit->LinkedText().empty() && this->m_tagCtrl && !this->m_tagCtrl->linkedText.empty())) {
     this->edit->SetText("");
@@ -1159,7 +1159,7 @@ int UIPartySettingWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       if (this->m_mode != 50) {
         g_windowMgr.CloseWindow(WID_PARTYSETTINGWND_PARTYCOUNT);
       }
-      CMode* mode = g_modeMgr.GetGameMode();
+      CGameMode* mode = g_modeMgr.GetGameMode();
       if (g_session.PartyCount() == 0) {
         if (this->m_mode == 50) {
           std::string name;
@@ -1260,7 +1260,7 @@ int UIPasswordWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
   switch (message) {
   case UM_COMMAND:
     if (a == ID_OK) {
-      CMode* mode = g_modeMgr.gameMode;
+      CMode* mode = g_modeMgr.currentMode;
       mode->SendMsg(MM_REQ_ENTER_ROOM, this->roomId, reinterpret_cast<int>(this->m_edit->Text()), 0, 0);
       g_windowMgr.CloseWindow(WID_PASSWORDWND);
     }
@@ -1402,7 +1402,7 @@ int UISpellListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
   }
   case UM_COMMAND: {
     this->RecordResponse(static_cast<int>(argument1), argument2, argument3, argument4);
-    CMode* mode = g_modeMgr.gameMode;
+    CMode* mode = g_modeMgr.currentMode;
     if (argument1 == ID_OK) {
       const int selected = this->m_selected;
       if (selected < 0 || static_cast<unsigned>(selected) >= this->m_skills.size()) {
@@ -1980,7 +1980,7 @@ void UIMenuWnd::OnLBtnUp(int x, int y) {
   if (target) {
     target->SendMsg(nullptr, UM_MENU_SELECTED, choice, 0, 0, 0);
   } else if (this->m_menuId == 10041) {
-    g_modeMgr.gameMode->SendMsg(MM_MENUSELECTED, choice, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_MENUSELECTED, choice, 0, 0, 0);
   }
   g_windowMgr.CloseWindow(WID_MENUWND);
 }
@@ -2003,7 +2003,7 @@ void UIItemCollectionWnd::OnMouseHover(int x, int y) {
   card.refiningLevel = 0;
   card.SetItemId(cardId);
 
-  CMode* tooltip = g_modeMgr.gameMode;
+  CMode* tooltip = g_modeMgr.currentMode;
   std::uint32_t color = 0xFFFFFFFF;
   if (index >= this->m_item.SlotCount()) {
     color = ItemCardColor(&this->m_item);
@@ -2038,7 +2038,7 @@ void UIStatusWnd::OnMouseHover(int x, int y) {
       int tipX = point.x - this->m_offsetX;
       int tipY = this->m_titleHeight - this->m_offsetY - 19 + point.y;
       this->ToScreen(tipX, tipY);
-      g_modeMgr.gameMode->ShowTooltip(statTexts[index], tipX, tipY, -1, true, true);
+      g_modeMgr.currentMode->ShowTooltip(statTexts[index], tipX, tipY, -1, true, true);
       break;
     }
   }
@@ -2061,7 +2061,7 @@ void UIStatusWnd::OnMouseHover(int x, int y) {
       int tipX = point.x - 16;
       int tipY = point.y - 13;
       this->ToScreen(tipX, tipY);
-      g_modeMgr.gameMode->ShowTooltip(traitTexts[index], tipX, tipY, -1, true, true);
+      g_modeMgr.currentMode->ShowTooltip(traitTexts[index], tipX, tipY, -1, true, true);
       return;
     }
   }
@@ -2201,7 +2201,7 @@ void UITipboxWnd::UpdatePageText() {
 // OFFSET: 0x008D0230
 // FUNCTION: fn_12083
 void UIExchangeWnd::DragAndDrop(int x, int y, std::intptr_t value) {
-  CMode* mode = g_modeMgr.GetGameMode();
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (this->isLocalTrader != 0) {
     mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
     return;
@@ -2234,7 +2234,7 @@ void UIEquipWnd::DragAndDrop(int x, int y, std::intptr_t value) {
     return;
   }
 
-  CMode* mode = g_modeMgr.GetGameMode();
+  CGameMode* mode = g_modeMgr.GetGameMode();
   ITEM_INFO item(0);
   bool fromStorage = false;
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
@@ -2270,7 +2270,7 @@ void UIEquipWnd::DragAndDrop(int x, int y, std::intptr_t value) {
     }
   }
 
-  g_modeMgr.gameMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+  g_modeMgr.currentMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x008D02D0
@@ -2281,7 +2281,7 @@ void UInCashWnd::DragAndDrop(int x, int y, std::intptr_t value) {
     return;
   }
 
-  CMode* mode = g_modeMgr.GetGameMode();
+  CGameMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   switch (drag->source) {
   case 4:
@@ -2731,15 +2731,15 @@ int UIItemCompositionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
         int found;
         ITEM_INFO item = this->GetItem(this->m_selected, &found);
         if (found != 0) {
-          g_modeMgr.gameMode->SendMsg(MM_REQ_ITEMCOMPOSITION, item.identity[1], this->m_compositionState, 0, 0);
+          g_modeMgr.currentMode->SendMsg(MM_REQ_ITEMCOMPOSITION, item.identity[1], this->m_compositionState, 0, 0);
         } else {
-          g_modeMgr.gameMode->SendMsg(MM_REQ_ITEMCOMPOSITION, -1, -1, 0, 0);
+          g_modeMgr.currentMode->SendMsg(MM_REQ_ITEMCOMPOSITION, -1, -1, 0, 0);
         }
         g_windowMgr.CloseWindow(WID_ITEMCOMPOSITIONWND);
       }
       break;
     case ID_CANCEL:
-      g_modeMgr.gameMode->SendMsg(MM_REQ_ITEMCOMPOSITION, -1, -1, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_REQ_ITEMCOMPOSITION, -1, -1, 0, 0);
       g_windowMgr.CloseWindow(WID_ITEMCOMPOSITIONWND);
       break;
     }
@@ -2761,7 +2761,7 @@ int UIItemCompositionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
             std::vector<unsigned char> packet(header.length, 0);
             std::memcpy(packet.data(), records + position, header.length);
             position += header.length;
-            static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ReceiveCardCompositionItemList(packet.data());
+            g_modeMgr.GetGameMode()->ReceiveCardCompositionItemList(packet.data());
           break;
         }
         default:
@@ -2814,13 +2814,13 @@ int UIItemIdentifyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         int found;
         ITEM_INFO item = this->GetItem(this->m_selected, &found);
         if (found != 0) {
-          g_modeMgr.gameMode->SendMsg(MM_REQ_ITEMIDENTIFY, item.identity[1], 0, 0, 0);
+          g_modeMgr.currentMode->SendMsg(MM_REQ_ITEMIDENTIFY, item.identity[1], 0, 0, 0);
         }
         g_windowMgr.CloseWindow(WID_ITEMIDENTIFYWND);
       }
       break;
     case ID_CANCEL:
-      g_modeMgr.gameMode->SendMsg(MM_REQ_ITEMIDENTIFY, -1, 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_REQ_ITEMIDENTIFY, -1, 0, 0, 0);
       g_windowMgr.CloseWindow(WID_ITEMIDENTIFYWND);
       break;
     }
@@ -2859,7 +2859,7 @@ int UIItemIdentifyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
           std::vector<unsigned char> packet(header.length, 0);
           std::memcpy(packet.data(), records + position, header.length);
           position += header.length;
-          static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ReceiveItemIdentificationList(packet.data());
+          g_modeMgr.GetGameMode()->ReceiveItemIdentificationList(packet.data());
           break;
         }
         default:
@@ -3101,10 +3101,10 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
         return 0;
       }
       if (this->m_page == 1) {
-        g_modeMgr.gameMode->SendMsg(MM_CONFIG_CALL, b, 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(MM_CONFIG_CALL, b, 0, 0, 0);
         return 0;
       }
-      g_modeMgr.gameMode->SendMsg(MM_OPEN_EQUIPEDITEM_CHANGE, b, 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_OPEN_EQUIPEDITEM_CHANGE, b, 0, 0, 0);
       return 0;
     case ID_RADIOBTN:
       for (int index = 0; index < 4; ++index) {
@@ -3554,11 +3554,11 @@ int UIBabyAcceptWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
     switch (a) {
     case ID_OK:
       g_windowMgr.CloseWindow(WID_BABYACCEPTWND2);
-      g_modeMgr.gameMode->SendMsg(MM_JOIN_BABY, this->identity, 1, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_JOIN_BABY, this->identity, 1, 0, 0);
       break;
     case ID_CANCEL:
       g_windowMgr.CloseWindow(WID_BABYACCEPTWND2);
-      g_modeMgr.gameMode->SendMsg(MM_JOIN_BABY, this->identity, 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_JOIN_BABY, this->identity, 0, 0, 0);
       break;
     }
     return 0;
@@ -3610,7 +3610,7 @@ int UIBabyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
       break;
     case ID_CANCEL:
       g_windowMgr.CloseWindow(WID_BABYACCEPTWND);
-      g_modeMgr.gameMode->SendMsg(MM_JOIN_BABY, this->identity, 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_JOIN_BABY, this->identity, 0, 0, 0);
       break;
     }
     return 0;
@@ -3851,15 +3851,15 @@ int UIChooseSellBuyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
     if (this->geometry.visible != 0) {
       switch (response) {
       case ID_CANCEL:
-        g_modeMgr.gameMode->SendMsg(MM_RELEASE_QUEST, 0, 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(MM_RELEASE_QUEST, 0, 0, 0, 0);
         g_windowMgr.CloseWindow(WID_CHOOSESELLBUYWND);
         break;
       case ID_BUY:
-        g_modeMgr.gameMode->SendMsg(MM_ACK_BUY, this->identity, 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(MM_ACK_BUY, this->identity, 0, 0, 0);
         g_windowMgr.LookupWindow(WID_CHOOSESELLBUYWND)->Show(0);
         break;
       case ID_SELL:
-        g_modeMgr.gameMode->SendMsg(MM_ACK_SELL, this->identity, 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(MM_ACK_SELL, this->identity, 0, 0, 0);
         g_windowMgr.LookupWindow(WID_CHOOSESELLBUYWND)->Show(0);
         break;
       default:
@@ -3888,7 +3888,7 @@ int UIChooseSellBuyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
         offset += 6;
 
         if (header.type == 20851) {
-          static_cast<CGameMode*>(g_modeMgr.GetGameMode())->isOnQuest = 1;
+          g_modeMgr.GetGameMode()->isOnQuest = 1;
           this->SendMsg(nullptr, UM_SETNAID, 0, 0, 0, 0);
           g_windowMgr.CloseWindow(WID_ITEMSHOPWND);
           g_windowMgr.CloseWindow(WID_ITEMPURCHASEWND);
@@ -4652,7 +4652,7 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       } else if (talkType == 51) {
         this->SaveChatLog();
       } else {
-        g_modeMgr.gameMode->SendMsg(MM_PROCESS_TALK_TYPE, talkType, reinterpret_cast<std::intptr_t>(parts), 0, 0);
+        g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, talkType, reinterpret_cast<std::intptr_t>(parts), 0, 0);
       }
       return 0;
     }
@@ -4665,7 +4665,7 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       g_windowMgr.chatInputText.assign(text, std::strlen(text));
     }
 
-    g_modeMgr.gameMode->SendMsg(MM_WHISPERMSG, reinterpret_cast<std::intptr_t>(this->m_target.c_str()), 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_WHISPERMSG, reinterpret_cast<std::intptr_t>(this->m_target.c_str()), 0, 0, 0);
     return 0;
   }
   case UM_MENU_SELECTED:
@@ -4684,7 +4684,7 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       this->m_log.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_ADD_TO_FRIEND_CHAR_LIST)).c_str(), 21));
     }
 
-    g_modeMgr.gameMode->SendMsg(MM_INITWHISPERMENU, reinterpret_cast<std::intptr_t>(this->m_target.c_str()), 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_INITWHISPERMENU, reinterpret_cast<std::intptr_t>(this->m_target.c_str()), 0, 0, 0);
     if (this->m_log.empty()) {
       return 0;
     }
@@ -4830,7 +4830,7 @@ __declspec(noinline) std::vector<unsigned char> MakeFramedMessage(std::uint16_t 
 // OFFSET: 0x00901370
 // FUNCTION: fn_12373
 int UIQuitWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  CMode* mode = g_modeMgr.GetGameMode();
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (message != UM_COMMAND) {
     return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
@@ -4855,7 +4855,7 @@ int UIQuitWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
 // OFFSET: 0x009013F0
 // FUNCTION: fn_12374
 int UIRestartWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  CMode* mode = g_modeMgr.GetGameMode();
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (message != UM_COMMAND) {
     return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
@@ -4901,7 +4901,7 @@ int UInCash_CallWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
 // OFFSET: 0x009098A0
 // FUNCTION: fn_12393
 void UIEquipWnd::UpdateCharacterView(int reset) {
-  CMode* mode = g_modeMgr.gameMode;
+  CMode* mode = g_modeMgr.currentMode;
   if (!reset && g_session.replayPacketMode > 0) {
     mode->SendMsg(MM_REQ_CARTOFF, 6, 0, 0, 0);
     return;
@@ -5102,7 +5102,7 @@ int UISayDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
         return 0;
       }
       g_session.m_itemSendTick = tick;
-      g_modeMgr.gameMode->SendMsg(this->m_responseMessage, this->m_responseId, 218, 0, 0);
+      g_modeMgr.currentMode->SendMsg(this->m_responseMessage, this->m_responseId, 218, 0, 0);
       this->m_responsePending = 1;
       this->SendMsg(nullptr, UM_DISABLENEXTBUTTON, 0, 0, 0, 0);
       break;
@@ -5110,7 +5110,7 @@ int UISayDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     case 600:
       break;
     default:
-      g_modeMgr.gameMode->SendMsg(this->m_responseMessage, this->m_responseId, static_cast<int>(a), 0, 0);
+      g_modeMgr.currentMode->SendMsg(this->m_responseMessage, this->m_responseId, static_cast<int>(a), 0, 0);
       break;
     }
     return 0;
@@ -5226,7 +5226,7 @@ int UIExchangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     this->LayoutButtons();
     return 0;
   case UM_COMMAND: {
-    CMode* mode = g_modeMgr.GetGameMode();
+    CGameMode* mode = g_modeMgr.GetGameMode();
     switch (a) {
     case ID_CHECK:
       this->takeScreenshot = b != 0;
@@ -5266,7 +5266,7 @@ int UIExchangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       }
       if (this->takeScreenshot) {
         const std::string text = FormatOwnedString(LookupMessage(MSI_SCREENSHOT_FOR_EXCHANGE_CHARNAME), this->partnerName.c_str());
-        g_modeMgr.gameMode->SendMsg(MM_SCREENSHOT, reinterpret_cast<int>(text.c_str()), 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(MM_SCREENSHOT, reinterpret_cast<int>(text.c_str()), 0, 0, 0);
       }
       mode->SendMsg(MM_EXEC_EXCHANGE_ITEM, 0, 0, 0, 0);
       this->localAccepted = 1;
@@ -5313,7 +5313,7 @@ int UIExchangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     this->Invalidate();
     return 0;
   case UM_DROP: {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     mode->SendMsg(MM_ADD_EXCHANGE_ITEM, mode->drag.id, mode->drag.quantity, 0, 0);
     mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
     return 0;
@@ -5859,7 +5859,7 @@ int UIChatRoomMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       setting.roomId = -1;
       setting.title = this->m_titleEdit->Text();
       setting.password = this->m_passwordEdit->Text();
-      g_modeMgr.gameMode->SendMsg(MM_CREATE_CHATROOM, reinterpret_cast<int>(&setting), 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_CREATE_CHATROOM, reinterpret_cast<int>(&setting), 0, 0, 0);
       g_windowMgr.CloseWindow(WID_CHATROOMMAKEWND);
       break;
     }
@@ -5963,7 +5963,7 @@ int UIChatRoomChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       setting.roomId = -1;
       setting.title = this->m_titleEdit->Text();
       setting.password = this->m_passwordEdit->Text();
-      g_modeMgr.gameMode->SendMsg(MM_CHANGE_CHATROOM, reinterpret_cast<int>(&setting), 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_CHANGE_CHATROOM, reinterpret_cast<int>(&setting), 0, 0, 0);
       g_windowMgr.CloseWindow(WID_CHATROOMCHANGEWND);
       return 0;
     }
@@ -6132,7 +6132,7 @@ int UIWaitWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::int
   switch (message) {
   case UM_COMMAND:
     if (argument1 == ID_CANCEL) {
-      g_modeMgr.gameMode->SendMsg(LMM_DISCONNECT_ACSVR, 0, 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(LMM_DISCONNECT_ACSVR, 0, 0, 0, 0);
     }
     break;
   case UM_ENABLE_CANCEL:
@@ -6152,10 +6152,10 @@ int UINoticeConfirmWnd::SendMsg(
   case UM_COMMAND: {
     switch (argument1) {
     case ID_OK:
-      g_modeMgr.gameMode->SendMsg(this->m_event, 0, 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(this->m_event, 0, 0, 0, 0);
       break;
     case ID_CANCEL:
-      g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
       break;
     }
 
@@ -6700,7 +6700,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
     return 0;
 
   case UM_DROP: {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     if (mode->drag.source == 4) {
       ITEM_INFO item;
       item.Assign(mode->drag);
@@ -6945,7 +6945,7 @@ void UIEquipWnd::OnLBtnDblClk(int x, int y) {
   ITEM_INFO item = this->ItemIconAt(x, y);
   if (item.identity[1] > 0 && item.quantity > 0) {
     const EquipSlots slots = g_session.GetEquipSlots(static_cast<int>(item.identity[3]));
-    g_modeMgr.gameMode->SendMsg(MM_TAKE_OFF_EQUIP, slots.values[2], this->m_page == 1, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_TAKE_OFF_EQUIP, slots.values[2], this->m_page == 1, 0, 0);
   }
 }
 
@@ -6964,7 +6964,7 @@ void UIEquipWnd::OnMouseHover(int x, int y) {
     }
     this->ToScreen(tooltipX, tooltipY);
 
-    CMode* tooltip = g_modeMgr.gameMode;
+    CMode* tooltip = g_modeMgr.currentMode;
     if (item.quantity < 2) {
       if (item.identified == 1 && item.optionCount != 0) {
         tooltip->ShowTooltip(FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), item.DisplayName(0).c_str(), item.optionCount).c_str(), tooltipX, tooltipY,
@@ -6988,7 +6988,7 @@ void UIEquipWnd::OnMouseHover(int x, int y) {
   this->m_highlight[1] = -1;
   this->m_highlight[2] = -1;
 
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (mode->drag.source == 1 && x >= 0 && y >= 0 && x < this->geometry.width && y < this->geometry.height) {
     ITEM_INFO dragged = LookupClientItemByIdentity(g_session.m_inventoryItems, mode->drag.id);
     if (dragged.identity[1] != 0 && dragged.identity[2] != 0) {
@@ -7066,7 +7066,7 @@ void UIExchangeWnd::OnMouseHover(int x, int y) {
   tooltipY = (tooltipY - 17) / this->m_rowHeight * this->m_rowHeight + 4;
   this->ToScreen(tooltipX, tooltipY);
 
-  CMode* tooltip = g_modeMgr.gameMode;
+  CMode* tooltip = g_modeMgr.currentMode;
   item.identity[0] = 21;
   if (item.identified == 1 && item.optionCount != 0) {
     tooltip->ShowTooltip(FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), item.DisplayName(0).c_str(), item.optionCount).c_str(), tooltipX, tooltipY,
@@ -7211,7 +7211,7 @@ void UInCashWnd::OnLBtnDown(int x, int y) {
 
   ITEM_INFO item = this->ItemAt(x, y);
   if (item.identity[1] > 0) {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     int source;
     if (this->m_selected < 0) {
       this->m_selected = ~this->m_selected;
@@ -7617,11 +7617,11 @@ int UIJoinGuildAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       g_windowMgr.CloseWindow(WID_GUILDTIPWND);
       g_windowMgr.CloseWindow(WID_CREATEGUILDWND_MODE_0);
       g_windowMgr.CloseWindow(WID_GUILDHELPERWND);
-      g_modeMgr.gameMode->SendMsg(MM_JOIN_GUILD, this->identity, 1, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_JOIN_GUILD, this->identity, 1, 0, 0);
       break;
     case ID_CANCEL:
       g_windowMgr.CloseWindow(WID_JOINGUILDACCEPTWND);
-      g_modeMgr.gameMode->SendMsg(MM_JOIN_GUILD, this->identity, 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_JOIN_GUILD, this->identity, 0, 0, 0);
       break;
     }
     break;
@@ -7948,11 +7948,11 @@ int UICoupleAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     switch (a) {
     case ID_OK:
       g_windowMgr.CloseWindow(WID_COUPLEACCEPTWND);
-      g_modeMgr.gameMode->SendMsg(MM_JOIN_COUPLE, this->identity, 1, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_JOIN_COUPLE, this->identity, 1, 0, 0);
       break;
     case ID_CANCEL:
       g_windowMgr.CloseWindow(WID_COUPLEACCEPTWND);
-      g_modeMgr.gameMode->SendMsg(MM_JOIN_COUPLE, this->identity, 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_JOIN_COUPLE, this->identity, 0, 0, 0);
       break;
     }
     break;
@@ -8041,11 +8041,11 @@ int UIJoinFriendAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     switch (a) {
     case ID_OK:
       g_windowMgr.CloseWindow(WID_JOINFRIENDACCEPTWND);
-      g_modeMgr.gameMode->SendMsg(MM_JOIN_FRIEND, this->m_accountId, this->m_characterId, 1, 0);
+      g_modeMgr.currentMode->SendMsg(MM_JOIN_FRIEND, this->m_accountId, this->m_characterId, 1, 0);
       break;
     case ID_CANCEL:
       g_windowMgr.CloseWindow(WID_JOINFRIENDACCEPTWND);
-      g_modeMgr.gameMode->SendMsg(MM_JOIN_FRIEND, this->m_accountId, this->m_characterId, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_JOIN_FRIEND, this->m_accountId, this->m_characterId, 0, 0);
       break;
     }
     break;
@@ -8099,7 +8099,7 @@ int UIMixAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
   case UM_COMMAND:
     switch (a) {
     case ID_OK: {
-      CMode* mode = g_modeMgr.gameMode;
+      CMode* mode = g_modeMgr.currentMode;
       g_windowMgr.CloseWindow(WID_ITEMSHOPWND2);
       g_windowMgr.CloseWindow(WID_ITEMSELLWND2);
       mode->SendMsg(MM_ITEMLISTWIN_RES, 0, 0, 0, 0);
@@ -8281,7 +8281,7 @@ int UISkillNameChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
   case UM_COMMAND:
     if (a == ID_OK) {
       if (this->m_skillId != -1 && this->m_edit->Length() != 0) {
-        g_modeMgr.gameMode->SendMsg(98, this->m_skillId, reinterpret_cast<std::intptr_t>(this->m_edit->Text()), 0, 0);
+        g_modeMgr.currentMode->SendMsg(98, this->m_skillId, reinterpret_cast<std::intptr_t>(this->m_edit->Text()), 0, 0);
       }
       g_windowMgr.CloseWindow(WID_SKILLNAMECHANGEWND);
     }
@@ -8307,7 +8307,7 @@ int UIStarPlaceAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     this->RecordResponse(static_cast<int>(a), b, c, d);
     switch (a) {
     case ID_OK: {
-      CMode* mode = g_modeMgr.GetGameMode();
+      CGameMode* mode = g_modeMgr.GetGameMode();
       g_windowMgr.CloseWindow(WID_STARPLACEACCEPTWND);
       mode->SendMsg(MM_STARPLACE_ACCEPT, this->m_place, 0, 0, 0);
       break;
@@ -8521,7 +8521,7 @@ static __forceinline void RequestTraitPointUp(CMode* mode, int index) {
 // OFFSET: 0x00905830
 // FUNCTION: fn_12383
 int UIStatusWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  CMode* mode = g_modeMgr.gameMode;
+  CMode* mode = g_modeMgr.currentMode;
   const int* statCosts = g_session.m_statusPointCost;
   const int statusPoint = g_session.m_statusPoint;
   switch (message) {
@@ -8660,7 +8660,7 @@ int UIStatusWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 // OFFSET: 0x00905F40
 // FUNCTION: fn_12384
 int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  CMode* mode = g_modeMgr.gameMode;
+  CMode* mode = g_modeMgr.currentMode;
 
   if (message == UM_COMMAND) {
     switch (a) {
@@ -9769,7 +9769,7 @@ int UIPetEggListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       int found = 0;
       ITEM_INFO item = this->GetItem(this->m_selected, &found);
       if (found) {
-        g_modeMgr.gameMode->SendMsg(MM_PETEGG_SELECT_FROM_LIST, item.identity[1], 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(MM_PETEGG_SELECT_FROM_LIST, item.identity[1], 0, 0, 0);
       }
       break;
     }
@@ -10035,7 +10035,7 @@ void UIEquipWnd::OnLBtnDown(int x, int y) {
   }
 
   if (item.quantity > 0) {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     const EquipSlots slots = g_session.GetEquipSlots(item.identity[3]);
     if (this->m_page == 1) {
       mode->drag.BeginItem(g_windowMgr, 24, item, item.quantity, slots.values[2]);
@@ -10169,9 +10169,9 @@ int UIMakingArrowListWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::
       ITEM_INFO item = this->GetItem(this->m_selected, &found);
       if (found != 0) {
         if (this->listType == 2) {
-          g_modeMgr.gameMode->SendMsg(MM_ARROW_FROM_LIST, item.GetItemId(), 0, 0, 0);
+          g_modeMgr.currentMode->SendMsg(MM_ARROW_FROM_LIST, item.GetItemId(), 0, 0, 0);
         } else {
-          g_modeMgr.gameMode->SendMsg(MM_ITEM_FROM_LIST, item.GetItemId(), this->listType, 0, 0);
+          g_modeMgr.currentMode->SendMsg(MM_ITEM_FROM_LIST, item.GetItemId(), this->listType, 0, 0);
         }
         g_windowMgr.CloseWindow(WID_MAKINGARROWLISTWND);
       }
@@ -10179,9 +10179,9 @@ int UIMakingArrowListWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::
     }
     case ID_CANCEL:
       if (this->listType == 2) {
-        g_modeMgr.gameMode->SendMsg(MM_ARROW_FROM_LIST, -1, 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(MM_ARROW_FROM_LIST, -1, 0, 0, 0);
       } else {
-        g_modeMgr.gameMode->SendMsg(MM_ITEM_FROM_LIST, -1, this->listType, 0, 0);
+        g_modeMgr.currentMode->SendMsg(MM_ITEM_FROM_LIST, -1, this->listType, 0, 0);
       }
       g_windowMgr.CloseWindow(WID_MAKINGARROWLISTWND);
       break;
@@ -10749,7 +10749,7 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
       break;
     case ID_CANCEL:
       if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT), 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
-        g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
         g_windowMgr.Schedule(this);
       }
       break;
@@ -11157,7 +11157,7 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       break;
     case ID_CANCEL:
       if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT), 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
-        g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
+        g_modeMgr.currentMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
         g_windowMgr.Schedule(this);
       }
       break;
@@ -11532,7 +11532,7 @@ void UIEquipWnd::RefreshLook()
     appearance[2] = g_session.m_head;
     appearance[6] = g_session.m_bodyStyle;
     appearance[7] = g_session.m_headPalette;
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     if (mode->scene && mode->scene->player)
       costumeJob = mode->scene->player->GetBodyCostume();
   } else {
@@ -11978,7 +11978,7 @@ int UIChooseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     return 0;
   }
   case UM_CANCEL_NPC_CHOICE:
-    if (CMode* mode = g_modeMgr.GetGameMode()) {
+    if (CGameMode* mode = g_modeMgr.GetGameMode()) {
       mode->SendMsg(MM_CHOOSE_MENU, -1, this->m_npcAid, 0, 0);
     }
     return 0;
@@ -12322,7 +12322,7 @@ int UIProhibitListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   
     break;
   case UM_COMBOBOX_SELECTED: {
-    CMode* mode = g_modeMgr.GetGameMode();
+    CGameMode* mode = g_modeMgr.GetGameMode();
     switch (a) {
     case 0: {
       if (!IsMonsterJob(g_session.m_aid)) {
@@ -12576,7 +12576,7 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
     this->m_bitmapName = "유저인터페이스\\collection\\" + std::string(this->m_item.ResourcePath()) + ".bmp";
     const std::vector<const char*>& descriptions = this->m_item.Description();
     this->m_viewButton->Move(6, argument2 != 0 ? -100 : IsItemCard(std::atoi(this->m_item.itemId.c_str())) * 100 - 94);
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     if (mode->HasInventoryItem(std::atoi(this->m_item.itemId.c_str()))) {
       const int y = IsBookItem(std::atoi(this->m_item.itemId.c_str())) * 100 - 94;
       for (int index = 0; index < 2; ++index) {
@@ -12759,7 +12759,7 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
       lines.emplace_back(descriptions[index]);
     }
     this->m_viewButton->Move(6, IsItemCard(std::atoi(this->m_item.itemId.c_str())) * 100 - 94);
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     if (mode->HasInventoryItem(std::atoi(this->m_item.itemId.c_str()))) {
       const int y = IsBookItem(std::atoi(this->m_item.itemId.c_str())) * 100 - 94;
       for (int index = 0; index < 2; ++index) {

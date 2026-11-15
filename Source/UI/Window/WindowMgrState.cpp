@@ -1068,7 +1068,7 @@ void UIWindowMgr::SetBackgroundSurface(CBitmapRes* bitmap) {
 // OFFSET: 0x00AAA050
 // FUNCTION: fn_17266
 void UIWindowMgr::SendFlagEffect(int hotkey) {
-  CMode* mode = g_modeMgr.gameMode;
+  CMode* mode = g_modeMgr.currentMode;
   if (!mode) {
     return;
   }
@@ -1166,12 +1166,12 @@ void UIWindowMgr::RestoreHiddenWindows() {
     }
   }
 
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   if (mode && mode->canRotateView == 1) {
     this->EnsureWindow(WID_MINIMAPZOOMWND);
   }
 
-  static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->RefreshEffect164();
+  g_modeMgr.GetGameMode()->scene->player->RefreshEffect164();
   this->windowVisibilityState = 1;
 
   for (std::map<int, UIWindow*>::iterator it = this->overlays.begin(); it != this->overlays.end(); ++it) {
@@ -1206,7 +1206,7 @@ int UIWindowMgr::RunEmailAddress() {
   this->modalResponse = 0;
   this->modalWindows.push_back(window);
   int response;
-  CMode* pump = g_modeMgr.gameMode;
+  CMode* pump = g_modeMgr.currentMode;
 
   for (;;) {
     if (g_modalImmediate != 0) {
@@ -1244,7 +1244,7 @@ int UIWindowMgr::RunEmailAddress() {
 
     if (pump) {
       pump->Update();
-      pump = g_modeMgr.gameMode;
+      pump = g_modeMgr.currentMode;
     }
 
     if (g_session.GetOption(20) > 0) {

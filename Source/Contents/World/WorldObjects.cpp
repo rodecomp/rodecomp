@@ -379,7 +379,7 @@ CSkill* CWorld::GetSkillByAID(std::uint32_t aid) const {
 // OFFSET: 0x00B3C350
 // FUNCTION: fn_18807
 CRenderObject* FindRenderObject(std::uint32_t aid) {
-  CWorld* scene = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene;
+  CWorld* scene = g_modeMgr.GetGameMode()->scene;
 
   if (g_session.m_aid == aid) {
     return static_cast<CRenderObject*>(scene->player);
@@ -486,7 +486,7 @@ void CGameMode::UpdateNameBalloon(CGameActor* actor) {
   } else if (actor->GetGdid() && showEmblem) {
     const unsigned char framedEmblem = g_serviceOptions.Get(TT_EMBLEM_FRAME_ON_OFF);
     std::string emblem = g_guildMgr->GetEmblemFilename(actor->GetGdid());
-    this->nameBalloon->SetIcon(emblem.c_str(), static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->isSiegeMode == 1 && framedEmblem ? 1 : 0);
+    this->nameBalloon->SetIcon(emblem.c_str(), g_modeMgr.GetGameMode()->scene->isSiegeMode == 1 && framedEmblem ? 1 : 0);
   } else if (this->scene->player == actor) {
     char path[256];
     std::memset(path, 0, sizeof(path));
@@ -785,7 +785,7 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
       menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(line), 0, 0, 0);
     }
 
-    CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+    CPlayer* player = g_modeMgr.GetGameMode()->scene->player;
     if (!StateFlag01(player->GetStateFlags()) && !StateFlag02(player->GetStateFlags())) {
       this->actorMenuIds.push_back(0x2A);
       sprintf(line, LookupMessage(MSI_REQ_VIEW_OTHERUSER), name.c_str());

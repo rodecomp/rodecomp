@@ -212,7 +212,7 @@ void CEmitterEffect::UpdateParticle(CParticle* particle) {
       } else {
         matrix rotation;
         std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
-        const CView* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera;
+        const CView* view = g_modeMgr.GetGameMode()->camera;
         rotation.MakeXRotation(view->camera.pitch / 180.0f * 3.141592f);
         matrix scale;
         std::memcpy(scale.values, g_identityMatrix, sizeof(scale.values));

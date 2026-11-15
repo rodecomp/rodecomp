@@ -38,10 +38,10 @@ void UITextureButton::OnLBtnUp(int x, int y) {
     if (this->parent) {
       if (g_windowMgr.WindowPolicy(3, this->parent->geometry.id) > 0) {
         int id = this->geometry.id;
-        if (id == 185 && g_modeMgr.gameMode && g_modeMgr.gameMode->cursorType == 2) {
+        if (id == 185 && g_modeMgr.currentMode && g_modeMgr.currentMode->cursorType == 2) {
           const char* text = LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT);
           if (g_windowMgr.Confirm(text, 2, true, false, 0, "Message", 280, 120, 0) == 187) {
-            g_modeMgr.gameMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
+            g_modeMgr.currentMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
           }
         } else {
           if (id == 184 || id == 321) {
@@ -53,7 +53,7 @@ void UITextureButton::OnLBtnUp(int x, int y) {
         }
       }
     } else {
-      g_modeMgr.gameMode->SendMsg(MM_COMMAND, this->geometry.id, this->m_argument, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_COMMAND, this->geometry.id, this->m_argument, 0, 0);
     }
   }
 

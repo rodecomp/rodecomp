@@ -360,13 +360,13 @@ void CEZ2STREffectEx::OnProcess() {
   }
 
   if (this->emitter->m_followGround) {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     this->position[1] = mode->scene->terrain->Height(this->position[0], this->position[2]);
   }
 
   if (CEZ2STRParticle* emitter = this->emitter) {
-    const float* view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values;
-    const float* inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse.values;
+    const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
+    const float* inverse = g_modeMgr.GetGameMode()->camera->frame.inverse.values;
 
     const float x = this->position[0];
     const float y = this->position[1];
@@ -396,9 +396,9 @@ void CEZ2STREffectEx::Render() {
   }
 
   if (this->alternateRender) {
-    static_cast<CEZ2STRParticle*>(this->emitter)->DrawGround(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+    static_cast<CEZ2STRParticle*>(this->emitter)->DrawGround(g_modeMgr.GetGameMode()->camera->frame.view);
   } else {
-    static_cast<CEZ2STRParticle*>(this->emitter)->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+    static_cast<CEZ2STRParticle*>(this->emitter)->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
   }
 }
 

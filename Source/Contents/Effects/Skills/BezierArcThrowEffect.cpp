@@ -65,7 +65,7 @@ void CBezierArcThrowEffect::OnProcess() {
   }
 
   const vector3d actorPos = actor->render.position;
-  const matrix& view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
+  const matrix& view = g_modeMgr.GetGameMode()->camera->frame.view;
   vector3d actorView = TransformPoint(view, actorPos);
   float targetViewX = this->m_target.y * view.values[3] +
                       this->m_target.x * view.values[0] +
@@ -80,7 +80,7 @@ void CBezierArcThrowEffect::OnProcess() {
   }
 
   actorView.y -= 10.0f;
-  vector3d ctrlPt = TransformPoint(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse, actorView);
+  vector3d ctrlPt = TransformPoint(g_modeMgr.GetGameMode()->camera->frame.inverse, actorView);
   this->m_progress -= 0.07f;
 
   vector3d delta;
@@ -120,7 +120,7 @@ void CBezierArcThrowEffect::OnProcess() {
 // FUNCTION: fn_09111
 void CBezierArcThrowEffect::Render() {
   if (this->m_particle) {
-    this->m_particle->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+    this->m_particle->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
   }
 }
 

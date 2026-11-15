@@ -59,8 +59,8 @@ void CGameActor::ProcessDamageMessages() {
         notice[0] = '\0';
         partyNotice[0] = '\0';
 
-        std::string targetName = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ActorName(targetAid);
-        std::string attackerName = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->ActorName(attackerAid);
+        std::string targetName = g_modeMgr.GetGameMode()->ActorName(targetAid);
+        std::string attackerName = g_modeMgr.GetGameMode()->ActorName(attackerAid);
 
         std::size_t position = targetName.find('#');
         if (position != std::string::npos) {
@@ -73,12 +73,12 @@ void CGameActor::ProcessDamageMessages() {
         }
 
         if (targetName.empty()) {
-          const CActorNameCard& card = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->LookupNameCard(targetAid);
+          const CActorNameCard& card = g_modeMgr.GetGameMode()->LookupNameCard(targetAid);
           targetName.assign(card.displayName.empty() ? std::string(LookupMessage(MSI_WHO_IS)) : card.displayName);
         }
 
         if (attackerName.empty()) {
-          const CActorNameCard& card = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->LookupNameCard(attackerAid);
+          const CActorNameCard& card = g_modeMgr.GetGameMode()->LookupNameCard(attackerAid);
           attackerName.assign(card.displayName.empty() ? std::string(LookupMessage(MSI_WHO_IS)) : card.displayName);
         }
 
@@ -117,7 +117,7 @@ void CGameActor::ProcessDamageMessages() {
 // OFFSET: 0x00CB2040
 // FUNCTION: fn_21100
 void CGameActor::RegisterPos() {
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   int column;
   int row;
   mode->WorldCell(this->render.position.x, this->render.position.z, column, row);
@@ -141,7 +141,7 @@ bool CGameActor::ProcessState() {
     this->render.colorChannels.alpha = alpha > 255 ? 255 : static_cast<unsigned char>(alpha);
   }
 
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   CWorld* world = mode->scene;
   const std::uint32_t serverTime = g_session.GetServerTime();
   int moved = 0;
@@ -297,7 +297,7 @@ bool CGameActor::ProcessState() {
       const int frames = static_cast<int>(this->GetElapsedFrames());
       if (this->hitTargetAid != 0) {
         if (frames % 34 == 0) {
-          CRenderObject* target = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->GetGameActorByAID(this->hitTargetAid);
+          CRenderObject* target = g_modeMgr.GetGameMode()->scene->GetGameActorByAID(this->hitTargetAid);
           if (target != nullptr) {
             this->Face(target->render.position.x, target->render.position.z);
           }
@@ -671,7 +671,7 @@ void CGameActor::ReleaseAttachments() {
   this->msgEffectList.erase(this->msgEffectList.begin(), this->msgEffectList.end());
 
   if (g_session.GetSiegeMode() && this->sceneNameWindow) {
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->RemoveNotificationWindow(this->sceneNameWindow);
+    g_modeMgr.GetGameMode()->RemoveNotificationWindow(this->sceneNameWindow);
     g_windowMgr.Schedule(this->sceneNameWindow);
     this->sceneNameWindow = nullptr;
   }
@@ -1200,7 +1200,7 @@ void __stdcall CreateHallucinationPc(
   argb.red = 0xFF;
   argb.blue = 0xFF;
 
-  static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->objects.push_back(hallu);
+  g_modeMgr.GetGameMode()->scene->objects.push_back(hallu);
   delete pc;
 }
 

@@ -1585,8 +1585,8 @@ bool CEZ2STRScreenEffect::ApplyHeadOffset(CEZ2STRParticle* particle) {
   }
 
   vector3d position = particle->position;
-  const matrix& view = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view;
-  const matrix& inverse = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.inverse;
+  const matrix& view = g_modeMgr.GetGameMode()->camera->frame.view;
+  const matrix& inverse = g_modeMgr.GetGameMode()->camera->frame.inverse;
 
   float x = position.y * view.values[3] + position.x * view.values[0] + position.z * view.values[6] + view.values[9] + shiftX;
   float y = position.y * view.values[4] + position.x * view.values[1] + position.z * view.values[7] + view.values[10] - shiftY;
@@ -5374,7 +5374,7 @@ void CEZ2STRScreenEffect::InitParticle(CEZ2STRParticle* particle, int id) {
 // FUNCTION: fn_19044
 void CEZ2STRScreenEffect::OnProcess() {
   if (this->followCamera == 1 && this->particle) {
-    double yaw = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->camera.yaw;
+    double yaw = g_modeMgr.GetGameMode()->camera->camera.yaw;
     if (yaw != this->cameraAngle) {
       CEZ2STRParticle* particle = this->particle;
       double angle = this->cameraAngle - yaw + particle->m_angle;
@@ -5405,7 +5405,7 @@ void CEZ2STRScreenEffect::OnProcess() {
   if (this->id == EF_ABYSS_SQUARE) {
     int frame = this->particle->elapsedFrames - 30;
     if (frame >= 0 && frame % 64 == 0) {
-      CRenderObject* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+      CRenderObject* player = g_modeMgr.GetGameMode()->scene->player;
       g_soundMgr->PlayWave(
         "effect\\ABC_ABYSS_SQUARE.wav", player->render.position.x - this->position[0], 0.0f, player->render.position.z - this->position[2], 250, 40, 1.0f, 0
       );
@@ -5470,7 +5470,7 @@ void CEZ2STRScreenEffect::Render() {
   DrawBlendedRectangle(0, 0, g_renderer->viewport.width, g_renderer->viewport.height, this->overlayColor);
 
 draw:
-  particle->DrawScreen(static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view);
+  particle->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
 }
 
 // OFFSET: 0x00B66460
@@ -5768,7 +5768,7 @@ void CEZ2STRScreenEffect::Open() {
   this->particle = particle;
   this->InitParticle(particle, this->id);
 
-  CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+  CGameMode* mode = g_modeMgr.GetGameMode();
   this->cameraAngle = static_cast<double>(mode->camera->camera.yaw);
 
   if (this->id >= 0x9B5) {
@@ -6251,8 +6251,8 @@ void CEZ2STRScreenEffect::InitEvents() {
     float fromY;
     float toX;
     float toY;
-    g_renderer->ProjectViewport(this->position, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, &fromX, &fromY, &fromReciprocalDepth);
-    g_renderer->ProjectViewport(this->sourcePosition, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, &toX, &toY, &toReciprocalDepth);
+    g_renderer->ProjectViewport(this->position, g_modeMgr.GetGameMode()->camera->frame.view.values, &fromX, &fromY, &fromReciprocalDepth);
+    g_renderer->ProjectViewport(this->sourcePosition, g_modeMgr.GetGameMode()->camera->frame.view.values, &toX, &toY, &toReciprocalDepth);
 
     const float dx = toX - fromX;
     const float dy = toY - fromY;
@@ -6288,8 +6288,8 @@ void CEZ2STRScreenEffect::InitEvents() {
     float fromY;
     float toX;
     float toY;
-    g_renderer->ProjectViewport(this->position, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, &fromX, &fromY, &fromReciprocalDepth);
-    g_renderer->ProjectViewport(this->sourcePosition, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, &toX, &toY, &toReciprocalDepth);
+    g_renderer->ProjectViewport(this->position, g_modeMgr.GetGameMode()->camera->frame.view.values, &fromX, &fromY, &fromReciprocalDepth);
+    g_renderer->ProjectViewport(this->sourcePosition, g_modeMgr.GetGameMode()->camera->frame.view.values, &toX, &toY, &toReciprocalDepth);
 
     const float dx = toX - fromX;
     const float dy = toY - fromY;
@@ -6401,8 +6401,8 @@ void CEZ2STRScreenEffect::InitEvents() {
     float fromY;
     float toX;
     float toY;
-    g_renderer->ProjectViewport(this->position, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, &fromX, &fromY, &fromReciprocalDepth);
-    g_renderer->ProjectViewport(this->sourcePosition, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values, &toX, &toY, &toReciprocalDepth);
+    g_renderer->ProjectViewport(this->position, g_modeMgr.GetGameMode()->camera->frame.view.values, &fromX, &fromY, &fromReciprocalDepth);
+    g_renderer->ProjectViewport(this->sourcePosition, g_modeMgr.GetGameMode()->camera->frame.view.values, &toX, &toY, &toReciprocalDepth);
 
     const float dx = toX - fromX;
     const float dy = toY - fromY;

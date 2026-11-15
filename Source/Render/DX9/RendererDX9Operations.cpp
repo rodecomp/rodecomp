@@ -57,7 +57,7 @@ void CRendererDX9::ClearDepth(int clearColor) {
 // FUNCTION: fn_02215
 void CRendererDX9::ClearWorld() {
   unsigned color = this->clearColor;
-  if (this->fog.enabled == 1 && static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->backgroundFog == 1) {
+  if (this->fog.enabled == 1 && g_modeMgr.GetGameMode()->scene->backgroundFog == 1) {
     color = this->BlendColor(this->clearColor, g_worldOverlayColor);
   }
 

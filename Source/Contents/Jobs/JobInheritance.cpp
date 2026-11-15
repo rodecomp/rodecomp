@@ -1332,19 +1332,19 @@ int CSession::GetPetTargetAid() const {
   std::uint32_t aid = this->m_homunAid;
   CGameMode* mode;
   CRenderObject* actor;
-  if (aid != 0 && (mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode())) != nullptr &&
+  if (aid != 0 && (mode = g_modeMgr.GetGameMode()) != nullptr &&
       (actor = mode->scene->GetGameActorByAID(aid)) != nullptr) {
     target = static_cast<CGameActor*>(actor)->hitTargetAid;
   }
 
   aid = this->m_mercenaryAid;
-  if (aid != 0 && (mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode())) != nullptr &&
+  if (aid != 0 && (mode = g_modeMgr.GetGameMode()) != nullptr &&
       (actor = mode->scene->GetGameActorByAID(aid)) != nullptr) {
     target = static_cast<CGameActor*>(actor)->hitTargetAid;
   }
 
   if (target > 0) {
-    mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    mode = g_modeMgr.GetGameMode();
     if (mode == nullptr || mode->scene->GetGameActorByAID(target) == nullptr) {
       return 0;
     }
@@ -1355,7 +1355,7 @@ int CSession::GetPetTargetAid() const {
 // OFFSET: 0x00E1D950
 // FUNCTION: fn_23854
 int CSession::GetBattleFieldMode() const {
-  return static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->isBattleFieldMode;
+  return g_modeMgr.GetGameMode()->scene->isBattleFieldMode;
 }
 
 // OFFSET: 0x00E1D970
@@ -1957,7 +1957,7 @@ bool CSession::PlaySkillGroundEffect(int skillId, vector3d position) {
       if (g_effectMgr->HasAllocator(effectId)) {
         g_effectMgr->Spawn(0, effectId, position, 0, -1, 0, 0);
       } else {
-        static_cast<CGameMode*>(g_modeMgr.GetGameMode())
+        g_modeMgr.GetGameMode()
           ->LaunchDummyEffect(&position, effectId, EffectLifetime(effectId) + 10, 0);
       }
     }
@@ -2131,7 +2131,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     }
     break;
   case AC_SHOWER: {
-    CGameMode* mode = static_cast<CGameMode*>(g_modeMgr.GetGameMode());
+    CGameMode* mode = g_modeMgr.GetGameMode();
     vector3d* sourcePosition = &source->render.position;
     mode->SpawnArrowEffect64(sourcePosition, &target->render.position, 18.0f);
     int column;
@@ -2203,7 +2203,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     break;
   case AM_ACIDTERROR:
     if (g_modeMgr.GetGameMode() != nullptr) {
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->LaunchTargetEffect(0x12A, source, target, -1);
+      g_modeMgr.GetGameMode()->LaunchTargetEffect(0x12A, source, target, -1);
     }
     break;
   case TF_SPRINKLESAND:
@@ -2211,11 +2211,11 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     break;
   case TF_THROWSTONE:
     if (g_modeMgr.GetGameMode() != nullptr) {
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->LaunchTargetEffect(0x134, source, target, -1);
+      g_modeMgr.GetGameMode()->LaunchTargetEffect(0x134, source, target, -1);
     }
     break;
   case RG_INTIMIDATE:
-    effect = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(EF_INTIMIDATE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    effect = g_modeMgr.GetGameMode()->scene->player->LaunchEffect(EF_INTIMIDATE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = source->render.position;
       effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
@@ -2288,27 +2288,27 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     break;
   case CR_ACIDDEMONSTRATION: {
     vector3d position = target->render.position;
-    static_cast<CGameMode*>(g_modeMgr.GetGameMode())->LaunchDummyEffect(&position, 0x219, 100, 0);
+    g_modeMgr.GetGameMode()->LaunchDummyEffect(&position, 0x219, 100, 0);
     break;
   }
   case NJ_SYURIKEN:
     if (g_modeMgr.GetGameMode() != nullptr) {
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->LaunchTargetEffect(0x265, source, target, -1);
+      g_modeMgr.GetGameMode()->LaunchTargetEffect(0x265, source, target, -1);
     }
     break;
   case NJ_KUNAI:
     if (g_modeMgr.GetGameMode() != nullptr) {
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->LaunchTargetEffect(0x266, source, target, -1);
+      g_modeMgr.GetGameMode()->LaunchTargetEffect(0x266, source, target, -1);
     }
     break;
   case NJ_HUUMA:
     if (g_modeMgr.GetGameMode() != nullptr) {
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->LaunchTargetEffect(0x267, source, target, -1);
+      g_modeMgr.GetGameMode()->LaunchTargetEffect(0x267, source, target, -1);
     }
     break;
   case NJ_ZENYNAGE:
     if (g_modeMgr.GetGameMode() != nullptr) {
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->LaunchTargetEffect(0x268, source, target, -1);
+      g_modeMgr.GetGameMode()->LaunchTargetEffect(0x268, source, target, -1);
     }
     break;
   case NJ_KOUENKA:
@@ -2497,7 +2497,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     g_soundMgr->PlayWave("effect\\EF_FireWall.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   case NPC_EXPULSION:
-    effect = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player->LaunchEffect(EF_INTIMIDATE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    effect = g_modeMgr.GetGameMode()->scene->player->LaunchEffect(EF_INTIMIDATE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
       vector3d position = target->render.position;
       effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
@@ -2556,7 +2556,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     break;
   case AS_VENOMKNIFE:
     if (g_modeMgr.GetGameMode() != nullptr) {
-      static_cast<CGameMode*>(g_modeMgr.GetGameMode())->LaunchTargetEffect(0x258, source, target, -1);
+      g_modeMgr.GetGameMode()->LaunchTargetEffect(0x258, source, target, -1);
     }
     break;
   case RK_HUNDREDSPEAR:
@@ -2589,7 +2589,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     }
     break;
   case GC_CROSSRIPPERSLASHER: {
-    float angle = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->CameraDesiredYaw() + source->render.angle;
+    float angle = g_modeMgr.GetGameMode()->CameraDesiredYaw() + source->render.angle;
     if (angle >= 360.0f) {
       angle -= 360.0f;
     }
@@ -2673,7 +2673,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     break;
   case RA_AIMEDBOLT: {
     g_effectMgr->Spawn(target->render.accountId, EF_NEW_AIMEDBOLT_END, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
-    float angle = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->CameraDesiredYaw() + source->render.angle;
+    float angle = g_modeMgr.GetGameMode()->CameraDesiredYaw() + source->render.angle;
     if (angle >= 360.0f) {
       angle -= 360.0f;
     }
@@ -2882,7 +2882,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     g_soundMgr->PlayWave("effect\\LG_TRAMPLE.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   case LG_BANISHINGPOINT: {
-    float angle = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->CameraDesiredYaw() + source->render.angle;
+    float angle = g_modeMgr.GetGameMode()->CameraDesiredYaw() + source->render.angle;
     if (angle >= 360.0f) {
       angle -= 360.0f;
     }
@@ -2933,7 +2933,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     break;
   }
   case LG_CANNONSPEAR: {
-    float angle = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->CameraDesiredYaw() + source->render.angle;
+    float angle = g_modeMgr.GetGameMode()->CameraDesiredYaw() + source->render.angle;
     if (angle >= 360.0f) {
       angle -= 360.0f;
     }
@@ -3117,7 +3117,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     }
     break;
   case NC_POWERSWING: {
-    float angle = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->CameraDesiredYaw() + source->render.angle;
+    float angle = g_modeMgr.GetGameMode()->CameraDesiredYaw() + source->render.angle;
     if (angle >= 360.0f) {
       angle -= 360.0f;
     }
@@ -3216,7 +3216,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     if (machine) {
       static_cast<CAMachineEffect*>(machine)->PlayAttack();
     }
-    CPlayer* player = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->player;
+    CPlayer* player = g_modeMgr.GetGameMode()->scene->player;
     g_soundMgr->PlayWave(
       "effect\\MT_A_MACHINE.wav", target->render.position.x - player->render.position.x, 0.0f, target->render.position.z - player->render.position.z,
       250, 40, 1.0f, 0

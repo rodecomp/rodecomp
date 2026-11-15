@@ -261,7 +261,7 @@ void UIItemReformWnd_Item::OnMouseHover(int x, int y) {
     this->ToScreen(screenX, screenY);
     const int tipX = screenX + 5;
     const int tipY = screenY - 5;
-    CMode* mode = g_modeMgr.gameMode;
+    CMode* mode = g_modeMgr.currentMode;
     mode->ShowTooltip(this->item->DisplayName(0).c_str(), tipX, tipY, 0xFFFFFFFFu, 0, 1);
   }
 }

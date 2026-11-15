@@ -154,7 +154,7 @@ void CSkillAction_SH_CHUL_HO_SONIC_CLAW::OnSkillEffect(int level, CGameActor* so
     return;
   }
 
-  const float angle = ScreenAngle(&source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values);
+  const float angle = ScreenAngle(&source->render.position.x, &target->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values);
   const int waves[12] = {12, 1, 1, 3, 5, 5, 6, 7, 7, 9, 11, 11};
   const int index = static_cast<int>(angle + 105.0f) % 360 / 30;
   if (index >= 0 && static_cast<std::size_t>(index) < sizeof(waves) / sizeof(waves[0])) {
@@ -416,7 +416,7 @@ void CSkillAction_SH_HYUN_ROK_CANNON::OnSkillEffect(int level, CGameActor* sourc
   }
 
   const float angle = ScreenAngle(
-    &source->render.position.x, &target->render.position.x, static_cast<CGameMode*>(g_modeMgr.GetGameMode())->camera->frame.view.values
+    &source->render.position.x, &target->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values
   );
   EffectLists* effects = g_effectMgr;
   if (CEffect* effect =

@@ -228,14 +228,14 @@ void UIRodexContentsWnd::OnMouseHover(int x, int y) {
     int tooltipY = 290;
     this->ToScreen(tooltipX, tooltipY);
     if (item.identified == 1 && item.optionCount != 0) {
-      CMode* gameMode = g_modeMgr.gameMode;
+      CMode* gameMode = g_modeMgr.currentMode;
       std::uint32_t color = g_session.GetItemNameColor(item);
       int screenX = tooltipX;
       int screenY = tooltipY;
       gameMode->ShowTooltip(FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), item.DisplayName(0).c_str(), item.optionCount).c_str(), screenX, screenY,
                     color, 0, 1);
     } else {
-      CMode* gameMode = g_modeMgr.gameMode;
+      CMode* gameMode = g_modeMgr.currentMode;
       std::uint32_t color = g_session.GetItemNameColor(item);
       int screenX = tooltipX;
       int screenY = tooltipY;
@@ -268,7 +268,7 @@ int UIRodexContentsWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       break;
     case ID_BUTTON1:
       if (this->m_items.size() != 0) {
-        if (g_modeMgr.GetGameMode() && static_cast<CGameMode*>(g_modeMgr.GetGameMode())->IsMenuWindowOpen() == 1) {
+        if (g_modeMgr.GetGameMode() && g_modeMgr.GetGameMode()->IsMenuWindowOpen() == 1) {
           break;
         }
         RodexMailAttachmentRequestPacket packet;
@@ -284,7 +284,7 @@ int UIRodexContentsWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       break;
     case ID_BUTTON2:
       if (this->m_zeny > 0) {
-        if (g_modeMgr.GetGameMode() && static_cast<CGameMode*>(g_modeMgr.GetGameMode())->IsMenuWindowOpen() == 1) {
+        if (g_modeMgr.GetGameMode() && g_modeMgr.GetGameMode()->IsMenuWindowOpen() == 1) {
           break;
         }
         RodexMailAttachmentRequestPacket packet;

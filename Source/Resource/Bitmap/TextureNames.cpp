@@ -38,7 +38,7 @@ const char* Resolve(const char* name) {
   const std::string original(name);
 
   if (original.find("유저인터페이스", 0, 14) != std::string::npos) {
-    if (g_modeMgr.gameMode && g_skinInfo.Selected() == true) {
+    if (g_modeMgr.currentMode && g_skinInfo.Selected() == true) {
       const std::string prefix(g_skinInfo.Prefix());
       // STATIC: 0x016D58CC
       // GLOBAL: gl_24385

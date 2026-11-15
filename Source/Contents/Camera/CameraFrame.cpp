@@ -20,7 +20,7 @@ void CView::Refresh() {
   this->frame.eye[0] = (((orbit.values[3] * 0.0f + orbit.values[0] * 0.0f) + distance * orbit.values[6]) + orbit.values[9]) + this->camera.target[0];
   this->frame.eye[1] = this->camera.target[1] + this->frame.eye[1];
   this->frame.eye[2] = this->camera.target[2] + this->frame.eye[2];
-  const float height = static_cast<CGameMode*>(g_modeMgr.GetGameMode())->scene->terrain->Height(this->frame.eye[0], this->frame.eye[2]);
+  const float height = g_modeMgr.GetGameMode()->scene->terrain->Height(this->frame.eye[0], this->frame.eye[2]);
 
   if (this->frame.eye[1] > height) {
     this->frame.eye[1] = height;
