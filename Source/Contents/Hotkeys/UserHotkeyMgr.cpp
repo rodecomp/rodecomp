@@ -49,22 +49,22 @@ namespace {
     }
     return index == HK_MENUICON_HIDE;
   }
+}
 
-  // OFFSET: 0x00E12E50
-  // FUNCTION: fn_23820
-  int HotkeyIndex(LuaScript& script, int tab, int index) {
-    if (tab == 1 && index >= HK_FIRST_HIDDEN) {
-      for (int candidate = HK_FIRST_HIDDEN; candidate <= index; ++candidate) {
-        if (HiddenInterfaceIndex(candidate)) {
-          ++index;
-        }
+// OFFSET: 0x00E12E50
+// FUNCTION: fn_23820
+int CSession::HotkeyIndex(int tab, int index) const {
+  if (tab == 1 && index >= HK_FIRST_HIDDEN) {
+    for (int candidate = HK_FIRST_HIDDEN; candidate <= index; ++candidate) {
+      if (HiddenInterfaceIndex(candidate)) {
+        ++index;
       }
     }
-
-    int count = 0;
-    script.Call("GetOriginalHotKeyListSize", "d>d", tab + 1, &count);
-    return index >= count ? -1 : index;
   }
+
+  int count = 0;
+  g_session.m_hotkeyScript->Call("GetOriginalHotKeyListSize", "d>d", tab + 1, &count);
+  return index >= count ? -1 : index;
 }
 
 // OFFSET: 0x00E0A4C0
@@ -185,7 +185,7 @@ void CUserHotkeyMgr::Capture() {
     const int count = g_session.HotkeyCount(tab);
 
     for (int row = 0; row < count; ++row) {
-      const int index = HotkeyIndex(*g_session.m_hotkeyScript, tab, row);
+      const int index = g_session.HotkeyIndex(tab, row);
       if (index == -1) {
         continue;
       }
@@ -207,27 +207,28 @@ void CUserHotkeyMgr::Capture() {
 
 // OFFSET: 0x005F8100
 // FUNCTION: fn_04060
-bool CUserHotkeyMgr::HasUserAssignments(LuaScript& script) const {
+bool CUserHotkeyMgr::HasUserAssignments() const {
   for (int position = 0; position < 4; ++position) {
     const int tab = this->TabAt(position);
-    const int count = HotkeyCount(script, tab);
+    const int count = g_session.HotkeyCount(tab);
 
     for (int row = 0; row < count; ++row) {
-      const int index = HotkeyIndex(script, tab, row);
+      const int index = g_session.HotkeyIndex(tab, row);
       if (index == -1) {
         continue;
       }
 
       std::string keyName;
+      int key1 = 0;
+      int key2 = 0;
       std::string userDescription;
-      int key1, key2;
       const char* keyText = nullptr;
       const char* description = nullptr;
 
-      if (script.Call("GetUserHotKeyInfo", "dd>ddss", tab + 1, index, &key1, &key2, &keyText, &description)) {
+      if (g_session.m_hotkeyScript->Call("GetUserHotKeyInfo", "dd>ddss", tab + 1, index, &key1, &key2, &keyText, &description)) {
         userDescription = description;
         if (!userDescription.empty() &&
-            script.Call("GetOriginalHotKeyInfo", "dd>ddss", tab + 1, index, &key1, &key2, &keyText, &description)) {
+            g_session.m_hotkeyScript->Call("GetOriginalHotKeyInfo", "dd>ddss", tab + 1, index, &key1, &key2, &keyText, &description)) {
           std::string originalDescription = description;
           if (!originalDescription.empty()) {
             return true;
@@ -246,7 +247,7 @@ bool CUserHotkeyMgr::HasChanges() const {
   if (static_cast<std::int32_t>(this->m_changes) > 0) {
     return true;
   }
-  if (!this->m_version2 && this->HasUserAssignments(*g_session.m_hotkeyScript) == true) {
+  if (!this->m_version2 && this->HasUserAssignments() == true) {
     return true;
   }
   return false;

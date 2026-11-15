@@ -198,6 +198,7 @@ public:
   unsigned BaseJob(unsigned job) const;
   HotkeyInfo GetHotkeyInfo(int tab, int index) const;
   int HotkeyCount(int tab) const;
+  int HotkeyIndex(int tab, int index) const;
   bool SkillUsesPercentSp(int id) const;
   std::string ShortcutFilename(std::uint32_t identifier) const;
   const char* ItemDragResource(const char* id, int identified);

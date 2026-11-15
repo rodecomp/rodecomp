@@ -19,7 +19,7 @@ public:
   void LoadV2(Json::Value& data);
   void LoadUserHotkeyTab(Json::Value& values, int tab);
   void Capture();
-  bool HasUserAssignments(LuaScript& script) const;
+  bool HasUserAssignments() const;
   bool HasChanges() const;
 
 protected:
