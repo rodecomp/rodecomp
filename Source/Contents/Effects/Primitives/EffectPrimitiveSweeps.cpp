@@ -5,6 +5,17 @@
 #include <algorithm>
 #include <cstdlib>
 
+namespace {
+struct ZeroVector3d : vector3d {
+  // INLINED
+  ZeroVector3d() {
+    this->x = 0.0f;
+    this->y = 0.0f;
+    this->z = 0.0f;
+  }
+};
+}
+
 // INLINED
 static int Random(int range) {
   const int value = std::rand() % range;
@@ -495,39 +506,15 @@ void CEffectPrim::RenderArcWalls(matrix& wtm) {
 // OFFSET: 0x00BF2AC0
 // FUNCTION: fn_19991
 void CEffectPrim::RenderJitterSweeps(matrix& wtm) {
-  vector3d lastBottom;
-  lastBottom.x = 0.0f;
-  lastBottom.y = 0.0f;
-  lastBottom.z = 0.0f;
-  vector3d currentBottom;
-  currentBottom.x = 0.0f;
-  currentBottom.y = 0.0f;
-  currentBottom.z = 0.0f;
-  vector3d lastTop;
-  lastTop.x = 0.0f;
-  lastTop.y = 0.0f;
-  lastTop.z = 0.0f;
-  vector3d currentTop;
-  currentTop.x = 0.0f;
-  currentTop.y = 0.0f;
-  currentTop.z = 0.0f;
+  ZeroVector3d lastBottom;
+  ZeroVector3d currentBottom;
+  ZeroVector3d lastTop;
+  ZeroVector3d currentTop;
   int count = 0;
-  vector3d bottoms[20];
-  vector3d bottomsCopy[20];
-  vector3d tops[20];
-  vector3d topsCopy[20];
-  for (int j = 0; j < 20; ++j) {
-    bottoms[j] = {0.0f, 0.0f, 0.0f};
-  }
-  for (int j = 0; j < 20; ++j) {
-    bottomsCopy[j] = {0.0f, 0.0f, 0.0f};
-  }
-  for (int j = 0; j < 20; ++j) {
-    tops[j] = {0.0f, 0.0f, 0.0f};
-  }
-  for (int j = 0; j < 20; ++j) {
-    topsCopy[j] = {0.0f, 0.0f, 0.0f};
-  }
+  ZeroVector3d bottoms[20];
+  ZeroVector3d bottomsCopy[20];
+  ZeroVector3d tops[20];
+  ZeroVector3d topsCopy[20];
 
   for (int layer = 0; layer < 4; ++layer) {
     float jitterY[21];
@@ -545,29 +532,30 @@ void CEffectPrim::RenderJitterSweeps(matrix& wtm) {
 
     for (int i = 0; i < this->state.slots[layer].vecTNow.y; ++i) {
       float height1 = this->state.slots[layer].height[i];
-      float height2 = this->state.slots[layer].height[i + 1];
       float radius1 = 0.0f;
       if (height1 > 0.0f) {
         radius1 += height1 / 90.0f * this->state.slots[layer].distance;
       }
+      vector3d start;
+      vector3d end;
+      const float depth = -this->state.slots[layer].distance;
+      start.x = g_cosTable[this->state.slots[layer].riseAngle] * radius1 + jitterX[i];
+      start.y = depth * g_sinTable[static_cast<short>(height1)] * this->state.slots[layer].vecTNow.x + (jitterY[i] - 2.0f);
+      start.z = g_sinTable[this->state.slots[layer].riseAngle] * radius1 + jitterZ[i];
+      float height2 = this->state.slots[layer].height[i + 1];
       float radius2 = 0.0f;
       if (height2 > 0.0f) {
         radius2 += height2 / 90.0f * this->state.slots[layer].distance;
       }
-      vector3d start;
-      vector3d end;
-      start.x = g_cosTable[this->state.slots[layer].riseAngle] * radius1 + jitterX[i];
-      start.y = -this->state.slots[layer].distance * g_sinTable[static_cast<short>(height1)] * this->state.slots[layer].vecTNow.x + (jitterY[i] - 2.0f);
-      start.z = g_sinTable[this->state.slots[layer].riseAngle] * radius1 + jitterZ[i];
       end.x = g_cosTable[this->state.slots[layer].riseAngle] * radius2 + jitterX[i + 1];
-      end.y = -this->state.slots[layer].distance * g_sinTable[static_cast<short>(height2)] * this->state.slots[layer].vecTNow.x + (jitterY[i + 1] - 2.0f);
+      end.y = depth * g_sinTable[static_cast<short>(height2)] * this->state.slots[layer].vecTNow.x + (jitterY[i + 1] - 2.0f);
       end.z = g_sinTable[this->state.slots[layer].riseAngle] * radius2 + jitterZ[i + 1];
       short facing = static_cast<short>(height2);
       Get_Angle(start.x - end.x, start.z - end.z, &facing);
       start += this->state.slots[layer].vecBNow;
       end += this->state.slots[layer].vecBNow;
       facing += 90;
-      if (facing > 359) {
+      if (facing >= 360) {
         facing -= 360;
       }
 
@@ -603,12 +591,7 @@ void CEffectPrim::RenderJitterSweeps(matrix& wtm) {
           lastTop = currentTop;
         }
 
-        if (layer == 0) {
-          bottoms[i] = currentBottom;
-          bottomsCopy[i] = currentBottom;
-          tops[i] = currentTop;
-          topsCopy[i] = currentTop;
-        } else {
+        if (layer != 0) {
           int alpha = this->state.slots[layer].alphaB;
           if (layer == 1) {
             alpha /= 3;
@@ -617,6 +600,11 @@ void CEffectPrim::RenderJitterSweeps(matrix& wtm) {
           }
           this->RenderTeiRect(&count, static_cast<short>(alpha), currentBottom, currentTop, tops[i], bottoms[i],
                               wtm, 0, 0, 1, 255, 0, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        } else {
+          bottoms[i] = currentBottom;
+          bottomsCopy[i] = currentBottom;
+          tops[i] = currentTop;
+          topsCopy[i] = currentTop;
         }
       }
     }
