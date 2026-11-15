@@ -367,7 +367,7 @@ namespace EquipmentProperties {
     CEquipmentInfo* FindEquipmentInfo(const int& key);
     CLuaInstance& GetScript();
     EquipmentPropertyDefinition* FindRandomOptionDefinition(const int& key);
-    std::list<unsigned int>* FindSkillGroup(const int& key);
+    std::list<unsigned int>* FindSkillGroup(const unsigned int& key);
     std::unordered_map<int, EquipmentValueC>& GetDisplayValues();
     bool HasFunctionPair(const std::uint64_t& key);
     EquipmentPropertyDefinition* FindDefinition(const std::uint64_t& key);
@@ -2116,9 +2116,9 @@ int GetEquipLocationIndex(const int& mask) {
 
 // OFFSET: 0x006AD880
 // FUNCTION: fn_06187
-__declspec(noinline) std::list<unsigned int>* EquipmentProperties::CEquipmentPropertiesMgr::FindSkillGroup(const int& key) {
+__declspec(noinline) std::list<unsigned int>* EquipmentProperties::CEquipmentPropertiesMgr::FindSkillGroup(const unsigned int& key) {
   auto found = this->skillGroups.find(key);
-  if (found == this->skillGroups.end()) {
+  if (this->skillGroups.end() == found) {
     return nullptr;
   }
   return &found->second;
