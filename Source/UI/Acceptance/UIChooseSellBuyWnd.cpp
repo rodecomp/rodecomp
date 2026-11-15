@@ -3247,7 +3247,7 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       } else {
         return 0;
       }
-      packet.packetType = ID_CZ_REQ_TAKEOFF_EQUIP_ALL_0bf5;
+      packet.packetType = ID_CZ_REQ_TAKEOFF_EQUIP_ALL2;
       GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
       this->unequipButton->SetDisabled(1);
       this->unequipButton->Invalidate();

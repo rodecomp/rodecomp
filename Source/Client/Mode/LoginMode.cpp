@@ -2343,7 +2343,7 @@ void CLoginMode::PollNetworkStatus() {
     switch (GetRagConnection().GetPacketType(reinterpret_cast<const char*>(g_gameModePacketBuffer))) {
     case ID_AC_ACCEPT_LOGIN:
     case ID_HC_ACCEPT_MAKECHAR:
-    case ID_PING:
+    case ID_CZ_PING:
     case ID_ZC_AID:
     case ID_HC_UPDATE_CHARINFO:
     case ID_AC_SHUTDOWN_INFO:

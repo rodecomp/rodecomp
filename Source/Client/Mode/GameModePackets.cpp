@@ -23427,7 +23427,7 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_REFUSE_QUIT:
     case ID_ZC_ACK_WHISPER:
     case ID_ZC_OTHER_GUILD_LIST:
-    case ID_PING:
+    case ID_CZ_PING:
     case ID_ZC_MONSTER_TALK:
     case ID_ZC_ACK_ACCOUNTNAME:
     case ID_ZC_ADD_MEMBER_TO_GROUP2:
@@ -23454,7 +23454,7 @@ void CGameMode::ProcessIncomingPackets() {
     case 0xC29:
     case 0xC35:
       break;
-    case idle_unit2Type:
+    case ID_ZC_NOTIFY_STANDENTRY:
       this->ReceiveActorTypedEntry(g_gameModePacketBuffer);
       break;
     case ID_ZC_NOTIFY_NEWENTRY:
@@ -23463,7 +23463,7 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_NOTIFY_MOVEENTRY:
       this->ReceiveActorMoveEntryOld0(g_gameModePacketBuffer);
       break;
-    case spawn_unit2Type:
+    case ID_ZC_NOTIFY_STANDENTRY_NPC:
       this->ReceiveNpcStandEntry(g_gameModePacketBuffer);
       break;
     case ID_ZC_NOTIFY_VANISH:
@@ -23581,7 +23581,7 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_PC_PURCHASE_RESULT_FROMMC:
       this->ReceiveEquipItemNotice(g_gameModePacketBuffer);
       break;
-    case openvendingType:
+    case ID_ZC_PC_PURCHASE_MYITEMLIST:
       this->ReceiveOpenedVendingItemList(g_gameModePacketBuffer);
       break;
     case ID_ZC_ACTION_FAILURE:
@@ -23638,7 +23638,7 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_ACK_REQNAMEALL:
       this->ReceiveActorNameAll(reinterpret_cast<const ActorNameAllPacket *>(g_gameModePacketBuffer));
       break;
-    case sc_notickType:
+    case ID_ZC_MSG_STATE_CHANGE:
       this->ReceiveStatusChangeNotice(g_gameModePacketBuffer);
       break;
     case ID_ZC_NOTIFY_RANKING:
@@ -23678,7 +23678,7 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_ADD_ITEM_TO_CART2:
       this->ReceiveItem1740Add(g_gameModePacketBuffer);
       break;
-    case graffiti_entryType:
+    case ID_ZC_SKILL_ENTRY2:
       this->Zc_Skill_Entry2(g_gameModePacketBuffer);
       break;
     case ID_ZC_DEVOTIONLIST:
@@ -23886,7 +23886,7 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_SKILL_POSTDELAY_LIST:
       this->LoadCooldownRecords(g_gameModePacketBuffer);
       break;
-    case status_change2Type:
+    case ID_ZC_MSG_STATE_CHANGE2:
       this->ReceiveStatusChangeExtended(g_gameModePacketBuffer);
       break;
     case ID_ZC_MILLENNIUMSHIELD:
@@ -23921,7 +23921,7 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_DELETE_ITEM_FROM_BODY:
       this->ReceiveItemConsumed(g_gameModePacketBuffer);
       break;
-    case partyleaderchangedType:
+    case ID_ZC_CHANGE_GROUP_MASTER:
       this->ReceivePartyLeaderChange(g_gameModePacketBuffer);
       break;
     case ID_ZC_PLAY_NPC_BGM:
@@ -24072,7 +24072,7 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_STORE_ITEMLIST_EQUIP_V2:
       this->ReceiveStorageEquipList3(g_gameModePacketBuffer);
       break;
-    case monsterhpType:
+    case ID_ZC_HP_INFO:
       this->ReceiveActorInt64Pair(g_gameModePacketBuffer);
       break;
     case ID_ZC_ACK_RANKING:
@@ -24171,22 +24171,22 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_WHISPER02:
       this->ReceiveWhisper2(g_gameModePacketBuffer);
       break;
-    case rodexicon:
+    case ID_ZC_NOTIFY_UNREAD_RODEX:
       this->ReceiveMailboxAvailability(g_gameModePacketBuffer);
       break;
-    case rodexwriteresult:
+    case ID_ZC_ACK_SEND_RODEX:
       this->ReceiveRodexComposeResult(g_gameModePacketBuffer);
       break;
-    case rodexnextpage:
+    case ID_ZC_ACK_RODEX_LIST:
       this->ReceiveRodexMailListAppend(g_gameModePacketBuffer);
       break;
-    case rodexgetzeny:
+    case ID_ZC_ACK_ZENY_FROM_RODEX:
       this->ReceiveRodexMailReturn(g_gameModePacketBuffer);
       break;
-    case rodexgetitem:
+    case ID_ZC_ACK_ITEM_FROM_RODEX:
       this->ReceiveRodexItemReturn(g_gameModePacketBuffer);
       break;
-    case rodexdelete:
+    case ID_ZC_ACK_DELETE_RODEX:
       this->ReceiveRodexMailDeleted(g_gameModePacketBuffer);
       break;
     case ID_ZC_ALL_QUEST_LIST3:
@@ -24213,7 +24213,7 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_ACK_ADD_ITEM_RODEX:
       this->ReceiveItemReward(g_gameModePacketBuffer);
       break;
-    case rodexremoveitem:
+    case ID_ZC_ACK_REMOVE_RODEX_ITEM:
       this->ReceiveStackedItemReturn(g_gameModePacketBuffer);
       break;
     case ID_ZC_ADD_ITEM_TO_STORE3:
@@ -24237,7 +24237,7 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_GUILDSTORAGE_ITEMLIST_EQUIP_V6:
       this->ReceiveItem1738EquipListOptions(g_gameModePacketBuffer);
       break;
-    case rodexopenwrite:
+    case ID_ZC_ACK_OPEN_WRITE_RODEX:
       this->ReceiveRodexOpen(g_gameModePacketBuffer);
       break;
     case ID_ZC_GOLDPCCAFE_POINT:
@@ -24249,16 +24249,16 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_ACK_OPEN_ROULETTE:
       this->ReceiveRouletteOpen(g_gameModePacketBuffer);
       break;
-    case rouletteinfoackType:
+    case ID_ZC_ACK_ROULEITTE_INFO:
       this->ReceiveRouletteInfo(g_gameModePacketBuffer);
       break;
     case ID_ZC_ACK_CLOSE_ROULETTE:
       this->ReceiveRouletteClose(g_gameModePacketBuffer);
       break;
-    case roulettgenerateackType:
+    case ID_ZC_ACK_GENERATE_ROULETTE:
       this->ReceiveRouletteResult(g_gameModePacketBuffer);
       break;
-    case roulettercvitemackType:
+    case ID_ZC_RECV_ROULETTE_ITEM:
       this->ReceiveRouletteSetResult(g_gameModePacketBuffer);
       break;
     case ID_ZC_EQUIPWIN_MICROSCOPE_V6:
@@ -24716,7 +24716,7 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_NPCACK_ENABLE:
       this->noMove = 0;
       break;
-    case reqName: {
+    case ID_ZC_ACK_REQNAME: {
       const ActorNamePacket *packet = reinterpret_cast<const ActorNamePacket *>(g_gameModePacketBuffer);
       this->nameCard.SetName(packet->aid, std::string(packet->name, sizeof(packet->name)).c_str());
       if (packet->aid == g_session.petGid) {
@@ -26941,7 +26941,7 @@ void CGameMode::ProcessIncomingPackets() {
         }
       }
       break;
-    case ID_ZC_UPDATE_GDID_02f7: {
+    case ID_ZC_UPDATE_GDID2: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_UPDATE_GDID_02f7*>(g_gameModePacketBuffer);
       const std::uint32_t flags = packet->mode;
       g_guildInfo.canInvite = flags & 1;
@@ -27401,7 +27401,7 @@ void CGameMode::ProcessIncomingPackets() {
       GetRagConnection().Send(sizeof(packetType), &packetType);
       break;
     }
-    case package_item_announceType:
+    case ID_ZC_BROADCASTING_SPECIAL_ITEM_OBTAIN:
       this->ReceiveItemObtainBroadcast(g_gameModePacketBuffer, false);
       break;
     case ID_ZC_NOTIFY_HP_TO_GROUPM_R2: {
@@ -27534,13 +27534,13 @@ void CGameMode::ProcessIncomingPackets() {
       }
       break;
     }
-    case bgqueue_ackType:
+    case ID_ZC_ACK_ENTRY_QUEUE_APPLY:
       g_entryQueueMgr->OnApplyResult(reinterpret_cast<const EntryQueueApplyResult *>(g_gameModePacketBuffer));
       break;
-    case bgqueue_updateinfoType:
+    case ID_ZC_NOTIFY_ENTRY_QUEUE_APPLY:
       g_entryQueueMgr->OnStatus(reinterpret_cast<const EntryQueueStatus *>(g_gameModePacketBuffer));
       break;
-    case bgqueue_notice_deleteType:
+    case ID_ZC_ACK_ENTRY_QUEUE_CANCEL:
       g_entryQueueMgr->OnCancelResult(reinterpret_cast<const EntryQueueNotice *>(g_gameModePacketBuffer));
       break;
     case ID_ZC_NOTIFY_ENTRY_QUEUE_ADMISSION:
@@ -27549,7 +27549,7 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_REPLY_ACK_ENTRY_QUEUE_ADMISSION:
       g_entryQueueMgr->OnResultNotice(reinterpret_cast<const EntryQueueNotice *>(g_gameModePacketBuffer));
       break;
-    case bgqueue_battlebeginsType:
+    case ID_ZC_NOTIFY_LOBBY_ADMISSION:
       g_entryQueueMgr->OnReady(reinterpret_cast<const EntryQueueReady *>(g_gameModePacketBuffer));
       break;
     case ID_ZC_REPLY_ACK_LOBBY_ADMISSION:
@@ -27595,7 +27595,7 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_ADD_EXCHANGE_ITEM3:
       ReceiveItemSlotOptions(g_gameModePacketBuffer);
       break;
-    case achievementRewardAckType: {
+    case ID_ZC_REQ_ACH_REWARD_ACK: {
       const auto* packet = reinterpret_cast<const FeedResultPacket*>(g_gameModePacketBuffer);
       this->ReceiveAchievementResult(packet->result, packet->itemId);
       break;
@@ -28110,7 +28110,7 @@ void CGameMode::ProcessIncomingPackets() {
                             packet->targetId, packet->result);
       break;
     }
-    case achievementListType: {
+    case ID_ZC_ALL_ACH_LIST: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_ACH_LIST*>(g_gameModePacketBuffer);
       ReceiveAchievementList(packet->totalScore, packet->level,
                  packet->exp, packet->nextExp,
@@ -28159,7 +28159,7 @@ void CGameMode::ProcessIncomingPackets() {
                                packet->result);
       break;
     }
-    case skillscale: {
+    case ID_ZC_EF_WARNING_PLANE: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_SKILL_SCALE*>(g_gameModePacketBuffer);
       this->SpawnSkillWarningPlanes(
           packet->aid, packet->skillId,
@@ -28228,7 +28228,7 @@ void CGameMode::ProcessIncomingPackets() {
                                     packet->zeny, reinterpret_cast<const unsigned char*>(packet + 1));
       break;
     }
-    case achievementUpdateType: {
+    case ID_ZC_ACH_UPDATE: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_ACH_UPDATE*>(g_gameModePacketBuffer);
       this->ReceiveAchievementUpdate(packet->totalScore,
                                      packet->level,
@@ -28274,7 +28274,7 @@ void CGameMode::ProcessIncomingPackets() {
                                           packet->requestType);
       break;
     }
-    case progressbarunit: {
+    case ID_ZC_PROGRESS_ACTOR: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_PROGRESSBAR_UNIT*>(g_gameModePacketBuffer);
       if (CRenderObject *actor = this->scene->GetGameActorByAID(packet->aid)) {
         actor->SendMsg(nullptr, AM_MAKE_SKILL_RECHARGEGAGE, static_cast<std::uint32_t>(packet->time * 1000), 0, 0, 0, 0, 0);
@@ -28541,7 +28541,7 @@ void CGameMode::ProcessIncomingPackets() {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFFFF, 0, 0, 0);
       break;
     }
-    case questUpdateType2: {
+    case ID_ZC_HUNTING_QUEST_INFO: {
       const auto* packet = reinterpret_cast<const PacketLengthHeader*>(g_gameModePacketBuffer);
       const int count = static_cast<unsigned int>(packet->length - 4) / 12;
       const auto* entry = reinterpret_cast<const PACKET_ZC_QUEST_UPDATE_sub*>(packet + 1);
