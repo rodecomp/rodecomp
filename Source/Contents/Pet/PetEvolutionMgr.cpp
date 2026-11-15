@@ -80,10 +80,10 @@ std::pair<bool, std::vector<std::pair<int, int>>> CPetEvolutionMgr::GetMaterials
     return std::make_pair(false, std::vector<std::pair<int, int>>());
   }
 
-  for (const PetEvolutionRecipe& recipe : found->second) {
-    if (recipe.target == target) {
-      for (std::pair<int, int> material : recipe.materials) {
-        materials.push_back(material);
+  for (auto recipe = found->second.begin(); recipe != found->second.end(); ++recipe) {
+    if (recipe->target == target) {
+      for (auto material = recipe->materials.begin(); material != recipe->materials.end(); ++material) {
+        materials.push_back(*material);
       }
       return std::make_pair(true, materials);
     }
