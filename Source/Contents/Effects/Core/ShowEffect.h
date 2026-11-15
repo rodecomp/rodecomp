@@ -3,11 +3,13 @@
 
 #include "Contents/Effects/Core/Effect.h"
 
+#include "Contents/Effects/Core/EffectTypes.h"
+
 #include <map>
 
 class CShowEffect : public CEffect {
 public:
-  /* 00CC */ std::map<int, int> effects;
+  /* 00CC */ std::map<int, RagEffectID> effects;
 
   CShowEffect();
   void Close() override;

@@ -24,7 +24,7 @@ namespace {
   }
 
   // INLINED
-  bool HasEffect(const std::map<int, int>& effects, int tag) {
+  bool HasEffect(const std::map<int, RagEffectID>& effects, int tag) {
     return effects.find(tag) != effects.end();
   }
 }
@@ -62,7 +62,7 @@ void CShowEffect::Add(int tag, int effectId) {
     }
   }
 
-  this->effects[tag] = effectId;
+  this->effects[tag] = static_cast<RagEffectID>(effectId);
 }
 
 // OFFSET: 0x00729910
