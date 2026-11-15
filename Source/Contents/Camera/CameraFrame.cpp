@@ -42,3 +42,19 @@ void CView::Update() {
   this->Apply();
   this->Refresh();
 }
+
+// INLINED
+void CameraFrame::Forward(const CameraState& camera, float* output) const {
+  const float y = camera.target[1] - this->eye[1];
+  const float x = camera.target[0] - this->eye[0];
+  const float z = camera.target[2] - this->eye[2];
+
+  output[1] = y;
+  output[0] = x;
+  output[2] = z;
+  const float inverse = 1.0f / SquareRoot((y * y + x * x) + z * z);
+  output[0] = inverse * output[0];
+  const float last = inverse * output[2];
+  output[1] = inverse * output[1];
+  output[2] = last;
+}

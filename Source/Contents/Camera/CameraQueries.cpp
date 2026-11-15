@@ -8,10 +8,10 @@
 
 // OFFSET: 0x00ADBAC0
 // FUNCTION: fn_17924
-void CameraFrame::Forward(const CameraState& camera, float* output) const {
-  const float y = camera.target[1] - this->eye[1];
-  const float x = camera.target[0] - this->eye[0];
-  const float z = camera.target[2] - this->eye[2];
+void CView::Forward(float* output) const {
+  const float y = this->camera.target[1] - this->frame.eye[1];
+  const float x = this->camera.target[0] - this->frame.eye[0];
+  const float z = this->camera.target[2] - this->frame.eye[2];
 
   output[1] = y;
   output[0] = x;

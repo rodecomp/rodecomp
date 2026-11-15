@@ -31,6 +31,7 @@ public:
   virtual void Update();
 
   matrix AlternateView(float yaw) const;
+  void Forward(float* output) const;
   void Refresh();
 
   void Apply();
