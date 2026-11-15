@@ -171,7 +171,7 @@ void CUIMacroReport::OnCreate(int width, int height) {
   CUIImageButton* menuButton = new CUIImageButton();
   menuButton->SetSize(11, 11);
   menuButton->Move(3, 3);
-  menuButton->SetOnClick([this]() { this->OnButtonClick(); });
+  menuButton->onClick = [this]() { this->OnButtonClick(); };
   menuButton->disabled = 0;
   menuButton->Invalidate();
   {
