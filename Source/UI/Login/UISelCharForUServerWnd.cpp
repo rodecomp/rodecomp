@@ -192,7 +192,9 @@ void UISelCharForUServerWnd::OnMouseMove(int x, int y) {
 // OFFSET: 0x0093F1F0
 // FUNCTION: fn_12777
 void UISelCharForUServerWnd::UpdateCharInfoBalloon(int x, int y, std::uint32_t color) {
-  const unsigned char red = (color >> 16) & 0xFF;
+  const int red = (color >> 16) & 0xFF;
+  const int green = (color >> 8) & 0xFF;
+  const int blue = color & 0xFF;
   if (!this->characterInfoBalloon) {
     this->characterInfoBalloon = new UICharInfoBalloonText();
     this->characterInfoBalloon->SetSize(140, 200);
@@ -242,7 +244,7 @@ void UISelCharForUServerWnd::UpdateCharInfoBalloon(int x, int y, std::uint32_t c
 
       this->characterInfoBalloon->Resize(width, 200);
       this->characterInfoBalloon->m_outlineColor = 0;
-      this->characterInfoBalloon->m_textColor = ((color & 0xFF) << 16) | (color & 0xFF00) | red;
+      this->characterInfoBalloon->m_textColor = RGB(red, green, blue);
       this->characterInfoBalloon->SetBackground(0x88000000);
       this->characterInfoBalloon->m_lines = this->characterInfoLines;
 
