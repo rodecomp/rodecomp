@@ -1,3 +1,5 @@
+#include "Render/Primitives/RenderPrimitivePool.h"
+#include <new>
 #include "Contents/Effects/Core/RagEffect.h"
 #include "UI/GameSettings/TalkType.h"
 #include "Client/Mode/ModeMessage.h"
@@ -59,6 +61,25 @@ inline RagEffectState::RagEffectState() : deltaPos(), deltaPos2(), deltaPos3() {
 
 // INLINED
 inline RagEffectState::~RagEffectState() {
+}
+
+namespace {
+struct PrimitivePoolAccess : RenderPrimitivePool {
+  // INLINED
+  inline RenderPrimitive* AcquireLocal() {
+    if (this->m_current == this->m_commands.end()) {
+      this->m_commands.emplace_back();
+      this->m_current = this->m_commands.end();
+      return &this->m_commands.back();
+    }
+
+    RenderPrimitive* command = &*this->m_current;
+    ++this->m_current;
+    new (command) RenderPrimitive;
+
+    return command;
+  }
+};
 }
 
 // OFFSET: 0x00BF84B0
@@ -14912,7 +14933,7 @@ void CRagEffect::RenderAniClip(EZeffectClip* clip, const EZeffectTransform* tran
   g_renderer->ProjectViewport(&this->state.parent->render.position.x, view.values, &screenX, &screenY, &rhw);
   const float scale = g_renderer->ScaleDistance(rhw);
 
-  RenderPrimitive* primitive = g_renderer->primitives.Acquire();
+  RenderPrimitive* primitive = static_cast<PrimitivePoolAccess&>(g_renderer->primitives).AcquireLocal();
   RenderVertex* vertices = primitive->vertices;
   SetAniClipCorners(vertices, *transform);
 
