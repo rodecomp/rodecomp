@@ -22,7 +22,8 @@ float CSession::AttackMotionLength(int job, int appearance, int equipment, int a
     case JT_SUPERNOVICE_B:
     case JT_SUPERNOVICE2:
     case JT_SUPERNOVICE2_B:
-      if (appearance == 1) {
+      switch (appearance) {
+      case 1:
         return 5.85f;
       }
       break;
