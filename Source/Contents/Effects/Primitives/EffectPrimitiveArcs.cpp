@@ -791,11 +791,11 @@ void CEffectPrim::RenderFanTrail(matrix& wtm) {
 // OFFSET: 0x00BF0370
 // FUNCTION: fn_19985
 void CEffectPrim::RenderCurvedFanTrail(matrix& wtm) {
+  int rpCnt = 0;
   vector3d vec1{};
   vector3d vec2{};
   vector3d vec3{};
   vector3d vec4{};
-  int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
     if (this->state.slots[ec].life != 1 || this->state.slots[ec].alphaB <= 0) {
@@ -839,25 +839,25 @@ void CEffectPrim::RenderCurvedFanTrail(matrix& wtm) {
       const int low = angle - 15;
       const int backRightAngle = high - 180 < 0 ? high - 180 + 360 : high - 180;
       const int backLeftAngle = low + 180 < 360 ? low + 180 : low + 180 - 360;
-      const float rotCos = g_cosTable[this->state.slots[ec].rotStart];
-      const float rotSin = g_sinTable[this->state.slots[ec].rotStart];
       const float base = this->state.slots[ec].height[0];
       vector3d left;
+      left.z = size * g_sinTable[leftAngle];
+      const float rotCos = g_cosTable[this->state.slots[ec].rotStart];
+      const float rotSin = g_sinTable[this->state.slots[ec].rotStart];
       left.x = size * g_cosTable[leftAngle] * rotCos;
       left.y = size * g_cosTable[leftAngle] * rotSin + base;
-      left.z = size * g_sinTable[leftAngle];
       vector3d right;
+      right.z = size * g_sinTable[rightAngle];
       right.x = size * g_cosTable[rightAngle] * rotCos;
       right.y = size * g_cosTable[rightAngle] * rotSin + base;
-      right.z = size * g_sinTable[rightAngle];
       vector3d backRight;
+      backRight.z = size * g_sinTable[backRightAngle];
       backRight.x = size * g_cosTable[backRightAngle] * rotCos;
       backRight.y = size * g_cosTable[backRightAngle] * rotSin + base;
-      backRight.z = size * g_sinTable[backRightAngle];
       vector3d backLeft;
+      backLeft.z = size * g_sinTable[backLeftAngle];
       backLeft.x = size * g_cosTable[backLeftAngle] * rotCos;
       backLeft.y = size * g_cosTable[backLeftAngle] * rotSin + base;
-      backLeft.z = size * g_sinTable[backLeftAngle];
 
       float remain = dist;
       int dir = this->state.slots[ec].riseAngle;
@@ -991,25 +991,25 @@ void CEffectPrim::RenderCurvedFanTrail(matrix& wtm) {
       const int low = angle - 25;
       const int backRightAngle = high - 180 < 0 ? high - 180 + 360 : high - 180;
       const int backLeftAngle = low + 180 < 360 ? low + 180 : low + 180 - 360;
-      const float rotCos = g_cosTable[this->state.slots[ec].rotStart];
-      const float rotSin = g_sinTable[this->state.slots[ec].rotStart];
       const float base = this->state.slots[ec].height[0];
       vector3d left;
+      left.z = size * g_sinTable[leftAngle];
+      const float rotCos = g_cosTable[this->state.slots[ec].rotStart];
+      const float rotSin = g_sinTable[this->state.slots[ec].rotStart];
       left.x = size * g_cosTable[leftAngle] * rotCos;
       left.y = size * g_cosTable[leftAngle] * rotSin + base;
-      left.z = size * g_sinTable[leftAngle];
       vector3d right;
+      right.z = size * g_sinTable[rightAngle];
       right.x = size * g_cosTable[rightAngle] * rotCos;
       right.y = size * g_cosTable[rightAngle] * rotSin + base;
-      right.z = size * g_sinTable[rightAngle];
       vector3d backRight;
+      backRight.z = size * g_sinTable[backRightAngle];
       backRight.x = size * g_cosTable[backRightAngle] * rotCos;
       backRight.y = size * g_cosTable[backRightAngle] * rotSin + base;
-      backRight.z = size * g_sinTable[backRightAngle];
       vector3d backLeft;
+      backLeft.z = size * g_sinTable[backLeftAngle];
       backLeft.x = size * g_cosTable[backLeftAngle] * rotCos;
       backLeft.y = size * g_cosTable[backLeftAngle] * rotSin + base;
-      backLeft.z = size * g_sinTable[backLeftAngle];
 
       float remain = dist;
       int dir = this->state.slots[ec].riseAngle;
