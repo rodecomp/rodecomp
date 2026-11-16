@@ -79,11 +79,12 @@ void UIListBoxAgit::OnLBtnDown(int x, int y) {
 void UIListBoxAgit::OnRBtnDown(int x, int y) {
   if (this->parent) {
     UIListBox::OnLBtnDown(x, y);
+    UIWindow* parent = this->parent;
     if (this->selected < 0) {
-      this->parent->SendMsg(nullptr, UM_HIDE_AGIT_MENU, 0, 0, 0, 0);
+      parent->SendMsg(nullptr, UM_HIDE_AGIT_MENU, 0, 0, 0, 0);
       return;
     }
-    this->parent->SendMsg(nullptr, UM_SHOW_AGIT_MENU, this->geometry.width + this->geometry.x - 3, this->geometry.y - y % this->lineHeight + y + 2, 0, 0);
+    parent->SendMsg(nullptr, UM_SHOW_AGIT_MENU, this->geometry.x + (this->geometry.width - 3), this->geometry.y - y % this->lineHeight + (y + 2), 0, 0);
   }
 }
 
