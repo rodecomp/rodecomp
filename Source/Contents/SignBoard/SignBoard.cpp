@@ -285,26 +285,18 @@ void CSignBoardWnd::Paint() {
 // OFFSET: 0x00821D10
 // FUNCTION: fn_10267
 void C3DCooRendering::Create() {
-  UIWindow* window;
-  int width;
-  int height;
   switch (this->type) {
   case 1:
-    window = new (std::nothrow) CBmpObjWnd();
-    width = 0xaa;
-    height = 0xaa;
+    this->window = new (std::nothrow) CBmpObjWnd();
+    this->window->SetSize(0xaa, 0xaa);
+    g_windowMgr.AddRenderedFront(this->window);
     break;
   case 3:
-    window = new (std::nothrow) CSignBoardWnd();
-    width = 0xa2;
-    height = 0x24;
+    this->window = new (std::nothrow) CSignBoardWnd();
+    this->window->SetSize(0xa2, 0x24);
+    g_windowMgr.AddRenderedFront(this->window);
     break;
-  default:
-    return;
   }
-  this->window = window;
-  window->SetSize(width, height);
-  g_windowMgr.AddRenderedFront(this->window);
 }
 
 // OFFSET: 0x00821EC0
@@ -399,8 +391,8 @@ void C3DCooRendering::SetWindowImage(const std::string& name) {
 
   switch (this->type) {
   case 1: {
+    static_cast<CBmpObjWnd*>(this->window)->path = name;
     CBmpObjWnd* window = static_cast<CBmpObjWnd*>(this->window);
-    window->path = name;
     const CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(window->path.c_str())));
     window->Resize(bitmap->image.width, bitmap->image.height);
     break;
