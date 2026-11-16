@@ -26,20 +26,19 @@ void GroundGeometry::DrawWaterCell(
   }
 
   GroundWater& surface = this->waterSurfaces[partition];
-  float middle = level;
-  float first = level;
-  float last = level;
+  float middle;
+  float first;
+  float last;
 
   if (surface.parameters.height != 0.0f) {
     const int sum = column + row;
-    const auto wave = [&](int coordinate) {
-      const float angle = static_cast<float>(coordinate) * surface.parameters.pitch + surface.phase;
-      const int degrees = static_cast<int>(angle);
-      return ClientSine(degrees) * surface.parameters.height + level;
-    };
-    middle = wave(sum);
-    first = wave(sum - 1);
-    last = wave(sum + 1);
+    middle = level + ClientSine(static_cast<int>(static_cast<float>(sum) * surface.parameters.pitch + surface.phase)) * surface.parameters.height;
+    first = level + ClientSine(static_cast<int>(static_cast<float>(sum - 1) * surface.parameters.pitch + surface.phase)) * surface.parameters.height;
+    last = level + ClientSine(static_cast<int>(static_cast<float>(sum + 1) * surface.parameters.pitch + surface.phase)) * surface.parameters.height;
+  } else {
+    middle = level;
+    first = level;
+    last = level;
   }
 
   RenderVertex vertices[4];
@@ -107,7 +106,7 @@ void GroundGeometry::DrawWaterCell(
     primitive->vertices[corner].v = (corner & 2) ? bottom : top;
   }
 
-  primitive->depthFlags = (primitive->depthFlags & 0xFF00u) | 1u;
+  *reinterpret_cast<unsigned char*>(&primitive->depthFlags) = 1;
   primitive->texture = surface.texture;
   g_renderer->Submit(primitive, 1);
 }
