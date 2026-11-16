@@ -131,7 +131,7 @@ CUIFrameWnd* CreateProbabilityTable() {
 
 // OFFSET: 0x00496610
 // FUNCTION: fn_45551
-static bool s_registered = [] {
+static bool s_probabilityTableRegistered = [] {
   std::function<CUIFrameWnd*()> factory = CreateProbabilityTable;
   Singleton<CUIRegisterMgr>::GetInstance()->Register(10012, factory);
   return true;
