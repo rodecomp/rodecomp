@@ -47,12 +47,13 @@ __forceinline bool NamedBinkMovie::Open(std::string fileName, int loop) {
     return false;
   }
 
-  if (this->decoder->Open(("video\\" + fileName).c_str(), loop, true) != true) {
-    return false;
+  const std::string path = "video\\" + fileName;
+  if (this->decoder->Open(path.c_str(), loop, true) == true) {
+    this->name = fileName;
+    return true;
   }
 
-  this->name = fileName;
-  return true;
+  return false;
 }
 
 // OFFSET: 0x007AFB50
