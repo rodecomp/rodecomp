@@ -51,10 +51,10 @@ void CItem::SetRenderInfo(const float* bounds, float x, float y) {
     // GLOBAL: gl_25149
     static const int minimumSize = static_cast<int>(g_renderer->UiScaleX() * 34.0f);
     ActorPickInfo* info = new ActorPickInfo;
-    info->left = std::min(bounds[0], bounds[2]);
+    info->left = bounds[0] < bounds[2] ? bounds[0] : bounds[2];
     info->top = bounds[1];
     info->depth = bounds[4] + 300.0f;
-    info->right = std::max(bounds[0], bounds[2]);
+    info->right = bounds[0] > bounds[2] ? bounds[0] : bounds[2];
     info->bottom = bounds[3];
     info->depthOffset = bounds[4] + 300.0f;
     info->accountId = this->itemAid;
