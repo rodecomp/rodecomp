@@ -20,6 +20,9 @@ struct BitmapPixels {
   /* 0014 */ std::uint32_t* pixels;
   /* 0018 */ bool dirty;
 
+  // INLINED
+  BitmapPixels() : bitmap(nullptr), previous(nullptr), pixels(nullptr) {
+  }
   BitmapPixels(int width, int height);
   ~BitmapPixels();
   void CopyRegion(

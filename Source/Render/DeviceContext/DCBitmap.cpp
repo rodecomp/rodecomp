@@ -2,7 +2,9 @@
 
 // OFFSET: 0x00545790
 // FUNCTION: fn_01832
-CDCBitmap::CDCBitmap(int width, int height) : m_bitmap(width, height) {
+CDCBitmap::CDCBitmap(int width, int height) {
+  this->m_bitmap.dc = CreateCompatibleDC(nullptr);
+  this->Create(width, height);
 }
 
 CDCBitmap::~CDCBitmap() = default;
