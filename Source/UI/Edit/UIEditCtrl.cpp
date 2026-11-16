@@ -4415,7 +4415,7 @@ std::string UIEditCtrl3::PlaceLineLinks(const char* line, std::string& text, con
     result += chunk;
 
     if (link.substr(0, 6) == "00000T") {
-      const int id = ItemLinkMessageId(link);
+      const int id = g_navigationLinkParser->ItemLinkMessageId(link);
       if (g_itemTagOwner->maxTipId >= id) {
         std::string name;
         const std::string title = g_itemTagOwner->Title(id, &name, 17);
