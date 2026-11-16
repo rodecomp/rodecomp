@@ -256,16 +256,17 @@ int UIMakeTargetProcessWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
         std::memcpy(&tag, bytes + offset, sizeof(tag));
         offset += sizeof(tag);
 
-        if (tag.id == 22001) {
-          break;
-        }
-
-        if (tag.id == 22002) {
+        switch (tag.id) {
+        case 22001:
+          return 0;
+        case 22002:
           std::memcpy(&this->makeType, bytes + offset, tag.bytes);
           offset += tag.bytes;
           this->SendMsg(nullptr, UM_SETCURITEM, this->makeType, 0, 0, 0);
-        } else {
+          break;
+        default:
           offset += tag.bytes;
+          break;
         }
       }
     }
