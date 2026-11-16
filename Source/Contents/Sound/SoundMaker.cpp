@@ -265,12 +265,12 @@ bool CSoundMaker::OnProcess() {
   const float slope = deltaZ / std::max(deltaX, 0.001f);
   float offsetX;
   float offsetZ;
-  if (!(static_cast<float>(this->height / this->width) >= std::fabs(slope))) {
-    offsetZ = static_cast<float>(this->height) * signZ * 0.5f;
-    offsetX = offsetZ / std::max(slope, 0.001f);
-  } else {
+  if (static_cast<float>(this->height / this->width) >= std::fabs(slope)) {
     offsetX = static_cast<float>(this->width) * signX * 0.5f;
     offsetZ = slope * offsetX;
+  } else {
+    offsetZ = static_cast<float>(this->height) * signZ * 0.5f;
+    offsetX = offsetZ / std::max(slope, 0.001f);
   }
 
   const float x = this->render.position.x + offsetX;
