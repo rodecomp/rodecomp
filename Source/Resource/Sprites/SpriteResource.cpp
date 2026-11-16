@@ -109,13 +109,15 @@ bool CSprRes::Load(const char* name) {
         file.Read(&encodedBytes, sizeof(encodedBytes));
         auto* runs = new std::uint8_t[encodedBytes];
         file.Read(runs, encodedBytes);
-        auto* pixels = new std::uint8_t[dimensions[0] * dimensions[1]];
+        const unsigned width = dimensions[0];
+        const unsigned height = dimensions[1];
+        auto* pixels = new std::uint8_t[width * height];
         const std::uint8_t* current = runs;
         std::uint16_t zeroCount = 0;
-        std::uint8_t value;
+        unsigned int value;
 
-        for (unsigned y = 0; y < dimensions[1]; ++y) {
-          for (unsigned x = 0; x < dimensions[0]; ++x) {
+        for (unsigned y = 0; y < height; ++y) {
+          for (unsigned x = 0; x < width; ++x) {
             if (zeroCount == 0) {
               value = *current++;
 
@@ -126,7 +128,7 @@ bool CSprRes::Load(const char* name) {
 
             const std::uint16_t before = zeroCount;
             zeroCount = zeroCount != 0 ? zeroCount - 1 : 0;
-            pixels[y * dimensions[0] + x] = before == 0 ? value : 0;
+            pixels[y * width + x] = before == 0 ? value : 0;
           }
         }
 
@@ -176,13 +178,15 @@ bool CSprRes::Load(const char* name) {
       auto* image = new SpriteRleImage{};
       image->width = static_cast<std::int16_t>(dimensions[0]);
       image->height = static_cast<std::int16_t>(dimensions[1]);
+      image->doubleWidth = 0;
+      image->doubleHeight = 0;
       auto* pixels = new std::uint32_t[image->width * image->height];
 
       for (int y = image->height - 1; y >= 0; --y) {
         for (int x = 0; x < image->width; ++x) {
           SpritePixel pixel;
           file.Read(&pixel, sizeof(pixel));
-          pixels[y * image->width + x] = pixel.blue | (pixel.green << 8) | (pixel.red << 16) | (static_cast<std::uint32_t>(pixel.alpha) << 24);
+          pixels[y * image->width + x] = (((((pixel.alpha << 8) + pixel.red) << 8) + pixel.green) << 8) + pixel.blue;
         }
       }
 
