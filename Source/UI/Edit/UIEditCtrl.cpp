@@ -10368,7 +10368,7 @@ void UIEditCtrl3::DecodeLinkFields(const std::string& link, std::vector<int>& fi
 bool UIEditCtrl3::LinkDisplayName(const std::string& encoded, std::string& output) {
   const bool isTag = encoded.substr(0, 6) == "00000T";
   if (isTag) {
-    const int id = ItemLinkMessageId(encoded);
+    const int id = g_navigationLinkParser->ItemLinkMessageId(encoded);
     if (g_itemTagOwner->maxTipId >= id) {
       g_itemTagOwner->Title(id, &output, 17);
       return true;
