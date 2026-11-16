@@ -57,14 +57,16 @@ void CRenderer::DrawBattleFieldIcon() {
   rect.right = this->viewport.width - 232;
   rect.bottom = 74;
   CGameMode* mode = g_modeMgr.GetGameMode();
-  mode->DrawTexture(rect, 0, 0.0999f, 0xCDFFFFFF, g_texMgr.Load("effect\\사자(A).bmp", 0, false, true, false), region);
+  CTexture* texture = g_texMgr.Load("effect\\사자(A).bmp", 0, false, true, false);
+  mode->DrawTexture(rect, 0, 0.0999f, 0xCDFFFFFF, texture, region);
 
   rect.left = this->viewport.width - 280;
   rect.top = 84;
   rect.right = this->viewport.width - 232;
   rect.bottom = 132;
   mode = g_modeMgr.GetGameMode();
-  mode->DrawTexture(rect, 0, 0.0999f, 0xCDFFFFFF, g_texMgr.Load("effect\\독수리(B).bmp", 0, false, true, false), region);
+  texture = g_texMgr.Load("effect\\독수리(B).bmp", 0, false, true, false);
+  mode->DrawTexture(rect, 0, 0.0999f, 0xCDFFFFFF, texture, region);
 
   const unsigned char width = g_session.m_score1 > 9 || g_session.m_score2 > 9 ? 2 : 1;
   CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load("이팩트\\RankFont.act"));
