@@ -96,7 +96,9 @@ CTexture* TextureCache::Create(const char* name, int option, bool fullSize, bool
 
         if (movie) {
           const auto* handle = movie->decoder->Handle();
-          texture = GetRenderSystemHolder()->CreateTexture(handle->width, handle->height, TextureFormat::A8R8G8B8, false, false);
+          const std::uint32_t width = handle->width;
+          const std::uint32_t height = handle->height;
+          texture = GetRenderSystemHolder()->CreateTexture(width, height, TextureFormat::A8R8G8B8, false, false);
 
           if (texture) {
             return texture;
@@ -105,11 +107,11 @@ CTexture* TextureCache::Create(const char* name, int option, bool fullSize, bool
       }
     }
 
+    const std::uint32_t transparent = 0;
     const int extent = 1 / g_textureReduction;
     texture = GetRenderSystemHolder()->CreateTexture(extent, extent, TextureFormat::A1R5G5B5, false, false);
 
     if (texture) {
-      const std::uint32_t transparent = 0;
       texture->Upload(0, 0, 1, 1, &transparent, option, 0);
     }
   } else {
@@ -125,11 +127,11 @@ CTexture* TextureCache::Create(const char* name, int option, bool fullSize, bool
       return texture;
     }
 
+    const std::uint32_t transparent = 0;
     const int extent = 1 / g_textureReduction;
     texture = GetRenderSystemHolder()->CreateTexture(extent, extent, TextureFormat::A1R5G5B5, false, false);
 
     if (texture) {
-      const std::uint32_t transparent = 0;
       texture->Upload(0, 0, 1, 1, &transparent, option, 0);
     }
   }
