@@ -167,7 +167,7 @@ void CPokJukEffect::OnProcess() {
           const int alpha = particle->alpha;
           if (ClampedRandom(2) == 0) {
             const int faded = alpha - 2;
-            particle->alpha = faded < 0 ? 0 : faded;
+            particle->alpha = faded >= 0 ? faded : 0;
           } else {
             const int faded = alpha - 1;
             particle->alpha = faded < 0 ? 0 : faded;
