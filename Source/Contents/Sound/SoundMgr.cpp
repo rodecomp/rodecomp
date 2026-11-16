@@ -480,34 +480,34 @@ bool CSoundMgr::PlayData3D(const void* data, const float& x, const float& y, con
   const float scaledVolume = static_cast<float>(this->volume3D) * scale;
   const int volume = static_cast<int>(scaledVolume);
 
-  if (!this->provider) {
-    return this->PlayData2D(data, x, y, z, 250, 40, 1.0f);
+  if (this->provider) {
+    for (int i = 0; i < this->sample3DCount; ++i) {
+      if (!this->samples3D[i]) {
+        continue;
+      }
+
+      if (AIL_3D_sample_status(this->samples3D[i]) != 2) {
+        continue;
+      }
+
+      if (!AIL_set_3D_sample_file(this->samples3D[i], data)) {
+        return false;
+      }
+
+      AIL_set_3D_sample_effects_level(this->samples3D[i], this->effectsEnabled ? 1.0f : 0.0f);
+      AIL_set_3D_position(this->samples3D[i], x, y, z);
+      AIL_set_3D_orientation(this->samples3D[i], -x, -y, -z, 0.0f, 1.0f, 0.0f);
+      AIL_set_3D_sample_volume(this->samples3D[i], volume);
+      AIL_set_3D_sample_distances(this->samples3D[i], static_cast<float>(maximumDistance), static_cast<float>(minimumDistance));
+      AIL_start_3D_sample(this->samples3D[i]);
+
+      return true;
+    }
+
+    return false;
   }
 
-  for (int i = 0; i < this->sample3DCount; ++i) {
-    if (!this->samples3D[i]) {
-      continue;
-    }
-
-    if (AIL_3D_sample_status(this->samples3D[i]) != 2) {
-      continue;
-    }
-
-    if (!AIL_set_3D_sample_file(this->samples3D[i], data)) {
-      return false;
-    }
-
-    AIL_set_3D_sample_effects_level(this->samples3D[i], this->effectsEnabled ? 1.0f : 0.0f);
-    AIL_set_3D_position(this->samples3D[i], x, y, z);
-    AIL_set_3D_orientation(this->samples3D[i], -x, -y, -z, 0.0f, 1.0f, 0.0f);
-    AIL_set_3D_sample_volume(this->samples3D[i], volume);
-    AIL_set_3D_sample_distances(this->samples3D[i], static_cast<float>(maximumDistance), static_cast<float>(minimumDistance));
-    AIL_start_3D_sample(this->samples3D[i]);
-
-    return true;
-  }
-
-  return false;
+  return this->PlayData2D(data, x, y, z, 250, 40, 1.0f);
 }
 
 // OFFSET: 0x00639D30
