@@ -9382,8 +9382,10 @@ void CGameMode::Update() {
               bool reachable = true;
               if (!this->IsValidCell(x, y)) {
                 reachable = this->GetClosestValidCell(&cellX, &cellY);
-                x = cellX;
-                y = cellY;
+                if (reachable) {
+                  x = cellX;
+                  y = cellY;
+                }
               }
               if (reachable) {
                 if (g_windowMgr.menuWnd != nullptr) {
@@ -9474,16 +9476,17 @@ void CGameMode::Update() {
 
     if (this->drag.source != 0 && (g_windowMgr.itemDropCntWnd == nullptr || g_windowMgr.itemDropCntWnd->geometry.visible == 0)) {
       if (this->drag.source == 0x1D) {
-        if (g_windowMgr.Window4F250Ready()) {
+        if (g_windowMgr.Window4F250Ready() == 1) {
           g_windowMgr.MoveTransient(g_mouse.x, g_mouse.y);
         }
       } else if (this->drag.resource.empty()) {
         this->drag.Clear();
       } else {
         const std::string resource = this->drag.resource;
-        CSprRes* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load((resource + ".spr").c_str()));
-        CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load((resource + ".act").c_str()));
-        this->DrawActionSprite(g_mouse.x, g_mouse.y, action, sprite, 0, 0, 1.0f, 0.0f, 0xFAFFFFFF, 0x201);
+        this->DrawActionSprite(
+          g_mouse.x, g_mouse.y, static_cast<CActRes*>(ResourceMgr::Instance().Load((resource + ".act").c_str())),
+          static_cast<CSprRes*>(ResourceMgr::Instance().Load((resource + ".spr").c_str())), 0, 0, 1.0f, 0.0f, 0xFAFFFFFF, 0x201
+        );
       }
     }
 
@@ -10706,6 +10709,7 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
     attack = shiftHeld;
     if (support) {
       attack = shiftHeld == 0;
+      skillMode = 1;
     }
   } else {
     skillMode = 0;
@@ -10715,7 +10719,6 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
     optionalSelf = false;
   }
 
-  bool resetCursor = false;
   if (pick) {
     if (this->scene->isBattleFieldMode == 0) {
       if (g_session.GetMapProperty07()) {
@@ -10761,9 +10764,7 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
           attack = 1;
         } else if (known) {
           attack = 0;
-          if (!skillMode) {
-            resetCursor = true;
-          } else {
+          if (skillMode) {
             attack = support;
             if ((selfTargetOption || shiftHeld) && optionalSelf == true) {
               attack = 1;
@@ -10782,9 +10783,7 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
     }
   }
 
-  if (resetCursor) {
-    this->SetCursorAction(0);
-  } else if (attack && actor->render.state != 3) {
+  if (attack && actor->render.state != 3) {
     this->SetCursorAction(skillMode ? 11 : 5);
     handled = 1;
   } else if (skillMode && actor->render.state != 3) {
@@ -10905,12 +10904,10 @@ void CGameMode::ProcessActorPick(int& handled, ActorPickInfo* pick, CGameActor* 
   }
 
   int& balloonAid = this->lastPcGid;
-  if (this->oldMouseX == g_mouse.x && this->oldMouseY == g_mouse.y) {
-    this->ShowActorNameBalloon(balloonAid);
-    return;
+  if (this->oldMouseX != g_mouse.x || this->oldMouseY != g_mouse.y) {
+    balloonAid = 0;
   }
-  balloonAid = 0;
-  this->ShowActorNameBalloon(0);
+  this->ShowActorNameBalloon(balloonAid);
 }
 
 // OFFSET: 0x00CFE510
