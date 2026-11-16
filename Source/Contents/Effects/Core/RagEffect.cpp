@@ -4723,7 +4723,7 @@ void CRagEffect::TexturedSlashWave(const char* name, char kind) {
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
   this->state.lastPrim->state.size = 0.0f;
-  this->state.lastPrim->state.deltaPos = {this->state.deltaPos.x, this->state.deltaPos.y, this->state.deltaPos.z};
+  this->state.lastPrim->state.deltaPos = this->state.deltaPos;
   RenderObjectState& primRender = this->state.lastPrim->render;
   primRender.position = this->render.position;
 
@@ -4851,9 +4851,10 @@ void CRagEffect::TexturedFlare(const char* name, char size, int, int) {
   this->state.lastPrim->state.slots[0].distance = 2.6f;
   this->state.lastPrim->state.slots[0].riseAngle = 80;
 
+  int slot = 0;
   for (int index = 0; index < 21; ++index) {
-    this->state.lastPrim->state.slots[0].height[index] = 0.0f;
-    this->state.lastPrim->state.slots[0].flag1[index] = 0;
+    this->state.lastPrim->state.slots[slot].height[index] = 0.0f;
+    this->state.lastPrim->state.slots[slot].flag1[index] = 0;
   }
 }
 
@@ -5705,7 +5706,7 @@ void CRagEffect::TexturedShieldThrow(const char* name) {
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
   this->state.lastPrim->state.size = 0.0f;
-  this->state.lastPrim->state.deltaPos = {this->state.deltaPos.x, this->state.deltaPos.y, this->state.deltaPos.z};
+  this->state.lastPrim->state.deltaPos = this->state.deltaPos;
   const float deltaX = this->state.deltaPos.x - this->render.position.x;
   const float deltaZ = this->state.deltaPos.z - this->render.position.z;
   this->state.lastPrim->state.slots[0].life = 1;
@@ -6003,10 +6004,10 @@ void CRagEffect::PokBurst() {
     this->state.lastPrim->state.slots[index].life = 1;
     this->state.lastPrim->state.slots[index].process = -300 - ClampedRandom(50);
     this->state.lastPrim->state.slots[index].rotStart = static_cast<std::int16_t>(ClampedRandom(360));
-    this->state.lastPrim->state.slots[index].vecBNow = {this->render.position.x, this->render.position.y, this->render.position.z};
-    this->state.lastPrim->state.slots[index].vecTPre = {this->render.position.x, this->render.position.y, this->render.position.z};
-    this->state.lastPrim->state.slots[index].vecTNow = {this->render.position.x, this->render.position.y, this->render.position.z};
-    this->state.lastPrim->state.slots[index].vecBPre = {this->render.position.x, this->render.position.y, this->render.position.z};
+    this->state.lastPrim->state.slots[index].vecBNow = this->render.position;
+    this->state.lastPrim->state.slots[index].vecTPre = this->render.position;
+    this->state.lastPrim->state.slots[index].vecTNow = this->render.position;
+    this->state.lastPrim->state.slots[index].vecBPre = this->render.position;
     this->state.lastPrim->state.slots[index].alphaB = 0;
     this->state.lastPrim->state.slots[index].maxHeight = 2.0f;
     this->state.lastPrim->state.slots[index].flag1[0] = static_cast<char>(ClampedRandom(5));
@@ -6845,9 +6846,10 @@ void CRagEffect::WhiteRingRipple(char size) {
   this->state.lastPrim->state.slots[0].alphaT = 100;
   this->state.lastPrim->state.slots[0].vecBNow.y = 0.0f;
 
+  int slot0 = 0;
   for (int step = 0; step < 21; ++step) {
-    this->state.lastPrim->state.slots[0].height[step] = 0.0f;
-    this->state.lastPrim->state.slots[0].flag1[step] = 1;
+    this->state.lastPrim->state.slots[slot0].height[step] = 0.0f;
+    this->state.lastPrim->state.slots[slot0].flag1[step] = 1;
   }
 
   this->state.lastPrim->state.slots[1].life = 1;
@@ -11941,7 +11943,7 @@ void CRagEffect::TANJI2() {
   this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\blue_ivy.bmp", 0, false, true, false);
 
   this->state.lastPrim->state.size = 0.0f;
-  this->state.lastPrim->state.deltaPos = {this->state.deltaPos.x, this->state.deltaPos.y, this->state.deltaPos.z};
+  this->state.lastPrim->state.deltaPos = this->state.deltaPos;
 
   const float dx = this->state.deltaPos.x - this->render.position.x;
   const float dz = this->state.deltaPos.z - this->render.position.z;
@@ -11989,7 +11991,7 @@ void CRagEffect::TEIHIT2() {
   this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\thunder_center.bmp", 0, false, true, false);
 
   this->state.lastPrim->state.size = 0.0f;
-  this->state.lastPrim->state.deltaPos = {this->state.deltaPos.x, this->state.deltaPos.y, this->state.deltaPos.z};
+  this->state.lastPrim->state.deltaPos = this->state.deltaPos;
   CopyVector(this->state.lastPrim->render.position, this->render.position);
 
   for (int i = 0; i < 4; ++i) {
@@ -13637,9 +13639,10 @@ void CRagEffect::WhiteRingWave() {
   this->state.lastPrim->state.slots[2].alphaT = 100;
   this->state.lastPrim->state.slots[2].vecBNow.y = 0.0f;
 
+  int slot2 = 2;
   for (int height = 0; height < 21; ++height) {
-    this->state.lastPrim->state.slots[2].height[height] = 0.0f;
-    this->state.lastPrim->state.slots[2].flag1[height] = 1;
+    this->state.lastPrim->state.slots[slot2].height[height] = 0.0f;
+    this->state.lastPrim->state.slots[slot2].flag1[height] = 1;
   }
 
   this->state.lastPrim->state.slots[3].life = 0;
@@ -13788,9 +13791,10 @@ void CRagEffect::WideTripleRingStack(const char* name) {
   this->state.lastPrim->state.slots[0].riseAngle = 55;
   this->state.lastPrim->state.slots[0].vecBNow.y = 0.0f;
 
+  int slot0 = 0;
   for (int height = 0; height < 21; ++height) {
-    this->state.lastPrim->state.slots[0].height[height] = 0.0f;
-    this->state.lastPrim->state.slots[0].flag1[height] = 0;
+    this->state.lastPrim->state.slots[slot0].height[height] = 0.0f;
+    this->state.lastPrim->state.slots[slot0].flag1[height] = 0;
   }
 
   this->state.lastPrim->state.slots[1].life = 1;
@@ -17265,9 +17269,10 @@ bool CRagEffect::GlassWallRising(const char* name) {
     this->state.lastPrim->state.slots[0].alphaT = 5500;
     this->state.lastPrim->state.slots[0].vecBNow.y = 0.0f;
 
+    int slot0 = 0;
     for (int height = 0; height < 21; ++height) {
-      this->state.lastPrim->state.slots[0].height[height] = 0.0f;
-      this->state.lastPrim->state.slots[0].flag1[height] = 0;
+      this->state.lastPrim->state.slots[slot0].height[height] = 0.0f;
+      this->state.lastPrim->state.slots[slot0].flag1[height] = 0;
     }
 
     this->state.lastPrim->state.slots[1].life = 1;
@@ -17281,9 +17286,10 @@ bool CRagEffect::GlassWallRising(const char* name) {
     this->state.lastPrim->state.slots[1].alphaT = 3080;
     this->state.lastPrim->state.slots[1].vecBNow.y = 0.0f;
 
+    int slot1 = 1;
     for (int height = 0; height < 21; ++height) {
-      this->state.lastPrim->state.slots[1].height[height] = 0.0f;
-      this->state.lastPrim->state.slots[1].flag1[height] = 0;
+      this->state.lastPrim->state.slots[slot1].height[height] = 0.0f;
+      this->state.lastPrim->state.slots[slot1].flag1[height] = 0;
     }
 
     this->state.lastPrim->state.slots[2].life = 1;
@@ -17297,9 +17303,10 @@ bool CRagEffect::GlassWallRising(const char* name) {
     this->state.lastPrim->state.slots[2].alphaT = 3080;
     this->state.lastPrim->state.slots[2].vecBNow.y = 0.0f;
 
+    int slot2 = 2;
     for (int height = 0; height < 21; ++height) {
-      this->state.lastPrim->state.slots[2].height[height] = 0.0f;
-      this->state.lastPrim->state.slots[2].flag1[height] = 0;
+      this->state.lastPrim->state.slots[slot2].height[height] = 0.0f;
+      this->state.lastPrim->state.slots[slot2].flag1[height] = 0;
     }
 
     this->state.lastPrim->state.slots[3].life = 0;
