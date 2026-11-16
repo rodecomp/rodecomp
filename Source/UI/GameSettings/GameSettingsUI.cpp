@@ -1635,10 +1635,12 @@ void CUIGroupSound::OnEffectScroll(int position) {
 // FUNCTION: fn_16032
 void CUIGroupEmblem::Refresh() {
   const bool enabled = g_serviceOptions.Get(TT_EMBLEM_FRAME_ON_OFF);
-  this->m_onButton->checked = enabled;
-  this->m_onButton->Invalidate();
-  this->m_offButton->checked = !enabled;
-  this->m_offButton->Invalidate();
+  auto* const onButton = this->m_onButton;
+  onButton->checked = enabled;
+  onButton->Invalidate();
+  auto* const offButton = this->m_offButton;
+  offButton->checked = !enabled;
+  offButton->Invalidate();
 }
 
 // OFFSET: 0x00A436A0
