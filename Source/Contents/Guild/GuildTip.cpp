@@ -63,17 +63,16 @@ int CGuildTip::Load() {
 
   for (int i = 0; i < fileSize; ++i) {
     switch (fileBuf[i]) {
-    case 10: {
-      fileBuf[i] = 0;
-      tmpList.push_back(baseBuf);
-      baseBuf = fileBuf + i + 1;
-      break;
-    }
     case '#':
       fileBuf[i] = 0;
       tmpList.push_back(baseBuf);
       this->m_tipList.push_back(tmpList);
       tmpList.clear();
+      baseBuf = fileBuf + i + 1;
+      break;
+    case 10:
+      fileBuf[i] = 0;
+      tmpList.push_back(baseBuf);
       baseBuf = fileBuf + i + 1;
       break;
     }
