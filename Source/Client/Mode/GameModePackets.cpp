@@ -10183,8 +10183,7 @@ namespace {
 // FUNCTION: fn_21691
 void CGameMode::ReceiveEquipItemDamaged(const unsigned char* packet) {
   const auto* p = reinterpret_cast<const PACKET_ZC_EQUIPITEM_DAMAGED*>(packet);
-  const std::uint16_t location = p->equipLocation;
-  if (location == 0) {
+  if (p->equipLocation == 0) {
     return;
   }
 
@@ -10193,7 +10192,7 @@ void CGameMode::ReceiveEquipItemDamaged(const unsigned char* packet) {
   if (aid != g_session.m_aid) {
     MessengerMember member = g_session.PartyByAccount(aid);
     if (member.valid) {
-      switch (location) {
+      switch (p->equipLocation) {
       case EQP_HAND_L:
         text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_DAMAGED_EQUIP_PARTY), member.name.c_str(), LookupMessage(0x109A)));
         break;
@@ -10209,7 +10208,7 @@ void CGameMode::ReceiveEquipItemDamaged(const unsigned char* packet) {
       }
     }
   } else {
-    const EquipSlots slots = g_session.GetEquipSlots(location);
+    const EquipSlots slots = g_session.GetEquipSlots(p->equipLocation);
     ITEM_INFO item = g_session.GetEquippedItemAt(slots.values[2]);
     if (item.identity[1] != 0) {
       text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_DAMAGED_EQUIP), item.DisplayName(0).c_str()));
