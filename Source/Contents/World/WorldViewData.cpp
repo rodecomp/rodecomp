@@ -602,6 +602,7 @@ void CWorldViewMgr::Load(LuaScript& script) {
     return;
   }
 
+  int mapId = -1;
   WorldViewArea area = {};
   for (int worldIndex = 1; worldIndex < 400; ++worldIndex) {
     const char* worldName = nullptr;
@@ -624,10 +625,10 @@ void CWorldViewMgr::Load(LuaScript& script) {
       const std::string tableName(mapTable);
       if (!tableName.empty()) {
         for (int index = 1; index < 400; ++index) {
-          int mapId = -1;
           const char* mapName = nullptr;
           const char* fieldName = nullptr;
           const char* description = nullptr;
+          mapId = -1;
           area.bottom = -1;
           area.right = -1;
           area.top = -1;
@@ -654,9 +655,9 @@ void CWorldViewMgr::Load(LuaScript& script) {
       const std::string tableName(fieldTable);
       if (!tableName.empty()) {
         for (int index = 1; index < 400; ++index) {
-          int mapId = -1;
           const char* mapName = nullptr;
           const char* displayName = nullptr;
+          mapId = -1;
           area.bottom = -1;
           area.right = -1;
           area.top = -1;
@@ -674,11 +675,7 @@ void CWorldViewMgr::Load(LuaScript& script) {
           if (CWorldViewMap* map = world->FindMap(mapId)) {
             map->displayName = displayName;
             map->name = mapName;
-            map->left = area.left;
-            map->top = area.top;
-            map->right = area.right;
-            map->bottom = area.bottom;
-            map->areaFlags = area.areaFlags;
+            map->area = area;
           }
         }
       }
