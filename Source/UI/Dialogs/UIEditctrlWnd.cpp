@@ -66,15 +66,16 @@ void UIMiniMapWnd::AddTownMarks() {
   this->marks[2].clear();
 
   for (int index = 0;; ++index) {
-    TownInfo info = g_townInfoMgr->GetTownInfo(mapName, index);
+    CTownInfoMgr* townInfoMgr = g_townInfoMgr;
+    TownInfo info = townInfoMgr->GetTownInfo(mapName, index);
     if (info.image.empty()) {
       break;
     }
 
     if (info.type == 8) {
       MiniMapMark mark;
-      mark.x = static_cast<int>(static_cast<float>(info.x) * this->scale - 6.0f + this->originX);
       mark.y = static_cast<int>(this->originY - (static_cast<float>(info.y) * this->scale + 6.0f));
+      mark.x = static_cast<int>(static_cast<float>(info.x) * this->scale - 6.0f + this->originX);
       this->marks[2].push_back(mark);
     } else {
       UIBitmapButton* button = new UIBitmapButton();
