@@ -6,6 +6,7 @@
 // OFFSET: 0x00ACCD30
 // FUNCTION: fn_17752
 CLanguageTC::CLanguageTC() : keys() {
+  this->keyStroke = 0;
   // STATIC: 0x011594E0
   // GLOBAL: gl_13427
   static constexpr std::array<std::uint8_t, 83> zhuyinBig5 = {0xA3, 0x74, 0xA3, 0x78, 0xA3, 0xBE, 0xA3, 0xBF, 0xA3, 0xA4, 0xA3, 0xBD, 0xA3, 0xBB, 0xA3, 0xAB, 0xA3,
@@ -18,8 +19,6 @@ CLanguageTC::CLanguageTC() : keys() {
   const unsigned char keys[] = {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
                                            'I', 'J', 'K', 'L', 'N', 'M', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
                                            VK_OEM_MINUS, VK_OEM_1, VK_OEM_COMMA, VK_OEM_PERIOD, VK_OEM_2};
-
-  this->keyStroke = 0;
 
   for (int index = 0; index < 256; ++index) {
     this->mappings[index].category = 4;
