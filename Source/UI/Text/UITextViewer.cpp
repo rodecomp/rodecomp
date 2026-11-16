@@ -217,12 +217,14 @@ void UITextViewer::Paint() {
     const int y = (index - first) * this->lineHeight + 4;
     const auto bytes = static_cast<unsigned>(line.size());
 
-    if (plain) {
-      this->DrawOutlinedText(3, y, line.c_str(), bytes, 0, 0xFFFFFF, 0, 12, 0, 0);
-    } else if (this->outline != 0) {
-      this->DrawOutlinedColoredText(3, y, line.c_str(), bytes, color, this->backgroundColor, 0, 12, this->bold);
+    if (!plain) {
+      if (this->outline != 0) {
+        this->DrawOutlinedColoredText(3, y, line.c_str(), bytes, color, this->backgroundColor, 0, 12, this->bold);
+      } else {
+        this->DrawColoredText(3, y, line.c_str(), bytes, color, 0, 12, false);
+      }
     } else {
-      this->DrawColoredText(3, y, line.c_str(), bytes, color, 0, 12, false);
+      this->DrawOutlinedText(3, y, line.c_str(), bytes, 0, 0xFFFFFF, 0, 12, 0, 0);
     }
   }
 }
