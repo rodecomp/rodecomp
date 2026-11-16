@@ -26,9 +26,6 @@ void UIShortCutWnd::OnMouseHover(int x, int y) {
   }
 
   const int index = (grid.hovered + 9 * grid.row);
-  int tooltipX = 29 * ((x - 15) / 29) + 15;
-  int tooltipY = -17;
-
   if (9 * grid.rows <= index) {
     if (!g_session.ItemSlotActive()) {
       return;
@@ -45,6 +42,8 @@ void UIShortCutWnd::OnMouseHover(int x, int y) {
     }
 
     const std::string text = FormatOwnedString(LookupMessage(MSI_EA2), item.DisplayName(0).c_str(), item.quantity);
+    int tooltipX = 29 * ((x - 15) / 29) + 15;
+    int tooltipY = -17;
     window.ToScreen(tooltipX, tooltipY);
 
     if (g_modeMgr.currentMode) {
@@ -54,7 +53,7 @@ void UIShortCutWnd::OnMouseHover(int x, int y) {
     return;
   }
 
-  std::string shortcut;
+  std::string shortcut = "";
   HotkeyInfo hotkey;
   const int bank = g_session.GetOption(10);
   if (bank == 0) {
@@ -67,37 +66,40 @@ void UIShortCutWnd::OnMouseHover(int x, int y) {
     shortcut = hotkey.text;
   }
 
+  int tooltipX = 29 * ((x - 15) / 29) + 15;
+  int tooltipY = -17;
   window.ToScreen(tooltipX, tooltipY);
-  std::string text;
-  const NormalItemSlot& slot = *this->m_slots[index];
 
-  if (slot.itemId == 0) {
-    text = shortcut;
-  } else if (slot.enabled != 0) {
-    CSkillInfo skill = g_session.LookupSkill(slot.itemId);
-    if (!skill.MatchesShortcut(&slot)) {
-      text = shortcut;
-    } else {
-      int level = slot.value;
-      if (IsIndexedSkill(static_cast<int>(skill.id)) && skill.level < level) {
-        level = skill.level;
-      }
-
-      const int sp = skill.UseSpAmount(*g_session.m_hotkeyScript, level);
-      const int ap = skill.UseApAmount(*g_session.m_hotkeyScript, level);
-      if (SkillUsesPercentSp(static_cast<int>(skill.id))) {
-        text = SkillTooltipPercent(shortcut.c_str(), skill.DisplayName(), level, sp, ap);
+  std::string text = "";
+  if (this->m_slots[index]->itemId != 0) {
+    if (this->m_slots[index]->enabled != 0) {
+      CSkillInfo skill = g_session.LookupSkill(this->m_slots[index]->itemId);
+      if (!this->MatchesShortcut(skill, this->m_slots[index])) {
+        text = shortcut;
       } else {
-        text = SkillTooltipFlat(shortcut.c_str(), skill.DisplayName(), level, sp, ap);
+        int level = this->m_slots[index]->value;
+        if (IsIndexedSkill(static_cast<int>(skill.id)) && skill.level < level) {
+          level = skill.level;
+        }
+
+        const int sp = skill.UseSpAmount(level);
+        const int ap = skill.UseApAmount(level);
+        if (g_session.SkillUsesPercentSp(static_cast<int>(skill.id))) {
+          text = SkillTooltipPercent(shortcut.c_str(), skill.DisplayName(), level, sp, ap);
+        } else {
+          text = SkillTooltipFlat(shortcut.c_str(), skill.DisplayName(), level, sp, ap);
+        }
+      }
+    } else {
+      ITEM_INFO item = g_session.LookupClientItem(static_cast<int>(this->m_slots[index]->itemId), 1);
+      if (item.quantity == 0) {
+        text = shortcut;
+      } else {
+        text = FormatOwnedString(LookupMessage(MSI_EA3), shortcut.c_str(), item.DisplayName(0).c_str(), item.quantity);
       }
     }
   } else {
-    ITEM_INFO item = g_session.LookupClientItem(static_cast<int>(slot.itemId), 1);
-    if (item.quantity == 0) {
-      text = shortcut;
-    } else {
-      text = FormatOwnedString(LookupMessage(MSI_EA3), shortcut.c_str(), item.DisplayName(0).c_str(), item.quantity);
-    }
+    text = shortcut;
   }
 
   g_modeMgr.currentMode->ShowTooltip(text.c_str(), tooltipX, tooltipY, -1, 0, 1);
