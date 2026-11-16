@@ -4311,28 +4311,25 @@ namespace {
   // INLINED
   __forceinline void DriftSlotAngles(EffectPrimitiveSlot& slot, int count, float rise = 1.0f, float fall = 1.0f) {
     for (int axis = 0; axis < count * 2; axis += 2) {
-      float& angle = slot.height[axis];
-      float& target = slot.height[axis + 1];
+      if (slot.height[axis + 1] > slot.height[axis]) {
+        slot.height[axis] += rise;
 
-      if (target > angle) {
-        angle += rise;
-
-        if (angle > 359.0f) {
-          angle = 359.0f;
+        if (slot.height[axis] > 359.0f) {
+          slot.height[axis] = 359.0f;
         }
 
-        if (angle > target) {
-          target = static_cast<float>(SafeRandom(static_cast<int>(angle)));
+        if (slot.height[axis] > slot.height[axis + 1]) {
+          slot.height[axis + 1] = static_cast<float>(SafeRandom(static_cast<int>(slot.height[axis])));
         }
       } else {
-        angle -= fall;
+        slot.height[axis] -= fall;
 
-        if (angle < 0.0f) {
-          angle = 0.0f;
+        if (slot.height[axis] < 0.0f) {
+          slot.height[axis] = 0.0f;
         }
 
-        if (angle <= target) {
-          target = static_cast<float>(359 - SafeRandom(static_cast<int>(angle)));
+        if (slot.height[axis] <= slot.height[axis + 1]) {
+          slot.height[axis + 1] = static_cast<float>(359 - SafeRandom(static_cast<int>(slot.height[axis])));
         }
       }
     }
@@ -7349,9 +7346,9 @@ namespace {
     point.z = static_cast<float>(ClampedRandom(11) - 5);
 
     if (slot.flag1[11] == 1) {
-      const float x = point.x;
+      const int x = static_cast<int>(point.x);
       point.x = point.z;
-      point.z = static_cast<float>(static_cast<int>(x));
+      point.z = static_cast<float>(x);
     }
   }
 }
@@ -7650,12 +7647,6 @@ namespace {
   }
 
   // INLINED
-  __forceinline std::int16_t AxisDistance(float value) {
-    const std::int16_t truncated = static_cast<std::int16_t>(static_cast<int>(value));
-    return truncated < 0 ? static_cast<std::int16_t>(-truncated) : truncated;
-  }
-
-  // INLINED
   __forceinline void MoveFloatingMote(
     EffectPrimitiveSlot& slot, vector3d& point, int angleX, int angleZ, char& counter, bool riseSubtractX, bool riseSubtractZ,
     bool subtractX, bool subtractZ, bool leading
@@ -7690,10 +7681,18 @@ namespace {
     } else if (kind == 15) {
       ShiftAxis(point.x, g_sinTable[static_cast<int>(slot.height[angleX])] * 0.1f, subtractX);
       ShiftAxis(point.z, g_sinTable[static_cast<int>(slot.height[angleZ])] * 0.1f, subtractZ);
-      std::int16_t distance = AxisDistance(point.x);
+      std::int16_t distance = static_cast<std::int16_t>(point.x);
+
+      if (distance < 0) {
+        distance = -distance;
+      }
 
       if (distance < 10) {
-        distance = AxisDistance(point.z);
+        distance = static_cast<std::int16_t>(point.z);
+
+        if (distance < 0) {
+          distance = -distance;
+        }
       }
 
       if (distance > 10) {
