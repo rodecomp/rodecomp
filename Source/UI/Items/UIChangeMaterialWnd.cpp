@@ -430,7 +430,7 @@ int UIChangeMaterialWnd::SendMsg(
         info.quantity = it->quantity;
         const ITEM_INFO stock = g_session.LookupClientItem(it->id, 1);
         info.identity[1] = stock.identity[1];
-        info.identified = it->quantity <= stock.quantity;
+        info.identified = stock.quantity >= it->quantity;
         this->m_materials.push_back(info);
       }
 
@@ -440,11 +440,10 @@ int UIChangeMaterialWnd::SendMsg(
           total += result.amount;
         }
         this->m_resultAmount = total > 1000 ? total : 1000;
-        const MaterialResult& first = entry->results.front();
-        const MaterialResult& last = entry->results.back();
-        const std::string name = ItemDisplayName(first.id);
-        const std::string text = FormatOwnedString(LookupMessage(MSI_IQ_POWERFUL_FAITH_ON), name.c_str(), first.quantity, last.quantity);
-        this->m_resultText = text;
+        this->m_resultText = static_cast<const std::string&>(FormatOwnedString(
+          LookupMessage(MSI_IQ_POWERFUL_FAITH_ON), ItemDisplayName(entry->results.front().id).c_str(), entry->results.front().quantity,
+          entry->results.back().quantity
+        ));
       } else {
         this->m_resultAmount = entry->results.front().amount;
         this->m_resultText = "";
