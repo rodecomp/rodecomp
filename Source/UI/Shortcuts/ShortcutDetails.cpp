@@ -38,7 +38,7 @@ void UIShortCutWnd::OnRBtnDown(int x, int y) {
   if (this->m_slots[index]->enabled) {
     CSkillInfo skill = g_session.LookupSkill(this->m_slots[index]->itemId);
 
-    if (skill.MatchesShortcut(this->m_slots[index])) {
+    if (this->MatchesShortcut(skill, this->m_slots[index])) {
       UIWindow* detail = g_windowMgr.EnsureWindow(WID_SKILLDESCRIBEWND);
 
       if (detail) {
