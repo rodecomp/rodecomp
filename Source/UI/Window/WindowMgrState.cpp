@@ -145,7 +145,8 @@ void UIWindowMgr::RestoreMiniPartyWindows() {
       continue;
     }
 
-    const SessionRecord0734 record = g_session.FindMiniPartyRecord(member.accountId);
+    SessionRecord0734 record;
+    record = g_session.FindMiniPartyRecord(member.accountId);
     UIMiniPartyWnd* window = new UIMiniPartyWnd();
     window->SetSize(174, 52);
     window->m_cell = record.cell;
