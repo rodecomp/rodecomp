@@ -62,10 +62,12 @@ bool CRotateItemEffect::IsAlive() {
 // FUNCTION: fn_19151
 void CRotateItemEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
-    (*it)->position.x = this->position[0];
-    (*it)->position.y = this->position[1];
-    (*it)->position.z = this->position[2];
-    if (CParticle* particle = *it) {
+    CParticle* particle = *it;
+    vector3d& particlePosition = (*it)->position;
+    particlePosition.x = this->position[0];
+    particlePosition.y = this->position[1];
+    particlePosition.z = this->position[2];
+    if (particle) {
       if (this->frame >= 5) {
         float& particleAngle = particle->angle;
         if (particle->columnIndex == 0) {
@@ -83,9 +85,7 @@ void CRotateItemEffect::OnProcess() {
 
         const int index = static_cast<int>(particleAngle);
         const float radius = particle->animationParameter;
-        particle->offsetX = radius * g_cosTable[index];
-        particle->offsetY = -8.0f;
-        particle->offsetZ = radius * g_sinTable[index];
+        particle->offset = vector3d{radius * g_cosTable[index], -8.0f, radius * g_sinTable[index]};
         this->angle = static_cast<float>(static_cast<int>(particleAngle - 5.0f) % 360);
         this->alpha = particle->alpha;
         if (particle->alpha > 0) {
@@ -108,7 +108,7 @@ void CRotateItemEffect::OnProcess() {
         }
       }
     }
-    ++(*it)->elapsedFrames;
+    ++particle->elapsedFrames;
   }
 }
 
