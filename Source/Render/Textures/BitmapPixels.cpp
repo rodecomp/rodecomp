@@ -275,18 +275,18 @@ void CDCBitmap::Brighten(int x, int y, int copyWidth, int copyHeight, int amount
 
 // OFFSET: 0x00548650
 // FUNCTION: fn_01855
-void BitmapPixels::Dim(int x, int y, int copyWidth, int copyHeight, int percent) {
-  if (x < 0 || y < 0 || this->width < static_cast<unsigned>(x) || this->height < static_cast<unsigned>(y) || copyWidth < 1 || copyHeight < 1) {
+void CDCBitmap::Dim(int x, int y, int copyWidth, int copyHeight, int percent) {
+  if (x < 0 || y < 0 || this->m_bitmap.width < static_cast<unsigned>(x) || this->m_bitmap.height < static_cast<unsigned>(y) || copyWidth < 1 || copyHeight < 1) {
     return;
   }
 
-  const int right = std::min(static_cast<std::uint32_t>(x + copyWidth), this->width);
-  const int bottom = std::min(static_cast<std::uint32_t>(y + copyHeight), this->height);
+  const int right = std::min(static_cast<std::uint32_t>(x + copyWidth), this->m_bitmap.width);
+  const int bottom = std::min(this->m_bitmap.height, static_cast<std::uint32_t>(y + copyHeight));
   const float factor = static_cast<float>(100 - percent) * 0.01f;
 
   for (int row = y; row < bottom; ++row) {
     for (int column = x; column < right; ++column) {
-      std::uint32_t& pixel = this->pixels[column + row * this->width];
+      std::uint32_t& pixel = this->m_bitmap.pixels[column + row * this->m_bitmap.width];
       if (pixel != 0xFFFF00FF) {
         const int red = static_cast<int>(static_cast<BYTE>(pixel >> 16) * factor);
         const int green = static_cast<int>(static_cast<BYTE>(pixel >> 8) * factor);

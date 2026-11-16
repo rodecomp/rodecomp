@@ -42,6 +42,3 @@ void CDCBitmap::CopyRegion(
   this->m_bitmap.CopyRegion(x, y, sourceLeft, sourceTop, sourceRight, sourceBottom, source, sourceWidth, sourceHeight, transparent, alpha);
 }
 
-void CDCBitmap::Dim(int x, int y, int width, int height, int percent) {
-  this->m_bitmap.Dim(x, y, width, height, percent);
-}
