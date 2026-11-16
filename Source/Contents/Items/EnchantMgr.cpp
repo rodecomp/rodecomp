@@ -565,9 +565,9 @@ void CEnchantMgr::AddPerfectEnchant(uint64_t group, uint32_t optionKey, const st
 // FUNCTION: fn_05538
 void CEnchantMgr::AddPerfectUpgradeEnchant(uint64_t group, uint32_t optionKey, const std::string& baseItemName, const std::string& itemName,
                                            uint64_t cost, const std::map<std::string, int>& materials) {
-  int baseItemId = CItemDBToIDMgr::GetInstance()->GetItemID(baseItemName);
+  int baseItemId = ItemDbToIdMgr()->GetItemID(baseItemName);
   if (baseItemId != 0) {
-    int itemId = CItemDBToIDMgr::GetInstance()->GetItemID(itemName);
+    int itemId = ItemDbToIdMgr()->GetItemID(itemName);
     if (itemId != 0) {
       m_enchants[group].options[optionKey].perfectUpgrades[baseItemId][itemId].cost = cost;
       m_enchants[group].options[optionKey].perfectUpgrades[baseItemId][itemId].materials = ConvertMaterials(materials);
