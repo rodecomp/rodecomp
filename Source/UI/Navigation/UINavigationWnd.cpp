@@ -431,10 +431,11 @@ void UINavigationWnd::ApplyMinimized() {
     if (g_renderer->viewport.width - 272 <= x) {
       x = g_renderer->viewport.width - this->geometry.width;
     }
+    x = std::ranges::max(x, 0);
     if (g_renderer->viewport.height - 338 <= y) {
       y = g_renderer->viewport.height - this->geometry.height;
     }
-    this->Move(std::ranges::max(x, 0), std::ranges::max(y, 0));
+    this->Move(x, std::ranges::max(y, 0));
 
     this->m_resizer->Move(-1000, -1000);
     this->m_helpButton->Move(this->geometry.width - 42, 3);
