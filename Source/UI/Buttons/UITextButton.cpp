@@ -1533,6 +1533,7 @@ void UITVTextButton::Paint() {
     }
   }
 
+  const int textX = inset + 1;
   std::uint32_t color = this->m_textColor;
 
   if (this->highlighted != 0) {
@@ -1540,9 +1541,9 @@ void UITVTextButton::Paint() {
   }
 
   if (this->m_outlined != 0) {
-    this->DrawOutlinedText(inset + 1, 2, this->displayText.c_str(), 0, color, this->m_outlineColor, this->m_fontFamily, this->m_fontHeight, 1, 0);
+    this->DrawOutlinedText(textX, 2, this->displayText.c_str(), 0, color, this->m_outlineColor, this->m_fontFamily, this->m_fontHeight, 1, 0);
   } else {
-    this->DrawTextAt(inset + 1, 2, this->displayText.c_str(), 0, this->m_fontFamily, this->m_fontHeight, color, 0, 0);
+    this->DrawTextAt(textX, 2, this->displayText.c_str(), 0, this->m_fontFamily, this->m_fontHeight, color, 0, 0);
   }
 }
 
@@ -2258,7 +2259,8 @@ void UIMemberListBox::Paint() {
   const int first = this->topLine;
   const unsigned end = std::min(static_cast<unsigned>(this->geometry.height / this->lineHeight - this->bottomMargin + first), static_cast<unsigned>(this->lines.size()));
 
-  for (int index = first, row = 0; index < static_cast<int>(end); ++index, ++row) {
+  for (int index = first; index < static_cast<int>(end); ++index) {
+    const int row = index - first;
     if (index == this->selected) {
       this->FillRegion(0, row * this->lineHeight + 1, this->geometry.width, this->lineHeight, 0xC8C832);
     }
@@ -2432,7 +2434,8 @@ void UIComboBox::Paint() {
   const int first = this->topLine;
   const unsigned end = std::min(static_cast<unsigned>(this->geometry.height / this->lineHeight - this->bottomMargin + first), static_cast<unsigned>(this->lines.size()));
 
-  for (int index = first, row = 0; index < static_cast<int>(end); ++index, ++row) {
+  for (int index = first; index < static_cast<int>(end); ++index) {
+    const int row = index - first;
     if (index == this->selected) {
       g_skinInfo.PaletteChannels(6, 2, red, green, blue);
       this->FillRegion(3, row * this->lineHeight + 1, this->geometry.width - 6, this->lineHeight - 2, RGB(red, green, blue));
@@ -3436,8 +3439,8 @@ void UIChatHisBox2::Paint() {
   const unsigned end = std::min(static_cast<unsigned>(this->geometry.height / this->lineHeight - this->bottomMargin + top), static_cast<unsigned>(this->lines.size()));
 
   FontCache& fonts = g_fontCache;
-  for (int row = 0; top + row < static_cast<int>(end); ++row) {
-    const int index = top + row;
+  for (int index = top; index < static_cast<int>(end); ++index) {
+    const int row = index - top;
     if (g_serviceType == 19 && g_tipOfTheDayEnglish) {
       const int width = this->TextWidth(this->lines[index].c_str(), 0, 0, 12, 0, 0);
       this->DrawTextAt(this->geometry.width - width - 19, this->lineHeight * row + 3, this->lines[index].c_str(), 0, 0, 12, this->lineColors[index], 0, 0);
