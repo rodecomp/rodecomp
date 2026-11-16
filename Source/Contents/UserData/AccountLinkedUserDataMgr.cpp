@@ -7,6 +7,7 @@
 #include "Contents/Hotkeys/EmotionHotkeys.h"
 #include "Contents/Hotkeys/UserHotkeyMgr.h"
 #include "Contents/Messenger/WhisperBlockMgr.h"
+#include "Network/TextEncoding.h"
 #include "Utility/Async/AsyncDiagnostic.h"
 #include "Utility/Cipher/XorBytes.h"
 #include "Utility/Cipher/LocalEncryptedName.h"
@@ -145,6 +146,17 @@ void CAccountLinkedUserDataMgr::CompleteSave() {
   --this->m_pendingLoads;
 }
 
+// INLINED
+void EmotionHotkeys::Export(Json::Value& data) const {
+  Json::Value values;
+
+  for (unsigned index = 0; index < 10; ++index) {
+    values.append(ToUtf8(this->current[index], g_textCodePage));
+  }
+
+  data["EmotionHotkey"] = values;
+}
+
 // OFFSET: 0x005BCE50
 // FUNCTION: fn_03469
 void CAccountLinkedUserDataMgr::Save() {
@@ -161,7 +173,7 @@ void CAccountLinkedUserDataMgr::Save() {
     data["WhisperBlockList"] = values;
   }
 
-  if (g_session.HasEmotionHotkeyChanges()) {
+  if (g_session.HasEmotionHotkeyChanges() == true) {
     g_session.m_emotionHotkeys.Export(data);
   }
 
@@ -173,7 +185,8 @@ void CAccountLinkedUserDataMgr::Save() {
     root["data"] = data;
     Json::StyledWriter writer;
     const std::string response = writer.write(root);
-    g_asyncWorkMgr->SaveAccount(this->m_accountId, this->m_accountName, this->SaveUrl(), std::string(g_session.m_webAuthToken, 16), response);
+    CAsyncWorkMgr* asyncWorkMgr = g_asyncWorkMgr;
+    asyncWorkMgr->SaveAccount(this->m_accountId, this->m_accountName, this->SaveUrl(), std::string(g_session.m_webAuthToken, 16), response);
     ++this->m_pendingLoads;
   }
 }
@@ -187,5 +200,6 @@ void CAccountLinkedUserDataMgr::Load(std::uint32_t accountId, std::string accoun
     return;
   }
 
-  g_asyncWorkMgr->LoadAccount(accountId, accountName, this->LoadUrl());
+  CAsyncWorkMgr* asyncWorkMgr = g_asyncWorkMgr;
+  asyncWorkMgr->LoadAccount(accountId, accountName, this->LoadUrl());
 }

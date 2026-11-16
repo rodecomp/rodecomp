@@ -91,14 +91,3 @@ bool CSession::LoadEmotionHotkeyDefaults() {
   const bool loaded = script.LoadFile(std::format("savedata\\shortcutlist\\{}.lua", this->ShortcutFilename(this->m_aid)), false);
   return loaded && script.ReadStrings(this->m_emotionHotkeys.current, "tbl") == 0 && this->m_emotionHotkeys.current.size() == 10;
 }
-
-// INLINED
-void EmotionHotkeys::Export(Json::Value& data) const {
-  Json::Value values;
-
-  for (unsigned index = 0; index < 10; ++index) {
-    values.append(ToUtf8(this->current[index], g_textCodePage));
-  }
-
-  data["EmotionHotkey"] = values;
-}
