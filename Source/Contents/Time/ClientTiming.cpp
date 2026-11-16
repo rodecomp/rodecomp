@@ -545,7 +545,7 @@ void CSession::SetHotkeySkillLevel(std::uint32_t skillLevel, int index) {
 // FUNCTION: fn_23916
 void CSession::RefreshTrackedAchievement(int id) {
   std::vector<SessionRecord6178>& tracked = this->trackedAchievements;
-  auto found = std::find_if(tracked.begin(), tracked.end(), [id](SessionRecord6178 record) { return id == record.id; });
+  auto found = std::find_if(tracked.begin(), tracked.end(), [&](SessionRecord6178 record) { return id == record.id; });
   if (found == tracked.end()) {
     return;
   }
