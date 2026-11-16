@@ -358,24 +358,27 @@ void CEZ2STREffectEx::OnProcess() {
   }
 
   if (this->emitter->m_followGround) {
+    vector3d position = this->positionVector;
     CGameMode* mode = g_modeMgr.GetGameMode();
-    this->position[1] = mode->scene->terrain->Height(this->position[0], this->position[2]);
+    position.y = mode->scene->terrain->Height(position.x, position.z);
+    this->positionVector = position;
   }
 
   if (CEZ2STRParticle* emitter = this->emitter) {
-    const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
-    const float* inverse = g_modeMgr.GetGameMode()->camera->frame.inverse.values;
+    const matrix& view = g_modeMgr.GetGameMode()->camera->frame.view;
+    const matrix& inverse = g_modeMgr.GetGameMode()->camera->frame.inverse;
 
-    const float x = this->position[0];
-    const float y = this->position[1];
-    const float z = this->position[2];
-    const float viewX = x * view[0] + y * view[3] + z * view[6] + view[9] + emitter->offsetX;
-    const float viewY = x * view[1] + y * view[4] + z * view[7] + view[10] - emitter->offsetY;
-    const float viewZ = x * view[2] + y * view[5] + z * view[8] + view[11];
+    const vector3d position = this->positionVector;
+    const float viewX = position.y * view.values[3] + position.x * view.values[0] + position.z * view.values[6] + view.values[9] + emitter->offsetX;
+    const float viewY = position.y * view.values[4] + position.x * view.values[1] + position.z * view.values[7] + view.values[10] - emitter->offsetY;
+    const float viewZ = position.y * view.values[5] + position.x * view.values[2] + position.z * view.values[8] + view.values[11];
 
-    emitter->position.x = viewX * inverse[0] + viewY * inverse[3] + viewZ * inverse[6] + inverse[9];
-    emitter->position.y = viewX * inverse[1] + viewY * inverse[4] + viewZ * inverse[7] + inverse[10];
-    emitter->position.z = viewX * inverse[2] + viewY * inverse[5] + viewZ * inverse[8] + inverse[11];
+    const float worldX = viewY * inverse.values[3] + viewX * inverse.values[0] + viewZ * inverse.values[6] + inverse.values[9];
+    const float worldY = viewY * inverse.values[4] + viewX * inverse.values[1] + viewZ * inverse.values[7] + inverse.values[10];
+    const float worldZ = viewY * inverse.values[5] + viewX * inverse.values[2] + viewZ * inverse.values[8] + inverse.values[11];
+    emitter->position.x = worldX;
+    emitter->position.y = worldY;
+    emitter->position.z = worldZ;
     static_cast<CEZ2STRParticle*>(emitter)->Process(0.0f, 0.0f, 0.0f);
   }
 
