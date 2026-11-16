@@ -387,7 +387,7 @@ public:
 void CSkillAction_DamageWereRaptorForm::PlayFormAttackEffect(CGameActor* actor) {
   if (actor) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("dr_hit_wereraptor", 0x1D6D75EDE7CD311FULL, char)), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("dr_hit_wereraptor", 0x1D6D75EDE7CD311FULL, char)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -395,7 +395,8 @@ void CSkillAction_DamageWereRaptorForm::PlayFormAttackEffect(CGameActor* actor) 
 // FUNCTION: fn_03156
 void CSkillAction_DamageWereWolfForm::PlayFormAttackEffect(CGameActor* actor) {
   if (actor) {
-    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("dr_hit_werewolf", 0x3375B1C7DBB5FD55ULL, char)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("dr_hit_werewolf", 0x3375B1C7DBB5FD55ULL, char)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -403,7 +404,8 @@ void CSkillAction_DamageWereWolfForm::PlayFormAttackEffect(CGameActor* actor) {
 // FUNCTION: fn_03157
 void CSkillAction_Icing::SpawnIcing(CGameActor* target) {
   if (target) {
-    if (CEffect* effect = g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("ice_hit", 0x91651D81F559F971ULL)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
+    EffectLists* effects = g_effectMgr;
+    if (CEffect* effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("ice_hit", 0x91651D81F559F971ULL)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
       effect->SetScale(0.9f);
     }
   }
@@ -413,7 +415,8 @@ void CSkillAction_Icing::SpawnIcing(CGameActor* target) {
 // FUNCTION: fn_03158
 void CSkillAction_ThunderingBasic::PlayThunderEffect(CGameActor* source) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("thundering_attack_g", 0x3FAF85D995034FD7ULL, char)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("thundering_attack_g", 0x3FAF85D995034FD7ULL, char)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -422,7 +425,7 @@ void CSkillAction_ThunderingBasic::PlayThunderEffect(CGameActor* source) {
 void CSkillAction_ThunderingExpand::PlayThunderEffect(CGameActor* source) {
   if (source) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("thundering_attack_y", 0x490FFB43A12F0DB9ULL, std::uint8_t)), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("thundering_attack_y", 0x490FFB43A12F0DB9ULL, char)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -592,7 +595,8 @@ void CSkillAction_Icing::OnSkillCast(int level, CGameActor* source) {
 // FUNCTION: fn_03180
 void CSkillAction_Thundering::OnSkillCast(int level, CGameActor* source) {
   if (source) {
-    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("thundering_cast", 0x93E7A3A1F587CDC5ULL, char)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
+    EffectLists* effects = g_effectMgr;
+    if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("thundering_cast", 0x93E7A3A1F587CDC5ULL, char)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
       effect->SetLifeTime(level);
     }
   }
@@ -642,7 +646,8 @@ void CEfstAction_AnimalForm::ResetAnimalForm(CRenderObject* actor) {
   }
   gameActor->SetShapeShift(0);
   gameActor->SetSprJob(gameActor->GetShapeShiftJob());
-  g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("return", 0x812BE72BCD5707B7ULL)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("return", 0x812BE72BCD5707B7ULL)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   gameActor->SetBodyPaletteName();
 }
 
@@ -702,7 +707,8 @@ void CSkillAction_AT_PULSE_OF_MADNESS::OnSkillCast(int level, CGameActor* source
 void CSkillAction_AT_PULSE_OF_MADNESS::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   this->CanUse(source);
 
-  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("pulse_of_madness", 0x2FF3C5036D070127ULL, std::uint8_t)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("pulse_of_madness", 0x2FF3C5036D070127ULL, char)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x005A6C00
@@ -871,7 +877,8 @@ void CSkillAction_AT_NATURE_HARMONY::OnSkillCast(int level, CGameActor* source) 
 // FUNCTION: fn_03210
 void CSkillAction_AT_NATURE_HARMONY::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("nature_harmony", 0x490FFB43A12F0DB9ULL)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("nature_harmony", 0x490FFB43A12F0DB9ULL)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -922,9 +929,9 @@ void CSkillAction_AT_GRAVITY_HOLE::OnSkillDamage(CGameActor* source, CGameActor*
 void CSkillAction_AT_GRAVITY_HOLE::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("gravity_hole", 0x91651D81F559F971ULL, char)), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("gravity_hole", 0x91651D81F559F971ULL, char)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effects = g_effectMgr;
-    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("gravity_hole_bottom", 0x73D1674B61DF7B0BULL, char)), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("gravity_hole_bottom", 0x73D1674B61DF7B0BULL, char)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -1014,7 +1021,8 @@ void CSkillAction_AT_GLACIER_NOVA::OnGroundSkillEffect(vector3d position, int ar
 // FUNCTION: fn_03226
 void CSkillAction_AT_GLACIER_SHARD::OnGroundSkillCast(int level, CGameActor* source, int argument3, int argument4, int argument5) {
   if (source) {
-    if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("glacier_shard_target", 0x151F77EBEBBB2147ULL, char)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
+    EffectLists* effects = g_effectMgr;
+    if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("glacier_shard_target", 0x151F77EBEBBB2147ULL, char)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
       effect->SetLifeTime(level);
     }
   }
@@ -1196,7 +1204,8 @@ void CSkillAction_AT_ALPHA_PHASE::OnSkillCast(int level, CGameActor* source) {
 // FUNCTION: fn_03243
 void CSkillAction_AT_ALPHA_PHASE::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("alpha_phase", 0x4F1791FB1503C713ULL)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("alpha_phase", 0x4F1791FB1503C713ULL)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -1222,7 +1231,8 @@ int CSkillAction_AT_APEX_PHASE::GetSkillAttackMotion() {
 // FUNCTION: fn_03247
 void CSkillAction_AT_APEX_PHASE::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("apex_phase", 0xA1A55B4D1597EDD3ULL)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("apex_phase", 0xA1A55B4D1597EDD3ULL)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -1248,7 +1258,8 @@ int CSkillAction_AT_FLIP_FLAP::GetSkillAttackMotion() {
 // FUNCTION: fn_03251
 void CSkillAction_AT_FLIP_FLAP::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("flip_flap", 0x1BF915E1F37DFDFDULL)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("flip_flap", 0x1BF915E1F37DFDFDULL)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -1305,7 +1316,8 @@ EfstActionMessage CEfstAction_FLIP_FLAP_TARGET::GetEfstEndMessage() {
 // FUNCTION: fn_03259
 void CEfstAction_FLIP_FLAP_TARGET::OnEfstBegin(int efstId, int value, int argument3, int argument4, CRenderObject* actor, bool argument6) {
   if (actor) {
-    g_effectMgr->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("aero_sync_sync", 0x3F5315DFE32B4FAFULL)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(actor->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("aero_sync_sync", 0x3F5315DFE32B4FAFULL)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -1332,9 +1344,9 @@ int CSkillAction_AT_TEMPEST_FLAP::GetSkillAttackMotion() {
 void CSkillAction_AT_TEMPEST_FLAP::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (target) {
     EffectLists* effects = g_effectMgr;
-    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("tempest_flap", 0x17FFC98B398FAF61ULL, char)), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("tempest_flap", 0x17FFC98B398FAF61ULL, char)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     effects = g_effectMgr;
-    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("tempest_flap_bottom", 0x9B5B959B954D9333ULL, char)), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("tempest_flap_bottom", 0x9B5B959B954D9333ULL, char)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 }
 
@@ -1521,7 +1533,8 @@ void CSkillAction_AT_SAVAGE_LUNGE::OnSkillEffect(int level, CGameActor* source, 
 // FUNCTION: fn_03264
 void CSkillAction_AT_TEMPEST_FLAP::OnSkillCast(int level, CGameActor* source) {
   if (this->CanUse(source)) {
-        if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("tempest_flap_cast", 0x33832D4D3FDFBDBFULL, char)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
+        EffectLists* effects = g_effectMgr;
+        if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("tempest_flap_cast", 0x33832D4D3FDFBDBFULL, char)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
       effect->SetLifeTime(level);
     }
   }
@@ -1668,7 +1681,8 @@ void CSkillAction_AT_PRIMAL_CLAW::OnSkillEffect(int level, CGameActor* source, C
     return;
   }
 
-    g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("primal_claw", 0x812BE72BCD5707B7ULL)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("primal_claw", 0x812BE72BCD5707B7ULL)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x005AF700
