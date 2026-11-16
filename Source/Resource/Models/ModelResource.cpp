@@ -533,7 +533,6 @@ void C3dGrannyModelRes::FreeControl(granny_control* control) {
 // OFFSET: 0x007598B0
 // FUNCTION: fn_08019
 granny_file* GrannyAnimationLibrary::ReadAnimationFile(const char* name, const char* suffix) {
-  std::string path;
   CFile file;
   std::sprintf(g_animationPath, "%s%s.gr2", name, suffix);
 
