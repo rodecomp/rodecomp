@@ -16,7 +16,7 @@
 
 // OFFSET: 0x00811C10
 // FUNCTION: fn_10109
-__declspec(safebuffers) RenderPrimitive* CCharacterRender::DrawShadow(const float* matrix, float scale) const {
+RenderPrimitive* CCharacterRender::DrawShadow(const float* matrix, float scale) const {
   if (0.0f == scale || !g_modeMgr.GetGameMode() || !g_modeMgr.GetGameMode()->scene) {
     return nullptr;
   }
@@ -24,20 +24,20 @@ __declspec(safebuffers) RenderPrimitive* CCharacterRender::DrawShadow(const floa
   CGameMode* mode = g_modeMgr.GetGameMode();
   const float* origin = &this->position.x;
   const float height = mode->scene->terrain->Height(origin[0], origin[2]);
-  float position[3];
-  position[0] = origin[0];
-  position[1] = height;
-  position[2] = origin[2];
-  const float depth = position[0] * matrix[2] + position[1] * matrix[5] + position[2] * matrix[8] + matrix[11];
+  vector3d position;
+  position.x = origin[0];
+  position.y = height;
+  position.z = origin[2];
+  const float depth = position.x * matrix[2] + position.y * matrix[5] + position.z * matrix[8] + matrix[11];
 
   float screenX;
   float screenY;
   float reciprocalDepth;
   if (this->viewportWidth == 0 && this->viewportHeight == 0) {
-    g_renderer->ProjectViewport(position, matrix, &screenX, &screenY, &reciprocalDepth);
+    g_renderer->ProjectViewport(&position.x, matrix, &screenX, &screenY, &reciprocalDepth);
   } else {
     g_renderer->ProjectViewportCentered(
-      position, matrix, &screenX, &screenY, &reciprocalDepth, static_cast<float>(this->viewportWidth) + this->viewportOffsetX, static_cast<float>(this->viewportHeight) + this->viewportOffsetY
+      &position.x, matrix, &screenX, &screenY, &reciprocalDepth, static_cast<float>(this->viewportWidth) + this->viewportOffsetX, static_cast<float>(this->viewportHeight) + this->viewportOffsetY
     );
   }
   const float distanceScale = g_renderer->ScaleDistance(reciprocalDepth);
@@ -63,7 +63,7 @@ __declspec(safebuffers) RenderPrimitive* CCharacterRender::DrawShadow(const floa
     return nullptr;
   }
 
-  quad.color = (((((((cell.color >> 24) & 0xFF) << 8) + (cell.color & 0xFF)) << 8) + ((cell.color >> 8) & 0xFF)) << 8) + ((cell.color >> 16) & 0xFF);
+  quad.color = (((((cell.colorChannels.alpha << 8) + cell.colorChannels.red) << 8) + cell.colorChannels.green) << 8) + cell.colorChannels.blue;
   quad.bottomRhw = 1.0f / (depth - (quad.bottom - screenY) * g_cotangent) + 0.00001f;
   quad.topRhw = 1.0f / (depth - (quad.top - screenY) * g_cotangent) + 0.00001f;
   quad.angle = static_cast<float>(cell.rotation);
