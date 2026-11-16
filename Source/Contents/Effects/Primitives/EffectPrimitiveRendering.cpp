@@ -73,24 +73,24 @@ void CEffectPrim::DrawEffectPrimitive15(matrix& wtm) {
   ZeroVector3d vert[4];
   ZeroVector3d tvert[4];
 
-  vert[0].z = this->state.widthSize;
-  vert[2].y = this->state.heightSize;
-  vert[1].z = -vert[0].z;
-  vert[0].y = -vert[2].y;
+  const float width = this->state.widthSize;
+  const float height = this->state.heightSize;
+  vert[0].Set(0.0f, -height, width);
+  vert[1].Set(0.0f, -height, -width);
+  vert[2].Set(0.0f, height, width);
+  vert[3].Set(0.0f, height, -width);
 
   if ((this->state.pattern & 0x80u) != 0) {
     vert[0].y = vert[0].y + vert[0].y;
+    vert[1].y = vert[1].y + vert[1].y;
     vert[2].y = 0.0f;
+    vert[3].y = 0.0f;
   }
 
   if ((this->state.pattern & 8u) != 0) {
     vert[2].y = 0.0f;
+    vert[3].y = 0.0f;
   }
-
-  vert[1].y = vert[0].y;
-  vert[2].z = vert[0].z;
-  vert[3].y = vert[2].y;
-  vert[3].z = vert[1].z;
 
   const float* matrix = this->state.rotTransform.values;
   TransformPrimitiveVertex(matrix, vert[0], tvert[0]);
@@ -4121,7 +4121,16 @@ __declspec(safebuffers) void CEffectPrim::RenderGroundBubbles(matrix& wtm) {
 }
 
 // INLINED
-static __forceinline void BuildSphereCageQuad(const EffectPrimitiveSlot& slot, int latitude, int turn, float radius, float drop, vector3d* out) {
+static __forceinline void SetSphereCageCorner(vector3d& corner, float lateral, float depth, int tilt, int side, const vector3d& offset) {
+  const float along = depth * g_cosTable[tilt];
+  corner = {
+    lateral * g_cosTable[side] - along * g_sinTable[side] + offset.x, depth * g_sinTable[tilt] + offset.y,
+    along * g_cosTable[side] + lateral * g_sinTable[side] + offset.z
+  };
+}
+
+// INLINED
+static __forceinline void BuildSphereCageQuad(const EffectPrimitiveSlot& slot, int latitude, int turn, float radius, float drop, vector3d& vec1, vector3d& vec2, vector3d& vec3, vector3d& vec4) {
   int pitch = latitude + 360;
   if (pitch >= 360) {
     pitch -= 360;
@@ -4152,21 +4161,19 @@ static __forceinline void BuildSphereCageQuad(const EffectPrimitiveSlot& slot, i
   const vector3d offset{reach * g_cosTable[yaw], radius * g_sinTable[pitch] - drop, reach * g_sinTable[yaw]};
   const float inside = static_cast<float>(static_cast<int>(slot.distance));
   const float outside = static_cast<float>(static_cast<int>(-slot.distance));
-  const float lateral[4] = {inside, outside, outside, inside};
-  const float depth[4] = {inside, inside, outside, outside};
-  for (int corner = 0; corner < 4; ++corner) {
-    const float along = depth[corner] * g_cosTable[tilt];
-    out[corner] = {
-      lateral[corner] * g_cosTable[side] - along * g_sinTable[side] + offset.x, depth[corner] * g_sinTable[tilt] + offset.y,
-      along * g_cosTable[side] + lateral[corner] * g_sinTable[side] + offset.z
-    };
-  }
+  SetSphereCageCorner(vec1, inside, inside, tilt, side, offset);
+  SetSphereCageCorner(vec2, outside, inside, tilt, side, offset);
+  SetSphereCageCorner(vec3, outside, outside, tilt, side, offset);
+  SetSphereCageCorner(vec4, inside, outside, tilt, side, offset);
 }
 
 // OFFSET: 0x00BD95A0
 // FUNCTION: fn_19892
 void CEffectPrim::RenderSphereCage(matrix& wtm) {
-  vector3d quad[4]{};
+  ZeroVector3d vec1;
+  ZeroVector3d vec2;
+  ZeroVector3d vec3;
+  ZeroVector3d vec4;
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -4181,43 +4188,43 @@ void CEffectPrim::RenderSphereCage(matrix& wtm) {
       for (int turn = 0; turn < 225; turn += 45) {
         this->state.slots[ec].distance = 1.5f - (level < 0.0f ? level * -1.0f : level) + 1.5f;
 
-        BuildSphereCageQuad(this->state.slots[ec], latitude, turn, this->state.slots[ec].maxHeight, this->state.slots[ec].maxHeight + 2.0f, quad);
+        BuildSphereCageQuad(this->state.slots[ec], latitude, turn, this->state.slots[ec].maxHeight, this->state.slots[ec].maxHeight + 2.0f, vec1, vec2, vec3, vec4);
         if (this->state.slots[ec].flag1[0] == 3) {
-          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 255, 100, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 100, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         } else if (this->state.slots[ec].flag1[0] == 2) {
-          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 255, 155, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 155, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         } else if (this->state.slots[ec].flag1[0] == 4) {
-          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 255, 150, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 150, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         } else if (this->state.slots[ec].flag1[0] == 5) {
-          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 100, 100, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 100, 100, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         } else {
-          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 205, 255, 205, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 205, 255, 205, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         }
 
-        BuildSphereCageQuad(this->state.slots[ec], latitude, turn, this->state.slots[ec].maxHeight + 0.2f, this->state.slots[ec].maxHeight, quad);
+        BuildSphereCageQuad(this->state.slots[ec], latitude, turn, this->state.slots[ec].maxHeight + 0.2f, this->state.slots[ec].maxHeight, vec1, vec2, vec3, vec4);
         if (this->state.slots[ec].flag1[0] == 3) {
-          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 255, 100, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 100, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         } else if (this->state.slots[ec].flag1[0] == 2) {
-          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 255, 155, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 155, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         } else if (this->state.slots[ec].flag1[0] == 4) {
-          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 255, 150, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 255, 150, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         } else if (this->state.slots[ec].flag1[0] == 5) {
-          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 100, 100, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 100, 100, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         } else {
-          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 155, 255, 155, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 155, 255, 155, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         }
 
-        BuildSphereCageQuad(this->state.slots[ec], latitude, turn, this->state.slots[ec].maxHeight + 0.4f + this->state.slots[ec].height[0], this->state.slots[ec].maxHeight, quad);
+        BuildSphereCageQuad(this->state.slots[ec], latitude, turn, this->state.slots[ec].maxHeight + 0.4f + this->state.slots[ec].height[0], this->state.slots[ec].maxHeight, vec1, vec2, vec3, vec4);
         if (this->state.slots[ec].flag1[0] == 3) {
-          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 1, 1, 0, 255, 100, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 1, 1, 0, 255, 100, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         } else if (this->state.slots[ec].flag1[0] == 2) {
-          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 1, 1, 0, 255, 155, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 1, 1, 0, 255, 155, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         } else if (this->state.slots[ec].flag1[0] == 4) {
-          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 1, 1, 0, 255, 150, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 1, 1, 0, 255, 150, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         } else if (this->state.slots[ec].flag1[0] == 5) {
-          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 0, 0, 0, 100, 100, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 100, 100, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         } else {
-          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, quad[0], quad[1], quad[2], quad[3], wtm, 1, 1, 0, 225, 255, 225, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 1, 1, 0, 225, 255, 225, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         }
       }
     }
@@ -5632,9 +5639,9 @@ void CEffectPrim::RenderPyramid(matrix& wtm) {
       TransformPrimitiveVertex(this->state.rotTransform.values, table[face * 3 + corner], corners[face * 3 + corner]);
     }
 
-    RenderVertex projected{0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
     const vector3d& corner0 = corners[face * 3 + 0];
     const vector3d point0 = {corner0.x + this->render.position.x, this->render.position.y + corner0.y, this->render.position.z + corner0.z};
+    RenderVertex projected{0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
     g_renderer->viewport.Project(&point0.x, wtm.values, projected);
     this->state.triangles[count].vertices[0] = projected;
     this->state.triangles[count].vertices[0].diffuse = this->state.argb;
@@ -5660,14 +5667,12 @@ void CEffectPrim::RenderPyramid(matrix& wtm) {
     this->state.triangles[count].texture = this->state.textures[0];
 
     if (this->state.triangles[count].Visible()) {
-      RenderTriangle& submitted = this->state.triangles[count];
-      ++count;
       if (this->state.slots[0].flag1[0] == 3) {
-        submitted.sourceBlend = 5;
-        submitted.destinationBlend = 2;
-        g_renderer->SubmitTriangle(submitted, 5);
+        this->state.triangles[count].sourceBlend = 5;
+        this->state.triangles[count].destinationBlend = 2;
+        g_renderer->SubmitTriangle(this->state.triangles[count++], 5);
       } else {
-        g_renderer->SubmitTriangle(submitted, 1);
+        g_renderer->SubmitTriangle(this->state.triangles[count++], 1);
       }
     }
   }
