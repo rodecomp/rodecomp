@@ -5786,8 +5786,8 @@ void UISkillListWnd::OnCreate(int width, int height) {
 
   const std::string prefix("유저인터페이스\\");
   const char* names[2][3] = {{"btn_use", "btn_use_a", "btn_use_b"}, {"btn_close", "btn_close_a", "btn_close_b"}};
-  int positions[2][2] = {{this->geometry.width - 107, this->geometry.height - 24}, {this->geometry.width - 61, this->geometry.height - 24}};
   int ids[2] = {184, 201};
+  int positions[2][2] = {{this->geometry.width - 107, this->geometry.height - 24}, {this->geometry.width - 61, this->geometry.height - 24}};
   for (int index = 0; index < 2; ++index) {
     this->buttons[index] = new UIBitmapButton();
     this->buttons[index]->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
