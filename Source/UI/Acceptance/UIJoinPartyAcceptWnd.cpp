@@ -71,14 +71,16 @@ int UIJoinPartyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     const auto* bytes = reinterpret_cast<const unsigned char*>(a);
     FramedMessageHeader header;
     std::memcpy(&header, bytes, sizeof(header));
-    if (header.type == 21750) {
-      unsigned int offset = sizeof(header);
-      while (offset < static_cast<unsigned int>(b)) {
+    unsigned int offset = sizeof(header);
+    if (21750 == header.type) {
+      bool scanning = true;
+      while (scanning && static_cast<unsigned int>(b) > offset) {
         std::memcpy(&header, bytes + offset, sizeof(header));
         offset += sizeof(header);
         switch (header.type) {
         case 21751:
-          return 0;
+          scanning = false;
+          break;
         case 21752: {
           char text[260] = {};
           std::memcpy(text, bytes + offset, header.length);
