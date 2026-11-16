@@ -1297,19 +1297,19 @@ int UIBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     }
 
     found.second.value = mode->drag.quantity;
-    if (g_session.HasItemId(found.second.currencyItemId)) {
+    if (g_session.HasItemId(found.second.currencyItemId) == true) {
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MONSTER_MONSTERINFO)), 255, 0, 0, 0);
       mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
       return 0;
     }
 
-    if (g_barterMarketItemMgr->HasItemByName(mode->drag.name)) {
+    if (g_barterMarketItemMgr->HasItemByName(mode->drag.name) == true) {
       int notice = 0;
-      if (g_session.IsEquipItemType(mode->drag.type)) {
+      if (g_session.IsEquipItemType(mode->drag.type) == true) {
         mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
         notice = 119;
-      } else if (g_session.IsShadowItemType(mode->drag.type)) {
+      } else if (g_session.IsShadowItemType(mode->drag.type) == true) {
         mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
         notice = 3569;
       }
@@ -1361,17 +1361,17 @@ int UIBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       return 0;
     }
 
-    if (a == ID_OK) {
+    switch (a) {
+    case ID_OK:
       if (!this->Purchase()) {
         return 0;
       }
       mode->SendMsg(MM_NPC_BARTER_MARKET_PURCHASE, 0, 0, 0, 0);
-    } else if (a != ID_CANCEL) {
-      return 0;
+    case ID_CANCEL:
+      mode->SendMsg(MM_RELEASE_QUEST, 0, 0, 0, 0);
+      g_barterMarketItemMgr->Clear();
+      break;
     }
-
-    mode->SendMsg(MM_RELEASE_QUEST, 0, 0, 0, 0);
-    g_barterMarketItemMgr->Clear();
     return 0;
   }
 
