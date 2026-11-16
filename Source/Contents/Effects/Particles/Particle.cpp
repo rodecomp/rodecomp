@@ -855,10 +855,10 @@ void CParticle::Render(bool billboard, float top, float bottom, float left, floa
   matrix placed;
   if (!billboard) {
     matrix translation;
-    translation.Identity();
+    std::memcpy(translation.values, g_identityMatrix, sizeof(g_identityMatrix));
     translation.MakeTranslate(this->position.x, this->position.y, this->position.z);
     matrix rotation;
-    rotation.Identity();
+    std::memcpy(rotation.values, g_identityMatrix, sizeof(g_identityMatrix));
     rotation.AppendYRotation(ToRadians(g_modeMgr.GetGameMode()->camera->camera.yaw));
     matrix facing;
     facing.Compose(rotation, translation);
