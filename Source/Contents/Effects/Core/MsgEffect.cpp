@@ -1543,21 +1543,19 @@ void CMsgEffect::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
       if (this->m_type == MET_BIRD) {
         this->m_velocity.x = (position->x - this->render.position.x) / 10.0f;
         this->m_velocity.y = (position->y - this->render.position.y) / 10.0f;
+        this->m_velocity.z = (position->z - this->render.position.z) / 10.0f;
         this->activeMotion = 1;
         this->motionInitialized = 0;
-        this->m_velocity.z = (position->z - this->render.position.z) / 10.0f;
-        return;
-      }
-
-      if (this->m_type == 27 || this->m_type == 31) {
+      } else if (this->m_type == 27 || this->m_type == 31) {
         this->m_velocity.x = (position->x - this->render.position.x) / 10.0f;
         this->m_velocity.y = (position->y - this->render.position.y) / 10.0f;
+        this->m_velocity.z = (position->z - this->render.position.z) / 10.0f;
         this->activeMotion = 1;
         this->processTick = 0;
-        this->m_velocity.z = (position->z - this->render.position.z) / 10.0f;
-        return;
+      } else {
+        this->EffectActor::SendMsg(sender, message, b, c, d, e, 0, 0);
       }
-      break;
+      return;
 
     case AM_MSGMASTER_DEAD:
       this->m_owner = nullptr;
@@ -1593,8 +1591,7 @@ void CMsgEffect::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
           if (sender != nullptr) {
             const CRenderObject* owner = static_cast<const CRenderObject*>(sender);
             this->render.position.x = owner->render.position.x - ClientSine(static_cast<int>(owner->render.angle)) * 5.0f;
-            owner = this->m_owner;
-            this->render.position.z = ClientCosine(static_cast<int>(owner->render.angle)) * 5.0f + owner->render.position.z;
+            this->render.position.z = ClientCosine(static_cast<int>(this->m_owner->render.angle)) * 5.0f + this->m_owner->render.position.z;
           }
           break;
 
@@ -1611,12 +1608,24 @@ void CMsgEffect::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
       this->m_type = static_cast<int>(c);
       this->m_value = static_cast<int>(b);
       switch (static_cast<int>(c)) {
+        case 27:
+          this->render.flatDepth = 0;
+          this->render.depthLayer = 0;
+          this->render.shadowVisible = 1;
+          this->render.shadowScale = 2.0f;
+          break;
+
         case MET_CART:
         case 31:
           this->render.flatDepth = 0;
           this->render.depthLayer = 0;
           this->render.shadowVisible = 1;
           this->render.shadowScale = 1.0f;
+          break;
+
+        case MET_BIRD:
+          this->render.flatDepth = 0;
+          this->render.depthLayer = 0;
           break;
 
         case MET_PKEFFECT:
@@ -1634,28 +1643,12 @@ void CMsgEffect::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
           this->render.flatDepth = 0;
           this->render.depthLayer = 5;
           break;
-
-        case MET_BIRD:
-          this->render.flatDepth = 0;
-          this->render.depthLayer = 0;
-          break;
-
-        case 27:
-          this->render.flatDepth = 0;
-          this->render.depthLayer = 0;
-          this->render.shadowVisible = 1;
-          this->render.shadowScale = 2.0f;
-          break;
       }
       return;
 
     case AM_SETPOS2: {
       int offset = 0;
       switch (this->m_type) {
-        case MET_MISS:
-          this->m_baseX = this->render.position.x;
-          return;
-
         case MET_NUMBER_TOTAL:
           offset = 15;
         case MET_NUMBER:
@@ -1665,12 +1658,14 @@ void CMsgEffect::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
           this->SetActionName(FormatOwnedString("%s.act", g_session.m_damageResourceName.c_str()).c_str());
           this->render.animation = 0;
           this->render.previousAnimation = 0;
-          this->render.position.x = position->x;
-          this->render.position.y = position->y;
-          this->render.position.z = position->z;
+          this->render.position = *position;
           this->render.position.y -= static_cast<float>(offset + 12);
           this->m_baseY = this->render.position.y;
           break;
+
+        case MET_MISS:
+          this->m_baseX = this->render.position.x;
+          return;
 
         case MET_CRITICAL_EFFECT:
         case MET_LUCKY_EFFECT:
@@ -1688,9 +1683,7 @@ void CMsgEffect::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
           this->SetActionName(FormatOwnedString("%s.act", g_session.m_damageResourceName.c_str()).c_str());
           this->render.animation = 0;
           this->render.previousAnimation = 0;
-          this->render.position.x = position->x;
-          this->render.position.y = position->y;
-          this->render.position.z = position->z;
+          this->render.position = *position;
           this->m_baseX = this->render.position.x;
           this->render.position.y -= 12.0f;
           this->m_baseY = this->render.position.y;
@@ -1736,21 +1729,21 @@ void CMsgEffect::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
           break;
 
         case MET_ICEBREAKEFFECT:
-          this->render.position.x = position->x;
-          this->render.position.y = position->y;
-          this->render.position.z = position->z;
+          this->render.position = *position;
           break;
 
-        case MET_ANGELUS_EFFECT:
-        case MET_CRUSIS_EFFECT:
-          this->render.curMotion = 1;
-          this->render.visible = 0;
+        case MET_GUARD:
+          this->render.position = *position;
+          this->render.position.y -= 2.0f;
+          this->render.curMotion = 0;
+          this->render.scale = 1.0f;
+          this->m_scale = 1.0f;
+          this->render.depthLayer = static_cast<std::uint32_t>(-5);
+          this->m_baseY = this->render.position.y;
           break;
 
         case MET_MISS:
-          this->render.position.x = position->x;
-          this->render.position.y = position->y;
-          this->render.position.z = position->z;
+          this->render.position = *position;
           this->m_baseX = this->render.position.x;
           this->render.position.y -= 12.0f;
           this->render.curMotion = 0;
@@ -1762,9 +1755,7 @@ void CMsgEffect::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
 
         case MET_CRITICAL_EFFECT:
         case MET_BLUE_EFFECT:
-          this->render.position.x = position->x;
-          this->render.position.y = position->y;
-          this->render.position.z = position->z;
+          this->render.position = *position;
           this->render.position.y -= 12.0f;
           this->render.curMotion = 1;
           this->render.scale = 3.0f;
@@ -1774,32 +1765,22 @@ void CMsgEffect::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
           this->render.color = 0xFFAAAAAA;
           break;
 
+        case MET_ANGELUS_EFFECT:
+        case MET_CRUSIS_EFFECT:
+          this->render.curMotion = 1;
+          this->render.visible = 0;
+          break;
+
         case 19:
-          this->render.position.x = position->x;
-          this->render.position.y = position->y;
-          this->render.position.z = position->z;
+          this->render.position = *position;
           this->render.position.y -= 12.0f;
           this->render.curMotion = 0;
           this->render.depthLayer = static_cast<std::uint32_t>(-5);
           this->m_baseY = this->render.position.y;
           break;
 
-        case MET_GUARD:
-          this->render.position.x = position->x;
-          this->render.position.y = position->y;
-          this->render.position.z = position->z;
-          this->render.position.y -= 2.0f;
-          this->render.curMotion = 0;
-          this->render.scale = 1.0f;
-          this->m_scale = 1.0f;
-          this->render.depthLayer = static_cast<std::uint32_t>(-5);
-          this->m_baseY = this->render.position.y;
-          break;
-
         default:
-          this->render.position.x = position->x;
-          this->render.position.y = position->y;
-          this->render.position.z = position->z;
+          this->render.position = *position;
           this->render.position.y -= 20.0f;
           break;
       }
