@@ -11,6 +11,8 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <windows.h>
+#include <shlwapi.h>
 
 template __declspec(noinline) bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
 
@@ -547,6 +549,43 @@ __declspec(noinline) std::vector<char> CNavigationManager::WriteObject(CNavi_Obj
   }
 
   return buffer;
+}
+
+// OFFSET: 0x00B8EC70
+// FUNCTION: fn_19501
+void CNaviInfo::CollectMobsInRange(int minimum, int maximum, std::vector<NavigationTarget>& out) {
+  NavigationTarget target(3, nullptr);
+  const std::vector<CNavi_Object*>::iterator end = this->mobs.end();
+  for (std::vector<CNavi_Object*>::iterator it = this->mobs.begin(); it != end; ++it) {
+    NaviCell lower;
+    NaviCell upper;
+    if (minimum <= (*it)->GetCell(&lower)->x && maximum >= (*it)->GetCell(&upper)->x) {
+      NaviCell cell;
+      const NaviCell* position = (*it)->GetCell(&cell);
+      target.x = position->x;
+      target.y = position->y;
+      target.name = (*it)->GetName();
+      target.object = *it;
+      out.push_back(target);
+    }
+  }
+}
+
+// OFFSET: 0x00B8FC40
+// FUNCTION: fn_19505
+void CNaviInfo::CollectMobsByTitle(std::string title, std::vector<NavigationTarget>& out) {
+  NavigationTarget target(3, nullptr);
+  for (std::vector<CNavi_Object*>::iterator it = this->mobs.begin(); it != this->mobs.end(); ++it) {
+    if (std::strcmp((*it)->GetTitle(), title.c_str()) == 0) {
+      NaviCell cell;
+      const NaviCell* position = (*it)->GetCell(&cell);
+      target.x = position->x;
+      target.y = position->y;
+      target.name = (*it)->GetName();
+      target.object = *it;
+      out.push_back(target);
+    }
+  }
 }
 
 // OFFSET: 0x00B92A70
