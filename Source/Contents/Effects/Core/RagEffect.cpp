@@ -7137,12 +7137,12 @@ void CRagEffect::TexturedRisingOrbs(const char* name, char kind) {
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   if (kind == 2) {
     this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
+    this->state.lastPrim->state.textures[1] = g_texMgr.Load(name, 0, false, true, false);
   } else {
     this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\pok1.tga", 0, false, true, false);
-    name = "effect\\pok3.tga";
+    this->state.lastPrim->state.textures[1] = g_texMgr.Load("effect\\pok3.tga", 0, false, true, false);
   }
 
-  this->state.lastPrim->state.textures[1] = g_texMgr.Load(name, 0, false, true, false);
   this->state.lastPrim->state.size = 0.0f;
   CopyVector(this->state.lastPrim->render.position, this->render.position);
 
@@ -7150,10 +7150,10 @@ void CRagEffect::TexturedRisingOrbs(const char* name, char kind) {
     this->state.lastPrim->state.slots[i].life = 1;
     this->state.lastPrim->state.slots[i].process = 0;
     if (kind == 2) {
-      if (i < 2) {
-        this->state.lastPrim->state.slots[i].distance = static_cast<float>(ClampedRandom(11)) * 0.1f + 2.0f;
-      } else {
+      if (i >= 2) {
         this->state.lastPrim->state.slots[i].life = 0;
+      } else {
+        this->state.lastPrim->state.slots[i].distance = static_cast<float>(ClampedRandom(11)) * 0.1f + 2.0f;
       }
 
       this->state.lastPrim->state.slots[i].vecBNow.x = static_cast<float>(ClampedRandom(19)) + this->render.position.x - 9.0f;
@@ -10724,7 +10724,7 @@ void CRagEffect::AlphaCenterTrail() {
   const RenderObjectState& parent = this->state.parent->render;
   this->render.position = parent.position;
 
-  if (this->state.stateCnt >= 4) {
+  if (this->state.stateCnt > 3) {
     return;
   }
 
@@ -10734,7 +10734,7 @@ void CRagEffect::AlphaCenterTrail() {
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\alpha_center.tga", 0, false, true, false);
   this->state.lastPrim->state.size = 0.0f;
-  this->state.lastPrim->state.deltaPos = {this->state.deltaPos.x, this->state.deltaPos.y, this->state.deltaPos.z};
+  this->state.lastPrim->state.deltaPos = this->state.deltaPos;
   const float deltaZ = this->state.deltaPos.z - this->render.position.z;
   const float deltaX = this->state.deltaPos.x - this->render.position.x;
   const float distance = SquareRoot(deltaZ * deltaZ + deltaX * deltaX);
@@ -11972,17 +11972,17 @@ void CRagEffect::ShieldBoomerang3(const char* name) {
 void CRagEffect::ParticleTime(const char* name, char kind) {
   this->render.position = this->state.parent->render.position;
 
-  const int minCount = kind == 2 ? 40 : 0;
+  const int minCount = kind != 2 ? 0 : 40;
   if (static_cast<int>(this->state.stateCnt) < minCount) {
     return;
   }
 
-  const int maxCount = kind == 2 ? 120 : 80;
+  const int maxCount = kind != 2 ? 80 : 120;
   if (static_cast<int>(this->state.stateCnt) > maxCount) {
     return;
   }
 
-  if ((this->state.stateCnt & 3) != 0) {
+  if (this->state.stateCnt % 4 != 0) {
     return;
   }
 
@@ -12015,7 +12015,9 @@ void CRagEffect::ParticleTime(const char* name, char kind) {
 
     if (kind == 0) {
       this->state.lastPrim->state.slots[i].flag1[2] = 11;
-    } else if (kind == 1 || kind == 2) {
+    } else if (kind == 1) {
+      this->state.lastPrim->state.slots[i].flag1[2] = 1;
+    } else if (kind == 2) {
       this->state.lastPrim->state.slots[i].flag1[2] = 1;
     } else if (kind == 3) {
       this->state.lastPrim->state.slots[i].flag1[2] = 13;
@@ -13248,7 +13250,7 @@ void CRagEffect::WhiteSparkRing(char kind) {
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\white02.bmp", 0, false, true, false);
   this->state.lastPrim->state.size = 0.0f;
-  this->state.lastPrim->state.deltaPos = {this->state.deltaPos.x, this->state.deltaPos.y, this->state.deltaPos.z};
+  this->state.lastPrim->state.deltaPos = this->state.deltaPos;
   CopyVector(this->state.lastPrim->render.position, this->render.position);
   this->state.lastPrim->state.slots[0].life = 0;
   this->state.lastPrim->state.slots[1].life = 0;
