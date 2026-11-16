@@ -409,47 +409,6 @@ bool CNaviInfo::IsSearchable(const char* name) const {
   return true;
 }
 
-// OFFSET: 0x00B8E970
-// FUNCTION: fn_19500
-void CNaviInfo::CollectTargets(int type, std::vector<NavigationTarget>& out) {
-  NavigationTarget target(type, nullptr);
-
-  if (std::strstr(this->name.c_str(), "_in") == nullptr && (type == 1 || type == 0)) {
-    target.name = this->name.c_str();
-    target.object = this;
-    target.type = 1;
-    out.push_back(target);
-  }
-
-  if (type == 2 || type == 0) {
-    target.type = 2;
-    const std::vector<CNavi_Object*>::iterator end = this->npcs.end();
-    for (std::vector<CNavi_Object*>::iterator it = this->npcs.begin(); it != end; ++it) {
-      NaviCell cell;
-      const NaviCell* position = (*it)->GetCell(&cell);
-      target.x = position->x;
-      target.y = position->y;
-      target.name = (*it)->GetName();
-      target.object = *it;
-      out.push_back(target);
-    }
-  }
-
-  if (type == 3 || type == 0) {
-    target.type = 3;
-    const std::vector<CNavi_Object*>::iterator end = this->mobs.end();
-    for (std::vector<CNavi_Object*>::iterator it = this->mobs.begin(); it != end; ++it) {
-      NaviCell cell;
-      const NaviCell* position = (*it)->GetCell(&cell);
-      target.x = position->x;
-      target.y = position->y;
-      target.name = (*it)->GetName();
-      target.object = *it;
-      out.push_back(target);
-    }
-  }
-}
-
 // OFFSET: 0x00B8E920
 // FUNCTION: fn_19499
 void CNaviInfo::Search(int type, const std::vector<std::string>& keywords, std::vector<NavigationTarget>& out) {
