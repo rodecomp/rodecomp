@@ -299,10 +299,10 @@ ITEM_INFO UISwapEquipmentWnd::GetSlotItem(int slot) {
   if (this->equipmentPage == 2) {
     ITEM_INFO item = g_session.GetSwapEquippedItem(slot);
     return item.identity[1] > 0 ? item : ITEM_INFO(0);
+  } else {
+    ITEM_INFO item = g_session.GetSwapCostumeItem(slot);
+    return item.identity[1] > 0 ? item : ITEM_INFO(0);
   }
-
-  ITEM_INFO item = g_session.GetSwapCostumeItem(slot);
-  return item.identity[1] > 0 ? item : ITEM_INFO(0);
 }
 
 // OFFSET: 0x00830760
