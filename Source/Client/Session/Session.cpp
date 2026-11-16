@@ -2714,7 +2714,9 @@ void CSession::LoadMiniPartyInfo() {
     }
   }
 
-  delete[] data;
+  if (data) {
+    delete[] data;
+  }
 }
 
 // OFFSET: 0x00DFD060
