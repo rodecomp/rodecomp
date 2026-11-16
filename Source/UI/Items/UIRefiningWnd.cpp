@@ -218,6 +218,15 @@ int UIRefiningWnd::SlotAt(int x, int y) {
   return index;
 }
 
+// INLINED
+static __forceinline int SelectedSuccessRate(const UIRefiningWnd* window) {
+  if (window->item.identity[1] > 0 && window->materials.size() != 0 && window->selectedMaterial >= 0 &&
+      window->materials.size() > static_cast<unsigned>(window->selectedMaterial)) {
+    return window->materials[window->selectedMaterial].successRate;
+  }
+  return 0;
+}
+
 // OFFSET: 0x007F55A0
 // FUNCTION: fn_09906
 void UIRefiningWnd::ApplyResult() {
@@ -1113,14 +1122,14 @@ void UIRefiningWnd::Paint() {
     }
 
     const char* color = "^CA152E";
-    int index = 0;
     int x = 10;
+    int index = 0;
     for (auto material = this->materials.begin(); material != this->materials.end(); ++material) {
       ITEM_INFO icon;
       icon.SetItemId(material->itemId);
       const int owned = g_session.LookupClientItem(material->itemId, 0).quantity;
       this->DrawItemIcon(x + 12, 69, icon, 0);
-      const std::string count = FormatOwnedString("%s%d^000000/1", owned != 0 ? "" : color, owned);
+      const std::string count = FormatOwnedString("%s%d^000000/1", owned == 0 ? color : "", owned);
       this->DrawFormattedText(x, 107, count, 48, 6, 0, 12, 0, 0);
       if (index == this->selectedMaterial && (this->state == REFINING_STATE_READY || (this->state == REFINING_STATE_PROCESS && this->frame == 0))) {
         this->DrawItemIcon(81, 150, icon, 0);
@@ -1134,7 +1143,7 @@ void UIRefiningWnd::Paint() {
       icon.SetItemId(this->catalystItemId);
       const int owned = g_session.LookupClientItem(this->catalystItemId, 0).quantity;
       this->DrawItemIcon(218, 69, icon, 0);
-      const std::string count = FormatOwnedString("%s%d^000000/%d", this->catalystCount <= owned ? "" : color, owned, this->catalystCount);
+      const std::string count = FormatOwnedString("%s%d^000000/%d", this->catalystCount > owned ? color : "", owned, this->catalystCount);
       this->DrawFormattedText(206, 107, count, 48, 6, 0, 12, 0, 0);
       if (this->catalystEnabled == 1 && (this->state == REFINING_STATE_READY || (this->state == REFINING_STATE_PROCESS && this->frame < 13))) {
         this->DrawItemIcon(161, 150, icon, 0);
@@ -1155,13 +1164,13 @@ void UIRefiningWnd::Paint() {
   case REFINING_STATE_READY:
     this->DrawCenteredText(0, 246, this->item.displayName.c_str(), 264, 0, 12, 0x462117, 1);
     break;
+  case REFINING_STATE_FAIL:
+    this->DrawCenteredText(0, 249, LookupMessage(MSI_OTP_MUST_8_CHAR), 264, 0, 12, 0x462117, 1);
+    break;
   case REFINING_STATE_SUCCESS:
   case REFINING_STATE_DOWNGRADE:
   case REFINING_STATE_FAIL2:
     this->DrawCenteredText(0, 249, this->item.displayName.c_str(), 264, 0, 12, 0x462117, 1);
-    break;
-  case REFINING_STATE_FAIL:
-    this->DrawCenteredText(0, 249, LookupMessage(MSI_OTP_MUST_8_CHAR), 264, 0, 12, 0x462117, 1);
     break;
   }
 
@@ -1173,20 +1182,10 @@ void UIRefiningWnd::Paint() {
       break;
     }
 
-    unsigned char rate = 0;
-    if (this->item.identity[1] > 0 && !this->materials.empty() && this->selectedMaterial >= 0 &&
-        static_cast<unsigned>(this->selectedMaterial) < this->materials.size()) {
-      rate = this->materials[this->selectedMaterial].successRate;
-    }
-    const std::string label = FormatOwnedString("%s %d%%", LookupMessage(MSI_CHANGE_HOMUN_NAME), rate);
+    const std::string label = FormatOwnedString("%s %d%%", LookupMessage(MSI_CHANGE_HOMUN_NAME), SelectedSuccessRate(this));
     const int labelWidth = this->TextWidth(label.c_str(), 0, 0, 12, 1, 0);
 
-    rate = 0;
-    if (this->item.identity[1] > 0 && !this->materials.empty() && this->selectedMaterial >= 0 &&
-        static_cast<unsigned>(this->selectedMaterial) < this->materials.size()) {
-      rate = this->materials[this->selectedMaterial].successRate;
-    }
-    const std::string percent = FormatOwnedString("%d%%", rate);
+    const std::string percent = FormatOwnedString("%d%%", SelectedSuccessRate(this));
     const int percentWidth = this->TextWidth(percent.c_str(), 0, 0, 12, 1, 0);
 
     const int x = static_cast<int>((this->geometry.width - labelWidth) * 0.5);
