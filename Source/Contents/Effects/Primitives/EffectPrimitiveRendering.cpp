@@ -2310,27 +2310,30 @@ void CEffectPrim::RenderBeam(matrix& wtm) {
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
-    const EffectPrimitiveSlot& slot = this->state.slots[ec];
-
-    if (slot.life != 1 || slot.alphaB <= 0) {
+    if (this->state.slots[ec].life != 1 || this->state.slots[ec].alphaB <= 0) {
       continue;
     }
 
-    const float lift = slot.height[3];
-    const float length = slot.distance * g_sinTable[slot.fullDisplayAngle] + slot.distance;
-    const float reach = length * g_cosTable[slot.riseAngle];
-    vec2.Set(reach * g_cosTable[slot.rotStart], length * g_sinTable[slot.riseAngle] - lift, reach * g_sinTable[slot.rotStart]);
+    const float length = this->state.slots[ec].distance * g_sinTable[this->state.slots[ec].fullDisplayAngle] + this->state.slots[ec].distance;
+    const float reach = length * g_cosTable[this->state.slots[ec].riseAngle];
+    vec2.Set(
+      reach * g_cosTable[this->state.slots[ec].rotStart], length * g_sinTable[this->state.slots[ec].riseAngle] - this->state.slots[ec].height[3],
+      reach * g_sinTable[this->state.slots[ec].rotStart]
+    );
     vec3 = vec2;
-    const unsigned char red = static_cast<unsigned char>(static_cast<int>(slot.height[0]));
-    const unsigned char green = static_cast<unsigned char>(static_cast<int>(slot.height[1]));
-    const unsigned char blue = static_cast<unsigned char>(static_cast<int>(slot.height[2]));
 
-    vec1.Set(0.5f, -lift, 0.0f);
-    vec4.Set(-0.5f, -lift, 0.0f);
-    this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-    vec1.Set(0.0f, -lift, 0.5f);
-    vec4.Set(0.0f, -lift, -0.5f);
-    this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    vec1.Set(0.5f, -this->state.slots[ec].height[3], 0.0f);
+    vec4.Set(-0.5f, -this->state.slots[ec].height[3], 0.0f);
+    this->RenderTeiRect(
+      &rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, static_cast<unsigned char>(this->state.slots[ec].height[0]),
+      static_cast<unsigned char>(this->state.slots[ec].height[1]), static_cast<unsigned char>(this->state.slots[ec].height[2]), 0.0f, 1.0f, 0.0f, 1.0f, 0
+    );
+    vec1.Set(0.0f, -this->state.slots[ec].height[3], 0.5f);
+    vec4.Set(0.0f, -this->state.slots[ec].height[3], -0.5f);
+    this->RenderTeiRect(
+      &rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, static_cast<unsigned char>(this->state.slots[ec].height[0]),
+      static_cast<unsigned char>(this->state.slots[ec].height[1]), static_cast<unsigned char>(this->state.slots[ec].height[2]), 0.0f, 1.0f, 0.0f, 1.0f, 0
+    );
   }
 }
 
