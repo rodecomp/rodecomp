@@ -68,7 +68,7 @@ void UIAdvenPartyBoardWnd::OnCreate(int, int) {
   this->minimum->maximum = 3;
   this->minimum->TextColor(0, 0, 0, 0xFFFFFFFFu);
   char minimumText[10] = {};
-  StringFormat(minimumText, sizeof(minimumText), _TRUNCATE, "%d", std::max(1, level - 5));
+  StringFormat(minimumText, sizeof(minimumText), _TRUNCATE, "%d", level - 5 > 1 ? level - 5 : 1);
   this->minimum->SetText(minimumText);
   this->minimum->Move(10, 24);
   this->minimum->Background(242, 242, 242);
