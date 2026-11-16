@@ -30,16 +30,14 @@ MiniPartyGridPoint CMiniPartyWndSortArea::GetWindowPosition(int index) const {
 // OFFSET: 0x00737F20
 // FUNCTION: fn_07661
 int CMiniPartyWndAreaMgr::FindCell(int x, int y) const {
-  const int dx = x - this->area.left;
-  int column = dx / g_miniPartyCellWidth;
-  if (static_cast<double>(dx % g_miniPartyCellWidth) > static_cast<double>(g_miniPartyCellWidth) * 0.5) {
+  int column = (x - this->area.left) / g_miniPartyCellWidth;
+  if (static_cast<double>((x - this->area.left) % g_miniPartyCellWidth) > static_cast<double>(g_miniPartyCellWidth) * 0.5) {
     ++column;
   }
   column = (std::max)(0, (std::min)(column, this->columns - 1));
 
-  const int dy = y - this->area.top;
-  int row = dy / g_miniPartyCellHeight;
-  if (static_cast<double>(dy % g_miniPartyCellHeight) > static_cast<double>(g_miniPartyCellHeight) * 0.5) {
+  int row = (y - this->area.top) / g_miniPartyCellHeight;
+  if (static_cast<double>((y - this->area.top) % g_miniPartyCellHeight) > static_cast<double>(g_miniPartyCellHeight) * 0.5) {
     ++row;
   }
   row = (std::max)(0, (std::min)(row, this->rows - 1));
