@@ -312,7 +312,7 @@ HRESULT DeviceOwnerDX9::ClipFullscreenCursor() {
 
 // OFFSET: 0x0054C510
 // FUNCTION: fn_01921
-HRESULT DeviceOwnerDX9::Present(int) {
+HRESULT DeviceOwnerDX9::Present(unsigned char) {
   if (!this->device) {
     return invalidDevice;
   }

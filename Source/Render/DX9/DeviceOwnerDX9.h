@@ -21,7 +21,7 @@ public:
   HRESULT Close();
   void UpdateMipmapFiltering();
   void RestoreDisplayMode();
-  HRESULT Present(int unused);
+  HRESULT Present(unsigned char unused);
   HRESULT ClipFullscreenCursor();
   HRESULT CheckState();
   bool Begin();
