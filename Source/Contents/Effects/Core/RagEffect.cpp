@@ -710,9 +710,8 @@ void CRagEffect::IncAgility() {
   this->state.lastPrim->state.duration = 50;
   this->state.lastPrim->state.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
   EffectPrimitiveState& moving = this->state.lastPrim->state;
-  const float distance = static_cast<float>(ClampedRandom(7) + 2);
-  const vector3d step = RotatedForward(moving.transform.values, distance);
-  moving.deltaPos2 = step;
+  const vector3d forward{0.0f, 0.0f, static_cast<float>(ClampedRandom(7) + 2)};
+  MatrixMult(moving.deltaPos2, forward, moving.transform.values);
   this->state.lastPrim->state.transform.MakeXRotation(GetRadian(90));
   this->state.lastPrim->state.speed = static_cast<float>(ClampedRandom(50) + 20) / 100.0f;
   this->state.lastPrim->state.widthSize = static_cast<float>(ClampedRandom(60) + 30) / 10.0f;
@@ -2183,12 +2182,8 @@ void CRagEffect::Snow() {
     this->state.lastPrim->state.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
     const float z = static_cast<float>(ClampedRandom(300) - 300);
     const float y = world->terrain->Height(this->render.position.x, this->render.position.z) - 100.0f;
-    const float* m = this->state.lastPrim->state.transform.values;
-    this->state.lastPrim->state.deltaPos2 = {
-      y * m[3] + m[0] * 0.0f + z * m[6] + m[9],
-      y * m[4] + m[1] * 0.0f + z * m[7] + m[10],
-      y * m[5] + m[2] * 0.0f + z * m[8] + m[11]
-    };
+    const vector3d offset{0.0f, y, z};
+    MatrixMult(this->state.lastPrim->state.deltaPos2, offset, this->state.lastPrim->state.transform.values);
     this->state.lastPrim->state.transform.MakeXRotation(GetRadian(90));
     this->state.lastPrim->state.speed = -0.5f;
     this->state.lastPrim->state.accel = 0.0f;
@@ -7523,7 +7518,8 @@ bool CRagEffect::AgilityChange(char increase, const std::string& textureName) {
   EffectPrimitiveState& particle = this->state.lastPrim->state;
   particle.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
   EffectPrimitiveState& moving = this->state.lastPrim->state;
-  moving.deltaPos2 = RotatedForward(moving.transform.values, static_cast<float>(ClampedRandom(7) + 2));
+  const vector3d forward{0.0f, 0.0f, static_cast<float>(ClampedRandom(7) + 2)};
+  MatrixMult(moving.deltaPos2, forward, moving.transform.values);
 
   if (increase == 1) {
     this->state.lastPrim->state.transform.MakeXRotation(GetRadian(90));
@@ -12671,8 +12667,8 @@ void CRagEffect::Enhance() {
     this->state.lastPrim = this->LaunchEffectPrim(16, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 50;
     this->state.lastPrim->state.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
-    const float distance = static_cast<float>(ClampedRandom(5) + 2);
-    this->state.lastPrim->state.deltaPos2 = RotatedForward(this->state.lastPrim->state.transform.values, distance);
+    const vector3d forward{0.0f, 0.0f, static_cast<float>(ClampedRandom(5) + 2)};
+    MatrixMult(this->state.lastPrim->state.deltaPos2, forward, this->state.lastPrim->state.transform.values);
     this->state.lastPrim->state.transform.MakeXRotation(GetRadian(90));
     this->state.lastPrim->state.speed = 2.0f;
     this->state.lastPrim->state.widthSize = 7.0f;
@@ -12687,8 +12683,8 @@ void CRagEffect::Enhance() {
     this->state.lastPrim = this->LaunchEffectPrim(16, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 50;
     this->state.lastPrim->state.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
-    const float distance = static_cast<float>(ClampedRandom(5) + 2);
-    this->state.lastPrim->state.deltaPos2 = RotatedForward(this->state.lastPrim->state.transform.values, distance);
+    const vector3d forward{0.0f, 0.0f, static_cast<float>(ClampedRandom(5) + 2)};
+    MatrixMult(this->state.lastPrim->state.deltaPos2, forward, this->state.lastPrim->state.transform.values);
     this->state.lastPrim->state.transform.MakeXRotation(GetRadian(90));
     this->state.lastPrim->state.speed = 2.0f;
     this->state.lastPrim->state.widthSize = 7.0f;
@@ -15092,8 +15088,8 @@ void CRagEffect::DecAgility() {
   streak.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
 
   EffectPrimitiveState& placed = this->state.lastPrim->state;
-  const vector3d offset = RotatedForward(placed.transform.values, static_cast<float>(ClampedRandom(7) + 2));
-  placed.deltaPos2 = offset;
+  const vector3d forward{0.0f, 0.0f, static_cast<float>(ClampedRandom(7) + 2)};
+  MatrixMult(placed.deltaPos2, forward, placed.transform.values);
   this->state.lastPrim->state.deltaPos2.y -= 20.0f;
 
   EffectPrimitiveState& upright = this->state.lastPrim->state;
@@ -16365,7 +16361,8 @@ void CRagEffect::IncAgilityCenter(char kind) {
   EffectPrimitiveState& particle = this->state.lastPrim->state;
   particle.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
   const float distance = static_cast<float>(ClampedRandom(7) + 2);
-  this->state.lastPrim->state.deltaPos2 = RotatedForward(this->state.lastPrim->state.transform.values, distance);
+  const vector3d forward{0.0f, 0.0f, distance};
+  MatrixMult(this->state.lastPrim->state.deltaPos2, forward, this->state.lastPrim->state.transform.values);
   this->state.lastPrim->state.transform.MakeXRotation(GetRadian(90));
 
   if (kind >= 2) {
