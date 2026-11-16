@@ -2743,20 +2743,29 @@ void UISkillListWnd::Paint() {
   CFile file;
   char text[80];
 
-  auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(
-    g_skillTooltipActive ? "유저인터페이스\\basic_interface\\titlebar_left2.bmp" : "유저인터페이스\\basic_interface\\titlebar_left.bmp"
-  )));
+  CBitmapRes* left;
+  if (g_skillTooltipActive == 0) {
+    left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\titlebar_left.bmp")));
+  } else {
+    left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\titlebar_left2.bmp")));
+  }
   this->DrawBitmap(0, 0, left, false);
-  auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(
-    g_skillTooltipActive ? "유저인터페이스\\basic_interface\\titlebar_right2.bmp" : "유저인터페이스\\basic_interface\\titlebar_right.bmp"
-  )));
+  CBitmapRes* right;
+  if (g_skillTooltipActive == 0) {
+    right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\titlebar_right.bmp")));
+  } else {
+    right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\titlebar_right2.bmp")));
+  }
   this->DrawBitmap(this->geometry.width - right->image.width, 0, right, false);
-  int count = (this->geometry.width - 24) / 12 + ((this->geometry.width - 24) % 12 != 0);
-  for (int x = 12; count > 0; --count, x += 12) {
-    auto* middle = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(
-      g_skillTooltipActive ? "유저인터페이스\\basic_interface\\titlebar_mid2.bmp" : "유저인터페이스\\basic_interface\\titlebar_mid.bmp"
-    )));
-    this->DrawBitmap(x, 0, middle, false);
+  const int count = (this->geometry.width - 24) / 12 + ((this->geometry.width - 24) % 12 != 0);
+  for (int i = 0; i < count; ++i) {
+    CBitmapRes* middle;
+    if (g_skillTooltipActive == 0) {
+      middle = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\titlebar_mid.bmp")));
+    } else {
+      middle = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\titlebar_mid2.bmp")));
+    }
+    this->DrawBitmap(i * 12 + 12, 0, middle, false);
   }
 
   if (this->geometry.height == 17) {
@@ -2764,33 +2773,37 @@ void UISkillListWnd::Paint() {
   }
 
   int rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
-  for (int y = 17; rows > 0; --rows, y += 8) {
+  for (int i = 0; i < rows; ++i) {
     auto* itemLeft = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
-    this->DrawBitmap(0, y, itemLeft, false);
+    this->DrawBitmap(0, i * 8 + 17, itemLeft, false);
   }
 
   rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
-  for (int y = 17; rows > 0; --rows, y += 8) {
+  for (int i = 0; i < rows; ++i) {
     auto* itemRight = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
-    this->DrawBitmap(this->geometry.width - itemRight->image.width, y, itemRight, false);
+    this->DrawBitmap(this->geometry.width - itemRight->image.width, i * 8 + 17, itemRight, false);
   }
 
-  unsigned red, green, blue;
-  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-  this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - 38, RGB(red, green, blue));
-  this->FillRegion(20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - 38) % 32, RGB(red, green, blue));
+  {
+    unsigned red, green, blue;
+    g_skinInfo.PaletteChannels(2, 2, red, green, blue);
+    this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - 38, RGB(red, green, blue));
+    this->FillRegion(20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - 38) % 32, RGB(red, green, blue));
+  }
   this->DrawButtonBar(2, 0, 1);
 
-  const int slotColumns = (this->geometry.width - 40) / 32;
-  const int slotRows = (this->geometry.height - 38) / 32;
-  int slots = slotRows;
-  for (int y = 17; slots > 0; --slots, y += 32) {
-    this->DrawItemSlotFrame(40, y);
-  }
+  {
+    const int slotColumns = (this->geometry.width - 40) / 32;
+    const int slotRows = (this->geometry.height - 38) / 32;
+    int slots = slotRows;
+    for (int y = 17; slots > 0; --slots, y += 32) {
+      this->DrawItemSlotFrame(40, y);
+    }
 
-  unsigned fillBlue;
-  g_skinInfo.PaletteChannels(2, 2, red, green, fillBlue);
-  this->FillRegion(72, 17, slotColumns * 32 - 32, slotRows * 32, RGB(red, green, fillBlue));
+    unsigned red, green, blue;
+    g_skinInfo.PaletteChannels(2, 2, red, green, blue);
+    this->FillRegion(72, 17, slotColumns * 32 - 32, slotRows * 32, RGB(red, green, blue));
+  }
 
   if (this->skillTab == 0) {
     this->DrawTextAt(17, 4, LookupMessage(MSI_HOMUN_SKILLLIST), 0, 0, 12, 0xFFFFFF, 0, 0);
@@ -2833,12 +2846,10 @@ void UISkillListWnd::Paint() {
     this->DrawBitmap(x + 44, top + 21, icon, true);
 
     int shade;
-    if (it->level == 0) {
-      shade = 120;
-    } else {
+    if (it->level != 0) {
       const char* format;
       int levelX;
-      if (CSkillInfo::UsesLevel(*g_session.m_hotkeyScript, static_cast<int>(it->id))) {
+      if (CSkillInfo::UsesLevel(static_cast<int>(it->id))) {
         std::sprintf(text, g_serviceType != 12 ? "Lv :" : "Nv :");
         this->DrawTextAt(x + 124, top + 34, text, 0, 0, 12, 0, 0, 0);
         if (this->skillTab == 0) {
@@ -2864,7 +2875,7 @@ void UISkillListWnd::Paint() {
         std::sprintf(text, LookupMessage(MSI_PASSIVE));
       } else {
         int sp = static_cast<int>(it->spCost);
-        if (CSkillInfo::UsesLevel(*g_session.m_hotkeyScript, static_cast<int>(it->id))) {
+        if (CSkillInfo::UsesLevel(static_cast<int>(it->id))) {
           if (this->skillTab == 0) {
             spLevel = g_session.HomunSkillLevel(static_cast<int>(it->id));
           } else if (this->skillTab == 1) {
@@ -2884,6 +2895,8 @@ void UISkillListWnd::Paint() {
       }
       this->DrawTextAt(x + 212, top + 34, text, 0, 0, 12, 0, 0, 0);
       shade = 0;
+    } else {
+      shade = 120;
     }
 
     x += 112;
@@ -9482,21 +9495,23 @@ void UIItemStoreWnd::Paint() {
   }
 
   int rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
-  for (int i = 0, y = 17; i < rows; ++i, y += 8) {
+  for (int i = 0; i < rows; ++i) {
     auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
-    this->DrawBitmap(0, y, left, false);
+    this->DrawBitmap(0, i * 8 + 17, left, false);
   }
 
   rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
-  for (int i = 0, y = 17; i < rows; ++i, y += 8) {
+  for (int i = 0; i < rows; ++i) {
     auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
-    this->DrawBitmap(this->geometry.width - right->image.width, y, right, false);
+    this->DrawBitmap(this->geometry.width - right->image.width, i * 8 + 17, right, false);
   }
 
-  unsigned red, green, blue;
-  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-  this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - 38, RGB(red, green, blue));
-  this->FillRegion(20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - 38) % 32, RGB(red, green, blue));
+  {
+    unsigned red, green, blue;
+    g_skinInfo.PaletteChannels(2, 2, red, green, blue);
+    this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - 38, RGB(red, green, blue));
+    this->FillRegion(20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - 38) % 32, RGB(red, green, blue));
+  }
   this->DrawButtonBar(this->alternateButtonBar != 0 ? 3 : 0, 0, 1);
 
   const int columns = (this->geometry.width - 40) / 32;
@@ -9655,9 +9670,11 @@ void UIMerchantShopMakeWnd::Paint() {
   this->ClearSurface(0xFF);
   this->DrawTitleBar(false, "", 0);
 
-  unsigned red, green, blue;
-  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-  this->FillRegion(0, 17, this->geometry.width, this->geometry.height - 38, RGB(red, green, blue));
+  {
+    unsigned red, green, blue;
+    g_skinInfo.PaletteChannels(2, 2, red, green, blue);
+    this->FillRegion(0, 17, this->geometry.width, this->geometry.height - 38, RGB(red, green, blue));
+  }
 
   int barHeight;
   if (this->mode != 0) {
@@ -9688,7 +9705,7 @@ void UIMerchantShopMakeWnd::Paint() {
       hidden = false;
       this->priceEdits[i]->Move(this->geometry.width - 119, (i - this->scroll) * 42 + 54);
     }
-    this->priceEdits[i]->Show(hidden ^ 1);
+    this->priceEdits[i]->Show(!hidden);
     if (this->mode != 0) {
       this->quantityEdits[i]->Move(this->geometry.width + hidden * 340 - 221, (i - this->scroll) * 42 + 54);
     }
@@ -10398,42 +10415,45 @@ void UIMerchantItemShopWnd::Paint() {
 
   unsigned rows = static_cast<unsigned>(this->geometry.height - this->footerHeight - 17) / 8 +
                   (static_cast<unsigned>(this->geometry.height - this->footerHeight - 17) % 8 != 0);
-  for (int y = 17; rows != 0; --rows, y += 8) {
+  for (unsigned i = 0; i < rows; ++i) {
     auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
-    this->DrawBitmap(0, y, left, false);
+    this->DrawBitmap(0, i * 8 + 17, left, false);
   }
 
   rows = static_cast<unsigned>(this->geometry.height - this->footerHeight - 17) / 8 +
          (static_cast<unsigned>(this->geometry.height - this->footerHeight - 17) % 8 != 0);
-  for (int y = 17; rows != 0; --rows, y += 8) {
+  for (unsigned i = 0; i < rows; ++i) {
     auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
-    this->DrawBitmap(this->geometry.width - right->image.width, y, right, false);
+    this->DrawBitmap(this->geometry.width - right->image.width, i * 8 + 17, right, false);
   }
 
-  unsigned red, green, blue;
-  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-  this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - this->footerHeight - 17, RGB(red, green, blue));
-  this->FillRegion(
-    20, static_cast<unsigned>(this->geometry.height - this->footerHeight - 17) / 32 * 32 + 17, this->geometry.width - 24,
-    static_cast<unsigned>(this->geometry.height - this->footerHeight - 17) % 32, RGB(red, green, blue)
-  );
+  {
+    unsigned red, green, blue;
+    g_skinInfo.PaletteChannels(2, 2, red, green, blue);
+    this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - this->footerHeight - 17, RGB(red, green, blue));
+    this->FillRegion(
+      20, static_cast<unsigned>(this->geometry.height - this->footerHeight - 17) / 32 * 32 + 17, this->geometry.width - 24,
+      static_cast<unsigned>(this->geometry.height - this->footerHeight - 17) % 32, RGB(red, green, blue)
+    );
+  }
   this->DrawButtonBar(this->alternateButtonBar != 0 ? 2 : 0, 0, 1);
 
-  const int columns = (this->geometry.width - 40) / 32;
-  const unsigned slotRows = static_cast<unsigned>(this->geometry.height - this->footerHeight - 17) / 32;
-  unsigned slots = slotRows;
-  for (int y = 17; slots != 0; --slots, y += 32) {
-    this->DrawItemSlotFrame(40, y);
+  {
+    const int columns = (this->geometry.width - 40) / 32;
+    const unsigned slotRows = static_cast<unsigned>(this->geometry.height - this->footerHeight - 17) / 32;
+    for (unsigned i = 0, y = 17; i < slotRows; ++i, y += 32) {
+      this->DrawItemSlotFrame(40, y);
+    }
+
+    unsigned fillRed, fillGreen, fillBlue;
+    g_skinInfo.PaletteChannels(2, 2, fillRed, fillGreen, fillBlue);
+    this->FillRegion(72, 17, columns * 32 - 32, slotRows * 32, RGB(fillRed, fillGreen, fillBlue));
   }
 
-  unsigned fillRed, fillGreen, fillBlue;
-  g_skinInfo.PaletteChannels(2, 2, fillRed, fillGreen, fillBlue);
-  this->FillRegion(72, 17, columns * 32 - 32, slotRows * 32, RGB(fillRed, fillGreen, fillBlue));
-
+  char title[128];
   {
     std::string actor = g_modeMgr.GetGameMode()->ActorName(this->ownerAid);
     const char* label = LookupMessage(this->buyingShop == 0 ? MSI_ITEM_MERCHANT_STORE : MSI_BUYINGSTORE_SHOPWND_TITLE);
-    char title[128];
     if (!actor.empty()) {
       sprintf(title, "%s - %s", label, actor.c_str());
     } else {
@@ -10475,7 +10495,7 @@ void UIMerchantItemShopWnd::Paint() {
       this->DrawItemAndQuantity(x, top + 21, *it, 0, 0);
     }
 
-    if (it->grade > 0) {
+    if (0 < it->grade) {
       this->DrawBitmap(
         x, top + 33,
         static_cast<CBitmapRes*>(
@@ -10509,7 +10529,7 @@ void UIMerchantItemShopWnd::Paint() {
     this->DrawButtonBar(3, 0, 1);
   }
 
-  if (this->duration != 0) {
+  if (this->duration > 0) {
     const int remaining = static_cast<int>(this->startTick + this->duration - timeGetTime());
     if (remaining > 0) {
       const int days = remaining / 86400000;
@@ -11047,26 +11067,28 @@ void UIItemWnd::Paint() {
   int rows;
   if (this->geometry.height > 120) {
     rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
-    for (int i = 0, y = 17; i < rows; ++i, y += 8) {
+    for (int i = 0; i < rows; ++i) {
       auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
-      this->DrawBitmap(0, y, left, false);
+      this->DrawBitmap(0, i * 8 + 17, left, false);
     }
   }
 
   rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
-  for (int i = 0, y = 17; i < rows; ++i, y += 8) {
+  for (int i = 0; i < rows; ++i) {
     auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
-    this->DrawBitmap(this->geometry.width - right->image.width, y, right, false);
+    this->DrawBitmap(this->geometry.width - right->image.width, i * 8 + 17, right, false);
   }
 
-  unsigned red, green, blue;
   if (this->categoryFilter == 3 && g_session.m_blockPrivateTab == 1) {
+    unsigned red, green, blue;
     g_skinInfo.PaletteChannels(0, 8, red, green, blue);
     this->FillRegion(20, 17, this->geometry.width - 21, this->geometry.height - 38, RGB(red, green, blue));
   } else {
+    unsigned red, green, blue;
     g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-    this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - 38, RGB(red, green, blue));
-    this->FillRegion(20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - 38) % 32, RGB(red, green, blue));
+    const int height = this->geometry.height - 38;
+    this->FillRegion(20, 17, (this->geometry.width - 60) % 32, height, RGB(red, green, blue));
+    this->FillRegion(20, height / 32 * 32 + 17, this->geometry.width - 24, height % 32, RGB(red, green, blue));
   }
 
   if (this->filterWindow) {
@@ -11151,7 +11173,7 @@ void UIItemWnd::Paint() {
     const int y = top + 21;
     this->DrawItemAndQuantity(x, y, *it, 0, 0);
 
-    if (it->grade > 0) {
+    if (0 < it->grade) {
       this->DrawBitmap(
         x, top + 33,
         static_cast<CBitmapRes*>(
