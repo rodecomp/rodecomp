@@ -4,12 +4,13 @@
 // OFFSET: 0x00DAAB00
 // FUNCTION: fn_22575
 int GetSpriteLayerOrder(CImfRes* imfRes, int layer, int baseAction, int action, int motion) {
+  const int order = 8 - layer;
   switch (action - baseAction) {
   case 0:
   case 1:
   case 6:
   case 7:
-    switch (8 - layer) {
+    switch (order) {
     case 0:
       return imfRes->GetLayer(1, action, motion);
     case 1:
@@ -34,7 +35,7 @@ int GetSpriteLayerOrder(CImfRes* imfRes, int layer, int baseAction, int action, 
   case 3:
   case 4:
   case 5:
-    switch (8 - layer) {
+    switch (order) {
     case 0:
       return 7;
     case 1:
