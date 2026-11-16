@@ -1959,7 +1959,8 @@ void CGrannyPc::RenderCached(const matrix& view, int layer, C3dGrannyModelRes* m
     const std::uint16_t* indices = this->meshIndices[layer][mesh];
     RenderCommand* command = commands[mesh];
     int vertexCount = 0;
-    for (int triangle = this->meshTriangleCounts[layer][mesh]; triangle > 0; --triangle) {
+    const int triangleCount = this->meshTriangleCounts[layer][mesh];
+    for (int triangle = 0; triangle < triangleCount; ++triangle) {
       for (int corner = 0; corner < 3; ++corner) {
         RenderVertex& output = command->vertices[vertexCount];
         const GrannyPNT332Vertex& vertex = source[indices[vertexCount]];
