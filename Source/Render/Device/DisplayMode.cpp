@@ -48,7 +48,8 @@ std::vector<DisplayMode> EnumerateDisplayModesDX9(UINT adapter) {
   }
 
   std::sort(dimensions.begin(), dimensions.end());
-  dimensions.erase(std::unique(dimensions.begin(), dimensions.end()), dimensions.end());
+  const auto last = std::unique(dimensions.begin(), dimensions.end());
+  dimensions.erase(last, dimensions.end());
 
   std::vector<DisplayMode> result;
   result.reserve(dimensions.size());
