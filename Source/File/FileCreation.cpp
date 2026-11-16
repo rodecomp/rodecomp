@@ -54,6 +54,42 @@ std::string CreateUniqueFileName(const std::string& filename) {
   return result;
 }
 
+struct ScopedJsonValue {
+  JsonValue value;
+
+  // INLINED
+  ~ScopedJsonValue() {
+    reinterpret_cast<void(__thiscall*)(JsonValue*)>(JsonDestroy)(&this->value);
+  }
+};
+
+struct CopiedJsonValue {
+  JsonValue value;
+
+  // INLINED
+  explicit CopiedJsonValue(const JsonValue& other) {
+    reinterpret_cast<void(__thiscall*)(JsonValue*, const JsonValue*)>(JsonCopyConstruct)(&this->value, &other);
+  }
+
+  // INLINED
+  ~CopiedJsonValue() {
+    reinterpret_cast<void(__thiscall*)(JsonValue*)>(JsonDestroy)(&this->value);
+  }
+};
+
+// INLINED
+static __forceinline bool GetDoubleValue(JsonCppLoader* loader, const JsonValue& node, const std::string& key, double* out) {
+  ScopedJsonValue value;
+  loader->GetValue(value.value, key, node, JsonValue::DOUBLE_VALUE);
+  if (value.value.IsNull() == true) {
+    loader->Fail("key 에 해당하는 데이터를 찾지 못했습니다. (keyName : %s)", key.c_str());
+    return false;
+  }
+
+  *out = value.value.AsDouble();
+  return true;
+}
+
 // OFFSET: 0x0050C2A0
 // FUNCTION: fn_00896
 bool JsonCppLoader::GetEZ2STREffect(std::map<std::string, EZ2STREffectRecord>* out) {
@@ -81,36 +117,21 @@ bool JsonCppLoader::GetEZ2STREffect(std::map<std::string, EZ2STREffectRecord>* o
   const JsonObject none;
   for (const JsonMember& member : members ? *members : none) {
     const std::string name = member.first;
-    const JsonValue node = member.second;
+    const CopiedJsonValue node(member.second);
     EZ2STREffectRecord record;
-    this->GetStringValue(node, "FilePath", &record.name);
+    this->GetStringValue(node.value, "FilePath", &record.name);
+    GetDoubleValue(this, node.value, "PosX", &record.offsetX);
+    GetDoubleValue(this, node.value, "PosY", &record.offsetY);
+    this->GetBoolValue(node.value, "IsInfinite", &record.infinite);
+    this->GetBoolValue(node.value, "IsFloor", &record.floor);
+    this->GetBoolValue(node.value, "IsAboveUI", &record.aboveUi);
+    this->GetStringValue(node.value, "SoundPath", &record.soundPath);
+    this->GetBoolValue(node.value, "IsSoundLoop", &record.soundLoop);
+    this->GetIntValue(node.value, "QuakeDelay", &record.delays[0]);
+    this->GetIntValue(node.value, "StartDelayTime", &record.delays[1]);
+    this->GetBoolValue(node.value, "IsToGround", &record.toGround);
 
-    JsonValue x;
-    this->GetValue(x, "PosX", node, JsonValue::DOUBLE_VALUE);
-    if (x.IsNull()) {
-      this->Fail("key 에 해당하는 데이터를 찾지 못했습니다. (keyName : %s)", "PosX");
-    } else {
-      record.offsetX = x.AsDouble();
-    }
-
-    JsonValue y;
-    this->GetValue(y, "PosY", node, JsonValue::DOUBLE_VALUE);
-    if (y.IsNull()) {
-      this->Fail("key 에 해당하는 데이터를 찾지 못했습니다. (keyName : %s)", "PosY");
-    } else {
-      record.offsetY = y.AsDouble();
-    }
-
-    this->GetBoolValue(node, "IsInfinite", &record.infinite);
-    this->GetBoolValue(node, "IsFloor", &record.floor);
-    this->GetBoolValue(node, "IsAboveUI", &record.aboveUi);
-    this->GetStringValue(node, "SoundPath", &record.soundPath);
-    this->GetBoolValue(node, "IsSoundLoop", &record.soundLoop);
-    this->GetIntValue(node, "QuakeDelay", &record.delays[0]);
-    this->GetIntValue(node, "StartDelayTime", &record.delays[1]);
-    this->GetBoolValue(node, "IsToGround", &record.toGround);
-
-    if (!out->insert(std::make_pair(name, record)).second) {
+    if (!out->insert(std::pair<std::string, EZ2STREffectRecord>(name, record)).second) {
       this->Fail("중복키가 입력되었습니다. (key : %s)", name.c_str());
       return false;
     }
