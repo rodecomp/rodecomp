@@ -2623,22 +2623,19 @@ void CEffectPrim::RenderRotatedPlate(matrix& wtm) {
       continue;
     }
 
-    const int angle = slot.fullDisplayAngle;
-    const int rise = slot.riseAngle;
-    const float size = slot.height[1];
-    const float shift = static_cast<float>(slot.flag1[1]) * size;
+    const float shift = static_cast<float>(slot.flag1[1]) * slot.height[1];
     const float outer = shift + slot.distance;
     const float inner = slot.distance - shift;
-    const float back = size * -1.0f;
+    const float back = slot.height[1] * -1.0f;
 
-    float across = g_cosTable[angle] * outer - g_sinTable[angle] * size;
-    vec2.Set(across * g_cosTable[rise] - g_sinTable[rise] * 0.0f, g_sinTable[angle] * outer + g_cosTable[angle] * size, across * g_sinTable[rise] + g_cosTable[rise] * 0.0f);
-    across = g_cosTable[angle] * inner - g_sinTable[angle] * size;
-    vec3.Set(across * g_cosTable[rise] - g_sinTable[rise] * 0.0f, g_sinTable[angle] * inner + g_cosTable[angle] * size, across * g_sinTable[rise] + g_cosTable[rise] * 0.0f);
-    across = g_cosTable[angle] * inner - g_sinTable[angle] * back;
-    vec4.Set(across * g_cosTable[rise] - g_sinTable[rise] * 0.0f, g_cosTable[angle] * back + g_sinTable[angle] * inner, across * g_sinTable[rise] + g_cosTable[rise] * 0.0f);
-    across = g_cosTable[angle] * outer - g_sinTable[angle] * back;
-    vec1.Set(across * g_cosTable[rise] - g_sinTable[rise] * 0.0f, g_cosTable[angle] * back + g_sinTable[angle] * outer, across * g_sinTable[rise] + g_cosTable[rise] * 0.0f);
+    float across = g_cosTable[slot.fullDisplayAngle] * outer - g_sinTable[slot.fullDisplayAngle] * slot.height[1];
+    vec2.Set(across * g_cosTable[slot.riseAngle] - g_sinTable[slot.riseAngle] * 0.0f, g_sinTable[slot.fullDisplayAngle] * outer + g_cosTable[slot.fullDisplayAngle] * slot.height[1], across * g_sinTable[slot.riseAngle] + g_cosTable[slot.riseAngle] * 0.0f);
+    across = g_cosTable[slot.fullDisplayAngle] * inner - g_sinTable[slot.fullDisplayAngle] * slot.height[1];
+    vec3.Set(across * g_cosTable[slot.riseAngle] - g_sinTable[slot.riseAngle] * 0.0f, g_sinTable[slot.fullDisplayAngle] * inner + g_cosTable[slot.fullDisplayAngle] * slot.height[1], across * g_sinTable[slot.riseAngle] + g_cosTable[slot.riseAngle] * 0.0f);
+    across = g_cosTable[slot.fullDisplayAngle] * inner - g_sinTable[slot.fullDisplayAngle] * back;
+    vec4.Set(across * g_cosTable[slot.riseAngle] - g_sinTable[slot.riseAngle] * 0.0f, g_cosTable[slot.fullDisplayAngle] * back + g_sinTable[slot.fullDisplayAngle] * inner, across * g_sinTable[slot.riseAngle] + g_cosTable[slot.riseAngle] * 0.0f);
+    across = g_cosTable[slot.fullDisplayAngle] * outer - g_sinTable[slot.fullDisplayAngle] * back;
+    vec1.Set(across * g_cosTable[slot.riseAngle] - g_sinTable[slot.riseAngle] * 0.0f, g_cosTable[slot.fullDisplayAngle] * back + g_sinTable[slot.fullDisplayAngle] * outer, across * g_sinTable[slot.riseAngle] + g_cosTable[slot.riseAngle] * 0.0f);
 
     if (slot.flag1[0] == 0) {
       this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, 225, 225, 80, 0.0f, 1.0f, 0.0f, 1.0f, 0);
@@ -4623,48 +4620,46 @@ void CEffectPrim::RenderRectUp2(matrix& wtm) {
     const unsigned char b = slot.height[4] < 10.0f ? 150 : 250;
     const unsigned char g = slot.height[4] < 10.0f ? 250 : 50;
     const unsigned char r = slot.height[4] < 10.0f ? 150 : 50;
-    const float w = slot.height[0];
-    const float h = slot.height[1];
 
-    slot.vecBPre = {w, -1.0f, h};
-    slot.vecBNow = {w, -1.0f, -h};
-    slot.vecTNow = {-w, -1.0f, -h};
-    slot.vecTPre = {-w, -1.0f, h};
+    slot.vecBPre = {slot.height[0], -1.0f, slot.height[1]};
+    slot.vecBNow = {slot.height[0], -1.0f, -slot.height[1]};
+    slot.vecTNow = {-slot.height[0], -1.0f, -slot.height[1]};
+    slot.vecTPre = {-slot.height[0], -1.0f, slot.height[1]};
 
-    if (slot.distance < w * 2.0f) {
-      slot.vecBPre.z = h - slot.distance;
+    if (slot.distance < slot.height[0] * 2.0f) {
+      slot.vecBPre.z = slot.height[1] - slot.distance;
       slot.vecBNow.z = slot.vecBPre.z - slot.height[3];
 
-      if (slot.vecBNow.z < -h) {
-        left = -h - slot.vecBNow.z;
-        slot.vecBNow.z = -h;
+      if (slot.vecBNow.z < -slot.height[1]) {
+        left = -slot.height[1] - slot.vecBNow.z;
+        slot.vecBNow.z = -slot.height[1];
         slot.vecTNow.x = slot.vecBNow.x - left;
       }
-    } else if (slot.distance < w * 4.0f) {
-      slot.vecBNow.x = w - (slot.distance - w * 2.0f);
+    } else if (slot.distance < slot.height[0] * 4.0f) {
+      slot.vecBNow.x = slot.height[0] - (slot.distance - slot.height[0] * 2.0f);
       slot.vecTNow.x = slot.vecBNow.x - slot.height[3];
 
-      if (slot.vecTNow.x < -w) {
-        left = -w - slot.vecTNow.x;
-        slot.vecTNow.x = -w;
+      if (slot.vecTNow.x < -slot.height[0]) {
+        left = -slot.height[0] - slot.vecTNow.x;
+        slot.vecTNow.x = -slot.height[0];
         slot.vecTPre.z = slot.vecTNow.z + left;
       }
-    } else if (slot.distance < w * 6.0f) {
-      slot.vecTNow.z = slot.distance - w * 4.0f - h;
+    } else if (slot.distance < slot.height[0] * 6.0f) {
+      slot.vecTNow.z = slot.distance - slot.height[0] * 4.0f - slot.height[1];
       slot.vecTPre.z = slot.vecTNow.z + slot.height[3];
 
-      if (slot.vecTPre.z > h) {
-        left = slot.vecTPre.z - h;
-        slot.vecTPre.z = h;
+      if (slot.vecTPre.z > slot.height[1]) {
+        left = slot.vecTPre.z - slot.height[1];
+        slot.vecTPre.z = slot.height[1];
         slot.vecBPre.x = slot.vecTPre.x + left;
       }
     } else {
-      slot.vecTPre.x = slot.distance - w * 6.0f - w;
+      slot.vecTPre.x = slot.distance - slot.height[0] * 6.0f - slot.height[0];
       slot.vecBPre.x = slot.vecTPre.x + slot.height[3];
 
-      if (slot.vecBPre.x > w) {
-        left = slot.vecBPre.x - w;
-        slot.vecBPre.x = w;
+      if (slot.vecBPre.x > slot.height[0]) {
+        left = slot.vecBPre.x - slot.height[0];
+        slot.vecBPre.x = slot.height[0];
         slot.vecBNow.z = slot.vecBPre.z - left;
       }
     }
@@ -4675,19 +4670,19 @@ void CEffectPrim::RenderRectUp2(matrix& wtm) {
     vec3.Set(slot.vecTPre.x, y, slot.vecTPre.z);
     vec4.Set(slot.vecTNow.x, y, slot.vecTNow.z);
 
-    if (slot.distance < w * 2.0f) {
+    if (slot.distance < slot.height[0] * 2.0f) {
       this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBPre, slot.vecBNow, vec2, vec1, wtm, 0, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
 
       if (left > 0.0f) {
         this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBNow, slot.vecTNow, vec4, vec2, wtm, 0, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       }
-    } else if (slot.distance < w * 4.0f) {
+    } else if (slot.distance < slot.height[0] * 4.0f) {
       this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBNow, slot.vecTNow, vec4, vec2, wtm, 0, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
 
       if (left > 0.0f) {
         this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecTNow, slot.vecTPre, vec3, vec4, wtm, 0, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       }
-    } else if (slot.distance < w * 6.0f) {
+    } else if (slot.distance < slot.height[0] * 6.0f) {
       this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecTNow, slot.vecTPre, vec3, vec4, wtm, 0, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
 
       if (left > 0.0f) {
