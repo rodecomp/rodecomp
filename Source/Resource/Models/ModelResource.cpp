@@ -214,7 +214,7 @@ __forceinline void C3dModelResV1::ReadNode(CFile& file, unsigned minor, const st
   int vertexCount = 0;
   file.Read(&vertexCount, 4);
   mesh.vertexCount = vertexCount;
-  auto* vertices = new std::array<float, 3>[vertexCount];
+  auto* vertices = new std::array<float, 3>[vertexCount]{};
   file.Read(vertices, static_cast<unsigned>(vertexCount) * 12u);
   mesh.vertices = vertices;
 
