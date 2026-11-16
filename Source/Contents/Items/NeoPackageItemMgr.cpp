@@ -182,6 +182,15 @@ CPaidPackageItemMgr::CPaidPackageItemMgr() {
 void CPaidPackageItemMgr::Init() {
 }
 
+// INLINED
+inline CSelectPackageItemMgr* SelectPackageItemMgr() {
+  if (!CSelectPackageItemMgr::s_instance) {
+    CSelectPackageItemMgr::s_instance = new (std::nothrow) CSelectPackageItemMgr;
+  }
+
+  return CSelectPackageItemMgr::s_instance;
+}
+
 // OFFSET: 0x006D2E30
 // FUNCTION: fn_06536
 void CPaidPackageItemMgr::AddItem(int itemId) {
@@ -200,7 +209,7 @@ void CPaidPackageItemMgr::AddItem(int itemId) {
     }
   }
 
-  CSelectPackageItemMgr* selectPackages = CSelectPackageItemMgr::GetInstance();
+  CSelectPackageItemMgr* selectPackages = SelectPackageItemMgr();
   std::map<int, std::map<int, SelectPackageTab>>::iterator selectPackage = selectPackages->m_packages.find(itemId);
   if (selectPackage == selectPackages->m_packages.end()) {
     return;
@@ -209,7 +218,7 @@ void CPaidPackageItemMgr::AddItem(int itemId) {
   this->m_items.insert(itemId);
   for (std::map<int, SelectPackageTab>::iterator tab = selectPackage->second.begin(); tab != selectPackage->second.end();
        ++tab) {
-    std::optional<std::vector<ITEM_INFO>*> items = CSelectPackageItemMgr::GetInstance()->FindItems(itemId, tab->first);
+    std::optional<std::vector<ITEM_INFO>*> items = SelectPackageItemMgr()->FindItems(itemId, tab->first);
     if (items) {
       for (std::vector<ITEM_INFO>::iterator item = (*items)->begin(); item != (*items)->end(); ++item) {
         this->AddItem(std::atoi(item->itemId.c_str()));
