@@ -35,11 +35,12 @@ void CTriangleShotArrow::Close() {
 // OFFSET: 0x0072EE90
 // FUNCTION: fn_07524
 void CTriangleShotArrow::Open() {
-  this->current.x = this->position[0];
-  this->current.y = this->position[1];
-  this->current.z = this->position[2];
+  vector3d& pos = this->current;
+  pos.x = this->position[0];
+  pos.y = this->position[1];
+  pos.z = this->position[2];
 
-  CEZ2STRParticle* arrow = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->current, 5));
+  CEZ2STRParticle* arrow = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&pos, 5));
   if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
     arrow->Open("mineffect\\new_triangleshot\\new_triangleshot_arrow\\new_triangleshot_arrow.str");
   } else {
@@ -50,16 +51,14 @@ void CTriangleShotArrow::Open() {
 
   this->speed = 1.0f;
   this->delay = 0;
-  this->current.y -= 10.0f;
-  vector3d target;
-  target.x = this->sourcePosition[0];
-  target.y = this->sourcePosition[1] - 10.0f;
-  target.z = this->sourcePosition[2];
+  pos.y -= 10.0f;
+  vector3d target = this->sourcePositionVector;
   this->step = 0;
+  target.y -= 10.0f;
 
-  this->direction.x = target.x - this->current.x;
-  this->direction.y = target.y - this->current.y;
-  this->direction.z = target.z - this->current.z;
+  this->direction.x = target.x - pos.x;
+  this->direction.y = target.y - pos.y;
+  this->direction.z = target.z - pos.z;
   const float length = SquareRoot(this->direction.x * this->direction.x + this->direction.y * this->direction.y +
                                   this->direction.z * this->direction.z);
   this->direction.x *= 0.125f;
@@ -70,20 +69,20 @@ void CTriangleShotArrow::Open() {
     this->direction *= this->speed;
   }
 
-  const float dx = target.x - this->current.x;
-  const float dy = target.y - this->current.y;
-  const float dz = target.z - this->current.z;
+  const float dx = target.x - pos.x;
+  const float dy = target.y - pos.y;
+  const float dz = target.z - pos.z;
   const float inverse = 1.0f / SquareRoot(dx * dx + dy * dy + dz * dz);
-  this->current.x = inverse * dx * 4.0f + this->current.x;
-  this->current.y = inverse * dy * 4.0f + this->current.y;
-  this->current.z = inverse * dz * 4.0f + this->current.z;
+  pos.x = inverse * dx * 4.0f + pos.x;
+  pos.y = inverse * dy * 4.0f + pos.y;
+  pos.z = inverse * dz * 4.0f + pos.z;
   this->origin = this->current;
-  this->position[0] = this->current.x;
-  this->position[1] = this->current.y;
-  this->position[2] = this->current.z;
+  this->position[0] = pos.x;
+  this->position[1] = pos.y;
+  this->position[2] = pos.z;
 
   CGameMode* mode = g_modeMgr.GetGameMode();
-  const float angle = static_cast<float>(atan2(static_cast<double>(target.z - this->current.z), static_cast<double>(target.x - this->current.x)));
+  const float angle = static_cast<float>(atan2(static_cast<double>(target.z - pos.z), static_cast<double>(target.x - pos.x)));
   float yaw = mode->CameraDesiredYaw() + angle / 3.141592f * 180.0f;
   if (yaw < 0.0f) {
     yaw += 360.0f;
