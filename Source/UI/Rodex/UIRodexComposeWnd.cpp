@@ -134,7 +134,11 @@ void UIRodexComposeWnd::InsertSkillTag(int tagId) {
   }
 
   std::string tagText = this->m_tagCtrl->AddSkillTag(tagId, 0xd630a9);
-  this->m_tagCtrl->taggedText = std::string(this->m_contents->Text());
+  {
+    UIItemTagOnMail* tagCtrl = this->m_tagCtrl;
+    std::string text = this->m_contents->Text();
+    tagCtrl->taggedText = text;
+  }
 
   this->m_contents->SetText((this->m_contents->Text() + tagText).c_str());
   this->m_contents->MoveCursorToEnd();
