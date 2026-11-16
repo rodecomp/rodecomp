@@ -1722,30 +1722,29 @@ UICashEmotionListChildWnd_Abstract::UICashEmotionListChildWnd_Abstract(int width
 // OFFSET: 0x007C3990
 // FUNCTION: fn_09343
 __declspec(noinline) void UICashEmotionScrollWnd::UpdateScrollBars() {
-  if (!this->horizontalBar) {
-    this->horizontalBar = new (std::nothrow) UICashEmotionScrollBar();
-    if (this->horizontalBar) {
-      this->horizontalBar->Configure(0, this->geometry.height - this->scrollBarHeight - 2, 0, this->geometry.width);
-    }
-  } else {
-    this->RemoveChild(this->horizontalBar, 0);
-  }
+  const int width = this->geometry.width;
+  const int height = this->geometry.height;
 
   if (this->horizontalBar) {
+    this->RemoveChild(this->horizontalBar, 0);
     UIWindow::AddChild(this->horizontalBar);
-  }
-
-  if (!this->scrollBar) {
-    this->scrollBar = new (std::nothrow) UICashEmotionScrollBar();
-    if (this->scrollBar) {
-      this->scrollBar->Configure(this->geometry.width - this->scrollBarWidth - 2, 0, 1, this->geometry.height);
-    }
   } else {
-    this->RemoveChild(this->scrollBar, 0);
+    this->horizontalBar = new (std::nothrow) UICashEmotionScrollBar();
+    if (this->horizontalBar) {
+      this->horizontalBar->Configure(0, height - this->scrollBarHeight - 2, 0, width);
+      UIWindow::AddChild(this->horizontalBar);
+    }
   }
 
   if (this->scrollBar) {
+    this->RemoveChild(this->scrollBar, 0);
     UIWindow::AddChild(this->scrollBar);
+  } else {
+    this->scrollBar = new (std::nothrow) UICashEmotionScrollBar();
+    if (this->scrollBar) {
+      this->scrollBar->Configure(width - this->scrollBarWidth - 2, 0, 1, height);
+      UIWindow::AddChild(this->scrollBar);
+    }
   }
 
   this->UpdateScrollRange();
