@@ -40,6 +40,16 @@ public:
 class CWorldViewMap {
 public:
   // INLINED
+  CWorldViewMap(int id, const char* name, WorldViewArea area) {
+    if (name) {
+      this->name = name;
+      this->displayName = name;
+    }
+    this->id = id;
+    this->area = area;
+  }
+
+  // INLINED
   ~CWorldViewMap() {
     for (std::vector<CWorldViewField*>::iterator it = this->fields.begin(); it != this->fields.end(); ++it) {
       delete *it;

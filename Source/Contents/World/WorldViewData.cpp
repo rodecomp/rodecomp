@@ -73,31 +73,21 @@ CWorldViewWorld::~CWorldViewWorld() {
 void CWorldViewWorld::AddField(int mapId, const char* name, CWorldViewField* field) {
   CWorldViewMap* map = nullptr;
   for (std::vector<CWorldViewMap*>::iterator it = this->maps.begin(); it != this->maps.end(); ++it) {
-    if ((*it)->id == mapId) {
+    if (mapId == (*it)->id) {
       map = *it;
       break;
     }
   }
 
   if (!map) {
-    map = new CWorldViewMap;
-    if (name) {
-      map->name = name;
-      map->displayName = name;
-    }
-    map->id = mapId;
-    map->left = field->left;
-    map->top = field->top;
-    map->right = field->right;
-    map->bottom = field->bottom;
-    map->areaFlags = field->areaFlags;
+    map = new CWorldViewMap(mapId, name, field->area);
     this->maps.push_back(map);
   }
 
-  if (field->left < map->left) {
+  if (map->left > field->left) {
     map->left = field->left;
   }
-  if (field->top < map->top) {
+  if (map->top > field->top) {
     map->top = field->top;
   }
   if (map->right < field->right) {
