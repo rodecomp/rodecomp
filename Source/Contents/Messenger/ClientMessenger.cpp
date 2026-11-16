@@ -5364,8 +5364,8 @@ int CLuaInstance::GetFieldStringArray(std::vector<std::string>& values, const ch
   if (type == LUA_TTABLE) {
     lua_pushnil(this->m_state);
     while (lua_next(this->m_state, -2) != 0) {
-      if (lua_type(this->m_state, -1) != LUA_TSTRING) {
-        result = 2;
+      result = lua_type(this->m_state, -1) == LUA_TSTRING ? 0 : 2;
+      if (result != 0) {
         break;
       }
       values.push_back(std::string(lua_tostring(this->m_state, -1)));
