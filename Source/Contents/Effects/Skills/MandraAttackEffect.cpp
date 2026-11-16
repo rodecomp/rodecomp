@@ -47,9 +47,10 @@ void CMandraAttackEffect::SendMsg(CGameObject* sender, std::int64_t message, std
     return;
   }
 
+  const int job = static_cast<int>(d);
   const char* sprite;
   const char* action;
-  switch (static_cast<int>(d)) {
+  switch (job) {
     case JT_HYDRA:
       sprite = "몬스터\\hydra_atk.spr";
       action = "몬스터\\hydra_atk.act";
@@ -162,7 +163,7 @@ void CMandraAttackEffect::SendMsg(CGameObject* sender, std::int64_t message, std
   this->render.visible = 1;
   this->render.motionStartTime = timeGetTime();
   this->SetAnimationSpeed(this->GetActRes()->Speed(0));
-  if (static_cast<int>(d) == 0x42C) {
+  if (job == JT_HYDRA) {
     this->SetAnimationSpeed(2.0f);
   }
 
