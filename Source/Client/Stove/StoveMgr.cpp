@@ -323,8 +323,8 @@ void CategoryProductsCallback::operator()(Stove::PCSDK::CallbackResult callbackR
   g_stoveWaitingCallback = false;
   if (callbackResult.GetResult().IsSuccessful()) {
     g_session.ClearAllInventoryCategories();
-    for (unsigned int index = 0; index < count; ++index) {
-      const Stove::PCSDK::IAP::StovePCProduct& product = products[index];
+    for (unsigned int index = 0; index < count; ++index, ++products) {
+      const Stove::PCSDK::IAP::StovePCProduct& product = *products;
       std::string categoryId = EncodeText(CP_ACP, std::wstring(product.GetCategoryId()));
       int list;
       if (g_stoveMgr->m_environment == 2) {
