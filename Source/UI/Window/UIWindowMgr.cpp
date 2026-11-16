@@ -1882,7 +1882,8 @@ int UIWindowMgr::SendNotice(int selector, std::intptr_t a, std::intptr_t b, std:
     if (existing == this->namedWindows.end()) {
       UIWhisperWnd* window = new UIWhisperWnd();
       window->SetSize(280, 120);
-      this->rendered.push_back(window);
+      UIWindow* const added = window;
+      this->rendered.push_back(added);
       window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->m_whisperPlacement), 0, 0, 0);
       window->Show(1);
       window->m_target = name;
@@ -1893,7 +1894,8 @@ int UIWindowMgr::SendNotice(int selector, std::intptr_t a, std::intptr_t b, std:
         window->m_name = name + "  (" + reinterpret_cast<const char*>(b) + ")  *^_^*";
       }
       if (c != 0) {
-        window->m_code = std::string(reinterpret_cast<const char*>(c));
+        std::string code(reinterpret_cast<const char*>(c));
+        window->m_code = std::move(code);
       }
       const int count = static_cast<int>(this->namedWindows.size());
       if (count != 0) {
@@ -1952,9 +1954,10 @@ int UIWindowMgr::SendNotice(int selector, std::intptr_t a, std::intptr_t b, std:
       std::vector<std::string> lines;
       WrapPlainText(text, lines, 94);
       for (unsigned int index = 0; index < lines.size(); ++index) {
-        std::string line;
-        line = lines[index];
-        this->pendingNoticeLines.push_back({line, static_cast<std::uint32_t>(b)});
+        WindowTextEntry entry;
+        entry.text = lines[index];
+        entry.color = static_cast<std::uint32_t>(b);
+        this->pendingNoticeLines.push_back(entry);
       }
     }
     break;
