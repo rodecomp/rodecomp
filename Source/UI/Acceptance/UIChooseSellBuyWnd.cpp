@@ -160,6 +160,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <new>
 #include <direct.h>
 #include <io.h>
 #include <mbctype.h>
@@ -12459,6 +12460,15 @@ void UIExchangeWnd::Paint() {
   this->DrawRightAlignedText(500, 332, amount, length, 1, 16, 0x323232, 0);
 }
 
+// INLINED
+inline NEO_PACKAGEITEM::CPaidPackageItemMgr* PaidPackageItemMgr() {
+  if (!NEO_PACKAGEITEM::CPaidPackageItemMgr::s_instance) {
+    NEO_PACKAGEITEM::CPaidPackageItemMgr::s_instance = new (std::nothrow) NEO_PACKAGEITEM::CPaidPackageItemMgr;
+  }
+
+  return NEO_PACKAGEITEM::CPaidPackageItemMgr::s_instance;
+}
+
 // OFFSET: 0x008FB960
 // FUNCTION: fn_12346
 int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
@@ -12532,7 +12542,7 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
     this->m_petLevel = -1;
     g_session.IsPetEgg(std::atoi(item->itemId.c_str()));
     this->m_item = *item;
-    this->m_helpButton->Enable(NEO_PACKAGEITEM::CPaidPackageItemMgr::GetInstance()->IsPaidItem(std::atoi(this->m_item.itemId.c_str())));
+    this->m_helpButton->Enable(PaidPackageItemMgr()->IsPaidItem(std::atoi(this->m_item.itemId.c_str())));
     CUIProbabilityTable* table = static_cast<CUIProbabilityTable*>(g_windowMgr.LookupWindow(WID_PROBABILITYTABLE));
     if (table && table->m_itemId != this->m_item.GetItemId()) {
       g_windowMgr.CloseWindow(WID_PROBABILITYTABLE);
