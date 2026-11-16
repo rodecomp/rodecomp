@@ -2428,10 +2428,10 @@ void CEffectPrim::RenderFloorRect(matrix& wtm) {
     const float back = this->state.slots[ec].maxHeight;
     const float width = this->state.slots[ec].height[0];
 
-    int angle = rot >= 90 ? rot - 90 : rot + 270;
+    int angle = rot < 90 ? rot + 270 : rot - 90;
     const float widthX = width * g_cosTable[angle];
     const float widthZ = width * g_sinTable[angle];
-    angle = rot >= 90 ? rot - 90 : rot + 270;
+    angle = rot < 90 ? rot + 270 : rot - 90;
     const float baseX = back * g_cosTable[angle] + widthX;
     const float baseZ = back * g_sinTable[angle] + widthZ;
 
