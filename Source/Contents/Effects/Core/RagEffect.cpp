@@ -405,24 +405,25 @@ void CRagEffect::FrostDiver2() {
 
   PlayEffectWave(*this, "effect\\EF_FrostDiver2.wav");
 
+  vector3d origin{0.0f, 0.0f, 0.0f};
   for (int index = 0; index < 8; ++index) {
-    this->state.lastPrim = this->LaunchEffectPrim(9, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(9, origin);
     this->state.lastPrim->state.duration = 40;
     this->state.lastPrim->state.pattern |= 1u;
     const int angle = ClampedRandom(360);
     const float length = static_cast<float>(ClampedRandom(4) + 1) / 10.0f;
     const float sine = ClientSine(angle);
     const float cosine = ClientCosine(angle);
-    this->state.lastPrim->state.deltaPos2.y = 30.0f;
-    this->state.lastPrim->state.deltaPos2.x = sine * length;
-    this->state.lastPrim->state.deltaPos2.z = -length * cosine;
+    vector3d& drift = this->state.lastPrim->state.deltaPos2;
+    drift.y = 30.0f;
+    drift.x = sine * length;
+    drift.z = -length * cosine;
     this->state.lastPrim->state.size = static_cast<float>(ClampedRandom(250) + 100) / 100.0f;
     this->state.lastPrim->state.heightSize = static_cast<float>(ClampedRandom(100) + 200) / 10.0f;
     this->state.lastPrim->state.longitude = static_cast<float>(ClampedRandom(360));
     this->state.lastPrim->state.latitude = static_cast<float>(ClampedRandom(20) + 80);
     this->state.lastPrim->state.transform.MakeXRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.latitude)));
-    EffectPrimitiveState& turn = this->state.lastPrim->state;
-    turn.transform.AppendYRotation(GetRadian(static_cast<int>(turn.longitude)));
+    this->state.lastPrim->state.transform.AppendYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
     EffectPrimitiveState& copy = this->state.lastPrim->state;
     copy.rotTransform = copy.transform;
     this->state.lastPrim->state.speed = 3.0f;
@@ -586,32 +587,30 @@ void CRagEffect::IceWall() {
   PlayEffectWave(*this, "effect\\wizard_icewall.wav");
   this->state.duration = 9999;
 
+  vector3d origin{0.0f, 0.0f, 0.0f};
   for (int offset = -2; offset < 4; offset += 2) {
-    this->state.lastPrim = this->LaunchEffectPrim(9, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(9, origin);
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.pattern |= 1u;
     const int angle = ClampedRandom(360);
     const float sine = ClientSine(angle);
     const float cosine = ClientCosine(angle);
-    this->state.lastPrim->state.deltaPos2.y = 30.0f;
-    this->state.lastPrim->state.deltaPos2.x = sine * 0.0f;
-    this->state.lastPrim->state.deltaPos2.z = -static_cast<float>(offset) * cosine;
+    vector3d& drift = this->state.lastPrim->state.deltaPos2;
+    drift.y = 30.0f;
+    drift.x = sine * 0.0f;
+    drift.z = -static_cast<float>(offset) * cosine;
     this->state.lastPrim->state.size = static_cast<float>(ClampedRandom(40) / 100) + 2.5f;
     this->state.lastPrim->state.heightSize = static_cast<float>(ClampedRandom(100) + 300) / 10.0f;
     this->state.lastPrim->state.longitude = static_cast<float>(ClampedRandom(360));
     this->state.lastPrim->state.latitude = static_cast<float>(ClampedRandom(6) + 87);
     this->state.lastPrim->state.chCnt = 20;
     this->state.lastPrim->state.alpha = 200.0f;
-    EffectPrimitiveState& tilt = this->state.lastPrim->state;
-    tilt.transform.MakeXRotation(GetRadian(static_cast<int>(tilt.latitude)));
-    EffectPrimitiveState& turn = this->state.lastPrim->state;
-    turn.transform.AppendYRotation(GetRadian(static_cast<int>(turn.longitude)));
-    EffectPrimitiveState& copy = this->state.lastPrim->state;
-    copy.rotTransform = copy.transform;
+    this->state.lastPrim->state.transform.MakeXRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.latitude)));
+    this->state.lastPrim->state.transform.AppendYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
+    this->state.lastPrim->state.rotTransform = this->state.lastPrim->state.transform;
     this->state.lastPrim->state.speed = 3.0f;
-    EffectPrimitiveState& slow = this->state.lastPrim->state;
-    const float decay = -(slow.speed / 40.0f);
-    slow.accel = decay + decay;
+    const float decay = -(this->state.lastPrim->state.speed / 40.0f);
+    this->state.lastPrim->state.accel = decay + decay;
     this->state.lastPrim->state.fadeOutCnt = this->state.lastPrim->state.duration - 10;
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
     this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ice.tga", 0, false, true, false);
@@ -1105,8 +1104,7 @@ void CRagEffect::SpearBmr() {
     this->state.lastPrim->render.angle = this->state.lastPrim->render.angle + 360.0f;
   }
 
-  CEffectPrim& particle = *this->state.lastPrim;
-  particle.state.speed = -(particle.CalcDist(this->state.deltaPos.x, this->state.deltaPos.z) / particle.state.duration);
+  this->state.lastPrim->state.speed = -(this->state.lastPrim->CalcDist(this->state.deltaPos.x, this->state.deltaPos.z) / this->state.lastPrim->state.duration);
   this->state.lastPrim->state.transform.MakeYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
   this->state.lastPrim->state.size = 1.0f;
   this->state.lastPrim->state.animSpeed = 1;
@@ -1121,7 +1119,8 @@ void CRagEffect::SpearBmr() {
     }
   }
 
-  this->SetAction(this->Get8Dir2(this->state.parent->render.angle, 1), 1, 1);
+  const int direction = this->Get8Dir2(this->state.parent->render.angle, 1);
+  this->SetAction(direction, 1, 1);
   this->state.lastPrim->SetSpriteName("이팩트\\창.spr");
   this->state.lastPrim->SetActionName("이팩트\\창.act");
   this->state.lastPrim->InitSegment();
@@ -11548,7 +11547,9 @@ void CRagEffect::BlitzBeat() {
   this->state.lastPrim->state.transform.MakeXRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.latitude)));
   this->state.lastPrim->state.transform.AppendYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
   MatrixMult(this->state.lastPrim->state.speed3d, {0.0f, -2.0f, 1.0f}, this->state.lastPrim->state.transform.values);
-  this->state.lastPrim->state.deltaPos += this->state.lastPrim->state.speed3d;
+  vector3d& delta = this->state.lastPrim->state.deltaPos;
+  const vector3d& speed = this->state.lastPrim->state.speed3d;
+  delta += speed;
   vector3d& drift = this->state.lastPrim->state.deltaPos2;
   drift.z = 0.0f;
   drift.x = static_cast<float>((driftX + 1) / 5);
@@ -12956,16 +12957,18 @@ void CRagEffect::StoneWall() {
   PlayEffectWave(*this, "effect\\wizard_icewall.wav");
   this->state.duration = 9999;
 
+  vector3d origin{0.0f, 0.0f, 0.0f};
   for (int offset = -2; offset < 4; offset += 2) {
-    this->state.lastPrim = this->LaunchEffectPrim(9, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(9, origin);
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.pattern |= 1u;
     const int angle = ClampedRandom(360);
     const float sine = ClientSine(angle);
     const float cosine = ClientCosine(angle);
-    this->state.lastPrim->state.deltaPos2.y = 30.0f;
-    this->state.lastPrim->state.deltaPos2.x = sine * 0.0f;
-    this->state.lastPrim->state.deltaPos2.z = -static_cast<float>(offset) * cosine;
+    vector3d& drift = this->state.lastPrim->state.deltaPos2;
+    drift.y = 30.0f;
+    drift.x = sine * 0.0f;
+    drift.z = -static_cast<float>(offset) * cosine;
     this->state.lastPrim->state.size = static_cast<float>(ClampedRandom(40) / 100) + 2.5f;
     this->state.lastPrim->state.heightSize = static_cast<float>(ClampedRandom(100) + 300) / 10.0f;
     this->state.lastPrim->state.longitude = static_cast<float>(ClampedRandom(360));
@@ -12973,8 +12976,7 @@ void CRagEffect::StoneWall() {
     this->state.lastPrim->state.chCnt = 20;
     this->state.lastPrim->state.alpha = 200.0f;
     this->state.lastPrim->state.transform.MakeXRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.latitude)));
-    EffectPrimitiveState& turn = this->state.lastPrim->state;
-    turn.transform.AppendYRotation(GetRadian(static_cast<int>(turn.longitude)));
+    this->state.lastPrim->state.transform.AppendYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
     this->state.lastPrim->state.rotTransform = this->state.lastPrim->state.transform;
     this->state.lastPrim->state.speed = 3.0f;
     const float decay = -(this->state.lastPrim->state.speed / 40.0f);

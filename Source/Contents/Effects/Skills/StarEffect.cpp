@@ -61,19 +61,17 @@ void CStarEffect::Open() {
 // OFFSET: 0x00B79FA0
 // FUNCTION: fn_19205
 void CStarEffect::SetupParticle(CParticle* particle) {
-  StarParticleState& state = particle->starState;
-
   particle->elapsedFrames = 0;
   particle->alpha = 0;
-  float* angle = state.angles;
+  float* angle = particle->starState.angles;
   for (int index = 0; index < 4; ++index) {
     *angle++ = static_cast<float>(Random(360));
   }
 
-  state.lifetime = static_cast<float>(Random(200) + 300);
-  state.texture = 1.0f;
-  state.baseScale = static_cast<float>(Random(20)) + 20.0f;
-  state.phase = static_cast<float>(Random(360));
+  particle->starState.lifetime = static_cast<float>(Random(200) + 300);
+  particle->starState.texture = 1.0f;
+  particle->starState.baseScale = static_cast<float>(Random(20)) + 20.0f;
+  particle->starState.phase = static_cast<float>(Random(360));
   particle->SetTexture("effect\\star01.bmp");
 
   float speedZ = static_cast<float>(Random(200) + 25);

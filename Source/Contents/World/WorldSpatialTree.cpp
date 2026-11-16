@@ -319,6 +319,7 @@ std::vector<C3dActor*>& WorldSpatialTree::ModelsAt(float x, float z, int depth) 
     return this->objects;
   }
 
+  const int next = depth + 1;
   WorldSpatialTree* child;
 
   if (this->center[0] > x) {
@@ -333,7 +334,7 @@ std::vector<C3dActor*>& WorldSpatialTree::ModelsAt(float x, float z, int depth) 
     child = this->children[3];
   }
 
-  return child->ModelsAt(x, z, depth + 1);
+  return child->ModelsAt(x, z, next);
 }
 
 // OFFSET: 0x00ACB560

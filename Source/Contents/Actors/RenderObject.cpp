@@ -554,15 +554,14 @@ void CRenderObject::SetColor(int alpha, int red, int green, int blue) {
 // FUNCTION: fn_21078
 void CRenderObject::ModifyArgb(int alpha, int red, int green, int blue) {
   if (this->render.colorLocked == 0) {
-    SpriteColor& argb = this->render.colorChannels;
-    int newAlpha = argb.alpha + alpha;
-    int newRed = argb.red + red;
-    int newGreen = argb.green + green;
-    int newBlue = argb.blue + blue;
-    argb.alpha = static_cast<unsigned char>(std::min(std::max(newAlpha, 0), 255));
-    argb.red = static_cast<unsigned char>(std::min(std::max(newRed, 0), 255));
-    argb.green = static_cast<unsigned char>(std::min(std::max(newGreen, 0), 255));
-    argb.blue = static_cast<unsigned char>(std::min(std::max(newBlue, 0), 255));
+    int newAlpha = this->render.colorChannels.alpha + alpha;
+    int newRed = this->render.colorChannels.red + red;
+    int newGreen = this->render.colorChannels.green + green;
+    int newBlue = this->render.colorChannels.blue + blue;
+    this->render.colorChannels.alpha = static_cast<unsigned char>(std::min(std::max(newAlpha, 0), 255));
+    this->render.colorChannels.red = static_cast<unsigned char>(std::min(std::max(newRed, 0), 255));
+    this->render.colorChannels.green = static_cast<unsigned char>(std::min(std::max(newGreen, 0), 255));
+    this->render.colorChannels.blue = static_cast<unsigned char>(std::min(std::max(newBlue, 0), 255));
   }
 }
 

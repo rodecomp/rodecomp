@@ -140,8 +140,7 @@ CWorldViewField* CWorldViewWorld::FieldAt(unsigned int& mapIndex, int x, int y) 
 // OFFSET: 0x00613B80
 // FUNCTION: fn_04353
 __declspec(noinline) CWorldViewField* CWorldViewWorld::FindField(unsigned int& mapIndex, const char* name) {
-  const unsigned int count = this->maps.size();
-  for (unsigned int index = 0; index < count; ++index) {
+  for (unsigned int index = 0; index < this->maps.size(); ++index) {
     CWorldViewMap* map = this->maps[index];
     for (std::vector<CWorldViewField*>::iterator it = map->fields.begin(); it != map->fields.end(); ++it) {
       CWorldViewField* field = *it;

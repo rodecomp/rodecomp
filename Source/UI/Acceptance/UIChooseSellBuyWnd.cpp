@@ -5465,16 +5465,15 @@ void UITipboxWnd::UpdateAnimations() {
       const std::uint32_t frameTime = this->m_frameTime;
       const std::uint32_t elapsed = timeGetTime() - frameTime;
       const std::uint32_t running = frameTime - this->m_animations[i].moveStart;
-      TipBoxAnimation& animation = this->m_animations[i];
-      const float duration = animation.duration;
+      const float duration = this->m_animations[i].duration;
       const float step = static_cast<float>(elapsed) * 0.001f;
       if (static_cast<float>(running) >= duration * 1000.0f) {
-        animation.x = static_cast<float>(animation.fromX);
+        this->m_animations[i].x = static_cast<float>(this->m_animations[i].fromX);
         this->m_animations[i].y = static_cast<float>(this->m_animations[i].fromY);
         this->m_animations[i].moveStart = this->m_frameTime;
       } else {
-        animation.x += static_cast<float>(animation.toX - animation.fromX) * step / duration;
-        animation.y += static_cast<float>(animation.toY - animation.fromY) * step / duration;
+        this->m_animations[i].x += static_cast<float>(this->m_animations[i].toX - this->m_animations[i].fromX) * step / duration;
+        this->m_animations[i].y += static_cast<float>(this->m_animations[i].toY - this->m_animations[i].fromY) * step / duration;
       }
     }
   }
