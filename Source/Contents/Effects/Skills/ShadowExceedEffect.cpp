@@ -115,7 +115,7 @@ void CShadowExceed::OnProcess() {
     CEZ2STRParticle* emitter = *it;
     if (IsParticleActive(*it) == true) {
       if (emitter) {
-        const vector3d position = {this->position[0], this->position[1], this->position[2]};
+        const vector3d position = this->positionVector;
         const matrix view = g_modeMgr.GetGameMode()->camera->frame.view;
         const matrix& inverse = g_modeMgr.GetGameMode()->camera->frame.inverse;
         vector3d viewPos = TransformPoint(view, position);
