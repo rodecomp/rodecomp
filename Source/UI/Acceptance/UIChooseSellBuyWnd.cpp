@@ -4369,7 +4369,7 @@ void UInCashWnd::DrawItems() {
     }
 
     const int x = row >= 4 ? 257 : 71;
-    const int y = (row >= 4 ? row - 4 : row) * this->m_rowHeight + this->m_listTop;
+    const int y = (row < 4 ? row : row - 4) * this->m_rowHeight + this->m_listTop;
     const std::string path = "유저인터페이스\\collection\\" + std::string(it->ResourcePath()) + ".bmp";
     if (!path.empty()) {
       this->DrawBitmap(x, y, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str()))), true);
