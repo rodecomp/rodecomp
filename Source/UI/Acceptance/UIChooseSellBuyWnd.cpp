@@ -4202,11 +4202,7 @@ void UIStatusWnd::OnCreate(int, int) {
   this->m_expandButton->AddTextStyle(1, 12, 0, 0, 1, 16, 3);
   this->m_expandButton->AddTextStyle(2, 12, 0, 0, 1, 16, 3);
   this->m_expandButton->SetSize(this->m_expandButton->BitmapWidth(), this->m_expandButton->BitmapHeight());
-  {
-    const std::string label = LookupMessage(MSI_DESC_WIS);
-    this->m_expandButton->text = label;
-    this->m_expandButton->Invalidate();
-  }
+  this->m_expandButton->SetText(LookupMessage(MSI_DESC_WIS));
   this->m_expandButton->Move(2, 121);
   this->m_expandButton->SetId(550);
   this->AddChild(this->m_expandButton);
