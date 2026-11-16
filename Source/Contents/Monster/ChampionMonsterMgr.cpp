@@ -108,8 +108,8 @@ int CChampionMonsterMgr::ApplyEffects(int id, CGameActor* actor, int aid) {
   if (actor->render.visible && actor->render.enabled && !StateFlag02(actor->GetStateFlags())) {
     for (unsigned int i = 0; i < effects.size(); ++i) {
       if (g_effectMgr->Find(aid, effects[i]) == nullptr) {
-        const vector3d& position = actor->render.position;
-        if (g_effectMgr->Spawn(aid, effects[i], position.x, position.y, position.z, 0, -1, 0, 0) == nullptr &&
+        EffectLists* effectMgr = g_effectMgr;
+        if (effectMgr->Spawn(aid, effects[i], actor->render.position, 0, -1, 0, 0) == nullptr &&
             !actor->HasId(effects[i])) {
           actor->LaunchEffect(effects[i], actor->render.position, 0.0f);
         }
