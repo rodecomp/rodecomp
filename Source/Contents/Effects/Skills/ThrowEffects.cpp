@@ -436,7 +436,7 @@ void CVolcanoEffect::AddRings() {
         particle->animationParameter = 0.0f;
         particle->angleParameter = 360;
         particle->alpha = 1;
-        particle->angle = static_cast<float>(row * 90);
+        particle->angle = static_cast<float>(particle->rowIndex * 90);
         particle->scale = static_cast<float>(row) + 1.0f;
         break;
       case EF_VOLCANO:
@@ -463,7 +463,7 @@ void CVolcanoEffect::AddRings() {
         particle->angleParameter = 360;
         particle->speedParameter = 25.0f;
         particle->phaseParameter = 80;
-        particle->angle = static_cast<float>(row * 90);
+        particle->angle = static_cast<float>(particle->rowIndex * 90);
         particle->animationParameter = 0.0f;
         particle->scale = static_cast<float>(row) + 1.0f;
         particle->SetColor(0, 0, 255);
