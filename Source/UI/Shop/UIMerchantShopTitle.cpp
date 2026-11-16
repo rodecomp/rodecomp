@@ -100,66 +100,71 @@ UIMerchantShopTitle::UIMerchantShopTitle(int buyingShop) : UIWindow(0), buyingSh
 // OFFSET: 0x00864DB0
 // FUNCTION: fn_10918
 int UIMerchantShopTitle::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
-  if (message == UM_COMMAND) {
-    return 0;
+  switch (message) {
+  case UM_COMMAND:
+    break;
+
+  case UM_SETINFO: {
+    char* text = reinterpret_cast<char*>(a);
+    if (g_forbiddenWords.Contains(text) == true) {
+      std::string masked = "";
+      g_forbiddenWords.Mask(text, &masked);
+    }
+
+    std::string title(text);
+    const std::size_t end = title.find('\r');
+    if (end != std::string::npos) {
+      title = title.substr(0, end);
+    }
+
+    this->fontStyle = static_cast<std::int16_t>(b);
+    switch (this->fontStyle) {
+    case 1:
+      this->label->fontFamily = 21;
+      break;
+    case 2:
+      this->label->fontFamily = 20;
+      break;
+    case 3:
+      this->label->fontFamily = 22;
+      break;
+    case 4:
+      this->label->fontFamily = 23;
+      break;
+    case 5:
+      this->label->fontFamily = 24;
+      break;
+    case 6:
+      this->label->fontFamily = 25;
+      break;
+    case 7:
+      this->label->fontFamily = 26;
+      break;
+    case 8:
+      this->label->fontFamily = 27;
+      break;
+    case 9:
+      this->label->fontFamily = 28;
+      break;
+    default:
+      this->label->fontFamily = 0;
+      break;
+    }
+    this->label->bold = 0;
+    this->label->italic = 0;
+    this->label->fontHeight = 12;
+    this->label->SetTextFitted(title.c_str());
+    this->Invalidate();
+    break;
   }
-  if (message == UM_SETNAID) {
+
+  case UM_SETNAID:
     this->ownerAid = a;
-    return 0;
-  }
-  if (message != UM_SETINFO) {
+    break;
+
+  default:
     return UIWindow::SendMsg(sender, message, a, b, c, d);
   }
 
-  char* text = reinterpret_cast<char*>(a);
-  if (g_forbiddenWords.Contains(text) == true) {
-    std::string masked;
-    g_forbiddenWords.Mask(text, &masked);
-  }
-
-  std::string title(text);
-  const std::size_t end = title.find('\r');
-  if (end != std::string::npos) {
-    title = title.substr(0, end);
-  }
-
-  this->fontStyle = static_cast<std::int16_t>(b);
-  switch (this->fontStyle) {
-  case 1:
-    this->label->fontFamily = 21;
-    break;
-  case 2:
-    this->label->fontFamily = 20;
-    break;
-  case 3:
-    this->label->fontFamily = 22;
-    break;
-  case 4:
-    this->label->fontFamily = 23;
-    break;
-  case 5:
-    this->label->fontFamily = 24;
-    break;
-  case 6:
-    this->label->fontFamily = 25;
-    break;
-  case 7:
-    this->label->fontFamily = 26;
-    break;
-  case 8:
-    this->label->fontFamily = 27;
-    break;
-  case 9:
-    this->label->fontFamily = 28;
-    break;
-  default:
-    this->label->fontFamily = 0;
-    break;
-  }
-  this->label->bold = 0;
-  this->label->italic = 0;
-  this->label->fontHeight = 12;
-  this->label->SetTextFitted(title.c_str());
-  this->Invalidate();
   return 0;
 }
