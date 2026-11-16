@@ -53,11 +53,10 @@ void CCharacterLinkedUserDataMgr::Save() {
       // OFFSET: 0x005E7AE0
       // FUNCTION: fn_03940
       bool operator()(CSkillInfo& skill) const {
-        const int id = static_cast<int>(skill.id);
-        const int level = g_session.UseLevel(id);
+        const int level = g_session.UseLevel(skill.id);
         if (level != 0) {
           Json::Value value;
-          value["SKID"] = id;
+          value["SKID"] = skill.id;
           value["SKLv"] = level;
           this->values->append(value);
         }
