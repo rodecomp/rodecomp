@@ -32,7 +32,7 @@ namespace {
       vertices[corner].diffuseChannels.alpha = 0x80;
     }
 
-    RenderPrimitive* primitive = g_renderer->primitives.Acquire();
+    RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
     std::memcpy(primitive->vertices, vertices, sizeof(vertices));
     primitive->texture = quad.texture;
     g_renderer->Submit(primitive, 0x800);
