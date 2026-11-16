@@ -4235,7 +4235,7 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
     return false;
   }
 
-  if (static_cast<unsigned int>(hotkey) < 45) {
+  if (static_cast<unsigned int>(hotkey) <= 44) {
     if (this->shortCutWnd) {
       this->shortCutWnd->SendMsg(nullptr, UM_USE_SHORTEN_ITEM, hotkey % 9, hotkey / 9, 0, 0);
     }
@@ -4515,7 +4515,6 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
       packet.id = ID_CZ_REQ_BANKING_CHECK;
       packet.aid = g_session.m_aid;
       CRagConnection& connection = GetRagConnection();
-      GetRagConnection();
       connection.Send(GetRagConnection().GetPacketSize(packet.id), &packet);
     }
     break;
@@ -4537,7 +4536,6 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
       packet.state = static_cast<unsigned char>(g_session.alternateShortcutRow);
     }
     CRagConnection& connection = GetRagConnection();
-    GetRagConnection();
     connection.Send(GetRagConnection().GetPacketSize(packet.id), &packet);
     break;
   }
