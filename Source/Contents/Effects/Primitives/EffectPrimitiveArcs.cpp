@@ -96,8 +96,9 @@ void CEffectPrim::RenderGroundArcGlow(matrix& wtm) {
           alpha = this->state.slots[ec].alphaB * 2;
         } else if (this->state.slots[ec].alphaT == 9) {
           this->state.size = 30.0f;
-          alpha = this->state.slots[ec].alphaB;
-          if (!g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
+          if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
+            alpha = this->state.slots[ec].alphaB;
+          } else {
             alpha = this->state.slots[ec].alphaB * 2;
           }
         } else if (this->state.slots[ec].alphaT == 6) {
@@ -108,8 +109,9 @@ void CEffectPrim::RenderGroundArcGlow(matrix& wtm) {
           alpha = this->state.slots[ec].alphaB * 3;
         } else if (this->state.slots[ec].alphaT == 11) {
           this->state.size = 32.0f;
-          alpha = this->state.slots[ec].alphaB;
-          if (!g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
+          if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
+            alpha = this->state.slots[ec].alphaB;
+          } else {
             alpha = this->state.slots[ec].alphaB * 2;
           }
         }
