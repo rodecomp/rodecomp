@@ -536,10 +536,13 @@ void UISeekPartyListWnd::UpdateScrollBar() {
   }
 
   const int count = g_session.m_partyBooking.m_entries.size();
+  const int visible = this->m_visibleRows;
   const int rows = count / this->m_columnCount + (count % this->m_columnCount != 0 ? 1 : 0);
 
-  const int visible = this->m_visibleRows;
-  const int range = std::max(0, rows - visible);
+  int range = rows - visible;
+  if (range < 0) {
+    range = 0;
+  }
 
   this->m_scrollable = range != 0;
   if (range != 0) {
