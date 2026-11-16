@@ -1346,6 +1346,22 @@ void CGameMode::RecordChatRoomSettings() {
 
 #pragma pack(push, 1)
 struct GameModeChunkHeader {
+  // INLINED
+  GameModeChunkHeader() {
+    this->Clear();
+  }
+
+  // INLINED
+  ~GameModeChunkHeader() {
+    this->Clear();
+  }
+
+  // INLINED
+  void Clear() {
+    this->type = 0;
+    this->size = 0;
+  }
+
   /* 0000 */ std::int16_t type;
   /* 0002 */ std::uint32_t size;
 };
@@ -1393,14 +1409,15 @@ unsigned CGameMode::ReadReplayGroundSkills(const std::vector<unsigned char>& dat
     return 0xFFFFFFFFu;
   }
 
-  GameModeChunkHeader header = {};
+  GameModeChunkHeader header;
   unsigned offset = 6;
+  header.Clear();
   header = *reinterpret_cast<const GameModeChunkHeader*>(data.data());
   if (17000 != header.type) {
     offset = 0xFFFFFFFFu;
   } else {
-    while (offset < data.size()) {
-      header = {};
+    while (data.size() > offset) {
+      header.Clear();
       header = *reinterpret_cast<const GameModeChunkHeader*>(data.data() + offset);
       offset += 6;
 
@@ -5700,14 +5717,15 @@ unsigned CGameMode::ReadReplayGroundItems(const std::vector<unsigned char>& data
     return 0xFFFFFFFFu;
   }
 
-  GameModeChunkHeader header = {};
+  GameModeChunkHeader header;
   unsigned offset = 6;
+  header.Clear();
   header = *reinterpret_cast<const GameModeChunkHeader*>(data.data());
   if (15000 != header.type) {
     offset = 0xFFFFFFFFu;
   } else {
-    while (offset < data.size()) {
-      header = {};
+    while (data.size() > offset) {
+      header.Clear();
       header = *reinterpret_cast<const GameModeChunkHeader*>(data.data() + offset);
       offset += 6;
 
@@ -5738,20 +5756,21 @@ unsigned CGameMode::ReadReplayActors(const std::vector<unsigned char>& data) {
     return 0xFFFFFFFFu;
   }
 
-  GameModeChunkHeader header = {};
+  GameModeChunkHeader header;
   unsigned offset = 6;
+  header.Clear();
   header = *reinterpret_cast<const GameModeChunkHeader*>(data.data());
   if (10000 != header.type) {
     offset = 0xFFFFFFFFu;
   } else {
     std::vector<unsigned char> record;
-    while (offset < data.size()) {
-      header = {};
+    while (data.size() > offset) {
+      header.Clear();
       header = *reinterpret_cast<const GameModeChunkHeader*>(data.data() + offset);
       offset += 6;
 
       if (static_cast<int>(header.size) > 0) {
-        record.resize(header.size);
+        record.resize(header.size, 0);
       }
 
       if (header.type == 10001) {
@@ -6381,21 +6400,22 @@ unsigned CGameMode::ReadReplayGuildInfo(const std::vector<unsigned char>& data) 
     return 0xFFFFFFFFu;
   }
 
-  GameModeChunkHeader header = {};
+  GameModeChunkHeader header;
   std::vector<unsigned char> record;
   unsigned offset = 6;
   std::uint32_t guildId = 0;
+  header.Clear();
   header = *reinterpret_cast<const GameModeChunkHeader*>(data.data());
   if (13000 != header.type) {
     offset = 0xFFFFFFFFu;
   } else {
-    while (offset < data.size()) {
-      header = {};
+    while (data.size() > offset) {
+      header.Clear();
       header = *reinterpret_cast<const GameModeChunkHeader*>(data.data() + offset);
       offset += 6;
 
       if (static_cast<int>(header.size) > 0) {
-        record.resize(header.size);
+        record.resize(header.size, 0);
       }
 
       switch (header.type) {
@@ -8393,13 +8413,14 @@ void CGameMode::Initialize(const char* name) {
   if (Replay::Instance().state == 6) {
     const std::vector<unsigned char> data = Replay::Instance().ReadSection(0x12);
     if (data.begin() != data.end()) {
-      GameModeChunkHeader header = {};
-      g_activeSkillEffects.clear();
+      GameModeChunkHeader header;
+      g_activeSkillEffects.erase(g_activeSkillEffects.begin(), g_activeSkillEffects.end());
       unsigned offset = 6;
+      header.Clear();
       header = *reinterpret_cast<const GameModeChunkHeader*>(data.data());
       if (header.type == 19000) {
         while (offset < data.size()) {
-          header = {};
+          header.Clear();
           header = *reinterpret_cast<const GameModeChunkHeader*>(data.data() + offset);
           offset += 6;
           if (header.type == 19001) {
@@ -8539,12 +8560,13 @@ void CGameMode::Initialize(const char* name) {
 
     const std::vector<unsigned char> data = Replay::Instance().ReadSection(0x17);
     if (data.begin() != data.end()) {
-      GameModeChunkHeader header = {};
+      GameModeChunkHeader header;
       unsigned offset = 6;
+      header.Clear();
       header = *reinterpret_cast<const GameModeChunkHeader*>(data.data());
       if (header.type == 14000) {
         while (offset < data.size()) {
-          header = {};
+          header.Clear();
           header = *reinterpret_cast<const GameModeChunkHeader*>(data.data() + offset);
           offset += 6;
           if (header.type == 14001) {
@@ -8569,7 +8591,11 @@ void CGameMode::Initialize(const char* name) {
   }
 
   if (g_screenShakeMode == 2) {
-    this->scene->player->SendMsg(nullptr, AM_STATUS_CHANGE, 0x22, g_screenShakeDuration <= 10000 && g_screenShakeDuration != 0, 0, 0, 0, 0);
+    if (g_screenShakeDuration <= 10000 && g_screenShakeDuration != 0) {
+      this->scene->player->SendMsg(nullptr, AM_STATUS_CHANGE, 0x22, 1, 0, 0, 0, 0);
+    } else {
+      this->scene->player->SendMsg(nullptr, AM_STATUS_CHANGE, 0x22, 0, 0, 0, 0, 0);
+    }
   }
 
   if (g_session.GetOption(6) > 0) {
@@ -10992,11 +11018,22 @@ void CGameMode::ProcessStatusIconTooltip(int x, int y) {
       this->statusIconTooltip->SetText(" ", 35);
     }
 
-    UITransBalloonText* balloon = this->statusIconTooltip;
     std::string extra;
     int line = 1;
     std::uint32_t color = 0;
-    if (id != 0x2B7) {
+    if (id == 0x2B7) {
+      {
+        ITEM_INFO item = g_session.LookupClientItemByIdentity(g_session.equippedArrowIndex);
+        if (item.identity[1] > 0) {
+          extra = static_cast<const std::string&>(FormatOwnedString("%s : %d", item.DisplayName(0).c_str(), item.quantity));
+          color = 0xFABEBE;
+        }
+      }
+
+      if (extra.size() != 0) {
+        this->statusIconTooltip->SetLine(extra.c_str(), color);
+      }
+    } else {
       for (;;) {
         const char* text;
         int red;
@@ -11019,18 +11056,10 @@ void CGameMode::ProcessStatusIconTooltip(int x, int y) {
         }
 
         const std::uint32_t lineColor = RGB(red, green, blue);
-        bool replace;
-        if (line == 1) {
-          replace = true;
+        if (line == 1 || firstLine(this->statusIconTooltip) == " ") {
+          this->statusIconTooltip->SetLine(description.c_str(), lineColor);
         } else {
-          const std::string first = firstLine(balloon);
-          replace = first.size() == 1 && first[0] == ' ';
-        }
-
-        if (replace) {
-          balloon->SetLine(description.c_str(), lineColor);
-        } else {
-          balloon->AddLine(description.c_str(), lineColor);
+          this->statusIconTooltip->AddLine(description.c_str(), lineColor);
         }
         ++line;
       }
@@ -11043,33 +11072,17 @@ void CGameMode::ProcessStatusIconTooltip(int x, int y) {
         }
 
         if (extra.size() != 0) {
-          balloon->AddLine(extra.c_str(), 0);
+          this->statusIconTooltip->AddLine(extra.c_str(), 0);
         }
-      }
-    } else {
-      {
-        ITEM_INFO item = g_session.LookupClientItemByIdentity(g_session.equippedArrowIndex);
-        if (item.identity[1] != 0) {
-          extra = static_cast<const std::string&>(FormatOwnedString("%s : %d", item.DisplayName(0).c_str(), item.quantity));
-          color = 0xFABEBE;
-        }
-      }
-
-      if (extra.size() != 0) {
-        balloon->SetLine(extra.c_str(), color);
       }
     }
 
-    const std::string first = firstLine(this->statusIconTooltip);
-    if (!(first.size() == 1 && first[0] == ' ')) {
+    if (firstLine(this->statusIconTooltip) != " ") {
       this->statusIconTooltip->Show(1);
       const int windowHeight = this->statusIconTooltip->geometry.height;
       const int left = right - 30 + (slot / rows) * -45 - this->statusIconTooltip->geometry.width;
       const int top = (slot % rows) * 35;
-      int windowY = g_renderer->viewport.height - windowHeight;
-      if (windowHeight + 171 + top <= g_renderer->viewport.height) {
-        windowY = top + 171;
-      }
+      const int windowY = windowHeight + 171 + top > g_renderer->viewport.height ? g_renderer->viewport.height - windowHeight : top + 171;
       this->statusIconTooltip->Move(left, windowY);
     }
 
