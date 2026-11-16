@@ -129,7 +129,8 @@ void CJupitelThunderStormEffect::OnProcess() {
         position.y = particle->position.y + this->step.y;
         position.z = particle->position.z + this->step.z;
       } else {
-        position = this->sourcePositionVector;
+        const vector3d source = this->sourcePositionVector;
+        position = source;
       }
       particle->position = position;
       static_cast<CEZ2STRParticle*>(this->particle)->Process(0.0f, 0.0f, 0.0f);
