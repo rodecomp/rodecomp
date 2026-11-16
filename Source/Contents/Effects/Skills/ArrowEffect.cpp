@@ -52,16 +52,13 @@ __declspec(safebuffers) bool CArrowEffect::OnProcess() {
     target.y -= 10.0f;
     this->velocity.z = target.z - this->render.position.z;
     this->velocity.y = target.y - this->render.position.y;
-    this->velocity.x = (target.x - this->render.position.x) * 0.125f;
-    this->velocity.y *= 0.125f;
-    this->velocity.z *= 0.125f;
+    this->velocity.x = target.x - this->render.position.x;
+    this->velocity *= 0.125f;
 
     float distance = this->CalcDist(target.x, target.y, target.z);
     if (distance < 40.0f) {
       this->speedScale = 40.0f / distance;
-      this->velocity.x = this->speedScale * this->velocity.x;
-      this->velocity.y = this->speedScale * this->velocity.y;
-      this->velocity.z = this->speedScale * this->velocity.z;
+      this->velocity *= this->speedScale;
     }
 
     this->Face(target.x, target.z);
