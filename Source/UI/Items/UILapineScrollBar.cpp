@@ -314,7 +314,7 @@ int UILapineBoxWnd::AddIngredient(std::uint32_t id, int quantity) {
 // FUNCTION: fn_04178
 unsigned char UILapineBox_IngredientListWnd::AddIngredient(std::uint32_t id) {
   ITEM_INFO owned = g_session.LookupClientItemByIdentity(id);
-  if (owned.identity[1] == 0) {
+  if (owned.identity[1] <= 0) {
     return 0;
   }
 

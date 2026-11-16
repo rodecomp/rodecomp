@@ -496,7 +496,7 @@ bool CSession::HasItemId(int itemId) const {
 // FUNCTION: fn_23592
 bool CSession::HasItemCount(int itemId, int count) const {
   const ITEM_INFO owned = this->LookupClientItemByIdentity(this->equippedArrowIndex);
-  if (owned.identity[1] != 0 && std::atoi(owned.itemId.c_str()) == itemId) {
+  if (owned.identity[1] > 0 && std::atoi(owned.itemId.c_str()) == itemId) {
     return true;
   }
 

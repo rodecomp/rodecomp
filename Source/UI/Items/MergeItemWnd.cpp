@@ -160,7 +160,7 @@ void CMergeItemWnd::Paint() {
     UICheckBox* box = this->m_items[first + index];
     if (box != nullptr) {
       ITEM_INFO item = g_session.LookupClientItemByIdentity(box->m_message);
-      if (item.identity[1] != 0) {
+      if (item.identity[1] > 0) {
         box->SetHidden(false);
         box->Move(this->m_checkOffsetX + x, this->m_checkOffsetY + y);
         this->DrawItemAndQuantity(this->m_slotOffsetX + x, this->m_slotOffsetY + y, item, 0, 0
@@ -197,7 +197,7 @@ void CMergeItemWnd::OnMouseHover(int x, int y) {
   int screenX = x;
   int screenY = y;
   ITEM_INFO item = g_session.LookupClientItemByIdentity(id);
-  if (item.identity[1] != 0) {
+  if (item.identity[1] > 0) {
     this->ToScreen(screenX, screenY);
     std::string text = FormatOwnedString(LookupMessage(MSI_EA2), item.DisplayName(0).c_str(), item.quantity);
     g_modeMgr.currentMode->ShowTooltip(text.c_str(), screenX, screenY, g_session.GetItemNameColor(item), 0, 1);
