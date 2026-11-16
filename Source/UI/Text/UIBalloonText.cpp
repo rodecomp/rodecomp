@@ -53,8 +53,6 @@ __declspec(noinline) UIBalloonText::UIBalloonText() : UIWindow(0) {
   this->m_outlineColor = 0;
 }
 
-UIBalloonText::~UIBalloonText() = default;
-
 // OFFSET: 0x00851A00
 // FUNCTION: fn_10695
 UINameBalloonText::~UINameBalloonText() = default;

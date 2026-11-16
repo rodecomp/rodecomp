@@ -19,7 +19,8 @@ class UIBalloonText : public UIWindow {
 
 public:
   UIBalloonText();
-  ~UIBalloonText() override;
+  // INLINED
+  __forceinline ~UIBalloonText() override {}
 
   bool CanHitTest() override;
   void OnProcess() override;
