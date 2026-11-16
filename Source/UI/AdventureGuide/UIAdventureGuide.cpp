@@ -571,9 +571,7 @@ void CUIQuestInfo::SetTitle(int id) {
   std::cmatch match;
   std::regex_search(text.c_str(), text.c_str() + text.size(), match, std::regex("Q(.+)\\("));
   const std::string whitespace(" \r\n\t\v\f");
-  if (match.size() > 1) {
-    text = match[1].str();
-  }
+  match.size() > 1 ? text = match[1].str() : text;
 
   text.erase(0, text.find_first_not_of(whitespace));
   text.erase(text.find_last_not_of(whitespace) + 1);
@@ -582,9 +580,7 @@ void CUIQuestInfo::SetTitle(int id) {
 
   text = entry.paragraphs[0];
   std::regex_search(text.c_str(), text.c_str() + text.size(), match, std::regex("\n"));
-  if (match.size() > 0) {
-    text = match.prefix().str();
-  }
+  match.size() > 0 ? text = match.prefix().str() : text;
 
   text.erase(0, text.find_first_not_of(whitespace));
   text.erase(text.find_last_not_of(whitespace) + 1);
