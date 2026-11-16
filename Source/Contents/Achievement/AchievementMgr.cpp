@@ -228,19 +228,22 @@ bool CAchievementMgr::LoadAchievementInfo() {
     lua_register(lua.GetState(), "SetAchieveIDByTab", CAchievementMgr::L_SetAchieveIDByTab);
     if (luaL_loadfile(lua.GetState(), OBFUSCATE_TEXT_NAMED("system\\Achievement_list.lub", 0x490FFB43A12F0DB9ULL, path)) != 0 || lua_pcall(lua.GetState(), 0, 0, 0) != 0) {
       MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CAchievementMgr", 0);
-    } else {
-      lua_getglobal(lua.GetState(), "main");
-      if (lua_pcall(lua.GetState(), 0, 2, 0) != 0) {
-        MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CAchievementMgr", 0);
-      } else if (!lua_isstring(lua.GetState(), -1)) {
-        MessageBoxA(nullptr, "second return value is not string...", "CAchievementMgr", 0);
-      } else {
-        if (lua_toboolean(lua.GetState(), -2)) {
-          return true;
-        }
-        MessageBoxA(nullptr, FormatString("error : %s", lua_tostring(lua.GetState(), -1)), "CAchievementMgr", 0);
-      }
+      return false;
     }
+    lua_getglobal(lua.GetState(), "main");
+    if (lua_pcall(lua.GetState(), 0, 2, 0) != 0) {
+      MessageBoxA(nullptr, lua_tostring(lua.GetState(), -1), "CAchievementMgr", 0);
+      return false;
+    }
+    if (!lua_isstring(lua.GetState(), -1)) {
+      MessageBoxA(nullptr, "second return value is not string...", "CAchievementMgr", 0);
+      return false;
+    }
+    if (!lua_toboolean(lua.GetState(), -2)) {
+      MessageBoxA(nullptr, FormatString("error : %s", lua_tostring(lua.GetState(), -1)), "CAchievementMgr", 0);
+      return false;
+    }
+    return true;
   }
 
   return false;
@@ -254,7 +257,7 @@ std::pair<bool, std::string> CAchievementMgr::InsertAchieveInfo(int id, std::str
     return std::make_pair(false, message);
   }
 
-  if (this->achievements.insert(std::pair<int, AchievementInfo>(id, AchievementInfo(title, summaryText, description, points))).second) {
+  if (this->achievements.insert(std::pair<int, AchievementInfo>(id, AchievementInfo(title, summaryText, description, points))).second == true) {
     return std::make_pair(true, "good");
   }
 
