@@ -28,11 +28,6 @@ namespace {
   }
 
   // INLINED
-  void Bitmap(UIWindow& window, CBitmapRes* image, int x, int y, bool transparent) {
-    window.DrawBitmap(x, y, image ? &image->image : nullptr, transparent);
-  }
-
-  // INLINED
   __forceinline void Count(UIWindow& window, int right, int y, int value) {
     char text[16];
     std::sprintf(text, "%d", value);
@@ -69,17 +64,15 @@ void UIWindow::DrawRightOutlinedText(
 void UIShortCutWnd::Paint() {
   UIWindow& window = *this;
   const ShortcutGrid& grid = this->m_grid;
-  const NormalItemSlot* const* slots = this->m_slots;
-  const NormalItemSlot* const* itemSlots = this->m_itemSlots;
-  ResourceMgr& resources = ResourceMgr::Instance();
   CBitmapRes* frame = Load("유저인터페이스\\Shortcut\\shortcut_frame.bmp");
 
-  for (int row = 0; row < grid.rows; ++row) {
-    Bitmap(window, frame, 0, (row * 33), false);
+  int frameRow = 0;
+  for (; frameRow < grid.rows; ++frameRow) {
+    window.DrawBitmap(0, frameRow * 33, frame, false);
   }
 
   if (g_session.ItemSlotActive()) {
-    Bitmap(window, Load("유저인터페이스\\Shortcut\\shortcut_frame_item.bmp"), 0, grid.rows > 0 ? (grid.rows * 33) : 0, false);
+    window.DrawBitmap(0, frameRow * 33, Load("유저인터페이스\\Shortcut\\shortcut_frame_item.bmp"), false);
   }
 
   if (grid.row != -1 && grid.hovered != -1) {
@@ -99,7 +92,7 @@ void UIShortCutWnd::Paint() {
         continue;
       }
 
-      const NormalItemSlot& slot = *slots[index];
+      const NormalItemSlot& slot = *this->m_slots[index];
       if (slot.itemId == 0) {
         continue;
       }
@@ -120,7 +113,7 @@ void UIShortCutWnd::Paint() {
         }
 
         g_session.m_mainCooldownIcons.push_back({skill.id, index, x, y});
-        Bitmap(window, image, x, y, true);
+        window.DrawBitmap(x, y, image, true);
         int level = slot.value;
 
         if (IsIndexedSkill(skill.id) && skill.level < level) {
@@ -140,7 +133,7 @@ void UIShortCutWnd::Paint() {
         }
 
         if (0 < item.grade) {
-          Bitmap(window, Load(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade).c_str()), x, (y + 12), true);
+          window.DrawBitmap(x, (y + 12), Load(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade).c_str()), true);
         }
       }
     }
@@ -150,7 +143,7 @@ void UIShortCutWnd::Paint() {
     const int y = ((grid.rows * 33) + 4);
 
     for (int column = 0; column < 9; ++column) {
-      const NormalItemSlot& slot = *itemSlots[column];
+      const NormalItemSlot& slot = *this->m_itemSlots[column];
       if (slot.itemId == 0) {
         continue;
       }
