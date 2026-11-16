@@ -3095,7 +3095,7 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
         return 0;
       }
 
-      std::string notice;
+      std::string notice("");
       bool enabled = false;
       if (g_session.replayPacketMode > 0) {
         enabled = true;
@@ -3148,8 +3148,8 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
         this->UpdateCharacterView(0);
       }
 
-      const int bottom = this->geometry.height - this->contentOffset;
       const int half = this->geometry.width / 2;
+      const int bottom = this->geometry.height - this->contentOffset;
       this->m_viewButton->Move(half - 18, IsEquipViewHidden() * 230 + bottom - 40);
       this->m_otherButton->Move(half - 14, bottom + (g_session.replayPacketMode > 0 ? -60 : 170));
       this->Invalidate();
@@ -4703,8 +4703,8 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
   }
   case UM_ADDCHAT: {
     char* line = reinterpret_cast<char*>(a);
-    if (g_forbiddenWords.Contains(line)) {
-      std::string masked;
+    if (g_forbiddenWords.Contains(line) == true) {
+      std::string masked("");
       g_forbiddenWords.Mask(line, &masked);
     }
 
