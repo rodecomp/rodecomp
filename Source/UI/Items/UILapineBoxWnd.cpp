@@ -535,16 +535,11 @@ void UILapineBoxWnd::SetIngredient(int id) {
 // FUNCTION: fn_04176
 void UILapineBoxWnd::AddMaterial(int id, int quantity) {
   std::vector<ITEM_INFO>& materials = this->ingredientList->materials;
-  std::vector<ITEM_INFO>::iterator it;
-  const std::vector<ITEM_INFO>::iterator end = materials.end();
-  for (it = materials.begin(); it != end; ++it) {
-    ITEM_INFO copy(*it);
-    if (std::atoi(copy.itemId.c_str()) == id) {
-      break;
-    }
-  }
+  const std::vector<ITEM_INFO>::iterator it = std::find_if(materials.begin(), materials.end(), [id](ITEM_INFO material) {
+    return id == std::atoi(material.itemId.c_str());
+  });
 
-  if (it == end) {
+  if (it == materials.end()) {
     ITEM_INFO material;
     material.SetItemId(id);
     material.quantity = quantity;
