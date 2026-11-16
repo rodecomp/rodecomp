@@ -75,13 +75,18 @@ std::uint32_t ResolveSkillId(std::uint32_t id) {
     return id;
   }
 
-  CSkillInfo* skill;
-  if (g_session.HasSkillEffect(1717) && g_session.m_skillBundle.FindIndexed(6580, skill) && skill->IsValid()) {
-    return 6580;
+  if (g_session.HasSkillEffect(1717)) {
+    const std::optional<CSkillInfo*> skill = g_session.m_skillBundle.FindIndexed(6580);
+    if (skill && (*skill)->IsValid()) {
+      return 6580;
+    }
   }
 
-  if (g_session.HasSkillEffect(1716) && g_session.m_skillBundle.FindIndexed(6579, skill) && skill->IsValid()) {
-    return 6579;
+  if (g_session.HasSkillEffect(1716)) {
+    const std::optional<CSkillInfo*> skill = g_session.m_skillBundle.FindIndexed(6579);
+    if (skill && (*skill)->IsValid()) {
+      return 6579;
+    }
   }
 
   return id;
@@ -111,14 +116,13 @@ CSkillInfo CPlayerSkillBundle::Lookup(std::uint32_t id) {
 
 // OFFSET: 0x007717F0
 // FUNCTION: fn_08281
-bool CPlayerSkillBundle::FindIndexed(std::uint32_t id, CSkillInfo*& output) {
+std::optional<CSkillInfo*> CPlayerSkillBundle::FindIndexed(int id) {
   const auto entry = this->index.find(id);
-  if (entry == this->index.end()) {
-    return false;
+  if (entry != this->index.end()) {
+    return entry->second;
   }
 
-  output = entry->second;
-  return true;
+  return std::nullopt;
 }
 
 // OFFSET: 0x00770EC0

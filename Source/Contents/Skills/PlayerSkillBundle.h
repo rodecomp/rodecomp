@@ -7,6 +7,7 @@
 #include <functional>
 #include <list>
 #include <map>
+#include <optional>
 #include <unordered_map>
 
 #include "UI/Window/WindowManagerWindows.h"
@@ -30,7 +31,7 @@ public:
   void Remove(std::uint32_t id);
   CSkillInfo* Find(std::uint32_t id);
   CSkillInfo Lookup(std::uint32_t id);
-  bool FindIndexed(std::uint32_t id, CSkillInfo*& output);
+  std::optional<CSkillInfo*> FindIndexed(int id);
   bool UpdatePending(const CSkillInfo& value);
   CSkillInfo Pending(std::uint32_t id);
   CSkillInfo* FindExtra(std::uint32_t id);
