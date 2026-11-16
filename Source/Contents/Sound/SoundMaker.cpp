@@ -1176,6 +1176,11 @@ void CNpc::UpdateBubblePositions() {
   this->UpdateHpGauge();
 }
 
+// INLINED
+static std::string PaletteNameOf(CPc* source) {
+  return source->headPaletteName;
+}
+
 // OFFSET: 0x00DA1470
 // FUNCTION: fn_22357
 CHalluPC2::CHalluPC2(CPc* source) {
@@ -1204,7 +1209,7 @@ CHalluPC2::CHalluPC2(CPc* source) {
   this->render.bodyPalette = 0;
   this->headPalette = source->headPalette;
   this->stateFlags = source->GetStateFlags();
-  this->headPaletteName = std::string(source->headPaletteName);
+  this->headPaletteName = PaletteNameOf(source);
   this->LoadEquipSprites(source->GetEquipSpriteNames());
   this->LoadEquipActions(source->GetEquipActionNames());
   this->imfName = source->imfName;
@@ -1249,7 +1254,7 @@ CBlurPC::CBlurPC(CPc* source) {
   this->render.bodyPalette = 0;
   this->headPalette = source->headPalette;
   this->stateFlags = source->GetStateFlags();
-  this->headPaletteName = std::string(source->headPaletteName);
+  this->headPaletteName = PaletteNameOf(source);
   this->LoadEquipSprites(source->GetEquipSpriteNames());
   this->LoadEquipActions(source->GetEquipActionNames());
   this->imfName = source->imfName;
@@ -1293,7 +1298,7 @@ CHalluPC::CHalluPC(CPc* source) {
   this->render.bodyPalette = 0;
   this->headPalette = source->headPalette;
   this->stateFlags = source->GetStateFlags();
-  this->headPaletteName = std::string(source->headPaletteName);
+  this->headPaletteName = PaletteNameOf(source);
   this->LoadEquipSprites(source->GetEquipSpriteNames());
   this->LoadEquipActions(source->GetEquipActionNames());
   this->imfName = source->imfName;
