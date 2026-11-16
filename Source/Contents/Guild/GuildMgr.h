@@ -38,9 +38,7 @@ public:
   static void StoreEmblem(const void* bytes, std::uint32_t size, std::uint32_t guild, std::uint32_t revision);
   static void __stdcall ReceiveEmblem(std::uint16_t state, std::uint32_t guild, std::uint32_t revision, const unsigned char* bytes, int size);
   static __declspec(noinline) void RefreshEmblem(std::uint32_t guild);
-  void UpdateEmblemRequests(
-    CEmblemDataMgr& emblems, std::uint32_t accountId, const std::string& accountName, const char* token16, CConnection& connection, CAsyncWorkMgr& manager
-  );
+  void UpdateEmblemRequests();
 
   /* 0004 */ bool m_initialized;
   /* 0008 */ std::map<std::uint32_t, CGuild> m_guilds;

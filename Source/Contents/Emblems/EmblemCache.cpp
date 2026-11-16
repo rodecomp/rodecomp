@@ -124,9 +124,7 @@ void __stdcall CGuildMgr::ReceiveEmblem(std::uint16_t state, std::uint32_t guild
 
 // OFFSET: 0x0065EE40
 // FUNCTION: fn_05179
-void CGuildMgr::UpdateEmblemRequests(
-  CEmblemDataMgr& emblems, std::uint32_t accountId, const std::string& accountName, const char* token16, CConnection& connection, CAsyncWorkMgr& manager
-) {
+void CGuildMgr::UpdateEmblemRequests() {
   this->m_reqBundle->Update();
 }
 

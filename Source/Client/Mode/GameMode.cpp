@@ -9350,10 +9350,7 @@ void CGameMode::Update() {
     g_timeScheduler->Process();
     g_playerNameDictionary->Update();
     this->nameCard.ProcessRequests();
-    g_guildMgr->UpdateEmblemRequests(
-      *g_emblemDataMgr, g_session.m_aid, g_session.m_accountName, g_session.m_webAuthToken, GetRagConnection(),
-      *g_asyncWorkMgr
-    );
+    g_guildMgr->UpdateEmblemRequests();
     g_asyncWorkMgr->Update(1000);
     this->ProcessInput();
 
