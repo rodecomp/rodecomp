@@ -236,7 +236,7 @@ int UIQuickSlotWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
         }
       } else {
         ITEM_INFO item = g_session.LookupClientItem(static_cast<int>(source.itemId), 1);
-        if (item.identity[1] != 0 && item.identified != 0) {
+        if (item.identity[1] > 0 && item.identified != 0) {
           entry.id = source.itemId;
         }
       }
@@ -262,7 +262,7 @@ int UIQuickSlotWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       }
 
       ITEM_INFO item = g_session.LookupClientItem(static_cast<int>(entry.id), 1);
-      if (item.identity[1] != 0) {
+      if (item.identity[1] > 0) {
         CGameMode* mode = g_modeMgr.GetGameMode();
         switch (item.identity[0]) {
         case UM_DEFPUSH:
