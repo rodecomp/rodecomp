@@ -137,7 +137,8 @@ namespace {
 int UIPetEvolutionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
   case UM_COMMAND:
-    if (argument1 == ID_OK) {
+    switch (argument1) {
+    case ID_OK: {
       std::vector<std::uint16_t> materials;
       for (auto it = this->m_materials.begin(); it != this->m_materials.end(); ++it) {
         ITEM_INFO item = g_session.LookupClientItem(it->first, 1);
@@ -163,9 +164,14 @@ int UIPetEvolutionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
       packet.evolvedEggId = this->m_evolvedEggId;
       std::memcpy(packet.materials, materials.data(), count * 2);
       GetRagConnection().Send(static_cast<short>(length), &packet);
+        g_windowMgr.CloseWindow(WID_PETEVOLUTIONWND);
+      break;
+    }
+
+    case ID_CANCEL:
+    case ID_CLOSE:
       g_windowMgr.CloseWindow(WID_PETEVOLUTIONWND);
-    } else if (argument1 == ID_CANCEL || argument1 == ID_CLOSE) {
-      g_windowMgr.CloseWindow(WID_PETEVOLUTIONWND);
+      break;
     }
     break;
 
