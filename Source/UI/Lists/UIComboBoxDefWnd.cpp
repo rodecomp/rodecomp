@@ -536,7 +536,7 @@ void UIDescriptRace::DrawRaceDescription() {
     }
   }
 
-  const int job = this->m_race == 1 ? 4218 : 0;
+  const int job = this->m_race != 1 ? 0 : 4218;
   const int action = this->m_noRace != 0 ? 9 : 1;
   int frame = 0;
   for (int layer = 0; layer < 2; ++layer) {
