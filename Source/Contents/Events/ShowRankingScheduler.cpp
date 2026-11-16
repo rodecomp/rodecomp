@@ -44,20 +44,19 @@ void CShowRankingScheduler::Process(const std::uint64_t& now) {
         this->Show();
       } else {
         bool complete = true;
-        const auto* ids = this->rankingData.ids;
         for (int index = 0; index < 10; ++index) {
           std::string name("");
-          if (ids[index] == 0) {
+          if (this->rankingData.ids[index] == 0) {
             continue;
           }
           for (std::size_t listed = 0; listed < this->rankingList.size(); ++listed) {
-            if (this->rankingList[listed] == ids[index]) {
+            if (this->rankingList[listed] == this->rankingData.ids[index]) {
               name = g_namelessName;
               break;
             }
           }
           if (name.find(g_namelessName) == std::string::npos) {
-            name = LookupPlayerName(ids[index]);
+            name = LookupPlayerName(this->rankingData.ids[index]);
             if (name.empty()) {
               complete = false;
             }
@@ -115,19 +114,17 @@ void CShowRankingScheduler::Show() {
   }
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(title), color, 0, 0, 0);
 
-  const auto* ids = this->rankingData.ids;
-  const auto* points = this->rankingData.points;
   for (int index = 0; index < 10; ++index) {
-    std::string name;
-    if (ids[index] != 0) {
+    std::string name = "";
+    if (this->rankingData.ids[index] != 0) {
       for (std::size_t listed = 0; listed < this->rankingList.size(); ++listed) {
-        if (this->rankingList[listed] == ids[index]) {
+        if (this->rankingList[listed] == this->rankingData.ids[index]) {
           name = g_namelessName;
           break;
         }
       }
       if (name.find(g_namelessName) == std::string::npos) {
-        name = LookupPlayerName(ids[index]);
+        name = LookupPlayerName(this->rankingData.ids[index]);
       }
     }
     if (name.empty() || name.find(g_namelessName) != std::string::npos) {
@@ -136,7 +133,7 @@ void CShowRankingScheduler::Show() {
 
     g_windowMgr.SendNotice(
       UIM_PUSHINTOCHATHISTORY,
-      reinterpret_cast<std::intptr_t>(FormatOwnedString("[ %2d ] %s  :  %4d POINT", index + 1, name.c_str(), points[index]).c_str()), background, 0, 0, 0
+      reinterpret_cast<std::intptr_t>(FormatOwnedString("[ %2d ] %s  :  %4d POINT", index + 1, name.c_str(), this->rankingData.points[index]).c_str()), background, 0, 0, 0
     );
   }
 
