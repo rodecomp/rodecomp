@@ -951,8 +951,8 @@ void UIRoMapWnd::DrawWorld() {
 
   this->DrawMarks();
   if (!g_worldViewMgr.selection.name.empty() && g_worldViewMgr.currentWorld == g_worldViewMgr.selection.worldIndex) {
-    const WorldViewRecord& selection = g_worldViewMgr.selection;
-    DrawTexturedRectangle(selection.left, selection.top, selection.right - selection.left, selection.bottom - selection.top, 0xEEFFFFFF, g_texMgr.Load("유저인터페이스\\worldview_interface\\wv_Select.bmp", 0, false, true, false));
+    const WorldViewArea area = g_worldViewMgr.selection.area;
+    DrawTexturedRectangle(area.left, area.top, area.right - area.left, area.bottom - area.top, 0xEEFFFFFF, g_texMgr.Load("유저인터페이스\\worldview_interface\\wv_Select.bmp", 0, false, true, false));
   }
 
   this->DrawRecordFaces(1);
