@@ -25,8 +25,8 @@
 // OFFSET: 0x009F71F0
 // FUNCTION: fn_14769
 CUIGameItem::CUIGameItem()
-    : CUIControl(), mode(0), showNameTooltip(1), allowItemInfo(1), transparent(0), scale(100), itemInfo(), name(), image(nullptr), showOverlay(0),
-      overlay(nullptr), onClick() {
+    : CUIControl(), mode(0), showNameTooltip(1), allowItemInfo(1), transparent(0), scale(100), itemInfo(), name(), image(), showOverlay(0),
+      overlay(), onClick() {
 }
 
 // OFFSET: 0x009E72A0
@@ -153,26 +153,10 @@ void CUIGameItem::SetItem(const ITEM_INFO& item) {
     return;
   }
 
-  CBitmapRes* image = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(path));
-  if (image) {
-    image->Lock();
-  }
-  CBitmapRes* oldImage = this->image;
-  this->image = image;
-  if (oldImage) {
-    oldImage->Unlock();
-  }
+  this->image = CResPtr<CBitmapRes>(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(path)));
 
   if (0 < item.grade) {
-    CBitmapRes* overlay = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(std::format("유저인터페이스\\grade_enchant\\grade_icon{}.bmp", item.grade)));
-    if (overlay) {
-      overlay->Lock();
-    }
-    CBitmapRes* oldOverlay = this->overlay;
-    this->overlay = overlay;
-    if (oldOverlay) {
-      oldOverlay->Unlock();
-    }
+    this->overlay = CResPtr<CBitmapRes>(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(std::format("유저인터페이스\\grade_enchant\\grade_icon{}.bmp", item.grade))));
   }
 
   this->Invalidate();

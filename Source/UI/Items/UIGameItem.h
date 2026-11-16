@@ -18,9 +18,9 @@ public:
   /* 0088 */ unsigned short scale;
   /* 0090 */ ITEM_INFO itemInfo;
   /* 0188 */ std::string name;
-  /* 01A0 */ CBitmapRes* image;
+  /* 01A0 */ CResPtr<CBitmapRes> image;
   /* 01A4 */ unsigned char showOverlay;
-  /* 01A8 */ CBitmapRes* overlay;
+  /* 01A8 */ CResPtr<CBitmapRes> overlay;
   /* 01B0 */ std::function<void(CUIGameItem*)> onClick;
 
   void Paint() override;
