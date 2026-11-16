@@ -4172,14 +4172,14 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       if (this->m_nameEdit->Length() >= 4) {
         const BOOL allowed = g_forbiddenWords.Allows(this->m_nameEdit->Text());
         BOOL valid = TRUE;
-        if (g_serviceType == 1) {
-          valid = ValidateCharacterName(this->m_nameEdit->Text());
+        if (g_serviceType == 1 && !ValidateCharacterName(this->m_nameEdit->Text())) {
+          valid = FALSE;
         }
 
-        const bool control = g_session.HasControlCharacter(this->m_nameEdit->Text());
-        const bool blank = g_session.IsBlankString(this->m_nameEdit->Text());
-        if (control || !allowed || !valid || blank) {
-          if (control || !allowed) {
+        const BOOL badName = g_session.HasControlCharacter(this->m_nameEdit->Text()) || !allowed;
+        const BOOL blank = g_session.IsBlankString(this->m_nameEdit->Text());
+        if (badName || !valid || blank) {
+          if (badName) {
             g_windowMgr.Confirm(LookupMessage(MSI_BAD_NAME), 0, true, false, 0, "Message", 280, 120, 0);
           }
           if (!valid) {
@@ -4217,7 +4217,8 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         g_windowMgr.Confirm(LookupMessage(MSI_ENTER_NAME_MORE_THAN_4_CHAR), 0, true, false, 0, "Message", 280, 120, 0);
       }
 
-      g_modeMgr.currentMode->SendMsg(LMM_SET_MAKING_CHAR_NAME, reinterpret_cast<int>(this->m_nameEdit->Text()), 0, 0, 0);
+      CMode* mode = g_modeMgr.currentMode;
+      mode->SendMsg(LMM_SET_MAKING_CHAR_NAME, reinterpret_cast<int>(this->m_nameEdit->Text()), 0, 0, 0);
       {
         int values[8];
         values[0] = this->m_info.stats[0];
@@ -4228,7 +4229,7 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         values[5] = this->m_info.stats[5];
         values[6] = this->m_info.headPalette;
         values[7] = this->m_info.head;
-        g_modeMgr.currentMode->SendMsg(LMM_SET_CHAR_PARAM, reinterpret_cast<int>(values), 0, 0, 0);
+        mode->SendMsg(LMM_SET_CHAR_PARAM, reinterpret_cast<int>(values), 0, 0, 0);
       }
       return 0;
     }
@@ -4245,12 +4246,15 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       this->Invalidate();
       return 0;
     }
-    case ID_RIGHT:
-      if (--this->m_view.action < this->m_view.actionBase) {
+    case ID_RIGHT: {
+      const int action = this->m_view.action - 1;
+      this->m_view.action = action;
+      if (action < this->m_view.actionBase) {
         this->m_view.action = this->m_view.actionBase + 7;
       }
       this->Invalidate();
       return 0;
+    }
     default:
       return 0;
     }
