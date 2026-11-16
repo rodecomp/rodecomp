@@ -719,21 +719,15 @@ bool CEffectPrim::UpdateFireWall() {
       }
     } else {
       for (int sample = 0; sample < 21; ++sample) {
-        if (this->state.slots[index].flag1[sample] != 0) {
-          const float base = this->state.slots[index].maxHeight * g_sinTable[sample * 9] * 0.55f;
-          this->state.slots[index].height[sample] = base;
-          this->state.slots[index].height[sample] = this->state.slots[index].maxHeight * g_sinTable[sample * 9] * 0.45f *
-                                                         g_sinTable[this->state.slots[index].process % 360] +
-                                                     base;
-        } else {
+        if (this->state.slots[index].flag1[sample] == 0) {
           float value;
 
-          if (this->state.slots[index].process > 90) {
-            this->state.slots[index].flag1[sample] = 1;
-            value = this->state.slots[index].height[sample];
-          } else {
+          if (this->state.slots[index].process <= 90) {
             value = this->state.slots[index].maxHeight * g_sinTable[sample * 9] * g_sinTable[this->state.slots[index].process];
             this->state.slots[index].height[sample] = value;
+          } else {
+            this->state.slots[index].flag1[sample] = 1;
+            value = this->state.slots[index].height[sample];
           }
 
           if (value > this->state.slots[index].maxHeight * g_sinTable[sample * 9]) {
@@ -743,6 +737,12 @@ bool CEffectPrim::UpdateFireWall() {
           if (this->state.slots[index].height[sample] < 0.0f) {
             this->state.slots[index].height[sample] = 0.0f;
           }
+        } else {
+          const float base = this->state.slots[index].maxHeight * g_sinTable[sample * 9] * 0.55f;
+          this->state.slots[index].height[sample] = base;
+          this->state.slots[index].height[sample] = this->state.slots[index].maxHeight * g_sinTable[sample * 9] * 0.45f *
+                                                         g_sinTable[this->state.slots[index].process % 360] +
+                                                     base;
         }
       }
     }
