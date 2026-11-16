@@ -19,91 +19,91 @@ int CSession::GetDisplayJob() {
   const int job = this->m_job;
 
   if (job == 7) {
-    if (g_session.m_jobFlags >> 5 & 1) {
+    if (static_cast<bool>(g_session.m_jobFlags >> 5 & 1)) {
       return job + 6;
     }
   } else if (job == 14) {
-    if (g_session.m_jobFlags >> 5 & 1) {
+    if (static_cast<bool>(g_session.m_jobFlags >> 5 & 1)) {
       return job + 7;
     }
   } else if (job == 4008) {
-    if (g_session.m_jobFlags >> 5 & 1) {
+    if (static_cast<bool>(g_session.m_jobFlags >> 5 & 1)) {
       return job + 6;
     }
   } else if (job == 4030) {
-    if (g_session.m_jobFlags >> 5 & 1) {
+    if (static_cast<bool>(g_session.m_jobFlags >> 5 & 1)) {
       return job + 6;
     }
   } else if (job == 4015) {
-    if (g_session.m_jobFlags >> 5 & 1) {
+    if (static_cast<bool>(g_session.m_jobFlags >> 5 & 1)) {
       return job + 7;
     }
   } else if (job == 4037) {
-    if (g_session.m_jobFlags >> 5 & 1) {
+    if (static_cast<bool>(g_session.m_jobFlags >> 5 & 1)) {
       return job + 7;
     }
   } else if (job == 4066) {
-    if (g_session.m_jobFlags >> 5 & 1) {
+    if (static_cast<bool>(g_session.m_jobFlags >> 5 & 1)) {
       return job + 16;
     }
   } else if (job == 4073) {
-    if (g_session.m_jobFlags >> 5 & 1) {
+    if (static_cast<bool>(g_session.m_jobFlags >> 5 & 1)) {
       return job + 10;
     }
   } else if (job == 4102) {
-    if (g_session.m_jobFlags >> 5 & 1) {
+    if (static_cast<bool>(g_session.m_jobFlags >> 5 & 1)) {
       return job + 8;
     }
   } else if (job == 4054) {
-    if (g_session.m_jobFlags >> 19 & 1) {
+    if (static_cast<bool>(g_session.m_jobFlags >> 19 & 1)) {
       return 4080;
     }
-    if (g_session.m_jobFlags >> 23 & 1) {
+    if (static_cast<bool>(g_session.m_jobFlags >> 23 & 1)) {
       return 4088;
     }
     if (g_session.m_jobFlags & 0x1000000) {
       return 4090;
     }
-    if (g_session.m_jobFlags >> 25 & 1) {
+    if (static_cast<bool>(g_session.m_jobFlags >> 25 & 1)) {
       return 4092;
     }
-    if (g_session.m_jobFlags >> 26 & 1) {
+    if (static_cast<bool>(g_session.m_jobFlags >> 26 & 1)) {
       return 4094;
     }
   } else if (job == 4060) {
-    if (g_session.m_jobFlags >> 19 & 1) {
+    if (static_cast<bool>(g_session.m_jobFlags >> 19 & 1)) {
       return 4081;
     }
-    if (g_session.m_jobFlags >> 23 & 1) {
+    if (static_cast<bool>(g_session.m_jobFlags >> 23 & 1)) {
       return 4089;
     }
     if (g_session.m_jobFlags & 0x1000000) {
       return 4091;
     }
-    if (g_session.m_jobFlags >> 25 & 1) {
+    if (static_cast<bool>(g_session.m_jobFlags >> 25 & 1)) {
       return 4093;
     }
-    if (g_session.m_jobFlags >> 26 & 1) {
+    if (static_cast<bool>(g_session.m_jobFlags >> 26 & 1)) {
       return 4095;
     }
   } else if (job == 4096) {
-    if (g_session.m_jobFlags >> 19 & 1) {
+    if (static_cast<bool>(g_session.m_jobFlags >> 19 & 1)) {
       return job + 13;
     }
   } else if (job == 4047) {
-    if (g_session.m_jobFlags >> 15 & 1) {
+    if (static_cast<bool>(g_session.m_jobFlags >> 15 & 1)) {
       return job + 1;
     }
   } else if (job == 4056) {
-    if (g_session.m_jobFlags >> 21 & 1) {
+    if (static_cast<bool>(g_session.m_jobFlags >> 21 & 1)) {
       return job + 28;
     }
   } else if (job == 4062) {
-    if (g_session.m_jobFlags >> 21 & 1) {
+    if (static_cast<bool>(g_session.m_jobFlags >> 21 & 1)) {
       return job + 23;
     }
   } else if (job == 4098) {
-    if (g_session.m_jobFlags >> 21 & 1) {
+    if (static_cast<bool>(g_session.m_jobFlags >> 21 & 1)) {
       return job + 13;
     }
   } else if (job == 4058) {
@@ -123,31 +123,31 @@ int CSession::GetDisplayJob() {
       return job + 26;
     }
   } else if (job == 4226) {
-    if (g_session.m_jobFlags >> 15 & 1) {
+    if (static_cast<bool>(g_session.m_jobFlags >> 15 & 1)) {
       return job + 12;
     }
   } else if (job == 4239) {
-    if (g_session.m_jobFlags >> 15 & 1) {
+    if (static_cast<bool>(g_session.m_jobFlags >> 15 & 1)) {
       return job + 4;
     }
   } else if (job == 4241) {
-    if (g_session.m_jobFlags >> 15 & 1) {
+    if (static_cast<bool>(g_session.m_jobFlags >> 15 & 1)) {
       return job + 3;
     }
   } else if (job == 4257) {
-    if (g_session.m_jobFlags >> 21 & 1) {
+    if (static_cast<bool>(g_session.m_jobFlags >> 21 & 1)) {
       return job + 21;
     }
   } else if (job == 4252) {
-    if (g_session.m_jobFlags >> 19 & 1) {
+    if (static_cast<bool>(g_session.m_jobFlags >> 19 & 1)) {
       return job + 28;
     }
   } else if (job == 4258) {
-    if (g_session.m_jobFlags >> 5 & 1) {
+    if (static_cast<bool>(g_session.m_jobFlags >> 5 & 1)) {
       return job + 23;
     }
   } else if (job == 4302) {
-    if (g_session.m_jobFlags >> 15 & 1) {
+    if (static_cast<bool>(g_session.m_jobFlags >> 15 & 1)) {
       return job + 14;
     }
   }
