@@ -2001,40 +2001,38 @@ void CEffectPrim::RenderMagnum2(matrix& wtm) {
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
-    EffectPrimitiveSlot& slot = this->state.slots[ec];
-
-    if (rpCnt >= 256 || slot.life != 1) {
+    if (rpCnt >= 256 || this->state.slots[ec].life != 1) {
       continue;
     }
 
-    const int step = slot.fullDisplayAngle / 20;
+    const int step = this->state.slots[ec].fullDisplayAngle / 20;
     int order = 0;
 
-    for (int count = 0; count <= slot.fullDisplayAngle; count += step) {
-      int angle = slot.rotStart + count;
+    for (int count = 0; count <= this->state.slots[ec].fullDisplayAngle; count += step) {
+      int angle = this->state.slots[ec].rotStart + count;
 
       if (angle >= 360) {
         angle -= 360;
       }
 
-      if (slot.fullDisplayAngle == 360 && order == 20) {
-        angle = slot.rotStart;
+      if (this->state.slots[ec].fullDisplayAngle == 360 && order == 20) {
+        angle = this->state.slots[ec].rotStart;
       }
 
       const float cs1 = g_cosTable[angle];
       const float sn1 = g_sinTable[angle];
-      slot.vecBNow.x = cs1 * slot.distance;
-      slot.vecBNow.y = -3.0f;
-      slot.vecBNow.z = sn1 * slot.distance;
+      this->state.slots[ec].vecBNow.x = cs1 * this->state.slots[ec].distance;
+      this->state.slots[ec].vecBNow.y = -3.0f;
+      this->state.slots[ec].vecBNow.z = sn1 * this->state.slots[ec].distance;
 
-      const float rx = g_cosTable[slot.riseAngle] * slot.maxHeight;
-      const float ry = g_sinTable[slot.riseAngle] * slot.maxHeight;
-      slot.vecTNow.x = cs1 * rx + slot.vecBNow.x;
-      slot.vecTNow.y = -(ry + 3.0f);
-      slot.vecTNow.z = sn1 * rx + slot.vecBNow.z;
+      const float rx = g_cosTable[this->state.slots[ec].riseAngle] * this->state.slots[ec].maxHeight;
+      const float ry = g_sinTable[this->state.slots[ec].riseAngle] * this->state.slots[ec].maxHeight;
+      this->state.slots[ec].vecTNow.x = cs1 * rx + this->state.slots[ec].vecBNow.x;
+      this->state.slots[ec].vecTNow.y = -(ry + 3.0f);
+      this->state.slots[ec].vecTNow.z = sn1 * rx + this->state.slots[ec].vecBNow.z;
 
-      if (order > 0 && slot.alphaB > 0) {
-        this->RenderTeiRect(&rpCnt, order - 1, slot.alphaB, slot.alphaB, slot.vecBPre, slot.vecBNow, slot.vecTNow, slot.vecTPre, wtm, 0);
+      if (order > 0 && this->state.slots[ec].alphaB > 0) {
+        this->RenderTeiRect(&rpCnt, order - 1, this->state.slots[ec].alphaB, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, this->state.slots[ec].vecTNow, this->state.slots[ec].vecTPre, wtm, 0);
       }
 
       ++order;
@@ -2043,8 +2041,8 @@ void CEffectPrim::RenderMagnum2(matrix& wtm) {
         order = 20;
       }
 
-      slot.vecBPre = slot.vecBNow;
-      slot.vecTPre = slot.vecTNow;
+      this->state.slots[ec].vecBPre = this->state.slots[ec].vecBNow;
+      this->state.slots[ec].vecTPre = this->state.slots[ec].vecTNow;
     }
   }
 }
