@@ -20,7 +20,8 @@ bool UIEditCtrl::RemoveInvalidLink(int type, std::list<UIWindow*>::iterator& ent
   std::string name;
 
   if (type == 438) {
-    name = g_navigationLinkParser->FormatNavigationLink(static_cast<UINaviLinkButton*>(*entry)->Link(), false);
+    NavigationLinkParser* const parser = g_navigationLinkParser;
+    name = parser->FormatNavigationLink(static_cast<UINaviLinkButton*>(*entry)->Link(), false);
   }
 
   const std::string current = this->text;
@@ -43,7 +44,7 @@ bool UIEditCtrl::RemoveInvalidLink(int type, std::list<UIWindow*>::iterator& ent
   int position = found;
 
   do {
-    std::string before;
+    std::string before = "";
 
     if (found > 0) {
       before = remaining.substr(found - 1, 1);
@@ -81,7 +82,12 @@ bool UIEditCtrl::RemoveInvalidLink(int type, std::list<UIWindow*>::iterator& ent
     }
 
     if (boundary == g_serverLanguage->cursor) {
-      remaining = before.find("<") != std::string::npos ? current.substr(0, position - 1) : current.substr(0, position);
+      if (before.find("<") != std::string::npos) {
+        remaining = current.substr(0, position - 1);
+      } else {
+        remaining = current.substr(0, position);
+      }
+
       remaining += current.substr((after.find(">") != std::string::npos ? position + 1 : position) + bytes);
       g_serverLanguage->ResetInput();
       g_serverLanguage->Insert(remaining.c_str());
