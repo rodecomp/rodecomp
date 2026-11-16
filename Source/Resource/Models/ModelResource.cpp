@@ -29,17 +29,6 @@ unsigned g_animationJobs[10] = {1288, 722, 1324, 1000, 1000, 1000, 1000, 1286, 1
 // GLOBAL: gl_24706
 const char* g_animationNames[5] = {"stand", "move", "attack", "dead", "damage"};
 
-struct ShadeVector {
-  ShadeVector() : x(0.0f), y(0.0f), z(0.0f) {
-  }
-
-  /* 0000 */ float x;
-  /* 0004 */ float y;
-  /* 0008 */ float z;
-};
-
-static_assert(sizeof(ShadeVector) == 12);
-
 struct ModelFaceRecordV1 {
   // INLINED
   void CopyTo(ModelFace& face) const {

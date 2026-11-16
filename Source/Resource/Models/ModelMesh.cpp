@@ -63,7 +63,7 @@ ModelFace::~ModelFace() = default;
 // FUNCTION: fn_02011
 void ModelMesh::CalculateNormals() {
   if (!this->faceNormals) {
-    this->faceNormals = new std::array<float, 3>[this->faceCount]{};
+    this->faceNormals = new ShadeVector[this->faceCount];
   }
 
   for (int index = 0; index < this->faceCount; ++index) {
@@ -79,10 +79,10 @@ void ModelMesh::CalculateNormals() {
     const float z2 = second[2] - third[2];
     auto& normal = this->faceNormals[index];
 
-    normal[0] = y2 * z1 - z2 * y1;
-    normal[1] = z2 * x1 - x2 * z1;
-    normal[2] = x2 * y1 - y2 * x1;
-    Normalize(this->faceNormals[index].data());
+    normal.x = y2 * z1 - z2 * y1;
+    normal.y = z2 * x1 - x2 * z1;
+    normal.z = x2 * y1 - y2 * x1;
+    Normalize(&this->faceNormals[index].x);
   }
 
   std::map<int, std::vector<int>> adjacent;
@@ -94,7 +94,7 @@ void ModelMesh::CalculateNormals() {
   }
 
   if (!this->vertexNormals) {
-    this->vertexNormals = new std::array<float, 3>[this->faceCount * 3]{};
+    this->vertexNormals = new ShadeVector[this->faceCount * 3];
   }
 
   for (int index = 0; index < this->faceCount; ++index) {
@@ -115,9 +115,9 @@ void ModelMesh::CalculateNormals() {
           }
 
           if (matches) {
-            this->vertexNormals[index * 3 + corner][0] = this->vertexNormals[index * 3 + corner][0] + this->faceNormals[neighbor][0];
-            this->vertexNormals[index * 3 + corner][1] = this->faceNormals[neighbor][1] + this->vertexNormals[index * 3 + corner][1];
-            this->vertexNormals[index * 3 + corner][2] = this->faceNormals[neighbor][2] + this->vertexNormals[index * 3 + corner][2];
+            this->vertexNormals[index * 3 + corner].x = this->vertexNormals[index * 3 + corner].x + this->faceNormals[neighbor].x;
+            this->vertexNormals[index * 3 + corner].y = this->faceNormals[neighbor].y + this->vertexNormals[index * 3 + corner].y;
+            this->vertexNormals[index * 3 + corner].z = this->faceNormals[neighbor].z + this->vertexNormals[index * 3 + corner].z;
           }
         }
       }
@@ -125,6 +125,6 @@ void ModelMesh::CalculateNormals() {
   }
 
   for (int index = 0; index < this->faceCount * 3; ++index) {
-    Normalize(this->vertexNormals[index].data());
+    Normalize(&this->vertexNormals[index].x);
   }
 }

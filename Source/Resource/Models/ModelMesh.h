@@ -6,6 +6,17 @@
 #include <cstdint>
 #include <vector>
 
+struct ShadeVector {
+  ShadeVector() : x(0.0f), y(0.0f), z(0.0f) {
+  }
+
+  /* 0000 */ float x;
+  /* 0004 */ float y;
+  /* 0008 */ float z;
+};
+
+static_assert(sizeof(ShadeVector) == 12);
+
 struct ModelFace {
   ModelFace();
   ~ModelFace();
@@ -38,8 +49,8 @@ struct ModelMesh {
   /* 000C */ ModelFace* faces;
   /* 0010 */ int textureVertexCount;
   /* 0014 */ ModelTextureVertex* textureVertices;
-  /* 0018 */ std::array<float, 3>* faceNormals;
-  /* 001C */ std::array<float, 3>* vertexNormals;
+  /* 0018 */ ShadeVector* faceNormals;
+  /* 001C */ ShadeVector* vertexNormals;
   /* 0020 */ unsigned char parentMesh[4];
   /* 0024 */ std::vector<std::uint32_t> indices[32];
   /* 01A4 */ unsigned char padding_01A4[48];
