@@ -11,15 +11,15 @@ MovementRouteInterpolation::MovementRouteInterpolation() : startX(0), startY(0) 
 // OFFSET: 0x00AD87A0
 // FUNCTION: fn_17867
 void CPathFinder::BuildMovementRoute(std::uint32_t tick, const PathNode* last, int stepDuration, MovementRouteInterpolation& route) {
-  std::uint32_t count = 0;
+  int count = 0;
   for (const PathNode* node = last; node; node = node->parent) {
     ++count;
   }
 
   route.points.resize(count);
-  if (static_cast<int>(count) > 1) {
+  if (count > 1) {
     const PathNode* node = last;
-    for (std::uint32_t index = count; index != 0;) {
+    for (int index = count; index != 0;) {
       --index;
       route.points[index].x = node->x;
       route.points[index].y = node->y;
@@ -33,7 +33,7 @@ void CPathFinder::BuildMovementRoute(std::uint32_t tick, const PathNode* last, i
     const float deltaX = static_cast<float>(route.points[1].x) - route.startX;
     const float initialDuration = SquareRoot(deltaY * deltaY + deltaX * deltaX) * static_cast<float>(stepDuration);
     route.points[1].tick = tick + static_cast<std::uint32_t>(initialDuration);
-    for (std::uint32_t index = 2; index < count; ++index) {
+    for (int index = 2; index < count; ++index) {
       const int duration = route.points[index].metadata & 1 ? diagonalDuration : stepDuration;
       route.points[index].tick = route.points[index - 1].tick + duration;
     }
