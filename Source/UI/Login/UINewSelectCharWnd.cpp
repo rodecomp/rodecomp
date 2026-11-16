@@ -87,7 +87,7 @@ UINewSelectCharWnd::UINewSelectCharWnd() : UIFrameWnd(0) {
   this->m_pageSlot = 0;
   this->m_totalCharacters = this->m_maxCharacters = g_session.m_normalSlotCount + g_session.m_premiumSlotCount + g_session.m_billingSlotCount;
 
-  const int slotCount = std::max(g_modeMgr.GetLoginMode()->GetMaxCharacterSlot() + 1, this->m_maxCharacters);
+  const int slotCount = std::max(this->m_maxCharacters, g_modeMgr.GetLoginMode()->GetMaxCharacterSlot() + 1);
   this->m_pageCount = slotCount / this->m_slotsPerPage;
   if (slotCount % this->m_slotsPerPage != 0) {
     this->m_pageCount++;
@@ -109,7 +109,7 @@ UINewSelectCharWnd::~UINewSelectCharWnd() = default;
 
 // OFFSET: 0x007D4520
 // FUNCTION: fn_09578
-CharSlotInfo::CharSlotInfo() = default;
+CharSlotInfo::CharSlotInfo() noexcept = default;
 
 // OFFSET: 0x007D4840
 // FUNCTION: fn_09582

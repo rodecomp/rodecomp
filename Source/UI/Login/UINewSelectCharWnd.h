@@ -28,7 +28,7 @@ enum NewSelectCharButtonId : int {
 extern unsigned char g_selectedSlotIndex;
 
 struct CharSlotInfo {
-  CharSlotInfo();
+  CharSlotInfo() noexcept;
   ~CharSlotInfo();
 
   /* 0000 */ int x;
