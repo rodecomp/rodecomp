@@ -219,7 +219,6 @@ void UINewSkillListWnd::DrawCharacter() {
       offsetY = y;
     }
 
-    const std::uint32_t* palette = sprite->palette;
     if (layer == 1) {
       CActRes* bodyAction = static_cast<CActRes*>(ResourceMgr::Instance().Load(actions[0].c_str()));
       const ActionFrame& bodyFrame = bodyAction->Frame(23, frame);
@@ -230,6 +229,7 @@ void UINewSkillListWnd::DrawCharacter() {
         g_skillListHeadOffsetY = offsetY;
       }
     }
+    const std::uint32_t* palette = sprite->palette;
     switch (layer) {
     case 0:
       if (bodyPalette != 0) {
