@@ -625,7 +625,7 @@ EnchantInfo* CEnchantMgr::GetEnchantInfo(uint64_t group) {
 std::map<int, int> CEnchantMgr::ConvertMaterials(std::map<std::string, int> materials) {
   std::map<int, int> result;
   for (auto it = materials.begin(); it != materials.end(); ++it) {
-    int itemId = CItemDBToIDMgr::GetInstance()->GetItemID(it->first);
+    int itemId = ItemDbToIdMgr()->GetItemID(it->first);
     if (itemId != 0) {
       result[itemId] = it->second;
     }
