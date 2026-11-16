@@ -1572,7 +1572,7 @@ bool CEZ2STRScreenEffect::ApplyHeadOffset(CEZ2STRParticle* particle) {
   }
 
   float factor = GetSkillFactor(actor->GetEffectiveJob(-1));
-  if (((actor->render.flags >> 4) & 1) != 0 && this->fadePulse == 1) {
+  if (static_cast<bool>((actor->render.flags >> 4) & 1) && this->fadePulse == 1) {
     float scale = 1.0f;
     actor->ScaleByFadePulse(scale);
     factor = scale * factor;
