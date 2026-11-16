@@ -2334,23 +2334,24 @@ void UIWindowMgr::DrawLoginOverlay() {
         this->loginDragRegion = 3;
       }
 
-      const float columns = static_cast<float>(quarter);
-      const float mouseX = static_cast<float>(g_mouse.x);
-      if (mouseX > columns * 3.3f + this->loginButtonPanelOffset.x && mouseX < columns * 3.9f + this->loginButtonPanelOffset.x &&
+      if (static_cast<float>(g_mouse.x) > static_cast<float>(quarter) * 3.3f + this->loginButtonPanelOffset.x &&
+          static_cast<float>(g_mouse.x) < static_cast<float>(quarter) * 3.9f + this->loginButtonPanelOffset.x &&
           static_cast<float>(g_mouse.y) > static_cast<float>(third) * 2.4f + this->loginButtonPanelOffset.y &&
           static_cast<float>(g_mouse.y) < static_cast<float>(third) * 2.8f + this->loginButtonPanelOffset.y) {
         this->loginDragRegion = 2;
       }
 
-      if (static_cast<float>(g_mouse.x) > columns * 0.1f + this->loginGridX && static_cast<float>(g_mouse.x) < columns * 1.8f + this->loginGridX &&
+      if (static_cast<float>(g_mouse.x) > static_cast<float>(quarter) * 0.1f + this->loginGridX &&
+          static_cast<float>(g_mouse.x) < static_cast<float>(quarter) * 1.8f + this->loginGridX &&
           static_cast<float>(g_mouse.y) > static_cast<float>(third) * 0.3f + this->loginGridY &&
           static_cast<float>(g_mouse.y) < static_cast<float>(third) * 1.2f + this->loginGridY) {
         this->loginDragRegion = 1;
       }
 
-      if (g_serviceType != 0 && static_cast<signed char>(g_startupSecondPhase) > 0 && static_cast<float>(g_mouse.x) > columns * 2.2f + this->loginSidePanelOffset.x &&
-          static_cast<float>(g_mouse.x) < columns * 3.5f + this->loginSidePanelOffset.x && g_mouse.y > this->loginSidePanelOffset.y &&
-          g_mouse.y < this->loginSidePanelOffset.y + third * 3) {
+      if (g_serviceType != 0 && static_cast<signed char>(g_startupSecondPhase) > 0 &&
+          static_cast<float>(g_mouse.x) > static_cast<float>(quarter) * 2.2f + this->loginSidePanelOffset.x &&
+          static_cast<float>(g_mouse.x) < static_cast<float>(quarter) * 3.5f + this->loginSidePanelOffset.x &&
+          g_mouse.y > this->loginSidePanelOffset.y && g_mouse.y < this->loginSidePanelOffset.y + third * 3) {
         this->loginDragRegion = 5;
       }
 
