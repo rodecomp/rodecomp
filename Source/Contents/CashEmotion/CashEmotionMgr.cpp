@@ -1564,7 +1564,7 @@ int CCashEmotionMgr::InsertEmotionMsgListTable(lua_State* state) {
   const int count = luaL_checkinteger(state, 4);
 
   for (int index = 5; index < count + 5; ++index) {
-    std::string name = raw ? std::string(luaL_checkstring(state, index)) : FromUtf8(luaL_checkstring(state, index), g_textCodePage);
+    std::string name = raw ? static_cast<const std::string&>(std::string(luaL_checkstring(state, index))) : FromUtf8(luaL_checkstring(state, index), g_textCodePage);
 
     const char* key = name.c_str();
     if (key && std::strlen(key) != 0) {
