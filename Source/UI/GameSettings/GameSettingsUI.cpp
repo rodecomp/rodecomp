@@ -3829,14 +3829,13 @@ void GameSettingsUI::CUIOptionItem::OnCreate(int width, int height) {
   this->m_check->Invalidate();
   this->AddChild(this->m_check);
 
-  CUIImageButton* runButton = new CUIImageButton();
-  this->m_runButton = runButton;
-  runButton->SetSize(34, 15);
-  runButton->Move(7, 5);
-  runButton->SetOnClick([this]() { this->RunFunction(); });
-  runButton->disabled = 0;
-  runButton->Invalidate();
-  runButton->SetImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\GameSettingsUI\\btn_optionapply_out.bmp", 0x8783C33941E15117ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\GameSettingsUI\\btn_optionapply_press.bmp", 0x271B45771F83DD9FULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\GameSettingsUI\\btn_optionapply_over.bmp", 0xC70319B5EB61598FULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\GameSettingsUI\\btn_optionapply_disable.bmp", 0x0B8745519B1F95D7ULL)));
+  this->m_runButton = new CUIImageButton();
+  this->m_runButton->SetSize(34, 15);
+  this->m_runButton->Move(7, 5);
+  this->m_runButton->SetOnClick([this]() { this->RunFunction(); });
+  this->m_runButton->disabled = 0;
+  this->m_runButton->Invalidate();
+  this->m_runButton->SetImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\GameSettingsUI\\btn_optionapply_out.bmp", 0x8783C33941E15117ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\GameSettingsUI\\btn_optionapply_press.bmp", 0x271B45771F83DD9FULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\GameSettingsUI\\btn_optionapply_over.bmp", 0xC70319B5EB61598FULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\GameSettingsUI\\btn_optionapply_disable.bmp", 0x0B8745519B1F95D7ULL)));
   this->AddChild(this->m_runButton);
 
   this->m_label = new CUITextButton();
@@ -3865,7 +3864,7 @@ void GameSettingsUI::CUIOptionItem::OnCreate(int width, int height) {
   this->m_description = new CUIStaticText();
   this->m_description->SetSize(252, 13);
   this->m_description->Move(138, 6);
-  this->m_description->SetText("", 0);
+  this->m_description->SetText("");
   this->m_description->SetFitText(1);
   this->m_description->SetAlign(0, 0);
   this->m_description->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Gulim", 0xDF8117FF49CFF551ULL)));
