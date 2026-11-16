@@ -163,13 +163,11 @@ void CStarEffect::UpdateParticle(CParticle* particle) {
     angle += 2;
   }
 
-  const vector3d offset = particle->offset;
-  particle->offsetY = offset.y;
-  particle->offsetX = g_sinTable[static_cast<int>(state.angles[0])] * 0.05f + offset.x;
-  particle->offsetZ = g_sinTable[static_cast<int>(state.angles[2])] * 0.05f + offset.z;
-  particle->position.x = particle->offsetX + this->position[0];
-  particle->position.y = offset.y;
-  particle->position.z = particle->offsetZ + this->position[2];
+  vector3d offset = particle->offset;
+  offset.x = g_sinTable[static_cast<int>(state.angles[0])] * 0.05f + offset.x;
+  offset.z = g_sinTable[static_cast<int>(state.angles[2])] * 0.05f + offset.z;
+  particle->offset = offset;
+  particle->position = vector3d{offset.x + this->position[0], offset.y, offset.z + this->position[2]};
 
   int phase = static_cast<int>(state.phase + 1.0f);
   if (phase >= 360) {
@@ -182,9 +180,10 @@ void CStarEffect::UpdateParticle(CParticle* particle) {
   matrix rotation;
   std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
   rotation.MakeXRotation(g_modeMgr.GetGameMode()->camera->camera.pitch / 180.0f * 3.141592f);
+  const float particleScale = particle->scale;
   matrix scale;
   std::memcpy(scale.values, g_identityMatrix, sizeof(scale.values));
-  scale.SetScale(particle->scale, particle->scale, 1.0f);
+  scale.SetScale(particleScale, particleScale, 1.0f);
   matrix transform;
   transform.Compose(scale, rotation);
   particle->transform = transform;
