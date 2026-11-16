@@ -524,13 +524,13 @@ void __fastcall DestroyReplayTaggedRecordHeader(ReplayTaggedRecordHeader* value)
 // OFFSET: 0x006D78C0
 // FUNCTION: fn_06596
 __declspec(noinline) void LoadItemNameTables() {
+  std::vector<char*> tokens;
   g_itemDescriptions.clear();
   g_itemCardNames.clear();
   g_metalProcessItems.clear();
   g_tableStorage.Clear();
   g_bookItemNames.clear();
 
-  std::vector<char*> tokens;
   if (tokens.capacity() < 20000) {
     tokens.reserve(20000);
   }
@@ -742,7 +742,8 @@ __declspec(noinline) void LoadItemNameTables() {
   sorry.name = "sorry";
   sorry.prefix = "";
   sorry.suffix = "";
-  FindItemCardName(-1, g_itemCardNames) = sorry;
+  ItemCardName& fallback = FindItemCardName(-1, g_itemCardNames);
+  fallback = sorry;
 
   std::vector<int> moveInfo;
   if (LoadItemIntegerTable(moveInfo, "ItemMoveInfoV5.txt") && !moveInfo.empty()) {
