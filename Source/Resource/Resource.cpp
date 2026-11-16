@@ -2,6 +2,7 @@
 #include "Resource/Resource.h"
 
 #include <cstdio>
+#include <cstring>
 #include <windows.h>
 #include <timeapi.h>
 
@@ -15,6 +16,15 @@ ResourceName::ResourceName(const char* name) {
 ResourceName& ResourceName::Assign(const char* name) {
   myGPack::AssignNameKey(this->hash, this->text, name);
   return *this;
+}
+
+// FOLDED: fn_18148
+bool ResourceName::operator<(const ResourceName& other) const {
+  if (this->hash != other.hash) {
+    return this->hash < other.hash;
+  }
+
+  return std::strcmp(this->text, other.text) < 0;
 }
 
 // OFFSET: 0x00AEDA10

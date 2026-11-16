@@ -13,6 +13,7 @@ struct ResourceName {
   /* 0004 */ char text[252];
   explicit __declspec(noinline) ResourceName(const char* name = "");
   __declspec(noinline) ResourceName& Assign(const char* name);
+  bool operator<(const ResourceName& other) const;
 };
 static_assert(sizeof(ResourceName) == 256);
 

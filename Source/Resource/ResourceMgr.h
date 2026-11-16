@@ -22,7 +22,10 @@ struct ResourceExtensionLess {
 };
 
 struct ResourceNameLess {
-  bool operator()(const ResourceName* left, const ResourceName* right) const;
+  // INLINED
+  bool operator()(const ResourceName* left, const ResourceName* right) const {
+    return *left < *right;
+  }
 };
 
 class ResourceMgr {

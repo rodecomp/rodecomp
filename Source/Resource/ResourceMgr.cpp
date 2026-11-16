@@ -34,14 +34,6 @@ unsigned char g_lowercaseTable[256] = {
   0xF0, 0xF1, 0xF2, 0xF3, 0xF4, 0xF5, 0xF6, 0xF7, 0xF8, 0xF9, 0xFA, 0xFB, 0xFC, 0xFD, 0xFE, 0xFF,
 };
 
-__declspec(noinline) bool ResourceNameLess::operator()(const ResourceName* left, const ResourceName* right) const {
-  if (left->hash != right->hash) {
-    return left->hash < right->hash;
-  }
-
-  return std::strcmp(left->text, right->text) < 0;
-}
-
 // INLINED
 ResourceMgr::ResourceMgr() {
   for (std::uint32_t& value : this->unknown_004C) {
@@ -95,12 +87,10 @@ int ResourceMgr::FindType(const char* extension) const {
 // OFFSET: 0x00AEE6B0
 // FUNCTION: fn_18174
 CRes* ResourceMgr::Find(int type, const char* name) const {
-  ResourceName key;
-  key.Assign(name);
-  const auto& resources = this->m_resources[type];
-  const auto entry = resources.find(&key);
+  ResourceName key(name);
+  const auto entry = this->m_resources[type].find(&key);
 
-  return entry == resources.end() ? nullptr : entry->second;
+  return entry == this->m_resources[type].end() ? nullptr : entry->second;
 }
 
 // OFFSET: 0x00AEF7D0
