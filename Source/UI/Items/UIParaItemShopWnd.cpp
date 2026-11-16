@@ -188,12 +188,12 @@ void UIParaResultWnd::OnMouseHover(int x, int y) {
     std::string text;
     char price[64];
     std::memset(price, 0, sizeof(price));
-    if (item.prices[0] == item.prices[1]) {
-      const char* amount = FormatGroupedInteger(static_cast<int>(item.prices[1]), price, sizeof(price));
-      text = FormatOwnedString("%s %s Zeny", item.DisplayName(0).c_str(), amount);
-    } else {
+    if (item.prices[0] != item.prices[1]) {
       const char* amount = FormatGroupedInteger(static_cast<int>(item.prices[1]), price, sizeof(price));
       text = FormatOwnedString("%s %d -> %s Zeny", item.DisplayName(0).c_str(), item.prices[0], amount);
+    } else {
+      const char* amount = FormatGroupedInteger(static_cast<int>(item.prices[1]), price, sizeof(price));
+      text = FormatOwnedString("%s %s Zeny", item.DisplayName(0).c_str(), amount);
     }
 
     g_modeMgr.currentMode->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
