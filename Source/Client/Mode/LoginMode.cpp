@@ -1202,75 +1202,44 @@ void __stdcall nullsub_486(int) {
 void CLoginMode::ReceiveRefuseLogin(const RefuseLoginPacket* packet) {
   char text[260];
   memset(text, 0, sizeof(text));
-  {
-    const char* message = LookupMessage(MSI_NAVIGATION_ROADLISTVIEW);
-    constexpr std::array<char, 3> source = OBFUSCATE_SOURCE("%s", 0x891B232D09451965ULL);
-    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0x891B232D09451965ULL, source), message);
-  }
+  StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0x891B232D09451965ULL, OBFUSCATE_SOURCE_ARRAY_CHAR("%s", 0x891B232D09451965ULL)), LookupMessage(MSI_NAVIGATION_ROADLISTVIEW));
 
   switch (packet->result) {
-  case 1: {
-    const char* message = LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_PERSONALNUMBER);
-    constexpr std::array<char, 3> source = OBFUSCATE_SOURCE("%s", 0x758F1D0B4F7705B9ULL);
-    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0x758F1D0B4F7705B9ULL, source), message);
+  case 1:
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0x758F1D0B4F7705B9ULL, OBFUSCATE_SOURCE_ARRAY_CHAR("%s", 0x758F1D0B4F7705B9ULL)), LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_PERSONALNUMBER));
     break;
-  }
-  case 2: {
-    const char* message = LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_ACCOUNT_BLOCK);
-    constexpr std::array<char, 3> source = OBFUSCATE_SOURCE("%s", 0x35E5656B5DEDCD75ULL);
-    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0x35E5656B5DEDCD75ULL, source), message);
+  case 2:
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0x35E5656B5DEDCD75ULL, OBFUSCATE_SOURCE_ARRAY_CHAR("%s", 0x35E5656B5DEDCD75ULL)), LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_ACCOUNT_BLOCK));
     break;
-  }
-  case 3: {
-    const char* message = LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_SYSTEM);
-    constexpr std::array<char, 3> source = OBFUSCATE_SOURCE("%s", 0x4941FD9F21BBB9FDULL);
-    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0x4941FD9F21BBB9FDULL, source), message);
+  case 3:
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0x4941FD9F21BBB9FDULL, OBFUSCATE_SOURCE_ARRAY_CHAR("%s", 0x4941FD9F21BBB9FDULL)), LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_SYSTEM));
     break;
-  }
-  case 4: {
-    const char* message = LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_UNKNOWN);
-    constexpr std::array<char, 3> source = OBFUSCATE_SOURCE("%s", 0xE7978FB5A94DD7FDULL);
-    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0xE7978FB5A94DD7FDULL, source), message);
+  case 4:
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0xE7978FB5A94DD7FDULL, OBFUSCATE_SOURCE_ARRAY_CHAR("%s", 0xE7978FB5A94DD7FDULL)), LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_UNKNOWN));
     break;
-  }
-  case 5: {
-    const char* message = LookupMessage(MSI_NAVIGATION_ICONTITEL);
-    constexpr std::array<char, 3> source = OBFUSCATE_SOURCE("%s", 0xB7FD8F670FC7B96BULL);
-    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0xB7FD8F670FC7B96BULL, source), message);
+  case 5:
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0xB7FD8F670FC7B96BULL, OBFUSCATE_SOURCE_ARRAY_CHAR("%s", 0xB7FD8F670FC7B96BULL)), LookupMessage(MSI_NAVIGATION_ICONTITEL));
     break;
-  }
-  case 6: {
-    const char* message = LookupMessage(MSI_NAVIGATION_RUITELISTTITEL);
-    constexpr std::array<char, 3> source = OBFUSCATE_SOURCE("%s", 0x39FF7FB50DEB998FULL);
-    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0x39FF7FB50DEB998FULL, source), message);
+  case 6:
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0x39FF7FB50DEB998FULL, OBFUSCATE_SOURCE_ARRAY_CHAR("%s", 0x39FF7FB50DEB998FULL)), LookupMessage(MSI_NAVIGATION_RUITELISTTITEL));
     break;
-  }
-  case 7: {
-    const char* message = LookupMessage(MSI_NAVIGATION_V4_HELP02);
-    constexpr std::array<char, 3> source = OBFUSCATE_SOURCE("%s", 0x2FE993D1DDE1F197ULL);
-    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0x2FE993D1DDE1F197ULL, source), message);
+  case 7:
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0x2FE993D1DDE1F197ULL, OBFUSCATE_SOURCE_ARRAY_CHAR("%s", 0x2FE993D1DDE1F197ULL)), LookupMessage(MSI_NAVIGATION_V4_HELP02));
     break;
-  }
-  case 8:
-  case 100:
-  case 102: {
-    const char* message = LookupMessage(MSI_NAVIGATION_ROADLISTVIEW);
-    constexpr std::array<char, 3> source = OBFUSCATE_SOURCE("%s", 0xAD075B8DB599F1CDULL);
-    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0xAD075B8DB599F1CDULL, source), message);
-    break;
-  }
-  case 9: {
-    const char* message = LookupMessage(MSI_ZEROQUEST_SIMPLEUI_ON);
-    constexpr std::array<char, 3> source = OBFUSCATE_SOURCE("%s", 0x2F8B0F37118D157FULL);
-    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0x2F8B0F37118D157FULL, source), message);
-    break;
-  }
   case 101: {
-    char blockDate[21] = {0};
+    char blockDate[21] = "";
     memcpy_s(blockDate, 20, packet->blockDate, 20);
     StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(MSI_LOGIN_REFUSE_BLOCKED_UNTIL), blockDate);
     break;
   }
+  case 8:
+  case 100:
+  case 102:
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0xAD075B8DB599F1CDULL, OBFUSCATE_SOURCE_ARRAY_CHAR("%s", 0xAD075B8DB599F1CDULL)), LookupMessage(MSI_NAVIGATION_ROADLISTVIEW));
+    break;
+  case 9:
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0x2F8B0F37118D157FULL, OBFUSCATE_SOURCE_ARRAY_CHAR("%s", 0x2F8B0F37118D157FULL)), LookupMessage(MSI_ZEROQUEST_SIMPLEUI_ON));
+    break;
   default:
     break;
   }
