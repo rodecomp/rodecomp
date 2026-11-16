@@ -130,26 +130,24 @@ int UIFrameWnd::DrawFittedItemName(int x, int y, const ITEM_INFO* item, std::uin
     }
 
     int bytes = static_cast<int>(end - text);
-    if (bytes == 0) {
-      continue;
-    }
-
-    if (text == highlight) {
-      this->DrawShadowedText(offset + x, y, text, bytes, static_cast<std::uint32_t>(highlightColor), 0xE0E0E0, 0, 12, 0);
-    } else if (item->damaged) {
-      this->DrawShadowedText(offset + x, y, text, bytes, color, 0x5050FA, 0, 12, 0);
-    } else {
-      std::uint32_t card = ItemCardColor(item);
-      if (card == 0x00ADFF2F) {
-        card = 0x00669900;
+    if (bytes != 0) {
+      if (text == highlight) {
+        this->DrawShadowedText(offset + x, y, text, bytes, static_cast<std::uint32_t>(highlightColor), 0xE0E0E0, 0, 12, 0);
+      } else if (item->damaged) {
+        this->DrawShadowedText(offset + x, y, text, bytes, color, 0x5050FA, 0, 12, 0);
+      } else {
+        std::uint32_t card = ItemCardColor(item);
+        if (card == 0x00ADFF2F) {
+          card = 0x00669900;
+        }
+        color = (card >> 16 & 0xFF) | ((card & 0xFF) << 16) | (card & 0x0000FF00);
+        this->DrawShadowedText(offset + x, y, text, bytes, color, 0xFFFFFF, 0, 12, 0);
       }
-      color = (card >> 16 & 0xFF) | ((card & 0xFF) << 16) | (card & 0x0000FF00);
-      this->DrawShadowedText(offset + x, y, text, bytes, color, 0xFFFFFF, 0, 12, 0);
-    }
-    offset += this->TextWidth(text, bytes, 0, 12, 0, 0);
-    text = end;
-    if (truncated) {
-      break;
+      offset += this->TextWidth(text, bytes, 0, 12, 0, 0);
+      text = end;
+      if (truncated) {
+        break;
+      }
     }
   }
   return offset;
