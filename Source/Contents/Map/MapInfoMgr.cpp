@@ -80,14 +80,14 @@ CMapInfoMgr::~CMapInfoMgr() {
 // OFFSET: 0x006CE820
 // FUNCTION: fn_06484
 void CMapInfoMgr::AddMapDisplayName(std::string map, std::string name, bool show) {
-  this->m_maps[map].m_displayName = name;
-  this->m_maps[map].m_showDisplayName = show;
+  this->m_maps.try_emplace(map).first->second.m_displayName = name;
+  this->m_maps.try_emplace(map).first->second.m_showDisplayName = show;
 }
 
 // OFFSET: 0x006CE8C0
 // FUNCTION: fn_06485
 void CMapInfoMgr::AddMapSignName(std::string map, std::string name, std::string subName) {
-  this->m_maps[map].m_sign = MapSignName{name, subName};
+  this->m_maps.try_emplace(map).first->second.m_sign = MapSignName{name, subName};
 }
 
 // OFFSET: 0x006CEAA0
@@ -262,7 +262,8 @@ int CMapInfoMgr::L_AddMapBackgroundBmp(lua_State* state) {
       const std::string bmp = lua_tostring(state, -1);
       lua_pushboolean(state, 1);
       lua_pushstring(state, "good");
-      g_mapInfoMgr->AddMapBackgroundBmp(map, bmp);
+      CMapInfoMgr* const manager = g_mapInfoMgr;
+      manager->AddMapBackgroundBmp(map, bmp);
     }
   }
 
