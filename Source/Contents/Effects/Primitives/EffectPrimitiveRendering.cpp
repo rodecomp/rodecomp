@@ -2150,39 +2150,36 @@ __declspec(safebuffers) void CEffectPrim::RenderGrid(matrix& wtm) {
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
-    const EffectPrimitiveSlot& slot = this->state.slots[ec];
 
-    if (slot.life != 1 || slot.alphaB <= 0) {
+    if (this->state.slots[ec].life != 1 || this->state.slots[ec].alphaB <= 0) {
       continue;
     }
 
     for (int x = -150; x < 150; x += 30) {
       for (int z = -90; z < 90; z += 30) {
-        const float size = slot.distance;
-        const float base = slot.maxHeight;
-        vec1.x = base + static_cast<float>(x);
+        vec1.x = this->state.slots[ec].maxHeight + static_cast<float>(x);
         vec1.y = -10.0f;
-        vec1.z = base + static_cast<float>(z);
-        vec2.x = size + static_cast<float>(x) + base;
+        vec1.z = this->state.slots[ec].maxHeight + static_cast<float>(z);
+        vec2.x = this->state.slots[ec].distance + static_cast<float>(x) + this->state.slots[ec].maxHeight;
         vec2.y = -10.0f;
         vec2.z = vec1.z;
         vec3.x = vec2.x;
         vec3.y = -10.0f;
-        vec3.z = size + static_cast<float>(z) + base;
+        vec3.z = this->state.slots[ec].distance + static_cast<float>(z) + this->state.slots[ec].maxHeight;
         vec4.x = vec1.x;
         vec4.y = -10.0f;
         vec4.z = vec3.z;
         this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
 
-        const char color = slot.flag1[10];
+        const char color = this->state.slots[ec].flag1[10];
         if (color == 0) {
-          this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         } else if (color == 1) {
-          this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 255, 0, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 255, 0, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         } else if (color == 3) {
-          this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         } else {
-          this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 0, 0, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 0, 0, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         }
       }
     }
