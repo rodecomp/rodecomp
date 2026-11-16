@@ -654,15 +654,18 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
       if (sender == this->m_raceViews[this->m_race]) {
         this->m_character.head = 1;
         for (int index = 0; index < 24; ++index) {
-          this->m_hairStyleButtons[index]->SendMsg(this, UM_SETSTATE, index == 0, 0, 0, 0);
+          this->m_hairStyleButtons[index]->SendMsg(this, UM_SETSTATE, index == 0 ? 1 : 0, 0, 0, 0);
           this->m_hairStyleButtons[index]->m_race = this->m_race;
           this->m_hairStyleButtons[index]->SendMsg(nullptr, UM_SETCURITEM, 0, 0, 0, 0);
         }
 
-        if (this->m_race == 0) {
+        switch (this->m_race) {
+        case 0:
           this->m_character.job = 0;
-        } else if (this->m_race == 1) {
+          break;
+        case 1:
           this->m_character.job = 0x107A;
+          break;
         }
         this->UpdatePreviewResources();
       }
@@ -696,34 +699,6 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     }
     return 0;
 
-  case ID_LEFT:
-    if (argument2 == 0) {
-      ++this->m_action;
-      if (this->m_action >= this->actionBase + 8) {
-        this->m_action = this->actionBase;
-      }
-      this->Invalidate();
-    }
-    return 0;
-
-  case MAKECHAR_BUTTON_HAIR_STYLE:
-    for (int index = 0; index < 24; ++index) {
-      if (sender == this->m_hairStyleButtons[index]) {
-        if (index >= (g_session.IsDoramJob(this->m_character.job) == true ? 6 : 0x17)) {
-          return 0;
-        }
-        this->m_hairStyleButtons[index]->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
-        this->m_character.head = static_cast<short>(index + 1);
-        if (this->m_character.head < 0) {
-          this->m_character.head = 0;
-        }
-        this->UpdatePreviewResources();
-      } else {
-        this->m_hairStyleButtons[index]->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
-      }
-    }
-    return 0;
-
   case MAKECHAR_BUTTON_GENDER:
     for (int index = 0; index < 2; ++index) {
       if (sender == this->m_genderButtons[index]) {
@@ -749,6 +724,38 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
       this->m_hairStyleButtons[index]->SendMsg(nullptr, UM_SETCURITEM, 0, 0, 0, 0);
     }
     this->UpdatePreviewResources();
+    return 0;
+
+  case MAKECHAR_BUTTON_HAIR_STYLE:
+    for (int index = 0; index < 24; ++index) {
+      if (sender == this->m_hairStyleButtons[index]) {
+        if (g_session.IsDoramJob(this->m_character.job) == true) {
+          if (index >= 6) {
+            return 0;
+          }
+        } else if (index >= 0x17) {
+          return 0;
+        }
+        this->m_hairStyleButtons[index]->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
+        this->m_character.head = static_cast<short>(index + 1);
+        if (this->m_character.head < 0) {
+          this->m_character.head = 0;
+        }
+        this->UpdatePreviewResources();
+      } else {
+        this->m_hairStyleButtons[index]->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
+      }
+    }
+    return 0;
+
+  case ID_LEFT:
+    if (argument2 == 0) {
+      ++this->m_action;
+      if (this->m_action >= this->actionBase + 8) {
+        this->m_action = this->actionBase;
+      }
+      this->Invalidate();
+    }
     return 0;
   }
 
