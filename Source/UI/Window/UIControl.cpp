@@ -3313,7 +3313,7 @@ void CUITextViewer::OnCreate(int width, int height) {
 
   this->scrollBar = new CUIVScrollBar();
   this->scrollBar->Show(0);
-  const std::function<void(int)> onChange = [this](int position) {
+  AssignHandler(this->scrollBar->onChange, std::function<void(int)>([this](int position) {
     int y = this->paddingTop;
     const CUIVScrollBar* bar = this->scrollBar;
     if (bar->dragging || bar->total <= bar->visible) {
@@ -3330,8 +3330,7 @@ void CUITextViewer::OnCreate(int width, int height) {
       window->Move(this->paddingLeft + child.second.first, child.second.second - position + y);
       window->Show(window->geometry.y + window->geometry.height >= 0 && window->geometry.y < this->geometry.height);
     }
-  };
-  AssignHandler(this->scrollBar->onChange, onChange);
+  }));
   this->AddChild(this->scrollBar);
 }
 
