@@ -46,9 +46,9 @@ FontCache::FontCache() {
 // OFFSET: 0x0100F120
 // FUNCTION: fn_29519
 FontCache::~FontCache() {
-  for (const FontEntry& entry : this->m_fonts) {
-    DeleteObject(entry.font);
-    entry.RemovePrivateFont();
+  for (auto entry = this->m_fonts.begin(); entry != this->m_fonts.end(); ++entry) {
+    DeleteObject(entry->font);
+    entry->RemovePrivateFont();
   }
 
   this->m_fonts.clear();
