@@ -1307,8 +1307,11 @@ void RenewQuestUI::CUIQuestItem::OnCreate(int width, int height) {
     std::string(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\bt_check_off.bmp", 0xBF2B4B31397FF5A7ULL)),
     std::string(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\bt_check_off.bmp", 0xD97D5DBDBB2F2709ULL))
   );
-  this->simpleViewCheckBox->checked = false;
-  this->simpleViewCheckBox->Invalidate();
+  {
+    auto* simpleViewCheckBox = this->simpleViewCheckBox;
+    simpleViewCheckBox->checked = false;
+    simpleViewCheckBox->Invalidate();
+  }
   this->AddChild(this->simpleViewCheckBox);
 
   this->activeCheckBox = new CUICheckBox();
@@ -1324,8 +1327,11 @@ void RenewQuestUI::CUIQuestItem::OnCreate(int width, int height) {
     std::string(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\bt_lock.bmp", 0xA5FD29D7AB6DC59FULL)),
     std::string(OBFUSCATE_TEXT("유저인터페이스\\Renew_QuestUI\\bt_lock.bmp", 0x13E33FA1A591AB67ULL))
   );
-  this->activeCheckBox->checked = false;
-  this->activeCheckBox->Invalidate();
+  {
+    auto* activeCheckBox = this->activeCheckBox;
+    activeCheckBox->checked = false;
+    activeCheckBox->Invalidate();
+  }
   this->AddChild(this->activeCheckBox);
 }
 
