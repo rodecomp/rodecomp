@@ -1916,10 +1916,7 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
     }
 
     CGameMode* mode = g_modeMgr.GetGameMode();
-    if (g_windowMgr.hoverWindow == this->m_edit) {
-      this->m_edit->Synchronize();
-    }
-    int quantity = std::atoi(this->m_edit->text.c_str());
+    int quantity = std::atoi(this->m_edit->Text());
     this->RecordResponse(184, 100, quantity, this->geometry.state);
     if (g_replayAnimationScaling != 0 && b == 100) {
       this->geometry.state = d;
@@ -2110,13 +2107,12 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       goto notify;
     }
     case 9: {
-      if (mode->drag.source != 11) {
-        break;
-      }
       int owned = 0;
-      const ITEM_INFO item = g_session.FindMerchantMyShopItem(mode->drag.id);
-      if (item.identity[1] != 0) {
-        owned = item.quantity;
+      if (mode->drag.source == 11) {
+        const ITEM_INFO item = g_session.FindMerchantMyShopItem(mode->drag.id);
+        if (item.identity[1] != 0) {
+          owned = item.quantity;
+        }
       }
       if (owned == 0) {
         break;
@@ -2129,13 +2125,12 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       goto notify;
     }
     case 10: {
-      if (mode->drag.source != 10) {
-        break;
-      }
       int owned = 0;
-      const ITEM_INFO item = g_session.FindMerchantPurchaseSavedItem(mode->drag.id);
-      if (item.identity[1] != 0) {
-        owned = item.quantity;
+      if (mode->drag.source == 10) {
+        const ITEM_INFO item = g_session.FindMerchantPurchaseSavedItem(mode->drag.id);
+        if (item.identity[1] != 0) {
+          owned = item.quantity;
+        }
       }
       if (owned == 0) {
         break;
@@ -2184,13 +2179,12 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       goto notify;
     }
     case 17: {
-      if (mode->drag.source != 22) {
-        break;
-      }
       int owned = 0;
-      const ITEM_INFO item = g_session.FindMerchantMyShopItem(mode->drag.id);
-      if (item.identity[1] != 0) {
-        owned = item.quantity;
+      if (mode->drag.source == 22) {
+        const ITEM_INFO item = g_session.FindMerchantMyShopItem(mode->drag.id);
+        if (item.identity[1] != 0) {
+          owned = item.quantity;
+        }
       }
       if (owned == 0) {
         break;
@@ -2203,13 +2197,12 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       goto notify;
     }
     case 18: {
-      if (mode->drag.source != 21) {
-        break;
-      }
       int owned = 0;
-      const ITEM_INFO item = g_session.FindMerchantHopeToSellItem(mode->drag.id);
-      if (item.identity[1] != 0) {
-        owned = item.quantity;
+      if (mode->drag.source == 21) {
+        const ITEM_INFO item = g_session.FindMerchantHopeToSellItem(mode->drag.id);
+        if (item.identity[1] != 0) {
+          owned = item.quantity;
+        }
       }
       if (owned == 0) {
         break;
@@ -2420,12 +2413,12 @@ void UIMerchantShopMakeWnd::OnCreate(int width, int height) {
   this->AddChild(this->scrollBar);
 
   this->slotCount = count;
-  if (this->mode == 0) {
-    if (count > 13) {
-      this->slotCount = 13;
+  if (this->mode != 0) {
+    if (count > 5) {
+      this->slotCount = 5;
     }
-  } else if (count > 5) {
-    this->slotCount = 5;
+  } else if (count > 13) {
+    this->slotCount = 13;
   }
   this->columns = 1;
   this->minimumRows = 4;
@@ -2468,20 +2461,22 @@ void UIMerchantShopMakeWnd::OnCreate(int width, int height) {
     this->AddChild(this->zenyLimitEdit);
   }
 
-  const std::string prefix("유저인터페이스\\");
-  const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
-  int positions[2][2] = {{this->geometry.width - 92, this->geometry.height - 24}, {this->geometry.width - 46, this->geometry.height - 24}};
-  int ids[2] = {184, 185};
-  for (int index = 0; index < 2; ++index) {
-    UIBitmapButton* button = new UIBitmapButton();
-    button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
-    button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
-    button->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
-    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
-    button->Move(positions[index][0], positions[index][1]);
-    button->SetId(ids[index]);
-    this->AddChild(button);
-    this->actionButtons[index] = button;
+  {
+    const std::string prefix("유저인터페이스\\");
+    const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
+    int ids[2] = {184, 185};
+    int positions[2][2] = {{this->geometry.width - 92, this->geometry.height - 24}, {this->geometry.width - 46, this->geometry.height - 24}};
+    for (int index = 0; index < 2; ++index) {
+      UIBitmapButton* button = new UIBitmapButton();
+      button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
+      button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
+      button->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
+      button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+      button->Move(positions[index][0], positions[index][1]);
+      button->SetId(ids[index]);
+      this->AddChild(button);
+      this->actionButtons[index] = button;
+    }
   }
 
   this->m_message0 = 184;
@@ -8327,8 +8322,9 @@ int UIItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     this->RecordResponse(static_cast<int>(a), b, c, d);
     if (a == ID_CHECK) {
       if (g_replayAnimationScaling != 0) {
-        this->checkBox->geometry.state = b;
-        this->checkBox->Invalidate();
+        UICheckBox* box = this->checkBox;
+        box->geometry.state = b;
+        box->Invalidate();
       }
 
       g_windowMgr.dragAllItems = b;
@@ -8337,10 +8333,12 @@ int UIItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     break;
   }
   case UM_DROP:
-    if (a == 0) {
+    switch (a) {
+    case 0: {
       CGameMode* mode = g_modeMgr.GetGameMode();
+      ModeDragState& drag = mode->drag;
       ITEM_INFO item;
-      item.Assign(mode->drag);
+      item.Assign(drag);
       g_session.RemoveItem1720ByName(item);
       if (g_windowMgr.itemPurchaseWnd) {
         g_windowMgr.itemPurchaseWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
@@ -8350,10 +8348,11 @@ int UIItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
       return 0;
     }
-    if (a == 1) {
+    case 1: {
       CGameMode* mode = g_modeMgr.GetGameMode();
+      ModeDragState& drag = mode->drag;
       ITEM_INFO item;
-      item.Assign(mode->drag);
+      item.Assign(drag);
       CSession* lists = &g_session;
       lists->MergeShopItem(item);
       lists->RemoveStorageItem(item);
@@ -8364,6 +8363,7 @@ int UIItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
       return 0;
+    }
     }
     break;
   case UM_SETTITLE:
@@ -8421,7 +8421,7 @@ int UIItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     const int size = g_session.GetList1Size();
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetItem1718At(i);
-      if (item.identity[1] != 0) {
+      if (item.identity[1] > 0) {
         this->items.push_back(item);
       }
     }
