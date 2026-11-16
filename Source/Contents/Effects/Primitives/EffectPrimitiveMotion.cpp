@@ -225,8 +225,9 @@ bool CEffectPrim::MoveEffectPrimitive() {
   if ((this->state.pattern & 0x200u) != 0) {
     matrix.MakeZRotation(g_modeMgr.GetGameMode()->camera->camera.pitch);
   } else if ((this->state.pattern & 0x40u) != 0) {
-    this->state.longitude = g_modeMgr.GetGameMode()->camera->camera.yaw + 90.0f;
-    this->state.roll = g_modeMgr.GetGameMode()->camera->camera.pitch;
+    CGameMode* const mode = g_modeMgr.GetGameMode();
+    this->state.longitude = mode->camera->camera.yaw + 90.0f;
+    this->state.roll = mode->camera->camera.pitch;
     matrix.MakeXRotation(GetRadian(static_cast<int>(this->state.latitude)));
     matrix.AppendZRotation(GetRadian(static_cast<int>(this->state.roll)));
   } else {
@@ -4219,7 +4220,7 @@ bool CEffectPrim::PrimTwilight() {
 
 // OFFSET: 0x00BC5440
 // FUNCTION: fn_19847
-bool CEffectPrim::PrimWind() {
+__declspec(noinline) bool CEffectPrim::PrimWind() {
   for (int index = 0; index < 4; ++index) {
     if (this->state.slots[index].life != 1) {
       continue;
@@ -8716,7 +8717,7 @@ bool CEffectPrim::OnProcess() {
 
           if (slot.alphaB < 1) {
             slot.alphaB = 0;
-            slot.distance = 2.14f;
+            slot.distance = 2.1399999f;
             slot.riseAngle = 74;
           }
         }
