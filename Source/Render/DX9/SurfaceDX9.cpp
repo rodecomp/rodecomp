@@ -80,7 +80,7 @@ CSurfaceDX9::CSurfaceDX9(DeviceOwnerDX9& owner, int width, int height)
 
 // OFFSET: 0x005707D0
 // FUNCTION: fn_02428
-CSurfaceDX9::CSurfaceDX9(DeviceOwnerDX9& owner, IDirect3DSurface9* surface) : m_owner(&owner) {
+CSurfaceDX9::CSurfaceDX9(DeviceOwnerDX9* owner, IDirect3DSurface9* surface) : m_owner(owner) {
   D3DSURFACE_DESC description;
   if (SUCCEEDED(surface->GetDesc(&description))) {
     this->m_width = description.Width;

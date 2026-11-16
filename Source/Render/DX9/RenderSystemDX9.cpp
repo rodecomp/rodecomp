@@ -106,7 +106,7 @@ CTexture* CRenderSystemDX9::BackBufferTexture() {
 std::shared_ptr<CSurface> CRenderSystemDX9::BackBufferSurface() {
   if (!this->m_backBuffer) {
       IDirect3DSurface9* backBuffer = this->m_device->backBuffer;
-      this->m_backBuffer = std::make_shared<CSurfaceDX9>(*this->m_device, backBuffer);
+      this->m_backBuffer = std::make_shared<CSurfaceDX9>(this->m_device, backBuffer);
   }
 
   return this->m_backBuffer;

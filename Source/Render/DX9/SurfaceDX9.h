@@ -12,7 +12,7 @@ std::uint16_t PackColorA1R5G5B5(std::uint32_t color);
 class CSurfaceDX9 : public CSurface {
 public:
   CSurfaceDX9(DeviceOwnerDX9& owner, int width, int height);
-  CSurfaceDX9(DeviceOwnerDX9& owner, IDirect3DSurface9* surface);
+  CSurfaceDX9(DeviceOwnerDX9* owner, IDirect3DSurface9* surface);
   ~CSurfaceDX9() override;
   std::uint32_t Width() override;
   std::uint32_t Height() override;
