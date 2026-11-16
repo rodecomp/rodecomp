@@ -2541,20 +2541,20 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
       }
     }
 
-    if (id != -1) {
-      if (this->CloseWindow(id) == true) {
+    if (id == -1) {
+      if (g_navigationManager.viewMode == 2) {
+        if (g_windowMgr.Confirm(LookupMessage(MSI_NAVIGATION_HELP2), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+          g_navigationManager.displayMode = 0;
+          g_navigationManager.expandedMap = false;
+          g_navigationManager.Reset(true);
+          g_worldViewMgr.ClearMarks();
+          g_worldViewMgr.ClearLevels();
+          g_worldViewMgr.ResetSelection();
+          g_windowMgr.CloseWindow(WID_NAVIGATIONRUIDEWND);
+        }
         return false;
       }
-    } else if (g_navigationManager.viewMode == 2) {
-      if (g_windowMgr.Confirm(LookupMessage(MSI_NAVIGATION_HELP2), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
-        g_navigationManager.displayMode = 0;
-        g_navigationManager.expandedMap = false;
-        g_navigationManager.Reset(true);
-        g_worldViewMgr.ClearMarks();
-        g_worldViewMgr.ClearLevels();
-        g_worldViewMgr.ResetSelection();
-        g_windowMgr.CloseWindow(WID_NAVIGATIONRUIDEWND);
-      }
+    } else if (this->CloseWindow(id) == true) {
       return false;
     }
 
