@@ -515,8 +515,8 @@ bool UILapineUpgradeBox_IngredientListWnd::AddIngredient(std::uint32_t identity)
   if ((g_session.IsPetEgg(itemId) == 1 && owned.damaged == 1) || g_session.HasSwapEquipmentItem(owned.identity[1]) == 1) {
     return false;
   }
-  const auto material = std::find_if(this->materials.begin(), this->materials.end(), [itemId](ITEM_INFO value) {
-    return std::atoi(value.itemId.c_str()) == itemId;
+  const auto material = std::find_if(this->materials.begin(), this->materials.end(), [owned](ITEM_INFO value) {
+    return std::atoi(owned.itemId.c_str()) == std::atoi(value.itemId.c_str());
   });
   if (material == this->materials.end()) {
     return false;
