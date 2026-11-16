@@ -45,7 +45,7 @@ struct ItemSaleData {
   /* 0000 */ std::uint32_t costume;
   /* 0004 */ __time32_t startTime;
   /* 0008 */ __time32_t endTime;
-  /* 000C */ std::uint32_t purchaseCount;
+  /* 000C */ std::int32_t purchaseCount;
 };
 
 struct ITEM_INFO {
