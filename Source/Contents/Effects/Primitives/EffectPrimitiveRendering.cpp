@@ -5101,17 +5101,16 @@ void CEffectPrim::RenderSphereWind(matrix& wtm) {
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
-    const EffectPrimitiveSlot& slot = this->state.slots[ec];
 
-    if (slot.life != 1) {
+    if (this->state.slots[ec].life != 1) {
       continue;
     }
 
-    const int step = slot.fullDisplayAngle / 20;
+    const int step = this->state.slots[ec].fullDisplayAngle / 20;
     int order = 0;
 
-    for (int count = 0; count <= slot.fullDisplayAngle; count += step) {
-      int angle = slot.rotStart + count;
+    for (int count = 0; count <= this->state.slots[ec].fullDisplayAngle; count += step) {
+      int angle = this->state.slots[ec].rotStart + count;
 
       if (angle >= 360) {
         angle -= 360;
@@ -5119,19 +5118,19 @@ void CEffectPrim::RenderSphereWind(matrix& wtm) {
         angle += 360;
       }
 
-      if (slot.fullDisplayAngle == 360 && order == 20) {
-        angle = slot.rotStart;
+      if (this->state.slots[ec].fullDisplayAngle == 360 && order == 20) {
+        angle = this->state.slots[ec].rotStart;
       }
 
       const float cs1 = g_cosTable[angle];
       const float sn1 = g_sinTable[angle];
-      const vector3d vecM{cs1 * (g_cosTable[slot.riseAngle] * slot.distance), cs1 * (g_sinTable[slot.riseAngle] * slot.distance), sn1 * slot.distance};
-      const vector3d vecA{-(slot.maxHeight * g_sinTable[slot.riseAngle]), slot.maxHeight * g_cosTable[slot.riseAngle], 0.0f};
-      vec2.Set(vecM.x + vecA.x, vecM.y + vecA.y + slot.height[0], vecM.z + vecA.z);
-      vec4.Set(vecM.x - vecA.x, vecM.y - vecA.y + slot.height[0], vecM.z - vecA.z);
+      const vector3d vecM{cs1 * (g_cosTable[this->state.slots[ec].riseAngle] * this->state.slots[ec].distance), cs1 * (g_sinTable[this->state.slots[ec].riseAngle] * this->state.slots[ec].distance), sn1 * this->state.slots[ec].distance};
+      const vector3d vecA{-(this->state.slots[ec].maxHeight * g_sinTable[this->state.slots[ec].riseAngle]), this->state.slots[ec].maxHeight * g_cosTable[this->state.slots[ec].riseAngle], 0.0f};
+      vec2.Set(vecM.x + vecA.x, vecM.y + vecA.y + this->state.slots[ec].height[0], vecM.z + vecA.z);
+      vec4.Set(vecM.x - vecA.x, vecM.y - vecA.y + this->state.slots[ec].height[0], vecM.z - vecA.z);
 
       if (order > 0) {
-        this->RenderTeiRect(&rpCnt, order - 1, slot.alphaB, slot.alphaB, vec1, vec2, vec4, vec3, wtm, 0);
+        this->RenderTeiRect(&rpCnt, order - 1, this->state.slots[ec].alphaB, this->state.slots[ec].alphaB, vec1, vec2, vec4, vec3, wtm, 0);
       }
 
       ++order;
