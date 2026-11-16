@@ -511,10 +511,10 @@ void CUISkillDelayInfo::SetSkill(int skillId) {
   this->delayList->UpdateScrollBar();
 
   this->description->Clear();
-  if (skillFlag & 0x1000) {
+  if (static_cast<bool>(skillFlag >> 12 & 1)) {
     this->description->AddLine(LookupMessage(4329));
   }
-  if (skillFlag & 4) {
+  if (static_cast<bool>(skillFlag >> 2 & 1)) {
     if (!this->description->lines.empty()) {
       this->description->AddLine("\n");
     }
