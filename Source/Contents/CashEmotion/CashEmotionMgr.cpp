@@ -158,7 +158,7 @@ protected:
 
 class UICashEmotionPack_Search_UnPurchased : public UICashEmotionPack_Search {
 public:
-  explicit UICashEmotionPack_Search_UnPurchased();
+  explicit __declspec(noinline) UICashEmotionPack_Search_UnPurchased();
   ~UICashEmotionPack_Search_UnPurchased() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
@@ -269,7 +269,7 @@ public:
   void AddResults(char type, const std::vector<std::pair<int, int>>& results, int& y);
 
 protected:
-  /* 00B0 */ std::vector<UICashEmotionPack*> m_items;
+  /* 00B0 */ std::vector<UICashEmotionPack_Search*> m_items;
   /* 00BC */ ICashEmotionAction* m_action;
   /* 00C0 */ std::string m_filter;
 };
