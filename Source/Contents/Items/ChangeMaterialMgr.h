@@ -67,6 +67,13 @@ struct MaterialKeyLess {
 
 class ChangeMaterialRecipeList {
 public:
+  // INLINED
+  ChangeMaterialRecipeList() {
+  }
+  // INLINED
+  ChangeMaterialRecipeList(const ChangeMaterialRecipeList& other) : m_recipes(other.m_recipes) {
+  }
+
   ChangeMaterialResult Add(std::vector<ChangeMaterialEntry> materials, std::vector<ChangeMaterialProduct> products, int type);
 
   /* 0000 */ std::vector<ChangeMaterialRecipe> m_recipes;

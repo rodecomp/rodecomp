@@ -128,9 +128,8 @@ ChangeMaterialResult CChangeMaterialMgr::InsertRecipe(std::vector<ChangeMaterial
 
   std::map<MaterialKey, ChangeMaterialRecipeList, MaterialKeyLess>::iterator it = this->m_library.find(key);
   if (it == this->m_library.end()) {
-    ChangeMaterialRecipeList recipes;
     std::pair<std::map<MaterialKey, ChangeMaterialRecipeList, MaterialKeyLess>::iterator, bool> inserted =
-        this->m_library.insert(std::map<MaterialKey, ChangeMaterialRecipeList, MaterialKeyLess>::value_type(key, recipes));
+        this->m_library.insert(std::map<MaterialKey, ChangeMaterialRecipeList, MaterialKeyLess>::value_type(key, ChangeMaterialRecipeList()));
     if (!inserted.second) {
       return ChangeMaterialResult(false, "error m_Library.insert()");
     }
