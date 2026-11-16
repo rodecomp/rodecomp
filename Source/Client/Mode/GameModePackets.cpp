@@ -10632,9 +10632,44 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
   }
 
   const unsigned char showMessage = g_serviceOptions.Get(TT_SKILLFAIL_ON_OFF);
-  char text[256];
   const char* notice;
   switch (packet->cause) {
+  case USESKILL_FAIL_SH_TEMPORARY_COMMUNION:
+    notice = LookupMessage(packet->value);
+    break;
+  case USESKILL_FAIL:
+    if (packet->skillId == WL_TETRAVORTEX || packet->skillId == WL_TETRAVORTEX_FIRE || packet->skillId == WL_TETRAVORTEX_WATER || packet->skillId == WL_TETRAVORTEX_WIND || packet->skillId == WL_TETRAVORTEX_GROUND) {
+      this->scene->player->SendMsg(nullptr, AM_EFFECT_LOOP_COUNT, 0x2DF, 0, 0, 0, 0, 0);
+      this->scene->player->SendMsg(nullptr, AM_EFFECT_LOOP_COUNT, 0x2E0, 0, 0, 0, 0, 0);
+      this->scene->player->SendMsg(nullptr, AM_EFFECT_LOOP_COUNT, 0x2E1, 0, 0, 0, 0, 0);
+      this->scene->player->SendMsg(nullptr, AM_EFFECT_LOOP_COUNT, 0x2E2, 0, 0, 0, 0, 0);
+    }
+    if (!showMessage) {
+      return;
+    }
+    notice = LookupMessage(MSI_USESKILL_FAIL);
+    break;
+  case USESKILL_FAIL_REDJAMSTONE:
+    notice = LookupMessage(MSI_NEED_REDJAMSTONE);
+    break;
+  case USESKILL_FAIL_BLUEJAMSTONE:
+    notice = LookupMessage(MSI_NEED_BLUEJAMSTONE);
+    break;
+  case USESKILL_FAIL_THIS_WEAPON:
+    notice = LookupMessage(MSI_USESKILL_FAIL_NOT_SUITABLE_WEAPON);
+    break;
+  case USESKILL_FAIL_SP_INSUFFICIENT:
+    notice = LookupMessage(MSI_USESKILL_FAIL_SP_INSUFFICIENT);
+    break;
+  case USESKILL_FAIL_HP_INSUFFICIENT:
+    notice = LookupMessage(MSI_USESKILL_FAIL_HP_INSUFFICIENT);
+    break;
+  case USESKILL_FAIL_MONEY:
+    notice = LookupMessage(MSI_SKILL_FAIL_MONEY);
+    break;
+  case USESKILL_FAIL_STUFF_INSUFFICIENT:
+    notice = LookupMessage(MSI_NOT_ENOUGH_SOURCE);
+    break;
   case USESKILL_FAIL_LEVEL:
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
     if (packet->skillId == NV_BASIC) {
@@ -10692,48 +10727,8 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
       }
     }
     break;
-  case USESKILL_FAIL_SP_INSUFFICIENT:
-    notice = LookupMessage(MSI_USESKILL_FAIL_SP_INSUFFICIENT);
-    break;
-  case USESKILL_FAIL_HP_INSUFFICIENT:
-    notice = LookupMessage(MSI_USESKILL_FAIL_HP_INSUFFICIENT);
-    break;
-  case USESKILL_FAIL_STUFF_INSUFFICIENT:
-    notice = LookupMessage(MSI_NOT_ENOUGH_SOURCE);
-    break;
-  case USESKILL_FAIL_SKILLINTERVAL:
-    if (HidesUseFailureMessage(packet->skillId) || !showMessage) {
-      return;
-    }
-    std::sprintf(text, LookupMessage(MSI_SKILLINTERVAL2), CSkillInfo::DisplayName(*g_session.m_hotkeyScript, packet->skillId));
-    notice = text;
-    break;
-  case USESKILL_FAIL_MONEY:
-    notice = LookupMessage(MSI_SKILL_FAIL_MONEY);
-    break;
-  case USESKILL_FAIL_THIS_WEAPON:
-    notice = LookupMessage(MSI_USESKILL_FAIL_NOT_SUITABLE_WEAPON);
-    break;
-  case USESKILL_FAIL_REDJAMSTONE:
-    notice = LookupMessage(MSI_NEED_REDJAMSTONE);
-    break;
-  case USESKILL_FAIL_BLUEJAMSTONE:
-    notice = LookupMessage(MSI_NEED_BLUEJAMSTONE);
-    break;
   case USESKILL_FAIL_WEIGHTOVER:
     notice = LookupMessage(MSI_USESKILL_FAIL_WEIGHTOVER);
-    break;
-  case USESKILL_FAIL:
-    if (packet->skillId == WL_TETRAVORTEX || packet->skillId == WL_TETRAVORTEX_FIRE || packet->skillId == WL_TETRAVORTEX_WATER || packet->skillId == WL_TETRAVORTEX_WIND || packet->skillId == WL_TETRAVORTEX_GROUND) {
-      this->scene->player->SendMsg(nullptr, AM_EFFECT_LOOP_COUNT, 0x2DF, 0, 0, 0, 0, 0);
-      this->scene->player->SendMsg(nullptr, AM_EFFECT_LOOP_COUNT, 0x2E0, 0, 0, 0, 0, 0);
-      this->scene->player->SendMsg(nullptr, AM_EFFECT_LOOP_COUNT, 0x2E1, 0, 0, 0, 0, 0);
-      this->scene->player->SendMsg(nullptr, AM_EFFECT_LOOP_COUNT, 0x2E2, 0, 0, 0, 0, 0);
-    }
-    if (!showMessage) {
-      return;
-    }
-    notice = LookupMessage(MSI_USESKILL_FAIL);
     break;
   case USESKILL_FAIL_TOTARGET:
     notice = LookupMessage(MSI_USESKILL_FAIL_TOTARGET);
@@ -10777,41 +10772,23 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
   case USESKILL_FAIL_PAINTBRUSH:
     notice = LookupMessage(MSI_USESKILL_FAIL_PAINTBRUSH);
     break;
-  case USESKILL_FAIL_DRAGON:
-    notice = LookupMessage(MSI_USESKILL_FAIL_DRAGON);
-    break;
   case USESKILL_FAIL_POS:
     notice = LookupMessage(MSI_USESKILL_FAIL_POS);
     break;
   case USESKILL_FAIL_HELPER_SP_INSUFFICIENT:
     notice = LookupMessage(MSI_USESKILL_FAIL_HELPER_SP_INSUFFICIENT);
     break;
-  case USESKILL_FAIL_NEER_WALL:
-    notice = LookupMessage(MSI_USESKILL_FAIL_NEER_WALL);
-    break;
-  case USESKILL_FAIL_NEED_EXP_1PERCENT:
-    notice = LookupMessage(MSI_USESKILL_FAIL_NEED_EXP_1PERCENT);
-    break;
-  case USESKILL_FAIL_CHORUS_SP_INSUFFICIENT:
-    notice = LookupMessage(MSI_USESKILL_FAIL_CHORUS_SP_INSUFFICIENT);
-    break;
   case USESKILL_FAIL_GC_WEAPONBLOCKING:
     notice = LookupMessage(MSI_USESKILL_FAIL_GC_WEAPONBLOCKING);
+    break;
+  case USESKILL_FAIL_NEED_WEAPON_BLOCKING:
+    notice = LookupMessage(MSI_RUSSIA_PERSONALINFO_DROP);
     break;
   case USESKILL_FAIL_GC_POISONINGWEAPON:
     notice = LookupMessage(MSI_USESKILL_FAIL_GC_POISONINGWEAPON);
     break;
   case USESKILL_FAIL_MADOGEAR:
     notice = LookupMessage(MSI_USESKILL_FAIL_MADOGEAR);
-    break;
-  case USESKILL_FAIL_NEED_EQUIPMENT_KUNAI:
-    notice = LookupMessage(MSI_USESKILL_FAIL_NEED_EQUIPMENT_KUNAI);
-    break;
-  case USESKILL_FAIL_TOTARGET_PLAYER:
-    notice = LookupMessage(MSI_USESKILL_FAIL_TOTARGET_PLAYER);
-    break;
-  case USESKILL_FAIL_SIZE:
-    notice = LookupMessage(MSI_USESKILL_FAIL_SIZE);
     break;
   case USESKILL_FAIL_CANONBALL:
     notice = LookupMessage(MSI_USESKILL_FAIL_CANONBALL);
@@ -10822,6 +10799,15 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
   case USESKILL_FAIL_GUILLONTINE_POISON:
     notice = LookupMessage(MSI_USESKILL_FAIL_GUILLONTINE_POISON);
     break;
+  case USESKILL_FAIL_SKILLINTERVAL: {
+    if (HidesUseFailureMessage(packet->skillId) || !showMessage) {
+      return;
+    }
+    char text[256];
+    std::sprintf(text, LookupMessage(MSI_SKILLINTERVAL2), CSkillInfo::DisplayName(packet->skillId));
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0xB, 0, 0);
+    return;
+  }
   case USESKILL_FAIL_MADOGEAR_RIDE:
     notice = LookupMessage(MSI_USESKILL_FAIL_MADOGEAR_RIDE);
     break;
@@ -10856,22 +10842,26 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_USESKILL_FAIL_NEED_EQUIPMENT), item.DisplayName(0).c_str()).c_str()), 0xFF, 0xB, 0, 0);
     return;
   }
-  case USESKILL_FAIL_COMBOSKILL:
+  case USESKILL_FAIL_COMBOSKILL: {
+    char text[256];
     if (packet->value == 0) {
       std::sprintf(text, LookupMessage(MSI_USESKILL_FAIL_COMBOSKILL2));
     } else {
-      std::sprintf(text, LookupMessage(MSI_USESKILL_FAIL_COMBOSKILL), CSkillInfo::DisplayName(*g_session.m_hotkeyScript, packet->value));
+      std::sprintf(text, LookupMessage(MSI_USESKILL_FAIL_COMBOSKILL), CSkillInfo::DisplayName(packet->value));
     }
-    notice = text;
-    break;
-  case USESKILL_FAIL_SPIRITS:
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0xB, 0, 0);
+    return;
+  }
+  case USESKILL_FAIL_SPIRITS: {
+    char text[256];
     if (packet->value == 0) {
       std::sprintf(text, LookupMessage(MSI_USESKILL_FAIL_SPIRITS2));
     } else {
       std::sprintf(text, LookupMessage(MSI_USESKILL_FAIL_SPIRITS), packet->value);
     }
-    notice = text;
-    break;
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0xB, 0, 0);
+    return;
+  }
   case USESKILL_FAIL_NEED_EQUIPPED_WEAPON_CLASS: {
     const int reason = packet->value;
     if (reason == 0x15) {
@@ -10909,27 +10899,47 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
   case USESKILL_FAIL_STYLE_CHANGE_GRAPPLER:
     notice = LookupMessage(MSI_USESKILL_FAIL_STYLE_CHANGE_GRAPPLER);
     break;
+  case USESKILL_FAIL_DRAGON:
+    notice = LookupMessage(MSI_USESKILL_FAIL_DRAGON);
+    break;
+  case USESKILL_FAIL_NEER_WALL:
+    notice = LookupMessage(MSI_USESKILL_FAIL_NEER_WALL);
+    break;
+  case USESKILL_FAIL_NEED_EXP_1PERCENT:
+    notice = LookupMessage(MSI_USESKILL_FAIL_NEED_EXP_1PERCENT);
+    break;
+  case USESKILL_FAIL_CHORUS_SP_INSUFFICIENT:
+    notice = LookupMessage(MSI_USESKILL_FAIL_CHORUS_SP_INSUFFICIENT);
+    break;
+  case USESKILL_FAIL_NEED_EQUIPMENT_KUNAI:
+    notice = LookupMessage(MSI_USESKILL_FAIL_NEED_EQUIPMENT_KUNAI);
+    break;
+  case USESKILL_FAIL_SIZE:
+    notice = LookupMessage(MSI_USESKILL_FAIL_SIZE);
+    break;
+  case USESKILL_FAIL_TOTARGET_PLAYER:
+    notice = LookupMessage(MSI_USESKILL_FAIL_TOTARGET_PLAYER);
+    break;
   case USESKILL_FAIL_THERE_ARE_NPC_AROUND:
     notice = LookupMessage(MSI_USESKILL_FAIL_THERE_ARE_NPC_AROUND);
     break;
   case USESKILL_FAIL_NEED_MORE_BULLET:
     notice = LookupMessage(MSI_STEAMAGENCY_ERROR);
     break;
-  case USESKILL_FAIL_COINS:
+  case USESKILL_FAIL_MAP:
+    notice = LookupMessage(MSI_SECOND_PASSWORD_INFO_4);
+    break;
+  case USESKILL_FAIL_COINS: {
+    char text[256];
     std::memset(text, 0, sizeof(text));
     if (packet->value > 0) {
       StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(MSI_FAIL_NEED_EQUIPPED_GUN_RIFLE), packet->value);
     } else {
       StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(MSI_FAIL_NEED_EQUIPPED_GUN_SHOTGUN));
     }
-    notice = text;
-    break;
-  case USESKILL_FAIL_SH_TEMPORARY_COMMUNION:
-    notice = LookupMessage(packet->value);
-    break;
-  case USESKILL_FAIL_MAP:
-    notice = LookupMessage(MSI_SECOND_PASSWORD_INFO_4);
-    break;
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0xB, 0, 0);
+    return;
+  }
   case USESKILL_FAIL_NEED_SUMMON_SP:
     notice = LookupMessage(MSI_SET_ITEMS_TO_MAIL_FAILED);
     break;
@@ -10959,9 +10969,6 @@ void CGameMode::ReceiveSkillFailure(const unsigned char* data) {
     break;
   case USESKILL_FAIL_NEED_ENERGY_SPHERE:
     notice = LookupMessage(MSI_USESKILL_FAIL_GC_WEAPONBLOCK_ON);
-    break;
-  case USESKILL_FAIL_NEED_WEAPON_BLOCKING:
-    notice = LookupMessage(MSI_RUSSIA_PERSONALINFO_DROP);
     break;
   case USESKILL_FAIL_MAX_TRAPS: {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_EMBLEM_REGIST_FAILED_INCORRECT_SIZE), packet->value).c_str()), 0xFF, 0xB, 0, 0);
