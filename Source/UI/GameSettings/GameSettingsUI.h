@@ -350,7 +350,7 @@ public:
   void OnClickLabel();
 
   /* 00E8 */ CUICheckBox* m_check;
-  /* 00EC */ UIWindow* m_runButton;
+  /* 00EC */ CUIImageButton* m_runButton;
   /* 00F0 */ CUITextButton* m_label;
   /* 00F4 */ CUIStaticText* m_description;
   /* 00F8 */ int m_optionId;
