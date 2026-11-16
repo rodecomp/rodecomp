@@ -30,11 +30,11 @@ void CSphereWind2Effect::Open() {
   for (int base = 0; base < 45; base += 9) {
     int angle = base;
     for (int ring = 0; ring < 4; ++ring) {
-      const int delay = -std::max(rand() % 20, 0);
-      const float radius = static_cast<float>(std::max(rand() % 11, 0)) * 0.2f + 2.0f;
-      const int rotation = std::max(rand() % 360, 0);
-      const int step = std::max(rand() % 91, 0) + 180;
-      const int speed = std::max(rand() % 4, 0) + 3;
+      const int delay = -std::ranges::max(rand() % 20, 0);
+      const float radius = static_cast<float>(std::ranges::max(rand() % 11, 0)) * 0.2f + 2.0f;
+      const int rotation = std::ranges::max(rand() % 360, 0);
+      const int step = std::ranges::max(rand() % 91, 0) + 180;
+      const int speed = std::ranges::max(rand() % 4, 0) + 3;
 
       for (int part = 0; part < 21; ++part) {
         CParticle* particle = CreateParticle(&this->positionVector, 5);
