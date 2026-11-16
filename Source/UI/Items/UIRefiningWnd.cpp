@@ -691,8 +691,8 @@ void UIRefining_Notice::OnProcess() {
       this->autoShown = 0;
       this->geometry.visible = 0;
     }
-    this->text = this->savedText;
-    this->highlight = this->savedHighlight;
+    this->text = this->saved.text;
+    this->highlight = this->saved.highlight;
     this->Invalidate();
     if (this->parent) {
       this->parent->Invalidate();
@@ -1062,8 +1062,8 @@ void UIRefining_Notice::SetNotice(const char* value, int duration, unsigned char
   this->highlight = highlight;
   this->text = value;
   if (duration == 0) {
-    this->savedText = value;
-    this->savedHighlight = highlight;
+    this->saved.text = value;
+    this->saved.highlight = highlight;
   } else {
     this->expireTick = timeGetTime() + duration;
     if (this->geometry.visible == 0) {

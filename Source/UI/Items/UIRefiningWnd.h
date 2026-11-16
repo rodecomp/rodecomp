@@ -68,17 +68,23 @@ public:
   /* 0120 */ unsigned char highlighted;
 };
 
+struct RefiningNoticeText {
+  // INLINED
+  RefiningNoticeText() : highlight(0) {}
+
+  /* 0000 */ std::string text;
+  /* 0018 */ unsigned char highlight;
+};
+
 class UIRefining_Notice : public UIStaticText {
 public:
   // INLINED
-  UIRefining_Notice()
-      : UIStaticText(), savedHighlight(0), expireTick(0), autoShown(0), highlight(0) {}
+  UIRefining_Notice() : UIStaticText(), expireTick(0), autoShown(0), highlight(0) {}
   void OnProcess() override;
   void Paint() override;
   void SetNotice(const char* value, int duration, unsigned char highlight);
 
-  /* 00D8 */ std::string savedText;
-  /* 00F0 */ unsigned char savedHighlight;
+  /* 00D8 */ RefiningNoticeText saved;
   /* 00F4 */ std::uint32_t expireTick;
   /* 00F8 */ unsigned char autoShown;
   /* 00F9 */ unsigned char highlight;
