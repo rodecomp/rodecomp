@@ -213,7 +213,7 @@ void UIChatHisBox::AddText(const char* text, std::uint32_t color, const char* st
   if (style) {
     this->history.push_back(std::string(style));
   } else {
-    this->history.push_back(std::string());
+    this->history.push_back("");
   }
   this->lineColors.push_back(color);
 
