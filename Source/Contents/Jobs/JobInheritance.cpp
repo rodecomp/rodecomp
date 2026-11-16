@@ -808,113 +808,31 @@ bool CSession::IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) const 
   bool result = false;
 
   switch (job) {
-  case JT_SWORDMAN:
-  case JT_KNIGHT:
-  case JT_CHICKEN:
-  case JT_CRUSADER:
-  case JT_CHICKEN2:
-  case JT_SWORDMAN_H:
-  case JT_KNIGHT_H:
-  case JT_CHICKEN_H:
-  case JT_CRUSADER_H:
-  case JT_CHICKEN2_H:
-  case JT_SWORDMAN_B:
-  case JT_KNIGHT_B:
-  case JT_CHICKEN_B:
-  case JT_CRUSADER_B:
-  case JT_CHICKEN2_B:
-  case JT_RUNE_KNIGHT:
-  case JT_RUNE_KNIGHT_H:
-  case JT_ROYAL_GUARD:
-  case JT_ROYAL_GUARD_H:
-  case JT_RUNE_CHICKEN:
-  case JT_RUNE_CHICKEN_H:
-  case JT_ROYAL_CHICKEN:
-  case JT_ROYAL_CHICKEN_H:
-  case JT_RUNE_CHICKEN2:
-  case JT_RUNE_CHICKEN2_H:
-  case JT_RUNE_CHICKEN3:
-  case JT_RUNE_CHICKEN3_H:
-  case JT_RUNE_CHICKEN4:
-  case JT_RUNE_CHICKEN4_H:
-  case JT_RUNE_CHICKEN5:
-  case JT_RUNE_CHICKEN5_H:
-  case JT_RUNE_KNIGHT_B:
-  case JT_ROYAL_GUARD_B:
-  case JT_RUNE_CHICKEN_B:
-  case JT_ROYAL_CHICKEN_B:
-  case JT_DRAGON_KNIGHT:
-  case JT_IMPERIAL_GUARD:
-  case JT_DRAGON_KNIGHT_CHICKEN:
-  case JT_IMPERIAL_GUARD_CHICKEN:
-    if (view == W_1HSPEAR || view == W_2HSPEAR) {
+  case JT_GUNSLINGER:
+  case JT_REBELLION:
+  case JT_GUNSLINGER_B:
+  case JT_REBELLION_B:
+  case JT_NIGHT_WATCH:
+    switch (view) {
+    case W_RIFLE:
+    case W_GATLING:
+    case W_SHOTGUN:
+    case W_GRENADE:
       result = true;
+      break;
+    default:
+      break;
     }
     break;
-  case JT_MAGICIAN:
-  case JT_MERCHANT:
-  case JT_MAGICIAN_H:
-  case JT_MERCHANT_H:
-  case JT_MAGICIAN_B:
-  case JT_MERCHANT_B:
-    if (view == W_DAGGER) {
-      result = true;
-    }
-    break;
-  case JT_ARCHER:
-  case JT_ARCHER_H:
-  case JT_ARCHER_B:
-    if (view != W_BOW) {
-      result = true;
-    }
-    break;
-  case JT_THIEF:
-  case JT_HUNTER:
-  case JT_ROGUE:
-  case JT_BARD:
-  case JT_DANCER:
-  case JT_THIEF_H:
-  case JT_HUNTER_H:
-  case JT_ROGUE_H:
-  case JT_BARD_H:
-  case JT_DANCER_H:
-  case JT_THIEF_B:
-  case JT_HUNTER_B:
-  case JT_ROGUE_B:
-  case JT_BARD_B:
-  case JT_DANCER_B:
-  case JT_RANGER:
-  case JT_RANGER_H:
-  case JT_MINSTREL:
-  case JT_WANDERER:
-  case JT_SHADOW_CHASER:
-  case JT_MINSTREL_H:
-  case JT_WANDERER_H:
-  case JT_SHADOW_CHASER_H:
-  case JT_WOLF_RANGER:
-  case JT_WOLF_RANGER_H:
-  case JT_RANGER_B:
-  case JT_MINSTREL_B:
-  case JT_WANDERER_B:
-  case JT_SHADOW_CHASER_B:
-  case JT_WOLF_RANGER_B:
-  case JT_WINDHAWK:
-  case JT_ABYSS_CHASER:
-  case JT_TROUBADOUR:
-  case JT_TROUVERE:
-  case JT_WOLF_WINDHAWK:
-    if (view == W_BOW) {
-      result = true;
-    }
-    break;
-  case JT_PRIEST:
-  case JT_PRIEST_H:
-  case JT_PRIEST_B:
-  case JT_ARCHBISHOP:
-  case JT_ARCHBISHOP_H:
-  case JT_ARCHBISHOP_B:
-  case JT_CARDINAL:
-    if (view == W_BOOK) {
+  case JT_NINJA:
+  case JT_KAGEROU:
+  case JT_OBORO:
+  case JT_NINJA_B:
+  case JT_KAGEROU_B:
+  case JT_OBORO_B:
+  case JT_SHINKIRO:
+  case JT_SHIRANUI:
+    if (view == W_HUUMA) {
       result = true;
     }
     break;
@@ -930,20 +848,71 @@ bool CSession::IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) const 
   case JT_SOUL_REAPER_B:
   case JT_ARCH_MAGE:
   case JT_SOUL_ASCETIC:
+    if (view == W_DAGGER && slot == 1) {
+      result = true;
+    } else if ((view == W_STAFF || view == W_2HSTAFF) && slot == 0) {
+      result = true;
+    }
+    break;
+  case JT_ARCHER:
+  case JT_ARCHER_H:
+  case JT_ARCHER_B:
+    if (view != W_BOW) {
+      result = true;
+    }
+    break;
+  case JT_NOVICE:
+  case JT_SUPERNOVICE:
+  case JT_NOVICE_H:
+  case JT_NOVICE_B:
+  case JT_SUPERNOVICE_B:
+  case JT_SUPERNOVICE2:
+  case JT_SUPERNOVICE2_B:
+  case JT_HYPER_NOVICE:
+    switch (slot) {
+    case 0:
+      if (view == W_DAGGER) {
+        result = true;
+      }
+      break;
+    case 1:
+      switch (view) {
+      case W_1HSWORD:
+      case W_2HSWORD:
+      case W_1HAXE:
+      case W_2HAXE:
+      case W_MACE:
+      case W_2HMACE:
+      case W_STAFF:
+      case W_2HSTAFF:
+        result = true;
+        break;
+      default:
+        break;
+      }
+      break;
+    }
+    break;
+  case JT_MAGICIAN:
+  case JT_MERCHANT:
+  case JT_MAGICIAN_H:
+  case JT_MERCHANT_H:
+  case JT_MAGICIAN_B:
+  case JT_MERCHANT_B:
     if (view == W_DAGGER) {
-      if (slot == 1) {
-        result = true;
-      }
-      break;
+      result = true;
     }
-
-    if (view == W_STAFF || view == W_2HSTAFF) {
-      if (slot == 0) {
-        result = true;
-      }
-      break;
+    break;
+  case JT_PRIEST:
+  case JT_PRIEST_H:
+  case JT_PRIEST_B:
+  case JT_ARCHBISHOP:
+  case JT_ARCHBISHOP_H:
+  case JT_ARCHBISHOP_B:
+  case JT_CARDINAL:
+    if (view == W_BOOK) {
+      result = true;
     }
-
     break;
   case JT_BLACKSMITH:
   case JT_BLACKSMITH_H:
@@ -993,17 +962,6 @@ bool CSession::IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) const 
       break;
     }
     break;
-  case JT_MONK:
-  case JT_MONK_H:
-  case JT_MONK_B:
-  case JT_SURA:
-  case JT_SURA_H:
-  case JT_SURA_B:
-  case JT_INQUISITOR:
-    if (view == W_FIST || view == W_KNUCKLE) {
-      result = true;
-    }
-    break;
   case JT_SAGE:
   case JT_SAGE_H:
   case JT_SAGE_B:
@@ -1040,65 +998,96 @@ bool CSession::IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) const 
       break;
     }
     break;
-  case JT_NOVICE:
-  case JT_SUPERNOVICE:
-  case JT_NOVICE_H:
-  case JT_NOVICE_B:
-  case JT_SUPERNOVICE_B:
-  case JT_SUPERNOVICE2:
-  case JT_SUPERNOVICE2_B:
-  case JT_HYPER_NOVICE:
-    if (slot == 0) {
-      if (view == W_DAGGER) {
-        result = true;
-      }
-      break;
-    }
-
-    if (slot != 1) {
-      break;
-    }
-
-    switch (view) {
-    case W_1HSWORD:
-    case W_2HSWORD:
-    case W_1HAXE:
-    case W_2HAXE:
-    case W_MACE:
-    case W_2HMACE:
-    case W_STAFF:
-    case W_2HSTAFF:
+  case JT_SWORDMAN:
+  case JT_KNIGHT:
+  case JT_CHICKEN:
+  case JT_CRUSADER:
+  case JT_CHICKEN2:
+  case JT_SWORDMAN_H:
+  case JT_KNIGHT_H:
+  case JT_CHICKEN_H:
+  case JT_CRUSADER_H:
+  case JT_CHICKEN2_H:
+  case JT_SWORDMAN_B:
+  case JT_KNIGHT_B:
+  case JT_CHICKEN_B:
+  case JT_CRUSADER_B:
+  case JT_CHICKEN2_B:
+  case JT_RUNE_KNIGHT:
+  case JT_RUNE_KNIGHT_H:
+  case JT_ROYAL_GUARD:
+  case JT_ROYAL_GUARD_H:
+  case JT_RUNE_CHICKEN:
+  case JT_RUNE_CHICKEN_H:
+  case JT_ROYAL_CHICKEN:
+  case JT_ROYAL_CHICKEN_H:
+  case JT_RUNE_CHICKEN2:
+  case JT_RUNE_CHICKEN2_H:
+  case JT_RUNE_CHICKEN3:
+  case JT_RUNE_CHICKEN3_H:
+  case JT_RUNE_CHICKEN4:
+  case JT_RUNE_CHICKEN4_H:
+  case JT_RUNE_CHICKEN5:
+  case JT_RUNE_CHICKEN5_H:
+  case JT_RUNE_KNIGHT_B:
+  case JT_ROYAL_GUARD_B:
+  case JT_RUNE_CHICKEN_B:
+  case JT_ROYAL_CHICKEN_B:
+  case JT_DRAGON_KNIGHT:
+  case JT_IMPERIAL_GUARD:
+  case JT_DRAGON_KNIGHT_CHICKEN:
+  case JT_IMPERIAL_GUARD_CHICKEN:
+    if (view == W_1HSPEAR || view == W_2HSPEAR) {
       result = true;
-      break;
-    default:
-      break;
     }
     break;
-  case JT_GUNSLINGER:
-  case JT_REBELLION:
-  case JT_GUNSLINGER_B:
-  case JT_REBELLION_B:
-  case JT_NIGHT_WATCH:
-    switch (view) {
-    case W_RIFLE:
-    case W_GATLING:
-    case W_SHOTGUN:
-    case W_GRENADE:
+  case JT_MONK:
+  case JT_MONK_H:
+  case JT_MONK_B:
+  case JT_SURA:
+  case JT_SURA_H:
+  case JT_SURA_B:
+  case JT_INQUISITOR:
+    if (view == W_FIST || view == W_KNUCKLE) {
       result = true;
-      break;
-    default:
-      break;
     }
     break;
-  case JT_NINJA:
-  case JT_KAGEROU:
-  case JT_OBORO:
-  case JT_NINJA_B:
-  case JT_KAGEROU_B:
-  case JT_OBORO_B:
-  case JT_SHINKIRO:
-  case JT_SHIRANUI:
-    if (view == W_HUUMA) {
+  case JT_THIEF:
+  case JT_HUNTER:
+  case JT_ROGUE:
+  case JT_BARD:
+  case JT_DANCER:
+  case JT_THIEF_H:
+  case JT_HUNTER_H:
+  case JT_ROGUE_H:
+  case JT_BARD_H:
+  case JT_DANCER_H:
+  case JT_THIEF_B:
+  case JT_HUNTER_B:
+  case JT_ROGUE_B:
+  case JT_BARD_B:
+  case JT_DANCER_B:
+  case JT_RANGER:
+  case JT_RANGER_H:
+  case JT_MINSTREL:
+  case JT_WANDERER:
+  case JT_SHADOW_CHASER:
+  case JT_MINSTREL_H:
+  case JT_WANDERER_H:
+  case JT_SHADOW_CHASER_H:
+  case JT_WOLF_RANGER:
+  case JT_WOLF_RANGER_H:
+  case JT_RANGER_B:
+  case JT_MINSTREL_B:
+  case JT_WANDERER_B:
+  case JT_SHADOW_CHASER_B:
+  case JT_WOLF_RANGER_B:
+  case JT_WINDHAWK:
+  case JT_ABYSS_CHASER:
+  case JT_TROUBADOUR:
+  case JT_TROUVERE:
+  case JT_WOLF_WINDHAWK:
+    if (view == W_BOW) {
       result = true;
     }
     break;
