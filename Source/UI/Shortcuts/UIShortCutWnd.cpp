@@ -548,17 +548,16 @@ void UINewChatWnd::SaveChatWndInfo() {
 
   int index = 1;
   for (std::map<int, SubChatWndInfo>::iterator it = g_session.m_noSubChatWnds.begin(); it != g_session.m_noSubChatWnds.end(); ++it, ++index) {
-    const SubChatWndInfo& info = it->second;
     sprintf(text, "ChatSubWnd_%d = {\r\n", index);
     file.Write(text, std::strlen(text));
     sprintf(text, "\tXPos = 0,\r\n\tYPos = 0,\r\n");
     file.Write(text, std::strlen(text));
     sprintf(text, "\tWidth = 0,\r\n\tHeight = 0,\r\n");
     file.Write(text, std::strlen(text));
-    sprintf(text, "\tTabState = \"On\",\r\n\tTabName = [[%s]],\r\n", info.name.c_str());
+    sprintf(text, "\tTabState = \"On\",\r\n\tTabName = [[%s]],\r\n", it->second.name.c_str());
     file.Write(text, std::strlen(text));
-    for (int option = 1; option <= 25; ++option) {
-      sprintf(text, "\toption%d = %d,\r\n", option, info.options[option - 1]);
+    for (int option = 0; option < 25; ++option) {
+      sprintf(text, "\toption%d = %d,\r\n", option + 1, it->second.options[option]);
       file.Write(text, std::strlen(text));
     }
     file.Write("}\r\n\r\n", 5);
@@ -566,17 +565,16 @@ void UINewChatWnd::SaveChatWndInfo() {
 
   index = static_cast<int>(g_session.m_noSubChatWnds.size()) + 1;
   for (std::map<int, SubChatWndInfo>::iterator it = g_session.m_subChatWnds.begin(); it != g_session.m_subChatWnds.end(); ++it, ++index) {
-    const SubChatWndInfo& info = it->second;
     sprintf(text, "ChatSubWnd_%d = {\r\n", index);
     file.Write(text, std::strlen(text));
-    sprintf(text, "\tXPos = %d,\r\n\tYPos = %d,\r\n", info.x, info.y);
+    sprintf(text, "\tXPos = %d,\r\n\tYPos = %d,\r\n", it->second.x, it->second.y);
     file.Write(text, std::strlen(text));
-    sprintf(text, "\tWidth = %d,\r\n\tHeight = %d,\r\n", info.width, info.height);
+    sprintf(text, "\tWidth = %d,\r\n\tHeight = %d,\r\n", it->second.width, it->second.height);
     file.Write(text, std::strlen(text));
-    sprintf(text, "\tTabState = \"Off\",\r\n\tTabName = \"%s\",\r\n", info.name.c_str());
+    sprintf(text, "\tTabState = \"Off\",\r\n\tTabName = \"%s\",\r\n", it->second.name.c_str());
     file.Write(text, std::strlen(text));
-    for (int option = 1; option <= 25; ++option) {
-      sprintf(text, "\toption%d = %d,\r\n", option, info.options[option - 1]);
+    for (int option = 0; option < 25; ++option) {
+      sprintf(text, "\toption%d = %d,\r\n", option + 1, it->second.options[option]);
       file.Write(text, std::strlen(text));
     }
     file.Write("}\r\n\r\n", 5);
