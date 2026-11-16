@@ -3819,17 +3819,14 @@ void CEffectPrim::PrimSTIN4() {
 
     if (slot.process == 1) {
       Get_Angle(target->render.position.x - this->render.position.x, target->render.position.z - this->render.position.z, &slot.rotStart);
-      const int swing = std::rand() % 21;
-      const std::int16_t turn = static_cast<std::int16_t>((swing >= 0 ? swing : 0) + 25);
-
       if (slot.flag1[2] == 0) {
-        slot.rotStart += turn;
+        slot.rotStart += ClampedRandom(21) + 25;
 
         if (slot.rotStart >= 360) {
           slot.rotStart -= 360;
         }
       } else {
-        slot.rotStart -= turn;
+        slot.rotStart -= ClampedRandom(21) + 25;
 
         if (slot.rotStart < 0) {
           slot.rotStart += 360;
