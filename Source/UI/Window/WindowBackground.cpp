@@ -118,8 +118,9 @@ void UIWindow::DrawRobeSprite(int job, int sex, int robe, int x, int y, bool ove
 
   if (overlay) {
     const std::uint32_t color = this->Color();
+    const float factor = g_session.GetSkillFactor(job);
     this->AddSpriteCellOverlay(
-      x, y, reinterpret_cast<int>(action), reinterpret_cast<int>(sprite), image, &cell, GetSkillFactor(job), 0.0f, color, sprite->palette, 1.0f
+      x, y, reinterpret_cast<int>(action), reinterpret_cast<int>(sprite), image, &cell, factor, 0.0f, color, sprite->palette, 1.0f
     );
     return;
   }
