@@ -500,8 +500,8 @@ std::pair<std::string, std::string> UITagListBox::ParseTag(std::string text, int
     }
     std::string marker = infoTagOpening;
     const std::size_t start = g_textTagRegistry[tagIndex].opening.size();
-    result.first += text.substr(start, opening - start);
-    result.second += text.substr(opening + marker.size(), closing - marker.size() - opening);
+    result.first = text.substr(start, opening - start);
+    result.second = text.substr(opening + marker.size(), closing - marker.size() - opening);
     break;
   }
   case LINE_SEGMENT_ITEM: {
@@ -515,8 +515,8 @@ std::pair<std::string, std::string> UITagListBox::ParseTag(std::string text, int
     }
     std::string marker = infoTagOpening;
     const std::size_t start = g_textTagRegistry[tagIndex].opening.size();
-    result.first += text.substr(start, opening - start);
-    result.second += text.substr(opening + marker.size(), closing - marker.size() - opening);
+    result.first = text.substr(start, opening - start);
+    result.second = text.substr(opening + marker.size(), closing - marker.size() - opening);
     break;
   }
   case LINE_SEGMENT_ITEM_LINK: {
