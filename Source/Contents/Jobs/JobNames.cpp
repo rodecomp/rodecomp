@@ -6,72 +6,14 @@
 // FUNCTION: fn_24165
 unsigned JobNames::BaseJob(unsigned job) {
   switch (job) {
-  case JT_CHICKEN:
-  case JT_LION_KNIGHT:
-    return JT_KNIGHT;
-  case JT_CHICKEN2:
-  case JT_LION_CRUSADER:
-    return JT_CRUSADER;
-  case JT_CHICKEN_H:
-  case JT_LION_KNIGHT_H:
-    return JT_KNIGHT_H;
-  case JT_CHICKEN2_H:
-  case JT_LION_CRUSADER_H:
-    return JT_CRUSADER_H;
-  case JT_CHICKEN_B:
-  case JT_LION_KNIGHT_B:
-    return JT_KNIGHT_B;
-  case JT_CHICKEN2_B:
-  case JT_LION_CRUSADER_B:
-    return JT_CRUSADER_B;
-  case JT_RUNE_CHICKEN:
-  case JT_RUNE_CHICKEN2:
-  case JT_RUNE_CHICKEN3:
-  case JT_RUNE_CHICKEN4:
-  case JT_RUNE_CHICKEN5:
-  case JT_LION_RUNE_KNIGHT:
-    return JT_RUNE_KNIGHT;
-  case JT_RUNE_CHICKEN_H:
-  case JT_RUNE_CHICKEN2_H:
-  case JT_RUNE_CHICKEN3_H:
-  case JT_RUNE_CHICKEN4_H:
-  case JT_RUNE_CHICKEN5_H:
-    return JT_RUNE_KNIGHT_H;
-  case JT_ROYAL_CHICKEN:
-  case JT_LION_ROYAL_GUARD:
-    return JT_ROYAL_GUARD;
-  case JT_ROYAL_CHICKEN_H:
-    return JT_ROYAL_GUARD_H;
-  case JT_WOLF_RANGER:
-  case JT_OSTRICH_RANGER:
-    return JT_RANGER;
-  case JT_WOLF_RANGER_H:
-    return JT_RANGER_H;
-  case JT_MADOGEAR:
-  case JT_PIG_MECHANIC:
-    return JT_MECHANIC;
-  case JT_MADOGEAR_H:
-    return JT_MECHANIC_H;
-  case JT_RUNE_CHICKEN_B:
-  case JT_LION_RUNE_KNIGHT_B:
-    return JT_RUNE_KNIGHT_B;
-  case JT_ROYAL_CHICKEN_B:
-  case JT_LION_ROYAL_GUARD_B:
-    return JT_ROYAL_GUARD_B;
-  case JT_WOLF_RANGER_B:
-  case JT_OSTRICH_RANGER_B:
-    return JT_RANGER_B;
-  case JT_MADOGEAR_B:
-  case JT_PIG_MECHANIC_B:
-    return JT_MECHANIC_B;
   case JT_FROG_NINJA:
     return JT_NINJA;
+  case JT_FROG_LINKER:
+    return JT_LINKER;
   case JT_PECO_GUNNER:
     return JT_GUNSLINGER;
   case JT_PECO_SWORD:
     return JT_SWORDMAN;
-  case JT_FROG_LINKER:
-    return JT_LINKER;
   case JT_PIG_WHITESMITH:
     return JT_BLACKSMITH_H;
   case JT_PIG_MERCHANT:
@@ -198,8 +140,6 @@ unsigned JobNames::BaseJob(unsigned job) {
     return JT_SURA_B;
   case JT_PIG_GENETIC_B:
     return JT_GENETIC_B;
-  case JT_DOG_THIEF_B:
-    return JT_THIEF_B;
   case JT_DOG_CHASER_B:
     return JT_SHADOW_CHASER_B;
   case JT_PORING_NOVICE_H:
@@ -216,6 +156,8 @@ unsigned JobNames::BaseJob(unsigned job) {
     return JT_MERCHANT_H;
   case JT_DOG_THIEF_H:
     return JT_THIEF_H;
+  case JT_DOG_THIEF_B:
+    return JT_THIEF_B;
   case JT_PORING_SNOVICE2:
     return JT_SUPERNOVICE2;
   case JT_PORING_SNOVICE2_B:
@@ -226,6 +168,21 @@ unsigned JobNames::BaseJob(unsigned job) {
     return JT_WIZARD_B;
   case JT_PIG_BLACKSMITH_B:
     return JT_BLACKSMITH_B;
+  case JT_CHICKEN:
+  case JT_LION_KNIGHT:
+    return JT_KNIGHT;
+  case JT_CHICKEN_B:
+  case JT_LION_KNIGHT_B:
+    return JT_KNIGHT_B;
+  case JT_CHICKEN2:
+  case JT_LION_CRUSADER:
+    return JT_CRUSADER;
+  case JT_CHICKEN2_H:
+  case JT_LION_CRUSADER_H:
+    return JT_CRUSADER_H;
+  case JT_CHICKEN2_B:
+  case JT_LION_CRUSADER_B:
+    return JT_CRUSADER_B;
   case JT_FROG_KAGEROU:
     return JT_KAGEROU;
   case JT_FROG_OBORO:
@@ -252,44 +209,84 @@ unsigned JobNames::BaseJob(unsigned job) {
     return JT_GUNSLINGER_B;
   case JT_PECO_REBELLION_B:
     return JT_REBELLION_B;
+  case JT_ROYAL_CHICKEN:
+  case JT_LION_ROYAL_GUARD:
+    return JT_ROYAL_GUARD;
+  case JT_ROYAL_CHICKEN_H:
+    return JT_ROYAL_GUARD_H;
+  case JT_ROYAL_CHICKEN_B:
+  case JT_LION_ROYAL_GUARD_B:
+    return JT_ROYAL_GUARD_B;
+  case JT_RUNE_CHICKEN_B:
+  case JT_LION_RUNE_KNIGHT_B:
+    return JT_RUNE_KNIGHT_B;
+  case JT_RUNE_CHICKEN:
+  case JT_RUNE_CHICKEN2:
+  case JT_RUNE_CHICKEN3:
+  case JT_RUNE_CHICKEN4:
+  case JT_RUNE_CHICKEN5:
+  case JT_LION_RUNE_KNIGHT:
+    return JT_RUNE_KNIGHT;
+  case JT_RUNE_CHICKEN_H:
+  case JT_RUNE_CHICKEN2_H:
+  case JT_RUNE_CHICKEN3_H:
+  case JT_RUNE_CHICKEN4_H:
+  case JT_RUNE_CHICKEN5_H:
+    return JT_RUNE_KNIGHT_H;
+  case JT_WOLF_RANGER:
+  case JT_OSTRICH_RANGER:
+    return JT_RANGER;
+  case JT_WOLF_RANGER_H:
+    return JT_RANGER_H;
+  case JT_WOLF_RANGER_B:
+  case JT_OSTRICH_RANGER_B:
+    return JT_RANGER_B;
+  case JT_MADOGEAR:
+  case JT_PIG_MECHANIC:
+    return JT_MECHANIC;
+  case JT_MADOGEAR_H:
+    return JT_MECHANIC_H;
+  case JT_MADOGEAR_B:
+  case JT_PIG_MECHANIC_B:
+    return JT_MECHANIC_B;
   case JT_HAETAE_STAR_EMPEROR:
     return JT_STAR_EMPEROR;
-  case JT_HAETAE_SOUL_REAPER:
-    return JT_SOUL_REAPER;
   case JT_HAETAE_STAR_EMPEROR_B:
     return JT_STAR_EMPEROR_B;
+  case JT_HAETAE_SOUL_REAPER:
+    return JT_SOUL_REAPER;
   case JT_HAETAE_SOUL_REAPER_B:
     return JT_SOUL_REAPER_B;
-  case JT_DRAGON_KNIGHT_RIDING:
-  case JT_DRAGON_KNIGHT_CHICKEN:
-    return JT_DRAGON_KNIGHT;
-  case JT_MEISTER_RIDING:
-  case JT_MEISTER_MADOGEAR:
-    return JT_MEISTER;
-  case JT_SHADOW_CROSS_RIDING:
-    return JT_SHADOW_CROSS;
-  case JT_ARCH_MAGE_RIDING:
-    return JT_ARCH_MAGE;
-  case JT_CARDINAL_RIDING:
-    return JT_CARDINAL;
   case JT_WINDHAWK_RIDING:
   case JT_WOLF_WINDHAWK:
     return JT_WINDHAWK;
+  case JT_TROUBADOUR_RIDING:
+    return JT_TROUBADOUR;
+  case JT_TROUVERE_RIDING:
+    return JT_TROUVERE;
+  case JT_ARCH_MAGE_RIDING:
+    return JT_ARCH_MAGE;
+  case JT_ELEMENTAL_MASTER_RIDING:
+    return JT_ELEMENTAL_MASTER;
+  case JT_CARDINAL_RIDING:
+    return JT_CARDINAL;
+  case JT_INQUISITOR_RIDING:
+    return JT_INQUISITOR;
+  case JT_MEISTER_RIDING:
+  case JT_MEISTER_MADOGEAR:
+    return JT_MEISTER;
+  case JT_DRAGON_KNIGHT_RIDING:
+  case JT_DRAGON_KNIGHT_CHICKEN:
+    return JT_DRAGON_KNIGHT;
   case JT_IMPERIAL_GUARD_RIDING:
   case JT_IMPERIAL_GUARD_CHICKEN:
     return JT_IMPERIAL_GUARD;
   case JT_BIOLO_RIDING:
     return JT_BIOLO;
+  case JT_SHADOW_CROSS_RIDING:
+    return JT_SHADOW_CROSS;
   case JT_ABYSS_CHASER_RIDING:
     return JT_ABYSS_CHASER;
-  case JT_ELEMENTAL_MASTER_RIDING:
-    return JT_ELEMENTAL_MASTER;
-  case JT_INQUISITOR_RIDING:
-    return JT_INQUISITOR;
-  case JT_TROUBADOUR_RIDING:
-    return JT_TROUBADOUR;
-  case JT_TROUVERE_RIDING:
-    return JT_TROUVERE;
   case JT_SKY_EMPEROR_RIDING:
     return JT_SKY_EMPEROR;
   case JT_SOUL_ASCETIC_RIDING:
@@ -310,6 +307,9 @@ unsigned JobNames::BaseJob(unsigned job) {
     return JT_KARNOS;
   case JT_ALITEA_RIDING:
     return JT_ALITEA;
+  case JT_CHICKEN_H:
+  case JT_LION_KNIGHT_H:
+    return JT_KNIGHT_H;
   default:
     return job;
   }
