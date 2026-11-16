@@ -371,15 +371,18 @@ bool CTextureDX9::UploadSurface(
       const std::uint32_t* input = pixels + row * stepY * stride;
 
       for (int column = 0; column < w; ++column) {
-        std::uint16_t converted = Convert16(input[column * stepX], D3DFMT_A1R5G5B5);
+        const std::uint16_t converted = Convert16(input[column * stepX], D3DFMT_A1R5G5B5);
         const std::uint16_t rgb = converted & 0x7FFF;
+        std::uint16_t value;
         if (rgb == 0x7C1F) {
-          converted = 0;
+          value = 0;
         } else if (blackTransparent && !rgb) {
-          converted = 0;
+          value = 0;
+        } else {
+          value = converted;
         }
 
-        std::memcpy(output + column * sizeof(converted), &converted, sizeof(converted));
+        std::memcpy(output + column * sizeof(value), &value, sizeof(value));
       }
     }
     break;
@@ -389,15 +392,18 @@ bool CTextureDX9::UploadSurface(
       const std::uint32_t* input = pixels + row * stepY * stride;
 
       for (int column = 0; column < w; ++column) {
-        std::uint16_t converted = Convert16(input[column * stepX], D3DFMT_A4R4G4B4);
+        const std::uint16_t converted = Convert16(input[column * stepX], D3DFMT_A4R4G4B4);
         const std::uint16_t rgb = converted & 0x0FFF;
+        std::uint16_t value;
         if (rgb == 0xF0F) {
-          converted = 0;
+          value = 0;
         } else if (blackTransparent && !rgb) {
-          converted = 0;
+          value = 0;
+        } else {
+          value = converted;
         }
 
-        std::memcpy(output + column * sizeof(converted), &converted, sizeof(converted));
+        std::memcpy(output + column * sizeof(value), &value, sizeof(value));
       }
     }
     break;
