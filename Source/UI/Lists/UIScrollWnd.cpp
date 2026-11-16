@@ -99,13 +99,14 @@ bool UIScrollWnd::Update(int redraw) {
     return this->UpdateCached(redraw);
   }
 
+  int needRedraw = redraw;
   for (auto it = this->childOrigins.begin(); it != this->childOrigins.end(); ++it) {
     it->first->Move(it->second.first - this->horizontalScrollPosition, it->second.second - this->scrollPosition);
   }
 
   if (this->m_dirty == 1) {
     this->Paint();
-    redraw = 1;
+    needRedraw = 1;
     this->m_dirty = 0;
   }
 
@@ -114,14 +115,14 @@ bool UIScrollWnd::Update(int redraw) {
     if (this->horizontalBar != child && this->scrollBar != child) {
       if (child->geometry.x + child->geometry.width > 0 && child->geometry.x < this->geometry.width && child->geometry.y + child->geometry.height > 0 &&
           child->geometry.y < this->geometry.height && child->geometry.visible == 1) {
-        changed |= this->UpdateChild(child, redraw);
+        changed |= this->UpdateChild(child, needRedraw);
       }
     } else if (child->geometry.visible == 1) {
-      changed |= child->Update(redraw);
+      changed |= child->Update(needRedraw);
     }
   }
 
-  if (this->parent && this->parent->m_cached == 0 && (redraw == 1 || changed == 1)) {
+  if (this->parent && this->parent->m_cached == 0 && (needRedraw == 1 || changed == 1)) {
     this->parent->geometry.surface->BlendFrom(
       this->geometry.x, this->geometry.y, this->geometry.width, this->geometry.height, *static_cast<CDCBitmap*>(this->geometry.surface)
     );
