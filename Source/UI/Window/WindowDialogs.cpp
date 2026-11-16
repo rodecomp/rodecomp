@@ -185,66 +185,66 @@ int UIWindowMgr::Confirm(
 
   this->hoverWindow = nullptr;
 
+  int response;
   if (box == nullptr) {
-    this->RestoreInput();
-    return 185;
-  }
+    response = 185;
+  } else {
+    this->modalResponse = 0;
+    this->modalWindows.push_back(box);
+    response = 184;
 
-  this->modalResponse = 0;
-  this->modalWindows.push_back(box);
-  int response = 184;
+    if (g_modalImmediate == 0) {
+      CMode* pump = g_modeMgr.currentMode;
 
-  if (g_modalImmediate == 0) {
-    CMode* pump = g_modeMgr.currentMode;
+      for (;;) {
+        if (this->activeWindowId != 0) {
+          if (UIWindow* active = this->Top()) {
+            active->Show(0);
+            this->Schedule(active);
+            this->modalWindows.pop_back();
+          }
 
-    for (;;) {
-      if (this->activeWindowId != 0) {
-        if (UIWindow* active = this->Top()) {
-          active->Show(0);
-          this->Schedule(active);
-          this->modalWindows.pop_back();
+          response = this->activeWindowId;
+
+          if (this->modalWindows.empty()) {
+            this->activeWindowId = 0;
+          }
+
+          break;
         }
 
-        response = this->activeWindowId;
+        if (this->modalResponse != 0) {
+          if (UIWindow* active = this->Top()) {
+            active->Show(0);
+            this->Schedule(active);
+            this->modalWindows.pop_back();
+          }
 
-        if (this->modalWindows.empty()) {
+          response = this->modalResponse;
+          this->modalResponse = 0;
+          break;
+        }
+
+        if (pump) {
+          pump->Update();
+          pump = g_modeMgr.currentMode;
+        }
+
+        if (g_session.GetOption(20) > 0) {
           this->activeWindowId = 0;
+          this->modalResponse = 0;
+
+          while (!this->modalWindows.empty()) {
+            this->Schedule(this->modalWindows.back());
+            this->modalWindows.pop_back();
+          }
+
+          break;
         }
 
-        break;
-      }
-
-      if (this->modalResponse != 0) {
-        if (UIWindow* active = this->Top()) {
-          active->Show(0);
-          this->Schedule(active);
-          this->modalWindows.pop_back();
+        if (g_modalImmediate != 0) {
+          break;
         }
-
-        response = this->modalResponse;
-        this->modalResponse = 0;
-        break;
-      }
-
-      if (pump) {
-        pump->Update();
-        pump = g_modeMgr.currentMode;
-      }
-
-      if (g_session.GetOption(20) > 0) {
-        this->activeWindowId = 0;
-        this->modalResponse = 0;
-
-        while (!this->modalWindows.empty()) {
-          this->Schedule(this->modalWindows.back());
-          this->modalWindows.pop_back();
-        }
-
-        break;
-      }
-
-      if (g_modalImmediate != 0) {
-        break;
       }
     }
   }
