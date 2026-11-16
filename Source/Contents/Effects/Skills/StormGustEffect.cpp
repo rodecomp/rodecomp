@@ -44,14 +44,14 @@ void CStormGustEffect::Open() {
     const float speed = static_cast<float>((speedRoll >= 0 ? speedRoll : 0) + 3);
     const int angleRoll = rand() % 360;
     const float angle = static_cast<float>(angleRoll >= 0 ? angleRoll : 0);
-    const float velocityZ = ClientCosine(static_cast<int>(angle)) * -speed;
-    const float velocityX = ClientSine(static_cast<int>(angle)) * speed;
-    particle->offsetX = velocityX;
-    particle->offsetY = 20.0f;
-    particle->offsetZ = velocityZ;
+    vector3d velocity;
+    velocity.z = ClientCosine(static_cast<int>(angle)) * -speed;
+    velocity.x = ClientSine(static_cast<int>(angle)) * speed;
+    velocity.y = 20.0f;
+    particle->offset = velocity;
 
-    particle->speedParameter = 1.5f;
     const int scaleRoll = rand() % 100;
+    particle->speedParameter = 1.5f;
     particle->scale = static_cast<float>((scaleRoll >= 0 ? scaleRoll : 0) + 400) / 100.0f;
 
     matrix& rotation = particle->rotation;
