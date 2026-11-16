@@ -293,7 +293,8 @@ void CRagEffect::BloodDrain() {
     this->state.lastPrim->state.latiAccel = spread + spread;
     this->state.lastPrim->state.roll = static_cast<float>(angle);
     this->state.lastPrim->state.transform.MakeYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
-    this->state.lastPrim->state.deltaPos3 = RotatedForward(this->state.lastPrim->state.transform.values, 1.0f);
+    const vector3d forward{0.0f, 0.0f, 1.0f};
+    MatrixMult(this->state.lastPrim->state.deltaPos3, forward, this->state.lastPrim->state.transform.values);
     this->state.lastPrim->state.rotAxis[0] = this->state.lastPrim->state.deltaPos3.x;
     this->state.lastPrim->state.rotAxis[1] = this->state.lastPrim->state.deltaPos3.y;
     this->state.lastPrim->state.rotAxis[2] = this->state.lastPrim->state.deltaPos3.z;
