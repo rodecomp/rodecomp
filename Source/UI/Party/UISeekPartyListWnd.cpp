@@ -322,20 +322,15 @@ int UISeekPartyListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
 
       std::string title(LookupMessage(MSI_PARTY_BOOKING_SEARCH));
       if (packet.level > 0) {
-        title += " Level: ";
-        title += IntToString(packet.level, 0);
+        title = title + " Level: " + IntToString(packet.level, 0);
       }
 
       if (this->m_region != 0) {
-        title += " Map: ";
-        title += this->m_regionCombo->GetSelectedText();
-        title += " ";
-        title += this->m_mapCombo->GetSelectedText();
+        title = title + " Map: " + this->m_regionCombo->GetSelectedText() + " " + this->m_mapCombo->GetSelectedText();
       }
 
       if (this->m_jobCategory != 0) {
-        title += " Job: ";
-        title += this->m_jobCombo->GetSelectedText();
+        title = title + " Job: " + this->m_jobCombo->GetSelectedText();
       }
 
       this->m_title->SetTextFitted(title.c_str());
