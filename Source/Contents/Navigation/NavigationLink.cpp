@@ -14,14 +14,6 @@ bool CNaviInfo::HasName(const char* name) const {
   return std::strcmp(this->name.c_str(), name) == 0;
 }
 
-// OFFSET: 0x00B8D8D0
-// FUNCTION: fn_19436
-CNavi_Link::~CNavi_Link() {
-  this->type = 200;
-  this->linkedInfo = nullptr;
-  this->linkedLinks.erase(this->linkedLinks.begin(), this->linkedLinks.end());
-}
-
 // OFFSET: 0x00B8E5F0
 // FUNCTION: fn_19473
 const char* CNavi_Link::GetTitle() const {
