@@ -914,7 +914,8 @@ void CSkillAction_DR_CUTTING_WIND::OnSkillEffect(int level, CGameActor* source, 
 
   EffectLists* effects = g_effectMgr;
   if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("cutting_wind", 0x4F1791FB1503C713ULL, name)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
-    effect->SetAngle(ScreenAngle(&target->render.position.x, &source->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values));
+    const float angle = ScreenAngle(&target->render.position.x, &source->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values);
+    effect->SetAngle(angle);
   }
 }
 
@@ -1138,7 +1139,8 @@ void CSkillAction_DR_SHOOTING_FEATHER::OnSkillEffect(int level, CGameActor* sour
 
   EffectLists* effects = g_effectMgr;
   if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("shooting_feather", 0x93E7A3A1F587CDC5ULL, name)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
-    effect->SetAngle(ScreenAngle(&source->render.position.x, &target->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values));
+    const float angle = ScreenAngle(&source->render.position.x, &target->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values);
+    effect->SetAngle(angle);
   }
 }
 
