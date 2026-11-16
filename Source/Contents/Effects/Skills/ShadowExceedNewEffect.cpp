@@ -37,9 +37,7 @@ void CShadowExceedNew::Open() {
   CEZ2STRParticle* emitter = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
   if (emitter) {
     emitter->Load(std::string("SHADOW_CROSS\\SHC_SHADOW_EXCEED\\shadow_exceed\\shadow_exceed_f_shadow_bottom.str"));
-    emitter->offsetX = 0.0f;
-    emitter->offsetY = -12.0f;
-    emitter->offsetZ = 0.0f;
+    emitter->offset = vector3d{0.0f, -12.0f, 0.0f};
     emitter->m_scale = 0.14f;
     this->frontEmitters.push_back(emitter);
   }
