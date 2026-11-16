@@ -197,8 +197,10 @@ int CItemInfoMgr::LuaAddItem(lua_State* state) {
     const char* identifiedResourceName = lua_tostring(state, -3);
     int slotCount = static_cast<int>(lua_tonumber(state, -2));
     int classNum = static_cast<int>(lua_tonumber(state, -1));
-    g_itemInfoMgr->m_items[static_cast<int>(id)].slotCount = slotCount;
-    g_itemInfoMgr->m_items[static_cast<int>(id)].classNum = classNum;
+    CItemInfoMgr* mgr = g_itemInfoMgr;
+    const int index = static_cast<int>(id);
+    mgr->m_items[index].slotCount = slotCount;
+    mgr->m_items[index].classNum = classNum;
     g_itemInfoMgr->SetUnidentifiedName(static_cast<int>(id), unidentifiedDisplayName, unidentifiedResourceName);
     g_itemInfoMgr->SetIdentifiedName(static_cast<int>(id), identifiedDisplayName, identifiedResourceName);
     lua_pushboolean(state, 1);
