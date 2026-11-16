@@ -16,13 +16,11 @@ struct CameraState {
 
   // INLINED
   void Reset() {
-    this->yaw = this->desiredYaw = 0;
-    this->distance = this->desiredDistance = 300;
-    this->pitch = this->desiredPitch = -45;
+    this->desiredYaw = this->yaw = 0;
+    this->desiredDistance = this->distance = 300;
+    this->desiredPitch = this->pitch = -45;
 
-    for (unsigned axis = 0; axis < 3; ++axis) {
-      (&this->target.x)[axis] = (&this->desiredTarget.x)[axis] = 0;
-    }
+    this->desiredTarget = this->target = vector3d{0, 0, 0};
   }
 };
 
