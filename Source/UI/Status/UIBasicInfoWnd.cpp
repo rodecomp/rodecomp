@@ -694,11 +694,9 @@ void UIBasicInfoWnd::Paint() {
     FormatGroupedInteger(g_session.m_zeny, zenyText, 64);
 
     int offset = 0;
-    const int maxHp = g_session.maxHp;
-    if (maxHp != 0) {
-      const int hp = g_session.hp;
-      const std::uint32_t color = static_cast<float>(hp) * 100.0f / static_cast<float>(maxHp) < 25.0f ? 255 : 0;
-      const int hpLength = std::sprintf(text, x == 9 ? "HP. %d / %d" : "HP %d / %d", hp, maxHp);
+    if (g_session.maxHp != 0) {
+      const std::uint32_t color = static_cast<float>(g_session.hp) * 100.0f / static_cast<float>(g_session.maxHp) < 25.0f ? 255 : 0;
+      const int hpLength = std::sprintf(text, x == 9 ? "HP. %d / %d" : "HP %d / %d", g_session.hp, g_session.maxHp);
       this->DrawTextAt(x, 36, text, hpLength, 1, 14, color, 0, 0);
       offset = this->TextWidth(text, hpLength, 1, 14, 0, 0);
       length = std::sprintf(text, " | ");
