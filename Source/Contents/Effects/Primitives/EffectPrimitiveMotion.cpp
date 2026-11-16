@@ -7259,12 +7259,11 @@ bool CEffectPrim::PrimDriftingOrbs() {
 
   DriftSlotAngles(slot, 3);
 
-  const char kind = slot.flag1[0];
 
-  if (kind != 0 && kind < 20 && kind >= 10) {
+  if (slot.flag1[0] != 0 && slot.flag1[0] < 20 && slot.flag1[0] >= 10) {
     switch (this->state.isChangeProcessed) {
     case 0:
-      if (slot.process % (kind - 9) == 0) {
+      if (slot.process % (slot.flag1[0] - 9) == 0) {
         slot.height[6] += 1.0f;
 
         if (slot.height[6] >= 360.0f) {
@@ -7276,7 +7275,7 @@ bool CEffectPrim::PrimDriftingOrbs() {
       slot.height[7] = -15.0f;
       break;
     case 1:
-      if (slot.process % (kind - 9) == 0) {
+      if (slot.process % (slot.flag1[0] - 9) == 0) {
         slot.height[6] += 15.0f;
 
         if (slot.height[6] >= 360.0f) {
@@ -7297,7 +7296,7 @@ bool CEffectPrim::PrimDriftingOrbs() {
       }
       break;
     }
-  } else if (kind == 0 || kind >= 20 || (slot.process & 1) == 0) {
+  } else if (slot.flag1[0] == 0 || slot.flag1[0] >= 20 || (slot.process & 1) == 0) {
     slot.height[6] += 1.0f;
 
     if (slot.height[6] >= 360.0f) {
@@ -7312,7 +7311,7 @@ bool CEffectPrim::PrimDriftingOrbs() {
     slot.vecBNow.x = g_sinTable[static_cast<int>(slot.height[6])] * 5.5f + slot.vecBNow.x;
     slot.vecBNow.z = g_cosTable[static_cast<int>(slot.height[6])] * 5.5f + slot.vecBNow.z;
   } else {
-    if (kind == 0 || kind >= 20) {
+    if (slot.flag1[0] == 0 || slot.flag1[0] >= 20) {
       slot.vecBNow.x = g_sinTable[static_cast<int>(slot.height[0])];
       slot.vecBNow.z = g_sinTable[static_cast<int>(slot.height[2])];
       slot.vecBNow.y = g_sinTable[static_cast<int>(slot.height[4])];
