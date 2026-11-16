@@ -1030,17 +1030,15 @@ void UIMessengerGroupWnd::Paint() {
       }
 
       memset(path, 0, sizeof(path));
-      const char* statusIcon;
       if (it->offline == 0) {
         if (it->accountId == g_session.m_aid) {
-          statusIcon = "%sicon_party_me.bmp";
+          sprintf(path, "%sicon_party_me.bmp", prefix.c_str());
         } else {
-          statusIcon = "%sicon_party_on.bmp";
+          sprintf(path, "%sicon_party_on.bmp", prefix.c_str());
         }
       } else {
-        statusIcon = "%sicon_party_off.bmp";
+        sprintf(path, "%sicon_party_off.bmp", prefix.c_str());
       }
-      sprintf(path, statusIcon, prefix.c_str());
       auto* status = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
       this->DrawBitmap(
         static_cast<int>(static_cast<float>(this->geometry.width) * 0.8f),
