@@ -321,10 +321,10 @@ void CSoundMgr::Shutdown() {
   }
 
   if (this->provider) {
-    for (void*& sample : this->samples3D) {
-      if (sample) {
-        AIL_release_3D_sample_handle(sample);
-        sample = nullptr;
+    for (int i = 0; i < 48; ++i) {
+      if (this->samples3D[i]) {
+        AIL_release_3D_sample_handle(this->samples3D[i]);
+        this->samples3D[i] = nullptr;
       }
     }
 
@@ -335,10 +335,10 @@ void CSoundMgr::Shutdown() {
 
   this->StopStreams();
 
-  for (void*& sample : this->samples) {
-    if (sample) {
-      AIL_release_sample_handle(sample);
-      sample = nullptr;
+  for (int i = 0; i < 48; ++i) {
+    if (this->samples[i]) {
+      AIL_release_sample_handle(this->samples[i]);
+      this->samples[i] = nullptr;
     }
   }
 
@@ -494,7 +494,11 @@ bool CSoundMgr::PlayData3D(const void* data, const float& x, const float& y, con
         return false;
       }
 
-      AIL_set_3D_sample_effects_level(this->samples3D[i], this->effectsEnabled ? 1.0f : 0.0f);
+      if (this->effectsEnabled) {
+        AIL_set_3D_sample_effects_level(this->samples3D[i], 1.0f);
+      } else {
+        AIL_set_3D_sample_effects_level(this->samples3D[i], 0.0f);
+      }
       AIL_set_3D_position(this->samples3D[i], x, y, z);
       AIL_set_3D_orientation(this->samples3D[i], -x, -y, -z, 0.0f, 1.0f, 0.0f);
       AIL_set_3D_sample_volume(this->samples3D[i], volume);
@@ -507,7 +511,11 @@ bool CSoundMgr::PlayData3D(const void* data, const float& x, const float& y, con
     return false;
   }
 
-  return this->PlayData2D(data, x, y, z, 250, 40, 1.0f);
+  if (!this->PlayData2D(data, x, y, z, 250, 40, 1.0f)) {
+    return false;
+  }
+
+  return true;
 }
 
 // OFFSET: 0x00639D30
@@ -533,12 +541,12 @@ bool CSoundMgr::PlayData2D(const void* data, const float& x, const float& y, con
   const float ySquared = y * y;
   const float distanceSquared = ySquared + horizontalResquared;
   const float distance = SquareRoot(distanceSquared);
+  int volume = this->sampleVolume;
 
   if (distance >= static_cast<float>(maximumDistance)) {
     return false;
   }
 
-  int volume = this->sampleVolume;
   const float minimum = static_cast<float>(minimumDistance);
 
   if (!(minimum >= distance)) {
@@ -634,10 +642,13 @@ void CSoundMgr::PlayWave(const char* name, float x, float y, float z, int maximu
     return;
   }
 
-  if (g_soundConfiguration.mode == 1) {
+  switch (g_soundConfiguration.mode) {
+  case 1:
     this->PlayData2D(wave->data, x, y, z, maximumDistance, minimumDistance, scale);
-  } else if (g_soundConfiguration.mode == 2) {
+    break;
+  case 2:
     this->PlayData3D(wave->data, x, y, z, maximumDistance, minimumDistance, scale);
+    break;
   }
 }
 
