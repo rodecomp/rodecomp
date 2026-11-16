@@ -115,7 +115,7 @@ void C3dActor::UpdateMatrix() {
 // OFFSET: 0x00ABB970
 // FUNCTION: fn_17517
 void C3dActorV2::UpdateMatrix() {
-  this->transform.Identity();
+  std::memcpy(this->transform.values, g_identityMatrix, sizeof(g_identityMatrix));
   this->transform.values[4] = -1.0f;
   this->transform.AppendScale(this->scale.x, this->scale.y, this->scale.z);
   this->transform.AppendYRotation(Radians(this->rotation.y));
