@@ -4060,9 +4060,9 @@ void UICardItemIllustWnd::OnCreate(int, int) {
 // OFFSET: 0x008E2590
 // FUNCTION: fn_12178
 void UIItemIdentifyWnd::OnCreate(int, int) {
-  this->m_title.assign(LookupMessage(MSI_ITEM_IDENTIFY));
-  this->m_selected = -1;
+  this->m_title = LookupMessage(MSI_ITEM_IDENTIFY);
   this->m_scroll = 0;
+  this->m_selected = -1;
   this->m_columns = 1;
   this->m_rows = 4;
   this->m_scrollable = 0;
@@ -4072,41 +4072,35 @@ void UIItemIdentifyWnd::OnCreate(int, int) {
   this->AddChild(this->m_scrollBar);
   this->UpdateScroll();
 
-  {
-    const std::string prefix("유저인터페이스\\");
-    const char* names[1][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}};
-    int positions[1][2] = {{this->geometry.width - 92, this->geometry.height - 24}};
-    int ids[1] = {184};
-    for (int i = 0; i < 1; ++i) {
-      auto* button = new UIBitmapButton();
-      button->SetBitmap((prefix + names[i][0] + ".bmp").c_str(), 0, 0);
-      button->SetBitmap((prefix + names[i][1] + ".bmp").c_str(), 1, 0);
-      button->SetBitmap((prefix + names[i][2] + ".bmp").c_str(), 2, 0);
-      button->SetSize(button->BitmapWidth(), button->BitmapHeight());
-      button->Move(positions[i][0], positions[i][1]);
-      button->SetId(ids[i]);
-      this->AddChild(button);
-    }
+  const std::string okPrefix("유저인터페이스\\");
+  const char* okNames[1][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}};
+  int okPositions[1][2] = {{this->geometry.width - 92, this->geometry.height - 24}};
+  int okIds[1] = {184};
+  for (int i = 0; i < 1; ++i) {
+    auto* button = new UIBitmapButton();
+    button->SetBitmap((okPrefix + okNames[i][0] + ".bmp").c_str(), 0, 0);
+    button->SetBitmap((okPrefix + okNames[i][1] + ".bmp").c_str(), 1, 0);
+    button->SetBitmap((okPrefix + okNames[i][2] + ".bmp").c_str(), 2, 0);
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    button->Move(okPositions[i][0], okPositions[i][1]);
+    button->SetId(okIds[i]);
+    this->AddChild(button);
   }
   this->m_message0 = 184;
 
-  {
-    const std::string prefix("유저인터페이스\\");
-    const char* names[1][3] = {{"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
-    int positions[1][2] = {{this->geometry.width - 46, this->geometry.height - 24}};
-    int ids[1] = {185};
-    for (int i = 0; i < 1; ++i) {
-      auto* button = new UIBitmapButton();
-      button->SetBitmap((prefix + names[i][0] + ".bmp").c_str(), 0, 0);
-      const std::string hover = prefix + names[i][1] + ".bmp";
-      button->SetBitmap(hover.c_str(), 1, 0);
-      const std::string pressed = prefix + names[i][2] + ".bmp";
-      button->SetBitmap(pressed.c_str(), 2, 0);
-      button->SetSize(button->BitmapWidth(), button->BitmapHeight());
-      button->Move(positions[i][0], positions[i][1]);
-      button->SetId(ids[i]);
-      this->AddChild(button);
-    }
+  const std::string cancelPrefix("유저인터페이스\\");
+  const char* cancelNames[1][3] = {{"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
+  int cancelPositions[1][2] = {{this->geometry.width - 46, this->geometry.height - 24}};
+  int cancelIds[1] = {185};
+  for (int i = 0; i < 1; ++i) {
+    auto* button = new UIBitmapButton();
+    button->SetBitmap((cancelPrefix + cancelNames[i][0] + ".bmp").c_str(), 0, 0);
+    button->SetBitmap((cancelPrefix + cancelNames[i][1] + ".bmp").c_str(), 1, 0);
+    button->SetBitmap((cancelPrefix + cancelNames[i][2] + ".bmp").c_str(), 2, 0);
+    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    button->Move(cancelPositions[i][0], cancelPositions[i][1]);
+    button->SetId(cancelIds[i]);
+    this->AddChild(button);
   }
 }
 
