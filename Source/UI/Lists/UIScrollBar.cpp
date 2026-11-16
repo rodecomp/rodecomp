@@ -1491,7 +1491,7 @@ int UITreeView::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
     }
 
     if (message != UM_TEXT_RBTN_UP) {
-      if (this->selectedNode->children.size() != 0) {
+      if (this->selectedNode->children.size() > 0) {
         this->HideNodes(this->root->children);
         const int x = sender->geometry.x;
         const int y = message == UM_TEXT_LBTN_UP ? sender->geometry.y - 6 : sender->geometry.y;
@@ -1577,10 +1577,7 @@ int UITreeView::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
   case UM_CHANGE_TVITEM_TEXT:
     if (b == 0) {
       this->editNode = reinterpret_cast<UITreeNode*>(a);
-      if (c > 361) {
-        c = 361;
-      }
-      this->edit->maximum = static_cast<int>(c);
+      this->edit->maximum = std::min(static_cast<int>(c), 361);
       this->edit->SetText(this->editNode->name);
       g_windowMgr.SetFocus(this->edit);
       this->Invalidate();
