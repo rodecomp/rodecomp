@@ -16,7 +16,6 @@
 #include "Archive/PakRegistry.h"
 #include "Client/Input/Mouse.h"
 #include "Client/Stove/StoveMgr.h"
-#include "Client/Mode/ModeFadeOut.h"
 #include "Client/Application/ErrorDialog.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session/Session.h"
@@ -945,6 +944,7 @@ void CLoginMode::OnUpdateEx(int value) {
   this->SendKeepalive();
   g_mouse.Update();
   g_windowMgr.ProcessMouse();
+  this->PollInput();
   if (this->running != 0) {
     this->SubD97780(this->cursorType);
     this->ExpireTooltip();
@@ -1088,6 +1088,7 @@ void CLoginMode::Update() {
   this->SendKeepalive();
   g_mouse.Update();
   g_windowMgr.ProcessMouse();
+  this->PollInput();
   if (this->running != 0) {
     this->SubD97780(this->cursorType);
     this->ExpireTooltip();
@@ -1486,7 +1487,7 @@ int CLoginMode::Run() {
     ++this->cursorFrame;
   }
 
-  FadeOutMode(*g_renderer, *GetRenderSystemHolder()->system, ResourceMgr::Instance(), 0, false, 0.0f, 0.0f);
+  this->FadeOutMode(0);
   return 1;
 }
 

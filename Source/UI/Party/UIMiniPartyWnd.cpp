@@ -328,7 +328,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
           }
           g_windowMgr.SendNotice(
             14, reinterpret_cast<std::intptr_t>(this->m_owner->GetMember().name.c_str()), reinterpret_cast<std::intptr_t>(group),
-            reinterpret_cast<std::intptr_t>(ShortcutFilename(this->m_owner->GetMember().characterId).c_str()), 0, 0
+            reinterpret_cast<std::intptr_t>(g_session.ShortcutFilename(this->m_owner->GetMember().characterId).c_str()), 0, 0
           );
           return 0;
         }

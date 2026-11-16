@@ -4739,7 +4739,7 @@ void CGameMode::ReceiveSpriteChange2(const unsigned char* data) {
     case LOOK_WEAPON: {
       g_session.m_weaponLook = packet->value;
       const int shield = packet->valueHigh;
-      const int view = GetWeaponViewValue(shield);
+      const int view = g_session.GetWeaponViewValue(shield);
       if (packet->valueLow != 0 && view == -1) {
         g_session.m_shield = shield;
       }
@@ -4814,7 +4814,7 @@ void CGameMode::ReceiveSpriteChange2(const unsigned char* data) {
   case LOOK_WEAPON: {
     const int shield = packet->valueHigh;
     const int weapon = value;
-    const int view = GetWeaponViewValue(shield);
+    const int view = g_session.GetWeaponViewValue(shield);
     switch (actor->GetEffectiveJob(-1)) {
     case JT_ASSASSIN:
     case JT_ASSASSIN_H:
@@ -7360,7 +7360,7 @@ struct EquipItemUpdatePacket {
 // OFFSET: 0x00D6D850
 // FUNCTION: fn_22091
 void CGameMode::RefreshInventoryOrEquipItem(std::uint16_t itemId, unsigned char damaged, std::uint16_t refine, ItemCardSlots cards, ItemSlotOptions options) {
-  ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, itemId);
+  ITEM_INFO item = g_session.LookupClientItemByIdentity(itemId);
   int lookup = 0;
   int slot = 0;
   if (item.identity[1] == 0) {

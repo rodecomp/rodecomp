@@ -53,12 +53,7 @@ void GroundBase::CellBounds(int, int, float&, float&) const {
 // OFFSET: 0x00AC0E30
 // FUNCTION: fn_17572
 bool GroundBase::CellVertices(float* vertices, int column, int row) const {
-  const TerrainHeightCell* const cells = *reinterpret_cast<TerrainHeightCell* const* const>(reinterpret_cast<const unsigned char*>(this->terrain) + 0x11C);
-  if (column < 0 || column >= this->terrain->width || row < 0 || row >= this->terrain->height) {
-    return false;
-  }
-
-  const TerrainHeightCell* cell = &cells[static_cast<unsigned>(row) * static_cast<unsigned>(this->terrain->width) + static_cast<unsigned>(column)];
+  const TerrainHeightCell* cell = this->terrain->CellAt(column, row);
   if (!cell) {
     return false;
   }

@@ -39,4 +39,11 @@ static_assert(offsetof(BitmapButtonTextStyle, shadow) == 0x0018);
 static_assert(sizeof(UIBmpTextButton) == 0x144);
 #endif
 
+// OFFSET: 0x007C2340
+// FUNCTION: fn_09323
+inline void UIBmpTextButton::SetText(std::string value) {
+  this->text = value;
+  this->Invalidate();
+}
+
 #endif

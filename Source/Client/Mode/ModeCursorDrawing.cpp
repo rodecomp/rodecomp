@@ -174,6 +174,6 @@ void CMode::DrawCursor() {
     quad[3].v = record.v1;
     quad[3].diffuse = 0xFAFFFFFF;
 
-    g_renderer->queues.Submit(primitive, 517, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+    g_renderer->Submit(primitive, 517);
   }
 }

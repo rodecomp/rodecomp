@@ -12,7 +12,9 @@ class CAdvenPartyInfo {
 public:
   CAdvenPartyInfo();
   CAdvenPartyInfo(const CAdvenPartyInfo& other);
-  virtual ~CAdvenPartyInfo();
+  // OFFSET: 0x005739D0
+  // FUNCTION: fn_02494
+  virtual ~CAdvenPartyInfo() {}
 
   /* 0004 */ bool tanker;
   /* 0005 */ bool healer;

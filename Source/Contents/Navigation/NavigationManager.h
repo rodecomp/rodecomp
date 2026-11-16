@@ -113,7 +113,7 @@ public:
   virtual int GetId() const;
   virtual int GetType() const;
   virtual int GetIndex() const;
-  virtual std::uint16_t GetFlag() const;
+  virtual int GetFlag() const;
   virtual const char* GetName() const;
   virtual const char* GetTitle() const;
   virtual NaviCell* GetCell(NaviCell* out) const;
@@ -284,6 +284,16 @@ struct NavigationTarget {
   /* 000C */ int y = 0;
   /* 0010 */ std::string name;
 };
+
+// OFFSET: 0x005C2C10
+// FUNCTION: fn_03544
+inline NavigationTarget::~NavigationTarget() {
+  this->type = -1;
+  this->object = nullptr;
+  this->x = -1;
+  this->y = -1;
+  this->name.clear();
+}
 
 class CNaviData {
 public:

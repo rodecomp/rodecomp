@@ -6,7 +6,6 @@
 #include <string>
 #include <vector>
 
-class CRenderSystemBase;
 namespace Json {
   class Value;
 }
@@ -16,9 +15,6 @@ struct EmotionHotkeys {
   /* 1004 */ std::vector<std::string> saved;
 
   void Load(Json::Value& data);
-  bool HasChanges() const;
-  void Save(std::uint32_t accountId, CRenderSystemBase* renderSystem) const;
-  bool LoadDefaults(std::uint32_t accountId);
   void Export(Json::Value& data) const;
 };
 

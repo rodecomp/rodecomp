@@ -222,7 +222,7 @@ void CLensFlare::Render(const float* matrix, vector3d eye, vector3d target) {
       primitive->vertices[1].diffuse = this->m_colors[i];
       primitive->vertices[2].diffuse = this->m_colors[i];
       primitive->vertices[3].diffuse = this->m_colors[i];
-      g_renderer->queues.Submit(primitive, 5, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+      g_renderer->Submit(primitive, 5);
     }
   }
 }

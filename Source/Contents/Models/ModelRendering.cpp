@@ -168,7 +168,7 @@ void C3dNodeV1::Draw(const float* matrix, unsigned char reversed, bool clip, uns
         flags |= 1;
       }
 
-      g_renderer->queues.Submit(command, flags, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+      g_renderer->Submit(command, flags);
       vertices = output;
     }
   }
@@ -302,7 +302,7 @@ void C3dNodeV2::Draw(const float* matrix, unsigned char reversed, bool clip, uns
         flags |= 1;
       }
 
-      g_renderer->queues.Submit(command, flags, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+      g_renderer->Submit(command, flags);
       vertices = output;
     }
   }

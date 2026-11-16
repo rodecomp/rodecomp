@@ -23,7 +23,6 @@
 #include "UI/Items/UILapineScrollBar.h"
 #include "UI/Macro/UICaptchaPreviewWnd.h"
 #include "Client/Mode/ModeMgr.h"
-#include "Client/Mode/ModeFadeOut.h"
 #include "Client/Replay/Replay.h"
 #include "Client/Session/Session.h"
 #include "Contents/Actors/ActorStateFlags.h"
@@ -1977,7 +1976,7 @@ void CGameMode::ReceiveZoneServerChange(const unsigned char* packet) {
 
 // OFFSET: 0x00D79F00
 // FUNCTION: fn_22184
-void CGameMode::ReceiveZoneServerChange(const char* mapName, std::int16_t x, std::int16_t y, int ip, std::int16_t port) {
+__declspec(noinline) void CGameMode::ReceiveZoneServerChange(const char* mapName, std::int16_t x, std::int16_t y, int ip, std::int16_t port) {
   g_session.m_localMapMove = 1;
   this->ChangeZoneServer(mapName, x, y, ip, port, std::string());
 }
@@ -8287,7 +8286,7 @@ void CGameMode::ReceiveBuyingStoreSellResult(const unsigned char* packet) {
     break;
   case 6: {
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-    ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, p->itemId, 0);
+    ITEM_INFO item = g_session.LookupClientItem(p->itemId, 0);
     g_windowMgr.SendNotice(
       UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_BUYINGSTORE_TRADE_OVERCOUNT), item.DisplayName(0).c_str()).c_str()), 0xFF, 0, 0, 0
     );
@@ -10001,7 +10000,7 @@ void CGameMode::ReceiveItemPickupAck5(
       break;
     }
 
-    const ITEM_INFO current = LookupClientItemByIdentity(g_session.m_inventoryItems, index);
+    const ITEM_INFO current = g_session.LookupClientItemByIdentity(index);
     int count = amount;
     if (current.identity[1] > 0) {
       count -= current.quantity;
@@ -10380,7 +10379,7 @@ void CGameMode::ReceiveFeedResult(const unsigned char* data) {
       this->SendMsg(MM_PET_ACT, emotion, 0, 0, 0);
       this->SendMsg(MM_PET_ACT, action, 0, 0, 0);
 
-      const int count = LookupClientItem(g_session.m_inventoryItems, packet->itemId, 0).quantity;
+      const int count = g_session.LookupClientItem(packet->itemId, 0).quantity;
       char name[260];
       std::memset(name, 0, sizeof(name));
       ITEM_INFO item;
@@ -10400,7 +10399,7 @@ void CGameMode::ReceiveFeedResult(const unsigned char* data) {
     if (packet->result != 0) {
       g_session.m_homunActionState = 0x1D;
 
-      const int count = LookupClientItem(g_session.m_inventoryItems, packet->itemId, 0).quantity;
+      const int count = g_session.LookupClientItem(packet->itemId, 0).quantity;
       char name[260];
       std::memset(name, 0, sizeof(name));
       ITEM_INFO item;
@@ -12421,7 +12420,7 @@ void CGameMode::ReceiveMapMove(const unsigned char* data) {
   } else {
     this->ReloadScene();
     this->InitializeState();
-    FadeOutMode(*g_renderer, *GetRenderSystemHolder()->system, ResourceMgr::Instance(), 0, false, 0.0f, 0.0f);
+    this->FadeOutMode(0);
     sameMap = 1;
   }
   this->sameMapMove = sameMap;
@@ -14478,7 +14477,7 @@ void CGameMode::SpawnMovingActor(
       if (this->partyPosList.find(entry.aid) != this->partyPosList.end() || this->guildPosList.find(entry.aid) != this->guildPosList.end()) {
         actor->SetGroupMemberVisible(1);
       }
-    } else if (!((objectType == 1 || objectType == 6 || objectType == 12) && IsPlayerJob(job))) {
+    } else if (!((objectType == 1 || objectType == 6 || objectType == 12) && g_session.IsPlayerJob(job))) {
       entry.appearanceVariant = 0;
     }
     actor->SendMsg(nullptr, AM_INITMOVEENTRY2, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
@@ -16415,7 +16414,7 @@ void CGameMode::SpawnStandingActor(
       }
       actor->SendMsg(nullptr, AM_INITSTANDENTRY2, reinterpret_cast<int>(&entry), 2, 0, 0, 0, 0);
     } else {
-      if (!((objectType == 1 || objectType == 6 || objectType == 5) && IsPlayerJob(job))) {
+      if (!((objectType == 1 || objectType == 6 || objectType == 5) && g_session.IsPlayerJob(job))) {
         entry.appearanceVariant = 0;
       }
       actor->SendMsg(nullptr, AM_INITSTANDENTRY, reinterpret_cast<int>(&entry), 1, 0, 0, 0, 0);
@@ -16686,7 +16685,7 @@ void CGameMode::SpawnStateActor(
       }
       actor->SendMsg(nullptr, AM_INITSTANDENTRY2, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
     } else {
-      if ((objectType == 1 || objectType == 6 || objectType == 12) && IsPlayerJob(job)) {
+      if ((objectType == 1 || objectType == 6 || objectType == 12) && g_session.IsPlayerJob(job)) {
         entry.bodyCostume = job;
       } else {
         entry.appearanceVariant = 0;
@@ -18480,7 +18479,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case ALL_RESURRECTION:
     if (target != nullptr) {
       target->LaunchEffect(EF_RESURRECTION, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      if (IsPlayerJob(target->GetEffectiveJob(-1))) {
+      if (g_session.IsPlayerJob(target->GetEffectiveJob(-1))) {
         target->LaunchEffect(EF_REVIVE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
     }
@@ -25739,10 +25738,10 @@ void CGameMode::ProcessIncomingPackets() {
       skill.type = packet->skillType;
       skill.id = packet->skillId;
       skill.upgradable = packet->upFlag;
-      skill.name = skill.IdName(*g_session.m_hotkeyScript);
+      skill.name = skill.IdName();
       skill.spCost = packet->skillSp;
       skill.range = packet->skillRange;
-      skill.apCost = skill.UseApAmount(*g_session.m_hotkeyScript, packet->skillLv);
+      skill.apCost = skill.UseApAmount(packet->skillLv);
       g_session.m_skillBundle.UpdatePending(skill);
       this->SendMsg(MM_USING_SKILL, reinterpret_cast<int>(&skill), skill.level, 1, -1);
       break;
@@ -26335,7 +26334,7 @@ void CGameMode::ProcessIncomingPackets() {
       this->ReceiveColorBroadcast(g_gameModePacketBuffer);
       break;
     case ID_SC_ACK_ENCRYPTION:
-      ShowErrorDialog(GetRenderSystemHolder()->system, "No Packet Encryption !!!", 0);
+      ShowErrorDialog("No Packet Encryption !!!", 0);
       break;
     case ID_ZC_USE_ITEM_ACK2: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_USE_ITEM_ACK2*>(g_gameModePacketBuffer);
@@ -27011,7 +27010,7 @@ void CGameMode::ProcessIncomingPackets() {
       char text[256];
       sprintf(text, LookupMessage(packet->msgId));
       char message[256];
-      sprintf(message, "[%s] %s", CSkillInfo::DisplayName(*g_session.m_hotkeyScript, packet->skillId),
+      sprintf(message, "[%s] %s", CSkillInfo::DisplayName(packet->skillId),
               text);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFFCDCD, 11, 0, 0);
       break;

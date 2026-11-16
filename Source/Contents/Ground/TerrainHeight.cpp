@@ -43,16 +43,6 @@ float C3dAttr::Height(float x, float z) const {
   return (localX * (second - first)) / size + first;
 }
 
-// OFFSET: 0x00748D30
-// FUNCTION: fn_07837
-const TerrainHeightCell* C3dAttr::CellAt(int column, int row) const {
-  if (column < 0 || column >= this->width || row < 0 || row >= this->height) {
-    return nullptr;
-  }
-
-  return this->m_cells.data() + column + row * this->width;
-}
-
 // OFFSET: 0x00748E90
 // FUNCTION: fn_07839
 void C3dAttr::HeightBounds(const int* rectangle, float& minimum, float& maximum) const {

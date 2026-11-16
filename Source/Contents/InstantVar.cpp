@@ -12,11 +12,6 @@ void CInstantVar::Set(int key, std::int64_t value) {
   this->m_values[key] = value;
 }
 
-std::int64_t CInstantVar::Get(int key) const {
-  const auto entry = this->m_values.find(key);
-  return entry == this->m_values.end() ? 0 : entry->second;
-}
-
 // OFFSET: 0x00612020
 // FUNCTION: fn_04340
 std::int64_t CRenderObject::GetInstant(int key) const {

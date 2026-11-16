@@ -59,8 +59,6 @@ struct RenderQueues {
   // INLINED
   __forceinline ~RenderQueues() = default;
 
-  void Submit(RenderCommand* primitive, std::uint16_t flags, bool depthAlpha, float depthStart, float depthEnd);
-  void SubmitTriangle(RenderTriangle& triangle, std::uint16_t flags, class RenderCommandPool& pool, bool depthAlpha, float depthStart, float depthEnd);
   void Clear();
 };
 

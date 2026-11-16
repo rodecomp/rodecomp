@@ -31,7 +31,9 @@ public:
 class CUIRadioItem : public CUIControl {
 public:
   /* 0080 */ CUIRadioButton* radioButton;
+  /* 0088 */ std::function<void(CUIRadioItem*)> onSelect;
 
+  void OnCreate(int width, int height) override;
   bool IsChecked();
 };
 
@@ -40,6 +42,17 @@ static_assert(offsetof(CUICheckBox, onCheck) == 0x128);
 static_assert(sizeof(CUICheckBox) == 0x150);
 static_assert(offsetof(CUIRadioButton, onSelect) == 0x150);
 static_assert(sizeof(CUIRadioButton) == 0x178);
+static_assert(offsetof(CUIRadioItem, onSelect) == 0x88);
 #endif
+
+// OFFSET: 0x009E8430
+// FUNCTION: fn_14492
+inline CUICheckBox::CUICheckBox() : CUIImageButton(), checked(false), onCheck() {
+}
+
+// OFFSET: 0x00A19D30
+// FUNCTION: fn_15347
+inline CUIRadioButton::CUIRadioButton() : CUICheckBox(), onSelect() {
+}
 
 #endif

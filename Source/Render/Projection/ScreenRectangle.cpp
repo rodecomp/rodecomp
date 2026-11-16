@@ -45,7 +45,7 @@ void DrawBlendedRectangle(int x, int y, int width, int height, std::uint32_t col
   primitive->quad[3].diffuse = color;
   primitive->sourceBlend = 5;
   primitive->destinationBlend = 6;
-  g_renderer->queues.Submit(primitive, 517, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+  g_renderer->Submit(primitive, 517);
 }
 
 // OFFSET: 0x0054ED40
@@ -85,7 +85,7 @@ void DrawTexturedRectangle(int x, int y, int width, int height, std::uint32_t co
   primitive->quad[3].u = 1.0f;
   primitive->quad[3].v = 1.0f;
   primitive->quad[3].diffuse = color;
-  g_renderer->queues.Submit(primitive, 513, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+  g_renderer->Submit(primitive, 513);
 }
 
 // OFFSET: 0x0054EFD0
@@ -118,5 +118,5 @@ void DrawTextureRegion(float x, float y, float width, float height, std::uint32_
     vertex.rhw = 0.999999f;
     vertex.diffuse = color;
   }
-  g_renderer->queues.Submit(primitive, 513, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+  g_renderer->Submit(primitive, 513);
 }

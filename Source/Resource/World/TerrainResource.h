@@ -40,4 +40,14 @@ private:
 static_assert(sizeof(C3dAttr) == 0x0128);
 #endif
 
+// OFFSET: 0x00748D30
+// FUNCTION: fn_07837
+inline const TerrainHeightCell* C3dAttr::CellAt(int column, int row) const {
+  if (column < 0 || column >= this->width || row < 0 || row >= this->height) {
+    return nullptr;
+  }
+
+  return this->m_cells.data() + column + row * this->width;
+}
+
 #endif

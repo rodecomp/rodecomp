@@ -117,7 +117,7 @@ namespace {
       primitive->vertices[corner].diffuse = color;
     }
 
-    g_renderer->queues.Submit(primitive, 1, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+    g_renderer->Submit(primitive, 1);
   }
 }
 
@@ -227,5 +227,5 @@ void GroundGeometry::DrawTerrainOverlay(
     primitive->vertices[corner].diffuse = color;
   }
 
-  g_renderer->queues.Submit(primitive, 1, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+  g_renderer->Submit(primitive, 1);
 }

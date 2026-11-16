@@ -322,7 +322,7 @@ void UIChangeMaterialWnd_List::RefreshVisibleEntries() {
 
       bool available = true;
       for (auto required = entry.materials.begin(); required != entry.materials.end(); ++required) {
-        const ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, required->id, 1);
+        const ITEM_INFO item = g_session.LookupClientItem(required->id, 1);
         if (item.quantity < required->quantity) {
           available = false;
         }
@@ -428,7 +428,7 @@ int UIChangeMaterialWnd::SendMsg(
         ITEM_INFO info;
         info.SetItemId(it->id);
         info.quantity = it->quantity;
-        const ITEM_INFO stock = LookupClientItem(g_session.m_inventoryItems, it->id, 1);
+        const ITEM_INFO stock = g_session.LookupClientItem(it->id, 1);
         info.identity[1] = stock.identity[1];
         info.identified = it->quantity <= stock.quantity;
         this->m_materials.push_back(info);

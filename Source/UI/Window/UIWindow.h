@@ -35,6 +35,7 @@ class UIWindow : public UIRPData {
   friend class UIWindowMgr;
   friend class CUIDropDownBox;
   friend class CUIGameSettingsUI;
+  friend class CUIRadioItem;
   friend class CUIRenewQuestUI;
   friend class UIItemTagOnChat;
   friend class UIScrollWnd;

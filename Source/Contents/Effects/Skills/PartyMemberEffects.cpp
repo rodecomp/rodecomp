@@ -113,7 +113,7 @@ CRagEffect* EffectActor::LaunchEffect(int effectId, vector3d deltaPos, float rot
   CRagEffect* effect;
 
   if (effectId == 127) {
-    this->state.effectLaunched = 1;
+    this->effectLaunched = 1;
   } else if (effectId < 0 || effectId > 60000) {
     return nullptr;
   }
@@ -158,7 +158,7 @@ CRagEffect* EffectActor::LaunchEffect(int effectId, vector3d deltaPos, float rot
 
   effect->Init(this, effectId, deltaPos);
   g_modeMgr.GetGameMode()->scene->objects.push_back(effect);
-  this->state.effects.push_back(effect);
+  this->effectList.push_back(effect);
   return effect;
 }
 

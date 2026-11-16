@@ -129,7 +129,7 @@ void UIShortCutWnd::Paint() {
 
         Count(window, x + 27, (y + 17), level);
       } else {
-        ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(slot.itemId), 1);
+        ITEM_INFO item = g_session.LookupClientItem(static_cast<int>(slot.itemId), 1);
         if (item.identity[1] == 0) {
           continue;
         }
@@ -155,7 +155,7 @@ void UIShortCutWnd::Paint() {
         continue;
       }
 
-      ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(slot.itemId), 1);
+      ITEM_INFO item = g_session.LookupClientItem(static_cast<int>(slot.itemId), 1);
       if (item.identity[1] == 0) {
         continue;
       }

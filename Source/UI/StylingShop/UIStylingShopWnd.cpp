@@ -993,11 +993,11 @@ bool UIShowInfoWnd::CheckPayment(const int& index, const int& zeny, const int& i
   }
 
   if (itemId) {
-    if (std::atoi(LookupClientItem(g_session.m_inventoryItems, itemId, 0).itemId.c_str()) != itemId) {
+    if (std::atoi(g_session.LookupClientItem(itemId, 0).itemId.c_str()) != itemId) {
       return false;
     }
   } else if (costumeItemId) {
-    if (std::atoi(LookupClientItem(g_session.m_inventoryItems, costumeItemId, 0).itemId.c_str()) != costumeItemId) {
+    if (std::atoi(g_session.LookupClientItem(costumeItemId, 0).itemId.c_str()) != costumeItemId) {
       return false;
     }
     this->m_checks[index]->SetBitmaps("유저인터페이스\\styleshop\\check_disable.bmp", "유저인터페이스\\styleshop\\Notcheck.bmp");

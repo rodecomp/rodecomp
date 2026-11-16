@@ -43,6 +43,8 @@ public:
   CMode();
   void ClearTooltip();
   void ExpireTooltip();
+  void PollInput();
+  std::uint32_t FadeOutMode(int showLogo);
   void ShowTooltip(const char* value, int x, int y, std::uint32_t color, unsigned char option, unsigned char convert);
   void SetCursorAction(int action);
   void TakeScreenshot();

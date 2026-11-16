@@ -468,9 +468,9 @@ void UIQuickSlotWnd::Paint() {
         }
       }
     } else {
-      ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(entry->id), 1);
+      ITEM_INFO item = g_session.LookupClientItem(static_cast<int>(entry->id), 1);
       if (item.identity[1] > 0) {
-        DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, 5, item, item.identified, 1);
+        this->DrawItemAndQuantity(x, 5, item, item.identified, 1);
         if (0 < item.grade) {
           this->DrawBitmap(
             x, 17,

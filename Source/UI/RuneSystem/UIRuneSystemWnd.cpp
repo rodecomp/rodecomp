@@ -1059,7 +1059,7 @@ void UIDecomlist::Paint() {
     const std::string background = FormatOwnedString("유저인터페이스\\runesystem\\list_decom_item_1_%d.bmp", index == this->m_selected);
     this->DrawBitmap(0, y, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background.c_str()))), true);
 
-    ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, itemId, 0);
+    ITEM_INFO item = g_session.LookupClientItem(itemId, 0);
     char text[128];
     std::memset(text, 0, sizeof(text));
     g_session.IconPath(item.itemId.c_str(), text, 1);
@@ -1320,7 +1320,7 @@ void UIRuneSystem_ActiveWnd::Paint() {
         icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\item\\사과.bmp")));
       }
 
-      ITEM_INFO owned = LookupClientItem(g_session.m_inventoryItems, itemId, 0);
+      ITEM_INFO owned = g_session.LookupClientItem(itemId, 0);
       const bool lacking = required > owned.quantity;
       owned.identified = 1;
       this->DrawBitmap(x, y, lacking ? red : blue, true);
@@ -1362,7 +1362,7 @@ void UIRuneSystem_DecomItemWnd::Paint() {
         icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\item\\사과.bmp")));
       }
 
-      ITEM_INFO owned = LookupClientItem(g_session.m_inventoryItems, itemId, 0);
+      ITEM_INFO owned = g_session.LookupClientItem(itemId, 0);
       const bool lacking = required > owned.quantity;
       owned.identified = 1;
       if (icon) {
@@ -1650,7 +1650,7 @@ int UIRuneSet_Info::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
 // OFFSET: 0x0081ED20
 // FUNCTION: fn_10232
 void UIRune_Decom::SetItem(int itemId) {
-  ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, itemId, 0);
+  ITEM_INFO item = g_session.LookupClientItem(itemId, 0);
   item.identified = 1;
   if (this->m_itemId != itemId) {
     this->m_itemId = itemId;
@@ -1735,7 +1735,7 @@ int UIRune_Decom::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
               g_session.extraInventorySlots + 100) {
           g_windowMgr.Confirm(LookupMessage(MSI_MACRO_USER_REPORT), 0, true, false, 0, "Message", 280, 120, 0);
         } else {
-          ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, this->m_itemId, 0);
+          ITEM_INFO item = g_session.LookupClientItem(this->m_itemId, 0);
           RuneDecomRequestPacket packet;
           packet.id = ID_CZ_RUNE_REQ_DECOMPOSE;
           packet.itemId = item.GetItemId();

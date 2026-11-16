@@ -74,7 +74,7 @@ void CGameActor::ProcessDamageMessages() {
           attackerName.assign(card.displayName.empty() ? std::string(LookupMessage(MSI_WHO_IS)) : card.displayName);
         }
 
-        if (IsPlayerJob(this->GetEffectiveJob(-1))) {
+        if (g_session.IsPlayerJob(this->GetEffectiveJob(-1))) {
           if (g_session.m_aid == targetAid) {
             std::sprintf(notice, LookupMessage(MSI_I_RECEIVED_DAMAGE), attackerName.c_str(), it->damage);
           } else if (g_session.IsPartyMember(targetAid, true)) {
@@ -412,6 +412,17 @@ bool CGameActor::ProcessState() {
   return true;
 }
 #pragma auto_inline(on)
+
+// OFFSET: 0x00CA82E0
+// FUNCTION: fn_20987
+EffectActor::EffectActor() {
+  this->launchEffectId = -1;
+  this->launchSkillLevel = 0;
+  this->effectLaunched = 0;
+  this->firstEffect = nullptr;
+  this->secondEffect = nullptr;
+  this->render.translucentOther[0] = 0;
+}
 
 // OFFSET: 0x00CA83A0
 // FUNCTION: fn_20988
@@ -1142,7 +1153,7 @@ bool CGameActor::UpdateMaximumValue(std::int64_t value) {
 // OFFSET: 0x00CADD30
 // FUNCTION: fn_21068
 int CGameActor::IsPlayerClass(int job) {
-  return IsPlayerJob(job);
+  return g_session.IsPlayerJob(job);
 }
 
 // OFFSET: 0x00CAE1B0

@@ -91,29 +91,3 @@ void UIWindow::DrawItemAndQuantity(
     this->DrawTextAt(left, y + 15, text, 0, 0, 11, 0, 0, 0);
   }
 }
-
-// INLINED
-void DrawItemWithQuantityAuxiliary(
-  UIWindow& window, int mode, int x, int y, const ITEM_INFO& item,
-  unsigned char identified, unsigned char plain
-) {
-  window.DrawItemAndQuantityAuxiliary(mode, x, y, item, identified, plain);
-}
-
-// INLINED
-void DrawItemIconById(UIWindow& window, int x, int y, const char* id, unsigned char identified) {
-  window.DrawItemIconFromId(x, y, id, identified);
-}
-
-// INLINED
-void DrawItemSlotBackground(UIWindow& window, int x, int y) {
-  window.DrawItemSlotFrame(x, y);
-}
-
-// INLINED
-void DrawItemWithQuantity(
-  UIWindow& window, ResourceMgr& resources, int x, int y, const ITEM_INFO& item,
-  unsigned char identified, unsigned char plain
-) {
-  window.DrawItemAndQuantity(x, y, item, identified, plain);
-}

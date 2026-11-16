@@ -20,6 +20,12 @@ private:
 };
 
 // INLINED
+inline std::int64_t CInstantVar::Get(int key) const {
+  const auto entry = this->m_values.find(key);
+  return entry == this->m_values.end() ? 0 : entry->second;
+}
+
+// INLINED
 inline void CInstantVar::Clear() {
   this->m_values.clear();
 }

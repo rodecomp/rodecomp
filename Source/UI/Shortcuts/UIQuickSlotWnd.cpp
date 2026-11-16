@@ -63,7 +63,7 @@ void UIQuickSlotWnd::OnLBtnDown(int x, int y) {
       }
     }
   } else if (entry.id != 0) {
-    ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(entry.id), 1);
+    ITEM_INFO item = g_session.LookupClientItem(static_cast<int>(entry.id), 1);
     if (item.identity[1] > 0) {
       CGameMode* mode = g_modeMgr.GetGameMode();
       mode->BeginDragItem(16, item, item.quantity, -1);
@@ -112,7 +112,7 @@ void UIQuickSlotWnd::OnMouseHover(int x, int y) {
       text = SkillUseTextFlat(skill.DisplayName(), level, sp, ap);
     }
   } else {
-    ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(id), 1);
+    ITEM_INFO item = g_session.LookupClientItem(static_cast<int>(id), 1);
     text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_EA2), item.DisplayName(0).c_str(), item.quantity));
   }
 
@@ -169,7 +169,7 @@ void UIQuickSlotWnd::OnRBtnDown(int x, int y) {
       detail->Move(originX - adjustment + x, originY + 33 + rowY);
     }
   } else if (id != 0) {
-    ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(id), 1);
+    ITEM_INFO item = g_session.LookupClientItem(static_cast<int>(id), 1);
     if (item.identity[1] > 0) {
       UIWindow* detail = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
       detail->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
@@ -236,7 +236,7 @@ int UIQuickSlotWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
           }
         }
       } else {
-        ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(source.itemId), 1);
+        ITEM_INFO item = g_session.LookupClientItem(static_cast<int>(source.itemId), 1);
         if (item.identity[1] != 0 && item.identified != 0) {
           entry.id = source.itemId;
         }
@@ -262,7 +262,7 @@ int UIQuickSlotWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
         return 0;
       }
 
-      ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(entry.id), 1);
+      ITEM_INFO item = g_session.LookupClientItem(static_cast<int>(entry.id), 1);
       if (item.identity[1] != 0) {
         CGameMode* mode = g_modeMgr.GetGameMode();
         switch (item.identity[0]) {

@@ -7,10 +7,6 @@ float C3dAttr::RayDistance(const float* ray, int column, int row) const {
   float nearest = 999999.0f;
   const TerrainHeightCell* cell;
 
-  if (row < 0 || row >= this->height || column < 0 || column >= this->width) {
-    return 0.0f;
-  }
-
   cell = this->CellAt(column, row);
 
   if (!cell) {

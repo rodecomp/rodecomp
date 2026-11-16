@@ -35,7 +35,7 @@ namespace {
     RenderPrimitive* primitive = g_renderer->primitives.Acquire();
     std::memcpy(primitive->vertices, vertices, sizeof(vertices));
     primitive->texture = quad.texture;
-    g_renderer->queues.Submit(primitive, 0x800, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+    g_renderer->Submit(primitive, 0x800);
   }
 }
 

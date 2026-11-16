@@ -9848,7 +9848,7 @@ void CRagEffect::SpawnActorHallucination() {
     }
 
     CRenderObject* hallu;
-    if (!IsPlayerJob(static_cast<CGameActor*>(this->state.parent)->GetEffectiveJob(-1))) {
+    if (!g_session.IsPlayerJob(static_cast<CGameActor*>(this->state.parent)->GetEffectiveJob(-1))) {
       hallu = new CHalluNPC(static_cast<CGameActor*>(this->state.parent));
     } else {
       hallu = new CHalluPC(static_cast<CPc*>(this->state.parent));
@@ -9870,7 +9870,7 @@ void CRagEffect::SpawnActorHallucination() {
   }
 
   CRenderObject* hallu;
-  if (!IsPlayerJob(static_cast<CGameActor*>(this->state.parent)->GetEffectiveJob(-1))) {
+  if (!g_session.IsPlayerJob(static_cast<CGameActor*>(this->state.parent)->GetEffectiveJob(-1))) {
     hallu = new CHalluNPC(static_cast<CGameActor*>(this->state.parent));
   } else {
     hallu = new CHalluPC(static_cast<CPc*>(this->state.parent));
@@ -14640,7 +14640,7 @@ void CRagEffect::RenderAniClip(EZeffectClip* clip, const EZeffectTransform* tran
   primitive->sourceBlend = transform->srcalpha;
   primitive->destinationBlend = transform->destalpha;
   primitive->textureMode = transform->mtpreset;
-  g_renderer->queues.Submit(primitive, 5, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+  g_renderer->Submit(primitive, 5);
 }
 
 // OFFSET: 0x00C38AD0

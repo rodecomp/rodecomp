@@ -112,8 +112,6 @@ struct ITEM_INFO {
   /* 00D9 */ unsigned char recordDate[24];
 };
 
-ITEM_INFO LookupClientItem(const std::list<ITEM_INFO>& values, int id, unsigned char requireIdentified);
-ITEM_INFO LookupClientItemByIdentity(const std::list<ITEM_INFO>& values, std::uint32_t id);
 bool IsNumericText(const char* text);
 bool LoadItemIntegerTable(std::vector<int>& values, const char* name);
 bool MatchItemName(std::string name, std::string query, unsigned char partial, std::list<int>* result, int id);

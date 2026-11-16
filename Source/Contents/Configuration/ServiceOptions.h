@@ -13,14 +13,14 @@ enum ServiceOption : int { ConfineCursor = 271 };
 class CGameSettingsMgr;
 
 bool IsServiceOption(int id);
-std::pair<int, unsigned char> FindServiceOption(const char* name);
-int SetOption(const char* name, unsigned char value);
+std::pair<int, bool> FindServiceOption(const char* name);
+int SetOption(const char* name, bool value);
 
 struct ServiceOptions {
-  /* 0000 */ std::unordered_map<int, unsigned char> values;
+  /* 0000 */ std::unordered_map<int, bool> values;
 
-  static unsigned char Get(int id);
-  static bool Set(int id, unsigned char value);
+  static bool Get(int id);
+  static bool Set(int id, bool value);
 };
 
 extern ServiceOptions g_serviceOptions;

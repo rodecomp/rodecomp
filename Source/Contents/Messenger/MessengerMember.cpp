@@ -221,10 +221,6 @@ UIDragMiniPartyWnd::UIDragMiniPartyWnd(MessengerMember member)
   this->geometry.state = 0;
 }
 
-// OFFSET: 0x007384A0
-// FUNCTION: fn_07666
-MessengerMember::~MessengerMember() = default;
-
 // OFFSET: 0x00E48C00
 // FUNCTION: fn_24228
 int ReadMessengerMembers(std::list<MessengerMember>& members, int offset, int size, const std::vector<unsigned char>& data) {
@@ -1689,7 +1685,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
           }
           g_windowMgr.SendNotice(
             14, reinterpret_cast<std::intptr_t>(member.name.c_str()), reinterpret_cast<std::intptr_t>(tag),
-            reinterpret_cast<std::intptr_t>(ShortcutFilename(member.characterId).c_str()), 0, 0
+            reinterpret_cast<std::intptr_t>(g_session.ShortcutFilename(member.characterId).c_str()), 0, 0
           );
         }
       }

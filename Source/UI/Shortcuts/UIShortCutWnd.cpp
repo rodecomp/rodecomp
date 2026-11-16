@@ -351,7 +351,7 @@ __forceinline void UseShortcutSlot(const NormalItemSlot& slot) {
     return;
   }
 
-  ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(slot.itemId), 1);
+  ITEM_INFO item = g_session.LookupClientItem(static_cast<int>(slot.itemId), 1);
   if (item.identity[1] == 0) {
     return;
   }

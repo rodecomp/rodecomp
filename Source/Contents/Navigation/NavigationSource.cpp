@@ -206,16 +206,6 @@ CNaviInfo::~CNaviInfo() {
   this->links.clear();
 }
 
-// OFFSET: 0x005C2C10
-// FUNCTION: fn_03544
-NavigationTarget::~NavigationTarget() {
-  this->type = -1;
-  this->object = nullptr;
-  this->x = -1;
-  this->y = -1;
-  this->name.clear();
-}
-
 // OFFSET: 0x00B92580
 // FUNCTION: fn_19551
 CNavigationManager::CNavigationManager() {
@@ -1061,11 +1051,7 @@ std::string CNavigationManager::StateMapName(int index, int* distance) {
       name.assign(info->GetName());
     }
   }
-  if (this->states[index].type == 3) {
-    *distance = static_cast<CNavi_Object*>(this->states[index].object)->GetFlag();
-  } else {
-    *distance = this->states[index].type == 2 ? 10000 : 0;
-  }
+  *distance = this->states[index].type == 3 ? static_cast<CNavi_Object*>(this->states[index].object)->GetFlag() : (this->states[index].type == 2 ? 10000 : 0);
   return name;
 }
 

@@ -68,6 +68,11 @@ void CMode::ExpireTooltip() {
   this->tooltip = nullptr;
 }
 
+// OFFSET: 0x00AD67D0
+// FUNCTION: fn_17844
+void CMode::PollInput() {
+}
+
 // OFFSET: 0x00AD64B0
 // FUNCTION: fn_17833
 void CMode::ClearTooltip() {

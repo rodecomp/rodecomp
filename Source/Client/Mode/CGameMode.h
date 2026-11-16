@@ -730,7 +730,8 @@ public:
   void RemovePendingItemPickup(int value);
   bool RecordReplayMessage(int message, int value, int first, int second);
   void UpdateReplayActionSpeeds();
-  __declspec(noinline) static std::uint32_t StopReplayRecording();
+  __declspec(noinline) std::uint32_t StopReplayRecording();
+  void CloseWhisperRecord();
   std::vector<unsigned char> WriteReplaySkillState();
   bool PickScreenTerrain(int& column, int& row);
   void ReceivePlayerRouteClear(const unsigned char* packet);
@@ -1077,7 +1078,6 @@ struct MiniMapEffectMarker {
 
 extern std::map<int, MiniMapEffectMarker> g_miniMapEffectMarkers;
 extern char g_pendingWhisperCount;
-void CloseWhisperRecord();
 extern unsigned char g_gameModePacketBuffer[0x10000];
 extern std::string g_gameModeNamelessTag;
 extern std::uint32_t g_gameTickInterval;

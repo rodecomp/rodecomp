@@ -1510,7 +1510,7 @@ void UITipOfTheDayWnd::Paint() {
   const int columns = (this->geometry.width - 40) / 32;
   const int slots = (this->geometry.height - 38) / 32;
   for (int i = 0, y = 17; i < slots; ++i, y += 32) {
-    DrawItemSlotBackground(*this, 40, y);
+    this->DrawItemSlotFrame(40, y);
   }
 
   g_skinInfo.PaletteChannels(2, 2, red, green, blue);
@@ -2714,7 +2714,7 @@ int UIItemCompositionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
   case UM_SET_CARD_ITEM_INDEX:
     this->m_compositionState = static_cast<int>(a);
     if (a != 0) {
-      ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, static_cast<std::uint32_t>(a));
+      ITEM_INFO item = g_session.LookupClientItemByIdentity(static_cast<std::uint32_t>(a));
       if (item.identity[1] != 0) {
         const std::string name = item.DisplayName(0);
         this->m_title = FormatOwnedString("%s (%s)", LookupMessage(MSI_ITEM_COMPOUNDING), name.c_str());
@@ -2799,7 +2799,7 @@ int UIItemIdentifyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     this->Invalidate();
     return 0;
   case UM_ADDITEM: {
-    ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, static_cast<std::uint32_t>(b));
+    ITEM_INFO item = g_session.LookupClientItemByIdentity(static_cast<std::uint32_t>(b));
     this->m_items.push_back(item);
     this->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
     return 0;
@@ -6993,7 +6993,7 @@ void UIEquipWnd::OnMouseHover(int x, int y) {
 
   CGameMode* mode = g_modeMgr.GetGameMode();
   if (mode->drag.source == 1 && x >= 0 && y >= 0 && x < this->geometry.width && y < this->geometry.height) {
-    ITEM_INFO dragged = LookupClientItemByIdentity(g_session.m_inventoryItems, mode->drag.id);
+    ITEM_INFO dragged = g_session.LookupClientItemByIdentity(mode->drag.id);
     if (dragged.identity[1] != 0 && dragged.identity[2] != 0) {
       const EquipSlots slots = g_session.GetEquipSlots(static_cast<int>(dragged.identity[2]));
       this->m_highlight[0] = slots.values[2];
@@ -9307,7 +9307,7 @@ std::vector<unsigned char> UIMakingArrowListWnd::GetReplayData() {
 void UINotifyItemObtainWnd::Paint() {
   this->DrawBorder(0, 0, 0, 0);
   if (this->m_itemId.size() != 0) {
-    DrawItemIconById(*this, 13, 5, this->m_itemId.c_str(), this->m_identified);
+    this->DrawItemIconFromId(13, 5, this->m_itemId.c_str(), this->m_identified);
   }
 
   const int kind = this->m_kind;
@@ -9624,7 +9624,7 @@ void UIItemCollectionWnd::Paint() {
           }
           this->DrawBitmap(x, y, bitmap, true);
         } else {
-          DrawItemIconById(*this, x, y, FormatOwnedString("%d", card).c_str(), 0);
+          this->DrawItemIconFromId(x, y, FormatOwnedString("%d", card).c_str(), 0);
         }
       }
     }
@@ -12400,8 +12400,8 @@ void UIExchangeWnd::Paint() {
     this->DrawBitmap(buttonX[index], this->geometry.height - 23, bitmap, false);
   }
   for (int row = 0; row < 10; ++row) {
-    DrawItemSlotBackground(*this, 12, this->m_rowHeight * row + 20);
-    DrawItemSlotBackground(*this, 291, this->m_rowHeight * row + 20);
+    this->DrawItemSlotFrame(12, this->m_rowHeight * row + 20);
+    this->DrawItemSlotFrame(291, this->m_rowHeight * row + 20);
   }
   unsigned red;
   unsigned green;
@@ -12420,7 +12420,7 @@ void UIExchangeWnd::Paint() {
       continue;
     }
     const int y = this->m_rowHeight * row;
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), 16, y + 21, item, 0, 0);
+    this->DrawItemAndQuantity(16, y + 21, item, 0, 0);
     this->DrawFittedItemName(48, y + 29, &item, 0, 0, 12, 1);
     if (0 < item.grade) {
       this->DrawBitmap(16, y + 33, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade).c_str()))), true);
@@ -12436,7 +12436,7 @@ void UIExchangeWnd::Paint() {
       continue;
     }
     const int y = this->m_rowHeight * row;
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), 295, y + 21, item, 0, 0);
+    this->DrawItemAndQuantity(295, y + 21, item, 0, 0);
     this->DrawFittedItemName(327, y + 29, &item, 0, 0, 12, 1);
     if (0 < item.grade) {
       this->DrawBitmap(295, y + 33, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade).c_str()))), true);

@@ -140,7 +140,7 @@ int UIPetEvolutionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
     if (argument1 == ID_OK) {
       std::vector<std::uint16_t> materials;
       for (auto it = this->m_materials.begin(); it != this->m_materials.end(); ++it) {
-        ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, it->first, 1);
+        ITEM_INFO item = g_session.LookupClientItem(it->first, 1);
         if (item.quantity < it->second) {
           g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PET_AUTO_FEEDING)), 255, 0, 0, 0);
           return 0;

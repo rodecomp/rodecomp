@@ -6,12 +6,6 @@
 
 #include <cstring>
 
-// OFFSET: 0x00522230
-// FUNCTION: fn_01124
-CFile::~CFile() {
-  this->Close();
-}
-
 // INLINED
 bool CFile::OpenWrite(const char* path, CRenderSystemBase* renderSystem) {
   this->m_path = path;

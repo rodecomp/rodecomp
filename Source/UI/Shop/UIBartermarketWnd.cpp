@@ -1697,7 +1697,7 @@ void UIBarterItemPurchaseWnd::Paint() {
   this->FillRegion(40, 17, this->geometry.width - 50, rows * 32, RGB(red, green, blue));
 
   for (int row = 0; row < rows; ++row) {
-    DrawItemSlotBackground(*this, 40, row * 32 + 17);
+    this->DrawItemSlotFrame(40, row * 32 + 17);
   }
 
   int visible = 0;
@@ -1718,11 +1718,11 @@ void UIBarterItemPurchaseWnd::Paint() {
     }
 
     const ITEM_INFO item = it->ToItemInfo();
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), x + 44, y + 21, item, 0, 0);
+    this->DrawItemAndQuantity(x + 44, y + 21, item, 0, 0);
     this->DrawWrappedItemName(x + 76, y + 29, 100, &item, 0, 0, 12);
     char iconId[64] = {};
     StringFormat(iconId, sizeof(iconId), static_cast<std::size_t>(-1), "%d", it->currencyItemId);
-    DrawItemIconById(*this, this->geometry.width - 70, y + 21, iconId, 1);
+    this->DrawItemIconFromId(this->geometry.width - 70, y + 21, iconId, 1);
     char amount[64] = {};
     if (it->currencyAmount > 0) {
       const int bytes = StringFormat(amount, sizeof(amount), static_cast<std::size_t>(-1), "%d", it->value * it->currencyAmount);

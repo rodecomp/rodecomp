@@ -36,7 +36,7 @@ void UIShortCutWnd::OnLBtnDown(int x, int y) {
       return;
     }
 
-    ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(this->m_itemSlots[column]->itemId), 1);
+    ITEM_INFO item = g_session.LookupClientItem(static_cast<int>(this->m_itemSlots[column]->itemId), 1);
     if (item.identity[1] > 0) {
       CGameMode* mode = g_modeMgr.GetGameMode();
       if (mode) {
@@ -57,7 +57,7 @@ void UIShortCutWnd::OnLBtnDown(int x, int y) {
         }
       }
     } else {
-      ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(this->m_slots[index]->itemId), 1);
+      ITEM_INFO item = g_session.LookupClientItem(static_cast<int>(this->m_slots[index]->itemId), 1);
       if (item.identity[1] > 0) {
         CGameMode* mode = g_modeMgr.GetGameMode();
         mode->BeginDragItem(7, item, item.quantity, -1);

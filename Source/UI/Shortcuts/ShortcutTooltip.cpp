@@ -39,7 +39,7 @@ void UIShortCutWnd::OnMouseHover(int x, int y) {
       return;
     }
 
-    ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(slot.itemId), 1);
+    ITEM_INFO item = g_session.LookupClientItem(static_cast<int>(slot.itemId), 1);
     if (item.quantity == 0) {
       return;
     }
@@ -92,7 +92,7 @@ void UIShortCutWnd::OnMouseHover(int x, int y) {
       }
     }
   } else {
-    ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(slot.itemId), 1);
+    ITEM_INFO item = g_session.LookupClientItem(static_cast<int>(slot.itemId), 1);
     if (item.quantity == 0) {
       text = shortcut;
     } else {

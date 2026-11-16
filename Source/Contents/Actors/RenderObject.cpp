@@ -874,7 +874,7 @@ void CGameActor::SetRenderInfo(const float* bounds, float x, float y) {
     float depth = 0.0f;
     if ((g_pickModifierKey == 0 && g_pickInvert == 0) || (g_pickModifierKey != 0 && g_pickInvert != 0)) {
       if (g_session.GetSiegeMode() != 0) {
-        if (IsPlayerJob(this->GetEffectiveJob(-1))) {
+        if (g_session.IsPlayerJob(this->GetEffectiveJob(-1))) {
           depth = g_session.IsLocalPlayerAid(this->GetGdid()) != 0 ? 100.0f : 400.0f;
         } else if (g_session.IsNpcJob(this->GetEffectiveJob(-1)) == true) {
           depth = 200.0f;
@@ -884,7 +884,7 @@ void CGameActor::SetRenderInfo(const float* bounds, float x, float y) {
           depth = 200.0f;
         }
       } else {
-        if (IsPlayerJob(this->GetEffectiveJob(-1))) {
+        if (g_session.IsPlayerJob(this->GetEffectiveJob(-1))) {
           depth = 100.0f;
         } else if (g_session.IsNpcJob(this->GetEffectiveJob(-1)) == true) {
           depth = 200.0f;
@@ -896,7 +896,7 @@ void CGameActor::SetRenderInfo(const float* bounds, float x, float y) {
       }
     } else {
       if (g_session.GetSiegeMode() != 0) {
-        if (IsPlayerJob(this->GetEffectiveJob(-1))) {
+        if (g_session.IsPlayerJob(this->GetEffectiveJob(-1))) {
           depth = g_session.IsLocalPlayerAid(this->GetGdid()) != 0 ? 400.0f : 100.0f;
         } else if (g_session.IsNpcJob(this->GetEffectiveJob(-1)) == true) {
           depth = 100.0f;
@@ -906,7 +906,7 @@ void CGameActor::SetRenderInfo(const float* bounds, float x, float y) {
           depth = 200.0f;
         }
       } else {
-        if (IsPlayerJob(this->GetEffectiveJob(-1))) {
+        if (g_session.IsPlayerJob(this->GetEffectiveJob(-1))) {
           depth = 400.0f;
         } else if (g_session.IsNpcJob(this->GetEffectiveJob(-1)) == true) {
           depth = 100.0f;
@@ -1318,7 +1318,7 @@ void CGameActor::SetState(int state, int resetPosition) {
   case ST_AUTOCOUNTER:
     if (g_session.IsPlayerJobId(this->GetEffectiveJob(-1))) {
       const std::int64_t weapon = this->GetWeapon();
-      IsJobWeaponAllowed(this->GetEffectiveJob(-1), this->sex, weapon);
+      g_session.IsJobWeaponAllowed(this->GetEffectiveJob(-1), this->sex, weapon);
       this->SetAction(action, 4, 1);
       this->render.isMotionFreezed = true;
     } else {
@@ -1433,10 +1433,10 @@ void CGameActor::SetState(int state, int resetPosition) {
     } else {
       this->render.sequenceInterval = 10;
       this->SetAnimationSequence(action, 0, action, 0, action, 0, action, 1, action, 1, 1, 3000, 0);
-      while (HasEffectOfType(this->state.effects, EF_LANDBODY)) {
+      while (HasEffectOfType(this->effectList, EF_LANDBODY)) {
         this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_LANDBODY, 0, 0, 0, 0, 0);
       }
-      while (HasEffectOfType(this->state.effects, EF_JUMPBODY)) {
+      while (HasEffectOfType(this->effectList, EF_JUMPBODY)) {
         this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_JUMPBODY, 0, 0, 0, 0, 0);
       }
       this->LaunchEffect(EF_JUMPBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -1593,10 +1593,10 @@ void CGameActor::SetState(int state, int resetPosition) {
   case 0x2e:
     this->render.sequenceInterval = 20;
     this->SetAnimationSequence(action, 0, action, 0, action, 0, action, 1, action, 1, 1, 3000, 0);
-    while (HasEffectOfType(this->state.effects, EF_LANDBODY)) {
+    while (HasEffectOfType(this->effectList, EF_LANDBODY)) {
       this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_LANDBODY, 0, 0, 0, 0, 0);
     }
-    while (HasEffectOfType(this->state.effects, EF_JUMPBODY1)) {
+    while (HasEffectOfType(this->effectList, EF_JUMPBODY1)) {
       this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_JUMPBODY1, 0, 0, 0, 0, 0);
     }
     this->LaunchEffect(EF_JUMPBODY1, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -2248,7 +2248,7 @@ void CGameActor::ShowPartyMemberEffect(std::uint32_t accountId) {
   for (int index = 0; index < g_session.PartyCount(); ++index) {
     MessengerMember member = g_session.PartyAt(index);
     if (member.accountId == accountId) {
-      for (CRagEffect* effect : this->state.effects) {
+      for (CRagEffect* effect : this->effectList) {
         if (effect && effect->state.type == 160) {
           return;
         }
@@ -3136,7 +3136,7 @@ void CGameActor::SetHatEffect(int effectId, bool on) {
   this->SendMsg(this, AM_DELETE_EFFECT, value, 0, 0, 0, 0, 0);
 
   CPc* pc;
-  if (hatEffect == 254 && IsPlayerJob(this->GetEffectiveJob(-1)) && (pc = dynamic_cast<CPc*>(this)) != nullptr) {
+  if (hatEffect == 254 && g_session.IsPlayerJob(this->GetEffectiveJob(-1)) && (pc = dynamic_cast<CPc*>(this)) != nullptr) {
     pc->appearanceFlags = on ? pc->appearanceFlags | 0x10 : pc->appearanceFlags ^ 0x10;
     if ((pc->virtue & 0x10) == 0 && (pc->appearanceFlags & 0x10) == 0) {
       return;
@@ -3902,7 +3902,7 @@ void CGrannyCorpse3d::Render(int argument) {
 
     command->texture = texture;
     command->vertexCount = vertexCount;
-    g_renderer->queues.Submit(command, 0, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+    g_renderer->Submit(command, 0);
   }
 }
 
@@ -4101,7 +4101,7 @@ void C3dGrannyGameActor::RenderLit(int argument, const GrannyActorLight& light) 
 
     command->texture = texture;
     command->vertexCount = vertexCount;
-    g_renderer->queues.Submit(command, 0, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+    g_renderer->Submit(command, 0);
     this->meshTextures[mesh] = texture;
     this->meshIndices[mesh] = indices;
     this->meshTriangleCounts[mesh] = triangleCount;
@@ -4223,7 +4223,7 @@ void C3dGrannyGameActor::RenderShadowed(int argument) {
     command->texture = meshTexture;
     command->vertexCount = vertexCount;
     if (meshTexture != nullptr) {
-      g_renderer->queues.Submit(command, 0, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+      g_renderer->Submit(command, 0);
     }
   }
 

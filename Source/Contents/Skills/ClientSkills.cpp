@@ -218,9 +218,15 @@ void CSession::RemoveSkill(std::uint32_t id) {
   }
 }
 
+// OFFSET: 0x00E07520
+// FUNCTION: fn_23745
+bool CSession::UpdateSkill(const CSkillInfo& value, unsigned char notify) {
+  return this->UpdateSkill(value, notify, 1);
+}
+
 // OFFSET: 0x00E07540
 // FUNCTION: fn_23746
-bool CSession::UpdateSkill(const CSkillInfo& value, unsigned char notify, unsigned char updateType) {
+__declspec(noinline) bool CSession::UpdateSkill(const CSkillInfo& value, unsigned char notify, unsigned char updateType) {
   {
     CSkillInfo snapshot(value);
     const auto update = [](CSkillInfo& target, const CSkillInfo& source, bool copyType, bool copyLearnedLevel) {

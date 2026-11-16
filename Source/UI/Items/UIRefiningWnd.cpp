@@ -276,7 +276,7 @@ void UIRefiningWnd::ApplyResult() {
       this->againButton->Invalidate();
     } else {
       this->notice->SetNotice(LookupMessage(MSI_CANNOT_REFINE_ITEM), 0, 0);
-      const int owned = LookupClientItem(g_session.m_inventoryItems, this->catalystItemId, 0).quantity;
+      const int owned = g_session.LookupClientItem(this->catalystItemId, 0).quantity;
       if (this->catalystCount > owned) {
         this->catalystEnabled = 0;
         this->notice->SetNotice(LookupMessage(MSI_NPC_ALL_STAT_DOWN_RESET), 5000, 1);
@@ -334,7 +334,7 @@ void UIRefiningWnd::ApplyResult() {
       info.GetIdDisplayName(name, capacity, 0);
       this->againButton->SetTooltip(name);
 
-      const ITEM_INFO owned = LookupClientItem(g_session.m_inventoryItems, itemId, 0);
+      const ITEM_INFO owned = g_session.LookupClientItem(itemId, 0);
       if (owned.quantity == 0) {
         this->notice->SetNotice(LookupMessage(MSI_REFINING_FAIL_BROKEN_ITEM), 5000, 1);
         this->againButton->SetDisabled(1);
@@ -465,7 +465,7 @@ void UIRefiningWnd::OnLBtnUp(int x, int y) {
   }
 
   if (static_cast<unsigned>(slot) < this->materials.size()) {
-    const int owned = LookupClientItem(g_session.m_inventoryItems, this->materials[slot].itemId, 0).quantity;
+    const int owned = g_session.LookupClientItem(this->materials[slot].itemId, 0).quantity;
     if (owned < 1) {
       return;
     }
@@ -521,7 +521,7 @@ void UIRefiningWnd::OnLBtnUp(int x, int y) {
       return;
     }
 
-    const int owned = LookupClientItem(g_session.m_inventoryItems, this->catalystItemId, 0).quantity;
+    const int owned = g_session.LookupClientItem(this->catalystItemId, 0).quantity;
     if (owned < this->catalystCount) {
       this->notice->SetNotice(LookupMessage(MSI_REFINING_FAIL), 3000, 1);
     } else if (this->catalystEnabled == 1) {
@@ -709,7 +709,7 @@ void UIRefiningWnd::OnRBtnUp(int x, int y) {
       if (!window) {
         return;
       }
-      ITEM_INFO info = LookupClientItem(g_session.m_inventoryItems, this->materials[this->selectedMaterial].itemId, 0);
+      ITEM_INFO info = g_session.LookupClientItem(this->materials[this->selectedMaterial].itemId, 0);
       window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&info), 0, 0, 0);
       return;
     }
@@ -719,7 +719,7 @@ void UIRefiningWnd::OnRBtnUp(int x, int y) {
       if (!window) {
         return;
       }
-      ITEM_INFO info = LookupClientItem(g_session.m_inventoryItems, this->catalystItemId, 0);
+      ITEM_INFO info = g_session.LookupClientItem(this->catalystItemId, 0);
       window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&info), 0, 0, 0);
       return;
     }
@@ -727,7 +727,7 @@ void UIRefiningWnd::OnRBtnUp(int x, int y) {
     const int slot = this->SlotAt(x, y);
     if (slot >= 0) {
       if (static_cast<unsigned>(slot) < this->materials.size()) {
-        ITEM_INFO info = LookupClientItem(g_session.m_inventoryItems, this->materials[slot].itemId, 0);
+        ITEM_INFO info = g_session.LookupClientItem(this->materials[slot].itemId, 0);
         if (info.identity[1] > 0) {
           UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
           if (window) {
@@ -741,7 +741,7 @@ void UIRefiningWnd::OnRBtnUp(int x, int y) {
         if (this->catalystCount < 1) {
           return;
         }
-        ITEM_INFO info = LookupClientItem(g_session.m_inventoryItems, this->catalystItemId, 0);
+        ITEM_INFO info = g_session.LookupClientItem(this->catalystItemId, 0);
         if (info.identity[1] > 0) {
           UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
           if (window) {
@@ -1118,7 +1118,7 @@ void UIRefiningWnd::Paint() {
     for (auto material = this->materials.begin(); material != this->materials.end(); ++material) {
       ITEM_INFO icon;
       icon.SetItemId(material->itemId);
-      const int owned = LookupClientItem(g_session.m_inventoryItems, material->itemId, 0).quantity;
+      const int owned = g_session.LookupClientItem(material->itemId, 0).quantity;
       this->DrawItemIcon(x + 12, 69, icon, 0);
       const std::string count = FormatOwnedString("%s%d^000000/1", owned != 0 ? "" : color, owned);
       this->DrawFormattedText(x, 107, count, 48, 6, 0, 12, 0, 0);
@@ -1132,7 +1132,7 @@ void UIRefiningWnd::Paint() {
     if (this->catalystItemId > 0 && this->catalystCount > 0) {
       ITEM_INFO icon;
       icon.SetItemId(this->catalystItemId);
-      const int owned = LookupClientItem(g_session.m_inventoryItems, this->catalystItemId, 0).quantity;
+      const int owned = g_session.LookupClientItem(this->catalystItemId, 0).quantity;
       this->DrawItemIcon(218, 69, icon, 0);
       const std::string count = FormatOwnedString("%s%d^000000/%d", this->catalystCount <= owned ? "" : color, owned, this->catalystCount);
       this->DrawFormattedText(206, 107, count, 48, 6, 0, 12, 0, 0);

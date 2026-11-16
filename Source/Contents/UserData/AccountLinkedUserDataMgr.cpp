@@ -110,7 +110,7 @@ void CAccountLinkedUserDataMgr::CompleteLoad(
         this->m_accountId = accountId;
         this->m_accountName = accountName;
         this->m_loaded = true;
-        g_session.m_emotionHotkeys.Save(g_session.m_aid, GetRenderSystemHolder()->system);
+        g_session.SaveEmotionHotkeys();
         break;
       }
     }
@@ -148,8 +148,7 @@ void CAccountLinkedUserDataMgr::CompleteSave() {
 // OFFSET: 0x005BCE50
 // FUNCTION: fn_03469
 void CAccountLinkedUserDataMgr::Save() {
-  EmotionHotkeys& emotions = g_session.m_emotionHotkeys;
-  emotions.Save(g_session.m_aid, GetRenderSystemHolder()->system);
+  g_session.SaveEmotionHotkeys();
   if (!this->m_loaded) {
     return;
   }
@@ -162,8 +161,8 @@ void CAccountLinkedUserDataMgr::Save() {
     data["WhisperBlockList"] = values;
   }
 
-  if (emotions.HasChanges()) {
-    emotions.Export(data);
+  if (g_session.HasEmotionHotkeyChanges()) {
+    g_session.m_emotionHotkeys.Export(data);
   }
 
   if (g_userHotkeyMgr->HasChanges() == true) {
@@ -182,7 +181,7 @@ void CAccountLinkedUserDataMgr::Save() {
 // OFFSET: 0x005BCD80
 // FUNCTION: fn_03468
 void CAccountLinkedUserDataMgr::Load(std::uint32_t accountId, std::string accountName) {
-  g_session.m_emotionHotkeys.LoadDefaults(g_session.m_aid);
+  g_session.LoadEmotionHotkeyDefaults();
 
   if (this->m_accountId == accountId && this->m_accountName == accountName) {
     return;

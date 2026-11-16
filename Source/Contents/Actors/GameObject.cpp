@@ -193,7 +193,7 @@ int CGameActor::Get8Dir(float angle) {
     relative -= 360.0f;
   }
 
-  if ((IsPlayerJob(this->GetEffectiveJob(-1)) && (this->render.animation == 0 || this->render.animation == 8 || this->render.animation == 16)) ||
+  if ((g_session.IsPlayerJob(this->GetEffectiveJob(-1)) && (this->render.animation == 0 || this->render.animation == 8 || this->render.animation == 16)) ||
       (this->GetEffectiveJob(-1) > 45 && this->GetEffectiveJob(-1) < 1000 && this->render.animation == 0) ||
       (g_session.IsHirelingJob(this->GetEffectiveJob(-1)) &&
        (this->render.animation == 0 || this->render.animation == 8 || this->render.animation == 16))) {
@@ -881,7 +881,7 @@ void CRenderObject::DrawQuad(const SpriteQuad& quad, const std::uint32_t* palett
   primitive->sourceBlend = 5;
   primitive->destinationBlend = blend != 5 ? 6 : 2;
   primitive->depthFlags = g_renderer->twoPass != 1;
-  g_renderer->queues.Submit(primitive, static_cast<std::uint16_t>(blend | this->render.blendFlags), g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+  g_renderer->Submit(primitive, static_cast<std::uint16_t>(blend | this->render.blendFlags));
 }
 
 // OFFSET: 0x00CB3F40
@@ -951,80 +951,80 @@ void CGameActor::ApplySavedShapeShift() {
 void EffectActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t, std::int64_t, std::int64_t, std::int64_t) {
   switch (message) {
     case AM_MASTER_DEAD:
-      for (auto it = this->state.effects.begin(); it != this->state.effects.end(); ++it) {
+      for (auto it = this->effectList.begin(); it != this->effectList.end(); ++it) {
         (*it)->SendMsg(this, AM_MASTER_DEAD, 0, 0, 0, 0, 0, 0);
       }
 
-      this->state.effects.clear();
+      this->effectList.clear();
       break;
 
     case AM_MAKE_MAGIC_TARGET:
-      if (!this->state.second) {
-        this->state.second = this->LaunchEffect(static_cast<int>(b), vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-        if (!this->state.second) {
+      if (!this->secondEffect) {
+        this->secondEffect = this->LaunchEffect(static_cast<int>(b), vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        if (!this->secondEffect) {
           return;
         }
       }
 
-      this->state.second->SendMsg(nullptr, AM_SET_DURATION, 0, c, 0, 0, 0, 0);
+      this->secondEffect->SendMsg(nullptr, AM_SET_DURATION, 0, c, 0, 0, 0, 0);
       break;
 
     case AM_DELETE_MAGIC_TARGET:
-      if (this->state.second) {
-        const auto end = this->state.effects.end();
-        const auto it = std::find(this->state.effects.begin(), end, this->state.second);
+      if (this->secondEffect) {
+        const auto end = this->effectList.end();
+        const auto it = std::find(this->effectList.begin(), end, this->secondEffect);
         if (it != end) {
           (*it)->SendMsg(this, AM_MASTER_DEAD, 0, 0, 0, 0, 0, 0);
-          this->state.effects.erase(it);
+          this->effectList.erase(it);
         }
 
-        this->state.second = nullptr;
+        this->secondEffect = nullptr;
       }
       break;
 
     case AM_MAKE_BEGIN_SPELL:
-      if (!this->state.first) {
-        this->state.first = this->LaunchEffect(static_cast<int>(b), vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-        if (!this->state.first) {
+      if (!this->firstEffect) {
+        this->firstEffect = this->LaunchEffect(static_cast<int>(b), vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        if (!this->firstEffect) {
           return;
         }
       }
 
       if (b > 0) {
         this->SendMsg(nullptr, AM_DELETE_EFFECT, b, 0, 0, 0, 0, 0);
-        this->state.first = this->LaunchEffect(static_cast<int>(b), vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-        if (!this->state.first) {
+        this->firstEffect = this->LaunchEffect(static_cast<int>(b), vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        if (!this->firstEffect) {
           return;
         }
       }
 
-      this->state.first->SendMsg(nullptr, AM_SET_DURATION, 0, c, 0, 0, 0, 0);
+      this->firstEffect->SendMsg(nullptr, AM_SET_DURATION, 0, c, 0, 0, 0, 0);
       break;
 
     case AM_DELETE_BEGIN_SPELL:
-      if (this->state.first) {
-        const auto end = this->state.effects.end();
-        const auto it = std::find(this->state.effects.begin(), end, this->state.first);
+      if (this->firstEffect) {
+        const auto end = this->effectList.end();
+        const auto it = std::find(this->effectList.begin(), end, this->firstEffect);
         if (it != end) {
           (*it)->SendMsg(this, AM_MASTER_DEAD, 0, 0, 0, 0, 0, 0);
-          this->state.effects.erase(it);
+          this->effectList.erase(it);
         }
 
-        this->state.first = nullptr;
+        this->firstEffect = nullptr;
       }
       break;
 
     case AM_EFFECT_DEAD:
       if (sender) {
         CRagEffect* const effect = static_cast<CRagEffect*>(sender);
-        for (auto it = this->state.effects.begin(); it != this->state.effects.end(); ++it) {
+        for (auto it = this->effectList.begin(); it != this->effectList.end(); ++it) {
           if (*it == effect) {
-            this->state.effects.erase(it);
+            this->effectList.erase(it);
 
-            if (this->state.first == effect) {
-              this->state.first = nullptr;
-            } else if (this->state.second == effect) {
-              this->state.second = nullptr;
+            if (this->firstEffect == effect) {
+              this->firstEffect = nullptr;
+            } else if (this->secondEffect == effect) {
+              this->secondEffect = nullptr;
             }
 
             return;
@@ -1039,13 +1039,13 @@ void EffectActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_
         return;
       }
 
-      for (auto it = this->state.effects.begin(); it != this->state.effects.end(); ++it) {
+      for (auto it = this->effectList.begin(); it != this->effectList.end(); ++it) {
         CRagEffect* const effect = *it;
         if (!effect) {
-          this->state.effects.erase(it);
+          this->effectList.erase(it);
         } else if (effect->state.type == b) {
           effect->SendMsg(this, AM_MASTER_DEAD, 0, 0, 0, 0, 0, 0);
-          this->state.effects.erase(it);
+          this->effectList.erase(it);
           return;
         }
       }
@@ -1057,24 +1057,24 @@ void EffectActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_
         return;
       }
 
-      for (auto it = this->state.effects.begin(); it != this->state.effects.end(); ++it) {
+      for (auto it = this->effectList.begin(); it != this->effectList.end(); ++it) {
         CRagEffect* const effect = *it;
         if (!effect) {
-          this->state.effects.erase(it);
+          this->effectList.erase(it);
         } else if (static_cast<int>(effect->state.tag) == b &&
                    effect->state.type == c) {
           effect->SendMsg(this, AM_MASTER_DEAD, 0, 0, 0, 0, 0, 0);
-          this->state.effects.erase(it);
+          this->effectList.erase(it);
           return;
         }
       }
       break;
 
     case AM_EFFECT_LOOP_COUNT:
-      for (auto it = this->state.effects.begin(); it != this->state.effects.end(); ++it) {
+      for (auto it = this->effectList.begin(); it != this->effectList.end(); ++it) {
         CRagEffect* const effect = *it;
         if (!effect) {
-          this->state.effects.erase(it);
+          this->effectList.erase(it);
         } else if (effect->state.type == b) {
           effect->SendMsg(this, AM_EFFECT_LOOP_COUNT, 0, b, static_cast<int>(c), static_cast<int>(c >> 32), 0, 0);
         }
@@ -1090,10 +1090,10 @@ void EffectActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_
         return;
       }
 
-      for (auto it = this->state.effects.begin(); it != this->state.effects.end(); ++it) {
+      for (auto it = this->effectList.begin(); it != this->effectList.end(); ++it) {
         CRagEffect* const effect = *it;
         if (!effect) {
-          this->state.effects.erase(it);
+          this->effectList.erase(it);
         } else if (*effectId == effect->state.type) {
           *effectId = -1;
           return;
@@ -1605,7 +1605,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
       g_session.mercenaryAlive = 0;
       break;
     }
-    if (this->willBeAttackedList.size() != 0 && !IsPlayerJob(this->GetEffectiveJob(-1))) {
+    if (this->willBeAttackedList.size() != 0 && !g_session.IsPlayerJob(this->GetEffectiveJob(-1))) {
       this->willBeDead = 1;
       break;
     }
@@ -1734,7 +1734,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
           const char* wave;
           if (id == 96 || id == 97) {
             wave = g_session.GetWeaponHitWaveName(-1);
-          } else if (IsPlayerJob(this->GetEffectiveJob(-1))) {
+          } else if (g_session.IsPlayerJob(this->GetEffectiveJob(-1))) {
             wave = g_session.GetHitWaveName(this->GetEffectiveJob(-1));
           } else {
             bool genericWeapon = true;
@@ -1879,7 +1879,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
         this->SendMsg(nullptr, AM_MAKE_NUMBER, value, static_cast<std::uint32_t>(color), kind, 0, 0, 0);
 
         if (!negative) {
-          const auto isPlayer = IsPlayerJob(this->GetEffectiveJob(-1));
+          const auto isPlayer = g_session.IsPlayerJob(this->GetEffectiveJob(-1));
           if (this->render.state != ST_DEAD) {
             if (isPlayer) {
               if (this->render.state != ST_ATTACK && id != 39 && id != 97) {
@@ -2631,7 +2631,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
         this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_STEELBODY, 0, 0, 0, 0, 0);
         this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_SU_STOOP, 0, 0, 0, 0, 0);
       }
-      if (this->render.accountId == g_session.m_gid || IsPlayerJob(this->GetEffectiveJob(-1))) {
+      if (this->render.accountId == g_session.m_gid || g_session.IsPlayerJob(this->GetEffectiveJob(-1))) {
         CPc* pc = static_cast<CPc*>(this);
         pc->virtue = on ? pc->virtue | 0x10 : pc->virtue ^ 0x10;
         if ((pc->virtue & 0x10) == 0 && (pc->appearanceFlags & 0x10) == 0) {
@@ -3004,7 +3004,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
       break;
     }
     case EFST_STRIKING:
-      if (IsPlayerJob(this->GetEffectiveJob(-1))) {
+      if (g_session.IsPlayerJob(this->GetEffectiveJob(-1))) {
         while (this->HasId(EF_MAKEHALLU2)) {
           this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_MAKEHALLU2, 0, 0, 0, 0, 0);
         }

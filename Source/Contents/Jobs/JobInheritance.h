@@ -4,9 +4,6 @@
 #include <cstdint>
 #include <string>
 
-int __stdcall IsPlayerJob(int job);
-int __stdcall GetWeaponViewValue(int weapon);
-bool __stdcall IsJobWeaponAllowed(int job, int slot, std::int64_t weapon);
 std::string GetJobTitleString(int job);
 bool ResetHotkeySlots();
 bool IsScreenShakeActive();

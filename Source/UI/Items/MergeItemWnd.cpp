@@ -60,7 +60,7 @@ void CMergeItemWnd::SelectSameItems(int id) {
   const int itemId = this->ItemIdOf(id);
   int checked = 0;
   for (auto it = this->m_items.begin(); it != this->m_items.end(); ++it) {
-    if (itemId == std::atoi(LookupClientItemByIdentity(g_session.m_inventoryItems, (*it)->m_message).itemId.c_str())) {
+    if (itemId == std::atoi(g_session.LookupClientItemByIdentity((*it)->m_message).itemId.c_str())) {
       const std::uint32_t state = (*it)->geometry.state;
       if ((*it)->m_message == id) {
         if (state == 0) {
@@ -75,7 +75,7 @@ void CMergeItemWnd::SelectSameItems(int id) {
   }
 
   for (auto it = this->m_items.begin(); it != this->m_items.end(); ++it) {
-    const int value = std::atoi(LookupClientItemByIdentity(g_session.m_inventoryItems, (*it)->m_message).itemId.c_str());
+    const int value = std::atoi(g_session.LookupClientItemByIdentity((*it)->m_message).itemId.c_str());
     (*it)->SetChecked(itemId == value ? checked : 0);
   }
 }
@@ -159,7 +159,7 @@ void CMergeItemWnd::Paint() {
     const int x = this->m_cellSize * (index % columns) + this->m_gridLeft;
     UICheckBox* box = this->m_items[first + index];
     if (box != nullptr) {
-      ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, box->m_message);
+      ITEM_INFO item = g_session.LookupClientItemByIdentity(box->m_message);
       if (item.identity[1] != 0) {
         box->SetHidden(false);
         box->Move(this->m_checkOffsetX + x, this->m_checkOffsetY + y);

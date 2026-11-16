@@ -100,7 +100,7 @@ void RouletteMgr::Draw() {
   command->texture = g_texMgr.Default();
   command->vertices = this->m_quads.current.vertices;
   command->vertexCount = 6;
-  g_renderer->queues.Submit(command, 0x201, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+  g_renderer->Submit(command, 0x201);
 
   this->Update();
 }

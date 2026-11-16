@@ -21,7 +21,7 @@ void UIShortCutWnd::OnRBtnDown(int x, int y) {
 
   if (index >= 9 * this->m_grid.rows) {
     if (g_session.ItemSlotActive()) {
-      ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(this->m_itemSlots[column]->itemId), 1);
+      ITEM_INFO item = g_session.LookupClientItem(static_cast<int>(this->m_itemSlots[column]->itemId), 1);
 
       if (item.identity[1] > 0) {
         g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND)->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
@@ -66,7 +66,7 @@ void UIShortCutWnd::OnRBtnDown(int x, int y) {
                                                                                               : originY + 33 + rowY);
     }
   } else {
-    ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, static_cast<int>(this->m_slots[index]->itemId), 1);
+    ITEM_INFO item = g_session.LookupClientItem(static_cast<int>(this->m_slots[index]->itemId), 1);
 
     if (item.identity[1] > 0) {
       g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND)->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);

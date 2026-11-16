@@ -105,7 +105,7 @@ bool CRendererDX9::SaveLogo(std::string filename) {
 }
 
 void CRendererDX9::Submit(RenderCommand* command, std::uint16_t flags) {
-  this->queues.Submit(command, flags, this->fog.supported != 0, g_depthStart, g_depthEnd);
+  this->Submit(command, flags);
 }
 
 // OFFSET: 0x00559BE0

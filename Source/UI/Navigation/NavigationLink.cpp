@@ -1778,7 +1778,7 @@ bool NavigationLinkParser::HasUnownedItemLink(std::string text) {
       continue;
     }
 
-    const bool unowned = !(LookupClientItem(g_session.m_inventoryItems, itemId, 0).identity[1] > 0 || g_session.HasItemId(itemId) ||
+    const bool unowned = !(g_session.LookupClientItem(itemId, 0).identity[1] > 0 || g_session.HasItemId(itemId) ||
                            g_session.HasItem1740Number(itemId));
     if (!unowned) {
       offset += static_cast<int>(link.size() + g_itemLinkTag.size() + g_itemLinkCloseTag.size());

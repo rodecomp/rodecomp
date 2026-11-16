@@ -725,7 +725,7 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
   if (pick->accountId == g_session.m_aid) {
     return;
   }
-  if (!IsPlayerJob(pick->job) && !isAdmin) {
+  if (!g_session.IsPlayerJob(pick->job) && !isAdmin) {
     return;
   }
   if (g_session.IsAllyActor(pick->accountId, pick->job) == 1) {
@@ -737,7 +737,7 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
   if (this->ActorName(pick->accountId).empty() && !isAdmin) {
     return;
   }
-  if (this->rBtnClickX != g_mouse.x || this->rBtnClickY != g_mouse.y || !IsPlayerJob(pick->job)) {
+  if (this->rBtnClickX != g_mouse.x || this->rBtnClickY != g_mouse.y || !g_session.IsPlayerJob(pick->job)) {
     return;
   }
 

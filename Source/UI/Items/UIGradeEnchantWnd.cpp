@@ -479,7 +479,7 @@ void UIGradeEnchantWnd::OnProcess() {
   }
 
   const bool disabled = this->requestPending == 1 || this->item.identity[1] == 0 || this->selectedMaterial == -1 ||
-                        LookupClientItem(g_session.m_inventoryItems, this->materials[this->selectedMaterial].itemId, 0).quantity <
+                        g_session.LookupClientItem(this->materials[this->selectedMaterial].itemId, 0).quantity <
                           this->materials[this->selectedMaterial].amount ||
                         g_session.m_zeny < this->SelectedMaterialZeny() || this->baseSuccessRate == 0;
 
@@ -517,7 +517,7 @@ void UIGradeEnchantWnd::OnRBtnUp(int x, int y) {
     if (row >= 0 && static_cast<unsigned>(row) < this->materials.size()) {
       UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
       if (window) {
-        ITEM_INFO material = LookupClientItem(g_session.m_inventoryItems, this->materials[row].itemId, 0);
+        ITEM_INFO material = g_session.LookupClientItem(this->materials[row].itemId, 0);
         window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&material), 0, 0, 0);
       }
       return;
@@ -526,7 +526,7 @@ void UIGradeEnchantWnd::OnRBtnUp(int x, int y) {
     if (x >= 195 && x <= 219 && y >= 228 && y <= 252) {
       UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
       if (window) {
-        ITEM_INFO blessing = LookupClientItem(g_session.m_inventoryItems, this->info.blessingItemId, 0);
+        ITEM_INFO blessing = g_session.LookupClientItem(this->info.blessingItemId, 0);
         window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&blessing), 0, 0, 0);
       }
     }
@@ -550,7 +550,7 @@ int UIGradeEnchantWnd::SendMsg(
     switch (argument1) {
     case ID_OK:
       if (this->requestPending != 1 && this->item.identity[1] > 0 && this->selectedMaterial != -1) {
-        const int quantity = LookupClientItem(g_session.m_inventoryItems, this->materials[this->selectedMaterial].itemId, 0).quantity;
+        const int quantity = g_session.LookupClientItem(this->materials[this->selectedMaterial].itemId, 0).quantity;
         if (quantity >= this->materials[this->selectedMaterial].amount && g_session.m_zeny >= this->SelectedMaterialZeny()) {
           if (this->protect != 0 || this->blessingAmount != 0 ||
               g_windowMgr.Confirm(LookupMessage(MSI_MERCHANTSHOP_TOTA_LOVER_ZENY_ERR), 2, true, false, 0, "Message", 280, 120, 0) != ID_NO) {
@@ -578,7 +578,7 @@ int UIGradeEnchantWnd::SendMsg(
     }
     case ID_UP:
       if (this->info.blessingItemId > 0 && this->blessingAmount < this->info.maxBlessingSteps * this->info.blessingStepAmount &&
-          LookupClientItem(g_session.m_inventoryItems, this->info.blessingItemId, 0).quantity >= this->blessingAmount + this->info.blessingStepAmount) {
+          g_session.LookupClientItem(this->info.blessingItemId, 0).quantity >= this->blessingAmount + this->info.blessingStepAmount) {
         this->blessingAmount += this->info.blessingStepAmount;
       }
       break;
@@ -733,7 +733,7 @@ void UIGradeEnchantWnd::UpdateEnchantMessages() {
   }
 
   if (this->selectedMaterial != -1 &&
-      LookupClientItem(g_session.m_inventoryItems, this->materials[this->selectedMaterial].itemId, 0).quantity <
+      g_session.LookupClientItem(this->materials[this->selectedMaterial].itemId, 0).quantity <
         this->materials[this->selectedMaterial].amount) {
     this->messageIds.push_back(3708);
   }

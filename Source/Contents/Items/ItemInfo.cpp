@@ -206,7 +206,8 @@ void ITEM_INFO::Reset() {
 
 // OFFSET: 0x00DDD4E0
 // FUNCTION: fn_23386
-ITEM_INFO LookupClientItem(const std::list<ITEM_INFO>& values, int id, unsigned char requireIdentified) {
+ITEM_INFO CSession::LookupClientItem(int id, unsigned char requireIdentified) const {
+  const std::list<ITEM_INFO>& values = this->m_inventoryItems;
   if (values.empty()) {
     return ITEM_INFO(0);
   }
@@ -224,22 +225,6 @@ ITEM_INFO LookupClientItem(const std::list<ITEM_INFO>& values, int id, unsigned 
 // FUNCTION: fn_23387
 ITEM_INFO CSession::LookupClientItemByIdentity(std::uint32_t id) const {
   const std::list<ITEM_INFO>& values = this->m_inventoryItems;
-  if (values.empty()) {
-    return ITEM_INFO(0);
-  }
-
-  auto it = values.begin();
-  for (; it != values.end(); ++it) {
-    if (it->identity[1] == id) {
-      break;
-    }
-  }
-
-  return it != values.end() ? *it : ITEM_INFO(0);
-}
-
-// INLINED
-ITEM_INFO LookupClientItemByIdentity(const std::list<ITEM_INFO>& values, std::uint32_t id) {
   if (values.empty()) {
     return ITEM_INFO(0);
   }

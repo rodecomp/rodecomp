@@ -160,9 +160,7 @@ void CEffectPrim::DrawEffectPrimitive15(matrix& wtm) {
     RenderTriangle& triangle = this->state.triangles[index];
 
     if (triangle.Visible()) {
-      g_renderer->queues.SubmitTriangle(
-        triangle, static_cast<std::uint16_t>(this->state.renderFlag), g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
-      );
+      g_renderer->SubmitTriangle(triangle, static_cast<std::uint16_t>(this->state.renderFlag));
     }
   }
 }
@@ -213,7 +211,7 @@ void CEffectPrim::Render(int argument) {
       this->state.triangles[0].vertices[2].u = 0.0f;
       this->state.triangles[0].vertices[2].v = 1.0f;
       this->state.triangles[0].texture = this->state.textures[0];
-      g_renderer->queues.SubmitTriangle(this->state.triangles[0], 1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+      g_renderer->SubmitTriangle(this->state.triangles[0], 1);
       break;
     }
     case PP_2DCIRCLE:
@@ -304,8 +302,8 @@ void CEffectPrim::Render(int argument) {
       this->state.triangles[1].vertices[2].u = 1.0f;
       this->state.triangles[1].vertices[2].v = 1.0f;
       this->state.triangles[1].texture = this->state.textures[this->render.curMotion];
-      g_renderer->queues.SubmitTriangle(this->state.triangles[0], static_cast<std::uint16_t>(this->state.renderFlag), g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
-      g_renderer->queues.SubmitTriangle(this->state.triangles[1], static_cast<std::uint16_t>(this->state.renderFlag), g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+      g_renderer->SubmitTriangle(this->state.triangles[0], static_cast<std::uint16_t>(this->state.renderFlag));
+      g_renderer->SubmitTriangle(this->state.triangles[1], static_cast<std::uint16_t>(this->state.renderFlag));
       break;
     }
     case PP_3DCROSSTEXTURE:
@@ -737,7 +735,7 @@ void CEffectPrim::Render(int argument) {
       this->state.triangles[0].vertices[2].u = 0.0f;
       this->state.triangles[0].vertices[2].v = 1.0f;
       this->state.triangles[0].texture = this->state.textures[0];
-      g_renderer->queues.SubmitTriangle(this->state.triangles[0], 1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+      g_renderer->SubmitTriangle(this->state.triangles[0], 1);
       break;
     }
     case PP_3DLINE: {
@@ -767,7 +765,7 @@ void CEffectPrim::Render(int argument) {
       this->state.triangles[0].vertices[2].u = 0.0f;
       this->state.triangles[0].vertices[2].v = 0.0f;
       this->state.triangles[0].texture = nullptr;
-      g_renderer->queues.SubmitTriangle(this->state.triangles[0], 5, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+      g_renderer->SubmitTriangle(this->state.triangles[0], 5);
       break;
     }
     case 171:
@@ -860,7 +858,7 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
   }
 
   if (this->state.triangles[*rpCnt].Visible()) {
-    g_renderer->queues.SubmitTriangle(this->state.triangles[*rpCnt], static_cast<std::uint16_t>(this->state.renderFlag), g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+    g_renderer->SubmitTriangle(this->state.triangles[*rpCnt], static_cast<std::uint16_t>(this->state.renderFlag));
     ++*rpCnt;
   }
 
@@ -916,7 +914,7 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
   }
 
   if (this->state.triangles[*rpCnt].Visible()) {
-    g_renderer->queues.SubmitTriangle(this->state.triangles[*rpCnt], static_cast<std::uint16_t>(this->state.renderFlag), g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+    g_renderer->SubmitTriangle(this->state.triangles[*rpCnt], static_cast<std::uint16_t>(this->state.renderFlag));
     ++*rpCnt;
   }
 }
@@ -1226,7 +1224,7 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
   this->state.triangles[*rpCnt].texture = this->state.textures[pw];
 
   if (this->state.triangles[*rpCnt].Visible()) {
-    g_renderer->queues.SubmitTriangle(this->state.triangles[*rpCnt], static_cast<std::uint16_t>(this->state.renderFlag), g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+    g_renderer->SubmitTriangle(this->state.triangles[*rpCnt], static_cast<std::uint16_t>(this->state.renderFlag));
     ++*rpCnt;
   }
 
@@ -1253,7 +1251,7 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
   this->state.triangles[*rpCnt].texture = this->state.textures[pw];
 
   if (this->state.triangles[*rpCnt].Visible()) {
-    g_renderer->queues.SubmitTriangle(this->state.triangles[*rpCnt], static_cast<std::uint16_t>(this->state.renderFlag), g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+    g_renderer->SubmitTriangle(this->state.triangles[*rpCnt], static_cast<std::uint16_t>(this->state.renderFlag));
     ++*rpCnt;
   }
 }
@@ -1313,9 +1311,7 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
   this->state.triangles[*rpCnt].texture = this->state.textures[0];
 
   if (this->state.triangles[*rpCnt].Visible()) {
-    g_renderer->queues.SubmitTriangle(
-      this->state.triangles[*rpCnt], static_cast<std::uint16_t>(this->state.renderFlag), g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
-    );
+    g_renderer->SubmitTriangle(this->state.triangles[*rpCnt], static_cast<std::uint16_t>(this->state.renderFlag));
     ++*rpCnt;
   }
 
@@ -1342,9 +1338,7 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
   this->state.triangles[*rpCnt].texture = this->state.textures[0];
 
   if (this->state.triangles[*rpCnt].Visible()) {
-    g_renderer->queues.SubmitTriangle(
-      this->state.triangles[*rpCnt], static_cast<std::uint16_t>(this->state.renderFlag), g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
-    );
+    g_renderer->SubmitTriangle(this->state.triangles[*rpCnt], static_cast<std::uint16_t>(this->state.renderFlag));
     ++*rpCnt;
   }
 }
@@ -3205,76 +3199,76 @@ void CEffectPrim::RenderFieldPanel(matrix& wtm) {
     const unsigned char texture = static_cast<unsigned char>(slot.flag1[0]);
     switch (this->state.slots[0].flag1[2]) {
       case 0:
-        this->RenderTeiRect(&rpCnt, slot.alphaB, vec2, vec1, vec4, vec3, wtm, 1, texture, 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, texture, 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
       case 1:
-        this->RenderTeiRect(&rpCnt, slot.alphaB, vec2, vec1, vec4, vec3, wtm, 0, texture, 1, 150, 150, 250, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, texture, 1, 150, 150, 250, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
       case 2:
-        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, texture, 1, 130, 130, 250, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec2, vec1, vec4, vec3, wtm, 0, texture, 1, 130, 130, 250, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
       case 3:
-        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, texture, 1, 200, 200, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec2, vec1, vec4, vec3, wtm, 0, texture, 1, 200, 200, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
       case 4:
-        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, texture, 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec2, vec1, vec4, vec3, wtm, 1, texture, 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
       case 7:
       case 23:
-        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, texture, 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec2, vec1, vec4, vec3, wtm, 0, texture, 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
       case 8:
-        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, texture, 1, 135, 255, 135, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec2, vec1, vec4, vec3, wtm, 1, texture, 1, 135, 255, 135, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
       case 10:
-        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, texture, 1, 250, 250, 150, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec2, vec1, vec4, vec3, wtm, 0, texture, 1, 250, 250, 150, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
       case 11:
-        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, texture, 1, 220, 250, 220, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec2, vec1, vec4, vec3, wtm, 0, texture, 1, 220, 250, 220, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
       case 12:
-        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, texture, 1, 252, 171, 143, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec2, vec1, vec4, vec3, wtm, 1, texture, 1, 252, 171, 143, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
       case 13:
-        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, texture, 1, 250, 100, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec2, vec1, vec4, vec3, wtm, 0, texture, 1, 250, 100, 100, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
       case 14:
-        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, texture, 1, 94, 0, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec2, vec1, vec4, vec3, wtm, 1, texture, 1, 94, 0, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
       case 15:
-        this->RenderTeiRect(&rpCnt, slot.alphaB, vec2, vec1, vec4, vec3, wtm, 1, texture, 1, 255, 200, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, texture, 1, 255, 200, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
       case 16:
-        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, texture, 1, 0, 0, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec2, vec1, vec4, vec3, wtm, 1, texture, 1, 0, 0, 0, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
       case 17:
-        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, texture, 1, 255, 180, 180, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec2, vec1, vec4, vec3, wtm, 1, texture, 1, 255, 180, 180, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
       case 18:
-        this->RenderTeiRect(&rpCnt, static_cast<short>(slot.alphaB / 2), vec1, vec2, vec3, vec4, wtm, 0, texture, 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, static_cast<short>(slot.alphaB / 2), vec2, vec1, vec4, vec3, wtm, 0, texture, 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
       case 24:
-        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, texture, 1, 63, 72, 204, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec2, vec1, vec4, vec3, wtm, 0, texture, 1, 63, 72, 204, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
       case 9:
         switch (this->state.slots[0].flag1[3]) {
         case 1:
-          this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, texture, 1, 255, 135, 135, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(&rpCnt, slot.alphaB, vec2, vec1, vec4, vec3, wtm, 1, texture, 1, 255, 135, 135, 0.0f, 1.0f, 0.0f, 1.0f, 0);
           break;
         case 2:
-          this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, texture, 1, 255, 205, 135, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(&rpCnt, slot.alphaB, vec2, vec1, vec4, vec3, wtm, 1, texture, 1, 255, 205, 135, 0.0f, 1.0f, 0.0f, 1.0f, 0);
           break;
         case 3:
-          this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, texture, 1, 255, 255, 135, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(&rpCnt, slot.alphaB, vec2, vec1, vec4, vec3, wtm, 1, texture, 1, 255, 255, 135, 0.0f, 1.0f, 0.0f, 1.0f, 0);
           break;
         case 4:
-          this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, texture, 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(&rpCnt, slot.alphaB, vec2, vec1, vec4, vec3, wtm, 1, texture, 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
           break;
         case 5:
-          this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, texture, 1, 135, 135, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(&rpCnt, slot.alphaB, vec2, vec1, vec4, vec3, wtm, 1, texture, 1, 135, 135, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
           break;
         case 6:
-          this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, texture, 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(&rpCnt, slot.alphaB, vec2, vec1, vec4, vec3, wtm, 0, texture, 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
           break;
         default:
           break;
@@ -3285,7 +3279,7 @@ void CEffectPrim::RenderFieldPanel(matrix& wtm) {
         vec2.y -= 110.0f;
         vec3.y -= 110.0f;
         vec4.y -= 110.0f;
-        this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, texture, 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+        this->RenderTeiRect(&rpCnt, slot.alphaB, vec2, vec1, vec4, vec3, wtm, 0, texture, 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         break;
       default:
         break;
@@ -3939,7 +3933,7 @@ void CEffectPrim::RenderLightningArc(matrix& wtm) {
             if (alpha > 0) {
               unsigned char red;
               unsigned char green;
-              if (slot.alphaT == 3) {
+              if (slot.fullDisplayAngle == 3) {
                 const int first = std::rand() % 100;
                 const int second = std::rand() % 50;
                 green = static_cast<unsigned char>(first >= 0 ? first : 0);
@@ -5183,7 +5177,7 @@ void CEffectPrim::Render2DCircle() {
     this->state.triangles[rpCnt].vertices[2].u = uInc;
     this->state.triangles[rpCnt].vertices[2].v = 0.0f;
     this->state.triangles[rpCnt].texture = this->state.textures[0];
-    g_renderer->queues.SubmitTriangle(this->state.triangles[rpCnt], 1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+    g_renderer->SubmitTriangle(this->state.triangles[rpCnt], 1);
     ++rpCnt;
 
     this->state.triangles[rpCnt].vertices[0].x = this->render.position.x + innerSize * cs1;
@@ -5208,7 +5202,7 @@ void CEffectPrim::Render2DCircle() {
     this->state.triangles[rpCnt].vertices[2].u = uInc + 0.25f;
     this->state.triangles[rpCnt].vertices[2].v = 0.0f;
     this->state.triangles[rpCnt].texture = this->state.textures[0];
-    g_renderer->queues.SubmitTriangle(this->state.triangles[rpCnt], 1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+    g_renderer->SubmitTriangle(this->state.triangles[rpCnt], 1);
     ++rpCnt;
 
     uInc += 0.25f;
@@ -5255,7 +5249,7 @@ void CEffectPrim::Render2DDiamond() {
     this->state.triangles[0].vertices[i].x = x * cs - y * sn + this->render.position.x;
     this->state.triangles[0].vertices[i].y = y * cs + x * sn + this->render.position.y;
   }
-  g_renderer->queues.SubmitTriangle(this->state.triangles[0], 1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+  g_renderer->SubmitTriangle(this->state.triangles[0], 1);
 
   this->state.triangles[1].vertices[0].x = halfWidth;
   this->state.triangles[1].vertices[0].y = halfHeight - notch;
@@ -5285,7 +5279,7 @@ void CEffectPrim::Render2DDiamond() {
     this->state.triangles[1].vertices[i].x = x * cs - y * sn + this->render.position.x;
     this->state.triangles[1].vertices[i].y = y * cs + x * sn + this->render.position.y;
   }
-  g_renderer->queues.SubmitTriangle(this->state.triangles[1], 1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+  g_renderer->SubmitTriangle(this->state.triangles[1], 1);
 }
 
 // OFFSET: 0x00BCC960
@@ -5316,7 +5310,7 @@ __declspec(safebuffers) void CEffectPrim::RenderRecordQuads(matrix& wtm) {
     this->state.triangles[rpCnt].vertices[2].v = 0.0f;
     this->state.triangles[rpCnt].texture = this->state.textures[0];
     if (this->state.triangles[rpCnt].Visible()) {
-      g_renderer->queues.SubmitTriangle(this->state.triangles[rpCnt++], 1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+      g_renderer->SubmitTriangle(this->state.triangles[rpCnt++], 1);
     }
 
     projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
@@ -5339,7 +5333,7 @@ __declspec(safebuffers) void CEffectPrim::RenderRecordQuads(matrix& wtm) {
     this->state.triangles[rpCnt].vertices[2].v = 1.0f;
     this->state.triangles[rpCnt].texture = this->state.textures[0];
     if (this->state.triangles[rpCnt].Visible()) {
-      g_renderer->queues.SubmitTriangle(this->state.triangles[rpCnt++], 1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+      g_renderer->SubmitTriangle(this->state.triangles[rpCnt++], 1);
     }
   }
 }
@@ -5411,9 +5405,7 @@ __declspec(safebuffers) void CEffectPrim::RenderRecordRings(matrix& wtm) {
       this->state.triangles[rpCnt].vertices[2].v = 0.0f;
       this->state.triangles[rpCnt].texture = this->state.textures[0];
       if (this->state.triangles[rpCnt].Visible()) {
-        g_renderer->queues.SubmitTriangle(
-          this->state.triangles[rpCnt++], static_cast<std::uint16_t>(this->state.renderFlag), g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
-        );
+        g_renderer->SubmitTriangle(this->state.triangles[rpCnt++], static_cast<std::uint16_t>(this->state.renderFlag));
       }
 
       projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
@@ -5436,9 +5428,7 @@ __declspec(safebuffers) void CEffectPrim::RenderRecordRings(matrix& wtm) {
       this->state.triangles[rpCnt].vertices[2].v = 1.0f;
       this->state.triangles[rpCnt].texture = this->state.textures[0];
       if (this->state.triangles[rpCnt].Visible()) {
-        g_renderer->queues.SubmitTriangle(
-          this->state.triangles[rpCnt++], static_cast<std::uint16_t>(this->state.renderFlag), g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd
-        );
+        g_renderer->SubmitTriangle(this->state.triangles[rpCnt++], static_cast<std::uint16_t>(this->state.renderFlag));
       }
 
       uInc = uNext;
@@ -5564,7 +5554,7 @@ void CEffectPrim::RenderArcBand(matrix& wtm) {
     this->state.triangles[rpCnt].vertices[1].v = 0.0f;
     this->state.triangles[rpCnt].texture = this->state.textures[this->render.curMotion];
     if (this->state.triangles[rpCnt].Visible()) {
-      g_renderer->queues.SubmitTriangle(this->state.triangles[rpCnt++], 1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+      g_renderer->SubmitTriangle(this->state.triangles[rpCnt++], 1);
     }
 
     projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
@@ -5587,7 +5577,7 @@ void CEffectPrim::RenderArcBand(matrix& wtm) {
     this->state.triangles[rpCnt].vertices[0].v = 1.0f;
     this->state.triangles[rpCnt].texture = this->state.textures[this->render.curMotion];
     if (this->state.triangles[rpCnt].Visible()) {
-      g_renderer->queues.SubmitTriangle(this->state.triangles[rpCnt++], 1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+      g_renderer->SubmitTriangle(this->state.triangles[rpCnt++], 1);
     }
 
     uInc = uNext;
@@ -5664,9 +5654,9 @@ void CEffectPrim::RenderPyramid(matrix& wtm) {
       if (this->state.slots[0].flag1[0] == 3) {
         submitted.sourceBlend = 5;
         submitted.destinationBlend = 2;
-        g_renderer->queues.SubmitTriangle(submitted, 5, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+        g_renderer->SubmitTriangle(submitted, 5);
       } else {
-        g_renderer->queues.SubmitTriangle(submitted, 1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+        g_renderer->SubmitTriangle(submitted, 1);
       }
     }
   }
@@ -5717,7 +5707,7 @@ void CEffectPrim::RenderCrossPlanes(matrix& wtm) {
     this->state.triangles[rpCnt].vertices[2].v = 0.0f;
     this->state.triangles[rpCnt].texture = this->state.textures[this->render.curMotion];
     if (this->state.triangles[rpCnt].Visible()) {
-      g_renderer->queues.SubmitTriangle(this->state.triangles[rpCnt++], 1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+      g_renderer->SubmitTriangle(this->state.triangles[rpCnt++], 1);
     }
 
     projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
@@ -5743,7 +5733,7 @@ void CEffectPrim::RenderCrossPlanes(matrix& wtm) {
     this->state.triangles[rpCnt].vertices[2].v = 1.0f;
     this->state.triangles[rpCnt].texture = this->state.textures[this->render.curMotion];
     if (this->state.triangles[rpCnt].Visible()) {
-      g_renderer->queues.SubmitTriangle(this->state.triangles[rpCnt++], 1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+      g_renderer->SubmitTriangle(this->state.triangles[rpCnt++], 1);
     }
   }
 }
@@ -6903,7 +6893,7 @@ void CEffectPrim::Render2DPrimitive() {
   this->state.triangles[0].texture = this->state.textures[this->render.curMotion];
 
   const std::uint16_t flag1 = (this->state.useRenderFlag[0] == 0) ? 1 : static_cast<std::uint16_t>(this->state.renderFlag);
-  g_renderer->queues.SubmitTriangle(this->state.triangles[0], flag1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+  g_renderer->SubmitTriangle(this->state.triangles[0], flag1);
 
   this->state.triangles[1].vertices[0].x = (p3_y + this->render.position.x) - 0.5f;
   this->state.triangles[1].vertices[0].y = (p3_x + this->render.position.y) - 0.5f;
@@ -6932,7 +6922,7 @@ void CEffectPrim::Render2DPrimitive() {
   this->state.triangles[1].texture = this->state.textures[this->render.curMotion];
 
   const std::uint16_t flag2 = (this->state.useRenderFlag[0] == 0) ? 1 : static_cast<std::uint16_t>(this->state.renderFlag);
-  g_renderer->queues.SubmitTriangle(this->state.triangles[1], flag2, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+  g_renderer->SubmitTriangle(this->state.triangles[1], flag2);
 
   if (this->state.slots[0].life == 'b') {
     for (const ActiveSkillEffect& effect : g_activeSkillEffects) {
@@ -7113,7 +7103,7 @@ void CEffectPrim::RenderSphere(matrix& wtm) {
       this->state.triangles[rpCnt].vertices[2].v = v;
       this->state.triangles[rpCnt].texture = this->state.textures[0];
       if (this->state.triangles[rpCnt].Visible()) {
-        g_renderer->queues.SubmitTriangle(this->state.triangles[rpCnt++], 1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+        g_renderer->SubmitTriangle(this->state.triangles[rpCnt++], 1);
       }
 
       projected = {0, 0, 0, 0, 0, 0xFF000000u, 0, 0};
@@ -7136,7 +7126,7 @@ void CEffectPrim::RenderSphere(matrix& wtm) {
       this->state.triangles[rpCnt].vertices[2].v = nextV;
       this->state.triangles[rpCnt].texture = this->state.textures[0];
       if (this->state.triangles[rpCnt].Visible()) {
-        g_renderer->queues.SubmitTriangle(this->state.triangles[rpCnt++], 1, g_renderer->commands, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+        g_renderer->SubmitTriangle(this->state.triangles[rpCnt++], 1);
       }
 
       u = nextU;

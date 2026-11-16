@@ -532,7 +532,7 @@ int UIItemReformWnd_List::SendMsg(
         if (g_session.HasSwapEquipmentItem(*index) != 0) {
           continue;
         }
-        ITEM_INFO item = LookupClientItemByIdentity(g_session.m_inventoryItems, *index);
+        ITEM_INFO item = g_session.LookupClientItemByIdentity(*index);
         const std::uint64_t refine = item.refiningLevel;
         if (refine < static_cast<std::uint64_t>(info->needRefineMin) || refine > static_cast<std::uint64_t>(info->needRefineMax)) {
           continue;

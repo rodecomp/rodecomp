@@ -84,5 +84,5 @@ void CMode::DrawTexture(const RECT& rect, int angle, float rhw, std::uint32_t co
   vertices[3].u = region.right * scaleU - margin;
   vertices[3].v = region.bottom * scaleV - margin;
 
-  g_renderer->queues.Submit(primitive, 0x201, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+  g_renderer->Submit(primitive, 0x201);
 }

@@ -9,7 +9,3 @@ CAdvenPartyInfo::CAdvenPartyInfo()
 // OFFSET: 0x005CA5B0
 // FUNCTION: fn_03646
 CAdvenPartyInfo::CAdvenPartyInfo(const CAdvenPartyInfo& other) = default;
-
-// OFFSET: 0x005739D0
-// FUNCTION: fn_02494
-CAdvenPartyInfo::~CAdvenPartyInfo() = default;

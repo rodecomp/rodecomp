@@ -142,6 +142,6 @@ void CMode::DrawActionSprite(
     vertices[3].v = record.v1;
     vertices[3].diffuse = color;
 
-    g_renderer->queues.Submit(primitive, flags, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+    g_renderer->Submit(primitive, flags);
   }
 }

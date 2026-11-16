@@ -819,7 +819,7 @@ void UIParaResultWnd::Paint() {
   const int columns = (this->geometry.width - 40) / 32;
   const int slots = (this->geometry.height - this->headerHeight - this->footerHeight - 17) / 32;
   for (int slot = slots, y = 17; slot > 0; --slot, y += 32) {
-    DrawItemSlotBackground(*this, 40, y);
+    this->DrawItemSlotFrame(40, y);
   }
 
   {
@@ -849,7 +849,7 @@ void UIParaResultWnd::Paint() {
     }
 
     const int x = column + 44;
-    DrawItemWithQuantity(*this, ResourceMgr::Instance(), x, top + 21, *it, 0, 0);
+    this->DrawItemAndQuantity(x, top + 21, *it, 0, 0);
     this->DrawWrappedItemName(column + 76, top + 29, 110, &*it, 0, 0, 12);
 
     if (0 < it->grade) {

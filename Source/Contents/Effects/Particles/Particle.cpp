@@ -889,7 +889,7 @@ void CParticle::Render(bool billboard, float top, float bottom, float left, floa
   this->primitive.texture = this->texture;
   this->primitive.sourceBlend = this->sourceBlend;
   this->primitive.destinationBlend = this->destinationBlend;
-  g_renderer->queues.Submit(&this->primitive, static_cast<std::uint16_t>(this->flags), g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+  g_renderer->Submit(&this->primitive, static_cast<std::uint16_t>(this->flags));
 }
 
 // OFFSET: 0x00B40100

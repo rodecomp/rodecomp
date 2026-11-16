@@ -3,7 +3,7 @@
 
 // OFFSET: 0x00DD9430
 // FUNCTION: fn_23335
-std::string ShortcutFilename(std::uint32_t identifier) {
+std::string CSession::ShortcutFilename(std::uint32_t identifier) const {
   std::string result = "";
 
   for (std::uint32_t divisor = 1000000000; divisor; divisor /= 10) {
@@ -50,9 +50,4 @@ std::string ShortcutFilename(std::uint32_t identifier) {
   }
 
   return result;
-}
-
-// INLINED
-std::string CSession::ShortcutFilename(std::uint32_t identifier) const {
-  return ::ShortcutFilename(identifier);
 }

@@ -329,9 +329,6 @@ void UIItemTagCtrl::UpdateItemTags() {
         break;
       }
 
-      if (!this->geometry.surface) {
-        this->Resize(this->tagWidth / 2, 15);
-      }
       const std::string fitted = this->FitTextToWidth(entry->name, this->tagWidth / 2);
       std::string display = "<";
       display += fitted;

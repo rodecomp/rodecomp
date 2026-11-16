@@ -379,8 +379,8 @@ const char* const g_serviceOptionNames[300] = {
     "TT_3D_SOUND_ON_OFF"
 };
 
-__declspec(noinline) void NotifyServiceOption(unsigned char enabled, int enabledMessage, int disabledMessage, int color);
-__declspec(noinline) void ApplyServiceOption(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage);
+__declspec(noinline) void NotifyServiceOption(bool enabled, int enabledMessage, int disabledMessage, int color);
+__declspec(noinline) void ApplyServiceOption(int id, bool value, bool notify, int enabledMessage, int disabledMessage);
 
 // OFFSET: 0x006C48C0
 // FUNCTION: fn_45461
@@ -406,7 +406,7 @@ CGameSettingsMgr::~CGameSettingsMgr() {
 
 // OFFSET: 0x006C0C40
 // FUNCTION: fn_06312
-void GameSettings::SetOption(int id, unsigned char value, bool notify) {
+void GameSettings::SetOption(int id, bool value, bool notify) {
   const std::optional<GameSettingsOption*> option = this->FindOption(id);
   if (!option || (*option)->type != 0) {
     return;
@@ -414,7 +414,7 @@ void GameSettings::SetOption(int id, unsigned char value, bool notify) {
 
   const auto entry = this->actions.find(id);
   if (entry != this->actions.end()) {
-    const std::function<void(int, unsigned char, bool, int, int)> action = entry->second;
+    const std::function<void(int, bool, bool, int, int)> action = entry->second;
     if (action) {
       action(id, value, notify, (*option)->enabledMessage, (*option)->disabledMessage);
     }
@@ -492,9 +492,9 @@ bool CGameSettingsMgr::LoadSettings() {
 
 // OFFSET: 0x006C17A0
 // FUNCTION: fn_06318
-unsigned char ServiceOptions::Get(int id) {
+bool ServiceOptions::Get(int id) {
   const auto entry = g_serviceOptions.values.find(id);
-  return entry == g_serviceOptions.values.end() ? 0 : entry->second;
+  return entry == g_serviceOptions.values.end() ? false : entry->second;
 }
 
 // OFFSET: 0x006C1820
@@ -655,7 +655,7 @@ void GameSettings::ToggleOption(int id) {
 
 // OFFSET: 0x006C29A0
 // FUNCTION: fn_06324
-__declspec(noinline) int SetOption(const char* name, unsigned char value) {
+__declspec(noinline) int SetOption(const char* name, bool value) {
   if (IsNullOrEmpty(name)) {
     return 3;
   }
@@ -673,9 +673,9 @@ __declspec(noinline) int SetOption(const char* name, unsigned char value) {
 
 // OFFSET: 0x006C0F00
 // FUNCTION: fn_06314
-std::pair<int, unsigned char> FindServiceOption(const char* name) {
+std::pair<int, bool> FindServiceOption(const char* name) {
   if (IsNullOrEmpty(name)) {
-    return {3, 0};
+    return {3, false};
   }
 
   int optionId = TT_UNKNOWN;
@@ -683,14 +683,14 @@ std::pair<int, unsigned char> FindServiceOption(const char* name) {
   g_session.GetTalkType(name, &optionId, strings);
   const auto entry = g_serviceOptions.values.find(optionId);
   if (entry == g_serviceOptions.values.end()) {
-    return {3, 0};
+    return {3, false};
   }
   return {optionId, entry->second};
 }
 
 // OFFSET: 0x006C2A80
 // FUNCTION: fn_06325
-bool ServiceOptions::Set(int id, unsigned char value) {
+bool ServiceOptions::Set(int id, bool value) {
   if (g_serviceOptions.values.find(id) == g_serviceOptions.values.end()) {
     return false;
   }
@@ -741,9 +741,9 @@ void SendServiceOptionPacket() {
 
 // OFFSET: 0x006C5E70
 // FUNCTION: fn_06370
-void NotifyServiceOption(unsigned char enabled, int enabledMessage, int disabledMessage, int color) {
+void NotifyServiceOption(bool enabled, int enabledMessage, int disabledMessage, int color) {
   std::string text;
-  if (enabled != 0) {
+  if (enabled) {
     if (enabledMessage != 0x125A) {
       text = LookupMessage(enabledMessage);
     }
@@ -816,7 +816,7 @@ void RotatePlayerDirection(bool clockwise) {
 
 // OFFSET: 0x006C41B0
 // FUNCTION: fn_06351
-void SendConfigServiceOption(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
+void SendConfigServiceOption(int id, bool value, bool notify, int enabledMessage, int disabledMessage) {
   if (value != g_serviceOptions.Get(id)) {
     ConfigPacket packet;
     packet.id = ID_CZ_CONFIG;
@@ -828,7 +828,7 @@ void SendConfigServiceOption(int id, unsigned char value, bool notify, int enabl
 
 // OFFSET: 0x006C4220
 // FUNCTION: fn_06352
-void ApplyServiceOptionFlags(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
+void ApplyServiceOptionFlags(int id, bool value, bool notify, int enabledMessage, int disabledMessage) {
   if (value != g_serviceOptions.Get(id)) {
     g_serviceOptions.Set(id, value);
     if (notify) {
@@ -841,7 +841,7 @@ void ApplyServiceOptionFlags(int id, unsigned char value, bool notify, int enabl
 
 // OFFSET: 0x006C4270
 // FUNCTION: fn_06353
-void ApplyServiceOption(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
+void ApplyServiceOption(int id, bool value, bool notify, int enabledMessage, int disabledMessage) {
   if (value != g_serviceOptions.Get(id)) {
     g_serviceOptions.Set(id, value);
     if (notify) {
@@ -888,7 +888,7 @@ void ToggleSitStand() {
 
 // OFFSET: 0x006C44A0
 // FUNCTION: fn_06355
-void ApplyServiceOptionXmasWeather(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
+void ApplyServiceOptionXmasWeather(int id, bool value, bool notify, int enabledMessage, int disabledMessage) {
   if (value != g_serviceOptions.Get(id)) {
     g_serviceOptions.Set(id, value);
     if (notify) {
@@ -913,7 +913,7 @@ void ApplyServiceOptionXmasWeather(int id, unsigned char value, bool notify, int
 
 // OFFSET: 0x006C4660
 // FUNCTION: fn_06357
-void ApplyServiceOptionMapFog(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
+void ApplyServiceOptionMapFog(int id, bool value, bool notify, int enabledMessage, int disabledMessage) {
   if (value != g_serviceOptions.Get(id)) {
     g_serviceOptions.Set(id, value);
     if (notify) {
@@ -926,7 +926,7 @@ void ApplyServiceOptionMapFog(int id, unsigned char value, bool notify, int enab
 
 // OFFSET: 0x006C46C0
 // FUNCTION: fn_06358
-void ApplyServiceOptionWithNotice(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
+void ApplyServiceOptionWithNotice(int id, bool value, bool notify, int enabledMessage, int disabledMessage) {
   if (value != g_serviceOptions.Get(id)) {
     g_serviceOptions.Set(id, value);
     if (g_serviceOptions.Get(TT_HIDE_AURA_ON_OFF)) {
@@ -943,7 +943,7 @@ void ApplyServiceOptionWithNotice(int id, unsigned char value, bool notify, int 
 
 // OFFSET: 0x006C48F0
 // FUNCTION: fn_06360
-void ApplyServiceOptionActorRefresh(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
+void ApplyServiceOptionActorRefresh(int id, bool value, bool notify, int enabledMessage, int disabledMessage) {
   if (value != g_serviceOptions.Get(id)) {
     g_serviceOptions.Set(id, value);
     if (notify) {
@@ -970,7 +970,7 @@ void ShowHelpMessages() {
 
 // OFFSET: 0x006C5D10
 // FUNCTION: fn_06366
-void ApplyServiceOptionSessionFlag(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
+void ApplyServiceOptionSessionFlag(int id, bool value, bool notify, int enabledMessage, int disabledMessage) {
   if (value != g_serviceOptions.Get(id)) {
     g_serviceOptions.Set(id, value);
     if (notify) {
@@ -983,7 +983,7 @@ void ApplyServiceOptionSessionFlag(int id, unsigned char value, bool notify, int
 
 // OFFSET: 0x006C5D60
 // FUNCTION: fn_06367
-void ApplyServiceOptionCursorClip(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
+void ApplyServiceOptionCursorClip(int id, bool value, bool notify, int enabledMessage, int disabledMessage) {
   if (value != g_serviceOptions.Get(id)) {
     g_serviceOptions.Set(id, value);
     if (notify) {
@@ -1000,7 +1000,7 @@ void ApplyServiceOptionCursorClip(int id, unsigned char value, bool notify, int 
 
 // OFFSET: 0x006C5DF0
 // FUNCTION: fn_06369
-void ApplyServiceOptionAskOnDisable(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
+void ApplyServiceOptionAskOnDisable(int id, bool value, bool notify, int enabledMessage, int disabledMessage) {
   if (value == g_serviceOptions.Get(TT_PETINFO_ALERT_ONOFF)) {
     return;
   }
@@ -1017,7 +1017,7 @@ void ApplyServiceOptionAskOnDisable(int id, unsigned char value, bool notify, in
 
 // OFFSET: 0x006C5FC0
 // FUNCTION: fn_06371
-void ApplyServiceOptionWindow159(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
+void ApplyServiceOptionWindow159(int id, bool value, bool notify, int enabledMessage, int disabledMessage) {
   if (value != g_serviceOptions.Get(id)) {
     g_serviceOptions.Set(id, value);
     if (notify) {
@@ -1032,7 +1032,7 @@ void ApplyServiceOptionWindow159(int id, unsigned char value, bool notify, int e
 
 // OFFSET: 0x006C60F0
 // FUNCTION: fn_06375
-void ApplyServiceOptionWindow190(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
+void ApplyServiceOptionWindow190(int id, bool value, bool notify, int enabledMessage, int disabledMessage) {
   if (value != g_serviceOptions.Get(id)) {
     g_serviceOptions.Set(id, value);
     if (notify) {
@@ -1047,7 +1047,7 @@ void ApplyServiceOptionWindow190(int id, unsigned char value, bool notify, int e
 
 // OFFSET: 0x006C6150
 // FUNCTION: fn_06376
-void ApplyServiceOptionWindow267(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
+void ApplyServiceOptionWindow267(int id, bool value, bool notify, int enabledMessage, int disabledMessage) {
   if (value != g_serviceOptions.Get(id)) {
     g_serviceOptions.Set(id, value);
     if (notify) {
@@ -1062,7 +1062,7 @@ void ApplyServiceOptionWindow267(int id, unsigned char value, bool notify, int e
 
 // OFFSET: 0x006C61B0
 // FUNCTION: fn_06377
-void ApplyServiceOptionWindows189(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
+void ApplyServiceOptionWindows189(int id, bool value, bool notify, int enabledMessage, int disabledMessage) {
   if (value != g_serviceOptions.Get(id)) {
     g_serviceOptions.Set(id, value);
     if (notify) {
@@ -1075,7 +1075,7 @@ void ApplyServiceOptionWindows189(int id, unsigned char value, bool notify, int 
 
 // OFFSET: 0x006C6200
 // FUNCTION: fn_06378
-void ApplyServiceOptionNotifyWindow(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
+void ApplyServiceOptionNotifyWindow(int id, bool value, bool notify, int enabledMessage, int disabledMessage) {
   if (value != g_serviceOptions.Get(id)) {
     g_serviceOptions.Set(id, value);
     if (notify) {
@@ -1090,7 +1090,7 @@ void ApplyServiceOptionNotifyWindow(int id, unsigned char value, bool notify, in
 
 // OFFSET: 0x006C6260
 // FUNCTION: fn_06379
-void ApplyServiceOptionWindow268(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
+void ApplyServiceOptionWindow268(int id, bool value, bool notify, int enabledMessage, int disabledMessage) {
   if (value != g_serviceOptions.Get(id)) {
     g_serviceOptions.Set(id, value);
     if (notify) {
@@ -1105,7 +1105,7 @@ void ApplyServiceOptionWindow268(int id, unsigned char value, bool notify, int e
 
 // OFFSET: 0x006C6300
 // FUNCTION: fn_06380
-void ApplyServiceOptionHideWindow(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
+void ApplyServiceOptionHideWindow(int id, bool value, bool notify, int enabledMessage, int disabledMessage) {
   if (value != g_serviceOptions.Get(id)) {
     g_serviceOptions.Set(id, value);
     if (notify) {
@@ -1148,7 +1148,7 @@ void SendWhisperBlockPacket() {
 
 // OFFSET: 0x006C6450
 // FUNCTION: fn_06384
-void ApplyServiceOptionAndSnap(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
+void ApplyServiceOptionAndSnap(int id, bool value, bool notify, int enabledMessage, int disabledMessage) {
   if (value != g_serviceOptions.Get(id)) {
     g_serviceOptions.Set(id, value);
     if (notify) {
@@ -1161,7 +1161,7 @@ void ApplyServiceOptionAndSnap(int id, unsigned char value, bool notify, int ena
 
 // OFFSET: 0x006C5A80
 // FUNCTION: fn_06363
-void ApplyServiceOptionWeatherFlag(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
+void ApplyServiceOptionWeatherFlag(int id, bool value, bool notify, int enabledMessage, int disabledMessage) {
   if (value != g_serviceOptions.Get(id)) {
     g_serviceOptions.Set(id, value);
     if (notify) {
@@ -1208,7 +1208,7 @@ CGameSettingsMgr* Singleton<CGameSettingsMgr>::GetInstance() {
 
 // OFFSET: 0x006C45F0
 // FUNCTION: fn_06356
-void ApplyServiceOptionJitterScale(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
+void ApplyServiceOptionJitterScale(int id, bool value, bool notify, int enabledMessage, int disabledMessage) {
   if (value != g_serviceOptions.Get(id)) {
     g_serviceOptions.Set(id, value);
     if (notify) {
@@ -1233,7 +1233,7 @@ void RequestModeAction48() {
 
 // OFFSET: 0x006C5A10
 // FUNCTION: fn_06362
-void ApplyItemWndServiceOption(int id, unsigned char value, bool notify, int enabledMessage, int disabledMessage) {
+void ApplyItemWndServiceOption(int id, bool value, bool notify, int enabledMessage, int disabledMessage) {
   if (value != g_serviceOptions.Get(id)) {
     g_serviceOptions.Set(id, value);
     if (notify) {

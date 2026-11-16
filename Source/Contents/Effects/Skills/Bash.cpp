@@ -208,7 +208,7 @@ void CBash::Render() {
     primitive.texture = particle->texture;
     primitive.sourceBlend = particle->sourceBlend;
     primitive.destinationBlend = particle->destinationBlend;
-    g_renderer->queues.Submit(&primitive, static_cast<std::uint16_t>(particle->flags), g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+    g_renderer->Submit(&primitive, static_cast<std::uint16_t>(particle->flags));
   }
 
   for (auto it = this->sparks.begin(); it != this->sparks.end(); ++it) {
@@ -258,6 +258,6 @@ void CBash::Render() {
     primitive.texture = particle->texture;
     primitive.sourceBlend = particle->sourceBlend;
     primitive.destinationBlend = particle->destinationBlend;
-    g_renderer->queues.Submit(&primitive, static_cast<std::uint16_t>(particle->flags), g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+    g_renderer->Submit(&primitive, static_cast<std::uint16_t>(particle->flags));
   }
 }

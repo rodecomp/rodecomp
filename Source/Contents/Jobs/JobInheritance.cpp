@@ -717,7 +717,7 @@ bool CSession::IsJobWeaponTypeAllowed(int job, std::int64_t weaponType) const {
 
 // OFFSET: 0x00DFBCE0
 // FUNCTION: fn_23587
-__declspec(noinline) int __stdcall IsPlayerJob(int job) {
+__declspec(noinline) int CSession::IsPlayerJob(int job) const {
   const auto value = static_cast<unsigned>(job);
   return value - JT_NOVICE_H <= unsigned(JT_MER_BEGIN - 1 - JT_NOVICE_H) || value <= unsigned(JT_SUMMER2);
 }
@@ -786,16 +786,6 @@ int CSession::GetRealWeaponId(int weapon) const {
     return real;
   }
   return weapon;
-}
-
-// INLINED
-int __stdcall GetWeaponViewValue(int weapon) {
-  return g_session.GetWeaponViewValue(weapon);
-}
-
-// INLINED
-bool __stdcall IsJobWeaponAllowed(int job, int slot, std::int64_t weapon) {
-  return g_session.IsJobWeaponAllowed(job, slot, weapon);
 }
 
 // OFFSET: 0x00DFB4B0
@@ -1837,26 +1827,8 @@ public:
   CEquipmentPropertiesMgr();
   CEquipmentWearable* FindProperty1(const int& key);
   void UnequipItem(const int& itemId, bool notify);
-  void RemoveWearable(const int& location);
+  void UnequipWearable(const int& location);
 };
-
-void CEquipmentPropertiesMgr::RemoveWearable(const int& location) {
-  this->m_dirty = true;
-  const int key = GetEquipLocationIndex(location);
-  CEquipmentWearable* wearable = this->FindProperty1(key);
-  if (wearable != nullptr) {
-    for (CEquipmentAttachable& attachable : wearable->GetAttachables()) {
-      this->UnequipItem(attachable.GetId(), true);
-    }
-    this->UnequipItem(wearable->GetId(), true);
-    wearable->Clear();
-    delete wearable;
-    this->properties1.erase(key);
-  }
-  if (this->observerWindow != nullptr) {
-    this->observerWindow->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
-  }
-}
 }
 
 // OFFSET: 0x00E24B30
@@ -1894,7 +1866,7 @@ bool CSession::UnequipCostumeItem(int location) {
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
-  g_equipmentPropertiesMgr->RemoveWearable(location);
+  g_equipmentPropertiesMgr->UnequipWearable(location);
   return true;
 }
 

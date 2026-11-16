@@ -224,6 +224,7 @@ static_assert(sizeof(SessionTraits) == 0x50);
 class CSession {
 public:
   void IconPath(const char* id, char* output, int identified);
+  ITEM_INFO LookupClientItem(int id, unsigned char requireIdentified) const;
   ITEM_INFO LookupClientItemByIdentity(std::uint32_t id) const;
   float GetSkillFactor(int job) const;
   unsigned BaseJob(unsigned job) const;
@@ -232,6 +233,7 @@ public:
   int HotkeyIndex(int tab, int index) const;
   bool SkillUsesPercentSp(int id) const;
   std::string ShortcutFilename(std::uint32_t identifier) const;
+  bool HasEmotionHotkeyChanges() const;
   void SaveEmotionHotkeys() const;
   bool LoadEmotionHotkeyDefaults();
   const char* ItemDragResource(const char* id, int identified);
@@ -869,6 +871,7 @@ public:
   int GetMaxJobLevel(int job) const;
   bool IsCostumeJob(int job) const;
   int GetSiegeMode() const;
+  int IsPlayerJob(int job) const;
   int IsPlayerJobId(int job) const;
   bool IsVisibleJob(int job) const;
   float AttackMotionLength(int job, int appearance, int equipment, int attackMode) const;
@@ -1038,6 +1041,7 @@ public:
   CSkillInfo LookupSkill(std::uint32_t id);
   void NotifySkillWindows();
   void RemoveSkill(std::uint32_t id);
+  bool UpdateSkill(const CSkillInfo& value, unsigned char notify);
   bool UpdateSkill(const CSkillInfo& value, unsigned char notify, unsigned char updateType);
   bool UpdateAdditionalSkill(const CSkillInfo& value, int unused);
   int InheritedJob(int job);

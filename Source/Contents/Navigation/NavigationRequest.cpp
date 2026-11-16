@@ -28,7 +28,7 @@ __declspec(noinline) CNavi_Object* FindNaviObjectByName(const char* name, const 
 
 // OFFSET: 0x00B8DF10
 // FUNCTION: fn_19461
-std::uint16_t CNavi_Object::GetFlag() const {
+int CNavi_Object::GetFlag() const {
   return this->flag;
 }
 

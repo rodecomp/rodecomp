@@ -46,5 +46,5 @@ void DrawAlphaRectangle(int x, int y, int width, int height, std::uint32_t color
   primitive->quad[3].u = 0.0f;
   primitive->quad[3].v = 0.0f;
   primitive->quad[3].diffuse = color;
-  g_renderer->queues.Submit(primitive, 513, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+  g_renderer->Submit(primitive, 513);
 }

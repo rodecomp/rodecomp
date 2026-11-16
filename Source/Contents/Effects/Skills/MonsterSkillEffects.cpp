@@ -1646,7 +1646,7 @@ void CFullScreenEffect::Render() {
 
     primitive.sourceBlend = particle->sourceBlend;
     primitive.destinationBlend = particle->destinationBlend;
-    g_renderer->queues.Submit(&primitive, static_cast<std::uint16_t>(particle->flags), g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+    g_renderer->Submit(&primitive, static_cast<std::uint16_t>(particle->flags));
   }
 }
 

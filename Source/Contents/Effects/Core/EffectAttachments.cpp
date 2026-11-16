@@ -4,7 +4,7 @@
 // OFFSET: 0x00CADBE0
 // FUNCTION: fn_21062
 bool EffectActor::HasId(int id) const {
-  for (auto it = this->state.effects.begin(); it != this->state.effects.end(); ++it) {
+  for (auto it = this->effectList.begin(); it != this->effectList.end(); ++it) {
     if (*it && (*it)->state.type == id) {
       return true;
     }
@@ -16,8 +16,8 @@ bool EffectActor::HasId(int id) const {
 // OFFSET: 0x00CADC40
 // FUNCTION: fn_21064
 bool EffectActor::Contains(const CRagEffect* effect) const {
-  if (this->state.effects.size() != 0) {
-    for (const CRagEffect* current : this->state.effects) {
+  if (this->effectList.size() != 0) {
+    for (const CRagEffect* current : this->effectList) {
       if (current == effect) {
         return true;
       }

@@ -2296,11 +2296,6 @@ void GameSettingsUI::CUIGroupSound::Apply() {
 inline CUIButton::CUIButton() : CUIControl(), state(0), disabled(0), tooltip(), onClick(), onHover() {
 }
 
-// OFFSET: 0x00A19D30
-// FUNCTION: fn_15347
-__declspec(noinline) CUIRadioButton::CUIRadioButton() : CUICheckBox(), onSelect() {
-}
-
 // OFFSET: 0x00A3C390
 // FUNCTION: fn_15886
 GameSettingsUI::CUIBasicPage::CUIBasicPage() : CUIPage(), m_skin(nullptr), m_sound(nullptr), m_emblem(nullptr), m_rodexSpam(nullptr), m_processPriority(nullptr), m_logInOut(nullptr) {

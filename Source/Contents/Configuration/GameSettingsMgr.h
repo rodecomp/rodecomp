@@ -21,7 +21,7 @@ struct GameSettingsOption {
   /* 0024 */ std::string tooltip;
   /* 003C */ int tipBoxId = 0;
   /* 0040 */ std::string description;
-  /* 0058 */ unsigned char defaultValue;
+  /* 0058 */ bool defaultValue;
   /* 0059 */ unsigned char padding_0059[3];
   /* 005C */ int enabledMessage = 4698;
   /* 0060 */ int disabledMessage = 4698;
@@ -34,14 +34,14 @@ public:
 
   /* 0004 */ CLuaInstance script;
   /* 000C */ std::vector<GameSettingsOption> options;
-  /* 0018 */ std::unordered_map<int, std::function<void(int, unsigned char, bool, int, int)>> actions;
+  /* 0018 */ std::unordered_map<int, std::function<void(int, bool, bool, int, int)>> actions;
   /* 0038 */ std::unordered_map<int, std::function<void()>> functions;
 
   bool LoadSettings();
   bool ReadOptionTable();
   void ResetToDefaults();
   void ToggleOption(int id);
-  void SetOption(int id, unsigned char value, bool notify);
+  void SetOption(int id, bool value, bool notify);
   void ApplyScriptOption(int id, const char* key);
   bool RunFunction(int id);
   std::optional<GameSettingsOption*> FindOption(int id);

@@ -2,43 +2,29 @@
 #include "Contents/Effects/Core/EffectActor.h"
 #include "Contents/Effects/Core/RagEffect.h"
 
-// INLINED
-EffectActorState::EffectActorState() : effectId(-1), skillLevel(0), effectLaunched(0), first(nullptr), second(nullptr) {
-}
-
-// INLINED
-EffectActorState::~EffectActorState() {
-}
-
-// OFFSET: 0x00CA82E0
-// FUNCTION: fn_20987
-EffectActor::EffectActor() {
-  this->render.translucentOther[0] = 0;
-}
-
 // OFFSET: 0x00CA8C40
 // FUNCTION: fn_20993
 EffectActor::~EffectActor() {
-  if (!this->state.effects.empty()) {
-    for (std::list<CRagEffect*>::iterator it = this->state.effects.begin(); it != this->state.effects.end(); ++it) {
+  if (!this->effectList.empty()) {
+    for (std::list<CRagEffect*>::iterator it = this->effectList.begin(); it != this->effectList.end(); ++it) {
       if (*it) {
         CRagEffect* effect = *it;
         effect->SendMsg(this, AM_MASTER_DEAD, 0, 0, 0, 0, 0, 0);
       }
     }
-    this->state.effects.erase(this->state.effects.begin(), this->state.effects.end());
+    this->effectList.erase(this->effectList.begin(), this->effectList.end());
   }
-  this->state.first = nullptr;
-  this->state.second = nullptr;
+  this->firstEffect = nullptr;
+  this->secondEffect = nullptr;
 }
 
 // OFFSET: 0x00CAF4B0
 // FUNCTION: fn_21083
 void EffectActor::ResetEffectState() {
-  this->state.effectId = -1;
-  this->state.skillLevel = 0;
-  this->state.effectLaunched = 0;
-  this->state.first = nullptr;
-  this->state.second = nullptr;
+  this->launchEffectId = -1;
+  this->launchSkillLevel = 0;
+  this->effectLaunched = 0;
+  this->firstEffect = nullptr;
+  this->secondEffect = nullptr;
   this->render.translucentOther[0] = 0;
 }

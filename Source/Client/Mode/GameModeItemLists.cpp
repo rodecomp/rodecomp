@@ -122,7 +122,7 @@ void CGameMode::ReceiveEquipListPart(unsigned char listType, int count, const un
       }
 
       if (g_session.IsPetEgg(std::atoi(item.itemId.c_str())) && item.damaged) {
-        const int petEgg = std::atoi(LookupClientItemByIdentity(g_session.m_inventoryItems, g_session.petEggIndex).itemId.c_str());
+        const int petEgg = std::atoi(g_session.LookupClientItemByIdentity(g_session.petEggIndex).itemId.c_str());
         if (!g_petEvolutionMgr->IsAutoFeeding(petEgg) && g_session.m_petAutoFeed == true) {
           g_session.SendPetAutoFeedOption(0);
         }

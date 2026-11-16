@@ -1,5 +1,6 @@
 #include "Render/Primitives/RenderPrimitivePool.h"
 #include "Render/Primitives/RenderQueues.h"
+#include "Render/Renderer.h"
 #include "Render/Textures/Texture.h"
 
 #include <bit>
@@ -127,7 +128,7 @@ void CTexture::DrawTo(
   const float v1 = (static_cast<float>(height) + g_textureOffsetY) / static_cast<float>(this->m_textureHeight);
   RenderPrimitive* primitive = pool.Acquire();
   SetQuad(primitive, this, x, y, width, height, color, u0, v0, u1, v1);
-  queues.Submit(primitive, 513, depthAlpha, depthStart, depthEnd);
+  g_renderer->Submit(primitive, 513);
 }
 
 // OFFSET: 0x00544610
@@ -141,7 +142,7 @@ void CTexture::StretchTo(
   const float v1 = (static_cast<float>(this->m_height) + g_textureOffsetY) / static_cast<float>(this->m_textureHeight);
   RenderPrimitive* primitive = pool.Acquire();
   SetQuad(primitive, this, x, y, width, height, 0xFFFFFFFF, u0, v0, u1, v1);
-  queues.Submit(primitive, 513, depthAlpha, depthStart, depthEnd);
+  g_renderer->Submit(primitive, 513);
 }
 
 // OFFSET: 0x00544840
@@ -163,5 +164,5 @@ void CTexture::StretchTintedTo(
   primitive->quad[1] = QuadVertex(static_cast<float>(right), static_cast<float>(y), z, rhw, color, 0xFFFFFFFF, u1, v0);
   primitive->quad[2] = QuadVertex(static_cast<float>(x), static_cast<float>(bottom), z, rhw, color, 0xFFFFFFFF, u0, v1);
   primitive->quad[3] = QuadVertex(static_cast<float>(right), static_cast<float>(bottom), z, rhw, 0xFFFFFFFF, 0xFFFFFFFF, u1, v1);
-  queues.Submit(primitive, 513, depthAlpha, depthStart, depthEnd);
+  g_renderer->Submit(primitive, 513);
 }

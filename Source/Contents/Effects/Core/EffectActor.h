@@ -9,18 +9,6 @@
 
 struct CRagEffect;
 
-struct EffectActorState {
-  EffectActorState();
-  ~EffectActorState();
-
-  /* 0138 */ int effectId;
-  /* 013C */ int skillLevel;
-  /* 0140 */ std::uint32_t effectLaunched;
-  /* 0144 */ std::list<CRagEffect*> effects;
-  /* 014C */ CRagEffect* first;
-  /* 0150 */ CRagEffect* second;
-};
-
 struct EffectActor : CRenderObject {
   EffectActor();
   ~EffectActor() override;
@@ -33,15 +21,19 @@ struct EffectActor : CRenderObject {
   CRagEffect* LaunchEffect(int effectId, int duration);
   CRagEffect* LaunchTaggedEffect(int effectId, std::uint32_t tag);
 
-  /* 0138 */ EffectActorState state;
+  /* 0138 */ int launchEffectId;
+  /* 013C */ int launchSkillLevel;
+  /* 0140 */ std::uint32_t effectLaunched;
+  /* 0144 */ std::list<CRagEffect*> effectList;
+  /* 014C */ CRagEffect* firstEffect;
+  /* 0150 */ CRagEffect* secondEffect;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
-static_assert(sizeof(EffectActorState) == 28);
 static_assert(sizeof(EffectActor) == 0x158);
-static_assert(offsetof(EffectActor, state) == 0x138);
-static_assert(offsetof(EffectActorState, skillLevel) == 0x4);
-static_assert(offsetof(EffectActorState, effectLaunched) == 0x8);
+static_assert(offsetof(EffectActor, launchEffectId) == 0x138);
+static_assert(offsetof(EffectActor, effectList) == 0x144);
+static_assert(offsetof(EffectActor, secondEffect) == 0x150);
 #endif
 
 #endif

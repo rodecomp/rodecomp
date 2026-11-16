@@ -28,6 +28,8 @@
 #include "Utility/Text/Base64.h"
 #include "Utility/Threading/NSyncObject.h"
 #include "Render/Renderer.h"
+#include "Utility/Cipher/LocalEncryptedName.h"
+#include "Utility/Cipher/Obfuscate.h"
 #include "UI/AdventureGuide/UIAdventureGuide.h"
 #include "UI/Window/FrameSkin.h"
 #include "UI/Text/CreateLineInfo.h"
@@ -1529,15 +1531,43 @@ void CUICheckBox::OnLBtnUp(int, int) {
   }
 }
 
-// OFFSET: 0x009E8430
-// FUNCTION: fn_14492
-CUICheckBox::CUICheckBox() : CUIImageButton(), checked(false), onCheck() {
-}
-
 // OFFSET: 0x009E89B0
 // FUNCTION: fn_14495
 bool CUIRadioItem::IsChecked() {
   return this->radioButton->checked;
+}
+
+// OFFSET: 0x009E89C0
+// FUNCTION: fn_45573
+void CUIRadioItem::OnCreate(int width, int height) {
+  this->radioButton = new CUIRadioButton();
+  this->radioButton->SetSize(12, 12);
+  this->radioButton->SetOnSelect([this](CUIRadioButton* button) {
+    if (this->parent) {
+      for (UIWindow* child : this->parent->m_children) {
+        CUIRadioItem* item = dynamic_cast<CUIRadioItem*>(child);
+        if (item) {
+          item->radioButton->checked = this == item;
+          item->radioButton->Invalidate();
+        }
+      }
+    }
+    if (this->onSelect) {
+      this->onSelect(this);
+    }
+  });
+  this->radioButton->disabled = 0;
+  this->radioButton->Invalidate();
+  {
+    // GLOBAL: gl_25961
+    // GLOBAL: gl_25962
+    // GLOBAL: gl_25963
+    // GLOBAL: gl_25964
+    this->radioButton->SetImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\radiobtn_off.bmp", 0x2BAD156DE3E1F9D9ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\radiobtn_on.bmp", 0xF161095D0DE18F95ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\radiobtn_off.bmp", 0xEDC74F6D13DF71EFULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\radiobtn_off.bmp", 0x758F1D0B4F7705B9ULL)));
+  }
+  this->radioButton->checked = true;
+  this->radioButton->Invalidate();
+  this->AddChild(this->radioButton);
 }
 
 // OFFSET: 0x009E7D60

@@ -635,7 +635,7 @@ __declspec(noinline) bool CRuneSystemMgr::HasRequiredItems(int listId) {
   }
 
   for (std::vector<std::pair<int, int>>::iterator it = found->second.begin(); it != found->second.end(); ++it) {
-    const ITEM_INFO item = LookupClientItem(g_session.m_inventoryItems, it->first, 0);
+    const ITEM_INFO item = g_session.LookupClientItem(it->first, 0);
     if (it->second > item.quantity) {
       return false;
     }

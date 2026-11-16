@@ -89,13 +89,13 @@ void GroundGeometry::DrawLightmapped(const float* matrix, const GroundQuad& quad
     }
 
     lightmap->texture = quad.lightmapTexture;
-    g_renderer->queues.Submit(lightmap, 0x1000, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+    g_renderer->Submit(lightmap, 0x1000);
   }
 
   RenderPrimitive* primitive = g_renderer->primitives.Acquire();
   std::memcpy(primitive->vertices, vertices, sizeof(vertices));
   primitive->texture = quad.texture;
-  g_renderer->queues.Submit(primitive, 0x800, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+  g_renderer->Submit(primitive, 0x800);
 }
 
 // OFFSET: 0x00AC15A0

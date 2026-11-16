@@ -4411,7 +4411,7 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
         CGameActor* actor = static_cast<CGameMode*>(mode)->scene->GetGameActorByAID(aid);
         if (actor) {
           if (actor->HasActiveHomunculusAI()) {
-            AiMessage command;
+            AiMessage command = {};
             command.type = 9;
             actor->SetMsg2AI(&command, 0);
           }
@@ -4425,7 +4425,7 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
       if (CGameMode* mode = g_modeMgr.GetGameMode()) {
         CGameActor* actor = static_cast<CGameMode*>(mode)->scene->GetGameActorByAID(g_session.m_mercenaryAid);
         if (actor && actor->HasActiveMercenaryAI()) {
-          AiMessage command;
+          AiMessage command = {};
           command.type = 9;
           actor->SetMsg2AI(&command, 1);
         }

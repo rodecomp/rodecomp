@@ -313,13 +313,6 @@ void UIAdvenPartyBoardWnd::Registration(bool value) {
   this->InvalidateChildren();
 }
 
-// OFFSET: 0x007C2340
-// FUNCTION: fn_09323
-void UIBmpTextButton::SetText(std::string value) {
-  this->text = value;
-  this->Invalidate();
-}
-
 // OFFSET: 0x007C1BC0
 // FUNCTION: fn_09317
 void UIAdvenPartyBoardWnd::SetOwnParty(CAdvenPartyInfo value) {

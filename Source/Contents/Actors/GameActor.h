@@ -69,14 +69,14 @@ struct ActorDamageMessage {
 };
 
 struct AiMessage {
-  /* 0000 */ int type;
+  /* 0000 */ int type = 0;
   /* 0004 */ int x;
   /* 0008 */ int y;
   /* 000C */ int level;
   /* 0010 */ int skill;
   /* 0014 */ int target;
 
-  AiMessage() : type(0), x(0), y(0), level(0), skill(0), target(0) {}
+  AiMessage() = default;
 };
 
 class CMercenaryAI;

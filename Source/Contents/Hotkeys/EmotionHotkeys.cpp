@@ -27,10 +27,10 @@ void EmotionHotkeys::Load(Json::Value& data) {
 
 // OFFSET: 0x00E24D10
 // FUNCTION: fn_23900
-bool EmotionHotkeys::HasChanges() const {
-  if (!this->saved.empty()) {
-    const std::string* current = this->current.data();
-    const std::string* saved = this->saved.data();
+bool CSession::HasEmotionHotkeyChanges() const {
+  if (!this->m_emotionHotkeys.saved.empty()) {
+    const std::string* current = this->m_emotionHotkeys.current.data();
+    const std::string* saved = this->m_emotionHotkeys.saved.data();
     for (int i = 0; i < 10; ++i) {
       if (saved[i] != current[i]) {
         return true;

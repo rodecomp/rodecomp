@@ -452,7 +452,7 @@ void CGrannyPc::SetState(int state, int resetPosition) {
     if (this->bodyState != 1 && this->bodyState != 2) {
       this->render.isMotionFreezed = false;
     }
-    const bool weaponAllowed = IsJobWeaponAllowed(
+    const bool weaponAllowed = g_session.IsJobWeaponAllowed(
       this->GetEffectiveJob(-1), this->sex,
       (static_cast<std::int64_t>(this->secondaryWeapon) << 32) | static_cast<std::uint32_t>(this->weapon)
     );
@@ -472,7 +472,7 @@ void CGrannyPc::SetState(int state, int resetPosition) {
     if (this->bodyState != 1 && this->bodyState != 2) {
       this->render.isMotionFreezed = false;
     }
-    const bool weaponAllowed = IsJobWeaponAllowed(
+    const bool weaponAllowed = g_session.IsJobWeaponAllowed(
       this->GetEffectiveJob(-1), this->sex,
       (static_cast<std::int64_t>(this->secondaryWeapon) << 32) | static_cast<std::uint32_t>(this->weapon)
     );
@@ -1981,7 +1981,7 @@ void CGrannyPc::RenderCached(const matrix& view, int layer, C3dGrannyModelRes* m
 
     command->texture = this->meshTextures[layer][mesh];
     command->vertexCount = this->meshTriangleCounts[layer][mesh] * 3;
-    g_renderer->queues.Submit(command, 0, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+    g_renderer->Submit(command, 0);
   }
 
   if (model == this->model) {
@@ -3904,7 +3904,7 @@ void CPlayer::SendMsg(
         this->isPreengageStateOfMove = 0;
         this->preengageXOfMove = -1;
         this->preengageYOfMove = -1;
-        this->SendMsg(nullptr, AM_REQ_MOVE_PRIMITIVE, b, c, 0, 0, 0, 0);
+        this->SendMsg(nullptr, AM_REQ_MOVE_PRIMITIVE, static_cast<int>(b), static_cast<int>(c), 0, 0, 0, 0);
       }
     }
     break;
@@ -4483,7 +4483,7 @@ void CPc::SetState(int state, int resetPosition) {
     } else if (this->GetShapeShift() == 2) {
       weaponAllowed = true;
     } else {
-      weaponAllowed = IsJobWeaponAllowed(
+      weaponAllowed = g_session.IsJobWeaponAllowed(
         this->GetEffectiveJob(-1), this->sex, (static_cast<std::int64_t>(this->secondaryWeapon) << 32) | static_cast<std::uint32_t>(this->weapon)
       );
     }
@@ -4516,11 +4516,11 @@ void CPc::SetState(int state, int resetPosition) {
     }
 
     CGameActor::SetState(attackState, resetPosition);
-    this->attackMotion = AttackMotionLength(this->GetEffectiveJob(-1), this->sex, this->weapon, weaponAllowed);
+    this->attackMotion = g_session.AttackMotionLength(this->GetEffectiveJob(-1), this->sex, this->weapon, weaponAllowed);
 
     int weaponView = this->weapon;
     if (weaponView > 105) {
-      weaponView = GetWeaponViewValue(weaponView);
+      weaponView = g_session.GetWeaponViewValue(weaponView);
     }
     bool usesArrow = false;
     g_session.m_hotkeyScript->Call("IsItemUsingArrow", "d>b", weaponView, &usesArrow);
@@ -4546,11 +4546,11 @@ void CPc::SetState(int state, int resetPosition) {
     if (this->bodyState != 1 && this->bodyState != 2) {
       this->render.isMotionFreezed = false;
     }
-    const bool weaponAllowed = IsJobWeaponAllowed(
+    const bool weaponAllowed = g_session.IsJobWeaponAllowed(
       this->GetEffectiveJob(-1), this->sex, (static_cast<std::int64_t>(this->secondaryWeapon) << 32) | static_cast<std::uint32_t>(this->weapon)
     );
     CGameActor::SetState(weaponAllowed ? 9 : 2, resetPosition);
-    this->attackMotion = AttackMotionLength(this->GetEffectiveJob(-1), this->sex, this->weapon, weaponAllowed);
+    this->attackMotion = g_session.AttackMotionLength(this->GetEffectiveJob(-1), this->sex, this->weapon, weaponAllowed);
     if ((this->weapon == 14 && this->secondaryWeapon == 0) || (this->weapon == 13 && this->secondaryWeapon == 0)) {
       CGameMode* mode = g_modeMgr.GetGameMode();
       mode->SpawnArrowEffect(&this->render.position, this->hitTargetAid, this->attackMotion * this->render.speed, 0);

@@ -89,7 +89,7 @@ void MiniMapNoOp() {
 
 // OFFSET: 0x00CCFF10
 // FUNCTION: fn_21249
-void CloseWhisperRecord() {
+void CGameMode::CloseWhisperRecord() {
   if (g_session.m_whisperRecord != 0) {
     if (g_session.IsAdminSubMode(7) != 0) {
       char path[256];
@@ -354,7 +354,7 @@ void CGameMode::DrawMiniMapTriangle(float x, float y, float size, std::uint32_t 
   vertices[3].v = 1.0f;
   vertices[3].diffuse = color;
 
-  g_renderer->queues.Submit(primitive, 0x201, g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+  g_renderer->Submit(primitive, 0x201);
 }
 
 // OFFSET: 0x00CD2BE0
