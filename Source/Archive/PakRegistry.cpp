@@ -42,8 +42,7 @@ void* PakRegistry::Read(const char* filename, std::uint32_t* size, int) {
 void* PakRegistry::ReadArchive(const char* filename, std::uint32_t* size) {
   for (const auto& archive : this->m_archives) {
     myGPack::PakEntry entry;
-    myGPack::PakName name;
-    name.Assign(filename);
+    myGPack::PakName name(filename);
 
     if (archive.second->Find(name, &entry)) {
       *size = entry.originalSize;
@@ -66,9 +65,7 @@ void* PakRegistry::ReadArchive(const char* filename, std::uint32_t* size) {
 bool PakRegistry::Exists(const char* filename, bool looseOnly) const {
   if (!looseOnly) {
     for (const auto& archive : this->m_archives) {
-      myGPack::PakName name;
-      name.Assign(filename);
-      if (archive.second->Find(name, nullptr)) {
+      if (archive.second->Find(myGPack::PakName(filename), nullptr)) {
         return true;
       }
     }

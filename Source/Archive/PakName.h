@@ -11,6 +11,7 @@ namespace myGPack {
   class PakName {
   public:
     PakName();
+    explicit PakName(const char* name);
     __declspec(noinline) PakName& Assign(const char* name);
     bool operator==(const PakName& other) const;
     bool operator!=(const PakName& other) const;

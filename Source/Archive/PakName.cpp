@@ -10,6 +10,11 @@ namespace myGPack {
     this->Assign("");
   }
 
+  // FOLDED: fn_18144
+  PakName::PakName(const char* name) {
+    this->Assign(name);
+  }
+
   // OFFSET: 0x00AECF90
   // FUNCTION: fn_18149
   PakName& PakName::Assign(const char* name) {
