@@ -50,12 +50,8 @@ int UIComboBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
       this->selected = static_cast<int>(this->lines.size() - 1);
     }
 
-    {
-      const int edge = (this->bottomMargin - this->geometry.height / this->lineHeight) + this->selected;
-
-      if (this->topLine <= edge) {
-        this->topLine = edge + 1;
-      }
+    if (this->topLine <= this->bottomMargin - this->geometry.height / this->lineHeight + this->selected) {
+      this->topLine = this->bottomMargin - this->geometry.height / this->lineHeight + this->selected + 1;
     }
 
     break;
@@ -94,15 +90,12 @@ int UIComboBoxID::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
   switch (message) {
   case UM_DEFPUSH:
     if (UIWindow* target = g_windowMgr.LookupWindow(static_cast<WindowId>(this->targetId))) {
-      int extra = 0;
       const auto found = this->lineData.find(this->selected);
-
       if (found != this->lineData.end()) {
-        extra = found->second;
+        target->SendMsg(nullptr, UM_COMBOBOX_SELECTED, this->lines[this->selected].id, found->second, 0, 0);
+      } else {
+        target->SendMsg(nullptr, UM_COMBOBOX_SELECTED, this->lines[this->selected].id, 0, 0, 0);
       }
-
-      const int lineId = this->lines[this->selected].id;
-      target->SendMsg(nullptr, UM_COMBOBOX_SELECTED, lineId, extra, 0, 0);
     }
 
     if (g_windowMgr.comboBoxWnd != nullptr) {
@@ -135,12 +128,8 @@ int UIComboBoxID::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
       this->selected = static_cast<int>(this->lines.size() - 1);
     }
 
-    {
-      const int edge = (this->bottomMargin - this->geometry.height / this->lineHeight) + this->selected;
-
-      if (this->topLine <= edge) {
-        this->topLine = edge + 1;
-      }
+    if (this->topLine <= this->bottomMargin - this->geometry.height / this->lineHeight + this->selected) {
+      this->topLine = this->bottomMargin - this->geometry.height / this->lineHeight + this->selected + 1;
     }
 
     break;
