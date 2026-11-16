@@ -79,7 +79,7 @@ void UIPetEvolutionWnd::Paint() {
       }
       if (illust) {
         this->FillRegion(12, 29, illust->image.width, illust->image.height, 0x9B9B9B);
-        this->DrawBitmap(10, 27, &illust->image, false);
+        this->DrawBitmap(10, 27, illust, false);
         this->DrawRectOutline(10, 27, illust->image.width, illust->image.height, 0);
       }
     }
@@ -88,7 +88,7 @@ void UIPetEvolutionWnd::Paint() {
     if (arrow) {
       this->DrawBitmap(
         static_cast<int>((this->geometry.width - arrow->image.width) * 0.5), static_cast<int>((134 - arrow->image.height) * 0.5 + 27.0),
-        &arrow->image, true
+        arrow, true
       );
     }
 
@@ -101,7 +101,7 @@ void UIPetEvolutionWnd::Paint() {
       }
       if (illust) {
         this->FillRegion(this->geometry.width - illust->image.width - 8, 29, illust->image.width, illust->image.height, 0x9B9B9B);
-        this->DrawBitmap(this->geometry.width - illust->image.width - 10, 27, &illust->image, false);
+        this->DrawBitmap(this->geometry.width - illust->image.width - 10, 27, illust, false);
         this->DrawRectOutline(this->geometry.width - illust->image.width - 10, 27, illust->image.width, illust->image.height, 0);
       }
     }
