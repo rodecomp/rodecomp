@@ -250,7 +250,7 @@ namespace {
     /* 0163 */ unsigned char cards[16];
     /* 0173 */ unsigned char skill;
     /* 0174 */ std::int32_t optionCount;
-    /* 0178 */ unsigned char options[25];
+    /* 0178 */ ItemOptionRecord options[5];
   };
 
   struct ValuesRecord {
@@ -309,7 +309,9 @@ void UIWindow::RecordDrop(int x, int y, const ModeDragState& drag, int target) {
   std::memcpy(packet.skillName, drag.skillName.c_str(), static_cast<int>(drag.skillName.size()) > 100 ? 100 : drag.skillName.size());
   std::memcpy(packet.cards, drag.cards, sizeof(packet.cards));
   packet.optionCount = drag.optionCount;
-  std::memcpy(packet.options, drag.options, sizeof(packet.options));
+  for (int index = 0; index < 5; ++index) {
+    packet.options[index] = drag.options[index];
+  }
 
   Replay::Instance().Record(packet.bytes, &packet, 42, 0);
 }
