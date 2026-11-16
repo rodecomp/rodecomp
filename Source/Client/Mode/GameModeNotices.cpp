@@ -5345,7 +5345,7 @@ void CGameMode::ReceiveRodexReadMail(const unsigned char* data) {
     }
   }
 
-  mail.body.append(packet->text, packet->textLength);
+  mail.body.insert(mail.body.end() - mail.body.begin(), packet->text, packet->textLength);
   mail.hasItem = packet->itemCount;
   mail.zeny = packet->zeny;
   mail.isRead = 1;
