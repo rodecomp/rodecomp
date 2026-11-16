@@ -19,6 +19,21 @@ static void AppendLine(std::vector<std::string>& lines, const char* first, const
   lines.push_back(line);
 }
 
+// INLINED
+inline bool HexColorToken(const char* text, const char* end) {
+  if (*text != '^' || end - text <= 6) {
+    return false;
+  }
+
+  for (int index = 1; index <= 6; ++index) {
+    if (g_colorHexDigit[static_cast<signed char>(text[index])] == 0) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 // OFFSET: 0x009B4220
 // FUNCTION: fn_13829
 void WrapPlainText(const char* text, std::vector<std::string>& lines, int width) {
@@ -90,7 +105,7 @@ void WrapRichText(
     int length;
     int id;
 
-    if (IsHexColorToken(current, end)) {
+    if (HexColorToken(current, end)) {
       current += 7;
       limit += 7;
       breakAt = current;
@@ -163,7 +178,7 @@ void WrapRichText(
 
   if (g_inlineCharset && marker && *marker != '\0' && marker < end) {
     for (std::size_t index = 1; index < lines.size(); ++index) {
-      const unsigned position = IsHexColorToken(lines[index].data(), lines[index].data() + lines[index].size()) ? 7 : 0;
+      const unsigned position = HexColorToken(lines[index].data(), lines[index].data() + lines[index].size()) ? 7 : 0;
       lines[index].insert(position, marker, 3);
     }
   }
