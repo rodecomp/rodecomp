@@ -78,7 +78,11 @@ void UIStaticText::SetTextFitted(const char* value) {
 
         if (truncated.size() >= 2) {
           const std::size_t size = truncated.size();
-          truncated.resize(truncated[size - 2] < 0 && truncated[size - 1] < 0 ? size - 2 : size - 1);
+          if (truncated[size - 2] < 0 && truncated[size - 1] < 0) {
+            truncated.resize(size - 2);
+          } else {
+            truncated.resize(size - 1);
+          }
         }
 
         this->text = truncated + "...";
