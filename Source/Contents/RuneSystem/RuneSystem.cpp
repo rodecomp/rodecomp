@@ -620,10 +620,16 @@ void CRuneSystemMgr::LoadDefaultTag() {
 // FUNCTION: fn_08150
 bool RuneSetData::IsRewardStep(int step) const {
   if (step == 0) {
-    return this->m_rewardStep == 0;
+    if (this->m_rewardStep == 0) {
+      return true;
+    }
+    return false;
   }
 
-  return this->m_rewardStep == this->FindLastReward(step + 1);
+  if (this->m_rewardStep == this->FindLastReward(step + 1)) {
+    return true;
+  }
+  return false;
 }
 
 // OFFSET: 0x00767FF0

@@ -330,8 +330,7 @@ void CRagEffect::FireBall() {
     this->state.lastPrim->render.angle = this->state.lastPrim->render.angle + 360.0f;
   }
 
-  CEffectPrim& particle = *this->state.lastPrim;
-  particle.state.speed = -(particle.CalcDist(this->state.deltaPos.x, this->state.deltaPos.z) / particle.state.duration);
+  this->state.lastPrim->state.speed = -(this->state.lastPrim->CalcDist(this->state.deltaPos.x, this->state.deltaPos.z) / this->state.lastPrim->state.duration);
   this->state.lastPrim->state.transform.MakeYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
   this->state.lastPrim->state.size = 1.3f;
   this->state.lastPrim->state.animSpeed = 1;
@@ -2279,12 +2278,12 @@ bool CRagEffect::CartRevolution() {
     this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\대폭발.tga", 0, false, true, false);
   }
 
-  if (this->state.stateCnt < 300) {
-    this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
-    return true;
+  if (this->state.stateCnt >= 300) {
+    return false;
   }
 
-  return false;
+  this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
+  return true;
 }
 
 // OFFSET: 0x00C0DEF0
@@ -9649,8 +9648,7 @@ void CRagEffect::LockOnMarker() {
     this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\LockOn128.tga", 0, false, true, false);
   }
 
-  CWorld* world = g_modeMgr.GetGameMode()->scene;
-  this->render.position.y = world->terrain->Height(this->render.position.x, this->render.position.z) - 2.0f;
+  this->render.position.y = g_modeMgr.GetGameMode()->scene->terrain->Height(this->render.position.x, this->render.position.z) - 2.0f;
 }
 
 // OFFSET: 0x00C1EC30
@@ -11935,10 +11933,12 @@ void CRagEffect::TEIHIT2() {
 // FUNCTION: fn_20265
 void CRagEffect::ShieldBoomerang3(const char* name) {
   CopyVector(this->render.position, this->state.parent->render.position);
-  if (this->state.stateCnt == 0) {
+  if (this->state.stateCnt != 0) {
+    if (this->state.stateCnt != 3 && this->state.stateCnt != 6 && this->state.stateCnt != 9 && this->state.stateCnt != 12) {
+      return;
+    }
+  } else {
     PlayEffectWave(*this, "effect\\cru_shield boomerang.wav");
-  } else if (this->state.stateCnt != 3 && this->state.stateCnt != 6 && this->state.stateCnt != 9 && this->state.stateCnt != 12) {
-    return;
   }
 
   this->state.lastPrim = this->LaunchEffectPrim(116, vector3d{0.0f, 0.0f, 0.0f});
@@ -14255,7 +14255,7 @@ void CRagEffect::Sakura() {
   this->state.lastPrim->state.alpha = 200.0f;
   this->state.lastPrim->SetSpriteName("이팩트\\sakura01.spr");
   this->state.lastPrim->SetActionName("이팩트\\sakura01.act");
-  this->state.lastPrim->SetAction(rand() % 3, 36, 0);
+  this->state.lastPrim->SetAction(ClampedRandom(3), 36, 0);
   this->state.lastPrim->InitSegment();
   this->state.lastPrim->state.slots[1].life = 0;
   this->state.lastPrim->state.slots[2].life = 0;

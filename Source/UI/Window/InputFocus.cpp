@@ -122,9 +122,14 @@ void SetPressedWindowRoot(UIWindow*& pressedRoot, UIWindow* window) {
 // OFFSET: 0x00AA9E60
 // FUNCTION: fn_17261
 void UIWindowMgr::SetPressedWindowRoot(UIWindow* window) {
-  UIWindow* root = window;
-  for (UIWindow* current = window; current != nullptr; current = current->parent) {
-    root = current;
+  if (window == nullptr) {
+    this->keyboardCommandRootWnd = window;
+    return;
   }
+  UIWindow* root;
+  do {
+    root = window;
+    window = window->parent;
+  } while (window != nullptr);
   this->keyboardCommandRootWnd = root;
 }

@@ -88,7 +88,10 @@ int BasicInfoWndInfo::IsValid() {
     return 0;
   }
 
-  return this->x >= 0 && this->x <= g_renderer->viewport.width - this->width && this->y >= 0 && this->y <= g_renderer->viewport.height - this->height;
+  if (this->x >= 0 && this->x <= g_renderer->viewport.width - this->width && this->y >= 0 && this->y <= g_renderer->viewport.height - this->height) {
+    return 1;
+  }
+  return 0;
 }
 
 // OFFSET: 0x009A51D0

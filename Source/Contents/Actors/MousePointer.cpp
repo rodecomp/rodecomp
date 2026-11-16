@@ -25,7 +25,15 @@ bool CMousePointer::OnProcess() {
 // OFFSET: 0x00CBF860
 // FUNCTION: fn_21114
 void CMousePointer::SendMsg(CGameObject*, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t, std::int64_t, std::int64_t, std::int64_t) {
-  if (message == 1) {
+  if (message != 1) {
+    if (message == 2) {
+      if (b != 0) {
+        this->m_remainingFrames = static_cast<int>(b);
+      } else {
+        this->render.visible = 0;
+      }
+    }
+  } else {
     const float* const position = reinterpret_cast<const float*>(static_cast<std::intptr_t>(b));
     this->render.position.x = position[0];
     this->render.position.z = position[1];
@@ -37,12 +45,6 @@ void CMousePointer::SendMsg(CGameObject*, std::int64_t message, std::int64_t b, 
       this->render.color = 0xFFFF0000;
     } else {
       this->render.color = 0xFFFFFFFF;
-    }
-  } else if (message == 2) {
-    if (b != 0) {
-      this->m_remainingFrames = static_cast<int>(b);
-    } else {
-      this->render.visible = 0;
     }
   }
 }

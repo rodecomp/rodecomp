@@ -74,7 +74,11 @@ const char* CLanguageBase::DisplayText() const {
 // OFFSET: 0x00ACE280
 // FUNCTION: fn_17778
 const char* CLanguageTC::DisplayText() const {
-  char bytes[9] = {};
+  char bytes[9];
+  const std::uint32_t zero = 0;
+  std::memcpy(&bytes[0], &zero, 4);
+  std::memcpy(&bytes[4], &zero, 4);
+  bytes[8] = 0;
 
   for (auto key = this->keys.begin(); key != this->keys.end(); ++key) {
     const auto& mapping = this->mappings[*key];
