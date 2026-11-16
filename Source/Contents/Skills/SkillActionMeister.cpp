@@ -251,7 +251,8 @@ void CSkillAction_MT_POWERFUL_SWING::OnSkillEffect(int level, CGameActor* source
     EffectLists* effects = g_effectMgr;
     CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("powerful_swing_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
-      effect->SetAngle(ScreenAngle(&source->render.position.x, &target->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values) + 180.0f);
+      const float angle = ScreenAngle(&source->render.position.x, &target->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values);
+      effect->SetAngle(angle + 180.0f);
     }
   }
   EffectLists* effects = g_effectMgr;
