@@ -209,7 +209,7 @@ void UIGuild_Storage_Log::Paint() {
 
   int y = 60;
   for (auto it = this->m_rowFlags.begin(); it != this->m_rowFlags.end(); ++it) {
-    this->DrawBitmap(6, y, *it == 1 ? in : out, true);
+    this->DrawBitmap(6, y, *it != 1 ? out : in, true);
     y += 15;
   }
 }
