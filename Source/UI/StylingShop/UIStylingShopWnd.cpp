@@ -983,27 +983,32 @@ std::string UIDisplayCharacter::GetStyleTable(const int& type) {
 bool UIShowInfoWnd::CheckPayment(const int& index, const int& zeny, const int& itemId, const int& costumeItemId) {
   if (zeny) {
     UICheckBox* check = this->m_checks[index];
+    bool enough;
     if (g_session.m_zeny >= zeny) {
+      enough = true;
       check->SetTooltip("");
-      return true;
+    } else {
+      check->SetTooltip(LookupMessage(g_session.m_zeny + g_session.m_bankBalance >= zeny ? 2820 : 2780));
+      enough = false;
     }
-
-    check->SetTooltip(LookupMessage(g_session.m_zeny + g_session.m_bankBalance < zeny ? 2780 : 2820));
-    return false;
+    return enough;
   }
 
   if (itemId) {
-    if (std::atoi(g_session.LookupClientItem(itemId, 0).itemId.c_str()) != itemId) {
-      return false;
+    if (std::atoi(g_session.LookupClientItem(itemId, 0).itemId.c_str()) == itemId) {
+      return true;
     }
-  } else if (costumeItemId) {
-    if (std::atoi(g_session.LookupClientItem(costumeItemId, 0).itemId.c_str()) != costumeItemId) {
-      return false;
+  } else {
+    if (!costumeItemId) {
+      return true;
     }
-    this->m_checks[index]->SetBitmaps("유저인터페이스\\styleshop\\check_disable.bmp", "유저인터페이스\\styleshop\\Notcheck.bmp");
+    if (std::atoi(g_session.LookupClientItem(costumeItemId, 0).itemId.c_str()) == costumeItemId) {
+      this->m_checks[index]->SetBitmaps("유저인터페이스\\styleshop\\check_disable.bmp", "유저인터페이스\\styleshop\\Notcheck.bmp");
+      return true;
+    }
   }
 
-  return true;
+  return false;
 }
 
 // OFFSET: 0x0082B680
