@@ -2210,10 +2210,12 @@ void CLoginMode::ReceiveAcceptLogin(const AcceptLoginPacket* packet, int version
   g_session.m_userLevel = packet->userLevel;
   g_session.m_aid = packet->aid;
 
-  unsigned char digest[16] = {};
-  ComputeLoginDigest(digest, packet, offsetof(AcceptLoginPacket, body));
-  g_pakRegistry.ApplyAuxiliary(digest, sizeof(digest));
-  SecureZeroMemory(digest, sizeof(digest));
+  {
+    unsigned char digest[16] = {};
+    ComputeLoginDigest(digest, packet, offsetof(AcceptLoginPacket, body));
+    g_pakRegistry.ApplyAuxiliary(digest, sizeof(digest));
+    SecureZeroMemory(digest, sizeof(digest));
+  }
 
   if (packet->sex >= 10) {
     g_session.SetFlag(packet->sex - 10);
