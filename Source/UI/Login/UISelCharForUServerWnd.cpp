@@ -204,9 +204,9 @@ void UISelCharForUServerWnd::UpdateCharInfoBalloon(int x, int y, std::uint32_t c
 
   this->characterInfoBalloon->Move(-400, -400);
   this->characterInfoLines.clear();
-  if (x > 26 && x < this->geometry.width - 26 && static_cast<unsigned>(y - 95) < 270 && (y > 249 || y < 211)) {
-    const int index = (y - 95) / 135 * this->m_columns + (x - 27) / 81;
-    CharacterInfo* info = reinterpret_cast<CharacterInfo*>(g_modeMgr.currentMode->SendMsg(MM_QUERYCHARICTORINFO, index, 0, 0, 0));
+  const bool inSlotArea = x >= 27 && x < this->geometry.width - 26 && y >= 95 && y <= 364 && (y >= 250 || y <= 210);
+  if (inSlotArea) {
+    CharacterInfo* info = reinterpret_cast<CharacterInfo*>(g_modeMgr.currentMode->SendMsg(MM_QUERYCHARICTORINFO, (y - 95) / 135 * this->m_columns + (x - 27) / 81, 0, 0, 0));
     if (info) {
       char name[25];
       std::memcpy(name, info->name, sizeof(info->name));
@@ -244,8 +244,7 @@ void UISelCharForUServerWnd::UpdateCharInfoBalloon(int x, int y, std::uint32_t c
       }
 
       this->characterInfoBalloon->Resize(width, 200);
-      this->characterInfoBalloon->m_outlineColor = 0;
-      this->characterInfoBalloon->m_textColor = RGB(red, green, blue);
+      this->characterInfoBalloon->SetColors(RGB(red, green, blue), 0);
       this->characterInfoBalloon->SetBackground(0x88000000);
       this->characterInfoBalloon->m_lines = this->characterInfoLines;
 
