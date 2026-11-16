@@ -72,7 +72,7 @@ void AutomaticSkills::DisableAll() {
   for (int id : this->m_ids) {
     const auto skill = static_cast<std::int16_t>(id);
     const int option = ActiveOption(skill);
-    if (g_session.GetOption(option) != 0) {
+    if (static_cast<int>(g_session.m_options.Get(option)) != 0) {
       Cancel(skill);
       g_session.SetOption(option, 0, 0);
     }
