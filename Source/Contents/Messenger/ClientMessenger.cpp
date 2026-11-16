@@ -5146,8 +5146,8 @@ MessengerMember CSession::PartyByAccount(std::uint32_t accountId) const {
 // FUNCTION: fn_23453
 MessengerMember CSession::PartyByCharacter(std::uint32_t characterId) const {
   std::list<MessengerMember>::const_iterator it = std::find_if(this->m_partyMembers.begin(), this->m_partyMembers.end(),
-                                                               [characterId](const MessengerMember& member) { return member.characterId == characterId; });
-  return it != this->m_partyMembers.end() ? *it : MessengerMember(0);
+                                                               [characterId](const MessengerMember& member) { return characterId == member.characterId; });
+  return it == this->m_partyMembers.end() ? MessengerMember(0) : *it;
 }
 
 // OFFSET: 0x00DE03E0
@@ -6735,23 +6735,14 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
   }
 }
 
-#pragma pack(push, 1)
-struct EquipmentItemOption {
-  /* 0000 */ std::int16_t id;
-  /* 0002 */ std::int16_t value;
-  /* 0004 */ unsigned char parameter;
-};
-#pragma pack(pop)
-
-static_assert(sizeof(EquipmentItemOption) == 5);
-
 // OFFSET: 0x0068A420
 // FUNCTION: fn_05604
 EquipmentProperties::CEquipmentWearable::CEquipmentWearable(const ITEM_INFO* item) : CEquipment(), m_active(true) {
   this->m_id = std::atoi(item->itemId.c_str());
   this->m_type = item->identity[3];
   this->m_info = CEquipmentPropertiesMgr::GetInstance()->FindEquipmentInfo(this->m_id);
-  this->inventoryIndex = g_session.GetEquipSlots(this->m_type).values[2];
+  const EquipSlots slots = g_session.GetEquipSlots(this->m_type);
+  this->inventoryIndex = slots.values[2];
 
   for (int index = 0; index < 4; ++index) {
     int card;
@@ -6763,11 +6754,10 @@ EquipmentProperties::CEquipmentWearable::CEquipmentWearable(const ITEM_INFO* ite
   }
 
   for (int index = 0; index < 5; ++index) {
-    EquipmentItemOption option;
-    std::memcpy(&option, &item->options[index], sizeof(option));
+    const ItemOptionRecord& option = item->options[index];
     const int optionId = option.id;
     EquipmentPropertyDefinition* definition = CEquipmentPropertiesMgr::GetInstance()->FindRandomOptionDefinition(optionId);
-    if (definition == nullptr || definition->functions.front() == "SetWeaponAttr") {
+    if (definition == nullptr || definition->functions.front().compare("SetWeaponAttr") == 0) {
       continue;
     }
 
@@ -6778,26 +6768,19 @@ EquipmentProperties::CEquipmentWearable::CEquipmentWearable(const ITEM_INFO* ite
     }
     if (definition->IsTwoDimensional() == true) {
       CEquipmentProperties2Dim* property = new CEquipmentProperties2Dim(definition);
-      const int parameter = option.parameter;
-      const int value = option.value * multiplier;
-      const unsigned int key = -1;
-      property->SetValue(parameter, value, key);
+      property->SetValue(option.parameter, option.value * multiplier, -1);
       this->m_children.push_back(property);
     } else if (definition->mode == 1) {
       this->m_children.push_back(new CEquipmentProperties(definition));
     } else {
       CEquipmentProperties1Dim* property = new CEquipmentProperties1Dim(definition);
-      const int value = option.value * multiplier;
-      const unsigned int key = -1;
-      property->SetValue(value, key);
+      property->SetValue(option.value * multiplier, -1);
       this->m_children.push_back(property);
       if (optionId == 35) {
-        const int additionalId = 25;
-        definition = CEquipmentPropertiesMgr::GetInstance()->FindRandomOptionDefinition(additionalId);
+        definition = CEquipmentPropertiesMgr::GetInstance()->FindRandomOptionDefinition(25);
         if (definition != nullptr) {
           CEquipmentProperties1Dim* additional = new CEquipmentProperties1Dim(definition);
-          const int negative = -option.value;
-          additional->SetValue(negative, key);
+          additional->SetValue(-option.value, -1);
           this->m_children.push_back(additional);
         }
       }
