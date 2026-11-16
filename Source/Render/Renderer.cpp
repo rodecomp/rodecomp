@@ -210,11 +210,19 @@ timer:
 
 // OFFSET: 0x00560A40
 // FUNCTION: fn_02161
-CRenderer::CRenderer() : frame(0), viewDirectionX(0), viewDirectionY(0), viewDirectionZ(0), twoPass(0), unknown_004C(0) {
+CRenderer::CRenderer() : viewDirectionX(0), viewDirectionY(0), viewDirectionZ(0) {
+  this->frame = 0;
+  this->twoPass = 0;
+  this->unknown_004C = 0;
+  this->commands.Init(1024);
+  this->primitives.Init(512);
+  this->lightmapped.Init(8192);
+  this->vertices.Init(10240);
   this->atlas.Initialize(50);
   this->fog.enabled = 0;
   this->fog.dirty = 1;
   this->fog.supported = 0;
+  this->queues.Reserve(1000);
 }
 
 // OFFSET: 0x00562090

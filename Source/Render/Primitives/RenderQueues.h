@@ -33,27 +33,30 @@ struct RenderQueues {
   /* 0240 */ std::vector<LightmappedCommand*> queue_0240;
 
   // INLINED
-  __forceinline RenderQueues() {
-    this->queue_015C.reserve(1000);
-    this->queue_0168.reserve(1000);
-    this->queue_0174.reserve(1000);
-    this->queue_0180.reserve(1000);
-    this->queue_018C.reserve(1000);
-    this->queue_0198.reserve(1000);
-    this->queue_01A4.reserve(1000);
-    this->queue_01B0.reserve(1000);
-    this->queue_01BC.reserve(1000);
-    this->queue_01C8.reserve(1000);
-    this->queue_01D4.reserve(1000);
-    this->queue_01E0.reserve(1000);
-    this->queue_01EC.reserve(1000);
-    this->lightmapped.first.reserve(1000);
-    this->lightmapped.second.reserve(1000);
-    this->queue_0210.reserve(1000);
-    this->queue_021C.reserve(1000);
-    this->queue_0228.reserve(1000);
-    this->queue_0234.reserve(1000);
-    this->queue_0240.reserve(1000);
+  __forceinline RenderQueues() = default;
+
+  // INLINED
+  void Reserve(unsigned count) {
+    this->lightmapped.first.reserve(count);
+    this->queue_015C.reserve(count);
+    this->queue_0168.reserve(count);
+    this->queue_0174.reserve(count);
+    this->queue_0180.reserve(count);
+    this->queue_018C.reserve(count);
+    this->queue_0198.reserve(count);
+    this->queue_01A4.reserve(count);
+    this->queue_01B0.reserve(count);
+    this->queue_01BC.reserve(count);
+    this->queue_01C8.reserve(count);
+    this->queue_01D4.reserve(count);
+    this->queue_01E0.reserve(count);
+    this->queue_01EC.reserve(count);
+    this->lightmapped.second.reserve(count);
+    this->queue_0210.reserve(count);
+    this->queue_021C.reserve(count);
+    this->queue_0228.reserve(count);
+    this->queue_0234.reserve(count);
+    this->queue_0240.reserve(count);
   }
 
   // INLINED

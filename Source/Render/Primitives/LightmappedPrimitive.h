@@ -60,7 +60,12 @@ class LightmappedPrimitivePool {
 public:
   // INLINED
   __forceinline LightmappedPrimitivePool() {
-    this->m_commands.resize(8192, LightmappedPrimitive());
+    this->m_current = this->m_commands.begin();
+  }
+
+  // INLINED
+  void Init(unsigned count) {
+    this->m_commands.resize(count, LightmappedPrimitive());
     this->m_current = this->m_commands.begin();
   }
 

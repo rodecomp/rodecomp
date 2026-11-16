@@ -9,7 +9,12 @@ class RenderCommandPool {
 public:
   // INLINED
   __forceinline RenderCommandPool() {
-    this->m_commands.resize(1024, RenderCommand());
+    this->m_current = this->m_commands.begin();
+  }
+
+  // INLINED
+  void Init(unsigned count) {
+    this->m_commands.resize(count, RenderCommand());
     this->m_current = this->m_commands.begin();
   }
 

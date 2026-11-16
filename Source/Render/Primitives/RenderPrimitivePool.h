@@ -11,7 +11,12 @@ class RenderPrimitivePool {
 public:
   // INLINED
   __forceinline RenderPrimitivePool() {
-    this->m_commands.resize(512, RenderPrimitive());
+    this->m_current = this->m_commands.begin();
+  }
+
+  // INLINED
+  void Init(unsigned count) {
+    this->m_commands.resize(count, RenderPrimitive());
     this->m_current = this->m_commands.begin();
   }
 

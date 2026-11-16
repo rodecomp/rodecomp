@@ -10,7 +10,14 @@
 class RenderVertexPool {
 public:
   // INLINED
-  RenderVertexPool() : m_minimum(10240), m_used(0) {
+  RenderVertexPool() : m_minimum(1024), m_used(0) {
+  }
+
+  // INLINED
+  void Init(unsigned minimum) {
+    this->m_used = 0;
+    this->m_minimum = minimum;
+    this->Release();
     this->Activate(this->m_minimum);
   }
 
