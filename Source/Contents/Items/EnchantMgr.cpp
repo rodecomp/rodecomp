@@ -65,7 +65,7 @@ CEnchantMgr::CEnchantMgr() {
 }
 
 // INLINED
-inline CItemDBToIDMgr* ItemDbToIdMgr() {
+__forceinline CItemDBToIDMgr* ItemDbToIdMgr() {
   if (!g_itemDbToIdMgr) {
     g_itemDbToIdMgr = new (std::nothrow) CItemDBToIDMgr;
   }
