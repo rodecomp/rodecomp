@@ -49,11 +49,11 @@ void UICandidateWnd::Paint() {
     for (int i = 0; i < this->m_count; ++i) {
       StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%d %s", i + 1, this->m_candidates[i].c_str());
       this->DrawTextAt(x, 12, text, 0, 0, 12, 0, 0, 0);
-      x += 8 + this->TextWidth(text, static_cast<unsigned>(std::strlen(text)), 0, 12, 0, 0);
+      x += this->TextWidth(text, static_cast<unsigned>(std::strlen(text)), 0, 12, 0, 0) + 8;
     }
-    this->FillTriangleRegion(8, 18, 14, 10, 14, 26, this->m_page > 0 ? 0xFF9F70 : 0xD2D2D2);
+    this->FillTriangleRegion(8, 18, 14, 10, 14, 26, this->m_page <= 0 ? 0xD2D2D2 : 0xFF9F70);
     const int width = this->geometry.width;
-    this->FillTriangleRegion(width - 8, 18, width - 14, 10, width - 14, 26, this->m_page < this->m_lastPage ? 0xFF9F70 : 0xD2D2D2);
+    this->FillTriangleRegion(width - 8, 18, width - 14, 10, width - 14, 26, this->m_page >= this->m_lastPage ? 0xD2D2D2 : 0xFF9F70);
     break;
   }
   case 2: {
@@ -79,16 +79,16 @@ void UICandidateWnd::Paint() {
     int x = 14;
     for (int i = 0; i < this->m_count; ++i) {
       StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%d %s", i + 1, this->m_candidates[i].c_str());
-      if (i == this->m_selection) {
-        this->DrawTextAt(x, 12, text, static_cast<int>(std::strlen(text)), 0, 12, 0xFF, 0, 0);
-      } else {
+      if (i != this->m_selection) {
         this->DrawTextAt(x, 12, text, 0, 0, 12, 0, 0, 0);
+      } else {
+        this->DrawTextAt(x, 12, text, static_cast<int>(std::strlen(text)), 0, 12, 0xFF, 0, 0);
       }
       x += this->TextWidth(text, static_cast<unsigned>(std::strlen(text)), 0, 12, 0, 0) + 8;
     }
-    this->FillTriangleRegion(8, 18, 14, 10, 14, 26, this->m_page > 0 ? 0xFF9F70 : 0xD2D2D2);
+    this->FillTriangleRegion(8, 18, 14, 10, 14, 26, this->m_page <= 0 ? 0xD2D2D2 : 0xFF9F70);
     const int width = this->geometry.width;
-    this->FillTriangleRegion(width - 8, 18, width - 14, 10, width - 14, 26, this->m_page < this->m_lastPage ? 0xFF9F70 : 0xD2D2D2);
+    this->FillTriangleRegion(width - 8, 18, width - 14, 10, width - 14, 26, this->m_page >= this->m_lastPage ? 0xD2D2D2 : 0xFF9F70);
     break;
   }
   }
