@@ -6,6 +6,8 @@
 #include <mshtmdid.h>
 
 #include <mshtml.h>
+#include <atlbase.h>
+#include <ocidl.h>
 
 // OFFSET: 0x00AB3710
 // FUNCTION: fn_17424
@@ -18,6 +20,48 @@ CWebEventReceiver::CWebEventReceiver()
 // FUNCTION: fn_17425
 CWebEventReceiver::~CWebEventReceiver() {
   OutputDebugStringA("~CWebEventReceiver() \n");
+}
+
+// OFFSET: 0x00AB3910
+// FUNCTION: fn_17427
+HRESULT __stdcall AdviseBrowserEvents(IUnknown* source, IUnknown* sink, REFIID events, DWORD* cookie) {
+  if (!source) {
+    return E_INVALIDARG;
+  }
+
+  CComPtr<IConnectionPointContainer> container;
+  CComPtr<IConnectionPoint> point;
+  HRESULT result = source->QueryInterface(&container);
+
+  if (SUCCEEDED(result)) {
+    result = container->FindConnectionPoint(events, &point);
+    if (SUCCEEDED(result)) {
+      result = point->Advise(sink, cookie);
+    }
+  }
+
+  return result;
+}
+
+// OFFSET: 0x00AB39E0
+// FUNCTION: fn_17428
+HRESULT __stdcall UnadviseBrowserEvents(IUnknown* source, REFIID events, DWORD cookie) {
+  if (!source) {
+    return E_INVALIDARG;
+  }
+
+  CComPtr<IConnectionPointContainer> container;
+  CComPtr<IConnectionPoint> point;
+  HRESULT result = source->QueryInterface(&container);
+
+  if (SUCCEEDED(result)) {
+    result = container->FindConnectionPoint(events, &point);
+    if (SUCCEEDED(result)) {
+      result = point->Unadvise(cookie);
+    }
+  }
+
+  return result;
 }
 
 // OFFSET: 0x00AB3AE0

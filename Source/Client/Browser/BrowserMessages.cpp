@@ -4,6 +4,39 @@
 
 #include <cstdint>
 
+// OFFSET: 0x00AB2D50
+// FUNCTION: fn_17418
+bool CWebBrowser::Navigate(std::string address) {
+  if (!this->browser) {
+    return false;
+  }
+
+  const auto length = address.size();
+  wchar_t* converted = new wchar_t[length + 1];
+  MultiByteToWideChar(CP_ACP, 0, address.c_str(), -1, converted, static_cast<int>(length));
+  converted[length] = L'\0';
+  BSTR url = SysAllocString(converted);
+  delete[] converted;
+
+  VARIANT optional;
+  VariantInit(&optional);
+  const HRESULT result = this->browser->Navigate(url, &optional, &optional, &optional, &optional);
+  SysFreeString(url);
+  ShowWindow(this->host, SW_SHOW);
+  this->browser->put_Visible(VARIANT_TRUE);
+
+  if (this->combo) {
+    SetWindowTextA(this->combo, address.c_str());
+  }
+
+  if (FAILED(result)) {
+    OutputDebugStringA("failed : Navigate() \n");
+    return false;
+  }
+
+  return true;
+}
+
 // OFFSET: 0x00AB33C0
 // FUNCTION: fn_17423
 LRESULT CALLBACK BrowserHostProc(HWND window, UINT message, WPARAM value, LPARAM flags) {
