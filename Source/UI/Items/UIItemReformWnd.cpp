@@ -387,13 +387,15 @@ void UIItemReformWnd::SelectItem(ITEM_INFO* item) {
     this->resultItem.options[0].id = g_itemOptionPlaceholderId;
   }
   if (info->preserveSocketItem == 1) {
-    std::memcpy(this->resultItem.cards, this->selectedItem->cards, sizeof(this->resultItem.cards));
+    for (int i = 0; i < 4; ++i) {
+      this->resultItem.cards[i] = this->selectedItem->cards[i];
+    }
   }
   if (info->preserveGrade == 1) {
     this->resultItem.grade = this->selectedItem->grade;
   }
 
-  for (std::map<int, std::uint64_t>::iterator it = info->materials.begin(); it != info->materials.end(); ++it) {
+  for (std::map<int, std::uint64_t>::iterator it = info->materials.begin(), end = info->materials.end(); it != end; ++it) {
     const int id = it->first;
     const int quantity = static_cast<int>(it->second);
     ITEM_INFO material;
