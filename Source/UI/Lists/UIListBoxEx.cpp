@@ -21,10 +21,15 @@ UIComboBoxEx::UIComboBoxEx() : UIListBoxEx(), targetId(10041) {
 // OFFSET: 0x0086DA90
 // FUNCTION: fn_11056
 UIListBoxEx::UIListBoxEx()
-    : UIWindow(0), backgroundRed(255), backgroundGreen(255), backgroundBlue(255), selected(0), topLine(0), horizontalOffset(0), contentWidth(0),
-      verticalOverflow(0), bottomMargin(0), verticalBar(nullptr), horizontalBar(nullptr), transparent(0), lineHeight(16), selectionColor(0) {
-  const SkinPaletteCell cell = {2, 2};
-  this->selectionColor = g_skinInfo.PaletteColor(cell, g_skinInfo.Selected());
+    : UIWindow(0), selected(0), topLine(0), horizontalOffset(0), contentWidth(0), verticalBar(nullptr), horizontalBar(nullptr) {
+  this->verticalOverflow = 0;
+  this->bottomMargin = 0;
+  this->transparent = 0;
+  this->lineHeight = 16;
+  this->backgroundRed = 255;
+  this->backgroundGreen = 255;
+  this->backgroundBlue = 255;
+  this->selectionColor = g_skinInfo.PaletteColor({2, 2}, g_skinInfo.Selected());
 }
 
 // OFFSET: 0x00873710
