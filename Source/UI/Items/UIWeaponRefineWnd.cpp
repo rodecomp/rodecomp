@@ -21,27 +21,31 @@
 #include <cstring>
 #include <vector>
 
+// INLINED
+static std::vector<unsigned char> MakeReplayTaggedRecord(std::uint16_t id, const void* data, std::uint32_t bytes) {
+  std::vector<unsigned char> record(bytes + 6, 0);
+  *reinterpret_cast<std::uint16_t*>(record.data()) = id;
+  *reinterpret_cast<std::uint32_t*>(record.data() + 2) = bytes;
+  std::memcpy(record.data() + 6, data, bytes);
+  return record;
+}
+
+// INLINED
+static void AppendReplayRecord(std::vector<unsigned char>& records, const std::vector<unsigned char>& record) {
+  records.insert(records.end(), record.begin(), record.end());
+}
+
 // OFFSET: 0x009A07C0
 // FUNCTION: fn_13602
 std::vector<unsigned char> UIWeaponRefineWnd::GetReplayData() {
   std::vector<unsigned char> records;
-  {
-    const auto record = BuildReplayTaggedRecord(22200, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
+  AppendReplayRecord(records, BuildReplayTaggedRecord(22200, nullptr, 0));
   const int count = static_cast<int>(this->itemIds.size());
   for (int index = 0; index < count; ++index) {
     const int values[2] = {this->itemIds[index], this->indices[index]};
-    std::vector<unsigned char> record(sizeof(values) + 6, 0);
-    *reinterpret_cast<std::uint16_t*>(record.data()) = 22202;
-    *reinterpret_cast<std::uint32_t*>(record.data() + 2) = sizeof(values);
-    std::memcpy(record.data() + 6, values, sizeof(values));
-    records.insert(records.end(), record.cbegin(), record.cend());
+    AppendReplayRecord(records, MakeReplayTaggedRecord(22202, values, sizeof(values)));
   }
-  {
-    const auto record = BuildReplayTaggedRecord(22201, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
+  AppendReplayRecord(records, BuildReplayTaggedRecord(22201, nullptr, 0));
   return records;
 }
 
