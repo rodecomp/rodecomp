@@ -117,7 +117,7 @@ CUIFrameWnd* CreateMacroReport() {
 
 // OFFSET: 0x004955B0
 // FUNCTION: fn_45550
-static bool s_registered = [] {
+static bool registered = [] {
   std::function<CUIFrameWnd*()> factory = CreateMacroReport;
   Singleton<CUIRegisterMgr>::GetInstance()->Register(10005, factory);
   return true;
