@@ -5246,11 +5246,7 @@ int UIExchangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
           return 0;
         }
 
-        std::int64_t money = _atoi64(text);
-        if (money > 0x7FFFFFFF) {
-          money = 0x7FFFFFFF;
-        }
-        int amount = static_cast<int>(MaxInt64(money, 0));
+        int amount = static_cast<int>(MaxInt64((std::min)(_atoi64(text), static_cast<std::int64_t>(0x7FFFFFFF)), 0));
         if (amount < 0) {
           amount = 0;
         }
