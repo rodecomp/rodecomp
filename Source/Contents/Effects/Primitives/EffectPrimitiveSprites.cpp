@@ -142,9 +142,8 @@ __declspec(safebuffers) void CEffectPrim::RenderGroundSprite(matrix& wtm) {
   g_renderer->ProjectViewport(position, wtm.values, &screenX, &screenY, &reciprocalDepth);
   float distanceScale = g_renderer->ScaleDistance(reciprocalDepth);
 
-  CRagEffect* master = this->state.master;
-  if (master->state.type == 1240 && master && master->state.parent) {
-    master->state.parent->ScaleByFadePulse(distanceScale);
+  if (this->state.master->state.type == 1240 && this->state.master && this->state.master->state.parent) {
+    this->state.master->state.parent->ScaleByFadePulse(distanceScale);
   }
 
   CSprRes* sprite = this->GetSprite();
@@ -169,13 +168,12 @@ __declspec(safebuffers) void CEffectPrim::RenderGroundSprite(matrix& wtm) {
       return;
     }
 
+    const std::uint32_t color = (((((cell.colorChannels.alpha << 8) + cell.colorChannels.red) << 8) + cell.colorChannels.green) << 8) + cell.colorChannels.blue;
     SpriteQuad quad;
     quad.top = top;
     quad.left = static_cast<float>(static_cast<int>(this->render.spriteOffsetX)) + left;
     quad.bottom = bottom;
     quad.right = static_cast<float>(static_cast<int>(this->render.spriteOffsetX)) + right;
-    const std::uint32_t color = static_cast<std::uint32_t>(((static_cast<std::uint32_t>(cell.color >> 24) << 8 | (cell.color & 0xFF)) << 8 | (cell.color >> 8 & 0xFF)) << 8) |
-                                (cell.color >> 16 & 0xFF);
     quad.bottomRhw = 1.0f / (depth - (bottom - screenY) * g_cotangent) + 0.00001f;
     quad.topRhw = 1.0f / (depth - (top - screenY) * g_cotangent) + 0.00001f;
     quad.angle = static_cast<float>(cell.rotation);
