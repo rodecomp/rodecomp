@@ -1535,7 +1535,7 @@ int UIMerchantItemMyShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     const int size = g_session.GetNumMerchantPurchaseItems();
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetMerchantPurchaseItemInfoBySequence(i);
-      if (item.identity[1] != 0) {
+      if (item.identity[1] > 0) {
         this->items.push_back(item);
       }
     }
@@ -6298,7 +6298,7 @@ int UIMerchantMirrorItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     const int size = g_session.GetNumMerchantMyShopItems();
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetMerchantMyShopItemInfoBySequence(i);
-      if (item.identity[1] != 0) {
+      if (item.identity[1] > 0) {
         this->items.push_back(item);
       }
     }
@@ -6436,7 +6436,7 @@ int UIItemSellWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     const int size = g_session.GetNumStorageItems();
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetStorageItemInfoBySequence(i);
-      if (item.identity[1] != 0) {
+      if (item.identity[1] > 0) {
         this->items.push_back(item);
       }
     }
@@ -6773,7 +6773,7 @@ int UIMerchantItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     const int size = g_session.GetNumMerchantMirrorItems();
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetMerchantMirrorItemInfoBySequence(i);
-      if (item.identity[1] != 0) {
+      if (item.identity[1] > 0) {
         this->items.push_back(item);
       }
     }
@@ -7048,7 +7048,7 @@ void UIItemSellWnd2::OnLBtnDown(int x, int y) {
 
   ITEM_INFO item = this->GetItemAt(x, y);
 
-  if (item.identity[1] == 0) {
+  if (item.identity[1] <= 0) {
     item = this->GetItemByIndex(this->hovered);
 
     if (item.identity[1] > 0) {
@@ -7083,7 +7083,7 @@ void UIItemSellWnd::OnLBtnDown(int x, int y) {
 
   ITEM_INFO item = this->GetItemAt(x, y);
 
-  if (item.identity[1] == 0) {
+  if (item.identity[1] <= 0) {
     item = this->GetItemByIndex(this->hovered);
 
     if (item.identity[1] > 0) {
@@ -7368,7 +7368,7 @@ void UIItemSellWnd2::OnMouseHover(int x, int y) {
 // FUNCTION: fn_13373
 void UIItemSellWnd::OnMouseHover(int x, int y) {
   ITEM_INFO item = this->GetItemAt(x, y);
-  if (item.identity[1] == 0) {
+  if (item.identity[1] <= 0) {
     return;
   }
 
@@ -7403,7 +7403,7 @@ void UIItemSellWnd::OnMouseHover(int x, int y) {
 // FUNCTION: fn_13374
 void UIItemShopWnd2::OnMouseHover(int x, int y) {
   ITEM_INFO item = this->GetItemAt(x, y);
-  if (item.identity[1] == 0) {
+  if (item.identity[1] <= 0) {
     return;
   }
 
@@ -7662,7 +7662,7 @@ void UIMerchantItemShopWnd::OnMouseHover(int x, int y) {
   }
 
   item = this->GetItemByIndex(this->GetItemIndexAt(x, y));
-  if (item.identity[1] == 0) {
+  if (item.identity[1] <= 0) {
     return;
   }
 
@@ -8062,8 +8062,9 @@ void UIItemWnd::OnCreate(int width, int height) {
   for (int index = 0; index < 4; ++index) {
     this->tabs->AddTab(labels[index], "");
   }
-  this->tabs->colors[3] = g_skinInfo.PaletteColor(SkinPaletteCell{5, 2}, g_skinInfo.Selected());
-  this->tabs->Invalidate();
+  UITabControl* tabControl = this->tabs;
+  tabControl->colors[3] = g_skinInfo.PaletteColor(SkinPaletteCell{5, 2}, g_skinInfo.Selected());
+  tabControl->Invalidate();
 
   this->lockDropBox = new (std::nothrow) UICheckBox();
   this->lockDropBox->SetSize(14, 11);
@@ -11355,7 +11356,7 @@ int UIItemStoreFindWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
     const int size = g_session.GetNumCartItems();
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetCartItemInfoBySequence(i);
-      if (item.identity[1] != 0) {
+      if (item.identity[1] > 0) {
         this->items.push_back(item);
       }
     }
