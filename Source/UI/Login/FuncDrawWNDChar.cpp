@@ -82,45 +82,45 @@ void FuncDrawWNDChar::Draw(bool option) {
     }
 
     const ActionFrame* frame = &act->Frame(this->m_action, this->m_motion);
-    switch (layer) {
-      case 2: {
-        FuncDrawOffset body = this->BodyAnchorOffset(frame, option);
-        if (this->customRendering == 1) {
-          continue;
-        }
-
-        offset.x += body.x;
-        offset.y += body.y;
-        break;
+    if (layer == 2) {
+      FuncDrawOffset body = this->BodyAnchorOffset(frame, option);
+      if (this->customRendering == 1) {
+        continue;
       }
-      case 3:
-      case 4:
-      case 5:
-      case 6: {
-        if (!this->hideHeadLayer && this->m_resources.find(2) != this->m_resources.end() && this->m_resources[2].second) {
-          CActRes* bodyAct = this->m_resources.find(2) != this->m_resources.end() ? this->m_resources[2].second : nullptr;
-          this->BodyAnchorOffset(&bodyAct->Frame(this->m_action, this->m_motion), option);
-        }
 
-        FuncDrawOffset anchor = this->LayerAnchorOffset(layer, &frame, act);
-        offset.x += anchor.x;
-        offset.y += anchor.y;
-        break;
-      }
-      case 0:
-      case 7: {
-        int baseMotion = this->m_motion;
-        int syncedMotion = this->m_motion;
-        CActRes* layerAct = this->m_resources.find(layer) != this->m_resources.end() ? this->m_resources[layer].second : nullptr;
-        int action = this->m_action;
-        if ((action >= 0 && action < 8) || static_cast<unsigned>(action - 16) <= 7) {
-          baseMotion = 0;
-        }
+      offset.x += body.x;
+      offset.y += body.y;
+    } else {
+      switch (layer) {
+        case 3:
+        case 4:
+        case 5:
+        case 6: {
+          if (!this->hideHeadLayer && this->m_resources.find(2) != this->m_resources.end() && this->m_resources[2].second) {
+            CActRes* bodyAct = this->m_resources.find(2) != this->m_resources.end() ? this->m_resources[2].second : nullptr;
+            this->BodyAnchorOffset(&bodyAct->Frame(this->m_action, this->m_motion), option);
+          }
 
-        CActRes* bodyAct = this->m_resources.find(1) != this->m_resources.end() ? this->m_resources[1].second : nullptr;
-        g_session.GetSyncedFrame(bodyAct, layerAct, action, baseMotion, this->m_time, &syncedMotion);
-        frame = &layerAct->Frame(this->m_action, syncedMotion);
-        break;
+          FuncDrawOffset anchor = this->LayerAnchorOffset(layer, &frame, act);
+          offset.x += anchor.x;
+          offset.y += anchor.y;
+          break;
+        }
+        case 0:
+        case 7: {
+          int baseMotion = this->m_motion;
+          int syncedMotion = this->m_motion;
+          CActRes* layerAct = this->m_resources.find(layer) != this->m_resources.end() ? this->m_resources[layer].second : nullptr;
+          int action = this->m_action;
+          if ((action >= 0 && action < 8) || static_cast<unsigned>(action - 16) <= 7) {
+            baseMotion = 0;
+          }
+
+          CActRes* bodyAct = this->m_resources.find(1) != this->m_resources.end() ? this->m_resources[1].second : nullptr;
+          g_session.GetSyncedFrame(bodyAct, layerAct, action, baseMotion, this->m_time, &syncedMotion);
+          frame = &layerAct->Frame(this->m_action, syncedMotion);
+          break;
+        }
       }
     }
 
