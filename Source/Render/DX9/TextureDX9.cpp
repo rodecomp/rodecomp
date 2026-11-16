@@ -352,12 +352,13 @@ bool CTextureDX9::UploadSurface(
     ++stepY;
   }
 
+  const int left = x / stepX, top = y / stepY;
   const int w = width / stepX, h = height / stepY;
   if (!w || !h) {
     return false;
   }
 
-  const RECT rectangle{x / stepX, y / stepY, x / stepX + w, y / stepY + h};
+  const RECT rectangle{left, top, left + w, top + h};
   D3DLOCKED_RECT locked;
   if (FAILED(surface->LockRect(&locked, &rectangle, 0))) {
     return false;
@@ -426,7 +427,11 @@ bool CTextureDX9::UploadSurface(
     break;
   }
 
-  return SUCCEEDED(surface->UnlockRect());
+  if (FAILED(surface->UnlockRect())) {
+    return false;
+  }
+
+  return true;
 }
 
 // OFFSET: 0x00573600
