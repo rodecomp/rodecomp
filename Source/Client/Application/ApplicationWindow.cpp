@@ -240,10 +240,10 @@ LRESULT CALLBACK WindowProc(HWND window, UINT message, WPARAM wParam, LPARAM lPa
     case SC_CLOSE:
       break;
     case SC_KEYMENU:
-      if (lParam != ' ') {
-        return 0;
+      if (lParam == ' ') {
+        break;
       }
-      break;
+      return 0;
     default:
       return 0;
     }
