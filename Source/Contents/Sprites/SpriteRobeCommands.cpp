@@ -29,7 +29,7 @@ void CCharacterRender::RenderRobeCommands(
   std::list<CharacterRenderDrawItem>& commands, bool drawOnTop, const void*, int& layer, const float* position, float x, float y, float scale,
   float shift, float
 ) {
-  if (this->robe < 1 || this->isHelmRobe == 1 || (this->actionIndex >= 64 && this->actionIndex <= 71)
+  if (this->robe <= 0 || this->isHelmRobe == 1 || (this->actionIndex >= 64 && this->actionIndex <= 71)
       || (this->bodyBlend == -1 && this->bodyCellX == -1 && this->bodyCellY == -1)) {
     return;
   }
@@ -79,9 +79,13 @@ void CCharacterRender::RenderRobeCommands(
         quad.topRhw = quad.topRhw + 0.0000065f;
       }
       if (drawOnTop && g_session.IsTopLayerRobe(this->robe)) {
-        const float bias = g_cameraDistance < 320.0f ? 0.000251f : 0.00011f;
-        quad.bottomRhw = bottom + bias;
-        quad.topRhw = top + bias;
+        if (g_cameraDistance < 320.0f) {
+          quad.bottomRhw = bottom + 0.000251f;
+          quad.topRhw = top + 0.000251f;
+        } else {
+          quad.bottomRhw = bottom + 0.00011f;
+          quad.topRhw = top + 0.00011f;
+        }
       }
 
       quad.image = image;
