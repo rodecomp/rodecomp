@@ -225,7 +225,7 @@ void CEZ2STRParticle::Restart() {
 // OFFSET: 0x00B3D7A0
 // FUNCTION: fn_18819
 void CEZ2STRParticle::Open(std::string name) {
-  this->m_res = CResPtr<CEZeffectRes>(static_cast<CEZeffectRes*>(ResourceMgr::Instance().Load(name)));
+  this->m_res = static_cast<CEZeffectRes*>(ResourceMgr::Instance().Load(name));
   this->m_name = name;
 
   char directory[256];
