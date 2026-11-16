@@ -2993,14 +2993,13 @@ void CServantWeaponEffect::Open() {
 
   for (int attempt = 0; attempt < 5; ++attempt) {
     for (int column = 0; column < 5; ++column) {
-      if (this->emitters[0][column] != nullptr || this->emitters[1][column] != nullptr) {
-        continue;
+      if (this->emitters[0][column] == nullptr && this->emitters[1][column] == nullptr) {
+        CEZ2STRParticle* emitter =
+            static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 13));
+        emitter->Load(std::string("servantweapon\\servantweapon_cast\\servantweapon_cast.str"));
+        this->emitters[1][column] = emitter;
+        break;
       }
-
-      CEZ2STRParticle* emitter =
-          static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 13));
-      emitter->Load(std::string("servantweapon\\servantweapon_cast\\servantweapon_cast.str"));
-      this->emitters[1][column] = emitter;
     }
   }
 }
@@ -3028,30 +3027,30 @@ bool CServantWeaponNewEffect::IsAlive() {
 CEZ2STRParticle* CServantWeaponNewEffect::CreateShot(float angle, int skill) {
   CEZ2STRParticle* particle =
       static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
-  if (!particle) {
-    return nullptr;
+  if (particle) {
+    switch (skill) {
+    case DK_SERVANTWEAPON_ATK:
+      particle->Load(std::string("DRAGON_KNIGHT\\DK_SERVANTWEAPON\\servantweapon_shoot\\servantweapon_shoot.str"));
+      break;
+    case DK_SERVANT_W_SIGN:
+      particle->Load(std::string("DRAGON_KNIGHT\\DK_SERVANT_W_SIGN\\servant_sign_shot\\servant_sign_shot.str"));
+      break;
+    case DK_SERVANT_W_PHANTOM:
+      particle->Load(std::string("DRAGON_KNIGHT\\DK_SERVANT_W_PHANTOM\\servant_phantom_shot\\servant_phantom_shot.str"));
+      break;
+    case DK_SERVANT_W_DEMOL:
+      particle->Load(
+          std::string("DRAGON_KNIGHT\\DK_SERVANT_W_DEMOL\\servant_demolition_shot\\servant_demolition_shot.str"));
+      break;
+    }
+
+    particle->m_scale = 0.12f;
+    CEZ2STRParticle* emitter = particle;
+    emitter->angle = angle;
+    return emitter;
   }
 
-  switch (skill) {
-  case DK_SERVANTWEAPON_ATK:
-    particle->Load(std::string("DRAGON_KNIGHT\\DK_SERVANTWEAPON\\servantweapon_shoot\\servantweapon_shoot.str"));
-    break;
-  case DK_SERVANT_W_SIGN:
-    particle->Load(std::string("DRAGON_KNIGHT\\DK_SERVANT_W_SIGN\\servant_sign_shot\\servant_sign_shot.str"));
-    break;
-  case DK_SERVANT_W_PHANTOM:
-    particle->Load(std::string("DRAGON_KNIGHT\\DK_SERVANT_W_PHANTOM\\servant_phantom_shot\\servant_phantom_shot.str"));
-    break;
-  case DK_SERVANT_W_DEMOL:
-    particle->Load(
-        std::string("DRAGON_KNIGHT\\DK_SERVANT_W_DEMOL\\servant_demolition_shot\\servant_demolition_shot.str"));
-    break;
-  }
-
-  particle->m_scale = 0.12f;
-  CEZ2STRParticle* emitter = particle;
-  emitter->angle = angle;
-  return emitter;
+  return nullptr;
 }
 
 // INLINED
@@ -3650,21 +3649,21 @@ void CSevereRainStorm::SpawnParticles() {
     break;
   case EF_DIAMOND_STORM:
     if (this->elapsedFrames % 5 == 0) {
-      vector3d position = {this->position[0], this->position[1], this->position[2]};
+      vector3d position = this->positionVector;
       position.x = (static_cast<float>(ClampedRandom(451)) - 225.0f) * 0.1f + position.x;
       position.z = (static_cast<float>(ClampedRandom(451)) - 225.0f) * 0.1f + position.z;
 
       CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&position, 5));
       CEZ2STRParticle* emitter = particle;
       particle->Open(std::string("diamond_storm\\diamond_storm\\diamond_storm.str"));
-      this->emitters.emplace_back(emitter);
+      this->emitters.push_back(std::move(emitter));
     }
     break;
   case EF_CROSS_RAIN:
     if (this->elapsedFrames % (9 - this->effectLevel / 3) == 0) {
       const long long ranges[10] = {3, 3, 3, 5, 5, 5, 7, 7, 7, 9};
       const long long spread = ranges[std::min(static_cast<unsigned int>(this->effectLevel), 10u) - 1] * 50;
-      vector3d position = {this->position[0], this->position[1], this->position[2]};
+      vector3d position = this->positionVector;
       const int range = static_cast<int>(spread) + 1;
       const int offsetX = ClampedRandom(range);
       const float half = static_cast<float>(spread) * g_depthAverageHalf;
@@ -3674,7 +3673,7 @@ void CSevereRainStorm::SpawnParticles() {
       CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&position, 5));
       CEZ2STRParticle* emitter = particle;
       particle->Load(std::string("crossrain\\cross_rain\\cross_rain.str"));
-      this->emitters.emplace_back(emitter);
+      this->emitters.push_back(std::move(emitter));
     }
     break;
   case EF_SKE_TWINKLING_GALAXY:
@@ -3784,10 +3783,12 @@ void CSevereRainStorm::SpawnBombardHits() {
 void CSevereRainStorm::SpawnCrystalRain() {
   const long long ranges[5] = {11, 13, 15, 17, 19};
   const long long spread = ranges[std::min(static_cast<unsigned int>(this->effectLevel), 5u) - 1] * 50;
-  vector3d position = {this->position[0], this->position[1], this->position[2]};
+  vector3d position = this->positionVector;
+  const int range = static_cast<int>(spread) + 1;
+  const int offsetX = ClampedRandom(range);
   const float half = static_cast<float>(spread) * 0.5f;
-  position.x = (static_cast<float>(ClampedRandom((static_cast<int>(spread) + 1))) - half) * 0.1f + position.x;
-  position.z = (static_cast<float>(ClampedRandom((static_cast<int>(spread) + 1))) - half) * 0.1f + position.z;
+  position.x = (static_cast<float>(offsetX) - half) * 0.1f + position.x;
+  position.z = (static_cast<float>(ClampedRandom(range)) - half) * 0.1f + position.z;
 
   CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&position, 13));
   particle->Load(std::string("rain_of_crystal\\rain_of_crystal_attack_bottom\\rain_of_crystal_attack_bottom.str"));
@@ -4690,7 +4691,7 @@ void CGaleStorm::SpawnArrow() {
 // OFFSET: 0x00717B60
 // FUNCTION: fn_07283
 void CGaleStorm::SpawnStorm() {
-  vector3d position = {this->position[0], this->position[1], this->position[2]};
+  vector3d position = this->positionVector;
   const int spanX = static_cast<int>(this->count) * 5 + 1;
   const int offsetX = spanX == 0 ? 0 : ClampedRandom(spanX);
   position.x = static_cast<float>(offsetX) - static_cast<float>(this->count * 5) * 0.5f + position.x;
@@ -4802,9 +4803,12 @@ void CRichsCoinEffect::OnProcess() {
       particle->animationParameter = angle;
       const float cosine = ClientCos(angle) * 7.0f;
       const float sine = ClientSin(angle) * 7.0f;
-      particle->position.z = cosine + this->position[2];
-      particle->position.x = sine + this->position[0];
-      particle->position.y = this->position[1] - 10.0f;
+      const float z = cosine + this->position[2];
+      const float y = this->position[1] - 10.0f;
+      const float x = sine + this->position[0];
+      particle->position.z = z;
+      particle->position.x = x;
+      particle->position.y = y;
 
       float degrees = angle / 3.141592f * 180.0f - g_modeMgr.GetGameMode()->camera->camera.yaw;
       if (degrees > 360.0f) {
@@ -4823,17 +4827,21 @@ void CRichsCoinEffect::OnProcess() {
 
   for (auto it = this->coins.begin(); it != this->coins.end(); ++it) {
     CParticle* coin = *it;
-    coin->position.x = this->position[0];
-    coin->position.y = this->position[1];
-    coin->position.z = this->position[2];
+    vector3d& coinPosition = (*it)->position;
+    coinPosition.x = this->position[0];
+    coinPosition.y = this->position[1];
+    coinPosition.z = this->position[2];
     if (coin) {
       const float angle = coin->animationParameter + 0.015f;
       coin->animationParameter = angle;
       const float cosine = ClientCos(angle) * 7.0f;
       const float sine = ClientSin(angle) * 7.0f;
-      coin->position.z = cosine + this->position[2];
-      coin->position.y = this->position[1] - 10.0f;
-      coin->position.x = sine + this->position[0];
+      const float z = cosine + this->position[2];
+      const float y = this->position[1] - 10.0f;
+      const float x = sine + this->position[0];
+      coin->position.z = z;
+      coin->position.y = y;
+      coin->position.x = x;
     }
     ++coin->elapsedFrames;
   }
