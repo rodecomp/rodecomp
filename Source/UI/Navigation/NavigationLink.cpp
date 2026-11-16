@@ -1826,36 +1826,34 @@ void OpenTextButtonNavigation(UITextButton* button) {
   const std::string name = button->GetLine(0);
   const int x = std::atoi(button->GetLine(1).c_str());
   const int y = std::atoi(button->GetLine(2).c_str());
-  if (button->m_lines.size() <= 3) {
-    g_navigationManager.StartNavigation(name, 2, 5, false, x, y, 1002);
-    return;
-  }
+  if (button->m_lines.size() > 3) {
+    const int mode = std::atoi(button->GetLine(3).c_str());
+    int code = std::atoi(button->GetLine(4).c_str());
+    if (code == -222) {
+      std::string tag = "$$DB ";
+      if (mode != 3) {
+        tag.clear();
+      }
 
-  const int mode = std::atoi(button->GetLine(3).c_str());
-  int code = std::atoi(button->GetLine(4).c_str());
-  if (code == -222) {
-    std::string tag = "$$DB ";
-    if (mode != 3) {
-      tag.clear();
+      tag += name;
+      g_navigationManager.SearchNavigation(tag, mode, false);
+      return;
     }
 
-    tag += name;
-    g_navigationManager.SearchNavigation(tag, mode, false);
-    return;
-  }
+    const int flag = std::atoi(button->GetLine(5).c_str());
+    const int id = std::atoi(button->GetLine(6).c_str());
+    unsigned char hundreds = 0;
+    if (code >= 100) {
+      hundreds = 1;
+      code -= 100;
+    }
 
-  const int flag = std::atoi(button->GetLine(5).c_str());
-  const int id = std::atoi(button->GetLine(6).c_str());
-  unsigned char hundreds = 0;
-  if (code >= 100) {
-    hundreds = 1;
-    code -= 100;
+    const unsigned char group = code < 10 ? hundreds : static_cast<unsigned char>(hundreds + 2);
+    const int remainder = code < 10 ? code : code - 10;
+    g_navigationManager.StartNavigation(name, mode, remainder < 1 ? group : static_cast<unsigned char>(group + 4), flag == 0, x, y, id);
+  } else {
+    g_navigationManager.StartNavigation(name, 2, 5, false, x, y, 1002);
   }
-
-  const unsigned char group = code < 10 ? hundreds : static_cast<unsigned char>(hundreds + 2);
-  const int remainder = code < 10 ? code : code - 10;
-  const unsigned char kind = remainder < 1 ? group : static_cast<unsigned char>(group + 4);
-  g_navigationManager.StartNavigation(name, mode, kind, flag == 0, x, y, id);
 }
 
 // OFFSET: 0x0083BAF0
