@@ -7761,17 +7761,15 @@ void CRagEffect::FrostSplash(int, int) {
   stored()->state.totalTexture = 1;
   stored()->state.textures = new CTexture*[stored()->state.totalTexture];
 
-  CTexture* texture;
-  bool water;
+  char textureKind;
   if (ClampedRandom(10) > 0) {
-    texture = g_texMgr.Load("effect\\freeze_a_small.bmp", 0, false, true, false);
-    water = false;
+    stored()->state.textures[0] = g_texMgr.Load("effect\\freeze_a_small.bmp", 0, false, true, false);
+    textureKind = 0;
   } else {
-    texture = g_texMgr.Load("effect\\waterp1.tga", 0, false, true, false);
-    water = true;
+    stored()->state.textures[0] = g_texMgr.Load("effect\\waterp1.tga", 0, false, true, false);
+    textureKind = 1;
   }
 
-  stored()->state.textures[0] = texture;
   stored()->state.size = 4.0f;
 
   for (int i = 0; i < 4; ++i) {
@@ -7791,7 +7789,7 @@ void CRagEffect::FrostSplash(int, int) {
     stored()->state.slots[i].flag1[12] = static_cast<char>(color - static_cast<char>(color / 100) * 100);
     stored()->state.slots[i].life = 1;
     stored()->state.slots[i].maxHeight = 0.05f;
-    stored()->state.slots[i].distance = scale * (water ? 7.0f : 4.5f);
+    stored()->state.slots[i].distance = scale * (textureKind == 1 ? 7.0f : 4.5f);
 
     stored()->state.slots[i].vecBPre.y = static_cast<float>(ClampedRandom(30));
     stored()->state.slots[i].height[0] = static_cast<float>(ClampedRandom(360));
