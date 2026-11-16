@@ -4054,10 +4054,8 @@ void CCrimsonArrowEffect::Open() {
   const float dx = toX - fromX;
   const float dy = toY - fromY;
   const float length = SquareRoot(dy * dy + dx * dx);
-  double angle = static_cast<float>(std::acos(static_cast<double>(dx / length))) / 3.141592f * 180.0f;
-  if (fromY > toY) {
-    angle = 360.0 - angle;
-  }
+  const float degrees = static_cast<float>(std::acos(static_cast<double>(dx / length))) / 3.141592f * 180.0f;
+  const double angle = fromY > toY ? 360.0 - degrees : degrees;
 
   CEZ2STRParticle* emitter = arrow;
   switch (this->id) {
