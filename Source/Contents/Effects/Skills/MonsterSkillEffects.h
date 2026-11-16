@@ -8,6 +8,7 @@
 #include <list>
 #include <map>
 #include <string>
+#include <utility>
 #include <vector>
 
 class CParticle;
@@ -272,7 +273,7 @@ public:
   };
 
   CFromTheAbyssEffect();
-  void UpdateParticle(long long key, AbyssParticle particle);
+  void UpdateParticle(std::pair<long long, AbyssParticle> particle);
   void SetLevel(long long level);
   void OnProcess() override;
   void Open() override;
