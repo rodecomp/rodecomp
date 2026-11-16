@@ -1,3 +1,4 @@
+#include "Render/DX9/RendererDX9.h"
 #include "Render/Primitives/RenderPrimitivePool.h"
 #include <new>
 #include "Contents/Effects/Particles/SpriteParticle.h"
@@ -283,7 +284,7 @@ void CSpriteParticle::Draw(char mode) {
 
     primitive->sourceBlend = 5;
     primitive->destinationBlend = (this->flags != 5) ? 6 : 2;
-    g_renderer->queues.Submit(primitive, static_cast<std::uint16_t>(this->flags), g_renderer->fog.supported != 0, g_depthStart, g_depthEnd);
+    static_cast<CRendererDX9*>(g_renderer)->Submit(primitive, static_cast<std::uint16_t>(this->flags));
   }
 }
 
