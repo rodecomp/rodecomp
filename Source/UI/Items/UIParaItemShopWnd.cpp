@@ -823,8 +823,8 @@ void UIParaResultWnd::Paint() {
 
   const int columns = (this->geometry.width - 40) / 32;
   const int slots = (this->geometry.height - this->headerHeight - this->footerHeight - 17) / 32;
-  for (int slot = slots, y = 17; slot > 0; --slot, y += 32) {
-    this->DrawItemSlotFrame(40, y);
+  for (int row = 0; row < slots; ++row) {
+    this->DrawItemSlotFrame(40, row * 32 + 17);
   }
 
   {
