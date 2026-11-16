@@ -369,37 +369,32 @@ void UISwapEquipmentWnd::Paint() {
 
   this->DrawEquipmentSlots();
 
-  {
-    FuncDrawWNDChar drawer(
-      this,
-      this->geometry.width / 2 + 1,
-      this->geometry.height - 53,
-      g_session.GetCurrentSex(),
-      static_cast<short>(g_session.m_job),
-      g_session.m_job,
-      static_cast<short>(g_session.m_bodyCostume),
-      static_cast<short>(g_session.m_head),
-      static_cast<short>(this->topAccessory),
-      static_cast<short>(this->midAccessory),
-      static_cast<short>(this->bottomAccessory),
-      this->weaponView,
-      0,
-      0,
-      g_session.m_bodyStyle,
-      g_session.m_headPalette,
-      0,
-      0,
-      this->previewTick
-    );
-    drawer.Draw(false);
-  }
+  FuncDrawWNDChar(
+    this,
+    this->geometry.width / 2 + 1,
+    this->geometry.height - 53,
+    g_session.GetCurrentSex(),
+    static_cast<short>(g_session.m_job),
+    g_session.m_job,
+    static_cast<short>(g_session.m_bodyCostume),
+    static_cast<short>(g_session.m_head),
+    static_cast<short>(this->topAccessory),
+    static_cast<short>(this->midAccessory),
+    static_cast<short>(this->bottomAccessory),
+    this->weaponView,
+    0,
+    0,
+    g_session.m_bodyStyle,
+    g_session.m_headPalette,
+    0,
+    0,
+    this->previewTick
+  ).Draw(false);
 
-  if (g_session.swapArrowIndex != 0) {
-    ITEM_INFO dragItem = g_session.LookupClientItemByIdentity(g_session.swapArrowIndex);
-    if (dragItem.identity[1] > 0) {
-      this->DrawItemIcon(this->geometry.width / 2 - 24, 27, dragItem, 0);
-      this->DrawFittedItemName(this->geometry.width / 2 - 24, 51, &dragItem, 0, 0, 12, 0);
-    }
+  ITEM_INFO dragItem = g_session.LookupClientItemByIdentity(g_session.swapArrowIndex);
+  if (dragItem.identity[1] > 0) {
+    this->DrawItemIcon(this->geometry.width / 2 - 24, 27, dragItem, 0);
+    this->DrawFittedItemName(this->geometry.width / 2 - 24, 51, &dragItem, 0, 0, 12, 0);
   }
 }
 
