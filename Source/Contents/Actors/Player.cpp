@@ -2996,11 +2996,11 @@ void CPlayer::UpdatePendingAction() {
       return;
     }
 
-    const float distance = this->AdjustFollowDistance(
-      target, target->CalcDist(this->render.position.x, this->render.position.y, this->render.position.z)
-    );
-    const bool inRange = static_cast<float>(range * 5) + 5.5f >= distance;
-    if ((this->destCellX == column && this->destCellZ == row) || inRange) {
+    const float targetDistance = target->CalcDist(this->render.position.x, this->render.position.y, this->render.position.z);
+    const float distance = this->AdjustFollowDistance(target, targetDistance);
+    const bool inRange = distance <= static_cast<float>(range * 5) + 5.5f;
+    const bool atDestination = this->destCellX == column && this->destCellZ == row;
+    if (inRange || atDestination) {
       this->SendMsg(nullptr, AM_REQ_SKILL, 0, 0, 0, 0, 0, 0);
       break;
     }
@@ -3034,8 +3034,9 @@ void CPlayer::UpdatePendingAction() {
     }
 
     const float distance = this->CalcDist(x, this->render.position.y, z);
-    const bool inRange = static_cast<float>(range * 5) + 5.5f >= distance;
-    if ((this->destCellX == column && this->destCellZ == row) || inRange) {
+    const bool inRange = distance <= static_cast<float>(range * 5) + 5.5f;
+    const bool atDestination = this->destCellX == column && this->destCellZ == row;
+    if (inRange || atDestination) {
       this->SendMsg(nullptr, AM_REQ_GROUND_SKILL, 0, 0, 0, 0, 0, 0);
       break;
     }
@@ -3114,8 +3115,9 @@ void CPlayer::UpdatePendingAction() {
     }
 
     const float distance = this->CalcDist(x, this->render.position.y, z);
-    const bool inRange = static_cast<float>(range * 5) + 5.5f >= distance;
-    if ((this->destCellX != column || this->destCellZ != row) && !inRange) {
+    const bool inRange = distance <= static_cast<float>(range * 5) + 5.5f;
+    const bool atDestination = this->destCellX == column && this->destCellZ == row;
+    if (!inRange && !atDestination) {
       if (this->destCellX == cellX && this->destCellZ == cellY) {
         return;
       }
@@ -3144,16 +3146,16 @@ void CPlayer::UpdatePendingAction() {
         if (this->attackMode == 2) {
           this->SendMsg(nullptr, AM_CANCELATTACK, 0, 0, 0, 0, 0, 0);
         }
-        if (this->isAttackRequest != 0 || timeGetTime() <= this->attackReqTime + 1200) {
+        if (this->isAttackRequest != 0 || this->attackReqTime + 1200 >= timeGetTime()) {
           return;
         }
-        ++this->totalAttackReqCnt;
         this->attackReqTime = timeGetTime();
+        ++this->totalAttackReqCnt;
         this->isAttackRequest = 1;
-        if (this->attackMode != 2) {
-          this->SendMsg(nullptr, AM_REQ_ATTACK_REPEAT, 0, 0, 0, 0, 0, 0);
-        } else {
+        if (this->attackMode == 2) {
           this->SendMsg(nullptr, AM_REQ_ATTACK, 0, 0, 0, 0, 0, 0);
+        } else {
+          this->SendMsg(nullptr, AM_REQ_ATTACK_REPEAT, 0, 0, 0, 0, 0, 0);
         }
         return;
       }
