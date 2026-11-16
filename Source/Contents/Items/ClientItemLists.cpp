@@ -1169,7 +1169,7 @@ bool CSession::OnItemEquipped(ITEM_INFO& item) {
 bool CSession::UnequipItem(int location, std::uint32_t identity) {
   if (location == EQP_AMMO) {
     const ITEM_INFO item = g_session.LookupClientItemByIdentity(identity);
-    if (item.identity[1] != 0) {
+    if (item.identity[1] > 0) {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s%s", item.DisplayName(0).c_str(), LookupMessage(MSI_ITEM_IS_REMOVED)).c_str()), 0xFF, 7, 0, 0);
     }
     this->equippedArrowIndex = 0;
@@ -1508,7 +1508,7 @@ __declspec(noinline) int CSession::IsDifferentName(const char* name, const char*
   }
 
   short matched = 0;
-  for (int index = 0; index < length; ++index) {
+  for (short index = 0; index < length; ++index) {
     CountSameNameChar(first[index], second[index], matched);
   }
 
