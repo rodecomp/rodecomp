@@ -214,13 +214,14 @@ void UIRodexComposeWnd::OnMouseHover(int x, int y) {
     int tooltipX = this->m_itemIndex * 34 + 30;
     int tooltipY = 290;
     this->ToScreen(tooltipX, tooltipY);
-    CMode* tooltip = g_modeMgr.currentMode;
     if (item.identified == 1 && item.optionCount != 0) {
+      CMode* tooltip = g_modeMgr.currentMode;
       std::uint32_t color = g_session.GetItemNameColor(item);
       tooltip->ShowTooltip(
         FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), item.DisplayName(0).c_str(), item.optionCount).c_str(), tooltipX, tooltipY, color, 0, 1
       );
     } else {
+      CMode* tooltip = g_modeMgr.currentMode;
       std::uint32_t color = g_session.GetItemNameColor(item);
       tooltip->ShowTooltip(item.DisplayName(0).c_str(), tooltipX, tooltipY, color, 0, 1);
     }
