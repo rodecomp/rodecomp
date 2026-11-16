@@ -2,12 +2,18 @@
 
 // OFFSET: 0x00545790
 // FUNCTION: fn_01832
-CDCBitmap::CDCBitmap(int width, int height) {
+CDCBitmap::CDCBitmap(int width, int height) : m_alpha(false) {
   this->m_bitmap.dc = CreateCompatibleDC(nullptr);
   this->Create(width, height);
 }
 
-CDCBitmap::~CDCBitmap() = default;
+// INLINED
+CDCBitmap::~CDCBitmap() {
+  this->ClearTextures();
+  SelectObject(this->m_bitmap.dc, this->m_bitmap.previous);
+  DeleteObject(this->m_bitmap.bitmap);
+  DeleteDC(this->m_bitmap.dc);
+}
 
 // OFFSET: 0x00569E90
 // FUNCTION: fn_02273

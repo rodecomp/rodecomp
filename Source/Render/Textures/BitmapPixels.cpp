@@ -21,13 +21,6 @@ BitmapPixels::BitmapPixels(int newWidth, int newHeight) : dc(CreateCompatibleDC(
   this->Create(newWidth, newHeight);
 }
 
-// INLINED
-BitmapPixels::~BitmapPixels() {
-  SelectObject(this->dc, this->previous);
-  DeleteObject(this->bitmap);
-  DeleteDC(this->dc);
-}
-
 // OFFSET: 0x00547C90
 // FUNCTION: fn_01847
 void CDCBitmap::UploadTexture(CTexture*& texture) {
@@ -77,7 +70,7 @@ __declspec(noinline) HGDIOBJ CDCBitmap::Create(int width, int height) {
   this->m_bitmap.width = width;
   this->m_bitmap.dirty = true;
   this->m_bitmap.height = height;
-  this->m_cache.Clear();
+  this->ClearTextures();
 
   BITMAPINFO info;
   info.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
@@ -228,7 +221,7 @@ void CDCBitmap::BlendFrom(std::uint32_t x, std::uint32_t y, int copyWidth, int c
     }
 
     for (int column = 0; column < copyWidth; ++column) {
-      if (source.m_cache.m_alpha) {
+      if (source.m_alpha) {
         const std::uint32_t target = destination[column];
         const std::uint32_t pixel = input[column];
         const WORD targetAlpha = static_cast<WORD>(target >> 24);

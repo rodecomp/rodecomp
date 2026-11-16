@@ -2,8 +2,10 @@
 #define RAGNAROK_SOURCE_RENDER_DEVICECONTEXT_DCBITMAP_H
 
 #include "Render/Textures/BitmapPixels.h"
-#include "Render/Textures/BitmapTextureCache.h"
 #include "Render/DeviceContext/DeviceContext.h"
+#include "Render/Textures/Texture.h"
+
+#include <list>
 
 class CDCBitmap : public CDC {
 public:
@@ -45,12 +47,21 @@ public:
   void SetAlpha(unsigned char maxLuminance);
   // INLINED
   void SetAlpha(bool alpha) {
-    this->m_cache.m_alpha = alpha;
+    this->m_alpha = alpha;
+  }
+  // INLINED
+  void ClearTextures() {
+    for (std::list<CTexture*>::iterator it = this->m_textures.begin(); it != this->m_textures.end(); ++it) {
+      delete *it;
+    }
+
+    this->m_textures.clear();
   }
 
 protected:
   /* 0004 */ BitmapPixels m_bitmap;
-  /* 0020 */ BitmapTextureCache m_cache;
+  /* 0020 */ std::list<CTexture*> m_textures;
+  /* 0028 */ bool m_alpha;
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

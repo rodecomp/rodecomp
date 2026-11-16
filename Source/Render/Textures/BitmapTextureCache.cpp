@@ -1,20 +1,10 @@
 #include "Render/DeviceContext/DCBitmap.h"
 #include "Render/Textures/BitmapPixels.h"
-#include "Render/Textures/BitmapTextureCache.h"
 #include "Render/RenderSystemBase.h"
 #include "Render/Textures/Texture.h"
 #include "Render/Textures/TextureCache.h"
 
 #include <algorithm>
-
-// INLINED
-BitmapTextureCache::BitmapTextureCache() : m_alpha(false) {
-}
-
-// INLINED
-BitmapTextureCache::~BitmapTextureCache() {
-  this->Clear();
-}
 
 // OFFSET: 0x00548380
 // FUNCTION: fn_01854
@@ -23,22 +13,22 @@ void CDCBitmap::UpdateCache() {
     return;
   }
 
-  if (this->m_cache.m_alpha == true) {
-    if (this->m_cache.m_textures.empty()) {
+  if (this->m_alpha == true) {
+    if (this->m_textures.empty()) {
       CTexture* texture = g_texMgr.CreateTexture(this->m_bitmap.width, this->m_bitmap.height, TextureFormat::A8R8G8B8, false, false);
       if (texture) {
-        this->m_cache.m_textures.push_back(texture);
+        this->m_textures.push_back(texture);
       }
     }
 
-    for (auto it = this->m_cache.m_textures.begin(); it != this->m_cache.m_textures.end(); ++it) {
+    for (auto it = this->m_textures.begin(); it != this->m_textures.end(); ++it) {
       (*it)->Upload(0, 0, this->m_bitmap.width, this->m_bitmap.height, this->m_bitmap.pixels, 0, this->m_bitmap.width);
     }
   } else {
-    if (this->m_cache.m_textures.empty()) {
+    if (this->m_textures.empty()) {
       for (unsigned y = 0; y < this->m_bitmap.height; y += 256) {
         for (unsigned x = 0; x < this->m_bitmap.width; x += 256) {
-          this->m_cache.m_textures.push_back(
+          this->m_textures.push_back(
             g_texMgr.CreateTexture(std::min(this->m_bitmap.width - x, 256u), std::min(this->m_bitmap.height - y, 256u), TextureFormat::A1R5G5B5, false, false)
           );
         }
@@ -51,7 +41,7 @@ void CDCBitmap::UpdateCache() {
       reinterpret_cast<unsigned char*>(this->m_bitmap.pixels)[offset + 3] = 255;
     }
 
-    auto texture = this->m_cache.m_textures.begin();
+    auto texture = this->m_textures.begin();
 
     for (unsigned y = 0; y < this->m_bitmap.height; y += 256) {
       for (unsigned x = 0; x < this->m_bitmap.width; x += 256) {
@@ -72,16 +62,16 @@ void CDCBitmap::Draw(int x, int y, int width, int height, std::uint32_t color) {
   }
 
   this->UpdateCache();
-  if (this->m_cache.m_textures.empty()) {
+  if (this->m_textures.empty()) {
     return;
   }
 
-  if (this->m_cache.m_alpha == true) {
-    for (auto texture = this->m_cache.m_textures.begin(); texture != this->m_cache.m_textures.end(); ++texture) {
+  if (this->m_alpha == true) {
+    for (auto texture = this->m_textures.begin(); texture != this->m_textures.end(); ++texture) {
       (*texture)->Draw(x, y, width, height, color);
     }
   } else {
-    auto texture = this->m_cache.m_textures.begin();
+    auto texture = this->m_textures.begin();
     for (int row = 0; row < height; row += 256) {
       for (int column = 0; column < width; column += 256) {
         (*texture)->Draw(x + column, y + row, std::min(width - column, 256), std::min(height - row, 256), color);

@@ -24,7 +24,6 @@ struct BitmapPixels {
   BitmapPixels() : bitmap(nullptr), previous(nullptr), pixels(nullptr) {
   }
   BitmapPixels(int width, int height);
-  ~BitmapPixels();
   void CopyRegion(
     int x, int y, int sourceLeft, int sourceTop, int sourceRight, int sourceBottom, const std::uint32_t* source, int sourceWidth, int sourceHeight,
     bool transparent, bool alpha
