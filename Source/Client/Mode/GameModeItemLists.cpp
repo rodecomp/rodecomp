@@ -97,11 +97,26 @@ namespace {
 void CGameMode::ReceiveEquipListPart(unsigned char listType, int count, const unsigned char* data) {
   const EquipListRecord* records = reinterpret_cast<const EquipListRecord*>(data);
   switch (listType) {
+  case INVTYPE_STORAGE:
+  case INVTYPE_GUILD_STORAGE:
+    for (int remaining = count; remaining > 0; --remaining, ++records) {
+      const EquipListRecord record = *records;
+      if (record.location == 0x8000) {
+        continue;
+      }
+
+      EquipListOption options[5];
+      std::memcpy(options, records->options, sizeof(options));
+      ITEM_INFO item;
+      FillEquipListItem(item, record, options);
+      g_session.AddCartItem(item, 0);
+    }
+    break;
   case INVTYPE_INVENTORY:
     for (int remaining = count; remaining > 0; --remaining, ++records) {
       const EquipListRecord record = *records;
       EquipListOption options[5];
-      std::memcpy(options, record.options, sizeof(options));
+      std::memcpy(options, records->options, sizeof(options));
       ITEM_INFO item;
       FillEquipListItem(item, record, options);
 
@@ -141,25 +156,10 @@ void CGameMode::ReceiveEquipListPart(unsigned char listType, int count, const un
     for (int remaining = count; remaining > 0; --remaining, ++records) {
       const EquipListRecord record = *records;
       EquipListOption options[5];
-      std::memcpy(options, record.options, sizeof(options));
+      std::memcpy(options, records->options, sizeof(options));
       ITEM_INFO item;
       FillEquipListItem(item, record, options);
       g_session.AddMerchantShopItem(item);
-    }
-    break;
-  case INVTYPE_STORAGE:
-  case INVTYPE_GUILD_STORAGE:
-    for (int remaining = count; remaining > 0; --remaining, ++records) {
-      const EquipListRecord record = *records;
-      if (record.location == 0x8000) {
-        continue;
-      }
-
-      EquipListOption options[5];
-      std::memcpy(options, record.options, sizeof(options));
-      ITEM_INFO item;
-      FillEquipListItem(item, record, options);
-      g_session.AddCartItem(item, 0);
     }
     break;
   }
