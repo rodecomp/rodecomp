@@ -114,7 +114,7 @@ struct CRagEffect : CRenderObject {
   void KyrieGuard(const char* name, char kind);
   void TexturedSlam(const char* name, std::int16_t kind, char unused);
   void BubbleSpiral(std::int16_t angle, const char* unused, char flag);
-  void BubbleSpiralKind(int angle, const char* unused, char kind);
+  void BubbleSpiralKind(std::int16_t angle, const char* unused, char kind);
   void FeatherRing(const char* name, std::int16_t angle, char large);
   void FeatherBurst(const char* name, std::int16_t angle, char unused);
   __declspec(noinline) void SlashFan(std::int16_t reverse);
