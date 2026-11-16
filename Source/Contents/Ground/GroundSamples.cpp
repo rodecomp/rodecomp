@@ -12,10 +12,10 @@ void GroundBase::SpatialCell(float x, float z, int& column, int& row) const {
 
 // OFFSET: 0x00AC09B0
 // FUNCTION: fn_17568
-void GroundGeometry::WorldColor(float x, float, float z, std::uint32_t* output) const {
+void GroundGeometry::WorldColor(vector3d position, std::uint32_t* output) const {
   int column;
   int row;
-  this->SpatialCell(x, z, column, row);
+  this->SpatialCell(position.x, position.z, column, row);
 
   if (column < 0 || row < 0 || column >= this->width || row >= this->height) {
     output[1] = 255;

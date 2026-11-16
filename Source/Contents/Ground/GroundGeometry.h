@@ -3,6 +3,7 @@
 
 #include "Contents/Ground/GroundSpatial.h"
 #include "Resource/World/GroundResource.h"
+#include "Utility/Math/Vector3d.h"
 
 #include <cstddef>
 #include <array>
@@ -105,7 +106,7 @@ public:
   void DrawWaterCell(int column, int row, GroundCell& cell, const float* matrix, const float* ambient);
   __declspec(noinline) void DrawLightmapped(const float* matrix, const GroundQuad& quad, bool clip);
   __declspec(noinline) void DrawSide(const float* matrix, const GroundQuad& quad, bool clip);
-  void WorldColor(float x, float unusedY, float z, std::uint32_t* output) const;
+  void WorldColor(vector3d position, std::uint32_t* output) const;
   void LightmapSample(int column, int row, unsigned char& alpha, unsigned char& red, unsigned char& green, unsigned char& blue) const;
   bool TerrainCellCorners(int column, int row, float* vertices) const;
   float WaterLevel(int column, int row) const;
