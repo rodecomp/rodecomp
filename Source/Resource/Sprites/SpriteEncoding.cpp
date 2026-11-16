@@ -5,31 +5,32 @@
 // OFFSET: 0x00761070
 // FUNCTION: fn_08063
 std::uint8_t* CSprRes::EncodeSpriteRuns(const std::uint8_t* pixels, int width, int height, std::uint16_t& bytes) {
-  std::vector<std::uint8_t> encoded;
   std::uint16_t zeroCount = 0;
-  int zeroRun = 0;
   std::uint16_t index = 0;
+  int zeroRun = 0;
+  std::vector<std::uint8_t> encoded;
 
   for (int y = 0; y < height; ++y) {
     for (int x = 0; x < width; ++x, ++index) {
       if (pixels[index] == 0) {
         if (!zeroRun) {
-          encoded.push_back(0);
           zeroRun = 1;
+          encoded.push_back(0);
           ++zeroCount;
         } else if (++zeroCount >= 255) {
           encoded.push_back(static_cast<std::uint8_t>(zeroCount));
           zeroRun = 0;
           zeroCount = 0;
         }
-      } else {
-        if (zeroRun) {
-          encoded.push_back(static_cast<std::uint8_t>(zeroCount));
-        }
-
+      } else if (zeroRun) {
+        encoded.push_back(static_cast<std::uint8_t>(zeroCount));
         encoded.push_back(pixels[index]);
         zeroRun = 0;
         zeroCount = 0;
+      } else {
+        zeroCount = 0;
+        encoded.push_back(pixels[index]);
+        zeroRun = 0;
       }
     }
   }
