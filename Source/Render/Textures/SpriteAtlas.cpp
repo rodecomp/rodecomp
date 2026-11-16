@@ -245,7 +245,8 @@ CTexture* SpriteAtlas::Insert(const SpriteRleImage* image, const std::uint32_t* 
 void SpriteAtlas::ClearExpired() {
   const std::uint32_t threshold = timeGetTime() - g_resourceReuseDelay;
 
-  for (std::forward_list<SpriteAtlasPage>& pages : this->m_classes) {
+  for (int index = 0; index < 25; ++index) {
+    std::forward_list<SpriteAtlasPage>& pages = this->m_classes[index];
     auto previous = pages.before_begin();
 
     for (auto it = pages.begin(); it != pages.end();) {
@@ -255,10 +256,10 @@ void SpriteAtlas::ClearExpired() {
         }
 
         CTexture* texture = it->texture;
-        if (texture->refCount) {
-          this->m_spare.push_back(texture);
-        } else {
+        if (texture->refCount == 0) {
           delete texture;
+        } else {
+          this->m_spare.push_back(texture);
         }
 
         it = pages.erase_after(previous);
