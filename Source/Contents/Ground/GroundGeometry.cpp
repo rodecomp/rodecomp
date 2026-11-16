@@ -308,6 +308,7 @@ void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const
       GroundCell& cell = this->cells[index];
       const CellNormals& cellNormals = normals[index];
       NormalVector smooth[4];
+      VertexColor color;
       const GroundCell* northwest;
       const CellNormals* northwestNormals;
 
@@ -473,7 +474,6 @@ void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const
           const float red = Clamp(amount * diffuse[0] + ambient[0]);
           const float green = Clamp(amount * diffuse[1] + ambient[1]);
           const float blue = Clamp(amount * diffuse[2] + ambient[2]);
-          VertexColor color;
           color.value = 0xFFFFFFFFu;
           const GroundCell* source = nullptr;
 
@@ -509,7 +509,6 @@ void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const
           const float red = Clamp(amount * diffuse[0] + ambient[0]);
           const float green = Clamp(amount * diffuse[1] + ambient[1]);
           const float blue = Clamp(amount * diffuse[2] + ambient[2]);
-          VertexColor color;
           color.value = 0xFFFFFFFFu;
           const GroundCell* source = nullptr;
 
@@ -541,7 +540,6 @@ void GroundGeometry::Build(CGndRes& resource, const float* lightDirection, const
           const float red = Clamp(amount * diffuse[0] + ambient[0]);
           const float green = Clamp(amount * diffuse[1] + ambient[1]);
           const float blue = Clamp(amount * diffuse[2] + ambient[2]);
-          VertexColor color;
           color.value = 0xFFFFFFFFu;
           const GroundCell* source = nullptr;
 
