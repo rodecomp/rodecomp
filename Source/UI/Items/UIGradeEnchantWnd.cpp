@@ -276,14 +276,13 @@ void UIGradeEnchantWnd::Paint() {
     int capacity = sizeof(description);
 
     int y = 118;
-    for (auto material = this->materials.begin(); material != this->materials.end(); ++material) {
+    for (auto material = this->materials.begin(); material != this->materials.end(); ++material, y += 40) {
       ITEM_INFO itemInfo;
       itemInfo.SetItemId(material->itemId);
       itemInfo.GetIdDisplayName(description, capacity, 0);
       this->DrawItemIcon(170, y - 9, itemInfo, 0);
       std::string text = FormatOwnedString(LookupMessage(MSI_NO_ITEM_FOR_EXCHANGE), description, material->amount);
       this->DrawAlignedText(203, y, text, 180, 0, 0, 0, 0, 11, 0, 0);
-      y += 40;
     }
 
     if (this->info.blessingItemId > 0) {
@@ -325,7 +324,7 @@ void UIGradeEnchantWnd::Paint() {
 
   if (this->item.identity[1] > 0) {
     this->DrawItemIcon(64, 125, this->item, 0);
-    if (this->item.grade > 0) {
+    if (0 < this->item.grade) {
       this->DrawBitmap(64, 137, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", this->item.grade).c_str()))), true);
     }
   }
