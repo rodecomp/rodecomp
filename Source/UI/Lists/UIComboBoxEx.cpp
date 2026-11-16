@@ -19,7 +19,6 @@ template __declspec(noinline) std::_Tree_find_result<std::map<int, ExtendedListL
 namespace {
   // INLINED
   unsigned Palette(int column, int row) {
-    auto& resources = ResourceMgr::Instance();
     unsigned red;
     unsigned green;
     unsigned blue;
