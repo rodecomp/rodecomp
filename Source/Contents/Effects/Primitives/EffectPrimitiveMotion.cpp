@@ -2523,18 +2523,20 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
   particle.latiSpeed = particle.latiAccel + particle.latiSpeed;
 
   if ((particle.pattern & 0x400u) != 0) {
-    particle.speed3d = {};
+    particle.speed3d.x = 0;
+    particle.speed3d.y = 0;
+    particle.speed3d.z = 0;
     Forward(particle.speed3d, particle.speed, particle.transform.values);
     particle.deltaPos.x = particle.speed3d.x + particle.deltaPos.x;
-    particle.deltaPos.y = particle.speed3d.y + particle.deltaPos.y;
     particle.deltaPos.z = particle.speed3d.z + particle.deltaPos.z;
+    particle.deltaPos.y = particle.speed3d.y + particle.deltaPos.y;
   } else if ((particle.pattern & 0x100u) != 0) {
     particle.deltaPos += particle.speed3d;
   } else {
     Forward(particle.speed3d, particle.speed, particle.transform.values);
     particle.deltaPos.x = particle.speed3d.x + particle.deltaPos.x;
-    particle.deltaPos.y = particle.speed3d.y + particle.deltaPos.y;
     particle.deltaPos.z = particle.speed3d.z + particle.deltaPos.z;
+    particle.deltaPos.y = particle.speed3d.y + particle.deltaPos.y;
   }
 
   if ((particle.pattern & 0x400u) != 0) {
@@ -2617,36 +2619,59 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
     particle.heightSpeed *= -1.0f;
   }
 
-  const bool wrap254 = (particle.pattern & 0x800u) != 0;
-  const bool gated = wrap254 && (particle.red == 254 || particle.blue == 254 || particle.green == 254);
-  bool advance = true;
-
-  if (gated) {
+  if ((particle.pattern & 0x800u) != 0 && (particle.red == 254 || particle.blue == 254 || particle.green == 254)) {
     if (particle.RGBCycleDelay != 0) {
       ++particle.RGBCycleCnt;
     }
 
-    advance = particle.RGBCycleDelay == particle.RGBCycleCnt;
-  }
-
-  if (advance) {
+    if (particle.RGBCycleDelay == particle.RGBCycleCnt) {
+      particle.red += particle.redSpeed;
+      particle.green += particle.greenSpeed;
+      particle.blue += particle.blueSpeed;
+      particle.RGBCycleCnt = 0;
+    }
+  } else {
     particle.red += particle.redSpeed;
     particle.green += particle.greenSpeed;
     particle.blue += particle.blueSpeed;
-
-    if (gated) {
-      particle.RGBCycleCnt = 0;
-    }
   }
 
-  if (wrap254) {
-    particle.red = particle.red > 254 ? 0 : particle.red < 0 ? 254 : particle.red;
-    particle.green = particle.green > 254 ? 0 : particle.green < 0 ? 254 : particle.green;
-    particle.blue = particle.blue > 254 ? 0 : particle.blue < 0 ? 254 : particle.blue;
+  if ((particle.pattern & 0x800u) != 0) {
+    if (particle.red > 254) {
+      particle.red = 0;
+    } else if (particle.red < 0) {
+      particle.red = 254;
+    }
+
+    if (particle.green > 254) {
+      particle.green = 0;
+    } else if (particle.green < 0) {
+      particle.green = 254;
+    }
+
+    if (particle.blue > 254) {
+      particle.blue = 0;
+    } else if (particle.blue < 0) {
+      particle.blue = 254;
+    }
   } else {
-    particle.red = particle.red > 255 ? 0 : particle.red < 0 ? 255 : particle.red;
-    particle.green = particle.green > 255 ? 255 : particle.green < 0 ? 0 : particle.green;
-    particle.blue = particle.blue > 255 ? 255 : particle.blue < 0 ? 0 : particle.blue;
+    if (particle.red > 255) {
+      particle.red = 0;
+    } else if (particle.red < 0) {
+      particle.red = 255;
+    }
+
+    if (particle.green > 255) {
+      particle.green = 255;
+    } else if (particle.green < 0) {
+      particle.green = 0;
+    }
+
+    if (particle.blue > 255) {
+      particle.blue = 255;
+    } else if (particle.blue < 0) {
+      particle.blue = 0;
+    }
   }
 
   this->ProcessAlpha();
@@ -2655,10 +2680,12 @@ bool CEffectPrim::Prim3DTextureNoMaster() {
     const auto next = this->render.curMotion + 1u;
     this->render.curMotion = next;
 
-    if (particle.repeatAnim != 0) {
+    if (particle.repeatAnim == 0) {
+      if (next == particle.totalTexture) {
+        return false;
+      }
+    } else {
       this->render.curMotion = static_cast<int>(next) % static_cast<int>(particle.totalTexture);
-    } else if (next == particle.totalTexture) {
-      return false;
     }
   }
 
@@ -4384,11 +4411,15 @@ bool CEffectPrim::PrimDriftingSquares() {
       slot.vecBPre.z += speed * g_sinTable[static_cast<int>(slot.height[2])];
     }
 
-    short offset = static_cast<short>(slot.vecBPre.x);
-    short reach = offset < 0 ? -offset : offset;
+    short reach = static_cast<short>(slot.vecBPre.x);
+    if (reach < 0) {
+      reach = -reach;
+    }
     if (reach < 30) {
-      offset = static_cast<short>(slot.vecBPre.z);
-      reach = offset < 0 ? -offset : offset;
+      reach = static_cast<short>(slot.vecBPre.z);
+      if (reach < 0) {
+        reach = -reach;
+      }
     }
     if ((mode == 1 && slot.process > 3000) || reach >= 30) {
       slot.flag1[11] -= 2;
@@ -4432,13 +4463,23 @@ bool CEffectPrim::PrimDriftingSquares() {
 
     slot.vecBNow.x -= speed * g_sinTable[static_cast<int>(slot.height[4])];
     slot.vecBNow.z -= speed * g_sinTable[static_cast<int>(slot.height[6])];
-    offset = static_cast<short>(slot.vecBNow.x);
-    reach = offset < 0 ? -offset : offset;
-    if (reach < 30) {
-      offset = static_cast<short>(slot.vecBNow.z);
-      reach = offset < 0 ? -offset : offset;
+    reach = static_cast<short>(slot.vecBNow.x);
+    if (reach < 0) {
+      reach = -reach;
     }
     if (reach < 30) {
+      reach = static_cast<short>(slot.vecBNow.z);
+      if (reach < 0) {
+        reach = -reach;
+      }
+    }
+    if (reach >= 30) {
+      slot.flag1[12] -= 2;
+      if (slot.flag1[12] < 2) {
+        slot.vecBNow.x = static_cast<float>(std::rand() % 31 - 15);
+        slot.vecBNow.z = static_cast<float>(std::rand() % 31 - 15);
+      }
+    } else {
       if (std::rand() % 125 == 0 && slot.flag1[12] > 100 && slot.flag1[8] == 0) {
         slot.flag1[8] = 1;
       }
@@ -4458,23 +4499,27 @@ bool CEffectPrim::PrimDriftingSquares() {
           slot.flag1[8] = 0;
         }
       }
-    } else {
-      slot.flag1[12] -= 2;
-      if (slot.flag1[12] < 2) {
-        slot.vecBNow.x = static_cast<float>(std::rand() % 31 - 15);
-        slot.vecBNow.z = static_cast<float>(std::rand() % 31 - 15);
-      }
     }
 
     slot.vecTPre.x += speed * g_sinTable[static_cast<int>(slot.height[8])];
     slot.vecTPre.z -= speed * g_sinTable[static_cast<int>(slot.height[10])];
-    offset = static_cast<short>(slot.vecTPre.x);
-    reach = offset < 0 ? -offset : offset;
-    if (reach < 30) {
-      offset = static_cast<short>(slot.vecTPre.z);
-      reach = offset < 0 ? -offset : offset;
+    reach = static_cast<short>(slot.vecTPre.x);
+    if (reach < 0) {
+      reach = -reach;
     }
-    if (reach <= 30) {
+    if (reach < 30) {
+      reach = static_cast<short>(slot.vecTPre.z);
+      if (reach < 0) {
+        reach = -reach;
+      }
+    }
+    if (reach > 30) {
+      slot.flag1[13] -= 2;
+      if (slot.flag1[13] < 2) {
+        slot.vecTPre.x = static_cast<float>(std::rand() % 31 - 15);
+        slot.vecTPre.z = static_cast<float>(std::rand() % 31 - 15);
+      }
+    } else {
       if (std::rand() % 125 == 0 && slot.flag1[13] > 100 && slot.flag1[9] == 0) {
         slot.flag1[9] = 1;
       }
@@ -4494,23 +4539,27 @@ bool CEffectPrim::PrimDriftingSquares() {
           slot.flag1[9] = 0;
         }
       }
-    } else {
-      slot.flag1[13] -= 2;
-      if (slot.flag1[13] < 2) {
-        slot.vecTPre.x = static_cast<float>(std::rand() % 31 - 15);
-        slot.vecTPre.z = static_cast<float>(std::rand() % 31 - 15);
-      }
     }
 
     slot.vecTNow.x -= speed * g_sinTable[static_cast<int>(slot.height[12])];
     slot.vecTNow.z += speed * g_sinTable[static_cast<int>(slot.height[14])];
-    offset = static_cast<short>(slot.vecTNow.x);
-    reach = offset < 0 ? -offset : offset;
-    if (reach < 30) {
-      offset = static_cast<short>(slot.vecTNow.z);
-      reach = offset < 0 ? -offset : offset;
+    reach = static_cast<short>(slot.vecTNow.x);
+    if (reach < 0) {
+      reach = -reach;
     }
-    if (reach <= 30) {
+    if (reach < 30) {
+      reach = static_cast<short>(slot.vecTNow.z);
+      if (reach < 0) {
+        reach = -reach;
+      }
+    }
+    if (reach > 30) {
+      slot.flag1[14] -= 2;
+      if (slot.flag1[14] < 2) {
+        slot.vecTNow.x = static_cast<float>(std::rand() % 31 - 15);
+        slot.vecTNow.z = static_cast<float>(std::rand() % 31 - 15);
+      }
+    } else {
       if (std::rand() % 125 == 0 && slot.flag1[14] > 100 && slot.flag1[10] == 0) {
         slot.flag1[10] = 1;
       }
@@ -4529,12 +4578,6 @@ bool CEffectPrim::PrimDriftingSquares() {
         } else {
           slot.flag1[10] = 0;
         }
-      }
-    } else {
-      slot.flag1[14] -= 2;
-      if (slot.flag1[14] < 2) {
-        slot.vecTNow.x = static_cast<float>(std::rand() % 31 - 15);
-        slot.vecTNow.z = static_cast<float>(std::rand() % 31 - 15);
       }
     }
   }
@@ -5839,11 +5882,10 @@ bool CEffectPrim::PrimFieldFireflies() {
     if (slot.height[7] < 99.0f) {
       ++slot.process;
       if (slot.flag1[2] == 23 && slot.process % 14 == 0) {
-        char frame = ++slot.flag1[0];
-        if (frame > 5) {
-          frame = 0;
+        ++slot.flag1[0];
+        if (slot.flag1[0] > 5) {
+          slot.flag1[0] = 0;
         }
-        slot.flag1[0] = frame;
       }
 
       if (slot.height[7] == 0.0f) {
