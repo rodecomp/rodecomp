@@ -594,23 +594,23 @@ void CUIQuestInfo::SetTitle(int id) {
 
 // OFFSET: 0x009DFAD0
 // FUNCTION: fn_14359
-void CUIItemInfo::SetStatusLines(bool first, bool second, bool third) {
+void CUIItemInfo::SetStatusLines(unsigned char first, unsigned char second, unsigned char third) {
   this->optionsViewer->Clear();
-  if (first == true) {
+  if (first == 1) {
     this->optionsViewer->SetTextColor(0xC86464u);
     this->optionsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_ENCHANT_IMPOSSIBLE)));
   } else {
     this->optionsViewer->SetTextColor(0x6464C8u);
     this->optionsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_GRADE_ENCHANT_POSSIBLE)));
   }
-  if (second == true) {
+  if (second == 1) {
     this->optionsViewer->SetTextColor(0xC86464u);
     this->optionsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_GRADE_ENCHANT_IMPOSSIBLE)));
   } else {
     this->optionsViewer->SetTextColor(0x6464C8u);
     this->optionsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_EQUIP_OUT)));
   }
-  if (third == true) {
+  if (third == 1) {
     this->optionsViewer->SetTextColor(0xC86464u);
     this->optionsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_EQUIP_NOTPUT)));
   } else {
