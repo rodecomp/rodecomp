@@ -1793,39 +1793,38 @@ void CEffectPrim::RenderHitLine3(matrix& wtm) {
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
-    const EffectPrimitiveSlot& slot = this->state.slots[ec];
 
-    if (slot.life != 1 || slot.alphaB <= 0 || slot.process <= 0) {
+    if (this->state.slots[ec].life != 1 || this->state.slots[ec].alphaB <= 0 || this->state.slots[ec].process <= 0) {
       continue;
     }
 
-    for (int j = 0; static_cast<float>(j) < slot.vecTNow.y; ++j) {
+    for (int j = 0; static_cast<float>(j) < this->state.slots[ec].vecTNow.y; ++j) {
       float speed = 0.0f;
 
-      if (slot.height[j] > 0.0f) {
-        speed += slot.height[j] / 90.0f * slot.distance;
+      if (this->state.slots[ec].height[j] > 0.0f) {
+        speed += this->state.slots[ec].height[j] / 90.0f * this->state.slots[ec].distance;
       }
 
       vector3d vecA{
-        speed * g_cosTable[slot.riseAngle], -slot.distance * g_sinTable[static_cast<std::int16_t>(slot.height[j])] * slot.vecTNow.x,
-        speed * g_sinTable[slot.riseAngle]
+        speed * g_cosTable[this->state.slots[ec].riseAngle], -this->state.slots[ec].distance * g_sinTable[static_cast<std::int16_t>(this->state.slots[ec].height[j])] * this->state.slots[ec].vecTNow.x,
+        speed * g_sinTable[this->state.slots[ec].riseAngle]
       };
 
       speed = 0.0f;
 
-      if (slot.height[j + 1] > 0.0f) {
-        speed += slot.height[j + 1] / 90.0f * slot.distance;
+      if (this->state.slots[ec].height[j + 1] > 0.0f) {
+        speed += this->state.slots[ec].height[j + 1] / 90.0f * this->state.slots[ec].distance;
       }
 
       vector3d vecB{
-        speed * g_cosTable[slot.riseAngle], -slot.distance * g_sinTable[static_cast<std::int16_t>(slot.height[j + 1])] * slot.vecTNow.x,
-        speed * g_sinTable[slot.riseAngle]
+        speed * g_cosTable[this->state.slots[ec].riseAngle], -this->state.slots[ec].distance * g_sinTable[static_cast<std::int16_t>(this->state.slots[ec].height[j + 1])] * this->state.slots[ec].vecTNow.x,
+        speed * g_sinTable[this->state.slots[ec].riseAngle]
       };
 
       std::int16_t angle;
       Get_Angle(vecA.x - vecB.x, vecA.z - vecB.z, &angle);
-      vecA += slot.vecBNow;
-      vecB += slot.vecBNow;
+      vecA += this->state.slots[ec].vecBNow;
+      vecB += this->state.slots[ec].vecBNow;
       angle += 90;
 
       if (angle >= 360) {
@@ -1833,7 +1832,7 @@ void CEffectPrim::RenderHitLine3(matrix& wtm) {
       }
 
       for (int i = 0; i <= 3; ++i) {
-        const float radius = slot.maxHeight;
+        const float radius = this->state.slots[ec].maxHeight;
         const float tx = radius * g_cosTable[i * 120];
         const float ry = radius * g_sinTable[i * 120] - 5.0f;
         const float rx = tx * g_cosTable[angle];
@@ -1842,16 +1841,16 @@ void CEffectPrim::RenderHitLine3(matrix& wtm) {
         vec4.Set(vecB.x + rx, vecB.y + ry, vecB.z + rz);
 
         if (i > 0) {
-          const int alpha = slot.alphaB - j * 10;
+          const int alpha = this->state.slots[ec].alphaB - j * 10;
 
           if (alpha > 0) {
-            if (slot.alphaT == 0) {
+            if (this->state.slots[ec].alphaT == 0) {
               this->RenderTeiRect(&rpCnt, alpha, vec2, vec4, vec3, vec1, wtm, 0, 0, 1, 255, 200, 150 - (5 - j) * 30, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-            } else if (slot.alphaT == 1) {
+            } else if (this->state.slots[ec].alphaT == 1) {
               this->RenderTeiRect(&rpCnt, alpha, vec2, vec4, vec3, vec1, wtm, 0, 0, 1, 120 - (5 - j) * 22, 120 - (5 - j) * 22, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-            } else if (slot.alphaT == 2) {
+            } else if (this->state.slots[ec].alphaT == 2) {
               this->RenderTeiRect(&rpCnt, alpha, vec2, vec4, vec3, vec1, wtm, 0, 0, 1, 255, 200, 150 - (3 - j) * 50, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-            } else if (slot.alphaT >= 3) {
+            } else if (this->state.slots[ec].alphaT >= 3) {
               const unsigned char grey = static_cast<unsigned char>(255 - (5 - j) * 30);
               this->RenderTeiRect(&rpCnt, alpha, vec2, vec4, vec3, vec1, wtm, 0, 0, 1, grey, grey, grey, 0.0f, 1.0f, 0.0f, 1.0f, 0);
             }
@@ -1862,9 +1861,9 @@ void CEffectPrim::RenderHitLine3(matrix& wtm) {
         vec3 = vec4;
       }
 
-      if (slot.alphaT >= 3) {
+      if (this->state.slots[ec].alphaT >= 3) {
         for (int i = 0; i <= 3; ++i) {
-          const float radius = slot.maxHeight * 4.0f;
+          const float radius = this->state.slots[ec].maxHeight * 4.0f;
           const float tx = radius * g_cosTable[i * 120];
           const float ry = radius * g_sinTable[i * 120] - 5.0f;
           const float rx = tx * g_cosTable[angle];
@@ -1873,9 +1872,9 @@ void CEffectPrim::RenderHitLine3(matrix& wtm) {
           vec4.Set(vecB.x + rx, vecB.y + ry, vecB.z + rz);
 
           if (i > 0) {
-            const int alpha = static_cast<int>(static_cast<float>(slot.alphaB - j * 10) * 0.5f);
+            const int alpha = static_cast<int>(static_cast<float>(this->state.slots[ec].alphaB - j * 10) * 0.5f);
 
-            if (alpha > 0 && slot.alphaT == 3) {
+            if (alpha > 0 && this->state.slots[ec].alphaT == 3) {
               this->RenderTeiRect(&rpCnt, alpha, vec2, vec4, vec3, vec1, wtm, 0, 0, 1, 0, 0, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
             }
           }
