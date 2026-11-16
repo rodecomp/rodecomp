@@ -40,6 +40,8 @@ extern "C" {
 #include <vector>
 #include <windows.h>
 
+template __declspec(noinline) std::_Tree_find_result<std::map<int, std::int64_t>::_Mybase::_Nodeptr> std::map<int, std::int64_t>::_Mybase::_Find_lower_bound<int>(const int&) const;
+
 template __declspec(noinline) SubChatWndInfo& std::map<int, SubChatWndInfo>::operator[](int&&);
 template __declspec(noinline) std::vector<std::string>& std::map<std::string, std::vector<std::string>>::operator[](const std::string&);
 
