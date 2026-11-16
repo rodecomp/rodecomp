@@ -88,7 +88,7 @@ void CCharacterLinkedUserDataMgr::Save() {
     data["HomunSkillInfo"] = values;
   }
 
-  data["ItemComparison"] = g_serviceOptions.Get(TT_ITEM_COMPARE_ON_OFF) != 0;
+  data["ItemComparison"] = g_serviceOptions.Get(TT_ITEM_COMPARE_ON_OFF);
   data["SortPrivateTab"] = g_session.m_sortPrivateTab;
   this->ExportNormalItemSlots(data);
 
