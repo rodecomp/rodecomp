@@ -45,20 +45,18 @@ bool CGameActor::FindRoute(int startX, int startY, int fractionX, int fractionY,
     stepSpeed = speed;
   }
 
-  const bool found =
+  bool found =
     g_pathFinder.FindPath(this->routeStartTick, startX, startY, fractionX, fractionY, destX, destY, stepSpeed, this->route, this->objectType);
-  if (!found) {
-    return found;
+  if (found) {
+    std::uint32_t endTick;
+    this->route.EndTick(&endTick);
+    const std::uint32_t now = g_session.GetServerTime();
+    if (endTick <= now) {
+      const int baseSpeed = g_replayAnimationScaling != 0 ? static_cast<int>(scaledSpeed) : speed;
+      this->routeStartTick = now;
+      found = g_pathFinder.FindPath(now, startX, startY, fractionX, fractionY, destX, destY, baseSpeed * 10 / 13, this->route, this->objectType);
+    }
   }
 
-  std::uint32_t endTick;
-  this->route.EndTick(&endTick);
-  const std::uint32_t now = g_session.GetServerTime();
-  if (endTick > now) {
-    return found;
-  }
-
-  const int baseSpeed = g_replayAnimationScaling != 0 ? static_cast<int>(scaledSpeed) : speed;
-  this->routeStartTick = now;
-  return g_pathFinder.FindPath(now, startX, startY, fractionX, fractionY, destX, destY, baseSpeed * 10 / 13, this->route, this->objectType);
+  return found;
 }
