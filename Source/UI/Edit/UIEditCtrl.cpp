@@ -7952,15 +7952,14 @@ void UIItemStoreWnd::OnCreate(int width, int height) {
 
   const std::string prefix("유저인터페이스\\");
   const char* names[2][3] = {{"btn_close", "btn_close_a", "btn_close_b"}, {"bt_search_normal", "bt_search_over", "bt_search_press"}};
-  int positions[2][2] = {{220, this->geometry.height - 23}, {185, this->geometry.height - 23}};
   int ids[2] = {201, 365};
+  int positions[2][2] = {{220, this->geometry.height - 23}, {185, this->geometry.height - 23}};
   for (int index = 0; index < 2; ++index) {
     this->buttons[index] = new UIBitmapButton();
-    UIBitmapButton* button = this->buttons[index];
-    button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
-    button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
-    button->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
-    this->buttons[index]->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    this->buttons[index]->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
+    this->buttons[index]->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
+    this->buttons[index]->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
+    this->buttons[index]->SetSize(this->buttons[index]->BitmapWidth(), this->buttons[index]->BitmapHeight());
     this->buttons[index]->Move(positions[index][0], positions[index][1]);
     this->buttons[index]->SetId(ids[index]);
     this->AddChild(this->buttons[index]);
@@ -7979,15 +7978,13 @@ void UIItemStoreWnd::OnCreate(int width, int height) {
     this->tabs[index]->SetChecked(0);
     this->tabs[index]->SetId(tabIds[index]);
 
-    int tooltip;
     if (index < 4) {
-      tooltip = index + 1465;
+      this->tabs[index]->SetTooltip(LookupMessage(index + 1465));
     } else if (index == 4) {
-      tooltip = 3151;
+      this->tabs[index]->SetTooltip(LookupMessage(3151));
     } else {
-      tooltip = index + 1464;
+      this->tabs[index]->SetTooltip(LookupMessage(index + 1464));
     }
-    this->tabs[index]->SetTooltip(LookupMessage(tooltip));
     this->AddChild(this->tabs[index]);
   }
 
