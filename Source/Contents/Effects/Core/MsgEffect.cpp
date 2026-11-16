@@ -164,10 +164,9 @@ __forceinline static void MsgEffectDrift(CMsgEffect* effect, float elapsed) {
     }
   }
 
-  const float step = elapsed / 3.0f;
   const float dirZ = effect->m_drift.z;
-  effect->render.position.x = dirX * step + effect->m_velocity.x + dirX * 3.0f;
-  effect->render.position.z = dirZ * step + effect->m_velocity.z + dirZ * 3.0f;
+  effect->render.position.x = dirX * (elapsed / 3.0f) + effect->m_velocity.x + dirX * 3.0f;
+  effect->render.position.z = dirZ * (elapsed / 3.0f) + effect->m_velocity.z + dirZ * 3.0f;
   float height = effect->m_baseY + 8.0f - (2.0f - elapsed / 30.0f) * elapsed + effect->m_drift.y;
   effect->render.position.y = height;
   if (height > 0.0f) {
@@ -612,8 +611,8 @@ bool CSkill::OnProcess() {
     if (this->m_effect) {
       int duration = this->m_effect->GetDuration();
       this->m_effect->SetStateDuration(duration + 21);
-      int random = rand() % 100;
-      random = random < 0 ? 0 : random;
+      const int roll = rand() % 100;
+      const int random = roll >= 0 ? roll : 0;
       if (random == 1) {
         g_effectMgr->Spawn(this->skillAid, EF_NEW_POISONSMOKE_1, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       } else if (random == 2) {
