@@ -829,8 +829,10 @@ void CRenderObject::DrawQuad(const SpriteQuad& quad, const std::uint32_t* palett
   } else {
     record.u0 = 0.0f;
     record.v0 = 0.0f;
-    record.u1 = static_cast<float>(texture->ImageWidth()) / static_cast<float>(texture->TextureWidth());
-    record.v1 = static_cast<float>(texture->ImageHeight()) / static_cast<float>(texture->TextureHeight());
+    record.u1 = static_cast<float>(static_cast<const CTexture*>(image->surface)->ImageWidth()) /
+                static_cast<float>(static_cast<const CTexture*>(image->surface)->TextureWidth());
+    record.v1 = static_cast<float>(static_cast<const CTexture*>(image->surface)->ImageHeight()) /
+                static_cast<float>(static_cast<const CTexture*>(image->surface)->TextureHeight());
   }
 
   const double depthBias = depthOffset * 0.000001;
