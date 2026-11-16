@@ -1280,10 +1280,9 @@ bool CNavigationManager::SetDestinationMap(std::string mapName, int x, int y) {
     std::string name = mapName;
     if (Replay::Instance().state == 2) {
       char packet[100] = {};
-      NavigationDestinationRecord record;
+      NavigationDestinationRecord record = {};
       record.header = 0x039008AE;
       record.length = sizeof(record);
-      std::memset(record.mapName, 0, sizeof(record.mapName));
       std::memcpy(record.mapName, name.c_str(), name.size());
       record.x = x;
       record.y = y;
@@ -1305,7 +1304,8 @@ bool CNavigationManager::SetDestinationMap(std::string mapName, int x, int y) {
     this->currentTarget.x = x;
     this->currentTarget.type = 0;
     this->currentTarget.y = y;
-    std::sprintf(text, "%s %d,%d", info->GetName(), x, y);
+    const char* name = info->GetName();
+    std::sprintf(text, "%s %d,%d", name, x, y);
   }
   this->currentTarget.name = text;
 
