@@ -725,10 +725,12 @@ void UIParaItemShopWnd::Paint() {
       this->FillRegion(72, top + 2, 191, 28, RGB(hoverRed, hoverGreen, hoverBlue));
     }
 
-    if (this->sellMode == 1 || it->quantity != 0) {
-      this->DrawItemAndQuantity(34, top + 4, *it, 0, 0);
+    const ITEM_INFO& item = *it;
+    const int iconY = top + 4;
+    if (this->sellMode == 1 || item.quantity != 0) {
+      this->DrawItemAndQuantity(34, iconY, item, 0, 0);
     } else {
-      this->DrawItemAndQuantityAuxiliary(1, 34, top + 4, *it, 0, 0);
+      this->DrawItemAndQuantityAuxiliary(1, 34, iconY, item, 0, 0);
     }
 
     this->DrawWrappedItemName(70, top + 12, 120, &*it, 0, 0, 12);
