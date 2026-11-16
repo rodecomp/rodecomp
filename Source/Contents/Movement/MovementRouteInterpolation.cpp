@@ -7,10 +7,11 @@ int MovementRouteInterpolation::Sample(std::uint32_t tick, float* x, float* y, i
     return -1;
   }
 
-  if (this->points.front().tick > tick) {
-    *x = static_cast<float>(this->points.front().x);
-    *y = static_cast<float>(this->points.front().y);
-    *metadata = this->points[1].metadata;
+  const auto first = this->points.begin();
+  if (first->tick > tick) {
+    *x = static_cast<float>(first->x);
+    *y = static_cast<float>(first->y);
+    *metadata = (first + 1)->metadata;
     return 0;
   }
 
@@ -22,13 +23,13 @@ int MovementRouteInterpolation::Sample(std::uint32_t tick, float* x, float* y, i
       float deltaX;
       float deltaY;
       if (index == 0) {
+        deltaY = static_cast<float>(this->points[index + 1].y) - this->startY;
         originX = this->startX;
         deltaX = static_cast<float>(this->points[index + 1].x) - originX;
-        deltaY = static_cast<float>(this->points[index + 1].y) - this->startY;
       } else {
+        deltaY = static_cast<float>(this->points[index + 1].y - this->points[index].y);
         originX = static_cast<float>(this->points[index].x);
         deltaX = static_cast<float>(this->points[index + 1].x - this->points[index].x);
-        deltaY = static_cast<float>(this->points[index + 1].y - this->points[index].y);
       }
 
       const float duration = static_cast<float>(this->points[index + 1].tick - this->points[index].tick);
