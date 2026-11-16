@@ -44,7 +44,7 @@ MapNameDisplay::MapNameDisplay(std::string name, std::string subName, std::strin
 
     TextContext text(*this->m_dc);
     text.SetColor(0xFFFFFF);
-    const int family = g_serviceType == 0 ? 29 : 0;
+    const int family = g_serviceType != 0 ? 0 : 29;
 
     text.SetFont(family, static_cast<int>(scale * 16.0f), 1, 0);
     SIZE nameSize;
