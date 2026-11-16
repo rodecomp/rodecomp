@@ -749,8 +749,11 @@ void UIGradeEnchantWnd::UpdateEnchantMessages() {
   }
 
   if (this->selectedMaterial != -1 && this->materials[this->selectedMaterial].breakOnFailure == 1) {
-    int warning = this->SuccessRate() < 100 ? 3712 : 3822;
-    this->messageIds.push_back(warning);
+    if (this->SuccessRate() < 100) {
+      this->messageIds.push_back(3712);
+    } else {
+      this->messageIds.push_back(3822);
+    }
   }
 
   if (this->selectedMaterial != -1 && this->materials[this->selectedMaterial].downgradeAmount > 0) {
