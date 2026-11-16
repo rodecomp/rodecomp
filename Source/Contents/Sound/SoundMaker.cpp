@@ -1369,12 +1369,14 @@ bool CNpc::OnProcess() {
       this->UpdateGaugePositions();
       result = this->ProcessState();
       break;
-    case JT_EFFECTLAUNCHER:
-      if (timeGetTime() > this->effectTick + this->xSize * 1000) {
+    case JT_EFFECTLAUNCHER: {
+      const int interval = this->xSize * 1000;
+      if (timeGetTime() > this->effectTick + interval) {
         this->effectTick = timeGetTime();
         this->LaunchEffect(this->moveSpeed, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
+    }
     default:
       this->ProcessBodyState();
       this->UpdateStateEffects();
@@ -1462,12 +1464,11 @@ bool CNpc::OnProcess() {
     case NPC_MERSOL_TYPE:
     case NPC_ELEMENTAL_TYPE:
     case NPC_ABR_TYPE:
-    case NPC_BIONIC_TYPE:
-      this->SetColor(
-        g_serviceOptions.Get(TT_HIDE_SUMMON_ON_OFF) ? 0x3A : static_cast<int>(this->render.color >> 24), static_cast<int>((this->render.color >> 16) & 0xFF),
-        static_cast<int>((this->render.color >> 8) & 0xFF), static_cast<int>(this->render.color & 0xFF)
-      );
+    case NPC_BIONIC_TYPE: {
+      const int alpha = g_serviceOptions.Get(TT_HIDE_SUMMON_ON_OFF) ? 0x3A : this->render.colorChannels.alpha;
+      this->SetColor(alpha, this->render.colorChannels.red, this->render.colorChannels.green, this->render.colorChannels.blue);
       break;
+    }
   }
 
   return result;
