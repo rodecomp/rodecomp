@@ -688,8 +688,11 @@ void CUISlot::OnCreate(int width, int height) {
   this->radioButton->SetSize(44, 44);
   this->radioButton->Move(59, 1);
   this->radioButton->SetOnSelect([this](CUIRadioButton* button) { this->SelectSlot(button); });
-  this->radioButton->disabled = 0;
-  this->radioButton->Invalidate();
+  {
+    CUIRadioButton* radioButton = this->radioButton;
+    radioButton->disabled = 0;
+    radioButton->Invalidate();
+  }
   {
     // GLOBAL: gl_25192
     // GLOBAL: gl_25191
@@ -697,8 +700,11 @@ void CUISlot::OnCreate(int width, int height) {
     // GLOBAL: gl_25189
     this->radioButton->SetImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\EnchantUI\\btn_socket_out.bmp", 0x23BBD58F8B5FF5C9ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\EnchantUI\\btn_socket_select.bmp", 0x0B7109397F6B1387ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\EnchantUI\\btn_socket_over.bmp", 0x03772763F96D9DA5ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\EnchantUI\\btn_socket_out.bmp", 0x17A9E5BF39AD4737ULL)));
   }
-  this->radioButton->checked = false;
-  this->radioButton->Invalidate();
+  {
+    CUIRadioButton* radioButton = this->radioButton;
+    radioButton->checked = false;
+    radioButton->Invalidate();
+  }
   this->AddChild(this->radioButton);
 
   this->itemIcon = new CUIGameItem();
