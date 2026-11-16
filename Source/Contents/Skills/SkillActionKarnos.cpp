@@ -305,7 +305,7 @@ void CSkillAction_KR_CLAW_WAVE::OnSkillCast(int level, CGameActor* source) {
 // FUNCTION: fn_03347
 void CSkillAction_KR_CLAW_WAVE::OnGroundSkillEffect(vector3d position, int argument2, int argument3) {
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("claw_wave", 0x17359BF953C367B3ULL, effectName)), position, 0, -1, 0, 0);
+  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("claw_wave", 0x17359BF953C367B3ULL, effectName)), position.x, position.y, position.z, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x005B0EA0
@@ -338,10 +338,10 @@ int CSkillAction_KR_EARTH_STAMP::GetSkillAttackMotion() {
 // FUNCTION: fn_03351
 void CSkillAction_KR_EARTH_STAMP::OnGroundSkillEffect(vector3d position, int argument2, int argument3) {
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("earth_stamp", 0x3FAF85D995034FD7ULL, effectName)), position, 0, -1, 0, 0);
+  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("earth_stamp", 0x3FAF85D995034FD7ULL, effectName)), position.x, position.y, position.z, 0, -1, 0, 0);
 
   effects = g_effectMgr;
-  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("earth_stamp_bottom", 0x490FFB43A12F0DB9ULL, bottomName)), position, 0, -1, 0, 0);
+  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("earth_stamp_bottom", 0x490FFB43A12F0DB9ULL, bottomName)), position.x, position.y, position.z, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x005B1590
@@ -468,11 +468,13 @@ void CSkillAction_KR_THUNDERING_ORB::OnGroundSkillEffect(vector3d position, int 
     static_cast<CBezierArcThrowEffect*>(orb)->SetTarget(position);
   }
 
-  if (CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("thundering_orb_g", 0x2D394DBD0F332733ULL, effectName)), position, 0, -1, 0, 0)) {
+  EffectLists* effects = g_effectMgr;
+  if (CEffect* effect = effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("thundering_orb_g", 0x2D394DBD0F332733ULL, effectName)), position, 0, -1, 0, 0)) {
     effect->SetDelay(300);
   }
 
-  if (CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("thundering_orb_g_bottom", 0x151F77EBEBBB2147ULL, bottomName)), position, 0, -1, 0, 0)) {
+  effects = g_effectMgr;
+  if (CEffect* effect = effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("thundering_orb_g_bottom", 0x151F77EBEBBB2147ULL, bottomName)), position, 0, -1, 0, 0)) {
     effect->SetDelay(300);
   }
 }
@@ -489,11 +491,13 @@ void CSkillAction_KR_THUNDERING_ORB_S::OnGroundSkillEffect(vector3d position, in
     static_cast<CBezierArcThrowEffect*>(orb)->SetTarget(position);
   }
 
-  if (CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("thundering_orb_y", 0x69FD1D9733D3CFC1ULL, effectName)), position, 0, -1, 0, 0)) {
+  EffectLists* effects = g_effectMgr;
+  if (CEffect* effect = effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("thundering_orb_y", 0x69FD1D9733D3CFC1ULL, effectName)), position, 0, -1, 0, 0)) {
     effect->SetDelay(300);
   }
 
-  if (CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("thundering_orb_y_bottom", 0xF5657D1F3DE5CDC7ULL, bottomName)), position, 0, -1, 0, 0)) {
+  effects = g_effectMgr;
+  if (CEffect* effect = effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("thundering_orb_y_bottom", 0xF5657D1F3DE5CDC7ULL, bottomName)), position, 0, -1, 0, 0)) {
     effect->SetDelay(300);
   }
 }
