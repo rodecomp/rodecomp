@@ -1,6 +1,7 @@
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
 #include "Client/Mode/ModeMgr.h"
+#include "Contents/Map/MapSkyMgr.h"
 #include "Contents/RuneSystem/RuneSystem.h"
 #include "Contents/Tables/MessageTable.h"
 #include "Resource/Bitmap/BitmapResource.h"
@@ -2120,7 +2121,7 @@ void UIRune_Decom::Paint() {
 
   if (this->m_itemName.size()) {
     const int nameWidth = this->TextWidth(this->m_itemName.c_str(), this->m_itemName.size(), 0, 13, 0, 0);
-    const int nameX = static_cast<int>(static_cast<float>(this->geometry.width - nameWidth) * 0.5f);
+    const int nameX = static_cast<int>(static_cast<float>(this->geometry.width - nameWidth) * g_depthAverageHalf);
     this->DrawTextAt(nameX, 0x19, this->m_itemName.c_str(), 0, 0, 13, 0xFFF0E1, 1, 0);
     this->DrawTextAt(nameX - 1, 0x1A, this->m_itemName.c_str(), 0, 0, 13, 0x864D43, 1, 0);
   }
@@ -2183,7 +2184,7 @@ void UIRune_Decom::Paint() {
 
       text = static_cast<const std::string&>(FormatOwnedString("%d ~ %d", (*this->m_decomList)[index].m_minCount, (*this->m_decomList)[index].m_maxCount));
       width = this->TextWidth(text.c_str(), text.size(), 0, 12, 0, 0);
-      this->DrawTextAt(x - static_cast<int>(static_cast<float>(width) * 0.5f) + 0x13, y + 0x23, text.c_str(), 0, 0, 11,
+      this->DrawTextAt(x - static_cast<int>(static_cast<float>(width) * g_depthAverageHalf) + 0x13, y + 0x23, text.c_str(), 0, 0, 11,
         0x875F51, 0, 0
       );
     }
