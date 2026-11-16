@@ -207,8 +207,7 @@ void UIHotkeyGuideWnd::OnCreate(int, int) {
 // OFFSET: 0x0096B730
 // FUNCTION: fn_13165
 void UIHotkeyGuideWnd::Paint() {
-  auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\hotkey_guide\\bg_shortcuts.bmp")));
-  this->DrawBitmap(0, 0, background, false);
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\hotkey_guide\\bg_shortcuts.bmp"))), false);
   this->DrawTitleBar(false, LookupMessage(MSI_IMAGE_CAPTURE), 0);
 
   for (auto key = this->m_keys.begin(); key != this->m_keys.end(); ++key) {
@@ -231,7 +230,7 @@ void UIHotkeyGuideWnd::Paint() {
   }
 
   int index = 0;
-  for (auto entry = this->m_entries.begin(); entry != this->m_entries.end(); ++entry) {
+  for (auto entry = this->m_entries.begin(); entry != this->m_entries.end(); ++entry, ++index) {
     std::string text;
     if (entry->firstKey != 0) {
       text = this->m_labels[entry->firstKey].text;
@@ -242,10 +241,11 @@ void UIHotkeyGuideWnd::Paint() {
     } else {
       text = "Non";
     }
-    int width = this->TextWidth(text.c_str(), 0, 0, 12, 1, 0);
-    int x = static_cast<int>((100 - width) * 0.5 + (index / 6 * 246 + 156));
-    this->DrawTextAt(x, index % 6 * 30 + 315, text.c_str(), 0, 0, 12, 0xA55139, 1, 0);
-    ++index;
+    const char* textPointer = text.c_str();
+    int column = index / 6;
+    int width = this->TextWidth(textPointer, 0, 0, 12, 1, 0);
+    int x = static_cast<int>((100 - width) * 0.5 + (column * 246 + 156));
+    this->DrawTextAt(x, index % 6 * 30 + 315, textPointer, 0, 0, 12, 0xA55139, 1, 0);
   }
 
   this->DrawCenteredText(4, 32, FormatOwnedString("%s / %s", LookupMessage(MSI_ZOOM_IN), LookupMessage(MSI_ZENY_LOTTO_BUY_10)).c_str(), 75, 0, 12, 0x2B2625, 0);
