@@ -64,6 +64,7 @@
 #include <timeapi.h>
 
 template __declspec(noinline) char* std::allocator<char>::allocate(const std::size_t);
+template __declspec(noinline) std::_Tree_find_result<std::map<int, std::int64_t>::_Mybase::_Nodeptr> std::map<int, std::int64_t>::_Mybase::_Find_lower_bound<int>(const int&) const;
 
 // OFFSET: 0x00E1DCA0
 // FUNCTION: fn_23875
@@ -411,11 +412,11 @@ void UISeekPartyWnd::Paint() {
   this->FillRegion(0, 17, this->geometry.width, this->geometry.height - 38, RGB(red, green, blue));
 
   if (!this->m_minimized) {
-    std::string name;
+    std::string name = "";
     const char* names[] = {"bibibic", "bibibic", "달기린", "달기린", "boya", "boya"};
-    name = FormatOwnedString(
+    name = static_cast<const std::string&>(FormatOwnedString(
       "유저인터페이스\\basic_interface\\seekparty\\type_0%d\\seekparty_%s_0%d_%d.bmp", this->m_type, names[this->m_type], this->m_type, this->m_level
-    );
+    ));
     if (ResourceMgr::Instance().Exists(name.c_str())) {
       auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name.c_str())));
       this->DrawBitmap(1, 18, bitmap, false);
@@ -494,9 +495,7 @@ void UIQuickSlotWnd::OnCreate(int, int) {}
 // OFFSET: 0x00930610
 // FUNCTION: fn_12686
 void UIQuickSlotWnd::OnLBtnDblClk(int x, int y) {
-  const auto& options = g_session.m_options.Values();
-  const auto option = options.find(5);
-  if (static_cast<int>(option == options.end() ? 0 : option->second) > 0 || static_cast<unsigned>(y) > 23) {
+  if (static_cast<int>(g_session.m_options.Get(5)) > 0 || static_cast<unsigned>(y) > 23) {
     return;
   }
 
