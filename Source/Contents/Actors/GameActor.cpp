@@ -98,7 +98,7 @@ void CGameActor::ProcessDamageMessages() {
       }
 
       ActorDamageMessage& message = *it;
-      this->SendMsg(nullptr, message.action, reinterpret_cast<std::uint32_t>(&message.targetAid), 0, 0, 0, 0, 0);
+      this->SendMsg(nullptr, message.action, reinterpret_cast<int>(&message.targetAid), 0, 0, 0, 0, 0);
       it = this->willBeAttackedList.erase(it);
     } else {
       ++it;
