@@ -51,6 +51,9 @@ void UICandidateWnd::Paint() {
       this->DrawTextAt(x, 12, text, 0, 0, 12, 0, 0, 0);
       x += 8 + this->TextWidth(text, static_cast<unsigned>(std::strlen(text)), 0, 12, 0, 0);
     }
+    this->FillTriangleRegion(8, 18, 14, 10, 14, 26, this->m_page > 0 ? 0xFF9F70 : 0xD2D2D2);
+    const int width = this->geometry.width;
+    this->FillTriangleRegion(width - 8, 18, width - 14, 10, width - 14, 26, this->m_page < this->m_lastPage ? 0xFF9F70 : 0xD2D2D2);
     break;
   }
   case 2: {
@@ -83,14 +86,12 @@ void UICandidateWnd::Paint() {
       }
       x += this->TextWidth(text, static_cast<unsigned>(std::strlen(text)), 0, 12, 0, 0) + 8;
     }
+    this->FillTriangleRegion(8, 18, 14, 10, 14, 26, this->m_page > 0 ? 0xFF9F70 : 0xD2D2D2);
+    const int width = this->geometry.width;
+    this->FillTriangleRegion(width - 8, 18, width - 14, 10, width - 14, 26, this->m_page < this->m_lastPage ? 0xFF9F70 : 0xD2D2D2);
     break;
   }
-  default:
-    return;
   }
-  FillTriangle(*this, 8, 18, 14, 10, 14, 26, this->m_page > 0 ? 0xFF9F70 : 0xD2D2D2);
-  int width = this->geometry.width;
-  FillTriangle(*this, width - 8, 18, width - 14, 10, width - 14, 26, this->m_page < this->m_lastPage ? 0xFF9F70 : 0xD2D2D2);
 }
 
 // OFFSET: 0x0096DB20
