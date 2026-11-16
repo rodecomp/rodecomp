@@ -2173,8 +2173,7 @@ UIListBoxID::UIListBoxID()
   background[0] = 255;
   background[1] = 255;
   background[2] = 255;
-  const SkinPaletteCell cell = {3, 2};
-  this->selectionColor = g_skinInfo.PaletteColor(cell, g_skinInfo.Selected());
+  this->selectionColor = g_skinInfo.PaletteColor({3, 2}, g_skinInfo.Selected());
 }
 
 // OFFSET: 0x0087C2A0
