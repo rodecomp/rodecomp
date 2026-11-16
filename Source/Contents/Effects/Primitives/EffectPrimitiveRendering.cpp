@@ -4580,9 +4580,18 @@ void CEffectPrim::RenderRectUp2(matrix& wtm) {
       continue;
     }
 
-    const unsigned char b = slot.height[4] < 10.0f ? 200 : 250;
-    const unsigned char g = slot.height[4] < 10.0f ? 250 : 100;
-    const unsigned char r = slot.height[4] < 10.0f ? 200 : 100;
+    unsigned char r;
+    unsigned char g;
+    unsigned char b;
+    if (slot.height[4] < 10.0f) {
+      r = 200;
+      g = 250;
+      b = 200;
+    } else {
+      r = 100;
+      g = 100;
+      b = 250;
+    }
 
     slot.vecBPre.x = slot.height[0];
     slot.vecBPre.y = -1.0f;
@@ -4616,9 +4625,18 @@ void CEffectPrim::RenderRectUp2(matrix& wtm) {
       continue;
     }
 
-    const unsigned char b = slot.height[4] < 10.0f ? 150 : 250;
-    const unsigned char g = slot.height[4] < 10.0f ? 250 : 50;
-    const unsigned char r = slot.height[4] < 10.0f ? 150 : 50;
+    unsigned char r;
+    unsigned char g;
+    unsigned char b;
+    if (slot.height[4] < 10.0f) {
+      r = 150;
+      g = 250;
+      b = 150;
+    } else {
+      r = 50;
+      g = 50;
+      b = 250;
+    }
 
     slot.vecBPre = {slot.height[0], -1.0f, slot.height[1]};
     slot.vecBNow = {slot.height[0], -1.0f, -slot.height[1]};
@@ -5334,14 +5352,14 @@ __declspec(safebuffers) void CEffectPrim::RenderRecordQuads(matrix& wtm) {
 // OFFSET: 0x00BC97E0
 // FUNCTION: fn_19858
 __declspec(safebuffers) void CEffectPrim::RenderRecordRings(matrix& wtm) {
+  int rpCnt = 0;
+  const float last = 360.0f - this->state.arcAngle;
+  float uInc = 0.0f;
   ZeroVector3d point1;
   ZeroVector3d point2;
   ZeroVector3d point3;
   ZeroVector3d point4;
   const float* tm = this->state.transform.values;
-  int rpCnt = 0;
-  const float last = 360.0f - this->state.arcAngle;
-  float uInc = 0.0f;
 
   for (int index = 0; index < this->state.numSegment; ++index) {
     const EffectPrimitiveRecord& record = this->state.records[index];
