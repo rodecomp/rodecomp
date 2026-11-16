@@ -16891,8 +16891,8 @@ void CGameMode::ReceiveColorBroadcast(const unsigned char* data) {
 void CGameMode::ReceiveTaggedBroadcast(const unsigned char* data) {
   const auto* p = reinterpret_cast<const PacketLengthHeader*>(data);
   char senderName[25] = {};
-  char text[0x400];
   char head[0x400];
+  char text[0x400];
   char body[0x400];
   std::memset(text, 0, sizeof(text));
   std::memset(head, 0, sizeof(head));
@@ -16904,8 +16904,8 @@ void CGameMode::ReceiveTaggedBroadcast(const unsigned char* data) {
   text[size] = '\0';
   const int length = static_cast<int>(std::strlen(text));
 
-  std::string message(text);
   std::uint32_t color = 0xFFFF;
+  std::string message(text);
   std::memcpy(tag, text, std::min<std::size_t>(4, std::strlen(text)));
   tag[4] = '\0';
   _strlwr(tag);
@@ -16919,7 +16919,7 @@ void CGameMode::ReceiveTaggedBroadcast(const unsigned char* data) {
     std::memcpy(head, text + 4, 6);
     head[6] = '\0';
     std::sscanf(head, "%lx", &rgb);
-    color = ((rgb & 0xFF) << 16) | (rgb & 0xFF00) | ((rgb >> 16) & 0xFF);
+    color = (GetRValue(rgb) << 16) | (GetGValue(rgb) << 8) | GetBValue(rgb);
     std::memcpy(body, text + 10, length - 10);
     body[length - 10] = '\0';
     message = body;
@@ -16939,7 +16939,7 @@ void CGameMode::ReceiveTaggedBroadcast(const unsigned char* data) {
     std::memcpy(head, text + 0x1C, 6);
     head[6] = '\0';
     std::sscanf(head, "%lx", &rgb);
-    color = ((rgb & 0xFF) << 16) | (rgb & 0xFF00) | ((rgb >> 16) & 0xFF);
+    color = (GetRValue(rgb) << 16) | (GetGValue(rgb) << 8) | GetBValue(rgb);
     const unsigned int bodySize = size - 0x22;
     std::memcpy(body, text + 0x22, bodySize);
     body[size - 0x22] = '\0';
@@ -16962,9 +16962,9 @@ void CGameMode::ReceiveTaggedBroadcast(const unsigned char* data) {
       message = filtered;
     }
   } else if (std::strcmp(tag, "ssss") == 0) {
-    std::memcpy(head, text + 4, length - 4);
-    head[length - 4] = '\0';
-    message = head;
+    std::memcpy(body, text + 4, length - 4);
+    body[length - 4] = '\0';
+    message = body;
     color = 0xFFFF;
     fontType = 14;
     systemMessage = true;
@@ -16979,18 +16979,21 @@ void CGameMode::ReceiveTaggedBroadcast(const unsigned char* data) {
   }
 
   g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-  g_windowMgr.SendNotice(
-    UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), color, fontType, reinterpret_cast<std::intptr_t>(senderName), 0
-  );
-  if (!systemMessage) {
+  if (systemMessage) {
+    g_windowMgr.SendNotice(
+      UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), color, fontType, reinterpret_cast<std::intptr_t>(senderName), 0
+    );
+  } else {
+    g_windowMgr.SendNotice(
+      UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message.c_str()), color, fontType, reinterpret_cast<std::intptr_t>(senderName), 0
+    );
     g_windowMgr.SendNotice(
       UIM_PUSHINTOCHATHISTORY2, reinterpret_cast<std::intptr_t>(message.c_str()), color, fontType, reinterpret_cast<std::intptr_t>(senderName), 0
     );
   }
 
   message = g_windowMgr.chatWnd->ConvertChat(message);
-  std::string linked = g_navigationLinkParser->DisplayNavigationLink(message);
-  message = std::move(linked);
+  message = g_navigationLinkParser->DisplayNavigationLink(message);
 
   std::vector<std::string> lines;
   WrapPlainText(message.c_str(), lines, 0x48);
