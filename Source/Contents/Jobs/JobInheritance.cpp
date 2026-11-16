@@ -2269,8 +2269,9 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     }
     break;
   case CR_ACIDDEMONSTRATION: {
+    CGameMode* mode = g_modeMgr.GetGameMode();
     vector3d position = target->render.position;
-    g_modeMgr.GetGameMode()->LaunchDummyEffect(&position, 0x219, 100, 0);
+    mode->LaunchDummyEffect(&position, 0x219, 100, 0);
     break;
   }
   case NJ_SYURIKEN:
@@ -2680,9 +2681,10 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     g_soundMgr->PlayWave("arrowstorm.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     const int effectId = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? 0x5B1 : 0x50D;
     g_effectMgr->Spawn(target->render.accountId, effectId, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    const int arrowEffectId = effectId + 1;
     vector3d position{0.0f, 0.0f, 0.0f};
     for (int delay = 600; delay < 1200; delay += 200) {
-      CEffect* arrow = g_effectMgr->Spawn(target->render.accountId, effectId + 1, position, 0, -1, 0, 0);
+      CEffect* arrow = g_effectMgr->Spawn(target->render.accountId, arrowEffectId, position, 0, -1, 0, 0);
       if (arrow) {
         arrow->SetDelay(delay);
       }
@@ -2730,14 +2732,13 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
     g_effectMgr->Spawn(target->render.accountId, EF_NEW_JUDEX_TARGET, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     g_effectMgr->Spawn(target->render.accountId, EF_NEW_JUDEX_TARGET_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     for (int count = 0; count < 12; ++count) {
-      vector3d position = target->render.position;
+      vector3d spot = target->render.position;
       const float radius = static_cast<float>(std::max(std::rand() % 15, 2));
       matrix rotation;
       rotation.MakeYRotation(static_cast<float>(std::max(std::rand() % 36, 0)) * 10.0f);
-      vector3d spot;
-      spot.x = rotation.values[0] * radius + rotation.values[3] * 0.0f + rotation.values[6] * 0.0f + rotation.values[9] + position.x;
-      spot.y = rotation.values[1] * radius + rotation.values[4] * 0.0f + rotation.values[7] * 0.0f + rotation.values[10] + position.y;
-      spot.z = rotation.values[2] * radius + rotation.values[5] * 0.0f + rotation.values[8] * 0.0f + rotation.values[11] + position.z;
+      spot.x = rotation.values[0] * radius + rotation.values[3] * 0.0f + rotation.values[6] * 0.0f + rotation.values[9] + spot.x;
+      spot.y = rotation.values[1] * radius + rotation.values[4] * 0.0f + rotation.values[7] * 0.0f + rotation.values[10] + spot.y;
+      spot.z = rotation.values[2] * radius + rotation.values[5] * 0.0f + rotation.values[8] * 0.0f + rotation.values[11] + spot.z;
       const int delay = std::max(std::rand() % 10, 0) * 50;
       CEffect* spawned = g_effectMgr->Spawn(0, EF_NEW_JUDEX_LIGHT, spot, 0, -1, 0, 0);
       if (spawned) {
