@@ -2427,20 +2427,22 @@ void CEffectPrim::RenderFloorRect(matrix& wtm) {
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
-    const EffectPrimitiveSlot& slot = this->state.slots[ec];
-
-    if (slot.life != 1 || slot.alphaB <= 0) {
+    if (this->state.slots[ec].life != 1) {
+      continue;
+    }
+    const short alpha = this->state.slots[ec].alphaB;
+    if (alpha <= 0) {
       continue;
     }
 
-    const int rot = slot.riseAngle;
-    const float back = slot.maxHeight;
-    const float width = slot.height[0];
-    const float length = slot.distance;
+    const int rot = this->state.slots[ec].riseAngle;
+    const float back = this->state.slots[ec].maxHeight;
+    const float width = this->state.slots[ec].height[0];
 
     int angle = rot >= 90 ? rot - 90 : rot + 270;
     const float widthX = width * g_cosTable[angle];
     const float widthZ = width * g_sinTable[angle];
+    angle = rot >= 90 ? rot - 90 : rot + 270;
     const float baseX = back * g_cosTable[angle] + widthX;
     const float baseZ = back * g_sinTable[angle] + widthZ;
 
@@ -2448,13 +2450,13 @@ void CEffectPrim::RenderFloorRect(matrix& wtm) {
     if (angle < 0) {
       angle += 360;
     }
-    vec4.Set(length * g_cosTable[angle] + baseX, 0.0f, length * g_sinTable[angle] + baseZ);
+    vec4.Set(this->state.slots[ec].distance * g_cosTable[angle] + baseX, 0.0f, this->state.slots[ec].distance * g_sinTable[angle] + baseZ);
 
     angle = rot - 180;
     if (angle < 0) {
       angle += 360;
     }
-    vec3.Set(length * g_cosTable[angle] + baseX, 0.0f, length * g_sinTable[angle] + baseZ);
+    vec3.Set(this->state.slots[ec].distance * g_cosTable[angle] + baseX, 0.0f, this->state.slots[ec].distance * g_sinTable[angle] + baseZ);
 
     angle = rot < 270 ? rot + 90 : rot - 270;
     const float sideX = back * g_cosTable[angle] + widthX;
@@ -2464,15 +2466,15 @@ void CEffectPrim::RenderFloorRect(matrix& wtm) {
     if (angle < 0) {
       angle += 360;
     }
-    vec1.Set(length * g_cosTable[angle] + sideX, 0.0f, length * g_sinTable[angle] + sideZ);
+    vec1.Set(this->state.slots[ec].distance * g_cosTable[angle] + sideX, 0.0f, this->state.slots[ec].distance * g_sinTable[angle] + sideZ);
 
     angle = rot - 180;
     if (angle < 0) {
       angle += 360;
     }
-    vec2.Set(length * g_cosTable[angle] + sideX, 0.0f, length * g_sinTable[angle] + sideZ);
+    vec2.Set(this->state.slots[ec].distance * g_cosTable[angle] + sideX, 0.0f, this->state.slots[ec].distance * g_sinTable[angle] + sideZ);
 
-    this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
   }
 }
 
