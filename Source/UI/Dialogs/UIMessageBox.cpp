@@ -3909,8 +3909,9 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
 // OFFSET: 0x008B6520
 // FUNCTION: fn_11751
 void UISelectServerWnd::OnCreate(int width, int height) {
+  const int listWidth = width - 24;
   this->m_serverList = new UIServerListBox();
-  this->m_serverList->Configure(12, 22, width - 24, height - 55, 0);
+  this->m_serverList->Configure(12, 22, listWidth, height - 55, 0);
   this->m_serverList->backgroundRed = 240;
   this->m_serverList->backgroundGreen = 240;
   this->m_serverList->backgroundBlue = 240;
@@ -3956,20 +3957,19 @@ void UISelectServerWnd::OnCreate(int width, int height) {
 // FUNCTION: fn_11748
 void UIReplayControlWnd::OnCreate(int, int) {
   const std::string prefix("유저인터페이스\\replay_interface\\");
+  const char* const names[6] = {"replay_stop_", "replay_end_", "replay_speedadd_", "replay_speedmin_", "replay_start_", "replay_pause_"};
   const int ids[6] = {403, 404, 405, 406, 401, 402};
   const int positions[6][2] = {{101, 89}, {149, 89}, {53, 89}, {53, 111}, {5, 89}, {-100, -100}};
-  const char* const names[6] = {"replay_stop_", "replay_end_", "replay_speedadd_", "replay_speedmin_", "replay_start_", "replay_pause_"};
 
   for (int i = 0; i < 4; ++i) {
     this->m_buttons[i] = new UIBitmapButton();
-    UIBitmapButton* button = this->m_buttons[i];
-    button->SetBitmap((prefix + names[i] + "a.bmp").c_str(), 0, 0);
-    button->SetBitmap((prefix + names[i] + "a.bmp").c_str(), 1, 0);
-    button->SetBitmap((prefix + names[i] + "b.bmp").c_str(), 2, 0);
-    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
-    button->Move(positions[i][0], positions[i][1]);
-    button->SetId(ids[i]);
-    this->AddChild(button);
+    this->m_buttons[i]->SetBitmap((prefix + names[i] + "a.bmp").c_str(), 0, 0);
+    this->m_buttons[i]->SetBitmap((prefix + names[i] + "a.bmp").c_str(), 1, 0);
+    this->m_buttons[i]->SetBitmap((prefix + names[i] + "b.bmp").c_str(), 2, 0);
+    this->m_buttons[i]->SetSize(this->m_buttons[i]->BitmapWidth(), this->m_buttons[i]->BitmapHeight());
+    this->m_buttons[i]->Move(positions[i][0], positions[i][1]);
+    this->m_buttons[i]->SetId(ids[i]);
+    this->AddChild(this->m_buttons[i]);
   }
 
   this->m_playButton = new UIReplayButton();
