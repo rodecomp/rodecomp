@@ -20,18 +20,15 @@ CBitmapRes* CBitmapRes::Create() {
 // FUNCTION: fn_07848
 bool CBitmapRes::Load(const char* name) {
   CFile file;
-  bool result = false;
   if (name && file.Open(name, 0, true, false)) {
     if (this->Decode(name, file.GetData(), file.GetSize(), false)) {
       file.Close();
-      result = true;
-    } else {
-      file.Close();
+      return true;
     }
+    file.Close();
   }
 
-  file.Close();
-  return result;
+  return false;
 }
 
 // OFFSET: 0x00749850
