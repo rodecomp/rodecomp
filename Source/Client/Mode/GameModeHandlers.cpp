@@ -2211,15 +2211,15 @@ void CGameMode::ReceiveRuneGradeResult(int result, int tagId, int type, std::int
     const int previousSlots = g_runeSystemMgr->GetCurSlotCount();
     const int state = g_runeSystemMgr->SetRuneGrade(tagId, type, id, grade, gradeLevel);
     if (state == 2) {
-      CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, EF_RUNESET_UPGRADE_SUCCESS, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, EF_RUNESET_UPGRADE_SUCCESS, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       const vector3d offset = {784.0f, 161.0f, 0.0f};
       effect->SetWindowOffset(offset, 1, 361);
     } else if (state == 1) {
-      CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, EF_RUNESET_UPGRADE_FAIL, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, EF_RUNESET_UPGRADE_FAIL, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       const vector3d offset = {784.0f, 161.0f, 0.0f};
       effect->SetWindowOffset(offset, 1, 361);
     } else {
-      CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, type != 0 ? 2395 : 2396, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+      CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, type != 0 ? 2395 : 2396, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       vector3d offset = {0.0f, 0.0f, 0.0f};
       if (type == 0) {
         offset.x = 473.0f;
