@@ -146,23 +146,28 @@ std::pair<bool, std::string> CPetEvolutionMgr::InsertPetAutoFeeding(int petEgg) 
 // FUNCTION: fn_05373
 std::pair<bool, std::string> CPetEvolutionMgr::InsertRecipe(int petEgg, int target, int material, int count) {
   std::vector<PetEvolutionRecipe>& recipes = this->m_recipes[petEgg];
-  for (auto it = recipes.begin(); it != recipes.end(); ++it) {
+  auto it = recipes.begin();
+  for (; it != recipes.end(); ++it) {
     if (it->target == target) {
-      for (auto entry = it->materials.begin(); entry != it->materials.end(); ++entry) {
-        if (entry->first == material) {
-          return std::make_pair(false, "duplicate material ITID");
-        }
-      }
-
-      it->materials.push_back(std::make_pair(material, count));
-      return std::make_pair(true, "good");
+      break;
     }
   }
 
-  PetEvolutionRecipe recipe;
-  recipe.target = target;
-  recipe.materials.push_back(std::make_pair(material, count));
-  recipes.push_back(std::move(recipe));
+  if (it != recipes.end()) {
+    for (auto entry = it->materials.begin(); entry != it->materials.end(); ++entry) {
+      if (entry->first == material) {
+        return std::make_pair(false, "duplicate material ITID");
+      }
+    }
+
+    it->materials.push_back(std::make_pair(material, count));
+  } else {
+    PetEvolutionRecipe recipe;
+    recipe.target = target;
+    recipe.materials.push_back(std::make_pair(material, count));
+    recipes.push_back(std::move(recipe));
+  }
+
   return std::make_pair(true, "good");
 }
 
