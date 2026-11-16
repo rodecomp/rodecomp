@@ -121,10 +121,14 @@ void UIKeyStrokeWnd::Paint() {
   char text[3];
   text[2] = '\0';
 
-  for (int index = 0; index < 4; ++index) {
-    std::memcpy(text, g_serverLanguage->DisplayText() + index * 2, 2);
-    this->DrawTextAt(2 + index * 14, 2, text, 2, 0, 12, 0, 0, 0);
-  }
+  std::memcpy(text, g_serverLanguage->DisplayText(), 2);
+  this->DrawTextAt(2, 2, text, 2, 0, 12, 0, 0, 0);
+  std::memcpy(text, g_serverLanguage->DisplayText() + 2, 2);
+  this->DrawTextAt(16, 2, text, 2, 0, 12, 0, 0, 0);
+  std::memcpy(text, g_serverLanguage->DisplayText() + 4, 2);
+  this->DrawTextAt(30, 2, text, 2, 0, 12, 0, 0, 0);
+  std::memcpy(text, g_serverLanguage->DisplayText() + 6, 2);
+  this->DrawTextAt(44, 2, text, 2, 0, 12, 0, 0, 0);
 }
 
 // OFFSET: 0x0096DD40
