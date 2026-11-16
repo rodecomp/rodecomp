@@ -5687,7 +5687,10 @@ bool CEffectPrim::PrimDriftingRings() {
     }
 
     const std::int16_t angle = slot.rotStart;
-    const std::int16_t heading = static_cast<std::int16_t>(angle + 345 < 360 ? angle + 345 : angle - 15);
+    std::int16_t heading = static_cast<std::int16_t>(angle + 345);
+    if (heading >= 360) {
+      heading = static_cast<std::int16_t>(heading - 360);
+    }
     slot.vecTNow.x += g_cosTable[heading];
     slot.vecTNow.z += g_sinTable[heading];
     if (angle >= 360) {
