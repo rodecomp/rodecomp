@@ -3939,11 +3939,11 @@ void CPlayer::SendMsg(
       this->headDir = 0;
       this->render.angle = facing;
     } else if (direction == 1) {
-      if (this->headDir == 1) {
+      if (this->headDir != 1) {
+        this->headDir = 1;
+      } else {
         this->headDir = 0;
         this->render.angle = facing;
-      } else {
-        this->headDir = 1;
       }
     } else {
       if (direction == 2 || direction == 3) {
@@ -3955,11 +3955,11 @@ void CPlayer::SendMsg(
         }
       }
       if (direction == 7) {
-        if (this->headDir == 2) {
+        if (this->headDir != 2) {
+          this->headDir = 2;
+        } else {
           this->headDir = 0;
           this->render.angle = facing;
-        } else {
-          this->headDir = 2;
         }
       } else if (direction == 5 || direction == 6) {
         const float angle = facing - 45.0f;
@@ -4057,7 +4057,10 @@ void CPlayer::SendMsg(
     break;
   case AM_RESUMEPROCEEDATTACK:
     if (this->render.state != ST_SIT && !StateFlag01(this->stateFlags)) {
-      const int attackMode = this->proceedType == 1 ? 5 : 1;
+      int attackMode = 5;
+      if (this->proceedType != 1) {
+        attackMode = 1;
+      }
       this->tickOfMoveForAttack = timeGetTime() - 1200;
       this->proceedType = attackMode;
       this->proceedTargetGid = static_cast<int>(b);
