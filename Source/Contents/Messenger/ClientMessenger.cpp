@@ -85,6 +85,9 @@ struct EquipmentValueC {
   /* 0000 */ int value;
 };
 template __declspec(noinline) std::unordered_map<int, EquipmentValueC>::unordered_map();
+template __declspec(noinline) std::unordered_map<int, int>::~unordered_map();
+template __declspec(noinline) std::string std::format<const char*&, int&>(const std::_Fmt_string<const char*&, int&>, const char*&, int&);
+template __declspec(noinline) std::string std::format<unsigned int&, int&>(const std::_Fmt_string<unsigned int&, int&>, unsigned int&, int&);
 template __declspec(noinline) void std::_Tree_val<std::_Tree_simple_types<unsigned int>>::_Erase_tree<std::allocator<std::_Tree_node<unsigned int, void*>>>(
   std::allocator<std::_Tree_node<unsigned int, void*>>&, std::_Tree_node<unsigned int, void*>*
 ) noexcept;
@@ -478,6 +481,7 @@ namespace EquipmentProperties {
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(EquipmentProperties::CEquipmentInfo) == 0x44);
+template __declspec(noinline) std::unordered_map<int, int, EquipmentProperties::CEquipmentValueHash>::~unordered_map();
 static_assert(offsetof(EquipmentProperties::CEquipment, m_properties) == 0xC);
 static_assert(offsetof(EquipmentProperties::CEquipment, m_pretend) == 0x34);
 static_assert(sizeof(EquipmentProperties::CEquipment) == 0x38);
