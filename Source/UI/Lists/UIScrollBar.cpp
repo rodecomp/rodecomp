@@ -600,9 +600,6 @@ void UITabControl::AddTab(const char* label, const char* tooltip) {
         }
       }
 
-      if (!this->geometry.surface) {
-        this->Resize(tabWidth, 15);
-      }
       const std::string fitted = this->FitTextToWidth(this->labels[index], tabWidth);
       this->labels[index] = "";
       this->labels[index] = fitted;
