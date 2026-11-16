@@ -812,9 +812,12 @@ void UIParaResultWnd::Paint() {
   {
     unsigned red = 0, green = 0, blue = 0;
     g_skinInfo.PaletteChannels(2, 2, red, green, blue);
+    const int columnRemainder = (this->geometry.width - 60) % 32;
+    this->FillRegion(20, 17, columnRemainder, this->geometry.height - this->footerHeight - 17, RGB(red, green, blue));
     const int listHeight = this->geometry.height - this->footerHeight - 17;
-    this->FillRegion(20, 17, (this->geometry.width - 60) % 32, listHeight, RGB(red, green, blue));
-    this->FillRegion(20, listHeight / 32 * 32 + 17, this->geometry.width - 24, listHeight % 32, RGB(red, green, blue));
+    const int rowRemainder = listHeight % 32;
+    const int remainderTop = listHeight / 32 * 32 + 17;
+    this->FillRegion(20, remainderTop, this->geometry.width - 24, rowRemainder, RGB(red, green, blue));
   }
   this->DrawButtonBar(this->alternateButtonBar != 1 ? 0 : 2, 0, 1);
 
