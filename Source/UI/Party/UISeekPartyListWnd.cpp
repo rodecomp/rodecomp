@@ -25,6 +25,8 @@
 #include <cstdlib>
 #include <cstring>
 
+template __declspec(noinline) std::pair<std::map<int, std::vector<SeekPartyMapEntry>>::_Mybase::_Nodeptr, bool> std::map<int, std::vector<SeekPartyMapEntry>>::_Mybase::_Emplace<std::pair<const int, std::vector<SeekPartyMapEntry>>>(std::pair<const int, std::vector<SeekPartyMapEntry>>&&);
+
 namespace {
 #pragma pack(push, 1)
 struct PACKET_CZ_PARTY_BOOKING_REQ_SEARCH {
