@@ -274,12 +274,12 @@ bool CEZ2STRParticle::Process(float x, float y, float z) {
     }
 
     if (!this->m_loop && this->m_frame - this->m_endFrame >= 0 && this->m_frame - lifeTime >= 0) {
-      if (this->m_repeat <= 0) {
+      if (this->m_repeat > 0) {
+        --this->m_repeat;
+      } else {
         this->life = -1.0f;
         return false;
       }
-
-      --this->m_repeat;
     }
 
     this->Restart();
@@ -497,8 +497,8 @@ void CEZ2STRParticle::RenderBillboard(EZeffectClip* clip, EZeffectTransform* tra
     vertices[i].z = RhwToDepth(vertices[i].rhw);
     vertices[i].u = scaleU * vertices[i].u;
     vertices[i].v = scaleV * vertices[i].v;
-    vertices[i].specular = 0xFFFFFFFF;
     vertices[i].diffuse = ClipColor(*transform, this->m_alpha);
+    vertices[i].specular = 0xFFFFFFFF;
   }
 
   primitive->texture = texture;
