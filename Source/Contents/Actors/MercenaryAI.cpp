@@ -1038,7 +1038,7 @@ int AiMove(lua_State* state) {
   int actorX = 0, actorY = 0;
   mode->WorldCell(actor->render.position.x, actor->render.position.z, actorX, actorY);
 
-  if (std::abs(x - actorX) + std::abs(y - actorY) < 25) {
+  if (std::abs(x - actorX) + std::abs(y - actorY) <= 24) {
 #pragma pack(push, 1)
     struct MoveNpcPacket {
       /* 0000 */ std::int16_t opcode;
