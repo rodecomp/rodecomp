@@ -230,7 +230,9 @@ void CEntryQueueMgr::OnStatus(const EntryQueueStatus* packet) {
 
   if (!this->current) {
     for (auto it = g_entryQueueList.begin(); it != g_entryQueueList.end(); ++it) {
-      if (std::string(it->second->name) == std::string(packet->queueName)) {
+      const std::string name(it->second->name);
+      const std::string queueName(packet->queueName);
+      if (name == queueName) {
         this->current = it->second;
         break;
       }
