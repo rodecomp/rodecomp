@@ -1199,8 +1199,8 @@ bool UIBarterItemPurchaseWnd::Purchase() {
     return false;
   }
 
-  std::map<int, int>* required = g_barterMarketItemMgr->GetTotals();
-  for (std::map<int, int>::iterator it = required->begin(); it != required->end(); ++it) {
+  std::map<int, int> required = *g_barterMarketItemMgr->GetTotals();
+  for (std::map<int, int>::iterator it = required.begin(); it != required.end(); ++it) {
     if (this->GetInventoryItemCount(it->first) < it->second) {
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PVP)), 255, 0, 0, 0);
