@@ -544,7 +544,8 @@ bool CSkill::OnProcess() {
       this->m_effect = this->LaunchEffect(EF_BOTTOM_MANHOLE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     if (this->m_effect) {
-      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+      int duration = this->m_effect->GetDuration();
+      this->m_effect->SetStateDuration(duration + 21);
     }
     break;
 
@@ -553,7 +554,8 @@ bool CSkill::OnProcess() {
       this->m_effect = this->LaunchEffect(EF_HEAVENSDRIVE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     if (this->m_effect) {
-      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+      int duration = this->m_effect->GetDuration();
+      this->m_effect->SetStateDuration(duration + 21);
       g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
     }
     break;
@@ -578,7 +580,8 @@ bool CSkill::OnProcess() {
       this->m_effect = this->LaunchEffect(EF_BOTTOM_SANC, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     if (this->m_effect) {
-      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+      int duration = this->m_effect->GetDuration();
+      this->m_effect->SetStateDuration(duration + 21);
     }
     break;
 
@@ -587,7 +590,8 @@ bool CSkill::OnProcess() {
       this->m_effect = this->LaunchEffect(EF_DEMONSTRATION, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     if (this->m_effect) {
-      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+      int duration = this->m_effect->GetDuration();
+      this->m_effect->SetStateDuration(duration + 21);
     }
     break;
 
@@ -596,7 +600,8 @@ bool CSkill::OnProcess() {
       this->m_effect = this->LaunchEffect(EF_BOTTOM_VO, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     if (this->m_effect) {
-      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+      int duration = this->m_effect->GetDuration();
+      this->m_effect->SetStateDuration(duration + 21);
     }
     break;
 
@@ -605,7 +610,8 @@ bool CSkill::OnProcess() {
       this->m_effect = this->LaunchEffect(EF_POISONSMOKE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     if (this->m_effect) {
-      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+      int duration = this->m_effect->GetDuration();
+      this->m_effect->SetStateDuration(duration + 21);
       int random = rand() % 100;
       random = random < 0 ? 0 : random;
       if (random == 1) {
@@ -621,7 +627,8 @@ bool CSkill::OnProcess() {
       this->m_effect = this->LaunchEffect(EF_BOTTOM_FOGWALL, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     if (this->m_effect) {
-      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+      int duration = this->m_effect->GetDuration();
+      this->m_effect->SetStateDuration(duration + 21);
     }
     break;
 
@@ -630,7 +637,8 @@ bool CSkill::OnProcess() {
       this->m_effect = this->LaunchEffect(EF_BOTTOM_DE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     if (this->m_effect) {
-      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+      int duration = this->m_effect->GetDuration();
+      this->m_effect->SetStateDuration(duration + 21);
     }
     break;
 
@@ -639,7 +647,8 @@ bool CSkill::OnProcess() {
       this->m_effect = this->LaunchEffect(EF_BOTTOM_SUITON, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     if (this->m_effect) {
-      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+      int duration = this->m_effect->GetDuration();
+      this->m_effect->SetStateDuration(duration + 21);
     }
     break;
 
@@ -648,7 +657,8 @@ bool CSkill::OnProcess() {
       this->m_effect = this->LaunchEffect(EF_BOTTOM_VI, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     if (this->m_effect) {
-      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+      int duration = this->m_effect->GetDuration();
+      this->m_effect->SetStateDuration(duration + 21);
     }
     break;
 
@@ -657,7 +667,8 @@ bool CSkill::OnProcess() {
       this->m_effect = this->LaunchEffect(EF_BOTTOM_LA, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     if (this->m_effect) {
-      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+      int duration = this->m_effect->GetDuration();
+      this->m_effect->SetStateDuration(duration + 21);
     }
     break;
 
@@ -666,7 +677,8 @@ bool CSkill::OnProcess() {
       this->m_effect = this->LaunchEffect(EF_BOTTOM_RUNNER, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     if (this->m_effect) {
-      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+      int duration = this->m_effect->GetDuration();
+      this->m_effect->SetStateDuration(duration + 21);
     }
     break;
 
@@ -675,7 +687,8 @@ bool CSkill::OnProcess() {
       this->m_effect = this->LaunchEffect(EF_BOTTOM_TRANSFER, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     if (this->m_effect) {
-      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+      int duration = this->m_effect->GetDuration();
+      this->m_effect->SetStateDuration(duration + 21);
     }
     break;
 
@@ -684,7 +697,8 @@ bool CSkill::OnProcess() {
       this->m_effect = this->LaunchEffect(EF_BOTTOM_BASILICA, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     if (this->m_effect) {
-      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+      int duration = this->m_effect->GetDuration();
+      this->m_effect->SetStateDuration(duration + 21);
     }
     break;
 
@@ -693,7 +707,8 @@ bool CSkill::OnProcess() {
       this->m_effect = this->LaunchEffect(EF_BOTTOM_SPIDER, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     if (this->m_effect) {
-      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+      int duration = this->m_effect->GetDuration();
+      this->m_effect->SetStateDuration(duration + 21);
     }
     break;
 
@@ -702,7 +717,8 @@ bool CSkill::OnProcess() {
       this->m_effect = this->LaunchEffect(EF_BOTTOM_HERMODE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     if (this->m_effect) {
-      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+      int duration = this->m_effect->GetDuration();
+      this->m_effect->SetStateDuration(duration + 21);
     }
     break;
 
@@ -711,7 +727,8 @@ bool CSkill::OnProcess() {
       this->m_effect = this->LaunchEffect(EF_GRAVITATION, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     if (this->m_effect) {
-      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+      int duration = this->m_effect->GetDuration();
+      this->m_effect->SetStateDuration(duration + 21);
     }
     break;
 
@@ -720,7 +737,8 @@ bool CSkill::OnProcess() {
       this->m_effect = this->LaunchEffect(EF_BOTTOM_BARRIER, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     if (this->m_effect) {
-      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+      int duration = this->m_effect->GetDuration();
+      this->m_effect->SetStateDuration(duration + 21);
     }
     break;
 
@@ -735,7 +753,8 @@ bool CSkill::OnProcess() {
       this->m_effect = this->LaunchEffect(EF_BOTTOM_GOSPEL, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     if (this->m_effect) {
-      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+      int duration = this->m_effect->GetDuration();
+      this->m_effect->SetStateDuration(duration + 21);
     }
     break;
 
@@ -744,7 +763,8 @@ bool CSkill::OnProcess() {
       this->m_effect = this->LaunchEffect(EF_BOTTOM_STEALTH, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     if (this->m_effect) {
-      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+      int duration = this->m_effect->GetDuration();
+      this->m_effect->SetStateDuration(duration + 21);
     }
     break;
 
@@ -753,7 +773,8 @@ bool CSkill::OnProcess() {
       this->m_effect = this->LaunchEffect(EF_VENOMDUST2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     if (this->m_effect) {
-      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+      int duration = this->m_effect->GetDuration();
+      this->m_effect->SetStateDuration(duration + 21);
     }
     break;
 
@@ -769,7 +790,8 @@ bool CSkill::OnProcess() {
       this->m_effect = this->LaunchEffect(EF_BOTTOM_MAG, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     if (this->m_effect) {
-      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+      int duration = this->m_effect->GetDuration();
+      this->m_effect->SetStateDuration(duration + 21);
     }
     break;
 
@@ -786,7 +808,8 @@ bool CSkill::OnProcess() {
       this->m_effect = this->LaunchEffect(EF_FIREPILLARON, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     if (this->m_effect) {
-      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+      int duration = this->m_effect->GetDuration();
+      this->m_effect->SetStateDuration(duration + 21);
     }
     break;
 
@@ -797,7 +820,8 @@ bool CSkill::OnProcess() {
       this->m_effect = this->LaunchEffect(EF_ICEWALL, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     if (this->m_effect) {
-      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+      int duration = this->m_effect->GetDuration();
+      this->m_effect->SetStateDuration(duration + 21);
     }
     break;
 
@@ -935,7 +959,8 @@ bool CSkill::OnProcess() {
       this->m_effect = this->LaunchEffect(EF_TATAMI, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     if (this->m_effect) {
-      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+      int duration = this->m_effect->GetDuration();
+      this->m_effect->SetStateDuration(duration + 21);
     }
     break;
 
@@ -1033,7 +1058,8 @@ bool CSkill::OnProcess() {
       this->m_effect = this->LaunchEffect(EF_BOTTOM_DE2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     if (this->m_effect) {
-      this->m_effect->SetStateDuration(this->m_effect->GetDuration() + 21);
+      int duration = this->m_effect->GetDuration();
+      this->m_effect->SetStateDuration(duration + 21);
     }
     break;
 
