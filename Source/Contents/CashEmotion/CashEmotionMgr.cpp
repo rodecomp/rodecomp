@@ -1000,33 +1000,38 @@ void CCashEmotionMgr::AddSearchResult(std::vector<std::pair<int, int>>& results,
 // OFFSET: 0x0059A820
 // FUNCTION: fn_02962
 std::vector<int> CCashEmotionMgr::SortPacks(const std::vector<int>& packs, const char* filter) {
-  if (!filter || std::strlen(filter) == 0) {
-    std::vector<int> result(packs);
-    std::sort(result.begin(), result.end(), CashEmotionPackOrder{this, true});
-    return result;
-  }
+  if (filter && std::strlen(filter) != 0) {
+    const std::size_t count = packs.size();
+    std::vector<int> matched;
+    matched.reserve(count);
+    std::vector<int> others;
+    others.reserve(count);
 
-  std::vector<int> matched;
-  matched.reserve(packs.size());
-  std::vector<int> others;
-  others.reserve(packs.size());
-
-  for (int packId : packs) {
-    const char* title = this->GetPackTitle(packId);
-    if (title && std::strstr(title, filter)) {
-      matched.push_back(packId);
-    } else {
-      others.push_back(packId);
+    for (int packId : packs) {
+      const char* title = this->GetPackTitle(packId);
+      if (title) {
+        if (std::strstr(title, filter)) {
+          matched.push_back(packId);
+        } else {
+          others.push_back(packId);
+        }
+      } else {
+        others.push_back(packId);
+      }
     }
+
+    std::sort(matched.begin(), matched.end(), CashEmotionPackOrder{this, true});
+    std::sort(others.begin(), others.end(), CashEmotionPackOrder{this, true});
+    for (const int& packId : others) {
+      matched.push_back(packId);
+    }
+
+    return matched;
   }
 
-  std::sort(matched.begin(), matched.end(), CashEmotionPackOrder{this, true});
-  std::sort(others.begin(), others.end(), CashEmotionPackOrder{this, true});
-  for (int packId : others) {
-    matched.push_back(packId);
-  }
-
-  return matched;
+  std::vector<int> result(packs);
+  std::sort(result.begin(), result.end(), CashEmotionPackOrder{this, true});
+  return result;
 }
 
 // OFFSET: 0x0059ABC0
