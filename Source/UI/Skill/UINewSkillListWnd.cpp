@@ -843,18 +843,18 @@ void UINewSkillListWnd::OnCreate(int width, int height) {
       {this->geometry.width - 50, this->geometry.height - 27},
     };
     int buttonIds[2] = {271, 363};
-    UIBitmapButton** buttons = &this->m_btnApply;
-    for (int i = 0; i < 2; ++i) {
-      buttons[i] = new UIBitmapButton();
-      buttons[i]->SetBitmap((baseDir + buttonNames[i][0] + ".bmp").c_str(), 0, 0);
-      buttons[i]->SetBitmap((baseDir + buttonNames[i][1] + ".bmp").c_str(), 1, 0);
-      buttons[i]->SetBitmap((baseDir + buttonNames[i][2] + ".bmp").c_str(), 2, 0);
-      buttons[i]->SetSize(buttons[i]->BitmapWidth(), buttons[i]->BitmapHeight());
-      buttons[i]->Move(buttonPos[i].x, buttonPos[i].y);
-      buttons[i]->SetId(buttonIds[i]);
-      buttons[i]->SetDisabled(1);
-      buttons[i]->Invalidate();
-      this->AddChild(buttons[i]);
+    UIBitmapButton** button = &this->m_btnApply;
+    for (int i = 0; i < 2; ++i, ++button) {
+      *button = new UIBitmapButton();
+      (*button)->SetBitmap((baseDir + buttonNames[i][0] + ".bmp").c_str(), 0, 0);
+      (*button)->SetBitmap((baseDir + buttonNames[i][1] + ".bmp").c_str(), 1, 0);
+      (*button)->SetBitmap((baseDir + buttonNames[i][2] + ".bmp").c_str(), 2, 0);
+      (*button)->SetSize((*button)->BitmapWidth(), (*button)->BitmapHeight());
+      (*button)->Move(buttonPos[i].x, buttonPos[i].y);
+      (*button)->SetId(buttonIds[i]);
+      (*button)->SetDisabled(1);
+      (*button)->Invalidate();
+      this->AddChild(*button);
     }
   }
 
@@ -1583,8 +1583,6 @@ bool UINewSkillListWnd::IncreaseSkillLevel(int skillId) {
 // OFFSET: 0x009AF960
 // FUNCTION: fn_13803
 void UINewSkillListWnd::DrawSkillTree() {
-  LuaScript& script = *g_session.m_hotkeyScript;
-
   CBitmapRes* emptySlot = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\no_skill.bmp")));
   for (int slot = 0; slot < 42; ++slot) {
     this->DrawBitmap(slot % this->m_columns * 68 + 76, slot / this->m_columns * 56 + 44, emptySlot, true);
@@ -1654,18 +1652,17 @@ void UINewSkillListWnd::DrawSkillTree() {
       }
     }
 
-    const int maxLevel = this->SkillAt(static_cast<int>(skill.treePosition), true).level;
     int red = shade;
     int green = shade;
     int blue = shade;
-    if (skill.level > maxLevel) {
+    if (skill.level > this->SkillAt(static_cast<int>(skill.treePosition), true).level) {
       red = 127;
       green = 60;
       blue = 255;
     }
 
     const int textY = y + 70;
-    const bool usesLevel = CSkillInfo::UsesLevel(script, static_cast<int>(skill.id));
+    const bool usesLevel = CSkillInfo::UsesLevel(static_cast<int>(skill.id));
     if (level != 0) {
       if (usesLevel) {
         int useLevel = g_session.UseLevel(static_cast<int>(skill.id));
