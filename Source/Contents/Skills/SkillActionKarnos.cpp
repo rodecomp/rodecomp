@@ -370,10 +370,10 @@ void CSkillAction_KR_GROUND_BLOOM::OnSkillEffect(int level, CGameActor* source, 
   }
 
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("ground_bloom", 0x91651D81F559F971ULL)), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("ground_bloom", 0x91651D81F559F971ULL)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 
   effects = g_effectMgr;
-  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("ground_bloom_bottom", 0x73D1674B61DF7B0BULL)), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("ground_bloom_bottom", 0x73D1674B61DF7B0BULL)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x005B19B0
@@ -435,7 +435,8 @@ void CSkillAction_KR_THUNDERING_FOCUS::OnSkillEffect(int level, CGameActor* sour
     return;
   }
 
-  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("thundering_focus_g", 0x61FF87ED7BF39BE1ULL)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("thundering_focus_g", 0x61FF87ED7BF39BE1ULL)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x005B2880
@@ -451,7 +452,8 @@ void CSkillAction_KR_THUNDERING_FOCUS_S::OnSkillEffect(int level, CGameActor* so
     return;
   }
 
-  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("thundering_focus_y", 0x7D993F650D2785FFULL)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("thundering_focus_y", 0x7D993F650D2785FFULL)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x005B2A90
@@ -503,7 +505,8 @@ void CSkillAction_KR_ICE_SPLASH::OnSkillEffect(int level, CGameActor* source, CG
     return;
   }
 
-  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("ice_splash", 0x8B65CD61012B5931ULL, effectName)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("ice_splash", 0x8B65CD61012B5931ULL, effectName)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x005B3470
@@ -907,10 +910,8 @@ void CSkillAction_KR_NASTY_SLASH::OnSkillEffect(int level, CGameActor* source, C
   }
 
   const float angle = ScreenAngle(&source->render.position.x, &target->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values);
-  constexpr std::array<std::uint8_t, 12> effectSourceArray = OBFUSCATE_SOURCE("nasty_slash", 0x2FF3C5036D070127ULL);
-  const std::uint8_t (&effectSource)[12] = effectSourceArray._Elems;
-  thread_local EncryptedName<sizeof(effectSource), 0x2FF3C5036D070127ULL> effectName(effectSource);
-  if (CEffect* effect = g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
+  EffectLists* effects = g_effectMgr;
+  if (CEffect* effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("nasty_slash", 0x2FF3C5036D070127ULL, effectName)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
     effect->SetAngle(angle);
     effect->SetPitch(25.0f);
   }
@@ -958,11 +959,8 @@ void CSkillAction_KR_IRON_HOWLING::OnSkillEffect(int level, CGameActor* source, 
     return;
   }
 
-  constexpr std::array<std::uint8_t, 13> effectSourceArray = OBFUSCATE_SOURCE("iron_howling", 0x91E147EBBD47C39FULL);
-  const std::uint8_t (&effectSource)[13] = effectSourceArray._Elems;
-  thread_local EncryptedName<sizeof(effectSource), 0x91E147EBBD47C39FULL> effectName(effectSource);
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("iron_howling", 0x91E147EBBD47C39FULL, effectName)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x005B6040
