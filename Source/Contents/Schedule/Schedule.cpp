@@ -29,8 +29,9 @@ bool CSchedule::CheckTime(const std::uint64_t& now) {
   if (this->interval == 0 || this->interval <= 0) {
     return false;
   }
-  const std::int64_t target = this->timestamp + static_cast<std::uint64_t>(this->interval) * 10000;
-  return (static_cast<std::int64_t>(now) <=> target) > 0;
+  const std::int64_t current = now;
+  const std::uint64_t target = this->timestamp + this->interval * 10000;
+  return (current <=> static_cast<std::int64_t>(target)) > 0;
 }
 
 // OFFSET: 0x00BA8A20
