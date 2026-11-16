@@ -286,7 +286,7 @@ void UIAdvenPartyBoardWnd::Registration(bool value) {
   if (g_session.partyLeader != 0) {
     this->recruit->SetTooltip("");
 
-    if (value) {
+    if (value == true) {
       this->ownParty->Enable(1);
       DisableButton(this->ownParty, 0);
       this->recruit->Enable(0);
@@ -307,7 +307,7 @@ void UIAdvenPartyBoardWnd::Registration(bool value) {
     DisableButton(this->ownParty, 1);
     this->recruit->Enable(1);
     DisableButton(this->recruit, 1);
-    this->recruit->SetText(std::string());
+    this->recruit->SetText("");
   }
 
   this->InvalidateChildren();
