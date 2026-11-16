@@ -192,7 +192,8 @@ int CTownInfoMgr::L_AddTownInfo(lua_State* state) {
   const int x = static_cast<int>(lua_tonumber(state, -3));
   const int y = static_cast<int>(lua_tonumber(state, -2));
   const int type = static_cast<int>(lua_tonumber(state, -1));
-  g_townInfoMgr->AddTownInfo(mapName, name, x, y, type);
+  CTownInfoMgr* const manager = g_townInfoMgr;
+  manager->AddTownInfo(mapName, name, x, y, type);
   lua_pushboolean(state, 1);
   lua_pushstring(state, FormatTownInfoString("good").c_str());
   return 2;
