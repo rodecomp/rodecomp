@@ -54,9 +54,8 @@ namespace {
 // OFFSET: 0x00E12E50
 // FUNCTION: fn_23820
 int CSession::HotkeyIndex(int tab, int index) const {
-  int candidate = HK_FIRST_HIDDEN;
-  if (tab == 1 && index >= candidate) {
-    for (; candidate <= index; ++candidate) {
+  if (tab == 1) {
+    for (int candidate = HK_FIRST_HIDDEN; candidate <= index; ++candidate) {
       if (HiddenInterfaceIndex(candidate) == true) {
         ++index;
       }
