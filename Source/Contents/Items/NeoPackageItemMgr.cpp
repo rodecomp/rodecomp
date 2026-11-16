@@ -53,7 +53,8 @@ void CNeoPackageItemMgr::Init() {
 // OFFSET: 0x006D1E10
 // FUNCTION: fn_06523
 void CNeoPackageItemMgr::InsertPackage(int packageId, int groupId, int itemId, const std::string& name, int probability) {
-  PackageGroup& group = this->m_packages[packageId].try_emplace(groupId, PackageGroup{}).first->second;
+  std::map<int, PackageGroup>& groups = this->m_packages[packageId];
+  PackageGroup& group = groups.try_emplace(groupId, PackageGroup{}).first->second;
   group.totalProbability += probability;
   group.items.emplace_back(itemId, name, probability);
 }
