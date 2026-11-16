@@ -14,7 +14,8 @@ CCharacterLinkedUserDataMgr* g_characterLinkedUserDataMgr;
 
 // INLINED
 CCharacterLinkedUserDataMgr::CCharacterLinkedUserDataMgr()
-    : m_enabled(true), m_accountId(0), m_characterId(0), m_accountName("unknown"), m_loaded(false), m_pendingSaves(0) {
+    : m_accountId(0), m_characterId(0), m_accountName("unknown"), m_loaded(false), m_pendingSaves(0), m_saveUrl(""), m_loadUrl("") {
+  this->m_enabled = true;
 }
 
 // INLINED
