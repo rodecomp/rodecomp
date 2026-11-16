@@ -55,7 +55,7 @@ void LegacyPositionTrack::Sample(int frame, matrix& output) const {
 
 // OFFSET: 0x00540670
 // FUNCTION: fn_01723
-void LegacyRotationTrack::Sample(int frame, matrix& output) const {
+__declspec(safebuffers) void LegacyRotationTrack::Sample(int frame, matrix& output) const {
   const std::vector<ModelRotationKey>& keys = *this;
   const unsigned count = keys.size();
 
