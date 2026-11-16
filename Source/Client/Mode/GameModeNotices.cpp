@@ -5058,10 +5058,7 @@ void CGameMode::ReceiveOngoingQuestList(const unsigned char* data) {
 
     RenewQuestOngoingInfo info;
     info.m_state = entry->state;
-    __time32_t endTime = 0;
-    if (entry->endTime > 0) {
-      endTime = entry->endTime;
-    }
+    __time32_t endTime = entry->endTime > 0 ? entry->endTime : 0;
     const tm time = *_localtime32(&endTime);
     info.m_year = time.tm_year + 1900;
     info.m_month = time.tm_mon + 1;
@@ -5118,10 +5115,7 @@ void CGameMode::ReceiveOngoingQuestList2(const unsigned char* data) {
 
     RenewQuestOngoingInfo info;
     info.m_state = entry->state;
-    __time32_t endTime = 0;
-    if (entry->endTime > 0) {
-      endTime = entry->endTime;
-    }
+    __time32_t endTime = entry->endTime > 0 ? entry->endTime : 0;
     const tm time = *_localtime32(&endTime);
     info.m_year = time.tm_year + 1900;
     info.m_month = time.tm_mon + 1;
