@@ -292,9 +292,8 @@ void CEZ2STREffectEx::Open() {
   particle->Load(info->name);
 
   CEZ2STRParticle* emitter = static_cast<CEZ2STRParticle*>(particle);
-  emitter->offsetX = info->offsetX;
-  emitter->offsetY = info->offsetY;
-  emitter->offsetZ = 0.0f;
+  const vector3d offset = {info->offsetX, info->offsetY, 0.0f};
+  emitter->offset = offset;
   if (info->flags & 1) {
     this->retained = 1;
     emitter->m_loop = 1;
