@@ -666,10 +666,10 @@ int WrappedLineLength(const char* text, int length, int width) {
 // OFFSET: 0x009BB8E0
 // FUNCTION: fn_13888
 void UITagListBox::AppendTaggedLines(std::string text, std::vector<STagInfoV2>& tags, int width) {
-  const int firstLine = static_cast<int>(this->lines.size());
   const char* buffer = text.c_str();
+  const int firstLine = static_cast<int>(this->lines.size());
   std::size_t position = 0;
-  while (position < text.size()) {
+  while (text.size() > position) {
     const char* start = buffer + position;
     int next = WrappedLineLength(start, static_cast<int>(text.size() - position), width) + static_cast<int>(position);
     for (std::size_t index = 0; index < tags.size(); ++index) {
@@ -679,10 +679,7 @@ void UITagListBox::AppendTaggedLines(std::string text, std::vector<STagInfoV2>& 
       }
     }
 
-    std::string line;
-    if (start != buffer + next) {
-      line.assign(start, next - position);
-    }
+    std::string line(start, buffer + next);
     this->AddLine(line.c_str());
     position = next;
   }
