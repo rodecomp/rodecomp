@@ -31,9 +31,7 @@ public:
   /* 00E0 */ float arcHeight;
   /* 00E4 */ int trailAlpha;
   /* 00E8 */ float trailRotation;
-  /* 00EC */ float trailX;
-  /* 00F0 */ float trailY;
-  /* 00F4 */ float trailZ;
+  /* 00EC */ vector3d trail;
   /* 00F8 */ std::vector<CParticle*> particles;
 };
 

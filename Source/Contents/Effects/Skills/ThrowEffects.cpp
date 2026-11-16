@@ -18,8 +18,8 @@
 // OFFSET: 0x00B7CB10
 // FUNCTION: fn_19227
 CThrowItemEffect::CThrowItemEffect()
-    : CEffect(-1), travelFrames(0), launchDelay(0), projectileCount(1), trailCount(4), heightDelta(0), arcHeight(0), trailX(0),
-      trailY(0), trailZ(0) {
+    : CEffect(-1), travelFrames(0), launchDelay(0), projectileCount(1), trailCount(4), heightDelta(0), arcHeight(0),
+      trail{0.0f, 0.0f, 0.0f} {
 }
 
 // OFFSET: 0x00B7CCC0
@@ -318,9 +318,7 @@ void CThrowItemEffect::OnProcess() {
       } else {
         this->trailAlpha -= target->columnIndex != 1 ? 25 : 150;
         target->alpha = this->trailAlpha;
-        offsetX = this->trailX;
-        offsetY = this->trailY;
-        offsetZ = this->trailZ;
+        target->offset = this->trail;
         rotation = this->trailRotation;
       }
 
@@ -338,9 +336,7 @@ void CThrowItemEffect::OnProcess() {
         height = g_sinTable[-static_cast<int>(progress * -180.0f)] * this->arcHeight;
       }
 
-      this->trailX = offsetX;
-      this->trailY = offsetY;
-      this->trailZ = offsetZ;
+      this->trail = target->offset;
       this->trailRotation = rotation;
       this->trailAlpha = target->alpha;
 
@@ -356,7 +352,8 @@ void CThrowItemEffect::OnProcess() {
 
         matrix translate;
         std::memcpy(translate.values, g_identityMatrix, sizeof(translate.values));
-        translate.MakeTranslate(offsetX, offsetY - height, offsetZ);
+        const vector3d offset = target->offset;
+        translate.MakeTranslate(offset.x, offset.y - height, offset.z);
 
         matrix rotationMatrix;
         rotationMatrix.Compose(scale, view);
