@@ -180,11 +180,11 @@ void CSpriteParticle::Draw(char mode) {
     if ((this->renderOptions & 0x200) != 0) {
       const int a = static_cast<int>(
         static_cast<float>(this->alpha) * (1.0f / 255.0f) *
-        (static_cast<float>(cell.color >> 24) * (1.0f / 255.0f)) * 255.0f
+        (static_cast<float>(cell.colorChannels.alpha) * (1.0f / 255.0f)) * 255.0f
       );
       for (int v = 0; v < 4; ++v) {
         primitive->vertices[v].diffuse =
-          ((static_cast<std::uint8_t>(a) << 8 | (cell.color & 0xFF)) << 8 | (cell.color >> 8 & 0xFF)) << 8 | (cell.color >> 16 & 0xFF);
+          ((static_cast<std::uint8_t>(a) << 8 | cell.colorChannels.red) << 8 | cell.colorChannels.green) << 8 | cell.colorChannels.blue;
       }
     }
 
