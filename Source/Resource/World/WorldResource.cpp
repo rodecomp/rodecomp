@@ -8,6 +8,7 @@
 #include <compare>
 #include <cstdio>
 #include <cstring>
+#include <tuple>
 
 // STATIC: 0x016FDA64
 // GLOBAL: gl_24387
@@ -18,21 +19,21 @@ namespace {
   struct WorldModelFileRecord {
     /* 0000 */ char model[80];
     /* 0050 */ char node[80];
-    /* 00A0 */ float position[3]{};
-    /* 00AC */ float rotation[3]{};
-    /* 00B8 */ float scale[3]{};
+    /* 00A0 */ vector3d position{};
+    /* 00AC */ vector3d rotation{};
+    /* 00B8 */ vector3d scale{};
   };
 
   struct WorldLightFileRecord {
     /* 0000 */ char name[80];
-    /* 0050 */ float position[3]{};
+    /* 0050 */ vector3d position{};
     /* 005C */ unsigned char colorAndRange[16];
   };
 
   struct WorldLegacySoundFileRecord {
     /* 0000 */ char name[80];
     /* 0050 */ char file[80];
-    /* 00A0 */ float position[3]{};
+    /* 00A0 */ vector3d position{};
     /* 00AC */ float volume;
     /* 00B0 */ int width;
     /* 00B4 */ int height;
@@ -45,21 +46,15 @@ namespace {
 
   // OFFSET: 0x00763010
   // FUNCTION: fn_08075
-  __declspec(noinline) std::strong_ordering CompareWorldVersion(const int targetVersion[2], const unsigned char* const fileVersion[2]) {
-    if (const std::strong_ordering order = targetVersion[1] <=> static_cast<int>(*fileVersion[1]); order != 0) {
-      return order;
-    }
-
-    if (const std::strong_ordering order = targetVersion[0] <=> static_cast<int>(*fileVersion[0]); order != 0) {
-      return order;
-    }
-
-    return {};
+  std::strong_ordering CompareWorldVersion(const std::tuple<int, int>& targetVersion, const std::tuple<unsigned char&, unsigned char&>& fileVersion) {
+    return targetVersion <=> fileVersion;
   }
 
   // INLINED
-  __forceinline bool IsWorldVersionAtLeast(unsigned char major, unsigned char minor, unsigned char requiredMajor, unsigned char requiredMinor) {
-    return (major == requiredMajor && minor >= requiredMinor) || major > requiredMajor;
+  inline void SetLightColor(float color[3], vector3d value) {
+    color[0] = value.x;
+    color[1] = value.y;
+    color[2] = value.z;
   }
 
   // OFFSET: 0x00763740
@@ -168,7 +163,7 @@ bool C3dWorldRes::Load(const char* name) {
   input.Read(lastName, sizeof(lastName));
   this->groundName = std::string(lastName);
 
-  if (IsWorldVersionAtLeast(major, minor, 1, 4)) {
+  if ((major == 1 && minor >= 4) || major >= 2) {
     input.Read(lastName, sizeof(lastName));
     this->terrainName = std::string(lastName);
   }
@@ -176,12 +171,12 @@ bool C3dWorldRes::Load(const char* name) {
   input.Read(lastName, sizeof(lastName));
   this->sourceName = std::string(lastName);
 
-  if (!IsWorldVersionAtLeast(major, minor, 2, 6)) {
-    if (IsWorldVersionAtLeast(major, minor, 1, 3)) {
+  if ((major == 2 && minor < 6) || major < 2) {
+    if ((major == 1 && minor >= 3) || major >= 2) {
       input.Read(&this->waterLevel, sizeof(this->waterLevel));
     }
 
-    if (IsWorldVersionAtLeast(major, minor, 1, 8)) {
+    if ((major == 1 && minor >= 8) || major >= 2) {
       input.Read(&this->waterType, sizeof(this->waterType));
       input.Read(&this->waveHeight, sizeof(this->waveHeight));
       input.Read(&this->waveSpeed, sizeof(this->waveSpeed));
@@ -193,14 +188,14 @@ bool C3dWorldRes::Load(const char* name) {
       this->wavePitch = 50.0f;
     }
 
-    if (IsWorldVersionAtLeast(major, minor, 1, 9)) {
+    if ((major == 1 && minor >= 9) || major >= 2) {
       input.Read(&this->waterAnimation, sizeof(this->waterAnimation));
     } else {
       this->waterAnimation = 3;
     }
   }
 
-  if (IsWorldVersionAtLeast(major, minor, 1, 5)) {
+  if ((major == 1 && minor >= 5) || major >= 2) {
     input.Read(&this->longitude, sizeof(this->longitude));
     input.Read(&this->latitude, sizeof(this->latitude));
     input.Read(&this->diffuse, sizeof(this->diffuse));
@@ -209,8 +204,12 @@ bool C3dWorldRes::Load(const char* name) {
     this->latitude = 45;
     this->longitude = 45;
 
-    this->diffuse.x = this->diffuse.y = this->diffuse.z = 1.0f;
-    this->ambient.x = this->ambient.y = this->ambient.z = 0.3f;
+    this->diffuse.x = 1.0f;
+    this->diffuse.y = 1.0f;
+    this->diffuse.z = 1.0f;
+    this->ambient.x = 0.3f;
+    this->ambient.y = 0.3f;
+    this->ambient.z = 0.3f;
   }
 
   constexpr float pi = 3.141592f;
@@ -223,12 +222,12 @@ bool C3dWorldRes::Load(const char* name) {
       ((matrix.values[component] * 0.0f + matrix.values[component + 3]) + matrix.values[component + 6] * 0.0f) + matrix.values[component + 9];
   }
 
-  if (IsWorldVersionAtLeast(major, minor, 1, 7)) {
+  if ((major == 1 && minor >= 7) || major >= 2) {
     unsigned unused;
     input.Read(&unused, sizeof(unused));
   }
 
-  if (IsWorldVersionAtLeast(major, minor, 1, 6)) {
+  if ((major == 1 && minor >= 6) || major >= 2) {
     input.Read(&this->bounds[0], sizeof(this->bounds[0]));
     input.Read(&this->bounds[1], sizeof(this->bounds[1]));
     input.Read(&this->bounds[2], sizeof(this->bounds[2]));
@@ -240,10 +239,7 @@ bool C3dWorldRes::Load(const char* name) {
     this->bounds[3] = 500;
   }
 
-  const int targetVersion[2] = {7, 2};
-  const unsigned char* const fileVersion[2] = {&minor, &major};
-
-  if (CompareWorldVersion(targetVersion, fileVersion) <= 0 && build >= 221) {
+  if (CompareWorldVersion(std::tuple<int, int>(2, 7), std::tie(major, minor)) <= 0 && build >= 221) {
     unsigned count;
     input.Read(&count, sizeof(count));
 
@@ -265,7 +261,7 @@ bool C3dWorldRes::Load(const char* name) {
       float speed;
       unsigned char flag;
 
-      if (IsWorldVersionAtLeast(major, minor, 1, 3)) {
+      if ((major == 1 && minor >= 3) || major >= 2) {
         input.Read(lastName, 40);
         input.Read(&animation, sizeof(animation));
         input.Read(&speed, sizeof(speed));
@@ -277,10 +273,7 @@ bool C3dWorldRes::Load(const char* name) {
           flag = 0;
         }
 
-        const int modelVersion[2] = {7, 2};
-        const unsigned char* const fileVersion[2] = {&minor, &major};
-
-        if (CompareWorldVersion(modelVersion, fileVersion) <= 0) {
+        if (CompareWorldVersion(std::tuple<int, int>(2, 7), std::tie(major, minor)) <= 0) {
           input.Read(&modelIndex, sizeof(modelIndex));
         }
 
@@ -304,9 +297,9 @@ bool C3dWorldRes::Load(const char* name) {
         record->animationSpeed = speed;
         record->animation = animation;
         record->animationType = animationType;
-        std::memcpy(&record->position, wire.position, sizeof(record->position));
-        std::memcpy(&record->rotation, wire.rotation, sizeof(record->rotation));
-        std::memcpy(&record->scale, wire.scale, sizeof(record->scale));
+        record->position = wire.position;
+        record->rotation = wire.rotation;
+        record->scale = wire.scale;
         record->flag = flag != 0;
         record->index = modelIndex;
         this->models.push_back(record);
@@ -340,7 +333,9 @@ bool C3dWorldRes::Load(const char* name) {
         record = new WorldSoundRecord;
         std::strncpy(record->name, wire.name, 79);
         std::strncpy(record->file, wire.file, 79);
-        std::memcpy(record->position, wire.position, sizeof(record->position));
+        record->position[0] = wire.position.x;
+        record->position[1] = wire.position.y;
+        record->position[2] = wire.position.z;
         record->volume = wire.volume;
         record->width = wire.width;
         record->height = wire.height;
@@ -364,9 +359,9 @@ bool C3dWorldRes::Load(const char* name) {
   }
 
   input.Close();
-  std::memcpy(g_worldLighting.ambient, &this->ambient, sizeof(this->ambient));
-  std::memcpy(g_worldLighting.diffuse, &this->diffuse, sizeof(this->diffuse));
-  std::memcpy(g_worldLighting.secondaryDiffuse, &this->diffuse, sizeof(this->diffuse));
+  SetLightColor(g_worldLighting.ambient, this->ambient);
+  SetLightColor(g_worldLighting.diffuse, this->diffuse);
+  SetLightColor(g_worldLighting.secondaryDiffuse, this->diffuse);
 
   return true;
 }
