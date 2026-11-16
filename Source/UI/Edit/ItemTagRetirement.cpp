@@ -107,14 +107,14 @@ bool UIItemTagOnMail::CanInsertTag(const std::string& name, int width) {
 
   std::string tag = "<";
   this->tagWidth = width;
-  tag += this->FitTextToWidth(name, width / 2);
+  tag += this->FitTextToWidth(name, this->tagWidth / 2);
   tag += ">";
 
   UIRodexEditCtrl3* contents = g_windowMgr.rodexComposeWnd->m_contents;
   const unsigned int maximum = contents->maximum;
   this->taggedText = contents->text;
-  this->taggedText += tag;
-  return this->taggedText.size() <= maximum;
+  const std::string text = this->taggedText += tag;
+  return text.size() <= maximum;
 }
 
 // OFFSET: 0x0087ABB0
