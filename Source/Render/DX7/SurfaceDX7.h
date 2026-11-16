@@ -13,7 +13,7 @@ class CSurfaceDX7 : public CSurface {
 
 public:
   CSurfaceDX7(DeviceOwnerDX7& owner, int width, int height);
-  CSurfaceDX7(DeviceOwnerDX7& owner, IDirectDrawSurface7* surface);
+  CSurfaceDX7(DeviceOwnerDX7* owner, IDirectDrawSurface7* surface);
   ~CSurfaceDX7() override;
   std::uint32_t Width() override;
   std::uint32_t Height() override;

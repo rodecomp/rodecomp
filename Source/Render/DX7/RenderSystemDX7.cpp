@@ -121,7 +121,7 @@ std::uint32_t CRenderSystemDX7::Height() {
 std::shared_ptr<CSurface> CRenderSystemDX7::BackBufferSurface() {
   if (!this->m_backBuffer) {
     IDirectDrawSurface7* renderTarget = this->m_device->renderTarget;
-    this->m_backBuffer = std::make_shared<CSurfaceDX7>(*this->m_device, renderTarget);
+    this->m_backBuffer = std::make_shared<CSurfaceDX7>(this->m_device, renderTarget);
   }
 
   return this->m_backBuffer;
