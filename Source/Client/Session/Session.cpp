@@ -1844,8 +1844,7 @@ void CSession::AddPendingActorName(std::uint32_t id) {
 // OFFSET: 0x00E2F3B0
 // FUNCTION: fn_24153
 void CSession::EndSkillOption() {
-  auto option = this->m_options.m_values.find(2);
-  if (option != this->m_options.m_values.end() && static_cast<int>(option->second) != 0) {
+  if (static_cast<int>(this->m_options.Get(2)) != 0) {
     this->automaticSkillHotkey = 0;
     PACKET_CZ_USE_SKILL_END packet;
     packet.packetType = ID_CZ_USE_SKILL_END;
