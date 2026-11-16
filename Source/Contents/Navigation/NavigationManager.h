@@ -270,7 +270,12 @@ public:
 };
 
 struct NavigationTarget {
-  NavigationTarget() : type(-1), object(nullptr), x(-1), y(-1) {}
+  NavigationTarget() {
+    this->type = -1;
+    this->object = nullptr;
+    this->x = -1;
+    this->y = -1;
+  }
   NavigationTarget(int type, void* object);
 
   // INLINED
