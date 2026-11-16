@@ -1999,7 +1999,8 @@ std::string UIChatHisBox::RenderNavigationLinks(const char* text, std::string& s
     }
     link = link.substr(0, end + g_naviLinkTagEnd.size());
 
-    const std::string name = g_navigationLinkParser->FormatNavigationLink(link, false);
+    NavigationLinkParser* const parser = g_navigationLinkParser;
+    const std::string name = parser->FormatNavigationLink(link, false);
     std::string label = "<";
     const int width = this->geometry.width / 2;
     label += this->FitTextToWidth(name, width);
@@ -2009,13 +2010,13 @@ std::string UIChatHisBox::RenderNavigationLinks(const char* text, std::string& s
     const std::string line(text);
     const std::size_t position = line.find(label);
     if (position != std::string::npos) {
-      tail = line.substr(position + label.size());
+      tail = std::string(line, position + label.size());
     }
 
     UINaviLinkButton* button = new (std::nothrow) UINaviLinkButton();
     button->link = link;
     button->Configure(label.c_str(), 0x82F2E1, 0, 12, 0, 0);
-    if (label.size() - 2 < name.size()) {
+    if (name.size() > label.size() - 2) {
       button->SetTooltip(name.c_str());
     }
     button->m_hoverColor = 0x82F2E1;
@@ -2034,7 +2035,7 @@ std::string UIChatHisBox::RenderNavigationLinks(const char* text, std::string& s
     remaining = source;
   }
 
-  if (!buttons.empty()) {
+  if (buttons.size() != 0) {
     this->naviLinks.push_back(buttons);
   }
   return result;
