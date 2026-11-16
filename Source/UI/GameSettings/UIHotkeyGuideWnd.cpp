@@ -312,11 +312,10 @@ int UIHotkeyGuideWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
 // FUNCTION: fn_13173
 void UIHotkeyGuideWnd::DrawKey(const HotkeyGuideKey* key) {
   CBitmapRes* bitmap;
-  int x;
   if (key->width == 36) {
     const char* name = key->height == 75 ? "유저인터페이스\\hotkey_guide\\bt_enter2.bmp" : "유저인터페이스\\hotkey_guide\\bt_keyboard.bmp";
     bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
-    x = key->x;
+    this->DrawBitmap(key->x, key->y, bitmap, true);
   } else {
     bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\hotkey_guide\\bt_left.bmp")));
     this->DrawBitmap(key->x, key->y, bitmap, true);
@@ -329,9 +328,8 @@ void UIHotkeyGuideWnd::DrawKey(const HotkeyGuideKey* key) {
       this->DrawBitmap(key->x + (key->width - 12), key->y, bitmap, true);
     }
     bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\hotkey_guide\\bt_right.bmp")));
-    x = key->width - 6 + key->x;
+    this->DrawBitmap(key->width - 6 + key->x, key->y, bitmap, true);
   }
-  this->DrawBitmap(x, key->y, bitmap, true);
 }
 
 // OFFSET: 0x0096C730
