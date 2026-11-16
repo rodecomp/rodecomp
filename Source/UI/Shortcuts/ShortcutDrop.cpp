@@ -162,7 +162,7 @@ void UIShortCutWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
   }
 
   ITEM_INFO item = g_session.LookupClientItemByIdentity(value.id);
-  if (item.identity[1] == 0 || item.identified == 0) {
+  if (item.identity[1] <= 0 || item.identified == 0) {
     g_modeMgr.currentMode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
     return;
   }
@@ -305,7 +305,7 @@ void UIQuickSlotWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
     }
   } else if (value.source != 6 && value.source != 9) {
     ITEM_INFO item = g_session.LookupClientItemByIdentity(value.id);
-    if (item.identity[1] != 0 && item.identified != 0) {
+    if (item.identity[1] > 0 && item.identified != 0) {
       switch (item.identity[0]) {
       case TYPE_ARMOR:
       case TYPE_WEAPON:
