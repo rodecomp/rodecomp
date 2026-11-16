@@ -7086,6 +7086,75 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
 
           unsigned int hash = HashName(itemType.c_str());
           switch (hash) {
+          case 0x47F48D1C:
+            for (int index = 0; index < count; ++index) {
+              if (stats[index] == 0) {
+                continue;
+              }
+              int variable;
+              switch (index) {
+              case 2:
+                variable = 41;
+                break;
+              case 3:
+                variable = 200;
+                break;
+              case 4:
+                variable = 13;
+                break;
+              case 5:
+                variable = 16;
+                break;
+              case 6:
+                variable = 15;
+                break;
+              case 7:
+                variable = 17;
+                break;
+              case 8:
+                variable = 14;
+                break;
+              case 9:
+                variable = 18;
+                break;
+              case 11:
+                variable = 219;
+                break;
+              case 12:
+                variable = 222;
+                break;
+              case 13:
+                variable = 220;
+                break;
+              case 14:
+                variable = 221;
+                break;
+              case 15:
+                variable = 223;
+                break;
+              case 16:
+                variable = 224;
+                break;
+              case 0:
+                info.values.try_emplace(0, stats[index]);
+                continue;
+              case 1:
+                info.values.try_emplace(1, stats[index]);
+                continue;
+              case 10:
+                info.values.try_emplace(2, stats[index]);
+                continue;
+              default:
+                continue;
+              }
+              auto found = this->statVariables.find(variable);
+              if (found == this->statVariables.end()) {
+                ShowErrorDialog(std::format("Not available stat type: {0}", variable), 0);
+              } else {
+                info.statProperties.try_emplace(found->second.value, stats[index]);
+              }
+            }
+            break;
           case 0x0F1AAAA6:
             for (int index = 0; index < count; ++index) {
               if (stats[index] == 0) {
@@ -7123,9 +7192,6 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
               case 9:
                 variable = 47;
                 break;
-              case 10:
-                info.values.try_emplace(2, stats[index]);
-                continue;
               case 11:
                 variable = 219;
                 break;
@@ -7144,75 +7210,9 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
               case 16:
                 variable = 224;
                 break;
-              default:
-                continue;
-              }
-              auto found = this->statVariables.find(variable);
-              if (found == this->statVariables.end()) {
-                ShowErrorDialog(std::format("Not available stat type: {0}", variable), 0);
-              } else {
-                info.statProperties.try_emplace(found->second.value, stats[index]);
-              }
-            }
-            break;
-          case 0x47F48D1C:
-            for (int index = 0; index < count; ++index) {
-              if (stats[index] == 0) {
-                continue;
-              }
-              int variable;
-              switch (index) {
-              case 0:
-                info.values.try_emplace(0, stats[index]);
-                continue;
-              case 1:
-                info.values.try_emplace(1, stats[index]);
-                continue;
-              case 2:
-                variable = 41;
-                break;
-              case 3:
-                variable = 200;
-                break;
-              case 4:
-                variable = 13;
-                break;
-              case 5:
-                variable = 16;
-                break;
-              case 6:
-                variable = 15;
-                break;
-              case 7:
-                variable = 17;
-                break;
-              case 8:
-                variable = 14;
-                break;
-              case 9:
-                variable = 18;
-                break;
               case 10:
                 info.values.try_emplace(2, stats[index]);
                 continue;
-              case 11:
-                variable = 219;
-                break;
-              case 12:
-                variable = 222;
-                break;
-              case 13:
-                variable = 220;
-                break;
-              case 14:
-                variable = 221;
-                break;
-              case 15:
-                variable = 223;
-                break;
-              case 16:
-                variable = 224;
-                break;
               default:
                 continue;
               }
@@ -7249,9 +7249,6 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
               }
               int variable;
               switch (index) {
-              case 0:
-                info.values.try_emplace(1, stats[index]);
-                continue;
               case 1:
                 variable = 41;
                 break;
@@ -7273,9 +7270,6 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
               case 7:
                 variable = 18;
                 break;
-              case 8:
-                info.values.try_emplace(2, stats[index]);
-                continue;
               case 9:
                 variable = 219;
                 break;
@@ -7294,6 +7288,12 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
               case 14:
                 variable = 224;
                 break;
+              case 0:
+                info.values.try_emplace(1, stats[index]);
+                continue;
+              case 8:
+                info.values.try_emplace(2, stats[index]);
+                continue;
               default:
                 continue;
               }
