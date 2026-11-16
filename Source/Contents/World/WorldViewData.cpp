@@ -383,11 +383,7 @@ bool CWorldViewMgr::SelectField(const char* name) {
       this->selection.mapIndex = mapIndex;
       this->selection.worldIndex = index;
       this->selection.name = field->name;
-      this->selection.left = field->left;
-      this->selection.top = field->top;
-      this->selection.right = field->right;
-      this->selection.bottom = field->bottom;
-      this->selection.areaFlags = field->areaFlags;
+      this->selection.area = field->area;
       return true;
     }
   }
