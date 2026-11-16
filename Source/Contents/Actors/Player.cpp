@@ -3287,9 +3287,9 @@ void CPlayer::ReapplySkillEffects() {
           this->LaunchEffect(EF_BLACKDEVIL, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
           g_soundMgr->PlayWave("effect\\_blind.wav", 0.0f, -100.0f, 0.0f, 250, 40, 1.0f, 0);
         }
-        for (int id = 0x1DB; id < 0x1E5; ++id) {
-          if (this->HasId(id) == true) {
-            this->SendMsg(nullptr, AM_DELETE_EFFECT, id, 0, 0, 0, 0, 0);
+        for (int i = 0; i < 10; ++i) {
+          if (this->HasId(0x1DB + i) == true) {
+            this->SendMsg(nullptr, AM_DELETE_EFFECT, 0x1DB + i, 0, 0, 0, 0, 0);
           }
         }
         this->LaunchEffect(effectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -3402,19 +3402,19 @@ void CPlayer::ReapplySkillEffects() {
         } else {
           switch (value) {
           case 0:
-            ball = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Spawn(this->render.accountId, EF_TETRA_VORTEX_BALL_1, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0));
+            ball = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Spawn(this->render.accountId, EF_TETRA_VORTEX_BALL_1, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0));
             ball->MoveFirstTo(type - 0x16B);
             break;
           case 1:
-            ball = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Spawn(this->render.accountId, EF_TETRA_VORTEX_BALL_3, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0));
+            ball = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Spawn(this->render.accountId, EF_TETRA_VORTEX_BALL_3, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0));
             ball->MoveFirstTo(type - 0x16B);
             break;
           case 2:
-            ball = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Spawn(this->render.accountId, EF_TETRA_VORTEX_BALL_2, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0));
+            ball = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Spawn(this->render.accountId, EF_TETRA_VORTEX_BALL_2, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0));
             ball->MoveFirstTo(type - 0x16B);
             break;
           case 3:
-            ball = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Spawn(this->render.accountId, EF_TETRA_VORTEX_BALL_4, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0));
+            ball = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Spawn(this->render.accountId, EF_TETRA_VORTEX_BALL_4, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0));
             ball->MoveFirstTo(type - 0x16B);
             break;
           }
