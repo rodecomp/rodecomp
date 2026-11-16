@@ -745,7 +745,11 @@ void CSkillAction_AT_FRENZY_FANG::OnSkillEffect(int level, CGameActor* source, C
     const float angle = ScreenAngle(
       &source->render.position.x, &target->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values
     );
-    effect->SetFlipX(angle < 90.0f || angle > 270.0f);
+    bool flip = true;
+    if (angle >= 90.0f && angle <= 270.0f) {
+      flip = false;
+    }
+    effect->SetFlipX(flip);
   }
 }
 
