@@ -656,9 +656,8 @@ void CRagEffect::IncAgiDex() {
   EffectPrimitiveState& spin = this->state.lastPrim->state;
   spin.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
   EffectPrimitiveState& moving = this->state.lastPrim->state;
-  const float distance = static_cast<float>(ClampedRandom(7) + 2);
-  const vector3d step = RotatedForward(moving.transform.values, distance);
-  moving.deltaPos2 = step;
+  const vector3d forward{0.0f, 0.0f, static_cast<float>(ClampedRandom(7) + 2)};
+  MatrixMult(moving.deltaPos2, forward, moving.transform.values);
   this->state.lastPrim->state.transform.MakeXRotation(GetRadian(90));
   this->state.lastPrim->state.speed = static_cast<float>(ClampedRandom(50) + 20) / 100.0f;
   this->state.lastPrim->state.widthSize = static_cast<float>(ClampedRandom(60) + 30) / 10.0f;
@@ -1069,7 +1068,8 @@ void CRagEffect::SoulStrike(char F1) {
   this->state.lastPrim->state.latiAccel = spread + spread;
   this->state.lastPrim->state.roll = static_cast<float>(base + step * index);
   this->state.lastPrim->state.transform.MakeYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
-  this->state.lastPrim->state.deltaPos3 = RotatedForward(this->state.lastPrim->state.transform.values, 1.0f);
+  const vector3d forward{0.0f, 0.0f, 1.0f};
+  MatrixMult(this->state.lastPrim->state.deltaPos3, forward, this->state.lastPrim->state.transform.values);
   this->state.lastPrim->state.rotAxis[0] = this->state.lastPrim->state.deltaPos3.x;
   this->state.lastPrim->state.rotAxis[1] = this->state.lastPrim->state.deltaPos3.y;
   this->state.lastPrim->state.rotAxis[2] = this->state.lastPrim->state.deltaPos3.z;
@@ -1693,13 +1693,8 @@ void CRagEffect::Blessing() {
     this->state.lastPrim->state.duration = 80;
     this->state.lastPrim->state.pattern |= 0x80u;
     this->state.lastPrim->state.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
-    const float* m = this->state.lastPrim->state.transform.values;
-    const float distance = static_cast<float>(ClampedRandom(7) + 2);
-    this->state.lastPrim->state.deltaPos2 = {
-      (m[0] * 0.0f - m[3] * 25.0f) + distance * m[6] + m[9],
-      (m[1] * 0.0f - m[4] * 25.0f) + distance * m[7] + m[10],
-      (m[2] * 0.0f - m[5] * 25.0f) + distance * m[8] + m[11]
-    };
+    const vector3d offset{0.0f, -25.0f, static_cast<float>(ClampedRandom(7) + 2)};
+    MatrixMult(this->state.lastPrim->state.deltaPos2, offset, this->state.lastPrim->state.transform.values);
     this->state.lastPrim->state.transform.MakeXRotation(GetRadian(-90));
     this->state.lastPrim->state.speed = static_cast<float>(ClampedRandom(20) + 20) / 100.0f;
     this->state.lastPrim->state.accel = -(this->state.lastPrim->state.speed / static_cast<float>(this->state.lastPrim->state.duration)) * 0.5f;
@@ -2351,12 +2346,7 @@ void CRagEffect::SonicBlowHit() {
   this->state.lastPrim->state.transform.MakeXRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.latitude)));
   this->state.lastPrim->state.transform.AppendYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
   EffectPrimitiveState& lift = this->state.lastPrim->state;
-  const float* m = lift.transform.values;
-  lift.speed3d = {
-    (m[0] * 0.0f - m[3] * 2.0f) + m[6] * 0.0f + m[9],
-    (m[1] * 0.0f - m[4] * 2.0f) + m[7] * 0.0f + m[10],
-    (m[2] * 0.0f - m[5] * 2.0f) + m[8] * 0.0f + m[11]
-  };
+  MatrixMult(lift.speed3d, vector3d{0.0f, -2.0f, 0.0f}, lift.transform.values);
   lift.deltaPos.x = lift.speed3d.x + lift.deltaPos.x;
   lift.deltaPos.y = lift.speed3d.y + lift.deltaPos.y;
   lift.deltaPos.z = lift.speed3d.z + lift.deltaPos.z;
@@ -7016,7 +7006,8 @@ void CRagEffect::RisingSparkles(char colorMode) {
   EffectPrimitiveState& particle = this->state.lastPrim->state;
   particle.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
   const float distance = static_cast<float>(ClampedRandom(7) + 3);
-  this->state.lastPrim->state.deltaPos2 = RotatedForward(this->state.lastPrim->state.transform.values, distance);
+  const vector3d forward{0.0f, 0.0f, distance};
+  MatrixMult(this->state.lastPrim->state.deltaPos2, forward, this->state.lastPrim->state.transform.values);
   this->state.lastPrim->state.deltaPos2.y -= 5.0f;
   this->state.lastPrim->state.transform.MakeXRotation(GetRadian(-90));
   this->state.lastPrim->state.accel = -0.015f;
@@ -12821,7 +12812,8 @@ void CRagEffect::HealSP() {
     this->state.lastPrim->state.gravSpeed = -1.2f;
     this->state.lastPrim->state.gravAccel = -(this->state.lastPrim->state.gravSpeed / static_cast<float>(this->state.lastPrim->state.duration)) / 1.5f;
     this->state.lastPrim->state.transform.MakeYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
-    this->state.lastPrim->state.deltaPos2 = RotatedForward(this->state.lastPrim->state.transform.values, this->state.lastPrim->state.radius);
+    const vector3d forward{0.0f, 0.0f, this->state.lastPrim->state.radius};
+    MatrixMult(this->state.lastPrim->state.deltaPos2, forward, this->state.lastPrim->state.transform.values);
     this->state.lastPrim->state.size = 0.55f;
     this->state.lastPrim->state.fadeOutCnt = this->state.lastPrim->state.duration - this->state.lastPrim->state.duration / 3;
     this->state.lastPrim->SetSpriteName("\uc774\ud329\ud2b8\\particle2.spr");
