@@ -153,33 +153,31 @@ void matrix::Compose(const matrix& first, const matrix& second) {
 // OFFSET: 0x00554920
 // FUNCTION: fn_02027
 void matrix::MakeInverse(const matrix& source) {
-  const float* a = source.values;
-  float* output = this->values;
-  const float minor = a[4] * a[8] - a[5] * a[7];
-  const float inverse = 1.0f / ((minor * a[0] - (a[3] * a[8] - a[6] * a[5]) * a[1]) + (a[3] * a[7] - a[6] * a[4]) * a[2]);
+  const float minor = source.values[4] * source.values[8] - source.values[5] * source.values[7];
+  const float inverse = 1.0f / ((minor * source.values[0] - (source.values[3] * source.values[8] - source.values[6] * source.values[5]) * source.values[1]) + (source.values[3] * source.values[7] - source.values[6] * source.values[4]) * source.values[2]);
   const float negative = -inverse;
   const float firstX = minor * inverse;
-  output[0] = firstX;
-  const float firstY = (a[1] * a[8] - a[7] * a[2]) * negative;
-  output[1] = firstY;
-  const float firstZ = (a[1] * a[5] - a[2] * a[4]) * inverse;
-  output[2] = firstZ;
-  const float secondX = (a[3] * a[8] - a[6] * a[5]) * negative;
-  output[3] = secondX;
-  const float secondY = (a[0] * a[8] - a[2] * a[6]) * inverse;
-  output[4] = secondY;
-  const float secondZ = (a[0] * a[5] - a[2] * a[3]) * negative;
-  output[5] = secondZ;
-  const float thirdX = (a[7] * a[3] - a[6] * a[4]) * inverse;
-  output[6] = thirdX;
-  const float thirdY = (a[7] * a[0] - a[1] * a[6]) * negative;
-  output[7] = thirdY;
-  const float thirdZ = (a[4] * a[0] - a[1] * a[3]) * inverse;
-  output[8] = thirdZ;
+  values[0] = firstX;
+  const float firstY = (source.values[1] * source.values[8] - source.values[7] * source.values[2]) * negative;
+  values[1] = firstY;
+  const float firstZ = (source.values[1] * source.values[5] - source.values[2] * source.values[4]) * inverse;
+  values[2] = firstZ;
+  const float secondX = (source.values[3] * source.values[8] - source.values[6] * source.values[5]) * negative;
+  values[3] = secondX;
+  const float secondY = (source.values[0] * source.values[8] - source.values[2] * source.values[6]) * inverse;
+  values[4] = secondY;
+  const float secondZ = (source.values[0] * source.values[5] - source.values[2] * source.values[3]) * negative;
+  values[5] = secondZ;
+  const float thirdX = (source.values[7] * source.values[3] - source.values[6] * source.values[4]) * inverse;
+  values[6] = thirdX;
+  const float thirdY = (source.values[7] * source.values[0] - source.values[1] * source.values[6]) * negative;
+  values[7] = thirdY;
+  const float thirdZ = (source.values[4] * source.values[0] - source.values[1] * source.values[3]) * inverse;
+  values[8] = thirdZ;
 
-  output[9] = -(firstX * a[9] + secondX * a[10] + thirdX * a[11]);
-  output[10] = -((firstY * a[9] + secondY * a[10]) + thirdY * a[11]);
-  output[11] = -((secondZ * a[10] + firstZ * a[9]) + thirdZ * a[11]);
+  values[9] = -(firstX * source.values[9] + secondX * source.values[10] + thirdX * source.values[11]);
+  values[10] = -((firstY * source.values[9] + secondY * source.values[10]) + thirdY * source.values[11]);
+  values[11] = -((secondZ * source.values[10] + firstZ * source.values[9]) + thirdZ * source.values[11]);
 }
 
 // OFFSET: 0x00554620
