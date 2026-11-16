@@ -33,7 +33,7 @@ void UIScrollBar_Navi::Paint() {
     CBitmapRes* thumbUp = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\navigation_interface3\\Navi_bar_up.bmp")));
     CBitmapRes* thumbMiddle = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\navigation_interface3\\Navi_bar_mid.bmp")));
     CBitmapRes* thumbDown = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\navigation_interface3\\Navi_bar_down.bmp")));
-    const int thumb = (this->arrowLength + ((interior - this->ThumbLength()) * this->position) / this->maximum);
+    const int thumb = this->arrowLength + this->ThumbOffset();
     this->DrawBitmap(0, thumb, thumbUp, true);
     const int length = this->ThumbLength();
 
