@@ -63,7 +63,7 @@ UIMiniMapWnd::UIMiniMapWnd()
 // FUNCTION: fn_13554
 void UIMiniMapWnd::AddTownMarks() {
   std::string mapName = g_modeMgr.GetGameMode()->mapName;
-  this->warpMarks.clear();
+  this->marks[2].clear();
 
   for (int index = 0;; ++index) {
     TownInfo info = g_townInfoMgr->GetTownInfo(mapName, index);
@@ -75,7 +75,7 @@ void UIMiniMapWnd::AddTownMarks() {
       MiniMapMark mark;
       mark.x = static_cast<int>(static_cast<float>(info.x) * this->scale - 6.0f + this->originX);
       mark.y = static_cast<int>(this->originY - (static_cast<float>(info.y) * this->scale + 6.0f));
-      this->warpMarks.push_back(mark);
+      this->marks[2].push_back(mark);
     } else {
       UIBitmapButton* button = new UIBitmapButton();
       button->SetBitmap(info.image.c_str(), 0, 0);
@@ -343,18 +343,18 @@ void UIMiniMapWnd::Paint() {
   }
 
   auto* warp = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\minimap\\warp.bmp")));
-  for (unsigned index = 0; index < this->warpMarks.size(); ++index) {
+  for (unsigned index = 0; index < this->marks[2].size(); ++index) {
     if (warp) {
-      this->DrawBitmap(this->warpMarks[index].x, this->warpMarks[index].y, warp, true);
+      this->DrawBitmap(this->marks[2][index].x, this->marks[2][index].y, warp, true);
     }
   }
 
   if (this->guildCheckBox->geometry.state != 0) {
     auto* guild = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\minimap\\guild.bmp")));
-    for (unsigned index = 0; index < this->guildMarks.size(); ++index) {
-      const int x = this->guildMarks[index].x;
+    for (unsigned index = 0; index < this->marks[1].size(); ++index) {
+      const int x = this->marks[1][index].x;
       if (x > 0) {
-        const int y = this->guildMarks[index].y;
+        const int y = this->marks[1][index].y;
         if (y > 0 && guild) {
           this->DrawBitmap(x, y, guild, true);
         }
@@ -362,10 +362,10 @@ void UIMiniMapWnd::Paint() {
     }
 
     auto* party = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\minimap\\Party.bmp")));
-    for (unsigned index = 0; index < this->partyMarks.size(); ++index) {
-      const int x = this->partyMarks[index].x;
+    for (unsigned index = 0; index < this->marks[0].size(); ++index) {
+      const int x = this->marks[0][index].x;
       if (x > 0) {
-        const int y = this->partyMarks[index].y;
+        const int y = this->marks[0][index].y;
         if (y > 0 && party) {
           this->DrawBitmap(x, y, party, true);
         }
@@ -482,11 +482,11 @@ int UIMiniMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
 
   case UM_MINIMAP_SET_MARK_POS:
     if (static_cast<unsigned>(argument1) < 3 && argument2 >= 0) {
-      std::vector<MiniMapMark>& marks = (&this->partyMarks)[argument1];
-      if (static_cast<unsigned>(argument2) < marks.size()) {
+      std::vector<MiniMapMark>& markList = this->marks[argument1];
+      if (static_cast<unsigned>(argument2) < markList.size()) {
         const int half = argument1 == 2 ? 8 : 6;
-        marks[argument2].x = static_cast<int>(static_cast<float>(argument3) * this->scale - half + this->originX);
-        marks[argument2].y = static_cast<int>(this->originY - (static_cast<float>(argument4) * this->scale + half));
+        markList[argument2].x = static_cast<int>(static_cast<float>(argument3) * this->scale - half + this->originX);
+        markList[argument2].y = static_cast<int>(this->originY - (static_cast<float>(argument4) * this->scale + half));
         this->Invalidate();
         return 0;
       }
@@ -495,9 +495,9 @@ int UIMiniMapWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
 
   case UM_MINIMAP_SET_MARK_COUNT:
     if (argument2 >= 0) {
-      std::vector<MiniMapMark>& marks = (&this->partyMarks)[argument1];
-      if (static_cast<unsigned>(argument2) != marks.size()) {
-        marks.resize(argument2, MiniMapMark{-100, -100});
+      std::vector<MiniMapMark>& markList = this->marks[argument1];
+      if (static_cast<unsigned>(argument2) != markList.size()) {
+        markList.resize(argument2, MiniMapMark{-100, -100});
         this->Invalidate();
         return 0;
       }

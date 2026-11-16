@@ -46,9 +46,7 @@ public:
   /* 0130 */ std::map<int, UIBitmapButton*> townButtons;
   /* 0138 */ std::map<int, UIButton*> questButtons;
   /* 0140 */ std::map<int, MiniMapMark> questMarks;
-  /* 0148 */ std::vector<MiniMapMark> partyMarks;
-  /* 0154 */ std::vector<MiniMapMark> guildMarks;
-  /* 0160 */ std::vector<MiniMapMark> warpMarks;
+  /* 0148 */ std::vector<MiniMapMark> marks[3];
 };
 
 #endif
