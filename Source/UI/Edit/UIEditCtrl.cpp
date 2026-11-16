@@ -1532,7 +1532,7 @@ int UIMerchantItemMyShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_
   }
   case UM_REFRESHITEM: {
     this->items.erase(this->items.begin(), this->items.end());
-    const int size = g_session.GetList9Size();
+    const int size = g_session.GetNumMerchantPurchaseItems();
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetItem1758At(i);
       if (item.identity[1] != 0) {
@@ -1655,7 +1655,7 @@ int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     int total = g_session.GetItem1720Total();
     int budget = g_session.m_zeny;
     if (this->cashShopMode) {
-      if (g_session.GetList2Size() == 10) {
+      if (g_session.GetNumPurchaseItems() == 10) {
         g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>("한 번에 10개 이상 구매 할 수 없습니다."), 0xFF, 0, 0, 0);
         return 0;
@@ -1700,7 +1700,7 @@ int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       if (!this->cashShopMode) {
         mode->SendMsg(MM_REQ_PURCHASE, 0, 0, 0, 0);
       } else {
-        if (!g_session.GetList2Size()) {
+        if (!g_session.GetNumPurchaseItems()) {
           break;
         }
 
@@ -1820,7 +1820,7 @@ int UIItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   case UM_REFRESHITEM: {
     this->items.erase(this->items.begin(), this->items.end());
     int total = 0;
-    const int size = g_session.GetList2Size();
+    const int size = g_session.GetNumPurchaseItems();
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetItem1720At(i);
       if (item.identity[1] != 0) {
@@ -6180,7 +6180,7 @@ int UIMerchantItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     break;
   case UM_REFRESHITEM: {
     this->items.erase(this->items.begin(), this->items.end());
-    const int size = g_session.GetList6Size();
+    const int size = g_session.GetNumMerchantShopItems();
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetItem1740At(i);
       if (item.identity[1] != 0) {
@@ -6279,7 +6279,7 @@ int UIMerchantMirrorItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     break;
   case UM_REFRESHITEM: {
     this->items.erase(this->items.begin(), this->items.end());
-    const int size = g_session.GetList8Size();
+    const int size = g_session.GetNumMerchantMyShopItems();
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetItem1750At(i);
       if (item.identity[1] != 0) {
@@ -6352,7 +6352,7 @@ int UIItemSellWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     return 0;
   }
   case UM_COMMAND: {
-    const int count = g_session.GetList4Size();
+    const int count = g_session.GetNumStorageItems();
     CMode* mode = g_modeMgr.currentMode;
     if (a == ID_OK) {
       if (count > 0) {
@@ -6417,7 +6417,7 @@ int UIItemSellWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     }
 
     this->items.erase(this->items.begin(), this->items.end());
-    const int size = g_session.GetList4Size();
+    const int size = g_session.GetNumStorageItems();
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetItem1730At(i);
       if (item.identity[1] != 0) {
@@ -6491,7 +6491,7 @@ int UIMerchantItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intpt
     item.Assign(drag);
 
     ITEM_INFO found;
-    const int ownedCount = g_session.GetList10Size();
+    const int ownedCount = g_session.GetNumMerchantHopeToSellItems();
     int owned = 0;
     for (int i = 0; i < ownedCount; ++i) {
       found = g_session.GetItem1760At(i);
@@ -6502,7 +6502,7 @@ int UIMerchantItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intpt
     }
 
     ITEM_INFO stock;
-    const int stockCount = g_session.GetList7Size();
+    const int stockCount = g_session.GetNumMerchantMirrorItems();
     int limit = 0;
     for (int i = 0; i < stockCount; ++i) {
       stock = g_session.GetItem1748At(i);
@@ -6639,7 +6639,7 @@ int UIMerchantItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intpt
   case UM_REFRESHITEM: {
     this->items.erase(this->items.begin(), this->items.end());
     int sum = 0;
-    const int count = g_session.GetList10Size();
+    const int count = g_session.GetNumMerchantHopeToSellItems();
     for (int i = 0; i < count; ++i) {
       ITEM_INFO item = g_session.GetItem1760At(i);
       if (item.identity[1] != 0) {
@@ -6754,7 +6754,7 @@ int UIMerchantItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     break;
   case UM_REFRESHITEM: {
     this->items.erase(this->items.begin(), this->items.end());
-    const int size = g_session.GetList7Size();
+    const int size = g_session.GetNumMerchantMirrorItems();
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetItem1748At(i);
       if (item.identity[1] != 0) {
@@ -8286,7 +8286,7 @@ int UIItemShopWnd2::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     break;
   case UM_REFRESHITEM: {
     this->items.erase(this->items.begin(), this->items.end());
-    const int size = g_session.GetList1Size();
+    const int size = g_session.GetNumShopItems();
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetItem1718At(i);
       if (item.identity[1] != 0) {
@@ -8418,7 +8418,7 @@ int UIItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     break;
   case UM_REFRESHITEM: {
     this->items.erase(this->items.begin(), this->items.end());
-    const int size = g_session.GetList1Size();
+    const int size = g_session.GetNumShopItems();
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetItem1718At(i);
       if (item.identity[1] > 0) {
@@ -8463,7 +8463,7 @@ int UIItemStoreSubWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   }
   case UM_REFRESHITEM: {
     this->items.erase(this->items.begin(), this->items.end());
-    const int size = g_session.GetList5Size();
+    const int size = g_session.GetNumCartItems();
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetItem1738At(i);
       if (item.identity[1] == 0) {
@@ -8798,7 +8798,7 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     return 0;
   case UM_REFRESHITEM: {
     this->items.erase(this->items.begin(), this->items.end());
-    const int size = g_session.GetList5Size();
+    const int size = g_session.GetNumCartItems();
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetItem1738At(i);
       if (item.identity[1] == 0) {
@@ -9981,7 +9981,7 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
       return 0;
     }
     this->items.erase(this->items.begin(), this->items.end());
-    for (int i = 0; i < g_session.GetList0Size(); ++i) {
+    for (int i = 0; i < g_session.GetNumInventoryItems(); ++i) {
       ITEM_INFO item = g_session.GetInventoryItemAt(i);
       if (item.identity[1] == 0) {
         continue;
@@ -10127,7 +10127,7 @@ int UIMerchantItemPurchaseMSGWnd::SendMsg(UIWindow* sender, int message, std::in
 // FUNCTION: fn_13443
 void UIItemWnd::RefreshItems() {
   this->items.clear();
-  for (int i = 0; i < g_session.GetList0Size(); ++i) {
+  for (int i = 0; i < g_session.GetNumInventoryItems(); ++i) {
     ITEM_INFO item = g_session.GetInventoryItemAt(i);
     if (item.flags[0] == 1) {
       this->items.push_back(item);
@@ -10268,7 +10268,7 @@ void UIMerchantItemPurchaseMSGWnd::SetPurchase(int value, int amount) {
   this->purchaseAmount = amount;
 
   int total = 0;
-  const int count = g_session.GetList10Size();
+  const int count = g_session.GetNumMerchantHopeToSellItems();
   for (int i = 0; i < count; ++i) {
     ITEM_INFO item;
     item = g_session.GetItem1760At(i);
@@ -10986,7 +10986,7 @@ int UIItemSellWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
   case UM_REFRESHITEM: {
     this->items.erase(this->items.begin(), this->items.end());
     int totalPrice = 0;
-    const int size = g_session.GetList4Size();
+    const int size = g_session.GetNumStorageItems();
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetItem1730At(i);
       if (item.identity[1] != 0) {
@@ -11182,7 +11182,7 @@ void UIItemWnd::Paint() {
     }
   }
 
-  const int count = g_session.GetList0Size() + g_session.CountDistinctEquippedItems() + g_session.CountDistinctCostumeItems();
+  const int count = g_session.GetNumInventoryItems() + g_session.CountDistinctEquippedItems() + g_session.CountDistinctCostumeItems();
   const std::uint32_t color = count >= g_session.extraInventorySlots + 100 ? 0xFF : 0x232323;
   this->DrawTextAt(35, this->geometry.height - 15, FormatOwnedString("%d", count).c_str(), 0, 0, 11, color, 0, 0);
   const int width = this->TextWidth(FormatOwnedString("%d", count).c_str(), 0, 0, 11, 0, 0);
@@ -11312,7 +11312,7 @@ int UIItemStoreFindWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
     return 0;
   case UM_REFRESHITEM: {
     this->items.erase(this->items.begin(), this->items.end());
-    const int size = g_session.GetList5Size();
+    const int size = g_session.GetNumCartItems();
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetItem1738At(i);
       if (item.identity[1] != 0) {
@@ -11472,14 +11472,14 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     ITEM_INFO item;
     item.Assign(mode->drag);
     if (mode->drag.source == 20) {
-      if (this->slotCount > g_session.GetList11Size()) {
+      if (this->slotCount > g_session.GetNumMerchantPurchaseSavedItems()) {
         if (!g_session.AddMerchantPurchaseSavedItem(item, 1, 1)) {
           g_windowMgr.Confirm(LookupMessage(MSI_BUYINGSTORE_MAKEWND_DUPLICATEITEM), 0, true, false, 0, "Message", 280, 120, 0);
         } else {
           g_session.RemoveMerchantMyShopItem(item, 1, 1);
         }
       }
-      int index = std::min(std::max(g_session.GetList11Size() - 1, 0), 4);
+      int index = std::min(std::max(g_session.GetNumMerchantPurchaseSavedItems() - 1, 0), 4);
       if (this->priceEdits[index]) {
         if (this->priceEdits[index]->Length() == 0) {
           this->priceEdits[index]->SetText("0");
@@ -11500,7 +11500,7 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
       }
       if (item.quantity != 0) {
-        const bool full = this->slotCount <= g_session.GetList11Size();
+        const bool full = this->slotCount <= g_session.GetNumMerchantPurchaseSavedItems();
         bool movable;
         if (!full) {
           movable = g_session.GetItem1750Quantity(mode->drag.id) != 0;
@@ -11511,7 +11511,7 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
           g_session.AddMerchantPurchaseSavedItem(item, 0, 1);
           g_session.RemoveMerchantMyShopItem(item, 0, 1);
         }
-        int index = g_session.GetList11Size() - 1;
+        int index = g_session.GetNumMerchantPurchaseSavedItems() - 1;
         bool fresh = true;
         std::string price;
         ITEM_INFO owned = g_session.FindMerchantPurchaseSavedItem(mode->drag.id);
@@ -11551,7 +11551,7 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
   }
   case UM_REFRESHITEM: {
     this->items.erase(this->items.begin(), this->items.end());
-    const int count = g_session.GetList11Size();
+    const int count = g_session.GetNumMerchantPurchaseSavedItems();
     for (int i = 0; i < count; ++i) {
       ITEM_INFO item = g_session.GetItem1768At(i);
       if (item.identity[1] > 0) {
@@ -11854,7 +11854,7 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         }
       } else {
         std::int64_t total = g_session.m_zeny;
-        for (std::int64_t i = 0; i < g_session.GetList11Size(); ++i) {
+        for (std::int64_t i = 0; i < g_session.GetNumMerchantPurchaseSavedItems(); ++i) {
           ITEM_INFO item = g_session.GetItem1768At(static_cast<int>(i));
           const std::int64_t price = static_cast<int>(item.prices[1]);
           const std::int64_t quantity = item.quantity;

@@ -5652,44 +5652,44 @@ void CSession::ResetSlots() {
 
 // OFFSET: 0x00DDF8B0
 // FUNCTION: fn_23428
-int CSession::GetList0Size() const {
+int CSession::GetNumInventoryItems() const {
   return static_cast<int>(this->m_inventoryItems.size());
 }
 
 // OFFSET: 0x00DDF8C0
 // FUNCTION: fn_23429
-int CSession::GetList11Size() const {
-  return static_cast<int>(this->merchantPurchaseSavedItems.size());
+int CSession::GetNumMerchantPurchaseSavedItems() const {
+  return static_cast<int>(this->m_merchantPurchaseSavedItems.size());
 }
 
 // OFFSET: 0x00DDF8D0
 // FUNCTION: fn_23430
-int CSession::GetList6Size() const {
-  return static_cast<int>(this->merchantShopItems.size());
+int CSession::GetNumMerchantShopItems() const {
+  return static_cast<int>(this->m_merchantShopItems.size());
 }
 
 // OFFSET: 0x00DDF8E0
 // FUNCTION: fn_23431
-int CSession::GetList8Size() const {
-  return static_cast<int>(this->merchantMyShopItems.size());
+int CSession::GetNumMerchantMyShopItems() const {
+  return static_cast<int>(this->m_merchantMyShopItems.size());
 }
 
 // OFFSET: 0x00DDF8F0
 // FUNCTION: fn_23432
-int CSession::GetList9Size() const {
-  return static_cast<int>(this->merchantPurchaseItems.size());
+int CSession::GetNumMerchantPurchaseItems() const {
+  return static_cast<int>(this->m_merchantPurchaseItems.size());
 }
 
 // OFFSET: 0x00DDF900
 // FUNCTION: fn_23433
-int CSession::GetList10Size() const {
-  return static_cast<int>(this->merchantHopeToSellItems.size());
+int CSession::GetNumMerchantHopeToSellItems() const {
+  return static_cast<int>(this->m_merchantHopeToSellItems.size());
 }
 
 // OFFSET: 0x00DDF910
 // FUNCTION: fn_23434
-int CSession::GetList7Size() const {
-  return static_cast<int>(this->merchantMirrorItems.size());
+int CSession::GetNumMerchantMirrorItems() const {
+  return static_cast<int>(this->m_merchantMirrorItems.size());
 }
 
 // OFFSET: 0x00DDF920
@@ -5706,26 +5706,26 @@ int CSession::GetInventoryCategorySize(int index) const {
 
 // OFFSET: 0x00DDF9E0
 // FUNCTION: fn_23437
-int CSession::GetList2Size() const {
-  return static_cast<int>(this->purchaseItems.size());
+int CSession::GetNumPurchaseItems() const {
+  return static_cast<int>(this->m_purchaseItems.size());
 }
 
 // OFFSET: 0x00DDF9F0
 // FUNCTION: fn_23438
-int CSession::GetList4Size() const {
-  return static_cast<int>(this->storageItems.size());
+int CSession::GetNumStorageItems() const {
+  return static_cast<int>(this->m_storageItems.size());
 }
 
 // OFFSET: 0x00DDFA00
 // FUNCTION: fn_23439
-int CSession::GetList1Size() const {
-  return static_cast<int>(this->shopItems.size());
+int CSession::GetNumShopItems() const {
+  return static_cast<int>(this->m_shopItems.size());
 }
 
 // OFFSET: 0x00DDFA10
 // FUNCTION: fn_23440
-int CSession::GetList5Size() const {
-  return static_cast<int>(this->cartItems.size());
+int CSession::GetNumCartItems() const {
+  return static_cast<int>(this->m_cartItems.size());
 }
 
 // OFFSET: 0x00DD8380
@@ -5764,9 +5764,9 @@ void CSession::KeepEquipment() {
 // OFFSET: 0x00DD8540
 // FUNCTION: fn_23307
 void CSession::ClearTradeItems() {
-  this->purchaseItems.erase(this->purchaseItems.begin(), this->purchaseItems.end());
-  this->storageItems.erase(this->storageItems.begin(), this->storageItems.end());
-  this->shopItems.erase(this->shopItems.begin(), this->shopItems.end());
+  this->m_purchaseItems.erase(this->m_purchaseItems.begin(), this->m_purchaseItems.end());
+  this->m_storageItems.erase(this->m_storageItems.begin(), this->m_storageItems.end());
+  this->m_shopItems.erase(this->m_shopItems.begin(), this->m_shopItems.end());
 }
 
 // OFFSET: 0x00DD8660

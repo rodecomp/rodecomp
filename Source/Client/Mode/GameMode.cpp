@@ -2628,7 +2628,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       return 0;
     }
     case MM_REQ_SELL: {
-      const int count = g_session.GetList4Size();
+      const int count = g_session.GetNumStorageItems();
       const std::uint32_t size = 4U + static_cast<std::uint32_t>(count) * 4U;
       if (size > 0x800) {
         return 0;
@@ -2839,7 +2839,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
     }
     case MM_REQ_TRADE_BUYING_STORE: {
       g_session.CopyItems1760To1770();
-      const int count = g_session.GetList10Size();
+      const int count = g_session.GetNumMerchantHopeToSellItems();
       const std::uint32_t size = 12U + static_cast<std::uint32_t>(count) * 8U;
       if (size > 0x800) {
         return 0;
@@ -3186,7 +3186,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
     }
     case MM_OPEN_BUYING_STORE_EXTENDED: {
       unsigned char packet[0x800]{};
-      const int count = g_session.GetList11Size();
+      const int count = g_session.GetNumMerchantPurchaseSavedItems();
       const std::uint16_t packetId = ID_CZ_REQ_CREATE_ASSISTANT_BUYING;
       const std::uint16_t length = static_cast<std::uint16_t>(96 + count * 10);
       std::memcpy(packet, &packetId, sizeof(packetId));
@@ -3387,7 +3387,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       return 0;
     case MM_NPC_MARKET_PURCHASE: {
       unsigned char packet[2048]{};
-      const int count = g_session.GetList2Size();
+      const int count = g_session.GetNumPurchaseItems();
       const std::uint32_t length = 4U + static_cast<std::uint32_t>(count) * 8U;
       if (length > sizeof(packet)) {
         return 0;
@@ -3703,7 +3703,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
     }
     case MM_NPC_MARKET_PURCHASE_V2: {
       unsigned char packet[0x800]{};
-      const int count = g_session.GetList2Size();
+      const int count = g_session.GetNumPurchaseItems();
       const std::uint32_t length = static_cast<std::uint32_t>(count) * 10U + 4U;
       if (length > sizeof(packet)) {
         return 0;
@@ -3971,11 +3971,11 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       return 0;
     }
     case MM_REQ_BUY_CASH_POINT: {
-      if (g_session.GetList2Size() == 0 || this->isPlayerDead != 0) {
+      if (g_session.GetNumPurchaseItems() == 0 || this->isPlayerDead != 0) {
         g_session.ClearTradeItems();
         return 0;
       }
-      const int count = g_session.GetList2Size();
+      const int count = g_session.GetNumPurchaseItems();
       const std::uint32_t length = static_cast<std::uint32_t>(count) * 6U + 10U;
       if (length > 0x800) {
         return 0;
@@ -4436,7 +4436,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       return 0;
     }
     case MM_REQ_OPENSTORE: {
-      const int count = g_session.GetList11Size();
+      const int count = g_session.GetNumMerchantPurchaseSavedItems();
       OpenStorePacket packet;
       packet.packetId = ID_CZ_REQ_OPENSTORE2;
       packet.length = static_cast<std::int16_t>(85 + count * 8);
@@ -4636,7 +4636,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
     }
     case MM_PC_PURCHASE_ITEMLIST_FROMMC: {
       g_session.CopyItems1760To1770();
-      const int count = g_session.GetList10Size();
+      const int count = g_session.GetNumMerchantHopeToSellItems();
       const std::uint32_t length = 12U + static_cast<std::uint32_t>(count) * 4U;
       if (length > 0x800U) {
         return 0;
@@ -4821,7 +4821,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       return 0;
     }
     case MM_REQ_PURCHASE: {
-      const int count = g_session.GetList2Size();
+      const int count = g_session.GetNumPurchaseItems();
       const std::uint32_t length = 4U + static_cast<std::uint32_t>(count) * 6U;
       if (length > 0x800) {
         return 0;
@@ -4977,7 +4977,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       return 0;
     }
     case MM_ITEMLISTWIN_RES: {
-      const int count = g_session.GetList4Size();
+      const int count = g_session.GetNumStorageItems();
       const std::uint32_t length = 12U + static_cast<std::uint32_t>(count) * 4U;
       if (length > 0x800) {
         return 0;
@@ -5170,7 +5170,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       return 0;
     }
     case MM_REQ_OPEN_BUYING_STORE: {
-      const int count = g_session.GetList11Size();
+      const int count = g_session.GetNumMerchantPurchaseSavedItems();
       unsigned char packet[0x800];
       const std::uint16_t header[] = {ID_CZ_REQ_OPEN_BUYING_STORE, static_cast<std::uint16_t>(0x59 + count * 10)};
       std::memcpy(packet, header, sizeof(header));
@@ -5205,7 +5205,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
     }
     case MM_OFFLINE_STORE_CREATE: {
       unsigned char packet[0x800] = {};
-      const int count = g_session.GetList11Size();
+      const int count = g_session.GetNumMerchantPurchaseSavedItems();
       const std::uint16_t header[] = {ID_CZ_REQ_CREATE_ASSISTANT_VENDING, static_cast<std::uint16_t>(0x58 + count * 8)};
       std::memcpy(packet, header, sizeof(header));
       std::strncpy(reinterpret_cast<char*>(packet + 4), reinterpret_cast<const char*>(argument1), 0x4F);

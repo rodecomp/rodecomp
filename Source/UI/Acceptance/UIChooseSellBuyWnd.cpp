@@ -6486,7 +6486,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
     return 0;
 
   case UM_SCROLLVERT:
-    if (g_session.GetList2Size() < 4) {
+    if (g_session.GetNumPurchaseItems() < 4) {
       return 0;
     }
     if (argument1 < 0) {
@@ -6497,8 +6497,8 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
     if (this->m_firstOther < 0) {
       this->m_firstOther = 0;
     }
-    if (this->m_firstOther > g_session.GetList2Size() - 3) {
-      this->m_firstOther = g_session.GetList2Size() - 3;
+    if (this->m_firstOther > g_session.GetNumPurchaseItems() - 3) {
+      this->m_firstOther = g_session.GetNumPurchaseItems() - 3;
     }
     this->m_otherScroll->SetPosition(this->m_firstOther);
     this->m_otherScroll->Invalidate();
@@ -6514,8 +6514,8 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
 
   case UM_SCROLLVERTPAGEDOWN:
     ++this->m_firstOther;
-    if (this->m_firstOther > std::min(g_session.GetList2Size() - 3, 4)) {
-      this->m_firstOther = std::min(g_session.GetList2Size() - 3, 4);
+    if (this->m_firstOther > std::min(g_session.GetNumPurchaseItems() - 3, 4)) {
+      this->m_firstOther = std::min(g_session.GetNumPurchaseItems() - 3, 4);
     }
     this->m_otherScroll->SetPosition(this->m_firstOther);
     this->m_otherScroll->Invalidate();
@@ -6570,7 +6570,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
           break;
         }
 
-        const int count = g_session.GetList2Size();
+        const int count = g_session.GetNumPurchaseItems();
         const unsigned int length = (count + 1) * 10;
         if (length > 0x800) {
           break;
@@ -6711,22 +6711,22 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
       item.Assign(mode->drag);
       g_session.RemoveItem1720ByName(item);
       this->m_totalPrice -= item.quantity * item.prices[1];
-      if (g_session.GetList2Size() == 3) {
+      if (g_session.GetNumPurchaseItems() == 3) {
         this->m_firstOther = 0;
         this->m_otherScroll->SetPosition(0);
         this->m_otherScroll->SetRange(4, 4, 4);
         this->m_otherScroll->Invalidate();
         this->m_otherScroll->Show(0);
-      } else if (g_session.GetList2Size() > 3 && g_session.GetList2Size() < 7) {
-        this->m_otherScroll->SetRange(4, 4, g_session.GetList2Size() + 1);
-        if (this->m_firstOther > g_session.GetList2Size() - 3) {
-          this->m_firstOther = g_session.GetList2Size() - 3;
+      } else if (g_session.GetNumPurchaseItems() > 3 && g_session.GetNumPurchaseItems() < 7) {
+        this->m_otherScroll->SetRange(4, 4, g_session.GetNumPurchaseItems() + 1);
+        if (this->m_firstOther > g_session.GetNumPurchaseItems() - 3) {
+          this->m_firstOther = g_session.GetNumPurchaseItems() - 3;
           this->m_otherScroll->SetPosition(this->m_firstOther);
         }
         this->m_otherScroll->Invalidate();
       }
     } else if (mode->drag.source == 6) {
-      if (g_session.GetList2Size() >= 8) {
+      if (g_session.GetNumPurchaseItems() >= 8) {
         mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
         return 0;
       }
@@ -6754,15 +6754,15 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
       item.bindOnEquip = static_cast<std::uint16_t>(this->m_selectedIndex);
       g_session.MergeItem1720ByName(item);
       this->m_totalPrice += item.quantity * item.prices[1];
-      if (g_session.GetList2Size() >= 4 && g_session.GetList2Size() < 8) {
+      if (g_session.GetNumPurchaseItems() >= 4 && g_session.GetNumPurchaseItems() < 8) {
         int total;
-        if (g_session.GetList2Size() == 4) {
+        if (g_session.GetNumPurchaseItems() == 4) {
           this->m_firstOther = 1;
           this->m_otherScroll->Show(1);
           total = 5;
         } else {
-          this->m_firstOther = g_session.GetList2Size() - 3;
-          total = g_session.GetList2Size() + 1;
+          this->m_firstOther = g_session.GetNumPurchaseItems() - 3;
+          total = g_session.GetNumPurchaseItems() + 1;
         }
         this->m_otherScroll->SetRange(4, 4, total);
         this->m_otherScroll->SetPosition(this->m_firstOther);
@@ -6771,7 +6771,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
     }
 
     this->m_otherItems.clear();
-    const int count = g_session.GetList2Size();
+    const int count = g_session.GetNumPurchaseItems();
     for (int index = 0; index < count; ++index) {
       ITEM_INFO other = g_session.GetItem1720At(index);
       if (other.identity[1] != 0) {
@@ -6791,7 +6791,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
 // OFFSET: 0x008F5AA0
 // FUNCTION: fn_12312
 void UInCashWnd::OnWheel(int delta) {
-  if (g_session.GetList2Size() < 4) {
+  if (g_session.GetNumPurchaseItems() < 4) {
     return;
   }
   if (delta < 0) {
@@ -7188,7 +7188,7 @@ ITEM_INFO UInCashWnd::ItemAt(int x, int y) {
     if (y >= top && y <= top + this->m_rowHeight) {
       index = this->m_firstOther + row;
       this->m_selected = index;
-      if (lists.GetList2Size() <= index) {
+      if (lists.GetNumPurchaseItems() <= index) {
         return ITEM_INFO(0);
       }
       break;
@@ -10103,7 +10103,7 @@ void UInCashWnd::OnLBtnDblClk(int x, int y) {
   this->m_otherItems.erase(this->m_otherItems.begin(), this->m_otherItems.end());
 
   const CSession& lists = g_session;
-  const int count = lists.GetList2Size();
+  const int count = lists.GetNumPurchaseItems();
   for (int index = 0; index < count; ++index) {
     ITEM_INFO other = g_session.GetItem1720At(index);
     if (other.identity[1] > 0) {
@@ -10111,16 +10111,16 @@ void UInCashWnd::OnLBtnDblClk(int x, int y) {
     }
   }
 
-  if (lists.GetList2Size() == 3) {
+  if (lists.GetNumPurchaseItems() == 3) {
     this->m_firstOther = 0;
     this->m_otherScroll->SetPosition(0);
     this->m_otherScroll->SetRange(4, 4, 4);
     this->m_otherScroll->Invalidate();
     this->m_otherScroll->Show(0);
-  } else if (lists.GetList2Size() > 3 && lists.GetList2Size() < 7) {
-    this->m_otherScroll->SetRange(4, 4, lists.GetList2Size() + 1);
-    if (this->m_firstOther > lists.GetList2Size() - 3) {
-      this->m_firstOther = lists.GetList2Size() - 3;
+  } else if (lists.GetNumPurchaseItems() > 3 && lists.GetNumPurchaseItems() < 7) {
+    this->m_otherScroll->SetRange(4, 4, lists.GetNumPurchaseItems() + 1);
+    if (this->m_firstOther > lists.GetNumPurchaseItems() - 3) {
+      this->m_firstOther = lists.GetNumPurchaseItems() - 3;
       this->m_otherScroll->SetPosition(this->m_firstOther);
     }
     this->m_otherScroll->Invalidate();

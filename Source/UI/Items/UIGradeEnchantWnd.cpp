@@ -743,7 +743,7 @@ void UIGradeEnchantWnd::UpdateEnchantMessages() {
   }
 
   if (static_cast<float>(g_session.m_weight) > static_cast<float>(g_session.m_maxWeight) * 0.7f ||
-      g_session.GetList0Size() + g_session.CountDistinctEquippedItems() +
+      g_session.GetNumInventoryItems() + g_session.CountDistinctEquippedItems() +
           g_session.CountDistinctCostumeItems() >=
         g_session.extraInventorySlots + 100) {
     this->messageIds.push_back(3710);

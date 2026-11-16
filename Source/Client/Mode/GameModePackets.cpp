@@ -2464,7 +2464,7 @@ void __stdcall ProcessVendingSale(int field8, int itemIdWord, int quantityWord, 
   if (g_windowMgr.merchantItemWnd != nullptr) {
     g_windowMgr.merchantItemWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
-  if (g_session.GetList9Size() == 0) {
+  if (g_session.GetNumMerchantPurchaseItems() == 0) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_IS_SOLD_OUT)), 0xFF00, 0, 0, 0);
     if (g_windowMgr.merchantItemMyShopWnd != nullptr) {
       g_windowMgr.merchantItemMyShopWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
@@ -2497,7 +2497,7 @@ __declspec(noinline) void CGameMode::ProcessBuyingStorePurchase(int updateTime, 
     if (g_session.m_muteSellSound) {
       g_soundMgr->PlayWave("effect\\ef_steal.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
-    if (g_session.GetList9Size() == 0) {
+    if (g_session.GetNumMerchantPurchaseItems() == 0) {
       g_windowMgr.buyingShopMyItemsWnd->SendMsg(nullptr, UM_COMMAND, ID_CLOSE, 0, 0, 0);
     }
   }

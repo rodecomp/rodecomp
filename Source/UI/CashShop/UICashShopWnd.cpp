@@ -1005,7 +1005,7 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
       }
 
       if (g_session.m_launchPassCommandLine) {
-        const int owned = lists.GetList0Size() + g_session.CountDistinctEquippedItems() + g_session.CountDistinctCostumeItems();
+        const int owned = lists.GetNumInventoryItems() + g_session.CountDistinctEquippedItems() + g_session.CountDistinctCostumeItems();
         if (g_session.m_weight > g_session.m_maxWeight * 0.7f || cartItems.front().quantity + owned > g_session.extraInventorySlots + 100) {
           g_windowMgr.Confirm(LookupMessage(MSI_ANOTHER_WORKING), 0, true, false, 0, "Message", 0x118, 0x78, 0);
           return 0;

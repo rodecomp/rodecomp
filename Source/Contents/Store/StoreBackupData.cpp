@@ -65,7 +65,7 @@ void CMCStoreInfoBackup::ExportData(Json::Value& data) const {
   data["Title"] = ToUtf8(this->title, g_textCodePage);
   Json::Value values;
 
-  const int itemCount = g_session.GetList9Size();
+  const int itemCount = g_session.GetNumMerchantPurchaseItems();
   for (int itemIndex = 0; itemIndex < itemCount; ++itemIndex) {
     const ITEM_INFO item = g_session.GetItem1758At(itemIndex);
     Json::Value value;

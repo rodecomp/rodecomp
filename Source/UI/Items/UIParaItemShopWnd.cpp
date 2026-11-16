@@ -430,7 +430,7 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
   case UM_REFRESHITEM: {
     this->items.erase(this->items.begin(), this->items.end());
     int sum = 0;
-    const int size = g_session.GetList2Size();
+    const int size = g_session.GetNumPurchaseItems();
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetItem1720At(i);
       if (item.identity[1] != 0) {
@@ -571,7 +571,7 @@ int UIParaItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     break;
   case UM_REFRESHITEM: {
     this->items.erase(this->items.begin(), this->items.end());
-    const int size = g_session.GetList1Size();
+    const int size = g_session.GetNumShopItems();
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetItem1718At(i);
       if (item.identity[1] > 0) {

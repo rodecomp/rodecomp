@@ -3035,7 +3035,7 @@ struct TradeItemFilterPacket {
 void CGameMode::ReceiveTradeItemFilter(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const TradeItemFilterPacket*>(data);
   g_session.ClearTradeItems();
-  const int count = g_session.GetList0Size();
+  const int count = g_session.GetNumInventoryItems();
   for (int i = 0; i < count; ++i) {
     ITEM_INFO item = g_session.GetInventoryItemAt(i);
     if (item.identity[1] == 0) {

@@ -754,7 +754,7 @@ void CSession::UnflagInventoryItem(int id) {
 // OFFSET: 0x00E016A0
 // FUNCTION: fn_23648
 void CSession::UnflagMerchantShopItem(int id) {
-  for (ITEM_INFO& entry : this->merchantShopItems) {
+  for (ITEM_INFO& entry : this->m_merchantShopItems) {
     if (entry.identity[1] == static_cast<std::uint32_t>(id)) {
       entry.flags[2] = 0;
       break;
@@ -765,7 +765,7 @@ void CSession::UnflagMerchantShopItem(int id) {
 // OFFSET: 0x00E016D0
 // FUNCTION: fn_23649
 void CSession::UnflagCartItem(int id) {
-  for (ITEM_INFO& entry : this->cartItems) {
+  for (ITEM_INFO& entry : this->m_cartItems) {
     if (entry.identity[1] == static_cast<std::uint32_t>(id)) {
       entry.flags[2] = 0;
       break;

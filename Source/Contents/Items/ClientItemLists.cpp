@@ -815,7 +815,7 @@ __declspec(noinline) bool CSession::AddInventoryItem(const ITEM_INFO& item, unsi
 // OFFSET: 0x00DD7210
 // FUNCTION: fn_23284
 bool CSession::AddMerchantPurchaseSavedItem(const ITEM_INFO& item, unsigned char alternate, unsigned char refresh) {
-  for (ITEM_INFO& value : this->merchantPurchaseSavedItems) {
+  for (ITEM_INFO& value : this->m_merchantPurchaseSavedItems) {
     if (value.identity[1] == item.identity[1]) {
       if (!alternate) {
         value.quantity += item.quantity;
@@ -829,7 +829,7 @@ bool CSession::AddMerchantPurchaseSavedItem(const ITEM_INFO& item, unsigned char
     }
   }
 
-  this->merchantPurchaseSavedItems.push_back(item);
+  this->m_merchantPurchaseSavedItems.push_back(item);
   if (refresh == 1) {
     UIWindow* window = static_cast<UIWindow*>(alternate ? g_windowMgr.buyingShopMakeWnd : g_windowMgr.merchantShopMakeWnd);
     if (window) {
@@ -842,7 +842,7 @@ bool CSession::AddMerchantPurchaseSavedItem(const ITEM_INFO& item, unsigned char
 // OFFSET: 0x00DD72C0
 // FUNCTION: fn_23285
 bool CSession::AddMerchantShopItem(const ITEM_INFO& item) {
-  for (ITEM_INFO& value : this->merchantShopItems) {
+  for (ITEM_INFO& value : this->m_merchantShopItems) {
     if (value.identity[1] == item.identity[1]) {
       value.quantity += item.quantity;
       if (UIWindow* window = static_cast<UIWindow*>(g_windowMgr.merchantItemWnd)) {
@@ -852,7 +852,7 @@ bool CSession::AddMerchantShopItem(const ITEM_INFO& item) {
     }
   }
 
-  this->merchantShopItems.push_back(item);
+  this->m_merchantShopItems.push_back(item);
   if (UIWindow* window = static_cast<UIWindow*>(g_windowMgr.merchantItemWnd)) {
     window->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
@@ -862,7 +862,7 @@ bool CSession::AddMerchantShopItem(const ITEM_INFO& item) {
 // OFFSET: 0x00DD7350
 // FUNCTION: fn_23286
 bool CSession::AddMerchantMyShopItem(const ITEM_INFO& item, int type, unsigned char refresh) {
-  for (ITEM_INFO& value : this->merchantMyShopItems) {
+  for (ITEM_INFO& value : this->m_merchantMyShopItems) {
     if (value.identity[1] == item.identity[1]) {
       value.quantity += item.quantity;
       if (refresh == 1) {
@@ -880,7 +880,7 @@ bool CSession::AddMerchantMyShopItem(const ITEM_INFO& item, int type, unsigned c
     }
   }
 
-  this->merchantMyShopItems.push_back(item);
+  this->m_merchantMyShopItems.push_back(item);
   if (refresh == 1) {
     UIWindow* window;
     if (type == 1) {
@@ -898,40 +898,40 @@ bool CSession::AddMerchantMyShopItem(const ITEM_INFO& item, int type, unsigned c
 // OFFSET: 0x00DD7420
 // FUNCTION: fn_23287
 void CSession::AddMerchantPurchaseItem(const ITEM_INFO& item) {
-  for (ITEM_INFO& value : this->merchantPurchaseItems) {
+  for (ITEM_INFO& value : this->m_merchantPurchaseItems) {
     if (value.identity[1] == item.identity[1]) {
       value.quantity += item.quantity;
       return;
     }
   }
 
-  this->merchantPurchaseItems.push_back(item);
+  this->m_merchantPurchaseItems.push_back(item);
 }
 
 // OFFSET: 0x00DD7470
 // FUNCTION: fn_23288
 void CSession::AddMerchantHopeToSellItem(const ITEM_INFO& item) {
-  for (ITEM_INFO& value : this->merchantHopeToSellItems) {
+  for (ITEM_INFO& value : this->m_merchantHopeToSellItems) {
     if (value.identity[1] == item.identity[1]) {
       value.quantity += item.quantity;
       return;
     }
   }
 
-  this->merchantHopeToSellItems.push_back(item);
+  this->m_merchantHopeToSellItems.push_back(item);
 }
 
 // OFFSET: 0x00DD74C0
 // FUNCTION: fn_23289
 void CSession::AddMerchantMirrorItem(const ITEM_INFO& item) {
-  for (ITEM_INFO& value : this->merchantMirrorItems) {
+  for (ITEM_INFO& value : this->m_merchantMirrorItems) {
     if (value.identity[1] == item.identity[1]) {
       value.quantity += item.quantity;
       return;
     }
   }
 
-  this->merchantMirrorItems.push_back(item);
+  this->m_merchantMirrorItems.push_back(item);
 }
 
 // OFFSET: 0x00DD7510
@@ -965,45 +965,45 @@ void CSession::AddShopItem(const RawItemBasic& item, int quantity, std::uint16_t
   value.refiningLevel = 0;
   value.damaged = 0;
   value.SetItemId(std::atoi(value.itemId.c_str()));
-  this->shopItems.push_back(value);
+  this->m_shopItems.push_back(value);
 }
 
 // OFFSET: 0x00DD76C0
 // FUNCTION: fn_23292
 void CSession::AppendShopItem(const ITEM_INFO& item) {
-  this->shopItems.push_back(item);
+  this->m_shopItems.push_back(item);
 }
 
 // OFFSET: 0x00DD76D0
 // FUNCTION: fn_23293
 void CSession::MergeItem1718ByName(const ITEM_INFO& item) {
-  for (auto it = this->shopItems.begin(); it != this->shopItems.end(); ++it) {
+  for (auto it = this->m_shopItems.begin(); it != this->m_shopItems.end(); ++it) {
     if (it->itemId == item.itemId) {
       it->quantity = it->quantity == -1 ? -1 : it->quantity + item.quantity;
       return;
     }
   }
 
-  this->shopItems.push_back(item);
+  this->m_shopItems.push_back(item);
 }
 
 // OFFSET: 0x00DD7770
 // FUNCTION: fn_23294
 void CSession::MergeItem1720ByName(const ITEM_INFO& item) {
-  for (auto it = this->purchaseItems.begin(); it != this->purchaseItems.end(); ++it) {
+  for (auto it = this->m_purchaseItems.begin(); it != this->m_purchaseItems.end(); ++it) {
     if (it->itemId == item.itemId) {
       it->quantity += item.quantity;
       return;
     }
   }
 
-  this->purchaseItems.push_back(item);
+  this->m_purchaseItems.push_back(item);
 }
 
 // OFFSET: 0x00DD77F0
 // FUNCTION: fn_23295
 void CSession::MergePurchaseItem(const ITEM_INFO& item) {
-  for (auto it = this->purchaseItems.begin(); it != this->purchaseItems.end(); ++it) {
+  for (auto it = this->m_purchaseItems.begin(); it != this->m_purchaseItems.end(); ++it) {
     bool same = it->identity[1] == item.identity[1];
     if (!item.flags[3]) {
       same = it->itemId == item.itemId;
@@ -1014,7 +1014,7 @@ void CSession::MergePurchaseItem(const ITEM_INFO& item) {
     }
   }
 
-  this->purchaseItems.push_back(item);
+  this->m_purchaseItems.push_back(item);
 }
 
 // OFFSET: 0x00DD7890
@@ -1022,7 +1022,7 @@ void CSession::MergePurchaseItem(const ITEM_INFO& item) {
 void CSession::AddStorageItem(const ITEM_INFO& item) {
   const ITEM_INFO owned = this->LookupClientItemByIdentity(item.identity[1]);
   if (owned.identity[1] > 0) {
-    for (ITEM_INFO& value : this->storageItems) {
+    for (ITEM_INFO& value : this->m_storageItems) {
       if (value.identity[1] == item.identity[1]) {
         if (owned.quantity >= value.quantity + item.quantity) {
           value.quantity += item.quantity;
@@ -1032,7 +1032,7 @@ void CSession::AddStorageItem(const ITEM_INFO& item) {
     }
 
     if (owned.quantity >= item.quantity) {
-      this->storageItems.push_back(item);
+      this->m_storageItems.push_back(item);
     }
   }
 }
@@ -1046,7 +1046,7 @@ void CSession::AddShopItem(const RawItemBasic& item, int mode) {
       ITEM_INFO value(owned);
       value.AssignBasic(item);
       value.SetItemId(std::atoi(value.itemId.c_str()));
-      this->shopItems.push_back(value);
+      this->m_shopItems.push_back(value);
     }
   } else {
     ITEM_INFO value;
@@ -1056,14 +1056,14 @@ void CSession::AddShopItem(const RawItemBasic& item, int mode) {
     value.SetItemId(std::atoi(value.itemId.c_str()));
     value.identity[2] = item.location;
     value.sprite = item.sprite;
-    this->shopItems.push_back(value);
+    this->m_shopItems.push_back(value);
   }
 }
 
 // OFFSET: 0x00DD7B30
 // FUNCTION: fn_23298
 void CSession::MergeShopItem(const ITEM_INFO& item) {
-  for (ITEM_INFO& value : this->shopItems) {
+  for (ITEM_INFO& value : this->m_shopItems) {
     if (value.identity[1] == item.identity[1]) {
       if (value.quantity != -1) {
         value.quantity += item.quantity;
@@ -1072,7 +1072,7 @@ void CSession::MergeShopItem(const ITEM_INFO& item) {
     }
   }
 
-  this->shopItems.push_back(item);
+  this->m_shopItems.push_back(item);
 }
 
 // OFFSET: 0x00DD7B80
@@ -1082,7 +1082,7 @@ __declspec(noinline) bool CSession::AddCartItem(const ITEM_INFO& item, unsigned 
     return true;
   }
 
-  for (ITEM_INFO& value : this->cartItems) {
+  for (ITEM_INFO& value : this->m_cartItems) {
     if (value.identity[1] == item.identity[1]) {
       value.quantity += item.quantity;
       if (refresh && g_windowMgr.itemStoreWnd) {
@@ -1092,7 +1092,7 @@ __declspec(noinline) bool CSession::AddCartItem(const ITEM_INFO& item, unsigned 
     }
   }
 
-  this->cartItems.push_back(item);
+  this->m_cartItems.push_back(item);
   if (refresh && g_windowMgr.itemStoreWnd) {
     g_windowMgr.itemStoreWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
@@ -1307,44 +1307,44 @@ void CSession::ClearInventory() {
 // OFFSET: 0x00DD88C0
 // FUNCTION: fn_23314
 void CSession::ClearItems1760And1748() {
-  this->merchantHopeToSellItems.erase(this->merchantHopeToSellItems.begin(), this->merchantHopeToSellItems.end());
-  this->merchantMirrorItems.erase(this->merchantMirrorItems.begin(), this->merchantMirrorItems.end());
+  this->m_merchantHopeToSellItems.erase(this->m_merchantHopeToSellItems.begin(), this->m_merchantHopeToSellItems.end());
+  this->m_merchantMirrorItems.erase(this->m_merchantMirrorItems.begin(), this->m_merchantMirrorItems.end());
 }
 
 // OFFSET: 0x00DD8900
 // FUNCTION: fn_23315
 void CSession::ClearMerchantPurchaseSavedItems() {
-  this->merchantPurchaseSavedItems.erase(this->merchantPurchaseSavedItems.begin(), this->merchantPurchaseSavedItems.end());
+  this->m_merchantPurchaseSavedItems.erase(this->m_merchantPurchaseSavedItems.begin(), this->m_merchantPurchaseSavedItems.end());
 }
 
 // OFFSET: 0x00DD8920
 // FUNCTION: fn_23316
 void CSession::ClearMerchantShopItems() {
-  this->merchantShopItems.erase(this->merchantShopItems.begin(), this->merchantShopItems.end());
+  this->m_merchantShopItems.erase(this->m_merchantShopItems.begin(), this->m_merchantShopItems.end());
 }
 
 // OFFSET: 0x00DD8940
 // FUNCTION: fn_23317
 __declspec(noinline) void CSession::ClearMerchantMyShopItems() {
-  this->merchantMyShopItems.erase(this->merchantMyShopItems.begin(), this->merchantMyShopItems.end());
+  this->m_merchantMyShopItems.erase(this->m_merchantMyShopItems.begin(), this->m_merchantMyShopItems.end());
 }
 
 // OFFSET: 0x00DD8960
 // FUNCTION: fn_23318
 void CSession::ClearMerchantPurchaseItems() {
-  this->merchantPurchaseItems.erase(this->merchantPurchaseItems.begin(), this->merchantPurchaseItems.end());
+  this->m_merchantPurchaseItems.erase(this->m_merchantPurchaseItems.begin(), this->m_merchantPurchaseItems.end());
 }
 
 // OFFSET: 0x00DD8980
 // FUNCTION: fn_23319
 void CSession::ClearMerchantHopeToSellItems() {
-  this->merchantHopeToSellItems.erase(this->merchantHopeToSellItems.begin(), this->merchantHopeToSellItems.end());
+  this->m_merchantHopeToSellItems.erase(this->m_merchantHopeToSellItems.begin(), this->m_merchantHopeToSellItems.end());
 }
 
 // OFFSET: 0x00DD89A0
 // FUNCTION: fn_23320
 void CSession::ClearMerchantMirrorItems() {
-  this->merchantMirrorItems.erase(this->merchantMirrorItems.begin(), this->merchantMirrorItems.end());
+  this->m_merchantMirrorItems.erase(this->m_merchantMirrorItems.begin(), this->m_merchantMirrorItems.end());
 }
 
 // OFFSET: 0x00DD89C0
@@ -1412,7 +1412,7 @@ void CSession::ResetStatBonuses() {
 // OFFSET: 0x00DD8C10
 // FUNCTION: fn_23327
 void CSession::ClearPurchaseItems() {
-  this->purchaseItems.erase(this->purchaseItems.begin(), this->purchaseItems.end());
+  this->m_purchaseItems.erase(this->m_purchaseItems.begin(), this->m_purchaseItems.end());
 }
 
 // OFFSET: 0x00DD8C70
@@ -1426,41 +1426,41 @@ void CSession::ResetHotkeyDescriptions() {
 // OFFSET: 0x00DD8CA0
 // FUNCTION: fn_23329
 void CSession::ClearCartItems() {
-  this->cartItems.erase(this->cartItems.begin(), this->cartItems.end());
+  this->m_cartItems.erase(this->m_cartItems.begin(), this->m_cartItems.end());
 }
 
 // OFFSET: 0x00DD8CC0
 // FUNCTION: fn_23330
 void CSession::CopyItems1740To1750() {
-  this->merchantMyShopItems.erase(this->merchantMyShopItems.begin(), this->merchantMyShopItems.end());
+  this->m_merchantMyShopItems.erase(this->m_merchantMyShopItems.begin(), this->m_merchantMyShopItems.end());
 
-  for (auto item = this->merchantShopItems.begin(); item != this->merchantShopItems.end(); ++item) {
-    this->merchantMyShopItems.push_back(*item);
+  for (auto item = this->m_merchantShopItems.begin(); item != this->m_merchantShopItems.end(); ++item) {
+    this->m_merchantMyShopItems.push_back(*item);
   }
 }
 
 // OFFSET: 0x00DD8DB0
 // FUNCTION: fn_23331
 void CSession::CopyItems1760To1770() {
-  this->filteredInventoryItems.erase(this->filteredInventoryItems.begin(), this->filteredInventoryItems.end());
+  this->m_filteredInventoryItems.erase(this->m_filteredInventoryItems.begin(), this->m_filteredInventoryItems.end());
 
-  for (auto item = this->merchantHopeToSellItems.begin(); item != this->merchantHopeToSellItems.end(); ++item) {
-    this->filteredInventoryItems.push_back(*item);
+  for (auto item = this->m_merchantHopeToSellItems.begin(); item != this->m_merchantHopeToSellItems.end(); ++item) {
+    this->m_filteredInventoryItems.push_back(*item);
   }
 }
 
 // OFFSET: 0x00DD8EA0
 // FUNCTION: fn_23332
 std::pair<bool, ITEM_INFO> CSession::FindMerchantMyShopItem(const ITEM_INFO& item, unsigned char) {
-  auto found = this->merchantMyShopItems.begin();
+  auto found = this->m_merchantMyShopItems.begin();
 
-  for (; found != this->merchantMyShopItems.end(); ++found) {
+  for (; found != this->m_merchantMyShopItems.end(); ++found) {
     if (IsSameItem(*found, item)) {
       break;
     }
   }
 
-  return found != this->merchantMyShopItems.end() ? std::make_pair(true, *found) : std::make_pair(false, ITEM_INFO());
+  return found != this->m_merchantMyShopItems.end() ? std::make_pair(true, *found) : std::make_pair(false, ITEM_INFO());
 }
 
 // OFFSET: 0x00DD91C0
@@ -1540,13 +1540,13 @@ __declspec(noinline) int CSession::IsDifferentName(const char* name, const char*
 // OFFSET: 0x00DDA470
 // FUNCTION: fn_23338
 void CSession::RemoveItem1758ByItemId(ITEM_INFO& item) {
-  for (auto it = this->merchantPurchaseItems.begin(); it != this->merchantPurchaseItems.end(); ++it) {
+  for (auto it = this->m_merchantPurchaseItems.begin(); it != this->m_merchantPurchaseItems.end(); ++it) {
     const int itemId = std::atoi(it->itemId.c_str());
     if (itemId == std::atoi(item.itemId.c_str())) {
       item.itemId = it->itemId;
       it->quantity -= item.quantity;
       if (it->quantity <= 0) {
-        this->merchantPurchaseItems.erase(it);
+        this->m_merchantPurchaseItems.erase(it);
       }
       return;
     }
@@ -1587,16 +1587,16 @@ void CSession::RefreshItem1768Window(unsigned char alternate, int argument) {
 // FUNCTION: fn_23340
 bool CSession::RemoveMerchantPurchaseSavedItem(const ITEM_INFO& item, unsigned char alternate) {
   int index = 0;
-  for (auto it = this->merchantPurchaseSavedItems.begin(); it != this->merchantPurchaseSavedItems.end(); ++it, ++index) {
+  for (auto it = this->m_merchantPurchaseSavedItems.begin(); it != this->m_merchantPurchaseSavedItems.end(); ++it, ++index) {
     if (it->identity[1] == item.identity[1]) {
       if (alternate) {
-        this->merchantPurchaseSavedItems.erase(it);
+        this->m_merchantPurchaseSavedItems.erase(it);
         this->RefreshItem1768Window(1, 0);
         return true;
       }
       it->quantity -= item.quantity;
       if (it->quantity <= 0) {
-        this->merchantPurchaseSavedItems.erase(it);
+        this->m_merchantPurchaseSavedItems.erase(it);
         this->RefreshItem1768Window(0, index + 1);
         return true;
       }
@@ -1611,14 +1611,14 @@ bool CSession::RemoveMerchantPurchaseSavedItem(const ITEM_INFO& item, unsigned c
 // OFFSET: 0x00DDA690
 // FUNCTION: fn_23341
 bool CSession::RemoveMerchantShopItem(const ITEM_INFO& item) {
-  for (auto it = this->merchantShopItems.begin(); it != this->merchantShopItems.end(); ++it) {
+  for (auto it = this->m_merchantShopItems.begin(); it != this->m_merchantShopItems.end(); ++it) {
     if (it->identity[1] == item.identity[1]) {
       it->quantity -= item.quantity;
       if (it->quantity <= 0) {
-        this->merchantShopItems.erase(it);
+        this->m_merchantShopItems.erase(it);
       }
       const std::uint32_t index = item.identity[1];
-      for (auto it2 = this->merchantShopItems.begin(); it2 != this->merchantShopItems.end(); ++it2) {
+      for (auto it2 = this->m_merchantShopItems.begin(); it2 != this->m_merchantShopItems.end(); ++it2) {
         if (it2->identity[1] == index) {
           it2->flags[2] = 0;
           break;
@@ -1639,12 +1639,12 @@ bool CSession::RemoveMerchantShopItem(const ITEM_INFO& item) {
 // OFFSET: 0x00DDA8B0
 // FUNCTION: fn_23343
 void CSession::RemoveMerchantPurchaseItem(ITEM_INFO& item) {
-  for (auto it = this->merchantPurchaseItems.begin(); it != this->merchantPurchaseItems.end(); ++it) {
+  for (auto it = this->m_merchantPurchaseItems.begin(); it != this->m_merchantPurchaseItems.end(); ++it) {
     if (it->identity[1] == item.identity[1]) {
       item.itemId = it->itemId;
       it->quantity -= item.quantity;
       if (it->quantity <= 0) {
-        this->merchantPurchaseItems.erase(it);
+        this->m_merchantPurchaseItems.erase(it);
       }
       return;
     }
@@ -1654,11 +1654,11 @@ void CSession::RemoveMerchantPurchaseItem(ITEM_INFO& item) {
 // OFFSET: 0x00DDA920
 // FUNCTION: fn_23344
 void CSession::RemoveMerchantHopeToSellItem(const ITEM_INFO& item) {
-  for (auto it = this->merchantHopeToSellItems.begin(); it != this->merchantHopeToSellItems.end(); ++it) {
+  for (auto it = this->m_merchantHopeToSellItems.begin(); it != this->m_merchantHopeToSellItems.end(); ++it) {
     if (it->identity[1] == item.identity[1]) {
       it->quantity -= item.quantity;
       if (it->quantity <= 0) {
-        this->merchantHopeToSellItems.erase(it);
+        this->m_merchantHopeToSellItems.erase(it);
       }
       return;
     }
@@ -1668,13 +1668,13 @@ void CSession::RemoveMerchantHopeToSellItem(const ITEM_INFO& item) {
 // OFFSET: 0x00DDA9C0
 // FUNCTION: fn_23345
 void CSession::RemoveItem1718ByItemId(const ITEM_INFO& item) {
-  for (auto it = this->shopItems.begin(); it != this->shopItems.end(); ++it) {
+  for (auto it = this->m_shopItems.begin(); it != this->m_shopItems.end(); ++it) {
     const int itemId = std::atoi(it->itemId.c_str());
     if (itemId == std::atoi(item.itemId.c_str())) {
       if (it->quantity != -1) {
         it->quantity -= item.quantity;
         if (it->quantity <= 0) {
-          this->shopItems.erase(it);
+          this->m_shopItems.erase(it);
         }
       }
       return;
@@ -1685,12 +1685,12 @@ void CSession::RemoveItem1718ByItemId(const ITEM_INFO& item) {
 // OFFSET: 0x00DDAA50
 // FUNCTION: fn_23346
 void CSession::RemoveShopItem(const ITEM_INFO& item) {
-  for (auto it = this->shopItems.begin(); it != this->shopItems.end(); ++it) {
+  for (auto it = this->m_shopItems.begin(); it != this->m_shopItems.end(); ++it) {
     if (it->identity[1] == item.identity[1]) {
       if (it->quantity != -1) {
         it->quantity -= item.quantity;
         if (it->quantity <= 0) {
-          this->shopItems.erase(it);
+          this->m_shopItems.erase(it);
         }
       }
       return;
@@ -1701,11 +1701,11 @@ void CSession::RemoveShopItem(const ITEM_INFO& item) {
 // OFFSET: 0x00DDAAB0
 // FUNCTION: fn_23347
 void CSession::RemoveItem1720ByName(const ITEM_INFO& item) {
-  for (auto it = this->purchaseItems.begin(); it != this->purchaseItems.end(); ++it) {
+  for (auto it = this->m_purchaseItems.begin(); it != this->m_purchaseItems.end(); ++it) {
     if (it->itemId == item.itemId) {
       it->quantity -= item.quantity;
       if (it->quantity <= 0) {
-        this->purchaseItems.erase(it);
+        this->m_purchaseItems.erase(it);
       }
       return;
     }
@@ -1715,11 +1715,11 @@ void CSession::RemoveItem1720ByName(const ITEM_INFO& item) {
 // OFFSET: 0x00DDAC40
 // FUNCTION: fn_23349
 void CSession::RemoveStorageItem(const ITEM_INFO& item) {
-  for (auto it = this->storageItems.begin(); it != this->storageItems.end(); ++it) {
+  for (auto it = this->m_storageItems.begin(); it != this->m_storageItems.end(); ++it) {
     if (it->identity[1] == item.identity[1]) {
       it->quantity -= item.quantity;
       if (it->quantity <= 0) {
-        this->storageItems.erase(it);
+        this->m_storageItems.erase(it);
       }
       return;
     }
@@ -1729,11 +1729,11 @@ void CSession::RemoveStorageItem(const ITEM_INFO& item) {
 // OFFSET: 0x00DDAC90
 // FUNCTION: fn_23350
 void CSession::ReduceShopItemQuantity(const ITEM_INFO& item) {
-  for (auto it = this->shopItems.begin(); it != this->shopItems.end(); ++it) {
+  for (auto it = this->m_shopItems.begin(); it != this->m_shopItems.end(); ++it) {
     if (it->identity[1] == item.identity[1]) {
       it->quantity -= item.quantity;
       if (it->quantity <= 0) {
-        this->shopItems.erase(it);
+        this->m_shopItems.erase(it);
       }
       return;
     }
@@ -1743,14 +1743,14 @@ void CSession::ReduceShopItemQuantity(const ITEM_INFO& item) {
 // OFFSET: 0x00DDACE0
 // FUNCTION: fn_23351
 bool CSession::RemoveCartItem(const ITEM_INFO& item) {
-  for (auto it = this->cartItems.begin(); it != this->cartItems.end(); ++it) {
+  for (auto it = this->m_cartItems.begin(); it != this->m_cartItems.end(); ++it) {
     if (it->identity[1] == item.identity[1]) {
       it->quantity -= item.quantity;
       if (it->quantity <= 0) {
-        this->cartItems.erase(it);
+        this->m_cartItems.erase(it);
       }
       const std::uint32_t index = item.identity[1];
-      for (auto it2 = this->cartItems.begin(); it2 != this->cartItems.end(); ++it2) {
+      for (auto it2 = this->m_cartItems.begin(); it2 != this->m_cartItems.end(); ++it2) {
         if (it2->identity[1] == index) {
           it2->flags[2] = 0;
           break;
@@ -1836,7 +1836,7 @@ void CSession::SetMerchantMyShopItems(int count, const short* ids) {
   for (int i = 0; i < count; ++i) {
     const ITEM_INFO item = g_session.LookupClientItemByIdentity(ids[i]);
     if (item.identity[1] > 0) {
-      this->merchantMyShopItems.push_back(item);
+      this->m_merchantMyShopItems.push_back(item);
     }
   }
 }

@@ -436,7 +436,7 @@ std::uint32_t ITEM_INFO::Deserialize(const std::vector<unsigned char>& data) {
 // OFFSET: 0x00DFB9D0
 // FUNCTION: fn_23584
 bool CSession::HasRequiredItems() const {
-  for (auto it = this->storageItems.begin(); it != this->storageItems.end(); ++it) {
+  for (auto it = this->m_storageItems.begin(); it != this->m_storageItems.end(); ++it) {
     const ITEM_INFO& required = *it;
     const ITEM_INFO owned = this->LookupClientItemByIdentity(required.identity[1]);
     if (owned.identity[1] <= 0 || owned.quantity < required.quantity) {
@@ -694,14 +694,14 @@ int ReadItemArray(ITEM_INFO* items, int offset, int size, const std::vector<unsi
 // OFFSET: 0x00DDA740
 // FUNCTION: fn_23342
 bool CSession::RemoveMerchantMyShopItem(const ITEM_INFO& item, int type, unsigned char refresh) {
-  for (auto it = this->merchantMyShopItems.begin(); it != this->merchantMyShopItems.end(); ++it) {
+  for (auto it = this->m_merchantMyShopItems.begin(); it != this->m_merchantMyShopItems.end(); ++it) {
     if (it->identity[1] == item.identity[1]) {
       if (type != 0) {
-        this->merchantMyShopItems.erase(it);
+        this->m_merchantMyShopItems.erase(it);
       } else {
         it->quantity -= item.quantity;
         if (it->quantity <= 0) {
-          this->merchantMyShopItems.erase(it);
+          this->m_merchantMyShopItems.erase(it);
         }
       }
 
@@ -740,12 +740,12 @@ bool CSession::RemoveMerchantMyShopItem(const ITEM_INFO& item, int type, unsigne
 // FUNCTION: fn_23348
 void CSession::RemovePurchaseItem(const ITEM_INFO& item) {
   const bool hasFlag = item.flags[3] != 0;
-  for (auto it = this->purchaseItems.begin(); it != this->purchaseItems.end(); ++it) {
+  for (auto it = this->m_purchaseItems.begin(); it != this->m_purchaseItems.end(); ++it) {
     const bool same = hasFlag ? it->identity[1] == item.identity[1] : it->itemId == item.itemId;
     if (same) {
       it->quantity -= item.quantity;
       if (it->quantity <= 0) {
-        this->purchaseItems.erase(it);
+        this->m_purchaseItems.erase(it);
       }
       return;
     }

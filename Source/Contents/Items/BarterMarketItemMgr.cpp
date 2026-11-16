@@ -849,7 +849,7 @@ BarterKeyLookup BarterKeyTree::FindLowerBound(const std::vector<int>& key)
 void CExpandedBarterMarketItemMgr::LoadInventoryItems()
 {
   this->itemInfos.clear();
-  const int count = g_session.GetList0Size();
+  const int count = g_session.GetNumInventoryItems();
   for (int i = 0; i < count; ++i) {
     ITEM_INFO item = g_session.GetInventoryItemAt(i);
     if (item.identified) {

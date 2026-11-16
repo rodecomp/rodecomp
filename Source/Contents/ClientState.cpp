@@ -325,40 +325,40 @@ std::uint32_t CSession::ReadReplayItems(const std::vector<unsigned char>& data) 
       offset = ReadItemList(this->m_inventoryItems, offset, header.bytes, data);
       break;
     case 4511:
-      offset = ReadItemList(this->shopItems, offset, header.bytes, data);
+      offset = ReadItemList(this->m_shopItems, offset, header.bytes, data);
       break;
     case 4512:
-      offset = ReadItemList(this->purchaseItems, offset, header.bytes, data);
+      offset = ReadItemList(this->m_purchaseItems, offset, header.bytes, data);
       break;
     case 4513:
-      offset = ReadItemList(this->sellItems, offset, header.bytes, data);
+      offset = ReadItemList(this->m_sellItems, offset, header.bytes, data);
       break;
     case 4514:
-      offset = ReadItemList(this->storageItems, offset, header.bytes, data);
+      offset = ReadItemList(this->m_storageItems, offset, header.bytes, data);
       break;
     case 4515:
-      offset = ReadItemList(this->cartItems, offset, header.bytes, data);
+      offset = ReadItemList(this->m_cartItems, offset, header.bytes, data);
       break;
     case 4516:
-      offset = ReadItemList(this->merchantShopItems, offset, header.bytes, data);
+      offset = ReadItemList(this->m_merchantShopItems, offset, header.bytes, data);
       break;
     case 4517:
-      offset = ReadItemList(this->merchantMirrorItems, offset, header.bytes, data);
+      offset = ReadItemList(this->m_merchantMirrorItems, offset, header.bytes, data);
       break;
     case 4518:
-      offset = ReadItemList(this->merchantMyShopItems, offset, header.bytes, data);
+      offset = ReadItemList(this->m_merchantMyShopItems, offset, header.bytes, data);
       break;
     case 4519:
-      offset = ReadItemList(this->merchantPurchaseItems, offset, header.bytes, data);
+      offset = ReadItemList(this->m_merchantPurchaseItems, offset, header.bytes, data);
       break;
     case 4520:
-      offset = ReadItemList(this->merchantHopeToSellItems, offset, header.bytes, data);
+      offset = ReadItemList(this->m_merchantHopeToSellItems, offset, header.bytes, data);
       break;
     case 4521:
-      offset = ReadItemList(this->merchantPurchaseSavedItems, offset, header.bytes, data);
+      offset = ReadItemList(this->m_merchantPurchaseSavedItems, offset, header.bytes, data);
       break;
     case 4522:
-      offset = ReadItemList(this->filteredInventoryItems, offset, header.bytes, data);
+      offset = ReadItemList(this->m_filteredInventoryItems, offset, header.bytes, data);
       break;
     case 4601:
       offset = ReadItemArray(this->equippedItems, offset, header.bytes, data);
