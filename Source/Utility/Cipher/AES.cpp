@@ -380,11 +380,14 @@ CAES::CAES(int keyLength, int blockSize) : m_bKeyInit(false) {
   std::memcpy(this->m_chain0, sm_chain0, this->m_blockSize);
   std::memcpy(this->m_chain, sm_chain0, this->m_blockSize);
 
-  if (this->m_keylength == 16) {
+  switch (this->m_keylength) {
+  case 16:
     this->m_iROUNDS = this->m_blockSize == 16 ? 10 : (this->m_blockSize == 24 ? 12 : 14);
-  } else if (this->m_keylength == 24) {
+    break;
+  case 24:
     this->m_iROUNDS = this->m_blockSize != 32 ? 12 : 14;
-  } else {
+    break;
+  default:
     this->m_iROUNDS = 14;
   }
 
