@@ -1087,16 +1087,16 @@ void CUISelectPackageItemBox::OnInit() {
 void CUISelectPackageItemBox::Open(int sourceIndex) {
   this->tabList->ClearData();
   this->itemList->ClearData();
-  this->title->SetTitle("", 0);
+  this->title->SetTitle("");
   this->sourceIndex = sourceIndex;
   const ITEM_INFO item = g_session.LookupClientItemByIdentity(sourceIndex);
-  if (item.identity[1] == 0) {
+  if (item.identity[1] <= 0) {
     return;
   }
 
   this->packageId = std::atoi(item.itemId.c_str());
   const char* name = FindItemDescription(this->packageId).identifiedName;
-  this->title->SetTitle(name, std::strlen(name));
+  this->title->SetTitle(name);
   if (!Singleton<CSelectPackageItemMgr>::s_instance) {
     Singleton<CSelectPackageItemMgr>::s_instance = new (std::nothrow) CSelectPackageItemMgr;
   }
@@ -1109,8 +1109,11 @@ void CUISelectPackageItemBox::Open(int sourceIndex) {
     this->tabList->UpdateScrollBar();
   }
 
-  this->okButton->disabled = 0;
-  this->okButton->Invalidate();
+  {
+    auto* okButton = this->okButton;
+    okButton->disabled = 0;
+    okButton->Invalidate();
+  }
 }
 
 // OFFSET: 0x00A70B90
