@@ -25,7 +25,7 @@ CChampionMonsterMgr* g_championMonsterMgr;
 // OFFSET: 0x00ADDF50
 // FUNCTION: fn_17951
 __declspec(noinline) void CChampionMonsterMgr::AddItem(int id, float value) {
-  this->m_items.insert(std::make_pair(id, lcData(value)));
+  this->m_items.insert(std::pair<int, lcData>(id, lcData(value)));
 }
 
 // OFFSET: 0x00ADE1B0
