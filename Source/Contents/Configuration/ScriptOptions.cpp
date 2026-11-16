@@ -16,7 +16,15 @@ int CSession::GetOptionInteger(const char* key, int fallback) {
 std::string CSession::GetOptionString(const char* key, const char* fallback) {
   const char* value = nullptr;
   this->m_hotkeyScript->Call("l_GetOptionValue", "s>s", key, &value);
-  return !value || std::strcmp(value, "-1") == 0 ? fallback : value;
+  if (!value) {
+    return fallback;
+  }
+
+  if (std::strcmp(value, "-1") == 0) {
+    return fallback;
+  }
+
+  return value;
 }
 
 // OFFSET: 0x00E0A760
