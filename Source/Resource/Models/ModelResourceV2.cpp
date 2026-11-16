@@ -66,9 +66,9 @@ bool C3dModelResV2::Load(const char* name) {
   }
 
   unsigned char major = 0;
-  unsigned char minor = 0;
   file.Read(&major, 1);
   this->major = major;
+  unsigned char minor = 0;
   file.Read(&minor, 1);
 
   this->ReadVersion(file, minor);
