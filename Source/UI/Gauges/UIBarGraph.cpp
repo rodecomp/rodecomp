@@ -108,8 +108,9 @@ void UIBarGraph4::Paint() {
 // OFFSET: 0x00887790
 // FUNCTION: fn_11339
 void UIBarGraph::Paint() {
-  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\gze_bg.bmp"))), false);
-  if (this->m_value == 0.0f) {
+  auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\gze_bg.bmp")));
+  this->DrawBitmap(0, 0, background, false);
+  if (0.0f == this->m_value) {
     return;
   }
 
