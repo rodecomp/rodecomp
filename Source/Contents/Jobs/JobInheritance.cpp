@@ -1298,15 +1298,15 @@ bool ResetHotkeySlots() {
 
 // OFFSET: 0x00E25E60
 // FUNCTION: fn_23909
-std::pair<int, int>* CSession::InsertPair(int key, int value) {
+void CSession::InsertPair(int key, int value) {
   for (std::vector<std::pair<int, int>>::iterator it = this->keyValues.begin(); it != this->keyValues.end(); ++it) {
     if (key == it->first) {
       it->second = value;
-      return &*it;
+      return;
     }
   }
 
-  return &this->keyValues.emplace_back(std::make_pair(key, value));
+  this->keyValues.push_back(std::make_pair(key, value));
 }
 
 // OFFSET: 0x00E0A1F0

@@ -854,7 +854,7 @@ public:
   void SetCostumeItem(unsigned int index, const ITEM_INFO& item);
   void SetEquippedItem(unsigned int index, const ITEM_INFO& item);
   void ClearHomunStatus();
-  std::pair<int, int>* InsertPair(int key, int value);
+  void InsertPair(int key, int value);
   int SetPairValue(int value, int slot);
   void ClearPairValues(unsigned char clearThird, unsigned char clearSecond, unsigned char clearFirst);
   int GetPairValue() const;
