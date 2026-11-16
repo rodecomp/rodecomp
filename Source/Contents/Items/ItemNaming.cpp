@@ -70,7 +70,17 @@ namespace {
 
   // INLINED
   ItemMoveInfo MakeEmptyItemMoveInfo() {
-    return ItemMoveInfo{};
+    ItemMoveInfo info;
+    info.itemId = 0;
+    info.drop = false;
+    info.trade = false;
+    info.storage = false;
+    info.cart = false;
+    info.sellToNpc = false;
+    info.mail = false;
+    info.auction = false;
+    info.guildStorage = false;
+    return info;
   }
 
   // INLINED
