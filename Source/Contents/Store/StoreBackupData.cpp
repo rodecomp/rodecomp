@@ -52,10 +52,10 @@ void CMCStoreInfoBackup::ImportData(Json::Value& data) {
     this->items.push_back(item);
   }
 
-  UIWindow* window = g_windowMgr.merchantShopMakeWnd ? g_windowMgr.merchantShopMakeWnd : g_windowMgr.buyingShopMakeWnd;
-
-  if (window) {
-    static_cast<UIMerchantShopMakeWnd*>(window)->Refresh();
+  if (g_windowMgr.merchantShopMakeWnd) {
+    g_windowMgr.merchantShopMakeWnd->Refresh();
+  } else if (g_windowMgr.buyingShopMakeWnd) {
+    g_windowMgr.buyingShopMakeWnd->Refresh();
   }
 }
 
