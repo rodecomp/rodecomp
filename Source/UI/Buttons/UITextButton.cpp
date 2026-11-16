@@ -537,10 +537,9 @@ void UIBasicSkillCtrl::OnMouseHover(int, int) {
 
   this->ToScreen(screenX, screenY);
 
-  LuaScript& script = *g_session.m_hotkeyScript;
   CSkillInfo skill = g_session.LookupSkill(static_cast<std::uint32_t>(this->m_skillId));
-  const int sp = skill.UseSpAmount(script, skill.level);
-  const int ap = skill.UseApAmount(script, skill.level);
+  const int sp = skill.UseSpAmount(skill.level);
+  const int ap = skill.UseApAmount(skill.level);
   std::string text;
 
   if (g_session.SkillUsesPercentSp(static_cast<int>(skill.id))) {
