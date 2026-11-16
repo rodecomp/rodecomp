@@ -130,10 +130,9 @@ void RouletteMgr::StartSpin(int x, int y, int originX, int originY) {
     this->m_quads.start.vertices[i] = this->m_quads.current.vertices[i];
   }
 
-  const float distance = (8 - this->m_stage) * 36.0f;
   for (int i = 0; i < 6; ++i) {
     this->m_quads.target.vertices[i] = this->m_quads.current.vertices[i];
-    this->m_quads.target.vertices[i].x = this->m_quads.current.vertices[i].x - distance;
+    this->m_quads.target.vertices[i].x = this->m_quads.current.vertices[i].x - (8 - this->m_stage) * 36.0f;
   }
 
   this->m_lastTick = timeGetTime();
