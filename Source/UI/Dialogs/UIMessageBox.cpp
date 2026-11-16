@@ -114,8 +114,6 @@ static const std::string s_messageBoxItemLinkOpening = "<ITEML>";
 static const std::string s_messageBoxItemLinkClosing = "</ITEML>";
 
 namespace {
-  constexpr char prefix[] = "유저인터페이스\\";
-
   // INLINED
   int TileCount(int length, int tile) {
     const std::div_t tiles = std::div(length, tile);
@@ -4126,7 +4124,9 @@ void UIMessageBoxAutoreturn::Configure(const char* text, int timeout) {
   this->SetSize(280, 120);
   this->OnCreate(280, 120);
   this->OnSize(280, 120);
-  this->Move((g_renderer->viewport.width - 640) / 2 + 185, (g_renderer->viewport.height - 480) / 2 + 180);
+  const int y = (g_renderer->viewport.height - 480) / 2 + 180;
+  const int x = (g_renderer->viewport.width - 640) / 2 + 185;
+  this->Move(x, y);
 
   this->viewer = new UITextViewer();
   this->viewer->Configure(10, 22, 260, 48, 0);
@@ -4151,7 +4151,7 @@ void UIMessageBoxAutoreturn::Configure(const char* text, int timeout) {
   this->gauge->m_fillBlue = blue;
   this->AddChild(this->gauge);
 
-  const std::string root(prefix);
+  const std::string root("유저인터페이스\\");
   auto* button = new UIBitmapButton();
   button->SetBitmap((root + "btn_cancel" + ".bmp").c_str(), 0, 0);
   button->SetBitmap((root + "btn_cancel_a" + ".bmp").c_str(), 1, 0);
