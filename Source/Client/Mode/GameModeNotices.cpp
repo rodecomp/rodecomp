@@ -3239,66 +3239,18 @@ void CGameMode::ReceiveGuildStorageLog(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const GuildStorageLogPacket*>(data);
   if (0 == packet->result) {
     for (int i = 0; i < packet->count; ++i) {
-      const GuildStorageLogPacketEntry& source = packet->entries[i];
-      ITEM_INFO item;
-      item.recordIds[0] = source.logId;
-      item.recordIds[1] = source.quantity;
-      item.recordType = source.operation;
-      std::strcpy(reinterpret_cast<char*>(item.recordName), source.name);
-      std::strcpy(reinterpret_cast<char*>(item.recordDate), source.date);
-      char number[16] = {};
-      item.itemId = _itoa(source.itemId, number, 10);
-      item.identified = source.identified;
-      item.identity[0] = source.count;
-      item.refiningLevel = source.refine;
-      std::memcpy(item.cards, source.cards, sizeof(source.cards));
-      GuildStorageLogEntry entry;
-      entry.logId = item.recordIds[0];
-      entry.quantity = item.recordIds[1];
-      entry.operation = item.recordType;
-      std::strcpy(entry.characterName, reinterpret_cast<const char*>(item.recordName));
-      std::strcpy(entry.timestamp, reinterpret_cast<const char*>(item.recordDate));
-      entry.itemName = item.DisplayName(0);
-      entry.identified = item.identified;
-      entry.itemType = item.identity[0];
-      entry.refineLevel = item.refiningLevel;
-      std::memcpy(entry.cards, item.cards, sizeof(entry.cards));
-      entry.category = source.highlighted;
-      g_session.guildStorageLogs[0].push_back(entry);
+      AddGuildStorageLog(packet->entries[i]);
     }
   } else if (1 == packet->result) {
     for (int i = 0; i < packet->count; ++i) {
-      const GuildStorageLogPacketEntry& source = packet->entries[i];
-      ITEM_INFO item;
-      item.recordIds[0] = source.logId;
-      item.recordIds[1] = source.quantity;
-      item.recordType = source.operation;
-      std::strcpy(reinterpret_cast<char*>(item.recordName), source.name);
-      std::strcpy(reinterpret_cast<char*>(item.recordDate), source.date);
-      char number[16] = {};
-      item.itemId = _itoa(source.itemId, number, 10);
-      item.identified = source.identified;
-      item.identity[0] = source.count;
-      item.refiningLevel = source.refine;
-      std::memcpy(item.cards, source.cards, sizeof(source.cards));
-      GuildStorageLogEntry entry;
-      entry.logId = item.recordIds[0];
-      entry.quantity = item.recordIds[1];
-      entry.operation = item.recordType;
-      std::strcpy(entry.characterName, reinterpret_cast<const char*>(item.recordName));
-      std::strcpy(entry.timestamp, reinterpret_cast<const char*>(item.recordDate));
-      entry.itemName = item.DisplayName(0);
-      entry.identified = item.identified;
-      entry.itemType = item.identity[0];
-      entry.refineLevel = item.refiningLevel;
-      std::memcpy(entry.cards, item.cards, sizeof(entry.cards));
-      entry.category = source.highlighted;
-      g_session.guildStorageLogs[0].push_back(entry);
+      AddGuildStorageLog(packet->entries[i]);
     }
-    GuildStorageLogEntry pivot;
-    std::sort(g_session.guildStorageLogs[0].begin(), g_session.guildStorageLogs[0].end(), [&pivot](const GuildStorageLogEntry& left, const GuildStorageLogEntry& right) {
-      return std::strcmp(left.timestamp, right.timestamp) > 0;
-    });
+    {
+      GuildStorageLogEntry pivot;
+      std::sort(g_session.guildStorageLogs[0].begin(), g_session.guildStorageLogs[0].end(), [&pivot](const GuildStorageLogEntry& left, const GuildStorageLogEntry& right) {
+        return std::strcmp(left.timestamp, right.timestamp) > 0;
+      });
+    }
     for (auto it = g_session.guildStorageLogs[0].begin(); it != g_session.guildStorageLogs[0].end(); ++it) {
       if (it->operation == 1) {
         g_session.guildStorageLogs[1].push_back(*it);
