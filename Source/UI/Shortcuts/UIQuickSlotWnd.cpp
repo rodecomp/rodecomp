@@ -101,11 +101,10 @@ void UIQuickSlotWnd::OnMouseHover(int x, int y) {
   if (id == 0) {
     text.clear();
   } else if (this->m_entries[this->m_selected].skill) {
-    LuaScript& script = *g_session.m_hotkeyScript;
     CSkillInfo skill = g_session.LookupSkill(id);
     const int level = this->m_entries[this->m_selected].count;
-    const int sp = skill.UseSpAmount(script, level);
-    const int ap = skill.UseApAmount(script, level);
+    const int sp = skill.UseSpAmount(level);
+    const int ap = skill.UseApAmount(level);
     if (SkillUsesPercentSp(static_cast<int>(skill.id))) {
       text = SkillUseTextPercent(skill.DisplayName(), level, sp, ap);
     } else {
