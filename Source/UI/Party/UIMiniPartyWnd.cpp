@@ -552,32 +552,42 @@ void UIMiniPartyInfoWnd::Paint() {
   if (this->m_owner->GetMember().dead == 1) {
     dead = 1;
   } else if (g_session.m_aid == this->m_owner->GetMember().accountId) {
-    dead = g_modeMgr.GetGameMode()->isPlayerDead == 1;
+    if (g_modeMgr.GetGameMode()->isPlayerDead == 1) {
+      dead = 1;
+    }
   }
 
   const int leader = this->m_owner->GetMember().leader;
-  std::sprintf(path, dead ? "%sicon_jobs_%d_die.bmp" : "%sicon_jobs_%d.bmp", directory.c_str(), job);
-  CRes* icon = ResourceMgr::Instance().Load(Resolve(path));
-  if (this->m_owner->GetMember().offline == 1) {
-    this->DrawAuxiliary(1, 7, leader == 0 ? 8 : 6, static_cast<CBitmapRes*>(icon), true, false);
+  if (dead == 0) {
+    std::sprintf(path, "%sicon_jobs_%d.bmp", directory.c_str(), job);
   } else {
-    this->DrawBitmap(7, leader == 0 ? 8 : 6, static_cast<CBitmapRes*>(icon), true);
+    std::sprintf(path, "%sicon_jobs_%d_die.bmp", directory.c_str(), job);
+  }
+  CRes* icon = ResourceMgr::Instance().Load(Resolve(path));
+  int offline = this->m_owner->GetMember().offline;
+  const int iconY = leader == 0 ? 8 : 6;
+  if (offline == 1) {
+    this->DrawAuxiliary(1, 7, iconY, static_cast<CBitmapRes*>(icon), true, false);
+  } else {
+    this->DrawBitmap(7, iconY, static_cast<CBitmapRes*>(icon), true);
   }
 
   if (this->m_owner->GetMember().leader == 0) {
     std::sprintf(path, "%sico_partyCrown.bmp", directory.c_str());
     CRes* crown = ResourceMgr::Instance().Load(Resolve(path));
-    if (this->m_owner->GetMember().offline == 1) {
+    offline = this->m_owner->GetMember().offline;
+    if (offline == 1) {
       this->DrawAuxiliary(1, 9, 0, static_cast<CBitmapRes*>(crown), true, false);
     } else {
       this->DrawBitmap(9, 0, static_cast<CBitmapRes*>(crown), true);
     }
   }
 
+  UIPcGage* gauge = this->m_gauge;
   if (this->m_owner->m_sizeMode == 0) {
-    this->m_gauge->Move(35, 23);
+    gauge->Move(35, 23);
   } else {
-    this->m_gauge->Move(-1000, -1000);
+    gauge->Move(-1000, -1000);
   }
 
   if (this->m_owner->m_sizeMode == 2) {
@@ -596,6 +606,10 @@ void UIMiniPartyInfoWnd::Paint() {
     fitted = this->FitDisplayText(static_cast<int>(static_cast<float>(this->geometry.width) * 0.6f), text, 0, 12, 1);
   }
 
-  this->DrawTextAt(35, 9, fitted.c_str(), 0, 0, 12, this->m_owner->GetMember().offline == 1 ? 0xAAAAAA : 0xFFFFFF, 1, 0
-  );
+  offline = this->m_owner->GetMember().offline;
+  if (offline == 1) {
+    this->DrawTextAt(35, 9, fitted.c_str(), 0, 0, 12, 0xAAAAAA, 1, 0);
+  } else {
+    this->DrawTextAt(35, 9, fitted.c_str(), 0, 0, 12, 0xFFFFFF, 1, 0);
+  }
 }
