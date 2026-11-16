@@ -23,7 +23,7 @@ void CCharacterRender::RenderRobe(
   std::list<RenderPrimitive*>& primitives, bool drawOnTop, const void*, int& layer, const float* position, float x, float y, float scale,
   float shift, float, CActRes* baseAct
 ) {
-  if (this->robe < 1 || this->isHelmRobe == 1 || (this->actionIndex >= 64 && this->actionIndex <= 71)
+  if (this->robe <= 0 || this->isHelmRobe == 1 || (this->actionIndex >= 64 && this->actionIndex <= 71)
       || (this->bodyBlend == -1 && this->bodyCellX == -1 && this->bodyCellY == -1)) {
     return;
   }
