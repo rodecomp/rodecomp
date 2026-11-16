@@ -17,6 +17,9 @@ public:
     explicit lcData(float value) : m_value(value) {
     }
     // INLINED
+    __forceinline lcData(const lcData& other) : m_value(other.m_value), m_effects(other.m_effects) {
+    }
+    // INLINED
     virtual ~lcData() {
     }
 
