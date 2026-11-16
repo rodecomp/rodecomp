@@ -3006,13 +3006,21 @@ void CRagEffect::TexturedRise(const char* name, char large) {
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
-  this->state.lastPrim->state.size = large != 1 ? 0.0f : 100.0f;
+  if (large == 1) {
+    this->state.lastPrim->state.size = 100.0f;
+  } else {
+    this->state.lastPrim->state.size = 0.0f;
+  }
   this->state.lastPrim->state.slots[0].life = 1;
   this->state.lastPrim->state.slots[1].life = 0;
   this->state.lastPrim->state.slots[2].life = 0;
   this->state.lastPrim->state.slots[3].life = 0;
   this->state.lastPrim->state.slots[0].process = 0;
-  this->state.lastPrim->state.slots[0].distance = large != 1 ? 5.0f : 6.0f;
+  if (large == 1) {
+    this->state.lastPrim->state.slots[0].distance = 6.0f;
+  } else {
+    this->state.lastPrim->state.slots[0].distance = 5.0f;
+  }
   this->state.lastPrim->state.slots[0].riseAngle = 0;
   this->state.lastPrim->state.slots[0].rotStart = static_cast<std::int16_t>(this->state.deltaPos.x);
   this->state.lastPrim->state.slots[0].alphaB = 150;
@@ -3394,7 +3402,11 @@ void CRagEffect::TexturedDualSpin(const char* first, const char* second, int) {
   this->state.lastPrim->state.slots[0].process = 0;
 
   const float distance = this->state.param[0];
-  this->state.lastPrim->state.slots[0].distance = distance < 5.0f ? 20.0f : distance;
+  if (distance < 5.0f) {
+    this->state.lastPrim->state.slots[0].distance = 20.0f;
+  } else {
+    this->state.lastPrim->state.slots[0].distance = distance;
+  }
 
   const float rotation = this->state.param[1];
   this->state.lastPrim->state.slots[0].rotStart = static_cast<std::int16_t>(rotation < 0.0f || rotation >= 360.0f ? 45 : static_cast<int>(rotation));
@@ -4701,7 +4713,11 @@ void CRagEffect::TexturedSprayKind(const char* name, float spin, char kind) {
     } else if (kind == 8) {
       this->state.lastPrim->state.slots[index].flag1[0] = 8;
     } else {
-      this->state.lastPrim->state.slots[index].flag1[0] = kind == 9 ? 9 : 2;
+      if (kind == 9) {
+        this->state.lastPrim->state.slots[index].flag1[0] = 9;
+      } else {
+        this->state.lastPrim->state.slots[index].flag1[0] = 2;
+      }
     }
   }
 }
@@ -8848,24 +8864,26 @@ void CRagEffect::HealCloudRings() {
   this->state.lastPrim->state.slots[1].alphaB = 0;
   this->state.lastPrim->state.slots[1].distance = 3.2f;
   this->state.lastPrim->state.slots[1].riseAngle = 90;
+  int slot1 = 1;
   for (int j = 0; j < 21; ++j) {
-    this->state.lastPrim->state.slots[1].height[j] = 2.5f;
-    this->state.lastPrim->state.slots[1].flag1[j] = 0;
+    this->state.lastPrim->state.slots[slot1].height[j] = 2.5f;
+    this->state.lastPrim->state.slots[slot1].flag1[j] = 0;
   }
 
   this->state.lastPrim->state.slots[1].alphaT = 0;
 
-  this->state.lastPrim->state.slots[2].life = 1;
-  this->state.lastPrim->state.slots[2].process = 0;
-  this->state.lastPrim->state.slots[2].fullDisplayAngle = 50;
-  this->state.lastPrim->state.slots[2].maxHeight = 8.0f;
-  this->state.lastPrim->state.slots[2].rotStart = 20;
-  this->state.lastPrim->state.slots[2].alphaB = 0;
-  this->state.lastPrim->state.slots[2].distance = 3.4f;
-  this->state.lastPrim->state.slots[2].riseAngle = 90;
+  int slot2 = 2;
+  this->state.lastPrim->state.slots[slot2].life = 1;
+  this->state.lastPrim->state.slots[slot2].process = 0;
+  this->state.lastPrim->state.slots[slot2].fullDisplayAngle = 50;
+  this->state.lastPrim->state.slots[slot2].maxHeight = 8.0f;
+  this->state.lastPrim->state.slots[slot2].rotStart = 20;
+  this->state.lastPrim->state.slots[slot2].alphaB = 0;
+  this->state.lastPrim->state.slots[slot2].distance = 3.4f;
+  this->state.lastPrim->state.slots[slot2].riseAngle = 90;
   for (int j = 0; j < 21; ++j) {
-    this->state.lastPrim->state.slots[2].height[j] = 2.0f;
-    this->state.lastPrim->state.slots[2].flag1[j] = 0;
+    this->state.lastPrim->state.slots[slot2].height[j] = 2.0f;
+    this->state.lastPrim->state.slots[slot2].flag1[j] = 0;
   }
 
   this->state.lastPrim->state.slots[2].alphaT = 0;
@@ -8878,9 +8896,10 @@ void CRagEffect::HealCloudRings() {
   this->state.lastPrim->state.slots[3].alphaB = 0;
   this->state.lastPrim->state.slots[3].distance = 3.6f;
   this->state.lastPrim->state.slots[3].riseAngle = 90;
+  int slot3 = 3;
   for (int j = 0; j < 21; ++j) {
-    this->state.lastPrim->state.slots[3].height[j] = 1.5f;
-    this->state.lastPrim->state.slots[3].flag1[j] = 0;
+    this->state.lastPrim->state.slots[slot3].height[j] = 1.5f;
+    this->state.lastPrim->state.slots[slot3].flag1[j] = 0;
   }
 
   this->state.lastPrim->state.slots[3].alphaT = 0;
@@ -9498,30 +9517,33 @@ void CRagEffect::BeginSpellSwirl(int, const char*, char alpha) {
   this->state.lastPrim->state.slots[0].alphaB = 0;
   this->state.lastPrim->state.slots[0].distance = 4.3f;
   this->state.lastPrim->state.slots[0].riseAngle = 75;
-  this->state.lastPrim->state.slots[1].life = 1;
-  this->state.lastPrim->state.slots[1].process = 0;
-  this->state.lastPrim->state.slots[1].fullDisplayAngle = 360;
-  this->state.lastPrim->state.slots[1].maxHeight = 23.0f;
-  this->state.lastPrim->state.slots[1].rotStart = 270;
-  this->state.lastPrim->state.slots[1].alphaB = 0;
-  this->state.lastPrim->state.slots[1].distance = 4.3f;
-  this->state.lastPrim->state.slots[1].riseAngle = 63;
-  this->state.lastPrim->state.slots[2].life = 1;
-  this->state.lastPrim->state.slots[2].process = 0;
-  this->state.lastPrim->state.slots[2].fullDisplayAngle = 360;
-  this->state.lastPrim->state.slots[2].maxHeight = 23.0f;
-  this->state.lastPrim->state.slots[2].rotStart = 0;
-  this->state.lastPrim->state.slots[2].alphaB = 0;
-  this->state.lastPrim->state.slots[2].distance = 4.3f;
-  this->state.lastPrim->state.slots[2].riseAngle = 52;
-  this->state.lastPrim->state.slots[3].life = 1;
-  this->state.lastPrim->state.slots[3].process = 0;
-  this->state.lastPrim->state.slots[3].fullDisplayAngle = 360;
-  this->state.lastPrim->state.slots[3].maxHeight = 23.0f;
-  this->state.lastPrim->state.slots[3].rotStart = 90;
-  this->state.lastPrim->state.slots[3].alphaB = 0;
-  this->state.lastPrim->state.slots[3].distance = 4.3f;
-  this->state.lastPrim->state.slots[3].riseAngle = 40;
+  int slot1 = 1;
+  this->state.lastPrim->state.slots[slot1].life = 1;
+  this->state.lastPrim->state.slots[slot1].process = 0;
+  this->state.lastPrim->state.slots[slot1].fullDisplayAngle = 360;
+  this->state.lastPrim->state.slots[slot1].maxHeight = 23.0f;
+  this->state.lastPrim->state.slots[slot1].rotStart = 270;
+  this->state.lastPrim->state.slots[slot1].alphaB = 0;
+  this->state.lastPrim->state.slots[slot1].distance = 4.3f;
+  this->state.lastPrim->state.slots[slot1].riseAngle = 63;
+  int slot2 = 2;
+  this->state.lastPrim->state.slots[slot2].life = 1;
+  this->state.lastPrim->state.slots[slot2].process = 0;
+  this->state.lastPrim->state.slots[slot2].fullDisplayAngle = 360;
+  this->state.lastPrim->state.slots[slot2].maxHeight = 23.0f;
+  this->state.lastPrim->state.slots[slot2].rotStart = 0;
+  this->state.lastPrim->state.slots[slot2].alphaB = 0;
+  this->state.lastPrim->state.slots[slot2].distance = 4.3f;
+  this->state.lastPrim->state.slots[slot2].riseAngle = 52;
+  int slot3 = 3;
+  this->state.lastPrim->state.slots[slot3].life = 1;
+  this->state.lastPrim->state.slots[slot3].process = 0;
+  this->state.lastPrim->state.slots[slot3].fullDisplayAngle = 360;
+  this->state.lastPrim->state.slots[slot3].maxHeight = 23.0f;
+  this->state.lastPrim->state.slots[slot3].rotStart = 90;
+  this->state.lastPrim->state.slots[slot3].alphaB = 0;
+  this->state.lastPrim->state.slots[slot3].distance = 4.3f;
+  this->state.lastPrim->state.slots[slot3].riseAngle = 40;
 
   for (int index = 0; index < 4; ++index) {
     this->state.lastPrim->state.slots[index].alphaT = alpha;
@@ -9540,9 +9562,7 @@ void CRagEffect::SevereRainstormCylinder(int, const char*, char alpha, float dis
   char name[128];
 
   const RenderObjectState& parent = this->state.parent->render;
-  this->render.position.x = parent.position.x;
-  this->render.position.y = parent.position.y;
-  this->render.position.z = parent.position.z;
+  this->render.position = parent.position;
 
   if (this->state.stateCnt != 0) {
     return;
@@ -9580,14 +9600,15 @@ void CRagEffect::SevereRainstormCylinder(int, const char*, char alpha, float dis
   this->state.lastPrim->state.slots[0].distance = distance;
   this->state.lastPrim->state.slots[0].riseAngle = 60;
 
-  this->state.lastPrim->state.slots[1].life = 1;
-  this->state.lastPrim->state.slots[1].process = 0;
-  this->state.lastPrim->state.slots[1].fullDisplayAngle = 120;
-  this->state.lastPrim->state.slots[1].maxHeight = 20.0f;
-  this->state.lastPrim->state.slots[1].rotStart = 90;
-  this->state.lastPrim->state.slots[1].alphaB = 0;
-  this->state.lastPrim->state.slots[1].distance = distance;
-  this->state.lastPrim->state.slots[1].riseAngle = 55;
+  int slot1 = 1;
+  this->state.lastPrim->state.slots[slot1].life = 1;
+  this->state.lastPrim->state.slots[slot1].process = 0;
+  this->state.lastPrim->state.slots[slot1].fullDisplayAngle = 120;
+  this->state.lastPrim->state.slots[slot1].maxHeight = 20.0f;
+  this->state.lastPrim->state.slots[slot1].rotStart = 90;
+  this->state.lastPrim->state.slots[slot1].alphaB = 0;
+  this->state.lastPrim->state.slots[slot1].distance = distance;
+  this->state.lastPrim->state.slots[slot1].riseAngle = 55;
 
   this->state.lastPrim->state.slots[2].life = 1;
   this->state.lastPrim->state.slots[2].process = 0;
@@ -14070,15 +14091,16 @@ void CRagEffect::QuadRingStack(const char* name) {
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
   this->state.lastPrim->state.size = 0.0f;
 
-  this->state.lastPrim->state.slots[0].life = 1;
-  this->state.lastPrim->state.slots[0].process = 0;
-  this->state.lastPrim->state.slots[0].fullDisplayAngle = 360;
-  this->state.lastPrim->state.slots[0].maxHeight = 40.0f;
-  this->state.lastPrim->state.slots[0].rotStart = 180;
-  this->state.lastPrim->state.slots[0].alphaB = 0;
-  this->state.lastPrim->state.slots[0].distance = 8.0f;
-  this->state.lastPrim->state.slots[0].riseAngle = 90;
-  this->state.lastPrim->state.slots[0].vecBNow.y = 0.0f;
+  int slot0 = 0;
+  this->state.lastPrim->state.slots[slot0].life = 1;
+  this->state.lastPrim->state.slots[slot0].process = 0;
+  this->state.lastPrim->state.slots[slot0].fullDisplayAngle = 360;
+  this->state.lastPrim->state.slots[slot0].maxHeight = 40.0f;
+  this->state.lastPrim->state.slots[slot0].rotStart = 180;
+  this->state.lastPrim->state.slots[slot0].alphaB = 0;
+  this->state.lastPrim->state.slots[slot0].distance = 8.0f;
+  this->state.lastPrim->state.slots[slot0].riseAngle = 90;
+  this->state.lastPrim->state.slots[slot0].vecBNow.y = 0.0f;
 
   for (int height = 0; height < 21; ++height) {
     this->state.lastPrim->state.slots[0].height[height] = 0.0f;
@@ -14100,34 +14122,36 @@ void CRagEffect::QuadRingStack(const char* name) {
     this->state.lastPrim->state.slots[1].flag1[height] = 0;
   }
 
-  this->state.lastPrim->state.slots[2].life = 1;
-  this->state.lastPrim->state.slots[2].process = 0;
-  this->state.lastPrim->state.slots[2].fullDisplayAngle = 360;
-  this->state.lastPrim->state.slots[2].maxHeight = 38.0f;
-  this->state.lastPrim->state.slots[2].rotStart = 0;
-  this->state.lastPrim->state.slots[2].alphaB = 0;
-  this->state.lastPrim->state.slots[2].distance = 7.8f;
-  this->state.lastPrim->state.slots[2].riseAngle = 90;
-  this->state.lastPrim->state.slots[2].vecBNow.y = 0.0f;
+  int slot2 = 2;
+  this->state.lastPrim->state.slots[slot2].life = 1;
+  this->state.lastPrim->state.slots[slot2].process = 0;
+  this->state.lastPrim->state.slots[slot2].fullDisplayAngle = 360;
+  this->state.lastPrim->state.slots[slot2].maxHeight = 38.0f;
+  this->state.lastPrim->state.slots[slot2].rotStart = 0;
+  this->state.lastPrim->state.slots[slot2].alphaB = 0;
+  this->state.lastPrim->state.slots[slot2].distance = 7.8f;
+  this->state.lastPrim->state.slots[slot2].riseAngle = 90;
+  this->state.lastPrim->state.slots[slot2].vecBNow.y = 0.0f;
 
   for (int height = 0; height < 21; ++height) {
-    this->state.lastPrim->state.slots[2].height[height] = 0.0f;
-    this->state.lastPrim->state.slots[2].flag1[height] = 0;
+    this->state.lastPrim->state.slots[slot2].height[height] = 0.0f;
+    this->state.lastPrim->state.slots[slot2].flag1[height] = 0;
   }
 
-  this->state.lastPrim->state.slots[3].life = 1;
-  this->state.lastPrim->state.slots[3].process = 0;
-  this->state.lastPrim->state.slots[3].fullDisplayAngle = 360;
-  this->state.lastPrim->state.slots[3].maxHeight = 37.0f;
-  this->state.lastPrim->state.slots[3].rotStart = 90;
-  this->state.lastPrim->state.slots[3].alphaB = 0;
-  this->state.lastPrim->state.slots[3].distance = 7.7f;
-  this->state.lastPrim->state.slots[3].riseAngle = 90;
-  this->state.lastPrim->state.slots[3].vecBNow.y = 0.0f;
+  int slot3 = 3;
+  this->state.lastPrim->state.slots[slot3].life = 1;
+  this->state.lastPrim->state.slots[slot3].process = 0;
+  this->state.lastPrim->state.slots[slot3].fullDisplayAngle = 360;
+  this->state.lastPrim->state.slots[slot3].maxHeight = 37.0f;
+  this->state.lastPrim->state.slots[slot3].rotStart = 90;
+  this->state.lastPrim->state.slots[slot3].alphaB = 0;
+  this->state.lastPrim->state.slots[slot3].distance = 7.7f;
+  this->state.lastPrim->state.slots[slot3].riseAngle = 90;
+  this->state.lastPrim->state.slots[slot3].vecBNow.y = 0.0f;
 
   for (int height = 0; height < 21; ++height) {
-    this->state.lastPrim->state.slots[3].height[height] = 0.0f;
-    this->state.lastPrim->state.slots[3].flag1[height] = 0;
+    this->state.lastPrim->state.slots[slot3].height[height] = 0.0f;
+    this->state.lastPrim->state.slots[slot3].flag1[height] = 0;
   }
 }
 
@@ -16616,30 +16640,31 @@ void CRagEffect::RingRedPulse(const char* name, float x, float z) {
   this->state.lastPrim->state.slots[0].riseAngle = 86;
   this->state.lastPrim->state.slots[0].alphaT = static_cast<std::int16_t>(this->state.duration) - 25;
   this->state.lastPrim->state.slots[0].vecBNow.x = x;
-  this->state.lastPrim->state.slots[0].vecBNow.y = 1234.5f;
   this->state.lastPrim->state.slots[0].vecBNow.z = z;
+  this->state.lastPrim->state.slots[0].vecBNow.y = 1234.5f;
 
   for (int j = 0; j < 21; ++j) {
     this->state.lastPrim->state.slots[0].height[j] = 0.0f;
     this->state.lastPrim->state.slots[0].flag1[j] = 33;
   }
 
-  this->state.lastPrim->state.slots[1].life = 1;
-  this->state.lastPrim->state.slots[1].process = 0;
-  this->state.lastPrim->state.slots[1].fullDisplayAngle = 360;
-  this->state.lastPrim->state.slots[1].maxHeight = 25.0f;
-  this->state.lastPrim->state.slots[1].rotStart = static_cast<std::int16_t>(ClampedRandom(360));
-  this->state.lastPrim->state.slots[1].alphaB = 0;
-  this->state.lastPrim->state.slots[1].distance = 2.0f;
-  this->state.lastPrim->state.slots[1].riseAngle = 90;
-  this->state.lastPrim->state.slots[1].alphaT = static_cast<std::int16_t>(this->state.duration) - 25;
-  this->state.lastPrim->state.slots[1].vecBNow.x = x;
-  this->state.lastPrim->state.slots[1].vecBNow.y = 1234.5f;
-  this->state.lastPrim->state.slots[1].vecBNow.z = z;
+  int slot1 = 1;
+  this->state.lastPrim->state.slots[slot1].life = 1;
+  this->state.lastPrim->state.slots[slot1].process = 0;
+  this->state.lastPrim->state.slots[slot1].fullDisplayAngle = 360;
+  this->state.lastPrim->state.slots[slot1].maxHeight = 25.0f;
+  this->state.lastPrim->state.slots[slot1].rotStart = static_cast<std::int16_t>(ClampedRandom(360));
+  this->state.lastPrim->state.slots[slot1].alphaB = 0;
+  this->state.lastPrim->state.slots[slot1].distance = 2.0f;
+  this->state.lastPrim->state.slots[slot1].riseAngle = 90;
+  this->state.lastPrim->state.slots[slot1].alphaT = static_cast<std::int16_t>(this->state.duration) - 25;
+  this->state.lastPrim->state.slots[slot1].vecBNow.x = x;
+  this->state.lastPrim->state.slots[slot1].vecBNow.z = z;
+  this->state.lastPrim->state.slots[slot1].vecBNow.y = 1234.5f;
 
   for (int j = 0; j < 21; ++j) {
-    this->state.lastPrim->state.slots[1].height[j] = 0.0f;
-    this->state.lastPrim->state.slots[1].flag1[j] = 33;
+    this->state.lastPrim->state.slots[slot1].height[j] = 0.0f;
+    this->state.lastPrim->state.slots[slot1].flag1[j] = 33;
   }
 
   this->state.lastPrim->state.slots[2].life = 0;
@@ -17067,9 +17092,10 @@ void CRagEffect::PortalRings() {
   this->state.lastPrim->state.slots[0].alphaT = 1400;
   this->state.lastPrim->state.slots[0].vecBNow.y = 0.0f;
 
+  int slot0 = 0;
   for (int i = 0; i < 21; ++i) {
-    this->state.lastPrim->state.slots[0].height[i] = 0.0f;
-    this->state.lastPrim->state.slots[0].flag1[i] = 2;
+    this->state.lastPrim->state.slots[slot0].height[i] = 0.0f;
+    this->state.lastPrim->state.slots[slot0].flag1[i] = 2;
   }
 
   this->state.lastPrim->state.slots[1].life = 1;
@@ -17083,9 +17109,10 @@ void CRagEffect::PortalRings() {
   this->state.lastPrim->state.slots[1].alphaT = 1400;
   this->state.lastPrim->state.slots[1].vecBNow.y = 0.0f;
 
+  int slot1 = 1;
   for (int i = 0; i < 21; ++i) {
-    this->state.lastPrim->state.slots[1].height[i] = 0.0f;
-    this->state.lastPrim->state.slots[1].flag1[i] = 2;
+    this->state.lastPrim->state.slots[slot1].height[i] = 0.0f;
+    this->state.lastPrim->state.slots[slot1].flag1[i] = 2;
   }
 
   this->state.lastPrim->state.slots[2].life = 1;
@@ -17510,9 +17537,10 @@ void CRagEffect::TexturedFireWall(const char* name, int unused) {
   this->state.lastPrim->state.slots[0].riseAngle = 70;
   this->state.lastPrim->state.slots[0].vecBNow.y = 0.0f;
 
+  int slot0 = 0;
   for (int height = 0; height < 21; ++height) {
-    this->state.lastPrim->state.slots[0].height[height] = 0.0f;
-    this->state.lastPrim->state.slots[0].flag1[height] = 0;
+    this->state.lastPrim->state.slots[slot0].height[height] = 0.0f;
+    this->state.lastPrim->state.slots[slot0].flag1[height] = 0;
   }
 
   this->state.lastPrim->state.slots[1].life = 1;
@@ -17536,8 +17564,8 @@ void CRagEffect::TexturedFireWall(const char* name, int unused) {
   this->state.lastPrim->state.slots[2].maxHeight = 19.0f;
   this->state.lastPrim->state.slots[2].rotStart = 180;
   this->state.lastPrim->state.slots[2].alphaB = 0;
-  this->state.lastPrim->state.slots[2].distance = 3.0f;
   this->state.lastPrim->state.slots[2].riseAngle = 45;
+  this->state.lastPrim->state.slots[2].distance = 3.0f;
   this->state.lastPrim->state.slots[2].vecBNow.y = 0.0f;
 
   for (int height = 0; height < 21; ++height) {
