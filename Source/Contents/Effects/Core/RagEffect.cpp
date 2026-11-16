@@ -1739,7 +1739,8 @@ void CRagEffect::Bottom2() {
     this->state.lastPrim->state.commonPattern = 1;
     this->state.lastPrim->state.pattern = 40;
     this->state.lastPrim->state.type = 50;
-    this->state.lastPrim->state.deltaPos2 = RotatedForward(axis, offset);
+    const vector3d forward{0.0f, 0.0f, offset};
+    MatrixMult(this->state.lastPrim->state.deltaPos2, forward, axis);
     this->state.lastPrim->state.longitude = static_cast<float>(facing + 90);
     this->state.lastPrim->state.widthSize = 2.5f;
     this->state.lastPrim->state.heightSize = 15.0f;
@@ -1754,9 +1755,7 @@ void CRagEffect::Bottom2() {
     this->state.lastPrim->state.commonPattern = 1;
     this->state.lastPrim->state.pattern = 40;
     this->state.lastPrim->state.type = 50;
-    this->state.lastPrim->state.deltaPos2.x = offset * axis[0] + axis[3] * 0.0f + axis[6] * 0.0f + axis[9];
-    this->state.lastPrim->state.deltaPos2.y = offset * axis[1] + axis[4] * 0.0f + axis[7] * 0.0f + axis[10];
-    this->state.lastPrim->state.deltaPos2.z = offset * axis[2] + axis[5] * 0.0f + axis[8] * 0.0f + axis[11];
+    MatrixMult(this->state.lastPrim->state.deltaPos2, vector3d{offset, 0.0f, 0.0f}, axis);
     this->state.lastPrim->state.longitude = static_cast<float>(facing);
     this->state.lastPrim->state.widthSize = 2.5f;
     this->state.lastPrim->state.heightSize = 15.0f;
@@ -2506,7 +2505,8 @@ bool CRagEffect::Potion_Berserk() {
     EffectPrimitiveState& particle = this->state.lastPrim->state;
     particle.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
     EffectPrimitiveState& spot = this->state.lastPrim->state;
-    spot.deltaPos2 = RotatedForward(spot.transform.values, static_cast<float>(ClampedRandom(7) + 2));
+    const vector3d forward{0.0f, 0.0f, static_cast<float>(ClampedRandom(7) + 2)};
+    MatrixMult(spot.deltaPos2, forward, spot.transform.values);
     this->state.lastPrim->state.transform.MakeXRotation(GetRadian(90));
     this->state.lastPrim->state.speed = static_cast<float>(ClampedRandom(50) + 20) / 60.0f;
     this->state.lastPrim->state.widthSize = static_cast<float>(ClampedRandom(60) + 30) / 10.0f;
@@ -14889,7 +14889,8 @@ bool CRagEffect::Potion_Awakening() {
     EffectPrimitiveState& particle = this->state.lastPrim->state;
     particle.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
     EffectPrimitiveState& spot = this->state.lastPrim->state;
-    spot.deltaPos2 = RotatedForward(spot.transform.values, static_cast<float>(ClampedRandom(7) + 2));
+    const vector3d forward{0.0f, 0.0f, static_cast<float>(ClampedRandom(7) + 2)};
+    MatrixMult(spot.deltaPos2, forward, spot.transform.values);
     this->state.lastPrim->state.transform.MakeXRotation(GetRadian(90));
     this->state.lastPrim->state.speed = static_cast<float>(ClampedRandom(50) + 20) / 60.0f;
     this->state.lastPrim->state.widthSize = static_cast<float>(ClampedRandom(60) + 30) / 10.0f;
