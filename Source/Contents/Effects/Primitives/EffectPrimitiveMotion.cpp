@@ -224,20 +224,19 @@ bool CEffectPrim::MoveEffectPrimitive() {
 
   if ((this->state.pattern & 0x200u) != 0) {
     matrix.MakeZRotation(g_modeMgr.GetGameMode()->camera->camera.pitch);
-  } else if ((this->state.pattern & 0x40u) != 0) {
-    CGameMode* const mode = g_modeMgr.GetGameMode();
-    this->state.longitude = mode->camera->camera.yaw + 90.0f;
-    this->state.roll = mode->camera->camera.pitch;
-    matrix.MakeXRotation(GetRadian(static_cast<int>(this->state.latitude)));
-    matrix.AppendZRotation(GetRadian(static_cast<int>(this->state.roll)));
-  } else {
-    matrix.MakeZRotation(GetRadian(static_cast<int>(this->state.roll)));
-    matrix.AppendXRotation(GetRadian(static_cast<int>(this->state.latitude)));
-  }
-
-  if ((this->state.pattern & 0x200u) != 0) {
     matrix.AppendYRotation(GetRadian(static_cast<int>(this->render.angle)));
   } else {
+    if ((this->state.pattern & 0x40u) != 0) {
+      CGameMode* const mode = g_modeMgr.GetGameMode();
+      this->state.longitude = mode->camera->camera.yaw + 90.0f;
+      this->state.roll = mode->camera->camera.pitch;
+      matrix.MakeXRotation(GetRadian(static_cast<int>(this->state.latitude)));
+      matrix.AppendZRotation(GetRadian(static_cast<int>(this->state.roll)));
+    } else {
+      matrix.MakeZRotation(GetRadian(static_cast<int>(this->state.roll)));
+      matrix.AppendXRotation(GetRadian(static_cast<int>(this->state.latitude)));
+    }
+
     matrix.AppendYRotation(GetRadian(static_cast<int>(this->state.longitude)));
   }
 
@@ -250,9 +249,10 @@ bool CEffectPrim::MoveEffectPrimitive() {
   }
 
   if ((this->state.pattern & 0x10u) != 0) {
-    this->state.master->state.deltaPos.x = this->state.deltaPos2.x + this->state.deltaPos.x;
-    this->state.master->state.deltaPos.y = this->state.deltaPos.y + this->state.deltaPos2.y;
-    this->state.master->state.deltaPos.z = this->state.deltaPos.z + this->state.deltaPos2.z;
+    this->state.master->state.deltaPos = {
+      this->state.deltaPos2.x + this->state.deltaPos.x, this->state.deltaPos.y + this->state.deltaPos2.y,
+      this->state.deltaPos.z + this->state.deltaPos2.z
+    };
   }
 
   if ((this->state.pattern & 4u) != 0 && this->render.position.y > g_modeMgr.GetGameMode()->scene->terrain->Height(this->render.position.x, this->render.position.z)) {
@@ -286,13 +286,41 @@ bool CEffectPrim::MoveEffectPrimitive() {
   }
 
   if ((this->state.pattern & 0x800u) != 0) {
-    this->state.red = this->state.red > 254 ? 0 : this->state.red < 0 ? 254 : this->state.red;
-    this->state.green = this->state.green > 254 ? 0 : this->state.green < 0 ? 254 : this->state.green;
-    this->state.blue = this->state.blue > 254 ? 0 : this->state.blue < 0 ? 254 : this->state.blue;
+    if (this->state.red > 254) {
+      this->state.red = 0;
+    } else if (this->state.red < 0) {
+      this->state.red = 254;
+    }
+
+    if (this->state.green > 254) {
+      this->state.green = 0;
+    } else if (this->state.green < 0) {
+      this->state.green = 254;
+    }
+
+    if (this->state.blue > 254) {
+      this->state.blue = 0;
+    } else if (this->state.blue < 0) {
+      this->state.blue = 254;
+    }
   } else {
-    this->state.red = this->state.red > 255 ? 0 : this->state.red < 0 ? 255 : this->state.red;
-    this->state.green = this->state.green > 255 ? 255 : this->state.green < 0 ? 0 : this->state.green;
-    this->state.blue = this->state.blue > 255 ? 255 : this->state.blue < 0 ? 0 : this->state.blue;
+    if (this->state.red > 255) {
+      this->state.red = 0;
+    } else if (this->state.red < 0) {
+      this->state.red = 255;
+    }
+
+    if (this->state.green > 255) {
+      this->state.green = 255;
+    } else if (this->state.green < 0) {
+      this->state.green = 0;
+    }
+
+    if (this->state.blue > 255) {
+      this->state.blue = 255;
+    } else if (this->state.blue < 0) {
+      this->state.blue = 0;
+    }
   }
 
   this->ProcessAlpha();
@@ -301,10 +329,12 @@ bool CEffectPrim::MoveEffectPrimitive() {
     const auto next = this->render.curMotion + 1u;
     this->render.curMotion = next;
 
-    if (this->state.repeatAnim != 0) {
+    if (this->state.repeatAnim == 0) {
+      if (next == this->state.totalTexture) {
+        return false;
+      }
+    } else {
       this->render.curMotion = static_cast<int>(next) % static_cast<int>(this->state.totalTexture);
-    } else if (next == this->state.totalTexture) {
-      return false;
     }
   }
 
@@ -463,13 +493,16 @@ bool CEffectPrim::Prim3DCylinder() {
   this->ProcessAlpha();
 
   if (this->state.stateCnt % this->state.animSpeed == 0) {
+    const unsigned total = this->state.totalTexture;
     const auto next = this->render.curMotion + 1u;
     this->render.curMotion = next;
 
-    if (this->state.repeatAnim != 0) {
-      this->render.curMotion = static_cast<int>(next) % static_cast<int>(this->state.totalTexture);
-    } else if (next == this->state.totalTexture) {
-      return false;
+    if (this->state.repeatAnim == 0) {
+      if (next == total) {
+        return false;
+      }
+    } else {
+      this->render.curMotion = static_cast<int>(next) % static_cast<int>(total);
     }
   }
 
@@ -516,13 +549,16 @@ bool CEffectPrim::Prim3DCylinderHalf() {
   this->ProcessAlpha();
 
   if (this->state.stateCnt % this->state.animSpeed == 0) {
+    const unsigned total = this->state.totalTexture;
     const auto next = this->render.curMotion + 1u;
     this->render.curMotion = next;
 
-    if (this->state.repeatAnim != 0) {
-      this->render.curMotion = static_cast<int>(next) % static_cast<int>(this->state.totalTexture);
-    } else if (next == this->state.totalTexture) {
-      return false;
+    if (this->state.repeatAnim == 0) {
+      if (next == total) {
+        return false;
+      }
+    } else {
+      this->render.curMotion = static_cast<int>(next) % static_cast<int>(total);
     }
   }
 
