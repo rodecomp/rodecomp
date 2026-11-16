@@ -8293,7 +8293,7 @@ int UISkillNameChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     break;
   case UM_SET_SKILL_INFO:
     this->m_skillId = static_cast<int>(a);
-    this->m_name = CSkillInfo::DisplayName(*g_session.m_hotkeyScript, static_cast<int>(a));
+    this->m_name = CSkillInfo::DisplayName(static_cast<int>(a));
     this->m_edit->SetText(this->m_name.c_str());
     g_windowMgr.SetFocus(this->m_edit);
     this->m_edit->SelectAll();
