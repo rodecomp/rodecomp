@@ -90,7 +90,7 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
   float rhw = 0.0f;
   g_renderer->ProjectViewport(origin, view, &screenX, &screenY, &rhw);
   float distanceScale = g_renderer->ScaleDistance(rhw);
-  distanceScale *= GetSkillFactor(this->job);
+  distanceScale *= g_session.GetSkillFactor(this->job);
 
   int swapCount = 0;
   bool bodyDrawn = false;
