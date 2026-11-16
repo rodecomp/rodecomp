@@ -90,9 +90,7 @@ bool CRotateBgEffect::IsAlive() {
 // FUNCTION: fn_19144
 void CRotateBgEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
-    (*it)->position.x = this->position[0];
-    (*it)->position.y = this->position[1];
-    (*it)->position.z = this->position[2];
+    (*it)->position = this->positionVector;
     CParticle* particle = *it;
     if (particle) {
       int alpha = particle->alpha;
@@ -102,7 +100,7 @@ void CRotateBgEffect::OnProcess() {
         ++alpha;
       }
 
-      alpha = std::max(alpha, 0);
+      alpha = alpha >= 0 ? alpha : 0;
       particle->alpha = alpha;
       if (alpha > 0) {
         const int index = particle->columnIndex;
@@ -111,7 +109,8 @@ void CRotateBgEffect::OnProcess() {
         if (index == 0) {
           this->height = -values[1];
           this->radius = values[0];
-          const int step = std::max(rand() % 3, 0);
+          const int roll = rand() % 3;
+          const int step = roll >= 0 ? roll : 0;
           this->angle = (particle->phaseParameter + 3 + step) % 360;
           particle->phaseParameter = this->angle;
           height = this->height;
@@ -148,11 +147,8 @@ void CRotateBgEffect::OnProcess() {
   }
 
   for (auto it = this->segmentParticles.begin(); it != this->segmentParticles.end(); ++it) {
+    (*it)->position = this->positionVector;
     CParticle* particle = *it;
-    vector3d& particlePosition = (*it)->position;
-    particlePosition.x = this->position[0];
-    particlePosition.y = this->position[1];
-    particlePosition.z = this->position[2];
     if (particle) {
       if (particle->columnIndex == 0) {
         this->segmentAngle = static_cast<int>(particle->angle);
