@@ -2875,13 +2875,13 @@ void CGameMode::UpdateSkillCooldown(std::uint16_t skill, std::uint32_t remaining
   value.duration = duration;
 
   for (const ShortcutCooldownIcon& icon : g_session.m_mainCooldownIcons) {
-    if (icon.id == skill) {
+    if (icon.id == value.id) {
       value.main.push_back(CooldownState(icon.slot, icon.x, icon.y, duration, value.end - remaining, duration - remaining, 0));
     }
   }
 
   for (const ShortcutCooldownIcon& icon : g_session.m_alternateCooldownIcons) {
-    if (icon.id == skill) {
+    if (icon.id == value.id) {
       value.alternate.push_back(CooldownState(icon.slot, icon.x, icon.y, duration, value.end - remaining, duration - remaining, 0));
     }
   }
