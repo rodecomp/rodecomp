@@ -3868,8 +3868,9 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
           menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(text.c_str()), 471, *it, 0);
         }
       }
+      const int height = (static_cast<int>(targets.second.size()) + 4) * 16;
       menu->SendMsg(nullptr, UM_SETCURITEM, 0, 0, 0, 0);
-      menu->Resize(110, (static_cast<int>(targets.second.size()) + 4) * 16);
+      menu->Resize(110, height);
       menu->SendMsg(nullptr, UM_SET_CALLER_WID, 88, 0, 0, 0);
       int x = 160;
       int y = 44;
