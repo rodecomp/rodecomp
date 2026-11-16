@@ -1897,9 +1897,8 @@ void CEffectPrim::RenderHitLine(matrix& wtm) {
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
-    const EffectPrimitiveSlot& slot = this->state.slots[ec];
 
-    if (slot.life != 1 || slot.alphaB <= 0 || slot.process <= 0) {
+    if (this->state.slots[ec].life != 1 || this->state.slots[ec].alphaB <= 0 || this->state.slots[ec].process <= 0) {
       continue;
     }
 
@@ -1907,71 +1906,71 @@ void CEffectPrim::RenderHitLine(matrix& wtm) {
       float speed = 0.0f;
       float radius = 1.0f;
 
-      for (int i = 0; i < slot.flag1[j]; ++i) {
-        speed += slot.distance * 2.0f * radius;
+      for (int i = 0; i < this->state.slots[ec].flag1[j]; ++i) {
+        speed += this->state.slots[ec].distance * 2.0f * radius;
         radius *= 0.7f;
       }
 
-      if (slot.height[j] > 0.0f) {
-        speed += slot.distance * radius * (slot.height[j] / 90.0f);
+      if (this->state.slots[ec].height[j] > 0.0f) {
+        speed += this->state.slots[ec].distance * radius * (this->state.slots[ec].height[j] / 90.0f);
       }
 
       radius = 1.0f;
 
-      for (int i = 0; i < slot.flag1[j]; ++i) {
+      for (int i = 0; i < this->state.slots[ec].flag1[j]; ++i) {
         radius *= 0.7f;
       }
 
       vector3d vecA{
-        speed * g_cosTable[slot.riseAngle], -slot.distance * g_sinTable[static_cast<std::int16_t>(slot.height[j])] * 1.5f * radius,
-        speed * g_sinTable[slot.riseAngle]
+        speed * g_cosTable[this->state.slots[ec].riseAngle], -this->state.slots[ec].distance * g_sinTable[static_cast<std::int16_t>(this->state.slots[ec].height[j])] * 1.5f * radius,
+        speed * g_sinTable[this->state.slots[ec].riseAngle]
       };
 
       speed = 0.0f;
       radius = 1.0f;
 
-      for (int i = 0; i < slot.flag1[j + 1]; ++i) {
-        speed += slot.distance * 2.0f * radius;
+      for (int i = 0; i < this->state.slots[ec].flag1[j + 1]; ++i) {
+        speed += this->state.slots[ec].distance * 2.0f * radius;
         radius *= 0.7f;
       }
 
-      if (slot.height[j + 1] > 0.0f) {
-        speed += slot.distance * radius * (slot.height[j + 1] / 90.0f);
+      if (this->state.slots[ec].height[j + 1] > 0.0f) {
+        speed += this->state.slots[ec].distance * radius * (this->state.slots[ec].height[j + 1] / 90.0f);
       }
 
       radius = 1.0f;
 
-      for (int i = 0; i < slot.flag1[j + 1]; ++i) {
+      for (int i = 0; i < this->state.slots[ec].flag1[j + 1]; ++i) {
         radius *= 0.7f;
       }
 
       vector3d vecB{
-        speed * g_cosTable[slot.riseAngle], -slot.distance * g_sinTable[static_cast<std::int16_t>(slot.height[j + 1])] * 1.5f * radius,
-        speed * g_sinTable[slot.riseAngle]
+        speed * g_cosTable[this->state.slots[ec].riseAngle], -this->state.slots[ec].distance * g_sinTable[static_cast<std::int16_t>(this->state.slots[ec].height[j + 1])] * 1.5f * radius,
+        speed * g_sinTable[this->state.slots[ec].riseAngle]
       };
 
       std::int16_t angle;
       Get_Angle(vecA.x - vecB.x, vecA.z - vecB.z, &angle);
-      vecA += slot.vecBNow;
-      vecB += slot.vecBNow;
+      vecA += this->state.slots[ec].vecBNow;
+      vecB += this->state.slots[ec].vecBNow;
       angle = static_cast<std::int16_t>((angle + 90) % 360);
 
       for (int i = 0; i <= 3; ++i) {
-        const float tx = slot.maxHeight * g_cosTable[i * 120];
-        const float ry = slot.maxHeight * g_sinTable[i * 120];
+        const float tx = this->state.slots[ec].maxHeight * g_cosTable[i * 120];
+        const float ry = this->state.slots[ec].maxHeight * g_sinTable[i * 120];
         const float rx = tx * g_cosTable[angle];
         const float rz = tx * g_sinTable[angle];
         vec2.Set(vecA.x + rx, vecA.y + ry, vecA.z + rz);
         vec4.Set(vecB.x + rx, vecB.y + ry, vecB.z + rz);
 
         if (i > 0) {
-          const int alpha = slot.alphaB - j * 5;
+          const int alpha = this->state.slots[ec].alphaB - j * 5;
 
           if (alpha > 0) {
-            if (slot.alphaT == 2) {
+            if (this->state.slots[ec].alphaT == 2) {
               const unsigned char shade = static_cast<unsigned char>(200 - (20 - j) * 7);
               this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec4, vec3, wtm, 0, 0, 1, 255, shade, shade, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-            } else if (slot.alphaT == 8) {
+            } else if (this->state.slots[ec].alphaT == 8) {
               const unsigned char shade = static_cast<unsigned char>(150 - (20 - j) * 7);
               this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec4, vec3, wtm, 0, 0, 1, shade, shade, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
             } else {
