@@ -461,17 +461,19 @@ bool IsItemCard(int id) {
 // FUNCTION: fn_06591
 const char* ITEM_INFO::ResourcePath() const {
   if (this->identified == 1) {
-    return FindItemDescription(std::atoi(this->itemId.c_str())).identifiedResource;
+    const int id = std::atoi(this->itemId.c_str());
+    return FindItemDescription(id, g_itemDescriptions).identifiedResource;
   }
 
-  return FindItemDescription(std::atoi(this->itemId.c_str())).unidentifiedResource;
+  const int id = std::atoi(this->itemId.c_str());
+  return FindItemDescription(id, g_itemDescriptions).unidentifiedResource;
 }
 
 // OFFSET: 0x006D76B0
 // FUNCTION: fn_06592
 int ITEM_INFO::SlotCount() const {
   int id = std::atoi(this->itemId.c_str());
-  return FindItemDescription(id).slots;
+  return FindItemDescription(id, g_itemDescriptions).slots;
 }
 
 // OFFSET: 0x006D7760
