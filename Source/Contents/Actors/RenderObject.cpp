@@ -1718,7 +1718,7 @@ void CGameActor::SetState(int state, int resetPosition) {
     break;
   }
 
-  this->render.previousAnimation = this->Get8Dir(this->render.angle) + this->render.animation;
+  this->render.previousAnimation = this->render.animation + this->Get8Dir(this->render.angle);
   const int previous = this->render.state;
   if (previous == ST_STAND || previous == ST_SIT) {
     this->render.previousState = previous;
@@ -4645,8 +4645,8 @@ bool C3dGrannyGameActor::OnProcess() {
 // OFFSET: 0x00CC9F20
 // FUNCTION: fn_21195
 void CGameActor::SpawnDamageDigits(int, int damage, std::uint32_t color, int type) {
-  std::vector<int> digits;
   const int value = damage >= 0 ? damage : 0;
+  std::vector<int> digits;
   int remaining = value;
   int digit;
   if (g_serviceOptions.Get(TT_EXTEND_DAMAGE_ON_OFF)) {
@@ -4689,16 +4689,14 @@ void CGameActor::SpawnDamageDigits(int, int damage, std::uint32_t color, int typ
     CMsgEffect* effect = new CMsgEffect;
     effect->render.color = color;
     effect->SendMsg(nullptr, AM_SETMASTERGID, static_cast<std::uint32_t>(this->render.accountId), type, 0, 0, 0, 0);
-    const std::intptr_t position = reinterpret_cast<std::intptr_t>(&this->render.position);
-    const int count = static_cast<int>(digits.size());
     if (value >= 100000000 && g_session.m_damageMillionUnit == 2) {
       if (index == 0) {
-        effect->SendMsg(nullptr, AM_SETPOS2, position, *it, static_cast<std::uint32_t>((count - 1) * 3 + 4), 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETPOS2, reinterpret_cast<std::intptr_t>(&this->render.position), *it, static_cast<std::uint32_t>((static_cast<int>(digits.size()) - 1) * 3 + 4), 0, 0, 0);
       } else {
-        effect->SendMsg(nullptr, AM_SETPOS2, position, *it, static_cast<std::uint32_t>((count - 1) * 3 - index * 8), 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETPOS2, reinterpret_cast<std::intptr_t>(&this->render.position), *it, static_cast<std::uint32_t>((static_cast<int>(digits.size()) - 1) * 3 - index * 8), 0, 0, 0);
       }
     } else {
-      effect->SendMsg(nullptr, AM_SETPOS2, position, *it, static_cast<std::uint32_t>((count - index * 2) * 4 - 4), 0, 0, 0);
+      effect->SendMsg(nullptr, AM_SETPOS2, reinterpret_cast<std::intptr_t>(&this->render.position), *it, static_cast<std::uint32_t>((static_cast<int>(digits.size()) - index * 2) * 4 - 4), 0, 0, 0);
     }
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
     effect->render.useGroundLighting = 0;
