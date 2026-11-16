@@ -7694,11 +7694,7 @@ void CGameMode::ProcessWhisper(int shortcutId, std::string name, std::string tex
         std::string header = "[ ";
         header.append(sender);
         std::string body(message.data());
-        {
-          std::string linked;
-          DisplayNavigationLink(linked, body);
-          body = std::move(linked);
-        }
+        body = g_navigationLinkParser->DisplayNavigationLink(body);
         if (std::strstr(message.data(), g_whisperItemLinkTag.c_str()) != nullptr) {
           body = g_windowMgr.chatWnd->ConvertChat(body);
           header = header + " ] : " + body;
@@ -7763,11 +7759,7 @@ void CGameMode::ProcessWhisper(int shortcutId, std::string name, std::string tex
         if (prefix.find(g_whisperItemLinkTag) != std::string::npos) {
           prefix = g_windowMgr.chatWnd->ConvertChat(prefix);
         }
-        {
-          std::string linked;
-          DisplayNavigationLink(linked, prefix);
-          prefix = std::move(linked);
-        }
+        prefix = g_navigationLinkParser->DisplayNavigationLink(prefix);
 
         BroadcastBalloonMessage balloonMessage;
         std::uint32_t color = 0xFFFF;
