@@ -53,10 +53,6 @@ bool CSession::LoadMapPosTable() {
   const char* start = cursor;
   for (; cursor < end; ++cursor) {
     switch (*cursor) {
-    case '\n':
-    case '\r':
-      start = cursor + 1;
-      break;
     case '@':
       if (this->m_mapPosListCount == -1) {
         this->m_mapPosListCount = std::atoi(std::string(start, cursor).c_str());
@@ -101,8 +97,8 @@ bool CSession::LoadMapPosTable() {
         position.valid = 1;
 
         if (boundsValid != 0) {
-          bounds.right = std::max(bounds.right, right);
-          bounds.bottom = std::max(bounds.bottom, bottom);
+          bounds.right = std::max(right, bounds.right);
+          bounds.bottom = std::max(bottom, bounds.bottom);
           bounds.left = std::min(bounds.left, rect.left);
           if (top < bounds.top) {
             bounds.top = top;
@@ -116,6 +112,10 @@ bool CSession::LoadMapPosTable() {
         name.clear();
         fields.clear();
       }
+      start = cursor + 1;
+      break;
+    case '\n':
+    case '\r':
       start = cursor + 1;
       break;
     }
