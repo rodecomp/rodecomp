@@ -5959,8 +5959,8 @@ void CSession::LoadSessionTables() {
     session->inventoryFilterIds.clear();
     session->inventoryFilterIds.reserve(512);
     storage.LoadTokens(buyingStoreItems, "BuyingStoreItemList.txt", 0);
-    for (char* token : buyingStoreItems) {
-      session->inventoryFilterIds.push_back(std::atoi(token));
+    for (auto it = buyingStoreItems.begin(); it != buyingStoreItems.end(); ++it) {
+      session->inventoryFilterIds.push_back(std::atoi(*it));
     }
   }
 
