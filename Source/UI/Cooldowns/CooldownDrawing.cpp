@@ -21,7 +21,12 @@ namespace {
 void CooldownDrawing::Draw(
   int centerX, int centerY, int radiusX, int radiusY, CooldownState& value, int limit, int offsetX, int offsetY
 ) {
-  if (value.x <= 0 || value.y <= 0 || (value.color & 0xFF000000u) == 0) {
+  if (value.x <= 0 || value.y <= 0) {
+    return;
+  }
+
+  const std::uint32_t color = value.color;
+  if ((color & 0xFF000000u) == 0) {
     return;
   }
 
@@ -34,7 +39,7 @@ void CooldownDrawing::Draw(
   vertices[11].x = vertices[13].x = static_cast<float>(centerX);
   vertices[11].y = vertices[13].y = bottom;
 
-  for (unsigned i = 0; i < 24; ++i) {
+  for (int i = 0; i < 24; ++i) {
     RenderVertex& vertex = vertices[i];
     if (i % 3 == 0) {
       vertex.x = static_cast<float>(centerX);
@@ -43,7 +48,7 @@ void CooldownDrawing::Draw(
 
     vertex.z = 0.000001f;
     vertex.rhw = 0.999999f;
-    vertex.diffuse = value.color;
+    vertex.diffuse = color;
     vertex.u = vertex.v = 0;
   }
 
@@ -118,9 +123,9 @@ void CooldownDrawing::Draw(
   command->vertices = vertices;
   command->vertexCount = value.vertexCount;
 
-  for (RenderVertex& vertex : value.vertices) {
-    vertex.x = static_cast<float>(((offsetX + value.x) + 12)) + vertex.x;
-    vertex.y = static_cast<float>(((offsetY + value.y) + 12)) + vertex.y;
+  for (int i = 0; i < 24; ++i) {
+    vertices[i].x += static_cast<float>(value.x + 12 + offsetX);
+    vertices[i].y += static_cast<float>(value.y + 12 + offsetY);
   }
 
   this->normal.push_back(command);
@@ -194,9 +199,9 @@ void CooldownDrawing::DrawReverse(CooldownState& value) {
   command->vertices = value.vertices;
   command->vertexCount = value.vertexCount;
 
-  for (RenderVertex& vertex : value.vertices) {
-    vertex.x = static_cast<float>(value.x) + vertex.x;
-    vertex.y = static_cast<float>(value.y) + vertex.y;
+  for (int i = 0; i < 24; ++i) {
+    value.vertices[i].x += static_cast<float>(value.x);
+    value.vertices[i].y += static_cast<float>(value.y);
   }
 
   this->reverse.push_back(command);
