@@ -557,7 +557,7 @@ __declspec(noinline) void UILapineUpgradeBox_IngredientInfoWnd::SetItem(std::uin
   }
 
   this->item.SetName(name);
-  this->tooltip.assign(name, std::strlen(name));
+  this->tooltip = name;
   this->Invalidate();
 }
 
