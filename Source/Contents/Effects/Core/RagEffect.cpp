@@ -955,8 +955,9 @@ void CRagEffect::Hit3() {
 // OFFSET: 0x00C19980
 // FUNCTION: fn_20066
 void CRagEffect::Hit4() {
+  CGameMode* gameMode = g_modeMgr.GetGameMode();
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
-  g_renderer->viewport.Project(&this->state.parent->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values, vertex);
+  g_renderer->viewport.Project(&this->state.parent->render.position.x, gameMode->camera->frame.view.values, vertex);
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
 
@@ -965,8 +966,10 @@ void CRagEffect::Hit4() {
   }
 
   PlayEffectWave(*this, "effect\\EF_hit4.wav");
-  const int facing = static_cast<int>(180.0f - this->state.parent->render.angle);
-  const int direction = facing < 0 ? facing + 360 : facing;
+  int direction = static_cast<int>(180.0f - this->state.parent->render.angle);
+  if (direction < 0) {
+    direction += 360;
+  }
   this->state.lastPrim = this->LaunchEffectPrim(13, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 15;
   this->state.lastPrim->state.longitude = static_cast<float>(direction);
