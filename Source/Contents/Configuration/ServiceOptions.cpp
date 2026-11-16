@@ -1388,8 +1388,10 @@ void CSession::LoadOptionInfo() {
   g_textureFiltering = this->GetOptionInteger("Trilinear", 0);
 
   const int effectVolume = this->GetOptionInteger("Effect_Volume", 100);
-  g_soundMgr->SetVolume(this->GetOptionInteger("Bgm_Volume", 100));
-  g_soundMgr->SetTargetVolume(g_soundMgr->Volume());
+  CSoundMgr* soundMgr = g_soundMgr;
+  soundMgr->SetVolume(this->GetOptionInteger("Bgm_Volume", 100));
+  soundMgr = g_soundMgr;
+  soundMgr->SetTargetVolume(soundMgr->Volume());
   g_soundMgr->SetSampleVolume(effectVolume);
   g_soundMgr->Set3DVolume(effectVolume);
 
@@ -1473,7 +1475,8 @@ void CSession::LoadOptionInfo() {
   g_viewportHeight = g_configuredScreenHeight;
   g_configuredBitsPerPixel = this->GetOptionInteger("BITPERPIXEL", 16);
 
-  OSVERSIONINFOA version = {sizeof(version)};
+  OSVERSIONINFOA version = {};
+  version.dwOSVersionInfoSize = sizeof(version);
   GetVersionExA(&version);
 
   if (version.dwMajorVersion >= 6 && version.dwMinorVersion >= 2) {
