@@ -106,6 +106,7 @@ public:
   int Contains(const UIWindow* window) const;
   bool IsDescendantOf(const UIWindow* ancestor) const;
   void BroadcastMsg4();
+  bool HasTextLinks(const std::string& text);
   void BroadcastMsg3();
   void PropagateMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4);
   __declspec(noinline) void ToScreen(int& x, int& y) const;

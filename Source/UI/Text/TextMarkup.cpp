@@ -47,7 +47,7 @@ static const std::string g_questTagEnd = "</QUEST>";
 
 // OFFSET: 0x00A7CA90
 // FUNCTION: fn_16949
-void __stdcall ExtractNavigationTextLinks(const std::string& text, std::vector<TextLink>& links) {
+void UITextViewer::ExtractNavigationTextLinks(const std::string& text, std::vector<TextLink>& links) {
   ExtractTextLinks(text, g_naviTagBegin, g_naviTagEnd, links);
 }
 
@@ -59,7 +59,7 @@ static const std::string g_tipBoxTagEnd = "</TIPBOX>";
 
 // OFFSET: 0x00A7D690
 // FUNCTION: fn_16951
-void ExtractTipBoxTextLinks(const std::string& text, std::vector<TextLink>& links) {
+void UITextViewer::ExtractTipBoxTextLinks(const std::string& text, std::vector<TextLink>& links) {
   ExtractTextLinks(text, g_tipBoxTagBegin, g_tipBoxTagEnd, links);
 }
 
@@ -71,13 +71,13 @@ static const std::string g_urlTagEnd = "</URL>";
 
 // OFFSET: 0x00A7D6B0
 // FUNCTION: fn_16952
-void ExtractUrlTextLinks(const std::string& text, std::vector<TextLink>& links) {
+void UITextViewer::ExtractUrlTextLinks(const std::string& text, std::vector<TextLink>& links) {
   ExtractTextLinks(text, g_urlTagBegin, g_urlTagEnd, links);
 }
 
 // OFFSET: 0x00A81A70
 // FUNCTION: fn_16980
-bool HasTextLinks(const std::string& text) {
+bool UIWindow::HasTextLinks(const std::string& text) {
   const bool hasUrl = text.find(g_urlTagBegin) != std::string::npos;
   if (text.find(g_itemTagBegin) != std::string::npos || text.find(g_tipBoxTagBegin) != std::string::npos) {
     return true;
@@ -223,7 +223,7 @@ const std::string RemoveTextLinkInfo(const std::string& source) {
 
 // OFFSET: 0x00A7CAB0
 // FUNCTION: fn_16950
-void __stdcall ExtractTextLinks(const std::string& source, const std::string& begin, const std::string& end, std::vector<TextLink>& links) {
+void UITextViewer::ExtractTextLinks(const std::string& source, const std::string& begin, const std::string& end, std::vector<TextLink>& links) {
   std::string text = source;
   auto position = text.find(begin);
 

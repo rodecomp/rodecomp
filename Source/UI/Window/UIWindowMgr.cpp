@@ -1694,8 +1694,8 @@ void UIWindowMgr::SendEmotionHotkey(int index) {
   const EmotionHotkeys* emotions = &g_session.m_emotionHotkeys;
   std::strcpy(text, emotions->current[index].c_str());
 
-  if (g_windowMgr.basicInfoWnd != nullptr) {
-    const bool linked = HasTextLinks(std::string(text));
+  if (UIBasicInfoWnd* basicInfoWnd = g_windowMgr.basicInfoWnd) {
+    const bool linked = basicInfoWnd->HasTextLinks(std::string(text));
     if (linked) {
       g_windowMgr.Confirm(LookupMessage(MSI_UNDEAD_MONSTERINFO), 0, true, false, 0, "Message", 280, 120, 0);
       return;

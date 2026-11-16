@@ -1522,8 +1522,7 @@ std::string UIWindow::FitVerticalDisplayText(int height, const char* text, int f
     display = g_windowMgr.chatWnd->ConvertChat(std::move(display));
   }
 
-  std::string navigation = g_navigationLinkParser->DisplayNavigationLink(display);
-  display = std::move(navigation);
+  display = g_navigationLinkParser->DisplayNavigationLink(display);
   display = static_cast<const std::string&>(DisplayQuestTextTag(display));
 
   if (this->VerticalTextHeight(display.c_str(), display.size(), family, fontHeight, bold) <= height) {
