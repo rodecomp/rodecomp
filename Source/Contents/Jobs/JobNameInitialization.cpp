@@ -57,12 +57,22 @@ void CSession::InitJobNameTable() {
     g_session.m_hotkeyScript->Call("ReqJobName", "d>s", id, &this->m_jobNameTable[id]);
   }
 
-  const char* const homunculi[] = {"LIF",   "AMISTR",   "FILIR",   "VANILMIRTH",   "LIF2",   "AMISTR2",   "FILIR2",   "VANILMIRTH2",
-                                   "LIF_H", "AMISTR_H", "FILIR_H", "VANILMIRTH_H", "LIF_H2", "AMISTR_H2", "FILIR_H2", "VANILMIRTH_H2"};
-
-  for (unsigned index = 0; index < 16; ++index) {
-    this->m_jobNameTable[JT_MER_LIF + index] = homunculi[index];
-  }
+  this->m_jobNameTable[JT_MER_LIF + 0] = "LIF";
+  this->m_jobNameTable[JT_MER_LIF + 1] = "AMISTR";
+  this->m_jobNameTable[JT_MER_LIF + 2] = "FILIR";
+  this->m_jobNameTable[JT_MER_LIF + 3] = "VANILMIRTH";
+  this->m_jobNameTable[JT_MER_LIF + 4] = "LIF2";
+  this->m_jobNameTable[JT_MER_LIF + 5] = "AMISTR2";
+  this->m_jobNameTable[JT_MER_LIF + 6] = "FILIR2";
+  this->m_jobNameTable[JT_MER_LIF + 7] = "VANILMIRTH2";
+  this->m_jobNameTable[JT_MER_LIF + 8] = "LIF_H";
+  this->m_jobNameTable[JT_MER_LIF + 9] = "AMISTR_H";
+  this->m_jobNameTable[JT_MER_LIF + 10] = "FILIR_H";
+  this->m_jobNameTable[JT_MER_LIF + 11] = "VANILMIRTH_H";
+  this->m_jobNameTable[JT_MER_LIF + 12] = "LIF_H2";
+  this->m_jobNameTable[JT_MER_LIF + 13] = "AMISTR_H2";
+  this->m_jobNameTable[JT_MER_LIF + 14] = "FILIR_H2";
+  this->m_jobNameTable[JT_MER_LIF + 15] = "VANILMIRTH_H2";
 
   this->m_jobNameTable[JT_MER_EIRA] = "MER_EIRA";
   this->m_jobNameTable[JT_MER_DIETER] = "MER_DIETER";
