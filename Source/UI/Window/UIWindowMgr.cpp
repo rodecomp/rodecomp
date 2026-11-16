@@ -277,6 +277,10 @@ struct BankingCheckPacket {
   /* 0002 */ std::uint32_t aid;
 };
 
+struct HeaderOnlyPacket {
+  /* 0000 */ std::int16_t id;
+};
+
 struct ShortcutRotatePacket {
   /* 0000 */ std::int16_t id;
   /* 0002 */ std::uint16_t option;
@@ -2692,20 +2696,26 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
   return false;
 }
 
+// INLINED
+static __forceinline void SaveWindowRectangle(std::map<int, SavedWindowRectangle*>& savedRectangles, int id, UIWindow* window) {
+  if (window) {
+    if (savedRectangles.find(id) != savedRectangles.end()) {
+      savedRectangles[id]->x = window->geometry.x;
+      savedRectangles[id]->y = window->geometry.y;
+      savedRectangles[id]->width = window->geometry.width;
+      savedRectangles[id]->height = window->geometry.height;
+    } else {
+      savedRectangles[id] = new SavedWindowRectangle(window->geometry.x, window->geometry.y, window->geometry.width, window->geometry.height);
+    }
+  }
+}
+
 // OFFSET: 0x00A8CF20
 // FUNCTION: fn_17143
 bool UIWindowMgr::CloseWindow(int id) {
-  UIWindow* window = this->LookupWindow(static_cast<WindowId>(id));
-  if (window) {
-    if (this->savedRectangles.find(id) != this->savedRectangles.end()) {
-      this->savedRectangles[id]->x = window->geometry.x;
-      this->savedRectangles[id]->y = window->geometry.y;
-      this->savedRectangles[id]->width = window->geometry.width;
-      this->savedRectangles[id]->height = window->geometry.height;
-    } else {
-      this->savedRectangles[id] = new SavedWindowRectangle(window->geometry.x, window->geometry.y, window->geometry.width, window->geometry.height);
-    }
-  }
+  const WindowId windowId = static_cast<WindowId>(id);
+  UIWindow* window = this->LookupWindow(windowId);
+  SaveWindowRectangle(this->savedRectangles, id, window);
 
   bool closed = false;
   g_modeMgr.GetGameMode();
@@ -3844,7 +3854,16 @@ bool UIWindowMgr::CloseWindow(int id) {
       closed = true;
     }
     break;
-  default:
+  case WID_JOINTO_BATTLEFIELDWND:
+  case WID_ENTRYQUEUESTANDBYWND:
+  case WID_ENTRYQUEUEREQUESTWND:
+  case WID_ENTRYQUEUEHELPWND:
+  case WID_MERGEITEMWND:
+  case WID_MERCHANTITEMPURCHASEMSGWND:
+  case WID_MERCHANTITEMLOGWND_MODE_0:
+  case WID_MERCHANTITEMLOGWND_MODE_1:
+  case WID_RENEWDETAILQUESTINFOWND:
+  case WID_RPIMAGEWND2:
     if (UIWindow* found = this->LookupWindow(static_cast<WindowId>(id))) {
       this->Schedule(found);
       closed = true;
@@ -3931,8 +3950,9 @@ bool UIWindowMgr::CloseWindow(int id) {
     break;
   case WID_RODEXINBOXWND:
     if (this->rodexInboxWnd) {
-      std::int16_t packet = 0x9E9;
-      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet), &packet);
+      HeaderOnlyPacket packet;
+      packet.id = 0x9E9;
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
       this->Schedule(this->rodexInboxWnd);
       this->rodexInboxWnd = nullptr;
       closed = true;
@@ -3943,8 +3963,9 @@ bool UIWindowMgr::CloseWindow(int id) {
     break;
   case WID_RODEXCOMPOSEWND:
     if (this->rodexComposeWnd) {
-      std::int16_t packet = 0xA03;
-      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet), &packet);
+      HeaderOnlyPacket packet;
+      packet.id = 0xA03;
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
       g_session.RestoreSelectionItems();
       g_session.ClearItemQuantities();
       this->Schedule(this->rodexComposeWnd);
@@ -3976,8 +3997,9 @@ bool UIWindowMgr::CloseWindow(int id) {
     break;
   case WID_ROULLETTEWND:
     if (this->roulletteWnd) {
-      std::int16_t packet = 0xA1D;
-      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet), &packet);
+      HeaderOnlyPacket packet;
+      packet.id = 0xA1D;
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
       g_rouletteMgr->Reset();
       this->Schedule(this->roulletteWnd);
       this->roulletteWnd = nullptr;
@@ -4062,8 +4084,9 @@ bool UIWindowMgr::CloseWindow(int id) {
       this->Schedule(this->cashShopWnd);
       this->cashShopWnd = nullptr;
       closed = true;
-      std::int16_t packet = 0x84A;
-      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet), &packet);
+      HeaderOnlyPacket packet;
+      packet.id = 0x84A;
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
     }
     break;
   case WID_TIPBOXWND:
@@ -4124,9 +4147,15 @@ bool UIWindowMgr::CloseWindow(int id) {
       closed = true;
     }
     break;
+  default:
+    if (UIWindow* found = this->LookupWindow(static_cast<WindowId>(id))) {
+      this->Schedule(found);
+      closed = true;
+    }
+    break;
   }
 
-  auto entry = this->windows.find(static_cast<WindowId>(id));
+  auto entry = this->windows.find(windowId);
   if (entry != this->windows.end()) {
     this->windows.erase(entry);
   }
