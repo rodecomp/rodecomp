@@ -23,8 +23,8 @@ protected:
 
 // INLINED
 inline void BitmapTextureCache::Clear() {
-  for (CTexture* texture : this->m_textures) {
-    delete texture;
+  for (std::list<CTexture*>::iterator it = this->m_textures.begin(); it != this->m_textures.end(); ++it) {
+    delete *it;
   }
 
   this->m_textures.clear();
