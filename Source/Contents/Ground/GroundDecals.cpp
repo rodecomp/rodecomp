@@ -63,41 +63,44 @@ namespace {
     const GroundGeometry& ground, const float* matrix, int column, int row, std::uint32_t color, CTexture& texture, const float* uv,
     float bias
   ) {
-    float vertices[4][3];
+    struct Point {
+      // INLINED
+      Point() : x(0), y(0), z(0) {
+      }
 
-    for (auto& vertex : vertices) {
-      vertex[0] = 0.0f;
-      vertex[1] = 0.0f;
-      vertex[2] = 0.0f;
-    }
+      float x;
+      float y;
+      float z;
+    };
+    Point vertices[4];
 
-    if (!ground.CellRectangle(column, row, vertices[0])) {
+    if (!ground.CellRectangle(column, row, &vertices[0].x)) {
       return;
     }
 
     for (int index = 0; index < 4; ++index) {
-      float* vertex = vertices[index];
+      Point& vertex = vertices[index];
       if (column & 1) {
-        if (vertices[1][0] > vertex[0]) {
-          vertex[0] = (vertices[1][0] - vertex[0]) * 0.5f + vertex[0];
+        if (vertices[1].x > vertex.x) {
+          vertex.x = (vertices[1].x - vertex.x) * 0.5f + vertex.x;
         }
-      } else if (vertex[0] > vertices[0][0]) {
-        vertex[0] = vertex[0] - (vertex[0] - vertices[0][0]) * 0.5f;
+      } else if (vertex.x > vertices[0].x) {
+        vertex.x = vertex.x - (vertex.x - vertices[0].x) * 0.5f;
       }
 
       if (row & 1) {
-        if (vertices[2][2] > vertex[2]) {
-          vertex[2] = (vertices[2][2] - vertex[2]) * 0.5f + vertex[2];
+        if (vertices[2].z > vertex.z) {
+          vertex.z = (vertices[2].z - vertex.z) * 0.5f + vertex.z;
         }
-      } else if (vertex[2] > vertices[0][2]) {
-        vertex[2] = vertex[2] - (vertex[2] - vertices[0][2]) * 0.5f;
+      } else if (vertex.z > vertices[0].z) {
+        vertex.z = vertex.z - (vertex.z - vertices[0].z) * 0.5f;
       }
     }
 
     RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
 
-    for (unsigned corner = 0; corner < 4; ++corner) {
-      g_renderer->viewport.Project(vertices[corner], matrix, primitive->vertices[corner]);
+    for (int corner = 0; corner < 4; ++corner) {
+      g_renderer->viewport.Project(&vertices[corner].x, matrix, primitive->vertices[corner]);
       primitive->vertices[corner].z = primitive->vertices[corner].z - bias;
     }
 
