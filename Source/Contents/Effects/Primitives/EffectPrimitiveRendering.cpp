@@ -2225,7 +2225,6 @@ void CEffectPrim::RenderPentagon(matrix& wtm) {
     }
 
     const vector3d top = slot.vecTPre;
-    const float radius = slot.maxHeight;
 
     for (int point = 0; point <= 5; ++point) {
       short angle = static_cast<short>(slot.rotStart + point * 72);
@@ -2233,8 +2232,8 @@ void CEffectPrim::RenderPentagon(matrix& wtm) {
         angle -= 360;
       }
 
-      const float dx = radius * g_cosTable[angle];
-      const float dz = radius * g_sinTable[angle];
+      const float dx = slot.maxHeight * g_cosTable[angle];
+      const float dz = slot.maxHeight * g_sinTable[angle];
       vec2.Set(dx + slot.vecTNow.x, slot.vecTNow.y, dz + slot.vecTNow.z);
       vec3.Set(top.x + dx, top.y, top.z + dz);
 
