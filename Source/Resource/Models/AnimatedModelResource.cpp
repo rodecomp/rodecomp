@@ -33,8 +33,15 @@ AnimatedModelFrame::~AnimatedModelFrame() {
 }
 
 // INLINED
-AnimatedModelNode::AnimatedModelNode()
-    : model(nullptr), parent(nullptr), vertexCount(0), faceCount(0), faceColors(nullptr), frames(nullptr), faces(nullptr), textures(nullptr) {
+AnimatedModelNode::AnimatedModelNode() {
+  this->textures = nullptr;
+  this->parent = nullptr;
+  this->model = nullptr;
+  this->vertexCount = 0;
+  this->faceCount = 0;
+  this->frames = nullptr;
+  this->faceColors = nullptr;
+  this->faces = nullptr;
 }
 
 // INLINED
@@ -222,10 +229,11 @@ bool C3dAnimModelRes::Load(const char* name) {
 
   for (AnimatedModelNode* node : this->nodes) {
     if (!node->parentName.empty()) {
+      const char* parentName = node->parentName.c_str();
       AnimatedModelNode* parent = nullptr;
 
       for (AnimatedModelNode* candidate : this->nodes) {
-        if (candidate->name == node->parentName.c_str()) {
+        if (candidate->name == parentName) {
           parent = candidate;
           break;
         }
