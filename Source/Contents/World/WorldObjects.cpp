@@ -465,8 +465,10 @@ void CGameMode::UpdateNameBalloon(CGameActor* actor) {
     char name[24] = {};
     strncpy_s(name, sizeof(name), masked.name.c_str(), masked.name.size());
     if (g_forbiddenWords.Contains(name) == true) {
-      std::string unused;
-      g_forbiddenWords.Mask(name, &unused);
+      {
+        std::string unused;
+        g_forbiddenWords.Mask(name, &unused);
+      }
       masked.name = name;
     }
     this->nameBalloon->SetName(masked, actor->IsPlayerClass(actor->GetEffectiveJob(-1)) == 0, 0);
@@ -486,7 +488,8 @@ void CGameMode::UpdateNameBalloon(CGameActor* actor) {
   } else if (actor->GetGdid() && showEmblem) {
     const unsigned char framedEmblem = g_serviceOptions.Get(TT_EMBLEM_FRAME_ON_OFF);
     std::string emblem = g_guildMgr->GetEmblemFilename(actor->GetGdid());
-    this->nameBalloon->SetIcon(emblem.c_str(), g_modeMgr.GetGameMode()->scene->isSiegeMode == 1 && framedEmblem ? 1 : 0);
+    const unsigned char framed = g_modeMgr.GetGameMode()->scene->isSiegeMode == 1 && framedEmblem ? 1 : 0;
+    this->nameBalloon->SetIcon(emblem.c_str(), framed);
   } else if (this->scene->player == actor) {
     char path[256];
     std::memset(path, 0, sizeof(path));
@@ -536,7 +539,7 @@ void CGameMode::UpdateNameBalloon(CGameActor* actor) {
       if (difference < -10) {
         balloon->m_textColor = 0xFF;
         balloon->m_outlineColor = 0;
-      } else if (difference >= 16) {
+      } else if (difference > 15) {
         balloon->m_textColor = 0x9B9B9B;
         balloon->m_outlineColor = 0;
       }
