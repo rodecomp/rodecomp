@@ -13,7 +13,9 @@ void SampleModelTexture(ModelTextureChannels& channels, float frame, ModelTextur
 
     std::vector<ModelTextureKey>& keys = channels[channel];
     unsigned next = 1;
-    if (frame < static_cast<float>(keys.back().frame)) {
+    if (frame >= static_cast<float>(keys.back().frame)) {
+      *targets[channel] = keys.back().value;
+    } else {
       const unsigned count = keys.size();
       for (; next < count; ++next) {
         if (frame < static_cast<float>(keys[next].frame)) {
@@ -24,8 +26,6 @@ void SampleModelTexture(ModelTextureChannels& channels, float frame, ModelTextur
       const int previous = keys[next - 1].frame;
       const float amount = (frame - static_cast<float>(previous)) / static_cast<float>(keys[next].frame - previous);
       *targets[channel] = (1.0f - amount) * keys[next - 1].value + amount * keys[next].value;
-    } else {
-      *targets[channel] = keys.back().value;
     }
   }
 }
