@@ -33,40 +33,6 @@
 #include <cstring>
 #include <string>
 
-namespace {
-  bool HiddenHotkeyIndex(int index) {
-    switch (index) {
-    case HK_BATTLEFIELDWND:
-    case HK_PARTY_RECRUIT:
-    case HK_PARTY_BOOKING_LIST:
-    case HK_EXMACRO_SETUPWND:
-    case HK_BUTTONS_RELOCATE:
-    case HK_MENUICON_HIDE:
-    case HK_TWITTERWND:
-    case HK_HUNTINGQUEST_INFO_ONOFF:
-    case HK_HIDDEN_62:
-    case HK_HIDDEN_64:
-    case HK_HIDDEN_65:
-    case HK_HIDDEN_66:
-    case HK_HIDDEN_67:
-      return true;
-    default:
-      return false;
-    }
-  }
-
-  __declspec(noinline) int ResolveHotkeyIndex(LuaScript& script, int tab, int index) {
-    if (tab == 1 && index >= 30) {
-      for (int candidate = 30; candidate <= index; ++candidate) {
-        index += HiddenHotkeyIndex(candidate);
-      }
-    }
-    int count = 0;
-    script.Call("GetOriginalHotKeyListSize", "d>d", tab + 1, &count);
-    return index >= count ? -1 : index;
-  }
-}
-
 // OFFSET: 0x0091FFD0
 // FUNCTION: fn_12639
 void UIHotKeyWnd::OnCreate(int, int) {
@@ -482,41 +448,31 @@ void UIHotKeyWnd::ReloadHotkeys() {
     const int tab = g_userHotkeyMgr->TabAt(position);
     const int count = g_session.HotkeyCount(tab);
     for (int row = 0; row < count; ++row) {
-      const int index = ResolveHotkeyIndex(*g_session.m_hotkeyScript, tab, row);
-      if (index == -1) {
-        continue;
+      const int index = g_session.HotkeyIndex(tab, row);
+      if (index != -1) {
+        std::string text;
+        std::string description;
+        int key1 = 0;
+        int key2 = 0;
+        const char* textValue = nullptr;
+        const char* descriptionValue = nullptr;
+        if (g_session.m_hotkeyScript->Call("GetUserHotKeyInfo", "dd>ddss", tab + 1, index, &key1, &key2, &textValue, &descriptionValue)) {
+          description = descriptionValue;
+          if (!description.empty()) {
+            if (g_session.m_hotkeyScript->Call("GetOriginalHotKeyInfo", "dd>ddss", tab + 1, index, &key1, &key2, &textValue, &descriptionValue)) {
+              text = textValue;
+              description = descriptionValue;
+              if (!description.empty()) {
+                HotkeyInfo& info = this->hotkeys[tab][index];
+                info.key1 = key1;
+                info.key2 = key2;
+                info.text = text;
+                info.description = description;
+              }
+            }
+          }
+        }
       }
-
-      std::string text;
-      std::string description;
-      int key1 = 0;
-      int key2 = 0;
-      const char* textValue = nullptr;
-      const char* descriptionValue = nullptr;
-      if (!g_session.m_hotkeyScript->Call("GetUserHotKeyInfo", "dd>ddss", tab + 1, index, &key1, &key2, &textValue, &descriptionValue)) {
-        continue;
-      }
-
-      description = descriptionValue;
-      if (description.empty()) {
-        continue;
-      }
-
-      if (!g_session.m_hotkeyScript->Call("GetOriginalHotKeyInfo", "dd>ddss", tab + 1, index, &key1, &key2, &textValue, &descriptionValue)) {
-        continue;
-      }
-
-      text = textValue;
-      description = descriptionValue;
-      if (description.empty()) {
-        continue;
-      }
-
-      HotkeyInfo& info = this->hotkeys[tab][index];
-      info.key1 = key1;
-      info.key2 = key2;
-      info.text = text;
-      info.description = description;
     }
   }
 
