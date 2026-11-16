@@ -3960,8 +3960,7 @@ void UIItemCollectionWnd::OnCreate(int width, int height) {
   this->m_viewer->Configure(91, 31, width - 98, height - 40, 0);
   unsigned red, green, blue;
   g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-  this->m_viewer->backgroundColor = 0xFF000000u | RGB(red, green, blue);
-  this->m_viewer->Invalidate();
+  this->m_viewer->SetBackgroundColor(0xFF000000u | RGB(red, green, blue));
   this->AddChild(this->m_viewer);
 
   this->m_closeButton = this->AddCloseButton("ESC", 0);
@@ -3977,9 +3976,9 @@ void UIItemCollectionWnd::OnCreate(int width, int height) {
   this->AddChild(this->m_viewButton);
 
   const std::string prefix = "book\\";
-  const char* tooltips[2] = {LookupMessage(MSI_BOOK_READ), LookupMessage(MSI_BOOK_AUTOREAD)};
-  const int ids[2] = {287, 288};
   const char* names[2] = {"책읽기", "책읽기"};
+  const int ids[2] = {287, 288};
+  const char* tooltips[2] = {LookupMessage(MSI_BOOK_READ), LookupMessage(MSI_BOOK_AUTOREAD)};
   for (int index = 0; index < 2; ++index) {
     this->m_readButtons[index] = new UISpriteButton();
     this->m_readButtons[index]->SetSprite((prefix + names[index] + ".spr").c_str());
@@ -4005,8 +4004,9 @@ void UIItemCollectionWnd::OnCreate(int width, int height) {
     this->m_moveInfo->Configure(LookupMessage(MSI_REFUSE_MDENGEON_IS_FULL), 0, 0, 12, 0, 1);
     this->m_moveInfo->SetId(487);
     UIItemMoveInfo* moveInfo = this->m_moveInfo;
-    int textHeight = this->TextHeight(LookupMessage(MSI_REFUSE_MDENGEON_IS_FULL), 0, 0, 12, 0, 0);
-    moveInfo->ResizeToTextClipped(this->TextWidth(LookupMessage(MSI_REFUSE_MDENGEON_IS_FULL), 0, 0, 12, 0, 0) + 1, textHeight);
+    const int textHeight = this->TextHeight(LookupMessage(MSI_REFUSE_MDENGEON_IS_FULL), 0, 0, 12, 0, 0);
+    const int textWidth = this->TextWidth(LookupMessage(MSI_REFUSE_MDENGEON_IS_FULL), 0, 0, 12, 0, 0) + 1;
+    moveInfo->ResizeToTextClipped(textWidth, textHeight);
     this->AddChild(this->m_moveInfo);
   }
 
@@ -4609,34 +4609,41 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     this->Move(this->placement->x, this->placement->y);
     return 0;
   }
-  case UM_COMMAND: {
-    if (a != ID_OK) {
-      if (a == ID_CLOSE) {
-        g_windowMgr.Schedule(this);
+  case UM_COMMAND:
+    switch (a) {
+    case ID_OK: {
+      if (HasItemLinkTag(std::string(this->m_edit->Text())) == true) {
+        this->m_edit->SetText("");
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CLOSE)), 0xFF, 0, 0, 0);
+        return 0;
       }
-      return 0;
-    }
 
-    if (HasItemLinkTag(std::string(this->m_edit->Text())) == true) {
-      this->m_edit->SetText("");
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CLOSE)), 0xFF, 0, 0, 0);
-      return 0;
-    }
+      char text[256];
+      std::strcpy(text, this->m_edit->Text());
+      this->m_edit->PushHistory();
+      g_windowMgr.SetFocus(this->m_edit);
+      if (std::strlen(text) == 0) {
+        return 0;
+      }
 
-    char text[256];
-    std::strcpy(text, this->m_edit->Text());
-    this->m_edit->PushHistory();
-    g_windowMgr.SetFocus(this->m_edit);
-    if (std::strlen(text) == 0) {
-      return 0;
-    }
+      if (g_serviceType == 1 && !ValidateCharacterName(text)) {
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ENGLISHONLY)), 0xFF, 0, 0, 0);
+        return 0;
+      }
 
-    if (g_serviceType == 1 && !ValidateCharacterName(text)) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ENGLISHONLY)), 0xFF, 0, 0, 0);
-      return 0;
-    }
+      if (this->m_target.size() != 0 && text[0] != '/') {
+        if (this->m_edit->links.size() != 0) {
+          g_windowMgr.SetChatInputText(this->m_edit->LinkedText().c_str());
+        } else if (this->m_edit->itemTags != nullptr) {
+          g_windowMgr.SetChatInputText(this->m_edit->itemTags->linkedText.c_str());
+        } else {
+          g_windowMgr.chatInputText.assign(text, std::strlen(text));
+        }
 
-    if (this->m_target.size() == 0 || text[0] == '/') {
+        g_modeMgr.currentMode->SendMsg(MM_WHISPERMSG, reinterpret_cast<std::intptr_t>(this->m_target.c_str()), 0, 0, 0);
+        return 0;
+      }
+
       if (g_session.ProcessEmotionShortcut(text) != 0) {
         return 0;
       }
@@ -4657,18 +4664,11 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       }
       return 0;
     }
-
-    if (this->m_edit->links.size() != 0) {
-      g_windowMgr.SetChatInputText(this->m_edit->LinkedText().c_str());
-    } else if (this->m_edit->itemTags != nullptr) {
-      g_windowMgr.SetChatInputText(this->m_edit->itemTags->linkedText.c_str());
-    } else {
-      g_windowMgr.chatInputText.assign(text, std::strlen(text));
+    case ID_CLOSE:
+      g_windowMgr.Schedule(this);
+      return 0;
     }
-
-    g_modeMgr.currentMode->SendMsg(MM_WHISPERMSG, reinterpret_cast<std::intptr_t>(this->m_target.c_str()), 0, 0, 0);
     return 0;
-  }
   case UM_MENU_SELECTED:
     if (this->m_log[a].value == 11) {
       this->SaveChatLog();
@@ -5171,14 +5171,16 @@ int UISayDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     const unsigned char* records = reinterpret_cast<const unsigned char*>(a);
     FramedMessageHeader header;
     std::memcpy(&header, records, sizeof(header));
-    if (header.type == 22500) {
-      unsigned int position = sizeof(header);
-      while (position < static_cast<unsigned int>(b)) {
+    unsigned int position = sizeof(header);
+    if (22500 == header.type) {
+      bool scanning = true;
+      while (scanning && static_cast<unsigned int>(b) > position) {
         std::memcpy(&header, records + position, sizeof(header));
         position += sizeof(header);
         switch (header.type) {
         case 22501:
-          return 0;
+          scanning = false;
+          break;
         case 22503: {
           char text[260];
           std::memset(text, 0, sizeof(text));
@@ -5323,11 +5325,12 @@ int UIExchangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     const unsigned char* records = reinterpret_cast<const unsigned char*>(a);
     FramedMessageHeader header{};
     std::memcpy(&header, records, sizeof(header));
-    if (header.type == 20600) {
-      unsigned int position = sizeof(header);
+    unsigned int position = sizeof(header);
+    if (20600 == header.type) {
       int number = 0;
       short level = 0;
-      while (position < static_cast<unsigned int>(b)) {
+      bool scanning = true;
+      while (scanning && static_cast<unsigned int>(b) > position) {
         std::memcpy(&header, records + position, sizeof(header));
         position += sizeof(header);
         switch (header.type) {
@@ -5384,7 +5387,8 @@ int UIExchangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
           break;
         case 20601:
           this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
-          return 0;
+          scanning = false;
+          break;
         default:
           position += header.length;
           break;
@@ -12417,10 +12421,15 @@ void UIExchangeWnd::Paint() {
     this->FillRegion(283, 21, 272, 310, RGB(red, green, blue));
   }
   int row = 0;
-  for (const ITEM_INFO& item : this->m_myItems) {
-    if (g_session.IsPetEgg(std::atoi(item.itemId.c_str())) != 0 && item.damaged != 0) {
+  int index = 0;
+  for (auto it = this->m_myItems.begin(); it != this->m_myItems.end(); ++it, ++index) {
+    if (index < 0) {
       continue;
     }
+    if (g_session.IsPetEgg(std::atoi(it->itemId.c_str())) != 0 && it->damaged != 0) {
+      continue;
+    }
+    const ITEM_INFO& item = *it;
     const int y = this->m_rowHeight * row;
     this->DrawItemAndQuantity(16, y + 21, item, 0, 0);
     this->DrawFittedItemName(48, y + 29, &item, 0, 0, 12, 1);
@@ -12432,33 +12441,40 @@ void UIExchangeWnd::Paint() {
     }
     ++row;
   }
-  row = 0;
-  for (const ITEM_INFO& item : this->m_otherItems) {
-    if (g_session.IsPetEgg(std::atoi(item.itemId.c_str())) != 0 && item.damaged != 0) {
+  int otherRow = 0;
+  int otherIndex = 0;
+  for (auto it = this->m_otherItems.begin(); it != this->m_otherItems.end(); ++it, ++otherIndex) {
+    if (otherIndex < 0) {
       continue;
     }
-    const int y = this->m_rowHeight * row;
+    if (g_session.IsPetEgg(std::atoi(it->itemId.c_str())) != 0 && it->damaged != 0) {
+      continue;
+    }
+    const ITEM_INFO& item = *it;
+    const int y = this->m_rowHeight * otherRow;
     this->DrawItemAndQuantity(295, y + 21, item, 0, 0);
     this->DrawFittedItemName(327, y + 29, &item, 0, 0, 12, 1);
     if (0 < item.grade) {
       this->DrawBitmap(295, y + 33, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade).c_str()))), true);
     }
-    if (row == 9) {
+    if (otherRow == 9) {
       break;
     }
-    ++row;
+    ++otherRow;
   }
   char grouped[32];
   char amount[128];
   int length = std::sprintf(amount, "%s", FormatGroupedInteger(g_session.exchangeMoney, grouped, sizeof(grouped)));
   PriceColors colors = PriceColor(g_session.exchangeMoney);
-  this->DrawRightAlignedText(219, 331, amount, length, 1, 16, colors.primary & 0xFFFFFF, 0);
-  this->DrawRightAlignedText(220, 331, amount, length, 1, 16, colors.primary & 0xFFFFFF, 0);
+  COLORREF textColor = RGB(GetRValue(colors.primary), GetGValue(colors.primary), GetBValue(colors.primary));
+  this->DrawRightAlignedText(219, 331, amount, length, 1, 16, textColor, 0);
+  this->DrawRightAlignedText(220, 331, amount, length, 1, 16, textColor, 0);
   this->DrawRightAlignedText(220, 332, amount, length, 1, 16, 0x323232, 0);
   length = std::sprintf(amount, "%s", FormatGroupedInteger(g_session.otherExchangeMoney, grouped, sizeof(grouped)));
   colors = PriceColor(g_session.otherExchangeMoney);
-  this->DrawRightAlignedText(499, 331, amount, length, 1, 16, colors.primary & 0xFFFFFF, 0);
-  this->DrawRightAlignedText(500, 331, amount, length, 1, 16, colors.primary & 0xFFFFFF, 0);
+  textColor = RGB(GetRValue(colors.primary), GetGValue(colors.primary), GetBValue(colors.primary));
+  this->DrawRightAlignedText(499, 331, amount, length, 1, 16, textColor, 0);
+  this->DrawRightAlignedText(500, 331, amount, length, 1, 16, textColor, 0);
   this->DrawRightAlignedText(500, 332, amount, length, 1, 16, 0x323232, 0);
 }
 
