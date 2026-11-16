@@ -4354,11 +4354,7 @@ void UILoginWnd::OnCreate(int, int) {
   button->SetSize(button->BitmapWidth(), button->BitmapHeight() + 2);
   button->Move(13, 104);
   button->SetId(285);
-  {
-    const std::string text(LookupMessage(MSI_ENST_BLESSING2));
-    button->text = text;
-    button->Invalidate();
-  }
+  button->SetText(LookupMessage(MSI_ENST_BLESSING2));
   button->AddTextStyle(0, 12, 0x313131, 1, 1, -1000, -1000);
   button->AddTextStyle(1, 12, 0x313131, 1, 1, -1000, -1000);
   button->AddTextStyle(2, 12, 0x313131, 1, 1, -1000, -1000);
@@ -4371,11 +4367,7 @@ void UILoginWnd::OnCreate(int, int) {
   button->SetSize(button->BitmapWidth(), button->BitmapHeight() + 2);
   button->Move(87, 104);
   button->SetId(ID_MAKEACCOUNT);
-  {
-    const std::string text(LookupMessage(MSI_ADVENTURER_AGENCY_REGIST_FAILED));
-    button->text = text;
-    button->Invalidate();
-  }
+  button->SetText(LookupMessage(MSI_ADVENTURER_AGENCY_REGIST_FAILED));
   button->AddTextStyle(0, 12, 0x313131, 1, 1, -1000, -1000);
   button->AddTextStyle(1, 12, 0x313131, 1, 1, -1000, -1000);
   button->AddTextStyle(2, 12, 0x313131, 1, 1, -1000, -1000);
@@ -4446,7 +4438,7 @@ void UILoginWnd::OnCreate(int, int) {
   this->idEdit->maximum = 24;
   this->passwordEdit->maximum = 24;
 
-  if (std::strcmp(this->idEdit->Text(), "") != 0 && std::strcmp(this->idEdit->Text(), "ID") != 0) {
+  if (std::strcmp("", this->idEdit->Text()) != 0 && std::strcmp("ID", this->idEdit->Text()) != 0) {
     g_windowMgr.SetFocus(this->passwordEdit);
   } else {
     g_windowMgr.SetFocus(this->idEdit);
