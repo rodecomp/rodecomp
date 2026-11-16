@@ -1201,7 +1201,8 @@ int AddTag(lua_State* state) {
     return 2;
   }
 
-  g_runeSystemMgr->m_tags.push_back(new CTagData(tagValue, name));
+  CRuneSystemMgr* mgr = g_runeSystemMgr;
+  mgr->InsertTag(tagValue, name);
   lua_pushboolean(state, 1);
   lua_pushstring(state, FormatOwnedString("good").c_str());
   return 2;
@@ -1218,7 +1219,7 @@ int AddDecomItemNum(lua_State* state) {
     return 2;
   }
 
-  g_runeSystemMgr->m_decomItems.push_back(itemId);
+  g_runeSystemMgr->InsertDecomItem(itemId);
   lua_pushboolean(state, 1);
   lua_pushstring(state, FormatOwnedString("good").c_str());
   return 2;

@@ -150,6 +150,10 @@ public:
   virtual ~CRuneSystemMgr();
 
   void AddRune(int tagId, int type, std::int64_t id, const std::string& resName, int activeType);
+  // INLINED
+  void InsertTag(int tagId, std::string name) { this->m_tags.push_back(new CTagData(tagId, name)); }
+  // INLINED
+  void InsertDecomItem(int itemId) { this->m_decomItems.push_back(itemId); }
   int GetTagCount() const;
   int GetOwnedDecomItemCount() const;
   CTagData* GetTag(int tagId);
