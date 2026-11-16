@@ -1306,7 +1306,7 @@ void EquipmentPropertyStore::RemoveDuplicateNames() {
     for (auto it = group.second.begin(); it != group.second.end();) {
       EquipmentProperty* property = it->second;
       EquipmentPropertyDefinition* definition = property->m_definition;
-      if (definition == nullptr || definition->uniqueGroup.size() == 0) {
+      if (definition == nullptr || definition->uniqueGroup.size() <= 0) {
         ++it;
       } else if (names.find(definition->uniqueGroup) == names.end()) {
         names.insert(definition->uniqueGroup);
