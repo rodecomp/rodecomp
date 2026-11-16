@@ -957,7 +957,7 @@ void UIWindow::DrawVerticalText(int x, int y, const char* text, unsigned bytes, 
   }
 
   const char* const end = text + bytes;
-  const char* const marker = text + TextContext::Marker(text, bytes);
+  const char* const marker = text + TextContext::Marker(text, static_cast<unsigned>(end - text));
   int widest = 0;
   TextContext context(*this->geometry.surface);
   context.SetFont(family, height, bold, 0);
