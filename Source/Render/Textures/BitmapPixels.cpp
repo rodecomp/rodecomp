@@ -714,13 +714,13 @@ void CDCBitmap::DrawRleSprite(int x, int y, const CSprRes& sprite, const ActionF
     std::uint32_t* row = this->m_bitmap.pixels + destinationY * this->m_bitmap.width + destinationX;
     const std::uint8_t* runs = image->runs;
     int remaining = 0;
-    auto next = [&]() -> unsigned {
+    auto next = [&]() -> std::uint8_t {
       if (remaining) {
         --remaining;
         return 0;
       }
 
-      unsigned value = *runs++;
+      std::uint8_t value = *runs++;
       if (!value) {
         remaining = *runs++ - 1;
       }
@@ -735,7 +735,7 @@ void CDCBitmap::DrawRleSprite(int x, int y, const CSprRes& sprite, const ActionF
     if (!cell.mirrored) {
       for (; copyHeight > 0; --copyHeight) {
         for (int column = 0; column < copyWidth; ++column) {
-          const unsigned index = next();
+          const std::uint8_t index = next();
           if (index) {
             const std::uint32_t color = palette[index];
             row[column] = ((color & 0x1F) << 3) + ((color & 0x3E0) << 6) + ((color & 0x7C00) << 9) - 0x01000000;
@@ -752,7 +752,7 @@ void CDCBitmap::DrawRleSprite(int x, int y, const CSprRes& sprite, const ActionF
       for (; copyHeight > 0; --copyHeight) {
         std::uint32_t* pixel = row + copyWidth - 1;
         for (int column = copyWidth; column > 0; --column, --pixel) {
-          const unsigned index = next();
+          const std::uint8_t index = next();
           if (index) {
             const std::uint32_t color = palette[index];
             *pixel = ((color & 0x1F) << 3) + ((color & 0x3E0) << 6) + ((color & 0x7C00) << 9) - 0x01000000;
