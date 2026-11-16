@@ -8864,7 +8864,7 @@ void CRagEffect::WhiteLightSparkle(char kind) {
   this->state.lastPrim->state.size = 0.0f;
 
   for (int i = 0; i < 4; ++i) {
-    if (kind == 1 && i > 0) {
+    if (kind == 1 && i >= 1) {
       this->state.lastPrim->state.slots[i].life = 0;
     } else {
       this->state.lastPrim->state.slots[i].life = 1;
