@@ -474,11 +474,11 @@ void CEZ2STRParticle::RenderBillboard(EZeffectClip* clip, EZeffectTransform* tra
 
   matrix world;
   world.MakeZRotation(ToRadians(static_cast<float>(transform->rz / 2.8444444444444)));
-  vector3d offset;
-  offset.x = transform->x - 320.0f;
-  offset.z = 0;
-  offset.y = transform->y - 240.0f;
-  world.AppendTranslate(&offset.x);
+  vector3d point;
+  point.x = transform->x - 320.0f;
+  point.z = 0;
+  point.y = transform->y - 240.0f;
+  world.AppendTranslate(&point.x);
   const float scale = this->m_scale;
   const float scaleY = this->m_flipY ? scale * -1.0f : scale;
   const float scaleX = this->m_flipX ? scale * -1.0f : scale;
@@ -491,7 +491,9 @@ void CEZ2STRParticle::RenderBillboard(EZeffectClip* clip, EZeffectTransform* tra
   matrix combined;
   combined.Compose(world, view);
   for (int i = 0; i < 4; ++i) {
-    vector3d point = {vertices[i].x, vertices[i].y, vertices[i].z};
+    point.x = vertices[i].x;
+    point.y = vertices[i].y;
+    point.z = vertices[i].z;
     g_renderer->viewport.Project(&point.x, combined.values, vertices[i]);
     vertices[i].rhw = this->depthOffset + vertices[i].rhw;
     vertices[i].z = RhwToDepth(vertices[i].rhw);
