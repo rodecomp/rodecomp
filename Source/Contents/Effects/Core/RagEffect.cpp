@@ -15412,7 +15412,7 @@ void CRagEffect::TexturedMagicRing(char type) {
     this->state.lastPrim->state.slots[0].process = 0;
     this->state.lastPrim->state.slots[0].fullDisplayAngle = 360;
     this->state.lastPrim->state.slots[0].maxHeight = 80.0f;
-    this->state.lastPrim->state.slots[0].rotStart = static_cast<std::int16_t>(std::max(rand() % 360, 0));
+    this->state.lastPrim->state.slots[0].rotStart = static_cast<std::int16_t>(ClampedRandom(360));
     this->state.lastPrim->state.slots[0].alphaB = 0;
     this->state.lastPrim->state.slots[0].distance = 7.0f;
     this->state.lastPrim->state.slots[0].riseAngle = 90;
@@ -15427,7 +15427,7 @@ void CRagEffect::TexturedMagicRing(char type) {
     this->state.lastPrim->state.slots[1].process = 0;
     this->state.lastPrim->state.slots[1].fullDisplayAngle = 360;
     this->state.lastPrim->state.slots[1].maxHeight = 80.0f;
-    this->state.lastPrim->state.slots[1].rotStart = static_cast<std::int16_t>(std::max(rand() % 360, 0));
+    this->state.lastPrim->state.slots[1].rotStart = static_cast<std::int16_t>(ClampedRandom(360));
     this->state.lastPrim->state.slots[1].alphaB = 0;
     this->state.lastPrim->state.slots[1].distance = 5.5f;
     this->state.lastPrim->state.slots[1].riseAngle = 90;
@@ -15442,7 +15442,7 @@ void CRagEffect::TexturedMagicRing(char type) {
     this->state.lastPrim->state.slots[2].process = 0;
     this->state.lastPrim->state.slots[2].fullDisplayAngle = 360;
     this->state.lastPrim->state.slots[2].maxHeight = 80.0f;
-    this->state.lastPrim->state.slots[2].rotStart = static_cast<std::int16_t>(std::max(rand() % 360, 0));
+    this->state.lastPrim->state.slots[2].rotStart = static_cast<std::int16_t>(ClampedRandom(360));
     this->state.lastPrim->state.slots[2].alphaB = 0;
     this->state.lastPrim->state.slots[2].distance = 4.0f;
     this->state.lastPrim->state.slots[2].riseAngle = 90;
@@ -18509,16 +18509,16 @@ void CRagEffect::TexturedClassChange(char kind) {
     std::int16_t angle;
     Get_Angle(this->render.position.x - this->state.deltaPos.x, this->render.position.z - this->state.deltaPos.z, &angle);
     const CView* camera = g_modeMgr.GetGameMode()->camera;
-    std::int16_t direction = static_cast<std::int16_t>(static_cast<int>(camera->camera.yaw) + angle) % 360;
-    if (direction < 0) {
-      direction += 360;
+    angle = static_cast<std::int16_t>(static_cast<int>(camera->camera.yaw) + angle) % 360;
+    if (angle < 0) {
+      angle += 360;
     }
 
-    if (direction >= 180 && direction < 270) {
+    if (angle >= 180 && angle < 270) {
       this->state.lastPrim->SetAction(2, 16, 1);
-    } else if (direction >= 90 && direction < 180) {
+    } else if (angle >= 90 && angle < 180) {
       this->state.lastPrim->SetAction(3, 16, 1);
-    } else if (direction >= 0 && direction < 90) {
+    } else if (angle >= 0 && angle < 90) {
       this->state.lastPrim->SetAction(0, 16, 1);
     } else {
       this->state.lastPrim->SetAction(1, 16, 1);
@@ -18664,16 +18664,16 @@ void CRagEffect::TexturedClassChange(char kind) {
     std::int16_t angle;
     Get_Angle(this->render.position.x - this->state.deltaPos.x, this->render.position.z - this->state.deltaPos.z, &angle);
     const CView* camera = g_modeMgr.GetGameMode()->camera;
-    std::int16_t direction = static_cast<std::int16_t>(static_cast<int>(camera->camera.yaw) + angle) % 360;
-    if (direction < 0) {
-      direction += 360;
+    angle = static_cast<std::int16_t>(static_cast<int>(camera->camera.yaw) + angle) % 360;
+    if (angle < 0) {
+      angle += 360;
     }
 
-    if (direction >= 180 && direction < 270) {
+    if (angle >= 180 && angle < 270) {
       this->state.lastPrim->SetAction(4, 16, 1);
-    } else if (direction >= 90 && direction < 180) {
+    } else if (angle >= 90 && angle < 180) {
       this->state.lastPrim->SetAction(6, 16, 1);
-    } else if (direction >= 0 && direction < 90) {
+    } else if (angle >= 0 && angle < 90) {
       this->state.lastPrim->SetAction(0, 16, 1);
     } else {
       this->state.lastPrim->SetAction(2, 16, 1);
