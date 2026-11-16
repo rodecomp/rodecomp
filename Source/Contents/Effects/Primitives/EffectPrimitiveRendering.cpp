@@ -6811,11 +6811,11 @@ void CEffectPrim::RenderMagicTarget(matrix& wtm) {
     const float cs = g_cosTable[slot.rotStart];
 
     for (int z = 0; z < 7; ++z) {
+      const float z0 = static_cast<float>(z) - 3.5f;
+      const float z1 = static_cast<float>(z + 1) - 3.5f;
       for (int x = 0; x < 7; ++x) {
         const float x0 = static_cast<float>(x) - 3.5f;
         const float x1 = static_cast<float>(x + 1) - 3.5f;
-        const float z0 = static_cast<float>(z) - 3.5f;
-        const float z1 = static_cast<float>(z + 1) - 3.5f;
         const float u00 = z0 * sn + x0 * cs;
         const float v00 = z0 * cs - x0 * sn;
         const float u10 = x1 * cs + z0 * sn;
