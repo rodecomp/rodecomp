@@ -5,8 +5,7 @@
 // FUNCTION: fn_17256
 void UIWindowMgr::SetFocus(UIWindow* value) {
   if (this->hoverWindow) {
-    const bool retained = value && value->GetEditWindow() == this->hoverWindow;
-    this->hoverWindow->OnFinishEdit(retained);
+    this->hoverWindow->OnFinishEdit(value == nullptr ? false : (value->GetEditWindow() == this->hoverWindow ? true : false));
   }
 
   if (value) {
