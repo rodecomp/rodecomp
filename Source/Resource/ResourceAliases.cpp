@@ -76,6 +76,8 @@ void ResourceMgr::LoadAliases(int) {
 
   std::string name;
   std::string replacement;
+  name.clear();
+  replacement.clear();
   const char* token = contents;
   for (int index = 0; index < static_cast<int>(bytes); ++index) {
     if (contents[index] == '\n' || contents[index] == '\r') {
