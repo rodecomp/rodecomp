@@ -175,7 +175,7 @@ void CUIScrollWindow::OnCreate(int width, int height) {
   this->background = new CUIStaticImage();
   this->background->SetSize(336, 318);
   this->background->Move(3, 2);
-  this->background->SetImage(std::string());
+  this->background->SetImage("");
   this->AddChild(this->background);
 
   this->topImage = new CUIStaticImage();
