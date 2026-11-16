@@ -1175,6 +1175,7 @@ public:
   const char* GetWeaponClassName(int item);
   std::string GetWeaponActName(int job, int sex, int weapon, int weaponItem, int costume);
   std::string GetWeaponSprName(int job, int sex, int weapon, int weaponItem, int costume);
+  std::string GetJobTitleString(int job);
   std::string GetWeaponEffectActName(int job, int sex, int weapon, int weaponItem, int effect, int costume);
   std::string GetWeaponEffectSprName(int job, int sex, int weapon, int weaponItem, int effect, int costume);
   void CollectCardItems();

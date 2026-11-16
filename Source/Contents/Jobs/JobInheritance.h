@@ -4,7 +4,6 @@
 #include <cstdint>
 #include <string>
 
-std::string GetJobTitleString(int job);
 bool ResetHotkeySlots();
 bool IsScreenShakeActive();
 bool __stdcall ValidateCharacterName(const char* name);

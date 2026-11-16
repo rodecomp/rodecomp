@@ -566,7 +566,7 @@ void UIEquipWnd::Paint() {
   if (this->m_page == 2) {
     this->FillRegion(1, this->m_contentTop + 15, this->geometry.width - 2, 131, 0xFFFFFF);
     this->DrawRectOutline(2, this->m_contentTop + 38, this->geometry.width - 4, 107, 0x646464);
-    const std::string jobTitle = GetJobTitleString(g_session.jobTitle);
+    const std::string jobTitle = g_session.GetJobTitleString(g_session.jobTitle);
     this->DrawCenteredText(1, this->m_contentTop + 20, jobTitle.c_str(), this->geometry.width - 2, 0, 13, 0, 1);
   }
   if (this->m_page == 3) {
@@ -9958,7 +9958,7 @@ void UIEquipWnd::RefreshTitleList() {
   this->m_titleList->Clear();
   this->m_titleList->AddLine(LookupMessage(MSI_GUILD_JOIN_GUILD_NOT_PERMITTED_MAP), 0);
   for (std::vector<int>::iterator it = g_session.jobTitles.begin(); it != g_session.jobTitles.end(); ++it) {
-    const std::string title = GetJobTitleString(*it);
+    const std::string title = g_session.GetJobTitleString(*it);
     this->m_titleList->AddLine(title.c_str(), *it);
   }
 }

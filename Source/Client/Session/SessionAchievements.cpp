@@ -22,8 +22,8 @@ struct JobTitleLess {
 // OFFSET: 0x00E063F0
 // FUNCTION: fn_23735
 bool JobTitleLess::operator()(int left, int right) const {
-  std::string leftTitle = GetJobTitleString(left);
-  std::string rightTitle = GetJobTitleString(right);
+  std::string leftTitle = g_session.GetJobTitleString(left);
+  std::string rightTitle = g_session.GetJobTitleString(right);
   return leftTitle < rightTitle;
 }
 

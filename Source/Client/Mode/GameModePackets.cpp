@@ -5038,7 +5038,7 @@ void CGameMode::SetActorNameCard(std::uint32_t id, const char* name, const char*
     g_session.jobTitle = job;
   }
 
-  std::string jobTitle = GetJobTitleString(job);
+  std::string jobTitle = g_session.GetJobTitleString(job);
   this->nameCard.Set(id, name, value1, value2, value3, jobTitle, std::string(""), 0);
 }
 

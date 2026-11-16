@@ -1214,7 +1214,7 @@ bool CSession::IsVisibleJob(int job) const {
 
 // OFFSET: 0x00E19230
 // FUNCTION: fn_23836
-std::string GetJobTitleString(int job) {
+std::string CSession::GetJobTitleString(int job) {
   const char* title = nullptr;
 
   if (g_session.m_hotkeyScript->Call("GetTitleString", "d>s", job, &title)) {

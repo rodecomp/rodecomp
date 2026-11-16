@@ -1488,7 +1488,7 @@ void UIAchViewWnd::UpdateInfo() {
     if (HasReward(*this->info)) {
       if (this->info->rewardTitleId > 0) {
         const std::string bitmap = "유저인터페이스\\achievement_re\\reward_title.bmp";
-        const std::string title = GetJobTitleString(this->info->rewardTitleId);
+        const std::string title = g_session.GetJobTitleString(this->info->rewardTitleId);
         this->rewards[0]->Set(bitmap.c_str(), title.c_str(), 0);
         this->rewards[0]->Show(1);
       }

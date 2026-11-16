@@ -1380,7 +1380,7 @@ void CGameMode::ReceiveJobTitle(unsigned char result, int job) {
   }
 
   g_session.jobTitle = job;
-  std::string title = GetJobTitleString(job);
+  std::string title = g_session.GetJobTitleString(job);
   CActorNameCard card = this->LookupNameCard(g_session.m_aid);
   this->nameCard.SetValue4(g_session.m_aid, title);
 
