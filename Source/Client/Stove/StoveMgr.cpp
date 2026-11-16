@@ -198,7 +198,7 @@ void OnStoveShutdown(Stove::PCSDK::CallbackResult callbackResult, Stove::PCSDK::
 // OFFSET: 0x0063AAE0
 // FUNCTION: fn_04778
 CStoveMgr::CStoveMgr()
-    : m_initialized(false), m_pendingOperation(0), m_environment(1), m_purchaseIdLow(0), m_purchaseIdHigh(0), m_purchaseUrl(), m_accessToken{},
+    : m_initialized(false), m_pendingOperation(0), m_environment(1), m_purchaseId(0), m_purchaseUrl(), m_accessToken{},
       m_memberNumber{}, m_gameUserId{}, m_applicationId() {
   this->Initialize();
 }
@@ -303,8 +303,7 @@ void PurchaseResultCallback::operator()(Stove::PCSDK::CallbackResult callbackRes
     if (reinterpret_cast<std::intptr_t>(reinterpret_cast<const Stove::PCSDK::IAP::StovePCChargeInfo&>(purchaseResult).GetChargeTypeName()) != 2) {
       CStoveMgr* stoveMgr = g_stoveMgr;
       const std::int64_t productId = reinterpret_cast<const Stove::PCSDK::IAP::StovePCOrderProduct&>(purchaseResult).GetProductId();
-      stoveMgr->m_purchaseIdLow = static_cast<int>(productId);
-      stoveMgr->m_purchaseIdHigh = static_cast<int>(productId >> 32);
+      stoveMgr->m_purchaseId = productId;
       stoveMgr = g_stoveMgr;
       stoveMgr->m_purchaseUrl = static_cast<const std::string&>(
           EncodeText(CP_ACP, std::wstring(reinterpret_cast<const Stove::PCSDK::IAP::StovePCPurchasedProduct&>(purchaseResult).GetCategoryId())));
@@ -632,13 +631,14 @@ void CStoveMgr::StartPurchase(const std::vector<ITEM_INFO>& items) {
     const char* verb = OBFUSCATE_DECRYPT(0x8F1B5BFD5F6175B5ULL, verbSource);
     ShellExecuteA(nullptr, verb, file, parameters, nullptr, SW_SHOWNORMAL);
   } else {
-    const char* url = this->m_purchaseUrl.c_str();
+    const char* parameters = this->m_purchaseUrl.c_str();
+    const char* file = this->m_purchaseUrl.c_str();
     constexpr auto verbSourceText = OBFUSCATE_SOURCE("OPEN", 0x9B17C9EFDBB39F2FULL);
     const auto& verbSource = verbSourceText.data;
     const char* verb = OBFUSCATE_DECRYPT(0x9B17C9EFDBB39F2FULL, verbSource);
-    ShellExecuteA(nullptr, verb, url, url, nullptr, SW_SHOWNORMAL);
+    ShellExecuteA(nullptr, verb, file, parameters, nullptr, SW_SHOWNORMAL);
     if (g_windowMgr.Confirm(PurchaseCheckingMessage()().Text(), 2, true, false, 0, "Message", 250, 170, 0) == 187) {
-      IAP_ConfirmPurchase((static_cast<std::int64_t>(this->m_purchaseIdHigh) << 32) | static_cast<std::uint32_t>(this->m_purchaseIdLow), OnStovePurchaseConfirmed);
+      IAP_ConfirmPurchase(this->m_purchaseId, OnStovePurchaseConfirmed);
       g_stoveWaitingCallback = true;
       do {
         Base_RunCallback();
