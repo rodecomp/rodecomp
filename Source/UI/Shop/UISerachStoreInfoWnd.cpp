@@ -420,7 +420,7 @@ void UISerachStoreInfoWnd::OnLBtnDblClk(int x, int y) {
     return;
   }
 
-  const unsigned int index = this->m_hoverRow + (this->m_page - 1) * 10;
+  const unsigned int index = this->m_hoverRow + 10 * this->m_page - 10;
   std::vector<SearchStoreResult>::iterator it = g_session.storeSearchResults.begin() + index;
   if (it == g_session.storeSearchResults.end()) {
     return;
