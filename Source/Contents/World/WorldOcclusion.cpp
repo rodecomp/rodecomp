@@ -12,7 +12,7 @@
 
 // OFFSET: 0x00CD5AD0
 // FUNCTION: fn_21286
-void CGameMode::MarkWorldOcclusion() {
+__declspec(safebuffers) void CGameMode::MarkWorldOcclusion() {
   if (!this->scene || !this->scene->player || !g_renderer) {
     return;
   }
@@ -24,12 +24,12 @@ void CGameMode::MarkWorldOcclusion() {
   g_renderer->viewport.Ray(screenX, screenY, &this->camera->frame.eye.x, this->camera->frame.inverse.values, ray);
 
   float actorRay[7];
-  actorRay[0] = ray[0];
-  actorRay[1] = ray[1];
-  actorRay[2] = ray[2];
   actorRay[3] = ray[3];
   actorRay[4] = ray[4];
   actorRay[5] = ray[5];
+  actorRay[0] = ray[0];
+  actorRay[1] = ray[1];
+  actorRay[2] = ray[2];
   actorRay[6] = (this->scene->player->render.position.y + this->camera->camera.distance) - 16.0f;
   query.Collect(ray, &this->scene->spatial);
 
