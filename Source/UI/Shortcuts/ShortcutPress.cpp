@@ -50,7 +50,7 @@ void UIShortCutWnd::OnLBtnDown(int x, int y) {
 
     if (this->m_slots[index]->enabled != 0) {
       CSkillInfo skill = g_session.LookupSkill(this->m_slots[index]->itemId);
-      if (skill.MatchesShortcut(this->m_slots[index])) {
+      if (this->MatchesShortcut(skill, this->m_slots[index])) {
         CGameMode* mode = g_modeMgr.GetGameMode();
         if (mode) {
           mode->BeginDragSkill(7, skill.id, skill.name, this->m_slots[index]->value, index);
