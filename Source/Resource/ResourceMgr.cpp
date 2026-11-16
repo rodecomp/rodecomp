@@ -123,7 +123,7 @@ bool ResourceMgr::Exists(const char* name) {
     return false;
   }
 
-  const std::string resolved = ::AddResourcePrefix(normalized, this->m_prefixes[type]);
+  const std::string resolved = this->AddResourcePrefix(normalized, this->m_prefixes[type]);
   if (CRes* existing = this->Find(type, resolved.c_str())) {
     existing->lastUse = timeGetTime();
     return true;
