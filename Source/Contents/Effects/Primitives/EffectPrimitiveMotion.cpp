@@ -1696,7 +1696,9 @@ bool CEffectPrim::PrimKouenka() {
 // OFFSET: 0x00BC27B0
 // FUNCTION: fn_19834
 bool CEffectPrim::PrimSakura() {
-  FollowMaster(*this);
+  this->render.position.x = this->state.master->render.position.x;
+  this->render.position.y = this->state.master->render.position.y;
+  this->render.position.z = this->state.master->render.position.z;
 
   EffectPrimitiveSlot& slot = this->state.slots[0];
 
@@ -1811,13 +1813,17 @@ void CEffectPrim::PrimTeiHit2() {
 // OFFSET: 0x00BC3C70
 // FUNCTION: fn_19840
 __declspec(noinline) bool CEffectPrim::PrimSuperAngel() {
-  this->render.position = this->state.master->render.position;
+  this->render.position.x = this->state.master->render.position.x;
+  this->render.position.y = this->state.master->render.position.y;
+  this->render.position.z = this->state.master->render.position.z;
 
   if (this->state.slots[0].life == 1) {
     ++this->state.slots[0].process;
     this->state.slots[0].vecBNow.y -= 0.1f;
     this->state.slots[0].vecBPre = this->state.slots[0].vecBNow;
-    this->state.deltaPos = this->state.slots[0].vecBPre;
+    this->state.deltaPos.x = this->state.slots[0].vecBPre.x;
+    this->state.deltaPos.y = this->state.slots[0].vecBPre.y;
+    this->state.deltaPos.z = this->state.slots[0].vecBPre.z;
 
     if (this->state.slots[0].process < 50) {
       if (this->state.slots[0].flag1[1] == 0) {
@@ -1940,7 +1946,9 @@ __declspec(noinline) bool CEffectPrim::PrimSuperAngel() {
     }
   }
 
-  this->render.position = this->state.deltaPos;
+  this->render.position.x = this->state.deltaPos.x;
+  this->render.position.y = this->state.deltaPos.y;
+  this->render.position.z = this->state.deltaPos.z;
   this->ShiftSegment();
   return true;
 }

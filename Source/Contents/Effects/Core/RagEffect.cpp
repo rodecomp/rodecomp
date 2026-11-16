@@ -4430,27 +4430,29 @@ void CRagEffect::BubbleSpiralKind(std::int16_t angle, const char*, char kind) {
     }
   }
 
-  this->state.lastPrim->state.slots[0].life = 1;
-  this->state.lastPrim->state.slots[0].process = 0;
-  this->state.lastPrim->state.slots[0].fullDisplayAngle = 360;
-  this->state.lastPrim->state.slots[0].maxHeight = 30.0f;
-  this->state.lastPrim->state.slots[0].rotStart = 180;
-  this->state.lastPrim->state.slots[0].alphaB = angle + 135;
-  this->state.lastPrim->state.slots[0].distance = 4.1f;
-  this->state.lastPrim->state.slots[0].riseAngle = 80;
-  this->state.lastPrim->state.slots[0].alphaT = kind;
-  this->state.lastPrim->state.slots[0].vecBNow.y = 0.0f;
+  int slot0 = 0;
+  this->state.lastPrim->state.slots[slot0].life = 1;
+  this->state.lastPrim->state.slots[slot0].process = 0;
+  this->state.lastPrim->state.slots[slot0].fullDisplayAngle = 360;
+  this->state.lastPrim->state.slots[slot0].maxHeight = 30.0f;
+  this->state.lastPrim->state.slots[slot0].rotStart = 180;
+  this->state.lastPrim->state.slots[slot0].alphaB = angle + 135;
+  this->state.lastPrim->state.slots[slot0].distance = 4.1f;
+  this->state.lastPrim->state.slots[slot0].riseAngle = 80;
+  this->state.lastPrim->state.slots[slot0].alphaT = kind;
+  this->state.lastPrim->state.slots[slot0].vecBNow.y = 0.0f;
 
-  this->state.lastPrim->state.slots[1].life = 1;
-  this->state.lastPrim->state.slots[1].process = 0;
-  this->state.lastPrim->state.slots[1].fullDisplayAngle = 360;
-  this->state.lastPrim->state.slots[1].maxHeight = 29.0f;
-  this->state.lastPrim->state.slots[1].rotStart = 270;
-  this->state.lastPrim->state.slots[1].alphaB = angle + 90;
-  this->state.lastPrim->state.slots[1].distance = 4.1f;
-  this->state.lastPrim->state.slots[1].riseAngle = 80;
-  this->state.lastPrim->state.slots[1].alphaT = kind;
-  this->state.lastPrim->state.slots[1].vecBNow.y = 0.0f;
+  int slot1 = 1;
+  this->state.lastPrim->state.slots[slot1].life = 1;
+  this->state.lastPrim->state.slots[slot1].process = 0;
+  this->state.lastPrim->state.slots[slot1].fullDisplayAngle = 360;
+  this->state.lastPrim->state.slots[slot1].maxHeight = 29.0f;
+  this->state.lastPrim->state.slots[slot1].rotStart = 270;
+  this->state.lastPrim->state.slots[slot1].alphaB = angle + 90;
+  this->state.lastPrim->state.slots[slot1].distance = 4.1f;
+  this->state.lastPrim->state.slots[slot1].riseAngle = 80;
+  this->state.lastPrim->state.slots[slot1].alphaT = kind;
+  this->state.lastPrim->state.slots[slot1].vecBNow.y = 0.0f;
 
   this->state.lastPrim->state.slots[2].life = 1;
   this->state.lastPrim->state.slots[2].process = 0;
@@ -16323,7 +16325,11 @@ void CRagEffect::TexturedMagicRing(const char* name, char kind) {
       this->state.lastPrim->state.slots[i].alphaB = 50;
       this->state.lastPrim->state.slots[i].height[0] = static_cast<float>(kind);
     } else if (kind == 3 || kind == 4) {
-      this->state.lastPrim->state.slots[i].life = i < 2 ? 1 : 0;
+      if (i < 2) {
+        this->state.lastPrim->state.slots[i].life = 1;
+      } else {
+        this->state.lastPrim->state.slots[i].life = 0;
+      }
       this->state.lastPrim->state.slots[i].process = 0;
       this->state.lastPrim->state.slots[i].fullDisplayAngle = static_cast<std::int16_t>(ClampedRandom(360));
       if (i < 1) {

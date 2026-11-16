@@ -1832,7 +1832,7 @@ void UIINT64BarGraph::Paint() {
   g_skinInfo.PaletteChannels(30, 2, red, green, blue);
   this->FillRegion(1, 1, this->geometry.width - 2, this->geometry.height - 2, (blue & 255) << 16 | (green & 255) << 8 | (red & 255));
 
-  if (this->m_maximum == 0) {
+  if (0 == this->m_maximum) {
     return;
   }
 

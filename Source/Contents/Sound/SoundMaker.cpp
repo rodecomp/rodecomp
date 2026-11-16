@@ -1542,7 +1542,7 @@ void CHalluPC::Render(int argument) {
   CWorld* scene = g_modeMgr.GetGameMode()->scene;
   if (scene) {
     CRenderObject* source = scene->GetGameActorByAidIncludeMe(this->render.accountId);
-    if (source && (source->render.flags & 0x10) != 0) {
+    if (source && 0 != (source->render.flags & 0x10)) {
       this->render.flags = 0x10;
       this->render.shrinkPhase = 45;
     }
