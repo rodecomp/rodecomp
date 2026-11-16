@@ -7984,6 +7984,7 @@ void CRagEffect::RocketPunch() {
     return;
   }
 
+  CGameMode* gameMode = g_modeMgr.GetGameMode();
   this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 20;
   this->state.lastPrim->state.pattern |= 0x100u;
