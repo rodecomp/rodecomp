@@ -9,8 +9,8 @@
 // OFFSET: 0x00ADBAC0
 // FUNCTION: fn_17924
 void CView::Forward(float* output) const {
-  const float y = this->camera.target.y - this->frame.eye.y;
   const float x = this->camera.target.x - this->frame.eye.x;
+  const float y = this->camera.target.y - this->frame.eye.y;
   const float z = this->camera.target.z - this->frame.eye.z;
 
   output[1] = y;
