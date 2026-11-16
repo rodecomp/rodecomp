@@ -303,8 +303,7 @@ void CSkillAction_NW_THE_VIGILANTE_AT_NIGHT_GUN_GATLING::OnSkillEffect(int level
     effect->position[2] = target->render.position.z + 0.0f;
     effect->position[1] = static_cast<float>(index % 4 / 2 * 15 - (first >= 0 ? first : 0)) + target->render.position.y;
     effect->SetDelay(index * 32);
-    const int scale = rand() % 51;
-    effect->SetScale(static_cast<float>((scale >= 0 ? scale : 0) + 50) * 0.01f);
+    effect->SetScale(static_cast<float>(std::max(rand() % 51, 0) + 50) * 0.01f);
   }
 }
 
