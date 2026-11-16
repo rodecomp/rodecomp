@@ -6,19 +6,7 @@
 #include <json/value.h>
 #include <string>
 
-void ClearUserHotkeys();
-void SaveUserHotkeys();
 void __stdcall ChangeUserHotkey(int tab, int index, int key1, int key2, const std::string& description);
-
-// INLINED
-inline void ClearUserHotkeys(LuaScript&) {
-  ClearUserHotkeys();
-}
-
-// INLINED
-inline void SaveUserHotkeys(LuaScript&) {
-  SaveUserHotkeys();
-}
 
 // INLINED
 inline void ChangeUserHotkey(LuaScript&, int tab, int index, int key1, int key2, const std::string& description) {

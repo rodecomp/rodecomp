@@ -162,16 +162,17 @@ void CUserHotkeyMgr::Reset() {
 // FUNCTION: fn_03464
 void CUserHotkeyMgr::LoadV2(Json::Value& data) {
   Json::Value values = data["UserHotkey_V2"];
+  Json::Value::iterator it = values.begin();
   if (values.empty()) {
-    this->m_version2 = false;
+    g_userHotkeyMgr->m_version2 = false;
   } else {
-    this->m_version2 = true;
-    ClearUserHotkeys();
+    g_userHotkeyMgr->m_version2 = true;
+    g_userHotkeyMgr->ClearUserHotkeys();
     this->LoadUserHotkeyTab(values["SkillBar_1Tab"], 0);
     this->LoadUserHotkeyTab(values["SkillBar_2Tab"], 3);
     this->LoadUserHotkeyTab(values["InterfaceTab"], 1);
     this->LoadUserHotkeyTab(values["EmotionTab"], 2);
-    SaveUserHotkeys();
+    g_userHotkeyMgr->SaveUserHotkeys();
   }
 }
 

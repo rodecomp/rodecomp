@@ -7,7 +7,7 @@ template bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_
 
 // OFFSET: 0x005F7D60
 // FUNCTION: fn_04055
-void ClearUserHotkeys() {
+void CUserHotkeyMgr::ClearUserHotkeys() {
   std::string path = "SaveData\\UserKeys";
   path = path + ".lua";
   if (!path.empty()) {
@@ -17,7 +17,7 @@ void ClearUserHotkeys() {
 
 // OFFSET: 0x005F8910
 // FUNCTION: fn_04063
-void SaveUserHotkeys() {
+void CUserHotkeyMgr::SaveUserHotkeys() {
   std::string path = "SaveData\\UserKeys";
   path = path + ".lua";
   if (!path.empty()) {

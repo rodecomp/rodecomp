@@ -21,6 +21,8 @@ public:
   void Capture();
   bool HasUserAssignments() const;
   bool HasChanges() const;
+  void ClearUserHotkeys();
+  void SaveUserHotkeys();
 
 protected:
   friend class CAccountLinkedUserDataMgr;
