@@ -10831,12 +10831,11 @@ bool CRagEffect::GlassWall() {
     rotation.MakeYRotation(GetRadian(angle));
     const float* m = rotation.values;
     for (int side = 1; side > -2; side -= 2) {
-      const float along = static_cast<float>(side) * 2.6f;
       this->state.lastPrim = this->LaunchEffectPrim(15, vector3d{0.0f, 0.0f, 0.0f});
       this->state.lastPrim->state.duration = this->state.duration;
       this->state.lastPrim->state.pattern = 40;
       this->state.lastPrim->state.type = 50;
-      this->state.lastPrim->state.deltaPos2 = RotatedForward(m, along);
+      this->state.lastPrim->state.deltaPos2 = RotatedForward(m, static_cast<float>(side) * 2.6f);
       this->state.lastPrim->state.longitude = static_cast<float>(angle + 90);
       this->state.lastPrim->state.widthSize = 3.0f;
       this->state.lastPrim->state.heightSize = 40.0f;
@@ -10847,11 +10846,11 @@ bool CRagEffect::GlassWall() {
       this->state.lastPrim->state.fadeOutCnt = this->state.lastPrim->state.duration - 6;
       this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
       this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ring_blue.tga", 0, false, true, false);
-      const float across = static_cast<float>(side) * 3.0f;
       this->state.lastPrim = this->LaunchEffectPrim(15, vector3d{0.0f, 0.0f, 0.0f});
       this->state.lastPrim->state.duration = this->state.duration;
       this->state.lastPrim->state.pattern = 40;
       this->state.lastPrim->state.type = 50;
+      const float across = static_cast<float>(side) * 3.0f;
       this->state.lastPrim->state.deltaPos2 = {
         across * m[0] + m[3] * 0.0f + m[6] * 0.0f + m[9],
         across * m[1] + m[4] * 0.0f + m[7] * 0.0f + m[10],
