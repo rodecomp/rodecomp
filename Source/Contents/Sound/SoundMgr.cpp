@@ -117,16 +117,15 @@ void CSoundMgr::FadeOut() {
 // OFFSET: 0x00638F60
 // FUNCTION: fn_04749
 void CSoundMgr::StopStreams() {
-  this->currentName = std::string();
-  MilesRuntime& miles = MilesRuntime::Get();
+  this->currentName = std::string("");
 
   if (this->stream) {
-    miles.closeStream(this->stream);
+    AIL_close_stream(this->stream);
     this->stream = nullptr;
   }
 
   if (this->secondaryStream) {
-    miles.closeStream(this->secondaryStream);
+    AIL_close_stream(this->secondaryStream);
     this->secondaryStream = nullptr;
   }
 
@@ -691,8 +690,8 @@ void CSoundMgr::SetListenerYaw(float yaw) {
   const float angle = 180.0f - yaw;
   const int degrees = static_cast<int>(angle);
   const float sine = ClientSine(degrees);
-  const float cosine = ClientCosine(degrees);
-  MilesRuntime::Get().set3DOrientation(this->listener, sine, 0.0f, -cosine, 0.0f, 1.0f, 0.0f);
+  const float negativeCosine = -ClientCosine(degrees);
+  AIL_set_3D_orientation(this->listener, sine, 0.0f, negativeCosine, 0.0f, 1.0f, 0.0f);
 }
 
 // OFFSET: 0x0063A560
