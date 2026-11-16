@@ -11893,7 +11893,7 @@ int UIChooseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     ChooseWndInfo* placement = reinterpret_cast<ChooseWndInfo*>(a);
     this->m_placement = placement;
     placement->IsValid();
-    this->Move(placement->x, placement->y);
+    this->Move(this->m_placement->x, this->m_placement->y);
     return 0;
   }
   case UM_UPPUSH:
@@ -11910,9 +11910,8 @@ int UIChooseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
           this->SendMsg(nullptr, UM_COMMAND, ID_CANCEL, 0, 0, 0);
           return 0;
         }
-        const int selected = this->m_list->selected;
-        if (selected != -1) {
-          g_modeMgr.GetGameMode()->SendMsg(MM_CHOOSE_MENU, this->m_items[selected] + 1, this->m_npcAid, 0, 0);
+        if (this->m_list->selected != -1) {
+          g_modeMgr.GetGameMode()->SendMsg(MM_CHOOSE_MENU, this->m_items[this->m_list->selected] + 1, this->m_npcAid, 0, 0);
           g_windowMgr.CloseWindow(WID_CHOOSEWND);
         }
       }
@@ -11957,7 +11956,7 @@ int UIChooseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     unsigned int position = sizeof(header);
     if (0x558C == header.type) {
       bool done = false;
-      while (!done && position < static_cast<unsigned int>(b)) {
+      while (!done && static_cast<unsigned int>(b) > position) {
         std::memcpy(&header, records + position, sizeof(header));
         position += sizeof(header);
         switch (header.type) {
