@@ -23,15 +23,14 @@ CDCBitmap* CreateBitmapDC(int width, int height, bool fill) {
 void CDCBitmap::SetAlpha(unsigned char maxLuminance) {
   for (std::uint32_t y = 0; y < this->m_bitmap.height; ++y) {
     for (std::uint32_t x = 0; x < this->m_bitmap.width; ++x) {
-      const std::uint32_t index = y * this->m_bitmap.width + x;
-      std::uint32_t pixel = this->m_bitmap.pixels[index];
+      std::uint32_t pixel = this->m_bitmap.pixels[x + y * this->m_bitmap.width];
       const unsigned char r = pixel & 0xFF;
       const unsigned char g = (pixel >> 8) & 0xFF;
       const unsigned char b = (pixel >> 16) & 0xFF;
       const unsigned char avg = static_cast<unsigned char>((r + g + b) / 3);
       const unsigned char alpha = static_cast<unsigned char>((static_cast<float>(avg) / static_cast<float>(maxLuminance)) * 255.0f);
       reinterpret_cast<unsigned char*>(&pixel)[3] = alpha;
-      this->m_bitmap.pixels[index] = pixel;
+      this->m_bitmap.pixels[x + y * this->m_bitmap.width] = pixel;
     }
   }
 }
