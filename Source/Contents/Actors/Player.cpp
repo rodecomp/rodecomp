@@ -454,7 +454,7 @@ void CGrannyPc::SetState(int state, int resetPosition) {
     }
     const bool weaponAllowed = g_session.IsJobWeaponAllowed(
       this->GetEffectiveJob(-1), this->sex,
-      (static_cast<std::int64_t>(this->secondaryWeapon) << 32) | static_cast<std::uint32_t>(this->weapon)
+      this->weaponPair
     );
     CGameActor::SetState(weaponAllowed ? 9 : 2, resetPosition);
     this->attackMotion = g_session.AttackMotionLength(this->GetEffectiveJob(-1), this->sex, this->weapon, weaponAllowed);
@@ -474,7 +474,7 @@ void CGrannyPc::SetState(int state, int resetPosition) {
     }
     const bool weaponAllowed = g_session.IsJobWeaponAllowed(
       this->GetEffectiveJob(-1), this->sex,
-      (static_cast<std::int64_t>(this->secondaryWeapon) << 32) | static_cast<std::uint32_t>(this->weapon)
+      this->weaponPair
     );
     CGameActor::SetState(weaponAllowed ? 9 : 2, resetPosition);
     this->attackMotion = g_session.AttackMotionLength(this->GetEffectiveJob(-1), this->sex, this->weapon, weaponAllowed);
