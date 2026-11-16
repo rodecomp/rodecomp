@@ -432,9 +432,10 @@ void CHealEffect::OnProcess() {
 
   for (auto it = this->columnParticles.begin(); it != this->columnParticles.end(); ++it) {
     CParticle* particle = *it;
-    particle->position.x = this->position[0];
-    particle->position.y = this->position[1];
-    particle->position.z = this->position[2];
+    vector3d& particlePosition = (*it)->position;
+    particlePosition.x = this->position[0];
+    particlePosition.y = this->position[1];
+    particlePosition.z = this->position[2];
     if (particle) {
       const int age = particle->elapsedFrames;
       int alpha = particle->alpha;
@@ -571,7 +572,7 @@ void CHealEffect::OnProcess() {
       particle->angleParameter += particle->angleParameter - 5 >= 0 ? -5 : 355;
 
       int alpha = particle->alpha;
-      if (particle->elapsedFrames < 11) {
+      if (particle->elapsedFrames <= 10) {
         alpha += 15;
       } else if (this->id != 312) {
         const int segment = particle->columnIndex;
