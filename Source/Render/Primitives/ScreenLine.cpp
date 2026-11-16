@@ -184,7 +184,10 @@ void UIRoMapWnd::DrawKafraIcon(float x, float y) {
   }
 
   const int tick = static_cast<int>(timeGetTime() % 4000);
-  const int step = tick == 0 ? 0 : tick / (4000 / count);
+  int step = 0;
+  if (tick != 0) {
+    step = tick / (4000 / count);
+  }
   const int last = count > step ? step : count - 1;
   const int frame = last < 0 ? 0 : last;
   const std::uint32_t* palette = sprite->palette;
