@@ -33,35 +33,31 @@ void GroundLightmapSet::Build(CGndRes& resource) {
   std::array<std::uint32_t, 256 * 256> pixels;
 
   for (int first = 0; first < this->lightmapCount; first += 1024) {
+    const int atlas = first / 1024;
     for (int index = 0; index < 1024 && first + index < this->lightmapCount; ++index) {
       unsigned char decoded[256];
       resource.Lightmap(first + index, decoded);
-      const unsigned column = static_cast<unsigned>(index) % 32;
-      const unsigned row = static_cast<unsigned>(index) / 32;
+      const int tile = first + index - atlas * 1024;
+      const unsigned column = tile % 32;
+      const unsigned row = tile / 32;
 
       for (unsigned y = 0; y < 8; ++y) {
         for (unsigned x = 0; x < 8; ++x) {
           const unsigned pixel = y * 8 + x;
-          pixels[(row * 8 + y) * 256 + column * 8 + x] = (static_cast<unsigned>(decoded[pixel]) << 24) |
-                                                         (static_cast<unsigned>(decoded[64 + pixel * 3]) << 16) |
-                                                         (static_cast<unsigned>(decoded[65 + pixel * 3]) << 8) | decoded[66 + pixel * 3];
+          pixels[(row * 8 + y) * 256 + column * 8 + x] =
+            (((((decoded[pixel] << 8) + decoded[64 + pixel * 3]) << 8) + decoded[65 + pixel * 3]) << 8) + decoded[66 + pixel * 3];
         }
       }
 
       GroundLightmap& map = this->lightmaps[first + index];
-      const float left = std::clamp(static_cast<float>(8 * column + 1) / 256.0f, 0.0f, 1.0f);
-      const float right = std::clamp(static_cast<float>(8 * column + 7) / 256.0f, 0.0f, 1.0f);
-      const float top = std::clamp(static_cast<float>(8 * row + 1) / 256.0f, 0.0f, 1.0f);
-      const float bottom = std::clamp(static_cast<float>(8 * row + 7) / 256.0f, 0.0f, 1.0f);
-
-      map.uv[0][0] = left;
-      map.uv[0][1] = top;
-      map.uv[1][0] = right;
-      map.uv[1][1] = top;
-      map.uv[2][0] = left;
-      map.uv[2][1] = bottom;
-      map.uv[3][0] = right;
-      map.uv[3][1] = bottom;
+      map.uv[0][0] = std::clamp(static_cast<float>(8 * column + 1) / 256.0f, 0.0f, 1.0f);
+      map.uv[0][1] = std::clamp(static_cast<float>(8 * row + 1) / 256.0f, 0.0f, 1.0f);
+      map.uv[1][0] = std::clamp(static_cast<float>(8 * column + 7) / 256.0f, 0.0f, 1.0f);
+      map.uv[1][1] = std::clamp(static_cast<float>(8 * row + 1) / 256.0f, 0.0f, 1.0f);
+      map.uv[2][0] = std::clamp(static_cast<float>(8 * column + 1) / 256.0f, 0.0f, 1.0f);
+      map.uv[2][1] = std::clamp(static_cast<float>(8 * row + 7) / 256.0f, 0.0f, 1.0f);
+      map.uv[3][0] = std::clamp(static_cast<float>(8 * column + 7) / 256.0f, 0.0f, 1.0f);
+      map.uv[3][1] = std::clamp(static_cast<float>(8 * row + 7) / 256.0f, 0.0f, 1.0f);
       map.color[0] = decoded[172];
       map.color[1] = decoded[173];
       map.color[2] = decoded[174];
@@ -69,8 +65,7 @@ void GroundLightmapSet::Build(CGndRes& resource) {
 
       for (unsigned corner = 0; corner < 4; ++corner) {
         const unsigned pixel = samples[corner];
-        map.cornerColors[corner] = (static_cast<unsigned>(decoded[pixel]) << 24) | (static_cast<unsigned>(decoded[64 + pixel * 3]) << 16) |
-                                   (static_cast<unsigned>(decoded[65 + pixel * 3]) << 8) | decoded[66 + pixel * 3];
+        map.cornerColors[corner] = (((((decoded[pixel] << 8) + decoded[64 + pixel * 3]) << 8) + decoded[65 + pixel * 3]) << 8) + decoded[66 + pixel * 3];
       }
     }
 
