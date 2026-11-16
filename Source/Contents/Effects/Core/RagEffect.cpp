@@ -2006,13 +2006,8 @@ void CRagEffect::RemoveTrap() {
     this->state.lastPrim->state.longitude = static_cast<float>(ClampedRandom(360));
     this->state.lastPrim->state.size = 0.8f;
     this->state.lastPrim->state.transform.MakeYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
-    const float* m = this->state.lastPrim->state.transform.values;
-    const float distance = this->state.lastPrim->state.radius;
-    this->state.lastPrim->state.deltaPos2 = {
-      m[3] * 0.0f + m[0] * 0.0f + distance * m[6] + m[9],
-      m[4] * 0.0f + m[1] * 0.0f + distance * m[7] + m[10],
-      m[5] * 0.0f + m[2] * 0.0f + distance * m[8] + m[11]
-    };
+    const vector3d forward{0.0f, 0.0f, this->state.lastPrim->state.radius};
+    MatrixMult(this->state.lastPrim->state.deltaPos2, forward, this->state.lastPrim->state.transform.values);
     this->state.lastPrim->state.fadeOutCnt = 35;
     this->state.lastPrim->SetSpriteName("이팩트\\particle1.spr");
     this->state.lastPrim->SetActionName("이팩트\\particle1.act");
