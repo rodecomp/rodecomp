@@ -5245,7 +5245,7 @@ void CGameMode::ReceiveRefineStatus(const char* playerName, int itemId, unsigned
   std::string text = FormatOwnedString(LookupMessage(!success + 3271), name.c_str(), refine, itemName.c_str());
   if (UIBroadcastBalloon* balloon = this->EnsureBroadcastBalloon()) {
     BroadcastBalloonMessage message;
-    message.lines.push_back(BroadcastBalloonLine{text, 0x62B0FF, 0});
+    message.lines.emplace_back(text, 0x62B0FFu, 0u);
     balloon->AddMessage(0, message);
   }
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0x62B0FF, 0, 0, 0);
