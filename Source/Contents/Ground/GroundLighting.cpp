@@ -80,7 +80,7 @@ void GroundGeometry::DrawLightmapped(const float* matrix, const GroundQuad& quad
   }
 
   if (g_serviceOptions.Get(TT_LIGHTMAP_ON_OFF) != 0) {
-    RenderPrimitive* lightmap = g_renderer->primitives.Acquire();
+    RenderPrimitive* lightmap = g_renderer->AcquirePrimitive();
     std::memcpy(lightmap->vertices, vertices, sizeof(vertices));
 
     for (unsigned corner = 0; corner < 4; ++corner) {
@@ -92,7 +92,7 @@ void GroundGeometry::DrawLightmapped(const float* matrix, const GroundQuad& quad
     g_renderer->Submit(lightmap, 0x1000);
   }
 
-  RenderPrimitive* primitive = g_renderer->primitives.Acquire();
+  RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
   std::memcpy(primitive->vertices, vertices, sizeof(vertices));
   primitive->texture = quad.texture;
   g_renderer->Submit(primitive, 0x800);
