@@ -1425,27 +1425,25 @@ void UINewChatWnd::OnCreate(int width, int height) {
 
   {
     std::string name = "유저인터페이스\\basic_interface\\battle_option";
-    UIBitmapButton* button = new UIBitmapButton();
-    this->m_headerButtons[0] = button;
-    button->SetBitmap((name + "_a.bmp").c_str(), 0, 0);
-    button->SetBitmap((name + "_b.bmp").c_str(), 1, 0);
-    button->SetBitmap((name + "_b.bmp").c_str(), 2, 0);
-    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
-    button->Move(this->m_tabWidth * 2 + 34, 5);
-    button->SetId(ID_ADD_CHAT_TAB);
-    this->AddChild(button);
+    this->m_headerButtons[0] = new UIBitmapButton();
+    this->m_headerButtons[0]->SetBitmap((name + "_a.bmp").c_str(), 0, 0);
+    this->m_headerButtons[0]->SetBitmap((name + "_b.bmp").c_str(), 1, 0);
+    this->m_headerButtons[0]->SetBitmap((name + "_b.bmp").c_str(), 2, 0);
+    this->m_headerButtons[0]->SetSize(this->m_headerButtons[0]->BitmapWidth(), this->m_headerButtons[0]->BitmapHeight());
+    this->m_headerButtons[0]->Move(this->m_tabWidth * 2 + 34, 5);
+    this->m_headerButtons[0]->SetId(ID_ADD_CHAT_TAB);
+    this->AddChild(this->m_headerButtons[0]);
   }
 
   {
     std::string name = "유저인터페이스\\basic_interface\\wnd_mini";
-    UIBitmapButton* button = new UIBitmapButton();
-    this->m_headerButtons[1] = button;
-    button->SetBitmap((name + "_a.bmp").c_str(), 0, 0);
-    button->SetBitmap((name + "_b.bmp").c_str(), 1, 0);
-    button->SetBitmap((name + "_b.bmp").c_str(), 2, 0);
-    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
-    button->SetId(ID_MINI);
-    this->AddChild(button);
+    this->m_headerButtons[1] = new UIBitmapButton();
+    this->m_headerButtons[1]->SetBitmap((name + "_a.bmp").c_str(), 0, 0);
+    this->m_headerButtons[1]->SetBitmap((name + "_b.bmp").c_str(), 1, 0);
+    this->m_headerButtons[1]->SetBitmap((name + "_b.bmp").c_str(), 2, 0);
+    this->m_headerButtons[1]->SetSize(this->m_headerButtons[1]->BitmapWidth(), this->m_headerButtons[1]->BitmapHeight());
+    this->m_headerButtons[1]->SetId(ID_MINI);
+    this->AddChild(this->m_headerButtons[1]);
   }
 
   for (std::map<int, SubChatWndInfo>::iterator it = g_session.m_noSubChatWnds.begin(); it != g_session.m_noSubChatWnds.end(); ++it) {

@@ -58,7 +58,7 @@ public:
   /* 00EC */ unsigned char padding_00EC[0x4];
   /* 00F0 */ int m_menuMode;
   /* 00F4 */ std::vector<UIChatHisBox*> m_tabs;
-  /* 0100 */ UIWindow* m_headerButtons[2];
+  /* 0100 */ UIBitmapButton* m_headerButtons[2];
   /* 0108 */ int m_lockButtonX;
   /* 010C */ int m_chatModeX;
   /* 0110 */ int m_maxTabs;
