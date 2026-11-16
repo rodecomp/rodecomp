@@ -8216,7 +8216,7 @@ int UISkillDescribeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
       CSkillInfo owned = g_session.LookupSkill(static_cast<std::uint32_t>(a));
       if (owned.available != 0 && owned.spCost != 0 && owned.level != 0) {
         char cost[64];
-        if (skill.UseApAmount(*g_session.m_hotkeyScript, owned.level) != 0) {
+        if (skill.UseApAmount(owned.level) != 0) {
           std::sprintf(cost, " (Sp : %d, Ap : %d)", owned.spCost, owned.apCost);
         } else {
           std::sprintf(cost, " (Sp : %d)", owned.spCost);
@@ -8239,7 +8239,8 @@ int UISkillDescribeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
         if (g_session.FindShopId("") != -1) {
           const int delay = g_session.GetShopEntry(1, this->m_skillId).first;
           if (delay != 0) {
-            const std::string line = FormatOwnedString(LookupMessage(MSI_FAIL_CALLHOMUN_OVER_100LEVEL), static_cast<int>(delay * 0.1), delay % 10);
+            const int seconds = static_cast<int>(delay * 0.1);
+            const std::string line = FormatOwnedString(LookupMessage(MSI_FAIL_CALLHOMUN_OVER_100LEVEL), seconds, delay % 10);
             this->m_text->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(line.c_str()), 0, 0, 1);
           }
         }
@@ -8248,25 +8249,28 @@ int UISkillDescribeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
         for (std::size_t index = 0; index < lines.size(); ++index) {
           buffer.resize(lines[index].size() + 4);
           StringFormat(buffer.data(), buffer.size(), static_cast<std::size_t>(-1), "%s%s", g_serverLanguage->Prefix(true), lines[index].c_str());
-          UIWindow* target = static_cast<int>(this->m_text->lines.size()) < 2 ? static_cast<UIWindow*>(this->m_text) : static_cast<UIWindow*>(this->m_viewer);
-          target->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(buffer.data()), 0, 1, 1);
+          if (static_cast<int>(this->m_text->lines.size()) < 2) {
+            this->m_text->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(buffer.data()), 0, 1, 1);
+          } else {
+            this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(buffer.data()), 0, 1, 1);
+          }
         }
       }
     } else {
       this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>("Unknown Skill"), 33, 0, 0);
     }
 
-    const int textHeight = 18 * static_cast<int>(this->m_text->lines.size());
-    this->m_text->Resize(this->m_text->geometry.width, textHeight);
+    int height = 18 * static_cast<int>(this->m_text->lines.size());
+    this->m_text->Resize(this->m_text->geometry.width, height);
     this->m_viewer->Move(this->m_viewer->geometry.x, this->m_text->geometry.height + this->m_text->geometry.y);
     int viewerHeight = 18 * static_cast<int>(this->m_viewer->lines.size()) + 4;
-    int total = viewerHeight + textHeight;
-    if (total > g_renderer->viewport.height - 50) {
-      total = g_renderer->viewport.height - 50;
-      viewerHeight = total - this->m_text->geometry.height;
+    height += viewerHeight;
+    if (height > g_renderer->viewport.height - 50) {
+      height = g_renderer->viewport.height - 50;
+      viewerHeight = height - this->m_text->geometry.height;
     }
     this->m_viewer->Resize(this->m_viewer->geometry.width, viewerHeight);
-    this->Resize(this->geometry.width, total + 6);
+    this->Resize(this->geometry.width, height + 6);
     this->Invalidate();
     g_windowMgr.Promote(this);
     break;
