@@ -655,7 +655,7 @@ int UIExpandedBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std:
     this->entries.erase(this->entries.begin(), this->entries.end());
     std::vector<BarterMarketEntry>* entries = g_expandedBarterMarketItemMgr->GetEntries();
     for (std::vector<BarterMarketEntry>::iterator it = entries->begin(); it != entries->end(); ++it) {
-      this->entries.emplace_back(*it);
+      this->entries.push_back(*it);
     }
     this->Invalidate();
     this->UpdateScrollBar();
