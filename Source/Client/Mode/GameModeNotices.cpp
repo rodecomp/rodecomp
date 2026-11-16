@@ -5425,7 +5425,8 @@ void CGameMode::ReceiveRodexMailListRefresh(const unsigned char* data) {
     RodexMail mail;
     mail.isRead = entry->isRead;
     mail.type = entry->type;
-    mail.expiresAt = _time32(nullptr) + entry->expireTime;
+    const __time32_t now = _time32(nullptr);
+    mail.expiresAt = entry->expireTime + now;
     mail.sender.assign(entry->sender, (std::min)(static_cast<std::size_t>(24), std::strlen(entry->sender)));
     mail.title.assign(entry->title, entry->titleLength);
     if (mails->find(entry->mailId) == mails->end()) {
