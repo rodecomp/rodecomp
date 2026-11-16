@@ -136,24 +136,18 @@ void matrix::AppendTranslate(const float* position) {
 // OFFSET: 0x005554B0
 // FUNCTION: fn_02037
 void matrix::Compose(const matrix& first, const matrix& second) {
-  const float* a = first.values;
-  const float* b = second.values;
-  float* output = this->values;
-
-  output[0] = (a[0] * b[0] + b[3] * a[1]) + b[6] * a[2];
-  output[3] = (a[4] * b[3] + a[3] * b[0]) + a[5] * b[6];
-  output[6] = (a[7] * b[3] + a[6] * b[0]) + a[8] * b[6];
-  output[9] = ((a[10] * b[3] + a[9] * b[0]) + a[11] * b[6]) + b[9];
-
-  output[1] = (b[4] * a[1] + b[1] * a[0]) + b[7] * a[2];
-  output[4] = (a[4] * b[4] + a[3] * b[1]) + a[5] * b[7];
-  output[7] = (a[7] * b[4] + a[6] * b[1]) + a[8] * b[7];
-  output[10] = ((a[10] * b[4] + a[9] * b[1]) + a[11] * b[7]) + b[10];
-
-  output[2] = (b[5] * a[1] + b[2] * a[0]) + a[2] * b[8];
-  output[5] = (b[5] * a[4] + b[2] * a[3]) + a[5] * b[8];
-  output[8] = (b[5] * a[7] + b[2] * a[6]) + a[8] * b[8];
-  output[11] = ((b[5] * a[10] + b[2] * a[9]) + a[11] * b[8]) + b[11];
+  values[0] = first.values[0] * second.values[0] + first.values[1] * second.values[3] + first.values[2] * second.values[6];
+  values[3] = first.values[3] * second.values[0] + first.values[4] * second.values[3] + first.values[5] * second.values[6];
+  values[6] = first.values[6] * second.values[0] + first.values[7] * second.values[3] + first.values[8] * second.values[6];
+  values[9] = first.values[9] * second.values[0] + first.values[10] * second.values[3] + first.values[11] * second.values[6] + second.values[9];
+  values[1] = first.values[0] * second.values[1] + first.values[1] * second.values[4] + first.values[2] * second.values[7];
+  values[4] = first.values[3] * second.values[1] + first.values[4] * second.values[4] + first.values[5] * second.values[7];
+  values[7] = first.values[6] * second.values[1] + first.values[7] * second.values[4] + first.values[8] * second.values[7];
+  values[10] = first.values[9] * second.values[1] + first.values[10] * second.values[4] + first.values[11] * second.values[7] + second.values[10];
+  values[2] = first.values[0] * second.values[2] + first.values[1] * second.values[5] + first.values[2] * second.values[8];
+  values[5] = first.values[3] * second.values[2] + first.values[4] * second.values[5] + first.values[5] * second.values[8];
+  values[8] = first.values[6] * second.values[2] + first.values[7] * second.values[5] + first.values[8] * second.values[8];
+  values[11] = first.values[9] * second.values[2] + first.values[10] * second.values[5] + first.values[11] * second.values[8] + second.values[11];
 }
 
 // OFFSET: 0x00554920
