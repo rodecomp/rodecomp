@@ -91,9 +91,7 @@ void CChopChopClawMarks::SpawnParticle() {
     const float y = point.y * 5.0f;
     // GLOBAL: gl_24875
     particle->Load(OBFUSCATE_TEXT("DRUID\\KR_CHOP_CHOP\\chop_chop\\chop_chop.str", 0x1D6D75EDE7CD311FULL));
-    particle->offsetX = x;
-    particle->offsetY = y;
-    particle->offsetZ = 0.0f;
+    particle->offset = vector3d{x, y, 0.0f};
     particle->m_angle = static_cast<float>(std::ranges::max(rand() % 360, 0));
     this->particles.push_back(particle);
   }
