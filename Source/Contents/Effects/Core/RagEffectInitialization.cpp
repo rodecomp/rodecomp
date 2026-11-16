@@ -13,18 +13,26 @@
 #include <cstdlib>
 #include <cstring>
 
-// INLINED
-__forceinline static void SelectRagEffectResource(RagEffectState& effect, ServiceOptions& options, char* name) {
+// OFFSET: 0x00C1C2D0
+// FUNCTION: fn_20074
+void CRagEffect::Init(EffectActor* parent, int id, vector3d deltaPos) {
+  this->state.type = id;
+  this->state.parent = parent;
+  this->render.position = parent->render.position;
+  this->state.longitude = parent->render.angle;
+  this->SetStateDuration(EffectLifetime(this->state.type));
+  this->state.deltaPos = deltaPos;
+  char name[64];
   std::sprintf(name, "");
-  switch (effect.type) {
+  switch (this->state.type) {
   case EF_WINDHIT:
-    std::sprintf(name, "WindHit%d.str", std::max(0, std::rand() % 3) + 1);
+    std::sprintf(name, "WindHit%d.str", std::ranges::max(std::rand() % 3, 0) + 1);
     break;
   case EF_COIN:
-    std::sprintf(name, options.Get(229) != 0 ? "memor_min.str" : "Maemor.str");
+    std::sprintf(name, g_serviceOptions.Get(229) != 0 ? "memor_min.str" : "Maemor.str");
     break;
   case EF_FIREWALL:
-    std::sprintf(name, "Firewall%d.str", std::max(0, std::rand() % 2) + 1);
+    std::sprintf(name, "Firewall%d.str", std::ranges::max(std::rand() % 2, 0) + 1);
     break;
   case EF_THUNDERSTORM:
     std::sprintf(name, "ThunderStorm.str");
@@ -42,7 +50,7 @@ __forceinline static void SelectRagEffectResource(RagEffectState& effect, Servic
     std::sprintf(name, "Invenom.str");
     break;
   case EF_CURE:
-    std::sprintf(name, options.Get(229) != 0 ? "cure_min.str" : "Cure.str");
+    std::sprintf(name, g_serviceOptions.Get(229) != 0 ? "cure_min.str" : "Cure.str");
     break;
   case EF_PROVOKE:
     std::sprintf(name, "Provoke.str");
@@ -54,13 +62,13 @@ __forceinline static void SelectRagEffectResource(RagEffectState& effect, Servic
     std::sprintf(name, "SkidTrap.str");
     break;
   case EF_GLORIA:
-    std::sprintf(name, options.Get(229) != 0 ? "gloria_min.str" : "Gloria.str");
+    std::sprintf(name, g_serviceOptions.Get(229) != 0 ? "gloria_min.str" : "Gloria.str");
     break;
   case EF_MAGNIFICAT:
-    std::sprintf(name, options.Get(229) != 0 ? "magnificat_min.str" : "Magnificat.str");
+    std::sprintf(name, g_serviceOptions.Get(229) != 0 ? "magnificat_min.str" : "Magnificat.str");
     break;
   case EF_RESURRECTION:
-    std::sprintf(name, options.Get(229) != 0 ? "resurrection_min.str" : "Resurrection.str");
+    std::sprintf(name, g_serviceOptions.Get(229) != 0 ? "resurrection_min.str" : "Resurrection.str");
     break;
   case EF_RECOVERY:
     std::sprintf(name, "Recovery.str");
@@ -72,7 +80,7 @@ __forceinline static void SelectRagEffectResource(RagEffectState& effect, Servic
     std::sprintf(name, "Impositio.str");
     break;
   case EF_LEXAETERNA:
-    std::sprintf(name, options.Get(229) != 0 ? "lexaeterna_min.str" : "LexAeterna.str");
+    std::sprintf(name, g_serviceOptions.Get(229) != 0 ? "lexaeterna_min.str" : "LexAeterna.str");
     break;
   case EF_ASPERSIO:
     std::sprintf(name, "Aspersio.str");
@@ -81,7 +89,7 @@ __forceinline static void SelectRagEffectResource(RagEffectState& effect, Servic
     std::sprintf(name, "LexDivina.str");
     break;
   case EF_SUFFRAGIUM:
-    std::sprintf(name, options.Get(229) != 0 ? "suffragium_min.str" : "Suffragium.str");
+    std::sprintf(name, g_serviceOptions.Get(229) != 0 ? "suffragium_min.str" : "Suffragium.str");
     break;
   case EF_STORMGUST:
     std::sprintf(name, "StormGust.str");
@@ -93,7 +101,7 @@ __forceinline static void SelectRagEffectResource(RagEffectState& effect, Servic
     std::sprintf(name, "Benedictio.str");
     break;
   case EF_METEORSTORM:
-    std::sprintf(name, "Meteor%d.str", std::max(0, std::rand() % 3) + 1);
+    std::sprintf(name, "Meteor%d.str", std::ranges::max(std::rand() % 3, 0) + 1);
     break;
   case EF_QUAGMIRE:
     std::sprintf(name, "Quagmire.str");
@@ -111,10 +119,10 @@ __forceinline static void SelectRagEffectResource(RagEffectState& effect, Servic
     std::sprintf(name, "CrashEarth.str");
     break;
   case EF_PERFECTION:
-    std::sprintf(name, options.Get(229) != 0 ? "WeaponPerfection_min.str" : "WeaponPerfection.str");
+    std::sprintf(name, g_serviceOptions.Get(229) != 0 ? "WeaponPerfection_min.str" : "WeaponPerfection.str");
     break;
   case EF_MAXPOWER:
-    std::sprintf(name, options.Get(229) != 0 ? "maximize_min.str" : "MaximizePower.str");
+    std::sprintf(name, g_serviceOptions.Get(229) != 0 ? "maximize_min.str" : "MaximizePower.str");
     break;
   case EF_BLASTMINEBOMB:
     std::sprintf(name, "BlastMine.str");
@@ -129,13 +137,13 @@ __forceinline static void SelectRagEffectResource(RagEffectState& effect, Servic
     std::sprintf(name, "Spring.str");
     break;
   case EF_BUBBLE:
-    std::sprintf(name, "Bubble%d.str", std::max(0, std::rand() % 4) + 1);
+    std::sprintf(name, "Bubble%d.str", std::ranges::max(std::rand() % 4, 0) + 1);
     break;
   case EF_GASPUSH:
     std::sprintf(name, "GasPush.str");
     break;
   case EF_KYRIE:
-    std::sprintf(name, options.Get(229) != 0 ? "kyrie_min.str" : "Kyrie.str");
+    std::sprintf(name, g_serviceOptions.Get(229) != 0 ? "kyrie_min.str" : "Kyrie.str");
     break;
   case EF_MAGNUS:
     std::sprintf(name, "Magnus.str");
@@ -168,7 +176,7 @@ __forceinline static void SelectRagEffectResource(RagEffectState& effect, Servic
     std::sprintf(name, "SandMan.str");
     break;
   case EF_PNEUMA:
-    std::sprintf(name, "Pneuma%d.str", std::max(0, std::rand() % 3) + 1);
+    std::sprintf(name, "Pneuma%d.str", std::ranges::max(std::rand() % 3, 0) + 1);
     break;
   case EF_SONICBLOW2:
     std::sprintf(name, "SonicBlow.str");
@@ -284,7 +292,7 @@ __forceinline static void SelectRagEffectResource(RagEffectState& effect, Servic
     std::sprintf(name, "StoneCurse.str");
     break;
   case EF_PONG:
-    std::sprintf(name, "Pong%d.str", std::max(0, std::rand() % 3) + 1);
+    std::sprintf(name, "Pong%d.str", std::ranges::max(std::rand() % 3, 0) + 1);
     break;
   case EF_POTION1:
     std::sprintf(name, "빨간포션.str");
@@ -391,7 +399,7 @@ __forceinline static void SelectRagEffectResource(RagEffectState& effect, Servic
     break;
   case EF_FIREHIT:
   case EF_FIREHIT2:
-    std::sprintf(name, "FireHit%d.str", std::max(0, std::rand() % 3) + 1);
+    std::sprintf(name, "FireHit%d.str", std::ranges::max(std::rand() % 3, 0) + 1);
     break;
   case EF_HFLIMOON1:
     std::sprintf(name, "moonlight_1.str");
@@ -470,7 +478,7 @@ __forceinline static void SelectRagEffectResource(RagEffectState& effect, Servic
     break;
   case EF_ANGELUS:
   case EF_WEWISH:
-    std::sprintf(name, options.Get(229) != 0 ? "jong_mini.str" : "Angelus.str");
+    std::sprintf(name, g_serviceOptions.Get(229) != 0 ? "jong_mini.str" : "Angelus.str");
     break;
   case EF_CRASHAXE:
     std::sprintf(name, "powerswing.str");
@@ -623,11 +631,11 @@ __forceinline static void SelectRagEffectResource(RagEffectState& effect, Servic
     std::sprintf(name, "Guardian.str");
     break;
   case EF_VENOMFOG:
-    std::sprintf(name, "bubble%d_1.str", std::max(0, std::rand() % 4) + 1);
+    std::sprintf(name, "bubble%d_1.str", std::ranges::max(std::rand() % 4, 0) + 1);
     break;
   case EF_DUSTSTORM:
     std::sprintf(name, "dust.str");
-    effect.loopLimit = 10;
+    this->state.loopLimit = 10;
     break;
   case EF_DANCE_BLADE_ATK:
     std::sprintf(name, "dancingblade.str");
@@ -641,7 +649,7 @@ __forceinline static void SelectRagEffectResource(RagEffectState& effect, Servic
     break;
   case EF_GC_DARKCROW:
     std::sprintf(name, "gc_darkcrow.str");
-    effect.loopLimit = 9999;
+    this->state.loopLimit = 9999;
     break;
   case EF_ALL_FULL_THROTTLE:
     std::sprintf(name, "all_full_throttle.str");
@@ -660,39 +668,26 @@ __forceinline static void SelectRagEffectResource(RagEffectState& effect, Servic
     break;
   case EF_AB_OFFERTORIUM_RING:
     std::sprintf(name, "AB_OFFERTORIUM_ring.str");
-    effect.loopLimit = 9999;
+    this->state.loopLimit = 9999;
     break;
   case EF_WL_TELEKINESIS_INTENSE:
     std::sprintf(name, "WL_TELEKINESIS_INTENSE.str");
-    effect.loopLimit = 9999;
+    this->state.loopLimit = 9999;
     break;
   case EF_GN_ILLUSIONDOPING:
     std::sprintf(name, "GN_ILLUSIONDOPING.str");
     break;
   case EF_NC_MAGMA_ERUPTION:
     std::sprintf(name, "NC_MAGMA_ERUPTION.str");
-    effect.loopLimit = 9999;
+    this->state.loopLimit = 9999;
     break;
   case EF_NPC_CHILL:
     std::sprintf(name, "chill.str");
-    effect.loopLimit = 9999;
+    this->state.loopLimit = 9999;
     break;
   default:
     break;
   }
-}
-
-// OFFSET: 0x00C1C2D0
-// FUNCTION: fn_20074
-void CRagEffect::Init(EffectActor* parent, int id, vector3d deltaPos) {
-  this->state.type = id;
-  this->state.parent = parent;
-  this->render.position = parent->render.position;
-  this->state.longitude = parent->render.angle;
-  this->SetStateDuration(EffectLifetime(this->state.type));
-  this->state.deltaPos = deltaPos;
-  char name[64];
-  SelectRagEffectResource(this->state, g_serviceOptions, name);
 
   if (std::strlen(name) != 0) {
     this->state.resource = ResourceMgr::Instance().Load(name);
