@@ -48,7 +48,7 @@ __declspec(noinline) void UIWindowMgr::Schedule(UIWindow* window) {
 // OFFSET: 0x00AA7250
 // FUNCTION: fn_17237
 void UIWindowMgr::Destroy(UIWindow* window) {
-  const bool snappingEnabled = g_serviceOptions.Get(TT_WINDOW_SNAP_ON_OFF) != 0;
+  const bool snappingEnabled = g_serviceOptions.Get(TT_WINDOW_SNAP_ON_OFF);
 
   if (!window) {
     return;
