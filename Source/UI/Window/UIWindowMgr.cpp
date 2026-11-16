@@ -985,110 +985,110 @@ void UIWindowMgr::ClearMapWindows() {
   }
 
   this->SaveVisibleWindowIds();
-  if (!this->chatWnd) {
-    this->Shutdown();
-    return;
-  }
+  if (this->chatWnd) {
+    if (this->dropDownBoxWnd && this->dropDownBoxWnd->geometry.visible) {
+      this->dropDownBoxWnd->Detach();
+      this->dropDownBoxWnd->Show(0);
+    }
 
-  if (this->dropDownBoxWnd && this->dropDownBoxWnd->geometry.visible) {
-    this->dropDownBoxWnd->Detach();
-    this->dropDownBoxWnd->Show(0);
-  }
-
-  for (auto entry = this->rendered.begin(); entry != this->rendered.end();) {
-    bool unregistered = true;
-    for (unsigned index = 0; index < this->retainedWindows.size(); ++index) {
-      if (*entry == this->retainedWindows[static_cast<int>(index)]) {
-        unregistered = false;
+    for (auto entry = this->rendered.begin(); entry != this->rendered.end();) {
+      bool unregistered = true;
+      for (int index = 0; index < this->retainedWindows.size(); ++index) {
+        if (*entry == this->retainedWindows[index]) {
+          unregistered = false;
+        }
       }
-    }
-    if (!unregistered) {
-      ++entry;
-      continue;
-    }
+      if (!unregistered) {
+        ++entry;
+        continue;
+      }
 
-    UIWindow* window = *entry;
-    if (this->chatWnd == window || window == this->macroDetectorWnd || window->geometry.id == 67) {
-      ++entry;
-      continue;
-    }
+      UIWindow*& window = *entry;
+      if (this->chatWnd == window || window == this->macroDetectorWnd || window->geometry.id == 67) {
+        ++entry;
+        continue;
+      }
 
-    if (window == static_cast<UIWindow*>(this->memorialDunWnd) && g_session.memorialWindowOpen != 0) {
-      g_session.memorialWindowX = window->geometry.x;
-      g_session.memorialWindowY = window->geometry.y;
-    }
+      if (window == static_cast<UIWindow*>(this->memorialDunWnd) && g_session.memorialWindowOpen != 0) {
+        g_session.memorialWindowX = window->geometry.x;
+        g_session.memorialWindowY = window->geometry.y;
+      }
 
-    if (!this->modalWindows.empty() && this->modalWindows.back()) {
-      if (this->persistentWindows.count(window)) {
+      if (!this->modalWindows.empty() && this->modalWindows.back() && this->persistentWindows.count(window)) {
         this->retainedPersistentWindow = true;
         ++entry;
         continue;
       }
-      if (std::find(this->modalWindows.begin(), this->modalWindows.end(), window) != this->modalWindows.end()) {
+      if (!this->modalWindows.empty() && this->modalWindows.back() &&
+          std::find(this->modalWindows.begin(), this->modalWindows.end(), window) != this->modalWindows.end()) {
         ++entry;
         continue;
       }
+
+      if (this->persistentWindows.count(window)) {
+        this->persistentWindows.erase(window);
+      }
+      window->StoreInfo();
+      delete window;
+      entry = this->rendered.erase(entry);
     }
 
-    this->persistentWindows.erase(window);
-    window->StoreInfo();
-    delete window;
-    entry = this->rendered.erase(entry);
-  }
+    for (auto entry = this->retired.begin(); entry != this->retired.end();) {
+      bool unregistered = true;
+      for (int index = 0; index < this->retainedWindows.size(); ++index) {
+        if (*entry == this->retainedWindows[index]) {
+          unregistered = false;
+        }
+      }
+      if (!unregistered || this->chatWnd == *entry) {
+        ++entry;
+        continue;
+      }
 
-  for (auto entry = this->retired.begin(); entry != this->retired.end();) {
-    bool unregistered = true;
-    for (unsigned index = 0; index < this->retainedWindows.size(); ++index) {
-      if (*entry == this->retainedWindows[static_cast<int>(index)]) {
-        unregistered = false;
+      entry = this->retired.erase(entry);
+    }
+
+    for (auto entry = this->snapRectangles.begin(); entry != this->snapRectangles.end();) {
+      if (this->chatWnd == entry->first) {
+        ++entry;
+      } else {
+        entry = this->snapRectangles.erase(entry);
       }
     }
-    if (!unregistered || this->chatWnd == *entry) {
-      ++entry;
-      continue;
+
+    UISubChatHisWnd* savedSubChatHistoryWnd = nullptr;
+    if (this->subChatHistoryWnd) {
+      savedSubChatHistoryWnd = this->subChatHistoryWnd;
+    }
+    UISubChatHisWnd* savedSecondSubChatHistoryWnd = nullptr;
+    if (this->secondSubChatHistoryWnd) {
+      savedSecondSubChatHistoryWnd = this->secondSubChatHistoryWnd;
+    }
+    UISubChatMiniWnd* savedSubChatMiniWnd = nullptr;
+    if (this->subChatMiniWnd) {
+      savedSubChatMiniWnd = this->subChatMiniWnd;
+    }
+    UINewChatWnd* savedChatWnd = nullptr;
+    if (this->chatWnd) {
+      savedChatWnd = this->chatWnd;
     }
 
-    entry = this->retired.erase(entry);
-  }
+    std::map<int, UIWindow*> savedWindows(this->retainedWindows);
+    this->ResetWindows();
+    this->chatWnd = savedChatWnd;
+    this->subChatHistoryWnd = savedSubChatHistoryWnd;
+    this->subChatMiniWnd = savedSubChatMiniWnd;
+    this->secondSubChatHistoryWnd = savedSecondSubChatHistoryWnd;
+    this->retainedWindows = savedWindows;
 
-  for (auto entry = this->snapRectangles.begin(); entry != this->snapRectangles.end();) {
-    if (this->chatWnd == entry->first) {
-      ++entry;
-    } else {
-      entry = this->snapRectangles.erase(entry);
+    for (UIWindow*& window : this->snapExcluded) {
+      this->Destroy(window);
+      window = nullptr;
     }
+    this->snapExcluded.clear();
+  } else {
+    this->Shutdown();
   }
-
-  UISubChatHisWnd* savedSubChatHistoryWnd = nullptr;
-  if (this->subChatHistoryWnd) {
-    savedSubChatHistoryWnd = this->subChatHistoryWnd;
-  }
-  UISubChatHisWnd* savedSecondSubChatHistoryWnd = nullptr;
-  if (this->secondSubChatHistoryWnd) {
-    savedSecondSubChatHistoryWnd = this->secondSubChatHistoryWnd;
-  }
-  UISubChatMiniWnd* savedSubChatMiniWnd = nullptr;
-  if (this->subChatMiniWnd) {
-    savedSubChatMiniWnd = this->subChatMiniWnd;
-  }
-  UINewChatWnd* savedChatWnd = nullptr;
-  if (this->chatWnd) {
-    savedChatWnd = this->chatWnd;
-  }
-
-  std::map<int, UIWindow*> savedWindows(this->retainedWindows);
-  this->ResetWindows();
-  this->chatWnd = savedChatWnd;
-  this->subChatHistoryWnd = savedSubChatHistoryWnd;
-  this->subChatMiniWnd = savedSubChatMiniWnd;
-  this->secondSubChatHistoryWnd = savedSecondSubChatHistoryWnd;
-  this->retainedWindows = savedWindows;
-
-  for (UIWindow*& window : this->snapExcluded) {
-    this->Destroy(window);
-    window = nullptr;
-  }
-  this->snapExcluded.clear();
 }
 
 // OFFSET: 0x00A8A1C0
@@ -1120,11 +1120,13 @@ void UIWindowMgr::SelectWhisperName(const char* name) {
     return;
   }
 
-  std::vector<std::string>& names = static_cast<UIWhisperEditCtrl*>(this->chatWnd->m_whisperEdit)->history;
   int index = 0;
   bool found = false;
-  for (const std::string& entry : names) {
-    if (entry == name) {
+  std::vector<std::string>& names = static_cast<UIWhisperEditCtrl*>(this->chatWnd->m_whisperEdit)->history;
+  std::vector<std::string>::iterator it = names.begin();
+  const std::vector<std::string>::iterator end = names.end();
+  for (; it != end; ++it) {
+    if (*it == name) {
       found = true;
       break;
     }
@@ -2113,25 +2115,12 @@ int UIWindowMgr::TranslateHotkey(int key, int keyData) {
     }
     return 3;
   }
-  if (pressed == VK_MENU && modifier == VK_TAB) {
+  if ((pressed == VK_MENU && modifier == VK_TAB) || (pressed == VK_SHIFT && modifier == VK_TAB)) {
     return 3;
   }
-  if (pressed == VK_SHIFT) {
-    if (modifier == VK_TAB) {
-      return 3;
-    }
-    return 4;
-  }
-  if (pressed == VK_MENU) {
-    if (modifier == VK_CONTROL || modifier == VK_SHIFT) {
-      primary = modifier;
-      this->modifierKey = pressed;
-    }
-    return 4;
-  }
-  if (pressed == VK_CONTROL && (modifier == VK_TAB || modifier == VK_SHIFT)) {
-    primary = modifier;
-    this->modifierKey = pressed;
+  if ((pressed == VK_MENU && (modifier == VK_CONTROL || modifier == VK_SHIFT)) ||
+      (pressed == VK_CONTROL && (modifier == VK_TAB || modifier == VK_SHIFT))) {
+    std::swap(primary, this->modifierKey);
   }
   return 4;
 }
