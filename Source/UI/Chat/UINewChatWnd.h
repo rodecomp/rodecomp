@@ -35,7 +35,7 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   void SaveChatLogs();
   void RefreshTabs(bool arrange);
-  std::string ConvertChat(std::string text);
+  std::string ConvertChat(const std::string& text);
   bool SuggestionsVisible() const;
   void ShowSuggestions(std::uint8_t visible);
   void ApplyInputLayout();

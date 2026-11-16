@@ -635,6 +635,11 @@ UIWindow* UIWindowMgr::LookupWindow(WindowId id) {
   }
 }
 
+// OFFSET: 0x00AA6430
+// FUNCTION: fn_17228
+void UIWindowMgr::OnChatWndCreated() {
+}
+
 // OFFSET: 0x00AA1800
 // FUNCTION: fn_17209
 void UIWindowMgr::ResetWindows() {

@@ -32,7 +32,7 @@ static const std::string g_viewerQuestTagEnd = "</QUEST>";
 
 // OFFSET: 0x0091B800
 // FUNCTION: fn_12605
-std::string UINewChatWnd::ConvertChat(std::string text) {
+std::string UINewChatWnd::ConvertChat(const std::string& text) {
   std::string converted = g_navigationLinkParser->DisplayNavigationLink(text);
   for (std::size_t index = 0; index < this->m_tabs.size(); ++index) {
     converted = this->m_tabs[0]->Convert(converted);
@@ -70,7 +70,7 @@ bool UITextViewer::AddItemLinks(std::string text, unsigned addedLines) {
   parsed = static_cast<const std::string&>(DisplayNavigationTextTag(parsed));
 
   if (g_windowMgr.chatWnd) {
-    parsed = g_windowMgr.chatWnd->ConvertChat(std::move(parsed));
+    parsed = g_windowMgr.chatWnd->ConvertChat(parsed);
   }
 
   {
@@ -114,7 +114,7 @@ bool UITextViewer::AddNaviLinks(std::string text, unsigned addedLines) {
   parsed = static_cast<const std::string&>(DisplayItemTextTag(parsed));
 
   if (g_windowMgr.chatWnd) {
-    parsed = g_windowMgr.chatWnd->ConvertChat(std::move(parsed));
+    parsed = g_windowMgr.chatWnd->ConvertChat(parsed);
   }
 
   parsed = static_cast<const std::string&>(DisplayTipBoxTextTag(parsed));
@@ -216,7 +216,7 @@ bool UITextViewer::AddQuestLinks(std::string text, unsigned addedLines) {
   parsed = static_cast<const std::string&>(DisplayNavigationTextTag(parsed));
 
   if (g_windowMgr.chatWnd) {
-    parsed = g_windowMgr.chatWnd->ConvertChat(std::move(parsed));
+    parsed = g_windowMgr.chatWnd->ConvertChat(parsed);
   }
 
   {
@@ -262,7 +262,7 @@ void UITextViewer::AddTipLinks(std::string text, unsigned addedLines) {
   parsed = static_cast<const std::string&>(DisplayQuestTextTag(parsed));
 
   if (g_windowMgr.chatWnd) {
-    parsed = g_windowMgr.chatWnd->ConvertChat(std::move(parsed));
+    parsed = g_windowMgr.chatWnd->ConvertChat(parsed);
   }
 
   {
@@ -357,7 +357,7 @@ bool UITextViewer::AddUrlLinks(std::string text, unsigned addedLines) {
   parsed = static_cast<const std::string&>(DisplayItemTextTag(parsed));
 
   if (g_windowMgr.chatWnd) {
-    parsed = g_windowMgr.chatWnd->ConvertChat(std::move(parsed));
+    parsed = g_windowMgr.chatWnd->ConvertChat(parsed);
   }
 
   parsed = static_cast<const std::string&>(DisplayTipBoxTextTag(parsed));

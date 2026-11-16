@@ -1534,6 +1534,7 @@ void UINewChatWnd::OnCreate(int width, int height) {
   this->m_listWidth = this->geometry.width - 6;
   this->m_listBorderStyle = 0;
   this->m_listHeight = this->geometry.height - this->m_inputOffsetY - this->m_inputAreaHeight;
+  g_windowMgr.OnChatWndCreated();
 
   if (!g_windowMgr.chatModeChanged) {
     g_windowMgr.inputSuggestionsEnabled = 1;

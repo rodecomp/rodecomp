@@ -14370,7 +14370,7 @@ void CGameMode::ReceiveActorMoveEntryLegacy(const unsigned char* data) {
       g_session.petAccessory = entry.accessory;
     }
     if (entry.accessory && !actor->GetGdid()) {
-      actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
+      actor->SetActionName(g_session.GetPetAccActName(entry.accessory));
     }
   } else if (packet->objectType == NPC_HO_TYPE && g_session.IsHomunAid(packet->aid)) {
     g_session.homunAlive = 1;
@@ -14501,7 +14501,7 @@ void CGameMode::SpawnMovingActor(
       g_session.petAccessory = entry.accessory;
     }
     if (entry.accessory && !actor->GetGdid()) {
-      actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
+      actor->SetActionName(g_session.GetPetAccActName(entry.accessory));
     }
   } else if (objectType == 8 && g_session.IsHomunAid(aid)) {
     g_session.homunAlive = 1;
@@ -14611,7 +14611,7 @@ void CGameMode::ReceiveActorMoveEntryOld(const unsigned char* data) {
         g_session.petAccessory = entry.accessory;
       }
       if (entry.accessory && !actor->GetGdid()) {
-        actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
+        actor->SetActionName(g_session.GetPetAccActName(entry.accessory));
       }
     }
     if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
@@ -14650,7 +14650,7 @@ void CGameMode::ReceiveActorMoveEntryOld(const unsigned char* data) {
         g_session.petAccessory = entry.accessory;
       }
       if (entry.accessory) {
-        actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
+        actor->SetActionName(g_session.GetPetAccActName(entry.accessory));
       }
     }
     this->scene->objects.push_back(actor);
@@ -15627,7 +15627,7 @@ void CGameMode::ReceiveActorStandEntryOld(const unsigned char* data) {
         g_session.petAccessory = entry.accessory;
       }
       if (entry.accessory) {
-        actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
+        actor->SetActionName(g_session.GetPetAccActName(entry.accessory));
       }
     }
     actor->SendMsg(nullptr, AM_STANDENTRY2, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
@@ -15657,7 +15657,7 @@ void CGameMode::ReceiveActorStandEntryOld(const unsigned char* data) {
         g_session.petAccessory = entry.accessory;
       }
       if (entry.accessory) {
-        actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
+        actor->SetActionName(g_session.GetPetAccActName(entry.accessory));
       }
     }
     this->scene->objects.push_back(actor);
@@ -15751,7 +15751,7 @@ void CGameMode::ReceiveActorStandEntryOld2(const unsigned char* data) {
         g_session.petAccessory = entry.accessory;
       }
       if (entry.accessory) {
-        actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
+        actor->SetActionName(g_session.GetPetAccActName(entry.accessory));
       }
     }
     actor->SendMsg(nullptr, AM_STANDENTRY2, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
@@ -15782,7 +15782,7 @@ void CGameMode::ReceiveActorStandEntryOld2(const unsigned char* data) {
         g_session.petAccessory = entry.accessory;
       }
       if (entry.accessory) {
-        actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
+        actor->SetActionName(g_session.GetPetAccActName(entry.accessory));
       }
     }
     this->scene->objects.push_back(actor);
@@ -15880,7 +15880,7 @@ void CGameMode::ReceiveActorStandEntryOld3(const unsigned char* data) {
         g_session.petAccessory = entry.accessory;
       }
       if (entry.accessory) {
-        actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
+        actor->SetActionName(g_session.GetPetAccActName(entry.accessory));
       }
     }
     actor->SendMsg(nullptr, AM_STANDENTRY2, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
@@ -15910,7 +15910,7 @@ void CGameMode::ReceiveActorStandEntryOld3(const unsigned char* data) {
         g_session.petAccessory = entry.accessory;
       }
       if (entry.accessory) {
-        actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
+        actor->SetActionName(g_session.GetPetAccActName(entry.accessory));
       }
     }
     this->scene->objects.push_back(actor);
@@ -16439,7 +16439,7 @@ void CGameMode::SpawnStandingActor(
       g_session.petAccessory = entry.accessory;
     }
     if (entry.accessory && !actor->GetGdid()) {
-      actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
+      actor->SetActionName(g_session.GetPetAccActName(entry.accessory));
     }
   } else if (objectType == 8 && g_session.IsHomunAid(aid)) {
     g_session.homunAlive = 1;
@@ -16712,7 +16712,7 @@ void CGameMode::SpawnStateActor(
       g_session.petAccessory = entry.accessory;
     }
     if (entry.accessory && !actor->GetGdid()) {
-      actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
+      actor->SetActionName(g_session.GetPetAccActName(entry.accessory));
     }
   } else if (objectType == 8 && g_session.IsHomunAid(aid)) {
     g_session.homunAlive = 1;
@@ -17191,7 +17191,7 @@ void CGameMode::ReceiveActorStateEntryLegacy(const unsigned char* data) {
       g_session.petAccessory = entry.accessory;
     }
     if (entry.accessory && !actor->GetGdid()) {
-      actor->SetActionName(ResourceMgr::Instance(), g_session.GetPetAccActName(entry.accessory));
+      actor->SetActionName(g_session.GetPetAccActName(entry.accessory));
     }
   } else if (packet->objectType == NPC_HO_TYPE && g_session.IsHomunAid(packet->aid)) {
     g_session.homunAlive = 1;

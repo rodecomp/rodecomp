@@ -460,11 +460,6 @@ void CRenderObject::SetActionName(const char* name) {
   }
 }
 
-// INLINED
-void CRenderObject::SetActionName(ResourceMgr&, const char* name) {
-  this->SetActionName(name);
-}
-
 // OFFSET: 0x00CC2D40
 // FUNCTION: fn_21144
 void CRenderObject::SetRenderInfo(const float*, float, float) {
@@ -488,11 +483,6 @@ void CRenderObject::SetSpriteName(const char* name) {
   if (this->render.sprite) {
     this->render.sprite->Lock();
   }
-}
-
-// INLINED
-void CRenderObject::SetSpriteName(ResourceMgr&, const char* name) {
-  this->SetSpriteName(name);
 }
 
 // OFFSET: 0x00CC3DC0

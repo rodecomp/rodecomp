@@ -760,6 +760,7 @@ public:
   const char* ChatInputText();
   void FocusWindow01C8Edit();
   void SetFocus(UIWindow* value);
+  void OnChatWndCreated();
   void FocusFirst();
   void FocusLast();
   void FocusNext();

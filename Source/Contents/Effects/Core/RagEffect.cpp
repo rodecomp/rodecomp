@@ -301,8 +301,8 @@ void CRagEffect::BloodDrain() {
     this->state.lastPrim->state.green = 100;
     this->state.lastPrim->state.blue = 250;
     this->state.lastPrim->state.size = 1.7f;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle1.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\particle1.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\particle1.spr");
+    this->state.lastPrim->SetActionName("이팩트\\particle1.act");
     this->state.lastPrim->state.numSegment = 7;
     this->state.lastPrim->InitSegment();
   }
@@ -1381,8 +1381,8 @@ void CRagEffect::EnergyDrain2() {
     this->state.lastPrim->state.green = ClampedRandom(81) + 160;
     this->state.lastPrim->state.blue = 255;
     this->state.lastPrim->state.size = static_cast<float>(ClampedRandom(6)) * 0.1f + 1.5f;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle1.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\particle1.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\particle1.spr");
+    this->state.lastPrim->SetActionName("이팩트\\particle1.act");
     this->state.lastPrim->state.numSegment = 7;
     this->state.lastPrim->InitSegment();
   }
@@ -7374,20 +7374,20 @@ void CRagEffect::MonsterSpriteBurst(char kind) {
   stored()->state.slots[1].flag1[1] = static_cast<char>(rand() % 3);
 
   if (kind == 2) {
-    Owner(&stored()->state).SetSpriteName(ResourceMgr::Instance(), "몬스터\\워그.spr");
-    Owner(&stored()->state).SetActionName(ResourceMgr::Instance(), "몬스터\\워그.act");
+    Owner(&stored()->state).SetSpriteName("몬스터\\워그.spr");
+    Owner(&stored()->state).SetActionName("몬스터\\워그.act");
     stored()->state.animSpeed = rand() % 3 + 6;
     Owner(&stored()->state).SetAction(rand() % 8, 16, 1);
   } else if (kind == 3) {
-    Owner(&stored()->state).SetSpriteName(ResourceMgr::Instance(), "몬스터\\violy.spr");
-    Owner(&stored()->state).SetActionName(ResourceMgr::Instance(), "몬스터\\violy.act");
+    Owner(&stored()->state).SetSpriteName("몬스터\\violy.spr");
+    Owner(&stored()->state).SetActionName("몬스터\\violy.act");
     stored()->state.animSpeed = rand() % 3 + 6;
     Owner(&stored()->state).SetAction(rand() % 8, 16, 1);
   } else if (kind == 4) {
     stored()->state.animSpeed = rand() % 3 + 6;
     const std::int16_t pose = static_cast<std::int16_t>(rand() % 3);
-    Owner(&stored()->state).SetSpriteName(ResourceMgr::Instance(), "몬스터\\succubus.spr");
-    Owner(&stored()->state).SetActionName(ResourceMgr::Instance(), "몬스터\\succubus.act");
+    Owner(&stored()->state).SetSpriteName("몬스터\\succubus.spr");
+    Owner(&stored()->state).SetActionName("몬스터\\succubus.act");
     if (pose == 0) {
       Owner(&stored()->state).SetAction(rand() % 8 + 56, 16, 1);
     } else if (pose == 1) {
@@ -7396,53 +7396,53 @@ void CRagEffect::MonsterSpriteBurst(char kind) {
       Owner(&stored()->state).SetAction(rand() % 8 + 40, 16, 1);
     }
   } else if (kind == 5) {
-    Owner(&stored()->state).SetSpriteName(ResourceMgr::Instance(), "몬스터\\mineral.spr");
-    Owner(&stored()->state).SetActionName(ResourceMgr::Instance(), "몬스터\\mineral.act");
+    Owner(&stored()->state).SetSpriteName("몬스터\\mineral.spr");
+    Owner(&stored()->state).SetActionName("몬스터\\mineral.act");
     stored()->state.animSpeed = rand() % 3 + 6;
     Owner(&stored()->state).SetAction(rand() % 8, 16, 1);
   } else if (kind == 6) {
-    Owner(&stored()->state).SetSpriteName(ResourceMgr::Instance(), "몬스터\\ktullanux.spr");
-    Owner(&stored()->state).SetActionName(ResourceMgr::Instance(), "몬스터\\ktullanux.act");
+    Owner(&stored()->state).SetSpriteName("몬스터\\ktullanux.spr");
+    Owner(&stored()->state).SetActionName("몬스터\\ktullanux.act");
     stored()->state.animSpeed = rand() % 3 + 6;
     Owner(&stored()->state).SetAction(rand() % 8, 16, 1);
   } else if (kind == 7) {
-    Owner(&stored()->state).SetSpriteName(ResourceMgr::Instance(), "몬스터\\garm.spr");
-    Owner(&stored()->state).SetActionName(ResourceMgr::Instance(), "몬스터\\garm.act");
+    Owner(&stored()->state).SetSpriteName("몬스터\\garm.spr");
+    Owner(&stored()->state).SetActionName("몬스터\\garm.act");
     stored()->state.animSpeed = rand() % 3 + 6;
     Owner(&stored()->state).SetAction(rand() % 8, 16, 1);
   } else if (kind == 8) {
-    Owner(&stored()->state).SetSpriteName(ResourceMgr::Instance(), "몬스터\\miyabi_ningyo.spr");
-    Owner(&stored()->state).SetActionName(ResourceMgr::Instance(), "몬스터\\miyabi_ningyo.act");
+    Owner(&stored()->state).SetSpriteName("몬스터\\miyabi_ningyo.spr");
+    Owner(&stored()->state).SetActionName("몬스터\\miyabi_ningyo.act");
     stored()->state.animSpeed = rand() % 3 + 6;
     Owner(&stored()->state).SetAction(rand() % 8 + 48, 16, 1);
   } else if (kind == 9) {
-    Owner(&stored()->state).SetSpriteName(ResourceMgr::Instance(), "몬스터\\garden_keeper.spr");
-    Owner(&stored()->state).SetActionName(ResourceMgr::Instance(), "몬스터\\garden_keeper.act");
+    Owner(&stored()->state).SetSpriteName("몬스터\\garden_keeper.spr");
+    Owner(&stored()->state).SetActionName("몬스터\\garden_keeper.act");
     stored()->state.animSpeed = 4;
     Owner(&stored()->state).SetAction(rand() % 8 + 16, 16, 1);
   } else if (kind == 13) {
-    Owner(&stored()->state).SetSpriteName(ResourceMgr::Instance(), "몬스터\\ginseng_bullet.spr");
-    Owner(&stored()->state).SetActionName(ResourceMgr::Instance(), "몬스터\\ginseng_bullet.act");
+    Owner(&stored()->state).SetSpriteName("몬스터\\ginseng_bullet.spr");
+    Owner(&stored()->state).SetActionName("몬스터\\ginseng_bullet.act");
     stored()->state.animSpeed = 3;
     Owner(&stored()->state).SetAction(rand() % 8, 16, 1);
   } else if (kind == 14) {
-    Owner(&stored()->state).SetSpriteName(ResourceMgr::Instance(), "몬스터\\nepenthes2_bullet.spr");
-    Owner(&stored()->state).SetActionName(ResourceMgr::Instance(), "몬스터\\nepenthes2_bullet.act");
+    Owner(&stored()->state).SetSpriteName("몬스터\\nepenthes2_bullet.spr");
+    Owner(&stored()->state).SetActionName("몬스터\\nepenthes2_bullet.act");
     stored()->state.animSpeed = 4;
     Owner(&stored()->state).SetAction(0, 16, 1);
   } else if (kind == 15) {
-    Owner(&stored()->state).SetSpriteName(ResourceMgr::Instance(), "몬스터\\imp.spr");
-    Owner(&stored()->state).SetActionName(ResourceMgr::Instance(), "몬스터\\imp.act");
+    Owner(&stored()->state).SetSpriteName("몬스터\\imp.spr");
+    Owner(&stored()->state).SetActionName("몬스터\\imp.act");
     stored()->state.animSpeed = 4;
     Owner(&stored()->state).SetAction(rand() % 8, 16, 1);
   } else if (kind > 9) {
-    Owner(&stored()->state).SetSpriteName(ResourceMgr::Instance(), "몬스터\\ifrit.spr");
-    Owner(&stored()->state).SetActionName(ResourceMgr::Instance(), "몬스터\\ifrit.act");
+    Owner(&stored()->state).SetSpriteName("몬스터\\ifrit.spr");
+    Owner(&stored()->state).SetActionName("몬스터\\ifrit.act");
     stored()->state.animSpeed = 4;
     Owner(&stored()->state).SetAction(rand() % 8 + 32, 16, 1);
   } else {
-    Owner(&stored()->state).SetSpriteName(ResourceMgr::Instance(), "몬스터\\geographer.spr");
-    Owner(&stored()->state).SetActionName(ResourceMgr::Instance(), "몬스터\\geographer.act");
+    Owner(&stored()->state).SetSpriteName("몬스터\\geographer.spr");
+    Owner(&stored()->state).SetActionName("몬스터\\geographer.act");
     stored()->state.animSpeed = 4;
     Owner(&stored()->state).SetAction(0, 16, 1);
   }
@@ -10287,8 +10287,8 @@ bool CRagEffect::OnProcess2() {
       this->state.lastPrim->state.size = 1.5f;
       EffectPrimitiveState& fade = this->state.lastPrim->state;
       fade.fadeOutCnt = fade.duration - fade.duration / 3;
-      this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\굴뚝연기.spr");
-      this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\굴뚝연기.act");
+      this->state.lastPrim->SetSpriteName("이팩트\\굴뚝연기.spr");
+      this->state.lastPrim->SetActionName("이팩트\\굴뚝연기.act");
       this->state.lastPrim->InitSegment();
     }
     break;
@@ -11464,8 +11464,8 @@ void CRagEffect::FireArrow() {
     EffectPrimitiveState& shrinking = this->state.lastPrim->state;
     shrinking.sizeSpeed = -(shrinking.size / shrinking.duration);
     this->state.lastPrim->state.fadeOutCnt = 0;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle4.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\particle4.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\particle4.spr");
+    this->state.lastPrim->SetActionName("이팩트\\particle4.act");
     this->state.lastPrim->InitSegment();
   }
 
@@ -13130,8 +13130,8 @@ void CRagEffect::EnchantPoison2() {
   this->state.lastPrim->state.alpha = 0.0f;
   this->state.lastPrim->state.alphaSpeed = this->state.lastPrim->state.maxAlpha / 10.0f;
   this->state.lastPrim->state.fadeOutCnt = this->state.lastPrim->state.duration - this->state.lastPrim->state.duration / 5;
-  this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle3.spr");
-  this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\particle3.act");
+  this->state.lastPrim->SetSpriteName("이팩트\\particle3.spr");
+  this->state.lastPrim->SetActionName("이팩트\\particle3.act");
   this->state.lastPrim->InitSegment();
 }
 
@@ -18466,46 +18466,46 @@ void CRagEffect::TexturedClassChange(char kind) {
 
   switch (kind) {
   case 0:
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\캐슬링.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\캐슬링.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\캐슬링.spr");
+    this->state.lastPrim->SetActionName("이팩트\\캐슬링.act");
     break;
   case 1:
     PlayEffectWave(*this, "effect\\h_blood_lust.wav");
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\블러드러스트.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\블러드러스트.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\블러드러스트.spr");
+    this->state.lastPrim->SetActionName("이팩트\\블러드러스트.act");
     break;
   case 2:
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\item_thunder.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\item_thunder.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\item_thunder.spr");
+    this->state.lastPrim->SetActionName("이팩트\\item_thunder.act");
     break;
   case 3:
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\item_cloud.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\item_cloud.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\item_cloud.spr");
+    this->state.lastPrim->SetActionName("이팩트\\item_cloud.act");
     break;
   case 4:
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\item_curse.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\item_curse.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\item_curse.spr");
+    this->state.lastPrim->SetActionName("이팩트\\item_curse.act");
     break;
   case 5:
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\item_zzz.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\item_zzz.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\item_zzz.spr");
+    this->state.lastPrim->SetActionName("이팩트\\item_zzz.act");
     break;
   case 6:
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\item_rain.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\item_rain.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\item_rain.spr");
+    this->state.lastPrim->SetActionName("이팩트\\item_rain.act");
     break;
   case 7:
     PlayEffectWave(*this, "effect\\ef_firehit.wav");
     this->state.lastPrim->state.animSpeed = 3;
     this->state.lastPrim->state.pattern = 0;
     this->state.lastPrim->state.alpha = 220.0f;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\m_ef01.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\m_ef01.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\m_ef01.spr");
+    this->state.lastPrim->SetActionName("이팩트\\m_ef01.act");
     break;
   case 8: {
     this->state.lastPrim->state.animSpeed = 4;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\m_ef02.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\m_ef02.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\m_ef02.spr");
+    this->state.lastPrim->SetActionName("이팩트\\m_ef02.act");
     std::int16_t angle;
     Get_Angle(this->render.position.x - this->state.deltaPos.x, this->render.position.z - this->state.deltaPos.z, &angle);
     const CView* camera = g_modeMgr.GetGameMode()->camera;
@@ -18527,38 +18527,38 @@ void CRagEffect::TexturedClassChange(char kind) {
   }
   case 9:
     this->state.lastPrim->state.animSpeed = 4;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\m_ef03.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\m_ef03.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\m_ef03.spr");
+    this->state.lastPrim->SetActionName("이팩트\\m_ef03.act");
     break;
   case 10:
     this->state.lastPrim->state.animSpeed = 4;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\m_ef04.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\m_ef04.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\m_ef04.spr");
+    this->state.lastPrim->SetActionName("이팩트\\m_ef04.act");
     this->state.lastPrim->state.repeatAnim = 1;
     break;
   case 11:
     this->state.lastPrim->state.animSpeed = 4;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\m_ef05.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\m_ef05.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\m_ef05.spr");
+    this->state.lastPrim->SetActionName("이팩트\\m_ef05.act");
     break;
   case 12:
     this->state.lastPrim->state.animSpeed = 4;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\m_ef06.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\m_ef06.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\m_ef06.spr");
+    this->state.lastPrim->SetActionName("이팩트\\m_ef06.act");
     break;
   case 13:
     this->state.lastPrim->state.animSpeed = 4;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\m_ef07.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\m_ef07.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\m_ef07.spr");
+    this->state.lastPrim->SetActionName("이팩트\\m_ef07.act");
     break;
   case 14:
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\합격_.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\합격_.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\합격_.spr");
+    this->state.lastPrim->SetActionName("이팩트\\합격_.act");
     break;
   case 15:
     this->state.lastPrim->state.animSpeed = 4;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\그림자베기.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\그림자베기.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\그림자베기.spr");
+    this->state.lastPrim->SetActionName("이팩트\\그림자베기.act");
     if (std::max(rand() % 2, 0) == 0) {
       this->state.lastPrim->SetAction(4, 16, 1);
     } else {
@@ -18569,14 +18569,14 @@ void CRagEffect::TexturedClassChange(char kind) {
     this->state.lastPrim->state.deltaPos2.y = -6.0f;
     this->state.lastPrim->state.renderFlag = 1;
     this->state.lastPrim->state.animSpeed = 6;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\다다미.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\다다미.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\다다미.spr");
+    this->state.lastPrim->SetActionName("이팩트\\다다미.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 17:
     this->state.lastPrim->state.animSpeed = 4;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\안개베기.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\안개베기.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\안개베기.spr");
+    this->state.lastPrim->SetActionName("이팩트\\안개베기.act");
     if (std::max(rand() % 2, 0) == 0) {
       this->state.lastPrim->SetAction(2, 16, 1);
     } else {
@@ -18586,8 +18586,8 @@ void CRagEffect::TexturedClassChange(char kind) {
   case 18:
     this->state.lastPrim->state.deltaPos2.y = -6.0f;
     this->state.lastPrim->state.animSpeed = 2;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\일섬.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\일섬.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\일섬.spr");
+    this->state.lastPrim->SetActionName("이팩트\\일섬.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 19:
@@ -18595,72 +18595,72 @@ void CRagEffect::TexturedClassChange(char kind) {
     this->state.lastPrim->state.renderFlag = 1;
     this->state.lastPrim->state.animSpeed = std::max(rand() % 5, 0) + 3;
     this->state.lastPrim->state.repeatAnim = 1;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\화염진.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\화염진.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\화염진.spr");
+    this->state.lastPrim->SetActionName("이팩트\\화염진.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 20:
     this->state.lastPrim->state.animSpeed = 4;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\데스페라도.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\데스페라도.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\데스페라도.spr");
+    this->state.lastPrim->SetActionName("이팩트\\데스페라도.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 21:
     this->state.lastPrim->state.deltaPos2.y = -1.0f;
     this->state.lastPrim->state.renderFlag = 1;
     this->state.lastPrim->state.repeatAnim = 1;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\라이트닝스피어.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\라이트닝스피어.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\라이트닝스피어.spr");
+    this->state.lastPrim->SetActionName("이팩트\\라이트닝스피어.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 22:
     this->state.lastPrim->state.deltaPos2.y = -1.0f;
     this->state.lastPrim->state.renderFlag = 1;
     this->state.lastPrim->state.repeatAnim = 1;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\블라인드스피어.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\블라인드스피어.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\블라인드스피어.spr");
+    this->state.lastPrim->SetActionName("이팩트\\블라인드스피어.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 23:
     this->state.lastPrim->state.deltaPos2.y = -1.0f;
     this->state.lastPrim->state.renderFlag = 1;
     this->state.lastPrim->state.repeatAnim = 1;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\포이즌스피어.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\포이즌스피어.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\포이즌스피어.spr");
+    this->state.lastPrim->SetActionName("이팩트\\포이즌스피어.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 24:
     this->state.lastPrim->state.deltaPos2.y = -1.0f;
     this->state.lastPrim->state.renderFlag = 1;
     this->state.lastPrim->state.repeatAnim = 1;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\프리징스피어.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\프리징스피어.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\프리징스피어.spr");
+    this->state.lastPrim->SetActionName("이팩트\\프리징스피어.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 25:
     this->state.lastPrim->state.deltaPos2.y = -1.0f;
     this->state.lastPrim->state.renderFlag = 1;
     this->state.lastPrim->state.repeatAnim = 1;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\플레어스피어.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\플레어스피어.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\플레어스피어.spr");
+    this->state.lastPrim->SetActionName("이팩트\\플레어스피어.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 26:
     this->state.lastPrim->state.animSpeed = 4;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\래피드샤워.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\래피드샤워.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\래피드샤워.spr");
+    this->state.lastPrim->SetActionName("이팩트\\래피드샤워.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 27:
     this->state.lastPrim->state.animSpeed = 2;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\매지컬불릿.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\매지컬불릿.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\매지컬불릿.spr");
+    this->state.lastPrim->SetActionName("이팩트\\매지컬불릿.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 28: {
     this->state.lastPrim->state.animSpeed = 4;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\스프레드.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\스프레드.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\스프레드.spr");
+    this->state.lastPrim->SetActionName("이팩트\\스프레드.act");
     std::int16_t angle;
     Get_Angle(this->render.position.x - this->state.deltaPos.x, this->render.position.z - this->state.deltaPos.z, &angle);
     const CView* camera = g_modeMgr.GetGameMode()->camera;
@@ -18682,74 +18682,74 @@ void CRagEffect::TexturedClassChange(char kind) {
   }
   case 29:
     this->state.lastPrim->state.animSpeed = 2;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\트래킹.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\트래킹.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\트래킹.spr");
+    this->state.lastPrim->SetActionName("이팩트\\트래킹.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 30:
     this->state.lastPrim->state.animSpeed = 2;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\트리플액션.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\트리플액션.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\트리플액션.spr");
+    this->state.lastPrim->SetActionName("이팩트\\트리플액션.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 31:
     this->state.lastPrim->state.animSpeed = 4;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\어스퀘이크.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\어스퀘이크.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\어스퀘이크.spr");
+    this->state.lastPrim->SetActionName("이팩트\\어스퀘이크.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 32:
     this->state.lastPrim->state.animSpeed = 4;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\폭죽_러브.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\폭죽_러브.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\폭죽_러브.spr");
+    this->state.lastPrim->SetActionName("이팩트\\폭죽_러브.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     g_soundMgr->PlayWave("effect\\itempokjuk.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   case 33:
     this->state.lastPrim->state.animSpeed = 4;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\폭죽_화이트데이.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\폭죽_화이트데이.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\폭죽_화이트데이.spr");
+    this->state.lastPrim->SetActionName("이팩트\\폭죽_화이트데이.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     g_soundMgr->PlayWave("effect\\itempokjuk.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   case 34:
     this->state.lastPrim->state.animSpeed = 4;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\폭죽_발렌타인.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\폭죽_발렌타인.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\폭죽_발렌타인.spr");
+    this->state.lastPrim->SetActionName("이팩트\\폭죽_발렌타인.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     g_soundMgr->PlayWave("effect\\itempokjuk.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   case 35:
     this->state.lastPrim->state.animSpeed = 4;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\폭죽_생일.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\폭죽_생일.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\폭죽_생일.spr");
+    this->state.lastPrim->SetActionName("이팩트\\폭죽_생일.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     g_soundMgr->PlayWave("effect\\itempokjuk.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   case 36:
     this->state.lastPrim->state.animSpeed = 4;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\폭죽_크리스마스.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\폭죽_크리스마스.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\폭죽_크리스마스.spr");
+    this->state.lastPrim->SetActionName("이팩트\\폭죽_크리스마스.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     g_soundMgr->PlayWave("effect\\itempokjuk.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   case 37:
     this->state.lastPrim->state.animSpeed = 4;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\mobile_ef04.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\mobile_ef04.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\mobile_ef04.spr");
+    this->state.lastPrim->SetActionName("이팩트\\mobile_ef04.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 38:
     this->state.lastPrim->state.animSpeed = 4;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\mashofa.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\mashofa.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\mashofa.spr");
+    this->state.lastPrim->SetActionName("이팩트\\mashofa.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     g_soundMgr->PlayWave("effect\\t_에너지방출.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   case 39:
     this->state.lastPrim->state.animSpeed = 4;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\soule.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\soule.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\soule.spr");
+    this->state.lastPrim->SetActionName("이팩트\\soule.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     g_soundMgr->PlayWave("effect\\매직 크래쉬.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
@@ -18757,46 +18757,46 @@ void CRagEffect::TexturedClassChange(char kind) {
     this->state.lastPrim->state.deltaPos2.y = -1.0f;
     this->state.lastPrim->state.renderFlag = 1;
     this->state.lastPrim->state.repeatAnim = 1;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\기본트랩.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\기본트랩.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\기본트랩.spr");
+    this->state.lastPrim->SetActionName("이팩트\\기본트랩.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 51:
     this->state.lastPrim->state.deltaPos2.y = -1.0f;
     this->state.lastPrim->state.renderFlag = 1;
     this->state.lastPrim->state.repeatAnim = 1;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\담황색트랩.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\담황색트랩.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\담황색트랩.spr");
+    this->state.lastPrim->SetActionName("이팩트\\담황색트랩.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 52:
     this->state.lastPrim->state.deltaPos2.y = -1.0f;
     this->state.lastPrim->state.renderFlag = 1;
     this->state.lastPrim->state.repeatAnim = 1;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\암청색트랩.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\암청색트랩.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\암청색트랩.spr");
+    this->state.lastPrim->SetActionName("이팩트\\암청색트랩.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 53:
     this->state.lastPrim->state.deltaPos2.y = -1.0f;
     this->state.lastPrim->state.renderFlag = 1;
     this->state.lastPrim->state.repeatAnim = 1;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\자홍색트랩.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\자홍색트랩.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\자홍색트랩.spr");
+    this->state.lastPrim->SetActionName("이팩트\\자홍색트랩.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 54:
     this->state.lastPrim->state.deltaPos2.y = -1.0f;
     this->state.lastPrim->state.renderFlag = 1;
     this->state.lastPrim->state.repeatAnim = 1;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\청록색트랩.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\청록색트랩.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\청록색트랩.spr");
+    this->state.lastPrim->SetActionName("이팩트\\청록색트랩.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 60:
     this->state.lastPrim->state.animSpeed = 4;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "몬스터\\stapo.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "몬스터\\stapo.act");
+    this->state.lastPrim->SetSpriteName("몬스터\\stapo.spr");
+    this->state.lastPrim->SetActionName("몬스터\\stapo.act");
     this->state.lastPrim->state.deltaPos2.y = -8.0f;
     if (rand() % 2 == 0) {
       this->state.lastPrim->SetAction(0, 16, 1);
@@ -18815,8 +18815,8 @@ void CRagEffect::TexturedClassChange(char kind) {
     this->state.lastPrim->state.red = 85;
     this->state.lastPrim->state.green = 255;
     this->state.lastPrim->state.blue = 85;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "몬스터\\Ancient_tree.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "몬스터\\Ancient_tree.act");
+    this->state.lastPrim->SetSpriteName("몬스터\\Ancient_tree.spr");
+    this->state.lastPrim->SetActionName("몬스터\\Ancient_tree.act");
     this->state.lastPrim->SetAction(rand() % 8, 16, 1);
     break;
   case 62:
@@ -18830,8 +18830,8 @@ void CRagEffect::TexturedClassChange(char kind) {
     this->state.lastPrim->state.red = 85;
     this->state.lastPrim->state.green = 255;
     this->state.lastPrim->state.blue = 85;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "몬스터\\ifrit.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "몬스터\\ifrit.act");
+    this->state.lastPrim->SetSpriteName("몬스터\\ifrit.spr");
+    this->state.lastPrim->SetActionName("몬스터\\ifrit.act");
     this->state.lastPrim->SetAction(rand() % 8 + 0x20, 16, 1);
     break;
   case 63:
@@ -18845,8 +18845,8 @@ void CRagEffect::TexturedClassChange(char kind) {
     this->state.lastPrim->state.red = 155;
     this->state.lastPrim->state.green = 255;
     this->state.lastPrim->state.blue = 155;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "몬스터\\mavka_bullet.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "몬스터\\mavka_bullet.act");
+    this->state.lastPrim->SetSpriteName("몬스터\\mavka_bullet.spr");
+    this->state.lastPrim->SetActionName("몬스터\\mavka_bullet.act");
     this->state.lastPrim->SetAction(rand() % 8, 16, 1);
     break;
   case 64:
@@ -18860,8 +18860,8 @@ void CRagEffect::TexturedClassChange(char kind) {
     this->state.lastPrim->state.red = 155;
     this->state.lastPrim->state.green = 155;
     this->state.lastPrim->state.blue = 155;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "몬스터\\breeze.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "몬스터\\breeze.act");
+    this->state.lastPrim->SetSpriteName("몬스터\\breeze.spr");
+    this->state.lastPrim->SetActionName("몬스터\\breeze.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 65:
@@ -18875,213 +18875,213 @@ void CRagEffect::TexturedClassChange(char kind) {
     this->state.lastPrim->state.red = 155;
     this->state.lastPrim->state.green = 155;
     this->state.lastPrim->state.blue = 155;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "몬스터\\breeze.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "몬스터\\breeze.act");
+    this->state.lastPrim->SetSpriteName("몬스터\\breeze.spr");
+    this->state.lastPrim->SetActionName("몬스터\\breeze.act");
     this->state.lastPrim->SetAction(4, 16, 1);
     break;
   case 70:
     this->state.lastPrim->state.repeatAnim = 1;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\거스트.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\거스트.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\거스트.spr");
+    this->state.lastPrim->SetActionName("이팩트\\거스트.act");
     break;
   case 71:
     this->state.lastPrim->state.repeatAnim = 1;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\블래스트.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\블래스트.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\블래스트.spr");
+    this->state.lastPrim->SetActionName("이팩트\\블래스트.act");
     break;
   case 72:
     this->state.lastPrim->state.repeatAnim = 1;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\아쿠아플레이.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\아쿠아플레이.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\아쿠아플레이.spr");
+    this->state.lastPrim->SetActionName("이팩트\\아쿠아플레이.act");
     break;
   case 73:
     this->state.lastPrim->state.repeatAnim = 1;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\업히벌.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\업히벌.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\업히벌.spr");
+    this->state.lastPrim->SetActionName("이팩트\\업히벌.act");
     break;
   case 74:
     this->state.lastPrim->state.repeatAnim = 1;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\와일드스톰.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\와일드스톰.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\와일드스톰.spr");
+    this->state.lastPrim->SetActionName("이팩트\\와일드스톰.act");
     break;
   case 75:
     this->state.lastPrim->state.repeatAnim = 1;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\칠리에어.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\칠리에어.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\칠리에어.spr");
+    this->state.lastPrim->SetActionName("이팩트\\칠리에어.act");
     break;
   case 76:
     this->state.lastPrim->state.repeatAnim = 1;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\커즈드소일.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\커즈드소일.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\커즈드소일.spr");
+    this->state.lastPrim->SetActionName("이팩트\\커즈드소일.act");
     break;
   case 77:
     this->state.lastPrim->state.repeatAnim = 1;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\쿨러.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\쿨러.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\쿨러.spr");
+    this->state.lastPrim->SetActionName("이팩트\\쿨러.act");
     break;
   case 78:
     this->state.lastPrim->state.repeatAnim = 1;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\트로픽.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\트로픽.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\트로픽.spr");
+    this->state.lastPrim->SetActionName("이팩트\\트로픽.act");
     break;
   case 79:
     this->state.lastPrim->state.repeatAnim = 1;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\파이로테크닉.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\파이로테크닉.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\파이로테크닉.spr");
+    this->state.lastPrim->SetActionName("이팩트\\파이로테크닉.act");
     break;
   case 80:
     this->state.lastPrim->state.repeatAnim = 1;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\페트롤로지.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\페트롤로지.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\페트롤로지.spr");
+    this->state.lastPrim->SetActionName("이팩트\\페트롤로지.act");
     break;
   case 81:
     this->state.lastPrim->state.repeatAnim = 1;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\히터.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\히터.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\히터.spr");
+    this->state.lastPrim->SetActionName("이팩트\\히터.act");
     break;
   case 82:
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->state.repeatAnim = 1;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\silent_brz.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\silent_brz.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\silent_brz.spr");
+    this->state.lastPrim->SetActionName("이팩트\\silent_brz.act");
     break;
   case 83:
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->state.repeatAnim = 0;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\magma_flow.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\magma_flow.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\magma_flow.spr");
+    this->state.lastPrim->SetActionName("이팩트\\magma_flow.act");
     break;
   case 84:
     this->state.lastPrim->state.deltaPos2.y = -1.0f;
     this->state.lastPrim->state.renderFlag = 1;
     this->state.lastPrim->state.animSpeed = 10;
     this->state.lastPrim->state.repeatAnim = 1;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\icemine.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\icemine.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\icemine.spr");
+    this->state.lastPrim->SetActionName("이팩트\\icemine.act");
     break;
   case 85:
     this->state.lastPrim->state.deltaPos2.y = -1.0f;
     this->state.lastPrim->state.renderFlag = 1;
     this->state.lastPrim->state.animSpeed = 10;
     this->state.lastPrim->state.repeatAnim = 0;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\icemine_.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\icemine_.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\icemine_.spr");
+    this->state.lastPrim->SetActionName("이팩트\\icemine_.act");
     this->state.lastPrim->SetAction(0, 10, 1);
     break;
   case 86:
     this->state.lastPrim->state.animSpeed = 4;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\RK_DRAGONBREATH_WATER.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\RK_DRAGONBREATH_WATER.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\RK_DRAGONBREATH_WATER.spr");
+    this->state.lastPrim->SetActionName("이팩트\\RK_DRAGONBREATH_WATER.act");
     break;
   case 87:
     this->state.lastPrim->state.animSpeed = 4;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\wideweb.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\wideweb.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\wideweb.spr");
+    this->state.lastPrim->SetActionName("이팩트\\wideweb.act");
     break;
   case 88:
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->state.repeatAnim = 1;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\burnt.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\burnt.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\burnt.spr");
+    this->state.lastPrim->SetActionName("이팩트\\burnt.act");
     break;
   case 90:
     this->state.lastPrim->state.deltaPos2.y = -1.0f;
     this->state.lastPrim->state.renderFlag = 1;
     this->state.lastPrim->state.repeatAnim = 1;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\그라운드드리프트.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\그라운드드리프트.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\그라운드드리프트.spr");
+    this->state.lastPrim->SetActionName("이팩트\\그라운드드리프트.act");
     this->state.lastPrim->SetAction(0, 16, 1);
     break;
   case 91:
     this->state.lastPrim->state.repeatAnim = 1;
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->state.deltaPos2.y = -4.0f;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\나뭇잎_완성.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\나뭇잎_완성.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\나뭇잎_완성.spr");
+    this->state.lastPrim->SetActionName("이팩트\\나뭇잎_완성.act");
     break;
   case 94:
     this->state.lastPrim->state.repeatAnim = 1;
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->state.deltaPos2.y = -4.0f;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\Black_Thunder\\Black_Thunder.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\Black_Thunder\\Black_Thunder.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\Black_Thunder\\Black_Thunder.spr");
+    this->state.lastPrim->SetActionName("이팩트\\Black_Thunder\\Black_Thunder.act");
     break;
   case 95:
     this->state.lastPrim->state.repeatAnim = 1;
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->state.deltaPos2.y = -4.0f;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\Black_Thunder\\Black_Thunder_Dark.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\Black_Thunder\\Black_Thunder_Dark.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\Black_Thunder\\Black_Thunder_Dark.spr");
+    this->state.lastPrim->SetActionName("이팩트\\Black_Thunder\\Black_Thunder_Dark.act");
     break;
   case 96:
     this->state.lastPrim->state.repeatAnim = 1;
     this->state.lastPrim->state.renderFlag = 0xd;
     this->state.lastPrim->state.animSpeed = 4;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Angel_Magic_Circle.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Angel_Magic_Circle.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\Barmund_Magic_Circle\\Angel_Magic_Circle.spr");
+    this->state.lastPrim->SetActionName("이팩트\\Barmund_Magic_Circle\\Angel_Magic_Circle.act");
     break;
   case 97:
     this->state.lastPrim->state.repeatAnim = 1;
     this->state.lastPrim->state.renderFlag = 0xd;
     this->state.lastPrim->state.animSpeed = 4;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Animal_Magic_Circle.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Animal_Magic_Circle.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\Barmund_Magic_Circle\\Animal_Magic_Circle.spr");
+    this->state.lastPrim->SetActionName("이팩트\\Barmund_Magic_Circle\\Animal_Magic_Circle.act");
     break;
   case 98:
     this->state.lastPrim->state.repeatAnim = 1;
     this->state.lastPrim->state.renderFlag = 0xd;
     this->state.lastPrim->state.animSpeed = 4;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Devil_Magic_Circle.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Devil_Magic_Circle.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\Barmund_Magic_Circle\\Devil_Magic_Circle.spr");
+    this->state.lastPrim->SetActionName("이팩트\\Barmund_Magic_Circle\\Devil_Magic_Circle.act");
     break;
   case 99:
     this->state.lastPrim->state.repeatAnim = 1;
     this->state.lastPrim->state.renderFlag = 0xd;
     this->state.lastPrim->state.animSpeed = 4;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Dragon_Magic_Circle.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Dragon_Magic_Circle.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\Barmund_Magic_Circle\\Dragon_Magic_Circle.spr");
+    this->state.lastPrim->SetActionName("이팩트\\Barmund_Magic_Circle\\Dragon_Magic_Circle.act");
     break;
   case 100:
     this->state.lastPrim->state.repeatAnim = 1;
     this->state.lastPrim->state.renderFlag = 0xd;
     this->state.lastPrim->state.animSpeed = 4;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Fish_Magic_Circle.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Fish_Magic_Circle.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\Barmund_Magic_Circle\\Fish_Magic_Circle.spr");
+    this->state.lastPrim->SetActionName("이팩트\\Barmund_Magic_Circle\\Fish_Magic_Circle.act");
     break;
   case 101:
     this->state.lastPrim->state.repeatAnim = 1;
     this->state.lastPrim->state.renderFlag = 0xd;
     this->state.lastPrim->state.animSpeed = 4;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Human_Magic_Circle.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Human_Magic_Circle.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\Barmund_Magic_Circle\\Human_Magic_Circle.spr");
+    this->state.lastPrim->SetActionName("이팩트\\Barmund_Magic_Circle\\Human_Magic_Circle.act");
     break;
   case 102:
     this->state.lastPrim->state.repeatAnim = 1;
     this->state.lastPrim->state.renderFlag = 0xd;
     this->state.lastPrim->state.animSpeed = 4;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Insect_Magic_Circle.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Insect_Magic_Circle.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\Barmund_Magic_Circle\\Insect_Magic_Circle.spr");
+    this->state.lastPrim->SetActionName("이팩트\\Barmund_Magic_Circle\\Insect_Magic_Circle.act");
     break;
   case 103:
     this->state.lastPrim->state.repeatAnim = 1;
     this->state.lastPrim->state.renderFlag = 0xd;
     this->state.lastPrim->state.animSpeed = 4;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Nothing_Magic_Circle.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Nothing_Magic_Circle.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\Barmund_Magic_Circle\\Nothing_Magic_Circle.spr");
+    this->state.lastPrim->SetActionName("이팩트\\Barmund_Magic_Circle\\Nothing_Magic_Circle.act");
     break;
   case 104:
     this->state.lastPrim->state.repeatAnim = 1;
     this->state.lastPrim->state.renderFlag = 0xd;
     this->state.lastPrim->state.animSpeed = 4;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Plant_Magic_Circle.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Plant_Magic_Circle.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\Barmund_Magic_Circle\\Plant_Magic_Circle.spr");
+    this->state.lastPrim->SetActionName("이팩트\\Barmund_Magic_Circle\\Plant_Magic_Circle.act");
     break;
   case 105:
     this->state.lastPrim->state.repeatAnim = 1;
     this->state.lastPrim->state.renderFlag = 0xd;
     this->state.lastPrim->state.animSpeed = 4;
-    this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Undead_Magic_Circle.spr");
-    this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\Barmund_Magic_Circle\\Undead_Magic_Circle.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\Barmund_Magic_Circle\\Undead_Magic_Circle.spr");
+    this->state.lastPrim->SetActionName("이팩트\\Barmund_Magic_Circle\\Undead_Magic_Circle.act");
     break;
   }
 
@@ -20859,8 +20859,8 @@ bool CRagEffect::OnProcess3() {
       this->state.lastPrim->state.deltaPos2.y = -4.5f;
       this->state.lastPrim->state.animSpeed = 2;
       this->state.lastPrim->state.size = 2.5f;
-      this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\썬더스톰.spr");
-      this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\썬더스톰.act");
+      this->state.lastPrim->SetSpriteName("이팩트\\썬더스톰.spr");
+      this->state.lastPrim->SetActionName("이팩트\\썬더스톰.act");
       this->state.lastPrim->InitSegment();
     }
     break;
@@ -20995,8 +20995,8 @@ bool CRagEffect::OnProcess3() {
         this->state.lastPrim->state.sizeSpeed = -0.1f;
         this->state.lastPrim->state.alpha = 50.0f;
         this->state.lastPrim->state.alphaSpeed = -3.0f;
-        this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\Sight.spr");
-        this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\Sight.act");
+        this->state.lastPrim->SetSpriteName("이팩트\\Sight.spr");
+        this->state.lastPrim->SetActionName("이팩트\\Sight.act");
         this->state.lastPrim->InitSegment();
       }
     }
@@ -22291,19 +22291,19 @@ bool CRagEffect::OnProcess3() {
       CHalluPlant* plant = new CHalluPlant();
       plant->render.position = this->render.position;
       if (this->state.type == EF_BIO5_PLANT_GREEN) {
-        plant->SetActionName(ResourceMgr::Instance(), "sprite\\몬스터\\green_plant.act");
+        plant->SetActionName("sprite\\몬스터\\green_plant.act");
         plant->SetActorJob(1080);
       } else if (this->state.type == EF_BIO5_PLANT_BLUE) {
-        plant->SetActionName(ResourceMgr::Instance(), "sprite\\몬스터\\blue_plant.act");
+        plant->SetActionName("sprite\\몬스터\\blue_plant.act");
         plant->SetActorJob(1079);
       } else if (this->state.type == EF_BIO5_PLANT_YELLOW) {
-        plant->SetActionName(ResourceMgr::Instance(), "sprite\\몬스터\\yellow_plant.act");
+        plant->SetActionName("sprite\\몬스터\\yellow_plant.act");
         plant->SetActorJob(1081);
       } else if (this->state.type == EF_BIO5_PLANT_WHITE) {
-        plant->SetActionName(ResourceMgr::Instance(), "sprite\\몬스터\\white_plant.act");
+        plant->SetActionName("sprite\\몬스터\\white_plant.act");
         plant->SetActorJob(1082);
       } else if (this->state.type == EF_BIO5_PLANT_RED) {
-        plant->SetActionName(ResourceMgr::Instance(), "sprite\\몬스터\\red_plant.act");
+        plant->SetActionName("sprite\\몬스터\\red_plant.act");
         plant->SetActorJob(1078);
       }
       plant->SetSprAct(plant->GetEffectiveJob(-1), plant->sex, 0);
@@ -22942,8 +22942,8 @@ bool CRagEffect::OnProcess() {
         this->state.lastPrim->state.deltaPos2.y = -10.0f;
         cosine *= -15.0f;
         this->state.lastPrim->state.deltaPos2.z = cosine;
-        this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle2.spr");
-        this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\particle2.act");
+        this->state.lastPrim->SetSpriteName("이팩트\\particle2.spr");
+        this->state.lastPrim->SetActionName("이팩트\\particle2.act");
         this->state.lastPrim->state.size = 3.0f;
         this->state.lastPrim->state.sizeSpeed = -0.1f;
         this->state.lastPrim->state.alpha = 250.0f;
@@ -22956,8 +22956,8 @@ bool CRagEffect::OnProcess() {
         this->state.lastPrim->state.deltaPos2.x = sine;
         this->state.lastPrim->state.deltaPos2.y = 0.0f;
         this->state.lastPrim->state.deltaPos2.z = cosine;
-        this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "Shadow.spr");
-        this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "Shadow.act");
+        this->state.lastPrim->SetSpriteName("Shadow.spr");
+        this->state.lastPrim->SetActionName("Shadow.act");
         this->state.lastPrim->state.animSpeed = 2;
         this->state.lastPrim->state.size = 1.5f;
         this->state.lastPrim->state.sizeSpeed = -0.06f;
@@ -23021,8 +23021,8 @@ bool CRagEffect::OnProcess() {
         this->state.lastPrim->state.deltaPos2.y = -20.0f;
         this->state.lastPrim->state.animSpeed = 2;
         this->state.lastPrim->state.repeatAnim = 0;
-        this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\성수뜨기.spr");
-        this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\성수뜨기.act");
+        this->state.lastPrim->SetSpriteName("이팩트\\성수뜨기.spr");
+        this->state.lastPrim->SetActionName("이팩트\\성수뜨기.act");
         this->state.lastPrim->InitSegment();
       }
       break;
@@ -23062,8 +23062,8 @@ bool CRagEffect::OnProcess() {
           this->state.lastPrim->state.size = 1.5f;
           EffectPrimitiveState& fade = this->state.lastPrim->state;
           fade.fadeOutCnt = fade.duration - fade.duration / 3;
-          this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\굴뚝연기.spr");
-          this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\굴뚝연기.act");
+          this->state.lastPrim->SetSpriteName("이팩트\\굴뚝연기.spr");
+          this->state.lastPrim->SetActionName("이팩트\\굴뚝연기.act");
           this->state.lastPrim->InitSegment();
         }
       }
@@ -23089,8 +23089,8 @@ bool CRagEffect::OnProcess() {
         }
         this->state.lastPrim->state.size = this->state.param[0];
         this->state.lastPrim->state.animSpeed = static_cast<int>(this->state.param[1]);
-        this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\torch_01.spr");
-        this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\torch_01.act");
+        this->state.lastPrim->SetSpriteName("이팩트\\torch_01.spr");
+        this->state.lastPrim->SetActionName("이팩트\\torch_01.act");
         this->state.lastPrim->InitSegment();
       }
       break;
@@ -23193,8 +23193,8 @@ bool CRagEffect::OnProcess() {
         this->state.lastPrim->state.animSpeed = 2;
         this->state.lastPrim->state.pattern |= 0x200;
         this->state.lastPrim->state.repeatAnim = 0;
-        this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\PoisonHit.spr");
-        this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\PoisonHit.act");
+        this->state.lastPrim->SetSpriteName("이팩트\\PoisonHit.spr");
+        this->state.lastPrim->SetActionName("이팩트\\PoisonHit.act");
         this->state.lastPrim->InitSegment();
       }
       break;
@@ -23326,8 +23326,8 @@ bool CRagEffect::OnProcess() {
         orbit.deltaPos2.x = (transform[0] * 0.0f - transform[3] * 30.0f) + radius * transform[6] + transform[9];
         orbit.deltaPos2.y = (transform[1] * 0.0f - transform[4] * 30.0f) + radius * transform[7] + transform[10];
         orbit.deltaPos2.z = (transform[2] * 0.0f - transform[5] * 30.0f) + radius * transform[8] + transform[11];
-        this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle1.spr");
-        this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\particle1.act");
+        this->state.lastPrim->SetSpriteName("이팩트\\particle1.spr");
+        this->state.lastPrim->SetActionName("이팩트\\particle1.act");
         this->state.lastPrim->InitSegment();
       }
       break;
@@ -23882,8 +23882,8 @@ bool CRagEffect::OnProcess() {
           this->state.param[1] = 1.0f;
         }
         this->state.lastPrim->state.animSpeed = static_cast<int>(this->state.param[1]);
-        this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\크리스마스.spr");
-        this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\크리스마스.act");
+        this->state.lastPrim->SetSpriteName("이팩트\\크리스마스.spr");
+        this->state.lastPrim->SetActionName("이팩트\\크리스마스.act");
         const int kind = rand() % 10;
         this->state.lastPrim->state.size = kind % 3 == 1 ? 0.01f : 1.0f;
         this->state.lastPrim->SetAction(kind / 2, 1, 1);
@@ -23915,8 +23915,8 @@ bool CRagEffect::OnProcess() {
         this->state.lastPrim->state.alphaSpeed = this->state.lastPrim->state.maxAlpha / 10.0f;
         EffectPrimitiveState& fade = this->state.lastPrim->state;
         fade.fadeOutCnt = fade.duration - fade.duration / 5;
-        this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\particle3.spr");
-        this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\particle3.act");
+        this->state.lastPrim->SetSpriteName("이팩트\\particle3.spr");
+        this->state.lastPrim->SetActionName("이팩트\\particle3.act");
         this->state.lastPrim->InitSegment();
       }
       break;
@@ -24048,8 +24048,8 @@ bool CRagEffect::OnProcess() {
         this->state.lastPrim->state.green = 0;
         this->state.lastPrim->state.blue = 0;
         this->state.lastPrim->state.fadeOutCnt = 60;
-        this->state.lastPrim->SetSpriteName(ResourceMgr::Instance(), "이팩트\\DarkBreath.spr");
-        this->state.lastPrim->SetActionName(ResourceMgr::Instance(), "이팩트\\DarkBreath.act");
+        this->state.lastPrim->SetSpriteName("이팩트\\DarkBreath.spr");
+        this->state.lastPrim->SetActionName("이팩트\\DarkBreath.act");
         this->state.lastPrim->InitSegment();
       }
       break;
