@@ -220,12 +220,12 @@ void UIHotkeyGuideWnd::Paint() {
     }
   }
 
-  for (auto label = this->m_labels.begin(); label != this->m_labels.end(); ++label) {
-    if (label->second.key.valid == true) {
-      this->DrawKeyLabel(label->second.text, &label->second.key);
+  for (auto& label : this->m_labels) {
+    if (label.second.key.valid == true) {
+      this->DrawKeyLabel(label.second.text, &label.second.key);
     }
-    if (label->second.altKey.valid == true) {
-      this->DrawKeyLabel(label->second.text, &label->second.altKey);
+    if (label.second.altKey.valid == true) {
+      this->DrawKeyLabel(label.second.text, &label.second.altKey);
     }
   }
 
@@ -243,8 +243,7 @@ void UIHotkeyGuideWnd::Paint() {
     }
     const char* textPointer = text.c_str();
     int column = index / 6;
-    int width = this->TextWidth(textPointer, 0, 0, 12, 1, 0);
-    int x = static_cast<int>((100 - width) * 0.5 + (column * 246 + 156));
+    int x = static_cast<int>((100 - this->TextWidth(textPointer, 0, 0, 12, 1, 0)) * 0.5 + (column * 246 + 156));
     this->DrawTextAt(x, index % 6 * 30 + 315, textPointer, 0, 0, 12, 0xA55139, 1, 0);
   }
 
