@@ -92,9 +92,10 @@ void CEvilsPawEffect::OnProcess() {
       const CView* view = g_modeMgr.GetGameMode()->camera;
       rotation.AppendXRotation(view->camera.pitch / 180.0f * 3.141592f);
 
+      const float size = particle->scale;
       matrix scale;
       std::memcpy(scale.values, g_identityMatrix, sizeof(scale.values));
-      scale.SetScale(particle->scale, particle->scale, 1.0f);
+      scale.SetScale(size, size, 1.0f);
 
       matrix result;
       result.Compose(scale, rotation);
@@ -102,7 +103,7 @@ void CEvilsPawEffect::OnProcess() {
 
       particle->position = vector3d{this->position[0] + this->offset.x, this->position[1] + this->offset.y, this->position[2] + this->offset.z};
     }
-    ++(*it)->elapsedFrames;
+    ++particle->elapsedFrames;
   }
 
   if (--this->delayCounter < 0) {
