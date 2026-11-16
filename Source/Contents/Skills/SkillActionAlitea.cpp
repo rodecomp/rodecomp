@@ -1131,7 +1131,8 @@ void CSkillAction_AT_FURIOS_STORM::OnSkillEffect(int level, CGameActor* source, 
     return;
   }
 
-  if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("thundering_cast_mute", 0x5B8F49AF09390D1BULL)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
+  EffectLists* effects = g_effectMgr;
+  if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("thundering_cast_mute", 0x5B8F49AF09390D1BULL)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
     effect->SetLifeTime(1000);
   }
 
@@ -1141,7 +1142,8 @@ void CSkillAction_AT_FURIOS_STORM::OnSkillEffect(int level, CGameActor* source, 
   const int stormBBottom = CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT("furios_storm_b_bottom", 0x0753A7E1EFA9E139ULL));
 
   for (int delay = 0; delay < 1000; delay += 250) {
-    const int variant = std::max(std::rand() % 2, 0);
+    const int roll = std::rand() % 2;
+    const int variant = roll >= 0 ? roll : 0;
     if (CEffect* effect = g_effectMgr->Spawn(source->render.accountId, variant ? stormA : stormB, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
       effect->SetDelay(delay);
     }
