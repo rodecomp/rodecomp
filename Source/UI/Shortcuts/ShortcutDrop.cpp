@@ -51,6 +51,33 @@ namespace {
   }
 }
 
+// OFFSET: 0x0091C4D0
+// FUNCTION: fn_12614
+int UIQuickSlotWnd::SlotX(int slot) {
+  for (int index = 0, value = 5; value < 63; ++index, value += 29) {
+    if (index == slot) {
+      return value;
+    }
+  }
+
+  return -1;
+}
+
+// OFFSET: 0x0091C500
+// FUNCTION: fn_12615
+int UIQuickSlotWnd::SlotAt(int x, int y) {
+  if (y < 0 || y >= 24 || (x > 58 && x < this->geometry.width)) {
+    return -1;
+  }
+
+  const int index = (x - 4) / 29;
+  if (x > index * 29 + 30) {
+    return -1;
+  }
+
+  return index;
+}
+
 // OFFSET: 0x00917640
 // FUNCTION: fn_12589
 void UIShortCutWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
