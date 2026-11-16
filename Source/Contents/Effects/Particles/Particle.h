@@ -163,7 +163,7 @@ public:
   /* 3FB8 */ int m_windowId;
   /* 3FBC */ bool m_attachToWindow;
   /* 3FBD */ bool m_visible;
-  /* 3FC0 */ vector3d m_windowOffset = {};
+  /* 3FC0 */ vector3d m_windowOffset = {0, 0, 0};
   /* 3FCC */ bool m_followActor;
   /* 3FD0 */ std::uint32_t m_actorId;
   /* 3FD4 */ float m_groundHeight = 0;
