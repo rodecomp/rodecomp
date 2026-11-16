@@ -68,8 +68,7 @@ bool CCommonObject::LoadTokens(std::vector<char*>& tokens, const char* name, int
         tokens.push_back(start);
 
         if (mode == 2) {
-          start = nullptr;
-          tokens.push_back(start);
+          tokens.push_back(nullptr);
         }
 
         start = buffer + index + 1;
