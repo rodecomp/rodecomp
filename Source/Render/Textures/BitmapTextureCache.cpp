@@ -82,13 +82,9 @@ void CDCBitmap::Draw(int x, int y, int width, int height, std::uint32_t color) {
     }
   } else {
     auto texture = this->m_cache.m_textures.begin();
-    int remainingHeight = height;
-
-    for (int row = 0; row < height; row += 256, remainingHeight -= 256) {
-      int remainingWidth = width;
-
-      for (int column = 0; column < width; column += 256, remainingWidth -= 256) {
-        (*texture)->Draw(x + column, y + row, remainingWidth > 256 ? 256 : remainingWidth, remainingHeight > 256 ? 256 : remainingHeight, color);
+    for (int row = 0; row < height; row += 256) {
+      for (int column = 0; column < width; column += 256) {
+        (*texture)->Draw(x + column, y + row, std::min(width - column, 256), std::min(height - row, 256), color);
         ++texture;
       }
     }
