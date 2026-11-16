@@ -1773,7 +1773,7 @@ void UIAgitMessageBox::InitializeMessageBox(const char* text, int width, int hei
   unsigned int green;
   unsigned int blue;
   g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-  viewer->backgroundColor = 0xFF000000 | (blue << 16) | (green << 8) | red;
+  viewer->backgroundColor = RGB(red, green, blue) | 0xFF000000;
   viewer->Invalidate();
   this->AddChild(viewer);
   viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text), width / 6, 0, 0);
