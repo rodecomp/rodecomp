@@ -212,12 +212,13 @@ __declspec(noinline) void UILapineBoxWnd::MaterialPosition(int* out, int index) 
 // OFFSET: 0x00602410
 // FUNCTION: fn_04180
 __declspec(noinline) ITEM_INFO UILapineBoxWnd::ReadMaterial(int x, int y) {
+  const auto first = this->items.begin();
   const unsigned int count = this->items.size();
   for (unsigned int index = 0; index < count; ++index) {
     int position[2];
     this->MaterialPosition(position, index);
     if (x >= position[0] && x <= position[0] + 0x18 && y >= position[1] && y <= position[1] + 0x18) {
-      return this->items[index];
+      return first[index];
     }
   }
   return ITEM_INFO(0);
