@@ -101,7 +101,7 @@ public:
 // FUNCTION: fn_08785
 void CSkillAction_SS_REIKETSUHOU::OnGroundSkillEffect(vector3d position, int level, int argument3) {
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("reiketsuhou_bottom"), position.x, position.y, position.z, 0, -1, 0, 0);
+  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("reiketsuhou_bottom"), position, 0, -1, 0, 0);
 
   const int counts[] = {5, 5, 5, 5, 5, 6, 6, 6, 7, 7};
   const int count = counts[std::min<unsigned int>(level, 10) - 1];
@@ -112,7 +112,7 @@ void CSkillAction_SS_REIKETSUHOU::OnGroundSkillEffect(vector3d position, int lev
     const int rollZ = std::rand() % (count * 50 + 1);
     spot.z += ((rollZ >= 0 ? rollZ : 0) - count * 50 * 0.5f) * 0.1f;
     effects = g_effectMgr;
-    if (CEffect* effect = effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("reiketsuhou"), spot.x, spot.y, spot.z, 0, -1, 0, 0)) {
+    if (CEffect* effect = effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("reiketsuhou"), spot, 0, -1, 0, 0)) {
       effect->SetDelay(index * 80);
     }
   }
