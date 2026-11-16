@@ -1064,8 +1064,7 @@ void CUISelectPackageItemBox::BindItem(SelectPackageItemBox::CUIItemInfo* item, 
 
   item->image->SetImage(image);
   item->gameItem->SetItem(data);
-  const std::string name = data.DisplayName(0);
-  item->nameText->SetText(name.c_str(), name.size());
+  item->nameText->SetText(data.DisplayName(0));
 }
 
 // OFFSET: 0x00A703D0
