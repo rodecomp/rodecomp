@@ -88,7 +88,8 @@ CMergeItemWnd::~CMergeItemWnd() {
 // OFFSET: 0x007DF3D0
 // FUNCTION: fn_09663
 int CMergeItemWnd::ItemIdOf(int id) {
-  return std::atoi(g_session.LookupClientItemByIdentity(id).itemId.c_str());
+  ITEM_INFO item = g_session.LookupClientItemByIdentity(id);
+  return std::atoi(item.itemId.c_str());
 }
 
 // OFFSET: 0x007DF580
