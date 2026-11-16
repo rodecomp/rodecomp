@@ -692,30 +692,37 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   this->firstList->SetOnSelect([this](ExchangeUI::CUIItem* item, const ExchangeUI::CItemData& data) { this->OnSelectFirstListItem(item, data); });
   this->firstList->SetBinder([this](ExchangeUI::CUIItem* item, const ExchangeUI::CItemData& data) { this->BindItem(item, data); });
   this->firstList->SetImages("", "", "", "");
-  this->firstList->itemX = 0;
-  this->firstList->itemY = 0;
+  {
+    ExchangeUI::CItemListBox* list = this->firstList;
+    list->itemX = 0;
+    list->itemY = 0;
+  }
   this->firstList->scrollBar->SetSize(13, 300);
   this->firstList->scrollBar->Move(259, 0);
   this->firstList->scrollBar->step = 30;
   {
+    ExchangeUI::CItemListBox* list = this->firstList;
     // GLOBAL: gl_25400
     const std::string down(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0down.bmp", 0xD97D5DBDBB2F2709ULL));
     // GLOBAL: gl_25401
     const std::string up(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0up.bmp", 0xED796785D1DF137FULL));
-    this->firstList->scrollBar->SetButtonImages(up, down);
+    list->scrollBar->SetButtonImages(up, down);
   }
   {
+    ExchangeUI::CItemListBox* list = this->firstList;
     // GLOBAL: gl_25402
-    this->firstList->scrollBar->SetBackground(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0mid.bmp", 0xA5FD29D7AB6DC59FULL)));
+    const std::string background(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0mid.bmp", 0xA5FD29D7AB6DC59FULL));
+    list->scrollBar->SetBackground(background);
   }
   {
+    ExchangeUI::CItemListBox* list = this->firstList;
     // GLOBAL: gl_25403
     const std::string thumbBottom(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0bar_down.bmp", 0xDD3913D5D7F97BE1ULL));
     // GLOBAL: gl_25404
     const std::string thumbMiddle(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0bar_mid.bmp", 0x050505679903579BULL));
     // GLOBAL: gl_25405
     const std::string thumbTop(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0bar_up.bmp", 0xF14F79170939C7F1ULL));
-    this->firstList->scrollBar->SetThumbImages(thumbTop, thumbMiddle, thumbBottom);
+    list->scrollBar->SetThumbImages(thumbTop, thumbMiddle, thumbBottom);
   }
   this->firstList->AddNewItem();
   this->AddChild(this->firstList);
@@ -732,7 +739,8 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   {
     CUIStaticText* text = this->ownZenyHighlight;
     // GLOBAL: gl_25407
-    text->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Arial", 0x83EFBFBB37EDBDBDULL)));
+    const std::string font(OBFUSCATE_SOURCE_TEXT("Arial", 0x83EFBFBB37EDBDBDULL));
+    text->SetFont(font);
   }
   this->ownZenyHighlight->SetFontHeight(16);
   this->ownZenyHighlight->SetBold(0);
@@ -753,7 +761,8 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   {
     CUIStaticText* text = this->ownZenyText;
     // GLOBAL: gl_25409
-    text->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Arial", 0x2FE993D1DDE1F197ULL)));
+    const std::string font(OBFUSCATE_SOURCE_TEXT("Arial", 0x2FE993D1DDE1F197ULL));
+    text->SetFont(font);
   }
   this->ownZenyText->SetFontHeight(16);
   this->ownZenyText->SetBold(0);
@@ -774,7 +783,8 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   {
     CUIStaticText* text = this->ownZenyShadow;
     // GLOBAL: gl_25411
-    text->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Arial", 0x2F8B0F37118D157FULL)));
+    const std::string font(OBFUSCATE_SOURCE_TEXT("Arial", 0x2F8B0F37118D157FULL));
+    text->SetFont(font);
   }
   this->ownZenyShadow->SetFontHeight(16);
   this->ownZenyShadow->SetBold(0);
@@ -807,30 +817,37 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   this->secondList->SetOnSelect([this](ExchangeUI::CUIItem* item, const ExchangeUI::CItemData& data) { this->OnSelectSecondListItem(item, data); });
   this->secondList->SetBinder([this](ExchangeUI::CUIItem* item, const ExchangeUI::CItemData& data) { this->BindItem(item, data); });
   this->secondList->SetImages("", "", "", "");
-  this->secondList->itemX = 0;
-  this->secondList->itemY = 0;
+  {
+    ExchangeUI::CItemListBox* list = this->secondList;
+    list->itemX = 0;
+    list->itemY = 0;
+  }
   this->secondList->scrollBar->SetSize(13, 300);
   this->secondList->scrollBar->Move(259, 0);
   this->secondList->scrollBar->step = 30;
   {
+    ExchangeUI::CItemListBox* list = this->secondList;
     // GLOBAL: gl_25412
     const std::string down(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0down.bmp", 0x4941FD9F21BBB9FDULL));
     // GLOBAL: gl_25413
     const std::string up(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0up.bmp", 0x35E5656B5DEDCD75ULL));
-    this->secondList->scrollBar->SetButtonImages(up, down);
+    list->scrollBar->SetButtonImages(up, down);
   }
   {
+    ExchangeUI::CItemListBox* list = this->secondList;
     // GLOBAL: gl_25414
-    this->secondList->scrollBar->SetBackground(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0mid.bmp", 0xE7978FB5A94DD7FDULL)));
+    const std::string background(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0mid.bmp", 0xE7978FB5A94DD7FDULL));
+    list->scrollBar->SetBackground(background);
   }
   {
+    ExchangeUI::CItemListBox* list = this->secondList;
     // GLOBAL: gl_25415
     const std::string thumbBottom(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0bar_down.bmp", 0x7115D9F973F913C9ULL));
     // GLOBAL: gl_25416
     const std::string thumbMiddle(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0bar_mid.bmp", 0xCB1D253B7FE1F563ULL));
     // GLOBAL: gl_25417
     const std::string thumbTop(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0bar_up.bmp", 0xB7FD8F670FC7B96BULL));
-    this->secondList->scrollBar->SetThumbImages(thumbTop, thumbMiddle, thumbBottom);
+    list->scrollBar->SetThumbImages(thumbTop, thumbMiddle, thumbBottom);
   }
   this->secondList->AddNewItem();
   this->AddChild(this->secondList);
@@ -847,7 +864,8 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   {
     CUIStaticText* text = this->partnerZenyHighlight;
     // GLOBAL: gl_25419
-    text->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Arial", 0x793F370985ED674FULL)));
+    const std::string font(OBFUSCATE_SOURCE_TEXT("Arial", 0x793F370985ED674FULL));
+    text->SetFont(font);
   }
   this->partnerZenyHighlight->SetFontHeight(16);
   this->partnerZenyHighlight->SetBold(0);
@@ -868,7 +886,8 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   {
     CUIStaticText* text = this->partnerZenyText;
     // GLOBAL: gl_25421
-    text->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Arial", 0x7DE349D717D7F123ULL)));
+    const std::string font(OBFUSCATE_SOURCE_TEXT("Arial", 0x7DE349D717D7F123ULL));
+    text->SetFont(font);
   }
   this->partnerZenyText->SetFontHeight(16);
   this->partnerZenyText->SetBold(0);
@@ -889,7 +908,8 @@ void CUIExchangeUI::OnCreate(int width, int height) {
   {
     CUIStaticText* text = this->partnerZenyShadow;
     // GLOBAL: gl_25423
-    text->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Arial", 0x7941D76335CFA14FULL)));
+    const std::string font(OBFUSCATE_SOURCE_TEXT("Arial", 0x7941D76335CFA14FULL));
+    text->SetFont(font);
   }
   this->partnerZenyShadow->SetFontHeight(16);
   this->partnerZenyShadow->SetBold(0);
