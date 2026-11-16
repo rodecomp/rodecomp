@@ -5166,8 +5166,8 @@ void CEffectPrim::RenderSphereWind(matrix& wtm) {
 void CEffectPrim::Render2DCircle() {
   float uInc = 0.0f;
   int rpCnt = 0;
-  const float temp = 360.0f - this->state.arcAngle;
   const float innerSize = this->state.radius - this->state.size;
+  const float temp = 360.0f - this->state.arcAngle;
 
   for (float i = 0.0f; i <= temp; i += this->state.arcAngle) {
     const float cs1 = g_cosTable[static_cast<int>(i)];
