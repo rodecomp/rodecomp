@@ -269,17 +269,17 @@ void UIExpandedBartermarketWnd::DragAndDrop(int x, int y, std::intptr_t value) {
 // OFFSET: 0x00845F60
 // FUNCTION: fn_10578
 std::pair<bool, BarterMarketEntry> UIExpandedBarterItemPurchaseWnd::GetEntryAt(int x, int y) {
-  if (x < 40 || x >= this->geometry.width - 20 || y < 17 || y >= this->rowCount * 64 + 17) {
+  if (x < 40 || x >= this->geometry.width - 20 || y < 17 || this->rowCount * 64 + 17 <= y) {
     return std::make_pair(false, BarterMarketEntry());
   }
 
   const int row = (y - 17) / 64;
   int index = 0;
   int visible = 0;
-  for (std::list<BarterMarketEntry>::iterator it = this->entries.begin(); it != this->entries.end(); ++it, ++index) {
+  for (std::list<BarterMarketEntry>::const_iterator it = this->entries.begin(); it != this->entries.end(); ++it, ++index) {
     if (index >= this->firstRow) {
       if (visible == row) {
-        return std::pair<bool, BarterMarketEntry>(true, *it);
+        return std::make_pair(true, *it);
       }
       ++visible;
     }
@@ -290,7 +290,7 @@ std::pair<bool, BarterMarketEntry> UIExpandedBarterItemPurchaseWnd::GetEntryAt(i
 // OFFSET: 0x00846110
 // FUNCTION: fn_10579
 std::pair<bool, BarterMarketEntry> UIExpandedBartermarketWnd::GetEntryAt(int x, int y) {
-  if (x < 40 || x >= this->geometry.width - 20 || y < 17 || y >= this->rowCount * 64 + 17) {
+  if (x < 40 || x >= this->geometry.width - 20 || y < 17 || this->rowCount * 64 + 17 <= y) {
     return std::make_pair(false, BarterMarketEntry());
   }
 
@@ -299,7 +299,7 @@ std::pair<bool, BarterMarketEntry> UIExpandedBartermarketWnd::GetEntryAt(int x, 
   for (std::list<BarterMarketEntry>::iterator it = this->entries.begin(); it != this->entries.end(); ++it, ++index) {
     if (index >= this->firstRow) {
       if (visible == (y - 17) / 64) {
-        return std::pair<bool, BarterMarketEntry>(true, *it);
+        return std::make_pair(true, *it);
       }
       ++visible;
     }
