@@ -42,24 +42,24 @@ vector3d g_worldAmbient;
 // GLOBAL: gl_24758
 float g_worldLoadCenter[3];
 
-namespace {
-  // INLINED
-  bool Before(const DeferredWorldModel& left, const DeferredWorldModel& right) {
-    if (left.distance < right.distance) {
-      return true;
-    }
+// INLINED
+inline bool operator<(const DeferredWorldModel& left, const DeferredWorldModel& right) {
+  if (left.distance < right.distance) {
+    return true;
+  }
 
-    if (right.distance < left.distance) {
-      return false;
-    }
-
-    if (left.distance == right.distance) {
-      return reinterpret_cast<std::uintptr_t>(left.placement) < reinterpret_cast<std::uintptr_t>(right.placement);
-    }
-
+  if (right.distance < left.distance) {
     return false;
   }
 
+  if (left.distance == right.distance) {
+    return reinterpret_cast<std::uintptr_t>(left.placement) < reinterpret_cast<std::uintptr_t>(right.placement);
+  }
+
+  return false;
+}
+
+namespace {
   // INLINED
   inline C3dActor* CreateWorldModel(const WorldModelRecord& placement, C3dModelRes& resource, BinkMovies& movies) {
     resource.RegisterMovies({placement.position.x, placement.position.y, placement.position.z});
@@ -97,10 +97,10 @@ namespace {
 DWORD WINAPI CWorld::LoadDeferredModels(void* parameter) {
   CWorld* world = static_cast<CWorld*>(parameter);
   SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
-  std::sort(g_deferredWorldModels.begin(), g_deferredWorldModels.end(), Before);
+  std::sort(g_deferredWorldModels.begin(), g_deferredWorldModels.end());
 
-  for (const DeferredWorldModel& entry : g_deferredWorldModels) {
-    const WorldModelRecord& placement = *entry.placement;
+  for (auto it = g_deferredWorldModels.begin(); it != g_deferredWorldModels.end(); ++it) {
+    const WorldModelRecord& placement = *it->placement;
     auto* resource = static_cast<C3dModelRes*>(ResourceMgr::Instance().Load(placement.model));
 
     if (!resource) {
@@ -114,7 +114,7 @@ DWORD WINAPI CWorld::LoadDeferredModels(void* parameter) {
     }
 
     world->models.push_back(model);
-    std::atomic_ref<long>(world->pending).fetch_add(1, std::memory_order_seq_cst);
+    InterlockedIncrement(&world->pending);
     Sleep(0);
   }
 
@@ -131,7 +131,7 @@ void CWorld::FinishModelLoading() {
   }
 
   g_deferredWorldModels.clear();
-  std::atomic_ref<long>(this->pending).store(0, std::memory_order_release);
+  this->pending = 0;
 }
 
 // OFFSET: 0x00AC94C0
@@ -208,11 +208,9 @@ void CWorld::InitWorld() {
 
   ResourceMgr::Instance().Remove(groundRes);
 
-  const std::size_t modelCount = worldRes->models.size();
+  const int modelCount = static_cast<int>(worldRes->models.size());
   this->models.clear();
-  if (this->models.capacity() < modelCount) {
-    this->models.reserve(modelCount);
-  }
+  this->models.reserve(modelCount);
 
   DWORD lastNoticeTime = 0;
   int lastPercent = -1;
