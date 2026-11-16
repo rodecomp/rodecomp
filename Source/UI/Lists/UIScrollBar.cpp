@@ -1877,13 +1877,16 @@ std::string UIChatHisBox::RenderItemLinks(const char* lineText, std::string& sou
 
   std::string remaining = source;
   std::string result = "";
-  unsigned position = 0;
   unsigned previous = 0;
+  unsigned position = 0;
   std::vector<UIItemTagButton*> buttons;
 
-  for (;; previous = position) {
+  for (;;) {
     std::string encoded = "";
-    if (!this->Next(remaining, encoded, position, source.c_str()) || result.size() >= std::strlen(lineText)) {
+    if (!this->Next(remaining, encoded, position, source.c_str())) {
+      break;
+    }
+    if (result.size() >= std::strlen(lineText)) {
       break;
     }
 
@@ -1913,6 +1916,7 @@ std::string UIChatHisBox::RenderItemLinks(const char* lineText, std::string& sou
           }
         }
         position += static_cast<unsigned>(encoded.size() + g_itemLinkTagEnd.size() + g_itemLinkTagBegin.size());
+        previous = position;
         continue;
       }
     }
@@ -1952,6 +1956,7 @@ std::string UIChatHisBox::RenderItemLinks(const char* lineText, std::string& sou
       result += label;
       position += static_cast<unsigned>(encoded.size() + g_itemLinkTagEnd.size() + g_itemLinkTagBegin.size());
     }
+    previous = position;
   }
 
   if (result.size() < std::strlen(lineText)) {
