@@ -4465,19 +4465,18 @@ void CGameMode::ReceiveOpenedVendingItemList(const unsigned char* packet) {
     return;
   }
 
-  const Item1758StoreRecord* record = reinterpret_cast<const Item1758StoreRecord*>(p + 1);
-  for (int i = 0; i < count; ++i, ++record) {
-    const Item1758StoreRecord entry = *record;
+  for (int i = 0; i < count; ++i) {
+    const Item1758StoreRecord entry = reinterpret_cast<const Item1758StoreRecord*>(p + 1)[i];
     ITEM_INFO item;
-    item.identity[0] = entry.type;
-    item.identity[1] = entry.index;
     item.prices[0] = entry.price;
     item.prices[1] = entry.price;
+    item.identity[1] = entry.index;
     item.quantity = entry.amount;
-    std::memcpy(item.cards, entry.cards, sizeof(entry.cards));
+    item.identity[0] = entry.type;
     item.SetItemId(entry.itemId);
     item.identified = entry.identified;
     item.damaged = entry.damaged;
+    std::memcpy(item.cards, entry.cards, sizeof(entry.cards));
     item.refiningLevel = entry.refine;
     item.optionCount = CountStoreItemOptions(entry.options);
     for (int index = 0; index < item.optionCount; ++index) {
