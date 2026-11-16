@@ -162,16 +162,20 @@ void GroundBase::DrawCellDecal(const float*, int, int, std::uint32_t, CTexture&,
 void GroundGeometry::DrawTerrainOverlay(
   const float* matrix, int column, int row, std::uint32_t color, CTexture* texture
 ) const {
-  float vertices[4][3];
+  struct Point {
+    // INLINED
+    Point() : x(0), y(0), z(0) {
+    }
 
-  for (auto& vertex : vertices) {
-    vertex[0] = 0.0f;
-    vertex[1] = 0.0f;
-    vertex[2] = 0.0f;
-  }
+    float x;
+    float y;
+    float z;
+  };
+  Point vertices[4];
 
   const int cellColumn = static_cast<int>(static_cast<float>(column) * 0.5f);
   const int cellRow = static_cast<int>(static_cast<float>(row) * 0.5f);
+  const int rowParity = row % 2;
   const int halfWidth = static_cast<int>(static_cast<float>(this->width) * 0.5f);
   const int halfHeight = static_cast<int>(static_cast<float>(this->height) * 0.5f);
   const float halfSize = this->cellSize * 0.5f;
@@ -188,27 +192,27 @@ void GroundGeometry::DrawTerrainOverlay(
   }
 
   const float x = static_cast<float>(cellColumn - halfWidth) * this->cellSize + ((column & 1) ? halfSize : 0.0f);
-  const float z = static_cast<float>(cellRow - halfHeight) * this->cellSize + (row % 2 == 1 ? halfSize : 0.0f);
+  const float z = static_cast<float>(cellRow - halfHeight) * this->cellSize + (rowParity == 1 ? halfSize : 0.0f);
   const float left = x - margin;
   const float right = (x + halfSize) + margin;
   const float top = z - margin;
   const float bottom = (z + halfSize) + margin;
-  vertices[0][0] = left;
-  vertices[0][1] = cell->heights[0];
-  vertices[0][2] = top;
-  vertices[1][0] = right;
-  vertices[1][1] = cell->heights[1];
-  vertices[1][2] = top;
-  vertices[2][0] = left;
-  vertices[2][1] = cell->heights[2];
-  vertices[2][2] = bottom;
-  vertices[3][0] = right;
-  vertices[3][1] = cell->heights[3];
-  vertices[3][2] = bottom;
+  vertices[0].x = left;
+  vertices[0].y = cell->heights[0];
+  vertices[0].z = top;
+  vertices[1].x = right;
+  vertices[1].y = cell->heights[1];
+  vertices[1].z = top;
+  vertices[2].x = left;
+  vertices[2].y = cell->heights[2];
+  vertices[2].z = bottom;
+  vertices[3].x = right;
+  vertices[3].y = cell->heights[3];
+  vertices[3].z = bottom;
   RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
 
-  for (unsigned corner = 0; corner < 4; ++corner) {
-    g_renderer->viewport.Project(vertices[corner], matrix, primitive->vertices[corner]);
+  for (int corner = 0; corner < 4; ++corner) {
+    g_renderer->viewport.Project(&vertices[corner].x, matrix, primitive->vertices[corner]);
   }
 
   primitive->vertices[0].u = 0.0f;
