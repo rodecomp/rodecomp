@@ -994,13 +994,13 @@ void UIWindow::DrawCenteredText(int x, int y, const char* text, int width, int f
   context.SetFont(family, height, bold, 0);
   context.SetColor(color);
   const int bytes = static_cast<int>(std::strlen(text));
-  if (width) {
+  if (!width) {
+    context.Draw(x, y, text, bytes);
+  } else {
     SIZE size;
     context.Measure(text, bytes, &size);
     const int extent = size.cx;
     context.Draw(static_cast<int>((width - extent) * 0.5 + x), y, text, static_cast<int>(std::strlen(text)));
-  } else {
-    context.Draw(x, y, text, bytes);
   }
 }
 
@@ -3123,10 +3123,8 @@ void UINavigationRuideWnd::RefreshRoute() {
   for (int index = 0; index < g_navigationManager.NodeCount(); ++index) {
     CNavi_Link* node = g_navigationManager.GetNode(index);
     NaviCell first;
-    const int y = node->GetCell(&first)->y;
     NaviCell second;
-    const int x = node->GetCell(&second)->x;
-    std::sprintf(text, "%s (%d %d)", node->GetInfo()->GetName(), x, y);
+    std::sprintf(text, "%s (%d %d)", node->GetInfo()->GetName(), node->GetCell(&second)->x, node->GetCell(&first)->y);
 
     UIListBox_NaviSearch* list = this->routeList;
     int icon;
@@ -3144,10 +3142,8 @@ void UINavigationRuideWnd::RefreshRoute() {
   NaviCell cell;
   if (g_navigationManager.GetDestinationCell(&cell)->x > 0) {
     NaviCell first;
-    const int y = g_navigationManager.GetDestinationCell(&first)->y;
     NaviCell second;
-    const int x = g_navigationManager.GetDestinationCell(&second)->x;
-    std::sprintf(text, "%s (%d %d)", g_navigationManager.GetDestinationInfo()->GetName(), x, y);
+    std::sprintf(text, "%s (%d %d)", g_navigationManager.GetDestinationInfo()->GetName(), g_navigationManager.GetDestinationCell(&second)->x, g_navigationManager.GetDestinationCell(&first)->y);
   } else {
     std::sprintf(text, "%s", g_navigationManager.GetDestinationInfo()->GetName());
   }
