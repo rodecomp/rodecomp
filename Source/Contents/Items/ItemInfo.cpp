@@ -79,30 +79,7 @@ __declspec(noinline) ITEM_INFO::ITEM_INFO(int) {
 
 // OFFSET: 0x005D8F90
 // FUNCTION: fn_03753
-ITEM_INFO::ITEM_INFO(const ITEM_INFO& other) : itemId(other.itemId), displayName(other.displayName) {
-  std::memcpy(this->identity, other.identity, sizeof(this->identity));
-  this->quantity = other.quantity;
-  std::memcpy(this->prices, other.prices, sizeof(this->prices));
-  std::memcpy(this->cards, other.cards, sizeof(this->cards));
-  this->identified = other.identified;
-  this->damaged = other.damaged;
-  this->refiningLevel = other.refiningLevel;
-  this->bindOnEquip = other.bindOnEquip;
-  this->durationInHours = other.durationInHours;
-  this->expireTime = other.expireTime;
-  this->priceFactor = other.priceFactor;
-  this->sprite = other.sprite;
-  std::memcpy(this->flags, other.flags, sizeof(this->flags));
-  this->saleData = other.saleData;
-  this->grade = other.grade;
-  this->productId = other.productId;
-  this->optionCount = other.optionCount;
-  std::memcpy(this->options, other.options, sizeof(this->options));
-  std::memcpy(this->recordIds, other.recordIds, sizeof(this->recordIds));
-  this->recordType = other.recordType;
-  std::memcpy(this->recordName, other.recordName, sizeof(this->recordName));
-  std::memcpy(this->recordDate, other.recordDate, sizeof(this->recordDate));
-}
+ITEM_INFO::ITEM_INFO(const ITEM_INFO& other) = default;
 
 // OFFSET: 0x006D52B0
 // FUNCTION: fn_06569
