@@ -64,12 +64,11 @@ ITEM_INFO UISerachStoreInfoWnd::ItemAt(int x, int y) {
   if (x > 5 && x < this->geometry.width - 10 && y > 100 && y < (this->m_rowHeight + 10) * 10) {
     const int row = (y - 100) / this->m_rowHeight;
     this->m_hoverRow = row;
-    const unsigned int index = row + (this->m_page - 1) * 10;
-    if (index >= g_session.storeSearchResults.size()) {
+    if (static_cast<unsigned int>(row + (this->m_page - 1) * 10) >= g_session.storeSearchResults.size()) {
       return item;
     }
 
-    std::vector<SearchStoreResult>::iterator it = g_session.storeSearchResults.begin() + index;
+    std::vector<SearchStoreResult>::iterator it = g_session.storeSearchResults.begin() + (row + (this->m_page - 1) * 10);
     if (it != g_session.storeSearchResults.end()) {
       item = it->item;
     }
