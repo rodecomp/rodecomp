@@ -689,7 +689,7 @@ CNavi_Link* CNavigationManager::ReadObject(const char* record) {
   const int cellY = header->cellY;
 
   std::size_t offset = 0x12;
-  int length = header->nameLength;
+  std::int16_t length = header->nameLength;
   std::string name(record + offset, record + offset + length);
   offset += length;
 
@@ -710,16 +710,18 @@ CNavi_Link* CNavigationManager::ReadObject(const char* record) {
   std::string linkedMap(record + offset, record + offset + length);
 
   CNaviInfo* info = this->FindObject(map.c_str());
-  if (info == nullptr) {
-    return nullptr;
+  if (info != nullptr) {
+    CNaviInfo* linkedInfo = this->FindObject(linkedMap.c_str());
+    if (linkedInfo != nullptr) {
+      CNavi_Link* link = info->FindMatchingLink(
+        CNavi_Link(type, index, name.c_str(), title.c_str(), cellX, cellY, info, linkedInfo, linkedCellX, linkedCellY)
+      );
+      if (link != nullptr) {
+        return link;
+      }
+    }
   }
-  CNaviInfo* linkedInfo = this->FindObject(linkedMap.c_str());
-  if (linkedInfo == nullptr) {
-    return nullptr;
-  }
-  return info->FindMatchingLink(
-    CNavi_Link(type, index, name.c_str(), title.c_str(), cellX, cellY, info, linkedInfo, linkedCellX, linkedCellY)
-  );
+  return nullptr;
 }
 
 // OFFSET: 0x00B950B0
