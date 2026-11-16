@@ -222,10 +222,10 @@ int UIMerchantItemLogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
   switch (message) {
   case UM_COMMAND:
     if (a == 201) {
-      if (this->mode != 0) {
-        g_windowMgr.CloseWindow(WID_MERCHANTITEMLOGWND_MODE_1);
-      } else {
+      if (this->mode == 0) {
         g_windowMgr.CloseWindow(WID_MERCHANTITEMLOGWND_MODE_0);
+      } else {
+        g_windowMgr.CloseWindow(WID_MERCHANTITEMLOGWND_MODE_1);
       }
     }
     break;
