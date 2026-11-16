@@ -344,12 +344,8 @@ void CSkillAction_DR_WERERAPTOR::OnSkillEffect(int level, CGameActor* source, CG
     return;
   }
 
-  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    constexpr auto effectSourceText = OBFUSCATE_SOURCE("wereraptor", 0xD3755DD95F47A909ULL);
-    const auto& effectSource = effectSourceText.data;
-    thread_local EncryptedName<sizeof(effectSource), 0xD3755DD95F47A909ULL> effectName(effectSource);
-    return effectName.Text();
-  }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("wereraptor", 0xD3755DD95F47A909ULL, effectName)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00620190
@@ -448,12 +444,7 @@ void CSkillAction_DR_HUNGER::OnSkillEffect(int level, CGameActor* source, CGameA
   }
 
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    constexpr auto bytesText = OBFUSCATE_SOURCE("hunger_target", 0x3375B1C7DBB5FD55ULL);
-    const auto& bytes = bytesText.data;
-    thread_local EncryptedName<sizeof(bytes), 0x3375B1C7DBB5FD55ULL> name(bytes);
-    return name.Text();
-  }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("hunger_target", 0x3375B1C7DBB5FD55ULL, name)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00620BE0
@@ -463,10 +454,8 @@ void CSkillAction_DR_HUNGER::OnSkillHit(CGameActor* source, CGameActor* target, 
     return;
   }
 
-  constexpr auto effectSourceText = OBFUSCATE_SOURCE("hunger", 0x1D6D75EDE7CD311FULL);
-  const auto& effectSource = effectSourceText.data;
-  thread_local EncryptedName<sizeof(effectSource), 0x1D6D75EDE7CD311FULL> effectName(effectSource);
-  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("hunger", 0x1D6D75EDE7CD311FULL, effectName)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00620DE0
@@ -590,17 +579,7 @@ void CSkillAction_DR_LOW_FLIGHT::OnSkillEffect(int level, CGameActor* source, CG
   const bool flag = direction != 1 && direction != 2;
 
   const std::string effectName(
-    (direction & 1) != 0 ? std::string([] {
-      constexpr auto horizonSourceText = OBFUSCATE_SOURCE("low_flight_horizon", 0x8B65CD61012B5931ULL);
-      const auto& horizonSource = horizonSourceText.data;
-      thread_local EncryptedName<sizeof(horizonSource), 0x8B65CD61012B5931ULL> horizonName(horizonSource);
-      return horizonName.Text();
-    }()) : std::string([] {
-      constexpr auto verticalSourceText = OBFUSCATE_SOURCE("low_flight_vertical", 0xF7530137154D8FE5ULL);
-      const auto& verticalSource = verticalSourceText.data;
-      thread_local EncryptedName<sizeof(verticalSource), 0xF7530137154D8FE5ULL> verticalName(verticalSource);
-      return verticalName.Text();
-    }())
+    (direction & 1) != 0 ? std::string(OBFUSCATE_TEXT_NAMED("low_flight_horizon", 0x8B65CD61012B5931ULL, horizonName)) : std::string(OBFUSCATE_TEXT_NAMED("low_flight_vertical", 0xF7530137154D8FE5ULL, verticalName))
   );
 
   EffectLists* effects = g_effectMgr;
@@ -624,12 +603,7 @@ void CSkillAction_DR_LOW_FLIGHT::OnSkillEffect(int level, CGameActor* source, CG
   }
 
   effects = g_effectMgr;
-  if (CEffect* effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-        constexpr auto bottomSourceText = OBFUSCATE_SOURCE("low_flight_bottom", 0x69FD1D9733D3CFC1ULL);
-        const auto& bottomSource = bottomSourceText.data;
-        thread_local EncryptedName<sizeof(bottomSource), 0x69FD1D9733D3CFC1ULL> bottomName(bottomSource);
-        return bottomName.Text();
-      }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
+  if (CEffect* effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("low_flight_bottom", 0x69FD1D9733D3CFC1ULL, bottomName)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
     effect->SetDelay(static_cast<int>(scale));
   }
 }
@@ -657,12 +631,8 @@ void CSkillAction_DR_NATURE_SHIELD::OnSkillCast(int level, CGameActor* source) {
 // OFFSET: 0x00622240
 // FUNCTION: fn_04504
 void CSkillAction_DR_NATURE_SHIELD::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
-  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    constexpr auto bytesText = OBFUSCATE_SOURCE("nature_shield", 0xF5657D1F3DE5CDC7ULL);
-    const auto& bytes = bytesText.data;
-    thread_local EncryptedName<sizeof(bytes), 0xF5657D1F3DE5CDC7ULL> name(bytes);
-    return name.Text();
-  }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("nature_shield", 0xF5657D1F3DE5CDC7ULL, name)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00622440
@@ -753,11 +723,7 @@ int CEfstAction_THUNDERING_ROD::GetEffectId(int efstId, int argument4) {
   const int step = argument4 - 1;
   if (static_cast<unsigned int>(step) <= 5) {
     std::string suffix = std::format("{:02}", step);
-    return CEZ2STREffectMgr::GetInstance()->EffectId(std::string([] {
-      constexpr std::array<char, 16> prefixSource = OBFUSCATE_SOURCE("thundering_rod_", 0x0BEB63A5C905B3A7ULL);
-      thread_local EncryptedName<sizeof(prefixSource), 0x0BEB63A5C905B3A7ULL> prefixName(prefixSource);
-      return prefixName.Text();
-    }()) + suffix);
+    return CEZ2STREffectMgr::GetInstance()->EffectId(std::string(OBFUSCATE_TEXT_NAMED("thundering_rod_", 0x0BEB63A5C905B3A7ULL, prefixName)) + suffix);
   }
 
   return -1;
@@ -809,20 +775,10 @@ void CSkillAction_DR_TRUTH_OF_EARTH::OnSkillEffect(int level, CGameActor* source
   }
 
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    constexpr auto bytesText = OBFUSCATE_SOURCE("truth_of_earth", 0xC7912587FFF31B71ULL);
-    const auto& bytes = bytesText.data;
-    thread_local EncryptedName<sizeof(bytes), 0xC7912587FFF31B71ULL> name(bytes);
-    return name.Text();
-  }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("truth_of_earth", 0xC7912587FFF31B71ULL, name)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 
   effects = g_effectMgr;
-  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    constexpr auto bytesText = OBFUSCATE_SOURCE("truth_of_earth_bottom", 0x69D345DB950F336DULL);
-    const auto& bytes = bytesText.data;
-    thread_local EncryptedName<sizeof(bytes), 0x69D345DB950F336DULL> name(bytes);
-    return name.Text();
-  }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("truth_of_earth_bottom", 0x69D345DB950F336DULL, name)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x006233D0
@@ -865,18 +821,10 @@ void CSkillAction_DR_TRUTH_OF_ICE::OnSkillEffect(int level, CGameActor* source, 
   }
 
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    constexpr std::array<char, 13> bytes = OBFUSCATE_SOURCE("truth_of_ice", 0x2D394DBD0F332733ULL);
-    thread_local EncryptedName<sizeof(bytes), 0x2D394DBD0F332733ULL> name(bytes);
-    return name.Text();
-  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("truth_of_ice", 0x2D394DBD0F332733ULL, name)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 
   effects = g_effectMgr;
-  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    constexpr std::array<char, 20> bytes = OBFUSCATE_SOURCE("truth_of_ice_bottom", 0x151F77EBEBBB2147ULL);
-    thread_local EncryptedName<sizeof(bytes), 0x151F77EBEBBB2147ULL> name(bytes);
-    return name.Text();
-  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("truth_of_ice_bottom", 0x151F77EBEBBB2147ULL, name)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00623820
@@ -919,18 +867,10 @@ void CSkillAction_DR_TRUTH_OF_WIND::OnSkillEffect(int level, CGameActor* source,
   }
 
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    constexpr std::array<char, 14> bytes = OBFUSCATE_SOURCE("truth_of_wind", 0x61FF87ED7BF39BE1ULL);
-    thread_local EncryptedName<sizeof(bytes), 0x61FF87ED7BF39BE1ULL> name(bytes);
-    return name.Text();
-  }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("truth_of_wind", 0x61FF87ED7BF39BE1ULL, name)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 
   effects = g_effectMgr;
-  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    constexpr std::array<char, 21> bytes = OBFUSCATE_SOURCE("truth_of_wind_bottom", 0x7D993F650D2785FFULL);
-    thread_local EncryptedName<sizeof(bytes), 0x7D993F650D2785FFULL> name(bytes);
-    return name.Text();
-  }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("truth_of_wind_bottom", 0x7D993F650D2785FFULL, name)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00623C70
@@ -973,12 +913,7 @@ void CSkillAction_DR_CUTTING_WIND::OnSkillEffect(int level, CGameActor* source, 
   }
 
   EffectLists* effects = g_effectMgr;
-  if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    constexpr auto bytesText = OBFUSCATE_SOURCE("cutting_wind", 0x4F1791FB1503C713ULL);
-    const auto& bytes = bytesText.data;
-    thread_local EncryptedName<sizeof(bytes), 0x4F1791FB1503C713ULL> name(bytes);
-    return name.Text();
-  }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
+  if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("cutting_wind", 0x4F1791FB1503C713ULL, name)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
     effect->SetAngle(ScreenAngle(&target->render.position.x, &source->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values));
   }
 }
@@ -990,12 +925,8 @@ void CSkillAction_DR_CUTTING_WIND::OnSkillDamage(CGameActor* source, CGameActor*
     return;
   }
 
-  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    constexpr std::array<std::uint8_t, 17> effectSourceArray = OBFUSCATE_SOURCE("cutting_wind_hit", 0xA1A55B4D1597EDD3ULL);
-    const std::uint8_t (&effectSource)[17] = effectSourceArray._Elems;
-    thread_local EncryptedName<sizeof(effectSource), 0xA1A55B4D1597EDD3ULL> effectName(effectSource);
-    return effectName.Text();
-  }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("cutting_wind_hit", 0xA1A55B4D1597EDD3ULL, effectName)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00624170
@@ -1046,12 +977,7 @@ void CSkillAction_DR_WIND_BOMB::OnSkillDamage(CGameActor* source, CGameActor* ta
   }
 
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    constexpr auto bytesText = OBFUSCATE_SOURCE("wind_bomb_hit", 0x91E147EBBD47C39FULL);
-    const auto& bytes = bytesText.data;
-    thread_local EncryptedName<sizeof(bytes), 0x91E147EBBD47C39FULL> name(bytes);
-    return name.Text();
-  }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("wind_bomb_hit", 0x91E147EBBD47C39FULL, name)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00624640
@@ -1062,20 +988,10 @@ void CSkillAction_DR_AROUND_FLOWER::OnSkillEffect(int level, CGameActor* source,
   }
 
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    constexpr auto bytesText = OBFUSCATE_SOURCE("around_flower", 0x6DED3DD1CF75AD9BULL);
-    const auto& bytes = bytesText.data;
-    thread_local EncryptedName<sizeof(bytes), 0x6DED3DD1CF75AD9BULL> name(bytes);
-    return name.Text();
-  }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("around_flower", 0x6DED3DD1CF75AD9BULL, name)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 
   effects = g_effectMgr;
-  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    constexpr auto bytesText = OBFUSCATE_SOURCE("around_flower_bottom", 0x49C3759B77DBD3C1ULL);
-    const auto& bytes = bytesText.data;
-    thread_local EncryptedName<sizeof(bytes), 0x49C3759B77DBD3C1ULL> name(bytes);
-    return name.Text();
-  }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("around_flower_bottom", 0x49C3759B77DBD3C1ULL, name)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x006249E0
@@ -1086,18 +1002,10 @@ void CSkillAction_DR_EARTH_FLOWER::OnSkillEffect(int level, CGameActor* source, 
   }
 
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    constexpr std::array<char, 13> bytes = OBFUSCATE_SOURCE("earth_flower", 0x1BF915E1F37DFDFDULL);
-    thread_local EncryptedName<sizeof(bytes), 0x1BF915E1F37DFDFDULL> name(bytes);
-    return name.Text();
-  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("earth_flower", 0x1BF915E1F37DFDFDULL, name)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 
   effects = g_effectMgr;
-  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    constexpr std::array<char, 20> bytes = OBFUSCATE_SOURCE("earth_flower_bottom", 0x01FF9313695DD9DFULL);
-    thread_local EncryptedName<sizeof(bytes), 0x01FF9313695DD9DFULL> name(bytes);
-    return name.Text();
-  }()), 0.0f, 0.0f, 0.0f, 0, -1, 0, 0);
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("earth_flower_bottom", 0x01FF9313695DD9DFULL, name)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00624D80
@@ -1107,12 +1015,8 @@ void CSkillAction_DR_ICE_CLOUD::OnSkillEffect(int level, CGameActor* source, CGa
     return;
   }
 
-  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    constexpr auto effectSourceText = OBFUSCATE_SOURCE("ice_cloud", 0x474DC581D5E98357ULL);
-    const auto& effectSource = effectSourceText.data;
-    thread_local EncryptedName<sizeof(effectSource), 0x474DC581D5E98357ULL> effectName(effectSource);
-    return effectName.Text();
-  }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("ice_cloud", 0x474DC581D5E98357ULL, effectName)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00624F80
@@ -1122,12 +1026,8 @@ void CSkillAction_DR_ICE_TOTEM::OnSkillEffect(int level, CGameActor* source, CGa
     return;
   }
 
-  g_effectMgr->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    constexpr auto effectSourceText = OBFUSCATE_SOURCE("ice_totem", 0x3F557BE333F95F6DULL);
-    const auto& effectSource = effectSourceText.data;
-    thread_local EncryptedName<sizeof(effectSource), 0x3F557BE333F95F6DULL> effectName(effectSource);
-    return effectName.Text();
-  }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("ice_totem", 0x3F557BE333F95F6DULL, effectName)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00625180
@@ -1146,10 +1046,8 @@ void CSkillAction_DR_WEREWOLF::OnSkillEffect(int level, CGameActor* source, CGam
     return;
   }
 
-  constexpr auto effectSourceText = OBFUSCATE_SOURCE("werewolf", 0x490FFB43A12F0DB9ULL);
-  const auto& effectSource = effectSourceText.data;
-  thread_local EncryptedName<sizeof(effectSource), 0x490FFB43A12F0DB9ULL> effectName(effectSource);
-  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("werewolf", 0x490FFB43A12F0DB9ULL, effectName)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x006253A0
@@ -1172,12 +1070,7 @@ void CSkillAction_DR_ENRAGE_WOLF::OnSkillEffect(int level, CGameActor* source, C
   }
 
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    constexpr auto bytesText = OBFUSCATE_SOURCE("enrage_wolf", 0x31D7C1EDA345E36DULL);
-    const auto& bytes = bytesText.data;
-    thread_local EncryptedName<sizeof(bytes), 0x31D7C1EDA345E36DULL> name(bytes);
-    return name.Text();
-  }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("enrage_wolf", 0x31D7C1EDA345E36DULL, name)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00620530
@@ -1187,11 +1080,8 @@ void CSkillAction_DR_BLOOD_HOWLING::OnSkillEffect(int level, CGameActor* source,
     return;
   }
 
-  constexpr auto effectSourceText = OBFUSCATE_SOURCE("blood_howling", 0xD98F03A52D35636DULL);
-  const auto& effectSource = effectSourceText.data;
-  thread_local EncryptedName<sizeof(effectSource), 0xD98F03A52D35636DULL> effectName(effectSource);
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("blood_howling", 0xD98F03A52D35636DULL, effectName)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x006207B0
@@ -1201,11 +1091,8 @@ void CSkillAction_DR_NOMERCY_CLAW::OnSkillEffect(int level, CGameActor* source, 
     return;
   }
 
-  constexpr auto effectSourceText = OBFUSCATE_SOURCE("nomercy_claw", 0x0F0F8B6B8F9D19D1ULL);
-  const auto& effectSource = effectSourceText.data;
-  thread_local EncryptedName<sizeof(effectSource), 0x0F0F8B6B8F9D19D1ULL> effectName(effectSource);
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("nomercy_claw", 0x0F0F8B6B8F9D19D1ULL, effectName)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x006210B0
@@ -1215,11 +1102,8 @@ void CSkillAction_DR_ENRAGE_RAPTOR::OnSkillEffect(int level, CGameActor* source,
     return;
   }
 
-  constexpr auto effectSourceText = OBFUSCATE_SOURCE("enrage_raptor", 0x812BE72BCD5707B7ULL);
-  const auto& effectSource = effectSourceText.data;
-  thread_local EncryptedName<sizeof(effectSource), 0x812BE72BCD5707B7ULL> effectName(effectSource);
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName.Text()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("enrage_raptor", 0x812BE72BCD5707B7ULL, effectName)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00621370
@@ -1229,12 +1113,8 @@ void CSkillAction_DR_PREENING::OnSkillEffect(int level, CGameActor* source, CGam
     return;
   }
 
-  g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    constexpr auto effectSourceText = OBFUSCATE_SOURCE("preening", 0xC52FB5FBB94FF917ULL);
-    const auto& effectSource = effectSourceText.data;
-    thread_local EncryptedName<sizeof(effectSource), 0xC52FB5FBB94FF917ULL> effectName(effectSource);
-    return effectName.Text();
-  }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  EffectLists* effects = g_effectMgr;
+  effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("preening", 0xC52FB5FBB94FF917ULL, effectName)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00620DF0
@@ -1249,12 +1129,7 @@ void CSkillAction_DR_CRUEL_BITE::OnSkillEffect(int level, CGameActor* source, CG
   }
 
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    constexpr auto bytesText = OBFUSCATE_SOURCE("cruel_bite", 0x59278F63D79F3DA1ULL);
-    const auto& bytes = bytesText.data;
-    thread_local EncryptedName<sizeof(bytes), 0x59278F63D79F3DA1ULL> name(bytes);
-    return name.Text();
-  }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+  effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("cruel_bite", 0x59278F63D79F3DA1ULL, name)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x006215E0
@@ -1265,12 +1140,7 @@ void CSkillAction_DR_SHOOTING_FEATHER::OnSkillEffect(int level, CGameActor* sour
   }
 
   EffectLists* effects = g_effectMgr;
-  if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId([] {
-    constexpr auto bytesText = OBFUSCATE_SOURCE("shooting_feather", 0x93E7A3A1F587CDC5ULL);
-    const auto& bytes = bytesText.data;
-    thread_local EncryptedName<sizeof(bytes), 0x93E7A3A1F587CDC5ULL> name(bytes);
-    return name.Text();
-  }()), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
+  if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_TEXT_NAMED("shooting_feather", 0x93E7A3A1F587CDC5ULL, name)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
     effect->SetAngle(ScreenAngle(&source->render.position.x, &target->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values));
   }
 }
