@@ -528,11 +528,10 @@ void UIEditCtrl3::PaintText() {
           end = 0;
         }
 
-        int length = end;
         if (static_cast<int>(std::strlen(this->wrappedLines[line].c_str())) == end && this->lineBreaks[line]) {
-          length = end - 2;
+          end -= 2;
         }
-        endX = length != 0 ? this->TextWidth(this->wrappedLines[line].c_str(), length, 0, 12, 0, 0) : 0;
+        endX = end != 0 ? this->TextWidth(this->wrappedLines[line].c_str(), end, 0, 12, 0, 0) : 0;
       }
 
       int left = x + startX;
@@ -546,7 +545,7 @@ void UIEditCtrl3::PaintText() {
       if (left < windowWidth && span > 0) {
         unsigned red, green, blue;
         g_skinInfo.PaletteChannels(6, 2, red, green, blue);
-        this->FillRegion(left, y, left + span <= windowWidth ? span : windowWidth - left, 14, RGB(red, green, blue));
+        this->FillRegion(left, y, left + span > windowWidth ? windowWidth - left : span, 14, RGB(red, green, blue));
       }
     }
 
@@ -557,7 +556,7 @@ void UIEditCtrl3::PaintText() {
 
     if (this->pendingText.size() < static_cast<unsigned>(line + 1)) {
       this->pendingText.push_back(this->wrappedLines[line]);
-    } else if (&this->pendingText[line] != &this->wrappedLines[line]) {
+    } else {
       this->pendingText[line] = this->wrappedLines[line];
     }
 
@@ -577,7 +576,7 @@ void UIEditCtrl3::PaintText() {
       for (std::size_t index = 0; index < entry->size(); ++index) {
         UIItemTagButton* button = (*entry)[index];
         const int buttonLine = button->line;
-        if (buttonLine < first || last - 1 < buttonLine) {
+        if (buttonLine < first || buttonLine > last - 1) {
           button->Move(-100, -100);
         } else if (line == buttonLine) {
           button->Move(button->column + x - 1, y);
@@ -679,7 +678,7 @@ void UIEditCtrl3::PaintText() {
           }
         } else if (this->movingDown != 0) {
           const int current = this->textY;
-          if (this->firstVisibleLine - 1 + rows < current) {
+          if (current > this->firstVisibleLine - 1 + rows) {
             if (current < rows) {
               this->firstVisibleLine = 0;
             } else {
@@ -687,10 +686,9 @@ void UIEditCtrl3::PaintText() {
             }
           }
         } else {
-          const int top = this->lineCount <= rows ? this->textY : this->lineCount - rows + wrapped;
-          this->firstVisibleLine = top;
-          if (this->multiline != 0 && top > 0) {
-            this->firstVisibleLine = top - 1;
+          this->firstVisibleLine = this->lineCount <= rows ? this->textY : this->lineCount - rows + wrapped;
+          if (this->multiline != 0 && this->firstVisibleLine > 0) {
+            --this->firstVisibleLine;
           }
         }
       }
@@ -701,8 +699,7 @@ void UIEditCtrl3::PaintText() {
     }
   }
 
-  std::size_t count = this->wrappedLines.size();
-  if (count > 1 && this->textY > 0) {
+  if (this->wrappedLines.size() > 1 && this->textY > 0) {
     const std::size_t length = std::strlen(this->wrappedLines[this->textY - 1].c_str());
     if (this->previousLineText) {
       delete[] this->previousLineText;
@@ -710,7 +707,7 @@ void UIEditCtrl3::PaintText() {
     }
     this->previousLineText = new char[length + 1];
     std::strcpy(this->previousLineText, this->wrappedLines[this->textY - 1].c_str());
-  } else if ((count == 1 || (count > 1 && this->textY == 0)) && this->lineBreaks[0]) {
+  } else if ((this->wrappedLines.size() == 1 || (this->wrappedLines.size() > 1 && this->textY == 0)) && this->lineBreaks[0]) {
     const std::size_t length = std::strlen(this->wrappedLines[0].c_str());
     if (this->previousLineText) {
       delete[] this->previousLineText;
@@ -720,8 +717,7 @@ void UIEditCtrl3::PaintText() {
     std::strcpy(this->previousLineText, this->wrappedLines[0].c_str());
   }
 
-  count = this->wrappedLines.size();
-  if (count > 1 && static_cast<unsigned>(this->textY) < count - 1) {
+  if (this->wrappedLines.size() > 1 && static_cast<unsigned>(this->textY) < this->wrappedLines.size() - 1) {
     const std::size_t length = std::strlen(this->wrappedLines[this->textY + 1].c_str());
     if (this->nextLineText) {
       delete[] this->nextLineText;
@@ -729,7 +725,7 @@ void UIEditCtrl3::PaintText() {
     }
     this->nextLineText = new char[length + 1];
     std::strcpy(this->nextLineText, this->wrappedLines[this->textY + 1].c_str());
-  } else if (count == 1 && this->lineBreaks[0]) {
+  } else if (this->wrappedLines.size() == 1 && this->lineBreaks[0]) {
     const std::size_t length = std::strlen(this->wrappedLines[0].c_str());
     if (this->nextLineText) {
       delete[] this->nextLineText;
