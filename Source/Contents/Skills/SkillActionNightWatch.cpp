@@ -317,7 +317,8 @@ int CSkillAction_NW_THE_VIGILANTE_AT_NIGHT_GUN_SHOTGUN::GetSkillAttackMotion() {
 // FUNCTION: fn_08685
 void CSkillAction_NW_THE_VIGILANTE_AT_NIGHT_GUN_SHOTGUN::OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   if (source) {
-    g_effectMgr->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("the_vigilante_at_night_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("the_vigilante_at_night_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   }
 
   if (!target) {
@@ -326,7 +327,8 @@ void CSkillAction_NW_THE_VIGILANTE_AT_NIGHT_GUN_SHOTGUN::OnSkillEffect(int level
 
   for (int index = 0; index < 4; ++index) {
     const vector3d position = target->render.position;
-    CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("the_vigilante_at_night_crack"), position, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    CEffect* effect = effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("the_vigilante_at_night_crack"), position, 0, -1, 0, 0);
     if (!effect) {
       return;
     }
