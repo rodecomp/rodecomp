@@ -24,7 +24,7 @@ void UIEmblemWnd::OnCreate(int, int) {
 void UIEmblemWnd::Paint() {
   this->ClearSurface(0xFFFF00FF);
 
-  const bool framed = g_serviceOptions.Get(TT_EMBLEM_FRAME_ON_OFF) != 0;
+  const bool framed = g_serviceOptions.Get(TT_EMBLEM_FRAME_ON_OFF);
   if (framed && g_session.GetSiegeMode() && !g_session.GetBattleFieldMode()) {
     CBitmapRes* frame = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\emblem_frame.bmp")));
     if (frame) {
