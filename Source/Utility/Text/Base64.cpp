@@ -105,28 +105,30 @@ std::string EncodeBase64(const std::string& input, bool urlSafe) {
 // OFFSET: 0x00619E10
 // FUNCTION: fn_04414
 std::string EncodeBase64(const unsigned char* input, unsigned int length, bool urlSafe) {
-  const unsigned int encodedLength = 4 * ((length + 2) / 3);
-  const char padding = urlSafe ? '.' : '=';
+  const unsigned int encodedLength = (length + 2) / 3 * 4;
+  const unsigned char padding = urlSafe ? '.' : '=';
   const char* alphabet = alphabets[urlSafe];
   std::string encoded;
   encoded.reserve(encodedLength);
 
-  for (unsigned int index = 0; index < length; index += 3) {
-    encoded.push_back(alphabet[input[index] >> 2]);
+  unsigned int index = 0;
+  while (index < length) {
+    encoded.push_back(alphabet[(input[index + 0] & 0xfc) >> 2]);
     if (index + 1 < length) {
-      encoded.push_back(alphabet[((input[index] & 3) << 4) + (input[index + 1] >> 4)]);
+      encoded.push_back(alphabet[((input[index + 0] & 0x03) << 4) + ((input[index + 1] & 0xf0) >> 4)]);
       if (index + 2 < length) {
-        encoded.push_back(alphabet[((input[index + 1] & 15) << 2) + (input[index + 2] >> 6)]);
-        encoded.push_back(alphabet[input[index + 2] & 63]);
+        encoded.push_back(alphabet[((input[index + 1] & 0x0f) << 2) + ((input[index + 2] & 0xc0) >> 6)]);
+        encoded.push_back(alphabet[input[index + 2] & 0x3f]);
       } else {
-        encoded.push_back(alphabet[(input[index + 1] & 15) << 2]);
+        encoded.push_back(alphabet[(input[index + 1] & 0x0f) << 2]);
         encoded.push_back(padding);
       }
     } else {
-      encoded.push_back(alphabet[(input[index] & 3) << 4]);
+      encoded.push_back(alphabet[(input[index + 0] & 0x03) << 4]);
       encoded.push_back(padding);
       encoded.push_back(padding);
     }
+    index += 3;
   }
 
   return encoded;
