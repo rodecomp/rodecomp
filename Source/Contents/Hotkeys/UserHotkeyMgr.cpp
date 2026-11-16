@@ -191,15 +191,16 @@ void CUserHotkeyMgr::Capture() {
         continue;
       }
 
-      std::string text;
-      int key1, key2;
+      Hotkey hotkey;
+      hotkey.tab = tab;
+      hotkey.index = index;
       const char* keyText = nullptr;
       const char* description = nullptr;
 
-      if (g_session.m_hotkeyScript->Call("GetUserHotKeyInfo", "dd>ddss", tab + 1, index, &key1, &key2, &keyText, &description)) {
-        text = description;
-        if (!text.empty()) {
-          this->m_original.emplace_back(tab, index, key1, key2, text);
+      if (g_session.m_hotkeyScript->Call("GetUserHotKeyInfo", "dd>ddss", tab + 1, index, &hotkey.key1, &hotkey.key2, &keyText, &description)) {
+        hotkey.description = description;
+        if (!hotkey.description.empty()) {
+          this->m_original.emplace_back(hotkey.tab, hotkey.index, hotkey.key1, hotkey.key2, hotkey.description);
         }
       }
     }
