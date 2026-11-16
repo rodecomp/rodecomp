@@ -357,23 +357,22 @@ std::string UIItemTagCtrl::AddSkillTag(int tagId, unsigned int color) {
   const std::string title = g_itemTagOwner->Title(tagId, &label, 17);
 
   UIItemTagButton* button = this->CreateItemTagButton(title, label, tagId, nullptr, 0x7F00E4);
-  if (!button) {
-    return std::string();
+  if (button) {
+    this->AddTagButton(button);
+
+    std::string link = "00000T";
+    const std::string number = this->ItemLinkNumberText(tagId);
+    link += number;
+    link += "%0&0'0(1)0";
+
+    ItemTagRecord record;
+    record.child = button;
+    StringFormat(record.number, sizeof(record.number), _TRUNCATE, "%s", number.c_str());
+    StringFormat(record.name, sizeof(record.name), _TRUNCATE, "%s", label.c_str());
+    StringFormat(record.link, sizeof(record.link), _TRUNCATE, "%s", link.c_str());
+    this->tags.push_back(record);
+
+    return "<" + label + ">";
   }
-
-  this->AddTagButton(button);
-
-  std::string link = "00000T";
-  const std::string number = this->ItemLinkNumberText(tagId);
-  link += number;
-  link += "%0&0'0(1)0";
-
-  ItemTagRecord record;
-  record.child = button;
-  StringFormat(record.number, sizeof(record.number), _TRUNCATE, "%s", number.c_str());
-  StringFormat(record.name, sizeof(record.name), _TRUNCATE, "%s", label.c_str());
-  StringFormat(record.link, sizeof(record.link), _TRUNCATE, "%s", link.c_str());
-  this->tags.push_back(record);
-
-  return "<" + label + ">";
+  return std::string();
 }
