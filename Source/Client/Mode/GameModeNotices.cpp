@@ -3204,6 +3204,35 @@ struct GuildStorageLogPacket {
 };
 #pragma pack(pop)
 
+// INLINED
+static __forceinline void AddGuildStorageLog(const GuildStorageLogPacketEntry& source) {
+  ITEM_INFO item;
+  item.recordIds[0] = source.logId;
+  item.recordIds[1] = source.quantity;
+  item.recordType = source.operation;
+  std::strcpy(reinterpret_cast<char*>(item.recordName), source.name);
+  std::strcpy(reinterpret_cast<char*>(item.recordDate), source.date);
+  char number[16] = {};
+  item.itemId = _itoa(source.itemId, number, 10);
+  item.identified = source.identified;
+  item.identity[0] = source.count;
+  item.refiningLevel = source.refine;
+  std::memcpy(item.cards, source.cards, sizeof(source.cards));
+  GuildStorageLogEntry entry;
+  entry.logId = item.recordIds[0];
+  entry.quantity = item.recordIds[1];
+  entry.operation = item.recordType;
+  std::strcpy(entry.characterName, reinterpret_cast<const char*>(item.recordName));
+  std::strcpy(entry.timestamp, reinterpret_cast<const char*>(item.recordDate));
+  entry.itemName = item.DisplayName(0);
+  entry.identified = item.identified;
+  entry.itemType = item.identity[0];
+  entry.refineLevel = item.refiningLevel;
+  std::memcpy(entry.cards, item.cards, sizeof(entry.cards));
+  entry.category = source.highlighted;
+  g_session.guildStorageLogs[0].push_back(entry);
+}
+
 // OFFSET: 0x00D1C640
 // FUNCTION: fn_21627
 void CGameMode::ReceiveGuildStorageLog(const unsigned char* data) {
@@ -5672,14 +5701,16 @@ void CGameMode::ReceiveRodexMailListAppend(const unsigned char* data) {
       RodexMail mail;
       mail.isRead = entry->isRead;
       mail.type = entry->type;
-      mail.expiresAt = _time32(nullptr) + entry->expireTime;
+      const __time32_t now = _time32(nullptr);
+      mail.expiresAt = entry->expireTime + now;
       mail.sender.assign(entry->sender, (std::min)(static_cast<std::size_t>(24), std::strlen(entry->sender)));
       if (packet->type == MAIL_INBOX_NORMAL && (mail.type & 8) == MAIL_INBOX_NORMAL && !g_session.HasCharacterName(mail.sender)) {
         mail.isKnownSender = g_session.IsKnownName(mail.sender);
       } else {
         mail.isKnownSender = 1;
       }
-      mail.title.insert(mail.title.end(), entry->title, entry->title + entry->titleLength);
+      const char* title = entry->title;
+      mail.title.insert(mail.title.end(), title, title + entry->titleLength);
 
       switch (packet->type) {
       case MAIL_INBOX_NORMAL:
