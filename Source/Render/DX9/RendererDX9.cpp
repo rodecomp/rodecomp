@@ -104,10 +104,6 @@ bool CRendererDX9::SaveLogo(std::string filename) {
   return this->SaveScreenshot(filename.c_str(), 1, overlay, nullptr);
 }
 
-void CRendererDX9::Submit(RenderCommand* command, std::uint16_t flags) {
-  this->Submit(command, flags);
-}
-
 // OFFSET: 0x00559BE0
 // FUNCTION: fn_02071
 void CRendererDX9::Submit(LightmappedPrimitive* command, int queue) {

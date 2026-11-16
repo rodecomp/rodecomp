@@ -46,7 +46,7 @@ public:
   void DrawQueues();
   void ApplyFog();
   bool SaveScreenshot(const char* filename, int format, CTexture* overlay, const tagRECT* rectangle);
-  void Submit(RenderCommand* command, std::uint16_t flags);
+  using CRenderer::Submit;
   void Submit(LightmappedPrimitive* command, int queue);
 
   /* 025C */ DeviceOwnerDX9* device;
