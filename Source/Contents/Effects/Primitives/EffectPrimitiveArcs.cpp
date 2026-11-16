@@ -1439,21 +1439,20 @@ void CEffectPrim::RenderPolygonFrames(matrix& wtm) {
 
     radius = slot.distance;
     angle = slot.fullDisplayAngle;
-    const float shape = slot.height[10];
     p0.x = radius * g_cosTable[angle];
     p0.y = 0.0f;
     p0.z = radius * g_sinTable[angle];
-    if (shape == 0.0f) {
+    if (slot.height[10] == 0.0f) {
       angle -= 90;
       if (angle < 0) {
         angle += 360;
       }
-    } else if (shape == 1.0f) {
+    } else if (slot.height[10] == 1.0f) {
       angle -= 60;
       if (angle < 0) {
         angle += 360;
       }
-    } else if (shape == 2.0f) {
+    } else if (slot.height[10] == 2.0f) {
       angle -= 130;
       if (angle < 0) {
         angle += 360;
@@ -1462,17 +1461,17 @@ void CEffectPrim::RenderPolygonFrames(matrix& wtm) {
     p1.x = radius * g_cosTable[angle];
     p1.y = 0.0f;
     p1.z = radius * g_sinTable[angle];
-    if (shape == 0.0f) {
+    if (slot.height[10] == 0.0f) {
       angle -= 90;
       if (angle < 0) {
         angle += 360;
       }
-    } else if (shape == 1.0f) {
+    } else if (slot.height[10] == 1.0f) {
       angle -= 120;
       if (angle < 0) {
         angle += 360;
       }
-    } else if (shape == 2.0f) {
+    } else if (slot.height[10] == 2.0f) {
       angle -= 50;
       if (angle < 0) {
         angle += 360;
@@ -1481,17 +1480,17 @@ void CEffectPrim::RenderPolygonFrames(matrix& wtm) {
     p2.x = radius * g_cosTable[angle];
     p2.y = 0.0f;
     p2.z = radius * g_sinTable[angle];
-    if (shape == 0.0f) {
+    if (slot.height[10] == 0.0f) {
       angle -= 90;
       if (angle < 0) {
         angle += 360;
       }
-    } else if (shape == 1.0f) {
+    } else if (slot.height[10] == 1.0f) {
       angle -= 60;
       if (angle < 0) {
         angle += 360;
       }
-    } else if (shape == 2.0f) {
+    } else if (slot.height[10] == 2.0f) {
       angle -= 130;
       if (angle < 0) {
         angle += 360;
@@ -1510,18 +1509,10 @@ void CEffectPrim::RenderPolygonFrames(matrix& wtm) {
     p3.z -= top;
     this->Tei_TowardScreen(p0, p1, p2, p3, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
 
-    p0.x = slot.vecBNow.x + p0.x;
-    p0.y = slot.vecBNow.y + p0.y;
-    p0.z = slot.vecBNow.z + p0.z;
-    p1.x = slot.vecBNow.x + p1.x;
-    p1.y = slot.vecBNow.y + p1.y;
-    p1.z = slot.vecBNow.z + p1.z;
-    p2.x = slot.vecBNow.x + p2.x;
-    p2.y = slot.vecBNow.y + p2.y;
-    p2.z = slot.vecBNow.z + p2.z;
-    p3.x = slot.vecBNow.x + p3.x;
-    p3.y = slot.vecBNow.y + p3.y;
-    p3.z = slot.vecBNow.z + p3.z;
+    p0 += slot.vecBNow;
+    p1 += slot.vecBNow;
+    p2 += slot.vecBNow;
+    p3 += slot.vecBNow;
 
     switch (slot.flag1[2]) {
     case 0:
@@ -1545,17 +1536,17 @@ void CEffectPrim::RenderPolygonFrames(matrix& wtm) {
     p0.x = radius * g_cosTable[angle];
     p0.y = 0.0f;
     p0.z = radius * g_sinTable[angle];
-    if (shape == 0.0f) {
+    if (slot.height[10] == 0.0f) {
       angle -= 90;
       if (angle < 0) {
         angle += 360;
       }
-    } else if (shape == 1.0f) {
+    } else if (slot.height[10] == 1.0f) {
       angle -= 60;
       if (angle < 0) {
         angle += 360;
       }
-    } else if (shape == 2.0f) {
+    } else if (slot.height[10] == 2.0f) {
       angle -= 130;
       if (angle < 0) {
         angle += 360;
@@ -1564,17 +1555,17 @@ void CEffectPrim::RenderPolygonFrames(matrix& wtm) {
     p1.x = radius * g_cosTable[angle];
     p1.y = 0.0f;
     p1.z = radius * g_sinTable[angle];
-    if (shape == 0.0f) {
+    if (slot.height[10] == 0.0f) {
       angle -= 90;
       if (angle < 0) {
         angle += 360;
       }
-    } else if (shape == 1.0f) {
+    } else if (slot.height[10] == 1.0f) {
       angle -= 120;
       if (angle < 0) {
         angle += 360;
       }
-    } else if (shape == 2.0f) {
+    } else if (slot.height[10] == 2.0f) {
       angle -= 50;
       if (angle < 0) {
         angle += 360;
@@ -1583,17 +1574,17 @@ void CEffectPrim::RenderPolygonFrames(matrix& wtm) {
     p2.x = radius * g_cosTable[angle];
     p2.y = 0.0f;
     p2.z = radius * g_sinTable[angle];
-    if (shape == 0.0f) {
+    if (slot.height[10] == 0.0f) {
       angle -= 90;
       if (angle < 0) {
         angle += 360;
       }
-    } else if (shape == 1.0f) {
+    } else if (slot.height[10] == 1.0f) {
       angle -= 60;
       if (angle < 0) {
         angle += 360;
       }
-    } else if (shape == 2.0f) {
+    } else if (slot.height[10] == 2.0f) {
       angle -= 130;
       if (angle < 0) {
         angle += 360;
@@ -1612,18 +1603,10 @@ void CEffectPrim::RenderPolygonFrames(matrix& wtm) {
     p3.z -= top;
     this->Tei_TowardScreen(p0, p1, p2, p3, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
 
-    p0.x = slot.vecBNow.x + p0.x;
-    p0.y = slot.vecBNow.y + p0.y;
-    p0.z = slot.vecBNow.z + p0.z;
-    p1.x = slot.vecBNow.x + p1.x;
-    p1.y = slot.vecBNow.y + p1.y;
-    p1.z = slot.vecBNow.z + p1.z;
-    p2.x = slot.vecBNow.x + p2.x;
-    p2.y = slot.vecBNow.y + p2.y;
-    p2.z = slot.vecBNow.z + p2.z;
-    p3.x = slot.vecBNow.x + p3.x;
-    p3.y = slot.vecBNow.y + p3.y;
-    p3.z = slot.vecBNow.z + p3.z;
+    p0 += slot.vecBNow;
+    p1 += slot.vecBNow;
+    p2 += slot.vecBNow;
+    p3 += slot.vecBNow;
 
     switch (slot.flag1[2]) {
     case 0:
