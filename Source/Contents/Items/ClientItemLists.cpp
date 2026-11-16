@@ -1869,7 +1869,7 @@ int CSession::IsFriendNameDifferent(const char* name) {
 
 // OFFSET: 0x00DFCBB0
 // FUNCTION: fn_23600
-bool CSession::AddExchangeItem(ITEM_INFO item) {
+__declspec(safebuffers) bool CSession::AddExchangeItem(ITEM_INFO item) {
   int count = 0;
   for (int i = 0; i < 10; ++i) {
     if (this->m_exchangeItems[i].quantity != 0) {
