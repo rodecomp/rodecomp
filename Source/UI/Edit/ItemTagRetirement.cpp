@@ -126,22 +126,21 @@ bool UIItemTagCtrl::SyncTagsWithText() {
   while (text.find("<") != std::string::npos) {
     std::string token = text.substr(text.find("<"));
 
-    if (token.find(">") == std::string::npos) {
-      text = text.substr(text.find("<") + 1);
-      continue;
-    }
+    if (token.find(">") != std::string::npos) {
+      text = text.substr(text.find(">") + 1);
+      token = token.substr(0, token.find(">") + 1);
 
-    text = text.substr(text.find(">") + 1);
-    token = token.substr(0, token.find(">") + 1);
-
-    for (auto entry = this->tags.begin(); entry != this->tags.end(); ++entry) {
-      std::string fitted = this->FitTextToWidth(entry->name, this->tagWidth / 2);
-      if (token.find(fitted) != std::string::npos) {
-        entry->index = kept.size();
-        kept.push_back(*entry);
-        this->tags.erase(entry);
-        break;
+      for (auto entry = this->tags.begin(); entry != this->tags.end(); ++entry) {
+        std::string fitted = this->FitTextToWidth(entry->name, this->tagWidth / 2);
+        if (token.find(fitted) != std::string::npos) {
+          entry->index = kept.size();
+          kept.push_back(*entry);
+          this->tags.erase(entry);
+          break;
+        }
       }
+    } else {
+      text = text.substr(text.find("<") + 1);
     }
   }
 
