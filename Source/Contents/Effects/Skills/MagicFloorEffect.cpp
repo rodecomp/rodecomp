@@ -146,20 +146,19 @@ void CMagicFloorEffect::OnProcess() {
     particlePosition.z = this->position[2];
 
     if (particle) {
-      const float current = particle->angle;
       int angle = 0;
       switch (particle->columnIndex) {
       case 0:
       case 1:
-        angle = static_cast<int>(current + 1.0f);
+        angle = static_cast<int>(particle->angle + 1.0f);
         break;
       case 2:
       case 3:
-        angle = static_cast<int>(current + 2.0f);
+        angle = static_cast<int>(particle->angle + 2.0f);
         break;
       case 4:
       case 5:
-        angle = static_cast<int>(current - 1.0f);
+        angle = static_cast<int>(particle->angle - 1.0f);
         break;
       }
 
