@@ -323,10 +323,8 @@ bool CGameActor::ProcessState() {
       const unsigned int elapsed = timeGetTime() - this->lastProcessStateTime;
       if (remaining != 0) {
         moved = 1;
-        const float elapsedTime = static_cast<float>(elapsed);
-        const float totalTime = static_cast<float>(remaining);
-        this->render.position.x = elapsedTime * deltaX / totalTime + old.x;
-        this->render.position.z = deltaZ * elapsedTime / totalTime + old.z;
+        this->render.position.x = deltaX * static_cast<float>(elapsed) / static_cast<float>(remaining) + old.x;
+        this->render.position.z = deltaZ * static_cast<float>(elapsed) / static_cast<float>(remaining) + old.z;
       }
       if (this->render.isMotionFinished) {
         this->render.position.x = this->damageDestX;
