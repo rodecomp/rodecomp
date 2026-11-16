@@ -254,8 +254,9 @@ void UIHotKeyWnd::OnLBtnDown(int x, int y) {
       int screenX = 0;
       int screenY = 0;
       this->ToScreen(screenX, screenY);
+      UIBalloonText* target = this->m_balloon;
       const char* text = LookupMessage(MSI_HOTKEYWND_NOTICE1);
-      this->m_balloon->SetText(text, 0x3C);
+      target->SetText(text, 0x3C);
       {
         UIBalloonText* balloon = this->m_balloon;
         balloon->m_textColor = 0xFFFFFF;

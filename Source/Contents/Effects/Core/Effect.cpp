@@ -198,9 +198,10 @@ void CEffect::CheckRange() {
 // OFFSET: 0x00B4E630
 // FUNCTION: fn_18998
 bool CEffect::InRange() {
-  const vector3d player = PlayerPosition();
-  const float y = player.y - this->position[1];
+  vector3d player;
+  player = PlayerPosition();
   const float x = player.x - this->position[0];
+  const float y = player.y - this->position[1];
   const float z = player.z - this->position[2];
   return SquareRoot(y * y + x * x + z * z) < static_cast<float>(this->range);
 }

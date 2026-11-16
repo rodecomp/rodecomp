@@ -570,8 +570,9 @@ void CUISkillDelayInfo::OnInit() {
   this->labels[1]->SetText(LookupMessage(4304));
   this->labels[2]->SetText(LookupMessage(4305));
 
-  this->delayList->layoutFlag = 1;
-  this->delayList->Invalidate();
+  auto* list = this->delayList;
+  list->layoutFlag = 1;
+  list->Invalidate();
   this->description->scrollBar->SetHidden(1);
 }
 
