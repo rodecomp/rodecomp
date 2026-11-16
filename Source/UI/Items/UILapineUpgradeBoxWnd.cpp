@@ -575,7 +575,7 @@ bool UILapineUpgradeBox_IngredientListWnd::CanUseIngredient(std::uint32_t identi
   const ITEM_INFO& item = entry->item;
 
   const auto material = std::find_if(this->materials.begin(), this->materials.end(), [&item](ITEM_INFO required) {
-    return std::atoi(required.itemId.c_str()) == std::atoi(item.itemId.c_str());
+    return std::atoi(item.itemId.c_str()) == std::atoi(required.itemId.c_str());
   });
   if (material == this->materials.end()) {
     return false;
