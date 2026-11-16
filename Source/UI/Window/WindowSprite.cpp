@@ -142,7 +142,7 @@ void UIWindow::AddRotatedSpriteCellOverlay(
     y += window->geometry.y;
   }
 
-  RenderPrimitive* primitive = g_renderer->primitives.Acquire();
+  RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
   SpriteAtlasRecord record{};
 
   CTexture* texture = static_cast<CTexture*>(const_cast<void*>(image->surface));
