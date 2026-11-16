@@ -460,7 +460,14 @@ void RegisterLowercaseName(const char* name) {
   std::string lowered(name);
   std::transform(lowered.begin(), lowered.end(), lowered.begin(), [](unsigned char character) { return static_cast<char>(std::tolower(character)); });
 
-  if (std::find(g_session.skyMapNames.begin(), g_session.skyMapNames.end(), lowered.c_str()) == g_session.skyMapNames.end()) {
+  std::vector<std::string>::iterator it = g_session.skyMapNames.begin();
+  for (; it != g_session.skyMapNames.end(); ++it) {
+    if (*it == lowered.c_str()) {
+      break;
+    }
+  }
+
+  if (it == g_session.skyMapNames.end()) {
     g_session.skyMapNames.push_back(lowered.c_str());
   }
 }
