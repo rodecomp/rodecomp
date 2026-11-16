@@ -234,7 +234,8 @@ void CSkillAction_WH_WILD_WALK::OnSkillDamage(CGameActor* source, CGameActor* ta
   if (source && target) {
     EffectLists* effects = g_effectMgr;
     if (CEffect* effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("wild_walk_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
-      effect->SetAngle(ScreenAngle(&source->render.position.x, &target->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values));
+      const float angle = ScreenAngle(&source->render.position.x, &target->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values);
+      effect->SetAngle(angle);
     }
   }
 }
