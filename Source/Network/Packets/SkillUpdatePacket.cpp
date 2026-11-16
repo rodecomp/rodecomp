@@ -1,15 +1,8 @@
 #include "Client/Mode/CGameMode.h"
-#include "UI/Window/UIEnums.h"
 #include "Network/Packets/PacketId.h"
 #include "Client/Session/Session.h"
-#include "UI/Window/UIWindow.h"
-#include "UI/Window/UIWindowMgr.h"
-#include "UI/Guild/UIGuildWnd.h"
-#include "UI/Shortcuts/UIShortCutWnd.h"
 
 #include <cstring>
-
-template __declspec(noinline) void std::list<CSkillInfo>::clear() noexcept;
 
 namespace {
   // INLINED
@@ -75,42 +68,4 @@ void CGameMode::ReceiveLearnedSkill(
   }
 
   g_session.UpdateSkill(value, 1, 0);
-}
-
-// OFFSET: 0x00D2B5C0
-// FUNCTION: fn_45442
-void CGameMode::ApplyAdditionalSkillPacket(const void* packet) {
-  this->isReqUpgradeSkillLevel = 0;
-  g_session.m_additionalSkills.clear();
-
-  const auto* bytes = static_cast<const unsigned char*>(packet);
-
-  const auto length = static_cast<std::uint32_t>(static_cast<int>(Read<std::int16_t>(bytes + 2)) - 6);
-  const int count = static_cast<int>(length / 37);
-  const unsigned char* record = bytes + 6;
-
-  for (int index = 0; index < count; ++index, record += 37) {
-    CSkillInfo value;
-    value.level = Read<std::int16_t>(record + 6);
-    value.id = Read<std::uint16_t>(record);
-    value.spCost = static_cast<std::int32_t>(Read<std::int16_t>(record + 8));
-    value.type = Read<std::uint32_t>(record + 2);
-    value.upgradable = record[36];
-    value.name = value.IdName();
-    value.apCost = value.UseApAmount(Read<std::int16_t>(record + 6));
-
-    if (value.id - 10000u <= 19u) {
-      g_session.UpdateAdditionalSkill(value, 1);
-    }
-  }
-
-  g_session.m_guildSkillPoint = Read<std::int16_t>(bytes + 4);
-  g_session.InvalidateWindowFrames();
-  if (g_windowMgr.guildSkillWnd) {
-    g_windowMgr.guildSkillWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
-  }
-
-  if (g_windowMgr.shortCutWnd) {
-    g_windowMgr.shortCutWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
-  }
 }
