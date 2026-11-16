@@ -16,7 +16,7 @@ std::string CSession::ResolveAccountServiceBase() {
   }
 
   const char* resolved = nullptr;
-  if (this->m_hotkeyScript->Call("GetTableStringValueForC", "ss>s", "AssistAddrTbl", key.c_str(), &resolved) && resolved && *resolved) {
+  if (this->m_hotkeyScript->Call("GetTableStringValueForC", "ss>s", "AssistAddrTbl", key.c_str(), &resolved) == true && resolved && *resolved) {
     return resolved;
   }
 
