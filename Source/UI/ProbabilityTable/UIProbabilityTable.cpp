@@ -125,7 +125,7 @@ CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::~CUIListBo
 
 // OFFSET: 0x00A486C0
 // FUNCTION: fn_16114
-CUIProbabilityTable* CreateProbabilityTable() {
+CUIFrameWnd* CreateProbabilityTable() {
   return new CUIProbabilityTable();
 }
 
