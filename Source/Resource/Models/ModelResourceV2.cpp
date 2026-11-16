@@ -19,6 +19,11 @@ struct ModelFaceRecord {
   /* 0014 */ std::uint32_t smoothing;
 };
 
+// INLINED
+static bool operator<(const ModelFace& a, const ModelFace& b) {
+  return a.texture < b.texture;
+}
+
 // OFFSET: 0x007555C0
 // FUNCTION: fn_07984
 C3dModelResV2::C3dModelResV2() : framesPerSecond(0.0f), animationLength(0) {
@@ -301,7 +306,7 @@ void C3dModelResV2::ReadVersion2(CFile& input) {
       std::memcpy(target.smoothing.data(), record.data() + 20, groups * 4u);
     }
 
-    std::sort(mesh.faces, mesh.faces + mesh.faceCount, [](const ModelFace& a, const ModelFace& b) { return a.texture < b.texture; });
+    std::sort(mesh.faces, mesh.faces + mesh.faceCount);
     mesh.CalculateNormals();
     node->scaleKeys.Read(input);
     node->rotationKeys.Read(input);
@@ -310,13 +315,15 @@ void C3dModelResV2::ReadVersion2(CFile& input) {
     this->meshes[node->name] = node->mesh.get();
   }
 
-  for (ModelNode* node : this->nodes) {
+  for (auto it = this->nodes.begin(); it != this->nodes.end(); ++it) {
+    ModelNode* node = *it;
+
     if (!node->parentName.empty()) {
       ModelNode* parent = this->FindNode(node->parentName.c_str());
 
       if (parent) {
         node->parent = parent;
-        parent->children.push_back(node);
+        parent->children.push_back(*it);
       }
     }
   }
@@ -430,7 +437,7 @@ void C3dModelResV2::ReadVersion3(CFile& input) {
     }
 
     node->mesh->faces = faces;
-    std::sort(node->mesh->faces, node->mesh->faces + node->mesh->faceCount, [](const ModelFace& a, const ModelFace& b) { return a.texture < b.texture; });
+    std::sort(node->mesh->faces, node->mesh->faces + node->mesh->faceCount);
     node->mesh->CalculateNormals();
     node->scaleKeys.Read(input);
     node->rotationKeys.Read(input);
@@ -451,13 +458,15 @@ void C3dModelResV2::ReadVersion3(CFile& input) {
     this->meshes[node->name] = node->mesh.get();
   }
 
-  for (ModelNode* node : this->nodes) {
+  for (auto it = this->nodes.begin(); it != this->nodes.end(); ++it) {
+    ModelNode* node = *it;
+
     if (!node->parentName.empty()) {
       ModelNode* parent = this->FindNode(node->parentName.c_str());
 
       if (parent) {
         node->parent = parent;
-        parent->children.push_back(node);
+        parent->children.push_back(*it);
       }
     }
   }
