@@ -76,9 +76,7 @@ int UIListBoxID::SendMsg(UIWindow* sender, int message, std::intptr_t argument1,
     if (this->selected > this->topLine + this->geometry.height / this->lineHeight - 1) {
       this->SendMsg(nullptr, UM_SCROLLVERT, 1, 0, 0, 0);
     }
-    this->Invalidate();
-    this->Refresh();
-    return 0;
+    break;
   case UM_UPPUSH:
     --this->selected;
     if (this->selected < 0) {
@@ -87,9 +85,7 @@ int UIListBoxID::SendMsg(UIWindow* sender, int message, std::intptr_t argument1,
     if (this->selected < this->topLine) {
       this->SendMsg(nullptr, UM_SCROLLVERT, -1, 0, 0, 0);
     }
-    this->Invalidate();
-    this->Refresh();
-    return 0;
+    break;
   case UM_DOWNPUSH:
     ++this->selected;
     if (static_cast<std::size_t>(this->selected) > this->lines.size() - 1) {
@@ -98,9 +94,7 @@ int UIListBoxID::SendMsg(UIWindow* sender, int message, std::intptr_t argument1,
     if (this->selected > this->geometry.height / this->lineHeight + this->topLine - 1) {
       this->SendMsg(nullptr, UM_SCROLLVERT, 1, 0, 0, 0);
     }
-    this->Invalidate();
-    this->Refresh();
-    return 0;
+    break;
   case UM_SCROLLVERT:
   case UM_SCROLLVERTPAGEUP:
   case UM_SCROLLVERTPAGEDOWN: {
@@ -162,7 +156,11 @@ int UIListBoxID::SendMsg(UIWindow* sender, int message, std::intptr_t argument1,
     }
     return this->horizontalOffset - previous;
   }
+  default:
+    return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
-  return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
+  this->Invalidate();
+  this->Refresh();
+  return 0;
 }
