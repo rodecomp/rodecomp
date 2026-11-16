@@ -11,11 +11,21 @@
 class CGndRes;
 class TextureCache;
 
+union GroundCornerColor {
+  /* 0000 */ std::uint32_t argb;
+  struct {
+    /* 0000 */ unsigned char b;
+    /* 0001 */ unsigned char g;
+    /* 0002 */ unsigned char r;
+    /* 0003 */ unsigned char a;
+  };
+};
+
 struct GroundLightmap {
   /* 0000 */ unsigned char color[4];
   /* 0004 */ CTexture* texture;
   /* 0008 */ float uv[4][2];
-  /* 0028 */ std::uint32_t cornerColors[4];
+  /* 0028 */ GroundCornerColor cornerColors[4];
 };
 
 class GroundLightmapSet {

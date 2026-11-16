@@ -57,10 +57,10 @@ int GroundBase::Lighting(int, int, float&, float&, float&) const {
 
 // INLINED
 static __forceinline void ReadLightmapSample(const GroundCell& cell, unsigned sample, unsigned char& alpha, unsigned char& red, unsigned char& green, unsigned char& blue) {
-  alpha = static_cast<unsigned char>(cell.top->lightmap->cornerColors[sample] >> 24);
-  red = static_cast<unsigned char>(cell.top->lightmap->cornerColors[sample] >> 16);
-  green = static_cast<unsigned char>(cell.top->lightmap->cornerColors[sample] >> 8);
-  blue = static_cast<unsigned char>(cell.top->lightmap->cornerColors[sample]);
+  alpha = cell.top->lightmap->cornerColors[sample].a;
+  red = cell.top->lightmap->cornerColors[sample].r;
+  green = cell.top->lightmap->cornerColors[sample].g;
+  blue = cell.top->lightmap->cornerColors[sample].b;
 }
 
 // OFFSET: 0x00AC11D0
