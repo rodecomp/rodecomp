@@ -192,12 +192,16 @@ __forceinline void UIShortCutWnd::ClickControl(int id) {
 
   case SHORTCUT_BUTTON_BANK: {
     const int bank = g_session.GetOption(10);
-    g_session.SetOption(10, bank == 0 ? 1 : 0, 0);
+    if (bank == 0) {
+      g_session.SetOption(10, 1, 0);
+    } else {
+      g_session.SetOption(10, 0, 0);
+    }
     this->m_bank->geometry.state = bank == 0;
     this->m_bank->Invalidate();
 
-    for (ShortcutCooldownRecord& record : g_session.m_requestTimers) {
-      record.main.clear();
+    for (std::list<ShortcutCooldownRecord>::iterator record = g_session.m_requestTimers.begin(); record != g_session.m_requestTimers.end(); ++record) {
+      record->main.clear();
     }
 
     this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
@@ -330,101 +334,102 @@ __forceinline void UIShortCutWnd::RestoreLayout(NormalItemSlotWindow* value) {
   this->Move(this->m_saved->x, this->m_saved->y);
 }
 
-// INLINED
-__forceinline void UseShortcutSlot(const NormalItemSlot& slot) {
-  if (g_session.GetOption(5) > 0 || slot.itemId == 0) {
-    return;
-  }
-
-  if (slot.enabled != 0) {
-    CSkillInfo skill = g_session.LookupSkill(slot.itemId);
-    if (skill.MatchesShortcut(&slot)) {
-      CMode* mode = g_modeMgr.currentMode;
-      int level = slot.value;
-      if (IsIndexedSkill(static_cast<int>(skill.id))) {
-        level = (std::min)(static_cast<int>(slot.value), skill.level);
-      }
-
-      mode->SendMsg(MM_USING_SKILL, reinterpret_cast<int>(&skill), level, 0, 0);
-    }
-
-    return;
-  }
-
-  ITEM_INFO item = g_session.LookupClientItem(static_cast<int>(slot.itemId), 1);
-  if (item.identity[1] == 0) {
-    return;
-  }
-
-  CGameMode* mode = g_modeMgr.GetGameMode();
-  switch (item.identity[0]) {
-  case TYPE_HEAL:
-  case TYPE_SCHANGE:
-  case TYPE_SPECIAL:
-    if (item.GetItemId() != 12802 || g_windowMgr.Confirm(LookupMessage(MSI_COMMAND_SETTING), 2, false, false, 0, "Message", 280, 120, 0) != 188) {
-      mode->SendMsg(MM_USEITEM, item.identity[1], 0, 0, 0);
-    }
-
-    break;
-
-  case TYPE_CASH_POINT_ITEM:
-    if (g_session.m_manner >= 0) {
-      const int result =
-        g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_CONFIRM_TO_OPEN_CASH_ITEM), item.DisplayName(0).c_str()).c_str(), 2, false, false, 0, "Message", 280, 120, 0);
-      if (result == 187) {
-        mode->SendMsg(MM_USEITEM, item.identity[1], 0, 0, 0);
-      }
-    }
-
-    break;
-
-  case TYPE_ARROW:
-  case TYPE_AMMO:
-  case TYPE_THROWWEAPON:
-  case TYPE_CANNONBALL:
-    if (item.identity[3] == 0x8000) {
-      mode->SendMsg(MM_WEAR_EQUIP_ARROW, item.identity[1], item.identity[2], 0, 0);
-    }
-
-    break;
-
-  default:
-    if (item.identity[2] != 0 && item.identity[3] == 0 && item.identified != 0) {
-      mode->SendMsg(MM_WEAR_EQUIP, item.identity[1], item.identity[2], 0, 0);
-    }
-
-    break;
-  }
-}
-
 // OFFSET: 0x0093B450
 // FUNCTION: fn_12760
 int UIShortCutWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case UM_USE_SHORTEN_ITEM:
-    UseShortcutSlot(*this->m_slots[a + 9 * b]);
+  case UM_USE_SHORTEN_ITEM: {
+    if (g_session.GetOption(5) > 0) {
+      return 0;
+    }
+
+    const NormalItemSlot* slot = this->m_slots[a + 9 * b];
+    if (slot->itemId == 0) {
+      return 0;
+    }
+
+    if (slot->enabled != 0) {
+      CSkillInfo skill = g_session.LookupSkill(slot->itemId);
+      if (this->MatchesShortcut(skill, slot)) {
+        CMode* mode = g_modeMgr.currentMode;
+        int level = slot->value;
+        if (IsIndexedSkill(static_cast<int>(skill.id))) {
+          level = (std::min)(static_cast<int>(slot->value), skill.level);
+        }
+
+        mode->SendMsg(MM_USING_SKILL, reinterpret_cast<int>(&skill), level, 0, 0);
+      }
+
+      return 0;
+    }
+
+    ITEM_INFO item = g_session.LookupClientItem(static_cast<int>(slot->itemId), 1);
+    if (item.identity[1] <= 0) {
+      return 0;
+    }
+
+    CGameMode* mode = g_modeMgr.GetGameMode();
+    switch (item.identity[0]) {
+    case TYPE_HEAL:
+    case TYPE_SCHANGE:
+    case TYPE_SPECIAL:
+      if (item.GetItemId() != 12802 || g_windowMgr.Confirm(LookupMessage(MSI_COMMAND_SETTING), 2, false, false, 0, "Message", 280, 120, 0) != 188) {
+        mode->SendMsg(MM_USEITEM, item.identity[1], 0, 0, 0);
+      }
+
+      break;
+
+    case TYPE_CASH_POINT_ITEM:
+      if (g_session.m_manner >= 0) {
+        const int result =
+          g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_CONFIRM_TO_OPEN_CASH_ITEM), item.DisplayName(0).c_str()).c_str(), 2, false, false, 0, "Message", 280, 120, 0);
+        if (result == 187) {
+          mode->SendMsg(MM_USEITEM, item.identity[1], 0, 0, 0);
+        }
+      }
+
+      break;
+
+    case TYPE_ARROW:
+    case TYPE_AMMO:
+    case TYPE_THROWWEAPON:
+    case TYPE_CANNONBALL:
+      if (item.identity[3] == 0x8000) {
+        mode->SendMsg(MM_WEAR_EQUIP_ARROW, item.identity[1], item.identity[2], 0, 0);
+      }
+
+      break;
+
+    default:
+      if (item.identity[2] != 0 && item.identity[3] == 0 && item.identified != 0) {
+        mode->SendMsg(MM_WEAR_EQUIP, item.identity[1], item.identity[2], 0, 0);
+      }
+
+      break;
+    }
     return 0;
+  }
 
   case UM_REFRESHITEM: {
     const int bank = g_session.GetOption(10);
     std::list<ShortcutCooldownRecord>& cooldowns = g_session.m_requestTimers;
     for (int index = 0; index < 36; ++index) {
+      NormalItemSlot*& slot = this->m_slots[index];
       const int source = g_session.RotateShortcut(index, bank);
       if (bank == 0) {
-        this->m_slots[index] = &g_session.m_shortcutSlots[source];
+        slot = &g_session.m_shortcutSlots[source];
       } else if (bank == 1) {
-        this->m_slots[index] = &g_session.m_secondaryShortcutSlots[source];
+        slot = &g_session.m_secondaryShortcutSlots[source];
       }
 
-      NormalItemSlot& slot = *this->m_slots[index];
-      if (slot.itemId == 0 || slot.enabled == 0) {
+      if (slot->itemId == 0 || slot->enabled == 0) {
         continue;
       }
 
-      CSkillInfo skill = g_session.m_skillBundle.Lookup(slot.itemId);
+      CSkillInfo skill = g_session.m_skillBundle.Lookup(slot->itemId);
       if (skill.available == 0) {
-        const auto record = std::find_if(cooldowns.begin(), cooldowns.end(), [&](const ShortcutCooldownRecord& value) {
-          return value.id == slot.itemId;
+        const auto record = std::find_if(cooldowns.begin(), cooldowns.end(), [slot](const ShortcutCooldownRecord& value) {
+          return value.id == slot->itemId;
         });
         if (record != cooldowns.end()) {
           const auto value = std::find_if(record->main.begin(), record->main.end(), [&](const CooldownState& state) { return state.slot == index; });
@@ -435,19 +440,19 @@ int UIShortCutWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       }
 
       if (skill.available == 0) {
-        skill = g_session.LookupHomunSkill(slot.itemId);
+        skill = g_session.LookupHomunSkill(slot->itemId);
       }
 
       if (skill.available == 0) {
-        skill = g_session.LookupMercSkill(slot.itemId);
+        skill = g_session.LookupMercSkill(slot->itemId);
       }
 
       if (skill.available == 0) {
-        skill = g_session.LookupAdditionalSkill(slot.itemId);
+        skill = g_session.LookupAdditionalSkill(slot->itemId);
       }
 
       if (skill.available != 0 && skill.level != 0 && g_session.UseLevel(static_cast<int>(skill.id)) == 0) {
-        slot.value = static_cast<std::int16_t>(skill.level);
+        slot->value = static_cast<std::int16_t>(skill.level);
       }
     }
 
