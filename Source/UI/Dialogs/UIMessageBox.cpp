@@ -1081,11 +1081,7 @@ void UILoginOTPWnd::OnCreate(int, int) {
   button->SetSize(button->BitmapWidth(), button->BitmapHeight());
   button->Move(186, 92);
   button->SetId(382);
-  {
-    const std::string text(LookupMessage(MSI_PRIVATE_AIRPLANE_WARNNING_SELECT_NPC));
-    button->text = text;
-    button->Invalidate();
-  }
+  button->SetText(LookupMessage(MSI_PRIVATE_AIRPLANE_WARNNING_SELECT_NPC));
   button->AddTextStyle(0, 12, 0x313131, 1, 1, -1000, -1000);
   button->AddTextStyle(1, 12, 0x313131, 1, 1, -1000, -1000);
   button->AddTextStyle(2, 12, 0x313131, 1, 1, -1000, -1000);
