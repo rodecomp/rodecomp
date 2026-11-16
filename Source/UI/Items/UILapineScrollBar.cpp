@@ -335,12 +335,12 @@ unsigned char UILapineBox_IngredientListWnd::AddIngredient(std::uint32_t id) {
     return 0;
   }
 
-  for (UIIngredientInfoWnd* itemWnd : this->items) {
-    if (itemWnd->item.identity[1] == id) {
-      itemWnd->item.quantity += it->quantity;
-      itemWnd->insufficient = 0;
-      itemWnd->Show(1);
-      itemWnd->Invalidate();
+  for (std::vector<UIIngredientInfoWnd*>::iterator entry = this->items.begin(); entry != this->items.end(); ++entry) {
+    if ((*entry)->item.identity[1] == id) {
+      (*entry)->item.quantity += it->quantity;
+      (*entry)->insufficient = 0;
+      (*entry)->Show(1);
+      (*entry)->Invalidate();
       this->Invalidate();
       return 1;
     }
