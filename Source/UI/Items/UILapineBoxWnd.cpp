@@ -405,7 +405,7 @@ int UILapineBox_IngredientListWnd::SendMsg(UIWindow* sender, int message, std::i
 
     for (std::vector<UIIngredientInfoWnd*>::iterator it = this->items.begin(); it != this->items.end(); ++it) {
       ITEM_INFO owned = g_session.LookupClientItemByIdentity((*it)->item.identity[1]);
-      if (owned.identity[1] == 0) {
+      if (owned.identity[1] <= 0) {
         (*it)->Show(0);
       }
     }
@@ -424,37 +424,31 @@ int UILapineBox_IngredientListWnd::SendMsg(UIWindow* sender, int message, std::i
     break;
 
   case UM_DECITEM: {
-    std::vector<UIIngredientInfoWnd*>::iterator it;
-    for (it = this->items.begin(); it != this->items.end(); ++it) {
-      if (static_cast<std::uint32_t>(a) == (*it)->item.identity[1]) {
-        break;
-      }
-    }
+    const std::vector<UIIngredientInfoWnd*>::iterator it =
+        std::find_if(this->items.begin(), this->items.end(), [a](UIIngredientInfoWnd* item) {
+          return static_cast<std::uint32_t>(a) == item->item.identity[1];
+        });
     if (it == this->items.end()) {
       break;
     }
 
     UIIngredientInfoWnd* selected = *it;
-    std::vector<ITEM_INFO>::iterator found = this->materials.begin();
-    const std::vector<ITEM_INFO>::iterator end = this->materials.end();
-    for (; found != end; ++found) {
-      ITEM_INFO copy(*found);
-      if (std::atoi(selected->item.itemId.c_str()) == std::atoi(copy.itemId.c_str())) {
-        break;
-      }
-    }
+    const std::vector<ITEM_INFO>::iterator found =
+        std::find_if(this->materials.begin(), this->materials.end(), [selected](ITEM_INFO material) {
+          return std::atoi(selected->item.itemId.c_str()) == std::atoi(material.itemId.c_str());
+        });
 
     if (found == this->materials.end()) {
       break;
     }
 
     const int need = found->quantity;
-    if (selected->item.quantity < need) {
+    if (need > selected->item.quantity) {
       this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_INPUT_FREE_MESSAGE), need).c_str()), 0, 0, 0);
       return -1;
     }
 
-    if (selected->item.refiningLevel < found->refiningLevel) {
+    if (found->refiningLevel > selected->item.refiningLevel) {
       this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CAPTCHA_INPUT_ANSWER)), 0, 0, 0);
       return -1;
     }
