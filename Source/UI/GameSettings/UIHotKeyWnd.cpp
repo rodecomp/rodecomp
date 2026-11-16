@@ -285,16 +285,13 @@ void UIHotKeyWnd::OnLBtnDown(int x, int y) {
 UIHotKeyWnd::HotkeyEntry UIHotKeyWnd::GetHotkey(int tab, int index, bool resolve) {
   HotkeyInfo info;
   if (resolve) {
-    index = ResolveHotkeyIndex(*g_session.m_hotkeyScript, tab, index);
+    index = g_session.HotkeyIndex(tab, index);
   }
 
   if (index != -1) {
     const auto it = this->hotkeys[tab].find(index);
-    if (it != this->hotkeys[tab].end()) {
-      info = it->second;
-    }
-    if (it == this->hotkeys[tab].end() || info.description.empty()) {
-      info = GetHotkeyInfo(*g_session.m_hotkeyScript, tab, index);
+    if (it == this->hotkeys[tab].end() || (info = it->second).description.empty()) {
+      info = g_session.GetHotkeyInfo(tab, index);
     }
   }
 
@@ -373,13 +370,12 @@ void UIHotKeyWnd::Paint() {
     return;
   }
 
-
   this->m_titleHeight = this->DrawTitleBar(true, LookupMessage(MSI_HOTKEYWND_TITLE), 0);
   this->m_buttonBarHeight = this->DrawButtonBar(2, 0, 1);
   this->DrawPanelBackground(this->m_titleHeight, 0, "");
 
-  const int count = g_session.HotkeyCount(this->m_tab);
   int visibleRow = 0;
+  const int count = g_session.HotkeyCount(this->m_tab);
 
   for (int row = 0; row < count; ++row) {
     if (this->m_paged && row < 36 * this->m_page - 36) {
@@ -392,16 +388,19 @@ void UIHotKeyWnd::Paint() {
     HotkeyInfo info = this->GetHotkey(this->m_tab, row, true).info;
     if (!info.description.empty()) {
       if (info.text.empty()) {
-        info.text = info.key1 ? LookupMessage(MSI_HOTKEY_UNKOWN) : LookupMessage(MSI_HOTKEY_NOTHING);
+        if (info.key1 == 0) {
+          info.text = LookupMessage(MSI_HOTKEY_NOTHING);
+        } else {
+          info.text = LookupMessage(MSI_HOTKEY_UNKOWN);
+        }
       }
 
+      const int textWidth = this->TextWidth(info.text.c_str(), 0, 0, 12, 0, 0);
+      const int textX = (this->m_keyColumnWidth - textWidth) / 2;
       const int halfWidth = this->geometry.width / 2;
       const int column = visibleRow / this->m_rowsPerPage;
       const int rowY = this->m_titleHeight + this->m_tabHeight + this->m_verticalMargin +
                        (visibleRow % this->m_rowsPerPage) * this->m_rowHeight;
-
-      const int textWidth = this->TextWidth(info.text.c_str(), 0, 0, 12, 0, 0);
-      const int textX = (this->m_keyColumnWidth - textWidth) / 2;
 
       const int backgroundX = column ? this->geometry.width - this->m_keyColumnWidth - this->m_horizontalMargin
                                      : halfWidth - this->m_keyColumnWidth;
@@ -430,7 +429,7 @@ void UIHotKeyWnd::Paint() {
 
       const std::string fitted = this->FitDisplayText(130, info.description.c_str(), 0, 12, 0);
       const int fittedWidth = this->TextWidth(fitted.c_str(), 0, 0, 12, 0, 0);
-      const int descriptionX = keyX + (halfWidth - this->m_horizontalMargin - this->m_keyColumnWidth - fittedWidth) / 2;
+      const int descriptionX = keyX + (this->geometry.width / 2 - this->m_horizontalMargin - this->m_keyColumnWidth - fittedWidth) / 2;
 
       this->DrawTextAt(descriptionX, rowY + 5, fitted.c_str(), 0, 0, 12, 0, 0, 0);
       this->DrawTextAt(textX + backgroundX, rowY + 5, info.text.c_str(), 0, 0, 12, 0, 0, 0);
@@ -546,70 +545,63 @@ bool UIHotKeyWnd::AssignSelectedHotkey(int mode) {
     return false;
   }
 
-  int rejection = 0;
-  bool checkConflict = false;
-  if (this->m_tab == 1 && ResolveHotkeyIndex(*g_session.m_hotkeyScript, 1, this->m_selectedRow) == 31) {
+  if (this->m_tab == 1 && g_session.HotkeyIndex(1, this->m_selectedRow) == 31) {
     const int key = g_windowMgr.keyCode;
     const int modifier = g_windowMgr.modifierKey;
     if (key == 0x12 || modifier == 0x12 || key == 0x11 || modifier == 0x11 || key == 0x10 || modifier == 0x10) {
-      rejection = 0x5D0;
+      mode = 3;
     } else if (key == 0x20 || key == 0x90) {
       if (modifier != 0) {
-        checkConflict = true;
+        mode = this->CheckHotkeyConflict();
       } else {
-        rejection = 0x5CF;
+        mode = 2;
       }
     } else if (mode == 4) {
       if (key == 0x14) {
-        rejection = 0x5D0;
+        mode = 3;
       } else if (modifier != 0 || g_windowMgr.IsSharedWindowId(key)) {
-        checkConflict = true;
+        mode = this->CheckHotkeyConflict();
       } else {
-        rejection = 0x5D0;
+        mode = 3;
       }
     }
   } else if (mode == 4) {
-    checkConflict = true;
+    mode = this->CheckHotkeyConflict();
   }
 
-  if (rejection == 0) {
-    if (checkConflict) {
-      mode = this->CheckHotkeyConflict();
-    }
-
-    switch (mode) {
-      case 1:
-        return false;
-      case 2:
-        rejection = 0x5CF;
-        break;
-      case 3:
-        rejection = 0x5D0;
-    }
-  }
-
-  if (rejection == 0) {
-    const HotkeyEntry entry = this->GetHotkey(this->m_tab, this->m_selectedRow + (this->m_page * 9 - 9) * 4, true);
-    HotkeyInfo info = entry.info;
-    if (g_windowMgr.keyCode == 0x1B) {
-      info.key1 = 0;
-      info.key2 = 0;
-      info.text = "";
-    } else {
-      info.key1 = g_windowMgr.keyCode;
-      info.key2 = g_windowMgr.modifierKey;
-      const char* text = nullptr;
-      if (g_session.m_hotkeyScript->Call("GetKeyDes", "dd>s", g_windowMgr.keyCode, g_windowMgr.modifierKey, &text) && text) {
-        info.text = text;
+  switch (mode) {
+    case 1:
+      return false;
+    case 2:
+    case 3:
+      break;
+    default: {
+      const HotkeyEntry entry = this->GetHotkey(this->m_tab, this->m_selectedRow + (this->m_page * 9 - 9) * 4, true);
+      HotkeyInfo info = entry.info;
+      if (g_windowMgr.keyCode == 0x1B) {
+        info.key1 = 0;
+        info.key2 = 0;
+        info.text = "";
+      } else {
+        info.key1 = g_windowMgr.keyCode;
+        info.key2 = g_windowMgr.modifierKey;
+        const char* text = nullptr;
+        if (g_session.m_hotkeyScript->Call("GetKeyDes", "dd>s", g_windowMgr.keyCode, g_windowMgr.modifierKey, &text) && text) {
+          info.text = text;
+        }
       }
-    }
 
-    this->SetHotkey(this->m_tab, entry.index, info);
-    this->Invalidate();
-    return true;
+      this->SetHotkey(this->m_tab, entry.index, info);
+      this->Invalidate();
+      return true;
+    }
   }
 
-  this->m_balloon->SetText(LookupMessage(rejection), 0x3C);
+  if (mode == 2) {
+    this->m_balloon->SetText(LookupMessage(0x5CF), 0x3C);
+  } else if (mode == 3) {
+    this->m_balloon->SetText(LookupMessage(0x5D0), 0x3C);
+  }
   {
     UIBalloonText* balloon = this->m_balloon;
     balloon->m_textColor = 0xFFFF;
