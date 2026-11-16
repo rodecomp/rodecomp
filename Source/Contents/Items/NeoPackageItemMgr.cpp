@@ -202,10 +202,9 @@ void CPaidPackageItemMgr::AddItem(int itemId) {
   std::optional<std::map<int, PackageGroup>*> package = CNeoPackageItemMgr::GetInstance()->FindPackage(itemId);
   if (package) {
     this->m_items.insert(itemId);
-    for (std::map<int, PackageGroup>::iterator group = (*package)->begin(); group != (*package)->end(); ++group) {
-      for (std::list<PackageEntry>::iterator entry = group->second.items.begin(); entry != group->second.items.end();
-           ++entry) {
-        this->AddItem(entry->itemId);
+    for (std::pair<const int, PackageGroup>& group : **package) {
+      for (PackageEntry& entry : group.second.items) {
+        this->AddItem(entry.itemId);
       }
     }
   }
@@ -217,12 +216,11 @@ void CPaidPackageItemMgr::AddItem(int itemId) {
   }
 
   this->m_items.insert(itemId);
-  for (std::map<int, SelectPackageTab>::iterator tab = selectPackage->second.begin(); tab != selectPackage->second.end();
-       ++tab) {
-    std::optional<std::vector<ITEM_INFO>*> items = SelectPackageItemMgr()->FindItems(itemId, tab->first);
+  for (std::pair<const int, SelectPackageTab>& tab : selectPackage->second) {
+    std::optional<std::vector<ITEM_INFO>*> items = SelectPackageItemMgr()->FindItems(itemId, tab.first);
     if (items) {
-      for (std::vector<ITEM_INFO>::iterator item = (*items)->begin(); item != (*items)->end(); ++item) {
-        this->AddItem(std::atoi(item->itemId.c_str()));
+      for (ITEM_INFO& item : **items) {
+        this->AddItem(std::atoi(item.itemId.c_str()));
       }
     }
   }
