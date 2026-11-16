@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <vector>
 #include <windows.h>
+#include "Utility/Math/Vector3d.h"
 
 struct WorldModelRecord;
 
@@ -19,9 +20,9 @@ static_assert(offsetof(DeferredWorldModel, placement) == 4);
 
 extern HANDLE hObject;
 extern std::vector<DeferredWorldModel> g_deferredWorldModels;
-extern float g_worldLightDirection[3];
-extern float g_worldDiffuse[3];
-extern float g_worldAmbient[3];
+extern vector3d g_worldLightDirection;
+extern vector3d g_worldDiffuse;
+extern vector3d g_worldAmbient;
 extern float g_worldLoadCenter[3];
 
 #endif

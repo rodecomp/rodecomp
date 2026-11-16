@@ -31,13 +31,13 @@
 
 
 // GLOBAL: gl_24754
-float g_worldLightDirection[3];
+vector3d g_worldLightDirection;
 
 // GLOBAL: gl_24755
-float g_worldDiffuse[3];
+vector3d g_worldDiffuse;
 
 // GLOBAL: gl_24756
-float g_worldAmbient[3];
+vector3d g_worldAmbient;
 
 // GLOBAL: gl_24758
 float g_worldLoadCenter[3];
@@ -86,7 +86,7 @@ namespace {
     actor->commandMode = placement.flag;
     actor->color = static_cast<std::uint32_t>(placement.index);
     actor->Assign(resource);
-    actor->Prepare(g_worldLightDirection, g_worldDiffuse, g_worldAmbient);
+    actor->Prepare(&g_worldLightDirection.x, &g_worldDiffuse.x, &g_worldAmbient.x);
 
     return actor;
   }
@@ -154,18 +154,12 @@ void CWorld::InitWorld() {
   modeBounds[2] = worldRes->bounds[0];
   modeBounds[3] = worldRes->bounds[1];
 
-  g_worldLightDirection[0] = worldRes->lightDirection.x;
-  g_worldLightDirection[1] = worldRes->lightDirection.y;
-  g_worldLightDirection[2] = worldRes->lightDirection.z;
-  g_worldDiffuse[0] = worldRes->diffuse.x;
-  g_worldDiffuse[1] = worldRes->diffuse.y;
-  g_worldDiffuse[2] = worldRes->diffuse.z;
-  g_worldAmbient[0] = worldRes->ambient.x;
-  g_worldAmbient[1] = worldRes->ambient.y;
-  g_worldAmbient[2] = worldRes->ambient.z;
+  g_worldLightDirection = worldRes->lightDirection;
+  g_worldDiffuse = worldRes->diffuse;
+  g_worldAmbient = worldRes->ambient;
 
   g_renderer->twoPass = worldRes->flag;
-  g_renderer->SetLighting(g_worldLightDirection, g_worldDiffuse, g_worldAmbient);
+  g_renderer->SetLighting(&g_worldLightDirection.x, &g_worldDiffuse.x, &g_worldAmbient.x);
 
   if (worldRes->terrainName.empty()) {
     ShowErrorDialog("attr \xc6\xc4\xc0\xcf\xc0\xcc rsw \xb3\xbb\xbf\xa1 \xc1\xf6\xc1\xa4\xb5\xc7\xbe\xee \xc0\xd6\xc1\xf6 \xbe\xca\xbd\xc0\xb4\xcf\xb4\xd9", 0);
@@ -198,7 +192,7 @@ void CWorld::InitWorld() {
   }
 
   this->ground = new GroundGeometry();
-  this->ground->Build(*groundRes, g_worldLightDirection, g_worldDiffuse, g_worldAmbient);
+  this->ground->Build(*groundRes, &g_worldLightDirection.x, &g_worldDiffuse.x, &g_worldAmbient.x);
   this->ground->terrain = this->terrain;
 
   this->ground->SetWater(
