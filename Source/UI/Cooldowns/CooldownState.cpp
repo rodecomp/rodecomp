@@ -34,10 +34,10 @@ CooldownState::CooldownState(int slotValue, int xValue, int yValue, std::uint32_
   this->slot = slotValue;
   this->ClearEdges();
   std::memset(this->vertices, 0, sizeof(this->vertices));
-  if (this->reverse != 0) {
-    this->color = 0xAAFFFFFF;
-  } else {
+  if (this->reverse == 0) {
     this->color = 0xAA000000;
+  } else {
+    this->color = 0xAAFFFFFF;
   }
 }
 
