@@ -118,18 +118,16 @@ int SnapObject::GetHeight() const {
 // OFFSET: 0x007E2B10
 // FUNCTION: fn_09708
 void SnapObject::AccumulateHeight(int& height, int side) const {
-  const SnapObject* current = this;
+  const SnapObject* next = nullptr;
+  height = (height + this->window->geometry.height);
 
-  do {
-    height = (height + current->window->geometry.height);
-    const SnapObject* next = nullptr;
-
-    for (SnapObject* candidate : current->edges[side]) {
-      if (candidate->window->geometry.height > 0) {
-        next = candidate;
-      }
+  for (auto it = this->edges[side].begin(); it != this->edges[side].end(); ++it) {
+    if ((*it)->window->geometry.height > 0) {
+      next = *it;
     }
+  }
 
-    current = next;
-  } while (current);
+  if (next) {
+    next->AccumulateHeight(height, side);
+  }
 }
