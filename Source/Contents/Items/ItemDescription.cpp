@@ -64,7 +64,7 @@ std::vector<const char*>& EnsureItemDescriptionLines(int id, std::map<int, std::
 
 // OFFSET: 0x006D5890
 // FUNCTION: fn_06579
-ITEM_DESC& FindItemDescription(int id) {
+__declspec(noinline) ITEM_DESC& FindItemDescription(int id) {
   return FindItemDescription(id, g_itemDescriptions);
 }
 
