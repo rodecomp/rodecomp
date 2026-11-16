@@ -408,11 +408,12 @@ __forceinline NaviCell CNavigationManager::ParseCell(const char* text) {
   if (x >= 0 && x <= 500 && y >= 0 && y <= 500) {
     cell.x = x;
     cell.y = y;
+    return cell;
   } else {
     cell.x = -1;
     cell.y = -1;
+    return cell;
   }
-  return cell;
 }
 
 // OFFSET: 0x00B93BA0
