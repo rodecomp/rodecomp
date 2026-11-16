@@ -79,7 +79,8 @@ void UIMakeTargetResultWnd::Paint() {
   item.identified = 1;
 
   const int firstWidth = this->DrawFittedItemName(0x10, 2, &item, 0, 0, 0xC, 0);
-  this->DrawShadowedText(firstWidth + 0x10, 2, LookupMessage(0x1AC + (this->succeeded == 1)), 0, 0, 0xFFFFFF, 0, 0xC, 0);
+  const char* result = LookupMessage(0x1AC + (this->succeeded == 1));
+  this->DrawShadowedText(firstWidth + 0x10, 2, result, 0, 0, 0xFFFFFF, 0, 0xC, 0);
 
   const int secondWidth = this->DrawFittedItemName(0x10, 0x2A, &item, 0, 0, 0xC, 0);
   if (this->succeeded == 1) {
