@@ -1251,7 +1251,7 @@ CUIFrameWnd* CreateRenewQuestUI() {
 
 // OFFSET: 0x00499210
 // FUNCTION: fn_45554
-static bool s_registered = [] {
+static bool s_renewQuestUIRegistered = [] {
   std::function<CUIFrameWnd*()> factory = CreateRenewQuestUI;
   Singleton<CUIRegisterMgr>::GetInstance()->Register(10008, factory);
   return true;
