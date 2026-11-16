@@ -8297,10 +8297,10 @@ void CRagEffect::TetraVortexPillar(char kind) {
   this->state.lastPrim->state.slots[3].life = 0;
   this->state.lastPrim->state.slots[0].process = 0;
   this->state.lastPrim->state.slots[0].life = 1;
-  if (this->state.param[0] > 0.0f) {
-    this->state.lastPrim->state.slots[0].distance = this->state.param[0];
-  } else {
+  if (this->state.param[0] <= 0.0f) {
     this->state.lastPrim->state.slots[0].distance = 30.0f;
+  } else {
+    this->state.lastPrim->state.slots[0].distance = this->state.param[0];
   }
 
   this->state.lastPrim->state.slots[0].vecBPre.y = this->render.position.y - 10.0f;
