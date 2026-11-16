@@ -59,14 +59,18 @@ CEmotionSaleExpireSchedule::CEmotionSaleExpireSchedule(const std::uint64_t& time
 void CEmotionSaleExpireSchedule::Process(const std::uint64_t& now) {
   CSchedule::Process(now);
   CashEmotionPackRefresh refresh = g_cashEmotionMgr->RefreshUnownedPacks();
-  if (refresh.changed && g_windowMgr.cashEmotionListWnd) {
-    g_windowMgr.cashEmotionListWnd->RefreshPackLists();
-    g_windowMgr.cashEmotionListWnd->RefreshSelection();
+  if (refresh.changed) {
+    UICashEmotionListWnd* window = g_windowMgr.cashEmotionListWnd;
+    if (window) {
+      window->RefreshPackLists();
+      window->RefreshSelection();
+    }
   }
-  if (refresh.nextTime != 0x7FFFFFFF) {
+  const int nextTime = refresh.nextTime;
+  if (nextTime != 0x7FFFFFFF) {
     int current = g_cashEmotionMgr->GetServerTime();
-    if (current < refresh.nextTime) {
-      this->interval = (static_cast<std::int64_t>(refresh.nextTime) * 10000000i64 - static_cast<std::int64_t>(current) * 10000000i64) / 10000i64;
+    if (current < nextTime) {
+      this->interval = (static_cast<std::int64_t>(nextTime) * 10000000i64 - static_cast<std::int64_t>(current) * 10000000i64) / 10000i64;
       return;
     }
   }
