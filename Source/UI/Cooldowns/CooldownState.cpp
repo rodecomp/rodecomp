@@ -79,7 +79,7 @@ float CooldownState::Update() {
   }
 
   if (this->duration != 0) {
-    this->angle = progress != 0 ? static_cast<float>((static_cast<double>(progress) / static_cast<double>(this->duration)) * 360.0) : 0.0f;
+    this->angle = progress == 0 ? 0.0f : static_cast<float>((static_cast<double>(progress) / static_cast<double>(this->duration)) * 360.0);
     int forwardCount = 0;
     int backwardCount = 0;
     if (this->angle >= 0 && this->angle < 45) {
@@ -120,18 +120,20 @@ float CooldownState::Update() {
     this->angle = 90.0f - (this->angle - static_cast<float>(this->segment) * 45.0f);
   }
 
-  if (this->duration <= progress) {
-    return this->edges.find(this->segment)->second.origin;
+  if (this->duration > progress) {
+    CooldownEdge& edge = this->edges.find(this->segment)->second;
+    float position = edge.origin;
+    const float radians = this->angle * 0.017453292f;
+    const float tangent = static_cast<float>(std::tan(static_cast<double>(radians)));
+    if (edge.increasing != 0) {
+      position += static_cast<float>(edge.radius) / tangent;
+    } else {
+      position -= static_cast<float>(edge.radius) / tangent;
+    }
+
+    edge.current = position;
+    return position;
   }
 
-  CooldownEdge& edge = this->edges.find(this->segment)->second;
-  const float radians = this->angle * 0.017453292f;
-  const float tangent = static_cast<float>(std::tan(static_cast<double>(radians)));
-  if (edge.increasing != 0) {
-    edge.current = edge.origin + static_cast<float>(edge.radius) / tangent;
-  } else {
-    edge.current = edge.origin - static_cast<float>(edge.radius) / tangent;
-  }
-
-  return edge.current;
+  return this->edges.find(this->segment)->second.origin;
 }
