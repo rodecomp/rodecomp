@@ -79,18 +79,15 @@ void CMCStoreInfoBackup::ExportData(Json::Value& data) const {
     value["Slot_3"] = static_cast<std::int32_t>(item.cards[2]);
     value["Slot_4"] = static_cast<std::int32_t>(item.cards[3]);
 
-    const int count = item.optionCount;
-    value["RandomOptionCount"] = count;
+    value["RandomOptionCount"] = item.optionCount;
     Json::Value options;
+    const int count = item.optionCount;
 
     for (int index = 0; index < count; ++index) {
-      const ItemOptionRecord& record = item.options[index];
-      const std::int16_t id = record.id;
-      const std::int16_t amount = record.value;
       Json::Value option;
-      option["OptIndex"] = id;
-      option["Value"] = amount;
-      option["Parm1"] = record.parameter;
+      option["OptIndex"] = item.options[index].id;
+      option["Value"] = item.options[index].value;
+      option["Parm1"] = item.options[index].parameter;
       options.append(option);
     }
 
