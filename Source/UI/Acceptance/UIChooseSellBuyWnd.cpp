@@ -3078,25 +3078,6 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
   }
   case UM_COMMAND:
     switch (a) {
-    case ID_CLOSE:
-      g_windowMgr.CloseWindow(this->m_viewOther == 1 ? WID_EQUIPWND_VIEWOTHER_1 : WID_EQUIPWND);
-      return 0;
-    case ID_MINI: {
-      const int height = this->geometry.height;
-      if (height == 17) {
-        this->Resize(this->geometry.width, this->m_show);
-      } else {
-        this->m_show = height;
-        this->Resize(this->geometry.width, 17);
-      }
-      g_windowMgr.StoreSnapRectangle(this);
-      g_windowMgr.Promote(this);
-      const int delta = this->geometry.height - height;
-      if (delta != 0) {
-        g_snapMgr.MoveEdge(this, 0, delta, 3);
-      }
-      return 0;
-    }
     case ID_CHECK:
       if (this->m_viewOther != 0) {
         return 0;
@@ -3107,17 +3088,6 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       }
       g_modeMgr.currentMode->SendMsg(MM_OPEN_EQUIPEDITEM_CHANGE, b, 0, 0, 0);
       return 0;
-    case ID_RADIOBTN:
-      for (int index = 0; index < 4; ++index) {
-        this->damageSkinButtons[index + 2]->Invalidate();
-        if (sender == this->damageSkinButtons[index + 2]) {
-          this->damageSkinMode = index;
-          this->damageSkinButtons[index + 2]->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
-        } else {
-          this->damageSkinButtons[index + 2]->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
-        }
-      }
-      return 0;
     case ID_EQUIP_OPTION_OFF: {
       if (g_windowMgr.merchantItemMyShopWnd != nullptr) {
         g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
@@ -3126,10 +3096,14 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       }
 
       std::string notice;
-      const bool enabled = g_session.replayPacketMode > 0;
+      bool enabled = false;
+      if (g_session.replayPacketMode > 0) {
+        enabled = true;
+      }
       if (StateFlag05(g_session.m_jobFlags)) {
-        const int job = g_session.GetDisplayJob();
-        notice = LookupMessage(job == JT_ROYAL_CHICKEN || job == JT_ROYAL_CHICKEN_H || job == JT_ROYAL_CHICKEN_B ? MSI_BATTLEFIELD_MSG_REQUEST_JOINWAIT : MSI_CHIKENOFF);
+        notice = LookupMessage(g_session.GetDisplayJob() == JT_ROYAL_CHICKEN || g_session.GetDisplayJob() == JT_ROYAL_CHICKEN_H || g_session.GetDisplayJob() == JT_ROYAL_CHICKEN_B
+                                 ? MSI_BATTLEFIELD_MSG_REQUEST_JOINWAIT
+                                 : MSI_CHIKENOFF);
       } else if (StateFlag22(g_session.m_jobFlags)) {
         notice = LookupMessage(MSI_MADOOFF);
       } else if (StateFlag19(g_session.m_jobFlags) || StateFlag23(g_session.m_jobFlags) || StateFlag24(g_session.m_jobFlags) || StateFlag25(g_session.m_jobFlags) ||
@@ -3181,6 +3155,36 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       this->Invalidate();
       return 0;
     }
+    case ID_MINI: {
+      const int height = this->geometry.height;
+      if (height == 17) {
+        this->Resize(this->geometry.width, this->m_show);
+      } else {
+        this->m_show = height;
+        this->Resize(this->geometry.width, 17);
+      }
+      g_windowMgr.StoreSnapRectangle(this);
+      g_windowMgr.Promote(this);
+      const int delta = this->geometry.height - height;
+      if (delta != 0) {
+        g_snapMgr.MoveEdge(this, 0, delta, 3);
+      }
+      return 0;
+    }
+    case ID_CLOSE:
+      g_windowMgr.CloseWindow(this->m_viewOther == 1 ? WID_EQUIPWND_VIEWOTHER_1 : WID_EQUIPWND);
+      return 0;
+    case ID_RADIOBTN:
+      for (int index = 0; index < 4; ++index) {
+        this->damageSkinButtons[index + 2]->Invalidate();
+        if (sender == this->damageSkinButtons[index + 2]) {
+          this->damageSkinMode = index;
+          this->damageSkinButtons[index + 2]->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
+        } else {
+          this->damageSkinButtons[index + 2]->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
+        }
+      }
+      return 0;
     case ID_EQUIP_OPTION_OPEN:
       if ((g_replayAnimationScaling == 0 || Replay::Instance().header.options.Get(ReplayRecordOption::Item) != 0) && !g_windowMgr.LookupWindow(WID_MERGEITEMWND) &&
           !g_windowMgr.CloseWindow(WID_MERCHANTITEMWND) && g_session.replayPacketMode > 0) {
@@ -3282,7 +3286,7 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
     return 0;
   case UM_SCROLLHORZ: {
     const int previous = this->m_firstSlot;
-    if (a != 0) {
+    if (a < 0 || a > 0) {
       this->m_firstSlot = previous + a;
     }
     const int last = g_session.damageSkinCount - 4;
@@ -12473,13 +12477,12 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
   switch (message) {
   case UM_SETINFO: {
     this->m_placement = reinterpret_cast<ItemCollectionWndInfo*>(argument1);
-    ItemCollectionWndInfo* placement = this->m_placement;
-    if (!placement->IsValid()) {
-      placement->Reset();
+    if (!this->m_placement->IsValid()) {
+      this->m_placement->Reset();
       this->Move((g_renderer->viewport.width - 640) / 2 + this->m_placement->x, this->m_placement->y * g_renderer->viewport.height / 480);
       return 0;
     }
-    this->Move(placement->x, placement->y);
+    this->Move(this->m_placement->x, this->m_placement->y);
     return 0;
   }
   case UM_COMMAND:
@@ -12572,7 +12575,7 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
       }
     }
     this->m_item.expireTime = item->expireTime;
-    this->m_compare = this->m_item.identified == 1 && !this->m_item.IsApprenticeItem() && this->m_item.IsEquipment();
+    this->m_compare = this->m_item.identified == 1 && !this->m_item.IsApprenticeItem() && this->m_item.IsEquipment() == true;
     this->m_optionCount = this->m_item.optionCount;
     if (this->m_compare) {
       if (this->geometry.height != 144) {
@@ -12585,7 +12588,11 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
     }
     this->m_bitmapName = "유저인터페이스\\collection\\" + std::string(this->m_item.ResourcePath()) + ".bmp";
     const std::vector<const char*>& descriptions = this->m_item.Description();
-    this->m_viewButton->Move(6, argument2 != 0 ? -100 : IsItemCard(std::atoi(this->m_item.itemId.c_str())) * 100 - 94);
+    int viewY = IsItemCard(std::atoi(this->m_item.itemId.c_str())) * 100 - 94;
+    if (argument2 != 0) {
+      viewY = -100;
+    }
+    this->m_viewButton->Move(6, viewY);
     CGameMode* mode = g_modeMgr.GetGameMode();
     if (mode->HasInventoryItem(std::atoi(this->m_item.itemId.c_str()))) {
       const int y = IsBookItem(std::atoi(this->m_item.itemId.c_str())) * 100 - 94;
