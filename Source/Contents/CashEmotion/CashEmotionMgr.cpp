@@ -1688,12 +1688,18 @@ int CCashEmotionMgr::InsertPackInfo(lua_State* state) {
   }
 
   if (startTime != 0) {
-    std::tm date = {0, 0, 0, static_cast<int>(startTime % 100), static_cast<int>(startTime % 10000 / 100 - 1), static_cast<int>(startTime / 10000 - 1900)};
+    std::tm date = {};
+    date.tm_year = static_cast<int>(startTime / 10000 - 1900);
+    date.tm_mon = static_cast<int>(startTime % 10000 / 100 - 1);
+    date.tm_mday = static_cast<int>(startTime % 100);
     startTime = _mktime32(&date);
   }
 
   if (endTime != 0) {
-    std::tm date = {0, 0, 0, static_cast<int>(endTime % 100), static_cast<int>(endTime % 10000 / 100 - 1), static_cast<int>(endTime / 10000 - 1900)};
+    std::tm date = {};
+    date.tm_year = static_cast<int>(endTime / 10000 - 1900);
+    date.tm_mon = static_cast<int>(endTime % 10000 / 100 - 1);
+    date.tm_mday = static_cast<int>(endTime % 100);
     endTime = _mktime32(&date);
   }
 
