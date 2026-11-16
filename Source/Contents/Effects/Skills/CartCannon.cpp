@@ -34,11 +34,12 @@ void CCartCannon::Close() {
 // OFFSET: 0x006FAA90
 // FUNCTION: fn_06897
 void CCartCannon::Open() {
-  this->currentPosition.x = this->position[0];
-  this->currentPosition.y = this->position[1];
-  this->currentPosition.z = this->position[2];
+  vector3d& current = this->currentPosition;
+  current.x = this->position[0];
+  current.y = this->position[1];
+  current.z = this->position[2];
 
-  CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->currentPosition, 5));
+  CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&current, 5));
   if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
     particle->Open("mineffect\\new_cart_cannon\\new_cart_cannon\\new_cart_cannon.str");
   } else {
@@ -49,14 +50,14 @@ void CCartCannon::Open() {
 
   this->speed = 1.0f;
   this->delay = 0;
-  this->currentPosition.y -= 10.0f;
+  current.y -= 10.0f;
   vector3d target = this->sourcePositionVector;
   this->currentStep = 0;
   target.y -= 10.0f;
 
-  this->stepDelta.x = target.x - this->currentPosition.x;
-  this->stepDelta.y = target.y - this->currentPosition.y;
-  this->stepDelta.z = target.z - this->currentPosition.z;
+  this->stepDelta.x = target.x - current.x;
+  this->stepDelta.y = target.y - current.y;
+  this->stepDelta.z = target.z - current.z;
 
   const float length = SquareRoot(
     this->stepDelta.x * this->stepDelta.x +
@@ -73,22 +74,22 @@ void CCartCannon::Open() {
     this->stepDelta *= this->speed;
   }
 
-  const float dx = target.x - this->currentPosition.x;
-  const float dy = target.y - this->currentPosition.y;
-  const float dz = target.z - this->currentPosition.z;
+  const float dx = target.x - current.x;
+  const float dy = target.y - current.y;
+  const float dz = target.z - current.z;
   const float inverse = 1.0f / SquareRoot(dx * dx + dy * dy + dz * dz);
 
-  this->currentPosition.x = inverse * dx * 4.0f + this->currentPosition.x;
-  this->currentPosition.y = inverse * dy * 4.0f + this->currentPosition.y;
-  this->currentPosition.z = inverse * dz * 4.0f + this->currentPosition.z;
+  current.x = inverse * dx * 4.0f + current.x;
+  current.y = inverse * dy * 4.0f + current.y;
+  current.z = inverse * dz * 4.0f + current.z;
 
   this->startPosition = this->currentPosition;
-  this->position[0] = this->currentPosition.x;
-  this->position[1] = this->currentPosition.y;
-  this->position[2] = this->currentPosition.z;
+  this->position[0] = current.x;
+  this->position[1] = current.y;
+  this->position[2] = current.z;
 
   CGameMode* mode = g_modeMgr.GetGameMode();
-  const float angle = static_cast<float>(atan2(static_cast<double>(target.z - this->currentPosition.z), static_cast<double>(target.x - this->currentPosition.x)));
+  const float angle = static_cast<float>(atan2(static_cast<double>(target.z - current.z), static_cast<double>(target.x - current.x)));
   float yaw = mode->CameraDesiredYaw() + angle / 3.141592f * 180.0f;
   if (yaw < 0.0f) {
     yaw += 360.0f;
