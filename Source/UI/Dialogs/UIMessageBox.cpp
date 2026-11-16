@@ -4177,11 +4177,9 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         return 0;
       }
 
-      if (this->m_nameEdit->Length() < 4) {
-        g_windowMgr.Confirm(LookupMessage(MSI_ENTER_NAME_MORE_THAN_4_CHAR), 0, true, false, 0, "Message", 280, 120, 0);
-      } else {
-        const bool allowed = g_forbiddenWords.Allows(this->m_nameEdit->Text());
-        bool valid = true;
+      if (this->m_nameEdit->Length() >= 4) {
+        const BOOL allowed = g_forbiddenWords.Allows(this->m_nameEdit->Text());
+        BOOL valid = TRUE;
         if (g_serviceType == 1) {
           valid = ValidateCharacterName(this->m_nameEdit->Text());
         }
@@ -4223,19 +4221,23 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
           g_modeMgr.currentMode->SendMsg(LMM_SENDCHARINFO, 0, 0, 0, 0);
           g_windowMgr.Schedule(this);
         }
+      } else {
+        g_windowMgr.Confirm(LookupMessage(MSI_ENTER_NAME_MORE_THAN_4_CHAR), 0, true, false, 0, "Message", 280, 120, 0);
       }
 
       g_modeMgr.currentMode->SendMsg(LMM_SET_MAKING_CHAR_NAME, reinterpret_cast<int>(this->m_nameEdit->Text()), 0, 0, 0);
-      int values[8];
-      values[0] = this->m_info.stats[0];
-      values[1] = this->m_info.stats[1];
-      values[2] = this->m_info.stats[2];
-      values[3] = this->m_info.stats[3];
-      values[4] = this->m_info.stats[4];
-      values[5] = this->m_info.stats[5];
-      values[6] = this->m_info.headPalette;
-      values[7] = this->m_info.head;
-      g_modeMgr.currentMode->SendMsg(LMM_SET_CHAR_PARAM, reinterpret_cast<int>(values), 0, 0, 0);
+      {
+        int values[8];
+        values[0] = this->m_info.stats[0];
+        values[1] = this->m_info.stats[1];
+        values[2] = this->m_info.stats[2];
+        values[3] = this->m_info.stats[3];
+        values[4] = this->m_info.stats[4];
+        values[5] = this->m_info.stats[5];
+        values[6] = this->m_info.headPalette;
+        values[7] = this->m_info.head;
+        g_modeMgr.currentMode->SendMsg(LMM_SET_CHAR_PARAM, reinterpret_cast<int>(values), 0, 0, 0);
+      }
       return 0;
     }
     case ID_CANCEL:
