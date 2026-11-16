@@ -1629,11 +1629,11 @@ void UIWindow::WrapTextWithBreaks(const char* text, std::vector<std::string>* li
     } while (current < end);
 
     if (bytes > 0) {
-      char* buffer = static_cast<char*>(std::malloc(bytes + 1));
+      char* buffer = new char[bytes + 1];
       std::memcpy(buffer, start, bytes);
       buffer[bytes] = '\0';
       lines->push_back(std::string(buffer));
-      std::free(buffer);
+      delete[] buffer;
       breaks->push_back(newline);
       offset += bytes;
     }
