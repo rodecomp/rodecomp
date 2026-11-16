@@ -839,13 +839,13 @@ void UISerachStoreInfoWnd::Paint() {
     this->DrawTextAt(5, this->geometry.height - 20, this->m_statusText.c_str(), 0, 0, 12, 0xFF, 0, 0);
   }
 
+  const std::vector<SearchStoreResult>::const_iterator end = g_session.storeSearchResults.end();
   if (static_cast<unsigned int>(this->m_page * 10 - 10) >= g_session.storeSearchResults.size()) {
     return;
   }
 
-  const SearchStoreResult* end = g_session.storeSearchResults.data() + g_session.storeSearchResults.size();
-  const SearchStoreResult* entry = g_session.storeSearchResults.data() + (this->m_page - 1) * 10;
-  for (int row = 0; entry != end; ++entry) {
+  int row = 0;
+  for (std::vector<SearchStoreResult>::const_iterator entry = g_session.storeSearchResults.begin() + (this->m_page - 1) * 10; entry != end; ++entry, ++row) {
     if (row == 10) {
       break;
     }
@@ -856,9 +856,8 @@ void UISerachStoreInfoWnd::Paint() {
     this->DrawRectOutline(50, this->m_rowHeight * row + 100, 110, this->m_rowHeight + 1, 0xC0C0C0);
     this->DrawRectOutline(330, this->m_rowHeight * row + 100, 30, this->m_rowHeight + 1, 0xC0C0C0);
 
-    const int next = row + 1;
-    if (next < 10) {
-      this->FillRegion(5, this->m_rowHeight * next + 100, this->geometry.width - 10, 1, 0xC0C0C0);
+    if (row + 1 < 10) {
+      this->FillRegion(5, this->m_rowHeight * (row + 1) + 100, this->geometry.width - 10, 1, 0xC0C0C0);
     }
 
     const int top = this->m_rowHeight * row + 100;
@@ -884,13 +883,12 @@ void UISerachStoreInfoWnd::Paint() {
 
     char text[100];
     std::sprintf(text, "%d", entry->quantity);
-    this->DrawTextAt((30 - this->TextWidth(text, 0, 0, 12, 0, 0)) / 2 + 330, y, text, 0, 0, 12, 0, 0, 0
-    );
+    x = (30 - this->TextWidth(text, 0, 0, 12, 0, 0)) / 2 + 330;
+    this->DrawTextAt(x, y, text, 0, 0, 12, 0, 0, 0);
 
     const std::string price = FormatGroupedInteger(entry->price, text, 100) + std::string(" Z");
     this->DrawAmount(entry->price, price, 435 - this->TextWidth(price.c_str(), 0, 0, 12, 0, 0), y);
 
-    row = next;
   }
 
   char page[12];
