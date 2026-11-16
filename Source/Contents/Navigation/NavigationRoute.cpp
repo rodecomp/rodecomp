@@ -1655,7 +1655,7 @@ bool CNavigationManager::RouteToSavedTarget(int cellX, int cellY) {
 // FUNCTION: fn_19637
 bool CNavigationManager::SelectTarget(int nodeIndex) {
   this->currentTarget = this->savedTarget;
-  if (nodeIndex >= 0 && static_cast<unsigned int>(nodeIndex) < this->nodes.size()) {
+  if (nodeIndex >= 0 && this->nodes.size() > static_cast<unsigned int>(nodeIndex)) {
     this->currentTarget.type = 6;
     this->currentTarget.object = this->nodes[nodeIndex];
   }
