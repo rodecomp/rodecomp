@@ -89,13 +89,13 @@ bool UIItemTagOnChat::CanInsertTag(const std::string& name, int width) {
 
   std::string tag = "<";
   this->tagWidth = width;
-  tag += this->FitTextToWidth(name, width / 2);
+  tag += this->FitTextToWidth(name, this->tagWidth / 2);
   tag += ">";
 
   UIEditCtrl* edit = static_cast<UIEditCtrl*>(g_windowMgr.GetHoverWindow());
   this->taggedText = edit->text;
-  this->taggedText += tag;
-  return this->taggedText.size() <= static_cast<unsigned int>(edit->maximum);
+  const std::string text = this->taggedText += tag;
+  return text.size() <= static_cast<unsigned int>(edit->maximum);
 }
 
 // OFFSET: 0x00879A10
@@ -299,7 +299,7 @@ bool UIItemTagOnMegaPhone::CanInsertTag(const std::string& name, int width) {
 
   std::string tag = "<";
   this->tagWidth = width;
-  tag += this->FitTextToWidth(name, width / 2);
+  tag += this->FitTextToWidth(name, this->tagWidth / 2);
   tag += ">";
 
   unsigned bytes = 0;
@@ -308,8 +308,8 @@ bool UIItemTagOnMegaPhone::CanInsertTag(const std::string& name, int width) {
   UIEditCtrl* edit = g_windowMgr.npcTextEditDialogWnd->edit;
   const unsigned int maximum = edit->maximum;
   this->taggedText = edit->text;
-  this->taggedText += tag;
-  return this->taggedText.size() <= maximum;
+  const std::string text = this->taggedText += tag;
+  return text.size() <= maximum;
 }
 
 // OFFSET: 0x008962C0
