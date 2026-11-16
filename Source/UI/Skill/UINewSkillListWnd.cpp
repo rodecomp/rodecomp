@@ -1125,7 +1125,7 @@ void UINewSkillListWnd::UpdateRequiredSkills() {
   for (CSkillInfo& skill : this->SkillList(this->m_tab, false)) {
     const int key = static_cast<int>(skill.treePosition);
     if (key != -1 && this->m_firstRow * this->m_columns <= key && key == this->m_selectedSkill) {
-      this->m_values.push_back({static_cast<int>(skill.id), 0});
+      this->m_values.push_front({static_cast<int>(skill.id), 0});
       for (std::size_t i = 0; i < skill.entries.size(); ++i) {
         const int id = static_cast<int>(skill.entries[i].skillId);
         const int tab = SkillTabOf(id);
@@ -1147,7 +1147,8 @@ void UINewSkillListWnd::UpdateRequiredSkills() {
         }
         skill.entries[i].requiredLevel = level;
         const SkillInfoEntry& entry = skill.entries[i];
-        this->m_values.push_back({static_cast<int>(entry.skillId), static_cast<int>(entry.requiredLevel)});
+        const NewSkillListValue value = {static_cast<int>(entry.skillId), static_cast<int>(entry.requiredLevel)};
+        this->m_values.push_front(value);
       }
       return;
     }
