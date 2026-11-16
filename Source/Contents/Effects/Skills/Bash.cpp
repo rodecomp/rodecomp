@@ -34,7 +34,7 @@ void CBash::Close() {
 
 // OFFSET: 0x00B422E0
 // FUNCTION: fn_18870
-void CBash::Open() {
+__declspec(safebuffers) void CBash::Open() {
   CGameMode* mode = g_modeMgr.GetGameMode();
   RenderVertex screen;
   screen.x = 0.0f;
