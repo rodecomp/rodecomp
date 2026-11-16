@@ -1783,7 +1783,7 @@ void CUIEnchantUI::OnCreate(int width, int height) {
   this->background->Move(0, 0);
   {
     // GLOBAL: gl_25281
-    this->background->SetImage(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\EnchantUI\\bg_enchantUI.bmp", 0x33133B977BCD03CDULL)));
+    this->background->SetImage(OBFUSCATE_TEXT("유저인터페이스\\EnchantUI\\bg_enchantUI.bmp", 0x33133B977BCD03CDULL));
   }
   this->AddChild(this->background);
 
@@ -1794,7 +1794,7 @@ void CUIEnchantUI::OnCreate(int width, int height) {
     // GLOBAL: gl_25284
     // GLOBAL: gl_25283
     // GLOBAL: gl_25282
-    this->titleBar->SetImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\basic_interface\\titlebar_left.bmp", 0x2FEB8739E5975BD1ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\basic_interface\\titlebar_mid.bmp", 0x6BA1C1132F033B75ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\basic_interface\\titlebar_right.bmp", 0xA12DAB392545D72FULL)));
+    this->titleBar->SetImages(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\titlebar_left.bmp", 0x2FEB8739E5975BD1ULL), OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\titlebar_mid.bmp", 0x6BA1C1132F033B75ULL), OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\titlebar_right.bmp", 0xA12DAB392545D72FULL));
   }
   this->AddChild(this->titleBar);
 
@@ -1806,15 +1806,18 @@ void CUIEnchantUI::OnCreate(int width, int height) {
   title->SetAlign(0, 6);
   {
     // GLOBAL: gl_25285
-    title->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Gulim", 0x234977DDB54BC71DULL)));
+    title->SetFont(OBFUSCATE_TEXT("Gulim", 0x234977DDB54BC71DULL));
   }
   title->SetFontHeight(12);
   title->SetBold(0);
   title->SetColor(0);
   title->SetShadow(1, 0xFFFFFF);
   title->SetOutline(0, 0xFFFFFF);
-  this->titleBar->titleText = title;
-  this->titleBar->AddChild(title);
+  {
+    CUITitleBar* const titleBar = this->titleBar;
+    titleBar->titleText = title;
+    titleBar->AddChild(title);
+  }
 
   CUIImageButton* closeButton = new CUIImageButton;
   closeButton->SetSize(11, 11);
@@ -1823,47 +1826,49 @@ void CUIEnchantUI::OnCreate(int width, int height) {
   closeButton->disabled = 0;
   closeButton->Invalidate();
   {
-    // GLOBAL: gl_25286
-    const std::string disabled(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\basic_interface\\sys_close_off.bmp", 0xA597A7E7492B39D5ULL));
     // GLOBAL: gl_25289
     // GLOBAL: gl_25288
     // GLOBAL: gl_25287
-    closeButton->SetImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\basic_interface\\sys_close_off.bmp", 0xEF6D1D893F2B2DC5ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\basic_interface\\sys_close_on.bmp", 0x39A39F87DD5F535BULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\basic_interface\\sys_close_on.bmp", 0x6FE153231D879777ULL)), disabled);
+    // GLOBAL: gl_25286
+    closeButton->SetImages(OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_close_off.bmp", 0xEF6D1D893F2B2DC5ULL), OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_close_on.bmp", 0x39A39F87DD5F535BULL), OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_close_on.bmp", 0x6FE153231D879777ULL), OBFUSCATE_TEXT("유저인터페이스\\basic_interface\\sys_close_off.bmp", 0xA597A7E7492B39D5ULL));
   }
   this->titleBar->SetSecondButton(closeButton);
 
-  this->targetList = new CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>;
-  this->targetList->itemWidth = 200;
-  this->targetList->rowHeight = 50;
-  this->targetList->SetSize(220, 400);
+  CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>* targetList = new CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>;
+  this->targetList = targetList;
+  targetList->itemWidth = 200;
+  targetList->rowHeight = 50;
+  targetList->SetSize(220, 400);
   this->targetList->Move(0, 17);
   this->targetList->SetOnSelect([this](EnchantUI::CUITargetItem* item, const ITEM_INFO& info) { this->OnSelectTarget(item, info); });
   this->targetList->SetBinder([this](EnchantUI::CUITargetItem* item, const ITEM_INFO& info) { this->UpdateTargetItem(item, info); });
   {
-    // GLOBAL: gl_25290
-    const std::string disabled(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\EnchantUI\\bg_enc_gear.bmp", 0x8783C33941E15117ULL));
     // GLOBAL: gl_25293
     // GLOBAL: gl_25292
     // GLOBAL: gl_25291
-    this->targetList->SetImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\EnchantUI\\bg_enc_gear.bmp", 0xFFABE3D5D1BBEF73ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\EnchantUI\\bg_enc_gear_press.bmp", 0x0399459DAF454F0FULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\EnchantUI\\bg_enc_gear_over.bmp", 0xD5A78DB38D8DAFABULL)), disabled);
+    // GLOBAL: gl_25290
+    this->targetList->SetImages(OBFUSCATE_TEXT("유저인터페이스\\EnchantUI\\bg_enc_gear.bmp", 0xFFABE3D5D1BBEF73ULL), OBFUSCATE_TEXT("유저인터페이스\\EnchantUI\\bg_enc_gear_press.bmp", 0x0399459DAF454F0FULL), OBFUSCATE_TEXT("유저인터페이스\\EnchantUI\\bg_enc_gear_over.bmp", 0xD5A78DB38D8DAFABULL), OBFUSCATE_TEXT("유저인터페이스\\EnchantUI\\bg_enc_gear.bmp", 0x8783C33941E15117ULL));
   }
-  this->targetList->itemX = 4;
-  this->targetList->itemY = 0;
+  {
+    auto* const list = this->targetList;
+    list->itemX = 4;
+    list->itemY = 0;
+  }
   this->targetList->scrollBar->SetSize(16, 400);
   this->targetList->scrollBar->Move(204, 0);
   this->targetList->scrollBar->step = 50;
   {
     // GLOBAL: gl_25295
     // GLOBAL: gl_25294
-    this->targetList->SetScrollBarButtonImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\EnchantUI\\scroll_arrow_up.bmp", 0x271B45771F83DD9FULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\EnchantUI\\scroll_arrow_dowm.bmp", 0xC70319B5EB61598FULL)));
+    this->targetList->SetScrollBarButtonImages(OBFUSCATE_TEXT("유저인터페이스\\EnchantUI\\scroll_arrow_up.bmp", 0x271B45771F83DD9FULL), OBFUSCATE_TEXT("유저인터페이스\\EnchantUI\\scroll_arrow_dowm.bmp", 0xC70319B5EB61598FULL));
   }
   {
     // GLOBAL: gl_25296
-    this->targetList->SetScrollBarBackground(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\EnchantUI\\scroll_bg.bmp", 0x0B8745519B1F95D7ULL)));
+    this->targetList->SetScrollBarBackground(OBFUSCATE_TEXT("유저인터페이스\\EnchantUI\\scroll_bg.bmp", 0x0B8745519B1F95D7ULL));
   }
   {
     // GLOBAL: gl_25297
-    this->targetList->SetScrollBarThumbImage(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\EnchantUI\\scroll_btn.bmp", 0x01CB4F1DF9D3F931ULL)));
+    this->targetList->SetScrollBarThumbImage(OBFUSCATE_TEXT("유저인터페이스\\EnchantUI\\scroll_btn.bmp", 0x01CB4F1DF9D3F931ULL));
   }
   this->targetList->AddNewItem();
   this->AddChild(this->targetList);
@@ -1879,12 +1884,11 @@ void CUIEnchantUI::OnCreate(int width, int height) {
   normalButton->disabled = 0;
   normalButton->Invalidate();
   {
-    // GLOBAL: gl_25298
-    const std::string disabled(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\EnchantUI\\tab_enc_common_out.bmp", 0xE33F2FF779878559ULL));
     // GLOBAL: gl_25301
     // GLOBAL: gl_25300
     // GLOBAL: gl_25299
-    normalButton->SetImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\EnchantUI\\tab_enc_common_out.bmp", 0xC5B1BBCD9BC9C997ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\EnchantUI\\tab_enc_common_select.bmp", 0xC1BB8111EDD183E1ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\EnchantUI\\tab_enc_common_out.bmp", 0x1767DDE18D779D8BULL)), disabled);
+    // GLOBAL: gl_25298
+    normalButton->SetImages(OBFUSCATE_TEXT("유저인터페이스\\EnchantUI\\tab_enc_common_out.bmp", 0xC5B1BBCD9BC9C997ULL), OBFUSCATE_TEXT("유저인터페이스\\EnchantUI\\tab_enc_common_select.bmp", 0xC1BB8111EDD183E1ULL), OBFUSCATE_TEXT("유저인터페이스\\EnchantUI\\tab_enc_common_out.bmp", 0x1767DDE18D779D8BULL), OBFUSCATE_TEXT("유저인터페이스\\EnchantUI\\tab_enc_common_out.bmp", 0xE33F2FF779878559ULL));
   }
   this->tab->AddChild(normalButton);
 
@@ -1894,12 +1898,11 @@ void CUIEnchantUI::OnCreate(int width, int height) {
   upgradeButton->disabled = 0;
   upgradeButton->Invalidate();
   {
-    // GLOBAL: gl_25302
-    const std::string disabled(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\EnchantUI\\tab_enc_grow_out.bmp", 0x79E915E9AF6F55DDULL));
     // GLOBAL: gl_25305
     // GLOBAL: gl_25304
     // GLOBAL: gl_25303
-    upgradeButton->SetImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\EnchantUI\\tab_enc_grow_out.bmp", 0xF15F8785CDE369BFULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\EnchantUI\\tab_enc_grow_select.bmp", 0x792FFD1325418FB5ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\EnchantUI\\tab_enc_grow_out.bmp", 0x49D33529F1556333ULL)), disabled);
+    // GLOBAL: gl_25302
+    upgradeButton->SetImages(OBFUSCATE_TEXT("유저인터페이스\\EnchantUI\\tab_enc_grow_out.bmp", 0xF15F8785CDE369BFULL), OBFUSCATE_TEXT("유저인터페이스\\EnchantUI\\tab_enc_grow_select.bmp", 0x792FFD1325418FB5ULL), OBFUSCATE_TEXT("유저인터페이스\\EnchantUI\\tab_enc_grow_out.bmp", 0x49D33529F1556333ULL), OBFUSCATE_TEXT("유저인터페이스\\EnchantUI\\tab_enc_grow_out.bmp", 0x79E915E9AF6F55DDULL));
   }
   this->tab->AddChild(upgradeButton);
 
@@ -1913,7 +1916,7 @@ void CUIEnchantUI::OnCreate(int width, int height) {
     // GLOBAL: gl_25308
     // GLOBAL: gl_25307
     // GLOBAL: gl_25306
-    resetButton->SetImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\EnchantUI\\tab_enc_reset_out.bmp", 0xB7AFBD2FD9FD7501ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\EnchantUI\\tab_enc_reset_select.bmp", 0x192D654D29337BE5ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\EnchantUI\\tab_enc_reset_out.bmp", 0xB3E307A5F753D5E3ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\EnchantUI\\tab_enc_reset_out.bmp", 0x0B23D10F2F49D72BULL)));
+    resetButton->SetImages(OBFUSCATE_TEXT("유저인터페이스\\EnchantUI\\tab_enc_reset_out.bmp", 0xB7AFBD2FD9FD7501ULL), OBFUSCATE_TEXT("유저인터페이스\\EnchantUI\\tab_enc_reset_select.bmp", 0x192D654D29337BE5ULL), OBFUSCATE_TEXT("유저인터페이스\\EnchantUI\\tab_enc_reset_out.bmp", 0xB3E307A5F753D5E3ULL), OBFUSCATE_TEXT("유저인터페이스\\EnchantUI\\tab_enc_reset_out.bmp", 0x0B23D10F2F49D72BULL));
   }
   this->tab->AddChild(resetButton);
 
@@ -1923,11 +1926,11 @@ void CUIEnchantUI::OnCreate(int width, int height) {
   this->AddChild(this->normalPage);
   {
     // GLOBAL: gl_25310
-    this->normalPage->firstPage->background->SetImage(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\EnchantUI\\bg_subpageB.bmp", 0x136F2F9915D1DBCFULL)));
+    this->normalPage->firstPage->background->SetImage(OBFUSCATE_TEXT("유저인터페이스\\EnchantUI\\bg_subpageB.bmp", 0x136F2F9915D1DBCFULL));
   }
   {
     // GLOBAL: gl_25311
-    this->normalPage->secondPage->background->SetImage(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\EnchantUI\\bg_subpageY.bmp", 0x6BDF334F2BFDAD51ULL)));
+    this->normalPage->secondPage->background->SetImage(OBFUSCATE_TEXT("유저인터페이스\\EnchantUI\\bg_subpageY.bmp", 0x6BDF334F2BFDAD51ULL));
   }
 
   this->upgradePage = new EnchantUI::CUIUpgrade;
@@ -1936,11 +1939,11 @@ void CUIEnchantUI::OnCreate(int width, int height) {
   this->AddChild(this->upgradePage);
   {
     // GLOBAL: gl_25312
-    this->upgradePage->firstPage->background->SetImage(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\EnchantUI\\bg_subpageB.bmp", 0x674D9F3975573D41ULL)));
+    this->upgradePage->firstPage->background->SetImage(OBFUSCATE_TEXT("유저인터페이스\\EnchantUI\\bg_subpageB.bmp", 0x674D9F3975573D41ULL));
   }
   {
     // GLOBAL: gl_25313
-    this->upgradePage->secondPage->background->SetImage(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\EnchantUI\\bg_subpageY.bmp", 0xADC51BF9C98B413DULL)));
+    this->upgradePage->secondPage->background->SetImage(OBFUSCATE_TEXT("유저인터페이스\\EnchantUI\\bg_subpageY.bmp", 0xADC51BF9C98B413DULL));
   }
 
   this->resetPage = new EnchantUI::CUIReset;
@@ -1954,7 +1957,7 @@ void CUIEnchantUI::OnCreate(int width, int height) {
   this->textViewer->SetTextOffset(0, 0);
   {
     // GLOBAL: gl_25314
-    this->textViewer->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Gulim", 0xDF8117FF49CFF551ULL)));
+    this->textViewer->SetFont(OBFUSCATE_TEXT("Gulim", 0xDF8117FF49CFF551ULL));
   }
   this->textViewer->SetFontHeight(12);
   this->textViewer->SetBold(1);
@@ -1968,17 +1971,17 @@ void CUIEnchantUI::OnCreate(int width, int height) {
   {
     // GLOBAL: gl_25316
     // GLOBAL: gl_25315
-    this->textViewer->SetScrollBarButtonImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0up.bmp", 0x114901C7E37F6D49ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0down.bmp", 0x7D5D0F110B6B8371ULL)));
+    this->textViewer->SetScrollBarButtonImages(OBFUSCATE_TEXT("유저인터페이스\\scroll0up.bmp", 0x114901C7E37F6D49ULL), OBFUSCATE_TEXT("유저인터페이스\\scroll0down.bmp", 0x7D5D0F110B6B8371ULL));
   }
   {
     // GLOBAL: gl_25317
-    this->textViewer->SetScrollBarBackground(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0mid.bmp", 0xDB27CB557D038759ULL)));
+    this->textViewer->SetScrollBarBackground(OBFUSCATE_TEXT("유저인터페이스\\scroll0mid.bmp", 0xDB27CB557D038759ULL));
   }
   {
     // GLOBAL: gl_25320
     // GLOBAL: gl_25319
     // GLOBAL: gl_25318
-    this->textViewer->SetScrollBarThumbImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0bar_up.bmp", 0x3FA3AFA7035DE3FFULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0bar_mid.bmp", 0x87E3D1C50D572DEFULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\scroll0bar_down.bmp", 0x51BB39B763BBBD8DULL)));
+    this->textViewer->SetScrollBarThumbImages(OBFUSCATE_TEXT("유저인터페이스\\scroll0bar_up.bmp", 0x3FA3AFA7035DE3FFULL), OBFUSCATE_TEXT("유저인터페이스\\scroll0bar_mid.bmp", 0x87E3D1C50D572DEFULL), OBFUSCATE_TEXT("유저인터페이스\\scroll0bar_down.bmp", 0x51BB39B763BBBD8DULL));
   }
   this->AddChild(this->textViewer);
 
