@@ -2598,20 +2598,12 @@ void UILoginWnd::LoadLogin() {
 
     if (saveId != 0) {
       int shade;
-      bool placeholder = std::strcmp("", id) == 0;
-      if (!placeholder) {
-        EncryptedName<3, 0x83EFBFBB37EDBDBDULL>& compareName = OBFUSCATE_STRING("ID", 0x83EFBFBB37EDBDBDULL);
-        placeholder = std::strcmp(compareName.Text(), id) == 0;
-      }
-
-      if (!placeholder) {
+      if (std::strcmp("", id) != 0 && std::strcmp(OBFUSCATE_STRING("ID", 0x83EFBFBB37EDBDBDULL).Text(), id) != 0) {
         shade = 0;
         this->idPlaceholder = false;
       } else {
         this->idPlaceholder = true;
-        UIEditCtrl_Custom* edit = this->idEdit;
-        EncryptedName<3, 0xBF2B4B31397FF5A7ULL>& textName = OBFUSCATE_STRING("ID", 0xBF2B4B31397FF5A7ULL);
-        edit->SetText(textName.Text());
+        this->idEdit->SetText(OBFUSCATE_STRING("ID", 0xBF2B4B31397FF5A7ULL).Text());
         shade = 156;
       }
 
