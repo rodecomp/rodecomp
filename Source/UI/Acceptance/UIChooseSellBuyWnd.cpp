@@ -2287,7 +2287,7 @@ void UInCashWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   switch (drag->source) {
   case 4:
     if (x < 445) {
-      const int quantity = g_session.GetItem1720QuantityByItemId(drag->name.c_str());
+      const int quantity = g_session.GetPurchaseItemNumByItemId(drag->name.c_str());
       if (quantity <= 1) {
         this->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
         return;
@@ -6525,7 +6525,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
     this->items.clear();
     const int count = g_session.GetInventoryCategorySize(this->m_tab);
     for (int index = 0; index < count; ++index) {
-      ITEM_INFO item = g_session.GetItem1784At(this->m_tab, index);
+      ITEM_INFO item = g_session.GetInventoryCategoryItemInfoBySequence(this->m_tab, index);
       if (item.identity[1] != 0 && (this->m_tab != 8 || item.bindOnEquip != 0xFFFF)) {
         this->items.push_back(item);
       }
@@ -6583,7 +6583,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
           break;
         }
         for (int index = 0; index < count; ++index) {
-          ITEM_INFO item = g_session.GetItem1720At(index);
+          ITEM_INFO item = g_session.GetPurchaseItemInfoBySequence(index);
           NCashBuyItem entry;
           entry.itemId = std::atoi(item.itemId.c_str());
           entry.quantity = item.quantity;
@@ -6614,7 +6614,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
         for (int list = 0; list < 9; ++list) {
           const int count = g_session.GetInventoryCategorySize(list);
           for (int index = 0; index < count; ++index) {
-            ITEM_INFO item = g_session.GetItem1784At(list, index);
+            ITEM_INFO item = g_session.GetInventoryCategoryItemInfoBySequence(list, index);
             std::string name(item.displayName);
             if (name.find(query) != std::string::npos && !g_session.HasInventorySearchItem(std::atoi(item.itemId.c_str()))) {
               g_session.inventoryCategories[10].push_back(item);
@@ -6731,7 +6731,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
         return 0;
       }
       if (this->m_tab == 8) {
-        const int owned = g_session.GetItem1720QuantityByItemId(mode->drag.name.c_str());
+        const int owned = g_session.GetPurchaseItemNumByItemId(mode->drag.name.c_str());
         for (ITEM_INFO& entry : this->items) {
           if (std::atoi(entry.itemId.c_str()) == std::atoi(mode->drag.name.c_str())) {
             if (entry.quantity <= 0) {
@@ -6773,7 +6773,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
     this->m_otherItems.clear();
     const int count = g_session.GetNumPurchaseItems();
     for (int index = 0; index < count; ++index) {
-      ITEM_INFO other = g_session.GetItem1720At(index);
+      ITEM_INFO other = g_session.GetPurchaseItemInfoBySequence(index);
       if (other.identity[1] != 0) {
         this->m_otherItems.push_back(other);
       }
@@ -10105,7 +10105,7 @@ void UInCashWnd::OnLBtnDblClk(int x, int y) {
   const CSession& lists = g_session;
   const int count = lists.GetNumPurchaseItems();
   for (int index = 0; index < count; ++index) {
-    ITEM_INFO other = g_session.GetItem1720At(index);
+    ITEM_INFO other = g_session.GetPurchaseItemInfoBySequence(index);
     if (other.identity[1] > 0) {
       this->m_otherItems.push_back(other);
     }

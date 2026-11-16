@@ -2531,7 +2531,7 @@ void __stdcall ProcessVendingSale(int field8, int itemIdWord, int quantityWord, 
 // OFFSET: 0x00D08670
 // FUNCTION: fn_21592
 __declspec(noinline) void CGameMode::ProcessBuyingStorePurchase(int updateTime, int itemId, int amount, int zeny, int zenyLimit, int charId) {
-  ITEM_INFO item = g_session.FindItem1758ByItemId(itemId);
+  ITEM_INFO item = g_session.GetMerchantPurchaseItemInfoByItemId(itemId);
   item.SetItemId(itemId);
   item.quantity = amount;
   item.prices[0] = static_cast<std::uint32_t>(zeny);

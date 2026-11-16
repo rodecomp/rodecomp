@@ -2637,7 +2637,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       const std::uint16_t header[2] = {ID_CZ_PC_SELL_ITEMLIST, static_cast<std::uint16_t>(size)};
       std::memcpy(packet, header, sizeof(header));
       for (int i = 0; i < count; ++i) {
-        const ITEM_INFO item = g_session.GetItem1730At(i);
+        const ITEM_INFO item = g_session.GetStorageItemInfoBySequence(i);
         const std::uint16_t entry[2] = {
           static_cast<std::uint16_t>(item.identity[1]), static_cast<std::uint16_t>(item.quantity)
         };
@@ -2852,7 +2852,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       std::memcpy(packet + 4, &argument1, 4);
       std::memcpy(packet + 8, &argument2, 4);
       for (int index = 0; index < count; ++index) {
-        const ITEM_INFO item = g_session.GetItem1760At(index);
+        const ITEM_INFO item = g_session.GetMerchantHopeToSellItemInfoBySequence(index);
         if (item.identity[1] != 0) {
           const std::uint16_t itemIndex = static_cast<std::uint16_t>(item.identity[1]);
           const int itemId = std::atoi(item.itemId.c_str());
@@ -3204,7 +3204,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       }
       unsigned char* output = packet + 96;
       for (int index = 0; index < count; ++index) {
-        ITEM_INFO item = g_session.GetItem1768At(index);
+        ITEM_INFO item = g_session.GetMerchantPurchaseSavedItemInfoBySequence(index);
         if (item.identity[1] > 0) {
           const int itemId = std::atoi(item.itemId.c_str());
           const std::uint16_t quantity = static_cast<std::uint16_t>(item.quantity);
@@ -3398,7 +3398,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       std::memcpy(packet + 2, &packetLength, sizeof(packetLength));
       if (count > 0) {
         for (int index = 0; index < count; ++index) {
-          const ITEM_INFO item = g_session.GetItem1720At(index);
+          const ITEM_INFO item = g_session.GetPurchaseItemInfoBySequence(index);
           const int id = std::atoi(item.itemId.c_str());
           std::memcpy(packet + 4 + index * 8, &id, sizeof(id));
           std::memcpy(packet + 8 + index * 8, &item.quantity, sizeof(item.quantity));
@@ -3712,7 +3712,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       std::memcpy(packet, header, sizeof(header));
       if (count > 0) {
         for (int index = 0; index < count; ++index) {
-          const ITEM_INFO item = g_session.GetItem1720At(index);
+          const ITEM_INFO item = g_session.GetPurchaseItemInfoBySequence(index);
           const std::int32_t itemId = std::atoi(item.itemId.c_str());
           const std::uint16_t identity = static_cast<std::uint16_t>(item.identity[1]);
           unsigned char* entry = packet + 4 + index * 10;
@@ -3989,7 +3989,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       std::memcpy(packet + 4, &argument1, sizeof(argument1));
       std::memcpy(packet + 8, &itemCount, sizeof(itemCount));
       for (int index = 0; index < count; ++index) {
-        const ITEM_INFO item = g_session.GetItem1720At(index);
+        const ITEM_INFO item = g_session.GetPurchaseItemInfoBySequence(index);
         const std::uint16_t quantity = static_cast<std::uint16_t>(item.quantity);
         const int itemId = std::atoi(item.itemId.c_str());
         std::memcpy(packet + 10 + index * 6, &quantity, sizeof(quantity));
@@ -4454,7 +4454,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       }
       OpenStoreEntry* entry = packet.entries;
       for (int index = 0; index < count; ++index) {
-        const ITEM_INFO item = g_session.GetItem1768At(index);
+        const ITEM_INFO item = g_session.GetMerchantPurchaseSavedItemInfoBySequence(index);
         if (item.identity[1]) {
           entry->index = static_cast<std::uint16_t>(item.identity[1]);
           entry->amount = static_cast<std::uint16_t>(item.quantity);
@@ -4647,7 +4647,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       std::memcpy(packet + 4, &argument1, sizeof(argument1));
       std::memcpy(packet + 8, &argument2, sizeof(argument2));
       for (int index = 0; index < count; ++index) {
-        ITEM_INFO item = g_session.GetItem1760At(index);
+        ITEM_INFO item = g_session.GetMerchantHopeToSellItemInfoBySequence(index);
         if (item.identity[1] != 0) {
           *reinterpret_cast<std::uint16_t*>(packet + 12 + index * 4) = static_cast<std::uint16_t>(item.quantity);
           *reinterpret_cast<std::uint16_t*>(packet + 14 + index * 4) = static_cast<std::uint16_t>(item.identity[1]);
@@ -4830,7 +4830,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       const std::uint16_t header[2] = {ID_CZ_PC_PURCHASE_ITEMLIST, static_cast<std::uint16_t>(length)};
       std::memcpy(packet, header, sizeof(header));
       for (int index = 0; index < count; ++index) {
-        const ITEM_INFO item = g_session.GetItem1720At(index);
+        const ITEM_INFO item = g_session.GetPurchaseItemInfoBySequence(index);
         const std::uint16_t quantity = static_cast<std::uint16_t>(item.quantity);
         const int itemId = std::atoi(item.itemId.c_str());
         std::memcpy(packet + 4 + index * 6, &quantity, sizeof(quantity));
@@ -4989,7 +4989,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       std::memcpy(packet + 4, &argument1, sizeof(argument1));
       std::memcpy(packet + 8, &flag, sizeof(flag));
       for (int index = 0; index < count; ++index) {
-        const ITEM_INFO item = g_session.GetItem1730At(index);
+        const ITEM_INFO item = g_session.GetStorageItemInfoBySequence(index);
         const std::uint16_t entry[2] = {
           static_cast<std::uint16_t>(item.identity[1]), static_cast<std::uint16_t>(item.quantity)
         };
@@ -5187,7 +5187,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       }
       unsigned char* output = packet + 0x59;
       for (int index = 0; index < count; ++index) {
-        const ITEM_INFO item = g_session.GetItem1768At(index);
+        const ITEM_INFO item = g_session.GetMerchantPurchaseSavedItemInfoBySequence(index);
         if (item.identity[1] > 0) {
           const int id = std::atoi(item.itemId.c_str());
           const std::uint16_t quantity = static_cast<std::uint16_t>(item.quantity);
@@ -5217,7 +5217,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       }
       unsigned char* output = packet + 0x58;
       for (int index = 0; index < count; ++index) {
-        const ITEM_INFO item = g_session.GetItem1768At(index);
+        const ITEM_INFO item = g_session.GetMerchantPurchaseSavedItemInfoBySequence(index);
         if (item.identity[1] != 0) {
           const std::uint16_t id = static_cast<std::uint16_t>(item.identity[1]);
           const std::uint16_t quantity = static_cast<std::uint16_t>(item.quantity);

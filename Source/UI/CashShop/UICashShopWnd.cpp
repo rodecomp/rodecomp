@@ -805,7 +805,7 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
   case UM_REFRESHITEM:
     this->m_items.clear();
     for (int index = 0; index < lists.GetInventoryCategorySize(this->m_selectedTab); ++index) {
-      ITEM_INFO item = g_session.GetItem1784At(this->m_selectedTab, index);
+      ITEM_INFO item = g_session.GetInventoryCategoryItemInfoBySequence(this->m_selectedTab, index);
       if (item.identity[1] > 0) {
         this->m_items.push_back(item);
       }
@@ -948,7 +948,7 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
           }
 
           for (int index = 0; index < lists.GetInventoryCategorySize(list); ++index) {
-            ITEM_INFO item = g_session.GetItem1784At(list, index);
+            ITEM_INFO item = g_session.GetInventoryCategoryItemInfoBySequence(list, index);
             std::string name(item.displayName);
             if (name.find(query) != std::string::npos && !g_session.HasInventorySearchItem(atoi(item.itemId.c_str()))) {
               g_session.inventoryCategories[10].push_back(item);
@@ -959,7 +959,7 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
         if (lists.GetInventoryCategorySize(10) > 0) {
           this->m_items.clear();
           for (int index = 0; index < lists.GetInventoryCategorySize(10); ++index) {
-            this->m_items.push_back(g_session.GetItem1784At(10, index));
+            this->m_items.push_back(g_session.GetInventoryCategoryItemInfoBySequence(10, index));
           }
 
           this->m_selectedTab = 10;

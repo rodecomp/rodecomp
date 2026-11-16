@@ -297,7 +297,7 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     case TYPE_ARMORMB:
     case TYPE_ARMORTMB:
     case TYPE_GUN: {
-      const int count = drag.uniqueItem == 1 ? g_session.GetItem1720Quantity(drag.id) : g_session.GetItem1720QuantityByItemId(drag.name.c_str());
+      const int count = drag.uniqueItem == 1 ? g_session.GetPurchaseItemNum(drag.id) : g_session.GetPurchaseItemNumByItemId(drag.name.c_str());
       if (count > 0) {
         mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
         g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
@@ -310,7 +310,7 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
 
     ITEM_INFO item;
     item.Assign(drag);
-    const int total = g_session.GetItem1720Total();
+    const int total = g_session.GetPurchaseItemTotalPrice();
     const int price = drag.price;
     const bool affordable = g_session.m_zeny >= static_cast<long long>(price) * drag.quantity + total;
 
@@ -332,7 +332,7 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 255, 0, 0, 0);
     }
 
-    const int available = item.flags[3] == 1 ? g_session.GetItem1718QuantityOf(item) : g_session.GetItem1718QuantityByItemId(item);
+    const int available = item.flags[3] == 1 ? g_session.GetShopItemNumOf(item) : g_session.GetShopItemNumByItemId(item);
     if (available != -1 && available < a) {
       item.quantity = available;
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
@@ -377,7 +377,7 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     CMode* mode = g_modeMgr.currentMode;
     switch (a) {
     case ID_OK: {
-      ITEM_INFO item = g_session.GetItem1720At(0);
+      ITEM_INFO item = g_session.GetPurchaseItemInfoBySequence(0);
       if (item.flags[3] == 1) {
         mode->SendMsg(MM_NPC_MARKET_PURCHASE_V2, 0, 0, 0, 0);
       } else {
@@ -432,7 +432,7 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     int sum = 0;
     const int size = g_session.GetNumPurchaseItems();
     for (int i = 0; i < size; ++i) {
-      ITEM_INFO item = g_session.GetItem1720At(i);
+      ITEM_INFO item = g_session.GetPurchaseItemInfoBySequence(i);
       if (item.identity[1] != 0) {
         sum += item.quantity * item.prices[1];
         this->items.push_back(item);
@@ -573,7 +573,7 @@ int UIParaItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     this->items.erase(this->items.begin(), this->items.end());
     const int size = g_session.GetNumShopItems();
     for (int i = 0; i < size; ++i) {
-      ITEM_INFO item = g_session.GetItem1718At(i);
+      ITEM_INFO item = g_session.GetShopItemInfoBySequence(i);
       if (item.identity[1] > 0) {
         this->items.push_back(item);
       }

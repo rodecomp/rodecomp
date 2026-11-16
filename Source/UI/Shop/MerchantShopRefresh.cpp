@@ -49,7 +49,7 @@ void UIMerchantShopMakeWnd::Refresh() {
   const int count = g_session.GetNumMerchantPurchaseSavedItems();
 
   for (int index = 0; index < count; ++index) {
-    const ITEM_INFO item = g_session.GetItem1768At(index);
+    const ITEM_INFO item = g_session.GetMerchantPurchaseSavedItemInfoBySequence(index);
     g_session.AddMerchantMyShopItem(item, this->mode, 0);
   }
 
