@@ -42,9 +42,7 @@ __forceinline const char* WaitActionName() {
 
 // INLINED
 UIWaitDBSaveWnd::UIWaitDBSaveWnd(const char* sprite, const char* action)
-    : UIWindow(0), m_animation(0), m_frame(0), m_loopLimit(0), m_sprite(nullptr), m_action(nullptr), m_startTime(0), m_loop(1),
-      m_closeTime(0) {
-  this->m_closeTime = timeGetTime() + 60000;
+    : UIWindow(0), m_animation(0), m_frame(0), m_loopLimit(0), m_loop(1), m_closeTime(timeGetTime() + 60000) {
   this->m_sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(sprite));
   this->m_action = static_cast<CActRes*>(ResourceMgr::Instance().Load(action));
   this->m_startTime = timeGetTime();
