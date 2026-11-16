@@ -207,7 +207,7 @@ struct ItemSlotAddOptionsPacket {
   /* 000B */ unsigned char identified;
   /* 000C */ unsigned char damaged;
   /* 000D */ unsigned char refine;
-  /* 000E */ unsigned char cards[16];
+  /* 000E */ std::uint32_t cards[4];
   /* 001E */ ItemSlotOption options[5];
   /* 0037 */ std::uint32_t expireTime;
   /* 003B */ std::uint16_t bindType;
@@ -220,7 +220,7 @@ struct ItemSlotAddGradePacket {
   /* 0007 */ int slot;
   /* 000B */ unsigned char identified;
   /* 000C */ unsigned char damaged;
-  /* 000D */ unsigned char cards[16];
+  /* 000D */ std::uint32_t cards[4];
   /* 001D */ ItemSlotOption options[5];
   /* 0036 */ std::uint32_t expireTime;
   /* 003A */ std::uint16_t bindType;
@@ -1187,8 +1187,7 @@ void CGameMode::ReceivePartyItemPickup(const unsigned char* data) {
     item.refiningLevel = packet->refine;
     item.grade = packet->grade;
 
-    std::string name = item.DisplayName(0);
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_ITEM_PICKUP_PARTY), member.name.c_str(), name.c_str()).c_str()), 0xFFFF00, 9, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_ITEM_PICKUP_PARTY), member.name.c_str(), item.DisplayName(0).c_str()).c_str()), 0xFFFF00, 9, 0, 0);
   }
 }
 
@@ -2173,7 +2172,9 @@ void CGameMode::ReceiveItemSlotAddOptions(const unsigned char* data) {
   item.damaged = packet->damaged;
   item.identified = packet->identified;
   item.refiningLevel = packet->refine;
-  std::memcpy(item.cards, packet->cards, sizeof(packet->cards));
+  for (int card = 0; card < 4; ++card) {
+    item.cards[card] = packet->cards[card];
+  }
   item.identity[1] = 0xFFFFFFFF;
   item.optionCount = CountItemSlotOptions(packet->options);
   for (int index = 0; index < item.optionCount; ++index) {
@@ -2204,7 +2205,9 @@ void CGameMode::ReceiveItemSlotAddGrade(const unsigned char* data) {
   item.damaged = packet->damaged;
   item.identified = packet->identified;
   item.refiningLevel = packet->refine;
-  std::memcpy(item.cards, packet->cards, sizeof(packet->cards));
+  for (int card = 0; card < 4; ++card) {
+    item.cards[card] = packet->cards[card];
+  }
   item.identity[1] = 0xFFFFFFFF;
   item.optionCount = CountItemSlotOptions(packet->options);
   for (int index = 0; index < item.optionCount; ++index) {
@@ -3523,7 +3526,9 @@ void CGameMode::ReceiveStorageNormalList2(const unsigned char* data) {
 void CGameMode::ReceiveItemUpgrade(std::uint16_t index, std::uint16_t refine, ItemCardSlots cards, ItemSlotOptions options) {
   ITEM_INFO item = g_session.LookupClientItemByIdentity(index);
   item.refiningLevel = refine;
-  std::memcpy(item.cards, cards.cards, sizeof(cards.cards));
+  for (int i = 0; i < 4; ++i) {
+    item.cards[i] = cards.cards[i];
+  }
   item.optionCount = CountItemSlotOptions(options.options);
   for (int i = 0; i < item.optionCount; ++i) {
     item.options[i] = options.options[i];
@@ -7358,7 +7363,9 @@ void CGameMode::RefreshInventoryOrEquipItem(std::uint16_t itemId, unsigned char 
 
   item.damaged = damaged;
   item.refiningLevel = refine;
-  std::memcpy(item.cards, cards.cards, sizeof(cards.cards));
+  for (int i = 0; i < 4; ++i) {
+    item.cards[i] = cards.cards[i];
+  }
   item.optionCount = CountItemSlotOptions(options.options);
   for (int index = 0; index < item.optionCount; ++index) {
     item.options[index] = options.options[index];
