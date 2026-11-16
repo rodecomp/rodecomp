@@ -40,10 +40,13 @@ bool JsonCppLoader::GetMapStringBoolValue(const JsonValue& node, const std::stri
     return false;
   }
 
-  const JsonObject& members = value.value.GetObject();
-  for (JsonObject::const_iterator member = members.begin(); member != members.end(); ++member) {
-    std::string name = member->first;
-    JsonCopiedValue element(member->second);
+  const JsonObject* members = value.value.ObjectRange();
+  if (members == nullptr) {
+    return true;
+  }
+  for (const JsonMember& member : *members) {
+    std::string name = member.first;
+    JsonCopiedValue element(member.second);
     if (element.value.GetType() != JsonValue::BOOL_VALUE) {
       this->Fail("잘못된 데이터가 입력되었습니다. boolValue 가 입력되어야 합니다. (keyName : %s)", key.c_str());
       return false;
@@ -236,23 +239,27 @@ bool JsonCppLoader::GetIntValue(const JsonValue& node, const std::string& key, i
 // OFFSET: 0x005087D0
 // FUNCTION: fn_00888
 bool JsonCppLoader::GetMapStringIntValue(const JsonValue& node, const std::string& key, std::map<std::string, int>* out) {
-  JsonValue value;
-  this->GetValue(value, key, node, JsonValue::OBJECT_VALUE);
-  if (value.IsNull()) {
+  JsonValueLocal value;
+  this->GetValue(value.value, key, node, JsonValue::OBJECT_VALUE);
+  if (value.value.IsNull()) {
     this->Fail("key 에 해당하는 데이터를 찾지 못했습니다. (keyName : %s)", key.c_str());
     return false;
   }
 
-  const JsonObject& members = value.GetObject();
-  for (JsonObject::const_iterator member = members.begin(); member != members.end(); ++member) {
-    std::string name = member->first;
-    JsonValue element = member->second;
-    if (element.GetType() != JsonValue::INT64_VALUE) {
+  const JsonObject* members = value.value.ObjectRange();
+  if (members == nullptr) {
+    return true;
+  }
+  for (const JsonMember& member : *members) {
+    std::string name = member.first;
+    JsonCopiedValue element(member.second);
+    if (element.value.GetType() != JsonValue::INT64_VALUE) {
       this->Fail("잘못된 데이터가 입력되었습니다. intValue 가 입력되어야 합니다. (keyName : %s)", key.c_str());
       return false;
     }
 
-    if (!out->insert(std::make_pair(name, element.AsInt())).second) {
+    const std::map<std::string, int>::value_type item(name, element.value.AsInt());
+    if (!out->insert(item).second) {
       this->Fail("중복키가 입력되었습니다. (keyName : %s)", key.c_str());
       return false;
     }
@@ -264,23 +271,27 @@ bool JsonCppLoader::GetMapStringIntValue(const JsonValue& node, const std::strin
 // OFFSET: 0x00508BD0
 // FUNCTION: fn_00889
 bool JsonCppLoader::GetMapStringStringValue(const JsonValue& node, const std::string& key, std::map<std::string, std::string>* out) {
-  JsonValue value;
-  this->GetValue(value, key, node, JsonValue::OBJECT_VALUE);
-  if (value.IsNull() == true) {
+  JsonValueLocal value;
+  this->GetValue(value.value, key, node, JsonValue::OBJECT_VALUE);
+  if (value.value.IsNull() == true) {
     this->Fail("key 에 해당하는 데이터를 찾지 못했습니다. (keyName : %s)", key.c_str());
     return false;
   }
 
-  const JsonObject& members = value.GetObject();
-  for (JsonObject::const_iterator member = members.begin(); member != members.end(); ++member) {
-    std::string name = member->first;
-    JsonValue element = member->second;
-    if (element.GetType() != JsonValue::STRING_VALUE) {
+  const JsonObject* members = value.value.ObjectRange();
+  if (members == nullptr) {
+    return true;
+  }
+  for (const JsonMember& member : *members) {
+    std::string name = member.first;
+    JsonCopiedValue element(member.second);
+    if (element.value.GetType() != JsonValue::STRING_VALUE) {
       this->Fail("잘못된 데이터가 입력되었습니다. stringValue 가 입력되어야 합니다. (keyName : %s)", key.c_str());
       return false;
     }
 
-    if (!out->insert(std::make_pair(name, element.AsString())).second) {
+    const std::map<std::string, std::string>::value_type item(name, element.value.AsString());
+    if (!out->insert(item).second) {
       this->Fail("중복키가 입력되었습니다. (keyName : %s)", key.c_str());
       return false;
     }
