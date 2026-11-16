@@ -180,7 +180,7 @@ void UIParaResultWnd::OnLBtnDown(int x, int y) {
 // FUNCTION: fn_13755
 void UIParaResultWnd::OnMouseHover(int x, int y) {
   ITEM_INFO item = this->GetItemAt(x, y);
-  if (item.identity[1] != 0) {
+  if (item.identity[1] > 0) {
     int tooltipX = (x - 40) / 32 * 32 + 40;
     int tooltipY = (y - 17) / 32 * 32 + 1;
     this->ToScreen(tooltipX, tooltipY);
