@@ -25,7 +25,14 @@ void RemoveDirectoryTree(const char* path) {
   } else {
     std::string dot(".");
     std::string dotdot("..");
-    do {
+    if (dot != found.cFileName && dotdot != found.cFileName) {
+      if ((found.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0) {
+        directories.push_back(std::string(found.cFileName));
+      } else {
+        files.push_back(std::string(found.cFileName));
+      }
+    }
+    while (FindNextFileA(search, &found)) {
       if (dot != found.cFileName && dotdot != found.cFileName) {
         if ((found.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0) {
           directories.push_back(std::string(found.cFileName));
@@ -33,7 +40,7 @@ void RemoveDirectoryTree(const char* path) {
           files.push_back(std::string(found.cFileName));
         }
       }
-    } while (FindNextFileA(search, &found));
+    }
     FindClose(search);
 
     std::strcpy(filename, path);
