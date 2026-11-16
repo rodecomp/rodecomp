@@ -28,7 +28,11 @@ template __declspec(noinline) TextureMap::iterator TextureMap::_Mybase::find(con
 
 // INLINED
 bool TextureNameLess::operator()(const char* left, const char* right) const {
-  return std::strcmp(left, right) < 0;
+  while (*left == *right && *left != '\0') {
+    ++left;
+    ++right;
+  }
+  return static_cast<unsigned char>(*left) < static_cast<unsigned char>(*right);
 }
 
 // OFFSET: 0x004074F5
@@ -140,7 +144,8 @@ CTexture* TextureCache::Create(const char* name, int option, bool fullSize, bool
 // OFFSET: 0x005717A0
 // FUNCTION: fn_02454
 CTexture* TextureCache::Load(const char* name, int option, bool fullSize, bool dynamic, bool renderTarget) {
-  const auto found = this->m_textures.find(name);
+  const char* key = name;
+  const auto found = this->m_textures.find(key);
 
   if (found != this->m_textures.end() && found->second) {
     CTexture* texture = found->second;
