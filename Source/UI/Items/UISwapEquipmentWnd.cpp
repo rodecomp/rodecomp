@@ -117,7 +117,8 @@ void UISwapEquipmentWnd::DrawEquipmentSlots() {
     }
 
     if (item.identity[1] > 0 && item.quantity == 1) {
-      int xCoords[4] = {34, 173, 6, 250};
+      int nameColumns[2] = {34, 173};
+      int iconColumns[2] = {6, 250};
       int yCoords[4] = {54, 80, 106, 132};
 
       if (fromSwap == true) {
@@ -125,18 +126,18 @@ void UISwapEquipmentWnd::DrawEquipmentSlots() {
         const int row = slot & 3;
         if (slot < 8) {
           const int iconY = row * 26 + 48;
-          this->DrawItemIcon(xCoords[slot / 4 + 2], iconY, item, 0);
-          this->DrawItemName(xCoords[slot / 4], yCoords[row], 70, &item, 0, 0, 12);
+          this->DrawItemIcon(iconColumns[slot / 4], iconY, item, 0);
+          this->DrawItemName(nameColumns[slot / 4], yCoords[row], 70, &item, 0, 0, 12);
           if (0 < item.grade) {
             this->DrawBitmap(
-              xCoords[slot / 4 + 2], iconY + 12,
+              iconColumns[slot / 4], iconY + 12,
               static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade).c_str()))),
               true
             );
           }
         } else {
-          this->DrawItemIcon(xCoords[row + 2], 22, item, 0);
-          this->DrawItemName(xCoords[slot - 8], 30, 70, &item, 0, 0, 12);
+          this->DrawItemIcon(iconColumns[row], 22, item, 0);
+          this->DrawItemName(nameColumns[slot - 8], 30, 70, &item, 0, 0, 12);
         }
       } else {
         const EquipSlots slots = g_session.GetEquipSlots(item.identity[3]);
@@ -145,38 +146,40 @@ void UISwapEquipmentWnd::DrawEquipmentSlots() {
           fromSwap = this->GetSlotItem(locations[i]).identity[1] > 0;
         }
 
-        if (fromSwap != true) {
-          this->SetSlotValue(slot, item.sprite);
-          char path[128];
-          if (slot < 8) {
-            const char* id = item.itemId.c_str();
-            const int iconX = xCoords[slot / 4 + 2];
-            std::memset(path, 0, sizeof(path));
-            g_session.IconPath(id, path, 1);
-            CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
-            const int row = slot & 3;
-            if (bitmap) {
-              this->DrawAuxiliary(1, iconX, row * 26 + 48, bitmap, true, false);
-            }
-            this->DrawItemName(xCoords[slot / 4], yCoords[row], 70, &item, 0, 0, 12);
-            if (0 < item.grade) {
-              this->DrawBitmap(
-                iconX, row * 26 + 60,
-                static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade).c_str()))),
-                true
-              );
-            }
-          } else {
-            const char* id = item.itemId.c_str();
-            const int iconX = xCoords[(slot & 3) + 2];
-            std::memset(path, 0, sizeof(path));
-            g_session.IconPath(id, path, 1);
-            CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
-            if (bitmap) {
-              this->DrawAuxiliary(1, iconX, 22, bitmap, true, false);
-            }
-            this->DrawItemName(xCoords[slot - 8], 30, 70, &item, 0, 0, 12);
+        if (fromSwap == true) {
+          continue;
+        }
+
+        this->SetSlotValue(slot, item.sprite);
+        char path[128];
+        if (slot < 8) {
+          const char* id = item.itemId.c_str();
+          const int iconX = iconColumns[slot / 4];
+          std::memset(path, 0, sizeof(path));
+          g_session.IconPath(id, path, 1);
+          CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
+          const int row = slot & 3;
+          if (bitmap) {
+            this->DrawAuxiliary(1, iconX, row * 26 + 48, bitmap, true, false);
           }
+          this->DrawItemName(nameColumns[slot / 4], yCoords[row], 70, &item, 0, 0, 12);
+          if (0 < item.grade) {
+            this->DrawBitmap(
+              iconX, row * 26 + 60,
+              static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", item.grade).c_str()))),
+              true
+            );
+          }
+        } else {
+          const char* id = item.itemId.c_str();
+          const int iconX = iconColumns[slot & 3];
+          std::memset(path, 0, sizeof(path));
+          g_session.IconPath(id, path, 1);
+          CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
+          if (bitmap) {
+            this->DrawAuxiliary(1, iconX, 22, bitmap, true, false);
+          }
+          this->DrawItemName(nameColumns[slot - 8], 30, 70, &item, 0, 0, 12);
         }
       }
     }
@@ -273,11 +276,19 @@ ITEM_INFO UISwapEquipmentWnd::ItemAtPoint(int x, int y) {
   int slot = -1;
   if (y <= this->geometry.height && y >= 22 && y <= 151) {
     if ((x >= 6 && x < 106) || (x >= 170 && x < this->geometry.width - 6)) {
-      const int row = (y - 22) / 26;
+      slot = (y - 22) / 26;
       if (x >= 170) {
-        slot = row == 0 ? 9 : row + 3;
+        if (slot == 0) {
+          slot = 9;
+        } else {
+          slot += 3;
+        }
       } else {
-        slot = row == 0 ? 8 : row - 1;
+        if (slot == 0) {
+          slot = 8;
+        } else {
+          --slot;
+        }
       }
     }
 
@@ -405,8 +416,10 @@ void UISwapEquipmentWnd::OnLBtnDblClk(int x, int y) {
     CMode* mode = g_modeMgr.currentMode;
     if (GetAsyncKeyState(VK_CONTROL)) {
       mode->SendMsg(MM_SWAP_EQUIPMENT_BY_INDEX, reinterpret_cast<int>(&item), 0, 0, 0);
+    } else if (this->equipmentPage == 2) {
+      mode->SendMsg(MM_TAKE_OFF_SWAP_EQUIP, slots.values[2], 1, 0, 0);
     } else {
-      mode->SendMsg(MM_TAKE_OFF_SWAP_EQUIP, slots.values[2], this->equipmentPage == 2, 0, 0);
+      mode->SendMsg(MM_TAKE_OFF_SWAP_EQUIP, slots.values[2], 0, 0, 0);
     }
   }
 }
