@@ -425,8 +425,8 @@ EffectActor::EffectActor() {
 // OFFSET: 0x00CA83A0
 // FUNCTION: fn_20988
 CGameActor::CGameActor()
-    : accel(), damageNumberCount(0), lastDamage(0), homunMsg(), homunResMsg(), merMsg(), merResMsg(),
-      positionDelta(), shapeShift(0), savedShapeShift(0) {
+    : accel{0.0f, 0.0f, 0.0f}, damageNumberCount(0), lastDamage(0), homunMsg(), homunResMsg(), merMsg(), merResMsg(),
+      positionDelta{0.0f, 0.0f, 0.0f}, shapeShift(0), savedShapeShift(0) {
   this->ResetState();
 }
 
