@@ -41,7 +41,10 @@ struct PACKET_CZ_REQ_ACH_REWARD {
 namespace {
   // INLINED
   bool HasReward(const AchievementInfo& info) {
-    return info.rewardBuffId > 0 || info.rewardTitleId > 0 || info.rewardItemId > 0;
+    bool result = info.rewardBuffId > 0;
+    result |= info.rewardTitleId > 0;
+    result |= info.rewardItemId > 0;
+    return result;
   }
 
   // INLINED
