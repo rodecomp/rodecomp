@@ -6320,13 +6320,12 @@ void UInCashWnd::OnCreate(int width, int height) {
     {"NC_PrevPage", "NC_PrevPage", "NC_PrevPage"}, {"NC_NextPage", "NC_NextPage", "NC_NextPage"}, {"NC_LastPage", "NC_LastPage", "NC_LastPage"},
     {"btn_buy", "btn_buy_a", "btn_buy_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}, {"btn_close", "btn_close_a", "btn_close_b"},
     {"btn_find", "btn_find_a", "btn_find_b"}, {"btn_refresh", "btn_refresh_a", "btn_refresh_b"}};
-  const int top = this->m_listHeight;
-  const int bottom = this->geometry.height;
-  const int right = this->geometry.width;
   int positions[19][2] = {
-    {4, top + 42}, {4, top + 87}, {4, top + 132}, {4, top + 177}, {4, top + 222}, {4, top + 267}, {4, top + 312}, {4, top + 357},
-    {4, top + 402}, {4, top + 447}, {203, bottom - 55}, {216, bottom - 55}, {276, bottom - 55}, {290, bottom - 55},
-    {right - 150, bottom - 40}, {right - 100, bottom - 40}, {right - 50, bottom - 40},
+    {4, this->m_listHeight + 42}, {4, this->m_listHeight + 87}, {4, this->m_listHeight + 132}, {4, this->m_listHeight + 177},
+    {4, this->m_listHeight + 222}, {4, this->m_listHeight + 267}, {4, this->m_listHeight + 312}, {4, this->m_listHeight + 357},
+    {4, this->m_listHeight + 402}, {4, this->m_listHeight + 447}, {203, this->geometry.height - 55}, {216, this->geometry.height - 55},
+    {276, this->geometry.height - 55}, {290, this->geometry.height - 55}, {this->geometry.width - 150, this->geometry.height - 40},
+    {this->geometry.width - 100, this->geometry.height - 40}, {this->geometry.width - 50, this->geometry.height - 40},
     {this->m_searchEdit->geometry.x + this->m_searchEdit->geometry.width + 10, 22}, {-100, -100}};
   const int ids[19] = {389, 390, 391, 392, 393, 394, 395, 396, 397, 398, 387, 316, 317, 388, 224, 386, 201, 365, 415};
 
@@ -6362,35 +6361,37 @@ void UInCashWnd::OnCreate(int width, int height) {
       this->m_buttons[index]->SetTooltip(LookupMessage(index + 0x736));
       break;
     case 8:
-      this->m_buttons[index]->SetTooltip(LookupMessage(MSI_BARGAINSALE_CASHSHOP_REFRESH_MSG));
+      this->m_buttons[8]->SetTooltip(LookupMessage(MSI_BARGAINSALE_CASHSHOP_REFRESH_MSG));
       break;
     case 10:
-    case 18:
-      this->m_buttons[index]->SetTooltip(LookupMessage(MSI_AUCTION_SEARCH));
+      this->m_buttons[10]->SetTooltip(LookupMessage(MSI_AUCTION_SEARCH));
       break;
     case 11:
-      this->m_buttons[index]->SetTooltip(LookupMessage(MSI_NC_FIRSTPAGE));
+      this->m_buttons[11]->SetTooltip(LookupMessage(MSI_NC_FIRSTPAGE));
       break;
     case 12:
-      this->m_buttons[index]->SetTooltip("<=");
+      this->m_buttons[12]->SetTooltip("<=");
       break;
     case 13:
-      this->m_buttons[index]->SetTooltip("=>");
+      this->m_buttons[13]->SetTooltip("=>");
       break;
     case 14:
-      this->m_buttons[index]->SetTooltip(LookupMessage(MSI_NC_LASTPAGE));
+      this->m_buttons[14]->SetTooltip(LookupMessage(MSI_NC_LASTPAGE));
       break;
     case 15:
-      this->m_buttons[index]->SetTooltip(LookupMessage(MSI_NC_BUY));
+      this->m_buttons[15]->SetTooltip(LookupMessage(MSI_NC_BUY));
       break;
     case 16:
-      this->m_buttons[index]->SetTooltip(LookupMessage(MSI_NC_BLANK));
+      this->m_buttons[16]->SetTooltip(LookupMessage(MSI_NC_BLANK));
       break;
     case 17:
-      this->m_buttons[index]->SetTooltip(LookupMessage(MSI_BOOK_CLOSE));
+      this->m_buttons[17]->SetTooltip(LookupMessage(MSI_BOOK_CLOSE));
+      break;
+    case 18:
+      this->m_buttons[18]->SetTooltip(LookupMessage(MSI_AUCTION_SEARCH));
       break;
     case 19:
-      this->m_buttons[index]->SetTooltip(LookupMessage(MSI_BARGAINSALE_CASHSHOP_CHECK_COUNT_MSG));
+      this->m_buttons[19]->SetTooltip(LookupMessage(MSI_BARGAINSALE_CASHSHOP_CHECK_COUNT_MSG));
       break;
     default:
       break;
