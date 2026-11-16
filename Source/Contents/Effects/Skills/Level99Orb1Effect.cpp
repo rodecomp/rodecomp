@@ -82,10 +82,10 @@ bool CLevel99Orb1Effect::IsAlive() {
 // FUNCTION: fn_19094
 void CLevel99Orb1Effect::OnProcess() {
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
-    (*it)->position.x = this->position[0];
-    (*it)->position.y = this->position[1];
-    (*it)->position.z = this->position[2];
     CParticle* particle = *it;
+    particle->position.x = this->position[0];
+    particle->position.y = this->position[1];
+    particle->position.z = this->position[2];
     if (particle) {
       const int index = particle->columnIndex + particle->rowIndex * 4;
       const float speed = particle->speedParameter;
