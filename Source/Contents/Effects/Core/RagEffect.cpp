@@ -1581,13 +1581,8 @@ bool CRagEffect::Aspersio() {
     this->state.lastPrim->state.longitude = static_cast<float>(ClampedRandom(360));
     this->state.lastPrim->state.size = 1.2f;
     this->state.lastPrim->state.transform.MakeYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
-    const float* m = this->state.lastPrim->state.transform.values;
-    const float distance = this->state.lastPrim->state.radius;
-    this->state.lastPrim->state.deltaPos2 = {
-      (m[0] * 0.0f - m[3] * 30.0f) + distance * m[6] + m[9],
-      (m[1] * 0.0f - m[4] * 30.0f) + distance * m[7] + m[10],
-      (m[2] * 0.0f - m[5] * 30.0f) + distance * m[8] + m[11]
-    };
+    const vector3d offset{0.0f, -30.0f, this->state.lastPrim->state.radius};
+    MatrixMult(this->state.lastPrim->state.deltaPos2, offset, this->state.lastPrim->state.transform.values);
     this->state.lastPrim->state.fadeOutCnt = 30;
     this->state.lastPrim->SetSpriteName("이팩트\\particle1.spr");
     this->state.lastPrim->SetActionName("이팩트\\particle1.act");
@@ -2048,14 +2043,8 @@ void CRagEffect::Sphere() {
   this->state.lastPrim->state.longAccel = -0.01f;
   this->state.lastPrim->state.size = 1.2f;
   this->state.lastPrim->state.transform.MakeYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
-  EffectPrimitiveState& particle = this->state.lastPrim->state;
-  const float* m = particle.transform.values;
-  const float distance = particle.radius;
-  particle.deltaPos2 = {
-    (m[0] * 0.0f - m[3] * 30.0f) + distance * m[6] + m[9],
-    (m[1] * 0.0f - m[4] * 30.0f) + distance * m[7] + m[10],
-    (m[2] * 0.0f - m[5] * 30.0f) + distance * m[8] + m[11]
-  };
+  const vector3d offset{0.0f, -30.0f, this->state.lastPrim->state.radius};
+  MatrixMult(this->state.lastPrim->state.deltaPos2, offset, this->state.lastPrim->state.transform.values);
   this->state.lastPrim->state.chRadiSpeed = 1;
   this->state.lastPrim->state.colorCycleIndex = 0;
   this->state.lastPrim->state.chPoint.push_back(95.0f);
@@ -2432,7 +2421,8 @@ void CRagEffect::Exit() {
     this->state.lastPrim->state.gravSpeed = -1.2f;
     this->state.lastPrim->state.gravAccel = -(this->state.lastPrim->state.gravSpeed / static_cast<float>(this->state.lastPrim->state.duration)) / 1.5f;
     this->state.lastPrim->state.transform.MakeYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
-    this->state.lastPrim->state.deltaPos2 = RotatedForward(this->state.lastPrim->state.transform.values, this->state.lastPrim->state.radius);
+    const vector3d forward{0.0f, 0.0f, this->state.lastPrim->state.radius};
+    MatrixMult(this->state.lastPrim->state.deltaPos2, forward, this->state.lastPrim->state.transform.values);
     this->state.lastPrim->state.size = 0.55f;
     const int duration = this->state.lastPrim->state.duration;
     this->state.lastPrim->state.fadeOutCnt = duration - duration / 3;
