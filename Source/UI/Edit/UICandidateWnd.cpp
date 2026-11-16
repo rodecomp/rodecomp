@@ -171,8 +171,8 @@ int UICompositionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
   if (text != nullptr) {
     this->m_text = text;
     int padded = this->TextWidth(text, 0, 0, 12, 0, 0) + 20;
-    int width = padded / 28 * 28;
-    width += padded != width ? 28 : 0;
+    const int rounded = padded / 28 * 28;
+    int width = (padded != rounded ? 28 : 0) + rounded;
     if (width < 34) {
       width = 34;
     }
