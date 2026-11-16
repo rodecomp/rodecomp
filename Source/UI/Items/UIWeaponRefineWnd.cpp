@@ -107,8 +107,9 @@ int UIWeaponRefineWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     switch (response) {
     case ID_OK: {
       if (g_replayAnimationScaling) {
-        this->m_list->selected = static_cast<int>(d);
-        this->m_list->Invalidate();
+        UIListBox* replayList = this->m_list;
+        replayList->selected = static_cast<int>(d);
+        replayList->Invalidate();
       }
 
       UIListBox* list = this->m_list;
