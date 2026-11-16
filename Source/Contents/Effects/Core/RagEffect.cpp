@@ -12615,7 +12615,8 @@ check_cadence:
     this->state.lastPrim->state.gravSpeed = -0.2f;
     this->state.lastPrim->state.gravAccel = -(this->state.lastPrim->state.gravSpeed / static_cast<float>(this->state.lastPrim->state.duration)) / 1.5f;
     this->state.lastPrim->state.transform.MakeYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
-    this->state.lastPrim->state.deltaPos2 = RotatedForward(this->state.lastPrim->state.transform.values, this->state.lastPrim->state.radius);
+    const vector3d forward{0.0f, 0.0f, this->state.lastPrim->state.radius};
+    MatrixMult(this->state.lastPrim->state.deltaPos2, forward, this->state.lastPrim->state.transform.values);
     this->state.lastPrim->state.size = static_cast<float>(ClampedRandom(10) / 10) + 0.7f;
     this->state.lastPrim->state.fadeOutCnt = this->state.lastPrim->state.duration - this->state.lastPrim->state.duration / 3;
     this->state.lastPrim->SetSpriteName("\uc774\ud329\ud2b8\\particle1.spr");
