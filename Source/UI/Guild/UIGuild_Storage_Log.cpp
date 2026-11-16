@@ -122,9 +122,10 @@ int UIGuild_Storage_Log::SendMsg(UIWindow* sender, int message, std::intptr_t a,
 // INLINED
 __forceinline void UIGuild_Storage_Log::FillLogRows(int index) {
   const std::vector<GuildStorageLogEntry>& logs = g_session.guildStorageLogs[index];
+  auto it = logs.begin();
   char number[256];
   std::memset(number, 0, 255);
-  for (auto it = logs.begin(); it != logs.end(); ++this->m_state, ++it, ++this->m_offset) {
+  for (; it != logs.end(); ++this->m_state, ++it, ++this->m_offset) {
     if (static_cast<unsigned>(this->m_state) >= 11 || this->m_offset >= this->m_categoryCounts[index]) {
       break;
     }
