@@ -109,7 +109,7 @@ void UIRodexInboxWnd::OnRBtnDown(int, int) {}
 
 // OFFSET: 0x00805750
 // FUNCTION: fn_10045
-void UIRodexInboxWnd::DrawMailIcons(int row, unsigned char attachments, unsigned char read, unsigned char returned) {
+void UIRodexInboxWnd::DrawMailIcons(int row, int attachmentType, unsigned char read, unsigned char returned) {
   const int y = row * 0x2C;
   const char* status = returned == 1
     ? "유저인터페이스\\basic_interface\\rodexsystem\\renewal\\icon_status_mail_returned.bmp"
@@ -119,6 +119,7 @@ void UIRodexInboxWnd::DrawMailIcons(int row, unsigned char attachments, unsigned
   CBitmapRes* statusIcon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(status)));
   this->DrawBitmap(0x24, y + 0x7C, statusIcon, true);
 
+  const unsigned char attachments = static_cast<unsigned char>(attachmentType);
   if ((attachments & 6) == 6) {
     this->DrawBitmap(0xD8, y + 0x8B, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\shadow_item_on.bmp"))), true);
     this->DrawBitmap(0xDB, y + 0x7F, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\icon_zeny_n_item.bmp"))), true);
