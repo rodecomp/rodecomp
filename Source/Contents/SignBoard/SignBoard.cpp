@@ -211,11 +211,8 @@ CSignBoardWnd::~CSignBoardWnd() = default;
 // OFFSET: 0x008215D0
 // FUNCTION: fn_10262
 void CSignBoardWnd::ApplyColor() {
-  int red = 0;
-  int green = 0;
-  int blue = 0;
+  int values[3] = {};
   if (this->colorText.size() != 0) {
-    int values[3] = {0, 0, 0};
     int index = 0;
     std::string rest = this->colorText;
     std::string token = this->colorText;
@@ -230,19 +227,16 @@ void CSignBoardWnd::ApplyColor() {
       }
       values[index] = std::atoi(rest.c_str());
     }
-    red = values[0];
-    green = values[1];
-    blue = values[2];
     if (this->colorText.find("#") != std::string::npos) {
       std::string hex = this->colorText;
       hex = hex.substr(hex.find("#") + 1);
       const unsigned long color = std::strtoul(hex.c_str(), nullptr, 16);
-      red = static_cast<int>((color >> 16) & 0xff);
-      green = static_cast<int>((color >> 8) & 0xff);
-      blue = static_cast<int>(color & 0xff);
+      values[0] = static_cast<int>((color >> 16) & 0xff);
+      values[1] = static_cast<int>((color >> 8) & 0xff);
+      values[2] = static_cast<int>(color & 0xff);
     }
   }
-  this->text->SetColor(red, green, blue);
+  this->text->SetColor(values[0], values[1], values[2]);
 }
 
 // OFFSET: 0x00821B40
