@@ -102,9 +102,10 @@ ITEM_INFO UIRodexComposeWnd::GetItemAtPoint(int x, int y) {
 void UIRodexComposeWnd::InsertItemTag(const ITEM_INFO& item) {
   if (!this->m_tagCtrl) {
     this->m_tagCtrl = new UIItemTagOnMail();
-    if (!this->m_tagCtrl) {
-      return;
-    }
+  }
+
+  if (!this->m_tagCtrl) {
+    return;
   }
 
   if (!this->m_tagCtrl->CanInsertTag(item.DisplayName(0), this->m_contents->geometry.width)) {
