@@ -16,7 +16,7 @@ struct CEffectPrim : CRenderObject {
   bool OnProcess() override;
   void Render(int argument) override;
   void DrawEffectPrimitive15(matrix& wtm);
-  void HandleMasterMessage(CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g);
+  virtual void HandleMasterMessage(CGameObject* sender, int message, int a, int b, int c, int d, int e, int f, int g);
 
   bool MoveEffectPrimitive();
   bool Prim3DCasting4();

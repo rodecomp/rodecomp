@@ -2149,7 +2149,7 @@ __declspec(safebuffers) bool CRagEffect::Signum() {
     }
   }
 
-  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
+  return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
 }
 
 // OFFSET: 0x00C3A920
@@ -2954,7 +2954,7 @@ void CRagEffect::TexturedRise(const char* name, char large) {
 void CRagEffect::TexturedSpiral(const char* name, int, int) {
   CopyVector(this->render.position, this->state.parent->render.position);
 
-  if (this->state.stateCnt >= 3) {
+  if (this->state.stateCnt > 2) {
     return;
   }
 
@@ -8069,6 +8069,7 @@ void CRagEffect::GreenRocketPunch() {
     return;
   }
 
+  g_modeMgr.GetGameMode();
   this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 5;
   this->state.lastPrim->state.duration = 20;
@@ -8080,8 +8081,7 @@ void CRagEffect::GreenRocketPunch() {
     this->state.lastPrim->render.angle = this->state.lastPrim->render.angle + 360.0f;
   }
 
-  CEffectPrim& particle = *this->state.lastPrim;
-  particle.state.speed = -(particle.CalcDist(this->state.deltaPos.x, this->state.deltaPos.z) / particle.state.duration);
+  this->state.lastPrim->state.speed = -(this->state.lastPrim->CalcDist(this->state.deltaPos.x, this->state.deltaPos.z) / this->state.lastPrim->state.duration);
   this->state.lastPrim->state.transform.MakeYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
   this->state.lastPrim->state.size = 1.0f;
   this->state.lastPrim->state.animSpeed = 1;
@@ -8363,13 +8363,13 @@ void CRagEffect::TetraVortexPillar(char kind) {
 
 // INLINED
 static __forceinline void LaunchFireballVolley(CRagEffect& effect, float turn, int shade, int fade) {
-  CEffectPrim* particle = effect.LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
-  effect.state.lastPrim = particle;
+  g_modeMgr.GetGameMode();
+  effect.state.lastPrim = effect.LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
   effect.state.lastPrim->state.renderFlag = 5;
   effect.state.lastPrim->state.duration = 20;
   effect.state.lastPrim->state.pattern |= 0x120u;
   effect.state.lastPrim->state.deltaPos2 = {0.0f, -15.0f, 0.0f};
-  particle->Face(effect.state.deltaPos.x, effect.state.deltaPos.z);
+  effect.state.lastPrim->Face(effect.state.deltaPos.x, effect.state.deltaPos.z);
   if (turn != 0.0f) {
     effect.state.lastPrim->render.angle = effect.state.lastPrim->render.angle + turn;
     if (effect.state.lastPrim->render.angle < 0.0f) {
@@ -12592,6 +12592,7 @@ int CRagEffect::WarpZone() {
     goto check_cadence;
   }
 
+  g_modeMgr.GetGameMode();
   this->state.lastPrim = this->LaunchEffectPrim(12, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 158;
   this->state.lastPrim->state.pattern |= 1;
@@ -13008,12 +13009,12 @@ void CRagEffect::StoneWall() {
 
 // INLINED
 static __forceinline void LaunchTintedFireballVolley(CRagEffect& effect, float turn, int red, int green, int blue, int fade) {
-  CEffectPrim* particle = effect.LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
-  effect.state.lastPrim = particle;
+  g_modeMgr.GetGameMode();
+  effect.state.lastPrim = effect.LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
   effect.state.lastPrim->state.duration = 20;
   effect.state.lastPrim->state.pattern |= 0x120u;
   effect.state.lastPrim->state.deltaPos2 = {0.0f, -15.0f, 0.0f};
-  particle->Face(effect.state.deltaPos.x, effect.state.deltaPos.z);
+  effect.state.lastPrim->Face(effect.state.deltaPos.x, effect.state.deltaPos.z);
   if (turn != 0.0f) {
     effect.state.lastPrim->render.angle = effect.state.lastPrim->render.angle + turn;
     if (effect.state.lastPrim->render.angle < 0.0f) {
