@@ -265,7 +265,7 @@ void UILapineBoxWnd::Paint() {
     this->DrawItemAndQuantity(position[0], position[1], this->items[index], 0, 0);
   }
 
-  if (timeGetTime() < this->noticeTick + this->noticeDuration) {
+  if (this->noticeTick + this->noticeDuration > timeGetTime()) {
     this->DrawBitmap(6, 229, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\lapine\\icon_notify.bmp"))), true);
     this->DrawTextAt(25, 230, this->notice.c_str(), 0, 0, 12, 0xFF0000, 0, 0);
   }
