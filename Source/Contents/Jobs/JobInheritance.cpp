@@ -472,18 +472,21 @@ bool CSession::IsJobWeaponTypeAllowed(int job, std::int64_t weaponType) const {
       return true;
     }
     break;
-  case JT_THIEF:
-  case JT_ROGUE:
-  case JT_THIEF_H:
-  case JT_ROGUE_H:
-  case JT_THIEF_B:
-  case JT_ROGUE_B:
-  case JT_SHADOW_CHASER:
-  case JT_SHADOW_CHASER_H:
-  case JT_SHADOW_CHASER_B:
+  case JT_ARCHER:
+  case JT_HUNTER:
+  case JT_ARCHER_H:
+  case JT_HUNTER_H:
+  case JT_ARCHER_B:
+  case JT_HUNTER_B:
+  case JT_RANGER:
+  case JT_RANGER_H:
+  case JT_WOLF_RANGER:
+  case JT_WOLF_RANGER_H:
+  case JT_RANGER_B:
+  case JT_WOLF_RANGER_B:
+  case JT_WINDHAWK:
     switch (weaponType) {
     case W_DAGGER:
-    case W_1HSWORD:
     case W_BOW:
       return true;
     }
@@ -558,21 +561,18 @@ bool CSession::IsJobWeaponTypeAllowed(int job, std::int64_t weaponType) const {
       return true;
     }
     break;
-  case JT_ARCHER:
-  case JT_HUNTER:
-  case JT_ARCHER_H:
-  case JT_HUNTER_H:
-  case JT_ARCHER_B:
-  case JT_HUNTER_B:
-  case JT_RANGER:
-  case JT_RANGER_H:
-  case JT_WOLF_RANGER:
-  case JT_WOLF_RANGER_H:
-  case JT_RANGER_B:
-  case JT_WOLF_RANGER_B:
-  case JT_WINDHAWK:
+  case JT_THIEF:
+  case JT_ROGUE:
+  case JT_THIEF_H:
+  case JT_ROGUE_H:
+  case JT_THIEF_B:
+  case JT_ROGUE_B:
+  case JT_SHADOW_CHASER:
+  case JT_SHADOW_CHASER_H:
+  case JT_SHADOW_CHASER_B:
     switch (weaponType) {
     case W_DAGGER:
+    case W_1HSWORD:
     case W_BOW:
       return true;
     }
