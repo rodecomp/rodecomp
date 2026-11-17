@@ -998,7 +998,11 @@ void CEffectPrim::PrimBottomOut() {
       if (slot.alphaB <= 0) {
         slot.alphaB = 0;
         slot.process = 0;
-        slot.vecBNow.y = slot.flag1[1] == 0 ? this->render.position.y : this->render.position.y - 5.0f;
+        if (slot.flag1[1] == 0) {
+          slot.vecBNow.y = this->render.position.y;
+        } else {
+          slot.vecBNow.y = this->render.position.y - 5.0f;
+        }
       }
 
       slot.vecBNow.y -= 0.2f;
@@ -1241,9 +1245,7 @@ void CEffectPrim::PrimEffectTexture_Ani() {
 
   if (slot.alphaB >= 255) {
     slot.alphaB = 255;
-  }
-
-  if (slot.alphaB < 0) {
+  } else if (slot.alphaB < 0) {
     slot.alphaB = 0;
   }
 
