@@ -1390,6 +1390,17 @@ __forceinline std::vector<unsigned char> MakeRecordChunk(std::int16_t type, Reco
 }
 
 // INLINED
+template <class Record>
+__forceinline std::vector<unsigned char> MakeFilledRecordChunk(std::int16_t type, const Record& value) {
+  std::vector<unsigned char> chunk(sizeof(GameModeChunkHeader) + sizeof(Record), 0);
+  auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
+  header->type = type;
+  header->size = sizeof(Record);
+  *reinterpret_cast<Record*>(chunk.data() + sizeof(GameModeChunkHeader)) = value;
+  return chunk;
+}
+
+// INLINED
 template <class Element>
 __forceinline std::vector<unsigned char> MakeDataChunk(std::int16_t type, const std::vector<Element>& payload) {
   std::vector<unsigned char> chunk(payload.size() + sizeof(GameModeChunkHeader), 0);
@@ -11027,7 +11038,8 @@ void CGameMode::ProcessStatusIconTooltip(int x, int y) {
     std::string extra;
     int line = 1;
     std::uint32_t color = 0;
-    if (id == 0x2B7) {
+    switch (id) {
+    case 0x2B7:
       {
         ITEM_INFO item = g_session.LookupClientItemByIdentity(g_session.equippedArrowIndex);
         if (item.identity[1] > 0) {
@@ -11039,7 +11051,8 @@ void CGameMode::ProcessStatusIconTooltip(int x, int y) {
       if (extra.size() != 0) {
         this->statusIconTooltip->SetLine(extra.c_str(), color);
       }
-    } else {
+      break;
+    default:
       for (;;) {
         const char* text;
         int red;
@@ -11081,6 +11094,7 @@ void CGameMode::ProcessStatusIconTooltip(int x, int y) {
           this->statusIconTooltip->AddLine(extra.c_str(), 0);
         }
       }
+      break;
     }
 
     if (firstLine(this->statusIconTooltip) != " ") {
