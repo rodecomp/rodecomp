@@ -5642,7 +5642,6 @@ bool CEffectPrim::PrimSpiralFade() {
     }
 
     const char mode = slot.flag1[0];
-    int phase;
     if (process <= 10) {
       slot.height[13] += 20.0f;
     } else if (mode >= 1) {
@@ -5656,20 +5655,15 @@ bool CEffectPrim::PrimSpiralFade() {
       slot.height[13] -= 5.0f;
       if (slot.height[13] < 0.0f) {
         slot.height[13] = 0.0f;
-        slot.vecTNow.x += 0.05f;
-        const int radius = static_cast<int>(slot.vecTNow.x);
-        phase = process % 60;
-        slot.vecBPre = {static_cast<float>(radius) * g_sinTable[6 * phase], -25.0f, static_cast<float>(radius) * g_cosTable[6 * phase]};
-        continue;
       }
     }
 
     slot.vecTNow.x += 0.05f;
-    phase = process % 60;
-    if (mode == 1) {
-      phase = 60 * (process / 60) - process + 60;
-    }
     const int radius = static_cast<int>(slot.vecTNow.x);
+    int phase = process % 60;
+    if (mode == 1) {
+      phase = 60 - phase;
+    }
     slot.vecBPre = {static_cast<float>(radius) * g_sinTable[6 * phase], -25.0f, static_cast<float>(radius) * g_cosTable[6 * phase]};
   }
 
