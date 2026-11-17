@@ -997,12 +997,16 @@ static EfstActionRegistrar s_efstActionIronHowling{EFST_IRON_HOWLING, NewAction<
 // GLOBAL: gl_25662
 static EfstActionRegistrar s_efstActionWindVeil{EFST_WIND_VEIL, NewAction<CEfstAction_WIND_VEIL, CEfstAction>};
 
+struct SkillObjectActionRegistration {
+  // INLINED
+  __forceinline SkillObjectActionRegistration(int skillId, std::function<CSkillObjectAction*()> factory) {
+    CSkillActionMgr::GetInstance()->RegisterSkillObjectAction(skillId, factory);
+  }
+};
+
 // OFFSET: 0x0040E870
 // FUNCTION: fn_45561
-static bool s_skillObjectActionRegistered313 = [](std::function<CSkillObjectAction*()> factory) {
-  CSkillActionMgr::GetInstance()->RegisterSkillObjectAction(313, factory);
-  return true;
-}(NewAction<CSkillObjectAction_KR_ICE_PILLAR, CSkillObjectAction>);
+static SkillObjectActionRegistration s_skillObjectActionRegistered313(313, NewAction<CSkillObjectAction_KR_ICE_PILLAR, CSkillObjectAction>);
 
 // GLOBAL: gl_25663
 static SkillActionRegistrar s_skillActionKrClawWave{KR_CLAW_WAVE, NewAction<CSkillAction_KR_CLAW_WAVE, CSkillAction>};
