@@ -123,23 +123,24 @@ __declspec(safebuffers) void CEffectPrim::RenderLaunchEffects(matrix&) {
 
 // OFFSET: 0x00BF5D80
 // FUNCTION: fn_19998
-__declspec(safebuffers) void CEffectPrim::RenderGroundSprite(matrix& wtm) {
+void CEffectPrim::RenderGroundSprite(matrix& wtm) {
   if (this->state.master) {
     this->render.position = this->state.master->render.position;
   }
 
   const float z = this->render.position.z;
   CGameMode* mode = g_modeMgr.GetGameMode();
-  float position[3];
-  position[0] = this->render.position.x;
-  position[1] = mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
-  position[2] = z;
-  const float depth = position[0] * wtm.values[2] + position[1] * wtm.values[5] + z * wtm.values[8] + wtm.values[11];
+  const float height = mode->scene->terrain->Height(this->render.position.x, this->render.position.z);
+  vector3d position;
+  position.x = this->render.position.x;
+  position.y = height;
+  position.z = z;
+  const float depth = position.x * wtm.values[2] + position.y * wtm.values[5] + z * wtm.values[8] + wtm.values[11];
 
   float screenX;
   float screenY;
   float reciprocalDepth;
-  g_renderer->ProjectViewport(position, wtm.values, &screenX, &screenY, &reciprocalDepth);
+  g_renderer->ProjectViewport(&position.x, wtm.values, &screenX, &screenY, &reciprocalDepth);
   float distanceScale = g_renderer->ScaleDistance(reciprocalDepth);
 
   if (this->state.master->state.type == EF_SOUL_REAPER_COLLECT && this->state.master && this->state.master->state.parent) {
