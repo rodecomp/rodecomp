@@ -1091,12 +1091,13 @@ void UIWindow::DrawFormattedText(int x, int y, const std::string& text, int widt
     width = textWidth;
   }
 
+  int drawX = x;
   switch (align) {
   case 2:
-    x -= textWidth;
+    drawX -= textWidth;
     break;
   case 6:
-    x = static_cast<int>((width - textWidth) * g_depthAverageHalf + x);
+    drawX = static_cast<int>((width - textWidth) * g_depthAverageHalf + drawX);
     break;
   }
 
@@ -1140,7 +1141,7 @@ void UIWindow::DrawFormattedText(int x, int y, const std::string& text, int widt
       TextContext context(*this->geometry.surface);
       context.SetFont(family, height, currentBold, 0);
       context.SetColor(color);
-      context.Draw(x + offset, y, drawn, bytes);
+      context.Draw(drawX + offset, y, drawn, bytes);
     }
 
     offset += advance;
