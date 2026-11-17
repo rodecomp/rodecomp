@@ -1466,6 +1466,30 @@ int UIWindow::FormattedTextWidth(std::string text, int family, int height, unsig
   return total;
 }
 
+// OFFSET: 0x00A7F510
+// FUNCTION: fn_16963
+const std::string UIWindow::DisplayItemTextTag(const std::string& text) {
+  return DisplayTextTag(text, g_itemTagBegin, g_itemTagEnd);
+}
+
+// OFFSET: 0x00A7F580
+// FUNCTION: fn_16964
+const std::string UIWindow::DisplayNavigationTextTag(const std::string& text) {
+  return DisplayTextTag(text, g_naviTagBegin, g_naviTagEnd);
+}
+
+// OFFSET: 0x00A7F5F0
+// FUNCTION: fn_16965
+const std::string UIWindow::DisplayQuestTextTag(const std::string& text) {
+  return DisplayTextTag(text, g_questTagBegin, g_questTagEnd);
+}
+
+// OFFSET: 0x00A7FE50
+// FUNCTION: fn_16967
+const std::string UIWindow::DisplayTipBoxTextTag(const std::string& text) {
+  return DisplayTextTag(text, g_tipBoxTagBegin, g_tipBoxTagEnd);
+}
+
 // OFFSET: 0x00A80880
 // FUNCTION: fn_16977
 std::string UIWindow::FitDisplayText(int width, const char* text, int family, int height, unsigned char bold) {
@@ -1519,20 +1543,18 @@ std::string UIWindow::FitDisplayText(int width, const char* text, int family, in
 // OFFSET: 0x00A81400
 // FUNCTION: fn_16978
 std::string UIWindow::FitVerticalDisplayText(int height, const char* text, int family, int fontHeight, unsigned char bold) {
-  std::string display;
-  display = text;
-  display = DisplayUrlTextTag(display);
-  display = static_cast<const std::string&>(DisplayNavigationTextTag(display));
-  display = static_cast<const std::string&>(DisplayTipBoxTextTag(display));
-  display = static_cast<const std::string&>(DisplayItemTextTag(display));
-  display = static_cast<const std::string&>(RemoveTextLinkInfo(display));
+  std::string display = DisplayUrlTextTag(text);
+  display = DisplayNavigationTextTag(display);
+  display = DisplayTipBoxTextTag(display);
+  display = DisplayItemTextTag(display);
+  display = RemoveTextLinkInfo(display);
 
   if (g_windowMgr.chatWnd) {
     display = g_windowMgr.chatWnd->ConvertChat(std::move(display));
   }
 
   display = g_navigationLinkParser->DisplayNavigationLink(display);
-  display = static_cast<const std::string&>(DisplayQuestTextTag(display));
+  display = DisplayQuestTextTag(display);
 
   if (this->VerticalTextHeight(display.c_str(), display.size(), family, fontHeight, bold) <= height) {
     return display;
@@ -3534,9 +3556,9 @@ void UINavigationV4Wnd::SelectRouteNode(int node) {
 // OFFSET: 0x00A85850
 // FUNCTION: fn_17017
 void UIWindow::DrawAlignedText(
-  int x, int y, std::string text, int width, int align, std::uint32_t color, int outlineColor, int family, int height, int bold, unsigned char outlined
+  int x, int y, std::string text, int width, int align, std::uint32_t color, int outlineColor, int family, int height, unsigned char bold, unsigned char outlined
 ) {
-  const int textWidth = this->TextWidth(text.c_str(), static_cast<unsigned>(text.size()), family, height, static_cast<unsigned char>(bold), 0);
+  const int textWidth = this->TextWidth(text.c_str(), static_cast<unsigned>(text.size()), family, height, bold, 0);
   switch (align) {
   case 2:
     x -= textWidth;
@@ -3551,7 +3573,7 @@ void UIWindow::DrawAlignedText(
   const char* const end = current + std::strlen(current);
   while (current != end) {
     const char* const next = CharNextExA(static_cast<WORD>(g_textCodePage), current, 0);
-    const int glyphWidth = this->TextWidth(std::string(current, next).c_str(), 0, family, height, static_cast<unsigned char>(bold), 0);
+    const int glyphWidth = this->TextWidth(std::string(current, next).c_str(), 0, family, height, bold, 0);
 
     if (outlined == 1) {
       {
@@ -3559,7 +3581,7 @@ void UIWindow::DrawAlignedText(
         const char* const string = glyph.c_str();
         const int bytes = static_cast<int>(std::strlen(string));
         TextContext context(*this->geometry.surface);
-        context.SetFont(family, height, static_cast<unsigned char>(bold), 0);
+        context.SetFont(family, height, bold, 0);
         context.SetColor(outlineColor);
         context.Draw(x + offset + 1, y, string, bytes);
       }
@@ -3568,7 +3590,7 @@ void UIWindow::DrawAlignedText(
         const char* const string = glyph.c_str();
         const int bytes = static_cast<int>(std::strlen(string));
         TextContext context(*this->geometry.surface);
-        context.SetFont(family, height, static_cast<unsigned char>(bold), 0);
+        context.SetFont(family, height, bold, 0);
         context.SetColor(outlineColor);
         context.Draw(x + offset - 1, y, string, bytes);
       }
@@ -3577,7 +3599,7 @@ void UIWindow::DrawAlignedText(
         const char* const string = glyph.c_str();
         const int bytes = static_cast<int>(std::strlen(string));
         TextContext context(*this->geometry.surface);
-        context.SetFont(family, height, static_cast<unsigned char>(bold), 0);
+        context.SetFont(family, height, bold, 0);
         context.SetColor(outlineColor);
         context.Draw(x + offset, y + 1, string, bytes);
       }
@@ -3586,7 +3608,7 @@ void UIWindow::DrawAlignedText(
         const char* const string = glyph.c_str();
         const int bytes = static_cast<int>(std::strlen(string));
         TextContext context(*this->geometry.surface);
-        context.SetFont(family, height, static_cast<unsigned char>(bold), 0);
+        context.SetFont(family, height, bold, 0);
         context.SetColor(outlineColor);
         context.Draw(x + offset, y - 1, string, bytes);
       }
@@ -3597,7 +3619,7 @@ void UIWindow::DrawAlignedText(
       const char* const string = glyph.c_str();
       const int bytes = static_cast<int>(std::strlen(string));
       TextContext context(*this->geometry.surface);
-      context.SetFont(family, height, static_cast<unsigned char>(bold), 0);
+      context.SetFont(family, height, bold, 0);
       context.SetColor(color);
       context.Draw(x + offset, y, string, bytes);
     }

@@ -13,6 +13,15 @@ struct TextLink {
   /* 0024 */ std::string metadata;
 };
 
+extern const std::string g_naviTagBegin;
+extern const std::string g_naviTagEnd;
+extern const std::string g_itemTagBegin;
+extern const std::string g_itemTagEnd;
+extern const std::string g_tipBoxTagBegin;
+extern const std::string g_tipBoxTagEnd;
+extern const std::string g_questTagBegin;
+extern const std::string g_questTagEnd;
+
 std::string __stdcall ExpandTextEscapes(const std::string& text);
 
 #if defined(_WIN32) && !defined(_WIN64)

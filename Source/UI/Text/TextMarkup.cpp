@@ -19,10 +19,10 @@ namespace {
 }
 
 // GLOBAL: gl_24593
-static const std::string g_naviTagBegin = "<NAVI>";
+const std::string g_naviTagBegin = "<NAVI>";
 
 // GLOBAL: gl_24594
-static const std::string g_naviTagEnd = "</NAVI>";
+const std::string g_naviTagEnd = "</NAVI>";
 
 // GLOBAL: gl_25478
 static const std::string g_infoTagBegin = "<INFO>";
@@ -34,16 +34,16 @@ static const std::string g_infoTagEnd = "</INFO>";
 static const std::string g_itemLinkTagOpen = "<ITEML>";
 
 // GLOBAL: gl_24595
-static const std::string g_itemTagBegin = "<ITEM>";
+const std::string g_itemTagBegin = "<ITEM>";
 
 // GLOBAL: gl_24596
-static const std::string g_itemTagEnd = "</ITEM>";
+const std::string g_itemTagEnd = "</ITEM>";
 
 // GLOBAL: gl_24599
-static const std::string g_questTagBegin = "<QUEST>";
+const std::string g_questTagBegin = "<QUEST>";
 
 // GLOBAL: gl_24600
-static const std::string g_questTagEnd = "</QUEST>";
+const std::string g_questTagEnd = "</QUEST>";
 
 // OFFSET: 0x00A7CA90
 // FUNCTION: fn_16949
@@ -52,10 +52,10 @@ void UIWindow::ExtractNavigationTextLinks(const std::string& text, std::vector<T
 }
 
 // GLOBAL: gl_24597
-static const std::string g_tipBoxTagBegin = "<TIPBOX>";
+const std::string g_tipBoxTagBegin = "<TIPBOX>";
 
 // GLOBAL: gl_24598
-static const std::string g_tipBoxTagEnd = "</TIPBOX>";
+const std::string g_tipBoxTagEnd = "</TIPBOX>";
 
 // OFFSET: 0x00A7D690
 // FUNCTION: fn_16951
@@ -164,30 +164,6 @@ const std::string UIWindow::DisplayTextTag(const std::string& source, const std:
   } while (position != -1);
 
   return result + text;
-}
-
-// OFFSET: 0x00A7F510
-// FUNCTION: fn_16963
-const std::string UIWindow::DisplayItemTextTag(const std::string& text) {
-  return DisplayTextTag(text, g_itemTagBegin, g_itemTagEnd);
-}
-
-// OFFSET: 0x00A7F580
-// FUNCTION: fn_16964
-const std::string UIWindow::DisplayNavigationTextTag(const std::string& text) {
-  return DisplayTextTag(text, g_naviTagBegin, g_naviTagEnd);
-}
-
-// OFFSET: 0x00A7F5F0
-// FUNCTION: fn_16965
-const std::string UIWindow::DisplayQuestTextTag(const std::string& text) {
-  return DisplayTextTag(text, g_questTagBegin, g_questTagEnd);
-}
-
-// OFFSET: 0x00A7FE50
-// FUNCTION: fn_16967
-const std::string UIWindow::DisplayTipBoxTextTag(const std::string& text) {
-  return DisplayTextTag(text, g_tipBoxTagBegin, g_tipBoxTagEnd);
 }
 
 // OFFSET: 0x00A7FEC0

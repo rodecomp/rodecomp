@@ -138,7 +138,7 @@ public:
   void SetSize(int width, int height);
   void DrawBitmap(int x, int y, const BitmapImage* image, bool transparent);
   void DrawBitmap(int x, int y, CBitmapRes* bitmap, bool transparent);
-  void DrawAlignedText(int x, int y, std::string text, int width, int align, std::uint32_t color, int arg7, int arg8, int arg9, int arg10, unsigned char bold);
+  void DrawAlignedText(int x, int y, std::string text, int width, int align, std::uint32_t color, int outlineColor, int family, int height, unsigned char bold, unsigned char outlined);
   void FillRegion(int x, int y, int width, int height, std::uint32_t color);
   std::string FitTextToWidth(const std::string& text, int width);
   void DrawRectOutline(int x, int y, int width, int height, std::uint32_t color);

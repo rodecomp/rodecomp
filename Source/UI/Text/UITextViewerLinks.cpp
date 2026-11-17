@@ -68,18 +68,15 @@ std::pair<int, int> UITextViewer::LinkPosition(unsigned position, unsigned added
 // FUNCTION: fn_11205
 bool UITextViewer::AddItemLinks(std::string text, unsigned addedLines) {
   std::string parsed = RemoveTextColors(text.c_str());
-  parsed = static_cast<const std::string&>(DisplayUrlTextTag(parsed));
-  parsed = static_cast<const std::string&>(DisplayNavigationTextTag(parsed));
+  parsed = DisplayUrlTextTag(parsed);
+  parsed = DisplayNavigationTextTag(parsed);
 
   if (g_windowMgr.chatWnd) {
     parsed = g_windowMgr.chatWnd->ConvertChat(parsed);
   }
 
-  {
-    std::string navigation = GetNavigationLinkParser()->DisplayNavigationLink(parsed);
-    parsed = std::move(navigation);
-  }
-  parsed = static_cast<const std::string&>(DisplayTipBoxTextTag(parsed));
+  parsed = GetNavigationLinkParser()->DisplayNavigationLink(parsed);
+  parsed = DisplayTipBoxTextTag(parsed);
 
   std::vector<TextLink> extracted;
   ExtractTextLinks(parsed, g_viewerItemTagBegin, g_viewerItemTagEnd, extracted);
@@ -112,16 +109,16 @@ bool UITextViewer::AddItemLinks(std::string text, unsigned addedLines) {
 // FUNCTION: fn_11206
 bool UITextViewer::AddNaviLinks(std::string text, unsigned addedLines) {
   std::string parsed = RemoveTextColors(text.c_str());
-  parsed = static_cast<const std::string&>(DisplayUrlTextTag(parsed));
-  parsed = static_cast<const std::string&>(DisplayItemTextTag(parsed));
+  parsed = DisplayUrlTextTag(parsed);
+  parsed = DisplayItemTextTag(parsed);
 
   if (g_windowMgr.chatWnd) {
     parsed = g_windowMgr.chatWnd->ConvertChat(parsed);
   }
 
-  parsed = static_cast<const std::string&>(DisplayTipBoxTextTag(parsed));
+  parsed = DisplayTipBoxTextTag(parsed);
   parsed = GetNavigationLinkParser()->DisplayNavigationLink(parsed);
-  parsed = static_cast<const std::string&>(DisplayQuestTextTag(parsed));
+  parsed = DisplayQuestTextTag(parsed);
 
   std::vector<TextLink> extracted;
   ExtractNavigationTextLinks(parsed, extracted);
@@ -211,18 +208,15 @@ void UIListBoxNavi::ResetLineColors() {
 // FUNCTION: fn_11209
 bool UITextViewer::AddQuestLinks(std::string text, unsigned addedLines) {
   std::string parsed = RemoveTextColors(text.c_str());
-  parsed = static_cast<const std::string&>(DisplayUrlTextTag(parsed));
-  parsed = static_cast<const std::string&>(DisplayNavigationTextTag(parsed));
+  parsed = DisplayUrlTextTag(parsed);
+  parsed = DisplayNavigationTextTag(parsed);
 
   if (g_windowMgr.chatWnd) {
     parsed = g_windowMgr.chatWnd->ConvertChat(parsed);
   }
 
-  {
-    std::string navigation = GetNavigationLinkParser()->DisplayNavigationLink(parsed);
-    parsed = std::move(navigation);
-  }
-  parsed = static_cast<const std::string&>(DisplayTipBoxTextTag(parsed));
+  parsed = GetNavigationLinkParser()->DisplayNavigationLink(parsed);
+  parsed = DisplayTipBoxTextTag(parsed);
 
   std::vector<TextLink> extracted;
   ExtractTextLinks(parsed, g_viewerQuestTagBegin, g_viewerQuestTagEnd, extracted);
@@ -255,10 +249,10 @@ bool UITextViewer::AddQuestLinks(std::string text, unsigned addedLines) {
 // FUNCTION: fn_11211
 void UITextViewer::AddTipLinks(std::string text, unsigned addedLines) {
   std::string parsed = RemoveTextColors(text.c_str());
-  parsed = static_cast<const std::string&>(DisplayUrlTextTag(parsed));
-  parsed = static_cast<const std::string&>(DisplayNavigationTextTag(parsed));
-  parsed = static_cast<const std::string&>(DisplayItemTextTag(parsed));
-  parsed = static_cast<const std::string&>(DisplayQuestTextTag(parsed));
+  parsed = DisplayUrlTextTag(parsed);
+  parsed = DisplayNavigationTextTag(parsed);
+  parsed = DisplayItemTextTag(parsed);
+  parsed = DisplayQuestTextTag(parsed);
 
   if (g_windowMgr.chatWnd) {
     parsed = g_windowMgr.chatWnd->ConvertChat(parsed);
@@ -348,16 +342,16 @@ void UITextViewer::AddTipLinks(std::string text, unsigned addedLines) {
 // FUNCTION: fn_11212
 bool UITextViewer::AddUrlLinks(std::string text, unsigned addedLines) {
   std::string parsed = RemoveTextColors(text.c_str());
-  parsed = static_cast<const std::string&>(DisplayNavigationTextTag(parsed));
-  parsed = static_cast<const std::string&>(DisplayItemTextTag(parsed));
+  parsed = DisplayNavigationTextTag(parsed);
+  parsed = DisplayItemTextTag(parsed);
 
   if (g_windowMgr.chatWnd) {
     parsed = g_windowMgr.chatWnd->ConvertChat(parsed);
   }
 
-  parsed = static_cast<const std::string&>(DisplayTipBoxTextTag(parsed));
+  parsed = DisplayTipBoxTextTag(parsed);
   parsed = g_navigationLinkParser->DisplayNavigationLink(parsed);
-  parsed = static_cast<const std::string&>(DisplayQuestTextTag(parsed));
+  parsed = DisplayQuestTextTag(parsed);
 
   std::vector<TextLink> extracted;
   ExtractUrlTextLinks(parsed, extracted);
