@@ -151,9 +151,9 @@ int ITEM_INFO::Creator(char* output, int& capacity, unsigned char consume) const
 // OFFSET: 0x006D6F50
 // FUNCTION: fn_06588
 __declspec(noinline) int ITEM_INFO::Prefixes(char* output, int& capacity, unsigned char consume) const {
+  char* cursor = output;
   int ids[4] = {CardId(*this, 0), CardId(*this, 1), CardId(*this, 2), CardId(*this, 3)};
   int remaining = capacity;
-  char* cursor = output;
 
   for (int index = 0; index < 4; ++index) {
     if (ids[index] <= 0) {
@@ -217,9 +217,9 @@ __declspec(noinline) int ITEM_INFO::Prefixes(char* output, int& capacity, unsign
 // OFFSET: 0x006D6DB0
 // FUNCTION: fn_06587
 int ITEM_INFO::Suffixes(char* output, int& capacity, unsigned char consume) const {
+  char* cursor = output;
   int ids[4] = {CardId(*this, 0), CardId(*this, 1), CardId(*this, 2), CardId(*this, 3)};
   int remaining = capacity;
-  char* cursor = output;
 
   for (int index = 0; index < 4; ++index) {
     if (ids[index] <= 0) {
