@@ -982,14 +982,17 @@ std::string UIDisplayCharacter::GetStyleTable(const int& type) {
 // FUNCTION: fn_10330
 bool UIShowInfoWnd::CheckPayment(const int& index, const int& zeny, const int& itemId, const int& costumeItemId) {
   if (zeny) {
-    UICheckBox* check = this->m_checks[index];
     bool enough;
     if (g_session.m_zeny >= zeny) {
       enough = true;
-      check->SetTooltip("");
+      this->m_checks[index]->SetTooltip("");
     } else {
-      check->SetTooltip(LookupMessage(g_session.m_zeny + g_session.m_bankBalance >= zeny ? 2820 : 2780));
       enough = false;
+      if (g_session.m_zeny + g_session.m_bankBalance >= zeny) {
+        this->m_checks[index]->SetTooltip(LookupMessage(2820));
+      } else {
+        this->m_checks[index]->SetTooltip(LookupMessage(2780));
+      }
     }
     return enough;
   }
