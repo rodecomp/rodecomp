@@ -752,6 +752,13 @@ public:
   void OnSkillObjectCreate(int argument, CRenderObject* object, CGameActor* source) override;
 };
 
+// OFFSET: 0x0078CC20
+// FUNCTION: fn_45577
+template <>
+CSkillObjectAction* NewAction<CSkillObjectAction_IG_CROSS_RAIN, CSkillObjectAction>() {
+  return new CSkillObjectAction_IG_CROSS_RAIN;
+}
+
 class CSkillAction_IG_GRAND_JUDGEMENT : public CSkillAction {
 public:
   int GetSkillAttackMotion() override;
