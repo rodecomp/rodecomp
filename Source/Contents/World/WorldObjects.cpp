@@ -484,7 +484,8 @@ void CGameMode::UpdateNameBalloon(CGameActor* actor) {
     this->nameBalloon->SetIcon(FormatOwnedString("유저인터페이스\\group\\group_%d.bmp", card.groupIconId).c_str(), 0);
   } else if (actor->GetGdid() && showEmblem) {
     const unsigned char framedEmblem = g_serviceOptions.Get(TT_EMBLEM_FRAME_ON_OFF);
-    std::string emblem = g_guildMgr->GetEmblemFilename(actor->GetGdid());
+    CGuildMgr* guildMgr = g_guildMgr;
+    std::string emblem = guildMgr->GetEmblemFilename(actor->GetGdid());
     if (g_modeMgr.GetGameMode()->scene->isSiegeMode == 1 && framedEmblem) {
       this->nameBalloon->SetIcon(emblem.c_str(), 1);
     } else {
