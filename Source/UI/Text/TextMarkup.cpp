@@ -140,7 +140,7 @@ const std::string __stdcall DisplayTextTag(const std::string& source, const std:
     return source;
   }
 
-  std::string result;
+  std::string result("");
 
   do {
     if (position > 0) {
