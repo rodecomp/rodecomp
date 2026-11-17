@@ -54,10 +54,11 @@ inline void TransformModelUV(float& u, float& v, const ModelTextureTransform& tr
   const float resultU = rotatedU * transform.values[2] + g_depthAverageHalf + transform.values[0];
   const float cosineV = ClientCos(angle) * (v - g_depthAverageHalf);
   const float rotatedV = ClientSin(angle) * (u - g_depthAverageHalf) + cosineV;
-  const float resultV = rotatedV * transform.values[3] + g_depthAverageHalf + transform.values[1];
+  const float resultV = rotatedV * transform.values[3] + g_depthAverageHalf;
+  const float offsetV = transform.values[1];
 
   u = resultU;
-  v = resultV;
+  v = resultV + offsetV;
 }
 
 // OFFSET: 0x00AB7D40
