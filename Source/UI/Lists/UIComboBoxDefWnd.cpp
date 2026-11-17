@@ -284,7 +284,11 @@ UIComboBoxDef2Wnd::~UIComboBoxDef2Wnd() = default;
 // OFFSET: 0x00885250
 // FUNCTION: fn_11318
 void UIComboBoxDef2Wnd::OnCreate(int width, int) {
-  std::string path = this->skin == 1 ? "유저인터페이스\\login_interface\\" : "유저인터페이스\\UIadventurerAgency\\";
+  std::string path = "유저인터페이스\\UIadventurerAgency\\";
+  if (this->skin == 1) {
+    path = "유저인터페이스\\login_interface\\";
+  }
+
   this->button = new UIBitmapButton();
   this->button->SetBitmap((path + "btn_dropdown_out" + ".bmp").c_str(), 0, 0);
   this->button->SetBitmap((path + "btn_dropdown_over" + ".bmp").c_str(), 1, 0);
@@ -298,9 +302,9 @@ void UIComboBoxDef2Wnd::OnCreate(int width, int) {
   auto* list = new UIComboBoxEx2();
   this->list = list;
   list->alignment = this->alignment;
-  list->SetSize(width, (this->dropdownHeight + 2));
-  list->Move(0, this->button->BitmapHeight());
-  this->AddChild(list);
+  this->list->SetSize(width, (this->dropdownHeight + 2));
+  this->list->Move(0, this->button->BitmapHeight());
+  this->AddChild(this->list);
 
   this->label = new UIStaticText();
   this->label->SetSize((this->geometry.width - this->button->BitmapWidth()), (this->button->BitmapHeight() - 6));
@@ -309,7 +313,7 @@ void UIComboBoxDef2Wnd::OnCreate(int width, int) {
   if (this->alignment == 0) {
     this->label->Move(2, (this->textOffset + 3));
   } else if (this->alignment == 1) {
-    this->label->Move(static_cast<int>(static_cast<float>(this->geometry.width) * 0.5f - static_cast<float>(this->TextWidth(std::string(this->label->text).c_str(), 0, 0, 12, 0, 0)) * 0.5f), (this->textOffset + 3));
+    this->label->Move(static_cast<int>(static_cast<float>(this->geometry.width) * 0.5f - static_cast<float>(this->TextWidth(this->label->GetText().c_str(), 0, 0, 12, 0, 0)) * 0.5f), (this->textOffset + 3));
   }
 
   this->label->shadow = 1;
@@ -325,11 +329,11 @@ void UIComboBoxDef2Wnd::Paint() {
     return;
   }
 
-  const int x = static_cast<int>(static_cast<float>(this->geometry.width) * 0.5f - static_cast<float>(this->TextWidth(std::string(this->label->text).c_str(), 0, 0, 12, 0, 0)) * 0.5f);
+  const int x = static_cast<int>(static_cast<float>(this->geometry.width) * 0.5f - static_cast<float>(this->TextWidth(this->label->GetText().c_str(), 0, 0, 12, 0, 0)) * 0.5f);
 
   if (x != this->previousTextX) {
     this->previousTextX = x;
-    this->label->Move(static_cast<int>(static_cast<float>(this->geometry.width) * 0.5f - static_cast<float>(this->TextWidth(std::string(this->label->text).c_str(), 0, 0, 12, 0, 0)) * 0.5f), (this->textOffset + 3));
+    this->label->Move(static_cast<int>(static_cast<float>(this->geometry.width) * 0.5f - static_cast<float>(this->TextWidth(this->label->GetText().c_str(), 0, 0, 12, 0, 0)) * 0.5f), (this->textOffset + 3));
     this->label->Invalidate();
   }
 }
@@ -506,7 +510,8 @@ void UIString::ParseTags(std::string text) {
     position = index + 1;
   }
 
-  this->text = text.substr(end + 1, text.find_first_of("<", end + 1) - (end + 1));
+  const std::size_t start = end + 1;
+  this->text = text.substr(start, text.find_first_of("<", start) - start);
 }
 
 // OFFSET: 0x008A0B10
