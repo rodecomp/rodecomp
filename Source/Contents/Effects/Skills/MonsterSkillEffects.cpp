@@ -1430,12 +1430,10 @@ static __forceinline void FollowAbyssOwner(const CFromTheAbyssEffect* effect, CE
   const float viewX = viewPosition.x + emitter->offset.x;
   const float viewY = viewPosition.y + emitter->offset.y;
   const float viewZ = viewPosition.z + emitter->offset.z;
-  const float worldX = viewX * inverse.values[0] + viewY * inverse.values[3] + viewZ * inverse.values[6] + inverse.values[9];
-  const float worldY = viewX * inverse.values[1] + viewY * inverse.values[4] + viewZ * inverse.values[7] + inverse.values[10];
-  const float worldZ = viewX * inverse.values[2] + viewY * inverse.values[5] + viewZ * inverse.values[8] + inverse.values[11];
-  emitter->position.x = worldX;
-  emitter->position.y = worldY;
-  emitter->position.z = worldZ;
+  const vector3d world = {viewX * inverse.values[0] + viewY * inverse.values[3] + viewZ * inverse.values[6] + inverse.values[9],
+                          viewX * inverse.values[1] + viewY * inverse.values[4] + viewZ * inverse.values[7] + inverse.values[10],
+                          viewX * inverse.values[2] + viewY * inverse.values[5] + viewZ * inverse.values[8] + inverse.values[11]};
+  emitter->position = world;
 }
 
 // OFFSET: 0x007154A0
@@ -2012,12 +2010,8 @@ void CJupitelThunderHit::OnProcess() {
         transform.Compose(scaling, rotation);
         particle->transform = transform;
         particle->scale = scale;
-        const float x = this->position[0] + 0.0f;
-        const float y = this->position[1] - 5.0f;
-        const float z = this->position[2] + 0.0f;
-        particle->position.x = x;
-        particle->position.y = y;
-        particle->position.z = z;
+        const vector3d position = {this->position[0] + 0.0f, this->position[1] - 5.0f, this->position[2] + 0.0f};
+        particle->position = position;
       }
     }
   }
@@ -2040,12 +2034,8 @@ void CJupitelThunderHit::OnProcess() {
       matrix transform;
       transform.Compose(scaling, rotation);
       particle->transform = transform;
-      const float x = this->position[0] + 0.0f;
-      const float y = this->position[1] - 5.0f;
-      const float z = this->position[2] + 0.0f;
-      particle->position.x = x;
-      particle->position.y = y;
-      particle->position.z = z;
+      const vector3d position = {this->position[0] + 0.0f, this->position[1] - 5.0f, this->position[2] + 0.0f};
+      particle->position = position;
     }
   }
 }
@@ -4351,12 +4341,8 @@ void CDancingKnifeEffect::OnProcess() {
     CEZ2STRParticle* emitter = *it;
     if (IsEmitterAlive(emitter) == true) {
       if (emitter) {
-        const float x = this->position[0] + 0.0f;
-        const float y = this->position[1] - 12.0f;
-        const float z = this->position[2] + 0.0f;
-        emitter->position.x = x;
-        emitter->position.y = y;
-        emitter->position.z = z;
+        const vector3d position = {this->position[0] + 0.0f, this->position[1] - 12.0f, this->position[2] + 0.0f};
+        emitter->position = position;
         emitter->Process(0.0f, 0.0f, 0.0f);
       }
       ++it;
@@ -4373,12 +4359,8 @@ void CDancingKnifeEffect::OnProcess() {
   for (auto it = this->secondStrikeEmitters.begin(); it != this->secondStrikeEmitters.end(); ++it) {
     CEZ2STRParticle* emitter = *it;
     if (emitter) {
-      const float x = this->position[0] + 0.0f;
-      const float y = this->position[1] - 12.0f;
-      const float z = this->position[2] + 0.0f;
-      emitter->position.x = x;
-      emitter->position.y = y;
-      emitter->position.z = z;
+      const vector3d position = {this->position[0] + 0.0f, this->position[1] - 12.0f, this->position[2] + 0.0f};
+      emitter->position = position;
       emitter->Process(0.0f, 0.0f, 0.0f);
     }
   }
@@ -4477,12 +4459,10 @@ void CCurseOfCubeEffect::OnProcess() {
         const float vy = viewPosition.y + this->viewOffsetY;
         const float vz = viewPosition.z + this->viewOffsetZ;
 
-        const float worldX = vy * inverse.values[3] + vx * inverse.values[0] + vz * inverse.values[6] + inverse.values[9];
-        const float worldY = vy * inverse.values[4] + vx * inverse.values[1] + vz * inverse.values[7] + inverse.values[10];
-        const float worldZ = vy * inverse.values[5] + vx * inverse.values[2] + vz * inverse.values[8] + inverse.values[11];
-        emitter->position.x = worldX;
-        emitter->position.y = worldY;
-        emitter->position.z = worldZ;
+        const vector3d world = {vy * inverse.values[3] + vx * inverse.values[0] + vz * inverse.values[6] + inverse.values[9],
+                                vy * inverse.values[4] + vx * inverse.values[1] + vz * inverse.values[7] + inverse.values[10],
+                                vy * inverse.values[5] + vx * inverse.values[2] + vz * inverse.values[8] + inverse.values[11]};
+        emitter->position = world;
         emitter->Process(0.0f, 0.0f, 0.0f);
       }
       ++it;
