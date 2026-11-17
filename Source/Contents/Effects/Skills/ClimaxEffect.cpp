@@ -90,12 +90,10 @@ void CClimaxEffect::OnProcess() {
         const float viewX = position.y * view[3] + position.x * view[0] + position.z * view[6] + view[9] + 0.0f;
         const float viewY = position.y * view[4] + position.x * view[1] + position.z * view[7] + view[10] - 10.0f;
 
-        const float worldX = viewY * inverse[3] + viewX * inverse[0] + viewZ * inverse[6] + inverse[9];
-        const float worldY = viewX * inverse[1] + viewY * inverse[4] + viewZ * inverse[7] + inverse[10];
-        const float worldZ = viewX * inverse[2] + viewY * inverse[5] + viewZ * inverse[8] + inverse[11];
-        climax->position.x = worldX;
-        climax->position.y = worldY;
-        climax->position.z = worldZ;
+        const vector3d world = {viewY * inverse[3] + viewX * inverse[0] + viewZ * inverse[6] + inverse[9],
+                                viewX * inverse[1] + viewY * inverse[4] + viewZ * inverse[7] + inverse[10],
+                                viewX * inverse[2] + viewY * inverse[5] + viewZ * inverse[8] + inverse[11]};
+        climax->position = world;
       }
 
       climax->Process(0.0f, 0.0f, 0.0f);
