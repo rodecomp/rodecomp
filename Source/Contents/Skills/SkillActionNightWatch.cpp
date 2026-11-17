@@ -293,16 +293,15 @@ void CSkillAction_NW_THE_VIGILANTE_AT_NIGHT_GUN_GATLING::OnSkillEffect(int level
 
   for (int index = 0; index < 7; ++index) {
     const vector3d position = target->render.position;
-    CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("the_vigilante_at_night_crack"), position, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    CEffect* effect = effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("the_vigilante_at_night_crack"), position, 0, -1, 0, 0);
     if (!effect) {
       return;
     }
 
     const int first = rand() % 15;
     const int second = rand() % 15;
-    effect->position[0] = static_cast<float>(index % 2 * 15 - (second >= 0 ? second : 0)) + target->render.position.x;
-    effect->position[2] = target->render.position.z + 0.0f;
-    effect->position[1] = static_cast<float>(index % 4 / 2 * 15 - (first >= 0 ? first : 0)) + target->render.position.y;
+    effect->positionVector = vector3d{static_cast<float>(index % 2 * 15 - (second >= 0 ? second : 0)) + target->render.position.x, static_cast<float>(index % 4 / 2 * 15 - (first >= 0 ? first : 0)) + target->render.position.y, target->render.position.z + 0.0f};
     effect->SetDelay(index * 32);
     effect->SetScale(static_cast<float>(std::max(rand() % 51, 0) + 50) * 0.01f);
   }
