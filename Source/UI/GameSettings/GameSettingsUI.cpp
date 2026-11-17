@@ -2087,7 +2087,7 @@ void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::ClearItems() {
 // FUNCTION: fn_16044
 bool GameSettingsUI::CUIListPage::SetOptionChecked(int id) {
   for (GameSettingsUI::CUIOptionItem* item : this->m_optionList->items) {
-    if (item->m_optionId == id) {
+    if (id == item->m_optionId) {
       CUICheckBox* check = item->m_check;
       check->checked = IsServiceOption(id) ^ g_serviceOptions.Get(id);
       check->Invalidate();
@@ -2101,13 +2101,8 @@ bool GameSettingsUI::CUIListPage::SetOptionChecked(int id) {
 // FUNCTION: fn_16031
 __declspec(noinline) void CUIGameSettingsUI::RefreshOption(int id) {
   for (GameSettingsUI::CUIListPage* page : this->m_pages) {
-    for (GameSettingsUI::CUIOptionItem* item : page->m_optionList->items) {
-      if (id == item->m_optionId) {
-        CUICheckBox* check = item->m_check;
-        check->checked = IsServiceOption(id) ^ g_serviceOptions.Get(id);
-        check->Invalidate();
-        return;
-      }
+    if (page->SetOptionChecked(id)) {
+      return;
     }
   }
   this->m_currentPage->CUIPage::Refresh();
@@ -3625,14 +3620,18 @@ void CUIGameSettingsUI::OnCreate(int width, int height) {
     this->AddChild(page);
     this->m_pages.push_back(page);
   }
-  this->m_pages[0]->Move(0, 34);
-  this->m_pages[1]->Move(0, 34);
-  this->m_pages[2]->Move(0, 34);
+  static_cast<UIWindow*>(this->m_pages[0])->Move(0, 34);
+  static_cast<UIWindow*>(this->m_pages[1])->Move(0, 34);
+  static_cast<UIWindow*>(this->m_pages[2])->Move(0, 34);
 
   this->m_tab = new CUITab();
   this->m_tab->SetSize(400, 18);
   this->m_tab->Move(0, 17);
-  this->m_tab->SetOnChange([this](CUITabButton* button) { this->OnTabChanged(button); });
+  {
+    CUITab* tab = this->m_tab;
+    const std::function<void(CUITabButton*)> handler = [this](CUITabButton* button) { this->OnTabChanged(button); };
+    tab->onChange = handler;
+  }
   this->AddChild(this->m_tab);
 
   CUITabButton* basicButton = new CUITabButton();
@@ -3754,8 +3753,11 @@ void CUIGameSettingsUI::OnCreate(int width, int height) {
   this->m_pageContainer->SetSize(42, 20);
   this->m_pageContainer->Move(5, 326);
   this->m_pageContainer->SetOnClick([this]() { this->ResetToDefaults(); });
-  this->m_pageContainer->disabled = 0;
-  this->m_pageContainer->Invalidate();
+  {
+    CUIImageButton* button = this->m_pageContainer;
+    button->disabled = 0;
+    button->Invalidate();
+  }
   {
     CUIImageButton* button = this->m_pageContainer;
     button->SetImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_reset.bmp", 0x67DD5BAB1919D9D1ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_reset_b.bmp", 0x9BE3EF737387AD79ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_reset_a.bmp", 0xB96B77B7255F8569ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_reset.bmp", 0x875FCDF1E7A1795FULL)));
@@ -3766,8 +3768,11 @@ void CUIGameSettingsUI::OnCreate(int width, int height) {
   this->m_applyButton->SetSize(42, 20);
   this->m_applyButton->Move(301, 326);
   this->m_applyButton->SetOnClick([this]() { this->OnApply(); });
-  this->m_applyButton->disabled = 0;
-  this->m_applyButton->Invalidate();
+  {
+    CUIImageButton* button = this->m_applyButton;
+    button->disabled = 0;
+    button->Invalidate();
+  }
   {
     CUIImageButton* button = this->m_applyButton;
     button->SetImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_apply.bmp", 0x072D2D872D259D5BULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_apply_b.bmp", 0x9D8F2D37BFFD61B7ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_apply_a.bmp", 0x79DF094DD9616575ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_apply.bmp", 0x11CB35636377DD07ULL)));
@@ -3778,8 +3783,11 @@ void CUIGameSettingsUI::OnCreate(int width, int height) {
   this->m_closeButton->SetSize(42, 20);
   this->m_closeButton->Move(348, 326);
   this->m_closeButton->SetOnClick([this]() { this->OnCloseButton(); });
-  this->m_closeButton->disabled = 0;
-  this->m_closeButton->Invalidate();
+  {
+    CUIImageButton* button = this->m_closeButton;
+    button->disabled = 0;
+    button->Invalidate();
+  }
   {
     CUIImageButton* button = this->m_closeButton;
     button->SetImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_close.bmp", 0x4755C1355575FD37ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_close_b.bmp", 0x6BF729E30729CF29ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_close_a.bmp", 0x3D371F5B0F7F9327ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\btn_close.bmp", 0x1F1D51274373C1FDULL)));
@@ -3823,19 +3831,28 @@ void GameSettingsUI::CUIOptionItem::OnCreate(int width, int height) {
   this->m_check->SetSize(34, 15);
   this->m_check->Move(8, 5);
   this->m_check->SetOnCheck([this](bool checked) { this->OnCheck(checked); });
-  this->m_check->disabled = 0;
-  this->m_check->Invalidate();
+  {
+    CUICheckBox* check = this->m_check;
+    check->disabled = 0;
+    check->Invalidate();
+  }
   this->m_check->SetImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\GameSettingsUI\\toggle_off.bmp", 0xA597A7E7492B39D5ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\GameSettingsUI\\toggle_on.bmp", 0xFFABE3D5D1BBEF73ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\GameSettingsUI\\toggle_off.bmp", 0x0399459DAF454F0FULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\GameSettingsUI\\toggle_off.bmp", 0xD5A78DB38D8DAFABULL)));
-  this->m_check->checked = false;
-  this->m_check->Invalidate();
+  {
+    CUICheckBox* check = this->m_check;
+    check->checked = false;
+    check->Invalidate();
+  }
   this->AddChild(this->m_check);
 
   this->m_runButton = new CUIImageButton();
   this->m_runButton->SetSize(34, 15);
   this->m_runButton->Move(7, 5);
   this->m_runButton->SetOnClick([this]() { this->RunFunction(); });
-  this->m_runButton->disabled = 0;
-  this->m_runButton->Invalidate();
+  {
+    CUIImageButton* button = this->m_runButton;
+    button->disabled = 0;
+    button->Invalidate();
+  }
   this->m_runButton->SetImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\GameSettingsUI\\btn_optionapply_out.bmp", 0x8783C33941E15117ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\GameSettingsUI\\btn_optionapply_press.bmp", 0x271B45771F83DD9FULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\GameSettingsUI\\btn_optionapply_over.bmp", 0xC70319B5EB61598FULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\GameSettingsUI\\btn_optionapply_disable.bmp", 0x0B8745519B1F95D7ULL)));
   this->AddChild(this->m_runButton);
 
@@ -3849,9 +3866,12 @@ void GameSettingsUI::CUIOptionItem::OnCreate(int width, int height) {
       }
     }
   });
-  this->m_label->disabled = 0;
-  this->m_label->Invalidate();
-  this->m_label->SetText(std::string());
+  {
+    CUITextButton* label = this->m_label;
+    label->disabled = 0;
+    label->Invalidate();
+  }
+  this->m_label->SetText("");
   this->m_label->SetFitText(true);
   this->m_label->SetAlign(0, 0);
   this->m_label->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Gulim", 0xADC51BF9C98B413DULL)));
