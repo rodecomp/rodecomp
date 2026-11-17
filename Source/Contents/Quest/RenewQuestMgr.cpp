@@ -445,13 +445,13 @@ void CRenewQuestMgr::WriteOngoingQuests(char* buffer) {
     for (int index = 0; index < huntCount; ++index) {
       RenewQuestHuntRecord hunt;
       SecureZeroMemory(&hunt, sizeof(hunt));
-      hunt.huntId = static_cast<int>(info.m_huntId[index]);
-      hunt.monsterCondition = info.m_huntConditionFlags[index];
-      hunt.monsterId = info.m_huntMobId[index];
-      hunt.minLevel = info.m_huntMinLevel[index];
-      hunt.maxLevel = info.m_huntMaxLevel[index];
       hunt.killCount = info.m_huntKillCount[index];
+      hunt.huntId = static_cast<int>(info.m_huntId[index]);
+      hunt.maxLevel = info.m_huntMaxLevel[index];
+      hunt.minLevel = info.m_huntMinLevel[index];
       hunt.killGoal = info.m_huntMaxCount[index];
+      hunt.monsterId = info.m_huntMobId[index];
+      hunt.monsterCondition = info.m_huntConditionFlags[index];
       strncpy_s(hunt.name, sizeof(hunt.name), info.m_huntName[index], _TRUNCATE);
       *reinterpret_cast<RenewQuestHuntRecord*>(buffer + offset) = hunt;
       offset += sizeof(RenewQuestHuntRecord);
