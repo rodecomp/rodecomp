@@ -216,7 +216,8 @@ void CWorld::InitWorld() {
   int lastPercent = -1;
   int progress = 0;
 
-  for (const WorldModelRecord* placement : worldRes->models) {
+  for (auto placementIt = worldRes->models.begin(); placementIt != worldRes->models.end(); ++placementIt) {
+    const WorldModelRecord* placement = *placementIt;
     progress += 100;
     DWORD now = timeGetTime();
     int percent = static_cast<int>(progress / modelCount);
