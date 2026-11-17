@@ -1126,10 +1126,7 @@ void UIAchTracingWnd::Paint() {
       buttons[0]->Enable(1);
       buttons[3]->Enable(1);
       UITextButton* toggle = buttons[0];
-      {
-        const std::string label = FormatOwnedString("● [%s]", g_achievementTracking[index].name.c_str());
-        toggle->label = label;
-      }
+      toggle->SetLabel(FormatOwnedString("● [%s]", g_achievementTracking[index].name.c_str()));
       toggle->ResizeToText();
       buttons[0]->Move(10, y);
       buttons[0]->m_value = g_achievementTracking[index].id;
