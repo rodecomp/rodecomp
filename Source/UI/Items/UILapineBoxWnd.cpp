@@ -260,9 +260,8 @@ bool UILapineBox_IngredientListWnd::CanUseIngredient(std::uint32_t identity) {
   }
 
   if (item.IsEquipment() == true && !item.IsApprenticeItem() && !item.HasSpecialCard()) {
-    const std::uint32_t* card = item.cards;
-    for (int index = 0; index < item.SlotCount(); ++index, ++card) {
-      if (index < 4 && static_cast<int>(*card) > 0) {
+    for (int index = 0; index < item.SlotCount(); ++index) {
+      if (index < 4 && static_cast<int>(item.cards[index]) > 0) {
         this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PURCHASEWND_TOTAL)), 0, 0, 0);
         return true;
       }
@@ -537,12 +536,14 @@ void UILapineBoxWnd::AddMaterial(int id, int quantity) {
     return id == std::atoi(material.itemId.c_str());
   });
 
-  if (it == materials.end()) {
-    ITEM_INFO material;
-    material.SetItemId(id);
-    material.quantity = quantity;
-    materials.push_back(material);
+  if (it != materials.end()) {
+    return;
   }
+
+  ITEM_INFO material;
+  material.SetItemId(id);
+  material.quantity = quantity;
+  materials.push_back(material);
 }
 
 // OFFSET: 0x006028C0
