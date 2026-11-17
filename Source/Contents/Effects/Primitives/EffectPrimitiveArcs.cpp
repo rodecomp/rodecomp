@@ -1695,7 +1695,7 @@ __declspec(safebuffers) void CEffectPrim::RenderSegmentSpriteGlow(matrix& wtm) {
         this->GetColorOverride(&red, &green, &blue);
         const std::uint32_t color = (((((alpha << 8) + red) << 8) + green) << 8) + blue;
         quad.color = color;
-        this->DrawQuad(quad, sprite->palette, this->state.slots[ec].flag1[2] == 1 ? 5 : 0x101, 0.0f, 0.0f, 0);
+        this->DrawQuad(quad, sprite->palette, this->state.slots[ec].flag1[2] != 1 ? 0x101 : 5, 0.0f, 0.0f, 0);
 
         SpriteQuad glow;
         glow.top = top - 1.0f;
