@@ -625,7 +625,7 @@ void UIGradeEnchantWnd::SetEnchantInfo(
     return;
   }
 
-  if (index == -1) {
+  if (-1 == index) {
     return;
   }
 
