@@ -44,11 +44,21 @@ struct UIItemRepairRecordHeader {
 };
 #pragma pack(pop)
 
+namespace {
+#pragma pack(push, 1)
+struct ReplayTaggedRecordHeader {
+  /* 0000 */ std::uint16_t id;
+  /* 0002 */ std::uint32_t bytes;
+};
+#pragma pack(pop)
+}
+
 // INLINED
 static std::vector<unsigned char> MakeReplayTaggedRecord(std::uint16_t id, const void* data, std::uint32_t bytes) {
   std::vector<unsigned char> record(bytes + 6, 0);
-  *reinterpret_cast<std::uint16_t*>(record.data()) = id;
-  *reinterpret_cast<std::uint32_t*>(record.data() + 2) = bytes;
+  ReplayTaggedRecordHeader* header = reinterpret_cast<ReplayTaggedRecordHeader*>(record.data());
+  header->id = id;
+  header->bytes = bytes;
   std::memcpy(record.data() + 6, data, bytes);
   return record;
 }
@@ -158,9 +168,9 @@ void UIMakeTargetListWnd::OnCreate(int width, int height) {
 // FUNCTION: fn_13606
 void UIMakeTargetProcessWnd::OnCreate(int width, int height) {
   const std::string prefix("유저인터페이스\\");
-  int positions[2][2] = {{width - 91, height - 24}, {width - 46, height - 24}};
   const char* names[2][3] = {{"btn_ok", "btn_ok_a", "btn_ok_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}};
   int ids[2] = {184, 185};
+  int positions[2][2] = {{width - 91, height - 24}, {width - 46, height - 24}};
 
   for (int i = 0; i < 2; ++i) {
     auto* button = new UIBitmapButton();
