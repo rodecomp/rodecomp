@@ -23,6 +23,8 @@ struct ReplayTaggedRecordHeader {
 
 static_assert(sizeof(ReplayTaggedRecordHeader) == 6);
 
+template __declspec(noinline) std::_Tree_find_result<std::map<int, ItemCardName>::_Mybase::_Nodeptr> std::map<int, ItemCardName>::_Mybase::_Find_lower_bound<int>(const int&) const;
+
 // GLOBAL: gl_24725
 std::map<int, ItemMoveInfo> g_itemMoveInfo;
 
@@ -101,7 +103,7 @@ namespace {
 // OFFSET: 0x006D77E0
 // FUNCTION: fn_06595
 bool ITEM_INFO::HasCards() const {
-  const bool first = g_itemCardNames.contains(CardId(*this, 0));
+  const bool first = g_itemCardNames.find(CardId(*this, 0)) != g_itemCardNames.end();
   const unsigned id = static_cast<unsigned>(std::atoi(this->itemId.c_str()));
 
   if (id - 9001u <= 498 || id - 10000u <= 999 || CardId(*this, 0) == 254 || CardId(*this, 0) == 255 || this->IsEquipment() != true) {
@@ -305,7 +307,10 @@ namespace {
   __forceinline int IdentifiedName(const ITEM_INFO& item, char* output, int& capacity, unsigned char consume) {
     const int id = std::atoi(item.itemId.c_str());
     const char* name = FindItemDescription(id, g_itemDescriptions).identifiedName;
-    return CopyText(output, capacity, consume, name ? name : " ");
+    if (name) {
+      return CopyText(output, capacity, consume, name);
+    }
+    return CopyText(output, capacity, consume, " ");
   }
 }
 
