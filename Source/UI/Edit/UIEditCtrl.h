@@ -56,6 +56,12 @@ public:
   void MoveCandidateWindow(int x);
   void MoveReadingWindow(int x);
   bool DecodeItemLink(const std::vector<int>& values, ITEM_INFO& item);
+  // INLINED
+  void SetTooltip(const char* text) {
+    if (text) {
+      this->tooltip = text;
+    }
+  }
 
   /* 007C */ int anchor;
   /* 0080 */ int cursor;

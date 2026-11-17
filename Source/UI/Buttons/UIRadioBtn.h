@@ -21,6 +21,12 @@ public:
     this->uncheckedBitmap = unchecked;
     this->Invalidate();
   }
+  // INLINED
+  void SetTooltip(const char* text) {
+    if (text) {
+      this->tooltip = text;
+    }
+  }
 
   /* 007C */ std::string text;
   /* 0094 */ int enabled;

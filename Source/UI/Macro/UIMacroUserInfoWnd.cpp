@@ -204,7 +204,7 @@ void UIMacroReporterWnd::Paint() {
       button->Invalidate();
     }
   }
-  DrawFilledRoundedBorder(*this, 0, 0, this->geometry.width, this->geometry.height, 0xFFFFFFFF);
+  this->DrawFilledRoundedOutline(0, 0, this->geometry.width, this->geometry.height, 0xFFFFFFFF);
   this->DrawTitleBar(true, "", 0);
   this->DrawButtonBar(1, 0, 1);
 
@@ -212,10 +212,8 @@ void UIMacroReporterWnd::Paint() {
     return;
   }
 
-  int y = 56;
   for (int row = 0; row < this->m_visibleRows; ++row) {
-    this->FillRegion(14, y, 214, 18, 0xE6E6E6);
-    y += 22;
+    this->FillRegion(14, row * 22 + 56, 214, 18, 0xE6E6E6);
   }
 
   for (unsigned int index = 0; index < this->m_rows.size(); ++index) {
@@ -223,16 +221,17 @@ void UIMacroReporterWnd::Paint() {
     this->m_rows[index].second->Enable(0);
   }
 
-  y = 57;
+  int y = 57;
   for (unsigned int index = this->m_firstRow; static_cast<int>(index) < this->m_firstRow + this->m_visibleRows; ++index, y += 22) {
     if (this->m_rows.size() <= index) {
       return;
     }
 
-    this->m_rows[index].first->Enable(1);
-    this->m_rows[index].first->Move(15, y + 2);
-    this->m_rows[index].second->Enable(1);
-    this->m_rows[index].second->Move(36, y);
+    std::pair<UIBitmapButton*, UITextButton*>& row = this->m_rows[index];
+    row.first->Enable(1);
+    row.first->Move(15, y + 2);
+    row.second->Enable(1);
+    row.second->Move(36, y);
   }
 }
 
@@ -501,9 +500,7 @@ void UIMacroReporterWnd::OnCreate(int, int) {
     this->m_tabs[index]->SetId(ID_RADIOBTN);
     this->m_tabs[index]->value = index;
     this->m_tabs[index]->SendMsg(this, UM_SETSTATE, index == this->m_mode, 0, 0, 0);
-    if (const char* tooltip = tooltips[index].c_str()) {
-      this->m_tabs[index]->tooltip = tooltip;
-    }
+    this->m_tabs[index]->SetTooltip(tooltips[index].c_str());
     this->AddChild(this->m_tabs[index]);
   }
   for (; index < 4; ++index) {
@@ -514,9 +511,7 @@ void UIMacroReporterWnd::OnCreate(int, int) {
     this->m_tabs[index]->SetId(ID_RADIOBTN);
     this->m_tabs[index]->value = index;
     this->m_tabs[index]->SendMsg(this, UM_SETSTATE, index == this->m_mode, 0, 0, 0);
-    if (const char* tooltip = tooltips[index].c_str()) {
-      this->m_tabs[index]->tooltip = tooltip;
-    }
+    this->m_tabs[index]->SetTooltip(tooltips[index].c_str());
     this->AddChild(this->m_tabs[index]);
   }
 
@@ -529,11 +524,10 @@ void UIMacroReporterWnd::OnCreate(int, int) {
     this->m_fields[row]->Border(125, 125, 125);
     this->m_fields[row]->preserveInput = 1;
     this->m_fields[row]->invalidatesParent = 1;
-    this->m_fields[row]->disabled = 1;
-    this->m_fields[row]->Invalidate();
-    if (const char* tooltip = LookupMessage(MSI_MACRO_BLACKLIST_USER_CHCEK_RESULT_FAIL_MAPNAME)) {
-      this->m_fields[row]->tooltip = tooltip;
-    }
+    UIEditCtrl* field = this->m_fields[row];
+    field->disabled = 1;
+    field->Invalidate();
+    this->m_fields[row]->SetTooltip(LookupMessage(MSI_MACRO_BLACKLIST_USER_CHCEK_RESULT_FAIL_MAPNAME));
     this->AddChild(this->m_fields[row]);
     this->m_names[row] = "";
     y += 22;
@@ -549,13 +543,12 @@ void UIMacroReporterWnd::OnCreate(int, int) {
   this->m_edit->preserveInput = 1;
   this->m_edit->invalidatesParent = 1;
   this->m_edit->SetText(IntToString(this->reportCount, 0).c_str());
-  if (const char* tooltip = LookupMessage(MSI_TAIWANSS_PERSONALINFO_DEATHMSG)) {
-    this->m_edit->tooltip = tooltip;
-  }
+  this->m_edit->SetTooltip(LookupMessage(MSI_TAIWANSS_PERSONALINFO_DEATHMSG));
   this->AddChild(this->m_edit);
   if (this->m_mode != 1) {
-    this->m_edit->disabled = 1;
-    this->m_edit->Invalidate();
+    UIEditCtrl* edit = this->m_edit;
+    edit->disabled = 1;
+    edit->Invalidate();
   }
 
   this->m_entries.clear();
