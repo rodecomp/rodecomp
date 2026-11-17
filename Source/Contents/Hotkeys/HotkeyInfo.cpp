@@ -1,5 +1,6 @@
 #include "Contents/Hotkeys/HotkeyInfo.h"
 #include "Client/Session/Session.h"
+#include "Contents/Skills/SkillId.h"
 #include "Script/LuaScript.h"
 
 // OFFSET: 0x009109E0
@@ -39,7 +40,7 @@ HotkeyInfo GetHotkeyInfo(LuaScript& script, int tab, int index) {
 // OFFSET: 0x00E1DFD0
 // FUNCTION: fn_23890
 bool CSession::SkillUsesPercentSp(int id) const {
-  return id == 2039 || id == 2464 || id == 6528;
+  return id == AB_ANCILLA || id == SO_EL_CURE || id == DR_HUNGER;
 }
 
 // OFFSET: 0x008224C0

@@ -9,6 +9,7 @@
 #include "Client/Mode/CGameMode.h"
 #include "Contents/ClientState.h"
 #include "Contents/Items/ItemDescription.h"
+#include "Contents/Items/ItemType.h"
 #include "Contents/Items/WeaponType.h"
 #include "Contents/Tables/MessageTable.h"
 #include "Contents/Messenger/ClientMessenger.h"
@@ -1350,13 +1351,13 @@ int CSession::GetBattleFieldMode() const {
 // OFFSET: 0x00E1D970
 // FUNCTION: fn_23855
 bool CSession::IsShadowItemType(int type) const {
-  return type == 18;
+  return type == TYPE_CASH_POINT_ITEM;
 }
 
 // OFFSET: 0x00E1D980
 // FUNCTION: fn_23856
 bool CSession::IsConsumableItemType(int type) const {
-  if (type == 0 || type == 1 || type == 2 || type == 18) {
+  if (type == TYPE_HEAL || type == TYPE_SCHANGE || type == TYPE_SPECIAL || type == TYPE_CASH_POINT_ITEM) {
     return true;
   }
   return false;
@@ -1460,7 +1461,7 @@ int CSession::GetMapProperty0F() const {
 // OFFSET: 0x00E1DB20
 // FUNCTION: fn_23868
 bool CSession::IsEquipItemType(int type) const {
-  if (type == 4 || type == 11 || type == 12 || type == 13 || type == 14 || type == 5 || type == 8 || type == 9 || type == 15) {
+  if (type == TYPE_ARMOR || type == TYPE_ARMORTM || type == TYPE_ARMORTB || type == TYPE_ARMORMB || type == TYPE_ARMORTMB || type == TYPE_WEAPON || type == TYPE_BOW || type == TYPE_BOTHHAND || type == TYPE_GUN) {
     return true;
   }
   return false;
@@ -1469,7 +1470,7 @@ bool CSession::IsEquipItemType(int type) const {
 // OFFSET: 0x00E1DB60
 // FUNCTION: fn_23869
 bool CSession::IsMiscItemType(int type) const {
-  if (type == 6 || type == 3 || type == 7 || type == 10 || type == 16 || type == 17 || type == 19) {
+  if (type == TYPE_CARD || type == TYPE_EVENT || type == TYPE_PETEGG || type == TYPE_ARROW || type == TYPE_AMMO || type == TYPE_THROWWEAPON || type == TYPE_CANNONBALL) {
     return true;
   }
   return false;
@@ -2260,7 +2261,7 @@ void CSession::PlaySkillEffect(int skillId, int level, CGameActor* source, CGame
   case CR_ACIDDEMONSTRATION: {
     CGameMode* mode = g_modeMgr.GetGameMode();
     vector3d position = target->render.position;
-    mode->LaunchDummyEffect(&position, 0x219, 100, 0);
+    mode->LaunchDummyEffect(&position, EF_ACIDDEMON, 100, 0);
     break;
   }
   case NJ_SYURIKEN:

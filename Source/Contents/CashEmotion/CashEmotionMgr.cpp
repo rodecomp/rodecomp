@@ -16,6 +16,7 @@
 #include "UI/Buttons/UISpriteButton.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Client/Session/Session.h"
+#include "Contents/Skills/SkillId.h"
 #include "Contents/Skills/SkillInfo.h"
 #include "Contents/UserData/NormalItemSlots.h"
 #include "Network/Connection/Connection.h"
@@ -2322,8 +2323,8 @@ void UICashEmotionListWnd::OnCreate(int width, int height) {
     }
   }
 
-  this->m_backButton = this->CreateButton(36, 22, 20, 18, 189, "유저인터페이스\\cashemotion\\btn_arrowback_%s.bmp", false);
-  this->m_searchButton = this->CreateButton(221, 22, 26, 18, 190, "유저인터페이스\\cashemotion\\btn_search_%s.bmp", true);
+  this->m_backButton = this->CreateButton(36, 22, 20, 18, ID_BUTTON1, "유저인터페이스\\cashemotion\\btn_arrowback_%s.bmp", false);
+  this->m_searchButton = this->CreateButton(221, 22, 26, 18, ID_BUTTON2, "유저인터페이스\\cashemotion\\btn_search_%s.bmp", true);
   this->m_shortcutButton = this->CreateButton(252, 22, 37, 18, 191, "유저인터페이스\\cashemotion\\btn_shortui_%s.bmp", false);
   this->m_buyButton = this->CreateButton(247, 355, 42, 20, 526, "유저인터페이스\\cashemotion\\btn_buy_%s.bmp", true);
 
@@ -2571,13 +2572,13 @@ int UICashEmotionListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
 
       CSkillInfo* skill;
       if (g_session.IsDoramJob(g_session.GetDisplayJob())) {
-        skill = g_session.m_skillBundle.Find(5018);
+        skill = g_session.m_skillBundle.Find(SU_BASIC_SKILL);
         if (!skill || skill->level <= 0) {
           g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_NOT_ENOUGH_BASICSKILL_LEVEL")), 255, 0, 0, 0);
           return 0;
         }
       } else {
-        skill = g_session.m_skillBundle.Find(1);
+        skill = g_session.m_skillBundle.Find(NV_BASIC);
         if (!skill || skill->level <= 1) {
           g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(g_simpleStringMgr->GetString("EMSG_EMOTION_EXPANTION_NOT_ENOUGH_BASICSKILL_LEVEL")), 255, 0, 0, 0);
           return 0;
@@ -2612,7 +2613,7 @@ int UICashEmotionListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       box->Create(nullptr, text.c_str(), 2, true, nullptr, 280, 128, nullptr);
       box->m_keepOpen = 1;
       g_windowMgr.AddRendered(box);
-      if (g_windowMgr.RunModal(box) == 187) {
+      if (g_windowMgr.RunModal(box) == ID_YES) {
         CashEmotionPurchasePacket packet;
         packet.id = ID_CZ_REQ_BUY_EMOTION_EXPANSION;
         packet.packId = g_cashEmotionMgr->selectedPackId;
@@ -3595,7 +3596,7 @@ void UICashEmotionPiece::OnCreate(int width, int height) {
   if (this->m_button) {
     this->m_button->SetSize(width, height);
     this->m_button->Move(0, 0);
-    this->m_button->SetId(189);
+    this->m_button->SetId(ID_BUTTON1);
     this->AddChild(this->m_button);
   }
 }
@@ -3662,7 +3663,7 @@ int UICashEmotionPiece::SendMsg(
 ) {
   switch (message) {
   case UM_COMMAND:
-    if (argument1 == 189 && this->parent) {
+    if (argument1 == ID_BUTTON1 && this->parent) {
       this->parent->SendMsg(this, UM_CASH_EMOTION_ACTIVATE, this->m_packId, this->m_emotionId, 0, 0);
     }
     return 0;

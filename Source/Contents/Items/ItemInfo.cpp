@@ -512,7 +512,7 @@ bool ITEM_INFO::IsApprenticeItem() const {
 // OFFSET: 0x006D8920
 // FUNCTION: fn_06601
 bool ITEM_INFO::IsForgeMaterial() const {
-  return std::atoi(this->itemId.c_str()) == 1000 || this->IsElementalStone();
+  return std::atoi(this->itemId.c_str()) == ITEMID_STAR_CRUMB || this->IsElementalStone();
 }
 
 // OFFSET: 0x006D8980
