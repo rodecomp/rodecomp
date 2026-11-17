@@ -254,6 +254,12 @@ void UIMiniMapWnd::ResetCursor(int, int) {
 // FUNCTION: fn_13562
 int UIEditctrlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
+  case UM_DEFPUSH:
+    if (this->edit == sender && this->edit->Length() > 0) {
+      this->SendMsg(this->edit, UM_COMMAND, ID_OK, 0, 0, 0);
+      return 0;
+    }
+    break;
   case UM_COMMAND:
     switch (argument1) {
     case ID_OK: {
@@ -276,11 +282,6 @@ int UIEditctrlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
       return 0;
     }
     return 0;
-  case UM_DEFPUSH:
-    if (this->edit == sender && this->edit->Length() > 0) {
-      this->SendMsg(this->edit, UM_COMMAND, ID_OK, 0, 0, 0);
-      return 0;
-    }
   }
 
   return UIFrameWnd::SendMsg(sender, message, argument1, argument2, argument3, argument4);
