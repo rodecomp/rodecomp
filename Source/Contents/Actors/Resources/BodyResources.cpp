@@ -4049,7 +4049,7 @@ bool CSession::IsSecondJob(int job) {
 
 // OFFSET: 0x00E0A3A0
 // FUNCTION: fn_23795
-std::string CSession::GetBodyJobName(int job) {
+__declspec(noinline) std::string CSession::GetBodyJobName(int job) {
   return this->m_bodyJobNames[job];
 }
 
