@@ -1441,6 +1441,7 @@ static __forceinline void FollowAbyssOwner(const CFromTheAbyssEffect* effect, CE
 // OFFSET: 0x007154A0
 // FUNCTION: fn_07269
 void CFromTheAbyssEffect::UpdateParticle(std::pair<long long, AbyssParticle> particle) {
+  const long long id = particle.first;
   CEZ2STRParticle* emitter = particle.second.emitter;
   if (!emitter) {
     return;
@@ -1450,7 +1451,7 @@ void CFromTheAbyssEffect::UpdateParticle(std::pair<long long, AbyssParticle> par
   case 3:
     if (IsEmitterAlive(emitter) != true) {
       FreeParticle(emitter);
-      AbyssParticle& entry = this->particles[particle.first];
+      AbyssParticle& entry = this->particles[id];
       entry.kind = 0;
       entry.emitter = nullptr;
       return;
@@ -1474,7 +1475,7 @@ void CFromTheAbyssEffect::UpdateParticle(std::pair<long long, AbyssParticle> par
         dying->offset = offset;
       }
 
-      AbyssParticle& entry = this->particles[particle.first];
+      AbyssParticle& entry = this->particles[id];
       entry.kind = 2;
       entry.emitter = dying;
       return;
