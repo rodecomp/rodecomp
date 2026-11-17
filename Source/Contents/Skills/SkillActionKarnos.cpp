@@ -991,11 +991,11 @@ void CSkillAction_SKID_KR_CHOP_CHOP::OnSkillEffect(int level, CGameActor* source
 }
 
 // GLOBAL: gl_25660
-static EfstActionRegistrar s_efstActionChopChop(1721, NewAction<CEfstAction_CHOP_CHOP, CEfstAction>);
+static EfstActionRegistrar s_efstActionChopChop{EFST_TASK_CHOP_CHOP, NewAction<CEfstAction_CHOP_CHOP, CEfstAction>};
 // GLOBAL: gl_25661
-static EfstActionRegistrar s_efstActionIronHowling(1692, NewAction<CEfstAction_IRON_HOWLING, CEfstAction>);
+static EfstActionRegistrar s_efstActionIronHowling{EFST_IRON_HOWLING, NewAction<CEfstAction_IRON_HOWLING, CEfstAction>};
 // GLOBAL: gl_25662
-static EfstActionRegistrar s_efstActionWindVeil(1693, NewAction<CEfstAction_WIND_VEIL, CEfstAction>);
+static EfstActionRegistrar s_efstActionWindVeil{EFST_WIND_VEIL, NewAction<CEfstAction_WIND_VEIL, CEfstAction>};
 
 // OFFSET: 0x0040E870
 // FUNCTION: fn_45561

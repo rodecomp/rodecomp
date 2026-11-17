@@ -1795,29 +1795,29 @@ void CSkillAction_DamageWereRaptorForm::SpawnAttack02Effect(CGameActor* source, 
 }
 
 // GLOBAL: gl_25618
-static EfstActionRegistrar s_efstActionAlphaPhase(1705, NewAction<CEfstAction_ALPHA_PHASE, CEfstAction>);
+static EfstActionRegistrar s_efstActionAlphaPhase{EFST_ALPHA_PHASE, NewAction<CEfstAction_ALPHA_PHASE, CEfstAction>};
 // GLOBAL: gl_25619
-static EfstActionRegistrar s_efstActionAtApexPhase(1708, NewAction<CEfstAction_AT_APEX_PHASE, CEfstAction>);
+static EfstActionRegistrar s_efstActionAtApexPhase{EFST_APEX_PHASE, NewAction<CEfstAction_AT_APEX_PHASE, CEfstAction>};
 // GLOBAL: gl_25620
-static EfstActionRegistrar s_efstActionFlipFlap(1706, NewAction<CEfstAction_FLIP_FLAP, CEfstAction>);
+static EfstActionRegistrar s_efstActionFlipFlap{EFST_FLIP_FLAP, NewAction<CEfstAction_FLIP_FLAP, CEfstAction>};
 // GLOBAL: gl_25621
-static EfstActionRegistrar s_efstActionFlipFlapTarget(1707, NewAction<CEfstAction_FLIP_FLAP_TARGET, CEfstAction>);
+static EfstActionRegistrar s_efstActionFlipFlapTarget{EFST_FLIP_FLAP_TARGET, NewAction<CEfstAction_FLIP_FLAP_TARGET, CEfstAction>};
 // GLOBAL: gl_25622
-static EfstActionRegistrar s_efstActionFuriosStorm(1722, NewAction<CEfstAction_FURIOS_STORM, CEfstAction>);
+static EfstActionRegistrar s_efstActionFuriosStorm{EFST_TASK_FURIOS_STORM, NewAction<CEfstAction_FURIOS_STORM, CEfstAction>};
 // GLOBAL: gl_25623
-static EfstActionRegistrar s_efstActionInsane2(1703, NewAction<CEfstAction_INSANE2, CEfstAction>);
+static EfstActionRegistrar s_efstActionInsane2{EFST_INSANE2, NewAction<CEfstAction_INSANE2, CEfstAction>};
 // GLOBAL: gl_25624
-static EfstActionRegistrar s_efstActionInsane3(1704, NewAction<CEfstAction_INSANE3, CEfstAction>);
+static EfstActionRegistrar s_efstActionInsane3{EFST_INSANE3, NewAction<CEfstAction_INSANE3, CEfstAction>};
 // GLOBAL: gl_25625
-static EfstActionRegistrar s_efstActionInsane(1702, NewAction<CEfstAction_INSANE, CEfstAction>);
+static EfstActionRegistrar s_efstActionInsane{EFST_INSANE, NewAction<CEfstAction_INSANE, CEfstAction>};
 // GLOBAL: gl_25626
-static EfstActionRegistrar s_efstActionNatureHarmony(1713, NewAction<CEfstAction_NATURE_HARMONY, CEfstAction>);
+static EfstActionRegistrar s_efstActionNatureHarmony{EFST_NATURE_HARMONY, NewAction<CEfstAction_NATURE_HARMONY, CEfstAction>};
 // GLOBAL: gl_25627
-static EfstActionRegistrar s_efstActionPulseOfMadness(1715, NewAction<CEfstAction_PULSE_OF_MADNESS, CEfstAction>);
+static EfstActionRegistrar s_efstActionPulseOfMadness{EFST_PULSE_OF_MADNESS, NewAction<CEfstAction_PULSE_OF_MADNESS, CEfstAction>};
 // GLOBAL: gl_25628
-static EfstActionRegistrar s_efstActionSolidStomp(1712, NewAction<CEfstAction_SOLID_STOMP, CEfstAction>);
+static EfstActionRegistrar s_efstActionSolidStomp{EFST_SOLID_STOMP, NewAction<CEfstAction_SOLID_STOMP, CEfstAction>};
 // GLOBAL: gl_25629
-static EfstActionRegistrar s_efstActionZephyrLink(1710, NewAction<CEfstAction_ZEPHYR_LINK, CEfstAction>);
+static EfstActionRegistrar s_efstActionZephyrLink{EFST_ZEPHYR_LINK, NewAction<CEfstAction_ZEPHYR_LINK, CEfstAction>};
 
 // OFFSET: 0x0040D1D0
 // FUNCTION: fn_45560

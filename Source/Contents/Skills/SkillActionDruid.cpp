@@ -1170,33 +1170,33 @@ void CEfstAction_WERERAPTOR::OnEfstBegin(int efstId, int value, int argument3, i
 }
 
 // GLOBAL: gl_25684
-static EfstActionRegistrar s_efstActionBloodHowling(1678, NewAction<CEfstAction_BLOOD_HOWLING, CEfstAction>);
+static EfstActionRegistrar s_efstActionBloodHowling{EFST_BLOOD_HOWLING, NewAction<CEfstAction_BLOOD_HOWLING, CEfstAction>};
 // GLOBAL: gl_25685
-static EfstActionRegistrar s_efstActionEnrageRaptor(1681, NewAction<CEfstAction_ENRAGE_RAPTOR, CEfstAction>);
+static EfstActionRegistrar s_efstActionEnrageRaptor{EFST_ENRAGE_RAPTOR, NewAction<CEfstAction_ENRAGE_RAPTOR, CEfstAction>};
 // GLOBAL: gl_25686
-static EfstActionRegistrar s_efstActionEnrageWolf(1676, NewAction<CEfstAction_ENRAGE_WOLF, CEfstAction>);
+static EfstActionRegistrar s_efstActionEnrageWolf{EFST_ENRAGE_WOLF, NewAction<CEfstAction_ENRAGE_WOLF, CEfstAction>};
 // GLOBAL: gl_25687
-static EfstActionRegistrar s_efstActionGroundGrow(1697, NewAction<CEfstAction_GROUND_GROW, CEfstAction>);
+static EfstActionRegistrar s_efstActionGroundGrow{EFST_GROUND_GROW, NewAction<CEfstAction_GROUND_GROW, CEfstAction>};
 // GLOBAL: gl_25688
-static EfstActionRegistrar s_efstActionNatureProtection(1698, NewAction<CEfstAction_NATURE_PROTECTION, CEfstAction>);
+static EfstActionRegistrar s_efstActionNatureProtection{EFST_NATURE_PROTECTION, NewAction<CEfstAction_NATURE_PROTECTION, CEfstAction>};
 // GLOBAL: gl_25689
-static EfstActionRegistrar s_efstActionNatureShield(1687, NewAction<CEfstAction_NATURE_SHIELD, CEfstAction>);
+static EfstActionRegistrar s_efstActionNatureShield{EFST_NATURE_SHIELD, NewAction<CEfstAction_NATURE_SHIELD, CEfstAction>};
 // GLOBAL: gl_25690
-static EfstActionRegistrar s_efstActionPreening(1682, NewAction<CEfstAction_PREENING, CEfstAction>);
+static EfstActionRegistrar s_efstActionPreening{EFST_PREENING, NewAction<CEfstAction_PREENING, CEfstAction>};
 // GLOBAL: gl_25691
-static EfstActionRegistrar s_efstActionThunderingRod(1695, NewAction<CEfstAction_THUNDERING_ROD, CEfstAction>);
+static EfstActionRegistrar s_efstActionThunderingRod{EFST_THUNDERING_ROD, NewAction<CEfstAction_THUNDERING_ROD, CEfstAction>};
 // GLOBAL: gl_25692
-static EfstActionRegistrar s_efstActionThunderingRodMax(1696, NewAction<CEfstAction_THUNDERING_ROD_MAX, CEfstAction>);
+static EfstActionRegistrar s_efstActionThunderingRodMax{EFST_THUNDERING_ROD_MAX, NewAction<CEfstAction_THUNDERING_ROD_MAX, CEfstAction>};
 // GLOBAL: gl_25693
-static EfstActionRegistrar s_efstActionTruthOfEarth(1686, NewAction<CEfstAction_TRUTH_OF_EARTH, CEfstAction>);
+static EfstActionRegistrar s_efstActionTruthOfEarth{EFST_TRUTH_OF_EARTH, NewAction<CEfstAction_TRUTH_OF_EARTH, CEfstAction>};
 // GLOBAL: gl_25694
-static EfstActionRegistrar s_efstActionTruthOfIce(1684, NewAction<CEfstAction_TRUTH_OF_ICE, CEfstAction>);
+static EfstActionRegistrar s_efstActionTruthOfIce{EFST_TRUTH_OF_ICE, NewAction<CEfstAction_TRUTH_OF_ICE, CEfstAction>};
 // GLOBAL: gl_25695
-static EfstActionRegistrar s_efstActionTruthOfWind(1685, NewAction<CEfstAction_TRUTH_OF_WIND, CEfstAction>);
+static EfstActionRegistrar s_efstActionTruthOfWind{EFST_TRUTH_OF_WIND, NewAction<CEfstAction_TRUTH_OF_WIND, CEfstAction>};
 // GLOBAL: gl_25696
-static EfstActionRegistrar s_efstActionWereraptor(1680, NewAction<CEfstAction_WERERAPTOR, CEfstAction>);
+static EfstActionRegistrar s_efstActionWereraptor{EFST_WERERAPTOR, NewAction<CEfstAction_WERERAPTOR, CEfstAction>};
 // GLOBAL: gl_25697
-static EfstActionRegistrar s_efstActionWerewolf(1675, NewAction<CEfstAction_WEREWOLF, CEfstAction>);
+static EfstActionRegistrar s_efstActionWerewolf{EFST_WEREWOLF, NewAction<CEfstAction_WEREWOLF, CEfstAction>};
 // GLOBAL: gl_25698
 static SkillActionRegistrar s_skillActionDrAroundFlower{DR_AROUND_FLOWER, NewAction<CSkillAction_DR_AROUND_FLOWER, CSkillAction>};
 // GLOBAL: gl_25699
