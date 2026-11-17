@@ -802,9 +802,12 @@ int CNavigationManager::RouteFromPlayer() {
   }
 
   CGameMode* mode = g_modeMgr.GetGameMode();
-  if (mode && mode->scene && mode->scene->terrain) {
-    this->ground = mode->scene->ground;
-    this->pathFinder.attr = mode->scene->terrain;
+  if (mode && mode->scene) {
+    C3dAttr* terrain = mode->scene->terrain;
+    if (terrain) {
+      this->ground = mode->scene->ground;
+      this->pathFinder.SetAttr(terrain);
+    }
   }
 
   {
