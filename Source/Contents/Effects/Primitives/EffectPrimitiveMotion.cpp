@@ -654,32 +654,7 @@ bool CEffectPrim::UpdateFireWall() {
       this->state.slots[index].rotStart -= 360;
     }
 
-    const int limit = this->state.duration - 40;
-    bool grown = false;
-
-    if (this->state.slots[index].process < limit) {
-      if (this->state.slots[index].process < 20) {
-        if (index == 3) {
-          this->state.slots[3].alphaB += 8;
-
-          if (this->state.slots[3].alphaB > 100) {
-            this->state.slots[3].alphaB = 100;
-          }
-
-          grown = true;
-        } else {
-          this->state.slots[index].alphaB += 10;
-
-          if (this->state.slots[index].alphaB > 180) {
-            this->state.slots[index].alphaB = 180;
-          }
-        }
-      }
-
-      if (index == 3) {
-        grown = true;
-      }
-    } else {
+    if (this->state.slots[index].process >= this->state.duration - 40) {
       if (index < 3) {
         this->state.slots[index].alphaB -= 5;
 
@@ -692,12 +667,24 @@ bool CEffectPrim::UpdateFireWall() {
         if (this->state.slots[index].alphaB < 0) {
           this->state.slots[index].alphaB = 0;
         }
+      }
+    } else if (this->state.slots[index].process < 20) {
+      if (index == 3) {
+        this->state.slots[3].alphaB += 8;
 
-        grown = true;
+        if (this->state.slots[3].alphaB > 100) {
+          this->state.slots[3].alphaB = 100;
+        }
+      } else {
+        this->state.slots[index].alphaB += 10;
+
+        if (this->state.slots[index].alphaB > 180) {
+          this->state.slots[index].alphaB = 180;
+        }
       }
     }
 
-    if (!grown) {
+    if (index < 3) {
       for (int sample = 0; sample < 21; ++sample) {
         if (this->state.slots[index].flag1[sample] == 0) {
           if (this->state.slots[index].process <= 90) {
