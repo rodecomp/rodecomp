@@ -696,8 +696,7 @@ void UIRuneSet_Info::RefreshDescription() {
 
   const int activeCount = this->m_runeSet->CountActiveSlots();
   for (int count = 2; count < 7; ++count) {
-    const std::vector<std::string>& lines = this->m_runeSet->m_descriptions[count - 1];
-    const int lineCount = static_cast<int>(lines.size());
+    const int lineCount = static_cast<int>(this->m_runeSet->m_descriptions[count - 1].size());
     if (lineCount == 0) {
       continue;
     }
@@ -706,7 +705,7 @@ void UIRuneSet_Info::RefreshDescription() {
     this->m_infoList->AddLine(FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_EQUIP_PUTERR), count).c_str(), reached ? 0xFF7B00 : 0xB0A29A, true);
     this->m_infoList->AddLine(std::string(), 0, false);
     for (int index = 0; index < lineCount; ++index) {
-      this->m_infoList->AddLine(lines[index].c_str(), reached ? 0 : 0xB0A29A, false);
+      this->m_infoList->AddLine(this->m_runeSet->m_descriptions[count - 1][index].c_str(), reached ? 0 : 0xB0A29A, false);
     }
     this->m_infoList->AddLine(std::string(), 0, false);
   }
