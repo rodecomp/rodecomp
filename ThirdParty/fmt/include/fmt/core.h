@@ -51,7 +51,7 @@
 
 #ifdef _MSC_VER
 #  define FMT_MSC_VERSION _MSC_VER
-#  define FMT_MSC_WARNING(...) __pragma(warning(__VA_ARGS__))
+#  define FMT_MSC_WARNING(...)
 #else
 #  define FMT_MSC_VERSION 0
 #  define FMT_MSC_WARNING(...)
