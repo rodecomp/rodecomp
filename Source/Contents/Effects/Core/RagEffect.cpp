@@ -6738,11 +6738,12 @@ void CRagEffect::TexturedSpread(const char* name, char kind) {
     this->state.lastPrim->state.size = 5.0f;
   }
 
-  for (int index = 0; index < 4; ++index) {
+  int index;
+  for (index = 0; index < 4; ++index) {
     this->state.lastPrim->state.slots[index].life = 0;
   }
 
-  for (int index = 0; index < 4; ++index) {
+  for (index = 0; index < 4; ++index) {
     this->state.lastPrim->state.slots[index].life = 1;
     this->state.lastPrim->state.slots[index].fullDisplayAngle = 360;
     this->state.lastPrim->state.slots[index].rotStart = static_cast<std::int16_t>(index * 90);
@@ -10576,13 +10577,14 @@ void CRagEffect::ElectricRingEarly(char kind, std::int16_t angle) {
   this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\elec1.tga", 0, false, true, false);
   this->state.lastPrim->state.size = 0.0f;
 
-  for (int index = 0; index < 4; ++index) {
+  int index;
+  for (index = 0; index < 4; ++index) {
     this->state.lastPrim->state.slots[index].life = 0;
   }
 
   const std::int16_t phase = kind;
 
-  for (int index = 0; index < 4; ++index) {
+  for (index = 0; index < 4; ++index) {
     this->state.lastPrim->state.slots[index].life = 1;
     this->state.lastPrim->state.slots[index].process = 0;
     this->state.lastPrim->state.slots[index].maxHeight = 0.1f;
@@ -14479,11 +14481,12 @@ void CRagEffect::ForestLight(const char* name, char flag) {
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
 
-  for (int i = 0; i < 4; ++i) {
+  int i;
+  for (i = 0; i < 4; ++i) {
     this->state.lastPrim->state.slots[i].life = 0;
   }
 
-  for (int i = 0; i < 4; ++i) {
+  for (i = 0; i < 4; ++i) {
     this->state.lastPrim->state.slots[i].life = 1;
     this->state.lastPrim->state.slots[i].process = 0;
 
