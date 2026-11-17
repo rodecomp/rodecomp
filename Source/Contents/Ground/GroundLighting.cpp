@@ -101,9 +101,9 @@ void GroundGeometry::DrawLightmapped(const float* matrix, const GroundQuad& quad
 // OFFSET: 0x00AC15A0
 // FUNCTION: fn_17585
 void GroundGeometry::DrawLit(const float* matrix, const int* rectangle, bool clip) {
-  float ambient[3];
+  vector3d ambient;
   EffectPoint corners[4];
-  std::memcpy(ambient, g_worldLighting.ambient, sizeof(ambient));
+  std::memcpy(&ambient, g_worldLighting.ambient, sizeof(ambient));
   int row = rectangle[1];
 
   while (row <= rectangle[3]) {
@@ -117,7 +117,7 @@ void GroundGeometry::DrawLit(const float* matrix, const int* rectangle, bool cli
         cell.frame = g_renderer->frame;
 
         if (cell.top) {
-          this->DrawWaterCell(column, row, cell, matrix, ambient);
+          this->DrawWaterCell(column, row, cell, matrix, &ambient.x);
           this->DrawLightmapped(matrix, *cell.top, clip);
         }
 
