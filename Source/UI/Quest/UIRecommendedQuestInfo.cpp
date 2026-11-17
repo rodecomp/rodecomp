@@ -290,7 +290,8 @@ void CUIScrollWindow::SetQuest(unsigned int questId) {
     this->background->SetImage("유저인터페이스\\renew_questui\\" + quest.backgroundImage);
 
     for (std::size_t i = 0; i < std::min<std::size_t>(this->questInfos.size(), 3); ++i) {
-      for (std::string line : quest.m_descriptions[i]) {
+      for (auto lineIt = quest.m_descriptions[i].begin(); lineIt != quest.m_descriptions[i].end(); ++lineIt) {
+        std::string line = *lineIt;
         this->questInfos[i]->textViewer->AddLine(line);
       }
     }
