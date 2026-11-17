@@ -281,7 +281,7 @@ bool UITagListBox::ItemFromFields(const std::vector<int>& fields, ITEM_INFO& ite
 // OFFSET: 0x009BACD0
 // FUNCTION: fn_13885
 void UITagListBox::DecodeValues(std::vector<int>& values, const char* text, int& position, const int& end, const char& separator, const char& alternate) {
-  std::string value;
+  std::string value = "";
 
   while (++position < end + 1) {
     const char byte = text[position];
