@@ -58,7 +58,8 @@ void UIWindowMgr::ConstrainSnap(UIWindow* window, int& dx, int& dy, int groupMem
   const bool root = g_snapMgr.IsRoot(window);
 
   for (auto it = this->snapRectangles.begin(); it != this->snapRectangles.end(); ++it) {
-    auto& [other, rectangle] = *it;
+    SnapRectangle& rectangle = it->second;
+    UIWindow* const other = it->first;
     const bool connected = g_snapMgr.Connected(window, other);
     const bool otherRoot = g_snapMgr.IsRoot(other);
     const bool otherConnected = g_snapMgr.ConnectedToRoot(other);
