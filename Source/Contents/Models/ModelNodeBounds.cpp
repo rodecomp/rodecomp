@@ -4,11 +4,9 @@
 
 // OFFSET: 0x00ABB300
 // FUNCTION: fn_17514
-void C3dNode::AccumulateBounds(float* bounds, const float* matrix) {
-  struct matrix parentMatrix;
-  std::memcpy(parentMatrix.values, matrix, sizeof(parentMatrix.values));
-  struct matrix combined;
-  combined.Compose(this->transform, parentMatrix);
+void C3dNode::AccumulateBounds(float* bounds, const matrix& parent) {
+  matrix combined;
+  combined.Compose(this->transform, parent);
 
   for (int index = 0; index < this->mesh->vertexCount; ++index) {
     const auto& vertex = this->mesh->vertices[index];
@@ -42,6 +40,6 @@ void C3dNode::AccumulateBounds(float* bounds, const float* matrix) {
   }
 
   for (C3dNode* child : this->children) {
-    child->AccumulateBounds(bounds, combined.values);
+    child->AccumulateBounds(bounds, combined);
   }
 }

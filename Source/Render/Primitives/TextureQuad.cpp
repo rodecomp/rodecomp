@@ -13,12 +13,6 @@ float g_depthStart;
 // GLOBAL: gl_24521
 float g_depthEnd;
 
-// OFFSET: 0x0055D310
-// FUNCTION: fn_02101
-__declspec(noinline) float RhwToDepth(float rhw) {
-  return ((1.0f / rhw - 10.0f) * 1.0067114f) * rhw;
-}
-
 // OFFSET: 0x00AD5FA0
 // FUNCTION: fn_17826
 void CMode::DrawTexture(const RECT& rect, int angle, float rhw, std::uint32_t color, CTexture* texture, TextureRegion region) {

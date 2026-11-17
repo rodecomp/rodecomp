@@ -42,6 +42,11 @@ static const std::string s_makeCharItemLinkClose = "</ITEML>";
 UIHairBitmap::UIHairBitmap() : UIBitmapButton() {
 }
 
+// OFFSET: 0x007D99C0
+// FUNCTION: fn_09608
+UIHairStyleButton::UIHairStyleButton(int style, int sex) : UIBitmapButton(), m_style(style), m_sex(sex), m_race(0), m_preview(nullptr), m_selected(false) {
+}
+
 // OFFSET: 0x007D9A50
 // FUNCTION: fn_09609
 UINewMakeCharWnd::UINewMakeCharWnd()

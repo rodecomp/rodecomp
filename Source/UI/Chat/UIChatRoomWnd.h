@@ -3,6 +3,7 @@
 
 #include "UI/Window/UIFrameWnd.h"
 #include "Contents/UserData/NormalItemSlots.h"
+#include "UI/Party/UIMiniPartyWnd.h"
 
 #include <map>
 #include <string>
@@ -45,7 +46,7 @@ public:
   /* 0104 */ UIBitmapButton* closeButton;
   /* 0108 */ UIStaticText* titleText;
   /* 010C */ std::map<std::string, int> memberRoles;
-  /* 0114 */ std::vector<std::pair<std::string, int>> menuCommands;
+  /* 0114 */ std::vector<MiniPartyInfoEntry> menuCommands;
   /* 0120 */ ChatRoomWndInfo* saved;
 };
 

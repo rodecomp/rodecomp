@@ -95,18 +95,24 @@ __declspec(noinline) bool CWorld::FindActorInCell(const float* position, std::fu
 
 // OFFSET: 0x00AC8BA0
 // FUNCTION: fn_17679
-bool CWorld::IsGuildMaster(std::uint32_t aid) {
-  for (CGameActor* actor : this->actors) {
-    if (actor->render.accountId == aid) {
-      if (!actor) {
-        return false;
-      }
-
-      return actor->GetPkState() == static_cast<int>(g_guildInfo.masterCharacterId);
-    }
+__declspec(noinline) bool CWorld::IsGuildMaster(std::uint32_t aid) {
+  auto it = std::find_if(this->actors.begin(), this->actors.end(), [aid](CGameActor* actor) {
+    return actor->render.accountId == aid;
+  });
+  if (it == this->actors.end()) {
+    return false;
   }
 
-  return false;
+  CGameActor* actor = *it;
+  if (!actor) {
+    return false;
+  }
+
+  if (static_cast<int>(g_guildInfo.masterCharacterId) != actor->GetPkState()) {
+    return false;
+  }
+
+  return true;
 }
 
 // OFFSET: 0x00AC8750

@@ -136,9 +136,9 @@ char g_skillListCount;
 int g_skillUpgradeId;
 
 // GLOBAL: gl_24651
-static const std::string g_itemLinkOpen = "<ITEML>";
+const std::string g_itemLinkOpen = "<ITEML>";
 // GLOBAL: gl_24652
-static const std::string g_itemLinkClose = "</ITEML>";
+const std::string g_itemLinkClose = "</ITEML>";
 // GLOBAL: gl_24647
 static const std::string g_editNaviTagBegin = "<NAVIL>";
 // GLOBAL: gl_24648
@@ -873,12 +873,6 @@ void UITextureButton::VisitChildren() {
     static_cast<float>(this->geometry.x), static_cast<float>(this->geometry.y), static_cast<float>(texture->Width()),
     static_cast<float>(texture->Height()), 0xFFFFFFFF, texture
   );
-}
-
-// OFFSET: 0x00858B80
-// FUNCTION: fn_10764
-std::string UINaviLinkButton::Link() {
-  return this->link;
 }
 
 // OFFSET: 0x00858BE0
@@ -2945,12 +2939,12 @@ void UISkillListWnd::Paint() {
           } else if (this->skillTab == 1) {
             spLevel = g_session.MercSkillLevel(static_cast<int>(it->id));
           }
-          const int amount = it->UseSpAmount(*g_session.m_hotkeyScript, spLevel);
+          const int amount = it->UseSpAmount(spLevel);
           if (amount != 0 && spLevel <= it->level) {
             sp = amount;
           }
         }
-        const int ap = it->UseApAmount(*g_session.m_hotkeyScript, it->level);
+        const int ap = it->UseApAmount(it->level);
         if (ap != 0) {
           std::sprintf(text, "Sp : %d , Ap : %d", sp, ap);
         } else {
@@ -5761,7 +5755,7 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
           this->skills.push_back(skill);
           ++upgradable;
         }
-        if (CSkillInfo::UsesLevel(*g_session.m_hotkeyScript, skill.id) && skill.level != 0) {
+        if (CSkillInfo::UsesLevel(skill.id) && skill.level != 0) {
           int current = 0;
           if (this->skillTab == 0) {
             current = g_session.HomunSkillLevel(skill.id);

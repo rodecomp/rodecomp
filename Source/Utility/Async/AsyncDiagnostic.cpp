@@ -18,7 +18,3 @@ AsyncDiagnostic& AsyncDiagnostic::operator=(AsyncDiagnostic&& other) noexcept {
   this->line = other.line;
   return *this;
 }
-
-// OFFSET: 0x005BA220
-// FUNCTION: fn_03441
-AsyncDiagnostic::~AsyncDiagnostic() = default;

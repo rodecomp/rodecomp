@@ -26,7 +26,7 @@ public:
   /* 00C0 */ UIEditCtrl* m_editCtrl;
   /* 00C4 */ UIBitmapButton* registerButton;
   /* 00C8 */ std::string m_selectedFile;
-  /* 00E0 */ void* m_decompressedData;
+  /* 00E0 */ unsigned char* m_decompressedData;
   /* 00E4 */ unsigned long m_decompressedSize;
 };
 

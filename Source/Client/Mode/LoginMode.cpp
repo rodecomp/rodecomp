@@ -3582,11 +3582,11 @@ void CLoginMode::OnChangeState(int value) {
   }
   case 2:
   case 3:
-    g_accountLinkedUserDataMgr->Reset(*g_session.m_hotkeyScript, g_serviceHost, g_servicePort, g_serviceOverrideKey);
-    g_characterLinkedUserDataMgr->Reset(*g_session.m_hotkeyScript, g_serviceHost, g_servicePort, g_serviceOverrideKey);
-    g_session.m_storeInfoBackup.Reset(*g_session.m_hotkeyScript, *g_session.m_hotkeyScript, g_serviceHost, g_servicePort, g_serviceOverrideKey);
+    g_accountLinkedUserDataMgr->Reset();
+    g_characterLinkedUserDataMgr->Reset();
+    g_session.m_storeInfoBackup.Reset();
     g_guildMgr->m_guilds.clear();
-    g_emblemDataMgr->RefreshUrls(*g_session.m_hotkeyScript, *g_session.m_hotkeyScript, g_serviceHost, g_servicePort, g_serviceOverrideKey);
+    g_emblemDataMgr->RefreshUrls();
     this->wallpaperName = g_loginWallpaperName;
     g_windowMgr.SetBackgroundSurface(static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->wallpaperName.c_str()))));
     if (!g_session.m_launchPassCommandLine) {
@@ -3796,7 +3796,7 @@ void CLoginMode::OnChangeState(int value) {
     }
 
     g_packetReassembler->Notify(2);
-    SendExecutableDigest(g_serviceType, g_serviceMode, g_instance, GetRagConnection(), g_packetLengths);
+    SendExecutableDigest();
     AccountLoginPacket packet;
     packet.id = ID_CA_LOGIN;
     packet.version = g_patchedClientVersion;

@@ -159,15 +159,15 @@ int UICaptchaRegisterWnd::SendMsg(
           if (bitmap.Decode(fullPath.c_str(), file.GetData(), file.GetSize(), false)) {
             if (bitmap.image.width == 220 && bitmap.image.height == 90) {
               if (this->m_decompressedData != nullptr) {
-                std::free(this->m_decompressedData);
+                delete[] this->m_decompressedData;
                 this->m_decompressedData = nullptr;
                 this->m_decompressedSize = 0;
               }
 
               this->m_decompressedSize = compressBound(file.GetSize());
-              this->m_decompressedData = std::malloc(this->m_decompressedSize);
+              this->m_decompressedData = new unsigned char[this->m_decompressedSize];
               compress(
-                static_cast<Bytef*>(this->m_decompressedData),
+                this->m_decompressedData,
                 &this->m_decompressedSize,
                 static_cast<const Bytef*>(file.GetData()),
                 file.GetSize()

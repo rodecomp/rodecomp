@@ -729,7 +729,7 @@ public:
   void RefreshGuildWindows();
   void RefreshRouletteWnd();
   void EnableRouletteWnd();
-  char UpdateSnapRectangles();
+  void UpdateSnapRectangles();
   bool ProcessDialogKey(int unused, int key);
   void DestroyBackgroundSurface();
   void SubmitActiveDialog();

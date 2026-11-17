@@ -11,7 +11,7 @@
 // FUNCTION: fn_02225
 void CRendererDX9::DrawOpaqueQueues() {
   RenderQueues& queues = this->queues;
-  ScopedDeviceStateDX9 restore(this->device->state);
+  ScopedDeviceStateDX9 restore = this->device->SaveState();
   this->device->state.SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
   this->device->state.SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
   const auto before = [](const RenderCommand* left, const RenderCommand* right) {

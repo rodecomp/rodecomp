@@ -4090,7 +4090,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
           g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_REWARD_HEAVY_INVENTORY)), 0xFF, 0, 0, 0);
           return 0;
         }
-        const unsigned baseJob = JobNames::BaseJob(g_session.GetDisplayJob());
+        const unsigned baseJob = g_session.BaseJob(g_session.GetDisplayJob());
         if (g_session.GetDisplayJob() != baseJob) {
           g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_REWARD_HEAVY_INVENTORY)), 0xFF, 0, 0, 0);
           return 0;

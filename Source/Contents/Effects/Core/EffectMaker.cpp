@@ -87,9 +87,9 @@ void CEffectMaker::SendMsg(CGameObject* sender, std::int64_t message, std::int64
     this->elapsedFrames = RandomBelow(static_cast<int>(record->delay + 1.0f));
   }
 
-  this->render.position.x = record->position[0];
-  this->render.position.y = record->position[1];
-  this->render.position.z = record->position[2];
+  this->render.position.x = record->position.x;
+  this->render.position.y = record->position.y;
+  this->render.position.z = record->position.z;
   this->parameter1 = record->parameters[0];
   this->parameter2 = record->parameters[1];
   this->parameter3 = record->parameters[2];

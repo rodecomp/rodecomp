@@ -225,7 +225,7 @@ void UIMenuIconWnd::Paint() {
         this->notificationButtons[it->first]->Enable(0);
       }
     } else {
-      this->DrawNamed(g_renderer->primitives, 0, 13, "유저인터페이스\\menu_icon\\bg_menu.tga", 0xFFFFFFFF, 0, 0);
+      this->DrawNamed(0, 13, "유저인터페이스\\menu_icon\\bg_menu.tga", 0xFFFFFFFF, 0, 0);
       const bool pinned = std::find(this->notifiedCommands.begin(), this->notifiedCommands.end(), it->first) != this->notifiedCommands.end();
       it->second->Enable(!pinned);
       if (this->notificationButtons.end() != this->notificationButtons.find(it->first)) {

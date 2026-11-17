@@ -22,6 +22,12 @@ std::uint32_t DepthAlpha(float reciprocalDepth) {
   return static_cast<std::uint32_t>(alpha) << 24;
 }
 
+// OFFSET: 0x0055D310
+// FUNCTION: fn_02101
+__declspec(noinline) float RhwToDepth(float rhw) {
+  return ((1.0f / rhw - 10.0f) * 1.0067114f) * rhw;
+}
+
 // OFFSET: 0x005694A0
 // FUNCTION: fn_02260
 void RenderCommand::ApplyDepthAlpha() {

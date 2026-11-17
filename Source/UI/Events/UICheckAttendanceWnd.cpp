@@ -184,7 +184,7 @@ void UICheckAttendanceWnd::Paint() {
 
     if (!message.empty()) {
       std::list<std::string> lines;
-      this->WrapFormattedText(message, &lines, 112, 0, 12, 1);
+      this->WrapText(message, &lines, 112, 0, 12, 1);
       const int top = static_cast<int>((77 - lines.size() * 15) * 0.5 + 95);
       int line = 0;
       for (auto it = lines.begin(); it != lines.end(); ++it, ++line) {

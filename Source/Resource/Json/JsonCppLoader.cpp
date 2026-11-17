@@ -241,7 +241,7 @@ bool JsonCppLoader::GetIntValue(const JsonValue& node, const std::string& key, i
 bool JsonCppLoader::GetMapStringIntValue(const JsonValue& node, const std::string& key, std::map<std::string, int>* out) {
   JsonValueLocal value;
   this->GetValue(value.value, key, node, JsonValue::OBJECT_VALUE);
-  if (value.value.IsNull()) {
+  if (value.value.IsNull() == true) {
     this->Fail("key 에 해당하는 데이터를 찾지 못했습니다. (keyName : %s)", key.c_str());
     return false;
   }

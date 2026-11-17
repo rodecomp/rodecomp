@@ -18,7 +18,26 @@ namespace {
     const float offset = static_cast<float>(center) * scale;
     const float coordinate = static_cast<float>(position) - offset;
 
-    return TruncateToInt(coordinate / scale);
+    return static_cast<int>(coordinate / scale);
+  }
+
+  // INLINED
+  __forceinline bool SpriteImageSize(const char* spriteName, const SpriteFrameCell& cell, int& width, int& height) {
+    auto* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(spriteName));
+
+    if (!sprite) {
+      return false;
+    }
+
+    const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
+
+    if (!image) {
+      return false;
+    }
+
+    width = image->doubleWidth != 0 ? image->width * 2 : image->width;
+    height = image->doubleHeight != 0 ? image->height * 2 : image->height;
+    return true;
   }
 }
 
@@ -106,6 +125,8 @@ bool CActRes::Load(const char* name) {
 
       for (int index = 0; index < cellCount; ++index) {
         SpriteFrameCell& cell = frame.cells[index];
+        int width;
+        int height;
 
         if (header.version < 0x0200) {
           file.Read(&cell, 16);
@@ -123,41 +144,42 @@ bool CActRes::Load(const char* name) {
             std::int32_t y;
             std::int32_t image;
             std::int32_t mirrored;
-            std::uint32_t color;
+            SpriteCellColor color;
             float scale;
             std::int32_t rotation;
             std::int32_t imageType;
           } legacy;
           file.Read(&legacy, sizeof(legacy));
-          cell = {legacy.x, legacy.y, legacy.image, legacy.mirrored, legacy.color, legacy.scale, legacy.scale, legacy.rotation, legacy.imageType};
+          cell.x = legacy.x;
+          cell.y = legacy.y;
+          cell.image = legacy.image;
+          cell.mirrored = legacy.mirrored;
+          cell.colorChannels = legacy.color;
+          cell.scaleX = legacy.scale;
+          cell.scaleY = legacy.scale;
+          cell.rotation = legacy.rotation;
+          cell.imageType = legacy.imageType;
+
+          if (cell.image == -1 || !SpriteImageSize(spriteName.c_str(), cell, width, height)) {
+            continue;
+          }
         } else {
           file.Read(&cell, sizeof(cell));
-        }
 
-        if (header.version >= 0x0205) {
-          int width;
-          int height;
-          file.Read(&width, sizeof(width));
-          file.Read(&height, sizeof(height));
+          if (header.version >= 0x0205) {
+            file.Read(&width, sizeof(width));
+            file.Read(&height, sizeof(height));
 
-          if (cell.image != -1) {
-            cell.x = RelativeCoordinate(cell.x, width, cell.scaleX);
-            cell.y = RelativeCoordinate(cell.y, height, cell.scaleY);
-          }
-        } else if (cell.image != -1) {
-          auto* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(spriteName.c_str()));
-
-          if (sprite) {
-            const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
-
-            if (image) {
-              const int width = image->width * (image->doubleWidth != 0 ? 2 : 1);
-              const int height = image->height * (image->doubleHeight != 0 ? 2 : 1);
-              cell.x = RelativeCoordinate(cell.x, width, cell.scaleX);
-              cell.y = RelativeCoordinate(cell.y, height, cell.scaleY);
+            if (cell.image == -1) {
+              continue;
             }
+          } else if (cell.image == -1 || !SpriteImageSize(spriteName.c_str(), cell, width, height)) {
+            continue;
           }
         }
+
+        cell.x = RelativeCoordinate(cell.x, width, cell.scaleX);
+        cell.y = RelativeCoordinate(cell.y, height, cell.scaleY);
       }
 
       if (header.version >= 0x0200) {

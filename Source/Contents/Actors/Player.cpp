@@ -2562,7 +2562,7 @@ void CPc::SetSprJob(int job) {
     );
     this->LoadEquipSprite(0, g_session.GetBodySprName(g_session.GetRidingJob(job), this->sex, this->bodyStyle, 0).c_str());
   } else {
-    const int effectiveJob = this->GetEffectiveJob(JobNames::BaseJob(job));
+    const int effectiveJob = this->GetEffectiveJob(g_session.BaseJob(job));
     switch (effectiveJob) {
       case JT_MADOGEAR:
       case JT_MADOGEAR_H:
@@ -4361,7 +4361,7 @@ void CPc::SetState(int state, int resetPosition) {
   }
 
   if (state == ST_DEAD) {
-    const int job = this->GetEffectiveJob(JobNames::BaseJob(this->job));
+    const int job = this->GetEffectiveJob(g_session.BaseJob(this->job));
     this->LoadEquipAction(0, g_session.GetBodyActionResourceName(job, this->sex, this->bodyStyle, this->GetMadogearType()).c_str());
     this->LoadEquipSprite(0, g_session.GetBodySprName(job, this->sex, this->bodyStyle, this->GetMadogearType()).c_str());
     current = this->render.state;

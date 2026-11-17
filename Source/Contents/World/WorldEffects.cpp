@@ -25,7 +25,7 @@ void CWorld::LoadMapEffects() {
     WorldEffectRecord* record = *it;
 
     if (g_effectMgr->HasAllocator(record->id)) {
-      g_effectMgr->Spawn(0, record->id, record->position[0], record->position[1], record->position[2], 0, -1, 0, 0);
+      g_effectMgr->Spawn(0, record->id, record->position, 0, -1, 0, 0);
     } else {
       CEffectMaker* effect = new CEffectMaker;
       const int address = reinterpret_cast<int>(record);

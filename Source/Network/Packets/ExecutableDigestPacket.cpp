@@ -3,6 +3,8 @@
 #include "Network/Packets/PacketLengths.h"
 #include "Utility/Hash/Md5State.h"
 #include "Network/Packets/PacketId.h"
+#include "Contents/Configuration/ServiceConfiguration.h"
+#include "Client/Application/Launcher.h"
 
 #include <cstdio>
 #include <cstdint>
@@ -20,9 +22,8 @@ namespace {
 
 // OFFSET: 0x00D8D790
 // FUNCTION: fn_22267
-void SendExecutableDigest(const int& serviceType, const int& serviceMode, HINSTANCE instance,
-  CConnection& connection, const PacketLengths& lengths) {
-  if (serviceType != 6 && (serviceType != 0 || serviceMode != 1)) {
+void SendExecutableDigest() {
+  if (g_serviceType != 6 && (g_serviceType != 0 || g_serviceMode != 1)) {
     return;
   }
 
@@ -31,7 +32,7 @@ void SendExecutableDigest(const int& serviceType, const int& serviceMode, HINSTA
   MD5State md5;
   md5.Init();
   char filename[MAX_PATH];
-  GetModuleFileNameA(instance, filename, MAX_PATH);
+  GetModuleFileNameA(g_instance, filename, MAX_PATH);
   FILE* file = std::fopen(filename, "rb");
   if (!file) {
     return;
@@ -44,20 +45,20 @@ void SendExecutableDigest(const int& serviceType, const int& serviceMode, HINSTA
   }
   md5.Finish(packet.digest);
 
-  if (serviceType == 0) {
-    if (serviceMode == 1) {
+  if (g_serviceType == 0) {
+    if (g_serviceMode == 1) {
       const std::uint32_t digest[4] = {0x912CD182, 0x8FD45A4F, 0x7ECF6FD9, 0x2D49CCF4};
       std::memcpy(packet.digest, digest, sizeof(digest));
-    } else if (serviceMode == 0) {
+    } else if (g_serviceMode == 0) {
       const std::uint32_t digest[4] = {0x3164E365, 0x11031C03, 0x136D501E, 0x7A2D6939};
       std::memcpy(packet.digest, digest, sizeof(digest));
     } else {
       std::memset(packet.digest, 0, sizeof(packet.digest));
     }
-  } else if (serviceType == 6 && serviceMode == 1) {
+  } else if (g_serviceType == 6 && g_serviceMode == 1) {
     const std::uint32_t digest[4] = {0xC2940AC7, 0x9A38CC7A, 0x3954F547, 0x39D0A47C};
     std::memcpy(packet.digest, digest, sizeof(digest));
   }
 
-  connection.Send(GetRagConnection().GetPacketSize(packet.id), &packet);
+  GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
 }

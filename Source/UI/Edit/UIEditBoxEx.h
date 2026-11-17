@@ -63,7 +63,13 @@ public:
 
 class CUIEditBoxEx : public CUIControl {
 public:
-  CUIEditBoxEx();
+  // OFFSET: 0x00A59BB0
+  // FUNCTION: fn_16367
+  CUIEditBoxEx()
+      : CUIControl(), backgroundColor(0xF7F7F7), borderColor(0xC6C6C6), borderWidth(1), editLeft(0), editTop(0), editRight(0), editBottom(0),
+        edit(nullptr), onSubmit() {
+  }
+
   void Resize(int width, int height) override;
   bool IsEditable() override;
   UIWindow* GetEditWindow() override;

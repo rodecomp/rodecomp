@@ -12,7 +12,9 @@ struct AsyncDiagnostic {
       : AsyncDiagnostic(&success, &message, file, &line) {
   }
   AsyncDiagnostic(const AsyncDiagnostic& other) = default;
-  ~AsyncDiagnostic();
+  // OFFSET: 0x005BA220
+  // FUNCTION: fn_03441
+  ~AsyncDiagnostic() = default;
   AsyncDiagnostic& operator=(AsyncDiagnostic&& other) noexcept;
 
   /* 0000 */ std::uint32_t line;

@@ -34,7 +34,7 @@ void CJupitelThunderStormEffect::Close() {
     this->particle = nullptr;
   }
 
-  for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
+  for (std::vector<CEZ2STRParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
     if (*it) {
       FreeParticle(*it);
     }
@@ -137,9 +137,9 @@ void CJupitelThunderStormEffect::OnProcess() {
     }
   }
 
-  for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
+  for (std::vector<CEZ2STRParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
     if (*it) {
-      static_cast<CEZ2STRParticle*>(*it)->Process(0.0f, 0.0f, 0.0f);
+      (*it)->Process(0.0f, 0.0f, 0.0f);
     }
   }
 }
@@ -151,9 +151,9 @@ void CJupitelThunderStormEffect::Render() {
     static_cast<CEZ2STRParticle*>(this->particle)->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
   }
 
-  for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
+  for (std::vector<CEZ2STRParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
     if (*it) {
-      static_cast<CEZ2STRParticle*>(*it)->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
+      (*it)->DrawScreen(g_modeMgr.GetGameMode()->camera->frame.view);
     }
   }
 }

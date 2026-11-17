@@ -18,6 +18,10 @@
 namespace {
   // INLINED
   __forceinline void PromoteWindow(UIWindow* window) {
+    if (window == nullptr) {
+      return;
+    }
+
     if ((g_windowMgr.modal != nullptr && g_windowMgr.navigationWnd != window) || g_windowMgr.LookupWindow(WID_NEWMAKECHARWND) || g_windowMgr.LookupWindow(WID_MAKECHARWND) ||
         g_windowMgr.LookupWindow(WID_SECONDPASSWORDINPUTWND) || g_windowMgr.LookupWindow(WID_SECONDPASSWORDEDITWND)) {
       return;

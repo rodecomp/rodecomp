@@ -1253,7 +1253,7 @@ void UIEditCtrl3::SetText(const char* value) {
 
   this->SelectAll();
 
-  if (this->text.find("<ITEML>") != std::string::npos || this->text.find("</ITEML>") != std::string::npos) {
+  if (this->text.find(g_itemLinkOpen) != std::string::npos || this->text.find(g_itemLinkClose) != std::string::npos) {
     this->SetLinkedText(this->text.c_str());
   }
 

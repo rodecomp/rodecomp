@@ -6,11 +6,6 @@
 #include <memory>
 #include <new>
 
-// INLINED
-CCommonObject::~CCommonObject() {
-  this->Clear();
-}
-
 // OFFSET: 0x005B7C90
 // FUNCTION: fn_03417
 void CCommonObject::Clear() {

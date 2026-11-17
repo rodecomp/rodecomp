@@ -9,7 +9,10 @@
 class DeviceOwnerDX9;
 
 struct RenderAdapter {
-  RenderAdapter();
+  // OFFSET: 0x00A3D0A0
+  // FUNCTION: fn_15905
+  RenderAdapter() : backend(0), ordinal(0), drawGuid{}, renderGuid{}, deviceGuid{} {
+  }
 
   // INLINED
   RenderAdapter(int backend, UINT ordinal, const char* description, const GUID& drawGuid, const GUID& renderGuid)

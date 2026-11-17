@@ -7017,7 +7017,7 @@ void UIEquipWnd::OnMouseHover(int x, int y) {
   CGameMode* mode = g_modeMgr.GetGameMode();
   if (mode->drag.source == 1 && x >= 0 && y >= 0 && x < this->geometry.width && y < this->geometry.height) {
     ITEM_INFO dragged = g_session.LookupClientItemByIdentity(mode->drag.id);
-    if (dragged.identity[1] != 0 && dragged.identity[2] != 0) {
+    if (dragged.identity[1] > 0 && dragged.identity[2] != 0) {
       const EquipSlots slots = g_session.GetEquipSlots(static_cast<int>(dragged.identity[2]));
       this->m_highlight[0] = slots.values[2];
       if (slots.values[1] != -1) {

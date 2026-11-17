@@ -1,16 +1,16 @@
-#include "Render/Primitives/RenderPrimitivePool.h"
+#include "Render/Renderer.h"
 #include "Render/Primitives/UIRPData.h"
 #include "Render/Textures/Texture.h"
 #include "Render/Textures/TextureCache.h"
 
 // OFFSET: 0x008130A0
 // FUNCTION: fn_10121
-void UIRPData::DrawStretched(RenderPrimitivePool& pool, int x, int y, CTexture* texture, std::uint32_t color, int width, int height) {
+void UIRPData::DrawStretched(int x, int y, CTexture* texture, std::uint32_t color, int width, int height) {
   if (!texture) {
     return;
   }
 
-  RenderPrimitive* primitive = pool.Acquire();
+  RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
   primitive->texture = texture;
   const int right = x + width;
   const int bottom = y + height;
@@ -44,13 +44,13 @@ void UIRPData::DrawStretched(RenderPrimitivePool& pool, int x, int y, CTexture* 
 
 // OFFSET: 0x008134B0
 // FUNCTION: fn_10122
-void UIRPData::DrawNamed(RenderPrimitivePool& pool, int x, int y, std::string name, std::uint32_t color, int width, int height) {
+void UIRPData::DrawNamed(int x, int y, std::string name, std::uint32_t color, int width, int height) {
   CTexture* texture = g_texMgr.Load(name.c_str(), 0, true, true, false);
   if (!texture) {
     return;
   }
 
-  RenderPrimitive* primitive = pool.Acquire();
+  RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
   primitive->texture = texture;
   const int imageWidth = texture->Width();
   const int imageHeight = texture->Height();
@@ -114,10 +114,10 @@ void UIRPData::DrawNamed(RenderPrimitivePool& pool, int x, int y, std::string na
 
 // OFFSET: 0x00813A00
 // FUNCTION: fn_10123
-void UIRPData::SetSolid(RenderPrimitivePool& pool, int width, int height, std::uint32_t color) {
+void UIRPData::SetSolid(int width, int height, std::uint32_t color) {
   this->m_primitives.clear();
 
-  RenderPrimitive* primitive = pool.Acquire();
+  RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
   primitive->texture = nullptr;
   primitive->quad[0].x = 0.0f;
   primitive->quad[0].y = 0.0f;

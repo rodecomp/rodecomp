@@ -33,16 +33,6 @@
 
 template __declspec(noinline) int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
 
-namespace {
-  __declspec(noinline) float ScreenLineSine(float angle) {
-    return static_cast<float>(std::sin(static_cast<double>(angle)));
-  }
-
-  __declspec(noinline) float ScreenLineCosine(float angle) {
-    return static_cast<float>(std::cos(static_cast<double>(angle)));
-  }
-}
-
 // OFFSET: 0x00918380
 // FUNCTION: fn_12594
 void UIRoMapWnd::DrawDashedArrow(
@@ -61,8 +51,8 @@ void UIRoMapWnd::DrawDashedArrow(
   }
   angle += 1.570796f;
 
-  const float sine = ScreenLineSine(angle);
-  const float cosine = ScreenLineCosine(angle);
+  const float sine = ClientSin(angle);
+  const float cosine = ClientCos(angle);
   const float inverseNormal = 1.0f / SquareRoot(cosine * cosine + sine * sine);
   const float normalX = cosine * inverseNormal;
   const float normalY = sine * inverseNormal;
@@ -286,8 +276,8 @@ void UIRoMapWnd::DrawArrow(
     angle = 6.283184f - angle;
   }
   angle += 1.570796f;
-  const float sine = ScreenLineSine(angle);
-  const float cosine = ScreenLineCosine(angle);
+  const float sine = ClientSin(angle);
+  const float cosine = ClientCos(angle);
   const float normal = 1.0f / SquareRoot(cosine * cosine + sine * sine);
   const float normalX = normal * cosine;
   const float normalY = normal * sine;

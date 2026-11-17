@@ -253,17 +253,6 @@ void EffectResourceSwitcher::SetDelay(int argument) {
 void CEffect::SetResource(int) {
 }
 
-// OFFSET: 0x005A2630
-// FUNCTION: fn_03115
-template <>
-CEZ2STREffectMgr* Singleton<CEZ2STREffectMgr>::GetInstance() {
-  if (!s_instance) {
-    s_instance = new (std::nothrow) CEZ2STREffectMgr;
-  }
-
-  return s_instance;
-}
-
 // OFFSET: 0x006FFA00
 // FUNCTION: fn_06967
 __declspec(noinline) unsigned char CEZ2STREffectEx::IsFinished() {

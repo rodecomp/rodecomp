@@ -775,7 +775,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     }
   case UM_MENU_SELECTED: {
     CGameMode* mode = g_modeMgr.GetGameMode();
-    switch (this->menuCommands[a].second) {
+    switch (this->menuCommands[a].value) {
     case MENUID_EXPEL: {
       if (this->memberList->selected == -1) {
         return 0;
@@ -837,34 +837,34 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         switch (rank) {
         case 0:
           if (!(target == self)) {
-            this->menuCommands.push_back(std::pair<std::string, int>(std::string(LookupMessage(MSI_BAN)), 0));
-            this->menuCommands.push_back(std::pair<std::string, int>(std::string(LookupMessage(MSI_GIVE_GIVE_ROOM_POWER)), 1));
+            this->menuCommands.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_BAN)).c_str(), 0));
+            this->menuCommands.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_GIVE_GIVE_ROOM_POWER)).c_str(), 1));
           }
-          this->menuCommands.push_back(std::pair<std::string, int>(std::string(LookupMessage(MSI_SEE_INFORMATION_OF_CHARACTER)), 3));
+          this->menuCommands.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_SEE_INFORMATION_OF_CHARACTER)).c_str(), 3));
           if (g_serviceMode != 3 && !g_windowMgr.IsFriend(target.c_str()) && !(target == self)) {
-            this->menuCommands.push_back(std::pair<std::string, int>(std::string(LookupMessage(MSI_ADD_TO_FRIEND_CHAR_LIST)), 21));
+            this->menuCommands.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_ADD_TO_FRIEND_CHAR_LIST)).c_str(), 21));
           }
-          this->menuCommands.push_back(std::pair<std::string, int>(std::string(LookupMessage(MSI_CHANGE_ROOM_SETTING)), 2));
+          this->menuCommands.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_CHANGE_ROOM_SETTING)).c_str(), 2));
           break;
         case 1:
-          this->menuCommands.push_back(std::pair<std::string, int>(std::string(LookupMessage(MSI_SEE_INFORMATION_OF_CHARACTER)), 3));
+          this->menuCommands.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_SEE_INFORMATION_OF_CHARACTER)).c_str(), 3));
           if (!g_windowMgr.IsFriend(target.c_str()) && !(target == self) && g_serviceMode != 3) {
-            this->menuCommands.push_back(std::pair<std::string, int>(std::string(LookupMessage(MSI_ADD_TO_FRIEND_CHAR_LIST)), 21));
+            this->menuCommands.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_ADD_TO_FRIEND_CHAR_LIST)).c_str(), 21));
           }
           break;
         }
       } else {
         if (rank == 0) {
-          this->menuCommands.push_back(std::pair<std::string, int>(std::string(LookupMessage(MSI_CHANGE_ROOM_SETTING)), 2));
+          this->menuCommands.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_CHANGE_ROOM_SETTING)).c_str(), 2));
         }
-        this->menuCommands.push_back(std::pair<std::string, int>(std::string(LookupMessage(MSI_WRITE_CHAT_TO_FILE)), 11));
+        this->menuCommands.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_WRITE_CHAT_TO_FILE)).c_str(), 11));
       }
     }
 
     if (!this->menuCommands.empty()) {
       UIWindow* menu = g_windowMgr.EnsureWindow(WID_MENUWND);
       for (unsigned index = 0; index < this->menuCommands.size(); ++index) {
-        menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(this->menuCommands[index].first.c_str()), 0, 0, 0);
+        menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(this->menuCommands[index].text.c_str()), 0, 0, 0);
       }
       menu->SendMsg(nullptr, UM_SET_CALLER_WID, WID_CHATROOMWND, 0, 0, 0);
       menu->SendMsg(nullptr, UM_ADJUSTSIZE, 0, 0, 0, 0);

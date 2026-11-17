@@ -14,7 +14,10 @@ public:
   CCommonObject() {
     this->Clear();
   }
-  virtual ~CCommonObject();
+  // INLINED
+  virtual ~CCommonObject() {
+    this->Clear();
+  }
   void Clear();
   bool LoadTokens(std::vector<char*>& tokens, const char* name, int mode);
   bool LoadCsv(const char* name, std::vector<std::string> (*transform)(const std::vector<std::string>&), void (*insert)(std::vector<const char*>&));

@@ -428,8 +428,11 @@ void UISwapEquipmentWnd::OnLBtnDown(int x, int y) {
   }
 
   const EquipSlots slots = g_session.GetEquipSlots(item.identity[3]);
-  CGameMode* mode = g_modeMgr.GetGameMode();
-  mode->drag.BeginItem(g_windowMgr, this->equipmentPage == 2 ? 18 : 17, item, item.quantity, slots.values[2]);
+  if (this->equipmentPage == 2) {
+    g_modeMgr.GetGameMode()->BeginDragItem(18, item, item.quantity, slots.values[2]);
+  } else {
+    g_modeMgr.GetGameMode()->BeginDragItem(17, item, item.quantity, slots.values[2]);
+  }
 
   if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
     if (g_windowMgr.GetHoverWindow() && item.identified != 0) {

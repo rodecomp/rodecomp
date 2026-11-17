@@ -31,7 +31,7 @@ namespace {
 // FUNCTION: fn_02224
 void CRendererDX9::DrawAlphaQueues() {
   RenderQueues& queues = this->queues;
-  ScopedDeviceStateDX9 restore(this->device->state);
+  ScopedDeviceStateDX9 restore = this->device->SaveState();
   const auto before = [](const DepthPrimitive& left, const DepthPrimitive& right) {
     return Before(left, right);
   };

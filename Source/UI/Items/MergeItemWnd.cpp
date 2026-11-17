@@ -411,8 +411,8 @@ bool CMergeItemWnd::RequestMerge() {
   {
     std::vector<char> packet;
     MergeItemPacketHeader header{0x096E, 0};
-    packet.insert(packet.end(), reinterpret_cast<const char*>(&header), reinterpret_cast<const char*>(&header + 1));
-    packet.insert(packet.end(), reinterpret_cast<const char*>(ids.data()), reinterpret_cast<const char*>(ids.data() + ids.size()));
+    packet.insert(packet.end(), reinterpret_cast<char*>(&header), reinterpret_cast<char*>(&header + 1));
+    packet.insert(packet.end(), reinterpret_cast<char*>(ids.data()), reinterpret_cast<char*>(ids.data() + ids.size()));
     MergeItemPacketHeader* packetHeader = reinterpret_cast<MergeItemPacketHeader*>(packet.data());
     packetHeader->length = static_cast<std::uint16_t>(packet.size());
     GetRagConnection().Send(static_cast<int>(packet.size()), packetHeader);

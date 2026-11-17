@@ -4,7 +4,7 @@
 
 // OFFSET: 0x00E2FE80
 // FUNCTION: fn_24165
-unsigned JobNames::BaseJob(unsigned job) {
+unsigned CSession::BaseJob(unsigned job) const {
   switch (job) {
   case JT_FROG_NINJA:
     return JT_NINJA;
@@ -326,7 +326,7 @@ const char* CSession::GetJobName(unsigned job, int sex) {
     return this->m_jobNameTable[job];
   }
 
-  const unsigned base = JobNames::BaseJob(job);
+  const unsigned base = this->BaseJob(job);
 
   if (sex == -1) {
     sex = this->GetCurrentSex();
@@ -347,9 +347,4 @@ const char* CSession::GetJobName(unsigned job, int sex) {
   }
 
   return this->m_jobNameTable[base];
-}
-
-// INLINED
-unsigned CSession::BaseJob(unsigned job) const {
-  return JobNames::BaseJob(job);
 }

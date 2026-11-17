@@ -31,11 +31,6 @@ namespace {
   }
 }
 
-// INLINED
-void matrix::Identity() {
-  std::memcpy(this->values, g_identityMatrix, sizeof(g_identityMatrix));
-}
-
 // OFFSET: 0x00555360
 // FUNCTION: fn_02034
 void matrix::MakeXRotation(float radians) {

@@ -26,11 +26,11 @@ namespace myGPack {
     /* 0000 */ std::uint8_t m_roundKeys[16][8];
 
     void BuildRoundKeys(const std::uint8_t* key);
+    int InitialPermutation(std::uint8_t* block) const;
+    int FinalPermutation(std::uint8_t* block) const;
   };
 
   static_assert(sizeof(PakCipher) == 128);
-  int __stdcall InitialPermutation(std::uint8_t* block);
-  int __stdcall FinalPermutation(std::uint8_t* block);
 
 }
 

@@ -243,12 +243,12 @@ std::vector<const ReputeInfo*> CReputeMgr::GetAllReputes() const {
 // FUNCTION: fn_04293
 bool CReputeMgr::Load() {
   if (!this->LoadReputeInfoData(this->m_infos)) {
-    ShowErrorDialog(GetRenderSystemHolder()->system, "Failed : LoadReputeInfoData", 0);
+    ShowErrorDialog("Failed : LoadReputeInfoData", 0);
     return false;
   }
 
   if (!this->LoadReputeGroupData(this->m_groups)) {
-    ShowErrorDialog(GetRenderSystemHolder()->system, "Failed : LoadReputeInfoData", 0);
+    ShowErrorDialog("Failed : LoadReputeInfoData", 0);
     return false;
   }
 

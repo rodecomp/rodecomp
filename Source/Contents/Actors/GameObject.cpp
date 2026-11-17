@@ -3290,7 +3290,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
         job = this->GetEffectiveJob(-1);
       } else {
         this->SetRiding(0);
-        job = JobNames::BaseJob(this->GetEffectiveJob(-1));
+        job = g_session.BaseJob(this->GetEffectiveJob(-1));
       }
       this->SetActorJob(job);
       this->SetBodyPalette(this->render.bodyPalette);

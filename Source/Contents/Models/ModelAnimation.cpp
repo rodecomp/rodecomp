@@ -3,24 +3,20 @@
 #include <cmath>
 #include <cstring>
 
-namespace {
-  __declspec(noinline) ModelRotationKey MatrixQuaternion(const matrix& matrix);
+// OFFSET: 0x00554340
+// FUNCTION: fn_02022
+__declspec(noinline) ModelRotationKey matrix::GetRotation() const {
+  ModelRotationKey result{0, {0, 0, 0, 1}};
+  const float trace = ((this->values[0] + 1.0f) + this->values[4]) + this->values[8];
+  const float root = std::sqrt(trace);
+  const float w = root * 0.5f;
+  result.rotation[3] = w;
+  const float divisor = w * 4.0f;
+  result.rotation[0] = (this->values[7] - this->values[5]) / divisor;
+  result.rotation[1] = (this->values[2] - this->values[6]) / divisor;
+  result.rotation[2] = (this->values[3] - this->values[1]) / divisor;
 
-  // OFFSET: 0x00554340
-  // FUNCTION: fn_02022
-  ModelRotationKey MatrixQuaternion(const matrix& matrix) {
-    ModelRotationKey result{0, {0, 0, 0, 1}};
-    const float trace = ((matrix.values[0] + 1.0f) + matrix.values[4]) + matrix.values[8];
-    const float root = std::sqrt(trace);
-    const float w = root * 0.5f;
-    result.rotation[3] = w;
-    const float divisor = w * 4.0f;
-    result.rotation[0] = (matrix.values[7] - matrix.values[5]) / divisor;
-    result.rotation[1] = (matrix.values[2] - matrix.values[6]) / divisor;
-    result.rotation[2] = (matrix.values[3] - matrix.values[1]) / divisor;
-
-    return result;
-  }
+  return result;
 }
 
 // OFFSET: 0x00540370
@@ -65,7 +61,7 @@ __declspec(safebuffers) void LegacyRotationTrack::Sample(int frame, matrix& outp
   }
 
   if (count == 1) {
-    QuaternionMatrix(keys[0], output);
+    output.MakeRotation(keys[0]);
     return;
   }
 
@@ -98,7 +94,7 @@ __declspec(safebuffers) void LegacyRotationTrack::Sample(int frame, matrix& outp
     result.Interpolate(amount, a, b, 0);
   }
 
-  QuaternionMatrix(result, output);
+  output.MakeRotation(result);
 }
 
 // OFFSET: 0x00540BF0
@@ -223,9 +219,9 @@ void ModelRotationTrack::Sample(float frame, const matrix& base, matrix& output)
   if (count == 0) {
     rotation = base;
   } else if (count == 1) {
-    QuaternionMatrix(keys[0], rotation);
+    rotation.MakeRotation(keys[0]);
   } else if (frame >= static_cast<float>(keys[count - 1].frame)) {
-    QuaternionMatrix(keys[count - 1], rotation);
+    rotation.MakeRotation(keys[count - 1]);
   } else {
     ModelRotationKey a{0, {0, 0, 0, 1}};
     ModelRotationKey b{0, {0, 0, 0, 1}};
@@ -233,7 +229,7 @@ void ModelRotationTrack::Sample(float frame, const matrix& base, matrix& output)
     for (unsigned next = 0; next < count; ++next) {
       if (static_cast<float>(keys[next].frame) > frame) {
         if (next == 0) {
-          a = MatrixQuaternion(base);
+          a = base.GetRotation();
           a.frame = 0;
         } else {
           a = keys[next - 1];
@@ -295,7 +291,7 @@ void ModelRotationTrack::Sample(float frame, const matrix& base, matrix& output)
     result.rotation[1] = by * secondWeight + firstWeight * ay;
     result.rotation[2] = bz * secondWeight + az * firstWeight;
     result.rotation[3] = bw * secondWeight + aw * firstWeight;
-    QuaternionMatrix(result, rotation);
+    rotation.MakeRotation(result);
   }
 
   matrix previous = output;

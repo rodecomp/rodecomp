@@ -28,7 +28,7 @@ public:
   void OverrideColors();
   void Prepare(const float* matrix, const float* direction, const float* diffuse, const float* ambient, int shade);
   void SampleGroundColors(const class CRenderer* renderer, const float* matrix, const class GroundGeometry& ground);
-  void AccumulateBounds(float* bounds, const float* matrix);
+  void AccumulateBounds(float* bounds, const matrix& parent);
 
   /* 0004 */ std::string name;
   /* 001C */ C3dActor* model;

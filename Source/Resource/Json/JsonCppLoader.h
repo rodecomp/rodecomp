@@ -120,7 +120,14 @@ inline int JsonValue::GetType() const {
 }
 
 inline bool JsonValue::IsNull() const {
-  return (this->Dereference()->type & 0x0f) == null_value;
+  switch (static_cast<StorageKind>(this->type & 0x0f)) {
+    case null_value:
+      return true;
+    case json_const_pointer:
+      return static_cast<const JsonValue*>(this->pointer)->IsNull();
+    default:
+      return false;
+  }
 }
 
 inline bool JsonValue::IsObject() const {

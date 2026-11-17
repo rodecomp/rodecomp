@@ -149,7 +149,7 @@ void CWorld::OnProcess() {
       C3dActor& model = *this->models[this->published];
       for (int index = 0; index < 4; ++index) {
         WorldSpatialTree* child = this->spatial.children[index];
-        if (model.oriented.Intersects(child->minimum)) {
+        if (IntersectsBounds(model.oriented, child->minimum)) {
           child->InsertModel(model, 1);
         }
       }

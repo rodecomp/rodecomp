@@ -348,7 +348,7 @@ namespace myGPack {
 
   // OFFSET: 0x00AE9260
   // FUNCTION: fn_18104
-  int __stdcall InitialPermutation(std::uint8_t* block) {
+  int PakCipher::InitialPermutation(std::uint8_t* block) const {
     Block64 result;
     result.words[0] = result.words[1] = 0;
 
@@ -366,7 +366,7 @@ namespace myGPack {
 
   // OFFSET: 0x00AE91D0
   // FUNCTION: fn_18103
-  int __stdcall FinalPermutation(std::uint8_t* block) {
+  int PakCipher::FinalPermutation(std::uint8_t* block) const {
     Block64 result;
     result.words[0] = result.words[1] = 0;
 

@@ -29,10 +29,7 @@ protected:
   /* 0034 */ bool m_enabled;
 };
 
-struct NAsyncWorkResponse {
-  /* 0000 */ bool valid;
-  /* 0004 */ NAsyncWorkPtr work;
-};
+using NAsyncWorkResponse = std::pair<bool, NAsyncWorkPtr>;
 
 class NAsyncWorkResponseQueue {
   friend class NAsyncWorkMgr;
@@ -53,7 +50,6 @@ protected:
 static_assert(sizeof(NAsyncWorkRequestQueue) == 56);
 static_assert(sizeof(NAsyncWorkResponseQueue) == 40);
 static_assert(sizeof(NAsyncWorkResponse) == 16);
-static_assert(offsetof(NAsyncWorkResponse, work) == 4);
 #endif
 
 #endif

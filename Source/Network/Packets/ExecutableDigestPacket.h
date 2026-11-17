@@ -6,7 +6,6 @@
 class CConnection;
 class PacketLengths;
 
-void SendExecutableDigest(const int& serviceType, const int& serviceMode, HINSTANCE instance,
-  CConnection& connection, const PacketLengths& lengths);
+void SendExecutableDigest();
 
 #endif

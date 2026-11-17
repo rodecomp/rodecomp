@@ -18,4 +18,10 @@ public:
 static_assert(sizeof(UINaviLinkButton) == 0x118);
 #endif
 
+// OFFSET: 0x00858B80
+// FUNCTION: fn_10764
+inline std::string UINaviLinkButton::Link() {
+  return this->link;
+}
+
 #endif

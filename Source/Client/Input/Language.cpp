@@ -470,11 +470,6 @@ LexiconBoundary g_lexiconBoundary;
 CLanguageTH::CLanguageTH() : lexiconLoaded(g_lexiconBoundary.Load()) {
 }
 
-// OFFSET: 0x007D99C0
-// FUNCTION: fn_09608
-UIHairStyleButton::UIHairStyleButton(int style, int sex) : UIBitmapButton(), m_style(style), m_sex(sex), m_race(0), m_preview(nullptr), m_selected(false) {
-}
-
 // OFFSET: 0x00ACD140
 // FUNCTION: fn_17755
 CLanguageBase::~CLanguageBase() = default;

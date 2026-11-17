@@ -74,11 +74,11 @@ void UIWindowMgr::EnableRouletteWnd() {
 
 // OFFSET: 0x00A96850
 // FUNCTION: fn_17189
-char UIWindowMgr::UpdateSnapRectangles() {
+void UIWindowMgr::UpdateSnapRectangles() {
   this->snapRectangles.clear();
 
   if (ServiceOptions::Get(141) == 0) {
-    return 0;
+    return;
   }
 
   for (UIWindow* window : this->rendered) {
@@ -101,8 +101,6 @@ char UIWindowMgr::UpdateSnapRectangles() {
       this->snapRectangles[window].Set(window->geometry.x, window->geometry.y, window->geometry.width, window->geometry.height);
     }
   }
-
-  return 1;
 }
 
 // OFFSET: 0x00A976C0

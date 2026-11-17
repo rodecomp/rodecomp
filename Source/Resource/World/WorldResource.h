@@ -40,7 +40,7 @@ struct WorldSoundRecord {
 
 struct WorldEffectRecord {
   /* 0000 */ char name[80];
-  /* 0050 */ float position[3]{};
+  /* 0050 */ vector3d position{};
   /* 005C */ int id;
   /* 0060 */ float delay;
   /* 0064 */ float parameters[4];

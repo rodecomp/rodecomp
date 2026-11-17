@@ -2,6 +2,7 @@
 #define RAGNAROK_SOURCE_UTILITY_MATH_AFFINEMATRIX_H
 
 #include <cstddef>
+#include <cstring>
 
 extern const float g_identityMatrix[12];
 extern float g_radTable[722];
@@ -16,6 +17,8 @@ float GetRadian(int degrees);
 float ClientSine(int degrees);
 float ClientCosine(int degrees);
 float SquareRoot(float value);
+
+struct ModelRotationKey;
 
 struct matrix {
   /* 0000 */ float values[12];
@@ -35,8 +38,15 @@ struct matrix {
   void AppendTranslate(const float* position);
   void Compose(const matrix& first, const matrix& second);
   void MakeInverse(const matrix& source);
+  void MakeRotation(const ModelRotationKey& key);
+  ModelRotationKey GetRotation() const;
   void LookAt(const float* origin, const float* target, const float* up);
 };
+
+// INLINED
+inline void matrix::Identity() {
+  std::memcpy(this->values, g_identityMatrix, sizeof(g_identityMatrix));
+}
 
 static_assert(sizeof(matrix) == 48);
 

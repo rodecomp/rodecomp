@@ -112,10 +112,10 @@ NAsyncWorkResponse NAsyncWorkResponseQueue::Pop() {
   NSyncObject held(&this->m_criticalSection);
   if (this->m_pending.empty()) {
     NAsyncWorkPtr empty(nullptr, "");
-    return {false, empty};
+    return std::make_pair(false, empty);
   }
 
   NAsyncWorkPtr work(this->m_pending.front());
   this->m_pending.pop_front();
-  return {true, work};
+  return std::make_pair(true, work);
 }

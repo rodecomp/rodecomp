@@ -8,9 +8,9 @@ void UIRPImageWnd2::Paint() {
     return;
   }
 
-  this->SetSolid(g_renderer->primitives, this->geometry.width, this->geometry.height, 0);
+  this->SetSolid(this->geometry.width, this->geometry.height, 0);
   for (int i = 0; i < this->m_imageCount; ++i) {
-    this->DrawNamed(g_renderer->primitives, 0, 0, this->m_imageName, 0xFFFFFFFF, 0, 0);
+    this->DrawNamed(0, 0, this->m_imageName, 0xFFFFFFFF, 0, 0);
   }
 }
 

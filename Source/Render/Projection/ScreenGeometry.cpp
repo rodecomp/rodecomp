@@ -35,7 +35,7 @@ void DrawScreenLine(ScreenPoint start, ScreenPoint end, int thickness, CTexture*
 // OFFSET: 0x0054DB40
 // FUNCTION: fn_01944
 void DrawScreenQuad(float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3, CTexture* texture, std::uint32_t color) {
-  RenderPrimitive* primitive = g_renderer->primitives.Acquire();
+  RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
   RenderVertex* vertices = primitive->vertices;
   vertices[0].x = x0;
   vertices[0].y = y0;
@@ -74,7 +74,7 @@ void DrawScreenQuad(float x0, float y0, float x1, float y1, float x2, float y2, 
 // OFFSET: 0x00915F60
 // FUNCTION: fn_12581
 void DrawScreenQuad(ScreenPoint p0, ScreenPoint p1, ScreenPoint p2, ScreenPoint p3, CTexture* texture, std::uint32_t color) {
-  RenderPrimitive* primitive = g_renderer->primitives.Acquire();
+  RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
   RenderVertex* vertices = primitive->vertices;
   vertices[0].x = p0.x;
   vertices[0].y = p0.y;

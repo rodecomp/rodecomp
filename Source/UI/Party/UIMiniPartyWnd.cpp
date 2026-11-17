@@ -72,7 +72,7 @@ void UIMiniPartyWnd::Paint() {
   this->m_primitives.clear();
   const int count = this->m_member.offline != 1 ? 3 : 1;
   for (int index = 0; index < count; ++index) {
-    this->DrawNamed(g_renderer->primitives, 0, 0, this->m_imageName, 0xFFFFFFFF, 0, 0);
+    this->DrawNamed(0, 0, this->m_imageName, 0xFFFFFFFF, 0, 0);
   }
 }
 

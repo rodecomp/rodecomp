@@ -916,18 +916,15 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
   case WM_LULLABY_DEEPSLEEP:
   case WM_RANDOMIZESPELL:
   case WM_GLOOMYDAY:
-    motion = 16;
-    effectId = 840;
-    return;
   case WA_MOONLIT_SERENADE:
-    motion = 16;
-    effectId = 840;
-    g_soundMgr->PlayWave("effect\\달빛세레나데.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    break;
   case WM_POEMOFNETHERWORLD:
     motion = 16;
     effectId = 840;
-    g_soundMgr->PlayWave("effect\\나락의노래.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    if (skillId == WM_POEMOFNETHERWORLD) {
+      g_soundMgr->PlayWave("effect\\나락의노래.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    } else if (skillId == WA_MOONLIT_SERENADE) {
+      g_soundMgr->PlayWave("effect\\달빛세레나데.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    }
     break;
   case WM_REVERBERATION:
     motion = 16;
@@ -959,13 +956,12 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
   case WM_MELODYOFSINK:
   case WM_BEYOND_OF_WARCRY:
   case WM_UNLIMITED_HUMMING_VOICE:
-    motion = 16;
-    effectId = 843;
-    return;
   case WM_LERADS_DEW:
     motion = 16;
     effectId = 843;
-    g_soundMgr->PlayWave("effect\\레라드의이슬.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    if (skillId == WM_LERADS_DEW) {
+      g_soundMgr->PlayWave("effect\\레라드의이슬.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+    }
     break;
   case WM_SOUND_OF_DESTRUCTION:
     effectId = -1;

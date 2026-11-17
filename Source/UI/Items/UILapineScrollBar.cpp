@@ -133,7 +133,7 @@ void UILapineBox_IngredientListWnd::Paint() {
 // FUNCTION: fn_45447
 UILapineBox_IngredientListWnd::UILapineBox_IngredientListWnd(int width, int height)
     : UIScrollWnd(width, height, 0), minRefine(0), maxRefine(20) {
-  this->Resize(width, height);
+  this->UIWindow::Resize(width, height);
   this->OnCreate(width, height);
 }
 

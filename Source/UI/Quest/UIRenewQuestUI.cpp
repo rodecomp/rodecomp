@@ -996,13 +996,6 @@ template <>
 CUIListBoxEx<RenewQuestUI::CUIQuestItem, unsigned long>::~CUIListBoxEx() {
 }
 
-// OFFSET: 0x00A59BB0
-// FUNCTION: fn_16367
-CUIEditBoxEx::CUIEditBoxEx()
-    : CUIControl(), backgroundColor(0xF7F7F7), borderColor(0xC6C6C6), borderWidth(1), editLeft(0), editTop(0), editRight(0), editBottom(0),
-      edit(nullptr), onSubmit() {
-}
-
 // OFFSET: 0x00A67CA0
 // FUNCTION: fn_16630
 void RenewQuestUI::CUIQuestItem::SetSelected(bool selected) {

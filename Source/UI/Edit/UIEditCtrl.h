@@ -292,6 +292,8 @@ static_assert(sizeof(UIEditCtrl5) == 0x13C);
 #endif
 
 extern int g_skillTooltipActive;
+extern const std::string g_itemLinkOpen;
+extern const std::string g_itemLinkClose;
 
 bool IsInputSuggestionAllowed();
 

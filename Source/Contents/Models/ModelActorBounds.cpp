@@ -152,7 +152,7 @@ void C3dActorV1::UpdateBounds() {
   std::array<float, 6> bounds = {100000, 100000, 100000, -100000, -100000, -100000};
   matrix identity;
   std::memcpy(identity.values, g_identityMatrix, sizeof(identity.values));
-  this->root->AccumulateBounds(bounds.data(), identity.values);
+  this->root->AccumulateBounds(bounds.data(), identity);
   this->offset.x = -(bounds[3] + bounds[0]) * 0.5f;
   this->offset.y = -bounds[4];
   this->offset.z = -(bounds[5] + bounds[2]) * 0.5f;
@@ -173,7 +173,7 @@ void C3dActorV2::UpdateBounds() {
   std::memcpy(identity.values, g_identityMatrix, sizeof(identity.values));
 
   for (std::list<C3dNodeV2*>::iterator it = this->roots.begin(); it != this->roots.end(); ++it) {
-    (*it)->AccumulateBounds(bounds.data(), identity.values);
+    (*it)->AccumulateBounds(bounds.data(), identity);
   }
 
   this->UpdateMatrix();

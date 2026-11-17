@@ -7,7 +7,7 @@
 // FUNCTION: fn_02030
 // OFFSET: 0x00554B90
 // FUNCTION: fn_02029
-void QuaternionMatrix(const ModelRotationKey& key, matrix& output) {
+void matrix::MakeRotation(const ModelRotationKey& key) {
   const float x2 = key.rotation[0] + key.rotation[0];
   const float y2 = key.rotation[1] + key.rotation[1];
   const float z2 = key.rotation[2] + key.rotation[2];
@@ -21,18 +21,18 @@ void QuaternionMatrix(const ModelRotationKey& key, matrix& output) {
   const float yz = key.rotation[1] * z2;
   const float zz = key.rotation[2] * z2;
 
-  output.values[0] = 1.0f - (yy + zz);
-  output.values[1] = xy + wz;
-  output.values[2] = xz - wy;
-  output.values[3] = xy - wz;
-  output.values[4] = 1.0f - (xx + zz);
-  output.values[5] = yz + wx;
-  output.values[6] = xz + wy;
-  output.values[7] = yz - wx;
-  output.values[8] = 1.0f - (xx + yy);
-  output.values[9] = 0.0f;
-  output.values[10] = 0.0f;
-  output.values[11] = 0.0f;
+  this->values[0] = 1.0f - (yy + zz);
+  this->values[1] = xy + wz;
+  this->values[2] = xz - wy;
+  this->values[3] = xy - wz;
+  this->values[4] = 1.0f - (xx + zz);
+  this->values[5] = yz + wx;
+  this->values[6] = xz + wy;
+  this->values[7] = yz - wx;
+  this->values[8] = 1.0f - (xx + yy);
+  this->values[9] = 0.0f;
+  this->values[10] = 0.0f;
+  this->values[11] = 0.0f;
 }
 
 // OFFSET: 0x00541B30

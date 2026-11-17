@@ -94,12 +94,12 @@ bool NAsyncWorkMgr::Initialize(std::uint32_t workers) {
 void NAsyncWorkMgr::Update(std::uint32_t maximum) {
   for (std::uint32_t i = 1; i <= maximum; ++i) {
     NAsyncWorkResponse response = this->m_responses->Pop();
-    if (!response.valid) {
+    if (!response.first) {
       break;
     }
 
-    if (response.work.Get()) {
-      response.work.Get()->Complete();
+    if (response.second.Get()) {
+      response.second.Get()->Complete();
     }
   }
 }

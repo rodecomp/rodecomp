@@ -46,6 +46,12 @@ public:
   /* 068C */ HRESULT lastPresent;
 };
 
+// OFFSET: 0x005650F0
+// FUNCTION: fn_02213
+inline ScopedDeviceStateDX9 DeviceOwnerDX9::SaveState() {
+  return ScopedDeviceStateDX9(this->state);
+}
+
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(DeviceOwnerDX9) == 0x690);
 static_assert(offsetof(DeviceOwnerDX9, state) == 0x000C);
