@@ -34,7 +34,7 @@ UIAgitMessageBox::UIAgitMessageBox()
 // OFFSET: 0x0095D580
 // FUNCTION: fn_13068
 void UIAgitMessageBox::Paint() {
-  this->DrawTitleBar(true, LookupMessage(MSI_USESKILL_FAIL_AP_INSUFFICIENT), 0);
+  this->DrawTitleBar(true, LookupMessage(MSI_GUILD_AGIT_AGIT_MESSAGE), 0);
   this->DrawPanelBackground(17, 0, "");
   this->DrawButtonBar(2, 0, 1);
 }
@@ -158,7 +158,7 @@ int UIListBoxAgitMenu::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   switch (a) {
   case 0: {
     if (g_session.GetSiegeMode() == 1) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_TOOLTIP_OF_OPTIONOFF_BTN)), 0xFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GUILD_AGIT_MOVE_FAIL_MAP)), 0xFF, 0, 0, 0);
       return 0;
     }
 
@@ -174,7 +174,7 @@ int UIListBoxAgitMenu::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       g_session.m_hotkeyScript->Call("get_agit_costzeny", "db>d", agitId, 1, &costGuildPoint);
 
       UIAgitMessageBox* box = new UIAgitMessageBox();
-      box->InitializeMessageBox((FormatString(LookupMessage(MSI_NOT_LEARN_BASIC_SKILL), agitName, costZeny, costGuildPoint)), 310, 130);
+      box->InitializeMessageBox((FormatString(LookupMessage(MSI_GUILD_AGIT_ARE_YOU_MOVE_AGIT), agitName, costZeny, costGuildPoint)), 310, 130);
 
       int x = g_renderer->viewport.centerX - box->geometry.width / 2;
       box->Move(x, (g_renderer->viewport.centerY - box->geometry.height / 2));

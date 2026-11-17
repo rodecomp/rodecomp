@@ -106,9 +106,9 @@ void UICreateGuildWnd::Paint() {
   this->DrawButtonBar(2, 0, 1);
   int text;
   if (this->m_mode == 0) {
-    text = MSI_PLEASE_PUT_GUILD_NAME_IN;
+    text = MIS_PUT_GUILD_NAME_IN;
   } else {
-    text = MSI_BASIC_EXP_MSG_BRZ;
+    text = MSI_PUT_DISBAND_GUILDNAME;
   }
   this->DrawTitleBar(true, LookupMessage(text - 1), 0);
   const char* message = LookupMessage(text);
@@ -133,7 +133,7 @@ void UICreateGuildWnd::OnLBtnUp(int, int) {
 // OFFSET: 0x0095F420
 // FUNCTION: fn_13078
 void UIGuildTipWnd::Paint() {
-  this->DrawTitleBar(true, LookupMessage(MSI_PARTY_RECRUIT_REFUSE_VOLUNTEER), 0);
+  this->DrawTitleBar(true, LookupMessage(MIS_GUILD_TIP), 0);
   this->DrawPanelBackground(17, 0, "");
   this->DrawButtonBar(2, 0, 1);
 }
@@ -175,10 +175,10 @@ int UICreateGuildWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, s
     this->m_nameEdit->SelectAll();
 
     if (name.empty()) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SHOW_MAPNAMETITLE)), 0xFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PLEASE_PUT_GUILD_NAME_IN)), 0xFF, 0, 0, 0);
     } else if (_mbsstr(reinterpret_cast<const unsigned char*>(this->m_nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_itemLinkOpening.c_str())) ||
                _mbsstr(reinterpret_cast<const unsigned char*>(this->m_nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_itemLinkClosing.c_str()))) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_STYLING_SHOP_OPEN_COUPON)), 0xFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NOT_USING_TAG_TO_NAME)), 0xFF, 0, 0, 0);
     } else if (this->m_mode == 0) {
       mode->SendMsg(MM_REQ_MAKE_GUILD, reinterpret_cast<int>(name.c_str()), 0, 0, 0);
     } else {

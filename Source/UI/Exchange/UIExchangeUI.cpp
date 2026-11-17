@@ -376,7 +376,7 @@ void CUIExchangeUI::OnProcess() {
     amount = amount < 0 ? 0 : amount;
 
     if (amount > 1000000000) {
-      g_windowMgr.Confirm(LookupMessage(MSI_BASIC_EXP_MSG_INDONESIA), 2, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_OVERPRICE_MAX), 2, true, false, 0, "Message", 280, 120, 0);
       FormatGroupedInteger(1000000000, text, sizeof(text));
       this->zenyEdit->SetText(text);
       this->SetZeny(1000000000);

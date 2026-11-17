@@ -158,26 +158,26 @@ void UIAccountLimitedToolWnd::OnCreate(int, int) {
 // OFFSET: 0x0094CF50
 // FUNCTION: fn_12901
 void UIAccountLimitedToolWnd::Paint() {
-  this->DrawTitleBar(false, LookupMessage(MSI_ACCOUNT_LIMITED_TOOL_SELL_COUNT), 0);
+  this->DrawTitleBar(false, LookupMessage(MSI_ACCOUNT_LIMITED_TOOL_TITLE), 0);
   this->DrawPanelBackground(17, 0, "");
-  this->DrawTextAt(5, 28, LookupMessage(MSI_ACCOUNT_LIMITED_TOOL_SELL_STARTTIME), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(5, 50, LookupMessage(MSI_ACCOUNT_LIMITED_TOOL_SELL_ENDTIME), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(5, 28, LookupMessage(MSI_ACCOUNT_LIMITED_DB_NAME), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(5, 50, LookupMessage(MSI_ACCOUNT_LIMITED_TOOL_DB_NUMBER), 0, 0, 12, 0, 0, 0);
   this->FillRegion(3, 70, this->geometry.width - 6, 2, 0x99938A);
-  this->DrawTextAt(5, 80, LookupMessage(MSI_ACCOUNT_LIMITED_SALE_ITEM), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(5, 102, LookupMessage(MSI_ACCOUNT_LIMITED_SALE_ITEM_START_DATE), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(5, 80, LookupMessage(MSI_ACCOUNT_LIMITED_TOOL_SELL_COUNT), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(5, 102, LookupMessage(MSI_ACCOUNT_LIMITED_TOOL_SELL_STARTTIME), 0, 0, 12, 0, 0, 0);
   this->DrawTextAt(117, 102, "/", 0, 0, 12, 0, 0, 0);
   this->DrawTextAt(152, 102, "/", 0, 0, 12, 0, 0, 0);
   this->DrawTextAt(187, 102, "(YY/MM/DD)", 0, 0, 12, 0, 0, 0);
   this->DrawTextAt(296, 102, ":", 0, 0, 12, 0, 0, 0);
   this->DrawTextAt(335, 102, "(HH:MM)", 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(5, 124, LookupMessage(MSI_ACCOUNT_LIMITED_SALE_ITEM_NUM), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(5, 124, LookupMessage(MSI_ACCOUNT_LIMITED_TOOL_SELL_ENDTIME), 0, 0, 12, 0, 0, 0);
   this->DrawTextAt(117, 124, "/", 0, 0, 12, 0, 0, 0);
   this->DrawTextAt(152, 124, "/", 0, 0, 12, 0, 0, 0);
   this->DrawTextAt(187, 124, "(YY/MM/DD)", 0, 0, 12, 0, 0, 0);
   this->DrawTextAt(296, 124, ":", 0, 0, 12, 0, 0, 0);
   this->DrawTextAt(335, 124, "(HH:MM)", 0, 0, 12, 0, 0, 0);
   this->FillRegion(3, 144, this->geometry.width - 6, 2, 0x99938A);
-  this->DrawTextAt(5, 154, LookupMessage(MSI_ZEROQUEST_QUESTVIEWWND_ON), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(5, 154, LookupMessage(MSI_ACCOUNT_LIMITED_TOOL_RENT_TIME), 0, 0, 12, 0, 0, 0);
   this->DrawTextAt(172, 154, "(DD)", 0, 0, 12, 0, 0, 0);
   this->DrawTextAt(278, 154, ":", 0, 0, 12, 0, 0, 0);
   this->DrawTextAt(322, 154, "(HH:MM)", 0, 0, 12, 0, 0, 0);
@@ -192,7 +192,7 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     switch (argument1) {
     case 2:
       if (argument2 == 1) {
-        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARGAINSALE_CASHSHOP_REFRESH_BTN_TOOLTIP)), 60, 0, 0);
+        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARGAINSALE_TOOLWND_DELETE_FAILED_MSG)), 60, 0, 0);
         UITextViewer* viewer = this->m_viewer;
         if (viewer->verticalOverflow != 0) {
           const int lineCount = viewer->LineCount();
@@ -200,7 +200,7 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         }
       } else {
         this->m_viewer->SendMsg(
-          nullptr, 29, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_BARGAINSALE_CASHSHOP_TIMER), this->m_edits[0]->Text()).c_str()), 60, 0, 0
+          nullptr, 29, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_BARGAINSALE_TOOLWND_DELETE_SUCCESS_MSG), this->m_edits[0]->Text()).c_str()), 60, 0, 0
         );
         UITextViewer* viewer = this->m_viewer;
         if (viewer->verticalOverflow != 0) {
@@ -228,7 +228,7 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     case 1:
       switch (argument2) {
       case 3: {
-        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARGAINSALE_TOOLWND_DELETE_SUCCESS_MSG)), 60, 0, 0);
+        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARGAINSALE_TOOLWND_APPLY_FAILED_MSG)), 60, 0, 0);
         UITextViewer* viewer = this->m_viewer;
         if (viewer->verticalOverflow != 0) {
           const int lineCount = viewer->LineCount();
@@ -243,7 +243,7 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
         break;
       }
       case 1: {
-        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARGAINSALE_TOOLWND_DELETE_SUCCESS_MSG)), 60, 0, 0);
+        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARGAINSALE_TOOLWND_APPLY_FAILED_MSG)), 60, 0, 0);
         UITextViewer* viewer = this->m_viewer;
         if (viewer->verticalOverflow != 0) {
           const int lineCount = viewer->LineCount();
@@ -259,12 +259,12 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       }
       case 0: {
         const std::string text = FormatOwnedString(
-          LookupMessage(MSI_RETRY_AFTER_PROCESS), this->m_edits[0]->Text(), std::atoi(this->m_edits[1]->Text()), std::atoi(this->m_edits[3]->Text()),
+          LookupMessage(MSI_ACCOUNT_LIMITED_TOOL_RESULT_NEWFORMAT), this->m_edits[0]->Text(), std::atoi(this->m_edits[1]->Text()), std::atoi(this->m_edits[3]->Text()),
           std::atoi(this->m_edits[4]->Text()), std::atoi(this->m_edits[5]->Text()), std::atoi(this->m_edits[6]->Text()), std::atoi(this->m_edits[7]->Text()),
           std::atoi(this->m_edits[8]->Text()), std::atoi(this->m_edits[9]->Text()), std::atoi(this->m_edits[10]->Text()), std::atoi(this->m_edits[11]->Text())
         );
         this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text.c_str()), 60, 0, 0);
-        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARGAINSALE_TOOLWND_DELETE_FAILED_MSG)), 60, 0, 0);
+        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARGAINSALE_TOOLWND_APPLY_SUCCESS_MSG)), 60, 0, 0);
         UITextViewer* viewer = this->m_viewer;
         if (viewer->verticalOverflow != 0) {
           const int lineCount = viewer->LineCount();
@@ -316,7 +316,7 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     case ID_SEARCH: {
       const std::string name = this->m_edits[0]->Text();
       if (name.empty()) {
-        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARGAINSALE_TOOLWND_APPLY_SUCCESS_MSG)), 60, 0, 0);
+        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARGAINSALE_TOOLWND_INPUT_ITEMDBNAME_MSG)), 60, 0, 0);
         UITextViewer* viewer = this->m_viewer;
         if (viewer->verticalOverflow != 0) {
           const int lineCount = viewer->LineCount();
@@ -334,7 +334,7 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     }
     case 561: {
       if (std::atoi(this->m_edits[1]->Text()) <= 0) {
-        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARGAINSALE_TOOLWND_INPUT_PERIODTIME_MSG)), 60, 0, 0);
+        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARGAINSALE_TOOLWND_INPUT_COUNT_MSG)), 60, 0, 0);
         UITextViewer* viewer = this->m_viewer;
         if (viewer->verticalOverflow != 0) {
           const int lineCount = viewer->LineCount();
@@ -347,7 +347,7 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       const AccountLimitedRange ranges[5] = {{23, 999}, {1, 12}, {1, 31}, {0, 23}, {0, 59}};
       for (int i = 2; i <= 11; ++i) {
         if (this->m_edits[i]->Length() == 0) {
-          this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARGAINSALE_TOOLWND_INPUT_ITEMDBNAME_MSG)), 60, 0, 0);
+          this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARGAINSALE_TOOLWND_INPUT_STARTTIME_MSG)), 60, 0, 0);
           UITextViewer* viewer = this->m_viewer;
           if (viewer->verticalOverflow != 0) {
             const int lineCount = viewer->LineCount();
@@ -358,7 +358,7 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 
           const AccountLimitedRange& range = ranges[i % 5 - 2];
           if (std::atoi(this->m_edits[i]->Text()) < range.minimum || std::atoi(this->m_edits[i]->Text()) > range.maximum) {
-            this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARGAINSALE_TOOLWND_ITEMID_CHECK_FAILED_MSG)), 60, 0, 0);
+            this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARGAINSALE_TOOLWND_WRONG_RANGE_MSG)), 60, 0, 0);
             UITextViewer* rangeViewer = this->m_viewer;
             if (rangeViewer->verticalOverflow != 0) {
               const int lineCount = rangeViewer->LineCount();
@@ -371,7 +371,7 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       }
 
       if (std::atoi(this->m_edits[12]->Text()) > 14) {
-        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ZEROQUEST_QUESTVIEWWND_OFF)), 60, 0, 0);
+        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ACCOUNT_LIMITED_TOOL_RENT_TIME_MAX_14DAY)), 60, 0, 0);
         this->m_edits[12]->SelectAll();
         return 0;
       }

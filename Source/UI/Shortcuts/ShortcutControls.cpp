@@ -27,7 +27,7 @@ void UIShortCutWnd::OnCreate(int, int) {
   this->m_bank->SetId(549);
   this->m_bank->Move(3, 4);
   this->m_bank->SetChecked(static_cast<int>(g_session.m_options.Get(10)));
-  this->m_bank->SetTooltip(LookupMessage(MSI_HOTKEYGUIDEWND_RIGHT));
+  this->m_bank->SetTooltip(LookupMessage(MSI_CHANGE_SKILLBER));
   this->AddChild(this->m_bank);
 
   this->m_decrease = new UIBitmapButton();

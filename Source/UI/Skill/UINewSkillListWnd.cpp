@@ -924,10 +924,10 @@ void UINewSkillListWnd::Paint() {
     const int total = g_session.m_skillPoint;
     if (points < total) {
       const int remaining = total - points;
-      const char* label = LookupMessage(MSI_REFUSE_CHANGE_PASSWD_SITE);
+      const char* label = LookupMessage(MSI_SKILLPOINT2);
       StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%s^0000ff%d^000000(^ff0000%d^000000) / %d", label, points, remaining, total);
     } else {
-      const char* label = LookupMessage(MSI_REFUSE_CHANGE_PASSWD_SITE);
+      const char* label = LookupMessage(MSI_SKILLPOINT2);
       StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%s%d", label, total);
     }
     this->DrawWrappedFormattedText(80, this->geometry.height - 23, std::string(text), 0, 0, 0, 0, 12, 0, 0);
@@ -1549,7 +1549,7 @@ bool UINewSkillListWnd::IncreaseSkillLevel(int skillId) {
 
       if (static_cast<int>(info->canPlanLevel) <= 0) {
         const char* name = info->DisplayName();
-        const char* format = LookupMessage(MSI_REFUSE_LOGIN_AUTH);
+        const char* format = LookupMessage(MSI_ADDSKILL_FAIL_INCLUDE_SKILL_YOU_CANNOT_LEARN);
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatString(format, name)), 0xFF, 0, 0, 0);
         return false;
       }

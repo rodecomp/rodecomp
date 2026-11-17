@@ -306,10 +306,10 @@ void UIRuneSetReWard::OnLBtnUp(int x, int y) {
   }
 
   if (this->m_state == 3) {
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_STORE_PASSWORD_ONOFF_MSG)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_REWARD_COMPLETE)), 0xFF, 0, 0, 0);
   }
   if (this->m_state == 0) {
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CASHSHOP_PASSWORD_ONOFF_MSG)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_REWARD_EMPTY)), 0xFF, 0, 0, 0);
   }
 
   if (this == g_windowMgr.Capture()) {
@@ -702,7 +702,7 @@ void UIRuneSet_Info::RefreshDescription() {
     }
 
     const bool reached = activeCount >= count;
-    this->m_infoList->AddLine(FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_EQUIP_PUTERR), count).c_str(), reached ? 0xFF7B00 : 0xB0A29A, true);
+    this->m_infoList->AddLine(FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_RUNESET_DESC), count).c_str(), reached ? 0xFF7B00 : 0xB0A29A, true);
     this->m_infoList->AddLine(std::string(), 0, false);
     for (int index = 0; index < lineCount; ++index) {
       this->m_infoList->AddLine(this->m_runeSet->m_descriptions[count - 1][index].c_str(), reached ? 0 : 0xB0A29A, false);
@@ -1012,7 +1012,7 @@ void UIRuneSystemWnd::Paint() {
     0, this->geometry.height - 36,
     static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\runesystem\\bg_left_down.bmp").c_str()))), false
   );
-  this->DrawTitleBar(true, LookupMessage(MSI_ADVENTURE_GUIDE), 0);
+  this->DrawTitleBar(true, LookupMessage(MSI_RUNESYSTEM_TITLE), 0);
 }
 
 // OFFSET: 0x0081E3F0
@@ -1115,7 +1115,7 @@ void UIEquipRuneSetWnd::Paint() {
   }
 
   titleX += 2;
-  const std::string title = FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_RUNE_FAILDESC), runeSet->GetName());
+  const std::string title = FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_RUNESET_TITLE), runeSet->GetName());
   this->DrawTextAt(titleX, 12, title.c_str(), 0, 0, 13, 0xFCDEE6, 1, 0);
   this->DrawTextAt(titleX, 11, title.c_str(), 0, 0, 13, 0x864D43, 1, 0);
   const std::string tag = FormatOwnedString("유저인터페이스\\runesystem\\tag\\bt_tag_%d_equip.bmp", runeSet->GetTagId());
@@ -1160,7 +1160,7 @@ void UIRuneList::Paint() {
     const std::string background = FormatOwnedString("유저인터페이스\\runesystem\\list_rune_item_%d_%d.bmp", active, index == this->m_selected);
     this->DrawBitmap(0, y, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background.c_str()))), true);
     this->DrawRuneIcon(18, y + 6, rune->GetResName(), active);
-    const std::string name = FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_RUNE_UPGRADEMAXDESC), rune->GetName());
+    const std::string name = FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_RUNE_TITLE), rune->GetName());
     this->DrawTextAt(62, y + 9, name.c_str(), 0, 0, 12, 0, 0, 0);
   }
   this->DrawScrollBar(true);
@@ -1192,7 +1192,7 @@ void UIRuneSetList::Paint() {
       }
     }
 
-    const std::string title = FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_RUNE_FAILDESC), runeSet->GetName());
+    const std::string title = FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_RUNESET_TITLE), runeSet->GetName());
     const int titleWidth = this->TextWidth(title.c_str(), title.size(), 0, 12, 0, 0);
     std::string grade;
     int gradeWidth = 0;
@@ -1588,7 +1588,7 @@ int UIRuneSet_Info::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       UIRuneSystemTab* tab = this->m_tab;
       tab->geometry.state = 0;
       tab->Invalidate();
-      g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_TITLE), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_RUNE_UNACTIVEDESC), 0, true, false, 0, "Message", 280, 120, 0);
     }
     this->Refresh();
     break;
@@ -1615,21 +1615,21 @@ int UIRuneSet_Info::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     case RUNE_BUTTON_REWARD_6:
     case RUNE_BUTTON_REWARD_7:
       if (!this->m_runeSet->IsRewardStep(argument1 - RUNE_BUTTON_REWARD_1)) {
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_REWARD_TITLE)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_REWARD_NOTMET)), 0xFF, 0, 0, 0);
       } else {
         CRuneSystemMgr::GetInstance()->SendRequest(ID_CZ_RUNESET_REQ_REWARD, this->m_runeSet, argument1 - 0x24D);
       }
       break;
     case RUNE_BUTTON_ACTIVATE:
       if (!this->m_runeSet) {
-        g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_EQUIP_NOT), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_RUNE_RUNE_NULL), 0, true, false, 0, "Message", 280, 120, 0);
       } else if (!this->parent || this->parent->SendMsg(this, 0x6A, 100, 0, 0, 0) != 0) {
         CRuneSystemMgr::GetInstance()->SendRequest(ID_CZ_RUNESET_REQ_ACTIVATE, this->m_runeSet, -1);
       }
       break;
     case RUNE_BUTTON_GRADE:
       if (!this->m_runeSet) {
-        g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_EQUIP_NOT), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_RUNE_RUNE_NULL), 0, true, false, 0, "Message", 280, 120, 0);
       } else if (!this->parent || this->parent->SendMsg(this, 0x6A, 100, 0, 0, 0) != 0) {
         CRuneSystemMgr::GetInstance()->SendRequest(ID_CZ_RUNESET_REQ_UPGRADE, this->m_runeSet, -1);
       }
@@ -1736,7 +1736,7 @@ int UIRune_Decom::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
         if (static_cast<float>(g_session.m_weight) > static_cast<float>(g_session.m_maxWeight) * 0.7f ||
             g_session.GetNumInventoryItems() + g_session.CountDistinctEquippedItems() + g_session.CountDistinctCostumeItems() + 8 >=
               g_session.extraInventorySlots + 100) {
-          g_windowMgr.Confirm(LookupMessage(MSI_MACRO_USER_REPORT), 0, true, false, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_FAILED_ITEMCREATE), 0, true, false, 0, "Message", 280, 120, 0);
         } else {
           ITEM_INFO item = g_session.LookupClientItem(this->m_itemId, 0);
           RuneDecomRequestPacket packet;
@@ -1777,7 +1777,7 @@ void UIRune_Decom::OnCreate(int, int) {
     this->m_radioButtons[index] = new UIRuneSystem_Decom_RadioBtn();
     this->m_radioButtons[index]->SetSize(0x68, 0x0E);
     this->m_radioButtons[index]->Move(x, 0x153);
-    const std::string text = FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_NOT_EXIST), CRuneSystemMgr::GetInstance()->GetDecomItem(index));
+    const std::string text = FormatOwnedString(LookupMessage(MSI_DECOM_NUM), CRuneSystemMgr::GetInstance()->GetDecomItem(index));
     this->m_radioButtons[index]->SetText(text.c_str());
     this->m_radioButtons[index]->SendMsg(this, UM_SETSTATE, index, 0, 0, 0);
     this->m_radioButtons[index]->SetBitmaps("유저인터페이스\\runesystem\\btn_radio_on.bmp", "유저인터페이스\\runesystem\\btn_radio_off.bmp");
@@ -1856,7 +1856,7 @@ void UIRuneSystemWnd::OnCreate(int, int) {
   this->m_runeDecom->SetSize(0x273, 0x20A);
   this->m_runeDecom->Move(0x11B, 0x11);
 
-  this->AddCloseButton(LookupMessage(MSI_ZENY_LOTTO_BUY_10), 0);
+  this->AddCloseButton(LookupMessage(MSI_CLOSE), 0);
   this->SelectTab();
   g_session.CollectCardItems();
 }
@@ -1914,7 +1914,7 @@ void UIRuneSet_Info::OnCreate(int, int) {
   this->m_gradeText = new UIStaticText();
   this->AddChild(this->m_gradeText);
   this->m_gradeText->SetSize(0x89, 0x7F);
-  const std::string gradeTitle = LookupMessage(MSI_RUNESYSTEM_RUNE_UNACTIVEDESC);
+  const std::string gradeTitle = LookupMessage(MSI_RUNESYSTEM_RUNE_UPGRADEPER);
   this->m_gradeText->SetText(gradeTitle.c_str(), 1);
   this->m_gradeText->SetColor(0xFF, 0xFF, 0xFF);
   const int titleWidth = this->TextWidth(gradeTitle.c_str(), 0, 0, 12, 0, 0);
@@ -2066,8 +2066,8 @@ void UIRuneSet_Info::Paint() {
       const std::string collection = std::format("유저인터페이스\\collection\\{}.bmp", resource);
       this->DrawBitmap(0x188, 0xE1, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(collection.c_str()))), true);
       if (0 != this->m_runeSet->m_reward.values[0]) {
-        this->DrawTextAt(0x1BC, 0x30, LookupMessage(MSI_REMOVE_HEAD_COLOR), 0, 0, 13, 0xFFF0E1, 1, 0);
-        this->DrawTextAt(0x1BC, 0x31, LookupMessage(MSI_REMOVE_HEAD_COLOR), 0, 0, 13, 0x864D43, 1, 0);
+        this->DrawTextAt(0x1BC, 0x30, LookupMessage(MSI_RUNESYSTEM_REWARD_TITLE), 0, 0, 13, 0xFFF0E1, 1, 0);
+        this->DrawTextAt(0x1BC, 0x31, LookupMessage(MSI_RUNESYSTEM_REWARD_TITLE), 0, 0, 13, 0x864D43, 1, 0);
       }
     }
   } else {
@@ -2075,16 +2075,16 @@ void UIRuneSet_Info::Paint() {
       0x179, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\runesystem\\bg_runeset_upgrade.bmp"))), true
     );
     if (this->m_runeSet->m_grade < 15) {
-      path = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_RUNE_RUNE_NULL), static_cast<double>(static_cast<float>(CRuneSystemMgr::GetInstance()->GetGradeFailValue(this->m_runeSet)) * 0.001f)));
+      path = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_RUNE_FAILDESC), static_cast<double>(static_cast<float>(CRuneSystemMgr::GetInstance()->GetGradeFailValue(this->m_runeSet)) * 0.001f)));
     } else {
-      path = LookupMessage(MSI_RUNESYSTEM_RUNESET_DESC);
+      path = LookupMessage(MSI_RUNESYSTEM_RUNE_UPGRADEMAXDESC);
     }
     const int width = this->TextWidth(path.c_str(), path.size(), 0, 12, 0, 0);
     this->DrawTextAt(0x1F5 - static_cast<int>(static_cast<float>(width) * 0.5f), 0x103, path.c_str(), 0, 0, 12, 0, 0, 0
     );
   }
 
-  const std::string title = FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_RUNE_FAILDESC), this->m_runeSet->GetName());
+  const std::string title = FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_RUNESET_TITLE), this->m_runeSet->GetName());
   const int titleWidth = this->TextWidth(title.c_str(), title.size(), 0, 13, 1, 0);
   int x = static_cast<int>(186.0f - static_cast<float>(titleWidth) * 0.5f);
   if (this->m_runeSet->m_grade) {
@@ -2310,9 +2310,9 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       break;
     case ID_EQUIP:
       if (CRuneSystemMgr::GetInstance()->GetCurRuneSet()) {
-        g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_DURING_CANNOT_OPEN_BANKING), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_EQUIP_PUTERR), 0, true, false, 0, "Message", 280, 120, 0);
       } else if (!argument2) {
-        g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_RUNE_UPGRADEPER), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_EQUIP_NOTPUT), 0, true, false, 0, "Message", 280, 120, 0);
       } else {
         RuneData* rune = reinterpret_cast<RuneData*>(argument2);
         RuneSetEquipPacket packet;
@@ -2325,8 +2325,8 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     case RUNE_BUTTON_UNEQUIP: {
       RuneSetData* runeSet = CRuneSystemMgr::GetInstance()->GetCurRuneSet();
       if (!runeSet) {
-        g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_DURING_CANNOT_OPEN_RODEX), 0, true, false, 0, "Message", 280, 120, 0);
-      } else if (g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_RUNE_TITLE), 2, true, false, 0, "Message", 280, 120, 0) != 0xBC) {
+        g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_EQUIP_NOT), 0, true, false, 0, "Message", 280, 120, 0);
+      } else if (g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_EQUIP_OUT), 2, true, false, 0, "Message", 280, 120, 0) != 0xBC) {
         RuneSetEquipPacket packet;
         packet.id = ID_CZ_RUNESET_REQ_EQUIP;
         packet.tagId = static_cast<std::uint16_t>(runeSet->GetTagId());

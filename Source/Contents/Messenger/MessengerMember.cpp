@@ -842,8 +842,8 @@ void UIMessengerGroupWnd::OnCreate(int, int) {
       LookupMessage(MSI_LOCK_MOUSE), LookupMessage(MSI_UNLOCK_MOUSE), LookupMessage(MSI_CREATE_PARTY), LookupMessage(MSI_WITHDRAW_PARTY), LookupMessage(MSI_INVITE_PARTY),
     };
     const char* partyTooltips[11] = {
-      LookupMessage(MSI_CANNOT_MORE_SELECT_JOB), LookupMessage(MSI_1ON1),  LookupMessage(MSI_CHARACTER_INFO),  LookupMessage(MSI_PARTY_SETTING),  LookupMessage(MSI_EXPEL),  LookupMessage(MSI_LOCK_MOUSE),
-      LookupMessage(MSI_UNLOCK_MOUSE), LookupMessage(MSI_CREATE_PARTY), LookupMessage(MSI_WITHDRAW_PARTY), LookupMessage(MSI_INVITE_PARTY), LookupMessage(MSI_FAILED_ALL_RODEX_LIST),
+      LookupMessage(MSI_ADVENTURER_AGENCY), LookupMessage(MSI_1ON1),  LookupMessage(MSI_CHARACTER_INFO),  LookupMessage(MSI_PARTY_SETTING),  LookupMessage(MSI_EXPEL),  LookupMessage(MSI_LOCK_MOUSE),
+      LookupMessage(MSI_UNLOCK_MOUSE), LookupMessage(MSI_CREATE_PARTY), LookupMessage(MSI_WITHDRAW_PARTY), LookupMessage(MSI_INVITE_PARTY), LookupMessage(MSI_SORT_MINIPARTY),
     };
     unsigned char disabled[11] = {1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0};
     this->hiddenButtons[0] = 0;
@@ -1042,7 +1042,7 @@ void UIMessengerGroupWnd::Paint() {
       memset(path, 0, sizeof(path));
       sprintf(path, "%sbg_partymember.bmp", prefix.c_str());
       auto* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
-      this->DrawTextAt(this->geometry.width - 96, this->geometry.height - 16, LookupMessage(MSI_CONNECT_SNS_FAIL_CUZ_NOT_CONNECTING), 0, 0, 12, 0, 0, 0
+      this->DrawTextAt(this->geometry.width - 96, this->geometry.height - 16, LookupMessage(MSI_PARTYMEMBER), 0, 0, 12, 0, 0, 0
       );
       this->DrawBitmap(this->geometry.width - 58, this->geometry.height - 18, background, true);
 
@@ -1541,7 +1541,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     if (this->selected != -1) {
       if (this->mode == 0) {
         this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_OPEN_1ON1_WINDOW)).c_str(), 7));
-        this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_USA_PERSONALINFO_DEATH)).c_str(), 0x3A));
+        this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_SEND_RODEX)).c_str(), 0x3A));
         this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_DELETE)).c_str(), 0x13));
         MessengerMember member = this->MemberAtIndex(this->selected);
         if (member.valid && !member.offline && g_session.partyLeader
@@ -1553,7 +1553,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       } else {
         MessengerMember member = this->MemberAtIndex(this->selected);
         if (member.valid) {
-          this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_USA_PERSONALINFO_DEATH)).c_str(), 0x3A));
+          this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_SEND_RODEX)).c_str(), 0x3A));
           if (member.name == g_session.DecodePlayerName()) {
             this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_LEAVE_PARTY)).c_str(), 9));
           } else {
@@ -1564,8 +1564,8 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
             }
           }
           if (!member.offline) {
-            this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_DATE_MM_DD)).c_str(), 0x3C));
-            this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_ACHIEVEMENT_NEXT_GRADE)).c_str(), 0x3D));
+            this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_ADD_MINI_PARTYWND)).c_str(), 0x3C));
+            this->menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_DELETE_MINI_PARTYWND)).c_str(), 0x3D));
           }
         }
       }
@@ -1589,7 +1589,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     }
     MessengerMember member = this->MemberAtIndex(this->selected);
     if (member.name.find(g_messengerNamelessTag, 0) != std::string::npos) {
-      g_windowMgr.Confirm(LookupMessage(MSI_CHR_DELETE_FAIL_CHN_TAREN_PERSONALNUMBER), 0, true, false, 0, "Message", 0x118, 0x78, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_CALLING_USERNAME), 0, true, false, 0, "Message", 0x118, 0x78, 0);
       return 0;
     }
     if (!member.valid) {

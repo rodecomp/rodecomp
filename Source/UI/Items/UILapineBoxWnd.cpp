@@ -244,25 +244,25 @@ bool UILapineBox_IngredientListWnd::CanUseIngredient(std::uint32_t identity) {
   }
 
   if (material->quantity > item.quantity) {
-    this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_INPUT_FREE_MESSAGE), material->quantity).c_str()), 0, 0, 0);
+    this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_LAPINE_FAIL_NOT_ENOUGH_ITEM_COUNT), material->quantity).c_str()), 0, 0, 0);
     return false;
   }
   if (this->minRefine > item.refiningLevel) {
-    this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CAPTCHA_INPUT_ANSWER)), 0, 0, 0);
+    this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_LAPINE_FAIL_NOT_ENOUGH_REFINING_LEVEL)), 0, 0, 0);
     return false;
   }
   if (this->maxRefine < item.refiningLevel) {
-    this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_COUNT_INFINITY)), 0, 0, 0);
+    this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_LAPINE_FAIL_REFINING_LEVEL_OVERFLOW_NEEDED)), 0, 0, 0);
     return false;
   }
   if (this->minRefine != 0 && this->minRefine < item.refiningLevel) {
-    this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEMSHOP_CURRENCY)), 0, 0, 0);
+    this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_LAPINE_WARNING_REFINING_LEVEL_HIGHER_THAN_NEEDED)), 0, 0, 0);
   }
 
   if (item.IsEquipment() == true && !item.IsApprenticeItem() && !item.HasSpecialCard()) {
     for (int index = 0; index < item.SlotCount(); ++index) {
       if (index < 4 && static_cast<int>(item.cards[index]) > 0) {
-        this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PURCHASEWND_TOTAL)), 0, 0, 0);
+        this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_LAPINE_WARNING_HAS_CARD_OR_ENCHANTED)), 0, 0, 0);
         return true;
       }
     }
@@ -447,12 +447,12 @@ int UILapineBox_IngredientListWnd::SendMsg(UIWindow* sender, int message, std::i
 
     const int need = found->quantity;
     if (need > selected->item.quantity) {
-      this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_INPUT_FREE_MESSAGE), found->quantity).c_str()), 0, 0, 0);
+      this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_LAPINE_FAIL_NOT_ENOUGH_ITEM_COUNT), found->quantity).c_str()), 0, 0, 0);
       return -1;
     }
 
     if (found->refiningLevel > selected->item.refiningLevel) {
-      this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CAPTCHA_INPUT_ANSWER)), 0, 0, 0);
+      this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_LAPINE_FAIL_NOT_ENOUGH_REFINING_LEVEL)), 0, 0, 0);
       return -1;
     }
 
@@ -562,7 +562,7 @@ void UIIngredientInfoWnd::SetIngredientItem(std::uint32_t id) {
     this->BuildItemName(&this->item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
 
     if (this->item.identified == 1 && this->item.optionCount != 0) {
-      sprintf_s(name, sizeof(name), LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), name, this->item.optionCount);
+      sprintf_s(name, sizeof(name), LookupMessage(MSI_EA6), name, this->item.optionCount);
     }
 
     this->item.SetName(name);

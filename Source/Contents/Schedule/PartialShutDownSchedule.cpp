@@ -79,7 +79,7 @@ void CPartialShutDownSchedule::Process(const std::uint64_t& now) {
     char text[256];
     std::memset(text, 0, 255);
     int secondsPerHour = 3600;
-    std::sprintf(text, LookupMessage(MSI_MENU_WEBBROWSERWND), seconds / secondsPerHour, (seconds % secondsPerHour) / 60);
+    std::sprintf(text, LookupMessage(MSI_PARTIAL_SHOUTDOWN_TIME), seconds / secondsPerHour, (seconds % secondsPerHour) / 60);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);
     return;
   }
@@ -89,7 +89,7 @@ void CPartialShutDownSchedule::Process(const std::uint64_t& now) {
       char text[256];
       std::memset(text, 0, 255);
       std::sprintf(
-        text, LookupMessage(MSI_MENU_MACROWND), this->endTime->Year(), this->endTime->Month(), this->endTime->Day(), this->endTime->Hour(), this->endTime->Minute(),
+        text, LookupMessage(MSI_SHOUTDOWN_TIME), this->endTime->Year(), this->endTime->Month(), this->endTime->Day(), this->endTime->Hour(), this->endTime->Minute(),
         this->endTime->Second()
       );
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF, 0, 0, 0);

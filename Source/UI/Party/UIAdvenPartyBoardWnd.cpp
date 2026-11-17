@@ -76,7 +76,7 @@ void UIRegisterPartyWnd::OnCreate(int, int) {
   auto* title = new UIStaticText();
   title->SetSize(40, 15);
   title->Move(10, 23);
-  title->SetText(LookupMessage(MSI_ADVENTURER_AGENCY_REGIST_SUCCESSED), 0);
+  title->SetText(LookupMessage(MSI_PARTY_MASTER), 0);
   title->SetColor(0, 0, 0);
   this->AddChild(title);
 
@@ -120,7 +120,7 @@ void UIRegisterPartyWnd::OnCreate(int, int) {
   auto* typeLabel = new UIStaticText();
   typeLabel->SetSize(this->geometry.width, 15);
   typeLabel->Move(10, 73);
-  typeLabel->SetText(LookupMessage(MSI_INCLUDE_BAD_WORD), 0);
+  typeLabel->SetText(LookupMessage(MSI_ADVEN_PURPOSE), 0);
   typeLabel->SetColor(0, 0, 0);
   this->AddChild(typeLabel);
   auto* roleLabel = new UIStaticText();
@@ -135,7 +135,7 @@ void UIRegisterPartyWnd::OnCreate(int, int) {
   const char* images[] = {"btn_job_def_on", "btn_job_def_off", "btn_job_heal_on", "btn_job_heal_off",
                           "btn_job_atk_on", "btn_job_atk_off", "btn_job_buf_on", "btn_job_buf_off"};
   const std::string path = "유저인터페이스\\UIadventurerAgency\\";
-  const char* tooltips[] = {LookupMessage(MSI_EXPLAIN_CHAT_UNBLOCK), LookupMessage(MSI_CANNOT_FIND_PARTYMASTER), LookupMessage(MSI_QUESTWND_LOWER), LookupMessage(MSI_EXPAND_SIGHT_ON)};
+  const char* tooltips[] = {LookupMessage(MSI_ADVEN_TANKER), LookupMessage(MSI_ADVEN_HEALER), LookupMessage(MSI_ADVEN_DEARER), LookupMessage(MSI_ADVEN_ASSIST)};
 
   for (int index = 0; index < 4; ++index) {
     this->jobs[index] = new UIJobSlotButton();
@@ -151,7 +151,7 @@ void UIRegisterPartyWnd::OnCreate(int, int) {
   auto* memoLabel = new UIStaticText();
   memoLabel->SetSize(this->geometry.width - 32, 15);
   memoLabel->Move(10, 121);
-  memoLabel->SetText(LookupMessage(MSI_ADVEN_DUNJUN), 0);
+  memoLabel->SetText(LookupMessage(MSI_ADVEN_MEMO), 0);
   memoLabel->SetColor(0, 0, 0);
   this->AddChild(memoLabel);
   this->memo = new UIEditCtrl2();
@@ -164,14 +164,14 @@ void UIRegisterPartyWnd::OnCreate(int, int) {
 
   if (g_adventurerAgencyMgr->registered == true) {
     this->change = new UIBasicButton();
-    this->change->Configure(this->TextWidth(LookupMessage(MSI_LOGIN), 0, 0, 12, 0, 0) + 10, LookupMessage(MSI_LOGIN));
+    this->change->Configure(this->TextWidth(LookupMessage(MSI_ADVEN_REWRITE), 0, 0, 12, 0, 0) + 10, LookupMessage(MSI_ADVEN_REWRITE));
     this->change->Move(108, 165);
     this->change->SetId(ID_EDIT_OWN_PARTY_LISTING);
     this->m_message0 = 564;
     this->AddChild(this->change);
   } else {
     this->recruit = new UIBasicButton();
-    this->recruit->Configure(this->TextWidth(LookupMessage(MSI_CHAT_WITH_PARTYMASTER), 0, 0, 12, 0, 0) + 10, LookupMessage(MSI_CHAT_WITH_PARTYMASTER));
+    this->recruit->Configure(this->TextWidth(LookupMessage(MSI_ADVEN_REGISTER), 0, 0, 12, 0, 0) + 10, LookupMessage(MSI_ADVEN_REGISTER));
     this->recruit->Move(108, 165);
     this->recruit->SetId(ID_REGISTER_PARTY_LISTING);
     this->m_message0 = 565;
@@ -179,7 +179,7 @@ void UIRegisterPartyWnd::OnCreate(int, int) {
   }
 
   std::vector<std::string> lines;
-  WrapPlainText(LookupMessage(MSI_ASK_JOIN), lines, 40);
+  WrapPlainText(LookupMessage(MSI_ADVEN_WARNING_TEXT), lines, 40);
   int y = 136;
 
   for (const auto& line : lines) {
@@ -207,14 +207,14 @@ void UIRegisterPartyWnd::OnCreate(int, int) {
   this->types->SetSize(63, 18);
   this->types->Move(60, 70);
   this->AddChild(this->types);
-  this->types->AddOption(LookupMessage(MSI_ACCOUNT), 0);
+  this->types->AddOption(LookupMessage(MSI_ALL_AREA), 0);
 
+  this->types->AddOption(LookupMessage(MSI_ADVEN_QUEST), 0);
+  this->types->AddOption(LookupMessage(MSI_ADVEN_FIELD), 0);
+  this->types->AddOption(LookupMessage(MSI_ADVEN_DUNJUN), 0);
   this->types->AddOption(LookupMessage(MSI_ADVEN_MD), 0);
   this->types->AddOption(LookupMessage(MSI_ADVEN_EDEN_GROUP), 0);
   this->types->AddOption(LookupMessage(MSI_ADVEN_ETC), 0);
-  this->types->AddOption(LookupMessage(MSI_ADVEN_SEARCH), 0);
-  this->types->AddOption(LookupMessage(MSI_ADVEN_RESET), 0);
-  this->types->AddOption(LookupMessage(MSI_ADVEN_JOIN_PARTY), 0);
 
   this->types->Select(0);
   this->AddBigCloseButton("", 0);
@@ -266,7 +266,7 @@ void UIRegisterPartyWnd::Paint() {
   this->ClearSurface(0xFFFF00FF);
   this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\UIadventurerAgency\\bg_agency_register.bmp"))), false);
   this->DrawTextAt(86, 50, "~", 0, 0, 12, 0, 0, 0);
-  this->DrawTitleBar(true, LookupMessage(MSI_ADVEN_MEMO), 0);
+  this->DrawTitleBar(true, LookupMessage(MSI_REGISTER_ADVENTURER_AGENCY), 0);
 }
 
 // OFFSET: 0x007C1410
@@ -296,12 +296,12 @@ int UIRegisterPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
     case ID_REGISTER_PARTY_LISTING:
       if (g_session.partyLeader == 0) {
         char text[256] = {};
-        StringFormat(text, sizeof(text), _TRUNCATE, LookupMessage(MSI_EXPAND_SIGHT_OPTIONWND));
+        StringFormat(text, sizeof(text), _TRUNCATE, LookupMessage(MSI_NOT_PARTYMASTER_CANNOT_REGISTER_ADVENTURER_AGENCY));
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
       } else {
         if (g_forbiddenWords.Contains(this->memo->Text()) == true) {
           char text[256] = {};
-          StringFormat(text, sizeof(text), _TRUNCATE, LookupMessage(MSI_STOP_RECRUITING_PARTY));
+          StringFormat(text, sizeof(text), _TRUNCATE, LookupMessage(MSI_INCLUDE_BAD_WORD));
           g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
           return 0;
         }
@@ -309,7 +309,7 @@ int UIRegisterPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
         this->NormalizeLevels();
 
         if (std::atoi(this->minimum->Text()) > std::atoi(this->maximum->Text())) {
-          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PLEASE_REOPEN_LISTWND_AFTER_A_WHILE)), 0xFF, 0, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CHECK_LEVEL_BEFORE_REGISTER_AGENCY)), 0xFF, 0, 0, 0);
           return 0;
         }
 
@@ -360,25 +360,25 @@ void UIApplyForPartyWnd::StoreInfo() {
 // FUNCTION: fn_09299
 void UIApplyForPartyWnd::OnCreate(int, int) {
   UIBasicButton* button = new UIBasicButton();
-  button->Configure(this->TextWidth(LookupMessage(MSI_ALL_AREA), 0, 0, 12, 0, 0) + 10, LookupMessage(MSI_ALL_AREA));
+  button->Configure(this->TextWidth(LookupMessage(MSI_CHAT_WITH_PARTYMASTER), 0, 0, 12, 0, 0) + 10, LookupMessage(MSI_CHAT_WITH_PARTYMASTER));
   button->Move(51, 165);
   button->SetId(381);
   this->AddChild(button);
 
   button = new UIBasicButton();
-  button->Configure(this->TextWidth(LookupMessage(MSI_ADVEN_REWRITE), 0, 0, 12, 0, 0) + 10, LookupMessage(MSI_ADVEN_REWRITE));
+  button->Configure(this->TextWidth(LookupMessage(MSI_ASK_JOIN), 0, 0, 12, 0, 0) + 10, LookupMessage(MSI_ASK_JOIN));
   button->Move(108, 165);
   button->SetId(271);
   this->AddChild(button);
 
   button = new UIBasicButton();
-  button->Configure(this->TextWidth(LookupMessage(MSI_ZENY_LOTTO_BUY_10), 0, 0, 12, 0, 0) + 10, LookupMessage(MSI_ZENY_LOTTO_BUY_10));
+  button->Configure(this->TextWidth(LookupMessage(MSI_CLOSE), 0, 0, 12, 0, 0) + 10, LookupMessage(MSI_CLOSE));
   button->Move(173, 165);
   button->SetId(201);
   this->AddChild(button);
 
   std::vector<std::string> lines;
-  WrapPlainText(LookupMessage(MSI_ASK_JOIN), lines, 40);
+  WrapPlainText(LookupMessage(MSI_ADVEN_WARNING_TEXT), lines, 40);
 
   for (unsigned index = 0; index < lines.size(); ++index) {
     auto* label = new UIStaticText();
@@ -405,15 +405,15 @@ void UIApplyForPartyWnd::SetInfo(CAdvenPartyInfo value) {
 void UIApplyForPartyWnd::Paint() {
   this->ClearSurface(0xFFFF00FF);
   this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\UIadventurerAgency\\bg_agency_register.bmp"))), false);
-  this->DrawTitleBar(true, LookupMessage(MSI_ADVEN_REGISTER), 0);
-  this->DrawTextAt(10, 25, LookupMessage(MSI_ADVENTURER_AGENCY_REGIST_SUCCESSED), 0, 0, 12, 0, 0, 0);
+  this->DrawTitleBar(true, LookupMessage(MSI_ADVEN_JOIN_PARTY), 0);
+  this->DrawTextAt(10, 25, LookupMessage(MSI_PARTY_MASTER), 0, 0, 12, 0, 0, 0);
   const std::string fitted = this->FitTextToWidth(this->info.characterName, 119);
   this->DrawTextAt(60, 25, fitted.c_str(), 0, 0, 12, 0, 0, 0);
   this->DrawTextAt(10, 49, LookupMessage(MSI_LEVEL), 0, 0, 12, 0, 0, 0);
   char levels[10] = {};
   StringFormat(levels, sizeof(levels), _TRUNCATE, "%d~%d", this->info.minimumLevel, this->info.maximumLevel);
   this->DrawTextAt(60, 49, levels, 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(10, 73, LookupMessage(MSI_INCLUDE_BAD_WORD), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(10, 73, LookupMessage(MSI_ADVEN_PURPOSE), 0, 0, 12, 0, 0, 0);
   this->DrawTextAt(60, 73, UIPartyInfoWnd::TypeName(this->info.type), 0, 0, 12, 0, 0, 0);
   this->DrawTextAt(10, 97, LookupMessage(MSI_JOB), 0, 0, 12, 0, 0, 0);
   this->DrawBitmap(60, 95, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
@@ -424,7 +424,7 @@ void UIApplyForPartyWnd::Paint() {
       Resolve(this->info.dealer != true ? "유저인터페이스\\UIadventurerAgency\\btn_job_atk_off.bmp" : "유저인터페이스\\UIadventurerAgency\\btn_job_atk_on.bmp"))), false);
   this->DrawBitmap(114, 95, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(
       Resolve(this->info.assist != true ? "유저인터페이스\\UIadventurerAgency\\btn_job_buf_off.bmp" : "유저인터페이스\\UIadventurerAgency\\btn_job_buf_on.bmp"))), false);
-  this->DrawTextAt(10, 121, LookupMessage(MSI_ADVEN_DUNJUN), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(10, 121, LookupMessage(MSI_ADVEN_MEMO), 0, 0, 12, 0, 0, 0);
   this->DrawTextAt(60, 121, this->info.memo.c_str(), 0, 0, 12, 0, 0, 0);
 }
 
@@ -440,16 +440,16 @@ void UIApplyForPartyWnd::OnMouseHover(int x, int y) {
 
   if (left > 60 && left < 76) {
     left = 60;
-    label = LookupMessage(MSI_EXPLAIN_CHAT_UNBLOCK);
+    label = LookupMessage(MSI_ADVEN_TANKER);
   } else if (left > 78 && left < 94) {
     left = 78;
-    label = LookupMessage(MSI_CANNOT_FIND_PARTYMASTER);
+    label = LookupMessage(MSI_ADVEN_HEALER);
   } else if (left > 96 && left < 112) {
     left = 96;
-    label = LookupMessage(MSI_QUESTWND_LOWER);
+    label = LookupMessage(MSI_ADVEN_DEARER);
   } else if (left > 114 && left < 130) {
     left = 114;
-    label = LookupMessage(MSI_EXPAND_SIGHT_ON);
+    label = LookupMessage(MSI_ADVEN_ASSIST);
   }
 
   if (!label.empty()) {
@@ -563,7 +563,7 @@ void UIAdvenPartyBoardWnd::OnCreate(int, int) {
   const int positions[][2] = {{160, 23}, {178, 23}, {196, 23}, {214, 23}};
   const char* images[] = {"btn_job_def_on", "btn_job_def_off", "btn_job_heal_on", "btn_job_heal_off", "btn_job_atk_on", "btn_job_atk_off", "btn_job_buf_on", "btn_job_buf_off"};
   const std::string path = "유저인터페이스\\UIadventurerAgency\\";
-  const char* tooltips[] = {LookupMessage(MSI_EXPLAIN_CHAT_UNBLOCK), LookupMessage(MSI_CANNOT_FIND_PARTYMASTER), LookupMessage(MSI_QUESTWND_LOWER), LookupMessage(MSI_EXPAND_SIGHT_ON)};
+  const char* tooltips[] = {LookupMessage(MSI_ADVEN_TANKER), LookupMessage(MSI_ADVEN_HEALER), LookupMessage(MSI_ADVEN_DEARER), LookupMessage(MSI_ADVEN_ASSIST)};
 
   for (int index = 0; index < 4; ++index) {
     this->jobs[index] = new UIJobSlotButton();
@@ -581,7 +581,7 @@ void UIAdvenPartyBoardWnd::OnCreate(int, int) {
   this->memo->maximum = 150;
   this->memo->TextColor(0, 0, 0, 0xFFFFFFFFu);
   this->memo->SetPlaceholderEnabled(true);
-  this->memo->SetPlaceholder(LookupMessage(MSI_EXPLAIN_CHAT_BLOCK));
+  this->memo->SetPlaceholder(LookupMessage(MSI_INPUT_SEARCH_TEXT));
   this->memo->SetPlaceholderColor(0x646464);
   this->memo->Move(238, 24);
   this->memo->Background(255, 255, 255);
@@ -595,7 +595,7 @@ void UIAdvenPartyBoardWnd::OnCreate(int, int) {
   search->SetSize(search->BitmapWidth(), search->BitmapHeight());
   search->Move(354, 22);
   search->SetId(ID_PARTY_SEARCH);
-  search->SetText(LookupMessage(MSI_ADVEN_PURPOSE));
+  search->SetText(LookupMessage(MSI_ADVEN_SEARCH));
   this->AddChild(search);
   auto* reset = new UIBmpTextButton();
   reset->SetBitmap("유저인터페이스\\UIadventurerAgency\\btn_initialize.bmp", 0, 0);
@@ -605,7 +605,7 @@ void UIAdvenPartyBoardWnd::OnCreate(int, int) {
   reset->SetSize(reset->BitmapWidth(), reset->BitmapHeight());
   reset->Move(401, 22);
   reset->SetId(ID_RESET);
-  reset->SetText(LookupMessage(MSI_ADVEN_WARNING_TEXT));
+  reset->SetText(LookupMessage(MSI_ADVEN_RESET));
   this->AddChild(reset);
   this->refresh = new UIBitmapButton();
   this->refresh->SetBitmap("유저인터페이스\\UIadventurerAgency\\btn_refresh.bmp", 0, 0);
@@ -681,13 +681,13 @@ void UIAdvenPartyBoardWnd::OnCreate(int, int) {
   this->types->SetSize(76, 18);
   this->types->Move(76, 22);
   this->AddChild(this->types);
-  this->types->AddOption(LookupMessage(MSI_ACCOUNT), 0);
+  this->types->AddOption(LookupMessage(MSI_ALL_AREA), 0);
+  this->types->AddOption(LookupMessage(MSI_ADVEN_QUEST), 0);
+  this->types->AddOption(LookupMessage(MSI_ADVEN_FIELD), 0);
+  this->types->AddOption(LookupMessage(MSI_ADVEN_DUNJUN), 0);
   this->types->AddOption(LookupMessage(MSI_ADVEN_MD), 0);
   this->types->AddOption(LookupMessage(MSI_ADVEN_EDEN_GROUP), 0);
   this->types->AddOption(LookupMessage(MSI_ADVEN_ETC), 0);
-  this->types->AddOption(LookupMessage(MSI_ADVEN_SEARCH), 0);
-  this->types->AddOption(LookupMessage(MSI_ADVEN_RESET), 0);
-  this->types->AddOption(LookupMessage(MSI_ADVEN_JOIN_PARTY), 0);
 
   this->types->Select(0);
   this->pageText = new UIStaticText();
@@ -702,12 +702,12 @@ void UIAdvenPartyBoardWnd::OnCreate(int, int) {
   this->m_message0 = 365;
 
   auto* close = new UIBasicButton();
-  close->Configure(42, LookupMessage(MSI_ZENY_LOTTO_BUY_10));
+  close->Configure(42, LookupMessage(MSI_CLOSE));
   close->Move(this->geometry.width - close->geometry.width - 10, 317);
   close->SetId(ID_CLOSE);
   this->AddChild(close);
   this->stop = new UIBasicButton();
-  this->stop->Configure((this->TextWidth(LookupMessage(MSI_REQUEST_PARTY), 0, 0, 12, 0, 0) + 10), LookupMessage(MSI_REQUEST_PARTY));
+  this->stop->Configure((this->TextWidth(LookupMessage(MSI_STOP_RECRUITING_PARTY), 0, 0, 12, 0, 0) + 10), LookupMessage(MSI_STOP_RECRUITING_PARTY));
   this->stop->Move(close->geometry.x - this->stop->geometry.width - 5, 317);
   this->stop->SetId(ADVENPARTY_BUTTON_STOP_RECRUIT);
   this->AddChild(this->stop);
@@ -1067,7 +1067,7 @@ int UIAdvenPartyBoardWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
 void UIAdvenPartyBoardWnd::Paint() {
   this->ClearSurface(0xFFFF00FF);
   this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\UIadventurerAgency\\bg_agencyList.bmp"))), false);
-  this->DrawTitleBar(true, LookupMessage(MSI_ADVENTURER_AGENCY_RECRUIT_STOP_FAILED), 0);
+  this->DrawTitleBar(true, LookupMessage(MSI_ADVENTURER_AGENCY_LIST), 0);
   this->DrawButtonBar(2, 0, 1);
   this->DrawTextAt(36, 25, "~", 0, 0, 12, 0, 0, 0);
 }

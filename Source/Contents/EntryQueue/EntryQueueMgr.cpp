@@ -139,40 +139,40 @@ void CEntryQueueMgr::OnApplyResult(const EntryQueueApplyResult* packet) {
       text += this->current->displayName;
     }
     text += "]";
-    text += LookupMessage(MSI_BATTLEFIELD_MSG_UNKNOWN_TYPE);
+    text += LookupMessage(MSI_BATTLEFIELD_MSG_REQUEST_JOINWAIT);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0x4763FF, 0, 0, 0);
     this->ready = 1;
     return;
   }
   case BG_APPLY_QUEUE_FINISHED:
-    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_MAXOVER), 0, false, false, 0, "Message", 0x118, 0x78, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_FULL), 0, false, false, 0, "Message", 0x118, 0x78, 0);
     break;
   case BG_APPLY_INVALID_NAME:
-    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_JOIN_NOTLEVEL), 0, false, false, 0, "Message", 0x118, 0x78, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_UNKNOWN_NAME), 0, false, false, 0, "Message", 0x118, 0x78, 0);
     break;
   case BG_APPLY_INVALID_APP:
-    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_JOIN_OVERLAP), 0, false, false, 0, "Message", 0x118, 0x78, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_UNKNOWN_TYPE), 0, false, false, 0, "Message", 0x118, 0x78, 0);
     break;
   case BG_APPLY_PLAYER_COUNT:
-    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_RESTART), 0, false, false, 0, "Message", 0x118, 0x78, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_MAXOVER), 0, false, false, 0, "Message", 0x118, 0x78, 0);
     break;
   case BG_APPLY_PLAYER_LEVEL:
-    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_NOTJOB), 0, false, false, 0, "Message", 0x118, 0x78, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_JOIN_NOTLEVEL), 0, false, false, 0, "Message", 0x118, 0x78, 0);
     break;
   case BG_APPLY_DUPLICATE:
-    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_JOIN_ONLYBOSS), 0, false, false, 0, "Message", 0x118, 0x78, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_JOIN_OVERLAP), 0, false, false, 0, "Message", 0x118, 0x78, 0);
     break;
   case BG_APPLY_RECONNECT:
-    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_BUSY_PARTYMEMBER), 0, false, false, 0, "Message", 0x118, 0x78, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_RESTART), 0, false, false, 0, "Message", 0x118, 0x78, 0);
     break;
   case BG_APPLY_PLAYER_CLASS:
-    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_CANCEL_JOINWAIT), 0, false, false, 0, "Message", 0x118, 0x78, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_NOTJOB), 0, false, false, 0, "Message", 0x118, 0x78, 0);
     break;
   case BG_APPLY_PARTYGUILD_LEADER:
-    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_WRONG_NAME), 0, false, false, 0, "Message", 0x118, 0x78, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_JOIN_ONLYBOSS), 0, false, false, 0, "Message", 0x118, 0x78, 0);
     break;
   case 15:
-    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_NOTRANK), 0, false, false, 0, "Message", 0x118, 0x78, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_BUSY_PARTYMEMBER), 0, false, false, 0, "Message", 0x118, 0x78, 0);
     break;
   }
 }
@@ -182,18 +182,18 @@ void CEntryQueueMgr::OnApplyResult(const EntryQueueApplyResult* packet) {
 void CEntryQueueMgr::OnCancelResult(const EntryQueueNotice* notice) {
   switch (notice->result) {
   case 1:
-    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_FAIL_CHOICE), 0, false, false, 0, "Message", 0x118, 0x78, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_CANCEL_JOINWAIT), 0, false, false, 0, "Message", 0x118, 0x78, 0);
     g_windowMgr.CloseWindow(WID_ENTRYQUEUESTANDBYWND);
     this->ready = 0;
     break;
   case 3:
-    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_CANCEL_JOIN), 0, false, false, 0, "Message", 0x118, 0x78, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_WRONG_NAME), 0, false, false, 0, "Message", 0x118, 0x78, 0);
     break;
   case 11:
-    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_DOYOU_JOIN), 0, false, false, 0, "Message", 0x118, 0x78, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_NOTRANK), 0, false, false, 0, "Message", 0x118, 0x78, 0);
     break;
   case 14:
-    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_HELP1), 0, false, false, 0, "Message", 0x118, 0x78, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_FAIL_CHOICE), 0, false, false, 0, "Message", 0x118, 0x78, 0);
     g_windowMgr.CloseWindow(WID_ENTRYQUEUESTANDBYWND);
     this->ready = 0;
     break;
@@ -202,7 +202,7 @@ void CEntryQueueMgr::OnCancelResult(const EntryQueueNotice* notice) {
   std::string text("[");
   text += this->current->displayName;
   text += "]";
-  text += LookupMessage(MSI_BATTLEFIELD_HELP2);
+  text += LookupMessage(MSI_BATTLEFIELD_MSG_CANCEL_JOIN);
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0xFF, 0, 0, 0);
   this->current = nullptr;
 }
@@ -263,7 +263,7 @@ void CEntryQueueMgr::OnReady(const EntryQueueReady* packet) {
   std::string text("[");
   text += this->current->displayName;
   text += "]";
-  text += LookupMessage(MSI_BATTLEFIELD_HELP3);
+  text += LookupMessage(MSI_BATTLEFIELD_MSG_DOYOU_JOIN);
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 0x4763FF, 0, 0, 0);
 }
 
@@ -272,10 +272,10 @@ void CEntryQueueMgr::OnReady(const EntryQueueReady* packet) {
 void CEntryQueueMgr::OnResultNotice(const EntryQueueNotice* notice) {
   switch (notice->result) {
   case 3:
-    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_CANCEL_JOIN), 0, false, false, 0, "Message", 0x118, 0x78, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_WRONG_NAME), 0, false, false, 0, "Message", 0x118, 0x78, 0);
     break;
   case 11:
-    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_DOYOU_JOIN), 0, false, false, 0, "Message", 0x118, 0x78, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_BATTLEFIELD_MSG_NOTRANK), 0, false, false, 0, "Message", 0x118, 0x78, 0);
   }
 }
 

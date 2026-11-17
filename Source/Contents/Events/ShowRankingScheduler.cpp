@@ -63,7 +63,7 @@ void CShowRankingScheduler::Process(const std::uint64_t& now) {
           }
         }
         if (!complete) {
-          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_STORE_ASSISTANT_TRADE_FORCED_REMOVAL_TITLE)), 0xffff, 0, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RANK_LOADING)), 0xffff, 0, 0, 0);
           return;
         }
         this->Show();

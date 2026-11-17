@@ -100,14 +100,14 @@ int UIChangeNameWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intpt
     switch (a) {
     case ID_OK: {
       if (GetNavigationLinkParser()->HasLink(this->m_edit->Text()) == true) {
-        g_windowMgr.Confirm(LookupMessage(MSI_STYLING_SHOP_OPEN_COUPON), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_NOT_USING_TAG_TO_NAME), 0, true, false, 0, "Message", 280, 120, 0);
         this->m_edit->SetText("");
         return 0;
       }
 
       std::string name(this->m_edit->Text());
       if (name.find('\n', 0) != std::string::npos) {
-        g_windowMgr.Confirm(LookupMessage(MSI_TOKENAGENCY_SERVER_CONNECTION_FAILED), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_ENTER_ONE_LINE_WITHOUT_LINE_BREAKS), 0, true, false, 0, "Message", 280, 120, 0);
         this->m_edit->SetText("");
         break;
       }

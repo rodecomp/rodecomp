@@ -312,7 +312,7 @@ void CUIRewards::OnBindItem(CUIRewardItem* item, const CRewardItemData& data) {
 // OFFSET: 0x00A558B0
 // FUNCTION: fn_16308
 void CUIOngoingQuestInfo::OnInit() {
-  this->titleBar->SetTitle(LookupMessage(MSI_RENEW_QUEST_DETAIL_REWARD));
+  this->titleBar->SetTitle(LookupMessage(MSI_RENEW_QUEST_TITLE));
   UIWindow* window = g_windowMgr.LookupWindow(WID_RENEWQUESTUI);
   if (window) {
     this->Move(window->geometry.x + window->geometry.width, window->geometry.y);
@@ -329,9 +329,9 @@ void CUIScrollWindow::OnInit() {
   this->firstContents->EnableClip();
   this->secondContents->EnableClip();
   this->rewards->EnableClip();
-  this->firstContents->title->SetText(LookupMessage(MSI_RENEW_QUEST_DETAIL_EXP));
-  this->secondContents->title->SetText(LookupMessage(MSI_RENEW_QUEST_DETAIL_JEXP));
-  this->rewards->title->SetText(LookupMessage(MSI_RENEW_QUEST_DETAIL_ITEM));
+  this->firstContents->title->SetText(LookupMessage(MSI_RENEW_QUEST_DETAIL_DESCRIPTION));
+  this->secondContents->title->SetText(LookupMessage(MSI_RENEW_QUEST_DETAIL_MONSTER));
+  this->rewards->title->SetText(LookupMessage(MSI_RENEW_QUEST_DETAIL_REWARD));
 }
 
 }
@@ -341,9 +341,9 @@ namespace OngoingQuestInfo {
 // OFFSET: 0x00A55950
 // FUNCTION: fn_16310
 void CUIRewards::OnInit() {
-  this->firstLabel->SetText(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP1_ITEM));
-  this->secondLabel->SetText(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP2_ITEM));
-  this->thirdLabel->SetText(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP3_ITEM));
+  this->firstLabel->SetText(LookupMessage(MSI_RENEW_QUEST_DETAIL_EXP));
+  this->secondLabel->SetText(LookupMessage(MSI_RENEW_QUEST_DETAIL_JEXP));
+  this->thirdLabel->SetText(LookupMessage(MSI_RENEW_QUEST_DETAIL_ITEM));
   CUIListBoxEx<CUIRewardItem, CRewardItemData>* list = this->rewardList;
   list->layoutFlag = 1;
   list->Invalidate();

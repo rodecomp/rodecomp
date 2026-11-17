@@ -67,7 +67,7 @@ void UIMacroDetectorWnd::ClearImageData() {
 void UIMacroDetectorWnd::SetCountdown(unsigned char count, std::uint32_t duration) {
   DWORD now = timeGetTime();
   if (this->lastCountdownTick > 0) {
-    this->message = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_MACRO_REGISTER_DATA), count));
+    this->message = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_MACRO_DETECTOR_WRONG_ANSWER_REMAIN_CNT), count));
   }
 
   this->remainingAttempts = count;

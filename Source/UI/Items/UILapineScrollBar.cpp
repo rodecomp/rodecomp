@@ -252,7 +252,7 @@ void UILapineBoxWnd::Paint() {
     this->DrawTitleBar(false, this->title.c_str(), 0);
   }
 
-  this->DrawCenteredText(33, 47, LookupMessage(MSI_LAPINE_FAIL_NOT_ENOUGH_REFINING_LEVEL), 160, 0, 11, 0xCD7A51, 0);
+  this->DrawCenteredText(33, 47, LookupMessage(MSI_LAPINE_INGREDIENT_TO_COMBINE), 160, 0, 11, 0xCD7A51, 0);
   this->DrawCenteredText(33, 63, this->description.c_str(), 160, 0, 11, 0x844A42, 0);
 
   this->DrawCenteredText(98, 76, FormatOwnedString("%d", static_cast<int>(this->items.size())).c_str(), 14, 0, 11, 0xFFFFFF, 0);
@@ -290,7 +290,7 @@ bool UILapineBoxWnd::AddIngredient(std::uint32_t id, int quantity) {
       int highlightColor;
       this->BuildItemName(&item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
       if (item.identified == 1 && item.optionCount != 0) {
-        sprintf_s(name, sizeof(name), LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), name, item.optionCount);
+        sprintf_s(name, sizeof(name), LookupMessage(MSI_EA6), name, item.optionCount);
       }
       item.SetName(name);
     }

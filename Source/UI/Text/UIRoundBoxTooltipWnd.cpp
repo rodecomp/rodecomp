@@ -122,12 +122,45 @@ int UIRoundBoxTooltipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       const ItemMoveInfo info = FindItemMoveInfo(static_cast<int>(argument1));
 
       if (info.drop) {
-        text += LookupMessage(MSI_ITEMMOVEINFO_MAIL);
-        longest = LookupMessage(MSI_ITEMMOVEINFO_MAIL);
+        text += LookupMessage(MSI_ITEMMOVEINFO_DROP);
+        longest = LookupMessage(MSI_ITEMMOVEINFO_DROP);
         ++lines;
       }
 
       if (info.storage) {
+        if (!text.empty()) {
+          text += "\n";
+        }
+        text += LookupMessage(MSI_ITEMMOVEINFO_STORE);
+        if (std::strlen(LookupMessage(MSI_ITEMMOVEINFO_STORE)) > std::strlen(longest.c_str())) {
+          longest = LookupMessage(MSI_ITEMMOVEINFO_STORE);
+        }
+        ++lines;
+      }
+
+      if (info.cart) {
+        if (!text.empty()) {
+          text += "\n";
+        }
+        text += LookupMessage(MSI_ITEMMOVEINFO_CART);
+        if (std::strlen(LookupMessage(MSI_ITEMMOVEINFO_CART)) > std::strlen(longest.c_str())) {
+          longest = LookupMessage(MSI_ITEMMOVEINFO_CART);
+        }
+        ++lines;
+      }
+
+      if (info.mail) {
+        if (!text.empty()) {
+          text += "\n";
+        }
+        text += LookupMessage(MSI_ITEMMOVEINFO_MAIL);
+        if (std::strlen(LookupMessage(MSI_ITEMMOVEINFO_MAIL)) > std::strlen(longest.c_str())) {
+          longest = LookupMessage(MSI_ITEMMOVEINFO_MAIL);
+        }
+        ++lines;
+      }
+
+      if (info.trade) {
         if (!text.empty()) {
           text += "\n";
         }
@@ -138,18 +171,7 @@ int UIRoundBoxTooltipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
         ++lines;
       }
 
-      if (info.cart) {
-        if (!text.empty()) {
-          text += "\n";
-        }
-        text += LookupMessage(MSI_ITEMMOVEINFO_AUCTION);
-        if (std::strlen(LookupMessage(MSI_ITEMMOVEINFO_AUCTION)) > std::strlen(longest.c_str())) {
-          longest = LookupMessage(MSI_ITEMMOVEINFO_AUCTION);
-        }
-        ++lines;
-      }
-
-      if (info.mail) {
+      if (info.guildStorage) {
         if (!text.empty()) {
           text += "\n";
         }
@@ -160,35 +182,13 @@ int UIRoundBoxTooltipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
         ++lines;
       }
 
-      if (info.trade) {
+      if (info.sellToNpc) {
         if (!text.empty()) {
           text += "\n";
         }
         text += LookupMessage(MSI_ITEMMOVEINFO_TONPC);
         if (std::strlen(LookupMessage(MSI_ITEMMOVEINFO_TONPC)) > std::strlen(longest.c_str())) {
           longest = LookupMessage(MSI_ITEMMOVEINFO_TONPC);
-        }
-        ++lines;
-      }
-
-      if (info.guildStorage) {
-        if (!text.empty()) {
-          text += "\n";
-        }
-        text += LookupMessage(MSI_CREATE_CHARACTER);
-        if (std::strlen(LookupMessage(MSI_CREATE_CHARACTER)) > std::strlen(longest.c_str())) {
-          longest = LookupMessage(MSI_CREATE_CHARACTER);
-        }
-        ++lines;
-      }
-
-      if (info.sellToNpc) {
-        if (!text.empty()) {
-          text += "\n";
-        }
-        text += LookupMessage(MSI_UNEQUIP_ARROW3);
-        if (std::strlen(LookupMessage(MSI_UNEQUIP_ARROW3)) > std::strlen(longest.c_str())) {
-          longest = LookupMessage(MSI_UNEQUIP_ARROW3);
         }
         ++lines;
       }

@@ -481,7 +481,7 @@ void CUIProbabilityTable::Search() {
     }
     this->m_list->RebindIndex(this->m_list->selected);
   } else {
-    g_windowMgr.Confirm(LookupMessage(MSI_REFINING_BLACKSMITH_BLESSING_MSG3), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_NO_SEARCH_RESULTS), 0, true, false, 0, "Message", 280, 120, 0);
   }
 
   this->m_lastSearch = keyword;
@@ -497,9 +497,9 @@ void CUIProbabilityTable::OnInit() {
     this->Move(g_renderer->viewport.centerX, (g_renderer->viewport.height - this->geometry.height) / 2);
   }
 
-  this->m_titleBar->SetTitle(LookupMessage(MSI_REFINING_PROBABILITY_URL));
-  this->m_nameHeader->SetText(LookupMessage(MSI_GRADE_ENCHANT_PROBABILITY_URL));
-  this->m_probabilityHeader->SetText(LookupMessage(MSI_SELLINGSLOT_SUCCESS));
+  this->m_titleBar->SetTitle(LookupMessage(MSI_PROBABILITY_TITLE));
+  this->m_nameHeader->SetText(LookupMessage(MSI_COMPONENT_SEARCH));
+  this->m_probabilityHeader->SetText(LookupMessage(MSI_PROBABILITY));
 }
 
 // OFFSET: 0x00A4E030

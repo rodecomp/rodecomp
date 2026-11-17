@@ -185,7 +185,7 @@ int __stdcall GameGuardCallback(int code, const int* packet) {
   case NPGAMEMON_GAMEHACK_KILLED:
   case NPGAMEMON_GAMEHACK_DETECT: {
     CNProtectGameGuardMgr* manager = g_nProtectGameGuardMgr;
-    manager->SetError(g_nprotectSource, 0x14B, std::string(LookupMessage(MSI_USA_PERSONALINFO_DROP)));
+    manager->SetError(g_nprotectSource, 0x14B, std::string(LookupMessage(MSI_GAMEHACK_DETECT2)));
     return 0;
   }
   case NPGAMEMON_GAMEHACK_DOUBT: {

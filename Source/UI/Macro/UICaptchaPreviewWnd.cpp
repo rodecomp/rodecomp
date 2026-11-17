@@ -129,9 +129,9 @@ void UIMacroDetectorWnd::Paint() {
   this->FillRegion(0, 16, this->geometry.width, this->geometry.height - 36, 0xFFFFFFFF);
   this->DrawRectOutline(0, 16, this->geometry.width, this->geometry.height - 36, 0xC6C6C6);
 
-  this->DrawTextAt(25, 28, LookupMessage(MSI_MACRO_DETECTOR_REMAIN_COUNT), 0, 0, 12, 0, 1, 0);
-  this->DrawTextAt(25, 45, LookupMessage(MSI_MACRO_REPORTER_SELECT_MODE_CHAR), 0, 0, 12, 0, 1, 0);
-  this->DrawTextAt(25, 62, LookupMessage(MSI_MACRO_REPORTER_SELECT_MODE_CELL), 0, 0, 12, 0, 1, 0);
+  this->DrawTextAt(25, 28, LookupMessage(MSI_MACRO_DETECTOR_NOTICE1), 0, 0, 12, 0, 1, 0);
+  this->DrawTextAt(25, 45, LookupMessage(MSI_MACRO_DETECTOR_NOTICE2), 0, 0, 12, 0, 1, 0);
+  this->DrawTextAt(25, 62, LookupMessage(MSI_MACRO_DETECTOR_NOTICE3), 0, 0, 12, 0, 1, 0);
 
   this->DrawTextAt(25, 82, this->message.c_str(), 0, 0, 12, 0x2323FF, 1, 0);
 
@@ -146,7 +146,7 @@ void UIMacroDetectorWnd::Paint() {
 
     unsigned int seconds = remaining / 1000;
     this->DrawRightAlignedText(280, 138, FormatOwnedString("%2d : %2d", seconds / 60, seconds).c_str(), 0, 0, 13, 0xFF2323, 1);
-    this->DrawTextAt(60, 138, FormatOwnedString(LookupMessage(MSI_MACRO_REPORTER_TOOLTIP_CHAR), this->remainingAttempts).c_str(), 0, 0, 13, 0x2323FF, 1, 0);
+    this->DrawTextAt(60, 138, FormatOwnedString(LookupMessage(MSI_MACRO_DETECTOR_REMAIN_COUNT), this->remainingAttempts).c_str(), 0, 0, 13, 0x2323FF, 1, 0);
   }
 }
 

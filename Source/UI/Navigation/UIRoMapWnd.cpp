@@ -1030,7 +1030,7 @@ void UIRoMapWnd::OnCreate(int, int) {
     std::string unchecked = "유저인터페이스\\checkbox_0.bmp";
     this->m_labelCheck = new (std::nothrow) UICheckBox();
     this->m_labelCheck->SetSize(80, 12);
-    this->m_labelCheck->SetImages(checked.c_str(), unchecked.c_str(), LookupMessage(MSI_WORLDMAP_MSG4));
+    this->m_labelCheck->SetImages(checked.c_str(), unchecked.c_str(), LookupMessage(MSI_WORLDMAP_MSG1));
     this->m_labelCheck->SetId(ID_STATUS);
     this->m_labelCheck->Move(closeX - 82, 3);
     this->m_labelCheck->SetChecked(this->m_showLabels);
@@ -1044,7 +1044,7 @@ void UIRoMapWnd::OnCreate(int, int) {
     this->m_searchButton->SetSize(this->m_searchButton->BitmapWidth(), this->m_searchButton->BitmapHeight());
     this->m_searchButton->Move(-100, -100);
     this->m_searchButton->SetId(ID_SEARCH);
-    this->m_searchButton->SetTooltip(LookupMessage(MSI_NAVIGATION_SEARCHINFO));
+    this->m_searchButton->SetTooltip(LookupMessage(MSI_NAVIGATION_SEARCH));
     this->AddChild(this->m_searchButton);
 
     this->m_searchListButton = new UIBitmapButton();
@@ -1054,7 +1054,7 @@ void UIRoMapWnd::OnCreate(int, int) {
     this->m_searchListButton->SetSize(this->m_searchListButton->BitmapWidth(), this->m_searchListButton->BitmapHeight());
     this->m_searchListButton->Move(-100, -100);
     this->m_searchListButton->SetId(ID_BASE);
-    this->m_searchListButton->SetTooltip(LookupMessage(MSI_NAVIGATION_V4_HELP01));
+    this->m_searchListButton->SetTooltip(LookupMessage(MSI_WORLDMAP_NAVIGATION_SET));
     this->AddChild(this->m_searchListButton);
 
     this->m_searchEdit = new UIEditCtrl();
@@ -1065,7 +1065,7 @@ void UIRoMapWnd::OnCreate(int, int) {
     this->m_searchEdit->Border(200, 100, 100);
     this->m_searchEdit->flat = 0;
     UIEditCtrl* edit = this->m_searchEdit;
-    if (const char* tooltip = LookupMessage(MSI_NAVIGATION_SERVICE)) {
+    if (const char* tooltip = LookupMessage(MSI_NAVIGATION_SETSTRING)) {
       edit->tooltip = tooltip;
     }
     this->AddChild(this->m_searchEdit);

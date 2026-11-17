@@ -595,24 +595,24 @@ void CUIItemInfo::SetStatusLines(unsigned char first, unsigned char second, unsi
   this->optionsViewer->Clear();
   if (first == 1) {
     this->optionsViewer->SetTextColor(0xC86464u);
-    this->optionsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_ENCHANT_IMPOSSIBLE)));
+    this->optionsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_REFINING_POSSIBLE)));
   } else {
     this->optionsViewer->SetTextColor(0x6464C8u);
-    this->optionsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_GRADE_ENCHANT_POSSIBLE)));
+    this->optionsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_REFINING_IMPOSSIBLE)));
   }
   if (second == 1) {
     this->optionsViewer->SetTextColor(0xC86464u);
-    this->optionsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_GRADE_ENCHANT_IMPOSSIBLE)));
+    this->optionsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_ENCHANT_POSSIBLE)));
   } else {
     this->optionsViewer->SetTextColor(0x6464C8u);
-    this->optionsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_EQUIP_OUT)));
+    this->optionsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_ENCHANT_IMPOSSIBLE)));
   }
   if (third == 1) {
     this->optionsViewer->SetTextColor(0xC86464u);
-    this->optionsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_EQUIP_NOTPUT)));
+    this->optionsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_GRADE_ENCHANT_POSSIBLE)));
   } else {
     this->optionsViewer->SetTextColor(0x6464C8u);
-    this->optionsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_RUNESYSTEM_RUNESET_TITLE)));
+    this->optionsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_GRADE_ENCHANT_IMPOSSIBLE)));
   }
 }
 
@@ -762,7 +762,7 @@ void CUIListBox<AdventureGuide::CUITab>::SelectItem(CUIListItem* item) {
 // OFFSET: 0x009DC950
 // FUNCTION: fn_14329
 void CUIAdventureGuide::OnInit() {
-  this->titleBar->SetTitle(LookupMessage(MSI_RUNESYSTEM_CLOSE_RODEX));
+  this->titleBar->SetTitle(LookupMessage(MSI_ADVENTURE_GUIDE));
 
   CAdventureGuideMgr* mgr = g_adventureGuideMgr;
   if (mgr->m_intros.empty()) {
@@ -1391,60 +1391,60 @@ void CUIMonsterInfo::SetMonster(const std::string& title) {
   this->action = static_cast<CActRes*>(ResourceMgr::Instance().Load(spriteName + ".act"));
 
   if (element == 1) {
-    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY4), elementLevel));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY1), elementLevel));
   } else if (element == 2) {
-    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY5), elementLevel));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY2), elementLevel));
   } else if (element == 3) {
-    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY6), elementLevel));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY3), elementLevel));
   } else if (element == 4) {
-    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY7), elementLevel));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY4), elementLevel));
   } else if (element == 5) {
-    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY8), elementLevel));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY5), elementLevel));
   } else if (element == 6) {
-    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY9), elementLevel));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY6), elementLevel));
   } else if (element == 7) {
-    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY0), elementLevel));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY7), elementLevel));
   } else if (element == 8) {
-    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_SCALE1), elementLevel));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY8), elementLevel));
   } else if (element == 9) {
-    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_SCALE2), elementLevel));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY9), elementLevel));
   } else {
-    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_SCALE0), elementLevel));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_PROPERTY0), elementLevel));
   }
 
   if (race == 1) {
-    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE4)));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE1)));
   } else if (race == 2) {
-    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE5)));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE2)));
   } else if (race == 3) {
-    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE6)));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE3)));
   } else if (race == 4) {
-    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE7)));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE4)));
   } else if (race == 5) {
-    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE8)));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE5)));
   } else if (race == 6) {
-    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE9)));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE6)));
   } else if (race == 7) {
-    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE0)));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE7)));
   } else if (race == 8) {
-    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_MOVECLICK)));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE8)));
   } else if (race == 9) {
-    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_NPCMOVE)));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE9)));
   } else {
-    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_NPCCLICK)));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE0)));
   }
 
   if (size == 1) {
-    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE1)));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_SCALE1)));
   } else if (size == 2) {
-    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE2)));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_SCALE2)));
   } else {
-    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_RACE3)));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_SCALE0)));
   }
 
   if (type == 0x12D) {
     this->detailsViewer->SetTextColor(0x6464FFu);
-    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_TARGET_D_D)));
+    this->detailsViewer->AddLine(FormatOwnedString(LookupMessage(MSI_NAVIGATION_BOSS)));
   }
 }
 

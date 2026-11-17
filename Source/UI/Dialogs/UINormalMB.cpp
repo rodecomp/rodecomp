@@ -78,7 +78,7 @@ void UINormalMB::Create(UIWindow* owner, const char* text, int type, bool defaul
   this->m_owner = owner;
   this->m_message = text;
   if (!title) {
-    this->m_title = LookupMessage(MSI_ITEM_GRADE_ENCHANT_FAIL);
+    this->m_title = LookupMessage(MSI_NORMAL_MESSAGEBOX_CAPTION);
   } else {
     this->m_title = title;
   }

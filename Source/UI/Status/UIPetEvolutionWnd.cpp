@@ -63,7 +63,7 @@ void UIPetEvolutionWnd::OnCreate(int width, int height) {
 // FUNCTION: fn_13764
 void UIPetEvolutionWnd::Paint() {
   this->ClearSurface(0xFFFFFFFF);
-  this->DrawTitleBar(true, LookupMessage(MSI_DO_YOU_WANT_TO_EVOLVE_PET), 0);
+  this->DrawTitleBar(true, LookupMessage(MSI_PET_EVOLUTION), 0);
 
   char text[260];
   std::memset(text, 0, sizeof(text));
@@ -107,7 +107,7 @@ void UIPetEvolutionWnd::Paint() {
     }
   }
 
-  this->DrawTextAt(10, 200, LookupMessage(MSI_PET_EVOLUTION_FAIL_NOTEXIST_CALLPET), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(10, 200, LookupMessage(MSI_PET_EVOLUTION_NEED_ITEM), 0, 0, 12, 0, 0, 0);
 
   int index = 0;
   for (auto it = this->m_materials.begin(); it != this->m_materials.end(); ++it, ++index) {
@@ -118,7 +118,7 @@ void UIPetEvolutionWnd::Paint() {
     );
   }
 
-  this->DrawTextAt(10, this->geometry.height - 52, LookupMessage(MSI_PET_EVOLUTION_FAIL_NOT_PETEGG), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(10, this->geometry.height - 52, LookupMessage(MSI_DO_YOU_WANT_TO_EVOLVE_PET), 0, 0, 12, 0, 0, 0);
 }
 
 namespace {
@@ -143,7 +143,7 @@ int UIPetEvolutionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
       for (auto it = this->m_materials.begin(); it != this->m_materials.end(); ++it) {
         ITEM_INFO item = g_session.LookupClientItem(it->first, 1);
         if (item.quantity < it->second) {
-          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PET_AUTO_FEEDING)), 255, 0, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PET_EVOLUTION_FAIL_RECIPE)), 255, 0, 0, 0);
           return 0;
         }
         materials.push_back(static_cast<std::uint16_t>(item.identity[1]));
@@ -151,7 +151,7 @@ int UIPetEvolutionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
       }
 
       if (g_session.petAccessory != 0) {
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_TIME_LINE_DAY2)), 255, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PET_EVOLUTION_FAIL_PET_ACC_OFF)), 255, 0, 0, 0);
         return 0;
       }
 

@@ -20,7 +20,7 @@ UIPasswordWnd::UIPasswordWnd() : UIItemDropCntWnd() {}
 void UISecondPasswordInputWnd::SetInputMode(int value) {
   this->inputMode = value;
   if (value == 0) {
-    this->instructionText->SetText(LookupMessage(MSI_PET_EVOLUTION_NEED_ITEM), 0);
+    this->instructionText->SetText(LookupMessage(MSI_SECOND_PASSWORD_INFO_4), 0);
   }
 }
 

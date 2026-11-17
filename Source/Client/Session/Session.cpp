@@ -1297,7 +1297,7 @@ int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
     if (space != std::string::npos) {
       parts[0] = command.erase(0, space + 1);
     } else {
-      g_windowMgr.SetChatInputText(LookupMessage(MSI_NOWARPSKILL2));
+      g_windowMgr.SetChatInputText(LookupMessage(MSI_PARTY_INVITE));
     }
     return -1;
   } else if (tokenizer[0] == "/길드초대" || tokenizer[0] == "/rlfemcheo" || tokenizer[0] == "/guildinvite") {
@@ -1307,7 +1307,7 @@ int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
     if (space != std::string::npos) {
       parts[0] = command.erase(0, space + 1);
     } else {
-      g_windowMgr.SetChatInputText(LookupMessage(MSI_PARA_PURCHASE_ITEM_WEIGHT));
+      g_windowMgr.SetChatInputText(LookupMessage(MSI_GUILD_INVITE));
     }
     return -1;
   } else if (tokenizer[0] == "/web" && static_cast<int>(tokenizer.tokens.size()) >= 2) {
@@ -1331,7 +1331,7 @@ int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
     *talkType = 0xD6;
     parts[0] = text + (tokenizer[0] == "/cl" ? 4 : 10);
     return -1;
-  } else if (tokenizer[0] == LookupMessage(MSI_PARA_RESULT_TITLE)) {
+  } else if (tokenizer[0] == LookupMessage(MSI_BARGAINSALE_TOOLWND_CALL)) {
     *talkType = 0xD8;
     return -1;
   } else if (tokenizer[0] == "/cashshop") {
@@ -3969,11 +3969,11 @@ void CSession::InitCommandTables() {
   this->m_commandIds.push_back(std::pair<const char*, int>("/eqopen", 185));
   this->m_commandIds.push_back(std::pair<const char*, int>("/show_addressbar", 205));
   this->m_commandIds.push_back(std::pair<const char*, int>("/buildinfo", 207));
-  this->m_commandIds.push_back(std::pair<const char*, int>(LookupMessage(MSI_GUILD_MEMBERLIST_SORT), 223));
+  this->m_commandIds.push_back(std::pair<const char*, int>(LookupMessage(MSI_MINIMAP_BUTTON_ONOFF), 223));
   this->m_commandIds.push_back(std::pair<const char*, int>("/viewpointvalue", 227));
   this->m_commandIds.push_back(std::pair<const char*, int>("/mable", 240));
-  this->m_commandIds.push_back(std::pair<const char*, int>(LookupMessage(MSI_CHECK_LEVEL_BEFORE_REGISTER_AGENCY), 241));
-  this->m_commandIds.push_back(std::pair<const char*, int>(LookupMessage(MSI_RUSSIA_PERSONALINFO_EXP), 243));
+  this->m_commandIds.push_back(std::pair<const char*, int>(LookupMessage(MSI_EXPAND_SIGHT), 241));
+  this->m_commandIds.push_back(std::pair<const char*, int>(LookupMessage(MSI_DRAW_EMBLEM_FRAME_ONOFF), 243));
   std::stable_sort(this->m_commandIds.begin(), this->m_commandIds.end(),
                    [](const std::pair<const char*, int>& left, const std::pair<const char*, int>& right) {
                      return std::strcmp(left.first, right.first) < 0;
@@ -5986,7 +5986,7 @@ void CSession::LoadSessionTables() {
   constexpr std::array<char, 15> source = OBFUSCATE_SOURCE("Ragnarok Setup", 0x9171997D6963C9F7ULL);
   thread_local EncryptedName<sizeof(source), 0x9171997D6963C9F7ULL> setupName(source);
   if (HWND window = FindWindowA(nullptr, setupName.Text())) {
-    ShowErrorDialog(LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_PASSWORD), 0);
+    ShowErrorDialog(LookupMessage(MSI_CLOSE_SETUP), 0);
     SendMessageA(window, WM_CLOSE, 0, 0);
   }
 

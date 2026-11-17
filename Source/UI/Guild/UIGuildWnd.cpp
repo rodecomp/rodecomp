@@ -1003,8 +1003,8 @@ void UIGuildInfoManageWnd::OnCreate(int, int) {
   this->m_agitMenu->SetSize(120, 35);
   this->m_agitMenu->SetId(559);
   this->m_agitMenu->Show(0);
-  this->m_agitMenu->AddLine(LookupMessage(MSI_GUILD_AGIT_SHOW_INVESTMENT_INFO));
-  this->m_agitMenu->AddLine(LookupMessage(MSI_GUILD_AGIT_MOVE_FAIL_MAP));
+  this->m_agitMenu->AddLine(LookupMessage(MSI_GUILD_AGIT_MOVE_AGIT));
+  this->m_agitMenu->AddLine(LookupMessage(MSI_GUILD_AGIT_INVESTMENT_INFO));
   this->AddChild(this->m_agitMenu);
   this->RefreshAgitList();
 }
@@ -1391,7 +1391,7 @@ void UIGuildPositionManageWnd::Paint() {
   headers[1] = LookupMessage(MSI_POSITION_NAME);
   headers[2] = LookupMessage(MSI_JOIN_AUTHORITY);
   headers[3] = LookupMessage(MSI_PENALTY_AUTORITY);
-  headers[4] = LookupMessage(MSI_BARGAINSALE_TOOLWND_TITLE);
+  headers[4] = LookupMessage(MSI_GUILD_STORAGE_PERMISSON);
   headers[5] = LookupMessage(MSI_CONTRIBUTION_PERCENT);
   int x = 0;
   for (int column = 0; column < 6; ++column) {
@@ -1760,7 +1760,7 @@ void UIGuildMemberManageWnd::OnCreate(int, int) {
 
   this->m_onlineCheck = new UICheckBox();
   this->m_onlineCheck->SetSize(240, 12);
-  this->m_onlineCheck->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(MSI_PARTYNAME));
+  this->m_onlineCheck->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(MSI_GUILD_MEMBERLIST_SORT));
   this->m_onlineCheck->FitToText();
   this->m_onlineCheck->Move(12, this->geometry.height - 18);
   this->m_onlineCheck->SetChecked(g_session.m_guildMemberListSort);
@@ -1966,11 +1966,11 @@ bool UIGuildMemberManageWnd::DrawMember(GuildInfo::Member& member, int& index, i
   char lastLogin[128];
   const __time32_t* lastLoginTime = &member.lastOfflineTime;
   if (*lastLoginTime != 0) {
-    strftime(lastLogin, sizeof(lastLogin), LookupMessage(MSI_CANNOT_OPEN_BANKING_DURING_REFINING), _localtime32(lastLoginTime));
+    strftime(lastLogin, sizeof(lastLogin), LookupMessage(MSI_TIME_TYPE4), _localtime32(lastLoginTime));
   } else {
     lastLogin[0] = '\0';
   }
-  this->DrawTextAt(8, y + 17, FormatOwnedString(LookupMessage(MSI_SWAP_EQUIPITEM_UNREGISTER_FIRST), lastLogin).c_str(), 0, 0, 11, 0x404040, 0, 0);
+  this->DrawTextAt(8, y + 17, FormatOwnedString(LookupMessage(MSI_LAST_LOGIN), lastLogin).c_str(), 0, 0, 11, 0x404040, 0, 0);
   return true;
 }
 
@@ -2452,7 +2452,7 @@ int UIGuildPositionManageWnd::SendMsg(UIWindow* sender, int message, std::intptr
         if (found) {
           position.tax = std::atoi(this->taxEdits[row]->Text());
           if (position.tax < 0 || position.tax > 50) {
-            g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_INC_ATTACKDAMAGE_ABILITYPOWER), 50, 0).c_str()), 0xFF, 0, 0, 0);
+            g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_CANNOT_OFFER_GUILD_EXP_MAX_RATE), 50, 0).c_str()), 0xFF, 0, 0, 0);
             if (position.tax < 0) {
               position.tax = 0;
             } else if (position.tax > 50) {
@@ -2697,13 +2697,13 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
           if (master != 0) {
             if (master == static_cast<int>(g_session.m_gid)) {
               this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_EXPEL_GUILD), MENUID_REMOVE_GUILE_MEMBER));
-              this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_SHOP_WITHDRAWAL), 59));
+              this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_CHANGE_GUILD_MASTER), 59));
             } else if (g_guildInfo.canExpel != 0 && member.characterId != master) {
               this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_EXPEL_GUILD), MENUID_REMOVE_GUILE_MEMBER));
             }
           } else if (g_guildInfo.masterName == g_session.DecodePlayerName()) {
             this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_EXPEL_GUILD), MENUID_REMOVE_GUILE_MEMBER));
-            this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_SHOP_WITHDRAWAL), 59));
+            this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_CHANGE_GUILD_MASTER), 59));
           } else if (g_guildInfo.canExpel != 0 && !(member.name == g_guildInfo.masterName)) {
             this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_EXPEL_GUILD), MENUID_REMOVE_GUILE_MEMBER));
           }
@@ -2716,7 +2716,7 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
             }
             this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_DIRECT_CHAT), MENUID_MAKE_WHISPER_WINDOW));
           }
-          this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_USA_PERSONALINFO_DEATH), MENUID_WRITE_RODEX));
+          this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_SEND_RODEX), MENUID_WRITE_RODEX));
         }
       }
     }
@@ -2738,7 +2738,7 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     GuildInfo::Member member;
     if ((this->GetMember(this->m_hoverRow, member) && member.name.find(g_guildNamelessTag, 0) != std::string::npos) ||
         !g_playerNameDictionary->Contains(member.characterId)) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CHR_DELETE_FAIL_CHN_TAREN_PERSONALNUMBER)), 0xFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CALLING_USERNAME)), 0xFF, 0, 0, 0);
       return 0;
     }
 
@@ -2802,7 +2802,7 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
     case 59: {
       GuildInfo::Member target;
       if (this->GetMember(this->m_hoverRow, target) == true) {
-        const std::string text = FormatOwnedString(LookupMessage(MSI_REMAIN_TIME), target.name.c_str(), target.name.c_str());
+        const std::string text = FormatOwnedString(LookupMessage(MSI_CONFIRM_CHANGING_GUILD_MASTER), target.name.c_str(), target.name.c_str());
         if (g_windowMgr.Confirm(text.c_str(), 2, false, false, 0, "Message", 280, 120, 0) != ID_NO) {
           target.positionId = 0;
           target.positionName = g_guildInfo.m_positions[target.positionId];
@@ -3086,7 +3086,7 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       EnumerateFileNames(this->emblemFiles, directory, "*.gif");
       const int count = static_cast<int>(this->emblemFiles.size());
       if (count == 0) {
-        g_windowMgr.Confirm(LookupMessage(MSI_SWAP_FAIL_SWAP), 0, true, false, 0, "Caution", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_EMBLEM_CHANGE), 0, true, false, 0, "Caution", 280, 120, 0);
         return 0;
       }
 
@@ -3104,7 +3104,7 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       return 0;
     }
     case 449:
-      g_windowMgr.Confirm(LookupMessage(MSI_PET_EVOLUTION), 0, false, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_GUILD_STORAGE_WARNING), 0, false, false, 0, "Message", 280, 120, 0);
       g_windowMgr.EnsureWindow(WID_CREATEGUILDWND_MODE_1);
       return 0;
     }
@@ -3130,7 +3130,7 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       std::string path = FormatOwnedString("..\\..\\emblem\\%s", name.c_str());
       CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str())));
       if (!bitmap) {
-        g_windowMgr.Confirm(LookupMessage(MSI_RODEX_MESSAGE_DELETE_ALL), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_EMBLEM_REGIST_FAILED_INCORRECT_SIZE), 0, true, false, 0, "Message", 280, 120, 0);
         return 0;
       }
 
@@ -3138,16 +3138,16 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
         CFile file;
         if (file.Open(FormatOwnedString("..\\emblem\\%s", name.c_str()).c_str(), 0, true, false) == true) {
           if (g_guildMgr->m_timeout < file.GetSize()) {
-            g_windowMgr.Confirm(LookupMessage(MSI_RODEX_MESSAGE_DELETE_ALL), 0, true, false, 0, "Message", 280, 120, 0);
+            g_windowMgr.Confirm(LookupMessage(MSI_EMBLEM_REGIST_FAILED_INCORRECT_SIZE), 0, true, false, 0, "Message", 280, 120, 0);
           } else {
             std::string uploadPath = FormatOwnedString("emblem\\%s", name.c_str());
             if (!g_emblemDataMgr->Upload(this->m_guildId, uploadPath)) {
-              g_windowMgr.Confirm(LookupMessage(MSI_RODEX_BUTTON_DELETE_ALL), 0, true, false, 0, "Message", 280, 120, 0);
+              g_windowMgr.Confirm(LookupMessage(MSI_EMBLEM_UPLOAD_FAILED_BUSY), 0, true, false, 0, "Message", 280, 120, 0);
             }
           }
         }
       } else {
-        g_windowMgr.Confirm(LookupMessage(MSI_RODEX_MESSAGE_DELETE_ALL), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_EMBLEM_REGIST_FAILED_INCORRECT_SIZE), 0, true, false, 0, "Message", 280, 120, 0);
       }
     }
     return 0;

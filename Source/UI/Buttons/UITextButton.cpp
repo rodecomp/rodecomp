@@ -509,7 +509,7 @@ void UIBasicItemCtrl::OnMouseHover(int, int) {
     text = this->m_tooltip;
   } else if (this->m_item.identity[1] > 0) {
     if (this->m_item.optionCount != 0) {
-      text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_FAIL_NEED_EQUIPPED_GUN_GATLING), this->m_item.DisplayName(0).c_str(), this->m_item.optionCount, this->m_item.quantity));
+      text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_EA5), this->m_item.DisplayName(0).c_str(), this->m_item.optionCount, this->m_item.quantity));
     } else {
       text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_EA2), this->m_item.DisplayName(0).c_str(), this->m_item.quantity));
     }
@@ -3588,7 +3588,7 @@ void UISlotBmpButton::Paint() {
     this->DrawBitmap(this->geometry.width / 2 - 0x2e, 0x1a, balloon, false);
 
     std::vector<std::string> lines;
-    WrapPlainText(LookupMessage(MSI_ERROR_MDENGEON_IS_FULL), lines, 0x14);
+    WrapPlainText(LookupMessage(MSI_CREATE_CHARACTER), lines, 0x14);
     int y = 0x22;
     for (unsigned index = 0; index < lines.size(); ++index) {
       this->DrawCenteredText(0x21, y, lines[index].c_str(), 0x5c, 0, 0xb, 0xffffff, 0);
@@ -3613,8 +3613,8 @@ void UISlotBmpButton::Paint() {
         Timestamp expiry(info->deleteDate);
         const std::uint32_t color = expiry.IsBeforeNow() ? 0xff0000 : 0xff;
         const TIMESTAMP_STRUCT date = expiry.ToSqlTimestamp();
-        const std::string period = FormatOwnedString(LookupMessage(MSI_INCOMPLETE), date.month, date.day);
-        const std::string time = FormatOwnedString(LookupMessage(MSI_PRIVATE_AIRPLANE_FAILED_USE_ITEM), date.hour, date.minute, date.second);
+        const std::string period = FormatOwnedString(LookupMessage(MSI_DATE_MM_DD), date.month, date.day);
+        const std::string time = FormatOwnedString(LookupMessage(MSI_DATE_HH_MM_SS), date.hour, date.minute, date.second);
         const int periodWidth = this->TextWidth(period.c_str(), 0, 0, 0xb, 0, 0);
         this->DrawTextAt(0x4f - periodWidth / 2, 0x28, period.c_str(), 0, 0, 0xb, color, 0, 0);
         const int timeWidth = this->TextWidth(time.c_str(), 0, 0, 0xb, 0, 0);

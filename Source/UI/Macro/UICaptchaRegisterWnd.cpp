@@ -119,14 +119,14 @@ int UICaptchaRegisterWnd::SendMsg(
     switch (a1) {
     case ID_SEND:
       if (this->m_editCtrl->Length() < 4) {
-        g_windowMgr.Confirm(LookupMessage(MSI_MACRO_DETECTOR_WRONG_ANSWER_REMAIN_CNT), 0, 1, 0, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_MACRO_INPUT_ANSWER), 0, 1, 0, 0, "Message", 280, 120, 0);
       } else if (this->m_selectedFile.empty()) {
-        g_windowMgr.Confirm(LookupMessage(MSI_MACRO_SEND_MACRO), 0, 1, 0, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_MACRO_SELECT_CAPTCHA), 0, 1, 0, 0, "Message", 280, 120, 0);
       } else if (this->m_decompressedSize <= 0) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>("compress data size error"), 0xFF, 0, 0, 0);
       } else {
         const int result =
-          g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_MACRO_REPORTER), this->m_editCtrl->Text()).c_str(), 2, 0, 0, 0, "Message", 280, 120, 0);
+          g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_MACRO_CHECK_ANSWER), this->m_editCtrl->Text()).c_str(), 2, 0, 0, 0, "Message", 280, 120, 0);
         if (result != ID_NO) {
           UIBitmapButton* button = this->registerButton;
           button->SetDisabled(1);

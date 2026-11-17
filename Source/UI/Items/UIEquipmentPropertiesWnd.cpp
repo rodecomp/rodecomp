@@ -297,7 +297,7 @@ void CUIEquipmentPropertiesWnd::OnCreate(int width, int height) {
   CUIStaticText* title = new CUIStaticText();
   title->SetSize(100, 18);
   title->Move(18, 0);
-  title->SetText(LookupMessage(MSI_SEND_TO_ALLY));
+  title->SetText(LookupMessage(MSI_EQUIPMENT_PROPERTIES));
   title->SetFitText(0);
   title->SetAlign(0, 6);
   {

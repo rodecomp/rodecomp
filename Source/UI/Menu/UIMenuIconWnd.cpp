@@ -272,7 +272,7 @@ void UIMenuIcon::OnMouseMove(int x, int y) {
     break;
   case MENUICON_GUILD:
     behaviorId = WID_GUILDWND;
-    message = MSI_CASHSHOP;
+    message = MSI_GUILD;
     break;
   case MENUICON_BATTLE:
     behaviorId = WID_JOINTO_BATTLEFIELDWND;
@@ -284,60 +284,60 @@ void UIMenuIcon::OnMouseMove(int x, int y) {
     break;
   case ID_MAP:
     behaviorId = WID_ROMAPWND;
-    message = MSI_MINIMAP_BUTTON_ON;
+    message = MSI_MINIMAP_TIP_WORLD_VIEW;
     break;
   case MENUICON_NAVIGATION:
     behaviorId = WID_NAVIGATIONV4WND;
-    message = MSI_CLAN_LEVEL;
+    message = MSI_MENU_NAVIGATIONWND;
     break;
   case ID_OPTION:
     message = MSI_OPTIONWND;
     break;
   case MENUICON_REC:
     behaviorId = WID_REPLAYRECCONTROLWND;
-    message = MSI_MENU_NAVIGATIONWND;
+    message = MSI_MENU_REPLAYWND;
     break;
   case ID_OPEN_HOTKEY:
-    message = MSI_IMAGE_CAPTURE;
+    message = MSI_HOTKEY_GUIDE;
     break;
   case MENUICON_BANK:
     behaviorId = 251;
-    message = MSI_SIT;
+    message = MSI_BANK;
     break;
   case MENUICON_MAIL:
     behaviorId = WID_RODEXINBOXWND;
-    message = MSI_MOVE;
+    message = MSI_MAIL;
     break;
   case MENUICON_ACHIEVEMENT:
     behaviorId = WID_ACHIEVEMENTWND;
-    message = MSI_ACHIEVEMENT_SCORE_REQUIRED_TO_REWARD;
+    message = MSI_ACHIEVEMENT_SYSTEM;
     break;
   case MENUICON_TIP:
     behaviorId = WID_TIPBOXWND;
-    message = MSI_REFINING_AGAIN_FAILED_INGREDIENT_CHANGED;
+    message = MSI_MENUICON_TIPBOX;
     break;
   case MENUICON_SHOP:
     behaviorId = WID_CASHSHOP_WND;
-    message = MSI_ROTATE;
+    message = MSI_CASHSHOP;
     break;
   case MENUICON_ATTENDANCE:
     behaviorId = WID_CHECKATTENDANCEWND;
-    message = MSI_CAN_NOT_OFFER_EXP_TO_GUILD_MAX_EXP;
+    message = MSI_CHECK_ATTENDANCE;
     break;
   case ID_TOGGLE_PARTY_BOARD:
     behaviorId = WID_ADVENPARTYBOARDWND;
-    message = MSI_CANNOT_MORE_SELECT_JOB;
+    message = MSI_ADVENTURER_AGENCY;
     break;
   case MENUICON_REPUTE:
     behaviorId = WID_REPUTEWND;
-    message = MSI_REPUTE_NOW_LOADING;
+    message = MSI_REPUTE_WND;
     break;
   case MENUICON_ADVENTURE_GUIDE:
     behaviorId = WID_ADVENTUREGUIDE;
-    message = MSI_RUNESYSTEM_CLOSE_RODEX;
+    message = MSI_ADVENTURE_GUIDE;
     break;
   case MENUICON_PROBABILITY:
-    message = MSI_REFINING_PROBABILITY_URL;
+    message = MSI_PROBABILITY_TITLE;
     break;
   default:
     known = false;
@@ -445,11 +445,11 @@ int UIMenuIconWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
         break;
       case MENUICON_MAIL:
         if (g_windowMgr.LookupWindow(WID_REFININGWND)) {
-          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_AURA_EFFECT_OFF)), 255, 0, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_OPEN_RODEX_DURING_REFINING)), 255, 0, 0, 0);
         } else if (g_windowMgr.LookupWindow(WID_GRADEENCHANTWND)) {
-          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BROADCASTING_GRADE_ENCHANT_SUCCESS)), 255, 0, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_OPEN_RODEX_DURING_GRADE_ENCHANT)), 255, 0, 0, 0);
         } else if (g_windowMgr.LookupWindow(WID_ENCHANTUI)) {
-          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ENCHANT_REQUEST)), 255, 0, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_OPEN_RODEX_DURING_ENCHANT)), 255, 0, 0, 0);
         } else {
           this->ToggleWindow(WID_RODEXINBOXWND);
         }
@@ -483,8 +483,8 @@ int UIMenuIconWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
         this->ToggleWindow(WID_ADVENTUREGUIDE);
         break;
       case MENUICON_PROBABILITY:
-        if (g_windowMgr.Confirm(LookupMessage(MSI_GENDER_CHANGE_FAILED_CAUSE_MONSTER_TRANSFORM), 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
-          ShellExecuteA(hWnd, "open", LookupMessage(MSI_GENDER_CHANGE_FAILED_CAUSE_MARRIED), nullptr, nullptr, SW_SHOWNORMAL);
+        if (g_windowMgr.Confirm(LookupMessage(MSI_ETC_PROBABILITY_WEB_CONNECT), 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
+          ShellExecuteA(hWnd, "open", LookupMessage(MSI_ETC_PROBABILITY_URL), nullptr, nullptr, SW_SHOWNORMAL);
         }
         break;
       }

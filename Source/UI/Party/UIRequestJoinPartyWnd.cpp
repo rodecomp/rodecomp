@@ -58,7 +58,7 @@ void UIRequestJoinPartyWnd::OnCreate(int, int) {
   this->AddChild(this->levelText);
   const int ids[] = {REQUESTJOIN_BUTTON_ACCEPT, REQUESTJOIN_BUTTON_REJECT};
   const int positions[][2] = {{122, 136}, {169, 136}};
-  const std::string labels[] = {LookupMessage(MSI_CANNOT_FIND_REQUEST_USER), LookupMessage(MSI_STORE_ASSISTANT_TRADE_FORCED_REMOVAL)};
+  const std::string labels[] = {LookupMessage(MSI_ACCEPT), LookupMessage(MSI_REFUSE)};
 
   for (int index = 0; index < 2; ++index) {
     auto* button = new UIBasicButton();
@@ -82,14 +82,14 @@ void UIRequestJoinPartyWnd::OnCreate(int, int) {
   this->block->SetId(ID_CHECK);
   this->AddChild(this->block);
   std::vector<std::string> unused;
-  WrapPlainText(LookupMessage(MSI_EXPAND_OBJALPHA), unused, 30);
+  WrapPlainText(LookupMessage(MSI_D0_NOT_RECEIVE_THE_USER_REQUEST_TODAY), unused, 30);
 
   this->blockText = new UITextViewer();
   this->blockText->Configure(31, 81, 182, 47, 0);
   SetViewerBackground(this->blockText, 0xFFD7C6BCu);
   this->AddChild(this->blockText);
   this->blockText->lineHeight = 15;
-  this->blockText->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_EXPAND_OBJALPHA)), 30, 0, 0);
+  this->blockText->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_D0_NOT_RECEIVE_THE_USER_REQUEST_TODAY)), 30, 0, 0);
   this->AddBigCloseButton("", 0);
 }
 
@@ -98,7 +98,7 @@ void UIRequestJoinPartyWnd::OnCreate(int, int) {
 void UIRequestJoinPartyWnd::Paint() {
   CBitmapRes* background = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\UIadventurerAgency\\bg_agency_admit.bmp")));
   this->DrawBitmap(0, 0, background, false);
-  this->DrawTitleBar(true, LookupMessage(MSI_ADVEN_ASSIST), 0);
+  this->DrawTitleBar(true, LookupMessage(MSI_REQUEST_JOIN_PARTY), 0);
 }
 
 // OFFSET: 0x007C1770
@@ -148,7 +148,7 @@ int UIRequestJoinPartyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     this->levelText->Move(25 - this->TextWidth(level, 0, 0, 12, 0, 0) / 2, 56);
     this->details->Clear();
     char messageText[1024] = {};
-    _snprintf_s(messageText, sizeof(messageText), _TRUNCATE, LookupMessage(MSI_EXIT), request.name);
+    _snprintf_s(messageText, sizeof(messageText), _TRUNCATE, LookupMessage(MSI_REQUEST_PARTY), request.name);
     this->details->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(messageText), 0, 0, 1);
     if (this->details->lines.size() == 3) {
       this->details->Move(43, 20);

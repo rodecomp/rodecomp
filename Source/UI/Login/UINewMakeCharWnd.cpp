@@ -194,7 +194,7 @@ void UIHairBitmap::OnLBtnUp(int x, int y) {
 // FUNCTION: fn_09615
 void UINewMakeCharWnd::Paint() {
   this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\make_character_ver2\\bg_makeBg.bmp"))), false);
-  this->DrawTextAt(0x2C, 0x11, LookupMessage(MSI_STOP_RECRUITING), 0, 0, 0xC, 0x5F5F5F, 1, 0);
+  this->DrawTextAt(0x2C, 0x11, LookupMessage(MSI_MAKECHARWND_TITLE), 0, 0, 0xC, 0x5F5F5F, 1, 0);
 
   for (int i = 0; i < 2; ++i) {
     CImfRes* offsets = static_cast<CImfRes*>(ResourceMgr::Instance().Load(this->m_raceOffsets.c_str()));
@@ -376,7 +376,7 @@ void UINewMakeCharWnd::OnCreate(int width, int height) {
   makeButton->SetBitmap("유저인터페이스\\make_character_ver2\\bt_make_press.bmp", 2, 0);
   makeButton->SetSize(makeButton->BitmapWidth(), makeButton->BitmapHeight());
   makeButton->Move(0x268, 0x17B);
-  makeButton->SetText(LookupMessage(MSI_MAKECHARWND_DOUBLECHECK_NAME));
+  makeButton->SetText(LookupMessage(MSI_MAKECHARWND_CREATE));
   makeButton->AddTextStyle(0, 0xE, 0x313131, 1, 1, -1000, -1000);
   makeButton->AddTextStyle(1, 0xE, 0x313131, 1, 1, -1000, -1000);
   makeButton->AddTextStyle(2, 0xE, 0x313131, 1, 1, -1000, -1000);
@@ -389,7 +389,7 @@ void UINewMakeCharWnd::OnCreate(int width, int height) {
   cancelButton->SetBitmap("유저인터페이스\\make_character_ver2\\bt_make_press.bmp", 2, 0);
   cancelButton->SetSize(cancelButton->BitmapWidth(), cancelButton->BitmapHeight());
   cancelButton->Move(0x19, 0x17B);
-  cancelButton->SetText(LookupMessage(MSI_PRIVATE_AIRPLANE_FAILED_DEAD_STATE));
+  cancelButton->SetText(LookupMessage(MSI_MAKECHARWND_CLOSE));
   cancelButton->AddTextStyle(0, 0xE, 0x313131, 1, 1, -1000, -1000);
   cancelButton->AddTextStyle(1, 0xE, 0x313131, 1, 1, -1000, -1000);
   cancelButton->AddTextStyle(2, 0xE, 0x313131, 1, 1, -1000, -1000);
@@ -461,7 +461,7 @@ void UINewMakeCharWnd::OnCreate(int width, int height) {
   leftTurn->Move(0x1AA, 0xB3);
   leftTurn->SetId(ID_LEFT);
   leftTurn->m_argument = 0;
-  leftTurn->SetTooltip(LookupMessage(MSI_VIEW_BEFORE_WORLDINFO_TITLE));
+  leftTurn->SetTooltip(LookupMessage(MSI_CHARACTER_LEFT_ROLL));
   this->AddChild(leftTurn);
 
   UIBitmapButton* rightTurn = new UIBitmapButton();
@@ -472,12 +472,12 @@ void UINewMakeCharWnd::OnCreate(int width, int height) {
   rightTurn->Move(0x227, 0xB3);
   rightTurn->SetId(ID_RIGHT);
   rightTurn->m_argument = 0;
-  rightTurn->SetTooltip(LookupMessage(MSI_VIEW_BEFORE_SERVERINFO));
+  rightTurn->SetTooltip(LookupMessage(MSI_CHARACTER_RIGHT_ROLL));
   this->AddChild(rightTurn);
 
   UIStaticText* hairStyleTitle = new UIStaticText();
   hairStyleTitle->SetSize(100, 0xF);
-  hairStyleTitle->SetText(LookupMessage(MSI_DATE_HH_MM_SS), 0);
+  hairStyleTitle->SetText(LookupMessage(MSI_MAKECHARWND_HAIR_STYLE), 0);
   hairStyleTitle->SetColor(0x40, 0x40, 0x40);
   hairStyleTitle->SetFont(0, 0xB, 1, 0);
   hairStyleTitle->Move(0x261, 0x2E);
@@ -499,7 +499,7 @@ void UINewMakeCharWnd::OnCreate(int width, int height) {
 
   UIStaticText* hairColorTitle = new UIStaticText();
   hairColorTitle->SetSize(100, 0xF);
-  hairColorTitle->SetText(LookupMessage(MSI_INPUT_TIME_EXCEEDED_SIGN_IN_AGAIN), 0);
+  hairColorTitle->SetText(LookupMessage(MSI_MAKECHARWND_HAIR_COLOR), 0);
   hairColorTitle->SetColor(0x40, 0x40, 0x40);
   hairColorTitle->SetFont(0, 0xB, 1, 0);
   hairColorTitle->Move(0x261, 0x11F);

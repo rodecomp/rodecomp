@@ -207,7 +207,7 @@ void UINewSelectCharWnd::OnCreate(int width, int height) {
   this->m_textButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_info_press.bmp", 2, 0);
   this->m_textButton->SetSize(this->m_textButton->BitmapWidth(), this->m_textButton->BitmapHeight());
   this->m_textButton->Move(0x33E, 0x15F);
-  this->m_textButton->SetText(LookupMessage(MSI_MAKECHARWND_HAIR_COLOR));
+  this->m_textButton->SetText(LookupMessage(MSI_SELECTCHARWND_NOTICE));
   this->m_textButton->AddTextStyle(0, 0xC, 0x313131, 0, 1, -1000, -1000);
   this->m_textButton->AddTextStyle(1, 0xC, 0x313131, 0, 1, -1000, -1000);
   this->m_textButton->AddTextStyle(2, 0xC, 0x313131, 0, 1, -1000, -1000);
@@ -222,7 +222,7 @@ void UINewSelectCharWnd::OnCreate(int width, int height) {
   this->m_windowC0->SetBitmap("유저인터페이스\\select_character_ver3\\bt_info_normal.bmp", 3, 0);
   this->m_windowC0->SetSize(this->m_windowC0->BitmapWidth(), this->m_windowC0->BitmapHeight());
   this->m_windowC0->Move(0x33E, 0x142);
-  this->m_windowC0->SetText(LookupMessage(MSI_SELECTCHARWND_DELETE));
+  this->m_windowC0->SetText(LookupMessage(MSI_SELECTCHARWND_RESERVE_TO_DEL_CHAR));
   this->m_windowC0->AddTextStyle(0, 0xC, 0x313131, 0, 1, -1000, -1000);
   this->m_windowC0->AddTextStyle(1, 0xC, 0x313131, 0, 1, -1000, -1000);
   this->m_windowC0->AddTextStyle(2, 0xC, 0x313131, 0, 1, -1000, -1000);
@@ -241,7 +241,7 @@ void UINewSelectCharWnd::OnCreate(int width, int height) {
   this->m_windowC4->SetBitmap("유저인터페이스\\select_character_ver3\\bt_info_press.bmp", 2, 0);
   this->m_windowC4->SetSize(this->m_windowC4->BitmapWidth(), this->m_windowC4->BitmapHeight());
   this->m_windowC4->Move(0x33E, 0x142);
-  this->m_windowC4->SetText(LookupMessage(MSI_SELECTCHARWND_CHARACTER_LIST));
+  this->m_windowC4->SetText(LookupMessage(MSI_SELECTCHARWND_CANCEL_TO_RESERVE_CHAR));
   this->m_windowC4->AddTextStyle(0, 0xC, 0x313131, 0, 1, -1000, -1000);
   this->m_windowC4->AddTextStyle(1, 0xC, 0x313131, 0, 1, -1000, -1000);
   this->m_windowC4->AddTextStyle(2, 0xC, 0x313131, 0, 1, -1000, -1000);
@@ -257,7 +257,7 @@ void UINewSelectCharWnd::OnCreate(int width, int height) {
   this->m_windowFC->SetSize(this->m_windowFC->BitmapWidth(), this->m_windowFC->BitmapHeight());
   this->m_windowFC->Move(0x330, 0x197);
   this->m_windowFC->SetId(ID_OK);
-  this->m_windowFC->SetText(LookupMessage(MSI_SELECTCHARWND_NOTICE));
+  this->m_windowFC->SetText(LookupMessage(MSI_SELECTCHARWND_START_GAME));
   this->m_windowFC->AddTextStyle(0, 0x12, 0xFFFFFF, 1, 1, -1000, 0x39);
   this->m_windowFC->AddTextStyle(1, 0x12, 0xFFFFFF, 1, 1, -1000, 0x39);
   this->m_windowFC->AddTextStyle(2, 0x12, 0xFFFFFF, 1, 1, -1000, 0x39);
@@ -270,7 +270,7 @@ void UINewSelectCharWnd::OnCreate(int width, int height) {
   this->m_window100->SetBitmap("유저인터페이스\\select_character_ver3\\bt_info_press.bmp", 2, 0);
   this->m_window100->SetSize(this->m_window100->BitmapWidth(), this->m_window100->BitmapHeight());
   this->m_window100->Move(0x33E, 0x15F);
-  this->m_window100->SetText(LookupMessage(MSI_MAKECHARWND_CREATE));
+  this->m_window100->SetText(LookupMessage(MSI_SELECTCHARWND_DELETE));
   this->m_window100->AddTextStyle(0, 0xC, 0x313131, 0, 1, -1000, -1000);
   this->m_window100->AddTextStyle(1, 0xC, 0x313131, 0, 1, -1000, -1000);
   this->m_window100->AddTextStyle(2, 0xC, 0x313131, 0, 1, -1000, -1000);
@@ -331,9 +331,9 @@ void UINewSelectCharWnd::OnCreate(int width, int height) {
   this->AddChild(this->m_nextPageButton);
 
   UIStaticText* pageTitle = new UIStaticText();
-  const int titleWidth = this->TextWidth(LookupMessage(MSI_MAKECHARWND_HAIR_STYLE), 0, 0, 0xC, 1, 0);
-  pageTitle->SetSize(titleWidth, this->TextHeight(LookupMessage(MSI_MAKECHARWND_HAIR_STYLE), 0, 0, 0xC, 1, 0));
-  pageTitle->SetText(LookupMessage(MSI_MAKECHARWND_HAIR_STYLE), 0);
+  const int titleWidth = this->TextWidth(LookupMessage(MSI_SELECTCHARWND_CHARACTER_LIST), 0, 0, 0xC, 1, 0);
+  pageTitle->SetSize(titleWidth, this->TextHeight(LookupMessage(MSI_SELECTCHARWND_CHARACTER_LIST), 0, 0, 0xC, 1, 0));
+  pageTitle->SetText(LookupMessage(MSI_SELECTCHARWND_CHARACTER_LIST), 0);
   pageTitle->SetColor(0x57, 0x66, 0x91);
   pageTitle->Move(0x380 - titleWidth / 2, 0x21A);
   this->AddChild(pageTitle);
@@ -374,7 +374,7 @@ void UINewSelectCharWnd::OnCreate(int width, int height) {
     if (g_session.IsListedId(character->job, character->sex) == 1) {
       char message[260];
       std::memset(message, 0, sizeof(message));
-      std::sprintf(message, LookupMessage(MSI_REFUSE_OVER_USERLIMIT), index, 0x9C41);
+      std::sprintf(message, LookupMessage(MSI_CHARACTERERROR_JOB), index, 0x9C41);
       g_windowMgr.Confirm(message, 0, true, false, 0, "Message", 0x118, 0x78, 0);
       g_modeMgr.currentMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
       break;
@@ -671,7 +671,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     case ID_CANCEL:
       g_accountLinkedUserDataMgr->Save();
       if (g_session.m_loginModeFlag == 1) {
-        if (g_windowMgr.Confirm(LookupMessage(MSI_ENST_ANGELUS2), 2, true, false, 0, "Message", 0x118, 0x78, 0) == ID_YES) {
+        if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_WANT_TO_BACK_LOGINWND), 2, true, false, 0, "Message", 0x118, 0x78, 0) == ID_YES) {
           g_modeMgr.currentMode->SendMsg(LMM_GOTO_LOGIN, 0, 0, 0, 0);
         }
       } else if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT), 2, true, false, 0, "Message", 0x118, 0x78, 0) == ID_YES) {

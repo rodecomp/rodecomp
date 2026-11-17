@@ -100,7 +100,7 @@ int UISeekPartyMBWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       } else {
         char text[260];
         std::memset(text, 0, sizeof(text));
-        StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(MSI_FAILED_TO_WRITE_MAIL), maximum);
+        StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(MSI_PARTY_BOOKING_ERR5R2), maximum);
         g_windowMgr.Confirm(text, 0, true, false, 0, "Message", 280, 120, 0);
       }
       break;

@@ -839,7 +839,7 @@ void RenewQuestUI::CUIQuestItem::OnSimpleView(bool simpleView) {
 // FUNCTION: fn_16622
 void RenewQuestUI::CUIQuestItem::OnInit() {
   CUIButton* button = this->simpleViewCheckBox;
-  std::string tooltip = LookupMessage(MSI_PASSWORD);
+  std::string tooltip = LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP3_ITEM);
   button->tooltip = tooltip;
 }
 
@@ -1101,7 +1101,7 @@ void RenewQuestUI::CUIQuestList::BindItem(CUIQuestItem* item, const unsigned lon
     CUICheckBox* activeCheckBox = item->activeCheckBox;
     activeCheckBox->checked = info.m_active;
     activeCheckBox->Invalidate();
-    std::string tooltip = LookupMessage(MSI_SAVE_ID);
+    std::string tooltip = LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP2_ITEM);
     item->activeCheckBox->tooltip = tooltip;
   } else {
     auto& quests = g_renewQuestMgr->m_ongoingQuests;
@@ -1123,7 +1123,7 @@ void RenewQuestUI::CUIQuestList::BindItem(CUIQuestItem* item, const unsigned lon
     CUICheckBox* activeCheckBox = item->activeCheckBox;
     activeCheckBox->checked = info.m_active;
     activeCheckBox->Invalidate();
-    std::string tooltip = LookupMessage(MSI_OTP_INPUT_TIME);
+    std::string tooltip = LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP1_ITEM);
     item->activeCheckBox->tooltip = tooltip;
   }
 }
@@ -1939,7 +1939,7 @@ void CUIRenewQuestUI::OnInit() {
   g_windowMgr.RecordWindowPacket(0x2718);
   g_windowMgr.CloseWindow(WID_NOTIFYQUESTWND);
 
-  this->titleBar->SetTitle(LookupMessage(MSI_RENEW_QUEST_DETAIL_REWARD));
+  this->titleBar->SetTitle(LookupMessage(MSI_RENEW_QUEST_TITLE));
   this->filterLabel->SetText(LookupMessage(MSI_QUEST_DISPLAY_ONOFF));
 
   bool visible = false;

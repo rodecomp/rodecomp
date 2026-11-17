@@ -41,22 +41,22 @@ int UIOpenMailBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
   }
 
   if (g_windowMgr.LookupWindow(WID_REFININGWND)) {
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_AURA_EFFECT_OFF)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_OPEN_RODEX_DURING_REFINING)), 0xFF, 0, 0, 0);
     return 0;
   }
 
   if (g_windowMgr.LookupWindow(WID_GRADEENCHANTWND)) {
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BROADCASTING_GRADE_ENCHANT_SUCCESS)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_OPEN_RODEX_DURING_GRADE_ENCHANT)), 0xFF, 0, 0, 0);
     return 0;
   }
 
   if (g_windowMgr.LookupWindow(WID_ENCHANTUI)) {
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ENCHANT_REQUEST)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_OPEN_RODEX_DURING_ENCHANT)), 0xFF, 0, 0, 0);
     return 0;
   }
 
   if (g_windowMgr.LookupWindow(WID_RUNESYSTEMWND)) {
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_CLOSE_BANKING)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_DURING_CANNOT_OPEN_RODEX)), 0xFF, 0, 0, 0);
     return 0;
   }
 

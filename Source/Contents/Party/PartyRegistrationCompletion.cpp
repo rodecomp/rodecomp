@@ -31,12 +31,12 @@ void CAdventurerAgencyMgr::CompleteRegistration(AsyncDiagnostic diagnostic, std:
   switch (type) {
     case 2:
     case 3:
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ADVEN_TANKER)), 0xFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ADVENTURER_AGENCY_REGIST_FAILED)), 0xFF, 0, 0, 0);
       return;
   }
 
   this->registered = true;
-  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BASIC_EXP_ZERO)), 0xFFFF64, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ADVENTURER_AGENCY_REGIST_SUCCESSED)), 0xFFFF64, 0, 0, 0);
   UIWindow* board = g_windowMgr.LookupWindow(WID_ADVENPARTYBOARDWND);
 
   if (board == nullptr) {

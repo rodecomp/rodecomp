@@ -33,41 +33,41 @@ void ReceivePartyJoinResult(const void* packet) {
   switch (ack->status) {
   case 5:
   case 6:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_JOIN_PARTY_BECAUSE_LOW_LEVEL)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_FIND_REQUEST_USER)), 0xFF, 0, 0, 0);
     break;
   case 9: {
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_EXCEEDED_NUMBER_OF_PARTYMEMBERS)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_FIND_PARTYMASTER)), 0xFF, 0, 0, 0);
     g_adventurerAgencyMgr->RequestStop(ack->masterAid);
     break;
   }
   case 10:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_QUESTWND_HIGHER)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NO_PARTY_FOUND)), 0xFF, 0, 0, 0);
     break;
   case 11:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_JOIN_ACCEPT)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_JOIN_PARTY_BECAUSE_LOW_LEVEL)), 0xFF, 0, 0, 0);
     break;
   case 4:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_JOIN_REFUSE)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_INVALID_MAPPROPERTY_REQUEST_USER)), 0xFF, 0, 0, 0);
     break;
   case 8: {
     char text[500] = {};
-    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(MSI_NOT_PARTYMASTER_CANNOT_REGISTER_ADVENTURER_AGENCY), ack->partyName);
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(MSI_REQUEST_REJECTED_BECAUSE_INVALID_MAPPROPERTY), ack->partyName);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
     break;
   }
   case 3:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_WEB_ADDRESS_FOR_RESTART)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_THE_PARTY_MASTER_CANNOT_BE_REQUESTED)), 0xFF, 0, 0, 0);
     break;
   case 2:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ALREADY_JOINED_REQUEST_USER)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_EXCEEDED_NUMBER_OF_PARTYMEMBERS)), 0xFF, 0, 0, 0);
     break;
   case 0: {
     char text[500] = {};
 
     if (g_session.partyLeader == 1) {
-      StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(MSI_ADVENTURER_AGENCY_LIST), ack->partyName);
+      StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(MSI_JOIN_ACCEPT_REQUEST_USER), ack->partyName);
     } else {
-      StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(MSI_JOIN_ACCEPT_REQUEST_USER), ack->playerName);
+      StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(MSI_JOIN_ACCEPT), ack->playerName);
     }
 
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF64, 0, 0, 0);
@@ -77,9 +77,9 @@ void ReceivePartyJoinResult(const void* packet) {
     char text[500] = {};
 
     if (g_session.partyLeader == 1) {
-      StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(MSI_REQUEST_JOIN_PARTY), ack->partyName);
+      StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(MSI_JOIN_REFUSE_REQUEST_USER), ack->partyName);
     } else {
-      StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(MSI_JOIN_REFUSE_REQUEST_USER), ack->playerName);
+      StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(MSI_JOIN_REFUSE), ack->playerName);
     }
 
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
@@ -87,7 +87,7 @@ void ReceivePartyJoinResult(const void* packet) {
   }
   case 7: {
     char text[500] = {};
-    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(MSI_REQUEST_REJECTED_BECAUSE_INVALID_MAPPROPERTY), ack->partyName);
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), LookupMessage(MSI_ALREADY_JOINED_REQUEST_USER), ack->partyName);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
     break;
   }

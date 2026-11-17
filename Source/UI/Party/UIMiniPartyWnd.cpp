@@ -210,7 +210,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       g_windowMgr.CloseWindow(WID_MENUWND);
     }
     if (this->m_owner->GetMember().valid) {
-      this->m_entries.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_USA_PERSONALINFO_DEATH)).c_str(), MENUID_WRITE_RODEX));
+      this->m_entries.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_SEND_RODEX)).c_str(), MENUID_WRITE_RODEX));
       if (this->m_owner->GetMember().name == g_session.DecodePlayerName()) {
         this->m_entries.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_LEAVE_PARTY)).c_str(), MENUID_LEAVE));
       } else {
@@ -220,7 +220,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
           this->m_entries.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_YIELD_PARTYMASTER)).c_str(), MENUID_YIELD_PARTYMASTER));
         }
       }
-      this->m_entries.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_ACHIEVEMENT_NEXT_GRADE)).c_str(), MENUID_CLOSE_MINIPARTY));
+      this->m_entries.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_DELETE_MINI_PARTYWND)).c_str(), MENUID_CLOSE_MINIPARTY));
     }
     if (this->m_entries.size()) {
       UIWindow* menu = g_windowMgr.EnsureWindow(WID_MENUWND);
@@ -253,7 +253,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       return 0;
     }
     if (this->m_entries.empty()) {
-      g_windowMgr.Confirm(LookupMessage(MSI_MENUICON_TIPBOX), 0, false, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_GET_OFF_MINI_PARTYWND), 0, false, false, 0, "Message", 280, 120, 0);
       return 0;
     }
     switch (this->m_entries[argument1].value) {
@@ -431,7 +431,7 @@ void UIMiniPartyWnd::OnLBtnUp(int x, int y) {
         this->m_cell = cell;
         g_session.SetRecord0734Value(this->m_member.accountId, cell);
       } else {
-        g_windowMgr.Confirm(LookupMessage(MSI_HOTKEY_SETTING), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_CANNOT_MOVE_MINI_PARTYWND), 0, true, false, 0, "Message", 280, 120, 0);
       }
     }
   }

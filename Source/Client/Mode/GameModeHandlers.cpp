@@ -959,23 +959,23 @@ void CGameMode::ReceiveItem1718Result(const unsigned char* packet) {
     break;
   case 10:
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_ACCESS_BY_WEIGHTOVER_80)), 0xFFFF00, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SEND_PURCHASES_BY_RODEX)), 0xFFFF00, 0, 0, 0);
     break;
   case 11:
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_OUT_OF_STOCK)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_EXCHANGED_FAILED)), 0xFF, 0, 0, 0);
     break;
   case 12:
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_DEAD)), 0xFFFF00, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_EXCHANGED_SUCCEEDED)), 0xFFFF00, 0, 0, 0);
     break;
   case 13:
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_INVENTORY_EXTEND_OF_BODYITEM)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_OUT_OF_STOCK)), 0xFF, 0, 0, 0);
     break;
   case 14:
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PVP)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NO_ITEM_FOR_EXCHANGE)), 0xFF, 0, 0, 0);
     break;
   }
 
@@ -1052,22 +1052,22 @@ void CGameMode::ReceivePetAct(unsigned char* packet) {
 void CGameMode::NotifyPetEvolutionResult(int result) {
   switch (result) {
   case 0:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PET_EVOLUTION_FAIL_RECIPE)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PET_EVOLUTION_FAIL_UNKNOWN)), 0xFF, 0, 0, 0);
     break;
   case 1:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PET_EVOLUTION_FAIL_MATERIAL)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PET_EVOLUTION_FAIL_NOTEXIST_CALLPET)), 0xFF, 0, 0, 0);
     break;
   case 2:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PET_EVOLUTION_FAIL_RG_FAMILIAR)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PET_EVOLUTION_FAIL_NOT_PETEGG)), 0xFF, 0, 0, 0);
     break;
   case 3:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PET_AUTO_FEEDING)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PET_EVOLUTION_FAIL_RECIPE)), 0xFF, 0, 0, 0);
     break;
   case 4:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PET_AUTO_FEEDING_REST)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PET_EVOLUTION_FAIL_MATERIAL)), 0xFF, 0, 0, 0);
     break;
   case 5:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PET_AUTO_FEEDING_ON)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PET_EVOLUTION_FAIL_RG_FAMILIAR)), 0xFF, 0, 0, 0);
     break;
   case 7:
     g_session.ResetPetEggAndJob();
@@ -1599,11 +1599,11 @@ void CGameMode::ReceiveRequestResult(const unsigned char* packet) {
     text = LookupMessage(MSI_CASH_FAILED_BUSY);
     break;
   case 303:
-    text = "- " + IntToString(303, 0) + " : " + LookupMessage(MSI_ZEROCHATWND_LOCK);
+    text = "- " + IntToString(303, 0) + " : " + LookupMessage(MSI_RESULT_ERROR_VTC_303);
     g_windowMgr.Confirm(text.c_str(), 0, false, false, 0, "Error", 280, 120, 0);
     break;
   case 304:
-    text = "- " + IntToString(304, 0) + " : " + LookupMessage(MSI_ZEROCHATWND_UNLOCK);
+    text = "- " + IntToString(304, 0) + " : " + LookupMessage(MSI_RESULT_ERROR_VTC_304);
     g_windowMgr.Confirm(text.c_str(), 0, false, false, 0, "Error", 280, 120, 0);
     break;
   default:
@@ -1688,6 +1688,19 @@ void CGameMode::ReceiveNamedResultNotice(const unsigned char* packet) {
   case 0:
     switch (packet[27]) {
     case 0:
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>((name + LookupMessage(MSI_TO_BLOCK_WHISPER)).c_str()), 0xFFFF, 0, 0, 0);
+      break;
+    case 1:
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>((name + LookupMessage(MSI_TO_BLOCK_WHISPER_FAILED1)).c_str()), 0xFFFF, 0, 0, 0);
+      break;
+    case 2:
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>((name + LookupMessage(MSI_TO_BLOCK_WHISPER_FAILED2)).c_str()), 0xFFFF, 0, 0, 0);
+      break;
+    }
+    break;
+  case 1:
+    switch (packet[27]) {
+    case 0:
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>((name + LookupMessage(MSI_TO_UNBLOCK_WHISPER)).c_str()), 0xFFFF, 0, 0, 0);
       break;
     case 1:
@@ -1695,19 +1708,6 @@ void CGameMode::ReceiveNamedResultNotice(const unsigned char* packet) {
       break;
     case 2:
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>((name + LookupMessage(MSI_TO_UNBLOCK_WHISPER_FAILED2)).c_str()), 0xFFFF, 0, 0, 0);
-      break;
-    }
-    break;
-  case 1:
-    switch (packet[27]) {
-    case 0:
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>((name + LookupMessage(MSI_NO_BLOCK_LIST)).c_str()), 0xFFFF, 0, 0, 0);
-      break;
-    case 1:
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>((name + LookupMessage(MSI_BLOCK_LIST)).c_str()), 0xFFFF, 0, 0, 0);
-      break;
-    case 2:
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>((name + LookupMessage(MSI_RENEW_QUEST_TAB_PROCESS)).c_str()), 0xFFFF, 0, 0, 0);
       break;
     }
     break;
@@ -1996,35 +1996,35 @@ void CGameMode::ReceiveRuneRewardPacket(const unsigned char* packet) {
     break;
   }
   case 1:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_LACK_OF_ITEM)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_DECOM_FAIL)), 0xFF, 0, 0, 0);
     break;
   case 2:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_ALREADY_EQUIPED)), 0xFF, 0, 0, 0);
-    g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_ALREADY_EQUIPED), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_DECOM_CANNOT_FIND_ITEM)), 0xFF, 0, 0, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_DECOM_CANNOT_FIND_ITEM), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 3:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_NOTHING_EQUIPED)), 0xFF, 0, 0, 0);
-    g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_NOTHING_EQUIPED), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_DECOM_NOT_ENOUGH_INVENTORY)), 0xFF, 0, 0, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_DECOM_NOT_ENOUGH_INVENTORY), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 4:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_INVALID_ID)), 0xFF, 0, 0, 0);
-    g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_INVALID_ID), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_DECOM_HEAVY_INVENTORY)), 0xFF, 0, 0, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_DECOM_HEAVY_INVENTORY), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 5:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_MAX_LEVEL)), 0xFF, 0, 0, 0);
-    g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_MAX_LEVEL), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_DECOM_OVER_ITEM_COUNT)), 0xFF, 0, 0, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_DECOM_OVER_ITEM_COUNT), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 6:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_INVALID_OWNER)), 0xFF, 0, 0, 0);
-    g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_INVALID_OWNER), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_DECOM_RUNE_UI_NOT_OPENED)), 0xFF, 0, 0, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_DECOM_RUNE_UI_NOT_OPENED), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 7:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_TABLE_NOT_EXIT)), 0xFF, 0, 0, 0);
-    g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_TABLE_NOT_EXIT), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_DECOM_TABLE_NOT_EXIT)), 0xFF, 0, 0, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_DECOM_TABLE_NOT_EXIT), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 8:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_DB_LOAD_NOT_YET)), 0xFF, 0, 0, 0);
-    g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_DB_LOAD_NOT_YET), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_DECOM_NOT_ENOUGH_ITEM_COUNT)), 0xFF, 0, 0, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_DECOM_NOT_ENOUGH_ITEM_COUNT), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   }
 
@@ -2129,25 +2129,25 @@ void CGameMode::ReceiveRuneRewardResult(int result, int tagId, std::int64_t id, 
     break;
   }
   case 1:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SECOND_PASSWORD_ONOFF_TIP_MSG)), 0x64FFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_REWARD_FAIL)), 0x64FFFF, 0, 0, 0);
     break;
   case 2:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_REWARD_RUNE_UI_NOT_OPENED)), 0x64FFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_REWARD_CANNOT_FIND_ITEM)), 0x64FFFF, 0, 0, 0);
     break;
   case 3:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_REWARD_TABLE_NOT_EXIT)), 0x64FFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_REWARD_MAX_INVENTORY)), 0x64FFFF, 0, 0, 0);
     break;
   case 4:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_MOVE_INDOOR_MAP)), 0x64FFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_REWARD_HEAVY_INVENTORY)), 0x64FFFF, 0, 0, 0);
     break;
   case 5:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GAME_SETTINGS_LOGINOUT)), 0x64FFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_REWARD_OVER_ITEM_COUNT)), 0x64FFFF, 0, 0, 0);
     break;
   case 6:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GAME_SETTINGS_TAB_ETC)), 0x64FFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_REWARD_RUNE_UI_NOT_OPENED)), 0x64FFFF, 0, 0, 0);
     break;
   case 7:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GAME_SETTINGS_FOG_ON)), 0x64FFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_REWARD_TABLE_NOT_EXIT)), 0x64FFFF, 0, 0, 0);
     break;
   }
 }
@@ -2249,49 +2249,49 @@ int CGameMode::HandleRuneResult(int result) {
   case 0:
     return 0;
   case 1:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_RUNE_UI_NOT_OPENED)), 0xFF, 0, 0, 0);
-    g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_RUNE_UI_NOT_OPENED), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_ALREADY_EXIST)), 0xFF, 0, 0, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_ALREADY_EXIST), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 2:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_DECOM_FAIL)), 0xFF, 0, 0, 0);
-    g_windowMgr.Confirm(LookupMessage(MSI_DECOM_FAIL), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_NOT_EXIST)), 0xFF, 0, 0, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_NOT_EXIST), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 3:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_DECOM_CANNOT_FIND_ITEM)), 0xFF, 0, 0, 0);
-    g_windowMgr.Confirm(LookupMessage(MSI_DECOM_CANNOT_FIND_ITEM), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_LACK_OF_ITEM)), 0xFF, 0, 0, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_LACK_OF_ITEM), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 4:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_DECOM_NOT_ENOUGH_INVENTORY)), 0xFF, 0, 0, 0);
-    g_windowMgr.Confirm(LookupMessage(MSI_DECOM_NOT_ENOUGH_INVENTORY), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_ALREADY_EQUIPED)), 0xFF, 0, 0, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_ALREADY_EQUIPED), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 5:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_DECOM_HEAVY_INVENTORY)), 0xFF, 0, 0, 0);
-    g_windowMgr.Confirm(LookupMessage(MSI_DECOM_HEAVY_INVENTORY), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_NOTHING_EQUIPED)), 0xFF, 0, 0, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_NOTHING_EQUIPED), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 6:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_DECOM_OVER_ITEM_COUNT)), 0xFF, 0, 0, 0);
-    g_windowMgr.Confirm(LookupMessage(MSI_DECOM_OVER_ITEM_COUNT), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_INVALID_ID)), 0xFF, 0, 0, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_INVALID_ID), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 7:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_DECOM_RUNE_UI_NOT_OPENED)), 0xFF, 0, 0, 0);
-    g_windowMgr.Confirm(LookupMessage(MSI_DECOM_RUNE_UI_NOT_OPENED), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_MAX_LEVEL)), 0xFF, 0, 0, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_MAX_LEVEL), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 8:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_DECOM_TABLE_NOT_EXIT)), 0xFF, 0, 0, 0);
-    g_windowMgr.Confirm(LookupMessage(MSI_DECOM_TABLE_NOT_EXIT), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_INVALID_OWNER)), 0xFF, 0, 0, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_INVALID_OWNER), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 10:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MACRO_USER_REPORT_NOT_USE_AREA)), 0xFF, 0, 0, 0);
-    g_windowMgr.Confirm(LookupMessage(MSI_DECOM_NOT_ENOUGH_ITEM_COUNT), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_DB_LOAD_NOT_YET)), 0xFF, 0, 0, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_TABLE_NOT_EXIT), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 11:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MACRO_USER_REPORT_NOT_USE_AREA)), 0xFF, 0, 0, 0);
-    g_windowMgr.Confirm(LookupMessage(MSI_MACRO_USER_REPORT_NOT_USE_AREA), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_DB_LOAD_NOT_YET)), 0xFF, 0, 0, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_DB_LOAD_NOT_YET), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   case 12:
   case 13:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GRAPHIC_SETTING_RENDER_SYSTEM)), 0xFF, 0, 0, 0);
-    g_windowMgr.Confirm(LookupMessage(MSI_GRAPHIC_SETTING_RENDER_SYSTEM), 0, true, false, 0, "Message", 280, 120, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_INVALID_TABLE_DATA)), 0xFF, 0, 0, 0);
+    g_windowMgr.Confirm(LookupMessage(MSI_RUNESYSTEM_INVALID_TABLE_DATA), 0, true, false, 0, "Message", 280, 120, 0);
     break;
   }
 
@@ -2332,15 +2332,15 @@ void CGameMode::ReceiveGameOptionResult(int command, int result, int enabled) {
   switch (result) {
   case 1:
     if (command == 1) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RODEX_SPAMOPTION_USERBLOCK)), 0x64FFFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RODEX_SPAMOPTION_FAIL)), 0x64FFFF, 0, 0, 0);
     }
 
     g_session.m_gameOptionFlag = enabled != 0;
     g_windowMgr.RefreshGameSettings();
     if (!g_session.m_gameOptionFlag) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RODEX_SPAMOPTION_RETURN_SUCCESS)), 0x64FFFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RODEX_SPAMOPTION_ON)), 0x64FFFF, 0, 0, 0);
     } else {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RODEX_SPAMOPTION_RETURN_FAIL)), 0x64FFFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RODEX_SPAMOPTION_OFF)), 0x64FFFF, 0, 0, 0);
     }
 
     break;
@@ -2434,7 +2434,7 @@ void CGameMode::ReceiveAchievementUpdate(
 
     AchievementInfo info;
     g_achievementMgr->GetAchievement(info, id);
-    const std::string text = FormatOwnedString(LookupMessage(MSI_NOTICE_NEXT_ROULLETE_STAGE), info.title.c_str());
+    const std::string text = FormatOwnedString(LookupMessage(MSI_NOTICE_COMPLETE_ACHIEVEMENT), info.title.c_str());
     this->achievementBalloon->WrapText(text.c_str(), 72);
     this->achievementBalloon->m_fontHeight = 20;
     {
@@ -2531,19 +2531,19 @@ void CGameMode::ReceiveItemReward2(const unsigned char* data) {
     g_session.AddStackedItem(reward);
     g_session.RemoveInventoryItem(reward.identity[1], reward.quantity);
     g_session.achievementResult = value;
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAILED_SEND_MAIL)), 0x64FFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SET_ITEMS_TO_MAIL_SUCCEED)), 0x64FFFF, 0, 0, 0);
     break;
   case 1:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAILED_CLOSE_ROULLETTE)), 0x64FFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SET_ITEMS_TO_MAIL_OVER_WEIGHT)), 0x64FFFF, 0, 0, 0);
     break;
   case 2:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAILED_OPEN_ROULLETTE)), 0x64FFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SET_ITEMS_TO_MAIL_FAILED)), 0x64FFFF, 0, 0, 0);
     break;
   case 3:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RESULT_ALREADY_LOSING_IDX)), 0x64FFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SET_ITEMS_TO_MAIL_OVERCOUNT)), 0x64FFFF, 0, 0, 0);
     break;
   case 4:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RODEX_READ)), 0x64FFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SET_UNMOVEABLE_ITEM)), 0x64FFFF, 0, 0, 0);
     break;
   }
 }
@@ -2574,20 +2574,20 @@ void CGameMode::ReceiveItemReward(const unsigned char* data) {
     g_session.AddStackedItem(item);
     g_session.RemoveInventoryItem(packet->index, packet->quantity);
     g_session.achievementResult = packet->value;
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAILED_SEND_MAIL)), 0x64FFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SET_ITEMS_TO_MAIL_SUCCEED)), 0x64FFFF, 0, 0, 0);
     break;
   }
   case 1:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAILED_CLOSE_ROULLETTE)), 0x64FFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SET_ITEMS_TO_MAIL_OVER_WEIGHT)), 0x64FFFF, 0, 0, 0);
     break;
   case 2:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAILED_OPEN_ROULLETTE)), 0x64FFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SET_ITEMS_TO_MAIL_FAILED)), 0x64FFFF, 0, 0, 0);
     break;
   case 3:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RESULT_ALREADY_LOSING_IDX)), 0x64FFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SET_ITEMS_TO_MAIL_OVERCOUNT)), 0x64FFFF, 0, 0, 0);
     break;
   case 4:
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RODEX_READ)), 0x64FFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SET_UNMOVEABLE_ITEM)), 0x64FFFF, 0, 0, 0);
     break;
   }
 }
@@ -2664,7 +2664,7 @@ void CGameMode::RequestWindow169(unsigned char enable) {
 // FUNCTION: fn_22020
 void CGameMode::ShowNoticeText(std::string text) {
   g_windowMgr.SendNotice(
-    UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_RODEX_SPAMOPTION_WARNING), text.c_str()).c_str()), 0x64FFFF, 0, 0, 0
+    UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_RODEX_SPAMOPTION_USERBLOCK), text.c_str()).c_str()), 0x64FFFF, 0, 0, 0
   );
 }
 

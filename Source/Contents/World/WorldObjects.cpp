@@ -761,7 +761,7 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
     this->menuTargetAid = pick->accountId;
 
     this->actorMenuIds.push_back(0x41);
-    menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_INVALID_MAPPROPERTY_REQUEST_USER)), 0, 0, 0);
+    menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_STORE_ASSISTANT_TRADE_FORCED_REMOVAL)), 0, 0, 0);
     menu->SendMsg(nullptr, UM_ADJUSTSIZE, 0, 0, 0, 0);
     menu->Move(g_mouse.x + 1, g_mouse.y + 1);
   } else {
@@ -838,15 +838,15 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
       menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ADD_TO_FRIEND_CHAR_LIST)), 0, 0, 0);
     }
     this->actorMenuIds.push_back(0x3A);
-    menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_USA_PERSONALINFO_DEATH)), 0, 0, 0);
+    menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SEND_RODEX)), 0, 0, 0);
     menu->SendMsg(nullptr, UM_ADDBOUNDARY, 0, 0, 0, 0);
 
     if (g_whisperBlockMgr->Contains(name)) {
       this->actorMenuIds.push_back(0xD);
-      menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GRADE_ENCHANT_ITEM_UNBREAKABLE)), 0, 0, 0);
+      menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_UNBLOCK_CHAT)), 0, 0, 0);
     } else {
       this->actorMenuIds.push_back(0xC);
-      menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GRADE_ENCHANT_ADDITIONAL_SOURCE_NOT_SELECT)), 0, 0, 0);
+      menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BLOCK_CHAT)), 0, 0, 0);
     }
 
     if (IsAdminAccount(g_session.m_aid)) {
@@ -870,7 +870,7 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
     this->menuTargetName = name;
     menu->SendMsg(nullptr, UM_ADDBOUNDARY, 0, 0, 0, 0);
     this->actorMenuIds.push_back(0x3F);
-    menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MACRO_USER_REPORT_COOLTIME)), 0xFF, 0, 0);
+    menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MACRO_USER_REPORT)), 0xFF, 0, 0);
     menu->SendMsg(nullptr, UM_ADDBOUNDARY, 0, 0, 0, 0);
 
     if (CPc* pc = dynamic_cast<CPc*>(this->scene->GetGameActorByAID(pick->accountId))) {

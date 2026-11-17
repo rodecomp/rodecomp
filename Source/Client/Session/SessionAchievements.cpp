@@ -77,7 +77,7 @@ bool CSession::ToggleTrackedAchievement(int id) {
     tracked.erase(found);
   } else {
     if (tracked.size() >= 3) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GET_ROULLETE_PRIZE)), 0x64FFFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAIL_ADD_ACHIEVEMENT_TRACING)), 0x64FFFF, 0, 0, 0);
       return false;
     }
 

@@ -71,7 +71,7 @@ void UIReputeWnd::OnCreate(int width, int height) {
   search->SetBitmap("유저인터페이스\\Reputation\\btn_search_over.bmp", 1, 0);
   search->SetBitmap("유저인터페이스\\Reputation\\btn_search_press.bmp", 2, 0);
   search->SetSize(search->BitmapWidth(), search->BitmapHeight());
-  search->SetLabel(LookupMessage(MSI_BO_BIONIC_PHARMACY_OK));
+  search->SetLabel(LookupMessage(MSI_SEARCH));
   search->Move(336, 25);
   search->SetId(321);
   this->AddChild(search);
@@ -100,12 +100,12 @@ void UIReputeWnd::OnCreate(int width, int height) {
   this->AddChild(this->m_nextButton);
 
   UIBasicButton* close = new UIBasicButton();
-  close->Configure(42, LookupMessage(MSI_ZENY_LOTTO_BUY_10));
+  close->Configure(42, LookupMessage(MSI_CLOSE));
   close->Move(589, 425);
   close->SetId(201);
   this->AddChild(close);
 
-  this->m_groupCombo->AddOption(LookupMessage(MSI_ENCHANT), 0);
+  this->m_groupCombo->AddOption(LookupMessage(MSI_REPUTE_TOTAL), 0);
   const std::vector<std::string> groups = Singleton<CReputeMgr>::GetInstance()->GetGroupNames();
   for (auto it = groups.begin(); it != groups.end(); ++it) {
     this->m_groupCombo->AddOption(*it, 0);
@@ -120,7 +120,7 @@ void UIReputeWnd::OnCreate(int width, int height) {
 // FUNCTION: fn_04314
 void UIReputeWnd::Paint() {
   this->ClearSurface(0xFFFFFFFF);
-  const int titleHeight = this->DrawTitleBar(false, LookupMessage(MSI_REPUTE_NOW_LOADING), 0);
+  const int titleHeight = this->DrawTitleBar(false, LookupMessage(MSI_REPUTE_WND), 0);
   const int barHeight = this->DrawButtonBar(2, 0, 1);
   this->DrawRectOutline(0, titleHeight - 1, this->geometry.width, this->geometry.height - barHeight - titleHeight + 2, 0xC6C6C6);
   this->DrawRectOutline(0, titleHeight, this->geometry.width, 1, 0);
@@ -130,7 +130,7 @@ void UIReputeWnd::Paint() {
     this->DrawFilledRoundedOutline(226, 156, 188, 138, 0xFFE7DE);
     this->DrawFilledRoundedOutline(231, 161, 178, 128, 0xFFFFFF);
     this->DrawBitmap(288, 182, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\notice_poring.bmp"))), true);
-    this->DrawCenteredText(225, 260, LookupMessage(MSI_ENCHANT_TAB_GENERAL), 190, 0, 15, 0xC89482, 1);
+    this->DrawCenteredText(225, 260, LookupMessage(MSI_REPUTE_NOW_LOADING), 190, 0, 15, 0xC89482, 1);
     return;
   }
 
@@ -165,7 +165,7 @@ void UIReputeWnd::Paint() {
 
       const std::uint64_t remain = value % 1000;
       this->FillRegion(left + 12, top + 100, static_cast<int>(static_cast<float>(remain) / 1000.0f * 299.0f), 6, 0xFF);
-      this->DrawRightAlignedText(left + 311, top + 114, FormatOwnedString(LookupMessage(MSI_GRADE_ENCHANT_ADDITIONAL_SOURCE_RESET), remain).c_str(), 0, 0, 12, 0, 1);
+      this->DrawRightAlignedText(left + 311, top + 114, FormatOwnedString(LookupMessage(MSI_REPUTE_POINT), remain).c_str(), 0, 0, 12, 0, 1);
     } else {
       for (std::uint64_t k = 0; k < info->maxPointPositive / 1000; ++k) {
         this->DrawBitmap(left + 12 + static_cast<int>(k) * 14, top + 72, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\Reputation\\light_empty.bmp"))), true);
@@ -177,7 +177,7 @@ void UIReputeWnd::Paint() {
 
       const std::uint64_t remain = info->point % 1000;
       this->FillRegion(left + 12, top + 100, static_cast<int>(static_cast<float>(remain) / 1000.0f * 299.0f), 6, 0xCD9279);
-      this->DrawRightAlignedText(left + 311, top + 114, FormatOwnedString(LookupMessage(MSI_GRADE_ENCHANT_ADDITIONAL_SOURCE_RESET), remain).c_str(), 0, 0, 12, 0, 1);
+      this->DrawRightAlignedText(left + 311, top + 114, FormatOwnedString(LookupMessage(MSI_REPUTE_POINT), remain).c_str(), 0, 0, 12, 0, 1);
     }
   }
 
@@ -258,7 +258,7 @@ int UIReputeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
   case UM_TAB:
     if (a) {
       int index;
-      if (std::string(reinterpret_cast<const char*>(a)) == LookupMessage(MSI_ENCHANT)) {
+      if (std::string(reinterpret_cast<const char*>(a)) == LookupMessage(MSI_REPUTE_TOTAL)) {
         index = 0;
       } else {
         index = this->m_groupCombo->list->FindLine(std::string(reinterpret_cast<const char*>(a)));
@@ -298,7 +298,7 @@ int UIReputeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 // FUNCTION: fn_04316
 void UIReputeWnd::FilterByGroup(const std::string& group) {
   this->m_reputes.clear();
-  if (group == LookupMessage(MSI_ENCHANT)) {
+  if (group == LookupMessage(MSI_REPUTE_TOTAL)) {
     this->m_reputes = Singleton<CReputeMgr>::GetInstance()->GetAllReputes();
     this->m_groupSelected = false;
     return;

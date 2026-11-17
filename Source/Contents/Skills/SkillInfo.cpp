@@ -1054,13 +1054,13 @@ CSkillAction* NewAction<CSkillAction_RA_UNLIMIT, CSkillAction>() {
 // OFFSET: 0x007764E0
 // FUNCTION: fn_08346
 EfstActionMessage CEfstAction_SHADOW_WEAPON::GetEfstBeginMessage() {
-  return {LookupMessage(MSI_HUNTING_QUEST_INFO_OFF), 0xFFFF00};
+  return {LookupMessage(MSI_SHC_ENCHANTING_SHADOW_ON), 0xFFFF00};
 }
 
 // OFFSET: 0x00776510
 // FUNCTION: fn_08347
 EfstActionMessage CEfstAction_SHADOW_WEAPON::GetEfstEndMessage() {
-  return {LookupMessage(MSI_TARGET_AP_MAX), 0xFF};
+  return {LookupMessage(MSI_SHC_ENCHANTING_SHADOW_OFF), 0xFF};
 }
 
 // OFFSET: 0x00777910
@@ -1099,13 +1099,13 @@ void CEfstAction_SHADOW_EXCEED::OnEfstUpdate(int efstId, int value, int argument
 // OFFSET: 0x00777F00
 // FUNCTION: fn_08368
 EfstActionMessage CEfstAction_SHADOW_EXCEED::GetEfstBeginMessage() {
-  return {LookupMessage(MSI_SHC_POTENT_VENOM_OFF), 0xFFFF00};
+  return {LookupMessage(MSI_SHC_SHADOW_EXCEED_ON), 0xFFFF00};
 }
 
 // OFFSET: 0x00777F30
 // FUNCTION: fn_08369
 EfstActionMessage CEfstAction_SHADOW_EXCEED::GetEfstEndMessage() {
-  return {LookupMessage(MSI_SHC_ENCHANTING_SHADOW_ON), 0xFF};
+  return {LookupMessage(MSI_SHC_SHADOW_EXCEED_OFF), 0xFF};
 }
 
 // OFFSET: 0x00778140
@@ -2101,7 +2101,7 @@ void CEfstAction_VIGOR::OnEfstUpdate(int efstId, int value, int argument3, int a
 // OFFSET: 0x0077E370
 // FUNCTION: fn_08454
 EfstActionMessage CEfstAction_VIGOR::GetEfstEndMessage() {
-  return {LookupMessage(MSI_IG_GUARD_STANCE_ON), 0xFF};
+  return {LookupMessage(MSI_DK_VIGOR_OFF), 0xFF};
 }
 
 // OFFSET: 0x0077E3B0
@@ -2135,7 +2135,7 @@ void CEfstAction_SERVANTWEAPON::OnEfstEnd(int efstId, int argument2, int argumen
 // OFFSET: 0x0077E7E0
 // FUNCTION: fn_08459
 EfstActionMessage CEfstAction_SERVANTWEAPON::GetEfstEndMessage() {
-  return {LookupMessage(MSI_IG_ATTACK_STANCE_ON), 0xFF};
+  return {LookupMessage(MSI_DK_SERVANTWEAPON_OFF), 0xFF};
 }
 
 // OFFSET: 0x0077E810
@@ -2466,7 +2466,7 @@ void CSkillAction_DK_CHARGINGPIERCE::OnSkillEffect(int level, CGameActor* source
 // OFFSET: 0x00781070
 // FUNCTION: fn_08489
 EfstActionMessage CEfstAction_CHARGINGPIERCE::GetEfstEndMessage() {
-  return {LookupMessage(MSI_IG_ATTACK_STANCE_OFF), 0xFF};
+  return {LookupMessage(MSI_DK_CHARGINGPIERCE_OFF), 0xFF};
 }
 
 // OFFSET: 0x007810A0

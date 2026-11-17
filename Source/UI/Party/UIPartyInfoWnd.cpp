@@ -34,19 +34,19 @@ CAdvenPartyInfo* UIPartyInfoWnd::Info() {
 const char* UIPartyInfoWnd::TypeName(int value) {
   switch (value) {
   case 0:
-    return LookupMessage(MSI_ACCOUNT);
+    return LookupMessage(MSI_ALL_AREA);
   case 1:
-    return LookupMessage(MSI_ADVEN_MD);
+    return LookupMessage(MSI_ADVEN_QUEST);
   case 2:
-    return LookupMessage(MSI_ADVEN_EDEN_GROUP);
+    return LookupMessage(MSI_ADVEN_FIELD);
   case 3:
-    return LookupMessage(MSI_ADVEN_ETC);
+    return LookupMessage(MSI_ADVEN_DUNJUN);
   case 4:
-    return LookupMessage(MSI_ADVEN_SEARCH);
+    return LookupMessage(MSI_ADVEN_MD);
   case 5:
-    return LookupMessage(MSI_ADVEN_RESET);
+    return LookupMessage(MSI_ADVEN_EDEN_GROUP);
   case 6:
-    return LookupMessage(MSI_ADVEN_JOIN_PARTY);
+    return LookupMessage(MSI_ADVEN_ETC);
   default:
     return "";
   }

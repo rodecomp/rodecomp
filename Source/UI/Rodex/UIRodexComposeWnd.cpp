@@ -223,7 +223,7 @@ void UIRodexComposeWnd::OnMouseHover(int x, int y) {
       CMode* tooltip = g_modeMgr.currentMode;
       std::uint32_t color = g_session.GetItemNameColor(item);
       tooltip->ShowTooltip(
-        FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), item.DisplayName(0).c_str(), item.optionCount).c_str(), tooltipX, tooltipY, color, 0, 1
+        FormatOwnedString(LookupMessage(MSI_EA6), item.DisplayName(0).c_str(), item.optionCount).c_str(), tooltipX, tooltipY, color, 0, 1
       );
     } else {
       CMode* tooltip = g_modeMgr.currentMode;
@@ -336,7 +336,7 @@ int UIRodexComposeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
     case ID_CHECK:
       if (this->m_recipientEdit->Length() != 0 && this->m_recipientEdit->Length() < 24) {
         if (GetNavigationLinkParser()->HasLink(this->m_recipientEdit->Text())) {
-          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_STYLING_SHOP_OPEN_COUPON)), 0x64FFFF, 0, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NOT_USING_TAG_TO_NAME)), 0x64FFFF, 0, 0, 0);
           return 0;
         }
 
@@ -354,41 +354,41 @@ int UIRodexComposeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
       }
 
       if (this->m_recipientEdit->Length() >= 24) {
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_WND_OVERFULL)), 0x64FFFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAIELD_SEND_MAIL_TO)), 0x64FFFF, 0, 0, 0);
       }
       if (GetNavigationLinkParser()->HasLink(this->m_recipientEdit->Text())) {
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_STYLING_SHOP_OPEN_COUPON)), 0x64FFFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NOT_USING_TAG_TO_NAME)), 0x64FFFF, 0, 0, 0);
       } else {
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAILED_SEND_MAIL_ITEM)), 0x64FFFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_INVALID_MAIL_RECIEVER_INFO)), 0x64FFFF, 0, 0, 0);
       }
       break;
     case ID_SEND: {
       if (this->m_recipientEdit->Length() == 0 && this->m_confirmedRecipientEdit->Length() == 0) {
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAILED_SEND_MAIL_ITEM)), 0x64FFFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_INVALID_MAIL_RECIEVER_INFO)), 0x64FFFF, 0, 0, 0);
         return 0;
       }
       if (this->m_titleEdit->Length() < 4 || this->m_titleEdit->Length() >= 51) {
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAIELD_SEND_MAIL_TO)), 0x64FFFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_INVALID_MAIL_TITLE_INFO)), 0x64FFFF, 0, 0, 0);
         return 0;
       }
       if (this->m_contents->Length() >= 1001) {
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_DYNAMICNPC_FAIL_DUPLICATENAME)), 0x64FFFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_INVALID_MAIL_CONTENTS_INFO)), 0x64FFFF, 0, 0, 0);
         return 0;
       }
 
       const std::int64_t zeny = this->GetZeny();
       if (zeny > 0) {
         if (zeny > g_session.m_zeny) {
-          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_TAIWAN_PERSONALINFO_EXPMSG)), 0x64FFFF, 0, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAILED_SEND_MAIL_ZENY)), 0x64FFFF, 0, 0, 0);
           return 0;
         }
         if (zeny + this->m_tax > g_session.m_zeny) {
-          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ACHIEVEMENT_SYSTEM)), 0x64FFFF, 0, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAILED_SEND_MAIL_ITEMS)), 0x64FFFF, 0, 0, 0);
           return 0;
         }
       }
       if (this->m_tax > 0 && this->m_tax > g_session.m_zeny) {
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ACHIEVEMENT_SYSTEM)), 0x64FFFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAILED_SEND_MAIL_ITEMS)), 0x64FFFF, 0, 0, 0);
         return 0;
       }
 
@@ -397,7 +397,7 @@ int UIRodexComposeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
         if (GetNavigationLinkParser()->HasLink(this->m_contents->Text())) {
           this->m_contents->SetText("");
           body.clear();
-          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CLOSE)), 0xFF, 0, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MSG_IS_ILLEGAL_MSG)), 0xFF, 0, 0, 0);
           return 0;
         }
 
@@ -421,7 +421,7 @@ int UIRodexComposeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
         return 0;
       }
 
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SEND_MAIL_COMMISSION)), 0x64FFFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_INVALID_CCODE_INFO)), 0x64FFFF, 0, 0, 0);
       return 0;
     }
     }
@@ -477,7 +477,7 @@ void UIRodexComposeWnd::Paint() {
 
   this->DrawBitmap(199, 305, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\bg_weight.bmp"))), true);
 
-  this->DrawTextAt(245, 316, LookupMessage(MSI_TWITTER_TAG), 0, 0, 11, 0x737373, 0, 0);
+  this->DrawTextAt(245, 316, LookupMessage(MSI_MAX_WEIGHT_IN_RODEX_CLIENT), 0, 0, 11, 0x737373, 0, 0);
   this->DrawRightAlignedText(244, 316, FormatOwnedString("%d", static_cast<std::int16_t>(g_session.achievementResult)).c_str(), 0, 0, 11, 0x737373, 0);
 
   this->FillRegion(35, 347, 95, 16, 0xFFFFFF);
@@ -599,12 +599,12 @@ void UIRodexComposeWnd::OnCreate(int, int) {
   this->m_confirmRecipientButton->SetSize(this->m_confirmRecipientButton->BitmapWidth(), this->m_confirmRecipientButton->BitmapHeight());
   {
     const int textX = static_cast<int>(
-      static_cast<float>(this->m_confirmRecipientButton->geometry.width - this->TextWidth(LookupMessage(MSI_RODEX_TAB_RETURN), 0, 0, 12, 0, 0)) *
+      static_cast<float>(this->m_confirmRecipientButton->geometry.width - this->TextWidth(LookupMessage(MSI_RODEX_BUTTON_CONFIRM_ID), 0, 0, 12, 0, 0)) *
       g_depthAverageHalf
     );
     UIBmpTextButton* button = this->m_confirmRecipientButton;
     const int textY = static_cast<int>(
-      static_cast<float>(button->geometry.height - this->TextHeight(LookupMessage(MSI_RODEX_TAB_RETURN), 0, 0, 12, 0, 0)) *
+      static_cast<float>(button->geometry.height - this->TextHeight(LookupMessage(MSI_RODEX_BUTTON_CONFIRM_ID), 0, 0, 12, 0, 0)) *
       g_depthAverageHalf
     );
     button->AddTextStyle(0, 12, 0x313131, 0, 0, textX, textY);
@@ -612,7 +612,7 @@ void UIRodexComposeWnd::OnCreate(int, int) {
     this->m_confirmRecipientButton->AddTextStyle(2, 12, 0x313131, 0, 1, textX, textY);
     this->m_confirmRecipientButton->AddTextStyle(3, 12, 0xC2C2C2, 0, 0, textX, textY);
   }
-  SetButtonText(this->m_confirmRecipientButton, LookupMessage(MSI_RODEX_TAB_RETURN));
+  SetButtonText(this->m_confirmRecipientButton, LookupMessage(MSI_RODEX_BUTTON_CONFIRM_ID));
   this->m_confirmRecipientButton->Move(0xA2, 0x1A);
   this->m_confirmRecipientButton->SetId(0xD5);
   this->AddChild(this->m_confirmRecipientButton);
@@ -671,7 +671,7 @@ void UIRodexComposeWnd::OnCreate(int, int) {
   this->AddChild(this->m_zeny);
 
   this->m_sendButton = new UIBasicButton();
-  this->m_sendButton->Configure(0x46, LookupMessage(MSI_RODEX_TAB_DEFAULT));
+  this->m_sendButton->Configure(0x46, LookupMessage(MSI_RODEX_BUTTON_SEND));
   this->m_sendButton->Move(0xE2, 0x178);
   this->m_sendButton->SetId(0x159);
   this->AddChild(this->m_sendButton);

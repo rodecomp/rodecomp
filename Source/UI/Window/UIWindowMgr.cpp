@@ -1701,7 +1701,7 @@ void UIWindowMgr::SendEmotionHotkey(int index) {
   if (UIBasicInfoWnd* basicInfoWnd = g_windowMgr.basicInfoWnd) {
     const bool linked = basicInfoWnd->HasTextLinks(std::string(text));
     if (linked) {
-      g_windowMgr.Confirm(LookupMessage(MSI_UNDEAD_MONSTERINFO), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_HAVE_ITEMTAG), 0, true, false, 0, "Message", 280, 120, 0);
       return;
     }
   }
@@ -2553,7 +2553,7 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
 
     if (id == -1) {
       if (g_navigationManager.viewMode == 2) {
-        if (g_windowMgr.Confirm(LookupMessage(MSI_NAVIGATION_HELP2), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+        if (g_windowMgr.Confirm(LookupMessage(MSI_NAVIGATION_GOEXIT), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
           g_navigationManager.displayMode = 0;
           g_navigationManager.expandedMap = false;
           g_navigationManager.Reset(true);
@@ -2591,7 +2591,7 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
     }
 
     if (this->LookupWindow(WID_NEWSELECTCHARWND) && g_session.m_loginModeFlag == 1) {
-      if (g_windowMgr.Confirm(LookupMessage(MSI_ENST_ANGELUS2), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_DO_YOU_WANT_TO_BACK_LOGINWND), 2, true, false, 0, "Message", 280, 120, 0) == 187) {
         g_modeMgr.currentMode->SendMsg(LMM_GOTO_LOGIN, 0, 0, 0, 0);
       }
       return false;
@@ -4587,7 +4587,7 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
   case HK_SINGLEMAP_ONOFF + 100:
     if (g_modeMgr.GetGameMode()->canRotateView != 0) {
       if (!g_session.IsNavigationAllowed()) {
-        g_windowMgr.Confirm(LookupMessage(MSI_BANK_0_MONEY), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_MINIMAP_MSG_16), 0, true, false, 0, "Message", 280, 120, 0);
       } else if (!g_windowMgr.CloseWindow(WID_MINIMAPWND)) {
         g_windowMgr.EnsureWindow(WID_MINIMAPWND);
       }
@@ -5159,7 +5159,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
   case WID_MERCHANTITEMWND:
     if (!g_mapPropertyMgr->GetValue(g_session.mapPropertyId, 40)) {
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RANKING_NUMBER)), 255, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CART_USE_DENY_MAP)), 255, 0, 0, 0);
       break;
     }
     window = this->merchantItemWnd;
@@ -6721,23 +6721,23 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     break;
   case WID_BANK_NEWWND:
     if (this->LookupWindow(WID_REFININGWND)) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NEWMAKECHAR_HUMANJOB)), 255, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_OPEN_BANKING_DURING_REFINING)), 255, 0, 0, 0);
       break;
     }
     if (this->LookupWindow(WID_GRADEENCHANTWND)) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_GRADE_ENCHANT_ITEM)), 255, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_OPEN_BANKING_DURING_GRADE_ENCHANT)), 255, 0, 0, 0);
       break;
     }
     if (this->LookupWindow(WID_ENCHANTUI)) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_REFORM_WARNNING_NOT_ENOUGH_MATERIAL)), 255, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_OPEN_BANKING_DURING_ENCHANT)), 255, 0, 0, 0);
       break;
     }
     if (this->LookupWindow(WID_EXPANDEDBARTERMARKETWND)) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PACKAGEITEM_SLEEPSTONECURSEFAIL)), 255, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_OPEN_BANKING_DURING_EXPANDED_BARTERMARKET)), 255, 0, 0, 0);
       break;
     }
     if (g_windowMgr.LookupWindow(WID_RUNESYSTEMWND)) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NOTIFY_JOIN_GUILD_ACCEPT_WND)), 255, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_DURING_CANNOT_OPEN_BANKING)), 255, 0, 0, 0);
       break;
     }
     window = this->bankNewWnd;
@@ -7055,11 +7055,11 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->CloseWindow(WID_RODEXCOMPOSEWND);
       this->CloseWindow(WID_RODEXCONTENTSWND);
       this->rodexInboxWnd->SendMsg(nullptr, UM_COMMAND, ID_CLOSE, 0, 0, 0);
-      this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_AURA_EFFECT_ON)), 255, 0, 0, 0);
+      this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CLOSE_RODEX_FOR_REFINING)), 255, 0, 0, 0);
     }
     if (this->bankNewWnd) {
       g_windowMgr.CloseWindow(WID_BANK_NEWWND);
-      this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NEWMAKECHAR_HUMAN)), 255, 0, 0, 0);
+      this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CLOSE_BANKING_FOR_REFINING)), 255, 0, 0, 0);
     }
     if (this->LookupWindow(WID_REFININGWND) == nullptr) {
       window = new UIRefiningWnd();
@@ -7211,7 +7211,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
   case WID_EXPANDEDBARTERMARKETWND:
     if (this->LookupWindow(WID_BANK_NEWWND)) {
       g_windowMgr.CloseWindow(WID_BANK_NEWWND);
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_USESKILL_FAIL_NEED_COMMUNION_WITH_SPIRIT)), 255, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CLOSE_BANKING_FOR_EXPANDED_BARTERMARKET)), 255, 0, 0, 0);
     }
     if (this->LookupWindow(WID_EXPANDEDBARTERMARKETWND) == nullptr) {
       window = this->expandedBarterMarketWnd = new UIExpandedBartermarketWnd();
@@ -7271,11 +7271,11 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       this->CloseWindow(WID_RODEXCOMPOSEWND);
       this->CloseWindow(WID_RODEXCONTENTSWND);
       this->rodexInboxWnd->SendMsg(nullptr, UM_COMMAND, ID_CLOSE, 0, 0, 0);
-      this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_OPEN_BANKING_DURING_GRADE_ENCHANT)), 255, 0, 0, 0);
+      this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CLOSE_RODEX_FOR_GRADE_ENCHANT)), 255, 0, 0, 0);
     }
     if (this->bankNewWnd) {
       g_windowMgr.CloseWindow(WID_BANK_NEWWND);
-      this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BROADCASTING_GRADE_ENCHANT_FAIL)), 255, 0, 0, 0);
+      this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CLOSE_BANKING_FOR_GRADE_ENCHANT)), 255, 0, 0, 0);
     }
     if (this->LookupWindow(WID_GRADEENCHANTWND) == nullptr) {
       window = new UIGradeEnchantWnd();
@@ -7382,11 +7382,11 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
         this->CloseWindow(WID_RODEXCOMPOSEWND);
         this->CloseWindow(WID_RODEXCONTENTSWND);
         this->rodexInboxWnd->SendMsg(nullptr, UM_COMMAND, ID_CLOSE, 0, 0, 0);
-        this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NOTIFY_ALLY_GUILD_ACCEPT_WND)), 255, 0, 0, 0);
+        this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_CLOSE_RODEX)), 255, 0, 0, 0);
       }
       if (this->bankNewWnd) {
         g_windowMgr.CloseWindow(WID_BANK_NEWWND);
-        this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NOTIFY_JOIN_FRIEND_ACCEPT_WND)), 255, 0, 0, 0);
+        this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_CLOSE_BANKING)), 255, 0, 0, 0);
       }
       window = new UIRuneSystemWnd();
       window->SetSize(910, 539);
@@ -7461,19 +7461,19 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
   if (notify) {
     switch (id) {
     case WID_JOINGUILDACCEPTWND:
-      this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NOTIFY_JOIN_PARTY_ACCEPT_WND)), 0xFFFF00, 0, 0, 0);
+      this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NOTIFY_JOIN_GUILD_ACCEPT_WND)), 0xFFFF00, 0, 0, 0);
       break;
     case WID_ALLYGUILDACCEPTWND:
-      this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NOTIFY_EXCHANGE_ACCEPT_WND)), 0xFFFF00, 0, 0, 0);
+      this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NOTIFY_ALLY_GUILD_ACCEPT_WND)), 0xFFFF00, 0, 0, 0);
       break;
     case WID_JOINFRIENDACCEPTWND:
-      this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_WARNING)), 0xFFFF00, 0, 0, 0);
+      this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NOTIFY_JOIN_FRIEND_ACCEPT_WND)), 0xFFFF00, 0, 0, 0);
       break;
     case WID_JOINPARTYACCEPTWND:
-      this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RUNESYSTEM_FAILED_ITEMCREATE)), 0xFFFF00, 0, 0, 0);
+      this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NOTIFY_JOIN_PARTY_ACCEPT_WND)), 0xFFFF00, 0, 0, 0);
       break;
     case WID_EXCHANGEACCEPTWND:
-      this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_TITLE_QUEST_BOARD_LIST)), 0xFFFF00, 0, 0, 0);
+      this->SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NOTIFY_EXCHANGE_ACCEPT_WND)), 0xFFFF00, 0, 0, 0);
       break;
     }
   }

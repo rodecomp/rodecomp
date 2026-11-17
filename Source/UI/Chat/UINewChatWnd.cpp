@@ -410,8 +410,8 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SEND_TO_ALL)), 0, 0, 0);
       menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SEND_TO_PARTY)), 0, 0, 0);
       menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SEND_TO_GUILD)), 0, 0, 0);
-      menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CLAN_MANAGE_LAND)), 0, 0, 0);
-      menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_REFINING_IMPOSSIBLE)), 0, 0, 0);
+      menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SEND_TO_CLAN)), 0, 0, 0);
+      menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SEND_TO_ALLY)), 0, 0, 0);
       menu->SendMsg(nullptr, UM_SETCURITEM, g_session.m_chatTarget, 0, 0, 0);
       menu->Resize(0x70, 0x30);
       menu->SendMsg(nullptr, UM_SET_CALLER_WID, 1, 0, 0, 0);
@@ -476,7 +476,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       }
       if (rejected) {
         this->m_chatEdit->SetText("");
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CLOSE)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MSG_IS_ILLEGAL_MSG)), 0xFF, 0, 0, 0);
         return 0;
       }
 
@@ -486,7 +486,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       edit = this->m_chatEdit;
       if (edit->HasNaviLinkTag(std::string(edit->Text())) == 1) {
         this->m_chatEdit->SetText("");
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CLOSE)), 0xFF, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MSG_IS_ILLEGAL_MSG)), 0xFF, 0, 0, 0);
         return 0;
       }
 
@@ -520,7 +520,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       if (talkType == 0x37 || talkType == 0x1A || talkType == 0x12) {
         if (_mbsstr(reinterpret_cast<const unsigned char*>(buffer), reinterpret_cast<const unsigned char*>(s_chatItemLinkOpening.c_str())) != nullptr
             || _mbsstr(reinterpret_cast<const unsigned char*>(buffer), reinterpret_cast<const unsigned char*>(s_itemLinkClosing.c_str())) != nullptr) {
-          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_STYLING_SHOP_OPEN_COUPON)), 0x64FFFF, 0, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NOT_USING_TAG_TO_NAME)), 0x64FFFF, 0, 0, 0);
           return 0;
         }
       }

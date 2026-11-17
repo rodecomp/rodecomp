@@ -167,10 +167,10 @@ void UISecondCostumeWnd::OnCreate(int width, int height) {
   this->m_typeCombo->SetBorderColor(100, 100, 100);
   this->m_typeCombo->SetColor(232, 232, 232);
   this->AddChild(this->m_typeCombo);
+  this->m_typeCombo->AddOption(LookupMessage(MSI_DRESSROOM_HEARCOLOR), 0);
+  this->m_typeCombo->AddOption(LookupMessage(MSI_DRESSROOM_HEARSTYLE), 0);
+  this->m_typeCombo->AddOption(LookupMessage(MSI_DRESSROOM_BODYCOLOR), 0);
   this->m_typeCombo->AddOption(LookupMessage(MSI_DRESSROOM_BODYSTYLE), 0);
-  this->m_typeCombo->AddOption(LookupMessage(MSI_MINIMAP_MSG_16), 0);
-  this->m_typeCombo->AddOption(LookupMessage(MSI_BANK_MAX_MONEY), 0);
-  this->m_typeCombo->AddOption(LookupMessage(MSI_BANK_MIN_MONEY), 0);
   this->m_typeCombo->Select(this->m_tab);
 
   auto* previous = new UIBitmapButton();

@@ -232,7 +232,7 @@ void UIParaResultWnd::OnCreate(int width, int height) {
 
   this->title = new UIStaticText();
   this->title->SetSize(70, 15);
-  this->title->SetText(LookupMessage(MSI_GUILD_INVITE), 0);
+  this->title->SetText(LookupMessage(MSI_PARA_RESULT_TITLE), 0);
   this->title->Move(16, 2);
   this->title->shadow = 1;
   this->AddChild(this->title);
@@ -336,7 +336,7 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     if (available != -1 && available < a) {
       item.quantity = available;
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PARA_PURCHASE_ITEM_FAIL)), 255, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PARA_WRONG_PURCHASE_COUNT_MSG)), 255, 0, 0, 0);
     }
 
     if (item.quantity > 0) {
@@ -354,7 +354,7 @@ int UIParaItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_INSUFFICIENT_MONEY)), 255, 0, 0, 0);
       } else if (weight + g_session.m_weight > g_session.m_maxWeight) {
         g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GUILD_STORAGE_ITEM_COUNT)), 255, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PARA_PURCHASE_ITEM_WEIGHT)), 255, 0, 0, 0);
       } else {
         if (item.flags[3] == 1) {
           g_session.RemoveShopItem(item);
@@ -610,7 +610,7 @@ int UIParaResultWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
   }
   case UM_SETTITLE:
     this->showQuantity = 0;
-    this->title->SetTextAutoWidth(LookupMessage(MSI_GUILD_INVITE));
+    this->title->SetTextAutoWidth(LookupMessage(MSI_PARA_RESULT_TITLE));
     this->SendMsg(nullptr, UM_RESIZE, 7, this->geometry.width, a, 0);
     return 0;
   case UM_RESIZE:

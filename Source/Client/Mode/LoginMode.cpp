@@ -784,13 +784,13 @@ void CLoginMode::ReceiveDeleteCharacter(const CharacterDeletePacket* packet) {
     message = LookupMessage(MSI_RESULT_FAIL_BIRTH);
     break;
   case 6:
-    message = LookupMessage(MSI_SPRITE_ALTER);
+    message = LookupMessage(MSI_CHR_DELETE_RESERVED_FAIL_CHARNAME);
     break;
   case 7:
     message = LookupMessage(MSI_CANNOT_DELETE_CHARACTER_EMAIL);
     break;
   case 8:
-    message = LookupMessage(MSI_ZENY_LOTTO_BUY_1);
+    message = LookupMessage(MSI_CHR_DELETE_FAIL_CHN_TAREN_PERSONALNUMBER);
     break;
   default:
     message = LookupMessage(MSI_RESULT_FAIL_UNKNOWN);
@@ -866,10 +866,10 @@ void CLoginMode::ReceiveDeleteReservation(const CharacterDeletePacket* packet) {
     message = LookupMessage(MSI_RESULT_FAIL_PARTY);
     break;
   case 6:
-    message = LookupMessage(MSI_RESULT_FAILED_ASSISTANT_POS_CHARACTER);
+    message = LookupMessage(MSI_RESULT_FAIL_ASSISTANT);
     break;
   case 7:
-    message = LookupMessage(MSI_ZENY_LOTTO_RODEX_WINNER_TITLE);
+    message = LookupMessage(MSI_RESULT_FAIL_ZENYLOTTO);
     break;
   default:
     message = LookupMessage(MSI_RESULT_FAIL_UNKNOWN);
@@ -1047,7 +1047,7 @@ void CLoginMode::SubD97780(int value) {
         if (this->loginResponseReceived == true && this->otpPending == true) {
           this->otpTimedOut = true;
           if (g_windowMgr.HasModalWindow() != true) {
-            if (g_windowMgr.Confirm(LookupMessage(MSI_PRIVATE_AIRPLANE_FAILED_SAME_MAP), 0, true, false, 0, "Message", 280, 120, 0) == 0xB8) {
+            if (g_windowMgr.Confirm(LookupMessage(MSI_INPUT_TIME_EXCEEDED_SIGN_IN_AGAIN), 0, true, false, 0, "Message", 280, 120, 0) == 0xB8) {
               this->otpPending = false;
               this->otpTimedOut = false;
               this->loginResponseReceived = false;
@@ -1061,7 +1061,7 @@ void CLoginMode::SubD97780(int value) {
       if (static_cast<int>(timeGetTime()) > this->otpStarted + 0x13880) {
         GetRagConnection().Close();
         if (this->loginResponseReceived == false) {
-          if (g_windowMgr.Confirm(LookupMessage(MSI_NO_PARTY_FOUND), 0, true, false, 0, "Message", 280, 120, 0) == 0xB8) {
+          if (g_windowMgr.Confirm(LookupMessage(MSI_REFUSE_RETRY_CONNECT_TC), 0, true, false, 0, "Message", 280, 120, 0) == 0xB8) {
             this->loginResponseReceived = false;
             this->otpStarted = timeGetTime();
             this->pendingCursorType = 3;
@@ -1202,29 +1202,29 @@ void __stdcall nullsub_486(int) {
 void CLoginMode::ReceiveRefuseLogin(const RefuseLoginPacket* packet) {
   char text[260];
   memset(text, 0, sizeof(text));
-  StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0x891B232D09451965ULL, OBFUSCATE_SOURCE_ARRAY_CHAR("%s", 0x891B232D09451965ULL)), LookupMessage(MSI_NAVIGATION_ROADLISTVIEW));
+  StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0x891B232D09451965ULL, OBFUSCATE_SOURCE_ARRAY_CHAR("%s", 0x891B232D09451965ULL)), LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_UNKNOWN));
 
   switch (packet->result) {
   case 1:
-    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0x758F1D0B4F7705B9ULL, OBFUSCATE_SOURCE_ARRAY_CHAR("%s", 0x758F1D0B4F7705B9ULL)), LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_PERSONALNUMBER));
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0x758F1D0B4F7705B9ULL, OBFUSCATE_SOURCE_ARRAY_CHAR("%s", 0x758F1D0B4F7705B9ULL)), LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_ACCOUNT_NOTEXIST));
     break;
   case 2:
-    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0x35E5656B5DEDCD75ULL, OBFUSCATE_SOURCE_ARRAY_CHAR("%s", 0x35E5656B5DEDCD75ULL)), LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_ACCOUNT_BLOCK));
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0x35E5656B5DEDCD75ULL, OBFUSCATE_SOURCE_ARRAY_CHAR("%s", 0x35E5656B5DEDCD75ULL)), LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_PASSWORD));
     break;
   case 3:
-    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0x4941FD9F21BBB9FDULL, OBFUSCATE_SOURCE_ARRAY_CHAR("%s", 0x4941FD9F21BBB9FDULL)), LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_SYSTEM));
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0x4941FD9F21BBB9FDULL, OBFUSCATE_SOURCE_ARRAY_CHAR("%s", 0x4941FD9F21BBB9FDULL)), LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_IP));
     break;
   case 4:
-    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0xE7978FB5A94DD7FDULL, OBFUSCATE_SOURCE_ARRAY_CHAR("%s", 0xE7978FB5A94DD7FDULL)), LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_UNKNOWN));
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0xE7978FB5A94DD7FDULL, OBFUSCATE_SOURCE_ARRAY_CHAR("%s", 0xE7978FB5A94DD7FDULL)), LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_PERSONALNUMBER));
     break;
   case 5:
-    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0xB7FD8F670FC7B96BULL, OBFUSCATE_SOURCE_ARRAY_CHAR("%s", 0xB7FD8F670FC7B96BULL)), LookupMessage(MSI_NAVIGATION_ICONTITEL));
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0xB7FD8F670FC7B96BULL, OBFUSCATE_SOURCE_ARRAY_CHAR("%s", 0xB7FD8F670FC7B96BULL)), LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_ACCOUNT_BLOCK));
     break;
   case 6:
-    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0x39FF7FB50DEB998FULL, OBFUSCATE_SOURCE_ARRAY_CHAR("%s", 0x39FF7FB50DEB998FULL)), LookupMessage(MSI_NAVIGATION_RUITELISTTITEL));
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0x39FF7FB50DEB998FULL, OBFUSCATE_SOURCE_ARRAY_CHAR("%s", 0x39FF7FB50DEB998FULL)), LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_SYSTEM));
     break;
   case 7:
-    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0x2FE993D1DDE1F197ULL, OBFUSCATE_SOURCE_ARRAY_CHAR("%s", 0x2FE993D1DDE1F197ULL)), LookupMessage(MSI_NAVIGATION_V4_HELP02));
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0x2FE993D1DDE1F197ULL, OBFUSCATE_SOURCE_ARRAY_CHAR("%s", 0x2FE993D1DDE1F197ULL)), LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_NOTACTIVATED));
     break;
   case 101: {
     char blockDate[21] = "";
@@ -1235,10 +1235,10 @@ void CLoginMode::ReceiveRefuseLogin(const RefuseLoginPacket* packet) {
   case 8:
   case 100:
   case 102:
-    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0xAD075B8DB599F1CDULL, OBFUSCATE_SOURCE_ARRAY_CHAR("%s", 0xAD075B8DB599F1CDULL)), LookupMessage(MSI_NAVIGATION_ROADLISTVIEW));
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0xAD075B8DB599F1CDULL, OBFUSCATE_SOURCE_ARRAY_CHAR("%s", 0xAD075B8DB599F1CDULL)), LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_UNKNOWN));
     break;
   case 9:
-    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0x2F8B0F37118D157FULL, OBFUSCATE_SOURCE_ARRAY_CHAR("%s", 0x2F8B0F37118D157FULL)), LookupMessage(MSI_ZEROQUEST_SIMPLEUI_ON));
+    StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), OBFUSCATE_DECRYPT(0x2F8B0F37118D157FULL, OBFUSCATE_SOURCE_ARRAY_CHAR("%s", 0x2F8B0F37118D157FULL)), LookupMessage(MSI_BAN_TEENAGER));
     break;
   default:
     break;
@@ -1299,10 +1299,10 @@ void CLoginMode::ReceiveLoginErrorDetail(const LoginErrorDetailPacket* packet) {
     message = LookupMessage(MSI_INCORRECT_PASSWORD);
     break;
   case 700:
-    message = LookupMessage(MSI_AUTHORIZATION_CODE);
+    message = LookupMessage(MSI_FAIL_SERVICE_CHECKING_ERROR);
     break;
   case 900: {
-    ShowErrorDialog(LookupMessage(MSI_CHECK_ATTENDANCE_REWARD), 0);
+    ShowErrorDialog(LookupMessage(MSI_FORCED_WEB_LOGIN), 0);
     const char* parametersText = OBFUSCATE_ARRAY_TEXT("http://ro.gnjoy.com/", 0x8783C33941E15117ULL, char);
     const char* fileText = OBFUSCATE_ARRAY_TEXT("http://ro.gnjoy.com/", 0x1767DDE18D779D8BULL, char);
     ShellExecuteA(nullptr, OBFUSCATE_ARRAY_TEXT("OPEN", 0xC1BB8111EDD183E1ULL, char), fileText, parametersText, nullptr, SW_SHOW);
@@ -1373,10 +1373,10 @@ void CLoginMode::ReceiveLoginError(const LoginErrorPacket* packet) {
     message = LookupMessage(MSI_INCORRECT_PASSWORD);
     break;
   case 700:
-    message = LookupMessage(MSI_AUTHORIZATION_CODE);
+    message = LookupMessage(MSI_FAIL_SERVICE_CHECKING_ERROR);
     break;
   case 800:
-    message = LookupMessage(MSI_NO_PARTY_FOUND);
+    message = LookupMessage(MSI_REFUSE_RETRY_CONNECT_TC);
     break;
   default:
     message = LookupMessage(MSI_RESULT_FAIL_UNKNOWN);
@@ -1548,7 +1548,7 @@ void CLoginMode::SubD90C90(const PasswordModePacket* packet) {
   case PINCODE_WRONG:
     if (packet->count <= 0) {
       g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
-      g_windowMgr.Confirm(LookupMessage(MSI_ACCOUNTLINKEDUSERDATA_LOAD_FAIL), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_INFO_5), 0, true, false, 0, "Message", 280, 120, 0);
       this->SendMsg(MM_QUIT, 0, 0, 0, 0);
     } else {
       g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
@@ -1588,21 +1588,21 @@ void CLoginMode::SubD90C90(const PasswordModePacket* packet) {
     this->pendingCursorType = 7;
     break;
   case 9: {
-    const char* text = LookupMessage(MSI_NAVIGATION_RUITELISTTITEL);
+    const char* text = LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_SYSTEM);
     constexpr std::array<char, 7> source = OBFUSCATE_SOURCE("%s(%d)", 0x0B8745519B1F95D7ULL);
     g_windowMgr.Confirm(FormatString(OBFUSCATE_DECRYPT(0x0B8745519B1F95D7ULL, source), text, 9), 0, true, false, 0, "Message",
                                                           280, 120, 0);
     break;
   }
   case 10: {
-    const char* text = LookupMessage(MSI_NAVIGATION_RUITELISTTITEL);
+    const char* text = LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_SYSTEM);
     constexpr std::array<char, 7> source = OBFUSCATE_SOURCE("%s(%d)", 0xA597A7E7492B39D5ULL);
     g_windowMgr.Confirm(FormatString(OBFUSCATE_DECRYPT(0xA597A7E7492B39D5ULL, source), text, 10), 0, true, false, 0, "Message",
                                                           280, 120, 0);
     break;
   }
   case 11: {
-    const char* text = LookupMessage(MSI_NAVIGATION_RUITELISTTITEL);
+    const char* text = LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_SYSTEM);
     constexpr std::array<char, 7> source = OBFUSCATE_SOURCE("%s(%d)", 0xFFABE3D5D1BBEF73ULL);
     g_windowMgr.Confirm(FormatString(OBFUSCATE_DECRYPT(0xFFABE3D5D1BBEF73ULL, source), text, 11), 0, true, false, 0, "Message",
                                                           280, 120, 0);
@@ -1670,21 +1670,21 @@ void CLoginMode::SubD911C0(const PasswordModePacket* packet) {
     this->pendingCursorType = 7;
     break;
   case 9: {
-    const char* text = LookupMessage(MSI_NAVIGATION_RUITELISTTITEL);
+    const char* text = LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_SYSTEM);
     constexpr std::array<char, 7> source = OBFUSCATE_SOURCE("%s(%d)", 0x49D33529F1556333ULL);
     g_windowMgr.Confirm(FormatString(OBFUSCATE_DECRYPT(0x49D33529F1556333ULL, source), text, 9), 0, true, false, 0, "Message",
                                                           280, 120, 0);
     break;
   }
   case 10: {
-    const char* text = LookupMessage(MSI_NAVIGATION_RUITELISTTITEL);
+    const char* text = LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_SYSTEM);
     constexpr std::array<char, 7> source = OBFUSCATE_SOURCE("%s(%d)", 0x01CB4F1DF9D3F931ULL);
     g_windowMgr.Confirm(FormatString(OBFUSCATE_DECRYPT(0x01CB4F1DF9D3F931ULL, source), text, 10), 0, true, false, 0, "Message",
                                                           280, 120, 0);
     break;
   }
   case 11: {
-    const char* text = LookupMessage(MSI_NAVIGATION_RUITELISTTITEL);
+    const char* text = LookupMessage(MSI_TAREN_LOGINREFUSE_FAIL_SYSTEM);
     constexpr std::array<char, 7> source = OBFUSCATE_SOURCE("%s(%d)", 0xC5B1BBCD9BC9C997ULL);
     g_windowMgr.Confirm(FormatString(OBFUSCATE_DECRYPT(0xC5B1BBCD9BC9C997ULL, source), text, 11), 0, true, false, 0, "Message",
                                                           280, 120, 0);
@@ -1853,7 +1853,7 @@ void CLoginMode::ShowLoginError(int code, int argument) {
 
   switch (code) {
   case 33:
-    message = LookupMessage(MSI_TITLE_EQUIPMENT);
+    message = LookupMessage(MSI_OTPUSER_ONLY);
     break;
   case REFUSE_INVALID_ID:
     message = LookupMessage(MSI_INCORRECT_USERID);
@@ -1990,13 +1990,13 @@ void CLoginMode::ShowLoginError(int code, int argument) {
   case 26:
   case 27:
   case 30:
-    message = LookupMessage(MSI_NO_PARTY_FOUND);
+    message = LookupMessage(MSI_REFUSE_RETRY_CONNECT_TC);
     break;
   case 28:
-    message = LookupMessage(MSI_FAILED_MAIL_CAUSE_TO_USE_ITEM);
+    message = LookupMessage(MSI_ACCESS_DENIED_BY_AUTHSERVER_CONNECTION);
     break;
   case 29:
-    message = LookupMessage(MSI_FAILIED_ONECLICK_ITEMIDENTIFY_NO_MAGNIFIER);
+    message = LookupMessage(MSI_ACCESS_DENIED_BY_BILLSERVER_CONNECTION);
     break;
   case 21:
     message = LookupMessage(MSI_SSO_FAILED);
@@ -2066,14 +2066,14 @@ void CLoginMode::ShowLoginError(int code, int argument) {
     message = LookupMessage(MSI_DOUBLE_LOGIN_PROHIBITED);
     break;
   case 0x14B4:
-    message = LookupMessage(MSI_RUSSIA_PERSONALINFO_DEATH);
+    message = LookupMessage(MSI_REFUSE_LOGIN_AUTH);
     break;
   case 0x14B5:
-    message = LookupMessage(MSI_RODEX_BUTTON_DELETE);
+    message = LookupMessage(MSI_REFUSE_LOGIN_ACCESSTICKET);
     break;
   case 110:
-    if (g_windowMgr.Confirm(LookupMessage(MSI_SHOUTDOWN_TIME), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8) {
-      const char* file = LookupMessage(MSI_PARTIAL_SHOUTDOWN_TIME);
+    if (g_windowMgr.Confirm(LookupMessage(MSI_REFUSE_CHANGE_PASSWD_FORCE), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8) {
+      const char* file = LookupMessage(MSI_REFUSE_CHANGE_PASSWD_SITE);
       constexpr std::array<char, 5> source = OBFUSCATE_SOURCE("open", 0x9B0F234DEFDF7593ULL);
       ShellExecuteA(hWnd, OBFUSCATE_DECRYPT(0x9B0F234DEFDF7593ULL, source), file, nullptr, nullptr, SW_SHOWNORMAL);
       g_modeMgr.Quit();
@@ -2081,21 +2081,21 @@ void CLoginMode::ShowLoginError(int code, int argument) {
     message = "";
     break;
   case 112:
-    message = LookupMessage(MSI_NAVIGATION_HELP_3);
+    message = LookupMessage(MSI_CBT_ACTIVE_USER_CHECK);
     break;
   case 242:
-    message = LookupMessage(MSI_THE_PARTY_MASTER_CANNOT_BE_REQUESTED);
+    message = LookupMessage(MSI_REFUSE_RETRY_CONNECT_AC);
     break;
   case 36: {
     const std::div_t remaining = std::div(this->remainingLoginSeconds, 3600);
-    message = FormatOwnedString(LookupMessage(MSI_CHECK_ATTENDANCE_RODEX_CONTENTS), remaining.quot, static_cast<int>(std::ceil(static_cast<float>(remaining.rem) / 60.0f)));
+    message = FormatOwnedString(LookupMessage(MSI_BAN_BLOCK_CHARCTER_SERVER_SECOND_PASSWORD), remaining.quot, static_cast<int>(std::ceil(static_cast<float>(remaining.rem) / 60.0f)));
     break;
   }
   case 243:
-    message = LookupMessage(MSI_UPGRADESKILLERROR_MORE_THIRDJOBSKILL);
+    message = LookupMessage(MSI_REFUSE_VTC_AUTH_FAILED);
     break;
   case 244:
-    message = LookupMessage(MSI_TIPTAG_FOCUS_WARNING);
+    message = LookupMessage(MSI_REFUSE_SDK_AUTH_FAILED);
     break;
   default: {
     message = LookupMessage(MSI_ACCESS_DENIED);
@@ -2162,17 +2162,17 @@ bool CLoginMode::ShowNotice(int notice, bool append) {
 
   switch (notice) {
   case 45:
-    window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MSG_MAKECHARCTER)), 0, 0, 0);
+    window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RESERVE_CHANGE_CHARACTER_SLOT)), 0, 0, 0);
     window->SendMsg(nullptr, UM_ADJUSTSIZE, 0, 0, 0, 0);
     this->noticeCommands.push_back(45);
     break;
   case 46:
-    window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_UAE_URL)), 0, 0, 0);
+    window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CHARACTER_SLOT_CHANGE)), 0, 0, 0);
     window->SendMsg(nullptr, UM_ADJUSTSIZE, 0, 0, 0, 0);
     this->noticeCommands.push_back(46);
     break;
   case 47:
-    window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_UAE_SERVERSTR)), 0, 0, 0);
+    window->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CHANGE_CHARACTER_NAME)), 0, 0, 0);
     window->SendMsg(nullptr, UM_ADJUSTSIZE, 0, 0, 0, 0);
     this->noticeCommands.push_back(47);
     break;
@@ -2355,11 +2355,11 @@ void CLoginMode::PollNetworkStatus() {
         this->pendingCursorType = 3;
         break;
       case ID_ZC_NOTIFY_UPDATECHAR:
-        g_windowMgr.Confirm(LookupMessage(MSI_GRADE_ENCHANT_REFINING_LEVEL_LACK), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_BAN_THAI_GGT_RESTRICTED_MAKE_CHAR), 0, true, false, 0, "Message", 280, 120, 0);
         this->pendingCursorType = 6;
         break;
       case ID_ZC_NOTIFY_UPDATEPLAYER:
-        g_windowMgr.Confirm(LookupMessage(MSI_STORE_ASSISTANT_TRADE_DATE), 0, true, false, 0, "Message", 280, 120, 0);
+        g_windowMgr.Confirm(LookupMessage(MSI_LIMIT_USER_MSG), 0, true, false, 0, "Message", 280, 120, 0);
         this->pendingCursorType = 6;
         break;
       case 0:
@@ -2705,7 +2705,7 @@ void CLoginMode::PollNetworkStatus() {
       const tm when = *_localtime32(&endTime);
       char text[0x400];
       memset(text, 0, sizeof(text));
-      _snprintf(text, sizeof(text), LookupMessage(MSI_MENU_MACROWND), when.tm_year + 1900, when.tm_mon + 1, when.tm_mday, when.tm_hour, when.tm_min, when.tm_sec);
+      _snprintf(text, sizeof(text), LookupMessage(MSI_SHOUTDOWN_TIME), when.tm_year + 1900, when.tm_mon + 1, when.tm_mday, when.tm_hour, when.tm_min, when.tm_sec);
       g_windowMgr.Confirm(text, 0, true, true, 0, "Message", 280, 120, 0);
       const std::uint64_t timestamp = static_cast<std::int64_t>(startTime) * 10000000;
       const std::int64_t interval = 3600000;
@@ -2747,28 +2747,28 @@ void CLoginMode::PollNetworkStatus() {
       int message = 0xC82;
       switch (packet->result) {
       case 1:
-        message = MSI_TAREN_LOGINREFUSE_FAIL_PERSONALNUMBER;
+        message = MSI_TAREN_LOGINREFUSE_FAIL_ACCOUNT_NOTEXIST;
         break;
       case 2:
-        message = MSI_TAREN_LOGINREFUSE_FAIL_ACCOUNT_BLOCK;
+        message = MSI_TAREN_LOGINREFUSE_FAIL_PASSWORD;
         break;
       case 3:
-        message = MSI_TAREN_LOGINREFUSE_FAIL_SYSTEM;
+        message = MSI_TAREN_LOGINREFUSE_FAIL_IP;
         break;
       case 4:
-        message = MSI_TAREN_LOGINREFUSE_FAIL_UNKNOWN;
+        message = MSI_TAREN_LOGINREFUSE_FAIL_PERSONALNUMBER;
         break;
       case 5:
-        message = MSI_NAVIGATION_ICONTITEL;
+        message = MSI_TAREN_LOGINREFUSE_FAIL_ACCOUNT_BLOCK;
         break;
       case 6:
-        message = MSI_NAVIGATION_RUITELISTTITEL;
+        message = MSI_TAREN_LOGINREFUSE_FAIL_SYSTEM;
         break;
       case 7:
-        message = MSI_NAVIGATION_V4_HELP02;
+        message = MSI_TAREN_LOGINREFUSE_FAIL_NOTACTIVATED;
         break;
       case 9:
-        message = MSI_ZEROQUEST_SIMPLEUI_ON;
+        message = MSI_BAN_TEENAGER;
         break;
       }
       GetRagConnection().Close();
@@ -3649,28 +3649,28 @@ void CLoginMode::OnChangeState(int value) {
       std::string purple = "^BA00FF";
       switch (server.address.userCount) {
       case 0:
-        status = static_cast<const std::string&>(FormatOwnedString("%s%s  ^000000%s", green.c_str(), LookupMessage(MSI_SERVER_USERCOUNT_STATE_VERY_BUSY), text));
+        status = static_cast<const std::string&>(FormatOwnedString("%s%s  ^000000%s", green.c_str(), LookupMessage(MSI_SERVER_USERCOUNT_STATE_NICE), text));
         break;
       case 1:
-        status = static_cast<const std::string&>(FormatOwnedString("%s%s  ^000000%s", orange.c_str(), LookupMessage(MSI_MENUICON_MAP), text));
+        status = static_cast<const std::string&>(FormatOwnedString("%s%s  ^000000%s", orange.c_str(), LookupMessage(MSI_SERVER_USERCOUNT_STATE_NORMAL), text));
         break;
       case 2:
-        status = static_cast<const std::string&>(FormatOwnedString("%s%s  ^000000%s", red.c_str(), LookupMessage(MSI_WORLDSTORE_ONLY_INVENTORY), text));
+        status = static_cast<const std::string&>(FormatOwnedString("%s%s  ^000000%s", red.c_str(), LookupMessage(MSI_SERVER_USERCOUNT_STATE_BUSY), text));
         break;
       case 3:
-        status = static_cast<const std::string&>(FormatOwnedString("%s%s  ^000000%s", purple.c_str(), LookupMessage(MSI_WORLDSTORE_PUT_BLOCK_PETEGG), text));
+        status = static_cast<const std::string&>(FormatOwnedString("%s%s  ^000000%s", purple.c_str(), LookupMessage(MSI_SERVER_USERCOUNT_STATE_VERY_BUSY), text));
         break;
       }
 
       switch (server.address.state) {
       case 2:
-        status.append(LookupMessage(MSI_SERVER_USERCOUNT_STATE_NICE));
+        status.append(LookupMessage(MSI_SERVER_PROPERTY_ADULT_NO_COUNT));
         break;
       case 3:
-        status.append(LookupMessage(MSI_SERVER_USERCOUNT_STATE_NORMAL));
+        status.append(LookupMessage(MSI_SERVER_PROPERTY_PAY_NO_COUNT));
         break;
       case 4:
-        status.append(LookupMessage(MSI_SERVER_USERCOUNT_STATE_BUSY));
+        status.append(LookupMessage(MSI_SERVER_PROPERTY_FREE_NO_COUNT));
         break;
       }
 
@@ -3969,7 +3969,7 @@ void CLoginMode::OnChangeState(int value) {
     if (ReplayFileList::Instance().Open(32, 0, 0) == 1) {
       this->pendingCursorType = 28;
     } else {
-      g_windowMgr.Confirm(LookupMessage(MSI_STORE_TABNAME_9), 4, true, true, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(LookupMessage(MSI_NOT_FOUND_REPLAY_FILE), 4, true, true, 0, "Message", 280, 120, 0);
       this->pendingCursorType = 26;
     }
     break;

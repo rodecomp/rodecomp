@@ -19,6 +19,10 @@ void UINavigationHelpWnd::OnCreate(int width, int height) {
   this->m_viewer->backgroundRed = 0xd2;
   this->AddChild(this->m_viewer);
 
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NAVIGATION_HELP1)), 0x30, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(" "), 0x30, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NAVIGATION_HELP2)), 0x30, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NAVIGATION_HELP3)), 0x30, 0, 0);
   this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NAVIGATION_HELP4)), 0x30, 0, 0);
   this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(" "), 0x30, 0, 0);
   this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NAVIGATION_HELP5)), 0x30, 0, 0);
@@ -26,7 +30,9 @@ void UINavigationHelpWnd::OnCreate(int width, int height) {
   this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NAVIGATION_HELP7)), 0x30, 0, 0);
   this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(" "), 0x30, 0, 0);
   this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NAVIGATION_HELP8)), 0x30, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(" "), 0x30, 0, 0);
   this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NAVIGATION_HELP9)), 0x30, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(" "), 0x30, 0, 0);
   this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NAVIGATION_HELP10)), 0x30, 0, 0);
   this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(" "), 0x30, 0, 0);
   this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NAVIGATION_HELP11)), 0x30, 0, 0);
@@ -34,29 +40,23 @@ void UINavigationHelpWnd::OnCreate(int width, int height) {
   this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NAVIGATION_HELP12)), 0x30, 0, 0);
   this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(" "), 0x30, 0, 0);
   this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NAVIGATION_HELP13)), 0x30, 0, 0);
-  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(" "), 0x30, 0, 0);
   this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NAVIGATION_HELP14)), 0x30, 0, 0);
   this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(" "), 0x30, 0, 0);
   this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NAVIGATION_HELP15)), 0x30, 0, 0);
-  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(" "), 0x30, 0, 0);
   this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NAVIGATION_HELP16)), 0x30, 0, 0);
-  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NAVIGATION_HELP17)), 0x30, 0, 0);
   this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(" "), 0x30, 0, 0);
-  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NAVIGATION_HELP18)), 0x30, 0, 0);
-  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NAVIGATION_HELP19)), 0x30, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NAVIGATION_V4_HELP01)), 0x30, 0, 0);
   this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(" "), 0x30, 0, 0);
-  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GOT_EXPERIENCE_POINT_INT64)), 0x30, 0, 0);
-  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(" "), 0x30, 0, 0);
-  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NOTIFY_EXP_INT64)), 0x30, 0, 0);
-  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CHARGE_FEE_HELP)), 0x30, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NAVIGATION_V4_HELP02)), 0x30, 0, 0);
+  this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NAVIGATION_V4_HELP03)), 0x30, 0, 0);
 
-  this->AddCloseButton(LookupMessage(MSI_NAVIGATION_HELP), 0);
+  this->AddCloseButton(LookupMessage(MSI_NAVIGATION_END), 0);
 }
 
 // OFFSET: 0x0092CEC0
 // FUNCTION: fn_12667
 void UINavigationHelpWnd::Paint() {
-  this->DrawTitleBar(true, LookupMessage(MSI_NAVIGATION_HELP3), 0);
+  this->DrawTitleBar(true, LookupMessage(MSI_NAVIGATION_HELPTITLE), 0);
   this->DrawPanelBackground(17, 0, "");
 }
 

@@ -137,7 +137,7 @@ void CMergeItemWnd::OnCreate(int, int) {
 void CMergeItemWnd::Paint() {
   unsigned red, green, blue;
   g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-  this->DrawTitleBar(true, LookupMessage(MSI_MERGE_ITEM_FAILED_NOT_MERGE), 0);
+  this->DrawTitleBar(true, LookupMessage(MSI_MERGE_ITEM), 0);
   this->FillRegion(0, 17, this->geometry.width, this->geometry.height, RGB(red, green, blue));
 
   for (int index = 0; index < this->m_visibleCount; ++index) {
@@ -404,7 +404,7 @@ bool CMergeItemWnd::RequestMerge() {
   }
 
   if (ids.size() < this->m_minSelection) {
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MERGE_ITEM_FAILED_MAX_COUNT)), 0xFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SELECT_ITEM_TO_MERGE)), 0xFF, 0, 0, 0);
     return false;
   }
 

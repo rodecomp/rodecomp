@@ -101,7 +101,7 @@ void UIItemReformWnd::OnCreate(int width, int height) {
   this->AddChild(cancel);
 
   this->reformButton = new UIBasicButton();
-  this->reformButton->Configure(60, LookupMessage(MSI_ITEM_REFORM_WARNNING_CARD_MAYBE_LOST));
+  this->reformButton->Configure(60, LookupMessage(MSI_ITEM_REFORM_OK));
   this->reformButton->Move(365, 236);
   this->reformButton->SetId(ID_OK);
   {
@@ -183,7 +183,7 @@ void UIItemReformWnd::Paint() {
 // FUNCTION: fn_04111
 void UIItemReformWnd_DetailBtn::Paint() {
   this->ClearSurface(0xFFFF00FF);
-  std::string text = LookupMessage(MSI_ENCHANT_SUCCESS);
+  std::string text = LookupMessage(MSI_ITEM_REFORM_CONFIRM_DETAILS);
   const unsigned int textWidth = this->TextWidth(text.c_str(), 0, 0, 12, 0, 0);
   this->DrawCenteredText(0, 0, text.c_str(), this->geometry.width, 0, 12, 0, 0);
   this->FillRegion((this->geometry.width - textWidth) * 0.5, 12, textWidth, 1, 0);
@@ -418,7 +418,7 @@ void UIItemReformWnd::SelectItem(ITEM_INFO* item) {
     }
   }
   if (insufficient) {
-    this->warning = LookupMessage(MSI_ITEM_REFORM_WARNNING_ENCHANT_MAYBE_LOST);
+    this->warning = LookupMessage(MSI_ITEM_REFORM_WARNNING_NOT_ENOUGH_MATERIAL);
   } else {
     {
       UIButton* button = this->reformButton;
@@ -430,7 +430,7 @@ void UIItemReformWnd::SelectItem(ITEM_INFO* item) {
   this->information = info->informationString;
   if (this->information.size() != 0) {
     this->detailButton->Enable(1);
-    this->warning = LookupMessage(MSI_ENCHANT_FAILED);
+    this->warning = LookupMessage(MSI_ITEM_REFORM_PLZ_CHECK_DETAILS);
   }
 
   baseIcon = this->baseIcon;
@@ -459,7 +459,7 @@ int UIItemReformWnd::SendMsg(
   case UM_REFRESHITEM:
     this->reformItem.SetItemId(argument1);
     if (this->list->SendMsg(this, UM_REFRESHITEM, argument1, 0, 0, 0) == -1) {
-      this->warning = LookupMessage(MSI_CANNOT_FIND_ENCHANT_ID);
+      this->warning = LookupMessage(MSI_ITEM_REFORM_NO_EXIST_TARGET_ITEM);
     }
     this->Invalidate();
     break;

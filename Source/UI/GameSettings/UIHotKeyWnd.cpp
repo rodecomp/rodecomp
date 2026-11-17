@@ -80,7 +80,7 @@ void UIHotKeyWnd::OnCreate(int, int) {
   this->m_tabs->Move(this->m_horizontalMargin, this->m_verticalMargin + this->m_titleHeight);
   this->AddChild(this->m_tabs);
 
-  const char* tabs[4] = {LookupMessage(MSI_HOTKEYWND_TAB1), LookupMessage(MSI_HOTKEYGUIDEWND_UP), LookupMessage(MSI_HOTKEYWND_TAB2), LookupMessage(MSI_HOTKEYWND_TAB3)};
+  const char* tabs[4] = {LookupMessage(MSI_HOTKEYWND_TAB1), LookupMessage(MSI_HOTKEYWND_SKILLBAR2), LookupMessage(MSI_HOTKEYWND_TAB2), LookupMessage(MSI_HOTKEYWND_TAB3)};
   for (int index = 0; index < 4; ++index) {
     this->m_tabs->AddTab(tabs[index], "");
   }
@@ -198,7 +198,7 @@ void UIHotKeyWnd::SaveHotkeys() {
     g_session.m_hotkeyScript->Call("SaveUserHotKeys2", "s", path.c_str());
     char message[500];
     std::memset(message, 0, sizeof(message));
-    StringFormat(message, sizeof(message), static_cast<std::size_t>(-1), "%s", LookupMessage(MSI_TRANSLATE_TITLE));
+    StringFormat(message, sizeof(message), static_cast<std::size_t>(-1), "%s", LookupMessage(MSI_SAVE_HOTKEY_TO_SERVER));
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFFFF, 1, 0, 0);
   }
 }

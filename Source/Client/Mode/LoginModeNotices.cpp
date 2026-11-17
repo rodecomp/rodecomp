@@ -206,10 +206,10 @@ void CLoginMode::ReceiveNotifyBan(const unsigned char* data) {
     strcpy(text, LookupMessage(MSI_BAN_SHUTDOWN_TEENAGER));
     break;
   case 114:
-    strcpy(text, LookupMessage(MSI_PLANNED_TIME_SHUTDOWN));
+    strcpy(text, LookupMessage(MSI_BAN_BILLING_SERVER_ERROR));
     break;
   case 116:
-    strcpy(text, LookupMessage(MSI_MCSTORE_BACKUP_TOOLTIP));
+    strcpy(text, LookupMessage(MSI_BAN_IP_BLOCK_FOR_ZERO));
     break;
   default:
     strcpy(text, LookupMessage(MSI_BANNED));

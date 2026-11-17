@@ -378,9 +378,9 @@ void UIBasicInfoWnd::DrawExpanded() {
   const int job = g_session.GetDisplayJob();
   const char* jobName = g_session.GetJobName(job, -1);
   this->DrawTextAt(9, 36, jobName, 0, family, fontHeight, 0, 0, 0);
-  this->DrawTextAt(9, 51, LookupMessage(MSI_BASICINFO_JOBLEVEL), 0, 1, 14, 0, 0, 0);
-  this->DrawTextAt(9, 65, LookupMessage(MSI_BASICINFO_EXP), 0, 1, 14, 0, 0, 0);
-  this->DrawTextAt(9, 80, LookupMessage(MSI_GUILD_AGIT_ARE_YOU_MOVE_AGIT), 0, 1, 14, 0, 0, 0);
+  this->DrawTextAt(9, 51, LookupMessage(MSI_BASICINFO_HP), 0, 1, 14, 0, 0, 0);
+  this->DrawTextAt(9, 65, LookupMessage(MSI_BASICINFO_SP), 0, 1, 14, 0, 0, 0);
+  this->DrawTextAt(9, 80, LookupMessage(MSI_BASICINFO_AP), 0, 1, 14, 0, 0, 0);
 
   if (g_session.maxHp > 0) {
     const std::int64_t percent = static_cast<std::int64_t>(g_session.hp) * 100 / g_session.maxHp;
@@ -476,8 +476,8 @@ void UIBasicInfoWnd::DrawCollapsed() {
   this->DrawTextAt(
     8, 20,
     FormatOwnedString(
-      "%s %d / %s / %s %d", LookupMessage(MSI_ALL_ON), g_session.m_level, g_session.GetJobName(g_session.GetDisplayJob(), -1),
-      LookupMessage(MSI_GUILD_AGIT_INVESTMENT_INFO), g_session.m_jobLevel
+      "%s %d / %s / %s %d", LookupMessage(MSI_BASICINFO_LEVEL), g_session.m_level, g_session.GetJobName(g_session.GetDisplayJob(), -1),
+      LookupMessage(MSI_BASICINFO_JOBLEVEL2), g_session.m_jobLevel
     ).c_str(),
     0, family, fontHeight, 0, 0, 0
   );
@@ -489,7 +489,7 @@ void UIBasicInfoWnd::DrawCollapsed() {
     hpColor = 0.25f > static_cast<float>(hp) / static_cast<float>(maxHp) ? 255 : 0;
   }
   this->DrawTextAt(
-    8, 36, FormatOwnedString("%s %d / %d", LookupMessage(MSI_BASICINFO_JOBLEVEL), hp, maxHp).c_str(), 0, family, fontHeight, hpColor, 0, 0
+    8, 36, FormatOwnedString("%s %d / %d", LookupMessage(MSI_BASICINFO_HP), hp, maxHp).c_str(), 0, family, fontHeight, hpColor, 0, 0
   );
 
   std::int64_t current = BaseExpCurrent();
@@ -510,7 +510,7 @@ void UIBasicInfoWnd::DrawCollapsed() {
     percent = 100.0;
   }
   this->DrawTextAt(
-    136, 36, FormatOwnedString("| %s %.1lf%%", LookupMessage(MSI_SIMPLECASH_P), percent).c_str(), 0, family, fontHeight, 0, 0, 0
+    136, 36, FormatOwnedString("| %s %.1lf%%", LookupMessage(MSI_BASICINFO_EXP), percent).c_str(), 0, family, fontHeight, 0, 0, 0
   );
 
   const int sp = g_session.m_sp;
@@ -520,12 +520,12 @@ void UIBasicInfoWnd::DrawCollapsed() {
     spColor = 0.25f > static_cast<float>(sp) / static_cast<float>(spMax) ? 255 : 0;
   }
   this->DrawTextAt(
-    8, 52, FormatOwnedString("%s %d / %d", LookupMessage(MSI_BASICINFO_EXP), sp, spMax).c_str(), 0, family, fontHeight, spColor, 0, 0
+    8, 52, FormatOwnedString("%s %d / %d", LookupMessage(MSI_BASICINFO_SP), sp, spMax).c_str(), 0, family, fontHeight, spColor, 0, 0
   );
 
   this->DrawTextAt(
     136, 52,
-    FormatOwnedString("| %s %d / %d", LookupMessage(MSI_GUILD_AGIT_ARE_YOU_MOVE_AGIT), g_session.GetTraitStat(232), g_session.GetTraitStat(233))
+    FormatOwnedString("| %s %d / %d", LookupMessage(MSI_BASICINFO_AP), g_session.GetTraitStat(232), g_session.GetTraitStat(233))
       .c_str(),
     0, family, fontHeight, 0, 0, 0
   );

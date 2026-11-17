@@ -172,7 +172,7 @@ void CRenewQuestMgr::RemoveStatusRequest(unsigned int id) {
 // OFFSET: 0x00677D80
 // FUNCTION: fn_05438
 std::string RenewQuestOngoingInfo::GetDateString() const {
-  return 1970 < this->m_year ? std::format("{0} [{1:04}/{2:02}/{3:02} {4:02}:{5:02}]", LookupMessage(MSI_NAVIGATION_ROUTEINFO), this->m_year,
+  return 1970 < this->m_year ? std::format("{0} [{1:04}/{2:02}/{3:02} {4:02}:{5:02}]", LookupMessage(MSI_QUESTUI_CLOSINGTIME), this->m_year,
                                            this->m_month, this->m_day, this->m_hour, this->m_minute)
                               : std::string("");
 }
@@ -198,115 +198,115 @@ std::string CRenewQuestMgr::GetMonsterConditionText(unsigned int flags, int minL
 
   if (flags != 0) {
     if (flags & 0x20000) {
-      std::string text(LookupMessage(MSI_NAVIGATION_PROPERTY4));
+      std::string text(LookupMessage(MSI_NAVIGATION_PROPERTY1));
       text.erase(text.size() - 2, text.size());
       result = result + text + separator;
     }
 
     if (flags & 0x40000) {
-      std::string text(LookupMessage(MSI_NAVIGATION_PROPERTY7));
+      std::string text(LookupMessage(MSI_NAVIGATION_PROPERTY4));
       text.erase(text.size() - 2, text.size());
       result = result + text + separator;
     }
 
     if (flags & 0x80000) {
-      std::string text(LookupMessage(MSI_NAVIGATION_PROPERTY5));
+      std::string text(LookupMessage(MSI_NAVIGATION_PROPERTY2));
       text.erase(text.size() - 2, text.size());
       result = result + text + separator;
     }
 
     if (flags & 0x100000) {
-      std::string text(LookupMessage(MSI_NAVIGATION_PROPERTY6));
+      std::string text(LookupMessage(MSI_NAVIGATION_PROPERTY3));
       text.erase(text.size() - 2, text.size());
       result = result + text + separator;
     }
 
     if (flags & 0x200000) {
-      std::string text(LookupMessage(MSI_NAVIGATION_PROPERTY0));
+      std::string text(LookupMessage(MSI_NAVIGATION_PROPERTY7));
       text.erase(text.size() - 2, text.size());
       result = result + text + separator;
     }
 
     if (flags & 0x400000) {
-      std::string text(LookupMessage(MSI_NAVIGATION_PROPERTY9));
+      std::string text(LookupMessage(MSI_NAVIGATION_PROPERTY6));
       text.erase(text.size() - 2, text.size());
       result = result + text + separator;
     }
 
     if (flags & 0x800000) {
-      std::string text(LookupMessage(MSI_NAVIGATION_PROPERTY8));
+      std::string text(LookupMessage(MSI_NAVIGATION_PROPERTY5));
       text.erase(text.size() - 2, text.size());
       result = result + text + separator;
     }
 
     if (flags & 0x1000000) {
-      std::string text(LookupMessage(MSI_NAVIGATION_SCALE1));
+      std::string text(LookupMessage(MSI_NAVIGATION_PROPERTY8));
       text.erase(text.size() - 2, text.size());
       result = result + text + separator;
     }
 
     if (flags & 0x2000000) {
-      std::string text(LookupMessage(MSI_NAVIGATION_SCALE0));
+      std::string text(LookupMessage(MSI_NAVIGATION_PROPERTY0));
       text.erase(text.size() - 2, text.size());
       result = result + text + separator;
     }
 
     if (flags & 0x4000000) {
-      std::string text(LookupMessage(MSI_NAVIGATION_SCALE2));
+      std::string text(LookupMessage(MSI_NAVIGATION_PROPERTY9));
       text.erase(text.size() - 2, text.size());
       result = result + text + separator;
     }
 
     if (flags & 0x10) {
-      result = result + std::string(LookupMessage(MSI_NAVIGATION_RACE3)) + separator;
+      result = result + std::string(LookupMessage(MSI_NAVIGATION_SCALE0)) + separator;
     }
 
     if (flags & 0x20) {
-      result = result + std::string(LookupMessage(MSI_NAVIGATION_RACE1)) + separator;
+      result = result + std::string(LookupMessage(MSI_NAVIGATION_SCALE1)) + separator;
     }
 
     if (flags & 0x40) {
-      result = result + std::string(LookupMessage(MSI_NAVIGATION_RACE2)) + separator;
+      result = result + std::string(LookupMessage(MSI_NAVIGATION_SCALE2)) + separator;
     }
 
     if (flags & 0x80) {
-      result = result + std::string(LookupMessage(MSI_NAVIGATION_RACE0)) + separator;
-    }
-
-    if (flags & 0x100) {
-      result = result + std::string(LookupMessage(MSI_NAVIGATION_RACE5)) + separator;
-    }
-
-    if (flags & 0x200) {
       result = result + std::string(LookupMessage(MSI_NAVIGATION_RACE7)) + separator;
     }
 
-    if (flags & 0x400) {
-      result = result + std::string(LookupMessage(MSI_NAVIGATION_RACE8)) + separator;
+    if (flags & 0x100) {
+      result = result + std::string(LookupMessage(MSI_NAVIGATION_RACE2)) + separator;
     }
 
-    if (flags & 0x800) {
-      result = result + std::string(LookupMessage(MSI_NAVIGATION_RACE6)) + separator;
-    }
-
-    if (flags & 0x1000) {
-      result = result + std::string(LookupMessage(MSI_NAVIGATION_RACE9)) + separator;
-    }
-
-    if (flags & 0x2000) {
-      result = result + std::string(LookupMessage(MSI_NAVIGATION_MOVECLICK)) + separator;
-    }
-
-    if (flags & 0x4000) {
+    if (flags & 0x200) {
       result = result + std::string(LookupMessage(MSI_NAVIGATION_RACE4)) + separator;
     }
 
+    if (flags & 0x400) {
+      result = result + std::string(LookupMessage(MSI_NAVIGATION_RACE5)) + separator;
+    }
+
+    if (flags & 0x800) {
+      result = result + std::string(LookupMessage(MSI_NAVIGATION_RACE3)) + separator;
+    }
+
+    if (flags & 0x1000) {
+      result = result + std::string(LookupMessage(MSI_NAVIGATION_RACE6)) + separator;
+    }
+
+    if (flags & 0x2000) {
+      result = result + std::string(LookupMessage(MSI_NAVIGATION_RACE8)) + separator;
+    }
+
+    if (flags & 0x4000) {
+      result = result + std::string(LookupMessage(MSI_NAVIGATION_RACE1)) + separator;
+    }
+
     if (flags & 0x8000) {
-      result = result + std::string(LookupMessage(MSI_NAVIGATION_NPCCLICK)) + separator;
+      result = result + std::string(LookupMessage(MSI_NAVIGATION_RACE0)) + separator;
     }
 
     if (flags & 0x10000) {
-      result = result + std::string(LookupMessage(MSI_NAVIGATION_NPCMOVE)) + separator;
+      result = result + std::string(LookupMessage(MSI_NAVIGATION_RACE9)) + separator;
     }
   }
 

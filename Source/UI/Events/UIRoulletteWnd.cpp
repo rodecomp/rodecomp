@@ -181,7 +181,7 @@ void UIRoulletteWnd::OnCreate(int, int) {
 // OFFSET: 0x0080C220
 // FUNCTION: fn_10087
 void UIRoulletteWnd::Paint() {
-  this->DrawTitleBar(true, LookupMessage(MSI_CHECK_USER_NAME), 0);
+  this->DrawTitleBar(true, LookupMessage(MSI_ROULLETTE_WND), 0);
   this->DrawPanelBackground(17, 0, "유저인터페이스\\basic_interface\\roullette\\roulletteBG.bmp");
 
   char buffer[40] = {};
@@ -249,7 +249,7 @@ void UIRoulletteWnd::OnMouseHover(int x, int y) {
     this->ToScreen(tooltipX, tooltipY);
     CMode* tooltip = g_modeMgr.currentMode;
     if (item.identified == 1 && item.optionCount != 0) {
-      tooltip->ShowTooltip(FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), item.DisplayName(0).c_str(), item.optionCount).c_str(), tooltipX, tooltipY,
+      tooltip->ShowTooltip(FormatOwnedString(LookupMessage(MSI_EA6), item.DisplayName(0).c_str(), item.optionCount).c_str(), tooltipX, tooltipY,
                     g_session.GetItemNameColor(item), 0, 1);
     } else {
       tooltip->ShowTooltip(item.DisplayName(0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
@@ -279,7 +279,7 @@ void UIRoulletteWnd::OnProcess() {
   if (this->m_startButton->geometry.state == 1 && this->m_enabled == 1) {
     if (g_rouletteMgr->m_spinning == 0) {
       this->m_startSprite->Move(339, 398);
-      this->m_startSprite->SetTooltip(LookupMessage(MSI_GUILD_MAKE_GUILD_NOT_PERMITTED_MAP));
+      this->m_startSprite->SetTooltip(LookupMessage(MSI_NOTICE_NEXT_ROULLETE_STAGE));
       this->m_stageArrow->Move(480, 337 - (this->CoinType() + g_rouletteMgr->m_stage) * 40);
     }
     if (g_rouletteMgr->m_resultShown == 1 && g_rouletteMgr->m_bonus == 0) {
@@ -298,7 +298,7 @@ void UIRoulletteWnd::OnProcess() {
 
   if (this->m_prizeButton->geometry.state == 1) {
     this->m_prizeSprite->Move(203, 398);
-    this->m_prizeSprite->SetTooltip(LookupMessage(MSI_TAKEOFF_TITLE));
+    this->m_prizeSprite->SetTooltip(LookupMessage(MSI_GET_ROULLETE_PRIZE));
     this->m_prizeButton->SetState(0);
   }
 
@@ -358,7 +358,7 @@ int UIRoulletteWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
               return 0;
             }
           } else {
-            g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAILED_SEND_MAIL_ITEMS)), 0x6464FF, 0, 0, 0);
+            g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAILED_CLOSE_ROULLETTEWND)), 0x6464FF, 0, 0, 0);
           }
           break;
         case ID_ROULETTE_GENERATE:

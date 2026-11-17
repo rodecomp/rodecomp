@@ -136,13 +136,13 @@ void CEfstAction_CALAMITYGALE::OnEfstUpdate(int efstId, int value, int argument3
 // OFFSET: 0x007A6370
 // FUNCTION: fn_09031
 EfstActionMessage CEfstAction_CALAMITYGALE::GetEfstBeginMessage() {
-  return {LookupMessage(MSI_WH_WIND_SIGN_OFF), 0xFFFF00};
+  return {LookupMessage(MSI_WH_CALAMITYGALE_ON), 0xFFFF00};
 }
 
 // OFFSET: 0x007A63A0
 // FUNCTION: fn_09032
 EfstActionMessage CEfstAction_CALAMITYGALE::GetEfstEndMessage() {
-  return {LookupMessage(MSI_THAI_PERSONALINFO_EXP2), 0xFF};
+  return {LookupMessage(MSI_WH_CALAMITYGALE_OFF), 0xFF};
 }
 
 // OFFSET: 0x007A63D0

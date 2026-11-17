@@ -1669,8 +1669,8 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
     const std::array<char, 4> devServerSource = OBFUSCATE_SOURCE_ARRAY_CHAR("Dev", 0x4B755DB19953E311ULL);
     EncryptedName<sizeof(devServerSource), 0x4B755DB19953E311ULL>& devServer = OBFUSCATE_DECRYPT_NAME(0x4B755DB19953E311ULL, devServerSource);
     if (!std::strstr(g_launchServerName, devServer.Text())) {
-      const char* parameters = LookupMessage(MSI_FRIEND_ALREADY_FRIEND);
-      const char* file = LookupMessage(MSI_FRIEND_ALREADY_FRIEND);
+      const char* parameters = LookupMessage(MSI_WEB_ADDRESS_FOR_RESTART);
+      const char* file = LookupMessage(MSI_WEB_ADDRESS_FOR_RESTART);
       const std::array<char, 5> openSource = OBFUSCATE_SOURCE_ARRAY_CHAR("OPEN", 0xD7A749EB27D5BF6DULL);
       EncryptedName<sizeof(openSource), 0xD7A749EB27D5BF6DULL>& open = OBFUSCATE_DECRYPT_NAME(0xD7A749EB27D5BF6DULL, openSource);
       ShellExecuteA(nullptr, open.Text(), file, parameters, nullptr, SW_SHOWNORMAL);

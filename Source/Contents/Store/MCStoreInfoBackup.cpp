@@ -135,9 +135,9 @@ void CMCStoreInfoBackup::CompleteSave(AsyncDiagnostic diagnostic, std::string re
   g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
 
   if (this->type == 0) {
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_EQUIP_FAIL_DURING_BARTER)), 0xFFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SAVE_SELL_STORE_ITEMLIST)), 0xFFFF, 0, 0, 0);
   } else if (this->type == 1) {
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARTER_ITEMLIST)), 0xFFFF, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SAVE_BUY_STORE_ITEMLIST)), 0xFFFF, 0, 0, 0);
   }
 }
 

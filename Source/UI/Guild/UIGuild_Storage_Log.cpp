@@ -186,7 +186,7 @@ void UIGuild_Storage_Log::FillRows() {
 // OFFSET: 0x0094D290
 // FUNCTION: fn_12904
 void UIGuild_Storage_Log::Paint() {
-  this->DrawTitleBar(true, LookupMessage(MSI_INCORRECT_GAMESAMBEID), 0);
+  this->DrawTitleBar(true, LookupMessage(MSI_GUILD_STORAGE_LOG_WND_NAME), 0);
   this->DrawPanelBackground(17, 0, "");
   this->DrawButtonBar(2, 0, 1);
   CBitmapRes* out = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\out.bmp")));
@@ -201,12 +201,12 @@ void UIGuild_Storage_Log::Paint() {
   tabs->colors[this->m_category] = 0xC89623;
   tabs->Invalidate();
 
-  this->DrawTextAt(234, 23, LookupMessage(MSI_EA5), 0, 0, 11, 0xFF, 0, 0);
-  this->DrawTextAt(6, 47, LookupMessage(MSI_GUILD_STORAGE_LOG_IN), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(70, 47, LookupMessage(MSI_GUILD_STORAGE_LOG_TIME), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(150, 47, LookupMessage(MSI_GUILD_STORAGE_ITEM_IN_OUT), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(200, 47, LookupMessage(MSI_GUILD_STORAGE_LOG_FINISH), 0, 0, 12, 0, 0, 0);
-  this->DrawTextAt(320, 47, LookupMessage(MSI_GUILD_STORAGE_LOG_ALL), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(234, 23, LookupMessage(MSI_GUILD_STORAGE_LOG_CAUTION), 0, 0, 11, 0xFF, 0, 0);
+  this->DrawTextAt(6, 47, LookupMessage(MSI_GUILD_STORAGE_ITEM_IN_OUT), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(70, 47, LookupMessage(MSI_GUILD_STORAGE_ITEM), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(150, 47, LookupMessage(MSI_GUILD_STORAGE_ITEM_COUNT), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(200, 47, LookupMessage(MSI_GUILD_STORAGE_USER_NAME), 0, 0, 12, 0, 0, 0);
+  this->DrawTextAt(320, 47, LookupMessage(MSI_GUILD_STORAGE_LOG_TIME), 0, 0, 12, 0, 0, 0);
   this->FillRows();
 
   int row = 0;

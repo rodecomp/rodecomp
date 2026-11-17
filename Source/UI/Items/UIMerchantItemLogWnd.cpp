@@ -179,7 +179,7 @@ void UIMerchantItemLogWnd::OnMouseHover(int x, int y) {
       std::uint32_t color = g_session.GetItemNameColor(item);
       int screenX = tooltipX;
       int screenY = tooltipY;
-      gameMode->ShowTooltip(FormatOwnedString(LookupMessage(MSI_FAIL_NEED_EQUIPPED_GUN_GATLING), item.DisplayName(0).c_str(), item.optionCount, item.quantity).c_str(), screenX, screenY,
+      gameMode->ShowTooltip(FormatOwnedString(LookupMessage(MSI_EA5), item.DisplayName(0).c_str(), item.optionCount, item.quantity).c_str(), screenX, screenY,
                  color, 0, 1);
     } else {
       std::uint32_t color = g_session.GetItemNameColor(item);

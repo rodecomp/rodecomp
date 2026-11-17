@@ -498,7 +498,7 @@ int UIExpandedBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std:
     CGameMode* mode = g_modeMgr.GetGameMode();
     std::pair<bool, BarterMarketEntry> found = g_expandedBarterMarketItemMgr->FindItem(mode->drag.barterId);
     if (!found.first) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_OUT_OF_STOCK)), 255, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_EXCHANGED_FAILED)), 255, 0, 0, 0);
       mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
       return 0;
     }
@@ -509,7 +509,7 @@ int UIExpandedBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std:
       if (owned.identity[1] > 0) {
         mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
         g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MONSTER_MONSTERINFO)), 255, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_EXCHANGE_ITEMS)), 255, 0, 0, 0);
         return 0;
       }
 
@@ -528,7 +528,7 @@ int UIExpandedBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std:
         if (available <= 0) {
           mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
           g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MONSTER_MONSTERINFO)), 255, 0, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_EXCHANGE_ITEMS)), 255, 0, 0, 0);
           return 0;
         }
       }
@@ -545,7 +545,7 @@ int UIExpandedBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std:
       if (g_expandedBarterMarketItemMgr->HasEntryByName(mode->drag.name) == true) {
         mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
         g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SAVE_HOTKEY_TO_SERVER)), 255, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BUY_ONE_AT_A_TIME)), 255, 0, 0, 0);
         return 0;
       }
     }
@@ -553,7 +553,7 @@ int UIExpandedBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std:
     if (mode->drag.quantity + g_expandedBarterMarketItemMgr->GetValueById(mode->drag.barterId) > 30000) {
       char buffer[200];
       std::memset(buffer, 0, sizeof(buffer));
-      StringFormat(buffer, sizeof(buffer), static_cast<std::size_t>(-1), LookupMessage(MSI_GLOBALRODEX_MESSAGE_RECEIVE_ALL), 30000);
+      StringFormat(buffer, sizeof(buffer), static_cast<std::size_t>(-1), LookupMessage(MSI_EXCHANGE_ITEM_CNT), 30000);
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(buffer), 255, 0, 0, 0);
       return 0;
@@ -561,7 +561,7 @@ int UIExpandedBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std:
 
     const int factor = static_cast<int>(g_expandedBarterMarketItemMgr->GetItemFactorById(mode->drag.barterId));
     if (factor < 0) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_OUT_OF_STOCK)), 255, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_EXCHANGED_FAILED)), 255, 0, 0, 0);
       mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
       return 0;
     }
@@ -956,7 +956,7 @@ void UIExpandedBartermarketWnd::OnLBtnDown(int x, int y) {
   if (found.first == true) {
     if (found.second.value == 0) {
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_INVENTORY_EXTEND_OF_BODYITEM)), 255, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_OUT_OF_STOCK)), 255, 0, 0, 0);
     } else if (CGameMode* mode = g_modeMgr.GetGameMode()) {
       mode->BeginDragBarterEntry(31, found.second, 1, -1);
     }
@@ -1002,7 +1002,7 @@ void UIBarterItemPurchaseWnd::OnMouseHover(int x, int y) {
     std::string text;
     BarterMarketItem item = found.second;
     ITEM_DESC description = FindItemDescription(item.currencyItemId);
-    text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_NO_ITEM_FOR_EXCHANGE), description.identifiedName, item.currencyAmount * item.value));
+    text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_BARTERITEM_NAME_COUNT), description.identifiedName, item.currencyAmount * item.value));
     CMode* tooltip = g_modeMgr.currentMode;
     ITEM_INFO info = item.ToItemInfo();
     if (tooltip) {
@@ -1023,7 +1023,7 @@ void UIBartermarketWnd::OnMouseHover(int x, int y) {
     this->ToScreen(tooltipX, tooltipY);
     std::string text;
     ITEM_DESC description = FindItemDescription(found.second.currencyItemId);
-    text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_NO_ITEM_FOR_EXCHANGE), description.identifiedName, found.second.currencyAmount));
+    text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_BARTERITEM_NAME_COUNT), description.identifiedName, found.second.currencyAmount));
     CMode* tooltip = g_modeMgr.currentMode;
     ITEM_INFO info = found.second.ToItemInfo();
     if (tooltip) {
@@ -1052,7 +1052,7 @@ void UIExpandedBarterItemPurchaseWnd::OnMouseHover(int x, int y) {
         text += buffer;
         text += " ";
       }
-      text += FormatOwnedString(LookupMessage(MSI_NO_ITEM_FOR_EXCHANGE), name, chunk->amount * found.second.value);
+      text += FormatOwnedString(LookupMessage(MSI_BARTERITEM_NAME_COUNT), name, chunk->amount * found.second.value);
       if (index != static_cast<int>(found.second.chunks.size())) {
         text += "\n";
       }
@@ -1085,7 +1085,7 @@ void UIExpandedBartermarketWnd::OnMouseHover(int x, int y) {
         text += buffer;
         text += " ";
       }
-      text += FormatOwnedString(LookupMessage(MSI_NO_ITEM_FOR_EXCHANGE), name, chunk->amount);
+      text += FormatOwnedString(LookupMessage(MSI_BARTERITEM_NAME_COUNT), name, chunk->amount);
       if (index != static_cast<int>(found.second.chunks.size())) {
         text += "\n";
       }
@@ -1114,9 +1114,9 @@ void UIPurchaseButton::OnMouseHover(int x, int y) {
       break;
     }
     if (it == totals.end()) {
-      text += FormatOwnedString(LookupMessage(MSI_NO_ITEM_FOR_EXCHANGE), description.identifiedName, amount);
+      text += FormatOwnedString(LookupMessage(MSI_BARTERITEM_NAME_COUNT), description.identifiedName, amount);
     } else {
-      text += FormatOwnedString(LookupMessage(MSI_NO_ITEM_FOR_EXCHANGE), description.identifiedName, amount) + "\n";
+      text += FormatOwnedString(LookupMessage(MSI_BARTERITEM_NAME_COUNT), description.identifiedName, amount) + "\n";
     }
   }
   int tooltipX = 0;
@@ -1139,7 +1139,7 @@ std::string UIExpandedBarterPurchaseButton::FormatChunkText(int refine, std::str
   }
   char line[1024];
   std::memset(line, 0, sizeof(line));
-  StringFormat(line, sizeof(line), static_cast<std::size_t>(-1), LookupMessage(MSI_NO_ITEM_FOR_EXCHANGE), name.c_str(), amount);
+  StringFormat(line, sizeof(line), static_cast<std::size_t>(-1), LookupMessage(MSI_BARTERITEM_NAME_COUNT), name.c_str(), amount);
   text += std::string(line);
   return text;
 }
@@ -1163,7 +1163,7 @@ void UIExpandedBarterPurchaseButton::OnMouseHover(int x, int y) {
     }
   }
   if (g_expandedBarterMarketItemMgr->total > 0) {
-    std::string total = FormatOwnedString(LookupMessage(MSI_ITEM_GRADE_ENCHANT_SUCCEESS), g_expandedBarterMarketItemMgr->total);
+    std::string total = FormatOwnedString(LookupMessage(MSI_TOTAL_NEED_MONEY), g_expandedBarterMarketItemMgr->total);
     text += "\n" + total;
   }
   if (!text.empty()) {
@@ -1205,7 +1205,7 @@ bool UIBarterItemPurchaseWnd::Purchase() {
 
   if (count > g_session.extraInventorySlots + 100) {
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SOUL_REAPER)), 255, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_EXCEED_LIMITED_ITEMNUM)), 255, 0, 0, 0);
     this->SendMsg(nullptr, UM_COMMAND, ID_CANCEL, 0, 0, 0);
     return false;
   }
@@ -1214,7 +1214,7 @@ bool UIBarterItemPurchaseWnd::Purchase() {
   for (std::map<int, int>::iterator it = required.begin(); it != required.end(); ++it) {
     if (this->GetInventoryItemCount(it->first) < it->second) {
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PVP)), 255, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NO_ITEM_FOR_EXCHANGE)), 255, 0, 0, 0);
       this->SendMsg(nullptr, UM_COMMAND, ID_CANCEL, 0, 0, 0);
       return false;
     }
@@ -1223,7 +1223,7 @@ bool UIBarterItemPurchaseWnd::Purchase() {
   for (std::map<std::string, int>::iterator it = totals.begin(); it != totals.end(); ++it) {
     if (it->second + this->GetInventoryItemCount(std::atoi(it->first.c_str())) > 30000) {
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-      const std::string text = FormatOwnedString(LookupMessage(MSI_STAR_EMPEROR), 30000);
+      const std::string text = FormatOwnedString(LookupMessage(MSI_LIMIT_BUY_ITEM3), 30000);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 255, 0, 0, 0);
       this->SendMsg(nullptr, UM_COMMAND, ID_CANCEL, 0, 0, 0);
       return false;
@@ -1302,7 +1302,7 @@ int UIBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 
     std::pair<bool, BarterMarketItem> found = g_barterMarketItemMgr->FindItem(mode->drag.barterId);
     if (found.first == false) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_OUT_OF_STOCK)), 255, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_EXCHANGED_FAILED)), 255, 0, 0, 0);
       mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
       return 0;
     }
@@ -1310,7 +1310,7 @@ int UIBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_
     found.second.value = mode->drag.quantity;
     if (g_session.HasItemId(found.second.currencyItemId) == true) {
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MONSTER_MONSTERINFO)), 255, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_EXCHANGE_ITEMS)), 255, 0, 0, 0);
       mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
       return 0;
     }
@@ -1342,7 +1342,7 @@ int UIBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intptr_
 
     const int amountById = g_barterMarketItemMgr->GetAmountById(mode->drag.barterId);
     if (amountById < 0) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_OUT_OF_STOCK)), 255, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_EXCHANGED_FAILED)), 255, 0, 0, 0);
       mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
       return 0;
     }
@@ -1505,7 +1505,7 @@ int UIBartermarketWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 
     std::pair<bool, BarterMarketItem> found = g_barterMarketItemMgr->FindAllItem(mode->drag.barterId);
     if (found.first == false) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_OUT_OF_STOCK)), 255, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_EXCHANGED_FAILED)), 255, 0, 0, 0);
       mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
       return 0;
     }
@@ -1615,14 +1615,14 @@ bool UIExpandedBarterItemPurchaseWnd::Purchase() {
 
   if (count > g_session.extraInventorySlots + 100) {
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_SOUL_REAPER)), 255, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_EXCEED_LIMITED_ITEMNUM)), 255, 0, 0, 0);
     this->SendMsg(nullptr, UM_COMMAND, ID_CANCEL, 0, 0, 0);
     return false;
   }
 
   if (!g_expandedBarterMarketItemMgr->HasRequiredItems()) {
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PVP)), 255, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NO_ITEM_FOR_EXCHANGE)), 255, 0, 0, 0);
     this->SendMsg(nullptr, UM_COMMAND, ID_CANCEL, 0, 0, 0);
     return false;
   }
@@ -1641,7 +1641,7 @@ bool UIExpandedBarterItemPurchaseWnd::Purchase() {
 
     if (it->second + owned > 30000) {
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-      const std::string text = FormatOwnedString(LookupMessage(MSI_GLOBALRODEX_MESSAGE_DELETE_ALL_ON_ADMIN), 30000);
+      const std::string text = FormatOwnedString(LookupMessage(MSI_LIMIT_HAVE_ITEM_CNT), 30000);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), 255, 0, 0, 0);
       this->SendMsg(nullptr, UM_COMMAND, ID_CANCEL, 0, 0, 0);
       return false;
@@ -1674,7 +1674,7 @@ void UIExpandedBartermarketWnd::OnCreate(int width, int height) {
 // OFFSET: 0x008426E0
 // FUNCTION: fn_10554
 void UIBarterItemPurchaseWnd::Paint() {
-  this->DrawTitleBar(false, LookupMessage(MSI_EXCHANGE_ITEM_CNT), 0);
+  this->DrawTitleBar(false, LookupMessage(MSI_BARTER_ITEMLIST), 0);
   if (this->geometry.height == 17) {
     return;
   }
@@ -1836,7 +1836,7 @@ void UIBartermarketWnd::Paint() {
 // OFFSET: 0x008473F0
 // FUNCTION: fn_10585
 void UIExpandedBarterItemPurchaseWnd::Paint() {
-  this->DrawTitleBar(false, LookupMessage(MSI_EXCHANGE_ITEM_CNT), 0);
+  this->DrawTitleBar(false, LookupMessage(MSI_BARTER_ITEMLIST), 0);
 
   const int leftHeight = this->geometry.height - 46;
   const int leftTiles = leftHeight / 8 + (leftHeight % 8 != 0);

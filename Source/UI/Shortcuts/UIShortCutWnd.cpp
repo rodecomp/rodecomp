@@ -373,7 +373,7 @@ int UIShortCutWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     case TYPE_HEAL:
     case TYPE_SCHANGE:
     case TYPE_SPECIAL:
-      if (item.GetItemId() != 12802 || g_windowMgr.Confirm(LookupMessage(MSI_COMMAND_SETTING), 2, false, false, 0, "Message", 280, 120, 0) != ID_NO) {
+      if (item.GetItemId() != 12802 || g_windowMgr.Confirm(LookupMessage(MSI_CONFIRM_TO_OPEN_EVENT_ITEM), 2, false, false, 0, "Message", 280, 120, 0) != ID_NO) {
         mode->SendMsg(MM_USEITEM, item.identity[1], 0, 0, 0);
       }
 
@@ -763,7 +763,7 @@ void UIMemorialDunWnd::OnCreate(int, int) {
   }
 
   this->m_partyButton = new (std::nothrow) UIBasicButton();
-  this->m_partyButton->Configure(125, LookupMessage(MSI_PARTY_NOT_LEAVE_PARTY_UNTIL_YIELD_PARTYMASTER));
+  this->m_partyButton->Configure(125, LookupMessage(MSI_MEMORIAL_DUN_DESTROY));
   this->m_partyButton->Move(-100, -100);
   this->m_partyButton->SetId(ID_DELETE);
   this->AddChild(this->m_partyButton);
@@ -1492,7 +1492,7 @@ void UINewChatWnd::OnCreate(int width, int height) {
   };
   const int buttonIds[3] = {0xE1, 0xD4, 0xEE};
   const int buttonPositions[3][2] = {{0x61, base + 3}, {0x24A, base + 7}, {0x23C, base + 7}};
-  const char* const tooltips[3] = {LookupMessage(MSI_RODEX_DOWNLOADING), LookupMessage(MSI_RODEX_TITLE), LookupMessage(MSI_RODEX_NOW_LOADING)};
+  const char* const tooltips[3] = {LookupMessage(MSI_CHATWND_RECEIVER_LIST), LookupMessage(MSI_CHATWND_CHANGE_SIZE), LookupMessage(MSI_CHATWND_RECEPTIVE_GROUP_LIST)};
   for (int index = 0; index < 3; ++index) {
     UIBitmapButton* button = new UIBitmapButton();
     this->m_inputButtons[index] = button;

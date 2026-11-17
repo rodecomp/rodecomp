@@ -563,13 +563,13 @@ int UIBank_NewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     if (!this->m_amountEdit) {
       return 0;
     }
-    this->m_amountEdit->SetText(LookupMessage(MSI_BANK_1_MINI));
+    this->m_amountEdit->SetText(LookupMessage(MSI_BANK_MAX));
     g_windowMgr.SetFocus(this->m_amountEdit);
     return 0;
   case BANK_BUTTON_DEPOSIT: {
     PACKET_CZ_BANK_TRANSACTION packet;
     if (g_modeMgr.GetGameMode() && g_modeMgr.GetGameMode()->IsMenuWindowOpen() == true) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_WRONG_GUN)), 255, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BANK_PROHIBIT)), 255, 0, 0, 0);
       return 0;
     }
     const long long amount = this->TransactionAmount(1);
@@ -577,11 +577,11 @@ int UIBank_NewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       return 0;
     }
     if (g_session.m_zeny < amount) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BANK_OVER_INT_MAX)), 255, 0, 0, 0);
-      this->m_status = LookupMessage(MSI_ITEMMOVEINFO_DROP);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BANK_DEPOSIT_NO_MONEY)), 255, 0, 0, 0);
+      this->m_status = LookupMessage(MSI_BANK_5_MINI);
     } else if (g_session.m_bankBalance + amount > 0x7FFFFFFFLL) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEMMOVEINFO_CART)), 255, 0, 0, 0);
-      this->m_status = LookupMessage(MSI_BANK_6_MINI);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BANK_7_MINI)), 255, 0, 0, 0);
+      this->m_status = LookupMessage(MSI_BANK_3_MINI);
     } else {
       packet.amount = static_cast<int>(amount);
       packet.id = ID_CZ_REQ_BANKING_DEPOSIT;
@@ -594,7 +594,7 @@ int UIBank_NewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
   case BANK_BUTTON_WITHDRAW: {
     PACKET_CZ_BANK_TRANSACTION packet;
     if (g_modeMgr.GetGameMode() && g_modeMgr.GetGameMode()->IsMenuWindowOpen() == true) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_WRONG_GUN)), 255, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BANK_PROHIBIT)), 255, 0, 0, 0);
       return 0;
     }
     const long long amount = this->TransactionAmount(0);
@@ -602,11 +602,11 @@ int UIBank_NewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       return 0;
     }
     if (g_session.m_bankBalance < amount) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BANK_WITHDRAW_ZERO)), 255, 0, 0, 0);
-      this->m_status = LookupMessage(MSI_ITEMMOVEINFO_STORE);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BANK_WITHDRAW_NO_MONEY)), 255, 0, 0, 0);
+      this->m_status = LookupMessage(MSI_BANK_6_MINI);
     } else if (static_cast<unsigned int>(g_session.m_zeny + static_cast<int>(amount)) > 0x7FFFFFFFu) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_JOBPLUSEXP_VALUE)), 255, 0, 0, 0);
-      this->m_status = LookupMessage(MSI_ITEMMOVEINFO_CART);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BANK_OVER_INT_MAX)), 255, 0, 0, 0);
+      this->m_status = LookupMessage(MSI_BANK_7_MINI);
     } else {
       packet.amount = static_cast<int>(amount);
       packet.id = ID_CZ_REQ_BANKING_WITHDRAW;
@@ -735,7 +735,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       }
       if (g_navigationLinkParser->HasLink(std::string(this->edit->Text()))) {
         this->edit->SetText("");
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CLOSE)), 255, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MSG_IS_ILLEGAL_MSG)), 255, 0, 0, 0);
         return 0;
       }
 

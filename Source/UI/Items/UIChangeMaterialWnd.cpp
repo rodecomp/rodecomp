@@ -206,9 +206,9 @@ void UIChangeMaterialWnd_List::OnMouseMove(int x, int y) {
 // FUNCTION: fn_03887
 void UIChangeMaterialWnd::OnProcess() {
   const std::string text = this->searchEdit->Text();
-  if (text.compare(LookupMessage(MSI_BO_RESEARCHREPORT_OFF)) != 0) {
+  if (text.compare(LookupMessage(MSI_CHANGE_MATERIAL_SEARCHTEXT)) != 0) {
     if (text.empty()) {
-      this->searchEdit->SetText(LookupMessage(MSI_BO_RESEARCHREPORT_OFF));
+      this->searchEdit->SetText(LookupMessage(MSI_CHANGE_MATERIAL_SEARCHTEXT));
       this->searchEdit->TextColor(0xb1u, 0xb1u, 0xb1u, 0xffffffffu);
     } else {
       this->searchEdit->TextColor(0, 0, 0, 0xffffffffu);
@@ -441,7 +441,7 @@ int UIChangeMaterialWnd::SendMsg(
         }
         this->m_resultAmount = total > 1000 ? total : 1000;
         this->m_resultText = static_cast<const std::string&>(FormatOwnedString(
-          LookupMessage(MSI_IQ_POWERFUL_FAITH_ON), ItemDisplayName(entry->results.front().id).c_str(), entry->results.front().quantity,
+          LookupMessage(MSI_CHANGE_MATERIAL_MESSAGE), ItemDisplayName(entry->results.front().id).c_str(), entry->results.front().quantity,
           entry->results.back().quantity
         ));
       } else {
@@ -501,7 +501,7 @@ int UIChangeMaterialWnd_List::SendMsg(
   case UM_COMMAND:
     if (argument1 == ID_SEARCH && argument2 != 0) {
       std::string filter(reinterpret_cast<const char*>(argument2));
-      if (filter.compare(LookupMessage(MSI_BO_RESEARCHREPORT_OFF)) == 0) {
+      if (filter.compare(LookupMessage(MSI_CHANGE_MATERIAL_SEARCHTEXT)) == 0) {
         filter = "";
       }
       this->ApplyFilter(filter);
@@ -564,7 +564,7 @@ void UIChangeMaterialWnd::Paint() {
   this->DrawItemAndQuantity(this->m_resultX, this->m_resultY, this->m_resultItem, 1, 0);
 
   {
-    const std::string amount = FormatOwnedString(LookupMessage(MSI_IQ_POWERFUL_FAITH_OFF), this->m_resultAmount / 10);
+    const std::string amount = FormatOwnedString(LookupMessage(MSI_CHANGE_MATERIAL_SUCCESS_RATE), this->m_resultAmount / 10);
     this->DrawOutlinedText(0x4F + (0xC8 - this->TextWidth(amount.c_str(), 0, 0x1D, 0x17, 1, 0)) / 2, 0x64, amount.c_str(), 0, 0x5082DC, 0x643C00, 0x1D, 0x17, 1, 0);
   }
 
@@ -716,7 +716,7 @@ void UIChangeMaterialWnd::OnCreate(int width, int height) {
   this->searchEdit->Move(313, 262);
   this->searchEdit->maximum = 20;
   this->searchEdit->preserveInput = 1;
-  this->searchEdit->SetText(LookupMessage(MSI_BO_RESEARCHREPORT_OFF));
+  this->searchEdit->SetText(LookupMessage(MSI_CHANGE_MATERIAL_SEARCHTEXT));
   this->searchEdit->TextColor(0xB1u, 0xB1u, 0xB1u, 0xFFFFFFFFu);
   this->searchEdit->Background(255, 236, 207);
   this->searchEdit->topPadding = -1;
@@ -728,7 +728,7 @@ void UIChangeMaterialWnd::OnCreate(int width, int height) {
   search->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_search_press.bmp", 2, 0);
   search->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_search_disable.bmp", 3, 0);
   search->SetSize(search->BitmapWidth(), search->BitmapHeight());
-  SetButtonText(search, LookupMessage(MSI_BO_BIONIC_PHARMACY_OK));
+  SetButtonText(search, LookupMessage(MSI_SEARCH));
   search->Move(432, 259);
   search->SetId(ID_SEARCH);
   this->AddChild(search);
@@ -746,7 +746,7 @@ void UIChangeMaterialWnd::OnCreate(int width, int height) {
   this->m_sortBox = new UIChangeMaterialWnd_CheckBox();
   this->m_sortBox->SetSize(74, 14);
   this->m_sortBox->SetBitmaps("유저인터페이스\\ChangeMaterial\\btn_sort_up.bmp", "유저인터페이스\\ChangeMaterial\\btn_sort_down.bmp");
-  this->m_sortBox->SetLabels(LookupMessage(MSI_MSG_IS_ILLEGAL_TAG_MSG), LookupMessage(MSI_BO_RESEARCHREPORT_ON));
+  this->m_sortBox->SetLabels(LookupMessage(MSI_CHANGE_MATERIAL_SORT), LookupMessage(MSI_CHANGE_MATERIAL_INVSORT));
   this->m_sortBox->Move(316, 24);
   this->m_sortBox->SetId(ID_SORT_ITEMS);
   this->m_sortBox->SetChecked(1);
@@ -763,7 +763,7 @@ void UIChangeMaterialWnd::OnCreate(int width, int height) {
   this->AddChild(this->m_button);
 
   UIBasicButton* cancel = new UIBasicButton();
-  cancel->Configure(42, LookupMessage(MSI_ZENY_LOTTO_BUY_10));
+  cancel->Configure(42, LookupMessage(MSI_CLOSE));
   const int cancelY = height - cancel->geometry.height - 12;
   cancel->Move(width - cancel->geometry.width - 55, cancelY);
   cancel->SetId(ID_CLOSE);

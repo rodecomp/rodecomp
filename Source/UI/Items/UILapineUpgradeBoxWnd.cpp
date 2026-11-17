@@ -158,7 +158,7 @@ void UILapineUpgradeBoxWnd::Paint() {
     this->DrawTitleBar(false, this->title.c_str(), 0);
   }
 
-  this->DrawCenteredText(35, 47, LookupMessage(MSI_LAPINE_FAIL_NOT_ENOUGH_REFINING_LEVEL), 156, 0, 11, 0xCD7A51, 0);
+  this->DrawCenteredText(35, 47, LookupMessage(MSI_LAPINE_INGREDIENT_TO_COMBINE), 156, 0, 11, 0xCD7A51, 0);
   this->DrawCenteredText(35, 63, this->description.c_str(), 156, 0, 11, 0x844A42, 0);
 
   if (this->item.identity[1] > 0) {
@@ -556,7 +556,7 @@ __declspec(noinline) void UILapineUpgradeBox_IngredientInfoWnd::SetItem(std::uin
   this->BuildItemName(&this->item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
 
   if (this->item.identified == 1 && this->item.optionCount != 0) {
-    sprintf_s(name, sizeof(name), LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), name, this->item.optionCount);
+    sprintf_s(name, sizeof(name), LookupMessage(MSI_EA6), name, this->item.optionCount);
   }
 
   this->item.SetName(name);
@@ -592,14 +592,14 @@ bool UILapineUpgradeBox_IngredientListWnd::CanUseIngredient(std::uint32_t identi
   }
 
   if (this->minRefine != 0 && this->minRefine < item.refiningLevel) {
-    this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEMSHOP_CURRENCY)), 0, 0, 0);
+    this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_LAPINE_WARNING_REFINING_LEVEL_HIGHER_THAN_NEEDED)), 0, 0, 0);
   }
 
   if (item.IsEquipment() == true && !item.IsApprenticeItem() && !item.HasSpecialCard()) {
     const std::uint32_t* cards = item.cards;
     const std::uint32_t* cardsEnd = cards + 4;
     if (std::find_if(cards, cardsEnd, [](std::uint32_t card) { return card != 0; }) != cardsEnd) {
-      this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PURCHASEWND_TOTAL)), 0, 0, 0);
+      this->parent->SendMsg(this, UM_RECEIVE_MSG, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_LAPINE_WARNING_HAS_CARD_OR_ENCHANTED)), 0, 0, 0);
     }
   }
 
@@ -663,7 +663,7 @@ int UILapineUpgradeBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
           this->BuildItemName(&owned, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
 
           if (owned.identified == 1 && owned.optionCount != 0) {
-            sprintf_s(name, sizeof(name), LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), name, owned.optionCount);
+            sprintf_s(name, sizeof(name), LookupMessage(MSI_EA6), name, owned.optionCount);
           }
 
           owned.SetName(name);

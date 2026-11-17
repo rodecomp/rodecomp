@@ -135,7 +135,7 @@ void UIRefiningWnd::OnCreate(int width, int height) {
   help->SetBitmap("유저인터페이스\\basic_interface\\btn_help_disabled.bmp", 3, 0);
   help->SetSize(help->BitmapWidth(), help->BitmapHeight());
   help->Move(230, 20);
-  help->SetTooltip(LookupMessage(MSI_PROBABILITY_TITLE));
+  help->SetTooltip(LookupMessage(MSI_CHECK_PROBABILITY));
   help->SetId(REFINING_BUTTON_PROBABILITY);
   this->AddChild(help);
 }
@@ -269,7 +269,7 @@ void UIRefiningWnd::ApplyResult() {
   }
 
   if (g_session.m_zeny < static_cast<int>(this->SelectedMaterialValue())) {
-    this->notice->SetNotice(LookupMessage(MSI_NPC_ALL_STAT_DOWN), 5000, 1);
+    this->notice->SetNotice(LookupMessage(MSI_REFINING_AGAIN_FAILED_LACK_OF_MONEY), 5000, 1);
     this->againButton->SetDisabled(1);
   } else {
     this->againButton->cost = this->SelectedMaterialValue();
@@ -280,15 +280,15 @@ void UIRefiningWnd::ApplyResult() {
   if (this->catalystEnabled == 1) {
     if (this->nextCatalystCount == 0) {
       this->catalystEnabled = 0;
-      this->notice->SetNotice(LookupMessage(MSI_REFINING_AGAIN_FAILED_LACK_OF_BLACKSMITHBLESSING), 5000, 1);
+      this->notice->SetNotice(LookupMessage(MSI_REFINING_AGAIN_FAILED_INGREDIENT_CHANGED), 5000, 1);
       this->againButton->SetDisabled(1);
       this->againButton->Invalidate();
     } else {
-      this->notice->SetNotice(LookupMessage(MSI_CANNOT_REFINE_ITEM), 0, 0);
+      this->notice->SetNotice(LookupMessage(MSI_USING_BLACKSMITH_BLESSING), 0, 0);
       const int owned = g_session.LookupClientItem(this->catalystItemId, 0).quantity;
       if (this->catalystCount > owned) {
         this->catalystEnabled = 0;
-        this->notice->SetNotice(LookupMessage(MSI_NPC_ALL_STAT_DOWN_RESET), 5000, 1);
+        this->notice->SetNotice(LookupMessage(MSI_REFINING_AGAIN_FAILED_LACK_OF_BLACKSMITHBLESSING), 5000, 1);
         this->againButton->SetDisabled(1);
         this->againButton->Invalidate();
       }
@@ -299,7 +299,7 @@ void UIRefiningWnd::ApplyResult() {
   if (count == 0) {
     this->materials.clear();
     this->selectedMaterial = -1;
-    this->notice->SetNotice(LookupMessage(MSI_RETURN), 5000, 1);
+    this->notice->SetNotice(LookupMessage(MSI_CANNOT_REFINE_ITEM), 5000, 1);
     this->againButton->SetDisabled(1);
     this->againButton->Invalidate();
   } else {
@@ -328,7 +328,7 @@ void UIRefiningWnd::ApplyResult() {
 
     if (!same) {
       this->selectedMaterial = -1;
-      this->notice->SetNotice(LookupMessage(MSI_REFINING_AGAIN_FAILED_LACK_OF_BLACKSMITHBLESSING), 5000, 1);
+      this->notice->SetNotice(LookupMessage(MSI_REFINING_AGAIN_FAILED_INGREDIENT_CHANGED), 5000, 1);
       this->againButton->SetDisabled(1);
       this->againButton->Invalidate();
     } else if (this->selectedMaterial >= 0 && static_cast<unsigned>(this->selectedMaterial) < this->materials.size()) {
@@ -345,7 +345,7 @@ void UIRefiningWnd::ApplyResult() {
 
       const ITEM_INFO owned = g_session.LookupClientItem(itemId, 0);
       if (owned.quantity == 0) {
-        this->notice->SetNotice(LookupMessage(MSI_REFINING_FAIL_BROKEN_ITEM), 5000, 1);
+        this->notice->SetNotice(LookupMessage(MSI_REFINING_AGAIN_FAILED_LACK_OF_INGREDIENT), 5000, 1);
         this->againButton->SetDisabled(1);
         this->againButton->Invalidate();
       }
@@ -361,21 +361,21 @@ void UIRefiningWnd::ApplyResult() {
 void UIRefining_BtnAgain::Paint() {
   UIBitmapButton::Paint();
   if (this->m_disabled == 1) {
-    int width = this->TextWidth(LookupMessage(MSI_REFINING_AGAIN_FAILED_LACK_OF_MONEY), 0, 0, 12, 1, 0);
+    int width = this->TextWidth(LookupMessage(MSI_AGAIN), 0, 0, 12, 1, 0);
     std::uint32_t color = this->success == 1 ? 0xE1C1F : (this->m_disabled == 1 ? 0x6F4333 : 0x3E1B12);
     this->DrawTextAt(static_cast<int>(static_cast<float>(this->geometry.width - width) * 0.5f),
-      (this->geometry.state == 2) + 14, LookupMessage(MSI_REFINING_AGAIN_FAILED_LACK_OF_MONEY), 0, 0, 12, color, 1, 0
+      (this->geometry.state == 2) + 14, LookupMessage(MSI_AGAIN), 0, 0, 12, color, 1, 0
     );
     return;
   }
 
-  int width = this->TextWidth(LookupMessage(MSI_REFINING_AGAIN_FAILED_LACK_OF_MONEY), 0, 0, 12, 1, 0);
+  int width = this->TextWidth(LookupMessage(MSI_AGAIN), 0, 0, 12, 1, 0);
   std::uint32_t color = this->success == 1 ? 0xE1C1F : (this->m_disabled == 1 ? 0x6F4333 : 0x3E1B12);
   this->DrawTextAt(static_cast<int>(static_cast<float>(this->geometry.width - width) * 0.5f),
-    (this->geometry.state == 2) + 9, LookupMessage(MSI_REFINING_AGAIN_FAILED_LACK_OF_MONEY), 0, 0, 12, color, 1, 0
+    (this->geometry.state == 2) + 9, LookupMessage(MSI_AGAIN), 0, 0, 12, color, 1, 0
   );
 
-  std::string count = FormatOwnedString(LookupMessage(MSI_CASHSHOP_SALE_LIST), this->remainingCount);
+  std::string count = FormatOwnedString(LookupMessage(MSI_REFINING_RATE), this->remainingCount);
   width = this->TextWidth(count.c_str(), 0, 0, 11, 0, 0);
   this->DrawTextAt(static_cast<int>(static_cast<float>(this->geometry.width - width) * 0.5f),
     (this->geometry.state == 2) + 22, count.c_str(), 0, 0, 11, 0, 0, 0
@@ -391,10 +391,10 @@ void UIRefining_BtnAgain::Paint() {
 // FUNCTION: fn_09910
 void UIRefining_BtnRefining::Paint() {
   UIBitmapButton::Paint();
-  int width = this->TextWidth(LookupMessage(MSI_NOTENOUGH_BLACKSMITH_BLESSING), 0, 0, 13, 1, 0);
+  int width = this->TextWidth(LookupMessage(MSI_REFINING), 0, 0, 13, 1, 0);
   std::uint32_t color = this->m_disabled == 1 ? 0x94644A : 0x3E1B12;
   this->DrawTextAt(static_cast<int>(static_cast<float>(this->geometry.width - width) * 0.5f),
-    (this->geometry.state == 2) + 11, LookupMessage(MSI_NOTENOUGH_BLACKSMITH_BLESSING), 0, 0, 12, color, 1, 0
+    (this->geometry.state == 2) + 11, LookupMessage(MSI_REFINING), 0, 0, 12, color, 1, 0
   );
 
   if (this->m_disabled == 0) {
@@ -408,10 +408,10 @@ void UIRefining_BtnRefining::Paint() {
 // FUNCTION: fn_09911
 void UIRefining_BtnReturn::Paint() {
   UIBitmapButton::Paint();
-  int width = this->TextWidth(LookupMessage(MSI_MANUFACTURED_MARRIAGERING_ITEM), 0, 0, 12, 1, 0);
+  int width = this->TextWidth(LookupMessage(MSI_RETURN), 0, 0, 12, 1, 0);
   std::uint32_t color = this->highlighted == 1 ? 0xE1C1F : 0x3E1B12;
   this->DrawTextAt(static_cast<int>(static_cast<float>(this->geometry.width - width) * 0.5f),
-    (this->geometry.state == 2) + 14, LookupMessage(MSI_MANUFACTURED_MARRIAGERING_ITEM), 0, 0, 12, color, 1, 0
+    (this->geometry.state == 2) + 14, LookupMessage(MSI_RETURN), 0, 0, 12, color, 1, 0
   );
 }
 
@@ -488,7 +488,7 @@ void UIRefiningWnd::OnLBtnUp(int x, int y) {
       switch (this->materials[slot].itemId) {
       case Carnium:
       case Bradium:
-        this->notice->SetNotice(LookupMessage(MSI_REFINING_FAIL_CLOSE_UI), 0, 0);
+        this->notice->SetNotice(LookupMessage(MSI_REFINING_FAIL_ITEM_DISAPPEAR_OR_ITEM_DOWNGRADE), 0, 0);
         break;
       case HD_Carnium:
       case HD_Bradium:
@@ -502,7 +502,7 @@ void UIRefiningWnd::OnLBtnUp(int x, int y) {
       case Etherdeocon:
       case Enriched_Ethernium:
       case Enriched_Etherdeocon:
-        this->notice->SetNotice(LookupMessage(MSI_CANNOT_OPEN_RODEX_DURING_REFINING), 0, 0);
+        this->notice->SetNotice(LookupMessage(MSI_REFINING_FAIL_ITEM_DOWMGRADE), 0, 0);
         break;
       case ITEMID_ORIDECON:
       case Elunium:
@@ -516,7 +516,7 @@ void UIRefiningWnd::OnLBtnUp(int x, int y) {
       case HD_Etel_Bradium:
       case Etel_Carnium:
       case HD_Etel_Carnium:
-        this->notice->SetNotice(LookupMessage(MSI_CLOSE_RODEX_FOR_REFINING), 0, 0);
+        this->notice->SetNotice(LookupMessage(MSI_REFINING_FAIL_ITEM_DISAPPEAR), 0, 0);
         break;
       default:
         this->Invalidate();
@@ -531,13 +531,13 @@ void UIRefiningWnd::OnLBtnUp(int x, int y) {
     const int owned = g_session.LookupClientItem(this->catalystItemId, 0).quantity;
     UIRefining_Notice* notice = this->notice;
     if (this->catalystCount > owned) {
-      notice->SetNotice(LookupMessage(MSI_REFINING_FAIL), 3000, 1);
+      notice->SetNotice(LookupMessage(MSI_NOTENOUGH_BLACKSMITH_BLESSING), 3000, 1);
     } else if (this->catalystEnabled == 1) {
       this->catalystEnabled = 0;
       notice->SetNotice("", 0, 0);
     } else {
       this->catalystEnabled = 1;
-      notice->SetNotice(LookupMessage(MSI_CANNOT_REFINE_ITEM), 0, 0);
+      notice->SetNotice(LookupMessage(MSI_USING_BLACKSMITH_BLESSING), 0, 0);
     }
   }
 
@@ -810,14 +810,14 @@ int UIRefiningWnd::SendMsg(
   case UM_COMMAND:
     switch (argument1) {
     case REFINING_BUTTON_PROBABILITY:
-      ShellExecuteA(hWnd, "open", LookupMessage(MSI_SELLINGSLOT_ERROR_MAXSLOT), nullptr, nullptr, SW_SHOWNORMAL);
+      ShellExecuteA(hWnd, "open", LookupMessage(MSI_REFINING_PROBABILITY_URL), nullptr, nullptr, SW_SHOWNORMAL);
       break;
     case ID_OK:
       if (this->requestPending != 1) {
         const std::uint32_t index = this->item.identity[1];
         if (index != 0) {
           if (g_session.m_zeny < static_cast<int>(this->SelectedMaterialValue())) {
-            this->notice->SetNotice(LookupMessage(MSI_REFINING_SUCCESS), 3000, 1);
+            this->notice->SetNotice(LookupMessage(MSI_NOTENOUGH_ZENY), 3000, 1);
           } else {
             this->requestPending = 1;
             RefiningRequestPacket packet;
@@ -869,7 +869,7 @@ int UIRefiningWnd::SendMsg(
           packet.index = static_cast<std::uint16_t>(argument1);
           GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
         } else {
-          this->notice->SetNotice(LookupMessage(MSI_RETURN), 3000, 1);
+          this->notice->SetNotice(LookupMessage(MSI_CANNOT_REFINE_ITEM), 3000, 1);
         }
       }
     }
@@ -886,7 +886,7 @@ void UIRefiningWnd::ApplyItem(int id, int count, const RefiningMaterial* materia
   case REFINING_STATE_WAIT:
   case REFINING_STATE_READY: {
     if (id == -1 || count == 0) {
-      this->notice->SetNotice(LookupMessage(MSI_RETURN), 3000, 1);
+      this->notice->SetNotice(LookupMessage(MSI_CANNOT_REFINE_ITEM), 3000, 1);
       return;
     }
 
@@ -905,7 +905,7 @@ void UIRefiningWnd::ApplyItem(int id, int count, const RefiningMaterial* materia
     char* cursor = text;
     this->BuildItemName(&this->item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
     if (this->item.identified == 1 && this->item.optionCount != 0) {
-      sprintf_s(text, sizeof(text), LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), text, this->item.optionCount);
+      sprintf_s(text, sizeof(text), LookupMessage(MSI_EA6), text, this->item.optionCount);
     }
 
     this->item.SetName(text);
@@ -963,7 +963,7 @@ void UIRefiningWnd::ApplyItem(int id, int count, const RefiningMaterial* materia
     char* name = text;
     this->BuildItemName(&this->nextItem, &highlightColor, &breaks, &name, &remaining, &cursor, 1, 0);
     if (this->nextItem.identified == 1 && this->nextItem.optionCount != 0) {
-      sprintf_s(text, sizeof(text), LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), text, this->nextItem.optionCount);
+      sprintf_s(text, sizeof(text), LookupMessage(MSI_EA6), text, this->nextItem.optionCount);
     }
 
     this->nextItem.SetName(text);
@@ -1164,7 +1164,7 @@ void UIRefiningWnd::Paint() {
     this->DrawCenteredText(0, 246, this->item.displayName.c_str(), 264, 0, 12, 0x462117, 1);
     break;
   case REFINING_STATE_FAIL:
-    this->DrawCenteredText(0, 249, LookupMessage(MSI_OTP_MUST_8_CHAR), 264, 0, 12, 0x462117, 1);
+    this->DrawCenteredText(0, 249, LookupMessage(MSI_REFINING_FAIL_BROKEN_ITEM), 264, 0, 12, 0x462117, 1);
     break;
   case REFINING_STATE_SUCCESS:
   case REFINING_STATE_DOWNGRADE:
@@ -1181,33 +1181,33 @@ void UIRefiningWnd::Paint() {
       break;
     }
 
-    const std::string label = FormatOwnedString("%s %d%%", LookupMessage(MSI_CHANGE_HOMUN_NAME), SelectedSuccessRate(this));
+    const std::string label = FormatOwnedString("%s %d%%", LookupMessage(MSI_SUCCESS), SelectedSuccessRate(this));
     const int labelWidth = this->TextWidth(label.c_str(), 0, 0, 12, 1, 0);
 
     const std::string percent = FormatOwnedString("%d%%", SelectedSuccessRate(this));
     const int percentWidth = this->TextWidth(percent.c_str(), 0, 0, 12, 1, 0);
 
     const int x = static_cast<int>((this->geometry.width - labelWidth) * 0.5);
-    this->DrawTextAt(x, 31, LookupMessage(MSI_CHANGE_HOMUN_NAME), 0, 0, 12, 0x422B1F, 1, 0);
+    this->DrawTextAt(x, 31, LookupMessage(MSI_SUCCESS), 0, 0, 12, 0x422B1F, 1, 0);
     this->DrawTextAt(x - percentWidth + labelWidth, 31, percent.c_str(), 0, 0, 12, 0xDE612A, 1, 0);
     break;
   }
   case REFINING_STATE_SUCCESS: {
-    const int width = this->TextWidth(LookupMessage(MSI_SUCCESS), 0, 0, 12, 1, 0);
-    this->DrawTextAt(static_cast<int>((this->geometry.width - width) * 0.5), 31, LookupMessage(MSI_SUCCESS), 0, 0, 12, 0x422B1F, 1, 0
+    const int width = this->TextWidth(LookupMessage(MSI_REFINING_SUCCESS), 0, 0, 12, 1, 0);
+    this->DrawTextAt(static_cast<int>((this->geometry.width - width) * 0.5), 31, LookupMessage(MSI_REFINING_SUCCESS), 0, 0, 12, 0x422B1F, 1, 0
     );
     break;
   }
   case REFINING_STATE_FAIL:
   case REFINING_STATE_DOWNGRADE:
   case REFINING_STATE_FAIL2: {
-    const int width = this->TextWidth(LookupMessage(MSI_RESET), 0, 0, 12, 1, 0);
-    this->DrawTextAt(static_cast<int>((this->geometry.width - width) * 0.5), 31, LookupMessage(MSI_RESET), 0, 0, 12, 0x422B1F, 1, 0
+    const int width = this->TextWidth(LookupMessage(MSI_REFINING_FAIL), 0, 0, 12, 1, 0);
+    this->DrawTextAt(static_cast<int>((this->geometry.width - width) * 0.5), 31, LookupMessage(MSI_REFINING_FAIL), 0, 0, 12, 0x422B1F, 1, 0
     );
     break;
   }
   }
 
   this->DrawButtonBar(2, 0, 1);
-  this->DrawTitleBar(false, LookupMessage(MSI_NOTENOUGH_BLACKSMITH_BLESSING), 0);
+  this->DrawTitleBar(false, LookupMessage(MSI_REFINING), 0);
 }

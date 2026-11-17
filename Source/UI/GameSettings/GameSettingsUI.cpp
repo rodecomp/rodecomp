@@ -1239,7 +1239,7 @@ void CUIGroup::Apply() {
 void CUIGroupEmblem::Apply() {
   g_serviceOptions.Set(0xF3, 0);
   g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ADDSKILL_FAIL_INCLUDE_SKILL_YOU_CANNOT_LEARN)), 0x64FFFF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_EMBLEM_FRAME_DRAW_OFF)), 0x64FFFF, 0, 0, 0);
 }
 
 // OFFSET: 0x00A40480
@@ -1534,7 +1534,7 @@ void CUIGroupSound::SetEffectVolume(int volume) {
 void CUIGroupEmblem::SetEnabled(bool enabled) {
   g_serviceOptions.Set(0xF3, enabled);
   g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(enabled ? MSI_USESKILL_FAIL_EMPTY_SOUL_ENERGY : MSI_ADDSKILL_FAIL_INCLUDE_SKILL_YOU_CANNOT_LEARN)), 0x64FFFF, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(enabled ? MSI_EMBLEM_FRAME_DRAW_ON : MSI_EMBLEM_FRAME_DRAW_OFF)), 0x64FFFF, 0, 0, 0);
 }
 
 // OFFSET: 0x00A3F5C0
@@ -1809,7 +1809,7 @@ void CUIGameSettingsUI::OnTitleIconClick() {
 // FUNCTION: fn_45480
 void CUIGameSettingsUI::OnApply() {
   const bool modified = this->m_graphicsPage->IsModified();
-  if (g_windowMgr.Confirm(LookupMessage(modified ? MSI_GRAPHIC_SETTING_AURA_OFF_CHECK : MSI_GRAPHIC_SETTING_SIMPLE_AURA_CHECK), 2, true, false, 0, "Message", 280, 120, 0) != ID_NO) {
+  if (g_windowMgr.Confirm(LookupMessage(modified ? MSI_GRAPHIC_SETTING_WARNING_RESTART : MSI_GRAPHIC_SETTING_APPLY), 2, true, false, 0, "Message", 280, 120, 0) != ID_NO) {
     this->m_graphicsPage->ApplySettings();
     this->UpdateApplyButton();
   }
@@ -2111,24 +2111,24 @@ __declspec(noinline) void CUIGameSettingsUI::RefreshOption(int id) {
 // OFFSET: 0x00A41120
 // FUNCTION: fn_15987
 void GameSettingsUI::CUIGroupEmblem::OnInit() {
-  this->m_title->SetText(LookupMessage(MSI_GAME_SETTINGS_HIDE));
-  this->m_onText->SetText(LookupMessage(MSI_GAME_SETTINGS_PROCESS_PRIORITY));
-  this->m_offText->SetText(LookupMessage(MSI_GAME_SETTINGS_PROCESS_PRIORITY_HIGH));
+  this->m_title->SetText(LookupMessage(MSI_GAME_SETTINGS_EMBLEM_FRAME));
+  this->m_onText->SetText(LookupMessage(MSI_GAME_SETTINGS_SHOW));
+  this->m_offText->SetText(LookupMessage(MSI_GAME_SETTINGS_HIDE));
 }
 
 // OFFSET: 0x00A411C0
 // FUNCTION: fn_15988
 void GameSettingsUI::CUIGroupFullscreen::OnInit() {
-  this->m_title->SetText(LookupMessage(MSI_MACRO_CHECKER_MAP_NOT_PROPER_MAP));
-  this->m_onText->SetText(LookupMessage(MSI_TAREN_TRWSDK_FILTER_SENSITIVEWORDS_ERROR));
-  this->m_offText->SetText(LookupMessage(MSI_TAREN_TRWSDK_FILTER_NO_SEND_BECAUSE_SENSITIVEWORDS_ERROR));
+  this->m_title->SetText(LookupMessage(MSI_GAME_SETTINGS_SCREEN_MODE));
+  this->m_onText->SetText(LookupMessage(MSI_GAME_SETTINGS_FULLSCREEN_MODE));
+  this->m_offText->SetText(LookupMessage(MSI_GAME_SETTINGS_WINDOW_MODE));
 }
 
 // OFFSET: 0x00A41260
 // FUNCTION: fn_15989
 void GameSettingsUI::CUIGroupGraphics::OnInit() {
-  this->m_title->SetText(LookupMessage(MSI_GRAPHIC_SETTING_MOUSE_SET));
-  this->m_modeText->SetText(LookupMessage(MSI_STORE_ASSISTANT_TRADE_FEE));
+  this->m_title->SetText(LookupMessage(MSI_GRAPHIC_SETTING_DEVICE_SET));
+  this->m_modeText->SetText(LookupMessage(MSI_GRAPHIC_SETTING_RESOLUTION_SET));
   GetRenderSystemHolder();
   this->m_adapter = this->m_pendingAdapter = SelectedRenderAdapter();
   this->m_mode = this->m_pendingMode = DisplayMode{static_cast<unsigned>(g_configuredScreenWidth), static_cast<unsigned>(g_configuredScreenHeight), static_cast<unsigned>(g_configuredBitsPerPixel)};
@@ -2137,7 +2137,7 @@ void GameSettingsUI::CUIGroupGraphics::OnInit() {
 // OFFSET: 0x00A41510
 // FUNCTION: fn_15990
 void GameSettingsUI::CUIGroupGraphicsAPI::OnInit() {
-  this->m_title->SetText(LookupMessage(MSI_ENCHANT_MARK_2));
+  this->m_title->SetText(LookupMessage(MSI_GRAPHIC_SETTING_RENDER_SYSTEM));
   const int backend = GetRenderSystemHolder()->Backend();
   this->m_pendingBackend = backend;
   this->m_backend = backend;
@@ -2146,29 +2146,29 @@ void GameSettingsUI::CUIGroupGraphicsAPI::OnInit() {
 // OFFSET: 0x00A41710
 // FUNCTION: fn_15992
 void GameSettingsUI::CUIGroupProcessPriority::OnInit() {
-  this->m_title->SetText(LookupMessage(MSI_GAME_SETTINGS_PROCESS_PRIORITY_NORMAL_TOOLTIP));
-  this->m_highText->SetText(LookupMessage(MSI_GAME_SETTINGS_PROCESS_PRIORITY_IDLE));
-  this->m_highText->SetTooltip(LookupMessage(MSI_GAME_SETTINGS_PROCESS_PRIORITY_IDLE_TOOLTIP));
-  this->m_normalText->SetText(LookupMessage(MSI_GAME_SETTINGS_AURA));
-  this->m_normalText->SetTooltip(LookupMessage(MSI_GAME_SETTINGS_SIMPLE_AURA));
-  this->m_idleText->SetText(LookupMessage(MSI_GAME_SETTINGS_SIMPLE_AURA_OFF));
-  this->m_idleText->SetTooltip(LookupMessage(MSI_GAME_SETTINGS_SIMPLE_AURA_ON));
+  this->m_title->SetText(LookupMessage(MSI_GAME_SETTINGS_PROCESS_PRIORITY));
+  this->m_highText->SetText(LookupMessage(MSI_GAME_SETTINGS_PROCESS_PRIORITY_HIGH));
+  this->m_highText->SetTooltip(LookupMessage(MSI_GAME_SETTINGS_PROCESS_PRIORITY_HIGH_TOOLTIP));
+  this->m_normalText->SetText(LookupMessage(MSI_GAME_SETTINGS_PROCESS_PRIORITY_NORMAL));
+  this->m_normalText->SetTooltip(LookupMessage(MSI_GAME_SETTINGS_PROCESS_PRIORITY_NORMAL_TOOLTIP));
+  this->m_idleText->SetText(LookupMessage(MSI_GAME_SETTINGS_PROCESS_PRIORITY_IDLE));
+  this->m_idleText->SetTooltip(LookupMessage(MSI_GAME_SETTINGS_PROCESS_PRIORITY_IDLE_TOOLTIP));
 }
 
 // OFFSET: 0x00A41870
 // FUNCTION: fn_15993
 void GameSettingsUI::CUIGroupRodexSpam::OnInit() {
-  this->m_title->SetText(LookupMessage(MSI_MOVE));
-  this->m_onText->SetText(LookupMessage(MSI_GAME_SETTINGS_PROCESS_PRIORITY_NORMAL));
-  this->m_offText->SetText(LookupMessage(MSI_GAME_SETTINGS_PROCESS_PRIORITY_HIGH_TOOLTIP));
+  this->m_title->SetText(LookupMessage(MSI_MAIL));
+  this->m_onText->SetText(LookupMessage(MSI_GAME_SETTINGS_RODEX_SPAM_OFF));
+  this->m_offText->SetText(LookupMessage(MSI_GAME_SETTINGS_RODEX_SPAM_ON));
 }
 
 // OFFSET: 0x00A41CE0
 // FUNCTION: fn_15998
 void GameSettingsUI::CUIGroupTrilinear::OnInit() {
-  this->m_title->SetText(LookupMessage(MSI_REFUSE_SDK_AUTH_FAILED));
-  this->m_onText->SetText(LookupMessage(MSI_GAME_SETTINGS_RODEX_SPAM_ON));
-  this->m_offText->SetText(LookupMessage(MSI_GAME_SETTINGS_RODEX_SPAM_OFF));
+  this->m_title->SetText(LookupMessage(MSI_GAME_SETTINGS_TRILINEAR));
+  this->m_onText->SetText(LookupMessage(MSI_GAME_SETTINGS_ON));
+  this->m_offText->SetText(LookupMessage(MSI_GAME_SETTINGS_OFF));
 }
 
 // OFFSET: 0x00A193A0
@@ -2216,17 +2216,17 @@ __declspec(noinline) CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::CUIL
 void GameSettingsUI::CUIGroupSound::OnInit() {
   this->m_title->SetText(LookupMessage(MSI_SOUND_OPTIONWND));
   this->m_bgmText->SetText(LookupMessage(MSI_BGM));
-  this->m_bgmMuteText->SetText(LookupMessage(MSI_GAME_SETTINGS_RODEX_SPAM_OFF));
+  this->m_bgmMuteText->SetText(LookupMessage(MSI_GAME_SETTINGS_OFF));
   this->m_effectText->SetText(LookupMessage(MSI_SOUND));
-  this->m_effectMuteText->SetText(LookupMessage(MSI_GAME_SETTINGS_RODEX_SPAM_OFF));
+  this->m_effectMuteText->SetText(LookupMessage(MSI_GAME_SETTINGS_OFF));
 }
 
 // OFFSET: 0x00A41560
 // FUNCTION: fn_15991
 void GameSettingsUI::CUIGroupLogInOut::OnInit() {
-  this->m_title->SetText(LookupMessage(MSI_SKILL_DELAY_INFO_CAST_STAT));
-  this->m_onText->SetText(LookupMessage(MSI_GAME_SETTINGS_RODEX_SPAM_ON));
-  this->m_offText->SetText(LookupMessage(MSI_GAME_SETTINGS_RODEX_SPAM_OFF));
+  this->m_title->SetText(LookupMessage(MSI_GAME_SETTINGS_LOGINOUT));
+  this->m_onText->SetText(LookupMessage(MSI_GAME_SETTINGS_ON));
+  this->m_offText->SetText(LookupMessage(MSI_GAME_SETTINGS_OFF));
   this->m_title->SetTooltip(OBFUSCATE_SOURCE_TEXT("/loginout\x0A/li", 0x03772763F96D9DA5ULL));
 }
 
@@ -2267,7 +2267,7 @@ void GameSettingsUI::CUIGroupGraphics::OnModeSelect(CUIComboItem* item, const Di
 // FUNCTION: fn_15994
 void GameSettingsUI::CUIGroupSkin::OnInit() {
   this->m_title->SetText(LookupMessage(MSI_SKIN));
-  this->m_combo->AddItem(std::string(LookupMessage(MSI_ACHIEVEMENT_COMMAND)), false);
+  this->m_combo->AddItem(std::string(LookupMessage(MSI_BASIC_SKIN)), false);
   for (int index = 0; index < static_cast<int>(g_skinInfo.prefixes.size()); ++index) {
     this->m_combo->AddItem(std::string(g_skinInfo.Name(index)), false);
   }
@@ -3420,7 +3420,7 @@ void CUIGameSettingsUI::RefreshHotkeyLabels() {
 // OFFSET: 0x00A3F180
 // FUNCTION: fn_15940
 void CUIGameSettingsUI::ResetToDefaults() {
-  if (g_windowMgr.Confirm(LookupMessage(MSI_GRAPHIC_SETTING_FOG_CHECK), 2, true, false, 0, "Message", 280, 120, 0) == ID_NO) {
+  if (g_windowMgr.Confirm(LookupMessage(MSI_GRAPHIC_SETTING_WARNING_RESET), 2, true, false, 0, "Message", 280, 120, 0) == ID_NO) {
     return;
   }
 
@@ -3806,12 +3806,12 @@ void CUIGameSettingsUI::OnCreate(int width, int height) {
 // FUNCTION: fn_15986
 void CUIGameSettingsUI::OnInit() {
   this->Move((g_renderer->viewport.width - this->geometry.width) / 2, (g_renderer->viewport.height - this->geometry.height) / 2);
-  static_cast<CUITitleBar*>(this->m_titleBar)->SetTitle(LookupMessage(MSI_COMMAND_LIST));
-  static_cast<CUITextButton*>(this->m_tab->FindChildById(0))->SetText(LookupMessage(MSI_GAME_SETTINGS_EMBLEM_FRAME));
-  static_cast<CUITextButton*>(this->m_tab->FindChildById(1))->SetText(LookupMessage(MSI_GAME_SETTINGS_ON));
-  static_cast<CUITextButton*>(this->m_tab->FindChildById(2))->SetText(LookupMessage(MSI_GAME_SETTINGS_OFF));
-  static_cast<CUITextButton*>(this->m_tab->FindChildById(3))->SetText(LookupMessage(MSI_GAME_SETTINGS_SHOW));
-  static_cast<CUITextButton*>(this->m_tab->FindChildById(4))->SetText(LookupMessage(MSI_SKILL_DELAY_INFO_GLOBAL_POST));
+  static_cast<CUITitleBar*>(this->m_titleBar)->SetTitle(LookupMessage(MSI_GAME_SETTING));
+  static_cast<CUITextButton*>(this->m_tab->FindChildById(0))->SetText(LookupMessage(MSI_GAME_SETTINGS_TAB_BASIC));
+  static_cast<CUITextButton*>(this->m_tab->FindChildById(1))->SetText(LookupMessage(MSI_GAME_SETTINGS_TAB_EFFECT));
+  static_cast<CUITextButton*>(this->m_tab->FindChildById(2))->SetText(LookupMessage(MSI_GAME_SETTINGS_TAB_CONTROL));
+  static_cast<CUITextButton*>(this->m_tab->FindChildById(3))->SetText(LookupMessage(MSI_GAME_SETTINGS_TAB_GRAPHICS));
+  static_cast<CUITextButton*>(this->m_tab->FindChildById(4))->SetText(LookupMessage(MSI_GAME_SETTINGS_TAB_ETC));
 
   for (UIWindow* child : this->m_currentPage->m_children) {
     static_cast<GameSettingsUI::CUIGroup*>(child)->Refresh();

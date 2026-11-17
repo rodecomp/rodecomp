@@ -235,29 +235,29 @@ void UIAchievementWnd::CreateTab() {
   this->tab->Move(0, 63);
   this->AddChild(this->tab);
 
-  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_GENERAL_ACTION), 0, -1);
-  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_GENERAL_REST), 1, -1);
-  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_ADVENTURE), 1, 0);
-  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_ADVENTURE_RUNEMIDGARTS), 1, 1);
-  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_ADVENTURE_SCHWARZWALD), 1, 2);
-  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_ADVENTURE_ARUNAFELTZ), 2, -1);
-  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_ADVENTURE_ANOTHERWORLD), 2, 0);
-  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_ADVENTURE_LOCALIZING), 2, 1);
-  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_ADVENTURE_DUNGEON), 2, 2);
-  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_BATTLE), 2, 3);
-  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_BATTLE_PVP), 2, 4);
-  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_BATTLE_TRAINING), 2, 5);
-  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_QUEST), 3, -1);
-  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_QUEST_EPISODE), 3, 0);
-  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_QUEST_GENERAL), 3, 1);
-  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_MEMORIAL), 4, -1);
-  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_MEMORIAL_MIDGARD), 4, 0);
-  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_MEMORIAL_ANOTHERWORLD), 4, 1);
-  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_MEMORIAL_REST), 5, -1);
-  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_ACHIEVEMENT), 5, 0);
-  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_TOTAL), 5, 1);
-  this->tab->SetLabel(LookupMessage(MSI_FAIL_ADD_ACHIEVEMENT_TRACING), 5, 2);
-  this->tab->SetLabel(LookupMessage(MSI_NOTICE_COMPLETE_ACHIEVEMENT), 6, -1);
+  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_SUMMARY), 0, -1);
+  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_GENERAL), 1, -1);
+  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_GENERAL_CHARACTER), 1, 0);
+  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_GENERAL_ACTION), 1, 1);
+  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_GENERAL_REST), 1, 2);
+  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_ADVENTURE), 2, -1);
+  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_ADVENTURE_RUNEMIDGARTS), 2, 0);
+  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_ADVENTURE_SCHWARZWALD), 2, 1);
+  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_ADVENTURE_ARUNAFELTZ), 2, 2);
+  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_ADVENTURE_ANOTHERWORLD), 2, 3);
+  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_ADVENTURE_LOCALIZING), 2, 4);
+  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_ADVENTURE_DUNGEON), 2, 5);
+  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_BATTLE), 3, -1);
+  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_BATTLE_PVP), 3, 0);
+  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_BATTLE_TRAINING), 3, 1);
+  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_QUEST), 4, -1);
+  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_QUEST_EPISODE), 4, 0);
+  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_QUEST_GENERAL), 4, 1);
+  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_MEMORIAL), 5, -1);
+  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_MEMORIAL_MIDGARD), 5, 0);
+  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_MEMORIAL_ANOTHERWORLD), 5, 1);
+  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_MEMORIAL_REST), 5, 2);
+  this->tab->SetLabel(LookupMessage(MSI_ACHIEVEMENT_TAB_ACHIEVEMENT), 6, -1);
 }
 
 // OFFSET: 0x007B52E0
@@ -270,7 +270,7 @@ void UIAchUpperWnd::OnCreate(int, int) {
   gauge->value = 0;
   gauge->maximum = 100;
   this->levelGauge->Move(47, 24);
-  this->levelGauge->text.assign(LookupMessage(MSI_ZENY_LOTTO_ACHIEVE));
+  this->levelGauge->text.assign(LookupMessage(MSI_ACHIEVEMENT_NEXT_GRADE));
   this->AddChild(this->levelGauge);
 
   gauge = new (std::nothrow) UICustomGageBar();
@@ -506,7 +506,7 @@ void UIAchTV::Paint() {
 // FUNCTION: fn_09219
 void UIAchSummaryWnd::Paint() {
   this->DrawBitmap(0, 0, AchievementBitmap("유저인터페이스\\achievement_re\\bg_summary.bmp"), false);
-  this->DrawTextAt(82, 27, LookupMessage(MSI_OTPUSER_ONLY), 0, 0, 12, 0xA55239, 1, 0);
+  this->DrawTextAt(82, 27, LookupMessage(MSI_ACHIEVEMENT_TAB_TOTAL), 0, 0, 12, 0xA55239, 1, 0);
   this->DrawRightAlignedText(600, 28, FormatOwnedString("%d/%d", this->gauges[0]->value, this->gauges[0]->maximum).c_str(), 0, 0, 11, 0x635AA5, 0);
 
   const int categories[6] = {2657, 2661, 2668, 2671, 2674, 2678};
@@ -518,7 +518,7 @@ void UIAchSummaryWnd::Paint() {
     this->DrawRightAlignedText(column * 304 + 296, row + 108, FormatOwnedString("%d/%d", gauge->value, gauge->maximum).c_str(), 0, 0, 11, 0x635AA5, 0);
   }
 
-  this->DrawTextAt(9, 292, LookupMessage(MSI_CASH_GEDARE_FAIL_MONEY), 0, 0, 12, 0x9C6B5A, 1, 0);
+  this->DrawTextAt(9, 292, LookupMessage(MSI_ACHIEVEMENT_RECENT_ACHIEVEMENT), 0, 0, 12, 0x9C6B5A, 1, 0);
 
   int x = 260;
   for (auto it = this->recent.rbegin(); it != this->recent.rend(); ++it) {
@@ -557,7 +557,7 @@ void UIAchTab::Paint() {
 void UIAchUpperWnd::Paint() {
   int visible;
 
-  if (this->title.compare(LookupMessage(MSI_OTPUSER_ONLY)) == 0) {
+  if (this->title.compare(LookupMessage(MSI_ACHIEVEMENT_TAB_TOTAL)) == 0) {
     this->DrawBitmap(0, 0, AchievementBitmap("유저인터페이스\\achievement_re\\bg_upper.bmp"), false);
     this->DrawRightAlignedText(130, 13, FormatOwnedString("%d/%d", this->achievementPoints, this->nextLevelPoints).c_str(), 0, 0, 11, 0, 0);
     this->DrawCenteredText(353, 6, FormatOwnedString("%d", g_session.achievementScore).c_str(), 46, 0, 12, 0x582708, 1);
@@ -570,8 +570,8 @@ void UIAchUpperWnd::Paint() {
   } else {
     this->DrawBitmap(0, 0, AchievementBitmap("유저인터페이스\\achievement_re\\bg_upper.bmp"), false);
     this->DrawBitmap(575, 3, AchievementBitmap("유저인터페이스\\achievement_re\\upper_trophy.bmp"), true);
-    this->DrawTextAt(169, 11, LookupMessage(MSI_ZENY_LOTTO_ACHIEVE_FAIL), 0, 0, 12, 0, 0, 0);
-    this->DrawTextAt(169, 26, LookupMessage(MSI_SWAP_EQUIPITEM), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(169, 11, LookupMessage(MSI_THE_WHOLE), 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(169, 26, LookupMessage(MSI_INCOMPLETE), 0, 0, 12, 0, 0, 0);
     this->DrawTextAt(614, 15, this->title.c_str(), 0, 0, 11, 0x582708, 0, 0);
     this->DrawRightAlignedText(130, 13, FormatOwnedString("%d/%d", this->achievementPoints, this->nextLevelPoints).c_str(), 0, 0, 11, 0, 0);
     this->DrawRightAlignedText(737, 15, FormatOwnedString("(%d/%d)", this->completedCount, this->achievementCount).c_str(), 0, 0, 11, 0x582708, 0);
@@ -633,7 +633,7 @@ void UIAchViewWnd::Paint() {
 // FUNCTION: fn_09224
 void UIAchievementWnd::Paint() {
   this->ClearSurface(0xFFFFFFFF);
-  this->DrawTitleBar(true, LookupMessage(MSI_ACHIEVEMENT_SCORE_REQUIRED_TO_REWARD), 0);
+  this->DrawTitleBar(true, LookupMessage(MSI_ACHIEVEMENT_SYSTEM), 0);
 }
 
 // OFFSET: 0x007B7680
@@ -1035,7 +1035,7 @@ void UIAchievementWnd::SelectTab(int group, int sub) {
   this->tab->Select(group, sub);
 
   if (group == 0) {
-    const std::string title = LookupMessage(MSI_OTPUSER_ONLY);
+    const std::string title = LookupMessage(MSI_ACHIEVEMENT_TAB_TOTAL);
     this->upper->SetTitle(title);
   } else {
     const std::string title = this->tab->Label(this->group, this->sub);

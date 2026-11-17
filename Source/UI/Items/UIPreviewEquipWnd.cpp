@@ -80,20 +80,20 @@ void UIPreviewEquipWnd::OnCreate(int width, int height) {
 
   UIStaticText* shadow = new UIStaticText();
   shadow->SetSize(
-    this->TextWidth(LookupMessage(MSI_IMPOSSIBLE_CHANGE_GUILD_MASTER_IN_SIEGE_TIME), 0, 0, 12, 0, 0),
-    this->TextHeight(LookupMessage(MSI_IMPOSSIBLE_CHANGE_GUILD_MASTER_IN_SIEGE_TIME), 0, 0, 12, 0, 0)
+    this->TextWidth(LookupMessage(MSI_EQUIPMENT), 0, 0, 12, 0, 0),
+    this->TextHeight(LookupMessage(MSI_EQUIPMENT), 0, 0, 12, 0, 0)
   );
-  shadow->SetText(LookupMessage(MSI_IMPOSSIBLE_CHANGE_GUILD_MASTER_IN_SIEGE_TIME), 0);
+  shadow->SetText(LookupMessage(MSI_EQUIPMENT), 0);
   shadow->SetColor(255, 255, 255);
   shadow->Move(19, 4);
   this->AddChild(shadow);
 
   UIStaticText* title = new UIStaticText();
   title->SetSize(
-    this->TextWidth(LookupMessage(MSI_IMPOSSIBLE_CHANGE_GUILD_MASTER_IN_SIEGE_TIME), 0, 0, 12, 0, 0),
-    this->TextHeight(LookupMessage(MSI_IMPOSSIBLE_CHANGE_GUILD_MASTER_IN_SIEGE_TIME), 0, 0, 12, 0, 0)
+    this->TextWidth(LookupMessage(MSI_EQUIPMENT), 0, 0, 12, 0, 0),
+    this->TextHeight(LookupMessage(MSI_EQUIPMENT), 0, 0, 12, 0, 0)
   );
-  title->SetText(LookupMessage(MSI_IMPOSSIBLE_CHANGE_GUILD_MASTER_IN_SIEGE_TIME), 0);
+  title->SetText(LookupMessage(MSI_EQUIPMENT), 0);
   title->Move(18, 3);
   this->AddChild(title);
 
@@ -123,7 +123,7 @@ void UIPreviewEquipWnd::OnCreate(int width, int height) {
   this->AddChild(this->m_rightButton);
 
   this->m_actionButton = new UIBasicButton();
-  this->m_actionButton->Configure(80, LookupMessage(MSI_BLOCK_CALL_PERMIT));
+  this->m_actionButton->Configure(80, LookupMessage(MSI_RESET));
   this->m_actionButton->Move(static_cast<int>((this->geometry.width - this->m_actionButton->geometry.width) * 0.5), this->geometry.height - 30);
   this->m_actionButton->SetId(ID_RESET);
   this->m_actionButton->invalidateParent = 1;

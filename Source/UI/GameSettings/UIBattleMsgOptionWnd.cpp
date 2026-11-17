@@ -49,7 +49,7 @@ UIBattleMsgOptionWnd::UIBattleMsgOptionWnd() : UIFrameWnd(0) {
   this->messages.push_back(LookupMessage(MSI_VIEW_WHISPER_MSG));
   this->messages.push_back(LookupMessage(MSI_VIEW_PARTY_MSG));
   this->messages.push_back(LookupMessage(MSI_VIEW_GUILD_MSG));
-  this->messages.push_back(LookupMessage(MSI_REFINING_POSSIBLE));
+  this->messages.push_back(LookupMessage(MSI_ALLY_CHAT_MSG));
   this->messages.push_back(LookupMessage(MSI_VIEW_GET_ITEM_MSG));
   this->messages.push_back(LookupMessage(MSI_VIEW_EQUIP_MSG));
   this->messages.push_back(LookupMessage(MSI_VIEW_CHANGE_STATUS_MSG));
@@ -65,10 +65,10 @@ UIBattleMsgOptionWnd::UIBattleMsgOptionWnd() : UIFrameWnd(0) {
   this->messages.push_back(LookupMessage(MSI_VIEW_GETTING_EXP_MSG));
   this->messages.push_back(LookupMessage(MSI_VIEW_QUEST_INFO_MSG));
   this->messages.push_back(LookupMessage(MSI_VIEW_BATTLEFIELD_INFO_MSG));
-  this->messages.push_back(LookupMessage(MSI_STR_MAKECHARACTER));
-  this->messages.push_back(LookupMessage(MSI_RESULT_FAILED_ASSISTANT_POS));
-  this->messages.push_back(LookupMessage(MSI_ALLY_CHAT_MSG));
-  this->messages.push_back(LookupMessage(MSI_PAY_CONFIRM_BY_NYANGVINE_FRUIT));
+  this->messages.push_back(LookupMessage(MSI_VIEW_CLAN_MSG));
+  this->messages.push_back(LookupMessage(MSI_BLOCK_CALL_NOTIFY));
+  this->messages.push_back(LookupMessage(MSI_GUILD_EXP_TRIBUTE));
+  this->messages.push_back(LookupMessage(MSI_VIEW_CHANGE_EQUIPMENT_PROPERTIES_MSG));
 
   this->text = LookupMessage(MSI_BATTLE_CHAT_WND_OPTION);
 }

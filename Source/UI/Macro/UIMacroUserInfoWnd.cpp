@@ -354,7 +354,7 @@ bool UIMacroReporterWnd::ValidateNames(unsigned char notify) {
       if (notify == 1) {
         g_windowMgr.SendNotice(
           1,
-          reinterpret_cast<std::intptr_t>(FormatOwnedString("%d번 %s", i + 1, LookupMessage(MSI_MACRO_BLACKLIST_USER_CHCEK_RESULT_SUCCESS)).c_str()),
+          reinterpret_cast<std::intptr_t>(FormatOwnedString("%d번 %s", i + 1, LookupMessage(MSI_MACRO_REPORTER_UNKNWON_MAP)).c_str()),
           0xFF,
           0,
           0,
@@ -380,7 +380,7 @@ bool UIMacroReporterWnd::ValidateTarget(unsigned char notify) {
   std::string text = this->m_target;
   if (text.empty() || text.size() - 4 > 4) {
     if (notify == 1) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s", LookupMessage(MSI_MACRO_BLACKLIST_USER_CHCEK_RESULT_FAIL_COOLTIME)).c_str()), 0xFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s", LookupMessage(MSI_MACRO_REPORTER_WRONG_NUMBER)).c_str()), 0xFF, 0, 0, 0);
     }
     return false;
   }
@@ -393,7 +393,7 @@ bool UIMacroReporterWnd::ValidateTarget(unsigned char notify) {
 
   if (value == 0 && text.compare(buffer) != 0) {
     if (notify == 1) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s", LookupMessage(MSI_MACRO_BLACKLIST_USER_CHCEK_RESULT_FAIL_COOLTIME)).c_str()), 0xFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s", LookupMessage(MSI_MACRO_REPORTER_WRONG_NUMBER)).c_str()), 0xFF, 0, 0, 0);
     }
     return false;
   }
@@ -408,7 +408,7 @@ bool UIMacroReporterWnd::ValidateTarget(unsigned char notify) {
 
   if (text.compare(buffer) != 0) {
     if (notify == 1) {
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s", LookupMessage(MSI_MACRO_BLACKLIST_USER_CHCEK_RESULT_FAIL_COOLTIME)).c_str()), 0xFF, 0, 0, 0);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s", LookupMessage(MSI_MACRO_REPORTER_WRONG_NUMBER)).c_str()), 0xFF, 0, 0, 0);
     }
     return false;
   }
@@ -488,8 +488,8 @@ void UIMacroReporterWnd::OnCreate(int, int) {
   this->m_reportButton->SetId(ID_SEND);
   this->AddChild(this->m_reportButton);
 
-  std::string labels[4] = {LookupMessage(MSI_MACRO_REPORTER_TOOLTIP_CELL), LookupMessage(MSI_MACRO_REPORTER_TOOLTIP_RANGE), LookupMessage(MSI_MACRO_REPORTER_TOOLTIP_QUIZ), LookupMessage(MSI_MACRO_REPORTER_UNKNWON_MAP)};
-  std::string tooltips[4] = {LookupMessage(MSI_TAIWANSS_PERSONALINFO_EXPMSG), LookupMessage(MSI_TAIWANSS_PERSONALINFO_DROPMSG), LookupMessage(MSI_MACRO_REPORTER_WRONG_NUMBER), LookupMessage(MSI_MACRO_REPORTER_TOOLTIP_MAP_QUIZ_INPUT)};
+  std::string labels[4] = {LookupMessage(MSI_MACRO_REPORTER_SELECT_MODE_CHAR), LookupMessage(MSI_MACRO_REPORTER_SELECT_MODE_CELL), LookupMessage(MSI_MACRO_REPORTER_SELECT_MODE_MAP), LookupMessage(MSI_MACRO_REPORTER_SELECT_MODE_QUIZ)};
+  std::string tooltips[4] = {LookupMessage(MSI_MACRO_REPORTER_TOOLTIP_CHAR), LookupMessage(MSI_MACRO_REPORTER_TOOLTIP_CELL), LookupMessage(MSI_MACRO_REPORTER_TOOLTIP_MAP), LookupMessage(MSI_MACRO_REPORTER_TOOLTIP_QUIZ)};
 
   int index = 0;
   for (; index < 2; ++index) {
@@ -527,7 +527,7 @@ void UIMacroReporterWnd::OnCreate(int, int) {
     UIEditCtrl* field = this->m_fields[row];
     field->disabled = 1;
     field->Invalidate();
-    this->m_fields[row]->SetTooltip(LookupMessage(MSI_MACRO_BLACKLIST_USER_CHCEK_RESULT_FAIL_MAPNAME));
+    this->m_fields[row]->SetTooltip(LookupMessage(MSI_MACRO_REPORTER_TOOLTIP_MAP_QUIZ_INPUT));
     this->AddChild(this->m_fields[row]);
     this->m_names[row] = "";
     y += 22;
@@ -543,7 +543,7 @@ void UIMacroReporterWnd::OnCreate(int, int) {
   this->m_edit->preserveInput = 1;
   this->m_edit->invalidatesParent = 1;
   this->m_edit->SetText(IntToString(this->reportCount, 0).c_str());
-  this->m_edit->SetTooltip(LookupMessage(MSI_TAIWANSS_PERSONALINFO_DEATHMSG));
+  this->m_edit->SetTooltip(LookupMessage(MSI_MACRO_REPORTER_TOOLTIP_RANGE));
   this->AddChild(this->m_edit);
   if (this->m_mode != 1) {
     UIEditCtrl* edit = this->m_edit;
@@ -679,7 +679,7 @@ int UIMacroReporterWnd::SendMsg(
           }
         }
         const int result = g_windowMgr
-                             .Confirm(FormatOwnedString(LookupMessage(MSI_MACRO_ALREADY_DETECTING), accounts.size()).c_str(), 2, false, false, 0, "Message", 280, 120, 0);
+                             .Confirm(FormatOwnedString(LookupMessage(MSI_MACRO_REPORTER), accounts.size()).c_str(), 2, false, false, 0, "Message", 280, 120, 0);
         if (result != ID_NO) {
           for (auto it = accounts.begin(); it != accounts.end(); ++it) {
             PACKET_CZ_MACRO_REPORT_ACCOUNT packet;
