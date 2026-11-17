@@ -212,7 +212,7 @@ int UISecondCostumeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
   case UM_COMMAND:
     switch (a) {
     case ID_LEFT:
-      this->m_page = this->m_page < 7 ? this->m_page + 1 : 0;
+      this->m_page = this->m_page >= 7 ? 0 : this->m_page + 1;
       this->Invalidate();
       return 0;
 
