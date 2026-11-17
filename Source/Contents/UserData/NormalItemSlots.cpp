@@ -1151,10 +1151,10 @@ void UIWindowMgr::ResetUIRectInfo() {
   this->previewEquipWndInfo.Reset();
 
   int* const swapEquipment = this->swapEquipmentPlacement;
-  swapEquipment[0] = (g_renderer->viewport.width - 280) / 2;
-  swapEquipment[1] = (g_renderer->viewport.height - 177) / 2;
   swapEquipment[2] = 280;
   swapEquipment[3] = 167;
+  swapEquipment[0] = (g_renderer->viewport.width - 280) / 2;
+  swapEquipment[1] = (g_renderer->viewport.height - 177) / 2;
 
   this->questDisplayInfo.Reset();
   this->registerPartyWndInfo.Reset();
