@@ -2594,19 +2594,18 @@ void CPc::SetSprJob(int job) {
 // OFFSET: 0x00DB4E70
 // FUNCTION: fn_22653
 __declspec(noinline) void CPlayer::UpdateMsgEffect(bool show) {
-  if (!StateFlag02(this->stateFlags) && !StateFlag06(this->stateFlags) && !StateFlag01(this->stateFlags)) {
-    if (show) {
-      if (!this->msgEffect) {
-        CMsgEffect* effect = g_modeMgr.GetGameMode()->SpawnMsgEffect(44, &this->render.position, this->render.accountId, true);
-        this->AddMsgEffect(effect);
-        effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
-        this->msgEffect = effect;
-      }
-      return;
-    }
+  if (StateFlag02(this->stateFlags) || StateFlag06(this->stateFlags) || StateFlag01(this->stateFlags)) {
+    show = false;
   }
 
-  if (this->msgEffect) {
+  if (show) {
+    if (!this->msgEffect) {
+      CMsgEffect* effect = g_modeMgr.GetGameMode()->SpawnMsgEffect(44, &this->render.position, this->render.accountId, true);
+      this->AddMsgEffect(effect);
+      effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
+      this->msgEffect = effect;
+    }
+  } else if (this->msgEffect) {
     this->msgEffect->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0);
     this->msgEffect = nullptr;
   }
