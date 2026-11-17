@@ -11610,7 +11610,7 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
           g_session.RemoveMerchantMyShopItem(item, 0, 1);
         }
         int index = g_session.GetNumMerchantPurchaseSavedItems() - 1;
-        std::string price;
+        std::string price("");
         bool fresh = true;
         ITEM_INFO owned = g_session.FindMerchantPurchaseSavedItem(drag.id);
         if (owned.identity[1] != 0) {
