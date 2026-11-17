@@ -187,9 +187,7 @@ void UIHairBitmap::OnLBtnUp(int x, int y) {
 // OFFSET: 0x007DB030
 // FUNCTION: fn_09615
 void UINewMakeCharWnd::Paint() {
-  CBitmapRes* background =
-    static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\make_character_ver2\\bg_makeBg.bmp")));
-  this->DrawBitmap(0, 0, background, false);
+  this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\make_character_ver2\\bg_makeBg.bmp"))), false);
   this->DrawTextAt(0x2C, 0x11, LookupMessage(MSI_STOP_RECRUITING), 0, 0, 0xC, 0x5F5F5F, 1, 0);
 
   for (int i = 0; i < 2; ++i) {
