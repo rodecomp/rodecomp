@@ -94,6 +94,7 @@ std::_Tree<std::_Tset_traits<UIWindow*, std::less<UIWindow*>, std::allocator<UIW
   UIWindow* const&
 ) const;
 template __declspec(noinline) void std::vector<bool>::push_back(const bool&);
+template __declspec(noinline) int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
 
 namespace {
   struct NavigationTargetLook {
@@ -1654,31 +1655,28 @@ void UIWindow::WrapPixelText(const char* text, std::vector<std::string>& lines, 
     return;
   }
 
+  const int totalWidth = this->TextWidth(text, 0, 0, 12, 0, 0);
   const int bytes = static_cast<int>(std::strlen(text));
-  if (bytes == 0) {
+  if (totalWidth <= 0) {
     return;
   }
 
-  if (this->TextWidth(text, bytes, 0, 12, 0, 0) <= 0) {
-    return;
-  }
-
-  const char* end = text + bytes;
   int offset = 0;
 
-  for (int row = 0; offset < bytes; ++row) {
-    if (row > 1000) {
+  for (int row = 0; offset < bytes;) {
+    if (row++ > 1000) {
       return;
     }
 
-    const char* begin = text + offset;
-    const char* current = begin;
-    int count = 0;
     int extent = 0;
+    int count = 0;
+    const char* begin = text + offset;
+    const char* end = begin + std::strlen(begin);
+    const char* current = begin;
     bool newline = false;
 
-    for (int step = 0; current < end; ++step) {
-      if (step > 1000) {
+    for (int step = 0; current < end;) {
+      if (step++ > 1000) {
         break;
       }
 
