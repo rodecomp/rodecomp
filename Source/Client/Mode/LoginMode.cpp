@@ -1852,70 +1852,6 @@ void CLoginMode::ShowLoginError(int code, int argument) {
   }
 
   switch (code) {
-  case 0x1393:
-    message = LookupMessage(MSI_REFUSE_SSO_AUTH_INVALID_TOKEN);
-    break;
-  case 0x1394: {
-    message = FormatOwnedString(LookupMessage(MSI_BLOCKED), argument);
-    break;
-  }
-  case 0x1395:
-  case 0x13BE:
-    message = LookupMessage(MSI_WITHDREW_USERS);
-    break;
-  case 0x1397:
-    if (g_launchPassCommandLine) {
-      std::string url;
-      if (g_stoveMgr->m_environment == 1) {
-        url = "https://member.gate8.com/auth/login/by_game?redirect_url=https%3A%2F%2Fro.game.gate8.com%2Faccount%2Fingamepopup&access_token=";
-      } else {
-        url = "https://member.onstove.com/auth/login/by_game?redirect_url=https://ro.game.onstove.com/account/ingamepopup/&access_token=";
-      }
-      url += g_stoveMgr->GetAccessToken();
-      constexpr std::array<char, 5> source = OBFUSCATE_SOURCE("OPEN", 0xD98F5345098D630DULL);
-      ShellExecuteA(nullptr, OBFUSCATE_DECRYPT(0xD98F5345098D630DULL, source), url.c_str(), url.c_str(), nullptr, SW_SHOWNORMAL);
-      message = "";
-      g_modeMgr.Quit();
-      return;
-    }
-    message = LookupMessage(MSI_REFUSE_SSO_AUTH_INVALID_USER);
-    break;
-  case 0x1399:
-    message = LookupMessage(MSI_REFUSE_SSO_AUTH_INVALID_AGE);
-    break;
-  case 0x13C7:
-    message = LookupMessage(MSI_ACCOUNT_BLOCK);
-    break;
-  case 0x13C8:
-    message = LookupMessage(MSI_BUG_BLOCK);
-    break;
-  case 0x1396:
-  case 0x1398:
-  case 0x139B:
-  case 0x139D:
-  case 0x13BC:
-  case 0x13BD:
-  case 0x13BF:
-  case 0x13C0:
-  case 0x13C1:
-  case 0x13C2:
-  case 0x13C3:
-  case 0x13C4:
-  case 0x13C5:
-    message = LookupMessage(MSI_SSO_ERROR_MSG);
-    break;
-  case 0x13BA:
-    message = LookupMessage(MSI_REFUSE_SSO_NOT_PAY_USER);
-    break;
-  case 0x13BB:
-    message = LookupMessage(MSI_DOUBLE_LOGIN_PROHIBITED);
-    break;
-  case 0x14B4:
-    message = LookupMessage(MSI_RUSSIA_PERSONALINFO_DEATH);
-    break;
-  case 0x14B5:
-    message = LookupMessage(MSI_RODEX_BUTTON_DELETE);
-    break;
   case 33:
     message = LookupMessage(MSI_TITLE_EQUIPMENT);
     break;
@@ -1948,7 +1884,6 @@ void CLoginMode::ShowLoginError(int code, int argument) {
     message = LookupMessage(MSI_ID_EXPIRED);
     break;
   case REFUSE_NOT_CONFIRMED:
-  case 0x13C6:
     message = LookupMessage(MSI_ID_EMAIL_CONFIRM_NEEDED);
     break;
   case REFUSE_INVALID_VERSION:
@@ -2064,8 +1999,77 @@ void CLoginMode::ShowLoginError(int code, int argument) {
     message = LookupMessage(MSI_FAILIED_ONECLICK_ITEMIDENTIFY_NO_MAGNIFIER);
     break;
   case 21:
+    message = LookupMessage(MSI_SSO_FAILED);
+    break;
+  case 0x1393:
+    message = LookupMessage(MSI_REFUSE_SSO_AUTH_INVALID_TOKEN);
+    break;
+  case 0x1394: {
+    message = FormatOwnedString(LookupMessage(MSI_BLOCKED), argument);
+    break;
+  }
+  case 0x1395:
+  case 0x13BE:
+    message = LookupMessage(MSI_WITHDREW_USERS);
+    break;
+  case 0x1397:
+    if (g_launchPassCommandLine) {
+      std::string url;
+      if (g_stoveMgr->m_environment == 1) {
+        url = "https://member.gate8.com/auth/login/by_game?redirect_url=https%3A%2F%2Fro.game.gate8.com%2Faccount%2Fingamepopup&access_token=";
+      } else {
+        url = "https://member.onstove.com/auth/login/by_game?redirect_url=https://ro.game.onstove.com/account/ingamepopup/&access_token=";
+      }
+      url += g_stoveMgr->GetAccessToken();
+      constexpr std::array<char, 5> source = OBFUSCATE_SOURCE("OPEN", 0xD98F5345098D630DULL);
+      ShellExecuteA(nullptr, OBFUSCATE_DECRYPT(0xD98F5345098D630DULL, source), url.c_str(), url.c_str(), nullptr, SW_SHOWNORMAL);
+      message = "";
+      g_modeMgr.Quit();
+      return;
+    }
+    message = LookupMessage(MSI_REFUSE_SSO_AUTH_INVALID_USER);
+    break;
+  case 0x1399:
+    message = LookupMessage(MSI_REFUSE_SSO_AUTH_INVALID_AGE);
+    break;
   case 0x139A:
     message = LookupMessage(MSI_SSO_FAILED);
+    break;
+  case 0x13C7:
+    message = LookupMessage(MSI_ACCOUNT_BLOCK);
+    break;
+  case 0x13C8:
+    message = LookupMessage(MSI_BUG_BLOCK);
+    break;
+  case 0x13C6:
+    message = LookupMessage(MSI_ID_EMAIL_CONFIRM_NEEDED);
+    break;
+  case 0x1396:
+  case 0x1398:
+  case 0x139B:
+  case 0x139D:
+  case 0x13BC:
+  case 0x13BD:
+  case 0x13BF:
+  case 0x13C0:
+  case 0x13C1:
+  case 0x13C2:
+  case 0x13C3:
+  case 0x13C4:
+  case 0x13C5:
+    message = LookupMessage(MSI_SSO_ERROR_MSG);
+    break;
+  case 0x13BA:
+    message = LookupMessage(MSI_REFUSE_SSO_NOT_PAY_USER);
+    break;
+  case 0x13BB:
+    message = LookupMessage(MSI_DOUBLE_LOGIN_PROHIBITED);
+    break;
+  case 0x14B4:
+    message = LookupMessage(MSI_RUSSIA_PERSONALINFO_DEATH);
+    break;
+  case 0x14B5:
+    message = LookupMessage(MSI_RODEX_BUTTON_DELETE);
     break;
   case 110:
     if (g_windowMgr.Confirm(LookupMessage(MSI_SHOUTDOWN_TIME), 0, true, true, 0, "Message", 280, 120, 0) == 0xB8) {
