@@ -4588,7 +4588,7 @@ void UIEditCtrl3::SetLinkedText(const char* value) {
 void UIEditCtrl3::WrapLines(std::vector<std::string>& lines) {
   const std::string open = "<";
   const std::string close = ">";
-  std::string remaining;
+  std::string remaining("");
 
   for (std::size_t index = 0; index < lines.size(); ++index) {
     std::vector<std::string> pieces;
@@ -7631,14 +7631,14 @@ void UIItemWnd::OnMouseHover(int x, int y) {
     CMode* gameMode = g_modeMgr.currentMode;
     if (item.identified == 1 && item.optionCount != 0) {
       std::uint32_t color = g_session.GetItemNameColor(item);
-      int screenX = tooltipX;
       int screenY = tooltipY;
+      int screenX = tooltipX;
       gameMode->ShowTooltip(FormatOwnedString(LookupMessage(MSI_FAIL_NEED_EQUIPPED_GUN_GATLING), item.DisplayName(0).c_str(), item.optionCount, item.quantity).c_str(), screenX, screenY,
                  color, 0, 1);
     } else {
       std::uint32_t color = g_session.GetItemNameColor(item);
-      int screenX = tooltipX;
       int screenY = tooltipY;
+      int screenX = tooltipX;
       gameMode->ShowTooltip(FormatOwnedString(LookupMessage(MSI_EA2), item.DisplayName(0).c_str(), item.quantity).c_str(), screenX, screenY,
                  color, 0, 1);
     }
