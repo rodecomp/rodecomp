@@ -2944,13 +2944,15 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
 
         std::string mapName = g_modeMgr.GetGameMode()->MapName();
         mapName = mapName.substr(0, mapName.find(".rsw")) + ".gat";
-        if (!g_privateAirplaneItems->IsStartableMap(mapName)) {
+        CPrivateAirplaneMgr* airplaneItems = g_privateAirplaneItems;
+        if (!airplaneItems->IsStartableMap(mapName)) {
           window->SendMsg(nullptr, UM_RESOLVE_PLAYER_TAGS, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PRIVATE_AIRPLANE_FAILED_ISNOT_STARTABLE_MAP)), 0, 0, 0);
           window->SendMsg(nullptr, UM_REFRESHBUTTON, 0, 0, 0, 0);
         }
 
         std::string targetName = g_navigationManager.GetCurrentTargetName() + ".gat";
-        if (!g_privateAirplaneItems->IsEndableMap(targetName)) {
+        airplaneItems = g_privateAirplaneItems;
+        if (!airplaneItems->IsEndableMap(targetName)) {
           window->SendMsg(nullptr, UM_RESOLVE_PLAYER_TAGS, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PRIVATE_AIRPLANE_FAILED_ISNOT_ENDABLE_MAP)), 0, 0, 0);
           window->SendMsg(nullptr, UM_REFRESHBUTTON, 0, 0, 0, 0);
         }
