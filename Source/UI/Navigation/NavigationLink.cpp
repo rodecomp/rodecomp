@@ -1767,7 +1767,7 @@ bool NavigationLinkParser::HasUnownedItemLink(std::string text) {
   int offset = 0;
 
   for (;;) {
-    std::string link;
+    std::string link("");
     if (!ExtractInnerItemLink(work, link, offset, text.c_str())) {
       return false;
     }
