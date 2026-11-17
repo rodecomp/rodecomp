@@ -24,7 +24,7 @@ CCheckGDISchedule::CCheckGDISchedule(const std::uint64_t& timestamp, const std::
 void CCheckGDISchedule::Process(const std::uint64_t& now) {
   this->CSchedule::Process(now);
   if (GetRagConnection().CheckConnectionRuntime()) {
-    HMODULE gdi32 = LoadLibraryA("gdi32.dll");
+    HMODULE gdi32 = LoadLibraryA("GDI32.dll");
     if (gdi32 != nullptr) {
       FARPROC proc = GetProcAddress(gdi32, "TextOutW");
       if (proc != reinterpret_cast<FARPROC>(TextOutW)) {
