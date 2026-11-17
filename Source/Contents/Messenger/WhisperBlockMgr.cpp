@@ -92,11 +92,3 @@ void CWhisperBlockMgr::Reset() {
   this->m_changes = 0;
 }
 
-// OFFSET: 0x005BB190
-// FUNCTION: fn_03454
-void CWhisperBlockMgr::Export(Json::Value& values) const {
-  for (const std::string& name : this->m_names) {
-    const std::string copy = name;
-    values.append(ToUtf8(copy, g_textCodePage));
-  }
-}

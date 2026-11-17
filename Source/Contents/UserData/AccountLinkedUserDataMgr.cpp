@@ -16,6 +16,7 @@
 
 #include <json/reader.h>
 #include <json/writer.h>
+#include <algorithm>
 #include <cstddef>
 #include <new>
 
@@ -38,6 +39,32 @@ CAccountLinkedUserDataMgr::CAccountLinkedUserDataMgr()
 
 // INLINED
 CAccountLinkedUserDataMgr::~CAccountLinkedUserDataMgr() = default;
+
+struct WhisperNameAppender {
+  /* 0000 */ Json::Value* values;
+
+  // INLINED
+  void operator()(const std::string& name) const {
+    const std::string copy = name;
+    this->values->append(ToUtf8(copy, g_textCodePage));
+  }
+};
+
+// OFFSET: 0x005BB190
+// FUNCTION: fn_03454
+template <>
+__declspec(noinline) WhisperNameAppender std::for_each(std::set<std::string>::const_iterator first, std::set<std::string>::const_iterator last, WhisperNameAppender function) {
+  for (; first != last; ++first) {
+    function(*first);
+  }
+
+  return function;
+}
+
+// INLINED
+void CWhisperBlockMgr::Export(Json::Value& values) const {
+  std::for_each(this->m_names.begin(), this->m_names.end(), WhisperNameAppender{&values});
+}
 
 // OFFSET: 0x005BBF50
 // FUNCTION: fn_03459
