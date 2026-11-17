@@ -2010,9 +2010,12 @@ void CJupitelThunderHit::OnProcess() {
         transform.Compose(scaling, rotation);
         particle->transform = transform;
         particle->scale = scale;
-        particle->position.x = this->position[0] + 0.0f;
-        particle->position.y = this->position[1] - 5.0f;
-        particle->position.z = this->position[2] + 0.0f;
+        const float x = this->position[0] + 0.0f;
+        const float y = this->position[1] - 5.0f;
+        const float z = this->position[2] + 0.0f;
+        particle->position.x = x;
+        particle->position.y = y;
+        particle->position.z = z;
       }
     }
   }
@@ -2035,9 +2038,12 @@ void CJupitelThunderHit::OnProcess() {
       matrix transform;
       transform.Compose(scaling, rotation);
       particle->transform = transform;
-      particle->position.x = this->position[0] + 0.0f;
-      particle->position.y = this->position[1] - 5.0f;
-      particle->position.z = this->position[2] + 0.0f;
+      const float x = this->position[0] + 0.0f;
+      const float y = this->position[1] - 5.0f;
+      const float z = this->position[2] + 0.0f;
+      particle->position.x = x;
+      particle->position.y = y;
+      particle->position.z = z;
     }
   }
 }
