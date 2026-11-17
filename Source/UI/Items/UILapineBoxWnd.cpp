@@ -339,8 +339,9 @@ int UILapineBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       GetRagConnection().Send(packet->length, payload);
 
       this->waiting = 1;
-      this->makeButton->SetDisabled(1);
-      this->makeButton->Invalidate();
+      auto* button = this->makeButton;
+      button->SetDisabled(1);
+      button->Invalidate();
       this->Invalidate();
 
       delete packet;
@@ -370,9 +371,10 @@ int UILapineBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     if (found != this->items.end()) {
       this->items.erase(found);
 
-      if (this->items.size() < static_cast<std::size_t>(this->maxItems)) {
-        this->moveButton->SetDisabled(0);
-        this->moveButton->Invalidate();
+      if (static_cast<std::size_t>(this->maxItems) > this->items.size()) {
+        auto* button = this->moveButton;
+        button->SetDisabled(0);
+        button->Invalidate();
       }
 
       this->Invalidate();
