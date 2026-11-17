@@ -311,15 +311,15 @@ void CLanguageBase::KeyDown(unsigned key, LPARAM) {
 
   if (HIBYTE(GetKeyState(VK_CONTROL))) {
     switch (key) {
-    case 'V':
-      this->Paste();
-      break;
     case 'X':
       this->CopySelection();
       this->DeleteSelection();
       break;
     case 'C':
       this->CopySelection();
+      break;
+    case 'V':
+      this->Paste();
       break;
     case 'A':
       this->anchor = 0;
@@ -342,18 +342,22 @@ void CLanguageBase::KeyDown(unsigned key, LPARAM) {
     this->DeleteSelection();
     break;
   case VK_LEFT:
-    if (ChatWindow() && ChatWindow()->SuggestionsVisible() && ChatWindow()->m_suggestions) {
-      ChatWindow()->m_suggestions->SendMsg(nullptr, UM_CASH_EMOTION_KEY, VK_LEFT, 0, 0, 0);
-      return;
+    if (UINewChatWnd* chat = ChatWindow()) {
+      if (chat->SuggestionsVisible() && chat->m_suggestions) {
+        chat->m_suggestions->SendMsg(nullptr, UM_CASH_EMOTION_KEY, VK_LEFT, 0, 0, 0);
+        return;
+      }
     }
 
     this->MoveBack();
     this->anchor = this->cursor;
     break;
   case VK_RIGHT:
-    if (ChatWindow() && ChatWindow()->SuggestionsVisible() && ChatWindow()->m_suggestions) {
-      ChatWindow()->m_suggestions->SendMsg(nullptr, UM_CASH_EMOTION_KEY, VK_RIGHT, 0, 0, 0);
-      return;
+    if (UINewChatWnd* chat = ChatWindow()) {
+      if (chat->SuggestionsVisible() && chat->m_suggestions) {
+        chat->m_suggestions->SendMsg(nullptr, UM_CASH_EMOTION_KEY, VK_RIGHT, 0, 0, 0);
+        return;
+      }
     }
 
     this->MoveForward();
