@@ -1699,37 +1699,36 @@ void CEffectPrim::RenderHalfSphere(matrix& wtm) {
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
-    const EffectPrimitiveSlot& slot = this->state.slots[ec];
 
-    if (slot.life != 1) {
+    if (this->state.slots[ec].life != 1) {
       continue;
     }
 
-    const int step = slot.fullDisplayAngle / 10;
+    const int step = this->state.slots[ec].fullDisplayAngle / 10;
 
     for (int angle2 = 0; angle2 < 180; angle2 += 18) {
-      for (int count = 0; count <= slot.fullDisplayAngle; count += step) {
-        int angle = slot.rotStart + count;
+      for (int count = 0; count <= this->state.slots[ec].fullDisplayAngle; count += step) {
+        int angle = this->state.slots[ec].rotStart + count;
 
         if (angle >= 360) {
           angle -= 360;
         }
 
-        if (slot.fullDisplayAngle == 360 && count == 360) {
-          angle = slot.rotStart;
+        if (this->state.slots[ec].fullDisplayAngle == 360 && count == 360) {
+          angle = this->state.slots[ec].rotStart;
         }
 
         const float cs1 = g_cosTable[angle];
         const float sn1 = g_sinTable[angle];
-        const float dist = slot.distance;
+        const float dist = this->state.slots[ec].distance;
 
         float ring = g_sinTable[angle2] * dist;
-        vec2.Set(cs1 * ring + slot.vecTNow.x, g_cosTable[angle2] * dist - slot.maxHeight, sn1 * ring + slot.vecTNow.z);
+        vec2.Set(cs1 * ring + this->state.slots[ec].vecTNow.x, g_cosTable[angle2] * dist - this->state.slots[ec].maxHeight, sn1 * ring + this->state.slots[ec].vecTNow.z);
         ring = g_sinTable[angle2 + 18] * dist;
-        vec4.Set(cs1 * ring + slot.vecTNow.x, g_cosTable[angle2 + 18] * dist - slot.maxHeight, sn1 * ring + slot.vecTNow.z);
+        vec4.Set(cs1 * ring + this->state.slots[ec].vecTNow.x, g_cosTable[angle2 + 18] * dist - this->state.slots[ec].maxHeight, sn1 * ring + this->state.slots[ec].vecTNow.z);
 
         if (count > 0) {
-          this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec4, vec3, wtm, 1, 0, 0, 250, 250, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+          this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, vec1, vec2, vec4, vec3, wtm, 1, 0, 0, 250, 250, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
         }
 
         vec1 = vec2;
@@ -2474,8 +2473,8 @@ void CEffectPrim::RenderFloorRect(matrix& wtm) {
 // OFFSET: 0x00BE0B40
 // FUNCTION: fn_19913
 void CEffectPrim::RenderRotatedRing(matrix& wtm) {
-  ZeroVector3d corners[4];
   int rpCnt = 0;
+  ZeroVector3d corners[4];
 
   for (int ec = 0; ec < 4; ++ec) {
     const EffectPrimitiveSlot& slot = this->state.slots[ec];
