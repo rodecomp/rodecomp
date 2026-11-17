@@ -336,9 +336,7 @@ void CSkillAction_NW_THE_VIGILANTE_AT_NIGHT_GUN_SHOTGUN::OnSkillEffect(int level
 
     const int first = rand() % 10;
     const int second = rand() % 10;
-    effect->position[0] = static_cast<float>(index % 2 * 10 - (second >= 0 ? second : 0)) + target->render.position.x;
-    effect->position[2] = target->render.position.z + 0.0f;
-    effect->position[1] = static_cast<float>(index % 4 / 2 * 10 - (first >= 0 ? first : 0)) + target->render.position.y;
+    effect->positionVector = vector3d{static_cast<float>(index % 2 * 10 - (second >= 0 ? second : 0)) + target->render.position.x, static_cast<float>(index % 4 / 2 * 10 - (first >= 0 ? first : 0)) + target->render.position.y, target->render.position.z + 0.0f};
     effect->SetDelay(index * 32);
     effect->SetScale(static_cast<float>(std::max(rand() % 31, 0) + 70) * 0.01f);
   }
