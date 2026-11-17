@@ -951,7 +951,7 @@ void UIWindowMgr::Shutdown() {
   for (std::list<UIWindow*>::iterator it = this->rendered.begin(); it != this->rendered.end(); ++it) {
     if (this->HasModalWindow() && this->persistentWindows.count(*it)) {
       this->retainedPersistentWindow = true;
-    } else if (!this->HasModalWindow() || std::find(this->modalWindows.begin(), this->modalWindows.end(), *it) == this->modalWindows.end()) {
+    } else if (!this->HasModalWindow() || this->modalWindows.end() == std::find(this->modalWindows.begin(), this->modalWindows.end(), *it)) {
       if (this->persistentWindows.count(*it)) {
         this->persistentWindows.erase(*it);
       }
@@ -975,10 +975,10 @@ void UIWindowMgr::Shutdown() {
     delete entry->second;
     entry = this->overlays.erase(entry);
   }
-  this->rendered.clear();
-  this->retired.clear();
+  this->rendered.erase(this->rendered.begin(), this->rendered.end());
+  this->retired.erase(this->retired.begin(), this->retired.end());
   this->snapRectangles.erase(this->snapRectangles.begin(), this->snapRectangles.end());
-  this->messageBoxes.clear();
+  this->messageBoxes.erase(this->messageBoxes.begin(), this->messageBoxes.end());
   this->ResetWindows();
 
   for (std::list<UIWindow*>::iterator it = this->snapExcluded.begin(); it != this->snapExcluded.end(); ++it) {
