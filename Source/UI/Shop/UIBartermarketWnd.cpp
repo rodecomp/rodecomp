@@ -1670,15 +1670,15 @@ void UIBarterItemPurchaseWnd::Paint() {
 
   const int leftHeight = this->geometry.height - 38;
   const int leftTiles = leftHeight / 8 + (leftHeight % 8 != 0);
-  for (int tile = 0, y = 17; tile < leftTiles; ++tile, y += 8) {
+  for (int tile = 0; tile < leftTiles; ++tile) {
     auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
-    this->DrawBitmap(0, y, bitmap, false);
+    this->DrawBitmap(0, tile * 8 + 17, bitmap, false);
   }
   const int rightHeight = this->geometry.height - 38;
   const int rightTiles = rightHeight / 8 + (rightHeight % 8 != 0);
-  for (int tile = 0, y = 17; tile < rightTiles; ++tile, y += 8) {
+  for (int tile = 0; tile < rightTiles; ++tile) {
     auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
-    this->DrawBitmap(this->geometry.width - bitmap->image.width, y, bitmap, false);
+    this->DrawBitmap(this->geometry.width - bitmap->image.width, tile * 8 + 17, bitmap, false);
   }
 
   unsigned red;
@@ -1688,7 +1688,8 @@ void UIBarterItemPurchaseWnd::Paint() {
   const int rightRemainder = (this->geometry.width - 60) % 32;
   this->FillRegion(20, 17, rightRemainder, this->geometry.height - 38, RGB(red, green, blue));
   const int bottomRemainder = (this->geometry.height - 38) % 32;
-  this->FillRegion(20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, bottomRemainder, RGB(red, green, blue));
+  const int bottomY = (this->geometry.height - 38) / 32 * 32 + 17;
+  this->FillRegion(20, bottomY, this->geometry.width - 24, bottomRemainder, RGB(red, green, blue));
   this->DrawButtonBar(2, 0, 1);
 
   const int rows = (this->geometry.height - 38) / 32;
@@ -1744,15 +1745,15 @@ void UIBartermarketWnd::Paint() {
 
   const int leftHeight = this->geometry.height - this->bottomPadding - 17;
   const int leftTiles = leftHeight / 8 + (leftHeight % 8 != 0);
-  for (int tile = 0, y = 17; tile < leftTiles; ++tile, y += 8) {
+  for (int tile = 0; tile < leftTiles; ++tile) {
     auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
-    this->DrawBitmap(0, y, bitmap, false);
+    this->DrawBitmap(0, tile * 8 + 17, bitmap, false);
   }
   const int rightHeight = this->geometry.height - this->bottomPadding - 17;
   const int rightTiles = rightHeight / 8 + (rightHeight % 8 != 0);
-  for (int tile = 0, y = 17; tile < rightTiles; ++tile, y += 8) {
+  for (int tile = 0; tile < rightTiles; ++tile) {
     auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
-    this->DrawBitmap(this->geometry.width - bitmap->image.width, y, bitmap, false);
+    this->DrawBitmap(this->geometry.width - bitmap->image.width, tile * 8 + 17, bitmap, false);
   }
 
   unsigned red;
@@ -1762,7 +1763,8 @@ void UIBartermarketWnd::Paint() {
   const int rightRemainder = (this->geometry.width - 60) % 32;
   this->FillRegion(20, 17, rightRemainder, this->geometry.height - this->bottomPadding - 17, RGB(red, green, blue));
   const int bottomRemainder = (this->geometry.height - this->bottomPadding - 17) % 32;
-  this->FillRegion(20, (this->geometry.height - this->bottomPadding - 17) / 32 * 32 + 17, this->geometry.width - 24, bottomRemainder, RGB(red, green, blue));
+  const int bottomY = (this->geometry.height - this->bottomPadding - 17) / 32 * 32 + 17;
+  this->FillRegion(20, bottomY, this->geometry.width - 24, bottomRemainder, RGB(red, green, blue));
   this->DrawButtonBar(2, 0, 1);
 
   const int columns = (this->geometry.width - 40) / 32;
@@ -1827,15 +1829,15 @@ void UIExpandedBarterItemPurchaseWnd::Paint() {
 
   const int leftHeight = this->geometry.height - 46;
   const int leftTiles = leftHeight / 8 + (leftHeight % 8 != 0);
-  for (int tile = 0, y = 17; tile < leftTiles; ++tile, y += 8) {
+  for (int tile = 0; tile < leftTiles; ++tile) {
     auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
-    this->DrawBitmap(0, y, bitmap, false);
+    this->DrawBitmap(0, tile * 8 + 17, bitmap, false);
   }
   const int rightHeight = this->geometry.height - 46;
   const int rightTiles = rightHeight / 8 + (rightHeight % 8 != 0);
-  for (int tile = 0, y = 17; tile < rightTiles; ++tile, y += 8) {
+  for (int tile = 0; tile < rightTiles; ++tile) {
     auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
-    this->DrawBitmap(this->geometry.width - bitmap->image.width, y, bitmap, false);
+    this->DrawBitmap(this->geometry.width - bitmap->image.width, tile * 8 + 17, bitmap, false);
   }
 
   this->DrawButtonBar(2, 0, 1);
@@ -1922,15 +1924,15 @@ void UIExpandedBartermarketWnd::Paint() {
 
   const int leftHeight = this->geometry.height - 46;
   const int leftTiles = leftHeight / 8 + (leftHeight % 8 != 0);
-  for (int tile = 0, y = 17; tile < leftTiles; ++tile, y += 8) {
+  for (int tile = 0; tile < leftTiles; ++tile) {
     auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
-    this->DrawBitmap(0, y, bitmap, false);
+    this->DrawBitmap(0, tile * 8 + 17, bitmap, false);
   }
   const int rightHeight = this->geometry.height - 46;
   const int rightTiles = rightHeight / 8 + (rightHeight % 8 != 0);
-  for (int tile = 0, y = 17; tile < rightTiles; ++tile, y += 8) {
+  for (int tile = 0; tile < rightTiles; ++tile) {
     auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
-    this->DrawBitmap(this->geometry.width - bitmap->image.width, y, bitmap, false);
+    this->DrawBitmap(this->geometry.width - bitmap->image.width, tile * 8 + 17, bitmap, false);
   }
 
   unsigned red;
