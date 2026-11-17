@@ -60,7 +60,8 @@ void UIMerchantShopMakeWnd::Refresh() {
   int index = 0;
   UIEditCtrl** edit = this->priceEdits;
 
-  for (const ITEM_INFO& item : displayed) {
+  for (auto itemIt = displayed.begin(); itemIt != displayed.end(); ++itemIt) {
+    const ITEM_INFO& item = *itemIt;
     if (index >= this->slotCount) {
       break;
     }
