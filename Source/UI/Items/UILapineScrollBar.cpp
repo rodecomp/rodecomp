@@ -326,7 +326,8 @@ unsigned char UILapineBox_IngredientListWnd::AddIngredient(std::uint32_t id) {
   }
 
   auto it = std::find_if(this->materials.begin(), this->materials.end(), [owned](ITEM_INFO mat) {
-    return std::atoi(owned.itemId.c_str()) == std::atoi(mat.itemId.c_str());
+    const int ownedId = std::atoi(owned.itemId.c_str());
+    return ownedId == std::atoi(mat.itemId.c_str());
   });
 
   if (it == this->materials.end()) {
@@ -334,7 +335,7 @@ unsigned char UILapineBox_IngredientListWnd::AddIngredient(std::uint32_t id) {
   }
 
   for (std::vector<UIIngredientInfoWnd*>::iterator entry = this->items.begin(); entry != this->items.end(); ++entry) {
-    if ((*entry)->item.identity[1] == id) {
+    if (id == (*entry)->item.identity[1]) {
       (*entry)->item.quantity += it->quantity;
       (*entry)->insufficient = 0;
       (*entry)->Show(1);
