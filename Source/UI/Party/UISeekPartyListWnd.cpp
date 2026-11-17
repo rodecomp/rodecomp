@@ -657,7 +657,8 @@ void UISeekPartyListWnd::SelectRegion(int region) {
   auto it = this->m_regionMaps.find(region);
   if (it != this->m_regionMaps.end()) {
     std::vector<SeekPartyMapEntry> maps = it->second;
-    for (SeekPartyMapEntry entry : maps) {
+    for (auto entryIt = maps.begin(), entryEnd = maps.end(); entryIt != entryEnd; ++entryIt) {
+      SeekPartyMapEntry entry = *entryIt;
       this->m_mapCombo->AddOption(entry.name.c_str(), entry.color);
     }
 
@@ -675,7 +676,8 @@ void UISeekPartyListWnd::SelectJobCategory(int category) {
   }
 
   this->m_jobCombo->Clear();
-  for (const std::string& option : this->m_jobOptions[category]) {
+  for (auto optionIt = this->m_jobOptions[category].begin(), optionEnd = this->m_jobOptions[category].end(); optionIt != optionEnd; ++optionIt) {
+    const std::string& option = *optionIt;
     this->m_jobCombo->AddOption(option, 0);
   }
 
