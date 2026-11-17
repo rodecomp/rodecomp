@@ -247,11 +247,12 @@ void UIRoulletteWnd::OnMouseHover(int x, int y) {
 
   if (item.quantity != 0) {
     this->ToScreen(tooltipX, tooltipY);
-    CMode* tooltip = g_modeMgr.currentMode;
     if (item.identified == 1 && item.optionCount != 0) {
+      CMode* tooltip = g_modeMgr.currentMode;
       tooltip->ShowTooltip(FormatOwnedString(LookupMessage(MSI_EA6), item.DisplayName(0).c_str(), item.optionCount).c_str(), tooltipX, tooltipY,
                     g_session.GetItemNameColor(item), 0, 1);
     } else {
+      CMode* tooltip = g_modeMgr.currentMode;
       tooltip->ShowTooltip(item.DisplayName(0).c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
     }
   }
