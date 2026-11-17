@@ -21,6 +21,12 @@
 #include <cstdlib>
 #include <string>
 
+// INLINED
+static int ClampedRandom(int range) {
+  const int value = rand() % range;
+  return value >= 0 ? value : 0;
+}
+
 class CSkillAction_NW_INTENSIVE_AIM : public CSkillAction {
 public:
   int GetSkillAttackMotion() override;
@@ -303,7 +309,7 @@ void CSkillAction_NW_THE_VIGILANTE_AT_NIGHT_GUN_GATLING::OnSkillEffect(int level
     const int second = rand() % 15;
     effect->positionVector = vector3d{static_cast<float>(index % 2 * 15 - (second >= 0 ? second : 0)) + target->render.position.x, static_cast<float>(index % 4 / 2 * 15 - (first >= 0 ? first : 0)) + target->render.position.y, target->render.position.z + 0.0f};
     effect->SetDelay(index * 32);
-    effect->SetScale(static_cast<float>(std::max(rand() % 51, 0) + 50) * 0.01f);
+    effect->SetScale(static_cast<float>(ClampedRandom(51) + 50) * 0.01f);
   }
 }
 
@@ -337,7 +343,7 @@ void CSkillAction_NW_THE_VIGILANTE_AT_NIGHT_GUN_SHOTGUN::OnSkillEffect(int level
     const int second = rand() % 10;
     effect->positionVector = vector3d{static_cast<float>(index % 2 * 10 - (second >= 0 ? second : 0)) + target->render.position.x, static_cast<float>(index % 4 / 2 * 10 - (first >= 0 ? first : 0)) + target->render.position.y, target->render.position.z + 0.0f};
     effect->SetDelay(index * 32);
-    effect->SetScale(static_cast<float>(std::max(rand() % 31, 0) + 70) * 0.01f);
+    effect->SetScale(static_cast<float>(ClampedRandom(31) + 70) * 0.01f);
   }
 }
 
