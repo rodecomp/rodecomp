@@ -227,7 +227,7 @@ namespace myGPack {
       substituted.words[0] = substituted.words[1] = 0;
 
       for (std::uint8_t i = 0; i < 8; ++i) {
-        if (i % 2 == 0) {
+        if (0 == i % 2) {
           substituted.bytes[i / 2] = static_cast<std::uint8_t>(s_substitution[64 * i + (permuted.bytes[i] >> 2)] << 4);
         } else {
           substituted.bytes[i / 2] += s_substitution[64 * i + (permuted.bytes[i] >> 2)];
@@ -249,9 +249,8 @@ namespace myGPack {
     }
 
     const std::uint32_t low = output->words[0];
-    const std::uint32_t high = output->words[1];
+    output->words[0] = output->words[1];
     output->words[1] = low;
-    output->words[0] = high;
 
     FinalPermutation(output->bytes);
     return 1;
@@ -411,7 +410,7 @@ namespace myGPack {
       substituted.words[0] = substituted.words[1] = 0;
 
       for (std::uint8_t i = 0; i < 8; ++i) {
-        if (i % 2 == 0) {
+        if (0 == i % 2) {
           substituted.bytes[i / 2] = static_cast<std::uint8_t>(s_substitution[64 * i + (permuted.bytes[i] >> 2)] << 4);
         } else {
           substituted.bytes[i / 2] += s_substitution[64 * i + (permuted.bytes[i] >> 2)];
