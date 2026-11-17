@@ -3,6 +3,7 @@
 
 #include "Render/Textures/SpritePixels.h"
 
+#include <array>
 #include <cstddef>
 #include <cstdint>
 #include <forward_list>
@@ -36,10 +37,6 @@ struct SpriteAtlasPage {
 
 class SpriteAtlas {
 public:
-  // INLINED
-  __forceinline SpriteAtlas() : m_classes{} {
-  }
-
   ~SpriteAtlas();
   void Initialize(unsigned spareCount);
   void Clear();
@@ -59,7 +56,7 @@ private:
   };
   SpriteAtlasPage* Allocate(unsigned category, unsigned width, unsigned height);
   void ClearSpare();
-  /* 0000 */ std::forward_list<SpriteAtlasPage> m_classes[25];
+  /* 0000 */ std::array<std::forward_list<SpriteAtlasPage>, 25> m_classes;
   /* 0064 */ std::unordered_map<Key, SpriteAtlasRecord*, Hash> m_lookup;
   /* 0084 */ std::vector<CTexture*> m_spare;
 };

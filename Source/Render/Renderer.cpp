@@ -14,10 +14,18 @@
 #include "Resource/Sprites/ActionResource.h"
 #include "Resource/Sprites/SpriteResource.h"
 
+#include <algorithm>
 #include <bit>
 #include <cstdlib>
 #include <cstring>
 #include <windows.h>
+
+// GLOBAL: gl_24883
+char s_hourlyBannerState;
+// GLOBAL: gl_24884
+short s_screenShakeStep;
+// GLOBAL: gl_24885
+int s_hourlyBannerAlpha;
 
 // OFFSET: 0x00544A60
 // FUNCTION: fn_01820
