@@ -45,13 +45,13 @@ void UIPreviewEquipWnd::DrawCharacter() {
   offset.x = 0.0f;
   offset.y = 0.0f;
   offset.z = -this->m_render->cameraDistance;
-  float eye[3];
-  eye[0] = offset.x * view.values[0] + offset.y * view.values[3] + offset.z * view.values[6] + view.values[9];
-  eye[1] = offset.x * view.values[1] + offset.y * view.values[4] + offset.z * view.values[7] + view.values[10];
-  eye[2] = offset.x * view.values[2] + offset.y * view.values[5] + offset.z * view.values[8] + view.values[11];
+  vector3d eye;
+  eye.x = offset.x * view.values[0] + offset.y * view.values[3] + offset.z * view.values[6] + view.values[9];
+  eye.y = offset.x * view.values[1] + offset.y * view.values[4] + offset.z * view.values[7] + view.values[10];
+  eye.z = offset.x * view.values[2] + offset.y * view.values[5] + offset.z * view.values[8] + view.values[11];
 
   vector3d up = this->m_render->cameraUp;
-  view.LookAt(eye, &this->m_render->position.x, &up.x);
+  view.LookAt(&eye.x, &this->m_render->position.x, &up.x);
 
   float screenX = 0.0f;
   float screenY = 0.0f;
