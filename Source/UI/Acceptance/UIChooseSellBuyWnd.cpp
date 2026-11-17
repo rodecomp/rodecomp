@@ -5825,7 +5825,7 @@ void UIChatRoomMakeWnd::OnCreate(int width, int height) {
   this->m_public = 0;
   const char* labels[2] = {LookupMessage(MSI_ROOM_PUBLIC2), LookupMessage(MSI_ROOM_PRIVATE2)};
   const int states[2] = {1, 0};
-  for (int index = 0, width = 40, x = 44; width < 64; ++index, width += 12, x += 52) {
+  for (int x = 44, width = 40, index = 0; width < 64; x += 52, width += 12, ++index) {
     this->m_publicButtons[index] = new UIRadioBtn();
     this->m_publicButtons[index]->SetSize(width, 12);
     this->m_publicButtons[index]->Move(x, 70);
@@ -5838,16 +5838,18 @@ void UIChatRoomMakeWnd::OnCreate(int width, int height) {
   this->m_limitText->SetSize(68, 14);
   this->m_limitText->Move(48, 49);
   this->m_limitText->SetText(this->m_limitLabels[this->m_limitLabels.size() - 1].c_str(), 0);
-  this->m_limitText->background = 0xFFF2F2F2;
-  this->m_limitText->Invalidate();
+  UIStaticText* limitText = this->m_limitText;
+  limitText->background = 0xFFF2F2F2;
+  limitText->Invalidate();
   this->AddChild(this->m_limitText);
 
   this->m_typeText = new UIStaticText();
   this->m_typeText->SetSize(68, 14);
   this->m_typeText->Move(187, 49);
   this->m_typeText->SetText(this->m_typeLabels.front().c_str(), 0);
-  this->m_typeText->background = 0xFFF2F2F2;
-  this->m_typeText->Invalidate();
+  UIStaticText* typeText = this->m_typeText;
+  typeText->background = 0xFFF2F2F2;
+  typeText->Invalidate();
   this->AddChild(this->m_typeText);
 }
 
