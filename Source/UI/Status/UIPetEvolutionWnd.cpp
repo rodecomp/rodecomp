@@ -175,14 +175,6 @@ int UIPetEvolutionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
     }
     break;
 
-  case UM_TEXT_LBTN_UP: {
-    ITEM_INFO item;
-    item.SetItemId(argument1);
-    item.identified = 1;
-    g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND)->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
-    break;
-  }
-
   case UM_SET_PET_EVOLUTION_MATERIALS: {
     this->m_materials.clear();
     this->m_petEggId = argument1;
@@ -192,6 +184,14 @@ int UIPetEvolutionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
       this->m_materials = result.second;
     }
     this->RebuildButtons();
+    break;
+  }
+
+  case UM_TEXT_LBTN_UP: {
+    ITEM_INFO item;
+    item.SetItemId(argument1);
+    item.identified = 1;
+    g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND)->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     break;
   }
 
