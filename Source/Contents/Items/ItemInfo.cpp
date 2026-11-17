@@ -415,16 +415,18 @@ std::uint32_t ITEM_INFO::Deserialize(const std::vector<unsigned char>& data) {
 
 // OFFSET: 0x00DFB9D0
 // FUNCTION: fn_23584
-bool CSession::HasRequiredItems() const {
-  for (auto it = this->m_storageItems.begin(); it != this->m_storageItems.end(); ++it) {
+int CSession::HasRequiredItems() const {
+  auto it = this->m_storageItems.begin();
+  while (it != this->m_storageItems.end()) {
     const ITEM_INFO& required = *it;
     const ITEM_INFO owned = this->LookupClientItemByIdentity(required.identity[1]);
     if (owned.identity[1] <= 0 || owned.quantity < required.quantity) {
-      return false;
+      return 0;
     }
+    ++it;
   }
 
-  return true;
+  return 1;
 }
 
 // OFFSET: 0x00DFBD90

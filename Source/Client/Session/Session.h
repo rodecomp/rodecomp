@@ -1223,7 +1223,7 @@ public:
   int GetRidingJob(int job);
   void InitNpcLocationRadius();
   int GetSpriteJob(int job, int costumeJob, bool spriteIndex);
-  bool HasRequiredItems() const;
+  int HasRequiredItems() const;
   bool IsSlotItemIdentity(std::uint32_t id) const;
   bool HasInventoryItem(std::uint32_t id) const;
   bool HasItemId(int itemId) const;
