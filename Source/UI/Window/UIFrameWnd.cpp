@@ -533,17 +533,32 @@ int UIBank_NewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
 
-  int step;
   switch (a) {
   case ID_CLOSE:
     g_windowMgr.CloseWindow(WID_BANK_NEWWND);
     return 0;
-  case ID_UP:
-    step = 1;
-    break;
-  case ID_DOWN:
-    step = -1;
-    break;
+  case ID_UP: {
+    const long long amount = this->AdjustAmount(1);
+    char text[260];
+    std::memset(text, 0, sizeof(text));
+    _i64toa(amount, text, 10);
+    if (this->m_amountEdit) {
+      this->m_amountEdit->SetText(text);
+      g_windowMgr.SetFocus(this->m_amountEdit);
+    }
+    return 0;
+  }
+  case ID_DOWN: {
+    const long long amount = this->AdjustAmount(-1);
+    char text[260];
+    std::memset(text, 0, sizeof(text));
+    _i64toa(amount, text, 10);
+    if (this->m_amountEdit) {
+      this->m_amountEdit->SetText(text);
+      g_windowMgr.SetFocus(this->m_amountEdit);
+    }
+    return 0;
+  }
   case BANK_BUTTON_MAX:
     if (!this->m_amountEdit) {
       return 0;
@@ -601,28 +616,42 @@ int UIBank_NewWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     }
     return 0;
   }
-  case BANK_BUTTON_10MIL:
-    step = 10000000;
-    break;
-  case BANK_BUTTON_1MIL:
-    step = 1000000;
-    break;
-  case BANK_BUTTON_100K:
-    step = 100000;
-    break;
+  case BANK_BUTTON_10MIL: {
+    const long long amount = this->AdjustAmount(10000000);
+    char text[260];
+    std::memset(text, 0, sizeof(text));
+    _i64toa(amount, text, 10);
+    if (this->m_amountEdit) {
+      this->m_amountEdit->SetText(text);
+      g_windowMgr.SetFocus(this->m_amountEdit);
+    }
+    return 0;
+  }
+  case BANK_BUTTON_1MIL: {
+    const long long amount = this->AdjustAmount(1000000);
+    char text[260];
+    std::memset(text, 0, sizeof(text));
+    _i64toa(amount, text, 10);
+    if (this->m_amountEdit) {
+      this->m_amountEdit->SetText(text);
+      g_windowMgr.SetFocus(this->m_amountEdit);
+    }
+    return 0;
+  }
+  case BANK_BUTTON_100K: {
+    const long long amount = this->AdjustAmount(100000);
+    char text[260];
+    std::memset(text, 0, sizeof(text));
+    _i64toa(amount, text, 10);
+    if (this->m_amountEdit) {
+      this->m_amountEdit->SetText(text);
+      g_windowMgr.SetFocus(this->m_amountEdit);
+    }
+    return 0;
+  }
   default:
     return 0;
   }
-
-  const long long amount = this->AdjustAmount(step);
-  char text[260];
-  std::memset(text, 0, sizeof(text));
-  _i64toa(amount, text, 10);
-  if (this->m_amountEdit) {
-    this->m_amountEdit->SetText(text);
-    g_windowMgr.SetFocus(this->m_amountEdit);
-  }
-  return 0;
 }
 
 // OFFSET: 0x008BDB00
