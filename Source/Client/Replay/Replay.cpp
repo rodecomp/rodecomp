@@ -782,6 +782,68 @@ bool Replay::SetOptions(const void* data, int bytes) {
   return true;
 }
 
+// INLINED
+static __forceinline bool OpenReplayFile(Replay* replay, const char* path, int mode) {
+  if (!path) {
+    return false;
+  }
+
+  replay->fileMode = mode;
+
+  if (mode == 0x1F) {
+    replay->file = std::fopen(path, "wb");
+    if (!replay->file) {
+      return false;
+    }
+
+    replay->fileOffset = 0x174;
+    return true;
+  }
+
+  replay->file = std::fopen(path, "rb");
+  if (!replay->file) {
+    return false;
+  }
+
+  std::fseek(replay->file, 100, SEEK_SET);
+  std::memset(&replay->header, 0, 0xC);
+  std::fread(&replay->header, 0xC, 1, replay->file);
+
+  if (replay->header.signature == 0x52414705u || replay->header.signature == 0x51404605u) {
+    ReplaySection section;
+
+    for (int index = 0; index <= 0x1A; ++index) {
+      std::fread(&section, sizeof(section), 1, replay->file);
+
+      if (section.id < 0 || section.id > 0x1A) {
+        break;
+      }
+
+      replay->sections[section.id].id = section.id;
+      replay->sections[section.id].bytes = section.bytes;
+      replay->sections[section.id].fileOffset = section.fileOffset;
+      section.id = 0;
+      section.bytes = 0;
+      section.fileOffset = 0;
+    }
+
+    if (replay->ParseMetadata(replay->ReadSection(2)) != 0xFFFFFFFFu) {
+      return true;
+    }
+
+    std::memset(&replay->header, 0, sizeof(replay->header));
+  }
+
+  if (replay->file) {
+    std::fclose(replay->file);
+    replay->file = nullptr;
+  }
+
+  std::memset(&replay->header, 0, sizeof(replay->header));
+  std::memset(replay->sections, 0, sizeof(replay->sections));
+  return false;
+}
+
 // OFFSET: 0x00B86B50
 // FUNCTION: fn_19337
 int ReplayFileList::Open(int mode, int argument1, int argument2) {

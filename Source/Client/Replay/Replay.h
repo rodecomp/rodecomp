@@ -204,7 +204,7 @@ public:
         pathEnabled(true),
         rejectExistingName(true) {
     this->selected = -1;
-    this->files.clear();
+    this->files.erase(this->files.begin(), this->files.end());
     this->fileState = 0;
     SecureZeroMemory(this->buffer, sizeof(this->buffer));
     this->selectionState = 0;
