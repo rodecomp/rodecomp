@@ -727,7 +727,7 @@ void UIParaItemShopWnd::Paint() {
 
     const ITEM_INFO& item = *it;
     const int iconY = top + 4;
-    if (this->sellMode == 1 || item.quantity != 0) {
+    if (this->sellMode == 1 || it->quantity != 0) {
       this->DrawItemAndQuantity(34, iconY, item, 0, 0);
     } else {
       this->DrawItemAndQuantityAuxiliary(1, 34, iconY, item, 0, 0);
