@@ -92,7 +92,8 @@ void CGuildMgr::StoreEmblem(const void* bytes, std::uint32_t size, std::uint32_t
       std::fclose(file);
     }
   } else {
-    g_guildMgr->MarkInvalidEmblem(filename);
+    CGuildMgr* manager = g_guildMgr;
+    manager->MarkInvalidEmblem(filename);
   }
 
   delete compressed;
