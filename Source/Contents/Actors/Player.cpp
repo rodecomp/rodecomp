@@ -2562,8 +2562,8 @@ void CPc::SetSprJob(int job) {
     );
     this->LoadEquipSprite(0, g_session.GetBodySprName(g_session.GetRidingJob(job), this->sex, this->bodyStyle, 0).c_str());
   } else {
-    const int effectiveJob = this->GetEffectiveJob(g_session.BaseJob(job));
-    switch (effectiveJob) {
+    job = this->GetEffectiveJob(g_session.BaseJob(job));
+    switch (job) {
       case JT_MADOGEAR:
       case JT_MADOGEAR_H:
       case JT_MEISTER_MADOGEAR:
@@ -2579,9 +2579,9 @@ void CPc::SetSprJob(int job) {
     }
 
     this->LoadEquipAction(
-      0, g_session.GetBodyActionResourceName(effectiveJob, this->sex, this->bodyStyle, this->GetMadogearType()).c_str()
+      0, g_session.GetBodyActionResourceName(job, this->sex, this->bodyStyle, this->GetMadogearType()).c_str()
     );
-    this->LoadEquipSprite(0, g_session.GetBodySprName(effectiveJob, this->sex, this->bodyStyle, this->GetMadogearType()).c_str());
+    this->LoadEquipSprite(0, g_session.GetBodySprName(job, this->sex, this->bodyStyle, this->GetMadogearType()).c_str());
   }
 
   this->SetActionName(this->equipActions[0] ? this->equipActions[0]->GetName() : "");
