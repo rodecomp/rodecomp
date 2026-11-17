@@ -15,6 +15,8 @@ extern "C" {
 #include <new>
 #include <windows.h>
 
+template __declspec(noinline) std::string std::operator+(std::string&&, const char* const);
+
 // GLOBAL: gl_24729
 CItemInfoMgr* g_itemInfoMgr;
 
@@ -197,12 +199,16 @@ int CItemInfoMgr::LuaAddItem(lua_State* state) {
     const char* identifiedResourceName = lua_tostring(state, -3);
     int slotCount = static_cast<int>(lua_tonumber(state, -2));
     int classNum = static_cast<int>(lua_tonumber(state, -1));
-    CItemInfoMgr* mgr = g_itemInfoMgr;
-    const int index = static_cast<int>(id);
-    mgr->m_items[index].slotCount = slotCount;
-    mgr->m_items[index].classNum = classNum;
-    g_itemInfoMgr->SetUnidentifiedName(static_cast<int>(id), unidentifiedDisplayName, unidentifiedResourceName);
-    g_itemInfoMgr->SetIdentifiedName(static_cast<int>(id), identifiedDisplayName, identifiedResourceName);
+    {
+      CItemInfoMgr* mgr = g_itemInfoMgr;
+      const int index = static_cast<int>(id);
+      mgr->m_items[index].slotCount = slotCount;
+      mgr->m_items[index].classNum = classNum;
+    }
+    CItemInfoMgr* unidentifiedTarget = g_itemInfoMgr;
+    unidentifiedTarget->SetUnidentifiedName(static_cast<int>(id), unidentifiedDisplayName, unidentifiedResourceName);
+    CItemInfoMgr* identifiedTarget = g_itemInfoMgr;
+    identifiedTarget->SetIdentifiedName(static_cast<int>(id), identifiedDisplayName, identifiedResourceName);
     lua_pushboolean(state, 1);
     lua_pushstring(state, FormatItemInfoMessage("good").c_str());
   }
@@ -239,7 +245,9 @@ int CItemInfoMgr::LuaAddItemIdentifiedDesc(lua_State* state) {
     lua_pushstring(state, FormatItemInfoMessage("1st argment is must number").c_str());
   } else {
     int id = static_cast<int>(lua_tonumber(state, -2));
-    g_itemInfoMgr->AddIdentifiedDescription(id, lua_tostring(state, -1));
+    const char* text = lua_tostring(state, -1);
+    CItemInfoMgr* manager = g_itemInfoMgr;
+    manager->AddIdentifiedDescription(id, text);
     lua_pushboolean(state, 1);
     lua_pushstring(state, FormatItemInfoMessage("good").c_str());
   }
@@ -295,7 +303,9 @@ int CItemInfoMgr::LuaAddItemUnidentifiedDesc(lua_State* state) {
     lua_pushstring(state, FormatItemInfoMessage("1st argment is must number").c_str());
   } else {
     int id = static_cast<int>(lua_tonumber(state, -2));
-    g_itemInfoMgr->AddUnidentifiedDescription(id, lua_tostring(state, -1));
+    const char* text = lua_tostring(state, -1);
+    CItemInfoMgr* manager = g_itemInfoMgr;
+    manager->AddUnidentifiedDescription(id, text);
     lua_pushboolean(state, 1);
     lua_pushstring(state, FormatItemInfoMessage("good").c_str());
   }
