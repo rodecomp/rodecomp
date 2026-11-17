@@ -3220,7 +3220,7 @@ std::string UINavigationV4Wnd::ObjectLabel(int type, void* object) {
       std::string text(LookupMessage(MSI_BANK_DEPOSIT_NO_MONEY));
       if (level > 99) {
         text.assign(LookupMessage(MSI_NAVIGATION_NUM4));
-      } else if (level > 49) {
+      } else if (level >= 50) {
         text = LookupMessage(MSI_NAVIGATION_NUM5);
       } else if (level >= 20 && level <= 49) {
         text = LookupMessage(MSI_BANK_SYSTEM_ERROR);
