@@ -707,9 +707,8 @@ int SetWindEffectInfo(lua_State* state) {
     effect->destinationBlend = static_cast<int>(luaL_checknumber(state, 3));
     break;
   case MSG_SET_TEXTURE: {
-    std::string name = luaL_checkstring(state, 3);
-    std::string texture = name;
-    effect->textureName = texture;
+    std::string texture = luaL_checkstring(state, 3);
+    effect->SetTexture(texture);
     break;
   }
   }
