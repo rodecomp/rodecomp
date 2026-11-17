@@ -2389,8 +2389,7 @@ void CEffectPrim::RenderCone(matrix& wtm) {
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
-
-    if (this->state.slots[ec].life != 1 || this->state.slots[ec].alphaB <= 0 || this->state.slots[ec].fullDisplayAngle < 0) {
+    if (this->state.slots[ec].life != 1 || this->state.slots[ec].alphaB <= 0) {
       continue;
     }
 
@@ -2532,8 +2531,8 @@ void CEffectPrim::RenderFloorRect(matrix& wtm) {
 // OFFSET: 0x00BE0B40
 // FUNCTION: fn_19913
 void CEffectPrim::RenderRotatedRing(matrix& wtm) {
-  int rpCnt = 0;
   ZeroVector3d corners[4];
+  int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
     const EffectPrimitiveSlot& slot = this->state.slots[ec];
@@ -2549,9 +2548,9 @@ void CEffectPrim::RenderRotatedRing(matrix& wtm) {
     int angle = slot.riseAngle;
 
     for (int index = 0; index < 4; ++index) {
-      angle = angle + 90 < 360 ? angle + 90 : angle - 270;
+      angle += angle + 90 < 360 ? 90 : -270;
       const float radial = dist * g_cosTable[angle];
-      corners[index].Set(cs * radial + center.x, dist * g_sinTable[angle] + center.y, sn * radial + center.z);
+      corners[index].Set(cs * radial + center.x, dist * g_sinTable[angle] + center.y, radial * sn + center.z);
     }
 
     this->RenderTeiRect(&rpCnt, slot.alphaB, corners[0], corners[1], corners[2], corners[3], wtm, 0, 0, 1, 80, 255, 80, 0.0f, 1.0f, 0.0f, 1.0f, 0);
@@ -3120,6 +3119,10 @@ __declspec(safebuffers) void CEffectPrim::RenderSpiralBlades(matrix& wtm) {
 // FUNCTION: fn_19901
 void CEffectPrim::RenderTube(matrix& wtm) {
   const EffectPrimitiveSlot& slot = this->state.slots[0];
+  ZeroVector3d prevStart;
+  ZeroVector3d start;
+  ZeroVector3d finish;
+  ZeroVector3d prevEnd;
   int rpCnt = 0;
 
   if (slot.life != 1 || slot.alphaB <= 0) {
@@ -3129,15 +3132,17 @@ void CEffectPrim::RenderTube(matrix& wtm) {
   const float deltaX = slot.vecTNow.x - slot.vecTPre.x;
   const float deltaZ = slot.vecTNow.z - slot.vecTPre.z;
   const float length = SquareRoot(deltaX * deltaX + deltaZ * deltaZ);
-  short heading = 0;
-  while (deltaX / length < g_cosTable[heading]) {
-    if (++heading > 180) {
+  const float dirX = deltaX / length;
+  const float dirZ = deltaZ / length;
+  short heading;
+  for (heading = 0; heading <= 180; ++heading) {
+    if (dirX >= g_cosTable[heading]) {
       break;
     }
   }
   if (heading > 180) {
     heading = 180;
-  } else if (deltaZ / length < 0.0f) {
+  } else if (dirZ < 0.0f) {
     heading = static_cast<short>(360 - heading);
   }
   short side = static_cast<short>(heading + 90);
@@ -3146,22 +3151,25 @@ void CEffectPrim::RenderTube(matrix& wtm) {
   }
 
   vector3d end;
-  if (slot.process >= 15) {
-    end = slot.vecTPre;
-  } else {
+  if (slot.process < 15) {
     const float t = g_sinTable[6 * slot.process];
     end = {
       (slot.vecTPre.x - slot.vecTNow.x) * t + slot.vecTNow.x, (slot.vecTPre.y - slot.vecTNow.y) * t + slot.vecTNow.y,
       (slot.vecTPre.z - slot.vecTNow.z) * t + slot.vecTNow.z
     };
+  } else {
+    end = slot.vecTPre;
   }
 
-  vector3d prevStart{};
-  vector3d prevEnd{};
   short alpha = slot.alphaB;
+  float radius;
 
   for (int pass = 0; pass < 2; ++pass) {
-    const float radius = pass == 0 ? slot.maxHeight : slot.maxHeight + slot.maxHeight;
+    if (pass == 0) {
+      radius = slot.maxHeight;
+    } else if (pass == 1) {
+      radius = slot.maxHeight + slot.maxHeight;
+    }
 
     for (int step = 0; step <= 10; ++step) {
       const int angle = step * 36;
@@ -3169,8 +3177,8 @@ void CEffectPrim::RenderTube(matrix& wtm) {
       const float up = radius * g_sinTable[angle];
       const float offsetX = across * g_cosTable[side];
       const float offsetZ = across * g_sinTable[side];
-      const vector3d start{offsetX + slot.vecTNow.x, up + slot.vecTNow.y, offsetZ + slot.vecTNow.z};
-      const vector3d finish{end.x + offsetX, end.y + up, end.z + offsetZ};
+      start.Set(offsetX + slot.vecTNow.x, up + slot.vecTNow.y, offsetZ + slot.vecTNow.z);
+      finish.Set(end.x + offsetX, end.y + up, end.z + offsetZ);
 
       if (step > 0) {
         const float mode = slot.height[4];
@@ -4900,7 +4908,7 @@ void CEffectPrim::RenderSMA2(matrix& wtm) {
         const float tx1 = static_cast<float>(order - 1) / 21.0f;
         const float tx2 = static_cast<float>(order) / 21.0f;
 
-        if (slot.alphaT == 99) {
+        if (99 == slot.alphaT) {
           this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec4, vec3, wtm, 99, 0, 1, 70, 70, 70, 0.0f, 1.0f, tx1, tx2, 0);
         } else {
           this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec4, vec3, wtm, 0, 0, 1, 90, 90, 255, 0.0f, 1.0f, tx1, tx2, 0);
@@ -5085,17 +5093,20 @@ __declspec(safebuffers) void CEffectPrim::RenderSoulLink(matrix& wtm) {
     }
 
     if (slot.process < 180) {
-      CRagEffect* effect = nullptr;
-
       if (static_cast<float>(g_session.m_aid) == slot.height[10]) {
-        effect = g_modeMgr.GetGameMode()->scene->player->LaunchEffect(EF_SOULLIGHT, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      } else if (auto* actor = g_modeMgr.GetGameMode()->scene->GetGameActorByAID(static_cast<std::uint32_t>(slot.height[10]))) {
-        effect = actor->LaunchEffect(EF_SOULLIGHT, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      }
+        CRagEffect* effect = g_modeMgr.GetGameMode()->scene->player->LaunchEffect(EF_SOULLIGHT, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
 
-      if (effect) {
-        vector3d position = vecA;
-        effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
+        if (effect) {
+          vector3d position = vecA;
+          effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
+        }
+      } else if (auto* actor = g_modeMgr.GetGameMode()->scene->GetGameActorByAID(static_cast<std::uint32_t>(slot.height[10]))) {
+        CRagEffect* effect = actor->LaunchEffect(EF_SOULLIGHT, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+
+        if (effect) {
+          vector3d position = vecA;
+          effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
+        }
       }
     }
 
@@ -6137,7 +6148,7 @@ void CEffectPrim::Render3DCasting2(matrix& wtm) {
       }
 
       ++order;
-      if (order > 20) {
+      if (order >= 21) {
         order = 20;
       }
 
@@ -6203,7 +6214,7 @@ void CEffectPrim::Render3DCasting(matrix& wtm) {
       }
 
       ++order;
-      if (order > 20) {
+      if (order >= 21) {
         order = 20;
       }
 
