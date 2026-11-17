@@ -6,11 +6,4 @@
 #include <json/value.h>
 #include <string>
 
-void __stdcall ChangeUserHotkey(int tab, int index, int key1, int key2, const std::string& description);
-
-// INLINED
-inline void ChangeUserHotkey(LuaScript&, int tab, int index, int key1, int key2, const std::string& description) {
-  ChangeUserHotkey(tab, index, key1, key2, description);
-}
-
 #endif

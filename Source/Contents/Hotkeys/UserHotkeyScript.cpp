@@ -25,11 +25,9 @@ void CUserHotkeyMgr::SaveUserHotkeys() {
   }
 }
 
-__declspec(noinline) void __stdcall ChangeUserHotkey(int tab, int index, int key1, int key2, const std::string& description);
-
 // OFFSET: 0x005F8B20
 // FUNCTION: fn_04064
-void __stdcall ChangeUserHotkey(int tab, int index, int key1, int key2, const std::string& description) {
+__declspec(noinline) void CUserHotkeyMgr::ChangeUserHotkey(int tab, int index, int key1, int key2, const std::string& description) {
   g_session.m_hotkeyScript->Call("ChangeUserHotKey", "ddsdd", tab + 1, index, description.c_str(), key1, key2);
 }
 
@@ -46,7 +44,7 @@ void CUserHotkeyMgr::LoadUserHotkeyTab(Json::Value& values, int tab) {
       std::string description = FromUtf8((*item).get("desc", "").asString(), g_textCodePage);
 
       if (index != -1 || description.empty()) {
-        ChangeUserHotkey(tab, index, key1, key2, description);
+        g_userHotkeyMgr->ChangeUserHotkey(tab, index, key1, key2, description);
       }
     }
   }

@@ -18,6 +18,7 @@ public:
   int TabAt(int position) const;
   void LoadV2(Json::Value& data);
   void LoadUserHotkeyTab(Json::Value& values, int tab);
+  void ChangeUserHotkey(int tab, int index, int key1, int key2, const std::string& description);
   void Capture();
   bool HasUserAssignments() const;
   bool HasChanges() const;
