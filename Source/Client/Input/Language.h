@@ -68,6 +68,7 @@ struct CLanguageBase {
   void SetPassword(unsigned char value);
   void Character(unsigned value, LPARAM unused);
   void KeyDown(unsigned key, LPARAM unused);
+  void SuggestChatCommand(const char* text);
   // INLINED
   void ReplaceInput(const char* value) {
     ResetInput();
@@ -111,7 +112,6 @@ static_assert(sizeof(CLanguageTH) == 0x00BC);
 #endif
 
 void __stdcall SubACDD10();
-void SuggestChatCommand(const char* text);
 int SubACFCE0();
 
 #endif

@@ -313,7 +313,7 @@ std::string NavigationLinkParser::ExpandMessages(std::string text) {
 
 // OFFSET: 0x00833160
 // FUNCTION: fn_10409
-int __stdcall DecodeNavigationNumber(std::string value) {
+int NavigationLinkParser::DecodeNavigationNumber(std::string value) {
   const char digits[] = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
   const int size = static_cast<int>(value.size()) + 1;
   int result = 0;
@@ -372,8 +372,8 @@ bool NavigationLinkParser::ParseNavigationLink(std::string value, std::string& n
 
   const auto coordinates = end - 4;
   const std::string tail = value.substr(coordinates);
-  x = DecodeNavigationNumber(tail.substr(0, 2));
-  y = DecodeNavigationNumber(tail.substr(2, 2));
+  x = this->DecodeNavigationNumber(tail.substr(0, 2));
+  y = this->DecodeNavigationNumber(tail.substr(2, 2));
   const std::string head = value.substr(0, coordinates);
   const auto begin = head.find(g_parserNaviLinkTag);
 

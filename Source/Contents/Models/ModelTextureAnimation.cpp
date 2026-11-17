@@ -3,15 +3,15 @@
 
 // OFFSET: 0x00540EA0
 // FUNCTION: fn_01727
-void SampleModelTexture(ModelTextureChannels& channels, float frame, ModelTextureTransform& output) {
+void ModelTextureChannels::Sample(float frame, ModelTextureTransform& output) {
   float* targets[5] = {&output.values[0], &output.values[1], &output.values[2], &output.values[3], &output.values[4]};
 
   for (int channel = 0; channel < 5; ++channel) {
-    if (channels.find(channel) == channels.end()) {
+    if (this->find(channel) == this->end()) {
       continue;
     }
 
-    std::vector<ModelTextureKey>& keys = channels[channel];
+    std::vector<ModelTextureKey>& keys = (*this)[channel];
     unsigned next = 1;
     if (frame >= static_cast<float>(keys.back().frame)) {
       *targets[channel] = keys.back().value;

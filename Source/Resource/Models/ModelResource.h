@@ -16,6 +16,7 @@ class TextureCache;
 struct ResourceByteReader;
 class CFile;
 class C3dModelRes;
+struct ModelTextureTransform;
 
 struct ModelPositionKey {
   /* 0000 */ int frame;
@@ -40,7 +41,9 @@ struct ModelTextureKey {
   /* 0004 */ float value;
 };
 
-using ModelTextureChannels = std::map<int, std::vector<ModelTextureKey>>;
+struct ModelTextureChannels : std::map<int, std::vector<ModelTextureKey>> {
+  void Sample(float frame, ModelTextureTransform& output);
+};
 
 class CFile;
 

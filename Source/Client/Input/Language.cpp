@@ -55,7 +55,7 @@ void CLanguageBase::DeleteSelection() {
   this->anchor = begin;
   this->cursor = begin;
 
-  SuggestChatCommand(this->text.c_str());
+  this->SuggestChatCommand(this->text.c_str());
 }
 
 // OFFSET: 0x00ACD360
@@ -66,7 +66,7 @@ void CLanguageBase::Insert(const char* value) {
   this->anchor = this->cursor + static_cast<int>(std::strlen(value));
   this->cursor = this->anchor;
 
-  SuggestChatCommand(this->text.c_str());
+  this->SuggestChatCommand(this->text.c_str());
 }
 
 
@@ -277,7 +277,7 @@ void CLanguageBase::Character(unsigned value, LPARAM) {
   this->anchor = this->cursor + static_cast<int>(std::strlen(bytes));
   this->cursor = this->anchor;
 
-  SuggestChatCommand(this->text.c_str());
+  this->SuggestChatCommand(this->text.c_str());
 }
 
 // OFFSET: 0x00ACE880
@@ -376,7 +376,7 @@ void CLanguageBase::KeyDown(unsigned key, LPARAM) {
 
 // OFFSET: 0x00ACEEB0
 // FUNCTION: fn_45450
-void SuggestChatCommand(const char* text) {
+void CLanguageBase::SuggestChatCommand(const char* text) {
   if (text && g_windowMgr.inputSuggestionsEnabled && ChatWindow() && ChatWindow()->m_chatEdit &&
       g_windowMgr.GetHoverWindow() == ChatWindow()->m_chatEdit) {
     g_cashEmotionMgr->ProcessChatCommand(text);
@@ -500,5 +500,5 @@ void CLanguageBase::RefreshComposition() {
 
   *std::format_to_n(converted, sizeof(converted) - 1, "{}{}", this->text, this->candidate).out = 0;
 
-  SuggestChatCommand(converted);
+  this->SuggestChatCommand(converted);
 }

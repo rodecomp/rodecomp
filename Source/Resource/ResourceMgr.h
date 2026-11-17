@@ -2,7 +2,6 @@
 #define RAGNAROK_SOURCE_RESOURCE_RESOURCEMGR_H
 
 #include "Resource/Resource.h"
-#include "Resource/ResourceAliases.h"
 
 #include <cstdint>
 #include <map>

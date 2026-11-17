@@ -163,7 +163,7 @@ void C3dNodeV2::Animate(double frame) {
   this->textureTransforms.clear();
 
   for (auto it = this->textureKeys.begin(); it != this->textureKeys.end(); ++it) {
-    SampleModelTexture(it->second, selected, this->textureTransforms[it->first]);
+    it->second.Sample(selected, this->textureTransforms[it->first]);
   }
 
   for (auto it = this->children.begin(); it != this->children.end(); ++it) {

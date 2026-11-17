@@ -81,7 +81,7 @@ void CStoveMgr::FetchAllProducts() {
 
 // OFFSET: 0x0063F030
 // FUNCTION: fn_04801
-void FetchStoveTermsAgreement() {
+void CStoveMgr::FetchStoveTermsAgreement() {
   Stove::PCSDK::IAP::StovePCTermsOption option;
   option.SetOperation(Stove::PCSDK::IAP::StovePCPaymentOperation::DEFAULT);
   IAP_FetchTermsAgreement(&option, OnStoveTermsAgreementFetched);

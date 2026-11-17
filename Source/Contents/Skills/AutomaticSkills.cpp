@@ -100,11 +100,3 @@ void AutomaticSkills::Use(std::int16_t id, std::int16_t level, std::uint32_t tar
   }
 }
 
-// OFFSET: 0x00CEFD20
-// FUNCTION: fn_21406
-void AutomaticSkills::Complete(int id) {
-  const std::uint16_t skill = static_cast<std::uint16_t>(id);
-  if (g_session.m_automaticSkills.Contains(skill)) {
-    g_session.m_options.Values()[g_session.m_automaticSkills.CancelOption(skill)] = 0;
-  }
-}

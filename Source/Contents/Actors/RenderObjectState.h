@@ -25,7 +25,6 @@ static_assert(sizeof(ActorTintColor) == 4);
 struct RenderObjectState {
   RenderObjectState();
   ~RenderObjectState();
-  void Reset();
   RenderObjectState(const RenderObjectState&) = delete;
   RenderObjectState& operator=(const RenderObjectState&) = delete;
 

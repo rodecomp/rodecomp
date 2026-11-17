@@ -28,6 +28,7 @@ class CRenderObject : public CGameObject {
 public:
   CRenderObject();
   ~CRenderObject() override;
+  void Reset();
   bool OnProcess() override;
   void SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g) override;
   void Render(int argument) override;

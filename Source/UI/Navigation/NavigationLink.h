@@ -13,6 +13,7 @@ struct NavigationLinkParser {
   bool HasLink(std::string text);
   __declspec(noinline) std::string ExpandMessages(std::string text);
   std::string EncodeNavigationNumber(int value);
+  int DecodeNavigationNumber(std::string value);
   bool ParseNavigationLink(std::string value, std::string& name, int& x, int& y);
   const std::string ExtractNavigationLink(std::string value);
   std::pair<bool, std::string> RemoveLineBreakTag(std::string value);
@@ -36,7 +37,6 @@ extern std::string g_naviLinkTagEnd;
 
 bool CreateNavigationLinkParser();
 void DestroyNavigationLinkParser();
-int __stdcall DecodeNavigationNumber(std::string value);
 void DisplayNavigationLink(std::string& output, std::string value);
 
 #endif

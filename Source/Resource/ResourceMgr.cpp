@@ -158,7 +158,7 @@ __forceinline CRes* ResourceMgr::LoadNamed(const char* name) {
       return nullptr;
     }
 
-    resolved = ::AddResourcePrefix(this->Resolve(normalized), this->m_prefixes[type]);
+    resolved = this->AddResourcePrefix(this->Resolve(normalized), this->m_prefixes[type]);
     if (CRes* existing = this->Find(type, resolved.c_str())) {
       existing->lastUse = timeGetTime();
       return existing;

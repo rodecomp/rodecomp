@@ -150,7 +150,7 @@ void CWorld::OnProcess() {
       for (int index = 0; index < 4; ++index) {
         WorldSpatialTree* child = this->spatial.children[index];
         if (IntersectsBounds(model.oriented, child->minimum)) {
-          child->InsertModel(model, 1);
+          child->InsertModel(&model, 1);
         }
       }
 

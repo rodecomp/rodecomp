@@ -4930,7 +4930,7 @@ void CGameMode::ReceiveStovePurchaseResult(const unsigned char* data) {
   }
   case 2:
     if (g_stoveMgr->m_pendingOperation == 2) {
-      FetchStoveTermsAgreement();
+      g_stoveMgr->FetchStoveTermsAgreement();
     } else if (g_stoveMgr->m_pendingOperation == 3) {
       g_stoveMgr->m_pendingOperation = 0;
       UICashShopWnd* window = static_cast<UICashShopWnd*>(g_windowMgr.LookupWindow(WID_CASHSHOP_WND));

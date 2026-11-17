@@ -36,6 +36,7 @@ public:
   __declspec(noinline) void WaitForCallback();
   void FetchCategoryProducts();
   void FetchAllProducts();
+  void FetchStoveTermsAgreement();
   bool Initialize();
   void StartPurchase(const std::vector<ITEM_INFO>& items);
 };
@@ -50,7 +51,5 @@ static_assert(offsetof(CStoveMgr, m_applicationId) == 0x02B8);
 #endif
 
 extern CStoveMgr* g_stoveMgr;
-
-void FetchStoveTermsAgreement();
 
 #endif

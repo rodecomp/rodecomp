@@ -281,7 +281,7 @@ int NavigationLinkParser::ItemLinkMessageId(const std::string& text) {
 
     for (unsigned int delimiter = 0; delimiter < sizeof(delimiters); ++delimiter) {
       if (delimiters[delimiter] == buffer[position] && !value.empty()) {
-        return DecodeNavigationNumber(value);
+        return this->DecodeNavigationNumber(value);
       }
     }
   }

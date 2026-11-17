@@ -317,7 +317,7 @@ __declspec(safebuffers) void CSkill::ShowModel(const char* modelName) {
   this->m_model->occlusionEnabled = 0;
   this->m_model->playback = 0;
   this->m_model->Prepare(diffuse, white, ambient);
-  g_modeMgr.GetGameMode()->scene->spatial.InsertModel(*this->m_model, 0);
+  g_modeMgr.GetGameMode()->scene->spatial.InsertModel(this->m_model, 0);
 }
 
 // OFFSET: 0x00E51BD0

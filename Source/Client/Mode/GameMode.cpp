@@ -5328,6 +5328,15 @@ void CGameMode::RequestAdminStatus() {
   GetRagConnection().Send(GetRagConnection().GetPacketSize(ID_CZ_REQ_GIVE_MANNER_POINT), &packet);
 }
 
+// OFFSET: 0x00CEFD20
+// FUNCTION: fn_21406
+void AutomaticSkills::Complete(int id) {
+  const std::uint16_t skill = static_cast<std::uint16_t>(id);
+  if (g_session.m_automaticSkills.Contains(skill)) {
+    g_session.m_options.Values()[g_session.m_automaticSkills.CancelOption(skill)] = 0;
+  }
+}
+
 // OFFSET: 0x00D06BD0
 // FUNCTION: fn_21578
 void SetPlayerName(std::uint32_t id, std::string name) {

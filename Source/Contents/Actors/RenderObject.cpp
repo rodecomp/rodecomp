@@ -151,7 +151,6 @@ static_assert(sizeof(CGrannyCorpse3d) == 0x258);
 
 // INLINED
 RenderObjectState::RenderObjectState() : sprite(nullptr), action(nullptr) {
-  this->Reset();
 }
 
 // INLINED
@@ -168,6 +167,7 @@ RenderObjectState::~RenderObjectState() {
 // OFFSET: 0x00CA8730
 // FUNCTION: fn_20991
 CRenderObject::CRenderObject() {
+  this->Reset();
 }
 
 // OFFSET: 0x00CA8F90
