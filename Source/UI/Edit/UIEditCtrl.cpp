@@ -4451,13 +4451,13 @@ std::string UIEditCtrl3::PlaceLineLinks(const char* line, std::string& text, con
   }
 
   std::string remaining(text);
-  std::string result;
+  std::string result = "";
   std::vector<UIItemTagButton*> buttons;
   int position = 0;
   int start;
 
   for (;;) {
-    std::string link;
+    std::string link = "";
     const int previous = position;
     start = previous;
     if (!this->ExtractItemLink(remaining, link, position, text.c_str())) {
@@ -10370,7 +10370,7 @@ void UIEditCtrl3::DecodeLinkFields(const std::string& link, std::vector<int>& fi
   char* text = new char[length];
   strcpy_s(text, length, link.c_str());
 
-  std::string value;
+  std::string value = "";
   int optionCount = 0;
   std::vector<int> options;
   int cardCount = 0;
