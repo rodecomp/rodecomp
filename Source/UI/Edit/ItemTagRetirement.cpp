@@ -1,6 +1,7 @@
 #include "Client/Input/InputCharset.h"
 #include "Client/Input/Language.h"
 #include "Contents/Items/ItemInfo.h"
+#include "Contents/Items/ItemLink.h"
 #include "Contents/Items/ItemNaming.h"
 #include "UI/Buttons/UIItemTagButton.h"
 #include "UI/Chat/UINewChatWnd.h"
@@ -369,20 +370,26 @@ void UIItemTagCtrl::UpdateItemTags() {
           const int start = static_cast<int>(prefix.size());
           const int end = start + bytes + 2;
           if (cursor > start && cursor < end) {
-            const int target = start + bytes / 2 + 1 > cursor ? end : start;
-            g_serverLanguage->Select(target, target);
+            if (start + bytes / 2 + 1 > cursor) {
+              g_serverLanguage->Select(end, end);
+            } else {
+              g_serverLanguage->Select(start, start);
+            }
           }
         }
 
         this->linkedText += head;
-        this->linkedText += itemLinkTagOpening;
+        this->linkedText += g_itemLinkTagBegin;
         this->linkedText += entry->link;
-        this->linkedText += itemLinkTagClosing;
+        this->linkedText += g_itemLinkTagEnd;
         remaining = remaining.substr(found + display.size());
         prefix += display;
+        if (++entry == this->tags.end()) {
+          break;
+        }
+      } else {
+        ++entry;
       }
-
-      ++entry;
     }
   }
 
