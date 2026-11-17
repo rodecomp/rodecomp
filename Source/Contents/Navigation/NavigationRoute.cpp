@@ -1248,8 +1248,11 @@ bool CNavigationManager::SelectNodeState() {
   const int path = this->selectedPath;
   const int node = this->selectedPathNode;
   if (path >= 0 && static_cast<unsigned int>(path) < this->nodePaths.size() && node >= 0 &&
-      static_cast<unsigned int>(node) < this->nodePaths[path].size() && this->nodePaths[path][node] != -1) {
-    return this->SelectState(this->nodePaths[path][node]);
+      static_cast<unsigned int>(node) < this->nodePaths[path].size()) {
+    const int state = this->nodePaths[path][node];
+    if (state != -1) {
+      return this->SelectState(state);
+    }
   }
 
   this->currentTarget = NavigationTarget();
