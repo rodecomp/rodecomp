@@ -674,12 +674,15 @@ int UIExpandedBartermarketWnd::SendMsg(UIWindow* sender, int message, std::intpt
   case UM_DROP: {
     CGameMode* mode = g_modeMgr.GetGameMode();
     std::pair<bool, BarterMarketEntry> found = g_expandedBarterMarketItemMgr->FindEntry(mode->drag.barterId);
-    if (found.first) {
-      found.second.value = mode->drag.quantity;
-      g_expandedBarterMarketItemMgr->RemoveEntry(found.second);
-      g_windowMgr.LookupWindow(WID_EXPANDEDBARTERITEMPURCHASEWND)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
-      this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+    if (!found.first) {
+      mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+      return 0;
     }
+
+    found.second.value = mode->drag.quantity;
+    g_expandedBarterMarketItemMgr->RemoveEntry(found.second);
+    g_windowMgr.LookupWindow(WID_EXPANDEDBARTERITEMPURCHASEWND)->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+    this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
     mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
     return 0;
   }
