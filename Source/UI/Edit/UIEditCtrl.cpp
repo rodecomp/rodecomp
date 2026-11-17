@@ -11351,7 +11351,7 @@ int UIItemStoreFindWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
       this->SortReversed();
     }
     if (!this->searchText.empty()) {
-      this->FilterByName(std::string(this->searchText.c_str(), this->searchText.size()));
+      this->FilterByName(this->searchText);
     }
 
     this->Invalidate();
@@ -11433,7 +11433,7 @@ int UIItemStoreFindWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
     if (this->searchText.empty()) {
       return 0;
     }
-    if (!this->FilterByName(std::string(this->searchText.c_str(), this->searchText.size()))) {
+    if (!this->FilterByName(this->searchText)) {
       return 0;
     }
     break;
