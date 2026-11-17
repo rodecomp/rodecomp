@@ -161,24 +161,20 @@ void CWorld::OnProcess() {
 
   auto objectEntry = this->objects.begin();
   while (objectEntry != this->objects.end()) {
-    CGameObject* object = *objectEntry;
-    if (object->OnProcess()) {
-      ++objectEntry;
-      continue;
-    }
-
-    for (auto actorEntry = this->actors.begin(); actorEntry != this->actors.end(); ++actorEntry) {
-      if (*actorEntry == object) {
+    if (!(*objectEntry)->OnProcess()) {
+      auto actorEntry = std::find(this->actors.begin(), this->actors.end(), *objectEntry);
+      if (actorEntry != this->actors.end()) {
         this->RemovePcPos((*actorEntry)->render.accountId, true);
         this->RemovePcPosForMove((*actorEntry)->render.accountId, true);
 
         this->actors.erase(actorEntry);
-        break;
       }
-    }
 
-    delete *objectEntry;
-    objectEntry = this->objects.erase(objectEntry);
+      delete *objectEntry;
+      objectEntry = this->objects.erase(objectEntry);
+    } else {
+      ++objectEntry;
+    }
   }
 
   for (auto idEntry = this->pendingActorIds.begin(); idEntry != this->pendingActorIds.end(); ++idEntry) {
