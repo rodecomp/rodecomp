@@ -205,7 +205,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     return 0;
   }
   case UM_MAKEMENU:
-    this->m_entries.clear();
+    this->m_entries.erase(this->m_entries.begin(), this->m_entries.end());
     if (g_windowMgr.menuWnd) {
       g_windowMgr.CloseWindow(WID_MENUWND);
     }
