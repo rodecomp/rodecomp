@@ -1145,7 +1145,8 @@ void UIAchTracingWnd::Paint() {
       AchTracingEntry& entry = g_achievementTracking[index];
       y += 15;
       if (entry.expanded == 1) {
-        for (const AchTracingCondition& condition : entry.conditions) {
+        for (auto conditionIt = entry.conditions.begin(); conditionIt != entry.conditions.end(); ++conditionIt) {
+          const AchTracingCondition& condition = *conditionIt;
           this->DrawTextAt(21, y + 1, condition.text.c_str(), 0, 0, 12, 0, 0, 0);
           std::uint32_t color = 0xFFFFFF;
           if (condition.completed) {
