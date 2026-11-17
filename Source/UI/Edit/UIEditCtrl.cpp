@@ -10673,28 +10673,26 @@ bool UIEditCtrl3::ExtractItemLink(std::string& text, std::string& link, int& pos
 
     close = text.find(g_itemLinkClose);
     if (open != std::string::npos) {
-      for (;;) {
+      do {
         position += open;
         text = text.substr(open + g_itemLinkOpen.size());
         open = text.find(g_itemLinkOpen);
         close = text.find(g_itemLinkClose);
-        if (open == std::string::npos) {
-          break;
+        if (open != std::string::npos) {
+          position += g_itemLinkOpen.size();
         }
-
-        position += g_itemLinkOpen.size();
-      }
+      } while (open != std::string::npos);
 
       link = text;
       text = source;
       std::string name = "";
       if (!this->LinkDisplayName(link, name)) {
-        position += link.size() + g_itemLinkOpen.size() + g_itemLinkClose.size();
+        position += link.size() + g_itemLinkClose.size() + g_itemLinkOpen.size();
         text = text.substr(position);
         return true;
       }
 
-      text = text.substr(position + link.size() + g_itemLinkOpen.size() + g_itemLinkClose.size());
+      text = text.substr(position + link.size() + g_itemLinkClose.size() + g_itemLinkOpen.size());
     }
   } while (close != std::string::npos);
 
