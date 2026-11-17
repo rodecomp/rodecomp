@@ -3041,26 +3041,25 @@ void CGameMode::ReceiveTradeItemFilter(const unsigned char* data) {
   const int count = g_session.GetNumInventoryItems();
   for (int i = 0; i < count; ++i) {
     ITEM_INFO item = g_session.GetInventoryItemAt(i);
-    if (item.identity[1] == 0) {
-      continue;
+    if (item.identity[1] > 0) {
+      if (packet->type == 1 && !this->IsEffectId994Group(std::atoi(item.itemId.c_str()))) {
+        continue;
+      }
+      if (packet->type == 2 && !this->IsEffectId990Group(std::atoi(item.itemId.c_str()))) {
+        continue;
+      }
+      if (item.identity[1] == g_session.equippedArrowIndex) {
+        continue;
+      }
+      RawItemBasic raw = {};
+      raw.id = item.identity[1];
+      strcpy_s(raw.itemId, sizeof(raw.itemId), item.itemId.c_str());
+      raw.type = item.identity[0];
+      raw.identified = item.identified;
+      raw.price = 1;
+      raw.realPrice = 2;
+      g_session.AddShopItem(raw, 1);
     }
-    if (packet->type == 1 && !this->IsEffectId994Group(std::atoi(item.itemId.c_str()))) {
-      continue;
-    }
-    if (packet->type == 2 && !this->IsEffectId990Group(std::atoi(item.itemId.c_str()))) {
-      continue;
-    }
-    if (item.identity[1] == g_session.equippedArrowIndex) {
-      continue;
-    }
-    RawItemBasic raw = {};
-    raw.id = item.identity[1];
-    strcpy_s(raw.itemId, sizeof(raw.itemId), item.itemId.c_str());
-    raw.type = item.identity[0];
-    raw.identified = item.identified;
-    raw.price = 1;
-    raw.realPrice = 2;
-    g_session.AddShopItem(raw, 1);
   }
   UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMSHOPWND2);
   window->SendMsg(nullptr, UM_SETTITLE, 1, 0, 0, 0);
@@ -5289,11 +5288,17 @@ struct RodexReadMailPacket {
 void CGameMode::ReceiveRodexReadMail(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const RodexReadMailPacket*>(data);
   g_session.ClearItemQuantities();
-  g_rodexMailStore->currentMailId = packet->mailId;
-  g_rodexMailStore->inboxType = packet->type;
+  std::int64_t mailId = packet->mailId;
+  const char* text = packet->text;
+  const unsigned char type = packet->type;
+  const std::int64_t zeny = packet->zeny;
+  const short textLength = packet->textLength;
+  const unsigned char itemCount = packet->itemCount;
+  g_rodexMailStore->currentMailId = mailId;
+  g_rodexMailStore->inboxType = type;
 
   RodexMailMap* mails;
-  switch (packet->type) {
+  switch (type) {
   case MAIL_INBOX_NORMAL:
     mails = &g_rodexMailStore->m_mails0;
     break;
@@ -5307,21 +5312,24 @@ void CGameMode::ReceiveRodexReadMail(const unsigned char* data) {
     return;
   }
 
-  RodexMailMap::iterator found = mails->find(packet->mailId);
+  RodexMailMap::iterator found = mails->find(mailId);
   if (found == mails->end()) {
     return;
   }
 
   RodexMail& mail = found->second;
-  if (!mail.isRead && --g_rodexMailStore->unreadCount == 0) {
-    if (UIWindow* window = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
-      window->SendMsg(nullptr, UM_COMMAND, ID_NOTICE, 476, 0, 0);
+  if (!mail.isRead) {
+    --g_rodexMailStore->unreadCount;
+    if (g_rodexMailStore->unreadCount == 0) {
+      if (UIWindow* window = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
+        window->SendMsg(nullptr, UM_COMMAND, ID_NOTICE, 476, 0, 0);
+      }
     }
   }
 
-  mail.body.insert(mail.body.end() - mail.body.begin(), packet->text, packet->textLength);
-  mail.hasItem = packet->itemCount;
-  mail.zeny = packet->zeny;
+  mail.body.insert(mail.body.end() - mail.body.begin(), text, textLength);
+  mail.hasItem = itemCount;
+  mail.zeny = zeny;
   mail.isRead = 1;
 
   RodexMailItem* mailItems = mail.attachments.items;
@@ -7534,11 +7542,12 @@ struct GuildStorageLogItemsPacket {
 // FUNCTION: fn_22055
 void CGameMode::ReceiveGuildStorageLogItems(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const GuildStorageLogItemsPacket*>(data);
+  const GuildStorageLogItemRecord* records = packet->records;
   std::vector<GuildStorageLogItem> items;
   items.reserve(packet->count);
   if (0 == packet->result || 1 == packet->result) {
     for (long long index = 0; index < packet->count; ++index) {
-      const GuildStorageLogItemRecord& record = packet->records[index];
+      const GuildStorageLogItemRecord& record = records[index];
       ITEM_INFO item;
       item.recordIds[0] = record.logId;
       item.recordIds[1] = record.quantity;
