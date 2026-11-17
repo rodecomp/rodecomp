@@ -90,6 +90,8 @@ public:
   static int LuaInsertRecipe(lua_State* L);
 
   bool Load();
+  // INLINED
+  std::map<MaterialKey, ChangeMaterialRecipeList, MaterialKeyLess> GetLibrary() const { return this->m_library; }
   ChangeMaterialResult InsertRecipe(std::vector<ChangeMaterialEntry> materials, const std::vector<ChangeMaterialProduct>& products, int type);
 
   /* 0000 */ std::map<MaterialKey, ChangeMaterialRecipeList, MaterialKeyLess> m_library;

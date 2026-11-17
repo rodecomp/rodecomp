@@ -26,12 +26,18 @@ struct MaterialReq {
 };
 
 struct MaterialResult {
+  // INLINED
+  MaterialResult() : id(0), quantity(0), amount(0) {}
+
   /* 0000 */ int id;
   /* 0004 */ int quantity;
   /* 0008 */ int amount;
 };
 
 struct MaterialListEntry {
+  // INLINED
+  MaterialListEntry() : state(0) {}
+
   /* 0000 */ unsigned char state;
   /* 0004 */ std::vector<MaterialReq> materials;
   /* 0010 */ std::vector<MaterialResult> results;

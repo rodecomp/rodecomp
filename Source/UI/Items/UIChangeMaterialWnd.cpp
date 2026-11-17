@@ -296,11 +296,11 @@ void UIChangeMaterialWnd_List::ApplyFilter(std::string text) {
 void UIChangeMaterialWnd_List::RefreshVisibleEntries() {
   this->m_entries.clear();
 
-  std::map<MaterialKey, ChangeMaterialRecipeList, MaterialKeyLess> library = g_changeMaterialMgr->m_library;
+  std::map<MaterialKey, ChangeMaterialRecipeList, MaterialKeyLess> library = g_changeMaterialMgr->GetLibrary();
   for (const auto& item : library) {
     std::vector<ChangeMaterialRecipe> recipes = item.second.m_recipes;
     for (const ChangeMaterialRecipe& recipe : recipes) {
-      MaterialListEntry entry = {};
+      MaterialListEntry entry;
       if (recipe.materials.empty() || recipe.products.empty()) {
         continue;
       }
