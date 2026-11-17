@@ -23,9 +23,9 @@ int MovementRouteInterpolation::Sample(std::uint32_t tick, float* x, float* y, i
       float deltaX;
       float deltaY;
       if (index == 0) {
-        deltaY = static_cast<float>(this->points[index + 1].y) - this->startY;
+        deltaY = static_cast<float>(this->points[1].y) - this->startY;
         originX = this->startX;
-        deltaX = static_cast<float>(this->points[index + 1].x) - originX;
+        deltaX = static_cast<float>(this->points[1].x) - originX;
       } else {
         deltaY = static_cast<float>(this->points[index + 1].y - this->points[index].y);
         originX = static_cast<float>(this->points[index].x);
