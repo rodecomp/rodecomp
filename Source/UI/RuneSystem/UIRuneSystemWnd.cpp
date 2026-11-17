@@ -1380,7 +1380,7 @@ void UIRuneSystem_DecomResultWnd::Paint() {
   ResourceMgr& resources = ResourceMgr::Instance();
   this->DrawBitmap(
     0, 0,
-    &static_cast<CBitmapRes*>(resources.Load(Resolve(FormatOwnedString("유저인터페이스\\runesystem\\bg_decomResult_%d.bmp", this->m_total > 0).c_str())))->image,
+    static_cast<CBitmapRes*>(resources.Load(Resolve(FormatOwnedString("유저인터페이스\\runesystem\\bg_decomResult_%d.bmp", this->m_total > 0).c_str()))),
     false
   );
   if (this->m_total == 0) {
@@ -1405,7 +1405,7 @@ void UIRuneSystem_DecomResultWnd::Paint() {
         icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\item\\사과.bmp")));
       }
       if (icon) {
-        this->DrawBitmap(x + 8, y - 35, &icon->image, true);
+        this->DrawBitmap(x + 8, y - 35, icon, true);
       }
 
       const std::string count = FormatOwnedString("%d", this->m_counts[index]);
