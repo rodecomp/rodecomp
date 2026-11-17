@@ -194,7 +194,9 @@ void CPaidPackageItemMgr::AddItem(int itemId) {
   }
 
   this->m_items.insert(itemId);
-  for (std::pair<const int, SelectPackageTab>& tab : selectPackage->second) {
+  const auto tabEnd = selectPackage->second.end();
+  for (auto tabIt = selectPackage->second.begin(); tabIt != tabEnd; ++tabIt) {
+    std::pair<const int, SelectPackageTab>& tab = *tabIt;
     std::optional<std::vector<ITEM_INFO>*> items = SelectPackageItemMgr()->FindItems(itemId, tab.first);
     if (items) {
       for (ITEM_INFO& item : **items) {
