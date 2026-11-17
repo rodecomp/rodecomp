@@ -6,6 +6,7 @@
 #include "Contents/Actors/ActorEnums.h"
 #include "Network/Packets/NoticeEnums.h"
 #include "Contents/Effects/Core/EffectTypes.h"
+#include "Contents/Skills/SkillId.h"
 #include "Contents/Skills/SkillUnitId.h"
 
 #include "Client/Mode/CGameMode.h"
@@ -3101,7 +3102,7 @@ void CPlayer::UpdatePendingAction() {
     int cellY;
     mode->WorldCell(skill->render.position.x, skill->render.position.z, cellX, cellY);
     int range = mode->GetSkillAttackRange(this->skillId, this->skillUseLevel);
-    if (mode->SendMsg(MM_GET_SKILL_USE_TYPE, 0, 0, 0, 0) == 0 && range < 5 && this->skillId != 124) {
+    if (mode->SendMsg(MM_GET_SKILL_USE_TYPE, 0, 0, 0, 0) == 0 && range < 5 && this->skillId != HT_REMOVETRAP) {
       range = g_session.storeItemLimit > 5 ? g_session.storeItemLimit : 5;
     }
     float x;

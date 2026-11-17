@@ -380,7 +380,7 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
       }
     }
 
-    int effectId = skillId < 493 ? 0 : -1;
+    int effectId = skillId < TK_MISSION ? 0 : -1;
     switch (skillId) {
     case MG_FIREWALL:
       effectId = 0x31;
