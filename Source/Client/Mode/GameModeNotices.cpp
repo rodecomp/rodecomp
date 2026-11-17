@@ -4681,7 +4681,6 @@ void CGameMode::ReceiveSpriteChange(const unsigned char* data) {
 // FUNCTION: fn_21836
 void CGameMode::ReceiveSpriteChange2(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const SpriteChange2Packet*>(data);
-  const int value = static_cast<int>(packet->value);
   CGameActor* actor;
   if (packet->aid == g_session.m_aid) {
     actor = this->scene->player;
@@ -4689,35 +4688,36 @@ void CGameMode::ReceiveSpriteChange2(const unsigned char* data) {
     case LOOK_BASE:
       g_session.UpdateBodyStyle(g_session.GetDisplayJob(), g_session.m_bodyStyle, g_session.m_bodyCostume);
       if (g_session.m_job != packet->value) {
-        g_session.SetJob(value);
+        g_session.SetJob(packet->valueLow);
       }
       break;
     case LOOK_HAIR:
-      g_session.m_head = value;
+      g_session.m_head = packet->valueLow;
       break;
     case LOOK_WEAPON: {
       g_session.m_weaponLook = packet->value;
       const int shield = packet->valueHigh;
+      const int weapon = packet->valueLow;
       const int view = g_session.GetWeaponViewValue(shield);
-      if (packet->valueLow != 0 && view == -1) {
+      if (weapon != 0 && view == -1) {
         g_session.m_shield = shield;
       }
       break;
     }
     case LOOK_HEAD_BOTTOM:
-      g_session.m_accessory = value;
+      g_session.m_accessory = packet->valueLow;
       break;
     case LOOK_HAIR_COLOR:
-      g_session.m_headPalette = value;
+      g_session.m_headPalette = packet->valueLow;
       break;
     case LOOK_CLOTHES_COLOR:
-      g_session.UpdateBodyStyle(g_session.GetDisplayJob(), value, g_session.m_bodyCostume);
+      g_session.UpdateBodyStyle(g_session.GetDisplayJob(), packet->valueLow, g_session.m_bodyCostume);
       break;
     case LOOK_HEAD_TOP:
-      g_session.m_accessory2 = value;
+      g_session.m_accessory2 = packet->valueLow;
       break;
     case LOOK_HEAD_MID:
-      g_session.m_accessory3 = value;
+      g_session.m_accessory3 = packet->valueLow;
       break;
     case LOOK_RESET_COSTUMES:
       g_session.m_accessory = 0;
@@ -4726,14 +4726,14 @@ void CGameMode::ReceiveSpriteChange2(const unsigned char* data) {
       g_session.m_robe = 0;
       break;
     case LOOK_ROBE:
-      g_session.m_robe = value;
+      g_session.m_robe = packet->valueLow;
       break;
     case LOOK_BODY2:
-      g_session.m_bodyCostume = value;
+      g_session.m_bodyCostume = packet->valueLow;
       break;
     case 14:
-      g_session.SetFlag(static_cast<char>(value));
-      actor->SetSex(value);
+      g_session.SetFlag(static_cast<char>(packet->valueLow));
+      actor->SetSex(packet->valueLow);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MACRO_CHECKER_MAP_SUCCESS)), 0, 0, 0, 0);
       break;
     }
@@ -4742,98 +4742,95 @@ void CGameMode::ReceiveSpriteChange2(const unsigned char* data) {
     }
   } else {
     actor = this->scene->GetGameActorByAID(packet->aid);
-    if (!actor) {
-      CSkill* skill = this->scene->GetSkillByAID(packet->aid);
-      if (!skill) {
-        return;
-      }
-      if (packet->type == LOOK_BASE) {
-        skill->SendMsg(nullptr, AM_SETJOB, packet->value, 0, 0, 0, 0, 0);
-      }
-      return;
-    }
   }
 
-  switch (packet->type) {
-  case LOOK_BASE:
-    actor->SetActorJob(value);
-    if (packet->aid == g_session.m_aid) {
-      actor->SetBodyPalette(g_session.m_bodyStyle);
-    }
-    actor->SetImfFileName();
-    actor->SetHeadPaletteName();
-    actor->SetBodyPaletteName();
-    break;
-  case LOOK_HAIR:
-    actor->SetSprHead(value);
-    actor->SetImfFileName();
-    actor->SetHeadPaletteName();
-    actor->RefreshAccessory3();
-    break;
-  case LOOK_WEAPON: {
-    const int shield = packet->valueHigh;
-    const int weapon = value;
-    const int view = g_session.GetWeaponViewValue(shield);
-    switch (actor->GetEffectiveJob(-1)) {
-    case JT_ASSASSIN:
-    case JT_ASSASSIN_H:
-    case JT_ASSASSIN_B:
-    case JT_GUILLOTINE_CROSS:
-    case JT_GUILLOTINE_CROSS_H:
-    case JT_GUILLOTINE_CROSS_B:
-    case JT_SHADOW_CROSS:
-      actor->SetSprWeapon2(packet->valueLow, packet->valueHigh);
+  if (actor) {
+    switch (packet->type) {
+    case LOOK_BASE:
+      actor->SetActorJob(packet->valueLow);
+      if (packet->aid == g_session.m_aid) {
+        actor->SetBodyPalette(g_session.m_bodyStyle);
+      }
+      actor->SetImfFileName();
+      actor->SetHeadPaletteName();
+      actor->SetBodyPaletteName();
       break;
-    default:
-      actor->SetSprWeapon2(weapon, static_cast<int>(static_cast<std::int64_t>(weapon) >> 32));
+    case LOOK_HAIR:
+      actor->SetSprHead(packet->valueLow);
+      actor->SetImfFileName();
+      actor->SetHeadPaletteName();
+      actor->RefreshAccessory3();
+      break;
+    case LOOK_WEAPON: {
+      const int shield = packet->valueHigh;
+      const int weapon = packet->valueLow;
+      const int view = g_session.GetWeaponViewValue(shield);
+      switch (actor->GetEffectiveJob(-1)) {
+      case JT_ASSASSIN:
+      case JT_ASSASSIN_H:
+      case JT_ASSASSIN_B:
+      case JT_GUILLOTINE_CROSS:
+      case JT_GUILLOTINE_CROSS_H:
+      case JT_GUILLOTINE_CROSS_B:
+      case JT_SHADOW_CROSS:
+        actor->SetSprWeapon2(packet->valueLow, packet->valueHigh);
+        break;
+      default:
+        actor->SetSprWeapon2(weapon, static_cast<int>(static_cast<std::int64_t>(weapon) >> 32));
+        break;
+      }
+      if (view == -1 || shield == 0) {
+        actor->SetSprShield(shield);
+      }
       break;
     }
-    if (view == -1 || shield == 0) {
-      actor->SetSprShield(shield);
+    case LOOK_HEAD_BOTTOM:
+      actor->SetSprAccessory(packet->valueLow);
+      break;
+    case LOOK_HAIR_COLOR:
+      actor->SetHeadPalette(packet->valueLow);
+      break;
+    case LOOK_CLOTHES_COLOR:
+      actor->SetBodyPalette(packet->valueLow);
+      break;
+    case LOOK_HEAD_TOP:
+      actor->SetSprAccessory2(packet->valueLow);
+      break;
+    case LOOK_HEAD_MID:
+      actor->SetSprAccessory3(packet->valueLow);
+      break;
+    case LOOK_SHOES:
+      actor->SetSprShoe(packet->valueLow);
+      break;
+    case LOOK_RESET_COSTUMES:
+      actor->SetSprAccessory(0);
+      actor->SetSprAccessory2(0);
+      actor->SetSprAccessory3(0);
+      actor->SetSprRobe(0, 0);
+      break;
+    case LOOK_ROBE:
+      actor->SetSprRobe(packet->valueLow, 0);
+      break;
+    case LOOK_BODY2:
+      actor->SetBodyCostume(packet->valueLow, 1);
+      if (StateFlag04(actor->GetStateFlags())) {
+        actor->SendMsg(nullptr, AM_DELETE_BIRD, 0, 0, 0, 0, 0, 0);
+        actor->SendMsg(nullptr, AM_MAKE_BIRD, 0, 0, 0, 0, 0, 0);
+      }
+      if (StateFlag20(actor->GetStateFlags())) {
+        actor->SendMsg(nullptr, AM_DELETE_WOLF, 0, 0, 0, 0, 0, 0);
+        actor->SendMsg(nullptr, AM_MAKE_WOLF, 0, 0, 0, 0, 0, 0);
+      }
+      break;
+    case 14:
+      actor->SetSex(packet->valueLow);
+      break;
     }
-    break;
-  }
-  case LOOK_HEAD_BOTTOM:
-    actor->SetSprAccessory(value);
-    break;
-  case LOOK_HAIR_COLOR:
-    actor->SetHeadPalette(value);
-    break;
-  case LOOK_CLOTHES_COLOR:
-    actor->SetBodyPalette(value);
-    break;
-  case LOOK_HEAD_TOP:
-    actor->SetSprAccessory2(value);
-    break;
-  case LOOK_HEAD_MID:
-    actor->SetSprAccessory3(value);
-    break;
-  case LOOK_SHOES:
-    actor->SetSprShoe(value);
-    break;
-  case LOOK_RESET_COSTUMES:
-    actor->SetSprAccessory(0);
-    actor->SetSprAccessory2(0);
-    actor->SetSprAccessory3(0);
-    actor->SetSprRobe(0, 0);
-    break;
-  case LOOK_ROBE:
-    actor->SetSprRobe(value, 0);
-    break;
-  case LOOK_BODY2:
-    actor->SetBodyCostume(value, 1);
-    if (StateFlag04(actor->GetStateFlags())) {
-      actor->SendMsg(nullptr, AM_DELETE_BIRD, 0, 0, 0, 0, 0, 0);
-      actor->SendMsg(nullptr, AM_MAKE_BIRD, 0, 0, 0, 0, 0, 0);
+  } else {
+    CSkill* skill = this->scene->GetSkillByAID(packet->aid);
+    if (skill && packet->type == LOOK_BASE) {
+      skill->SendMsg(nullptr, AM_SETJOB, packet->value, 0, 0, 0, 0, 0);
     }
-    if (StateFlag20(actor->GetStateFlags())) {
-      actor->SendMsg(nullptr, AM_DELETE_WOLF, 0, 0, 0, 0, 0, 0);
-      actor->SendMsg(nullptr, AM_MAKE_WOLF, 0, 0, 0, 0, 0, 0);
-    }
-    break;
-  case 14:
-    actor->SetSex(value);
-    break;
   }
 }
 
@@ -7146,7 +7143,6 @@ struct GuildPacketText {
   /* 0004 */ char text[1];
 };
 
-#pragma pack(push, 1)
 struct GuildMemberKickedPacket {
   /* 0000 */ std::uint16_t packetType;
   /* 0002 */ char text[40];
