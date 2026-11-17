@@ -1140,9 +1140,9 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
     g_soundMgr->PlayWave("effect\\LG_RAYOFGENESIS.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   case NPC_RAINOFMETEOR: {
-    const float raised = height + 25.0f;
-    g_effectMgr->Spawn(0, EF_NEW_METEORSTORM_BOTTOM, x, raised, z, 0, -1, 0, 0);
-    g_effectMgr->Spawn(0, EF_NEW_METEORSTORM, x, raised, z, 0, -1, 0, 0);
+    const vector3d raised{x, height + 25.0f, z};
+    g_effectMgr->Spawn(0, EF_NEW_METEORSTORM_BOTTOM, raised, 0, -1, 0, 0);
+    g_effectMgr->Spawn(0, EF_NEW_METEORSTORM, raised, 0, -1, 0, 0);
     g_soundMgr->PlayWave("effect\\wizard_meteor.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   }
