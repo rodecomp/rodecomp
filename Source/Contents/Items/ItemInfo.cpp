@@ -19,6 +19,8 @@
 template __declspec(noinline) bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
 
 template __declspec(noinline) int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+template __declspec(noinline) void std::list<int>::push_back(const int&);
+template __declspec(noinline) std::vector<int>::~vector() noexcept;
 
 namespace {
 #pragma pack(push, 1)
