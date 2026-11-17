@@ -46,7 +46,7 @@ namespace binary {
 
 // OFFSET: 0x004FC250
 // FUNCTION: fn_00671
-__declspec(noinline) double decode_half(std::uint16_t half) {
+__declspec(noinline) inline double decode_half(std::uint16_t half) {
   const std::int64_t exponent = (half >> 10) & 0x1f;
   const std::int64_t mantissa = half & 0x3ff;
   double value;
