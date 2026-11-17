@@ -2103,7 +2103,7 @@ void CPc::RenderOverlaySprite(const float* matrix, int) {
 
   ResourceMgr::Instance().Load(this->imfName.c_str());
   int count = 0;
-  bool drawn = false;
+  int drawn = 0;
   if (std::strlen(this->equipActions[0] ? this->equipActions[0]->GetName() : "") == 0) {
     return;
   }
@@ -2114,7 +2114,7 @@ void CPc::RenderOverlaySprite(const float* matrix, int) {
 
   CActRes* action = static_cast<CActRes*>(this->GetEquipAction(0));
   CSprRes* sprite = static_cast<CSprRes*>(this->equipSprites[0]);
-  if (this->render.curMotion >= action->FrameCount(this->render.previousAnimation)) {
+  if (this->render.curMotion >= static_cast<int>(action->FrameCount(this->render.previousAnimation))) {
     return;
   }
 
@@ -2136,7 +2136,7 @@ void CPc::RenderOverlaySprite(const float* matrix, int) {
     }
 
     ++count;
-    drawn = true;
+    drawn = 1;
     quad.image = image;
     if (this->render.trackBounds != 0) {
       bounds.Include(&quad.top);
