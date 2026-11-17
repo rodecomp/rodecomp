@@ -2912,11 +2912,11 @@ void CGameMode::Zc_Skill_Entry(unsigned char* record) {
   data.type = packet.type;
   data.x = packet.x;
   data.y = packet.y;
-  data.aid = packet.aid;
-  data.owner = packet.owner;
   data.visible = true;
   data.level = 0;
   packet.visible = 1;
+  data.aid = packet.aid;
+  data.owner = packet.owner;
 
   CSkill* skill = this->scene->GetSkillByAID(data.aid);
   if (data.owner != g_session.m_aid && !data.visible) {
