@@ -7010,7 +7010,11 @@ void UIEquipWnd::OnLBtnDblClk(int x, int y) {
   ITEM_INFO item = this->ItemIconAt(x, y);
   if (item.identity[1] > 0 && item.quantity > 0) {
     const EquipSlots slots = g_session.GetEquipSlots(static_cast<int>(item.identity[3]));
-    g_modeMgr.currentMode->SendMsg(MM_TAKE_OFF_EQUIP, slots.values[2], this->m_page == 1, 0, 0);
+    if (this->m_page == 1) {
+      g_modeMgr.currentMode->SendMsg(MM_TAKE_OFF_EQUIP, slots.values[2], 1, 0, 0);
+    } else {
+      g_modeMgr.currentMode->SendMsg(MM_TAKE_OFF_EQUIP, slots.values[2], 0, 0, 0);
+    }
   }
 }
 
@@ -7092,11 +7096,13 @@ ITEM_INFO UIExchangeWnd::ItemAt(int x, int y) {
   const int row = (y - 17) / this->m_rowHeight;
   if (x < 280) {
     std::list<ITEM_INFO>::iterator it = this->m_myItems.begin();
-    for (int index = 0; index < row; ++index) {
-      if (it == this->m_myItems.end()) {
-        return ITEM_INFO(0);
+    if (row != 0) {
+      for (int index = 0; index < row; ++index) {
+        if (it == this->m_myItems.end()) {
+          return ITEM_INFO(0);
+        }
+        ++it;
       }
-      ++it;
     }
     if (it == this->m_myItems.end()) {
       return ITEM_INFO(0);
@@ -7104,11 +7110,13 @@ ITEM_INFO UIExchangeWnd::ItemAt(int x, int y) {
     return *it;
   } else {
     std::list<ITEM_INFO>::iterator it = this->m_otherItems.begin();
-    for (int index = 0; index < row; ++index) {
-      if (it == this->m_otherItems.end()) {
-        return ITEM_INFO(0);
+    if (row != 0) {
+      for (int index = 0; index < row; ++index) {
+        if (it == this->m_otherItems.end()) {
+          return ITEM_INFO(0);
+        }
+        ++it;
       }
-      ++it;
     }
     if (it == this->m_otherItems.end()) {
       return ITEM_INFO(0);
@@ -8595,9 +8603,6 @@ int UIStatusWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
   switch (message) {
   case UM_COMMAND:
     switch (a) {
-    case ID_CLOSE:
-      g_windowMgr.CloseWindow(WID_STATUSWND);
-      break;
     case ID_MINI: {
       const int height = this->geometry.height;
       if (height == 17) {
@@ -8614,6 +8619,9 @@ int UIStatusWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
       }
       break;
     }
+    case ID_CLOSE:
+      g_windowMgr.CloseWindow(WID_STATUSWND);
+      break;
     case ID_STR:
       RequestStatusPointUp(this, mode, statCosts, statusPoint, 0);
       break;
@@ -10033,26 +10041,25 @@ void UIItemCollectionWnd::OnRBtnDown(int x, int y) {
   }
 
   ITEM_INFO card;
-  int cardId;
-  std::memcpy(&cardId, &this->m_item.cards[index], sizeof(cardId));
   card.identified = 1;
   card.identity[0] = 6;
   card.refiningLevel = 0;
-  card.SetItemId(cardId);
+  card.SetItemId(this->m_item.cards[index]);
   UIWindow* window = g_windowMgr.EnsureWindow(WID_COMBINEDCARDITEMCOLLECTIONWND);
   window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, card.identified, 0, 0, 0);
-  window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&card), index >= this->m_item.SlotCount(), 0, 0);
+  if (index < this->m_item.SlotCount()) {
+    window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&card), 0, 0, 0);
+  } else {
+    window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&card), 1, 0, 0);
+  }
 
   if (UIItemCollectionWnd* comparison = g_windowMgr.itemCollectionComparisonWnd) {
-    int compareId;
-    std::memcpy(&compareId, &comparison->m_item.cards[index], sizeof(compareId));
-    if (compareId != 0 && compareId != 254 && compareId != 255) {
+    if (comparison->m_item.cards[index] != 0 && comparison->m_item.cards[index] != 254 && comparison->m_item.cards[index] != 255) {
       ITEM_INFO compareCard;
       compareCard.identified = 1;
       compareCard.identity[0] = 6;
       compareCard.refiningLevel = 0;
-      std::memcpy(&compareId, &comparison->m_item.cards[index], sizeof(compareId));
-      compareCard.SetItemId(compareId);
+      compareCard.SetItemId(comparison->m_item.cards[index]);
       UIWindow* compareWindow = g_windowMgr.EnsureWindow(WID_COMBINEDCARDITEMCOLLECTION_COMPARISONWND);
       compareWindow->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, compareCard.identified, 0, 0, 0);
       compareWindow->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&compareCard), 1, 0, 0);
@@ -10071,15 +10078,17 @@ void UIItemCollection_ComparisonWnd::OnRBtnDown(int x, int y) {
   }
 
   ITEM_INFO card;
-  int cardId;
-  std::memcpy(&cardId, &this->m_item.cards[index], sizeof(cardId));
   card.identified = 1;
   card.identity[0] = 6;
   card.refiningLevel = 0;
-  card.SetItemId(cardId);
+  card.SetItemId(this->m_item.cards[index]);
   UIWindow* window = g_windowMgr.EnsureWindow(WID_COMBINEDCARDITEMCOLLECTIONWND);
   window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, card.identified, 0, 0, 0);
-  window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&card), index >= this->m_item.SlotCount(), 0, 0);
+  if (index < this->m_item.SlotCount()) {
+    window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&card), 0, 0, 0);
+  } else {
+    window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&card), 1, 0, 0);
+  }
 }
 
 // OFFSET: 0x008F3660
@@ -12074,40 +12083,39 @@ int UIChooseWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
 // FUNCTION: fn_12331
 int UIChoose3Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   const char* text = reinterpret_cast<const char*>(a);
-  if (message != UM_SETCHOOSE || text == nullptr) {
-    return this->UIChooseWnd::SendMsg(sender, message, a, b, c, d);
+  if (message == UM_SETCHOOSE && text != nullptr) {
+    const std::string_view value(text);
+    if (!value.empty() && value != LookupMessage(MSI_REF_UNEQUIP)) {
+      int length = 0;
+      int itemId = 0;
+      const char* line = text;
+      if (ParseItemIdTag(text, text + value.size(), length, itemId) == 1 && itemId > 0) {
+        line = FindItemDescription(itemId).identifiedName;
+      }
+      this->m_list->AddLine(line);
+      ++this->m_lastItemIndex;
+      this->m_items.push_back(this->m_lastItemIndex);
+      UIListBox* list = this->m_list;
+      const int listWidth = list->geometry.width;
+      const int growWidth = 0;
+      int growHeight = 0;
+      if (this->m_minimumLines < static_cast<int>(list->lines.size()) && list->LineCount() <= this->m_maximumLines) {
+        growHeight = list->lineHeight;
+      }
+      if (growWidth > 0 || growHeight > 0) {
+        const int okX = this->geometry.width - this->m_okButton->geometry.x;
+        const int okY = this->geometry.height - this->m_okButton->geometry.y;
+        const int cancelX = this->geometry.width - this->m_cancelButton->geometry.x;
+        const int cancelY = this->geometry.height - this->m_cancelButton->geometry.y;
+        list->Resize(listWidth + growWidth, list->geometry.height + growHeight);
+        this->Resize(this->geometry.width + growWidth, this->geometry.height + growHeight);
+        this->m_okButton->Move(this->geometry.width - okX, this->geometry.height - okY);
+        this->m_cancelButton->Move(this->geometry.width - cancelX, this->geometry.height - cancelY);
+      }
+      return 0;
+    }
   }
-  const std::string_view value(text);
-  if (value.empty() || value == LookupMessage(MSI_REF_UNEQUIP)) {
-    return this->UIChooseWnd::SendMsg(sender, message, a, b, c, d);
-  }
-  int length = 0;
-  int itemId = 0;
-  const char* line = text;
-  if (ParseItemIdTag(text, text + value.size(), length, itemId) == 1 && itemId > 0) {
-    line = FindItemDescription(itemId).identifiedName;
-  }
-  this->m_list->AddLine(line);
-  ++this->m_lastItemIndex;
-  this->m_items.push_back(this->m_lastItemIndex);
-  UIListBox* list = this->m_list;
-  const int listWidth = list->geometry.width;
-  const int growWidth = 0;
-  int growHeight = 0;
-  if (this->m_minimumLines < static_cast<int>(list->lines.size()) && list->LineCount() <= this->m_maximumLines) {
-    growHeight = list->lineHeight;
-  }
-  if (growWidth > 0 || growHeight > 0) {
-    const int okX = this->geometry.width - this->m_okButton->geometry.x;
-    const int okY = this->geometry.height - this->m_okButton->geometry.y;
-    const int cancelX = this->geometry.width - this->m_cancelButton->geometry.x;
-    const int cancelY = this->geometry.height - this->m_cancelButton->geometry.y;
-    list->Resize(listWidth + growWidth, list->geometry.height + growHeight);
-    this->Resize(this->geometry.width + growWidth, this->geometry.height + growHeight);
-    this->m_okButton->Move(this->geometry.width - okX, this->geometry.height - okY);
-    this->m_cancelButton->Move(this->geometry.width - cancelX, this->geometry.height - cancelY);
-  }
-  return 0;
+  return this->UIChooseWnd::SendMsg(sender, message, a, b, c, d);
 }
 
 // OFFSET: 0x008D3720
