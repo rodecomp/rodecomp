@@ -4057,18 +4057,22 @@ void UISpriteButton::Paint() {
       texture = static_cast<CTexture*>(const_cast<void*>(image->surface));
     }
 
-    const int width = this->geometry.width;
-    const int height = this->geometry.height;
+    int width;
+    int height;
     int x;
     int y;
     if (index == 0) {
       halfWidth = image->width / 2;
+      width = this->geometry.width;
       x = width / 2 - halfWidth;
       halfHeight = image->height / 2;
+      height = this->geometry.height;
       y = height / 2 - halfHeight;
       baseX = cell.x;
       baseY = cell.y;
     } else {
+      width = this->geometry.width;
+      height = this->geometry.height;
       x = width / 2 - baseX - halfWidth + cell.x;
       y = height / 2 - baseY - halfHeight + cell.y;
     }
