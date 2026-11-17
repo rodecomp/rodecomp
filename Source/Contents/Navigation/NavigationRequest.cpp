@@ -429,7 +429,8 @@ void CNaviInfo::SearchMobs(const std::vector<std::string>& keywords, std::vector
   std::memset(buffer, 0, sizeof(buffer));
 
   std::vector<std::wstring> wideKeywords;
-  for (const std::string& keyword : keywords) {
+  for (auto keywordIt = keywords.begin(); keywordIt != keywords.end(); ++keywordIt) {
+    const std::string& keyword = *keywordIt;
     MultiByteToWideChar(CP_ACP, 0, keyword.c_str(), -1, buffer, 100);
     wideKeywords.push_back(std::wstring(buffer));
   }
@@ -472,7 +473,8 @@ void CNaviInfo::SearchNpcs(const std::vector<std::string>& keywords, std::vector
   std::memset(buffer, 0, sizeof(buffer));
 
   std::vector<std::wstring> wideKeywords;
-  for (const std::string& keyword : keywords) {
+  for (auto keywordIt = keywords.begin(); keywordIt != keywords.end(); ++keywordIt) {
+    const std::string& keyword = *keywordIt;
     MultiByteToWideChar(CP_ACP, 0, keyword.c_str(), -1, buffer, 100);
     wideKeywords.push_back(std::wstring(buffer));
   }
