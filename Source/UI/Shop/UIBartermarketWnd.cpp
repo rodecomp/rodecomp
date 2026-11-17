@@ -1844,11 +1844,13 @@ void UIExpandedBarterItemPurchaseWnd::Paint() {
   }
 
   this->DrawButtonBar(2, 0, 1);
-  unsigned red;
-  unsigned green;
-  unsigned blue;
-  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-  this->FillRegion(20, 17, this->geometry.width - 40, this->geometry.height - 46, RGB(red, green, blue));
+  {
+    unsigned red;
+    unsigned green;
+    unsigned blue;
+    g_skinInfo.PaletteChannels(2, 2, red, green, blue);
+    this->FillRegion(20, 17, this->geometry.width - 40, this->geometry.height - 46, RGB(red, green, blue));
+  }
   this->DrawButtonBar(2, 0, 1);
 
   int visible = 0;
@@ -1938,11 +1940,13 @@ void UIExpandedBartermarketWnd::Paint() {
     this->DrawBitmap(this->geometry.width - bitmap->image.width, tile * 8 + 17, bitmap, false);
   }
 
-  unsigned red;
-  unsigned green;
-  unsigned blue;
-  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-  this->FillRegion(20, 17, this->geometry.width - 40, this->geometry.height - 46, RGB(red, green, blue));
+  {
+    unsigned red;
+    unsigned green;
+    unsigned blue;
+    g_skinInfo.PaletteChannels(2, 2, red, green, blue);
+    this->FillRegion(20, 17, this->geometry.width - 40, this->geometry.height - 46, RGB(red, green, blue));
+  }
   this->DrawButtonBar(2, 0, 1);
 
   int visible = 0;
