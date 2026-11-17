@@ -30,13 +30,13 @@ void UIRPData::DrawStretched(int x, int y, CTexture* texture, std::uint32_t colo
   primitive->quad[3].y = static_cast<float>(bottom);
   primitive->quad[3].u = (static_cast<float>(texture->Width()) + g_textureOffsetX) / static_cast<float>(texture->TextureWidth());
   primitive->quad[3].v = (static_cast<float>(texture->Height()) + g_textureOffsetX) / static_cast<float>(texture->TextureHeight());
-  for (RenderVertex& vertex : primitive->quad) {
-    vertex.diffuse = color;
+  for (int i = 0; i < 4; ++i) {
+    primitive->quad[i].diffuse = color;
   }
 
-  for (RenderVertex& vertex : primitive->quad) {
-    vertex.z = 0.000001f;
-    vertex.rhw = 0.999999f;
+  for (int i = 0; i < 4; ++i) {
+    primitive->quad[i].z = 0.000001f;
+    primitive->quad[i].rhw = 0.999999f;
   }
 
   this->m_primitives.push_back(primitive);
@@ -127,12 +127,12 @@ void UIRPData::SetSolid(int width, int height, std::uint32_t color) {
   primitive->quad[2].y = static_cast<float>(height);
   primitive->quad[3].x = static_cast<float>(width);
   primitive->quad[3].y = static_cast<float>(height);
-  for (RenderVertex& vertex : primitive->quad) {
-    vertex.u = 0.0f;
-    vertex.v = 0.0f;
-    vertex.z = 0.000001f;
-    vertex.rhw = 0.999999f;
-    vertex.diffuse = color;
+  for (int i = 0; i < 4; ++i) {
+    primitive->quad[i].u = 0.0f;
+    primitive->quad[i].v = 0.0f;
+    primitive->quad[i].z = 0.000001f;
+    primitive->quad[i].rhw = 0.999999f;
+    primitive->quad[i].diffuse = color;
   }
 
   this->m_primitives.push_back(primitive);
