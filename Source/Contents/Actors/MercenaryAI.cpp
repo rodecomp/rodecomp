@@ -972,6 +972,7 @@ int AiIsMonster(lua_State* state) {
   double result = 0.0;
   if (actor) {
     int job = actor->GetEffectiveJob(-1);
+    bool checkState = false;
     if (((job > 1000 && job < 3999) || static_cast<unsigned>(job - 20021) <= 11978) && actor->objectType != 7) {
       switch (actor->objectType) {
       case NPC_MERSOL_TYPE:
@@ -981,11 +982,7 @@ int AiIsMonster(lua_State* state) {
         result = 0.0;
         break;
       default:
-        if (StateFlag06(actor->GetStateFlags()) || StateFlag01(actor->GetStateFlags()) || StateFlag02(actor->GetStateFlags())) {
-          result = 0.0;
-        } else {
-          result = 1.0;
-        }
+        checkState = true;
         break;
       }
     } else if (g_session.IsPlayerJobId(job)) {
@@ -999,11 +996,15 @@ int AiIsMonster(lua_State* state) {
         ally = 1;
       }
       if (!ally) {
-        if (StateFlag06(actor->GetStateFlags()) || StateFlag01(actor->GetStateFlags()) || StateFlag02(actor->GetStateFlags())) {
-          result = 0.0;
-        } else {
-          result = 1.0;
-        }
+        checkState = true;
+      }
+    }
+
+    if (checkState) {
+      if (StateFlag06(actor->GetStateFlags()) || StateFlag01(actor->GetStateFlags()) || StateFlag02(actor->GetStateFlags())) {
+        result = 0.0;
+      } else {
+        result = 1.0;
       }
     }
   }
