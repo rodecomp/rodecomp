@@ -207,14 +207,22 @@ void UIItemTagOnMail::SetLines(const std::vector<std::string>& lines) {
 // FUNCTION: fn_11597
 void UIItemTagCtrl::AddItemTag(const ITEM_INFO& item, unsigned int color) {
   std::string tag = "<";
-  tag += item.DisplayName(0);
-  tag += ">";
+  {
+    const std::string name = item.DisplayName(0);
+    tag.append(name.data(), name.size());
+  }
+  tag.append(">", 1);
 
   UIItemTagButton* button = new UIItemTagButton();
 
   std::string label = "<";
-  label += this->FitTextToWidth(item.DisplayName(0), this->tagWidth / 2);
-  label += ">";
+  {
+    const int width = this->tagWidth;
+    const std::string name = item.DisplayName(0);
+    const std::string fitted = this->FitTextToWidth(name, width / 2);
+    label.append(fitted.data(), fitted.size());
+  }
+  label.append(">", 1);
 
   button->Configure(label.c_str(), color, 0, 12, 0, 0);
   button->SetTooltip(tag.c_str());
