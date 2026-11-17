@@ -726,18 +726,18 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     }
     this->SendMsg(nullptr, UM_RESIZE, 7, this->saved->width, this->saved->height, 0);
     this->Move(this->saved->x, this->saved->y);
-    return 0;
+    break;
   case UM_COMMAND:
     switch (a) {
     case ID_OK: {
       if (this->edit->Length() == 0) {
-        return 0;
+        break;
       }
       NavigationLinkParser* parser = g_navigationLinkParser;
       if (parser->HasLink(std::string(this->edit->Text()))) {
         this->edit->SetText("");
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MSG_IS_ILLEGAL_MSG)), 255, 0, 0, 0);
-        return 0;
+        break;
       }
 
       std::string text = this->edit->Text();
@@ -760,7 +760,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 
       if (g_serviceType == 1 && !g_session.ValidateCharacterName(buffer)) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ENGLISHONLY)), 255, 0, 0, 0);
-        return 0;
+        break;
       }
 
       bool self = false;
@@ -793,57 +793,59 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       this->edit->PushHistory();
       this->edit->SetText("");
       g_windowMgr.SetFocus(this->edit);
-      return 0;
+      break;
     }
     case ID_CLOSE:
       g_modeMgr.currentMode->SendMsg(MM_REQ_EXIT_ROOM, 0, 0, 0, 0);
-      return 0;
+      break;
     case ID_NAME:
       g_windowMgr.SelectWhisperName(reinterpret_cast<const char*>(b));
-      return 0;
+      break;
     default:
-      return 0;
+      break;
     }
+    break;
   case UM_MENU_SELECTED: {
     CGameMode* mode = g_modeMgr.GetGameMode();
     switch (this->menuCommands[a].value) {
     case MENUID_EXPEL: {
       if (this->memberList->selected == -1) {
-        return 0;
+        break;
       }
       const std::string name = this->memberList->lines[this->memberList->selected];
       mode->SendMsg(MM_REQ_EXPEL_MEMBER, reinterpret_cast<int>(name.c_str()), 0, 0, 0);
-      return 0;
+      break;
     }
     case MENUID_GIVE_ROOM_POWER: {
       if (this->memberList->selected == -1) {
-        return 0;
+        break;
       }
       const std::string name = this->memberList->lines[this->memberList->selected];
       mode->SendMsg(MM_REQ_ROLE_CHANGE, reinterpret_cast<int>(name.c_str()), 0, 0, 0);
-      return 0;
+      break;
     }
     case MENUID_CHANGE_ROOM_SETTING:
       g_windowMgr.EnsureWindow(WID_CHATROOMCHANGEWND)->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&mode->chatRoom), 0, 0, 0);
-      return 0;
+      break;
     case MENUID_QUERYINFO:
       g_windowMgr.Confirm(LookupMessage(MSI_NOTSUPPORTEDYET), 0, true, false, 0, "Message", 280, 120, 0);
-      return 0;
+      break;
     case MENUID_WRITE_CHAT_TO_FILE:
       this->SaveChatLog();
-      return 0;
+      break;
     case MENUID_ADD_TO_FRIEND_CHAR_LIST_FROM_WINDOW: {
       if (this->memberList->selected == -1) {
-        return 0;
+        break;
       }
       const std::string name = this->memberList->lines[this->memberList->selected];
       g_windowMgr.RequestAddFriend(name.c_str());
-      return 0;
+      break;
     }
     default:
-      return 0;
+      break;
     }
   }
+  break;
   case UM_MAKEMENU: {
     this->menuCommands.erase(this->menuCommands.begin(), this->menuCommands.end());
     if (g_windowMgr.menuWnd != nullptr) {
@@ -854,17 +856,17 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       const std::string self = g_session.DecodePlayerName();
       const std::map<std::string, int>::iterator found = this->memberRoles.find(self);
       if (found == this->memberRoles.end()) {
-        return 0;
+        break;
       }
       const int rank = this->memberRoles[self];
       if (rank == -1) {
-        return 0;
+        break;
       }
 
       if (this->memberList->selected != -1) {
         const std::string target = this->memberList->lines[this->memberList->selected];
         if (this->memberRoles.find(target) == this->memberRoles.end() || this->memberRoles[target] == -1) {
-          return 0;
+          break;
         }
         switch (rank) {
         case 0:
@@ -919,7 +921,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       }
       menu->Move(maxX, maxY);
     }
-    return 0;
+    break;
   }
   case UM_SETINFO: {
     const ChatRoomTitleInfo* settings = reinterpret_cast<const ChatRoomTitleInfo*>(a);
@@ -945,7 +947,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     }
     this->titleText->SetTextFitted(text);
     this->Invalidate();
-    return 0;
+    break;
   }
   case UM_ROLE_CHANGE: {
     if (this->memberRoles.find(std::string(reinterpret_cast<const char*>(a))) != this->memberRoles.end()) {
@@ -955,24 +957,24 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     for (std::map<std::string, int>::iterator it = this->memberRoles.begin(); it != this->memberRoles.end(); ++it) {
       this->memberList->AddText(it->first.c_str(), it->second != 0 ? 0 : 0x808000, nullptr);
     }
-    return 0;
+    break;
   }
   case UM_MEMBER_EXIT: {
     const std::map<std::string, int>::iterator found = this->memberRoles.find(std::string(reinterpret_cast<const char*>(a)));
     if (found == this->memberRoles.end()) {
-      return 0;
+      break;
     }
     this->memberRoles.erase(found);
     this->memberList->Clear();
     for (std::map<std::string, int>::iterator it = this->memberRoles.begin(); it != this->memberRoles.end(); ++it) {
       this->memberList->AddText(it->first.c_str(), it->second != 0 ? 0 : 0x808000, nullptr);
     }
-    return 0;
+    break;
   }
   case UM_CLEARMEMBER:
     this->memberList->Clear();
     this->memberRoles.erase(this->memberRoles.begin(), this->memberRoles.end());
-    return 0;
+    break;
   case UM_ADDMEMBER: {
     this->memberRoles[std::string(reinterpret_cast<const char*>(a))] = static_cast<int>(b);
     int color = 0;
@@ -984,7 +986,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       color = 0x808000;
     }
     this->memberList->AddText(reinterpret_cast<const char*>(a), color, nullptr);
-    return 0;
+    break;
   }
   case UM_ADDCHAT: {
     char* text = reinterpret_cast<char*>(a);
@@ -1042,21 +1044,21 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     for (unsigned index = 0; index < lines.size(); ++index) {
       this->history->AddText(lines[index].c_str(), static_cast<int>(b), name);
     }
-    return 0;
+    break;
   }
   case UM_PAGEUPPUSH:
     if (this->history->verticalOverflow != 0) {
       this->history->SendMsg(nullptr, UM_SCROLLVERTPAGEUP, 0, 0, 0, 0);
     }
-    return 0;
+    break;
   case UM_PAGEDOWNPUSH:
     if (this->history->verticalOverflow != 0) {
       this->history->SendMsg(nullptr, UM_SCROLLVERTPAGEDOWN, 0, 0, 0, 0);
     }
-    return 0;
+    break;
   case UM_RESIZE: {
     if (a != 7) {
-      return 0;
+      break;
     }
     int width = b > 512 ? 512 : b;
     int height = c > 384 ? 384 : c;
@@ -1083,7 +1085,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       this->titleText->SetTextFitted(title.c_str());
     }
     g_windowMgr.StoreSnapRectangle(this);
-    return 0;
+    break;
   }
   case UM_REPLAY_FRAMED_DATA: {
     const unsigned char* data = reinterpret_cast<const unsigned char*>(a);
@@ -1165,11 +1167,12 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         }
       }
     }
-    return 0;
+    break;
   }
   default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
+  return 0;
 }
 
 // OFFSET: 0x008A36A0
@@ -1203,3 +1206,4 @@ UILoginWnd::UILoginWnd() : UIFrameWnd(0), savedAccounts(), loginTypeCombo(0), lo
   this->unknown_00D4 = 0;
   this->backgroundWindow = nullptr;
 }
+
