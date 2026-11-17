@@ -118,7 +118,7 @@ bool UITextViewer::AddNaviLinks(std::string text, unsigned addedLines) {
   }
 
   parsed = static_cast<const std::string&>(DisplayTipBoxTextTag(parsed));
-  parsed = g_navigationLinkParser->DisplayNavigationLink(parsed);
+  parsed = GetNavigationLinkParser()->DisplayNavigationLink(parsed);
   parsed = static_cast<const std::string&>(DisplayQuestTextTag(parsed));
 
   std::vector<TextLink> extracted;
