@@ -2315,7 +2315,7 @@ void CLoginMode::PollNetworkStatus() {
     return;
   }
 
-  while (GetRagConnection().ReadPacket(g_gameModePacketBuffer, nullptr, g_packetLengths)) {
+  while (GetRagConnection().ReadPacket(g_gameModePacketBuffer, nullptr)) {
     switch (GetRagConnection().GetPacketType(reinterpret_cast<const char*>(g_gameModePacketBuffer))) {
     case ID_AC_ACCEPT_LOGIN:
     case ID_HC_ACCEPT_MAKECHAR:
@@ -2362,6 +2362,7 @@ void CLoginMode::PollNetworkStatus() {
         g_windowMgr.Confirm(LookupMessage(MSI_STORE_ASSISTANT_TRADE_DATE), 0, true, false, 0, "Message", 280, 120, 0);
         this->pendingCursorType = 6;
         break;
+      case 0:
       default:
         g_windowMgr.Confirm(LookupMessage(MSI_ACCESS_DENIED), 0, true, false, 0, "Message", 280, 120, 0);
         g_charServerAccountIdPending = 0;
@@ -2370,31 +2371,31 @@ void CLoginMode::PollNetworkStatus() {
       }
       break;
     case ID_HC_REFUSE_MAKECHAR: {
-      int message;
+      const char* message;
       switch (reinterpret_cast<const ResultPacket*>(g_gameModePacketBuffer)->result) {
       case 0:
-        message = MSI_CHARACTER_NAME_ALREADY_EXISTS;
+        message = LookupMessage(MSI_CHARACTER_NAME_ALREADY_EXISTS);
         break;
       case 1:
-        message = MSI_LIMIT_AGE;
+        message = LookupMessage(MSI_LIMIT_AGE);
         break;
       case 2:
-        message = MSI_LIMIT_CHAR_DELETE;
+        message = LookupMessage(MSI_LIMIT_CHAR_DELETE);
         break;
       case 3:
-        message = MSI_FR_ERR_MKCHAR_INVALID_SLOT;
+        message = LookupMessage(MSI_FR_ERR_MKCHAR_INVALID_SLOT);
         break;
       case 11:
-        message = MSI_NEED_PREMIUM_SERVICE;
+        message = LookupMessage(MSI_NEED_PREMIUM_SERVICE);
         break;
       case 12:
-        message = MSI_CHARACTERNAME_ERROR;
+        message = LookupMessage(MSI_CHARACTERNAME_ERROR);
         break;
       default:
-        message = MSI_CHARACTER_CREATION_DENIED;
+        message = LookupMessage(MSI_CHARACTER_CREATION_DENIED);
         break;
       }
-      g_windowMgr.Confirm(LookupMessage(message), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(message, 0, true, false, 0, "Message", 280, 120, 0);
       this->pendingCursorType = 7;
       break;
     }
@@ -2415,22 +2416,22 @@ void CLoginMode::PollNetworkStatus() {
       break;
     }
     case ID_HC_REFUSE_DELETECHAR: {
-      int message;
+      const char* message;
       switch (reinterpret_cast<const ResultPacket*>(g_gameModePacketBuffer)->result) {
       case 0:
-        message = g_serviceType == ServiceKorea ? MSI_CANNOT_DELETE_CHARACTER_PEOPLE_REG_NUMBER : MSI_CANNOT_DELETE_CHARACTER_EMAIL;
+        message = LookupMessage(g_serviceType == ServiceKorea ? MSI_CANNOT_DELETE_CHARACTER_PEOPLE_REG_NUMBER : MSI_CANNOT_DELETE_CHARACTER_EMAIL);
         break;
       case 1:
-        message = MSI_FR_ERR_DELCHAR_INVALID_SLOT;
+        message = LookupMessage(MSI_FR_ERR_DELCHAR_INVALID_SLOT);
         break;
       case 2:
-        message = MSI_RESULT_FAIL_CHAR_DELETE;
+        message = LookupMessage(MSI_RESULT_FAIL_CHAR_DELETE);
         break;
       default:
-        message = MSI_CANNOT_DELETE_CHARACTER;
+        message = LookupMessage(MSI_CANNOT_DELETE_CHARACTER);
         break;
       }
-      g_windowMgr.Confirm(LookupMessage(message), 0, true, false, 0, "Message", 280, 120, 0);
+      g_windowMgr.Confirm(message, 0, true, false, 0, "Message", 280, 120, 0);
       this->pendingCursorType = 7;
       break;
     }
@@ -2449,6 +2450,17 @@ void CLoginMode::PollNetworkStatus() {
     case ID_SC_NOTIFY_BAN:
       this->ReceiveNotifyBan(g_gameModePacketBuffer);
       break;
+    case ID_AC_EVENT_RESULT:
+      g_windowMgr.Confirm(LookupMessage(MSI_EVENT_RESULT), 0, true, false, 0, "Message", 280, 120, 0);
+      break;
+    case ID_HC_BLOCK_CHARACTER: {
+      const BlockedCharacterPacket* packet = reinterpret_cast<const BlockedCharacterPacket*>(g_gameModePacketBuffer);
+      BlockedCharacter* blocked = g_session.m_blockedCharacters;
+      g_session.blockedCharacterCount = (packet->length - offsetof(BlockedCharacterPacket, characters)) / sizeof(BlockedCharacter);
+      memset(blocked, 0, g_session.blockedCharacterCount * sizeof(BlockedCharacter));
+      memcpy(blocked, packet->characters, g_session.blockedCharacterCount * sizeof(BlockedCharacter));
+      break;
+    }
     case ID_SC_BILLING_INFO:
       this->ReceiveBillingInfo(g_gameModePacketBuffer);
       break;
@@ -2465,28 +2477,18 @@ void CLoginMode::PollNetworkStatus() {
       }
       break;
     case ID_SC_ACK_ENCRYPTION: {
-      ShowErrorDialog(GetRenderSystemHolder()->system, OBFUSCATE_BYTES_TEXT("No Packet Encryption !!!", 0xB195637DAFCB0D59ULL), 0);
+      ShowErrorDialog(OBFUSCATE_BYTES_TEXT("No Packet Encryption !!!", 0xB195637DAFCB0D59ULL), 0);
       break;
     }
     case ID_AC_NOTIFY_ERROR: {
       const LoginMessagePacket* packet = reinterpret_cast<const LoginMessagePacket*>(g_gameModePacketBuffer);
-      const std::string message(packet->text, reinterpret_cast<const char*>(packet) + packet->length);
+      std::string message;
+      message.assign(packet->text, reinterpret_cast<const char*>(packet) + packet->length - packet->text);
       g_windowMgr.Confirm(message.c_str(), 0, true, true, 0, "Message", 280, 120, 0);
       g_charServerAccountIdPending = 0;
       this->pendingCursorType = 3;
       break;
     }
-    case ID_HC_BLOCK_CHARACTER: {
-      const BlockedCharacterPacket* packet = reinterpret_cast<const BlockedCharacterPacket*>(g_gameModePacketBuffer);
-      BlockedCharacter* blocked = g_session.m_blockedCharacters;
-      g_session.blockedCharacterCount = (packet->length - offsetof(BlockedCharacterPacket, characters)) / sizeof(BlockedCharacter);
-      memset(blocked, 0, g_session.blockedCharacterCount * sizeof(BlockedCharacter));
-      memcpy(blocked, packet->characters, g_session.blockedCharacterCount * sizeof(BlockedCharacter));
-      break;
-    }
-    case ID_AC_EVENT_RESULT:
-      g_windowMgr.Confirm(LookupMessage(MSI_EVENT_RESULT), 0, true, false, 0, "Message", 280, 120, 0);
-      break;
     case ID_HC_CHARNOTBEENSELECTED: {
       const AcceptEnterNeoUnionPacket* packet = reinterpret_cast<const AcceptEnterNeoUnionPacket*>(g_gameModePacketBuffer);
       this->slotExtension = packet->extension;
@@ -2558,23 +2560,23 @@ void CLoginMode::PollNetworkStatus() {
     case ID_HC_DELETE_CHAR3_RESERVED:
       this->ReceiveDeleteReservation(reinterpret_cast<const CharacterDeletePacket*>(g_gameModePacketBuffer));
       break;
-    case ID_HC_DELETE_CHAR3:
-      this->ReceiveDeleteCharacter(reinterpret_cast<const CharacterDeletePacket*>(g_gameModePacketBuffer));
-      break;
-    case ID_HC_DELETE_CHAR3_CANCEL:
-      this->ReceiveDeleteCancel(reinterpret_cast<const CharacterDeletePacket*>(g_gameModePacketBuffer));
-      break;
-    case ID_HC_ACCEPT_ENTER2:
-      this->ReceiveCharacterSlots(reinterpret_cast<const CharacterSlotsPacket*>(g_gameModePacketBuffer));
-      break;
     case ID_AC_REFUSE_LOGIN_SSO: {
       LoginErrorCodePacket* packet = reinterpret_cast<LoginErrorCodePacket*>(g_gameModePacketBuffer);
       packet->text[19] = '\0';
       this->ShowLoginError(packet->code, reinterpret_cast<int>(packet->text));
       break;
     }
+    case ID_HC_ACCEPT_ENTER2:
+      this->ReceiveCharacterSlots(reinterpret_cast<const CharacterSlotsPacket*>(g_gameModePacketBuffer));
+      break;
     case ID_HC_NOTIFY_ACCESSIBLE_MAPNAME:
       this->ReceiveMapStates(reinterpret_cast<const MapStatePacket*>(g_gameModePacketBuffer));
+      break;
+    case ID_HC_DELETE_CHAR3:
+      this->ReceiveDeleteCharacter(reinterpret_cast<const CharacterDeletePacket*>(g_gameModePacketBuffer));
+      break;
+    case ID_HC_DELETE_CHAR3_CANCEL:
+      this->ReceiveDeleteCancel(reinterpret_cast<const CharacterDeletePacket*>(g_gameModePacketBuffer));
       break;
     case ID_ZC_GPK_DYNCODE:
       IgnoreRemovedPacket(g_gameModePacketBuffer);
@@ -2642,14 +2644,14 @@ void CLoginMode::PollNetworkStatus() {
         g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_EDIT_FAILED), 0, true, false, 0, "Message", 280, 120, 0);
         this->pendingCursorType = 7;
         break;
-      case 2:
-        g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
-        g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_EDIT_RESTRICT_PW), 0, true, false, 0, "Message", 280, 120, 0);
-        this->pendingCursorType = 7;
-        break;
       case 3:
         g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
         g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_EDIT_PERSONALNUM_PW), 0, true, false, 0, "Message", 280, 120, 0);
+        this->pendingCursorType = 7;
+        break;
+      case 2:
+        g_windowMgr.CloseWindow(WID_SECONDPASSWORDINPUTWND);
+        g_windowMgr.Confirm(LookupMessage(MSI_SECOND_PASSWORD_EDIT_RESTRICT_PW), 0, true, false, 0, "Message", 280, 120, 0);
         this->pendingCursorType = 7;
         break;
       }
