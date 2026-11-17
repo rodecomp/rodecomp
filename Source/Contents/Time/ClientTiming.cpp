@@ -163,13 +163,14 @@ bool CNavigationManager::LoadScript(LuaScript* script) {
   this->data.ClearAll();
 
   int type;
+  int index = 1;
   int cellX = 0;
   int cellY = 0;
   int linkedX = 0;
   int linkedY = 0;
   int targetId = -1;
   int cost = 0;
-  for (int index = 1; index < 9999; ++index) {
+  for (; index < 9999; ++index) {
     const char* name = nullptr;
     const char* title = nullptr;
     if (!script->Call("queryNavi_MapInfo", "d>ssddd", index, &name, &title, &type, &cellX, &cellY)) {
