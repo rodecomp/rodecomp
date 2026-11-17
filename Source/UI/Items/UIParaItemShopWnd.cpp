@@ -645,7 +645,8 @@ int UIParaResultWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
     break;
   case UM_REFRESHITEM: {
     int sum = 0;
-    for (const ITEM_INFO& item : this->items) {
+    for (auto itemIt = this->items.begin(); itemIt != this->items.end(); ++itemIt) {
+      const ITEM_INFO& item = *itemIt;
       sum += item.prices[1] * item.quantity;
     }
 
