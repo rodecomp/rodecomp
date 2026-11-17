@@ -765,7 +765,7 @@ void CSession::ResetCostumeItems() {
     this->costumeItems[index].Reset();
   }
 
-  RequestBasicInfoRefresh();
+  this->RequestBasicInfoRefresh();
 }
 
 // OFFSET: 0x00E08B40
@@ -984,7 +984,7 @@ bool CSession::EquipCostumeItem(const ITEM_INFO& item, const char* name) {
     }
   }
 
-  RequestBasicInfoRefresh();
+  this->RequestBasicInfoRefresh();
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }

@@ -1,3 +1,4 @@
+#include "Client/Session/Session.h"
 #include "Resource/ResourcePreload.h"
 #include "Resource/Resource.h"
 #include "Resource/ResourceMgr.h"
@@ -10,7 +11,7 @@ int g_spriteHalfHeight;
 
 // OFFSET: 0x00DFCDA0
 // FUNCTION: fn_23602
-void PreloadCommonSprites() {
+void CSession::PreloadCommonSprites() {
   CRes* shadowAction = ResourceMgr::Instance().Load("shadow.act");
   CRes* shadowSprite = ResourceMgr::Instance().Load("shadow.spr");
   if (shadowAction) {

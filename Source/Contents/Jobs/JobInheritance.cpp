@@ -1845,7 +1845,7 @@ bool CSession::UnequipCostumeItem(int location) {
         items[slots.values[0]].Reset();
       }
     }
-    RequestBasicInfoRefresh();
+    this->RequestBasicInfoRefresh();
   }
 
   this->InvalidateWindowFrames();

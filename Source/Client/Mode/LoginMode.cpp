@@ -1266,7 +1266,7 @@ bool sub_D92B60(int) {
 // OFFSET: 0x00D9A230
 // FUNCTION: fn_22310
 void PreloadLoginSprites() {
-  PreloadCommonSprites();
+  g_session.PreloadCommonSprites();
 }
 
 // OFFSET: 0x00D9CFD0
@@ -1718,7 +1718,7 @@ void CLoginMode::Initialize(const char* name) {
   g_isStopByLogin = 1;
   g_session.ClearItemContainers();
   g_guildInfo.Init();
-  PreloadCommonSprites();
+  g_session.PreloadCommonSprites();
   if (g_serviceOptions.Get(TT_MUSIC_ON_OFF)) {
     g_soundMgr->PlayStream("bgm\\01.mp3", 0, false);
   }

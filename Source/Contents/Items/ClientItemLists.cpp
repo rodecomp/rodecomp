@@ -1114,7 +1114,7 @@ bool CSession::EquipInventoryItem(const ITEM_INFO& item, const char* name) {
     }
   }
 
-  RequestBasicInfoRefresh();
+  this->RequestBasicInfoRefresh();
   if (g_equipmentPropertiesMgr == nullptr) {
     g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
   }
@@ -1147,7 +1147,7 @@ bool CSession::OnItemEquipped(ITEM_INFO& item) {
       }
     }
 
-    RequestBasicInfoRefresh();
+    this->RequestBasicInfoRefresh();
     if (g_equipmentPropertiesMgr == nullptr) {
       g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
     }
@@ -1218,7 +1218,7 @@ bool CSession::UnequipItem(int location, std::uint32_t identity) {
         this->equippedItems[slots.values[0]].Reset();
       }
     }
-    RequestBasicInfoRefresh();
+    this->RequestBasicInfoRefresh();
   }
 
   if (g_equipmentPropertiesMgr == nullptr) {

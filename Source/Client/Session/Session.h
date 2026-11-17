@@ -834,6 +834,8 @@ public:
   bool AddShopName(std::string name, int shopId);
   int SetPlayerSkillMode(int value);
   void SetElementalGid(int value);
+  void RequestBasicInfoRefresh();
+  void PreloadCommonSprites();
   void UnflagInventoryItem(int id);
   void UnflagMerchantShopItem(int id);
   void UnflagCartItem(int id);

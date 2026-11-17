@@ -1008,7 +1008,7 @@ void CSession::CollectCardItems() {
 
 // OFFSET: 0x00E48B70
 // FUNCTION: fn_24226
-void RequestBasicInfoRefresh() {
+void CSession::RequestBasicInfoRefresh() {
   if (g_windowMgr.equipWnd != nullptr) {
     g_windowMgr.equipWnd->SendMsg(nullptr, UM_SET_DISABLE, 575, 0, 0, 0);
   }

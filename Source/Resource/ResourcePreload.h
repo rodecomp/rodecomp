@@ -4,6 +4,4 @@
 extern int g_spriteHalfWidth;
 extern int g_spriteHalfHeight;
 
-void PreloadCommonSprites();
-
 #endif

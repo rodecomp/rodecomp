@@ -4,7 +4,6 @@
 #include <vector>
 
 
-void RequestBasicInfoRefresh();
 void __stdcall SetPetInfoAlert(bool enabled);
 void AppendBytes(std::vector<unsigned char>& output, const std::vector<unsigned char>& bytes);
 

@@ -5629,7 +5629,7 @@ void CSession::ResetEquipment() {
   for (int index = 0; index < 10; ++index) {
     this->equippedItems[index].Reset();
   }
-  RequestBasicInfoRefresh();
+  this->RequestBasicInfoRefresh();
   EquipmentProperties::CEquipmentPropertiesMgr::GetInstance()->Clear();
   g_windowMgr.InvalidateFrames();
 }
