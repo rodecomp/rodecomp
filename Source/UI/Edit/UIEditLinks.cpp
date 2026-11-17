@@ -121,7 +121,7 @@ void UIEditCtrl::MoveCursorToEnd() {
 
 // OFFSET: 0x008550E0
 // FUNCTION: fn_10750
-void UIEditCtrl::SnapLinkSelection(const std::string& prefix, const int& bytes) {
+__declspec(noinline) void UIEditCtrl::SnapLinkSelection(const std::string& prefix, const int& bytes) {
   if (g_windowMgr.rodexComposeWnd && g_windowMgr.rodexComposeWnd->m_contents != g_windowMgr.GetHoverWindow()) {
     return;
   }
@@ -159,7 +159,7 @@ void UIEditCtrl::UpdateLinks() {
   }
 
   this->linkedText.clear();
-  std::string prefix;
+  std::string prefix = "";
   std::string remaining = this->text;
 
   for (auto entry = this->links.begin(); entry != this->links.end(); ++entry) {
@@ -168,8 +168,9 @@ void UIEditCtrl::UpdateLinks() {
       break;
     }
 
+    NavigationLinkParser* const parser = g_navigationLinkParser;
     auto* button = static_cast<UINaviLinkButton*>(*entry);
-    const std::string name = g_navigationLinkParser->FormatNavigationLink(button->Link(), false);
+    const std::string name = parser->FormatNavigationLink(button->Link(), false);
     const std::string fitted = this->FitTextToWidth(name, this->geometry.width / 2);
     std::string display = "<";
     display.append(fitted.c_str(), fitted.size());
