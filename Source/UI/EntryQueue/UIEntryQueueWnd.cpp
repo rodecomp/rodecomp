@@ -651,8 +651,11 @@ void UIEntryQueueHelpWnd::OnCreate(int width, int height) {
   this->m_viewer->Configure(10, 22, 270, 225, 0);
   unsigned red, green, blue;
   g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-  const COLORREF rgb = RGB(red, green, blue);
-  this->m_viewer->SetBackgroundColor(0xFF000000u | rgb);
+  {
+    auto* viewer = this->m_viewer;
+    viewer->backgroundColor = RGB(red, green, blue) | 0xFF000000u;
+    viewer->Invalidate();
+  }
   this->AddChild(this->m_viewer);
 
   char message[0x104];
