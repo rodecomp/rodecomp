@@ -119,27 +119,25 @@ void CAccountLinkedUserDataMgr::CompleteLoad(
     if (reader.parse(response, root, true)) {
       constexpr std::array<std::uint8_t, 5> typeSourceArray = OBFUSCATE_SOURCE("Type", 0xC52FB5FBB94FF917ULL);
       const std::uint8_t (&typeSource)[5] = typeSourceArray._Elems;
-      switch (root[(OBFUSCATE_DECRYPT(0xC52FB5FBB94FF917ULL, typeSource))].asInt()) {
-      case 1: {
-        constexpr std::array<std::uint8_t, 5> whisperSourceArray = OBFUSCATE_SOURCE("data", 0x93E7A3A1F587CDC5ULL);
-        const std::uint8_t (&whisperSource)[5] = whisperSourceArray._Elems;
-        LoadWhisperBlockList(root[(OBFUSCATE_DECRYPT(0x93E7A3A1F587CDC5ULL, whisperSource))]);
-        constexpr std::array<std::uint8_t, 5> emotionSourceArray = OBFUSCATE_SOURCE("data", 0x2FF3C5036D070127ULL);
-        const std::uint8_t (&emotionSource)[5] = emotionSourceArray._Elems;
-        g_session.m_emotionHotkeys.Load(root[(OBFUSCATE_DECRYPT(0x2FF3C5036D070127ULL, emotionSource))]);
-        constexpr std::array<std::uint8_t, 5> hotkeySourceArray = OBFUSCATE_SOURCE("data", 0x17359BF953C367B3ULL);
-        const std::uint8_t (&hotkeySource)[5] = hotkeySourceArray._Elems;
-        g_userHotkeyMgr->LoadV2(root[(OBFUSCATE_DECRYPT(0x17359BF953C367B3ULL, hotkeySource))]);
-      }
-        [[fallthrough]];
-      case 2:
+      const int type = root[(OBFUSCATE_DECRYPT(0xC52FB5FBB94FF917ULL, typeSource))].asInt();
+      if (type == 1 || type == 2) {
+        if (type == 1) {
+          constexpr std::array<std::uint8_t, 5> whisperSourceArray = OBFUSCATE_SOURCE("data", 0x93E7A3A1F587CDC5ULL);
+          const std::uint8_t (&whisperSource)[5] = whisperSourceArray._Elems;
+          LoadWhisperBlockList(root[(OBFUSCATE_DECRYPT(0x93E7A3A1F587CDC5ULL, whisperSource))]);
+          constexpr std::array<std::uint8_t, 5> emotionSourceArray = OBFUSCATE_SOURCE("data", 0x2FF3C5036D070127ULL);
+          const std::uint8_t (&emotionSource)[5] = emotionSourceArray._Elems;
+          g_session.m_emotionHotkeys.Load(root[(OBFUSCATE_DECRYPT(0x2FF3C5036D070127ULL, emotionSource))]);
+          constexpr std::array<std::uint8_t, 5> hotkeySourceArray = OBFUSCATE_SOURCE("data", 0x17359BF953C367B3ULL);
+          const std::uint8_t (&hotkeySource)[5] = hotkeySourceArray._Elems;
+          g_userHotkeyMgr->LoadV2(root[(OBFUSCATE_DECRYPT(0x17359BF953C367B3ULL, hotkeySource))]);
+        }
         g_whisperBlockMgr->m_tracking = true;
         g_userHotkeyMgr->m_loaded = true;
         this->m_accountId = accountId;
         this->m_accountName = accountName;
         this->m_loaded = true;
         g_session.SaveEmotionHotkeys();
-        break;
       }
     }
   }
