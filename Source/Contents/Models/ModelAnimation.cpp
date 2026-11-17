@@ -89,12 +89,12 @@ __declspec(safebuffers) void LegacyRotationTrack::Sample(int frame, matrix& outp
 
   if (next == 0) {
     result.Interpolate(0.0f, keys[0], keys[1], 0);
+    output.MakeRotation(result);
   } else {
     const float amount = static_cast<float>((frame - a.frame)) / static_cast<float>((b.frame - a.frame));
     result.Interpolate(amount, a, b, 0);
+    output.MakeRotation(result);
   }
-
-  output.MakeRotation(result);
 }
 
 // OFFSET: 0x00540BF0
