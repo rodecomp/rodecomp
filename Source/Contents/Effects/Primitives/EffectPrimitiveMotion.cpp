@@ -1510,9 +1510,7 @@ void CEffectPrim::PrimShieldBoomerang3() {
     return;
   }
 
-  ++slot.process;
-
-  if (slot.process <= 0) {
+  if (++slot.process <= 0) {
     return;
   }
 
@@ -1532,10 +1530,11 @@ void CEffectPrim::PrimShieldBoomerang3() {
     }
   }
 
-  slot.fullDisplayAngle -= 15;
+  const std::int16_t fullDisplayAngle = static_cast<std::int16_t>(slot.fullDisplayAngle - 15);
+  slot.fullDisplayAngle = fullDisplayAngle;
 
-  if (slot.fullDisplayAngle < 0) {
-    slot.fullDisplayAngle += 360;
+  if (fullDisplayAngle < 0) {
+    slot.fullDisplayAngle = static_cast<std::int16_t>(fullDisplayAngle + 360);
   }
 
   if (slot.process <= 5) {
@@ -3646,9 +3645,10 @@ bool CEffectPrim::PrimPeongUp() {
       continue;
     }
 
-    this->state.slots[index].alphaB += this->state.slots[index].process >= 30 ? -2 : 5;
+    const std::int16_t alpha = static_cast<std::int16_t>(this->state.slots[index].alphaB + (this->state.slots[index].process >= 30 ? -2 : 5));
+    this->state.slots[index].alphaB = alpha;
 
-    if (this->state.slots[index].alphaB < 0) {
+    if (alpha < 0) {
       this->state.slots[index].alphaB = 0;
     }
 
