@@ -7399,7 +7399,11 @@ void CRagEffect::MonsterSpriteBurst(char kind) {
     stored()->state.slots[0].flag1[0] = kind;
   }
 
-  stored()->state.slots[0].flag1[2] = kind == 15 ? 1 : 0;
+  if (kind == 15) {
+    stored()->state.slots[0].flag1[2] = 1;
+  } else {
+    stored()->state.slots[0].flag1[2] = 0;
+  }
   stored()->state.alpha = 0.0f;
   stored()->state.slots[1].flag1[1] = static_cast<char>(rand() % 3);
 
