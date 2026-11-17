@@ -129,13 +129,13 @@ void UIListBoxEx::Refresh() {
   }
 
   this->verticalOverflow = overflow != 0;
-  auto* bar = this->verticalBar;
-
   if (overflow != 0) {
-    bar->maximum = this->bottomMargin + overflow;
+    this->verticalBar->maximum = this->bottomMargin + overflow;
   } else {
-    bar->maximum = 0;
+    this->verticalBar->maximum = 0;
   }
+
+  auto* bar = this->verticalBar;
 
   bar->total = count;
   bar->visible = visible;
