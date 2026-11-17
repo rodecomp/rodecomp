@@ -27,8 +27,8 @@ const int g_runeSetSlotY[6] = {70, 70, 207, 207, 344, 344};
 void UIRuneSetList::ScrollBy(int delta) {
   const int previous = this->position;
   int next = delta + previous;
-  next = next >= 0 ? next : 0;
-  next = std::min(next, this->maximum);
+  const int lower = next >= 0 ? next : 0;
+  next = lower > this->maximum ? this->maximum : lower;
   this->position = next;
   if (previous != next) {
     this->Invalidate();
