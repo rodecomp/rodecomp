@@ -7686,7 +7686,8 @@ void UIMerchantItemMyShopWnd::OnMouseHover(int x, int y) {
       }
     }
 
-    g_modeMgr.currentMode->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+    CMode* mode = g_modeMgr.currentMode;
+    mode->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
   }
 }
 
@@ -10840,7 +10841,8 @@ void UISkillListWnd::OnMouseHover(int x, int y) {
   if (std::strlen(name) != 0) {
     int tooltipY = (index - this->scroll) * 32 + 17;
     int tooltipX = 112;
-    if (this->TextWidth(name, 0, 0, 12, 0, 0) > this->geometry.width - 132 && x > tooltipX) {
+    const int maxWidth = this->geometry.width - 132;
+    if (this->TextWidth(name, 0, 0, 12, 0, 0) > maxWidth && x > tooltipX) {
       this->ToScreen(tooltipX, tooltipY);
       g_modeMgr.currentMode->ShowTooltip(name, tooltipX - 8, tooltipY, 0xFFFFFFFF, 0, 1);
     }
