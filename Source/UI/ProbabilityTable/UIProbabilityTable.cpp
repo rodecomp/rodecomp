@@ -171,10 +171,7 @@ template <>
 void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::OnCreate(int width, int height) {
   this->scrollBar = new CUIVScrollBar();
   this->scrollBar->Show(0);
-  {
-    const std::function<void(int)> onChange = [this](int position) { this->OnScroll(position); };
-    this->scrollBar->onChange = onChange;
-  }
+  this->scrollBar->SetOnChange([this](int position) { this->OnScroll(position); });
   this->AddChild(this->scrollBar);
 }
 

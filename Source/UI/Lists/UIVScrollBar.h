@@ -84,4 +84,10 @@ inline CUIVScrollBar::CUIVScrollBar()
       hidden(0), transparent(0), upButton(nullptr) {
 }
 
+// OFFSET: 0x009D3120
+// FUNCTION: fn_14028
+inline void CUIVScrollBar::SetOnChange(std::function<void(int)> handler) {
+  this->onChange = handler;
+}
+
 #endif

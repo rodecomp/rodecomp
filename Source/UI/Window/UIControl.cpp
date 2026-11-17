@@ -387,12 +387,6 @@ void CUIVScrollBar::SetTotal(int value) {
   this->Invalidate();
 }
 
-// OFFSET: 0x009D3120
-// FUNCTION: fn_14028
-void CUIVScrollBar::SetOnChange(std::function<void(int)> handler) {
-  this->onChange = handler;
-}
-
 // OFFSET: 0x009F2E80
 // FUNCTION: fn_14732
 void CUIVScrollBar::SetVisible(int value) {
@@ -3314,7 +3308,7 @@ void CUITextViewer::OnCreate(int width, int height) {
 
   this->scrollBar = new CUIVScrollBar();
   this->scrollBar->Show(0);
-  AssignHandler(this->scrollBar->onChange, std::function<void(int)>([this](int position) {
+  this->scrollBar->SetOnChange([this](int position) {
     int y = this->paddingTop;
     const CUIVScrollBar* bar = this->scrollBar;
     if (bar->dragging || bar->total <= bar->visible) {
@@ -3331,7 +3325,7 @@ void CUITextViewer::OnCreate(int width, int height) {
       window->Move(this->paddingLeft + child.second.first, child.second.second - position + y);
       window->Show(window->geometry.y + window->geometry.height >= 0 && window->geometry.y < this->geometry.height);
     }
-  }));
+  });
   this->AddChild(this->scrollBar);
 }
 
