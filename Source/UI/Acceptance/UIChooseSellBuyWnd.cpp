@@ -710,9 +710,17 @@ void UIMenuWnd::Paint() {
     }
     if (!separator) {
       if (index == this->m_selected) {
-        this->FillRegion(3, this->m_itemHeight / 2 * (unique ? index : index - 1) + 1, this->geometry.width - 6, this->m_itemHeight - 2, RGB(red, green, blue));
+        if (unique) {
+          this->FillRegion(3, this->m_itemHeight / 2 * index + 1, this->geometry.width - 6, this->m_itemHeight - 2, RGB(red, green, blue));
+        } else {
+          this->FillRegion(3, (index - 1) * (this->m_itemHeight / 2) + 1, this->geometry.width - 6, this->m_itemHeight - 2, RGB(red, green, blue));
+        }
       }
-      this->DrawTextAt(3, this->m_itemHeight * (unique ? index : index - 1) / 2 + 1, this->m_items[index].c_str(), 0, 0, 12, this->m_colors[index], 0, 0);
+      if (unique) {
+        this->DrawTextAt(3, this->m_itemHeight * index / 2 + 1, this->m_items[index].c_str(), 0, 0, 12, this->m_colors[index], 0, 0);
+      } else {
+        this->DrawTextAt(3, (index - 1) * this->m_itemHeight / 2 + 1, this->m_items[index].c_str(), 0, 0, 12, this->m_colors[index], 0, 0);
+      }
     } else {
       unsigned lineRed, lineGreen, lineBlue;
       g_skinInfo.PaletteChannels(14, 6, lineRed, lineGreen, lineBlue);
@@ -9560,11 +9568,10 @@ void UIItemCollectionWnd::Paint() {
   }
   const int bottom = this->m_compare == 1 ? height - 29 : height;
 
-  const char* background;
   if (this->m_kind == 234 || this->m_kind == 250) {
     this->DrawSkinBox("유저인터페이스\\basic_interface\\sysbox_comparison_", 0, 0, this->geometry.width, bottom, true);
-    background = "유저인터페이스\\basic_interface\\collection_Comparison_bg.bmp";
-  } else if (this->m_item.grade > 0) {
+    this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\collection_Comparison_bg.bmp"))), true);
+  } else if (0 < this->m_item.grade) {
     const int width = this->geometry.width;
     this->DrawSkinBox(FormatOwnedString("유저인터페이스\\sysbox_g%d_", this->m_item.grade).c_str(), 0, 0, width, bottom, false);
     this->DrawBitmap(
@@ -9574,13 +9581,9 @@ void UIItemCollectionWnd::Paint() {
       ),
       true
     );
-    background = nullptr;
   } else {
     this->DrawSkinBox("유저인터페이스\\sysbox_", 0, 0, this->geometry.width, bottom, true);
-    background = "유저인터페이스\\basic_interface\\collection_bg.bmp";
-  }
-  if (background != nullptr) {
-    this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(background))), true);
+    this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\collection_bg.bmp"))), true);
   }
 
   if (this->m_bitmapName.size() > 0) {
