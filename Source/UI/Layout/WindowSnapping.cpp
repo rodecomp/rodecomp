@@ -10,7 +10,9 @@ template __declspec(noinline) std::_Tree_find_result<std::map<UIWindow*, SnapRec
 // OFFSET: 0x00AAB0D0
 // FUNCTION: fn_17280
 void UIWindowMgr::StoreSnapRectangle(UIWindow* window) {
-  for (UIWindow* entry : this->snapExcluded) {
+  const auto entryEnd = this->snapExcluded.end();
+  for (auto entryIt = this->snapExcluded.begin(); entryIt != entryEnd; ++entryIt) {
+    UIWindow* entry = *entryIt;
     if (entry == window) {
       return;
     }
