@@ -742,7 +742,7 @@ void UIRefiningWnd::OnRBtnUp(int x, int y) {
       }
 
       if (slot == 4) {
-        if (this->catalystCount < 1) {
+        if (this->catalystCount <= 0) {
           return;
         }
         ITEM_INFO info = g_session.LookupClientItem(this->catalystItemId, 0);
