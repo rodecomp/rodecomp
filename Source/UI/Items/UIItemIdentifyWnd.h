@@ -7,6 +7,8 @@
 #include <list>
 #include <string>
 
+struct ItemCompositionWndInfo;
+struct ItemIdentifyWndInfo;
 struct WindowPlacement;
 
 class UIScrollBar;
@@ -21,7 +23,7 @@ public:
   /* 00C8 */ int m_scrollable;
   /* 00CC */ std::list<ITEM_INFO> m_items;
   /* 00D4 */ std::string m_title;
-  /* 00EC */ WindowPlacement* m_placement;
+  /* 00EC */ ItemIdentifyWndInfo* m_placement;
 
   UIItemIdentifyWnd();
   // INLINED
@@ -66,7 +68,7 @@ public:
   std::vector<unsigned char> GetReplayData() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
-  /* 00F0 */ WindowPlacement* m_compositionPlacement;
+  /* 00F0 */ ItemCompositionWndInfo* m_compositionPlacement;
   /* 00F4 */ int m_compositionState;
 };
 

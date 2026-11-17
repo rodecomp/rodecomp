@@ -53,8 +53,7 @@ public:
   /* 00B4 */ UIEditCtrl* searchEdit;
   /* 00B8 */ UIListBoxID* searchResults;
   /* 00BC */ UITagTextViewer* tipViewer;
-  /* 00C0 */ UIStaticText* titleText;
-  /* 00C4 */ UIStaticText* subtitleText;
+  /* 00C0 */ UIStaticText* m_titleTexts[2];
   /* 00C8 */ UIStaticText* m_pageText;
   /* 00CC */ UIStaticText* m_pageTotalText;
   /* 00D0 */ UIBitmapButton* previousButton;

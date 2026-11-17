@@ -7452,8 +7452,8 @@ UITipboxWnd::UITipboxWnd()
     : UIFrameWnd(0), searchEdit(0), searchResults(0),
       tipViewer(0), m_pageText(nullptr), m_pageTotalText(nullptr), previousButton(0), nextButton(0), tagButton(0), m_buildTime(0), m_frameTime(0),
       refreshPending(false), showAtStartup(0) {
-  this->titleText = 0;
-  this->subtitleText = 0;
+  this->m_titleTexts[0] = 0;
+  this->m_titleTexts[1] = 0;
 }
 
 // OFFSET: 0x008C86B0
@@ -9361,6 +9361,7 @@ void UINotifyItemObtainWnd::Paint() {
   }
 
   const int kind = this->m_kind;
+  ITEM_INFO* item = &this->m_item;
   const int width = this->geometry.width - 49;
   char text[256];
   char* highlight = nullptr;
@@ -9368,9 +9369,9 @@ void UINotifyItemObtainWnd::Paint() {
   std::vector<char*> breaks;
   int remaining = sizeof(text);
   int highlightColor;
-  this->BuildItemName(&this->m_item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
+  this->BuildItemName(item, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
 
-  const int written = sprintf_s(cursor, remaining, LookupMessage(MSI_EA_OBTAIN), this->m_item.quantity);
+  const int written = sprintf_s(cursor, remaining, LookupMessage(MSI_EA_OBTAIN), item->quantity);
   if (written > 0) {
     remaining -= written;
     cursor += written;
@@ -10195,7 +10196,7 @@ int UIMakingArrowListWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::
     } else {
       this->m_scroll = previous + static_cast<int>(a);
     }
-    if (this->m_scroll != previous) {
+    if (previous != this->m_scroll) {
       this->UpdateScroll();
       this->Invalidate();
     }
@@ -10213,9 +10214,11 @@ int UIMakingArrowListWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::
       ITEM_INFO item = this->GetItem(this->m_selected, &found);
       if (found != 0) {
         if (this->listType == 2) {
-          g_modeMgr.currentMode->SendMsg(MM_ARROW_FROM_LIST, item.GetItemId(), 0, 0, 0);
+          CMode* mode = g_modeMgr.currentMode;
+          mode->SendMsg(MM_ARROW_FROM_LIST, item.GetItemId(), 0, 0, 0);
         } else {
-          g_modeMgr.currentMode->SendMsg(MM_ITEM_FROM_LIST, item.GetItemId(), this->listType, 0, 0);
+          CMode* mode = g_modeMgr.currentMode;
+          mode->SendMsg(MM_ITEM_FROM_LIST, item.GetItemId(), this->listType, 0, 0);
         }
         g_windowMgr.CloseWindow(WID_MAKINGARROWLISTWND);
       }
@@ -10514,7 +10517,7 @@ void UITipboxWnd::OnCreate(int width, int) {
   this->tipViewer->Show(1);
 
   int y = 50;
-  for (UIStaticText** titles = &this->titleText; y < 90; ++titles) {
+  for (UIStaticText** titles = this->m_titleTexts; y < 90; ++titles) {
     *titles = new UIStaticText();
     (*titles)->SetSize(220, 18);
     (*titles)->SetText("", 0);
@@ -12123,18 +12126,17 @@ void UITipboxWnd::RefreshTip() {
   std::vector<std::string> lines;
   WrapPlainText(title.c_str(), lines, 30);
 
-  UIStaticText** texts = &this->titleText;
   for (int index = 0; index < 2; ++index) {
-    texts[index]->SetText("", 0);
-    texts[index]->Show(0);
+    this->m_titleTexts[index]->SetText("", 0);
+    this->m_titleTexts[index]->Show(0);
   }
 
   const unsigned count = static_cast<unsigned>(lines.size());
   if (count != 0) {
     const int shown = (count > 1 ? 1 : 0) + 1;
     for (int index = 0; index < shown; ++index) {
-      texts[index]->SetText(lines[index].c_str(), 0);
-      texts[index]->Show(1);
+      this->m_titleTexts[index]->SetText(lines[index].c_str(), 0);
+      this->m_titleTexts[index]->Show(1);
     }
 
     int height;
@@ -12257,7 +12259,7 @@ int UITipboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
       this->searchResults->Show(1);
       this->searchResults->Clear();
       this->tipViewer->Clear();
-      UIStaticText* const texts[2] = {this->titleText, this->subtitleText};
+      UIStaticText* const texts[2] = {this->m_titleTexts[0], this->m_titleTexts[1]};
       for (int index = 0; index < 2; ++index) {
         texts[index]->SetText("", 0);
       }
