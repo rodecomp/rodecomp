@@ -3647,7 +3647,7 @@ __declspec(noinline) void CGameMode::SpawnGrannyCorpse(float x, float y, float z
 
 // OFFSET: 0x00CC8230
 // FUNCTION: fn_21193
-void CGameActor::ProcessHitMessage(CGameObject*, const ActorHitInfo* info, int, int) {
+__declspec(safebuffers) void CGameActor::ProcessHitMessage(CGameObject*, const ActorHitInfo* info, int, int) {
   CGameMode* mode = g_modeMgr.GetGameMode();
   int type = info->type;
   this->hitTargetAid = info->targetAid;

@@ -811,7 +811,11 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
     this->state.triangles[*rpCnt].destinationBlend = 1;
   } else {
     this->state.triangles[*rpCnt].sourceBlend = 5;
-    this->state.triangles[*rpCnt].destinationBlend = 99 == pw ? 6 : destBlend;
+    if (99 == pw) {
+      this->state.triangles[*rpCnt].destinationBlend = 6;
+    } else {
+      this->state.triangles[*rpCnt].destinationBlend = destBlend;
+    }
   }
   vertex = {0.0f, 0.0f, 0.0f, 0.0f, 0, 0xFF000000, 0.0f, 0.0f};
   g_renderer->Project(&vec1.x, wtm.values, vertex);
@@ -862,12 +866,16 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
     ++*rpCnt;
   }
 
-  if (10 == pw) {
+  if (10 != pw) {
+    this->state.triangles[*rpCnt].sourceBlend = 5;
+    if (99 == pw) {
+      this->state.triangles[*rpCnt].destinationBlend = 6;
+    } else {
+      this->state.triangles[*rpCnt].destinationBlend = destBlend;
+    }
+  } else {
     this->state.triangles[*rpCnt].sourceBlend = 2;
     this->state.triangles[*rpCnt].destinationBlend = 1;
-  } else {
-    this->state.triangles[*rpCnt].sourceBlend = 5;
-    this->state.triangles[*rpCnt].destinationBlend = 99 == pw ? 6 : destBlend;
   }
   vertex = {0.0f, 0.0f, 0.0f, 0.0f, 0, 0xFF000000, 0.0f, 0.0f};
   g_renderer->Project(&vec4.x, wtm.values, vertex);
@@ -2764,10 +2772,10 @@ __declspec(safebuffers) void CEffectPrim::RenderTrailSquares(matrix& wtm) {
       vec3.Set(offset.x + vec3.x, offset.y + vec3.y, offset.z + vec3.z);
       vec4.Set(offset.x + vec4.x, offset.y + vec4.y, offset.z + vec4.z);
 
-      if (this->state.slots[ec].flag1[3] != 0) {
-        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha / 4), vec1, vec2, vec3, vec4, wtm, 0, this->state.slots[ec].flag1[3], 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
-      } else {
+      if (this->state.slots[ec].flag1[3] == 0) {
         this->RenderTeiRect(&rpCnt, static_cast<short>(alpha), vec1, vec2, vec3, vec4, wtm, 0, 0, 1, red, green, blue, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+      } else {
+        this->RenderTeiRect(&rpCnt, static_cast<short>(alpha / 4), vec1, vec2, vec3, vec4, wtm, 0, this->state.slots[ec].flag1[3], 1, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
       }
 
       shrink += step != 0 ? 0.25f : 0.5f;
@@ -7063,16 +7071,16 @@ void CEffectPrim::RenderSegmentSprites2(matrix& wtm) {
 
       float left;
       float right;
-      if ((cell.mirrored & 1) == 0) {
-        left = static_cast<float>(cell.x * scale * cell.scaleX * distanceScale + screenX);
-        right = static_cast<float>(((static_cast<short>(image->doubleWidth) + 1) * image->width + cell.x) * scale * cell.scaleX * distanceScale + screenX);
-        if (left >= static_cast<float>(g_renderer->viewport.width)) {
-          continue;
-        }
-      } else {
+      if ((cell.mirrored & 1) != 0) {
         left = static_cast<float>(((static_cast<short>(image->doubleWidth) + 1) * image->width + cell.x) * scale * cell.scaleX * distanceScale + screenX);
         right = static_cast<float>(cell.x * scale * cell.scaleX * distanceScale + screenX);
         if (right >= static_cast<float>(g_renderer->viewport.width)) {
+          continue;
+        }
+      } else {
+        left = static_cast<float>(cell.x * scale * cell.scaleX * distanceScale + screenX);
+        right = static_cast<float>(((static_cast<short>(image->doubleWidth) + 1) * image->width + cell.x) * scale * cell.scaleX * distanceScale + screenX);
+        if (left >= static_cast<float>(g_renderer->viewport.width)) {
           continue;
         }
       }
@@ -7088,10 +7096,10 @@ void CEffectPrim::RenderSegmentSprites2(matrix& wtm) {
       quad.right = right;
       quad.bottomRhw = 1.0f / ((bottom - screenY) * g_tangent + depth) + 0.0001f;
       quad.topRhw = 1.0f / ((top - screenY) * g_tangent + depth) + 0.0001f;
-      if ((this->state.pattern & 0x200) == 0) {
-        quad.color = record.color;
-      } else {
+      if ((this->state.pattern & 0x200) != 0) {
         quad.color = (cell.color & 0xFF00FF00) | ((cell.color & 0xFF) << 16) | ((cell.color >> 16) & 0xFF);
+      } else {
+        quad.color = record.color;
       }
       quad.angle = static_cast<float>(cell.rotation) + this->state.roll;
       quad.image = image;
