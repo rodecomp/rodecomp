@@ -12664,9 +12664,7 @@ void LaunchSkillCastEffect(CGameMode* mode, CGameActor* source, CGameActor* targ
   if (targetAid == 0) {
     float worldX = 0.0f;
     float worldZ = 0.0f;
-    const int column = x;
-    const int row = y;
-    g_modeMgr.GetGameMode()->CellCenter(column, row, worldX, worldZ);
+    g_modeMgr.GetGameMode()->CellCenter(x, y, worldX, worldZ);
     source->Face(worldX, worldZ);
 
     CGroundScope* scope = new (std::nothrow) CGroundScope;
@@ -12675,7 +12673,7 @@ void LaunchSkillCastEffect(CGameMode* mode, CGameActor* source, CGameActor* targ
     }
 
     scope->SendMsg(nullptr, AM_SETMASTERGID, static_cast<std::uint32_t>(source->render.accountId), 0, 0, 0, 0, 0);
-    scope->SendMsg(nullptr, AM_SETPOS, column, row, 0, 0, 0, 0);
+    scope->SendMsg(nullptr, AM_SETPOS, x, y, 0, 0, 0, 0);
     scope->SendMsg(nullptr, AM_SETTIME, static_cast<std::uint32_t>(timeGetTime() + delay), 0, 0, 0, 0, 0);
     const int id = skillId;
     scope->SendMsg(nullptr, AM_SET_SKILL, id, 0, 0, 0, 0, 0);
@@ -12714,12 +12712,14 @@ void LaunchSkillCastEffect(CGameMode* mode, CGameActor* source, CGameActor* targ
     return;
   case WL_SOULEXPANSION: {
     const float speed = target->render.speed;
-    effect = g_effectMgr->Spawn(target->render.accountId, EF_NEW_SOULEXPANSION_LOOP, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    effect = effects->Spawn(target->render.accountId, EF_NEW_SOULEXPANSION_LOOP, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     const int duration = static_cast<int>(speed * 150.0f + 200.0f) + delay;
     if (effect) {
       effect->SetLifeTime(duration);
     }
-    effect = g_effectMgr->Spawn(target->render.accountId, EF_NEW_SOULEXPANSION_LOOP_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    effect = effects->Spawn(target->render.accountId, EF_NEW_SOULEXPANSION_LOOP_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetLifeTime(duration);
     }
@@ -12957,9 +12957,9 @@ __declspec(noinline) void SetActiveSkillEffect184(unsigned char enable) {
     ActiveSkillEffect effect;
     effect.id = 184;
     effect.expiration = 999999;
-    effect.value1 = 0;
     effect.totalDuration = 9999;
     effect.remainingDuration = 9999;
+    effect.value1 = 0;
     g_activeSkillEffects.push_back(effect);
     return;
   }
