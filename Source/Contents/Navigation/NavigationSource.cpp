@@ -658,11 +658,11 @@ void CNaviInfo::SearchMap(const std::vector<std::string>& keywords, std::vector<
   out.push_back(target);
 
   target.type = 3;
-  for (CNavi_Object* mob : this->mobs) {
+  for (std::vector<CNavi_Object*>::iterator it = this->mobs.begin(); it != this->mobs.end(); ++it) {
     target.x = -1000;
     target.y = -1000;
-    target.name = mob->GetName();
-    target.object = mob;
+    target.name = (*it)->GetName();
+    target.object = *it;
     out.push_back(target);
   }
 }
