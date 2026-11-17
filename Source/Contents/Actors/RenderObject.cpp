@@ -861,29 +861,7 @@ void CGameActor::SetRenderInfo(const float* bounds, float x, float y) {
     static int s_minPickSize = static_cast<int>(g_renderer->UiScaleX() * 40.0f);
 
     float depth = 0.0f;
-    if ((g_pickModifierKey == 0 && g_pickInvert == 0) || (g_pickModifierKey != 0 && g_pickInvert != 0)) {
-      if (g_session.GetSiegeMode() != 0) {
-        if (g_session.IsPlayerJob(this->GetEffectiveJob(-1))) {
-          depth = g_session.IsLocalPlayerAid(this->GetGdid()) != 0 ? 100.0f : 400.0f;
-        } else if (g_session.IsNpcJob(this->GetEffectiveJob(-1)) == true) {
-          depth = 200.0f;
-        } else if (g_session.IsMonsterClass(this->GetEffectiveJob(-1))) {
-          depth = this->objectType == 7 ? 50.0f : 400.0f;
-        } else if (g_session.IsCompanionJob(this->GetEffectiveJob(-1)) != 0) {
-          depth = 200.0f;
-        }
-      } else {
-        if (g_session.IsPlayerJob(this->GetEffectiveJob(-1))) {
-          depth = 100.0f;
-        } else if (g_session.IsNpcJob(this->GetEffectiveJob(-1)) == true) {
-          depth = 200.0f;
-        } else if (g_session.IsMonsterClass(this->GetEffectiveJob(-1))) {
-          depth = this->objectType == 7 ? 50.0f : 400.0f;
-        } else if (g_session.IsCompanionJob(this->GetEffectiveJob(-1)) != 0) {
-          depth = 200.0f;
-        }
-      }
-    } else {
+    if ((g_pickModifierKey == 0 && g_pickInvert != 0) || (g_pickModifierKey != 0 && g_pickInvert == 0)) {
       if (g_session.GetSiegeMode() != 0) {
         if (g_session.IsPlayerJob(this->GetEffectiveJob(-1))) {
           depth = g_session.IsLocalPlayerAid(this->GetGdid()) != 0 ? 400.0f : 100.0f;
@@ -905,6 +883,28 @@ void CGameActor::SetRenderInfo(const float* bounds, float x, float y) {
           depth = 200.0f;
         }
       }
+    } else {
+      if (g_session.GetSiegeMode() != 0) {
+        if (g_session.IsPlayerJob(this->GetEffectiveJob(-1))) {
+          depth = g_session.IsLocalPlayerAid(this->GetGdid()) != 0 ? 100.0f : 400.0f;
+        } else if (g_session.IsNpcJob(this->GetEffectiveJob(-1)) == true) {
+          depth = 200.0f;
+        } else if (g_session.IsMonsterClass(this->GetEffectiveJob(-1))) {
+          depth = this->objectType == 7 ? 50.0f : 400.0f;
+        } else if (g_session.IsCompanionJob(this->GetEffectiveJob(-1)) != 0) {
+          depth = 200.0f;
+        }
+      } else {
+        if (g_session.IsPlayerJob(this->GetEffectiveJob(-1))) {
+          depth = 100.0f;
+        } else if (g_session.IsNpcJob(this->GetEffectiveJob(-1)) == true) {
+          depth = 200.0f;
+        } else if (g_session.IsMonsterClass(this->GetEffectiveJob(-1))) {
+          depth = this->objectType == 7 ? 50.0f : 400.0f;
+        } else if (g_session.IsCompanionJob(this->GetEffectiveJob(-1)) != 0) {
+          depth = 200.0f;
+        }
+      }
     }
 
     switch (this->objectType) {
@@ -916,17 +916,17 @@ void CGameActor::SetRenderInfo(const float* bounds, float x, float y) {
       break;
     }
 
-    if (!this->modelReady) {
+    if (this->modelReady != true) {
       if (bounds[0] == static_cast<float>(g_renderer->viewport.width) && bounds[1] == static_cast<float>(g_renderer->viewport.height) &&
           bounds[2] == 0.0f && bounds[3] == 0.0f) {
         return;
       }
 
       ActorPickInfo* info = new ActorPickInfo;
-      info->left = std::min(bounds[0], bounds[2]);
+      info->left = bounds[0] < bounds[2] ? bounds[0] : bounds[2];
       info->top = bounds[1];
       info->depth = depth + bounds[4];
-      info->right = std::max(bounds[0], bounds[2]);
+      info->right = bounds[0] > bounds[2] ? bounds[0] : bounds[2];
       info->bottom = bounds[3];
       info->depthOffset = depth + bounds[4];
       info->accountId = this->render.accountId;
