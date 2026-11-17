@@ -7943,7 +7943,8 @@ void UIWaitWnd::OnCreate(int width, int height) {
   g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->m_textViewer->SetBackgroundColor(0xFF000000u | RGB(red, green, blue));
   this->AddChild(this->m_textViewer);
-  this->m_textViewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PLEASE_BE_PATIENT)), 38, 0, 0);
+  const char* message = LookupMessage(MSI_PLEASE_BE_PATIENT);
+  this->m_textViewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(message), 38, 0, 0);
 }
 
 namespace {
@@ -9898,7 +9899,7 @@ void UILoadingWnd::OnCreate(int, int) {
   this->AddChild(this->m_progressBar);
 
   const int count = static_cast<int>(g_loadingScreens.size());
-  char name[256];
+  char name[MAX_PATH];
   if (g_session.m_localMapMove == 1) {
     std::strcpy(name, "유저인터페이스\\loading_airplane.jpg");
   } else if (!g_session.m_randomLoadingScreen) {
@@ -12379,9 +12380,8 @@ void UIFrameWnd::DrawItemNameText(
 int UIProhibitListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
   case UM_COMMAND: {
-    if (a == ID_CLOSE) {
-      g_windowMgr.CloseWindow(WID_PROHIBITLISTWND);
-    } else if (a == 0x10C) {
+    switch (a) {
+    case 0x10C: {
       UIWindow* menu = g_windowMgr.EnsureWindow(WID_COMBOBOXWND);
       std::string feeding;
       std::string performance;
@@ -12401,8 +12401,13 @@ int UIProhibitListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       int y = 0x2C;
       this->ToScreen(x, y);
       menu->Move(x, y);
+      break;
     }
-  
+    case ID_CLOSE:
+      g_windowMgr.CloseWindow(WID_PROHIBITLISTWND);
+      break;
+    }
+
     break;
   }
   case UM_SETINFO:
