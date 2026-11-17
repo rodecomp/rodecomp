@@ -944,20 +944,20 @@ void CGameMode::RefreshMiniMapTooltips() {
 
 // OFFSET: 0x00CD0B30
 // FUNCTION: fn_21254
-int CGameMode::UpdateMiniMapTooltip() {
+void CGameMode::UpdateMiniMapTooltip() {
   int& tooltipId = this->miniMapTooltipId;
   std::string& tooltipText = this->miniMapTooltipText;
   int id = tooltipId;
   if (id > 9 || id == -1) {
     this->RefreshMiniMapTooltips();
     if (tooltipId == -1 && g_windowMgr.illustWnd != nullptr) {
-      return g_windowMgr.CloseWindow(WID_ILLUSTWND);
+      g_windowMgr.CloseWindow(WID_ILLUSTWND);
     }
-    return tooltipId;
+    return;
   }
 
   if (tooltipText.size() == 0) {
-    return id;
+    return;
   }
 
   UIWindow* window = g_windowMgr.illustWnd;
@@ -966,7 +966,7 @@ int CGameMode::UpdateMiniMapTooltip() {
     g_miniMapTooltipId = tooltipId;
   } else {
     if (id == g_miniMapTooltipId && std::strcmp(g_miniMapTooltipText, tooltipText.c_str()) == 0) {
-      return 0;
+      return;
     }
     g_miniMapTooltipId = id;
   }
@@ -1010,5 +1010,4 @@ int CGameMode::UpdateMiniMapTooltip() {
   }
 
   window->Move(x - window->geometry.width / 2, y);
-  return id;
 }
