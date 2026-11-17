@@ -1280,8 +1280,11 @@ void UIGuildSkillWnd::Paint() {
   UIGuildWnd::Paint();
   int drawn = 0;
   int index = 0;
-  for (auto skill = this->m_skills.begin(); skill != this->m_skills.end(); ++skill, ++index) {
+  auto skill = this->m_skills.begin();
+  while (skill != this->m_skills.end()) {
     if (index < this->m_scrollTop * this->m_columns) {
+      ++skill;
+      ++index;
       continue;
     }
 
@@ -1318,7 +1321,10 @@ void UIGuildSkillWnd::Paint() {
     }
 
     this->DrawTextAt(x + 112, y + 46, skill->DisplayName(), 0, 0, 12, RGB(gray, gray, gray), 0, 0);
-    if (++drawn == this->m_visibleRows * this->m_columns) {
+    ++drawn;
+    ++skill;
+    ++index;
+    if (drawn == this->m_visibleRows * this->m_columns) {
       break;
     }
   }
