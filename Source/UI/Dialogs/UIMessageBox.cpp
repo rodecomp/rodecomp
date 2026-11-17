@@ -2120,7 +2120,8 @@ void UIMonsterInfoWnd::Paint() {
   g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   const std::uint32_t fill = RGB(red, green, blue);
   this->ClearSurface(fill);
-  this->DrawPanelBackground(this->DrawTitleBar(false, "", 0), 0, "");
+  const int titleHeight = this->DrawTitleBar(false, "", 0);
+  this->DrawPanelBackground(titleHeight, 0, "");
   this->DrawButtonBar(2, 0, 1);
   g_skinInfo.PaletteChannels(22, 2, red, green, blue);
   const std::uint32_t border = RGB(red, green, blue);
@@ -3547,20 +3548,19 @@ void UIHomunInfoWnd::Paint() {
   this->DrawRightAlignedText(205, 104, text, bytes, 1, 14, 0, 0);
   bytes = std::sprintf(text, "%d / %d", g_session.homunHunger, 100);
   this->DrawRightAlignedText(200, 130, text, bytes, 1, 14, 0, 0);
-  const int intimacy = g_session.homunFriendly;
-  if (intimacy >= 0 && intimacy <= 3) {
+  if (g_session.homunFriendly >= 0 && g_session.homunFriendly <= 3) {
     std::strcpy(text, LookupMessage(MSI_VERYHATE));
-  } else if (intimacy > 3 && intimacy <= 10) {
+  } else if (g_session.homunFriendly > 3 && g_session.homunFriendly <= 10) {
     std::strcpy(text, LookupMessage(MSI_HATE));
-  } else if (intimacy > 10 && intimacy <= 100) {
+  } else if (g_session.homunFriendly > 10 && g_session.homunFriendly <= 100) {
     std::strcpy(text, LookupMessage(MSI_VERY_AWKWARD));
-  } else if (intimacy > 100 && intimacy <= 250) {
+  } else if (g_session.homunFriendly > 100 && g_session.homunFriendly <= 250) {
     std::strcpy(text, LookupMessage(MSI_AWKWARD));
-  } else if (intimacy > 250 && intimacy <= 750) {
+  } else if (g_session.homunFriendly > 250 && g_session.homunFriendly <= 750) {
     std::strcpy(text, LookupMessage(MSI_NORMAL));
-  } else if (intimacy > 750 && intimacy <= 910) {
+  } else if (g_session.homunFriendly > 750 && g_session.homunFriendly <= 910) {
     std::strcpy(text, LookupMessage(MSI_FRIENDLY));
-  } else if (intimacy > 910 && intimacy <= 1000) {
+  } else if (g_session.homunFriendly > 910 && g_session.homunFriendly <= 1000) {
     std::strcpy(text, LookupMessage(MSI_VERY_FRIENDLY));
   } else {
     std::strcpy(text, LookupMessage(MSI_UNKNOWN));
