@@ -24,7 +24,8 @@ bool CSession::LoadMapNameTable() {
   const bool loaded = storage.LoadTokens(tokens, OBFUSCATE_TEXT("mapNameTable.txt", 0x17FB0F6BFF3BE93FULL), 0);
 
   for (auto token = tokens.begin(); token != tokens.end(); token += 2) {
-    g_mapInfoMgr->AddMapDisplayName(token[0], token[1], false);
+    CMapInfoMgr* const mapInfoMgr = g_mapInfoMgr;
+    mapInfoMgr->AddMapDisplayName(token[0], token[1], false);
   }
 
   return loaded;
