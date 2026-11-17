@@ -6213,7 +6213,7 @@ int UIChangeNameWnd::IsNameWithinLimit(std::string name, int limit) {
 // OFFSET: 0x008F6840
 // FUNCTION: fn_12323
 void UIItemCollectionWnd::SetHeight(int height) {
-  const int minimum = (this->m_compare == 1 ? 175 : 120) + this->m_extraHeight;
+  const int minimum = (this->m_compare != 1 ? 120 : 175) + this->m_extraHeight;
   if (height < minimum) {
     height = minimum;
   }
@@ -6227,17 +6227,19 @@ void UIItemCollectionWnd::SetHeight(int height) {
   const int moveInfoId = FindItemMoveInfo(std::atoi(this->m_itemIdText.c_str())).itemId;
   if (moveInfoId != 0) {
     this->Resize(this->geometry.width, height + this->m_moveInfo->geometry.height + 3);
-    this->m_moveInfo->m_moveIndex = std::atoi(this->m_itemIdText.c_str());
+    UIItemMoveInfo* moveInfo = this->m_moveInfo;
+    moveInfo->m_moveIndex = std::atoi(this->m_itemIdText.c_str());
   } else {
     this->Resize(this->geometry.width, height);
   }
 
+  const int viewHeight = height - this->m_extraHeight;
   int resizerY;
   if (this->m_compare != 0) {
-    this->m_viewer->Resize(this->geometry.width - 98, height - this->m_extraHeight - 69);
+    this->m_viewer->Resize(this->geometry.width - 98, viewHeight - 69);
     resizerY = this->geometry.height - this->m_extraHeight - 46;
   } else {
-    this->m_viewer->Resize(this->geometry.width - 98, height - this->m_extraHeight - 40);
+    this->m_viewer->Resize(this->geometry.width - 98, viewHeight - 40);
     resizerY = this->geometry.height - this->m_extraHeight - 17;
   }
   this->m_resizer->Move(this->geometry.width - 17, resizerY);
