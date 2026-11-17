@@ -6513,7 +6513,8 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
     return 0;
 
   case UM_SCROLLVERTPAGEUP:
-    if (--this->m_firstOther < 0) {
+    --this->m_firstOther;
+    if (this->m_firstOther < 0) {
       this->m_firstOther = 0;
     }
     this->m_otherScroll->SetPosition(this->m_firstOther);
@@ -6575,10 +6576,10 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
       header.packetType = ID_CZ_SE_PC_BUY_CASHITEM_LIST;
       header.points = std::atoi(this->m_pointEdit->Text());
       char text[0x800];
-      if (header.points == 0) {
-        FormatMessageBuffer(text, LookupMessage(MSI_BILLING_INFO_URL), this->m_totalPrice);
-      } else {
+      if (header.points != 0) {
         FormatMessageBuffer(text, LookupMessage(MSI_CHANGE_MATERIAL_INVSORT), this->m_totalPrice - header.points, header.points);
+      } else {
+        FormatMessageBuffer(text, LookupMessage(MSI_BILLING_INFO_URL), this->m_totalPrice);
       }
       if (g_windowMgr.Confirm(text, 2, true, true, 0, "Message", 280, 120, 0) != ID_YES) {
         break;
