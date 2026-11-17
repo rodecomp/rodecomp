@@ -778,7 +778,7 @@ bool RodexMailEntryLess::operator()(const RodexMailEntry& left, const RodexMailE
 
 // OFFSET: 0x008054D0
 // FUNCTION: fn_10043
-bool UIRodexInboxWnd::RequestMailAction(int type, std::int64_t mailId) {
+__declspec(noinline) bool UIRodexInboxWnd::RequestMailAction(int type, std::int64_t mailId) {
   RodexMailMap* mails = RodexMailsOfType(type);
   if (mails == nullptr) {
     return false;
@@ -960,8 +960,7 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         for (int i = 0; i < 6; ++i) {
           UICheckBox* check = this->checks[i];
           if (check->geometry.visible == 1 && check->geometry.state != 0 && check->m_message != -1) {
-            const RodexMailEntry entry = this->searchResults[this->page * 6 + i];
-            selected.push_back(entry);
+            selected.push_back(RodexMailEntry(this->searchResults[this->page * 6 + i]));
           }
         }
 
@@ -1136,8 +1135,7 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         for (int i = 0; i < 6; ++i) {
           UICheckBox* check = this->checks[i];
           if (check->geometry.visible == 1 && check->geometry.state != 0 && check->m_message != -1) {
-            const RodexMailEntry entry = this->searchResults[this->page * 6 + i];
-            selected.push_back(entry);
+            selected.push_back(RodexMailEntry(this->searchResults[this->page * 6 + i]));
           }
         }
 
