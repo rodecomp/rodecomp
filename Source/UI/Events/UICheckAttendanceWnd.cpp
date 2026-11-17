@@ -76,9 +76,10 @@ void UICheckAttendanceWnd::VisitChildren() {
       texture = g_texMgr.Load("유저인터페이스\\check_attendance\\bt_slot_complete.tga", 0, false, true, false);
     }
 
+    const int bannerHeight = this->BannerHeight();
     DrawTextureRegion(
       static_cast<float>(this->geometry.x + (day % 5) * 62 + 26),
-      static_cast<float>(this->BannerHeight() + 95 + (day / 5) * 64 + this->geometry.y), static_cast<float>(texture->Width()),
+      static_cast<float>(bannerHeight + 95 + (day / 5) * 64 + this->geometry.y), static_cast<float>(texture->Width()),
       static_cast<float>(texture->Height()), 0xFFFFFFFF, texture
     );
   }
