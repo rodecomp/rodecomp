@@ -28,7 +28,7 @@ enum RefiningButtonId : int {
 
 #pragma pack(push, 1)
 struct RefiningMaterial {
-  /* 0000 */ std::uint32_t itemId;
+  /* 0000 */ int itemId;
   /* 0004 */ unsigned char successRate;
   /* 0005 */ std::uint32_t cost;
 };

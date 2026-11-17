@@ -475,7 +475,7 @@ void UIRefiningWnd::OnLBtnUp(int x, int y) {
 
   if (static_cast<unsigned>(slot) < this->materials.size()) {
     const int owned = g_session.LookupClientItem(this->materials[slot].itemId, 0).quantity;
-    if (owned < 1) {
+    if (owned <= 0) {
       return;
     }
 
@@ -484,12 +484,11 @@ void UIRefiningWnd::OnLBtnUp(int x, int y) {
     button->cost = this->SelectedMaterialValue();
     button->Invalidate();
 
-    if (this->materials[slot].successRate <= 99 && this->catalystEnabled == 0) {
-      int message;
+    if (this->materials[slot].successRate < 100 && this->catalystEnabled == 0) {
       switch (this->materials[slot].itemId) {
       case Carnium:
       case Bradium:
-        message = MSI_REFINING_FAIL_CLOSE_UI;
+        this->notice->SetNotice(LookupMessage(MSI_REFINING_FAIL_CLOSE_UI), 0, 0);
         break;
       case HD_Carnium:
       case HD_Bradium:
@@ -503,7 +502,7 @@ void UIRefiningWnd::OnLBtnUp(int x, int y) {
       case Etherdeocon:
       case Enriched_Ethernium:
       case Enriched_Etherdeocon:
-        message = MSI_CANNOT_OPEN_RODEX_DURING_REFINING;
+        this->notice->SetNotice(LookupMessage(MSI_CANNOT_OPEN_RODEX_DURING_REFINING), 0, 0);
         break;
       case ITEMID_ORIDECON:
       case Elunium:
@@ -517,13 +516,12 @@ void UIRefiningWnd::OnLBtnUp(int x, int y) {
       case HD_Etel_Bradium:
       case Etel_Carnium:
       case HD_Etel_Carnium:
-        message = MSI_CLOSE_RODEX_FOR_REFINING;
+        this->notice->SetNotice(LookupMessage(MSI_CLOSE_RODEX_FOR_REFINING), 0, 0);
         break;
       default:
         this->Invalidate();
         return;
       }
-      this->notice->SetNotice(LookupMessage(message), 0, 0);
     }
   } else {
     if (slot != 4 || this->catalystCount < 1) {
@@ -531,14 +529,15 @@ void UIRefiningWnd::OnLBtnUp(int x, int y) {
     }
 
     const int owned = g_session.LookupClientItem(this->catalystItemId, 0).quantity;
-    if (owned < this->catalystCount) {
-      this->notice->SetNotice(LookupMessage(MSI_REFINING_FAIL), 3000, 1);
+    UIRefining_Notice* notice = this->notice;
+    if (this->catalystCount > owned) {
+      notice->SetNotice(LookupMessage(MSI_REFINING_FAIL), 3000, 1);
     } else if (this->catalystEnabled == 1) {
       this->catalystEnabled = 0;
-      this->notice->SetNotice("", 0, 0);
+      notice->SetNotice("", 0, 0);
     } else {
       this->catalystEnabled = 1;
-      this->notice->SetNotice(LookupMessage(MSI_CANNOT_REFINE_ITEM), 0, 0);
+      notice->SetNotice(LookupMessage(MSI_CANNOT_REFINE_ITEM), 0, 0);
     }
   }
 
