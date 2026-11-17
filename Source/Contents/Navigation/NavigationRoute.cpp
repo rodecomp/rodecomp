@@ -40,6 +40,8 @@
 #include "Resource/MSGSTRINGID.h"
 #include "Network/Packets/PacketId.h"
 
+template __declspec(noinline) bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+
 template __declspec(noinline) void std::vector<NavigationTarget>::push_back(const NavigationTarget&);
 
 namespace {
