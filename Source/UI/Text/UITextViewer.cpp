@@ -35,7 +35,8 @@ UITextViewer::UITextViewer() : UIListBox(), splitTipLinks(0), outline(0), bold(0
   unsigned green;
   unsigned blue;
   g_skinInfo.PaletteChannels(18, 2, red, green, blue);
-  this->SetBackgroundColor(0xFF000000u | RGB(red, green, blue));
+  const COLORREF rgb = RGB(red, green, blue);
+  this->SetBackgroundColor(0xFF000000u | rgb);
 
   this->plainTextMode = 0;
 }
