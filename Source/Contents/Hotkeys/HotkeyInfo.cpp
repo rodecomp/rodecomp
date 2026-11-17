@@ -7,10 +7,6 @@
 HotkeyInfo::HotkeyInfo() : key1(0), key2(0) {
 }
 
-// OFFSET: 0x00910960
-// FUNCTION: fn_12505
-HotkeyInfo::HotkeyInfo(const HotkeyInfo& other) = default;
-
 // OFFSET: 0x00E09790
 // FUNCTION: fn_23783
 HotkeyInfo CSession::GetHotkeyInfo(int tab, int index) const {
