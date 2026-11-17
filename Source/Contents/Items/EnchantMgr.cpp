@@ -128,7 +128,7 @@ void CEnchantMgr::HandleEnchantResult(int messageId, int itemId) {
       return;
     }
 
-    if (this->m_request.packetType == ID_CZ_REQUEST_RESET_ENCHANT) {
+    if (ID_CZ_REQUEST_RESET_ENCHANT == this->m_request.packetType) {
       for (int slot : enchant->second.slots) {
         if (static_cast<uint32_t>(slot) < 4) {
           item.SetCard(0, slot);
@@ -142,7 +142,7 @@ void CEnchantMgr::HandleEnchantResult(int messageId, int itemId) {
     }
 
     g_session.UpdateInventoryItem(item, 1);
-    int effect = 0;
+    int effect;
     const vector3d position = {0.0f, 0.0f, 0.0f};
     switch (this->m_request.packetType) {
     case ID_CZ_REQUEST_RANDOM_ENCHANT:
@@ -157,10 +157,13 @@ void CEnchantMgr::HandleEnchantResult(int messageId, int itemId) {
     case ID_CZ_REQUEST_RESET_ENCHANT:
       effect = EF_UI_RESET_SUCCESS;
       break;
+    default:
+      effect = 0;
+      break;
     }
     g_effectMgr->Spawn(g_session.m_aid, effect, position, 0, -1, 0, 0);
   } else if (messageId == 0xF12) {
-    int effect = 0;
+    int effect;
     const vector3d position = {0.0f, 0.0f, 0.0f};
     switch (this->m_request.packetType) {
     case ID_CZ_REQUEST_RANDOM_ENCHANT:
@@ -172,6 +175,9 @@ void CEnchantMgr::HandleEnchantResult(int messageId, int itemId) {
       break;
     case ID_CZ_REQUEST_RESET_ENCHANT:
       effect = EF_UI_RESET_FAIL;
+      break;
+    default:
+      effect = 0;
       break;
     }
     g_effectMgr->Spawn(g_session.m_aid, effect, position, 0, -1, 0, 0);
@@ -334,7 +340,7 @@ int L_AddRandomUpgradeEnchant(lua_State* L) {
   if (firstItemId != 0) {
     int secondItemId = ItemDbToIdMgr()->GetItemID(secondItemName);
     if (secondItemId != 0) {
-      mgr->m_enchants[static_cast<uint64_t>(id)].options[optionKey].randomUpgrades[firstItemId].rates[secondItemId] = rate;
+      mgr->m_enchants[id].options[optionKey].randomUpgrades[firstItemId].rates[secondItemId] = rate;
     }
   }
   return 2;
