@@ -92,7 +92,7 @@ public:
   void OnMouseHover(int x, int y) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
-  int AddIngredient(std::uint32_t id, int quantity);
+  bool AddIngredient(std::uint32_t id, int quantity);
   void OnLBtnDblClk(int x, int y) override;
   void OnLBtnDown(int x, int y) override;
   void NotifyWindow(int unused, int alsoUnused);

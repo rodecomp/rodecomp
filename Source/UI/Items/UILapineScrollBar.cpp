@@ -273,10 +273,10 @@ void UILapineBoxWnd::Paint() {
 
 // OFFSET: 0x00601D20
 // FUNCTION: fn_04177
-int UILapineBoxWnd::AddIngredient(std::uint32_t id, int quantity) {
+bool UILapineBoxWnd::AddIngredient(std::uint32_t id, int quantity) {
   if (this->items.size() < 10) {
     if (std::find_if(this->items.begin(), this->items.end(), [id](ITEM_INFO entry) { return id == entry.identity[1]; }) != this->items.end()) {
-      return 0;
+      return false;
     }
     ITEM_INFO item = g_session.LookupClientItemByIdentity(id);
     item.quantity = quantity;
@@ -303,9 +303,9 @@ int UILapineBoxWnd::AddIngredient(std::uint32_t id, int quantity) {
       }
     }
     this->Invalidate();
-    return 1;
+    return true;
   }
-  return 0;
+  return false;
 }
 
 // OFFSET: 0x00602030
