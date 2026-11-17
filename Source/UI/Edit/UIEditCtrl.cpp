@@ -9092,9 +9092,11 @@ void UIChatEditCtrl::InsertItemLink(const ITEM_INFO& item) {
 void UIItemStoreFindWnd::Paint() {
   this->DrawTitleBar(true, "", 0);
 
-  unsigned red, green, blue;
-  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-  this->FillRegion(0, 17, this->geometry.width, this->geometry.height - 38, RGB(red, green, blue));
+  {
+    unsigned red, green, blue;
+    g_skinInfo.PaletteChannels(2, 2, red, green, blue);
+    this->FillRegion(0, 17, this->geometry.width, this->geometry.height - 38, RGB(red, green, blue));
+  }
   this->DrawButtonBar(0, 0, 1);
 
   const int columns = (this->geometry.width - 40) / 32;
@@ -9104,9 +9106,11 @@ void UIItemStoreFindWnd::Paint() {
     this->DrawItemSlotFrame(10, y);
   }
 
-  unsigned fillRed, fillGreen, fillBlue;
-  g_skinInfo.PaletteChannels(2, 2, fillRed, fillGreen, fillBlue);
-  this->FillRegion(72, 17, columns * 32 - 32, rows * 32, RGB(fillRed, fillGreen, fillBlue));
+  {
+    unsigned fillRed, fillGreen, fillBlue;
+    g_skinInfo.PaletteChannels(2, 2, fillRed, fillGreen, fillBlue);
+    this->FillRegion(72, 17, columns * 32 - 32, rows * 32, RGB(fillRed, fillGreen, fillBlue));
+  }
 
   int visible = 0;
   int index = 0;
@@ -9150,9 +9154,11 @@ void UIItemStoreFindWnd::Paint() {
 void UIItemStoreSubWnd::Paint() {
   this->DrawTitleBar(true, "", 0);
 
-  unsigned red, green, blue;
-  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-  this->FillRegion(0, 17, this->geometry.width, this->geometry.height - 38, RGB(red, green, blue));
+  {
+    unsigned red, green, blue;
+    g_skinInfo.PaletteChannels(2, 2, red, green, blue);
+    this->FillRegion(0, 17, this->geometry.width, this->geometry.height - 38, RGB(red, green, blue));
+  }
   this->DrawButtonBar(0, 0, 1);
 
   const int columns = (this->geometry.width - 40) / 32;
@@ -9162,9 +9168,11 @@ void UIItemStoreSubWnd::Paint() {
     this->DrawItemSlotFrame(10, y);
   }
 
-  unsigned fillRed, fillGreen, fillBlue;
-  g_skinInfo.PaletteChannels(2, 2, fillRed, fillGreen, fillBlue);
-  this->FillRegion(72, 17, columns * 32 - 32, rows * 32, RGB(fillRed, fillGreen, fillBlue));
+  {
+    unsigned fillRed, fillGreen, fillBlue;
+    g_skinInfo.PaletteChannels(2, 2, fillRed, fillGreen, fillBlue);
+    this->FillRegion(72, 17, columns * 32 - 32, rows * 32, RGB(fillRed, fillGreen, fillBlue));
+  }
 
   int visible = 0;
   int index = 0;
@@ -10096,13 +10104,14 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
     this->filterButton->Move(157, this->geometry.height - 19);
     return 0;
   }
-  case UM_REFRESHITEM:
+  case UM_REFRESHITEM: {
     if (this->categoryFilter == 3) {
       this->RefreshItems();
       return 0;
     }
     this->items.erase(this->items.begin(), this->items.end());
-    for (int i = 0; i < g_session.GetNumInventoryItems(); ++i) {
+    const int count = g_session.GetNumInventoryItems();
+    for (int i = 0; i < count; ++i) {
       ITEM_INFO item = g_session.GetInventoryItemAt(i);
       if (item.identity[1] == 0) {
         continue;
@@ -10155,6 +10164,7 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
     this->Invalidate();
     this->UpdateScrollBar();
     return 0;
+  }
   case UM_DROP: {
     CGameMode* mode = g_modeMgr.GetGameMode();
     ModeDragState& drag = static_cast<CGameMode*>(mode)->drag;
@@ -10412,7 +10422,7 @@ void UIEditCtrl3::DecodeLinkFields(const std::string& link, std::vector<int>& fi
   fields[0] = this->DecodeLinkNumber(std::move(value));
   value.clear();
   value += text[5];
-  fields[1] = this->DecodeLinkNumber(std::move(value));
+  fields[1] = this->DecodeLinkNumber(value);
   value.clear();
 
   int field = 2;
@@ -10430,7 +10440,7 @@ void UIEditCtrl3::DecodeLinkFields(const std::string& link, std::vector<int>& fi
 
       if (kind == 7) {
         if (!value.empty()) {
-          fields[field] = this->DecodeLinkNumber(std::move(value));
+          fields[field] = this->DecodeLinkNumber(value);
         }
 
         const int size = static_cast<int>(link.size());
@@ -10438,13 +10448,13 @@ void UIEditCtrl3::DecodeLinkFields(const std::string& link, std::vector<int>& fi
       } else if (kind == 9) {
         ++optionCount;
         if (!value.empty()) {
-          fields[field] = this->DecodeLinkNumber(std::move(value));
+          fields[field] = this->DecodeLinkNumber(value);
         }
 
         const int size = static_cast<int>(link.size());
         this->DecodeLinkOptions(options, text, position, size, delimiters[10], delimiters[11]);
       } else if (!value.empty()) {
-        fields[field] = this->DecodeLinkNumber(std::move(value));
+        fields[field] = this->DecodeLinkNumber(value);
       }
 
       value.clear();
