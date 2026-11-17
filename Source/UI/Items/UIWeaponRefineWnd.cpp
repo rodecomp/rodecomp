@@ -21,11 +21,21 @@
 #include <cstring>
 #include <vector>
 
+namespace {
+#pragma pack(push, 1)
+struct ReplayTaggedRecordHeader {
+  /* 0000 */ std::uint16_t id;
+  /* 0002 */ std::uint32_t bytes;
+};
+#pragma pack(pop)
+}
+
 // INLINED
 static std::vector<unsigned char> MakeReplayTaggedRecord(std::uint16_t id, const void* data, std::uint32_t bytes) {
   std::vector<unsigned char> record(bytes + 6, 0);
-  *reinterpret_cast<std::uint16_t*>(record.data()) = id;
-  *reinterpret_cast<std::uint32_t*>(record.data() + 2) = bytes;
+  ReplayTaggedRecordHeader* header = reinterpret_cast<ReplayTaggedRecordHeader*>(record.data());
+  header->id = id;
+  header->bytes = bytes;
   std::memcpy(record.data() + 6, data, bytes);
   return record;
 }
@@ -68,8 +78,8 @@ struct UIWeaponRefineRecordHeader {
 
   // INLINED
   ~UIWeaponRefineRecordHeader() {
-    this->bytes = 0;
     this->id = 0;
+    this->bytes = 0;
   }
 };
 #pragma pack(pop)
@@ -77,11 +87,11 @@ struct UIWeaponRefineRecordHeader {
 // OFFSET: 0x009A4CA0
 // FUNCTION: fn_13619
 int UIWeaponRefineWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
+  int itemId = static_cast<int>(a);
   ITEM_INFO item;
 
   switch (message) {
   case UM_ADDITEM: {
-    const int itemId = static_cast<int>(a);
     this->itemIds.push_back(itemId);
     this->indices.push_back(b);
 
@@ -133,24 +143,25 @@ int UIWeaponRefineWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       g_windowMgr.CloseWindow(WID_WEAPONREFINEWND);
       return 0;
     }
-
-    return 0;
+    break;
   }
 
   case UM_REPLAY_FRAMED_DATA: {
     const auto* bytes = reinterpret_cast<const unsigned char*>(a);
     UIWeaponRefineRecordHeader header;
-    unsigned offset = 6;
     header = *reinterpret_cast<const UIWeaponRefineRecordHeader*>(bytes);
+    unsigned offset = 6;
 
-    if (header.id == 22200) {
-      while (static_cast<unsigned>(b) > offset) {
+    if (22200 == header.id) {
+      bool scanning = true;
+      while (scanning && static_cast<unsigned>(b) > offset) {
         header = *reinterpret_cast<const UIWeaponRefineRecordHeader*>(bytes + offset);
         offset += 6;
 
         switch (header.id) {
         case 22201:
-          return 0;
+          scanning = false;
+          break;
 
         case 22202: {
           int values[2] = {};
@@ -166,10 +177,12 @@ int UIWeaponRefineWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         }
       }
     }
-
-    return 0;
-  }
+    break;
   }
 
-  return this->UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  default:
+    return this->UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
+
+  return 0;
 }
