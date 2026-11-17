@@ -1538,20 +1538,14 @@ AdventureGuide::CUISubTab* CUIListBox<AdventureGuide::CUISubTab>::CreateItem() {
   item->SetSize(this->itemWidth, this->rowHeight);
   item->Show(0);
   item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
-  {
-    const std::function<void(CUIListItem*)> onHover = [this](CUIListItem* listItem) {
-      for (AdventureGuide::CUISubTab* other : this->items) {
-        other->SetHighlighted(other == listItem);
-      }
-    };
-    item->onHover = onHover;
-  }
-  {
-    const std::function<void(CUIListItem*)> onPress = [this](CUIListItem* listItem) {
-      this->SelectItem(listItem);
-    };
-    item->onPress = onPress;
-  }
+  item->SetOnHover([this](CUIListItem* listItem) {
+    for (AdventureGuide::CUISubTab* other : this->items) {
+      other->SetHighlighted(other == listItem);
+    }
+  });
+  item->SetOnPress([this](CUIListItem* listItem) {
+    this->SelectItem(listItem);
+  });
   this->AddChild(item);
   this->items.push_back(item);
   this->UpdateScrollBar();
@@ -1567,20 +1561,14 @@ AdventureGuide::CUITab* CUIListBox<AdventureGuide::CUITab>::CreateItem() {
   item->SetSize(this->itemWidth, this->rowHeight);
   item->Show(0);
   item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
-  {
-    const std::function<void(CUIListItem*)> onHover = [this](CUIListItem* listItem) {
-      for (AdventureGuide::CUITab* other : this->items) {
-        other->SetHighlighted(other == listItem);
-      }
-    };
-    item->onHover = onHover;
-  }
-  {
-    const std::function<void(CUIListItem*)> onPress = [this](CUIListItem* listItem) {
-      this->SelectItem(listItem);
-    };
-    item->onPress = onPress;
-  }
+  item->SetOnHover([this](CUIListItem* listItem) {
+    for (AdventureGuide::CUITab* other : this->items) {
+      other->SetHighlighted(other == listItem);
+    }
+  });
+  item->SetOnPress([this](CUIListItem* listItem) {
+    this->SelectItem(listItem);
+  });
   this->AddChild(item);
   this->items.push_back(item);
   this->UpdateScrollBar();
