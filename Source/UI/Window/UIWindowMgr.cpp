@@ -2320,7 +2320,7 @@ void UIWindowMgr::DrawLoginOverlay() {
   const short third = static_cast<short>(g_renderer->viewport.height / 3);
   char name[256];
 
-  if (CTexture* grade = g_texMgr.Load("유저인터페이스\\\0_GameGrade.tga", 0, false, true, false)) {
+  if (CTexture* grade = g_texMgr.Load("유저인터페이스\\T_GameGrade.tga", 0, false, true, false)) {
     this->gradeImageWidth = grade->Width();
     this->gradeImageHeight = grade->Height();
   }
@@ -2412,7 +2412,7 @@ void UIWindowMgr::DrawLoginOverlay() {
     rect.bottom = static_cast<int>(this->loginBottomPanelOffset.x + static_cast<float>(third) * 3.0f);
     rect.top = static_cast<int>(this->loginBottomPanelOffset.x + static_cast<float>(third) * 2.5f);
     this->loginBottomPanelOffset.y = static_cast<short>(rect.top);
-    std::sprintf(name, "유저인터페이스\\\0_테입%d.tga", tape);
+    std::sprintf(name, "유저인터페이스\\T_테입%d.tga", tape);
     g_modeMgr.GetGameMode()->DrawTexture(rect, 0, 0.0999f, 0xFFFFFFFF, g_texMgr.Load(name, 0, false, true, false), region);
   }
 
@@ -2420,14 +2420,14 @@ void UIWindowMgr::DrawLoginOverlay() {
   rect.top = this->gradeImageY;
   rect.right = this->gradeImageWidth + this->gradeImageX;
   rect.bottom = this->gradeImageHeight + this->gradeImageY;
-  g_modeMgr.GetGameMode()->DrawTexture(rect, 0, 0.0999f, 0xFFFFFFFF, g_texMgr.Load("유저인터페이스\\\0_GameGrade.tga", 0, false, true, false), region);
+  g_modeMgr.GetGameMode()->DrawTexture(rect, 0, 0.0999f, 0xFFFFFFFF, g_texMgr.Load("유저인터페이스\\T_GameGrade.tga", 0, false, true, false), region);
 
   rect.left = static_cast<int>(this->loginButtonPanelOffset.x + static_cast<float>(step) * 3.1f);
   rect.right = step + rect.left;
   rect.top = static_cast<int>(this->loginButtonPanelOffset.y + static_cast<float>(third) * 2.4f);
   const float half = static_cast<float>(third) * 0.5f;
   rect.bottom = static_cast<int>(static_cast<float>(rect.top) + half);
-  g_modeMgr.GetGameMode()->DrawTexture(rect, 0, 0.0999f, 0xFFFFFFFF, g_texMgr.Load("유저인터페이스\\\0_중력성인.tga", 0, false, true, false), region);
+  g_modeMgr.GetGameMode()->DrawTexture(rect, 0, 0.0999f, 0xFFFFFFFF, g_texMgr.Load("유저인터페이스\\T_중력성인.tga", 0, false, true, false), region);
 
   char row = -2;
   for (int column = this->loginGridX; column < this->loginGridX + step * 2; column += step) {
@@ -2448,7 +2448,7 @@ void UIWindowMgr::DrawLoginOverlay() {
           rect.bottom = static_cast<int>(static_cast<float>(y) + half);
           y += third;
         }
-        std::sprintf(name, "유저인터페이스\\\0_R%d.tga", index);
+        std::sprintf(name, "유저인터페이스\\T_R%d.tga", index);
         g_modeMgr.GetGameMode()->DrawTexture(rect, 0, 0.0999f, 0xFFFFFFFF, g_texMgr.Load(name, 0, false, true, false), region);
       } while (this->loginGridY + (static_cast<float>(third) + static_cast<float>(third)) > static_cast<float>(y));
     }
