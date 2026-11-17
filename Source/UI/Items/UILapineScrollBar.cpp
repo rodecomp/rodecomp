@@ -334,15 +334,14 @@ unsigned char UILapineBox_IngredientListWnd::AddIngredient(std::uint32_t id) {
     return 0;
   }
 
-  for (std::vector<UIIngredientInfoWnd*>::iterator entry = this->items.begin(); entry != this->items.end(); ++entry) {
-    if (id == (*entry)->item.identity[1]) {
-      (*entry)->item.quantity += it->quantity;
-      (*entry)->insufficient = 0;
-      (*entry)->Show(1);
-      (*entry)->Invalidate();
-      this->Invalidate();
-      return 1;
-    }
+  auto entry = std::find_if(this->items.begin(), this->items.end(), [id](UIIngredientInfoWnd* info) { return id == info->item.identity[1]; });
+  if (entry != this->items.end()) {
+    (*entry)->item.quantity += it->quantity;
+    (*entry)->insufficient = 0;
+    (*entry)->Show(1);
+    (*entry)->Invalidate();
+    this->Invalidate();
+    return 1;
   }
 
   UILapineBoxWnd* owner = static_cast<UILapineBoxWnd*>(this->parent);
