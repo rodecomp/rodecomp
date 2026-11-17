@@ -30,6 +30,10 @@ CTexture::CTexture() {
   this->m_name[0] = '\0';
 }
 
+// OFFSET: 0x00572370
+// FUNCTION: fn_02464
+CSurface::~CSurface() = default;
+
 // OFFSET: 0x00572380
 // FUNCTION: fn_02465
 CTexture::~CTexture() = default;
