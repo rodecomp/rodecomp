@@ -676,7 +676,7 @@ void CPc::LoadEquipAction(int slot, const char* name) {
     return;
   }
 
-  const int baseJob = JobNames::BaseJob(this->GetEffectiveJob(-1));
+  const int baseJob = g_session.BaseJob(this->GetEffectiveJob(-1));
   const int costumeJob = this->GetBodyCostume();
   const std::string actionName = g_session.GetBodyActionResourceName(baseJob, this->sex, costumeJob, 0);
   CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load(actionName));
