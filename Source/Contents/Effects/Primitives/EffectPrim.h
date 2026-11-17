@@ -252,7 +252,7 @@ struct CEffectPrim : CRenderObject {
   void RenderGroundSprite(matrix& wtm);
   void RenderSegmentSpriteTrail(matrix& wtm);
 
-  void Initialize(CRagEffect& master, int type, float x, float y, float z);
+  void Initialize(CRagEffect& master, int type, vector3d deltaPos);
   void GetColorOverride(unsigned char* red, unsigned char* green, unsigned char* blue);
   void Get_Angle(float x, float y, std::int16_t* angle);
 

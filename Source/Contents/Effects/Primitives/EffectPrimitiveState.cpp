@@ -69,12 +69,12 @@ void CEffectPrim::Get_Angle(float x, float y, std::int16_t* angle) {
 
 // OFFSET: 0x00BAE5D0
 // FUNCTION: fn_19767
-void CEffectPrim::Initialize(CRagEffect& master, int type, float x, float y, float z) {
+void CEffectPrim::Initialize(CRagEffect& master, int type, vector3d deltaPos) {
   this->state.master = &master;
   this->state.count = type;
-  this->state.deltaPos.x = x + this->state.deltaPos.x;
-  this->state.deltaPos.y = y + this->state.deltaPos.y;
-  this->state.deltaPos.z = z + this->state.deltaPos.z;
+  this->state.deltaPos.x = deltaPos.x + this->state.deltaPos.x;
+  this->state.deltaPos.y = deltaPos.y + this->state.deltaPos.y;
+  this->state.deltaPos.z = deltaPos.z + this->state.deltaPos.z;
   this->state.orgPos = master.render.position;
   this->render.position = this->state.orgPos;
   this->state.isChangeProcessed = 0;
