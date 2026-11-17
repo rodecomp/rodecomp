@@ -13,6 +13,11 @@
 #include <cstring>
 #include <ctime>
 
+template __declspec(noinline) std::_Tree_find_result<std::_Tree_node<std::pair<const int, std::vector<PartyBookingMapInfo>>, void*>*>
+std::map<int, std::vector<PartyBookingMapInfo>>::_Mybase::_Find_lower_bound<int>(const int&) const;
+template __declspec(noinline) std::vector<PartyBookingMapInfo>::vector(const std::vector<PartyBookingMapInfo>&);
+template __declspec(noinline) std::string std::operator+(const std::string&, const char* const);
+
 // OFFSET: 0x00910B20
 // FUNCTION: fn_12508
 PartyBookingEntry::PartyBookingEntry(const PartyBookingEntry& other) = default;
@@ -107,15 +112,15 @@ std::pair<bool, PartyBookingEntry> PartyBookingMgr::MakeEntry(PARTY_BOOKING_AD_I
   ++region;
   auto found = this->m_maps.find(region);
   if (found == this->m_maps.end()) {
-    return std::pair<bool, PartyBookingEntry>(false, entry);
+    return std::make_pair(false, entry);
   }
 
-  const std::vector<PartyBookingMapInfo>& maps = found->second;
+  std::vector<PartyBookingMapInfo> maps = found->second;
   if (maps.size() < static_cast<unsigned int>(mapIndex)) {
-    return std::pair<bool, PartyBookingEntry>(false, entry);
+    return std::make_pair(false, entry);
   }
 
-  const PartyBookingMapInfo& map = maps.at(mapIndex);
+  PartyBookingMapInfo map = maps.at(mapIndex);
 
   tm* expire = _localtime32(&info.expireTime);
   sprintf(buffer, " %02d : %02d ", expire->tm_hour, expire->tm_min);
@@ -149,7 +154,7 @@ std::pair<bool, PartyBookingEntry> PartyBookingMgr::MakeEntry(PARTY_BOOKING_AD_I
 
   entry.jobs = buffer;
   entry.isEnd = false;
-  return std::pair<bool, PartyBookingEntry>(true, entry);
+  return std::make_pair(true, entry);
 }
 
 // OFFSET: 0x00B175B0
