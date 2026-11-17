@@ -20,7 +20,6 @@ static_assert(sizeof(ActiveSkillEffect) == 28);
 static_assert(offsetof(ActiveSkillEffect, remainingDuration) == 0x18);
 #endif
 
-void InitMapTypeInfoTable();
 float GetSkillFactor(int job);
 
 #endif

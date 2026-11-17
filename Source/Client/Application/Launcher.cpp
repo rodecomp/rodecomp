@@ -1128,7 +1128,7 @@ std::pair<bool, std::string> InitializeManagers() {
     return std::pair<bool, std::string>(false, std::string(name.Text()));
   }
 
-  InitMapTypeInfoTable();
+  g_session.InitMapTypeInfoTable();
   if (!RodexMailStore::Create()) {
     const std::array<char, 34> nameSource = OBFUSCATE_SOURCE_ARRAY_CHAR("CRodexSystemMgr::CreateInstance()", 0x07112F85A39F4FABULL);
     EncryptedName<sizeof(nameSource), 0x07112F85A39F4FABULL>& name = OBFUSCATE_DECRYPT_NAME(0x07112F85A39F4FABULL, nameSource);

@@ -23,7 +23,7 @@ class CSelectPackageItemMgr : public Singleton<CSelectPackageItemMgr> {
 public:
   static int LuaAddTab(lua_State* L);
   static int LuaAddItem(lua_State* L);
-  static bool LoadScript();
+  bool LoadScript();
 
   /* 0004 */ std::map<int, std::map<int, SelectPackageTab>> m_packages;
 

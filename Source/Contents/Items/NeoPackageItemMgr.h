@@ -33,7 +33,7 @@ struct PackageGroup {
 class CNeoPackageItemMgr : public Singleton<CNeoPackageItemMgr> {
 public:
   static int LuaInsertPackage(lua_State* state);
-  static bool LoadScript();
+  bool LoadScript();
 
   __declspec(noinline) CNeoPackageItemMgr();
 
@@ -48,7 +48,7 @@ public:
 class CPaidPackageItemMgr : public Singleton<CPaidPackageItemMgr> {
 public:
   static int LuaAddItemSold(lua_State* L);
-  static bool LoadScript();
+  bool LoadScript();
 
   CPaidPackageItemMgr();
 
