@@ -629,7 +629,8 @@ void CGameMode::ReceivePartyRoster(const unsigned char* packet) {
 // FUNCTION: fn_21822
 void CGameMode::ReceiveGroundSkillExtended(const unsigned char* record) {
   const GroundSkillPacketExtended& packet = *reinterpret_cast<const GroundSkillPacketExtended*>(record);
-  switch (packet.type) {
+  const int skillType = packet.type;
+  switch (skillType) {
   case UNT_GRAFFITI: {
     if (packet.length <= 23) {
       return;
@@ -649,22 +650,24 @@ void CGameMode::ReceiveGroundSkillExtended(const unsigned char* record) {
     return;
   }
 
-  GroundSkillExtendedData data;
+  GroundSkillArgumentData arguments;
+  GroundSkillExtendedData& data = arguments.extended;
   data.skill.aid = packet.aid;
   data.skill.owner = packet.owner;
-  data.skill.type = packet.type;
+  data.skill.type = skillType;
   data.skill.x = packet.x;
   data.skill.y = packet.y;
-  data.skill.visible = packet.visible;
+  const unsigned char visible = packet.visible;
+  data.skill.visible = visible;
   data.skill.level = packet.level;
   data.flags = packet.flags;
-  if (data.skill.owner != g_session.m_aid && !data.skill.visible) {
-    const auto found = std::find(this->m_skillUnitIds.begin(), this->m_skillUnitIds.end(), data.skill.aid);
+  if (data.skill.owner != g_session.m_aid && !visible) {
+    const auto found = std::find_if(this->m_skillUnitIds.begin(), this->m_skillUnitIds.end(), [&data](std::uint32_t id) { return data.skill.aid == id; });
     if (found != this->m_skillUnitIds.end()) {
       this->m_skillUnitIds.erase(found);
       data.skill.visible = 0;
     }
-  } else if (data.skill.visible) {
+  } else if (visible) {
     this->m_skillUnitIds.push_back(packet.aid);
   }
 
@@ -701,7 +704,7 @@ void CGameMode::SpawnGroundSkill(std::uint32_t aid, std::uint32_t owner, int val
     data.extended.skill.level = level;
     data.extended.flags = flags;
     data.value = value;
-    if (owner != g_session.m_aid && !visible) {
+    if (g_session.m_aid != owner && !visible) {
       const auto found = std::find_if(this->m_skillUnitIds.begin(), this->m_skillUnitIds.end(), [aid](std::uint32_t id) { return aid == id; });
       if (this->m_skillUnitIds.end() != found) {
         this->m_skillUnitIds.erase(found);
@@ -2210,16 +2213,17 @@ void CGameMode::ReceiveRuneGradeResult(int result, int tagId, int type, std::int
   if (this->HandleRuneResult(result) == 0) {
     const int previousSlots = g_runeSystemMgr->GetCurSlotCount();
     const int state = g_runeSystemMgr->SetRuneGrade(tagId, type, id, grade, gradeLevel);
+    EffectLists* effectMgr = g_effectMgr;
     if (state == 2) {
-      CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, EF_RUNESET_UPGRADE_SUCCESS, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      CEffect* effect = effectMgr->Spawn(g_session.m_aid, EF_RUNESET_UPGRADE_SUCCESS, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       const vector3d offset = {784.0f, 161.0f, 0.0f};
       effect->SetWindowOffset(offset, 1, 361);
     } else if (state == 1) {
-      CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, EF_RUNESET_UPGRADE_FAIL, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      CEffect* effect = effectMgr->Spawn(g_session.m_aid, EF_RUNESET_UPGRADE_FAIL, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       const vector3d offset = {784.0f, 161.0f, 0.0f};
       effect->SetWindowOffset(offset, 1, 361);
     } else {
-      CEffect* effect = g_effectMgr->Spawn(g_session.m_aid, type != 0 ? 2395 : 2396, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      CEffect* effect = effectMgr->Spawn(g_session.m_aid, type != 0 ? 2395 : 2396, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       vector3d offset = {0.0f, 0.0f, 0.0f};
       if (type == 0) {
         offset.x = 473.0f;
@@ -2917,7 +2921,7 @@ void CGameMode::Zc_Skill_Entry(unsigned char* record) {
   CSkill* skill = this->scene->GetSkillByAID(data.aid);
   if (data.owner != g_session.m_aid && !data.visible) {
 
-    const auto found = std::find(this->m_skillUnitIds.begin(), this->m_skillUnitIds.end(), packet.aid);
+    const auto found = std::find_if(this->m_skillUnitIds.begin(), this->m_skillUnitIds.end(), [&packet](std::uint32_t id) { return packet.aid == id; });
     if (found != this->m_skillUnitIds.end()) {
       this->m_skillUnitIds.erase(found);
       packet.visible = 0;
@@ -2962,13 +2966,15 @@ void CGameMode::Zc_Skill_Entry2(unsigned char* record) {
     this->scene->skills.push_back(skill);
     skill->SendMsg(nullptr, AM_SETMASTERGID, packet.aid, 0, 0, 0, 0, 0);
     const int address = reinterpret_cast<int>(packet.text);
-    skill->SendMsg(nullptr, AM_SET_SKILL, address, data.x, data.y, 0, 0, 0);
+    const int x = packet.x;
+    const int y = packet.y;
+    skill->SendMsg(nullptr, AM_SET_SKILL, address, x, y, 0, 0, 0);
     return;
   }
 
   CSkill* skill = this->scene->GetSkillByAID(data.aid);
   if (data.owner != g_session.m_aid && !data.visible) {
-    const auto found = std::find(this->m_skillUnitIds.begin(), this->m_skillUnitIds.end(), packet.aid);
+    const auto found = std::find_if(this->m_skillUnitIds.begin(), this->m_skillUnitIds.end(), [&packet](std::uint32_t id) { return packet.aid == id; });
     if (found != this->m_skillUnitIds.end()) {
       this->m_skillUnitIds.erase(found);
       packet.visible = 0;
@@ -3082,7 +3088,7 @@ void CGameMode::ReceiveGroundSkill32(const unsigned char* record) {
     if (data.visible) {
       this->m_skillUnitIds.push_back(packet.aid);
     } else {
-      const auto found = std::find(this->m_skillUnitIds.begin(), this->m_skillUnitIds.end(), data.aid);
+      const auto found = std::find_if(this->m_skillUnitIds.begin(), this->m_skillUnitIds.end(), [&data](std::uint32_t id) { return data.aid == id; });
       if (found != this->m_skillUnitIds.end()) {
         this->m_skillUnitIds.erase(found);
         data.visible = 0;
