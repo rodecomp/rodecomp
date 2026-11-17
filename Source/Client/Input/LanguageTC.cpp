@@ -25,17 +25,22 @@ CLanguageTC::CLanguageTC() : keys() {
   }
 
   for (unsigned index = 0; index < 41; ++index) {
-    auto& mapping = this->mappings[keys[index]];
-    mapping.bytes[0] = zhuyin[2 * index];
-    mapping.bytes[1] = zhuyin[2 * index + 1];
-    mapping.bytes[2] = 0;
-    mapping.category = static_cast<std::uint8_t>(categories[index] - '1');
+    auto& entry = this->mappings[keys[index]];
+    entry.bytes[0] = zhuyin[2 * index];
+    entry.bytes[1] = zhuyin[2 * index + 1];
+    entry.bytes[2] = 0;
+    entry.category = static_cast<std::uint8_t>(categories[index] - '1');
   }
 
+  this->mappings['C'].bytes[0] = 0xA3;
   this->mappings['C'].bytes[1] = 0x7E;
+  this->mappings['D'].bytes[0] = 0xA3;
   this->mappings['D'].bytes[1] = 0x7D;
+  this->mappings['E'].bytes[0] = 0xA3;
   this->mappings['E'].bytes[1] = 0x7C;
+  this->mappings['U'].bytes[0] = 0xA3;
   this->mappings['U'].bytes[1] = 0xB8;
+  this->mappings['X'].bytes[0] = 0xA3;
   this->mappings['X'].bytes[1] = 0x7B;
 }
 

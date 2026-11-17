@@ -269,8 +269,8 @@ int VNIInputMode::Convert(char key, char vowel, int value) {
         index = index - this->m_toneIndex + 6;
       }
       this->m_lastKey = key;
-      this->m_toneIndex = key - '0';
       index = index - '6' + key;
+      this->m_toneIndex = key - '0';
     } else {
       index = -1;
       this->Reset();
