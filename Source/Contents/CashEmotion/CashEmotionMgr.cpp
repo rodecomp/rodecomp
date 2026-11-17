@@ -895,7 +895,7 @@ const char* CCashEmotionMgr::GetPackTitle(int packId) {
 
 // OFFSET: 0x0059A110
 // FUNCTION: fn_02954
-int CCashEmotionMgr::GetPackPrice(int packId) {
+__declspec(noinline) int CCashEmotionMgr::GetPackPrice(int packId) {
   auto it = this->packs.find(packId);
   if (this->packs.end() == it) {
     return -1;
@@ -2694,8 +2694,9 @@ void UICashEmotionListWnd::SetTab(char tab) {
     }
 
     this->m_searchEdit->OnFinishEdit(0);
-    this->m_searchEdit->disabled = basic;
-    this->m_searchEdit->Invalidate();
+    UIEditCtrl* edit = this->m_searchEdit;
+    edit->disabled = basic;
+    edit->Invalidate();
     if (basic) {
       this->m_searchEdit->SetText("");
     }
@@ -3071,7 +3072,7 @@ void UICashEmotionPack::UpdateExpiry(Timestamp* expiry) {
 
 // OFFSET: 0x007CA100
 // FUNCTION: fn_09443
-std::string UICashEmotionPack::GetPriceText(int packId) {
+__declspec(noinline) std::string UICashEmotionPack::GetPriceText(int packId) {
   int price = g_cashEmotionMgr->GetPackPrice(packId);
   if (price > 0) {
     const char* format = g_simpleStringMgr->GetString("EMSG_PURCHASE_PRICE");
