@@ -1439,8 +1439,7 @@ void CPc::SetSprWeapon2(int first, int second) {
 // OFFSET: 0x00DB3740
 // FUNCTION: fn_22649
 void CPc::SetSprWeapon(int first, int second) {
-  this->weapon = first;
-  this->secondaryWeapon = second;
+  this->weaponPair = *reinterpret_cast<const std::int64_t*>(&first);
 
   if (!g_session.IsJobWeaponTypeAllowed(this->GetEffectiveJob(-1), *reinterpret_cast<const std::int64_t*>(&first))) {
     this->LoadEquipAction(5, "");
@@ -2388,8 +2387,7 @@ void CPc::SetSprActFull(int first, int second, int third, int fourth, int fifth,
   this->appearanceJob = first;
   this->SetSexBit(second);
   this->head = third;
-  this->weapon = fourth;
-  this->secondaryWeapon = fifth;
+  this->weaponPair = *reinterpret_cast<const std::int64_t*>(&fourth);
   this->accessory = sixth;
   this->accessory2 = seventh;
   this->accessory3 = eighth;
@@ -2616,12 +2614,11 @@ __declspec(noinline) void CPlayer::UpdateMsgEffect(bool show) {
 void CGrannyPc::SetSprActFull(int first, int second, int third, int fourth, int fifth, int sixth, int seventh, int eighth, int ninth, int tenth, int eleventh) {
   this->SetSexBit(second);
   this->head = third;
-  this->weapon = fourth;
+  this->weaponPair = *reinterpret_cast<const std::int64_t*>(&fourth);
   this->accessory = sixth;
   this->accessory2 = seventh;
   this->accessory3 = eighth;
   this->shield = ninth;
-  this->secondaryWeapon = fifth;
   this->headPalette = tenth;
   this->render.bodyPalette = eleventh;
   this->SetActorJob(first);
@@ -4582,8 +4579,8 @@ void CGrannyPc::Render(int argument) {
   }
 
   GrannyPcLight light;
-  light.red = 200;
   light.direction = g_weatherEffect.GetWindDirection();
+  light.red = 200;
   light.green = 200;
   light.blue = 200;
   light.intensity = 0x80;
