@@ -11,6 +11,7 @@
 #include "UI/Edit/UIEditBoxEx.h"
 #include "UI/Text/UIStaticTextControl.h"
 
+#include <algorithm>
 #include <atlconv.h>
 #include <cmath>
 #include <iterator>
@@ -30,19 +31,17 @@ template __declspec(noinline) void std::_List_node<ProbabilityTable::CItemData, 
 // FUNCTION: fn_16206
 template <>
 bool CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::RebindIndex(int index) {
-  if (index != -1) {
-    for (auto itemIt = this->items.begin(), itemEnd = this->items.end(); itemIt != itemEnd; ++itemIt) {
-      ProbabilityTable::CUIItem* item = *itemIt;
-      if (index == item->index) {
-        if (!this->binder) {
-          return false;
-        }
-        this->binder(item, *std::next(this->data.begin(), index));
-        return true;
-      }
-    }
+  if (index == -1) {
+    return false;
   }
-  return false;
+
+  auto found = std::find_if(this->items.begin(), this->items.end(), [index](ProbabilityTable::CUIItem* item) { return index == item->index; });
+  if (found == this->items.end() || !this->binder) {
+    return false;
+  }
+
+  this->binder(*found, *std::next(this->data.begin(), index));
+  return true;
 }
 
 // OFFSET: 0x00A4E490
