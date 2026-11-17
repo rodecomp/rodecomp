@@ -5090,7 +5090,9 @@ int UISayDialogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     return 0;
   case UM_SETINFO:
     this->m_placement = reinterpret_cast<SayDialogWndInfo*>(a);
-    this->m_placement->IsValid();
+    if (!this->m_placement->IsValid()) {
+      this->m_placement->Reset();
+    }
     this->Move(this->m_placement->x, this->m_placement->y);
     return 0;
   case UM_UPPUSH:
