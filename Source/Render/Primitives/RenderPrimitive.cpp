@@ -86,12 +86,19 @@ RenderPrimitive& RenderPrimitive::operator=(const RenderPrimitive& other) {
 // OFFSET: 0x00569380
 // FUNCTION: fn_02256
 void RenderCommand::AllocateTriangles(std::uint32_t triangleCount) {
-  const std::uint32_t vertexCount = triangleCount * 3;
-  auto* vertices = new RenderVertex[vertexCount];
-  for (std::uint32_t i = 0; i < vertexCount; ++i) {
-    vertices[i].Reset();
-  }
-  this->vertices = vertices;
+  struct Vertex : RenderVertex {
+    Vertex() {
+      this->x = 0.0f;
+      this->y = 0.0f;
+      this->z = 0.0f;
+      this->rhw = 0.0f;
+      this->diffuse = 0;
+      this->specular = 0xFF000000u;
+      this->u = 0.0f;
+      this->v = 0.0f;
+    }
+  };
+  this->vertices = new Vertex[triangleCount * 3];
 }
 
 // OFFSET: 0x00569470
