@@ -5448,7 +5448,7 @@ void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, i
     launched->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&targetPos), 0, 0, 0, 0);
   }
 
-  int effect = skillId < 493 && !(skillId >= 411 && skillId <= 472) ? 0 : -1;
+  int effect = !(skillId >= 411 && skillId <= 472) && skillId < 493 ? 0 : -1;
   switch (skillId) {
   case SM_MAGNUM:
   case MG_FIREBALL:
