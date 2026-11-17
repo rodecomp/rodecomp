@@ -9,28 +9,11 @@
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Resource/Json/JsonCppLoader.h"
-#include "Resource/Json/JsonCppLoaderExternal.h"
 
 #include "Resource/MSGSTRINGID.h"
 #include <algorithm>
 #include <cstring>
 #include <utility>
-
-struct JsonValueCopy {
-  /* 0000 */ JsonValue value;
-
-  // INLINED
-  JsonValueCopy(const JsonValue& other) {
-    reinterpret_cast<void(__thiscall*)(JsonValue*, const JsonValue*)>(JsonCopyConstruct)(&this->value, &other);
-  }
-
-  JsonValueCopy(const JsonValueCopy&) = delete;
-
-  // INLINED
-  ~JsonValueCopy() {
-    reinterpret_cast<void(__thiscall*)(JsonValue*)>(JsonDestroy)(&this->value);
-  }
-};
 
 // OFFSET: 0x0050AE30
 // FUNCTION: fn_00894
@@ -40,34 +23,22 @@ bool JsonCppLoader::GetReputeGroupData(std::map<int, ReputeGroupRecord>* out) {
     return false;
   }
 
-  const JsonValue* groups = nullptr;
-  if (const JsonObject* root = this->document.ObjectRange()) {
-    for (const JsonMember& entry : *root) {
-      if (entry.first == "ReputeGroup") {
-        groups = &entry.second;
-        break;
-      }
-    }
-  }
-
-  if (groups == nullptr) {
+  if (this->document.find("ReputeGroup") == this->document.object_range().end()) {
     this->Fail("키에 해당하는 데이터가 없습니다. (key : %s)", "ReputeGroup");
     return false;
   }
 
-  if (const JsonObject* members = groups->ObjectRange()) {
-    for (const JsonMember& member : *members) {
-      const std::string name = member.first;
-      const JsonValueCopy node(member.second);
-      ReputeGroupRecord record;
-      this->GetStringValue(node.value, "ID", &record.id);
-      this->GetStringValue(node.value, "Name", &record.name);
-      this->GetIntVectorValue(node.value, "ReputeList", &record.reputes);
+  for (const auto& member : this->document["ReputeGroup"].object_range()) {
+    const std::string name = member.key();
+    const jsoncons::json node = member.value();
+    ReputeGroupRecord record;
+    this->GetStringValue(node, "ID", &record.id);
+    this->GetStringValue(node, "Name", &record.name);
+    this->GetIntVectorValue(node, "ReputeList", &record.reputes);
 
-      if (!out->insert(std::pair<int, ReputeGroupRecord>(std::stoi(name), record)).second) {
-        this->Fail("중복키가 입력되었습니다. (name : %s)", name.c_str());
-        return false;
-      }
+    if (!out->insert(std::pair<int, ReputeGroupRecord>(std::stoi(name), record)).second) {
+      this->Fail("중복키가 입력되었습니다. (name : %s)", name.c_str());
+      return false;
     }
   }
 
@@ -82,35 +53,23 @@ bool JsonCppLoader::GetReputeInfoData(std::map<int, ReputeInfoRecord>* out) {
     return false;
   }
 
-  const JsonValue* infos = nullptr;
-  if (const JsonObject* root = this->document.ObjectRange()) {
-    for (const JsonMember& entry : *root) {
-      if (entry.first == "reputeInfo") {
-        infos = &entry.second;
-        break;
-      }
-    }
-  }
-
-  if (infos == nullptr) {
+  if (this->document.find("reputeInfo") == this->document.object_range().end()) {
     this->Fail("키에 해당하는 데이터가 없습니다. (key : %s)", "reputeInfo");
     return false;
   }
 
-  if (const JsonObject* members = infos->ObjectRange()) {
-    for (const JsonMember& member : *members) {
-      const std::string name = member.first;
-      const JsonValueCopy node(member.second);
-      ReputeInfoRecord record;
-      this->GetStringValue(node.value, "Name", &record.name);
-      this->GetIntValue(node.value, "MaxPoint_Positive", &record.maxPointPositive);
-      this->GetIntValue(node.value, "MaxPoint_Negative", &record.maxPointNegative);
-      this->GetStringValue(node.value, "Invisible", &record.invisible);
+  for (const auto& member : this->document["reputeInfo"].object_range()) {
+    const std::string name = member.key();
+    const jsoncons::json node = member.value();
+    ReputeInfoRecord record;
+    this->GetStringValue(node, "Name", &record.name);
+    this->GetIntValue(node, "MaxPoint_Positive", &record.maxPointPositive);
+    this->GetIntValue(node, "MaxPoint_Negative", &record.maxPointNegative);
+    this->GetStringValue(node, "Invisible", &record.invisible);
 
-      if (!out->insert(std::pair<int, ReputeInfoRecord>(std::stoi(name), record)).second) {
-        this->Fail("중복키가 입력되었습니다. (key : %s)", name.c_str());
-        return false;
-      }
+    if (!out->insert(std::pair<int, ReputeInfoRecord>(std::stoi(name), record)).second) {
+      this->Fail("중복키가 입력되었습니다. (key : %s)", name.c_str());
+      return false;
     }
   }
 
