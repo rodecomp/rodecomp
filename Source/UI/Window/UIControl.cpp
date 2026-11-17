@@ -1754,8 +1754,9 @@ void CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::AddNe
     return;
   }
 
-  for (AdventureGuide::CUIItemInfo* item : this->items) {
-    this->RemoveChild(item, 1);
+  const auto end = this->items.end();
+  for (auto it = this->items.begin(); it != end; ++it) {
+    this->RemoveChild(*it, 1);
   }
   this->items.clear();
   this->selected = static_cast<unsigned int>(-1);
@@ -1819,8 +1820,9 @@ void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>:
     return;
   }
 
-  for (AdventureGuide::CUIMonsterInfo* item : this->items) {
-    this->RemoveChild(item, 1);
+  const auto end = this->items.end();
+  for (auto it = this->items.begin(); it != end; ++it) {
+    this->RemoveChild(*it, 1);
   }
   this->items.clear();
   this->selected = static_cast<unsigned int>(-1);
@@ -1884,8 +1886,9 @@ void CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::Add
     return;
   }
 
-  for (AdventureGuide::CUIQuestInfo* item : this->items) {
-    this->RemoveChild(item, 1);
+  const auto end = this->items.end();
+  for (auto it = this->items.begin(); it != end; ++it) {
+    this->RemoveChild(*it, 1);
   }
   this->items.clear();
   this->selected = static_cast<unsigned int>(-1);
@@ -1949,8 +1952,9 @@ void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::AddNewItem
     return;
   }
 
-  for (AdventureGuide::CUITabInfo* item : this->items) {
-    this->RemoveChild(item, 1);
+  const auto end = this->items.end();
+  for (auto it = this->items.begin(); it != end; ++it) {
+    this->RemoveChild(*it, 1);
   }
   this->items.clear();
   this->selected = static_cast<unsigned int>(-1);

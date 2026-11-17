@@ -64,7 +64,7 @@ public:
 
 class CUIRewardItem : public CUIListItem {
 public:
-  CUIRewardItem();
+  __declspec(noinline) CUIRewardItem();
   void OnCreate(int width, int height) override;
   void OnInit() override;
   void Paint() override;

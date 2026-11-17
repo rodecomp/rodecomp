@@ -1051,8 +1051,9 @@ void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::AddNewItem() {
     return;
   }
 
-  for (ExchangeUI::CUIItem* item : this->items) {
-    this->RemoveChild(item, 1);
+  const auto end = this->items.end();
+  for (auto it = this->items.begin(); it != end; ++it) {
+    this->RemoveChild(*it, 1);
   }
   this->items.clear();
   this->selected = static_cast<unsigned int>(-1);
@@ -1068,41 +1069,35 @@ void CUIListBoxEx<ExchangeUI::CUIItem, ExchangeUI::CItemData>::AddNewItem() {
       item->SetSize(this->itemWidth, this->rowHeight);
       item->Show(0);
       item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
-      {
-        const std::function<void(CUIListItem*)> onHover = [this](CUIListItem* listItem) {
-          for (ExchangeUI::CUIItem* other : this->items) {
-            other->SetHighlighted(other == listItem);
+      item->SetOnHover([this](CUIListItem* listItem) {
+        for (ExchangeUI::CUIItem* other : this->items) {
+          other->SetHighlighted(other == listItem);
+        }
+      });
+      item->SetOnPress([this](CUIListItem* listItem) {
+        if (this->layoutFlag) {
+          return;
+        }
+        for (ExchangeUI::CUIItem* other : this->items) {
+          if (listItem != other) {
+            other->SetSelected(0);
           }
-        };
-        item->onHover = onHover;
-      }
-      {
-        const std::function<void(CUIListItem*)> onPress = [this](CUIListItem* listItem) {
-          if (this->layoutFlag) {
-            return;
-          }
-          for (ExchangeUI::CUIItem* other : this->items) {
-            if (listItem != other) {
-              other->SetSelected(0);
-            }
-          }
-          listItem->SetSelected(1);
-          if (listItem->index == static_cast<int>(this->selected) && this->selectionFlag) {
-            return;
-          }
-          ExchangeUI::CUIItem* selectedItem = dynamic_cast<ExchangeUI::CUIItem*>(listItem);
-          if (!selectedItem) {
-            return;
-          }
-          this->selected = selectedItem->index;
-          if (this->onSelect && static_cast<int>(this->selected) >= 0 && this->selected < this->data.size()) {
-            auto node = this->data.begin();
-            std::advance(node, static_cast<int>(this->selected));
-            this->onSelect(selectedItem, *node);
-          }
-        };
-        item->onPress = onPress;
-      }
+        }
+        listItem->SetSelected(1);
+        if (listItem->index == static_cast<int>(this->selected) && this->selectionFlag) {
+          return;
+        }
+        ExchangeUI::CUIItem* selectedItem = dynamic_cast<ExchangeUI::CUIItem*>(listItem);
+        if (!selectedItem) {
+          return;
+        }
+        this->selected = selectedItem->index;
+        if (this->onSelect && static_cast<int>(this->selected) >= 0 && this->selected < this->data.size()) {
+          auto node = this->data.begin();
+          std::advance(node, static_cast<int>(this->selected));
+          this->onSelect(selectedItem, *node);
+        }
+      });
       this->AddChild(item);
       slot = item;
     }

@@ -22,7 +22,7 @@ public:
   /* 00F0 */ CUIStaticText* quantityText;
   /* 00F4 */ CUIStaticText* itemNameText;
 
-  CUIItem();
+  __declspec(noinline) CUIItem();
   void OnCreate(int width, int height) override;
   void Paint() override;
   void OnInit() override;

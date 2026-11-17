@@ -104,7 +104,7 @@ public:
 
 class CUIMonsterInfo : public CUIListItem {
 public:
-  CUIMonsterInfo();
+  __declspec(noinline) CUIMonsterInfo();
   void OnCreate(int width, int height) override;
   void OnInit() override;
   void Paint() override;
@@ -136,7 +136,7 @@ public:
 
 class CUITabInfo : public CUIListItem {
 public:
-  CUITabInfo();
+  __declspec(noinline) CUITabInfo();
   void OnCreate(int width, int height) override;
   void OnInit() override;
 

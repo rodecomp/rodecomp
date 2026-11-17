@@ -237,7 +237,12 @@ void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::AddNe
     return;
   }
 
-  this->ClearItems();
+  const auto end = this->items.end();
+  for (auto it = this->items.begin(); it != end; ++it) {
+    this->RemoveChild(*it, 1);
+  }
+  this->items.clear();
+  this->selected = static_cast<unsigned int>(-1);
 
   if (this->geometry.height >= this->rowHeight) {
     unsigned int count = static_cast<unsigned int>(this->geometry.height / this->rowHeight) + 1;
@@ -250,20 +255,14 @@ void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::AddNe
       item->SetSize(this->itemWidth, this->rowHeight);
       item->Show(0);
       item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
-      {
-        const std::function<void(CUIListItem*)> onHover = [this](CUIListItem* listItem) {
-          for (ProbabilityTable::CUIItem* other : this->items) {
-            other->SetHighlighted(other == listItem);
-          }
-        };
-        item->onHover = onHover;
-      }
-      {
-        const std::function<void(CUIListItem*)> onPress = [this](CUIListItem* listItem) {
-          this->SelectItem(listItem);
-        };
-        item->onPress = onPress;
-      }
+      item->SetOnHover([this](CUIListItem* listItem) {
+        for (ProbabilityTable::CUIItem* other : this->items) {
+          other->SetHighlighted(other == listItem);
+        }
+      });
+      item->SetOnPress([this](CUIListItem* listItem) {
+        this->SelectItem(listItem);
+      });
       this->AddChild(item);
       slot = item;
     }

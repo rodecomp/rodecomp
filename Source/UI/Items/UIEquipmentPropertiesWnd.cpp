@@ -95,8 +95,9 @@ void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::s
     return;
   }
 
-  for (EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine* item : this->items) {
-    this->RemoveChild(item, 1);
+  const auto end = this->items.end();
+  for (auto it = this->items.begin(); it != end; ++it) {
+    this->RemoveChild(*it, 1);
   }
   this->items.clear();
   this->selected = static_cast<unsigned int>(-1);
@@ -113,20 +114,14 @@ void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::s
       item->SetSize(this->itemWidth, this->rowHeight);
       item->Show(0);
       item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
-      {
-        const std::function<void(CUIListItem*)> onHover = [this](CUIListItem* listItem) {
-          for (EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine* other : this->items) {
-            other->SetHighlighted(other == listItem);
-          }
-        };
-        item->onHover = onHover;
-      }
-      {
-        const std::function<void(CUIListItem*)> onPress = [this](CUIListItem* listItem) {
-          this->SelectItem(listItem);
-        };
-        item->onPress = onPress;
-      }
+      item->SetOnHover([this](CUIListItem* listItem) {
+        for (EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine* other : this->items) {
+          other->SetHighlighted(other == listItem);
+        }
+      });
+      item->SetOnPress([this](CUIListItem* listItem) {
+        this->SelectItem(listItem);
+      });
       this->AddChild(item);
       slot = item;
     }

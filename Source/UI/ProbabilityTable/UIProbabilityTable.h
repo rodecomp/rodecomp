@@ -20,7 +20,7 @@ public:
 
 class CUIItem : public CUIListItem {
 public:
-  CUIItem();
+  __declspec(noinline) CUIItem();
   void OnCreate(int width, int height) override;
   void OnInit() override;
   void Paint() override;

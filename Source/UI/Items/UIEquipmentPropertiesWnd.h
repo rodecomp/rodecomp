@@ -11,7 +11,7 @@
 namespace EquipmentPropertiesWnd {
 class CUIItemEquipmentPropertiesLine : public CUIListItem {
 public:
-  CUIItemEquipmentPropertiesLine();
+  __declspec(noinline) CUIItemEquipmentPropertiesLine();
 
   /* 00E8 */ CUIStaticText* labelText;
   /* 00EC */ CUIStaticText* valueText;
