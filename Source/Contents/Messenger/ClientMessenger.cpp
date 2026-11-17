@@ -55,6 +55,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <format>
+#include <fmt/format.h>
 #include <list>
 #include <map>
 #include <new>
@@ -86,15 +87,15 @@ struct EquipmentValueC {
 };
 template __declspec(noinline) std::unordered_map<int, EquipmentValueC>::unordered_map();
 template __declspec(noinline) std::unordered_map<int, int>::~unordered_map();
-template __declspec(noinline) std::string std::format<const char*&, int&>(const std::_Fmt_string<const char*&, int&>, const char*&, int&);
-template __declspec(noinline) std::string std::format<unsigned int&, int&>(const std::_Fmt_string<unsigned int&, int&>, unsigned int&, int&);
-template __declspec(noinline) std::string std::format<int&, const char*&>(const std::_Fmt_string<int&, const char*&>, int&, const char*&);
 template __declspec(noinline) void std::_Tree_val<std::_Tree_simple_types<unsigned int>>::_Erase_tree<std::allocator<std::_Tree_node<unsigned int, void*>>>(
   std::allocator<std::_Tree_node<unsigned int, void*>>&, std::_Tree_node<unsigned int, void*>*
 ) noexcept;
 template __declspec(noinline) void std::_Tree_val<std::_Tree_simple_types<std::pair<const int, int>>>::_Erase_tree<std::allocator<std::_Tree_node<std::pair<const int, int>, void*>>>(
   std::allocator<std::_Tree_node<std::pair<const int, int>, void*>>&, std::_Tree_node<std::pair<const int, int>, void*>*
 ) noexcept;
+template __declspec(noinline) std::string fmt::format<const char*&, int&>(fmt::format_string<const char*&, int&>, const char*&, int&);
+template __declspec(noinline) std::string fmt::format<unsigned int&, int&>(fmt::format_string<unsigned int&, int&>, unsigned int&, int&);
+template __declspec(noinline) std::string fmt::format<int&, const char*&>(fmt::format_string<int&, const char*&>, int&, const char*&);
 
 struct EquipmentEntryA {
   /* 0000 */ int value;
@@ -945,7 +946,7 @@ void EquipmentProperties::CEquipmentWearable::Load(bool force) {
     lua_gettable(state, 1);
     if (lua_type(state, -1) == LUA_TTABLE) {
       for (auto& entry : this->m_info->statProperties) {
-        this->AddProperty(std::format("AddExtParam arg1:0 arg2:{0}", entry.first), "AddExtParam", -1, entry.second, -1);
+        this->AddProperty(fmt::format("AddExtParam arg1:0 arg2:{0}", entry.first), "AddExtParam", -1, entry.second, -1);
       }
 
       if (!g_session.IsCostumeLocation(this->m_type) && this->m_info != nullptr) {
@@ -957,31 +958,31 @@ void EquipmentProperties::CEquipmentWearable::Load(bool force) {
             if (this->m_info->kind == 1) {
               const int attack = CEquipmentPropertiesMgr::GetInstance()->GetRefiningBonus(3, key, level);
               if (attack != 0) {
-                this->AddProperty(std::format("AddExtParam arg1:0 arg2:{0}", 0x2D), "AddExtParam", -1, attack, -1);
+                this->AddProperty(fmt::format("AddExtParam arg1:0 arg2:{0}", 0x2D), "AddExtParam", -1, attack, -1);
               }
 
               const int resist = CEquipmentPropertiesMgr::GetInstance()->GetRefiningBonus(4, key, level);
               if (resist != 0) {
-                this->AddProperty(std::format("AddExtParam arg1:0 arg2:{0}", 0xF4), "AddExtParam", -1, resist, -1);
-                this->AddProperty(std::format("AddExtParam arg1:0 arg2:{0}", 0xF5), "AddExtParam", -1, resist, -1);
+                this->AddProperty(fmt::format("AddExtParam arg1:0 arg2:{0}", 0xF4), "AddExtParam", -1, resist, -1);
+                this->AddProperty(fmt::format("AddExtParam arg1:0 arg2:{0}", 0xF5), "AddExtParam", -1, resist, -1);
               }
             } else if (this->m_info->kind == 2 || this->m_info->kind == 3) {
               const int bonus = CEquipmentPropertiesMgr::GetInstance()->GetRefiningBonus(1, key, level);
               if (bonus != 0) {
                 const int rate = CEquipmentPropertiesMgr::GetInstance()->GetGradeBonus(1, equipped.grade, 1);
-                this->AddProperty(std::format("AddExtParam arg1:0 arg2:{0}", 0x29), "AddExtParam", -1,
+                this->AddProperty(fmt::format("AddExtParam arg1:0 arg2:{0}", 0x29), "AddExtParam", -1,
                                   static_cast<int>(static_cast<float>(rate * bonus) / 10.0f + static_cast<float>(bonus)), -1);
                 if (this->m_info->kind == 2) {
                   const int magicRate = CEquipmentPropertiesMgr::GetInstance()->GetGradeBonus(1, equipped.grade, 2);
-                  this->AddProperty(std::format("AddExtParam arg1:0 arg2:{0}", 0xC8), "AddExtParam", -1,
+                  this->AddProperty(fmt::format("AddExtParam arg1:0 arg2:{0}", 0xC8), "AddExtParam", -1,
                                     static_cast<int>(static_cast<float>(magicRate * bonus) / 10.0f + static_cast<float>(bonus)), -1);
                 }
               }
 
               const int defense = CEquipmentPropertiesMgr::GetInstance()->GetRefiningBonus(2, key, level);
               if (defense != 0) {
-                this->AddProperty(std::format("AddExtParam arg1:0 arg2:{0}", 0xF2), "AddExtParam", -1, defense, -1);
-                this->AddProperty(std::format("AddExtParam arg1:0 arg2:{0}", 0xF3), "AddExtParam", -1, defense, -1);
+                this->AddProperty(fmt::format("AddExtParam arg1:0 arg2:{0}", 0xF2), "AddExtParam", -1, defense, -1);
+                this->AddProperty(fmt::format("AddExtParam arg1:0 arg2:{0}", 0xF3), "AddExtParam", -1, defense, -1);
               }
             }
           }
@@ -1047,7 +1048,7 @@ void EquipmentProperties::CEquipment::NotifyProperties(const COLORREF& color, bo
         ReplaceAll(line, "#", " ");
         RemoveAll(line, "{~}");
         if (line.size() > 0) {
-          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(std::format("{0}{1}", suffix, std::string_view(line)).c_str()), color, 0x18, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(fmt::format("{0}{1}", suffix, line).c_str()), color, 0x18, 0, 0);
         }
       }
     }
@@ -1208,7 +1209,7 @@ std::string EquipmentProperties::CEquipmentProperties2Dim::Describe(bool detaile
       }
       break;
     case 0x16716DCE:
-      argument = std::format("{0}", entry->first);
+      argument = fmt::format("{0}", entry->first);
       break;
     default:
       failed = true;
@@ -2147,7 +2148,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadADSkill() {
       }
       this->loadValid &= result == 0;
       if (result != 0) {
-        ShowErrorDialog(std::format("{0} table has invalid key({1})", name, result), 0);
+        ShowErrorDialog(fmt::format("{0} table has invalid key({1})", name, result), 0);
       }
       if (this->loadValid) {
         unsigned int value = 0;
@@ -2160,7 +2161,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadADSkill() {
         }
         this->loadValid &= result == 0;
         if (result != 0) {
-          ShowErrorDialog(std::format("{0} table has invalid value({1})", name, result), 0);
+          ShowErrorDialog(fmt::format("{0} table has invalid value({1})", name, result), 0);
         }
         if (this->loadValid) {
           this->constantValues.try_emplace(key, EquipmentValueA{static_cast<int>(value)});
@@ -2169,11 +2170,11 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadADSkill() {
       lua_settop(state, -2);
     }
   } else {
-    ShowErrorDialog(std::format("Can't find global table '{0}'", name), 0);
+    ShowErrorDialog(fmt::format("Can't find global table '{0}'", name), 0);
   }
   lua_settop(state, -2);
   if (!this->loadValid) {
-    ShowErrorDialog(std::format("Check error in '{0}' table and restart game ", name), 0);
+    ShowErrorDialog(fmt::format("Check error in '{0}' table and restart game ", name), 0);
   }
 }
 
@@ -2200,14 +2201,14 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadCombiitem() {
       }
       this->loadValid &= result == 0;
       if (result != 0) {
-        ShowErrorDialog(std::format("{0} table has invalid entry key({1})", name, result), 0);
+        ShowErrorDialog(fmt::format("{0} table has invalid entry key({1})", name, result), 0);
       }
       if (this->loadValid) {
         std::vector<unsigned int> items;
         result = this->script.GetFieldUIntArray(items, "Item");
         this->loadValid &= result == 0;
         if (result != 0) {
-          ShowErrorDialog(std::format("Combiitem[{0}] has invalid 'Item' table({1})", key, result), 0);
+          ShowErrorDialog(fmt::format("Combiitem[{0}] has invalid 'Item' table({1})", key, result), 0);
         }
         if (this->loadValid) {
           for (unsigned int item : items) {
@@ -2218,11 +2219,11 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadCombiitem() {
       lua_settop(state, -2);
     }
   } else {
-    ShowErrorDialog(std::format("Can't find global table '{0}'", name), 0);
+    ShowErrorDialog(fmt::format("Can't find global table '{0}'", name), 0);
   }
   lua_settop(state, -2);
   if (!this->loadValid) {
-    ShowErrorDialog(std::format("Check error in '{0}' table and restart game ", name), 0);
+    ShowErrorDialog(fmt::format("Check error in '{0}' table and restart game ", name), 0);
   }
 }
 
@@ -2248,7 +2249,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEnumVar() {
       }
       this->loadValid &= result == 0;
       if (result != 0) {
-        ShowErrorDialog(std::format("{0} table has invalid entry key({1})", name, result), 0);
+        ShowErrorDialog(fmt::format("{0} table has invalid entry key({1})", name, result), 0);
       }
       if (this->loadValid) {
         std::vector<int> values;
@@ -2353,7 +2354,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadIgnoreEquipmentProperties
       int result = this->script.GetFieldStringArray(functions, "func");
       this->loadValid &= result == 0;
       if (result != 0) {
-        ShowErrorDialog(std::format("{0}'s sub table[{1}] has invaild 'func' field({2})", name, index, result), 0);
+        ShowErrorDialog(fmt::format("{0}'s sub table[{1}] has invaild 'func' field({2})", name, index, result), 0);
       }
       if (!this->loadValid) {
         break;
@@ -2361,7 +2362,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadIgnoreEquipmentProperties
 
       this->loadValid &= functions.size() != 0;
       if (functions.size() == 0) {
-        ShowErrorDialog(std::format("{0}'s sub table[{1}]'s 'func' table has 0 value", name, index), 0);
+        ShowErrorDialog(fmt::format("{0}'s sub table[{1}]'s 'func' table has 0 value", name, index), 0);
       }
       if (!this->loadValid) {
         break;
@@ -2369,7 +2370,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadIgnoreEquipmentProperties
 
       this->loadValid &= functions.size() <= 2;
       if (functions.size() > 2) {
-        ShowErrorDialog(std::format("{0}'s sub table[{1}]'s 'func' table has more than 2 values", name, index), 0);
+        ShowErrorDialog(fmt::format("{0}'s sub table[{1}]'s 'func' table has more than 2 values", name, index), 0);
       }
       if (!this->loadValid) {
         break;
@@ -2380,16 +2381,16 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadIgnoreEquipmentProperties
       const bool valid = result == 0 || result == 1;
       this->loadValid &= valid;
       if (!valid) {
-        ShowErrorDialog(std::format("{0}'s sub table[{1}]'s has invalid 'cond' table({2})", name, index, result), 0);
+        ShowErrorDialog(fmt::format("{0}'s sub table[{1}]'s has invalid 'cond' table({2})", name, index, result), 0);
       }
       if (!this->loadValid) {
         break;
       }
 
       for (const std::string& function : functions) {
-        std::string text = std::format("{0}", function);
+        std::string text = fmt::format("{0}", function);
         for (const auto& condition : conditions) {
-          text = std::format("{0} arg{1}:{2}", text, condition.first, condition.second);
+          text = fmt::format("{0} arg{1}:{2}", text, condition.first, condition.second);
         }
         unsigned int hash = 5381;
         for (const char* character = text.c_str(); *character != '\0'; ++character) {
@@ -2400,7 +2401,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadIgnoreEquipmentProperties
 
       this->loadValid &= valid;
       if (!valid) {
-        ShowErrorDialog(std::format("{0}'s sub table[{1}]'s 'cond' table has some error", name, index), 0);
+        ShowErrorDialog(fmt::format("{0}'s sub table[{1}]'s 'cond' table has some error", name, index), 0);
       }
       if (!this->loadValid) {
         break;
@@ -2408,11 +2409,11 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadIgnoreEquipmentProperties
       lua_settop(state, -2);
     }
   } else {
-    ShowErrorDialog(std::format("Can't find global table '{0}'", name), 0);
+    ShowErrorDialog(fmt::format("Can't find global table '{0}'", name), 0);
   }
   lua_settop(state, -2);
   if (!this->loadValid) {
-    ShowErrorDialog(std::format("Check error in '{0}' table and restart game ", name), 0);
+    ShowErrorDialog(fmt::format("Check error in '{0}' table and restart game ", name), 0);
   }
 }
 
@@ -2439,13 +2440,13 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadGradeBonus() {
         }
         this->loadValid &= result == 0;
         if (result != 0) {
-          ShowErrorDialog(std::format("invalid key({0}): {1}", result, name), 0);
+          ShowErrorDialog(fmt::format("invalid key({0}): {1}", result, name), 0);
         }
         if (this->loadValid) {
           bool valid = lua_type(state, -1) == LUA_TTABLE;
           this->loadValid &= valid;
           if (!valid) {
-            ShowErrorDialog(std::format("invalid data type: {0}.{1}", name, key), 0);
+            ShowErrorDialog(fmt::format("invalid data type: {0}.{1}", name, key), 0);
           }
           if (this->loadValid) {
             int kind = 0;
@@ -2468,7 +2469,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadGradeBonus() {
             }
             this->loadValid &= valid;
             if (!valid) {
-              ShowErrorDialog(std::format("invalid value: {0}.{1}", name, key), 0);
+              ShowErrorDialog(fmt::format("invalid value: {0}.{1}", name, key), 0);
             }
             if (this->loadValid) {
               lua_pushnil(state);
@@ -2484,13 +2485,13 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadGradeBonus() {
                   }
                   this->loadValid &= result == 0;
                   if (result != 0) {
-                    ShowErrorDialog(std::format("invalid key({0}): {1}.{2}", result, name, key), 0);
+                    ShowErrorDialog(fmt::format("invalid key({0}): {1}.{2}", result, name, key), 0);
                   }
                   if (this->loadValid) {
                     valid = lua_type(state, -1) == LUA_TTABLE;
                     this->loadValid &= valid;
                     if (!valid) {
-                      ShowErrorDialog(std::format("invalid data type: {0}.{1}.{2}", name, key, category), 0);
+                      ShowErrorDialog(fmt::format("invalid data type: {0}.{1}.{2}", name, key, category), 0);
                     }
                     if (this->loadValid) {
                       int categoryIndex = 0;
@@ -2524,7 +2525,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadGradeBonus() {
                       }
                       this->loadValid &= valid;
                       if (!valid) {
-                        ShowErrorDialog(std::format("invalid value: {0}.{1}.{2}", name, key, category), 0);
+                        ShowErrorDialog(fmt::format("invalid value: {0}.{1}.{2}", name, key, category), 0);
                       }
                       if (this->loadValid) {
                         lua_pushnil(state);
@@ -2541,7 +2542,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadGradeBonus() {
                             valid = result == 0;
                             this->loadValid &= valid;
                             if (result != 0) {
-                              ShowErrorDialog(std::format("invalid key({0}): {1}.{2}.{3}", result, name, key, category), 0);
+                              ShowErrorDialog(fmt::format("invalid key({0}): {1}.{2}.{3}", result, name, key, category), 0);
                             }
                             if (this->loadValid) {
                               int fieldIndex = 0;
@@ -2558,7 +2559,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadGradeBonus() {
                               }
                               this->loadValid &= valid;
                               if (!valid) {
-                                ShowErrorDialog(std::format("invalid key: {0}.{1}.{2}", name, key, category), 0);
+                                ShowErrorDialog(fmt::format("invalid key: {0}.{1}.{2}", name, key, category), 0);
                               }
                               if (this->loadValid) {
                                 int value;
@@ -2571,7 +2572,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadGradeBonus() {
                                 }
                                 this->loadValid &= result == 0;
                                 if (result != 0) {
-                                  ShowErrorDialog(std::format("invalid value: {0}.{1}.{2}.{3}", name, key, category, field), 0);
+                                  ShowErrorDialog(fmt::format("invalid value: {0}.{1}.{2}.{3}", name, key, category, field), 0);
                                 }
                                 if (this->loadValid) {
                                   this->categoryValues[kind][categoryIndex][fieldIndex].value = value;
@@ -2594,11 +2595,11 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadGradeBonus() {
       lua_settop(state, -2);
     }
   } else {
-    ShowErrorDialog(std::format("Can't find global table '{0}'", name), 0);
+    ShowErrorDialog(fmt::format("Can't find global table '{0}'", name), 0);
   }
   lua_settop(state, -2);
   if (!this->loadValid) {
-    ShowErrorDialog(std::format("Check error in '{0}' table and restart game ", name), 0);
+    ShowErrorDialog(fmt::format("Check error in '{0}' table and restart game ", name), 0);
   }
 }
 
@@ -2626,13 +2627,13 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadRefiningBonus() {
         }
         this->loadValid &= result == 0;
         if (result != 0) {
-          ShowErrorDialog(std::format("invalid key({0}): {1}", result, name), 0);
+          ShowErrorDialog(fmt::format("invalid key({0}): {1}", result, name), 0);
         }
         if (this->loadValid) {
           bool valid = lua_type(state, -1) == LUA_TTABLE;
           this->loadValid &= valid;
           if (!valid) {
-            ShowErrorDialog(std::format("invalid data type: {0}.{1}", name, key), 0);
+            ShowErrorDialog(fmt::format("invalid data type: {0}.{1}", name, key), 0);
           }
           if (this->loadValid) {
             int kind = 0;
@@ -2655,7 +2656,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadRefiningBonus() {
             }
             this->loadValid &= valid;
             if (!valid) {
-              ShowErrorDialog(std::format("invalid value: {0}.{1}", name, key), 0);
+              ShowErrorDialog(fmt::format("invalid value: {0}.{1}", name, key), 0);
             }
             if (this->loadValid) {
               lua_pushnil(state);
@@ -2671,13 +2672,13 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadRefiningBonus() {
                   }
                   this->loadValid &= result == 0;
                   if (result != 0) {
-                    ShowErrorDialog(std::format("invalid key({0}): {1}.{2}", result, name, key), 0);
+                    ShowErrorDialog(fmt::format("invalid key({0}): {1}.{2}", result, name, key), 0);
                   }
                   if (this->loadValid) {
                     valid = lua_type(state, -1) == LUA_TTABLE;
                     this->loadValid &= valid;
                     if (!valid) {
-                      ShowErrorDialog(std::format("invalid data type: {0}.{1}.{2}", name, key, level), 0);
+                      ShowErrorDialog(fmt::format("invalid data type: {0}.{1}.{2}", name, key, level), 0);
                     }
                     if (this->loadValid) {
                       lua_pushnil(state);
@@ -2693,7 +2694,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadRefiningBonus() {
                           }
                           this->loadValid &= result == 0;
                           if (result != 0) {
-                            ShowErrorDialog(std::format("invalid key({0}): {1}.{2}.{3}", result, name, key, level), 0);
+                            ShowErrorDialog(fmt::format("invalid key({0}): {1}.{2}.{3}", result, name, key, level), 0);
                           }
                           if (this->loadValid) {
                             int value = -1;
@@ -2706,7 +2707,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadRefiningBonus() {
                             }
                             this->loadValid &= result == 0;
                             if (result != 0) {
-                              ShowErrorDialog(std::format("invalid value({0}): {1}.{2}.{3}.{4}", result, name, key, level, index), 0);
+                              ShowErrorDialog(fmt::format("invalid value({0}): {1}.{2}.{3}.{4}", result, name, key, level, index), 0);
                             }
                             if (this->loadValid) {
                               this->levelRates[kind][level][index] = static_cast<float>(value);
@@ -2727,11 +2728,11 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadRefiningBonus() {
       lua_settop(state, -2);
     }
   } else {
-    ShowErrorDialog(std::format("Can't find global table '{0}'", name), 0);
+    ShowErrorDialog(fmt::format("Can't find global table '{0}'", name), 0);
   }
   lua_settop(state, -2);
   if (!this->loadValid) {
-    ShowErrorDialog(std::format("Check error in '{0}' table and restart game ", name), 0);
+    ShowErrorDialog(fmt::format("Check error in '{0}' table and restart game ", name), 0);
   }
 }
 
@@ -2759,7 +2760,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadSkillGroup() {
       const bool keyValid = keyResult == 0;
       this->loadValid &= keyValid;
       if (keyResult != 0) {
-        ShowErrorDialog(std::format("{0} table has invalid entry key({1})", name, keyResult), 0);
+        ShowErrorDialog(fmt::format("{0} table has invalid entry key({1})", name, keyResult), 0);
       }
       if (this->loadValid && lua_type(state, -1) == LUA_TTABLE) {
         lua_pushnil(state);
@@ -2775,7 +2776,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadSkillGroup() {
           }
           this->loadValid &= keyValid;
           if (keyResult != 0) {
-            ShowErrorDialog(std::format("SkillGroup[{0}] has invalid 'Skill' table({1})", key, result), 0);
+            ShowErrorDialog(fmt::format("SkillGroup[{0}] has invalid 'Skill' table({1})", key, result), 0);
           }
           if (this->loadValid) {
             this->skillGroups[key].push_back(skill);
@@ -2786,11 +2787,11 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadSkillGroup() {
       lua_settop(state, -2);
     }
   } else {
-    ShowErrorDialog(std::format("Can't find global table '{0}'", name), 0);
+    ShowErrorDialog(fmt::format("Can't find global table '{0}'", name), 0);
   }
   lua_settop(state, -2);
   if (!this->loadValid) {
-    ShowErrorDialog(std::format("Check error in '{0}' table and restart game ", name), 0);
+    ShowErrorDialog(fmt::format("Check error in '{0}' table and restart game ", name), 0);
   }
 }
 
@@ -3961,12 +3962,12 @@ void EquipmentProperties::CEquipmentPropertiesMgr::ApplyProperty(const char* nam
   int index = -1;
   int value = 0x7FFFFFFF;
   int key = -1;
-  std::string text = std::format("{0}", name);
+  std::string text = fmt::format("{0}", name);
   for (int position = 1; position <= count; ++position) {
     const int stackIndex = position - count - 1;
     if (!lua_isnumber(state, stackIndex)) {
       lua_pushboolean(state, 0);
-      lua_pushstring(state, std::format("arg{0} is must number", position).c_str());
+      lua_pushstring(state, fmt::format("arg{0} is must number", position).c_str());
       return;
     }
 
@@ -3978,7 +3979,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::ApplyProperty(const char* nam
     } else if (keyPosition == position) {
       key = number;
     } else {
-      text = std::format("{0} arg{1}:{2}", text, position, number);
+      text = fmt::format("{0} arg{1}:{2}", text, position, number);
     }
   }
 
@@ -4472,7 +4473,7 @@ int GetCategoryJob(lua_State* state) {
   for (int index = -1; index < 0; ++index) {
     if (!lua_isnumber(state, index)) {
       lua_pushboolean(state, 0);
-      lua_pushstring(state, std::format("arg{0} is must number", count + 1).c_str());
+      lua_pushstring(state, fmt::format("arg{0} is must number", count + 1).c_str());
       return 2;
     }
     args.push_back(static_cast<int>(lua_tonumber(state, index)));
@@ -4717,7 +4718,7 @@ int GetEquipArmorLv(lua_State* state) {
   for (int index = -1; index < 0; ++index) {
     if (!lua_isnumber(state, index)) {
       lua_pushboolean(state, 0);
-      lua_pushstring(state, std::format("arg{0} is must number", number + 1).c_str());
+      lua_pushstring(state, fmt::format("arg{0} is must number", number + 1).c_str());
       return 2;
     }
     args.push_back(static_cast<int>(lua_tonumber(state, index)));
@@ -4740,7 +4741,7 @@ int GetEquipWeaponLv(lua_State* state) {
   for (int index = -1; index < 0; ++index) {
     if (!lua_isnumber(state, index)) {
       lua_pushboolean(state, 0);
-      lua_pushstring(state, std::format("arg{0} is must number", number + 1).c_str());
+      lua_pushstring(state, fmt::format("arg{0} is must number", number + 1).c_str());
       return 2;
     }
     args.push_back(static_cast<int>(lua_tonumber(state, index)));
@@ -4808,7 +4809,7 @@ int GetSkillLevel(lua_State* state) {
   for (int index = -1; index < 0; ++index) {
     if (!lua_isnumber(state, index)) {
       lua_pushboolean(state, 0);
-      lua_pushstring(state, std::format("arg{0} is must number", number + 1).c_str());
+      lua_pushstring(state, fmt::format("arg{0} is must number", number + 1).c_str());
       return 2;
     }
     args.push_back(static_cast<int>(lua_tonumber(state, index)));
@@ -4828,7 +4829,7 @@ int GetPlayerValue(lua_State* state) {
   for (int index = -1; index < 0; ++index) {
     if (!lua_isnumber(state, index)) {
       lua_pushboolean(state, 0);
-      lua_pushstring(state, std::format("arg{0} is must number", number + 1).c_str());
+      lua_pushstring(state, fmt::format("arg{0} is must number", number + 1).c_str());
       return 2;
     }
     args.push_back(static_cast<int>(lua_tonumber(state, index)));
@@ -4912,7 +4913,7 @@ int GetWeaponClass(lua_State* state) {
   for (int index = -1; index < 0; ++index) {
     if (!lua_isnumber(state, index)) {
       lua_pushboolean(state, 0);
-      lua_pushstring(state, std::format("arg{0} is must number", number + 1).c_str());
+      lua_pushstring(state, fmt::format("arg{0} is must number", number + 1).c_str());
       return 2;
     }
     args.push_back(static_cast<int>(lua_tonumber(state, index)));
@@ -5970,7 +5971,7 @@ int GetEquipGrade(lua_State* state) {
   for (int index = -1; index < 0; ++index) {
     if (!lua_isnumber(state, index)) {
       lua_pushboolean(state, 0);
-      lua_pushstring(state, std::format("arg{0} is must number", number + 1).c_str());
+      lua_pushstring(state, fmt::format("arg{0} is must number", number + 1).c_str());
       return 2;
     }
     args.push_back(static_cast<int>(lua_tonumber(state, index)));
@@ -5999,7 +6000,7 @@ int GetEquipItemId(lua_State* state) {
   for (int index = -1; index < 0; ++index) {
     if (!lua_isnumber(state, index)) {
       lua_pushboolean(state, 0);
-      lua_pushstring(state, std::format("arg{0} is must number", number + 1).c_str());
+      lua_pushstring(state, fmt::format("arg{0} is must number", number + 1).c_str());
       return 2;
     }
     args.push_back(static_cast<int>(lua_tonumber(state, index)));
@@ -6026,7 +6027,7 @@ int GetEquipRefine(lua_State* state) {
   for (int index = -1; index < 0; ++index) {
     if (!lua_isnumber(state, index)) {
       lua_pushboolean(state, 0);
-      lua_pushstring(state, std::format("arg{0} is must number", number + 1).c_str());
+      lua_pushstring(state, fmt::format("arg{0} is must number", number + 1).c_str());
       return 2;
     }
     args.push_back(static_cast<int>(lua_tonumber(state, index)));
@@ -6107,7 +6108,7 @@ int GetEquipTempValue(lua_State* state) {
   for (int index = -1; index < 0; ++index) {
     if (!lua_isnumber(state, index)) {
       lua_pushboolean(state, 0);
-      lua_pushstring(state, std::format("arg{0} is must number", number + 1).c_str());
+      lua_pushstring(state, fmt::format("arg{0} is must number", number + 1).c_str());
       return 2;
     }
     args.push_back(static_cast<int>(lua_tonumber(state, index)));
@@ -6128,7 +6129,7 @@ int SetEquipTempValue(lua_State* state) {
   for (int index = -2; index < 0; ++index) {
     if (!lua_isnumber(state, index)) {
       lua_pushboolean(state, 0);
-      lua_pushstring(state, std::format("arg{0} is must number", number + 1).c_str());
+      lua_pushstring(state, fmt::format("arg{0} is must number", number + 1).c_str());
       return 2;
     }
     args.push_back(static_cast<int>(lua_tonumber(state, index)));
@@ -6381,14 +6382,14 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
       }
       this->loadValid &= result == 0;
       if (result != 0) {
-        ShowErrorDialog(std::format("{0} table has invalid entry key({1})", name, result), 0);
+        ShowErrorDialog(fmt::format("{0} table has invalid entry key({1})", name, result), 0);
       }
       if (this->loadValid) {
         std::string categoryName;
         result = this->script.GetFieldString(categoryName, "name");
         this->loadValid &= result == 0;
         if (result != 0) {
-          ShowErrorDialog(std::format("Category[{0}] has invalid 'name' field({1})", category, result), 0);
+          ShowErrorDialog(fmt::format("Category[{0}] has invalid 'name' field({1})", category, result), 0);
         }
         if (this->loadValid) {
           categoryName = FromUtf8(categoryName, g_textCodePage);
@@ -6409,7 +6410,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
               }
               this->loadValid &= result == 0;
               if (result != 0) {
-                ShowErrorDialog(std::format("Category table has invalid entry key({0})", result), 0);
+                ShowErrorDialog(fmt::format("Category table has invalid entry key({0})", result), 0);
               }
               if (!this->loadValid) {
                 break;
@@ -6424,7 +6425,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
               result = this->script.GetFieldString(orderName, "name");
               this->loadValid &= result == 0;
               if (result != 0) {
-                ShowErrorDialog(std::format("Category({0})'s order[{1}] has invaild 'name' field({2})", categoryName, order, result), 0);
+                ShowErrorDialog(fmt::format("Category({0})'s order[{1}] has invaild 'name' field({2})", categoryName, order, result), 0);
               }
               if (!this->loadValid) {
                 break;
@@ -6447,7 +6448,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
               result = this->script.GetFieldStringArray(definition->functions, "func");
               this->loadValid &= result == 0;
               if (result != 0) {
-                ShowErrorDialog(std::format("Category({0})'s order[{1}] has invaild 'func' field({2})", categoryName, order, result), 0);
+                ShowErrorDialog(fmt::format("Category({0})'s order[{1}] has invaild 'func' field({2})", categoryName, order, result), 0);
               }
               if (!this->loadValid) {
                 break;
@@ -6455,7 +6456,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
 
               this->loadValid &= definition->functions.size() != 0;
               if (definition->functions.size() == 0) {
-                ShowErrorDialog(std::format("Category({0})'s order[{1}]'s 'func' table has 0 value", categoryName, order), 0);
+                ShowErrorDialog(fmt::format("Category({0})'s order[{1}]'s 'func' table has 0 value", categoryName, order), 0);
               }
               if (!this->loadValid) {
                 break;
@@ -6463,7 +6464,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
 
               this->loadValid &= definition->functions.size() <= 2;
               if (definition->functions.size() > 2) {
-                ShowErrorDialog(std::format("Category({0})'s order[{1}]'s 'func' table has more than 2 values", categoryName, order), 0);
+                ShowErrorDialog(fmt::format("Category({0})'s order[{1}]'s 'func' table has more than 2 values", categoryName, order), 0);
               }
               if (!this->loadValid) {
                 break;
@@ -6473,7 +6474,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
               result = this->script.GetFieldUIntMap(values, "val");
               this->loadValid &= result == 0;
               if (result != 0) {
-                ShowErrorDialog(std::format("Category({0})'s order[{1}]'s has invalid 'val' table({2})", categoryName, order, result), 0);
+                ShowErrorDialog(fmt::format("Category({0})'s order[{1}]'s has invalid 'val' table({2})", categoryName, order, result), 0);
               }
               if (!this->loadValid) {
                 break;
@@ -6481,7 +6482,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
 
               this->loadValid &= values.size() == 1;
               if (values.size() != 1) {
-                ShowErrorDialog(std::format("Category({0})'s order[{1}]'s 'val' table has too many key-value pair", categoryName, order), 0);
+                ShowErrorDialog(fmt::format("Category({0})'s order[{1}]'s 'val' table has too many key-value pair", categoryName, order), 0);
               }
               if (!this->loadValid) {
                 break;
@@ -6493,7 +6494,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
                 if (!hasValue) {
                   this->loadValid &= value.second == 1;
                   if (definition->mode != 1) {
-                    ShowErrorDialog(std::format("Category({0})'s order[{1}]'s 'val' table must have 'ONE' type", categoryName, order), 0);
+                    ShowErrorDialog(fmt::format("Category({0})'s order[{1}]'s 'val' table must have 'ONE' type", categoryName, order), 0);
                   }
                   if (!this->loadValid) {
                     break;
@@ -6506,16 +6507,16 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
               bool valid = result == 0 || result == 1;
               this->loadValid &= valid;
               if (!valid) {
-                ShowErrorDialog(std::format("Category({0})'s order[{1}]'s has invalid 'cond' table({2})", categoryName, order, result), 0);
+                ShowErrorDialog(fmt::format("Category({0})'s order[{1}]'s has invalid 'cond' table({2})", categoryName, order, result), 0);
               }
               if (!this->loadValid) {
                 break;
               }
 
               for (const std::string& function : definition->functions) {
-                std::string text = std::format("{0}", function);
+                std::string text = fmt::format("{0}", function);
                 for (const auto& condition : conditions) {
-                  text = std::format("{0} arg{1}:{2}", text, condition.first, condition.second);
+                  text = fmt::format("{0} arg{1}:{2}", text, condition.first, condition.second);
                 }
                 unsigned int hash = 5381;
                 for (const char* character = text.c_str(); *character != '\0'; ++character) {
@@ -6525,7 +6526,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
                 valid = this->m_definitionsByName.find(nameKey) == this->m_definitionsByName.end();
                 this->loadValid &= valid;
                 if (!valid) {
-                  ShowErrorDialog(std::format("string:{0} cause hash collision", text), 0);
+                  ShowErrorDialog(fmt::format("string:{0} cause hash collision", text), 0);
                 }
                 if (!this->loadValid) {
                   break;
@@ -6535,7 +6536,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
 
               this->loadValid &= valid;
               if (!valid) {
-                ShowErrorDialog(std::format("Category({0})'s order[{1}]'s 'cond' table has some error", categoryName, order), 0);
+                ShowErrorDialog(fmt::format("Category({0})'s order[{1}]'s 'cond' table has some error", categoryName, order), 0);
               }
               if (!this->loadValid) {
                 break;
@@ -6545,12 +6546,12 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
               valid = result == 0 || result == 1;
               this->loadValid &= valid;
               if (!valid) {
-                ShowErrorDialog(std::format("Category({0})'s order[{1}]'s value table has invaild 'sym' field", categoryName, order), 0);
+                ShowErrorDialog(fmt::format("Category({0})'s order[{1}]'s value table has invaild 'sym' field", categoryName, order), 0);
               }
               valid = definition->signLabels.size() == 0 || definition->signLabels.size() == 2;
               this->loadValid &= valid;
               if (!valid) {
-                ShowErrorDialog(std::format("Category({0})'s order[{1}]'s value table has invaild 'sym' field", categoryName, order), 0);
+                ShowErrorDialog(fmt::format("Category({0})'s order[{1}]'s value table has invaild 'sym' field", categoryName, order), 0);
               }
               for (std::string& symbolText : definition->signLabels) {
                 symbolText = FromUtf8(symbolText, g_textCodePage);
@@ -6561,7 +6562,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
               valid = result == 0 || result == 1;
               this->loadValid &= valid;
               if (!valid) {
-                ShowErrorDialog(std::format("Category({0})'s order[{1}]'s has invalid 'sep' table({2})", categoryName, order, result), 0);
+                ShowErrorDialog(fmt::format("Category({0})'s order[{1}]'s has invalid 'sep' table({2})", categoryName, order, result), 0);
               }
               if (!this->loadValid) {
                 break;
@@ -6570,7 +6571,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
               if (result == 0) {
                 this->loadValid &= separators.size() == 1;
                 if (separators.size() != 1) {
-                  ShowErrorDialog(std::format("Category({0})'s order[{1}]'s 'sep' table has too many key-value pair", categoryName, order), 0);
+                  ShowErrorDialog(fmt::format("Category({0})'s order[{1}]'s 'sep' table has too many key-value pair", categoryName, order), 0);
                 }
                 if (!this->loadValid) {
                   break;
@@ -6586,7 +6587,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
               valid = result == 0 || result == 1;
               this->loadValid &= valid;
               if (!valid) {
-                ShowErrorDialog(std::format("Category({0})'s order[{1}] has invaild 'rndOpt' field({2})", categoryName, order, result), 0);
+                ShowErrorDialog(fmt::format("Category({0})'s order[{1}] has invaild 'rndOpt' field({2})", categoryName, order, result), 0);
               }
               if (!this->loadValid) {
                 break;
@@ -6596,7 +6597,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
                 valid = this->randomOptionDefinitions.find(randomOption) == this->randomOptionDefinitions.end();
                 this->loadValid &= valid;
                 if (!valid) {
-                  ShowErrorDialog(std::format("Category({0})'s order[{1}]'s rndOpt value is already defined: {2}", category, order,
+                  ShowErrorDialog(fmt::format("Category({0})'s order[{1}]'s rndOpt value is already defined: {2}", category, order,
                                               static_cast<unsigned int>(randomOption)),
                                   0);
                 }
@@ -6610,7 +6611,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
               valid = result == 0 || result == 1;
               this->loadValid &= valid;
               if (!valid) {
-                ShowErrorDialog(std::format("Category({0})'s order[{1}] has invaild 'uniq1' field({2})", categoryName, order, result), 0);
+                ShowErrorDialog(fmt::format("Category({0})'s order[{1}] has invaild 'uniq1' field({2})", categoryName, order, result), 0);
               }
               if (!this->loadValid) {
                 break;
@@ -6620,7 +6621,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
               valid = result == 0 || result == 1;
               this->loadValid &= valid;
               if (!valid) {
-                ShowErrorDialog(std::format("Category({0})'s order[{1}] has invaild 'uniq2' field({2})", categoryName, order, result), 0);
+                ShowErrorDialog(fmt::format("Category({0})'s order[{1}] has invaild 'uniq2' field({2})", categoryName, order, result), 0);
               }
               if (!this->loadValid) {
                 break;
@@ -6653,7 +6654,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
               valid = result == 0 || result == 1;
               this->loadValid &= valid;
               if (!valid) {
-                ShowErrorDialog(std::format("Category({0})'s order[{1}] has invaild 'rndOpt' field({2})", categoryName, order, result), 0);
+                ShowErrorDialog(fmt::format("Category({0})'s order[{1}] has invaild 'rndOpt' field({2})", categoryName, order, result), 0);
               }
               if (!this->loadValid) {
                 break;
@@ -6661,7 +6662,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
               lua_settop(state, -2);
             }
           } else {
-            ShowErrorDialog(std::format("Category({0})'s has invaild 'order' table", categoryName), 0);
+            ShowErrorDialog(fmt::format("Category({0})'s has invaild 'order' table", categoryName), 0);
           }
           lua_settop(state, -2);
         }
@@ -6669,11 +6670,11 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadEquipmentPropertiesOrder(
       lua_settop(state, -2);
     }
   } else {
-    ShowErrorDialog(std::format("Can't find global table '{0}'", name), 0);
+    ShowErrorDialog(fmt::format("Can't find global table '{0}'", name), 0);
   }
   lua_settop(state, -2);
   if (!this->loadValid) {
-    ShowErrorDialog(std::format("Check error in '{0}' table and restart game ", name), 0);
+    ShowErrorDialog(fmt::format("Check error in '{0}' table and restart game ", name), 0);
   }
 }
 
@@ -6944,7 +6945,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
           }
           this->loadValid &= result == 0;
           if (result != 0) {
-            ShowErrorDialog(std::format("{0} table has invalid entry key({1})", name, result), 0);
+            ShowErrorDialog(fmt::format("{0} table has invalid entry key({1})", name, result), 0);
           }
           if (!this->loadValid) {
             break;
@@ -6975,7 +6976,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
           bool valid = result == 0 || result == 1;
           this->loadValid &= valid;
           if (!valid) {
-            ShowErrorDialog(std::format("Item[{0}] has invalid 'Stat' table({1})", key, result), 0);
+            ShowErrorDialog(fmt::format("Item[{0}] has invalid 'Stat' table({1})", key, result), 0);
           }
           if (!this->loadValid) {
             break;
@@ -6986,7 +6987,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
           const bool hasType = result == 0;
           this->loadValid &= hasType;
           if (result != 0) {
-            ShowErrorDialog(std::format("Item[{0}] has invalid 'Type' field({1})", key, result), 0);
+            ShowErrorDialog(fmt::format("Item[{0}] has invalid 'Type' field({1})", key, result), 0);
           }
           if (!this->loadValid) {
             break;
@@ -7020,7 +7021,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
           valid = count == stats.size();
           this->loadValid &= valid;
           if (!valid) {
-            ShowErrorDialog(std::format("Item[{0}] has invalid 'Stat' table(count: {1})", key, count), 0);
+            ShowErrorDialog(fmt::format("Item[{0}] has invalid 'Stat' table(count: {1})", key, count), 0);
           }
           if (!this->loadValid) {
             break;
@@ -7091,7 +7092,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
               }
               auto found = this->statVariables.find(variable);
               if (found == this->statVariables.end()) {
-                ShowErrorDialog(std::format("Not available stat type: {0}", variable), 0);
+                ShowErrorDialog(fmt::format("Not available stat type: {0}", variable), 0);
               } else {
                 info.statProperties.try_emplace(found->second.value, stats[index]);
               }
@@ -7160,7 +7161,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
               }
               auto found = this->statVariables.find(variable);
               if (found == this->statVariables.end()) {
-                ShowErrorDialog(std::format("Not available stat type: {0}", variable), 0);
+                ShowErrorDialog(fmt::format("Not available stat type: {0}", variable), 0);
               } else {
                 info.statProperties.try_emplace(found->second.value, stats[index]);
               }
@@ -7177,7 +7178,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
                 const int variable = 41;
                 auto found = this->statVariables.find(variable);
                 if (found == this->statVariables.end()) {
-                  ShowErrorDialog(std::format("Not available stat type: {0}", variable), 0);
+                  ShowErrorDialog(fmt::format("Not available stat type: {0}", variable), 0);
                 } else {
                   info.statProperties.try_emplace(found->second.value, stats[index]);
                 }
@@ -7241,7 +7242,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
               }
               auto found = this->statVariables.find(variable);
               if (found == this->statVariables.end()) {
-                ShowErrorDialog(std::format("Not available stat type: {0}", variable), 0);
+                ShowErrorDialog(fmt::format("Not available stat type: {0}", variable), 0);
               } else {
                 info.statProperties.try_emplace(found->second.value, stats[index]);
               }
@@ -7258,7 +7259,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
           valid = result == 0 || result == 1;
           this->loadValid &= valid;
           if (!valid) {
-            ShowErrorDialog(std::format("Item[{0}] has invalid 'Combiitem' table({1})", key, result), 0);
+            ShowErrorDialog(fmt::format("Item[{0}] has invalid 'Combiitem' table({1})", key, result), 0);
           }
           if (!this->loadValid) {
             break;
@@ -7273,10 +7274,10 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
       lua_settop(state, -2);
     }
   } else {
-    ShowErrorDialog(std::format("Can't find global table '{0}'", name), 0);
+    ShowErrorDialog(fmt::format("Can't find global table '{0}'", name), 0);
   }
   lua_settop(state, -2);
   if (!this->loadValid) {
-    ShowErrorDialog(std::format("Check error in '{0}' table and restart game ", name), 0);
+    ShowErrorDialog(fmt::format("Check error in '{0}' table and restart game ", name), 0);
   }
 }
