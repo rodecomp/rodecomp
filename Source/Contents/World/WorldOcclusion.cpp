@@ -20,7 +20,7 @@ __declspec(safebuffers) void CGameMode::MarkWorldOcclusion() {
   const int screenX = this->scene->player->render.screenX;
   const int screenY = static_cast<int>(static_cast<float>(this->scene->player->render.screenY) - g_renderer->viewport.uiScaleY * 23.0f);
   WorldRayQuery query;
-  float ray[6]{};
+  float ray[6] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
   g_renderer->Ray(screenX, screenY, &this->camera->frame.eye.x, this->camera->frame.inverse.values, ray);
 
   float actorRay[7];
@@ -33,8 +33,9 @@ __declspec(safebuffers) void CGameMode::MarkWorldOcclusion() {
   actorRay[6] = (this->scene->player->render.position.y + this->camera->camera.distance) - 16.0f;
   query.Collect(ray, &this->scene->spatial);
 
-  for (auto node = query.nodes.begin(); node != query.nodes.end(); ++node) {
-    for (auto model = (*node)->objects.begin(); model != (*node)->objects.end(); ++model) {
+  for (auto it = query.nodes.begin(); it != query.nodes.end(); ++it) {
+    WorldSpatialTree* node = *it;
+    for (auto model = node->objects.begin(); model != node->objects.end(); ++model) {
       (*model)->MarkOccluded(actorRay);
     }
   }
@@ -42,13 +43,14 @@ __declspec(safebuffers) void CGameMode::MarkWorldOcclusion() {
   if (this->checkGroundAlpha) {
     for (auto it = query.nodes.begin(); it != query.nodes.end(); ++it) {
       WorldSpatialTree* node = *it;
+      GroundGeometry* ground = node->ground;
       int row = node->groundCells[1];
 
       while (row <= node->groundCells[3]) {
         int column = node->groundCells[0];
 
         while (column <= node->groundCells[2]) {
-          node->ground->MarkRay(ray, column, row, actorRay[6]);
+          ground->MarkRay(ray, column, row, actorRay[6]);
           ++column;
         }
 
