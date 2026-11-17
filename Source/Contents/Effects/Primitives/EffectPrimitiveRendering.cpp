@@ -1789,9 +1789,9 @@ void CEffectPrim::RenderHermode(matrix& wtm) {
 // OFFSET: 0x00BDB530
 // FUNCTION: fn_19896
 void CEffectPrim::RenderHitLine3(matrix& wtm) {
-  ZeroVector3d vec3;
   ZeroVector3d vec1;
   ZeroVector3d vec2;
+  ZeroVector3d vec3;
   ZeroVector3d vec4;
   int rpCnt = 0;
 
@@ -1808,10 +1808,10 @@ void CEffectPrim::RenderHitLine3(matrix& wtm) {
         speed += this->state.slots[ec].height[j] / 90.0f * this->state.slots[ec].distance;
       }
 
-      vector3d vecA{
-        speed * g_cosTable[this->state.slots[ec].riseAngle], -this->state.slots[ec].distance * g_sinTable[static_cast<std::int16_t>(this->state.slots[ec].height[j])] * this->state.slots[ec].vecTNow.x,
-        speed * g_sinTable[this->state.slots[ec].riseAngle]
-      };
+      vector3d vecA;
+      vecA.y = -this->state.slots[ec].distance * g_sinTable[static_cast<std::int16_t>(this->state.slots[ec].height[j])] * this->state.slots[ec].vecTNow.x;
+      vecA.z = speed * g_sinTable[this->state.slots[ec].riseAngle];
+      vecA.x = speed * g_cosTable[this->state.slots[ec].riseAngle];
 
       speed = 0.0f;
 
@@ -1819,13 +1819,36 @@ void CEffectPrim::RenderHitLine3(matrix& wtm) {
         speed += this->state.slots[ec].height[j + 1] / 90.0f * this->state.slots[ec].distance;
       }
 
-      vector3d vecB{
-        speed * g_cosTable[this->state.slots[ec].riseAngle], -this->state.slots[ec].distance * g_sinTable[static_cast<std::int16_t>(this->state.slots[ec].height[j + 1])] * this->state.slots[ec].vecTNow.x,
-        speed * g_sinTable[this->state.slots[ec].riseAngle]
-      };
+      vector3d vecB;
+      vecB.y = -this->state.slots[ec].distance * g_sinTable[static_cast<std::int16_t>(this->state.slots[ec].height[j + 1])] * this->state.slots[ec].vecTNow.x;
+      vecB.z = speed * g_sinTable[this->state.slots[ec].riseAngle];
+      vecB.x = speed * g_cosTable[this->state.slots[ec].riseAngle];
 
       std::int16_t angle;
-      this->Get_Angle(vecA.x - vecB.x, vecA.z - vecB.z, &angle);
+      {
+        const float y = vecA.z - vecB.z;
+        const float x = vecA.x - vecB.x;
+        const float length = SquareRoot(x * x + y * y);
+        const float normalY = y / length;
+        const float normalX = x / length;
+        std::int16_t index = 0;
+
+        for (; index <= 180; ++index) {
+          if (normalX >= g_cosTable[index]) {
+            break;
+          }
+        }
+
+        if (index <= 180) {
+          if (normalY >= 0.0f) {
+            angle = index;
+          } else {
+            angle = 360 - index;
+          }
+        } else {
+          angle = 180;
+        }
+      }
       vecA += this->state.slots[ec].vecBNow;
       vecB += this->state.slots[ec].vecBNow;
       angle += 90;
@@ -1854,7 +1877,7 @@ void CEffectPrim::RenderHitLine3(matrix& wtm) {
             } else if (this->state.slots[ec].alphaT == 2) {
               this->RenderTeiRect(&rpCnt, alpha, vec2, vec4, vec3, vec1, wtm, 0, 0, 1, 255, 200, 150 - (3 - j) * 50, 0.0f, 1.0f, 0.0f, 1.0f, 0);
             } else if (this->state.slots[ec].alphaT >= 3) {
-              const unsigned char grey = static_cast<unsigned char>(255 - (5 - j) * 30);
+              const int grey = 255 - (5 - j) * 30;
               this->RenderTeiRect(&rpCnt, alpha, vec2, vec4, vec3, vec1, wtm, 0, 0, 1, grey, grey, grey, 0.0f, 1.0f, 0.0f, 1.0f, 0);
             }
           }
@@ -1953,7 +1976,30 @@ void CEffectPrim::RenderHitLine(matrix& wtm) {
       };
 
       std::int16_t angle;
-      this->Get_Angle(vecA.x - vecB.x, vecA.z - vecB.z, &angle);
+      {
+        const float y = vecA.z - vecB.z;
+        const float x = vecA.x - vecB.x;
+        const float length = SquareRoot(x * x + y * y);
+        const float normalY = y / length;
+        const float normalX = x / length;
+        std::int16_t index = 0;
+
+        for (; index <= 180; ++index) {
+          if (normalX >= g_cosTable[index]) {
+            break;
+          }
+        }
+
+        if (index <= 180) {
+          if (normalY >= 0.0f) {
+            angle = index;
+          } else {
+            angle = 360 - index;
+          }
+        } else {
+          angle = 180;
+        }
+      }
       vecA += this->state.slots[ec].vecBNow;
       vecB += this->state.slots[ec].vecBNow;
       angle = static_cast<std::int16_t>((angle + 90) % 360);
