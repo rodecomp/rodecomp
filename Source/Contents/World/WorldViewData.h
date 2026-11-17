@@ -11,6 +11,10 @@ class CTexture;
 class LuaScript;
 
 struct WorldViewArea {
+  WorldViewArea() = default;
+  WorldViewArea(int left, int top, int right, int bottom, int areaFlags) : left(left), top(top), right(right), bottom(bottom), areaFlags(areaFlags) {
+  }
+
   /* 0000 */ int left;
   /* 0004 */ int top;
   /* 0008 */ int right;

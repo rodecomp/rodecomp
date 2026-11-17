@@ -714,7 +714,7 @@ void CFlyingShipRouteInfo::BuildRoute(const std::vector<std::string>& mapNames) 
     CWorldViewField* field = g_worldViewMgr.worlds[0]->FindField(it->c_str());
     if (field) {
       std::string name = field->name;
-      WorldViewArea area = {field->left, field->top, field->right, field->bottom, field->areaFlags};
+      WorldViewArea area = field->area;
       RoMapMarker marker;
       SetRoMapMarker(name, area, marker);
       this->entries.push_back(marker);
