@@ -271,7 +271,7 @@ int FallbackFontIndex(const std::string& name) {
 
 // OFFSET: 0x0054F8A0
 // FUNCTION: fn_01960
-std::string __stdcall PrivateFontFamilyName(const std::string& path) {
+std::string FontEntry::PrivateFontFamilyName(const std::string& path) const {
   std::wstring wide;
   wide.assign(path.begin(), path.end());
   Gdiplus::PrivateFontCollection collection;
