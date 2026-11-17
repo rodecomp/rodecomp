@@ -2,6 +2,7 @@
 #define RAGNAROK_SOURCE_CONTENTS_MOVIES_BINKMOVIES_H
 
 #include "Contents/Movies/BinkMovie.h"
+#include "Utility/Math/Vector3d.h"
 
 #include <cstddef>
 #include <list>
@@ -10,11 +11,7 @@
 
 class TextureCache;
 
-struct MoviePosition {
-  /* 0000 */ float x;
-  /* 0004 */ float y;
-  /* 0008 */ float z;
-};
+using MoviePosition = vector3d;
 
 struct NamedBinkMovie {
   NamedBinkMovie();

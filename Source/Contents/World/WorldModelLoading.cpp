@@ -62,7 +62,7 @@ inline bool operator<(const DeferredWorldModel& left, const DeferredWorldModel& 
 namespace {
   // INLINED
   inline C3dActor* CreateWorldModel(const WorldModelRecord& placement, C3dModelRes& resource, BinkMovies& movies) {
-    resource.RegisterMovies({placement.position.x, placement.position.y, placement.position.z});
+    resource.RegisterMovies(placement.position);
 
     if (!resource.FindNode(placement.node) && resource.nodes.front() == nullptr) {
       return nullptr;

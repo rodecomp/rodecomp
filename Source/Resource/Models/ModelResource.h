@@ -4,6 +4,7 @@
 #include "Resource/Models/ModelMesh.h"
 #include "Resource/Resource.h"
 #include "Utility/Math/AffineMatrix.h"
+#include "Utility/Math/Vector3d.h"
 
 #include <functional>
 #include <list>
@@ -133,7 +134,7 @@ public:
   void Unload() override;
   ModelNode* FindNode(const char* name) const;
   void ForEachRootName(std::function<void(const std::string&)> callback) const;
-  void RegisterMovies(struct MoviePosition position) const;
+  void RegisterMovies(vector3d position) const;
 
   /* 0110 */ int major;
   /* 0114 */ std::list<ModelNode*> nodes;
