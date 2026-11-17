@@ -20,8 +20,8 @@ void CRenderer::SetSize(int columns, int rows) {
   this->viewport.clipCenterY = rows / 2;
   this->viewport.clipCenterX = columns / 2;
   this->viewport.vertical = wide;
-  this->viewport.horizontal = wide * aspect;
   this->viewport.scaleX = (static_cast<float>(columns / 2) / narrow) * aspect;
+  this->viewport.horizontal = wide * aspect;
 
   this->viewport.uiScaleX = static_cast<float>(columns) / 640.0f;
   const float height = (static_cast<float>(rows) * 1.34f) / 768.0f;

@@ -4816,8 +4816,8 @@ void CRichsCoinEffect::OnProcess() {
       const float cosine = ClientCos(angle) * 7.0f;
       const float sine = ClientSin(angle) * 7.0f;
       const float z = cosine + this->position[2];
-      const float y = this->position[1] - 10.0f;
       const float x = sine + this->position[0];
+      const float y = this->position[1] - 10.0f;
       particle->position.z = z;
       particle->position.x = x;
       particle->position.y = y;
@@ -4849,8 +4849,8 @@ void CRichsCoinEffect::OnProcess() {
       const float cosine = ClientCos(angle) * 7.0f;
       const float sine = ClientSin(angle) * 7.0f;
       const float z = cosine + this->position[2];
-      const float y = this->position[1] - 10.0f;
       const float x = sine + this->position[0];
+      const float y = this->position[1] - 10.0f;
       coin->position.z = z;
       coin->position.y = y;
       coin->position.x = x;

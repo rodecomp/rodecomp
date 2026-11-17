@@ -9,11 +9,11 @@
 // OFFSET: 0x00AC3320
 // FUNCTION: fn_17600
 void GroundBase::SetWater(float newLevel, int newType, int newAnimation, int newPitch, int newPhase, float newHeight) {
+  this->waterLevel = newLevel;
   this->waterAnimation = newAnimation;
   this->waterPitch = newPitch;
-  this->waterLevel = newLevel;
-  this->waterHeight = newHeight;
   this->waterPhase = newPhase % 360;
+  this->waterHeight = newHeight;
   this->waterType = newType;
 }
 

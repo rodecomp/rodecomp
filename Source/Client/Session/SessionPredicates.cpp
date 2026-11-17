@@ -119,7 +119,7 @@ int CSession::IsCompanionAid(std::uint32_t aid) const {
     return 1;
   }
   auto it = this->summonHp.find(aid);
-  if (it == this->summonHp.end() || it->second == -1) {
+  if (this->summonHp.end() == it || -1 == it->second) {
     return 0;
   }
   return 1;

@@ -13354,22 +13354,24 @@ void CRagEffect::WhiteLightTrail(const char* name, char kind) {
   this->state.lastPrim->state.slots[3].life = 0;
 
   if (kind == 0) {
-    this->state.lastPrim->state.slots[0].life = 1;
-    this->state.lastPrim->state.slots[0].maxHeight = static_cast<float>(ClampedRandom(16)) * 0.01f + 0.1f;
-    this->state.lastPrim->state.slots[0].distance = static_cast<float>(ClampedRandom(11)) * 0.1f + 3.0f;
-    this->state.lastPrim->state.slots[0].process = -ClampedRandom(26);
-    this->state.lastPrim->state.slots[0].alphaB = 0;
-    this->state.lastPrim->state.slots[0].vecBPre.y = static_cast<float>(-ClampedRandom(8));
+    int slot0 = 0;
+    this->state.lastPrim->state.slots[slot0].life = 1;
+    this->state.lastPrim->state.slots[slot0].maxHeight = static_cast<float>(ClampedRandom(16)) * 0.01f + 0.1f;
+    this->state.lastPrim->state.slots[slot0].distance = static_cast<float>(ClampedRandom(11)) * 0.1f + 3.0f;
+    this->state.lastPrim->state.slots[slot0].process = -ClampedRandom(26);
+    this->state.lastPrim->state.slots[slot0].alphaB = 0;
+    this->state.lastPrim->state.slots[slot0].vecBPre.y = static_cast<float>(-ClampedRandom(8));
     const int heading = ClampedRandom(360);
     const float offsetX = g_cosTable[heading] * 2.5f;
     const float offsetZ = g_sinTable[heading] * 2.5f;
-    this->state.lastPrim->state.slots[0].vecBPre.x = offsetX;
-    this->state.lastPrim->state.slots[0].vecBPre.z = offsetZ;
-    this->state.lastPrim->state.slots[0].height[0] = static_cast<float>(ClampedRandom(360));
-    this->state.lastPrim->state.slots[0].height[1] = static_cast<float>(ClampedRandom(360));
-    this->state.lastPrim->state.slots[0].height[2] = static_cast<float>(ClampedRandom(360));
-    this->state.lastPrim->state.slots[0].height[3] = static_cast<float>(ClampedRandom(360));
-    this->state.lastPrim->state.slots[0].flag1[0] = 1;
+    int slot0b = 0;
+    this->state.lastPrim->state.slots[slot0b].vecBPre.x = offsetX;
+    this->state.lastPrim->state.slots[slot0b].vecBPre.z = offsetZ;
+    this->state.lastPrim->state.slots[slot0b].height[0] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[slot0b].height[1] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[slot0b].height[2] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[slot0b].height[3] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[slot0b].flag1[0] = 1;
     return;
   }
 
