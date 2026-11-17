@@ -13,14 +13,12 @@ std::string UIWindow::FitTextToWidth(const std::string& source, int width) {
 
   std::string text(source);
   int extent = this->TextWidth(text.c_str(), 0, 0, 12, 0, 0);
-  this->TextWidth("...", 0, 0, 12, 0, 0);
-  ATL::CA2WEX<128> wide(text.c_str(), CP_THREAD_ACP);
-  std::wstring remaining(wide);
+  this->TextWidth("...", 3, 0, 12, 0, 0);
+  std::wstring remaining(ATL::CA2WEX<128>(text.c_str(), CP_THREAD_ACP));
 
   while (extent > width) {
     if (remaining.size() <= 1) {
-      ATL::CW2AEX<128> converted(remaining.c_str(), CP_THREAD_ACP);
-      return std::string(converted) + "...";
+      return std::string(ATL::CW2AEX<128>(remaining.c_str(), CP_THREAD_ACP)) + "...";
     }
 
     std::size_t length = remaining.size() - 1;
@@ -30,8 +28,7 @@ std::string UIWindow::FitTextToWidth(const std::string& source, int width) {
     }
 
     remaining.resize(length);
-    ATL::CW2AEX<128> converted(remaining.c_str(), CP_THREAD_ACP);
-    text = std::string(converted) + "...";
+    text = std::string(ATL::CW2AEX<128>(remaining.c_str(), CP_THREAD_ACP)) + "...";
     extent = this->TextWidth(text.c_str(), 0, 0, 12, 0, 0);
   }
 
