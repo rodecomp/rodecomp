@@ -1741,13 +1741,12 @@ void UIGuildMemberManageWnd::OnCreate(int, int) {
     const std::string prefix("유저인터페이스\\");
     int x = this->geometry.width - 61;
     int y = this->geometry.height - 23;
-    UIBitmapButton* button = new UIBitmapButton();
-    this->m_button = button;
-    button->SetBitmap((prefix + "btn_ok" + ".bmp").c_str(), 0, 0);
-    button->SetBitmap((prefix + "btn_ok_a" + ".bmp").c_str(), 1, 0);
-    button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
-    button->SetBitmap((prefix + "btn_ok_dis" + ".bmp").c_str(), 3, 0);
-    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+    this->m_button = new UIBitmapButton();
+    this->m_button->SetBitmap((prefix + "btn_ok" + ".bmp").c_str(), 0, 0);
+    this->m_button->SetBitmap((prefix + "btn_ok_a" + ".bmp").c_str(), 1, 0);
+    this->m_button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
+    this->m_button->SetBitmap((prefix + "btn_ok_dis" + ".bmp").c_str(), 3, 0);
+    this->m_button->SetSize(this->m_button->BitmapWidth(), this->m_button->BitmapHeight());
     if (g_guildInfo.isMaster && !this->membersByCharacterId.empty()) {
       this->m_button->Move(x, y);
     } else {
