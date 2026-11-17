@@ -872,7 +872,7 @@ void ToggleSitStand() {
   player->render.angle = static_cast<float>(std::ceil(player->render.angle));
   mode->SendMsg(MM_CHANGE_DIRECTION, (static_cast<int>(player->render.angle) + 180) / 45 % 8, motion, 0, 0);
 
-  if (player->render.state == 6) {
+  if (player->render.state == ST_SIT) {
     std::list<unsigned long>& times = mode->periodicTicks;
     times.pop_front();
     times.push_back(timeGetTime());

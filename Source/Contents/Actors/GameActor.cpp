@@ -765,129 +765,129 @@ bool CGameActor::UpdateFadeOut() {
 // OFFSET: 0x00CACFE0
 // FUNCTION: fn_21050
 int __stdcall MountedJob(int job, std::uint32_t flags) {
-  if (job == 0xfd6) {
+  if (job == JT_RUNE_KNIGHT) {
     if (StateFlag19(flags)) {
-      return 0xff0;
+      return JT_RUNE_CHICKEN;
     }
     if (StateFlag23(flags)) {
-      return 0xff8;
+      return JT_RUNE_CHICKEN2;
     }
     if (StateFlag24(flags)) {
-      return 0xffa;
+      return JT_RUNE_CHICKEN3;
     }
     if (StateFlag25(flags)) {
-      return 0xffc;
+      return JT_RUNE_CHICKEN4;
     }
     if (StateFlag26(flags)) {
-      return 0xffe;
+      return JT_RUNE_CHICKEN5;
     }
-  } else if (job == 0xfdc) {
+  } else if (job == JT_RUNE_KNIGHT_H) {
     if (StateFlag19(flags)) {
-      return 0xff1;
+      return JT_RUNE_CHICKEN_H;
     }
     if (StateFlag23(flags)) {
-      return 0xff9;
+      return JT_RUNE_CHICKEN2_H;
     }
     if (StateFlag24(flags)) {
-      return 0xffb;
+      return JT_RUNE_CHICKEN3_H;
     }
     if (StateFlag25(flags)) {
-      return 0xffd;
+      return JT_RUNE_CHICKEN4_H;
     }
     if (StateFlag26(flags)) {
-      return 0xfff;
+      return JT_RUNE_CHICKEN5_H;
     }
-  } else if (job == 0x1000) {
+  } else if (job == JT_RUNE_KNIGHT_B) {
     if (StateFlag19(flags)) {
-      return 0x100d;
+      return JT_RUNE_CHICKEN_B;
     }
-  } else if (job == 0xfd8) {
+  } else if (job == JT_RANGER) {
     if (StateFlag21(flags)) {
-      return 0xff4;
+      return JT_WOLF_RANGER;
     }
-  } else if (job == 0xfde) {
+  } else if (job == JT_RANGER_H) {
     if (StateFlag21(flags)) {
-      return 0xff5;
+      return JT_WOLF_RANGER_H;
     }
-  } else if (job == 0x1002) {
+  } else if (job == JT_RANGER_B) {
     if (StateFlag21(flags)) {
-      return 0x100f;
+      return JT_WOLF_RANGER_B;
     }
-  } else if (job == 0xfda) {
+  } else if (job == JT_MECHANIC) {
     if (StateFlag22(flags)) {
-      return 0xff6;
+      return JT_MADOGEAR;
     }
-  } else if (job == 0xfe0) {
+  } else if (job == JT_MECHANIC_H) {
     if (StateFlag22(flags)) {
-      return 0xff7;
+      return JT_MADOGEAR_H;
     }
-  } else if (job == 0x1004) {
+  } else if (job == JT_MECHANIC_B) {
     if (StateFlag22(flags)) {
-      return 0x1010;
+      return JT_MADOGEAR_B;
     }
-  } else if (job == 0x7) {
+  } else if (job == JT_KNIGHT) {
     if (StateFlag05(flags)) {
-      return 0xd;
+      return JT_CHICKEN;
     }
-  } else if (job == 0xe) {
+  } else if (job == JT_CRUSADER) {
     if (StateFlag05(flags)) {
-      return 0x15;
+      return JT_CHICKEN2;
     }
-  } else if (job == 0xfa8) {
+  } else if (job == JT_KNIGHT_H) {
     if (StateFlag05(flags)) {
-      return 0xfae;
+      return JT_CHICKEN_H;
     }
-  } else if (job == 0xfbe) {
+  } else if (job == JT_KNIGHT_B) {
     if (StateFlag05(flags)) {
-      return 0xfc4;
+      return JT_CHICKEN_B;
     }
-  } else if (job == 0xfaf) {
+  } else if (job == JT_CRUSADER_H) {
     if (StateFlag05(flags)) {
-      return 0xfb6;
+      return JT_CHICKEN2_H;
     }
-  } else if (job == 0xfc5) {
+  } else if (job == JT_CRUSADER_B) {
     if (StateFlag05(flags)) {
-      return 0xfcc;
+      return JT_CHICKEN2_B;
     }
-  } else if (job == 0xfe2) {
+  } else if (job == JT_ROYAL_GUARD) {
     if (StateFlag05(flags)) {
-      return 0xff2;
+      return JT_ROYAL_CHICKEN;
     }
-  } else if (job == 0xfe9) {
+  } else if (job == JT_ROYAL_GUARD_H) {
     if (StateFlag05(flags)) {
-      return 0xff3;
+      return JT_ROYAL_CHICKEN_H;
     }
-  } else if (job == 0x1006) {
+  } else if (job == JT_ROYAL_GUARD_B) {
     if (StateFlag05(flags)) {
-      return 0x100e;
+      return JT_ROYAL_CHICKEN_B;
     }
-  } else if (job == 0xfcf) {
+  } else if (job == JT_STAR) {
     if (StateFlag15(flags)) {
-      return 0xfd0;
+      return JT_STAR2;
     }
-  } else if (job == 0x1082) {
+  } else if (job == JT_STAR_B) {
     if (StateFlag15(flags)) {
-      return 0x108e;
+      return JT_STAR2_B;
     }
-  } else if (job == 0x10a1) {
+  } else if (job == JT_WINDHAWK) {
     if (StateFlag21(flags) == true) {
-      return 0x10b6;
+      return JT_WOLF_WINDHAWK;
     }
-  } else if (job == 0x109d) {
+  } else if (job == JT_MEISTER) {
     if (StateFlag22(flags) == true) {
-      return 0x10b7;
+      return JT_MEISTER_MADOGEAR;
     }
-  } else if (job == 0x109c) {
+  } else if (job == JT_DRAGON_KNIGHT) {
     if (StateFlag19(flags) == true) {
-      return 0x10b8;
+      return JT_DRAGON_KNIGHT_CHICKEN;
     }
-  } else if (job == 0x10a2) {
+  } else if (job == JT_IMPERIAL_GUARD) {
     if (StateFlag05(flags) == true) {
-      return 0x10b9;
+      return JT_IMPERIAL_GUARD_CHICKEN;
     }
-  } else if (job == 0x10ce) {
+  } else if (job == JT_SKY_EMPEROR) {
     if (StateFlag15(flags)) {
-      return 0x10dc;
+      return JT_SKY_EMPEROR2;
     }
   }
   return job;

@@ -1,6 +1,7 @@
 #include "Contents/ClientState.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
+#include "Contents/Actors/ActorEnums.h"
 
 #include "Client/Mode/CGameMode.h"
 #include "Contents/Configuration/ServiceOptions.h"
@@ -211,9 +212,9 @@ std::uint32_t CSession::ReadReplayStats(const std::vector<unsigned char>& data) 
       if (player) {
         player->SetMadogearType(this->madogearType);
         if (this->madogearType) {
-          player->SendMsg(nullptr, 105, 0, 0, 0, 0, 0, 0);
+          player->SendMsg(nullptr, AM_MAKE_CHICKEN, 0, 0, 0, 0, 0, 0);
         } else {
-          player->SendMsg(nullptr, 106, 0, 0, 0, 0, 0, 0);
+          player->SendMsg(nullptr, AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
         }
       }
       break;

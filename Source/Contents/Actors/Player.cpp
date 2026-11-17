@@ -456,7 +456,7 @@ void CGrannyPc::SetState(int state, int resetPosition) {
       this->GetEffectiveJob(-1), this->sex,
       this->weaponPair
     );
-    CGameActor::SetState(weaponAllowed ? 9 : 2, resetPosition);
+    CGameActor::SetState(weaponAllowed ? ST_ATTACK2 : ST_ATTACK, resetPosition);
     this->attackMotion = g_session.AttackMotionLength(this->GetEffectiveJob(-1), this->sex, this->weapon, weaponAllowed);
     bool usesArrow = false;
     g_session.m_hotkeyScript->Call("IsItemUsingArrow", "d>b", this->weapon, &usesArrow);
@@ -476,9 +476,9 @@ void CGrannyPc::SetState(int state, int resetPosition) {
       this->GetEffectiveJob(-1), this->sex,
       this->weaponPair
     );
-    CGameActor::SetState(weaponAllowed ? 9 : 2, resetPosition);
+    CGameActor::SetState(weaponAllowed ? ST_ATTACK2 : ST_ATTACK, resetPosition);
     this->attackMotion = g_session.AttackMotionLength(this->GetEffectiveJob(-1), this->sex, this->weapon, weaponAllowed);
-    if ((this->weapon == 14 && this->secondaryWeapon == 0) || (this->weapon == 13 && this->secondaryWeapon == 0)) {
+    if ((this->weapon == W_WHIP && this->secondaryWeapon == 0) || (this->weapon == W_MUSICAL && this->secondaryWeapon == 0)) {
       CGameMode* mode = g_modeMgr.GetGameMode();
       mode->SpawnArrowEffect(&this->render.position, this->hitTargetAid, this->attackMotion * this->render.speed, 0);
       this->attackMotion = 8.0f / this->render.speed + this->attackMotion;
@@ -543,7 +543,7 @@ bool CPlayer::IsSpecialState(int state) const {
 // OFFSET: 0x00DB06C0
 // FUNCTION: fn_22619
 void CGrannyPc::SetModifyFactorOfmotionSpeed(int value) {
-  if (this->weapon != 11 || this->secondaryWeapon != 0) {
+  if (this->weapon != W_BOW || this->secondaryWeapon != 0) {
     value = value > g_maxMoveSpeed ? g_maxMoveSpeed : value;
   }
 
@@ -561,7 +561,7 @@ void CPc::SetModifyFactorOfmotionSpeed(int value) {
     weapon = g_session.GetWeaponViewValue(weapon);
   }
 
-  if (weapon != 11) {
+  if (weapon != W_BOW) {
     speed = speed > g_maxMoveSpeed ? g_maxMoveSpeed : speed;
   }
 
@@ -4556,9 +4556,9 @@ void CPc::SetState(int state, int resetPosition) {
       this->render.isMotionFreezed = false;
     }
     const bool weaponAllowed = g_session.IsJobWeaponAllowed(this->GetEffectiveJob(-1), this->sex, this->weaponPair);
-    CGameActor::SetState(weaponAllowed ? 9 : 2, resetPosition);
+    CGameActor::SetState(weaponAllowed ? ST_ATTACK2 : ST_ATTACK, resetPosition);
     this->attackMotion = g_session.AttackMotionLength(this->GetEffectiveJob(-1), this->sex, this->weapon, weaponAllowed);
-    if (this->weaponPair == 14 || this->weaponPair == 13) {
+    if (this->weaponPair == W_WHIP || this->weaponPair == W_MUSICAL) {
       CGameMode* mode = g_modeMgr.GetGameMode();
       mode->SpawnArrowEffect(&this->render.position, this->hitTargetAid, this->attackMotion * this->render.speed, 0);
       this->attackMotion = 8.0f / this->render.speed + this->attackMotion;

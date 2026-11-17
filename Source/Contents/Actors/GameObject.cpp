@@ -350,7 +350,7 @@ void CRenderObject::DrawSprite(int argument, bool seasonal, float offset) {
     int blend = 257;
     this->DrawSpriteEffects(&quad, &cell, &box, scale, bottomRhw, topRhw, palette, image, &blend, color);
 
-    if (this->render.spriteJob == 0x235) {
+    if (this->render.spriteJob == JT_MOB_TOMB) {
       quad.bottomRhw = bottomRhw - 0.0000003f;
       quad.topRhw = topRhw - 0.0000003f;
     }
@@ -447,7 +447,7 @@ void CGameActor::RenderMercenary(const float* matrix, int job) {
       }
       bodyFrame = frame;
     } else if (layer == 1) {
-      if (job >= 0x1781 && job <= 0x178A) {
+      if (job >= JT_MER_ARCHER01 && job <= JT_MER_ARCHER10) {
         std::sprintf(path, "인간족\\머리통\\여\\%d_여.act", job % 23 + 1);
         action = static_cast<CActRes*>(ResourceMgr::Instance().Load(path));
         std::sprintf(path, "인간족\\머리통\\여\\%d_여.spr", job % 23 + 1);
@@ -472,12 +472,12 @@ void CGameActor::RenderMercenary(const float* matrix, int job) {
       offsetX = headOffsetX;
       offsetY = headOffsetY;
     } else if (layer == 2) {
-      if (job >= 0x1781 && job <= 0x178A) {
+      if (job >= JT_MER_ARCHER01 && job <= JT_MER_ARCHER10) {
         std::sprintf(path, "인간족\\용병\\활용병_활.act");
         action = static_cast<CActRes*>(ResourceMgr::Instance().Load(path));
         std::sprintf(path, "인간족\\용병\\활용병_활.spr");
         sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(path));
-      } else if (job >= 0x178B && job <= 0x1794) {
+      } else if (job >= JT_MER_LANCER01 && job <= JT_MER_LANCER10) {
         std::sprintf(path, "인간족\\용병\\창용병_창.act");
         action = static_cast<CActRes*>(ResourceMgr::Instance().Load(path));
         std::sprintf(path, "인간족\\용병\\창용병_창.spr");
@@ -490,11 +490,11 @@ void CGameActor::RenderMercenary(const float* matrix, int job) {
       }
       frame = &action->Frame(this->render.previousAnimation, this->render.curMotion);
     } else if (layer == 3) {
-      if (job >= 0x1781 && job <= 0x178A) {
+      if (job >= JT_MER_ARCHER01 && job <= JT_MER_ARCHER10) {
         continue;
       }
 
-      if (job >= 0x178B && job <= 0x1794) {
+      if (job >= JT_MER_LANCER01 && job <= JT_MER_LANCER10) {
         std::sprintf(path, "인간족\\용병\\창용병_창_검광.act");
         action = static_cast<CActRes*>(ResourceMgr::Instance().Load(path));
         std::sprintf(path, "인간족\\용병\\창용병_창_검광.spr");
@@ -738,7 +738,7 @@ void CGameActor::RenderMercenary(const float* matrix, int job) {
 // OFFSET: 0x00CB35F0
 // FUNCTION: fn_21105
 void CRenderObject::DrawShadow(int argument, float scale) {
-  if (this->render.spriteJob == 565 || this->render.shadowVisible == 0 || this->render.shadowScale == 0.0f || scale == 0.0f) {
+  if (this->render.spriteJob == JT_MOB_TOMB || this->render.shadowVisible == 0 || this->render.shadowScale == 0.0f || scale == 0.0f) {
     return;
   }
 
@@ -2047,7 +2047,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
       this->SetState(ST_STAND, 1);
     }
     this->healthState = entry->healthState;
-    if (entry->job == 0x2D2 || entry->job == 0x508) {
+    if (entry->job == JT_GUILD_FLAG || entry->job == JT_EMPELIUM) {
       this->SetGuildInfo(entry->guildId, entry->guildVersion);
     }
     this->SetPropensityInfo(entry->honor, entry->virtue);

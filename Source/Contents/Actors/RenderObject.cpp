@@ -4125,7 +4125,7 @@ void C3dGrannyGameActor::RenderLit(int argument, const GrannyActorLight& light) 
     matrix world;
     world.Compose(local, view);
 
-    if (this->job == 0x49D && mesh == 28) {
+    if (this->job == JT_ZOMBIE_DRAGON && mesh == 28) {
       this->LaunchEffect(EF_DRAGONSMOKE, vector3d{source[64].position[0], source[64].position[1], source[64].position[2]}, -this->angle);
     }
 
@@ -4245,7 +4245,7 @@ void C3dGrannyGameActor::RenderShadowed(int argument) {
       continue;
     }
 
-    if (this->job == 0x49D && mesh == 28) {
+    if (this->job == JT_ZOMBIE_DRAGON && mesh == 28) {
       this->LaunchEffect(EF_DRAGONSMOKE, vector3d{source[64].position[0], source[64].position[1], source[64].position[2]}, -this->angle);
     }
 

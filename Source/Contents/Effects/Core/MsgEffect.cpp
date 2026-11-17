@@ -1452,9 +1452,9 @@ void CMsgEffect::FollowOwner() {
           if (this->m_owner->render.state == 0 && dist < 16.0f) {
             this->render.previousAnimation = this->render.animation + dir;
           }
-        } else if (owner->render.state == 4) {
+        } else if (owner->render.state == ST_DAMAGE) {
           this->render.previousAnimation = this->render.animation + 0x18 + dir;
-        } else if (owner->render.state == 3) {
+        } else if (owner->render.state == ST_DEAD) {
           this->render.previousAnimation = this->render.animation + 0x20 + dir;
         } else if (owner->render.state == 0 || dist <= 14.0f) {
           this->render.previousAnimation = this->render.animation + dir;

@@ -18,135 +18,135 @@ const char* g_equipmentResourceExtensions[2] = {"act", "spr"};
 int CSession::GetDisplayJob() {
   const int job = this->m_job;
 
-  if (job == 7) {
+  if (job == JT_KNIGHT) {
     if (static_cast<bool>(g_session.m_jobFlags >> 5 & 1)) {
       return job + 6;
     }
-  } else if (job == 14) {
+  } else if (job == JT_CRUSADER) {
     if (static_cast<bool>(g_session.m_jobFlags >> 5 & 1)) {
       return job + 7;
     }
-  } else if (job == 4008) {
+  } else if (job == JT_KNIGHT_H) {
     if (static_cast<bool>(g_session.m_jobFlags >> 5 & 1)) {
       return job + 6;
     }
-  } else if (job == 4030) {
+  } else if (job == JT_KNIGHT_B) {
     if (static_cast<bool>(g_session.m_jobFlags >> 5 & 1)) {
       return job + 6;
     }
-  } else if (job == 4015) {
+  } else if (job == JT_CRUSADER_H) {
     if (static_cast<bool>(g_session.m_jobFlags >> 5 & 1)) {
       return job + 7;
     }
-  } else if (job == 4037) {
+  } else if (job == JT_CRUSADER_B) {
     if (static_cast<bool>(g_session.m_jobFlags >> 5 & 1)) {
       return job + 7;
     }
-  } else if (job == 4066) {
+  } else if (job == JT_ROYAL_GUARD) {
     if (static_cast<bool>(g_session.m_jobFlags >> 5 & 1)) {
       return job + 16;
     }
-  } else if (job == 4073) {
+  } else if (job == JT_ROYAL_GUARD_H) {
     if (static_cast<bool>(g_session.m_jobFlags >> 5 & 1)) {
       return job + 10;
     }
-  } else if (job == 4102) {
+  } else if (job == JT_ROYAL_GUARD_B) {
     if (static_cast<bool>(g_session.m_jobFlags >> 5 & 1)) {
       return job + 8;
     }
-  } else if (job == 4054) {
+  } else if (job == JT_RUNE_KNIGHT) {
     if (static_cast<bool>(g_session.m_jobFlags >> 19 & 1)) {
-      return 4080;
+      return JT_RUNE_CHICKEN;
     }
     if (static_cast<bool>(g_session.m_jobFlags >> 23 & 1)) {
-      return 4088;
+      return JT_RUNE_CHICKEN2;
     }
     if (static_cast<bool>(g_session.m_jobFlags >> 24 & 1)) {
-      return 4090;
+      return JT_RUNE_CHICKEN3;
     }
     if (static_cast<bool>(g_session.m_jobFlags >> 25 & 1)) {
-      return 4092;
+      return JT_RUNE_CHICKEN4;
     }
     if (static_cast<bool>(g_session.m_jobFlags >> 26 & 1)) {
-      return 4094;
+      return JT_RUNE_CHICKEN5;
     }
-  } else if (job == 4060) {
+  } else if (job == JT_RUNE_KNIGHT_H) {
     if (static_cast<bool>(g_session.m_jobFlags >> 19 & 1)) {
-      return 4081;
+      return JT_RUNE_CHICKEN_H;
     }
     if (static_cast<bool>(g_session.m_jobFlags >> 23 & 1)) {
-      return 4089;
+      return JT_RUNE_CHICKEN2_H;
     }
     if (static_cast<bool>(g_session.m_jobFlags >> 24 & 1)) {
-      return 4091;
+      return JT_RUNE_CHICKEN3_H;
     }
     if (static_cast<bool>(g_session.m_jobFlags >> 25 & 1)) {
-      return 4093;
+      return JT_RUNE_CHICKEN4_H;
     }
     if (static_cast<bool>(g_session.m_jobFlags >> 26 & 1)) {
-      return 4095;
+      return JT_RUNE_CHICKEN5_H;
     }
-  } else if (job == 4096) {
+  } else if (job == JT_RUNE_KNIGHT_B) {
     if (static_cast<bool>(g_session.m_jobFlags >> 19 & 1)) {
       return job + 13;
     }
-  } else if (job == 4047) {
+  } else if (job == JT_STAR) {
     if (static_cast<bool>(g_session.m_jobFlags >> 15 & 1)) {
       return job + 1;
     }
-  } else if (job == 4056) {
+  } else if (job == JT_RANGER) {
     if (static_cast<bool>(g_session.m_jobFlags >> 21 & 1)) {
       return job + 28;
     }
-  } else if (job == 4062) {
+  } else if (job == JT_RANGER_H) {
     if (static_cast<bool>(g_session.m_jobFlags >> 21 & 1)) {
       return job + 23;
     }
-  } else if (job == 4098) {
+  } else if (job == JT_RANGER_B) {
     if (static_cast<bool>(g_session.m_jobFlags >> 21 & 1)) {
       return job + 13;
     }
-  } else if (job == 4058) {
+  } else if (job == JT_MECHANIC) {
     if (g_session.madogearType != 0) {
       return job + 28;
     }
-  } else if (job == 4064) {
+  } else if (job == JT_MECHANIC_H) {
     if (g_session.madogearType != 0) {
       return job + 23;
     }
-  } else if (job == 4100) {
+  } else if (job == JT_MECHANIC_B) {
     if (g_session.madogearType != 0) {
       return job + 12;
     }
-  } else if (job == 4253) {
+  } else if (job == JT_MEISTER) {
     if (g_session.madogearType != 0) {
       return job + 26;
     }
-  } else if (job == 4226) {
+  } else if (job == JT_STAR_B) {
     if (static_cast<bool>(g_session.m_jobFlags >> 15 & 1)) {
       return job + 12;
     }
-  } else if (job == 4239) {
+  } else if (job == JT_STAR_EMPEROR) {
     if (static_cast<bool>(g_session.m_jobFlags >> 15 & 1)) {
       return job + 4;
     }
-  } else if (job == 4241) {
+  } else if (job == JT_STAR_EMPEROR_B) {
     if (static_cast<bool>(g_session.m_jobFlags >> 15 & 1)) {
       return job + 3;
     }
-  } else if (job == 4257) {
+  } else if (job == JT_WINDHAWK) {
     if (static_cast<bool>(g_session.m_jobFlags >> 21 & 1)) {
       return job + 21;
     }
-  } else if (job == 4252) {
+  } else if (job == JT_DRAGON_KNIGHT) {
     if (static_cast<bool>(g_session.m_jobFlags >> 19 & 1)) {
       return job + 28;
     }
-  } else if (job == 4258) {
+  } else if (job == JT_IMPERIAL_GUARD) {
     if (static_cast<bool>(g_session.m_jobFlags >> 5 & 1)) {
       return job + 23;
     }
-  } else if (job == 4302) {
+  } else if (job == JT_SKY_EMPEROR) {
     if (static_cast<bool>(g_session.m_jobFlags >> 15 & 1)) {
       return job + 14;
     }

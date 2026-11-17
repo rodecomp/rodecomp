@@ -2,6 +2,7 @@
 #include "UI/Window/UIEnums.h"
 #include "Contents/Actors/MercenaryAI.h"
 #include "Contents/Actors/ActorEnums.h"
+#include "Contents/Jobs/JobId.h"
 #include "Network/Packets/NoticeEnums.h"
 
 #include "Client/Mode/CGameMode.h"
@@ -159,11 +160,11 @@ int CMercenaryAI::Process(std::uint32_t aid) {
   char message[1024];
 
   CGameActor* actor = g_modeMgr.GetGameMode()->scene->GetGameActorByAID(aid);
-  if (actor->render.state == 2 || actor->render.state == 7) {
+  if (actor->render.state == ST_ATTACK || actor->render.state == ST_SKILL) {
     if (!actor->render.isMotionFinished) {
       return 0;
     }
-    actor->SetState(0, 1);
+    actor->SetState(ST_STAND, 1);
   }
 
   if (this->actionStarted == 0) {
@@ -177,7 +178,7 @@ int CMercenaryAI::Process(std::uint32_t aid) {
     if (actionState != 0 && this->kind == 0) {
       this->actionStarted = GetTickCount();
       if (actionState == 29) {
-        if (g_session.m_homunJob >= 6048 && g_session.m_homunJob <= 6052) {
+        if (g_session.m_homunJob >= JT_MER_EIRA && g_session.m_homunJob <= JT_MER_ELEANOR) {
           actor->SetAction(0x30, 4, 0);
         } else {
           actor->SetAction(0x38, 4, 0);
@@ -187,7 +188,7 @@ int CMercenaryAI::Process(std::uint32_t aid) {
       return 0;
     }
   } else if (GetTickCount() - this->actionStarted > this->actionDuration) {
-    actor->SetState(0, 1);
+    actor->SetState(ST_STAND, 1);
     if (this->kind == 0) {
       g_session.m_homunActionState = 0;
     } else if (this->kind == 1) {
@@ -656,7 +657,7 @@ int AiMercenaryGetV(lua_State* state) {
   }
 
   case V_TARGET:
-    if (!actor || actor->render.state == 3) {
+    if (!actor || actor->render.state == ST_DEAD) {
       lua_pushnumber(state, -1.0);
       return 1;
     } else {
