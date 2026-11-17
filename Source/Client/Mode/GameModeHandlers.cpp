@@ -2909,11 +2909,11 @@ void CGameMode::Zc_Skill_Entry(unsigned char* record) {
   GroundSkillPacket& packet = *reinterpret_cast<GroundSkillPacket*>(record);
   GroundSkillArgumentData arguments;
   GroundSkillSpawnData& data = arguments.extended.skill;
-  data.aid = packet.aid;
-  data.owner = packet.owner;
   data.type = packet.type;
   data.x = packet.x;
   data.y = packet.y;
+  data.aid = packet.aid;
+  data.owner = packet.owner;
   data.visible = true;
   data.level = 0;
   packet.visible = 1;
