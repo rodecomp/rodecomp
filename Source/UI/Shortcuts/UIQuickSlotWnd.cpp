@@ -76,10 +76,8 @@ void UIQuickSlotWnd::OnLBtnDown(int x, int y) {
 void UIQuickSlotWnd::OnMouseHover(int x, int y) {
   int index;
   if (static_cast<unsigned int>(y) <= 23 && (x <= 58 || x >= this->geometry.width)) {
-    index = (x - 4) / 29;
-    if (x > index * 29 + 30) {
-      index = -1;
-    }
+    const int column = (x - 4) / 29;
+    index = x > column * 29 + 30 ? -1 : column;
   } else {
     index = -1;
   }
@@ -98,21 +96,23 @@ void UIQuickSlotWnd::OnMouseHover(int x, int y) {
   this->ToScreen(screenX, screenY);
   std::string text;
   const std::uint32_t id = this->m_entries[this->m_selected].id;
-  if (id == 0) {
-    text.clear();
-  } else if (this->m_entries[this->m_selected].skill) {
-    CSkillInfo skill = g_session.LookupSkill(id);
-    const int level = this->m_entries[this->m_selected].count;
-    const int sp = skill.UseSpAmount(level);
-    const int ap = skill.UseApAmount(level);
-    if (SkillUsesPercentSp(static_cast<int>(skill.id))) {
-      text = SkillUseTextPercent(skill.DisplayName(), level, sp, ap);
+  if (id != 0) {
+    if (this->m_entries[this->m_selected].skill) {
+      CSkillInfo skill = g_session.LookupSkill(id);
+      const int level = this->m_entries[this->m_selected].count;
+      const int sp = skill.UseSpAmount(level);
+      const int ap = skill.UseApAmount(level);
+      if (g_session.SkillUsesPercentSp(static_cast<int>(skill.id))) {
+        text = SkillUseTextPercent(skill.DisplayName(), level, sp, ap);
+      } else {
+        text = SkillUseTextFlat(skill.DisplayName(), level, sp, ap);
+      }
     } else {
-      text = SkillUseTextFlat(skill.DisplayName(), level, sp, ap);
+      ITEM_INFO item = g_session.LookupClientItem(static_cast<int>(id), 1);
+      text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_EA2), item.DisplayName(0).c_str(), item.quantity));
     }
   } else {
-    ITEM_INFO item = g_session.LookupClientItem(static_cast<int>(id), 1);
-    text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_EA2), item.DisplayName(0).c_str(), item.quantity));
+    text.clear();
   }
 
   if (!text.empty()) {
