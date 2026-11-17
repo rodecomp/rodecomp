@@ -21,11 +21,11 @@ struct BitmapImage {
 // INLINED
 inline void BitmapImage::Clear() {
   if (this->pixels) {
-    std::free(this->pixels);
+    delete[] this->pixels;
   }
 
   if (this->auxiliary) {
-    std::free(this->auxiliary);
+    delete[] static_cast<std::uint32_t*>(this->auxiliary);
   }
 
   this->width = 0;
