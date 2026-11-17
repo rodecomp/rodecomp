@@ -4066,11 +4066,10 @@ SessionTraits::SessionTraits() {
 
 // OFFSET: 0x00DC2B20
 // FUNCTION: fn_22763
-CSession::CSession() {
-  this->m_priorityClass = 32;
-  this->m_genderChangeBlocked = false;
-  this->m_itemSlotActive = true;
-  this->sessionIndex = -1;
+CSession::CSession()
+  : m_launchPassCommandLine(false), m_channelCopId(0), showCameraInfo(0), m_priorityClass(32), m_pingLiveSchedule(0),
+    m_lastReceiveTick(0), m_lastSendTick(0), m_gameOptionFlag(false), m_genderChangeBlocked(false), m_itemSlotActive(true),
+    playerSkillMode(0), m_startTimeTicks(0), m_loginTimeTicks(0), sessionIndex(-1) {
   this->skyMapNames.clear();
 
   CItemInfoMgr::Create();

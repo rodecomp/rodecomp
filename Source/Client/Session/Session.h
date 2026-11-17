@@ -100,6 +100,14 @@ struct MapPosEntry {
   /* 0010 */ int valid;
 };
 
+struct MapObjectLightEntry {
+  /* 0000 */ const char* name;
+  /* 0004 */ bool enabled;
+};
+
+static_assert(sizeof(MapObjectLightEntry) == 8);
+static_assert(offsetof(MapObjectLightEntry, enabled) == 4);
+
 struct SessionRecord6178Entry {
   // INLINED
   SessionRecord6178Entry(const std::string& text, bool completed) : text(text), completed(completed) {
@@ -448,7 +456,7 @@ public:
   /* 5268 */ std::vector<std::string> m_jobHitWaves;
   /* 5274 */ std::vector<std::string> m_weaponHitWaves;
   /* 5280 */ std::list<int> padding_5280;
-  /* 5288 */ unsigned char padding_5288[0x0C];
+  /* 5288 */ std::vector<MapObjectLightEntry> m_mapObjectLights;
   /* 5294 */ std::vector<const char*> m_bodyJobNames;
   /* 52A0 */ std::vector<const char*> m_sexNames;
   /* 52AC */ std::vector<const char*> m_weaponNames;
@@ -697,7 +705,7 @@ public:
   /* 7ECD */ unsigned char padding_7ECD[3];
   /* 7ED0 */ int minimumNameLength;
   /* 7ED4 */ std::uint32_t nameValidationTick;
-  /* 7ED8 */ int m_swapEquipmentMode = 0;
+  /* 7ED8 */ int m_swapEquipmentMode;
   /* 7EDC */ bool m_showMenuIcon;
   /* 7EDD */ unsigned char padding_7EDD[3];
   /* 7EE0 */ std::map<int, RobeAlpha> m_robeAlpha;
@@ -1425,6 +1433,8 @@ static_assert(offsetof(CSession, m_whisperRecord) == 0x5554);
 static_assert(offsetof(CSession, m_noSubChatWnds) == 0x73C);
 static_assert(offsetof(CSession, m_subChatWnds) == 0x744);
 static_assert(offsetof(CSession, m_prohibitionLog) == 0x754);
+static_assert(offsetof(CSession, m_mapObjectLights) == 0x5288);
+static_assert(offsetof(CSession, m_bodyJobNames) == 0x5294);
 static_assert(offsetof(CSession, m_mapPositions) == 0x5310);
 static_assert(offsetof(CSession, m_mapPosListCount) == 0x5328);
 static_assert(offsetof(SessionRecord6144, registered) == 0x0);
