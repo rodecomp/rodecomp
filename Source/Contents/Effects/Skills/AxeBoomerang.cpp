@@ -22,9 +22,7 @@ CAxeBoomerang::CAxeBoomerang() : CEffect(-1) {
   this->particlePosition.z = 0.0f;
   this->launchPosition.x = 0.0f;
   this->rotationParameter = 0;
-  this->launchPosition.x = 0.0f;
-  this->launchPosition.y = 0.0f;
-  this->launchPosition.z = 0.0f;
+  this->launchPosition = vector3d{0.0f, 0.0f, 0.0f};
 }
 
 // OFFSET: 0x006F5A60
