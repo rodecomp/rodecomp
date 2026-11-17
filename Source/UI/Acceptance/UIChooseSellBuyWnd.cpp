@@ -2719,15 +2719,13 @@ int UICombinedCardItemCollectionWnd::SendMsg(UIWindow* sender, int message, std:
 // FUNCTION: fn_12348
 int UIItemCompositionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case UM_SETINFO: {
-    ItemCompositionWndInfo* placement = reinterpret_cast<ItemCompositionWndInfo*>(a);
-    this->m_compositionPlacement = placement;
-    if (!placement->IsValid()) {
-      placement->Reset();
+  case UM_SETINFO:
+    this->m_compositionPlacement = reinterpret_cast<ItemCompositionWndInfo*>(a);
+    if (!this->m_compositionPlacement->IsValid()) {
+      this->m_compositionPlacement->Reset();
     }
-    this->Move(placement->x, placement->y);
+    this->Move(this->m_compositionPlacement->x, this->m_compositionPlacement->y);
     return 0;
-  }
   case UM_SET_CARD_ITEM_INDEX:
     this->m_compositionState = static_cast<int>(a);
     if (a != 0) {
@@ -2799,15 +2797,13 @@ int UIItemCompositionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
 // FUNCTION: fn_12349
 int UIItemIdentifyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
-  case UM_SETINFO: {
-    ItemIdentifyWndInfo* placement = reinterpret_cast<ItemIdentifyWndInfo*>(a);
-    this->m_placement = placement;
-    if (!placement->IsValid()) {
-      placement->Reset();
+  case UM_SETINFO:
+    this->m_placement = reinterpret_cast<ItemIdentifyWndInfo*>(a);
+    if (!this->m_placement->IsValid()) {
+      this->m_placement->Reset();
     }
-    this->Move(placement->x, placement->y);
+    this->Move(this->m_placement->x, this->m_placement->y);
     return 0;
-  }
   case UM_CLEAR_ITEM:
     this->m_items.clear();
     return 0;
@@ -2855,7 +2851,7 @@ int UIItemIdentifyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     } else {
       this->m_scroll = previous + static_cast<int>(a);
     }
-    if (this->m_scroll != previous) {
+    if (previous != this->m_scroll) {
       this->UpdateScroll();
       this->Invalidate();
     }
@@ -9512,14 +9508,14 @@ void UISecondPasswordInputWnd::Paint() {
     break;
   }
 
-  for (std::size_t index = 0, x = 416; index < std::strlen(this->currentPassword); ++index, x += 5) {
-    this->DrawTextAt(static_cast<int>(x), this->currentPasswordY, "*", 0, 0, 12, 0, 0, 0);
+  for (std::size_t index = 0; index < std::strlen(this->currentPassword); ++index) {
+    this->DrawTextAt(static_cast<int>(5 * index + 416), this->currentPasswordY, "*", 0, 0, 12, 0, 0, 0);
   }
-  for (std::size_t index = 0, x = 416; index < std::strlen(this->newPassword); ++index, x += 5) {
-    this->DrawTextAt(static_cast<int>(x), this->newPasswordY, "*", 0, 0, 12, 0, 0, 0);
+  for (std::size_t index = 0; index < std::strlen(this->newPassword); ++index) {
+    this->DrawTextAt(static_cast<int>(5 * index + 416), this->newPasswordY, "*", 0, 0, 12, 0, 0, 0);
   }
-  for (std::size_t index = 0, x = 416; index < std::strlen(this->confirmPassword); ++index, x += 5) {
-    this->DrawTextAt(static_cast<int>(x), this->confirmPasswordY, "*", 0, 0, 12, 0, 0, 0);
+  for (std::size_t index = 0; index < std::strlen(this->confirmPassword); ++index) {
+    this->DrawTextAt(static_cast<int>(5 * index + 416), this->confirmPasswordY, "*", 0, 0, 12, 0, 0, 0);
   }
 }
 
@@ -12490,14 +12486,17 @@ void UIExchangeWnd::Paint() {
     this->DrawItemSlotFrame(12, this->m_rowHeight * row + 20);
     this->DrawItemSlotFrame(291, this->m_rowHeight * row + 20);
   }
-  unsigned red;
-  unsigned green;
-  unsigned blue;
   if (this->isLocalTrader != 0) {
+    unsigned red;
+    unsigned green;
+    unsigned blue;
     g_skinInfo.PaletteChannels(10, 6, red, green, blue);
     this->FillRegion(4, 21, 272, 310, RGB(red, green, blue));
   }
   if (this->localConfirmed != 0) {
+    unsigned red;
+    unsigned green;
+    unsigned blue;
     g_skinInfo.PaletteChannels(10, 6, red, green, blue);
     this->FillRegion(283, 21, 272, 310, RGB(red, green, blue));
   }
