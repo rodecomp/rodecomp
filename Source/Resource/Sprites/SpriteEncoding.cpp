@@ -57,8 +57,9 @@ std::uint8_t* CSprRes::ReduceSprite(const std::uint8_t* pixels, int width, int h
   auto* output = new std::uint8_t[outputWidth * outputHeight];
 
   for (int y = 0; y < outputHeight; ++y) {
+    std::uint8_t* line = &output[y * outputWidth];
     for (int x = 0; x < outputWidth; ++x) {
-      output[y * outputWidth + x] = pixels[(halfHeight + 1) * y * width + (halfWidth + 1) * x];
+      line[x] = pixels[(halfHeight + 1) * y * width + (halfWidth + 1) * x];
     }
   }
 
