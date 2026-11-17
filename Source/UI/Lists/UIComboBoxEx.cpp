@@ -88,8 +88,8 @@ namespace {
 // INLINED
 __forceinline void SetBarRange(UIScrollBar* bar, int maximum, int visible, int total) {
   bar->maximum = maximum;
-  bar->visible = visible;
   bar->total = total;
+  bar->visible = visible;
   bar->Invalidate();
 
   if (bar->position > bar->maximum) {
