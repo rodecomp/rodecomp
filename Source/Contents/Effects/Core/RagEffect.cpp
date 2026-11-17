@@ -628,7 +628,7 @@ void CRagEffect::IceWall() {
 
 // OFFSET: 0x00C1B8B0
 // FUNCTION: fn_20072
-void CRagEffect::IncAgiDex() {
+__declspec(safebuffers) void CRagEffect::IncAgiDex() {
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
   g_renderer->viewport.Project(
     &this->state.parent->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values, vertex
@@ -638,7 +638,7 @@ void CRagEffect::IncAgiDex() {
   CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt == 0) {
-    PlayEffectWave(*this, "effect\\EF_IncAgiDex.wav");
+    PlayEffectWaveInline(*this, "effect\\EF_IncAgiDex.wav");
     this->state.lastPrim = this->LaunchEffectPrim(0, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.longitude = 0.0f;
@@ -1061,7 +1061,7 @@ void CRagEffect::SoulStrike(char F1) {
   }
 
   const int index = frame / 11;
-  PlayEffectWave(*this, "effect\\EF_SoulStrike.wav");
+  PlayEffectWaveInline(*this, "effect\\EF_SoulStrike.wav");
   this->state.lastPrim = this->LaunchEffectPrim(8, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 40;
   this->state.lastPrim->state.deltaPos2 = {0.0f, -10.0f, 0.0f};
@@ -6998,7 +6998,7 @@ void CRagEffect::TexturedSpreadFlat(const char* name, char kind) {
 
 // OFFSET: 0x00C74390
 // FUNCTION: fn_20332
-void CRagEffect::RisingSparkles(char colorMode) {
+__declspec(safebuffers) void CRagEffect::RisingSparkles(char colorMode) {
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
   const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   g_renderer->viewport.Project(&this->state.parent->render.position.x, view, vertex);
@@ -7887,7 +7887,7 @@ void CRagEffect::AssassinCloakingClear() {
 
 // OFFSET: 0x00C710C0
 // FUNCTION: fn_20318
-void CRagEffect::TintedRisingSparkles(char) {
+__declspec(safebuffers) void CRagEffect::TintedRisingSparkles(char) {
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
   const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   g_renderer->viewport.Project(&this->state.parent->render.position.x, view, vertex);
@@ -9879,7 +9879,7 @@ void CRagEffect::NapalmFragments() {
   }
 
   if (this->state.stateCnt == 0) {
-    PlayEffectWave(*this, "effect\\EF_NapalmBeat.wav");
+    PlayEffectWaveInline(*this, "effect\\EF_NapalmBeat.wav");
   }
 
   this->state.lastPrim = this->LaunchEffectPrim(0, vector3d{0.0f, 0.0f, 0.0f});
@@ -11158,7 +11158,7 @@ static void SetVector(vector3d& v, float x, float y, float z) {
 
 // OFFSET: 0x00C39730
 // FUNCTION: fn_20102
-void CRagEffect::Sightrasher() {
+__declspec(safebuffers) void CRagEffect::Sightrasher() {
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
   const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   g_renderer->viewport.Project(&this->state.parent->render.position.x, view, vertex);
@@ -11167,7 +11167,7 @@ void CRagEffect::Sightrasher() {
 
   if (this->state.stateCnt == 0) {
     this->state.parent->SendMsg(nullptr, AM_DELETE_EFFECT, EF_SIGHT, 0, 0, 0, 0, 0);
-    PlayEffectWave(*this, "effect\\wizard_sightrasher.wav");
+    PlayEffectWaveInline(*this, "effect\\wizard_sightrasher.wav");
   }
 
   if (this->state.stateCnt % 5 == 0 && this->state.stateCnt < 20) {
@@ -14638,7 +14638,7 @@ void CRagEffect::RenderAniClip(EZeffectClip* clip, const EZeffectTransform* tran
 
 // OFFSET: 0x00C38AD0
 // FUNCTION: fn_20099
-void CRagEffect::SandScatter() {
+__declspec(safebuffers) void CRagEffect::SandScatter() {
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
   const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   g_renderer->viewport.Project(&this->state.parent->render.position.x, view, vertex);
@@ -14789,7 +14789,7 @@ void CRagEffect::SendMsg(
 
 // OFFSET: 0x00C39460
 // FUNCTION: fn_20101
-void CRagEffect::Sight() {
+__declspec(safebuffers) void CRagEffect::Sight() {
   CopyVector(this->render.position, this->state.parent->render.position);
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
   const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
@@ -14837,7 +14837,7 @@ void CRagEffect::Sight() {
 }
 // OFFSET: 0x00C3D190
 // FUNCTION: fn_20115
-void CRagEffect::AlphaCenterRise() {
+__declspec(safebuffers) void CRagEffect::AlphaCenterRise() {
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
   const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   g_renderer->viewport.Project(&this->state.parent->render.position.x, view, vertex);
@@ -16339,7 +16339,7 @@ void CRagEffect::TexturedMagicRing(const char* name, char kind) {
 
 // OFFSET: 0x00C48820
 // FUNCTION: fn_20163
-void CRagEffect::IncAgilityCenter(char kind) {
+__declspec(safebuffers) void CRagEffect::IncAgilityCenter(char kind) {
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
   const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   g_renderer->viewport.Project(&this->state.parent->render.position.x, view, vertex);
@@ -16349,7 +16349,7 @@ void CRagEffect::IncAgilityCenter(char kind) {
   this->render.position = parent.position;
 
   if (this->state.stateCnt == 0) {
-    PlayEffectWave(*this, kind == 3 ? "effect\\소울 체인지.wav" : "effect\\EF_IncAgility.wav");
+    PlayEffectWaveInline(*this, kind == 3 ? "effect\\소울 체인지.wav" : "effect\\EF_IncAgility.wav");
   }
 
   if ((this->state.stateCnt & 1) != 0) {
@@ -17609,37 +17609,37 @@ void CRagEffect::TexturedAura(const char* name, char kind) {
     this->state.lastPrim->state.slots[0].height[10] = 0.0f;
     this->state.lastPrim->state.slots[0].fullDisplayAngle = 135;
   } else if (kind == 10 || kind == 11) {
-    this->state.lastPrim->state.slots[0].distance = this->state.param[0] > 0.0f ? this->state.param[0] * 0.7f : 70.0f;
+    this->state.lastPrim->state.slots[0].distance = this->state.param[0] <= 0.0f ? 70.0f : this->state.param[0] * 0.7f;
     this->state.lastPrim->state.slots[0].vecBPre.y = this->render.position.y;
     this->state.lastPrim->state.slots[0].flag1[2] = 10;
     this->state.lastPrim->state.slots[0].height[10] = 0.0f;
     this->state.lastPrim->state.slots[0].fullDisplayAngle = static_cast<std::int16_t>(ClampedRandom(360));
   } else if (kind == 12) {
-    this->state.lastPrim->state.slots[0].distance = this->state.param[0] > 0.0f ? this->state.param[0] * 1.2f : 120.0f;
+    this->state.lastPrim->state.slots[0].distance = this->state.param[0] <= 0.0f ? 120.0f : this->state.param[0] * 1.2f;
     this->state.lastPrim->state.slots[0].vecBPre.y = this->render.position.y;
     this->state.lastPrim->state.slots[0].flag1[2] = 12;
     this->state.lastPrim->state.slots[0].height[10] = 0.0f;
     this->state.lastPrim->state.slots[0].fullDisplayAngle = static_cast<std::int16_t>(ClampedRandom(360));
   } else if (kind == 13) {
-    this->state.lastPrim->state.slots[0].distance = this->state.param[0] > 0.0f ? this->state.param[0] * 3.0f : 300.0f;
+    this->state.lastPrim->state.slots[0].distance = this->state.param[0] <= 0.0f ? 300.0f : this->state.param[0] * 3.0f;
     this->state.lastPrim->state.slots[0].vecBPre.y = this->render.position.y;
     this->state.lastPrim->state.slots[0].flag1[2] = 12;
     this->state.lastPrim->state.slots[0].height[10] = 0.0f;
     this->state.lastPrim->state.slots[0].fullDisplayAngle = static_cast<std::int16_t>(ClampedRandom(360));
   } else if (kind == 14) {
-    this->state.lastPrim->state.slots[0].distance = this->state.param[0] > 0.0f ? this->state.param[0] : 30.0f;
+    this->state.lastPrim->state.slots[0].distance = this->state.param[0] <= 0.0f ? 30.0f : this->state.param[0];
     this->state.lastPrim->state.slots[0].vecBPre.y = this->render.position.y;
     this->state.lastPrim->state.slots[0].flag1[2] = 4;
     this->state.lastPrim->state.slots[0].height[10] = 0.0f;
     this->state.lastPrim->state.slots[0].fullDisplayAngle = static_cast<std::int16_t>(ClampedRandom(360));
   } else if (kind == 15) {
-    this->state.lastPrim->state.slots[0].distance = this->state.param[0] > 0.0f ? this->state.param[0] : 30.0f;
+    this->state.lastPrim->state.slots[0].distance = this->state.param[0] <= 0.0f ? 30.0f : this->state.param[0];
     this->state.lastPrim->state.slots[0].vecBPre.y = this->render.position.y;
     this->state.lastPrim->state.slots[0].flag1[2] = 15;
     this->state.lastPrim->state.slots[0].height[10] = 0.0f;
     this->state.lastPrim->state.slots[0].fullDisplayAngle = static_cast<std::int16_t>(ClampedRandom(360));
   } else if (kind == 16 || kind == 17) {
-    this->state.lastPrim->state.slots[0].distance = this->state.param[0] > 0.0f ? this->state.param[0] * 0.9f : 9.5f;
+    this->state.lastPrim->state.slots[0].distance = this->state.param[0] <= 0.0f ? 9.5f : this->state.param[0] * 0.9f;
     if (kind == 17) {
       this->state.lastPrim->state.slots[0].distance *= 0.85f;
     }
@@ -17649,7 +17649,7 @@ void CRagEffect::TexturedAura(const char* name, char kind) {
     this->state.lastPrim->state.slots[0].height[10] = 0.0f;
     this->state.lastPrim->state.slots[0].fullDisplayAngle = static_cast<std::int16_t>(ClampedRandom(360));
   } else if (kind == 18) {
-    this->state.lastPrim->state.slots[0].distance = this->state.param[0] > 0.0f ? this->state.param[0] * 0.9f : 9.0f;
+    this->state.lastPrim->state.slots[0].distance = this->state.param[0] <= 0.0f ? 9.0f : this->state.param[0] * 0.9f;
     this->state.lastPrim->state.slots[0].vecBPre.y = this->render.position.y;
     this->state.lastPrim->state.slots[0].flag1[2] = 5;
     this->state.lastPrim->state.slots[0].height[10] = 0.0f;
