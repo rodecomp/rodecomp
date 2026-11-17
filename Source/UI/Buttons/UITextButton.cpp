@@ -2169,8 +2169,8 @@ void UIZeroQuestScrollBar::Paint() {
   this->DrawBitmap(0, y, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\UIRenewal\\questui\\btn_scroll_thumb_up.bmp"))), true);
 
   const int bottom = y + this->ThumbLength() - 4;
-  for (y += 4; y < bottom; y += 4) {
-    this->DrawBitmap(0, y, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\UIRenewal\\questui\\btn_scroll_thumb_mid.bmp"))), true);
+  for (int row = y + 4; row < bottom; row += 4) {
+    this->DrawBitmap(0, row, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\UIRenewal\\questui\\btn_scroll_thumb_mid.bmp"))), true);
   }
 
   this->DrawBitmap(0, bottom, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\UIRenewal\\questui\\btn_scroll_thumb_down.bmp"))), true);
@@ -3286,9 +3286,8 @@ void UIString::OnLBtnUp(int, int) {
     UIWindow* window = g_windowMgr.EnsureWindow(WID_MONSTERDISPLAYWND);
     window->SendMsg(nullptr, UM_CARDITEMILLUSTRATE, reinterpret_cast<std::intptr_t>(this->link.c_str()), 1, 0, 0);
     UIWindow* frame = g_windowMgr.LookupWindow(WID_RENEWQUESTUI);
-    UIWindow* parent = this->parent;
     window->Move(
-      frame->geometry.x + (parent->geometry.x + 100 + this->geometry.x), frame->geometry.y + (parent->geometry.y - 60 + this->geometry.y)
+      frame->geometry.x + (this->parent->geometry.x + 100 + this->geometry.x), frame->geometry.y + (this->parent->geometry.y - 60 + this->geometry.y)
     );
   } else if (!this->image.empty()) {
     ITEM_INFO item;
