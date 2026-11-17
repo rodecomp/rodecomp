@@ -120,8 +120,9 @@ void UIClanInfoManageWnd::Paint() {
     }
     if (relation->first == 0) {
       if (row == this->allyRow) {
-        g_skinInfo.PaletteChannels(6, 2, red, green, blue);
-        this->FillRegion(204, y, 80, 16, RGB(red, green, blue));
+        unsigned rowRed, rowGreen, rowBlue;
+        g_skinInfo.PaletteChannels(6, 2, rowRed, rowGreen, rowBlue);
+        this->FillRegion(204, y, 80, 16, RGB(rowRed, rowGreen, rowBlue));
       }
       this->DrawTextAt(204, y, relation->second.c_str(), 0, 0, 12, 0, 0, 0);
       ++row;
@@ -139,8 +140,9 @@ void UIClanInfoManageWnd::Paint() {
     }
     if (relation->first == 1) {
       if (row == this->hostileRow) {
-        g_skinInfo.PaletteChannels(6, 2, red, green, blue);
-        this->FillRegion(204, y, 80, 16, RGB(red, green, blue));
+        unsigned rowRed, rowGreen, rowBlue;
+        g_skinInfo.PaletteChannels(6, 2, rowRed, rowGreen, rowBlue);
+        this->FillRegion(204, y, 80, 16, RGB(rowRed, rowGreen, rowBlue));
       }
       this->DrawTextAt(204, y, relation->second.c_str(), 0, 0, 12, 0, 0, 0);
       ++row;
