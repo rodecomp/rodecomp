@@ -79,19 +79,20 @@ UIRodexScrollBar::UIRodexScrollBar() : UIScrollBar() {
 // OFFSET: 0x007FF520
 // FUNCTION: fn_10002
 ITEM_INFO UIRodexComposeWnd::GetItemAtPoint(int x, int y) {
-  if (x >= 30 && x <= 190 && y >= 309 && y <= 333) {
-    this->m_itemIndex = 0;
-    int left = 30;
-    int index = 0;
-    for (auto item = this->m_items.begin(); item != this->m_items.end(); ++item) {
-      if (x > left && x < left + 24) {
-        return *item;
-      }
-      left += 34;
-      this->m_itemIndex = ++index;
-    }
+  if (x < 30 || x > 190 || y < 309 || y > 333) {
+    return ITEM_INFO(0);
   }
 
+  this->m_itemIndex = 0;
+  int index = 0;
+  int left = 30;
+  for (auto item = this->m_items.begin(); item != this->m_items.end(); ++item) {
+    if (x > left && x < left + 24) {
+      return *item;
+    }
+    left += 34;
+    this->m_itemIndex = ++index;
+  }
   return ITEM_INFO(0);
 }
 
