@@ -1073,7 +1073,7 @@ void UIEditCtrl_Currency::OnProcess() {
   int index = 0;
 
   for (std::string::iterator it = digits.begin(); it != digits.end(); ++it, ++index) {
-    if (this->text[index] == ',' && index < anchor) {
+    if (this->text[index] == ',' && anchor > index) {
       ++separators;
     }
 
@@ -1093,8 +1093,7 @@ void UIEditCtrl_Currency::OnProcess() {
   this->Trim();
 
   g_serverLanguage->ResetInput();
-  g_serverLanguage->ResetInput();
-  g_serverLanguage->Insert(this->text.c_str());
+  g_serverLanguage->ReplaceInput(this->text.c_str());
 
   const int length = static_cast<int>(this->text.size());
   anchor += length / 4 - (length - anchor) / 4 - separators;
