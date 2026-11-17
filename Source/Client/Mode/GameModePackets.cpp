@@ -19632,7 +19632,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
           position.x -= static_cast<float>(RandomScatterOffset());
           position.z += static_cast<float>(RandomScatterOffset());
         }
-        g_effectMgr->Spawn(0, EF_TETRA_VORTEX_FIRE_SUB, position.x, position.y, position.z, 0, -1, 0, 0);
+        g_effectMgr->Spawn(0, EF_TETRA_VORTEX_FIRE_SUB, position, 0, -1, 0, 0);
       }
     }
     break;
@@ -19666,7 +19666,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
           position.x -= static_cast<float>(RandomScatterOffset());
           position.z += static_cast<float>(RandomScatterOffset());
         }
-        g_effectMgr->Spawn(0, EF_TETRA_VORTEX_WATER_SUB, position.x, position.y, position.z, 0, -1, 0, 0);
+        g_effectMgr->Spawn(0, EF_TETRA_VORTEX_WATER_SUB, position, 0, -1, 0, 0);
       }
     }
     break;
@@ -19700,7 +19700,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
           position.x -= static_cast<float>(RandomScatterOffset());
           position.z += static_cast<float>(RandomScatterOffset());
         }
-        g_effectMgr->Spawn(0, EF_TETRA_VORTEX_WIND_SUB, position.x, position.y, position.z, 0, -1, 0, 0);
+        g_effectMgr->Spawn(0, EF_TETRA_VORTEX_WIND_SUB, position, 0, -1, 0, 0);
       }
     }
     break;
@@ -19734,7 +19734,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
           position.x -= static_cast<float>(RandomScatterOffset());
           position.z += static_cast<float>(RandomScatterOffset());
         }
-        g_effectMgr->Spawn(0, EF_TETRA_VORTEX_EARTH_SUB, position.x, position.y, position.z, 0, -1, 0, 0);
+        g_effectMgr->Spawn(0, EF_TETRA_VORTEX_EARTH_SUB, position, 0, -1, 0, 0);
       }
     }
     break;
@@ -20448,7 +20448,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
       if (effect) {
         effect->SetScale(scale);
       }
-      effect = g_effectMgr->Spawn(0, EF_NEW_EARTHDRIVE_BOTTOM, position.x, position.y, position.z, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(0, EF_NEW_EARTHDRIVE_BOTTOM, position, 0, -1, 0, 0);
       if (effect) {
         effect->SetScale(scale);
       }
@@ -20633,7 +20633,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
           vector3d position = source->render.position;
           position.z += static_cast<float>(row) * spacing;
           position.x += static_cast<float>(column) * spacing;
-          g_effectMgr->Spawn(0, EF_WM_FRIGG_SONG, position.x, position.y, position.z, 0, -1, 0, 0);
+          g_effectMgr->Spawn(0, EF_WM_FRIGG_SONG, position, 0, -1, 0, 0);
         }
       }
     }
