@@ -1,3 +1,4 @@
+#include "Render/Primitives/DepthAlpha.h"
 #include "Render/Primitives/RenderPrimitive.h"
 #include "Render/Renderer.h"
 
@@ -105,6 +106,14 @@ void RenderCommand::AllocateTriangles(std::uint32_t triangleCount) {
 // FUNCTION: fn_02257
 void RenderCommand::Draw(int unused) {
   g_renderer->DrawPrimitive(this);
+}
+
+// OFFSET: 0x005694A0
+// FUNCTION: fn_02260
+void RenderCommand::ApplyDepthAlpha() {
+  for (int index = 0; index < this->vertexCount; ++index) {
+    this->vertices[index].specular = DepthAlpha(this->vertices[index].rhw);
+  }
 }
 
 // OFFSET: 0x00569580

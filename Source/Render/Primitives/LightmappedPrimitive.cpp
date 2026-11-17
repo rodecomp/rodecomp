@@ -81,3 +81,11 @@ void LightmappedPrimitive::DrawLightmapped(int unused) {
 void LightmappedCommand::DrawAuxiliary(int unused) {
   g_renderer->DrawAuxiliaryPrimitive(this);
 }
+
+// OFFSET: 0x005694E0
+// FUNCTION: fn_02261
+void LightmappedPrimitive::ApplyDepthAlpha() {
+  for (int index = 0; index < this->vertexCount; ++index) {
+    this->vertices[index].specular = DepthAlpha(this->vertices[index].rhw);
+  }
+}
