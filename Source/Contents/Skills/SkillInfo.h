@@ -80,12 +80,8 @@ public:
   }
   virtual void OnEfstUpdate(int efstId, int value, int argument3, int argument4, CRenderObject* actor) {
   }
-  virtual EfstActionMessage GetEfstBeginMessage() {
-    return {nullptr, 0xFFFF00};
-  }
-  virtual EfstActionMessage GetEfstEndMessage() {
-    return {nullptr, 0xFF};
-  }
+  virtual EfstActionMessage GetEfstBeginMessage();
+  virtual EfstActionMessage GetEfstEndMessage();
 };
 
 class CSkillObjectAction {

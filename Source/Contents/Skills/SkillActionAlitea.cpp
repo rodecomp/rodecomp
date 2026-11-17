@@ -1650,16 +1650,14 @@ void __stdcall OnEfstUpdate(int a, int b, int c, int d, int e) {
 
 // OFFSET: 0x005AF140
 // FUNCTION: fn_03302
-void __stdcall GetEfstBeginMessage(std::uint32_t* out) {
-  out[0] = 0;
-  out[1] = 0xFFFF00;
+EfstActionMessage CEfstAction::GetEfstBeginMessage() {
+  return {nullptr, 0xFFFF00};
 }
 
 // OFFSET: 0x005AF160
 // FUNCTION: fn_03303
-void __stdcall GetEfstEndMessage(std::uint32_t* out) {
-  out[0] = 0;
-  out[1] = 0xFF;
+EfstActionMessage CEfstAction::GetEfstEndMessage() {
+  return {nullptr, 0xFF};
 }
 
 // OFFSET: 0x005AF180
