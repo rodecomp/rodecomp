@@ -5585,7 +5585,8 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
         g_session.CheckInterval(5000) == true) {
       const int hungerLevel = g_session.GetPetHungryState(g_session.petHunger);
       const int friendlyLevel = g_session.GetPetFriendlyState(g_session.m_petFriendly);
-      this->SendMsg(MM_PET_ACT, g_session.GetPetEmotionNumber(g_session.petJob, 2, hungerLevel), 0, 0, 0);
+      const int emotion = g_session.GetPetEmotionNumber(g_session.petJob, 2, hungerLevel);
+      this->SendMsg(MM_PET_ACT, emotion, 0, 0, 0);
       this->SendMsg(MM_PET_ACT, g_session.GetPetActionNumber(hungerLevel, friendlyLevel, 2), 0, 0, 0);
     }
     if (g_session.hp != packet->value) {
@@ -5627,9 +5628,8 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
     this->scene->player->characterLevel = static_cast<std::uint16_t>(g_session.m_level);
     g_soundMgr->PlayWave("levelup.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
 
-    int effectId;
     if (g_session.IsSuperNoviceClass(g_session.GetDisplayJob())) {
-      effectId = 338;
+      this->scene->player->LaunchEffect(338, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     } else {
       switch (g_session.GetDisplayJob()) {
       case JT_TAEKWON:
@@ -5649,19 +5649,18 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
       case JT_SKY_EMPEROR:
       case JT_SOUL_ASCETIC:
       case JT_SKY_EMPEROR2:
-        effectId = 582;
+        this->scene->player->LaunchEffect(582, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         break;
       case JT_GANGSI:
       case JT_DEATHKNIGHT:
       case JT_COLLECTOR:
-        effectId = 338;
+        this->scene->player->LaunchEffect(338, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         break;
       default:
-        effectId = 371;
+        this->scene->player->LaunchEffect(371, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         break;
       }
     }
-    this->scene->player->LaunchEffect(effectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
 
     if (g_replayAnimationScaling == 0) {
       g_windowMgr.EnsureWindow(WID_NOTIFYLEVELUPWND);
@@ -5669,7 +5668,8 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
     if (this->scene->GetGameActorByAID(g_session.petGid)) {
       const int hungerLevel = g_session.GetPetHungryState(g_session.petHunger);
       const int friendlyLevel = g_session.GetPetFriendlyState(g_session.m_petFriendly);
-      this->SendMsg(MM_PET_ACT, g_session.GetPetEmotionNumber(g_session.petJob, 6, hungerLevel), 0, 0, 0);
+      const int emotion = g_session.GetPetEmotionNumber(g_session.petJob, 6, hungerLevel);
+      this->SendMsg(MM_PET_ACT, emotion, 0, 0, 0);
       this->SendMsg(MM_PET_ACT, g_session.GetPetActionNumber(hungerLevel, friendlyLevel, 6), 0, 0, 0);
     }
     if (g_replayAnimationScaling == 0) {
@@ -5686,7 +5686,11 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
   case SP_JOBLEVEL:
     g_session.m_jobLevel = packet->value;
     g_session.InvalidateWindowFrames();
-    this->scene->player->LaunchEffect(packet->value > 50 ? 337 : 158, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    if (packet->value <= 50) {
+      this->scene->player->LaunchEffect(158, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    } else {
+      this->scene->player->LaunchEffect(337, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    }
 
     if (g_replayAnimationScaling == 0) {
       g_windowMgr.EnsureWindow(WID_NOTIFYJOBLEVELUPWND);
@@ -5738,7 +5742,7 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
     }
 
     const int percent = (g_session.m_weight * 100) / (g_session.m_maxWeight < 1 ? 1 : g_session.m_maxWeight);
-    if (oldPercent < percent) {
+    if (percent > oldPercent) {
       if (percent >= g_session.m_overweightThresholdPercent && oldPercent < g_session.m_overweightThresholdPercent) {
         g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_USA_LOGINERRORMSG_UNKNOWN), g_session.m_overweightThresholdPercent).c_str()), 0xFF, 8, 0, 0);
@@ -5752,7 +5756,7 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
     if (oldPercent <= percent) {
       break;
     }
-    if (percent < g_session.m_overweightThresholdPercent && g_session.m_overweightThresholdPercent <= oldPercent) {
+    if (percent < g_session.m_overweightThresholdPercent && oldPercent >= g_session.m_overweightThresholdPercent) {
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NO_RECOVER_OVERWEIGHT_RELEASED)), 0xFFFF00, 8, 0, 0);
     }
