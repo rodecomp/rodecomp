@@ -137,7 +137,11 @@ public:
   CSkillInfo& operator=(const CSkillInfo& other) = default;
 
   virtual ~CSkillInfo();
-  __declspec(noinline) bool IsValid() const;
+  __declspec(noinline) static bool IsValid(const CSkillInfo& skill);
+  // INLINED
+  bool IsValid() const {
+    return CSkillInfo::IsValid(*this);
+  }
   bool MatchesShortcut(const NormalItemSlot* slot) const;
   int UseApAmount(int skillLevel) const;
   // INLINED

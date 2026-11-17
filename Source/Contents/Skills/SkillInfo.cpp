@@ -443,8 +443,8 @@ CSkillInfo::~CSkillInfo() = default;
 
 // OFFSET: 0x00774710
 // FUNCTION: fn_08325
-bool CSkillInfo::IsValid() const {
-  return this->available != 0 && this->level != 0;
+bool CSkillInfo::IsValid(const CSkillInfo& skill) {
+  return skill.available != 0 && skill.level != 0;
 }
 
 // OFFSET: 0x00776540
@@ -557,7 +557,7 @@ bool UIShortCutWnd::MatchesShortcut(const CSkillInfo& skill, const NormalItemSlo
   }
 
   const auto requested = slot->value;
-  return requested != 0 && (skill.id != slot->itemId || skill.level >= requested);
+  return 0 != requested && (skill.id != slot->itemId || skill.level >= requested);
 }
 
 // OFFSET: 0x00773550
