@@ -1013,107 +1013,149 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
     return;
   }
 
-  vector3d position{x, height, z};
   switch (skillId) {
-  case MG_THUNDERSTORM:
-    mode->LaunchDummyEffect(&position, 0x1E, EffectLifetime(0x1E) + 10, 0);
-    break;
-  case PR_BENEDICTIO:
-  case ALL_ANGEL_PROTECT:
-    mode->LaunchDummyEffect(&position, 0x5B, EffectLifetime(0x5B) + 10, 0);
-    break;
-  case PR_SANCTUARY:
-    mode->LaunchDummyEffect(&position, 0x53, EffectLifetime(0x53) + 10, 0);
-    break;
-  case PR_MAGNUS:
+  case PR_MAGNUS: {
+    vector3d position{x, height, z};
     mode->LaunchDummyEffect(&position, 0x71, EffectLifetime(0x71) + 10, 0);
     break;
-  case WZ_METEOR:
-    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
-      g_effectMgr->Spawn(0, EF_METEOR_STORM_VISUAL, position.x, position.y, position.z, 0, -1, 0, 0);
-    } else {
-      mode->LaunchDummyEffect(&position, 0x5C, EffectLifetime(0x5C) + 10, 0);
-    }
-    break;
-  case WZ_VERMILION:
-    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
-      g_effectMgr->Spawn(0, EF_LORD_OF_VERMILLION_VISUAL, position.x, position.y, position.z, 0, -1, 0, 0);
-    } else {
-      mode->LaunchDummyEffect(&position, 0x5A, EffectLifetime(0x5A) + 10, 0);
-    }
-    break;
-  case WZ_ICEWALL:
-    mode->LaunchDummyEffect(&position, 0x4A, EffectLifetime(0x4A) + 10, 0);
-    break;
-  case WZ_STORMGUST:
-  case NPC_STORMGUST2: {
-    const int effect = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? 0x2C4 : 0x59;
-    mode->LaunchDummyEffect(&position, effect, EffectLifetime(0x59) + 10, 0);
+  }
+  case PR_SANCTUARY: {
+    vector3d position{x, height, z};
+    mode->LaunchDummyEffect(&position, 0x53, EffectLifetime(0x53) + 10, 0);
     break;
   }
-  case WZ_HEAVENDRIVE:
+  case WZ_HEAVENDRIVE: {
+    vector3d position{x, height, z};
     mode->LaunchDummyEffect(&position, 0x8E, EffectLifetime(0x8E) + 10, 0);
     break;
-  case WZ_QUAGMIRE:
+  }
+  case WZ_QUAGMIRE: {
+    vector3d position{x, height, z};
     if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
-      g_effectMgr->Spawn(0, EF_QUAGMIRE_VISUAL, position.x, position.y, position.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(0, EF_QUAGMIRE_VISUAL, position, 0, -1, 0, 0);
     } else {
       mode->LaunchDummyEffect(&position, 0x5F, EffectLifetime(0x5F) + 10, 0);
     }
     break;
-  case BS_HAMMERFALL:
-    mode->LaunchDummyEffect(&position, 0x66, EffectLifetime(0x66) + 10, 0);
+  }
+  case WZ_VERMILION: {
+    vector3d position{x, height, z};
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
+      g_effectMgr->Spawn(0, EF_LORD_OF_VERMILLION_VISUAL, position, 0, -1, 0, 0);
+    } else {
+      mode->LaunchDummyEffect(&position, 0x5A, EffectLifetime(0x5A) + 10, 0);
+    }
     break;
-  case BS_ADRENALINE:
-  case BS_ADRENALINE2:
-    mode->LaunchDummyEffect(&position, 0x62, EffectLifetime(0x62) + 10, 0);
+  }
+  case WZ_METEOR: {
+    vector3d position{x, height, z};
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
+      g_effectMgr->Spawn(0, EF_METEOR_STORM_VISUAL, position, 0, -1, 0, 0);
+    } else {
+      mode->LaunchDummyEffect(&position, 0x5C, EffectLifetime(0x5C) + 10, 0);
+    }
     break;
-  case HT_SKIDTRAP:
+  }
+  case HT_SKIDTRAP: {
+    vector3d position{x, height, z};
     mode->LaunchDummyEffect(&position, 0x45, EffectLifetime(0x45) + 10, 0);
     break;
-  case HT_DETECTING:
+  }
+  case HT_DETECTING: {
+    vector3d position{x, height, z};
     mode->LaunchDummyEffect(&position, 0x77, EffectLifetime(0x77) + 10, 0);
     if (this->statusEffects[0] != 0) {
       const std::int64_t address = reinterpret_cast<int>(&position);
       this->statusEffects[0]->SendMsg(nullptr, AM_REQ_ATTACK, address, 0, 0, 0, 0, 0);
     }
     break;
-  case AS_VENOMDUST:
+  }
+  case AS_VENOMDUST: {
+    vector3d position{x, height, z};
     mode->LaunchDummyEffect(&position, 0x7C, EffectLifetime(0x7C) + 10, 0);
     break;
-  case SA_VOLCANO:
-    mode->LaunchDummyEffect(&position, 0xE1, EffectLifetime(0xE1) + 10, 0);
-    break;
-  case SA_DELUGE:
-    mode->LaunchDummyEffect(&position, 0xEC, EffectLifetime(0xEC) + 10, 0);
-    break;
-  case SA_VIOLENTGALE:
-    mode->LaunchDummyEffect(&position, 0xED, EffectLifetime(0xED) + 10, 0);
-    break;
-  case SA_LANDPROTECTOR:
-    mode->LaunchDummyEffect(&position, 0xEE, EffectLifetime(0xEE) + 10, 0);
-    break;
-  case CR_SLIMPITCHER: {
-    g_soundMgr->PlayWave("assulter_attack.wav", 0.0f, -150.0f, 0.0f, 250, 40, 1.0f, 0);
-    int effect;
-    if (level < 6) {
-      effect = 0x1F1;
-    } else if (level < 10) {
-      effect = 0x1F2;
-    } else {
-      effect = 0x1F3;
-    }
-    mode->LaunchDummyEffect(&position, effect, EffectLifetime(effect) + 10, 0);
+  }
+  case BS_HAMMERFALL: {
+    vector3d position{x, height, z};
+    mode->LaunchDummyEffect(&position, 0x66, EffectLifetime(0x66) + 10, 0);
     break;
   }
-  case HW_GANBANTEIN:
+  case WZ_ICEWALL: {
+    vector3d position{x, height, z};
+    mode->LaunchDummyEffect(&position, 0x4A, EffectLifetime(0x4A) + 10, 0);
+    break;
+  }
+  case MG_THUNDERSTORM: {
+    vector3d position{x, height, z};
+    mode->LaunchDummyEffect(&position, 0x1E, EffectLifetime(0x1E) + 10, 0);
+    break;
+  }
+  case PR_BENEDICTIO:
+  case ALL_ANGEL_PROTECT: {
+    vector3d position{x, height, z};
+    mode->LaunchDummyEffect(&position, 0x5B, EffectLifetime(0x5B) + 10, 0);
+    break;
+  }
+  case WZ_STORMGUST:
+  case NPC_STORMGUST2: {
+    vector3d position{x, height, z};
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
+      mode->LaunchDummyEffect(&position, 0x2C4, EffectLifetime(0x59) + 10, 0);
+    } else {
+      mode->LaunchDummyEffect(&position, 0x59, EffectLifetime(0x59) + 10, 0);
+    }
+    break;
+  }
+  case BS_ADRENALINE:
+  case BS_ADRENALINE2: {
+    vector3d position{x, height, z};
+    mode->LaunchDummyEffect(&position, 0x62, EffectLifetime(0x62) + 10, 0);
+    break;
+  }
+  case SA_VOLCANO: {
+    vector3d position{x, height, z};
+    mode->LaunchDummyEffect(&position, 0xE1, EffectLifetime(0xE1) + 10, 0);
+    break;
+  }
+  case SA_DELUGE: {
+    vector3d position{x, height, z};
+    mode->LaunchDummyEffect(&position, 0xEC, EffectLifetime(0xEC) + 10, 0);
+    break;
+  }
+  case SA_VIOLENTGALE: {
+    vector3d position{x, height, z};
+    mode->LaunchDummyEffect(&position, 0xED, EffectLifetime(0xED) + 10, 0);
+    break;
+  }
+  case SA_LANDPROTECTOR: {
+    vector3d position{x, height, z};
+    mode->LaunchDummyEffect(&position, 0xEE, EffectLifetime(0xEE) + 10, 0);
+    break;
+  }
+  case CR_SLIMPITCHER: {
+    g_soundMgr->PlayWave("assulter_attack.wav", 0.0f, -150.0f, 0.0f, 250, 40, 1.0f, 0);
+    vector3d position{x, height, z};
+    if (level < 6) {
+      mode->LaunchDummyEffect(&position, 0x1F1, EffectLifetime(0x1F1) + 10, 0);
+    } else if (level < 10) {
+      mode->LaunchDummyEffect(&position, 0x1F2, EffectLifetime(0x1F2) + 10, 0);
+    } else {
+      mode->LaunchDummyEffect(&position, 0x1F3, EffectLifetime(0x1F3) + 10, 0);
+    }
+    break;
+  }
+  case HW_GANBANTEIN: {
+    vector3d position{x, height, z};
     g_soundMgr->PlayWave("effect\\EF_FireWall.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     mode->LaunchDummyEffect(&position, 0xDF, EffectLifetime(0xDF) + 10, 0);
     break;
-  case HW_GRAVITATION:
+  }
+  case HW_GRAVITATION: {
+    vector3d position{x, height, z};
     mode->LaunchDummyEffect(&position, 0x20A, 0x104, 0);
     g_soundMgr->PlayWave("effect\\wizard_earthspike.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
+  }
   case CR_CULTIVATION:
     this->LaunchEffect(EF_BEGINSPELL6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
@@ -1131,14 +1173,18 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
     this->LaunchEffect(EF_MAXPAIN, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case NPC_MAGMA_ERUPTION:
-  case NC_MAGMA_ERUPTION:
+  case NC_MAGMA_ERUPTION: {
+    vector3d position{x, height, z};
     mode->LaunchDummyEffect(&position, 0x66, EffectLifetime(0x66) + 10, 0);
     break;
+  }
   case NPC_RAYOFGENESIS:
-  case LG_RAYOFGENESIS:
-    g_effectMgr->Spawn(0, EF_NEW_RAYOFGENESIS, position.x, position.y, position.z, 0, -1, 0, 0);
+  case LG_RAYOFGENESIS: {
+    vector3d position{x, height, z};
+    g_effectMgr->Spawn(0, EF_NEW_RAYOFGENESIS, position, 0, -1, 0, 0);
     g_soundMgr->PlayWave("effect\\LG_RAYOFGENESIS.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
+  }
   case NPC_RAINOFMETEOR: {
     const vector3d raised{x, height + 25.0f, z};
     g_effectMgr->Spawn(0, EF_NEW_METEORSTORM_BOTTOM, raised, 0, -1, 0, 0);
@@ -1146,11 +1192,14 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
     g_soundMgr->PlayWave("effect\\wizard_meteor.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   }
-  case NPC_GROUNDDRIVE:
+  case NPC_GROUNDDRIVE: {
+    vector3d position{x, height, z};
     mode->LaunchDummyEffect(&position, 0x577, EffectLifetime(0x577) + 10, 0);
     break;
+  }
   case NPC_LOCKON_LASER_ATK: {
-    CEffect* effect = g_effectMgr->Spawn(0, EF_HAMMER_OF_GOD, position.x, position.y, position.z, 0, -1, 0, 0);
+    vector3d position{x, height, z};
+    CEffect* effect = g_effectMgr->Spawn(0, EF_HAMMER_OF_GOD, position, 0, -1, 0, 0);
     if (effect != nullptr) {
       effect->AdvanceFrame(0.4f);
     }
@@ -1159,48 +1208,68 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
   case NC_COLDSLOWER: {
     CRagEffect* effect = this->LaunchEffect(EF_COLDTHROW, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect != nullptr) {
+      vector3d position{x, height, z};
       effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
     }
     break;
   }
-  case SO_DIAMONDDUST:
+  case SO_DIAMONDDUST: {
+    vector3d position{x, height, z};
     g_soundMgr->PlayWave("effect\\wl_jackfrost.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
-      g_effectMgr->Spawn(0, EF_MINEFFECT_DIAMONDDUST, position.x, position.y, position.z, 0, level, 0, 0);
-      g_effectMgr->Spawn(0, EF_MINEFFECT_DIAMONDDUST_BOTTOM, position.x, position.y, position.z, 0, level, 0, 0);
+      g_effectMgr->Spawn(0, EF_MINEFFECT_DIAMONDDUST, position, 0, level, 0, 0);
+      g_effectMgr->Spawn(0, EF_MINEFFECT_DIAMONDDUST_BOTTOM, position, 0, level, 0, 0);
     } else {
-      g_effectMgr->Spawn(0, EF_NEW_DIAMONDDUST, position.x, position.y, position.z, 0, level, 0, 0);
-      g_effectMgr->Spawn(0, EF_NEW_DIAMONDDUST_BOTTOM, position.x, position.y, position.z, 0, level, 0, 0);
+      g_effectMgr->Spawn(0, EF_NEW_DIAMONDDUST, position, 0, level, 0, 0);
+      g_effectMgr->Spawn(0, EF_NEW_DIAMONDDUST_BOTTOM, position, 0, level, 0, 0);
     }
     break;
-  case RL_HAMMER_OF_GOD:
-    g_effectMgr->Spawn(0, EF_HAMMER_OF_GOD, position.x, position.y, position.z, 0, -1, 0, 0);
+  }
+  case RL_HAMMER_OF_GOD: {
+    vector3d position{x, height, z};
+    g_effectMgr->Spawn(0, EF_HAMMER_OF_GOD, position, 0, -1, 0, 0);
     break;
-  case SU_CN_METEOR:
-    g_effectMgr->Spawn(0, 0x452, position.x, position.y, position.z, 0, -1, 0, 0);
+  }
+  case SU_CN_METEOR: {
+    vector3d position{x, height, z};
+    g_effectMgr->Spawn(0, 0x452, position, 0, -1, 0, 0);
     break;
-  case SU_CN_METEOR2:
-    g_effectMgr->Spawn(0, 0x458, position.x, position.y, position.z, 0, -1, 0, 0);
+  }
+  case SU_CN_METEOR2: {
+    vector3d position{x, height, z};
+    g_effectMgr->Spawn(0, 0x458, position, 0, -1, 0, 0);
     break;
-  case AG_VIOLENT_QUAKE_ATK:
-    g_effectMgr->Spawn(0, EF_VIOLENTQUAKE, position.x, position.y, position.z, 0, -1, 0, 0);
+  }
+  case AG_VIOLENT_QUAKE_ATK: {
+    vector3d position{x, height, z};
+    g_effectMgr->Spawn(0, EF_VIOLENTQUAKE, position, 0, -1, 0, 0);
     break;
+  }
   case AG_STRANTUM_TREMOR:
   case AG_TORNADO_STORM:
   case AG_FLORAL_FLARE_ROAD:
     this->SetFrameSequence(0x60, 1, 3, 0x60, 3, 1, 500, 0);
     break;
-  case AG_ALL_BLOOM_ATK:
-    g_effectMgr->Spawn(0, 0x706, position.x, position.y, position.z, 0, -1, 0, 0);
+  case AG_ALL_BLOOM_ATK: {
+    vector3d position{x, height, z};
+    g_effectMgr->Spawn(0, 0x706, position, 0, -1, 0, 0);
+    break;
+  }
+  case WH_DEEPBLINDTRAP:
+  case WH_SOLIDTRAP:
+  case WH_SWIFTTRAP:
+  case WH_FLAMETRAP:
+    this->SetFrameSequence(0x18, 0, 2, 0x60, 2, 1, 500, 0);
     break;
   case ABC_ABYSS_STRIKE: {
-    g_effectMgr->Spawn(0, EF_ABYSS_STRIKE, position.x, position.y, position.z, 0, -1, 0, 0);
-    g_effectMgr->Spawn(0, EF_ABYSS_STRIKE_BOTTOM, position.x, position.y, position.z, 0, -1, 0, 0);
-    CEffect* effect = g_effectMgr->Spawn(0, EF_ABYSS_STRIKE_GROUND, position.x, position.y, position.z, 0, -1, 0, 0);
+    vector3d position{x, height, z};
+    g_effectMgr->Spawn(0, EF_ABYSS_STRIKE, position, 0, -1, 0, 0);
+    g_effectMgr->Spawn(0, EF_ABYSS_STRIKE_BOTTOM, position, 0, -1, 0, 0);
+    CEffect* effect = g_effectMgr->Spawn(0, EF_ABYSS_STRIKE_GROUND, position, 0, -1, 0, 0);
     if (effect != nullptr) {
       effect->SetDelay(0x370);
     }
-    effect = g_effectMgr->Spawn(0, EF_ABYSS_STRIKE_GROUND_BOTTOM, position.x, position.y, position.z, 0, -1, 0, 0);
+    effect = g_effectMgr->Spawn(0, EF_ABYSS_STRIKE_GROUND_BOTTOM, position, 0, -1, 0, 0);
     if (effect != nullptr) {
       effect->SetDelay(0x370);
     }
@@ -1208,12 +1277,6 @@ void CGameActor::PlayGroundSkillEffect(int sender, const int* skill, int argumen
   }
   case ABC_ABYSS_SQUARE:
     this->SetFrameSequence(0x60, 0, 0, 0x60, 0, 1, 500, 0);
-    break;
-  case WH_DEEPBLINDTRAP:
-  case WH_SOLIDTRAP:
-  case WH_SWIFTTRAP:
-  case WH_FLAMETRAP:
-    this->SetFrameSequence(0x18, 0, 2, 0x60, 2, 1, 500, 0);
     break;
   }
 }
