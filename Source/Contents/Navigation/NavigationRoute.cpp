@@ -1448,30 +1448,39 @@ bool CNavigationManager::LoadTargetPreview() {
         this->previewY = viewY;
         this->previewX = viewX;
       } else if (targetType == 0) {
-        int cellColumn = this->currentTarget.x;
-        int cellRow;
-        CNaviInfo* info;
-        if (cellColumn < 0) {
+        if (this->currentTarget.x < 0) {
           NaviCell cellY;
           NaviCell cellX;
-          cellRow = this->data.GetCell(&cellY)->y;
-          cellColumn = this->data.GetCell(&cellX)->x;
-          info = this->data.GetInfo();
+          const int cellRow = this->data.GetCell(&cellY)->y;
+          const int cellColumn = this->data.GetCell(&cellX)->x;
+          CNaviInfo* info = this->data.GetInfo();
+          int viewX = -1;
+          int viewY = -1;
+          if (info) {
+            int offsetX;
+            int offsetY;
+            const float scale = this->FitToSquare(&offsetX, &offsetY, info->GetCellX(), info->GetCellY(), 126.0f);
+            viewX = static_cast<int>(cellColumn * scale + offsetX);
+            viewY = static_cast<int>(126.0f - (cellRow * scale + offsetY));
+          }
+          this->previewY = viewY;
+          this->previewX = viewX;
         } else {
-          cellRow = this->currentTarget.y;
-          info = static_cast<CNaviInfo*>(this->currentTarget.object);
+          const int cellColumn = this->currentTarget.x;
+          const int cellRow = this->currentTarget.y;
+          CNaviInfo* info = static_cast<CNaviInfo*>(this->currentTarget.object);
+          int viewX = -1;
+          int viewY = -1;
+          if (info) {
+            int offsetX;
+            int offsetY;
+            const float scale = this->FitToSquare(&offsetX, &offsetY, info->GetCellX(), info->GetCellY(), 126.0f);
+            viewX = static_cast<int>(cellColumn * scale + offsetX);
+            viewY = static_cast<int>(126.0f - (cellRow * scale + offsetY));
+          }
+          this->previewY = viewY;
+          this->previewX = viewX;
         }
-        int viewX = -1;
-        int viewY = -1;
-        if (info) {
-          int offsetX;
-          int offsetY;
-          const float scale = this->FitToSquare(&offsetX, &offsetY, info->GetCellX(), info->GetCellY(), 126.0f);
-          viewX = static_cast<int>(cellColumn * scale + offsetX);
-          viewY = static_cast<int>(126.0f - (cellRow * scale + offsetY));
-        }
-        this->previewY = viewY;
-        this->previewX = viewX;
       }
     }
   }
