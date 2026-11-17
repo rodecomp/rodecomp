@@ -2667,7 +2667,6 @@ void CSession::LoadMiniPartyInfo() {
 
   int state = 1;
   char name[24] = {0};
-  char token[24];
   SessionRecord0734 record;
   for (int i = 0; i < size; ++i) {
     record.active = 1;
@@ -2693,7 +2692,7 @@ void CSession::LoadMiniPartyInfo() {
     case '{': {
       ++i;
       std::memset(name, 0, sizeof(name) - 1);
-      std::memset(token, 0, sizeof(token));
+      char token[24] = {0};
       int position = 0;
       while (data[i] != ',') {
         token[position] += data[i];
