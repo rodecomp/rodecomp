@@ -2738,7 +2738,8 @@ void CPc::SetBodyPaletteName() {
     job = g_session.GetRidingJob(job);
   }
 
-  this->render.name.assign(static_cast<const std::string&>(g_session.GetBodyPalName(job, this->sex, this->render.bodyPalette, costumeJob, this->GetMadogearType(), 0)));
+  const std::string& paletteName = g_session.GetBodyPalName(job, this->sex, this->render.bodyPalette, costumeJob, this->GetMadogearType(), 0);
+  this->render.name.assign(paletteName);
 }
 
 // OFFSET: 0x00DB2670
