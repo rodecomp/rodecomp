@@ -4724,7 +4724,7 @@ void CGameMode::ReceiveItem1718List(const unsigned char* packet) {
 
 // OFFSET: 0x00D77C90
 // FUNCTION: fn_22154
-void ReceiveTradeItems(int count, const TradeItemRecord* records) {
+void CGameMode::ReceiveTradeItems(int count, const TradeItemRecord* records) {
   g_session.ClearTradeItems();
 
   for (int i = 0; i < count; ++i) {

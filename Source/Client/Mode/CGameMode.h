@@ -17,6 +17,7 @@
 #include <vector>
 
 class CView;
+struct TradeItemRecord;
 class UIBroadcastBalloon;
 class UINameBalloonText;
 class UIAchBalloonText;
@@ -535,6 +536,7 @@ public:
   void ReceiveItem1738AddOptions(const unsigned char* packet);
   void ReceiveItem1738AddGrade(const unsigned char* packet);
   void ReceiveItem1740Add(const unsigned char* packet);
+  void ReceiveTradeItems(int count, const TradeItemRecord* records);
   void ReceiveItem1740AddOptions(const unsigned char* packet);
   void ReceiveItem1740AddGrade(const unsigned char* packet);
   void ReceiveItem1740BasicList(const unsigned char* packet);
