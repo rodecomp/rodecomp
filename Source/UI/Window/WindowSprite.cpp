@@ -162,8 +162,8 @@ void UIWindow::AddRotatedSpriteCellOverlay(
   const int left = static_cast<int>(cell->x * static_cast<double>(cell->scaleX) + 1.0);
   const int right = static_cast<int>(((static_cast<std::int16_t>(image->doubleWidth) + 1) * image->width + cell->x) * static_cast<double>(cell->scaleX));
   const int top = static_cast<int>(cell->y * static_cast<double>(cell->scaleY));
-  const int startX = (cell->mirrored & 1) ? right : left;
-  const int endX = (cell->mirrored & 1) ? left : right;
+  const int startX = !(cell->mirrored & 1) ? left : right;
+  const int endX = !(cell->mirrored & 1) ? right : left;
   const float halfWidth = static_cast<float>(endX - startX) * 0.5f;
   const int bottom =
     static_cast<int>(((static_cast<std::int16_t>(image->doubleHeight) + 1) * image->height + cell->y) * static_cast<double>(cell->scaleY) + 1.0);
