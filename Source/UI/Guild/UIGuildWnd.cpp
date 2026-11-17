@@ -1746,11 +1746,11 @@ void UIGuildMemberManageWnd::OnCreate(int, int) {
     button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
     button->SetBitmap((prefix + "btn_ok_dis" + ".bmp").c_str(), 3, 0);
     button->SetSize(button->BitmapWidth(), button->BitmapHeight());
-    if (!g_guildInfo.isMaster || this->membersByCharacterId.empty()) {
-      x = -200;
-      y = -200;
+    if (g_guildInfo.isMaster && !this->membersByCharacterId.empty()) {
+      this->m_button->Move(x, y);
+    } else {
+      this->m_button->Move(-200, -200);
     }
-    this->m_button->Move(x, y);
     this->m_button->SetId(184);
     this->AddChild(this->m_button);
     this->m_message0 = 184;
@@ -2968,11 +2968,11 @@ void UIGuildPositionManageWnd::OnCreate(int, int) {
     this->m_button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
     this->m_button->SetBitmap((prefix + "btn_ok_dis" + ".bmp").c_str(), 3, 0);
     this->m_button->SetSize(this->m_button->BitmapWidth(), this->m_button->BitmapHeight());
-    if (!g_guildInfo.isMaster || this->m_positionMap.empty()) {
-      x = -200;
-      y = -200;
+    if (g_guildInfo.isMaster && !this->m_positionMap.empty()) {
+      this->m_button->Move(x, y);
+    } else {
+      this->m_button->Move(-200, -200);
     }
-    this->m_button->Move(x, y);
     this->m_button->SetId(184);
     this->AddChild(this->m_button);
     this->m_message0 = 184;
