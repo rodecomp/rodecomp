@@ -23066,8 +23066,7 @@ bool CRagEffect::OnProcess() {
         this->state.lastPrim->state.deltaPos2.y = -1.0f;
         this->state.lastPrim->state.innerSize = 8.0f;
         this->state.lastPrim->state.latitude = 90.0f;
-        EffectPrimitiveState& tilted = this->state.lastPrim->state;
-        tilted.transform.MakeXRotation(GetRadian(static_cast<int>(tilted.latitude)));
+        this->state.lastPrim->state.transform.MakeXRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.latitude)));
         this->state.lastPrim->state.radiusSpeed = 1.0f;
         EffectPrimitiveState& ring = this->state.lastPrim->state;
         ring.radiusAccel = -(ring.radiusSpeed / static_cast<float>(ring.duration)) * g_depthAverageHalf;
@@ -23127,10 +23126,8 @@ bool CRagEffect::OnProcess() {
         for (int index = 0; index < count; ++index) {
           this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
           this->state.lastPrim->state.duration = this->state.duration;
-          EffectPrimitiveState& tilted = this->state.lastPrim->state;
-          tilted.transform.MakeXRotation(GetRadian(std::max(rand() % 30, 0) + 75));
-          EffectPrimitiveState& turned = this->state.lastPrim->state;
-          turned.transform.AppendYRotation(GetRadian(std::max(rand() % 360, 0)));
+          this->state.lastPrim->state.transform.MakeXRotation(GetRadian(std::max(rand() % 30, 0) + 75));
+          this->state.lastPrim->state.transform.AppendYRotation(GetRadian(std::max(rand() % 360, 0)));
           this->state.lastPrim->state.deltaPos2.y = -9.0f;
           this->state.lastPrim->state.rollSpeed = 0.75f;
           this->state.lastPrim->state.speed = static_cast<float>(std::max(rand() % 3, 0) + 3) / 10.0f;
@@ -23393,8 +23390,7 @@ bool CRagEffect::OnProcess() {
         this->state.lastPrim->state.longSpeed = 15.0f;
         this->state.lastPrim->state.longAccel = -0.01f;
         this->state.lastPrim->state.size = 1.2f;
-        EffectPrimitiveState& turned = this->state.lastPrim->state;
-        turned.transform.MakeYRotation(GetRadian(static_cast<int>(turned.longitude)));
+        this->state.lastPrim->state.transform.MakeYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
         EffectPrimitiveState& orbit = this->state.lastPrim->state;
         const float* transform = orbit.transform.values;
         const float radius = orbit.radius;
@@ -23977,10 +23973,8 @@ bool CRagEffect::OnProcess() {
       if (this->state.stateCnt % 5 == 0) {
         this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
         this->state.lastPrim->state.duration = 10;
-        EffectPrimitiveState& turned = this->state.lastPrim->state;
-        turned.transform.MakeYRotation(GetRadian(std::max(rand() % 360, 0)));
-        EffectPrimitiveState& tilted = this->state.lastPrim->state;
-        tilted.transform.MakeXRotation(GetRadian(90));
+        this->state.lastPrim->state.transform.MakeYRotation(GetRadian(std::max(rand() % 360, 0)));
+        this->state.lastPrim->state.transform.MakeXRotation(GetRadian(90));
         this->state.lastPrim->state.speed = static_cast<float>(std::max(rand() % 20, 0) + 20) / 80.0f;
         EffectPrimitiveState& moving = this->state.lastPrim->state;
         moving.accel = -(moving.speed / static_cast<float>(moving.duration)) * g_depthAverageHalf;
