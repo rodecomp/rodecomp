@@ -214,14 +214,15 @@ bool CNavigationManager::BuildRoute(int startX, int startY, int destX, int destY
       int offsetX;
       int offsetY;
       const float scale = this->FitToSquare(&offsetX, &offsetY, width, height, 126.0f);
-      for (const PathCell& point : this->movementRoute.points) {
+      const auto end = this->movementRoute.points.end();
+      for (auto point = this->movementRoute.points.begin(); point != end; ++point) {
         NaviCell cell;
-        cell.x = static_cast<int>(point.x * scale + offsetX);
-        cell.y = static_cast<int>(126.0f - (point.y * scale + offsetY));
+        cell.x = static_cast<int>(point->x * scale + offsetX);
+        cell.y = static_cast<int>(126.0f - (point->y * scale + offsetY));
 
         bool exists = false;
-        for (const NaviCell& other : this->cells) {
-          if (other.x == cell.x && other.y == cell.y) {
+        for (auto other = this->cells.begin(), last = this->cells.end(); other != last; ++other) {
+          if (other->x == cell.x && other->y == cell.y) {
             exists = true;
             break;
           }
@@ -1172,8 +1173,9 @@ int CNaviData::ParseSearchKind(std::vector<std::string>& tokens) {
 // FUNCTION: fn_19386
 CNavi_Object* CNaviData::FindMobByTitle(std::string title) {
   std::vector<NavigationTarget> targets;
-  for (CNaviInfo* info : this->destinations) {
-    info->CollectMobsByTitle(title, targets);
+  const auto end = this->destinations.end();
+  for (auto it = this->destinations.begin(); it != end; ++it) {
+    (*it)->CollectMobsByTitle(title, targets);
     if (targets.begin() != targets.end()) {
       return static_cast<CNavi_Object*>(targets.front().object);
     }
