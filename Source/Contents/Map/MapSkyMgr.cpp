@@ -20,6 +20,8 @@
 #include <cstdlib>
 #include <new>
 
+template __declspec(noinline) int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+
 // GLOBAL: gl_24482
 CWeatherEffect g_weatherEffect;
 
@@ -462,12 +464,12 @@ void RegisterLowercaseName(const char* name) {
 
   std::vector<std::string>::iterator it = g_session.skyMapNames.begin();
   for (; it != g_session.skyMapNames.end(); ++it) {
-    if (*it == lowered.c_str()) {
+    if (it->compare(lowered.c_str()) == 0) {
       break;
     }
   }
 
-  if (it == g_session.skyMapNames.end()) {
+  if (g_session.skyMapNames.end() == it) {
     g_session.skyMapNames.push_back(lowered.c_str());
   }
 }
