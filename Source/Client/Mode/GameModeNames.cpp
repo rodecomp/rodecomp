@@ -138,8 +138,8 @@ bool CGameMode::AppendGuildEmblem(std::vector<char>& output, std::vector<std::st
   std::memset(path, 0, sizeof(path));
   std::string name = g_guildMgr->GetEmblemFilename(guildId);
 
-  for (const std::string& existing : names) {
-    if (std::strcmp(name.c_str(), existing.c_str()) == 0) {
+  for (std::vector<std::string>::iterator it = names.begin(); it != names.end(); ++it) {
+    if (std::strcmp(name.c_str(), it->c_str()) == 0) {
       return false;
     }
   }
@@ -151,11 +151,11 @@ bool CGameMode::AppendGuildEmblem(std::vector<char>& output, std::vector<std::st
     return false;
   }
 
-  const std::uint32_t size = file.GetSize();
-  output.resize(size + 4 + name.size(), 0);
-  *reinterpret_cast<std::uint32_t*>(output.data()) = static_cast<std::uint32_t>(name.size());
-  std::memcpy(output.data() + 4, name.c_str(), name.size());
-  file.Read(output.data() + name.size() + 4, size);
+  output.resize(file.GetSize() + 4 + name.size(), 0);
+  const std::uint32_t length = name.size();
+  std::memcpy(output.data(), &length, 4);
+  std::memcpy(output.data() + 4, name.c_str(), length);
+  file.Read(output.data() + name.size() + 4, file.GetSize());
   file.Close();
   names.push_back(name);
   return true;
