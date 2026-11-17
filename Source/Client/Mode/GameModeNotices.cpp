@@ -4584,19 +4584,7 @@ struct SpriteChange2Packet {
 void CGameMode::ReceiveSpriteChange(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const SpriteChangePacket*>(data);
   CGameActor* actor;
-  if (packet->aid != g_session.m_aid) {
-    actor = this->scene->GetGameActorByAID(packet->aid);
-    if (!actor) {
-      CSkill* skill = this->scene->GetSkillByAID(packet->aid);
-      if (!skill) {
-        return;
-      }
-      if (packet->type == LOOK_BASE) {
-        skill->SendMsg(nullptr, AM_SETJOB, packet->value, 0, 0, 0, 0, 0);
-      }
-      return;
-    }
-  } else {
+  if (packet->aid == g_session.m_aid) {
     actor = this->scene->player;
     switch (packet->type) {
     case LOOK_BASE:
@@ -4631,42 +4619,51 @@ void CGameMode::ReceiveSpriteChange(const unsigned char* data) {
     if (!actor) {
       return;
     }
+  } else {
+    actor = this->scene->GetGameActorByAID(packet->aid);
   }
 
-  switch (packet->type) {
-  case LOOK_BASE:
-    actor->SetActorJob(packet->value);
-    actor->SetImfFileName();
-    actor->SetHeadPaletteName();
-    actor->SetBodyPaletteName();
-    break;
-  case LOOK_HAIR:
-    actor->SetSprHead(packet->value);
-    actor->SetImfFileName();
-    actor->SetHeadPaletteName();
-    actor->RefreshAccessory3();
-    break;
-  case LOOK_WEAPON:
-    actor->SetSprWeapon(packet->value, 0);
-    break;
-  case LOOK_HEAD_BOTTOM:
-    actor->SetSprAccessory(packet->value);
-    break;
-  case LOOK_HAIR_COLOR:
-    actor->SetHeadPalette(packet->value);
-    break;
-  case LOOK_CLOTHES_COLOR:
-    actor->SetBodyPalette(packet->value);
-    break;
-  case LOOK_HEAD_TOP:
-    actor->SetSprAccessory2(packet->value);
-    break;
-  case LOOK_HEAD_MID:
-    actor->SetSprAccessory3(packet->value);
-    break;
-  case LOOK_SHIELD:
-    actor->SetSprShield(packet->value);
-    break;
+  if (actor) {
+    switch (packet->type) {
+    case LOOK_BASE:
+      actor->SetActorJob(packet->value);
+      actor->SetImfFileName();
+      actor->SetHeadPaletteName();
+      actor->SetBodyPaletteName();
+      break;
+    case LOOK_HAIR:
+      actor->SetSprHead(packet->value);
+      actor->SetImfFileName();
+      actor->SetHeadPaletteName();
+      actor->RefreshAccessory3();
+      break;
+    case LOOK_WEAPON:
+      actor->SetSprWeapon(packet->value, 0);
+      break;
+    case LOOK_HEAD_BOTTOM:
+      actor->SetSprAccessory(packet->value);
+      break;
+    case LOOK_HAIR_COLOR:
+      actor->SetHeadPalette(packet->value);
+      break;
+    case LOOK_CLOTHES_COLOR:
+      actor->SetBodyPalette(packet->value);
+      break;
+    case LOOK_HEAD_TOP:
+      actor->SetSprAccessory2(packet->value);
+      break;
+    case LOOK_HEAD_MID:
+      actor->SetSprAccessory3(packet->value);
+      break;
+    case LOOK_SHIELD:
+      actor->SetSprShield(packet->value);
+      break;
+    }
+  } else {
+    CSkill* skill = this->scene->GetSkillByAID(packet->aid);
+    if (skill && packet->type == LOOK_BASE) {
+      skill->SendMsg(nullptr, AM_SETJOB, packet->value, 0, 0, 0, 0, 0);
+    }
   }
 }
 
