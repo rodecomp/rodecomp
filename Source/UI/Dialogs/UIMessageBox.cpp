@@ -389,7 +389,8 @@ void UIMerInfoWnd::Paint() {
   this->DrawTextAt(218, 70, text, bytes, 1, 14, 0, 0, 0);
   bytes = std::sprintf(text, "%d / %d", g_session.m_mercenarySp, g_session.m_mercenaryMaxSp);
   this->DrawTextAt(218, 85, text, bytes, 1, 14, 0, 0, 0);
-  std::strftime(text, 128, LookupMessage(MSI_TIME_TYPE2), _localtime32(&g_session.m_mercenaryExpiration));
+  const tm* expiration = _localtime32(&g_session.m_mercenaryExpiration);
+  std::strftime(text, 128, LookupMessage(MSI_TIME_TYPE2), expiration);
   this->DrawTextAt(155, 111, text, static_cast<int>(std::strlen(text)), 0, 12, 255, 0, 0);
   bytes = std::sprintf(text, "%d", g_session.m_mercenaryLoyalty);
   this->DrawTextAt(170, 133, text, bytes, 1, 14, 0, 0, 0);
@@ -2292,21 +2293,20 @@ int UIReplayRECControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       g_modeMgr.currentMode->SendMsg(MM_STOP_REPLAY_RECORDING, 0, 0, 0, 0);
       return 0;
     case ID_CONFIRM_REPLAY_RECORDING_PATH: {
-      auto* edit = this->filenameEdit;
-      if (edit->Length() <= 0) {
+      if (this->filenameEdit->Length() <= 0) {
         g_windowMgr.Confirm(LookupMessage(MSI_REPLAY_ENTERTHEFILENAME), 0, true, false, 0, "Message", 280, 120, 0);
         return 0;
       }
 
-      if (_mbsstr(reinterpret_cast<const unsigned char*>(edit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkOpening.c_str())) ||
-          _mbsstr(reinterpret_cast<const unsigned char*>(edit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkClosing.c_str()))) {
+      if (_mbsstr(reinterpret_cast<const unsigned char*>(this->filenameEdit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkOpening.c_str())) ||
+          _mbsstr(reinterpret_cast<const unsigned char*>(this->filenameEdit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkClosing.c_str()))) {
         g_windowMgr.Confirm(LookupMessage(MSI_STYLING_SHOP_OPEN_COUPON), 0, true, false, 0, "Message", 280, 120, 0);
         return 0;
       }
 
-      ReplayFileList::Instance().SetPath(edit->Text());
+      ReplayFileList::Instance().SetPath(this->filenameEdit->Text());
       g_windowMgr.SetFocus(nullptr);
-      edit->SetText("");
+      this->filenameEdit->SetText("");
       g_modeMgr.currentMode->SendMsg(MM_START_REPLAY_RECORDING, 0, 0, 0, 0);
 
       if (Replay::Instance().state == 1) {
