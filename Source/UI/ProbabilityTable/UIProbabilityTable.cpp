@@ -26,6 +26,8 @@
 #include <string>
 #include <string_view>
 
+template __declspec(noinline) std::function<void(CUIListItem*)>& std::function<void(CUIListItem*)>::operator=(const std::function<void(CUIListItem*)>&);
+
 // GLOBAL: gl_25157
 static const std::string g_probabilityHighlightBegin = "^FF0000<B>";
 // GLOBAL: gl_25158
@@ -245,14 +247,20 @@ void CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::AddNe
       item->SetSize(this->itemWidth, this->rowHeight);
       item->Show(0);
       item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
-      item->onHover = [this](CUIListItem* listItem) {
-        for (ProbabilityTable::CUIItem* other : this->items) {
-          other->SetHighlighted(other == listItem);
-        }
-      };
-      item->onPress = [this](CUIListItem* listItem) {
-        this->SelectItem(listItem);
-      };
+      {
+        const std::function<void(CUIListItem*)> onHover = [this](CUIListItem* listItem) {
+          for (ProbabilityTable::CUIItem* other : this->items) {
+            other->SetHighlighted(other == listItem);
+          }
+        };
+        item->onHover = onHover;
+      }
+      {
+        const std::function<void(CUIListItem*)> onPress = [this](CUIListItem* listItem) {
+          this->SelectItem(listItem);
+        };
+        item->onPress = onPress;
+      }
       this->AddChild(item);
       slot = item;
     }
