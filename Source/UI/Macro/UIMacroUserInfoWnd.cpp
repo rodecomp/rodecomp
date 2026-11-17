@@ -802,18 +802,17 @@ int UIMacroReporterWnd::SendMsg(
         this->m_target = this->m_fields[0]->Text();
       }
     } else if (sender == this->m_edit) {
-      UIEditCtrl* edit = this->m_edit;
-      std::string text = edit->Text();
+      std::string text = this->m_edit->Text();
       if (text.size() > 1) {
-        edit->SetText(IntToString(this->reportCount, 0).c_str());
+        this->m_edit->SetText(IntToString(this->reportCount, 0).c_str());
       } else if (text.c_str()[0] >= '0' && text.c_str()[0] <= '9') {
         this->reportCount = std::atoi(text.c_str());
         if (this->reportCount > this->maxReportCount) {
           this->reportCount = this->maxReportCount;
-          edit->SetText(IntToString(this->maxReportCount, 0).c_str());
+          this->m_edit->SetText(IntToString(this->maxReportCount, 0).c_str());
         }
       } else {
-        edit->SetText(IntToString(this->reportCount, 0).c_str());
+        this->m_edit->SetText(IntToString(this->reportCount, 0).c_str());
       }
     }
     break;
