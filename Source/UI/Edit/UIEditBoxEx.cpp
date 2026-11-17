@@ -9,6 +9,8 @@
 #include <cstdlib>
 #include <windows.h>
 
+template __declspec(noinline) void std::vector<bool>::push_back(const bool&);
+
 // OFFSET: 0x009E4310
 // FUNCTION: fn_14429
 bool CUIEditBoxEx::IsEditable() {
@@ -196,8 +198,8 @@ void CUIEditCtrlEx::Synchronize() {
 
   const std::string prefix = g_serverLanguage->Prefix(false);
   const std::string fullText = prefix + this->text;
-  std::vector<std::string> lines;
   std::vector<bool> breaks;
+  std::vector<std::string> lines;
   if (this->multiline != 0) {
     int wrapWidth = this->geometry.width - this->scrollBar->geometry.width - this->horizontalPadding;
     this->WrapTextWithBreaks(fullText.c_str(), &lines, &breaks, wrapWidth);
@@ -209,8 +211,8 @@ void CUIEditCtrlEx::Synchronize() {
 
   this->lines.clear();
   if (!lines.empty()) {
-    int anchor = 0;
     int cursor = 0;
+    int anchor = 0;
     g_serverLanguage->Selection(anchor, cursor);
     if (anchor > cursor) {
       std::swap(anchor, cursor);
@@ -227,20 +229,12 @@ void CUIEditCtrlEx::Synchronize() {
       std::size_t lineEnd = currentOffset + rawLine.size();
       if (static_cast<std::size_t>(anchor) <= lineEnd) {
         int offset = anchor - currentOffset;
-        if (lineLen < offset) {
-          line.selectionBegin = lineLen;
-        } else {
-          line.selectionBegin = std::max(offset, 0);
-        }
+        line.selectionBegin = lineLen < offset ? lineLen : std::max(offset, 0);
         line.selectionEnd = lineLen;
       }
       if (static_cast<std::size_t>(cursor) <= lineEnd) {
         int offset = cursor - currentOffset;
-        if (lineLen < offset) {
-          line.selectionEnd = lineLen;
-        } else {
-          line.selectionEnd = std::max(offset, 0);
-        }
+        line.selectionEnd = lineLen < offset ? lineLen : std::max(offset, 0);
       }
       currentOffset = static_cast<int>(lineEnd);
 
@@ -273,15 +267,15 @@ void CUIEditCtrlEx::Synchronize() {
       }
     }
 
-    const int candidateCursor = g_serverLanguage->compositionCursor;
-    if (candidateCursor != 0) {
-      this->column += candidateCursor;
+    const int candidateLength = static_cast<int>(g_serverLanguage->candidate.size());
+    int end = std::max(anchor, cursor) + candidateLength + static_cast<int>(prefix.size());
+    if (candidateLength != 0) {
+      this->column += candidateLength;
       int cursorX = 0;
       if (this->column > 0) {
         cursorX = this->TextWidth(this->lines[this->line].text.c_str(), this->column, 0, 12, 0, 0);
       }
 
-      int end = std::max(anchor, cursor) + candidateCursor + static_cast<int>(prefix.size());
       int readingOffset = end - currentOffset;
       int readingX = 0;
       if (readingOffset > 0) {
