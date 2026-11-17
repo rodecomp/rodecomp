@@ -9494,86 +9494,76 @@ void UIItemShopWnd::Paint() {
 // OFFSET: 0x009808E0
 // FUNCTION: fn_13337
 void UIItemStoreWnd::Paint() {
-  this->DrawTitleBar(false, "", 0);
+  this->DrawTitleBar(0, "", 0);
 
   if (this->geometry.height == 17) {
     return;
   }
 
   int rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
-  for (int i = 0; i < rows; ++i) {
+  for (int i = 0, y = 17; i < rows; ++i, y += 8) {
     auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
-    this->DrawBitmap(0, i * 8 + 17, left, false);
+    this->DrawBitmap(0, y, left, 0);
   }
 
   rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
-  for (int i = 0; i < rows; ++i) {
+  for (int i = 0, y = 17; i < rows; ++i, y += 8) {
     auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
-    this->DrawBitmap(this->geometry.width - right->image.width, i * 8 + 17, right, false);
+    this->DrawBitmap(this->geometry.width - right->image.width, y, right, 0);
   }
 
-  {
-    unsigned red, green, blue;
-    g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-    this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - 38, RGB(red, green, blue));
-    this->FillRegion(20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - 38) % 32, RGB(red, green, blue));
-  }
+  unsigned red, green, blue;
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
+  this->FillRegion(20, 17, (this->geometry.width - 60) % 32, this->geometry.height - 38, RGB(red, green, blue));
+  this->FillRegion(20, (this->geometry.height - 38) / 32 * 32 + 17, this->geometry.width - 24, (this->geometry.height - 38) % 32, RGB(red, green, blue));
   this->DrawButtonBar(this->alternateButtonBar != 0 ? 3 : 0, 0, 1);
 
   const int columns = (this->geometry.width - 40) / 32;
-  const int slotRows = (this->geometry.height - 74) / 32;
-  if (!this->m_hideCapacity) {
+  const int visibleRows = (this->geometry.height - 74) / 32;
+  if (this->m_hideCapacity == 0) {
     this->scrollBar->Show(0);
     unsigned fillRed, fillGreen, fillBlue;
     g_skinInfo.PaletteChannels(2, 2, fillRed, fillGreen, fillBlue);
-    this->FillRegion(40, 17, columns * 32, slotRows * 32, RGB(fillRed, fillGreen, fillBlue));
+    this->FillRegion(40, 17, columns * 32, visibleRows * 32, RGB(fillRed, fillGreen, fillBlue));
     this->DrawRoundedOutline(55, 131, 187, 139, 0xCE9484);
     this->DrawFilledRoundedOutline(56, 132, 185, 137, 0xFFE7DE);
     this->DrawFilledRoundedOutline(61, 137, 175, 127, 0xFFFFFF);
     auto* poring = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\notice_poring.bmp")));
-    this->DrawBitmap(116, 151, poring, true);
-    this->DrawCenteredText(20, 210, LookupMessage(MSI_RODEX_BUTTON_ANSWER), 257, 0, 12, 0, 0);
-    this->DrawCenteredText(20, 236, LookupMessage(MSI_CLOSE_SETUP), 257, 0, 15, 0xC89482, 1);
-    this->DrawCenteredText(20, 272, LookupMessage(MSI_USE_WORLDMAP_WITH_PERIOD_MSG2), 257, 0, 12, 0x6464DC, 1);
+    this->DrawBitmap(116, 151, poring, 1);
+    this->DrawCenteredText(20, 210, LookupMessage(0xDD4), 257, 0, 12, 0, 0);
+    this->DrawCenteredText(20, 236, LookupMessage(0xC77), 257, 0, 15, 0xC89482, 1);
+    this->DrawCenteredText(20, 272, LookupMessage(0xE13), 257, 0, 12, 0x6464DC, 1);
     return;
   }
 
   this->scrollBar->Show(1);
-  int slots = slotRows;
-  for (int i = 0, y = 17; i < slots; ++i, y += 32) {
+  for (int i = 0, y = 17; i < visibleRows; ++i, y += 32) {
     this->DrawItemSlotFrame(40, y);
   }
 
   unsigned fillRed, fillGreen, fillBlue;
   g_skinInfo.PaletteChannels(2, 2, fillRed, fillGreen, fillBlue);
-  this->FillRegion(72, 17, columns * 32 - 32, slotRows * 32, RGB(fillRed, fillGreen, fillBlue));
+  this->FillRegion(72, 17, columns * 32 - 32, visibleRows * 32, RGB(fillRed, fillGreen, fillBlue));
 
   int visible = 0;
   int index = 0;
-
   for (auto it = this->items.begin(); it != this->items.end(); ++it, ++index) {
     if (index < this->scroll * this->columns) {
       continue;
     }
-
     if (g_session.IsPetEgg(std::atoi(it->itemId.c_str())) && it->damaged) {
       continue;
     }
 
-    const int top = visible / this->columns * 32;
-    const int column = visible % this->columns * 32;
-    const int x = column + 44;
-    this->DrawItemAndQuantity(x, top + 21, *it, 0, 0);
-    this->DrawWrappedItemName(column + 80, top + 29, 180, &*it, 0, 0, 12);
+    const int row = visible / this->columns;
+    const int column = visible % this->columns;
+    const int x = column * 32 + 44;
+    this->DrawItemAndQuantity(x, row * 32 + 21, *it, 0, 0);
+    this->DrawWrappedItemName(column * 32 + 80, row * 32 + 29, 180, &*it, 0, 0, 12);
 
-    if (0 < it->grade) {
-      this->DrawBitmap(
-        x, top + 33,
-        static_cast<CBitmapRes*>(
-          ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->grade).c_str()))
-        ),
-        true
-      );
+    if (it->grade > 0) {
+      const std::string icon = FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", it->grade);
+      this->DrawBitmap(x, row * 32 + 33, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(icon.c_str()))), 1);
     }
 
     if (++visible == this->visibleRows * this->columns) {
@@ -9582,7 +9572,7 @@ void UIItemStoreWnd::Paint() {
   }
 
   auto* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\inventory\\icon_num.bmp")));
-  this->DrawBitmap(6, this->geometry.height - 21, icon, true);
+  this->DrawBitmap(6, this->geometry.height - 21, icon, 1);
   const std::uint32_t color = this->m_itemCount >= this->m_capacity ? 0xFF : 0x232323;
   this->DrawTextAt(22, this->geometry.height - 19, FormatOwnedString("%d", this->m_itemCount).c_str(), 0, 0, 11, color, 0, 0);
   const int width = this->TextWidth(FormatOwnedString("%d", this->m_itemCount).c_str(), 0, 0, 11, 0, 0);
