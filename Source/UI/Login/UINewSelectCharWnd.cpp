@@ -631,11 +631,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         }
 
         g_session.SetPlayerNameKey(reinterpret_cast<const unsigned char*>(info->name));
-        if (info->sex == 'c') {
-          g_session.SetFlag(static_cast<char>(g_session.m_sex));
-        } else {
-          g_session.SetFlag(static_cast<char>(info->sex));
-        }
+        g_session.SetFlag(static_cast<char>(info->sex != 'c' ? info->sex : g_session.m_sex));
         this->m_navigationBlocked = true;
         const BlockedCharacter* blocked = g_session.m_blockedCharacters;
         for (int index = 0; index < g_session.blockedCharacterCount; ++index) {
@@ -738,18 +734,17 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
 
       for (int index = 0; index < this->m_slotsPerPage; ++index) {
         UIWindow* button = this->m_slotButtons2[index];
-        if (sender != button) {
+        if (sender == button) {
+          this->m_pageSlot = index;
+          g_selectedSlotIndex = static_cast<unsigned char>(this->m_page * this->m_slotsPerPage + index);
+          this->m_slotButtons2[index]->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
+          if (argument2 != 0xE2 && this->m_slotStatus[static_cast<unsigned char>(g_selectedSlotIndex)] != 0 &&
+              static_cast<UISlotBmpButton*>(this->m_slotButtons2[index])->m_displayMode == 0) {
+            this->SendMsg(nullptr, UM_COMMAND, ID_MAKE, this->m_pageSlot, 0, 0);
+            break;
+          }
+        } else {
           button->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
-          continue;
-        }
-
-        this->m_pageSlot = index;
-        g_selectedSlotIndex = static_cast<unsigned char>(this->m_page * this->m_slotsPerPage + index);
-        this->m_slotButtons2[index]->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
-        if (argument2 != 0xE2 && this->m_slotStatus[static_cast<unsigned char>(g_selectedSlotIndex)] != 0 &&
-            static_cast<UISlotBmpButton*>(this->m_slotButtons2[index])->m_displayMode == 0) {
-          this->SendMsg(nullptr, UM_COMMAND, ID_MAKE, this->m_pageSlot, 0, 0);
-          break;
         }
       }
 
@@ -899,21 +894,21 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         }
 
         const int column = this->m_page != 0 ? index % (this->m_page * this->m_slotsPerPage) : index;
-        UISlotBmpButton* button = static_cast<UISlotBmpButton*>(this->m_slotButtons2[column]);
         if (this->m_slotStatus[index] == 1) {
-          button->SetSlot(-1, index);
+          static_cast<UISlotBmpButton*>(this->m_slotButtons2[column])->SetSlot(-1, index);
           this->m_characterWindows[column]->SetText("", 0);
-          if (index < static_cast<unsigned>(g_session.m_producibleSlotCount)) {
-            button->SendMsg(nullptr, UM_SET_CHARACTER_SLOT_STYLE, 0, 0, 0, 0);
-          } else {
+          UISlotBmpButton* button = static_cast<UISlotBmpButton*>(this->m_slotButtons2[column]);
+          if (index >= static_cast<unsigned>(g_session.m_producibleSlotCount)) {
             button->SetDisabled(1);
             button->Invalidate();
+          } else {
+            button->SendMsg(nullptr, UM_SET_CHARACTER_SLOT_STYLE, 0, 0, 0, 0);
           }
           continue;
         }
 
-        button->SetSlot(index, -1);
-        button->SendMsg(nullptr, UM_SET_CHARACTER_SLOT_STYLE, 1, 0, 0, 0);
+        static_cast<UISlotBmpButton*>(this->m_slotButtons2[column])->SetSlot(index, -1);
+        this->m_slotButtons2[column]->SendMsg(nullptr, UM_SET_CHARACTER_SLOT_STYLE, 1, 0, 0, 0);
         const CharacterInfo* info = reinterpret_cast<const CharacterInfo*>(g_modeMgr.currentMode->SendMsg(MM_QUERYCHARICTORINFO, index, 0, 0, 0));
         if (info != nullptr) {
           this->m_characterWindows[column]->SetTextFitted(info->name);
@@ -965,21 +960,21 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         }
 
         const int column = this->m_page != 0 ? index % (this->m_page * this->m_slotsPerPage) : index;
-        UISlotBmpButton* button = static_cast<UISlotBmpButton*>(this->m_slotButtons2[column]);
         if (this->m_slotStatus[index] == 1) {
-          button->SetSlot(-1, index);
+          static_cast<UISlotBmpButton*>(this->m_slotButtons2[column])->SetSlot(-1, index);
           this->m_characterWindows[column]->SetText("", 0);
-          if (index < static_cast<unsigned>(g_session.m_producibleSlotCount)) {
-            button->SendMsg(nullptr, UM_SET_CHARACTER_SLOT_STYLE, 0, 0, 0, 0);
-          } else {
+          UISlotBmpButton* button = static_cast<UISlotBmpButton*>(this->m_slotButtons2[column]);
+          if (index >= static_cast<unsigned>(g_session.m_producibleSlotCount)) {
             button->SetDisabled(1);
             button->Invalidate();
+          } else {
+            button->SendMsg(nullptr, UM_SET_CHARACTER_SLOT_STYLE, 0, 0, 0, 0);
           }
           continue;
         }
 
-        button->SetSlot(index, -1);
-        button->SendMsg(nullptr, UM_SET_CHARACTER_SLOT_STYLE, 1, 0, 0, 0);
+        static_cast<UISlotBmpButton*>(this->m_slotButtons2[column])->SetSlot(index, -1);
+        this->m_slotButtons2[column]->SendMsg(nullptr, UM_SET_CHARACTER_SLOT_STYLE, 1, 0, 0, 0);
         const CharacterInfo* info = reinterpret_cast<const CharacterInfo*>(g_modeMgr.currentMode->SendMsg(MM_QUERYCHARICTORINFO, index, 0, 0, 0));
         if (info != nullptr) {
           this->m_characterWindows[column]->SetTextFitted(info->name);
@@ -1022,7 +1017,11 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         this->m_pageSlot = this->m_slotsPerPage - 1;
       }
       for (int index = 0; index < this->m_slotsPerPage; ++index) {
-        this->m_slotButtons2[index]->SendMsg(this, UM_SETSTATE, index == this->m_pageSlot, 0, 0, 0);
+        if (index == this->m_pageSlot) {
+          this->m_slotButtons2[index]->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
+        } else {
+          this->m_slotButtons2[index]->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
+        }
       }
       g_selectedSlotIndex = static_cast<unsigned char>(this->m_page * this->m_slotsPerPage + this->m_pageSlot);
       this->UpdateCharacterInfo();
@@ -1050,7 +1049,11 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         this->m_pageSlot %= this->m_slotsPerPage * this->m_page;
       }
       for (int index = 0; index < this->m_slotsPerPage; ++index) {
-        this->m_slotButtons2[index]->SendMsg(this, UM_SETSTATE, index == this->m_pageSlot, 0, 0, 0);
+        if (index == this->m_pageSlot) {
+          this->m_slotButtons2[index]->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
+        } else {
+          this->m_slotButtons2[index]->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
+        }
       }
       g_selectedSlotIndex = static_cast<unsigned char>(this->m_page * this->m_slotsPerPage + this->m_pageSlot);
       this->UpdateCharacterInfo();
@@ -1076,7 +1079,11 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         this->m_pageSlot += this->m_slotsPerPage;
       }
       for (int index = 0; index < this->m_slotsPerPage; ++index) {
-        this->m_slotButtons2[index]->SendMsg(this, UM_SETSTATE, index == this->m_pageSlot, 0, 0, 0);
+        if (index == this->m_pageSlot) {
+          this->m_slotButtons2[index]->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
+        } else {
+          this->m_slotButtons2[index]->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
+        }
       }
       g_selectedSlotIndex = static_cast<unsigned char>(this->m_page * this->m_slotsPerPage + this->m_pageSlot);
       this->UpdateCharacterInfo();
@@ -1104,7 +1111,11 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         this->m_pageSlot %= this->m_slotsPerPage * this->m_page;
       }
       for (int index = 0; index < this->m_slotsPerPage; ++index) {
-        this->m_slotButtons2[index]->SendMsg(this, UM_SETSTATE, index == this->m_pageSlot, 0, 0, 0);
+        if (index == this->m_pageSlot) {
+          this->m_slotButtons2[index]->SendMsg(this, UM_SETSTATE, 1, 0, 0, 0);
+        } else {
+          this->m_slotButtons2[index]->SendMsg(this, UM_SETSTATE, 0, 0, 0, 0);
+        }
       }
       g_selectedSlotIndex = static_cast<unsigned char>(this->m_page * this->m_slotsPerPage + this->m_pageSlot);
       this->UpdateCharacterInfo();
