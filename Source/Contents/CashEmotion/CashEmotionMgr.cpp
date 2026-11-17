@@ -2700,14 +2700,14 @@ void UICashEmotionListWnd::SetTab(char tab) {
     }
   }
 
-  if (this->m_backButton) {
-    this->m_backButton->SetDisabled(basic);
-    this->m_backButton->Invalidate();
+  if (UIBitmapButton* backButton = this->m_backButton) {
+    backButton->SetDisabled(basic);
+    backButton->Invalidate();
   }
 
-  if (this->m_searchButton) {
-    this->m_searchButton->SetDisabled(basic);
-    this->m_searchButton->Invalidate();
+  if (UIBitmapButton* searchButton = this->m_searchButton) {
+    searchButton->SetDisabled(basic);
+    searchButton->Invalidate();
   }
 
   if (this->m_currentList) {
