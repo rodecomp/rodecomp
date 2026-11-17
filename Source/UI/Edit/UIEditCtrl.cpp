@@ -2601,15 +2601,15 @@ void UIItemBaseWnd::Paint() {
   }
 
   const int leftTiles = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
-  for (int tile = 0, y = 17; tile < leftTiles; ++tile, y += 8) {
+  for (int tile = 0; tile < leftTiles; ++tile) {
     auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
-    this->DrawBitmap(0, y, left, false);
+    this->DrawBitmap(0, tile * 8 + 17, left, false);
   }
 
   const int rightTiles = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
-  for (int tile = 0, y = 17; tile < rightTiles; ++tile, y += 8) {
+  for (int tile = 0; tile < rightTiles; ++tile) {
     auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
-    this->DrawBitmap(this->geometry.width - right->image.width, y, right, false);
+    this->DrawBitmap(this->geometry.width - right->image.width, tile * 8 + 17, right, false);
   }
 
   unsigned red, green, blue;
@@ -2623,9 +2623,9 @@ void UIItemBaseWnd::Paint() {
 
   const int columns = (this->geometry.width - 40) / 32;
   const int rows = (this->geometry.height - 38) / 32;
-  for (int row = 0, y = 17; row < rows; ++row, y += 32) {
+  for (int row = 0; row < rows; ++row) {
     for (int column = 0, x = 40; column < columns; ++column, x += 32) {
-      this->DrawItemSlotFrame(x, y);
+      this->DrawItemSlotFrame(x, row * 32 + 17);
     }
   }
 
