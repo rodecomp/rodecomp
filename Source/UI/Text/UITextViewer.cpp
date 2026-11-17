@@ -339,7 +339,8 @@ int UITextViewEX::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
 
   case UM_SETTEXT: {
     std::string text(reinterpret_cast<const char*>(argument1));
-    for (UIWindow* link : this->extraLinks) {
+    for (auto linkIt = this->extraLinks.begin(), linkEnd = this->extraLinks.end(); linkIt != linkEnd; ++linkIt) {
+      UIWindow* link = *linkIt;
       this->RemoveChild(link, 1);
     }
     this->extraLinks.clear();
