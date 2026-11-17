@@ -580,6 +580,7 @@ namespace {
 int UIMacroReporterWnd::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
+  PACKET_CZ_MACRO_REPORT_HEADER header;
   switch (message) {
   case UM_SETINFO: {
     this->m_state = reinterpret_cast<MacroReporterState*>(argument1);
@@ -653,7 +654,6 @@ int UIMacroReporterWnd::SendMsg(
         this->m_namesValid = this->ValidateNames(1);
         this->m_targetValid = this->ValidateTarget(1);
         if (this->m_namesValid == true && this->m_targetValid == true) {
-          PACKET_CZ_MACRO_REPORT_HEADER header;
           header.packetType = ID_CZ_MACRO_REPORT_USER;
           strncpy_s(header.target, sizeof(header.target), this->m_target.c_str(), _TRUNCATE);
           header.count = static_cast<std::uint8_t>(this->m_nameCount);
