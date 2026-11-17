@@ -4143,12 +4143,16 @@ void CRagEffect::SlashFan(std::int16_t reverse) {
     this->state.lastPrim->state.slots[index].process = 0;
     this->state.lastPrim->state.slots[index].distance = 100.0f;
     this->state.lastPrim->state.slots[index].maxHeight = 1.0f;
-    this->state.lastPrim->state.slots[index].height[0] = reverse == 0 ? -15.0f - static_cast<float>(index) * 2.5f : static_cast<float>(index) * 2.5f + 15.0f;
+    if (reverse == 0) {
+      this->state.lastPrim->state.slots[index].height[0] = -15.0f - static_cast<float>(index) * 2.5f;
+    } else {
+      this->state.lastPrim->state.slots[index].height[0] = static_cast<float>(index) * 2.5f + 15.0f;
+    }
     this->state.lastPrim->Get_Angle(
       this->state.deltaPos.x - this->render.position.x, this->state.deltaPos.z - this->render.position.z, &this->state.lastPrim->state.slots[index].riseAngle
     );
 
-    if (this->state.lastPrim->state.slots[index].riseAngle > 359) {
+    if (this->state.lastPrim->state.slots[index].riseAngle >= 360) {
       this->state.lastPrim->state.slots[index].riseAngle -= 360;
     }
 
@@ -6444,8 +6448,8 @@ void CRagEffect::BubbleFanSweep(const char*, char rising) {
   this->state.lastPrim->state.totalTexture = 13;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
 
-  for (int number = 2, index = 0; number < 28; number += 2, ++index) {
-    std::sprintf(name, "effect\\W_bubble%02d.tga", number);
+  for (int index = 0; index < 13; ++index) {
+    std::sprintf(name, "effect\\W_bubble%02d.tga", index * 2 + 2);
     this->state.lastPrim->state.textures[index] = g_texMgr.Load(name, 0, false, true, false);
   }
 
@@ -6469,7 +6473,11 @@ void CRagEffect::BubbleFanSweep(const char*, char rising) {
     this->state.lastPrim->state.slots[index].vecBNow.y = 0.0f;
     this->state.lastPrim->state.slots[index].vecTNow.x = 0.0f;
     this->state.lastPrim->state.slots[index].vecTNow.z = 0.0f;
-    this->state.lastPrim->state.slots[index].vecTPre.x = rising == 1 ? 7.0f : 0.0f;
+    if (rising == 1) {
+      this->state.lastPrim->state.slots[index].vecTPre.x = 7.0f;
+    } else {
+      this->state.lastPrim->state.slots[index].vecTPre.x = 0.0f;
+    }
   }
 }
 
@@ -7707,7 +7715,7 @@ void CRagEffect::CloudBurst() {
 void CRagEffect::CloudSpread() {
   CopyVector(this->render.position, this->state.parent->render.position);
 
-  if (this->state.stateCnt < 2) {
+  if (this->state.stateCnt <= 1) {
     this->state.lastPrim = this->LaunchEffectPrim(69, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = 5;
     this->state.lastPrim->state.duration = this->state.duration;
@@ -8519,7 +8527,7 @@ void CRagEffect::AlphaCenterStream() {
 void CRagEffect::CloudDrift() {
   CopyVector(this->render.position, this->state.parent->render.position);
 
-  if (this->state.stateCnt < 2) {
+  if (this->state.stateCnt <= 1) {
     this->state.lastPrim = this->LaunchEffectPrim(69, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = 5;
     this->state.lastPrim->state.duration = this->state.duration;

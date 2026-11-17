@@ -6949,7 +6949,7 @@ void CEffectPrim::PrimSTIN3() {
     slot.vecBNow.z += slot.height[1] * g_sinTable[slot.rotStart];
 
     if (slot.process % 3 == 0) {
-      for (int trail = 2; trail >= 0; --trail) {
+      for (int trail = 2; trail > -1; --trail) {
         slots[trail + 1].vecBNow = slots[trail].vecBNow;
         slots[trail + 1].alphaB = static_cast<std::int16_t>(static_cast<int>(static_cast<float>(slots[trail].alphaB) * 0.8f));
         slots[trail + 1].riseAngle = slots[trail].riseAngle;
