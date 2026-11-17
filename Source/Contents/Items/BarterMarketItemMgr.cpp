@@ -811,18 +811,19 @@ struct BarterKeyTree {
 // FUNCTION: fn_03797
 BarterKeyLookup BarterKeyTree::FindLowerBound(const std::vector<int>& key)
 {
-  BarterKeyLookup result;
   BarterKeyNode* node = this->head->parent;
+  BarterKeyLookup result;
   result.node = node;
   result.direction = 0;
   result.bound = this->head;
   while (node->isnil == 0) {
     result.node = node;
+    int i = 0;
     int nodeCount = (int)node->key.size();
     int keyCount = (int)key.size();
-    int count = nodeCount < keyCount ? keyCount : nodeCount;
+    int count = std::max(nodeCount, keyCount);
     int relation = 0;
-    for (int i = 0; i < count; ++i) {
+    for (; i < count; ++i) {
       int left = i < nodeCount ? node->key[i] : 0;
       int right = i < keyCount ? key[i] : 0;
       if (left < right) {
