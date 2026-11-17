@@ -127,7 +127,7 @@ void CTalismanMarkEffect::OnProcess() {
       continue;
     }
 
-    switch (static_cast<signed char>(particle->animationState)) {
+    switch (particle->animationState) {
     case 0:
       if (IsParticleActive(particle)) {
         break;

@@ -604,17 +604,17 @@ UIJobIconButton::~UIJobIconButton() = default;
 void UIJobIconButton::Paint() {
   std::string name("");
   if (this->m_disabled == 1) {
-    name = this->m_names[3];
+    name = this->m_disabledName;
   } else {
     switch (this->geometry.state) {
     case 0:
-      name = this->m_names[0];
+      name = this->m_normalName;
       break;
     case 1:
-      name = this->m_names[1];
+      name = this->m_hoverName;
       break;
     case 2:
-      name = this->m_names[2];
+      name = this->m_pressedName;
       break;
     }
   }

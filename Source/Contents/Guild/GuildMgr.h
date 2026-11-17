@@ -23,6 +23,12 @@ public:
 
 class CGuildMgr {
 public:
+  struct ReceivedEmblem {
+    /* 0000 */ std::uint32_t guildId;
+    /* 0004 */ std::uint32_t version;
+    /* 0008 */ std::vector<unsigned char> data;
+  };
+
   CGuildMgr();
   virtual ~CGuildMgr();
 
@@ -44,9 +50,7 @@ public:
   /* 0008 */ std::map<std::uint32_t, CGuild> m_guilds;
   /* 0010 */ CGuildEmblemReqBundle* m_reqBundle;
   /* 0014 */ std::set<std::string> m_invalidEmblems;
-  /* 001C */ std::uint32_t m_receiveGuildId;
-  /* 0020 */ std::uint32_t m_receiveVersion;
-  /* 0024 */ std::vector<unsigned char> m_receiveData;
+  /* 001C */ ReceivedEmblem m_receivedEmblem;
   /* 0030 */ int m_timeout;
 };
 
@@ -60,8 +64,8 @@ static_assert(offsetof(CGuildMgr, m_initialized) == 0x04);
 static_assert(offsetof(CGuildMgr, m_guilds) == 0x08);
 static_assert(offsetof(CGuildMgr, m_reqBundle) == 0x10);
 static_assert(offsetof(CGuildMgr, m_invalidEmblems) == 0x14);
-static_assert(offsetof(CGuildMgr, m_receiveGuildId) == 0x1C);
-static_assert(offsetof(CGuildMgr, m_receiveData) == 0x24);
+static_assert(offsetof(CGuildMgr, m_receivedEmblem) == 0x1C);
+static_assert(offsetof(CGuildMgr, m_receivedEmblem) + offsetof(CGuildMgr::ReceivedEmblem, data) == 0x24);
 static_assert(offsetof(CGuildMgr, m_timeout) == 0x30);
 #endif
 

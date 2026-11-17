@@ -2025,13 +2025,13 @@ void CJupitelThunderHit::OnProcess() {
     ++(*it)->elapsedFrames;
     CParticle* particle = *it;
     if (particle && particle->elapsedFrames >= 0) {
-      std::size_t index = static_cast<signed char>(particle->animationState) + 1;
+      std::size_t index = particle->animationState + 1;
       if (index >= this->textures.size()) {
         index = 0;
       }
 
       particle->SetTexture(this->textures[index]);
-      particle->animationState = static_cast<unsigned char>(index);
+      particle->animationState = static_cast<signed char>(index);
       matrix rotation;
       rotation.MakeXRotation(g_modeMgr.GetGameMode()->camera->camera.pitch / 180.0f * 3.141592f);
       matrix scaling;
@@ -2252,8 +2252,8 @@ void CNewCloudKillEffect::OnProcess() {
     if (particle->elapsedFrames >= particle->phaseParameter) {
       ResetLightning(particle);
     } else {
-      int state = std::max(static_cast<signed char>(particle->animationState) - 1, 0);
-      particle->animationState = static_cast<unsigned char>(state);
+      int state = std::max(particle->animationState - 1, 0);
+      particle->animationState = static_cast<signed char>(state);
       particle->alpha = state * 25;
 
       matrix scale;
@@ -4277,7 +4277,7 @@ void CNewCloudKillEffect::Render() {
 
   for (auto it = this->lightningEmitters.begin(); it != this->lightningEmitters.end(); ++it) {
     CParticle* particle = *it;
-    if (static_cast<signed char>(particle->animationState) <= 0 || !*it) {
+    if (particle->animationState <= 0 || !*it) {
       continue;
     }
 

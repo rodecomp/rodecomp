@@ -45,7 +45,7 @@ struct RenderObjectState {
   /* 0064 */ float motionSpeedScale;
   /* 0068 */ float motionSpeed;
   /* 006C */ std::uint32_t motionType;
-  /* 0070 */ std::uint32_t state;
+  /* 0070 */ int state;
   /* 0074 */ std::uint32_t previousState;
   /* 0078 */ std::uint32_t spriteOffsetX;
   /* 007C */ std::uint32_t spriteAngle;

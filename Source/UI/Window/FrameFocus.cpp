@@ -203,7 +203,7 @@ bool UIWindowMgr::HasTitleAtActorCell(std::uint32_t aid) {
     if (typeid(*window) == typeid(UIMerchantShopTitle)) {
       owner = g_session.FindGameActor(static_cast<UIMerchantShopTitle*>(window)->ownerAid);
     } else if (typeid(*window) == typeid(UIChatRoomTitle)) {
-      const int roomId = static_cast<UIChatRoomTitle*>(window)->roomId;
+      const int roomId = static_cast<UIChatRoomTitle*>(window)->info.id;
       if (roomId == 0) {
         return true;
       }

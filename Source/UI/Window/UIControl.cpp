@@ -3686,9 +3686,9 @@ void CUITextViewer::AddLine(const std::string& text) {
   } else {
     align = this->textX == 2;
   }
-  LineFontFlags flags{this->bold, false};
+  LineTextStyle style{this->textColor, this->fontHeight, this->bold, false};
   CCreateLineInfo lineInfo(
-    this, text.c_str(), availableWidth, this->lineSpacing, this->textColor, this->fontHeight, flags,
+    this, text.c_str(), availableWidth, this->lineSpacing, style,
     this->outline, this->outlineColor, this->shadow, this->shadowColor, align
   );
   if (!lineInfo.m_lines.empty()) {

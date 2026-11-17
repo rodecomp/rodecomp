@@ -2491,7 +2491,7 @@ void UIChatRoomWnd::SaveChatLog() {
     return;
   }
 
-  std::string name = this->title;
+  std::string name = this->info.title;
   for (unsigned position = 0; position < name.size(); ++position) {
     const char character = name[position];
     if (character == '\\' || character == '/' || character == ':' || character == '*' || character == '?' || character == '"' || character == '<' ||
@@ -2520,12 +2520,12 @@ std::vector<unsigned char> UIChatRoomWnd::SerializeReplayData() {
   std::vector<unsigned char> records;
   AppendRecord(records, BuildReplayTaggedRecord(0x5014, nullptr, 0));
   AppendRecord(records, BuildReplayTaggedRecord(0x5016, this->saved, 0x10));
-  AppendRecord(records, BuildReplayTaggedRecord(0x5017, this->title.data(), static_cast<std::uint32_t>(this->title.size())));
-  AppendRecord(records, BuildReplayTaggedRecord(0x5018, this->roomSettingsText.data(), static_cast<std::uint32_t>(this->roomSettingsText.size())));
-  AppendRecord(records, BuildReplayTaggedRecord(0x5019, &this->roomStatusValues[0], 4));
-  AppendRecord(records, BuildReplayTaggedRecord(0x501A, &this->roomStatusValues[1], 4));
-  AppendRecord(records, BuildReplayTaggedRecord(0x501B, &this->roomStatusValues[2], 4));
-  AppendRecord(records, BuildReplayTaggedRecord(0x501C, &this->roomStatusValues[3], 4));
+  AppendRecord(records, BuildReplayTaggedRecord(0x5017, this->info.title.data(), static_cast<std::uint32_t>(this->info.title.size())));
+  AppendRecord(records, BuildReplayTaggedRecord(0x5018, this->info.password.data(), static_cast<std::uint32_t>(this->info.password.size())));
+  AppendRecord(records, BuildReplayTaggedRecord(0x5019, &this->info.type, 4));
+  AppendRecord(records, BuildReplayTaggedRecord(0x501A, &this->info.memberCount, 4));
+  AppendRecord(records, BuildReplayTaggedRecord(0x501B, &this->info.memberLimit, 4));
+  AppendRecord(records, BuildReplayTaggedRecord(0x501C, &this->info.id, 4));
 
   for (auto it = this->memberRoles.begin(); it != this->memberRoles.end(); ++it) {
     if (it->second == 0) {

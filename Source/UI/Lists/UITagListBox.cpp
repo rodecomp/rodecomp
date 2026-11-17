@@ -156,7 +156,7 @@ void UITagListBox::DecodeItemFields(const std::string& text, std::vector<int>& f
   strcpy_s(buffer, size, text.c_str());
   std::string value = "";
   int optionCount = 0;
-  std::vector<int> options;
+  std::vector<unsigned int> options;
   int cardIndex = 0;
 
   fields.resize(260);
@@ -280,7 +280,7 @@ bool UITagListBox::ItemFromFields(const std::vector<int>& fields, ITEM_INFO& ite
 
 // OFFSET: 0x009BACD0
 // FUNCTION: fn_13885
-void UITagListBox::DecodeValues(std::vector<int>& values, const char* text, int& position, const int& end, const char& separator, const char& alternate) {
+void UITagListBox::DecodeValues(std::vector<unsigned int>& values, const char* text, int& position, const int& end, const char& separator, const char& alternate) {
   std::string value = "";
 
   while (++position < end + 1) {
@@ -303,7 +303,7 @@ void UITagListBox::DecodeValues(std::vector<int>& values, const char* text, int&
 int UITagListBox::DecodeCards(std::vector<int>& fields, const char* text, int& position, const char& separator, const int& end, int index) {
   std::string value = "";
   int count = 1;
-  std::vector<int> cards;
+  std::vector<unsigned int> cards;
 
   while (++position < end + 1) {
     const char byte = text[position];

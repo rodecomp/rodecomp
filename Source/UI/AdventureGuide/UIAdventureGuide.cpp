@@ -507,7 +507,7 @@ void CUIMonster::OnInit() {
   for (const AdventureGuideEpisode& episode : episodes) {
     CMonsterData data;
     data.name = episode.name;
-    data.values = episode.values;
+    data.values = episode.info.values;
     this->monsterList->data.push_back(data);
   }
   this->monsterList->UpdateScrollBar();

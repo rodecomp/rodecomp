@@ -135,7 +135,7 @@ void UIRuneSetReWard::Paint() {
   } else if (this->m_state == 1) {
     switch (this->geometry.state) {
     case 0:
-      name = &this->m_names[3];
+      name = &this->m_disabledName;
       break;
     case 1:
     case 2:
@@ -145,13 +145,13 @@ void UIRuneSetReWard::Paint() {
   } else {
     switch (this->geometry.state) {
     case 0:
-      name = &this->m_names[0];
+      name = &this->m_normalName;
       break;
     case 1:
-      name = &this->m_names[1];
+      name = &this->m_hoverName;
       break;
     case 2:
-      name = &this->m_names[2];
+      name = &this->m_pressedName;
       break;
     }
   }

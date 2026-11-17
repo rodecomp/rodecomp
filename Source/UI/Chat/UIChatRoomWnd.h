@@ -2,6 +2,7 @@
 #define RAGNAROK_SOURCE_UI_CHAT_UICHATROOMWND_H
 
 #include "UI/Window/UIFrameWnd.h"
+#include "UI/Chat/UIChatRoomTitle.h"
 #include "Contents/UserData/NormalItemSlots.h"
 #include "UI/Party/UIMiniPartyWnd.h"
 
@@ -28,17 +29,7 @@ public:
   void SaveChatLog();
   std::vector<unsigned char> SerializeReplayData();
 
-  /* 00B4 */ std::string title;
-  /* 00CC */ std::string roomSettingsText;
-  /* 00E4 */ union {
-    int roomStatusValues[4];
-    struct {
-      int roomType;
-      int memberCount;
-      int memberLimit;
-      int roomId;
-    } roomStatus;
-  };
+  /* 00B4 */ ChatRoomTitleInfo info;
   /* 00F4 */ UIResizer* resizer;
   /* 00F8 */ UIChatEditCtrl* edit;
   /* 00FC */ UIChatHisBox* history;

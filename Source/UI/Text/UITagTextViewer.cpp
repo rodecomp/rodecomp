@@ -249,9 +249,9 @@ void UITagTextViewer::AddText(const std::string& text) {
   const int spacing = previousCursor > 0 ? this->m_lineSpacing : 0;
   this->m_cursorY = previousCursor + spacing;
 
-  const LineFontFlags flags = {this->m_font.bold != 0, this->m_font.italic != 0};
+  const LineTextStyle style = {this->m_font.color, this->m_font.height, this->m_font.bold != 0, this->m_font.italic != 0};
   CCreateLineInfo info(
-    this, text.c_str(), this->m_textWidth, this->m_lineSpacing, this->m_font.color, this->m_font.height, flags, this->m_outlined, this->m_outlineColor,
+    this, text.c_str(), this->m_textWidth, this->m_lineSpacing, style, this->m_outlined, this->m_outlineColor,
     false, 0xFFFFFF, this->m_horizontalAlign
   );
   this->m_cursorY += info.m_height;
@@ -299,9 +299,9 @@ void UITagTextViewer::Layout() {
     this->m_textWidth = this->geometry.width - this->m_margin - 0xD;
   }
 
-  const LineFontFlags flags = {this->m_font.bold != 0, this->m_font.italic != 0};
+  const LineTextStyle style = {this->m_font.color, this->m_font.height, this->m_font.bold != 0, this->m_font.italic != 0};
   CCreateLineInfo info(
-    this, joined.c_str(), this->m_textWidth, this->m_lineSpacing, this->m_font.color, this->m_font.height, flags, this->m_outlined, this->m_outlineColor,
+    this, joined.c_str(), this->m_textWidth, this->m_lineSpacing, style, this->m_outlined, this->m_outlineColor,
     false, 0xFFFFFF, this->m_horizontalAlign
   );
   const std::vector<std::vector<UIWindow*>> lines = info.m_lines;

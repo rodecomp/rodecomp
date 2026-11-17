@@ -83,7 +83,7 @@ public:
   /* 009C */ int honor;
   /* 00A0 */ int virtue;
   /* 00A4 */ int guildTabBitmask;
-  /* 00A8 */ std::uint32_t m_guildId;
+  /* 00A8 */ int m_guildId;
   /* 00AC */ int canInvite;
   /* 00B0 */ int canExpel;
   /* 00B4 */ int isMaster;

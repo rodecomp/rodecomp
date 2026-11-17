@@ -17,7 +17,12 @@ struct SlotAddButton : UIBitmapButton {
       if (bitmap->image.height > this->m_bitmapHeight) {
         this->m_bitmapHeight = bitmap->image.height;
       }
-      this->m_names[state] = name;
+      switch (state) {
+      case 0: this->m_normalName = name; break;
+      case 1: this->m_hoverName = name; break;
+      case 2: this->m_pressedName = name; break;
+      case 3: this->m_disabledName = name; break;
+      }
     }
   }
 };

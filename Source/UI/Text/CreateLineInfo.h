@@ -52,11 +52,6 @@ struct LineTextSegment {
   /* 002C */ int auxiliaryValue;
 };
 
-struct LineFontFlags {
-  /* 0000 */ bool bold;
-  /* 0001 */ bool italic;
-};
-
 struct LineFontState {
   /* 0000 */ int fontHeight;
   /* 0004 */ std::uint32_t color;
@@ -99,7 +94,7 @@ public:
   /* 007C */ int m_height;
 
   CCreateLineInfo(
-    UIWindow* parent, const char* text, int width, int lineSpacing, std::uint32_t color, int fontHeight, LineFontFlags flags, bool outlineEnabled,
+    UIWindow* parent, const char* text, int width, int lineSpacing, LineTextStyle style, bool outlineEnabled,
     int outlineColorValue, bool padding_0030, int shadowColorValue, unsigned char align
   );
   virtual ~CCreateLineInfo();

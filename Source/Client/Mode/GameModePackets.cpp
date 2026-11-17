@@ -11124,13 +11124,13 @@ void CGameMode::ReceiveChatRoomMemberList(const unsigned char* data) {
   bool joined = false;
   if (actor) {
     if (UIChatRoomTitle* room = static_cast<UIChatRoomTitle*>(actor->actorWindows[1])) {
-      info.title = room->title;
-      info.password = room->password;
-      info.type = room->roomType;
-      info.memberCount = room->memberCount;
-      info.memberLimit = room->memberLimit;
-      info.id = room->roomId;
-      if (packet->roomId == room->roomId) {
+      info.title = room->info.title;
+      info.password = room->info.password;
+      info.type = room->info.type;
+      info.memberCount = room->info.memberCount;
+      info.memberLimit = room->info.memberLimit;
+      info.id = room->info.id;
+      if (packet->roomId == room->info.id) {
         joined = true;
       }
     }
@@ -25249,7 +25249,7 @@ void CGameMode::ProcessIncomingPackets() {
       if (CRenderObject *actor = this->scene->GetGameActorByAID(this->chatRoomActorIds[roomId])) {
         actor->SendMsg(nullptr, AM_DELETE_CHAT_TITLE, 0, 0, 0, 0, 0, 0);
       }
-      if (g_windowMgr.chatRoomWnd && g_windowMgr.chatRoomWnd->roomStatus.roomId == static_cast<int>(roomId)) {
+      if (g_windowMgr.chatRoomWnd && g_windowMgr.chatRoomWnd->info.id == static_cast<int>(roomId)) {
         g_windowMgr.CloseWindow(WID_CHATROOMWND);
         g_windowMgr.CloseWindow(WID_CHATROOMCHANGEWND);
       }
@@ -25262,8 +25262,8 @@ void CGameMode::ProcessIncomingPackets() {
       name[24] = '\0';
       g_session.DecodePlayerName();
       UIChatRoomWnd *window = static_cast<UIChatRoomWnd *>(g_windowMgr.EnsureWindow(WID_CHATROOMWND));
-      ChatRoomMemberUpdateInfo info{window->title, window->roomSettingsText, window->roomStatus.roomType, window->roomStatus.memberCount,
-                             window->roomStatus.memberLimit, window->roomStatus.roomId};
+      ChatRoomMemberUpdateInfo info{window->info.title, window->info.password, window->info.type, window->info.memberCount,
+                             window->info.memberLimit, window->info.id};
       info.memberCount = packet->count;
       window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&info), 0, 0, 0);
       window->SendMsg(nullptr, UM_ADDMEMBER, reinterpret_cast<std::intptr_t>(name), 1, 0, 0);
@@ -25284,8 +25284,8 @@ void CGameMode::ProcessIncomingPackets() {
       }
 
       UIChatRoomWnd *window = static_cast<UIChatRoomWnd *>(g_windowMgr.EnsureWindow(WID_CHATROOMWND));
-      ChatRoomMemberUpdateInfo info{window->title, window->roomSettingsText, window->roomStatus.roomType, window->roomStatus.memberCount,
-                             window->roomStatus.memberLimit, window->roomStatus.roomId};
+      ChatRoomMemberUpdateInfo info{window->info.title, window->info.password, window->info.type, window->info.memberCount,
+                             window->info.memberLimit, window->info.id};
       info.memberCount = packet->count;
       window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&info), 0, 0, 0);
       window->SendMsg(nullptr, UM_MEMBER_EXIT, reinterpret_cast<std::intptr_t>(name), 0, 0, 0);

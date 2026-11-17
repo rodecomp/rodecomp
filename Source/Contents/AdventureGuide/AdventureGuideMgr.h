@@ -36,20 +36,22 @@ struct AdventureGuideIntroPage {
   /* 0018 */ std::map<int, AdventureGuideText> texts;
 };
 
+struct AdventureGuideEpisodeInfo {
+  /* 0000 */ int order;
+  /* 0004 */ int maxLevel;
+  /* 0008 */ std::vector<std::string> values;
+};
+
 struct AdventureGuideEpisodeSource {
   /* 0000 */ const char* name;
-  /* 0004 */ int order;
-  /* 0008 */ int maxLevel;
-  /* 000C */ std::vector<std::string> values;
+  /* 0004 */ AdventureGuideEpisodeInfo info;
 };
 
 struct AdventureGuideEpisode {
   AdventureGuideEpisode(AdventureGuideEpisodeSource&& source);
 
   /* 0000 */ std::string name;
-  /* 0018 */ int order;
-  /* 001C */ int maxLevel;
-  /* 0020 */ std::vector<std::string> values;
+  /* 0018 */ AdventureGuideEpisodeInfo info;
 };
 
 struct AdventureGuideContents {
@@ -142,8 +144,8 @@ static_assert(sizeof(AdventureGuideText) == 0x30);
 static_assert(sizeof(AdventureGuideEpisodeSource) == 0x18);
 static_assert(sizeof(AdventureGuideEpisode) == 0x2C);
 static_assert(sizeof(AdventureGuideResult) == 0x1C);
-static_assert(offsetof(AdventureGuideEpisode, order) == 0x18);
-static_assert(offsetof(AdventureGuideEpisode, values) == 0x20);
+static_assert(offsetof(AdventureGuideEpisode, info) == 0x18);
+static_assert(offsetof(AdventureGuideEpisode, info) + offsetof(AdventureGuideEpisodeInfo, values) == 0x20);
 static_assert(sizeof(AdventureGuideContents) == 0x4C);
 static_assert(offsetof(AdventureGuideContents, values) == 0x40);
 static_assert(sizeof(AdventureGuideEntry) == 0x30);

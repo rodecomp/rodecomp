@@ -404,7 +404,7 @@ int UIMenuIconWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
         this->ToggleWindow(WID_MESSENGERWND);
         break;
       case MENUICON_GUILD:
-        this->ToggleWindow(static_cast<int>(g_guildInfo.m_guildId) < 1 ? WID_GUILDHELPERWND : WID_GUILDWND);
+        this->ToggleWindow(g_guildInfo.m_guildId < 1 ? WID_GUILDHELPERWND : WID_GUILDWND);
         break;
       case ID_QUEST:
         this->ToggleWindow(WID_RENEWQUESTUI);

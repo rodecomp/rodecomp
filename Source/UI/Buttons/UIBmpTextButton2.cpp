@@ -18,19 +18,19 @@ void UIBmpTextButton2::Paint() {
   } else {
     switch (this->geometry.state) {
     case 0:
-      bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_names[0].c_str())));
+      bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_normalName.c_str())));
       break;
     case 1:
-      bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_names[1].c_str())));
+      bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_hoverName.c_str())));
       break;
     case 2:
-      bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_names[2].c_str())));
+      bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_pressedName.c_str())));
       break;
     }
   }
 
-  if (this->m_disabled != 0 && this->m_names[3].size() > 0) {
-    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_names[3].c_str())));
+  if (this->m_disabled != 0 && this->m_disabledName.size() > 0) {
+    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_disabledName.c_str())));
   }
 
   this->DrawBitmap(0, 0, bitmap, false);

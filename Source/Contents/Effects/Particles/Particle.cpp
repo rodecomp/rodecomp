@@ -120,13 +120,13 @@ std::string EmitterInfoKey(std::string effect) {
 
 // OFFSET: 0x00B3C880
 // FUNCTION: fn_18812
-vector2d RandomDiscPoint(float x, float y, long long radius) {
+vector2d RandomDiscPoint(vector2d center, long long radius) {
   const double turn = rand() / 32767.0;
   const double distance = SquareRoot(static_cast<float>(rand() / 32767.0)) * static_cast<float>(radius);
   vector2d point;
   const double angle = (turn + turn) * 3.141592653589;
-  point.x = static_cast<float>(x + ClientCos(static_cast<float>(angle)) * distance);
-  point.y = static_cast<float>(y + ClientSin(static_cast<float>(angle)) * distance);
+  point.x = static_cast<float>(center.x + ClientCos(static_cast<float>(angle)) * distance);
+  point.y = static_cast<float>(center.y + ClientSin(static_cast<float>(angle)) * distance);
   return point;
 }
 

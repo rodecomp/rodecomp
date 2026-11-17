@@ -185,7 +185,7 @@ void UIStylingShopButton::OnLBtnUp(int, int) {
 // OFFSET: 0x0082A1C0
 // FUNCTION: fn_10357
 void UIStylingShopButton::OnMouseHover(int, int) {
-  if (!this->m_names[1].empty()) {
+  if (!this->m_hoverName.empty()) {
     return;
   }
 

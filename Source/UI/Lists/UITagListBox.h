@@ -39,7 +39,7 @@ public:
   int DecodeNumber(std::string text);
   void DecodeItemFields(const std::string& text, std::vector<int>& fields);
   bool ItemFromFields(const std::vector<int>& fields, ITEM_INFO& item);
-  void DecodeValues(std::vector<int>& values, const char* text, int& position, const int& end, const char& separator, const char& alternate);
+  void DecodeValues(std::vector<unsigned int>& values, const char* text, int& position, const int& end, const char& separator, const char& alternate);
   int DecodeCards(std::vector<int>& fields, const char* text, int& position, const char& separator, const int& end, int index);
   void AddTagButton(STagInfoV2 tag, int lineCount);
 

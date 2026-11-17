@@ -55,7 +55,7 @@ CEZ2STRParticle* CCaneOfEvilEyeEffect::CreateEye(int type, const float* position
   eye->offsetX = position[0];
   eye->offsetY = position[1];
   eye->offsetZ = position[2];
-  eye->animationState = static_cast<unsigned char>(type);
+  eye->animationState = static_cast<signed char>(type);
   return eye;
 }
 
@@ -82,7 +82,7 @@ CEZ2STRParticle* CCaneOfEvilEyeEffect::CreateLight(int type, const float* positi
   light->originX = position[0];
   light->originY = position[1];
   light->originZ = position[2];
-  light->animationState = static_cast<unsigned char>(type);
+  light->animationState = static_cast<signed char>(type);
   return light;
 }
 

@@ -1352,7 +1352,7 @@ void CGameActor::SetState(int state, int resetPosition) {
     isPlayer = false;
   }
 
-  if (state != static_cast<int>(this->render.state) && this->render.state == ST_MOVE && isPlayer) {
+  if (state != this->render.state && this->render.state == ST_MOVE && isPlayer) {
     CellFloatPos pos;
     pos.x = this->render.position.x;
     pos.z = this->render.position.z;

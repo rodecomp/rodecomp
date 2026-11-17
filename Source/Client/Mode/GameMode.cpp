@@ -6631,13 +6631,13 @@ std::vector<unsigned char> CGameMode::SaveActorStates() {
       scratch.resize(sizeof(ChatRoomEntryPacket), 0);
       auto* packet = reinterpret_cast<ChatRoomEntryPacket*>(scratch.data());
       packet->type = 0xD7;
-      packet->packetLength = static_cast<std::uint16_t>(room->title.size() + sizeof(ChatRoomEntryPacket));
+      packet->packetLength = static_cast<std::uint16_t>(room->info.title.size() + sizeof(ChatRoomEntryPacket));
       packet->aid = (*it)->render.accountId;
-      packet->roomId = room->roomId;
-      packet->maxCount = static_cast<std::uint16_t>(room->memberLimit);
-      packet->curCount = static_cast<std::uint16_t>(room->memberCount);
-      packet->type = static_cast<unsigned char>(room->roomType);
-      scratch.insert(scratch.end(), room->title.begin(), room->title.end());
+      packet->roomId = room->info.id;
+      packet->maxCount = static_cast<std::uint16_t>(room->info.memberLimit);
+      packet->curCount = static_cast<std::uint16_t>(room->info.memberCount);
+      packet->type = static_cast<unsigned char>(room->info.type);
+      scratch.insert(scratch.end(), room->info.title.begin(), room->info.title.end());
 
       const std::vector<unsigned char> chunk = MakeDataChunk(0xC9, scratch);
       data.insert(data.end(), chunk.begin(), chunk.end());

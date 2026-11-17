@@ -52,7 +52,7 @@ void CCompetentia::Close() {
 void CCompetentia::Open() {
   for (__int64 i = 0; i < 10; ++i) {
     vector3d pos = this->positionVector;
-    const vector2d point = RandomDiscPoint(pos.x, pos.z, 50);
+    const vector2d point = RandomDiscPoint(vector2d{pos.x, pos.z}, 50);
     pos.x = point.x;
     pos.z = point.y;
     CGameMode* mode = g_modeMgr.GetGameMode();

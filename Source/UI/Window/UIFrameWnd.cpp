@@ -668,7 +668,7 @@ UIBank_NewWnd::UIBank_NewWnd()
 // OFFSET: 0x008A35A0
 // FUNCTION: fn_11655
 UIChatRoomWnd::UIChatRoomWnd()
-    : UIFrameWnd(0), title(), roomSettingsText(), memberRoles(), menuCommands(), saved(nullptr) {
+    : UIFrameWnd(0), memberRoles(), menuCommands(), saved(nullptr) {
 }
 
 #pragma pack(push, 1)
@@ -891,22 +891,22 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
   }
   case UM_SETINFO: {
     const ChatRoomTitleInfo* settings = reinterpret_cast<const ChatRoomTitleInfo*>(a);
-    this->title = settings->title;
-    this->roomSettingsText = settings->password;
-    this->roomStatus.roomType = settings->type;
-    this->roomStatus.memberCount = settings->memberCount;
-    this->roomStatus.memberLimit = settings->memberLimit;
-    this->roomStatus.roomId = settings->id;
+    this->info.title = settings->title;
+    this->info.password = settings->password;
+    this->info.type = settings->type;
+    this->info.memberCount = settings->memberCount;
+    this->info.memberLimit = settings->memberLimit;
+    this->info.id = settings->id;
 
-    const std::size_t end = this->title.find('\r');
+    const std::size_t end = this->info.title.find('\r');
     if (end != std::string::npos) {
-      this->title = this->title.substr(0, end);
+      this->info.title = this->info.title.substr(0, end);
     }
 
     std::string prefix;
-    prefix = LookupMessage((this->roomStatus.roomType != 0) + 89);
+    prefix = LookupMessage((this->info.type != 0) + 89);
     char text[256];
-    std::sprintf(text, "%s%s (%d/%d)", prefix.c_str(), this->title.c_str(), this->roomStatus.memberCount, this->roomStatus.memberLimit);
+    std::sprintf(text, "%s%s (%d/%d)", prefix.c_str(), this->info.title.c_str(), this->info.memberCount, this->info.memberLimit);
     if (g_forbiddenWords.Contains(text)) {
       std::string masked;
       g_forbiddenWords.Mask(text, &masked);
@@ -1078,7 +1078,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
           std::memset(value, 0, sizeof(value));
           std::memcpy(value, data + offset, header.size);
           offset += header.size;
-          settings->title = this->title = value;
+          settings->title = this->info.title = value;
           break;
         }
         case 0x5018: {
@@ -1086,28 +1086,28 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
           std::memset(value, 0, sizeof(value));
           std::memcpy(value, data + offset, header.size);
           offset += header.size;
-          settings->password = this->roomSettingsText = value;
+          settings->password = this->info.password = value;
           break;
         }
         case 0x5019:
-        std::memcpy(&this->roomStatus.roomType, data + offset, header.size);
+        std::memcpy(&this->info.type, data + offset, header.size);
           offset += header.size;
-        settings->type = this->roomStatus.roomType;
+        settings->type = this->info.type;
           break;
         case 0x501A:
-          std::memcpy(&this->roomStatus.memberCount, data + offset, header.size);
+          std::memcpy(&this->info.memberCount, data + offset, header.size);
           offset += header.size;
-          settings->memberCount = this->roomStatus.memberCount;
+          settings->memberCount = this->info.memberCount;
           break;
         case 0x501B:
-          std::memcpy(&this->roomStatus.memberLimit, data + offset, header.size);
+          std::memcpy(&this->info.memberLimit, data + offset, header.size);
           offset += header.size;
-          settings->memberLimit = this->roomStatus.memberLimit;
+          settings->memberLimit = this->info.memberLimit;
           break;
         case 0x501C:
-          std::memcpy(&this->roomStatus.roomId, data + offset, header.size);
+          std::memcpy(&this->info.id, data + offset, header.size);
           offset += header.size;
-          settings->id = this->roomStatus.roomId;
+          settings->id = this->info.id;
           this->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(settings), 0, 0, 0);
           break;
         case 0x501E: {

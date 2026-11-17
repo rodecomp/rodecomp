@@ -1122,7 +1122,7 @@ using AdventureGuideContentsTable = std::map<int, std::map<int, AdventureGuideCo
 // OFFSET: 0x0065F5C0
 // FUNCTION: fn_05188
 AdventureGuideEpisode::AdventureGuideEpisode(AdventureGuideEpisodeSource&& source)
-    : name(source.name), order(source.order), maxLevel(source.maxLevel), values(std::move(source.values)) {
+    : name(source.name), info(std::move(source.info)) {
 }
 
 // OFFSET: 0x0065F680
@@ -1205,7 +1205,7 @@ void CAdventureGuideMgr::GetEpisodeList(std::list<AdventureGuideEpisode>& out) {
   out.clear();
 
   for (const AdventureGuideEpisode& episode : m_episodes) {
-    if (episode.order <= g_session.m_level && g_session.m_level <= episode.maxLevel) {
+    if (episode.info.order <= g_session.m_level && g_session.m_level <= episode.info.maxLevel) {
       out.push_back(episode);
     }
   }
@@ -1462,7 +1462,7 @@ AdventureGuideResult CAdventureGuideMgr::InsertGuideMenu(int type, int id, std::
 // OFFSET: 0x00666860
 // FUNCTION: fn_05251
 AdventureGuideResult CAdventureGuideMgr::InsertMonsterContents(std::string_view name, int minLevel, int maxLevel) {
-  m_episodes.emplace_back(AdventureGuideEpisodeSource{name.data(), minLevel, maxLevel});
+  m_episodes.emplace_back(AdventureGuideEpisodeSource{name.data(), {minLevel, maxLevel}});
   return AdventureGuideResult(true, "good");
 }
 
@@ -1478,7 +1478,7 @@ AdventureGuideResult CAdventureGuideMgr::InsertMonsterReward(std::string_view na
     return AdventureGuideResult(false, FormatOwnedString("[%s] cannot be find", name));
   }
 
-  episode.values.emplace_back(text.data());
+  episode.info.values.emplace_back(text.data());
   return AdventureGuideResult(true, "good");
 }
 
@@ -1622,7 +1622,7 @@ bool CAdventureGuideMgr::Load() {
   }
 
   m_episodes.sort([](const AdventureGuideEpisode& lhs, const AdventureGuideEpisode& rhs) {
-    return lhs.order < rhs.order;
+    return lhs.info.order < rhs.info.order;
   });
   return true;
 }

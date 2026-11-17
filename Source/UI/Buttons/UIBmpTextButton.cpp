@@ -34,7 +34,7 @@ void UIBmpTextButton::Paint() {
   }
 
   if (this->m_disabled == 1) {
-    this->DrawBitmap(0, 0, dynamic_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_names[3].c_str()))), false);
+    this->DrawBitmap(0, 0, dynamic_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_disabledName.c_str()))), false);
 
     if (this->text.size() > 0) {
       if (found) {
@@ -53,7 +53,7 @@ void UIBmpTextButton::Paint() {
   } else {
     switch (this->geometry.state) {
     case 0: {
-      this->DrawBitmap(0, 0, dynamic_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_names[0].c_str()))), false);
+      this->DrawBitmap(0, 0, dynamic_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_normalName.c_str()))), false);
 
       if (this->text.size() > 0) {
         if (found) {
@@ -72,7 +72,7 @@ void UIBmpTextButton::Paint() {
       break;
     }
     case 1: {
-      this->DrawBitmap(0, 0, dynamic_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_names[1].c_str()))), false);
+      this->DrawBitmap(0, 0, dynamic_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_hoverName.c_str()))), false);
 
       if (this->text.size() > 0) {
         if (found) {
@@ -91,7 +91,7 @@ void UIBmpTextButton::Paint() {
       break;
     }
     case 2: {
-      this->DrawBitmap(0, 0, dynamic_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_names[2].c_str()))), false);
+      this->DrawBitmap(0, 0, dynamic_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_pressedName.c_str()))), false);
 
       if (this->text.size() > 0) {
         if (found) {
