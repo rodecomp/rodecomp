@@ -1755,11 +1755,11 @@ void UIWindow::WrapPixelText(const char* text, std::vector<std::string>& lines, 
       if (std::strlen(buffer) == 0) {
         lines.push_back(" ");
       } else {
-        lines.push_back(buffer);
+        AppendLine(lines, buffer);
       }
     } else {
       buffer[count] = '\0';
-      lines.push_back(buffer);
+      AppendLine(lines, buffer);
     }
 
     delete[] buffer;
