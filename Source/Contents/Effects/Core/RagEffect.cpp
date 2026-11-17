@@ -12376,14 +12376,15 @@ void CRagEffect::IceArrow() {
 
   if (this->state.stateCnt >= 12) {
     const int frameOffset = this->state.stateCnt - 12;
-    if (frameOffset % 10 == 0 && frameOffset < static_cast<int>(this->state.count)) {
+    int interval = 10;
+    if (frameOffset % interval == 0 && frameOffset < static_cast<int>(this->state.count)) {
       this->state.lastPrim = this->LaunchEffectPrim(16, vector3d{0.0f, 0.0f, 0.0f});
       this->state.lastPrim->state.duration = 70;
       this->state.lastPrim->state.pattern = 20;
 
       EffectPrimitiveState& arrow = this->state.lastPrim->state;
-      const int spreadZ = ClampedRandom(10);
-      const int spreadX = ClampedRandom(10);
+      const int spreadZ = ClampedRandom(interval);
+      const int spreadX = ClampedRandom(interval);
       arrow.deltaPos2.y = -60.0f;
       arrow.deltaPos2.x = static_cast<float>(spreadX + 25);
       arrow.deltaPos2.z = static_cast<float>(spreadZ + 15);
