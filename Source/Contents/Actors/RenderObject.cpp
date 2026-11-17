@@ -4279,19 +4279,7 @@ void C3dGrannyGameActor::RenderShadowed(int argument) {
     this->litPositions.push_back(position);
 
     if (mesh == 1) {
-      {
-        const std::string name = g_guildMgr->GetEmblemFilename(this->GetGdid());
-        CEmblemRes* emblem = static_cast<CEmblemRes*>(ResourceMgr::Instance().Load(name));
-        if (emblem != nullptr) {
-          if (this->emblemTexture == nullptr) {
-            this->emblemTexture = g_texMgr.Upload(24, 24, emblem->gif.image.pixels, 0, 0, false, false, false);
-          } else {
-            this->emblemTexture->Upload(0, 0, 24, 24, emblem->gif.image.pixels, 0, 0);
-          }
-        }
-      }
-
-      command->texture = this->emblemTexture;
+      command->texture = this->UpdateEmblemTexture();
     } else {
       command->texture = texture;
     }
@@ -5082,7 +5070,7 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
       this->SendMsg(nullptr, AM_DELETE_BURNING_EFFECT, 0, 0, 0, 0, 0, 0);
       break;
     case OPT1_IMPRISON:
-      while (this->HasId(EF_BOTTOM_BASILICA2)) {
+      while (HasEffectOfType(this->effectList, EF_BOTTOM_BASILICA2)) {
         this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_BOTTOM_BASILICA2, 0, 0, 0, 0, 0);
       }
       break;
@@ -5159,7 +5147,7 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
     if (this->render.accountId == g_session.m_aid) {
       g_playerPoisoned = 1;
     }
-    if (!this->HasId(EF_BLACKBODY)) {
+    if (!HasEffectOfType(this->effectList, EF_BLACKBODY)) {
       this->render.colorLocked = 1;
       color.green = 0x80;
       color.red = 0xFF;
