@@ -1742,6 +1742,10 @@ void CEffectPrim::RenderHalfSphere(matrix& wtm) {
 // OFFSET: 0x00BDAEF0
 // FUNCTION: fn_19895
 void CEffectPrim::RenderHermode(matrix& wtm) {
+  ZeroVector3d vec1;
+  ZeroVector3d vec2;
+  ZeroVector3d vec3;
+  ZeroVector3d vec4;
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -1765,13 +1769,13 @@ void CEffectPrim::RenderHermode(matrix& wtm) {
     angle += angle + 90 >= 360 ? -270 : 90;
     slot.vecTPre = {static_cast<float>(g_cosTable[angle] * radius), y, static_cast<float>(g_sinTable[angle] * radius)};
 
-    vector3d vec1 = slot.vecBPre;
+    vec1 = slot.vecBPre;
     vec1.y -= slot.distance;
-    vector3d vec2 = slot.vecBNow;
+    vec2 = slot.vecBNow;
     vec2.y -= slot.distance;
-    vector3d vec3 = slot.vecTPre;
+    vec3 = slot.vecTPre;
     vec3.y -= slot.distance;
-    vector3d vec4 = slot.vecTNow;
+    vec4 = slot.vecTNow;
     vec4.y -= slot.distance;
 
     this->RenderTeiRect(&rpCnt, slot.alphaB, slot.vecBPre, slot.vecBNow, slot.vecTNow, slot.vecTPre, wtm, 0, 0, 0, static_cast<unsigned char>(slot.flag1[0]), static_cast<unsigned char>(slot.flag1[0]), 250, 0.0f, 1.0f, 0.0f, 1.0f, 0);
