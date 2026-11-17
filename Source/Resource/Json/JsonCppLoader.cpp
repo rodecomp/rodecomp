@@ -311,9 +311,13 @@ bool JsonCppLoader::LoadJson(const std::string& path) {
       return false;
     }
 
-    JsonCppLoaderJsonOptions optionStorage;
-    JsonCppLoaderJsonOptionsGuard options{reinterpret_cast<JsonCppLoaderJsonOptions*(__thiscall*)(JsonCppLoaderJsonOptions*, int)>(JsonDecodeOptionsConstruct)(&optionStorage, 1)};
-    this->document = JsonParseStream(&file, options.options, JsonCppLoaderJsonHandler{});
+    {
+      JsonCppLoaderJsonOptions optionStorage;
+      JsonCppLoaderJsonOptionsGuard options{
+        reinterpret_cast<JsonCppLoaderJsonOptions*(__thiscall*)(JsonCppLoaderJsonOptions*, int)>(JsonDecodeOptionsConstruct)(&optionStorage, 1)};
+      this->document = JsonParseStream(&file, options.options, JsonCppLoaderJsonHandler{});
+    }
+
     file.close();
   } catch (const std::exception& exception) {
     this->Fail("error : JsonCppLoader::LoadJson failed (reason : %s)", exception.what());
