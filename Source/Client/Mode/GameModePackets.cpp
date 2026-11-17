@@ -2509,21 +2509,22 @@ void __stdcall ProcessVendingSale(int field8, int itemIdWord, int quantityWord, 
   g_session.RemoveMerchantPurchaseItem(item);
   g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
   g_windowMgr.SendNotice(
-    UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_ITEM_IS_SOLD), item.DisplayName(0).c_str(), quantity).c_str()), 0xFFFF64, 0, 0, 0
+    UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_ITEM_IS_SOLD), item.DisplayName(0).c_str(), item.quantity).c_str()), 0xFFFF64, 0, 0, 0
   );
+  UIWindow* myShopWnd = g_windowMgr.merchantItemMyShopWnd;
   if (g_windowMgr.merchantItemWnd != nullptr) {
     g_windowMgr.merchantItemWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
   if (g_session.GetNumMerchantPurchaseItems() == 0) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_IS_SOLD_OUT)), 0xFF00, 0, 0, 0);
-    if (g_windowMgr.merchantItemMyShopWnd != nullptr) {
-      g_windowMgr.merchantItemMyShopWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
-      g_windowMgr.merchantItemMyShopWnd->SendMsg(nullptr, UM_COMMAND, ID_CLOSE, 0, 0, 0);
+    if (myShopWnd != nullptr) {
+      myShopWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+      myShopWnd->SendMsg(nullptr, UM_COMMAND, ID_CLOSE, 0, 0, 0);
     }
-  } else if (g_windowMgr.merchantItemMyShopWnd != nullptr) {
-    g_windowMgr.merchantItemMyShopWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+  } else if (myShopWnd != nullptr) {
+    myShopWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
-  if (g_windowMgr.merchantItemMyShopWnd != nullptr && g_session.m_muteSellSound) {
+  if (myShopWnd != nullptr && g_session.m_muteSellSound) {
     g_soundMgr->PlayWave("effect\\ef_steal.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
   }
 }
@@ -5680,13 +5681,14 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
     }
     break;
   }
-  case SP_JOBLEVEL:
+  case SP_JOBLEVEL: {
     g_session.m_jobLevel = packet->value;
     g_session.InvalidateWindowFrames();
+    CPlayer* player = this->scene->player;
     if (packet->value <= 50) {
-      this->scene->player->LaunchEffect(158, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      player->LaunchEffect(158, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     } else {
-      this->scene->player->LaunchEffect(337, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      player->LaunchEffect(337, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
 
     if (g_replayAnimationScaling == 0) {
@@ -5699,6 +5701,7 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
       window->SendMsg(nullptr, UM_COMMAND, ID_NOTICE, 196, 1, 0);
     }
     break;
+  }
   case SP_SKILLPOINT:
     g_session.m_skillPoint = packet->value;
     g_session.InvalidateWindowFrames();
@@ -5746,7 +5749,8 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
       }
       if (percent >= 90 && oldPercent < 90) {
         g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NO_ATTACK_OVERWEIGHT)), 0xFF, 8, 0, 0);
+        const char* message = LookupMessage(MSI_NO_ATTACK_OVERWEIGHT);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFF, 8, 0, 0);
       }
       break;
     }
@@ -5755,11 +5759,13 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
     }
     if (percent < g_session.m_overweightThresholdPercent && oldPercent >= g_session.m_overweightThresholdPercent) {
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NO_RECOVER_OVERWEIGHT_RELEASED)), 0xFFFF00, 8, 0, 0);
+      const char* message = LookupMessage(MSI_NO_RECOVER_OVERWEIGHT_RELEASED);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFFFF00, 8, 0, 0);
     }
     if (percent < 90 && oldPercent >= 90) {
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NO_ATTACK_OVERWEIGHT_RELEASED)), 0xFFFF00, 8, 0, 0);
+      const char* message = LookupMessage(MSI_NO_ATTACK_OVERWEIGHT_RELEASED);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFFFF00, 8, 0, 0);
     }
     break;
   }
@@ -5778,14 +5784,16 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
     if (percent < 50) {
       if (oldPercent >= 50) {
         g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NO_RECOVER_OVERWEIGHT_RELEASED)), 0xFFFF00, 8, 0, 0);
+        const char* message = LookupMessage(MSI_NO_RECOVER_OVERWEIGHT_RELEASED);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFFFF00, 8, 0, 0);
       }
     } else if (percent >= 90) {
       break;
     }
     if (oldPercent >= 90) {
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NO_ATTACK_OVERWEIGHT_RELEASED)), 0xFFFF00, 8, 0, 0);
+      const char* message = LookupMessage(MSI_NO_ATTACK_OVERWEIGHT_RELEASED);
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0xFFFF00, 8, 0, 0);
     }
     break;
   }
@@ -8476,7 +8484,9 @@ __declspec(noinline) void CGameMode::ReceivePartyItemPickupNotice(const unsigned
     item.identity[1] = p->itemId;
     item.identity[3] = 0;
     item.SetItemId(p->itemId);
-    std::memcpy(item.cards, p->cards, sizeof(item.cards));
+    for (int card = 0; card < 4; ++card) {
+      item.cards[card] = p->cards[card];
+    }
     item.identified = p->identified;
     item.damaged = p->damaged;
     item.refiningLevel = p->refine;
