@@ -547,8 +547,7 @@ void UIRoMapWnd::OnMouseMove(int x, int y) {
   this->selectedRecord->name = field->name;
   this->selectedRecord->area = field->area;
 
-  CWorldViewMap* map = world->maps[mapIndex];
-  this->selectedRecord->screenArea = map->area;
+  this->selectedRecord->screenArea = world->maps[mapIndex]->area;
   this->Invalidate();
 }
 

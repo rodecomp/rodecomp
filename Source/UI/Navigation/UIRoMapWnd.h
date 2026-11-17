@@ -40,7 +40,8 @@ extern CWorldViewMgr g_worldViewMgr;
 class UIRoMapWnd;
 
 struct CKafraMoveMapServiceInfo {
-  virtual ~CKafraMoveMapServiceInfo() = default;
+  // INLINED
+  virtual ~CKafraMoveMapServiceInfo() {}
 
   void Build(std::string mapName);
   __declspec(noinline) void Update(UIRoMapWnd* wnd, float elapsed);

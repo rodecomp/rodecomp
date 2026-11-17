@@ -27,7 +27,8 @@ struct RoMapMarker {
 class CFlyingShipRouteInfo {
 public:
   CFlyingShipRouteInfo();
-  virtual ~CFlyingShipRouteInfo() = default;
+  // INLINED
+  virtual ~CFlyingShipRouteInfo() {}
 
   bool IsRouteMap(std::string mapName);
   void Draw(UIRoMapWnd* wnd);
