@@ -1028,10 +1028,10 @@ int CNavigationManager::GetRouteResult() const {
 // OFFSET: 0x00B96220
 // FUNCTION: fn_19583
 NavigationTarget CNavigationManager::GetState(int index) const {
-  if (index >= 0 && this->states.size() > static_cast<unsigned int>(index)) {
-    return this->states[index];
+  if (index < 0 || this->states.size() <= static_cast<unsigned int>(index)) {
+    return NavigationTarget();
   }
-  return NavigationTarget();
+  return this->states[index];
 }
 
 // OFFSET: 0x00B96340
