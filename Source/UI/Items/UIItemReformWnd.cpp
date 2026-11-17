@@ -68,8 +68,10 @@ void UIItemReformWnd_DetailMsg::SetText(const std::string& text) {
   unsigned int height = this->geometry.height;
   CCreateLineInfo info(this, text.c_str(), this->geometry.width - 20, 4, LineTextStyle{0, 12, false, false}, false, 0, false, 0xFFFFFF, 0);
   std::vector<std::vector<UIWindow*>> lines = info.m_lines;
-  for (std::vector<UIWindow*> line : lines) {
-    for (UIWindow* window : line) {
+  for (auto lineIt = lines.begin(); lineIt != lines.end(); ++lineIt) {
+    std::vector<UIWindow*> line = *lineIt;
+    for (auto windowIt = line.begin(); windowIt != line.end(); ++windowIt) {
+      UIWindow* window = *windowIt;
       if (window) {
         window->Move(window->geometry.x + 12, window->geometry.y + 12);
         this->AddChild(window);
@@ -355,7 +357,8 @@ void UIItemReformWnd::SelectItem(ITEM_INFO* item) {
   UIItemReformWnd_Item* resultIcon = this->resultIcon;
   resultIcon->item = nullptr;
   resultIcon->Invalidate();
-  for (UIItemReformWnd_Item* icon : this->materialIcons) {
+  for (auto iconIt = this->materialIcons.begin(); iconIt != this->materialIcons.end(); ++iconIt) {
+    UIItemReformWnd_Item* icon = *iconIt;
     if (icon) {
       icon->item = nullptr;
       icon->Invalidate();
