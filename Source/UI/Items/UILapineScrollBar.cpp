@@ -234,15 +234,13 @@ void UIIngredientInfoWnd::Paint() {
   std::string name;
   name = this->FitDisplayText(100, this->item.displayName.c_str(), 0, 12, 0).c_str();
 
-  std::uint32_t color = 0;
   if (this->insufficient == 0) {
     this->DrawItemAndQuantity(4, 3, this->item, 0, 0);
+    this->DrawShadowedText(36, 9, name.c_str(), 0, 0, 0xE0E0E0, 0, 12, 0);
   } else {
     this->DrawItemAndQuantityAuxiliary(2, 4, 3, this->item, this->item.identified, 0);
-    color = 0x969696;
+    this->DrawShadowedText(36, 9, name.c_str(), 0, 0x969696, 0xE0E0E0, 0, 12, 0);
   }
-
-  this->DrawShadowedText(36, 9, name.c_str(), 0, color, 0xE0E0E0, 0, 12, 0);
 }
 
 // OFFSET: 0x005FFF90
