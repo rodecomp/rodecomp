@@ -93,15 +93,6 @@ void UIEquipWnd::DrawDamageSkinPage() {
   }
 }
 
-namespace {
-  struct ItemNameTextInfo {
-    int x;
-    int y;
-    int height;
-    int family;
-  };
-}
-
 // OFFSET: 0x008D13E0
 // FUNCTION: fn_12093
 int UIFrameWnd::DrawFittedItemName(int x, int y, const ITEM_INFO* item, std::uint32_t color, int, int, char option) {
@@ -156,6 +147,16 @@ int UIFrameWnd::DrawFittedItemName(int x, int y, const ITEM_INFO* item, std::uin
 // OFFSET: 0x008D17C0
 // FUNCTION: fn_12094
 int UIFrameWnd::DrawItemName(int x, int y, int width, const ITEM_INFO* item, int, int family, int height) {
+  struct ItemNameTextInfo {
+    // INLINED
+    ItemNameTextInfo(int x, int y, int height, int family) : x(x), y(y), height(height), family(family) {}
+
+    int x;
+    int y;
+    int height;
+    int family;
+  };
+
   char buffer[256] = {};
   char* highlight = nullptr;
   char* cursor = buffer;
@@ -170,7 +171,7 @@ int UIFrameWnd::DrawItemName(int x, int y, int width, const ITEM_INFO* item, int
   }
   color = (color >> 16 & 0xFF) | ((color & 0xFF) << 16) | (color & 0x0000FF00);
 
-  const ItemNameTextInfo info = {x, y, height, family};
+  const ItemNameTextInfo info(x, y, height, family);
   this->DrawItemNameText(&info, buffer, highlight, color, static_cast<std::uint32_t>(highlightColor), width, &breaks);
   return x;
 }
