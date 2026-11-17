@@ -2878,7 +2878,8 @@ void CGameMode::UpdateSkillCooldown(std::uint16_t skill, std::uint32_t remaining
     }
   }
 
-  for (const ShortcutCooldownIcon& icon : g_session.m_alternateCooldownIcons) {
+  for (auto iconIt = g_session.m_alternateCooldownIcons.begin(); iconIt != g_session.m_alternateCooldownIcons.end(); ++iconIt) {
+    const ShortcutCooldownIcon& icon = *iconIt;
     if (icon.id == value.id) {
       value.alternate.push_back(CooldownState(icon.slot, icon.x, icon.y, duration, value.end - remaining, duration - remaining, 0));
     }
