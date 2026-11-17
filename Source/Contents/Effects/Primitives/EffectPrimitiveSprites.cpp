@@ -241,16 +241,16 @@ void CEffectPrim::RenderSegmentSpriteTrail(matrix& wtm) {
 
         float left;
         float right;
-        if ((cell.mirrored & 1) != 0) {
-          left = static_cast<float>(((static_cast<short>(image->doubleWidth) + 1) * image->width + cell.x) * scale * cell.scaleX * distanceScale + screenX);
-          right = static_cast<float>(cell.x * scale * cell.scaleX * distanceScale + screenX);
-          if (right >= static_cast<float>(g_renderer->viewport.width) || left <= 0.0f) {
-            continue;
-          }
-        } else {
+        if ((cell.mirrored & 1) == 0) {
           left = static_cast<float>(cell.x * scale * cell.scaleX * distanceScale + screenX);
           right = static_cast<float>(((static_cast<short>(image->doubleWidth) + 1) * image->width + cell.x) * scale * cell.scaleX * distanceScale + screenX);
           if (left >= static_cast<float>(g_renderer->viewport.width) || right <= 0.0f) {
+            continue;
+          }
+        } else {
+          left = static_cast<float>(((static_cast<short>(image->doubleWidth) + 1) * image->width + cell.x) * scale * cell.scaleX * distanceScale + screenX);
+          right = static_cast<float>(cell.x * scale * cell.scaleX * distanceScale + screenX);
+          if (right >= static_cast<float>(g_renderer->viewport.width) || left <= 0.0f) {
             continue;
           }
         }
