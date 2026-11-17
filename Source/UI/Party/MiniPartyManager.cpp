@@ -191,7 +191,8 @@ void UIWindowMgr::RebuildMiniPartyWindows() {
 
   g_session.ClearMiniPartyRecords();
 
-  for (const SessionRecord0734& record : records) {
+  for (auto recordIt = records.begin(); recordIt != records.end(); ++recordIt) {
+    const SessionRecord0734& record = *recordIt;
     MessengerMember member = g_session.PartyByAccount(record.id);
     if (member.valid == 0) {
       continue;
