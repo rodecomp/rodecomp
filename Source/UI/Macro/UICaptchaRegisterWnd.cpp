@@ -115,6 +115,39 @@ int UICaptchaRegisterWnd::SendMsg(
   UIWindow* sender, int message, std::intptr_t a1, std::intptr_t a2, std::intptr_t a3, std::intptr_t a4
 ) {
   switch (message) {
+  case UM_COMMAND:
+    switch (a1) {
+    case ID_SEND:
+      if (this->m_editCtrl->Length() < 4) {
+        g_windowMgr.Confirm(LookupMessage(MSI_MACRO_DETECTOR_WRONG_ANSWER_REMAIN_CNT), 0, 1, 0, 0, "Message", 280, 120, 0);
+      } else if (this->m_selectedFile.empty()) {
+        g_windowMgr.Confirm(LookupMessage(MSI_MACRO_SEND_MACRO), 0, 1, 0, 0, "Message", 280, 120, 0);
+      } else if (this->m_decompressedSize <= 0) {
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>("compress data size error"), 0xFF, 0, 0, 0);
+      } else {
+        const int result =
+          g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_MACRO_REPORTER), this->m_editCtrl->Text()).c_str(), 2, 0, 0, 0, "Message", 280, 120, 0);
+        if (result != 188) {
+          UIBitmapButton* button = this->registerButton;
+          button->SetDisabled(1);
+          button->Invalidate();
+
+          CaptchaRegisterPacket packet;
+          packet.id = ID_CZ_REQ_UPLOAD_MACRO_DETECTOR;
+          memcpy_s(packet.text, sizeof(packet.text), this->m_editCtrl->Text(), sizeof(packet.text));
+          packet.size = static_cast<std::int16_t>(this->m_decompressedSize);
+
+          GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
+
+          g_serverLanguage->ResetInput();
+        }
+      }
+      break;
+    case ID_CLOSE:
+      g_windowMgr.CloseWindow(WID_CAPTCHAREGISTERWND);
+      break;
+    }
+    break;
   case UM_COMBOBOX_SELECTED:
     if (sender == this->m_fileComboBox) {
       this->m_selectedFile = this->m_fileComboBox->GetSelectedText();
@@ -149,38 +182,6 @@ int UICaptchaRegisterWnd::SendMsg(
           }
         }
       }
-    }
-    break;
-  case UM_COMMAND:
-    switch (a1) {
-    case ID_SEND:
-      if (this->m_editCtrl->Length() < 4) {
-        g_windowMgr.Confirm(LookupMessage(MSI_MACRO_DETECTOR_WRONG_ANSWER_REMAIN_CNT), 0, 1, 0, 0, "Message", 280, 120, 0);
-      } else if (this->m_selectedFile.empty()) {
-        g_windowMgr.Confirm(LookupMessage(MSI_MACRO_SEND_MACRO), 0, 1, 0, 0, "Message", 280, 120, 0);
-      } else if (this->m_decompressedSize == 0) {
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>("compress data size error"), 0xFF, 0, 0, 0);
-      } else {
-        const int result =
-          g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_MACRO_REPORTER), this->m_editCtrl->Text()).c_str(), 2, 0, 0, 0, "Message", 280, 120, 0);
-        if (result != 188) {
-          this->registerButton->SetDisabled(1);
-          this->registerButton->Invalidate();
-
-          CaptchaRegisterPacket packet;
-          packet.id = ID_CZ_REQ_UPLOAD_MACRO_DETECTOR;
-          memcpy_s(packet.text, sizeof(packet.text), this->m_editCtrl->Text(), sizeof(packet.text));
-          packet.size = static_cast<std::int16_t>(this->m_decompressedSize);
-
-          GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
-
-          g_serverLanguage->ResetInput();
-        }
-      }
-      break;
-    case ID_CLOSE:
-      g_windowMgr.CloseWindow(WID_CAPTCHAREGISTERWND);
-      break;
     }
     break;
   }
