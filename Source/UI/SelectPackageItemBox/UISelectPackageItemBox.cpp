@@ -30,6 +30,8 @@
 #include <new>
 
 template __declspec(noinline) std::string::basic_string(const std::string&);
+template __declspec(noinline) std::function<void(CUIListItem*)>&
+std::function<void(CUIListItem*)>::operator=(const std::function<void(CUIListItem*)>&);
 
 template __declspec(noinline) std::list<ITEM_INFO>::~list() noexcept;
 template __declspec(noinline) std::list<SelectPackageItemBox::CTabInfoData>::~list() noexcept;
@@ -234,14 +236,20 @@ void CUIListBoxEx<SelectPackageItemBox::CUIItemInfo, ITEM_INFO>::AddNewItem() {
       item->SetSize(this->itemWidth, this->rowHeight);
       item->Show(0);
       item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
-      item->onHover = [this](CUIListItem* listItem) {
-        for (SelectPackageItemBox::CUIItemInfo* other : this->items) {
-          other->SetHighlighted(other == listItem);
-        }
-      };
-      item->onPress = [this](CUIListItem* listItem) {
-        this->SelectItem(listItem);
-      };
+      {
+        const std::function<void(CUIListItem*)> onHover = [this](CUIListItem* listItem) {
+          for (SelectPackageItemBox::CUIItemInfo* other : this->items) {
+            other->SetHighlighted(other == listItem);
+          }
+        };
+        item->onHover = onHover;
+      }
+      {
+        const std::function<void(CUIListItem*)> onPress = [this](CUIListItem* listItem) {
+          this->SelectItem(listItem);
+        };
+        item->onPress = onPress;
+      }
       this->AddChild(item);
       slot = item;
     }
@@ -276,14 +284,20 @@ void CUIListBoxEx<SelectPackageItemBox::CUITabInfo, SelectPackageItemBox::CTabIn
       item->SetSize(this->itemWidth, this->rowHeight);
       item->Show(0);
       item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
-      item->onHover = [this](CUIListItem* listItem) {
-        for (SelectPackageItemBox::CUITabInfo* other : this->items) {
-          other->SetHighlighted(other == listItem);
-        }
-      };
-      item->onPress = [this](CUIListItem* listItem) {
-        this->SelectItem(listItem);
-      };
+      {
+        const std::function<void(CUIListItem*)> onHover = [this](CUIListItem* listItem) {
+          for (SelectPackageItemBox::CUITabInfo* other : this->items) {
+            other->SetHighlighted(other == listItem);
+          }
+        };
+        item->onHover = onHover;
+      }
+      {
+        const std::function<void(CUIListItem*)> onPress = [this](CUIListItem* listItem) {
+          this->SelectItem(listItem);
+        };
+        item->onPress = onPress;
+      }
       this->AddChild(item);
       slot = item;
     }
