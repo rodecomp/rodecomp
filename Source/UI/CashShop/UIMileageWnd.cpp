@@ -65,7 +65,8 @@ void UIMileageWnd::OnLBtnUp(int x, int y) {
     return;
   }
 
-  DynamicNpcCreatePacket packet = {ID_CZ_DYNAMICNPC_CREATE_REQUEST};
+  DynamicNpcCreatePacket packet = {};
+  packet.id = ID_CZ_DYNAMICNPC_CREATE_REQUEST;
   StringFormat(packet.name, sizeof(packet.name), static_cast<std::size_t>(-1), "GOLDPCCAFE");
   GetRagConnection().Send(sizeof(packet), &packet);
 }
