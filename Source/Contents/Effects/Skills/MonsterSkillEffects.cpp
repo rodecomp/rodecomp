@@ -1503,7 +1503,7 @@ void CFromTheAbyssEffect::Render() {
 // OFFSET: 0x00715F30
 // FUNCTION: fn_07271
 void CFromTheAbyssEffect::SetLevel(long long level) {
-  if (level < 0 || level > this->maxLevel) {
+  if (level < 0 || this->maxLevel < level) {
     return;
   }
 
