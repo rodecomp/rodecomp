@@ -17751,7 +17751,11 @@ void CRagEffect::HealRingSparkle(const char* name, char type) {
     this->state.lastPrim->state.slots[0].distance = 4.6f;
     this->state.lastPrim->state.slots[0].riseAngle = 90;
     this->state.lastPrim->state.slots[0].vecBNow.y = 0.0f;
-    this->state.lastPrim->state.slots[0].alphaT = type != 0 ? 40 : 60;
+    if (type == 0) {
+      this->state.lastPrim->state.slots[0].alphaT = 60;
+    } else {
+      this->state.lastPrim->state.slots[0].alphaT = 40;
+    }
     for (int i = 0; i < 21; ++i) {
       this->state.lastPrim->state.slots[0].height[i] = 0.0f;
       this->state.lastPrim->state.slots[0].flag1[i] = 0;
@@ -17766,7 +17770,11 @@ void CRagEffect::HealRingSparkle(const char* name, char type) {
     this->state.lastPrim->state.slots[1].distance = 5.0f;
     this->state.lastPrim->state.slots[1].riseAngle = 90;
     this->state.lastPrim->state.slots[1].vecBNow.y = 0.0f;
-    this->state.lastPrim->state.slots[1].alphaT = type != 0 ? 40 : 60;
+    if (type == 0) {
+      this->state.lastPrim->state.slots[1].alphaT = 60;
+    } else {
+      this->state.lastPrim->state.slots[1].alphaT = 40;
+    }
     for (int i = 0; i < 21; ++i) {
       this->state.lastPrim->state.slots[1].height[i] = 0.0f;
       this->state.lastPrim->state.slots[1].flag1[i] = 0;
@@ -17781,7 +17789,11 @@ void CRagEffect::HealRingSparkle(const char* name, char type) {
     this->state.lastPrim->state.slots[2].distance = 5.0f;
     this->state.lastPrim->state.slots[2].riseAngle = 50;
     this->state.lastPrim->state.slots[2].vecBNow.y = 0.0f;
-    this->state.lastPrim->state.slots[2].alphaT = type != 0 ? 40 : 60;
+    if (type == 0) {
+      this->state.lastPrim->state.slots[2].alphaT = 60;
+    } else {
+      this->state.lastPrim->state.slots[2].alphaT = 40;
+    }
     for (int i = 0; i < 21; ++i) {
       this->state.lastPrim->state.slots[2].height[i] = 0.0f;
       this->state.lastPrim->state.slots[2].flag1[i] = 0;
@@ -17796,7 +17808,11 @@ void CRagEffect::HealRingSparkle(const char* name, char type) {
     this->state.lastPrim->state.slots[3].distance = 5.2f;
     this->state.lastPrim->state.slots[3].riseAngle = 48;
     this->state.lastPrim->state.slots[3].vecBNow.y = 0.0f;
-    this->state.lastPrim->state.slots[3].alphaT = type != 0 ? 40 : 60;
+    if (type == 0) {
+      this->state.lastPrim->state.slots[3].alphaT = 60;
+    } else {
+      this->state.lastPrim->state.slots[3].alphaT = 40;
+    }
     for (int i = 0; i < 21; ++i) {
       this->state.lastPrim->state.slots[3].height[i] = 0.0f;
       this->state.lastPrim->state.slots[3].flag1[i] = 0;
