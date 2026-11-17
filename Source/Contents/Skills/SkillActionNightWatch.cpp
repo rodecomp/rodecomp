@@ -779,10 +779,9 @@ void CSkillAction_NW_MIDNIGHT_FALLEN::OnGroundSkillEffect(vector3d position, int
   for (int angle = 45; angle < 405; angle += 120) {
     const float radians = static_cast<float>(angle) / 180.0f * 3.141592f;
     const float offsetZ = ClientSin(radians) * 10.0f;
-    const float offsetX = ClientCos(radians) * 10.0f;
+    const float x = ClientCos(radians) * 10.0f + position.x;
     const float z = offsetZ + position.z;
     const float y = position.y + 0.0f;
-    const float x = offsetX + position.x;
     EffectLists* effects = g_effectMgr;
     CEffect* effect = effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("midnight_fallen_bottom"), x, y, z, 0, -1, 0, 0);
     if (effect) {
