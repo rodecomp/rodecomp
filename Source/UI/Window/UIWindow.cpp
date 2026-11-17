@@ -1406,10 +1406,10 @@ SIZE UIWindow::VerticalTextSize(const char* text, unsigned bytes, int family, in
   }
 
   while (text < end) {
-    const char* next = CharNextExA(static_cast<WORD>(g_textCodePage), text, 0);
     SIZE part;
     part.cx = 0;
     part.cy = 0;
+    const char* next = CharNextExA(static_cast<WORD>(g_textCodePage), text, 0);
     context.Measure(text, static_cast<int>(next - text), &part);
     if (size.cx < part.cx) {
       size.cx = part.cx;
