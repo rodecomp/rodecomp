@@ -115,13 +115,16 @@ CUIFrameWnd* CreateMacroReport() {
   return new CUIMacroReport();
 }
 
+struct UIRegistration {
+  // INLINED
+  __forceinline UIRegistration(int id, std::function<CUIFrameWnd*()> factory) {
+    Singleton<CUIRegisterMgr>::GetInstance()->Register(id, factory);
+  }
+};
+
 // OFFSET: 0x004955B0
 // FUNCTION: fn_45550
-static bool registered = [] {
-  std::function<CUIFrameWnd*()> factory = CreateMacroReport;
-  Singleton<CUIRegisterMgr>::GetInstance()->Register(10005, factory);
-  return true;
-}();
+static UIRegistration registered(10005, CreateMacroReport);
 
 // OFFSET: 0x00A44240
 // FUNCTION: fn_16053

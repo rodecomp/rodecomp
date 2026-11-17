@@ -131,13 +131,16 @@ CUIFrameWnd* CreateProbabilityTable() {
   return new CUIProbabilityTable();
 }
 
+struct UIRegistration {
+  // INLINED
+  __forceinline UIRegistration(int id, std::function<CUIFrameWnd*()> factory) {
+    Singleton<CUIRegisterMgr>::GetInstance()->Register(id, factory);
+  }
+};
+
 // OFFSET: 0x00496610
 // FUNCTION: fn_45551
-static bool s_probabilityTableRegistered = [] {
-  std::function<CUIFrameWnd*()> factory = CreateProbabilityTable;
-  Singleton<CUIRegisterMgr>::GetInstance()->Register(10012, factory);
-  return true;
-}();
+static UIRegistration s_probabilityTableRegistered(10012, CreateProbabilityTable);
 
 // OFFSET: 0x00A48740
 // FUNCTION: fn_16115

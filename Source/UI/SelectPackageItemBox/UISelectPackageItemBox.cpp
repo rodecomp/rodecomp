@@ -1141,13 +1141,16 @@ CUIFrameWnd* CreateSelectPackageItemBox() {
   return new CUISelectPackageItemBox();
 }
 
+struct UIRegistration {
+  // INLINED
+  __forceinline UIRegistration(int id, std::function<CUIFrameWnd*()> factory) {
+    Singleton<CUIRegisterMgr>::GetInstance()->Register(id, factory);
+  }
+};
+
 // OFFSET: 0x0049B670
 // FUNCTION: fn_45555
-static bool s_registered = [] {
-  std::function<CUIFrameWnd*()> factory = CreateSelectPackageItemBox;
-  Singleton<CUIRegisterMgr>::GetInstance()->Register(10033, factory);
-  return true;
-}();
+static UIRegistration s_registered(10033, CreateSelectPackageItemBox);
 
 // OFFSET: 0x00A6F470
 // FUNCTION: fn_16772

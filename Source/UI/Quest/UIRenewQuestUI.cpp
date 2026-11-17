@@ -1241,13 +1241,16 @@ CUIFrameWnd* CreateRenewQuestUI() {
   return new CUIRenewQuestUI();
 }
 
+struct UIRegistration {
+  // INLINED
+  __forceinline UIRegistration(int id, std::function<CUIFrameWnd*()> factory) {
+    Singleton<CUIRegisterMgr>::GetInstance()->Register(id, factory);
+  }
+};
+
 // OFFSET: 0x00499210
 // FUNCTION: fn_45554
-static bool s_renewQuestUIRegistered = [] {
-  std::function<CUIFrameWnd*()> factory = CreateRenewQuestUI;
-  Singleton<CUIRegisterMgr>::GetInstance()->Register(10008, factory);
-  return true;
-}();
+static UIRegistration s_renewQuestUIRegistered(10008, CreateRenewQuestUI);
 
 // OFFSET: 0x00A5C590
 // FUNCTION: fn_16434
