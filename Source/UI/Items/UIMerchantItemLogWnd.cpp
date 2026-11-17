@@ -67,7 +67,7 @@ void UIMerchantItemLogWnd::OnCreate(int width, int height) {
   this->buttons[0]->SetBitmap("유저인터페이스\\btn_close_b.bmp", 2, 0);
   this->buttons[0]->SetSize(this->buttons[0]->BitmapWidth(), this->buttons[0]->BitmapHeight());
   this->buttons[0]->Move(this->geometry.width - 61, this->geometry.height - 24);
-  this->buttons[0]->SetId(201);
+  this->buttons[0]->SetId(ID_CLOSE);
   this->AddChild(this->buttons[0]);
 
   this->columns = 1;
@@ -223,7 +223,7 @@ void UIMerchantItemLogWnd::OnRBtnDown(int x, int y) {
 int UIMerchantItemLogWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
   case UM_COMMAND:
-    if (a == 201) {
+    if (a == ID_CLOSE) {
       if (this->mode == 0) {
         g_windowMgr.CloseWindow(WID_MERCHANTITEMLOGWND_MODE_0);
       } else {

@@ -100,7 +100,7 @@ void CMergeItemWnd::CreateControls() {
   this->m_mergeButton->SetBitmap("유저인터페이스\\btn_ok_a.bmp", 1, 0);
   this->m_mergeButton->SetBitmap("유저인터페이스\\btn_ok_b.bmp", 2, 0);
   this->m_mergeButton->SetSize(this->m_mergeButton->BitmapWidth(), this->m_mergeButton->BitmapHeight());
-  this->m_mergeButton->SetId(184);
+  this->m_mergeButton->SetId(ID_OK);
   this->AddChild(this->m_mergeButton);
 
   this->m_cancelButton = new UIBitmapButton();
@@ -108,7 +108,7 @@ void CMergeItemWnd::CreateControls() {
   this->m_cancelButton->SetBitmap("유저인터페이스\\btn_cancel_a.bmp", 1, 0);
   this->m_cancelButton->SetBitmap("유저인터페이스\\btn_cancel_b.bmp", 2, 0);
   this->m_cancelButton->SetSize(this->m_cancelButton->BitmapWidth(), this->m_cancelButton->BitmapHeight());
-  this->m_cancelButton->SetId(185);
+  this->m_cancelButton->SetId(ID_CANCEL);
   this->AddChild(this->m_cancelButton);
 
   this->m_closeButton = this->AddCloseButton("", 240);

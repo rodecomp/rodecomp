@@ -429,6 +429,6 @@ void UIGuildTipWnd::OnCreate(int width, int height) {
   this->m_closeButton->SetBitmap((prefix + "btn_close_b" + ".bmp").c_str(), 2, 0);
   this->m_closeButton->SetSize(this->m_closeButton->BitmapWidth(), this->m_closeButton->BitmapHeight());
   this->m_closeButton->Move(width - 50, height - 24);
-  this->m_closeButton->SetId(201);
+  this->m_closeButton->SetId(ID_CLOSE);
   this->AddChild(this->m_closeButton);
 }

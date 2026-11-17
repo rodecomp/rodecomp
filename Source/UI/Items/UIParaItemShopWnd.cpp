@@ -259,7 +259,7 @@ void UIParaResultWnd::OnCreate(int width, int height) {
     this->buttons[0]->SetBitmap((prefix + "btn_ok_b.bmp").c_str(), 2, 0);
     this->buttons[0]->SetSize(this->buttons[0]->BitmapWidth(), this->buttons[0]->BitmapHeight());
     this->buttons[0]->Move(x, y);
-    this->buttons[0]->SetId(184);
+    this->buttons[0]->SetId(ID_OK);
     this->AddChild(this->buttons[0]);
   }
 
@@ -496,7 +496,7 @@ int UIParaItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     return 0;
   case UM_COMMAND:
     this->RecordResponse(static_cast<int>(a), b, c, d);
-    if (a == 213) {
+    if (a == ID_CHECK) {
       if (g_replayAnimationScaling != 0) {
         UICheckBox* checkBox = this->checkBox;
         checkBox->geometry.state = b;
@@ -600,7 +600,7 @@ int UIParaResultWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
   case UM_COMMAND: {
     this->RecordResponse(static_cast<int>(a), b, c, d);
     CMode* mode = g_modeMgr.currentMode;
-    if (a == 184) {
+    if (a == ID_OK) {
       mode->SendMsg(MM_NPC_MARKET_CLOSE, 0, 0, 0, 0);
       mode->SendMsg(MM_RELEASE_QUEST, 0, 0, 0, 0);
       g_session.ClearTradeItems();

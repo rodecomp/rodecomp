@@ -539,7 +539,7 @@ int UIRuneSetReWard::SendMsg(
       this->m_texts[argument1] = reinterpret_cast<const char*>(argument2);
     }
     break;
-  case 0x66:
+  case UM_SETID:
     this->m_itemId = argument2;
     this->SetDisabled(1);
     if (argument2 == 0) {

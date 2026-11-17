@@ -155,7 +155,7 @@ void UISecondCostumeWnd::OnCreate(int width, int height) {
   this->m_list->backgroundRed = 210;
   this->m_list->backgroundGreen = 210;
   this->m_list->backgroundBlue = 210;
-  this->m_list->SetId(336);
+  this->m_list->SetId(ID_SELECT_ITEM);
   this->m_list->Move(4, 40);
   this->AddChild(this->m_list);
   this->RefreshList(this->m_tab);
@@ -179,7 +179,7 @@ void UISecondCostumeWnd::OnCreate(int width, int height) {
   previous->SetBitmap("유저인터페이스\\scroll1left.bmp", 2, 0);
   previous->SetSize(previous->BitmapWidth(), previous->BitmapHeight());
   previous->Move(width - 202, 110);
-  previous->SetId(227);
+  previous->SetId(ID_LEFT);
   this->AddChild(previous);
 
   auto* next = new UIBitmapButton();
@@ -188,7 +188,7 @@ void UISecondCostumeWnd::OnCreate(int width, int height) {
   next->SetBitmap("유저인터페이스\\scroll1right.bmp", 2, 0);
   next->SetSize(next->BitmapWidth(), next->BitmapHeight());
   next->Move(width - 19, 110);
-  next->SetId(226);
+  next->SetId(ID_RIGHT);
   this->AddChild(next);
 }
 

@@ -97,13 +97,13 @@ void UIItemReformWnd::OnCreate(int width, int height) {
   UIBasicButton* cancel = new UIBasicButton();
   cancel->Configure(60, LookupMessage(MSI_CANCEL));
   cancel->Move(300, 236);
-  cancel->SetId(201);
+  cancel->SetId(ID_CLOSE);
   this->AddChild(cancel);
 
   this->reformButton = new UIBasicButton();
   this->reformButton->Configure(60, LookupMessage(MSI_ITEM_REFORM_WARNNING_CARD_MAYBE_LOST));
   this->reformButton->Move(365, 236);
-  this->reformButton->SetId(184);
+  this->reformButton->SetId(ID_OK);
   {
     UIButton* button = this->reformButton;
     button->SetDisabled(1);

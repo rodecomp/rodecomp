@@ -1,6 +1,7 @@
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Items/UIItemStoreComboBox.h"
 #include "UI/Text/UIStaticText.h"
+#include "UI/Window/UIEnums.h"
 #include "UI/Window/UIWindow.h"
 
 #include <cstdio>
@@ -27,7 +28,7 @@ void UIItemStoreComboBoxWnd::OnCreate(int, int) {
   this->button->SetBitmap((path + disabled + ".bmp").c_str(), 2, 0);
   this->button->SetSize(this->button->BitmapWidth(), this->button->BitmapHeight());
   this->button->Move(this->geometry.width - this->button->BitmapWidth(), this->geometry.height - this->button->BitmapHeight());
-  this->button->SetId(273);
+  this->button->SetId(ID_OPEN_MEMBER_POS_COMBO);
   this->AddChild(this->button);
 
   UIItemStoreComboBox* items = new UIItemStoreComboBox();

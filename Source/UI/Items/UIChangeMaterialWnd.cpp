@@ -499,7 +499,7 @@ int UIChangeMaterialWnd_List::SendMsg(
     return this->m_scrollOffset - previous;
   }
   case UM_COMMAND:
-    if (argument1 == 0x141 && argument2 != 0) {
+    if (argument1 == ID_SEARCH && argument2 != 0) {
       std::string filter(reinterpret_cast<const char*>(argument2));
       if (filter.compare(LookupMessage(MSI_BO_RESEARCHREPORT_OFF)) == 0) {
         filter = "";

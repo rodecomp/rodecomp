@@ -1463,7 +1463,7 @@ void UIExpandedBarterItemPurchaseWnd::OnCreate(int width, int height) {
   this->buyButton->SetBitmap("유저인터페이스\\btn_buy_b.bmp", 2, 0);
   this->buyButton->SetSize(this->buyButton->BitmapWidth(), this->buyButton->BitmapHeight());
   this->buyButton->Move(this->geometry.width - 105, this->geometry.height - 24);
-  this->buyButton->SetId(184);
+  this->buyButton->SetId(ID_OK);
   this->AddChild(this->buyButton);
 
   this->cancelButton = new UIBitmapButton();
@@ -1472,7 +1472,7 @@ void UIExpandedBarterItemPurchaseWnd::OnCreate(int width, int height) {
   this->cancelButton->SetBitmap("유저인터페이스\\btn_cancel_b.bmp", 2, 0);
   this->cancelButton->SetSize(this->cancelButton->BitmapWidth(), this->cancelButton->BitmapHeight());
   this->cancelButton->Move(this->geometry.width - 60, this->geometry.height - 24);
-  this->cancelButton->SetId(185);
+  this->cancelButton->SetId(ID_CANCEL);
   this->AddChild(this->cancelButton);
 
   this->rowCount = (height - 46) / 64;

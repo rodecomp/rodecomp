@@ -975,7 +975,7 @@ void UIGuildInfoManageWnd::OnCreate(int, int) {
     } else {
       this->m_editButton->Move(-200, -200);
     }
-    this->m_editButton->SetId(278);
+    this->m_editButton->SetId(ID_CHANGE_GUILE_EMBLEM);
     this->AddChild(this->m_editButton);
 
     this->m_disbandButton = new UIBitmapButton();
@@ -1728,7 +1728,7 @@ void UIGuildMemberManageWnd::OnCreate(int, int) {
       (*button)->SetBitmap((prefix + "txtbox_btn_c" + ".bmp").c_str(), 2, 0);
       (*button)->SetSize((*button)->BitmapWidth(), (*button)->BitmapHeight());
       (*button)->Move(142, y);
-      (*button)->SetId(273);
+      (*button)->SetId(ID_OPEN_MEMBER_POS_COMBO);
       this->AddChild(*button);
     }
   }
@@ -1753,7 +1753,7 @@ void UIGuildMemberManageWnd::OnCreate(int, int) {
     } else {
       this->m_button->Move(-200, -200);
     }
-    this->m_button->SetId(184);
+    this->m_button->SetId(ID_OK);
     this->AddChild(this->m_button);
     this->m_message0 = 184;
   }
@@ -2013,7 +2013,7 @@ void UIGuildNoticeWnd::OnCreate(int, int) {
     this->m_sendButton->Move(this->geometry.width - 46, this->geometry.height - 24);
   }
 
-  this->m_sendButton->SetId(277);
+  this->m_sendButton->SetId(ID_SEND_GUILD_NOTICE);
   this->AddChild(this->m_sendButton);
 }
 
@@ -2716,7 +2716,7 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
             }
             this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_DIRECT_CHAT), MENUID_MAKE_WHISPER_WINDOW));
           }
-          this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_USA_PERSONALINFO_DEATH), 58));
+          this->memberMenuEntries.push_back(MiniPartyInfoEntry(LookupMessage(MSI_USA_PERSONALINFO_DEATH), MENUID_WRITE_RODEX));
         }
       }
     }
@@ -2792,7 +2792,7 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
       }
       break;
     }
-    case 58: {
+    case MENUID_WRITE_RODEX: {
       GuildInfo::Member target;
       if (this->GetMember(this->m_hoverRow, target) == true) {
         g_modeMgr.GetGameMode()->SendMsg(MM_OPEN_WRITE_RODEX, reinterpret_cast<int>(target.name.c_str()), 0, 0, 0);
@@ -2847,7 +2847,7 @@ int UIGuildMemberManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
         this->m_rowButtons[index]->SetBitmap((prefix + "txtbox_btn_c" + ".bmp").c_str(), 2, 0);
         this->m_rowButtons[index]->SetSize(this->m_rowButtons[index]->BitmapWidth(), this->m_rowButtons[index]->BitmapHeight());
         this->m_rowButtons[index]->Move(142, (this->m_rowSpacing + 36) * index + this->m_rowSpacing + 82);
-        this->m_rowButtons[index]->SetId(273);
+        this->m_rowButtons[index]->SetId(ID_OPEN_MEMBER_POS_COMBO);
         this->AddChild(this->m_rowButtons[index]);
       }
     }
@@ -2929,7 +2929,7 @@ void UIGuildPositionManageWnd::OnCreate(int, int) {
       this->positionNameEdits[row]->Move(g_guildPositionColumnWidths[0] + 9, row * g_guildPositionRowHeight + 66);
       this->positionNameEdits[row]->maximum = 30;
       this->positionNameEdits[row]->Background(242, 242, 242);
-      this->positionNameEdits[row]->SetId(275);
+      this->positionNameEdits[row]->SetId(ID_POSNAME_EDIT);
       this->AddChild(this->positionNameEdits[row]);
     }
 
@@ -2942,7 +2942,7 @@ void UIGuildPositionManageWnd::OnCreate(int, int) {
       );
       this->taxEdits[row]->maximum = 2;
       this->taxEdits[row]->Background(242, 242, 242);
-      this->taxEdits[row]->SetId(276);
+      this->taxEdits[row]->SetId(ID_PAYRATE_EDIT);
       this->AddChild(this->taxEdits[row]);
     }
   } else {
@@ -2981,7 +2981,7 @@ void UIGuildPositionManageWnd::OnCreate(int, int) {
     } else {
       this->m_button->Move(-200, -200);
     }
-    this->m_button->SetId(184);
+    this->m_button->SetId(ID_OK);
     this->AddChild(this->m_button);
     this->m_message0 = 184;
   }

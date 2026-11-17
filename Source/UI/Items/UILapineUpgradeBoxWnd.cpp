@@ -97,7 +97,7 @@ void UILapineUpgradeBoxWnd::OnCreate(int, int) {
   this->closeButton->SetBitmap("유저인터페이스\\lapine\\btn_cancel_dis.bmp", 3, 0);
   this->closeButton->SetSize(this->closeButton->BitmapWidth(), this->closeButton->BitmapHeight());
   this->closeButton->Move(280, 226);
-  this->closeButton->SetId(201);
+  this->closeButton->SetId(ID_CLOSE);
   this->AddChild(this->closeButton);
 
   this->upgradeButton = new UIBitmapButton();
@@ -107,7 +107,7 @@ void UILapineUpgradeBoxWnd::OnCreate(int, int) {
   this->upgradeButton->SetBitmap("유저인터페이스\\lapine\\btn_make_dis.bmp", 3, 0);
   this->upgradeButton->SetSize(this->upgradeButton->BitmapWidth(), this->upgradeButton->BitmapHeight());
   this->upgradeButton->Move(340, 226);
-  this->upgradeButton->SetId(509);
+  this->upgradeButton->SetId(ID_LAPINE_START_UPGRADE);
   this->AddChild(this->upgradeButton);
 
   this->selectButton = new UIBitmapButton();
@@ -117,7 +117,7 @@ void UILapineUpgradeBoxWnd::OnCreate(int, int) {
   this->selectButton->SetBitmap("유저인터페이스\\lapine\\btn_moveitem_dis.bmp", 3, 0);
   this->selectButton->SetSize(this->selectButton->BitmapWidth(), this->selectButton->BitmapHeight());
   this->selectButton->Move(213, 110);
-  this->selectButton->SetId(505);
+  this->selectButton->SetId(ID_LAPINE_ADD_INGREDIENT);
   this->AddChild(this->selectButton);
 }
 
