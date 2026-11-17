@@ -240,12 +240,12 @@ int UISerachStoreInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       if (this->m_searchPending != 0) {
         std::list<int> itemIds;
         std::list<int> cardIds;
-        itemIds = SearchItemIds(itemName, 0, this->m_matchOption);
+        itemIds = static_cast<const std::list<int>&>(SearchItemIds(itemName, 0, this->m_matchOption));
         if (itemIds.size() == 0) {
           this->m_searchPending = 0;
           this->m_statusText = LookupMessage(MSI_SSI_FAILED_ITEM_DOES_NOT_EXIST);
         } else if (cardName.size() != 0) {
-          cardIds = SearchItemIds(cardName, 1, this->m_matchOption);
+          cardIds = static_cast<const std::list<int>&>(SearchItemIds(cardName, 1, this->m_matchOption));
           if (cardIds.size() == 0) {
             this->m_searchPending = 0;
             this->m_statusText = LookupMessage(MSI_SSI_FAILED_NAME_OF_CARD_DOES_NOT_EXIST);
