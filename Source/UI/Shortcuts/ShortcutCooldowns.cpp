@@ -195,7 +195,8 @@ void CGameMode::ApplyCooldownStart(const void* packet) {
     }
   }
 
-  for (const ShortcutCooldownIcon& icon : g_session.m_alternateCooldownIcons) {
+  for (auto iconIt = g_session.m_alternateCooldownIcons.begin(); iconIt != g_session.m_alternateCooldownIcons.end(); ++iconIt) {
+    const ShortcutCooldownIcon& icon = *iconIt;
     if (icon.id == start->id &&
         std::find_if(g_session.m_requestTimers.begin(), g_session.m_requestTimers.end(), [&](const ShortcutCooldownRecord& record) { return record.id == icon.id; }) ==
           g_session.m_requestTimers.end()) {
