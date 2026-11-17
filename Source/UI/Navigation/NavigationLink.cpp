@@ -525,7 +525,7 @@ void NavigationLinkParser::SplitMessageArguments(const char* text, std::vector<s
   std::size_t separator = remaining.find(',');
 
   while (separator != std::string::npos) {
-    std::string argument;
+    std::string argument("");
     argument = remaining.substr(0, separator);
     arguments.push_back(argument);
     remaining = remaining.substr(separator + 1);
