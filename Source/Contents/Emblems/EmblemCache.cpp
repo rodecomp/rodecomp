@@ -77,7 +77,8 @@ void CGuildMgr::StoreEmblem(const void* bytes, std::uint32_t size, std::uint32_t
       std::list<std::string> names;
       EnumerateFileNames(names, directory.c_str(), path.c_str());
 
-      for (const std::string& name : names) {
+      for (auto nameIt = names.begin(); nameIt != names.end(); ++nameIt) {
+        const std::string& name = *nameIt;
         path = directory + name;
         _chmod(path.c_str(), _S_IWRITE);
         _unlink(path.c_str());
