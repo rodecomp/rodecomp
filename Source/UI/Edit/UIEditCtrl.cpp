@@ -7396,7 +7396,8 @@ void UIItemPurchaseWnd::OnMouseHover(int x, int y) {
                                FormatGroupedInteger(static_cast<int>(item.prices[1]), price, 64), currency));
     }
 
-    g_modeMgr.currentMode->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+    CMode* mode = g_modeMgr.currentMode;
+    mode->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
   }
 }
 
@@ -7421,7 +7422,8 @@ void UIItemSellWnd2::OnMouseHover(int x, int y) {
                                FormatGroupedInteger(static_cast<int>(item.prices[1]), price, 64)));
     }
 
-    g_modeMgr.currentMode->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+    CMode* mode = g_modeMgr.currentMode;
+    mode->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
   }
 }
 
@@ -7493,7 +7495,8 @@ void UIItemShopWnd2::OnMouseHover(int x, int y) {
     }
   }
 
-  g_modeMgr.currentMode->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+  CMode* mode = g_modeMgr.currentMode;
+  mode->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
 }
 
 // OFFSET: 0x00986970
