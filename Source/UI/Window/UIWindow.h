@@ -108,6 +108,7 @@ public:
   bool IsDescendantOf(const UIWindow* ancestor) const;
   void BroadcastMsg4();
   bool HasTextLinks(const std::string& text);
+  std::string ExpandTextEscapes(const std::string& text);
   void ExtractTextLinks(const std::string& source, const std::string& begin, const std::string& end, std::vector<TextLink>& links);
   void ExtractNavigationTextLinks(const std::string& text, std::vector<TextLink>& links);
   void ExtractTipBoxTextLinks(const std::string& text, std::vector<TextLink>& links);

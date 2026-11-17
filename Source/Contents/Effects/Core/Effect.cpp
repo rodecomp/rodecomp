@@ -120,9 +120,7 @@ void CEffect::SetActor(std::uint32_t aid) {
 void CEffect::SetSourceActor(std::uint32_t aid) {
   if (CRenderObject* source = FindRenderObject(aid)) {
     this->sourceActor = aid;
-    this->sourcePosition[0] = source->render.position.x;
-    this->sourcePosition[1] = source->render.position.y;
-    this->sourcePosition[2] = source->render.position.z;
+    this->sourcePositionVector = source->render.position;
   }
 }
 
@@ -130,9 +128,7 @@ void CEffect::SetSourceActor(std::uint32_t aid) {
 // FUNCTION: fn_18993
 void CEffect::Update(std::uint32_t aid) {
   if (CRenderObject* actor = FindRenderObject(aid)) {
-    this->position[0] = actor->render.position.x;
-    this->position[1] = actor->render.position.y;
-    this->position[2] = actor->render.position.z;
+    this->positionVector = actor->render.position;
   }
 
   this->CheckRange();

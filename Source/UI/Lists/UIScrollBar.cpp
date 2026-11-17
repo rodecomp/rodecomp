@@ -751,13 +751,13 @@ void UIEditCtrl_Custom::PaintText() {
     } else if (g_serverLanguage->candidate.size() != 0) {
       this->MoveCandidateWindow(left);
       this->MoveReadingWindow(right);
-      if ((timeGetTime() / 500 & 1) == 0) {
+      if (0 == timeGetTime() / 500 % 2) {
         this->DrawSelection(x + left, std::max(right - left, 2));
       }
       this->DrawLabel(x, y, display.c_str());
     } else {
       this->DrawLabel(x, y, display.c_str());
-      if (IsInputSuggestionAllowed() == true && (timeGetTime() / 500 & 1) == 0) {
+      if (IsInputSuggestionAllowed() == true && 0 == timeGetTime() / 500 % 2) {
         this->DrawTextAt(x + left - 2, y, "|", 0, 0, 12, this->textColor, 0, 0);
       }
     }

@@ -18,6 +18,9 @@
 struct EZ2STREffectRecord;
 
 class JsonValue;
+struct JsonObjectIterator;
+struct JsonObjectRange;
+struct JsonProxy;
 
 typedef std::pair<std::string, JsonValue> JsonMember;
 typedef std::vector<JsonMember> JsonObject;
@@ -75,6 +78,10 @@ public:
   const JsonArray& GetArray() const;
   const JsonArray& ArrayRange() const;
   const JsonObject* ObjectRange() const;
+  JsonObjectRange MemberRange();
+  JsonObjectIterator Find(const std::string_view& name);
+  JsonValue& At(const std::string_view& name);
+  JsonProxy operator[](const std::string_view& name);
 
   /* 0000 */ unsigned char type;
   /* 0001 */ unsigned char padding_0001;
@@ -84,6 +91,61 @@ public:
 
 private:
   const JsonValue* Dereference() const;
+};
+
+struct JsonObjectIterator {
+  /* 0000 */ JsonMember* it;
+  /* 0004 */ bool hasValue;
+
+  // INLINED
+  bool operator==(const JsonObjectIterator& other) const {
+    if (this->hasValue && other.hasValue) {
+      return this->it == other.it;
+    }
+
+    return this->hasValue == other.hasValue;
+  }
+
+  // INLINED
+  bool operator!=(const JsonObjectIterator& other) const {
+    return !(*this == other);
+  }
+
+  // INLINED
+  JsonObjectIterator& operator++() {
+    ++this->it;
+    return *this;
+  }
+
+  // INLINED
+  JsonMember& operator*() const {
+    return *this->it;
+  }
+};
+
+struct JsonObjectRange {
+  /* 0000 */ JsonObjectIterator first;
+  /* 0008 */ JsonObjectIterator last;
+
+  // INLINED
+  JsonObjectIterator begin() const {
+    return this->first;
+  }
+
+  // INLINED
+  JsonObjectIterator end() const {
+    return this->last;
+  }
+};
+
+struct JsonProxy {
+  /* 0000 */ JsonValue& parent;
+  /* 0004 */ std::string_view key;
+
+  // INLINED
+  JsonObjectRange MemberRange() {
+    return this->parent.At(this->key).MemberRange();
+  }
 };
 
 inline const JsonValue* JsonValue::Dereference() const {
@@ -299,6 +361,10 @@ static_assert(sizeof(JsonCppLoaderParsedValue) == 0x10);
 static_assert(offsetof(JsonValue, smallValue) == 0x02);
 static_assert(offsetof(JsonValue, pointer) == 0x04);
 static_assert(offsetof(JsonValue, integer) == 0x08);
+static_assert(sizeof(JsonMember) == 0x28);
+static_assert(sizeof(JsonObjectIterator) == 0x08);
+static_assert(sizeof(JsonObjectRange) == 0x10);
+static_assert(sizeof(JsonProxy) == 0x0C);
 static_assert(offsetof(JsonCppLoader, document) == 0x08);
 static_assert(offsetof(JsonCppLoader, error) == 0x18);
 static_assert(offsetof(JsonCppLoader, loaded) == 0x30);
