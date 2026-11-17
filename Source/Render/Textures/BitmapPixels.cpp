@@ -304,12 +304,12 @@ void BitmapPixels::CopyRegion(
   this->dirty = true;
 
   for (int sourceY = sourceTop, destinationY = y; sourceY < sourceBottom; ++sourceY, ++destinationY) {
-    if (sourceY < 0 || sourceY >= sourceHeight || destinationY < 0 || static_cast<unsigned>(destinationY) >= this->height) {
+    if (sourceY < 0 || sourceHeight <= sourceY || destinationY < 0 || this->height <= static_cast<unsigned>(destinationY)) {
       continue;
     }
 
     for (int sourceX = sourceLeft, destinationX = x; sourceX < sourceRight; ++sourceX, ++destinationX) {
-      if (sourceX < 0 || sourceX >= sourceWidth || destinationX < 0 || static_cast<unsigned>(destinationX) >= this->width) {
+      if (sourceX < 0 || sourceWidth <= sourceX || destinationX < 0 || this->width <= static_cast<unsigned>(destinationX)) {
         continue;
       }
 
