@@ -20,6 +20,10 @@
 #include <new>
 #include <vector>
 
+template __declspec(noinline) std::map<int, EnchantPerfectInfo>::iterator std::map<int, EnchantPerfectInfo>::_Mybase::find(const int&);
+template __declspec(noinline) std::map<int, std::map<int, EnchantPerfectInfo>>::iterator std::map<int, std::map<int, EnchantPerfectInfo>>::_Mybase::find(
+    const int&);
+
 // GLOBAL: gl_24882
 template <>
 CEnchantMgr* Singleton<CEnchantMgr>::s_instance = nullptr;
@@ -57,7 +61,7 @@ template void CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemDat
 template void CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>::OnScroll(int);
 template void CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::ClearItems();
 template void CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>::ClearItems();
-template int CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::AddData(const EnchantUI::CEnchantItemData&, bool);
+template __declspec(noinline) int CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::AddData(const EnchantUI::CEnchantItemData&, bool);
 template void CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::ClearData();
 template void CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CEnchantItemData>::UpdateScrollBar();
 
@@ -1385,9 +1389,10 @@ void CUIUpgradePerfect::OnSelectEnchant(CUIEnchantItem* item, const CEnchantItem
     const int baseItemId = std::atoi(this->slots[this->selectedSlot]->itemIcon->GetItemInfo()->itemId.c_str());
     auto base = (*option)->perfectUpgrades.find(baseItemId);
     if (base != (*option)->perfectUpgrades.end()) {
+      auto& enchants = base->second;
       const int itemId = std::atoi(item->itemIcon->GetItemInfo()->itemId.c_str());
-      auto it = base->second.find(itemId);
-      if (it != base->second.end()) {
+      auto it = enchants.find(itemId);
+      if (it != enchants.end()) {
         this->SetCost(it->second);
       }
     }
@@ -1518,12 +1523,13 @@ bool CUINormalRandom::LoadEnchantList() {
   }
 
   this->SetSlot(slot);
-  if ((*option)->enchants.size() == 0) {
+  auto& enchants = (*option)->enchants;
+  if (enchants.size() == 0) {
     return false;
   }
 
-  auto grade = (*option)->enchants.find(this->gameItem->GetItemInfo()->grade);
-  if (grade == (*option)->enchants.end()) {
+  auto grade = enchants.find(this->gameItem->GetItemInfo()->grade);
+  if (grade == enchants.end()) {
     return false;
   }
 
@@ -1552,9 +1558,10 @@ bool CUIUpgradeRandom::LoadEnchantList() {
     return false;
   }
 
+  auto& upgrades = (*option)->randomUpgrades;
   const int baseItemId = std::atoi(this->slots[this->selectedSlot]->itemIcon->GetItemInfo()->itemId.c_str());
-  auto base = (*option)->randomUpgrades.find(baseItemId);
-  if (base == (*option)->randomUpgrades.end()) {
+  auto base = upgrades.find(baseItemId);
+  if (base == upgrades.end()) {
     return false;
   }
 
@@ -1584,7 +1591,7 @@ bool CUIUpgradePerfect::LoadEnchantList() {
   }
 
   this->isUpgrade = (*option)->isUpgrade;
-  const auto& upgrades = (*option)->perfectUpgrades;
+  auto& upgrades = (*option)->perfectUpgrades;
   if (upgrades.size() == 0) {
     return false;
   }
