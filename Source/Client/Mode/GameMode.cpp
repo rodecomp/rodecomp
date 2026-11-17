@@ -140,6 +140,7 @@ struct GameModeReplayPacket {
 #pragma pack(pop)
 
 template __declspec(noinline) std::vector<char>::vector(const std::size_t, const char&, const std::allocator<char>&);
+template __declspec(noinline) std::string& std::string::operator=(std::string&&) noexcept;
 
 namespace {
 struct RodexSendMailRequest {
@@ -1426,9 +1427,9 @@ unsigned CGameMode::ReadReplayGroundSkills(const std::vector<unsigned char>& dat
   }
 
   GameModeChunkHeader header;
-  unsigned offset = 6;
   header.Clear();
   header = *reinterpret_cast<const GameModeChunkHeader*>(data.data());
+  unsigned offset = 6;
   if (17000 != header.type) {
     offset = 0xFFFFFFFFu;
   } else {
@@ -6429,10 +6430,10 @@ unsigned CGameMode::ReadReplayGuildInfo(const std::vector<unsigned char>& data) 
 
   GameModeChunkHeader header;
   std::vector<unsigned char> record;
-  unsigned offset = 6;
   std::uint32_t guildId = 0;
   header.Clear();
   header = *reinterpret_cast<const GameModeChunkHeader*>(data.data());
+  unsigned offset = 6;
   if (13000 != header.type) {
     offset = 0xFFFFFFFFu;
   } else {
@@ -8698,8 +8699,8 @@ void CGameMode::ReceiveSkillUpdate(
   skill.upgradable = upgradable;
   skill.range = range;
   skill.type = type;
-  skill.learnedLevel = learnedLevel;
   skill.id = id;
+  skill.learnedLevel = learnedLevel;
 
   if (g_session.IsHomunculusSkill(id)) {
     g_session.UpdateHomunSkill(skill, 1);
