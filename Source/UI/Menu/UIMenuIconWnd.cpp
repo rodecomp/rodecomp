@@ -493,12 +493,5 @@ int UIMenuIconWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
     this->SendMsg(nullptr, UM_COMMAND, g_session.m_showMenuIcon == true ? ID_CLOSE : MENUICON_OPEN, 0, 0, 0);
   }
 
-  if (message == UM_COMMAND && argument1 == MENUICON_BATTLE && !Replay::Instance().AllowsEvent(argument1) && g_entryQueueMgr) {
-    if (reinterpret_cast<const unsigned char*>(g_entryQueueMgr)[0x3C] == 1) {
-      g_entryQueueMgr->SendRankingRequest();
-    }
-    this->ToggleWindow(WID_JOINTO_BATTLEFIELDWND);
-  }
-
   return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
 }
