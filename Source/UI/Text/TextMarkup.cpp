@@ -78,13 +78,16 @@ void UITextViewer::ExtractUrlTextLinks(const std::string& text, std::vector<Text
 // OFFSET: 0x00A81A70
 // FUNCTION: fn_16980
 bool UIWindow::HasTextLinks(const std::string& text) {
-  const bool hasUrl = text.find(g_urlTagBegin) != std::string::npos;
+  const auto urlPosition = text.find(g_urlTagBegin);
   if (text.find(g_itemTagBegin) != std::string::npos || text.find(g_tipBoxTagBegin) != std::string::npos) {
     return true;
   }
 
-  bool hasLink = hasUrl;
-  hasLink |= text.find(g_naviTagBegin) != std::string::npos;
+  bool hasLink = urlPosition != std::string::npos;
+  if (text.find(g_naviTagBegin) != std::string::npos) {
+    hasLink = true;
+  }
+
   return text.find(g_itemLinkTagOpen) != std::string::npos || text.find(g_questTagBegin) != std::string::npos || hasLink;
 }
 
