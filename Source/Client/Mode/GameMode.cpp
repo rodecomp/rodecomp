@@ -7934,7 +7934,7 @@ void CGameMode::InitializeState() {
   bounds.right = g_renderer->viewport.width;
   bounds.bottom = g_renderer->viewport.height;
   g_actorPickNode.MakeQuardTree(1, bounds);
-  g_pathFinder.attr = this->scene->terrain;
+  g_pathFinder.SetAttr(this->scene->terrain);
   g_navigationManager.UpdateGround();
   g_overrideColor = 0;
 
@@ -7965,7 +7965,7 @@ void CGameMode::InitializeState() {
   this->waitingUseItemAck = 0;
   this->waitingItemThrowAck = 0;
   this->waitingReqStatusAck = 0;
-  this->drag.Clear();
+  this->ClearDrag();
   this->lastNaid = 0;
   this->menuTargetAid = 0;
   this->lastPcGid = 0;
@@ -8061,10 +8061,7 @@ void CGameMode::InitializeState() {
     g_session.SetOption(5, 1);
   }
 
-  SendGameTick(
-    true, this->syncAcknowledged, this->syncRequestTick, g_gameTickInterval,
-    GetRagConnection(), g_packetLengths, g_pingLogEnabled, g_pingLogFirstTick, g_pingLogTicks
-  );
+  this->SendSyncRequest(true);
   g_weatherEffect.ResetEffect();
   g_weatherEffect.ApplyMapWeather(this->mapName);
   if (std::strcmp(this->mapName, "xmas_fild01.rsw") == 0 || std::strcmp(this->mapName, "xmas.rsw") == 0) {
