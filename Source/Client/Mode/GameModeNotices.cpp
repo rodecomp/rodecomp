@@ -7823,5 +7823,5 @@ void CGameMode::ReceiveStoreResult(unsigned char kind, unsigned char result) {
     return;
   }
 
-  g_windowMgr.CloseWindow(WID_WAITDBSAVEWND);
+  g_windowMgr.CloseWaitDBSaveWindow();
 }

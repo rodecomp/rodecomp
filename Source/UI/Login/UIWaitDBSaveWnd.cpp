@@ -126,7 +126,7 @@ void UIWaitDBSaveWnd::OnMouseMove(int, int) {
 void UIWaitDBSaveWnd::OnProcess() {
   if (this->m_closeTime != 0 && timeGetTime() >= this->m_closeTime) {
     this->m_closeTime = 0;
-    g_windowMgr.CloseWindow(WID_WAITDBSAVEWND);
+    g_windowMgr.CloseWaitDBSaveWindow();
     return;
   }
 

@@ -17,6 +17,7 @@ struct BroadcastBalloonLine {
 };
 
 struct BroadcastBalloonMessage {
+  // OFFSET: 0x00D040D0
   BroadcastBalloonMessage() : start(), duration(20), fontHeight(12), backgroundColor(0x40000000), width(0), height(0) {
     this->start = std::chrono::system_clock::now();
   }
