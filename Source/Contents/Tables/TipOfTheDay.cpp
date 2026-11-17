@@ -71,11 +71,11 @@ int CTipOfTheDay::Load() {
   for (int i = 0; i < fileSize; ++i) {
     if (fileBuf[i] == 10) {
       fileBuf[i] = 0;
-      tmpList.push_back(baseBuf);
+      AppendLine(tmpList, baseBuf);
       baseBuf = fileBuf + i + 1;
     } else if (fileBuf[i] == '#') {
       fileBuf[i] = 0;
-      tmpList.push_back(baseBuf);
+      AppendLine(tmpList, baseBuf);
       this->m_tipList.push_back(tmpList);
       tmpList.clear();
       baseBuf = fileBuf + i + 1;
