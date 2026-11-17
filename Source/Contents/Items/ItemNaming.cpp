@@ -794,9 +794,9 @@ int ITEM_INFO::Element(char* output, int& capacity, unsigned char consume) const
   case ELE_NEUTRAL: {
     const int id = std::atoi(this->itemId.c_str());
     if (id == 2634 || id == 2635) {
-      return CopyText(output, capacity, consume, LookupMessage(2976));
+      return CopyText(output, capacity, consume, LookupMessage(MSI_MANUFACTURED_MARRIAGERING_ITEM));
     }
-    return CopyText(output, capacity, consume, LookupMessage(450));
+    return CopyText(output, capacity, consume, LookupMessage(MSI_MANUFACTURED_NORMAL_ITEM));
   }
   case ELE_WATER:
     return CopyText(output, capacity, consume, LookupMessage(MSI_MANUFACTURED_ICE_ITEM));

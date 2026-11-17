@@ -94,9 +94,9 @@ void UIMakeTargetResultWnd::Paint() {
 
   const int secondWidth = this->DrawFittedItemName(0x10, 0x2A, &item, 0, 0, 0xC, 0);
   if (this->succeeded == 1) {
-    this->DrawShadowedText(secondWidth + 0x10, 0x2A, LookupMessage(0x1AF), 0, 0, 0xFFFFFF, 0, 0xC, 0);
+    this->DrawShadowedText(secondWidth + 0x10, 0x2A, LookupMessage(MSI_MAKE_TARGET_SUCCEESS_MSG), 0, 0, 0xFFFFFF, 0, 0xC, 0);
   } else {
-    this->DrawShadowedText(secondWidth + 0x10, 0x2A, LookupMessage(0x1AE), 0, 0, 0xFFFFFF, 0, 0xC, 0);
+    this->DrawShadowedText(secondWidth + 0x10, 0x2A, LookupMessage(MSI_MAKE_TARGET_FAIL_MSG), 0, 0, 0xFFFFFF, 0, 0xC, 0);
   }
 }
 

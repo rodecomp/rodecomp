@@ -1655,7 +1655,7 @@ void CUIQuest::SearchNavigation() {
   g_navigationManager.selectedPathNode = 0;
   if (!g_navigationManager.SelectNodeState()) {
     this->RequestNavigation();
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(4241)), 0, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANNOT_MOVE_INDOOR_MAP)), 0, 0, 0, 0);
     return;
   }
 

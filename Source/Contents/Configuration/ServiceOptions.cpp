@@ -1006,7 +1006,7 @@ void ApplyServiceOptionAskOnDisable(int id, bool value, bool notify, int enabled
   }
 
   if (!value &&
-      g_windowMgr.Confirm(LookupMessage(0x1104), 2, true, false, 0, "Message", 0x118, 0x78, 0) == 0xBC) {
+      g_windowMgr.Confirm(LookupMessage(MSI_PETINFO_ALERT), 2, true, false, 0, "Message", 0x118, 0x78, 0) == 0xBC) {
     g_serviceOptions.Set(0x128, 1);
     g_windowMgr.RefreshGameSettingOption(0x128);
     return;

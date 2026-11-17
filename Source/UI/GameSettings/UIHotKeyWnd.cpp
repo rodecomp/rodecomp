@@ -585,9 +585,9 @@ bool UIHotKeyWnd::AssignSelectedHotkey(int mode) {
   }
 
   if (mode == 2) {
-    this->m_balloon->SetText(LookupMessage(0x5CF), 0x3C);
+    this->m_balloon->SetText(LookupMessage(MSI_HOTKEYWND_NOTICE2), 0x3C);
   } else if (mode == 3) {
-    this->m_balloon->SetText(LookupMessage(0x5D0), 0x3C);
+    this->m_balloon->SetText(LookupMessage(MSI_HOTKEYWND_NOTICE3), 0x3C);
   }
   {
     UIBalloonText* balloon = this->m_balloon;

@@ -1,5 +1,6 @@
 #include "Contents/Actors/ActorEnums.h"
 #include "Contents/Effects/Core/EffectTypes.h"
+#include "Resource/MSGSTRINGID.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Session/Session.h"
 #include "Client/Mode/ModeMgr.h"
@@ -715,13 +716,13 @@ void CSkillAction_AT_PULSE_OF_MADNESS::OnSkillEffect(int level, CGameActor* sour
 // OFFSET: 0x005A6C00
 // FUNCTION: fn_03193
 EfstActionMessage CEfstAction_PULSE_OF_MADNESS::GetEfstBeginMessage() {
-  return {LookupMessage(4668), 0xFFFF00};
+  return {LookupMessage(MSI_AT_PULSE_OF_MADNESS_ON), 0xFFFF00};
 }
 
 // OFFSET: 0x005A6C30
 // FUNCTION: fn_03194
 EfstActionMessage CEfstAction_PULSE_OF_MADNESS::GetEfstEndMessage() {
-  return {LookupMessage(4669), 0xFF};
+  return {LookupMessage(MSI_AT_PULSE_OF_MADNESS_OFF), 0xFF};
 }
 
 // OFFSET: 0x005A6C60
@@ -890,13 +891,13 @@ void CSkillAction_AT_NATURE_HARMONY::OnSkillEffect(int level, CGameActor* source
 // OFFSET: 0x005A79B0
 // FUNCTION: fn_03211
 EfstActionMessage CEfstAction_NATURE_HARMONY::GetEfstBeginMessage() {
-  return {LookupMessage(4684), 0xFFFF00};
+  return {LookupMessage(MSI_AT_NATURE_HARMONY_ON), 0xFFFF00};
 }
 
 // OFFSET: 0x005A79E0
 // FUNCTION: fn_03212
 EfstActionMessage CEfstAction_NATURE_HARMONY::GetEfstEndMessage() {
-  return {LookupMessage(4685), 0xFF};
+  return {LookupMessage(MSI_AT_NATURE_HARMONY_OFF), 0xFF};
 }
 
 // OFFSET: 0x005A7A10
@@ -1217,13 +1218,13 @@ void CSkillAction_AT_ALPHA_PHASE::OnSkillEffect(int level, CGameActor* source, C
 // OFFSET: 0x005AB840
 // FUNCTION: fn_03244
 EfstActionMessage CEfstAction_ALPHA_PHASE::GetEfstBeginMessage() {
-  return {LookupMessage(4670), 0xFFFF00};
+  return {LookupMessage(MSI_AT_ALPHA_PHASE_ON), 0xFFFF00};
 }
 
 // OFFSET: 0x005AB870
 // FUNCTION: fn_03245
 EfstActionMessage CEfstAction_ALPHA_PHASE::GetEfstEndMessage() {
-  return {LookupMessage(4671), 0xFF};
+  return {LookupMessage(MSI_AT_ALPHA_PHASE_OFF), 0xFF};
 }
 
 // OFFSET: 0x005AB8A0
@@ -1244,13 +1245,13 @@ void CSkillAction_AT_APEX_PHASE::OnSkillEffect(int level, CGameActor* source, CG
 // OFFSET: 0x005ABAB0
 // FUNCTION: fn_03248
 EfstActionMessage CEfstAction_AT_APEX_PHASE::GetEfstBeginMessage() {
-  return {LookupMessage(4682), 0xFFFF00};
+  return {LookupMessage(MSI_AT_APEX_PHASE_ON), 0xFFFF00};
 }
 
 // OFFSET: 0x005ABAE0
 // FUNCTION: fn_03249
 EfstActionMessage CEfstAction_AT_APEX_PHASE::GetEfstEndMessage() {
-  return {LookupMessage(4683), 0xFF};
+  return {LookupMessage(MSI_AT_APEX_PHASE_OFF), 0xFF};
 }
 
 // OFFSET: 0x005ABB10
@@ -1271,13 +1272,13 @@ void CSkillAction_AT_FLIP_FLAP::OnSkillEffect(int level, CGameActor* source, CGa
 // OFFSET: 0x005ABD20
 // FUNCTION: fn_03252
 EfstActionMessage CEfstAction_FLIP_FLAP::GetEfstBeginMessage() {
-  return {LookupMessage(4678), 0xFFFF00};
+  return {LookupMessage(MSI_AT_FLIP_FLAP_ON), 0xFFFF00};
 }
 
 // OFFSET: 0x005ABD50
 // FUNCTION: fn_03253
 EfstActionMessage CEfstAction_FLIP_FLAP::GetEfstEndMessage() {
-  return {LookupMessage(4679), 0xFF};
+  return {LookupMessage(MSI_AT_FLIP_FLAP_OFF), 0xFF};
 }
 
 // OFFSET: 0x005ABD80
@@ -1308,13 +1309,13 @@ void CSkillAction_AT_AERO_SYNC::OnSkillEffect(int level, CGameActor* source, CGa
 // OFFSET: 0x005AC300
 // FUNCTION: fn_03257
 EfstActionMessage CEfstAction_FLIP_FLAP_TARGET::GetEfstBeginMessage() {
-  return {LookupMessage(4680), 0xFFFF00};
+  return {LookupMessage(MSI_FLIP_FLAP_TAGET_ON), 0xFFFF00};
 }
 
 // OFFSET: 0x005AC330
 // FUNCTION: fn_03258
 EfstActionMessage CEfstAction_FLIP_FLAP_TARGET::GetEfstEndMessage() {
-  return {LookupMessage(4681), 0xFF};
+  return {LookupMessage(MSI_FLIP_FLAP_TAGET_OFF), 0xFF};
 }
 
 // OFFSET: 0x005AC360
@@ -1405,13 +1406,13 @@ void CSkillAction_AT_SOLID_STOMP::OnSkillEffect(int level, CGameActor* source, C
 // OFFSET: 0x005ADD10
 // FUNCTION: fn_03271
 EfstActionMessage CEfstAction_SOLID_STOMP::GetEfstBeginMessage() {
-  return {LookupMessage(4686), 0xFFFF00};
+  return {LookupMessage(MSI_AT_SOLID_STOMP_ON), 0xFFFF00};
 }
 
 // OFFSET: 0x005ADD40
 // FUNCTION: fn_03272
 EfstActionMessage CEfstAction_SOLID_STOMP::GetEfstEndMessage() {
-  return {LookupMessage(4687), 0xFF};
+  return {LookupMessage(MSI_AT_SOLID_STOMP_OFF), 0xFF};
 }
 
 // OFFSET: 0x005ADD70

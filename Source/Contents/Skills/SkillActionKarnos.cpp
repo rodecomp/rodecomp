@@ -1,6 +1,7 @@
 #include "Client/Mode/CGameMode.h"
 #include "Contents/Effects/Core/EffectTypes.h"
 #include "Contents/Actors/ActorEnums.h"
+#include "Resource/MSGSTRINGID.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/GameActor.h"
 #include "Contents/Camera/Camera.h"
@@ -728,13 +729,13 @@ void CSkillAction_KR_IRON_HOWLING::OnSkillCast(int level, CGameActor* source) {
 // OFFSET: 0x005B51F0
 // FUNCTION: fn_03385
 EfstActionMessage CEfstAction_IRON_HOWLING::GetEfstBeginMessage() {
-  return {LookupMessage(4662), 0xFFFF00};
+  return {LookupMessage(MSI_KR_IRON_HOWLING_ON), 0xFFFF00};
 }
 
 // OFFSET: 0x005B5220
 // FUNCTION: fn_03386
 EfstActionMessage CEfstAction_IRON_HOWLING::GetEfstEndMessage() {
-  return {LookupMessage(4663), 0xFF};
+  return {LookupMessage(MSI_KR_IRON_HOWLING_OFF), 0xFF};
 }
 
 // OFFSET: 0x005B5250
@@ -796,13 +797,13 @@ void CSkillAction_KR_WIND_VEIL::OnSkillCast(int level, CGameActor* source) {
 // OFFSET: 0x005B58F0
 // FUNCTION: fn_03394
 EfstActionMessage CEfstAction_WIND_VEIL::GetEfstBeginMessage() {
-  return {LookupMessage(4664), 0xFFFF00};
+  return {LookupMessage(MSI_KR_WIND_VEIL_ON), 0xFFFF00};
 }
 
 // OFFSET: 0x005B5920
 // FUNCTION: fn_03395
 EfstActionMessage CEfstAction_WIND_VEIL::GetEfstEndMessage() {
-  return {LookupMessage(4665), 0xFF};
+  return {LookupMessage(MSI_KR_WIND_VEIL_OFF), 0xFF};
 }
 
 // OFFSET: 0x005B5950

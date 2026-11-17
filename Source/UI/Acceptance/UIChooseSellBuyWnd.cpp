@@ -4171,7 +4171,7 @@ void UISkillDescribeWnd::OnCreate(int width, int height) {
   this->m_delayButton->SetSize(this->m_delayButton->BitmapWidth(), this->m_delayButton->BitmapHeight());
   this->m_delayButton->Move(this->geometry.width - this->m_delayButton->BitmapWidth() - 4, 18);
   this->m_delayButton->SetId(ID_HELP);
-  this->m_delayButton->SetTooltip(LookupMessage(4254));
+  this->m_delayButton->SetTooltip(LookupMessage(MSI_SKILL_DELAY_INFO));
   this->m_delayButton->Enable(0);
   this->AddChild(this->m_delayButton);
   this->AddCloseButton("", 0);

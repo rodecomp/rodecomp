@@ -1310,7 +1310,7 @@ void CLoginMode::ReceiveLoginErrorDetail(const LoginErrorDetailPacket* packet) {
     return;
   }
   case 1200:
-    message = LookupMessage(4355);
+    message = LookupMessage(MSI_RESULT_FAIL_CANNOT_LOGIN);
     break;
   default:
     message = LookupMessage(MSI_RESULT_FAIL_UNKNOWN);

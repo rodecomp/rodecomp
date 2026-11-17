@@ -1518,7 +1518,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       this->buttons[0]->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_01_disable.bmp", 1, 0);
       this->buttons[0]->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_01_disable.bmp", 2, 0);
       this->buttons[0]->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_01_disable.bmp", 3, 0);
-      this->buttons[0]->SetTooltip(LookupMessage(0x62));
+      this->buttons[0]->SetTooltip(LookupMessage(MSI_MSG));
     } else {
       {
         UIBitmapButton* button = this->buttons[0];
@@ -1528,7 +1528,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       this->buttons[0]->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_partymaster_01.bmp", 0, 0);
       this->buttons[0]->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_partymaster_01_a.bmp", 1, 0);
       this->buttons[0]->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_partymaster_01_b.bmp", 2, 0);
-      this->buttons[0]->SetTooltip(LookupMessage(0xDBA));
+      this->buttons[0]->SetTooltip(LookupMessage(MSI_ADVENTURER_AGENCY));
     }
     this->LayoutButtons();
     return 0;

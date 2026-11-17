@@ -1,5 +1,6 @@
 #include "Contents/Actors/ActorEnums.h"
 #include "Contents/Effects/Core/EffectTypes.h"
+#include "Resource/MSGSTRINGID.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/GameActor.h"
@@ -352,13 +353,13 @@ void CSkillAction_DR_WERERAPTOR::OnSkillEffect(int level, CGameActor* source, CG
 // OFFSET: 0x00620190
 // FUNCTION: fn_04460
 EfstActionMessage CEfstAction_WERERAPTOR::GetEfstBeginMessage() {
-  return {LookupMessage(4648), 0xFFFF00};
+  return {LookupMessage(MSI_DR_WERERAPTOR_ON), 0xFFFF00};
 }
 
 // OFFSET: 0x006201C0
 // FUNCTION: fn_04461
 EfstActionMessage CEfstAction_WERERAPTOR::GetEfstEndMessage() {
-  return {LookupMessage(4649), 0xFF};
+  return {LookupMessage(MSI_DR_WERERAPTOR_OFF), 0xFF};
 }
 
 // OFFSET: 0x00620220
@@ -384,13 +385,13 @@ void CSkillAction_DR_ENRAGE_WOLF::OnSkillCast(int level, CGameActor* source) {
 // OFFSET: 0x00620480
 // FUNCTION: fn_04467
 EfstActionMessage CEfstAction_ENRAGE_WOLF::GetEfstBeginMessage() {
-  return {LookupMessage(4644), 0xFFFF00};
+  return {LookupMessage(MSI_DR_ENRAGE_WOLF_ON), 0xFFFF00};
 }
 
 // OFFSET: 0x006204B0
 // FUNCTION: fn_04468
 EfstActionMessage CEfstAction_ENRAGE_WOLF::GetEfstEndMessage() {
-  return {LookupMessage(4645), 0xFF};
+  return {LookupMessage(MSI_DR_ENRAGE_WOLF_OFF), 0xFF};
 }
 
 // OFFSET: 0x006204E0
@@ -416,13 +417,13 @@ void CSkillAction_DR_BLOOD_HOWLING::OnSkillCast(int level, CGameActor* source) {
 // OFFSET: 0x00620740
 // FUNCTION: fn_04473
 EfstActionMessage CEfstAction_BLOOD_HOWLING::GetEfstBeginMessage() {
-  return {LookupMessage(4646), 0xFFFF00};
+  return {LookupMessage(MSI_DR_BLOOD_HOWLING_ON), 0xFFFF00};
 }
 
 // OFFSET: 0x00620770
 // FUNCTION: fn_04474
 EfstActionMessage CEfstAction_BLOOD_HOWLING::GetEfstEndMessage() {
-  return {LookupMessage(4647), 0xFF};
+  return {LookupMessage(MSI_DR_BLOOD_HOWLING_OFF), 0xFF};
 }
 
 // OFFSET: 0x006207A0
@@ -488,13 +489,13 @@ void CSkillAction_DR_ENRAGE_RAPTOR::OnSkillCast(int level, CGameActor* source) {
 // OFFSET: 0x006212C0
 // FUNCTION: fn_04486
 EfstActionMessage CEfstAction_ENRAGE_RAPTOR::GetEfstBeginMessage() {
-  return {LookupMessage(4650), 0xFFFF00};
+  return {LookupMessage(MSI_DR_ENRAGE_RAPTOR_ON), 0xFFFF00};
 }
 
 // OFFSET: 0x006212F0
 // FUNCTION: fn_04487
 EfstActionMessage CEfstAction_ENRAGE_RAPTOR::GetEfstEndMessage() {
-  return {LookupMessage(4651), 0xFF};
+  return {LookupMessage(MSI_DR_ENRAGE_RAPTOR_OFF), 0xFF};
 }
 
 // OFFSET: 0x00621320
@@ -520,13 +521,13 @@ void CSkillAction_DR_PREENING::OnSkillCast(int level, CGameActor* source) {
 // OFFSET: 0x00621570
 // FUNCTION: fn_04492
 EfstActionMessage CEfstAction_PREENING::GetEfstBeginMessage() {
-  return {LookupMessage(4652), 0xFFFF00};
+  return {LookupMessage(MSI_DR_PREENING_ON), 0xFFFF00};
 }
 
 // OFFSET: 0x006215A0
 // FUNCTION: fn_04493
 EfstActionMessage CEfstAction_PREENING::GetEfstEndMessage() {
-  return {LookupMessage(4653), 0xFF};
+  return {LookupMessage(MSI_DR_PREENING_OFF), 0xFF};
 }
 
 // OFFSET: 0x006215D0
@@ -639,13 +640,13 @@ void CSkillAction_DR_NATURE_SHIELD::OnSkillEffect(int level, CGameActor* source,
 // OFFSET: 0x00622440
 // FUNCTION: fn_04505
 EfstActionMessage CEfstAction_NATURE_SHIELD::GetEfstBeginMessage() {
-  return {LookupMessage(4660), 0xFFFF00};
+  return {LookupMessage(MSI_DR_NATURE_SHIELD_ON), 0xFFFF00};
 }
 
 // OFFSET: 0x00622470
 // FUNCTION: fn_04506
 EfstActionMessage CEfstAction_NATURE_SHIELD::GetEfstEndMessage() {
-  return {LookupMessage(4661), 0xFF};
+  return {LookupMessage(MSI_DR_NATURE_SHIELD_OFF), 0xFF};
 }
 
 // OFFSET: 0x006224A0
@@ -676,13 +677,13 @@ int CEfstAction_GROUND_GROW::GetEffectId(int efstId, int argument4) {
 // OFFSET: 0x00622920
 // FUNCTION: fn_04509
 EfstActionMessage CEfstAction_NATURE_PROTECTION::GetEfstBeginMessage() {
-  return {LookupMessage(4666), 0xFFFF00};
+  return {LookupMessage(MSI_KR_NATURE_PROTECTION_ON), 0xFFFF00};
 }
 
 // OFFSET: 0x00622950
 // FUNCTION: fn_04510
 EfstActionMessage CEfstAction_NATURE_PROTECTION::GetEfstEndMessage() {
-  return {LookupMessage(4667), 0xFF};
+  return {LookupMessage(MSI_KR_NATURE_PROTECTION_OFF), 0xFF};
 }
 
 // OFFSET: 0x00622980
@@ -733,13 +734,13 @@ int CEfstAction_THUNDERING_ROD::GetEffectId(int efstId, int argument4) {
 // OFFSET: 0x00622DD0
 // FUNCTION: fn_04516
 EfstActionMessage CEfstAction_THUNDERING_ROD_MAX::GetEfstBeginMessage() {
-  return {LookupMessage(4688), 0xFFFF00};
+  return {LookupMessage(MSI_THUNDERING_ROD_MAX_ON), 0xFFFF00};
 }
 
 // OFFSET: 0x00622E00
 // FUNCTION: fn_04517
 EfstActionMessage CEfstAction_THUNDERING_ROD_MAX::GetEfstEndMessage() {
-  return {LookupMessage(4689), 0xFF};
+  return {LookupMessage(MSI_THUNDERING_ROD_MAX_OFF), 0xFF};
 }
 
 // OFFSET: 0x00622E30
@@ -785,13 +786,13 @@ void CSkillAction_DR_TRUTH_OF_EARTH::OnSkillEffect(int level, CGameActor* source
 // OFFSET: 0x006233D0
 // FUNCTION: fn_04523
 EfstActionMessage CEfstAction_TRUTH_OF_EARTH::GetEfstBeginMessage() {
-  return {LookupMessage(4654), 0xFFFF00};
+  return {LookupMessage(MSI_DR_TRUTH_OF_EARTH_ON), 0xFFFF00};
 }
 
 // OFFSET: 0x00623400
 // FUNCTION: fn_04524
 EfstActionMessage CEfstAction_TRUTH_OF_EARTH::GetEfstEndMessage() {
-  return {LookupMessage(4655), 0xFF};
+  return {LookupMessage(MSI_DR_TRUTH_OF_EARTH_OFF), 0xFF};
 }
 
 // OFFSET: 0x00623430
@@ -831,13 +832,13 @@ void CSkillAction_DR_TRUTH_OF_ICE::OnSkillEffect(int level, CGameActor* source, 
 // OFFSET: 0x00623820
 // FUNCTION: fn_04529
 EfstActionMessage CEfstAction_TRUTH_OF_ICE::GetEfstBeginMessage() {
-  return {LookupMessage(4658), 0xFFFF00};
+  return {LookupMessage(MSI_DR_TRUTH_OF_ICE_ON), 0xFFFF00};
 }
 
 // OFFSET: 0x00623850
 // FUNCTION: fn_04530
 EfstActionMessage CEfstAction_TRUTH_OF_ICE::GetEfstEndMessage() {
-  return {LookupMessage(4659), 0xFF};
+  return {LookupMessage(MSI_DR_TRUTH_OF_ICE_OFF), 0xFF};
 }
 
 // OFFSET: 0x00623880
@@ -877,13 +878,13 @@ void CSkillAction_DR_TRUTH_OF_WIND::OnSkillEffect(int level, CGameActor* source,
 // OFFSET: 0x00623C70
 // FUNCTION: fn_04535
 EfstActionMessage CEfstAction_TRUTH_OF_WIND::GetEfstBeginMessage() {
-  return {LookupMessage(4656), 0xFFFF00};
+  return {LookupMessage(MSI_DR_TRUTH_OF_WIND_ON), 0xFFFF00};
 }
 
 // OFFSET: 0x00623CA0
 // FUNCTION: fn_04536
 EfstActionMessage CEfstAction_TRUTH_OF_WIND::GetEfstEndMessage() {
-  return {LookupMessage(4657), 0xFF};
+  return {LookupMessage(MSI_DR_TRUTH_OF_WIND_OFF), 0xFF};
 }
 
 // OFFSET: 0x00623CD0
@@ -1052,13 +1053,13 @@ void CSkillAction_DR_WEREWOLF::OnSkillEffect(int level, CGameActor* source, CGam
 // OFFSET: 0x006253A0
 // FUNCTION: fn_04553
 EfstActionMessage CEfstAction_WEREWOLF::GetEfstBeginMessage() {
-  return {LookupMessage(4642), 0xFFFF00};
+  return {LookupMessage(MSI_DR_WEREWOLF_ON), 0xFFFF00};
 }
 
 // OFFSET: 0x006253D0
 // FUNCTION: fn_04554
 EfstActionMessage CEfstAction_WEREWOLF::GetEfstEndMessage() {
-  return {LookupMessage(4643), 0xFF};
+  return {LookupMessage(MSI_DR_WEREWOLF_OFF), 0xFF};
 }
 
 // OFFSET: 0x00620270

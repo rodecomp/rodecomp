@@ -2290,7 +2290,7 @@ __declspec(noinline) void CGameMode::ReceiveDebuffRemovalResult(const unsigned c
   switch (p->result - 1) {
   case 0: {
     window->Show(0);
-    const char* text = LookupMessage(0x10E8);
+    const char* text = LookupMessage(MSI_PENALTY_DEBUFF_REMOVE_NPC_ON);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
     return;
   }
@@ -7681,13 +7681,13 @@ void CGameMode::ReceiveResultNotice4327(const unsigned char* packet) {
   std::string text;
   switch (p->result) {
   case 0:
-    text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(4327)));
+    text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_PENALTY_MAKE_PARTY)));
     break;
   case 1:
-    text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(4327)));
+    text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_PENALTY_MAKE_PARTY)));
     break;
   case 2:
-    text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(4327)));
+    text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_PENALTY_MAKE_PARTY)));
     break;
   }
 
@@ -10283,16 +10283,16 @@ void CGameMode::ReceiveEquipItemDamaged(const unsigned char* packet) {
     if (member.valid) {
       switch (p->equipLocation) {
       case EQP_HAND_L:
-        text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_DAMAGED_EQUIP_PARTY), member.name.c_str(), LookupMessage(0x109A)));
+        text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_DAMAGED_EQUIP_PARTY), member.name.c_str(), LookupMessage(MSI_DAMAGED_LARM)));
         break;
       case EQP_HAND_R:
-        text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_DAMAGED_EQUIP_PARTY), member.name.c_str(), LookupMessage(0x109B)));
+        text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_DAMAGED_EQUIP_PARTY), member.name.c_str(), LookupMessage(MSI_DAMAGED_RARM)));
         break;
       case EQP_ARMOR:
         text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_DAMAGED_EQUIP_PARTY), member.name.c_str(), LookupMessage(MSI_DAMAGED_BODY)));
         break;
       case EQP_HEAD_TOP:
-        text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_DAMAGED_EQUIP_PARTY), member.name.c_str(), LookupMessage(0x10CB)));
+        text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_DAMAGED_EQUIP_PARTY), member.name.c_str(), LookupMessage(MSI_DAMAGED_HEAD)));
         break;
       }
     }
@@ -10591,7 +10591,7 @@ void CGameMode::ReceivePetChangeState(const unsigned char* data) {
     break;
   case 7:
     if (g_serviceOptions.Get(TT_PETINFO_ALERT_ONOFF) == 1) {
-      g_windowMgr.AddMessageBox(LookupMessage(0x10F8), 0, true, 0, 0, LookupMessage(MSI_TRANSLATE_MESSAGE), 0x118, 0x78, nullptr, false);
+      g_windowMgr.AddMessageBox(LookupMessage(MSI_PET_DISAPPEAR), 0, true, 0, 0, LookupMessage(MSI_TRANSLATE_MESSAGE), 0x118, 0x78, nullptr, false);
     }
     break;
   case CHANGESTATEPET_UPDATE_EGG:

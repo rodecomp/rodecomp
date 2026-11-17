@@ -440,19 +440,19 @@ void CGameMode::ReceiveFriendAddResult(const unsigned char* data) {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(buffer), 0xFF, 0, 0, 0);
       break;
     case 4:
-      std::sprintf(buffer, LookupMessage(2737), name);
+      std::sprintf(buffer, LookupMessage(MSI_FAILED_FRIEND_ADD__ALREADY_REQUEST), name);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(buffer), 0xFF, 0, 0, 0);
       break;
     case 6:
-      std::sprintf(buffer, LookupMessage(3448), name);
+      std::sprintf(buffer, LookupMessage(MSI_FRIEND_ALREADY_FRIEND), name);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(buffer), 0xFF, 0, 0, 0);
       break;
     case 7:
-      std::sprintf(buffer, LookupMessage(3449), name);
+      std::sprintf(buffer, LookupMessage(MSI_FRIEND_CAN_NOT_FIND), name);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(buffer), 0xFF, 0, 0, 0);
       break;
     case 8:
-      std::sprintf(buffer, LookupMessage(3450), name);
+      std::sprintf(buffer, LookupMessage(MSI_FRIEND_ALREADY_JOINING), name);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(buffer), 0xFF, 0, 0, 0);
       break;
   }

@@ -387,7 +387,7 @@ __declspec(noinline) void CNavigationManager::ShowRouteResult(int result, int mo
     message = LookupMessage(MSI_NAVIGATION_RS_HERE);
     break;
   case -90:
-    message = LookupMessage(4692);
+    message = LookupMessage(MSI_NAVIGATION_UNABLETOGUIDEMAP);
     break;
   default:
     message = "NoMsg.";

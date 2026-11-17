@@ -517,16 +517,16 @@ void CUISkillDelayInfo::SetSkill(int skillId) {
 
   this->description->Clear();
   if (static_cast<bool>(static_cast<unsigned int>(skillFlag) >> 12 & 1)) {
-    this->description->AddLine(LookupMessage(4329));
+    this->description->AddLine(LookupMessage(MSI_SKILL_DELAY_FLAG_DISABLE_FIXEDCASTING_REDUCTION));
   }
   if (static_cast<bool>(static_cast<unsigned int>(skillFlag) >> 2 & 1)) {
     if (!this->description->lines.empty()) {
       this->description->AddLine("\n");
     }
-    this->description->AddLine(LookupMessage(4330));
+    this->description->AddLine(LookupMessage(MSI_SKILL_DELAY_FLAG_NOREDUCT));
   }
   if (skillId == 2461) {
-    if (const char* message = LookupMessage(4335)) {
+    if (const char* message = LookupMessage(MSI_SKILL_DELAY_INFO_SO_EL_ACTION)) {
       this->description->AddLine(message);
     }
   }
@@ -566,14 +566,14 @@ void CUISkillDelayInfo::OnInit() {
   this->backgroundColor = g_skinInfo.PaletteColor(SkinPaletteCell{0, 2}, true);
   this->borderColor = g_skinInfo.PaletteColor(SkinPaletteCell{6, 2}, true);
 
-  this->titleBar->SetTitle(LookupMessage(4254));
-  this->columns[0]->SetText(LookupMessage(4255));
-  this->columns[1]->SetText(LookupMessage(4256));
-  this->columns[2]->SetText(LookupMessage(4257));
-  this->columns[3]->SetText(LookupMessage(4258));
-  this->labels[0]->SetText(LookupMessage(4303));
-  this->labels[1]->SetText(LookupMessage(4304));
-  this->labels[2]->SetText(LookupMessage(4305));
+  this->titleBar->SetTitle(LookupMessage(MSI_SKILL_DELAY_INFO));
+  this->columns[0]->SetText(LookupMessage(MSI_SKILL_DELAY_INFO_CAST_FIXED));
+  this->columns[1]->SetText(LookupMessage(MSI_SKILL_DELAY_INFO_CAST_STAT));
+  this->columns[2]->SetText(LookupMessage(MSI_SKILL_DELAY_INFO_GLOBAL_POST));
+  this->columns[3]->SetText(LookupMessage(MSI_SKILL_DELAY_INFO_SINGLE_POST));
+  this->labels[0]->SetText(LookupMessage(MSI_SKILL_DELAY_INFO_CASTING));
+  this->labels[1]->SetText(LookupMessage(MSI_SKILL_DELAY_INFO_COOLTIME));
+  this->labels[2]->SetText(LookupMessage(MSI_SKILL_DELAY_INFO_LEVEL));
 
   auto* list = this->delayList;
   list->layoutFlag = 1;
