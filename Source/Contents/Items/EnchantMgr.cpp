@@ -120,7 +120,8 @@ void CEnchantMgr::HandleEnchantResult(int messageId, int itemId) {
     }
 
     if (ID_CZ_REQUEST_RESET_ENCHANT == this->m_request.packetType) {
-      for (int slot : enchant->second.slots) {
+      for (auto slotIt = enchant->second.slots.begin(); slotIt != enchant->second.slots.end(); ++slotIt) {
+        int slot = *slotIt;
         if (static_cast<uint32_t>(slot) < 4) {
           item.SetCard(0, slot);
         }
