@@ -2476,9 +2476,11 @@ void CPc::SetSprAct2(int first, int second, int third, int fourth, int fifth, in
       case JT_SHADOW_CROSS:
         this->SetSprWeapon2(fourth, fifth);
         break;
-      default:
-        this->SetSprWeapon2(fourth, fourth >> 31);
+      default: {
+        const std::int64_t weapon = fourth;
+        this->SetSprWeapon2(static_cast<int>(weapon), static_cast<int>(weapon >> 32));
         break;
+      }
     }
   }
 
@@ -4642,9 +4644,9 @@ void CGrannyPc::RenderShadow(int argument, vector3d lightDirection, bool cached)
     const int offsetZ = static_cast<int>(this->render.position.z - centerZ);
 
     std::memset(g_groundShadowPixels, 0, sizeof(g_groundShadowPixels));
-    for (const vector3d& point : this->attachmentPositions) {
-      const float x = point.x * 0.35f;
-      const float y = point.y * 0.35f;
+    for (std::vector<vector3d>::iterator point = this->attachmentPositions.begin(); point != this->attachmentPositions.end(); ++point) {
+      const float x = point->x * 0.35f;
+      const float y = point->y * 0.35f;
       const int pixelX = static_cast<int>(x * sine + y * cosine + 17.0f) + offsetX;
       const int pixelY = static_cast<int>(x * cosine - y * sine + 17.0f) + offsetZ;
       if (pixelX >= 0 && pixelX < 34 && pixelY >= 0 && pixelY < 34) {
