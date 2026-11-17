@@ -609,12 +609,12 @@ void UIAchViewWnd::Paint() {
     }
   }
 
-  if (this->info->reward.itemId > 0 || this->info->reward.titleId > 0 || this->info->reward.buffId > 0) {
+  if (HasReward(*this->info)) {
     int width = 0;
     int count = 0;
-    for (UIToolTipBitmapWnd* reward : this->rewards) {
-      if (reward->geometry.visible == 1) {
-        width += reward->geometry.width;
+    for (int index = 0; index < 3; ++index) {
+      if (this->rewards[index]->geometry.visible == 1) {
+        width += this->rewards[index]->geometry.width;
         ++count;
       }
     }
@@ -1115,15 +1115,21 @@ void UIAchTracingWnd::Paint() {
   for (int pass = 0; pass < 2; ++pass) {
     UITextButton** buttons = this->toggleButtons;
     for (unsigned int index = 0; index < g_achievementTracking.size(); ++index, ++buttons) {
-      if (pass == 0 ? g_achievementTracking[index].pinned == 1 : g_achievementTracking[index].pinned != 1) {
+      if (pass == 0) {
+        if (g_achievementTracking[index].pinned == 1) {
+          continue;
+        }
+      } else if (g_achievementTracking[index].pinned != 1) {
         continue;
       }
 
       buttons[0]->Enable(1);
       buttons[3]->Enable(1);
       UITextButton* toggle = buttons[0];
-      const std::string label = FormatOwnedString("● [%s]", g_achievementTracking[index].name.c_str());
-      toggle->label = label;
+      {
+        const std::string label = FormatOwnedString("● [%s]", g_achievementTracking[index].name.c_str());
+        toggle->label = label;
+      }
       toggle->ResizeToText();
       buttons[0]->Move(10, y);
       buttons[0]->m_value = g_achievementTracking[index].id;
@@ -1323,13 +1329,13 @@ int UIAchievementWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     return 0;
 
   case UM_LIST_SELECTION:
-    if (this->achievements.find(argument1) == this->achievements.end()) {
-      this->view->SetAchievement(-1, nullptr);
+    if (this->achievements.find(argument1) != this->achievements.end()) {
+      this->view->SetAchievement(argument1, &this->achievements[argument1]);
       this->Invalidate();
       return 0;
     }
 
-    this->view->SetAchievement(argument1, &this->achievements[argument1]);
+    this->view->SetAchievement(-1, nullptr);
     this->Invalidate();
     return 0;
 
@@ -1403,8 +1409,8 @@ void UIAchSummaryWnd::UpdateInfo() {
   }
 
   for (int index = 0; index < this->visibleCount; ++index) {
-    this->gauges[index]->value = g_achievementMgr->GetCompletedCount(index, -1);
-    this->gauges[index]->maximum = g_achievementMgr->GetAchievementCount(index, -1);
+    this->gauges[index]->SetValue(g_achievementMgr->GetCompletedCount(index, -1));
+    this->gauges[index]->SetMaximum(g_achievementMgr->GetAchievementCount(index, -1));
   }
 
   this->Invalidate();
