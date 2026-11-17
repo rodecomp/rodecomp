@@ -6750,6 +6750,10 @@ __declspec(safebuffers) void CEffectPrim::RenderDoubleGumGang(matrix& wtm) {
 // OFFSET: 0x00BD8B80
 // FUNCTION: fn_19890
 void CEffectPrim::RenderGrandCross2(matrix& wtm) {
+  ZeroVector3d vec1;
+  ZeroVector3d vec2;
+  ZeroVector3d vec3;
+  ZeroVector3d vec4;
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -6783,13 +6787,13 @@ void CEffectPrim::RenderGrandCross2(matrix& wtm) {
     this->state.slots[ec].vecTPre.z = sn1 * rx + cs1 * rz;
     this->state.slots[ec].vecTPre.y = -1.0f;
 
-    vector3d vec1 = this->state.slots[ec].vecBPre;
+    vec1 = this->state.slots[ec].vecBPre;
     vec1.y -= this->state.slots[ec].height[2];
-    vector3d vec2 = this->state.slots[ec].vecBNow;
+    vec2 = this->state.slots[ec].vecBNow;
     vec2.y -= this->state.slots[ec].height[2];
-    vector3d vec3 = this->state.slots[ec].vecTPre;
+    vec3 = this->state.slots[ec].vecTPre;
     vec3.y -= this->state.slots[ec].height[2];
-    vector3d vec4 = this->state.slots[ec].vecTNow;
+    vec4 = this->state.slots[ec].vecTNow;
     vec4.y -= this->state.slots[ec].height[2];
 
     this->RenderTeiRect(&rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, vec2, vec1, wtm, 1, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f, 1.0f, 0);
