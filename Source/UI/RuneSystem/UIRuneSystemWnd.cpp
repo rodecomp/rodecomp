@@ -1592,9 +1592,6 @@ int UIRuneSet_Info::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
     }
     this->Refresh();
     break;
-  case UM_REFRESH:
-    this->Refresh();
-    break;
   case UM_COMMAND:
     switch (argument1) {
     case ID_EQUIP:
@@ -1641,6 +1638,9 @@ int UIRuneSet_Info::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
   case UM_SCROLLVERTPAGEDOWN:
     this->m_infoList->ScrollBy(argument1);
     this->Invalidate();
+    break;
+  case UM_REFRESH:
+    this->Refresh();
     break;
   }
 
