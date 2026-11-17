@@ -2590,17 +2590,17 @@ void UIItemIdentifyWnd::OnWheel(int delta) {
 // OFFSET: 0x008F6370
 // FUNCTION: fn_12315
 void UIItemParamChangeDisplayWnd::SumEquippedStats() {
+  int locations = 0;
   this->m_before = 0;
   this->m_beforeSecond = 0;
 
-  int locations = 0;
   for (int index = 0; index < 8; ++index) {
     ITEM_INFO item = g_session.GetEquippedItemAt(index);
     if (item.identity[1] > 0 && item.quantity == 1) {
       const ITEM_DESC& description = FindItemDescription(std::atoi(item.itemId.c_str()));
-      const bool duplicate = (description.descriptionFlags & locations) != 0;
+      const int previous = locations;
       locations |= description.descriptionFlags;
-      if (duplicate) {
+      if ((description.descriptionFlags & previous) != 0) {
         continue;
       }
 
