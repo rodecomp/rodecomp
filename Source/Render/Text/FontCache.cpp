@@ -129,7 +129,7 @@ __declspec(noinline) bool FontEntry::CreatePrivateFont() {
     description.lfWeight = this->bold ? FW_BOLD : FW_NORMAL;
     description.lfItalic = this->italic != 0;
     description.lfCharSet = static_cast<BYTE>(this->charset);
-    strncpy_s(description.lfFaceName, PrivateFontFamilyName(path).c_str(), _TRUNCATE);
+    strncpy_s(description.lfFaceName, this->PrivateFontFamilyName(path).c_str(), _TRUNCATE);
     this->font = CreateFontIndirectA(&description);
   }
 

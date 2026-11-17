@@ -20,6 +20,7 @@ struct FontEntry {
   void CreateSystemFont();
   bool CreatePrivateFont();
   void RemovePrivateFont() const;
+  std::string PrivateFontFamilyName(const std::string& path) const;
 
   /* 0000 */ int family;
   /* 0004 */ int height;
@@ -47,7 +48,6 @@ private:
 };
 
 HFONT __stdcall CreateEmbeddedFont(int height, std::int16_t family);
-std::string __stdcall PrivateFontFamilyName(const std::string& path);
 int FallbackFontIndex(const std::string& name);
 
 struct FontCacheLayout {
