@@ -8742,7 +8742,8 @@ void CGameMode::ReceiveGuildMemberAdd(const unsigned char* packet) {
   member.online = p->member.online;
   guildInfo->AddMember(member);
 
-  g_playerNameDictionary->Set(p->member.characterId, std::string(name, 25).c_str());
+  CPlayerNameDictionary* names = g_playerNameDictionary;
+  names->Set(p->member.characterId, std::string(name, 25).c_str());
   guildInfo->UpdateMemberExpRatios();
   g_windowMgr.RefreshGuildWindows();
 }
@@ -17132,7 +17133,8 @@ void CGameMode::ReceiveTaggedBroadcast(const unsigned char* data) {
   }
 
   message = g_windowMgr.chatWnd->ConvertChat(message);
-  message = g_navigationLinkParser->DisplayNavigationLink(message);
+  NavigationLinkParser* parser = g_navigationLinkParser;
+  message = parser->DisplayNavigationLink(message);
 
   std::vector<std::string> lines;
   WrapPlainText(message.c_str(), lines, 0x48);
@@ -18363,13 +18365,15 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     secondaryEffects[0x14E2] = 0x8C8;
 
     if (primaryEffects.find(skillId) != primaryEffects.end()) {
-      effect = g_effectMgr->Spawn(actor->render.accountId, static_cast<int>(primaryEffects[skillId]), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      EffectLists* effects = g_effectMgr;
+      effect = effects->Spawn(actor->render.accountId, static_cast<int>(primaryEffects[skillId]), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetLifeTime(delay);
       }
     }
     if (secondaryEffects.find(skillId) != secondaryEffects.end()) {
-      effect = g_effectMgr->Spawn(actor->render.accountId, static_cast<int>(secondaryEffects[skillId]), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+      EffectLists* effects = g_effectMgr;
+      effect = effects->Spawn(actor->render.accountId, static_cast<int>(secondaryEffects[skillId]), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetLifeTime(delay);
       }
