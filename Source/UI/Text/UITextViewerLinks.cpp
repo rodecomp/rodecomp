@@ -74,7 +74,7 @@ bool UITextViewer::AddItemLinks(std::string text, unsigned addedLines) {
   }
 
   {
-    std::string navigation = g_navigationLinkParser->DisplayNavigationLink(parsed);
+    std::string navigation = GetNavigationLinkParser()->DisplayNavigationLink(parsed);
     parsed = std::move(navigation);
   }
   parsed = static_cast<const std::string&>(DisplayTipBoxTextTag(parsed));
@@ -217,7 +217,7 @@ bool UITextViewer::AddQuestLinks(std::string text, unsigned addedLines) {
   }
 
   {
-    std::string navigation = g_navigationLinkParser->DisplayNavigationLink(parsed);
+    std::string navigation = GetNavigationLinkParser()->DisplayNavigationLink(parsed);
     parsed = std::move(navigation);
   }
   parsed = static_cast<const std::string&>(DisplayTipBoxTextTag(parsed));
@@ -262,7 +262,7 @@ void UITextViewer::AddTipLinks(std::string text, unsigned addedLines) {
     parsed = g_windowMgr.chatWnd->ConvertChat(parsed);
   }
 
-  parsed = g_navigationLinkParser->DisplayNavigationLink(parsed);
+  parsed = GetNavigationLinkParser()->DisplayNavigationLink(parsed);
 
   std::vector<TextLink> extracted;
   ExtractTipBoxTextLinks(parsed, extracted);
