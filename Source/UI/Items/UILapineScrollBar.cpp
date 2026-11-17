@@ -295,7 +295,7 @@ bool UILapineBoxWnd::AddIngredient(std::uint32_t id, int quantity) {
       item.SetName(name);
     }
     this->items.push_back(item);
-    if (static_cast<int>(this->items.size()) == this->maxItems) {
+    if (this->maxItems == static_cast<int>(this->items.size())) {
       {
         auto* moveButton = this->moveButton;
         moveButton->SetDisabled(1);
