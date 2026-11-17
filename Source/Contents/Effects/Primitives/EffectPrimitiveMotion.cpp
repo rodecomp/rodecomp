@@ -2882,12 +2882,10 @@ bool CEffectPrim::Prim3DParticleOrbit() {
 // FUNCTION: fn_19783
 bool CEffectPrim::Prim3DParticleSpline() {
   const CRagEffect* master = this->state.master;
-  const float masterX = master->render.position.x;
-  const float masterY = master->render.position.y;
-  const float masterZ = master->render.position.z;
-  this->state.orgPos.x = masterX + this->state.deltaPos2.x;
-  this->state.orgPos.y = masterY + this->state.deltaPos2.y;
-  this->state.orgPos.z = masterZ + this->state.deltaPos2.z;
+  this->state.orgPos = {
+    this->state.deltaPos2.x + master->render.position.x, master->render.position.y + this->state.deltaPos2.y,
+    master->render.position.z + this->state.deltaPos2.z
+  };
 
   const int angle = static_cast<int>(this->state.roll);
   const float lateral = this->state.latiSpeed;
@@ -2920,9 +2918,7 @@ bool CEffectPrim::Prim3DParticleSpline() {
 // OFFSET: 0x00BE6FE0
 // FUNCTION: fn_19931
 void CEffectPrim::ShiftSegment() {
-  const int count = this->state.numSegment;
-
-  for (int index = count - 1; index > 0; --index) {
+  for (int index = this->state.numSegment - 1; index > 0; --index) {
     EffectPrimitiveRecord& record = this->state.records[index];
     const EffectPrimitiveRecord& previous = this->state.records[index - 1];
     record.position = previous.position;
@@ -2934,13 +2930,13 @@ void CEffectPrim::ShiftSegment() {
     record.radius = previous.radius;
     record.angle = previous.angle;
     std::memcpy(record.matrix, previous.matrix, sizeof(record.matrix));
-    record.alpha = this->state.alpha - this->state.alpha / static_cast<float>(count) * static_cast<float>(index);
+    record.alpha = this->state.alpha - this->state.alpha / static_cast<float>(this->state.numSegment) * static_cast<float>(index);
 
     const std::uint32_t red = static_cast<unsigned char>(this->state.red);
     const std::uint32_t green = static_cast<unsigned char>(this->state.green);
     const std::uint32_t blue = static_cast<unsigned char>(this->state.blue);
-    record.color = (static_cast<std::uint32_t>(static_cast<int>(record.alpha)) << 24) | (red << 16) | (green << 8) | blue;
-    record.scale = this->state.size - this->state.size / static_cast<float>(count) * static_cast<float>(index) * 0.5f;
+    record.color = (static_cast<std::uint32_t>(static_cast<int>(record.alpha)) << 24) + (red << 16) + (green << 8) + blue;
+    record.scale = this->state.size - this->state.size / static_cast<float>(this->state.numSegment) * static_cast<float>(index) * 0.5f;
   }
 
   EffectPrimitiveRecord& first = this->state.records[0];
@@ -2959,7 +2955,7 @@ void CEffectPrim::ShiftSegment() {
   const std::uint32_t red = static_cast<unsigned char>(this->state.red);
   const std::uint32_t green = static_cast<unsigned char>(this->state.green);
   const std::uint32_t blue = static_cast<unsigned char>(this->state.blue);
-  first.color = (static_cast<std::uint32_t>(static_cast<int>(this->state.alpha)) << 24) | (red << 16) | (green << 8) | blue;
+  first.color = (static_cast<std::uint32_t>(static_cast<int>(first.alpha)) << 24) + (red << 16) + (green << 8) + blue;
 }
 
 // INLINED
