@@ -3362,10 +3362,12 @@ void CNewCloudKillEffect::ResetLightning(CParticle* particle) {
   particle->frameIndex = ClampedRandom(4);
   particle->phaseParameter = ClampedRandom(50) + 10;
   particle->angle = static_cast<float>(ClampedRandom(360));
-  particle->offsetZ = static_cast<float>(ClampedRandom(10)) - 5.0f;
-  particle->offsetX = static_cast<float>(ClampedRandom(10)) - 5.0f;
+  const float z = static_cast<float>(ClampedRandom(10)) - 5.0f;
+  const float x = static_cast<float>(ClampedRandom(10)) - 5.0f;
   particle->offsetY = -10.0f;
   particle->elapsedFrames = 0;
+  particle->offsetX = x;
+  particle->offsetZ = z;
   particle->InitParticleQuad(particle->vertices);
 }
 
