@@ -2419,7 +2419,8 @@ void CSkillAction_DK_DRAGONIC_BREATH::OnSkillHit(CGameActor* source, CGameActor*
 
   for (int i = 0; i < 4; ++i) {
     const vector3d position = target->render.position;
-    CEffect* effect = g_effectMgr->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("dragonic_breath_hit"), position, 0, -1, 0, 0);
+    EffectLists* effects = g_effectMgr;
+    CEffect* effect = effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("dragonic_breath_hit"), position, 0, -1, 0, 0);
     if (!effect) {
       break;
     }
@@ -2428,9 +2429,7 @@ void CSkillAction_DK_DRAGONIC_BREATH::OnSkillHit(CGameActor* source, CGameActor*
     const int second = std::rand() % 10;
     const int jitterX = second >= 0 ? second : 0;
     const int jitterY = first >= 0 ? first : 0;
-    effect->position[0] = static_cast<float>((i % 2) * 10 - jitterX) + target->render.position.x;
-    effect->position[2] = target->render.position.z + 0.0f;
-    effect->position[1] = static_cast<float>((i % 4) / 2 * 10 - jitterY) + target->render.position.y;
+    effect->positionVector = vector3d{static_cast<float>((i % 2) * 10 - jitterX) + target->render.position.x, static_cast<float>((i % 4) / 2 * 10 - jitterY) + target->render.position.y, target->render.position.z + 0.0f};
   }
 }
 
