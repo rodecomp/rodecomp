@@ -278,8 +278,8 @@ void UITextViewer::AddTipLinks(std::string text, unsigned addedLines) {
             breakAt = ++current;
           }
 
-          if (current >= limit || *current == '\n') {
-            if (*current == '\n') {
+          if (current >= limit || '\n' == *current) {
+            if ('\n' == *current) {
               breakAt = current++;
             }
 
