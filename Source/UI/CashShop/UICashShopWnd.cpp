@@ -1122,7 +1122,7 @@ int UICashShopWnd_Cart::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       return itemId == atoi(item.itemId.c_str());
     });
 
-    if (it == this->m_cartItems.end()) {
+    if (this->m_cartItems.end() == it) {
       if (g_session.m_launchPassCommandLine && !this->m_cartItems.empty()) {
         const int result =
           g_windowMgr.Confirm(FormatOwnedString(CashShopReplaceCartItemText()().Text(), item.displayName.c_str()).c_str(), 2, true, false, 0, "Message", 0x118, 0x78, 0);
@@ -1162,10 +1162,11 @@ int UICashShopWnd_Cart::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       if (total > 100) {
         g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_LIMIT_BUY_ITEM2), 100).c_str(), 0, true, false, 0, "Message", 0x118, 0x78, 0);
         it->quantity = 100;
+        this->SendMsg(this, UM_SCROLLVERT, 0, 0, 0, 0);
       } else {
         it->quantity = total <= 0 ? 1 : total;
+        this->SendMsg(this, UM_SCROLLVERT, 0, 0, 0, 0);
       }
-      this->SendMsg(this, UM_SCROLLVERT, 0, 0, 0, 0);
     }
 
     if (this->parent != nullptr) {
@@ -1212,12 +1213,11 @@ int UICashShopWnd_Cart::SendMsg(UIWindow* sender, int message, std::intptr_t arg
 
     const int maximum = std::max(count - this->m_visibleCount, 0);
 
-    UIScrollBar* scrollBar = static_cast<UIScrollBar*>(this->m_scrollBar);
     if (maximum == 0) {
       if (static_cast<int>(this->m_scrollIndex) > 0) {
         this->m_scrollIndex = 0;
-        scrollBar->SetRange(maximum, this->m_visibleCount, this->m_cartItems.size());
-        scrollBar->SetPosition(this->m_scrollIndex);
+        this->m_scrollBar->SetRange(maximum, this->m_visibleCount, this->m_cartItems.size());
+        this->m_scrollBar->SetPosition(this->m_scrollIndex);
       }
       break;
     }
@@ -1232,8 +1232,8 @@ int UICashShopWnd_Cart::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       break;
     }
 
-    scrollBar->SetRange(maximum, this->m_visibleCount, this->m_cartItems.size());
-    scrollBar->SetPosition(this->m_scrollIndex);
+    this->m_scrollBar->SetRange(maximum, this->m_visibleCount, this->m_cartItems.size());
+    this->m_scrollBar->SetPosition(this->m_scrollIndex);
     this->Invalidate();
     break;
   }
