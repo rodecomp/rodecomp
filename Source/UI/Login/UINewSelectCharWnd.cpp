@@ -583,7 +583,11 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         }
 
         g_session.SetPlayerNameKey(reinterpret_cast<const unsigned char*>(info->name));
-        g_session.SetFlag(static_cast<char>(info->sex != 'c' ? info->sex : g_session.m_sex));
+        if (info->sex != 'c') {
+          g_session.SetFlag(info->sex);
+        } else {
+          g_session.SetFlag(g_session.m_sex);
+        }
         this->m_navigationBlocked = true;
         const BlockedCharacter* blocked = g_session.m_blockedCharacters;
         for (int index = 0; index < g_session.blockedCharacterCount; ++index) {
