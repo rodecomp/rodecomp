@@ -141,7 +141,7 @@ std::string XmlNode::DecodeEntity(const char* begin, const char* end) {
     return std::string(1, '>');
   }
 
-  if (std::memcmp(begin, "am", 2) == 0 && begin[2] == 'p') {
+  if (std::memcmp(begin, "amp", 3) == 0) {
     return std::string(1, '&');
   }
 
