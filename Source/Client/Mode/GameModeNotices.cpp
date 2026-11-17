@@ -5446,18 +5446,30 @@ void CGameMode::ReceiveSpecialBroadcast(const unsigned char* data) {
   std::string text;
   switch (packet->type) {
   case 0:
-    text.assign(FormatOwnedString(LookupMessage(packet->index + 837), g_session.DecodePlayerName(), packet->name));
+    {
+      const int messageId = packet->index + 837;
+      text.assign(FormatOwnedString(LookupMessage(messageId), g_session.DecodePlayerName(), packet->name));
+    }
     break;
   case 1:
-    text.assign(FormatOwnedString(LookupMessage(packet->index + 840), g_session.DecodePlayerName(), packet->name));
+    {
+      const int messageId = packet->index + 840;
+      text.assign(FormatOwnedString(LookupMessage(messageId), g_session.DecodePlayerName(), packet->name));
+    }
     player->LaunchEffect(EF_HATED, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     g_soundMgr->PlayWave("effect\\T_피링.wav", 0.0f, -250.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   case 10:
-    text.assign(FormatOwnedString(LookupMessage(packet->index + 843), g_session.DecodePlayerName(), g_session.GetJobName(packet->value, -1)));
+    {
+      const int messageId = packet->index + 843;
+      text.assign(FormatOwnedString(LookupMessage(messageId), g_session.DecodePlayerName(), g_session.GetJobName(packet->value, -1)));
+    }
     break;
   case 11:
-    text.assign(FormatOwnedString(LookupMessage(packet->index + 846), g_session.DecodePlayerName(), g_session.GetJobName(packet->value, -1)));
+    {
+      const int messageId = packet->index + 846;
+      text.assign(FormatOwnedString(LookupMessage(messageId), g_session.DecodePlayerName(), g_session.GetJobName(packet->value, -1)));
+    }
     player->LaunchEffect(EF_HATED, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     g_soundMgr->PlayWave("effect\\T_피링.wav", 0.0f, -250.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
