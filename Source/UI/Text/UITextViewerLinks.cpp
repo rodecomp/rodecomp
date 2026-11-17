@@ -267,11 +267,12 @@ void UITextViewer::AddTipLinks(std::string text, unsigned addedLines) {
     for (unsigned index = 0; index < extracted.size(); ++index) {
 
       if (this->splitTipLinks == 1) {
+        const std::uint32_t firstWidth = 32u - extracted[index].position;
         std::vector<std::string> labels;
         const char* begin = extracted[index].display.c_str();
-        const char* const end = begin + std::strlen(begin);
-        std::uintptr_t limit = reinterpret_cast<std::uintptr_t>(begin) + 32u - extracted[index].position;
         const char* current = begin;
+        const char* const end = begin + std::strlen(begin);
+        const char* limit = begin + firstWidth;
         const char* breakAt = begin;
 
         while (current < end) {
@@ -281,7 +282,7 @@ void UITextViewer::AddTipLinks(std::string text, unsigned addedLines) {
             breakAt = ++current;
           }
 
-          if (reinterpret_cast<std::uintptr_t>(current) >= limit || *current == '\n') {
+          if (current >= limit || *current == '\n') {
             if (*current == '\n') {
               breakAt = current++;
             }
@@ -294,7 +295,7 @@ void UITextViewer::AddTipLinks(std::string text, unsigned addedLines) {
               begin = current;
             }
 
-            limit = reinterpret_cast<std::uintptr_t>(begin) + 32u;
+            limit = begin + 32;
           }
         }
 
@@ -311,7 +312,12 @@ void UITextViewer::AddTipLinks(std::string text, unsigned addedLines) {
           button->m_hoverColor = 0x00FF7864;
           button->SetId(LINK_BUTTON_TIP);
           this->SplitTextLinkArguments(extracted[index].metadata, button);
-          const auto position = this->LinkPosition(fragment == 0 ? extracted[index].position : 0, addedLines - fragment);
+          std::pair<int, int> position;
+          if (fragment == 0) {
+            position = this->LinkPosition(extracted[index].position, addedLines - fragment);
+          } else {
+            position = this->LinkPosition(0, addedLines - fragment);
+          }
           button->m_value = position.first;
           button->Move(position.second, -100);
           this->AddChild(button);
