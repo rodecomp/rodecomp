@@ -44,12 +44,12 @@ void CGameActor::ProcessDamageMessages() {
   for (auto it = this->willBeAttackedList.begin(); it != this->willBeAttackedList.end();) {
     if (timeGetTime() >= it->time) {
       if (it->damage > 0) {
-        const std::uint32_t targetAid = it->targetAid;
-        const std::uint32_t attackerAid = it->attackerAid;
         char partyNotice[500];
         char notice[500];
         notice[0] = '\0';
         partyNotice[0] = '\0';
+        const std::uint32_t targetAid = it->targetAid;
+        const std::uint32_t attackerAid = it->attackerAid;
 
         std::string targetName = g_modeMgr.GetGameMode()->ActorName(targetAid);
         std::string attackerName = g_modeMgr.GetGameMode()->ActorName(attackerAid);
