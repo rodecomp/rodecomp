@@ -95,7 +95,7 @@ void UIQuestDisplay::Paint() {
       ++none;
     } else {
       for (int index = 0; index < info.m_huntCount; ++index) {
-        std::string hunt;
+        std::string hunt("");
         if (info.m_huntMobId[index] != 31999) {
           const short minLevel = info.m_huntMinLevel[index];
           const short maxLevel = info.m_huntMaxLevel[index];
