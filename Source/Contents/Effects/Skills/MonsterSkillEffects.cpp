@@ -1310,7 +1310,7 @@ void CFootprintStrEffect::SpawnFootprint() {
       particle->Open(bottom);
       particle->m_scale = static_cast<float>(this->bottomScale);
       particle->m_angle = angle;
-      this->emitters.push_back(emitter);
+      this->emitters.push_back(std::move(emitter));
     }
   }
 
@@ -1325,7 +1325,7 @@ void CFootprintStrEffect::SpawnFootprint() {
       particle->Open(top);
       particle->depthOffset = 0.000035f;
       particle->m_scale = static_cast<float>(this->topScale);
-      this->topEmitters.push_back(emitter);
+      this->topEmitters.push_back(std::move(emitter));
     }
   }
 
