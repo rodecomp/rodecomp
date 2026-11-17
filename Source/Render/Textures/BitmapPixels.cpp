@@ -144,7 +144,7 @@ void CDCBitmap::Fill(const RECT* rectangle, std::uint32_t color) {
 
 // OFFSET: 0x00548230
 // FUNCTION: fn_01852
-void CDCBitmap::Copy(int x, int y, int copyWidth, int copyHeight, const std::uint32_t* source, bool transparent) {
+void CDCBitmap::Copy(int x, int y, int copyWidth, int copyHeight, const std::uint32_t* source, int transparent) {
   if (!this->m_bitmap.pixels || !source) {
     return;
   }
@@ -156,7 +156,7 @@ void CDCBitmap::Copy(int x, int y, int copyWidth, int copyHeight, const std::uin
   for (int row = 0; row < copyHeight; ++row) {
     for (int column = 0; column < copyWidth; ++column, ++input) {
       const std::uint32_t value = *input;
-      if (!transparent || value != 0xFFFF00FF) {
+      if (static_cast<unsigned char>(transparent) == 0 || value != 0xFFFF00FF) {
         const std::int32_t index = static_cast<std::int32_t>((row + y) * this->m_bitmap.width + column + x);
         if (index > -1 && count > index) {
           this->m_bitmap.pixels[index] = value;

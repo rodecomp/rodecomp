@@ -12,6 +12,7 @@
 #include "Render/Textures/SpriteAtlas.h"
 
 #include <string>
+#include <new>
 
 class CRenderSystemBase;
 class CBitmapRes;
@@ -20,7 +21,6 @@ class CRenderer {
 public:
   CRenderer();
   virtual ~CRenderer();
-  RenderPrimitive* AcquirePrimitive();
   virtual void SetCamera(const float* eye, const float* target, const float* up) = 0;
   virtual void SetLighting(const float* direction, const float* diffuse, const float* ambient) = 0;
   virtual void SetClearColor(unsigned color) = 0;
@@ -28,10 +28,10 @@ public:
   virtual void ClearDepth(int clearColor) = 0;
   virtual void ClearWorld() = 0;
   virtual bool Draw() = 0;
-  virtual HRESULT Present(int option) = 0;
+  virtual void Present(bool option) = 0;
   virtual float FPS() const = 0;
-  virtual bool CaptureBackBuffer() = 0;
-  virtual bool RestoreBackBuffer() = 0;
+  virtual void CaptureBackBuffer() = 0;
+  virtual void RestoreBackBuffer() = 0;
   virtual void DrawAuxiliaryPrimitive(LightmappedCommand* primitive) = 0;
   virtual void DrawLightmappedPrimitive(LightmappedPrimitive* primitive) = 0;
   virtual void DrawPrimitive(RenderCommand* primitive) = 0;
@@ -42,6 +42,12 @@ public:
   virtual bool SaveLogo(std::string filename) = 0;
   virtual int LockBackBuffer() = 0;
   virtual HRESULT UnlockBackBuffer() = 0;
+  void SetSize(int width, int height);
+  void Project(const float* position, const float* matrix, RenderVertex& output) const;
+  void Project(const float* position, const float* matrix, LightmappedVertex& output) const;
+  void Ray(int x, int y, const float* origin, const float* matrix, float* output) const;
+  RenderCommand* AcquireCommand();
+  RenderPrimitive* AcquirePrimitive();
   float* ProjectViewport(const float* position, const float* matrix, float* x, float* y, float* reciprocalDepth);
   float* ProjectViewportCentered(
     const float* position, const float* matrix, float* x, float* y, float* reciprocalDepth, float width, float height
@@ -97,5 +103,11 @@ static_assert(offsetof(CRenderer, fog) == 0x0150);
 static_assert(offsetof(CRenderer, queues) == 0x015C);
 static_assert(offsetof(CRenderer, backBuffer) == 0x0250);
 #endif
+
+// OFFSET: 0x00CA63D0
+// FUNCTION: fn_20958
+inline RenderCommand* CRenderer::AcquireCommand() {
+  return this->commands.Acquire();
+}
 
 #endif

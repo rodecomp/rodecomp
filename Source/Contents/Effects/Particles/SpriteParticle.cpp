@@ -248,7 +248,7 @@ void CSpriteParticle::Draw(char mode) {
       worldVertices[v].x = finalTransform.values[0] * vx + finalTransform.values[3] * vy + finalTransform.values[6] * vz + finalTransform.values[9];
       worldVertices[v].y = finalTransform.values[1] * vx + finalTransform.values[4] * vy + finalTransform.values[7] * vz + finalTransform.values[10];
       worldVertices[v].z = finalTransform.values[2] * vx + finalTransform.values[5] * vy + finalTransform.values[8] * vz + finalTransform.values[11];
-      g_renderer->viewport.Project(&worldVertices[v].x, view, primitive->vertices[v]);
+      g_renderer->Project(&worldVertices[v].x, view, primitive->vertices[v]);
     }
 
     if (CRenderObject* renderObject = FindRenderObject(this->actorId)) {

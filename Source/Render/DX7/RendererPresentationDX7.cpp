@@ -11,7 +11,7 @@
 
 // OFFSET: 0x0055B000
 // FUNCTION: fn_02087
-HRESULT CRendererDX7::Present(int option) {
+void CRendererDX7::Present(bool option) {
   ++this->frame;
   const unsigned elapsed = GetTickCount() - this->time;
 
@@ -25,7 +25,7 @@ HRESULT CRendererDX7::Present(int option) {
 
   DeviceOwnerDX7* owner = g_deviceOwnerDX7;
   if (owner && owner->RestoreLostSurfaces() == TRUE) {
-    return S_OK;
+    return;
   }
 
   if (this->LockBackBuffer()) {
@@ -34,7 +34,7 @@ HRESULT CRendererDX7::Present(int option) {
 
   owner = g_deviceOwnerDX7;
   if (owner) {
-    const HRESULT result = owner->Present(option != 0);
+    const HRESULT result = owner->Present(option);
     if (FAILED(result) && result == DDERR_SURFACELOST) {
       owner = g_deviceOwnerDX7;
       if (owner) {
@@ -42,7 +42,6 @@ HRESULT CRendererDX7::Present(int option) {
       }
     }
   }
-  return S_OK;
 }
 
 // OFFSET: 0x0055D0F0

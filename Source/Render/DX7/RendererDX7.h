@@ -44,10 +44,10 @@ public:
   int SaveJpeg(const char* filename, CBitmapRes* overlay) override;
   bool SaveLogo(std::string filename) override;
   void SetTexture(unsigned stage, CTextureDX7* texture);
-  HRESULT Present(int option) override;
+  void Present(bool option) override;
   float FPS() const override;
-  bool CaptureBackBuffer() override;
-  bool RestoreBackBuffer() override;
+  void CaptureBackBuffer() override;
+  void RestoreBackBuffer() override;
   void DrawAuxiliaryPrimitive(LightmappedCommand* primitive) override;
   void CleanupTextures() override;
   void DrawDepthSortedQueue();

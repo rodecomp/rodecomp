@@ -57,7 +57,7 @@ std::uint32_t CRenderSystemDX9::Height() {
 // FUNCTION: fn_02359
 CRenderer* CRenderSystemDX9::CreateRenderer() {
   auto* renderer = new CRendererDX9(*this->m_device);
-  renderer->viewport.SetSize(this->CRenderSystemDX9::Width(), this->CRenderSystemDX9::Height());
+  renderer->SetSize(this->CRenderSystemDX9::Width(), this->CRenderSystemDX9::Height());
 
   return renderer;
 }

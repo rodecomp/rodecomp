@@ -96,7 +96,7 @@ void RouletteMgr::Destroy() {
 // OFFSET: 0x0080ACC0
 // FUNCTION: fn_10076
 void RouletteMgr::Draw() {
-  RenderCommand* command = g_renderer->commands.Acquire();
+  RenderCommand* command = g_renderer->AcquireCommand();
   command->texture = g_texMgr.Default();
   command->vertices = this->m_quads.current.vertices;
   command->vertexCount = 6;

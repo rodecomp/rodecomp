@@ -66,7 +66,7 @@ void GroundGeometry::DrawWaterCell(
   cell.corners[3][1] = last;
 
   for (unsigned corner = 0; corner < 4; ++corner) {
-    g_renderer->viewport.Project(cell.corners[corner], matrix, vertices[corner]);
+    g_renderer->Project(cell.corners[corner], matrix, vertices[corner]);
   }
 
   const float firstArea = (vertices[2].x - vertices[0].x) * (vertices[1].y - vertices[0].y);

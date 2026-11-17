@@ -60,7 +60,7 @@ CRenderer* DeviceOwnerDX7::CreateRenderer() {
   CRendererDX7* renderer = new CRendererDX7();
   renderer->SetTextureFormat(format);
   renderer->device = this->device;
-  renderer->viewport.SetSize(this->width, this->height);
+  renderer->SetSize(this->width, this->height);
   this->CalibrateTextureCoordinates();
   return renderer;
 }

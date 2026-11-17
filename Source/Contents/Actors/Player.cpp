@@ -1975,7 +1975,7 @@ void CGrannyPc::RenderCached(const matrix& view, int layer, C3dGrannyModelRes* m
           position.z = corner.y * values[5] + corner.x * values[2] + corner.z * values[8] + values[11];
         }
 
-        g_renderer->viewport.Project(&position.x, world.values, output);
+        g_renderer->Project(&position.x, world.values, output);
       }
     }
 
@@ -4223,7 +4223,7 @@ void CGrannyPc::RenderModel(
           position.z = transform.values[5] * point.y + transform.values[2] * point.x + transform.values[8] * point.z + transform.values[11];
         }
 
-        g_renderer->viewport.Project(&position.x, world.values, output);
+        g_renderer->Project(&position.x, world.values, output);
         output.u = vertex.uv[0];
         output.v = vertex.uv[1];
         const float shade = lightY * vertex.normal[1] + lightX * vertex.normal[0] + lightZ * vertex.normal[2];

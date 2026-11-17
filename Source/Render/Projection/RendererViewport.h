@@ -17,11 +17,6 @@ struct RendererViewport {
   /* 002C */ int height;
   /* 0030 */ int centerX;
   /* 0034 */ int centerY;
-
-  void SetSize(int width, int height);
-  void Project(const float* position, const float* matrix, struct RenderVertex& output) const;
-  void Project(const float* position, const float* matrix, struct LightmappedVertex& output) const;
-  void Ray(int x, int y, const float* origin, const float* matrix, float* output) const;
 };
 
 extern float g_cotangent;

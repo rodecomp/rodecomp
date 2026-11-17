@@ -231,8 +231,3 @@ CRenderer::CRenderer() : viewDirectionX(0), viewDirectionY(0), viewDirectionZ(0)
 // OFFSET: 0x00562090
 // FUNCTION: fn_02175
 CRenderer::~CRenderer() = default;
-
-// INLINED
-RenderPrimitive* RenderPrimitivePool::Acquire() {
-  return g_renderer->AcquirePrimitive();
-}

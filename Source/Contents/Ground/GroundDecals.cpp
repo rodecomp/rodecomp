@@ -100,7 +100,7 @@ namespace {
     RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
 
     for (int corner = 0; corner < 4; ++corner) {
-      g_renderer->viewport.Project(&vertices[corner].x, matrix, primitive->vertices[corner]);
+      g_renderer->Project(&vertices[corner].x, matrix, primitive->vertices[corner]);
       primitive->vertices[corner].z = primitive->vertices[corner].z - bias;
     }
 
@@ -215,7 +215,7 @@ void GroundGeometry::DrawTerrainOverlay(
   RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
 
   for (int corner = 0; corner < 4; ++corner) {
-    g_renderer->viewport.Project(&vertices[corner].x, matrix, primitive->vertices[corner]);
+    g_renderer->Project(&vertices[corner].x, matrix, primitive->vertices[corner]);
   }
 
   primitive->vertices[0].u = 0.0f;

@@ -18,7 +18,7 @@ public:
   virtual void Grow(std::uint32_t width, std::uint32_t height) = 0;
   virtual bool GetDC(HDC* output) = 0;
   virtual void ReleaseDC(HDC dc) = 0;
-  virtual void Copy(int x, int y, int width, int height, const std::uint32_t* source, bool transparent) = 0;
+  virtual void Copy(int x, int y, int width, int height, const std::uint32_t* source, int transparent) = 0;
   virtual void ScaleCopy(int x, int y, int sourceWidth, int sourceHeight, int width, int height, const std::uint32_t* source, int option) = 0;
   virtual void CopyRegion(
     int x, int y, int sourceLeft, int sourceTop, int sourceRight, int sourceBottom, const std::uint32_t* source, int sourceWidth, int sourceHeight,

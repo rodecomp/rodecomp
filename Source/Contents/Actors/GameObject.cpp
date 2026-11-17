@@ -95,25 +95,6 @@ std::uint64_t CGameObject::s_nextIdentity = 0;
 // GLOBAL: gl_24538
 float g_cotangent = 0.16f;
 
-namespace {
-struct PrimitivePoolAccess : RenderPrimitivePool {
-  // INLINED
-  inline RenderPrimitive* AcquireLocal() {
-    if (this->m_current == this->m_commands.end()) {
-      this->m_commands.emplace_back();
-      this->m_current = this->m_commands.end();
-      return &this->m_commands.back();
-    }
-
-    RenderPrimitive* command = &*this->m_current;
-    ++this->m_current;
-    new (command) RenderPrimitive;
-
-    return command;
-  }
-};
-}
-
 // OFFSET: 0x00CA8600
 // FUNCTION: fn_20989
 CGameObject::CGameObject() : identity(++s_nextIdentity) {
@@ -842,7 +823,7 @@ void CRenderObject::DrawQuad(const SpriteQuad& quad, const std::uint32_t* palett
   const float bottomZ = RhwToDepth(static_cast<float>(depthBias + quad.bottomRhw));
   const float topZ = RhwToDepth(static_cast<float>(quad.topRhw + depthBias));
 
-  RenderPrimitive* primitive = static_cast<PrimitivePoolAccess&>(g_renderer->primitives).AcquireLocal();
+  RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
   RenderVertex* vertices = primitive->vertices;
   primitive->texture = texture;
 

@@ -194,7 +194,7 @@ void CLensFlare::Render(const float* matrix, vector3d eye, vector3d target) {
     if (dot < 0.0f) {
       RenderPrimitive* primitive = static_cast<PrimitivePoolAccess&>(g_renderer->primitives).AcquireLocal();
       RenderVertex* vertices = primitive->vertices;
-      g_renderer->viewport.Project(&element.position.x, matrix, vertices[0]);
+      g_renderer->Project(&element.position.x, matrix, vertices[0]);
       vertices[3] = vertices[0];
       vertices[2] = vertices[0];
       vertices[1] = vertices[0];

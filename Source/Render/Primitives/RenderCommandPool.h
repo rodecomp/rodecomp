@@ -7,6 +7,8 @@
 #include <new>
 
 class RenderCommandPool {
+  friend class CRenderer;
+
 public:
   // INLINED
   __forceinline RenderCommandPool() {
@@ -27,8 +29,7 @@ private:
   /* 0064 */ std::deque<RenderCommand>::iterator m_current;
 };
 
-// OFFSET: 0x00CA63D0
-// FUNCTION: fn_20958
+// INLINED
 inline RenderCommand* RenderCommandPool::Acquire() {
   if (this->m_current == this->m_commands.end()) {
     this->m_commands.emplace_back();

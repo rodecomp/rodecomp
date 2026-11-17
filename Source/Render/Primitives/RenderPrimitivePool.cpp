@@ -22,3 +22,4 @@ RenderPrimitive* CRenderer::AcquirePrimitive() {
 
   return command;
 }
+

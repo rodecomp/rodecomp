@@ -7,7 +7,7 @@
 
 // OFFSET: 0x00565B70
 // FUNCTION: fn_02223
-HRESULT CRendererDX9::Present(int option) {
+void CRendererDX9::Present(bool option) {
   ++this->frame;
   ++this->frames;
   const unsigned now = timeGetTime();
@@ -23,9 +23,7 @@ HRESULT CRendererDX9::Present(int option) {
   static constexpr char source[] = "C:\\repositories\\RagnarokClient\\RagnarokClient\\3dLib\\RendererDX9.cpp";
   g_renderDiagnosticLine = 161;
   g_renderDiagnosticFile = source;
-  const HRESULT result = this->device->Present(option);
+  this->device->Present(option);
   g_renderDiagnosticLine = 164;
   g_renderDiagnosticFile = source;
-
-  return result;
 }

@@ -45,7 +45,7 @@ __declspec(safebuffers) void CBash::Open() {
   screen.specular = 0xFF000000;
   screen.u = 0.0f;
   screen.v = 0.0f;
-  g_renderer->viewport.Project(this->position, mode->camera->frame.view.values, screen);
+  g_renderer->Project(this->position, mode->camera->frame.view.values, screen);
   this->screenX = screen.x;
   this->screenY = screen.y - 40.0f;
 

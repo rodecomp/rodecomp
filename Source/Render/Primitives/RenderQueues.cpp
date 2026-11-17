@@ -65,7 +65,7 @@ void CRenderer::Submit(RenderCommand* primitive, std::uint16_t flags) {
 // OFFSET: 0x00559F70
 // FUNCTION: fn_02074
 void CRenderer::SubmitTriangle(RenderTriangle& triangle, std::uint16_t flags) {
-  RenderCommand* command = this->commands.Acquire();
+  RenderCommand* command = this->AcquireCommand();
   command->vertices = triangle.vertices;
   command->vertexCount = 3;
   command->texture = triangle.texture;

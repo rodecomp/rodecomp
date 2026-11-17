@@ -883,7 +883,7 @@ __declspec(noinline) void UIWindow::DrawBitmap(int x, int y, const BitmapImage* 
 
 // OFFSET: 0x00A7BB60
 // FUNCTION: fn_16935
-__declspec(noinline) void UIWindow::DrawBitmap(int x, int y, CBitmapRes* bitmap, bool transparent) {
+__declspec(noinline) void UIWindow::DrawBitmap(int x, int y, CBitmapRes* bitmap, int transparent) {
   if (!this->geometry.surface || !bitmap) {
     return;
   }
@@ -1233,7 +1233,7 @@ void UIWindow::DrawAuxiliaryScaled(int mode, int x, int y, int width, int height
 
 // OFFSET: 0x00A7BE30
 // FUNCTION: fn_16940
-void UIWindow::DrawAuxiliary(int mode, int x, int y, CBitmapRes* bitmap, bool transparent, bool rebuild) {
+void UIWindow::DrawAuxiliary(int mode, int x, int y, CBitmapRes* bitmap, int transparent, bool rebuild) {
   if (!this->geometry.surface || !bitmap) {
     return;
   }

@@ -226,7 +226,7 @@ void CDCSurface::ReleaseDC(HDC dc) {
 
 // OFFSET: 0x00549320
 // FUNCTION: fn_01881
-void CDCSurface::Copy(int x, int y, int width, int height, const std::uint32_t* source, bool transparent) {
+void CDCSurface::Copy(int x, int y, int width, int height, const std::uint32_t* source, int transparent) {
   this->m_surface->Upload(x, y, width, height, source, transparent, 0);
 }
 

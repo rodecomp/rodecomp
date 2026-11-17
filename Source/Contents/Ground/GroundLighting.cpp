@@ -28,7 +28,7 @@ void GroundGeometry::DrawLightmapped(const float* matrix, const GroundQuad& quad
 
   for (unsigned corner = 0; corner < 4; ++corner) {
     vertices[corner].specular = 0xFF000000u;
-    g_renderer->viewport.Project(quad.vertices[corner].position, matrix, vertices[corner]);
+    g_renderer->Project(quad.vertices[corner].position, matrix, vertices[corner]);
   }
 
   if (clip && !GroundQuadVisible(vertices)) {

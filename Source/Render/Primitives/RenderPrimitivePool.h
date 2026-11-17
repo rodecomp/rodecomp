@@ -21,7 +21,6 @@ public:
   }
 
   ~RenderPrimitivePool();
-  RenderPrimitive* Acquire();
   void Rewind();
 
 protected:

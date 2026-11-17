@@ -78,7 +78,7 @@ void C3dNodeV1::Draw(const float* matrix, unsigned char reversed, bool clip, uns
   const unsigned char alpha = this->model->alpha;
 
   for (int index = 0; index < vertexCount; ++index) {
-    g_renderer->viewport.Project(meshVertices[index].data(), combined.values, projected[index]);
+    g_renderer->Project(meshVertices[index].data(), combined.values, projected[index]);
   }
 
   RenderVertex* vertices = g_renderer->vertices.Acquire(static_cast<unsigned>(this->mesh->faceCount) * 3u);
@@ -158,7 +158,7 @@ void C3dNodeV1::Draw(const float* matrix, unsigned char reversed, bool clip, uns
     const int count = static_cast<int>(output - vertices);
 
     if (count != 0) {
-      RenderCommand* command = g_renderer->commands.Acquire();
+      RenderCommand* command = g_renderer->AcquireCommand();
       command->vertices = vertices;
       command->vertexCount = count;
       command->texture = this->textures[texture % this->textures.size()];
@@ -203,7 +203,7 @@ void C3dNodeV2::Draw(const float* matrix, unsigned char reversed, bool clip, uns
   const unsigned char alpha = this->model->alpha;
 
   for (int index = 0; index < vertexCount; ++index) {
-    g_renderer->viewport.Project(meshVertices[index].data(), combined.values, projected[index]);
+    g_renderer->Project(meshVertices[index].data(), combined.values, projected[index]);
   }
 
   RenderVertex* vertices = g_renderer->vertices.Acquire(static_cast<unsigned>(this->mesh->faceCount) * 3u);
@@ -292,7 +292,7 @@ void C3dNodeV2::Draw(const float* matrix, unsigned char reversed, bool clip, uns
     const int count = static_cast<int>(output - vertices);
 
     if (count != 0) {
-      RenderCommand* command = g_renderer->commands.Acquire();
+      RenderCommand* command = g_renderer->AcquireCommand();
       command->vertices = vertices;
       command->vertexCount = count;
       command->texture = this->textures[texture % this->textures.size()];

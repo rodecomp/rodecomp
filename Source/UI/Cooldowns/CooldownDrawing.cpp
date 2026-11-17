@@ -118,7 +118,7 @@ void CooldownOwner::Draw(
     return;
   }
 
-  RenderCommand* command = g_renderer->commands.Acquire();
+  RenderCommand* command = g_renderer->AcquireCommand();
   command->texture = g_texMgr.Default();
   command->vertices = vertices;
   command->vertexCount = value.vertexCount;
@@ -194,7 +194,7 @@ void CooldownOwner::DrawReverse(CooldownState& value) {
     break;
   }
 
-  RenderCommand* command = g_renderer->commands.Acquire();
+  RenderCommand* command = g_renderer->AcquireCommand();
   command->texture = g_texMgr.Default();
   command->vertices = value.vertices;
   command->vertexCount = value.vertexCount;

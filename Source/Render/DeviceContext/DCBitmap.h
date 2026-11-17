@@ -14,7 +14,7 @@ public:
   void Grow(std::uint32_t width, std::uint32_t height) override;
   bool GetDC(HDC* output) override;
   void ReleaseDC(HDC dc) override;
-  void Copy(int x, int y, int width, int height, const std::uint32_t* source, bool transparent) override;
+  void Copy(int x, int y, int width, int height, const std::uint32_t* source, int transparent) override;
   void ScaleCopy(int x, int y, int sourceWidth, int sourceHeight, int width, int height, const std::uint32_t* source, int option) override;
   void CopyRegion(
     int x, int y, int sourceLeft, int sourceTop, int sourceRight, int sourceBottom, const std::uint32_t* source, int sourceWidth, int sourceHeight,

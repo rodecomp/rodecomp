@@ -18,7 +18,7 @@ namespace {
     }
 
     for (unsigned corner = 0; corner < 4; ++corner) {
-      g_renderer->viewport.Project(quad.vertices[corner].position, matrix, vertices[corner]);
+      g_renderer->Project(quad.vertices[corner].position, matrix, vertices[corner]);
     }
 
     if (clip && !GroundQuadVisible(vertices)) {

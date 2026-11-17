@@ -411,7 +411,7 @@ bool CEZ2STRParticle::Process(float x, float y, float z) {
 __declspec(safebuffers) void CEZ2STRParticle::UpdatePosition(float x, float y, float z) {
   CGameMode* mode = g_modeMgr.GetGameMode();
   RenderVertex screen = {0, 0, 0, 0, 0, 0xFF000000, 0, 0};
-  g_renderer->viewport.Project(&this->position.x, mode->camera->frame.view.values, screen);
+  g_renderer->Project(&this->position.x, mode->camera->frame.view.values, screen);
   this->m_screen.x = screen.x + x;
   this->m_screen.y = screen.y + y;
   this->m_screen.z = screen.z + z;
@@ -495,7 +495,7 @@ void CEZ2STRParticle::RenderBillboard(EZeffectClip* clip, EZeffectTransform* tra
     point.x = vertices[i].x;
     point.y = vertices[i].y;
     point.z = vertices[i].z;
-    g_renderer->viewport.Project(&point.x, combined.values, vertices[i]);
+    g_renderer->Project(&point.x, combined.values, vertices[i]);
     vertices[i].rhw = this->depthOffset + vertices[i].rhw;
     vertices[i].z = RhwToDepth(vertices[i].rhw);
     vertices[i].u = scaleU * vertices[i].u;
@@ -665,7 +665,7 @@ void CEZ2STRParticle::RenderGround(EZeffectClip* clip, EZeffectTransform* transf
     }
     this->m_groundHeight = point.y;
 
-    g_renderer->viewport.Project(&point.x, view.values, vertices[i]);
+    g_renderer->Project(&point.x, view.values, vertices[i]);
     vertices[i].rhw = this->depthOffset + vertices[i].rhw;
     vertices[i].z = RhwToDepth(vertices[i].rhw);
     vertices[i].u = scaleU * vertices[i].u;
@@ -875,7 +875,7 @@ void CParticle::Render(bool billboard, float top, float bottom, float left, floa
   world.Compose(*local, view);
   for (int i = 0; i < 4; ++i) {
     vector3d point = {output[i].x, output[i].y, output[i].z};
-    g_renderer->viewport.Project(&point.x, world.values, output[i]);
+    g_renderer->Project(&point.x, world.values, output[i]);
     const float rhw = this->depthOffset + output[i].rhw;
     output[i].rhw = rhw;
     if (0.0f > rhw) {

@@ -138,7 +138,7 @@ public:
   void ClearSurface(std::uint32_t color);
   void SetSize(int width, int height);
   void DrawBitmap(int x, int y, const BitmapImage* image, bool transparent);
-  void DrawBitmap(int x, int y, CBitmapRes* bitmap, bool transparent);
+  void DrawBitmap(int x, int y, CBitmapRes* bitmap, int transparent);
   void DrawAlignedText(int x, int y, std::string text, int width, int align, std::uint32_t color, int outlineColor, int family, int height, unsigned char bold, unsigned char outlined);
   void FillRegion(int x, int y, int width, int height, std::uint32_t color);
   std::string FitTextToWidth(const std::string& text, int width);
@@ -200,7 +200,7 @@ public:
   void DrawBitmapScaled(int x, int y, int width, int height, const CBitmapRes* bitmap, int option);
   void DrawBitmapRegion(int x, int y, CBitmapRes* bitmap, bool transparent, bool whole, int left, int top, int right, int bottom);
   void DrawAuxiliaryScaled(int mode, int x, int y, int width, int height, CBitmapRes* bitmap, int option, bool rebuild);
-  void DrawAuxiliary(int mode, int x, int y, CBitmapRes* bitmap, bool transparent, bool rebuild);
+  void DrawAuxiliary(int mode, int x, int y, CBitmapRes* bitmap, int transparent, bool rebuild);
   void DrawItemIcon(int x, int y, const ITEM_INFO& item, unsigned char identified);
   void DrawItemIconFromId(int x, int y, const char* id, unsigned char identified);
   void DrawItemSlotFrame(int x, int y);

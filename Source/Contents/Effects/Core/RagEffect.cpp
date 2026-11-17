@@ -216,7 +216,7 @@ static __forceinline void SendAfterimageColor(CGameObject& target, CRagEffect& s
 __declspec(safebuffers) void CRagEffect::Endure() {
   const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   RenderVertex screen{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
-  g_renderer->viewport.Project(&this->state.parent->render.position.x, view, screen);
+  g_renderer->Project(&this->state.parent->render.position.x, view, screen);
   this->state.tlvertX = screen.x;
   this->state.tlvertY = screen.y;
 
@@ -625,7 +625,7 @@ void CRagEffect::IceWall() {
 __declspec(safebuffers) void CRagEffect::IncAgiDex() {
   const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
-  g_renderer->viewport.Project(&this->state.parent->render.position.x, view, vertex);
+  g_renderer->Project(&this->state.parent->render.position.x, view, vertex);
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
   CopyVector(this->render.position, this->state.parent->render.position);
@@ -677,7 +677,7 @@ __declspec(safebuffers) void CRagEffect::IncAgiDex() {
 __declspec(safebuffers) void CRagEffect::IncAgility() {
   const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
-  g_renderer->viewport.Project(&this->state.parent->render.position.x, view, vertex);
+  g_renderer->Project(&this->state.parent->render.position.x, view, vertex);
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
   CopyVector(this->render.position, this->state.parent->render.position);
@@ -805,7 +805,7 @@ void CRagEffect::Hit1() {
 void CRagEffect::Hit2(int option) {
   const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   RenderVertex screen{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
-  g_renderer->viewport.Project(&this->state.parent->render.position.x, view, screen);
+  g_renderer->Project(&this->state.parent->render.position.x, view, screen);
   this->state.tlvertX = screen.x;
   this->state.tlvertY = screen.y;
 
@@ -937,7 +937,7 @@ void CRagEffect::Hit3() {
 void CRagEffect::Hit4() {
   CGameMode* gameMode = g_modeMgr.GetGameMode();
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
-  g_renderer->viewport.Project(&this->state.parent->render.position.x, gameMode->camera->frame.view.values, vertex);
+  g_renderer->Project(&this->state.parent->render.position.x, gameMode->camera->frame.view.values, vertex);
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
 
@@ -2104,7 +2104,7 @@ void CRagEffect::SetStateDuration(int duration) {
 __declspec(safebuffers) bool CRagEffect::Signum() {
   const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   RenderVertex screen{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
-  g_renderer->viewport.Project(&this->state.parent->render.position.x, view, screen);
+  g_renderer->Project(&this->state.parent->render.position.x, view, screen);
   this->state.tlvertX = screen.x;
   this->state.tlvertY = screen.y;
 
@@ -7013,7 +7013,7 @@ void CRagEffect::TexturedSpreadFlat(const char* name, char kind) {
 __declspec(safebuffers) void CRagEffect::RisingSparkles(char colorMode) {
   const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
-  g_renderer->viewport.Project(&this->state.parent->render.position.x, view, vertex);
+  g_renderer->Project(&this->state.parent->render.position.x, view, vertex);
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
   const RenderObjectState& parent = this->state.parent->render;
@@ -7457,7 +7457,7 @@ void CRagEffect::MonsterSpriteBurst(char kind) {
 __declspec(safebuffers) bool CRagEffect::AgilityChange(char increase, const std::string& textureName) {
   const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
-  g_renderer->viewport.Project(&this->state.parent->render.position.x, view, vertex);
+  g_renderer->Project(&this->state.parent->render.position.x, view, vertex);
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
   const RenderObjectState& parent = this->state.parent->render;
@@ -7911,7 +7911,7 @@ void CRagEffect::AssassinCloakingClear() {
 __declspec(safebuffers) void CRagEffect::TintedRisingSparkles(char) {
   const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
-  g_renderer->viewport.Project(&this->state.parent->render.position.x, view, vertex);
+  g_renderer->Project(&this->state.parent->render.position.x, view, vertex);
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
   const RenderObjectState& parent = this->state.parent->render;
@@ -9196,7 +9196,7 @@ __declspec(safebuffers) void CRagEffect::ColdHit() {
 
   const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   RenderVertex screen{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
-  g_renderer->viewport.Project(&this->state.parent->render.position.x, view, screen);
+  g_renderer->Project(&this->state.parent->render.position.x, view, screen);
   this->state.tlvertX = screen.x;
   this->state.tlvertY = screen.y;
 
@@ -9271,7 +9271,7 @@ __declspec(safebuffers) void CRagEffect::TurnUndead() {
 
   const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
-  g_renderer->viewport.Project(&this->state.parent->render.position.x, view, vertex);
+  g_renderer->Project(&this->state.parent->render.position.x, view, vertex);
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
 
@@ -9885,7 +9885,7 @@ void CRagEffect::SpawnActorHallucination() {
 void CRagEffect::NapalmFragments() {
   const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
-  g_renderer->viewport.Project(&this->state.parent->render.position.x, view, vertex);
+  g_renderer->Project(&this->state.parent->render.position.x, view, vertex);
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
 
@@ -10309,7 +10309,7 @@ __declspec(safebuffers) void CRagEffect::StoneCurseRing() {
 
   const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
-  g_renderer->viewport.Project(&this->state.parent->render.position.x, view, vertex);
+  g_renderer->Project(&this->state.parent->render.position.x, view, vertex);
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
 
@@ -11173,7 +11173,7 @@ static void SetVector(vector3d& v, float x, float y, float z) {
 __declspec(safebuffers) void CRagEffect::Sightrasher() {
   const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
-  g_renderer->viewport.Project(&this->state.parent->render.position.x, view, vertex);
+  g_renderer->Project(&this->state.parent->render.position.x, view, vertex);
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
 
@@ -12413,7 +12413,7 @@ void CRagEffect::Flasher() {
 
   const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
-  g_renderer->viewport.Project(&this->state.parent->render.position.x, view, vertex);
+  g_renderer->Project(&this->state.parent->render.position.x, view, vertex);
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
 
@@ -12715,7 +12715,7 @@ __declspec(safebuffers) void CRagEffect::HasteUp() {
 
   const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
-  g_renderer->viewport.Project(&this->state.parent->render.position.x, view, vertex);
+  g_renderer->Project(&this->state.parent->render.position.x, view, vertex);
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
 
@@ -12879,7 +12879,7 @@ void CRagEffect::RedParticleSpray(int count) {
 void CRagEffect::Hit5() {
   const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
-  g_renderer->viewport.Project(&this->state.parent->render.position.x, view, vertex);
+  g_renderer->Project(&this->state.parent->render.position.x, view, vertex);
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
 
@@ -12917,7 +12917,7 @@ void CRagEffect::Hit5() {
 void CRagEffect::Hit6() {
   const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
-  g_renderer->viewport.Project(&this->state.parent->render.position.x, view, vertex);
+  g_renderer->Project(&this->state.parent->render.position.x, view, vertex);
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
 
@@ -14650,7 +14650,7 @@ void CRagEffect::RenderAniClip(EZeffectClip* clip, const EZeffectTransform* tran
 __declspec(safebuffers) void CRagEffect::SandScatter() {
   const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
-  g_renderer->viewport.Project(&this->state.parent->render.position.x, view, vertex);
+  g_renderer->Project(&this->state.parent->render.position.x, view, vertex);
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
 
@@ -14802,7 +14802,7 @@ __declspec(safebuffers) void CRagEffect::Sight() {
   CopyVector(this->render.position, this->state.parent->render.position);
   const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
-  g_renderer->viewport.Project(&this->state.parent->render.position.x, view, vertex);
+  g_renderer->Project(&this->state.parent->render.position.x, view, vertex);
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
 
@@ -14849,7 +14849,7 @@ __declspec(safebuffers) void CRagEffect::Sight() {
 __declspec(safebuffers) void CRagEffect::AlphaCenterRise() {
   const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
-  g_renderer->viewport.Project(&this->state.parent->render.position.x, view, vertex);
+  g_renderer->Project(&this->state.parent->render.position.x, view, vertex);
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
 
@@ -15062,7 +15062,7 @@ bool CRagEffect::StormGust() {
 __declspec(safebuffers) void CRagEffect::DecAgility() {
   const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   RenderVertex screen{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
-  g_renderer->viewport.Project(&this->state.parent->render.position.x, view, screen);
+  g_renderer->Project(&this->state.parent->render.position.x, view, screen);
   this->state.tlvertX = screen.x;
   this->state.tlvertY = screen.y;
   CopyVector(this->render.position, this->state.parent->render.position);
@@ -16383,7 +16383,7 @@ void CRagEffect::TexturedMagicRing(const char* name, char kind) {
 __declspec(safebuffers) void CRagEffect::IncAgilityCenter(char kind) {
   const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
-  g_renderer->viewport.Project(&this->state.parent->render.position.x, view, vertex);
+  g_renderer->Project(&this->state.parent->render.position.x, view, vertex);
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
   const RenderObjectState& parent = this->state.parent->render;
@@ -23185,7 +23185,7 @@ bool CRagEffect::OnProcess() {
     {
       RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
       const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
-      g_renderer->viewport.Project(&this->state.parent->render.position.x, view, vertex);
+      g_renderer->Project(&this->state.parent->render.position.x, view, vertex);
       this->state.tlvertX = vertex.x;
       this->state.tlvertY = vertex.y;
       const int roll = rand() % 360;
@@ -23737,7 +23737,7 @@ bool CRagEffect::OnProcess() {
     {
       RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
       const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
-      g_renderer->viewport.Project(&this->state.parent->render.position.x, view, vertex);
+      g_renderer->Project(&this->state.parent->render.position.x, view, vertex);
       this->state.tlvertX = vertex.x;
       this->state.tlvertY = vertex.y;
       if (this->state.stateCnt == 0) {
