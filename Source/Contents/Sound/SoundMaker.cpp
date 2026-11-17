@@ -1102,7 +1102,8 @@ void CNpc::Render(int argument) {
           if (effect.id == 184) {
             if (this->objectType == NPC_MOB_TYPE && (!this->render.visible || !this->render.enabled)) {
               this->SetColor(-1, 0, 0, 0);
-              this->DrawSprite(argument, g_session.IsMonsterClass(this->GetEffectiveJob(-1)), 0.0f);
+              const bool monster = g_session.IsMonsterClass(this->GetEffectiveJob(-1));
+              this->DrawSprite(argument, monster, 0.0f);
               return;
             }
             break;
