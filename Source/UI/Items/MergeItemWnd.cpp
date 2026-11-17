@@ -195,8 +195,8 @@ void CMergeItemWnd::OnLBtnDown(int x, int y) {
 // FUNCTION: fn_09668
 void CMergeItemWnd::OnMouseHover(int x, int y) {
   const int id = this->ItemAt(x, y);
-  int screenX = x;
   int screenY = y;
+  int screenX = x;
   ITEM_INFO item = g_session.LookupClientItemByIdentity(id);
   if (item.identity[1] > 0) {
     this->ToScreen(screenX, screenY);
