@@ -37,6 +37,11 @@
 #include <vector>
 
 template __declspec(noinline) bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+template __declspec(noinline) std::string std::string::substr(std::string::size_type, std::string::size_type) const;
+template __declspec(noinline) std::string* std::_Move_unchecked<std::string*, std::string*>(std::string*, std::string*, std::string*);
+template __declspec(noinline) std::map<int, UIWindow*>::map(const std::map<int, UIWindow*>&);
+template __declspec(noinline) void std::map<int, UIWindow*>::_Mybase::clear() noexcept;
+template __declspec(noinline) std::_Tree_unchecked_const_iterator<std::map<int, UIWindow*>::_Mybase::_Scary_val>& std::_Tree_unchecked_const_iterator<std::map<int, UIWindow*>::_Mybase::_Scary_val>::operator++() noexcept;
 
 // GLOBAL: gl_25380
 static const std::string s_chatItemLinkOpening = "<ITEML>";
@@ -319,15 +324,16 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
         );
       }
 
-      const bool everyTab = c == 25 || (c == 0 && b == 0xFF);
+      bool everyTab = false;
+      if (c == 25 || (c == 0 && b == 0xFF)) {
+        everyTab = true;
+      }
       int index = 0;
       for (std::map<int, SubChatWndInfo>::iterator it = g_session.m_noSubChatWnds.begin(); it != g_session.m_noSubChatWnds.end(); ++it, ++index) {
         if ((it->second.options[c] || everyTab) && this->m_tabs[index] != nullptr) {
           static_cast<UIChatHisBox*>(this->m_tabs[index])->AddLinkRecord(reinterpret_cast<const char*>(a), b, name);
           for (unsigned int line = 0; line < lines.size(); ++line) {
-            UIWindow* tab = this->m_tabs[index];
-            const int width = this->TextWidth(lines[line].c_str(), 0, 0, 12, 0, 0);
-            if (width <= tab->geometry.width - 20 || hasLink) {
+            if (this->m_tabs[index]->geometry.width - 20 >= this->TextWidth(lines[line].c_str(), 0, 0, 12, 0, 0) || hasLink) {
               static_cast<UIChatHisBox*>(this->m_tabs[index])->AddText(lines[line].c_str(), b, name);
             } else {
               static_cast<UIChatHisBox*>(this->m_tabs[index])->AddTextWrapped(lines[line].c_str(), b, name);
