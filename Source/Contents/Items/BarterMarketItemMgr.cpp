@@ -739,14 +739,16 @@ struct BarterTriple {
 // FUNCTION: fn_03802
 BarterTriple* CopyTriples(BarterTriple* first, BarterTriple* last, BarterTriple* dest)
 {
-  while (first != last) {
-    dest->first = first->first;
-    dest->second = first->second;
-    dest->third = first->third;
-    ++first;
-    ++dest;
+  BarterTriple* src = first;
+  BarterTriple* dst = dest;
+  while (src != last) {
+    dst->second = src->second;
+    dst->first = src->first;
+    dst->third = src->third;
+    ++src;
+    ++dst;
   }
-  return dest;
+  return dst;
 }
 
 struct BarterChunkAllocator {
