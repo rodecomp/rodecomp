@@ -37,6 +37,7 @@ public:
   void FetchCategoryProducts();
   void FetchAllProducts();
   void FetchStoveTermsAgreement();
+  void RunCallback();
   bool Initialize();
   void StartPurchase(const std::vector<ITEM_INFO>& items);
 };

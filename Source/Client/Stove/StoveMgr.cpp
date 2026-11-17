@@ -92,6 +92,12 @@ void CStoveMgr::FetchStoveTermsAgreement() {
   } while (g_stoveWaitingCallback);
 }
 
+// OFFSET: 0x0063E900
+// FUNCTION: fn_04798
+void CStoveMgr::RunCallback() {
+  Base_RunCallback();
+}
+
 // OFFSET: 0x0063E910
 // FUNCTION: fn_45460
 void CStoveMgr::FetchCategoryProducts() {

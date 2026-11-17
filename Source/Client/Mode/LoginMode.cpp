@@ -1098,7 +1098,7 @@ void CLoginMode::Update() {
   g_asyncWorkMgr->Update(1000);
   g_ggHashMgr->VerifyPendingFiles();
   if (g_launchPassCommandLine) {
-    Base_RunCallback();
+    g_stoveMgr->RunCallback();
   }
 
   if (g_restoreSurfaces != 0) {
