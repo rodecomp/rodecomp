@@ -915,34 +915,34 @@ bool CWorld::RemoveGroundItem(std::uint32_t aid) {
 // OFFSET: 0x00ACA8A0
 // FUNCTION: fn_17697
 bool CWorld::RemoveSkill(std::uint32_t aid) {
-  for (auto entry = this->skills.begin(); entry != this->skills.end(); ++entry) {
-    if ((*entry)->skillAid == aid) {
-      CSkill* skill = *entry;
-
-      if (!skill) {
-        return false;
-      }
-
-      skill->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0);
-
-      if (skill->HasPendingDamage() == true) {
-        for (std::uint32_t pending : this->pendingActorIds) {
-          if (pending == aid) {
-            return false;
-          }
-        }
-
-        this->pendingActorIds.push_back(aid);
-        return false;
-      }
-
-      this->RemoveObject(skill);
-      this->skills.erase(entry);
-      return true;
-    }
+  auto entry = std::find_if(this->skills.begin(), this->skills.end(), [aid](CSkill* skill) {
+    return skill->skillAid == aid;
+  });
+  if (entry == this->skills.end()) {
+    return false;
   }
 
-  return false;
+  CSkill* skill = *entry;
+  if (!skill) {
+    return false;
+  }
+
+  skill->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0);
+
+  if (skill->HasPendingDamage() == true) {
+    for (std::uint32_t pending : this->pendingActorIds) {
+      if (pending == aid) {
+        return false;
+      }
+    }
+
+    this->pendingActorIds.push_back(aid);
+    return false;
+  }
+
+  this->RemoveObject(skill);
+  this->skills.erase(entry);
+  return true;
 }
 
 // OFFSET: 0x00CDA2F0
