@@ -8,6 +8,5 @@ extern int(WSAAPI* g_connectionReceive)(SOCKET socket, char* data, int bytes, in
 
 bool InitializeConnections();
 void Cleanup();
-bool CheckConnectionRuntime();
 
 #endif

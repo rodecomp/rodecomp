@@ -64,6 +64,7 @@ public:
   ~CRagConnection() override;
   short GetPacketType(const char* packet);
   int GetPacketSize(int id);
+  bool CheckConnectionRuntime();
 
   /* 006C */ unsigned char m_replayMode;
 };
