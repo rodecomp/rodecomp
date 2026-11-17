@@ -40,6 +40,7 @@ extern CWorldViewMgr g_worldViewMgr;
 class UIRoMapWnd;
 
 struct CKafraMoveMapServiceInfo {
+  CKafraMoveMapServiceInfo();
   // INLINED
   virtual ~CKafraMoveMapServiceInfo() {}
 

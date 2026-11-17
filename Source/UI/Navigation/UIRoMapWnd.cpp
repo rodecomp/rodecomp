@@ -651,12 +651,15 @@ void UIRoMapWnd::DrawMapMarker(const RoMapMarker& marker, unsigned char skipSele
   this->DrawOutlinedText(marker.area.left + 2, marker.area.top + 5, name.c_str(), 0, 0xD2FF, 0, 0, 12, 1, 0);
 }
 
+// INLINED
+inline CKafraMoveMapServiceInfo::CKafraMoveMapServiceInfo() : blend(0.0f) {
+  g_session.m_hotkeyScript->Call("ReadKafraMoveMapServiceInfo", "");
+  g_session.m_hotkeyScript->Call("ReadKafraMiniMapPosInfo", "");
+}
+
 // OFFSET: 0x009119B0
 // FUNCTION: fn_12522
 UIRoMapWnd::UIRoMapWnd() : UIFrameWnd(0), previewTexture(nullptr) {
-  g_session.m_hotkeyScript->Call("ReadKafraMoveMapServiceInfo", "");
-  g_session.m_hotkeyScript->Call("ReadKafraMiniMapPosInfo", "");
-  this->fieldNames.clear();
   this->ClearRecords();
   this->m_showLabels = 0;
   this->m_lastTime = 0;
