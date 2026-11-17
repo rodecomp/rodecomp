@@ -928,7 +928,8 @@ std::vector<unsigned char> CNavigationManager::WriteStates() {
     buffer.resize(it->name.size() + 0x24 + offset, 0);
     reinterpret_cast<NaviTargetRecord*>(buffer.data() + offset)->type = it->type;
     offset += 4;
-    std::memcpy(reinterpret_cast<NaviStateDataRecord*>(buffer.data() + offset)->mapName, info->GetName(), info->GetNameLength());
+    char* mapName = reinterpret_cast<NaviStateDataRecord*>(buffer.data() + offset)->mapName;
+    std::memcpy(mapName, info->GetName(), info->GetNameLength());
     reinterpret_cast<NaviStateDataRecord*>(buffer.data() + offset)->x = it->x;
     reinterpret_cast<NaviStateDataRecord*>(buffer.data() + offset)->y = it->y;
     const int length = static_cast<int>(it->name.size());
