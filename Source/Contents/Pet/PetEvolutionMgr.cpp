@@ -65,7 +65,9 @@ std::pair<bool, std::vector<int>> CPetEvolutionMgr::GetEvolutionTargets(int petE
     return std::make_pair(false, std::vector<int>());
   }
 
-  for (const PetEvolutionRecipe& recipe : found->second) {
+  const auto recipeEnd = found->second.end();
+  for (auto recipeIt = found->second.begin(); recipeIt != recipeEnd; ++recipeIt) {
+    const PetEvolutionRecipe& recipe = *recipeIt;
     targets.push_back(recipe.target);
   }
   return std::make_pair(true, targets);
