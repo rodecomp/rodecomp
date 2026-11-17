@@ -3,4 +3,3 @@
 #include <string>
 
 extern template std::string::basic_string(const std::string&);
-extern template std::string::~basic_string();
