@@ -541,7 +541,7 @@ void UIChatHisBox::CopyHistory(const UIChatHisBox& other) {
 // FUNCTION: fn_11200
 void UIComboBoxID::AddLine(const char* text, int id, int data) {
   const int index = static_cast<int>(this->lines.size());
-  this->lines.insert({index, {id, text}});
+  this->lines.insert(std::pair<const int, IdListLine>(std::piecewise_construct, std::forward_as_tuple(index), std::forward_as_tuple(id, text)));
   const int width = this->TextWidth(text, 0, 0, 12, 0, 0);
   this->contentWidth = std::max(this->contentWidth, width);
   this->Refresh();
@@ -554,7 +554,7 @@ void UIComboBoxID::AddLine(const char* text, int id, int data) {
 // OFFSET: 0x00875DD0
 // FUNCTION: fn_11203
 void UIListBoxID::AddLine(const char* text, int id) {
-  this->lines.insert({static_cast<int>(this->lines.size()), {id, text}});
+  this->lines.insert(std::pair<const int, IdListLine>(std::piecewise_construct, std::forward_as_tuple(static_cast<int>(this->lines.size())), std::forward_as_tuple(id, text)));
   const int width = this->TextWidth(text, 0, 0, 12, 0, 0);
   this->contentWidth = std::max(this->contentWidth, width);
   this->Refresh();
