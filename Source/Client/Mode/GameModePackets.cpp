@@ -9700,9 +9700,10 @@ void CGameMode::ReceiveItemPickupAck2(const unsigned char* data) {
       UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_GET_ITEM), item.DisplayName(0).c_str(), packet->amount).c_str()), 0xFFFF00, 6, 0, 0
     );
 
+    const int amount = packet->amount;
     UIWindow* window = g_windowMgr.EnsureWindow(WID_NOTIFYITEMOBTAINWND);
     window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, item.identified, 0, 0, 0);
-    window->SendMsg(nullptr, UM_SETTITLE, 0, packet->amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
+    window->SendMsg(nullptr, UM_SETTITLE, 0, amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
     window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     break;
   }
@@ -9800,9 +9801,10 @@ void CGameMode::ReceiveItemPickupAck3(const unsigned char* data) {
       UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_GET_ITEM), item.DisplayName(0).c_str(), packet->amount).c_str()), 0xFFFF00, 6, 0, 0
     );
 
+    const int amount = packet->amount;
     UIWindow* window = g_windowMgr.EnsureWindow(WID_NOTIFYITEMOBTAINWND);
     window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, item.identified, 0, 0, 0);
-    window->SendMsg(nullptr, UM_SETTITLE, 0, packet->amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
+    window->SendMsg(nullptr, UM_SETTITLE, 0, amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
     window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     if (UIWindow* quest = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
       quest->SendMsg(nullptr, UM_COMMAND, ID_NOTICE, 0xC2, 1, 0);
@@ -9904,9 +9906,10 @@ void CGameMode::ReceiveItemPickupAck(const unsigned char* data) {
       UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_GET_ITEM), item.DisplayName(0).c_str(), packet->amount).c_str()), 0xFFFF00, 6, 0, 0
     );
 
+    const int amount = packet->amount;
     UIWindow* window = g_windowMgr.EnsureWindow(WID_NOTIFYITEMOBTAINWND);
     window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, item.identified, 0, 0, 0);
-    window->SendMsg(nullptr, UM_SETTITLE, 0, packet->amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
+    window->SendMsg(nullptr, UM_SETTITLE, 0, amount, reinterpret_cast<std::intptr_t>(item.itemId.c_str()), 0);
     window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     break;
   }
@@ -10281,7 +10284,7 @@ void CGameMode::ReceiveEquipItemDamaged(const unsigned char* packet) {
   } else {
     const EquipSlots slots = g_session.GetEquipSlots(p->equipLocation);
     ITEM_INFO item = g_session.GetEquippedItemAt(slots.values[2]);
-    if (item.identity[1] != 0) {
+    if (item.identity[1] > 0) {
       text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_DAMAGED_EQUIP), item.DisplayName(0).c_str()));
     }
   }
