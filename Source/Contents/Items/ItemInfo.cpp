@@ -306,9 +306,9 @@ std::uint32_t ITEM_INFO::Deserialize(const std::vector<unsigned char>& data) {
     return 0xFFFFFFFF;
   }
 
-  std::uint32_t offset = 6;
   ItemRecordHeader header;
   header.Read(data.data());
+  std::uint32_t offset = 6;
   if (281 != header.id) {
     return 0xFFFFFFFF;
   }
