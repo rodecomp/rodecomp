@@ -1019,89 +1019,98 @@ void CUIItemInfo::OnCreate(int width, int height) {
   this->nameText->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->nameText);
 
-  CUITextViewer* description = new CUITextViewer();
-  this->descriptionViewer = description;
-  description->SetSize(173, 97);
-  description->Move(165, 26);
-  description->SetTextOffset(0, 6);
+  this->descriptionViewer = new CUITextViewer();
+  this->descriptionViewer->SetSize(173, 97);
+  this->descriptionViewer->Move(165, 26);
+  this->descriptionViewer->SetTextOffset(0, 6);
   {
+    CUITextViewer* description = this->descriptionViewer;
     description->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Gulim", 0xB3E307A5F753D5E3ULL)));
   }
-  description->SetFontHeight(12);
-  description->SetBold(0);
-  description->SetTextColor(0);
-  description->SetOutline(0, 0xFFFF00FF);
-  description->SetLineSpacing(6);
-  description->SetBackgroundColor(0xFFFF00FF);
-  description->SetPadding(0, 0, 0, 0);
-  description->SetScrollBarSize(8, 97);
-  description->SetScrollStep(20);
+  this->descriptionViewer->SetFontHeight(12);
+  this->descriptionViewer->SetBold(0);
+  this->descriptionViewer->SetTextColor(0);
+  this->descriptionViewer->SetOutline(0, 0xFFFF00FF);
+  this->descriptionViewer->SetLineSpacing(6);
+  this->descriptionViewer->SetBackgroundColor(0xFFFF00FF);
+  this->descriptionViewer->SetPadding(0, 0, 0, 0);
+  this->descriptionViewer->SetScrollBarSize(8, 97);
+  this->descriptionViewer->SetScrollStep(20);
   {
-    description->SetScrollBarButtonImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_arrow_up.bmp", 0xDB27CB557D038759ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_arrow_down.bmp", 0x3FA3AFA7035DE3FFULL)));
+    CUITextViewer* description = this->descriptionViewer;
+    description->SetScrollBarButtonImages(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_arrow_up.bmp", 0xDB27CB557D038759ULL), OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_arrow_down.bmp", 0x3FA3AFA7035DE3FFULL));
   }
   {
-    description->SetScrollBarBackground(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_bg_mid.bmp", 0x87E3D1C50D572DEFULL)));
+    CUITextViewer* description = this->descriptionViewer;
+    description->SetScrollBarBackground(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_bg_mid.bmp", 0x87E3D1C50D572DEFULL));
   }
   {
-    description->SetScrollBarThumbImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_thumb_up.bmp", 0x51BB39B763BBBD8DULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_thumb_mid.bmp", 0xADC51BF9C98B413DULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_thumb_down.bmp", 0xDF8117FF49CFF551ULL)));
+    CUITextViewer* description = this->descriptionViewer;
+    description->SetScrollBarThumbImages(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_thumb_up.bmp", 0x51BB39B763BBBD8DULL), OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_thumb_mid.bmp", 0xADC51BF9C98B413DULL), OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_thumb_down.bmp", 0xDF8117FF49CFF551ULL));
   }
-  this->AddChild(description);
+  this->AddChild(this->descriptionViewer);
 
-  CUITextViewer* options = new CUITextViewer();
-  this->optionsViewer = options;
-  options->SetSize(115, 90);
-  options->Move(338, 26);
-  options->SetTextOffset(0, 8);
+  this->optionsViewer = new CUITextViewer();
+  this->optionsViewer->SetSize(115, 90);
+  this->optionsViewer->Move(338, 26);
+  this->optionsViewer->SetTextOffset(0, 8);
   {
+    CUITextViewer* options = this->optionsViewer;
     options->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Gulim", 0x114901C7E37F6D49ULL)));
   }
-  options->SetFontHeight(12);
-  options->SetBold(0);
-  options->SetTextColor(0);
-  options->SetOutline(0, 0xFFFF00FF);
-  options->SetLineSpacing(6);
-  options->SetBackgroundColor(0xFFFF00FF);
-  options->SetPadding(0, 0, 0, 0);
-  options->SetScrollBarSize(8, 90);
-  options->SetScrollStep(20);
+  this->optionsViewer->SetFontHeight(12);
+  this->optionsViewer->SetBold(0);
+  this->optionsViewer->SetTextColor(0);
+  this->optionsViewer->SetOutline(0, 0xFFFF00FF);
+  this->optionsViewer->SetLineSpacing(6);
+  this->optionsViewer->SetBackgroundColor(0xFFFF00FF);
+  this->optionsViewer->SetPadding(0, 0, 0, 0);
+  this->optionsViewer->SetScrollBarSize(8, 90);
+  this->optionsViewer->SetScrollStep(20);
   {
-    options->SetScrollBarButtonImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_arrow_up.bmp", 0x7D5D0F110B6B8371ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_arrow_down.bmp", 0xF715514F5961B75BULL)));
+    CUITextViewer* options = this->optionsViewer;
+    options->SetScrollBarButtonImages(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_arrow_up.bmp", 0x7D5D0F110B6B8371ULL), OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_arrow_down.bmp", 0xF715514F5961B75BULL));
   }
   {
-    options->SetScrollBarBackground(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_bg_mid.bmp", 0x4191BB5531FD3999ULL)));
+    CUITextViewer* options = this->optionsViewer;
+    options->SetScrollBarBackground(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_bg_mid.bmp", 0x4191BB5531FD3999ULL));
   }
   {
-    options->SetScrollBarThumbImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_thumb_up.bmp", 0xB19D1FA9116F39D3ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_thumb_mid.bmp", 0x9569C9C7E70909AFULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_thumb_down.bmp", 0xD7A749EB27D5BF6DULL)));
+    CUITextViewer* options = this->optionsViewer;
+    options->SetScrollBarThumbImages(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_thumb_up.bmp", 0xB19D1FA9116F39D3ULL), OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_thumb_mid.bmp", 0x9569C9C7E70909AFULL), OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_thumb_down.bmp", 0xD7A749EB27D5BF6DULL));
   }
-  this->AddChild(options);
+  this->AddChild(this->optionsViewer);
 
-  CUITextViewer* sources = new CUITextViewer();
-  this->sourcesViewer = sources;
-  sources->SetSize(108, 118);
-  sources->Move(480, 5);
-  sources->SetTextOffset(0, 6);
+  this->sourcesViewer = new CUITextViewer();
+  this->sourcesViewer->SetSize(108, 118);
+  this->sourcesViewer->Move(480, 5);
+  this->sourcesViewer->SetTextOffset(0, 6);
   {
+    CUITextViewer* sources = this->sourcesViewer;
     sources->SetFont(std::string(OBFUSCATE_SOURCE_TEXT("Gulim", 0xB195637DAFCB0D59ULL)));
   }
-  sources->SetFontHeight(12);
-  sources->SetBold(0);
-  sources->SetTextColor(0);
-  sources->SetOutline(0, 0xFFFF00FF);
-  sources->SetLineSpacing(6);
-  sources->SetBackgroundColor(0xFFFF00FF);
-  sources->SetPadding(0, 0, 0, 0);
-  sources->SetScrollBarSize(8, 118);
-  sources->SetScrollStep(20);
+  this->sourcesViewer->SetFontHeight(12);
+  this->sourcesViewer->SetBold(0);
+  this->sourcesViewer->SetTextColor(0);
+  this->sourcesViewer->SetOutline(0, 0xFFFF00FF);
+  this->sourcesViewer->SetLineSpacing(6);
+  this->sourcesViewer->SetBackgroundColor(0xFFFF00FF);
+  this->sourcesViewer->SetPadding(0, 0, 0, 0);
+  this->sourcesViewer->SetScrollBarSize(8, 118);
+  this->sourcesViewer->SetScrollStep(20);
   {
-    sources->SetScrollBarButtonImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_arrow_up.bmp", 0xADADEB4DF7813B55ULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_arrow_down.bmp", 0xD9452D81E5CD99C1ULL)));
+    CUITextViewer* sources = this->sourcesViewer;
+    sources->SetScrollBarButtonImages(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_arrow_up.bmp", 0xADADEB4DF7813B55ULL), OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_arrow_down.bmp", 0xD9452D81E5CD99C1ULL));
   }
   {
-    sources->SetScrollBarBackground(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_bg_mid.bmp", 0xFD69A9B3F311818DULL)));
+    CUITextViewer* sources = this->sourcesViewer;
+    sources->SetScrollBarBackground(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_bg_mid.bmp", 0xFD69A9B3F311818DULL));
   }
   {
-    sources->SetScrollBarThumbImages(std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_thumb_up.bmp", 0x7F2DFFC1ABE91F2BULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_thumb_mid.bmp", 0xD98F5345098D630DULL)), std::string(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_thumb_down.bmp", 0x9B0F234DEFDF7593ULL)));
+    CUITextViewer* sources = this->sourcesViewer;
+    sources->SetScrollBarThumbImages(OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_thumb_up.bmp", 0x7F2DFFC1ABE91F2BULL), OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_thumb_mid.bmp", 0xD98F5345098D630DULL), OBFUSCATE_SOURCE_TEXT("유저인터페이스\\AdventureGuide\\scroll_thumb_down.bmp", 0x9B0F234DEFDF7593ULL));
   }
-  this->AddChild(sources);
+  this->AddChild(this->sourcesViewer);
 }
 
 // OFFSET: 0x009CC580
