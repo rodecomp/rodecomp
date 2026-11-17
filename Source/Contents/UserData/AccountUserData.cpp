@@ -9,6 +9,7 @@ void LoadWhisperBlockList(Json::Value& data) {
 
   for (Json::UInt i = 0; i < names.size(); ++i) {
     std::string name = FromUtf8(names[i].asString(), g_textCodePage);
-    g_whisperBlockMgr->Add(name);
+    CWhisperBlockMgr* whisperBlockMgr = g_whisperBlockMgr;
+    whisperBlockMgr->Add(name);
   }
 }
