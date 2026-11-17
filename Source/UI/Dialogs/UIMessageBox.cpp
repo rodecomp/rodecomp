@@ -1736,7 +1736,7 @@ void UINoticeWnd::OnCreate(int, int) {
   checkText[checkSize] = 0;
   std::fclose(check);
 
-  int lines[20];
+  int lines[21];
   lines[0] = 0;
   int lineCount = 1;
   this->lineCount = 0;
