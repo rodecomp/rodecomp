@@ -14,8 +14,6 @@ namespace {
   bool Hex(unsigned char value) {
     return (value >= '0' && value <= '9') || (value >= 'a' && value <= 'f') || (value >= 'A' && value <= 'F');
   }
-
-  // INLINED
 }
 
 // GLOBAL: gl_24593
