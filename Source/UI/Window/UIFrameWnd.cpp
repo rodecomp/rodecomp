@@ -733,7 +733,8 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       if (this->edit->Length() == 0) {
         return 0;
       }
-      if (g_navigationLinkParser->HasLink(std::string(this->edit->Text()))) {
+      NavigationLinkParser* parser = g_navigationLinkParser;
+      if (parser->HasLink(std::string(this->edit->Text()))) {
         this->edit->SetText("");
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_MSG_IS_ILLEGAL_MSG)), 255, 0, 0, 0);
         return 0;
@@ -741,7 +742,8 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 
       std::string text = this->edit->Text();
       if (!this->edit->links.empty()) {
-        text = this->edit->LinkedText();
+        const std::string linked = this->edit->LinkedText();
+        text = linked;
       } else if (_mbsstr(reinterpret_cast<const unsigned char*>(this->edit->Text()), reinterpret_cast<const unsigned char*>("<"))) {
         UIItemTagOnChat* tags = this->edit->itemTags;
         if (tags != nullptr && !tags->linkedText.empty()) {
@@ -843,14 +845,15 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     }
   }
   case UM_MAKEMENU: {
-    this->menuCommands.clear();
+    this->menuCommands.erase(this->menuCommands.begin(), this->menuCommands.end());
     if (g_windowMgr.menuWnd != nullptr) {
       g_windowMgr.CloseWindow(WID_MENUWND);
     }
 
     {
       const std::string self = g_session.DecodePlayerName();
-      if (this->memberRoles.find(self) == this->memberRoles.end()) {
+      const std::map<std::string, int>::iterator found = this->memberRoles.find(self);
+      if (found == this->memberRoles.end()) {
         return 0;
       }
       const int rank = this->memberRoles[self];
@@ -890,7 +893,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       }
     }
 
-    if (!this->menuCommands.empty()) {
+    if (this->menuCommands.size() != 0) {
       UIWindow* menu = g_windowMgr.EnsureWindow(WID_MENUWND);
       for (unsigned index = 0; index < this->menuCommands.size(); ++index) {
         menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(this->menuCommands[index].text.c_str()), 0, 0, 0);
@@ -936,8 +939,8 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     prefix = LookupMessage((this->info.type != 0) + 89);
     char text[256];
     std::sprintf(text, "%s%s (%d/%d)", prefix.c_str(), this->info.title.c_str(), this->info.memberCount, this->info.memberLimit);
-    if (g_forbiddenWords.Contains(text)) {
-      std::string masked;
+    if (g_forbiddenWords.Contains(text) == true) {
+      std::string masked("");
       g_forbiddenWords.Mask(text, &masked);
     }
     this->titleText->SetTextFitted(text);
@@ -985,7 +988,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
   }
   case UM_ADDCHAT: {
     char* text = reinterpret_cast<char*>(a);
-    if (g_forbiddenWords.Contains(text)) {
+    if (g_forbiddenWords.Contains(text) == true) {
       std::string masked("");
       g_forbiddenWords.Mask(text, &masked);
     }
