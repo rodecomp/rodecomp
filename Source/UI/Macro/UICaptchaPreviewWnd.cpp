@@ -146,10 +146,7 @@ void UIMacroDetectorWnd::Paint() {
 
     unsigned int seconds = remaining / 1000;
     this->DrawRightAlignedText(280, 138, FormatOwnedString("%2d : %2d", seconds / 60, seconds).c_str(), 0, 0, 13, 0xFF2323, 1);
-    {
-      std::string str = FormatOwnedString(LookupMessage(MSI_MACRO_REPORTER_TOOLTIP_CHAR), this->remainingAttempts);
-      this->DrawTextAt(60, 138, str.c_str(), 0, 0, 13, 0x2323FF, 1, 0);
-    }
+    this->DrawTextAt(60, 138, FormatOwnedString(LookupMessage(MSI_MACRO_REPORTER_TOOLTIP_CHAR), this->remainingAttempts).c_str(), 0, 0, 13, 0x2323FF, 1, 0);
   }
 }
 
