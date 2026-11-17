@@ -25,6 +25,8 @@
 #include <format>
 #include <string>
 
+template __declspec(noinline) std::function<void(CUIListItem*)>& std::function<void(CUIListItem*)>::operator=(const std::function<void(CUIListItem*)>&);
+
 template __declspec(noinline) std::_Tree_find_result<std::_Tree_node<std::pair<const unsigned int, RenewQuestOngoingInfo>, void*>*>
 std::map<unsigned int, RenewQuestOngoingInfo>::_Mybase::_Find_lower_bound<unsigned int>(const unsigned int&) const;
 
@@ -764,14 +766,20 @@ void CUIListBoxEx<OngoingQuestInfo::CUIRewardItem, OngoingQuestInfo::CRewardItem
       item->SetSize(this->itemWidth, this->rowHeight);
       item->Show(0);
       item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
-      item->onHover = [this](CUIListItem* listItem) {
-        for (OngoingQuestInfo::CUIRewardItem* other : this->items) {
-          other->SetHighlighted(other == listItem);
-        }
-      };
-      item->onPress = [this](CUIListItem* listItem) {
-        this->SelectItem(listItem);
-      };
+      {
+        const std::function<void(CUIListItem*)> onHover = [this](CUIListItem* listItem) {
+          for (OngoingQuestInfo::CUIRewardItem* other : this->items) {
+            other->SetHighlighted(other == listItem);
+          }
+        };
+        item->onHover = onHover;
+      }
+      {
+        const std::function<void(CUIListItem*)> onPress = [this](CUIListItem* listItem) {
+          this->SelectItem(listItem);
+        };
+        item->onPress = onPress;
+      }
       this->AddChild(item);
       slot = item;
     }
