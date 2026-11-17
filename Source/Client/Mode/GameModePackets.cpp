@@ -12374,9 +12374,9 @@ void CGameMode::ReceiveGuildMemberList3(const unsigned char* data) {
     member.sex = record->sex;
     member.positionId = record->positionId;
     member.level = record->level;
+    member.expRatio = 0.0f;
     member.exp = record->exp;
     member.online = record->online;
-    member.expRatio = 0.0f;
     if (member.characterId == g_session.m_gid) {
       member.name = g_session.DecodePlayerName();
     } else {
