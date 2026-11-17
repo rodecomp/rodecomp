@@ -31,7 +31,8 @@ template __declspec(noinline) void std::_List_node<ProbabilityTable::CItemData, 
 template <>
 bool CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>::RebindIndex(int index) {
   if (index != -1) {
-    for (ProbabilityTable::CUIItem* item : this->items) {
+    for (auto itemIt = this->items.begin(), itemEnd = this->items.end(); itemIt != itemEnd; ++itemIt) {
+      ProbabilityTable::CUIItem* item = *itemIt;
       if (index == item->index) {
         if (!this->binder) {
           return false;
