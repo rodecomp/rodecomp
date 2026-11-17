@@ -907,7 +907,7 @@ public:
   bool IsSuperNoviceClass(int job) const;
   void ApplySaveDataOptions();
   int SetHotkeyEntry(char enabled, int id, int value, int slot);
-  int SetFlag(char value);
+  int SetFlag(int value);
   void SetPlayerNameKey(const unsigned char* key);
   // INLINED
   NormalItemSlot& SkillHotkey(int index) {

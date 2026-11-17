@@ -4731,7 +4731,7 @@ void CGameMode::ReceiveSpriteChange2(const unsigned char* data) {
       g_session.m_bodyCostume = packet->valueLow;
       break;
     case 14:
-      g_session.SetFlag(static_cast<char>(packet->valueLow));
+      g_session.SetFlag(packet->valueLow);
       actor->SetSex(packet->valueLow);
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GENDER_CHANGE_MESSAGE_COMPLETE)), 0, 0, 0, 0);
       break;

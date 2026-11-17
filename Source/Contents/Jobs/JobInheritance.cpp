@@ -1613,7 +1613,7 @@ int CSession::SetHotkeyEntry(char enabled, int id, int value, int slot) {
 
 // OFFSET: 0x00E26030
 // FUNCTION: fn_23912
-int CSession::SetFlag(char value) {
+int CSession::SetFlag(int value) {
   const int result = value & 1;
   this->cachedSex = result;
   this->currentSex = result;
