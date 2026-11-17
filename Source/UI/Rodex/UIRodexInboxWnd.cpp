@@ -700,7 +700,14 @@ void UIRodexInboxWnd::RequestMailAttachments(int type, std::int64_t mailId) {
     return;
   }
 
-  RodexMailMap* mails = RodexMailsOfType(type);
+  RodexMailMap* mails = nullptr;
+  if (type == 0) {
+    mails = &g_rodexMailStore->m_mails0;
+  } else if (type == 1) {
+    mails = &g_rodexMailStore->m_mails1;
+  } else if (type == 2) {
+    mails = &g_rodexMailStore->m_mails2;
+  }
   unsigned char flags = 0;
   if (mails != nullptr) {
     RodexMailMap::iterator mail = mails->find(mailId);
