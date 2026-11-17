@@ -124,7 +124,7 @@ void CEnchantMgr::HandleEnchantResult(int messageId, int itemId) {
     }
 
     ITEM_INFO item = g_session.LookupClientItemByIdentity(this->m_request.index);
-    if (item.identity[1] == 0) {
+    if (item.identity[1] <= 0) {
       return;
     }
 
