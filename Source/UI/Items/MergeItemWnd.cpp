@@ -156,8 +156,8 @@ void CMergeItemWnd::Paint() {
     }
 
     const int columns = (this->geometry.width - this->m_marginRight - this->m_gridLeft) / this->m_cellSize;
-    const int y = this->m_cellSize * (index / columns) + this->m_gridTop;
     const int x = this->m_cellSize * (index % columns) + this->m_gridLeft;
+    const int y = this->m_cellSize * (index / columns) + this->m_gridTop;
     UICheckBox* box = this->m_items[first + index];
     if (box != nullptr) {
       ITEM_INFO item = g_session.LookupClientItemByIdentity(box->m_message);
