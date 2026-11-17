@@ -3226,13 +3226,13 @@ int CLoginMode::SendMsg(int event, int argument1, int argument2, int argument3, 
     this->pendingCursorType = 27;
     return 0;
   case LMM_START_REPLAY:
-    g_session.SetFlag(static_cast<char>(Replay::Instance().header.sessionSyncValue));
+    g_session.SetFlag(Replay::Instance().header.sessionSyncValue);
     this->pendingCursorType = 28;
     return 0;
   case LMM_REPLAY_SELECT_SERVER:
     GetRagConnection().m_replayMode = 0;
     g_session.m_aid = ReplayFileList::Instance().selectionState;
-    g_session.SetFlag(static_cast<char>(ReplayFileList::Instance().dialogState));
+    g_session.SetFlag(ReplayFileList::Instance().dialogState);
     this->pendingCursorType = 6;
     return 0;
   case LMM_SELECT_MAP:
