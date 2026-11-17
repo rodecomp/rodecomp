@@ -40,34 +40,22 @@ bool JsonCppLoader::GetReputeGroupData(std::map<int, ReputeGroupRecord>* out) {
     return false;
   }
 
-  const JsonValue* groups = nullptr;
-  if (const JsonObject* root = this->document.ObjectRange()) {
-    for (const JsonMember& entry : *root) {
-      if (entry.first == "ReputeGroup") {
-        groups = &entry.second;
-        break;
-      }
-    }
-  }
-
-  if (groups == nullptr) {
+  if (this->document.MemberRange().end() == this->document.Find("ReputeGroup")) {
     this->Fail("키에 해당하는 데이터가 없습니다. (key : %s)", "ReputeGroup");
     return false;
   }
 
-  if (const JsonObject* members = groups->ObjectRange()) {
-    for (const JsonMember& member : *members) {
-      const std::string name = member.first;
-      const JsonValueCopy node(member.second);
-      ReputeGroupRecord record;
-      this->GetStringValue(node.value, "ID", &record.id);
-      this->GetStringValue(node.value, "Name", &record.name);
-      this->GetIntVectorValue(node.value, "ReputeList", &record.reputes);
+  for (const JsonMember& member : this->document["ReputeGroup"].MemberRange()) {
+    const std::string name = member.first;
+    const JsonValueCopy node(member.second);
+    ReputeGroupRecord record;
+    this->GetStringValue(node.value, "ID", &record.id);
+    this->GetStringValue(node.value, "Name", &record.name);
+    this->GetIntVectorValue(node.value, "ReputeList", &record.reputes);
 
-      if (!out->insert(std::pair<int, ReputeGroupRecord>(std::stoi(name), record)).second) {
-        this->Fail("중복키가 입력되었습니다. (name : %s)", name.c_str());
-        return false;
-      }
+    if (!out->insert(std::pair<int, ReputeGroupRecord>(std::stoi(name), record)).second) {
+      this->Fail("중복키가 입력되었습니다. (name : %s)", name.c_str());
+      return false;
     }
   }
 
