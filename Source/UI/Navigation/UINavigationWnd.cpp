@@ -575,7 +575,9 @@ void UINavigationWnd::Paint() {
         drawCrosshair = false;
       }
       const float scale = static_cast<float>(size) * g_navigationPointScale;
-      for (const NaviCell& point : g_navigationManager.cells) {
+      const auto pointEnd = g_navigationManager.cells.end();
+      for (auto pointIt = g_navigationManager.cells.begin(); pointIt != pointEnd; ++pointIt) {
+        const NaviCell& point = *pointIt;
         this->FillRegion(static_cast<int>(point.x * scale + mapX), static_cast<int>(point.y * scale + mapY), 2, 2, 0x00F0F00A);
       }
 
