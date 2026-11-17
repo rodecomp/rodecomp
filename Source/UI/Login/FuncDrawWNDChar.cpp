@@ -47,13 +47,13 @@ void FuncDrawWNDChar::Draw(bool option) {
   std::list<int> layers = this->DrawOrder();
   this->LoadResources(layers);
   for (int layer : layers) {
-    if (this->m_resources.find(layer) == this->m_resources.end()) {
+    const auto resource = this->m_resources.find(layer);
+    if (resource == this->m_resources.end()) {
       continue;
     }
 
-    std::pair<CSprRes*, CActRes*> resources = this->m_resources[layer];
-    CSprRes* sprite = resources.first;
-    CActRes* act = resources.second;
+    CSprRes* sprite = resource->second.first;
+    CActRes* act = resource->second.second;
     if (!sprite || !act) {
       continue;
     }
@@ -99,8 +99,9 @@ void FuncDrawWNDChar::Draw(bool option) {
         case 4:
         case 5:
         case 6: {
-          if (!this->hideHeadLayer && this->m_resources.find(2) != this->m_resources.end() && this->m_resources[2].second) {
-            CActRes* bodyAct = this->m_resources.find(2) != this->m_resources.end() ? this->m_resources[2].second : nullptr;
+          const auto bodyResource = this->m_resources.find(2);
+          if (!this->hideHeadLayer && bodyResource != this->m_resources.end() && bodyResource->second.second) {
+            CActRes* bodyAct = bodyResource->second.second;
             this->BodyAnchorOffset(&bodyAct->Frame(this->m_action, this->m_motion), option);
           }
 
@@ -113,13 +114,14 @@ void FuncDrawWNDChar::Draw(bool option) {
         case 7: {
           int baseMotion = this->m_motion;
           int syncedMotion = this->m_motion;
-          CActRes* layerAct = this->m_resources.find(layer) != this->m_resources.end() ? this->m_resources[layer].second : nullptr;
+          CActRes* layerAct = resource->second.second;
           int action = this->m_action;
           if ((action >= 0 && action < 8) || static_cast<unsigned>(action - 16) <= 7) {
             baseMotion = 0;
           }
 
-          CActRes* bodyAct = this->m_resources.find(1) != this->m_resources.end() ? this->m_resources[1].second : nullptr;
+          const auto bodyResource = this->m_resources.find(1);
+          CActRes* bodyAct = bodyResource != this->m_resources.end() ? bodyResource->second.second : nullptr;
           g_session.GetSyncedFrame(bodyAct, layerAct, action, baseMotion, this->m_time, &syncedMotion);
           frame = &layerAct->Frame(this->m_action, syncedMotion);
           break;
