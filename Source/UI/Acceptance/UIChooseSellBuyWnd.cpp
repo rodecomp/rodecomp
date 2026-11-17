@@ -1346,10 +1346,10 @@ void UISayDialogWnd::Paint() {
 void UISelectCartWnd::Paint() {
   const int titleHeight = this->DrawTitleBar(true, LookupMessage(MSI_CART_LIST), 0);
   this->DrawPanelBackground(titleHeight, 0, "");
-  const auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\sysboxs_ld.bmp")));
-  this->DrawBitmap(0, this->geometry.height - left->image.height, &left->image, false);
-  const auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\sysboxs_rd.bmp")));
-  this->DrawBitmap(this->geometry.width - right->image.width, this->geometry.height - right->image.height, &right->image, false);
+  CBitmapRes* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\sysboxs_ld.bmp")));
+  this->DrawBitmap(0, this->geometry.height - left->image.height, left, false);
+  CBitmapRes* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\sysboxs_rd.bmp")));
+  this->DrawBitmap(this->geometry.width - right->image.width, this->geometry.height - right->image.height, right, false);
 }
 
 // OFFSET: 0x008F0400
