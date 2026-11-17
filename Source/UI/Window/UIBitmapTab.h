@@ -7,6 +7,10 @@
 #include <vector>
 
 struct BitmapTabEntry {
+  BitmapTabEntry(int height, const char* name)
+      : height(height), name(name) {
+  }
+
   /* 0000 */ int height;
   /* 0004 */ std::string name;
 };

@@ -69,7 +69,7 @@ int UIBitmapTab::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::i
       const std::string name = FormatOwnedString(tabName, 'a');
       CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name.c_str())));
       if (bitmap) {
-        this->tabs.push_back(BitmapTabEntry{bitmap->image.height, tabName});
+        this->tabs.push_back(BitmapTabEntry(bitmap->image.height, tabName));
       }
     }
     break;
