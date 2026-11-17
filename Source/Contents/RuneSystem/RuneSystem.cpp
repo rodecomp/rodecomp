@@ -1091,14 +1091,16 @@ int AddRuneDescription(lua_State* state) {
     return 2;
   }
 
-  const std::string text = description;
-  RuneData* rune = g_runeSystemMgr->FindRune(tagId, 0, runeSetId, nullptr);
-  if (rune) {
-    const unsigned int index = static_cast<int>(indexValue) - 1;
-    if (index < 6) {
-      static_cast<RuneSetData*>(rune)->m_descriptions[index].push_back(text);
-    } else {
-      MessageBoxA(hWnd, FormatOwnedString("AddRune_Description 인댁스 오류 %d", index).c_str(), "LuaLoad", MB_OK);
+  {
+    const std::string text = description;
+    RuneData* rune = g_runeSystemMgr->FindRune(tagId, 0, runeSetId, nullptr);
+    if (rune) {
+      const unsigned int index = static_cast<int>(indexValue) - 1;
+      if (index < 6) {
+        static_cast<RuneSetData*>(rune)->m_descriptions[index].push_back(text);
+      } else {
+        MessageBoxA(hWnd, FormatOwnedString("AddRune_Description 인댁스 오류 %d", index).c_str(), "LuaLoad", MB_OK);
+      }
     }
   }
 
