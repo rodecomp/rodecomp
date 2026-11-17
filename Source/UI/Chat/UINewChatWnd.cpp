@@ -268,7 +268,11 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     case 0: {
       const int count = static_cast<int>(this->m_whisperEdit->history.size());
       if (a >= 0 && a <= count) {
-        this->m_whisperEdit->SetText(a == count ? "" : this->m_whisperEdit->history[a].c_str());
+        if (a == count) {
+          this->m_whisperEdit->SetText("");
+        } else {
+          this->m_whisperEdit->SetText(this->m_whisperEdit->history[a].c_str());
+        }
         this->m_whisperEdit->historyIndex = a;
       }
       g_windowMgr.SetFocus(this->m_whisperEdit);
