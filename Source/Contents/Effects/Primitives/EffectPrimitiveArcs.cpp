@@ -408,23 +408,31 @@ void CEffectPrim::RenderGroundSquare(matrix& wtm) {
     }
 
     int angle = this->state.slots[ec].rotStart;
+    float cosA = g_cosTable[angle];
+    float sinA = g_sinTable[angle];
     const double radius = (g_sinTable[this->state.slots[ec].riseAngle] + 1.0f) * (this->state.slots[ec].distance * 0.1f) + this->state.slots[ec].distance * 0.8;
 
-    this->state.slots[ec].vecBPre.x = static_cast<float>(g_cosTable[angle] * radius);
-    this->state.slots[ec].vecBPre.z = static_cast<float>(g_sinTable[angle] * radius);
+    this->state.slots[ec].vecBPre.x = static_cast<float>(cosA * radius);
+    this->state.slots[ec].vecBPre.z = static_cast<float>(sinA * radius);
     this->state.slots[ec].vecBPre.y = this->state.slots[ec].height[0];
     angle += angle < 270 ? 90 : -270;
+    cosA = g_cosTable[angle];
+    sinA = g_sinTable[angle];
     this->state.slots[ec].vecBNow.y = this->state.slots[ec].height[0];
-    this->state.slots[ec].vecBNow.x = static_cast<float>(g_cosTable[angle] * radius);
-    this->state.slots[ec].vecBNow.z = static_cast<float>(g_sinTable[angle] * radius);
+    this->state.slots[ec].vecBNow.x = static_cast<float>(cosA * radius);
+    this->state.slots[ec].vecBNow.z = static_cast<float>(sinA * radius);
     angle += angle + 90 < 360 ? 90 : -270;
+    cosA = g_cosTable[angle];
+    sinA = g_sinTable[angle];
     this->state.slots[ec].vecTNow.y = this->state.slots[ec].height[0];
-    this->state.slots[ec].vecTNow.x = static_cast<float>(g_cosTable[angle] * radius);
-    this->state.slots[ec].vecTNow.z = static_cast<float>(g_sinTable[angle] * radius);
+    this->state.slots[ec].vecTNow.x = static_cast<float>(cosA * radius);
+    this->state.slots[ec].vecTNow.z = static_cast<float>(sinA * radius);
     angle += angle + 90 < 360 ? 90 : -270;
+    cosA = g_cosTable[angle];
+    sinA = g_sinTable[angle];
     this->state.slots[ec].vecTPre.y = this->state.slots[ec].height[0];
-    this->state.slots[ec].vecTPre.x = static_cast<float>(g_cosTable[angle] * radius);
-    this->state.slots[ec].vecTPre.z = static_cast<float>(g_sinTable[angle] * radius);
+    this->state.slots[ec].vecTPre.x = static_cast<float>(cosA * radius);
+    this->state.slots[ec].vecTPre.z = static_cast<float>(sinA * radius);
 
     this->RenderTeiRect(
       &rpCnt, this->state.slots[ec].alphaB, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, this->state.slots[ec].vecTNow, this->state.slots[ec].vecTPre, wtm, this->state.slots[ec].height[2] == 1.0f,
@@ -439,42 +447,48 @@ void CEffectPrim::RenderGroundSquareBlend(matrix& wtm) {
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
-    EffectPrimitiveSlot& slot = this->state.slots[ec];
-
-    if (slot.life != 1) {
+    if (this->state.slots[ec].life != 1) {
       continue;
     }
 
-    int angle = slot.rotStart;
-    const double radius = (g_sinTable[slot.riseAngle] + 1.0f) * (slot.distance * 0.1f) + slot.distance * 0.8;
+    const int angle = this->state.slots[ec].rotStart;
+    float cosA = g_cosTable[angle];
+    float sinA = g_sinTable[angle];
+    const double radius = (g_sinTable[this->state.slots[ec].riseAngle] + 1.0f) * (this->state.slots[ec].distance * 0.1f) + this->state.slots[ec].distance * 0.8;
 
-    slot.vecBPre.x = static_cast<float>(g_cosTable[angle] * radius);
-    slot.vecBPre.z = static_cast<float>(g_sinTable[angle] * radius);
-    slot.vecBPre.y = slot.height[0];
-    angle += angle < 270 ? 90 : -270;
-    slot.vecBNow.y = slot.height[0];
-    slot.vecBNow.x = static_cast<float>(g_cosTable[angle] * radius);
-    slot.vecBNow.z = static_cast<float>(g_sinTable[angle] * radius);
-    angle += angle + 90 < 360 ? 90 : -270;
-    slot.vecTNow.y = slot.height[0];
-    slot.vecTNow.x = static_cast<float>(g_cosTable[angle] * radius);
-    slot.vecTNow.z = static_cast<float>(g_sinTable[angle] * radius);
-    angle += angle + 90 < 360 ? 90 : -270;
-    slot.vecTPre.y = slot.height[0];
-    slot.vecTPre.x = static_cast<float>(g_cosTable[angle] * radius);
-    slot.vecTPre.z = static_cast<float>(g_sinTable[angle] * radius);
+    this->state.slots[ec].vecBPre.x = static_cast<float>(cosA * radius);
+    this->state.slots[ec].vecBPre.z = static_cast<float>(sinA * radius);
+    this->state.slots[ec].vecBPre.y = this->state.slots[ec].height[0];
+    const int angle2 = angle + (angle < 270 ? 90 : -270);
+    cosA = g_cosTable[angle2];
+    sinA = g_sinTable[angle2];
+    this->state.slots[ec].vecBNow.y = this->state.slots[ec].height[0];
+    this->state.slots[ec].vecBNow.x = static_cast<float>(cosA * radius);
+    this->state.slots[ec].vecBNow.z = static_cast<float>(sinA * radius);
+    const int angle3 = angle2 + (angle2 + 90 < 360 ? 90 : -270);
+    cosA = g_cosTable[angle3];
+    sinA = g_sinTable[angle3];
+    this->state.slots[ec].vecTNow.y = this->state.slots[ec].height[0];
+    this->state.slots[ec].vecTNow.x = static_cast<float>(cosA * radius);
+    this->state.slots[ec].vecTNow.z = static_cast<float>(sinA * radius);
+    const int angle4 = angle3 + (angle3 + 90 < 360 ? 90 : -270);
+    cosA = g_cosTable[angle4];
+    sinA = g_sinTable[angle4];
+    this->state.slots[ec].vecTPre.y = this->state.slots[ec].height[0];
+    this->state.slots[ec].vecTPre.x = static_cast<float>(cosA * radius);
+    this->state.slots[ec].vecTPre.z = static_cast<float>(sinA * radius);
 
-    short alpha = static_cast<short>(slot.process % 256 * 2);
+    short alpha = static_cast<short>(this->state.slots[ec].process % 256 * 2);
     if (alpha > 255) {
       alpha = 511 - alpha;
     }
 
     this->RenderTeiRect(
-      &rpCnt, alpha, slot.vecBPre, slot.vecBNow, slot.vecTNow, slot.vecTPre, wtm, 1, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f,
+      &rpCnt, alpha, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, this->state.slots[ec].vecTNow, this->state.slots[ec].vecTPre, wtm, 1, 0, 0, 255, 255, 255, 0.0f, 1.0f, 0.0f,
       1.0f, 0
     );
     this->RenderTeiRect(
-      &rpCnt, 255 - alpha, slot.vecBPre, slot.vecBNow, slot.vecTNow, slot.vecTPre, wtm, 1, 1, 0, 255, 255, 255, 0.0f, 1.0f,
+      &rpCnt, 255 - alpha, this->state.slots[ec].vecBPre, this->state.slots[ec].vecBNow, this->state.slots[ec].vecTNow, this->state.slots[ec].vecTPre, wtm, 1, 1, 0, 255, 255, 255, 0.0f, 1.0f,
       0.0f, 1.0f, 0
     );
   }
