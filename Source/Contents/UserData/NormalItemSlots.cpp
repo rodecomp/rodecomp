@@ -1165,7 +1165,9 @@ void UIWindowMgr::ResetUIRectInfo() {
 // OFFSET: 0x009A7CA0
 // FUNCTION: fn_13738
 void NavigationWindowInfo::Clamp() {
-  if (this->height < 338 || this->height > 338) {
+  if (this->height < 338) {
+    this->height = 338;
+  } else if (this->height > 338) {
     this->height = 338;
   }
 
