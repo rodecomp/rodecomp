@@ -15,6 +15,8 @@ extern "C" {
 #include <new>
 #include <utility>
 
+template __declspec(noinline) std::string std::operator+(std::string&&, const char* const);
+
 // GLOBAL: gl_24817
 CTownInfoMgr* g_townInfoMgr;
 

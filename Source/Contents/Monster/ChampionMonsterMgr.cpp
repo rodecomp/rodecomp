@@ -19,6 +19,8 @@ extern "C" {
 #include <utility>
 #include <windows.h>
 
+template __declspec(noinline) std::string std::operator+(std::string&&, const char* const);
+
 // GLOBAL: gl_24813
 CChampionMonsterMgr* g_championMonsterMgr;
 

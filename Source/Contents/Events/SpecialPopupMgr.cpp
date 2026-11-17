@@ -13,6 +13,8 @@ extern "C" {
 #include <new>
 #include <windows.h>
 
+template __declspec(noinline) std::string std::operator+(std::string&&, const char* const);
+
 // GLOBAL: gl_24839
 CSpecialPopupMgr* g_specialPopupMgr = nullptr;
 

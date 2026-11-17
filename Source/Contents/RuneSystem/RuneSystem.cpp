@@ -22,6 +22,8 @@ extern "C" {
 #include <string>
 #include <windows.h>
 
+template __declspec(noinline) std::string std::operator+(std::string&&, const char* const);
+
 namespace EquipmentProperties {
 class CEquipmentPropertiesMgr {
 public:
