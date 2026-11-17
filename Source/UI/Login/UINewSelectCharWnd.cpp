@@ -126,7 +126,7 @@ void Nullsub243() {
 
 // OFFSET: 0x007D50D0
 // FUNCTION: fn_09587
-__declspec(noinline) std::string UIStaticText::GetText() const {
+std::string UIStaticText::GetText() const {
   return this->text;
 }
 
@@ -215,71 +215,68 @@ void UINewSelectCharWnd::OnCreate(int width, int height) {
   this->m_textButton->Enable(0);
   this->AddChild(this->m_textButton);
 
-  UIBmpTextButton* startButton = new UIBmpTextButton();
-  this->m_windowC0 = startButton;
-  startButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_info_normal.bmp", 0, 0);
-  startButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_info_over.bmp", 1, 0);
-  startButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_info_press.bmp", 2, 0);
-  startButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_info_normal.bmp", 3, 0);
-  startButton->SetSize(startButton->BitmapWidth(), startButton->BitmapHeight());
-  startButton->Move(0x33E, 0x142);
-  startButton->SetText(LookupMessage(MSI_SELECTCHARWND_DELETE));
-  startButton->AddTextStyle(0, 0xC, 0x313131, 0, 1, -1000, -1000);
-  startButton->AddTextStyle(1, 0xC, 0x313131, 0, 1, -1000, -1000);
-  startButton->AddTextStyle(2, 0xC, 0x313131, 0, 1, -1000, -1000);
-  startButton->AddTextStyle(3, 0xC, 0x909090, 0, 0, -1000, -1000);
-  startButton->SetId(SELECTCHAR_BUTTON_DELETE);
-  this->AddChild(startButton);
+  this->m_windowC0 = new UIBmpTextButton();
+  this->m_windowC0->SetBitmap("유저인터페이스\\select_character_ver3\\bt_info_normal.bmp", 0, 0);
+  this->m_windowC0->SetBitmap("유저인터페이스\\select_character_ver3\\bt_info_over.bmp", 1, 0);
+  this->m_windowC0->SetBitmap("유저인터페이스\\select_character_ver3\\bt_info_press.bmp", 2, 0);
+  this->m_windowC0->SetBitmap("유저인터페이스\\select_character_ver3\\bt_info_normal.bmp", 3, 0);
+  this->m_windowC0->SetSize(this->m_windowC0->BitmapWidth(), this->m_windowC0->BitmapHeight());
+  this->m_windowC0->Move(0x33E, 0x142);
+  this->m_windowC0->SetText(LookupMessage(MSI_SELECTCHARWND_DELETE));
+  this->m_windowC0->AddTextStyle(0, 0xC, 0x313131, 0, 1, -1000, -1000);
+  this->m_windowC0->AddTextStyle(1, 0xC, 0x313131, 0, 1, -1000, -1000);
+  this->m_windowC0->AddTextStyle(2, 0xC, 0x313131, 0, 1, -1000, -1000);
+  this->m_windowC0->AddTextStyle(3, 0xC, 0x909090, 0, 0, -1000, -1000);
+  this->m_windowC0->SetId(SELECTCHAR_BUTTON_DELETE);
+  this->AddChild(this->m_windowC0);
   if (this->m_slotStatus[this->m_slotsPerPage * this->m_page + this->m_pageSlot] == 1) {
-    startButton->SetDisabled(1);
-    startButton->Invalidate();
+    auto* button = this->m_windowC0;
+    button->SetDisabled(1);
+    button->Invalidate();
   }
 
-  UIBmpTextButton* cancelDeleteButton = new UIBmpTextButton();
-  this->m_windowC4 = cancelDeleteButton;
-  cancelDeleteButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_info_normal.bmp", 0, 0);
-  cancelDeleteButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_info_over.bmp", 1, 0);
-  cancelDeleteButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_info_press.bmp", 2, 0);
-  cancelDeleteButton->SetSize(cancelDeleteButton->BitmapWidth(), cancelDeleteButton->BitmapHeight());
-  cancelDeleteButton->Move(0x33E, 0x142);
-  cancelDeleteButton->SetText(LookupMessage(MSI_SELECTCHARWND_CHARACTER_LIST));
-  cancelDeleteButton->AddTextStyle(0, 0xC, 0x313131, 0, 1, -1000, -1000);
-  cancelDeleteButton->AddTextStyle(1, 0xC, 0x313131, 0, 1, -1000, -1000);
-  cancelDeleteButton->AddTextStyle(2, 0xC, 0x313131, 0, 1, -1000, -1000);
-  cancelDeleteButton->SetId(SELECTCHAR_BUTTON_CANCEL_DELETE);
-  cancelDeleteButton->Enable(0);
-  this->AddChild(cancelDeleteButton);
+  this->m_windowC4 = new UIBmpTextButton();
+  this->m_windowC4->SetBitmap("유저인터페이스\\select_character_ver3\\bt_info_normal.bmp", 0, 0);
+  this->m_windowC4->SetBitmap("유저인터페이스\\select_character_ver3\\bt_info_over.bmp", 1, 0);
+  this->m_windowC4->SetBitmap("유저인터페이스\\select_character_ver3\\bt_info_press.bmp", 2, 0);
+  this->m_windowC4->SetSize(this->m_windowC4->BitmapWidth(), this->m_windowC4->BitmapHeight());
+  this->m_windowC4->Move(0x33E, 0x142);
+  this->m_windowC4->SetText(LookupMessage(MSI_SELECTCHARWND_CHARACTER_LIST));
+  this->m_windowC4->AddTextStyle(0, 0xC, 0x313131, 0, 1, -1000, -1000);
+  this->m_windowC4->AddTextStyle(1, 0xC, 0x313131, 0, 1, -1000, -1000);
+  this->m_windowC4->AddTextStyle(2, 0xC, 0x313131, 0, 1, -1000, -1000);
+  this->m_windowC4->SetId(SELECTCHAR_BUTTON_CANCEL_DELETE);
+  this->m_windowC4->Enable(0);
+  this->AddChild(this->m_windowC4);
 
-  UIBmpTextButton* gameStartButton = new UIBmpTextButton();
-  this->m_windowFC = gameStartButton;
-  gameStartButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_gameStart_off.bmp", 0, 0);
-  gameStartButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_gameStart_over.bmp", 1, 0);
-  gameStartButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_gameStart_press.bmp", 2, 0);
-  gameStartButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_gameStart_off.bmp", 3, 0);
-  gameStartButton->SetSize(gameStartButton->BitmapWidth(), gameStartButton->BitmapHeight());
-  gameStartButton->Move(0x330, 0x197);
-  gameStartButton->SetId(ID_OK);
-  gameStartButton->SetText(LookupMessage(MSI_SELECTCHARWND_NOTICE));
-  gameStartButton->AddTextStyle(0, 0x12, 0xFFFFFF, 1, 1, -1000, 0x39);
-  gameStartButton->AddTextStyle(1, 0x12, 0xFFFFFF, 1, 1, -1000, 0x39);
-  gameStartButton->AddTextStyle(2, 0x12, 0xFFFFFF, 1, 1, -1000, 0x39);
-  gameStartButton->AddTextStyle(3, 0x12, 0x7F74DC, 1, 0, -1000, 0x39);
-  this->AddChild(gameStartButton);
+  this->m_windowFC = new UIBmpTextButton();
+  this->m_windowFC->SetBitmap("유저인터페이스\\select_character_ver3\\bt_gameStart_off.bmp", 0, 0);
+  this->m_windowFC->SetBitmap("유저인터페이스\\select_character_ver3\\bt_gameStart_over.bmp", 1, 0);
+  this->m_windowFC->SetBitmap("유저인터페이스\\select_character_ver3\\bt_gameStart_press.bmp", 2, 0);
+  this->m_windowFC->SetBitmap("유저인터페이스\\select_character_ver3\\bt_gameStart_off.bmp", 3, 0);
+  this->m_windowFC->SetSize(this->m_windowFC->BitmapWidth(), this->m_windowFC->BitmapHeight());
+  this->m_windowFC->Move(0x330, 0x197);
+  this->m_windowFC->SetId(ID_OK);
+  this->m_windowFC->SetText(LookupMessage(MSI_SELECTCHARWND_NOTICE));
+  this->m_windowFC->AddTextStyle(0, 0x12, 0xFFFFFF, 1, 1, -1000, 0x39);
+  this->m_windowFC->AddTextStyle(1, 0x12, 0xFFFFFF, 1, 1, -1000, 0x39);
+  this->m_windowFC->AddTextStyle(2, 0x12, 0xFFFFFF, 1, 1, -1000, 0x39);
+  this->m_windowFC->AddTextStyle(3, 0x12, 0x7F74DC, 1, 0, -1000, 0x39);
+  this->AddChild(this->m_windowFC);
 
-  UIBmpTextButton* deleteButton = new UIBmpTextButton();
-  this->m_window100 = deleteButton;
-  deleteButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_info_normal.bmp", 0, 0);
-  deleteButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_info_over.bmp", 1, 0);
-  deleteButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_info_press.bmp", 2, 0);
-  deleteButton->SetSize(deleteButton->BitmapWidth(), deleteButton->BitmapHeight());
-  deleteButton->Move(0x33E, 0x15F);
-  deleteButton->SetText(LookupMessage(MSI_MAKECHARWND_CREATE));
-  deleteButton->AddTextStyle(0, 0xC, 0x313131, 0, 1, -1000, -1000);
-  deleteButton->AddTextStyle(1, 0xC, 0x313131, 0, 1, -1000, -1000);
-  deleteButton->AddTextStyle(2, 0xC, 0x313131, 0, 1, -1000, -1000);
-  deleteButton->SetId(ID_DELETE);
-  deleteButton->Enable(0);
-  this->AddChild(deleteButton);
+  this->m_window100 = new UIBmpTextButton();
+  this->m_window100->SetBitmap("유저인터페이스\\select_character_ver3\\bt_info_normal.bmp", 0, 0);
+  this->m_window100->SetBitmap("유저인터페이스\\select_character_ver3\\bt_info_over.bmp", 1, 0);
+  this->m_window100->SetBitmap("유저인터페이스\\select_character_ver3\\bt_info_press.bmp", 2, 0);
+  this->m_window100->SetSize(this->m_window100->BitmapWidth(), this->m_window100->BitmapHeight());
+  this->m_window100->Move(0x33E, 0x15F);
+  this->m_window100->SetText(LookupMessage(MSI_MAKECHARWND_CREATE));
+  this->m_window100->AddTextStyle(0, 0xC, 0x313131, 0, 1, -1000, -1000);
+  this->m_window100->AddTextStyle(1, 0xC, 0x313131, 0, 1, -1000, -1000);
+  this->m_window100->AddTextStyle(2, 0xC, 0x313131, 0, 1, -1000, -1000);
+  this->m_window100->SetId(ID_DELETE);
+  this->m_window100->Enable(0);
+  this->AddChild(this->m_window100);
 
   this->m_button416 = new UIBitmapButton();
   this->m_button416->SetBitmap("유저인터페이스\\btn_make.bmp", 0, 0);
@@ -404,81 +401,80 @@ void UINewSelectCharWnd::OnCreate(int width, int height) {
     this->m_slotStatus[slot] = 0;
     const int page = slot / this->m_slotsPerPage;
     const int column = page != 0 ? index % (page * this->m_slotsPerPage) : slot;
-    CharSlotInfo& slotInfo = this->m_charSlotInfos[slot];
-    slotInfo.x = (column % 5) * 0x9D + 0x5A;
-    slotInfo.y = (column / 5) * 0xC3 + 0x9E;
-    slotInfo.job = character->job;
-    slotInfo.robe = character->robe;
+    this->m_charSlotInfos[slot].x = (column % 5) * 0x9D + 0x5A;
+    this->m_charSlotInfos[slot].y = (column / 5) * 0xC3 + 0x9E;
+    this->m_charSlotInfos[slot].job = character->job;
+    this->m_charSlotInfos[slot].robe = character->robe;
     if (character->deleteDate > 0) {
-      slotInfo.actionBase = 0x10;
-      slotInfo.action = 0x10;
+      this->m_charSlotInfos[slot].actionBase = 0x10;
+      this->m_charSlotInfos[slot].action = 0x10;
     } else {
-      slotInfo.actionBase = 0;
-      slotInfo.action = 0;
+      this->m_charSlotInfos[slot].actionBase = 0;
+      this->m_charSlotInfos[slot].action = 0;
     }
-    slotInfo.frame = 0;
+    this->m_charSlotInfos[slot].frame = 0;
 
     {
-      const std::string name = g_session.GetBodyActionResourceName(character->job, character->sex, character->bodyCostume, 0);
-      slotInfo.actionNames[0] = name;
+      const std::string& name = g_session.GetBodyActionResourceName(character->job, character->sex, character->bodyCostume, 0);
+      this->m_charSlotInfos[slot].actionNames[0] = name;
     }
     {
-      const std::string name = g_session.GetBodySprName(character->job, character->sex, character->bodyCostume, 0);
-      slotInfo.spriteNames[0] = name;
+      const std::string& name = g_session.GetBodySprName(character->job, character->sex, character->bodyCostume, 0);
+      this->m_charSlotInfos[slot].spriteNames[0] = name;
     }
     int head = character->head;
     {
-      const std::string name = g_session.GetHeadActName(character->job, character->sex, &head);
-      slotInfo.actionNames[1] = name;
+      const std::string& name = g_session.GetHeadActName(character->job, character->sex, &head);
+      this->m_charSlotInfos[slot].actionNames[1] = name;
     }
     {
-      const std::string name = g_session.GetHeadSprName(character->job, character->sex, &head);
-      slotInfo.spriteNames[1] = name;
+      const std::string& name = g_session.GetHeadSprName(character->job, character->sex, &head);
+      this->m_charSlotInfos[slot].spriteNames[1] = name;
     }
     {
-      const std::string name = g_session.GetAccessoryActName(character->job, character->sex, head, character->accessory3);
-      slotInfo.actionNames[2] = name;
+      const std::string& name = g_session.GetAccessoryActName(character->job, character->sex, head, character->accessory3);
+      this->m_charSlotInfos[slot].actionNames[2] = name;
     }
     {
-      const std::string name = g_session.GetAccessorySprName(character->job, character->sex, head, character->accessory3);
-      slotInfo.spriteNames[2] = name;
+      const std::string& name = g_session.GetAccessorySprName(character->job, character->sex, head, character->accessory3);
+      this->m_charSlotInfos[slot].spriteNames[2] = name;
     }
     character->head = static_cast<std::int16_t>(head);
     {
-      const std::string name = g_session.GetAccessoryActName(character->job, character->sex, head, character->accessory2);
-      slotInfo.actionNames[3] = name;
+      const std::string& name = g_session.GetAccessoryActName(character->job, character->sex, head, character->accessory2);
+      this->m_charSlotInfos[slot].actionNames[3] = name;
     }
     {
-      const std::string name = g_session.GetAccessorySprName(character->job, character->sex, head, character->accessory2);
-      slotInfo.spriteNames[3] = name;
+      const std::string& name = g_session.GetAccessorySprName(character->job, character->sex, head, character->accessory2);
+      this->m_charSlotInfos[slot].spriteNames[3] = name;
     }
     this->m_slotShorts[slot] = character->accessory2;
     {
-      const std::string name = g_session.GetAccessoryActName(character->job, character->sex, head, character->accessory);
-      slotInfo.actionNames[4] = name;
+      const std::string& name = g_session.GetAccessoryActName(character->job, character->sex, head, character->accessory);
+      this->m_charSlotInfos[slot].actionNames[4] = name;
     }
     {
-      const std::string name = g_session.GetAccessorySprName(character->job, character->sex, head, character->accessory);
-      slotInfo.spriteNames[4] = name;
+      const std::string& name = g_session.GetAccessorySprName(character->job, character->sex, head, character->accessory);
+      this->m_charSlotInfos[slot].spriteNames[4] = name;
     }
 
-    slotInfo.bodyPalette = g_session.GetBodyStyle(character->job, character->bodyStyle, character->bodyCostume);
-    if (slotInfo.bodyPalette != 0) {
+    this->m_charSlotInfos[slot].bodyPalette = g_session.GetBodyStyle(character->job, character->bodyStyle, character->bodyCostume);
+    if (this->m_charSlotInfos[slot].bodyPalette != 0) {
       {
-        const std::string name = g_session.GetBodyPalName(character->job, character->sex, slotInfo.bodyPalette, character->bodyCostume, 0, 0);
-        slotInfo.bodyPaletteName = name;
+        const std::string& name = g_session.GetBodyPalName(character->job, character->sex, this->m_charSlotInfos[slot].bodyPalette, character->bodyCostume, 0, 0);
+        this->m_charSlotInfos[slot].bodyPaletteName = name;
       }
     }
 
-    slotInfo.headPalette = character->headPalette;
-    if (slotInfo.headPalette != 0) {
+    this->m_charSlotInfos[slot].headPalette = character->headPalette;
+    if (this->m_charSlotInfos[slot].headPalette != 0) {
       {
-        const std::string name = g_session.GetHeadPalName(head, character->job, character->sex, slotInfo.headPalette);
-        slotInfo.headPaletteName = name;
+        const std::string& name = g_session.GetHeadPalName(head, character->job, character->sex, this->m_charSlotInfos[slot].headPalette);
+        this->m_charSlotInfos[slot].headPaletteName = name;
       }
     }
 
-    slotInfo.imfName = g_session.GetBodyImfName(character->job, character->sex, character->head, character->bodyCostume);
+    this->m_charSlotInfos[slot].imfName = g_session.GetBodyImfName(character->job, character->sex, character->head, character->bodyCostume);
   }
 
   for (int index = 0; index < this->m_totalSlots; ++index) {
