@@ -73,12 +73,12 @@ EnchantUI::CUIEnchantItem* CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CE
   item->SetSize(this->itemWidth, this->rowHeight);
   item->Show(0);
   item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
-  item->onHover = [this](CUIListItem* listItem) {
+  item->SetOnHover([this](CUIListItem* listItem) {
     for (EnchantUI::CUIEnchantItem* other : this->items) {
       other->SetHighlighted(other == listItem);
     }
-  };
-  item->onPress = [this](CUIListItem* listItem) {
+  });
+  item->SetOnPress([this](CUIListItem* listItem) {
     if (this->layoutFlag) {
       return;
     }
@@ -101,7 +101,7 @@ EnchantUI::CUIEnchantItem* CUIListBoxEx<EnchantUI::CUIEnchantItem, EnchantUI::CE
       std::advance(node, static_cast<int>(this->selected));
       this->onSelect(selectedItem, *node);
     }
-  };
+  });
   this->AddChild(item);
   return item;
 }
@@ -169,12 +169,12 @@ EnchantUI::CUITargetItem* CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>::Cre
   item->SetSize(this->itemWidth, this->rowHeight);
   item->Show(0);
   item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
-  item->onHover = [this](CUIListItem* listItem) {
+  item->SetOnHover([this](CUIListItem* listItem) {
     for (EnchantUI::CUITargetItem* other : this->items) {
       other->SetHighlighted(other == listItem);
     }
-  };
-  item->onPress = [this](CUIListItem* listItem) {
+  });
+  item->SetOnPress([this](CUIListItem* listItem) {
     if (this->layoutFlag) {
       return;
     }
@@ -197,7 +197,7 @@ EnchantUI::CUITargetItem* CUIListBoxEx<EnchantUI::CUITargetItem, ITEM_INFO>::Cre
       std::advance(node, static_cast<int>(this->selected));
       this->onSelect(selectedItem, *node);
     }
-  };
+  });
   this->AddChild(item);
   return item;
 }
