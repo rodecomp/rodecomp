@@ -39,6 +39,8 @@
 #include "Contents/Guild/GuildInfo.h"
 
 #include "Resource/MSGSTRINGID.h"
+template __declspec(noinline) std::string& std::string::operator=(const char* const);
+template __declspec(noinline) std::vector<MiniPartyInfoEntry>::iterator std::vector<MiniPartyInfoEntry>::erase(const_iterator, const_iterator) noexcept;
 // GLOBAL: gl_24999
 int g_guildMemberColumnWidths[6] = {98, 65, 53, 39, 39, 76};
 
@@ -2026,7 +2028,7 @@ int UIGuildNoticeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, s
       break;
     case ID_SEND_GUILD_NOTICE: {
       std::string body;
-      body = this->m_bodyEdit->Text();
+      body.assign(this->m_bodyEdit->Text());
       if (g_forbiddenWords.Contains(this->m_titleEdit->Text()) == true || g_forbiddenWords.Contains(body.c_str()) == true) {
         g_windowMgr.Confirm(LookupMessage(MSI_BAD_SENTANGE), 0, true, false, 0, "Message", 280, 120, 0);
         return 0;
@@ -2091,15 +2093,16 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
     case ID_LVLSELECTDN6:
     case ID_LVLSELECTDN7: {
       CSkillInfo skill = this->SkillAt(this->m_scrollTop + a1 - 253);
+      const int skillId = skill.id;
       if (skill.available != 0) {
-        int level = g_session.UseLevel(skill.id) - 1;
+        int level = g_session.UseLevel(skillId) - 1;
         if (level <= 0) {
           level = 1;
         }
         if (level > skill.level) {
           level = skill.level;
         }
-        g_session.m_skillBundle.SetSkillValue(skill.id, level);
+        g_session.m_skillBundle.SetSkillValue(skillId, level);
         this->Invalidate();
       }
       return 0;
@@ -2112,15 +2115,16 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
     case ID_LVLSELECTUP6:
     case ID_LVLSELECTUP7: {
       CSkillInfo skill = this->SkillAt(this->m_scrollTop + a1 - 260);
+      const int skillId = skill.id;
       if (skill.available != 0) {
-        int level = g_session.UseLevel(skill.id) + 1;
+        int level = g_session.UseLevel(skillId) + 1;
         if (level <= 0) {
           level = 1;
         }
         if (level > skill.level) {
           level = skill.level;
         }
-        g_session.m_skillBundle.SetSkillValue(skill.id, level);
+        g_session.m_skillBundle.SetSkillValue(skillId, level);
         this->Invalidate();
       }
       return 0;
@@ -2172,8 +2176,7 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
     if (this->m_hoverIndex != -1) {
       CSkillInfo skill = this->SkillAt(this->m_hoverIndex);
       if (skill.available != 0) {
-        const std::string text = LookupMessage(MSI_SEE_INFORMATION_OF_SKILL);
-        this->m_menuItems.push_back(MiniPartyInfoEntry(text.c_str(), MENUID_QUERYINFO));
+        this->m_menuItems.push_back(MiniPartyInfoEntry(std::string(LookupMessage(MSI_SEE_INFORMATION_OF_SKILL)).c_str(), MENUID_QUERYINFO));
       }
     }
     if (this->m_menuItems.size() != 0) {
@@ -2184,15 +2187,19 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
       menu->SendMsg(nullptr, UM_SET_CALLER_WID, WID_GUILDSKILLWND, 0, 0, 0);
       menu->SendMsg(nullptr, UM_ADJUSTSIZE, 0, 0, 0, 0);
 
-      int x = std::max(g_mouse.x + 1, 1);
-      int maxX = g_renderer->viewport.width - menu->geometry.width;
-      if (x > maxX) {
-        x = maxX;
+      int x = g_mouse.x + 1;
+      int y = g_mouse.y + 1;
+      if (x < 1) {
+        x = 1;
       }
-      int y = std::max(g_mouse.y + 1, 1);
-      int maxY = g_renderer->viewport.height - menu->geometry.height;
-      if (y > maxY) {
-        y = maxY;
+      if (x > g_renderer->viewport.width - menu->geometry.width) {
+        x = g_renderer->viewport.width - menu->geometry.width;
+      }
+      if (y < 1) {
+        y = 1;
+      }
+      if (y > g_renderer->viewport.height - menu->geometry.height) {
+        y = g_renderer->viewport.height - menu->geometry.height;
       }
       menu->Move(x, y);
       return 0;
@@ -2219,7 +2226,8 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
   case UM_USESKILL: {
     const CSkillInfo* skill = reinterpret_cast<const CSkillInfo*>(a1);
     if (skill->level != 0) {
-      g_modeMgr.currentMode->SendMsg(MM_USING_SKILL, a1, g_session.UseLevel(skill->id), 0, 0);
+      CMode* gameMode = g_modeMgr.currentMode;
+      gameMode->SendMsg(MM_USING_SKILL, a1, g_session.UseLevel(skill->id), 0, 0);
     }
     break;
   }
@@ -2999,9 +3007,10 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
         }
         if (it->relation == 0) {
           if (row == this->m_allyRow) {
-            if (it->guildId != 0) {
-              gameMode->SendMsg(MM_REQ_DELETE_RELATED_GUILD, it->guildId, 0, 0, 0);
+            if (it->guildId == 0) {
+              break;
             }
+            gameMode->SendMsg(MM_REQ_DELETE_RELATED_GUILD, it->guildId, 0, 0, 0);
             return 0;
           }
           ++row;
@@ -3015,9 +3024,10 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
         }
         if (it->relation == 1) {
           if (row == this->m_hostileRow) {
-            if (it->guildId != 0) {
-              gameMode->SendMsg(MM_REQ_DELETE_RELATED_GUILD, it->guildId, 1, 0, 0);
+            if (it->guildId == 0) {
+              break;
             }
+            gameMode->SendMsg(MM_REQ_DELETE_RELATED_GUILD, it->guildId, 1, 0, 0);
             return 0;
           }
           ++row;
@@ -3042,15 +3052,19 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       menu->SendMsg(nullptr, UM_SET_CALLER_WID, WID_GUILDINFOMANAGEWND, 0, 0, 0);
       menu->SendMsg(nullptr, UM_ADJUSTSIZE, 0, 0, 0, 0);
 
-      int x = std::max(g_mouse.x + 1, 1);
-      int maxX = g_renderer->viewport.width - menu->geometry.width;
-      if (x > maxX) {
-        x = maxX;
+      int x = g_mouse.x + 1;
+      int y = g_mouse.y + 1;
+      if (x < 1) {
+        x = 1;
       }
-      int y = std::max(g_mouse.y + 1, 1);
-      int maxY = g_renderer->viewport.height - menu->geometry.height;
-      if (y > maxY) {
-        y = maxY;
+      if (x > g_renderer->viewport.width - menu->geometry.width) {
+        x = g_renderer->viewport.width - menu->geometry.width;
+      }
+      if (y < 1) {
+        y = 1;
+      }
+      if (y > g_renderer->viewport.height - menu->geometry.height) {
+        y = g_renderer->viewport.height - menu->geometry.height;
       }
       menu->Move(x, y);
       return 0;
@@ -3081,7 +3095,7 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
         menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(it->c_str()), 0, 0, 0);
       }
       menu->SendMsg(nullptr, UM_SETCURITEM, 0, 0, 0, 0);
-      menu->Resize(160, std::min(count * 16, 160));
+      menu->Resize(160, std::min(160, count * 16));
       menu->SendMsg(nullptr, UM_SET_CALLER_WID, WID_GUILDINFOMANAGEWND, 0, 0, 0);
       int x = this->geometry.width - 163;
       int y = 86;
@@ -3106,7 +3120,7 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     int index = 0;
     for (std::list<std::string>::iterator it = this->emblemFiles.begin(); it != this->emblemFiles.end(); ++it) {
       if (a1 == index) {
-        name = *it;
+        name = it->c_str();
         break;
       }
       ++index;
