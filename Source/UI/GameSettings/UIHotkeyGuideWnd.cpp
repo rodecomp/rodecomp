@@ -242,8 +242,7 @@ void UIHotkeyGuideWnd::Paint() {
       text = "Non";
     }
     const char* textPointer = text.c_str();
-    int column = index / 6;
-    int x = static_cast<int>((100 - this->TextWidth(textPointer, 0, 0, 12, 1, 0)) * 0.5 + (column * 246 + 156));
+    int x = static_cast<int>((100 - this->TextWidth(text.c_str(), 0, 0, 12, 1, 0)) * 0.5 + (index / 6 * 246 + 156));
     this->DrawTextAt(x, index % 6 * 30 + 315, textPointer, 0, 0, 12, 0xA55139, 1, 0);
   }
 
