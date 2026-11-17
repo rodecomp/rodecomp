@@ -3097,6 +3097,44 @@ static __forceinline void WanderAngleSlow(float& angle, float& target) {
   }
 }
 
+namespace {
+  // INLINED
+  __forceinline int SafeRandom(int range) {
+    if (range == 0) {
+      return 0;
+    }
+
+    return ClampedRandom(range);
+  }
+
+  // INLINED
+  __forceinline void DriftSlotAngles(EffectPrimitiveSlot& slot, int count, float rise = 1.0f, float fall = 1.0f) {
+    for (int axis = 0; axis < count * 2; axis += 2) {
+      if (slot.height[axis + 1] > slot.height[axis]) {
+        slot.height[axis] += rise;
+
+        if (slot.height[axis] > 359.0f) {
+          slot.height[axis] = 359.0f;
+        }
+
+        if (slot.height[axis] > slot.height[axis + 1]) {
+          slot.height[axis + 1] = static_cast<float>(SafeRandom(static_cast<int>(slot.height[axis])));
+        }
+      } else {
+        slot.height[axis] -= fall;
+
+        if (slot.height[axis] < 0.0f) {
+          slot.height[axis] = 0.0f;
+        }
+
+        if (slot.height[axis] <= slot.height[axis + 1]) {
+          slot.height[axis + 1] = static_cast<float>(359 - SafeRandom(static_cast<int>(slot.height[axis])));
+        }
+      }
+    }
+  }
+}
+
 // INLINED
 static __forceinline void SpinDown(float& angle) {
   angle -= 1.0f;
@@ -4358,258 +4396,213 @@ __declspec(noinline) bool CEffectPrim::PrimWind() {
   return true;
 }
 
-namespace {
-  // INLINED
-  __forceinline int SafeRandom(int range) {
-    if (range == 0) {
-      return 0;
-    }
-
-    return ClampedRandom(range);
-  }
-
-  // INLINED
-  __forceinline void DriftSlotAngles(EffectPrimitiveSlot& slot, int count, float rise = 1.0f, float fall = 1.0f) {
-    for (int axis = 0; axis < count * 2; axis += 2) {
-      if (slot.height[axis + 1] > slot.height[axis]) {
-        slot.height[axis] += rise;
-
-        if (slot.height[axis] > 359.0f) {
-          slot.height[axis] = 359.0f;
-        }
-
-        if (slot.height[axis] > slot.height[axis + 1]) {
-          slot.height[axis + 1] = static_cast<float>(SafeRandom(static_cast<int>(slot.height[axis])));
-        }
-      } else {
-        slot.height[axis] -= fall;
-
-        if (slot.height[axis] < 0.0f) {
-          slot.height[axis] = 0.0f;
-        }
-
-        if (slot.height[axis] <= slot.height[axis + 1]) {
-          slot.height[axis + 1] = static_cast<float>(359 - SafeRandom(static_cast<int>(slot.height[axis])));
-        }
-      }
-    }
-  }
-}
-
 // OFFSET: 0x00BC5580
 // FUNCTION: fn_19848
 bool CEffectPrim::PrimDriftingSquares() {
-  const CView* view = g_modeMgr.GetGameMode()->camera;
-  this->state.slots[0].alphaT = static_cast<std::int16_t>(360 - static_cast<short>(view->camera.yaw));
-  const short anglePitch = static_cast<short>(450 - static_cast<short>(view->camera.pitch));
-  this->state.slots[1].alphaT = anglePitch;
-  if (anglePitch >= 360) {
-    this->state.slots[1].alphaT = anglePitch - 360;
-  }
+  FaceCamera(this->state.slots);
 
   this->render.position = this->state.master->render.position;
 
   for (int ec = 0; ec < 4; ++ec) {
-    EffectPrimitiveSlot& slot = this->state.slots[ec];
     float speed = 0.05f;
-    ++slot.process;
-    if (slot.life != 1) {
+    ++this->state.slots[ec].process;
+    if (this->state.slots[ec].life != 1) {
       continue;
     }
 
-    if (slot.flag1[11] < 120) {
-      ++slot.flag1[11];
+    if (this->state.slots[ec].flag1[11] < 120) {
+      ++this->state.slots[ec].flag1[11];
     }
-    if (slot.flag1[0] == 1) {
+    if (this->state.slots[ec].flag1[0] == 1) {
       speed = 0.03f;
     } else {
-      if (slot.flag1[12] < 120) {
-        ++slot.flag1[12];
+      if (this->state.slots[ec].flag1[12] < 120) {
+        ++this->state.slots[ec].flag1[12];
       }
-      if (slot.flag1[13] < 120) {
-        ++slot.flag1[13];
+      if (this->state.slots[ec].flag1[13] < 120) {
+        ++this->state.slots[ec].flag1[13];
       }
-      if (slot.flag1[14] < 120) {
-        ++slot.flag1[14];
+      if (this->state.slots[ec].flag1[14] < 120) {
+        ++this->state.slots[ec].flag1[14];
       }
     }
 
-    DriftSlotAngles(slot, 8, 3.0f, 2.0f);
+    DriftSlotAngles(this->state.slots[ec], 8, 3.0f, 2.0f);
 
-    const char mode = slot.flag1[0];
+    const char mode = this->state.slots[ec].flag1[0];
     if (mode == 1) {
-      slot.vecBPre.y += g_sinTable[static_cast<int>(slot.height[0])] * speed;
+      this->state.slots[ec].vecBPre.y += g_sinTable[static_cast<int>(this->state.slots[ec].height[0])] * speed;
     } else {
-      slot.vecBPre.x += g_sinTable[static_cast<int>(slot.height[0])] * speed;
-      slot.vecBPre.z += speed * g_sinTable[static_cast<int>(slot.height[2])];
+      this->state.slots[ec].vecBPre.x += g_sinTable[static_cast<int>(this->state.slots[ec].height[0])] * speed;
+      this->state.slots[ec].vecBPre.z += speed * g_sinTable[static_cast<int>(this->state.slots[ec].height[2])];
     }
 
-    short reach = static_cast<short>(slot.vecBPre.x);
+    short reach = static_cast<short>(this->state.slots[ec].vecBPre.x);
     if (reach < 0) {
       reach = -reach;
     }
     if (reach < 30) {
-      reach = static_cast<short>(slot.vecBPre.z);
+      reach = static_cast<short>(this->state.slots[ec].vecBPre.z);
       if (reach < 0) {
         reach = -reach;
       }
     }
-    if ((mode == 1 && slot.process > 3000) || reach >= 30) {
-      slot.flag1[11] -= 2;
-      if (slot.flag1[11] < 2) {
+    if ((mode == 1 && this->state.slots[ec].process > 3000) || reach >= 30) {
+      this->state.slots[ec].flag1[11] -= 2;
+      if (this->state.slots[ec].flag1[11] <= 1) {
         if (mode == 1) {
-          slot.process = 0;
-          slot.vecBPre.y = 0.0f;
-          slot.vecBPre.x = 0.0f;
-          slot.vecBPre.z = 0.0f;
+          this->state.slots[ec].process = 0;
+          this->state.slots[ec].vecBPre.y = 0.0f;
+          this->state.slots[ec].vecBPre.x = 0.0f;
+          this->state.slots[ec].vecBPre.z = 0.0f;
         } else {
-          slot.vecBPre.x = static_cast<float>(std::rand() % 31 - 15);
-          slot.vecBPre.z = static_cast<float>(std::rand() % 31 - 15);
+          this->state.slots[ec].vecBPre.x = static_cast<float>(std::rand() % 31 - 15);
+          this->state.slots[ec].vecBPre.z = static_cast<float>(std::rand() % 31 - 15);
         }
       }
     } else {
       const int roll = mode == 1 ? std::rand() % 20 : std::rand() % 125;
-      if (roll == 0 && slot.flag1[11] > 100 && slot.flag1[7] == 0) {
-        slot.flag1[7] = 1;
+      if (roll == 0 && this->state.slots[ec].flag1[11] > 100 && this->state.slots[ec].flag1[7] == 0) {
+        this->state.slots[ec].flag1[7] = 1;
       }
-      if (slot.flag1[7] > 0) {
-        ++slot.flag1[7];
-        if (slot.flag1[7] <= 90) {
-          slot.flag1[11] -= 6;
-          if (slot.flag1[11] < 0) {
-            slot.flag1[11] = 0;
+      if (this->state.slots[ec].flag1[7] >= 1) {
+        ++this->state.slots[ec].flag1[7];
+        if (this->state.slots[ec].flag1[7] <= 90) {
+          this->state.slots[ec].flag1[11] -= 6;
+          if (this->state.slots[ec].flag1[11] < 0) {
+            this->state.slots[ec].flag1[11] = 0;
           }
-        } else if (slot.flag1[7] < 120) {
-          slot.flag1[11] += 4;
-          if (slot.flag1[11] > 120) {
-            slot.flag1[11] = 120;
+        } else if (this->state.slots[ec].flag1[7] < 120) {
+          this->state.slots[ec].flag1[11] += 4;
+          if (this->state.slots[ec].flag1[11] > 120) {
+            this->state.slots[ec].flag1[11] = 120;
           }
         } else {
-          slot.flag1[7] = 0;
+          this->state.slots[ec].flag1[7] = 0;
         }
       }
     }
 
-    if (slot.flag1[0] == 1) {
+    if (this->state.slots[ec].flag1[0] == 1) {
       return true;
     }
 
-    slot.vecBNow.x -= speed * g_sinTable[static_cast<int>(slot.height[4])];
-    slot.vecBNow.z -= speed * g_sinTable[static_cast<int>(slot.height[6])];
-    reach = static_cast<short>(slot.vecBNow.x);
+    this->state.slots[ec].vecBNow.x -= speed * g_sinTable[static_cast<int>(this->state.slots[ec].height[4])];
+    this->state.slots[ec].vecBNow.z -= speed * g_sinTable[static_cast<int>(this->state.slots[ec].height[6])];
+    reach = static_cast<short>(this->state.slots[ec].vecBNow.x);
     if (reach < 0) {
       reach = -reach;
     }
     if (reach < 30) {
-      reach = static_cast<short>(slot.vecBNow.z);
+      reach = static_cast<short>(this->state.slots[ec].vecBNow.z);
       if (reach < 0) {
         reach = -reach;
       }
     }
     if (reach >= 30) {
-      slot.flag1[12] -= 2;
-      if (slot.flag1[12] < 2) {
-        slot.vecBNow.x = static_cast<float>(std::rand() % 31 - 15);
-        slot.vecBNow.z = static_cast<float>(std::rand() % 31 - 15);
+      this->state.slots[ec].flag1[12] -= 2;
+      if (this->state.slots[ec].flag1[12] <= 1) {
+        this->state.slots[ec].vecBNow.x = static_cast<float>(std::rand() % 31 - 15);
+        this->state.slots[ec].vecBNow.z = static_cast<float>(std::rand() % 31 - 15);
       }
     } else {
-      if (std::rand() % 125 == 0 && slot.flag1[12] > 100 && slot.flag1[8] == 0) {
-        slot.flag1[8] = 1;
+      if (std::rand() % 125 == 0 && this->state.slots[ec].flag1[12] > 100 && this->state.slots[ec].flag1[8] == 0) {
+        this->state.slots[ec].flag1[8] = 1;
       }
-      if (slot.flag1[8] > 0) {
-        ++slot.flag1[8];
-        if (slot.flag1[8] <= 90) {
-          slot.flag1[12] -= 6;
-          if (slot.flag1[12] < 0) {
-            slot.flag1[12] = 0;
+      if (this->state.slots[ec].flag1[8] >= 1) {
+        ++this->state.slots[ec].flag1[8];
+        if (this->state.slots[ec].flag1[8] <= 90) {
+          this->state.slots[ec].flag1[12] -= 6;
+          if (this->state.slots[ec].flag1[12] < 0) {
+            this->state.slots[ec].flag1[12] = 0;
           }
-        } else if (slot.flag1[8] < 120) {
-          slot.flag1[12] += 4;
-          if (slot.flag1[12] > 120) {
-            slot.flag1[12] = 120;
+        } else if (this->state.slots[ec].flag1[8] < 120) {
+          this->state.slots[ec].flag1[12] += 4;
+          if (this->state.slots[ec].flag1[12] > 120) {
+            this->state.slots[ec].flag1[12] = 120;
           }
         } else {
-          slot.flag1[8] = 0;
+          this->state.slots[ec].flag1[8] = 0;
         }
       }
     }
 
-    slot.vecTPre.x += speed * g_sinTable[static_cast<int>(slot.height[8])];
-    slot.vecTPre.z -= speed * g_sinTable[static_cast<int>(slot.height[10])];
-    reach = static_cast<short>(slot.vecTPre.x);
+    this->state.slots[ec].vecTPre.x += speed * g_sinTable[static_cast<int>(this->state.slots[ec].height[8])];
+    this->state.slots[ec].vecTPre.z -= speed * g_sinTable[static_cast<int>(this->state.slots[ec].height[10])];
+    reach = static_cast<short>(this->state.slots[ec].vecTPre.x);
     if (reach < 0) {
       reach = -reach;
     }
     if (reach < 30) {
-      reach = static_cast<short>(slot.vecTPre.z);
+      reach = static_cast<short>(this->state.slots[ec].vecTPre.z);
       if (reach < 0) {
         reach = -reach;
       }
     }
     if (reach > 30) {
-      slot.flag1[13] -= 2;
-      if (slot.flag1[13] < 2) {
-        slot.vecTPre.x = static_cast<float>(std::rand() % 31 - 15);
-        slot.vecTPre.z = static_cast<float>(std::rand() % 31 - 15);
+      this->state.slots[ec].flag1[13] -= 2;
+      if (this->state.slots[ec].flag1[13] <= 1) {
+        this->state.slots[ec].vecTPre.x = static_cast<float>(std::rand() % 31 - 15);
+        this->state.slots[ec].vecTPre.z = static_cast<float>(std::rand() % 31 - 15);
       }
     } else {
-      if (std::rand() % 125 == 0 && slot.flag1[13] > 100 && slot.flag1[9] == 0) {
-        slot.flag1[9] = 1;
+      if (std::rand() % 125 == 0 && this->state.slots[ec].flag1[13] > 100 && this->state.slots[ec].flag1[9] == 0) {
+        this->state.slots[ec].flag1[9] = 1;
       }
-      if (slot.flag1[9] > 0) {
-        ++slot.flag1[9];
-        if (slot.flag1[9] <= 90) {
-          slot.flag1[13] -= 6;
-          if (slot.flag1[13] < 0) {
-            slot.flag1[13] = 0;
+      if (this->state.slots[ec].flag1[9] >= 1) {
+        ++this->state.slots[ec].flag1[9];
+        if (this->state.slots[ec].flag1[9] <= 90) {
+          this->state.slots[ec].flag1[13] -= 6;
+          if (this->state.slots[ec].flag1[13] < 0) {
+            this->state.slots[ec].flag1[13] = 0;
           }
-        } else if (slot.flag1[9] < 120) {
-          slot.flag1[13] += 4;
-          if (slot.flag1[13] > 120) {
-            slot.flag1[13] = 120;
+        } else if (this->state.slots[ec].flag1[9] < 120) {
+          this->state.slots[ec].flag1[13] += 4;
+          if (this->state.slots[ec].flag1[13] > 120) {
+            this->state.slots[ec].flag1[13] = 120;
           }
         } else {
-          slot.flag1[9] = 0;
+          this->state.slots[ec].flag1[9] = 0;
         }
       }
     }
 
-    slot.vecTNow.x -= speed * g_sinTable[static_cast<int>(slot.height[12])];
-    slot.vecTNow.z += speed * g_sinTable[static_cast<int>(slot.height[14])];
-    reach = static_cast<short>(slot.vecTNow.x);
+    this->state.slots[ec].vecTNow.x -= speed * g_sinTable[static_cast<int>(this->state.slots[ec].height[12])];
+    this->state.slots[ec].vecTNow.z += speed * g_sinTable[static_cast<int>(this->state.slots[ec].height[14])];
+    reach = static_cast<short>(this->state.slots[ec].vecTNow.x);
     if (reach < 0) {
       reach = -reach;
     }
     if (reach < 30) {
-      reach = static_cast<short>(slot.vecTNow.z);
+      reach = static_cast<short>(this->state.slots[ec].vecTNow.z);
       if (reach < 0) {
         reach = -reach;
       }
     }
     if (reach > 30) {
-      slot.flag1[14] -= 2;
-      if (slot.flag1[14] < 2) {
-        slot.vecTNow.x = static_cast<float>(std::rand() % 31 - 15);
-        slot.vecTNow.z = static_cast<float>(std::rand() % 31 - 15);
+      this->state.slots[ec].flag1[14] -= 2;
+      if (this->state.slots[ec].flag1[14] <= 1) {
+        this->state.slots[ec].vecTNow.x = static_cast<float>(std::rand() % 31 - 15);
+        this->state.slots[ec].vecTNow.z = static_cast<float>(std::rand() % 31 - 15);
       }
     } else {
-      if (std::rand() % 125 == 0 && slot.flag1[14] > 100 && slot.flag1[10] == 0) {
-        slot.flag1[10] = 1;
+      if (std::rand() % 125 == 0 && this->state.slots[ec].flag1[14] > 100 && this->state.slots[ec].flag1[10] == 0) {
+        this->state.slots[ec].flag1[10] = 1;
       }
-      if (slot.flag1[10] > 0) {
-        ++slot.flag1[10];
-        if (slot.flag1[10] <= 90) {
-          slot.flag1[14] -= 6;
-          if (slot.flag1[14] < 0) {
-            slot.flag1[14] = 0;
+      if (this->state.slots[ec].flag1[10] >= 1) {
+        ++this->state.slots[ec].flag1[10];
+        if (this->state.slots[ec].flag1[10] <= 90) {
+          this->state.slots[ec].flag1[14] -= 6;
+          if (this->state.slots[ec].flag1[14] < 0) {
+            this->state.slots[ec].flag1[14] = 0;
           }
-        } else if (slot.flag1[10] < 120) {
-          slot.flag1[14] += 4;
-          if (slot.flag1[14] > 120) {
-            slot.flag1[14] = 120;
+        } else if (this->state.slots[ec].flag1[10] < 120) {
+          this->state.slots[ec].flag1[14] += 4;
+          if (this->state.slots[ec].flag1[14] > 120) {
+            this->state.slots[ec].flag1[14] = 120;
           }
         } else {
-          slot.flag1[10] = 0;
+          this->state.slots[ec].flag1[10] = 0;
         }
       }
     }
@@ -5121,22 +5114,22 @@ void CEffectPrim::PrimTrailShift() {
 
     ++this->state.slots[index].process;
     this->state.slots[index].vecBNow = this->render.position;
-    this->state.slots[index].vecBNow.y = this->render.position.y - 10.0f;
+    this->state.slots[index].vecBNow.y -= 10.0f;
 
-    if (this->state.slots[index].process < 1) {
+    if (this->state.slots[index].process <= 0) {
       continue;
     }
 
     const int delay = index * 10;
     if (this->state.slots[index].alphaT == 1) {
-      if (delay < this->state.slots[index].process) {
+      if (this->state.slots[index].process > delay) {
         this->state.slots[index].riseAngle += 2;
       }
       if (this->state.slots[index].riseAngle >= 360) {
         this->state.slots[index].riseAngle -= 360;
       }
     } else {
-      if (delay < this->state.slots[index].process) {
+      if (this->state.slots[index].process > delay) {
         this->state.slots[index].riseAngle -= 2;
       }
       if (this->state.slots[index].riseAngle < 0) {
@@ -5366,36 +5359,35 @@ __declspec(noinline) void CEffectPrim::PrimGlowFollow() {
   FaceCamera(this->state.slots);
   this->render.position = this->state.master->render.position;
 
-  EffectPrimitiveSlot& slot = this->state.slots[0];
-  if (slot.life != 1) {
+  if (this->state.slots[0].life != 1) {
     return;
   }
 
-  if (++slot.process < 30) {
-    if (slot.flag1[4] == 31) {
-      slot.alphaB = static_cast<std::int16_t>(slot.alphaB + 8);
+  if (++this->state.slots[0].process < 30) {
+    if (this->state.slots[0].flag1[4] == 31) {
+      this->state.slots[0].alphaB = static_cast<std::int16_t>(this->state.slots[0].alphaB + 8);
     } else {
-      slot.alphaB = static_cast<std::int16_t>(slot.alphaB + 3);
-      if (slot.alphaB >= 60) {
-        slot.alphaB = 60;
+      this->state.slots[0].alphaB = static_cast<std::int16_t>(this->state.slots[0].alphaB + 3);
+      if (this->state.slots[0].alphaB >= 60) {
+        this->state.slots[0].alphaB = 60;
       }
     }
   }
 
-  if (slot.alphaB >= 255) {
-    slot.alphaB = 255;
-  } else if (slot.alphaB < 0) {
-    slot.alphaB = 0;
+  if (this->state.slots[0].alphaB >= 255) {
+    this->state.slots[0].alphaB = 255;
+  } else if (this->state.slots[0].alphaB < 0) {
+    this->state.slots[0].alphaB = 0;
   }
 
-  slot.height[8] += 1.0f;
-  if (slot.height[8] >= 360.0f) {
-    slot.height[8] -= 360.0f;
+  this->state.slots[0].height[8] += 1.0f;
+  if (this->state.slots[0].height[8] >= 360.0f) {
+    this->state.slots[0].height[8] -= 360.0f;
   }
 
-  slot.vecBNow.y = slot.vecBPre.y;
-  slot.vecBNow.x = this->render.position.x;
-  slot.vecBNow.z = this->render.position.z;
+  this->state.slots[0].vecBNow.y = this->state.slots[0].vecBPre.y;
+  this->state.slots[0].vecBNow.x = this->render.position.x;
+  this->state.slots[0].vecBNow.z = this->render.position.z;
 }
 
 // OFFSET: 0x00BEA100
@@ -5415,13 +5407,13 @@ __declspec(noinline) bool CEffectPrim::PrimOrbitFade() {
       this->state.slots[index].alphaB = 255;
     }
 
-    if (this->state.slots[index].vecBNow.y < 0.0f) {
-      this->state.slots[index].vecBNow.y += this->state.slots[index].maxHeight;
-    } else {
+    if (this->state.slots[index].vecBNow.y >= 0.0f) {
       this->state.slots[index].alphaB = static_cast<std::int16_t>(this->state.slots[index].alphaB - 15);
+    } else {
+      this->state.slots[index].vecBNow.y += this->state.slots[index].maxHeight;
     }
 
-    const int angle = this->state.slots[index].fullDisplayAngle;
+    const short angle = this->state.slots[index].fullDisplayAngle;
     this->state.slots[index].vecBNow.x = this->state.slots[index].height[0] * g_cosTable[angle];
     this->state.slots[index].vecBNow.z = this->state.slots[index].height[0] * g_sinTable[angle];
 
