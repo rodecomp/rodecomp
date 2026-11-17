@@ -1601,22 +1601,18 @@ void UINewSkillListWnd::DrawSkillTree() {
   std::list<CSkillInfo>& skills = this->SkillList(this->m_tab, false);
   for (auto it = skills.begin(); it != skills.end(); ++it) {
     const CSkillInfo& skill = *it;
-    const int position = static_cast<int>(skill.treePosition);
+    int position = static_cast<int>(skill.treePosition);
     if (position == -1) {
       continue;
     }
-    const int first = this->m_firstRow * this->m_columns;
-    if (position < first) {
-      continue;
-    }
-    const int slot = position - first;
-    if (slot >= 42) {
+    position -= this->m_firstRow * this->m_columns;
+    if (position < 0 || position >= 42) {
       continue;
     }
 
     const int level = skill.level;
-    const int x = slot % this->m_columns * 68 + 72;
-    const int y = slot / this->m_columns * 56;
+    const int x = position % this->m_columns * 68 + 72;
+    const int y = position / this->m_columns * 56;
 
     if (!this->IsExtraTab(this->m_tab) && HasSkillValue(this->m_values, static_cast<int>(skill.id))) {
       this->FillRegion(x + 3, y + 43, 26, 26, 0xCCC0FF);
