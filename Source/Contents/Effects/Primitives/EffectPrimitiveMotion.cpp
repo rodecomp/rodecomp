@@ -4201,10 +4201,11 @@ bool CEffectPrim::PrimTwilight() {
       this->state.slots[index].height[8] -= 360.0f;
     }
 
-    ++this->state.slots[index].fullDisplayAngle;
+    const std::int16_t fullDisplayAngle = static_cast<std::int16_t>(this->state.slots[index].fullDisplayAngle + 1);
+    this->state.slots[index].fullDisplayAngle = fullDisplayAngle;
 
-    if (this->state.slots[index].fullDisplayAngle >= 360) {
-      this->state.slots[index].fullDisplayAngle -= 360;
+    if (fullDisplayAngle >= 360) {
+      this->state.slots[index].fullDisplayAngle = static_cast<std::int16_t>(fullDisplayAngle - 360);
     }
   }
 
