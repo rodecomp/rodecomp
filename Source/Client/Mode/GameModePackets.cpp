@@ -4776,24 +4776,21 @@ void CGameMode::Zc_Spirits2(const unsigned char* data) {
   }
 
   if (StateFlag01(actor->GetStateFlags()) || StateFlag02(actor->GetStateFlags())) {
-    int effectId;
     switch (actor->GetEffectiveJob(-1)) {
     case JT_GUNSLINGER:
     case JT_REBELLION:
     case JT_GUNSLINGER_B:
     case JT_REBELLION_B:
     case JT_NIGHT_WATCH:
-      effectId = 629;
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_CHOOKGI3, 0, 0, 0, 0, 0);
       break;
     case JT_MONK_B:
-      effectId = 504;
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_CHOOKGI2, 0, 0, 0, 0, 0);
       break;
     default:
-      effectId = 228;
+      actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_CHOOKGI, 0, 0, 0, 0, 0);
       break;
     }
-
-    actor->SendMsg(nullptr, AM_DELETE_EFFECT, static_cast<std::uint32_t>(effectId), 0, 0, 0, 0, 0);
     return;
   }
 
@@ -10576,8 +10573,14 @@ void CGameMode::ReceivePetChangeState(const unsigned char* data) {
       actor->SetState(0, 1);
     }
     break;
+  case 7:
+    if (g_serviceOptions.Get(TT_PETINFO_ALERT_ONOFF) == 1) {
+      g_windowMgr.AddMessageBox(LookupMessage(0x10F8), 0, true, 0, 0, LookupMessage(MSI_SHOW_NAME_OF_ENTERED_MAP), 0x118, 0x78, nullptr, false);
+    }
+    break;
   case CHANGESTATEPET_UPDATE_EGG:
-    if (packet->value == 0) {
+    switch (packet->value) {
+    case 0: {
       g_session.ResetPetEggAndJob();
       if (UIWindow* window = g_windowMgr.LookupWindow(WID_ITEMWND)) {
         window->Invalidate();
@@ -10586,7 +10589,9 @@ void CGameMode::ReceivePetChangeState(const unsigned char* data) {
       const int kind = 0;
       EquipmentProperties::CEquipmentPropertiesMgr::GetInstance()->RemoveExpansion(kind, itemId);
       g_windowMgr.CloseWindow(WID_PETINFOWND);
-    } else if (packet->value == 1) {
+      break;
+    }
+    case 1:
       if (UIItemIdentifyWnd* window = static_cast<UIItemIdentifyWnd*>(g_windowMgr.LookupWindow(WID_PETEGGLISTWND))) {
         int found = 0;
         ITEM_INFO item = window->GetSelectedItem(&found);
@@ -10604,11 +10609,7 @@ void CGameMode::ReceivePetChangeState(const unsigned char* data) {
         }
         g_windowMgr.CloseWindow(WID_PETEGGLISTWND);
       }
-    }
-    break;
-  case 7:
-    if (g_serviceOptions.Get(TT_PETINFO_ALERT_ONOFF) == 1) {
-      g_windowMgr.AddMessageBox(LookupMessage(0x10F8), 0, true, 0, 0, LookupMessage(MSI_SHOW_NAME_OF_ENTERED_MAP), 0x118, 0x78, nullptr, false);
+      break;
     }
     break;
   }
@@ -12830,10 +12831,10 @@ void CGameMode::NotifySkillCasting(
 
   if (delay == 0 && skillId == RL_FALLEN_ANGEL) {
     CEffect* effect = g_effectMgr->Find(source->render.accountId, EF_FALLEN_ANGEL);
-    if (effect) {
-      effect->Open();
-    } else {
+    if (effect == nullptr) {
       g_effectMgr->Spawn(source->render.accountId, EF_FALLEN_ANGEL, source->render.position, 0, -1, 0, 0);
+    } else {
+      effect->Open();
     }
   }
 
@@ -12993,10 +12994,6 @@ void CGameMode::ReceiveParaResultList(const unsigned char* packet) {
   const auto* p = reinterpret_cast<const PACKET_ZC_NPC_MARKET_PURCHASE_RESULT*>(packet);
   const int count = static_cast<unsigned int>(p->packetLength - 6) / sizeof(ParaResultRecord);
   switch (p->result) {
-  case -1:
-    g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RULE)), 0xFF, 0, 0, 0);
-    break;
   case PURCHASE_SUCCEED:
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_DEAL_SECCESS)), 0xFFFF00, 0, 0, 0);
@@ -13017,6 +13014,10 @@ void CGameMode::ReceiveParaResultList(const unsigned char* packet) {
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PURCHASE_FAIL_EACHITEM_COUNT)), 0xFF, 0, 0, 0);
     break;
+  case -1:
+    g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_RULE)), 0xFF, 0, 0, 0);
+    break;
   }
 
   if (count <= 0) {
@@ -13027,16 +13028,16 @@ void CGameMode::ReceiveParaResultList(const unsigned char* packet) {
   }
 
   UIParaResultWnd* window = dynamic_cast<UIParaResultWnd*>(static_cast<UIFrameWnd*>(g_windowMgr.EnsureWindow(WID_PARARESULTWND)));
-  const ParaResultRecord* record = reinterpret_cast<const ParaResultRecord*>(p + 1);
+  const ParaResultRecord* records = reinterpret_cast<const ParaResultRecord*>(p + 1);
   for (int i = 0; i < count; ++i) {
+    const ParaResultRecord record = records[i];
     RawItemBasic item = {};
-    _itoa(record->itemId, item.itemId, 10);
-    item.price = record->location;
-    item.realPrice = record->location;
+    _itoa(record.itemId, item.itemId, 10);
+    item.price = record.location;
+    item.realPrice = record.location;
     item.id = -1;
     item.identified = 1;
-    window->AddItem(item, record->quantity);
-    ++record;
+    window->AddItem(item, record.quantity);
   }
 
   window->SendMsg(nullptr, UM_SETTITLE, (count - 2 > 0 ? count - 2 : 0) * 32 + 120, 0, 0, 0);
@@ -15073,8 +15074,9 @@ void CGameMode::ReceiveActorMoveEntryOld0(const unsigned char* data) {
   entry.appearanceVariant = this->SubD07740(entry.job, packet->sex);
   entry.speed = packet->speed;
   entry.head = packet->head;
-  entry.weapon = packet->weapon;
-  entry.shield = packet->weapon >> 31;
+  const std::int64_t weapon = packet->weapon;
+  entry.weapon = static_cast<int>(weapon);
+  entry.shield = static_cast<int>(weapon >> 32);
   entry.accessory = packet->accessory;
   entry.healthState = packet->healthState;
   entry.bodyState = packet->bodyState;
@@ -16051,8 +16053,9 @@ void CGameMode::ReceiveActorStandEntryOld0(const unsigned char* data) {
   entry.xSize = packet->xSize;
   entry.ySize = packet->ySize;
   entry.head = packet->head;
-  entry.weapon = packet->weapon;
-  entry.shield = packet->weapon >> 31;
+  const std::int64_t weapon = packet->weapon;
+  entry.weapon = static_cast<int>(weapon);
+  entry.shield = static_cast<int>(weapon >> 32);
   entry.accessory = packet->accessory;
   entry.effectState = packet->healthState;
   entry.bodyState = packet->bodyState;
@@ -16464,7 +16467,7 @@ void CGameMode::SpawnStandingActor(
   entry.direction = posDir[2] & 0x0F;
   entry.cellY = ((posDir[1] & 0x3F) << 4) | (posDir[2] >> 4);
 
-  CGameActor* actor = this->scene->GetGameActorByAID(entry.aid);
+  CGameActor* actor = this->scene->GetGameActorByAID(aid);
   if (actor) {
     if (objectType == 0) {
       actor->SendMsg(nullptr, AM_STANDENTRY2, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
@@ -16735,7 +16738,7 @@ void CGameMode::SpawnStateActor(
   entry.direction = posDir[2] & 0x0F;
   entry.cellY = ((posDir[1] & 0x3F) << 4) | (posDir[2] >> 4);
 
-  CGameActor* actor = this->scene->GetGameActorByAID(entry.aid);
+  CGameActor* actor = this->scene->GetGameActorByAID(aid);
   if (actor) {
     if (objectType == 0) {
       actor->SendMsg(nullptr, AM_STANDENTRY2, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
