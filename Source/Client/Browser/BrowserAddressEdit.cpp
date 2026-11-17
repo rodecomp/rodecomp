@@ -1,20 +1,20 @@
 #include "Client/Browser/WebBrowser.h"
 #include "UI/Window/UIWindowMgr.h"
 
+#include <atlbase.h>
 #include <oleauto.h>
 
 // GLOBAL: gl_24370
 WNDPROC lpPrevWndFunc;
 
 struct BrowserAddressBstr {
-  BSTR text;
+  CComBSTR text;
   ~BrowserAddressBstr();
 };
 
 // OFFSET: 0x00AB20F0
 // FUNCTION: fn_17411
 BrowserAddressBstr::~BrowserAddressBstr() {
-  SysFreeString(text);
 }
 
 // OFFSET: 0x00AB21F0
