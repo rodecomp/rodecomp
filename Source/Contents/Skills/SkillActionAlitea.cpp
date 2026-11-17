@@ -1826,6 +1826,13 @@ struct SkillObjectActionRegistration {
   }
 };
 
+// OFFSET: 0x005B06D0
+// FUNCTION: fn_45576
+template <>
+CSkillObjectAction* NewAction<CSkillObjectAction_AT_GLACIER_MONOLITH, CSkillObjectAction>() {
+    return new CSkillObjectAction_AT_GLACIER_MONOLITH;
+}
+
 // OFFSET: 0x0040D1D0
 // FUNCTION: fn_45560
 static SkillObjectActionRegistration s_skillObjectActionRegistered314(314, NewAction<CSkillObjectAction_AT_GLACIER_MONOLITH, CSkillObjectAction>);
