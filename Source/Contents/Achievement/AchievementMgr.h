@@ -21,6 +21,12 @@ struct AchievementReward {
   /* 001C */ int conditionId;
 };
 
+struct AchievementRewardIds {
+  /* 0000 */ int itemId = -1;
+  /* 0004 */ int titleId = -1;
+  /* 0008 */ int buffId = -1;
+};
+
 struct AchievementInfo {
   // INLINED
   AchievementInfo() {
@@ -34,9 +40,7 @@ struct AchievementInfo {
   /* 0018 */ std::string summaryText;
   /* 0030 */ std::string description;
   /* 0048 */ int points;
-  /* 004C */ int rewardItemId = -1;
-  /* 0050 */ int rewardTitleId = -1;
-  /* 0054 */ int rewardBuffId = -1;
+  /* 004C */ AchievementRewardIds reward;
   /* 0058 */ std::vector<AchievementReward> rewards;
   /* 0064 */ int progressMode;
   /* 0068 */ std::string iconName;

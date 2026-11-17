@@ -41,9 +41,9 @@ struct PACKET_CZ_REQ_ACH_REWARD {
 namespace {
   // INLINED
   bool HasReward(const AchievementInfo& info) {
-    bool result = info.rewardBuffId > 0;
-    result |= info.rewardTitleId > 0;
-    result |= info.rewardItemId > 0;
+    bool result = info.reward.buffId > 0;
+    result |= info.reward.titleId > 0;
+    result |= info.reward.itemId > 0;
     return result;
   }
 
@@ -608,7 +608,7 @@ void UIAchViewWnd::Paint() {
     }
   }
 
-  if (this->info->rewardItemId > 0 || this->info->rewardTitleId > 0 || this->info->rewardBuffId > 0) {
+  if (this->info->reward.itemId > 0 || this->info->reward.titleId > 0 || this->info->reward.buffId > 0) {
     int width = 0;
     int count = 0;
     for (UIToolTipBitmapWnd* reward : this->rewards) {
@@ -1486,24 +1486,24 @@ void UIAchViewWnd::UpdateInfo() {
     }
 
     if (HasReward(*this->info)) {
-      if (this->info->rewardTitleId > 0) {
+      if (this->info->reward.titleId > 0) {
         const std::string bitmap = "유저인터페이스\\achievement_re\\reward_title.bmp";
-        const std::string title = g_session.GetJobTitleString(this->info->rewardTitleId);
+        const std::string title = g_session.GetJobTitleString(this->info->reward.titleId);
         this->rewards[0]->Set(bitmap.c_str(), title.c_str(), 0);
         this->rewards[0]->Show(1);
       }
 
-      if (this->info->rewardBuffId > 0) {
+      if (this->info->reward.buffId > 0) {
         const std::string bitmap = "유저인터페이스\\achievement_re\\reward_buff.bmp";
         const char* description = nullptr;
-        g_session.m_hotkeyScript->Call("GetStateIconDescript", "dd>s", this->info->rewardBuffId, 1, &description);
+        g_session.m_hotkeyScript->Call("GetStateIconDescript", "dd>s", this->info->reward.buffId, 1, &description);
         this->rewards[1]->Set(bitmap.c_str(), description, 0);
         this->rewards[1]->Show(1);
       }
 
-      if (this->info->rewardItemId > 0) {
+      if (this->info->reward.itemId > 0) {
         const std::string bitmap = "유저인터페이스\\achievement_re\\reward_item.bmp";
-        this->rewards[2]->Set(bitmap.c_str(), nullptr, this->info->rewardItemId);
+        this->rewards[2]->Set(bitmap.c_str(), nullptr, this->info->reward.itemId);
         this->rewards[2]->Show(1);
       }
     }

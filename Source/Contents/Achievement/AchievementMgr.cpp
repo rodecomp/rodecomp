@@ -131,7 +131,7 @@ std::string CAchievementMgr::GetSummaryText(int id) {
 // FUNCTION: fn_05318
 int CAchievementMgr::GetRewardTitleId(int id) {
   if (this->achievements.find(id) != this->achievements.end()) {
-    return this->achievements[id].rewardTitleId;
+    return this->achievements[id].reward.titleId;
   }
   return -1;
 }
@@ -288,7 +288,7 @@ std::pair<bool, std::string> CAchievementMgr::InsertAchieveResource(int id, std:
 std::pair<bool, std::string> CAchievementMgr::InsertAchieveRewardBuff(int id, int value) {
   const auto found = this->achievements.find(id);
   if (found != this->achievements.end()) {
-    found->second.rewardBuffId = value;
+    found->second.reward.buffId = value;
     return std::make_pair(true, "good");
   } else {
     return std::make_pair(false, static_cast<const std::string&>(FormatOwnedString("achievement info [%d] cannot be find", id)));
@@ -300,7 +300,7 @@ std::pair<bool, std::string> CAchievementMgr::InsertAchieveRewardBuff(int id, in
 std::pair<bool, std::string> CAchievementMgr::InsertAchieveRewardItem(int id, int value) {
   const auto found = this->achievements.find(id);
   if (found != this->achievements.end()) {
-    found->second.rewardItemId = value;
+    found->second.reward.itemId = value;
     return std::make_pair(true, "good");
   } else {
     return std::make_pair(false, static_cast<const std::string&>(FormatOwnedString("achievement info [%d] cannot be find", id)));
@@ -312,7 +312,7 @@ std::pair<bool, std::string> CAchievementMgr::InsertAchieveRewardItem(int id, in
 std::pair<bool, std::string> CAchievementMgr::InsertAchieveRewardTitle(int id, int value) {
   const auto found = this->achievements.find(id);
   if (found != this->achievements.end()) {
-    found->second.rewardTitleId = value;
+    found->second.reward.titleId = value;
     return std::make_pair(true, "good");
   } else {
     return std::make_pair(false, static_cast<const std::string&>(FormatOwnedString("achievement info [%d] cannot be find", id)));
@@ -340,9 +340,9 @@ bool CAchievementMgr::HasReward(int id) {
   }
 
   const AchievementInfo& info = this->achievements[id];
-  bool result = info.rewardBuffId > 0;
-  result |= info.rewardTitleId > 0;
-  if (info.rewardItemId > 0) {
+  bool result = info.reward.buffId > 0;
+  result |= info.reward.titleId > 0;
+  if (info.reward.itemId > 0) {
     result = true;
   }
   return result;
