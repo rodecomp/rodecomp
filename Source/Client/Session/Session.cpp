@@ -3462,7 +3462,7 @@ bool CSession::LoadMapViewParameters() {
       values.push_back(std::string(start, cursor));
     } else {
       values.push_back(std::string(start, cursor));
-      this->m_mapViewParameters.push_back(std::make_pair(name, values));
+      this->m_mapViewParameters.push_back(std::pair<std::string, std::vector<std::string>>(name, values));
       name.clear();
       values.clear();
     }
