@@ -7170,7 +7170,7 @@ void CGameMode::ChangeZoneServer(std::string mapName, int x, int y, int ip, int 
   g_zoneServerEndpoint.port = port;
   StringFormat(g_zoneServerEndpoint.overrideAddress, sizeof(g_zoneServerEndpoint.overrideAddress), static_cast<std::size_t>(-1), "%s", host.c_str());
   GetRagConnection().Close();
-  g_activeSkillEffects.clear();
+  g_activeSkillEffects.erase(g_activeSkillEffects.begin(), g_activeSkillEffects.end());
 
   this->noMove = 1;
   this->noMoveStartTick = timeGetTime();
@@ -7181,28 +7181,28 @@ void CGameMode::ChangeZoneServer(std::string mapName, int x, int y, int ip, int 
 
   if (g_replayAnimationScaling == 0) {
     this->connectionReady = GetRagConnection().Connect(g_zoneServerEndpoint);
-    if (!this->connectionReady) {
+    if (this->connectionReady) {
+      g_nProtectGameGuardMgr->IncrementCounter();
+      g_packetReassembler->Notify(1);
+      GetRagConnection().SendDeadline() = timeGetTime() + 1000;
+
+      ZoneEnterPacket packet;
+      packet.packetType = ID_CZ_ENTER2;
+      packet.clientTime = timeGetTime();
+      packet.aid = g_session.m_aid;
+      packet.gid = g_session.m_gid;
+      packet.authCode = g_session.m_authCode;
+      packet.sex = static_cast<unsigned char>(g_session.GetCurrentSex());
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
+      g_session.SetOption(17, 1, 0);
+      GetRagConnection().SetBlock(1);
+    } else {
       GetRagConnection().Close();
       if (g_windowMgr.Confirm(LookupMessage(MSI_SERVER_CONNECTION_FAILED), 1, true, true, 0, "Message", 280, 120, 0) != 269) {
         this->SendMsg(MM_QUIT_TO_IDENTRY, 0, 0, 0, 0);
       }
       return;
     }
-
-    g_nProtectGameGuardMgr->IncrementCounter();
-    g_packetReassembler->Notify(1);
-    GetRagConnection().SendDeadline() = timeGetTime() + 1000;
-
-    ZoneEnterPacket packet;
-    packet.packetType = ID_CZ_ENTER2;
-    packet.clientTime = timeGetTime();
-    packet.aid = g_session.m_aid;
-    packet.gid = g_session.m_gid;
-    packet.authCode = g_session.m_authCode;
-    packet.sex = static_cast<unsigned char>(g_session.GetCurrentSex());
-    GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
-    g_session.SetOption(17, 1, 0);
-    GetRagConnection().SetBlock(1);
   }
 
   static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND))->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
