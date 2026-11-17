@@ -52,8 +52,7 @@ int UIJoinPartyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       g_modeMgr.currentMode->SendMsg(MM_JOIN_GROUP, this->identity, 0, 0, 0);
       break;
     }
-
-    return 0;
+    break;
 
   case UM_SET_JOIN_PARTY_MSG: {
     this->identity = static_cast<std::uint32_t>(a);
@@ -63,41 +62,44 @@ int UIJoinPartyAcceptWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     text += LookupMessage(MSI_SUGGEST_JOIN_PARTY);
     this->viewer->Clear();
     this->viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text.c_str()), 38, 0, 0);
-
-    return 0;
+    break;
   }
 
   case UM_REPLAY_FRAMED_DATA: {
     const auto* bytes = reinterpret_cast<const unsigned char*>(a);
     FramedMessageHeader header;
-    std::memcpy(&header, bytes, sizeof(header));
-    unsigned int offset = sizeof(header);
-    if (21750 == header.type) {
-      bool scanning = true;
-      while (scanning && static_cast<unsigned int>(b) > offset) {
-        std::memcpy(&header, bytes + offset, sizeof(header));
-        offset += sizeof(header);
-        switch (header.type) {
-        case 21751:
-          scanning = false;
-          break;
-        case 21752: {
-          char text[260] = {};
-          std::memcpy(text, bytes + offset, header.length);
-          offset += header.length;
-          this->SendMsg(nullptr, UM_SET_JOIN_PARTY_MSG, 0, reinterpret_cast<std::intptr_t>(text), 0, 0);
-          break;
-        }
-        default:
-          offset += header.length;
-          break;
-        }
+    header = *reinterpret_cast<const FramedMessageHeader*>(bytes);
+    unsigned int offset = 6;
+    if (21750 != header.type) {
+      break;
+    }
+
+    bool scanning = true;
+    while (scanning && static_cast<unsigned int>(b) > offset) {
+      header = *reinterpret_cast<const FramedMessageHeader*>(bytes + offset);
+      offset += 6;
+      switch (header.type) {
+      case 21751:
+        scanning = false;
+        break;
+      case 21752: {
+        char text[260] = {};
+        std::memcpy(text, bytes + offset, header.length);
+        offset += header.length;
+        this->SendMsg(nullptr, UM_SET_JOIN_PARTY_MSG, 0, reinterpret_cast<std::intptr_t>(text), 0, 0);
+        break;
+      }
+      default:
+        offset += header.length;
+        break;
       }
     }
-    return 0;
+    break;
   }
 
   default:
     return this->UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
+
+  return 0;
 }
