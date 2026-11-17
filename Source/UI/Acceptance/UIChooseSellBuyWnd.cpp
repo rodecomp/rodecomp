@@ -10473,15 +10473,18 @@ void UITipboxWnd::OnCreate(int width, int) {
 
   this->tipViewer = new UITagTextViewer();
   this->tipViewer->SetSize(226, 245);
-  this->tipViewer->m_backgroundColor = 0xFF000000u | RGB(red, green, blue);
-  this->tipViewer->Invalidate();
+  {
+    UITagTextViewer* viewer = this->tipViewer;
+    viewer->m_backgroundColor = RGB(red, green, blue) | 0xFF000000u;
+    viewer->Invalidate();
+  }
   this->tipViewer->m_textWidth = 188;
   this->tipViewer->Move(250, 70);
   this->AddChild(this->tipViewer);
   this->tipViewer->Show(1);
 
-  UIStaticText** titles = &this->titleText;
-  for (int y = 50; y < 90; y += 20) {
+  int y = 50;
+  for (UIStaticText** titles = &this->titleText; y < 90; ++titles) {
     *titles = new UIStaticText();
     (*titles)->SetSize(220, 18);
     (*titles)->SetText("", 0);
@@ -10489,7 +10492,7 @@ void UITipboxWnd::OnCreate(int width, int) {
     (*titles)->SetColor(44, 77, 160);
     (*titles)->Move(254, y);
     this->AddChild(*titles);
-    ++titles;
+    y += 20;
   }
 
   TipBoxEntry& entry = g_itemTagOwner->SelectRandomTip();
@@ -10536,16 +10539,15 @@ void UITipboxWnd::OnCreate(int width, int) {
   closeButton->SetId(201);
   this->AddChild(closeButton);
 
-  UIEditCtrl4* search = new UIEditCtrl4();
-  this->searchEdit = search;
-  search->SetSize(193, 15);
-  search->maximum = 150;
-  search->TextColor(RGB(0, 0, 0), 0xFFFFFFFF);
-  search->SetPlaceholderEnabled(true);
-  search->SetPlaceholder(LookupMessage(MSI_ENTER_YOUR_AUTHENTICATION_NUMBER));
-  search->SetPlaceholderColor(0xB1B1B1);
-  search->Move(253, 22);
-  search->Background(255, 255, 255);
+  this->searchEdit = new UIEditCtrl4();
+  this->searchEdit->SetSize(193, 15);
+  this->searchEdit->maximum = 150;
+  this->searchEdit->TextColor(0, 0, 0, 0xFFFFFFFF);
+  static_cast<UIEditCtrl4*>(this->searchEdit)->SetPlaceholderEnabled(true);
+  static_cast<UIEditCtrl4*>(this->searchEdit)->SetPlaceholder(LookupMessage(MSI_ENTER_YOUR_AUTHENTICATION_NUMBER));
+  static_cast<UIEditCtrl4*>(this->searchEdit)->SetPlaceholderColor(0xB1B1B1);
+  this->searchEdit->Move(253, 22);
+  this->searchEdit->Background(255, 255, 255);
   this->AddChild(this->searchEdit);
 
   this->previousButton = new UIBitmapButton();
@@ -10570,10 +10572,9 @@ void UITipboxWnd::OnCreate(int width, int) {
 
   this->searchResults = new UIListBoxID();
   this->searchResults->Configure(250, 50, 216, 266, 0);
-  int* background = this->searchResults->backgroundColor;
-  background[0] = 240;
-  background[1] = 240;
-  background[2] = 240;
+  this->searchResults->backgroundColor[0] = 240;
+  this->searchResults->backgroundColor[1] = 240;
+  this->searchResults->backgroundColor[2] = 240;
   this->searchResults->SetId(184);
   this->AddChild(this->searchResults);
   this->searchResults->Show(0);
@@ -10592,12 +10593,18 @@ void UITipboxWnd::OnCreate(int width, int) {
   this->RefreshTip();
 
   if (entry.paragraphs.size() == 1) {
-    this->nextButton->SetDisabled(1);
-    this->nextButton->Invalidate();
+    {
+      UIButton* button = this->nextButton;
+      button->SetDisabled(1);
+      button->Invalidate();
+    }
     this->nextButton->Invalidate();
   }
-  this->previousButton->SetDisabled(1);
-  this->previousButton->Invalidate();
+  {
+    UIButton* button = this->previousButton;
+    button->SetDisabled(1);
+    button->Invalidate();
+  }
   this->previousButton->Invalidate();
 }
 
