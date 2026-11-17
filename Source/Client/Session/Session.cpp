@@ -90,6 +90,7 @@
 #include "UI/Status/UIMerInfoWnd.h"
 
 template __declspec(noinline) void std::vector<SearchStoreResult>::_Destroy(SearchStoreResult*, SearchStoreResult*);
+template __declspec(noinline) std::pair<std::string, std::vector<std::string>>::pair(std::string&, std::vector<std::string>&);
 
 // STATIC: 0x01732638
 // GLOBAL: gl_24474
@@ -1779,7 +1780,11 @@ bool CSession::IsGuildMemberName(const char* name) const {
     }
   }
 
-  return std::strcmp(g_guildInfo.masterName.c_str(), name) == 0;
+  if (std::strcmp(g_guildInfo.masterName.c_str(), name) == 0) {
+    return true;
+  }
+
+  return false;
 }
 
 // OFFSET: 0x00DFA160
