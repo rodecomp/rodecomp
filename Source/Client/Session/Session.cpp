@@ -437,7 +437,8 @@ int CSession::GetMerchantMyShopItemNum(std::uint32_t id) const {
 // OFFSET: 0x00DDECB0
 // FUNCTION: fn_23411
 ITEM_INFO CSession::FindMerchantPurchaseItem(std::uint32_t id) const {
-  for (const ITEM_INFO& item : this->m_merchantPurchaseItems) {
+  for (auto itemIt = this->m_merchantPurchaseItems.begin(); itemIt != this->m_merchantPurchaseItems.end(); ++itemIt) {
+    const ITEM_INFO& item = *itemIt;
     if (item.identity[1] == id) {
       return item;
     }
