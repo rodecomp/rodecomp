@@ -301,42 +301,30 @@ void UINewSelectCharWnd::OnCreate(int width, int height) {
   this->m_button417->Enable(0);
 
   this->m_prevPageButton = new UIBitmapButton();
-  const char* prevNormal;
-  const char* prevOver;
-  const char* prevPress;
   if (this->m_page == 0) {
-    prevPress = "유저인터페이스\\select_character_ver3\\bt_left_off.bmp";
-    prevOver = prevPress;
-    prevNormal = prevPress;
+    this->m_prevPageButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_left_off.bmp", 0, 0);
+    this->m_prevPageButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_left_off.bmp", 1, 0);
+    this->m_prevPageButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_left_off.bmp", 2, 0);
   } else {
-    prevPress = "유저인터페이스\\select_character_ver3\\bt_left_press.bmp";
-    prevOver = "유저인터페이스\\select_character_ver3\\bt_left_over.bmp";
-    prevNormal = "유저인터페이스\\select_character_ver3\\bt_left_on.bmp";
+    this->m_prevPageButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_left_on.bmp", 0, 0);
+    this->m_prevPageButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_left_over.bmp", 1, 0);
+    this->m_prevPageButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_left_press.bmp", 2, 0);
   }
-  this->m_prevPageButton->SetBitmap(prevNormal, 0, 0);
-  this->m_prevPageButton->SetBitmap(prevOver, 1, 0);
-  this->m_prevPageButton->SetBitmap(prevPress, 2, 0);
   this->m_prevPageButton->SetSize(this->m_prevPageButton->BitmapWidth(), this->m_prevPageButton->BitmapHeight());
   this->m_prevPageButton->Move(0x33E, 0x22E);
   this->m_prevPageButton->SetId(ID_PREV_PAGE);
   this->AddChild(this->m_prevPageButton);
 
   this->m_nextPageButton = new UIBitmapButton();
-  const char* nextNormal;
-  const char* nextOver;
-  const char* nextPress;
-  if (this->m_page < this->m_pageCount - 1) {
-    nextPress = "유저인터페이스\\select_character_ver3\\bt_right_press.bmp";
-    nextOver = "유저인터페이스\\select_character_ver3\\bt_right_over.bmp";
-    nextNormal = "유저인터페이스\\select_character_ver3\\bt_right_on.bmp";
+  if (this->m_page >= this->m_pageCount - 1) {
+    this->m_nextPageButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_right_off.bmp", 0, 0);
+    this->m_nextPageButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_right_off.bmp", 1, 0);
+    this->m_nextPageButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_right_off.bmp", 2, 0);
   } else {
-    nextPress = "유저인터페이스\\select_character_ver3\\bt_right_off.bmp";
-    nextOver = nextPress;
-    nextNormal = nextPress;
+    this->m_nextPageButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_right_on.bmp", 0, 0);
+    this->m_nextPageButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_right_over.bmp", 1, 0);
+    this->m_nextPageButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_right_press.bmp", 2, 0);
   }
-  this->m_nextPageButton->SetBitmap(nextNormal, 0, 0);
-  this->m_nextPageButton->SetBitmap(nextOver, 1, 0);
-  this->m_nextPageButton->SetBitmap(nextPress, 2, 0);
   this->m_nextPageButton->SetSize(this->m_nextPageButton->BitmapWidth(), this->m_nextPageButton->BitmapHeight());
   this->m_nextPageButton->Move(0x3AB, 0x22E);
   this->m_nextPageButton->SetId(ID_NEXT_PAGE);
@@ -661,7 +649,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     case ID_MAKE:
       if (this->m_pageSlot != argument2) {
         this->m_pageSlot = argument2;
-        this->SendMsg(this->m_slotButtons2[argument2], UM_COMMAND, ID_SLOT, 0, 0, 0);
+        this->SendMsg(this->m_slotButtons2[this->m_pageSlot], UM_COMMAND, ID_SLOT, 0, 0, 0);
       }
       if (this->m_slotStatus[static_cast<unsigned char>(g_selectedSlotIndex)] == 1 && static_cast<unsigned char>(g_selectedSlotIndex) < g_session.m_producibleSlotCount &&
           g_windowMgr.EnsureWindow(WID_NEWMAKECHARWND) != nullptr) {
@@ -754,19 +742,16 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
           reinterpret_cast<const CharacterInfo*>(g_modeMgr.currentMode->SendMsg(MM_QUERYCHARICTORINFO, static_cast<unsigned char>(g_selectedSlotIndex), 0, 0, 0));
         const int selected = static_cast<unsigned char>(g_selectedSlotIndex);
         if (this->m_slotMoveSource != selected && selected < this->m_maxCharacters) {
-          if (info == nullptr) {
-            if (this->m_slotMoveSource != -1) {
-              g_modeMgr.GetLoginMode()->ShowNotice(0x2E, false);
-            }
-          } else {
+          if (info != nullptr) {
             if (info->slotChangeCount > 0) {
               shown = g_modeMgr.GetLoginMode()->ShowNotice(0x2D, false);
             }
-            if (info->nameChangeCount > 0) {
-              g_modeMgr.GetLoginMode()->ShowNotice(0x2F, shown);
-            }
+          } else if (this->m_slotMoveSource != -1) {
+            g_modeMgr.GetLoginMode()->ShowNotice(0x2E, false);
           }
-        } else if (info != nullptr && info->nameChangeCount > 0) {
+        }
+
+        if (info != nullptr && info->nameChangeCount > 0) {
           g_modeMgr.GetLoginMode()->ShowNotice(0x2F, shown);
         }
       }
@@ -843,7 +828,7 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       this->m_slotMoveSource = static_cast<unsigned char>(g_selectedSlotIndex);
       break;
     case SELECTCHAR_BUTTON_SLOT_MOVE_CONFIRM: {
-      const unsigned char selected = static_cast<unsigned char>(g_selectedSlotIndex);
+      const int selected = static_cast<unsigned char>(g_selectedSlotIndex);
       if (g_windowMgr.Confirm(LookupMessage(MSI_CHANGE_CHARACTER_SLOT), 2, false, false, 0, "Message", 0x118, 0x78, 0) == ID_YES) {
         const CharacterInfo* info = reinterpret_cast<const CharacterInfo*>(g_modeMgr.currentMode->SendMsg(MM_QUERYCHARICTORINFO, this->m_slotMoveSource, 0, 0, 0));
         if (info != nullptr) {
@@ -864,21 +849,15 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       }
 
       --this->m_page;
-      const char* prevNormal;
-      const char* prevOver;
-      const char* prevPress;
       if (this->m_page == 0) {
-        prevPress = "유저인터페이스\\select_character_ver3\\bt_left_off.bmp";
-        prevOver = prevPress;
-        prevNormal = prevPress;
+        this->m_prevPageButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_left_off.bmp", 0, 0);
+        this->m_prevPageButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_left_off.bmp", 1, 0);
+        this->m_prevPageButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_left_off.bmp", 2, 0);
       } else {
-        prevPress = "유저인터페이스\\select_character_ver3\\bt_left_press.bmp";
-        prevOver = "유저인터페이스\\select_character_ver3\\bt_left_over.bmp";
-        prevNormal = "유저인터페이스\\select_character_ver3\\bt_left_on.bmp";
+        this->m_prevPageButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_left_on.bmp", 0, 0);
+        this->m_prevPageButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_left_over.bmp", 1, 0);
+        this->m_prevPageButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_left_press.bmp", 2, 0);
       }
-      this->m_prevPageButton->SetBitmap(prevNormal, 0, 0);
-      this->m_prevPageButton->SetBitmap(prevOver, 1, 0);
-      this->m_prevPageButton->SetBitmap(prevPress, 2, 0);
       this->m_nextPageButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_right_on.bmp", 0, 0);
       this->m_nextPageButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_right_over.bmp", 1, 0);
       this->m_nextPageButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_right_press.bmp", 2, 0);
@@ -893,7 +872,10 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
           continue;
         }
 
-        const int column = this->m_page != 0 ? index % (this->m_page * this->m_slotsPerPage) : index;
+        int column = index;
+        if (this->m_page != 0) {
+          column = index % (this->m_page * this->m_slotsPerPage);
+        }
         if (this->m_slotStatus[index] == 1) {
           static_cast<UISlotBmpButton*>(this->m_slotButtons2[column])->SetSlot(-1, index);
           this->m_characterWindows[column]->SetText("", 0);
@@ -930,21 +912,15 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       }
 
       ++this->m_page;
-      const char* nextNormal;
-      const char* nextOver;
-      const char* nextPress;
-      if (this->m_page < this->m_pageCount - 1) {
-        nextPress = "유저인터페이스\\select_character_ver3\\bt_right_press.bmp";
-        nextOver = "유저인터페이스\\select_character_ver3\\bt_right_over.bmp";
-        nextNormal = "유저인터페이스\\select_character_ver3\\bt_right_on.bmp";
+      if (this->m_page >= this->m_pageCount - 1) {
+        this->m_nextPageButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_right_off.bmp", 0, 0);
+        this->m_nextPageButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_right_off.bmp", 1, 0);
+        this->m_nextPageButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_right_off.bmp", 2, 0);
       } else {
-        nextPress = "유저인터페이스\\select_character_ver3\\bt_right_off.bmp";
-        nextOver = nextPress;
-        nextNormal = nextPress;
+        this->m_nextPageButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_right_on.bmp", 0, 0);
+        this->m_nextPageButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_right_over.bmp", 1, 0);
+        this->m_nextPageButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_right_press.bmp", 2, 0);
       }
-      this->m_nextPageButton->SetBitmap(nextNormal, 0, 0);
-      this->m_nextPageButton->SetBitmap(nextOver, 1, 0);
-      this->m_nextPageButton->SetBitmap(nextPress, 2, 0);
       this->m_prevPageButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_left_on.bmp", 0, 0);
       this->m_prevPageButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_left_over.bmp", 1, 0);
       this->m_prevPageButton->SetBitmap("유저인터페이스\\select_character_ver3\\bt_left_press.bmp", 2, 0);
@@ -959,7 +935,10 @@ int UINewSelectCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
           continue;
         }
 
-        const int column = this->m_page != 0 ? index % (this->m_page * this->m_slotsPerPage) : index;
+        int column = index;
+        if (this->m_page != 0) {
+          column = index % (this->m_page * this->m_slotsPerPage);
+        }
         if (this->m_slotStatus[index] == 1) {
           static_cast<UISlotBmpButton*>(this->m_slotButtons2[column])->SetSlot(-1, index);
           this->m_characterWindows[column]->SetText("", 0);
