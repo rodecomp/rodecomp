@@ -1518,8 +1518,8 @@ void UITipOfTheDayWnd::Paint() {
 
   const int columns = (this->geometry.width - 40) / 32;
   const int slots = (this->geometry.height - 38) / 32;
-  for (int i = 0, y = 17; i < slots; ++i, y += 32) {
-    this->DrawItemSlotFrame(40, y);
+  for (int i = 0; i < slots; ++i) {
+    this->DrawItemSlotFrame(40, i * 32 + 17);
   }
 
   g_skinInfo.PaletteChannels(2, 2, red, green, blue);
