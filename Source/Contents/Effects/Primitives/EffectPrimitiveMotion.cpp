@@ -964,10 +964,11 @@ void CEffectPrim::PrimBottom() {
   slot.vecBNow.y = slot.vecBPre.y + 3.0f * g_sinTable[slot.rotStart];
 
   if (slot.flag1[2] == 7) {
-    slot.fullDisplayAngle += 10;
+    const std::int16_t fullDisplayAngle = static_cast<std::int16_t>(slot.fullDisplayAngle + 10);
+    slot.fullDisplayAngle = fullDisplayAngle;
 
-    if (slot.fullDisplayAngle >= 360) {
-      slot.fullDisplayAngle -= 360;
+    if (fullDisplayAngle >= 360) {
+      slot.fullDisplayAngle = static_cast<std::int16_t>(fullDisplayAngle - 360);
     }
   }
 }
