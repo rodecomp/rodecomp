@@ -1843,7 +1843,7 @@ bool UIShowInfoWnd::SendStyleChange() {
   header.packetLength = count * 8 + 6;
 
   memset(&packet[sizeof(header)], 0, sizeof(packet) - sizeof(header));
-  *reinterpret_cast<StyleChangeHeader*>(packet) = header;
+  memcpy(packet, &header, offsetof(StyleChangeHeader, count));
   reinterpret_cast<StyleChangeHeader*>(packet)->count = count;
 
   bool changed = false;
