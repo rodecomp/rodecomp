@@ -2550,7 +2550,8 @@ int UICashEmotionListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       }
 
       char selected = 0;
-      for (auto& tab : this->m_tabs) {
+      for (auto tabIt = this->m_tabs.begin(); tabIt != this->m_tabs.end(); ++tabIt) {
+        auto& tab = *tabIt;
         if (sender == tab.second) {
           tab.second->SendMsg(nullptr, UM_SETSTATE, 1, 0, 0, 0);
           selected = tab.first;
