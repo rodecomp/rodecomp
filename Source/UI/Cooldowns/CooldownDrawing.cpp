@@ -34,10 +34,14 @@ void CooldownOwner::Draw(
   const float top = static_cast<float>((centerY - radiusY));
   const float bottom = static_cast<float>((centerY + radiusY));
 
-  vertices[1].x = vertices[23].x = static_cast<float>(centerX);
-  vertices[1].y = vertices[23].y = top;
-  vertices[11].x = vertices[13].x = static_cast<float>(centerX);
-  vertices[11].y = vertices[13].y = bottom;
+  vertices[1].x = static_cast<float>(centerX);
+  vertices[23].x = static_cast<float>(centerX);
+  vertices[1].y = top;
+  vertices[23].y = top;
+  vertices[11].x = static_cast<float>(centerX);
+  vertices[13].x = static_cast<float>(centerX);
+  vertices[11].y = bottom;
+  vertices[13].y = bottom;
 
   for (int i = 0; i < 24; ++i) {
     RenderVertex& vertex = vertices[i];
@@ -48,18 +52,38 @@ void CooldownOwner::Draw(
 
     vertex.z = 0.000001f;
     vertex.rhw = 0.999999f;
+    vertex.u = 0;
+    vertex.v = 0;
     vertex.diffuse = color;
-    vertex.u = vertex.v = 0;
   }
 
-  vertices[5].y = vertices[7].y = vertices[17].y = vertices[19].y = static_cast<float>(centerY);
-  vertices[2].y = vertices[4].y = vertices[20].y = vertices[22].y = top;
-  vertices[8].y = vertices[10].y = vertices[14].y = vertices[16].y = bottom;
+  vertices[5].y = static_cast<float>(centerY);
+  vertices[7].y = static_cast<float>(centerY);
+  vertices[2].y = top;
+  vertices[4].y = top;
+  vertices[8].y = bottom;
+  vertices[10].y = bottom;
+  vertices[14].y = bottom;
+  vertices[16].y = bottom;
+  vertices[17].y = static_cast<float>(centerY);
+  vertices[19].y = static_cast<float>(centerY);
+  vertices[20].y = top;
+  vertices[22].y = top;
   const float right = static_cast<float>((centerX + radiusX));
   const float left = static_cast<float>((centerX - radiusX));
   if (value.reverse == 0) {
-    vertices[2].x = vertices[4].x = vertices[5].x = vertices[7].x = vertices[8].x = vertices[10].x = left;
-    vertices[14].x = vertices[16].x = vertices[17].x = vertices[19].x = vertices[20].x = vertices[22].x = right;
+    vertices[2].x = left;
+    vertices[4].x = left;
+    vertices[5].x = left;
+    vertices[7].x = left;
+    vertices[8].x = left;
+    vertices[10].x = left;
+    vertices[14].x = right;
+    vertices[16].x = right;
+    vertices[17].x = right;
+    vertices[19].x = right;
+    vertices[20].x = right;
+    vertices[22].x = right;
     value.AddEdge(0, vertices[23].x, radiusX, 1);
     value.AddEdge(1, vertices[20].y, radiusY, 1);
     value.AddEdge(2, vertices[17].y, radiusY, 1);
@@ -69,8 +93,18 @@ void CooldownOwner::Draw(
     value.AddEdge(6, vertices[5].y, radiusY, 0);
     value.AddEdge(7, vertices[2].x, radiusX, 1);
   } else {
-    vertices[2].x = vertices[4].x = vertices[5].x = vertices[7].x = vertices[8].x = vertices[10].x = right;
-    vertices[14].x = vertices[16].x = vertices[17].x = vertices[19].x = vertices[20].x = vertices[22].x = left;
+    vertices[2].x = right;
+    vertices[4].x = right;
+    vertices[5].x = right;
+    vertices[7].x = right;
+    vertices[8].x = right;
+    vertices[10].x = right;
+    vertices[14].x = left;
+    vertices[16].x = left;
+    vertices[17].x = left;
+    vertices[19].x = left;
+    vertices[20].x = left;
+    vertices[22].x = left;
     value.AddEdge(0, vertices[1].x, radiusX, 1);
     value.AddEdge(1, vertices[4].y, radiusY, 1);
     value.AddEdge(2, vertices[7].y, radiusY, 1);
