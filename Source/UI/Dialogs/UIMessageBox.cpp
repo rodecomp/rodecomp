@@ -3304,9 +3304,11 @@ int UILoginWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
         g_windowMgr.CloseWindow(WID_LOGINWND);
         this->SaveLogin();
       } else if (this->idEdit->Length() < 4) {
-        g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_BASIC_EXP_MSG2_EXCEPT_PREMIUM), 4).c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+        const char* format = LookupMessage(MSI_BASIC_EXP_MSG2_EXCEPT_PREMIUM);
+        g_windowMgr.Confirm(FormatOwnedString(format, 4).c_str(), 0, true, false, 0, "Message", 280, 120, 0);
       } else {
-        g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_SWAP_EQUIPITEM_CANNOT_ADD_ITEM), 6).c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+        const char* format = LookupMessage(MSI_SWAP_EQUIPITEM_CANNOT_ADD_ITEM);
+        g_windowMgr.Confirm(FormatOwnedString(format, 6).c_str(), 0, true, false, 0, "Message", 280, 120, 0);
       }
       break;
     }
