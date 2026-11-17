@@ -2480,7 +2480,8 @@ void CEffectPrim::RenderFloorRect(matrix& wtm) {
     int angle = rot < 90 ? rot + 270 : rot - 90;
     const float widthX = width * g_cosTable[angle];
     const float widthZ = width * g_sinTable[angle];
-    angle = rot < 90 ? rot + 270 : rot - 90;
+    int& backAngle = angle;
+    backAngle = rot < 90 ? rot + 270 : rot - 90;
     const float baseX = back * g_cosTable[angle] + widthX;
     const float baseZ = back * g_sinTable[angle] + widthZ;
 
@@ -2496,7 +2497,11 @@ void CEffectPrim::RenderFloorRect(matrix& wtm) {
     }
     vec3.Set(this->state.slots[ec].distance * g_cosTable[angle] + baseX, 0.0f, this->state.slots[ec].distance * g_sinTable[angle] + baseZ);
 
-    angle = rot < 270 ? rot + 90 : rot - 270;
+    if (rot >= 270) {
+      angle = rot - 270;
+    } else {
+      angle = rot + 90;
+    }
     const float sideX = back * g_cosTable[angle] + widthX;
     const float sideZ = back * g_sinTable[angle] + widthZ;
 
