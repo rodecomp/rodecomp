@@ -709,8 +709,8 @@ void UIRoMapWnd::OnLBtnUp(int x, int y) {
 
       const int below = y + 1;
       const int right = x + 2;
-      const int menuY = this->geometry.height - below - height >= 0 ? below : this->geometry.height - height;
-      const int menuX = this->geometry.width - right - width >= 0 ? right : this->geometry.width - width;
+      const int menuY = this->geometry.height - below - height < 0 ? this->geometry.height - height : below;
+      const int menuX = this->geometry.width - right - width < 0 ? this->geometry.width - width : right;
       menu->Move(menuX, menuY);
     }
   } else if (this->selectedRecord) {
