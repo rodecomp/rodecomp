@@ -2731,7 +2731,7 @@ void CPc::SetBodyPaletteName() {
 
   if (this->GetMonsterTransformJob() < 0 && this->IsShapeShifted()) {
     std::string paletteName;
-    this->render.name.assign(static_cast<const std::string&>(FormatOwnedString("몸\\%s_%d.pal", this->GetShapeShiftName().c_str(), this->render.bodyPalette)));
+    this->render.name = static_cast<const std::string&>(FormatOwnedString("몸\\%s_%d.pal", this->GetShapeShiftName().c_str(), this->render.bodyPalette));
     return;
   }
 
@@ -2741,8 +2741,7 @@ void CPc::SetBodyPaletteName() {
     job = g_session.GetRidingJob(job);
   }
 
-  const std::string& paletteName = g_session.GetBodyPalName(job, this->sex, this->render.bodyPalette, costumeJob, this->GetMadogearType(), 0);
-  this->render.name.assign(paletteName);
+  this->render.name = static_cast<const std::string&>(g_session.GetBodyPalName(job, this->sex, this->render.bodyPalette, costumeJob, this->GetMadogearType(), 0));
 }
 
 // OFFSET: 0x00DB2670
@@ -5464,21 +5463,21 @@ bool CGrannyPc::ProcessState() {
         this->Face(target->render.position.x, target->render.position.z);
       }
     }
-    return true;
+    break;
   }
+  case ST_SKILL:
+    this->ProcessMotion();
+    if (this->render.isMotionFinished) {
+      this->SetState(ST_STAND, 1);
+    }
+    break;
   case ST_ATTACK:
     this->ProcessMotion();
     this->GetElapsedFrames();
     if (this->render.isMotionFinished) {
       this->SetState(ST_STAND, 1);
     }
-    return true;
-  case ST_SKILL:
-    this->ProcessMotion();
-    if (this->render.isMotionFinished) {
-      this->SetState(ST_STAND, 1);
-    }
-    return true;
+    break;
   case ST_DEAD:
     this->render.frameSequenceActive = 0;
     this->render.animationSequenceActive = 0;
@@ -5486,10 +5485,12 @@ bool CGrannyPc::ProcessState() {
     this->render.isMotionFreezed = false;
   case ST_SIT:
     this->ProcessMotion();
-    return true;
+    break;
   default:
     return CGameActor::ProcessState();
   }
+
+  return true;
 }
 
 // OFFSET: 0x00DAC200
@@ -5515,15 +5516,8 @@ bool CPc::ProcessState() {
         this->Face(target->render.position.x, target->render.position.z);
       }
     }
-    return true;
+    break;
   }
-  case ST_ATTACK:
-    this->ProcessMotion();
-    this->GetElapsedFrames();
-    if (this->render.isMotionFinished) {
-      this->SetState(ST_STAND, 1);
-    }
-    return true;
   case ST_SKILL:
   case ST_AB_SPECIAL:
   case 62:
@@ -5548,7 +5542,14 @@ bool CPc::ProcessState() {
     if (this->render.isMotionFinished) {
       this->SetState(ST_STAND, 1);
     }
-    return true;
+    break;
+  case ST_ATTACK:
+    this->ProcessMotion();
+    this->GetElapsedFrames();
+    if (this->render.isMotionFinished) {
+      this->SetState(ST_STAND, 1);
+    }
+    break;
   case ST_DEAD:
     this->render.frameSequenceActive = 0;
     this->render.animationSequenceActive = 0;
@@ -5560,16 +5561,18 @@ bool CPc::ProcessState() {
   case 66:
   case 81:
     this->ProcessMotion();
-    return true;
+    break;
   case 51:
     this->ProcessMotion();
     if (this->render.isMotionFinished == true) {
       this->render.state = ST_ATTACK;
     }
-    return true;
+    break;
   default:
     return CGameActor::ProcessState();
   }
+
+  return true;
 }
 
 // OFFSET: 0x00DBA5D0
