@@ -132,12 +132,10 @@ void CCloudKillEffect::OnProcess() {
       float& angle = particle->angle;
       const float speed = particle->acceleration + particle->frameDelay;
       particle->frameDelay = speed;
-      const float x = values[3] * 0.0f + values[0] * 0.0f + speed * values[6] + values[9] + particle->velocity.x;
-      const float y = values[4] * 0.0f + values[1] * 0.0f + speed * values[7] + values[10] + particle->velocity.y;
-      const float z = values[5] * 0.0f + values[2] * 0.0f + speed * values[8] + values[11] + particle->velocity.z;
-      particle->velocity.x = x;
-      particle->velocity.y = y;
-      particle->velocity.z = z;
+      const vector3d velocity = {values[3] * 0.0f + values[0] * 0.0f + speed * values[6] + values[9] + particle->velocity.x,
+                                 values[4] * 0.0f + values[1] * 0.0f + speed * values[7] + values[10] + particle->velocity.y,
+                                 values[5] * 0.0f + values[2] * 0.0f + speed * values[8] + values[11] + particle->velocity.z};
+      particle->velocity = velocity;
       angle = particle->spin + angle;
       particle->position.z = particle->velocity.z + this->position[2];
       particle->position.x = particle->velocity.x + this->position[0];
@@ -170,12 +168,10 @@ void CCloudKillEffect::OnProcess() {
       float& angle = particle->angle;
       const float speed = particle->acceleration + particle->frameDelay;
       particle->frameDelay = speed;
-      const float x = values[3] * 0.0f + values[0] * 0.0f + speed * values[6] + values[9] + particle->velocity.x;
-      const float y = values[4] * 0.0f + values[1] * 0.0f + speed * values[7] + values[10] + particle->velocity.y;
-      const float z = values[5] * 0.0f + values[2] * 0.0f + speed * values[8] + values[11] + particle->velocity.z;
-      particle->velocity.x = x;
-      particle->velocity.y = y;
-      particle->velocity.z = z;
+      const vector3d velocity = {values[3] * 0.0f + values[0] * 0.0f + speed * values[6] + values[9] + particle->velocity.x,
+                                 values[4] * 0.0f + values[1] * 0.0f + speed * values[7] + values[10] + particle->velocity.y,
+                                 values[5] * 0.0f + values[2] * 0.0f + speed * values[8] + values[11] + particle->velocity.z};
+      particle->velocity = velocity;
       particle->position.y = particle->originY + this->position[1] + particle->velocity.y;
       particle->position.x = particle->originX + this->position[0] + particle->velocity.x;
       particle->position.z = this->position[2] + particle->originZ + particle->velocity.z;
