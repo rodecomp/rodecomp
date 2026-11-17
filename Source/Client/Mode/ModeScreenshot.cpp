@@ -37,76 +37,78 @@ void CMode::TakeScreenshot() {
     return;
   }
 
-  SYSTEMTIME time;
-  GetLocalTime(&time);
+  {
+    SYSTEMTIME time;
+    GetLocalTime(&time);
 
-  char text[128];
-  std::memset(text, 0, sizeof(text));
+    char text[128];
+    std::memset(text, 0, sizeof(text));
 
-  const char* dayNames[7] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+    const char* dayNames[7] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
-  if (g_serviceType != 0) {
-    std::sprintf(
-      text, "%d/%02d/%02d/%s  %02d: %02d: %02d", time.wYear, time.wMonth, time.wDay, dayNames[time.wDayOfWeek],
-      time.wHour, time.wMinute, time.wSecond
-    );
-  } else {
-    int gid = static_cast<int>(g_session.m_gid);
-    if (gid != 0) {
-      char code[12] = {};
-      int divisor = 100000000;
-      int length = 0;
-      do {
-        int digit = 0;
-        while (gid >= divisor) {
-          gid -= divisor;
-          ++digit;
-        }
-        divisor /= 10;
-
-        if (length > 0) {
-          ++length;
-        } else if (digit > 0) {
-          length = 1;
-        }
-
-        if (digit == 0) {
-          if (length > 0) {
-            code[length - 1] = 'R';
-          }
-        } else if (digit == 1) {
-          code[length - 1] = 'O';
-        } else if (digit == 2) {
-          code[length - 1] = 'H';
-        } else if (digit == 3) {
-          code[length - 1] = 'U';
-        } else if (digit == 4) {
-          code[length - 1] = 'T';
-        } else if (digit == 5) {
-          code[length - 1] = 'N';
-        } else if (digit == 6) {
-          code[length - 1] = 'A';
-        } else if (digit == 7) {
-          code[length - 1] = 'S';
-        } else if (digit == 8) {
-          code[length - 1] = 'E';
-        } else if (digit == 9) {
-          code[length - 1] = 'W';
-        }
-      } while (divisor > 0);
-
+    if (g_serviceType != 0) {
       std::sprintf(
-        text, "%d/%02d/%02d/%s  %02d: %02d: %02d     %s", time.wYear, time.wMonth, time.wDay,
-        dayNames[time.wDayOfWeek], time.wHour, time.wMinute, time.wSecond, code
+        text, "%d/%02d/%02d/%s  %02d: %02d: %02d", time.wYear, time.wMonth, time.wDay, dayNames[time.wDayOfWeek],
+        time.wHour, time.wMinute, time.wSecond
       );
-    }
-  }
+    } else {
+      int gid = static_cast<int>(g_session.m_gid);
+      if (gid != 0) {
+        char code[12] = {};
+        int divisor = 100000000;
+        int length = 0;
+        do {
+          int digit = 0;
+          while (gid >= divisor) {
+            gid -= divisor;
+            ++digit;
+          }
+          divisor /= 10;
 
-  g_renderer->DrawBackBufferText(5, g_renderer->viewport.height - 16, text, 0);
-  g_renderer->DrawBackBufferText(3, g_renderer->viewport.height - 16, text, 0);
-  g_renderer->DrawBackBufferText(4, g_renderer->viewport.height - 15, text, 0);
-  g_renderer->DrawBackBufferText(4, g_renderer->viewport.height - 17, text, 0);
-  g_renderer->DrawBackBufferText(4, g_renderer->viewport.height - 16, text, 0xFFFFFF);
+          if (length > 0) {
+            ++length;
+          } else if (digit > 0) {
+            length = 1;
+          }
+
+          if (digit == 0) {
+            if (length > 0) {
+              code[length - 1] = 'R';
+            }
+          } else if (digit == 1) {
+            code[length - 1] = 'O';
+          } else if (digit == 2) {
+            code[length - 1] = 'H';
+          } else if (digit == 3) {
+            code[length - 1] = 'U';
+          } else if (digit == 4) {
+            code[length - 1] = 'T';
+          } else if (digit == 5) {
+            code[length - 1] = 'N';
+          } else if (digit == 6) {
+            code[length - 1] = 'A';
+          } else if (digit == 7) {
+            code[length - 1] = 'S';
+          } else if (digit == 8) {
+            code[length - 1] = 'E';
+          } else if (digit == 9) {
+            code[length - 1] = 'W';
+          }
+        } while (divisor > 0);
+
+        std::sprintf(
+          text, "%d/%02d/%02d/%s  %02d: %02d: %02d     %s", time.wYear, time.wMonth, time.wDay,
+          dayNames[time.wDayOfWeek], time.wHour, time.wMinute, time.wSecond, code
+        );
+      }
+    }
+
+    g_renderer->DrawBackBufferText(5, g_renderer->viewport.height - 16, text, 0);
+    g_renderer->DrawBackBufferText(3, g_renderer->viewport.height - 16, text, 0);
+    g_renderer->DrawBackBufferText(4, g_renderer->viewport.height - 15, text, 0);
+    g_renderer->DrawBackBufferText(4, g_renderer->viewport.height - 17, text, 0);
+    g_renderer->DrawBackBufferText(4, g_renderer->viewport.height - 16, text, 0xFFFFFF);
+  }
 
   this->screenshotRequested = 0;
 
