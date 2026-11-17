@@ -714,10 +714,11 @@ void CDCBitmap::DrawRleSprite(int x, int y, const CSprRes& sprite, const ActionF
         return 0;
       }
 
-      std::uint8_t value = *runs++;
+      std::uint8_t value = *runs;
       if (!value) {
-        remaining = *runs++ - 1;
+        remaining = *++runs - 1;
       }
+      ++runs;
 
       return value;
     };
