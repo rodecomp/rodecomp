@@ -90,7 +90,7 @@ void UIMiniMapWnd::AddTownMarks() {
         static_cast<int>(this->originY - (static_cast<float>(info.y) * this->scale + 6.0f))
       );
       this->AddChild(button);
-      this->townButtons.emplace(index, button);
+      this->townButtons.insert(std::make_pair(index, button));
     }
   }
 }
