@@ -603,6 +603,13 @@ struct SkillObjectActionRegistration {
   }
 };
 
+// OFFSET: 0x007A20D0
+// FUNCTION: fn_45579
+template <>
+CSkillObjectAction* NewAction<CSkillObjectAction_SH_HYUN_ROKS_BREEZE, CSkillObjectAction>() {
+  return new CSkillObjectAction_SH_HYUN_ROKS_BREEZE;
+}
+
 // OFFSET: 0x004616C0
 // FUNCTION: fn_45567
 static SkillObjectActionRegistration s_skillObjectActionRegistered293(293, NewAction<CSkillObjectAction_SH_HYUN_ROKS_BREEZE, CSkillObjectAction>);
