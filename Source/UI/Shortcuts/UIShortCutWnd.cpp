@@ -794,7 +794,6 @@ void UIMemorialDunWnd::Paint() {
 
   std::uint32_t color;
   char text[500];
-  char timeText[128];
   const unsigned short codePage = static_cast<unsigned short>(g_textCodePage);
 
   if (g_session.memorialDungeonState != 3) {
@@ -815,6 +814,7 @@ void UIMemorialDunWnd::Paint() {
     const int width = this->ColoredTextWidth(text, 0, 0, 12, 0);
     this->DrawColoredText((this->geometry.width - width) / 2, (this->geometry.height - 17) / 2, text, 0, color, 0, 12, false);
   } else if (g_session.memorialDungeonState == 1) {
+    char timeText[128];
     if (g_session.memorialExpirationTime) {
       const tm* time = _localtime32(&g_session.memorialExpirationTime);
       strftime(timeText, 128, LookupMessage(MSI_TIME_TYPE2), time);
@@ -833,6 +833,7 @@ void UIMemorialDunWnd::Paint() {
       }
     }
   } else if (g_session.memorialDungeonState == 2) {
+    char timeText[128];
     if (g_session.memorialCreationTime) {
       this->DrawTextAt(10, 55, LookupMessage(MSI_MEMORIAL_DUN_NOTIFY2), 0, 0, 12, 0, 0, 0);
       const tm* time = _localtime32(&g_session.memorialCreationTime);
