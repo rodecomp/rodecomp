@@ -7110,7 +7110,7 @@ void UIExchangeWnd::OnMouseHover(int x, int y) {
   int tooltipY = y;
   ITEM_INFO item = this->ItemAt(x, y);
   this->m_hoverX = static_cast<short>(x);
-  if (item.identity[1] == 0) {
+  if (item.identity[1] <= 0) {
     return;
   }
 
