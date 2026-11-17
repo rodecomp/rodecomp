@@ -39,8 +39,7 @@ void UISecondPasswordInputWnd::CreateKeypad(unsigned int seed) {
     this->m_digits[i] = static_cast<unsigned char>(i);
   }
 
-  CSecondPwdRandom random(seed);
-  std::shuffle(this->m_digits, this->m_digits + 10, random);
+  std::shuffle(this->m_digits, this->m_digits + 10, CSecondPwdRandom(seed));
 
   std::string prefix = "유저인터페이스\\";
   {
@@ -109,12 +108,15 @@ void UISecondPasswordInputWnd::CreateKeypad(unsigned int seed) {
     this->actionButtons[3]->Enable(0);
     break;
   case PASSWORDWND_MODE_NOTSET:
-  case PASSWORDWND_MODE_NEW:
-    this->actionButtons[1]->SetDisabled(1);
-    this->actionButtons[1]->Invalidate();
-    this->actionButtons[2]->SetDisabled(1);
-    this->actionButtons[2]->Invalidate();
+  case PASSWORDWND_MODE_NEW: {
+    UIButton* button = this->actionButtons[1];
+    button->SetDisabled(1);
+    button->Invalidate();
+    button = this->actionButtons[2];
+    button->SetDisabled(1);
+    button->Invalidate();
     break;
+  }
   }
   this->actionButtons[2]->Enable(0);
 
