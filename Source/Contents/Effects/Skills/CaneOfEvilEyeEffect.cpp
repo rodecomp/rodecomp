@@ -216,12 +216,10 @@ void CCaneOfEvilEyeEffect::UpdateEyes() {
       const float viewZ = y * view[5] + x * view[2] + z * view[8] + view[11];
 
       const float* inverse = g_modeMgr.GetGameMode()->camera->frame.inverse.values;
-      const float worldX = viewY * inverse[3] + viewX * inverse[0] + viewZ * inverse[6] + inverse[9];
-      const float worldY = viewY * inverse[4] + viewX * inverse[1] + viewZ * inverse[7] + inverse[10];
-      const float worldZ = viewY * inverse[5] + viewX * inverse[2] + viewZ * inverse[8] + inverse[11];
-      eye->position.x = worldX;
-      eye->position.y = worldY;
-      eye->position.z = worldZ;
+      const vector3d world = {viewY * inverse[3] + viewX * inverse[0] + viewZ * inverse[6] + inverse[9],
+                              viewY * inverse[4] + viewX * inverse[1] + viewZ * inverse[7] + inverse[10],
+                              viewY * inverse[5] + viewX * inverse[2] + viewZ * inverse[8] + inverse[11]};
+      eye->position = world;
       eye->Process(0.0f, 0.0f, 0.0f);
     }
   }
@@ -299,12 +297,10 @@ void CCaneOfEvilEyeEffect::UpdateLights() {
       const float viewZ = y * view[5] + x * view[2] + z * view[8] + view[11];
 
       const float* inverse = g_modeMgr.GetGameMode()->camera->frame.inverse.values;
-      const float worldX = viewY * inverse[3] + viewX * inverse[0] + viewZ * inverse[6] + inverse[9];
-      const float worldY = viewY * inverse[4] + viewX * inverse[1] + viewZ * inverse[7] + inverse[10];
-      const float worldZ = viewY * inverse[5] + viewX * inverse[2] + viewZ * inverse[8] + inverse[11];
-      light->position.x = worldX;
-      light->position.y = worldY;
-      light->position.z = worldZ;
+      const vector3d world = {viewY * inverse[3] + viewX * inverse[0] + viewZ * inverse[6] + inverse[9],
+                              viewY * inverse[4] + viewX * inverse[1] + viewZ * inverse[7] + inverse[10],
+                              viewY * inverse[5] + viewX * inverse[2] + viewZ * inverse[8] + inverse[11]};
+      light->position = world;
       light->Process(0.0f, 0.0f, 0.0f);
     }
   }
