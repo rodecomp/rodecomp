@@ -2512,11 +2512,12 @@ void UIGuildMemberManageWnd::Paint() {
     });
   }
 
+  const int spacing = this->m_rowSpacing * 6;
   unsigned red, green, blue;
   g_skinInfo.PaletteChannels(14, 6, red, green, blue);
   this->DrawRectOutline(5, 46, 377, this->m_rowSpacing / 2 + 237, RGB(red, green, blue));
   this->FillRegion(5, 66, 377, 1, RGB(red, green, blue));
-  const int rows = 6 - this->m_rowSpacing * 6 / 36;
+  const int rows = 6 - spacing / 36;
   for (int row = 1; row <= rows; ++row) {
     this->FillRegion(5, (this->m_rowSpacing + 36) * row + 66, 377, 1, RGB(red, green, blue));
   }
@@ -2534,6 +2535,7 @@ void UIGuildMemberManageWnd::Paint() {
     }
   }
 
+  int textX = 10;
   const char* headers[6];
   headers[0] = LookupMessage(MSI_NAME);
   headers[1] = LookupMessage(MSI_POSITION);
@@ -2541,18 +2543,15 @@ void UIGuildMemberManageWnd::Paint() {
   headers[3] = LookupMessage(MSI_LEVEL);
   headers[4] = LookupMessage(MSI_CONTRIBUTION);
   headers[5] = LookupMessage(MSI_EXP_CONTIRIBUTION);
-  int textX = 10;
   for (int column = 0; column < 6; ++column) {
     const char* header = headers[column];
     this->DrawTextAt(textX, 51, header, 0, 0, 12, 0, 0, 0);
     if (column == this->m_sortColumn) {
       const int arrowX = this->TextWidth(header, 0, 0, 12, 0, 0) + textX;
       if (this->m_sortOrders[this->m_sortColumn] == 1) {
-        const auto* arrow = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\guild\\guild_arrow_up.bmp")));
-        this->DrawBitmap(arrowX, 53, arrow ? &arrow->image : nullptr, true);
+        this->DrawBitmap(arrowX, 53, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\guild\\guild_arrow_up.bmp"))), 1);
       } else if (this->m_sortOrders[this->m_sortColumn] == 2) {
-        const auto* arrow = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\guild\\guild_arrow_down.bmp")));
-        this->DrawBitmap(arrowX, 53, arrow ? &arrow->image : nullptr, true);
+        this->DrawBitmap(arrowX, 53, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\guild\\guild_arrow_down.bmp"))), 1);
       }
     }
     textX += g_guildMemberColumnWidths[column] + 1;
