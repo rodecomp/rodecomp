@@ -147,8 +147,8 @@ void UIEditCtrl::UpdateLinks() {
   }
 
   bool hasLink = false;
-
-  for (UIWindow* window : this->links) {
+  for (auto it = this->links.begin(); it != this->links.end(); ++it) {
+    UIWindow* window = *it;
     if (window->geometry.id == 438) {
       hasLink = true;
     }
