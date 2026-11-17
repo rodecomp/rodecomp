@@ -17535,8 +17535,7 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
   if (g_effectMgr->HasAllocator(effectId)) {
     g_effectMgr->Spawn(actor->render.accountId, effectId, actor->render.position, 0, -1, 0, 0);
   } else {
-    const int delayFrames = delay / 16;
-    actor->SendMsg(nullptr, AM_MAKE_BEGIN_SPELL, effectId, delayFrames, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_MAKE_BEGIN_SPELL, effectId, delay / 16, 0, 0, 0, 0);
   }
 
   CEffect* effect;
@@ -17591,7 +17590,11 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     }
     return;
   case WL_JACKFROST:
-    effect = g_effectMgr->Spawn(actor->render.accountId, g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? 0x607 : 0x5A6, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
+      effect = g_effectMgr->Spawn(actor->render.accountId, EF_MINEFFECT_JACKFROST_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    } else {
+      effect = g_effectMgr->Spawn(actor->render.accountId, EF_NEW_JACKFROST_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    }
     if (effect) {
       effect->SetLifeTime(delay);
     }
@@ -17692,7 +17695,11 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     vector3d position{0.0f, 0.0f, 0.0f};
     g_modeMgr.GetGameMode()->CellCenter(x, y, position.x, position.z);
     position.y = g_modeMgr.GetGameMode()->scene->terrain->Height(position.x, position.z);
-    effect = g_effectMgr->Spawn(0, g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? 0x5AC : 0x504, position, 0, -1, 0, 0);
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
+      effect = g_effectMgr->Spawn(0, EF_MINEFFECT_DIAMONDDUST_CAST, position, 0, -1, 0, 0);
+    } else {
+      effect = g_effectMgr->Spawn(0, EF_NEW_DIAMONDDUST_CAST, position, 0, -1, 0, 0);
+    }
     if (effect) {
       effect->SetLifeTime(delay);
     }
@@ -17703,7 +17710,11 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     vector3d position{0.0f, 0.0f, 0.0f};
     g_modeMgr.GetGameMode()->CellCenter(x, y, position.x, position.z);
     position.y = g_modeMgr.GetGameMode()->scene->terrain->Height(position.x, position.z);
-    effect = g_effectMgr->Spawn(0, g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? 0x5B0 : 0x50A, position, 0, -1, 0, 0);
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
+      effect = g_effectMgr->Spawn(0, EF_MINEFFECT_PSYCHICWAVE_CAST, position, 0, -1, 0, 0);
+    } else {
+      effect = g_effectMgr->Spawn(0, EF_NEW_PSYCHICWAVE_CAST, position, 0, -1, 0, 0);
+    }
     if (effect) {
       effect->SetLifeTime(delay);
     }
@@ -18288,15 +18299,14 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
     primaryEffects[0x14E2] = 0x8C7;
     secondaryEffects[0x14E2] = 0x8C8;
 
-    const vector3d position{0.0f, 0.0f, 0.0f};
     if (primaryEffects.find(skillId) != primaryEffects.end()) {
-      effect = g_effectMgr->Spawn(actor->render.accountId, static_cast<int>(primaryEffects[skillId]), position, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(actor->render.accountId, static_cast<int>(primaryEffects[skillId]), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetLifeTime(delay);
       }
     }
     if (secondaryEffects.find(skillId) != secondaryEffects.end()) {
-      effect = g_effectMgr->Spawn(actor->render.accountId, static_cast<int>(secondaryEffects[skillId]), position, 0, -1, 0, 0);
+      effect = g_effectMgr->Spawn(actor->render.accountId, static_cast<int>(secondaryEffects[skillId]), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       if (effect) {
         effect->SetLifeTime(delay);
       }
