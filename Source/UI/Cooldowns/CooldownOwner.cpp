@@ -3,16 +3,16 @@
 // INLINED
 CooldownOwner::CooldownOwner() {
   this->m_initialized = false;
-  this->m_drawing.normal.clear();
-  this->m_drawing.reverse.clear();
+  this->m_normal.clear();
+  this->m_reverse.clear();
   this->m_values.clear();
   this->m_initialized = true;
 }
 
 // INLINED
 CooldownOwner::~CooldownOwner() {
-  this->m_drawing.normal.clear();
-  this->m_drawing.reverse.clear();
+  this->m_normal.clear();
+  this->m_reverse.clear();
   this->m_values.clear();
 }
 
@@ -26,7 +26,7 @@ void CooldownOwner::Register(unsigned id, std::uint32_t duration, std::uint32_t 
 // OFFSET: 0x00CA64B0
 // FUNCTION: fn_20959
 void CooldownOwner::ClearReverseCommands() {
-  this->m_drawing.reverse.clear();
+  this->m_reverse.clear();
 }
 
 // INLINED

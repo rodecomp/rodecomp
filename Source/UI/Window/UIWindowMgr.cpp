@@ -378,7 +378,7 @@ void UIWindowMgr::DrawWindows() {
       window->FlushPrimitives();
       g_renderDiagnosticLine = 3860;
       g_renderDiagnosticFile = g_windowManagerDiagnosticFile;
-      g_cooldownOwner->Drawing().SubmitNormal();
+      g_cooldownOwner->SubmitNormal();
       g_renderDiagnosticLine = 3866;
       g_renderDiagnosticFile = g_windowManagerDiagnosticFile;
       if (window == this->roulletteWnd) {

@@ -1,10 +1,12 @@
 #ifndef RAGNAROK_SOURCE_UI_SHORTCUTS_SHORTCUTCOOLDOWNS_H
 #define RAGNAROK_SOURCE_UI_SHORTCUTS_SHORTCUTCOOLDOWNS_H
 
-#include "UI/Cooldowns/CooldownDrawing.h"
+#include "UI/Cooldowns/CooldownState.h"
 
 #include <cstddef>
 #include <list>
+
+class CooldownOwner;
 
 struct ShortcutCooldownIcon {
   /* 0000 */ int id;
@@ -23,10 +25,10 @@ struct ShortcutCooldownRecord {
 
 bool RotateCooldownRows(std::list<ShortcutCooldownRecord>& records, int amount, int bank, int& rotation0, int& rotation1);
 void PaintMainCooldowns(
-  std::list<ShortcutCooldownRecord>& records, const std::list<ShortcutCooldownIcon>& icons, int rows, int x, int y, CooldownDrawing& drawing
+  std::list<ShortcutCooldownRecord>& records, const std::list<ShortcutCooldownIcon>& icons, int rows, int x, int y, CooldownOwner& owner
 );
 void PaintAlternateCooldowns(
-  std::list<ShortcutCooldownRecord>& records, const std::list<ShortcutCooldownIcon>& icons, int x, int y, CooldownDrawing& drawing
+  std::list<ShortcutCooldownRecord>& records, const std::list<ShortcutCooldownIcon>& icons, int x, int y, CooldownOwner& owner
 );
 
 static_assert(sizeof(ShortcutCooldownIcon) == 16);

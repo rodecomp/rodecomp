@@ -3,7 +3,7 @@
 #include "Render/Renderer.h"
 #include "Render/DX9/RendererDX9.h"
 #include "Render/Textures/TextureCache.h"
-#include "UI/Cooldowns/CooldownDrawing.h"
+#include "UI/Cooldowns/CooldownOwner.h"
 
 namespace {
   // INLINED
@@ -18,7 +18,7 @@ namespace {
 
 // OFFSET: 0x00CA66B0
 // FUNCTION: fn_20964
-void CooldownDrawing::Draw(
+void CooldownOwner::Draw(
   int centerX, int centerY, int radiusX, int radiusY, CooldownState& value, int limit, int offsetX, int offsetY
 ) {
   if (value.x <= 0 || value.y <= 0) {
@@ -128,12 +128,12 @@ void CooldownDrawing::Draw(
     vertices[i].y += static_cast<float>(value.y + 12 + offsetY);
   }
 
-  this->normal.push_back(command);
+  this->m_normal.push_back(command);
 }
 
 // OFFSET: 0x00CA6C00
 // FUNCTION: fn_20965
-void CooldownDrawing::DrawReverse(CooldownState& value) {
+void CooldownOwner::DrawReverse(CooldownState& value) {
   if (value.duration == 0) {
     return;
   }
@@ -204,17 +204,17 @@ void CooldownDrawing::DrawReverse(CooldownState& value) {
     value.vertices[i].y += static_cast<float>(value.y);
   }
 
-  this->reverse.push_back(command);
+  this->m_reverse.push_back(command);
 }
 
 // OFFSET: 0x00CA6670
 // FUNCTION: fn_20963
-void CooldownDrawing::SubmitNormal() {
-  Submit(this->normal);
+void CooldownOwner::SubmitNormal() {
+  Submit(this->m_normal);
 }
 
 // OFFSET: 0x00CA6630
 // FUNCTION: fn_20962
-void CooldownDrawing::SubmitReverse() {
-  Submit(this->reverse);
+void CooldownOwner::SubmitReverse() {
+  Submit(this->m_reverse);
 }

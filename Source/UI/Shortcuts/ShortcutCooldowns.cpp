@@ -206,7 +206,7 @@ void CGameMode::ApplyCooldownStart(const void* packet) {
 }
 
 void PaintCooldowns(
-  std::list<ShortcutCooldownRecord>& records, const std::list<ShortcutCooldownIcon>& icons, std::list<CooldownState> ShortcutCooldownRecord::* values, int limit, int x, int y, CooldownDrawing& drawing
+  std::list<ShortcutCooldownRecord>& records, const std::list<ShortcutCooldownIcon>& icons, std::list<CooldownState> ShortcutCooldownRecord::* values, int limit, int x, int y, CooldownOwner& owner
 );
 
 // INLINED
@@ -249,22 +249,22 @@ bool RotateCooldownRows(std::list<ShortcutCooldownRecord>& records, int amount, 
 
 // INLINED
 void PaintMainCooldowns(
-  std::list<ShortcutCooldownRecord>& records, const std::list<ShortcutCooldownIcon>& icons, int rows, int x, int y, CooldownDrawing& drawing
+  std::list<ShortcutCooldownRecord>& records, const std::list<ShortcutCooldownIcon>& icons, int rows, int x, int y, CooldownOwner& owner
 ) {
   const int limit = rows * 33 + 4;
-  PaintCooldowns(records, icons, &ShortcutCooldownRecord::main, limit, x, y, drawing);
+  PaintCooldowns(records, icons, &ShortcutCooldownRecord::main, limit, x, y, owner);
 }
 
 // INLINED
 __forceinline void PaintAlternateCooldowns(
-  std::list<ShortcutCooldownRecord>& records, const std::list<ShortcutCooldownIcon>& icons, int x, int y, CooldownDrawing& drawing
+  std::list<ShortcutCooldownRecord>& records, const std::list<ShortcutCooldownIcon>& icons, int x, int y, CooldownOwner& owner
 ) {
-  PaintCooldowns(records, icons, &ShortcutCooldownRecord::alternate, 0, x, y, drawing);
+  PaintCooldowns(records, icons, &ShortcutCooldownRecord::alternate, 0, x, y, owner);
 }
 
 // INLINED
 __forceinline void PaintCooldowns(
-  std::list<ShortcutCooldownRecord>& records, const std::list<ShortcutCooldownIcon>& icons, std::list<CooldownState> ShortcutCooldownRecord::* values, int limit, int x, int y, CooldownDrawing& drawing
+  std::list<ShortcutCooldownRecord>& records, const std::list<ShortcutCooldownIcon>& icons, std::list<CooldownState> ShortcutCooldownRecord::* values, int limit, int x, int y, CooldownOwner& owner
 ) {
   const std::uint32_t now = CooldownNow();
 
@@ -289,7 +289,7 @@ __forceinline void PaintCooldowns(
       }
 
       for (auto state = states.begin(); state != states.end(); ++state) {
-        drawing.Draw(0, 0, 12, 12, *state, limit, x, y);
+        owner.Draw(0, 0, 12, 12, *state, limit, x, y);
       }
 
       ++entry;
@@ -486,7 +486,7 @@ void UIQuickSlotWnd::Paint() {
     }
   }
 
-  PaintAlternateCooldowns(g_session.m_requestTimers, g_session.m_alternateCooldownIcons, this->geometry.x, this->geometry.y, g_cooldownOwner->Drawing());
+  PaintAlternateCooldowns(g_session.m_requestTimers, g_session.m_alternateCooldownIcons, this->geometry.x, this->geometry.y, *g_cooldownOwner);
 }
 
 // OFFSET: 0x00924A50

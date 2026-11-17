@@ -1,9 +1,11 @@
 #ifndef RAGNAROK_SOURCE_UI_COOLDOWNS_COOLDOWNOWNER_H
 #define RAGNAROK_SOURCE_UI_COOLDOWNS_COOLDOWNOWNER_H
 
-#include "UI/Cooldowns/CooldownDrawing.h"
+#include "UI/Cooldowns/CooldownState.h"
 
+#include <cstddef>
 #include <map>
+#include <vector>
 
 class CooldownOwner {
 public:
@@ -25,14 +27,19 @@ public:
       this->m_values.erase(entry);
     }
   }
-  // INLINED
-  CooldownDrawing& Drawing() {
-    return this->m_drawing;
-  }
+  void Draw(
+    int centerX, int centerY, int radiusX, int radiusY, CooldownState& value, int limit, int offsetX, int offsetY
+  );
+  void SubmitNormal();
+  void SubmitReverse();
 
   /* 0000 */ bool m_initialized;
-  /* 0004 */ CooldownDrawing m_drawing;
+  /* 0004 */ std::vector<RenderCommand*> m_normal;
+  /* 0010 */ std::vector<RenderCommand*> m_reverse;
   /* 001C */ std::map<unsigned, CooldownState> m_values;
+
+private:
+  __declspec(noinline) void DrawReverse(CooldownState& value);
 };
 
 extern CooldownOwner* g_cooldownOwner;
@@ -42,6 +49,8 @@ void DestroyCooldownOwner();
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(CooldownOwner) == 36);
+static_assert(offsetof(CooldownOwner, m_normal) == 0x04);
+static_assert(offsetof(CooldownOwner, m_reverse) == 0x10);
 #endif
 
 #endif
