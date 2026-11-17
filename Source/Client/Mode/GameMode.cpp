@@ -6578,7 +6578,7 @@ static_assert(sizeof(GameModeStoredRecord0191) == 0x1C);
 static_assert(sizeof(GameModeStoredRecord00DA) == 0x3F);
 
 // INLINED
-__forceinline std::vector<char> BuildStoredActorRecord(CGameActor* actor, CActorNameCardHolder& nameCard) {
+__forceinline std::vector<char> BuildStoredActorRecord(CGameActor* actor, CGameMode* mode) {
   CPc* pc = static_cast<CPc*>(actor);
   std::vector<char> record;
   record.resize(sizeof(GameModeStoredRecord00DA), 0);
@@ -6600,7 +6600,7 @@ __forceinline std::vector<char> BuildStoredActorRecord(CGameActor* actor, CActor
   stored->robe = static_cast<std::uint16_t>(pc->robe);
   stored->bodyCostume = static_cast<std::uint16_t>(actor->GetBodyCostume());
   {
-    std::string name = nameCard.Name(actor->render.accountId);
+    std::string name = mode->nameCard.Name(actor->render.accountId);
     std::memcpy(stored->text, name.c_str(), sizeof(stored->text));
   }
   return record;
@@ -6645,7 +6645,7 @@ std::vector<unsigned char> CGameMode::SaveActorStates() {
 
     CGameActor* actor = *it;
     if (actor->storedActorEntry == 1) {
-      AppendChunk(data, MakeDataChunk(0xDA, BuildStoredActorRecord(actor, this->nameCard)));
+      AppendChunk(data, MakeDataChunk(0xDA, BuildStoredActorRecord(actor, this)));
     }
 
     UIMerchantShopTitle* shop = static_cast<UIMerchantShopTitle*>((*it)->actorWindows[2]);
@@ -6685,15 +6685,12 @@ std::vector<unsigned char> CGameMode::SaveActorStates() {
 
     const int count = (*it)->GetMadogearType();
     if (count > 0) {
-      GameModeStoredRecord0191 record;
+      GameModeStoredRecord0191 record = {};
       record.remaining = 9999;
-      record.packetType = 0;
       record.count = count;
-      record.value2 = 0;
       record.total = 9999;
       record.aid = (*it)->render.accountId;
       record.statusType = 0x47D;
-      record.value3 = 0;
 
       const std::vector<unsigned char> chunk = MakeFilledRecordChunk(0x191, record);
       data.insert(data.end(), chunk.begin(), chunk.end());
@@ -6701,10 +6698,7 @@ std::vector<unsigned char> CGameMode::SaveActorStates() {
   }
 
   {
-    std::vector<unsigned char> chunk(sizeof(GameModeChunkHeader), 0);
-    auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
-    header->type = 10001;
-    header->size = 0;
+    const std::vector<unsigned char> chunk = MakeEmptyChunk(10001);
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
