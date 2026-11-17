@@ -181,6 +181,37 @@ struct JsonCopiedValue {
 };
 
 // OFFSET: 0x005058B0
+// FUNCTION: fn_00775
+JsonValue::ValueType JsonValue::Type() const {
+  switch (this->type & 0x0f) {
+    case null_value:
+      return NULL_VALUE;
+    case bool_value:
+      return BOOL_VALUE;
+    case int64_value:
+      return INT64_VALUE;
+    case uint64_value:
+      return UINT64_VALUE;
+    case half_value:
+      return HALF_VALUE;
+    case double_value:
+      return DOUBLE_VALUE;
+    case short_string_value:
+    case long_string_value:
+      return STRING_VALUE;
+    case byte_string_value:
+      return BYTE_STRING_VALUE;
+    case array_value:
+      return ARRAY_VALUE;
+    case empty_object_value:
+    case object_value:
+      return OBJECT_VALUE;
+    case json_const_pointer:
+      return static_cast<const JsonValue*>(this->pointer)->Type();
+    default:
+      __assume(0);
+  }
+}
 
 // OFFSET: 0x004F3820
 // FUNCTION: fn_00484
