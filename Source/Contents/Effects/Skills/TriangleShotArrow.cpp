@@ -51,7 +51,7 @@ void CTriangleShotArrow::Open() {
 
   this->speed = 1.0f;
   this->delay = 0;
-  pos.y -= 10.0f;
+  this->current.y -= 10.0f;
   vector3d target = this->sourcePositionVector;
   this->step = 0;
   target.y -= 10.0f;
