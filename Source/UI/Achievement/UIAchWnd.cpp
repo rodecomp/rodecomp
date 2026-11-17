@@ -622,8 +622,9 @@ void UIAchViewWnd::Paint() {
     int x = static_cast<int>((this->geometry.width - count * 8 - width + 8) * 0.5);
     for (int index = 0; index < 3; ++index) {
       if (this->rewards[index]->geometry.visible == 1) {
-        this->rewards[index]->Move(x, 304);
+        const int left = x;
         x += 70;
+        this->rewards[index]->Move(left, 304);
       }
     }
   }
