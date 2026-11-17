@@ -2744,7 +2744,7 @@ void CEffectPrim::RenderColorPanel(matrix& wtm) {
     const int angle = slot.rotStart;
     const float size = slot.height[2];
     const float half = size * g_depthAverageHalf;
-    const int opposite = angle < 180 ? angle + 180 : angle - 180;
+    const int opposite = angle >= 180 ? angle - 180 : angle + 180;
     const float top = half - slot.height[4];
     const float preX = half * g_cosTable[angle] - g_sinTable[angle] * 0.0f;
     const float preZ = half * g_sinTable[angle] + g_cosTable[angle] * 0.0f;
@@ -2761,20 +2761,20 @@ void CEffectPrim::RenderColorPanel(matrix& wtm) {
     if (mode == 2.0f) {
       if (level == 0.0f) {
         red = 105;
-        green = 255;
         blue = 105;
+        green = 255;
       } else if (level == 1.0f) {
         red = 5;
-        green = 255;
         blue = 5;
+        green = 255;
       } else if (level == 2.0f) {
         red = 55;
-        green = 255;
         blue = 55;
+        green = 255;
       } else if (level == 3.0f) {
         red = 155;
-        green = 255;
         blue = 155;
+        green = 255;
       }
     } else if (mode == 3.0f) {
       if (level == 0.0f) {
@@ -2796,75 +2796,75 @@ void CEffectPrim::RenderColorPanel(matrix& wtm) {
       }
     } else if (mode == 4.0f) {
       if (level == 0.0f) {
-        red = 255;
-        green = 255;
         blue = 105;
+        red = 255;
+        green = 255;
       } else if (level == 1.0f) {
-        red = 255;
-        green = 255;
         blue = 5;
+        red = 255;
+        green = 255;
       } else if (level == 2.0f) {
-        red = 255;
-        green = 255;
         blue = 55;
-      } else if (level == 3.0f) {
         red = 255;
         green = 255;
+      } else if (level == 3.0f) {
         blue = 155;
+        red = 255;
+        green = 255;
       }
     } else if (mode == 5.0f) {
       if (level == 0.0f) {
-        red = 255;
         green = 105;
         blue = 105;
-      } else if (level == 1.0f) {
         red = 255;
+      } else if (level == 1.0f) {
         green = 5;
         blue = 5;
-      } else if (level == 2.0f) {
         red = 255;
+      } else if (level == 2.0f) {
         green = 55;
         blue = 55;
-      } else if (level == 3.0f) {
         red = 255;
+      } else if (level == 3.0f) {
         green = 155;
         blue = 155;
+        red = 255;
       }
     } else if (mode == 6.0f) {
       if (level == 0.0f) {
-        red = 255;
         green = 105;
         blue = 255;
-      } else if (level == 1.0f) {
         red = 255;
+      } else if (level == 1.0f) {
         green = 5;
         blue = 255;
-      } else if (level == 2.0f) {
         red = 255;
+      } else if (level == 2.0f) {
         green = 55;
         blue = 255;
-      } else if (level == 3.0f) {
         red = 255;
+      } else if (level == 3.0f) {
         green = 155;
         blue = 255;
+        red = 255;
       }
     } else if (mode == 7.0f) {
       if (level == 0.0f) {
         red = 105;
-        green = 255;
         blue = 255;
+        green = 255;
       } else if (level == 1.0f) {
         red = 5;
-        green = 255;
         blue = 255;
+        green = 255;
       } else if (level == 2.0f) {
         red = 55;
-        green = 255;
         blue = 255;
+        green = 255;
       } else if (level == 3.0f) {
         red = 155;
-        green = 255;
         blue = 255;
+        green = 255;
       }
     } else if (mode == 8.0f) {
       if (level == 0.0f) {
@@ -2881,8 +2881,8 @@ void CEffectPrim::RenderColorPanel(matrix& wtm) {
         blue = 55;
       } else if (level == 3.0f) {
         red = 255;
-        green = 255;
         blue = 255;
+        green = 255;
       }
     } else {
       extra = 0;
