@@ -39,7 +39,8 @@ void C3dNode::AccumulateBounds(float* bounds, const matrix& parent) {
     }
   }
 
-  for (C3dNode* child : this->children) {
+  for (auto childIt = this->children.begin(); childIt != this->children.end(); ++childIt) {
+    C3dNode* child = *childIt;
     child->AccumulateBounds(bounds, combined);
   }
 }
