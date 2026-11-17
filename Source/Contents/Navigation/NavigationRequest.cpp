@@ -125,7 +125,7 @@ bool CNavigationManager::UpdateGround() {
     return false;
   }
   this->ground = scene->ground;
-  this->pathFinder.attr = terrain;
+  this->pathFinder.SetAttr(terrain);
   return true;
 }
 
