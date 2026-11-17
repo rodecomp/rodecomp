@@ -50,7 +50,7 @@ void CCartCannon::Open() {
 
   this->speed = 1.0f;
   this->delay = 0;
-  current.y -= 10.0f;
+  this->currentPosition.y -= 10.0f;
   vector3d target = this->sourcePositionVector;
   this->currentStep = 0;
   target.y -= 10.0f;
