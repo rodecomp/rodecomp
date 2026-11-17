@@ -23,6 +23,8 @@
 #include <ctime>
 #include <string>
 
+template __declspec(noinline) std::string::basic_string(const std::string&);
+
 #pragma pack(push, 1)
 struct AccountLimitedSearchPacket {
   /* 0000 */ std::int16_t id;

@@ -27,7 +27,7 @@ public:
   void SetNumber(int value);
   void SetTextWithinWidth(const char* value, int outlineValue);
   void SetFont(int family, int height, unsigned char bold, unsigned char italic);
-  std::string GetText() const;
+  inline std::string GetText() const;
 
   /* 007C */ int red;
   /* 0080 */ int green;
@@ -44,6 +44,12 @@ public:
   /* 00A8 */ std::string text;
   /* 00C0 */ std::string tooltip;
 };
+
+// OFFSET: 0x007D50D0
+// FUNCTION: fn_09587
+inline std::string UIStaticText::GetText() const {
+  return this->text;
+}
 
 class UIStaticText2 : public UIStaticText {
 public:

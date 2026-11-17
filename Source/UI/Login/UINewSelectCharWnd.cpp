@@ -124,12 +124,6 @@ CharSlotInfo::~CharSlotInfo() = default;
 void Nullsub243() {
 }
 
-// OFFSET: 0x007D50D0
-// FUNCTION: fn_09587
-std::string UIStaticText::GetText() const {
-  return this->text;
-}
-
 // OFFSET: 0x007D5130
 // FUNCTION: fn_09588
 void UINewSelectCharWnd::DisableButtonById(int id) {
