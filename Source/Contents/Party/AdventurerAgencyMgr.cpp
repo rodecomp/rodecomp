@@ -76,12 +76,12 @@ std::string CAdventurerAgencyMgr::ServiceUrl(int operation) const {
   }
 
   switch (operation) {
+  case 1:
+    url += "/party/list";
+    break;
   case 0:
   case 2:
     url += "/party/add";
-    break;
-  case 1:
-    url += "/party/list";
     break;
   case 3:
     url += "/party/search";
