@@ -152,10 +152,11 @@ int UIMerchantShopTitle::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       this->label->fontFamily = 0;
       break;
     }
-    this->label->bold = 0;
-    this->label->italic = 0;
-    this->label->fontHeight = 12;
-    this->label->SetTextFitted(fitted);
+    UIStaticText* const label = this->label;
+    label->bold = 0;
+    label->italic = 0;
+    label->fontHeight = 12;
+    label->SetTextFitted(fitted);
     this->Invalidate();
     break;
   }
