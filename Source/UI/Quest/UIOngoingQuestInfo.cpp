@@ -425,7 +425,8 @@ void CUIScrollWindow::SetQuest(unsigned int id) {
     this->rewards->firstText->SetText(quest.baseExpReward);
     this->rewards->secondText->SetText(quest.jobExpReward);
     for (const auto& reward : quest.m_rewards) {
-      this->rewards->rewardList->AddData(CRewardItemData{static_cast<int>(reward.first), static_cast<int>(reward.second)}, false);
+      const CRewardItemData data{static_cast<int>(reward.first), static_cast<int>(reward.second)};
+      this->rewards->rewardList->AddData(data, false);
     }
     this->rewards->rewardList->UpdateScrollBar();
 
