@@ -155,6 +155,13 @@ public:
   void OnSkillObjectRemove(CRenderObject* object) override;
 };
 
+// OFFSET: 0x0079EB50
+// FUNCTION: fn_45578
+template <>
+CSkillObjectAction* NewAction<CSkillObjectAction_SOA_TOTEM_OF_TUTELARY, CSkillObjectAction>() {
+  return new CSkillObjectAction_SOA_TOTEM_OF_TUTELARY;
+}
+
 // OFFSET: 0x0079B9A0
 // FUNCTION: fn_08874
 bool CSkillAction_SOA_TALISMAN_OF_FIVE_ELEMENTS::IsSupport() {
