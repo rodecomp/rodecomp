@@ -7683,8 +7683,8 @@ void UIMerchantItemPurchaseWnd::OnMouseHover(int x, int y) {
 
     CMode* mode = g_modeMgr.currentMode;
     std::uint32_t color = g_session.GetItemNameColor(item);
-    int screenX = tooltipX;
     int screenY = tooltipY;
+    int screenX = tooltipX;
     char price[64];
     mode->ShowTooltip(FormatOwnedString("%s %d %s %s Zeny", item.DisplayName(0).c_str(), item.quantity, LookupMessage(MSI_EA4),
                                  FormatGroupedInteger(static_cast<int>(item.prices[1]), price, 64))
@@ -7705,14 +7705,14 @@ void UIMerchantItemShopWnd::OnMouseHover(int x, int y) {
     if (item.identified == 1 && item.optionCount != 0) {
       CMode* mode = g_modeMgr.currentMode;
       std::uint32_t color = g_session.GetItemNameColor(item);
-      int screenX = tooltipX;
       int screenY = tooltipY;
+      int screenX = tooltipX;
       mode->ShowTooltip(FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), item.DisplayName(0).c_str(), item.optionCount).c_str(), screenX, screenY, color, 0, 1);
     } else {
       CMode* mode = g_modeMgr.currentMode;
       std::uint32_t color = g_session.GetItemNameColor(item);
-      int screenX = tooltipX;
       int screenY = tooltipY;
+      int screenX = tooltipX;
       mode->ShowTooltip(item.DisplayName(0).c_str(), screenX, screenY, color, 0, 1);
     }
     return;
@@ -7730,14 +7730,14 @@ void UIMerchantItemShopWnd::OnMouseHover(int x, int y) {
   if (item.identified == 1 && item.optionCount != 0) {
     CMode* mode = g_modeMgr.currentMode;
     std::uint32_t color = g_session.GetItemNameColor(item);
-    int screenX = tooltipX - 2;
     int screenY = tooltipY + 24;
+    int screenX = tooltipX - 2;
     mode->ShowTooltip(FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), item.DisplayName(0).c_str(), item.optionCount).c_str(), screenX, screenY, color, 0, 1);
   } else {
     CMode* mode = g_modeMgr.currentMode;
     std::uint32_t color = g_session.GetItemNameColor(item);
-    int screenX = tooltipX - 2;
     int screenY = tooltipY + 24;
+    int screenX = tooltipX - 2;
     mode->ShowTooltip(item.DisplayName(0).c_str(), screenX, screenY, color, 0, 1);
   }
 }
@@ -7754,14 +7754,14 @@ void UIMerchantItemWnd::OnMouseHover(int x, int y) {
     CMode* gameMode = g_modeMgr.currentMode;
     if (item.identified == 1 && item.optionCount != 0) {
       std::uint32_t color = g_session.GetItemNameColor(item);
-      int screenX = tooltipX;
       int screenY = tooltipY;
+      int screenX = tooltipX;
       gameMode->ShowTooltip(FormatOwnedString(LookupMessage(MSI_FAIL_NEED_EQUIPPED_GUN_GATLING), item.DisplayName(0).c_str(), item.optionCount, item.quantity).c_str(), screenX, screenY,
                  color, 0, 1);
     } else {
       std::uint32_t color = g_session.GetItemNameColor(item);
-      int screenX = tooltipX;
       int screenY = tooltipY;
+      int screenX = tooltipX;
       gameMode->ShowTooltip(FormatOwnedString("%s %d %s", item.DisplayName(0).c_str(), item.quantity, LookupMessage(MSI_EA4)).c_str(), screenX, screenY,
                  color, 0, 1);
     }
@@ -7780,14 +7780,14 @@ void UIMerchantMirrorItemWnd::OnMouseHover(int x, int y) {
     CMode* gameMode = g_modeMgr.currentMode;
     if (item.identified == 1 && item.optionCount != 0) {
       std::uint32_t color = g_session.GetItemNameColor(item);
-      int screenX = tooltipX;
       int screenY = tooltipY;
+      int screenX = tooltipX;
       gameMode->ShowTooltip(FormatOwnedString(LookupMessage(MSI_EA10), item.DisplayName(0).c_str(), item.optionCount, item.quantity).c_str(), screenX, screenY,
                  color, 0, 1);
     } else {
       std::uint32_t color = g_session.GetItemNameColor(item);
-      int screenX = tooltipX;
       int screenY = tooltipY;
+      int screenX = tooltipX;
       gameMode->ShowTooltip(FormatOwnedString("%s %d %s", item.DisplayName(0).c_str(), item.quantity, LookupMessage(MSI_EA4)).c_str(), screenX, screenY,
                  color, 0, 1);
     }
