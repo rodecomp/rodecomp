@@ -22,8 +22,6 @@ extern const std::string g_tipBoxTagEnd;
 extern const std::string g_questTagBegin;
 extern const std::string g_questTagEnd;
 
-std::string __stdcall ExpandTextEscapes(const std::string& text);
-
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(TextLink) == 60);
 static_assert(offsetof(TextLink, position) == 0x0);

@@ -93,7 +93,7 @@ bool UIWindow::HasTextLinks(const std::string& text) {
 
 // OFFSET: 0x008791E0
 // FUNCTION: fn_11214
-std::string __stdcall ExpandTextEscapes(const std::string& text) {
+std::string UIWindow::ExpandTextEscapes(const std::string& text) {
   std::string result = text;
   auto position = result.find("\\n");
 
