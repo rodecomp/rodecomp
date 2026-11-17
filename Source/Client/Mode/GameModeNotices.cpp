@@ -4005,17 +4005,16 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&message);
     this->scene->player->SendMsg(nullptr, AM_GROUNDSKILL, value, 0, 0, 0, 0, 0);
     actor = this->scene->player;
-    if (actor != nullptr) {
-      job = actor->GetEffectiveJob(-1);
-    }
   } else {
     CGameActor* gameActor = this->scene->GetGameActorByAID(*reinterpret_cast<const std::uint32_t*>(packet + 4));
     if (gameActor != nullptr) {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&message);
       gameActor->SendMsg(nullptr, AM_GROUNDSKILL, value, 0, 0, 0, 0, 0);
       actor = gameActor;
-      job = actor->GetEffectiveJob(-1);
     }
+  }
+  if (actor != nullptr) {
+    job = actor->GetEffectiveJob(-1);
   }
 
   if (!g_session.IsMonsterActor(actor)) {
@@ -4042,10 +4041,8 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
         float x;
         float z;
         mode->CellCenter(offsets[index][0] + cellX, offsets[index][1] + cellY, x, z);
-        vector3d target;
-        target.x = x;
-        target.y = mode->scene->terrain->Height(x, z);
-        target.z = z;
+        const float y = mode->scene->terrain->Height(x, z);
+        vector3d target = {x, y, z};
         mode->SpawnArrowEffect64(source, &target, 18.0f);
       }
       break;
@@ -4055,10 +4052,8 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       float x;
       float z;
       mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
-      vector3d position;
-      position.x = x;
-      position.y = mode->scene->terrain->Height(x, z);
-      position.z = z;
+      const float y = mode->scene->terrain->Height(x, z);
+      vector3d position = {x, y, z};
       this->LaunchDummyEffect(&position, 0x26E, 200, 0);
       break;
     }
@@ -4072,10 +4067,8 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       float x;
       float z;
       mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
-      vector3d position;
-      position.x = x;
-      position.y = mode->scene->terrain->Height(x, z);
-      position.z = z;
+      const float y = mode->scene->terrain->Height(x, z);
+      vector3d position = {x, y, z};
       this->LaunchDummyEffect(&position, 0x2D6, EffectLifetime(0x2D6) + 10, 0);
       break;
     }
@@ -4087,33 +4080,27 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       float x;
       float z;
       mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
-      vector3d position;
-      position.x = x;
-      position.y = mode->scene->terrain->Height(x, z);
-      position.z = z;
+      const float y = mode->scene->terrain->Height(x, z);
+      vector3d position = {x, y, z};
       int count = message.level + 2;
       if (count > 7) {
         count = 7;
-      } else if (count <= 0) {
-        return;
       }
-      for (int delay = 0; count != 0; --count, delay += 500) {
-        CEffect* effect;
+      for (int index = 0; index < count; ++index) {
         if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
-          effect = g_effectMgr->Spawn(0, EF_MINEFFECT_PSYCHICWAVE, position.x, position.y, position.z, 0, -1, 0, 0);
-          if (effect) {
-            effect->SetDelay(delay);
+          if (CEffect* effect = g_effectMgr->Spawn(0, EF_MINEFFECT_PSYCHICWAVE, position.x, position.y, position.z, 0, -1, 0, 0)) {
+            effect->SetDelay(index * 500);
           }
-          effect = g_effectMgr->Spawn(0, EF_MINEFFECT_PSYCHICWAVE_BOTTOM, position.x, position.y, position.z, 0, -1, 0, 0);
+          if (CEffect* effect = g_effectMgr->Spawn(0, EF_MINEFFECT_PSYCHICWAVE_BOTTOM, position.x, position.y, position.z, 0, -1, 0, 0)) {
+            effect->SetDelay(index * 500);
+          }
         } else {
-          effect = g_effectMgr->Spawn(0, EF_NEW_PSYCHICWAVE, position.x, position.y, position.z, 0, -1, 0, 0);
-          if (effect) {
-            effect->SetDelay(delay);
+          if (CEffect* effect = g_effectMgr->Spawn(0, EF_NEW_PSYCHICWAVE, position.x, position.y, position.z, 0, -1, 0, 0)) {
+            effect->SetDelay(index * 500);
           }
-          effect = g_effectMgr->Spawn(0, EF_NEW_PSYCHICWAVE_BOTTOM, position.x, position.y, position.z, 0, -1, 0, 0);
-        }
-        if (effect) {
-          effect->SetDelay(delay);
+          if (CEffect* effect = g_effectMgr->Spawn(0, EF_NEW_PSYCHICWAVE_BOTTOM, position.x, position.y, position.z, 0, -1, 0, 0)) {
+            effect->SetDelay(index * 500);
+          }
         }
       }
       break;
@@ -4155,10 +4142,8 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       float x;
       float z;
       mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
-      vector3d position;
-      position.x = x;
-      position.y = mode->scene->terrain->Height(x, z);
-      position.z = z;
+      const float y = mode->scene->terrain->Height(x, z);
+      vector3d position = {x, y, z};
       this->LaunchDummyEffect(&position, 0x393, 150, 0);
       break;
     }
@@ -4201,10 +4186,8 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       float x;
       float z;
       mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
-      vector3d position;
-      position.x = x;
-      position.y = mode->scene->terrain->Height(x, z);
-      position.z = z;
+      const float y = mode->scene->terrain->Height(x, z);
+      vector3d position = {x, y, z};
       this->LaunchDummyEffect(&position, 0x376, 300, 0);
       this->LaunchDummyEffect(&position, 0x375, 200, 0);
       this->LaunchDummyEffect(&position, 0x383, 999, 0);
@@ -4221,10 +4204,8 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       float x;
       float z;
       mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
-      vector3d position;
-      position.x = x;
-      position.y = mode->scene->terrain->Height(x, z);
-      position.z = z;
+      const float y = mode->scene->terrain->Height(x, z);
+      vector3d position = {x, y, z};
       effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
       break;
     }
@@ -4237,10 +4218,8 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       float x;
       float z;
       mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
-      vector3d position;
-      position.x = x;
-      position.y = mode->scene->terrain->Height(x, z);
-      position.z = z;
+      const float y = mode->scene->terrain->Height(x, z);
+      vector3d position = {x, y, z};
       effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&position), 0, 0, 0, 0);
       g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
       g_soundMgr->PlayWave("effect\\invisibility.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
@@ -4259,7 +4238,7 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       if (actor == nullptr) {
         return;
       }
-      g_effectMgr->Spawn(actor->render.accountId, EF_BOOK_OF_CREATINGSTAR, actor->render.position.x, actor->render.position.y, actor->render.position.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(actor->render.accountId, EF_BOOK_OF_CREATINGSTAR, actor->render.position, 0, -1, 0, 0);
       break;
     default:
       CSkillActionMgr::GetInstance()->OnGroundSkillEffect(*reinterpret_cast<const std::uint16_t*>(packet + 2), *reinterpret_cast<const std::int16_t*>(packet + 0xA),
@@ -4270,16 +4249,16 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       vector3d position = {0.0f, 0.0f, 0.0f};
       this->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), position.x, position.z);
       position.y = this->scene->terrain->Height(position.x, position.z);
-      g_effectMgr->Spawn(0, EF_TERRA_DRIVE_BOTTOM, position.x, position.y, position.z, 0, -1, 0, 0);
-      g_effectMgr->Spawn(0, EF_TERRA_DRIVE, position.x, position.y, position.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(0, EF_TERRA_DRIVE_BOTTOM, position, 0, -1, 0, 0);
+      g_effectMgr->Spawn(0, EF_TERRA_DRIVE, position, 0, -1, 0, 0);
       break;
     }
     case EM_DIAMOND_STORM: {
       vector3d position = {0.0f, 0.0f, 0.0f};
       this->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), position.x, position.z);
       position.y = this->scene->terrain->Height(position.x, position.z);
-      g_effectMgr->Spawn(0, EF_DIAMOND_STORM_BOTTOM, position.x, position.y, position.z, 0, -1, 0, 0);
-      g_effectMgr->Spawn(0, EF_DIAMOND_STORM, position.x, position.y, position.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(0, EF_DIAMOND_STORM_BOTTOM, position, 0, -1, 0, 0);
+      g_effectMgr->Spawn(0, EF_DIAMOND_STORM, position, 0, -1, 0, 0);
       break;
     }
     }
@@ -4297,33 +4276,27 @@ void CGameMode::ReceiveNotifyGroundSkill(const unsigned char* packet) {
       float x;
       float z;
       mode->CellCenter(*reinterpret_cast<const std::int16_t*>(packet + 0xA), *reinterpret_cast<const std::int16_t*>(packet + 0xC), x, z);
-      vector3d position;
-      position.x = x;
-      position.y = mode->scene->terrain->Height(x, z);
-      position.z = z;
+      const float y = mode->scene->terrain->Height(x, z);
+      vector3d position = {x, y, z};
       int count = message.level + 2;
       if (count > 7) {
         count = 7;
-      } else if (count <= 0) {
-        return;
       }
-      for (int delay = 0; count != 0; --count, delay += 500) {
-        CEffect* effect;
+      for (int index = 0; index < count; ++index) {
         if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
-          effect = g_effectMgr->Spawn(0, EF_MINEFFECT_PSYCHICWAVE, position.x, position.y, position.z, 0, -1, 0, 0);
-          if (effect) {
-            effect->SetDelay(delay);
+          if (CEffect* effect = g_effectMgr->Spawn(0, EF_MINEFFECT_PSYCHICWAVE, position.x, position.y, position.z, 0, -1, 0, 0)) {
+            effect->SetDelay(index * 500);
           }
-          effect = g_effectMgr->Spawn(0, EF_MINEFFECT_PSYCHICWAVE_BOTTOM, position.x, position.y, position.z, 0, -1, 0, 0);
+          if (CEffect* effect = g_effectMgr->Spawn(0, EF_MINEFFECT_PSYCHICWAVE_BOTTOM, position.x, position.y, position.z, 0, -1, 0, 0)) {
+            effect->SetDelay(index * 500);
+          }
         } else {
-          effect = g_effectMgr->Spawn(0, EF_NEW_PSYCHICWAVE, position.x, position.y, position.z, 0, -1, 0, 0);
-          if (effect) {
-            effect->SetDelay(delay);
+          if (CEffect* effect = g_effectMgr->Spawn(0, EF_NEW_PSYCHICWAVE, position.x, position.y, position.z, 0, -1, 0, 0)) {
+            effect->SetDelay(index * 500);
           }
-          effect = g_effectMgr->Spawn(0, EF_NEW_PSYCHICWAVE_BOTTOM, position.x, position.y, position.z, 0, -1, 0, 0);
-        }
-        if (effect) {
-          effect->SetDelay(delay);
+          if (CEffect* effect = g_effectMgr->Spawn(0, EF_NEW_PSYCHICWAVE_BOTTOM, position.x, position.y, position.z, 0, -1, 0, 0)) {
+            effect->SetDelay(index * 500);
+          }
         }
       }
     }
