@@ -218,7 +218,7 @@ static __forceinline void SendAfterimageColor(CGameObject& target, CRagEffect& s
 
 // OFFSET: 0x00C11C60
 // FUNCTION: fn_20039
-void CRagEffect::Endure() {
+__declspec(safebuffers) void CRagEffect::Endure() {
   RenderVertex screen{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
   g_renderer->viewport.Project(
     &this->state.parent->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values, screen
@@ -227,7 +227,7 @@ void CRagEffect::Endure() {
   this->state.tlvertY = screen.y;
 
   if (this->state.stateCnt == 0) {
-    PlayEffectWave(*this, "effect\\EF_Endure.wav");
+    PlayEffectWaveInline(*this, "effect\\EF_Endure.wav");
 
     this->state.lastPrim = this->LaunchEffectPrim(0, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = this->state.duration;
@@ -682,7 +682,7 @@ void CRagEffect::IncAgiDex() {
 
 // OFFSET: 0x00C1BDC0
 // FUNCTION: fn_20073
-void CRagEffect::IncAgility() {
+__declspec(safebuffers) void CRagEffect::IncAgility() {
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
   g_renderer->viewport.Project(
     &this->state.parent->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values, vertex
@@ -692,7 +692,7 @@ void CRagEffect::IncAgility() {
   CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt == 0) {
-    PlayEffectWave(*this, "effect\\EF_IncAgility.wav");
+    PlayEffectWaveInline(*this, "effect\\EF_IncAgility.wav");
     this->state.lastPrim = this->LaunchEffectPrim(0, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.longitude = 0.0f;
@@ -1619,7 +1619,7 @@ void CRagEffect::Bash() {
     return;
   }
 
-  PlayEffectWave(*this, "effect\\EF_Bash.wav");
+  PlayEffectWaveInline(*this, "effect\\EF_Bash.wav");
 
   this->state.lastPrim = this->LaunchEffectPrim(4, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 40;
@@ -2111,7 +2111,7 @@ void CRagEffect::SetStateDuration(int duration) {
 
 // OFFSET: 0x00C39EC0
 // FUNCTION: fn_20103
-bool CRagEffect::Signum() {
+__declspec(safebuffers) bool CRagEffect::Signum() {
   RenderVertex screen{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
   g_renderer->viewport.Project(
     &this->state.parent->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values, screen
@@ -5164,9 +5164,9 @@ void CRagEffect::Magnum2(const char* name) {
   if (this->state.stateCnt == 0) {
     this->state.flag = 0;
   } else if (this->state.stateCnt == 20) {
-    PlayEffectWave(*this, "permeter_attack.wav");
+    PlayEffectWaveInline(*this, "permeter_attack.wav");
   } else if (this->state.stateCnt == 30) {
-    PlayEffectWave(*this, "effect\\EF_MagnumBreak.wav");
+    PlayEffectWaveInline(*this, "effect\\EF_MagnumBreak.wav");
   }
 
   const int frame = this->state.stateCnt;
@@ -7255,10 +7255,10 @@ void CRagEffect::MonsterSpriteBurst(char kind) {
   int limit;
   if (kind == 13 || kind == 14) {
     limit = 30;
-  } else if (kind < 9) {
-    limit = kind >= 2 ? 10 : 50;
-  } else {
+  } else if (kind >= 9) {
     limit = 20;
+  } else {
+    limit = kind >= 2 ? 10 : 50;
   }
 
   if (this->state.stateCnt >= limit) {
@@ -7275,7 +7275,7 @@ void CRagEffect::MonsterSpriteBurst(char kind) {
   stored()->state.slots[0].life = 1;
 
   std::int16_t angle;
-  float radius = 24.0f;
+  float radius;
   if (kind == 2) {
     stored()->state.size = 0.6f;
     angle = static_cast<std::int16_t>(this->state.stateCnt * 36);
@@ -7322,8 +7322,9 @@ void CRagEffect::MonsterSpriteBurst(char kind) {
       radius = 12.0f;
     } else {
       stored()->state.size = 0.95f;
+      radius = 24.0f;
     }
-  } else if (kind > 9) {
+  } else if (kind >= 10) {
     angle = static_cast<std::int16_t>(this->state.stateCnt * 18);
     if (this->state.stateCnt % 2 == 0) {
       radius = 6.0f;
@@ -7332,7 +7333,7 @@ void CRagEffect::MonsterSpriteBurst(char kind) {
       radius = 12.0f;
       stored()->state.size = static_cast<float>(rand() % 11) * 0.03f + 0.5f;
     }
-  } else if (kind > 2) {
+  } else if (kind >= 3) {
     stored()->state.size = 1.0f;
     angle = static_cast<std::int16_t>(this->state.stateCnt * 36);
     radius = 40.0f;
@@ -7442,7 +7443,7 @@ void CRagEffect::MonsterSpriteBurst(char kind) {
 
 // OFFSET: 0x00C78A40
 // FUNCTION: fn_20350
-bool CRagEffect::AgilityChange(char increase, const std::string& textureName) {
+__declspec(safebuffers) bool CRagEffect::AgilityChange(char increase, const std::string& textureName) {
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
   const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   g_renderer->viewport.Project(&this->state.parent->render.position.x, view, vertex);
@@ -9246,9 +9247,9 @@ bool CRagEffect::ProcessEZ2STRAtTarget() {
 
 // OFFSET: 0x00C3DF90
 // FUNCTION: fn_20116
-void CRagEffect::TurnUndead() {
+__declspec(safebuffers) void CRagEffect::TurnUndead() {
   if (this->state.stateCnt == 37) {
-    PlayEffectWave(*this, "effect\\EF_Bash.wav");
+    PlayEffectWaveInline(*this, "effect\\EF_Bash.wav");
   }
 
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
@@ -10289,9 +10290,9 @@ bool CRagEffect::OnProcess2() {
 
 // OFFSET: 0x00C35160
 // FUNCTION: fn_20089
-void CRagEffect::StoneCurseRing() {
+__declspec(safebuffers) void CRagEffect::StoneCurseRing() {
   if (this->state.stateCnt == 0) {
-    PlayEffectWave(*this, "effect\\black_overthrust.wav");
+    PlayEffectWaveInline(*this, "effect\\black_overthrust.wav");
   }
 
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
@@ -10305,7 +10306,7 @@ void CRagEffect::StoneCurseRing() {
   }
 
   this->state.duration = 9999;
-  PlayEffectWave(*this, "effect\\EF_StoneCurse.wav");
+  PlayEffectWaveInline(*this, "effect\\EF_StoneCurse.wav");
   this->state.lastPrim = this->LaunchEffectPrim(4, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 40;
   this->state.lastPrim->state.deltaPos2.y = -20.0f;
@@ -11074,12 +11075,12 @@ void CRagEffect::EarthSpike(char type) {
 
   const char* textureName = nullptr;
   if (type == 0) {
-    PlayEffectWave(*this, "effect\\wizard_earthspike.wav");
+    PlayEffectWaveInline(*this, "effect\\wizard_earthspike.wav");
     textureName = "effect\\stone.bmp";
   } else if (type == 2) {
     char waveName[52];
     std::sprintf(waveName, "effect\\EF_IceArrow%d.wav", ClampedRandom(3) + 1);
-    PlayEffectWave(*this, waveName);
+    PlayEffectWaveInline(*this, waveName);
     textureName = "effect\\ice.tga";
   }
 
@@ -11119,7 +11120,7 @@ void CRagEffect::EarthSpike(char type) {
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(textureName, 0, false, true, false);
 
   for (int step = 60; step < 420; step += 60) {
-    const int offset = step != 0 ? ClampedRandom(step) : 0;
+    const int offset = step == 0 ? 0 : ClampedRandom(step);
     this->state.lastPrim = this->LaunchEffectPrim(9, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 240;
     this->state.lastPrim->state.pattern |= 1u;
@@ -12698,14 +12699,14 @@ void CRagEffect::Enhance() {
 
 // OFFSET: 0x00C17500
 // FUNCTION: fn_20060
-void CRagEffect::HasteUp() {
+__declspec(safebuffers) void CRagEffect::HasteUp() {
   if (this->state.stateCnt == 0) {
     this->state.duration = 300;
-    PlayEffectWave(*this, "effect\\black_adrenalinerush_a.wav");
+    PlayEffectWaveInline(*this, "effect\\black_adrenalinerush_a.wav");
   }
 
   if (this->state.stateCnt == 30) {
-    PlayEffectWave(*this, "effect\\black_adrenalinerush_b.wav");
+    PlayEffectWaveInline(*this, "effect\\black_adrenalinerush_b.wav");
   }
 
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
@@ -13058,7 +13059,7 @@ void CRagEffect::Detoxication() {
     }
 
     if (this->state.stateCnt == 0) {
-      PlayEffectWave(*this, "effect\\EF_Detoxication.wav");
+      PlayEffectWaveInline(*this, "effect\\EF_Detoxication.wav");
     }
 
     this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
@@ -13074,7 +13075,7 @@ void CRagEffect::Detoxication() {
     }
 
     if (this->state.stateCnt == 0) {
-      PlayEffectWave(*this, "effect\\EF_Detoxication.wav");
+      PlayEffectWaveInline(*this, "effect\\EF_Detoxication.wav");
     }
 
     this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
@@ -13137,8 +13138,8 @@ void CRagEffect::EnchantPoison2() {
 // FUNCTION: fn_20038
 void CRagEffect::PoisonAttack(char flag) {
   if (this->state.stateCnt == 0 && flag == 0) {
-    PlayEffectWave(*this, "effect\\assasin_enchantpoison.wav");
-    PlayEffectWave(*this, "effect\\EF_PoisonAttack.wav");
+    PlayEffectWaveInline(*this, "effect\\assasin_enchantpoison.wav");
+    PlayEffectWaveInline(*this, "effect\\EF_PoisonAttack.wav");
   } else if (flag == 1) {
     if (this->state.stateCnt % 9 != 0) {
       return;
@@ -14274,7 +14275,7 @@ void CRagEffect::CHIMTO(char flag) {
   }
 
   if (flag == 0) {
-    PlayEffectWave(*this, "effect\\mon_\uce68\ud22c\uacbd.wav");
+    PlayEffectWaveInline(*this, "effect\\mon_\uce68\ud22c\uacbd.wav");
   }
 
   this->state.lastPrim = this->LaunchEffectPrim(46, vector3d{0.0f, 0.0f, 0.0f});
@@ -15050,7 +15051,7 @@ bool CRagEffect::StormGust() {
 
 // OFFSET: 0x00C0F7E0
 // FUNCTION: fn_20031
-void CRagEffect::DecAgility() {
+__declspec(safebuffers) void CRagEffect::DecAgility() {
   RenderVertex screen{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
   g_renderer->viewport.Project(
     &this->state.parent->render.position.x, g_modeMgr.GetGameMode()->camera->frame.view.values, screen
@@ -15060,7 +15061,7 @@ void CRagEffect::DecAgility() {
   CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt == 0) {
-    PlayEffectWave(*this, "effect\\EF_DecAgility.wav");
+    PlayEffectWaveInline(*this, "effect\\EF_DecAgility.wav");
 
     this->state.lastPrim = this->LaunchEffectPrim(0, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = this->state.duration;
@@ -18124,7 +18125,7 @@ void CRagEffect::FreezingCircle(char kind) {
   if (kind == 3) {
     this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ghost.bmp", 0, false, true, false);
     this->state.lastPrim->state.size = 0.0f;
-  } else if (kind > 0) {
+  } else if (kind >= 1) {
     this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\whitelight.tga", 0, false, true, false);
     this->state.lastPrim->state.size = 0.0f;
 
@@ -18137,7 +18138,7 @@ void CRagEffect::FreezingCircle(char kind) {
   }
 
   for (int i = 0; i < 4; ++i) {
-    if ((kind == 3 && i >= 1) || ((kind == 7 || kind == 8) && i >= 2)) {
+    if ((kind == 3 && i >= 1) || (kind == 7 && i >= 2) || (kind == 8 && i >= 2)) {
       this->state.lastPrim->state.slots[i].life = 0;
     } else {
       this->state.lastPrim->state.slots[i].life = 1;
@@ -18151,7 +18152,7 @@ void CRagEffect::FreezingCircle(char kind) {
       this->state.lastPrim->state.slots[i].vecBPre.x = static_cast<float>(ClampedRandom(15) - 8);
       this->state.lastPrim->state.slots[i].vecBPre.z = static_cast<float>(ClampedRandom(15) - 8);
     } else {
-      if (kind == 1 || kind == 4 || kind == 5 || kind == 6 || kind >= 8) {
+      if (kind == 1 || kind == 4 || kind == 5 || kind >= 8 || kind == 6) {
         this->state.lastPrim->state.slots[i].distance = 2.4f;
       } else {
         this->state.lastPrim->state.slots[i].distance = 0.8f;
@@ -18461,7 +18462,7 @@ void CRagEffect::BlackSpellRings(char silent) {
 void CRagEffect::TexturedClassChange(char kind) {
   this->render.position = this->state.parent->render.position;
 
-  const int stage = kind == 30 ? 30 : 0;
+  const int stage = kind != 30 ? 0 : 30;
   if (this->state.stateCnt == 0x5F5E0FE) {
     this->state.stateCnt = 0;
   }
@@ -18484,7 +18485,7 @@ void CRagEffect::TexturedClassChange(char kind) {
     this->state.lastPrim->SetActionName("이팩트\\캐슬링.act");
     break;
   case 1:
-    PlayEffectWave(*this, "effect\\h_blood_lust.wav");
+    PlayEffectWaveInline(*this, "effect\\h_blood_lust.wav");
     this->state.lastPrim->SetSpriteName("이팩트\\블러드러스트.spr");
     this->state.lastPrim->SetActionName("이팩트\\블러드러스트.act");
     break;
@@ -18509,7 +18510,7 @@ void CRagEffect::TexturedClassChange(char kind) {
     this->state.lastPrim->SetActionName("이팩트\\item_rain.act");
     break;
   case 7:
-    PlayEffectWave(*this, "effect\\ef_firehit.wav");
+    PlayEffectWaveInline(*this, "effect\\ef_firehit.wav");
     this->state.lastPrim->state.animSpeed = 3;
     this->state.lastPrim->state.pattern = 0;
     this->state.lastPrim->state.alpha = 220.0f;
@@ -18539,16 +18540,16 @@ void CRagEffect::TexturedClassChange(char kind) {
     }
     break;
   }
-  case 9:
-    this->state.lastPrim->state.animSpeed = 4;
-    this->state.lastPrim->SetSpriteName("이팩트\\m_ef03.spr");
-    this->state.lastPrim->SetActionName("이팩트\\m_ef03.act");
-    break;
   case 10:
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->SetSpriteName("이팩트\\m_ef04.spr");
     this->state.lastPrim->SetActionName("이팩트\\m_ef04.act");
     this->state.lastPrim->state.repeatAnim = 1;
+    break;
+  case 9:
+    this->state.lastPrim->state.animSpeed = 4;
+    this->state.lastPrim->SetSpriteName("이팩트\\m_ef03.spr");
+    this->state.lastPrim->SetActionName("이팩트\\m_ef03.act");
     break;
   case 11:
     this->state.lastPrim->state.animSpeed = 4;
@@ -18573,7 +18574,7 @@ void CRagEffect::TexturedClassChange(char kind) {
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->SetSpriteName("이팩트\\그림자베기.spr");
     this->state.lastPrim->SetActionName("이팩트\\그림자베기.act");
-    if (std::max(rand() % 2, 0) == 0) {
+    if (ClampedRandom(2) == 0) {
       this->state.lastPrim->SetAction(4, 16, 1);
     } else {
       this->state.lastPrim->SetAction(0, 16, 1);
@@ -18591,7 +18592,7 @@ void CRagEffect::TexturedClassChange(char kind) {
     this->state.lastPrim->state.animSpeed = 4;
     this->state.lastPrim->SetSpriteName("이팩트\\안개베기.spr");
     this->state.lastPrim->SetActionName("이팩트\\안개베기.act");
-    if (std::max(rand() % 2, 0) == 0) {
+    if (ClampedRandom(2) == 0) {
       this->state.lastPrim->SetAction(2, 16, 1);
     } else {
       this->state.lastPrim->SetAction(0, 16, 1);
@@ -18607,7 +18608,7 @@ void CRagEffect::TexturedClassChange(char kind) {
   case 19:
     this->state.lastPrim->state.deltaPos2.y = -1.0f;
     this->state.lastPrim->state.renderFlag = 1;
-    this->state.lastPrim->state.animSpeed = std::max(rand() % 5, 0) + 3;
+    this->state.lastPrim->state.animSpeed = ClampedRandom(5) + 3;
     this->state.lastPrim->state.repeatAnim = 1;
     this->state.lastPrim->SetSpriteName("이팩트\\화염진.spr");
     this->state.lastPrim->SetActionName("이팩트\\화염진.act");
@@ -18822,7 +18823,7 @@ void CRagEffect::TexturedClassChange(char kind) {
     this->state.lastPrim->state.deltaPos2.y = -1.0f;
     this->state.lastPrim->state.renderFlag = 5;
     this->state.lastPrim->state.repeatAnim = 1;
-    this->state.lastPrim->state.animSpeed = std::max(rand() % 3, 0) + 8;
+    this->state.lastPrim->state.animSpeed = ClampedRandom(3) + 8;
     this->state.lastPrim->state.pattern = 0;
     this->state.lastPrim->state.alpha = static_cast<float>(rand() % 71 + 70);
     this->state.lastPrim->state.size = static_cast<float>(rand() % 11) * 0.04f + 0.4f;
@@ -18837,7 +18838,7 @@ void CRagEffect::TexturedClassChange(char kind) {
     this->state.lastPrim->state.deltaPos2.y = -1.0f;
     this->state.lastPrim->state.renderFlag = 5;
     this->state.lastPrim->state.repeatAnim = 1;
-    this->state.lastPrim->state.animSpeed = std::max(rand() % 3, 0) + 8;
+    this->state.lastPrim->state.animSpeed = ClampedRandom(3) + 8;
     this->state.lastPrim->state.pattern = 0;
     this->state.lastPrim->state.alpha = static_cast<float>(rand() % 71 + 70);
     this->state.lastPrim->state.size = static_cast<float>(rand() % 11) * 0.04f + 0.4f;
