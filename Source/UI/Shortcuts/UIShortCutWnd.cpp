@@ -1204,8 +1204,7 @@ int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       std::string local(this->m_edit->Text());
       const int previousWidth = this->m_inputWidth;
       if (local.size() > 0) {
-        const int measured = this->TextWidth(local.c_str(), 0, 0, 12, 0, 0);
-        if (measured + 10 < this->geometry.width - 0x32) {
+        if (this->TextWidth(local.c_str(), 0, 0, 12, 0, 0) + 10 < this->geometry.width - 0x32) {
           this->m_name = local;
           g_session.m_subChatWnds[this->m_index].name = this->m_name;
           const int renamed = this->TextWidth(local.c_str(), 0, 0, 12, 0, 0);
@@ -1215,8 +1214,7 @@ int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
           }
         }
       }
-      const int measured = this->TextWidth(local.c_str(), 0, 0, 12, 0, 0);
-      if (measured + 10 >= this->geometry.width - 0x32) {
+      if (this->TextWidth(local.c_str(), 0, 0, 12, 0, 0) + 10 >= this->geometry.width - 0x32) {
         g_windowMgr.Confirm(LookupMessage(MSI_FAILED_CHANGE_TABNAME), 0, true, false, 0, "Message", 0x118, 0x78, 0);
       }
       this->m_edit->Move(-100, -100);
@@ -1227,11 +1225,7 @@ int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       RECT rectangle;
       rectangle.left = 0;
       rectangle.top = 0;
-      int span = this->m_inputWidth;
-      if (span < previousWidth) {
-        span = previousWidth;
-      }
-      rectangle.right = span + 0x32;
+      rectangle.right = (previousWidth >= this->m_inputWidth ? previousWidth : this->m_inputWidth) + 0x32;
       rectangle.bottom = this->m_inputHeight + 10;
       this->FillSurface(0xFFFF00FF, &rectangle);
       if (UIWindow* window = g_windowMgr.LookupWindow(WID_BATTLEMSGOPTIONWND)) {
@@ -1319,9 +1313,18 @@ int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     return 0;
   case UM_COMMAND:
     switch (argument1) {
+    case ID_NAME:
+      g_windowMgr.SelectWhisperName(reinterpret_cast<const char*>(argument2));
+      return 0;
     case ID_OPTION:
       if (UIWindow* window = g_windowMgr.EnsureWindow(WID_BATTLEMSGOPTIONWND)) {
         window->SendMsg(this, UM_COMMAND, ID_OPTION, this->m_index, 0, 0);
+        return 0;
+      }
+      return 0;
+    case ID_STICK_ON:
+      if (ChatWindow() != nullptr) {
+        ChatWindow()->SendMsg(this, UM_ATTACH_CHAT_TAB, 0, 0, 0, 0);
         return 0;
       }
       return 0;
@@ -1357,15 +1360,6 @@ int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       }
       return 0;
     }
-    case ID_NAME:
-      g_windowMgr.SelectWhisperName(reinterpret_cast<const char*>(argument2));
-      return 0;
-    case ID_STICK_ON:
-      if (ChatWindow() != nullptr) {
-        ChatWindow()->SendMsg(this, UM_ATTACH_CHAT_TAB, 0, 0, 0, 0);
-        return 0;
-      }
-      return 0;
     default:
       return 0;
     }
