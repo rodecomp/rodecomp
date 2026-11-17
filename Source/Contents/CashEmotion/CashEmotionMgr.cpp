@@ -3849,6 +3849,7 @@ void UICashEmotionSprBtn::PaintSelected() {
   int baseY = 0;
   for (unsigned index = 0; index < frame->cells.size(); ++index) {
     record = SpriteAtlasRecord{};
+    const std::uint32_t* palette = paletteRes ? paletteRes->palette : sprite->palette;
     const SpriteFrameCell* cell = &frame->Cell(index);
     if (!cell || cell->image == -1) {
       continue;
@@ -3859,7 +3860,6 @@ void UICashEmotionSprBtn::PaintSelected() {
       continue;
     }
 
-    const std::uint32_t* palette = paletteRes ? paletteRes->palette : sprite->palette;
     CTexture* texture;
     if (cell->imageType == 0) {
       texture = g_renderer->atlas.Find(image, palette, record);
@@ -3874,18 +3874,18 @@ void UICashEmotionSprBtn::PaintSelected() {
       continue;
     }
 
-    int x;
-    int y;
+    int x = width / 2;
+    int y = height / 2;
     if (index == 0) {
       halfWidth = image->width / 2;
-      x = width / 2 - halfWidth;
+      x -= halfWidth;
       halfHeight = image->height / 2;
-      y = height / 2 - halfHeight;
+      y -= halfHeight;
       baseX = cell->x;
       baseY = cell->y;
     } else {
-      x = width / 2 + (cell->x - baseX - halfWidth);
-      y = height / 2 + (cell->y - baseY - halfHeight);
+      x += cell->x - baseX - halfWidth;
+      y += cell->y - baseY - halfHeight;
     }
 
     const int clipX = x < 0 ? -x : 0;
@@ -3905,8 +3905,8 @@ void UICashEmotionSprBtn::PaintSelected() {
     const int sourceX = static_cast<int>(record.u0 * 256.0f + clipX);
     const int sourceY = static_cast<int>(record.v0 * 256.0f + clipY);
     surface->DrawSurface(
-      x < 0 ? 0 : x, y < 0 ? 0 : y, texture, sourceX < 0 ? 0 : sourceX, sourceY < 0 ? 0 : sourceY, drawWidth < 0 ? 0 : drawWidth,
-      drawHeight < 0 ? 0 : drawHeight, cell->mirrored, image->doubleWidth + 1, image->doubleHeight + 1, 1
+      x >= 0 ? x : 0, y >= 0 ? y : 0, texture, sourceX >= 0 ? sourceX : 0, sourceY >= 0 ? sourceY : 0, drawWidth >= 0 ? drawWidth : 0,
+      drawHeight >= 0 ? drawHeight : 0, cell->mirrored, image->doubleWidth + 1, image->doubleHeight + 1, 1
     );
   }
 
@@ -4047,13 +4047,13 @@ void UISpriteButton::Paint() {
   int baseY = 0;
   for (unsigned index = 0; index < frame.cells.size(); ++index) {
     SpriteAtlasRecord record{};
+    const std::uint32_t* palette = paletteRes ? paletteRes->palette : sprite->palette;
     const SpriteFrameCell& cell = frame.Cell(index);
     if (cell.image == -1) {
       continue;
     }
 
     const SpriteRleImage* image = sprite->images[cell.imageType][cell.image];
-    const std::uint32_t* palette = paletteRes ? paletteRes->palette : sprite->palette;
     CTexture* texture;
     if (cell.imageType == 0) {
       texture = g_renderer->atlas.Find(image, palette, record);
@@ -4091,7 +4091,7 @@ void UISpriteButton::Paint() {
     }
 
     const int clipX = x < 0 ? -x : 0;
-    const int left = x < 0 ? 0 : x;
+    const int left = x >= 0 ? x : 0;
     if (drawHeight + y > height) {
       drawHeight = height - y;
     }
@@ -4104,7 +4104,7 @@ void UISpriteButton::Paint() {
     if (this->geometry.surface) {
       const int top = static_cast<int>(sourceY);
       this->geometry.surface->DrawSurface(
-        left, y < 0 ? 0 : y, texture, sourceX < 0 ? 0 : sourceX, top < 0 ? 0 : top, drawWidth < 0 ? 0 : drawWidth, drawHeight < 0 ? 0 : drawHeight,
+        left, y >= 0 ? y : 0, texture, sourceX >= 0 ? sourceX : 0, top >= 0 ? top : 0, drawWidth >= 0 ? drawWidth : 0, drawHeight >= 0 ? drawHeight : 0,
         cell.mirrored, image->doubleWidth + 1, image->doubleHeight + 1, 0
       );
     }
