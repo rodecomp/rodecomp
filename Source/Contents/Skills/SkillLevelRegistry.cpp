@@ -1,7 +1,7 @@
 #include "Contents/Skills/SkillInfo.h"
 #include "Client/Application/Registry.h"
 #include "Client/Session/Session.h"
-#include "Contents/Skills/SkillLevelRegistry.h"
+#include "UI/Window/UIWindowMgr.h"
 #include "Script/LuaScript.h"
 
 #include <cstdio>
@@ -14,7 +14,7 @@ const char* g_skillUseLevelInfoKeySuffix = "\\SkillUseLevelInfo";
 
 // OFFSET: 0x00A92370
 // FUNCTION: fn_17177
-void LoadSkillUseLevelRegistry() {
+void UIWindowMgr::LoadSkillUseLevelRegistry() {
   char key[512];
   std::strcpy(key, g_subKey);
   std::strcat(key, g_skillUseLevelInfoKeySuffix);

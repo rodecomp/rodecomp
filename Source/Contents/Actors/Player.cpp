@@ -3923,7 +3923,7 @@ void CPlayer::SendMsg(
     float targetX;
     float targetZ;
     mode->CellCenter(static_cast<int>(b), static_cast<int>(c), targetX, targetZ);
-    const float heading = CRenderObject::Heading(this->render.position.x, this->render.position.z, targetX, targetZ);
+    const float heading = this->Heading(this->render.position.x, this->render.position.z, targetX, targetZ);
     const float facing = static_cast<float>((CPlayer::AngleToDirection(static_cast<float>(heading + 22.5)) + 4) * 45);
     int delta = static_cast<int>(this->render.angle - facing);
     if (delta < 0) {

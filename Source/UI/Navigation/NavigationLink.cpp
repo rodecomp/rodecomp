@@ -871,7 +871,7 @@ int CCreateLineInfo::LayoutLink(int x, std::string text, int type, LineTextStyle
 
   std::string display = std::get<1>(info);
   if (this->m_parent) {
-    display = RemoveTextColors(display.c_str());
+    display = this->m_parent->RemoveTextColors(display.c_str());
   }
 
   const std::string linkData = std::get<2>(info);

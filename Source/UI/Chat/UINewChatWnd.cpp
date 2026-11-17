@@ -463,7 +463,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       }
 
       UIChatEditCtrl* edit = this->m_chatEdit;
-      bool rejected = HasItemLinkTag(std::string(edit->Text()));
+      bool rejected = edit->HasItemLinkTag(std::string(edit->Text())) == 1;
       if (!rejected) {
         UIItemTagOnChat* tags = this->m_chatEdit->itemTags;
         if (tags != nullptr && tags->linkedText.size() != 0) {
@@ -483,7 +483,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
         text = this->m_chatEdit->LinkedText();
       }
       edit = this->m_chatEdit;
-      if (HasNaviLinkTag(std::string(edit->Text())) != 0) {
+      if (edit->HasNaviLinkTag(std::string(edit->Text())) == 1) {
         this->m_chatEdit->SetText("");
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CLOSE)), 0xFF, 0, 0, 0);
         return 0;

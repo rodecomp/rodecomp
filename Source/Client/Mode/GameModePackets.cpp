@@ -4735,7 +4735,7 @@ void CGameMode::ShowSpecialPopup(int popupId) {
   switch (popup->m_messageId) {
   case 0:
     for (auto description = popup->m_descriptions.begin(); description != popup->m_descriptions.end(); ++description) {
-      text = RemoveTextColors(description->c_str());
+      text = window.RemoveTextColors(description->c_str());
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), popup->m_color, 0, 0, 0);
     }
     break;
@@ -4746,7 +4746,7 @@ void CGameMode::ShowSpecialPopup(int popupId) {
     [[fallthrough]];
   case 2:
     for (auto description = popup->m_descriptions.begin(); description != popup->m_descriptions.end(); ++description) {
-      text = RemoveTextColors(description->c_str());
+      text = window.RemoveTextColors(description->c_str());
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.c_str()), popup->m_color, 0, 0, 0);
     }
     if (UIWindow* popupWindow = g_windowMgr.EnsureWindow(WID_BALLOONOPENBTN)) {

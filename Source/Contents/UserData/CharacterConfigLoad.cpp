@@ -2,7 +2,6 @@
 #include "Contents/Async/AsyncWorkMgr.h"
 #include "Contents/UserData/CharacterLinkedUserDataMgr.h"
 #include "Contents/Configuration/ServiceOptions.h"
-#include "Contents/Skills/SkillLevelRegistry.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Async/AsyncDiagnostic.h"
 
@@ -45,7 +44,7 @@ void CCharacterLinkedUserDataMgr::CompleteLoad(
     break;
   }
   case 4:
-    LoadSkillUseLevelRegistry();
+    g_windowMgr.LoadSkillUseLevelRegistry();
     g_session.SetOption(7, 1, 0);
     g_session.SetOption(8, 1, 0);
     this->m_loaded = true;

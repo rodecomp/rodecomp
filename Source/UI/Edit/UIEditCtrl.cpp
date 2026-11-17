@@ -516,13 +516,13 @@ std::string UIEditCtrl3::TakePendingText() {
 
 // OFFSET: 0x008590E0
 // FUNCTION: fn_10772
-bool HasItemLinkTag(const std::string& text) {
+int UIEditCtrl::HasItemLinkTag(const std::string& text) {
   return text.find(g_itemLinkOpen) != std::string::npos || text.find(g_itemLinkClose) != std::string::npos;
 }
 
 // OFFSET: 0x00859170
 // FUNCTION: fn_10773
-int __stdcall HasNaviLinkTag(const std::string& text) {
+int UIEditCtrl::HasNaviLinkTag(const std::string& text) {
   return text.find(g_editNaviTagBegin) != std::string::npos || text.find(g_editNaviTagEnd) != std::string::npos;
 }
 

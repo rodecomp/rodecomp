@@ -47,7 +47,7 @@ static const std::string g_questTagEnd = "</QUEST>";
 
 // OFFSET: 0x00A7CA90
 // FUNCTION: fn_16949
-void UITextViewer::ExtractNavigationTextLinks(const std::string& text, std::vector<TextLink>& links) {
+void UIWindow::ExtractNavigationTextLinks(const std::string& text, std::vector<TextLink>& links) {
   ExtractTextLinks(text, g_naviTagBegin, g_naviTagEnd, links);
 }
 
@@ -59,7 +59,7 @@ static const std::string g_tipBoxTagEnd = "</TIPBOX>";
 
 // OFFSET: 0x00A7D690
 // FUNCTION: fn_16951
-void UITextViewer::ExtractTipBoxTextLinks(const std::string& text, std::vector<TextLink>& links) {
+void UIWindow::ExtractTipBoxTextLinks(const std::string& text, std::vector<TextLink>& links) {
   ExtractTextLinks(text, g_tipBoxTagBegin, g_tipBoxTagEnd, links);
 }
 
@@ -71,7 +71,7 @@ static const std::string g_urlTagEnd = "</URL>";
 
 // OFFSET: 0x00A7D6B0
 // FUNCTION: fn_16952
-void UITextViewer::ExtractUrlTextLinks(const std::string& text, std::vector<TextLink>& links) {
+void UIWindow::ExtractUrlTextLinks(const std::string& text, std::vector<TextLink>& links) {
   ExtractTextLinks(text, g_urlTagBegin, g_urlTagEnd, links);
 }
 
@@ -114,7 +114,7 @@ std::string __stdcall ExpandTextEscapes(const std::string& text) {
 
 // OFFSET: 0x00A7EDC0
 // FUNCTION: fn_16961
-std::string RemoveTextColors(const char* text) {
+std::string UIWindow::RemoveTextColors(const char* text) {
   const char* end = text + std::char_traits<char>::length(text);
   const char* current = text;
   std::string result;
@@ -135,7 +135,7 @@ std::string RemoveTextColors(const char* text) {
 
 // OFFSET: 0x00A7F660
 // FUNCTION: fn_16966
-const std::string __stdcall DisplayTextTag(const std::string& source, const std::string& begin, const std::string& end) {
+const std::string UIWindow::DisplayTextTag(const std::string& source, const std::string& begin, const std::string& end) {
   std::string text = source;
   int position = static_cast<int>(text.find(begin));
 
@@ -168,37 +168,37 @@ const std::string __stdcall DisplayTextTag(const std::string& source, const std:
 
 // OFFSET: 0x00A7F510
 // FUNCTION: fn_16963
-const std::string __stdcall DisplayItemTextTag(const std::string& text) {
+const std::string UIWindow::DisplayItemTextTag(const std::string& text) {
   return DisplayTextTag(text, g_itemTagBegin, g_itemTagEnd);
 }
 
 // OFFSET: 0x00A7F580
 // FUNCTION: fn_16964
-const std::string __stdcall DisplayNavigationTextTag(const std::string& text) {
+const std::string UIWindow::DisplayNavigationTextTag(const std::string& text) {
   return DisplayTextTag(text, g_naviTagBegin, g_naviTagEnd);
 }
 
 // OFFSET: 0x00A7F5F0
 // FUNCTION: fn_16965
-const std::string __stdcall DisplayQuestTextTag(const std::string& text) {
+const std::string UIWindow::DisplayQuestTextTag(const std::string& text) {
   return DisplayTextTag(text, g_questTagBegin, g_questTagEnd);
 }
 
 // OFFSET: 0x00A7FE50
 // FUNCTION: fn_16967
-const std::string __stdcall DisplayTipBoxTextTag(const std::string& text) {
+const std::string UIWindow::DisplayTipBoxTextTag(const std::string& text) {
   return DisplayTextTag(text, g_tipBoxTagBegin, g_tipBoxTagEnd);
 }
 
 // OFFSET: 0x00A7FEC0
 // FUNCTION: fn_16968
-const std::string __stdcall DisplayUrlTextTag(const std::string& text) {
+const std::string UIWindow::DisplayUrlTextTag(const std::string& text) {
   return DisplayTextTag(text, g_urlTagBegin, g_urlTagEnd);
 }
 
 // OFFSET: 0x00A7EF40
 // FUNCTION: fn_16962
-const std::string RemoveTextLinkInfo(const std::string& source) {
+const std::string UIWindow::RemoveTextLinkInfo(const std::string& source) {
   std::string text = source;
   int position = static_cast<int>(text.find(g_infoTagBegin));
 
@@ -226,7 +226,7 @@ const std::string RemoveTextLinkInfo(const std::string& source) {
 
 // OFFSET: 0x00A7CAB0
 // FUNCTION: fn_16950
-void UITextViewer::ExtractTextLinks(const std::string& source, const std::string& begin, const std::string& end, std::vector<TextLink>& links) {
+void UIWindow::ExtractTextLinks(const std::string& source, const std::string& begin, const std::string& end, std::vector<TextLink>& links) {
   std::string text = source;
   auto position = text.find(begin);
 

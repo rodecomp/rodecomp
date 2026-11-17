@@ -27,7 +27,7 @@ static_assert(offsetof(tagRECT, bottom) == 0xC);
 
 // OFFSET: 0x00CA9580
 // FUNCTION: fn_21007
-float __stdcall CRenderObject::Heading(float x, float z, float targetX, float targetZ) {
+float CRenderObject::Heading(float x, float z, float targetX, float targetZ) {
   const float deltaX = targetX - x;
   const float deltaZ = targetZ - z;
   float angle = (static_cast<float>(std::atan2(static_cast<double>(deltaX), static_cast<double>(-deltaZ))) / 3.141592f) * 180.0f;

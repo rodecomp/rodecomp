@@ -252,7 +252,7 @@ void UIWindow::DrawOutlinedColoredText(
 
 // OFFSET: 0x00A87300
 // FUNCTION: fn_17062
-std::string StripColorCodes(const char* text, unsigned bytes) {
+std::string UIWindow::StripColorCodes(const char* text, unsigned bytes) {
   std::string result;
   const char* const end = text + bytes;
   const char* const marker = text + TextContext::Marker(text, static_cast<unsigned>(end - text));
@@ -285,32 +285,3 @@ bool ContainsValue(const std::deque<UIWindow*>& values, UIWindow* const& value) 
   return values.end() != std::find(values.begin(), values.end(), value);
 }
 
-// INLINED
-__declspec(noinline) const char* SegmentEnd(const char* text, const char* end) {
-  if (text == nullptr) {
-    return nullptr;
-  }
-
-  const char* current = text;
-
-  while (current < end) {
-    if (*current == '^' && end - current >= 6) {
-      bool color = true;
-
-      for (int index = 1; index <= 6; ++index) {
-        if (!g_colorHexDigit[current[index]]) {
-          color = false;
-          break;
-        }
-      }
-
-      if (color) {
-        return current;
-      }
-    }
-
-    current = CharNextExA(static_cast<WORD>(g_textCodePage), current, 0);
-  }
-
-  return current;
-}

@@ -11401,7 +11401,7 @@ void CRagEffect::FireArrow() {
     arrow.deltaPos2.z = static_cast<float>(spreadZ + 15);
     const int aimZ = ClampedRandom(4);
     const int aimX = ClampedRandom(4);
-    const float heading = CRenderObject::Heading(
+    const float heading = this->Heading(
       this->state.lastPrim->state.deltaPos2.x, this->state.lastPrim->state.deltaPos2.z, static_cast<float>(aimX - 2), static_cast<float>(aimZ - 2)
     );
     this->state.lastPrim->state.longitude = -heading;
@@ -11409,7 +11409,7 @@ void CRagEffect::FireArrow() {
     const float dx = std::fabs(this->state.lastPrim->state.deltaPos2.x);
     const float dz = std::fabs(this->state.lastPrim->state.deltaPos2.z);
     const float run = SquareRoot(dx * dx + dz * dz);
-    const float pitch = CRenderObject::Heading(-std::fabs(this->state.lastPrim->state.deltaPos2.y), run, 0.0f, 0.0f);
+    const float pitch = this->state.lastPrim->Heading(-std::fabs(this->state.lastPrim->state.deltaPos2.y), run, 0.0f, 0.0f);
     this->state.lastPrim->state.latitude = pitch;
     this->state.latitude = pitch;
     EffectPrimitiveState& tilt = this->state.lastPrim->state;
@@ -12344,7 +12344,7 @@ void CRagEffect::IceArrow() {
 
       const int aimZ = ClampedRandom(4);
       const int aimX = ClampedRandom(4);
-      const float angleY = -CRenderObject::Heading(
+      const float angleY = -this->Heading(
         this->state.lastPrim->state.deltaPos2.x,
         this->state.lastPrim->state.deltaPos2.z,
         static_cast<float>(aimX - 2),
@@ -12356,7 +12356,7 @@ void CRagEffect::IceArrow() {
       const float dx = std::fabs(this->state.lastPrim->state.deltaPos2.x);
       const float dz = std::fabs(this->state.lastPrim->state.deltaPos2.z);
       const float distXZ = SquareRoot(dx * dx + dz * dz);
-      const float angleX = CRenderObject::Heading(-std::fabs(this->state.lastPrim->state.deltaPos2.y), distXZ, 0.0f, 0.0f);
+      const float angleX = this->state.lastPrim->Heading(-std::fabs(this->state.lastPrim->state.deltaPos2.y), distXZ, 0.0f, 0.0f);
       this->state.lastPrim->state.latitude = angleX;
       this->state.latitude = angleX;
 

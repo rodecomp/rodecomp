@@ -810,7 +810,8 @@ public:
   bool ProcessShortcutKey(int action);
   bool ProcessKeyDown(int key, int keyData, int pressed);
   void ShowWaitDBSaveWindow();
-  void CloseWaitDBSaveWindow();
+  void LoadSkillUseLevelRegistry();
+  __declspec(noinline) void CloseWaitDBSaveWindow();
   void SendEmotionHotkey(int index);
 };
 

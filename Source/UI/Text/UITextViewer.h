@@ -64,10 +64,6 @@ private:
   bool AddQuestLinks(std::string text, unsigned addedLines);
   void AddTipLinks(std::string text, unsigned addedLines);
   void SplitTextLinkArguments(std::string text, UITextButton* button);
-  void ExtractTextLinks(const std::string& source, const std::string& begin, const std::string& end, std::vector<TextLink>& links);
-  void ExtractNavigationTextLinks(const std::string& text, std::vector<TextLink>& links);
-  void ExtractTipBoxTextLinks(const std::string& text, std::vector<TextLink>& links);
-  void ExtractUrlTextLinks(const std::string& text, std::vector<TextLink>& links);
   void AppendText(char* text, int width, int carriageReturns, int pixels);
   void Activate(UITextButton* button, int id);
 };

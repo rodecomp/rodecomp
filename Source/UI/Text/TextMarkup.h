@@ -14,14 +14,6 @@ struct TextLink {
 };
 
 std::string __stdcall ExpandTextEscapes(const std::string& text);
-std::string RemoveTextColors(const char* text);
-const std::string __stdcall DisplayTextTag(const std::string& source, const std::string& begin, const std::string& end);
-const std::string __stdcall DisplayItemTextTag(const std::string& text);
-const std::string __stdcall DisplayNavigationTextTag(const std::string& text);
-const std::string __stdcall DisplayQuestTextTag(const std::string& text);
-const std::string __stdcall DisplayTipBoxTextTag(const std::string& text);
-const std::string __stdcall DisplayUrlTextTag(const std::string& text);
-const std::string RemoveTextLinkInfo(const std::string& source);
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(TextLink) == 60);

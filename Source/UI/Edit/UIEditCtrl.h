@@ -56,6 +56,8 @@ public:
   void MoveCandidateWindow(int x);
   void MoveReadingWindow(int x);
   bool DecodeItemLink(const std::vector<int>& values, ITEM_INFO& item);
+  int HasItemLinkTag(const std::string& text);
+  int HasNaviLinkTag(const std::string& text);
   // INLINED
   void SetTooltip(const char* text) {
     if (text) {
@@ -256,9 +258,6 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void SetText(const char* value) override;
 };
-
-bool HasItemLinkTag(const std::string& text);
-int __stdcall HasNaviLinkTag(const std::string& text);
 
 class UIShowAndEditTimeCtrl : public UIWindow {
 public:

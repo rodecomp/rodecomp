@@ -56,7 +56,7 @@ public:
   virtual std::uint32_t GetStateFlags() {
     return 0;
   }
-  static float __stdcall Heading(float x, float z, float targetX, float targetZ);
+  float Heading(float x, float z, float targetX, float targetZ);
   void Face(float x, float z);
   float CalcDist(float x, float z) const;
   float CalcDist(float x, float y, float z) const;

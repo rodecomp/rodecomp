@@ -4629,7 +4629,7 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
   case UM_COMMAND:
     switch (a) {
     case ID_OK: {
-      if (HasItemLinkTag(std::string(this->m_edit->Text())) == true) {
+      if (this->m_edit->HasItemLinkTag(std::string(this->m_edit->Text())) == 1) {
         this->m_edit->SetText("");
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CLOSE)), 0xFF, 0, 0, 0);
         return 0;
