@@ -1211,42 +1211,41 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
       g_modeMgr.GetGameMode()->scene->RemoveObject(this->statusEffects[10]);
     }
     break;
-  case AM_MSGEFFECT_DEAD:
-    for (auto it = this->msgEffectList.begin(); it != this->msgEffectList.end(); ++it) {
-      if (*it == sender) {
-        CGameObject* const effect = *it;
-        if (this->statusEffects[1] == effect) {
-          this->statusEffects[1] = 0;
-        } else if (this->statusEffects[0] == effect) {
-          this->statusEffects[0] = 0;
-        } else if (this->statusEffects[2] == effect) {
-          this->statusEffects[2] = 0;
-        } else if (this->statusEffects[3] == effect) {
-          this->statusEffects[3] = 0;
-        } else if (this->statusEffects[4] == effect) {
-          this->statusEffects[4] = 0;
-        } else if (this->statusEffects[5] == effect) {
-          this->statusEffects[5] = 0;
-        } else if (this->statusEffects[6] == effect) {
-          this->statusEffects[6] = 0;
-        } else if (this->statusEffects[8] == effect) {
-          this->statusEffects[8] = 0;
-        } else if (this->statusEffects[9] == effect) {
-          this->statusEffects[9] = 0;
-        } else if (this->statusEffects[7] == effect) {
-          this->statusEffects[7] = 0;
-        } else if (this->statusEffects[10] == effect) {
-          this->statusEffects[10] = 0;
-        } else if (this->statusEffects[11] == effect) {
-          this->statusEffects[11] = 0;
-        } else if (this->statusEffects[12] == effect) {
-          this->statusEffects[12] = 0;
-        }
-        this->msgEffectList.erase(it);
-        break;
+  case AM_MSGEFFECT_DEAD: {
+    const auto it = std::find(this->msgEffectList.begin(), this->msgEffectList.end(), sender);
+    if (it != this->msgEffectList.end()) {
+      CGameObject* const effect = *it;
+      if (this->statusEffects[1] == effect) {
+        this->statusEffects[1] = 0;
+      } else if (this->statusEffects[0] == effect) {
+        this->statusEffects[0] = 0;
+      } else if (this->statusEffects[2] == effect) {
+        this->statusEffects[2] = 0;
+      } else if (this->statusEffects[3] == effect) {
+        this->statusEffects[3] = 0;
+      } else if (this->statusEffects[4] == effect) {
+        this->statusEffects[4] = 0;
+      } else if (this->statusEffects[5] == effect) {
+        this->statusEffects[5] = 0;
+      } else if (this->statusEffects[6] == effect) {
+        this->statusEffects[6] = 0;
+      } else if (this->statusEffects[8] == effect) {
+        this->statusEffects[8] = 0;
+      } else if (this->statusEffects[9] == effect) {
+        this->statusEffects[9] = 0;
+      } else if (this->statusEffects[7] == effect) {
+        this->statusEffects[7] = 0;
+      } else if (this->statusEffects[10] == effect) {
+        this->statusEffects[10] = 0;
+      } else if (this->statusEffects[11] == effect) {
+        this->statusEffects[11] = 0;
+      } else if (this->statusEffects[12] == effect) {
+        this->statusEffects[12] = 0;
       }
+      this->msgEffectList.erase(it);
     }
     break;
+  }
   case AM_SET_TARGET_AID:
     this->hitTargetAid = static_cast<std::uint32_t>(b);
     break;
@@ -1275,7 +1274,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     if (!g_serviceOptions.Get(TT_MISS_EFFECT_ON_OFF)) {
       break;
     }
-    CMsgEffect* effect = mode->SpawnDamageMsgEffect(&this->render.position, static_cast<int>(b), this->render.accountId);
+    CGameObject* effect = mode->SpawnDamageMsgEffect(&this->render.position, static_cast<int>(b), this->render.accountId);
     this->msgEffectList.push_back(effect);
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
     ++this->damageNumberCount;
@@ -1285,7 +1284,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     this->LaunchEffect(EF_GUARD, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case AM_MAKE_LUCKY: {
-    CMsgEffect* effect = mode->SpawnMsgEffect(0xD, &this->render.position, this->render.accountId, true);
+    CGameObject* effect = mode->SpawnMsgEffect(0xD, &this->render.position, this->render.accountId, true);
     this->msgEffectList.push_back(effect);
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
     break;
@@ -1295,7 +1294,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
       break;
     }
     if (!g_cashEmotionMgr->IsChatProhibitEmotion(static_cast<int>(c))) {
-      CMsgEffect* effect = mode->SpawnCashEmotion(reinterpret_cast<int>(&this->render.position), static_cast<int>(b), static_cast<int>(c), this->render.accountId);
+      CGameObject* effect = mode->SpawnCashEmotion(reinterpret_cast<int>(&this->render.position), static_cast<int>(b), static_cast<int>(c), this->render.accountId);
       if (effect != nullptr) {
         this->msgEffectList.push_back(effect);
         effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
@@ -1332,7 +1331,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     if (g_session.IsBabyJob(this->GetEffectiveJob(-1))) {
       baby = 1;
     }
-    CMsgEffect* effect = mode->SpawnMsgEffect(effectIds[row][baby], &this->render.position, this->render.accountId, true);
+    CGameObject* effect = mode->SpawnMsgEffect(effectIds[row][baby], &this->render.position, this->render.accountId, true);
     this->msgEffectList.push_back(effect);
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
     this->statusEffects[1] = effect;
@@ -1379,10 +1378,10 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
       effectId = 0xE;
       break;
     }
-    CMsgEffect* effect = mode->SpawnMsgEffect(effectId, &this->render.position, this->render.accountId, true);
+    CGameObject* effect = mode->SpawnMsgEffect(effectId, &this->render.position, this->render.accountId, true);
     this->msgEffectList.push_back(effect);
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
-    effect->SetAnimationSpeed(6.0f);
+    static_cast<CMsgEffect*>(effect)->SetAnimationSpeed(6.0f);
     this->statusEffects[0] = effect;
     break;
   }
@@ -1397,36 +1396,43 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     if (this->statusEffects[1] != 0) {
       break;
     }
-    int effectId;
     switch (this->GetEffectiveJob(-1)) {
     case JT_RANGER:
     case JT_RANGER_H:
     case JT_WOLF_RANGER:
-    case JT_WOLF_RANGER_H:
-      effectId = 0x23;
+    case JT_WOLF_RANGER_H: {
+      CGameObject* effect = mode->SpawnMsgEffect(0x23, &this->render.position, this->render.accountId, true);
+      this->msgEffectList.push_back(effect);
+      effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
+      this->statusEffects[1] = effect;
       break;
+    }
     case JT_RANGER_B:
-    case JT_WOLF_RANGER_B:
-      effectId = 0x2A;
+    case JT_WOLF_RANGER_B: {
+      CGameObject* effect = mode->SpawnMsgEffect(0x2A, &this->render.position, this->render.accountId, true);
+      this->msgEffectList.push_back(effect);
+      effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
+      this->statusEffects[1] = effect;
       break;
+    }
     case JT_WINDHAWK:
-    case JT_WOLF_WINDHAWK:
-      effectId = 0x46;
+    case JT_WOLF_WINDHAWK: {
+      CGameObject* effect = mode->SpawnMsgEffect(0x46, &this->render.position, this->render.accountId, true);
+      this->msgEffectList.push_back(effect);
+      effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
+      this->statusEffects[1] = effect;
       break;
+    }
     default:
       return;
     }
-    CMsgEffect* effect = mode->SpawnMsgEffect(effectId, &this->render.position, this->render.accountId, true);
-    this->msgEffectList.push_back(effect);
-    effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
-    this->statusEffects[1] = effect;
     break;
   }
   case AM_MAKE_PKEFFECT: {
     if (this->statusEffects[2] != 0) {
       break;
     }
-    CMsgEffect* effect = mode->SpawnMsgEffect(2, &this->render.position, this->render.accountId, true);
+    CGameObject* effect = mode->SpawnMsgEffect(2, &this->render.position, this->render.accountId, true);
     this->msgEffectList.push_back(effect);
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
     this->statusEffects[2] = effect;
@@ -1442,7 +1448,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     if (this->statusEffects[3] != 0) {
       break;
     }
-    CMsgEffect* effect = mode->SpawnMsgEffect(3, &this->render.position, this->render.accountId, visible);
+    CGameObject* effect = mode->SpawnMsgEffect(3, &this->render.position, this->render.accountId, visible);
     this->msgEffectList.push_back(effect);
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
     this->statusEffects[3] = effect;
@@ -1459,7 +1465,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     if (this->statusEffects[4] != 0) {
       break;
     }
-    CMsgEffect* effect = mode->SpawnMsgEffect(6, &this->render.position, this->render.accountId, true);
+    CGameObject* effect = mode->SpawnMsgEffect(6, &this->render.position, this->render.accountId, true);
     this->msgEffectList.push_back(effect);
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
     this->statusEffects[4] = effect;
@@ -1475,7 +1481,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     if (this->statusEffects[5] != 0) {
       break;
     }
-    CMsgEffect* effect = mode->SpawnMsgEffect(7, &this->render.position, this->render.accountId, true);
+    CGameObject* effect = mode->SpawnMsgEffect(7, &this->render.position, this->render.accountId, true);
     this->msgEffectList.push_back(effect);
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
     this->statusEffects[5] = effect;
@@ -1493,7 +1499,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     if (this->statusEffects[6] != 0) {
       break;
     }
-    CMsgEffect* effect = mode->SpawnMsgEffect(8, &this->render.position, this->render.accountId, true);
+    CGameObject* effect = mode->SpawnMsgEffect(8, &this->render.position, this->render.accountId, true);
     this->msgEffectList.push_back(effect);
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
     this->statusEffects[6] = effect;
@@ -1515,7 +1521,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     if (this->statusEffects[7] != 0) {
       break;
     }
-    CMsgEffect* effect = mode->SpawnMsgEffect(9, &this->render.position, this->render.accountId, true);
+    CGameObject* effect = mode->SpawnMsgEffect(9, &this->render.position, this->render.accountId, true);
     this->msgEffectList.push_back(effect);
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
     this->statusEffects[7] = effect;
@@ -1531,7 +1537,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     if (this->statusEffects[8] != 0) {
       break;
     }
-    CMsgEffect* effect = mode->SpawnMsgEffect(0xA, &this->render.position, this->render.accountId, true);
+    CGameObject* effect = mode->SpawnMsgEffect(0xA, &this->render.position, this->render.accountId, true);
     this->msgEffectList.push_back(effect);
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
     this->statusEffects[8] = effect;
@@ -1547,7 +1553,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     if (this->statusEffects[9] != 0) {
       break;
     }
-    CMsgEffect* effect = mode->SpawnMsgEffect(0xB, &this->render.position, this->render.accountId, true);
+    CGameObject* effect = mode->SpawnMsgEffect(0xB, &this->render.position, this->render.accountId, true);
     this->msgEffectList.push_back(effect);
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
     this->statusEffects[9] = effect;
@@ -1560,25 +1566,25 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     }
     break;
   case AM_MAKE_SMOKE_FFECT: {
-    CMsgEffect* effect = mode->SpawnMsgEffect(5, &this->render.position, this->render.accountId, true);
+    CGameObject* effect = mode->SpawnMsgEffect(5, &this->render.position, this->render.accountId, true);
     this->msgEffectList.push_back(effect);
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
     break;
   }
   case AM_MAKE_ICEBREAKE_FFECT: {
-    CMsgEffect* effect = mode->SpawnMsgEffect(4, &this->render.position, this->render.accountId, visible);
+    CGameObject* effect = mode->SpawnMsgEffect(4, &this->render.position, this->render.accountId, visible);
     this->msgEffectList.push_back(effect);
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
     break;
   }
   case AM_MAKE_CRITICAL_EFFECT: {
-    CMsgEffect* effect = mode->SpawnMsgEffect(0xC, &this->render.position, this->render.accountId, true);
+    CGameObject* effect = mode->SpawnMsgEffect(0xC, &this->render.position, this->render.accountId, true);
     this->msgEffectList.push_back(effect);
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
     break;
   }
   case 131: {
-    CMsgEffect* effect = mode->SpawnMsgEffect(0x16, &this->render.position, this->render.accountId, true);
+    CGameObject* effect = mode->SpawnMsgEffect(0x16, &this->render.position, this->render.accountId, true);
     this->msgEffectList.push_back(effect);
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
     break;
@@ -1618,7 +1624,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     if (this->statusEffects[11] != 0) {
       break;
     }
-    CMsgEffect* effect = mode->SpawnMsgEffect(0x1F, &this->render.position, this->render.accountId, true);
+    CGameObject* effect = mode->SpawnMsgEffect(0x1F, &this->render.position, this->render.accountId, true);
     this->msgEffectList.push_back(effect);
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
     this->statusEffects[11] = effect;
@@ -1634,7 +1640,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     if (this->statusEffects[12] != 0) {
       break;
     }
-    CMsgEffect* effect = mode->SpawnMsgEffect(0x43, &this->render.position, this->render.accountId, true);
+    CGameObject* effect = mode->SpawnMsgEffect(0x43, &this->render.position, this->render.accountId, true);
     this->msgEffectList.push_back(effect);
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
     this->statusEffects[12] = effect;
@@ -2199,11 +2205,11 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     break;
   case AM_CHAT: {
     std::string text(reinterpret_cast<const char*>(static_cast<std::intptr_t>(b)));
-    if (g_windowMgr.chatWnd != nullptr) {
-      text = g_windowMgr.chatWnd->ConvertChat(std::string(reinterpret_cast<const char*>(static_cast<std::intptr_t>(b))));
+    UINewChatWnd* const chatWnd = g_windowMgr.chatWnd;
+    if (chatWnd != nullptr) {
+      text = chatWnd->ConvertChat(std::string(reinterpret_cast<const char*>(static_cast<std::intptr_t>(b))));
     }
-    std::string linked = g_navigationLinkParser->DisplayNavigationLink(text);
-    text = std::move(linked);
+    text = g_navigationLinkParser->DisplayNavigationLink(text);
     const char* message = reinterpret_cast<const char*>(static_cast<std::intptr_t>(b));
     if (text.size() != 0) {
       message = text.c_str();
@@ -2569,9 +2575,9 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
           this->LaunchEffect(EF_BLACKDEVIL, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
           g_soundMgr->PlayWave("effect\\_blind.wav", 0.0f, -100.0f, 0.0f, 250, 40, 1.0f, 0);
         }
-        for (int id = 0x1DB; id < 0x1E5; ++id) {
-          if (this->HasId(id) == true) {
-            this->SendMsg(nullptr, AM_DELETE_EFFECT, id, 0, 0, 0, 0, 0);
+        for (int i = 0; i < 10; ++i) {
+          if (this->HasId(0x1DB + i) == true) {
+            this->SendMsg(nullptr, AM_DELETE_EFFECT, 0x1DB + i, 0, 0, 0, 0, 0);
           }
         }
         this->LaunchEffect(effectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -3062,9 +3068,9 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
       if (c == 1) {
         const std::int64_t level = d;
         if (level <= 10 && level > 0) {
-          for (int id = 0x514; id < 0x51E; ++id) {
-            g_effectMgr->Retire(this->render.accountId, id);
-            g_effectMgr->Retire(this->render.accountId, id + 0xA7);
+          for (int i = 0; i < 10; ++i) {
+            g_effectMgr->Retire(this->render.accountId, 0x514 + i);
+            g_effectMgr->Retire(this->render.accountId, 0x5BB + i);
           }
           if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
             g_effectMgr->Spawn(this->render.accountId, static_cast<int>(d) + 0x5BA, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -3073,9 +3079,9 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
           }
         }
       } else {
-        for (int id = 0x514; id < 0x51E; ++id) {
-          g_effectMgr->Retire(this->render.accountId, id);
-          g_effectMgr->Retire(this->render.accountId, id + 0xA7);
+        for (int i = 0; i < 10; ++i) {
+          g_effectMgr->Retire(this->render.accountId, 0x514 + i);
+          g_effectMgr->Retire(this->render.accountId, 0x5BB + i);
         }
       }
       break;
