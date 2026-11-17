@@ -202,8 +202,7 @@ void UIItemReformWnd_DetailMsg::Paint() {
 void UIItemReformWnd_Item::Paint() {
   this->ClearSurface(0xFFFF00FF);
   if (this->item) {
-    ResourceMgr& resources = ResourceMgr::Instance();
-    this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(resources.Load(Resolve(FormatOwnedString("유저인터페이스\\item\\%s.bmp", this->item->ResourcePath()).c_str()))), true);
+    this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\item\\%s.bmp", this->item->ResourcePath()).c_str()))), true);
   }
 }
 
