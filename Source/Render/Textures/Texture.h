@@ -22,11 +22,9 @@ public:
   virtual void UploadSprite(int x, int y, int width, int height, const SpriteRleImage* image, const std::uint32_t* palette) = 0;
   virtual bool CopyTexture(CTexture* source, int sourceX, int sourceY, int sourceWidth, int sourceHeight, int x, int y, int width, int height) = 0;
   virtual bool Create(int width, int height, int format) = 0;
+  void Draw(int x, int y, int width, int height, std::uint32_t color) override;
+  void Stretch(int x, int y, int width, int height) override;
 
-  void DrawTo(
-    RenderPrimitivePool& pool, RenderQueues& queues, int x, int y, int width, int height, std::uint32_t color, bool depthAlpha, float depthStart, float depthEnd
-  );
-  void StretchTo(RenderPrimitivePool& pool, RenderQueues& queues, int x, int y, int width, int height, bool depthAlpha, float depthStart, float depthEnd);
   void StretchTintedTo(
     RenderPrimitivePool& pool, RenderQueues& queues, int x, int y, int width, int height, std::uint32_t color, bool depthAlpha, float depthStart, float depthEnd
   );

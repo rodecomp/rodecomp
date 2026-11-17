@@ -22,8 +22,6 @@ public:
   void ReleaseDC(HDC dc) override;
   void Upload(int x, int y, int width, int height, const std::uint32_t* pixels, int option, int sourceWidth) override;
   void Fill(const RECT* rectangle, std::uint32_t color) override;
-  void Draw(int x, int y, int width, int height, std::uint32_t color) override;
-  void Stretch(int x, int y, int width, int height) override;
   void Update(const RECT* rectangle) override;
   void UploadSprite(int x, int y, int width, int height, const SpriteRleImage* image, const std::uint32_t* palette) override;
   bool CopyTexture(CTexture* source, int sourceX, int sourceY, int sourceWidth, int sourceHeight, int x, int y, int width, int height) override;

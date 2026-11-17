@@ -103,45 +103,39 @@ namespace {
 
   // INLINED
   __forceinline void
-  SetQuad(RenderPrimitive* primitive, CTexture* texture, int x, int y, int width, int height, std::uint32_t color, float u0, float v0, float u1, float v1) {
+  SetQuad(RenderPrimitive* primitive, CTexture* texture, int x, int y, int right, int bottom, std::uint32_t color, float u0, float v0, float u1, float v1) {
     constexpr float z = 0.00001f;
     constexpr float rhw = 0.99999f;
-    const float right = static_cast<float>(static_cast<std::int32_t>(static_cast<std::uint32_t>(x) + width));
-    const float bottom = static_cast<float>(static_cast<std::int32_t>(static_cast<std::uint32_t>(y) + height));
 
     primitive->texture = texture;
     primitive->quad[0] = QuadVertex(static_cast<float>(x), static_cast<float>(y), z, rhw, color, 0xFFFFFFFF, u0, v0);
-    primitive->quad[1] = QuadVertex(right, static_cast<float>(y), z, rhw, color, 0xFFFFFFFF, u1, v0);
-    primitive->quad[2] = QuadVertex(static_cast<float>(x), bottom, z, rhw, color, 0xFFFFFFFF, u0, v1);
-    primitive->quad[3] = QuadVertex(right, bottom, z, rhw, color, 0xFFFFFFFF, u1, v1);
+    primitive->quad[1] = QuadVertex(static_cast<float>(right), static_cast<float>(y), z, rhw, color, 0xFFFFFFFF, u1, v0);
+    primitive->quad[2] = QuadVertex(static_cast<float>(x), static_cast<float>(bottom), z, rhw, color, 0xFFFFFFFF, u0, v1);
+    primitive->quad[3] = QuadVertex(static_cast<float>(right), static_cast<float>(bottom), z, rhw, color, 0xFFFFFFFF, u1, v1);
   }
 }
 
 // OFFSET: 0x00544410
 // FUNCTION: fn_01817
-void CTexture::DrawTo(
-  RenderPrimitivePool& pool, RenderQueues& queues, int x, int y, int width, int height, std::uint32_t color, bool depthAlpha, float depthStart, float depthEnd
-) {
+void CTexture::Draw(int x, int y, int width, int height, std::uint32_t color) {
   const float u0 = g_textureOffsetX / static_cast<float>(this->m_textureWidth);
   const float v0 = g_textureOffsetY / static_cast<float>(this->m_textureHeight);
   const float u1 = (static_cast<float>(width) + g_textureOffsetX) / static_cast<float>(this->m_textureWidth);
   const float v1 = (static_cast<float>(height) + g_textureOffsetY) / static_cast<float>(this->m_textureHeight);
-  RenderPrimitive* primitive = pool.Acquire();
-  SetQuad(primitive, this, x, y, width, height, color, u0, v0, u1, v1);
+  RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
+  SetQuad(primitive, this, x, y, x + width, y + height, color, u0, v0, u1, v1);
   g_renderer->Submit(primitive, 513);
 }
 
 // OFFSET: 0x00544610
 // FUNCTION: fn_01818
-void CTexture::StretchTo(
-  RenderPrimitivePool& pool, RenderQueues& queues, int x, int y, int width, int height, bool depthAlpha, float depthStart, float depthEnd
-) {
+void CTexture::Stretch(int x, int y, int width, int height) {
   const float u0 = g_textureOffsetX / static_cast<float>(this->m_textureWidth);
   const float v0 = g_textureOffsetY / static_cast<float>(this->m_textureHeight);
   const float u1 = (static_cast<float>(this->m_width) + g_textureOffsetX) / static_cast<float>(this->m_textureWidth);
   const float v1 = (static_cast<float>(this->m_height) + g_textureOffsetY) / static_cast<float>(this->m_textureHeight);
-  RenderPrimitive* primitive = pool.Acquire();
-  SetQuad(primitive, this, x, y, width, height, 0xFFFFFFFF, u0, v0, u1, v1);
+  RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
+  SetQuad(primitive, this, x, y, x + width, y + height, 0xFFFFFFFF, u0, v0, u1, v1);
   g_renderer->Submit(primitive, 513);
 }
 
