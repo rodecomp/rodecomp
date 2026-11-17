@@ -784,7 +784,8 @@ void UIMinimapZoomWnd::OnCreate(int, int) {
   this->SendMsg(this, UM_COMMAND, 502, 0, 0, 0);
 
   for (int index = 0;; ++index) {
-    TownInfo town = g_townInfoMgr->GetTownInfo(g_modeMgr.GetGameMode()->MapName(), index);
+    CTownInfoMgr* townInfoMgr = g_townInfoMgr;
+    TownInfo town = townInfoMgr->GetTownInfo(g_modeMgr.GetGameMode()->MapName(), index);
     if (town.image.empty()) {
       break;
     }
