@@ -869,12 +869,12 @@ void CGameMode::RefreshMiniMapTooltips() {
     }
 
     if (this->miniMapTooltipText.size() == 0) {
-      for (auto it = this->miniMapTooltipWindows.begin(); it != this->miniMapTooltipWindows.end(); ++it) {
+      for (auto it = this->miniMapTooltipWindows.begin(), end = this->miniMapTooltipWindows.end(); it != end; ++it) {
         g_windowMgr.CloseWindow(it->first);
       }
       this->miniMapTooltipWindows.clear();
     } else {
-      for (auto it = this->miniMapTooltipWindows.begin(); it != this->miniMapTooltipWindows.end(); ++it) {
+      for (auto it = this->miniMapTooltipWindows.begin(), end = this->miniMapTooltipWindows.end(); it != end; ++it) {
         if (it->second == this->miniMapTooltipText) {
           g_windowMgr.CloseWindow(it->first);
           this->miniMapTooltipWindows.erase(it);
