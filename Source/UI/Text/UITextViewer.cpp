@@ -292,12 +292,14 @@ int UITextViewEX::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
   case UM_UPPUSH:
     if (this->verticalOverflow != 0) {
       this->SendMsg(this->verticalBar, UM_SCROLLVERT, -1, 0, 0, 0);
+      return 0;
     }
     return 0;
 
   case UM_DOWNPUSH:
     if (this->verticalOverflow != 0) {
       this->SendMsg(this->verticalBar, UM_SCROLLVERT, 1, 0, 0, 0);
+      return 0;
     }
     return 0;
 
