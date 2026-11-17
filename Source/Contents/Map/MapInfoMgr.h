@@ -5,6 +5,7 @@
 
 #include <map>
 #include <string>
+#include <utility>
 
 #include <windows.h>
 
@@ -12,15 +13,10 @@ class CRenderSystemBase;
 class CTexture;
 struct lua_State;
 
-struct MapSignName {
-  /* 0000 */ std::string m_name;
-  /* 0018 */ std::string m_subName;
-};
-
 struct MapInfo {
   /* 0000 */ std::string m_displayName;
   /* 0018 */ bool m_showDisplayName;
-  /* 001C */ MapSignName m_sign;
+  /* 001C */ std::pair<std::string, std::string> m_sign;
   /* 004C */ std::string m_backgroundBmp;
 };
 

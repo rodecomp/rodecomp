@@ -87,7 +87,7 @@ void CMapInfoMgr::AddMapDisplayName(std::string map, std::string name, bool show
 // OFFSET: 0x006CE8C0
 // FUNCTION: fn_06485
 void CMapInfoMgr::AddMapSignName(std::string map, std::string name, std::string subName) {
-  this->m_maps.try_emplace(map).first->second.m_sign = MapSignName{name, subName};
+  this->m_maps.try_emplace(map).first->second.m_sign = std::make_pair(name, subName);
 }
 
 // OFFSET: 0x006CEAA0
@@ -122,8 +122,8 @@ void CMapInfoMgr::ShowMapName(std::string map) {
     bmp.assign("noname", 6);
   }
 
-  std::string name = info->m_sign.m_name;
-  std::string subName = info->m_sign.m_subName;
+  std::string name = info->m_sign.first;
+  std::string subName = info->m_sign.second;
   if (name.size() == 0 && subName.size() == 0) {
     subName = this->m_emptyName;
   }
@@ -180,7 +180,7 @@ MapInfo* CMapInfoMgr::FindMapInfo(std::string map) {
 const char* CMapInfoMgr::GetSignSubName(std::string map) {
   const MapInfo* info = this->FindMapInfo(map);
   if (info != nullptr) {
-    return info->m_sign.m_subName.c_str();
+    return info->m_sign.second.c_str();
   }
 
   return this->m_emptyName.c_str();
