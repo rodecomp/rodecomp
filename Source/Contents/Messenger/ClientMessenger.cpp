@@ -86,6 +86,7 @@ struct EquipmentValueC {
   /* 0000 */ int value;
 };
 template __declspec(noinline) std::unordered_map<int, EquipmentValueC>::unordered_map();
+template __declspec(noinline) std::unordered_map<int, int>::unordered_map();
 template __declspec(noinline) std::unordered_map<int, int>::~unordered_map();
 template __declspec(noinline) void std::_Tree_val<std::_Tree_simple_types<unsigned int>>::_Erase_tree<std::allocator<std::_Tree_node<unsigned int, void*>>>(
   std::allocator<std::_Tree_node<unsigned int, void*>>&, std::_Tree_node<unsigned int, void*>*
@@ -314,6 +315,10 @@ namespace EquipmentProperties {
   };
 
   struct CEquipmentInfo {
+    // INLINED
+    CEquipmentInfo() : kind(0) {
+    }
+
     /* 0000 */ int kind;
     /* 0004 */ std::unordered_map<int, int, CEquipmentValueHash> values;
     /* 0024 */ std::unordered_map<int, int> statProperties;
@@ -6931,348 +6936,343 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadItems() {
   lua_getfield(state, LUA_GLOBALSINDEX, name);
   if (lua_type(state, -1) == LUA_TTABLE) {
     lua_pushnil(state);
-    while (lua_next(state, -2) != 0) {
-      {
-        CEquipmentInfo info{0};
-        do {
-          unsigned int key = 0;
-          int result;
-          int type = lua_type(this->script.GetState(), -2);
-          if (type == LUA_TNUMBER) {
-            key = static_cast<unsigned int>(lua_tonumber(this->script.GetState(), -2));
-            result = 0;
-          } else {
-            result = (type != LUA_TNIL) + 1;
-          }
-          this->loadValid &= result == 0;
-          if (result != 0) {
-            ShowErrorDialog(fmt::format("{0} table has invalid entry key({1})", name, result), 0);
-          }
-          if (!this->loadValid) {
-            break;
-          }
-
-          std::vector<int> stats;
-          if (lua_type(this->script.GetState(), -1) == LUA_TTABLE) {
-            lua_getfield(this->script.GetState(), -1, "Stat");
-            type = lua_type(this->script.GetState(), -1);
-            if (type == LUA_TTABLE) {
-              lua_pushnil(this->script.GetState());
-              result = 0;
-              while (lua_next(this->script.GetState(), -2) != 0) {
-                if (lua_type(this->script.GetState(), -1) != LUA_TNUMBER) {
-                  result = 2;
-                  break;
-                }
-                stats.push_back(static_cast<int>(lua_tonumber(this->script.GetState(), -1)));
-                lua_settop(this->script.GetState(), -2);
-              }
-            } else {
-              result = (type != LUA_TNIL) + 1;
-            }
-            lua_settop(this->script.GetState(), -2);
-          } else {
-            result = 3;
-          }
-          bool valid = result == 0 || result == 1;
-          this->loadValid &= valid;
-          if (!valid) {
-            ShowErrorDialog(fmt::format("Item[{0}] has invalid 'Stat' table({1})", key, result), 0);
-          }
-          if (!this->loadValid) {
-            break;
-          }
-
-          std::string itemType;
-          result = this->script.GetFieldString(itemType, "Type");
-          const bool hasType = result == 0;
-          this->loadValid &= hasType;
-          if (result != 0) {
-            ShowErrorDialog(fmt::format("Item[{0}] has invalid 'Type' field({1})", key, result), 0);
-          }
-          if (!this->loadValid) {
-            break;
-          }
-
-          int count = 0;
-          if (hasType) {
-            unsigned int hash = HashName(itemType.c_str());
-            switch (hash) {
-            case 0x0F1AAAA6:
-              info.kind = 1;
-              count = 17;
-              break;
-            case 0x47F48D1C:
-              info.kind = 2;
-              count = 17;
-              break;
-            case 0xC8D7BCE1:
-              info.kind = 3;
-              count = 15;
-              break;
-            case 0x7C941E6F:
-              info.kind = 4;
-              count = 2;
-              break;
-            case 0xA4C66E86:
-              info.kind = 5;
-              break;
-            }
-          }
-          valid = count == stats.size();
-          this->loadValid &= valid;
-          if (!valid) {
-            ShowErrorDialog(fmt::format("Item[{0}] has invalid 'Stat' table(count: {1})", key, count), 0);
-          }
-          if (!this->loadValid) {
-            break;
-          }
-
-          unsigned int hash = HashName(itemType.c_str());
-          switch (hash) {
-          case 0x47F48D1C:
-            for (int index = 0; index < count; ++index) {
-              if (stats[index] == 0) {
-                continue;
-              }
-              int variable;
-              switch (index) {
-              case 2:
-                variable = 41;
-                break;
-              case 3:
-                variable = 200;
-                break;
-              case 4:
-                variable = 13;
-                break;
-              case 5:
-                variable = 16;
-                break;
-              case 6:
-                variable = 15;
-                break;
-              case 7:
-                variable = 17;
-                break;
-              case 8:
-                variable = 14;
-                break;
-              case 9:
-                variable = 18;
-                break;
-              case 11:
-                variable = 219;
-                break;
-              case 12:
-                variable = 222;
-                break;
-              case 13:
-                variable = 220;
-                break;
-              case 14:
-                variable = 221;
-                break;
-              case 15:
-                variable = 223;
-                break;
-              case 16:
-                variable = 224;
-                break;
-              case 0:
-                info.values.try_emplace(0, stats[index]);
-                continue;
-              case 1:
-                info.values.try_emplace(1, stats[index]);
-                continue;
-              case 10:
-                info.values.try_emplace(2, stats[index]);
-                continue;
-              default:
-                continue;
-              }
-              auto found = this->statVariables.find(variable);
-              if (found == this->statVariables.end()) {
-                ShowErrorDialog(fmt::format("Not available stat type: {0}", variable), 0);
-              } else {
-                info.statProperties.try_emplace(found->second.value, stats[index]);
-              }
-            }
-            break;
-          case 0x0F1AAAA6:
-            for (int index = 0; index < count; ++index) {
-              if (stats[index] == 0) {
-                continue;
-              }
-              int variable;
-              switch (index) {
-              case 0:
-                variable = 45;
-                break;
-              case 1:
-                variable = 13;
-                break;
-              case 2:
-                variable = 16;
-                break;
-              case 3:
-                variable = 15;
-                break;
-              case 4:
-                variable = 17;
-                break;
-              case 5:
-                variable = 14;
-                break;
-              case 6:
-                variable = 18;
-                break;
-              case 7:
-                variable = 6;
-                break;
-              case 8:
-                variable = 8;
-                break;
-              case 9:
-                variable = 47;
-                break;
-              case 11:
-                variable = 219;
-                break;
-              case 12:
-                variable = 222;
-                break;
-              case 13:
-                variable = 220;
-                break;
-              case 14:
-                variable = 221;
-                break;
-              case 15:
-                variable = 223;
-                break;
-              case 16:
-                variable = 224;
-                break;
-              case 10:
-                info.values.try_emplace(2, stats[index]);
-                continue;
-              default:
-                continue;
-              }
-              auto found = this->statVariables.find(variable);
-              if (found == this->statVariables.end()) {
-                ShowErrorDialog(fmt::format("Not available stat type: {0}", variable), 0);
-              } else {
-                info.statProperties.try_emplace(found->second.value, stats[index]);
-              }
-            }
-            break;
-          case 0x7C941E6F:
-            for (int index = 0; index < count; ++index) {
-              if (stats[index] == 0) {
-                continue;
-              }
-              if (index == 0) {
-                info.values.try_emplace(0, stats[index]);
-              } else if (index == 1) {
-                const int variable = 41;
-                auto found = this->statVariables.find(variable);
-                if (found == this->statVariables.end()) {
-                  ShowErrorDialog(fmt::format("Not available stat type: {0}", variable), 0);
-                } else {
-                  info.statProperties.try_emplace(found->second.value, stats[index]);
-                }
-              }
-            }
-            break;
-          case 0xC8D7BCE1:
-            for (int index = 0; index < count; ++index) {
-              if (stats[index] == 0) {
-                continue;
-              }
-              int variable;
-              switch (index) {
-              case 1:
-                variable = 41;
-                break;
-              case 2:
-                variable = 13;
-                break;
-              case 3:
-                variable = 16;
-                break;
-              case 4:
-                variable = 15;
-                break;
-              case 5:
-                variable = 17;
-                break;
-              case 6:
-                variable = 14;
-                break;
-              case 7:
-                variable = 18;
-                break;
-              case 9:
-                variable = 219;
-                break;
-              case 10:
-                variable = 222;
-                break;
-              case 11:
-                variable = 220;
-                break;
-              case 12:
-                variable = 221;
-                break;
-              case 13:
-                variable = 223;
-                break;
-              case 14:
-                variable = 224;
-                break;
-              case 0:
-                info.values.try_emplace(1, stats[index]);
-                continue;
-              case 8:
-                info.values.try_emplace(2, stats[index]);
-                continue;
-              default:
-                continue;
-              }
-              auto found = this->statVariables.find(variable);
-              if (found == this->statVariables.end()) {
-                ShowErrorDialog(fmt::format("Not available stat type: {0}", variable), 0);
-              } else {
-                info.statProperties.try_emplace(found->second.value, stats[index]);
-              }
-            }
-            break;
-          }
-
-          if (info.kind != 0) {
-            this->equipmentInfo.try_emplace(key, std::move(info));
-          }
-
-          std::vector<unsigned int> combinations;
-          result = this->script.GetFieldUIntArray(combinations, "Combiitem");
-          valid = result == 0 || result == 1;
-          this->loadValid &= valid;
-          if (!valid) {
-            ShowErrorDialog(fmt::format("Item[{0}] has invalid 'Combiitem' table({1})", key, result), 0);
-          }
-          if (!this->loadValid) {
-            break;
-          }
-          if (result == 0) {
-            for (const unsigned int& combination : combinations) {
-              this->m_itemCombinations[key].push_back(combination);
-            }
-          }
-        } while (false);
+    for (; lua_next(state, -2) != 0; lua_settop(state, -2)) {
+      CEquipmentInfo info;
+      unsigned int key = 0;
+      int result;
+      int type = lua_type(this->script.GetState(), -2);
+      if (type == LUA_TNUMBER) {
+        key = static_cast<unsigned int>(lua_tonumber(this->script.GetState(), -2));
+        result = 0;
+      } else {
+        result = (type != LUA_TNIL) + 1;
       }
-      lua_settop(state, -2);
+      this->loadValid &= result == 0;
+      if (result != 0) {
+        ShowErrorDialog(fmt::format("{0} table has invalid entry key({1})", name, result), 0);
+      }
+      if (!this->loadValid) {
+        continue;
+      }
+
+      std::vector<int> stats;
+      if (lua_type(this->script.GetState(), -1) == LUA_TTABLE) {
+        lua_getfield(this->script.GetState(), -1, "Stat");
+        type = lua_type(this->script.GetState(), -1);
+        if (type == LUA_TTABLE) {
+          lua_pushnil(this->script.GetState());
+          result = 0;
+          while (lua_next(this->script.GetState(), -2) != 0) {
+            if (lua_type(this->script.GetState(), -1) != LUA_TNUMBER) {
+              result = 2;
+              break;
+            }
+            stats.push_back(static_cast<int>(lua_tonumber(this->script.GetState(), -1)));
+            lua_settop(this->script.GetState(), -2);
+          }
+        } else {
+          result = (type != LUA_TNIL) + 1;
+        }
+        lua_settop(this->script.GetState(), -2);
+      } else {
+        result = 3;
+      }
+      bool valid = result == 0 || result == 1;
+      this->loadValid &= valid;
+      if (!valid) {
+        ShowErrorDialog(fmt::format("Item[{0}] has invalid 'Stat' table({1})", key, result), 0);
+      }
+      if (!this->loadValid) {
+        continue;
+      }
+
+      std::string itemType;
+      result = this->script.GetFieldString(itemType, "Type");
+      const bool hasType = result == 0;
+      this->loadValid &= hasType;
+      if (result != 0) {
+        ShowErrorDialog(fmt::format("Item[{0}] has invalid 'Type' field({1})", key, result), 0);
+      }
+      if (!this->loadValid) {
+        continue;
+      }
+
+      int count = 0;
+      if (hasType) {
+        unsigned int hash = HashName(itemType.c_str());
+        switch (hash) {
+        case 0x0F1AAAA6:
+          info.kind = 1;
+          count = 17;
+          break;
+        case 0x47F48D1C:
+          info.kind = 2;
+          count = 17;
+          break;
+        case 0xC8D7BCE1:
+          info.kind = 3;
+          count = 15;
+          break;
+        case 0x7C941E6F:
+          info.kind = 4;
+          count = 2;
+          break;
+        case 0xA4C66E86:
+          info.kind = 5;
+          break;
+        }
+      }
+      valid = count == stats.size();
+      this->loadValid &= valid;
+      if (!valid) {
+        ShowErrorDialog(fmt::format("Item[{0}] has invalid 'Stat' table(count: {1})", key, count), 0);
+      }
+      if (!this->loadValid) {
+        continue;
+      }
+
+      unsigned int hash = HashName(itemType.c_str());
+      switch (hash) {
+      case 0x47F48D1C:
+        for (int index = 0; index < count; ++index) {
+          if (stats[index] == 0) {
+            continue;
+          }
+          int variable;
+          switch (index) {
+          case 2:
+            variable = 41;
+            break;
+          case 3:
+            variable = 200;
+            break;
+          case 4:
+            variable = 13;
+            break;
+          case 5:
+            variable = 16;
+            break;
+          case 6:
+            variable = 15;
+            break;
+          case 7:
+            variable = 17;
+            break;
+          case 8:
+            variable = 14;
+            break;
+          case 9:
+            variable = 18;
+            break;
+          case 11:
+            variable = 219;
+            break;
+          case 12:
+            variable = 222;
+            break;
+          case 13:
+            variable = 220;
+            break;
+          case 14:
+            variable = 221;
+            break;
+          case 15:
+            variable = 223;
+            break;
+          case 16:
+            variable = 224;
+            break;
+          case 0:
+            info.values.try_emplace(0, stats[index]);
+            continue;
+          case 1:
+            info.values.try_emplace(1, stats[index]);
+            continue;
+          case 10:
+            info.values.try_emplace(2, stats[index]);
+            continue;
+          default:
+            continue;
+          }
+          auto found = this->statVariables.find(variable);
+          if (found == this->statVariables.end()) {
+            ShowErrorDialog(fmt::format("Not available stat type: {0}", variable), 0);
+          } else {
+            info.statProperties.try_emplace(found->second.value, stats[index]);
+          }
+        }
+        break;
+      case 0x0F1AAAA6:
+        for (int index = 0; index < count; ++index) {
+          if (stats[index] == 0) {
+            continue;
+          }
+          int variable;
+          switch (index) {
+          case 0:
+            variable = 45;
+            break;
+          case 1:
+            variable = 13;
+            break;
+          case 2:
+            variable = 16;
+            break;
+          case 3:
+            variable = 15;
+            break;
+          case 4:
+            variable = 17;
+            break;
+          case 5:
+            variable = 14;
+            break;
+          case 6:
+            variable = 18;
+            break;
+          case 7:
+            variable = 6;
+            break;
+          case 8:
+            variable = 8;
+            break;
+          case 9:
+            variable = 47;
+            break;
+          case 11:
+            variable = 219;
+            break;
+          case 12:
+            variable = 222;
+            break;
+          case 13:
+            variable = 220;
+            break;
+          case 14:
+            variable = 221;
+            break;
+          case 15:
+            variable = 223;
+            break;
+          case 16:
+            variable = 224;
+            break;
+          case 10:
+            info.values.try_emplace(2, stats[index]);
+            continue;
+          default:
+            continue;
+          }
+          auto found = this->statVariables.find(variable);
+          if (found == this->statVariables.end()) {
+            ShowErrorDialog(fmt::format("Not available stat type: {0}", variable), 0);
+          } else {
+            info.statProperties.try_emplace(found->second.value, stats[index]);
+          }
+        }
+        break;
+      case 0x7C941E6F:
+        for (int index = 0; index < count; ++index) {
+          if (stats[index] == 0) {
+            continue;
+          }
+          if (index == 0) {
+            info.values.try_emplace(0, stats[index]);
+          } else if (index == 1) {
+            const int variable = 41;
+            auto found = this->statVariables.find(variable);
+            if (found == this->statVariables.end()) {
+              ShowErrorDialog(fmt::format("Not available stat type: {0}", variable), 0);
+            } else {
+              info.statProperties.try_emplace(found->second.value, stats[index]);
+            }
+          }
+        }
+        break;
+      case 0xC8D7BCE1:
+        for (int index = 0; index < count; ++index) {
+          if (stats[index] == 0) {
+            continue;
+          }
+          int variable;
+          switch (index) {
+          case 1:
+            variable = 41;
+            break;
+          case 2:
+            variable = 13;
+            break;
+          case 3:
+            variable = 16;
+            break;
+          case 4:
+            variable = 15;
+            break;
+          case 5:
+            variable = 17;
+            break;
+          case 6:
+            variable = 14;
+            break;
+          case 7:
+            variable = 18;
+            break;
+          case 9:
+            variable = 219;
+            break;
+          case 10:
+            variable = 222;
+            break;
+          case 11:
+            variable = 220;
+            break;
+          case 12:
+            variable = 221;
+            break;
+          case 13:
+            variable = 223;
+            break;
+          case 14:
+            variable = 224;
+            break;
+          case 0:
+            info.values.try_emplace(1, stats[index]);
+            continue;
+          case 8:
+            info.values.try_emplace(2, stats[index]);
+            continue;
+          default:
+            continue;
+          }
+          auto found = this->statVariables.find(variable);
+          if (found == this->statVariables.end()) {
+            ShowErrorDialog(fmt::format("Not available stat type: {0}", variable), 0);
+          } else {
+            info.statProperties.try_emplace(found->second.value, stats[index]);
+          }
+        }
+        break;
+      }
+
+      if (info.kind != 0) {
+        this->equipmentInfo.try_emplace(key, std::move(info));
+      }
+
+      std::vector<unsigned int> combinations;
+      result = this->script.GetFieldUIntArray(combinations, "Combiitem");
+      valid = result == 0 || result == 1;
+      this->loadValid &= valid;
+      if (!valid) {
+        ShowErrorDialog(fmt::format("Item[{0}] has invalid 'Combiitem' table({1})", key, result), 0);
+      }
+      if (!this->loadValid) {
+        continue;
+      }
+      if (result == 0) {
+        for (const unsigned int& combination : combinations) {
+          this->m_itemCombinations[key].push_back(combination);
+        }
+      }
     }
   } else {
     ShowErrorDialog(fmt::format("Can't find global table '{0}'", name), 0);
