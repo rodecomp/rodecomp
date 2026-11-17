@@ -361,8 +361,9 @@ void CUIOngoingQuestInfo::UpdateHuntInfo() {
   window->secondContents->textViewer->Clear();
   const auto found = g_renewQuestMgr->m_ongoingQuests.find(questId);
   if (found != g_renewQuestMgr->m_ongoingQuests.end()) {
-    for (int index = 0; index < found->second.m_huntCount; ++index) {
-      window->secondContents->textViewer->AddLine(found->second.GetHuntText(index));
+    RenewQuestOngoingInfo& quest = found->second;
+    for (int index = 0; index < quest.m_huntCount; ++index) {
+      window->secondContents->textViewer->AddLine(quest.GetHuntText(index));
     }
   }
 
