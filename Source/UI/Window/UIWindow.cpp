@@ -2798,10 +2798,10 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
       const int count = static_cast<int>(this->routeFiles.size());
       if (count != 0) {
         UIWindow* history = g_windowMgr.EnsureWindow(WID_COMBOBOXWND);
-        for (const std::string& name : this->routeFiles) {
-          history->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(name.c_str()), 0, 0, 0);
+        for (std::vector<std::string>::iterator name = this->routeFiles.begin(); name != this->routeFiles.end(); ++name) {
+          history->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(name->c_str()), 0, 0, 0);
         }
-        const int height = (std::min)(count * 0x10, 0xA0);
+        const int height = (std::min)(0xA0, count * 0x10);
         history->SendMsg(nullptr, UM_SETCURITEM, 0, 0, 0, 0);
         history->Resize(0xA0, height);
         history->SendMsg(nullptr, UM_SET_CALLER_WID, 0xCB, 0, 0, 0);
@@ -2833,8 +2833,9 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
           g_navigationManager.selectedPathNode = 0;
           g_navigationManager.SelectNodeState();
         }
-        this->searchList->selected = g_navigationManager.selectedPathNode;
-        this->searchList->Invalidate();
+        UIListBox_NaviSearch* list = this->searchList;
+        list->selected = g_navigationManager.selectedPathNode;
+        list->Invalidate();
         if (g_windowMgr.modal) {
           g_windowMgr.modal->RefreshWorldMapSelection();
         }
@@ -2879,7 +2880,7 @@ int UINavigationV4Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
     case ID_PREVIEW:
       if (g_navigationManager.GetCurrentTargetName().size() != 0) {
         const int type = g_navigationManager.GetCurrentTarget().type;
-        if (type < 2) {
+        if (type <= 1) {
           this->LayoutWithoutDetails();
           g_navigationManager.displayMode = 2;
           this->noticeUntil = timeGetTime() + 5000;
