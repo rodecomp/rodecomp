@@ -1,6 +1,10 @@
 #include "Contents/Movement/TerrainPathSearch.h"
 #include "Resource/World/TerrainResource.h"
 
+template __declspec(noinline) std::vector<PathNode*>::~vector();
+template __declspec(noinline) std::vector<PathNode>::~vector();
+template __declspec(noinline) std::map<int, PathNode*>::~map();
+
 // OFFSET: 0x00AD85A0
 // FUNCTION: fn_17865
 CPathFinder::~CPathFinder() {
