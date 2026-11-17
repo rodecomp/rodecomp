@@ -234,14 +234,13 @@ void UIWindow::DrawOutlinedColoredText(
     }
 
     if (next != current) {
-      const int length = static_cast<int>(segment.size());
       context.SetColor(outline);
-      context.Draw((x - 1), y, segment.c_str(), length);
-      context.Draw((x + 1), y, segment.c_str(), length);
-      context.Draw(x, (y - 1), segment.c_str(), length);
-      context.Draw(x, (y + 1), segment.c_str(), length);
+      context.Draw((x - 1), y, segment.c_str(), static_cast<int>(segment.size()));
+      context.Draw((x + 1), y, segment.c_str(), static_cast<int>(segment.size()));
+      context.Draw(x, (y - 1), segment.c_str(), static_cast<int>(segment.size()));
+      context.Draw(x, (y + 1), segment.c_str(), static_cast<int>(segment.size()));
       context.SetColor(color);
-      context.Draw(x, y, segment.c_str(), length);
+      context.Draw(x, y, segment.c_str(), static_cast<int>(segment.size()));
       SIZE size;
       context.Measure(current, static_cast<int>(next - current), &size);
       x = (x + size.cx);
