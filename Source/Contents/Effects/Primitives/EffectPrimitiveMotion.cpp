@@ -1034,9 +1034,7 @@ void CEffectPrim::PrimBubbleDrop() {
     return;
   }
 
-  ++slot.process;
-
-  if (slot.process <= 0) {
+  if (++slot.process <= 0) {
     return;
   }
 
@@ -1057,10 +1055,11 @@ void CEffectPrim::PrimBubbleDrop() {
   }
 
   if (slot.process < slot.flag1[4]) {
-    slot.fullDisplayAngle -= 15;
+    const std::int16_t fullDisplayAngle = static_cast<std::int16_t>(slot.fullDisplayAngle - 15);
+    slot.fullDisplayAngle = fullDisplayAngle;
 
-    if (slot.fullDisplayAngle < 0) {
-      slot.fullDisplayAngle += 360;
+    if (fullDisplayAngle < 0) {
+      slot.fullDisplayAngle = static_cast<std::int16_t>(fullDisplayAngle + 360);
     }
 
     slot.vecBPre.y += slot.height[1];
@@ -5233,9 +5232,10 @@ __declspec(noinline) void CEffectPrim::PrimHoverFollow() {
     this->state.slots[0].height[8] -= 360.0f;
   }
 
-  this->state.slots[0].rotStart = static_cast<std::int16_t>(this->state.slots[0].rotStart + 1);
-  if (this->state.slots[0].rotStart >= 360) {
-    this->state.slots[0].rotStart = static_cast<std::int16_t>(this->state.slots[0].rotStart - 360);
+  const std::int16_t rotStart = static_cast<std::int16_t>(this->state.slots[0].rotStart + 1);
+  this->state.slots[0].rotStart = rotStart;
+  if (rotStart >= 360) {
+    this->state.slots[0].rotStart = static_cast<std::int16_t>(rotStart - 360);
   }
 
   this->state.slots[0].vecBNow.x = this->render.position.x;
@@ -5563,10 +5563,10 @@ bool CEffectPrim::PrimDriftingRings() {
       continue;
     }
 
-    const int process = ++slot.process;
-    if (process <= 0) {
+    if (++slot.process <= 0) {
       continue;
     }
+    const int process = slot.process;
 
     const std::int16_t angle = slot.rotStart;
     std::int16_t heading = static_cast<std::int16_t>(angle + 345);
@@ -6594,13 +6594,11 @@ void CEffectPrim::PrimFadingColumns() {
 void CEffectPrim::PrimAuraGlow() {
   EffectPrimitiveSlot* slots = this->state.slots;
   const CView* view = g_modeMgr.GetGameMode()->camera;
-  const short yaw = static_cast<short>(static_cast<int>(view->camera.yaw));
-  const short pitch = static_cast<short>(-static_cast<int>(view->camera.pitch));
-  slots[0].alphaT = static_cast<short>(360 - yaw);
-  const short anglePitch = static_cast<short>(pitch + 450);
+  slots[0].alphaT = static_cast<short>(360 - static_cast<int>(view->camera.yaw));
+  const short anglePitch = static_cast<short>(450 - static_cast<int>(view->camera.pitch));
   slots[1].alphaT = anglePitch;
   if (anglePitch >= 360) {
-    slots[1].alphaT = static_cast<short>(pitch + 90);
+    slots[1].alphaT = static_cast<short>(anglePitch - 360);
   }
 
   const CRagEffect* master = this->state.master;
