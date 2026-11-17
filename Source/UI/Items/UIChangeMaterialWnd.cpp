@@ -277,7 +277,8 @@ void UIChangeMaterialWnd_List::ApplyFilter(std::string text) {
   std::transform(filter.begin(), filter.end(), filter.begin(), [](unsigned char c) { return static_cast<char>(tolower(c)); });
 
   int index = 0;
-  for (const MaterialListEntry& entry : this->m_entries) {
+  for (auto entryIt = this->m_entries.begin(), entryEnd = this->m_entries.end(); entryIt != entryEnd; ++entryIt) {
+    const MaterialListEntry& entry = *entryIt;
     std::string name = ItemDisplayName(entry.results.front().id);
     std::transform(name.begin(), name.end(), name.begin(), [](unsigned char c) { return static_cast<char>(tolower(c)); });
 
