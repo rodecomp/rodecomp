@@ -2236,7 +2236,7 @@ void CLoginMode::ReceiveAcceptLogin(const AcceptLoginPacket* packet, int version
   case ServiceIndonesia:
   case ServiceGermany:
   case ServiceBrazil:
-    g_serviceOptions.Set(0x6C, 0);
+    g_serviceOptions.Set(TT_BOLD_NAME_TYPE_ON_OFF, 0);
     break;
   }
   const unsigned char flags = g_serviceOptions.Get(TT_BOLD_NAME_TYPE_ON_OFF);
@@ -3955,7 +3955,7 @@ void CLoginMode::OnChangeState(int value) {
     break;
   case 29: {
     if (g_serviceType == ServiceIndonesia || g_serviceType == ServiceGermany || g_serviceType == ServiceBrazil) {
-      g_serviceOptions.Set(0x6C, 0);
+      g_serviceOptions.Set(TT_BOLD_NAME_TYPE_ON_OFF, 0);
     }
     const unsigned char flags = g_serviceOptions.Get(TT_BOLD_NAME_TYPE_ON_OFF);
     g_session.SetServiceFlags(flags, flags);

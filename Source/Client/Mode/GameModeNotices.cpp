@@ -3547,9 +3547,9 @@ void CGameMode::ReceiveFeedConfig(unsigned char state, bool option) {
   if (g_windowMgr.equipWnd) {
     g_windowMgr.equipWnd->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
-  g_serviceOptions.Set(231, option);
+  g_serviceOptions.Set(TT_BLOCK_CALL_ON_OFF, option);
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(option + 0xBA2)), 0x64FFFF, 0, 0, 0);
-  g_windowMgr.RefreshGameSettingOption(231);
+  g_windowMgr.RefreshGameSettingOption(TT_BLOCK_CALL_ON_OFF);
 }
 
 // OFFSET: 0x00D6E6F0
@@ -3561,9 +3561,9 @@ void CGameMode::ReceiveFeedConfig2(unsigned char state, bool option, bool petAut
   if (g_windowMgr.equipWnd) {
     g_windowMgr.equipWnd->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
-  g_serviceOptions.Set(231, option);
+  g_serviceOptions.Set(TT_BLOCK_CALL_ON_OFF, option);
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(option + 0xBA2)), 0x64FFFF, 0, 0, 0);
-  g_windowMgr.RefreshGameSettingOption(231);
+  g_windowMgr.RefreshGameSettingOption(TT_BLOCK_CALL_ON_OFF);
   g_session.SetPetAutoFeed(petAutoFeed);
 }
 
@@ -3576,9 +3576,9 @@ void CGameMode::ReceiveFeedConfig3(unsigned char state, bool option, bool petAut
   if (g_windowMgr.equipWnd) {
     g_windowMgr.equipWnd->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
-  g_serviceOptions.Set(231, option);
+  g_serviceOptions.Set(TT_BLOCK_CALL_ON_OFF, option);
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(option + 0xBA2)), 0x64FFFF, 0, 0, 0);
-  g_windowMgr.RefreshGameSettingOption(231);
+  g_windowMgr.RefreshGameSettingOption(TT_BLOCK_CALL_ON_OFF);
   g_session.SetPetAutoFeed(petAutoFeed);
   g_session.SetHomunculusAutoFeed(homunculusAutoFeed);
 }
@@ -3592,9 +3592,9 @@ void CGameMode::ReceiveFeedConfig4(unsigned char state, bool option, bool petAut
   if (g_windowMgr.equipWnd) {
     g_windowMgr.equipWnd->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
   }
-  g_serviceOptions.Set(231, option);
+  g_serviceOptions.Set(TT_BLOCK_CALL_ON_OFF, option);
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(option + 0xBA2)), 0x64FFFF, 0, 0, 0);
-  g_windowMgr.RefreshGameSettingOption(231);
+  g_windowMgr.RefreshGameSettingOption(TT_BLOCK_CALL_ON_OFF);
   g_session.SetPetAutoFeed(petAutoFeed);
   g_session.SetHomunculusAutoFeed(homunculusAutoFeed);
   g_session.m_hideCostumes = value;
@@ -4858,12 +4858,12 @@ void CGameMode::ReceiveMapProperty(const unsigned char* data) {
   g_mapPropertyMgr->SetValue(packet->mapId, 41, (packet->flags >> 10) & 1);
   g_session.mapPropertyId = packet->mapId;
 
-  g_serviceOptions.Set(229, g_session.m_serviceOption229 != 0);
+  g_serviceOptions.Set(TT_MIN_EFFECT_ON_OFF, g_session.m_serviceOption229 != 0);
   g_session.m_isSiegeZone = 0;
   g_session.m_isPvpZone = 0;
   g_session.partyBlocked = 0;
   if (g_session.GetMapProperty0F()) {
-    g_serviceOptions.Set(229, 1);
+    g_serviceOptions.Set(TT_MIN_EFFECT_ON_OFF, 1);
   }
   if (g_session.GetMapProperty10()) {
     g_session.m_isSiegeZone = 1;

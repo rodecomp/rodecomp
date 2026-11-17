@@ -9,6 +9,7 @@
 #include "Client/Mode/ModeMessage.h"
 #include "Client/Mode/GameModeEnums.h"
 #include "Contents/Items/ItemId.h"
+#include "Contents/Items/ItemType.h"
 #include "Contents/Jobs/JobId.h"
 #include "Contents/Skills/SkillId.h"
 #include "Contents/Skills/SkillUnitId.h"
@@ -6968,13 +6969,13 @@ void CGameMode::ReceiveUiDragMessage(const unsigned char* message) {
     this->isDragAllowed = this->IsAllowedPair(packet->windowId, packet->source);
   } else {
     const int kind = packet->windowId;
-    if (kind == 0x17 || kind == 0x2C) {
-      if (packet->itemType <= 3 || packet->itemType == 7) {
+    if (kind == WID_ITEMPURCHASEWND || kind == WID_MERCHANTITEMPURCHASEWND) {
+      if (packet->itemType <= TYPE_EVENT || packet->itemType == TYPE_PETEGG) {
         this->isDragAllowed = this->IsAllowedPair(kind, packet->source);
       }
-    } else if (kind == 0x16) {
-      if (packet->itemType <= 3 || packet->itemType == 7) {
-        this->isDragAllowed = this->IsAllowedPair(0x16, packet->source);
+    } else if (kind == WID_ITEMSHOPWND) {
+      if (packet->itemType <= TYPE_EVENT || packet->itemType == TYPE_PETEGG) {
+        this->isDragAllowed = this->IsAllowedPair(WID_ITEMSHOPWND, packet->source);
       }
     }
   }
@@ -6984,10 +6985,10 @@ void CGameMode::ReceiveUiDragMessage(const unsigned char* message) {
   }
 
   const int kind = packet->windowId;
-  if (kind == 0x24 || kind == 0x9F) {
+  if (kind == WID_SHORTCUTWND || kind == WID_QUIKSLOTWND) {
     this->isDragAllowed = 0;
   } else if (this->isDragAllowed == 1 && g_windowMgr.itemDropCntWnd != nullptr) {
-    if (drag.type != 6) {
+    if (drag.type != TYPE_CARD) {
       const ITEM_DESC description = FindItemDescription(std::atoi(drag.name.c_str()));
       g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETTEXT, 0, reinterpret_cast<std::intptr_t>(description.identifiedName), 0, 0);
     } else {
@@ -7429,7 +7430,7 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
     if (itemId == 0x3113) {
       const int job = player->GetEffectiveJob(-1);
       char text[0x100];
-      if (job >= 4054 && job <= 4112) {
+      if (job >= JT_RUNE_KNIGHT && job <= JT_MADOGEAR_B) {
         strcpy_s(text, sizeof(text), LookupMessage(MSI_PLUSEXP50));
       } else {
         strcpy_s(text, sizeof(text), LookupMessage(MSI_PLUSEXP75));
@@ -7456,14 +7457,14 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
   case Red_Slim_Potion_B:
   case Red_Potion_B:
   case Tyr:
-    effectId = 0xCC;
+    effectId = EF_POTION1;
     break;
   case Orange_Potion:
   case Delicious_Fish:
   case Light_Orange_Pot:
   case Orange_Potion_B:
   case Mora_Berry:
-    effectId = 0xCD;
+    effectId = EF_POTION2;
     break;
   case ITEMID_YELLOW_POTION:
   case Yellow_Herb:
@@ -7471,7 +7472,7 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
   case Light_Yellow_Pot:
   case Yellow_Potion_B:
   case Yellow_Slim_Potion_B:
-    effectId = 0xCE;
+    effectId = EF_POTION3;
     break;
   case ITEMID_WHITE_POTION:
   case White_Herb:
@@ -7486,7 +7487,7 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
   case TE_White_Slim_Potion:
   case White_Potion_B:
   case White_Slim_Potion_B:
-    effectId = 0xCF;
+    effectId = EF_POTION4;
     break;
   case ITEMID_BLUE_POTION:
   case Blue_Herb:
@@ -7494,12 +7495,12 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
   case Siege_Blue_Potion:
   case Woe_Blue_Potion:
   case Blue_Potion_B:
-    effectId = 0xD0;
+    effectId = EF_POTION5;
     break;
   case Green_Potion:
   case Green_Herb:
   case Green_Potion_B:
-    effectId = 0xD1;
+    effectId = EF_POTION6;
     break;
   case ITEMID_APPLE:
   case Banana:
@@ -7514,7 +7515,7 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
   case Popped_Rice:
   case Orange:
   case Realgar_Wine:
-    effectId = 0xD2;
+    effectId = EF_POTION7;
     break;
   case Grape:
   case Grape_Juice:
@@ -7526,7 +7527,7 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
   case Manuks_Courage:
   case Luciola:
   case Tiny_Waterbottle:
-    effectId = 0xD3;
+    effectId = EF_POTION8;
     break;
   case Meat:
   case Honey:
@@ -7577,36 +7578,36 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
   case Candy_B:
   case Piece_Of_Cake_B:
   case Well_Baked_Cookie_B:
-    effectId = 7;
+    effectId = EF_EXIT;
     break;
   case Chocolate:
   case White_Chocolate:
   case White_Chocolate_B:
   case Chocolate_B:
   case Choco_Lump:
-    effectId = 0x16C;
+    effectId = EF_VALLENTINE2;
     break;
   case HandMade_Chocolate:
   case HandMade_Chocolate_:
   case HandMade_Chocolate_B:
   case HandMade_Chocolate_B_:
   case Girl_Bunch_Of_Flower:
-    effectId = 0x16B;
+    effectId = EF_VALLENTINE;
     break;
   case Center_Potion:
   case Light_Center_Pot:
   case Center_Potion_B:
-    effectId = 0xDA;
+    effectId = EF_POTION_CON;
     break;
   case Awakening_Potion:
   case Light_Awakening_Pot:
   case Awakening_Potion_B:
-    effectId = 0xDB;
+    effectId = EF_POTION_;
     break;
   case Berserk_Potion:
   case Light_Berserk_Pot:
   case Berserk_Potion_B:
-    effectId = 0xDC;
+    effectId = EF_POTION_BERSERK;
     break;
   case Mojji:
   case Sesame_Pastry:
@@ -7622,19 +7623,19 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
   case Honey_Pastry_B:
   case Rainbow_Cake_B:
     g_soundMgr->PlayWave("_heal_effect.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    effectId = 0x1EB;
+    effectId = EF_MOCHI;
     break;
   case Inspector_Certificate:
   case Inspector_Certificate_:
     g_soundMgr->PlayWave("effect\\mapae.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    effectId = 0x1FB;
+    effectId = EF_MAPAE;
     break;
   case Durian:
-    effectId = 0xDC;
+    effectId = EF_POTION_BERSERK;
     static_cast<EffectActor*>(actor)->LaunchEffect(EF_GUMGANG2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case RAMADAN:
-    effectId = 0x1EC;
+    effectId = EF_LAMADAN;
     break;
   case Fruit_Of_Mastela:
     g_soundMgr->PlayWave("_heal_effect.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
@@ -7645,88 +7646,88 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
   case Speed_Up_Potion:
   case Speed_Up_Potion_B:
     g_soundMgr->PlayWave("effect\\fast.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    effectId = 0x207;
+    effectId = EF_ITEMFAST;
     break;
   case Slow_Down_Potion:
   case Slow_Down_Potion_B:
-    effectId = 0x26;
+    effectId = EF_DECAGILITY;
     break;
   case Fire_Cracker:
     g_soundMgr->PlayWave("effect\\itempokjuk.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    effectId = 0x1FC;
+    effectId = EF_ITEMPOKJUK;
     break;
   case Chocolate_Drink:
   case Cute_Strawberry_Choco:
   case Lovely_Choco_Tart:
   case Chocolate_Drink_B:
   case Cacao99:
-    effectId = 0x1FD;
+    effectId = EF_05VAL;
     break;
   case Giftbox_China:
     g_soundMgr->PlayWave("effect\\ro2effect.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    effectId = 0x221;
+    effectId = EF_RO2YEAR;
     break;
   case Giggling_Box:
   case HALLOWEEN_G_BOX:
     g_soundMgr->PlayWave("wraith_die.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   case Box_Of_Thunder:
-    effectId = 0x240;
+    effectId = EF_ITEM_THUNDER;
     break;
   case Gloomy_Box:
-    effectId = 0x241;
+    effectId = EF_ITEM_CLOUD;
     break;
   case Box_Of_Grudge:
-    effectId = 0x242;
+    effectId = EF_ITEM_CURSE;
     break;
   case Sleepy_Box:
-    effectId = 0x243;
+    effectId = EF_ITEM_ZZZ;
     break;
   case Box_Of_Storm:
-    effectId = 0x244;
+    effectId = EF_ITEM_RAIN;
     break;
   case Painting_Box:
     g_soundMgr->PlayWave("ork_warrior_breath.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
   case Box_Of_Sunlight:
-    effectId = 0x245;
+    effectId = EF_ITEM_LIGHT;
     break;
   case Resist_Fire:
     g_soundMgr->PlayWave("evil_cloud_hermit_attack.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    effectId = 0x25B;
+    effectId = EF_FIREHIT2;
     break;
   case Resist_Water:
     g_soundMgr->PlayWave("evil_cloud_hermit_attack.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    effectId = 0x33;
+    effectId = EF_COLDHIT;
     break;
   case Resist_Earth:
     g_soundMgr->PlayWave("evil_cloud_hermit_attack.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    effectId = 0x93;
+    effectId = EF_EARTHHIT;
     break;
   case Resist_Wind:
     g_soundMgr->PlayWave("evil_cloud_hermit_attack.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    effectId = 0x34;
+    effectId = EF_WINDHIT;
     break;
   case Lucky_Potion:
-    effectId = 0x264;
+    effectId = EF_HAPGYEOK;
     break;
   case Str_Dish10_M:
-    effectId = 0x251;
+    effectId = EF_FOOD01;
     break;
   case Agi_Dish10_M:
-    effectId = 0x254;
+    effectId = EF_FOOD04;
     break;
   case Int_Dish10_M:
-    effectId = 0x252;
+    effectId = EF_FOOD02;
     break;
   case Dex_Dish10_M:
-    effectId = 0x255;
+    effectId = EF_FOOD05;
     break;
   case Luk_Dish10_M:
-    effectId = 0x256;
+    effectId = EF_FOOD06;
     break;
   case Vit_Dish10_M:
-    effectId = 0x253;
+    effectId = EF_FOOD03;
     break;
   case Assumptio_5_Scroll:
     static_cast<EffectActor*>(actor)->LaunchEffect(EF_ASSUMPTIO, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -7734,87 +7735,87 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
     break;
   case Spray_Of_Flowers:
   case Large_Spray_Of_Flowers:
-    effectId = 0x2BB;
+    effectId = EF_FLOWERLEAF;
     break;
   case Goddess_Bless:
-    effectId = 0x152;
+    effectId = EF_ANGEL2;
     break;
   case Angel_Bless:
-    effectId = 0x2C1;
+    effectId = EF_ITEM316;
     break;
   case Powder_Snow:
     g_soundMgr->PlayWave("effect\\storm.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    effectId = 0x2C2;
+    effectId = EF_ITEM317;
     break;
   case Little_Heart:
-    effectId = 0x2C3;
+    effectId = EF_ITEM318;
     break;
   case J_Firecracker:
     g_soundMgr->PlayWave("effect\\pokjuk_jap.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    effectId = 0x2C5;
+    effectId = EF_POK_JAP;
     break;
   case Egg:
   case Manuk:
   case Pinguicula:
-    effectId = 0xD2;
+    effectId = EF_POTION7;
     break;
   case J_Aspersio_5_Scroll:
-    effectId = 0x56;
+    effectId = EF_ASPERSIO;
     break;
   case RWC_Cele_Fire:
     g_soundMgr->PlayWave("effect\\itempokjuk.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    effectId = 0x3DB;
+    effectId = EF_2011RWC;
     break;
   case RWC_Cele_Fire2:
     g_soundMgr->PlayWave("effect\\itempokjuk.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    effectId = 0x3DC;
+    effectId = EF_2011RWC2;
     break;
   case No100_Firecracker:
     g_soundMgr->PlayWave("effect\\itempokjuk.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    effectId = 0x3EE;
+    effectId = EF_NO100_FIRECRACKER;
     break;
   case Fire_Cracker_Love:
-    effectId = 0x2AA;
+    effectId = EF_POK_LOVE;
     break;
   case Fire_Cracker_Wday:
-    effectId = 0x2AB;
+    effectId = EF_POK_WHITE;
     break;
   case Fire_Cracker_Vday:
-    effectId = 0x2AC;
+    effectId = EF_POK_VALEN;
     break;
   case Fire_Cracker_Bday:
-    effectId = 0x2AD;
+    effectId = EF_POK_BIRTH;
     break;
   case Fire_Cracker_Xmas:
-    effectId = 0x2AE;
+    effectId = EF_POK_CHRISTMAS;
     break;
   case Bath_Foam_A:
   case Bath_Foam_B:
   case Bath_Foam_C:
-    effectId = 0x63D;
-    secondEffectId = 0x63E;
+    effectId = EF_NEW_BATHFOAM;
+    secondEffectId = EF_NEW_BATHFOAM_BOTTOM;
     break;
   case Aroma_Oil:
-    effectId = 0x63B;
-    secondEffectId = 0x63C;
+    effectId = EF_NEW_AROMAOIL;
+    secondEffectId = EF_NEW_AROMAOIL_BOTTOM;
     break;
   case 0x19605:
-    effectId = 0x982;
+    effectId = EF_UNK_2434;
     break;
   }
 
   if ((itemId >= 0x2F09 && itemId <= 0x2F0D) || (itemId >= 0x2F27 && itemId <= 0x2F2B) || itemId == 0x2FAA) {
-    effectId = 0x251;
+    effectId = EF_FOOD01;
   } else if ((itemId >= 0x2F0E && itemId <= 0x2F12) || (itemId >= 0x2F2C && itemId <= 0x2F30) || itemId == 0x2FAC) {
-    effectId = 0x252;
+    effectId = EF_FOOD02;
   } else if ((itemId >= 0x2F13 && itemId <= 0x2F17) || (itemId >= 0x2F31 && itemId <= 0x2F35) || itemId == 0x2FAF) {
-    effectId = 0x253;
+    effectId = EF_FOOD03;
   } else if ((itemId >= 0x2F18 && itemId <= 0x2F1C) || (itemId >= 0x2F36 && itemId <= 0x2F3A) || itemId == 0x2FAB) {
-    effectId = 0x254;
+    effectId = EF_FOOD04;
   } else if ((itemId >= 0x2F1D && itemId <= 0x2F21) || (itemId >= 0x2F3B && itemId <= 0x2F3F) || itemId == 0x2FAD) {
-    effectId = 0x255;
+    effectId = EF_FOOD05;
   } else if ((itemId >= 0x2F22 && itemId <= 0x2F26) || (itemId >= 0x2F40 && itemId <= 0x2F44) || itemId == 0x2FAE) {
-    effectId = 0x256;
+    effectId = EF_FOOD06;
   }
 
   if (effectId > 0) {
@@ -8005,7 +8006,7 @@ void CGameMode::InitializeState() {
       DWORD type = REG_DWORD;
       DWORD size = sizeof(position);
       RegQueryValueExA(valueKey, "POS", nullptr, &type, reinterpret_cast<BYTE*>(&position), &size);
-      g_serviceOptions.Set(92, position == 1);
+      g_serviceOptions.Set(TT_NAME_ABOVE_HEAD_ON_OFF, position == 1);
       RegCloseKey(valueKey);
     }
   }
@@ -10016,39 +10017,39 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     break;
   }
   case TT_SET1_ON_OFF:
-    g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, 0x71, 0, 0, 0);
-    g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, 0x6C, 0, 0, 0);
-    g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, 0x6D, 0, 0, 0);
-    g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, 0x8D, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, TT_SKILLFAIL_ON_OFF, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, TT_BOLD_NAME_TYPE_ON_OFF, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, TT_NOCTRL_ON_OFF, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, TT_WINDOW_SNAP_ON_OFF, 0, 0, 0);
     break;
   case TT_SET2_ON_OFF:
-    g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, 0x71, 0, 0, 0);
-    g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, 0x6C, 0, 0, 0);
-    g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, 0x6D, 0, 0, 0);
-    g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, 0x78, 0, 0, 0);
-    g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, 0x79, 0, 0, 0);
-    g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, 0x8D, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, TT_SKILLFAIL_ON_OFF, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, TT_BOLD_NAME_TYPE_ON_OFF, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, TT_NOCTRL_ON_OFF, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, TT_QUICKSPELL_ON_OFF, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, TT_QUICKSPELL2_ON_OFF, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, TT_WINDOW_SNAP_ON_OFF, 0, 0, 0);
     break;
   case TT_SET3_ON_OFF:
-    g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, 0x71, 0, 0, 0);
-    g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, 0x6C, 0, 0, 0);
-    g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, 0x6D, 0, 0, 0);
-    g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, 0x8D, 0, 0, 0);
-    g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, 0xA5, 0, 0, 0);
-    g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, 0x87, 0, 0, 0);
-    g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, 0xA7, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, TT_SKILLFAIL_ON_OFF, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, TT_BOLD_NAME_TYPE_ON_OFF, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, TT_NOCTRL_ON_OFF, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, TT_WINDOW_SNAP_ON_OFF, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, TT_LOGINOUT_ON_OFF, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, TT_BATTLE_ON_OFF, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, TT_SHOPPING_ON_OFF, 0, 0, 0);
     break;
   case TT_QUICKSPELL3_ON_OFF:
-    g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, 0x78, 0, 0, 0);
-    g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, 0x79, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, TT_QUICKSPELL_ON_OFF, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, TT_QUICKSPELL2_ON_OFF, 0, 0, 0);
     break;
   case TT_SKILLFAIL_ON_OFF:
-    g_serviceOptions.Set(0x71, !g_serviceOptions.Get(TT_SKILLFAIL_ON_OFF));
+    g_serviceOptions.Set(TT_SKILLFAIL_ON_OFF, !g_serviceOptions.Get(TT_SKILLFAIL_ON_OFF));
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(g_serviceOptions.Get(TT_SKILLFAIL_ON_OFF) ? MSI_SKILLFAIL_ON : MSI_SKILLFAIL_OFF)), 0x64FFFF, 0, 0, 0);
     break;
   case TT_LOGINOUT_ON_OFF:
-    g_serviceOptions.Set(0xA5, !g_serviceOptions.Get(TT_LOGINOUT_ON_OFF));
+    g_serviceOptions.Set(TT_LOGINOUT_ON_OFF, !g_serviceOptions.Get(TT_LOGINOUT_ON_OFF));
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(g_serviceOptions.Get(TT_LOGINOUT_ON_OFF) ? MSI_LOGINOUT_ON : MSI_LOGINOUT_OFF)), 0x64FFFF, 0, 0, 0);
     g_windowMgr.RefreshGameSettings();
@@ -10120,7 +10121,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     break;
   }
   case TT_EFFECT_SOUND_ON_OFF:
-    g_serviceOptions.Set(0xB, !g_serviceOptions.Get(TT_EFFECT_SOUND_ON_OFF));
+    g_serviceOptions.Set(TT_EFFECT_SOUND_ON_OFF, !g_serviceOptions.Get(TT_EFFECT_SOUND_ON_OFF));
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(g_serviceOptions.Get(TT_EFFECT_SOUND_ON_OFF) ? MSI_SOUND_ON : MSI_SOUND_OFF)), 0x64FFFF, 0, 0, 0);
     if (g_serviceOptions.Get(TT_EFFECT_SOUND_ON_OFF)) {
@@ -10138,7 +10139,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(g_frameskip ? MSI_FRAME_SKIP_ON : MSI_FRAME_SKIP_OFF)), 0x64FFFF, 0, 0, 0);
     break;
   case TT_MUSIC_ON_OFF:
-    g_serviceOptions.Set(7, !g_serviceOptions.Get(TT_MUSIC_ON_OFF));
+    g_serviceOptions.Set(TT_MUSIC_ON_OFF, !g_serviceOptions.Get(TT_MUSIC_ON_OFF));
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(g_serviceOptions.Get(TT_MUSIC_ON_OFF) ? MSI_BGM_ON : MSI_BGM_OFF)), 0x64FFFF, 0, 0, 0);
     if (g_serviceOptions.Get(TT_MUSIC_ON_OFF)) {
@@ -10567,7 +10568,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
   case TT_SHOW_CASHSHOP_BTN_ON_OFF: {
     UIWindow* window = g_windowMgr.LookupWindow(WID_NCASH_CALLWND);
     if (window) {
-      g_serviceOptions.Set(0xDA, !g_serviceOptions.Get(TT_SHOW_CASHSHOP_BTN_ON_OFF));
+      g_serviceOptions.Set(TT_SHOW_CASHSHOP_BTN_ON_OFF, !g_serviceOptions.Get(TT_SHOW_CASHSHOP_BTN_ON_OFF));
       window->Show(g_serviceOptions.Get(TT_SHOW_CASHSHOP_BTN_ON_OFF));
     }
     break;
@@ -10575,7 +10576,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
   case TT_SHOW_GOLDPCCAFE_ON_OFF: {
     UIWindow* window = g_windowMgr.LookupWindow(WID_MILEAGEWND);
     if (window) {
-      g_serviceOptions.Set(0xDB, !g_serviceOptions.Get(TT_SHOW_GOLDPCCAFE_ON_OFF));
+      g_serviceOptions.Set(TT_SHOW_GOLDPCCAFE_ON_OFF, !g_serviceOptions.Get(TT_SHOW_GOLDPCCAFE_ON_OFF));
       window->Show(g_serviceOptions.Get(TT_SHOW_GOLDPCCAFE_ON_OFF));
     }
     break;
@@ -10583,7 +10584,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
   case TT_SHOW_ROULETTE_BTN_ON_OFF: {
     UIWindow* window = g_windowMgr.LookupWindow(WID_OPENROULLETTEWND);
     if (window) {
-      g_serviceOptions.Set(0xDC, !g_serviceOptions.Get(TT_SHOW_ROULETTE_BTN_ON_OFF));
+      g_serviceOptions.Set(TT_SHOW_ROULETTE_BTN_ON_OFF, !g_serviceOptions.Get(TT_SHOW_ROULETTE_BTN_ON_OFF));
       window->Show(g_serviceOptions.Get(TT_SHOW_ROULETTE_BTN_ON_OFF));
     }
     break;
@@ -10645,7 +10646,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     break;
   }
   case TT_EMBLEM_FRAME_ON_OFF:
-    g_serviceOptions.Set(0xF3, !g_serviceOptions.Get(TT_EMBLEM_FRAME_ON_OFF));
+    g_serviceOptions.Set(TT_EMBLEM_FRAME_ON_OFF, !g_serviceOptions.Get(TT_EMBLEM_FRAME_ON_OFF));
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(g_serviceOptions.Get(TT_EMBLEM_FRAME_ON_OFF) ? MSI_USESKILL_FAIL_EMPTY_SOUL_ENERGY : MSI_ADDSKILL_FAIL_INCLUDE_SKILL_YOU_CANNOT_LEARN)), 0x64FFFF, 0, 0, 0);
     g_windowMgr.RefreshGameSettings();

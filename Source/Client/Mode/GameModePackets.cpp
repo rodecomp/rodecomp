@@ -7863,11 +7863,11 @@ __declspec(noinline) void CGameMode::ReceiveFeedOption(const unsigned char* pack
     break;
   }
   case CONFIG_CALL:
-    g_serviceOptions.Set(231, p->value != 0);
+    g_serviceOptions.Set(TT_BLOCK_CALL_ON_OFF, p->value != 0);
     g_windowMgr.SendNotice(
       UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage((p->value != 0) + 0xBA2)), 0x64FFFF, 0, 0, 0
     );
-    g_windowMgr.RefreshGameSettingOption(231);
+    g_windowMgr.RefreshGameSettingOption(TT_BLOCK_CALL_ON_OFF);
     break;
   case CONFIG_PET_AUTOFEED:
     g_session.SetPetAutoFeed(p->value > 0);
@@ -26258,7 +26258,7 @@ void CGameMode::ProcessIncomingPackets() {
     }
     case ID_ZC_NOTIFY_MAPPROPERTY: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_NOTIFY_MAPPROPERTY*>(g_gameModePacketBuffer);
-      g_serviceOptions.Set(229, g_session.m_serviceOption229 != 0);
+      g_serviceOptions.Set(TT_MIN_EFFECT_ON_OFF, g_session.m_serviceOption229 != 0);
       switch (packet->property) {
       case MAPPROPERTY_FREEPVPZONE:
       case MAPPROPERTY_PVPSERVERZONE:
@@ -26269,14 +26269,14 @@ void CGameMode::ProcessIncomingPackets() {
         break;
       case MAPPROPERTY_AGITZONE:
         this->scene->isSiegeMode = 1;
-        g_serviceOptions.Set(229, 1);
+        g_serviceOptions.Set(TT_MIN_EFFECT_ON_OFF, 1);
         break;
       case MAPPROPERTY_PKSERVERZONE:
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_PKZONE)), 0x9B9BFF, 0, 0, 0);
         break;
       }
       if (g_session.GetMapProperty0F()) {
-        g_serviceOptions.Set(229, 1);
+        g_serviceOptions.Set(TT_MIN_EFFECT_ON_OFF, 1);
       }
       if (g_serviceType) {
         g_mapPropertyMgr->Clear();
@@ -26520,7 +26520,7 @@ void CGameMode::ProcessIncomingPackets() {
     }
     case ID_ZC_NOTIFY_MAPPROPERTY2: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_NOTIFY_MAPPROPERTY2*>(g_gameModePacketBuffer);
-      g_serviceOptions.Set(229, g_session.m_serviceOption229 != 0);
+      g_serviceOptions.Set(TT_MIN_EFFECT_ON_OFF, g_session.m_serviceOption229 != 0);
       const std::int16_t type = packet->type;
       g_session.mapPropertyId = type;
       if (type == 5 || type == 6) {
@@ -26530,14 +26530,14 @@ void CGameMode::ProcessIncomingPackets() {
         if (g_session.GetMapProperty09() || packet->type == 18 ||
             packet->type == 8) {
           this->scene->isSiegeMode = 1;
-          g_serviceOptions.Set(229, 1);
+          g_serviceOptions.Set(TT_MIN_EFFECT_ON_OFF, 1);
         } else if (packet->type == 19) {
           this->scene->isBattleFieldMode = 1;
           this->scene->isPKZone = 1;
         }
       }
       if (g_session.GetMapProperty0F()) {
-        g_serviceOptions.Set(229, 1);
+        g_serviceOptions.Set(TT_MIN_EFFECT_ON_OFF, 1);
       }
       if (!g_statusRefreshSuppressed) {
         g_modeMgr.GetGameMode()->scene->player->ReapplySkillEffects();
@@ -27623,7 +27623,7 @@ void CGameMode::ProcessIncomingPackets() {
           window->SendMsg(nullptr, UM_SET_CASHSHOP_BALANCE, packet->cashPoints, packet->kafraPoints,
                           0, 0);
         } else {
-          std::int16_t packetType = 0x844;
+          std::int16_t packetType = ID_CZ_SE_CASHSHOP_OPEN;
           GetRagConnection().Send(GetRagConnection().GetPacketSize(packetType), &packetType);
         }
       }
@@ -28656,7 +28656,7 @@ void CGameMode::ProcessIncomingPackets() {
     }
     case 0xBC8: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_SKILL_ENTRY5*>(g_gameModePacketBuffer);
-      if (packet->job != 176) {
+      if (packet->job != UNT_GRAFFITI) {
         this->SpawnGroundSkill(
             packet->aid, packet->creatorId,
             packet->skillId, packet->x,

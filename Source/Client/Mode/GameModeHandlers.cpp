@@ -693,7 +693,7 @@ void CGameMode::ReceiveGroundSkillExtended(const unsigned char* record) {
 // OFFSET: 0x00D413F0
 // FUNCTION: fn_21824
 void CGameMode::SpawnGroundSkill(std::uint32_t aid, std::uint32_t owner, int value, std::int16_t x, std::int16_t y, int type, signed char level, unsigned char visible, unsigned char flags) {
-  if (type != 0x126) {
+  if (type != UNT_SHINKIROU) {
     GroundSkillArgumentData data;
     data.extended.skill.aid = aid;
     data.extended.skill.type = type;
@@ -2990,7 +2990,7 @@ void CGameMode::Zc_Skill_Entry2(unsigned char* record) {
 // FUNCTION: fn_21820
 void CGameMode::ReceiveGroundSkill8(const unsigned char* record) {
   const GroundSkillPacket8& packet = *reinterpret_cast<const GroundSkillPacket8*>(record);
-  if (packet.type == 176) {
+  if (packet.type == UNT_GRAFFITI) {
     if (packet.length <= 19) {
       return;
     }
@@ -3049,7 +3049,7 @@ void CGameMode::ReceiveGroundSkill8(const unsigned char* record) {
 // FUNCTION: fn_21821
 void CGameMode::ReceiveGroundSkill32(const unsigned char* record) {
   const GroundSkillPacket32& packet = *reinterpret_cast<const GroundSkillPacket32*>(record);
-  if (packet.type == 176) {
+  if (packet.type == UNT_GRAFFITI) {
     if (packet.length <= 22) {
       return;
     }
