@@ -221,10 +221,10 @@ void CGameMode::DrawMiniMap() {
   TextureRegion view;
   int reduction;
   {
+    const float centerX = static_cast<float>(g_renderer->viewport.width - 144) + 64.0f;
     const int width = this->scene->terrain->width;
     const int height = this->scene->terrain->height;
     const CPlayer* player = this->scene->player;
-    const float centerX = static_cast<float>(g_renderer->viewport.width - 144) + 64.0f;
     int row;
     int column;
     this->WorldCell(player->render.position.x, player->render.position.z, column, row);
@@ -776,7 +776,7 @@ void CGameMode::DrawTimeAttackCountdown(std::uint32_t value, int mode) {
     case 3:
       remaining = g_session.m_timeAttackCountdown / 30;
       --g_session.m_timeAttackCountdown;
-      if (remaining == 0) {
+      if (remaining <= 0) {
         g_session.m_timeAttackVisible = 0;
       }
       break;
