@@ -873,9 +873,8 @@ bool CSession::LoadFogParameters() {
     } else if (values.size() < 3) {
       values.push_back(std::string(start, cursor));
     } else {
-      std::string last(start, cursor);
-      values.push_back(std::move(last));
-      this->m_fogParameters.push_back(std::make_pair(name, values));
+      values.push_back(std::string(start, cursor));
+      this->m_fogParameters.push_back(std::pair<std::string, std::vector<std::string>>(name, values));
       name.clear();
       values.clear();
     }
