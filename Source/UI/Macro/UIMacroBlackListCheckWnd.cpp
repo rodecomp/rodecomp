@@ -121,7 +121,6 @@ void UIMacroBlackListCheckWnd::Paint() {
   }
   this->DrawAlignedText(0x86, 0x109, stars.c_str(), 0x32, 6, 0x4949FF, 0, 0, 0xC, 0, 0);
 
-  int x = 0;
   for (int i = 0; i < this->codeLength; ++i) {
     int base = 0x46;
     if (this->codeLength == 4) {
@@ -130,8 +129,7 @@ void UIMacroBlackListCheckWnd::Paint() {
       base = 0x5D;
     }
 
-    this->DrawAlignedText(x + base, this->charColors[i], this->code + i, 0, 0, 0, 0, 0, this->charSizes[i], this->charFlags[i], 0);
-    x += 0x17;
+    this->DrawAlignedText(base + i * 0x17, this->charColors[i], this->code + i, 0, 0, 0, 0, 0, this->charSizes[i], this->charFlags[i], 0);
   }
 
 
