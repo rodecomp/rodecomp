@@ -10156,8 +10156,9 @@ void UInCashWnd::OnLBtnDblClk(int x, int y) {
   } else if (lists.GetNumPurchaseItems() > 3 && lists.GetNumPurchaseItems() < 7) {
     this->m_otherScroll->SetRange(4, 4, lists.GetNumPurchaseItems() + 1);
     if (this->m_firstOther > lists.GetNumPurchaseItems() - 3) {
-      this->m_firstOther = lists.GetNumPurchaseItems() - 3;
-      this->m_otherScroll->SetPosition(this->m_firstOther);
+      const int lastIndex = lists.GetNumPurchaseItems() - 3;
+      this->m_firstOther = lastIndex;
+      this->m_otherScroll->SetPosition(lastIndex);
     }
     this->m_otherScroll->Invalidate();
   }
