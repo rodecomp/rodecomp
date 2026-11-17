@@ -7,6 +7,27 @@
 #include <cstdint>
 #include <cstring>
 
+namespace {
+#pragma pack(push, 1)
+  struct EquipWindowRecord {
+    /* 0000 */ std::int16_t index;
+    /* 0002 */ int itemId;
+    /* 0006 */ unsigned char type;
+    /* 0007 */ std::uint16_t location;
+    /* 0009 */ std::uint16_t wearState;
+    /* 000B */ unsigned char refine;
+    /* 000C */ std::uint32_t cards[4];
+    /* 001C */ std::uint32_t expireTime;
+    /* 0020 */ std::uint16_t bindOnEquip;
+    /* 0022 */ std::uint16_t sprite;
+    /* 0024 */ unsigned char identified : 1;
+    /* 0024 */ unsigned char damaged : 1;
+    /* 0024 */ unsigned char etcTab : 1;
+  };
+#pragma pack(pop)
+
+  static_assert(sizeof(EquipWindowRecord) == 37);
+}
 
 // OFFSET: 0x00D325F0
 // FUNCTION: fn_21743
@@ -15,26 +36,24 @@ void CGameMode::ReceiveEquipWindowMicroscope(const unsigned char* packet) {
   g_session.ResetAlternateCostumeItems();
 
   const int length = *reinterpret_cast<const std::int16_t*>(packet + 2);
-  const int count = static_cast<unsigned>(length - 45) / 37u;
-  const unsigned char* entry = packet + 45;
-  for (int index = 0; index < count; ++index, entry += 37) {
+  const int count = static_cast<unsigned>(length - 45) / sizeof(EquipWindowRecord);
+  const EquipWindowRecord* record = reinterpret_cast<const EquipWindowRecord*>(packet + 45);
+  for (int index = 0; index < count; ++index, ++record) {
     ITEM_INFO item;
-    item.identity[0] = entry[6];
-    item.identity[2] = *reinterpret_cast<const std::uint16_t*>(entry + 7);
-    item.identity[1] = *reinterpret_cast<const std::int16_t*>(entry);
-    item.identity[3] = *reinterpret_cast<const std::uint16_t*>(entry + 9);
+    item.identity[0] = record->type;
+    item.identity[2] = record->location;
+    item.identity[1] = record->index;
+    item.identity[3] = record->wearState;
     item.quantity = 1;
-    std::memcpy(item.cards, entry + 12, sizeof(item.cards));
-    item.SetItemId(*reinterpret_cast<const int*>(entry + 2));
-
-    const unsigned char flags = entry[36];
-    item.identified = flags & 1;
-    item.damaged = (flags >> 1) & 1;
-    item.refiningLevel = entry[11];
-    item.expireTime = *reinterpret_cast<const std::uint32_t*>(entry + 28);
-    item.bindOnEquip = *reinterpret_cast<const std::uint16_t*>(entry + 32);
-    item.sprite = *reinterpret_cast<const std::uint16_t*>(entry + 34);
-    item.flags[0] = (flags >> 2) & 1;
+    std::memcpy(item.cards, record->cards, sizeof(item.cards));
+    item.SetItemId(record->itemId);
+    item.identified = record->identified;
+    item.damaged = record->damaged;
+    item.refiningLevel = record->refine;
+    item.expireTime = record->expireTime;
+    item.bindOnEquip = record->bindOnEquip;
+    item.sprite = record->sprite;
+    item.flags[0] = record->etcTab;
 
     if (item.identity[3] != 0) {
       if (g_session.IsCostumeLocation(item.identity[3])) {
