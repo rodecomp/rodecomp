@@ -5746,9 +5746,9 @@ unsigned CGameMode::ReadReplayGroundItems(const std::vector<unsigned char>& data
   }
 
   GameModeChunkHeader header;
-  unsigned offset = 6;
   header.Clear();
   header = *reinterpret_cast<const GameModeChunkHeader*>(data.data());
+  unsigned offset = 6;
   if (15000 != header.type) {
     offset = 0xFFFFFFFFu;
   } else {
@@ -5785,9 +5785,9 @@ unsigned CGameMode::ReadReplayActors(const std::vector<unsigned char>& data) {
   }
 
   GameModeChunkHeader header;
-  unsigned offset = 6;
   header.Clear();
   header = *reinterpret_cast<const GameModeChunkHeader*>(data.data());
+  unsigned offset = 6;
   if (10000 != header.type) {
     offset = 0xFFFFFFFFu;
   } else {
@@ -8264,7 +8264,7 @@ void CGameMode::ProcessRightButtonDrag() {
 // OFFSET: 0x00CE7CE0
 // FUNCTION: fn_21339
 void CGameMode::ProcessMouseWheel(int requireControl) {
-  if (timeGetTime() - this->wheelTick < 16) {
+  if (timeGetTime() - this->wheelTick <= 15) {
     return;
   }
 
@@ -9045,24 +9045,24 @@ int CGameMode::ProcessMousePick(int result, ActorPickInfo* pick) {
       }
 
       CGameActor* actor = this->scene->GetGameActorByAID(clickTarget);
-      if (!actor) {
-        clickTarget = 0;
+      if (actor) {
+        this->ProcessActorClick(result, pick, actor);
         return result;
       }
-      this->ProcessActorClick(result, pick, actor);
+      clickTarget = 0;
       return result;
     }
 
     if (pickTarget != 0) {
       CGameActor* actor = this->scene->GetGameActorByAID(pickTarget);
-      if (!actor) {
-        pickTarget = 0;
+      if (actor) {
+        if (lockedPick != 0 && actor->render.state == ST_DEAD) {
+          lockedPick = 0;
+        }
+        this->ProcessActorPick(result, pick, actor);
         return result;
       }
-      if (lockedPick != 0 && actor->render.state == ST_DEAD) {
-        lockedPick = 0;
-      }
-      this->ProcessActorPick(result, pick, actor);
+      pickTarget = 0;
       return result;
     }
   }
