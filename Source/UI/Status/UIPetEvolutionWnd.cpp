@@ -233,6 +233,10 @@ void UIPetEvolutionWnd::RebuildButtons() {
   }
 
   this->m_materialButtons.clear();
+  if (this->m_materials.empty()) {
+    return;
+  }
+
   int y = 230;
   for (auto it = this->m_materials.begin(); it != this->m_materials.end(); ++it) {
     ITEM_INFO item;
