@@ -6150,10 +6150,13 @@ int UIMerchantItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     break;
   case UM_DROP: {
     CGameMode* mode = g_modeMgr.GetGameMode();
-    if (mode->drag.source == 1) {
+    switch (mode->drag.source) {
+    case 1:
       mode->SendMsg(MM_MOVE_ITEM_FROM_BODY_TO_CART, mode->drag.id, mode->drag.quantity, 0, 0);
-    } else if (mode->drag.source == 6) {
+      break;
+    case 6:
       mode->SendMsg(MM_MOVE_ITEM_FROM_STORE_TO_CART, mode->drag.id, mode->drag.quantity, 0, 0);
+      break;
     }
 
     mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
@@ -6193,7 +6196,7 @@ int UIMerchantItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     const int size = g_session.GetNumMerchantShopItems();
     for (int i = 0; i < size; ++i) {
       ITEM_INFO item = g_session.GetMerchantShopItemInfoBySequence(i);
-      if (item.identity[1] != 0) {
+      if (item.identity[1] > 0) {
         this->items.push_back(item);
       }
     }
@@ -8537,7 +8540,7 @@ int UIItemStoreSubWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       this->SortReversed2();
     }
 
-    if (!this->nameFilter.empty() && !this->FilterByName2(std::string(this->nameFilter.c_str(), this->nameFilter.size()))) {
+    if (!this->nameFilter.empty() && !this->FilterByName2(this->nameFilter)) {
       return 0;
     }
 
@@ -8579,7 +8582,7 @@ int UIItemStoreSubWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
     return 0;
   }
   case UM_SEARCH_ITEMS:
-    if (!this->nameFilter.empty() && this->FilterByName2(std::string(this->nameFilter.c_str(), this->nameFilter.size()))) {
+    if (!this->nameFilter.empty() && this->FilterByName2(this->nameFilter)) {
       this->Invalidate();
       this->UpdateScrollBar();
     }
@@ -8755,7 +8758,7 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       if (!this->m_searchWindow) {
         this->m_searchWindow = g_windowMgr.EnsureWindow(WID_ITEMSTOREFINDWND);
         std::string text(this->searchEdit->Text());
-        if (!text.empty() && this->FilterByName(std::string(text.c_str(), text.size()))) {
+        if (!text.empty() && this->FilterByName(text)) {
           static_cast<UIItemStoreFindWnd*>(this->m_searchWindow)->SetSearchText(std::string(text.c_str(), text.size()));
           this->m_searchWindow->SendMsg(nullptr, UM_SEARCH_ITEMS, 0, 0, 0, 0);
         }
@@ -8874,7 +8877,7 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
 
     std::string text = this->searchEdit->Text();
     if (!text.empty() && a == 365) {
-      if (this->FilterByName(std::string(text.c_str(), text.size()))) {
+      if (this->FilterByName(text)) {
         this->Invalidate();
         this->UpdateScrollBar();
         for (int index = 0; index < 7; ++index) {
