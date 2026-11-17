@@ -3,6 +3,7 @@
 
 #include "Resource/Json/JsonCppLoaderExternal.h"
 
+#include <algorithm>
 #include <cstdlib>
 #include <cstring>
 #include <cstddef>
@@ -75,6 +76,7 @@ public:
   const JsonArray& GetArray() const;
   const JsonArray& ArrayRange() const;
   const JsonObject* ObjectRange() const;
+  const JsonValue* Find(std::string_view name) const;
 
   /* 0000 */ unsigned char type;
   /* 0001 */ unsigned char padding_0001;
@@ -216,10 +218,32 @@ inline const JsonObject* JsonValue::ObjectRange() const {
   }
 }
 
+// INLINED
+inline const JsonValue* JsonValue::Find(std::string_view name) const {
+  const JsonObject* members = this->Dereference()->ObjectRange();
+  if (members == nullptr) {
+    return nullptr;
+  }
+
+  const JsonObject::const_iterator member = std::lower_bound(
+    members->begin(), members->end(), name, [](const JsonMember& entry, std::string_view key) { return std::string_view(entry.first).compare(key) < 0; }
+  );
+  if (member == members->end() || std::string_view(member->first) != name) {
+    return nullptr;
+  }
+
+  return &member->second;
+}
+
 struct JsonCppLoaderParsedValue : JsonValue {
   // INLINED
   JsonCppLoaderParsedValue() {
     reinterpret_cast<void(__thiscall*)(JsonValue*, const JsonValue*)>(JsonCopyConstruct)(this, static_cast<const JsonValue*>(JsonNull()));
+  }
+
+  // INLINED
+  explicit JsonCppLoaderParsedValue(const JsonValue& other) {
+    reinterpret_cast<void(__thiscall*)(JsonValue*, const JsonValue*)>(JsonCopyConstruct)(this, &other);
   }
 
   // INLINED
@@ -242,7 +266,7 @@ public:
   JsonCppLoader();
   virtual ~JsonCppLoader();
 
-  JsonValue& GetValue(JsonValue& out, const std::string& key, const JsonValue& node, int expectedType);
+  JsonCppLoaderParsedValue GetValue(const std::string& key, const JsonValue& node, JsonValue::ValueType expectedType);
   JsonValue::ValueType GetValueType(const JsonValue& value);
   void Fail(const char* format, ...);
   bool LoadBson(const std::string& path);
@@ -272,26 +296,6 @@ public:
   /* 0030 */ bool loaded;
   /* 0031 */ bool succeeded;
 };
-
-inline JsonValue& JsonCppLoader::GetValue(JsonValue& out, const std::string& key, const JsonValue& node, int expectedType) {
-  const JsonValue* source = static_cast<const JsonValue*>(JsonNull());
-  if (!node.IsNull() && node.IsObject()) {
-    const JsonObject& members = node.GetObject();
-    JsonObject::const_iterator member = members.begin();
-    for (; member != members.end(); ++member) {
-      if (member->first == key) {
-        break;
-      }
-    }
-
-    if (member != members.end() && member->second.GetType() == expectedType) {
-      source = &member->second;
-    }
-  }
-
-  reinterpret_cast<void(__thiscall*)(JsonValue*, const JsonValue*)>(JsonCopyConstruct)(&out, source);
-  return out;
-}
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(JsonValue) == 0x10);

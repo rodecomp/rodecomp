@@ -54,15 +54,6 @@ std::string CreateUniqueFileName(const std::string& filename) {
   return result;
 }
 
-struct ScopedJsonValue {
-  JsonValue value;
-
-  // INLINED
-  ~ScopedJsonValue() {
-    reinterpret_cast<void(__thiscall*)(JsonValue*)>(JsonDestroy)(&this->value);
-  }
-};
-
 struct CopiedJsonValue {
   JsonValue value;
 
@@ -79,14 +70,13 @@ struct CopiedJsonValue {
 
 // INLINED
 static __forceinline bool GetDoubleValue(JsonCppLoader* loader, const JsonValue& node, const std::string& key, double* out) {
-  ScopedJsonValue value;
-  loader->GetValue(value.value, key, node, JsonValue::DOUBLE_VALUE);
-  if (value.value.IsNull() == true) {
+  const JsonCppLoaderParsedValue value = loader->GetValue(key, node, JsonValue::DOUBLE_VALUE);
+  if (value.IsNull() == true) {
     loader->Fail("key 에 해당하는 데이터를 찾지 못했습니다. (keyName : %s)", key.c_str());
     return false;
   }
 
-  *out = value.value.AsDouble();
+  *out = value.AsDouble();
   return true;
 }
 
@@ -114,8 +104,9 @@ bool JsonCppLoader::GetEZ2STREffect(std::map<std::string, EZ2STREffectRecord>* o
   }
 
   const JsonObject* members = effects->ObjectRange();
-  const JsonObject none;
-  for (const JsonMember& member : members ? *members : none) {
+  const JsonMember* const end = members ? members->data() + members->size() : nullptr;
+  for (const JsonMember* entry = members ? members->data() : nullptr; entry != end; ++entry) {
+    const JsonMember& member = *entry;
     const std::string name = member.first;
     const CopiedJsonValue node(member.second);
     EZ2STREffectRecord record;
