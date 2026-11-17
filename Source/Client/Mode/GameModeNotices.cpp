@@ -557,17 +557,11 @@ void CGameMode::ReceiveStatusChangeAck(const unsigned char* data) {
 // OFFSET: 0x00D45E30
 // FUNCTION: fn_21842
 void CGameMode::StopActorMove(std::uint32_t aid, std::int16_t x, std::int16_t y, unsigned char flag) {
-  CGameActor* actor;
   if (aid == g_session.m_aid) {
-    actor = this->scene->player;
-  } else {
-    actor = this->scene->GetGameActorByAID(aid);
-    if (!actor) {
-      return;
-    }
+    this->scene->player->SendMsg(nullptr, AM_STOPMOVE, x, y, 0, flag, 0, 0);
+  } else if (CGameActor* actor = this->scene->GetGameActorByAID(aid)) {
+    actor->SendMsg(nullptr, AM_STOPMOVE, x, y, 0, flag, 0, 0);
   }
-
-  actor->SendMsg(nullptr, AM_STOPMOVE, x, y, 0, flag, 0, 0);
 }
 
 // OFFSET: 0x00D69140
