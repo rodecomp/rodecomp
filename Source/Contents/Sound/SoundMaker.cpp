@@ -1714,14 +1714,14 @@ void CNpc::SetState(int state, int) {
           break;
         case ST_SKILL:
           switch (this->objectType) {
+            case NPC_MERSOL_TYPE:
+              this->SetAction(16, 4, 1);
+              break;
             case NPC_HO_TYPE:
             case NPC_ELEMENTAL_TYPE:
             case NPC_ABR_TYPE:
             case NPC_BIONIC_TYPE:
               this->SetAction(40, 4, 1);
-              break;
-            case NPC_MERSOL_TYPE:
-              this->SetAction(16, 4, 1);
               break;
           }
           if (this->GetEffectiveJob(-1) >= 6017 && this->GetEffectiveJob(-1) <= 6046) {
