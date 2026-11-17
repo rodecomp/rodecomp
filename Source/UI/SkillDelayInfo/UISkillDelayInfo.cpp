@@ -137,7 +137,7 @@ void CUIDelayItem::OnCreate(int width, int height) {
   this->level->SetOutline(0, 0xFFFFFF);
   this->AddChild(this->level);
 
-  for (int index = 4; index != 0; --index) {
+  for (int index = 0; index < 4; ++index) {
     CUITime* time = new CUITime();
     time->SetSize(70, 21);
     this->AddChild(time);
