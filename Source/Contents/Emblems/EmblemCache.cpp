@@ -51,7 +51,12 @@ bool CGuildMgr::IsInvalidEmblem(std::string path) const {
 // OFFSET: 0x0065DFB0
 // FUNCTION: fn_05171
 void CGuildMgr::MarkInvalidEmblem(std::string path) {
-  const std::string name = Basename(path);
+  std::string name = path;
+  const auto separator = path.rfind('\\');
+  if (separator != std::string::npos) {
+    name = path.substr(separator + 1, path.size());
+  }
+
   if (this->m_invalidEmblems.find(name) == this->m_invalidEmblems.end()) {
     this->m_invalidEmblems.insert(name);
   }
