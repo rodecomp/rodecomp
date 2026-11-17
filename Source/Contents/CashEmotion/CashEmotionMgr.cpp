@@ -3101,7 +3101,9 @@ int UICashEmotionPack::SetPack(int packId, bool showTooltip, bool hoverable) {
     this->packTitleText->SetTextFitted(g_cashEmotionMgr->GetPackTitle(packId));
   }
 
-  for (UICashEmotionPiece* piece : this->m_pieces) {
+  const auto pieceEnd = this->m_pieces.end();
+  for (auto pieceIt = this->m_pieces.begin(); pieceIt != pieceEnd; ++pieceIt) {
+    UICashEmotionPiece* piece = *pieceIt;
     this->RemoveChild(piece, 1);
   }
   this->m_pieces.clear();
