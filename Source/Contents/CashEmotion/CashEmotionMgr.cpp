@@ -2157,10 +2157,15 @@ const char* UICashEmotionListChildWnd_UnPurchased::Filter() {
 // OFFSET: 0x007C6540
 // FUNCTION: fn_09393
 __declspec(noinline) void UICashEmotionListChildWnd_UnPurchased::Refresh(const char* filter) {
-  this->m_filter = filter ? filter : "";
+  if (!filter) {
+    this->m_filter = "";
+  } else {
+    this->m_filter = filter;
+  }
   for (UICashEmotionPack_Unpurchase* item : this->m_items) {
     this->RemoveChild(item, 0);
   }
+  int y = 0;
   this->scrollPosition = 0;
   this->horizontalScrollPosition = 0;
 
@@ -2169,7 +2174,6 @@ __declspec(noinline) void UICashEmotionListChildWnd_UnPurchased::Refresh(const c
 
   std::string endFormat = g_simpleStringMgr->GetString("EMSG_EMOTION_SALE_END_TIME");
   std::vector<int> packs = g_cashEmotionMgr->SortUnownedPacks(filter);
-  int y = 0;
   for (int packId : packs) {
     CashEmotionPack* info = g_cashEmotionMgr->GetPack(packId);
     if (!info || !g_cashEmotionMgr->GetPackEmotionTable(packId)) {
