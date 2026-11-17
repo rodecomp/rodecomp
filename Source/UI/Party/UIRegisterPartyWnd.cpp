@@ -128,8 +128,8 @@ void UIRegisterPartyWnd::OnCreate(int, int) {
     this->jobs[index] = new UIJobSlotButton();
     this->jobs[index]->SetSize(16, 16);
     this->jobs[index]->Move(positions[index][0], positions[index][1]);
-    this->jobs[index]->selectedImage = static_cast<const std::string&>(path + images[index * 2] + ".bmp");
-    this->jobs[index]->unselectedImage = static_cast<const std::string&>(path + images[index * 2 + 1] + ".bmp");
+    this->jobs[index]->SetSelectedImage(path + images[index * 2] + ".bmp");
+    this->jobs[index]->SetUnselectedImage(path + images[index * 2 + 1] + ".bmp");
     this->jobs[index]->SetSelected(1);
     this->jobs[index]->SetTooltip(tooltips[index]);
     this->AddChild(this->jobs[index]);

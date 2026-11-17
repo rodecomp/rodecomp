@@ -10,6 +10,16 @@ public:
   void OnLBtnUp(int x, int y) override;
   void SetSelected(bool value);
 
+  // INLINED
+  void SetSelectedImage(std::string image) {
+    this->selectedImage = image;
+  }
+
+  // INLINED
+  void SetUnselectedImage(std::string image) {
+    this->unselectedImage = image;
+  }
+
   /* 0120 */ std::string selectedImage;
   /* 0138 */ std::string unselectedImage;
   /* 0150 */ bool selected;

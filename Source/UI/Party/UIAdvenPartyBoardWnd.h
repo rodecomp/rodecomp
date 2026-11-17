@@ -16,6 +16,7 @@ class UIStaticText;
 class UIBmpTextButton;
 class UIBasicButton;
 class UIEditCtrl;
+class UIEditCtrl5;
 class UIJobSlotButton;
 class UIComboBoxDef2Wnd;
 class UIPartyInfoWnd;
@@ -43,7 +44,7 @@ public:
   /* 00B4 */ UIStaticText* pageText;
   /* 00B8 */ UIWindow* padding_00B8;
   /* 00BC */ UIBitmapButton* refresh;
-  /* 00C0 */ UIEditCtrl* memo;
+  /* 00C0 */ UIEditCtrl5* memo;
   /* 00C4 */ UIPartyInfoWnd* rows[10];
   /* 00EC */ UIPartyInfoWnd* ownParty;
   /* 00F0 */ UIBmpTextButton* recruit;

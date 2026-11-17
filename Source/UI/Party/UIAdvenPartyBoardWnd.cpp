@@ -97,24 +97,23 @@ void UIAdvenPartyBoardWnd::OnCreate(int, int) {
     this->jobs[index] = new UIJobSlotButton();
     this->jobs[index]->SetSize(16, 16);
     this->jobs[index]->Move(positions[index][0], positions[index][1]);
-    this->jobs[index]->selectedImage = static_cast<const std::string&>(path + images[index * 2] + ".bmp");
-    this->jobs[index]->unselectedImage = static_cast<const std::string&>(path + images[index * 2 + 1] + ".bmp");
+    this->jobs[index]->SetSelectedImage(path + images[index * 2] + ".bmp");
+    this->jobs[index]->SetUnselectedImage(path + images[index * 2 + 1] + ".bmp");
     this->jobs[index]->SetSelected(0);
     this->jobs[index]->SetTooltip(tooltips[index]);
     this->AddChild(this->jobs[index]);
   }
 
-  auto* memo = new UIEditCtrl5();
-  this->memo = memo;
-  memo->SetSize(116, 14);
-  memo->maximum = 150;
-  memo->TextColor(0, 0, 0, 0xFFFFFFFFu);
-  memo->SetPlaceholderEnabled(true);
-  memo->SetPlaceholder(LookupMessage(MSI_EXPLAIN_CHAT_BLOCK));
-  memo->SetPlaceholderColor(0x646464);
-  memo->Move(238, 24);
-  memo->Background(255, 255, 255);
-  this->AddChild(memo);
+  this->memo = new UIEditCtrl5();
+  this->memo->SetSize(116, 14);
+  this->memo->maximum = 150;
+  this->memo->TextColor(0, 0, 0, 0xFFFFFFFFu);
+  this->memo->SetPlaceholderEnabled(true);
+  this->memo->SetPlaceholder(LookupMessage(MSI_EXPLAIN_CHAT_BLOCK));
+  this->memo->SetPlaceholderColor(0x646464);
+  this->memo->Move(238, 24);
+  this->memo->Background(255, 255, 255);
+  this->AddChild(this->memo);
 
   auto* search = new UIBmpTextButton();
   search->SetBitmap("유저인터페이스\\UIadventurerAgency\\btn_search.bmp", 0, 0);
