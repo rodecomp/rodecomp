@@ -68,7 +68,8 @@ namespace {
 
 // OFFSET: 0x00638A90
 // FUNCTION: fn_45421
-CSoundMgr::CSoundMgr() {
+CSoundMgr::CSoundMgr() : currentName(""), defaultName("") {
+  this->initialized = 0;
   if (this->Initialize()) {
     this->initialized = 1;
   }
