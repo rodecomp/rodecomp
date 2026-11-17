@@ -2086,15 +2086,16 @@ void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::ClearItems() {
 // OFFSET: 0x00A43B00
 // FUNCTION: fn_16044
 bool GameSettingsUI::CUIListPage::SetOptionChecked(int id) {
-  for (GameSettingsUI::CUIOptionItem* item : this->m_optionList->items) {
-    if (id == item->m_optionId) {
-      CUICheckBox* check = item->m_check;
-      check->checked = IsServiceOption(id) ^ g_serviceOptions.Get(id);
-      check->Invalidate();
-      return true;
-    }
+  auto& items = this->m_optionList->items;
+  auto found = std::find_if(items.begin(), items.end(), [id](GameSettingsUI::CUIOptionItem* item) { return id == item->m_optionId; });
+  if (found == items.end()) {
+    return false;
   }
-  return false;
+
+  CUICheckBox* check = (*found)->m_check;
+  check->checked = IsServiceOption(id) ^ g_serviceOptions.Get(id);
+  check->Invalidate();
+  return true;
 }
 
 // OFFSET: 0x00A43590
