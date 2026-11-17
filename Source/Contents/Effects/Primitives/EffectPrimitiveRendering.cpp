@@ -5252,8 +5252,8 @@ void CEffectPrim::Render2DDiamond() {
   this->state.triangles[0].vertices[0].u = 0.0f;
   this->state.triangles[0].vertices[0].v = 0.5f;
   this->state.triangles[0].vertices[1].x = 0.0f;
-  this->state.triangles[0].vertices[1].y = halfHeight;
   this->state.triangles[0].vertices[1].z = 0.000001f;
+  this->state.triangles[0].vertices[1].y = halfHeight;
   this->state.triangles[0].vertices[1].rhw = 0.999999f;
   this->state.triangles[0].vertices[1].diffuse = 0xFFFFFFFFu;
   this->state.triangles[0].vertices[1].u = 0.5f;

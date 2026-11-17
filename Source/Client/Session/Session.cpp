@@ -611,7 +611,8 @@ ITEM_INFO CSession::GetMerchantHopeToSellItemInfoByItemId(const char* itemId) co
 // OFFSET: 0x00DDF090
 // FUNCTION: fn_23417
 int CSession::GetMerchantHopeToSellItemNumByItemId(const char* itemId) const {
-  for (const ITEM_INFO& item : this->m_merchantHopeToSellItems) {
+  for (auto it = this->m_merchantHopeToSellItems.begin(); it != this->m_merchantHopeToSellItems.end(); ++it) {
+    const ITEM_INFO& item = *it;
     if (item.itemId == itemId) {
       return item.quantity;
     }
@@ -981,11 +982,11 @@ ITEM_INFO* CSession::FindInventoryItemByItemId(int itemId, bool identifiedOnly) 
 // FUNCTION: fn_23390
 int CSession::GetInventoryItemCount(int itemId) const {
   int count = 0;
-  for (const ITEM_INFO& item : this->m_inventoryItems) {
+  std::for_each(this->m_inventoryItems.begin(), this->m_inventoryItems.end(), [&](const ITEM_INFO& item) {
     if (std::atoi(item.itemId.c_str()) == itemId) {
       count += item.quantity;
     }
-  }
+  });
 
   return count;
 }
@@ -1550,7 +1551,8 @@ ITEM_INFO CSession::GetPurchaseItemInfoBySequence(int index) const {
 // OFFSET: 0x00DE0770
 // FUNCTION: fn_23458
 int CSession::GetPurchaseItemNumByItemId(const char* itemId) const {
-  for (const ITEM_INFO& item : this->m_purchaseItems) {
+  for (auto it = this->m_purchaseItems.begin(); it != this->m_purchaseItems.end(); ++it) {
+    const ITEM_INFO& item = *it;
     if (item.itemId == itemId) {
       return item.quantity;
     }

@@ -104,7 +104,10 @@ CRes* ResourceMgr::Find(int type, const char* name) const {
   ResourceName key(name);
   const auto entry = this->m_resources[type].find(&key);
 
-  return entry == this->m_resources[type].end() ? nullptr : entry->second;
+  if (entry != this->m_resources[type].end()) {
+    return entry->second;
+  }
+  return nullptr;
 }
 
 // OFFSET: 0x00AEF7D0

@@ -1405,11 +1405,11 @@ void UIWindowMgr::SetWindows189Visible(unsigned char show) {
 // OFFSET: 0x00AAA2D0
 // FUNCTION: fn_17268
 void UIWindowMgr::ShowWindowsWithId(int id, unsigned char show) {
-  for (UIWindow* window : this->rendered) {
+  std::for_each(this->rendered.begin(), this->rendered.end(), [&](UIWindow* window) {
     if (id == window->geometry.id) {
       window->Show(show);
     }
-  }
+  });
 }
 
 namespace {

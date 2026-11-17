@@ -2476,9 +2476,9 @@ void CUITextViewer::SetScrollBarBackground(const std::string& name) {
 // OFFSET: 0x009E9DD0
 // FUNCTION: fn_14512
 void CUITextViewer::Clear() {
-  for (auto& child : this->childPositions) {
+  std::for_each(this->childPositions.begin(), this->childPositions.end(), [&](auto& child) {
     this->RemoveChild(child.first, 1);
-  }
+  });
   this->childPositions.clear();
   this->lines.clear();
   this->contentHeight = 0;

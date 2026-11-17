@@ -3132,14 +3132,14 @@ void CGameMode::ReceiveSpriteChange2Mirrored(const unsigned char* packet) {
   const auto* value = reinterpret_cast<const SpriteChange2RelayPacket*>(packet);
   this->ReceiveSpriteChange2(packet);
   if (value->aid == g_session.m_aid) {
-    for (std::uint32_t aid : this->spriteMirrorActorIds) {
+    std::for_each(this->spriteMirrorActorIds.begin(), this->spriteMirrorActorIds.end(), [=](std::uint32_t aid) {
       SpriteChange2RelayPacket relay;
       relay.id = ID_ZC_SPRITE_CHANGE2;
       relay.aid = aid;
       relay.type = value->type;
       relay.value = value->value;
       this->ReceiveSpriteChange2(reinterpret_cast<const unsigned char*>(&relay));
-    }
+    });
   }
 }
 
