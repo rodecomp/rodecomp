@@ -110,7 +110,9 @@ __declspec(safebuffers) void CEffectPrim::RenderSpinSquare(
   matrix& wtm, int* rpCnt, float scale, short slotIndex, short pw, unsigned char red, unsigned char green, unsigned char blue
 ) {
   EffectPrimitiveSlot& slot = this->state.slots[slotIndex];
+  const float distance = slot.distance;
   float tilt = slot.height[8];
+  const int angle1 = slot.fullDisplayAngle;
   if (tilt >= 360.0f || tilt < 0.0f) {
     slot.height[8] = 0.0f;
     tilt = 0.0f;
@@ -125,8 +127,7 @@ __declspec(safebuffers) void CEffectPrim::RenderSpinSquare(
   vec3.y = 0.0f;
   vec4.y = 0.0f;
 
-  const float radius = slot.distance * g_sinTable[static_cast<int>(tilt)] * 0.05f + slot.distance * scale;
-  const int angle1 = slot.fullDisplayAngle;
+  const float radius = distance * g_sinTable[static_cast<int>(tilt)] * 0.05f + distance * scale;
   const int angle2 = angle1 + (angle1 < 270 ? 90 : -270);
   const int angle3 = angle2 + (angle2 + 90 >= 360 ? -270 : 90);
   const int angle4 = angle3 + (angle3 + 90 >= 360 ? -270 : 90);
@@ -208,13 +209,13 @@ void CEffectPrim::RenderTrailingArc(matrix& wtm) {
     const int step = this->state.slots[ec].fullDisplayAngle / 20;
     int i = 0;
     for (int offset = 0; offset <= this->state.slots[ec].fullDisplayAngle; offset += step) {
-      int angle = (this->state.slots[ec].rotStart + offset) % 360;
+      int angle = (offset + this->state.slots[ec].rotStart) % 360;
       if (this->state.slots[ec].fullDisplayAngle == 360 && i == 20) {
         angle = this->state.slots[ec].rotStart;
       }
 
-      const float baseX = this->state.slots[ec].distance * g_cosTable[angle];
       const float baseZ = this->state.slots[ec].distance * g_sinTable[angle];
+      const float baseX = this->state.slots[ec].distance * g_cosTable[angle];
       const float rise = this->state.slots[ec].height[i];
       const float riseX = rise * g_cosTable[this->state.slots[ec].riseAngle];
       curT.y = -(rise * g_sinTable[this->state.slots[ec].riseAngle]);
