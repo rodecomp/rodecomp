@@ -6420,8 +6420,6 @@ void UInCashWnd::OnCreate(int width, int height) {
 // OFFSET: 0x00908260
 // FUNCTION: fn_12391
 int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
-  char key[512];
-
   switch (message) {
   case UM_SETINFO:
     this->m_placement = reinterpret_cast<NCashWndInfo*>(argument1);
@@ -6439,6 +6437,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
     return 0;
 
   case UM_SET_CASHSHOP_BALANCE: {
+    char key[512];
     std::strcpy(key, g_subKey);
     std::strcat(key, "\\NeoCash");
     HKEY handle;
@@ -6514,7 +6513,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
     return 0;
 
   case UM_REFRESH: {
-    this->items.clear();
+    this->items.erase(this->items.begin(), this->items.end());
     const int count = g_session.GetInventoryCategorySize(this->m_tab);
     for (int index = 0; index < count; ++index) {
       ITEM_INFO item = g_session.GetInventoryCategoryItemInfoBySequence(this->m_tab, index);
@@ -6531,7 +6530,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
     case 386:
       this->m_totalPrice = 0;
       g_session.ClearPurchaseItems();
-      this->m_otherItems.clear();
+      this->m_otherItems.erase(this->m_otherItems.begin(), this->m_otherItems.end());
       this->m_firstOther = 0;
       this->m_otherScroll->SetPosition(0);
       this->m_otherScroll->Invalidate();
@@ -6543,51 +6542,52 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
       if (this->m_totalPrice <= 0) {
         break;
       }
-      int notice;
-      if (this->m_cashBalance < std::atoi(this->m_pointEdit->Text()) || std::atoi(this->m_pointEdit->Text()) + this->m_pointBalance < this->m_totalPrice) {
-        notice = MSI_BUY_CASH_FAIL_MONEY;
-      } else if (std::atoi(this->m_pointEdit->Text()) <= this->m_totalPrice) {
-        NCashBuyHeader header = {};
-        header.packetType = ID_CZ_SE_PC_BUY_CASHITEM_LIST;
-        const int points = std::atoi(this->m_pointEdit->Text());
-        const int total = this->m_totalPrice;
-        header.points = points;
-        char text[0x800];
-        if (points == 0) {
-          FormatMessageBuffer(text, LookupMessage(MSI_BILLING_INFO_URL), total);
-        } else {
-          FormatMessageBuffer(text, LookupMessage(MSI_CHANGE_MATERIAL_INVSORT), total - points, points);
-        }
-        if (g_windowMgr.Confirm(text, 2, true, true, 0, "Message", 280, 120, 0) != ID_YES) {
-          break;
-        }
-
-        const int count = g_session.GetNumPurchaseItems();
-        const unsigned int length = (count + 1) * 10;
-        if (length > 0x800) {
-          break;
-        }
-        header.packetLength = static_cast<std::uint16_t>(length);
-        header.count = static_cast<std::uint16_t>(count);
-        char buffer[0x800];
-        std::memcpy(buffer, &header, sizeof(header));
-        if (count == 0) {
-          break;
-        }
-        for (int index = 0; index < count; ++index) {
-          ITEM_INFO item = g_session.GetPurchaseItemInfoBySequence(index);
-          NCashBuyItem entry;
-          entry.itemId = std::atoi(item.itemId.c_str());
-          entry.quantity = item.quantity;
-          entry.tab = item.bindOnEquip;
-          std::memcpy(buffer + sizeof(header) + index * sizeof(entry), &entry, sizeof(entry));
-        }
-        GetRagConnection().Send(static_cast<short>(length), buffer);
+      if (std::atoi(this->m_pointEdit->Text()) > this->m_cashBalance) {
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BUY_CASH_FAIL_MONEY)), 0xFF, 0, 0, 0);
         return 0;
-      } else {
-        notice = MSI_BUY_CASH_FAIL2;
       }
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(notice)), 0xFF, 0, 0, 0);
+      if (this->m_totalPrice > std::atoi(this->m_pointEdit->Text()) + this->m_pointBalance) {
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BUY_CASH_FAIL_MONEY)), 0xFF, 0, 0, 0);
+        return 0;
+      }
+      if (std::atoi(this->m_pointEdit->Text()) > this->m_totalPrice) {
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BUY_CASH_FAIL2)), 0xFF, 0, 0, 0);
+        return 0;
+      }
+      NCashBuyHeader header = {};
+      header.packetType = ID_CZ_SE_PC_BUY_CASHITEM_LIST;
+      header.points = std::atoi(this->m_pointEdit->Text());
+      char text[0x800];
+      if (header.points == 0) {
+        FormatMessageBuffer(text, LookupMessage(MSI_BILLING_INFO_URL), this->m_totalPrice);
+      } else {
+        FormatMessageBuffer(text, LookupMessage(MSI_CHANGE_MATERIAL_INVSORT), this->m_totalPrice - header.points, header.points);
+      }
+      if (g_windowMgr.Confirm(text, 2, true, true, 0, "Message", 280, 120, 0) != ID_YES) {
+        break;
+      }
+
+      const int count = g_session.GetNumPurchaseItems();
+      const unsigned int length = (count + 1) * 10;
+      if (length > 0x800) {
+        break;
+      }
+      header.packetLength = static_cast<std::uint16_t>(length);
+      header.count = static_cast<std::uint16_t>(count);
+      char buffer[0x800];
+      std::memcpy(buffer, &header, sizeof(header));
+      if (count == 0) {
+        break;
+      }
+      for (int index = 0; index < count; ++index) {
+        ITEM_INFO item = g_session.GetPurchaseItemInfoBySequence(index);
+        NCashBuyItem entry;
+        entry.itemId = std::atoi(item.itemId.c_str());
+        entry.quantity = item.quantity;
+        entry.tab = item.bindOnEquip;
+        std::memcpy(buffer + sizeof(header) + index * sizeof(entry), &entry, sizeof(entry));
+      }
+      GetRagConnection().Send(static_cast<short>(length), buffer);
       return 0;
     }
 
@@ -6667,7 +6667,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
     case 397:
     case 398:
     case 477: {
-      if (static_cast<unsigned int>(this->m_tab) < 11 && this->m_buttons[this->m_tab] != nullptr) {
+      if (static_cast<unsigned int>(this->m_tab) <= 10 && this->m_buttons[this->m_tab] != nullptr) {
         this->m_buttons[this->m_tab]->SetDisabled(0);
         this->m_buttons[this->m_tab]->Invalidate();
         this->m_buttons[this->m_tab]->SetState(0);
@@ -6681,6 +6681,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
         this->m_otherScroll->Move(-100, -100);
       }
 
+      char key[512];
       std::strcpy(key, g_subKey);
       std::strcat(key, "\\NeoCash");
       HKEY handle;
@@ -6698,7 +6699,8 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
 
   case UM_DROP: {
     CGameMode* mode = g_modeMgr.GetGameMode();
-    if (mode->drag.source == 4) {
+    switch (mode->drag.source) {
+    case 4: {
       ITEM_INFO item;
       item.Assign(mode->drag);
       g_session.RemoveItem1720ByName(item);
@@ -6717,7 +6719,9 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
         }
         this->m_otherScroll->Invalidate();
       }
-    } else if (mode->drag.source == 6) {
+      break;
+    }
+    case 6: {
       if (g_session.GetNumPurchaseItems() >= 8) {
         mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
         return 0;
@@ -6760,9 +6764,11 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
         this->m_otherScroll->SetPosition(this->m_firstOther);
         this->m_otherScroll->Invalidate();
       }
+      break;
+    }
     }
 
-    this->m_otherItems.clear();
+    this->m_otherItems.erase(this->m_otherItems.begin(), this->m_otherItems.end());
     const int count = g_session.GetNumPurchaseItems();
     for (int index = 0; index < count; ++index) {
       ITEM_INFO other = g_session.GetPurchaseItemInfoBySequence(index);
