@@ -7137,7 +7137,8 @@ void UIExchangeWnd::OnMouseHover(int x, int y) {
   }
 
   int tooltipX = x >= 280 ? 321 : 42;
-  tooltipY = (tooltipY - 17) / this->m_rowHeight * this->m_rowHeight + 4;
+  const int row = (tooltipY - 17) / this->m_rowHeight;
+  tooltipY = row * this->m_rowHeight + 4;
   this->ToScreen(tooltipX, tooltipY);
 
   CMode* tooltip = g_modeMgr.currentMode;
