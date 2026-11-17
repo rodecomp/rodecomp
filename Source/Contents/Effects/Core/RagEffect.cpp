@@ -4224,11 +4224,12 @@ void CRagEffect::FeatherRing(const char* name, std::int16_t angle, char large) {
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
   this->state.lastPrim->state.size = large == 1 ? 10.0f : 4.0f;
 
-  for (int index = 0; index < 4; ++index) {
+  int index;
+  for (index = 0; index < 4; ++index) {
     this->state.lastPrim->state.slots[index].life = 0;
   }
 
-  for (int index = 0; index < 4; ++index) {
+  for (index = 0; index < 4; ++index) {
     this->state.lastPrim->state.slots[index].life = 1;
     this->state.lastPrim->state.slots[index].process = 0;
     this->state.lastPrim->state.slots[index].maxHeight = static_cast<float>(ClampedRandom(11)) * 0.2f + 4.0f;
@@ -5191,12 +5192,13 @@ void CRagEffect::Magnum2(const char* name) {
       this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
       this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
       this->state.lastPrim->state.size = 5.0f;
-      for (int i = 0; i < 4; ++i) {
+      int i;
+      for (i = 0; i < 4; ++i) {
         this->state.lastPrim->state.slots[i].life = 0;
       }
       const float maxHeight = 20.0f - static_cast<float>(elapsed) * 0.7f;
       const float distance = static_cast<float>(elapsed) * 0.2f + 5.0f;
-      for (int i = 0; i < 2; ++i) {
+      for (i = 0; i < 2; ++i) {
         this->state.lastPrim->state.slots[i].life = 1;
         this->state.lastPrim->state.slots[i].process = 0;
         this->state.lastPrim->state.slots[i].fullDisplayAngle = 360;
@@ -6630,11 +6632,12 @@ void CRagEffect::ElectricFan(const char*, std::int16_t fade) {
   this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\elec1.tga", 0, false, true, false);
   this->state.lastPrim->state.size = 0.0f;
 
-  for (int index = 0; index < 4; ++index) {
+  int index;
+  for (index = 0; index < 4; ++index) {
     this->state.lastPrim->state.slots[index].life = 0;
   }
 
-  for (int index = 0; index < 4; ++index) {
+  for (index = 0; index < 4; ++index) {
     this->state.lastPrim->state.slots[index].life = 1;
     this->state.lastPrim->state.slots[index].process = 0;
     this->state.lastPrim->state.slots[index].maxHeight = 0.1f;
