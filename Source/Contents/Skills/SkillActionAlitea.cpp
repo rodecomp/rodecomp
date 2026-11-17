@@ -1819,12 +1819,16 @@ static EfstActionRegistrar s_efstActionSolidStomp{EFST_SOLID_STOMP, NewAction<CE
 // GLOBAL: gl_25629
 static EfstActionRegistrar s_efstActionZephyrLink{EFST_ZEPHYR_LINK, NewAction<CEfstAction_ZEPHYR_LINK, CEfstAction>};
 
+struct SkillObjectActionRegistration {
+  // INLINED
+  __forceinline SkillObjectActionRegistration(int skillId, std::function<CSkillObjectAction*()> factory) {
+    CSkillActionMgr::GetInstance()->RegisterSkillObjectAction(skillId, factory);
+  }
+};
+
 // OFFSET: 0x0040D1D0
 // FUNCTION: fn_45560
-static bool s_skillObjectActionRegistered314 = [](std::function<CSkillObjectAction*()> factory) {
-  CSkillActionMgr::GetInstance()->RegisterSkillObjectAction(314, factory);
-  return true;
-}(NewAction<CSkillObjectAction_AT_GLACIER_MONOLITH, CSkillObjectAction>);
+static SkillObjectActionRegistration s_skillObjectActionRegistered314(314, NewAction<CSkillObjectAction_AT_GLACIER_MONOLITH, CSkillObjectAction>);
 
 // GLOBAL: gl_25630
 static SkillActionRegistrar s_skillActionAtAeroSync{AT_AERO_SYNC, NewAction<CSkillAction_AT_AERO_SYNC, CSkillAction>};
