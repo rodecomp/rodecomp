@@ -197,8 +197,9 @@ void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>:
     return;
   }
 
-  for (SkillDelayInfo::CUIDelayItem* item : this->items) {
-    this->RemoveChild(item, 1);
+  const auto end = this->items.end();
+  for (auto it = this->items.begin(); it != end; ++it) {
+    this->RemoveChild(*it, 1);
   }
   this->items.clear();
   this->selected = static_cast<unsigned int>(-1);
@@ -214,12 +215,12 @@ void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>:
       item->SetSize(this->itemWidth, this->rowHeight);
       item->Show(0);
       item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
-      item->onHover = [this](CUIListItem* listItem) {
+      item->SetOnHover([this](CUIListItem* listItem) {
         for (SkillDelayInfo::CUIDelayItem* row : this->items) {
           row->SetHighlighted(listItem == row);
         }
-      };
-      item->onPress = [this](CUIListItem* listItem) {
+      });
+      item->SetOnPress([this](CUIListItem* listItem) {
         if (this->layoutFlag) {
           return;
         }
@@ -245,7 +246,7 @@ void CUIListBoxEx<SkillDelayInfo::CUIDelayItem, SkillDelayInfo::CDelayItemData>:
           }
           this->onSelect(delayItem, *node);
         }
-      };
+      });
       this->AddChild(item);
       slot = item;
     }
