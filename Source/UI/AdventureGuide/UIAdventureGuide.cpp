@@ -35,6 +35,7 @@
 template __declspec(noinline) std::string std::sub_match<std::string::const_iterator>::str() const;
 template __declspec(noinline) void CUIListBox<AdventureGuide::CUISubTab>::UpdateScrollBar();
 template __declspec(noinline) void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::UpdateScrollBar();
+template __declspec(noinline) std::function<void(CUIListItem*)>& std::function<void(CUIListItem*)>::operator=(const std::function<void(CUIListItem*)>&);
 
 template void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::UpdateScrollBar();
 template void CUIListBox<AdventureGuide::CUITab>::UpdateScrollBar();
@@ -1537,14 +1538,20 @@ AdventureGuide::CUISubTab* CUIListBox<AdventureGuide::CUISubTab>::CreateItem() {
   item->SetSize(this->itemWidth, this->rowHeight);
   item->Show(0);
   item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
-  item->onHover = [this](CUIListItem* listItem) {
-    for (AdventureGuide::CUISubTab* other : this->items) {
-      other->SetHighlighted(other == listItem);
-    }
-  };
-  item->onPress = [this](CUIListItem* listItem) {
-    this->SelectItem(listItem);
-  };
+  {
+    const std::function<void(CUIListItem*)> onHover = [this](CUIListItem* listItem) {
+      for (AdventureGuide::CUISubTab* other : this->items) {
+        other->SetHighlighted(other == listItem);
+      }
+    };
+    item->onHover = onHover;
+  }
+  {
+    const std::function<void(CUIListItem*)> onPress = [this](CUIListItem* listItem) {
+      this->SelectItem(listItem);
+    };
+    item->onPress = onPress;
+  }
   this->AddChild(item);
   this->items.push_back(item);
   this->UpdateScrollBar();
@@ -1560,14 +1567,20 @@ AdventureGuide::CUITab* CUIListBox<AdventureGuide::CUITab>::CreateItem() {
   item->SetSize(this->itemWidth, this->rowHeight);
   item->Show(0);
   item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
-  item->onHover = [this](CUIListItem* listItem) {
-    for (AdventureGuide::CUITab* other : this->items) {
-      other->SetHighlighted(other == listItem);
-    }
-  };
-  item->onPress = [this](CUIListItem* listItem) {
-    this->SelectItem(listItem);
-  };
+  {
+    const std::function<void(CUIListItem*)> onHover = [this](CUIListItem* listItem) {
+      for (AdventureGuide::CUITab* other : this->items) {
+        other->SetHighlighted(other == listItem);
+      }
+    };
+    item->onHover = onHover;
+  }
+  {
+    const std::function<void(CUIListItem*)> onPress = [this](CUIListItem* listItem) {
+      this->SelectItem(listItem);
+    };
+    item->onPress = onPress;
+  }
   this->AddChild(item);
   this->items.push_back(item);
   this->UpdateScrollBar();
