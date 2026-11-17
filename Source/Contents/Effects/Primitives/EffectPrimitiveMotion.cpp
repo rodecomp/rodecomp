@@ -3086,14 +3086,13 @@ bool CEffectPrim::PrimAcidDemon() {
     }
 
     ++slot.process;
-    const int roll = std::rand();
 
     if (index == 3) {
-      const int step = roll % 2;
-      slot.rotStart = static_cast<std::int16_t>((step >= 0 ? step : 0) + 2 + slot.rotStart);
+      const int step = std::rand() % 2;
+      slot.rotStart = static_cast<std::int16_t>((step >= 0 ? step : 0) + 2 + this->state.slots[index].rotStart);
     } else {
-      const int step = roll % 3;
-      slot.rotStart = static_cast<std::int16_t>((step >= 0 ? step : 0) + 4 + slot.rotStart);
+      const int step = std::rand() % 3;
+      slot.rotStart = static_cast<std::int16_t>((step >= 0 ? step : 0) + 4 + this->state.slots[index].rotStart);
     }
 
     if (slot.rotStart >= 360) {
@@ -6498,8 +6497,8 @@ bool CEffectPrim::PrimRippleRings() {
     for (int column = 0; column < 21; ++column) {
       slot.height[column] = slot.maxHeight;
 
-      if (slot.process < 11) {
-        slot.height[column] = slot.maxHeight * g_sinTable[slot.process * 9];
+      if (slot.process <= 10) {
+        slot.height[column] *= g_sinTable[slot.process * 9];
       }
     }
   }
@@ -7042,21 +7041,29 @@ bool CEffectPrim::PrimDriftingSparks() {
 
 namespace {
   // INLINED
-  __forceinline bool StepTowardAngle(float& angle, float target, float step) {
+  template <typename Retarget>
+  __forceinline void StepTowardAngle(float& angle, float target, float step, Retarget retarget) {
     const float difference = angle - target;
 
     if (difference < 180.0f && difference >= 0.0f) {
       angle -= step;
-      return !(target < angle);
-    }
 
-    if (difference < -180.0f) {
+      if (angle <= target) {
+        retarget();
+      }
+    } else if (difference < -180.0f) {
       angle -= step;
-      return !(target - 360.0f < angle);
-    }
 
-    angle += step;
-    return !(angle < target);
+      if (angle <= target - 360.0f) {
+        retarget();
+      }
+    } else {
+      angle += step;
+
+      if (angle >= target) {
+        retarget();
+      }
+    }
   }
 
   // INLINED
@@ -7100,13 +7107,13 @@ bool CEffectPrim::PrimWanderingFlames() {
     for (int pair = 0; pair < 2; ++pair) {
       float* values = &slot.height[pair * 5];
 
-      if (StepTowardAngle(values[2], values[1], 2.0f)) {
+      StepTowardAngle(values[2], values[1], 2.0f, [values] {
         values[1] = values[0] - 45.0f + static_cast<float>(rand() % 91);
-      }
+      });
 
-      if (StepTowardAngle(values[4], values[3], 1.0f)) {
+      StepTowardAngle(values[4], values[3], 1.0f, [values] {
         values[3] = static_cast<float>(rand() % 11 + 175);
-      }
+      });
     }
 
     for (int angle = 0; angle < 10; ++angle) {
@@ -7154,13 +7161,13 @@ bool CEffectPrim::PrimWanderingFlames2() {
     for (int pair = 0; pair < 2; ++pair) {
       float* values = &slot.height[pair * 5];
 
-      if (StepTowardAngle(values[2], values[1], 2.0f)) {
+      StepTowardAngle(values[2], values[1], 2.0f, [values] {
         values[1] = static_cast<float>(rand() % 360) + values[0];
-      }
+      });
 
-      if (StepTowardAngle(values[4], values[3], 1.0f)) {
+      StepTowardAngle(values[4], values[3], 1.0f, [values] {
         values[3] = static_cast<float>(rand() % 11 + 175);
-      }
+      });
     }
 
     for (int angle = 0; angle < 10; ++angle) {
