@@ -57,7 +57,7 @@ void UIRequestJoinPartyMgr::Shutdown() {
 // OFFSET: 0x007C00F0
 // FUNCTION: fn_09311
 void UIRequestJoinPartyMgr::Add(std::uint32_t accountId, std::uint32_t characterId, const char* name, std::int16_t job, std::int16_t level) {
-  if (std::find(this->m_blocked.begin(), this->m_blocked.end(), accountId) != this->m_blocked.end()) {
+  if (std::find_if(this->m_blocked.begin(), this->m_blocked.end(), [&](std::uint32_t blocked) { return accountId == blocked; }) != this->m_blocked.end()) {
     return;
   }
 
