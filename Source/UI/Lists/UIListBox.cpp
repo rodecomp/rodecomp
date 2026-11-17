@@ -217,12 +217,13 @@ void UIChatHisBox::AddText(const char* text, std::uint32_t color, const char* st
   }
   this->lineColors.push_back(color);
 
-  int mode = 4;
   const auto* bytes = reinterpret_cast<const unsigned char*>(text);
 
   if (_mbsstr(bytes, reinterpret_cast<const unsigned char*>(g_itemLinkTagBegin.c_str())) || _mbsstr(bytes, reinterpret_cast<const unsigned char*>(g_itemLinkTagEnd.c_str()))) {
+    int mode = 4;
     this->AddItemLinkLine(text, color, mode);
-  } else if (g_navigationLinkParser->HasLink(std::string(text))) {
+  } else if (GetNavigationLinkParser()->HasLink(std::string(text))) {
+    int mode = 4;
     this->AddNavigationLinkLine(text, color, mode);
   } else {
     this->UIListBox::AddLine(text);
