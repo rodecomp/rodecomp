@@ -507,8 +507,9 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::AddNewItem() {
     return;
   }
 
-  for (GameSettingsUI::CUIComboItem* item : this->items) {
-    this->RemoveChild(item, 1);
+  const auto end = this->items.end();
+  for (auto it = this->items.begin(); it != end; ++it) {
+    this->RemoveChild(*it, 1);
   }
   this->items.clear();
   this->selected = static_cast<unsigned int>(-1);
@@ -524,14 +525,14 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderAdapter>::AddNewItem() {
       item->SetSize(this->itemWidth, this->rowHeight);
       item->Show(0);
       item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
-      item->onHover = [this](CUIListItem* listItem) {
+      item->SetOnHover([this](CUIListItem* listItem) {
         for (GameSettingsUI::CUIComboItem* other : this->items) {
           other->SetHighlighted(other == listItem);
         }
-      };
-      item->onPress = [this](CUIListItem* listItem) {
+      });
+      item->SetOnPress([this](CUIListItem* listItem) {
         this->SelectItem(listItem);
-      };
+      });
       this->AddChild(item);
       slot = item;
     }
@@ -549,8 +550,9 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::AddNewItem() {
     return;
   }
 
-  for (GameSettingsUI::CUIComboItem* item : this->items) {
-    this->RemoveChild(item, 1);
+  const auto end = this->items.end();
+  for (auto it = this->items.begin(); it != end; ++it) {
+    this->RemoveChild(*it, 1);
   }
   this->items.clear();
   this->selected = static_cast<unsigned int>(-1);
@@ -566,14 +568,14 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, DisplayMode>::AddNewItem() {
       item->SetSize(this->itemWidth, this->rowHeight);
       item->Show(0);
       item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
-      item->onHover = [this](CUIListItem* listItem) {
+      item->SetOnHover([this](CUIListItem* listItem) {
         for (GameSettingsUI::CUIComboItem* other : this->items) {
           other->SetHighlighted(other == listItem);
         }
-      };
-      item->onPress = [this](CUIListItem* listItem) {
+      });
+      item->SetOnPress([this](CUIListItem* listItem) {
         this->SelectItem(listItem);
-      };
+      });
       this->AddChild(item);
       slot = item;
     }
@@ -591,8 +593,9 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::AddNewItem() {
     return;
   }
 
-  for (GameSettingsUI::CUIComboItem* item : this->items) {
-    this->RemoveChild(item, 1);
+  const auto end = this->items.end();
+  for (auto it = this->items.begin(); it != end; ++it) {
+    this->RemoveChild(*it, 1);
   }
   this->items.clear();
   this->selected = static_cast<unsigned int>(-1);
@@ -608,14 +611,14 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, RenderBackend>::AddNewItem() {
       item->SetSize(this->itemWidth, this->rowHeight);
       item->Show(0);
       item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
-      item->onHover = [this](CUIListItem* listItem) {
+      item->SetOnHover([this](CUIListItem* listItem) {
         for (GameSettingsUI::CUIComboItem* other : this->items) {
           other->SetHighlighted(other == listItem);
         }
-      };
-      item->onPress = [this](CUIListItem* listItem) {
+      });
+      item->SetOnPress([this](CUIListItem* listItem) {
         this->SelectItem(listItem);
-      };
+      });
       this->AddChild(item);
       slot = item;
     }
@@ -633,8 +636,9 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::AddNewItem() {
     return;
   }
 
-  for (GameSettingsUI::CUIComboItem* item : this->items) {
-    this->RemoveChild(item, 1);
+  const auto end = this->items.end();
+  for (auto it = this->items.begin(); it != end; ++it) {
+    this->RemoveChild(*it, 1);
   }
   this->items.clear();
   this->selected = static_cast<unsigned int>(-1);
@@ -650,14 +654,14 @@ void CUIListBoxEx<GameSettingsUI::CUIComboItem, std::string>::AddNewItem() {
       item->SetSize(this->itemWidth, this->rowHeight);
       item->Show(0);
       item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
-      item->onHover = [this](CUIListItem* listItem) {
+      item->SetOnHover([this](CUIListItem* listItem) {
         for (GameSettingsUI::CUIComboItem* other : this->items) {
           other->SetHighlighted(other == listItem);
         }
-      };
-      item->onPress = [this](CUIListItem* listItem) {
+      });
+      item->SetOnPress([this](CUIListItem* listItem) {
         this->SelectItem(listItem);
-      };
+      });
       this->AddChild(item);
       slot = item;
     }
@@ -702,8 +706,9 @@ void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::AddNewItem() {
     return;
   }
 
-  for (GameSettingsUI::CUIOptionItem* item : this->items) {
-    this->RemoveChild(item, 1);
+  const auto end = this->items.end();
+  for (auto it = this->items.begin(); it != end; ++it) {
+    this->RemoveChild(*it, 1);
   }
   this->items.clear();
   this->selected = static_cast<unsigned int>(-1);
@@ -719,14 +724,14 @@ void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::AddNewItem() {
       item->SetSize(this->itemWidth, this->rowHeight);
       item->Show(0);
       item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
-      item->onHover = [this](CUIListItem* listItem) {
+      item->SetOnHover([this](CUIListItem* listItem) {
         for (GameSettingsUI::CUIOptionItem* other : this->items) {
           other->SetHighlighted(other == listItem);
         }
-      };
-      item->onPress = [this](CUIListItem* listItem) {
+      });
+      item->SetOnPress([this](CUIListItem* listItem) {
         this->SelectItem(listItem);
-      };
+      });
       this->AddChild(item);
       slot = item;
     }

@@ -27,6 +27,10 @@ public:
   virtual void SetHighlighted(bool highlighted);
   virtual void SetFrozen(bool frozen);
   __declspec(noinline) void SetImageResources(CBitmapRes* normal, CBitmapRes* hover, CBitmapRes* pressed, CBitmapRes* disabled);
+  // INLINED
+  void SetOnHover(std::function<void(CUIListItem*)> callback) { this->onHover = callback; }
+  // INLINED
+  void SetOnPress(std::function<void(CUIListItem*)> callback) { this->onPress = callback; }
 
   /* 0080 */ std::map<int, CBitmapRes*> images;
   /* 0088 */ int selected;
