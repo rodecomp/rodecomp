@@ -270,10 +270,10 @@ void CRenderObject::DrawSprite(int argument, bool seasonal, float offset) {
   const ActionFrame& frame = action->Frame(this->render.previousAnimation, this->render.curMotion);
 
   const float* origin = &this->render.position.x;
-  float position[3];
-  position[0] = origin[0] * matrix[0] + origin[1] * matrix[3] + origin[2] * matrix[6] + matrix[9];
-  position[1] = origin[0] * matrix[1] + origin[1] * matrix[4] + origin[2] * matrix[7] + matrix[10];
-  position[2] = origin[0] * matrix[2] + origin[1] * matrix[5] + origin[2] * matrix[8] + matrix[11];
+  vector3d position;
+  position.x = origin[0] * matrix[0] + origin[1] * matrix[3] + origin[2] * matrix[6] + matrix[9];
+  position.y = origin[0] * matrix[1] + origin[1] * matrix[4] + origin[2] * matrix[7] + matrix[10];
+  position.z = origin[0] * matrix[2] + origin[1] * matrix[5] + origin[2] * matrix[8] + matrix[11];
 
   float x;
   float y;
@@ -288,7 +288,7 @@ void CRenderObject::DrawSprite(int argument, bool seasonal, float offset) {
   if (g_championMonsterMgr->IsChampion(static_cast<int>(this->render.spriteJob))) {
     extra += g_championMonsterMgr->GetValue(static_cast<int>(this->render.spriteJob));
   }
-  if (extra != 0.0f) {
+  if (0.0f != extra) {
     distanceScale *= extra;
   }
 
@@ -318,7 +318,7 @@ void CRenderObject::DrawSprite(int argument, bool seasonal, float offset) {
     tagRECT box;
     std::uint32_t color;
     if (!this->PrepareSprite(
-          index, index, distanceScale, cell, x, y, position, scale, &bottomRhw, &topRhw, image, &quad, &box, &color, 0, 0, 0
+          index, index, distanceScale, cell, x, y, &position.x, scale, &bottomRhw, &topRhw, image, &quad, &box, &color, 0, 0, 0
         )) {
       continue;
     }
@@ -364,14 +364,13 @@ void CRenderObject::DrawSprite(int argument, bool seasonal, float offset) {
 
     SpriteQuad overlay = quad;
     if ((this->render.flags & 0x100) != 0) {
-      const short level = this->render.effectPhase;
       bool draw = true;
-      if (level <= 5) {
-        overlay.color = (static_cast<short>(level * 50) << 24) + 0xFFFFFF;
-      } else if (level <= 8) {
+      if (this->render.effectPhase <= 5) {
+        overlay.color = (static_cast<short>(this->render.effectPhase * 50) << 24) + 0xFFFFFF;
+      } else if (this->render.effectPhase <= 8) {
         overlay.color = 0xFFFFFFFF;
-      } else if (level <= 11) {
-        overlay.color = (static_cast<short>(895 - level * 80) << 24) + 0xFFFFFF;
+      } else if (this->render.effectPhase <= 11) {
+        overlay.color = (static_cast<short>(895 - this->render.effectPhase * 80) << 24) + 0xFFFFFF;
       } else {
         draw = false;
       }
@@ -403,10 +402,10 @@ void CRenderObject::DrawSprite(int argument, bool seasonal, float offset) {
 // FUNCTION: fn_21104
 void CGameActor::RenderMercenary(const float* matrix, int job) {
   const float* origin = &this->render.position.x;
-  float position[3];
-  position[0] = origin[0] * matrix[0] + origin[1] * matrix[3] + origin[2] * matrix[6] + matrix[9];
-  position[1] = origin[0] * matrix[1] + origin[1] * matrix[4] + origin[2] * matrix[7] + matrix[10];
-  position[2] = origin[0] * matrix[2] + origin[1] * matrix[5] + origin[2] * matrix[8] + matrix[11];
+  vector3d position;
+  position.x = origin[0] * matrix[0] + origin[1] * matrix[3] + origin[2] * matrix[6] + matrix[9];
+  position.y = origin[0] * matrix[1] + origin[1] * matrix[4] + origin[2] * matrix[7] + matrix[10];
+  position.z = origin[0] * matrix[2] + origin[1] * matrix[5] + origin[2] * matrix[8] + matrix[11];
 
   float x;
   float y;
@@ -643,7 +642,7 @@ void CGameActor::RenderMercenary(const float* matrix, int job) {
         frame = &action->Frame(this->render.previousAnimation, 0);
       }
 
-      if (frame->anchorCount != 0 && headFrame->anchorCount != 0 && frame->anchors[0].attachmentId == headFrame->anchors[0].attachmentId) {
+      if (frame->anchorCount != 0 && headFrame->anchorCount != 0 && headFrame->anchors[0].attachmentId == frame->anchors[0].attachmentId) {
         accessoryOffsetX = headFrame->anchors[0].x - frame->anchors[0].x;
         accessoryOffsetY = headFrame->anchors[0].y - frame->anchors[0].y;
       }
@@ -674,15 +673,15 @@ void CGameActor::RenderMercenary(const float* matrix, int job) {
         std::uint32_t color;
         SpriteColor colorChannels;
       };
-      if (!this->PrepareSprite(index, index, distanceScale, cell, x, y, position, scale, &bottomRhw, &topRhw, image, &quad, &box, &color, offsetX, offsetY, 0)) {
+      if (!this->PrepareSprite(index, index, distanceScale, cell, x, y, &position.x, scale, &bottomRhw, &topRhw, image, &quad, &box, &color, offsetX, offsetY, 0)) {
         continue;
       }
 
+      drawn = true;
       int blend = 0x101;
       if (colorChannels.alpha < 0xFF) {
         blend = 1;
       }
-      drawn = true;
       quad.image = image;
 
       if (layer >= 4) {
