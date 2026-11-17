@@ -4427,7 +4427,7 @@ std::string UIEditCtrl3::ResolveItemLinks(const std::string& source) {
 
     std::string name;
     if (this->LinkDisplayName(link, name)) {
-      name = this->BracketFittedText(name);
+      name = static_cast<const std::string&>(this->BracketFittedText(name));
       result += name;
       position += static_cast<int>(link.size() + g_itemLinkClose.size() + g_itemLinkOpen.size());
     }
