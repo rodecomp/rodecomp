@@ -2,6 +2,8 @@
 
 #include "Contents/Actors/RenderObject.h"
 
+template __declspec(noinline) std::map<int, std::int64_t>::~map();
+
 // OFFSET: 0x00CA8EE0
 // FUNCTION: fn_20997
 CInstantVar::~CInstantVar() = default;
