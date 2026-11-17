@@ -52,6 +52,8 @@ struct ActorSkillInfo {
 };
 
 struct ActorDamageMessage {
+  ActorDamageMessage() {}
+
   /* 0000 */ std::uint32_t targetAid;
   /* 0004 */ int action;
   /* 0008 */ int damage;

@@ -2303,8 +2303,8 @@ void CGameActor::ShowPartyMemberEffect(std::uint32_t accountId) {
   for (int index = 0; index < g_session.PartyCount(); ++index) {
     MessengerMember member = g_session.PartyAt(index);
     if (member.accountId == accountId) {
-      for (CRagEffect* effect : this->effectList) {
-        if (effect && effect->state.type == 160) {
+      for (auto it = this->effectList.begin(); it != this->effectList.end(); ++it) {
+        if (*it && (*it)->state.type == 160) {
           return;
         }
       }
