@@ -2184,8 +2184,8 @@ __declspec(safebuffers) void CEffectPrim::RenderGrid(matrix& wtm) {
 // OFFSET: 0x00BCFC00
 // FUNCTION: fn_19867
 void CEffectPrim::RenderRing(matrix& wtm) {
-  ZeroVector3d corners[4];
   int rpCnt = 0;
+  ZeroVector3d corners[4];
 
   for (int ec = 0; ec < 4; ++ec) {
     const EffectPrimitiveSlot& slot = this->state.slots[ec];
