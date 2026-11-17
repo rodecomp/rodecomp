@@ -26,6 +26,7 @@
 #include <cstring>
 #include <new>
 
+template __declspec(noinline) int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
 template __declspec(noinline) char* std::allocator<char>::allocate(const std::size_t);
 
 // GLOBAL: gl_25003
@@ -325,25 +326,25 @@ void UIAchViewWnd::OnCreate(int, int) {
     ++condition;
   }
 
-  for (UICustomGageBar*& slot : this->gauges) {
+  for (int index = 0; index < 10; ++index) {
     UICustomGageBar* gauge = new (std::nothrow) UICustomGageBar();
-    slot = gauge;
+    this->gauges[index] = gauge;
     gauge->OnCreate(254, 10);
     gauge->Resize(254, 10);
     gauge->value = 0;
     gauge->maximum = 100;
-    slot->barColor = 0xC78A71;
-    slot->backgroundColor = 0xFFFFFF;
-    slot->outerBorderColor = 0xFFFFFF;
-    slot->innerBorderColor = 0xDAA896;
-    slot->Show(0);
-    this->AddChild(slot);
+    this->gauges[index]->barColor = 0xC78A71;
+    this->gauges[index]->backgroundColor = 0xFFFFFF;
+    this->gauges[index]->outerBorderColor = 0xFFFFFF;
+    this->gauges[index]->innerBorderColor = 0xDAA896;
+    this->gauges[index]->Show(0);
+    this->AddChild(this->gauges[index]);
   }
 
-  for (UIToolTipBitmapWnd*& reward : this->rewards) {
-    reward = new (std::nothrow) UIToolTipBitmapWnd();
-    reward->Show(0);
-    this->AddChild(reward);
+  for (int index = 0; index < 3; ++index) {
+    this->rewards[index] = new (std::nothrow) UIToolTipBitmapWnd();
+    this->rewards[index]->Show(0);
+    this->AddChild(this->rewards[index]);
   }
 }
 
@@ -556,7 +557,7 @@ void UIAchTab::Paint() {
 void UIAchUpperWnd::Paint() {
   int visible;
 
-  if (this->title == LookupMessage(MSI_OTPUSER_ONLY)) {
+  if (this->title.compare(LookupMessage(MSI_OTPUSER_ONLY)) == 0) {
     this->DrawBitmap(0, 0, AchievementBitmap("유저인터페이스\\achievement_re\\bg_upper.bmp"), false);
     this->DrawRightAlignedText(130, 13, FormatOwnedString("%d/%d", this->achievementPoints, this->nextLevelPoints).c_str(), 0, 0, 11, 0, 0);
     this->DrawCenteredText(353, 6, FormatOwnedString("%d", g_session.achievementScore).c_str(), 46, 0, 12, 0x582708, 1);

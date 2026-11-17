@@ -40,6 +40,11 @@ public:
   /* 00A4 */ std::uint32_t outerBorderColor;
   /* 00A8 */ std::uint32_t innerBorderColor;
 
+  // INLINED
+  void SetValue(int newValue) { this->value = newValue; }
+  // INLINED
+  void SetMaximum(int newMaximum) { this->maximum = newMaximum; }
+
   void Paint() override;
   void OnMouseHover(int x, int y) override;
 };
