@@ -620,9 +620,9 @@ void UIAchViewWnd::Paint() {
     }
 
     int x = static_cast<int>((this->geometry.width - count * 8 - width + 8) * 0.5);
-    for (UIToolTipBitmapWnd* reward : this->rewards) {
-      if (reward->geometry.visible == 1) {
-        reward->Move(x, 304);
+    for (int index = 0; index < 3; ++index) {
+      if (this->rewards[index]->geometry.visible == 1) {
+        this->rewards[index]->Move(x, 304);
         x += 70;
       }
     }
@@ -1387,11 +1387,7 @@ void UIAchSummaryWnd::UpdateInfo() {
       this->recent.push_back(std::make_pair(second, info));
     }
 
-    UITextButton* button = this->buttons[1];
-    {
-      const std::string title = info.title.c_str();
-      button->label = title;
-    }
+    this->buttons[1]->SetLabel(info.title.c_str());
     this->buttons[1]->SetId(second);
     this->buttons[1]->ResizeToText();
 
@@ -1399,11 +1395,7 @@ void UIAchSummaryWnd::UpdateInfo() {
       this->recent.push_back(std::make_pair(first, info));
     }
 
-    button = this->buttons[0];
-    {
-      const std::string title = info.title.c_str();
-      button->label = title;
-    }
+    this->buttons[0]->SetLabel(info.title.c_str());
     this->buttons[0]->SetId(first);
     this->buttons[0]->ResizeToText();
   }
