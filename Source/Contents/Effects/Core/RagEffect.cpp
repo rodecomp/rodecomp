@@ -6265,28 +6265,26 @@ void CRagEffect::TexturedScatterSphere(const char* name, char flag, int) {
     return;
   }
 
-  CEffectPrim* particle = this->LaunchEffectPrim(159, vector3d{0.0f, 0.0f, 0.0f});
-  this->state.lastPrim = particle;
-  auto stored = [&]() -> CEffectPrim* { return this->state.lastPrim; };
-  stored()->state.renderFlag = 5;
-  stored()->state.duration = this->state.duration;
-  particle->state.textures = new CTexture*[particle->state.totalTexture];
-  stored()->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
+  this->state.lastPrim = this->LaunchEffectPrim(159, vector3d{0.0f, 0.0f, 0.0f});
+  this->state.lastPrim->state.renderFlag = 5;
+  this->state.lastPrim->state.duration = this->state.duration;
+  this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+  this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
 
   for (int index = 0; index < 4; ++index) {
-    stored()->state.slots[index].life = 1;
-    stored()->state.slots[index].height[4] = 0.0f;
-    stored()->state.slots[index].process = -rand() % 101;
-    stored()->state.slots[index].distance = 4.0f;
-    stored()->state.slots[index].alphaB = 0;
-    stored()->state.slots[index].riseAngle = static_cast<std::int16_t>(ClampedRandom(360));
-    stored()->state.slots[index].rotStart = static_cast<std::int16_t>(ClampedRandom(360));
-    stored()->state.slots[index].height[0] = -5.0f;
-    stored()->state.slots[index].height[1] = 0.5f;
-    stored()->state.slots[index].flag1[0] = 0;
-    stored()->state.slots[index].flag1[1] = 0;
-    stored()->state.slots[index].flag1[2] = flag;
-    EffectPrimitiveSlot& slot = stored()->state.slots[index];
+    this->state.lastPrim->state.slots[index].life = 1;
+    this->state.lastPrim->state.slots[index].height[4] = 0.0f;
+    this->state.lastPrim->state.slots[index].process = -rand() % 101;
+    this->state.lastPrim->state.slots[index].distance = 4.0f;
+    this->state.lastPrim->state.slots[index].alphaB = 0;
+    this->state.lastPrim->state.slots[index].riseAngle = static_cast<std::int16_t>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[index].rotStart = static_cast<std::int16_t>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[index].height[0] = -5.0f;
+    this->state.lastPrim->state.slots[index].height[1] = 0.5f;
+    this->state.lastPrim->state.slots[index].flag1[0] = 0;
+    this->state.lastPrim->state.slots[index].flag1[1] = 0;
+    this->state.lastPrim->state.slots[index].flag1[2] = flag;
+    EffectPrimitiveSlot& slot = this->state.lastPrim->state.slots[index];
     const float radius = g_cosTable[slot.riseAngle] * 70.0f;
     slot.vecBNow.z = g_sinTable[slot.riseAngle] * 70.0f;
     slot.vecBNow.x = radius * g_cosTable[slot.rotStart];
@@ -8027,8 +8025,7 @@ void CRagEffect::RocketPunch() {
     this->state.lastPrim->render.angle = this->state.lastPrim->render.angle + 360.0f;
   }
 
-  CEffectPrim& particle = *this->state.lastPrim;
-  particle.state.speed = -(particle.CalcDist(this->state.deltaPos.x, this->state.deltaPos.z) / particle.state.duration);
+  this->state.lastPrim->state.speed = -(this->state.lastPrim->CalcDist(this->state.deltaPos.x, this->state.deltaPos.z) / this->state.lastPrim->state.duration);
   this->state.lastPrim->state.transform.MakeYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
   this->state.lastPrim->state.size = 1.0f;
   this->state.lastPrim->state.animSpeed = 1;
