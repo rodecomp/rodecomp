@@ -1409,9 +1409,10 @@ void CSkillAction_ABC_CHASING_SHOT::OnSkillEffect(int level, CGameActor* source,
     effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&target->render.position), 0, 0, 0, 0);
   }
 
+  const vector3d offset{0.0f, 0.0f, 0.0f};
   for (int angle = 0; angle < 360; angle += 45) {
     EffectLists* effects = g_effectMgr;
-    CEffect* effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("chasing_shot_single"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    CEffect* effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("chasing_shot_single"), offset, 0, -1, 0, 0);
     if (effect) {
       effect->SetAngle(static_cast<float>(angle));
       effect->SetScale(0.15f);
