@@ -35,8 +35,7 @@ bool TextureNameLess::operator()(const char* left, const char* right) const {
   return static_cast<unsigned char>(*left) < static_cast<unsigned char>(*right);
 }
 
-// OFFSET: 0x004074F5
-// FUNCTION: fn_00152
+// INLINED
 TextureCache::TextureCache() {
 }
 
