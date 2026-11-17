@@ -863,13 +863,13 @@ int CCashEmotionMgr::GetEarliestExpiry() {
 
 // OFFSET: 0x0059A040
 // FUNCTION: fn_02951
-CashEmotionTable* CCashEmotionMgr::GetPackEmotionTable(int packId) {
+__declspec(noinline) CashEmotionTable* CCashEmotionMgr::GetPackEmotionTable(int packId) {
   auto it = this->m_emotionsByPack.find(packId);
-  if (it == this->m_emotionsByPack.end()) {
-    return nullptr;
+  if (it != this->m_emotionsByPack.end()) {
+    return &it->second;
   }
 
-  return &it->second;
+  return nullptr;
 }
 
 // OFFSET: 0x0059A080
