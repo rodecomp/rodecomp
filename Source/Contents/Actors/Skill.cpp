@@ -361,14 +361,15 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
       hitCount = 1;
     }
     const int damage = hit->damage / hitCount;
+    const std::uint32_t targetAid = hit->targetAid;
 
     CRenderObject* target = nullptr;
-    if (g_session.m_aid == hit->targetAid) {
+    if (g_session.m_aid == targetAid) {
       target = mode->scene->player;
       g_session.GetDisplayJob();
     } else {
-      CRenderObject* actor = mode->scene->GetGameActorByAID(hit->targetAid);
-      CRenderObject* skill = mode->scene->GetSkillByAID(hit->targetAid);
+      CRenderObject* actor = mode->scene->GetGameActorByAID(targetAid);
+      CRenderObject* skill = mode->scene->GetSkillByAID(targetAid);
       if (actor != nullptr) {
         target = actor;
       } else if (skill != nullptr) {
@@ -499,7 +500,7 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
       return;
     case UNT_FIREWALL:
     case UNT_FIRE_MANTLE: {
-      const vector3d& player = mode->scene->player->render.position;
+      const vector3d& player = g_modeMgr.GetGameMode()->scene->player->render.position;
       g_soundMgr->PlayWave("effect\\EF_FireWall.wav", position.x - player.x, 0.0f, position.z - player.z, 250, 40, 1.0f, 0);
       this->render.trackBounds = 0;
       return;
@@ -565,7 +566,7 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
       return;
     case UNT_KAEN:
       if (rand() % 8 == 0) {
-        const vector3d& player = mode->scene->player->render.position;
+        const vector3d& player = g_modeMgr.GetGameMode()->scene->player->render.position;
         g_soundMgr->PlayWave("effect\\화염진.wav", position.x - player.x, 0.0f, position.z - player.z, 250, 40, 1.0f, 0);
       }
       this->render.trackBounds = 0;
@@ -635,13 +636,13 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
       return;
     }
     case UNT_KINGS_GRACE: {
-      const vector3d& player = mode->scene->player->render.position;
+      const vector3d& player = g_modeMgr.GetGameMode()->scene->player->render.position;
       g_soundMgr->PlayWave("effect\\lg_kings_grace.wav", position.x - player.x, 0.0f, position.z - player.z, 250, 40, 1.0f, 0);
       this->render.trackBounds = 0;
       return;
     }
     case UNT_MAGMA_ERUPTION: {
-      const vector3d& player = mode->scene->player->render.position;
+      const vector3d& player = g_modeMgr.GetGameMode()->scene->player->render.position;
       g_soundMgr->PlayWave("effect\\NC_MAGMA_ERUPTION.wav", position.x - player.x, 0.0f, position.z - player.z, 250, 40, 1.0f, 0);
       this->render.trackBounds = 0;
       return;
