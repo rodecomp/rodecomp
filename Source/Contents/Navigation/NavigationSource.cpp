@@ -281,7 +281,7 @@ void CNavigationManager::Reset(bool clearAll) {
   this->nodes.clear();
   this->routeFlag = false;
   this->selectedNode = -1;
-  this->movementRoute.segment = 0;
+  this->movementRoute.ResetSegment();
   this->drawRoute = false;
   this->ground = nullptr;
   this->viewMode = 0;
@@ -712,7 +712,7 @@ void CNavigationManager::ClearSavedTarget() {
   this->routeResult = 0;
   this->nodes.clear();
   this->selectedNode = -1;
-  this->movementRoute.segment = 0;
+  this->movementRoute.ResetSegment();
   this->drawRoute = false;
   this->ground = nullptr;
   this->cells.clear();
