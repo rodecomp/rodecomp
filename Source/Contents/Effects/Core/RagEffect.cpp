@@ -7769,111 +7769,122 @@ void CRagEffect::FrostSplash(int, int) {
   this->render.position = parent.position;
   CEffectPrim* particle = this->LaunchEffectPrim(150, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim = particle;
-  auto stored = [&]() -> CEffectPrim* { return this->state.lastPrim; };
-  stored()->state.renderFlag = 5;
-  stored()->state.duration = this->state.duration;
-  stored()->state.totalTexture = 1;
-  stored()->state.textures = new CTexture*[stored()->state.totalTexture];
+  this->state.lastPrim->state.renderFlag = 5;
+  this->state.lastPrim->state.duration = this->state.duration;
+  this->state.lastPrim->state.totalTexture = 1;
+  this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
 
   char textureKind;
   if (ClampedRandom(10) > 0) {
-    stored()->state.textures[0] = g_texMgr.Load("effect\\freeze_a_small.bmp", 0, false, true, false);
+    this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\freeze_a_small.bmp", 0, false, true, false);
     textureKind = 0;
   } else {
-    stored()->state.textures[0] = g_texMgr.Load("effect\\waterp1.tga", 0, false, true, false);
+    this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\waterp1.tga", 0, false, true, false);
     textureKind = 1;
   }
 
-  stored()->state.size = 4.0f;
+  this->state.lastPrim->state.size = 4.0f;
 
   for (int i = 0; i < 4; ++i) {
-    stored()->state.slots[i].fullDisplayAngle = static_cast<std::int16_t>(this->state.param[1]);
-    stored()->state.slots[i].fullDisplayAngle %= 360;
-    const std::int16_t angle = stored()->state.slots[i].fullDisplayAngle;
+    this->state.lastPrim->state.slots[i].fullDisplayAngle = static_cast<std::int16_t>(this->state.param[1]);
+    this->state.lastPrim->state.slots[i].fullDisplayAngle %= 360;
+    const std::int16_t angle = this->state.lastPrim->state.slots[i].fullDisplayAngle;
     if (this->state.param[0] < 10.0f) {
       this->state.param[0] = 10.0f;
     }
 
-    stored()->state.slots[i].riseAngle = static_cast<std::int16_t>(this->state.param[0]);
-    const float scale = static_cast<float>(stored()->state.slots[i].riseAngle) / 10.0f;
+    this->state.lastPrim->state.slots[i].riseAngle = static_cast<std::int16_t>(this->state.param[0]);
+    const float scale = static_cast<float>(this->state.lastPrim->state.slots[i].riseAngle) / 10.0f;
     unsigned color = static_cast<unsigned>(this->state.param[2]);
     color %= 1000000;
-    stored()->state.slots[i].flag1[10] = static_cast<char>(color / 10000);
-    stored()->state.slots[i].flag1[11] = static_cast<char>((color - stored()->state.slots[i].flag1[12] * 10000) / 100);
-    stored()->state.slots[i].flag1[12] = static_cast<char>(color - static_cast<char>(color / 100) * 100);
-    stored()->state.slots[i].life = 1;
-    stored()->state.slots[i].maxHeight = 0.05f;
-    stored()->state.slots[i].distance = scale * (textureKind == 1 ? 7.0f : 4.5f);
-
-    stored()->state.slots[i].vecBPre.y = static_cast<float>(ClampedRandom(30));
-    stored()->state.slots[i].height[0] = static_cast<float>(ClampedRandom(360));
-    stored()->state.slots[i].height[1] = static_cast<float>(ClampedRandom(360));
-    stored()->state.slots[i].height[2] = static_cast<float>(ClampedRandom(360));
-    stored()->state.slots[i].height[3] = static_cast<float>(ClampedRandom(360));
-    stored()->state.slots[i].vecBPre.x = static_cast<float>(ClampedRandom(45) - 22);
-    stored()->state.slots[i].vecBPre.z = static_cast<float>(ClampedRandom(11) - 5);
-    stored()->state.slots[i].vecBPre.x = scale * stored()->state.slots[i].vecBPre.x;
-    stored()->state.slots[i].vecBPre.z = scale * stored()->state.slots[i].vecBPre.z;
-    stored()->state.slots[i].vecBPre.y = scale * stored()->state.slots[i].vecBPre.y;
-    {
-      const float x = stored()->state.slots[i].vecBPre.x;
-      const float z = stored()->state.slots[i].vecBPre.z;
-      stored()->state.slots[i].vecBPre.x = g_cosTable[angle] * x - g_sinTable[angle] * z;
-      stored()->state.slots[i].vecBPre.z = g_sinTable[angle] * x + g_cosTable[angle] * z;
+    this->state.lastPrim->state.slots[i].flag1[10] = static_cast<char>(color / 10000);
+    this->state.lastPrim->state.slots[i].flag1[11] = static_cast<char>((color - this->state.lastPrim->state.slots[i].flag1[12] * 10000) / 100);
+    this->state.lastPrim->state.slots[i].flag1[12] = static_cast<char>(color - static_cast<char>(color / 100) * 100);
+    this->state.lastPrim->state.slots[i].life = 1;
+    this->state.lastPrim->state.slots[i].maxHeight = 0.05f;
+    if (textureKind == 1) {
+      this->state.lastPrim->state.slots[i].distance = scale * 7.0f;
+    } else {
+      this->state.lastPrim->state.slots[i].distance = scale * 4.5f;
     }
 
-    stored()->state.slots[i].vecBNow.x = static_cast<float>(ClampedRandom(45) - 22);
-    stored()->state.slots[i].vecBNow.y = static_cast<float>(ClampedRandom(30));
-    stored()->state.slots[i].vecBNow.z = static_cast<float>(ClampedRandom(11) - 5);
-    stored()->state.slots[i].height[4] = static_cast<float>(ClampedRandom(360));
-    stored()->state.slots[i].height[5] = static_cast<float>(ClampedRandom(360));
-    stored()->state.slots[i].height[6] = static_cast<float>(ClampedRandom(360));
-    stored()->state.slots[i].height[7] = static_cast<float>(ClampedRandom(360));
-    stored()->state.slots[i].vecBNow.x = scale * stored()->state.slots[i].vecBNow.x;
-    stored()->state.slots[i].vecBNow.z = scale * stored()->state.slots[i].vecBNow.z;
-    stored()->state.slots[i].vecBNow.y = scale * stored()->state.slots[i].vecBNow.y;
+    this->state.lastPrim->state.slots[i].vecBPre.y = static_cast<float>(ClampedRandom(30));
+    this->state.lastPrim->state.slots[i].height[0] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[i].height[1] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[i].height[2] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[i].height[3] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[i].vecBPre.x = static_cast<float>(ClampedRandom(45) - 22);
+    this->state.lastPrim->state.slots[i].vecBPre.z = static_cast<float>(ClampedRandom(11) - 5);
+    this->state.lastPrim->state.slots[i].vecBPre.x = scale * this->state.lastPrim->state.slots[i].vecBPre.x;
+    this->state.lastPrim->state.slots[i].vecBPre.z = scale * this->state.lastPrim->state.slots[i].vecBPre.z;
+    this->state.lastPrim->state.slots[i].vecBPre.y = scale * this->state.lastPrim->state.slots[i].vecBPre.y;
     {
-      const float x = stored()->state.slots[i].vecBNow.x;
-      const float z = stored()->state.slots[i].vecBNow.z;
-      stored()->state.slots[i].vecBNow.x = g_cosTable[angle] * x - g_sinTable[angle] * z;
-      stored()->state.slots[i].vecBNow.z = g_sinTable[angle] * x + g_cosTable[angle] * z;
+      const float cosValue = g_cosTable[angle];
+      const float sinValue = g_sinTable[angle];
+      const float x = this->state.lastPrim->state.slots[i].vecBPre.x;
+      const float z = this->state.lastPrim->state.slots[i].vecBPre.z;
+      this->state.lastPrim->state.slots[i].vecBPre.x = cosValue * x - sinValue * z;
+      this->state.lastPrim->state.slots[i].vecBPre.z = sinValue * x + cosValue * z;
     }
 
-    stored()->state.slots[i].vecTPre.x = static_cast<float>(ClampedRandom(45) - 22);
-    stored()->state.slots[i].vecTPre.y = static_cast<float>(ClampedRandom(30));
-    stored()->state.slots[i].vecTPre.z = static_cast<float>(ClampedRandom(11) - 5);
-    stored()->state.slots[i].height[8] = static_cast<float>(ClampedRandom(360));
-    stored()->state.slots[i].height[9] = static_cast<float>(ClampedRandom(360));
-    stored()->state.slots[i].height[10] = static_cast<float>(ClampedRandom(360));
-    stored()->state.slots[i].height[11] = static_cast<float>(ClampedRandom(360));
-    stored()->state.slots[i].vecTPre.x = scale * stored()->state.slots[i].vecTPre.x;
-    stored()->state.slots[i].vecTPre.z = scale * stored()->state.slots[i].vecTPre.z;
-    stored()->state.slots[i].vecTPre.y = scale * stored()->state.slots[i].vecTPre.y;
+    this->state.lastPrim->state.slots[i].vecBNow.x = static_cast<float>(ClampedRandom(45) - 22);
+    this->state.lastPrim->state.slots[i].vecBNow.y = static_cast<float>(ClampedRandom(30));
+    this->state.lastPrim->state.slots[i].vecBNow.z = static_cast<float>(ClampedRandom(11) - 5);
+    this->state.lastPrim->state.slots[i].height[4] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[i].height[5] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[i].height[6] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[i].height[7] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[i].vecBNow.x = scale * this->state.lastPrim->state.slots[i].vecBNow.x;
+    this->state.lastPrim->state.slots[i].vecBNow.z = scale * this->state.lastPrim->state.slots[i].vecBNow.z;
+    this->state.lastPrim->state.slots[i].vecBNow.y = scale * this->state.lastPrim->state.slots[i].vecBNow.y;
     {
-      const float x = stored()->state.slots[i].vecTPre.x;
-      const float z = stored()->state.slots[i].vecTPre.z;
-      stored()->state.slots[i].vecTPre.x = x * g_cosTable[angle] - z * g_sinTable[angle];
-      stored()->state.slots[i].vecTPre.z = x * g_sinTable[angle] + z * g_cosTable[angle];
+      const float cosValue = g_cosTable[angle];
+      const float sinValue = g_sinTable[angle];
+      const float x = this->state.lastPrim->state.slots[i].vecBNow.x;
+      const float z = this->state.lastPrim->state.slots[i].vecBNow.z;
+      this->state.lastPrim->state.slots[i].vecBNow.x = cosValue * x - sinValue * z;
+      this->state.lastPrim->state.slots[i].vecBNow.z = sinValue * x + cosValue * z;
     }
 
-    stored()->state.slots[i].vecTNow.x = static_cast<float>(ClampedRandom(45) - 22);
-    stored()->state.slots[i].vecTNow.y = static_cast<float>(ClampedRandom(30));
-    stored()->state.slots[i].vecTNow.z = static_cast<float>(ClampedRandom(11) - 5);
-    stored()->state.slots[i].height[12] = static_cast<float>(ClampedRandom(360));
-    stored()->state.slots[i].height[13] = static_cast<float>(ClampedRandom(360));
-    stored()->state.slots[i].height[14] = static_cast<float>(ClampedRandom(360));
-    stored()->state.slots[i].height[15] = static_cast<float>(ClampedRandom(360));
-    stored()->state.slots[i].vecTNow.x = scale * stored()->state.slots[i].vecTNow.x;
-    stored()->state.slots[i].vecTNow.z = scale * stored()->state.slots[i].vecTNow.z;
-    stored()->state.slots[i].vecTNow.y = scale * stored()->state.slots[i].vecTNow.y;
+    this->state.lastPrim->state.slots[i].vecTPre.x = static_cast<float>(ClampedRandom(45) - 22);
+    this->state.lastPrim->state.slots[i].vecTPre.y = static_cast<float>(ClampedRandom(30));
+    this->state.lastPrim->state.slots[i].vecTPre.z = static_cast<float>(ClampedRandom(11) - 5);
+    this->state.lastPrim->state.slots[i].height[8] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[i].height[9] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[i].height[10] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[i].height[11] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[i].vecTPre.x = scale * this->state.lastPrim->state.slots[i].vecTPre.x;
+    this->state.lastPrim->state.slots[i].vecTPre.z = scale * this->state.lastPrim->state.slots[i].vecTPre.z;
+    this->state.lastPrim->state.slots[i].vecTPre.y = scale * this->state.lastPrim->state.slots[i].vecTPre.y;
     {
-      const float x = stored()->state.slots[i].vecTNow.x;
-      const float z = stored()->state.slots[i].vecTNow.z;
-      stored()->state.slots[i].vecTNow.x = x * g_cosTable[angle] - z * g_sinTable[angle];
-      stored()->state.slots[i].vecTNow.z = x * g_sinTable[angle] + z * g_cosTable[angle];
+      const float cosValue = g_cosTable[angle];
+      const float sinValue = g_sinTable[angle];
+      const float x = this->state.lastPrim->state.slots[i].vecTPre.x;
+      const float z = this->state.lastPrim->state.slots[i].vecTPre.z;
+      this->state.lastPrim->state.slots[i].vecTPre.x = x * cosValue - z * sinValue;
+      this->state.lastPrim->state.slots[i].vecTPre.z = x * sinValue + z * cosValue;
     }
 
-    stored()->state.slots[i].flag1[0] = 2;
+    this->state.lastPrim->state.slots[i].vecTNow.x = static_cast<float>(ClampedRandom(45) - 22);
+    this->state.lastPrim->state.slots[i].vecTNow.y = static_cast<float>(ClampedRandom(30));
+    this->state.lastPrim->state.slots[i].vecTNow.z = static_cast<float>(ClampedRandom(11) - 5);
+    this->state.lastPrim->state.slots[i].height[12] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[i].height[13] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[i].height[14] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[i].height[15] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[i].vecTNow.x = scale * this->state.lastPrim->state.slots[i].vecTNow.x;
+    this->state.lastPrim->state.slots[i].vecTNow.z = scale * this->state.lastPrim->state.slots[i].vecTNow.z;
+    this->state.lastPrim->state.slots[i].vecTNow.y = scale * this->state.lastPrim->state.slots[i].vecTNow.y;
+    {
+      const float cosValue = g_cosTable[angle];
+      const float sinValue = g_sinTable[angle];
+      const float x = this->state.lastPrim->state.slots[i].vecTNow.x;
+      const float z = this->state.lastPrim->state.slots[i].vecTNow.z;
+      this->state.lastPrim->state.slots[i].vecTNow.x = x * cosValue - z * sinValue;
+      this->state.lastPrim->state.slots[i].vecTNow.z = x * sinValue + z * cosValue;
+    }
+
+    this->state.lastPrim->state.slots[i].flag1[0] = 2;
   }
 }
 
@@ -9916,34 +9927,8 @@ void CRagEffect::NapalmFragments() {
 // FUNCTION: fn_20086
 bool CRagEffect::OnProcess2() {
   switch (this->state.type) {
-  case EF_CHEMICALPROTECTION:
-    if (this->state.stateCnt == 0) {
-      this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "apocalips_attack.wav");
-    }
-    this->ShockwaveRing(30);
-    this->ShockwaveRing(60);
-    break;
-  case EF_POKJUK_SOUND:
-    this->Fireworks();
-    break;
   case EF_DEMONSTRATION:
     this->Demonstration();
-    break;
-  case EF_CHEMICAL2:
-    this->SlashFan(0);
-    this->SlashFan(1);
-    if (this->state.stateCnt == 44) {
-      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
-      this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\연주붕격.wav");
-    }
-    if (this->state.stateCnt >= 20 && this->state.stateCnt <= 120) {
-      if ((this->state.parent->render.flags & 8) == 0) {
-        this->state.parent->render.flags += 8;
-      }
-      this->state.parent->SetColor(-1, 255, 255, 150);
-    }
     break;
   case EF_TELEPORTATION2:
     this->TeleportRings("effect\\Magic_Violet.tga", 0);
@@ -9951,7 +9936,7 @@ bool CRagEffect::OnProcess2() {
   case EF_PHARMACY_OK:
     if (this->state.stateCnt == 0) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\p_success.wav");
+      PlayEffectWaveInline(*this, "effect\\p_success.wav");
     }
     if (!this->ProcessEZ2STRC10830()) {
       return false;
@@ -9960,14 +9945,71 @@ bool CRagEffect::OnProcess2() {
   case EF_PHARMACY_FAIL:
     if (this->state.stateCnt == 0) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\p_failed.wav");
+      PlayEffectWaveInline(*this, "effect\\p_failed.wav");
     }
     if (!this->ProcessEZ2STRC10830()) {
       return false;
     }
     break;
+  case EF_WATERFALL:
+    this->Waterfall("", 0, 0, 0);
+    for (int index = 0; index < 40; ++index) {
+      this->FrostScatter(0, 0);
+    }
+    break;
+  case EF_WATERFALL_90:
+    this->Waterfall("", 1, 0, 0);
+    for (int index = 0; index < 40; ++index) {
+      this->FrostScatter(1, 0);
+    }
+    break;
+  case EF_WATERFALL_SMALL:
+    this->Waterfall("", 0, 1, 0);
+    for (int index = 0; index < 20; ++index) {
+      this->FrostScatter(0, 1);
+    }
+    break;
+  case EF_WATERFALL_SMALL_90:
+    this->Waterfall("", 1, 1, 0);
+    for (int index = 0; index < 20; ++index) {
+      this->FrostScatter(1, 1);
+    }
+    break;
+  case EF_WATERFALL_T2:
+    this->Waterfall("", 0, 0, 1);
+    for (int index = 0; index < 40; ++index) {
+      this->FrostScatter(0, 0);
+    }
+    break;
+  case EF_WATERFALL_T2_90:
+    this->Waterfall("", 1, 0, 1);
+    for (int index = 0; index < 40; ++index) {
+      this->FrostScatter(1, 0);
+    }
+    break;
+  case EF_WATERFALL_SMALL_T2:
+    this->Waterfall("", 0, 1, 1);
+    for (int index = 0; index < 20; ++index) {
+      this->FrostScatter(0, 1);
+    }
+    break;
+  case EF_WATERFALL_SMALL_T2_90:
+    this->Waterfall("", 1, 1, 1);
+    for (int index = 0; index < 20; ++index) {
+      this->FrostScatter(1, 1);
+    }
+    break;
   case EF_FORESTLIGHT:
     this->ForestLight("effect\\cloud11.tga", 0);
+    break;
+  case EF_FORESTLIGHT2:
+    this->ForestLight("effect\\cloud11.tga", 1);
+    break;
+  case EF_FORESTLIGHT3:
+    this->ForestLight("effect\\cloud11.tga", 2);
+    break;
+  case EF_FORESTLIGHT4:
+    this->ForestLight("effect\\cloud11.tga", 10);
     break;
   case EF_THROWITEM3:
     this->ThrowItem("유저인터페이스\\item\\돌.bmp", 2);
@@ -9983,7 +10025,7 @@ bool CRagEffect::OnProcess2() {
   case EF_LOUD:
     if (this->state.stateCnt == 0) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\고성방가.wav");
+      PlayEffectWaveInline(*this, "effect\\고성방가.wav");
     }
     if (!this->ProcessEZ2STRC10830()) {
       return false;
@@ -10020,15 +10062,6 @@ bool CRagEffect::OnProcess2() {
     break;
   case EF_WARPZONE2:
     this->AlphaDownRipples("effect\\ring_blue.tga", 0);
-    break;
-  case EF_FORESTLIGHT2:
-    this->ForestLight("effect\\cloud11.tga", 1);
-    break;
-  case EF_FORESTLIGHT3:
-    this->ForestLight("effect\\cloud11.tga", 2);
-    break;
-  case EF_FORESTLIGHT4:
-    this->ForestLight("effect\\cloud11.tga", 10);
     break;
   case EF_HEAL4:
     this->HealRingSparkle("effect\\ring_white.tga", 1);
@@ -10091,7 +10124,7 @@ bool CRagEffect::OnProcess2() {
   case EF_HEARTCASTING:
     if (this->state.stateCnt == 0) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+      PlayEffectWaveInline(*this, "effect\\EF_BeginSpell.wav");
 
       const float cell = 0.27f;
       this->RingRedPulse("effect\\ring_red.tga", 0 * cell, 37 * cell);
@@ -10138,54 +10171,6 @@ bool CRagEffect::OnProcess2() {
       this->TexturedSparkle("effect\\white02.bmp");
     }
     break;
-  case EF_WATERFALL:
-    this->Waterfall("", 0, 0, 0);
-    for (int index = 0; index < 40; ++index) {
-      this->FrostScatter(0, 0);
-    }
-    break;
-  case EF_WATERFALL_90:
-    this->Waterfall("", 1, 0, 0);
-    for (int index = 0; index < 40; ++index) {
-      this->FrostScatter(1, 0);
-    }
-    break;
-  case EF_WATERFALL_SMALL:
-    this->Waterfall("", 0, 1, 0);
-    for (int index = 0; index < 20; ++index) {
-      this->FrostScatter(0, 1);
-    }
-    break;
-  case EF_WATERFALL_SMALL_90:
-    this->Waterfall("", 1, 1, 0);
-    for (int index = 0; index < 20; ++index) {
-      this->FrostScatter(1, 1);
-    }
-    break;
-  case EF_WATERFALL_T2:
-    this->Waterfall("", 0, 0, 1);
-    for (int index = 0; index < 40; ++index) {
-      this->FrostScatter(0, 0);
-    }
-    break;
-  case EF_WATERFALL_T2_90:
-    this->Waterfall("", 1, 0, 1);
-    for (int index = 0; index < 40; ++index) {
-      this->FrostScatter(1, 0);
-    }
-    break;
-  case EF_WATERFALL_SMALL_T2:
-    this->Waterfall("", 0, 1, 1);
-    for (int index = 0; index < 20; ++index) {
-      this->FrostScatter(0, 1);
-    }
-    break;
-  case EF_WATERFALL_SMALL_T2_90:
-    this->Waterfall("", 1, 1, 1);
-    for (int index = 0; index < 20; ++index) {
-      this->FrostScatter(1, 1);
-    }
-    break;
   case EF_GHOST:
     this->Ghost(0);
     break;
@@ -10198,7 +10183,7 @@ bool CRagEffect::OnProcess2() {
   case EF_SOULBREAKER:
     if (this->state.stateCnt == 20) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\기공포.wav");
+      PlayEffectWaveInline(*this, "effect\\기공포.wav");
     }
     if (this->state.stateCnt >= 0 && this->state.stateCnt <= 10) {
       if ((this->state.parent->render.flags & 1) == 0) {
@@ -10220,7 +10205,7 @@ bool CRagEffect::OnProcess2() {
   case EF_PRESSURE:
     if (this->state.stateCnt == 3) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\프레셔.wav");
+      PlayEffectWaveInline(*this, "effect\\프레셔.wav");
     }
     this->TexturedRain("effect\\cross_old.bmp", 0);
     this->TexturedLevelRing("effect\\explosive_1_128.bmp", -28, 0);
@@ -10228,7 +10213,7 @@ bool CRagEffect::OnProcess2() {
   case EF_BASH3D:
     if (this->state.stateCnt == 22) {
       this->render.position = this->state.parent->render.position;
-      PlayEffectWave(*this, "effect\\세크리파이스.wav");
+      PlayEffectWaveInline(*this, "effect\\세크리파이스.wav");
     }
     for (int phase = 0; phase < 5; ++phase) {
       this->TexturedQuadSpin("effect\\alpha_center.tga", static_cast<char>(phase), 0);
@@ -10239,6 +10224,9 @@ bool CRagEffect::OnProcess2() {
       }
       this->state.parent->SetColor(-1, 255, 200, 200);
     }
+    break;
+  case EF_POKJUK_SOUND:
+    this->Fireworks();
     break;
   case EF_AURABLADE:
     this->WhiteYellowRings();
@@ -10251,7 +10239,7 @@ bool CRagEffect::OnProcess2() {
     break;
   case EF_LKCONCENTRATION:
     if (this->state.stateCnt == 0) {
-      PlayEffectWave(*this, "effect\\knight_twohandquicken.wav");
+      PlayEffectWaveInline(*this, "effect\\knight_twohandquicken.wav");
     }
     this->state.parent->SetColor(-1, 255, 255, 160);
     this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
@@ -10273,17 +10261,40 @@ bool CRagEffect::OnProcess2() {
       this->state.lastPrim->state.duration = this->state.duration;
       this->state.lastPrim->state.rollSpeed = 0.75f;
       EffectPrimitiveState& tilted = this->state.lastPrim->state;
-      tilted.transform.MakeXRotation(GetRadian(std::max(rand() % 30, 0) + 75));
+      tilted.transform.MakeXRotation(GetRadian(ClampedRandom(30) + 75));
       EffectPrimitiveState& turned = this->state.lastPrim->state;
-      turned.transform.AppendYRotation(GetRadian(std::max(rand() % 360, 0)));
+      turned.transform.AppendYRotation(GetRadian(ClampedRandom(360)));
       this->state.lastPrim->state.deltaPos2.y = -9.0f;
-      this->state.lastPrim->state.speed = static_cast<float>(std::max(rand() % 3, 0) + 3) / 10.0f;
+      this->state.lastPrim->state.speed = static_cast<float>(ClampedRandom(3) + 3) / 10.0f;
       this->state.lastPrim->state.size = 1.5f;
       EffectPrimitiveState& fade = this->state.lastPrim->state;
       fade.fadeOutCnt = fade.duration - fade.duration / 3;
       this->state.lastPrim->SetSpriteName("이팩트\\굴뚝연기.spr");
       this->state.lastPrim->SetActionName("이팩트\\굴뚝연기.act");
       this->state.lastPrim->InitSegment();
+    }
+    break;
+  case EF_CHEMICALPROTECTION:
+    if (this->state.stateCnt == 0) {
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWaveInline(*this, "apocalips_attack.wav");
+    }
+    this->ShockwaveRing(30);
+    this->ShockwaveRing(60);
+    break;
+  case EF_CHEMICAL2:
+    this->SlashFan(0);
+    this->SlashFan(1);
+    if (this->state.stateCnt == 44) {
+      g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
+      this->render.position = this->state.parent->render.position;
+      PlayEffectWaveInline(*this, "effect\\연주붕격.wav");
+    }
+    if (this->state.stateCnt >= 20 && this->state.stateCnt <= 120) {
+      if ((this->state.parent->render.flags & 8) == 0) {
+        this->state.parent->render.flags += 8;
+      }
+      this->state.parent->SetColor(-1, 255, 255, 150);
     }
     break;
   }
