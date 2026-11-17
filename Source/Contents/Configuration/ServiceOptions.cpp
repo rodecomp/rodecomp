@@ -462,7 +462,8 @@ std::optional<GameSettingsOption*> GameSettings::FindOption(int id) {
 // FUNCTION: fn_06316
 std::list<int> GameSettings::GetOptionIds(int tab) {
   std::list<int> ids;
-  for (const GameSettingsOption& option : this->options) {
+  for (auto optionIt = this->options.begin(), optionEnd = this->options.end(); optionIt != optionEnd; ++optionIt) {
+    const GameSettingsOption& option = *optionIt;
     if (option.tab == tab) {
       ids.push_back(option.id);
     }
