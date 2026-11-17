@@ -6907,14 +6907,14 @@ ITEM_INFO UIEquipWnd::GetSlotItem(int slot) {
     return g_session.GetAlternateCostumeItemAt(slot);
   }
 
-  if (this->m_page != 0) {
-    return ITEM_INFO(0);
+  if (this->m_page == 0) {
+    if (this->m_viewOther == 0) {
+      return g_session.GetEquippedItemAt(slot);
+    }
+    return g_session.GetAlternateEquippedItemAt(slot);
   }
 
-  if (this->m_viewOther == 0) {
-    return g_session.GetEquippedItemAt(slot);
-  }
-  return g_session.GetAlternateEquippedItemAt(slot);
+  return ITEM_INFO(0);
 }
 
 // OFFSET: 0x008D8580
