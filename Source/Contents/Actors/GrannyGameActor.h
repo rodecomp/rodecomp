@@ -34,6 +34,7 @@ public:
   void Render(int argument) override;
   void RenderLit(int argument, const GrannyActorLight& light);
   void RenderShadowed(int argument);
+  CTexture* UpdateEmblemTexture();
   void MakeCorpse() override;
   bool OnProcess() override;
 

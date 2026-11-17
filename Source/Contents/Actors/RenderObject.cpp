@@ -2822,8 +2822,8 @@ void CGameActor::SetTetraBall(int index, int on, int value) {
       }
     }
 
-    const int type = value & 3;
-    if (type == 0) {
+    switch (value & 3) {
+    case 0:
       if (ball == nullptr) {
         CTetraBallEffect* spawned = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Spawn(this->render.accountId, EF_TETRA_VORTEX_BALL_1, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0));
         if (spawned != nullptr) {
@@ -2832,7 +2832,8 @@ void CGameActor::SetTetraBall(int index, int on, int value) {
       } else {
         ball->AddBall(0x4EE, index);
       }
-    } else if (type == 1) {
+      break;
+    case 1:
       if (ball == nullptr) {
         CTetraBallEffect* spawned = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Spawn(this->render.accountId, EF_TETRA_VORTEX_BALL_3, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0));
         if (spawned != nullptr) {
@@ -2841,7 +2842,8 @@ void CGameActor::SetTetraBall(int index, int on, int value) {
       } else {
         ball->AddBall(0x4F0, index);
       }
-    } else if (type == 2) {
+      break;
+    case 2:
       if (ball == nullptr) {
         CTetraBallEffect* spawned = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Spawn(this->render.accountId, EF_TETRA_VORTEX_BALL_2, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0));
         if (spawned != nullptr) {
@@ -2850,7 +2852,8 @@ void CGameActor::SetTetraBall(int index, int on, int value) {
       } else {
         ball->AddBall(0x4EF, index);
       }
-    } else if (type == 3) {
+      break;
+    case 3:
       if (ball == nullptr) {
         CTetraBallEffect* spawned = dynamic_cast<CTetraBallEffect*>(g_effectMgr->Spawn(this->render.accountId, EF_TETRA_VORTEX_BALL_4, 0.0f, 0.0f, 0.0f, 0, -1, 0, 0));
         if (spawned != nullptr) {
@@ -2859,6 +2862,7 @@ void CGameActor::SetTetraBall(int index, int on, int value) {
       } else {
         ball->AddBall(0x4F1, index);
       }
+      break;
     }
 
     this->movementState[index] = value;
@@ -4104,6 +4108,22 @@ void C3dGrannyGameActor::RenderLit(int argument, const GrannyActorLight& light) 
   } else {
     this->SetTlvert(screenX, screenY);
   }
+}
+
+// INLINED
+CTexture* C3dGrannyGameActor::UpdateEmblemTexture() {
+  CGuildMgr* guildMgr = g_guildMgr;
+  const std::string name = guildMgr->GetEmblemFilename(this->GetGdid());
+  CEmblemRes* emblem = static_cast<CEmblemRes*>(ResourceMgr::Instance().Load(name));
+  if (emblem != nullptr) {
+    if (this->emblemTexture == nullptr) {
+      this->emblemTexture = g_texMgr.Upload(24, 24, emblem->gif.image.pixels, 0, 0, false, false, false);
+    } else {
+      this->emblemTexture->Upload(0, 0, 24, 24, emblem->gif.image.pixels, 0, 0);
+    }
+  }
+
+  return this->emblemTexture;
 }
 
 // OFFSET: 0x00CC68F0
