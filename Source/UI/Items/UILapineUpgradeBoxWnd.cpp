@@ -524,7 +524,8 @@ bool UILapineUpgradeBox_IngredientListWnd::AddIngredient(std::uint32_t identity)
   if (material == this->materials.end()) {
     return false;
   }
-  for (UILapineUpgradeBox_IngredientInfoWnd* entry : this->items) {
+  for (auto entryIt = this->items.begin(); entryIt != this->items.end(); ++entryIt) {
+    UILapineUpgradeBox_IngredientInfoWnd* entry = *entryIt;
     if (identity == entry->item.identity[1]) {
       return true;
     }
