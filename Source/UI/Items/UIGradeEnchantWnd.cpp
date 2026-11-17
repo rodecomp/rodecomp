@@ -477,7 +477,7 @@ void UIGradeEnchantWnd::OnProcess() {
     this->ResetItem();
   }
 
-  const bool disabled = this->requestPending == 1 || this->item.identity[1] == 0 || this->selectedMaterial == -1 ||
+  const bool disabled = this->requestPending == 1 || this->item.identity[1] <= 0 || this->selectedMaterial == -1 ||
                         g_session.LookupClientItem(this->materials[this->selectedMaterial].itemId, 0).quantity <
                           this->materials[this->selectedMaterial].amount ||
                         g_session.m_zeny < this->SelectedMaterialZeny() || this->baseSuccessRate == 0;
