@@ -13431,10 +13431,9 @@ void CGameMode::SpawnStandingPc(
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
     actor->SendMsg(nullptr, AM_STANDENTRY2, value, 0, 0, 0, 0, 0);
   } else {
-    CPc* pc = new CPc;
-    this->scene->objects.push_back(pc);
-    this->scene->actors.push_back(pc);
-    actor = pc;
+    actor = new CPc;
+    this->scene->objects.push_back(actor);
+    this->scene->actors.push_back(actor);
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
     actor->SendMsg(nullptr, AM_INITSTANDENTRY2, value, 0, 0, 0, 0, 0);
   }
@@ -13473,10 +13472,9 @@ void CGameMode::SpawnStandingPc2(
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
     actor->SendMsg(nullptr, AM_STANDENTRY2, value, 0, 0, 0, 0, 0);
   } else {
-    CPc* pc = new CPc;
-    this->scene->objects.push_back(pc);
-    this->scene->actors.push_back(pc);
-    actor = pc;
+    actor = new CPc;
+    this->scene->objects.push_back(actor);
+    this->scene->actors.push_back(actor);
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
     actor->SendMsg(nullptr, AM_INITSTANDENTRY2, value, 0, 0, 0, 0, 0);
   }
@@ -14508,7 +14506,8 @@ void CGameMode::SpawnMovingActor(
   }
 
   if (objectType == 0 && gid != 0) {
-    g_playerNameDictionary->Set(gid, name);
+    CPlayerNameDictionary* dictionary = g_playerNameDictionary;
+    dictionary->Set(gid, name);
   }
   this->nameCard.SetName(aid, name);
 
@@ -14544,12 +14543,12 @@ void CGameMode::SpawnMovingActor(
   CGameActor* actor = this->scene->GetGameActorByAID(aid);
   if (actor) {
     if (actor->isGroupMemberVisible) {
-      auto member = this->partyPosList.find(actor->render.accountId);
+      auto member = this->partyPosList.find(static_cast<std::uint32_t>(actor->render.accountId));
       if (member != this->partyPosList.end()) {
         member->second.x = entry.dstX;
         member->second.y = entry.dstY;
       }
-      member = this->guildPosList.find(actor->render.accountId);
+      member = this->guildPosList.find(static_cast<std::uint32_t>(actor->render.accountId));
       if (member != this->guildPosList.end()) {
         member->second.x = entry.dstX;
         member->second.y = entry.dstY;
@@ -14568,9 +14567,9 @@ void CGameMode::SpawnMovingActor(
     }
 
     created->objectType = objectType;
-    actor = created;
     this->scene->objects.push_back(created);
     this->scene->actors.push_back(created);
+    actor = created;
     if (actor->objectType == PC_TYPE) {
       if (this->partyPosList.find(entry.aid) != this->partyPosList.end() || this->guildPosList.find(entry.aid) != this->guildPosList.end()) {
         actor->SetGroupMemberVisible(1);
