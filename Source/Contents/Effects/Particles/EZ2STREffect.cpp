@@ -5780,6 +5780,10 @@ void CEZ2STRScreenEffect::Open() {
 // FUNCTION: fn_19040
 void CEZ2STRScreenEffect::InitEvents() {
   const int id = this->id;
+  float fromX;
+  float fromY;
+  float toX;
+  float toY;
   switch (id) {
   case EF_POTION1:
   case EF_POTION2:
@@ -6247,10 +6251,6 @@ void CEZ2STRScreenEffect::InitEvents() {
   case EF_SHADOW_STAB: {
     float fromReciprocalDepth = 0.0f;
     float toReciprocalDepth = 0.0f;
-    float fromX;
-    float fromY;
-    float toX;
-    float toY;
     g_renderer->ProjectViewport(this->position, g_modeMgr.GetGameMode()->camera->frame.view.values, &fromX, &fromY, &fromReciprocalDepth);
     g_renderer->ProjectViewport(this->sourcePosition, g_modeMgr.GetGameMode()->camera->frame.view.values, &toX, &toY, &toReciprocalDepth);
 
@@ -6284,10 +6284,6 @@ void CEZ2STRScreenEffect::InitEvents() {
   case EF_CHAIN_REACTION_SHOT: {
     float fromReciprocalDepth = 0.0f;
     float toReciprocalDepth = 0.0f;
-    float fromX;
-    float fromY;
-    float toX;
-    float toY;
     g_renderer->ProjectViewport(this->position, g_modeMgr.GetGameMode()->camera->frame.view.values, &fromX, &fromY, &fromReciprocalDepth);
     g_renderer->ProjectViewport(this->sourcePosition, g_modeMgr.GetGameMode()->camera->frame.view.values, &toX, &toY, &toReciprocalDepth);
 
@@ -6397,10 +6393,6 @@ void CEZ2STRScreenEffect::InitEvents() {
   case EF_ROSEBLOSSOM_SHOT: {
     float fromReciprocalDepth = 0.0f;
     float toReciprocalDepth = 0.0f;
-    float fromX;
-    float fromY;
-    float toX;
-    float toY;
     g_renderer->ProjectViewport(this->position, g_modeMgr.GetGameMode()->camera->frame.view.values, &fromX, &fromY, &fromReciprocalDepth);
     g_renderer->ProjectViewport(this->sourcePosition, g_modeMgr.GetGameMode()->camera->frame.view.values, &toX, &toY, &toReciprocalDepth);
 
@@ -6752,200 +6744,785 @@ void CEZ2STRScreenEffect::InitEvents() {
     break;
 
   case EF_NEW_METEORSTORM_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_ADORAMUS_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_TETRA_VORTEX_FIRE_GROUND:
+    this->particle->flags = 13;
+    break;
+
   case EF_TETRA_VORTEX_WATER_GROUND:
+    this->particle->flags = 13;
+    break;
+
   case EF_TETRA_VORTEX_WIND_GROUND:
+    this->particle->flags = 13;
+    break;
+
   case EF_TETRA_VORTEX_EARTH_GROUND:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_CRIMSONROCK_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_TETRA_VORTEX_CORE_GROUND:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_DIAMONDDUST_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_DIAMONDDUST_CAST:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_SECRAMENT:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_PSYCHICWAVE_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_PSYCHICWAVE_CAST:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_TRIANGLESHOT_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_RAMPAGEBLASTER_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_FEINTBOMB_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_ARMSCANNON_01_DOWN:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_ARMSCANNON_11_DOWN:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_ARMSCANNON_EXPLOSION_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_CART_CANNON_EXPLOSION_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_CART_CANNON_FIRE_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_CART_TORNADO_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_HELP_ANGEL_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_BANISHINGPOINT_TARGET_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_BANISHINGPOINT_CAST_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_DRAGONBREATH_BOMB_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_ARMSCANNON_CAST_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_DRAGONBREATH_WATER_BOMB_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_COUNTER_SLASH_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_FATAL_MENACE_CAST_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_COMET_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_COMET_CAST_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_COMET_SUB_EXP_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_MINEFFECT_ADORAMUS_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_MINEFFECT_TETRA_FIRE_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_MINEFFECT_TETRA_WATER_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_MINEFFECT_TETRA_WIND_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_MINEFFECT_TETRA_EARTH_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_MINEFFECT_TETRA_CORE_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_MINEFFECT_CRIMSONROCK_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_MINEFFECT_DIAMONDDUST_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_MINEFFECT_DIAMONDDUST_CAST:
+    this->particle->flags = 13;
+    break;
+
   case EF_MINEFFECT_SECRAMENT:
+    this->particle->flags = 13;
+    break;
+
   case EF_MINEFFECT_PSYCHICWAVE_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_MINEFFECT_PSYCHICWAVE_CAST:
+    this->particle->flags = 13;
+    break;
+
   case EF_MINEFFECT_TRIANGLESHOT_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_MINEFFECT_RAMPAGEBLASTER_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_MINEFFECT_FEINTBOMB_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_MINEFFECT_ARMSCANNON_01:
+    this->particle->flags = 13;
+    break;
+
   case EF_MINEFFECT_ARMSCANNON_11:
+    this->particle->flags = 13;
+    break;
+
   case EF_MINEFFECT_ARMSCANNON_EXPLOSION_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_MINEFFECT_ARMSCANNON_CAST_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_MINEFFECT_CART_CANNON_EXPLOSION_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_MINEFFECT_CART_CANNON_FIRE_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_MINEFFECT_CART_TORNADO_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_MINEFFECT_BANISHINGPOINT_TARGET_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_MINEFFECT_BANISHINGPOINT_CAST_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_MINEFFECT_COMET_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_MINEFFECT_COMET_CAST_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_MINEFFECT_COMET_SUB_EXP_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_POISONSMOKE_CAST:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_HELLINFERNO_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_HELLINFERNO_SUB_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_CLEARANCE_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_VARETYRSPEAR_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_VARETYRSPEAR_CAST_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_FALLENEMPIRE_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_HOWLINGOFLION_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_HOWLINGOFLION_CAST_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_METALLICSOUND_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_REPRODUCE_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_SOULEXPANSION_CAST_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_SOULEXPANSION_LOOP_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_AROMAOIL_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_BATHFOAM_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_WALLOFTHORN_CAST_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_EARTHGRAVE_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_IGNITIONBREAK_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_JUDEX_CAST_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_JUDEX_CAST_LOOP_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_JUDEX_TARGET_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_JUDEX_LIGHT_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_CHAINLIGHTNING_CAST_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_CHAINLIGHTNING_LOCKON:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_MANDRAGORA_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_SOUNDOFDESTRUCTION_CAST_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_UNLIMIT_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_AXEBOOMERANG_CAST_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_SPELLFIST_FIRE_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_SPELLFIST_WATER_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_CARTBOOST_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_OVERBRAND_CAST_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_WINDCUTTER_BOTTOM_01:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_WINDCUTTER_BOTTOM_05:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_SERVANTWEAPON_HIT_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_SERVANTWEAPON_SHOOT_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_VULCANARM_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_EARTHDRIVE_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_SERVANT_PHANTOM_HIT_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_SERVANT_PHANTOM_SUB_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_DRAGONIC_AURA_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_DRAGONIC_AURA_HIT_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_DRAGONIC_AURA_BUFF_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_MADNESS_CRUSHER_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_AUTOSHADOWSPELL_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_DESTRUCTIVE_HURRICANE_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_ROCKDOWN_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_CHARGINGPIERCE_CAST_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_MYSTERY_ILLUSION_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_TORNADO_STORM_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_VIOLENT_QUAKE_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_ALL_BLOOM_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_CLIMAX_CAST_LOOP:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_D_MACHINE_CAST_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_ARBITRIUM_CAST_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_COMPETENTIA_LOOP_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_CRYSTAL_IMPACT_CAST_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_ENCHANTING_SHADOW_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_IMPACT_CRATER_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_ABR_INFINITY_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_ABR_INFINITY_CAST:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_DILECTIO_HEAL_CAST_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_PRAMEN_CAST:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEW_BATTLE_W_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_FIRST_FAITH_POWER:
+    this->particle->flags = 13;
+    break;
+
   case EF_JUDGE:
+    this->particle->flags = 13;
+    break;
+
   case EF_JUDGE_AURA:
+    this->particle->flags = 13;
+    break;
+
   case EF_THIRD_EXOR_FLAME:
+    this->particle->flags = 13;
+    break;
+
   case EF_THIRD_EXOR_FLAME_AURA:
+    this->particle->flags = 13;
+    break;
+
   case EF_CHAIN_REACTION_SHOT_CAST_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_DILUVIO_ICE_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_ARDOR_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_LIGHTNING_LAND_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_ROSEBLOSSOM_CAST_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_FIRST_BRAND_AURA:
+    this->particle->flags = 13;
+    break;
+
   case EF_CONFLAGRATION_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_SOUND_BLEND_CAST_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_JAWAII_SERENADE_CAST_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_PRONMARCH_CAST_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_RHYTHMSHOOTING_CAST_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_SECOND_FAITH_AURA:
+    this->particle->flags = 13;
+    break;
+
   case EF_ABYSS_STRIKE_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_ABYSS_STRIKE_CAST_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_ABYSS_STRIKE_GROUND_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_MASSIVE_FLAME_BLASTER_HIT_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_PROCELLA_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_GEF_NOCTURN_CAST_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_ROKI_CAPRICCIO_CAST_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_ABYSS_SLAYER_CAST_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_ABYSS_SQUARE_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_TERRA_DRIVE_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_ELEMENTAL_BUSTER_FIRE_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_ELEMENTAL_BUSTER_LAND_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_ELEMENTAL_BUSTER_POISON_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_ELEMENTAL_BUSTER_WATER_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_ELEMENTAL_BUSTER_WIND_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_OVERSLASH_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_ADVANCED_PROTECTION_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_ADVANCED_PROTECTION_CAST_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_CROSS_RAIN_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_CROSS_RAIN_CAST_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_GRAND_JUDGEMENT_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_GUARDIANSHIELD_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_JUDGEMENT_CROSS_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_JUDGEMENT_CROSS_CAST_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_REBOUND_SHIELD_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_REBOUND_SHIELD_CAST_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_ULTIMATESACRIFICE_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_ACIDIFIED_ZONE_FIRE_CAST_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_ACIDIFIED_ZONE_FIRE_START_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_ACIDIFIED_ZONE_FIRE_LOOP_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_ACIDIFIED_ZONE_WATER_CAST_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_ACIDIFIED_ZONE_WATER_START_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_ACIDIFIED_ZONE_WATER_LOOP_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_ACIDIFIED_ZONE_WIND_CAST_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_ACIDIFIED_ZONE_WIND_START_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_ACIDIFIED_ZONE_WIND_LOOP_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_ACIDIFIED_ZONE_GROUND_CAST_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_ACIDIFIED_ZONE_GROUND_START_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_ACIDIFIED_ZONE_GROUND_LOOP_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_RESEARCH_REPORT_CAST_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_SERPENS_DEEP_POISONING_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_DILUVIO_COLD_FORCE_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_ARDOR_FLAMETECHNIC_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_PROCELLA_GRACE_BREEZE_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_TERREMOTUS_EARTH_CARE_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_THIRD_CONSECRATION_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_SERVANT_SIGN_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NPC_KILLING_AURA:
+    this->particle->flags = 13;
+    break;
+
   case EF_TOXIN_OF_MANDARA_BOMB_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_NEEDLE_STINGER_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_ABSOLUTE_ZEPHYR_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_HEILIGE_PFERD_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_HEILIGE_PFERD_CAST:
+    this->particle->flags = 13;
+    break;
+
   case EF_THE_ONE_FIGHTER_RISES_BOTTOM:
+    this->particle->flags = 13;
+    break;
+
   case EF_DESTRUCTIVE_HURRICANE_BOTTOM_REUSE:
     this->particle->flags = 13;
     break;
