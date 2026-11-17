@@ -8,7 +8,9 @@ These apply to rodecomp: Ragnarok Online Ragexe 2026-02-19 (x86), built with MSV
 Code carries no explanatory comments: none inside functions, none above them, no file headers, no
 commented-out code. Allowed comments are Clank stable-ID annotations (`// FUNCTION:`, `// GLOBAL:`,
 `// STRING:`, `// VTABLE:`), `// OFFSET:` provenance on standalone functions, existing `// STATIC:` provenance,
-exact bare `// INLINED` markers, `// VIRTUALIZED:` markers on protector stubs (section 2), and field-offset markers (`/* XXXX */`). Use only string literals evidenced in the original executable.
+exact bare `// INLINED` markers, `// FOLDED:` markers on linker-folded functions and `// VIRTUALIZED:` markers on
+protector stubs (section 2), and field-offset markers (`/* XXXX */`). Use only string literals evidenced in the
+original executable.
 
 Put explanations in submission notes rather than adding source comments or creating documentation by default.
 Preserve existing provenance except `OFFSET` annotations attached to inline-only functions, which must be removed.
@@ -32,8 +34,9 @@ void Player::Update(float dt) {
   listing that disagrees with the symbol database. An `OFFSET` line always has its `FUNCTION` line right below it,
   and no blank line separates the annotations from the definition. The submission gate checks this.
 - Several IDs stack on one definition only for template instances: each `FUNCTION` line keeps its own `OFFSET`
-  line above it. Two non-template functions with identical bytes are two source functions; one often only calls
-  the other, which the compiler inlined.
+  line above it. Two non-template functions with identical bytes are two source functions: often one only calls
+  the other, which the compiler inlined; when both exist as real functions but the original has one body, the
+  linker folded them (see `// FOLDED:` below).
 
   ```cpp
   // OFFSET: 0x009C2A50
@@ -119,6 +122,27 @@ static void BuildFullKeyName(const char* keyname, char* buffer) {
   This overrides general provenance-preservation rules.
 - Do not invent a standalone ID or mark a source-only helper inline without original evidence.
 - Inlined code is checked through its callers, not submitted as an invented standalone original.
+
+### `// FOLDED:` for functions the linker folded into another
+
+MSVC's identical-COMDAT folding (`/OPT:ICF`) keeps one copy of functions that compile to the same bytes. Two
+source functions can then share one address, and its ID can stand on only one of them. The other carries
+`// FOLDED:` with that ID, and no `OFFSET`:
+
+```cpp
+// FOLDED: fn_18148
+bool ResourceName::operator<(const ResourceName& other) const {
+    ...
+}
+```
+
+- Use it when callers of the second function call the shared address in the original (e.g. `ResourceMgr::Find`
+  calls `0xAECEE0` with a `ResourceName`, while `fn_18148` is annotated on `myGPack::PakName::operator<`).
+- The server compiles the definition and compares it with the code at the ID's address: folding needs
+  identical code, so anything short of a match is refused, in `td check` as at submission.
+- A folded definition has no score or task of its own: the ID's status stays with its `FUNCTION`.
+- Not for a helper whose code the compiler inlined into callers (that is `// INLINED`), nor for template
+  instances (stack `FUNCTION` lines).
 
 ### `// VIRTUALIZED:` for protector-virtualized functions
 
