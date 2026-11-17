@@ -823,7 +823,7 @@ void UIShowInfoWnd::ArrangeCheckBoxes(const int& layout) {
 
 // OFFSET: 0x0082E500
 // FUNCTION: fn_10378
-__declspec(noinline) void ToggleStylingAccessory(int itemId, int slot) {
+__declspec(noinline) void __stdcall ToggleStylingAccessory(int itemId, int slot) {
   UIStylingShopWnd* shop = static_cast<UIStylingShopWnd*>(g_windowMgr.LookupWindow(WID_STYLINGSHOPWND));
   auto it = shop->m_tabs.begin();
   for (; it != shop->m_tabs.end(); ++it) {

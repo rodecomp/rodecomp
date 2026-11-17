@@ -136,7 +136,7 @@ public:
 
 class UIStylingShopButton;
 
-void ToggleStylingAccessory(int itemId, int slot);
+void __stdcall ToggleStylingAccessory(int itemId, int slot);
 
 class UIStylingShopWnd : public UIFrameWnd {
 public:
