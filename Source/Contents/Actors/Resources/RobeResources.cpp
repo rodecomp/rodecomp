@@ -19,8 +19,14 @@ std::string EquipmentResourceMgr::GetRobeResourceName(int type, int job, int sex
   std::string sexName;
   std::string robeName;
 
-  jobName = static_cast<const std::string&>(g_session.GetBodyJobName(spriteJob));
-  sexName = static_cast<const std::string&>(g_session.GetSexName(sex));
+  {
+    const std::string& name = g_session.GetBodyJobName(spriteJob);
+    jobName = name;
+  }
+  {
+    const std::string& name = g_session.GetSexName(sex);
+    sexName = name;
+  }
   robeName = static_cast<const std::string&>(this->GetRobeSprName(robe, 0));
   if (robeName.size() == 0) {
     return "";
@@ -64,7 +70,10 @@ std::string EquipmentResourceMgr::GetShieldResourceName(int type, int job, int s
   std::string shieldName;
 
   const int shieldView = g_session.GetItemDescription40(shield);
-  sexName = static_cast<const std::string&>(g_session.GetSexName(sex));
+  {
+    const std::string& name = g_session.GetSexName(sex);
+    sexName = name;
+  }
   bool exists = false;
   if (shield >= 5 && g_session.HasJobShieldSprite(job, shield) == true) {
     path = static_cast<const std::string&>(FormatOwnedString("방패\\%s_%s_%d_방패.%s", g_session.m_shieldJobNames[spriteJob], sexName.c_str(), shield, g_equipmentResourceExtensions[type]));
@@ -76,7 +85,10 @@ std::string EquipmentResourceMgr::GetShieldResourceName(int type, int job, int s
       return "";
     }
 
-    shieldName = static_cast<const std::string&>(g_session.GetRobeName(shieldView));
+    {
+      const std::string& name = g_session.GetRobeName(shieldView);
+      shieldName = name;
+    }
     path = static_cast<const std::string&>(FormatOwnedString("방패\\%s_%s%s.%s", g_session.m_shieldJobNames[spriteJob], sexName.c_str(), shieldName.c_str(), g_equipmentResourceExtensions[type]));
     exists = ResourceMgr::Instance().Exists(path.c_str());
   }

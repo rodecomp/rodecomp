@@ -69,8 +69,14 @@ std::string EquipmentResourceMgr::GetAccessoryResourceName(int type, int job, in
     headName = g_session.m_humanFemaleHeadNames[head];
   }
 
-  sexName = static_cast<const std::string&>(g_session.GetSexName(sex));
-  accessoryName = static_cast<const std::string&>(g_session.GetAccessoryName(accessory));
+  {
+    const std::string& name = g_session.GetSexName(sex);
+    sexName = name;
+  }
+  {
+    const std::string& name = g_session.GetAccessoryName(accessory);
+    accessoryName = name;
+  }
 
   if (accessoryName.size() == 0) {
     return "";
@@ -94,7 +100,10 @@ std::string EquipmentResourceMgr::GetNamedAccessoryResourceName(int type, int se
   std::string path = "";
   std::string sexName = "";
 
-  sexName = static_cast<const std::string&>(g_session.GetSexName(sex));
+  {
+    const std::string& name = g_session.GetSexName(sex);
+    sexName = name;
+  }
   path = static_cast<const std::string&>(FormatOwnedString("sprite\\악세사리\\%s\\%s%s.%s", sexName.c_str(), sexName.c_str(), accessoryName.c_str(), g_equipmentResourceExtensions[type]));
   return path;
 }
@@ -112,7 +121,10 @@ std::string EquipmentResourceMgr::GetBodyPalName(int job, int sex, int palette, 
   std::string result = "";
   std::string sexName = "";
 
-  sexName = static_cast<const std::string&>(g_session.GetSexName(sex));
+  {
+    const std::string& name = g_session.GetSexName(sex);
+    sexName = name;
+  }
 
   if (g_session.IsDoramJob(job) == true) {
     if (secondJob == true) {
@@ -151,9 +163,15 @@ std::string EquipmentResourceMgr::GetRaceBodyResourceName(int type, int raceJob,
   std::string sexName = "";
   std::string jobName = "";
 
-  sexName = static_cast<const std::string&>(g_session.GetSexName(sex));
+  {
+    const std::string& name = g_session.GetSexName(sex);
+    sexName = name;
+  }
   const bool secondJob = g_session.IsSecondJob(costumeJob);
-  jobName = static_cast<const std::string&>(g_session.GetBodyJobName(g_session.GetSpriteJob(job, costumeJob, true)));
+  {
+    const std::string& name = g_session.GetBodyJobName(g_session.GetSpriteJob(job, costumeJob, true));
+    jobName = name;
+  }
 
   if (secondJob == true) {
     result = static_cast<const std::string&>(this->GetBodyRacePrefix(raceJob)) +
