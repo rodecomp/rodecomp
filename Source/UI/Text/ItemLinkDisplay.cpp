@@ -48,7 +48,7 @@ bool UIChatHisBox::Next(std::string& remaining, std::string& encoded, unsigned& 
   }
 
   do {
-    remaining = remaining.substr(0, close);
+    remaining = std::string(remaining, 0, close);
     auto begin = remaining.find(g_itemLinkTagBegin);
 
     if (close != std::string::npos && begin == std::string::npos) {
