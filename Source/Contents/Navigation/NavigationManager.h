@@ -459,8 +459,8 @@ public:
   /* 1280 */ int routeSide;
   /* 1284 */ int previewType;
   /* 1288 */ CTexture* previewTexture;
-  /* 128C */ int previewX;
-  /* 1290 */ int previewY;
+  /* 128C */ int previewX = 0;
+  /* 1290 */ int previewY = 0;
   /* 1294 */ std::vector<NaviCell> cells;
   /* 12A0 */ CActRes* previewAction;
   /* 12A4 */ CSprRes* previewSprite;

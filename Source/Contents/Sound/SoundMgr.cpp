@@ -494,10 +494,10 @@ bool CSoundMgr::PlayData3D(const void* data, const float& x, const float& y, con
         return false;
       }
 
-      if (this->effectsEnabled) {
-        AIL_set_3D_sample_effects_level(this->samples3D[i], 1.0f);
-      } else {
+      if (!this->effectsEnabled) {
         AIL_set_3D_sample_effects_level(this->samples3D[i], 0.0f);
+      } else {
+        AIL_set_3D_sample_effects_level(this->samples3D[i], 1.0f);
       }
       AIL_set_3D_position(this->samples3D[i], x, y, z);
       AIL_set_3D_orientation(this->samples3D[i], -x, -y, -z, 0.0f, 1.0f, 0.0f);

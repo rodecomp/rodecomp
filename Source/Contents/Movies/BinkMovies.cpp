@@ -74,7 +74,7 @@ NamedBinkMovie* BinkMovies::Get(std::string name, int loop) {
   auto found = std::find_if(this->m_movies.begin(), this->m_movies.end(), [name](NamedBinkMovie* movie) {
     return name.compare(movie->Name()) == 0;
   });
-  if (found != this->m_movies.end()) {
+  if (this->m_movies.end() != found) {
     return *found;
   }
 
