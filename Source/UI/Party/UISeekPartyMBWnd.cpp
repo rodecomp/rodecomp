@@ -138,8 +138,7 @@ int UISeekPartyMBWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       auto found = this->m_subTypes.find(key);
       if (found != this->m_subTypes.end()) {
         const std::vector<std::pair<std::string, int>> entries = found->second;
-        for (auto it = entries.begin(); it != entries.end(); ++it) {
-          const std::pair<std::string, int> entry = *it;
+        for (const std::pair<std::string, int> entry : entries) {
           this->m_subTypeCombo->AddOption(entry.first.c_str(), entry.second);
         }
       }
