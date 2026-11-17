@@ -9,6 +9,7 @@
 #include "Client/Mode/CGameMode.h"
 #include "Client/Session/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Contents/Jobs/JobId.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
@@ -371,7 +372,7 @@ void UIBasicInfoWnd::DrawExpanded() {
   this->DrawTextAt(18, 3, LookupMessage(MSI_BASICINFOWND), 0, 0, 12, 0xFFFFFF, 0, 0);
   this->DrawTextAt(17, 2, LookupMessage(MSI_BASICINFOWND), 0, 0, 12, 0, 0, 0);
 
-  const bool compact = g_serviceType == 0 || g_serviceType == 14;
+  const bool compact = g_serviceType == ServiceKorea || g_serviceType == ServiceRussia;
   const int family = compact ? 0 : 1;
   const int fontHeight = compact ? 12 : 14;
   const int job = g_session.GetDisplayJob();
@@ -406,7 +407,7 @@ void UIBasicInfoWnd::DrawExpanded() {
 
   {
     std::string jobLevel = FormatOwnedString(LookupMessage(MSI__BASIC_MSG_JOB), g_session.m_jobLevel);
-    if (g_serviceType == 12) {
+    if (g_serviceType == ServiceBrazil) {
       jobLevel = static_cast<const std::string&>(FormatOwnedString("Classe. %d", g_session.m_jobLevel));
     }
     this->DrawTextAt(17, this->layoutOffset + 83, jobLevel.c_str(), 0, 1, 14, 0, 0, 0);
@@ -422,7 +423,7 @@ void UIBasicInfoWnd::DrawExpanded() {
   );
 
   std::string weightText;
-  if (g_serviceType == 12) {
+  if (g_serviceType == ServiceBrazil) {
     weightText = static_cast<const std::string&>(FormatOwnedString("Peso : %3d / %3d", g_session.m_weight, g_session.m_maxWeight));
   } else {
     weightText = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_WEIGHT), g_session.m_weight, g_session.m_maxWeight));
@@ -451,7 +452,7 @@ void UIBasicInfoWnd::DrawCollapsed() {
 
   int family = 1;
   int fontHeight = 14;
-  if (g_serviceType == 0) {
+  if (g_serviceType == ServiceKorea) {
     switch (g_session.GetDisplayJob()) {
     case JT_TAEKWON:
     case JT_STAR:
@@ -650,11 +651,11 @@ void UIBasicInfoWnd::Paint() {
     int family = 1;
     int fontHeight = 14;
     int length;
-    if (g_serviceType == 12) {
+    if (g_serviceType == ServiceBrazil) {
       length = std::sprintf(text, "Nv. %2d / %s / Nv. %2d / Exp. %lld %%", g_session.m_level, g_session.GetJobName(g_session.GetDisplayJob(), -1),
                             g_session.m_jobLevel, static_cast<long long>(percent));
     } else {
-      if (g_serviceType == 0) {
+      if (g_serviceType == ServiceKorea) {
         switch (g_session.GetDisplayJob()) {
         case JT_SUPERNOVICE:
         case JT_TAEKWON:
@@ -720,7 +721,7 @@ void UIBasicInfoWnd::Paint() {
 
     int family;
     int fontHeight;
-    if (g_serviceType == 0 || g_serviceType == 14) {
+    if (g_serviceType == ServiceKorea || g_serviceType == ServiceRussia) {
       family = 0;
       fontHeight = 12;
     } else {
@@ -732,7 +733,7 @@ void UIBasicInfoWnd::Paint() {
     this->DrawTextAt(9, 36, jobName, 0, family, fontHeight, 0, 0, 0);
 
     std::memset(text, 0, sizeof(text));
-    if (g_serviceType == 1) {
+    if (g_serviceType == ServiceAmerica) {
       this->DrawTextAt(18, 3, "Basic Info", 0, 0, 12, 0xFFFFFF, 0, 0);
       this->DrawTextAt(17, 2, "Basic Info", 0, 0, 12, 0, 0, 0);
     } else {
@@ -755,13 +756,13 @@ void UIBasicInfoWnd::Paint() {
       this->DrawTextAt(173, 65, text, 0, 1, 14, 0, 0, 0);
     }
 
-    if (g_serviceType == 12) {
+    if (g_serviceType == ServiceBrazil) {
       std::sprintf(text, "Base. %d", g_session.m_level);
     } else {
       std::sprintf(text, "Base Lv. %d", g_session.m_level);
     }
     this->DrawTextAt(17, this->layoutOffset + 71, text, 0, 1, 14, 0, 0, 0);
-    if (g_serviceType == 12) {
+    if (g_serviceType == ServiceBrazil) {
       std::sprintf(text, "Classe. %d", g_session.m_jobLevel);
     } else {
       std::sprintf(text, "Job Lv. %d", g_session.m_jobLevel);
@@ -774,7 +775,7 @@ void UIBasicInfoWnd::Paint() {
     const int zenyWidth = this->TextWidth(text, std::strlen(text), 1, 14, 0, 0);
     this->DrawRightAlignedText(this->geometry.width - 5, this->layoutOffset + 103, text, std::strlen(text), 1, 14, 0, 0);
 
-    if (g_serviceType == 12) {
+    if (g_serviceType == ServiceBrazil) {
       std::sprintf(text, "Peso : %3d / %3d", g_session.m_weight, g_session.m_maxWeight);
     } else {
       std::sprintf(text, "Weight : %3d / %3d", g_session.m_weight, g_session.m_maxWeight);

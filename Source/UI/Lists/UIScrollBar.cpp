@@ -31,6 +31,7 @@
 #include "UI/Buttons/UINaviLinkButton.h"
 #include "UI/Buttons/UIItemTagButton.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Contents/Tables/TipOfTheDay.h"
 #include "Contents/Tables/MessageTable.h"
 #include <algorithm>
@@ -1408,7 +1409,7 @@ void UIChatHisBox::Paint() {
   FontCache& fonts = g_fontCache;
   for (int index = top; index < static_cast<int>(end); ++index) {
     const int row = index - top;
-    if (g_serviceType == 19 && g_tipOfTheDayEnglish) {
+    if (g_serviceType == ServiceUae && g_tipOfTheDayEnglish) {
       const int width = this->TextWidth(this->lines[index].c_str(), 0, 0, 12, 0, 0);
       this->DrawTextAt(this->geometry.width - width - 18, this->lineHeight * row + 4, this->lines[index].c_str(), 0, 0, 12, 0, 0, 0);
       this->DrawTextAt(this->geometry.width - width - 19, this->lineHeight * row + 3, this->lines[index].c_str(), 0, 0, 12, this->lineColors[index], 0, 0);

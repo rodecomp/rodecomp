@@ -13,6 +13,7 @@
 #include "Client/Mode/ModeDragState.h"
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Contents/Tables/MessageTable.h"
 #include "File/ShortcutFilename.h"
 #include "Render/Renderer.h"
@@ -420,7 +421,7 @@ int CUIExchangeUI::SendMsg(UIWindow* sender, int message, std::intptr_t argument
 
     this->partnerName = reinterpret_cast<const char*>(argument1);
     if (argument2 > 0) {
-      if (g_serviceType == 6) {
+      if (g_serviceType == ServiceIndonesia) {
         this->partnerText->SetText(std::format("{} Lv{}", this->partnerName, static_cast<int>(argument3)));
       } else {
         std::string job = g_session.ShortcutFilename(argument2);

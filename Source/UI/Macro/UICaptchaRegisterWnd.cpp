@@ -127,7 +127,7 @@ int UICaptchaRegisterWnd::SendMsg(
       } else {
         const int result =
           g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_MACRO_REPORTER), this->m_editCtrl->Text()).c_str(), 2, 0, 0, 0, "Message", 280, 120, 0);
-        if (result != 188) {
+        if (result != ID_NO) {
           UIBitmapButton* button = this->registerButton;
           button->SetDisabled(1);
           button->Invalidate();

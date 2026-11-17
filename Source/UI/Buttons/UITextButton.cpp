@@ -3422,6 +3422,7 @@ UITVTextButton::UITVTextButton() : UIButton() {
 }
 
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Contents/Tables/TipOfTheDay.h"
 
 // OFFSET: 0x0086DE10
@@ -3443,7 +3444,7 @@ void UIChatHisBox2::Paint() {
   FontCache& fonts = g_fontCache;
   for (int index = top; index < static_cast<int>(end); ++index) {
     const int row = index - top;
-    if (g_serviceType == 19 && g_tipOfTheDayEnglish) {
+    if (g_serviceType == ServiceUae && g_tipOfTheDayEnglish) {
       const int width = this->TextWidth(this->lines[index].c_str(), 0, 0, 12, 0, 0);
       this->DrawTextAt(this->geometry.width - width - 19, this->lineHeight * row + 3, this->lines[index].c_str(), 0, 0, 12, this->lineColors[index], 0, 0);
     } else {

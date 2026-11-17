@@ -38,13 +38,13 @@ void UITextureButton::OnLBtnUp(int x, int y) {
     if (this->parent) {
       if (g_windowMgr.WindowPolicy(3, this->parent->geometry.id) > 0) {
         int id = this->geometry.id;
-        if (id == 185 && g_modeMgr.currentMode && g_modeMgr.currentMode->cursorType == 2) {
+        if (id == ID_CANCEL && g_modeMgr.currentMode && g_modeMgr.currentMode->cursorType == 2) {
           const char* text = LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT);
-          if (g_windowMgr.Confirm(text, 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+          if (g_windowMgr.Confirm(text, 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
             g_modeMgr.currentMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
           }
         } else {
-          if (id == 184 || id == 321) {
+          if (id == ID_OK || id == ID_SEARCH) {
             this->parent->RecordEditTexts();
             id = this->geometry.id;
           }

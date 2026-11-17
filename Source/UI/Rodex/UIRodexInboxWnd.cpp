@@ -971,7 +971,7 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         if (selected.size() == 0) {
           break;
         }
-        if (g_windowMgr.Confirm(LookupMessage(MSI_MINIMAP_TIP_ZOOM_OUT), 2, false, false, 0, "Message", 280, 120, 0) != 0xBB) {
+        if (g_windowMgr.Confirm(LookupMessage(MSI_MINIMAP_TIP_ZOOM_OUT), 2, false, false, 0, "Message", 280, 120, 0) != ID_YES) {
           break;
         }
         for (int i = 0; i < 6; ++i) {
@@ -1001,7 +1001,7 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         if (selected.size() == 0) {
           break;
         }
-        if (g_windowMgr.Confirm(LookupMessage(MSI_MINIMAP_TIP_ZOOM_OUT), 2, false, false, 0, "Message", 280, 120, 0) != 0xBB) {
+        if (g_windowMgr.Confirm(LookupMessage(MSI_MINIMAP_TIP_ZOOM_OUT), 2, false, false, 0, "Message", 280, 120, 0) != ID_YES) {
           break;
         }
         for (int i = 0; i < 6; ++i) {
@@ -1107,7 +1107,7 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       }
 
       const std::string text = FormatOwnedString(LookupMessage(MSI_HOTKEYGUIDEWND_LEFT), type.c_str());
-      if (g_windowMgr.Confirm(text.c_str(), 2, false, false, 0, "Message", 280, 120, 0) == 0xBB) {
+      if (g_windowMgr.Confirm(text.c_str(), 2, false, false, 0, "Message", 280, 120, 0) == ID_YES) {
         if (this->searchActive == 1) {
           for (std::vector<RodexMailEntry>::iterator entry = this->searchResults.begin(); entry != this->searchResults.end(); ++entry) {
             if (entry->first == 0) {
@@ -1144,7 +1144,7 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         }
 
         if (selected.size() != 0 &&
-            g_windowMgr.Confirm(LookupMessage(MSI_CHANGE_SKILLBER), 2, false, false, 0, "Message", 280, 120, 0) == 0xBB) {
+            g_windowMgr.Confirm(LookupMessage(MSI_CHANGE_SKILLBER), 2, false, false, 0, "Message", 280, 120, 0) == ID_YES) {
           for (std::vector<RodexMailEntry>::iterator entry = selected.begin(); entry != selected.end(); ++entry) {
             this->RequestMailAttachments(entry->first, entry->second);
           }
@@ -1166,7 +1166,7 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
         }
 
         if (selected.size() != 0 &&
-            g_windowMgr.Confirm(LookupMessage(MSI_CHANGE_SKILLBER), 2, false, false, 0, "Message", 280, 120, 0) == 0xBB) {
+            g_windowMgr.Confirm(LookupMessage(MSI_CHANGE_SKILLBER), 2, false, false, 0, "Message", 280, 120, 0) == ID_YES) {
           for (std::vector<int>::iterator id = selected.begin(); id != selected.end(); ++id) {
             this->RequestMailAttachments(g_rodexMailStore->inboxType, *id);
           }

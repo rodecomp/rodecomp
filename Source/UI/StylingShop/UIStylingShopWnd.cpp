@@ -163,7 +163,7 @@ void UIStylingShopButton::OnLBtnUp(int, int) {
       int id = this->geometry.id;
       if (id == ID_CANCEL && g_modeMgr.currentMode && g_modeMgr.currentMode->cursorType == 2) {
         const char* text = LookupMessage(MSI_DO_YOU_REALLY_WANT_TO_QUIT);
-        if (g_windowMgr.Confirm(text, 2, true, false, 0, "Message", 280, 120, 0) == 187) {
+        if (g_windowMgr.Confirm(text, 2, true, false, 0, "Message", 280, 120, 0) == ID_YES) {
           g_modeMgr.currentMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
         }
       } else {
@@ -390,7 +390,7 @@ int UIMyStyleWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
   } else {
     switch (argument1) {
     case ID_CLOSE:
-      if (g_windowMgr.Confirm(LookupMessage(MSI_STYLING_SHOP_REGISTER_BOOKMARK), 2, false, false, 0, "Message", 280, 120, 0) != 188) {
+      if (g_windowMgr.Confirm(LookupMessage(MSI_STYLING_SHOP_REGISTER_BOOKMARK), 2, false, false, 0, "Message", 280, 120, 0) != ID_NO) {
         for (int i = 0; i < 2; ++i) {
           if (sender == this->deleteStyleButtons[i]) {
             this->RemoveChild(this->m_slots[i], 1);
@@ -1460,7 +1460,7 @@ int UIStylingShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     break;
   case ID_BUY:
     if (this->m_buyButton->m_argument == 0 &&
-        g_windowMgr.Confirm(LookupMessage(MSI_ASK_MOVE_BY_PRIVATE_AIRPLANE), 2, false, false, 0, "Message", 280, 120, 0) != 188) {
+        g_windowMgr.Confirm(LookupMessage(MSI_ASK_MOVE_BY_PRIVATE_AIRPLANE), 2, false, false, 0, "Message", 280, 120, 0) != ID_NO) {
       for (std::map<UIWindow*, UIStylingshopTabParentWnd*>::iterator it = this->m_tabs.begin(); it != this->m_tabs.end(); ++it) {
         UIStylingshopTabParentWnd* tab = it->second;
         if (tab->geometry.visible == 0) {

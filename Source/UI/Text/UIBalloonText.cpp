@@ -2,6 +2,7 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Actors/ActorNameCard.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Contents/Tables/ForbiddenWords.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Render/Text/TextContext.h"
@@ -377,7 +378,7 @@ void UINameBalloonText::SetName(const CActorNameCard& info, bool stripHash, unsi
 
       char line[260];
       std::memset(line, 0, sizeof(line));
-      sprintf_s(line, sizeof(line), g_serviceType != 0 ? "%s (%s)" : "%s (%s) ", name.c_str(), party);
+      sprintf_s(line, sizeof(line), g_serviceType != ServiceKorea ? "%s (%s)" : "%s (%s) ", name.c_str(), party);
       this->m_lines.push_back(line);
     }
 
@@ -400,7 +401,7 @@ void UINameBalloonText::SetName(const CActorNameCard& info, bool stripHash, unsi
 
       char line[260];
       std::memset(line, 0, sizeof(line));
-      sprintf_s(line, sizeof(line), g_serviceType != 0 ? "%s [%s]" : "%s (%s) ", guild, position);
+      sprintf_s(line, sizeof(line), g_serviceType != ServiceKorea ? "%s [%s]" : "%s (%s) ", guild, position);
       this->m_lines.push_back(line);
     }
   }

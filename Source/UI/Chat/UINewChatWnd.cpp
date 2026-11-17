@@ -9,6 +9,7 @@
 #include "Client/Replay/Replay.h"
 #include "Client/Session/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Contents/Jobs/JobInheritance.h"
 #include "Contents/Tables/MessageTable.h"
 #include "Network/TextEncoding.h"
@@ -309,7 +310,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       }
       }
 
-      if (g_serviceType == 10 && std::strlen(name) > 24) {
+      if (g_serviceType == ServiceGermany && std::strlen(name) > 24) {
         return 0;
       }
 
@@ -498,7 +499,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
         return 0;
       }
 
-      if (g_serviceType == 1 && !g_session.ValidateCharacterName(buffer)) {
+      if (g_serviceType == ServiceAmerica && !g_session.ValidateCharacterName(buffer)) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ENGLISHONLY)), 0xFF, 0, 0, 0);
         return 0;
       }

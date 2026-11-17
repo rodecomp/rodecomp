@@ -14,6 +14,7 @@
 #include "UI/Navigation/NavigationLink.h"
 #include "Client/Session/Session.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Contents/Tables/ForbiddenWords.h"
 #include "Contents/Jobs/JobInheritance.h"
 #include "Contents/Tables/MessageTable.h"
@@ -111,7 +112,7 @@ int UIChangeNameWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intpt
         break;
       }
 
-      if (g_serviceType == 1 && !g_session.ValidateCharacterName(this->m_edit->Text())) {
+      if (g_serviceType == ServiceAmerica && !g_session.ValidateCharacterName(this->m_edit->Text())) {
         g_windowMgr.Confirm(LookupMessage(MSI_CHARACTERNAME_ERROR), 0, true, false, 0, "Message", 280, 120, 0);
         this->m_edit->SetText("");
         return 0;
@@ -160,7 +161,7 @@ int UIChangeNameWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intpt
 
       char text[300];
       std::sprintf(text, LookupMessage(MSI_CONFIRM_TO_CHANGE_NAME), this->m_info.name);
-      if (g_windowMgr.Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) == 187) {
+      if (g_windowMgr.Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) == ID_YES) {
         CharacterRenamePacket packet;
         packet.id = ID_CH_REQ_CHANGE_CHARACTERNAME;
         packet.gid = this->m_character->gid;

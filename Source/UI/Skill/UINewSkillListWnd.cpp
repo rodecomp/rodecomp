@@ -37,6 +37,7 @@
 #include "Utility/Text/FormatString.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Contents/Sprites/SpriteRidingOffset.h"
 #include "Render/DeviceContext/DeviceContext.h"
 #include "Render/Textures/SpriteAtlas.h"
@@ -317,7 +318,7 @@ void UINewSkillListWnd::DrawSkillList() {
       const int textY = y + 47;
       const bool usesLevel = CSkillInfo::UsesLevel(static_cast<int>(skill.id));
       if (level != 0) {
-        std::sprintf(text, g_serviceType == 12 ? "Nv :" : "Lv :");
+        std::sprintf(text, g_serviceType == ServiceBrazil ? "Nv :" : "Lv :");
         const int labelX = this->m_locked != 0 || !usesLevel ? textX + 1 : textX + 12;
         const std::uint32_t gray = RGB(shade, shade, shade);
         this->DrawTextAt(labelX, textY, text, 0, 0, 12, gray, 0, 0);

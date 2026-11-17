@@ -8,6 +8,7 @@
 #include "Client/Session/Session.h"
 #include "Contents/Actors/Pc.h"
 #include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Contents/Tables/MessageTable.h"
 #include "Contents/Sprites/SpriteRidingOffset.h"
 #include "Render/DeviceContext/DeviceContext.h"
@@ -570,7 +571,7 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     }
 
     int valid = 1;
-    if (g_serviceType == 1 && !g_session.ValidateCharacterName(this->m_nameEdit->Text())) {
+    if (g_serviceType == ServiceAmerica && !g_session.ValidateCharacterName(this->m_nameEdit->Text())) {
       valid = 0;
     }
     int allowed = g_forbiddenWords.Allows(this->m_nameEdit->Text());
@@ -631,7 +632,7 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
 
   case ID_CANCEL:
     g_windowMgr.Schedule(this);
-    g_modeMgr.currentMode->SendMsg(MM_COMMAND, 0x2714, 0, 0, 0);
+    g_modeMgr.currentMode->SendMsg(MM_COMMAND, LMM_SELECTCHARACTER, 0, 0, 0);
     return 0;
 
   case ID_SLOT:
