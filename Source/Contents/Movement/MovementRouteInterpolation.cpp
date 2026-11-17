@@ -57,3 +57,9 @@ int MovementRouteInterpolation::Sample(std::uint32_t tick, float* x, float* y, i
 std::uint32_t MovementRouteInterpolation::Segment() const {
   return this->segment;
 }
+
+// OFFSET: 0x00AD9910
+// FUNCTION: fn_17887
+void MovementRouteInterpolation::ResetSegment() {
+  this->segment = 0;
+}
