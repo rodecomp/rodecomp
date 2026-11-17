@@ -522,8 +522,7 @@ __declspec(noinline) std::vector<char> CNavigationManager::WriteObject(CNavi_Obj
 
     reinterpret_cast<NaviObjectRecord*>(buffer.data())->type = type;
     reinterpret_cast<NaviObjectRecord*>(buffer.data())->index = index;
-    reinterpret_cast<NaviObjectRecord*>(buffer.data())->cellX = cell.x;
-    reinterpret_cast<NaviObjectRecord*>(buffer.data())->cellY = cell.y;
+    std::memcpy(&reinterpret_cast<NaviObjectRecord*>(buffer.data())->cellX, &cell, sizeof(cell));
 
     std::int16_t length = static_cast<std::int16_t>(name.size());
     reinterpret_cast<NaviObjectRecord*>(buffer.data())->nameLength = length;
