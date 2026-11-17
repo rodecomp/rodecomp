@@ -298,7 +298,7 @@ void UICashShopWnd::OnCreate(int, int) {
   this->m_searchEdit->Move(0x5E, 0x206);
   this->m_searchEdit->preserveInput = 1;
   this->m_searchEdit->SetText(LookupMessage(MSI_CASHSHOP_CASH_POINT));
-  this->m_searchEdit->TextColor(0xB1B1B1, 0xFFFFFFFFu);
+  this->m_searchEdit->TextColor(0xB1, 0xB1, 0xB1, 0xFFFFFFFFu);
   this->AddChild(this->m_searchEdit);
 
   UIBitmapButton* search = new UIBitmapButton();

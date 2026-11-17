@@ -23,12 +23,11 @@ struct SpritePixel {
 
 static_assert(sizeof(SpritePixel) == 4);
 
-// INLINED
+// OFFSET: 0x00760F50
+// FUNCTION: fn_08060
 CSprRes::CSprRes() : indexedCount(0) {
 }
 
-// OFFSET: 0x00760F50
-// FUNCTION: fn_08060
 CSprRes::~CSprRes() = default;
 
 // OFFSET: 0x0075FE90

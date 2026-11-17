@@ -1244,15 +1244,76 @@ int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       return 0;
     }
     return 0;
-  case UM_PAGEUPPUSH:
-    if (this->m_chatBox->verticalOverflow != 0) {
-      this->m_chatBox->SendMsg(nullptr, UM_SCROLLVERTPAGEUP, 0, 0, 0, 0);
+  case 0x74:
+    if (sender == this->m_chatBox && this->geometry.height > this->m_inputHeight) {
+      RECT rectangle;
+      rectangle.left = this->m_chatBox->geometry.x;
+      rectangle.top = this->m_chatBox->geometry.y;
+      rectangle.right = this->geometry.width - 3;
+      rectangle.bottom = this->geometry.height - this->headerHeight;
+      this->FillSurface(0xFFFF00FF, &rectangle);
       return 0;
+    }
+    return 0;
+  case UM_SETINFO: {
+    this->m_saved = reinterpret_cast<SubChatHisWndInfo*>(argument1);
+    if (this->m_saved->IsValid() == 0) {
+      this->m_saved->Reset(this->geometry.id);
+    }
+    this->Move(this->m_saved->x, this->m_saved->y);
+    this->Resize(this->m_saved->width, this->m_saved->height);
+    return 0;
+  }
+  case UM_ADDCHAT: {
+    char detail[25];
+    std::memset(detail, 0, sizeof(detail));
+    if (argument3 != 0) {
+      std::strcpy(detail, reinterpret_cast<const char*>(argument3));
+    }
+    const char* text = reinterpret_cast<const char*>(argument1);
+    this->m_chatBox->AddLinkRecord(text, static_cast<int>(argument2), detail);
+    if (_mbsstr(reinterpret_cast<const unsigned char*>(text), reinterpret_cast<const unsigned char*>(s_chatItemLinkOpening.c_str())) != nullptr) {
+      this->m_chatBox->AddText(text, static_cast<int>(argument2), detail);
+    } else {
+      this->m_chatBox->AddTextWrapped(text, static_cast<int>(argument2), detail);
+    }
+    return 0;
+  }
+  case UM_RESIZE:
+    if (g_session.m_canDragWnd != 0 && argument1 == 7) {
+      int width = static_cast<int>(argument2);
+      int height = static_cast<int>(argument3);
+      if (width > 0x200) {
+        width = 0x200;
+      }
+      if (height > 0x180) {
+        height = 0x180;
+      }
+      if (width < 0x118) {
+        width = 0x118;
+      }
+      if (height < 0x4A) {
+        height = 0x4A;
+      }
+      width = (width - 0x118) / 32 * 32 + 0x118;
+      height = (height - 0x4A) / 32 * 32 + 0x4A;
+      if (width != this->geometry.width || height != this->geometry.height) {
+        this->Resize(width, height);
+        this->m_resizer->Move(this->geometry.width - 0xF, this->geometry.height - 0xF);
+        this->ApplyButtonLayout();
+        return 0;
+      }
     }
     return 0;
   case UM_PAGEDOWNPUSH:
     if (this->m_chatBox->verticalOverflow != 0) {
       this->m_chatBox->SendMsg(nullptr, UM_SCROLLVERTPAGEDOWN, 0, 0, 0, 0);
+      return 0;
+    }
+    return 0;
+  case UM_PAGEUPPUSH:
+    if (this->m_chatBox->verticalOverflow != 0) {
+      this->m_chatBox->SendMsg(nullptr, UM_SCROLLVERTPAGEUP, 0, 0, 0, 0);
       return 0;
     }
     return 0;
@@ -1308,67 +1369,6 @@ int UISubChatHisWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     default:
       return 0;
     }
-  case UM_RESIZE:
-    if (g_session.m_canDragWnd != 0 && argument1 == 7) {
-      int width = static_cast<int>(argument2);
-      int height = static_cast<int>(argument3);
-      if (width > 0x200) {
-        width = 0x200;
-      }
-      if (height > 0x180) {
-        height = 0x180;
-      }
-      if (width < 0x118) {
-        width = 0x118;
-      }
-      if (height < 0x4A) {
-        height = 0x4A;
-      }
-      width = (width - 0x118) / 32 * 32 + 0x118;
-      height = (height - 0x4A) / 32 * 32 + 0x4A;
-      if (width != this->geometry.width || height != this->geometry.height) {
-        this->Resize(width, height);
-        this->m_resizer->Move(this->geometry.width - 0xF, this->geometry.height - 0xF);
-        this->ApplyButtonLayout();
-        return 0;
-      }
-    }
-    return 0;
-  case UM_SETINFO: {
-    this->m_saved = reinterpret_cast<SubChatHisWndInfo*>(argument1);
-    if (this->m_saved->IsValid() == 0) {
-      this->m_saved->Reset(this->geometry.id);
-    }
-    this->Move(this->m_saved->x, this->m_saved->y);
-    this->Resize(this->m_saved->width, this->m_saved->height);
-    return 0;
-  }
-  case UM_ADDCHAT: {
-    char detail[25];
-    std::memset(detail, 0, sizeof(detail));
-    if (argument3 != 0) {
-      std::strcpy(detail, reinterpret_cast<const char*>(argument3));
-    }
-    const char* text = reinterpret_cast<const char*>(argument1);
-    this->m_chatBox->AddLinkRecord(text, static_cast<int>(argument2), detail);
-    if (_mbsstr(reinterpret_cast<const unsigned char*>(text), reinterpret_cast<const unsigned char*>("<ITEML>")) != nullptr) {
-      this->m_chatBox->AddText(text, static_cast<int>(argument2), detail);
-    } else {
-      this->m_chatBox->AddTextWrapped(text, static_cast<int>(argument2), detail);
-    }
-    return 0;
-  }
-  case 0x74:
-    if (sender == this->m_chatBox && this->geometry.height > this->m_inputHeight) {
-      RECT rectangle;
-      rectangle.left = this->m_chatBox->geometry.x;
-      rectangle.top = this->m_chatBox->geometry.y;
-      rectangle.right = this->geometry.width - 3;
-      rectangle.bottom = this->geometry.height - this->headerHeight;
-      this->FillSurface(0xFFFF00FF, &rectangle);
-      return 0;
-    }
-    return 0;
   default:
     break;
   }

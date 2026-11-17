@@ -141,9 +141,7 @@ void CTexture::Stretch(int x, int y, int width, int height) {
 
 // OFFSET: 0x00544840
 // FUNCTION: fn_01819
-void CTexture::StretchTintedTo(
-  RenderPrimitivePool& pool, RenderQueues& queues, int x, int y, int width, int height, std::uint32_t color, bool depthAlpha, float depthStart, float depthEnd
-) {
+void CTexture::StretchTintedTo(int x, int y, int width, int height, std::uint32_t color) {
   constexpr float z = 0.00001f;
   constexpr float rhw = 0.99999f;
   const float u0 = g_textureOffsetX / static_cast<float>(this->m_textureWidth);
@@ -152,7 +150,7 @@ void CTexture::StretchTintedTo(
   const float v1 = (static_cast<float>(this->m_height) + g_textureOffsetY) / static_cast<float>(this->m_textureHeight);
   const int right = x + width;
   const int bottom = y + height;
-  RenderPrimitive* primitive = pool.Acquire();
+  RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
   primitive->texture = this;
   primitive->quad[0] = QuadVertex(static_cast<float>(x), static_cast<float>(y), z, rhw, color, 0xFFFFFFFF, u0, v0);
   primitive->quad[1] = QuadVertex(static_cast<float>(right), static_cast<float>(y), z, rhw, color, 0xFFFFFFFF, u1, v0);

@@ -240,9 +240,8 @@ void CMapInfoMgr::DrawMapName() {
   const float scale = static_cast<float>(display->m_height) / static_cast<float>(display->m_texture->Height());
   const int width = static_cast<int>(static_cast<float>(display->m_texture->Width()) * scale);
   display->m_texture->StretchTintedTo(
-    g_renderer->primitives, g_renderer->queues, static_cast<int>(static_cast<float>(display->m_width - width) * 0.5f),
-    static_cast<int>(static_cast<float>(g_renderer->viewport.height) * 0.12f), width, display->m_height, color, g_renderer->fog.supported != 0,
-    g_depthStart, g_depthEnd
+    static_cast<int>(static_cast<float>(display->m_width - width) * 0.5f), static_cast<int>(static_cast<float>(g_renderer->viewport.height) * 0.12f), width,
+    display->m_height, color
   );
   display->m_dc->Draw(0, static_cast<int>(static_cast<float>(g_renderer->viewport.height) * 0.12f), display->m_width, display->m_height, color);
 }

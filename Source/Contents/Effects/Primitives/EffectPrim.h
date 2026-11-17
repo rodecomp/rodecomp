@@ -12,6 +12,7 @@ struct CRagEffect;
 
 struct CEffectPrim : CRenderObject {
   CEffectPrim();
+  ~CEffectPrim() override;
   bool OnProcess() override;
   void Render(int argument) override;
   void DrawEffectPrimitive15(matrix& wtm);

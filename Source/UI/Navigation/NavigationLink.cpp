@@ -439,7 +439,8 @@ std::string NavigationLinkParser::DisplayNavigationLink(std::string value) {
     if (end != std::string::npos) {
       const std::string rest = text.substr(end + std::strlen(g_naviLinkCloseTag.c_str()));
       text = text.substr(0, end + std::strlen(g_naviLinkCloseTag.c_str()));
-      const std::string link = g_navigationLinkParser->FormatNavigationLink(text, true);
+      NavigationLinkParser* parser = g_navigationLinkParser;
+      const std::string link = parser->FormatNavigationLink(text, true);
       output += head;
       output += link;
       output += rest;

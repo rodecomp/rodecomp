@@ -4,6 +4,7 @@
 #include "Render/Primitives/RenderPrimitive.h"
 
 #include <deque>
+#include <new>
 
 class RenderCommandPool {
 public:
@@ -25,6 +26,19 @@ private:
   /* 0050 */ std::deque<RenderCommand> m_commands;
   /* 0064 */ std::deque<RenderCommand>::iterator m_current;
 };
+
+// OFFSET: 0x00CA63D0
+// FUNCTION: fn_20958
+inline RenderCommand* RenderCommandPool::Acquire() {
+  if (this->m_current == this->m_commands.end()) {
+    this->m_commands.emplace_back();
+    this->m_current = this->m_commands.end();
+    return &this->m_commands.back();
+  }
+
+  RenderCommand* command = &*this->m_current++;
+  return new (command) RenderCommand;
+}
 
 // INLINED
 inline void RenderCommandPool::Rewind() {

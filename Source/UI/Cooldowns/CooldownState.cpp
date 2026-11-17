@@ -1,5 +1,6 @@
 #include "UI/Cooldowns/CooldownState.h"
 #include "Client/Replay/Replay.h"
+#include "UI/Cooldowns/CooldownClock.h"
 
 #include <cmath>
 #include <cstring>
@@ -7,11 +8,6 @@
 #include <timeapi.h>
 
 template __declspec(noinline) std::_Tree<std::_Tmap_traits<unsigned, CooldownEdge, std::less<unsigned>, std::allocator<std::pair<const unsigned, CooldownEdge>>, false>>::~_Tree() noexcept;
-
-// INLINED
-std::uint32_t CooldownNow() {
-  return g_replayAnimationScaling ? Replay::Instance().elapsed : timeGetTime();
-}
 
 // OFFSET: 0x00CA4F30
 // FUNCTION: fn_20946

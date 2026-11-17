@@ -246,7 +246,11 @@ public:
   /* 064C */ std::unordered_map<int, int> itemPickupCounts;
   /* 066C */ unsigned char padding_066C[0x4];
 
-  std::string MapName();
+  // OFFSET: 0x005C4520
+  // FUNCTION: fn_03565
+  std::string MapName() {
+    return this->mapName;
+  }
   UIBroadcastBalloon* EnsureBroadcastBalloon();
   void HandleCameraInfo(const unsigned char* data);
   void InitializeCamera();

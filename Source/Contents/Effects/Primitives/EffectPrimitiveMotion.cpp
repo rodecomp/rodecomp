@@ -1216,8 +1216,8 @@ void CEffectPrim::PrimEffectTexture2() {
 void CEffectPrim::PrimEffectTexture_Ani() {
   FaceCamera(this->state.slots);
 
-  const CRagEffect* master = this->state.master;
-  this->render.position = master->render.position;
+  const float x = this->state.master->render.position.x;
+  this->render.position = this->state.master->render.position;
 
   EffectPrimitiveSlot& slot = this->state.slots[0];
 
@@ -1246,7 +1246,7 @@ void CEffectPrim::PrimEffectTexture_Ani() {
   }
 
   slot.vecBNow.y = slot.vecBPre.y;
-  slot.vecBNow.x = this->render.position.x;
+  slot.vecBNow.x = x;
   slot.vecBNow.z = this->render.position.z;
 }
 
@@ -4709,11 +4709,10 @@ void CEffectPrim::PrimAnimatedFlash() {
   const int process = slot.process + 1;
   slot.process = process;
   if (process % 4 == 0) {
-    char frame = static_cast<char>(slot.flag1[0] + 1);
-    if (frame >= static_cast<int>(this->state.totalTexture)) {
-      frame = 0;
+    ++slot.flag1[0];
+    if (slot.flag1[0] >= static_cast<int>(this->state.totalTexture)) {
+      slot.flag1[0] = 0;
     }
-    slot.flag1[0] = frame;
   }
 
   if (process < 30) {

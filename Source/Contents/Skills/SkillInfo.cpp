@@ -1791,8 +1791,7 @@ bool CSkillActionMgr::OnGroundSkillCast(int skillId, int castDelay, CGameActor* 
     return false;
   }
 
-  const vector3d position = CellWorldPosition(column, row);
-  action->OnGroundSkillCast(castDelay, target, std::bit_cast<int>(position.x), std::bit_cast<int>(position.y), std::bit_cast<int>(position.z));
+  action->OnGroundSkillCast(castDelay, target, CellWorldPosition(column, row));
   return true;
 }
 
@@ -2697,7 +2696,7 @@ public:
   int GetSkillAttackMotion() override;
   bool KeepSkillAttackMotion(int argument) override;
   void OnSkillCast(int level, CGameActor* source) override;
-  void OnGroundSkillCast(int level, CGameActor* source, int argument3, int argument4, int argument5) override;
+  void OnGroundSkillCast(int level, CGameActor* source, vector3d position) override;
   int GetSkillScopeType() override;
 };
 
@@ -3147,10 +3146,10 @@ void CSkillAction_HN_JACK_FROST_NOVA::OnSkillCast(int level, CGameActor* source)
 
 // OFFSET: 0x007842D0
 // FUNCTION: fn_08548
-void CSkillAction_HN_JACK_FROST_NOVA::OnGroundSkillCast(int level, CGameActor* source, int argument3, int argument4, int argument5) {
+void CSkillAction_HN_JACK_FROST_NOVA::OnGroundSkillCast(int level, CGameActor* source, vector3d position) {
   CGameMode* mode = g_modeMgr.GetGameMode();
   if (mode) {
-    g_modeMgr.GetGameMode()->LaunchDummyEffect(reinterpret_cast<const vector3d*>(&argument3), 0x5A8, level / 24, 0);
+    g_modeMgr.GetGameMode()->LaunchDummyEffect(&position, 0x5A8, level / 24, 0);
   }
 }
 

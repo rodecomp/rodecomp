@@ -25,9 +25,7 @@ public:
   void Draw(int x, int y, int width, int height, std::uint32_t color) override;
   void Stretch(int x, int y, int width, int height) override;
 
-  void StretchTintedTo(
-    RenderPrimitivePool& pool, RenderQueues& queues, int x, int y, int width, int height, std::uint32_t color, bool depthAlpha, float depthStart, float depthEnd
-  );
+  void StretchTintedTo(int x, int y, int width, int height, std::uint32_t color);
   std::uint32_t SetImageSize(std::uint32_t width, std::uint32_t height);
   std::uint32_t Retain();
   std::uint32_t Touch();

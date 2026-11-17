@@ -672,16 +672,16 @@ void UIStylingShopWnd::SetBuyEnabled(bool enabled) {
   const char* normal;
   const char* hover;
   const char* pressed;
-  if (enabled) {
-    this->m_buyButton->m_argument = 0;
-    normal = "유저인터페이스\\styleshop\\btn_buy_out.bmp";
-    hover = "유저인터페이스\\styleshop\\btn_buy_over.bmp";
-    pressed = "유저인터페이스\\styleshop\\btn_buy_down.bmp";
-  } else {
+  if (!enabled) {
     this->m_buyButton->m_argument = 1;
     pressed = "유저인터페이스\\styleshop\\btn_buy_disable.bmp";
     hover = pressed;
     normal = pressed;
+  } else {
+    this->m_buyButton->m_argument = 0;
+    normal = "유저인터페이스\\styleshop\\btn_buy_out.bmp";
+    hover = "유저인터페이스\\styleshop\\btn_buy_over.bmp";
+    pressed = "유저인터페이스\\styleshop\\btn_buy_down.bmp";
   }
 
   this->m_buyButton->SetBitmap(normal, 0, 0);

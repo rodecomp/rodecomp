@@ -221,7 +221,7 @@ public:
 
 class CSkillAction_AT_GLACIER_SHARD : public CSkillAction_Icing {
 public:
-  void OnGroundSkillCast(int level, CGameActor* source, int argument3, int argument4, int argument5) override;
+  void OnGroundSkillCast(int level, CGameActor* source, vector3d position) override;
   void OnSkillEffect(int level, CGameActor* source, CGameActor* target) override;
 };
 
@@ -1024,7 +1024,7 @@ void CSkillAction_AT_GLACIER_NOVA::OnGroundSkillEffect(vector3d position, int ar
 
 // OFFSET: 0x005A91A0
 // FUNCTION: fn_03226
-void CSkillAction_AT_GLACIER_SHARD::OnGroundSkillCast(int level, CGameActor* source, int argument3, int argument4, int argument5) {
+void CSkillAction_AT_GLACIER_SHARD::OnGroundSkillCast(int level, CGameActor* source, vector3d position) {
   if (source) {
     EffectLists* effects = g_effectMgr;
     if (CEffect* effect = effects->Spawn(source->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(OBFUSCATE_ARRAY_TEXT("glacier_shard_target", 0x151F77EBEBBB2147ULL, char)), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {

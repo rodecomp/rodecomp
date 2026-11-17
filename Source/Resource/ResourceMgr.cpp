@@ -36,9 +36,23 @@ unsigned char g_lowercaseTable[256] = {
 
 // INLINED
 ResourceMgr::ResourceMgr() {
-  for (std::uint32_t& value : this->unknown_004C) {
-    value = 0;
-  }
+  this->unknown_004C = 0;
+  this->unknown_0050 = 0;
+  this->unknown_0054 = 0;
+  this->unknown_0058 = 0;
+  this->unknown_005C = 0;
+  this->unknown_0060 = 0;
+  this->unknown_0064 = 0;
+  this->unknown_0068 = 0;
+  this->unknown_006C = 0;
+  this->unknown_0070 = 0;
+  this->unknown_0074 = 0;
+  this->unknown_0078 = 0;
+  this->unknown_007C = 0;
+  this->unknown_0080 = 0;
+  this->unknown_0084 = 0;
+  this->unknown_0088 = 0;
+  this->unknown_008C = 0;
   InitializeCriticalSection(&this->m_lock);
 }
 

@@ -17,6 +17,7 @@
 #include "UI/Shop/ItemDrawing.h"
 #include "UI/Shortcuts/UIQuickSlotWnd.h"
 #include "UI/Cooldowns/CooldownOwner.h"
+#include "UI/Cooldowns/CooldownClock.h"
 #include "UI/Status/UIRebirthWnd.h"
 #include "UI/Party/UISeekPartyMBWnd.h"
 #include "UI/Party/UISeekPartyWnd.h"
@@ -352,7 +353,7 @@ void UISeekPartyListWnd::Paint() {
       if (it->second.isEnd) {
         this->FillRegion(21, y + 1, 508, (row + 1 != static_cast<int>(g_session.m_partyBooking.m_entries.size())) + 38, 0xFFFFFF);
         auto* more = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\more_info.bmp")));
-        this->DrawBitmap(22, y + 2, &more->image, false);
+        this->DrawBitmap(22, y + 2, more, false);
       } else {
         this->FillRegion(21, y + 1, 508, (row != static_cast<int>(g_session.m_partyBooking.m_entries.size())) + 38, 0xFFFFFF);
         if (this->m_hoverIndex == index) {

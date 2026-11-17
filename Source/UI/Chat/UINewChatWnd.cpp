@@ -44,7 +44,7 @@ template __declspec(noinline) void std::map<int, UIWindow*>::_Mybase::clear() no
 template __declspec(noinline) std::_Tree_unchecked_const_iterator<std::map<int, UIWindow*>::_Mybase::_Scary_val>& std::_Tree_unchecked_const_iterator<std::map<int, UIWindow*>::_Mybase::_Scary_val>::operator++() noexcept;
 
 // GLOBAL: gl_25380
-static const std::string s_chatItemLinkOpening = "<ITEML>";
+const std::string s_chatItemLinkOpening = "<ITEML>";
 
 // GLOBAL: gl_25450
 static const std::string s_itemLinkClosing = "</ITEML>";

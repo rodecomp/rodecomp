@@ -313,17 +313,17 @@ public:
   /* 0094 */ CUIGroupTrilinear* m_trilinear;
 };
 
-class CUIListPage final : public CUIControl {
+class CUIListPage : public CUIControl {
 public:
   __declspec(noinline) CUIListPage();
-  void OnCreate(int width, int height) override;
-  void OnInit() override;
-  void Paint() override;
-  virtual void OnSelectOption(CUIOptionItem* item, const TALKTYPE& type);
-  virtual void BindOption(CUIOptionItem* item, const TALKTYPE& id);
-  virtual void LoadOptions(int tab);
-  virtual void RefreshOptions();
-  virtual bool SetOptionChecked(int id);
+  void OnCreate(int width, int height) final;
+  void OnInit() final;
+  void Paint() final;
+  virtual void OnSelectOption(CUIOptionItem* item, const TALKTYPE& type) final;
+  virtual void BindOption(CUIOptionItem* item, const TALKTYPE& id) final;
+  virtual void LoadOptions(int tab) final;
+  virtual void RefreshOptions() final;
+  virtual bool SetOptionChecked(int id) final;
   __declspec(noinline) void RefreshHotkeyLabels();
   std::string GetHotkeyText(int tab, int index);
 

@@ -1,3 +1,4 @@
+#include "Contents/Actors/ActorEnums.h"
 #include "Contents/Effects/Primitives/EffectPrimitiveState.h"
 #include "Contents/Effects/Primitives/EffectPrim.h"
 #include "Contents/Effects/Core/RagEffect.h"
@@ -19,18 +20,14 @@ EffectPrimitiveSlot::EffectPrimitiveSlot() {
 
 // INLINED
 EffectPrimitiveState::~EffectPrimitiveState() {
-  if (this->master) {
-    auto& related = this->master->state.primList;
-
-    for (auto entry = related.begin(); entry != related.end(); ++entry) {
-      if (*entry == this) {
-        related.erase(entry);
-        break;
-      }
-    }
-  }
-
   std::free(this->textures);
+}
+
+// INLINED
+CEffectPrim::~CEffectPrim() {
+  if (this->state.master) {
+    this->state.master->SendMsg(this, AM_CHILD_DEAD, 0, 0, 0, 0, 0, 0);
+  }
 }
 
 // OFFSET: 0x00BAE460
@@ -58,7 +55,7 @@ void __stdcall Get_Angle(float x, float y, std::int16_t* angle) {
 
   for (std::int16_t index = 0; index <= 180; ++index) {
     if (normalX >= g_cosTable[index]) {
-      *angle = normalY < 0.0f ? 360 - index : index;
+      *angle = normalY >= 0.0f ? index : 360 - index;
       return;
     }
   }

@@ -39,7 +39,7 @@ struct RagEffectState {
   /* 00048 */ vector3d deltaPos;
   /* 00054 */ vector3d deltaPos2;
   /* 00060 */ vector3d deltaPos3;
-  /* 0006C */ std::list<EffectPrimitiveState*> primList;
+  /* 0006C */ std::list<CEffectPrim*> primList;
   /* 00074 */ RagEffectSegment objSeg[20];
   /* 006B4 */ CRes* resource;
   /* 006B8 */ EZeffectData* resourceData;

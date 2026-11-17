@@ -2072,12 +2072,6 @@ void UINavigationV4Wnd::DrawMapTexture(int x, int y, int size) {
   }
 }
 
-// OFFSET: 0x005C4520
-// FUNCTION: fn_03565
-std::string CGameMode::MapName() {
-  return this->mapName;
-}
-
 // OFFSET: 0x005C45D0
 // FUNCTION: fn_03568
 bool UINavigationV4Wnd::IsListShown() const {

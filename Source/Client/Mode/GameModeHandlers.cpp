@@ -1098,7 +1098,7 @@ void CGameMode::PlayBgm(unsigned char type, std::string name) {
   }
   case 2: {
     CSoundMgr* soundMgr = g_soundMgr;
-    soundMgr->SetDefaultName(g_session.GetBgmFileName(std::string(this->mapName).c_str()));
+    soundMgr->SetDefaultName(g_session.GetBgmFileName(this->MapName().c_str()));
     g_soundMgr->secondaryEnabled = 0;
     break;
   }

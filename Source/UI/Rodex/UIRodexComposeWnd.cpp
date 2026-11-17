@@ -167,12 +167,13 @@ void UIRodexScrollBar::Paint() {
     return;
   }
 
-  if (this->vertical == 1) {
+  switch (this->vertical) {
+  case 1: {
     this->FillRegion(0, 0, 5, this->geometry.height, 0xFFFFFF);
-    const auto* upper = static_cast<CBitmapRes*>(
+    auto* upper = static_cast<CBitmapRes*>(
       ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\scrollbar_arrow_upper.bmp"))
     );
-    this->DrawBitmap(0, 0, &upper->image, false);
+    this->DrawBitmap(0, 0, upper, false);
 
     int offset = this->ThumbOffset() + this->arrowLength;
     if (offset < 5) {
@@ -185,10 +186,12 @@ void UIRodexScrollBar::Paint() {
     }
 
     this->FillRegion(0, offset, 5, length, 0xE9E9E9);
-    const auto* lower = static_cast<CBitmapRes*>(
+    auto* lower = static_cast<CBitmapRes*>(
       ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\scrollbar_arrow_down.bmp"))
     );
-    this->DrawBitmap(0, this->geometry.height - this->arrowLength, &lower->image, false);
+    this->DrawBitmap(0, this->geometry.height - this->arrowLength, lower, false);
+    break;
+  }
   }
 
   this->minimumThumb = 0;
@@ -504,7 +507,9 @@ void UIRodexComposeWnd::Paint() {
   this->DrawRightAlignedText(104, 382, taxBuf, 0, 0, 11, taxColor, 0);
 
   if (this->m_zeny->Length() != 0) {
-    if (inputZeny > g_session.m_zeny || inputZeny + this->m_tax > g_session.m_zeny) {
+    if (inputZeny > g_session.m_zeny) {
+      this->m_zeny->TextColor(0xFF, 0, 0, 0xFFFFFFFF);
+    } else if (inputZeny + this->m_tax > g_session.m_zeny) {
       this->m_zeny->TextColor(0xFF, 0, 0, 0xFFFFFFFF);
     } else {
       this->m_zeny->TextColor(0, 0, 0, 0xFFFFFFFF);
@@ -518,10 +523,10 @@ void UIRodexComposeWnd::Paint() {
   int itemX = 30;
   for (const auto& item : this->m_items) {
     this->DrawBitmap(itemX - 4, 319, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\shadow_item_on.bmp"))), true);
-    if (this->m_tax <= g_session.m_zeny) {
-      this->DrawItemAndQuantity(itemX, 309, item, 0, 0);
-    } else {
+    if (this->m_tax > g_session.m_zeny) {
       this->DrawItemAndQuantityAuxiliary(2, itemX, 309, item, item.identified, 0);
+    } else {
+      this->DrawItemAndQuantity(itemX, 309, item, 0, 0);
     }
     if (item.grade > 0) {
       this->DrawBitmap(itemX, 321, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", static_cast<int>(item.grade)).c_str()))), true);

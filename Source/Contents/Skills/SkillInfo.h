@@ -52,7 +52,8 @@ public:
   // INLINED
   virtual void OnTargetSkillCast(CGameActor* source, CGameActor* target, int delay) {
   }
-  virtual void OnGroundSkillCast(int level, CGameActor* source, int argument3, int argument4, int argument5) {
+  // INLINED
+  virtual void OnGroundSkillCast(int level, CGameActor* source, vector3d position) {
   }
   virtual void OnSkillEffect(int level, CGameActor* source, CGameActor* target) {
   }

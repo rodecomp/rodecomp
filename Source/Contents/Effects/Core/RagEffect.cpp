@@ -118,17 +118,12 @@ CRagEffect::CRagEffect() {
   this->state.tag = 0;
 }
 
-// INLINED
-static CEffectPrim& Owner(EffectPrimitiveState* particle) {
-  return *reinterpret_cast<CEffectPrim*>(reinterpret_cast<char*>(particle) - offsetof(CEffectPrim, state));
-}
-
 // OFFSET: 0x00BF8AC0
 // FUNCTION: fn_20011
 CRagEffect::~CRagEffect() {
   if (!this->state.primList.empty()) {
     for (auto it = this->state.primList.begin(); it != this->state.primList.end(); ++it) {
-      Owner(*it).HandleMasterMessage(nullptr, 24, 0, 0, 0, 0, 0, 0, 0);
+      (*it)->HandleMasterMessage(nullptr, 24, 0, 0, 0, 0, 0, 0, 0);
     }
 
     this->state.primList.erase(this->state.primList.begin(), this->state.primList.end());
@@ -1681,7 +1676,7 @@ void CRagEffect::Blessing() {
     this->state.lastPrim->state.maxAlpha = 100.0f;
     this->state.lastPrim->state.alphaSpeed = this->state.lastPrim->state.maxAlpha / 30.0f;
     this->state.lastPrim->state.fadeOutCnt = this->state.lastPrim->state.duration - 30;
-    Owner(&this->state.lastPrim->state).InitSegment();
+    this->state.lastPrim->InitSegment();
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
     this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\alpha_down.tga", 0, false, true, false);
   }
@@ -1692,9 +1687,9 @@ void CRagEffect::Blessing() {
     this->state.lastPrim->state.animSpeed = 2;
     this->state.lastPrim->state.alpha = static_cast<float>(this->state.stateCnt * -6 + 200);
     this->state.lastPrim->state.deltaPos2 = {0.0f, -25.0f, 0.0f};
-    Owner(&this->state.lastPrim->state).SetSpriteName("이팩트\\축복.spr");
-    Owner(&this->state.lastPrim->state).SetActionName("이팩트\\축복.act");
-    Owner(&this->state.lastPrim->state).InitSegment();
+    this->state.lastPrim->SetSpriteName("이팩트\\축복.spr");
+    this->state.lastPrim->SetActionName("이팩트\\축복.act");
+    this->state.lastPrim->InitSegment();
   }
 
   if (this->state.stateCnt % 4 == 0) {
@@ -1711,9 +1706,9 @@ void CRagEffect::Blessing() {
     this->state.lastPrim->state.size = 0.5f;
     this->state.lastPrim->state.fadeOutCnt = this->state.lastPrim->state.duration - this->state.lastPrim->state.duration / 5;
     this->state.lastPrim->state.alphaSpeed = this->state.lastPrim->state.maxAlpha / 10.0f;
-    Owner(&this->state.lastPrim->state).SetActionName("이팩트\\particle6.act");
-    Owner(&this->state.lastPrim->state).SetSpriteName("이팩트\\particle6.spr");
-    Owner(&this->state.lastPrim->state).InitSegment();
+    this->state.lastPrim->SetActionName("이팩트\\particle6.act");
+    this->state.lastPrim->SetSpriteName("이팩트\\particle6.spr");
+    this->state.lastPrim->InitSegment();
   }
 }
 
@@ -7343,12 +7338,12 @@ void CRagEffect::MonsterSpriteBurst(char kind) {
     radius = static_cast<float>(rand() % 45 + 5);
   }
 
-  Owner(&stored()->state).render.position = stored()->state.master->render.position;
-  Owner(&stored()->state).render.position.x = radius * g_sinTable[angle] + Owner(&stored()->state).render.position.x;
-  Owner(&stored()->state).render.position.z = radius * g_cosTable[angle] + Owner(&stored()->state).render.position.z;
+  stored()->render.position = stored()->state.master->render.position;
+  stored()->render.position.x = radius * g_sinTable[angle] + stored()->render.position.x;
+  stored()->render.position.z = radius * g_cosTable[angle] + stored()->render.position.z;
   CWorld* world = g_modeMgr.GetGameMode()->scene;
-  Owner(&stored()->state).render.position.y =
-    world->terrain->Height(Owner(&stored()->state).render.position.x, Owner(&stored()->state).render.position.z);
+  stored()->render.position.y =
+    world->terrain->Height(stored()->render.position.x, stored()->render.position.z);
 
   if (kind == 5 || kind == 10) {
     stored()->state.slots[0].flag1[0] = 4;
@@ -7365,80 +7360,80 @@ void CRagEffect::MonsterSpriteBurst(char kind) {
   stored()->state.slots[1].flag1[1] = static_cast<char>(rand() % 3);
 
   if (kind == 2) {
-    Owner(&stored()->state).SetSpriteName("몬스터\\워그.spr");
-    Owner(&stored()->state).SetActionName("몬스터\\워그.act");
+    stored()->SetSpriteName("몬스터\\워그.spr");
+    stored()->SetActionName("몬스터\\워그.act");
     stored()->state.animSpeed = rand() % 3 + 6;
-    Owner(&stored()->state).SetAction(rand() % 8, 16, 1);
+    stored()->SetAction(rand() % 8, 16, 1);
   } else if (kind == 3) {
-    Owner(&stored()->state).SetSpriteName("몬스터\\violy.spr");
-    Owner(&stored()->state).SetActionName("몬스터\\violy.act");
+    stored()->SetSpriteName("몬스터\\violy.spr");
+    stored()->SetActionName("몬스터\\violy.act");
     stored()->state.animSpeed = rand() % 3 + 6;
-    Owner(&stored()->state).SetAction(rand() % 8, 16, 1);
+    stored()->SetAction(rand() % 8, 16, 1);
   } else if (kind == 4) {
     stored()->state.animSpeed = rand() % 3 + 6;
     const std::int16_t pose = static_cast<std::int16_t>(rand() % 3);
-    Owner(&stored()->state).SetSpriteName("몬스터\\succubus.spr");
-    Owner(&stored()->state).SetActionName("몬스터\\succubus.act");
+    stored()->SetSpriteName("몬스터\\succubus.spr");
+    stored()->SetActionName("몬스터\\succubus.act");
     if (pose == 0) {
-      Owner(&stored()->state).SetAction(rand() % 8 + 56, 16, 1);
+      stored()->SetAction(rand() % 8 + 56, 16, 1);
     } else if (pose == 1) {
-      Owner(&stored()->state).SetAction(rand() % 8 + 48, 16, 1);
+      stored()->SetAction(rand() % 8 + 48, 16, 1);
     } else {
-      Owner(&stored()->state).SetAction(rand() % 8 + 40, 16, 1);
+      stored()->SetAction(rand() % 8 + 40, 16, 1);
     }
   } else if (kind == 5) {
-    Owner(&stored()->state).SetSpriteName("몬스터\\mineral.spr");
-    Owner(&stored()->state).SetActionName("몬스터\\mineral.act");
+    stored()->SetSpriteName("몬스터\\mineral.spr");
+    stored()->SetActionName("몬스터\\mineral.act");
     stored()->state.animSpeed = rand() % 3 + 6;
-    Owner(&stored()->state).SetAction(rand() % 8, 16, 1);
+    stored()->SetAction(rand() % 8, 16, 1);
   } else if (kind == 6) {
-    Owner(&stored()->state).SetSpriteName("몬스터\\ktullanux.spr");
-    Owner(&stored()->state).SetActionName("몬스터\\ktullanux.act");
+    stored()->SetSpriteName("몬스터\\ktullanux.spr");
+    stored()->SetActionName("몬스터\\ktullanux.act");
     stored()->state.animSpeed = rand() % 3 + 6;
-    Owner(&stored()->state).SetAction(rand() % 8, 16, 1);
+    stored()->SetAction(rand() % 8, 16, 1);
   } else if (kind == 7) {
-    Owner(&stored()->state).SetSpriteName("몬스터\\garm.spr");
-    Owner(&stored()->state).SetActionName("몬스터\\garm.act");
+    stored()->SetSpriteName("몬스터\\garm.spr");
+    stored()->SetActionName("몬스터\\garm.act");
     stored()->state.animSpeed = rand() % 3 + 6;
-    Owner(&stored()->state).SetAction(rand() % 8, 16, 1);
+    stored()->SetAction(rand() % 8, 16, 1);
   } else if (kind == 8) {
-    Owner(&stored()->state).SetSpriteName("몬스터\\miyabi_ningyo.spr");
-    Owner(&stored()->state).SetActionName("몬스터\\miyabi_ningyo.act");
+    stored()->SetSpriteName("몬스터\\miyabi_ningyo.spr");
+    stored()->SetActionName("몬스터\\miyabi_ningyo.act");
     stored()->state.animSpeed = rand() % 3 + 6;
-    Owner(&stored()->state).SetAction(rand() % 8 + 48, 16, 1);
+    stored()->SetAction(rand() % 8 + 48, 16, 1);
   } else if (kind == 9) {
-    Owner(&stored()->state).SetSpriteName("몬스터\\garden_keeper.spr");
-    Owner(&stored()->state).SetActionName("몬스터\\garden_keeper.act");
+    stored()->SetSpriteName("몬스터\\garden_keeper.spr");
+    stored()->SetActionName("몬스터\\garden_keeper.act");
     stored()->state.animSpeed = 4;
-    Owner(&stored()->state).SetAction(rand() % 8 + 16, 16, 1);
+    stored()->SetAction(rand() % 8 + 16, 16, 1);
   } else if (kind == 13) {
-    Owner(&stored()->state).SetSpriteName("몬스터\\ginseng_bullet.spr");
-    Owner(&stored()->state).SetActionName("몬스터\\ginseng_bullet.act");
+    stored()->SetSpriteName("몬스터\\ginseng_bullet.spr");
+    stored()->SetActionName("몬스터\\ginseng_bullet.act");
     stored()->state.animSpeed = 3;
-    Owner(&stored()->state).SetAction(rand() % 8, 16, 1);
+    stored()->SetAction(rand() % 8, 16, 1);
   } else if (kind == 14) {
-    Owner(&stored()->state).SetSpriteName("몬스터\\nepenthes2_bullet.spr");
-    Owner(&stored()->state).SetActionName("몬스터\\nepenthes2_bullet.act");
+    stored()->SetSpriteName("몬스터\\nepenthes2_bullet.spr");
+    stored()->SetActionName("몬스터\\nepenthes2_bullet.act");
     stored()->state.animSpeed = 4;
-    Owner(&stored()->state).SetAction(0, 16, 1);
+    stored()->SetAction(0, 16, 1);
   } else if (kind == 15) {
-    Owner(&stored()->state).SetSpriteName("몬스터\\imp.spr");
-    Owner(&stored()->state).SetActionName("몬스터\\imp.act");
+    stored()->SetSpriteName("몬스터\\imp.spr");
+    stored()->SetActionName("몬스터\\imp.act");
     stored()->state.animSpeed = 4;
-    Owner(&stored()->state).SetAction(rand() % 8, 16, 1);
+    stored()->SetAction(rand() % 8, 16, 1);
   } else if (kind > 9) {
-    Owner(&stored()->state).SetSpriteName("몬스터\\ifrit.spr");
-    Owner(&stored()->state).SetActionName("몬스터\\ifrit.act");
+    stored()->SetSpriteName("몬스터\\ifrit.spr");
+    stored()->SetActionName("몬스터\\ifrit.act");
     stored()->state.animSpeed = 4;
-    Owner(&stored()->state).SetAction(rand() % 8 + 32, 16, 1);
+    stored()->SetAction(rand() % 8 + 32, 16, 1);
   } else {
-    Owner(&stored()->state).SetSpriteName("몬스터\\geographer.spr");
-    Owner(&stored()->state).SetActionName("몬스터\\geographer.act");
+    stored()->SetSpriteName("몬스터\\geographer.spr");
+    stored()->SetActionName("몬스터\\geographer.act");
     stored()->state.animSpeed = 4;
-    Owner(&stored()->state).SetAction(0, 16, 1);
+    stored()->SetAction(0, 16, 1);
   }
 
-  Owner(&stored()->state).InitSegment();
+  stored()->InitSegment();
 }
 
 // OFFSET: 0x00C78A40
@@ -8657,27 +8652,27 @@ void CRagEffect::Vallentine(char kind) {
   stored()->state.animSpeed = 2;
   stored()->state.repeatAnim = 0;
   if (kind == 2) {
-    Owner(&stored()->state).SetSpriteName("이팩트\\05vallentine.spr");
-    Owner(&stored()->state).SetActionName("이팩트\\05vallentine.act");
-    Owner(&stored()->state).SetAction(0, 16, 1);
+    stored()->SetSpriteName("이팩트\\05vallentine.spr");
+    stored()->SetActionName("이팩트\\05vallentine.act");
+    stored()->SetAction(0, 16, 1);
   } else if (kind == 3) {
-    Owner(&stored()->state).SetSpriteName("이팩트\\fast.spr");
-    Owner(&stored()->state).SetActionName("이팩트\\fast.act");
+    stored()->SetSpriteName("이팩트\\fast.spr");
+    stored()->SetActionName("이팩트\\fast.act");
     stored()->state.animSpeed = 4;
-    Owner(&stored()->state).SetAction(0, 16, 1);
+    stored()->SetAction(0, 16, 1);
   } else if (kind == 4) {
     stored()->state.renderFlag |= 0x200u;
-    Owner(&stored()->state).SetSpriteName("이팩트\\ro2effect.spr");
-    Owner(&stored()->state).SetActionName("이팩트\\ro2effect.act");
+    stored()->SetSpriteName("이팩트\\ro2effect.spr");
+    stored()->SetActionName("이팩트\\ro2effect.act");
     stored()->state.animSpeed = 4;
-    Owner(&stored()->state).SetAction(0, 16, 1);
+    stored()->SetAction(0, 16, 1);
   } else {
-    Owner(&stored()->state).SetSpriteName("이팩트\\vallentine.spr");
-    Owner(&stored()->state).SetActionName("이팩트\\vallentine.act");
-    Owner(&stored()->state).SetAction(kind, 16, 1);
+    stored()->SetSpriteName("이팩트\\vallentine.spr");
+    stored()->SetActionName("이팩트\\vallentine.act");
+    stored()->SetAction(kind, 16, 1);
   }
 
-  Owner(&stored()->state).InitSegment();
+  stored()->InitSegment();
 }
 
 // OFFSET: 0x00C6C6A0
@@ -9391,10 +9386,10 @@ void CRagEffect::SakuraFireArrow() {
   stored()->state.slots[2].life = 0;
   stored()->state.slots[3].life = 0;
   stored()->state.alpha = 250.0f;
-  Owner(&stored()->state).SetSpriteName("이팩트\\sakura01.spr");
-  Owner(&stored()->state).SetActionName("이팩트\\sakura01.act");
-  Owner(&stored()->state).SetAction(ClampedRandom(3), 36, 0);
-  Owner(&stored()->state).InitSegment();
+  stored()->SetSpriteName("이팩트\\sakura01.spr");
+  stored()->SetActionName("이팩트\\sakura01.act");
+  stored()->SetAction(ClampedRandom(3), 36, 0);
+  stored()->InitSegment();
 }
 
 // OFFSET: 0x00C6D890
@@ -11998,7 +11993,7 @@ void CRagEffect::ParticleTime(const char* name, char kind) {
   this->state.lastPrim->state.textures[1] = g_texMgr.Load("effect\\pok3.tga", 0, false, true, false);
 
   this->state.lastPrim->state.size = 0.0f;
-  Owner(&this->state.lastPrim->state).render.position = this->render.position;
+  this->state.lastPrim->render.position = this->render.position;
 
   for (int i = 0; i < 4; ++i) {
     this->state.lastPrim->state.slots[i].life = 1;
@@ -12478,42 +12473,42 @@ int CRagEffect::SuperAngel(char type, int dummy) {
     this->state.lastPrim->state.alpha = 0.0f;
 
     if (type == 0) {
-      Owner(&this->state.lastPrim->state).SetSpriteName("\uc774\ud329\ud2b8\\\ucc9c\uc0ac.spr");
-      Owner(&this->state.lastPrim->state).SetActionName("\uc774\ud329\ud2b8\\\ucc9c\uc0ac.act");
+      this->state.lastPrim->SetSpriteName("\uc774\ud329\ud2b8\\\ucc9c\uc0ac.spr");
+      this->state.lastPrim->SetActionName("\uc774\ud329\ud2b8\\\ucc9c\uc0ac.act");
       this->state.lastPrim->state.renderFlag = 5;
     } else if (type == 1) {
-      Owner(&this->state.lastPrim->state).SetSpriteName("\uc774\ud329\ud2b8\\\ucc9c\uc0ac\ub0a0\uac1c.spr");
-      Owner(&this->state.lastPrim->state).SetActionName("\uc774\ud329\ud2b8\\\ucc9c\uc0ac\ub0a0\uac1c.act");
+      this->state.lastPrim->SetSpriteName("\uc774\ud329\ud2b8\\\ucc9c\uc0ac\ub0a0\uac1c.spr");
+      this->state.lastPrim->SetActionName("\uc774\ud329\ud2b8\\\ucc9c\uc0ac\ub0a0\uac1c.act");
       this->state.lastPrim->state.renderFlag = 5;
     } else if (type == 2) {
-      Owner(&this->state.lastPrim->state).SetSpriteName("\uc774\ud329\ud2b8\\\uae43\ud1381.spr");
-      Owner(&this->state.lastPrim->state).SetActionName("\uc774\ud329\ud2b8\\\uae43\ud1381.act");
+      this->state.lastPrim->SetSpriteName("\uc774\ud329\ud2b8\\\uae43\ud1381.spr");
+      this->state.lastPrim->SetActionName("\uc774\ud329\ud2b8\\\uae43\ud1381.act");
       this->state.lastPrim->state.renderFlag = 5;
     } else if (type == 3) {
-      Owner(&this->state.lastPrim->state).SetSpriteName("\uc774\ud329\ud2b8\\\uae43\ud1382.spr");
-      Owner(&this->state.lastPrim->state).SetActionName("\uc774\ud329\ud2b8\\\uae43\ud1382.act");
+      this->state.lastPrim->SetSpriteName("\uc774\ud329\ud2b8\\\uae43\ud1382.spr");
+      this->state.lastPrim->SetActionName("\uc774\ud329\ud2b8\\\uae43\ud1382.act");
       this->state.lastPrim->state.renderFlag = 5;
     } else if (type == 4) {
-      Owner(&this->state.lastPrim->state).SetSpriteName("\uc774\ud329\ud2b8\\\uae43\ud1383.spr");
-      Owner(&this->state.lastPrim->state).SetActionName("\uc774\ud329\ud2b8\\\uae43\ud1383.act");
+      this->state.lastPrim->SetSpriteName("\uc774\ud329\ud2b8\\\uae43\ud1383.spr");
+      this->state.lastPrim->SetActionName("\uc774\ud329\ud2b8\\\uae43\ud1383.act");
       this->state.lastPrim->state.renderFlag = 5;
     } else if (type == 10) {
-      Owner(&this->state.lastPrim->state).SetSpriteName("\uc774\ud329\ud2b8\\\ud55c\ubcf5\ucc9c\uc0ac.spr");
-      Owner(&this->state.lastPrim->state).SetActionName("\uc774\ud329\ud2b8\\\ud55c\ubcf5\ucc9c\uc0ac.act");
+      this->state.lastPrim->SetSpriteName("\uc774\ud329\ud2b8\\\ud55c\ubcf5\ucc9c\uc0ac.spr");
+      this->state.lastPrim->SetActionName("\uc774\ud329\ud2b8\\\ud55c\ubcf5\ucc9c\uc0ac.act");
       this->state.lastPrim->state.renderFlag = 1;
       this->state.lastPrim->state.slots[0].vecBNow.y = this->render.position.y - 30.0f;
       this->state.lastPrim->state.renderFlag |= 0x200;
     } else if (type == 11) {
-      Owner(&this->state.lastPrim->state).SetSpriteName("\uc774\ud329\ud2b8\\\ud55c\ubcf5\ucc9c\uc0ac(\ub0a0\uac1c).spr");
-      Owner(&this->state.lastPrim->state).SetActionName("\uc774\ud329\ud2b8\\\ud55c\ubcf5\ucc9c\uc0ac(\ub0a0\uac1c).act");
+      this->state.lastPrim->SetSpriteName("\uc774\ud329\ud2b8\\\ud55c\ubcf5\ucc9c\uc0ac(\ub0a0\uac1c).spr");
+      this->state.lastPrim->SetActionName("\uc774\ud329\ud2b8\\\ud55c\ubcf5\ucc9c\uc0ac(\ub0a0\uac1c).act");
       this->state.lastPrim->state.renderFlag = 5;
       this->state.lastPrim->state.slots[0].vecBNow.y = this->render.position.y - 30.0f;
     }
 
-    Owner(&this->state.lastPrim->state).SetAction(0, 16, 1);
-    Owner(&this->state.lastPrim->state).InitSegment();
+    this->state.lastPrim->SetAction(0, 16, 1);
+    this->state.lastPrim->InitSegment();
     this->state.lastPrim->state.repeatAnim = 1;
-    Owner(&this->state.lastPrim->state).render.previousAnimation = 0;
+    this->state.lastPrim->render.previousAnimation = 0;
     this->state.lastPrim->state.slots[1].life = 0;
     this->state.lastPrim->state.slots[2].life = 0;
     this->state.lastPrim->state.slots[3].life = 0;
@@ -14700,14 +14695,14 @@ void CRagEffect::SendMsg(
         break;
       }
       for (auto it = this->state.primList.begin(); it != this->state.primList.end(); ++it) {
-        if (static_cast<CGameObject*>(&Owner(*it)) == sender) {
+        if (static_cast<CGameObject*>(*it) == sender) {
           this->state.primList.erase(it);
           break;
         }
       }
     } else {
       for (auto it = this->state.primList.begin(); it != this->state.primList.end(); ++it) {
-        Owner(*it).HandleMasterMessage(nullptr, 24, 0, 0, 0, 0, 0, 0, 0);
+        (*it)->HandleMasterMessage(nullptr, 24, 0, 0, 0, 0, 0, 0, 0);
       }
       this->state.primList.erase(this->state.primList.begin(), this->state.primList.end());
     }

@@ -79,4 +79,6 @@ inline UINewChatWnd* ChatWindow() {
   return g_windowMgr.chatWnd;
 }
 
+extern const std::string s_chatItemLinkOpening;
+
 #endif

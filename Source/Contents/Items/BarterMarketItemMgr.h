@@ -28,6 +28,7 @@ struct BarterMarketItem {
   // FUNCTION: fn_18072
   BarterMarketItem() {}
   __declspec(noinline) BarterMarketItem(const BarterMarketItem& other);
+  __declspec(noinline) ~BarterMarketItem() = default;
   ITEM_INFO ToItemInfo() const;
 };
 
