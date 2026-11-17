@@ -115,6 +115,9 @@ public:
 
 class CCashEmotionAction_SelectedUnPurchasedPack : public ICashEmotionAction {
 public:
+  // INLINED
+  CCashEmotionAction_SelectedUnPurchasedPack() {
+  }
   bool Execute(int packId, int argument) override;
 };
 
