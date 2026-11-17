@@ -377,10 +377,12 @@ void CRagEffect::FireSparks() {
   this->state.lastPrim->state.transform.AppendXRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.latitude)));
   const float* m = this->state.lastPrim->state.transform.values;
   const float distance = static_cast<float>(ClampedRandom(13) + 2);
+  vector3d forward;
+  MatrixMult(forward, vector3d{0.0f, 0.0f, distance}, m);
   EffectPrimitiveState& moving = this->state.lastPrim->state;
-  moving.deltaPos2.x = (((m[3] * 0.0f + m[0] * 0.0f) + distance * m[6]) + m[9]) + 0.0f;
-  moving.deltaPos2.y = (((m[1] * 0.0f + m[4] * 0.0f) + distance * m[7]) + m[10]) - 10.0f;
-  moving.deltaPos2.z = (((m[5] * 0.0f + m[2] * 0.0f) + distance * m[8]) + m[11]) + 0.0f;
+  moving.deltaPos2.x = forward.x + 0.0f;
+  moving.deltaPos2.y = forward.y - 10.0f;
+  moving.deltaPos2.z = forward.z + 0.0f;
   this->state.lastPrim->state.chCnt = ClampedRandom(25) + 5;
   this->state.lastPrim->state.size = static_cast<float>(ClampedRandom(70) + 30) / 100.0f;
   this->state.lastPrim->state.alpha = 0.0f;
@@ -1935,11 +1937,12 @@ void CRagEffect::AttackEnergy2(const char* name) {
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
   this->state.lastPrim->state.size = 4.0f;
 
-  for (int index = 0; index < 4; ++index) {
+  int index;
+  for (index = 0; index < 4; ++index) {
     this->state.lastPrim->state.slots[index].life = 0;
   }
 
-  for (int index = 0; index < 4; ++index) {
+  for (index = 0; index < 4; ++index) {
     this->state.lastPrim->state.slots[index].life = 1;
     this->state.lastPrim->state.slots[index].process = 0;
     this->state.lastPrim->state.slots[index].maxHeight = 8.0f;
@@ -2963,11 +2966,12 @@ void CRagEffect::TexturedSpiral(const char* name, int, int) {
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
 
-  for (int index = 0; index < 4; ++index) {
+  int index;
+  for (index = 0; index < 4; ++index) {
     this->state.lastPrim->state.slots[index].life = 0;
   }
 
-  for (int index = 0; index < 4; ++index) {
+  for (index = 0; index < 4; ++index) {
     this->state.lastPrim->state.slots[index].life = 1;
     this->state.lastPrim->state.slots[index].process = 0;
     this->state.lastPrim->state.slots[index].distance = 100.0f;
@@ -3087,11 +3091,12 @@ void CRagEffect::TexturedSpiralSmall(const char* name, int, int) {
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
 
-  for (int slot = 0; slot < 4; ++slot) {
+  int slot;
+  for (slot = 0; slot < 4; ++slot) {
     this->state.lastPrim->state.slots[slot].life = 0;
   }
 
-  for (int slot = 0; slot < 4; ++slot) {
+  for (slot = 0; slot < 4; ++slot) {
     this->state.lastPrim->state.slots[slot].life = 1;
     this->state.lastPrim->state.slots[slot].process = 0;
     this->state.lastPrim->state.slots[slot].distance = 50.0f;
@@ -3120,11 +3125,12 @@ void CRagEffect::TexturedSpiralTall(const char* name, int, int) {
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
 
-  for (int slot = 0; slot < 4; ++slot) {
+  int slot;
+  for (slot = 0; slot < 4; ++slot) {
     this->state.lastPrim->state.slots[slot].life = 0;
   }
 
-  for (int slot = 0; slot < 4; ++slot) {
+  for (slot = 0; slot < 4; ++slot) {
     this->state.lastPrim->state.slots[slot].life = 1;
     this->state.lastPrim->state.slots[slot].process = 0;
     this->state.lastPrim->state.slots[slot].distance = 100.0f;
@@ -3154,11 +3160,12 @@ void CRagEffect::TexturedSpiralFade(const char* name, int, int) {
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
 
-  for (int slot = 0; slot < 4; ++slot) {
+  int slot;
+  for (slot = 0; slot < 4; ++slot) {
     this->state.lastPrim->state.slots[slot].life = 0;
   }
 
-  for (int slot = 0; slot < 4; ++slot) {
+  for (slot = 0; slot < 4; ++slot) {
     this->state.lastPrim->state.slots[slot].life = 1;
     this->state.lastPrim->state.slots[slot].process = 0;
     this->state.lastPrim->state.slots[slot].distance = 0.0f;
@@ -4183,11 +4190,12 @@ void CRagEffect::FeatherBurst(const char* name, std::int16_t angle, char) {
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
   this->state.lastPrim->state.size = 10.0f;
 
-  for (int slot = 0; slot < 4; ++slot) {
+  int slot;
+  for (slot = 0; slot < 4; ++slot) {
     this->state.lastPrim->state.slots[slot].life = 0;
   }
 
-  for (int slot = 0; slot < 4; ++slot) {
+  for (slot = 0; slot < 4; ++slot) {
     this->state.lastPrim->state.slots[slot].life = 1;
     this->state.lastPrim->state.slots[slot].process = -ClampedRandom(20);
     this->state.lastPrim->state.slots[slot].maxHeight = static_cast<float>(ClampedRandom(11)) * 0.2f + 2.0f;
@@ -4719,11 +4727,12 @@ void CRagEffect::TexturedBeams(const char* name, char flag) {
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
 
-  for (int index = 0; index < 4; ++index) {
+  int index;
+  for (index = 0; index < 4; ++index) {
     this->state.lastPrim->state.slots[index].life = 0;
   }
 
-  for (int index = 0; index < 3; ++index) {
+  for (index = 0; index < 3; ++index) {
     this->state.lastPrim->state.slots[index].life = 1;
     this->state.lastPrim->state.slots[index].process = 0;
     this->state.lastPrim->state.slots[index].alphaB = 30;
@@ -6507,11 +6516,12 @@ void CRagEffect::TexturedDoubleSpiral(const char* name, int, int) {
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
 
-  for (int index = 0; index < 4; ++index) {
+  int index;
+  for (index = 0; index < 4; ++index) {
     this->state.lastPrim->state.slots[index].life = 0;
   }
 
-  for (int index = 0; index < 4; ++index) {
+  for (index = 0; index < 4; ++index) {
     this->state.lastPrim->state.slots[index].life = 1;
     this->state.lastPrim->state.slots[index].process = 0;
     this->state.lastPrim->state.slots[index].distance = 6.0f;
@@ -10613,13 +10623,14 @@ void CRagEffect::ElectricRing(char kind, std::int16_t angle) {
   this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\elec1.tga", 0, false, true, false);
   this->state.lastPrim->state.size = 0.0f;
 
-  for (int index = 0; index < 4; ++index) {
+  int index;
+  for (index = 0; index < 4; ++index) {
     this->state.lastPrim->state.slots[index].life = 0;
   }
 
   const std::int16_t phase = kind;
 
-  for (int index = 0; index < 4; ++index) {
+  for (index = 0; index < 4; ++index) {
     this->state.lastPrim->state.slots[index].life = 1;
     this->state.lastPrim->state.slots[index].process = 0;
     this->state.lastPrim->state.slots[index].maxHeight = 0.1f;
@@ -10660,13 +10671,14 @@ void CRagEffect::ElectricRingLate(char kind, std::int16_t angle) {
   this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\elec1.tga", 0, false, true, false);
   this->state.lastPrim->state.size = 0.0f;
 
-  for (int index = 0; index < 4; ++index) {
+  int index;
+  for (index = 0; index < 4; ++index) {
     this->state.lastPrim->state.slots[index].life = 0;
   }
 
   const std::int16_t phase = kind;
 
-  for (int index = 0; index < 4; ++index) {
+  for (index = 0; index < 4; ++index) {
     this->state.lastPrim->state.slots[index].life = 1;
     this->state.lastPrim->state.slots[index].process = 0;
     this->state.lastPrim->state.slots[index].maxHeight = 0.1f;
@@ -14083,11 +14095,12 @@ void CRagEffect::AsuraStrike(char kind) {
 
     this->state.lastPrim->state.size = 0.0f;
 
-    for (int index = 0; index < 4; ++index) {
+    int index;
+    for (index = 0; index < 4; ++index) {
       this->state.lastPrim->state.slots[index].life = 0;
     }
 
-    for (int index = 0; index < 3; ++index) {
+    for (index = 0; index < 3; ++index) {
       this->state.lastPrim->state.slots[index].life = 1;
       this->state.lastPrim->state.slots[index].process = index * 20 - 40;
       this->state.lastPrim->state.slots[index].alphaB = 0;
@@ -14130,11 +14143,12 @@ void CRagEffect::AsuraStrike(char kind) {
 
     this->state.lastPrim->state.size = 0.0f;
 
-    for (int index = 0; index < 4; ++index) {
+    int index;
+    for (index = 0; index < 4; ++index) {
       this->state.lastPrim->state.slots[index].life = 0;
     }
 
-    for (int index = 0; index < 3; ++index) {
+    for (index = 0; index < 3; ++index) {
       this->state.lastPrim->state.slots[index].life = 1;
       this->state.lastPrim->state.slots[index].process = -40 - index * 20;
       this->state.lastPrim->state.slots[index].alphaB = 0;
@@ -15226,7 +15240,8 @@ void CRagEffect::VioletRingCloud(char type) {
     this->state.lastPrim->state.slots[0].riseAngle = 90;
     this->state.lastPrim->state.slots[0].alphaT = 1400;
     this->state.lastPrim->state.slots[0].vecBNow.y = 0.0f;
-    for (int i = 0; i < 21; ++i) {
+    int i;
+    for (i = 0; i < 21; ++i) {
       this->state.lastPrim->state.slots[0].height[i] = 0.0f;
       this->state.lastPrim->state.slots[0].flag1[i] = 1;
     }
@@ -15241,7 +15256,7 @@ void CRagEffect::VioletRingCloud(char type) {
     this->state.lastPrim->state.slots[1].riseAngle = 90;
     this->state.lastPrim->state.slots[1].alphaT = 1400;
     this->state.lastPrim->state.slots[1].vecBNow.y = 0.0f;
-    for (int i = 0; i < 21; ++i) {
+    for (i = 0; i < 21; ++i) {
       this->state.lastPrim->state.slots[1].height[i] = 0.0f;
       this->state.lastPrim->state.slots[1].flag1[i] = 1;
     }
@@ -17797,7 +17812,8 @@ void CRagEffect::HealRingSparkle(const char* name, char type) {
     } else {
       this->state.lastPrim->state.slots[0].alphaT = 40;
     }
-    for (int i = 0; i < 21; ++i) {
+    int i;
+    for (i = 0; i < 21; ++i) {
       this->state.lastPrim->state.slots[0].height[i] = 0.0f;
       this->state.lastPrim->state.slots[0].flag1[i] = 0;
     }
@@ -17816,7 +17832,7 @@ void CRagEffect::HealRingSparkle(const char* name, char type) {
     } else {
       this->state.lastPrim->state.slots[1].alphaT = 40;
     }
-    for (int i = 0; i < 21; ++i) {
+    for (i = 0; i < 21; ++i) {
       this->state.lastPrim->state.slots[1].height[i] = 0.0f;
       this->state.lastPrim->state.slots[1].flag1[i] = 0;
     }
