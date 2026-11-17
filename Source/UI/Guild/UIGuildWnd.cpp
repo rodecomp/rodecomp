@@ -1833,8 +1833,9 @@ void UIGuildBanishedMemberWnd::Paint() {
   const auto& members = g_guildInfo.bannedMembers;
   int drawn = 0;
   int index = 0;
-  for (auto member = members.begin(); member != members.end(); ++member, ++index) {
+  for (auto member = members.begin(); member != members.end(); ++index) {
     if (index < this->m_scrollTop * this->m_columns) {
+      ++member;
       continue;
     }
 
@@ -1861,6 +1862,7 @@ void UIGuildBanishedMemberWnd::Paint() {
     if (++drawn == this->m_visibleRows * this->m_columns) {
       break;
     }
+    ++member;
   }
 }
 
