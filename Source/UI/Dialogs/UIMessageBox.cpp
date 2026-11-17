@@ -106,6 +106,7 @@
 #include "Resource/MSGSTRINGID.h"
 
 template __declspec(noinline) bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+template __declspec(noinline) std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const std::string, int>>>, std::_Iterator_base0>& std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const std::string, int>>>, std::_Iterator_base0>::operator++() noexcept;
 
 // GLOBAL: gl_25153
 static const std::string s_messageBoxItemLinkOpening = "<ITEML>";
@@ -118,6 +119,30 @@ namespace {
   int TileCount(int length, int tile) {
     const std::div_t tiles = std::div(length, tile);
     return tiles.quot + (tiles.rem != 0);
+  }
+
+#pragma pack(push, 1)
+  struct ChatRoomRecordHeader {
+    /* 0000 */ std::uint16_t id;
+    /* 0002 */ std::uint32_t bytes;
+  };
+#pragma pack(pop)
+
+  // INLINED
+  __forceinline std::vector<unsigned char> MakeChatRoomRecord(std::uint16_t id, const void* data, std::uint32_t bytes) {
+    std::vector<unsigned char> record(bytes + sizeof(ChatRoomRecordHeader));
+    ChatRoomRecordHeader* header = reinterpret_cast<ChatRoomRecordHeader*>(record.data());
+    header->id = id;
+    header->bytes = bytes;
+    if (bytes != 0) {
+      std::memcpy(record.data() + sizeof(ChatRoomRecordHeader), data, bytes);
+    }
+    return record;
+  }
+
+  // INLINED
+  void AppendRecord(std::vector<unsigned char>& records, const std::vector<unsigned char>& record) {
+    records.insert(records.end(), record.begin(), record.end());
   }
 
   struct HangameJoinUrl {
@@ -2501,57 +2526,28 @@ void UIChatRoomWnd::SaveChatLog() {
 // FUNCTION: fn_11725
 std::vector<unsigned char> UIChatRoomWnd::SerializeReplayData() {
   std::vector<unsigned char> records;
-  {
-    const auto record = BuildReplayTaggedRecord(0x5014, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(0x5016, this->saved, 0x10);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(0x5017, this->title.data(), static_cast<std::uint32_t>(this->title.size()));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(0x5018, this->roomSettingsText.data(), static_cast<std::uint32_t>(this->roomSettingsText.size()));
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(0x5019, this->roomStatusValues, 4);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(0x501A, this->roomStatusValues + 4, 4);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(0x501B, this->roomStatusValues + 8, 4);
-    records.insert(records.end(), record.begin(), record.end());
-  }
-  {
-    const auto record = BuildReplayTaggedRecord(0x501C, this->roomStatusValues + 12, 4);
-    records.insert(records.end(), record.begin(), record.end());
-  }
+  AppendRecord(records, BuildReplayTaggedRecord(0x5014, nullptr, 0));
+  AppendRecord(records, BuildReplayTaggedRecord(0x5016, this->saved, 0x10));
+  AppendRecord(records, BuildReplayTaggedRecord(0x5017, this->title.data(), static_cast<std::uint32_t>(this->title.size())));
+  AppendRecord(records, BuildReplayTaggedRecord(0x5018, this->roomSettingsText.data(), static_cast<std::uint32_t>(this->roomSettingsText.size())));
+  AppendRecord(records, BuildReplayTaggedRecord(0x5019, &this->roomStatusValues[0], 4));
+  AppendRecord(records, BuildReplayTaggedRecord(0x501A, &this->roomStatusValues[1], 4));
+  AppendRecord(records, BuildReplayTaggedRecord(0x501B, &this->roomStatusValues[2], 4));
+  AppendRecord(records, BuildReplayTaggedRecord(0x501C, &this->roomStatusValues[3], 4));
 
-  for (const auto& entry : this->memberRoles) {
-    if (entry.second == 0) {
-      const auto record = BuildReplayTaggedRecord(0x501E, entry.first.data(), static_cast<std::uint32_t>(entry.first.size()));
-      records.insert(records.end(), record.begin(), record.end());
+  for (auto it = this->memberRoles.begin(); it != this->memberRoles.end(); ++it) {
+    if (it->second == 0) {
+      AppendRecord(records, MakeChatRoomRecord(0x501E, it->first.data(), static_cast<std::uint32_t>(it->first.size())));
     }
   }
 
-  for (const auto& entry : this->memberRoles) {
-    if (entry.second != 0) {
-      const auto record = BuildReplayTaggedRecord(0x501F, entry.first.data(), static_cast<std::uint32_t>(entry.first.size()));
-      records.insert(records.end(), record.begin(), record.end());
+  for (auto it = this->memberRoles.begin(); it != this->memberRoles.end(); ++it) {
+    if (it->second != 0) {
+      AppendRecord(records, MakeChatRoomRecord(0x501F, it->first.data(), static_cast<std::uint32_t>(it->first.size())));
     }
   }
 
-  {
-    const auto record = BuildReplayTaggedRecord(0x5015, nullptr, 0);
-    records.insert(records.end(), record.begin(), record.end());
-  }
+  AppendRecord(records, BuildReplayTaggedRecord(0x5015, nullptr, 0));
   return records;
 }
 
@@ -2726,15 +2722,15 @@ int UIReplayControlWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       g_windowMgr.Schedule(this);
       g_modeMgr.currentMode->SendMsg(MM_EXIT_REPLAY, 0, 0, 0, 0);
       Replay::Instance().speed = 1.0f;
-      return 0;
+      break;
     case ID_DECREASE_REPLAY_SPEED:
       g_modeMgr.currentMode->SendMsg(MM_DECREASE_REPLAY_SPEED, 0, 0, 0, 0);
       this->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
-      return 0;
+      break;
     case ID_INCREASE_REPLAY_SPEED:
       g_modeMgr.currentMode->SendMsg(MM_INCREASE_REPLAY_SPEED, 0, 0, 0, 0);
       this->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
-      return 0;
+      break;
     }
     return 0;
   case UM_REFRESHBUTTON:
