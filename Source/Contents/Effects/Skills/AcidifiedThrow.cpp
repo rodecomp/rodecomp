@@ -14,6 +14,16 @@
 
 #include <cmath>
 
+namespace {
+// INLINED
+__forceinline bool IsParticleActive(const CEZ2STRParticle* particle) {
+  if (0.0f == particle->life) {
+    return true;
+  }
+  return particle->life * 60.0f > static_cast<float>(particle->elapsedFrames);
+}
+}
+
 // OFFSET: 0x006F3540
 // FUNCTION: fn_06821
 CAcidifiedThrow::CAcidifiedThrow() : CEffect(-1) {
@@ -206,15 +216,16 @@ void CAcidifiedThrow::OnProcess() {
   for (__int64 i = 0; i < 3; ++i) {
     CEZ2STRParticle* emitter = this->impactEmitters[i];
     if (emitter) {
-      if (0.0f == emitter->life || static_cast<float>(emitter->elapsedFrames) < emitter->life * 60.0f) {
-        emitter->position.x = this->impactPosition.x - 1.0f;
-        emitter->position.y = this->impactPosition.y - 14.0f;
-        emitter->position.z = this->impactPosition.z;
-        emitter->Process(0.0f, 0.0f, 0.0f);
-        ++activeCount;
-      } else {
+      if (IsParticleActive(emitter) != true) {
         FreeParticle(emitter);
         this->impactEmitters[i] = nullptr;
+      } else {
+        const vector3d position = this->impactPosition;
+        emitter->position.x = position.x - 1.0f;
+        emitter->position.y = position.y - 14.0f;
+        emitter->position.z = position.z;
+        this->impactEmitters[i]->Process(0.0f, 0.0f, 0.0f);
+        ++activeCount;
       }
     }
   }
