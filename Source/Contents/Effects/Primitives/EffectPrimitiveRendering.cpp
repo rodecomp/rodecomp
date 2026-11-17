@@ -840,11 +840,11 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
     }
   } else if (extra == 1 || extra == 3) {
     if (extra == 3) {
-      const RenderVertex center = TransformVert(wtm, this->render.position);
+      vertex = TransformVert(wtm, this->render.position);
       const float width = std::fabs(this->state.triangles[*rpCnt].vertices[0].x - this->state.triangles[*rpCnt].vertices[1].x) * 0.5f;
-      this->state.triangles[*rpCnt].vertices[0].x = center.x + width;
-      this->state.triangles[*rpCnt].vertices[1].x = center.x - width;
-      this->state.triangles[*rpCnt].vertices[2].x = center.x - width;
+      this->state.triangles[*rpCnt].vertices[0].x = vertex.x + width;
+      this->state.triangles[*rpCnt].vertices[1].x = vertex.x - width;
+      this->state.triangles[*rpCnt].vertices[2].x = vertex.x - width;
 
       for (int index = 0; index < 3; ++index) {
         this->state.triangles[*rpCnt].vertices[index].y += static_cast<float>(-30 * g_renderer->viewport.height / 480) * this->render.distanceScale;
@@ -896,11 +896,11 @@ __declspec(safebuffers) void CEffectPrim::RenderTeiRect(
     }
   } else if (extra == 1 || extra == 3) {
     if (extra == 3) {
-      const RenderVertex center = TransformVert(wtm, this->render.position);
+      vertex = TransformVert(wtm, this->render.position);
       const float width = std::fabs(this->state.triangles[*rpCnt].vertices[0].x - this->state.triangles[*rpCnt].vertices[1].x) * 0.5f;
-      this->state.triangles[*rpCnt].vertices[0].x = center.x + width;
-      this->state.triangles[*rpCnt].vertices[1].x = center.x - width;
-      this->state.triangles[*rpCnt].vertices[2].x = center.x + width;
+      this->state.triangles[*rpCnt].vertices[0].x = vertex.x + width;
+      this->state.triangles[*rpCnt].vertices[1].x = vertex.x - width;
+      this->state.triangles[*rpCnt].vertices[2].x = vertex.x + width;
 
       for (int index = 0; index < 3; ++index) {
         this->state.triangles[*rpCnt].vertices[index].y += static_cast<float>(-30 * g_renderer->viewport.height / 480) * this->render.distanceScale;
@@ -5617,8 +5617,8 @@ void CEffectPrim::RenderPyramid(matrix& wtm) {
   ZeroVector3d table[12];
   ZeroVector3d corners[12];
   const float size = this->state.size;
-  const float height = this->state.heightSize;
   const float negative = -size;
+  const float height = this->state.heightSize;
   table[0] = {negative, negative, 0.0f};
   table[1] = {0.0f, 0.0f, height};
   table[2] = {size, negative, 0.0f};
@@ -5633,9 +5633,7 @@ void CEffectPrim::RenderPyramid(matrix& wtm) {
   table[11] = {size, negative, 0.0f};
 
   if (this->state.slots[0].flag1[0] == 3) {
-    const int first = std::rand() % 11;
-    const int second = std::rand() % 11;
-    this->state.argb = static_cast<std::uint32_t>((((first << 8) + second) << 8) - 0xD7D701);
+    this->state.argb = static_cast<std::uint32_t>(((((std::rand() % 11) << 8) + std::rand() % 11) << 8) - 0xD7D701);
   }
 
   int count = 0;
@@ -6304,18 +6302,19 @@ void CEffectPrim::RenderAttackEnergy2(matrix& wtm) {
 // OFFSET: 0x00BD12D0
 // FUNCTION: fn_19872
 __declspec(safebuffers) void CEffectPrim::RenderBlind(matrix& wtm) {
-  int rpCnt = 0;
-  int r = 10;
-  int g = 10;
-  int b = 10;
   ZeroVector3d vec1;
   ZeroVector3d vec2;
   ZeroVector3d vec3;
   ZeroVector3d vec4;
+  int rpCnt = 0;
+  int r = 10;
+  int g = 10;
+  int b = 10;
 
   for (int ec = 0; ec < 4; ++ec) {
     const EffectPrimitiveSlot& slot = this->state.slots[ec];
-    if (slot.life != 1 || slot.alphaB <= 0) {
+    const short alpha = slot.alphaB;
+    if (slot.life != 1 || alpha <= 0) {
       continue;
     }
 
@@ -6332,7 +6331,7 @@ __declspec(safebuffers) void CEffectPrim::RenderBlind(matrix& wtm) {
     vec3.Set(distance, 0.0f, distance);
     vec4.Set(distance, 0.0f, 0.0f);
     this->Tei_TowardScreen(vec1, vec2, vec3, vec4, this->state.slots[0].alphaT, this->state.slots[1].alphaT);
-    this->RenderTeiRect(&rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
+    this->RenderTeiRect(&rpCnt, alpha, vec1, vec2, vec3, vec4, wtm, 1, 0, 0, r, g, b, 0.0f, 1.0f, 0.0f, 1.0f, 0);
 
     vec1.Set(0.0f, 0.0f, 0.0f);
     vec2.Set(0.0f, 0.0f, -slot.distance);
@@ -6440,7 +6439,7 @@ __declspec(safebuffers) void CEffectPrim::RenderChemical(matrix& wtm) {
 }
 
 // INLINED
-static __forceinline void SetColorPaperCorner(ZeroVector3d& corner, int angle, float rx, float cs2, float sn2, const vector3d& center) {
+static __forceinline void SetColorPaperCorner(ZeroVector3d& corner, int angle, float rx, float cs2, float sn2) {
   if (angle >= 360) {
     angle -= 360;
   }
@@ -6449,7 +6448,7 @@ static __forceinline void SetColorPaperCorner(ZeroVector3d& corner, int angle, f
   }
 
   const float ry = rx * g_sinTable[angle];
-  corner.Set(rx * g_cosTable[angle] + center.x, ry * cs2 + center.y, ry * sn2 + center.z);
+  corner.Set(rx * g_cosTable[angle], ry * cs2, ry * sn2);
 }
 
 // OFFSET: 0x00BD53E0
@@ -6470,10 +6469,14 @@ void CEffectPrim::RenderColorPaper(matrix& wtm) {
     const float rx = slot.maxHeight;
     const float cs2 = g_cosTable[slot.riseAngle];
     const float sn2 = g_sinTable[slot.riseAngle];
-    SetColorPaperCorner(vec1, slot.rotStart, rx, cs2, sn2, slot.vecBNow);
-    SetColorPaperCorner(vec2, slot.rotStart + 90, rx, cs2, sn2, slot.vecBNow);
-    SetColorPaperCorner(vec3, slot.rotStart + 180, rx, cs2, sn2, slot.vecBNow);
-    SetColorPaperCorner(vec4, slot.rotStart + 270, rx, cs2, sn2, slot.vecBNow);
+    SetColorPaperCorner(vec1, slot.rotStart, rx, cs2, sn2);
+    SetColorPaperCorner(vec2, slot.rotStart + 90, rx, cs2, sn2);
+    SetColorPaperCorner(vec3, slot.rotStart + 180, rx, cs2, sn2);
+    SetColorPaperCorner(vec4, slot.rotStart + 270, rx, cs2, sn2);
+    vec1 += slot.vecBNow;
+    vec2 += slot.vecBNow;
+    vec3 += slot.vecBNow;
+    vec4 += slot.vecBNow;
 
     this->RenderTeiRect(
       &rpCnt, slot.alphaB, vec1, vec2, vec3, vec4, wtm, 0, 0, 0, static_cast<unsigned char>(static_cast<int>(slot.height[0])),
@@ -6828,6 +6831,8 @@ void CEffectPrim::RenderMagicTarget(matrix& wtm) {
       const float z0 = static_cast<float>(z) - 3.5f;
       const float z1 = static_cast<float>(z + 1) - 3.5f;
       for (int x = 0; x < 7; ++x) {
+        const int cellX = column + x;
+        const int cellZ = row + z;
         const float x0 = static_cast<float>(x) - 3.5f;
         const float x1 = static_cast<float>(x + 1) - 3.5f;
         const float u00 = z0 * sn + x0 * cs;
@@ -6845,7 +6850,7 @@ void CEffectPrim::RenderMagicTarget(matrix& wtm) {
           (u01 * scale + 3.5f) / 7.0f, (v01 * scale + 3.5f) / 7.0f, (u11 * scale + 3.5f) / 7.0f, (v11 * scale + 3.5f) / 7.0f,
         };
         ground->DrawGridDecal(
-          wtm.values, column + x, row + z, 0xAA9999FF, *g_texMgr.Load("effect\\magic_target.tga", 0, false, true, false), uv);
+          wtm.values, cellX, cellZ, 0xAA9999FF, *g_texMgr.Load("effect\\magic_target.tga", 0, false, true, false), uv);
 
         scale = slot.maxHeight + 0.1f;
         uv[0] = (scale * u00 + 3.5f) / 7.0f;
@@ -6857,7 +6862,7 @@ void CEffectPrim::RenderMagicTarget(matrix& wtm) {
         uv[6] = (scale * u11 + 3.5f) / 7.0f;
         uv[7] = (scale * v11 + 3.5f) / 7.0f;
         ground->DrawGridDecal(
-          wtm.values, column + x, row + z, 0x559999FF, *g_texMgr.Load("effect\\magic_target.tga", 0, false, true, false), uv);
+          wtm.values, cellX, cellZ, 0x559999FF, *g_texMgr.Load("effect\\magic_target.tga", 0, false, true, false), uv);
       }
     }
   }
