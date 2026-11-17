@@ -363,12 +363,6 @@ void CUIListBoxEx<GameSettingsUI::CUIOptionItem, TALKTYPE>::OnWheel(int value) {
   }
 }
 
-// OFFSET: 0x00A353D0
-// FUNCTION: fn_15426
-void CUICheckBox::SetOnCheck(std::function<void(bool)> callback) {
-  this->onCheck = callback;
-}
-
 // OFFSET: 0x00A354A0
 // FUNCTION: fn_15427
 template <>

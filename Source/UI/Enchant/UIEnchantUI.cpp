@@ -806,12 +806,6 @@ void CUIUpgrade::OnCreate(int width, int height) {
 }
 }
 
-// OFFSET: 0x00A021D0
-// FUNCTION: fn_14838
-void CUIRadioButton::SetOnSelect(std::function<void(CUIRadioButton*)> callback) {
-  this->onSelect = callback;
-}
-
 namespace EnchantUI {
 // OFFSET: 0x00A02D80
 // FUNCTION: fn_14845

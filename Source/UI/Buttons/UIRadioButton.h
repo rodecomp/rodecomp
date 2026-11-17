@@ -55,4 +55,16 @@ inline CUICheckBox::CUICheckBox() : CUIImageButton(), checked(false), onCheck() 
 inline CUIRadioButton::CUIRadioButton() : CUICheckBox(), onSelect() {
 }
 
+// OFFSET: 0x00A353D0
+// FUNCTION: fn_15426
+inline void CUICheckBox::SetOnCheck(std::function<void(bool)> callback) {
+  this->onCheck = callback;
+}
+
+// OFFSET: 0x00A021D0
+// FUNCTION: fn_14838
+inline void CUIRadioButton::SetOnSelect(std::function<void(CUIRadioButton*)> callback) {
+  this->onSelect = callback;
+}
+
 #endif
