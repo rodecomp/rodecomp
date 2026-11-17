@@ -6334,6 +6334,7 @@ void UInCashWnd::OnCreate(int width, int height) {
     {"NC_PrevPage", "NC_PrevPage", "NC_PrevPage"}, {"NC_NextPage", "NC_NextPage", "NC_NextPage"}, {"NC_LastPage", "NC_LastPage", "NC_LastPage"},
     {"btn_buy", "btn_buy_a", "btn_buy_b"}, {"btn_cancel", "btn_cancel_a", "btn_cancel_b"}, {"btn_close", "btn_close_a", "btn_close_b"},
     {"btn_find", "btn_find_a", "btn_find_b"}, {"btn_refresh", "btn_refresh_a", "btn_refresh_b"}};
+  const int ids[19] = {389, 390, 391, 392, 393, 394, 395, 396, 397, 398, 387, 316, 317, 388, 224, 386, 201, 365, 415};
   int positions[19][2] = {
     {4, this->m_listHeight + 42}, {4, this->m_listHeight + 87}, {4, this->m_listHeight + 132}, {4, this->m_listHeight + 177},
     {4, this->m_listHeight + 222}, {4, this->m_listHeight + 267}, {4, this->m_listHeight + 312}, {4, this->m_listHeight + 357},
@@ -6341,7 +6342,6 @@ void UInCashWnd::OnCreate(int width, int height) {
     {276, this->geometry.height - 55}, {290, this->geometry.height - 55}, {this->geometry.width - 150, this->geometry.height - 40},
     {this->geometry.width - 100, this->geometry.height - 40}, {this->geometry.width - 50, this->geometry.height - 40},
     {this->m_searchEdit->geometry.x + this->m_searchEdit->geometry.width + 10, 22}, {-100, -100}};
-  const int ids[19] = {389, 390, 391, 392, 393, 394, 395, 396, 397, 398, 387, 316, 317, 388, 224, 386, 201, 365, 415};
 
   const std::string interfacePrefix("유저인터페이스\\basic_interface\\");
   const std::string prefix("유저인터페이스\\");
@@ -6468,8 +6468,11 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
     } else if (this->m_tab < 0) {
       this->m_tab = 0;
     }
-    this->m_buttons[this->m_tab]->SetDisabled(1);
-    this->m_buttons[this->m_tab]->Invalidate();
+    {
+      UIBitmapButton* button = this->m_buttons[this->m_tab];
+      button->SetDisabled(1);
+      button->Invalidate();
+    }
     if (this->m_tab == 8) {
       this->m_otherScroll->Move(this->geometry.width - this->m_otherScroll->geometry.width - 10, 22);
     } else {
@@ -6682,13 +6685,19 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
     case 398:
     case 477: {
       if (static_cast<unsigned int>(this->m_tab) <= 10 && this->m_buttons[this->m_tab] != nullptr) {
-        this->m_buttons[this->m_tab]->SetDisabled(0);
-        this->m_buttons[this->m_tab]->Invalidate();
+        {
+          UIBitmapButton* button = this->m_buttons[this->m_tab];
+          button->SetDisabled(0);
+          button->Invalidate();
+        }
         this->m_buttons[this->m_tab]->SetState(0);
       }
       this->m_tab = argument1 - 389;
-      this->m_buttons[argument1 - 389]->SetDisabled(1);
-      this->m_buttons[argument1 - 389]->Invalidate();
+      {
+        UIBitmapButton* button = this->m_buttons[this->m_tab];
+        button->SetDisabled(1);
+        button->Invalidate();
+      }
       if (this->m_tab == 8) {
         this->m_otherScroll->Move(this->geometry.width - this->m_otherScroll->geometry.width - 10, 22);
       } else {
@@ -10898,10 +10907,16 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
       std::memset(this->confirmPassword, 0, sizeof(this->confirmPassword));
       this->actionButtons[0]->Enable(0);
       this->actionButtons[3]->Enable(1);
-      this->actionButtons[1]->SetDisabled(1);
-      this->actionButtons[1]->Invalidate();
-      this->actionButtons[2]->SetDisabled(1);
-      this->actionButtons[2]->Invalidate();
+      {
+        UIButton* button = this->actionButtons[1];
+        button->SetDisabled(1);
+        button->Invalidate();
+      }
+      {
+        UIButton* button = this->actionButtons[2];
+        button->SetDisabled(1);
+        button->Invalidate();
+      }
       this->Invalidate();
       break;
 
@@ -10912,6 +10927,8 @@ int UISecondPasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr
       }
       switch (this->passwordStage) {
       case 0:
+        std::strcat(this->currentPassword, IntToString(this->FindKeypadDigit(1), 0).c_str());
+        break;
       case 1:
         std::strcat(this->currentPassword, IntToString(this->FindKeypadDigit(1), 0).c_str());
         break;
@@ -11290,10 +11307,16 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       std::memset(this->confirmPassword, 0, sizeof(this->confirmPassword));
       this->actionButtons[0]->Enable(0);
       this->actionButtons[3]->Enable(1);
-      this->actionButtons[1]->SetDisabled(1);
-      this->actionButtons[1]->Invalidate();
-      this->actionButtons[2]->SetDisabled(1);
-      this->actionButtons[2]->Invalidate();
+      {
+        UIButton* button = this->actionButtons[1];
+        button->SetDisabled(1);
+        button->Invalidate();
+      }
+      {
+        UIButton* button = this->actionButtons[2];
+        button->SetDisabled(1);
+        button->Invalidate();
+      }
       this->Invalidate();
       break;
 
@@ -11304,6 +11327,8 @@ int UISecondPasswordEditWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       }
       switch (this->passwordStage) {
       case 0:
+        std::strcat(this->currentPassword, IntToString(this->FindKeypadDigit(1), 0).c_str());
+        break;
       case 1:
         std::strcat(this->currentPassword, IntToString(this->FindKeypadDigit(1), 0).c_str());
         break;
