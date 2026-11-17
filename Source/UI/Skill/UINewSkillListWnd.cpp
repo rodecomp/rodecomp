@@ -1126,7 +1126,7 @@ void UINewSkillListWnd::UpdateRequiredSkills() {
 
   for (CSkillInfo& skill : this->SkillList(this->m_tab, false)) {
     const int key = static_cast<int>(skill.treePosition);
-    if (key != -1 && this->m_firstRow * this->m_columns <= key && key == this->m_selectedSkill) {
+    if (key != -1 && key >= this->m_firstRow * this->m_columns && key == this->m_selectedSkill) {
       this->m_values.push_front({static_cast<int>(skill.id), 0});
       for (std::size_t i = 0; i < skill.entries.size(); ++i) {
         const int id = static_cast<int>(skill.entries[i].skillId);
@@ -1536,7 +1536,7 @@ bool UINewSkillListWnd::IncreaseSkillLevel(int skillId) {
       }
 
       const auto planned = std::find_if(this->m_plannedSkillLevels.begin(), this->m_plannedSkillLevels.end(), [id](const NewSkillListValue& value) {
-        return value.id == id;
+        return id == value.id;
       });
       const int current = (std::max)(static_cast<int>(info->learnedLevel), planned != this->m_plannedSkillLevels.end() ? planned->value : 0);
       if (current >= target) {
@@ -1545,7 +1545,8 @@ bool UINewSkillListWnd::IncreaseSkillLevel(int skillId) {
 
       if (static_cast<int>(info->canPlanLevel) <= 0) {
         const char* name = info->DisplayName();
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatString(LookupMessage(MSI_REFUSE_LOGIN_AUTH), name)), 0xFF, 0, 0, 0);
+        const char* format = LookupMessage(MSI_REFUSE_LOGIN_AUTH);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatString(format, name)), 0xFF, 0, 0, 0);
         return false;
       }
 
