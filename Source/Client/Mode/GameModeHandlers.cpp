@@ -696,13 +696,13 @@ void CGameMode::SpawnGroundSkill(std::uint32_t aid, std::uint32_t owner, int val
   if (type != 0x126) {
     GroundSkillArgumentData data;
     data.extended.skill.aid = aid;
-    data.extended.skill.owner = owner;
     data.extended.skill.type = type;
     data.extended.skill.x = x;
     data.extended.skill.y = y;
     data.extended.skill.visible = visible;
-    data.extended.skill.level = level;
+    data.extended.skill.owner = owner;
     data.value = value;
+    data.extended.skill.level = level;
     data.extended.flags = flags;
     if (g_session.m_aid != owner && !visible) {
       const auto found = std::find_if(this->m_skillUnitIds.begin(), this->m_skillUnitIds.end(), [aid](std::uint32_t id) { return aid == id; });
