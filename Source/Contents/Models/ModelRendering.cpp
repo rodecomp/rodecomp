@@ -48,8 +48,13 @@ namespace {
 
 // INLINED
 inline void TransformModelUV(float& u, float& v, const ModelTextureTransform& transform) {
-  const float resultU = (ClientCos(transform.values[4]) * (u - 0.5f) - ClientSin(transform.values[4]) * (v - 0.5f)) * transform.values[2] + 0.5f + transform.values[0];
-  const float resultV = (ClientCos(transform.values[4]) * (v - 0.5f) + ClientSin(transform.values[4]) * (u - 0.5f)) * transform.values[3] + 0.5f + transform.values[1];
+  const float angle = transform.values[4];
+  const float cosineU = ClientCos(angle) * (u - g_depthAverageHalf);
+  const float rotatedU = cosineU - ClientSin(angle) * (v - g_depthAverageHalf);
+  const float resultU = rotatedU * transform.values[2] + g_depthAverageHalf + transform.values[0];
+  const float cosineV = ClientCos(angle) * (v - g_depthAverageHalf);
+  const float rotatedV = ClientSin(angle) * (u - g_depthAverageHalf) + cosineV;
+  const float resultV = rotatedV * transform.values[3] + g_depthAverageHalf + transform.values[1];
 
   u = resultU;
   v = resultV;
