@@ -6599,11 +6599,9 @@ std::vector<unsigned char> CGameMode::SaveActorStates() {
   for (std::list<CGameActor*>::iterator it = this->scene->actors.begin(); it != this->scene->actors.end(); ++it) {
     if ((*it)->storedActorEntry == 0) {
       if ((*it)->render.state == 1) {
-        const std::vector<unsigned char> chunk = MakeDataChunk(0xD6, this->BuildActorEntryPacket(*it, ID_ZC_NOTIFY_MOVEENTRY11));
-        data.insert(data.end(), chunk.begin(), chunk.end());
+        AppendChunk(data, MakeDataChunk(0xD6, this->BuildActorEntryPacket(*it, ID_ZC_NOTIFY_MOVEENTRY11)));
       } else {
-        const std::vector<unsigned char> chunk = MakeDataChunk(0xD9, this->BuildActorEntryPacket(*it, ID_ZC_NOTIFY_STANDENTRY11));
-        data.insert(data.end(), chunk.begin(), chunk.end());
+        AppendChunk(data, MakeDataChunk(0xD9, this->BuildActorEntryPacket(*it, ID_ZC_NOTIFY_STANDENTRY11)));
       }
     }
 
@@ -6626,33 +6624,7 @@ std::vector<unsigned char> CGameMode::SaveActorStates() {
 
     CGameActor* actor = *it;
     if (actor->storedActorEntry == 1) {
-      CPc* pc = static_cast<CPc*>(actor);
-      std::vector<char> record;
-      record.resize(sizeof(GameModeStoredRecord00DA), 0);
-      auto* stored = reinterpret_cast<GameModeStoredRecord00DA*>(record.data());
-      stored->aid = actor->render.accountId;
-      stored->job = actor->GetEffectiveJob(-1);
-      stored->sex = static_cast<unsigned char>(actor->sex);
-      stored->cellX = static_cast<std::uint16_t>(actor->movementState[5]);
-      stored->cellY = static_cast<std::uint16_t>(actor->destCellY);
-      stored->head = static_cast<std::uint16_t>(pc->head);
-      const std::int64_t value = actor->GetWeapon();
-      stored->weapon = static_cast<int>(value);
-      stored->shield = static_cast<int>(value >> 32);
-      stored->accessory = static_cast<std::uint16_t>(pc->accessory);
-      stored->accessory2 = static_cast<std::uint16_t>(pc->accessory2);
-      stored->accessory3 = static_cast<std::uint16_t>(pc->accessory3);
-      stored->headPalette = static_cast<std::uint16_t>(pc->headPalette);
-      stored->bodyPalette = static_cast<std::uint16_t>(actor->render.bodyPalette);
-      stored->robe = static_cast<std::uint16_t>(pc->robe);
-      stored->bodyCostume = static_cast<std::uint16_t>(actor->GetBodyCostume());
-      {
-        std::string name = this->nameCard.Name(actor->render.accountId);
-        std::memcpy(stored->text, name.c_str(), sizeof(stored->text));
-      }
-
-      const std::vector<unsigned char> chunk = MakeDataChunk(0xDA, record);
-      data.insert(data.end(), chunk.begin(), chunk.end());
+      AppendChunk(data, MakeDataChunk(0xDA, BuildStoredActorRecord(actor, this->nameCard)));
     }
 
     UIMerchantShopTitle* shop = static_cast<UIMerchantShopTitle*>((*it)->actorWindows[2]);
