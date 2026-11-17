@@ -169,8 +169,9 @@ void UIItemReformWnd::Paint() {
     const int owned = g_session.GetInventoryItemCount(std::atoi(this->materials[index].itemId.c_str()));
     const int required = this->materials[index].quantity;
     const std::uint32_t color = owned < required ? 0x321EC8 : 0x3C3C3C;
-    this->DrawTextAt(x - half, y, "/", 0, 0, 12, 0, 0, 0);
-    this->DrawRightAlignedText(x - half, y, FormatOwnedString("%d", owned).c_str(), 0, 0, 12, color, 0);
+    const int left = x - half;
+    this->DrawTextAt(left, y, "/", 0, 0, 12, 0, 0, 0);
+    this->DrawRightAlignedText(left, y, FormatOwnedString("%d", owned).c_str(), 0, 0, 12, color, 0);
     this->DrawTextAt(x + half, y, FormatOwnedString("%d", required).c_str(), 0, 0, 12, color, 0, 0);
   }
   if (this->warning.size() != 0) {
