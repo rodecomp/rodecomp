@@ -4629,7 +4629,7 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
   case UM_COMMAND:
     switch (a) {
     case ID_OK: {
-      if (this->m_edit->HasItemLinkTag(std::string(this->m_edit->Text())) == 1) {
+      if (this->m_edit->HasItemLinkTag(this->m_edit->Text()) == 1) {
         this->m_edit->SetText("");
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CLOSE)), 0xFF, 0, 0, 0);
         return 0;
@@ -4692,7 +4692,7 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     }
     return 0;
   case UM_MAKEMENU: {
-    this->m_log.clear();
+    this->m_log.erase(this->m_log.begin(), this->m_log.end());
     if (g_windowMgr.menuWnd != nullptr) {
       g_windowMgr.CloseWindow(WID_MENUWND);
     }
@@ -4712,10 +4712,23 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(this->m_log[index].text.c_str()), 0, 0, 0);
     }
     menu->SendMsg(nullptr, UM_ADJUSTSIZE, 0, 0, 0, 0);
-    menu->Move(
-      std::min(std::max(g_mouse.x + 1, 1), g_renderer->viewport.width - menu->geometry.width),
-      std::min(std::max(g_mouse.y + 1, 1), g_renderer->viewport.height - menu->geometry.height)
-    );
+    int x = g_mouse.x + 1;
+    int y = g_mouse.y + 1;
+    if (x < 1) {
+      x = 1;
+    }
+    int maxX = g_renderer->viewport.width - menu->geometry.width;
+    if (x <= maxX) {
+      maxX = x;
+    }
+    if (y < 1) {
+      y = 1;
+    }
+    int maxY = g_renderer->viewport.height - menu->geometry.height;
+    if (y <= maxY) {
+      maxY = y;
+    }
+    menu->Move(maxX, maxY);
     return 0;
   }
   case UM_ADDCHAT: {
