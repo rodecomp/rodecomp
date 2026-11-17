@@ -679,47 +679,45 @@ namespace myGPack {
 
     uLongf compressedLength = compressBound(static_cast<uLong>(table.size()));
     std::vector<std::uint8_t> compressed(compressedLength);
-    bool result;
 
     if (compress(compressed.data(), &compressedLength, table.data(), static_cast<uLong>(table.size())) != Z_OK) {
-      result = false;
-    } else {
-      std::vector<std::uint8_t> auxiliary;
+      return false;
+    }
 
-      for (auto source = this->m_sources.begin(); source != this->m_sources.end(); ++source) {
-        (*source)->ReadAuxiliary(auxiliary);
-        if (!auxiliary.empty()) {
-          break;
-        }
-      }
+    std::vector<std::uint8_t> auxiliary;
 
-      if (auxiliary.empty()) {
-        auxiliary = this->m_auxiliary;
-      }
-
-      PakTableHeader header;
-      header.auxiliarySize = static_cast<std::uint32_t>(auxiliary.size());
-      header.compressedSize = compressedLength;
-      header.originalSize = static_cast<std::uint32_t>(table.size());
-
-      const std::uint64_t offset = this->Allocate(header.auxiliarySize + compressedLength + sizeof(header));
-      result = false;
-
-      if (this->m_output.Write(offset, &header, sizeof(header)) && this->m_output.Write(offset + sizeof(header), compressed.data(), compressedLength) &&
-          this->m_output.Write(offset + compressedLength + sizeof(header), auxiliary.data(), header.auxiliarySize) &&
-          this->m_output.Write(0, "Event Horizon", 14)) {
-        PakHeaderTable information;
-        information.tableOffset = offset - kPakHeaderSize;
-        information.entryCount = static_cast<std::uint32_t>(this->m_entries.size());
-        information.version = kPakVersion;
-
-        if (this->m_output.Write(kPakHeaderTablePosition, &information, sizeof(information))) {
-          result = true;
-        }
+    for (auto source = this->m_sources.begin(); source != this->m_sources.end(); ++source) {
+      (*source)->ReadAuxiliary(auxiliary);
+      if (auxiliary.size() != 0) {
+        break;
       }
     }
 
-    return result;
+    if (auxiliary.size() == 0) {
+      auxiliary = this->m_auxiliary;
+    }
+
+    PakTableHeader header;
+    header.auxiliarySize = static_cast<std::uint32_t>(auxiliary.size());
+    header.compressedSize = compressedLength;
+    header.originalSize = static_cast<std::uint32_t>(table.size());
+
+    const std::uint64_t offset = this->Allocate(header.auxiliarySize + compressedLength + sizeof(header));
+
+    if (this->m_output.Write(offset, &header, sizeof(header)) && this->m_output.Write(offset + sizeof(header), compressed.data(), compressedLength) &&
+        this->m_output.Write(offset + compressedLength + sizeof(header), auxiliary.data(), header.auxiliarySize) &&
+        this->m_output.Write(0, "Event Horizon", 14)) {
+      PakHeaderTable information;
+      information.tableOffset = offset - kPakHeaderSize;
+      information.entryCount = static_cast<std::uint32_t>(this->m_entries.size());
+      information.version = kPakVersion;
+
+      if (this->m_output.Write(kPakHeaderTablePosition, &information, sizeof(information))) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   // OFFSET: 0x005F59C0
