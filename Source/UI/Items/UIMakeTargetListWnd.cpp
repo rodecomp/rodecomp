@@ -36,10 +36,11 @@ struct ReplayTaggedRecordHeader {
 // INLINED
 inline std::vector<unsigned char> MakeReplayTaggedRecord(std::uint16_t id, const void* data, std::uint32_t bytes) {
   std::vector<unsigned char> record(bytes + 6u, 0);
-  const ReplayTaggedRecordHeader header{id, bytes};
-  std::memcpy(record.data(), &header, sizeof(header));
+  ReplayTaggedRecordHeader* header = reinterpret_cast<ReplayTaggedRecordHeader*>(record.data());
+  header->id = id;
+  header->bytes = bytes;
   if (bytes != 0) {
-    std::memcpy(record.data() + sizeof(header), data, bytes);
+    std::memcpy(record.data() + sizeof(ReplayTaggedRecordHeader), data, bytes);
   }
   return record;
 }
