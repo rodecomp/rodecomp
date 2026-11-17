@@ -18283,6 +18283,13 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
   }
   }
 }
+
+// INLINED
+static int RandomScatterOffset() {
+  const int offset = std::rand() % 35;
+  return offset < 10 ? 10 : offset;
+}
+
 // OFFSET: 0x00D7B640
 // FUNCTION: fn_22208
 void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t sourceAid, std::uint32_t targetAid, bool result) {
@@ -18677,7 +18684,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
   case RG_STEALCOIN:
     if (target != nullptr) {
       if (sourceAid == g_session.m_aid) {
-        char notice[512];
+        char notice[504];
         std::sprintf(notice, LookupMessage(MSI_NOTIFY_STEAL_COIN), g_modeMgr.GetGameMode()->ActorName(target->render.accountId).c_str(), level);
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(notice), 0xC8C8FF, 0x10, 0, 0);
       }
@@ -19581,17 +19588,17 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
         vector3d position = target->render.position;
         position.z -= 5.0f;
         if (i == 0) {
-          position.x += static_cast<float>(std::max(std::rand() % 35, 10));
-          position.z += static_cast<float>(std::max(std::rand() % 35, 10));
+          position.x += static_cast<float>(RandomScatterOffset());
+          position.z += static_cast<float>(RandomScatterOffset());
         } else if (i == 1) {
-          position.x += static_cast<float>(std::max(std::rand() % 35, 10));
-          position.z -= static_cast<float>(std::max(std::rand() % 35, 10));
+          position.x += static_cast<float>(RandomScatterOffset());
+          position.z -= static_cast<float>(RandomScatterOffset());
         } else if (i == 2) {
-          position.x -= static_cast<float>(std::max(std::rand() % 35, 10));
-          position.z -= static_cast<float>(std::max(std::rand() % 35, 10));
+          position.x -= static_cast<float>(RandomScatterOffset());
+          position.z -= static_cast<float>(RandomScatterOffset());
         } else if (i == 3) {
-          position.x -= static_cast<float>(std::max(std::rand() % 35, 10));
-          position.z += static_cast<float>(std::max(std::rand() % 35, 10));
+          position.x -= static_cast<float>(RandomScatterOffset());
+          position.z += static_cast<float>(RandomScatterOffset());
         }
         g_effectMgr->Spawn(0, EF_TETRA_VORTEX_FIRE_SUB, position.x, position.y, position.z, 0, -1, 0, 0);
       }
@@ -19615,17 +19622,17 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
         vector3d position = target->render.position;
         position.z -= 5.0f;
         if (i == 0) {
-          position.x += static_cast<float>(std::max(std::rand() % 35, 10));
-          position.z += static_cast<float>(std::max(std::rand() % 35, 10));
+          position.x += static_cast<float>(RandomScatterOffset());
+          position.z += static_cast<float>(RandomScatterOffset());
         } else if (i == 1) {
-          position.x += static_cast<float>(std::max(std::rand() % 35, 10));
-          position.z -= static_cast<float>(std::max(std::rand() % 35, 10));
+          position.x += static_cast<float>(RandomScatterOffset());
+          position.z -= static_cast<float>(RandomScatterOffset());
         } else if (i == 2) {
-          position.x -= static_cast<float>(std::max(std::rand() % 35, 10));
-          position.z -= static_cast<float>(std::max(std::rand() % 35, 10));
+          position.x -= static_cast<float>(RandomScatterOffset());
+          position.z -= static_cast<float>(RandomScatterOffset());
         } else if (i == 3) {
-          position.x -= static_cast<float>(std::max(std::rand() % 35, 10));
-          position.z += static_cast<float>(std::max(std::rand() % 35, 10));
+          position.x -= static_cast<float>(RandomScatterOffset());
+          position.z += static_cast<float>(RandomScatterOffset());
         }
         g_effectMgr->Spawn(0, EF_TETRA_VORTEX_WATER_SUB, position.x, position.y, position.z, 0, -1, 0, 0);
       }
@@ -19649,17 +19656,17 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
         vector3d position = target->render.position;
         position.z -= 5.0f;
         if (i == 0) {
-          position.x += static_cast<float>(std::max(std::rand() % 35, 10));
-          position.z += static_cast<float>(std::max(std::rand() % 35, 10));
+          position.x += static_cast<float>(RandomScatterOffset());
+          position.z += static_cast<float>(RandomScatterOffset());
         } else if (i == 1) {
-          position.x += static_cast<float>(std::max(std::rand() % 35, 10));
-          position.z -= static_cast<float>(std::max(std::rand() % 35, 10));
+          position.x += static_cast<float>(RandomScatterOffset());
+          position.z -= static_cast<float>(RandomScatterOffset());
         } else if (i == 2) {
-          position.x -= static_cast<float>(std::max(std::rand() % 35, 10));
-          position.z -= static_cast<float>(std::max(std::rand() % 35, 10));
+          position.x -= static_cast<float>(RandomScatterOffset());
+          position.z -= static_cast<float>(RandomScatterOffset());
         } else if (i == 3) {
-          position.x -= static_cast<float>(std::max(std::rand() % 35, 10));
-          position.z += static_cast<float>(std::max(std::rand() % 35, 10));
+          position.x -= static_cast<float>(RandomScatterOffset());
+          position.z += static_cast<float>(RandomScatterOffset());
         }
         g_effectMgr->Spawn(0, EF_TETRA_VORTEX_WIND_SUB, position.x, position.y, position.z, 0, -1, 0, 0);
       }
@@ -19683,17 +19690,17 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
         vector3d position = target->render.position;
         position.z -= 5.0f;
         if (i == 0) {
-          position.x += static_cast<float>(std::max(std::rand() % 35, 10));
-          position.z += static_cast<float>(std::max(std::rand() % 35, 10));
+          position.x += static_cast<float>(RandomScatterOffset());
+          position.z += static_cast<float>(RandomScatterOffset());
         } else if (i == 1) {
-          position.x += static_cast<float>(std::max(std::rand() % 35, 10));
-          position.z -= static_cast<float>(std::max(std::rand() % 35, 10));
+          position.x += static_cast<float>(RandomScatterOffset());
+          position.z -= static_cast<float>(RandomScatterOffset());
         } else if (i == 2) {
-          position.x -= static_cast<float>(std::max(std::rand() % 35, 10));
-          position.z -= static_cast<float>(std::max(std::rand() % 35, 10));
+          position.x -= static_cast<float>(RandomScatterOffset());
+          position.z -= static_cast<float>(RandomScatterOffset());
         } else if (i == 3) {
-          position.x -= static_cast<float>(std::max(std::rand() % 35, 10));
-          position.z += static_cast<float>(std::max(std::rand() % 35, 10));
+          position.x -= static_cast<float>(RandomScatterOffset());
+          position.z += static_cast<float>(RandomScatterOffset());
         }
         g_effectMgr->Spawn(0, EF_TETRA_VORTEX_EARTH_SUB, position.x, position.y, position.z, 0, -1, 0, 0);
       }
