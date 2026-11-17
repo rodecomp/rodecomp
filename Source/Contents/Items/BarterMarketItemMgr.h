@@ -70,6 +70,8 @@ struct BarterChunk16 {
   /* 0004 */ int field_4 = 0;
   /* 0008 */ int amount = 0;
   /* 000C */ int field_c = 0;
+
+  ~BarterChunk16() {}
 };
 
 struct BarterMarketEntry {
