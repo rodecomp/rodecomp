@@ -1242,7 +1242,7 @@ std::string EquipmentProperties::CEquipmentProperties2Dim::Describe(bool detaile
     const double sign = (result < 0.0 && this->m_definition->signLabels.size() == 2) ? -1.0 : 1.0;
     const double scale = std::pow(10.0, precision);
     const double rounded = std::floor(result * scale) / scale;
-    std::string number = std::vformat("{:.{}f}", std::make_format_args(sign * rounded, precision));
+    std::string number = std::format("{:.{}f}", sign * rounded, precision);
     if (rounded != 0.0) {
       if (text.size() != 0) {
         text += "\n";
