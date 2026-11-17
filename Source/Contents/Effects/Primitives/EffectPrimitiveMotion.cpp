@@ -1600,10 +1600,11 @@ void CEffectPrim::PrimShieldBoomerang() {
     }
   }
 
-  this->state.slots[0].fullDisplayAngle -= 15;
+  const std::int16_t displayAngle = static_cast<std::int16_t>(this->state.slots[0].fullDisplayAngle - 15);
+  this->state.slots[0].fullDisplayAngle = displayAngle;
 
-  if (this->state.slots[0].fullDisplayAngle < 0) {
-    this->state.slots[0].fullDisplayAngle += 360;
+  if (displayAngle < 0) {
+    this->state.slots[0].fullDisplayAngle = static_cast<std::int16_t>(displayAngle + 360);
   }
 
   if (this->state.slots[0].process == 1) {
