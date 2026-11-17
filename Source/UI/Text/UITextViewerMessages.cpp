@@ -256,7 +256,8 @@ int UITextViewer::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
         display = g_windowMgr.chatWnd->ConvertChat(display);
       }
 
-      display = g_navigationLinkParser->DisplayNavigationLink(display);
+      NavigationLinkParser* parser = g_navigationLinkParser;
+      display = parser->DisplayNavigationLink(display);
       display = DisplayQuestTextTag(display);
 
       if (pixels) {
