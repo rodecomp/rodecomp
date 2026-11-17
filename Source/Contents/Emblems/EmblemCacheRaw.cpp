@@ -30,7 +30,8 @@ void CSession::StoreEmblem(const void* data, std::size_t size, std::uint32_t gui
   std::sprintf(path, "%s_%d_*.ebm", this->m_accountName.c_str(), guildId);
   std::list<std::string> names;
   EnumerateFileNames(names, directory, path);
-  for (const std::string& name : names) {
+  for (auto nameIt = names.begin(); nameIt != names.end(); ++nameIt) {
+    const std::string& name = *nameIt;
     std::sprintf(path, "%s%s", directory, name.c_str());
     _chmod(path, _S_IWRITE);
     _unlink(path);
