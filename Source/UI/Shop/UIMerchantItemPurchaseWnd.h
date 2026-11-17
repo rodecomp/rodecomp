@@ -20,6 +20,7 @@ public:
   void OnRBtnDown(int x, int y) override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
+  std::vector<unsigned char> GetReplayData() override;
 
   /* 00F0 */ int nonItemHeight;
   /* 00F4 */ UIStaticText* total;

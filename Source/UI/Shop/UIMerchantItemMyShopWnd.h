@@ -22,6 +22,7 @@ public:
   void OnMouseHover(int x, int y) override;
   void OnRBtnDown(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
+  std::vector<unsigned char> GetReplayData() override;
 
   void OpenShop();
   void SetDuration(std::uint32_t value);

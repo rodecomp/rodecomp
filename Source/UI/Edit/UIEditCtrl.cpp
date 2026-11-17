@@ -5276,9 +5276,9 @@ std::vector<unsigned char> UIItemStoreWnd::GetReplayData() {
 
 // OFFSET: 0x00973260
 // FUNCTION: fn_13285
-std::vector<unsigned char> UIItemShopWnd::BuildReplayRecords() {
+std::vector<unsigned char> UIMerchantItemMyShopWnd::GetReplayData() {
   std::vector<unsigned char> records;
-  if (this->hovered != 0) {
+  if (this->buyingShop != 0) {
     AppendReplayRecord(records, BuildReplayTaggedRecord(21050, nullptr, 0));
     AppendReplayRecord(records, BuildReplayTaggedRecord(21051, nullptr, 0));
   } else {
@@ -5290,9 +5290,9 @@ std::vector<unsigned char> UIItemShopWnd::BuildReplayRecords() {
 
 // OFFSET: 0x009733A0
 // FUNCTION: fn_13286
-std::vector<unsigned char> UIParaItemShopWnd::BuildReplayRecords() {
+std::vector<unsigned char> UIMerchantItemPurchaseWnd::GetReplayData() {
   std::vector<unsigned char> records;
-  if (this->footerHeight != 0) {
+  if (this->buyingStore != 0) {
     AppendReplayRecord(records, BuildReplayTaggedRecord(21100, nullptr, 0));
     AppendReplayRecord(records, BuildReplayTaggedRecord(21101, nullptr, 0));
   } else {
