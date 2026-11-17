@@ -68,13 +68,13 @@ CTipBoxMgr::CTipBoxMgr()
       m_entries{},
       m_randomList{},
       m_currentEntry{},
-      m_image{},
       m_imagePath{},
       paragraphIndex(0),
-      m_initialized(true),
-      m_missing{},
-      currentTipId(0),
-      maxTipId(0) {
+      m_missing{} {
+  this->m_initialized = true;
+  this->currentTipId = 0;
+  this->maxTipId = 0;
+  this->m_missing.title = "";
 }
 
 // INLINED

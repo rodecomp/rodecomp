@@ -13,6 +13,7 @@
 #include "Resource/MSGSTRINGID.h"
 
 template __declspec(noinline) std::string::basic_string(const std::string&);
+template __declspec(noinline) std::string& std::string::operator=(std::string&&) noexcept;
 // OFFSET: 0x007BAE20
 // FUNCTION: fn_09277
 UIPartyInfoWnd::UIPartyInfoWnd()
@@ -147,6 +148,6 @@ void UIPartyInfoWnd::OnRBtnUp(int, int) {
   }
 
   std::string code("");
-  code = static_cast<const std::string&>(g_session.ShortcutFilename(this->info.characterId));
+  code = g_session.ShortcutFilename(this->info.characterId);
   g_windowMgr.SendNotice(UIM_MAKE_WHISPER_WINDOW, reinterpret_cast<std::intptr_t>(name.c_str()), reinterpret_cast<std::intptr_t>(relationship), reinterpret_cast<std::intptr_t>(code.c_str()), 0, 0);
 }

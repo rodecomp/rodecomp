@@ -13,6 +13,8 @@
 #include <windows.h>
 #include <timeapi.h>
 
+template __declspec(noinline) std::string& std::string::operator=(std::string&&) noexcept;
+
 namespace {
   constexpr char sourceFile[] = "C:\\repositories\\RagnarokClient\\RagnarokClient\\Contents\\AdventurerAgency\\CLoadPartyLIstAsyncWork.cpp";
 
