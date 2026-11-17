@@ -1861,16 +1861,6 @@ bool CDropItemEffect::IsAlive() {
 // FUNCTION: fn_07310
 void CDropItemEffect::OpenEmitters() {
   switch (this->id) {
-  case EF_DROPITEM_PURPLE:
-    this->emitters[0]->Open("new_dropitem\\dropitem_purple\\dropitem_purple\\dropitem_purple.str");
-    this->emitters[1]->Open("new_dropitem\\dropitem_purple\\dropitem_purple_bottom\\dropitem_purple_bottom.str");
-    this->soundName = "drop_purple.wav";
-    break;
-  case EF_DROPITEM_YELLOW:
-    this->emitters[0]->Open("new_dropitem\\dropitem_yellow\\dropitem_yellow\\dropitem_yellow.str");
-    this->emitters[1]->Open("new_dropitem\\dropitem_yellow\\dropitem_yellow_bottom\\dropitem_yellow_bottom.str");
-    this->soundName = "drop_yellow.wav";
-    break;
   case EF_DROPITEM_BLUE:
     this->emitters[0]->Open("new_dropitem\\dropitem_blue\\dropitem_blue\\dropitem_blue.str");
     this->emitters[1]->Open("new_dropitem\\dropitem_blue\\dropitem_blue_bottom\\dropitem_blue_bottom.str");
@@ -1885,6 +1875,16 @@ void CDropItemEffect::OpenEmitters() {
     this->emitters[0]->Open("new_dropitem\\dropitem_red\\dropitem_red\\dropitem_red.str");
     this->emitters[1]->Open("new_dropitem\\dropitem_red\\dropitem_red_bottom\\dropitem_red_bottom.str");
     this->soundName = "drop_red.wav";
+    break;
+  case EF_DROPITEM_PURPLE:
+    this->emitters[0]->Open("new_dropitem\\dropitem_purple\\dropitem_purple\\dropitem_purple.str");
+    this->emitters[1]->Open("new_dropitem\\dropitem_purple\\dropitem_purple_bottom\\dropitem_purple_bottom.str");
+    this->soundName = "drop_purple.wav";
+    break;
+  case EF_DROPITEM_YELLOW:
+    this->emitters[0]->Open("new_dropitem\\dropitem_yellow\\dropitem_yellow\\dropitem_yellow.str");
+    this->emitters[1]->Open("new_dropitem\\dropitem_yellow\\dropitem_yellow_bottom\\dropitem_yellow_bottom.str");
+    this->soundName = "drop_yellow.wav";
     break;
   default:
     this->emitters[0]->Open("new_dropitem\\dropitem_pink\\dropitem_pink\\dropitem_pink.str");
@@ -3218,7 +3218,7 @@ void CServantWeaponNewEffect::Shoot(int skill) {
     if (shot) {
       FreeParticle(weapon);
       this->emitters.pop_back();
-      this->trails.push_back(shot);
+      this->trails.push_back(std::move(shot));
       this->AddEvent(0, "effect\\DK_SERVANTWEAPON.wav", this->frame, 0);
     }
   }
