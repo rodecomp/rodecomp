@@ -1638,22 +1638,19 @@ bool CNavigationManager::RouteToSavedTarget(int cellX, int cellY) {
 
     MovementRouteInterpolation route;
     int cost = 0;
-    for (CNavi_Link* link : links) {
+    for (auto it = links.begin(); it != links.end(); ++it) {
       if (this->savedTarget.type == 0) {
         this->pathFinder.Reset();
         cost = 0;
-        if (link->GetLinkedCell().x == x && link->GetLinkedCell().y == y) {
+        if ((*it)->GetLinkedCell().x == x && (*it)->GetLinkedCell().y == y) {
           cost = 1;
-        } else if (this->pathFinder.FindPath(1, link->GetLinkedCell().x, link->GetLinkedCell().y, 8, 8, x, y, 10, route, 15)) {
+        } else if (this->pathFinder.FindPath(1, (*it)->GetLinkedCell().x, (*it)->GetLinkedCell().y, 8, 8, x, y, 10, route, 15)) {
           cost = static_cast<int>(route.points.size());
         } else {
           continue;
         }
       }
-      NaviLink entry;
-      entry.link = link;
-      entry.cost = cost;
-      this->data.endLinks.push_back(entry);
+      this->data.endLinks.push_back(NaviLink{*it, cost});
     }
   }
 
