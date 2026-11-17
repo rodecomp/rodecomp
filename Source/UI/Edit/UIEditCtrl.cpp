@@ -11307,12 +11307,11 @@ void UIItemDropCntWnd::OnCreate(int, int) {
     name = item.DisplayName(0);
   }
 
-  auto* title = new UIStaticText();
-  this->itemTitle = title;
-  title->SetSize(100, 15);
-  title->Move(15, 6);
-  title->SetText(name.c_str(), 0);
-  this->AddChild(title);
+  this->itemTitle = new UIStaticText();
+  this->itemTitle->SetSize(100, 15);
+  this->itemTitle->Move(15, 6);
+  this->itemTitle->SetText(name.c_str(), 0);
+  this->AddChild(this->itemTitle);
 
   const std::string prefix("유저인터페이스\\");
   const int x = this->geometry.width - 55;
