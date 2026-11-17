@@ -2304,7 +2304,7 @@ void CGameActor::ShowPartyMemberEffect(std::uint32_t accountId) {
     MessengerMember member = g_session.PartyAt(index);
     if (member.accountId == accountId) {
       for (auto it = this->effectList.begin(); it != this->effectList.end(); ++it) {
-        if (*it && (*it)->state.type == 160) {
+        if (*it && (*it)->state.type == EF_PARTY) {
           return;
         }
       }

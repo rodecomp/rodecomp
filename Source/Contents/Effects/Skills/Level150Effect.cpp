@@ -4,6 +4,7 @@
 #include "Client/Mode/ModeMgr.h"
 #include "Contents/Camera/Camera.h"
 #include "Contents/Effects/Core/EffectMemoryMgr.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "Contents/Effects/Particles/Particle.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Text/FormatString.h"
@@ -64,13 +65,13 @@ void CLevel150Effect::AddBubbleRing(int alphaOffset) {
       particle->groupIndex = 4;
       particle->alpha = alphaOffset + (3 - ring) * 45;
 
-      if (effectId == 978) {
+      if (effectId == EF_LEVEL150) {
         particle->SetColor(100, 100, 255);
-      } else if (effectId == 1022) {
+      } else if (effectId == EF_LEVEL160) {
         particle->SetColor(255, 255, 100);
-      } else if (effectId == 1226) {
+      } else if (effectId == EF_LEVEL185) {
         particle->SetColor(255, 155, 155);
-      } else if (effectId == 2275) {
+      } else if (effectId == EF_LEVEL4TH) {
         particle->SetColor(255, 155, 0);
       }
 
@@ -157,25 +158,25 @@ void CLevel150Effect::AddShock(int kind) {
 
       this->shocks.push_back(particle);
 
-      if (effectId == 978) {
+      if (effectId == EF_LEVEL150) {
         if (kind == 3) {
           particle->SetColor(35, 35, 255);
         } else {
           particle->SetColor(105, 105, 255);
         }
-      } else if (effectId == 1022) {
+      } else if (effectId == EF_LEVEL160) {
         if (kind == 3) {
           particle->SetColor(255, 255, 35);
         } else {
           particle->SetColor(255, 255, 105);
         }
-      } else if (effectId == 1226) {
+      } else if (effectId == EF_LEVEL185) {
         if (kind == 3) {
           particle->SetColor(255, 55, 55);
         } else {
           particle->SetColor(255, 155, 155);
         }
-      } else if (effectId == 2275) {
+      } else if (effectId == EF_LEVEL4TH) {
         particle->SetColor(255, 155, 0);
       }
     }
@@ -362,13 +363,13 @@ void CLevel150SubEffect::Init() {
       particle->elapsedFrames = -20 * ring;
       this->particles.push_back(particle);
 
-      if (effectId == 979) {
+      if (effectId == EF_LEVEL150_SUB) {
         particle->SetColor(blue[ring][0], blue[ring][1], blue[ring][2]);
-      } else if (effectId == 1023) {
+      } else if (effectId == EF_LEVEL160_SUB) {
         particle->SetColor(yellow[ring][0], yellow[ring][1], yellow[ring][2]);
-      } else if (effectId == 1227) {
+      } else if (effectId == EF_LEVEL185_SUB) {
         particle->SetColor(red[ring][0], red[ring][1], red[ring][2]);
-      } else if (effectId == 2276) {
+      } else if (effectId == EF_LEVEL4TH_SUB) {
         particle->SetColor(255, 155, 0);
       }
     }

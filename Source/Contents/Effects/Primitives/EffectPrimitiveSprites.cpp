@@ -142,7 +142,7 @@ __declspec(safebuffers) void CEffectPrim::RenderGroundSprite(matrix& wtm) {
   g_renderer->ProjectViewport(position, wtm.values, &screenX, &screenY, &reciprocalDepth);
   float distanceScale = g_renderer->ScaleDistance(reciprocalDepth);
 
-  if (this->state.master->state.type == 1240 && this->state.master && this->state.master->state.parent) {
+  if (this->state.master->state.type == EF_SOUL_REAPER_COLLECT && this->state.master && this->state.master->state.parent) {
     this->state.master->state.parent->ScaleByFadePulse(distanceScale);
   }
 

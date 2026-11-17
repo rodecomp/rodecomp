@@ -6304,7 +6304,7 @@ void CRagEffect::DigitalSpace(int effectId) {
     this->state.lastPrim = this->LaunchEffectPrim(168, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = this->state.duration;
 
-    if (effectId == 1240) {
+    if (effectId == EF_SOUL_REAPER_COLLECT) {
       this->state.lastPrim->SetSpriteName("이팩트\\digital_space\\digital_space.spr");
       this->state.lastPrim->SetActionName("이팩트\\digital_space\\digital_space.act");
       this->state.lastPrim->render.previousAnimation = 0;
@@ -22110,7 +22110,7 @@ bool CRagEffect::OnProcess3() {
     }
     break;
   case EF_SOUL_REAPER_COLLECT:
-    this->DigitalSpace(1240);
+    this->DigitalSpace(EF_SOUL_REAPER_COLLECT);
     break;
   case EF_NEW_SEVERERAINSTORM_HIT:
     if (this->state.stateCnt % 30 == 0) {

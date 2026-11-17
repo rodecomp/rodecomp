@@ -3,6 +3,7 @@
 #include "UI/GameSettings/TalkType.h"
 #include "Contents/Effects/Core/RagEffect.h"
 #include "Contents/Effects/Core/RagEffectState.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "Contents/Configuration/ServiceOptions.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
@@ -16,7 +17,7 @@ bool CRagEffect::PartyEffectVisible() {
     return false;
   }
 
-  if (this->state.type == 232) {
+  if (this->state.type == EF_LINELINK) {
     CWorld* scene = g_modeMgr.GetGameMode()->scene;
     const EffectActor* target = static_cast<const EffectActor*>(scene->GetGameActorByAidIncludeMe(static_cast<std::uint32_t>(this->state.deltaPos.y)));
 
