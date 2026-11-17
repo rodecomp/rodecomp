@@ -3038,7 +3038,8 @@ void UIPetInfoWnd::Paint() {
   unsigned blue;
   g_skinInfo.PaletteChannels(2, 2, red, green, blue);
   this->ClearSurface(RGB(red, green, blue));
-  this->DrawPanelBackground(this->DrawTitleBar(false, "", 0), 0, "");
+  const int titleHeight = this->DrawTitleBar(false, "", 0);
+  this->DrawPanelBackground(titleHeight, 0, "");
 
   auto* leftCorner = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\sysboxs_ld.bmp")));
   this->DrawBitmap(0, this->geometry.height - leftCorner->image.height, leftCorner, false);
