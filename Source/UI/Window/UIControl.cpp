@@ -1771,43 +1771,37 @@ void CUIListBoxEx<AdventureGuide::CUIItemInfo, AdventureGuide::CItemData>::AddNe
       item->SetSize(this->itemWidth, this->rowHeight);
       item->Show(0);
       item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
-      {
-        const std::function<void(CUIListItem*)> onHover = [this](CUIListItem* listItem) {
-          for (AdventureGuide::CUIItemInfo* other : this->items) {
-            other->SetHighlighted(other == listItem);
+      item->SetOnHover([this](CUIListItem* listItem) {
+        for (AdventureGuide::CUIItemInfo* other : this->items) {
+          other->SetHighlighted(other == listItem);
+        }
+      });
+      item->SetOnPress([this](CUIListItem* listItem) {
+        if (this->layoutFlag) {
+          return;
+        }
+        for (AdventureGuide::CUIItemInfo* other : this->items) {
+          if (listItem != other) {
+            other->SetSelected(0);
           }
-        };
-        item->onHover = onHover;
-      }
-      {
-        const std::function<void(CUIListItem*)> onPress = [this](CUIListItem* listItem) {
-          if (this->layoutFlag) {
-            return;
+        }
+        listItem->SetSelected(1);
+        if (listItem->index == static_cast<int>(this->selected) && this->selectionFlag) {
+          return;
+        }
+        AdventureGuide::CUIItemInfo* selectedItem = dynamic_cast<AdventureGuide::CUIItemInfo*>(listItem);
+        if (!selectedItem) {
+          return;
+        }
+        this->selected = selectedItem->index;
+        if (this->onSelect && static_cast<int>(this->selected) >= 0 && this->selected < this->data.size()) {
+          auto node = this->data.begin();
+          for (int remaining = static_cast<int>(this->selected); remaining > 0; --remaining) {
+            ++node;
           }
-          for (AdventureGuide::CUIItemInfo* other : this->items) {
-            if (listItem != other) {
-              other->SetSelected(0);
-            }
-          }
-          listItem->SetSelected(1);
-          if (listItem->index == static_cast<int>(this->selected) && this->selectionFlag) {
-            return;
-          }
-          AdventureGuide::CUIItemInfo* selectedItem = dynamic_cast<AdventureGuide::CUIItemInfo*>(listItem);
-          if (!selectedItem) {
-            return;
-          }
-          this->selected = selectedItem->index;
-          if (this->onSelect && static_cast<int>(this->selected) >= 0 && this->selected < this->data.size()) {
-            auto node = this->data.begin();
-            for (int remaining = static_cast<int>(this->selected); remaining > 0; --remaining) {
-              ++node;
-            }
-            this->onSelect(selectedItem, *node);
-          }
-        };
-        item->onPress = onPress;
-      }
+          this->onSelect(selectedItem, *node);
+        }
+      });
       this->AddChild(item);
       slot = item;
     }
@@ -1842,43 +1836,37 @@ void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>:
       item->SetSize(this->itemWidth, this->rowHeight);
       item->Show(0);
       item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
-      {
-        const std::function<void(CUIListItem*)> onHover = [this](CUIListItem* listItem) {
-          for (AdventureGuide::CUIMonsterInfo* other : this->items) {
-            other->SetHighlighted(other == listItem);
+      item->SetOnHover([this](CUIListItem* listItem) {
+        for (AdventureGuide::CUIMonsterInfo* other : this->items) {
+          other->SetHighlighted(other == listItem);
+        }
+      });
+      item->SetOnPress([this](CUIListItem* listItem) {
+        if (this->layoutFlag) {
+          return;
+        }
+        for (AdventureGuide::CUIMonsterInfo* other : this->items) {
+          if (listItem != other) {
+            other->SetSelected(0);
           }
-        };
-        item->onHover = onHover;
-      }
-      {
-        const std::function<void(CUIListItem*)> onPress = [this](CUIListItem* listItem) {
-          if (this->layoutFlag) {
-            return;
+        }
+        listItem->SetSelected(1);
+        if (listItem->index == static_cast<int>(this->selected) && this->selectionFlag) {
+          return;
+        }
+        AdventureGuide::CUIMonsterInfo* selectedItem = dynamic_cast<AdventureGuide::CUIMonsterInfo*>(listItem);
+        if (!selectedItem) {
+          return;
+        }
+        this->selected = selectedItem->index;
+        if (this->onSelect && static_cast<int>(this->selected) >= 0 && this->selected < this->data.size()) {
+          auto node = this->data.begin();
+          for (int remaining = static_cast<int>(this->selected); remaining > 0; --remaining) {
+            ++node;
           }
-          for (AdventureGuide::CUIMonsterInfo* other : this->items) {
-            if (listItem != other) {
-              other->SetSelected(0);
-            }
-          }
-          listItem->SetSelected(1);
-          if (listItem->index == static_cast<int>(this->selected) && this->selectionFlag) {
-            return;
-          }
-          AdventureGuide::CUIMonsterInfo* selectedItem = dynamic_cast<AdventureGuide::CUIMonsterInfo*>(listItem);
-          if (!selectedItem) {
-            return;
-          }
-          this->selected = selectedItem->index;
-          if (this->onSelect && static_cast<int>(this->selected) >= 0 && this->selected < this->data.size()) {
-            auto node = this->data.begin();
-            for (int remaining = static_cast<int>(this->selected); remaining > 0; --remaining) {
-              ++node;
-            }
-            this->onSelect(selectedItem, *node);
-          }
-        };
-        item->onPress = onPress;
-      }
+          this->onSelect(selectedItem, *node);
+        }
+      });
       this->AddChild(item);
       slot = item;
     }
@@ -1913,43 +1901,37 @@ void CUIListBoxEx<AdventureGuide::CUIQuestInfo, AdventureGuide::CQuestInfo>::Add
       item->SetSize(this->itemWidth, this->rowHeight);
       item->Show(0);
       item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
-      {
-        const std::function<void(CUIListItem*)> onHover = [this](CUIListItem* listItem) {
-          for (AdventureGuide::CUIQuestInfo* other : this->items) {
-            other->SetHighlighted(other == listItem);
+      item->SetOnHover([this](CUIListItem* listItem) {
+        for (AdventureGuide::CUIQuestInfo* other : this->items) {
+          other->SetHighlighted(other == listItem);
+        }
+      });
+      item->SetOnPress([this](CUIListItem* listItem) {
+        if (this->layoutFlag) {
+          return;
+        }
+        for (AdventureGuide::CUIQuestInfo* other : this->items) {
+          if (listItem != other) {
+            other->SetSelected(0);
           }
-        };
-        item->onHover = onHover;
-      }
-      {
-        const std::function<void(CUIListItem*)> onPress = [this](CUIListItem* listItem) {
-          if (this->layoutFlag) {
-            return;
+        }
+        listItem->SetSelected(1);
+        if (listItem->index == static_cast<int>(this->selected) && this->selectionFlag) {
+          return;
+        }
+        AdventureGuide::CUIQuestInfo* selectedItem = dynamic_cast<AdventureGuide::CUIQuestInfo*>(listItem);
+        if (!selectedItem) {
+          return;
+        }
+        this->selected = selectedItem->index;
+        if (this->onSelect && static_cast<int>(this->selected) >= 0 && this->selected < this->data.size()) {
+          auto node = this->data.begin();
+          for (int remaining = static_cast<int>(this->selected); remaining > 0; --remaining) {
+            ++node;
           }
-          for (AdventureGuide::CUIQuestInfo* other : this->items) {
-            if (listItem != other) {
-              other->SetSelected(0);
-            }
-          }
-          listItem->SetSelected(1);
-          if (listItem->index == static_cast<int>(this->selected) && this->selectionFlag) {
-            return;
-          }
-          AdventureGuide::CUIQuestInfo* selectedItem = dynamic_cast<AdventureGuide::CUIQuestInfo*>(listItem);
-          if (!selectedItem) {
-            return;
-          }
-          this->selected = selectedItem->index;
-          if (this->onSelect && static_cast<int>(this->selected) >= 0 && this->selected < this->data.size()) {
-            auto node = this->data.begin();
-            for (int remaining = static_cast<int>(this->selected); remaining > 0; --remaining) {
-              ++node;
-            }
-            this->onSelect(selectedItem, *node);
-          }
-        };
-        item->onPress = onPress;
-      }
+          this->onSelect(selectedItem, *node);
+        }
+      });
       this->AddChild(item);
       slot = item;
     }
@@ -1984,43 +1966,37 @@ void CUIListBoxEx<AdventureGuide::CUITabInfo, Guide_Intro::Contents>::AddNewItem
       item->SetSize(this->itemWidth, this->rowHeight);
       item->Show(0);
       item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
-      {
-        const std::function<void(CUIListItem*)> onHover = [this](CUIListItem* listItem) {
-          for (AdventureGuide::CUITabInfo* other : this->items) {
-            other->SetHighlighted(other == listItem);
+      item->SetOnHover([this](CUIListItem* listItem) {
+        for (AdventureGuide::CUITabInfo* other : this->items) {
+          other->SetHighlighted(other == listItem);
+        }
+      });
+      item->SetOnPress([this](CUIListItem* listItem) {
+        if (this->layoutFlag) {
+          return;
+        }
+        for (AdventureGuide::CUITabInfo* other : this->items) {
+          if (listItem != other) {
+            other->SetSelected(0);
           }
-        };
-        item->onHover = onHover;
-      }
-      {
-        const std::function<void(CUIListItem*)> onPress = [this](CUIListItem* listItem) {
-          if (this->layoutFlag) {
-            return;
+        }
+        listItem->SetSelected(1);
+        if (listItem->index == static_cast<int>(this->selected) && this->selectionFlag) {
+          return;
+        }
+        AdventureGuide::CUITabInfo* selectedItem = dynamic_cast<AdventureGuide::CUITabInfo*>(listItem);
+        if (!selectedItem) {
+          return;
+        }
+        this->selected = selectedItem->index;
+        if (this->onSelect && static_cast<int>(this->selected) >= 0 && this->selected < this->data.size()) {
+          auto node = this->data.begin();
+          for (int remaining = static_cast<int>(this->selected); remaining > 0; --remaining) {
+            ++node;
           }
-          for (AdventureGuide::CUITabInfo* other : this->items) {
-            if (listItem != other) {
-              other->SetSelected(0);
-            }
-          }
-          listItem->SetSelected(1);
-          if (listItem->index == static_cast<int>(this->selected) && this->selectionFlag) {
-            return;
-          }
-          AdventureGuide::CUITabInfo* selectedItem = dynamic_cast<AdventureGuide::CUITabInfo*>(listItem);
-          if (!selectedItem) {
-            return;
-          }
-          this->selected = selectedItem->index;
-          if (this->onSelect && static_cast<int>(this->selected) >= 0 && this->selected < this->data.size()) {
-            auto node = this->data.begin();
-            for (int remaining = static_cast<int>(this->selected); remaining > 0; --remaining) {
-              ++node;
-            }
-            this->onSelect(selectedItem, *node);
-          }
-        };
-        item->onPress = onPress;
-      }
+          this->onSelect(selectedItem, *node);
+        }
+      });
       this->AddChild(item);
       slot = item;
     }
