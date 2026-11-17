@@ -97,8 +97,6 @@ namespace myGPack {
     this->Close();
   }
 
-  // OFFSET: 0x005EF710
-  // FUNCTION: fn_04011
   CWritePakFile::~CWritePakFile() = default;
 
   // OFFSET: 0x005EF850
