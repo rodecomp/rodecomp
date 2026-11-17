@@ -88,6 +88,7 @@ template __declspec(noinline) std::unordered_map<int, EquipmentValueC>::unordere
 template __declspec(noinline) std::unordered_map<int, int>::~unordered_map();
 template __declspec(noinline) std::string std::format<const char*&, int&>(const std::_Fmt_string<const char*&, int&>, const char*&, int&);
 template __declspec(noinline) std::string std::format<unsigned int&, int&>(const std::_Fmt_string<unsigned int&, int&>, unsigned int&, int&);
+template __declspec(noinline) std::string std::format<int&, const char*&>(const std::_Fmt_string<int&, const char*&>, int&, const char*&);
 template __declspec(noinline) void std::_Tree_val<std::_Tree_simple_types<unsigned int>>::_Erase_tree<std::allocator<std::_Tree_node<unsigned int, void*>>>(
   std::allocator<std::_Tree_node<unsigned int, void*>>&, std::_Tree_node<unsigned int, void*>*
 ) noexcept;
@@ -5576,26 +5577,38 @@ bool CGameMode::IsValidCell(int x, int y) {
 // OFFSET: 0x00DD80A0
 // FUNCTION: fn_23304
 __declspec(noinline) void CSession::UpdateRandomStats() {
+  int statCount = 12;
   if (g_resetMessengerRandomStats != 0) {
     g_resetMessengerRandomStats = 0;
-    this->randomStatIndexC = std::ranges::max(std::rand() % 12, 0);
-    this->randomStatIndexB = std::ranges::max(std::rand() % 12, 0);
-    this->randomStatIndexE = std::ranges::max(std::rand() % 12, 0);
-    this->randomStatIndexA = std::ranges::max(std::rand() % 12, 0);
-    this->randomStatIndexD = std::ranges::max(std::rand() % 12, 0);
+    int roll = std::rand() % statCount;
+    this->randomStatIndexC = roll >= 0 ? roll : 0;
+    roll = std::rand() % statCount;
+    this->randomStatIndexB = roll >= 0 ? roll : 0;
+    roll = std::rand() % statCount;
+    this->randomStatIndexE = roll >= 0 ? roll : 0;
+    roll = std::rand() % statCount;
+    this->randomStatIndexA = roll >= 0 ? roll : 0;
+    roll = std::rand() % statCount;
+    this->randomStatIndexD = roll >= 0 ? roll : 0;
   }
 
   const int bound70 = this->m_sp;
   const int bound74 = this->m_maxSp;
   const int bound68 = this->hp;
   const int bound6C = this->maxHp;
-  this->randomStatIndexC = std::ranges::max(std::rand() % 12, 0);
-  this->randomStatIndexA = std::ranges::max(std::rand() % 12, 0);
-  this->randomStatIndexD = std::ranges::max(std::rand() % 12, 0);
-  this->randomStatIndexB = std::ranges::max(std::rand() % 12, 0);
-  this->randomStatIndexE = std::ranges::max(std::rand() % 12, 0);
-  for (int& value : this->randomStatValues) {
-    value = std::max(std::abs(std::rand()) % 1, 0);
+  int roll = std::rand() % statCount;
+  this->randomStatIndexC = roll >= 0 ? roll : 0;
+  roll = std::rand() % statCount;
+  this->randomStatIndexA = roll >= 0 ? roll : 0;
+  roll = std::rand() % statCount;
+  this->randomStatIndexD = roll >= 0 ? roll : 0;
+  roll = std::rand() % statCount;
+  this->randomStatIndexB = roll >= 0 ? roll : 0;
+  roll = std::rand() % statCount;
+  this->randomStatIndexE = roll >= 0 ? roll : 0;
+  for (int index = 0; index < 12; ++index) {
+    const int value = std::abs(std::rand()) % 1;
+    this->randomStatValues[index] = value >= 0 ? value : 0;
   }
 
   if (this->hp != bound68) {
