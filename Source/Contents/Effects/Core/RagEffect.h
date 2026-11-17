@@ -333,7 +333,7 @@ struct CRagEffect : CRenderObject {
   __declspec(noinline) void TexturedMagicRing(char type);
   void TexturedRisingRing(const char* name);
   bool TexturedRisingRingStages(const char* name, char level);
-  void TexturedGroundRing(const char* name, char flag, int unused1, int unused2);
+  void TexturedGroundRing(const char* name, char flag, float unused1, float unused2);
   void TexturedQuadRingSized(std::int16_t baseAlpha, const char* name, char kind);
   __declspec(noinline) void WhiteYellowRings();
   __declspec(noinline) void BlueSpellRings();

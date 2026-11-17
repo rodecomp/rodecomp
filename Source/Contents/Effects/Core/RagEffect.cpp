@@ -17061,7 +17061,7 @@ void CRagEffect::PortalRings() {
 
 // OFFSET: 0x00C46860
 // FUNCTION: fn_20154
-void CRagEffect::TexturedGroundRing(const char* name, char flag, int unused1, int unused2) {
+void CRagEffect::TexturedGroundRing(const char* name, char flag, float unused1, float unused2) {
   this->render.position = this->state.parent->render.position;
 
   if (this->state.stateCnt > 3) {
@@ -19200,7 +19200,7 @@ bool CRagEffect::OnProcess3() {
     this->SpriteRing(20);
     break;
   case EF_BOTTOM_DE2:
-    this->TexturedGroundRing("effect\\ring_blue.tga", 0, 0, 0);
+    this->TexturedGroundRing("effect\\ring_blue.tga", 0, 0.0f, 0.0f);
     break;
   case EF_PNG_TEST:
     this->TexturedAura("pe_fur1_01.bmp", 1);
