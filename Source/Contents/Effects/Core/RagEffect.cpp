@@ -177,6 +177,15 @@ static int ClampedRandom(int range) {
 }
 
 // INLINED
+static int ClampedRandomAtZero(int range) {
+  int value = rand() % range;
+  if (value < 0) {
+    value = 0;
+  }
+  return value;
+}
+
+// INLINED
 static void CopyVector(vector3d& to, const vector3d& from) {
   to = from;
 }
@@ -4771,6 +4780,7 @@ void CRagEffect::TexturedSwirl(unsigned char clockwise, const char* name) {
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
+  const int direction = clockwise * 2 - 1;
 
   for (EffectPrimitiveSlot& slot : this->state.lastPrim->state.slots) {
     slot.life = 1;
@@ -4778,7 +4788,7 @@ void CRagEffect::TexturedSwirl(unsigned char clockwise, const char* name) {
     slot.distance = 100.0f;
     slot.maxHeight = static_cast<float>(ClampedRandom(6)) * 0.1f + 0.5f;
     slot.flag1[0] = static_cast<char>(ClampedRandom(3) + 125);
-    slot.height[0] = (static_cast<float>(ClampedRandom(11)) + 15.0f) * static_cast<float>(clockwise * 2 - 1);
+    slot.height[0] = (static_cast<float>(ClampedRandom(11)) + 15.0f) * static_cast<float>(direction);
     slot.height[1] = static_cast<float>(ClampedRandom(200));
     slot.height[2] = static_cast<float>(ClampedRandom(31)) + 40.0f;
     slot.height[3] = static_cast<float>(ClampedRandom(11)) * 0.1f + 1.0f;
@@ -6056,21 +6066,21 @@ void CRagEffect::LineStreakTextured(std::int16_t kind, const char* name) {
     this->state.lastPrim->state.slots[index].distance = 100.0f;
 
     if (mode == 0) {
-      this->state.lastPrim->state.slots[index].height[0] = -15.0f - static_cast<float>(std::max(0, rand() % 11));
+      this->state.lastPrim->state.slots[index].height[0] = -15.0f - static_cast<float>(ClampedRandomAtZero(11));
     } else if (mode == 1) {
-      this->state.lastPrim->state.slots[index].height[0] = static_cast<float>(std::max(0, rand() % 11)) + 15.0f;
+      this->state.lastPrim->state.slots[index].height[0] = static_cast<float>(ClampedRandomAtZero(11)) + 15.0f;
     }
 
-    this->state.lastPrim->state.slots[index].height[1] = static_cast<float>(std::max(0, rand() % 200));
-    this->state.lastPrim->state.slots[index].maxHeight = static_cast<float>(std::max(0, rand() % 6)) * 0.1f + 0.5f;
-    this->state.lastPrim->state.slots[index].height[2] = static_cast<float>(std::max(0, rand() % 31)) + 40.0f;
-    this->state.lastPrim->state.slots[index].flag1[0] = static_cast<char>(std::max(0, rand() % 3) + 10);
-    this->state.lastPrim->state.slots[index].height[3] = static_cast<float>(std::max(0, rand() % 11)) * 0.1f + 1.0f;
+    this->state.lastPrim->state.slots[index].height[1] = static_cast<float>(ClampedRandomAtZero(200));
+    this->state.lastPrim->state.slots[index].maxHeight = static_cast<float>(ClampedRandomAtZero(6)) * 0.1f + 0.5f;
+    this->state.lastPrim->state.slots[index].height[2] = static_cast<float>(ClampedRandomAtZero(31)) + 40.0f;
+    this->state.lastPrim->state.slots[index].flag1[0] = static_cast<char>(ClampedRandomAtZero(3) + 10);
+    this->state.lastPrim->state.slots[index].height[3] = static_cast<float>(ClampedRandomAtZero(11)) * 0.1f + 1.0f;
 
     if (static_cast<unsigned>(kind - 20) < 10) {
-      this->state.lastPrim->state.slots[index].flag1[0] = static_cast<char>(std::max(0, rand() % 3) + 33);
+      this->state.lastPrim->state.slots[index].flag1[0] = static_cast<char>(ClampedRandomAtZero(3) + 33);
     } else if (static_cast<unsigned>(kind - 30) < 10) {
-      this->state.lastPrim->state.slots[index].flag1[0] = static_cast<char>(std::max(0, rand() % 3) + 36);
+      this->state.lastPrim->state.slots[index].flag1[0] = static_cast<char>(ClampedRandomAtZero(3) + 36);
     }
 
     this->state.lastPrim->Get_Angle(
@@ -6658,7 +6668,7 @@ void CRagEffect::ElectricFan(const char*, std::int16_t fade) {
 
     this->state.lastPrim->state.slots[index].distance = 20.0f;
     this->state.lastPrim->state.slots[index].height[0] = 0.0f;
-    this->state.lastPrim->state.slots[index].vecTNow.x = static_cast<float>(ClampedRandom(11)) * 0.01f + 0.0f;
+    this->state.lastPrim->state.slots[index].vecTNow.x = static_cast<float>(ClampedRandomAtZero(11)) * 0.01f + 0.0f;
     CopyVector(this->state.lastPrim->state.slots[index].vecBNow, this->render.position);
     this->state.lastPrim->state.slots[index].vecBNow.y -= 10.0f;
     this->state.lastPrim->state.slots[index].vecTNow.y = 20.0f;
@@ -8535,13 +8545,13 @@ void CRagEffect::AlphaCenterStream() {
   const float range = SquareRoot(dz * dz + dx * dx);
   for (int i = 0; i < 4; ++i) {
     this->state.lastPrim->state.slots[i].life = 1;
-    this->state.lastPrim->state.slots[i].process = -30 - ClampedRandom(110);
+    this->state.lastPrim->state.slots[i].process = -30 - ClampedRandomAtZero(110);
     this->state.lastPrim->Get_Angle(dx, dz, &this->state.lastPrim->state.slots[i].rotStart);
     this->state.lastPrim->state.slots[i].alphaB = 0;
-    this->state.lastPrim->state.slots[i].vecBNow.x = static_cast<float>(ClampedRandom(100)) * 0.08f - 4.0f + this->render.position.x;
-    this->state.lastPrim->state.slots[i].vecBNow.z = static_cast<float>(ClampedRandom(100)) * 0.08f - 4.0f + this->render.position.z;
+    this->state.lastPrim->state.slots[i].vecBNow.x = static_cast<float>(ClampedRandomAtZero(100)) * 0.08f - 4.0f + this->render.position.x;
+    this->state.lastPrim->state.slots[i].vecBNow.z = static_cast<float>(ClampedRandomAtZero(100)) * 0.08f - 4.0f + this->render.position.z;
     this->state.lastPrim->state.slots[i].vecBNow.y = this->render.position.y;
-    this->state.lastPrim->state.slots[i].height[1] = static_cast<float>(ClampedRandom(100)) * 0.15f;
+    this->state.lastPrim->state.slots[i].height[1] = static_cast<float>(ClampedRandomAtZero(100)) * 0.15f;
     this->state.lastPrim->state.slots[i].vecBNow.x -=
       g_cosTable[this->state.lastPrim->state.slots[i].rotStart] * this->state.lastPrim->state.slots[i].height[1];
     this->state.lastPrim->state.slots[i].vecBNow.z -=
@@ -8549,9 +8559,9 @@ void CRagEffect::AlphaCenterStream() {
     this->state.lastPrim->state.slots[i].vecTNow.x = this->state.lastPrim->state.slots[i].vecBNow.x;
     this->state.lastPrim->state.slots[i].vecTNow.z = this->state.lastPrim->state.slots[i].vecBNow.z;
     this->state.lastPrim->state.slots[i].vecTNow.y = this->render.position.y;
-    this->state.lastPrim->state.slots[i].maxHeight = static_cast<float>(ClampedRandom(11)) * 0.008f + 0.02f;
-    this->state.lastPrim->state.slots[i].height[0] = static_cast<float>(ClampedRandom(100)) * 0.06f + 4.0f;
-    this->state.lastPrim->state.slots[i].distance = static_cast<float>(ClampedRandom(100)) * 0.3f + range;
+    this->state.lastPrim->state.slots[i].maxHeight = static_cast<float>(ClampedRandomAtZero(11)) * 0.008f + 0.02f;
+    this->state.lastPrim->state.slots[i].height[0] = static_cast<float>(ClampedRandomAtZero(100)) * 0.06f + 4.0f;
+    this->state.lastPrim->state.slots[i].distance = static_cast<float>(ClampedRandomAtZero(100)) * 0.3f + range;
     this->state.lastPrim->state.slots[i].height[4] = 3.0f;
   }
 }
@@ -8964,24 +8974,28 @@ void CRagEffect::WhiteLightSparkle(char kind) {
     this->state.lastPrim->state.slots[i].flag1[2] = 0;
     this->state.lastPrim->state.slots[i].flag1[3] = 0;
     this->state.lastPrim->state.slots[i].flag1[4] = 0;
-    this->state.lastPrim->state.slots[i].flag1[5] = static_cast<char>((kind == 2) * 2 + 8);
+    if (kind == 2) {
+      this->state.lastPrim->state.slots[i].flag1[5] = 10;
+    } else {
+      this->state.lastPrim->state.slots[i].flag1[5] = 8;
+    }
   }
 }
 
 // INLINED
 static __forceinline void ScatterFrostVector(CRagEffect& effect, int slot, int vector, int firstHeight) {
   if (effect.state.lastPrim->state.slots[slot].flag1[12] == 0) {
-    effect.state.lastPrim->state.slots[slot].vectors[vector].x = static_cast<float>(ClampedRandom(45) - 22);
+    effect.state.lastPrim->state.slots[slot].vectors[vector].x = static_cast<float>(ClampedRandomAtZero(45) - 22);
   } else {
-    effect.state.lastPrim->state.slots[slot].vectors[vector].x = static_cast<float>(ClampedRandom(23) - 11);
+    effect.state.lastPrim->state.slots[slot].vectors[vector].x = static_cast<float>(ClampedRandomAtZero(23) - 11);
   }
 
-  effect.state.lastPrim->state.slots[slot].vectors[vector].y = static_cast<float>(ClampedRandom(30));
-  effect.state.lastPrim->state.slots[slot].vectors[vector].z = static_cast<float>(ClampedRandom(11) - 5);
-  effect.state.lastPrim->state.slots[slot].height[firstHeight] = static_cast<float>(ClampedRandom(360));
-  effect.state.lastPrim->state.slots[slot].height[firstHeight + 1] = static_cast<float>(ClampedRandom(360));
-  effect.state.lastPrim->state.slots[slot].height[firstHeight + 2] = static_cast<float>(ClampedRandom(360));
-  effect.state.lastPrim->state.slots[slot].height[firstHeight + 3] = static_cast<float>(ClampedRandom(360));
+  effect.state.lastPrim->state.slots[slot].vectors[vector].y = static_cast<float>(ClampedRandomAtZero(30));
+  effect.state.lastPrim->state.slots[slot].vectors[vector].z = static_cast<float>(ClampedRandomAtZero(11) - 5);
+  effect.state.lastPrim->state.slots[slot].height[firstHeight] = static_cast<float>(ClampedRandomAtZero(360));
+  effect.state.lastPrim->state.slots[slot].height[firstHeight + 1] = static_cast<float>(ClampedRandomAtZero(360));
+  effect.state.lastPrim->state.slots[slot].height[firstHeight + 2] = static_cast<float>(ClampedRandomAtZero(360));
+  effect.state.lastPrim->state.slots[slot].height[firstHeight + 3] = static_cast<float>(ClampedRandomAtZero(360));
 
   if (effect.state.lastPrim->state.slots[slot].flag1[11] == 1) {
     const float x = effect.state.lastPrim->state.slots[slot].vectors[vector].x;
@@ -9916,13 +9930,13 @@ void CRagEffect::NapalmFragments() {
 
   this->state.lastPrim = this->LaunchEffectPrim(0, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 30;
-  const int distance = ClampedRandom(50) + 10;
+  const int distance = ClampedRandomAtZero(50) + 10;
   const float radius = static_cast<float>(distance);
-  const float angle = static_cast<float>(ClampedRandom(360));
+  const float angle = static_cast<float>(ClampedRandomAtZero(360));
   this->state.lastPrim->state.deltaPos2.x = ClientSine(static_cast<int>(angle)) * radius;
   this->state.lastPrim->state.deltaPos2.y = ClientCosine(static_cast<int>(angle)) * -static_cast<float>(distance);
   this->state.lastPrim->state.deltaPos2.y -= 20.0f;
-  const float size = static_cast<float>(ClampedRandom(40) + 20);
+  const float size = static_cast<float>(ClampedRandomAtZero(40) + 20);
   this->state.lastPrim->state.heightSize = size;
   this->state.lastPrim->state.widthSize = size;
   this->state.lastPrim->state.alpha = 0.0f;
@@ -10774,13 +10788,13 @@ void CRagEffect::AlphaCenterTrail() {
 
   for (int index = 0; index < 4; ++index) {
     this->state.lastPrim->state.slots[index].life = 1;
-    this->state.lastPrim->state.slots[index].process = -45 - ClampedRandom(20);
+    this->state.lastPrim->state.slots[index].process = -45 - ClampedRandomAtZero(20);
     this->state.lastPrim->Get_Angle(deltaX, deltaZ, &this->state.lastPrim->state.slots[index].rotStart);
     this->state.lastPrim->state.slots[index].alphaB = 0;
-    this->state.lastPrim->state.slots[index].vecBNow.x = (static_cast<float>(ClampedRandom(100)) * 0.08f - 4.0f) + this->render.position.x;
-    this->state.lastPrim->state.slots[index].vecBNow.z = (static_cast<float>(ClampedRandom(100)) * 0.08f - 4.0f) + this->render.position.z;
+    this->state.lastPrim->state.slots[index].vecBNow.x = (static_cast<float>(ClampedRandomAtZero(100)) * 0.08f - 4.0f) + this->render.position.x;
+    this->state.lastPrim->state.slots[index].vecBNow.z = (static_cast<float>(ClampedRandomAtZero(100)) * 0.08f - 4.0f) + this->render.position.z;
     this->state.lastPrim->state.slots[index].vecBNow.y = this->render.position.y;
-    this->state.lastPrim->state.slots[index].height[1] = static_cast<float>(ClampedRandom(100)) * 0.15f;
+    this->state.lastPrim->state.slots[index].height[1] = static_cast<float>(ClampedRandomAtZero(100)) * 0.15f;
     this->state.lastPrim->state.slots[index].vecBNow.x -=
       g_cosTable[this->state.lastPrim->state.slots[index].rotStart] * this->state.lastPrim->state.slots[index].height[1];
     this->state.lastPrim->state.slots[index].vecBNow.z -=
@@ -10789,8 +10803,8 @@ void CRagEffect::AlphaCenterTrail() {
     this->state.lastPrim->state.slots[index].vecTNow.z = this->state.lastPrim->state.slots[index].vecBNow.z;
     this->state.lastPrim->state.slots[index].vecTNow.y = this->render.position.y;
     this->state.lastPrim->state.slots[index].maxHeight = 0.05f;
-    this->state.lastPrim->state.slots[index].height[0] = static_cast<float>(ClampedRandom(100)) * 0.04f + 8.0f;
-    this->state.lastPrim->state.slots[index].distance = static_cast<float>(ClampedRandom(100)) * 0.6f + distance;
+    this->state.lastPrim->state.slots[index].height[0] = static_cast<float>(ClampedRandomAtZero(100)) * 0.04f + 8.0f;
+    this->state.lastPrim->state.slots[index].distance = static_cast<float>(ClampedRandomAtZero(100)) * 0.6f + distance;
     this->state.lastPrim->state.slots[index].height[4] = 2.0f;
   }
 }
@@ -12030,15 +12044,15 @@ void CRagEffect::ParticleTime(const char* name, char kind) {
   for (int i = 0; i < 4; ++i) {
     this->state.lastPrim->state.slots[i].life = 1;
     this->state.lastPrim->state.slots[i].process = 0;
-    this->state.lastPrim->state.slots[i].distance = static_cast<float>(ClampedRandom(10)) * 0.1f + 2.0f;
+    this->state.lastPrim->state.slots[i].distance = static_cast<float>(ClampedRandomAtZero(10)) * 0.1f + 2.0f;
     this->state.lastPrim->state.slots[i].height[8] = 0.0f;
     this->state.lastPrim->state.slots[i].alphaB = 0;
-    this->state.lastPrim->state.slots[i].vecBNow.x = static_cast<float>(ClampedRandom(11)) + this->render.position.x - 5.0f;
-    this->state.lastPrim->state.slots[i].vecBNow.z = static_cast<float>(ClampedRandom(11)) + this->render.position.z - 5.0f;
+    this->state.lastPrim->state.slots[i].vecBNow.x = static_cast<float>(ClampedRandomAtZero(11)) + this->render.position.x - 5.0f;
+    this->state.lastPrim->state.slots[i].vecBNow.z = static_cast<float>(ClampedRandomAtZero(11)) + this->render.position.z - 5.0f;
     this->state.lastPrim->state.slots[i].vecBNow.y = this->render.position.y - 6.0f;
     this->state.lastPrim->state.slots[i].rotStart = 0;
     this->state.lastPrim->state.slots[i].height[1] = 0.0f;
-    this->state.lastPrim->state.slots[i].height[2] = static_cast<float>(ClampedRandom(20)) * 0.01f + 0.1f;
+    this->state.lastPrim->state.slots[i].height[2] = static_cast<float>(ClampedRandomAtZero(20)) * 0.01f + 0.1f;
     this->state.lastPrim->state.slots[i].fullDisplayAngle = 0;
     this->state.lastPrim->state.slots[i].flag1[0] = 0;
     this->state.lastPrim->state.slots[i].flag1[1] = 1;
@@ -13297,19 +13311,19 @@ void CRagEffect::WhiteSparkRing(char kind) {
     this->state.lastPrim->state.slots[index].life = 1;
 
     if (kind == 3) {
-      this->state.lastPrim->state.slots[index].process = -(25 + ClampedRandom(21));
+      this->state.lastPrim->state.slots[index].process = -(25 + ClampedRandomAtZero(21));
       this->state.lastPrim->state.slots[index].maxHeight = 0.06f;
     } else {
-      this->state.lastPrim->state.slots[index].process = -(15 + ClampedRandom(26));
+      this->state.lastPrim->state.slots[index].process = -(15 + ClampedRandomAtZero(26));
       this->state.lastPrim->state.slots[index].maxHeight = 0.07f;
     }
 
-    this->state.lastPrim->state.slots[index].alphaB = static_cast<std::int16_t>(ClampedRandom(121) + 125);
+    this->state.lastPrim->state.slots[index].alphaB = static_cast<std::int16_t>(ClampedRandomAtZero(121) + 125);
     this->state.lastPrim->Get_Angle(
       this->render.position.x - this->state.deltaPos.x, this->render.position.z - this->state.deltaPos.z,
       &this->state.lastPrim->state.slots[index].riseAngle
     );
-    this->state.lastPrim->state.slots[index].riseAngle += static_cast<std::int16_t>(ClampedRandom(121) - 60);
+    this->state.lastPrim->state.slots[index].riseAngle += static_cast<std::int16_t>(ClampedRandomAtZero(121) - 60);
 
     if (this->state.lastPrim->state.slots[index].riseAngle >= 360) {
       this->state.lastPrim->state.slots[index].riseAngle -= 360;
@@ -13319,9 +13333,9 @@ void CRagEffect::WhiteSparkRing(char kind) {
       this->state.lastPrim->state.slots[index].riseAngle += 360;
     }
 
-    this->state.lastPrim->state.slots[index].distance = static_cast<float>(ClampedRandom(7)) + 6.0f;
+    this->state.lastPrim->state.slots[index].distance = static_cast<float>(ClampedRandomAtZero(7)) + 6.0f;
     this->state.lastPrim->state.slots[index].height[0] = 0.0f;
-    this->state.lastPrim->state.slots[index].vecTNow.x = static_cast<float>(ClampedRandom(7)) * 0.1f + 0.8f;
+    this->state.lastPrim->state.slots[index].vecTNow.x = static_cast<float>(ClampedRandomAtZero(7)) * 0.1f + 0.8f;
     this->state.lastPrim->state.slots[index].vecBNow = this->render.position;
     this->state.lastPrim->state.slots[index].vecTNow.y = 3.0f;
 
@@ -16834,7 +16848,9 @@ void CRagEffect::SuperSlashFan(char count, char value) {
   }
 
   this->state.lastPrim = this->LaunchEffectPrim(35, vector3d{0.0f, 0.0f, 0.0f});
-  this->state.lastPrim->state.renderFlag = 5;
+  this->state.lastPrim->state.renderFlag = 0;
+  this->state.lastPrim->state.renderFlag |= 1u;
+  this->state.lastPrim->state.renderFlag |= 5u;
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 5;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
@@ -16851,26 +16867,26 @@ void CRagEffect::SuperSlashFan(char count, char value) {
   for (int i = 0; i < count; ++i) {
     this->state.lastPrim->state.slots[i].life = 1;
     this->state.lastPrim->state.slots[i].distance = 3.5f;
-    this->state.lastPrim->state.slots[i].vecBPre.y = -static_cast<float>(ClampedRandom(10));
+    this->state.lastPrim->state.slots[i].vecBPre.y = static_cast<float>(-ClampedRandomAtZero(10));
     this->state.lastPrim->state.slots[i].height[0] = 10.0f;
     this->state.lastPrim->state.slots[i].height[1] = 70.0f;
-    this->state.lastPrim->state.slots[i].height[2] = static_cast<float>(ClampedRandom(5));
-    this->state.lastPrim->state.slots[i].height[3] = static_cast<float>(ClampedRandom(360));
-    this->state.lastPrim->state.slots[i].vecBNow.y = -static_cast<float>(ClampedRandom(10));
+    this->state.lastPrim->state.slots[i].height[2] = static_cast<float>(ClampedRandomAtZero(5));
+    this->state.lastPrim->state.slots[i].height[3] = static_cast<float>(ClampedRandomAtZero(360));
+    this->state.lastPrim->state.slots[i].vecBNow.y = static_cast<float>(-ClampedRandomAtZero(10));
     this->state.lastPrim->state.slots[i].height[4] = 10.0f;
     this->state.lastPrim->state.slots[i].height[5] = 130.0f;
-    this->state.lastPrim->state.slots[i].height[6] = static_cast<float>(ClampedRandom(5));
-    this->state.lastPrim->state.slots[i].height[7] = static_cast<float>(ClampedRandom(360));
-    this->state.lastPrim->state.slots[i].vecTPre.y = -static_cast<float>(ClampedRandom(10));
+    this->state.lastPrim->state.slots[i].height[6] = static_cast<float>(ClampedRandomAtZero(5));
+    this->state.lastPrim->state.slots[i].height[7] = static_cast<float>(ClampedRandomAtZero(360));
+    this->state.lastPrim->state.slots[i].vecTPre.y = static_cast<float>(-ClampedRandomAtZero(10));
     this->state.lastPrim->state.slots[i].height[8] = 10.0f;
     this->state.lastPrim->state.slots[i].height[9] = 190.0f;
-    this->state.lastPrim->state.slots[i].height[10] = static_cast<float>(ClampedRandom(5));
-    this->state.lastPrim->state.slots[i].height[11] = static_cast<float>(ClampedRandom(360));
-    this->state.lastPrim->state.slots[i].vecTNow.y = -static_cast<float>(ClampedRandom(10));
+    this->state.lastPrim->state.slots[i].height[10] = static_cast<float>(ClampedRandomAtZero(5));
+    this->state.lastPrim->state.slots[i].height[11] = static_cast<float>(ClampedRandomAtZero(360));
+    this->state.lastPrim->state.slots[i].vecTNow.y = static_cast<float>(-ClampedRandomAtZero(10));
     this->state.lastPrim->state.slots[i].height[12] = 10.0f;
     this->state.lastPrim->state.slots[i].height[13] = 250.0f;
-    this->state.lastPrim->state.slots[i].height[14] = static_cast<float>(ClampedRandom(5));
-    this->state.lastPrim->state.slots[i].height[15] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[i].height[14] = static_cast<float>(ClampedRandomAtZero(5));
+    this->state.lastPrim->state.slots[i].height[15] = static_cast<float>(ClampedRandomAtZero(360));
     this->state.lastPrim->state.slots[i].flag1[4] = value;
   }
 }
@@ -16904,26 +16920,26 @@ void CRagEffect::SuperSlashSpread(char count, char value) {
     this->state.lastPrim->state.slots[i].process = 0;
     this->state.lastPrim->state.slots[i].life = 1;
     this->state.lastPrim->state.slots[i].distance = 2.0f;
-    this->state.lastPrim->state.slots[i].vecBPre.y = -static_cast<float>(ClampedRandom(10));
+    this->state.lastPrim->state.slots[i].vecBPre.y = static_cast<float>(-ClampedRandomAtZero(10));
     this->state.lastPrim->state.slots[i].height[0] = 10.0f;
     this->state.lastPrim->state.slots[i].height[1] = 40.0f;
-    this->state.lastPrim->state.slots[i].height[2] = static_cast<float>(ClampedRandom(5));
-    this->state.lastPrim->state.slots[i].height[3] = static_cast<float>(ClampedRandom(360));
-    this->state.lastPrim->state.slots[i].vecBNow.y = -static_cast<float>(ClampedRandom(10));
+    this->state.lastPrim->state.slots[i].height[2] = static_cast<float>(ClampedRandomAtZero(5));
+    this->state.lastPrim->state.slots[i].height[3] = static_cast<float>(ClampedRandomAtZero(360));
+    this->state.lastPrim->state.slots[i].vecBNow.y = static_cast<float>(-ClampedRandomAtZero(10));
     this->state.lastPrim->state.slots[i].height[4] = 10.0f;
     this->state.lastPrim->state.slots[i].height[5] = 80.0f;
-    this->state.lastPrim->state.slots[i].height[6] = static_cast<float>(ClampedRandom(5));
-    this->state.lastPrim->state.slots[i].height[7] = static_cast<float>(ClampedRandom(360));
-    this->state.lastPrim->state.slots[i].vecTPre.y = -static_cast<float>(ClampedRandom(10));
+    this->state.lastPrim->state.slots[i].height[6] = static_cast<float>(ClampedRandomAtZero(5));
+    this->state.lastPrim->state.slots[i].height[7] = static_cast<float>(ClampedRandomAtZero(360));
+    this->state.lastPrim->state.slots[i].vecTPre.y = static_cast<float>(-ClampedRandomAtZero(10));
     this->state.lastPrim->state.slots[i].height[8] = 10.0f;
     this->state.lastPrim->state.slots[i].height[9] = 120.0f;
-    this->state.lastPrim->state.slots[i].height[10] = static_cast<float>(ClampedRandom(5));
-    this->state.lastPrim->state.slots[i].height[11] = static_cast<float>(ClampedRandom(360));
-    this->state.lastPrim->state.slots[i].vecTNow.y = -static_cast<float>(ClampedRandom(10));
+    this->state.lastPrim->state.slots[i].height[10] = static_cast<float>(ClampedRandomAtZero(5));
+    this->state.lastPrim->state.slots[i].height[11] = static_cast<float>(ClampedRandomAtZero(360));
+    this->state.lastPrim->state.slots[i].vecTNow.y = static_cast<float>(-ClampedRandomAtZero(10));
     this->state.lastPrim->state.slots[i].height[12] = 10.0f;
     this->state.lastPrim->state.slots[i].height[13] = 160.0f;
-    this->state.lastPrim->state.slots[i].height[14] = static_cast<float>(ClampedRandom(5));
-    this->state.lastPrim->state.slots[i].height[15] = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[i].height[14] = static_cast<float>(ClampedRandomAtZero(5));
+    this->state.lastPrim->state.slots[i].height[15] = static_cast<float>(ClampedRandomAtZero(360));
     this->state.lastPrim->state.slots[i].flag1[4] = value;
   }
 }
@@ -17127,8 +17143,8 @@ void CRagEffect::TexturedGroundRing(const char* name, char flag, float unused1, 
   stored()->state.slots[0].process = 0;
   stored()->state.slots[0].fullDisplayAngle = 360;
   stored()->state.slots[0].maxHeight = 15.0f;
-  stored()->state.slots[0].rotStart = static_cast<std::int16_t>(ClampedRandom(360));
-  stored()->state.slots[0].alphaB = static_cast<std::int16_t>(ClampedRandom(100));
+  stored()->state.slots[0].rotStart = static_cast<std::int16_t>(ClampedRandomAtZero(360));
+  stored()->state.slots[0].alphaB = static_cast<std::int16_t>(ClampedRandomAtZero(100));
   stored()->state.slots[0].distance = static_cast<float>(this->state.stateCnt * 2) + g_depthAverageHalf;
   stored()->state.slots[0].vecTNow.x = stored()->state.slots[0].distance;
   stored()->state.slots[0].distance -= static_cast<float>(rand() % 21) * 0.1f;
@@ -17143,8 +17159,8 @@ void CRagEffect::TexturedGroundRing(const char* name, char flag, float unused1, 
   stored()->state.slots[1].process = 0;
   stored()->state.slots[1].fullDisplayAngle = 360;
   stored()->state.slots[1].maxHeight = 16.0f;
-  stored()->state.slots[1].rotStart = static_cast<std::int16_t>(ClampedRandom(360));
-  stored()->state.slots[1].alphaB = static_cast<std::int16_t>(ClampedRandom(100));
+  stored()->state.slots[1].rotStart = static_cast<std::int16_t>(ClampedRandomAtZero(360));
+  stored()->state.slots[1].alphaB = static_cast<std::int16_t>(ClampedRandomAtZero(100));
   stored()->state.slots[1].distance = static_cast<float>(this->state.stateCnt * 2) + 1.0f;
   stored()->state.slots[1].vecTNow.x = stored()->state.slots[1].distance;
   stored()->state.slots[1].distance += static_cast<float>(rand() % 21) * 0.1f;
@@ -17159,8 +17175,8 @@ void CRagEffect::TexturedGroundRing(const char* name, char flag, float unused1, 
   stored()->state.slots[2].process = 0;
   stored()->state.slots[2].fullDisplayAngle = 360;
   stored()->state.slots[2].maxHeight = 17.0f;
-  stored()->state.slots[2].rotStart = static_cast<std::int16_t>(ClampedRandom(360));
-  stored()->state.slots[2].alphaB = static_cast<std::int16_t>(ClampedRandom(100));
+  stored()->state.slots[2].rotStart = static_cast<std::int16_t>(ClampedRandomAtZero(360));
+  stored()->state.slots[2].alphaB = static_cast<std::int16_t>(ClampedRandomAtZero(100));
   stored()->state.slots[2].distance = static_cast<float>(this->state.stateCnt * 2) + 1.5f;
   stored()->state.slots[2].vecTNow.x = stored()->state.slots[2].distance;
   stored()->state.slots[2].distance -= static_cast<float>(rand() % 21) * 0.1f;
@@ -17175,8 +17191,8 @@ void CRagEffect::TexturedGroundRing(const char* name, char flag, float unused1, 
   stored()->state.slots[3].process = 0;
   stored()->state.slots[3].fullDisplayAngle = 360;
   stored()->state.slots[3].maxHeight = 18.0f;
-  stored()->state.slots[3].rotStart = static_cast<std::int16_t>(ClampedRandom(360));
-  stored()->state.slots[3].alphaB = static_cast<std::int16_t>(ClampedRandom(100));
+  stored()->state.slots[3].rotStart = static_cast<std::int16_t>(ClampedRandomAtZero(360));
+  stored()->state.slots[3].alphaB = static_cast<std::int16_t>(ClampedRandomAtZero(100));
   stored()->state.slots[3].distance = static_cast<float>(this->state.stateCnt * 2) + 2.0f;
   stored()->state.slots[3].vecTNow.x = stored()->state.slots[3].distance;
   stored()->state.slots[3].distance += static_cast<float>(rand() % 21) * 0.1f;
@@ -17857,7 +17873,7 @@ void CRagEffect::HealRingSparkle(const char* name, char type) {
     } else {
       this->state.lastPrim->state.slots[2].maxHeight = 12.0f;
     }
-    this->state.lastPrim->state.slots[2].rotStart = static_cast<std::int16_t>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[2].rotStart = static_cast<std::int16_t>(ClampedRandomAtZero(360));
     this->state.lastPrim->state.slots[2].alphaB = 0;
     this->state.lastPrim->state.slots[2].distance = 5.0f;
     this->state.lastPrim->state.slots[2].riseAngle = 50;
@@ -17880,7 +17896,7 @@ void CRagEffect::HealRingSparkle(const char* name, char type) {
     } else {
       this->state.lastPrim->state.slots[3].maxHeight = 18.0f;
     }
-    this->state.lastPrim->state.slots[3].rotStart = static_cast<std::int16_t>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[3].rotStart = static_cast<std::int16_t>(ClampedRandomAtZero(360));
     this->state.lastPrim->state.slots[3].alphaB = 0;
     this->state.lastPrim->state.slots[3].distance = 5.2f;
     this->state.lastPrim->state.slots[3].riseAngle = 48;
@@ -17912,18 +17928,18 @@ void CRagEffect::HealRingSparkle(const char* name, char type) {
     for (int i = 0; i < 4; ++i) {
       this->state.lastPrim->state.slots[i].life = 1;
       this->state.lastPrim->state.slots[i].process = 0;
-      this->state.lastPrim->state.slots[i].distance = static_cast<float>(ClampedRandom(10)) * 0.1f + 2.0f;
+      this->state.lastPrim->state.slots[i].distance = static_cast<float>(ClampedRandomAtZero(10)) * 0.1f + 2.0f;
       this->state.lastPrim->state.slots[i].height[8] = 0.0f;
       this->state.lastPrim->state.slots[i].alphaB = 0;
-      this->state.lastPrim->state.slots[i].vecBNow.x = static_cast<float>(ClampedRandom(13)) + this->render.position.x - 6.0f;
-      this->state.lastPrim->state.slots[i].vecBNow.z = static_cast<float>(ClampedRandom(13)) + this->render.position.z - 6.0f;
+      this->state.lastPrim->state.slots[i].vecBNow.x = static_cast<float>(ClampedRandomAtZero(13)) + this->render.position.x - 6.0f;
+      this->state.lastPrim->state.slots[i].vecBNow.z = static_cast<float>(ClampedRandomAtZero(13)) + this->render.position.z - 6.0f;
       this->state.lastPrim->state.slots[i].vecBNow.y = this->render.position.y;
       this->state.lastPrim->state.slots[i].rotStart = 0;
       this->state.lastPrim->state.slots[i].height[1] = 0.0f;
       if (type == 0) {
-        this->state.lastPrim->state.slots[i].height[2] = static_cast<float>(ClampedRandom(40)) * 0.01f + 0.4f;
+        this->state.lastPrim->state.slots[i].height[2] = static_cast<float>(ClampedRandomAtZero(40)) * 0.01f + 0.4f;
       } else {
-        this->state.lastPrim->state.slots[i].height[2] = static_cast<float>(ClampedRandom(40)) * 0.01f + 0.6f;
+        this->state.lastPrim->state.slots[i].height[2] = static_cast<float>(ClampedRandomAtZero(40)) * 0.01f + 0.6f;
       }
       this->state.lastPrim->state.slots[i].fullDisplayAngle = 0;
       this->state.lastPrim->state.slots[i].flag1[0] = 0;
@@ -17979,7 +17995,7 @@ void CRagEffect::HealRingSparkle(const char* name, char type) {
     this->state.lastPrim->state.slots[2].process = 0;
     this->state.lastPrim->state.slots[2].fullDisplayAngle = 360;
     this->state.lastPrim->state.slots[2].maxHeight = 10.0f;
-    this->state.lastPrim->state.slots[2].rotStart = static_cast<std::int16_t>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[2].rotStart = static_cast<std::int16_t>(ClampedRandomAtZero(360));
     this->state.lastPrim->state.slots[2].alphaB = 0;
     this->state.lastPrim->state.slots[2].distance = 5.3f;
     this->state.lastPrim->state.slots[2].riseAngle = 46;
@@ -17994,7 +18010,7 @@ void CRagEffect::HealRingSparkle(const char* name, char type) {
     this->state.lastPrim->state.slots[3].process = 0;
     this->state.lastPrim->state.slots[3].fullDisplayAngle = 360;
     this->state.lastPrim->state.slots[3].maxHeight = 10.0f;
-    this->state.lastPrim->state.slots[3].rotStart = static_cast<std::int16_t>(ClampedRandom(360));
+    this->state.lastPrim->state.slots[3].rotStart = static_cast<std::int16_t>(ClampedRandomAtZero(360));
     this->state.lastPrim->state.slots[3].alphaB = 0;
     this->state.lastPrim->state.slots[3].distance = 5.4f;
     this->state.lastPrim->state.slots[3].riseAngle = 44;
@@ -18020,15 +18036,15 @@ void CRagEffect::HealRingSparkle(const char* name, char type) {
     for (int i = 0; i < 4; ++i) {
       this->state.lastPrim->state.slots[i].life = 1;
       this->state.lastPrim->state.slots[i].process = 0;
-      this->state.lastPrim->state.slots[i].distance = static_cast<float>(ClampedRandom(10)) * 0.1f + 2.4f;
+      this->state.lastPrim->state.slots[i].distance = static_cast<float>(ClampedRandomAtZero(10)) * 0.1f + 2.4f;
       this->state.lastPrim->state.slots[i].height[8] = 0.0f;
       this->state.lastPrim->state.slots[i].alphaB = 0;
-      this->state.lastPrim->state.slots[i].vecBNow.x = static_cast<float>(ClampedRandom(13)) + this->render.position.x - 6.0f;
-      this->state.lastPrim->state.slots[i].vecBNow.z = static_cast<float>(ClampedRandom(13)) + this->render.position.z - 6.0f;
+      this->state.lastPrim->state.slots[i].vecBNow.x = static_cast<float>(ClampedRandomAtZero(13)) + this->render.position.x - 6.0f;
+      this->state.lastPrim->state.slots[i].vecBNow.z = static_cast<float>(ClampedRandomAtZero(13)) + this->render.position.z - 6.0f;
       this->state.lastPrim->state.slots[i].vecBNow.y = this->render.position.y;
       this->state.lastPrim->state.slots[i].rotStart = 0;
       this->state.lastPrim->state.slots[i].height[1] = 0.0f;
-      this->state.lastPrim->state.slots[i].height[2] = static_cast<float>(ClampedRandom(40)) * 0.01f + 0.4f;
+      this->state.lastPrim->state.slots[i].height[2] = static_cast<float>(ClampedRandomAtZero(40)) * 0.01f + 0.4f;
       this->state.lastPrim->state.slots[i].fullDisplayAngle = 0;
       this->state.lastPrim->state.slots[i].flag1[0] = 0;
       this->state.lastPrim->state.slots[i].flag1[1] = 1;
