@@ -454,7 +454,10 @@ namespace {
     std::uint32_t location;
     std::uint32_t wearState;
     unsigned char refine;
-    std::uint32_t cards[4];
+    std::uint32_t card0;
+    std::uint32_t card1;
+    std::uint32_t card2;
+    std::uint32_t card3;
     std::uint32_t expireTime;
     std::uint16_t bindOnEquip;
     std::uint16_t sprite;
@@ -462,7 +465,6 @@ namespace {
     bool damaged;
     bool placeEtcTab;
     StoreItemOption options[5];
-    unsigned char grade;
   };
 
   static_assert(sizeof(ItemStoreListHeader) == 0x1C);
@@ -496,7 +498,10 @@ namespace {
     entry.location = record.location;
     entry.wearState = record.wearState;
     entry.refine = record.refine;
-    std::memcpy(entry.cards, record.cards, sizeof(entry.cards));
+    entry.card0 = record.cards[0];
+    entry.card1 = record.cards[1];
+    entry.card2 = record.cards[2];
+    entry.card3 = record.cards[3];
     entry.expireTime = record.expireTime;
     entry.bindOnEquip = record.bindOnEquip;
     entry.sprite = record.sprite;
@@ -513,7 +518,10 @@ namespace {
     entry.location = record.location;
     entry.wearState = record.wearState;
     entry.refine = record.refine;
-    std::memcpy(entry.cards, record.cards, sizeof(entry.cards));
+    entry.card0 = record.cards[0];
+    entry.card1 = record.cards[1];
+    entry.card2 = record.cards[2];
+    entry.card3 = record.cards[3];
     entry.expireTime = record.expireTime;
     entry.bindOnEquip = record.bindOnEquip;
     entry.sprite = record.sprite;
@@ -1070,18 +1078,21 @@ void CGameMode::ReceiveItem1738EquipList(const unsigned char* data) {
 
   const int count = (packet->length - sizeof(ItemStoreListHeader)) / sizeof(StoreEquipRecord);
   const StoreEquipRecord* records = reinterpret_cast<const StoreEquipRecord*>(packet + 1);
-  StoreItemOption options[5] = {0};
   for (int i = 0; i < count; ++i) {
     const StoreEquipRecord* record = &records[i];
     StoreEquipEntry entry;
     ReadStoreEquipEntry(entry, *record);
+    StoreItemOption options[5] = {0};
     ITEM_INFO item;
     item.identity[0] = entry.type;
     item.identity[1] = entry.index;
     item.identity[2] = entry.location;
     item.identity[3] = entry.wearState;
     item.quantity = 1;
-    std::memcpy(item.cards, entry.cards, sizeof(entry.cards));
+    item.cards[0] = entry.card0;
+    item.cards[1] = entry.card1;
+    item.cards[2] = entry.card2;
+    item.cards[3] = entry.card3;
     item.SetItemId(entry.itemId);
     item.identified = entry.identified;
     item.damaged = entry.damaged;
@@ -1116,13 +1127,18 @@ void CGameMode::ReceiveItem1738EquipListOptions(const unsigned char* data) {
     const StoreEquipOptionRecord* record = records;
     StoreEquipEntry entry;
     ReadStoreEquipEntry(entry, *record);
+    StoreItemOption options[5];
+    std::memcpy(options, record->options, sizeof(options));
     ITEM_INFO item;
     item.identity[0] = entry.type;
     item.identity[1] = entry.index;
     item.identity[2] = entry.location;
     item.identity[3] = entry.wearState;
     item.quantity = 1;
-    std::memcpy(item.cards, entry.cards, sizeof(entry.cards));
+    item.cards[0] = entry.card0;
+    item.cards[1] = entry.card1;
+    item.cards[2] = entry.card2;
+    item.cards[3] = entry.card3;
     item.SetItemId(entry.itemId);
     item.identified = entry.identified;
     item.damaged = entry.damaged;
@@ -1131,9 +1147,9 @@ void CGameMode::ReceiveItem1738EquipListOptions(const unsigned char* data) {
     item.bindOnEquip = entry.bindOnEquip;
     item.sprite = entry.sprite;
     item.flags[0] = entry.placeEtcTab;
-    item.optionCount = CountStoreItemOptions(entry.options);
+    item.optionCount = CountStoreItemOptions(options);
     for (int index = 0; index < item.optionCount; ++index) {
-      item.options[index] = entry.options[index];
+      item.options[index] = options[index];
     }
     g_session.AddCartItem(item, 1);
   }
@@ -2171,18 +2187,21 @@ __declspec(noinline) void CGameMode::ReceiveItem1740EquipList(const unsigned cha
   const auto* p = reinterpret_cast<const PacketLengthHeader*>(packet);
   const int count = (p->length - 4) / sizeof(StoreEquipRecord);
   const StoreEquipRecord* records = reinterpret_cast<const StoreEquipRecord*>(p + 1);
-  StoreItemOption options[5] = {0};
   for (int i = 0; i < count; ++i) {
     const StoreEquipRecord* record = &records[i];
     StoreEquipEntry entry;
     ReadStoreEquipEntry(entry, *record);
+    StoreItemOption options[5] = {0};
     ITEM_INFO item;
     item.identity[0] = entry.type;
     item.identity[1] = entry.index;
     item.identity[2] = entry.location;
     item.identity[3] = entry.wearState;
     item.quantity = 1;
-    std::memcpy(item.cards, entry.cards, sizeof(entry.cards));
+    item.cards[0] = entry.card0;
+    item.cards[1] = entry.card1;
+    item.cards[2] = entry.card2;
+    item.cards[3] = entry.card3;
     item.SetItemId(entry.itemId);
     item.identified = entry.identified;
     item.damaged = entry.damaged;
@@ -2212,13 +2231,18 @@ void CGameMode::ReceiveItem1740EquipListOptions(const unsigned char* packet) {
     const StoreEquipOptionRecord* record = &records[i];
     StoreEquipEntry entry;
     ReadStoreEquipEntry(entry, *record);
+    StoreItemOption options[5];
+    std::memcpy(options, record->options, sizeof(options));
     ITEM_INFO item;
     item.identity[0] = entry.type;
     item.identity[1] = entry.index;
     item.identity[2] = entry.location;
     item.identity[3] = entry.wearState;
     item.quantity = 1;
-    std::memcpy(item.cards, entry.cards, sizeof(entry.cards));
+    item.cards[0] = entry.card0;
+    item.cards[1] = entry.card1;
+    item.cards[2] = entry.card2;
+    item.cards[3] = entry.card3;
     item.SetItemId(entry.itemId);
     item.identified = entry.identified;
     item.damaged = entry.damaged;
@@ -2228,9 +2252,9 @@ void CGameMode::ReceiveItem1740EquipListOptions(const unsigned char* packet) {
     item.sprite = entry.sprite;
     item.flags[0] = entry.placeEtcTab;
     item.grade = 0;
-    item.optionCount = CountStoreItemOptions(entry.options);
+    item.optionCount = CountStoreItemOptions(options);
     for (int index = 0; index < item.optionCount; ++index) {
-      item.options[index] = entry.options[index];
+      item.options[index] = options[index];
     }
     g_session.AddMerchantShopItem(item);
   }
@@ -9249,8 +9273,26 @@ namespace {
 
   static_assert(sizeof(EquipWindowGradeRecord) == 0x44);
 
+  struct StoreEquipGradeEntry {
+    std::int16_t index;
+    int itemId;
+    unsigned char type;
+    std::uint32_t location;
+    std::uint32_t wearState;
+    unsigned char refine;
+    std::uint32_t cards[4];
+    std::uint32_t expireTime;
+    std::uint16_t bindOnEquip;
+    std::uint16_t sprite;
+    bool identified;
+    bool damaged;
+    bool placeEtcTab;
+    StoreItemOption options[5];
+    unsigned char grade;
+  };
+
   // INLINED
-  __forceinline void ReadStoreEquipEntry(StoreEquipEntry& entry, const EquipWindowGradeRecord& record) {
+  __forceinline void ReadStoreEquipEntry(StoreEquipGradeEntry& entry, const EquipWindowGradeRecord& record) {
     entry.index = record.index;
     entry.itemId = record.itemId;
     entry.type = record.type;
@@ -9275,7 +9317,10 @@ namespace {
     item.identity[2] = record.location;
     item.identity[3] = record.wearState;
     item.quantity = 1;
-    std::memcpy(item.cards, record.cards, sizeof(record.cards));
+    item.cards[0] = record.card0;
+    item.cards[1] = record.card1;
+    item.cards[2] = record.card2;
+    item.cards[3] = record.card3;
     item.SetItemId(record.itemId);
     item.identified = record.identified;
     item.damaged = record.damaged;
@@ -9292,7 +9337,7 @@ namespace {
   }
 
   // INLINED
-  __forceinline void FillEquipWindowGradeItem(ITEM_INFO& item, const StoreEquipEntry& record, const StoreItemOption* options) {
+  __forceinline void FillEquipWindowGradeItem(ITEM_INFO& item, const StoreEquipGradeEntry& record, const StoreItemOption* options) {
     item.identity[0] = record.type;
     item.identity[1] = record.index;
     item.identity[2] = record.location;
@@ -9460,7 +9505,7 @@ void CGameMode::ReceiveEquipWindowMicroscope6(const unsigned char* packet) {
   const EquipWindowGradeRecord* records = reinterpret_cast<const EquipWindowGradeRecord*>(p + 1);
   for (int index = 0; index < count; ++index) {
     const EquipWindowGradeRecord* record = &records[index];
-    StoreEquipEntry entry;
+    StoreEquipGradeEntry entry;
     ReadStoreEquipEntry(entry, *record);
     StoreItemOption options[5];
     std::memcpy(options, record->options, sizeof(options));
@@ -9537,10 +9582,10 @@ void CGameMode::ReceiveInventoryEquipList(const unsigned char* packet) {
   const int length = p->length;
   const int count = static_cast<unsigned>(length - 4) / 41u;
   const StoreEquipRecord* record = reinterpret_cast<const StoreEquipRecord*>(p + 1);
-  StoreItemOption options[5] = {0};
   for (int index = 0; index < count; ++index, ++record) {
     StoreEquipEntry entry;
     ReadStoreEquipEntry(entry, *record);
+    StoreItemOption options[5] = {0};
     ITEM_INFO item;
     FillEquipWindowItem(item, entry, options);
     AddInventoryEquipItem(item);
@@ -9587,7 +9632,7 @@ void CGameMode::ReceiveInventoryEquipList3(const unsigned char* packet) {
   const EquipWindowGradeRecord* records = reinterpret_cast<const EquipWindowGradeRecord*>(p + 1);
   for (int index = 0; index < count; ++index) {
     const EquipWindowGradeRecord* record = &records[index];
-    StoreEquipEntry entry;
+    StoreEquipGradeEntry entry;
     ReadStoreEquipEntry(entry, *record);
     StoreItemOption options[5];
     std::memcpy(options, record->options, sizeof(options));
