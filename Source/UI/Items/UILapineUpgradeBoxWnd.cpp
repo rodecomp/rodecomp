@@ -377,8 +377,8 @@ int UILapineUpgradeBox_IngredientListWnd::SendMsg(UIWindow* sender, int message,
       } else {
         this->MoveScrollChild(*it, 0, y);
         (*it)->Invalidate();
-        ++it;
         y += 0x1E;
+        ++it;
       }
     }
     this->UpdateScrollRange();
