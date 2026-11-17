@@ -653,13 +653,6 @@ void UINewSkillListWnd::InitTabs() {
   case JT_HYPER_NOVICE:
     jobKey = 23;
     break;
-  case JT_GUNSLINGER:
-  case JT_REBELLION:
-  case JT_GUNSLINGER_B:
-  case JT_REBELLION_B:
-  case JT_NIGHT_WATCH:
-    jobKey = 24;
-    break;
   case JT_NINJA:
   case JT_KAGEROU:
   case JT_OBORO:
@@ -669,6 +662,13 @@ void UINewSkillListWnd::InitTabs() {
   case JT_SHINKIRO:
   case JT_SHIRANUI:
     jobKey = 25;
+    break;
+  case JT_GUNSLINGER:
+  case JT_REBELLION:
+  case JT_GUNSLINGER_B:
+  case JT_REBELLION_B:
+  case JT_NIGHT_WATCH:
+    jobKey = 24;
     break;
   case JT_TAEKWON:
   case JT_TAEKWON_B:
@@ -891,9 +891,9 @@ void UINewSkillListWnd::Paint() {
   this->DrawBitmap(this->geometry.width - bitmap->image.width, 0, bitmap, false);
 
   int count = (this->geometry.width - left - 24) / 5 + ((this->geometry.width - left - 24) % 5 != 0);
-  for (int i = 0, x = left + 12; i < count; ++i, x += 5) {
+  for (int i = 0; i < count; ++i) {
     bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\skill_upbar_mid.bmp")));
-    this->DrawBitmap(x, 0, bitmap, false);
+    this->DrawBitmap(left + 12 + i * 5, 0, bitmap, false);
   }
 
   bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\skill_botbar_left.bmp")));
@@ -902,10 +902,9 @@ void UINewSkillListWnd::Paint() {
   this->DrawBitmap(this->geometry.width - bitmap->image.width, this->geometry.height - bitmap->image.height, bitmap, false);
 
   bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\skill_botbar_mid.bmp")));
-  int span = this->geometry.width - left - 24;
-  count = span / bitmap->image.width + (span % bitmap->image.width != 0);
-  for (int i = 0, x = left + 12; i < count; ++i, x += 5) {
-    this->DrawBitmap(x, this->geometry.height - bitmap->image.height, bitmap, false);
+  count = (this->geometry.width - left - 24) / bitmap->image.width + ((this->geometry.width - left - 24) % bitmap->image.width != 0);
+  for (int i = 0; i < count; ++i) {
+    this->DrawBitmap(left + 12 + i * 5, this->geometry.height - bitmap->image.height, bitmap, false);
   }
 
   this->DrawTextAt(41, 6, LookupMessage(MSI_SKILLLIST), 0, 0, 12, 0xFFFFFF, 0, 0);
@@ -915,17 +914,20 @@ void UINewSkillListWnd::Paint() {
   char text[80];
   std::memset(text, 0, sizeof(text));
   if (g_session.m_simplifiedSkillList != 0) {
-    std::sprintf(text, LookupMessage(MSI_SKILLPOINT), points);
+    const char* format = LookupMessage(MSI_SKILLPOINT);
+    std::sprintf(text, format, points);
     this->TextWidth(text, 0, 0, 12, 0, 0);
     this->DrawTextAt(30, this->geometry.height - 23, text, 0, 0, 12, 0, 0, 0);
     this->DrawSkillList();
   } else {
     const int total = g_session.m_skillPoint;
     if (points < total) {
-      StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%s^0000ff%d^000000(^ff0000%d^000000) / %d", LookupMessage(MSI_REFUSE_CHANGE_PASSWD_SITE), points, total - points,
-                   total);
+      const int remaining = total - points;
+      const char* label = LookupMessage(MSI_REFUSE_CHANGE_PASSWD_SITE);
+      StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%s^0000ff%d^000000(^ff0000%d^000000) / %d", label, points, remaining, total);
     } else {
-      StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%s%d", LookupMessage(MSI_REFUSE_CHANGE_PASSWD_SITE), total);
+      const char* label = LookupMessage(MSI_REFUSE_CHANGE_PASSWD_SITE);
+      StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%s%d", label, total);
     }
     this->DrawWrappedFormattedText(80, this->geometry.height - 23, std::string(text), 0, 0, 0, 0, 12, 0, 0);
     this->DrawSkillTree();
