@@ -131,7 +131,7 @@ void UIMakeTargetProcessWnd::Paint() {
     break;
   default: {
     const ITEM_INFO* material = this->materials;
-    for (int x = 8; x < 104; x += 32, ++material) {
+    for (int x = 8; x < 104; ++material, x += 32) {
       auto* bar = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\btnbar_right2.bmp")));
       this->DrawItemSlotFrame(x - 4, this->geometry.height - bar->image.height - 32);
       if (material->identity[1] > 0) {
@@ -152,9 +152,8 @@ void UIMakeTargetProcessWnd::Paint() {
   this->DrawShadowedText(requiredWidth + 16, 22, LookupMessage(MSI_REQUIRE_FOR_MAKE_TARGET), 0, 0, 0xFFFFFF, 0, 12, 0);
 
   const std::vector<const char*>& lines = FindMetalProcessItems(this->makeType);
-  int y = 42;
-  for (unsigned int index = 0; index < lines.size(); ++index, y += 20) {
-    this->DrawTextAt(16, y, lines[index], 0, 0, 12, 0, 0, 0);
+  for (unsigned int index = 0; index < lines.size(); ++index) {
+    this->DrawTextAt(16, 42 + 20 * index, lines[index], 0, 0, 12, 0, 0, 0);
   }
 }
 
