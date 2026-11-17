@@ -224,21 +224,21 @@ void UIRodexContentsWnd::OnLBtnDown(int x, int y) {
 void UIRodexContentsWnd::OnMouseHover(int x, int y) {
   ITEM_INFO item = this->GetItemAtPoint(x, y);
   if (std::atoi(item.itemId.c_str()) != 0) {
-    int tooltipX = this->m_itemIndex * 34 + 30;
     int tooltipY = 290;
+    int tooltipX = this->m_itemIndex * 34 + 30;
     this->ToScreen(tooltipX, tooltipY);
     if (item.identified == 1 && item.optionCount != 0) {
       CMode* gameMode = g_modeMgr.currentMode;
       std::uint32_t color = g_session.GetItemNameColor(item);
-      int screenX = tooltipX;
       int screenY = tooltipY;
+      int screenX = tooltipX;
       gameMode->ShowTooltip(FormatOwnedString(LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), item.DisplayName(0).c_str(), item.optionCount).c_str(), screenX, screenY,
                     color, 0, 1);
     } else {
       CMode* gameMode = g_modeMgr.currentMode;
       std::uint32_t color = g_session.GetItemNameColor(item);
-      int screenX = tooltipX;
       int screenY = tooltipY;
+      int screenX = tooltipX;
       gameMode->ShowTooltip(item.DisplayName(0).c_str(), screenX, screenY, color, 0, 1);
     }
   }
