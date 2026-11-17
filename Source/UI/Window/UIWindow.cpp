@@ -1931,36 +1931,36 @@ static __forceinline bool FitSpriteFrame(const ActionFrame* frame, const CSprRes
     return false;
   }
 
-  const SpriteFrameCell& first = frame->Cell(0);
-  if (first.image == -1) {
+  const SpriteFrameCell* first = &frame->Cell(0);
+  if (!first || first->image == -1) {
     return false;
   }
 
-  const SpriteRleImage* image = sprite->images[first.imageType][first.image];
+  const SpriteRleImage* image = sprite->images[first->imageType][first->image];
   if (!image) {
     return false;
   }
 
-  int left = static_cast<int>(static_cast<float>(first.x) * first.scaleX);
-  int top = static_cast<int>(static_cast<float>(first.y) * first.scaleY);
-  int right = static_cast<int>(static_cast<float>(image->width) * first.scaleX) + left;
-  int bottom = static_cast<int>(static_cast<float>(image->height) * first.scaleY) + top;
+  int left = static_cast<int>(static_cast<float>(first->x) * first->scaleX);
+  int top = static_cast<int>(static_cast<float>(first->y) * first->scaleY);
+  int right = static_cast<int>(static_cast<float>(image->width) * first->scaleX) + left;
+  int bottom = static_cast<int>(static_cast<float>(image->height) * first->scaleY) + top;
 
   for (int index = 1; index < frame->cellCount; ++index) {
-    const SpriteFrameCell& cell = frame->Cell(index);
-    if (cell.image == -1) {
+    const SpriteFrameCell* cell = &frame->Cell(index);
+    if (!cell || cell->image == -1) {
       continue;
     }
 
-    const SpriteRleImage* part = sprite->images[cell.imageType][cell.image];
+    const SpriteRleImage* part = sprite->images[cell->imageType][cell->image];
     if (!part) {
       continue;
     }
 
-    const int cellX = static_cast<int>(static_cast<float>(cell.x) * cell.scaleX);
-    const int cellWidth = static_cast<int>(static_cast<float>(part->width) * cell.scaleX);
-    const int cellY = static_cast<int>(static_cast<float>(cell.y) * cell.scaleY);
-    const int cellHeight = static_cast<int>(static_cast<float>(part->height) * cell.scaleY);
+    const int cellX = static_cast<int>(static_cast<float>(cell->x) * cell->scaleX);
+    const int cellWidth = static_cast<int>(static_cast<float>(part->width) * cell->scaleX);
+    const int cellY = static_cast<int>(static_cast<float>(cell->y) * cell->scaleY);
+    const int cellHeight = static_cast<int>(static_cast<float>(part->height) * cell->scaleY);
     if (left > cellX) {
       left = cellX;
     }
