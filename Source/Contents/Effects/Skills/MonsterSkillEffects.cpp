@@ -4341,9 +4341,12 @@ void CDancingKnifeEffect::OnProcess() {
     CEZ2STRParticle* emitter = *it;
     if (IsEmitterAlive(emitter) == true) {
       if (emitter) {
-        emitter->position.x = this->position[0] + 0.0f;
-        emitter->position.y = this->position[1] - 12.0f;
-        emitter->position.z = this->position[2] + 0.0f;
+        const float x = this->position[0] + 0.0f;
+        const float y = this->position[1] - 12.0f;
+        const float z = this->position[2] + 0.0f;
+        emitter->position.x = x;
+        emitter->position.y = y;
+        emitter->position.z = z;
         emitter->Process(0.0f, 0.0f, 0.0f);
       }
       ++it;
@@ -4360,9 +4363,12 @@ void CDancingKnifeEffect::OnProcess() {
   for (auto it = this->secondStrikeEmitters.begin(); it != this->secondStrikeEmitters.end(); ++it) {
     CEZ2STRParticle* emitter = *it;
     if (emitter) {
-      emitter->position.x = this->position[0] + 0.0f;
-      emitter->position.y = this->position[1] - 12.0f;
-      emitter->position.z = this->position[2] + 0.0f;
+      const float x = this->position[0] + 0.0f;
+      const float y = this->position[1] - 12.0f;
+      const float z = this->position[2] + 0.0f;
+      emitter->position.x = x;
+      emitter->position.y = y;
+      emitter->position.z = z;
       emitter->Process(0.0f, 0.0f, 0.0f);
     }
   }
