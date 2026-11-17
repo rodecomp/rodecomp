@@ -10227,11 +10227,11 @@ bool UIItemStoreFindWnd::FilterByName(std::string query) {
   for (auto it = this->items.begin(); it != this->items.end();) {
     ITEM_INFO item = *it;
     const std::string name = item.displayName;
-    auto next = std::next(it);
     if (!_mbsstr(reinterpret_cast<const unsigned char*>(name.c_str()), reinterpret_cast<const unsigned char*>(query.c_str()))) {
-      this->items.erase(it);
+      it = this->items.erase(it);
+    } else {
+      ++it;
     }
-    it = next;
   }
   return true;
 }
@@ -10343,8 +10343,8 @@ void UIMerchantItemPurchaseMSGWnd::SetPurchase(int value, int amount) {
   this->purchaseIndex = value;
   this->purchaseAmount = amount;
 
-  int total = 0;
   const int count = g_session.GetNumMerchantHopeToSellItems();
+  int total = 0;
   for (int i = 0; i < count; ++i) {
     ITEM_INFO item;
     item = g_session.GetMerchantHopeToSellItemInfoBySequence(i);
