@@ -8,6 +8,8 @@ enum ITEMTYPE : int {
   TYPE_EVENT = 3,
   TYPE_ARMOR = 4,
   TYPE_WEAPON = 5,
+  TYPE_CARD = 6,
+  TYPE_PETEGG = 7,
   TYPE_BOW = 8,
   TYPE_BOTHHAND = 9,
   TYPE_ARROW = 10,

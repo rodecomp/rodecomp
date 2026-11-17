@@ -378,7 +378,7 @@ void UIChooseWarpWnd::OnCreate(int width, int height) {
   this->m_list->backgroundRed = 240;
   this->m_list->backgroundGreen = 240;
   this->m_list->backgroundBlue = 240;
-  this->m_list->SetId(184);
+  this->m_list->SetId(ID_OK);
   this->AddChild(this->m_list);
 
   const std::string prefix("유저인터페이스\\");
@@ -408,7 +408,7 @@ void UIChooseWnd::OnCreate(int width, int height) {
   this->m_list->backgroundRed = 240;
   this->m_list->backgroundGreen = 240;
   this->m_list->backgroundBlue = 240;
-  this->m_list->SetId(184);
+  this->m_list->SetId(ID_OK);
   this->AddChild(this->m_list);
   this->m_message0 = 184;
 
@@ -418,7 +418,7 @@ void UIChooseWnd::OnCreate(int width, int height) {
   this->m_okButton->SetBitmap("유저인터페이스\\btn_ok_b.bmp", 2, 0);
   this->m_okButton->SetSize(this->m_okButton->BitmapWidth(), this->m_okButton->BitmapHeight());
   this->m_okButton->Move(this->geometry.width - 92, this->geometry.height - 24);
-  this->m_okButton->SetId(184);
+  this->m_okButton->SetId(ID_OK);
   this->AddChild(this->m_okButton);
 
   this->m_cancelButton = new UIBitmapButton();
@@ -427,7 +427,7 @@ void UIChooseWnd::OnCreate(int width, int height) {
   this->m_cancelButton->SetBitmap("유저인터페이스\\btn_cancel_b.bmp", 2, 0);
   this->m_cancelButton->SetSize(this->m_cancelButton->BitmapWidth(), this->m_cancelButton->BitmapHeight());
   this->m_cancelButton->Move(this->geometry.width - 46, this->geometry.height - 24);
-  this->m_cancelButton->SetId(185);
+  this->m_cancelButton->SetId(ID_CANCEL);
   this->AddChild(this->m_cancelButton);
 }
 
@@ -440,7 +440,7 @@ void UIDisconnectedServerMsgWnd::OnCreate(int width, int height) {
   button->SetBitmap("유저인터페이스\\btn_ok_b.bmp", 2, 0);
   button->SetSize(button->BitmapWidth(), button->BitmapHeight());
   button->Move(234, 96);
-  button->SetId(184);
+  button->SetId(ID_OK);
   this->AddChild(button);
   this->m_message0 = 184;
 
@@ -478,7 +478,7 @@ void UIEmailAddressWnd::OnCreate(int, int) {
     button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
     button->SetSize(button->BitmapWidth(), button->BitmapHeight());
     button->Move(x, y);
-    button->SetId(184);
+    button->SetId(ID_OK);
     this->AddChild(button);
   }
   this->m_message0 = 184;
@@ -3362,7 +3362,7 @@ void UIEquipWnd::OnCreate(int width, int height) {
       this->m_viewButton->SetBitmap((prefix + "btn_off" + ".bmp").c_str(), 2, 0);
       this->m_viewButton->SetSize(this->m_viewButton->BitmapWidth(), this->m_viewButton->BitmapHeight());
       this->m_viewButton->Move(x, IsEquipViewHidden() * 230 + bottom - 40);
-      this->m_viewButton->SetId(248);
+      this->m_viewButton->SetId(ID_EQUIP_OPTION_OFF);
 
       const char* tooltip = nullptr;
       if (StateFlag04(g_session.m_jobFlags)) {
@@ -3405,7 +3405,7 @@ void UIEquipWnd::OnCreate(int width, int height) {
       this->m_otherButton->SetBitmap((prefix + "btn_items_on" + ".bmp").c_str(), 2, 0);
       this->m_otherButton->SetSize(this->m_otherButton->BitmapWidth(), this->m_otherButton->BitmapHeight());
       this->m_otherButton->Move(x, bottom + (g_session.replayPacketMode > 0 ? -60 : 170));
-      this->m_otherButton->SetId(249);
+      this->m_otherButton->SetId(ID_EQUIP_OPTION_OPEN);
       this->m_otherButton->SetTooltip(g_session.replayPacketMode > 0 ? LookupMessage(MSI_OPENCARTWINDOW) : "");
       this->AddChild(this->m_otherButton);
     }
@@ -3470,7 +3470,7 @@ void UIEquipWnd::OnCreate(int width, int height) {
     apply->SetBitmap("유저인터페이스\\btn_apply_b.bmp", 2, 0);
     apply->SetSize(apply->BitmapWidth(), apply->BitmapHeight());
     apply->Move(160, 167);
-    apply->SetId(271);
+    apply->SetId(ID_APPLY);
     apply->Enable(0);
     this->AddChild(apply);
 
@@ -3481,7 +3481,7 @@ void UIEquipWnd::OnCreate(int width, int height) {
     close->SetBitmap("유저인터페이스\\btn_close_b.bmp", 2, 0);
     close->SetSize(close->BitmapWidth(), close->BitmapHeight());
     close->Move(220, 167);
-    close->SetId(201);
+    close->SetId(ID_CLOSE);
     close->Enable(0);
     this->AddChild(close);
 
@@ -4034,7 +4034,7 @@ void UIItemCollectionWnd::OnCreate(int width, int height) {
   this->m_helpButton->SetBitmap("유저인터페이스\\basic_interface\\btn_help_disabled.bmp", 3, 0);
   this->m_helpButton->SetSize(this->m_helpButton->BitmapWidth(), this->m_helpButton->BitmapHeight());
   this->m_helpButton->Move(10, 10);
-  this->m_helpButton->SetId(343);
+  this->m_helpButton->SetId(ID_HELP);
   this->m_helpButton->SetTooltip(LookupMessage(MSI_PROBABILITY_TITLE));
   this->AddChild(this->m_helpButton);
 }
@@ -4167,7 +4167,7 @@ void UISkillDescribeWnd::OnCreate(int width, int height) {
   this->m_delayButton->SetBitmap("유저인터페이스\\skilldelayinfo\\btn_sd_pressed.bmp", 2, 0);
   this->m_delayButton->SetSize(this->m_delayButton->BitmapWidth(), this->m_delayButton->BitmapHeight());
   this->m_delayButton->Move(this->geometry.width - this->m_delayButton->BitmapWidth() - 4, 18);
-  this->m_delayButton->SetId(343);
+  this->m_delayButton->SetId(ID_HELP);
   this->m_delayButton->SetTooltip(LookupMessage(4254));
   this->m_delayButton->Enable(0);
   this->AddChild(this->m_delayButton);
@@ -4249,7 +4249,7 @@ void UISkillNameChangeWnd::OnCreate(int, int) {
     button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
     button->SetSize(button->BitmapWidth(), button->BitmapHeight());
     button->Move(x, y);
-    button->SetId(184);
+    button->SetId(ID_OK);
     this->AddChild(button);
   }
   this->m_skillId = -1;
@@ -4269,7 +4269,7 @@ void UIToolTipWnd::OnCreate(int width, int height) {
     listHeight = 30;
   }
   this->m_list->Configure(12, 22, listWidth, listHeight, 1);
-  this->m_list->SetId(184);
+  this->m_list->SetId(ID_OK);
   this->m_list->AddLine("__________");
   this->m_list->AddLine("**********");
   this->AddChild(this->m_list);
@@ -7845,7 +7845,7 @@ void UINpcEditDialogWnd::OnCreate(int, int) {
     button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
     button->SetSize(button->BitmapWidth(), button->BitmapHeight());
     button->Move(x, y);
-    button->SetId(184);
+    button->SetId(ID_OK);
     this->AddChild(button);
   }
   this->npcId = -1;
@@ -7876,7 +7876,7 @@ void UINpcTextEditDialogWnd::OnCreate(int, int) {
     button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
     button->SetSize(button->BitmapWidth(), button->BitmapHeight());
     button->Move(x, y);
-    button->SetId(184);
+    button->SetId(ID_OK);
     this->AddChild(button);
   }
   this->npcId = -1;
@@ -7936,7 +7936,7 @@ void UIWaitWnd::OnCreate(int width, int height) {
   this->m_button->SetBitmap("유저인터페이스\\btn_cancel_b.bmp", 2, 0);
   this->m_button->SetSize(this->m_button->BitmapWidth(), this->m_button->BitmapHeight());
   this->m_button->Move((width - this->m_button->BitmapWidth()) / 2, 50);
-  this->m_button->SetId(185);
+  this->m_button->SetId(ID_CANCEL);
   this->m_button->SetTooltip("");
   this->AddChild(this->m_button);
 
@@ -8481,7 +8481,7 @@ void UIPasswordWnd::OnCreate(int, int) {
     button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
     button->SetSize(button->BitmapWidth(), button->BitmapHeight());
     button->Move(x, y);
-    button->SetId(184);
+    button->SetId(ID_OK);
     this->AddChild(button);
   }
   this->m_message0 = 184;
@@ -9410,7 +9410,7 @@ void UIWhisperWnd::OnCreate(int, int) {
   this->m_chatHistory = history;
   history->Configure(0, 0, this->geometry.width - 2, this->geometry.height - 38, 1);
   this->m_chatHistory->Move(1, 17);
-  this->m_chatHistory->SetId(184);
+  this->m_chatHistory->SetId(ID_OK);
   this->m_chatHistory->backgroundRed = 255;
   this->m_chatHistory->backgroundGreen = 0;
   this->m_chatHistory->backgroundBlue = 255;
@@ -9707,7 +9707,7 @@ void UIAutoMessageWnd::OnCreate(int, int) {
     button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
     button->SetSize(button->BitmapWidth(), button->BitmapHeight());
     button->Move(x, y);
-    button->SetId(184);
+    button->SetId(ID_OK);
     this->AddChild(button);
   }
   this->m_message0 = 184;
@@ -10562,7 +10562,7 @@ void UITipboxWnd::OnCreate(int width, int) {
   checkBox->SetImages("유저인터페이스\\tipbox\\checkBox_check.bmp", "유저인터페이스\\tipbox\\checkBox.bmp", LookupMessage(MSI_ZEROCHATWND_RESIZE));
   checkBox->Move(9, 347);
   checkBox->SetChecked(this->showAtStartup);
-  checkBox->SetId(213);
+  checkBox->SetId(ID_CHECK);
   this->AddChild(checkBox);
 
   UIBmpTextButton* closeButton = new UIBmpTextButton();
@@ -10572,7 +10572,7 @@ void UITipboxWnd::OnCreate(int width, int) {
   closeButton->SetSize(closeButton->BitmapWidth(), closeButton->BitmapHeight());
   closeButton->SetText(LookupMessage(MSI_BOOK_CLOSE));
   closeButton->Move(415, 341);
-  closeButton->SetId(201);
+  closeButton->SetId(ID_CLOSE);
   this->AddChild(closeButton);
 
   this->searchEdit = new UIEditCtrl4();
@@ -10593,7 +10593,7 @@ void UITipboxWnd::OnCreate(int width, int) {
   this->previousButton->SetBitmap("유저인터페이스\\tipbox\\bt_arrowL_off.bmp", 3, 0);
   this->previousButton->SetSize(this->previousButton->BitmapWidth(), this->previousButton->BitmapHeight());
   this->previousButton->Move(415, 319);
-  this->previousButton->SetId(246);
+  this->previousButton->SetId(ID_PREV);
   this->AddChild(this->previousButton);
 
   this->nextButton = new UIBitmapButton();
@@ -10603,7 +10603,7 @@ void UITipboxWnd::OnCreate(int width, int) {
   this->nextButton->SetBitmap("유저인터페이스\\tipbox\\bt_arrowR_off.bmp", 3, 0);
   this->nextButton->SetSize(this->nextButton->BitmapWidth(), this->nextButton->BitmapHeight());
   this->nextButton->Move(462, 319);
-  this->nextButton->SetId(218);
+  this->nextButton->SetId(ID_NEXT);
   this->AddChild(this->nextButton);
 
   this->searchResults = new UIListBoxID();
@@ -10611,7 +10611,7 @@ void UITipboxWnd::OnCreate(int width, int) {
   this->searchResults->backgroundColor[0] = 240;
   this->searchResults->backgroundColor[1] = 240;
   this->searchResults->backgroundColor[2] = 240;
-  this->searchResults->SetId(184);
+  this->searchResults->SetId(ID_OK);
   this->AddChild(this->searchResults);
   this->searchResults->Show(0);
 

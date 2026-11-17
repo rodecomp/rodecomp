@@ -1617,7 +1617,7 @@ void UIMakeCharWnd::OnCreate(int, int) {
   this->m_nameEdit->SetSize(this->m_nameEdit->geometry.width, this->m_nameEdit->geometry.height);
   this->m_nameEdit->Move(40, 142);
   this->m_nameEdit->maximum = 24;
-  this->m_nameEdit->SetId(184);
+  this->m_nameEdit->SetId(ID_OK);
   this->AddChild(this->m_nameEdit);
   this->InitHairControls();
   g_windowMgr.SetFocus(this->m_nameEdit);
@@ -1657,13 +1657,13 @@ void UIChatRoomWnd::OnCreate(int, int) {
   this->history = history;
   history->Configure(0, 0, this->geometry.width - this->geometry.width * 56 / 280 - 3, this->geometry.height - 38, 0);
   this->history->Move(1, 17);
-  this->history->SetId(184);
+  this->history->SetId(ID_OK);
   this->AddChild(this->history);
 
   this->memberList = new UIMemberListBox();
   this->memberList->Configure(0, 0, this->geometry.width * 56 / 280, this->geometry.height - 38, 0);
   this->memberList->Move(this->geometry.width - this->geometry.width * 56 / 280 - 1, 17);
-  this->memberList->SetId(184);
+  this->memberList->SetId(ID_OK);
   this->AddChild(this->memberList);
 
   this->closeButton = this->AddCloseButton("/q", 0);
@@ -1951,7 +1951,7 @@ void UISelectReplayDataWnd::OnCreate(int width, int height) {
   this->m_list->backgroundRed = 240;
   this->m_list->backgroundGreen = 240;
   this->m_list->backgroundBlue = 240;
-  this->m_list->SetId(184);
+  this->m_list->SetId(ID_OK);
   this->AddChild(this->m_list);
 
   const std::string prefix("유저인터페이스\\");
@@ -3904,7 +3904,7 @@ void UISelectServerWnd::OnCreate(int width, int height) {
   this->m_serverList->backgroundRed = 240;
   this->m_serverList->backgroundGreen = 240;
   this->m_serverList->backgroundBlue = 240;
-  this->m_serverList->SetId(184);
+  this->m_serverList->SetId(ID_OK);
   this->AddChild(this->m_serverList);
 
   const std::string prefix("유저인터페이스\\");

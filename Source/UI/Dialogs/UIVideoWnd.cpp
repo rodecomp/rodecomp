@@ -54,7 +54,7 @@ void UIVideoWnd::OnCreate(int width, int height) {
   UIVideoSkipButton* button = new UIVideoSkipButton();
   button->SetSize(127, 43);
   button->Move(width - button->geometry.width - 33, height - button->geometry.height - 110);
-  button->SetId(521);
+  button->SetId(ID_CLOSE_VIDEO);
   this->AddChild(button);
 }
 

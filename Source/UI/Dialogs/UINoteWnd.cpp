@@ -15,7 +15,7 @@ void UINoteWnd::OnCreate(int width, int height) {
   UIBasicButton* button = new UIBasicButton();
   button->Configure(60, LookupMessage(MSI_ZENY_LOTTO_BUY_10));
   button->Move(width - 68, height - 26);
-  button->SetId(201);
+  button->SetId(ID_CLOSE);
   this->AddChild(button);
 
   this->m_scroll = new UINoteWnd_Scroll(width - 35, height - 59);

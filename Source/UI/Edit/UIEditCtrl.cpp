@@ -900,7 +900,7 @@ void UINoticeMessageBox_LockSellItem::OnCreate(int, int) {
   button->SetBitmap("유저인터페이스\\inventory\\bt_close.bmp", 2, 0);
   button->SetSize(button->BitmapWidth(), button->BitmapHeight());
   button->Move(229, 4);
-  button->SetId(201);
+  button->SetId(ID_CLOSE);
   this->AddChild(button);
 }
 
@@ -2556,7 +2556,7 @@ void UIMerchantShopMakeWnd::OnCreate(int width, int height) {
   info->SetBitmap("유저인터페이스\\basic_interface\\bt_shopinfo.bmp", 2, 0);
   info->SetSize(info->BitmapWidth(), info->BitmapHeight());
   info->Move(this->geometry.width - 23, 20);
-  info->SetId(343);
+  info->SetId(ID_HELP);
   this->AddChild(info);
 }
 
@@ -2723,7 +2723,7 @@ void UIMerchantItemPurchaseMSGWnd::OnCreate(int, int) {
   this->buyButton->SetBitmap("유저인터페이스\\btn_buy_b.bmp", 2, 0);
   this->buyButton->SetSize(this->buyButton->BitmapWidth(), this->buyButton->BitmapHeight());
   this->buyButton->Move(this->geometry.width - 106, this->geometry.height - 24);
-  this->buyButton->SetId(184);
+  this->buyButton->SetId(ID_OK);
   this->AddChild(this->buyButton);
 
   this->cancelButton = new UIBitmapButton();
@@ -2732,7 +2732,7 @@ void UIMerchantItemPurchaseMSGWnd::OnCreate(int, int) {
   this->cancelButton->SetBitmap("유저인터페이스\\btn_cancel_b.bmp", 2, 0);
   this->cancelButton->SetSize(this->cancelButton->BitmapWidth(), this->cancelButton->BitmapHeight());
   this->cancelButton->Move(this->geometry.width - 61, this->geometry.height - 24);
-  this->cancelButton->SetId(185);
+  this->cancelButton->SetId(ID_CANCEL);
   this->AddChild(this->cancelButton);
 
   this->firstLine = new UIStaticText();
@@ -3032,16 +3032,16 @@ void UIItemWnd::OnLBtnDblClk(int x, int y) {
 
   CGameMode* mode = g_modeMgr.GetGameMode();
   switch (item.identity[0]) {
-  case 0:
-  case 1:
-  case 2:
+  case TYPE_HEAL:
+  case TYPE_SCHANGE:
+  case TYPE_SPECIAL:
     if (item.GetItemId() == 12802 &&
         g_windowMgr.Confirm(LookupMessage(MSI_COMMAND_SETTING), 2, false, false, 0, "Message", 280, 120, 0) == ID_NO) {
       break;
     }
     mode->SendMsg(MM_USEITEM, static_cast<int>(item.identity[1]), 0, 0, 0);
     break;
-  case 18:
+  case TYPE_CASH_POINT_ITEM:
     if (g_session.m_manner >= 0) {
       if (g_windowMgr
               .Confirm(FormatOwnedString(LookupMessage(MSI_CONFIRM_TO_OPEN_CASH_ITEM), item.DisplayName(0).c_str()).c_str(), 2, false, false, 0, "Message", 280, 120, 0) == ID_YES) {
@@ -3076,10 +3076,10 @@ void UIItemWnd::OnLBtnDblClk(int x, int y) {
       mode->SendMsg(MM_WEAR_EQUIP, static_cast<int>(item.identity[1]), static_cast<int>(item.identity[2]), 0, 0);
     }
     break;
-  case 10:
-  case 16:
-  case 17:
-  case 19:
+  case TYPE_ARROW:
+  case TYPE_AMMO:
+  case TYPE_THROWWEAPON:
+  case TYPE_CANNONBALL:
     if (item.identity[1] <= 0 || item.identity[3] != 0) {
       break;
     }
@@ -3089,7 +3089,7 @@ void UIItemWnd::OnLBtnDblClk(int x, int y) {
       mode->SendMsg(MM_WEAR_EQUIP_ARROW, static_cast<int>(item.identity[1]), static_cast<int>(item.identity[2]), 0, 0);
     }
     break;
-  case 6:
+  case TYPE_CARD:
     mode->SendMsg(MM_REQ_ITEMCOMPOSITION_LIST, static_cast<int>(item.identity[1]), 0, 0, 0);
     break;
   }
@@ -3597,7 +3597,7 @@ void UIMerchantShopMakeWnd::AddActionButton() {
   this->actionButton->Configure(60, LookupMessage(MSI_GUILD_AGIT_AGIT_MESSAGE));
   this->actionButton->Move(this->geometry.width - 156, this->geometry.height - 24);
   this->actionButton->SetTooltip(LookupMessage(MSI_WARNING_UNDER_AGE_MSG1));
-  this->actionButton->SetId(560);
+  this->actionButton->SetId(ID_RESTORE_STORE_INFO);
   this->AddChild(this->actionButton);
 }
 
@@ -3843,7 +3843,7 @@ void UIMerchantItemMyShopWnd::OpenShop() {
     this->actionButton = new UIBasicButton();
     this->actionButton->Configure(42, LookupMessage(MSI_LIMIT_USER));
     this->actionButton->Move(this->geometry.width - this->actionButton->geometry.width - 66, this->geometry.height - 24);
-    this->actionButton->SetId(506);
+    this->actionButton->SetId(ID_CLOSE_OFFLINE_STORE);
     this->AddChild(this->actionButton);
   }
 
@@ -3878,11 +3878,11 @@ void UIItemWnd::ReleaseSelection(unsigned char keep) {
 // FUNCTION: fn_13469
 int ItemTypeSortRank(int type) {
   switch (type) {
-  case 0:
-  case 1:
-  case 2:
+  case TYPE_HEAL:
+  case TYPE_SCHANGE:
+  case TYPE_SPECIAL:
     return 0;
-  case 18:
+  case TYPE_CASH_POINT_ITEM:
     return 1;
   case TYPE_ARMOR:
   case TYPE_ARMORTM:
@@ -3895,15 +3895,15 @@ int ItemTypeSortRank(int type) {
   case TYPE_BOTHHAND:
   case TYPE_GUN:
     return 3;
-  case 10:
-  case 16:
-  case 17:
-  case 19:
+  case TYPE_ARROW:
+  case TYPE_AMMO:
+  case TYPE_THROWWEAPON:
+  case TYPE_CANNONBALL:
     return 4;
-  case 6:
+  case TYPE_CARD:
     return 5;
-  case 3:
-  case 7:
+  case TYPE_EVENT:
+  case TYPE_PETEGG:
     return 6;
   default:
     return 10;
@@ -8075,7 +8075,7 @@ void UIItemStoreWnd::OnCreate(int width, int height) {
     if (index < 4) {
       this->tabs[index]->SetTooltip(LookupMessage(index + 1465));
     } else if (index == 4) {
-      this->tabs[index]->SetTooltip(LookupMessage(3151));
+      this->tabs[index]->SetTooltip(LookupMessage(MSI_STORE_TABNAME_10));
     } else {
       this->tabs[index]->SetTooltip(LookupMessage(index + 1464));
     }
@@ -8173,7 +8173,7 @@ void UIItemWnd::OnCreate(int width, int height) {
   this->countButton->SetBitmap("유저인터페이스\\inventory\\icon_num.bmp", 2, 0);
   this->countButton->SetSize(this->countButton->BitmapWidth(), this->countButton->BitmapHeight());
   this->countButton->Move(23, height - 17);
-  this->countButton->SetId(545);
+  this->countButton->SetId(ID_EXTEND_INVENTORY);
   this->countButton->SetTooltip(LookupMessage(MSI_INVENTORY_EXTEND_FAILED_ANOTHER_WORK));
   this->AddChild(this->countButton);
 
@@ -8185,14 +8185,14 @@ void UIItemWnd::OnCreate(int width, int height) {
   this->dealLockButton->SetSize(this->dealLockButton->BitmapWidth(), this->dealLockButton->BitmapHeight());
   this->dealLockButton->Move(124, this->geometry.height - 19);
   this->dealLockButton->SetTooltip(LookupMessage(MSI_CONNECT_SNS_PART_SCREEN_SHOT));
-  this->dealLockButton->SetId(507);
+  this->dealLockButton->SetId(ID_TOGGLE_ITEM_TRADE_LOCK);
   this->AddChild(this->dealLockButton);
 
   this->filterButton = new UIBitmapButton();
   this->RefreshSortButton();
   this->filterButton->SetSize(this->filterButton->BitmapWidth(), this->filterButton->BitmapHeight());
   this->filterButton->Move(157, this->geometry.height - 19);
-  this->filterButton->SetId(364);
+  this->filterButton->SetId(ID_SORT_ITEMS);
   this->AddChild(this->filterButton);
 }
 
@@ -8578,10 +8578,10 @@ int UIItemStoreSubWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       } else {
         switch (this->tabIndex) {
         case 0:
-          matches = type == 0 || type == 1 || type == 2;
+          matches = type == TYPE_HEAL || type == TYPE_SCHANGE || type == TYPE_SPECIAL;
           break;
         case 1:
-          matches = type == 18;
+          matches = type == TYPE_CASH_POINT_ITEM;
           break;
         case 2:
           switch (type) {
@@ -8605,13 +8605,13 @@ int UIItemStoreSubWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
           }
           break;
         case 5:
-          matches = type == 10 || type == 16 || type == 17 || type == 19;
+          matches = type == TYPE_ARROW || type == TYPE_AMMO || type == TYPE_THROWWEAPON || type == TYPE_CANNONBALL;
           break;
         case 6:
-          matches = type == 6;
+          matches = type == TYPE_CARD;
           break;
         case 7:
-          matches = type == 3 || type == 7;
+          matches = type == TYPE_EVENT || type == TYPE_PETEGG;
           break;
         }
       }
@@ -8913,10 +8913,10 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       } else {
         switch (this->m_sortMode) {
         case 0:
-          matches = type == 0 || type == 1 || type == 2;
+          matches = type == TYPE_HEAL || type == TYPE_SCHANGE || type == TYPE_SPECIAL;
           break;
         case 1:
-          matches = type == 18;
+          matches = type == TYPE_CASH_POINT_ITEM;
           break;
         case 2:
           switch (type) {
@@ -8940,13 +8940,13 @@ int UIItemStoreWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
           }
           break;
         case 5:
-          matches = type == 10 || type == 16 || type == 17 || type == 19;
+          matches = type == TYPE_ARROW || type == TYPE_AMMO || type == TYPE_THROWWEAPON || type == TYPE_CANNONBALL;
           break;
         case 6:
-          matches = type == 6;
+          matches = type == TYPE_CARD;
           break;
         case 7:
-          matches = type == 3 || type == 7;
+          matches = type == TYPE_EVENT || type == TYPE_PETEGG;
           break;
         }
       }
@@ -9617,9 +9617,9 @@ void UIItemStoreWnd::Paint() {
     this->DrawFilledRoundedOutline(61, 137, 175, 127, 0xFFFFFF);
     auto* poring = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\notice_poring.bmp")));
     this->DrawBitmap(116, 151, poring, 1);
-    this->DrawCenteredText(20, 210, LookupMessage(0xDD4), 257, 0, 12, 0, 0);
-    this->DrawCenteredText(20, 236, LookupMessage(0xC77), 257, 0, 15, 0xC89482, 1);
-    this->DrawCenteredText(20, 272, LookupMessage(0xE13), 257, 0, 12, 0x6464DC, 1);
+    this->DrawCenteredText(20, 210, LookupMessage(MSI_RODEX_BUTTON_ANSWER), 257, 0, 12, 0, 0);
+    this->DrawCenteredText(20, 236, LookupMessage(MSI_CLOSE_SETUP), 257, 0, 15, 0xC89482, 1);
+    this->DrawCenteredText(20, 272, LookupMessage(MSI_USE_WORLDMAP_WITH_PERIOD_MSG2), 257, 0, 12, 0x6464DC, 1);
     return;
   }
 
@@ -10111,11 +10111,11 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
       if (item.flags[0] != 0) {
         include = this->categoryFilter == 3;
       } else if (this->categoryFilter == 0) {
-        if (type <= 2 || type == 18) {
+        if (type <= TYPE_SPECIAL || type == TYPE_CASH_POINT_ITEM) {
           if (this->usableFilter == 0) {
-            include = type == 0;
+            include = type == TYPE_HEAL;
           } else if (this->usableFilter == 2) {
-            include = type == 1 || type == 2;
+            include = type == TYPE_SCHANGE || type == TYPE_SPECIAL;
           } else if (this->usableFilter == 3) {
             include = true;
           }
@@ -10132,9 +10132,9 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
         case TYPE_ARMORTMB:
         case TYPE_GUN:
           if (this->equipmentFilter == 0) {
-            include = type == 5 || type == 9 || type == 8;
+            include = type == TYPE_WEAPON || type == TYPE_BOTHHAND || type == TYPE_BOW;
           } else if (this->equipmentFilter == 1) {
-            include = type == 4 || type == 11 || type == 12 || type == 13 || type == 14;
+            include = type == TYPE_ARMOR || type == TYPE_ARMORTM || type == TYPE_ARMORTB || type == TYPE_ARMORMB || type == TYPE_ARMORTMB;
           } else if (this->equipmentFilter == 3) {
             include = true;
           }
@@ -10143,7 +10143,7 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
           break;
         }
       } else if (this->categoryFilter == 2) {
-        if (type == 6 || type == 3 || type == 7 || type == 10 || type == 16 || type == 17 || type == 19) {
+        if (type == TYPE_CARD || type == TYPE_EVENT || type == TYPE_PETEGG || type == TYPE_ARROW || type == TYPE_AMMO || type == TYPE_THROWWEAPON || type == TYPE_CANNONBALL) {
           include = this->miscFilter == 4;
         }
       }
@@ -11348,7 +11348,7 @@ void UIItemDropCntWnd::OnCreate(int, int) {
   button->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
   button->SetSize(button->BitmapWidth(), button->BitmapHeight());
   button->Move(x, y);
-  button->SetId(184);
+  button->SetId(ID_OK);
   this->AddChild(button);
   this->m_message0 = 184;
   this->geometry.state = 0;
