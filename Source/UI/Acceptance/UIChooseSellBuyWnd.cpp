@@ -1403,27 +1403,28 @@ int UISpellListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
   }
   case UM_COMMAND: {
     this->RecordResponse(static_cast<int>(argument1), argument2, argument3, argument4);
-    CMode* mode = g_modeMgr.currentMode;
-    if (argument1 == ID_OK) {
+    switch (argument1) {
+    case ID_OK: {
       const int selected = this->m_selected;
-      if (selected < 0 || static_cast<unsigned>(selected) >= this->m_skills.size()) {
-        return 0;
+      if (selected >= 0 && static_cast<unsigned>(selected) < this->m_skills.size()) {
+        if (this->m_sourceSkillId == 0) {
+          g_modeMgr.currentMode->SendMsg(MM_SELECT_SPELL, this->m_skills[selected], 0, 0, 0);
+        } else {
+          g_modeMgr.currentMode->SendMsg(MM_SKILL_SELECT_RESPONSE, this->m_skills[selected], this->m_sourceSkillId, 0, 0);
+        }
+        g_windowMgr.CloseWindow(WID_SPELLLISTWND);
       }
-      if (this->m_sourceSkillId != 0) {
-        mode->SendMsg(MM_SKILL_SELECT_RESPONSE, this->m_skills[selected], this->m_sourceSkillId, 0, 0);
-      } else {
-        mode->SendMsg(MM_SELECT_SPELL, this->m_skills[selected], 0, 0, 0);
-      }
-    } else if (argument1 == ID_CANCEL) {
-      if (this->m_sourceSkillId != 0) {
-        mode->SendMsg(MM_SKILL_SELECT_RESPONSE, 0, this->m_sourceSkillId, 0, 0);
-      } else {
-        mode->SendMsg(MM_SELECT_SPELL, 0, 0, 0, 0);
-      }
-    } else {
-      return 0;
+      break;
     }
-    g_windowMgr.CloseWindow(WID_SPELLLISTWND);
+    case ID_CANCEL:
+      if (this->m_sourceSkillId == 0) {
+        g_modeMgr.currentMode->SendMsg(MM_SELECT_SPELL, 0, 0, 0, 0);
+      } else {
+        g_modeMgr.currentMode->SendMsg(MM_SKILL_SELECT_RESPONSE, 0, this->m_sourceSkillId, 0, 0);
+      }
+      g_windowMgr.CloseWindow(WID_SPELLLISTWND);
+      break;
+    }
     return 0;
   }
   default:
@@ -2183,15 +2184,14 @@ void UITipboxWnd::UpdatePageText() {
   this->m_pageText->SetFont(0, 12, 1, 0);
 
   const std::string separator = "/";
-  const int pages = static_cast<int>(g_itemTagOwner->m_currentEntry.paragraphs.size());
-  this->m_pageTotalText->SetText((separator + IntToString(pages, 0)).c_str(), 0);
+  this->m_pageTotalText->SetText((separator + IntToString(static_cast<int>(g_itemTagOwner->m_currentEntry.paragraphs.size()), 0)).c_str(), 0);
 
   const int pageWidth = this->ColoredTextWidth(
     IntToString((g_itemTagOwner->paragraphIndex >= 0 ? g_itemTagOwner->paragraphIndex : 0) + 1, 0).c_str(),
     std::strlen(IntToString((g_itemTagOwner->paragraphIndex >= 0 ? g_itemTagOwner->paragraphIndex : 0) + 1, 0).c_str()), 0, 12, 1
   );
   const int totalWidth = this->ColoredTextWidth(
-    (separator + IntToString(pages, 0)).c_str(), std::strlen((separator + IntToString(pages, 0)).c_str()), 0, 12, 0
+    (separator + IntToString(static_cast<int>(g_itemTagOwner->m_currentEntry.paragraphs.size()), 0)).c_str(), std::strlen((separator + IntToString(static_cast<int>(g_itemTagOwner->m_currentEntry.paragraphs.size()), 0)).c_str()), 0, 12, 0
   );
 
   const int offset = (36 - totalWidth - pageWidth) / 2;
@@ -3914,7 +3914,7 @@ int UIChooseSellBuyWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, 
 
 // OFFSET: 0x008D9AD0
 // FUNCTION: fn_12135
-int UIListBox::LineCount() const {
+__declspec(noinline) int UIListBox::LineCount() const {
   return static_cast<int>(this->lines.size());
 }
 
@@ -7209,15 +7209,13 @@ void UInCashWnd::OnLBtnDown(int x, int y) {
   ITEM_INFO item = this->ItemAt(x, y);
   if (item.identity[1] > 0) {
     CGameMode* mode = g_modeMgr.GetGameMode();
-    int source;
     if (this->m_selected < 0) {
       this->m_selected = ~this->m_selected;
-      source = 4;
+      mode->BeginDragItem(4, item, 1, -1);
     } else {
       this->m_selectedIndex = item.bindOnEquip;
-      source = 6;
+      mode->BeginDragItem(6, item, 1, -1);
     }
-    mode->drag.BeginItem(g_windowMgr, source, item, 1, -1);
   }
 }
 
@@ -11569,16 +11567,16 @@ char* UIBookWnd::StripColorCodes(const char* text) {
   const unsigned length = static_cast<unsigned>(std::strlen(text));
   const char* const end = text + length;
   const char* const marker = text + TextContext::Marker(text, static_cast<unsigned>(end - text));
+  std::uint32_t color = 0;
   char* segmentBuffer = new char[length + 1];
   char* result = new char[length + 1];
   *result = '\0';
-  std::uint32_t color = 0;
   while (text < end) {
     const char* const start = ParseColorCode(text, color);
     text = SegmentEnd(start, end);
     std::string segment(start, text);
     if (marker != nullptr && *marker != '\0') {
-      segment.insert(0, marker, 3);
+      segment.insert(segment.begin(), marker, marker + 3);
     }
     if (text != start) {
       std::strcpy(segmentBuffer, segment.c_str());
@@ -11837,7 +11835,7 @@ int UIFrameWnd::BuildItemName(
 // OFFSET: 0x008D9420
 // FUNCTION: fn_12133
 bool UIItemCollectionWnd::WrapText(std::string text, int width, std::list<std::string>& lines) {
-  if (this->TextWidth(text.c_str(), 0, 0, 12, 0, 0) <= width) {
+  if (width >= this->TextWidth(text.c_str(), 0, 0, 12, 0, 0)) {
     lines.push_back(text);
     return false;
   }
@@ -11850,15 +11848,13 @@ bool UIItemCollectionWnd::WrapText(std::string text, int width, std::list<std::s
       ++cursor;
       start = cursor;
     } else if (cursor[0] < 0 && cursor[1] < 0) {
-      const std::string candidate(start, cursor + 2);
-      if (this->TextWidth(candidate.c_str(), 0, 0, 12, 0, 0) > width) {
+      if (width < this->TextWidth(std::string(start, cursor + 2).c_str(), 0, 0, 12, 0, 0)) {
         lines.push_back(std::string(start, cursor));
         start = cursor;
       }
       cursor += 2;
     } else {
-      const std::string candidate(start, cursor + 1);
-      if (this->TextWidth(candidate.c_str(), 0, 0, 12, 0, 0) > width) {
+      if (width < this->TextWidth(std::string(start, cursor + 1).c_str(), 0, 0, 12, 0, 0)) {
         lines.push_back(std::string(start, cursor));
         start = cursor;
       }
@@ -11994,14 +11990,14 @@ int UIChoose3Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
   if (message != UM_SETCHOOSE || text == nullptr) {
     return this->UIChooseWnd::SendMsg(sender, message, a, b, c, d);
   }
-  const std::size_t textLength = std::strlen(text);
-  if (textLength == 0 || std::strcmp(text, LookupMessage(MSI_REF_UNEQUIP)) == 0) {
+  const std::string_view value(text);
+  if (value.empty() || value == LookupMessage(MSI_REF_UNEQUIP)) {
     return this->UIChooseWnd::SendMsg(sender, message, a, b, c, d);
   }
   int length = 0;
   int itemId = 0;
   const char* line = text;
-  if (ParseItemIdTag(text, text + textLength, length, itemId) == 1 && itemId > 0) {
+  if (ParseItemIdTag(text, text + value.size(), length, itemId) == 1 && itemId > 0) {
     line = FindItemDescription(itemId).identifiedName;
   }
   this->m_list->AddLine(line);
@@ -12109,12 +12105,18 @@ int UITipboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     const int page = (std::max)(0, g_itemTagOwner->paragraphIndex);
     g_itemTagOwner->paragraphIndex = page + 1;
     if (g_itemTagOwner->IsLastTip() == true) {
-      this->nextButton->SetDisabled(1);
-      this->nextButton->Invalidate();
+      {
+        UIButton* button = this->nextButton;
+        button->SetDisabled(1);
+        button->Invalidate();
+      }
       this->nextButton->Invalidate();
     }
-    this->previousButton->SetDisabled(0);
-    this->previousButton->Invalidate();
+    {
+      UIButton* button = this->previousButton;
+      button->SetDisabled(0);
+      button->Invalidate();
+    }
     this->previousButton->Invalidate();
     this->RefreshTip();
     break;
@@ -12123,11 +12125,17 @@ int UITipboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     this->previousButton->Enable(1);
     this->nextButton->Enable(1);
     g_itemTagOwner->SelectTip(this->searchResults->lines[this->searchResults->selected].id);
-    this->nextButton->SetDisabled(g_itemTagOwner->IsLastTip() == true ? 1 : 0);
+    {
+      UIButton* button = this->nextButton;
+      button->SetDisabled(g_itemTagOwner->IsLastTip() == true ? 1 : 0);
+      button->Invalidate();
+    }
     this->nextButton->Invalidate();
-    this->nextButton->Invalidate();
-    this->previousButton->SetDisabled(1);
-    this->previousButton->Invalidate();
+    {
+      UIButton* button = this->previousButton;
+      button->SetDisabled(1);
+      button->Invalidate();
+    }
     this->previousButton->Invalidate();
     this->RefreshTip();
     this->BuildAnimations();
@@ -12138,12 +12146,18 @@ int UITipboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
   case ID_PREV: {
     const int page = (std::max)(0, g_itemTagOwner->paragraphIndex);
     g_itemTagOwner->paragraphIndex = page - 1;
-    this->nextButton->SetDisabled(0);
-    this->nextButton->Invalidate();
+    {
+      UIButton* button = this->nextButton;
+      button->SetDisabled(0);
+      button->Invalidate();
+    }
     this->nextButton->Invalidate();
     if (page == 1) {
-      this->previousButton->SetDisabled(1);
-      this->previousButton->Invalidate();
+      {
+        UIButton* button = this->previousButton;
+        button->SetDisabled(1);
+        button->Invalidate();
+      }
       this->previousButton->Invalidate();
     }
     this->RefreshTip();
@@ -12192,11 +12206,17 @@ int UITipboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     break;
   }
   case 0x21F:
-    this->nextButton->SetDisabled(g_itemTagOwner->IsLastTip() == true ? 1 : 0);
+    {
+      UIButton* button = this->nextButton;
+      button->SetDisabled(g_itemTagOwner->IsLastTip() == true ? 1 : 0);
+      button->Invalidate();
+    }
     this->nextButton->Invalidate();
-    this->nextButton->Invalidate();
-    this->previousButton->SetDisabled(1);
-    this->previousButton->Invalidate();
+    {
+      UIButton* button = this->previousButton;
+      button->SetDisabled(1);
+      button->Invalidate();
+    }
     this->previousButton->Invalidate();
     this->RefreshTip();
     this->BuildAnimations();
