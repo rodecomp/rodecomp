@@ -112,7 +112,8 @@ void C3dNodeV2::Initialize(const ModelNode& base) {
   this->positionKeys = resource.positionKeys;
   this->textureKeys = resource.textureKeys;
 
-  for (const ModelNode* resourceChild : resource.children) {
+  for (auto resourceChildIt = resource.children.begin(); resourceChildIt != resource.children.end(); ++resourceChildIt) {
+    const ModelNode* resourceChild = *resourceChildIt;
     auto* child = new C3dNodeV2;
     child->parent = this;
     child->model = this->model;
