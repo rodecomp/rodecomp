@@ -4903,8 +4903,8 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
         this->render.visible = 0;
         this->SendMsg(nullptr, AM_DELETE_EFFECT, EF_TOPRANK, 0, 0, 0, 0, 0);
         if (this->msgEffectList.size() != 0) {
-          for (CGameObject* object : this->msgEffectList) {
-            static_cast<CMsgEffect*>(object)->m_visible = this->render.accountId == g_session.m_aid;
+          for (auto it = this->msgEffectList.begin(); it != this->msgEffectList.end(); ++it) {
+            static_cast<CMsgEffect*>(*it)->m_visible = this->render.accountId == g_session.m_aid;
           }
         }
       } else {
@@ -4933,8 +4933,8 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
         this->render.shadowVisible = 0;
       }
       if (this->msgEffectList.size() != 0) {
-        for (CGameObject* object : this->msgEffectList) {
-          static_cast<CMsgEffect*>(object)->m_visible = true;
+        for (auto it = this->msgEffectList.begin(); it != this->msgEffectList.end(); ++it) {
+          static_cast<CMsgEffect*>(*it)->m_visible = true;
         }
       }
       if (this->maxHp > 0) {
