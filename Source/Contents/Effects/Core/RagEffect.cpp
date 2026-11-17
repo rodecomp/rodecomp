@@ -14721,9 +14721,8 @@ __declspec(safebuffers) void CRagEffect::SandScatter() {
 void CRagEffect::SendMsg(
   CGameObject* sender, int messageLow, int messageHigh, std::int64_t first, int secondLow, int secondHigh, int thirdLow, int thirdHigh
 ) {
-  const std::int64_t message = static_cast<std::int64_t>(messageHigh) << 32 | static_cast<std::uint32_t>(messageLow);
-  const std::int64_t second = static_cast<std::int64_t>(secondHigh) << 32 | static_cast<std::uint32_t>(secondLow);
-  const std::int64_t third = static_cast<std::int64_t>(thirdHigh) << 32 | static_cast<std::uint32_t>(thirdLow);
+  const std::int64_t message = static_cast<std::int64_t>(static_cast<std::uint64_t>(static_cast<std::uint32_t>(messageHigh)) << 32 | static_cast<std::uint32_t>(messageLow));
+  const std::int64_t second = static_cast<std::int64_t>(static_cast<std::uint64_t>(static_cast<std::uint32_t>(secondHigh)) << 32 | static_cast<std::uint32_t>(secondLow));
 
   switch (message) {
   case AM_CHILD_DEAD:
@@ -14782,13 +14781,13 @@ void CRagEffect::SendMsg(
         this->render.position.x = 250.0f;
         this->render.position.y = 250.0f;
         this->render.position.z = 250.0f;
-        this->state.duration = static_cast<int>(third);
+        this->state.duration = thirdLow;
       } else if (second == 792 || second == 925 || second == 824) {
         this->render.position.x = 250.0f;
         this->render.position.y = 250.0f;
         this->render.position.z = 250.0f;
       } else if (second == 1058) {
-        const float* position = reinterpret_cast<const float*>(static_cast<std::intptr_t>(third));
+        const float* position = reinterpret_cast<const float*>(static_cast<std::intptr_t>(thirdLow));
         this->state.deltaPos.x = position[0];
         this->state.deltaPos.y = position[1];
         this->state.deltaPos.z = position[2];
@@ -14831,7 +14830,7 @@ void CRagEffect::SendMsg(
   case AM_CHANGE_COLOR:
     this->state.colorChannels[0] = static_cast<std::int32_t>(first);
     this->state.colorChannels[1] = static_cast<std::int32_t>(second);
-    this->state.colorChannels[2] = static_cast<std::int32_t>(third);
+    this->state.colorChannels[2] = thirdLow;
     break;
   }
 }
