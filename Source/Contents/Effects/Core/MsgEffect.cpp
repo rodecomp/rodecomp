@@ -112,7 +112,7 @@ static float MsgEffectElapsedFrames(CMsgEffect* effect) {
 }
 
 // INLINED
-__forceinline static void MsgEffectDrift(CMsgEffect* effect, float elapsed) {
+__forceinline static float MsgEffectDriftDirection(CMsgEffect* effect) {
   float dirX = effect->m_drift.x;
   const int skinMode = g_session.m_damageSkinMode;
   if (effect->m_drift.x == 0.0f && effect->m_owner != nullptr) {
@@ -163,10 +163,11 @@ __forceinline static void MsgEffectDrift(CMsgEffect* effect, float elapsed) {
       effect->m_drift.z = rotation.values[2] * x + rotation.values[5] * y + rotation.values[8] * z + rotation.values[11];
     }
   }
+  return dirX;
+}
 
-  const float dirZ = effect->m_drift.z;
-  effect->render.position.x = dirX * (elapsed / 3.0f) + effect->m_velocity.x + dirX * 3.0f;
-  effect->render.position.z = dirZ * (elapsed / 3.0f) + effect->m_velocity.z + dirZ * 3.0f;
+// INLINED
+__forceinline static void MsgEffectDriftHeight(CMsgEffect* effect, float elapsed) {
   float height = effect->m_baseY + 8.0f - (2.0f - elapsed / 30.0f) * elapsed + effect->m_drift.y;
   effect->render.position.y = height;
   if (height > 0.0f) {
@@ -175,6 +176,23 @@ __forceinline static void MsgEffectDrift(CMsgEffect* effect, float elapsed) {
     height = -height;
     effect->m_drift.y = height / (height * 3.0f * 0.25f);
   }
+}
+
+// INLINED
+__forceinline static void MsgEffectDrift(CMsgEffect* effect, float elapsed) {
+  const float dirX = MsgEffectDriftDirection(effect);
+  effect->render.position.x = dirX * (elapsed / 3.0f) + effect->m_velocity.x + dirX * 3.0f;
+  effect->render.position.z = effect->m_drift.z * (elapsed / 3.0f) + effect->m_velocity.z + effect->m_drift.z * 3.0f;
+  MsgEffectDriftHeight(effect, elapsed);
+}
+
+// INLINED
+__forceinline static void MsgEffectDriftCached(CMsgEffect* effect, float elapsed) {
+  const float dirX = MsgEffectDriftDirection(effect);
+  const float dirZ = effect->m_drift.z;
+  effect->render.position.x = dirX * (elapsed / 3.0f) + effect->m_velocity.x + dirX * 3.0f;
+  effect->render.position.z = dirZ * (elapsed / 3.0f) + effect->m_velocity.z + dirZ * 3.0f;
+  MsgEffectDriftHeight(effect, elapsed);
 }
 
 // OFFSET: 0x00E4C3E0
@@ -222,7 +240,7 @@ bool CMsgEffect::OnProcess() {
     case MET_NUMBER_CRITICAL:
       elapsed = MsgEffectElapsedFrames(this);
       this->render.previousAnimation = this->render.animation;
-      MsgEffectDrift(this, elapsed);
+      MsgEffectDriftCached(this, elapsed);
       if (this->render.scale > 1.3f) {
         this->render.scale = this->m_scale - elapsed * 0.24f;
       } else if (this->render.scale < 1.3f) {
@@ -329,9 +347,9 @@ bool CMsgEffect::OnProcess() {
     case MET_BLUE_EFFECT: {
       elapsed = MsgEffectElapsedFrames(this);
       this->render.previousAnimation = this->render.animation;
+      int fade = 0;
       this->render.curMotion = 0;
       this->render.position.y = this->m_baseY - elapsed * 0.1f - 15.0f;
-      int fade = 0;
       if (elapsed > 90.0f) {
         fade = static_cast<int>((elapsed - 90.0f) * 8.0f);
       }
@@ -472,17 +490,14 @@ bool CMsgEffect::OnProcess() {
         }
         this->render.previousAnimation = this->Get8Dir2(this->render.angle, 1) + 8;
         this->render.position.x = this->m_velocity.x + this->render.position.x;
-        if (this->processTick > 10 && this->processTick < 25) {
-          this->initialVelocityX = this->m_velocity.x;
-          this->render.position.z = this->m_velocity.z + this->render.position.z;
-        } else {
-          this->initialVelocityX = this->m_velocity.x;
+        if (this->processTick <= 10 || this->processTick >= 25) {
           this->render.position.y = this->m_velocity.y + this->render.position.y;
-          this->render.position.z = this->m_velocity.z + this->render.position.z;
-          if (this->processTick >= 25) {
-            this->m_finished = 1;
-            this->m_velocity.y = this->m_velocity.y * -1.9f;
-          }
+        }
+        this->initialVelocityX = this->m_velocity.x;
+        this->render.position.z = this->m_velocity.z + this->render.position.z;
+        if (this->processTick >= 25) {
+          this->m_finished = 1;
+          this->m_velocity.y = this->m_velocity.y * -1.9f;
         }
         this->GetActRes();
         ++this->processTick;
@@ -1421,12 +1436,16 @@ void CMsgEffect::FollowOwner() {
           direction.y = this->render.position.z - owner->render.position.z;
           this->render.previousAnimation = this->render.animation + 8 + dir;
           direction.Normalize();
-          float radius = dist - 0.7f;
+          const float radius = dist - 0.7f;
           if (radius <= 15.0f) {
-            radius = 14.9f;
+            direction.x *= 14.9f;
+            direction.y *= 14.9f;
+          } else {
+            direction.x *= radius;
+            direction.y *= radius;
           }
-          this->render.position.x = direction.x * radius + owner->render.position.x;
-          this->render.position.z = direction.y * radius + owner->render.position.z;
+          this->render.position.x = direction.x + owner->render.position.x;
+          this->render.position.z = direction.y + owner->render.position.z;
           const float movedX = this->render.position.x - oldPosition.x;
           const float movedZ = this->render.position.z - oldPosition.z;
           this->travelDistance += SquareRoot(movedZ * movedZ + movedX * movedX);
@@ -1479,10 +1498,14 @@ void CMsgEffect::FollowOwner() {
         const int dir = this->Get8Dir2(this->render.angle, 1);
         CRenderObject* owner = this->m_owner;
         this->render.previousAnimation = this->render.animation + dir;
-        if (this->motionInitialized == 0) {
-          if (dist <= 25.0f) {
-            this->motionInitialized = 1;
-          }
+        bool approach = false;
+        if (dist > 25.0f && this->motionInitialized == 0) {
+          approach = true;
+        } else if (dist <= 25.0f && this->motionInitialized == 0) {
+          this->motionInitialized = 1;
+          approach = true;
+        }
+        if (approach) {
           const vector3d oldPosition = this->render.position;
           vector2d direction;
           direction.x = this->render.position.x - owner->render.position.x;
