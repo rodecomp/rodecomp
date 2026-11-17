@@ -2717,24 +2717,23 @@ static __forceinline void FillCharacterNpcRenderSecondary(CCharacterNpc* self, C
 void CCharacterNpc::SendMsg(
   CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g
 ) {
-  CharacterNpcViewInfo* info = reinterpret_cast<CharacterNpcViewInfo*>(static_cast<std::intptr_t>(b));
   switch (message) {
   case AM_INITSTANDENTRY:
     this->CGameActor::SendMsg(sender, message, b, c, d, e, 0, 0);
-    this->render.visible = g_session.IsVisibleJob(info->job);
-    this->SetGuildInfo(info->guildId, info->guildEmblemVersion);
+    this->render.visible = g_session.IsVisibleJob(reinterpret_cast<CharacterNpcViewInfo*>(static_cast<std::intptr_t>(b))->job);
+    this->SetGuildInfo(reinterpret_cast<CharacterNpcViewInfo*>(static_cast<std::intptr_t>(b))->guildId, reinterpret_cast<CharacterNpcViewInfo*>(static_cast<std::intptr_t>(b))->guildEmblemVersion);
     if (this->characterRender != nullptr) {
       return;
     }
     this->characterRender = new CCharacterRender(0, 0);
-    FillCharacterNpcRenderPrimary(this, info);
+    FillCharacterNpcRenderPrimary(this, reinterpret_cast<CharacterNpcViewInfo*>(static_cast<std::intptr_t>(b)));
     return;
   case AM_STANDENTRY:
     this->CGameActor::SendMsg(sender, message, b, c, d, e, 0, 0);
     if (this->characterRender == nullptr) {
       return;
     }
-    FillCharacterNpcRenderPrimary(this, info);
+    FillCharacterNpcRenderPrimary(this, reinterpret_cast<CharacterNpcViewInfo*>(static_cast<std::intptr_t>(b)));
     return;
   case AM_INITMOVEENTRY:
   case AM_INITMOVEENTRY2:
@@ -2743,7 +2742,7 @@ void CCharacterNpc::SendMsg(
       return;
     }
     this->characterRender = new CCharacterRender(0, 0);
-    FillCharacterNpcRenderSecondary(this, info);
+    FillCharacterNpcRenderSecondary(this, reinterpret_cast<CharacterNpcViewInfo*>(static_cast<std::intptr_t>(b)));
     return;
   case AM_MOVEENTRY:
   case AM_MOVEENTRY2:
@@ -2751,7 +2750,7 @@ void CCharacterNpc::SendMsg(
     if (this->characterRender == nullptr) {
       return;
     }
-    FillCharacterNpcRenderSecondary(this, info);
+    FillCharacterNpcRenderSecondary(this, reinterpret_cast<CharacterNpcViewInfo*>(static_cast<std::intptr_t>(b)));
     return;
   default:
     CNpc::SendMsg(sender, message, b, c, d, e, 0, 0);
