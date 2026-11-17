@@ -101,13 +101,13 @@ UINewMakeCharWnd::UINewMakeCharWnd()
   this->m_character.head = static_cast<short>(head);
   this->m_racePaletteEnabled[1] = bodyPalette;
   if (bodyPalette > 0) {
-    this->m_racePalettes[1].assign(static_cast<const std::string&>(g_session.GetBodyPalName(this->m_character.job, this->m_character.sex, bodyPalette, 0, 0, 0)));
+    this->m_bodyPalette.assign(static_cast<const std::string&>(g_session.GetBodyPalName(this->m_character.job, this->m_character.sex, bodyPalette, 0, 0, 0)));
   }
 
   const int headPalette = this->m_character.headPalette;
   this->m_racePaletteEnabled[0] = headPalette;
   if (headPalette > 0) {
-    this->m_racePalettes[0].assign(static_cast<const std::string&>(g_session.GetHeadPalName(head, this->m_character.job, this->m_character.sex, headPalette)));
+    this->m_headPalette.assign(static_cast<const std::string&>(g_session.GetHeadPalName(head, this->m_character.job, this->m_character.sex, headPalette)));
   }
 
   this->m_raceOffsets = g_session.GetBodyImfName(this->m_character.job, this->m_character.sex, this->m_character.head, this->m_character.bodyCostume);
@@ -210,12 +210,12 @@ void UINewMakeCharWnd::Paint() {
     switch (i) {
     case 0:
       if (this->m_racePaletteEnabled[1] > 0) {
-        palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->m_racePalettes[1].c_str()))->palette;
+        palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->m_bodyPalette.c_str()))->palette;
       }
       break;
     case 1:
       if (this->m_racePaletteEnabled[0] > 0) {
-        palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->m_racePalettes[0].c_str()))->palette;
+        palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->m_headPalette.c_str()))->palette;
       }
       break;
     }
@@ -340,13 +340,13 @@ void UINewMakeCharWnd::UpdatePreviewResources() {
   this->m_character.head = static_cast<short>(head);
   this->m_racePaletteEnabled[1] = bodyPalette;
   if (bodyPalette > 0) {
-    this->m_racePalettes[1] = static_cast<const std::string&>(g_session.GetBodyPalName(this->m_character.job, this->m_character.sex, bodyPalette, this->m_character.job, 0, 0));
+    this->m_bodyPalette = static_cast<const std::string&>(g_session.GetBodyPalName(this->m_character.job, this->m_character.sex, bodyPalette, this->m_character.job, 0, 0));
   }
 
   const int headPalette = this->m_character.headPalette;
   this->m_racePaletteEnabled[0] = headPalette;
   if (headPalette > 0) {
-    this->m_racePalettes[0] = static_cast<const std::string&>(g_session.GetHeadPalName(head, this->m_character.job, this->m_character.sex, headPalette));
+    this->m_headPalette = static_cast<const std::string&>(g_session.GetHeadPalName(head, this->m_character.job, this->m_character.sex, headPalette));
   }
 
   this->m_raceOffsets = g_session.GetBodyImfName(this->m_character.job, this->m_character.sex, this->m_character.head, this->m_character.bodyCostume);

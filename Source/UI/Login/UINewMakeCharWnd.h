@@ -67,7 +67,8 @@ public:
   /* 0134 */ std::string m_raceSprites[5];
   /* 01AC */ std::string m_raceOffsets;
   /* 01C4 */ int m_racePaletteEnabled[2];
-  /* 01CC */ std::string m_racePalettes[2];
+  /* 01CC */ std::string m_headPalette;
+  /* 01E4 */ std::string m_bodyPalette;
   /* 01FC */ int actionBase;
   /* 0200 */ int m_action;
   /* 0204 */ int m_frame;
