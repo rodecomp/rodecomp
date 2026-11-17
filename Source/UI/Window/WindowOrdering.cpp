@@ -116,10 +116,10 @@ void UIWindowMgr::Promote(UIWindow* window) {
 
   int companion = -1;
 
-  if (window->geometry.id == 12) {
+  if (window->geometry.id == WID_ITEMCOLLECTIONWND) {
     companion = 234;
   }
-  if (window->geometry.id == 82) {
+  if (window->geometry.id == WID_COMBINEDCARDITEMCOLLECTIONWND) {
     companion = 250;
   }
 

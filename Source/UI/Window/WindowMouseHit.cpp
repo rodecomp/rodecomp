@@ -44,9 +44,9 @@ static __forceinline void PromoteWindow(UIWindowMgr* manager, UIWindow* window) 
   }
 
   int companion = -1;
-  if (window->geometry.id == 12) {
+  if (window->geometry.id == WID_ITEMCOLLECTIONWND) {
     companion = 234;
-  } else if (window->geometry.id == 82) {
+  } else if (window->geometry.id == WID_COMBINEDCARDITEMCOLLECTIONWND) {
     companion = 250;
   }
 

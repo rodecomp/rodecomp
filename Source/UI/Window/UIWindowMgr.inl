@@ -15,7 +15,7 @@ inline bool UIWindowMgr::ShowShortcutWindow(int value) {
   }
 
   this->m_normalItemSlotWindow.show = value;
-  g_windowMgr.EnsureWindow(36);
+  g_windowMgr.EnsureWindow(WID_SHORTCUTWND);
   this->shortCutWnd->Show(value);
 
   if (value != 0) {
@@ -23,7 +23,7 @@ inline bool UIWindowMgr::ShowShortcutWindow(int value) {
   }
 
   if (g_serviceOptions.Get(TT_QUICK_SLOT_ON_OFF)) {
-    g_windowMgr.EnsureWindow(159);
+    g_windowMgr.EnsureWindow(WID_QUIKSLOTWND);
   }
 
   UIWindow* companion = g_windowMgr.LookupWindow(WID_QUIKSLOTWND);

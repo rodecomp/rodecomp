@@ -71,7 +71,7 @@ void UIWindowMgr::BringToFront(int id) {
   }
 
   this->RemoveOrder(id);
-  if (id == 203) {
+  if (id == WID_NAVIGATIONV4WND) {
     this->windowHistory.push_back(id);
   } else {
     this->windowHistory.push_front(id);

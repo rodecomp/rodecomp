@@ -630,27 +630,27 @@ void UIWindowMgr::SaveVisibleWindowIds() {
   this->savedWindowIds.clear();
   for (auto it = this->rendered.begin(); it != this->rendered.end(); ++it) {
     int id = (*it)->geometry.id;
-    if (id == 8) {
+    if (id == WID_ITEMWND) {
       if (this->itemWndInfo.visible) {
         this->savedWindowIds.push_back(id);
       }
-    } else if (id == 10) {
+    } else if (id == WID_EQUIPWND) {
       if (this->equipWndInfo.visible) {
         this->savedWindowIds.push_back(id);
       }
-    } else if (id == 11) {
+    } else if (id == WID_STATUSWND) {
       if (this->statusWndInfo.visible) {
         this->savedWindowIds.push_back(id);
       }
-    } else if (id == 13) {
+    } else if (id == WID_OPTIONWND) {
       if (this->optionWndInfo.visible) {
         this->savedWindowIds.push_back(id);
       }
-    } else if (id == 37) {
+    } else if (id == WID_SKILLLISTWND) {
       if (this->skillListWndVisible) {
         this->savedWindowIds.push_back(id);
       }
-    } else if (id == 321) {
+    } else if (id == WID_RENEWQUESTWND) {
       if (this->questWndVisible) {
         this->savedWindowIds.push_back(id);
       }
@@ -662,23 +662,23 @@ void UIWindowMgr::SaveVisibleWindowIds() {
       if (this->questWndVisible) {
         this->savedWindowIds.push_back(id);
       }
-    } else if ((id == 69 || id == 34) && this->messengerGroupWndInfo.visible) {
+    } else if ((id == WID_MESSENGERWND || id == WID_MESSENGERGROUPWND) && this->messengerGroupWndInfo.visible) {
       this->savedWindowIds.push_back(id);
-    } else if (id == 271) {
+    } else if (id == WID_ACHTRACINGWND) {
       if (g_session.HasTrackedAchievements() == true) {
         this->savedWindowIds.push_back(id);
       }
-    } else if (id == 286) {
+    } else if (id == WID_MACROREPORTERWND) {
       if (this->macroReporterVisible == true) {
         this->savedWindowIds.push_back(id);
       }
-    } else if (id == 10014) {
+    } else if (id == WID_GAMESETTINGSUI) {
       if (g_session.lowMemory && g_session.performanceWarningEnabled && g_effectDetailLevel == 2 && g_textureDetailLevel == 2) {
         this->savedWindowIds.push_back(id);
       }
-    } else if (id == 301) {
+    } else if (id == WID_MINIPARTYWND) {
       for (auto entry = this->savedWindowIds.begin(); entry != this->savedWindowIds.end(); ++entry) {
-        if (*entry == 301) {
+        if (*entry == WID_MINIPARTYWND) {
           this->savedWindowIds.erase(entry);
           break;
         }

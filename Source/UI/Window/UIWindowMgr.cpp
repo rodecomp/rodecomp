@@ -333,10 +333,10 @@ void UIWindowMgr::DrawWindows() {
 
   for (auto entry = this->rendered.begin(); entry != this->rendered.end(); ++entry) {
     UIWindow* window = *entry;
-    if (window->geometry.visible != 0 && (this->macroBlackListCheckWnd == nullptr || window->geometry.id == 359)) {
+    if (window->geometry.visible != 0 && (this->macroBlackListCheckWnd == nullptr || window->geometry.id == WID_MACROBLACKLISTCHECKWND)) {
       g_renderDiagnosticLine = 3783;
       g_renderDiagnosticFile = g_windowManagerDiagnosticFile;
-      if (window->geometry.id == 189) {
+      if (window->geometry.id == WID_MERCHANTSHOPTITLE) {
         window->Invalidate();
       }
 
@@ -1017,7 +1017,7 @@ void UIWindowMgr::ClearMapWindows() {
       }
 
       UIWindow*& window = *entry;
-      if (this->chatWnd == window || window == this->macroDetectorWnd || window->geometry.id == 67) {
+      if (this->chatWnd == window || window == this->macroDetectorWnd || window->geometry.id == WID_WHISPERWND) {
         ++entry;
         continue;
       }
@@ -1202,10 +1202,10 @@ int UIWindowMgr::ShowWhisperFrom(const char* name, const char* text, int color, 
   if ((this->modal == nullptr || this->navigationWnd == window) && !this->LookupWindow(WID_NEWMAKECHARWND) && !this->LookupWindow(WID_MAKECHARWND) && !this->LookupWindow(WID_SECONDPASSWORDINPUTWND) &&
       !this->LookupWindow(WID_SECONDPASSWORDEDITWND)) {
     int companion = -1;
-    if (window->geometry.id == 12) {
+    if (window->geometry.id == WID_ITEMCOLLECTIONWND) {
       companion = 234;
     }
-    if (window->geometry.id == 82) {
+    if (window->geometry.id == WID_COMBINEDCARDITEMCOLLECTIONWND) {
       companion = 250;
     }
 
@@ -1322,7 +1322,7 @@ void UIWindowMgr::AddRenderedFront(UIWindow* window) {
 // FUNCTION: fn_17129
 __declspec(noinline) void UIWindowMgr::ShowWindows189(unsigned char show) {
   for (auto it = this->rendered.begin(); it != this->rendered.end(); ++it) {
-    if ((*it)->geometry.id != 189) {
+    if ((*it)->geometry.id != WID_MERCHANTSHOPTITLE) {
       continue;
     }
 
@@ -1396,7 +1396,7 @@ void UIWindowMgr::SendMsgToNamedWindow(const char* name) {
 // FUNCTION: fn_17267
 void UIWindowMgr::SetWindows189Visible(unsigned char show) {
   for (auto it = this->rendered.begin(); this->rendered.end() != it; ++it) {
-    if ((*it)->geometry.id == 189) {
+    if ((*it)->geometry.id == WID_MERCHANTSHOPTITLE) {
       (*it)->Show(show);
     }
   }
@@ -1751,7 +1751,7 @@ void UIWindowMgr::CycleWindowVisibility(int) {
   const int state = this->windowVisibilityState;
   if (state == 0) {
     if (this->basicInfoWnd) {
-      this->basicInfoWnd->SendMsg(nullptr, UM_COMMAND, 222, 0, 0, 0);
+      this->basicInfoWnd->SendMsg(nullptr, UM_COMMAND, BASICINFO_BUTTON_CLOSE_ALL, 0, 0, 0);
     }
     if (this->hiddenWindows.size() == 0) {
       for (std::list<UIWindow*>::iterator it = this->rendered.begin(); it != this->rendered.end(); ++it) {
@@ -1779,7 +1779,7 @@ void UIWindowMgr::CycleWindowVisibility(int) {
     }
     if (closed) {
       if (this->basicInfoWnd) {
-        this->basicInfoWnd->SendMsg(nullptr, UM_COMMAND, 222, 0, 0, 0);
+        this->basicInfoWnd->SendMsg(nullptr, UM_COMMAND, BASICINFO_BUTTON_CLOSE_ALL, 0, 0, 0);
       }
       return;
     }
@@ -1814,7 +1814,7 @@ void UIWindowMgr::CycleWindowVisibility(int) {
     if (closed) {
       this->ShowWindows189(0);
       if (this->basicInfoWnd) {
-        this->basicInfoWnd->SendMsg(nullptr, UM_COMMAND, 222, 0, 0, 0);
+        this->basicInfoWnd->SendMsg(nullptr, UM_COMMAND, BASICINFO_BUTTON_CLOSE_ALL, 0, 0, 0);
       }
       return;
     }
@@ -1823,7 +1823,7 @@ void UIWindowMgr::CycleWindowVisibility(int) {
       (*it)->Show(1);
     }
     for (std::list<UIWindow*>::iterator it = this->rendered.begin(); it != this->rendered.end(); ++it) {
-      if ((*it)->geometry.id == 189) {
+      if ((*it)->geometry.id == WID_MERCHANTSHOPTITLE) {
         if (!g_serviceOptions.Get(TT_SHOW_MERCHANT_SHOP_ON_OFF)) {
           (*it)->Show(0);
         } else {
@@ -1895,7 +1895,7 @@ int UIWindowMgr::SendNotice(int selector, std::intptr_t a, std::intptr_t b, std:
       window->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->m_whisperPlacement), 0, 0, 0);
       window->Show(1);
       window->m_target = name;
-      window->SetId(67);
+      window->SetId(WID_WHISPERWND);
       if (b == 0) {
         window->m_name = name;
       } else {
@@ -4188,17 +4188,17 @@ void UIWindowMgr::ShowWaitDBSaveWindow() {
   this->waitDBSaveWnd = new UIWaitDBSaveWnd();
   this->waitDBSaveWnd->SetSize(g_renderer->viewport.width, g_renderer->viewport.height);
   this->waitDBSaveWnd->Move(0, 0);
-  this->waitDBSaveWnd->SetId(10024);
+  this->waitDBSaveWnd->SetId(WID_WAITDBSAVEWND);
   this->rendered.push_back(this->waitDBSaveWnd);
 
   UIWindow* window = this->waitDBSaveWnd;
   if (window && (this->modal == nullptr || this->navigationWnd == window) && !this->LookupWindow(WID_NEWMAKECHARWND) && !this->LookupWindow(WID_MAKECHARWND) &&
       !this->LookupWindow(WID_SECONDPASSWORDINPUTWND) && !this->LookupWindow(WID_SECONDPASSWORDEDITWND)) {
     int companion = -1;
-    if (window->geometry.id == 12) {
+    if (window->geometry.id == WID_ITEMCOLLECTIONWND) {
       companion = 234;
     }
-    if (window->geometry.id == 82) {
+    if (window->geometry.id == WID_COMBINEDCARDITEMCOLLECTIONWND) {
       companion = 250;
     }
 
@@ -4370,7 +4370,7 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
     break;
   case HK_SITORSTAND + 100:
     if (g_modeMgr.currentMode) {
-      g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, 0x16, 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_PROCESS_TALK_TYPE, TT_EX_SIT, 0, 0, 0);
     }
     break;
   case HK_MINIMAP_ONOFF + 100:
@@ -4517,7 +4517,7 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
     break;
   case HK_REPLAY_ONOFF + 100:
     if (UIWindow* window = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
-      window->SendMsg(nullptr, UM_COMMAND, 0x18F, 0, 0, 0);
+      window->SendMsg(nullptr, UM_COMMAND, MENUICON_REC, 0, 0, 0);
     }
     break;
   case HK_REPLAY_STARTSTOP + 100:
@@ -4748,7 +4748,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
         this->EnsureWindow(WID_STATUSWND);
       }
       if (this->optionWndInfo.visible) {
-        this->EnsureWindow(13);
+        this->EnsureWindow(WID_OPTIONWND);
       }
       if (this->skillListWndVisible) {
         this->EnsureWindow(WID_SKILLLISTWND);
@@ -4863,7 +4863,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
   case WID_ITEMWND:
     window = this->itemWnd;
     if (window == nullptr) {
-      this->RecordWindowPacket(8);
+      this->RecordWindowPacket(WID_ITEMWND);
       window = this->itemWnd = new UIItemWnd();
       window->SetSize(280, 120);
       window->Move(0, 120);
@@ -6305,7 +6305,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     break;
   case WID_NAVIGATIONV4WND:
     if (this->navigationWnd == nullptr) {
-      this->RecordWindowPacket(203);
+      this->RecordWindowPacket(WID_NAVIGATIONV4WND);
       g_navigationManager.hideWindow = false;
       window = this->navigationWnd = new UINavigationV4Wnd();
       window->SetSize(272, 338);
@@ -6407,7 +6407,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window = this->subChatHistoryWnd = new UISubChatHisWnd();
       window->SetSize(300, 95);
       this->AddRendered(window);
-      this->subChatHistoryWnd->SetId(130);
+      this->subChatHistoryWnd->SetId(WID_SUBCHATHISWND);
       this->subChatHistoryWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->subChatHisWndInfo[0].x), 0, 0, 0);
     }
     window->Show(0);
@@ -6418,7 +6418,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
       window = this->secondSubChatHistoryWnd = new UISubChatHisWnd();
       window->SetSize(300, 95);
       this->AddRendered(window);
-      this->secondSubChatHistoryWnd->SetId(131);
+      this->secondSubChatHistoryWnd->SetId(WID_SUBCHATHISWND2);
       this->secondSubChatHistoryWnd->SendMsg(nullptr, UM_SETINFO, reinterpret_cast<std::intptr_t>(&this->subChatHisWndInfo[1].x), 0, 0, 0);
     }
     window->Show(0);
@@ -7146,7 +7146,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     }
     break;
   case WID_RENEWQUESTWND:
-    this->RecordWindowPacket(321);
+    this->RecordWindowPacket(WID_RENEWQUESTWND);
     window = this->LookupWindow(static_cast<WindowId>(id));
     if (window == nullptr) {
       window = new UIRenewQuestWnd();
@@ -7161,7 +7161,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
     this->questWndVisible = 1;
     break;
   case WID_RENEWDETAILQUESTINFOWND:
-    this->RecordWindowPacket(321);
+    this->RecordWindowPacket(WID_RENEWQUESTWND);
     window = this->LookupWindow(static_cast<WindowId>(id));
     if (window == nullptr) {
       window = new UIRenewDetailQuestInfoWnd();
