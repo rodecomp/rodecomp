@@ -1542,7 +1542,7 @@ bool CUIRadioItem::IsChecked() {
 void CUIRadioItem::OnCreate(int width, int height) {
   this->radioButton = new CUIRadioButton();
   this->radioButton->SetSize(12, 12);
-  this->radioButton->SetOnSelect([this](CUIRadioButton* button) {
+  this->radioButton->onSelect = [this](CUIRadioButton* button) {
     if (this->parent) {
       for (UIWindow* child : this->parent->m_children) {
         CUIRadioItem* item = dynamic_cast<CUIRadioItem*>(child);
@@ -1555,7 +1555,7 @@ void CUIRadioItem::OnCreate(int width, int height) {
     if (this->onSelect) {
       this->onSelect(this);
     }
-  });
+  };
   this->radioButton->disabled = 0;
   this->radioButton->Invalidate();
   {
