@@ -1487,7 +1487,7 @@ void CEffectPrim::PrimSMA() {
     if (this->state.slots[index].process == 1) {
       const float x = this->state.deltaPos.x - this->render.position.x;
       const float z = this->state.deltaPos.z - this->render.position.z;
-      Get_Angle(x, z, &this->state.slots[index].rotStart);
+      this->Get_Angle(x, z, &this->state.slots[index].rotStart);
     }
 
     this->state.slots[index].vecBNow.x += this->state.slots[index].height[1] * g_cosTable[this->state.slots[index].rotStart];
@@ -1609,7 +1609,7 @@ void CEffectPrim::PrimShieldBoomerang() {
   if (this->state.slots[0].process == 1) {
     const float rx = this->state.deltaPos.x - this->state.slots[0].vecBNow.x;
     const float rz = this->state.deltaPos.z - this->state.slots[0].vecBNow.z;
-    Get_Angle(rx, rz, &this->state.slots[0].rotStart);
+    this->Get_Angle(rx, rz, &this->state.slots[0].rotStart);
   }
 
   if (this->state.slots[0].flag1[1] == 0) {
@@ -1641,7 +1641,7 @@ void CEffectPrim::PrimShieldBoomerang() {
     const float rx = this->render.position.x - this->state.slots[0].vecBNow.x;
     const float rz = this->render.position.z - this->state.slots[0].vecBNow.z;
     std::int16_t angle;
-    Get_Angle(rx, rz, &angle);
+    this->Get_Angle(rx, rz, &angle);
 
     if (this->state.slots[0].rotStart < angle - 4 || this->state.slots[0].rotStart > angle + 4) {
       this->state.slots[0].rotStart += 5;
@@ -1811,7 +1811,7 @@ void CEffectPrim::PrimTeiHit2() {
     if (this->state.slots[ec].process == 1) {
       const float rx = this->state.deltaPos.x - this->render.position.x;
       const float rz = this->state.deltaPos.z - this->render.position.z;
-      Get_Angle(rx, rz, &this->state.slots[ec].rotStart);
+      this->Get_Angle(rx, rz, &this->state.slots[ec].rotStart);
       this->state.slots[ec].rotStart += Random(60) - 30;
 
       if (this->state.slots[ec].rotStart >= 360) {
@@ -2034,7 +2034,7 @@ void CEffectPrim::PrimTanji2() {
   if (this->state.slots[0].process == 1) {
     const float rx = this->state.deltaPos.x - this->state.slots[0].vecBNow.x;
     const float rz = this->state.deltaPos.z - this->state.slots[0].vecBNow.z;
-    Get_Angle(rx, rz, &this->state.slots[0].rotStart);
+    this->Get_Angle(rx, rz, &this->state.slots[0].rotStart);
   }
 
   this->state.slots[0].vecBNow.x += this->state.slots[0].height[1] * g_cosTable[this->state.slots[0].rotStart];
@@ -2205,7 +2205,7 @@ void CEffectPrim::PrimThrowItem() {
   if (slot.process == 1) {
     const float x = this->state.deltaPos.x - slot.vecBNow.x;
     const float z = this->state.deltaPos.z - slot.vecBNow.z;
-    Get_Angle(x, z, &slot.rotStart);
+    this->Get_Angle(x, z, &slot.rotStart);
   }
 
   float progress = static_cast<float>(slot.process);
@@ -3795,7 +3795,7 @@ void CEffectPrim::PrimSTIN4() {
     }
 
     if (slot.process == 1) {
-      Get_Angle(target->render.position.x - this->render.position.x, target->render.position.z - this->render.position.z, &slot.rotStart);
+      this->Get_Angle(target->render.position.x - this->render.position.x, target->render.position.z - this->render.position.z, &slot.rotStart);
       if (slot.flag1[2] == 0) {
         slot.rotStart += ClampedRandom(21) + 25;
 
@@ -3822,7 +3822,7 @@ void CEffectPrim::PrimSTIN4() {
     if (slot.process > 5) {
       if (slot.flag1[1] == 0) {
         std::int16_t heading;
-        Get_Angle(target->render.position.x - slot.vecBNow.x, target->render.position.z - slot.vecBNow.z, &heading);
+        this->Get_Angle(target->render.position.x - slot.vecBNow.x, target->render.position.z - slot.vecBNow.z, &heading);
 
         if (slot.rotStart >= heading - 3 && slot.rotStart <= heading + 3) {
           slot.flag1[1] = 10;
@@ -6851,7 +6851,7 @@ void CEffectPrim::PrimSTIN3() {
     }
 
     if (slot.process == 1) {
-      Get_Angle(target->render.position.x - this->render.position.x, target->render.position.z - this->render.position.z, &slot.rotStart);
+      this->Get_Angle(target->render.position.x - this->render.position.x, target->render.position.z - this->render.position.z, &slot.rotStart);
 
       if (slot.flag1[2] == 0) {
         slot.rotStart += 90;
@@ -6879,7 +6879,7 @@ void CEffectPrim::PrimSTIN3() {
     if (slot.process > 5) {
       if (slot.flag1[1] == 0) {
         std::int16_t heading;
-        Get_Angle(target->render.position.x - slot.vecBNow.x, target->render.position.z - slot.vecBNow.z, &heading);
+        this->Get_Angle(target->render.position.x - slot.vecBNow.x, target->render.position.z - slot.vecBNow.z, &heading);
 
         if (slot.rotStart < heading - 3 || slot.rotStart > heading + 3) {
           if (slot.flag1[2] == 0) {
@@ -6921,7 +6921,7 @@ void CEffectPrim::PrimSTIN3() {
         }
       } else if (slot.flag1[1] == 20) {
         std::int16_t heading;
-        Get_Angle(this->render.position.x - slot.vecBNow.x, this->render.position.z - slot.vecBNow.z, &heading);
+        this->Get_Angle(this->render.position.x - slot.vecBNow.x, this->render.position.z - slot.vecBNow.z, &heading);
 
         if (slot.rotStart < heading - 3 || slot.rotStart > heading + 3) {
           if (slot.flag1[2] == 0) {
@@ -9059,7 +9059,7 @@ bool CEffectPrim::OnProcess() {
         }
 
         if (process == 0) {
-          Get_Angle(this->state.deltaPos.x - this->render.position.x, this->state.deltaPos.z - this->render.position.z, &slot.rotStart);
+          this->Get_Angle(this->state.deltaPos.x - this->render.position.x, this->state.deltaPos.z - this->render.position.z, &slot.rotStart);
           std::int16_t turn;
 
           if (slot.flag1[1] == 1) {
@@ -9150,7 +9150,7 @@ bool CEffectPrim::OnProcess() {
       }
 
       if (slot.process == 1) {
-        Get_Angle(this->state.deltaPos.x - this->render.position.x, this->state.deltaPos.z - this->render.position.z, &slot.rotStart);
+        this->Get_Angle(this->state.deltaPos.x - this->render.position.x, this->state.deltaPos.z - this->render.position.z, &slot.rotStart);
       } else if (slot.process < 11) {
         slot.alphaB += 25;
 
@@ -9207,7 +9207,7 @@ bool CEffectPrim::OnProcess() {
       }
 
       if (slot.process == 1) {
-        Get_Angle(this->state.deltaPos.x - this->render.position.x, this->state.deltaPos.z - this->render.position.z, &slot.rotStart);
+        this->Get_Angle(this->state.deltaPos.x - this->render.position.x, this->state.deltaPos.z - this->render.position.z, &slot.rotStart);
       } else if (slot.process < 11) {
         slot.alphaB += 6;
 

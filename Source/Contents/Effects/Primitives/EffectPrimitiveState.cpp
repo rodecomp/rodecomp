@@ -48,14 +48,18 @@ void CEffectPrim::GetColorOverride(unsigned char* red, unsigned char* green, uns
 
 // OFFSET: 0x00BAE4B0
 // FUNCTION: fn_19766
-void __stdcall Get_Angle(float x, float y, std::int16_t* angle) {
+void CEffectPrim::Get_Angle(float x, float y, std::int16_t* angle) {
   const float length = SquareRoot(x * x + y * y);
   const float normalY = y / length;
   const float normalX = x / length;
 
   for (std::int16_t index = 0; index <= 180; ++index) {
     if (normalX >= g_cosTable[index]) {
-      *angle = normalY >= 0.0f ? index : 360 - index;
+      if (normalY >= 0.0f) {
+        *angle = index;
+      } else {
+        *angle = 360 - index;
+      }
       return;
     }
   }

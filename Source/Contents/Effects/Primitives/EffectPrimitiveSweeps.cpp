@@ -551,7 +551,7 @@ void CEffectPrim::RenderJitterSweeps(matrix& wtm) {
       end.y = depth * g_sinTable[static_cast<short>(height2)] * this->state.slots[layer].vecTNow.x + (jitterY[i + 1] - 2.0f);
       end.z = g_sinTable[this->state.slots[layer].riseAngle] * radius2 + jitterZ[i + 1];
       short facing = static_cast<short>(height2);
-      Get_Angle(start.x - end.x, start.z - end.z, &facing);
+      this->Get_Angle(start.x - end.x, start.z - end.z, &facing);
       start += this->state.slots[layer].vecBNow;
       end += this->state.slots[layer].vecBNow;
       facing += 90;

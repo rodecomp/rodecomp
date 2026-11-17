@@ -185,8 +185,6 @@ struct EffectPrimitiveObject {
   bool AdvanceFrame();
 };
 
-void __stdcall Get_Angle(float x, float y, std::int16_t* angle);
-
 static_assert(sizeof(EffectPrimitiveRecord) == 140);
 static_assert(sizeof(EffectPrimitiveSlot) == 0xB4);
 #if defined(_WIN32) && !defined(_WIN64)

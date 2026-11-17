@@ -1323,7 +1323,7 @@ void CRagEffect::AirTexture(const char* name) {
   EffectPrimitiveSlot& slot = this->state.lastPrim->state.slots[0];
   slot.vecBNow = this->state.deltaPos;
   this->state.lastPrim->state.slots[0].fullDisplayAngle = static_cast<std::int16_t>(ClampedRandom(360));
-  Get_Angle(
+  this->state.lastPrim->Get_Angle(
     this->state.deltaPos.x - this->render.position.x, this->state.deltaPos.z - this->render.position.z, &this->state.lastPrim->state.slots[0].riseAngle
   );
   this->state.lastPrim->state.slots[0].riseAngle += 90;
@@ -3070,7 +3070,7 @@ void CRagEffect::TexturedBeam(char flag, const char* name) {
   this->state.lastPrim->state.slots[0].height[0] = 50.0f;
   this->state.lastPrim->state.slots[0].maxHeight = 5.0f;
   this->state.lastPrim->state.slots[0].height[2] = 80.0f;
-  Get_Angle(
+  this->state.lastPrim->Get_Angle(
     this->state.deltaPos.x - this->render.position.x, this->state.deltaPos.z - this->render.position.z, &this->state.lastPrim->state.slots[0].riseAngle
   );
   this->state.lastPrim->state.slots[0].alphaB = 0;
@@ -4144,7 +4144,7 @@ void CRagEffect::SlashFan(std::int16_t reverse) {
     this->state.lastPrim->state.slots[index].distance = 100.0f;
     this->state.lastPrim->state.slots[index].maxHeight = 1.0f;
     this->state.lastPrim->state.slots[index].height[0] = reverse == 0 ? -15.0f - static_cast<float>(index) * 2.5f : static_cast<float>(index) * 2.5f + 15.0f;
-    Get_Angle(
+    this->state.lastPrim->Get_Angle(
       this->state.deltaPos.x - this->render.position.x, this->state.deltaPos.z - this->render.position.z, &this->state.lastPrim->state.slots[index].riseAngle
     );
 
@@ -4761,7 +4761,7 @@ void CRagEffect::TexturedSwirl(unsigned char clockwise, const char* name) {
     slot.height[1] = static_cast<float>(ClampedRandom(200));
     slot.height[2] = static_cast<float>(ClampedRandom(31)) + 40.0f;
     slot.height[3] = static_cast<float>(ClampedRandom(11)) * 0.1f + 1.0f;
-    Get_Angle(this->state.deltaPos.x - this->render.position.x, this->state.deltaPos.z - this->render.position.z, &slot.riseAngle);
+    this->state.lastPrim->Get_Angle(this->state.deltaPos.x - this->render.position.x, this->state.deltaPos.z - this->render.position.z, &slot.riseAngle);
     slot.alphaB = 0;
   }
 }
@@ -5578,7 +5578,7 @@ void CRagEffect::LineStreak(std::int16_t kind) {
     this->state.lastPrim->state.slots[index].height[2] = static_cast<float>(ClampedRandom(31)) + 20.0f;
     this->state.lastPrim->state.slots[index].flag1[0] = static_cast<char>(ClampedRandom(3) + 0);
     this->state.lastPrim->state.slots[index].height[3] = static_cast<float>(ClampedRandom(21)) * 0.1f + 1.5f;
-    Get_Angle(
+    this->state.lastPrim->Get_Angle(
       this->state.deltaPos.x - this->render.position.x, this->state.deltaPos.z - this->render.position.z, &this->state.lastPrim->state.slots[index].riseAngle
     );
     this->state.lastPrim->state.slots[index].alphaB = 0;
@@ -5626,7 +5626,7 @@ void CRagEffect::LineStreakKind(std::int16_t kind) {
       this->state.lastPrim->state.slots[index].flag1[0] = static_cast<char>(ClampedRandom(3) + 30);
       this->state.lastPrim->state.slots[index].height[3] = static_cast<float>(ClampedRandom(21)) * 0.1f + 1.5f;
     }
-    Get_Angle(
+    this->state.lastPrim->Get_Angle(
       this->state.deltaPos.x - this->render.position.x, this->state.deltaPos.z - this->render.position.z, &this->state.lastPrim->state.slots[index].riseAngle
     );
     this->state.lastPrim->state.slots[index].alphaB = 0;
@@ -5754,7 +5754,7 @@ void CRagEffect::ElectricArc(char kind, std::int16_t) {
     this->state.lastPrim->state.slots[index].process = 0;
     this->state.lastPrim->state.slots[index].maxHeight = 0.1f;
     this->state.lastPrim->state.slots[index].alphaB = 0;
-    Get_Angle(
+    this->state.lastPrim->Get_Angle(
       this->state.deltaPos.x - this->render.position.x, this->state.deltaPos.z - this->render.position.z, &this->state.lastPrim->state.slots[index].riseAngle
     );
     this->state.lastPrim->state.slots[index].distance = 0.0f;
@@ -6051,7 +6051,7 @@ void CRagEffect::LineStreakTextured(std::int16_t kind, const char* name) {
       this->state.lastPrim->state.slots[index].flag1[0] = static_cast<char>(std::max(0, rand() % 3) + 36);
     }
 
-    Get_Angle(
+    this->state.lastPrim->Get_Angle(
       this->state.deltaPos.x - this->render.position.x, this->state.deltaPos.z - this->render.position.z, &this->state.lastPrim->state.slots[index].riseAngle
     );
     this->state.lastPrim->state.slots[index].alphaB = 0;
@@ -6407,7 +6407,7 @@ void CRagEffect::TexturedFanSweep(const char* name, char wide) {
     this->state.lastPrim->state.slots[index].life = 1;
     this->state.lastPrim->state.slots[index].process = index * -8;
     this->state.lastPrim->state.slots[index].maxHeight = wide ? 20.0f : 30.0f;
-    Get_Angle(
+    this->state.lastPrim->Get_Angle(
       this->state.deltaPos.x - this->render.position.x, this->state.deltaPos.z - this->render.position.z, &this->state.lastPrim->state.slots[index].rotStart
     );
     this->state.lastPrim->state.slots[index].fullDisplayAngle = 315;
@@ -6453,7 +6453,7 @@ void CRagEffect::BubbleFanSweep(const char*, char rising) {
     this->state.lastPrim->state.slots[index].life = 1;
     this->state.lastPrim->state.slots[index].process = index * -8;
     this->state.lastPrim->state.slots[index].maxHeight = 30.0f;
-    Get_Angle(
+    this->state.lastPrim->Get_Angle(
       this->state.deltaPos.x - this->render.position.x, this->state.deltaPos.z - this->render.position.z, &this->state.lastPrim->state.slots[index].rotStart
     );
     this->state.lastPrim->state.slots[index].fullDisplayAngle = 315;
@@ -7206,7 +7206,7 @@ void CRagEffect::TexturedForkBolt(const char* name, char flag) {
   this->state.lastPrim->state.slots[0].maxHeight = static_cast<float>(ClampedRandom(21)) * 0.01f + 0.8f;
   this->state.lastPrim->state.slots[0].distance = static_cast<float>(ClampedRandom(21)) * 0.1f + 3.0f;
   this->state.lastPrim->state.slots[0].process = 0;
-  Get_Angle(
+  this->state.lastPrim->Get_Angle(
     this->state.deltaPos.x - this->render.position.x, this->state.deltaPos.z - this->render.position.z, &this->state.lastPrim->state.slots[0].riseAngle
   );
   this->state.lastPrim->state.slots[0].vecBPre.x = x - this->render.position.x;
@@ -7673,7 +7673,7 @@ void CRagEffect::CloudBurst() {
     for (int i = 0; i < 4; ++i) {
       this->state.lastPrim->state.slots[i].life = 1;
       this->state.lastPrim->state.slots[i].process = -ClampedRandom(20);
-      Get_Angle(targetX - x, targetZ - z, &this->state.lastPrim->state.slots[i].rotStart);
+      this->state.lastPrim->Get_Angle(targetX - x, targetZ - z, &this->state.lastPrim->state.slots[i].rotStart);
       this->state.lastPrim->state.slots[i].alphaB = 0;
       this->state.lastPrim->state.slots[i].vecBNow.x = static_cast<float>(ClampedRandom(100)) * 0.06f - 3.0f + this->render.position.x;
       this->state.lastPrim->state.slots[i].vecBNow.z = static_cast<float>(ClampedRandom(100)) * 0.06f - 3.0f + this->render.position.z;
@@ -7721,7 +7721,7 @@ void CRagEffect::CloudSpread() {
     for (int i = 0; i < 4; ++i) {
       this->state.lastPrim->state.slots[i].life = 1;
       this->state.lastPrim->state.slots[i].process = -ClampedRandom(20);
-      Get_Angle(dx, dz, &this->state.lastPrim->state.slots[i].rotStart);
+      this->state.lastPrim->Get_Angle(dx, dz, &this->state.lastPrim->state.slots[i].rotStart);
       this->state.lastPrim->state.slots[i].alphaB = 0;
       this->state.lastPrim->state.slots[i].vecBNow.x = static_cast<float>(ClampedRandom(100)) * 0.3f - 15.0f + this->render.position.x;
       this->state.lastPrim->state.slots[i].vecBNow.z = static_cast<float>(ClampedRandom(100)) * 0.3f - 15.0f + this->render.position.z;
@@ -8004,7 +8004,7 @@ void CRagEffect::RocketPunch() {
   this->state.lastPrim->SetSpriteName("이팩트\\남_로켓트펀치.spr");
   this->state.lastPrim->SetActionName("이팩트\\남_로켓트펀치.act");
   std::int16_t angle;
-  Get_Angle(this->render.position.x - this->state.deltaPos.x, this->render.position.z - this->state.deltaPos.z, &angle);
+  this->state.lastPrim->Get_Angle(this->render.position.x - this->state.deltaPos.x, this->render.position.z - this->state.deltaPos.z, &angle);
   const CView* camera = g_modeMgr.GetGameMode()->camera;
   std::int16_t direction = static_cast<std::int16_t>(static_cast<int>(camera->camera.yaw) + angle) % 360;
   if (direction < 0) {
@@ -8057,7 +8057,7 @@ void CRagEffect::GreenRocketPunch() {
   this->state.lastPrim->SetSpriteName("이팩트\\남_로켓트펀치.spr");
   this->state.lastPrim->SetActionName("이팩트\\남_로켓트펀치.act");
   std::int16_t angle;
-  Get_Angle(this->render.position.x - this->state.deltaPos.x, this->render.position.z - this->state.deltaPos.z, &angle);
+  this->state.lastPrim->Get_Angle(this->render.position.x - this->state.deltaPos.x, this->render.position.z - this->state.deltaPos.z, &angle);
   const CView* camera = g_modeMgr.GetGameMode()->camera;
   std::int16_t direction = static_cast<std::int16_t>(static_cast<int>(camera->camera.yaw) + angle) % 360;
   if (direction < 0) {
@@ -8494,7 +8494,7 @@ void CRagEffect::AlphaCenterStream() {
   for (int i = 0; i < 4; ++i) {
     this->state.lastPrim->state.slots[i].life = 1;
     this->state.lastPrim->state.slots[i].process = -30 - ClampedRandom(110);
-    Get_Angle(dx, dz, &this->state.lastPrim->state.slots[i].rotStart);
+    this->state.lastPrim->Get_Angle(dx, dz, &this->state.lastPrim->state.slots[i].rotStart);
     this->state.lastPrim->state.slots[i].alphaB = 0;
     this->state.lastPrim->state.slots[i].vecBNow.x = static_cast<float>(ClampedRandom(100)) * 0.08f - 4.0f + this->render.position.x;
     this->state.lastPrim->state.slots[i].vecBNow.z = static_cast<float>(ClampedRandom(100)) * 0.08f - 4.0f + this->render.position.z;
@@ -8533,7 +8533,7 @@ void CRagEffect::CloudDrift() {
     for (int i = 0; i < 4; ++i) {
       this->state.lastPrim->state.slots[i].life = 1;
       this->state.lastPrim->state.slots[i].process = -ClampedRandom(20);
-      Get_Angle(dx, dz, &this->state.lastPrim->state.slots[i].rotStart);
+      this->state.lastPrim->Get_Angle(dx, dz, &this->state.lastPrim->state.slots[i].rotStart);
       this->state.lastPrim->state.slots[i].alphaB = 0;
       this->state.lastPrim->state.slots[i].vecBNow.x = static_cast<float>(ClampedRandom(100)) * 0.06f - 3.0f + this->render.position.x;
       this->state.lastPrim->state.slots[i].vecBNow.z = static_cast<float>(ClampedRandom(100)) * 0.06f - 3.0f + this->render.position.z;
@@ -8721,7 +8721,7 @@ void CRagEffect::TexturedSpinShards(const char* name, char kind) {
     }
 
     slot.process = 0;
-    Get_Angle(this->state.deltaPos.x - this->render.position.x, this->state.deltaPos.z - this->render.position.z, &slot.riseAngle);
+    prim->Get_Angle(this->state.deltaPos.x - this->render.position.x, this->state.deltaPos.z - this->render.position.z, &slot.riseAngle);
     slot.vecBPre.z = z - this->render.position.z;
     slot.vecBPre.x = x - this->render.position.x;
     slot.vecBPre.y = y - this->render.position.y;
@@ -10514,7 +10514,7 @@ void CRagEffect::SnowDrift(char flag) {
     this->state.lastPrim->state.slots[index].height[8] = 0.0f;
     this->state.lastPrim->state.slots[index].alphaB = 0;
     this->state.lastPrim->state.deltaPos = this->state.deltaPos;
-    Get_Angle(this->render.position.x - this->state.deltaPos.x, this->render.position.z - this->state.deltaPos.z, &this->state.lastPrim->state.slots[index].riseAngle);
+    this->state.lastPrim->Get_Angle(this->render.position.x - this->state.deltaPos.x, this->render.position.z - this->state.deltaPos.z, &this->state.lastPrim->state.slots[index].riseAngle);
     this->state.lastPrim->state.slots[index].riseAngle += static_cast<std::int16_t>(rand() % 41 + 160);
 
     if (this->state.lastPrim->state.slots[index].riseAngle >= 360) {
@@ -10738,7 +10738,7 @@ void CRagEffect::AlphaCenterTrail() {
   for (int index = 0; index < 4; ++index) {
     this->state.lastPrim->state.slots[index].life = 1;
     this->state.lastPrim->state.slots[index].process = -45 - ClampedRandom(20);
-    Get_Angle(deltaX, deltaZ, &this->state.lastPrim->state.slots[index].rotStart);
+    this->state.lastPrim->Get_Angle(deltaX, deltaZ, &this->state.lastPrim->state.slots[index].rotStart);
     this->state.lastPrim->state.slots[index].alphaB = 0;
     this->state.lastPrim->state.slots[index].vecBNow.x = (static_cast<float>(ClampedRandom(100)) * 0.08f - 4.0f) + this->render.position.x;
     this->state.lastPrim->state.slots[index].vecBNow.z = (static_cast<float>(ClampedRandom(100)) * 0.08f - 4.0f) + this->render.position.z;
@@ -13270,7 +13270,7 @@ void CRagEffect::WhiteSparkRing(char kind) {
     }
 
     this->state.lastPrim->state.slots[index].alphaB = static_cast<std::int16_t>(ClampedRandom(121) + 125);
-    Get_Angle(
+    this->state.lastPrim->Get_Angle(
       this->render.position.x - this->state.deltaPos.x, this->render.position.z - this->state.deltaPos.z,
       &this->state.lastPrim->state.slots[index].riseAngle
     );
@@ -14318,7 +14318,7 @@ void CRagEffect::CHIMTO(char flag) {
   }
 
   std::int16_t angle;
-  Get_Angle(this->render.position.x - this->state.deltaPos.x, this->render.position.z - this->state.deltaPos.z, &angle);
+  this->state.lastPrim->Get_Angle(this->render.position.x - this->state.deltaPos.x, this->render.position.z - this->state.deltaPos.z, &angle);
   const CView* camera = g_modeMgr.GetGameMode()->camera;
   std::int16_t direction = static_cast<std::int16_t>(static_cast<int>(camera->camera.yaw) + angle) % 360;
   if (direction < 0) {
@@ -16613,7 +16613,7 @@ void CRagEffect::LineStreakLayered(short kind) {
       this->state.lastPrim->state.slots[i].height[3] = static_cast<float>(ClampedRandom(11)) * 0.1f + 1.0f;
     }
 
-    Get_Angle(
+    this->state.lastPrim->Get_Angle(
       this->state.deltaPos.x - this->render.position.x, this->state.deltaPos.z - this->render.position.z,
       &this->state.lastPrim->state.slots[i].riseAngle
     );
@@ -16667,7 +16667,7 @@ void CRagEffect::TorchRedRing(char kind) {
   this->state.lastPrim->state.slots[0].alphaB = 0;
   this->state.lastPrim->state.deltaPos = this->state.deltaPos;
 
-  Get_Angle(
+  this->state.lastPrim->Get_Angle(
     this->render.position.x - this->state.deltaPos.x, this->render.position.z - this->state.deltaPos.z,
     &this->state.lastPrim->state.slots[0].riseAngle
   );
@@ -18529,7 +18529,7 @@ void CRagEffect::TexturedClassChange(char kind) {
     this->state.lastPrim->SetSpriteName("이팩트\\m_ef02.spr");
     this->state.lastPrim->SetActionName("이팩트\\m_ef02.act");
     std::int16_t angle;
-    Get_Angle(this->render.position.x - this->state.deltaPos.x, this->render.position.z - this->state.deltaPos.z, &angle);
+    this->state.lastPrim->Get_Angle(this->render.position.x - this->state.deltaPos.x, this->render.position.z - this->state.deltaPos.z, &angle);
     const CView* camera = g_modeMgr.GetGameMode()->camera;
     angle = static_cast<std::int16_t>(static_cast<int>(camera->camera.yaw) + angle) % 360;
     if (angle < 0) {
@@ -18684,7 +18684,7 @@ void CRagEffect::TexturedClassChange(char kind) {
     this->state.lastPrim->SetSpriteName("이팩트\\스프레드.spr");
     this->state.lastPrim->SetActionName("이팩트\\스프레드.act");
     std::int16_t angle;
-    Get_Angle(this->render.position.x - this->state.deltaPos.x, this->render.position.z - this->state.deltaPos.z, &angle);
+    this->state.lastPrim->Get_Angle(this->render.position.x - this->state.deltaPos.x, this->render.position.z - this->state.deltaPos.z, &angle);
     const CView* camera = g_modeMgr.GetGameMode()->camera;
     angle = static_cast<std::int16_t>(static_cast<int>(camera->camera.yaw) + angle) % 360;
     if (angle < 0) {

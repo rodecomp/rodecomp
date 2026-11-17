@@ -1825,7 +1825,7 @@ void CEffectPrim::RenderHitLine3(matrix& wtm) {
       };
 
       std::int16_t angle;
-      Get_Angle(vecA.x - vecB.x, vecA.z - vecB.z, &angle);
+      this->Get_Angle(vecA.x - vecB.x, vecA.z - vecB.z, &angle);
       vecA += this->state.slots[ec].vecBNow;
       vecB += this->state.slots[ec].vecBNow;
       angle += 90;
@@ -1953,7 +1953,7 @@ void CEffectPrim::RenderHitLine(matrix& wtm) {
       };
 
       std::int16_t angle;
-      Get_Angle(vecA.x - vecB.x, vecA.z - vecB.z, &angle);
+      this->Get_Angle(vecA.x - vecB.x, vecA.z - vecB.z, &angle);
       vecA += this->state.slots[ec].vecBNow;
       vecB += this->state.slots[ec].vecBNow;
       angle = static_cast<std::int16_t>((angle + 90) % 360);

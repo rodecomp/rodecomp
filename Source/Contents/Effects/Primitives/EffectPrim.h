@@ -254,6 +254,7 @@ struct CEffectPrim : CRenderObject {
 
   void Initialize(CRagEffect& master, int type, float x, float y, float z);
   void GetColorOverride(unsigned char* red, unsigned char* green, unsigned char* blue);
+  void Get_Angle(float x, float y, std::int16_t* angle);
 
   /* 0138 */ EffectPrimitiveState state;
 };
