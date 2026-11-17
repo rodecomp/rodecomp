@@ -10442,14 +10442,17 @@ void UIEditCtrl3::DecodeLinkFields(const std::string& link, std::vector<int>& fi
         continue;
       }
 
-      if (kind == 7) {
+      switch (kind) {
+      case 7: {
         if (!value.empty()) {
           fields[field] = this->DecodeLinkNumber(value);
         }
 
         const int size = static_cast<int>(link.size());
         cardCount = this->DecodeLinkCards(fields, text, position, delimiters[7], size, 6);
-      } else if (kind == 9) {
+        break;
+      }
+      case 9: {
         ++optionCount;
         if (!value.empty()) {
           fields[field] = this->DecodeLinkNumber(value);
@@ -10457,8 +10460,13 @@ void UIEditCtrl3::DecodeLinkFields(const std::string& link, std::vector<int>& fi
 
         const int size = static_cast<int>(link.size());
         this->DecodeLinkOptions(options, text, position, size, delimiters[10], delimiters[11]);
-      } else if (!value.empty()) {
-        fields[field] = this->DecodeLinkNumber(value);
+        break;
+      }
+      default:
+        if (!value.empty()) {
+          fields[field] = this->DecodeLinkNumber(value);
+        }
+        break;
       }
 
       value.clear();
