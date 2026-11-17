@@ -347,7 +347,8 @@ void UISerachStoreInfoWnd::OnMouseHover(int x, int y) {
     }
 
     if (text.size() != 0) {
-      g_modeMgr.currentMode->ShowTooltip(text.c_str(), screenX, screenY, g_session.GetItemNameColor(item), 0, 1);
+      CMode* mode = g_modeMgr.currentMode;
+      mode->ShowTooltip(text.c_str(), screenX, screenY, g_session.GetItemNameColor(item), 0, 1);
     }
   }
 
