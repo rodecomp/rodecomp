@@ -15416,7 +15416,11 @@ void CRagEffect::TexturedMagicRing(char type) {
     this->state.lastPrim->state.slots[0].alphaB = 0;
     this->state.lastPrim->state.slots[0].distance = 7.0f;
     this->state.lastPrim->state.slots[0].riseAngle = 90;
-    this->state.lastPrim->state.slots[0].alphaT = static_cast<std::int16_t>(type == 1 ? -1 : 1400);
+    if (type == 1) {
+      this->state.lastPrim->state.slots[0].alphaT = -1;
+    } else {
+      this->state.lastPrim->state.slots[0].alphaT = 1400;
+    }
     this->state.lastPrim->state.slots[0].vecBNow.y = 0.0f;
     for (int i = 0; i < 21; ++i) {
       this->state.lastPrim->state.slots[0].height[i] = 0.0f;
@@ -15431,7 +15435,11 @@ void CRagEffect::TexturedMagicRing(char type) {
     this->state.lastPrim->state.slots[1].alphaB = 0;
     this->state.lastPrim->state.slots[1].distance = 5.5f;
     this->state.lastPrim->state.slots[1].riseAngle = 90;
-    this->state.lastPrim->state.slots[1].alphaT = static_cast<std::int16_t>(type == 1 ? -1 : 1400);
+    if (type == 1) {
+      this->state.lastPrim->state.slots[1].alphaT = -1;
+    } else {
+      this->state.lastPrim->state.slots[1].alphaT = 1400;
+    }
     this->state.lastPrim->state.slots[1].vecBNow.y = 0.0f;
     for (int i = 0; i < 21; ++i) {
       this->state.lastPrim->state.slots[1].height[i] = 0.0f;
@@ -15446,7 +15454,11 @@ void CRagEffect::TexturedMagicRing(char type) {
     this->state.lastPrim->state.slots[2].alphaB = 0;
     this->state.lastPrim->state.slots[2].distance = 4.0f;
     this->state.lastPrim->state.slots[2].riseAngle = 90;
-    this->state.lastPrim->state.slots[2].alphaT = static_cast<std::int16_t>(type == 1 ? -1 : 1400);
+    if (type == 1) {
+      this->state.lastPrim->state.slots[2].alphaT = -1;
+    } else {
+      this->state.lastPrim->state.slots[2].alphaT = 1400;
+    }
     this->state.lastPrim->state.slots[2].vecBNow.y = 0.0f;
     for (int i = 0; i < 21; ++i) {
       this->state.lastPrim->state.slots[2].height[i] = 0.0f;
