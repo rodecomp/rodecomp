@@ -16,7 +16,7 @@ struct TraditionalKeyMapping {
 // VTABLE: vt_01605
 struct CLanguageTC : CLanguageBase {
   /* 00B8 */ std::list<std::uint8_t> keys;
-  /* 00C0 */ std::array<TraditionalKeyMapping, 256> mappings;
+  /* 00C0 */ TraditionalKeyMapping mappings[256];
   /* 04C0 */ unsigned char keyStrokeEnabled;
   /* 04C1 */ std::uint8_t keyStroke;
   /* 04C2 */ unsigned char padding_04C2[2];
