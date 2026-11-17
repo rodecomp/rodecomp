@@ -184,12 +184,9 @@ void UIRoMapWnd::DrawKafraIcon(float x, float y) {
   }
 
   const int tick = static_cast<int>(timeGetTime() % 4000);
-  int step = 0;
-  if (tick != 0) {
-    step = tick / (4000 / count);
-  }
+  const int step = tick == 0 ? 0 : tick / (4000 / count);
   const int last = count > step ? step : count - 1;
-  const int frame = last < 0 ? 0 : last;
+  const int frame = last >= 0 ? last : 0;
   const std::uint32_t* palette = sprite->palette;
 
   const SpriteFrameCell* cell = &frames[0].Cell(0);
@@ -279,11 +276,11 @@ void UIRoMapWnd::DrawArrow(
   float x0, float y0, float x1, float y1, float startLeft, float startTop, float startRight, float startBottom, float endLeft, float endTop, float endRight,
   float endBottom, int bodyWidth, CTexture* body, int headWidth, CTexture* head, float progress, std::uint32_t color
 ) {
-  float dy = y1 - y0;
   float dx = x1 - x0;
+  float dy = y1 - y0;
   const float length = 1.0f / SquareRoot(dy * dy + dx * dx);
-  const float dirY = length * dy;
   const float dirX = length * dx;
+  const float dirY = length * dy;
   float angle = static_cast<float>(std::acos(static_cast<double>(dirX)));
   if (dirY < 0.0f) {
     angle = 6.283184f - angle;
@@ -365,13 +362,14 @@ void UIRoMapWnd::DrawSelectedMapPreview() {
   }
 
   WorldViewRecord* record = this->selectedRecord;
-  const int savedLeft = record->left;
-  const int savedTop = record->top;
-  const int savedRight = record->right;
-  const int savedBottom = record->bottom;
-  const int savedAreaFlags = record->areaFlags;
+  const WorldViewArea savedArea = record->area;
 
-  if (g_kafraServiceMapList.find(std::string(record->name)) != g_kafraServiceMapList.end()) {
+  bool hasKafraService;
+  {
+    const std::string mapName = record->name;
+    hasKafraService = g_kafraServiceMapList.find(mapName) != g_kafraServiceMapList.end();
+  }
+  if (hasKafraService) {
     WorldViewRecord* current = this->selectedRecord;
     if (g_exceptionMiniMapPosList.find(current->name) != g_exceptionMiniMapPosList.end()) {
       const MiniMapPosition offset = g_exceptionMiniMapPosList[current->name];
@@ -382,12 +380,7 @@ void UIRoMapWnd::DrawSelectedMapPreview() {
     }
   }
 
-  record = this->selectedRecord;
-  record->left = savedLeft;
-  record->top = savedTop;
-  record->right = savedRight;
-  record->bottom = savedBottom;
-  record->areaFlags = savedAreaFlags;
+  this->selectedRecord->area = savedArea;
 
   record = this->selectedRecord;
   int x = record->right + 10;
@@ -401,7 +394,9 @@ void UIRoMapWnd::DrawSelectedMapPreview() {
 
   WorldViewArea* previous = this->previewArea;
   this->previewArea = new WorldViewArea{x, y, x + 130, y + 130, 1};
-  delete previous;
+  if (previous != nullptr) {
+    delete previous;
+  }
 
   tagRECT area = {x, y, x + 130, y + 130};
   this->FillSurface(0xFFFF00FF, &area);
