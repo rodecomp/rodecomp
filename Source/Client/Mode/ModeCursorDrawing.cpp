@@ -79,12 +79,17 @@ void CMode::DrawCursor() {
   switch (this->cursorAction) {
   case 2:
   case 9:
-    if (g_mouse.buttons[0] == 0) {
+    if (g_mouse.buttons[0] != 0) {
+      const unsigned frame = ticks / divisor;
+      this->cursorActionFrame = frame % action->FrameCount(this->cursorAction);
+      if (frame / action->FrameCount(this->cursorAction) >= 1) {
+        this->cursorActionFrame = action->FrameCount(this->cursorAction) - 1;
+      }
+    } else {
       this->cursorTick = timeGetTime();
       this->cursorActionFrame = 0;
-      break;
     }
-    [[fallthrough]];
+    break;
   case 1: {
     const unsigned frame = ticks / divisor;
     this->cursorActionFrame = frame % action->FrameCount(this->cursorAction);
