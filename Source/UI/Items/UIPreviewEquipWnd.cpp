@@ -273,11 +273,11 @@ int UIPreviewEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       case EQP_COSTUME_HEAD_LOW:
         this->m_render->lowerHeadgear = item->sprite;
         this->m_render->lowerHeadgearLocation = 1;
-        if ((this->m_render->upperHeadgearLocation & 1) != 0) {
+        if (0 != (this->m_render->upperHeadgearLocation & 1)) {
           this->m_render->upperHeadgearLocation = 0;
           this->m_render->upperHeadgear = 0;
         }
-        if ((this->m_render->middleHeadgearLocation & 1) != 0) {
+        if (0 != (this->m_render->middleHeadgearLocation & 1)) {
           this->m_render->middleHeadgearLocation = 0;
           this->m_render->middleHeadgear = 0;
         }
