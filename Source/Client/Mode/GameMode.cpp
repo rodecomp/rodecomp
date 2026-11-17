@@ -7416,7 +7416,11 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
     if (itemId == 0x3113) {
       const int job = player->GetEffectiveJob(-1);
       char text[0x100];
-      strcpy_s(text, sizeof(text), LookupMessage(job >= 4054 && job <= 4112 ? MSI_PLUSEXP50 : MSI_PLUSEXP75));
+      if (job >= 4054 && job <= 4112) {
+        strcpy_s(text, sizeof(text), LookupMessage(MSI_PLUSEXP50));
+      } else {
+        strcpy_s(text, sizeof(text), LookupMessage(MSI_PLUSEXP75));
+      }
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFFFF00, 8, 0, 0);
     }
   } else {
@@ -7426,8 +7430,8 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
     }
   }
 
-  int secondEffectId = -1;
   int effectId = -1;
+  int secondEffectId = -1;
   switch (itemId) {
   case ITEMID_RED_POTION:
   case Red_Herb:
@@ -7613,8 +7617,8 @@ void CGameMode::PlayItemUseEffect(int itemId, std::uint32_t aid) {
     effectId = 0x1FB;
     break;
   case Durian:
-    static_cast<EffectActor*>(actor)->LaunchEffect(EF_GUMGANG2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     effectId = 0xDC;
+    static_cast<EffectActor*>(actor)->LaunchEffect(EF_GUMGANG2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     break;
   case RAMADAN:
     effectId = 0x1EC;
