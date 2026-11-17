@@ -6982,8 +6982,7 @@ void CEffectPrim::Render2DPrimitive() {
 
   this->state.triangles[0].texture = this->state.textures[this->render.curMotion];
 
-  const std::uint16_t flag1 = (this->state.useRenderFlag[0] == 0) ? 1 : static_cast<std::uint16_t>(this->state.renderFlag);
-  g_renderer->SubmitTriangle(this->state.triangles[0], flag1);
+  g_renderer->SubmitTriangle(this->state.triangles[0], static_cast<std::uint16_t>(this->state.useRenderFlag[0] ? this->state.renderFlag : 1));
 
   this->state.triangles[1].vertices[0].x = (p3_y + this->render.position.x) - 0.5f;
   this->state.triangles[1].vertices[0].y = (p3_x + this->render.position.y) - 0.5f;
@@ -7011,8 +7010,7 @@ void CEffectPrim::Render2DPrimitive() {
 
   this->state.triangles[1].texture = this->state.textures[this->render.curMotion];
 
-  const std::uint16_t flag2 = (this->state.useRenderFlag[0] == 0) ? 1 : static_cast<std::uint16_t>(this->state.renderFlag);
-  g_renderer->SubmitTriangle(this->state.triangles[1], flag2);
+  g_renderer->SubmitTriangle(this->state.triangles[1], static_cast<std::uint16_t>(this->state.useRenderFlag[0] ? this->state.renderFlag : 1));
 
   if (this->state.slots[0].life == 'b') {
     for (const ActiveSkillEffect& effect : g_activeSkillEffects) {
