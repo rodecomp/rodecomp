@@ -33,7 +33,7 @@ static const std::string g_viewerQuestTagEnd = "</QUEST>";
 // OFFSET: 0x0091B800
 // FUNCTION: fn_12605
 std::string UINewChatWnd::ConvertChat(const std::string& text) {
-  std::string converted = g_navigationLinkParser->DisplayNavigationLink(text);
+  std::string converted = GetNavigationLinkParser()->DisplayNavigationLink(text);
   for (std::size_t index = 0; index < this->m_tabs.size(); ++index) {
     converted = this->m_tabs[0]->Convert(converted);
   }
