@@ -79,7 +79,8 @@ bool CEmblemDataMgr::Upload(std::uint32_t guildId, std::string path) {
   }
 
   std::string token(g_session.m_webAuthToken, 16);
-  g_asyncWorkMgr->UploadEmblem(this->m_uploadUrl, g_session.m_aid, token, g_session.m_accountName, guildId, path);
+  CAsyncWorkMgr* workMgr = g_asyncWorkMgr;
+  workMgr->UploadEmblem(this->m_uploadUrl, g_session.m_aid, token, g_session.m_accountName, guildId, path);
 
   return true;
 }
