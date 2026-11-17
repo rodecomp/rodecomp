@@ -132,7 +132,7 @@ void CMeteorEffect::OnProcess() {
       if (particle) {
         CSpriteParticle* spriteParticle = static_cast<CSpriteParticle*>(particle);
         spriteParticle->UpdateFrame();
-        if (static_cast<long long>(spriteParticle->frame) == this->quakeFrame) {
+        if (this->quakeFrame == static_cast<long long>(spriteParticle->frame)) {
           g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
         }
         ++particle->elapsedFrames;

@@ -12921,7 +12921,7 @@ __declspec(noinline) void SetActiveSkillEffect184(unsigned char enable) {
   std::vector<ActiveSkillEffect>::iterator it = std::find_if(g_activeSkillEffects.begin(), g_activeSkillEffects.end(), [](const ActiveSkillEffect& effect) {
     return effect.id == 184;
   });
-  if (it != g_activeSkillEffects.end()) {
+  if (g_activeSkillEffects.end() != it) {
     g_activeSkillEffects.erase(it);
   }
 }

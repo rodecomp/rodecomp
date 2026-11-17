@@ -1217,7 +1217,9 @@ void CEffectPrim::PrimEffectTexture_Ani() {
   FaceCamera(this->state.slots);
 
   const float x = this->state.master->render.position.x;
-  this->render.position = this->state.master->render.position;
+  this->render.position.x = this->state.master->render.position.x;
+  this->render.position.y = this->state.master->render.position.y;
+  this->render.position.z = this->state.master->render.position.z;
 
   EffectPrimitiveSlot& slot = this->state.slots[0];
 
@@ -5201,14 +5203,14 @@ void CEffectPrim::PrimPulseRing() {
       slot.height[2] *= g_sinTable[process];
     }
 
-    if (mode == 4.0f) {
-      if (slot.height[6] == 0.0f) {
+    if (4.0f == mode) {
+      if (0.0f == slot.height[6]) {
         slot.height[5] += 1.0f;
         if (slot.height[5] > 200.0f) {
           slot.height[6] = 1.0f;
           slot.height[5] = 200.0f;
         }
-      } else if (slot.height[6] == 1.0f) {
+      } else if (1.0f == slot.height[6]) {
         slot.height[5] -= 1.0f;
         if (slot.height[5] < 0.0f) {
           slot.height[6] = 0.0f;

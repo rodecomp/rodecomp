@@ -3287,7 +3287,11 @@ void CRagEffect::TorchDustRing(const char* name, char kind, std::int16_t angle) 
 
   if (kind == 2) {
     const float radius = this->state.param[0];
-    this->state.lastPrim->state.slots[0].distance = radius < 5.0f ? 20.0f : radius;
+    if (radius < 5.0f) {
+      this->state.lastPrim->state.slots[0].distance = 20.0f;
+    } else {
+      this->state.lastPrim->state.slots[0].distance = radius;
+    }
     const float start = this->state.param[1];
     this->state.lastPrim->state.slots[0].rotStart = (start < 0.0f || start >= 360.0f) ? 45 : static_cast<std::int16_t>(start);
     this->state.lastPrim->state.slots[0].alphaB = 200;
@@ -7198,7 +7202,11 @@ void CRagEffect::TexturedRisingOrbs(const char* name, char kind) {
     if (kind == 0 || kind == 2) {
       this->state.lastPrim->state.slots[i].flag1[2] = 11;
     } else {
-      this->state.lastPrim->state.slots[i].flag1[2] = kind == 3 ? 18 : 1;
+      if (kind == 3) {
+        this->state.lastPrim->state.slots[i].flag1[2] = 18;
+      } else {
+        this->state.lastPrim->state.slots[i].flag1[2] = 1;
+      }
     }
 
     this->state.lastPrim->state.slots[i].height[7] = 0.0f;
@@ -11615,10 +11623,10 @@ void CRagEffect::Map_MagicZone(const char* name, char type) {
   if (type == 2 || type == 3) {
     this->state.lastPrim->state.slots[0].distance = 40.0f;
   } else if (type == 4 || type == 14) {
-    if (this->state.param[0] > 0.0f) {
-      this->state.lastPrim->state.slots[0].distance = this->state.param[0];
-    } else {
+    if (this->state.param[0] <= 0.0f) {
       this->state.lastPrim->state.slots[0].distance = 40.0f;
+    } else {
+      this->state.lastPrim->state.slots[0].distance = this->state.param[0];
     }
   } else {
     this->state.lastPrim->state.slots[0].distance = 30.0f;

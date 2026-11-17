@@ -2975,7 +2975,7 @@ void CGameActor::SetMonsterTransformJob(int value) {
 // OFFSET: 0x00CABDE0
 // FUNCTION: fn_21038
 void CRenderObject::ScaleByFadePulse(float& scale) const {
-  if ((this->render.flags & 0x10) != 0) {
+  if (0 != (this->render.flags & 0x10)) {
     const unsigned index = this->render.shrinkPhase * 4u + 90u;
     if (index > 270) {
       scale = scale * 0.5f;
