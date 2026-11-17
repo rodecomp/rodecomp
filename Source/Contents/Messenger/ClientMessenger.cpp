@@ -638,11 +638,8 @@ int EquipmentProperties::CEquipment::GetValue(const int& key) {
     return -1;
   }
 
-  auto found = this->m_info->values.find(key);
-  if (this->m_info->values.end() != found) {
-    return found->second;
-  }
-  return 0;
+  const auto found = this->m_info->values.find(key);
+  return found != this->m_info->values.end() ? found->second : 0;
 }
 
 // OFFSET: 0x0068C0F0
