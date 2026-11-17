@@ -54,6 +54,7 @@
 #include "Resource/MSGSTRINGID.h"
 
 template __declspec(noinline) std::string std::operator+(const char* const, const std::string&);
+template __declspec(noinline) std::_List_node<UITreeNode*, void*>* std::list<UITreeNode*>::_Emplace<UITreeNode* const&>(std::_List_node<UITreeNode*, void*>* const, UITreeNode* const&);
 // OFFSET: 0x0086DDA0
 // FUNCTION: fn_11059
 UIListBoxTitle::UIListBoxTitle() {
@@ -417,17 +418,14 @@ void UIScrollBar::Paint() {
     this->DrawBitmap(this->geometry.width - this->arrowLength - 1, 0, bitmap, true);
 
     const int thumb = this->arrowLength + this->ThumbOffset();
-    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll1bar_left.bmp")));
-    this->DrawBitmap(thumb, 0, bitmap, true);
+    this->DrawBitmap(thumb, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll1bar_left.bmp"))), true);
     const int end = thumb + this->ThumbLength() - 4;
 
     for (int offset = thumb + 4; offset < end; offset += 4) {
-      bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll1bar_mid.bmp")));
-      this->DrawBitmap(offset, 0, bitmap, true);
+      this->DrawBitmap(offset, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll1bar_mid.bmp"))), true);
     }
 
-    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll1bar_right.bmp")));
-    this->DrawBitmap(end, 0, bitmap, true);
+    this->DrawBitmap(end, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll1bar_right.bmp"))), true);
     break;
   }
   case 1: {
@@ -447,17 +445,14 @@ void UIScrollBar::Paint() {
     this->DrawBitmap(0, this->geometry.height - this->arrowLength - 1, bitmap, true);
 
     const int thumb = this->arrowLength + this->ThumbOffset();
-    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll0bar_up.bmp")));
-    this->DrawBitmap(0, thumb, bitmap, true);
+    this->DrawBitmap(0, thumb, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll0bar_up.bmp"))), true);
     const int end = thumb + this->ThumbLength() - 4;
 
     for (int offset = thumb + 4; offset < end; offset += 4) {
-      bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll0bar_mid.bmp")));
-      this->DrawBitmap(0, offset, bitmap, true);
+      this->DrawBitmap(0, offset, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll0bar_mid.bmp"))), true);
     }
 
-    bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll0bar_down.bmp")));
-    this->DrawBitmap(0, end, bitmap, true);
+    this->DrawBitmap(0, end, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\scroll0bar_down.bmp"))), true);
     break;
   }
   }
@@ -1411,18 +1406,16 @@ void UIChatHisBox::Paint() {
   const unsigned int end = lineCount < visible ? lineCount : visible;
 
   FontCache& fonts = g_fontCache;
-  for (int row = 0; top + row < static_cast<int>(end); ++row) {
-    const int index = top + row;
-    int x;
+  for (int index = top; index < static_cast<int>(end); ++index) {
+    const int row = index - top;
     if (g_serviceType == 19 && g_tipOfTheDayEnglish) {
       const int width = this->TextWidth(this->lines[index].c_str(), 0, 0, 12, 0, 0);
       this->DrawTextAt(this->geometry.width - width - 18, this->lineHeight * row + 4, this->lines[index].c_str(), 0, 0, 12, 0, 0, 0);
-      x = this->geometry.width - width - 19;
+      this->DrawTextAt(this->geometry.width - width - 19, this->lineHeight * row + 3, this->lines[index].c_str(), 0, 0, 12, this->lineColors[index], 0, 0);
     } else {
       this->DrawTextAt(3, this->lineHeight * row + 4, this->lines[index].c_str(), 0, 0, 12, 0, 0, 0);
-      x = 2;
+      this->DrawTextAt(2, this->lineHeight * row + 3, this->lines[index].c_str(), 0, 0, 12, this->lineColors[index], 0, 0);
     }
-    this->DrawTextAt(x, this->lineHeight * row + 3, this->lines[index].c_str(), 0, 0, 12, this->lineColors[index], 0, 0);
     this->PlaceNaviLinks(index);
     this->PlaceItemTags(index);
   }
@@ -1492,15 +1485,13 @@ int UITreeView::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
         this->HideNodes(this->root->children);
         const int x = sender->geometry.x;
         const int y = message == UM_TEXT_LBTN_UP ? sender->geometry.y - 6 : sender->geometry.y;
-        UIWindow* button;
         if (this->selectedNode->expanded == 0) {
           this->selectedNode->expanded = 1;
-          button = this->selectedNode->collapseButton;
+          this->selectedNode->collapseButton->Move(x, y);
         } else {
           this->selectedNode->expanded = 0;
-          button = this->selectedNode->expandButton;
+          this->selectedNode->expandButton->Move(x, y);
         }
-        button->Move(x, y);
         this->Invalidate();
       }
 
