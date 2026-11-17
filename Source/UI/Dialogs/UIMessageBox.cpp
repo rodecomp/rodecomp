@@ -64,6 +64,7 @@
 #include "Resource/Sprites/ActionResource.h"
 #include "Resource/Sprites/SpriteResource.h"
 #include <cstring>
+#include <fmt/core.h>
 #include <format>
 #include "Client/Mode/CGameMode.h"
 #include <cstdio>
@@ -1453,7 +1454,7 @@ void UIPayConfirmWnd::Configure(const std::string& text, int itemId) {
 
   std::string resource(FindItemDescription(itemId).identifiedResource);
   if (!resource.empty()) {
-    this->m_image = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(std::format("유저인터페이스\\collection\\{}.bmp", resource)));
+    this->m_image = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(fmt::format("유저인터페이스\\collection\\{}.bmp", resource)));
   }
 }
 

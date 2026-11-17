@@ -45,6 +45,7 @@
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
+#include <fmt/core.h>
 #include <format>
 
 namespace {
@@ -471,7 +472,7 @@ void UIRodexComposeWnd::Paint() {
     this->DrawBitmap(161, 21, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\bg_id_balloon.bmp"))), true);
   }
 
-  this->DrawTextAt(261, 276, std::format("/ {}", 1000).c_str(), 0, 0, 10, 0xD66E44, 0, 0);
+  this->DrawTextAt(261, 276, fmt::format("/ {}", 1000).c_str(), 0, 0, 10, 0xD66E44, 0, 0);
   this->DrawRightAlignedText(258, 276, FormatOwnedString("%d", this->m_contents->Length() + this->m_contents->tagTextLength).c_str(), 0, 0, 10, 0xD66E44, 0);
 
   this->DrawBitmap(199, 305, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\bg_weight.bmp"))), true);

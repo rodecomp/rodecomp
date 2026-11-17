@@ -2804,6 +2804,7 @@ void UIScrollBar_Custom::SetThumbBitmaps(std::string top, std::string middle, st
 #include "Client/Mode/CMode.h"
 #include "Client/Mode/CLoginMode.h"
 
+#include <fmt/core.h>
 #include <format>
 
 // OFFSET: 0x00884720
@@ -3533,11 +3534,11 @@ int UISlotBmpButton::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     this->m_displayMode = static_cast<int>(argument1);
     const char* slot = argument1 != 0 ? "slot" : "slot2";
     const char* img = this->m_inRange ? "img_buy" : "img_";
-    const std::string base = std::format("유저인터페이스\\select_character_ver3\\{}{}_", img, slot).c_str();
+    const std::string base = fmt::format("유저인터페이스\\select_character_ver3\\{}{}_", img, slot).c_str();
 
-    this->SetBitmap(std::format("{}normal.bmp", base).c_str(), 0, 0);
-    this->SetBitmap(std::format("{}over.bmp", base).c_str(), 1, 0);
-    this->SetBitmap(std::format("{}press.bmp", base).c_str(), 2, 0);
+    this->SetBitmap(fmt::format("{}normal.bmp", base).c_str(), 0, 0);
+    this->SetBitmap(fmt::format("{}over.bmp", base).c_str(), 1, 0);
+    this->SetBitmap(fmt::format("{}press.bmp", base).c_str(), 2, 0);
     break;
   }
 
@@ -3572,7 +3573,7 @@ void UISlotBmpButton::Paint() {
       }
     } else if (this->m_displayMode == 1 && this->m_selected == 1) {
       CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(
-        std::format("유저인터페이스\\select_character_ver3\\img_{}_select{}.bmp", this->m_inRange ? "buyslot" : "slot", this->m_animationTick / this->m_frameInterval).c_str()
+        fmt::format("유저인터페이스\\select_character_ver3\\img_{}_select{}.bmp", this->m_inRange ? "buyslot" : "slot", this->m_animationTick / this->m_frameInterval).c_str()
       )));
       if (bitmap) {
         this->DrawBitmap(0, 0, bitmap, false);

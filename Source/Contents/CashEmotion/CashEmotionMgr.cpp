@@ -64,6 +64,7 @@ extern "C" {
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
+#include <fmt/core.h>
 #include <format>
 #include <functional>
 #include <iterator>
@@ -84,6 +85,10 @@ std::unordered_map<std::string, CashEmotionCommand*>::_Mybase::find<void>(const 
 template __declspec(noinline) std::pair<std::unordered_map<std::string, CashEmotionCommand*>::_Mybase::_Nodeptr, bool>
 std::unordered_map<std::string, CashEmotionCommand*>::_Mybase::_Try_emplace<const std::string&, CashEmotionCommand*&>(
   const std::string&, CashEmotionCommand*&
+);
+
+template __declspec(noinline) std::string fmt::format<int&, int&, int&, int&, int&>(
+  fmt::format_string<int&, int&, int&, int&, int&>, int&, int&, int&, int&, int&
 );
 
 class ICashEmotionAction {
@@ -1456,7 +1461,7 @@ void CCashEmotionMgr::ShowErrorMessage(const char* key, int value) {
     return;
   }
 
-  std::string text = std::vformat(format, std::make_format_args(value));
+  std::string text = fmt::vformat(format, fmt::make_format_args(value));
   MessageBoxA(nullptr, text.c_str(), std::string("").c_str(), MB_OK);
 }
 
@@ -2471,7 +2476,7 @@ int UICashEmotionListWnd::SetPeriod(int packId) {
   const int period = g_cashEmotionMgr->GetPackPeriod(packId);
   if (period > 0) {
     int days = period / 24;
-    this->m_period->SetTextFitted(std::vformat(g_simpleStringMgr->GetString("EMSG_PERIOD_OF_USE"), std::make_format_args(days)).c_str());
+    this->m_period->SetTextFitted(fmt::vformat(g_simpleStringMgr->GetString("EMSG_PERIOD_OF_USE"), fmt::make_format_args(days)).c_str());
     this->m_period->Show(1);
   } else {
     this->m_period->Show(0);
@@ -2599,7 +2604,7 @@ int UICashEmotionListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       }
 
       std::string text;
-      text = free ? std::vformat(format, std::make_format_args(title)) : std::vformat(format, std::make_format_args(title, price));
+      text = free ? fmt::vformat(format, fmt::make_format_args(title)) : fmt::vformat(format, fmt::make_format_args(title, price));
 
       UINormalMB* box = new UINormalMB();
       box->Create(nullptr, text.c_str(), 2, true, nullptr, 280, 128, nullptr);
@@ -3043,7 +3048,7 @@ void UICashEmotionPack::ShowExpiry(__time32_t value) {
   int day = expiry.Day();
   int month = expiry.Month();
   int year = expiry.Year();
-  std::string text = std::vformat(this->m_title, std::make_format_args(year, month, day, hour, minute));
+  std::string text = fmt::format(fmt::runtime(this->m_title), year, month, day, hour, minute);
   this->m_titleText->SetTextFitted(text.c_str());
 }
 
@@ -3059,7 +3064,7 @@ void UICashEmotionPack::UpdateExpiry(Timestamp* expiry) {
   int day = expiry->Day();
   int month = expiry->Month();
   int year = expiry->Year();
-  std::string text = std::vformat(this->m_title, std::make_format_args(year, month, day, hour, minute));
+  std::string text = fmt::format(fmt::runtime(this->m_title), year, month, day, hour, minute);
   this->m_titleText->SetTextFitted(text.c_str());
 }
 
@@ -3070,7 +3075,7 @@ std::string UICashEmotionPack::GetPriceText(int packId) {
   if (price > 0) {
     const char* format = g_simpleStringMgr->GetString("EMSG_PURCHASE_PRICE");
     if (format) {
-      return std::vformat(format, std::make_format_args(price));
+      return fmt::vformat(format, fmt::make_format_args(price));
     }
 
     return std::to_string(price);
@@ -3299,7 +3304,7 @@ void UICashEmotionPack_Purchase::ShowExpiry(__time32_t expiry) {
     unsigned int hours = remaining / 3600;
     remaining -= hours * 3600;
     unsigned int minutes = remaining / 60;
-    std::string text = std::vformat(this->m_title, std::make_format_args(days, hours, minutes));
+    std::string text = fmt::vformat(this->m_title, fmt::make_format_args(days, hours, minutes));
     this->m_titleText->SetTextFitted(text.c_str());
   } else {
     this->m_titleText->SetTextFitted(g_simpleStringMgr->GetString("EMSG_PERIOD_OF_LAST_TIME"));

@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <atlbase.h>
 #include <d3d9.h>
+#include <fmt/core.h>
 #include <format>
 #include <utility>
 
@@ -55,7 +56,7 @@ std::vector<DisplayMode> EnumerateDisplayModesDX9(UINT adapter) {
   result.reserve(dimensions.size());
 
   for (const auto& [width, height] : dimensions) {
-    const std::string description = std::format("{} x {}", width, height);
+    const std::string description = fmt::format("{} x {}", width, height);
     result.push_back({width, height, 32, description});
   }
 

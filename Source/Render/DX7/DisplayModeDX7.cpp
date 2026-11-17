@@ -2,6 +2,7 @@
 #include "Render/Device/DisplayMode.h"
 
 #include <VersionHelpers.h>
+#include <fmt/core.h>
 #include <format>
 
 // OFFSET: 0x0056BDD0
@@ -31,11 +32,11 @@ std::vector<DisplayMode> EnumerateDisplayModesDX7(unsigned deviceIndex) {
 
     if (IsWindows8OrGreater()) {
       if (bits == 32) {
-        const std::string description = std::format("{} x {}", width, height);
+        const std::string description = fmt::format("{} x {}", width, height);
         result.push_back({width, height, 32, description});
       }
     } else if (bits == 16 || bits == 32) {
-      const std::string description = std::format("{} x {} x {}", width, height, bits);
+      const std::string description = fmt::format("{} x {} x {}", width, height, bits);
       result.push_back({width, height, bits, description});
     }
   }

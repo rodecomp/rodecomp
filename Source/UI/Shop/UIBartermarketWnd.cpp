@@ -29,6 +29,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <cstring>
+#include <fmt/core.h>
 #include <format>
 #include <map>
 #include <new>
@@ -1881,7 +1882,7 @@ void UIExpandedBarterItemPurchaseWnd::Paint() {
 
     if (it->refine > 0) {
       std::uint32_t color = 0xFFFFFF;
-      const std::string quantity = std::format("+{}", it->refine);
+      const std::string quantity = fmt::format("+{}", it->refine);
       this->DrawOutlinedColoredText(50, y + 18, quantity.c_str(), quantity.size(), color, 200, 0, 12, 1);
     }
 
@@ -1982,7 +1983,7 @@ void UIExpandedBartermarketWnd::Paint() {
     }
     if (it->refine > 0) {
       std::uint32_t color = 0xFFFFFF;
-      const std::string quantity = std::format("+{}", it->refine);
+      const std::string quantity = fmt::format("+{}", it->refine);
       this->DrawOutlinedColoredText(50, y + 18, quantity.c_str(), quantity.size(), color, 200, 0, 12, 1);
     }
 

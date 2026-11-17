@@ -2,6 +2,7 @@
 #include "Render/DX9/DeviceOwnerDX9.h"
 #include "Render/Device/Direct3DErrors.h"
 
+#include <fmt/core.h>
 #include <format>
 
 namespace {
@@ -36,7 +37,7 @@ __declspec(noinline) HRESULT DeviceOwnerDX9::CheckState() {
         }
       } else if (FAILED(result)) {
         if (lastReported != result) {
-          const std::string message = std::format("{} : {}", Direct3DErrorName(result), Direct3DErrorDescription(result));
+          const std::string message = fmt::format("{} : {}", Direct3DErrorName(result), Direct3DErrorDescription(result));
           ShowErrorDialog(message.c_str(), 0);
           lastReported = result;
         }
