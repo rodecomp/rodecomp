@@ -5,7 +5,7 @@
 
 // OFFSET: 0x0054FFA0
 // FUNCTION: fn_01965
-bool IsValidIdentChar(char value) {
+__declspec(noinline) bool IsValidIdentChar(char value) {
   return g_colorHexDigit[static_cast<unsigned char>(value)] != 0;
 }
 #include "Client/Mode/CMode.h"
@@ -1452,7 +1452,7 @@ int CCreateLineInfo::ParseItemName(int index) {
     std::string digits;
     for (long long position = index + keyword.size(); position < this->m_text.size(); ++position) {
       const char ch = this->m_text.at(static_cast<std::size_t>(position));
-      if (!g_colorHexDigit[static_cast<unsigned char>(ch)]) {
+      if (!IsValidIdentChar(ch)) {
         break;
       }
       digits.push_back(ch);
