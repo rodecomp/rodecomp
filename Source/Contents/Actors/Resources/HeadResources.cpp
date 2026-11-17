@@ -216,7 +216,7 @@ void CSession::NormalizeHead(int* head, int job) {
     return;
   }
 
-  if (job < 23) {
+  if (job <= JT_SUPERNOVICE) {
     switch (job) {
     case JT_SWORDMAN:
       *head = 2;
@@ -236,6 +236,9 @@ void CSession::NormalizeHead(int* head, int job) {
     case JT_THIEF:
       *head = 7;
       return;
+    case JT_NOVICE:
+    case JT_SUPERNOVICE:
+      break;
     }
   }
   *head = 1;
