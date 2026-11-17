@@ -2360,16 +2360,18 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadIgnoreEquipmentProperties
         break;
       }
 
-      this->loadValid &= functions.size() != 0;
-      if (functions.size() == 0) {
+      const bool hasFunctions = functions.size() != 0;
+      this->loadValid &= hasFunctions;
+      if (hasFunctions == false) {
         ShowErrorDialog(fmt::format("{0}'s sub table[{1}]'s 'func' table has 0 value", name, index), 0);
       }
       if (!this->loadValid) {
         break;
       }
 
-      this->loadValid &= functions.size() <= 2;
-      if (functions.size() > 2) {
+      const bool fewFunctions = functions.size() <= 2;
+      this->loadValid &= fewFunctions;
+      if (fewFunctions == false) {
         ShowErrorDialog(fmt::format("{0}'s sub table[{1}]'s 'func' table has more than 2 values", name, index), 0);
       }
       if (!this->loadValid) {
