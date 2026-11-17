@@ -301,7 +301,7 @@ void UISerachStoreInfoWnd::OnMouseHover(int x, int y) {
 
     std::string text;
     if (static_cast<unsigned int>(x - 51) <= 108) {
-      const auto entry = g_session.storeSearchResults.begin() + ((this->m_page - 1) * 10 + this->m_hoverRow);
+      const auto entry = g_session.storeSearchResults.begin() + (this->m_page - 1) * 10 + this->m_hoverRow;
       if (entry != g_session.storeSearchResults.end()) {
         text.assign(entry->storeName);
         const std::size_t end = text.find('\r');
@@ -440,8 +440,8 @@ void UIHotKeyWnd::Paint() {
 // FUNCTION: fn_12620
 void UIHotKeyWnd::ReloadHotkeys() {
   this->m_selectedRow = -1;
-  for (auto& map : this->hotkeys) {
-    map.clear();
+  for (int tab = 0; tab < 4; ++tab) {
+    this->hotkeys[tab].clear();
   }
 
   for (int position = 0; position < 4; ++position) {
