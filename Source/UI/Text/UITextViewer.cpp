@@ -63,7 +63,8 @@ void UITextViewEX::Configure(int x, int y, int width, int height, unsigned char 
 // OFFSET: 0x0087A1E0
 // FUNCTION: fn_11228
 void UITextViewEX::Clear() {
-  for (UIWindow* link : this->extraLinks) {
+  for (auto linkIt = this->extraLinks.begin(), linkEnd = this->extraLinks.end(); linkIt != linkEnd; ++linkIt) {
+    UIWindow* link = *linkIt;
     this->RemoveChild(link, 1);
   }
   this->extraLinks.clear();
