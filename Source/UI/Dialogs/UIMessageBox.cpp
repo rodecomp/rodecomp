@@ -318,7 +318,8 @@ void UIMakeCharWnd::Paint() {
     CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load(this->m_view.actionNames[i].c_str()));
     CSprRes* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(this->m_view.spriteNames[i].c_str()));
     const ActionFrame& frame = action->Frame(this->m_view.action, this->m_view.frame);
-    POINT offset = offsets->GetLongPoint(i, this->m_view.action, this->m_view.frame);
+    POINT offset;
+    offset = offsets->GetLongPoint(i, this->m_view.action, this->m_view.frame);
 
     if (i == 1) {
       CActRes* body = static_cast<CActRes*>(ResourceMgr::Instance().Load(this->m_view.actionNames[0].c_str()));
