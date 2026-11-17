@@ -19,7 +19,8 @@ void CRendererDX9::DrawBaseQueue() {
     return reinterpret_cast<std::uintptr_t>(left->texture) < reinterpret_cast<std::uintptr_t>(right->texture);
   });
 
-  for (RenderCommand* command : this->queues.queue_0168) {
+  for (auto commandIt = this->queues.queue_0168.begin(); commandIt != this->queues.queue_0168.end(); ++commandIt) {
+    RenderCommand* command = *commandIt;
     this->device->state.SetTexture(0, command->texture ? static_cast<CTextureDX9*>(command->texture)->NativeTexture() : nullptr);
     this->DrawPrimitive(command);
   }
