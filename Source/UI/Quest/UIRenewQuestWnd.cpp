@@ -213,16 +213,14 @@ void UIOngoingQuestScrollWnd::RefreshHuntTexts() {
       const short minLevel = quest.m_huntMinLevel[index];
       const short maxLevel = quest.m_huntMaxLevel[index];
       const char* name = quest.m_huntName[index];
-      if (-1 < minLevel && -1 < maxLevel && (0 != minLevel || 0 != maxLevel)) {
-        if (minLevel == 0) {
-          text = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d▼", name, maxLevel));
-        } else if (maxLevel == 0) {
-          text = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d▲", name, minLevel));
-        } else {
-          text = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d~Lv.%d", name, minLevel, maxLevel));
-        }
-      } else {
+      if (-1 >= minLevel || -1 >= maxLevel || (0 == minLevel && 0 == maxLevel)) {
         text = static_cast<const std::string&>(FormatOwnedString("%s", name));
+      } else if (minLevel == 0) {
+        text = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d▼", name, maxLevel));
+      } else if (maxLevel == 0) {
+        text = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d▲", name, minLevel));
+      } else {
+        text = static_cast<const std::string&>(FormatOwnedString("%s Lv.%d~Lv.%d", name, minLevel, maxLevel));
       }
     } else {
       text = static_cast<const std::string&>(
