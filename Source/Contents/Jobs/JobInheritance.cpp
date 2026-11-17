@@ -1229,7 +1229,7 @@ __declspec(noinline) int CSession::GetWeaponViewValue(int weapon) const {
 // FUNCTION: fn_23898
 int CSession::GetDualWieldWeaponType(int first, int second) const {
   int main = first;
-  int result = 0;
+  int result = W_FIST;
   int sub;
 
   if (first == 0) {
@@ -1245,33 +1245,33 @@ int CSession::GetDualWieldWeaponType(int first, int second) const {
   }
 
   if (main >= 1100 && main < 1150 || main >= 13400 && main < 13500 || static_cast<unsigned>(main - 500000) <= 0x270F) {
-    result = 2;
+    result = W_1HSWORD;
 
     if (sub >= 1100 && sub < 1150 || sub >= 13400 && sub < 13500 || static_cast<unsigned>(sub - 500000) <= 0x270F) {
-      return 26;
+      return W_DOUBLE_SS;
     } else if (sub >= 1200 && sub < 1250 || sub >= 13000 && sub < 13100 || sub >= 28700 && sub < 28900 ||
       static_cast<unsigned>(sub - 510000) <= 0x270F) {
-      return 28;
+      return W_DOUBLE_DS;
     } else if (sub >= 1300 && sub < 1350 || static_cast<unsigned>(sub - 520000) <= 0x270F) {
-      return 30;
+      return W_DOUBLE_SA;
     }
   } else if (main >= 1200 && main < 1250 || main >= 13000 && main < 13100 || main >= 28700 && main < 28900 ||
     static_cast<unsigned>(main - 510000) <= 0x270F) {
-    result = 1;
+    result = W_DAGGER;
 
     if (sub >= 1100 && sub < 1150 || sub >= 13400 && sub < 13500 || static_cast<unsigned>(sub - 500000) <= 0x270F) {
-      return 28;
+      return W_DOUBLE_DS;
     } else if (sub >= 1200 && sub < 1250 || sub >= 13000 && sub < 13100 || sub >= 28700 && sub < 28900 ||
       static_cast<unsigned>(sub - 510000) <= 0x270F) {
-      return 25;
+      return W_DOUBLE_DD;
     } else if (sub >= 1300 && sub < 1350 || static_cast<unsigned>(sub - 520000) <= 0x270F) {
-      return 29;
+      return W_DOUBLE_DA;
     }
   } else if (main >= 1300 && main < 1350 || static_cast<unsigned>(main - 520000) <= 0x270F) {
-    result = 6;
+    result = W_1HAXE;
 
     if (sub >= 1300 && sub < 1350 || static_cast<unsigned>(sub - 520000) <= 0x270F) {
-      return 27;
+      return W_DOUBLE_AA;
     }
   }
 
