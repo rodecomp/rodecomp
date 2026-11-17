@@ -355,8 +355,7 @@ void UIItemReformWnd::SelectItem(ITEM_INFO* item) {
   UIItemReformWnd_Item* resultIcon = this->resultIcon;
   resultIcon->item = nullptr;
   resultIcon->Invalidate();
-  for (std::vector<UIItemReformWnd_Item*>::iterator it = this->materialIcons.begin(), end = this->materialIcons.end(); it != end; ++it) {
-    UIItemReformWnd_Item* icon = *it;
+  for (UIItemReformWnd_Item* icon : this->materialIcons) {
     if (icon) {
       icon->item = nullptr;
       icon->Invalidate();
