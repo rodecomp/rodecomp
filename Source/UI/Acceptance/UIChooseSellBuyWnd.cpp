@@ -6035,6 +6035,8 @@ int UIChatRoomChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       list->Move(x + 1, y);
       return 0;
     }
+    default:
+      return UIChatRoomMakeWnd::SendMsg(sender, UM_COMMAND, a, b, c, d);
     }
     break;
   case UM_SETINFO: {
@@ -6059,8 +6061,9 @@ int UIChatRoomChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     this->Invalidate();
     return 0;
   }
+  default:
+    return UIChatRoomMakeWnd::SendMsg(sender, message, a, b, c, d);
   }
-  return UIChatRoomMakeWnd::SendMsg(sender, message, a, b, c, d);
 }
 
 // OFFSET: 0x008F64B0
