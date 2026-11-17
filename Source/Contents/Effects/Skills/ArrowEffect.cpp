@@ -266,7 +266,7 @@ void CArrowEffect::SendMsg(CGameObject* sender, std::int64_t message, std::int64
     return;
   }
 
-  if ((f | g) != 0) {
-    this->startFrame = *reinterpret_cast<const float*>(f);
+  if (d != 0) {
+    this->startFrame = *reinterpret_cast<const float*>(d);
   }
 }
