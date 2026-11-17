@@ -2028,7 +2028,7 @@ void CGameMode::ReceiveZoneServerChange(const unsigned char* packet) {
 // FUNCTION: fn_22184
 __declspec(noinline) void CGameMode::ReceiveZoneServerChange(const char* mapName, std::int16_t x, std::int16_t y, int ip, std::int16_t port) {
   g_session.m_localMapMove = 1;
-  this->ChangeZoneServer(mapName, x, y, ip, port, std::string());
+  this->ChangeZoneServer(mapName, x, y, ip, port, "");
 }
 
 namespace {
@@ -2538,17 +2538,18 @@ __declspec(noinline) void CGameMode::ProcessBuyingStorePurchase(int updateTime, 
   UIWindow* window = g_windowMgr.EnsureWindow(WID_MERCHANTITEMLOGWND_MODE_1);
   window->SendMsg(nullptr, UM_REFRESHITEM, reinterpret_cast<std::intptr_t>(&item), charId, updateTime, 0);
   g_session.RemoveItem1758ByItemId(item);
+  UIWindow* shopWnd = g_windowMgr.buyingShopMyItemsWnd;
   if (g_windowMgr.itemWnd != nullptr) {
     g_windowMgr.itemWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
   }
-  if (g_windowMgr.buyingShopMyItemsWnd != nullptr) {
-    g_windowMgr.buyingShopMyItemsWnd->SendMsg(nullptr, UM_SET_BUYING_SHOP_ZENY, zenyLimit, 0, 0, 0);
-    g_windowMgr.buyingShopMyItemsWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
+  if (shopWnd != nullptr) {
+    shopWnd->SendMsg(nullptr, UM_SET_BUYING_SHOP_ZENY, zenyLimit, 0, 0, 0);
+    shopWnd->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
     if (g_session.m_muteSellSound) {
       g_soundMgr->PlayWave("effect\\ef_steal.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     if (g_session.GetNumMerchantPurchaseItems() == 0) {
-      g_windowMgr.buyingShopMyItemsWnd->SendMsg(nullptr, UM_COMMAND, ID_CLOSE, 0, 0, 0);
+      shopWnd->SendMsg(nullptr, UM_COMMAND, ID_CLOSE, 0, 0, 0);
     }
   }
 }
@@ -8062,10 +8063,11 @@ __declspec(noinline) void CGameMode::ReceiveItemSellResult(const unsigned char* 
   {
     const int count = p->count;
     const int total = p->price * count;
-    ITEM_INFO item = g_session.LookupClientItemByIdentity(p->index);
     g_windowMgr.SendNotice(
       UIM_PUSHINTOCHATHISTORY,
-      reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_BUYINGSTORE_TRADE_SELLCOMPLETE), item.DisplayName(0).c_str(), count, total).c_str()),
+      reinterpret_cast<std::intptr_t>(
+        FormatOwnedString(LookupMessage(MSI_BUYINGSTORE_TRADE_SELLCOMPLETE), g_session.LookupClientItemByIdentity(p->index).DisplayName(0).c_str(), count, total).c_str()
+      ),
       0xFFFF64, 0, 0, 0
     );
   }
@@ -8339,9 +8341,12 @@ void CGameMode::ReceiveBuyingStoreSellResult(const unsigned char* packet) {
     break;
   case 6: {
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-    ITEM_INFO item = g_session.LookupClientItem(p->itemId, 0);
     g_windowMgr.SendNotice(
-      UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_BUYINGSTORE_TRADE_OVERCOUNT), item.DisplayName(0).c_str()).c_str()), 0xFF, 0, 0, 0
+      UIM_PUSHINTOCHATHISTORY,
+      reinterpret_cast<std::intptr_t>(
+        FormatOwnedString(LookupMessage(MSI_BUYINGSTORE_TRADE_OVERCOUNT), g_session.LookupClientItem(p->itemId, 0).DisplayName(0).c_str()).c_str()
+      ),
+      0xFF, 0, 0, 0
     );
     break;
   }
@@ -9190,13 +9195,12 @@ void CGameMode::ReceiveActorBroadcastText(const unsigned char* data) {
     std::string masked("");
     g_forbiddenWords.Mask(text.data(), &masked);
   }
-  const int aid = p->aid;
-  if (MonsterJobColor(aid)) {
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.data()), MonsterJobColor(aid), 0, 0, 0);
+  if (MonsterJobColor(p->aid)) {
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.data()), MonsterJobColor(p->aid), 0, 0, 0);
   } else if (!g_serviceOptions.Get(TT_NOTALKMSG_ON_OFF) && !g_serviceOptions.Get(TT_NOTALKMSG2_ON_OFF)) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text.data()), 0x9B00FF, 1, 0, 0);
   }
-  if (CRenderObject* actor = this->scene->GetGameActorByAID(aid)) {
+  if (CRenderObject* actor = this->scene->GetGameActorByAID(p->aid)) {
     const std::int64_t value = reinterpret_cast<std::intptr_t>(text.data());
     actor->SendMsg(nullptr, AM_CHAT, value, 0, 0, 0, 0, 0);
   }
@@ -17124,8 +17128,9 @@ void CGameMode::ReceiveItemObtainBroadcast(const unsigned char* data, bool packa
   name.assign(packet->name, packet->nameLength);
   const auto* tail = reinterpret_cast<const ItemObtainSourceTail*>(data + packet->nameLength);
   if (packet->sourceType == 0) {
+    const int boxItemId = tail->itemId;
     ITEM_INFO box;
-    box.SetItemId(tail->itemId);
+    box.SetItemId(boxItemId);
     box.identified = 1;
     source = box.DisplayName(0);
   } else if (packet->sourceType == 1) {
