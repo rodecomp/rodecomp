@@ -808,12 +808,15 @@ void UIBarterItemPurchaseWnd::OnLBtnDown(int x, int y) {
 
 // INLINED
 __forceinline int UIBartermarketWnd::GetBarterItemIndexAt(int x, int y) {
-  if (x < 40 || x >= this->geometry.width - 20 || y < 17 || y >= this->visibleRows * 32 + 17) {
+  if (x < 40 || x >= this->geometry.width - 20 || y < 17 || this->visibleRows * 32 + 17 <= y) {
     return -1;
   }
 
-  const int column = std::min((x - 40) / 32, this->columns - 1);
+  int column = (x - 40) / 32;
   const int row = (y - 17) / 32;
+  if (column > this->columns - 1) {
+    column = this->columns - 1;
+  }
   std::list<BarterMarketItem> items = *g_barterMarketItemMgr->GetItems();
   int index = 0;
   int visible = 0;
