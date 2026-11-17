@@ -89,16 +89,6 @@ int CTipOfTheDay::Load() {
   return 1;
 }
 
-// OFFSET: 0x00909CF0
-// FUNCTION: fn_12400
-int CTipOfTheDay::Size() {
-  if (this->m_bTryLoading == false) {
-    this->Load();
-  }
-
-  return static_cast<int>(this->m_tipList.size());
-}
-
 // OFFSET: 0x00AE7710
 // FUNCTION: fn_18078
 StringList& CTipOfTheDay::GetTip(int index) {

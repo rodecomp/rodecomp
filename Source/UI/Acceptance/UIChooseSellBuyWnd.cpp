@@ -1379,7 +1379,7 @@ void UISkillNameChangeWnd::Paint() {
 int UISpellListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
   case UM_ADDITEM: {
-    this->m_skills.push_back(static_cast<std::uint32_t>(argument1));
+    this->m_skills.push_back(argument1);
     ITEM_INFO item;
     this->m_items.push_back(item);
     this->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
@@ -2293,6 +2293,16 @@ void UInCashWnd::DragAndDrop(int x, int y, std::intptr_t value) {
   CGameMode* mode = g_modeMgr.GetGameMode();
   const ModeDragState* drag = reinterpret_cast<const ModeDragState*>(value);
   switch (drag->source) {
+  default:
+    mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+    return;
+  case 6:
+    if (x > 444) {
+      g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
+      g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, 19, 0, 0, 0);
+      return;
+    }
+    break;
   case 4:
     if (x < 445) {
       const int quantity = g_session.GetPurchaseItemNumByItemId(drag->name.c_str());
@@ -2303,13 +2313,6 @@ void UInCashWnd::DragAndDrop(int x, int y, std::intptr_t value) {
 
       g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
       g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, 20, quantity, 0, 0);
-      return;
-    }
-    break;
-  case 6:
-    if (x > 444) {
-      g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 1);
-      g_windowMgr.itemDropCntWnd->SendMsg(nullptr, UM_SETSTATE, 19, 0, 0, 0);
       return;
     }
     break;
@@ -4972,6 +4975,16 @@ void UIWaitWnd::SetMessage(const char* text, int, int) {
 // FUNCTION: fn_12399
 bool UINotifyItemObtainWnd::CanHitTest() {
   return false;
+}
+
+// OFFSET: 0x00909CF0
+// FUNCTION: fn_12400
+int CTipOfTheDay::Size() {
+  if (this->m_bTryLoading == false) {
+    this->Load();
+  }
+
+  return static_cast<int>(this->m_tipList.size());
 }
 
 // OFFSET: 0x00909D20

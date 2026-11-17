@@ -10,7 +10,7 @@ class UISpellListWnd : public UIItemIdentifyWnd {
 public:
   UISpellListWnd();
   ~UISpellListWnd() override;
-  /* 00F0 */ std::vector<std::uint32_t> m_skills;
+  /* 00F0 */ std::vector<int> m_skills;
   /* 00FC */ std::int16_t m_sourceSkillId;
 
   void Paint() override;
