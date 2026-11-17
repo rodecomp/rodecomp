@@ -117,7 +117,8 @@ void CGameMode::StepTowardWalkableCell(const int& targetX, const int& targetY, i
     --y;
   }
 
-  if (this->scene->terrain->Walkable(x, y)) {
+  const TerrainHeightCell* cell = this->scene->terrain->CellAt(x, y);
+  if (cell != nullptr && cell->type != 1 && cell->type != 5) {
     return;
   }
 
@@ -125,7 +126,8 @@ void CGameMode::StepTowardWalkableCell(const int& targetX, const int& targetY, i
   for (int i = 0; i < 8; ++i) {
     x = startX + offsets[i][0];
     y = startY + offsets[i][1];
-    if (this->scene->terrain->Walkable(x, y)) {
+    cell = this->scene->terrain->CellAt(x, y);
+    if (cell != nullptr && cell->type != 1 && cell->type != 5) {
       return;
     }
   }
