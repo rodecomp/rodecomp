@@ -510,7 +510,7 @@ bool UILapineUpgradeBox_IngredientListWnd::AddIngredient(std::uint32_t identity)
   if (owned.identity[1] <= 0) {
     return false;
   }
-  if (owned.refiningLevel < this->minRefine || owned.refiningLevel > this->maxRefine || owned.optionCount < this->minOptionCount) {
+  if (this->minRefine > owned.refiningLevel || this->maxRefine < owned.refiningLevel || this->minOptionCount > owned.optionCount) {
     return false;
   }
   const int itemId = std::atoi(owned.itemId.c_str());
@@ -518,13 +518,14 @@ bool UILapineUpgradeBox_IngredientListWnd::AddIngredient(std::uint32_t identity)
     return false;
   }
   const auto material = std::find_if(this->materials.begin(), this->materials.end(), [owned](ITEM_INFO value) {
-    return std::atoi(owned.itemId.c_str()) == std::atoi(value.itemId.c_str());
+    const int ownedId = std::atoi(owned.itemId.c_str());
+    return ownedId == std::atoi(value.itemId.c_str());
   });
   if (material == this->materials.end()) {
     return false;
   }
   for (UILapineUpgradeBox_IngredientInfoWnd* entry : this->items) {
-    if (entry->item.identity[1] == identity) {
+    if (identity == entry->item.identity[1]) {
       return true;
     }
   }
@@ -567,7 +568,7 @@ __declspec(noinline) void UILapineUpgradeBox_IngredientInfoWnd::SetItem(std::uin
 // FUNCTION: fn_04222
 bool UILapineUpgradeBox_IngredientListWnd::CanUseIngredient(std::uint32_t identity) {
   auto entryIt = std::find_if(this->items.begin(), this->items.end(), [identity](UILapineUpgradeBox_IngredientInfoWnd* entry) {
-    return entry->item.identity[1] == identity;
+    return identity == entry->item.identity[1];
   });
   if (entryIt == this->items.end()) {
     return false;
@@ -648,7 +649,7 @@ int UILapineUpgradeBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     }
     break;
   case UM_ADDITEM:
-    if (this->item.identity[1] == 0 && this->ingredientList->CanUseIngredient(static_cast<std::uint32_t>(a)) == 1) {
+    if (this->item.identity[1] <= 0 && this->ingredientList->CanUseIngredient(static_cast<std::uint32_t>(a)) == 1) {
       ITEM_INFO owned = g_session.LookupClientItemByIdentity(static_cast<std::uint32_t>(a));
       if (owned.identity[1] > 0) {
         {
