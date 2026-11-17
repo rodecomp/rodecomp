@@ -243,7 +243,8 @@ bool ITEM_INFO::operator<(const ITEM_INFO& other) const {
 // FUNCTION: fn_06607
 std::list<int> SearchItemIds(std::string query, unsigned char cardsOnly, unsigned char partial) {
   std::list<int> result;
-  for (const auto& entry : g_itemDescriptions) {
+  for (auto entryIt = g_itemDescriptions.begin(); entryIt != g_itemDescriptions.end(); ++entryIt) {
+    const auto& entry = *entryIt;
     if (cardsOnly == 1 && g_itemCardNames.find(entry.first) == g_itemCardNames.end()) {
       continue;
     }
