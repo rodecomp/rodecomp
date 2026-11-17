@@ -4166,12 +4166,13 @@ void C3dGrannyGameActor::RenderShadowed(int argument) {
       this->LaunchEffect(EF_DRAGONSMOKE, vector3d{source[64].position[0], source[64].position[1], source[64].position[2]}, -this->angle);
     }
 
+    const std::uint16_t* meshIndices = indices;
     int vertexCount = 0;
     for (int triangle = 0; triangle < triangleCount; ++triangle) {
       command = this->commands[mesh];
       for (int corner = 0; corner < 3; ++corner) {
         RenderVertex& output = command->vertices[vertexCount];
-        const GrannyPNT332Vertex& vertex = source[indices[vertexCount]];
+        const GrannyPNT332Vertex& vertex = source[meshIndices[vertexCount]];
         ++vertexCount;
         position.x = vertex.position[0];
         position.y = vertex.position[1];
@@ -4195,13 +4196,15 @@ void C3dGrannyGameActor::RenderShadowed(int argument) {
     this->litPositions.push_back(position);
 
     if (mesh == 1) {
-      const std::string name = g_guildMgr->GetEmblemFilename(this->GetGdid());
-      CEmblemRes* emblem = static_cast<CEmblemRes*>(ResourceMgr::Instance().Load(name));
-      if (emblem != nullptr) {
-        if (this->emblemTexture == nullptr) {
-          this->emblemTexture = g_texMgr.Upload(24, 24, emblem->gif.image.pixels, 0, 0, false, false, false);
-        } else {
-          this->emblemTexture->Upload(0, 0, 24, 24, emblem->gif.image.pixels, 0, 0);
+      {
+        const std::string name = g_guildMgr->GetEmblemFilename(this->GetGdid());
+        CEmblemRes* emblem = static_cast<CEmblemRes*>(ResourceMgr::Instance().Load(name));
+        if (emblem != nullptr) {
+          if (this->emblemTexture == nullptr) {
+            this->emblemTexture = g_texMgr.Upload(24, 24, emblem->gif.image.pixels, 0, 0, false, false, false);
+          } else {
+            this->emblemTexture->Upload(0, 0, 24, 24, emblem->gif.image.pixels, 0, 0);
+          }
         }
       }
 
