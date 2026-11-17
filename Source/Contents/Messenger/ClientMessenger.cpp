@@ -1052,7 +1052,7 @@ void EquipmentProperties::CEquipment::NotifyProperties(const COLORREF& color, bo
         ReplaceAll(line, "#", " ");
         RemoveAll(line, "{~}");
         if (line.size() > 0) {
-          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(std::format("{0}{1}", suffix, line).c_str()), color, 0x18, 0, 0);
+          g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(std::format("{0}{1}", suffix, std::string_view(line)).c_str()), color, 0x18, 0, 0);
         }
       }
     }
