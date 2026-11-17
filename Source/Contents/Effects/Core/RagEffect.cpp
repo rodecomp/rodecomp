@@ -18367,7 +18367,7 @@ void CRagEffect::TorchDust(char kind) {
   stored()->state.slots[3].life = 0;
   stored()->state.slots[0].process = 0;
   stored()->state.slots[0].life = 1;
-  stored()->state.slots[0].distance = this->state.param[0] > 0.0f ? this->state.param[0] : 20.0f;
+  stored()->state.slots[0].distance = this->state.param[0] <= 0.0f ? 20.0f : this->state.param[0];
   stored()->state.slots[0].vecBPre.y = this->render.position.y - 10.0f;
   stored()->state.slots[0].flag1[2] = 4;
 
@@ -18380,12 +18380,16 @@ void CRagEffect::TorchDust(char kind) {
     stored()->state.slots[0].fullDisplayAngle = 135;
     stored()->state.slots[0].height[10] = 0.0f;
     stored()->state.slots[0].height[8] = 0.0f;
-    stored()->state.slots[0].alphaB = kind == 0 ? 100 : 130;
+    if (kind != 0) {
+      stored()->state.slots[0].alphaB = 130;
+    } else {
+      stored()->state.slots[0].alphaB = 100;
+    }
   }
 
   stored()->state.slots[0].vecBNow.x = this->render.position.x;
   stored()->state.slots[0].vecBNow.z = this->render.position.z;
-  stored()->state.slots[0].rotStart = static_cast<std::int16_t>(std::max(rand() % 360, 0));
+  stored()->state.slots[0].rotStart = static_cast<std::int16_t>(ClampedRandom(360));
   stored()->state.slots[0].flag1[0] = 0;
   stored()->state.slots[0].flag1[4] = kind;
 }
