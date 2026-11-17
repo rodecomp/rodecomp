@@ -387,6 +387,12 @@ struct DustExplosionSpawner {
 };
 
 // INLINED
+static __forceinline int ClampedRandom(int range) {
+  const int value = std::rand() % range;
+  return value >= 0 ? value : 0;
+}
+
+// INLINED
 template <class Action>
 __forceinline Action* CreateAction(const std::map<int, std::function<Action*()>>& factories, int id) {
   const auto found = factories.find(id);
@@ -1124,12 +1130,10 @@ vector3d CellWorldPosition(int column, int row) {
     return vector3d{0.0f, 0.0f, 0.0f};
   }
 
-  float z = 0.0f;
-  float y = 0.0f;
-  float x = 0.0f;
-  g_modeMgr.GetGameMode()->scene->CellOrigin(column, row, x, z);
-  y = g_modeMgr.GetGameMode()->scene->terrain->Height(x, z);
-  return vector3d{x + 2.5f, y + 0.0f, z + 2.5f};
+  vector3d position = {0.0f, 0.0f, 0.0f};
+  g_modeMgr.GetGameMode()->scene->CellOrigin(column, row, position.x, position.z);
+  position.y = g_modeMgr.GetGameMode()->scene->terrain->Height(position.x, position.z);
+  return vector3d{position.x + 2.5f, position.y + 0.0f, position.z + 2.5f};
 }
 
 // OFFSET: 0x0077AEA0
@@ -1361,7 +1365,7 @@ void CSkillAction_ABC_CHASING_BREAK::OnSkillEffect(int level, CGameActor* source
     CEffect* effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("chasing_break"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
       effect->SetAngle(static_cast<float>(angle));
-      effect->SetDelay(std::max(0, std::rand() % 150));
+      effect->SetDelay(ClampedRandom(150));
       effect->SetScale(0.15f);
       effect->EnableGroundRender();
     }
@@ -3070,13 +3074,13 @@ void CSkillAction_HN_METEOR_STORM_BUSTER::OnSkillCast(int level, CGameActor* sou
 // FUNCTION: fn_08539
 void CSkillAction_HN_METEOR_STORM_BUSTER::OnGroundSkillEffect(vector3d position, int argument2, int argument3) {
   EffectLists* effects = g_effectMgr;
-  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("meteor_storm_buster_meteor_bottom"), position, 0, -1, 0, 0);
+  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("meteor_storm_buster_meteor_bottom"), position.x, position.y, position.z, 0, -1, 0, 0);
   effects = g_effectMgr;
-  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("meteor_storm_buster_meteor"), position, 0, -1, 0, 0);
+  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("meteor_storm_buster_meteor"), position.x, position.y, position.z, 0, -1, 0, 0);
   effects = g_effectMgr;
-  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("meteor_storm_buster_bottom"), position, 0, -1, 0, 0);
+  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("meteor_storm_buster_bottom"), position.x, position.y, position.z, 0, -1, 0, 0);
   effects = g_effectMgr;
-  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("meteor_storm_buster"), position, 0, -1, 0, 0);
+  effects->Spawn(0, CEZ2STREffectMgr::GetInstance()->EffectId("meteor_storm_buster"), position.x, position.y, position.z, 0, -1, 0, 0);
 }
 
 // OFFSET: 0x00784100
@@ -3217,13 +3221,17 @@ void CSkillAction_HN_HELLS_DRIVE::OnSkillEffect(int level, CGameActor* source, C
   std::vector<int> columns = shuffledIndices(count);
   std::vector<int> rows = shuffledIndices(count);
   for (int index = 0; index < count; ++index) {
-    float offsetZ = 0.0f;
-    if (!rows.empty()) {
+    float offsetZ;
+    if (rows.empty()) {
+      offsetZ = 0.0f;
+    } else {
       offsetZ = static_cast<float>((rows.front() - count / 2) * 5.0);
       rows.erase(rows.begin());
     }
-    float offsetX = 0.0f;
-    if (!columns.empty()) {
+    float offsetX;
+    if (columns.empty()) {
+      offsetX = 0.0f;
+    } else {
       offsetX = static_cast<float>((columns.front() - count / 2) * 5.0);
       columns.erase(columns.begin());
     }
