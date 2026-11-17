@@ -288,7 +288,8 @@ void UIOngoingQuestScrollWnd::SetQuest(unsigned int questId) {
   context.SetFont(0, 12, 1, 0);
   context.Measure(LookupMessage(MSI_RENEW_QUEST_DETAIL_EXP), static_cast<int>(std::strlen(LookupMessage(MSI_RENEW_QUEST_DETAIL_EXP))), &size);
   label->SetSize(size.cx + 4, 12);
-  label->SetText(LookupMessage(MSI_RENEW_QUEST_DETAIL_EXP), 0);
+  const char* expText = LookupMessage(MSI_RENEW_QUEST_DETAIL_EXP);
+  label->SetText(expText, 0);
   label->Move(24, 9);
   this->AddScrollChild(label);
 
@@ -326,7 +327,8 @@ void UIOngoingQuestScrollWnd::SetQuest(unsigned int questId) {
   label = new UIStaticText();
   context.Measure(LookupMessage(MSI_RENEW_QUEST_DETAIL_JEXP), static_cast<int>(std::strlen(LookupMessage(MSI_RENEW_QUEST_DETAIL_JEXP))), &size);
   label->SetSize(size.cx + 4, 12);
-  label->SetText(LookupMessage(MSI_RENEW_QUEST_DETAIL_JEXP), 0);
+  const char* jobExpText = LookupMessage(MSI_RENEW_QUEST_DETAIL_JEXP);
+  label->SetText(jobExpText, 0);
   label->Move(24, y);
   this->AddScrollChild(label);
   y += 22;
@@ -367,7 +369,8 @@ void UIOngoingQuestScrollWnd::SetQuest(unsigned int questId) {
   label = new UIStaticText();
   context.Measure(LookupMessage(MSI_RENEW_QUEST_DETAIL_ITEM), static_cast<int>(std::strlen(LookupMessage(MSI_RENEW_QUEST_DETAIL_ITEM))), &size);
   label->SetSize(size.cx + 4, 12);
-  label->SetText(LookupMessage(MSI_RENEW_QUEST_DETAIL_ITEM), 0);
+  const char* itemText = LookupMessage(MSI_RENEW_QUEST_DETAIL_ITEM);
+  label->SetText(itemText, 0);
   label->Move(24, y);
   this->AddScrollChild(label);
   y += 22;
@@ -375,7 +378,8 @@ void UIOngoingQuestScrollWnd::SetQuest(unsigned int questId) {
   label = new UIStaticText();
   context.Measure(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP1_ITEM), static_cast<int>(std::strlen(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP1_ITEM))), &size);
   label->SetSize(size.cx + 4, 12);
-  label->SetText(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP1_ITEM), 0);
+  const char* baseRewardText = LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP1_ITEM);
+  label->SetText(baseRewardText, 0);
   label->Move(32, y);
   this->AddScrollChild(label);
 
@@ -391,7 +395,8 @@ void UIOngoingQuestScrollWnd::SetQuest(unsigned int questId) {
   label = new UIStaticText();
   context.Measure(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP2_ITEM), static_cast<int>(std::strlen(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP2_ITEM))), &size);
   label->SetSize(size.cx + 4, 12);
-  label->SetText(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP2_ITEM), 0);
+  const char* jobRewardText = LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP2_ITEM);
+  label->SetText(jobRewardText, 0);
   label->Move(32, y);
   this->AddScrollChild(label);
 
@@ -407,7 +412,8 @@ void UIOngoingQuestScrollWnd::SetQuest(unsigned int questId) {
   label = new UIStaticText();
   context.Measure(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP3_ITEM), static_cast<int>(std::strlen(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP3_ITEM))), &size);
   label->SetSize(size.cx + 4, 12);
-  label->SetText(LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP3_ITEM), 0);
+  const char* itemRewardText = LookupMessage(MSI_RENEW_QUEST_CHECK_TOOTIP3_ITEM);
+  label->SetText(itemRewardText, 0);
   label->Move(32, y);
   this->AddScrollChild(label);
 
