@@ -161,8 +161,12 @@ void CWindEffect::OnProcess() {
       particle->vertices[2].z = this->lastPoints[0].z;
     }
 
-    this->lastPoints[0] = bottom;
-    this->lastPoints[1] = top;
+    this->lastPoints[0].x = bottom.x;
+    this->lastPoints[0].y = bottom.y;
+    this->lastPoints[0].z = bottom.z;
+    this->lastPoints[1].x = top.x;
+    this->lastPoints[1].y = top.y;
+    this->lastPoints[1].z = top.z;
   }
 }
 
