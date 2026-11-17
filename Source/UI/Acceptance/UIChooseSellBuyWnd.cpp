@@ -3352,10 +3352,9 @@ void UIEquipWnd::OnCreate(int width, int height) {
       this->m_viewButton->SetId(248);
 
       const char* tooltip = nullptr;
-      const std::uint32_t flags = g_session.m_jobFlags;
-      if (StateFlag04(flags)) {
+      if (StateFlag04(g_session.m_jobFlags)) {
         tooltip = LookupMessage(MSI_BIRDOFF);
-      } else if (StateFlag05(flags)) {
+      } else if (StateFlag05(g_session.m_jobFlags)) {
         switch (g_session.GetDisplayJob()) {
         case JT_ROYAL_CHICKEN:
         case JT_ROYAL_CHICKEN_H:
@@ -3367,13 +3366,17 @@ void UIEquipWnd::OnCreate(int width, int height) {
           tooltip = LookupMessage(MSI_CHIKENOFF);
           break;
         }
-      } else if (StateFlag22(flags)) {
+      } else if (StateFlag22(g_session.m_jobFlags)) {
         tooltip = LookupMessage(MSI_MADOOFF);
-      } else if (StateFlag19(flags) || StateFlag23(flags) || StateFlag24(flags) || StateFlag25(flags) || StateFlag26(flags)) {
+      } else if (StateFlag19(g_session.m_jobFlags) || StateFlag23(g_session.m_jobFlags) || StateFlag24(g_session.m_jobFlags) || StateFlag25(g_session.m_jobFlags) || StateFlag26(g_session.m_jobFlags)) {
         tooltip = LookupMessage(MSI_DRAGONOFF);
       }
       if (g_session.replayPacketMode > 0) {
-        tooltip = LookupMessage(tooltip ? MSI_BAN_LOGIN_IS_RESTRICTED : MSI_CARTOFF);
+        if (tooltip) {
+          tooltip = LookupMessage(MSI_BAN_LOGIN_IS_RESTRICTED);
+        } else {
+          tooltip = LookupMessage(MSI_CARTOFF);
+        }
       }
       this->m_viewButton->SetTooltip(tooltip);
       this->AddChild(this->m_viewButton);
@@ -3412,9 +3415,10 @@ void UIEquipWnd::OnCreate(int width, int height) {
 
   this->m_titleList = new UIListBoxTitle();
   this->m_titleList->Configure(3, this->m_contentTop + 39, this->geometry.width - 6, 105, 0);
-  this->m_titleList->backgroundColor[0] = 225;
-  this->m_titleList->backgroundColor[1] = 225;
-  this->m_titleList->backgroundColor[2] = 225;
+  int* background = this->m_titleList->backgroundColor;
+  background[0] = 225;
+  background[1] = 225;
+  background[2] = 225;
   this->m_titleList->SetId(480);
   this->m_titleList->Show(0);
   this->AddChild(this->m_titleList);
