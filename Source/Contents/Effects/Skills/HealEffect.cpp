@@ -333,14 +333,14 @@ void CHealEffect::Open() {
 // FUNCTION: fn_19073
 void CHealEffect::InitEvents() {
   switch (this->id) {
-  case EF_ABSORBSPIRITS:
-    this->AddEvent(0, "effect\\흡기.wav", 0, 0);
-    break;
   case EF_HEAL:
   case EF_HEAL2:
   case EF_HEAL3:
   case EF_HEAL4:
     this->AddEvent(0, "_heal_effect.wav", 0, 0);
+    break;
+  case EF_ABSORBSPIRITS:
+    this->AddEvent(0, "effect\\흡기.wav", 0, 0);
     break;
   }
 }
