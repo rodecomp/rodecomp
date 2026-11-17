@@ -28,21 +28,21 @@ bool GroundGeometry::CellRectangle(int column, int row, float* vertices) const {
   vertices[1] = 0.0f;
   vertices[0] = x0;
   vertices[2] = z0;
-  const float x1 = static_cast<float>(cellColumn - this->width / 2 + 1) * this->cellSize;
   const float z1 = static_cast<float>(cellRow - this->height / 2) * this->cellSize;
+  const float x1 = static_cast<float>(cellColumn - this->width / 2 + 1) * this->cellSize;
   vertices[4] = 0.0f;
-  vertices[3] = x1;
   vertices[5] = z1;
-  const float x2 = static_cast<float>(cellColumn - this->width / 2) * this->cellSize;
+  vertices[3] = x1;
   const float z2 = static_cast<float>(cellRow - this->height / 2 + 1) * this->cellSize;
+  const float x2 = static_cast<float>(cellColumn - this->width / 2) * this->cellSize;
   vertices[7] = 0.0f;
-  vertices[6] = x2;
   vertices[8] = z2;
-  const float x3 = static_cast<float>(cellColumn - this->width / 2 + 1) * this->cellSize;
+  vertices[6] = x2;
   const float z3 = static_cast<float>(cellRow - this->height / 2 + 1) * this->cellSize;
+  const float x3 = static_cast<float>(cellColumn - this->width / 2 + 1) * this->cellSize;
   vertices[10] = 0.0f;
-  vertices[9] = x3;
   vertices[11] = z3;
+  vertices[9] = x3;
 
   const TerrainHeightCell* cell = this->terrain->CellAt(column, row);
 
