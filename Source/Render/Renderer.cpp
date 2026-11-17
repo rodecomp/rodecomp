@@ -121,22 +121,15 @@ void CRenderer::DrawBattleFieldIcon() {
 // OFFSET: 0x0055E840
 // FUNCTION: fn_02112
 void CRenderer::DrawOverlays() {
-  // GLOBAL: gl_24883
-  static char s_bannerState;
-  // GLOBAL: gl_24885
-  static int s_bannerAlpha;
-  // GLOBAL: gl_24884
-  static short s_shakeStep;
-
   if (g_serviceType == 0) {
     SYSTEMTIME now;
     GetLocalTime(&now);
-    if (now.wMinute == 0 && now.wSecond == 0 && s_bannerState == 0) {
-      s_bannerState = 1;
-      s_bannerAlpha = 0;
-    } else if (now.wMinute == 0 && now.wSecond >= 10 && s_bannerState == 1) {
-      s_bannerState = 2;
-    } else if (s_bannerState < 1) {
+    if (now.wMinute == 0 && now.wSecond == 0 && s_hourlyBannerState == 0) {
+      s_hourlyBannerState = 1;
+      s_hourlyBannerAlpha = 0;
+    } else if (now.wMinute == 0 && now.wSecond >= 10 && s_hourlyBannerState == 1) {
+      s_hourlyBannerState = 2;
+    } else if (s_hourlyBannerState < 1) {
       goto timer;
     }
 
@@ -148,17 +141,17 @@ void CRenderer::DrawOverlays() {
         rect.left = this->viewport.width - texture->Width() - 140;
         rect.top = 45;
         rect.right = this->viewport.width - 140;
-        if (s_bannerState == 1) {
-          if (s_bannerAlpha < 220) {
-            ++s_bannerAlpha;
+        if (s_hourlyBannerState == 1) {
+          if (s_hourlyBannerAlpha < 220) {
+            ++s_hourlyBannerAlpha;
           }
-        } else if (s_bannerAlpha > 0) {
-          --s_bannerAlpha;
+        } else if (s_hourlyBannerAlpha > 0) {
+          --s_hourlyBannerAlpha;
         } else {
-          s_bannerState = 0;
+          s_hourlyBannerState = 0;
         }
 
-        const std::uint32_t color = (s_bannerAlpha << 24) + 0xFFFFFF;
+        const std::uint32_t color = (s_hourlyBannerAlpha << 24) + 0xFFFFFF;
         const TextureRegion region = {0.0f, 0.0f, 1.0f, 1.0f};
         g_modeMgr.GetGameMode()->DrawTexture(rect, 0, 0.0999f, color, texture, region);
       }
@@ -183,13 +176,13 @@ timer:
   }
 
   char* line = static_cast<char*>(std::malloc(this->backBuffer.pitch));
-  if (s_shakeStep < 2) {
-    s_shakeStep = 2;
+  if (s_screenShakeStep < 2) {
+    s_screenShakeStep = 2;
   }
 
   for (int y = this->viewport.height - 1; y >= 0; --y) {
     char* row = static_cast<char*>(this->backBuffer.pixels) + this->backBuffer.pitch * y;
-    const unsigned char period = s_shakeStep > 10 ? 20 - s_shakeStep : s_shakeStep;
+    const unsigned char period = s_screenShakeStep > 10 ? 20 - s_screenShakeStep : s_screenShakeStep;
     if (y == this->viewport.height - 1) {
       std::memcpy(line, row, this->backBuffer.pitch);
     }
@@ -206,12 +199,12 @@ timer:
     }
   }
 
-  s_shakeStep += 2;
-  if (s_shakeStep < 2) {
-    s_shakeStep = 2;
-  } else if (s_shakeStep > 16) {
-    g_screenShakeDuration = g_screenShakeDuration - 1 < 0 ? 0 : g_screenShakeDuration - 1;
-    s_shakeStep = 2;
+  s_screenShakeStep += 2;
+  if (s_screenShakeStep < 2) {
+    s_screenShakeStep = 2;
+  } else if (s_screenShakeStep > 16) {
+    g_screenShakeDuration = std::max(g_screenShakeDuration - 1, 0);
+    s_screenShakeStep = 2;
   }
 
   std::free(line);
