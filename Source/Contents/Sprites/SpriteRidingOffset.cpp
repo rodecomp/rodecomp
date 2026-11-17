@@ -18,9 +18,9 @@ int SpriteRidingOffset(const ActionFrame* frame, unsigned animation, unsigned mo
     return 0;
   }
 
-  std::string name = g_session.GetBodyActionResourceName(g_session.BaseJob(job), sex, costumeJob, 0);
-  std::string resourceName(name);
-  CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load(resourceName));
+  const int baseJob = g_session.BaseJob(job);
+  std::string name = g_session.GetBodyActionResourceName(baseJob, sex, costumeJob, 0);
+  CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load(name));
   if (!action) {
     return 0;
   }
