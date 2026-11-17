@@ -75,7 +75,8 @@ void UICaptchaRegisterWnd::OnCreate(int width, int height) {
   this->m_fileComboBox->SetColor(232, 232, 232);
   this->AddChild(this->m_fileComboBox);
 
-  for (const std::string& file : files) {
+  for (auto fileIt = files.begin(); fileIt != files.end(); ++fileIt) {
+    const std::string& file = *fileIt;
     this->m_fileComboBox->AddOption(file.c_str(), 0);
   }
 
