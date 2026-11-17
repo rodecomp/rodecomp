@@ -5902,7 +5902,7 @@ void CGameMode::ApplyStatusChange(
     }
 
     if (type == EFST_SPELLFIST && actor) {
-      const unsigned char element = static_cast<unsigned char>(value3);
+      const int element = value3 & 0xFF;
       if (element == 19) {
         g_effectMgr->Spawn(actor->render.accountId, EF_NEW_SPELLFIST_FIRE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
         g_effectMgr->Spawn(actor->render.accountId, EF_NEW_SPELLFIST_FIRE_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
@@ -6757,7 +6757,7 @@ void CGameMode::ApplyStatusChange(
         break;
       }
 
-      const unsigned char element = static_cast<unsigned char>(value3);
+      const int element = value3 & 0xFF;
       if (element == 19) {
         g_effectMgr->Spawn(actor->render.accountId, EF_NEW_SPELLFIST_FIRE, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
         g_effectMgr->Spawn(actor->render.accountId, EF_NEW_SPELLFIST_FIRE_BOTTOM, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
