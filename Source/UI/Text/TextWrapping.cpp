@@ -13,9 +13,17 @@
 #include <mbstring.h>
 #include <windows.h>
 
-// INLINED
-static void AppendLine(std::vector<std::string>& lines, const char* first, const char* last) {
+// OFFSET: 0x009B43C0
+// FUNCTION: fn_13830
+__declspec(noinline) static void AppendLine(std::vector<std::string>& lines, const char* first, const char* last) {
   const std::string line(first, last);
+  lines.push_back(line);
+}
+
+// OFFSET: 0x009B44C0
+// FUNCTION: fn_13831
+void AppendLine(std::vector<std::string>& lines, const char* text) {
+  const std::string line(text);
   lines.push_back(line);
 }
 

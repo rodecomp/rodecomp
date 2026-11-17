@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+void AppendLine(std::vector<std::string>& lines, const char* text);
 
 void WrapPlainText(const char* text, std::vector<std::string>& lines, int width);
 

@@ -3,6 +3,7 @@
 #include "Contents/Configuration/ServiceConfiguration.h"
 #include "File/File.h"
 #include "File/ResourcePath.h"
+#include "UI/Text/TextWrapping.h"
 
 #include <cstdio>
 
