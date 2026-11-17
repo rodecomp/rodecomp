@@ -192,28 +192,28 @@ UIMakeCharWnd::UIMakeCharWnd()
   this->m_view.x = 70;
   this->m_view.y = 123;
 
-  this->m_view.actionNames[0].assign(g_session.GetBodyActionResourceName(this->m_info.job, this->m_info.sex, 0, 0));
-  this->m_view.spriteNames[0].assign(g_session.GetBodySprName(this->m_info.job, this->m_info.sex, 0, 0));
+  this->m_view.actionNames[0].assign(static_cast<const std::string&>(g_session.GetBodyActionResourceName(this->m_info.job, this->m_info.sex, 0, 0)));
+  this->m_view.spriteNames[0].assign(static_cast<const std::string&>(g_session.GetBodySprName(this->m_info.job, this->m_info.sex, 0, 0)));
 
   if (this->m_info.sex == 1 && 13 == this->m_info.head) {
     this->m_info.head = 14;
   }
 
   int head = this->m_info.head;
-  this->m_view.actionNames[1].assign(g_session.GetHeadActName(this->m_info.job, this->m_info.sex, &head));
-  this->m_view.spriteNames[1].assign(g_session.GetHeadSprName(this->m_info.job, this->m_info.sex, &head));
+  this->m_view.actionNames[1].assign(static_cast<const std::string&>(g_session.GetHeadActName(this->m_info.job, this->m_info.sex, &head)));
+  this->m_view.spriteNames[1].assign(static_cast<const std::string&>(g_session.GetHeadSprName(this->m_info.job, this->m_info.sex, &head)));
 
   const int bodyPalette = this->m_info.bodyStyle;
   this->m_info.head = static_cast<std::int16_t>(head);
   this->m_view.bodyPalette = bodyPalette;
   if (bodyPalette) {
-    this->m_view.bodyPaletteName.assign(g_session.GetBodyPalName(this->m_info.job, this->m_info.sex, bodyPalette, this->m_info.bodyCostume, 0, 0));
+    this->m_view.bodyPaletteName.assign(static_cast<const std::string&>(g_session.GetBodyPalName(this->m_info.job, this->m_info.sex, bodyPalette, this->m_info.bodyCostume, 0, 0)));
   }
 
   const int headPalette = this->m_info.headPalette;
   this->m_view.headPalette = headPalette;
   if (headPalette) {
-    this->m_view.headPaletteName.assign(g_session.GetHeadPalName(head, this->m_info.job, this->m_info.sex, headPalette));
+    this->m_view.headPaletteName.assign(static_cast<const std::string&>(g_session.GetHeadPalName(head, this->m_info.job, this->m_info.sex, headPalette)));
   }
 
   this->m_view.imfName = g_session.GetBodyImfName(this->m_info.job, this->m_info.sex, this->m_info.head, this->m_info.bodyCostume);
@@ -432,7 +432,7 @@ void UIMerInfoWnd::Paint() {
 long long UIBank_NewWnd::TransactionAmount(unsigned char deposit) {
   std::string text = this->m_amountEdit->Text();
   this->m_amountEdit->SetText("");
-  if (text == std::string(LookupMessage(MSI_BANK_1_MINI))) {
+  if (std::string(LookupMessage(MSI_BANK_1_MINI)) == text) {
     const long long cash = g_session.m_zeny;
     const long long balance = g_session.m_bankBalance;
     const long long excess = cash + balance > 0x7FFFFFFF ? cash + balance - 0x7FFFFFFF : 0;
