@@ -3358,7 +3358,8 @@ void UITextViewEX::Paint() {
     std::vector<UITextButton*> buttons = *it;
     if (line >= top) {
       int x = 0;
-      for (UITextButton* button : buttons) {
+      for (auto buttonIt = buttons.begin(), buttonEnd = buttons.end(); buttonIt != buttonEnd; ++buttonIt) {
+        UITextButton* button = *buttonIt;
         UIString* text = reinterpret_cast<UIString*>(button);
         if (StringText(*text) != "\n") {
           text->Show(1);
@@ -3377,7 +3378,8 @@ void UITextViewEX::Paint() {
       }
       y += 21;
     } else {
-      for (UITextButton* button : buttons) {
+      for (auto buttonIt = buttons.begin(), buttonEnd = buttons.end(); buttonIt != buttonEnd; ++buttonIt) {
+        UITextButton* button = *buttonIt;
         button->Show(0);
       }
     }
