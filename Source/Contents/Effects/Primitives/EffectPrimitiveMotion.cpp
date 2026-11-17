@@ -6494,7 +6494,7 @@ bool CEffectPrim::PrimPulsingColumns() {
         this->state.slots[index].height[column] =
             this->state.slots[index].maxHeight * 0.25f * g_sinTable[phase % 360] + this->state.slots[index].maxHeight * 0.75f;
 
-        if (this->state.slots[index].process < 91) {
+        if (this->state.slots[index].process <= 90) {
           this->state.slots[index].height[column] *= g_sinTable[this->state.slots[index].process];
         }
 
@@ -6504,14 +6504,14 @@ bool CEffectPrim::PrimPulsingColumns() {
       } else if (kind == 1 || kind == 3) {
         this->state.slots[index].height[column] = this->state.slots[index].maxHeight;
 
-        if (this->state.slots[index].process < 91) {
-          this->state.slots[index].height[column] = this->state.slots[index].maxHeight * g_sinTable[this->state.slots[index].process];
+        if (this->state.slots[index].process <= 90) {
+          this->state.slots[index].height[column] *= g_sinTable[this->state.slots[index].process];
         }
       } else if (kind == 2) {
         this->state.slots[index].height[column] = this->state.slots[index].maxHeight;
 
-        if (this->state.slots[index].process < 46) {
-          this->state.slots[index].height[column] = this->state.slots[index].maxHeight * g_sinTable[this->state.slots[index].process * 4];
+        if (this->state.slots[index].process <= 45) {
+          this->state.slots[index].height[column] *= g_sinTable[this->state.slots[index].process * 4];
         } else {
           this->state.slots[index].height[column] = 0.0f;
         }
