@@ -168,6 +168,14 @@ static void PlayEffectWave(const CRagEffect& effect, const char* name) {
 }
 
 // INLINED
+static __forceinline void PlayEffectWaveInline(const CRagEffect& effect, const char* name) {
+  const auto* player = static_cast<const CRenderObject*>(g_modeMgr.GetGameMode()->scene->player);
+  g_soundMgr->PlayWave(
+    name, effect.render.position.x - player->render.position.x, 0.0f, effect.render.position.z - player->render.position.z, 250, 40, 1.0f, 0
+  );
+}
+
+// INLINED
 static int ClampedRandom(int range) {
   const int value = rand() % range;
   return value >= 0 ? value : 0;
@@ -319,7 +327,7 @@ void CRagEffect::FireBall() {
     return;
   }
 
-  PlayEffectWave(*this, "effect\\EF_FireBall.wav");
+  PlayEffectWaveInline(*this, "effect\\EF_FireBall.wav");
   this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 20;
   this->state.lastPrim->state.pattern |= 0x120u;
@@ -404,7 +412,7 @@ void CRagEffect::FrostDiver2() {
     return;
   }
 
-  PlayEffectWave(*this, "effect\\EF_FrostDiver2.wav");
+  PlayEffectWaveInline(*this, "effect\\EF_FrostDiver2.wav");
 
   vector3d origin{0.0f, 0.0f, 0.0f};
   for (int index = 0; index < 8; ++index) {
@@ -515,7 +523,7 @@ void CRagEffect::FrostDiver(char type) {
 // FUNCTION: fn_20058
 void CRagEffect::GrimTooth() {
   if (this->state.stateCnt == 0) {
-    PlayEffectWave(*this, "effect\\EF_FrostDiver.wav");
+    PlayEffectWaveInline(*this, "effect\\EF_FrostDiver.wav");
     this->Face(this->state.deltaPos.x, this->state.deltaPos.z);
     matrix rotation;
     rotation.MakeYRotation(GetRadian(static_cast<int>(-this->render.angle)));
@@ -585,7 +593,7 @@ void CRagEffect::IceWall() {
     return;
   }
 
-  PlayEffectWave(*this, "effect\\wizard_icewall.wav");
+  PlayEffectWaveInline(*this, "effect\\wizard_icewall.wav");
   this->state.duration = 9999;
 
   vector3d origin{0.0f, 0.0f, 0.0f};
@@ -815,7 +823,7 @@ void CRagEffect::Hit2(int option) {
     return;
   }
 
-  PlayEffectWave(*this, "effect\\EF_hit2.wav");
+  PlayEffectWaveInline(*this, "effect\\EF_hit2.wav");
 
   int index = 0;
 
@@ -865,7 +873,7 @@ void CRagEffect::Hit3() {
     return;
   }
 
-  PlayEffectWave(*this, "effect\\EF_hit3.wav");
+  PlayEffectWaveInline(*this, "effect\\EF_hit3.wav");
 
   int facing = static_cast<int>(180.0f - this->state.parent->render.angle);
 
@@ -947,7 +955,7 @@ void CRagEffect::Hit4() {
     return;
   }
 
-  PlayEffectWave(*this, "effect\\EF_hit4.wav");
+  PlayEffectWaveInline(*this, "effect\\EF_hit4.wav");
   int direction = static_cast<int>(180.0f - this->state.parent->render.angle);
   if (direction < 0) {
     direction += 360;
@@ -1092,7 +1100,7 @@ void CRagEffect::SpearBmr() {
     return;
   }
 
-  PlayEffectWave(*this, "effect\\EF_FireBall.wav");
+  PlayEffectWaveInline(*this, "effect\\EF_FireBall.wav");
   this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 15;
   this->state.lastPrim->state.pattern |= 0x120u;
@@ -1192,7 +1200,7 @@ void CRagEffect::WaterBall2() {
     return;
   }
 
-  PlayEffectWave(*this, "effect\\wizard_waterball_chulung.wav");
+  PlayEffectWaveInline(*this, "effect\\wizard_waterball_chulung.wav");
   this->state.lastPrim = this->LaunchEffectPrim(8, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->SetSpriteName("이팩트\\Waterball.spr");
   this->state.lastPrim->SetActionName("이팩트\\Waterball.act");
@@ -1226,7 +1234,7 @@ void CRagEffect::Yufitel(char F1) {
     return;
   }
 
-  PlayEffectWave(*this, "effect\\hunter_shockwavetrap.wav");
+  PlayEffectWaveInline(*this, "effect\\hunter_shockwavetrap.wav");
 
   if (this->state.stateCnt != 0) {
     return;
@@ -1567,7 +1575,7 @@ bool CRagEffect::ShieldCharge() {
 // FUNCTION: fn_20016
 bool CRagEffect::Aspersio() {
   if (this->state.stateCnt == 70) {
-    PlayEffectWave(*this, "effect\\priest_aspersio.wav");
+    PlayEffectWaveInline(*this, "effect\\priest_aspersio.wav");
   }
 
   if (this->state.stateCnt % 5 == 0 && this->state.stateCnt > 60 && this->state.stateCnt < 140) {
@@ -1659,7 +1667,7 @@ void CRagEffect::Blessing() {
   this->render.position = parent.render.position;
 
   if (this->state.stateCnt == 0) {
-    PlayEffectWave(*this, "effect\\EF_Blessing.wav");
+    PlayEffectWaveInline(*this, "effect\\EF_Blessing.wav");
     this->state.lastPrim = this->LaunchEffectPrim(12, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = this->state.duration;
     this->state.lastPrim->state.pattern |= 1u;
@@ -1837,7 +1845,7 @@ void CRagEffect::Steal() {
     return;
   }
 
-  PlayEffectWave(*this, "effect\\EF_Steal.wav");
+  PlayEffectWaveInline(*this, "effect\\EF_Steal.wav");
 
   for (int count = 0; count < 10; ++count) {
     this->state.lastPrim = this->LaunchEffectPrim(6, vector3d{0.0f, 0.0f, 0.0f});
@@ -1958,23 +1966,23 @@ void CRagEffect::AttackEnergy2(const char* name) {
 // FUNCTION: fn_20077
 bool CRagEffect::LexDivina() {
   if (this->state.stateCnt == 0) {
-    PlayEffectWave(*this, "effect\\priest_lexdivina.wav");
+    PlayEffectWaveInline(*this, "effect\\priest_lexdivina.wav");
   }
 
   if (this->state.stateCnt == 20) {
-    PlayEffectWave(*this, "effect\\priest_lexdivina.wav");
+    PlayEffectWaveInline(*this, "effect\\priest_lexdivina.wav");
   }
 
   if (this->state.stateCnt == 35) {
-    PlayEffectWave(*this, "effect\\priest_lexdivina.wav");
+    PlayEffectWaveInline(*this, "effect\\priest_lexdivina.wav");
   }
 
   if (this->state.stateCnt == 60) {
-    PlayEffectWave(*this, "effect\\priest_lexdivina.wav");
+    PlayEffectWaveInline(*this, "effect\\priest_lexdivina.wav");
   }
 
   if (this->state.stateCnt == 70) {
-    PlayEffectWave(*this, "effect\\priest_lexdivina.wav");
+    PlayEffectWaveInline(*this, "effect\\priest_lexdivina.wav");
   }
 
   return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
@@ -1984,7 +1992,7 @@ bool CRagEffect::LexDivina() {
 // FUNCTION: fn_20096
 void CRagEffect::RemoveTrap() {
   if (this->state.stateCnt == 0) {
-    PlayEffectWave(*this, "effect\\hunter_removetrap.wav");
+    PlayEffectWaveInline(*this, "effect\\hunter_removetrap.wav");
   }
 
   if (this->state.stateCnt != 0 && this->state.stateCnt != 7) {
@@ -2238,7 +2246,7 @@ void CRagEffect::Entry() {
 // FUNCTION: fn_20025
 bool CRagEffect::CartRevolution() {
   if (this->state.stateCnt == 7 || this->state.stateCnt == 20) {
-    PlayEffectWave(*this, "effect\\EF_MagnumBreak.wav");
+    PlayEffectWaveInline(*this, "effect\\EF_MagnumBreak.wav");
     this->state.lastPrim = this->LaunchEffectPrim(12, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 20;
     this->state.lastPrim->state.renderFlag |= 0x200u;
@@ -2331,7 +2339,7 @@ void CRagEffect::SonicBlowHit() {
     return;
   }
 
-  PlayEffectWave(*this, "effect\\assasin_sonicblow.wav");
+  PlayEffectWaveInline(*this, "effect\\assasin_sonicblow.wav");
 
   if (this->state.stateCnt != 0) {
     return;
@@ -2385,7 +2393,7 @@ void CRagEffect::Exit() {
     this->state.lastPrim->state.fadeOutCnt = this->state.lastPrim->state.duration - 20;
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
     this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\alpha_down.tga", 0, false, true, false);
-    PlayEffectWave(*this, "_heal_effect.wav");
+    PlayEffectWaveInline(*this, "_heal_effect.wav");
   }
 
   if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0) {
@@ -3455,7 +3463,7 @@ void CRagEffect::BlackMaximize(const char* name) {
     return;
   }
 
-  PlayEffectWave(*this, "effect\\black_maximize_power_sword_bic.wav");
+  PlayEffectWaveInline(*this, "effect\\black_maximize_power_sword_bic.wav");
   this->state.lastPrim = this->LaunchEffectPrim(61, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 5;
   this->state.lastPrim->state.duration = this->state.duration;
@@ -3536,7 +3544,7 @@ void CRagEffect::WaterOut() {
     return;
   }
 
-  PlayEffectWave(*this, "effect\\wizard_waterball_chulung.wav");
+  PlayEffectWaveInline(*this, "effect\\wizard_waterball_chulung.wav");
 
   if (this->state.stateCnt != 0) {
     return;
@@ -4472,7 +4480,7 @@ void CRagEffect::KyrieGuard(const char* name, char kind) {
     return;
   }
 
-  PlayEffectWave(*this, "effect\\kyrie_guard.wav");
+  PlayEffectWaveInline(*this, "effect\\kyrie_guard.wav");
   this->state.lastPrim = this->LaunchEffectPrim(61, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 5;
   this->state.lastPrim->state.duration = this->state.duration;
@@ -5640,7 +5648,7 @@ void CRagEffect::TexturedShieldThrow(const char* name) {
     return;
   }
 
-  PlayEffectWave(*this, "effect\\cru_shield boomerang.wav");
+  PlayEffectWaveInline(*this, "effect\\cru_shield boomerang.wav");
   this->state.lastPrim = this->LaunchEffectPrim(42, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 5;
   this->state.lastPrim->state.duration = this->state.duration;
@@ -6118,7 +6126,7 @@ void CRagEffect::WeddingBurst(const char* name, char silent) {
   }
 
   if (silent == 0) {
-    PlayEffectWave(*this, "effect\\wedding.wav");
+    PlayEffectWaveInline(*this, "effect\\wedding.wav");
   }
 
   this->state.lastPrim = this->LaunchEffectPrim(78, vector3d{0.0f, 0.0f, 0.0f});
@@ -7690,11 +7698,11 @@ void CRagEffect::CloudBurst() {
   }
 
   if (this->state.stateCnt == 10) {
-    PlayEffectWave(*this, "effect\\EF_hit2.wav");
+    PlayEffectWaveInline(*this, "effect\\EF_hit2.wav");
   }
 
   if (this->state.stateCnt == 20) {
-    PlayEffectWave(*this, "effect\\EF_hit4.wav");
+    PlayEffectWaveInline(*this, "effect\\EF_hit4.wav");
   }
 }
 
@@ -7738,11 +7746,11 @@ void CRagEffect::CloudSpread() {
   }
 
   if (this->state.stateCnt == 10) {
-    PlayEffectWave(*this, "effect\\EF_hit2.wav");
+    PlayEffectWaveInline(*this, "effect\\EF_hit2.wav");
   }
 
   if (this->state.stateCnt == 20) {
-    PlayEffectWave(*this, "effect\\EF_hit4.wav");
+    PlayEffectWaveInline(*this, "effect\\EF_hit4.wav");
   }
 }
 
@@ -7869,7 +7877,7 @@ void CRagEffect::FrostSplash(int, int) {
 // FUNCTION: fn_20313
 void CRagEffect::AssassinCloakingClear() {
   if (this->state.stateCnt == 0) {
-    PlayEffectWave(*this, "effect\\assasin_cloaking.wav");
+    PlayEffectWaveInline(*this, "effect\\assasin_cloaking.wav");
   }
 
   this->state.parent->SetColor(50, 0, 0, 0);
@@ -8407,7 +8415,7 @@ void CRagEffect::TeleportRings(const char* name, std::int16_t level) {
   }
 
   CopyVector(this->render.position, this->state.parent->render.position);
-  PlayEffectWave(*this, "effect\\EF_Teleportation.wav");
+  PlayEffectWaveInline(*this, "effect\\EF_Teleportation.wav");
   this->state.lastPrim = this->LaunchEffectPrim(57, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 5;
   this->state.lastPrim->state.duration = this->state.duration;
@@ -8550,15 +8558,15 @@ void CRagEffect::CloudDrift() {
   }
 
   if (this->state.stateCnt == 10) {
-    PlayEffectWave(*this, "effect\\EF_hit2.wav");
+    PlayEffectWaveInline(*this, "effect\\EF_hit2.wav");
   }
 
   if (this->state.stateCnt == 20) {
-    PlayEffectWave(*this, "effect\\EF_hit4.wav");
+    PlayEffectWaveInline(*this, "effect\\EF_hit4.wav");
   }
 
   if (this->state.stateCnt == 30) {
-    PlayEffectWave(*this, "effect\\EF_hit2.wav");
+    PlayEffectWaveInline(*this, "effect\\EF_hit2.wav");
   }
 }
 
@@ -8640,7 +8648,7 @@ void CRagEffect::Vallentine(char kind) {
     return;
   }
 
-  PlayEffectWave(*this, "effect\\vallentine.wav");
+  PlayEffectWaveInline(*this, "effect\\vallentine.wav");
   this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
   stored()->state.pattern |= 0x200u;
   stored()->state.duration = this->state.duration;
@@ -8829,7 +8837,7 @@ void CRagEffect::HealCloudRings() {
   }
 
   this->state.lastPrim->state.slots[3].alphaT = 0;
-  PlayEffectWave(*this, "_heal_effect.wav");
+  PlayEffectWaveInline(*this, "_heal_effect.wav");
 }
 
 // OFFSET: 0x00C6BF40
@@ -9124,7 +9132,7 @@ bool CRagEffect::Coin() {
 
 // OFFSET: 0x00C0EBE0
 // FUNCTION: fn_20028
-void CRagEffect::ColdHit() {
+__declspec(safebuffers) void CRagEffect::ColdHit() {
   if (this->state.stateCnt == 0) {
     int index = 0;
 
@@ -9198,7 +9206,7 @@ void CRagEffect::ColdHit() {
 // FUNCTION: fn_20029
 bool CRagEffect::Concentration() {
   if (this->state.stateCnt == 0) {
-    PlayEffectWave(*this, "effect\\ac_concentration.wav");
+    PlayEffectWaveInline(*this, "effect\\ac_concentration.wav");
   }
 
   return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
@@ -9208,7 +9216,7 @@ bool CRagEffect::Concentration() {
 // FUNCTION: fn_20030
 bool CRagEffect::FirePillarBomb() {
   if (this->state.stateCnt == 30) {
-    PlayEffectWave(*this, "effect\\wizard_fire_pillar_b.wav");
+    PlayEffectWaveInline(*this, "effect\\wizard_fire_pillar_b.wav");
   }
 
   if (this->state.stateCnt == 35) {
@@ -9332,7 +9340,7 @@ void CRagEffect::TurnUndead() {
 bool CRagEffect::TwoHandQuicken() {
   if (this->state.stateCnt == 0) {
     this->state.duration = 9999;
-    PlayEffectWave(*this, "effect\\knight_twohandquicken.wav");
+    PlayEffectWaveInline(*this, "effect\\knight_twohandquicken.wav");
   }
 
   return this->ProcessEZ2STR(0.0f, -80.0f, 0.0f) ? true : false;
@@ -9344,7 +9352,7 @@ void CRagEffect::SageMagicRod() {
   if (this->state.stateCnt == 0) {
     const RenderObjectState& parent = this->state.parent->render;
     this->render.position = parent.position;
-    PlayEffectWave(*this, "effect\\sage_magic rod.wav");
+    PlayEffectWaveInline(*this, "effect\\sage_magic rod.wav");
   }
 }
 
@@ -9357,7 +9365,7 @@ void CRagEffect::SakuraFireArrow() {
   if (this->state.stateCnt >= 12 && this->state.stateCnt <= 15) {
     char waveName[52];
     std::sprintf(waveName, "effect\\EF_FireArrow%d.wav", ClampedRandom(3) + 1);
-    PlayEffectWave(*this, waveName);
+    PlayEffectWaveInline(*this, waveName);
   }
 
   if (this->state.stateCnt >= 20) {
@@ -9566,7 +9574,7 @@ void CRagEffect::SevereRainstormCylinder(int, const char*, char alpha, float dis
 // FUNCTION: fn_20026
 void CRagEffect::AssassinCloaking() {
   if (this->state.stateCnt == 0) {
-    PlayEffectWave(*this, "effect\\assasin_cloaking.wav");
+    PlayEffectWaveInline(*this, "effect\\assasin_cloaking.wav");
   }
 
   this->state.parent->SetColor(50, -1, -1, -1);
@@ -9645,7 +9653,7 @@ void CRagEffect::MagnumBreak() {
     return;
   }
 
-  PlayEffectWave(*this, "effect\\EF_MagnumBreak.wav");
+  PlayEffectWaveInline(*this, "effect\\EF_MagnumBreak.wav");
   this->state.lastPrim = this->LaunchEffectPrim(12, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.renderFlag |= 0x200u;
@@ -10815,7 +10823,7 @@ void CRagEffect::Waterfall(const char* name, char flag, char tall, char variant)
 // FUNCTION: fn_20057
 bool CRagEffect::GlassWall() {
   if (this->state.stateCnt == 0) {
-    PlayEffectWave(*this, "effect\\EF_GlassWall.wav");
+    PlayEffectWaveInline(*this, "effect\\EF_GlassWall.wav");
     const int facing = static_cast<int>(180.0f - this->state.parent->render.angle);
     const int angle = facing < 0 ? facing + 360 : facing;
     matrix rotation;
@@ -11379,7 +11387,7 @@ void CRagEffect::FireArrow() {
   if (this->state.stateCnt == 12) {
     char waveName[52];
     std::sprintf(waveName, "effect\\EF_FireArrow%d.wav", ClampedRandom(3) + 1);
-    PlayEffectWave(*this, waveName);
+    PlayEffectWaveInline(*this, waveName);
     this->state.count *= 10;
   }
 
@@ -11477,11 +11485,11 @@ static int g_blitzBeatCount;
 // FUNCTION: fn_20020
 void CRagEffect::BlitzBeat() {
   if (this->state.stateCnt == 5) {
-    PlayEffectWave(*this, "effect\\hunter_blitzbeat_1st.wav");
+    PlayEffectWaveInline(*this, "effect\\hunter_blitzbeat_1st.wav");
   }
 
   if (this->state.stateCnt == 30) {
-    PlayEffectWave(*this, "effect\\hunter_blitzbeat.wav");
+    PlayEffectWaveInline(*this, "effect\\hunter_blitzbeat.wav");
   }
 
   const RenderObjectState& parent = this->state.parent->render;
@@ -11926,7 +11934,7 @@ void CRagEffect::ShieldBoomerang3(const char* name) {
       return;
     }
   } else {
-    PlayEffectWave(*this, "effect\\cru_shield boomerang.wav");
+    PlayEffectWaveInline(*this, "effect\\cru_shield boomerang.wav");
   }
 
   this->state.lastPrim = this->LaunchEffectPrim(116, vector3d{0.0f, 0.0f, 0.0f});
@@ -12319,7 +12327,7 @@ void CRagEffect::IceArrow() {
   if (this->state.stateCnt == 12) {
     char soundBuffer[64];
     sprintf(soundBuffer, "effect\\EF_IceArrow%d.wav", ClampedRandom(3) + 1);
-    PlayEffectWave(*this, soundBuffer);
+    PlayEffectWaveInline(*this, soundBuffer);
     this->state.count *= 10;
   }
 
@@ -12391,7 +12399,7 @@ void CRagEffect::IceArrow() {
 // FUNCTION: fn_20050
 void CRagEffect::Flasher() {
   if (this->state.stateCnt == 0) {
-    PlayEffectWave(*this, "effect\\hunter_flasher.wav");
+    PlayEffectWaveInline(*this, "effect\\hunter_flasher.wav");
   }
 
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
@@ -12800,7 +12808,7 @@ void CRagEffect::HealSP() {
     this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
     this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\alpha_down.tga", 0, false, true, false);
 
-    PlayEffectWave(*this, "_heal_effect.wav");
+    PlayEffectWaveInline(*this, "_heal_effect.wav");
   }
 
   if ((this->state.stateCnt & 1) == 0) {
@@ -12875,7 +12883,7 @@ void CRagEffect::Hit5() {
     return;
   }
 
-  PlayEffectWave(*this, "effect\\EF_hit5.wav");
+  PlayEffectWaveInline(*this, "effect\\EF_hit5.wav");
   const int angle = ClampedRandom(360);
   const int angles[2] = {angle, angle + 90};
 
@@ -12914,7 +12922,7 @@ void CRagEffect::Hit6() {
     return;
   }
 
-  PlayEffectWave(*this, "effect\\EF_hit6.wav");
+  PlayEffectWaveInline(*this, "effect\\EF_hit6.wav");
   const int angle = ClampedRandom(360);
   const int angles[2] = {angle, angle + 90};
 
@@ -12946,7 +12954,7 @@ void CRagEffect::StoneWall() {
     return;
   }
 
-  PlayEffectWave(*this, "effect\\wizard_icewall.wav");
+  PlayEffectWaveInline(*this, "effect\\wizard_icewall.wav");
   this->state.duration = 9999;
 
   vector3d origin{0.0f, 0.0f, 0.0f};
@@ -13096,7 +13104,7 @@ void CRagEffect::EnchantPoison2() {
   const int frame = this->state.stateCnt;
 
   if (frame == 0 || frame == 5 || frame == 11 || frame == 18 || frame == 26 || frame == 40) {
-    PlayEffectWave(*this, "effect\\assasin_enchantpoison.wav");
+    PlayEffectWaveInline(*this, "effect\\assasin_enchantpoison.wav");
   }
 
   if (this->state.stateCnt % 3 != 0) {
@@ -13192,7 +13200,7 @@ void CRagEffect::StoneSpike() {
     return;
   }
 
-  PlayEffectWave(*this, "effect\\wizard_earthspike.wav");
+  PlayEffectWaveInline(*this, "effect\\wizard_earthspike.wav");
   g_modeMgr.GetGameMode()->SendMsg(MM_QUAKE, 0, 0, 0, 0);
   this->state.duration += 50;
 
@@ -13882,7 +13890,7 @@ void CRagEffect::WhiteSparkStreak(char kind) {
 void CRagEffect::BlueRingWave() {
   if (this->state.stateCnt % 14 == 0) {
     CopyVector(this->render.position, this->state.parent->render.position);
-    PlayEffectWave(*this, "effect\\EF_ReadyPortal.wav");
+    PlayEffectWaveInline(*this, "effect\\EF_ReadyPortal.wav");
   }
 
   if (this->state.stateCnt != 0) {
@@ -14038,7 +14046,7 @@ void CRagEffect::AsuraStrike(char kind) {
       this->state.duration = 350;
     }
 
-    PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+    PlayEffectWaveInline(*this, "effect\\EF_BeginSpell.wav");
     this->TexturedQuadRingSized(45, "effect\\ring_white.tga", 2);
     this->TexturedQuadRingSized(25, "effect\\ring_white.tga", 2);
   }
@@ -14349,7 +14357,7 @@ void CRagEffect::TANJI() {
     return;
   }
 
-  PlayEffectWave(*this, "effect\\mon_\ud0c4\uc9c0\uc2e0\ud1b5.wav");
+  PlayEffectWaveInline(*this, "effect\\mon_\ud0c4\uc9c0\uc2e0\ud1b5.wav");
   this->state.lastPrim = this->LaunchEffectPrim(42, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 5;
   this->state.lastPrim->state.duration = this->state.duration;
@@ -14997,7 +15005,7 @@ void CRagEffect::StatusIconColumn() {
 // FUNCTION: fn_20113
 bool CRagEffect::StormGust() {
   if (this->state.stateCnt == 0) {
-    PlayEffectWave(*this, "effect\\wizard_stormgust.wav");
+    PlayEffectWaveInline(*this, "effect\\wizard_stormgust.wav");
   }
 
   if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) == 0 && this->state.stateCnt % 29 == 0 &&
@@ -15715,7 +15723,7 @@ bool CRagEffect::TexturedRisingRingStages(const char* name, char level) {
 
   if (level == 1) {
     if (this->state.stateCnt == 30) {
-      PlayEffectWave(*this, "effect\\EF_GlassWall.wav");
+      PlayEffectWaveInline(*this, "effect\\EF_GlassWall.wav");
       this->state.lastPrim = this->LaunchEffectPrim(60, vector3d{0.0f, 0.0f, 0.0f});
       stored()->state.renderFlag = 5;
       stored()->state.duration = this->state.duration;
@@ -15772,7 +15780,7 @@ bool CRagEffect::TexturedRisingRingStages(const char* name, char level) {
     }
   } else {
     if (this->state.stateCnt == 30) {
-      PlayEffectWave(*this, "effect\\EF_GlassWall.wav");
+      PlayEffectWaveInline(*this, "effect\\EF_GlassWall.wav");
       this->state.lastPrim = this->LaunchEffectPrim(60, vector3d{0.0f, 0.0f, 0.0f});
       stored()->state.renderFlag = 5;
       stored()->state.duration = this->state.duration;
@@ -16004,7 +16012,7 @@ void CRagEffect::GrandCrossRings(short angle, char kind) {
     return;
   }
 
-  PlayEffectWave(*this, "effect\\cru_grand cross.wav");
+  PlayEffectWaveInline(*this, "effect\\cru_grand cross.wav");
   this->state.lastPrim = this->LaunchEffectPrim(34, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 0;
   this->state.lastPrim->state.renderFlag |= 1;
@@ -17156,7 +17164,7 @@ bool CRagEffect::GlassWallRising(const char* name) {
   CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt == 0) {
-    PlayEffectWave(*this, "effect\\EF_GlassWall.wav");
+    PlayEffectWaveInline(*this, "effect\\EF_GlassWall.wav");
     this->state.lastPrim = this->LaunchEffectPrim(60, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = 5;
     this->state.lastPrim->state.duration = this->state.duration;
@@ -17392,7 +17400,7 @@ void CRagEffect::TexturedFireWall(const char* name, int unused) {
     return;
   }
 
-  PlayEffectWave(*this, "effect\\EF_FireWall.wav");
+  PlayEffectWaveInline(*this, "effect\\EF_FireWall.wav");
 
   const RenderObjectState& parent = this->state.parent->render;
   this->render.position.x = parent.position.x;
@@ -17480,7 +17488,7 @@ void CRagEffect::TeleportSpiral(const char* name) {
     return;
   }
 
-  PlayEffectWave(*this, "effect\\EF_Teleportation.wav");
+  PlayEffectWaveInline(*this, "effect\\EF_Teleportation.wav");
 
   this->state.lastPrim = this->LaunchEffectPrim(60, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 5;
@@ -17794,7 +17802,7 @@ void CRagEffect::HealRingSparkle(const char* name, char type) {
     }
 
     if (type < 2) {
-      PlayEffectWave(*this, "_heal_effect.wav");
+      PlayEffectWaveInline(*this, "_heal_effect.wav");
     }
   } else if (this->state.stateCnt <= 50 && this->state.stateCnt % 6 == 0 && type < 2) {
     this->state.lastPrim = this->LaunchEffectPrim(59, vector3d{0.0f, 0.0f, 0.0f});
@@ -18006,7 +18014,7 @@ void CRagEffect::HealBurst(const char* name, char flag) {
     this->state.lastPrim->state.slots[2].life = 0;
     this->state.lastPrim->state.slots[3].life = 0;
 
-    PlayEffectWave(*this, "_heal_effect.wav");
+    PlayEffectWaveInline(*this, "_heal_effect.wav");
     return;
   }
 
@@ -18410,7 +18418,7 @@ void CRagEffect::TexturedSpellRings(const char* name) {
   CopyVector(this->render.position, this->state.parent->render.position);
 
   if (this->state.stateCnt == 0) {
-    PlayEffectWave(*this, "effect\\EF_BeginSpell.wav");
+    PlayEffectWaveInline(*this, "effect\\EF_BeginSpell.wav");
     this->TexturedQuadRingSized(45, name, 3);
     this->TexturedQuadRingSized(25, name, 3);
   }
