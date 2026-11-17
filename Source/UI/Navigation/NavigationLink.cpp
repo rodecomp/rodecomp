@@ -566,7 +566,7 @@ std::string NavigationLinkParser::FormatMessageArguments(std::string value, int 
         std::size_t position = percent + 1;
 
         for (;;) {
-          strcpy_s(conversion, sizeof(conversion), std::string(result, position, 1).c_str());
+          strcpy_s(conversion, sizeof(conversion), result.substr(position, 1).c_str());
           if (conversion[0] >= 'A') {
             break;
           }
@@ -580,13 +580,13 @@ std::string NavigationLinkParser::FormatMessageArguments(std::string value, int 
         char buffer[164] = {};
 
         if (_mbsstr(reinterpret_cast<const unsigned char*>(conversion), reinterpret_cast<const unsigned char*>("s"))) {
-          if (arguments[index].find("MsgStr(") != std::string::npos) {
+          if (arguments[index].find("MsgStr(") == std::string::npos) {
+            std::sprintf(buffer, format.c_str(), arguments[index].c_str());
+          } else {
             arguments[index] = arguments[index].substr(7);
             arguments[index] = arguments[index].substr(0, arguments[index].size() - 1);
             const std::string nested = LookupMessage(std::atoi(arguments[index].c_str()));
             std::sprintf(buffer, format.c_str(), nested.c_str());
-          } else {
-            std::sprintf(buffer, format.c_str(), arguments[index].c_str());
           }
         } else if (_mbsstr(reinterpret_cast<const unsigned char*>(conversion), reinterpret_cast<const unsigned char*>("d"))) {
           std::sprintf(buffer, format.c_str(), std::atoi(arguments[index].c_str()));
@@ -1190,8 +1190,7 @@ UITextButton* CCreateLineInfo::CreateLinkWindow(const std::string& text, const s
   button->ResizeToTextClipped(width + 1, button->geometry.height);
 
   for (auto it = parts.begin(); it != parts.end(); ++it) {
-    std::string part = *it;
-    button->m_lines.push_back(part);
+    button->AddLine(*it);
   }
 
   return button;
