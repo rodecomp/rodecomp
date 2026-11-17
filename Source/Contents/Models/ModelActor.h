@@ -26,6 +26,11 @@ public:
   void Fade();
 
   // INLINED
+  vector3d GetPosition() const {
+    return this->position;
+  }
+
+  // INLINED
   void SetPosition(const vector3d& value) {
     this->position = value;
     this->dirty = 1;
