@@ -45,6 +45,11 @@ public:
   const std::string& GetLine(std::size_t index) const;
   int GetLinesCount() const;
 
+  // INLINED
+  void AddLine(std::string line) {
+    this->m_lines.push_back(line);
+  }
+
 protected:
   /* 00B4 */ std::uint32_t m_color;
   /* 00B8 */ std::uint32_t m_normalColor;

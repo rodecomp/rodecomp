@@ -41,7 +41,7 @@ struct LineTextStyle {
 
 struct LineTextSegment {
   // INLINED
-  LineTextSegment(const std::string& text, const LineTextStyle& style)
+  LineTextSegment(std::string text, LineTextStyle style)
       : text(text), style(style), type(LINE_SEGMENT_TEXT), auxiliaryState(0), auxiliaryValue(0) {
   }
 
