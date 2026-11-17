@@ -22,6 +22,10 @@ public:
   void ResetParticles() override;
 
   void Init();
+  // INLINED
+  void SetTexture(std::string name) {
+    this->textureName = name;
+  }
 
   /* 00CC */ unsigned short ringCount = 4;
   /* 00CE */ unsigned char maxAlpha = 200;

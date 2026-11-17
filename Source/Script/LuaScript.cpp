@@ -1313,8 +1313,8 @@ int LuaScript::TableInteger(std::string table, int keyType, std::intptr_t key) {
 // FUNCTION: fn_17157
 int UIWindowMgr::GetHotkeyBehavior() {
   int behavior = -1;
-  const int mode = static_cast<int>(g_session.m_options.Get(10));
-  g_session.m_hotkeyScript->Call("GetBehaviorOfHotKey2", "ddd>d", mode, this->keyCode, this->modifierKey, &behavior);
+  const std::int64_t mode = g_session.m_options.Get(10);
+  g_session.m_hotkeyScript->Call("GetBehaviorOfHotKey2", "ddd>d", static_cast<int>(mode), this->keyCode, this->modifierKey, &behavior);
   if (behavior != -1) {
     return behavior;
   }
