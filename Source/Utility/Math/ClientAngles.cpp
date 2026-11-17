@@ -23,11 +23,11 @@ static void Wrap(int& degrees) {
 // FUNCTION: fn_02021
 void CreateTrigonometricTable() {
   for (int index = 0; index <= 360; ++index) {
-    const float angle = (static_cast<float>(index) / 180.0f) * 3.141592f;
+    const float angle = static_cast<float>(index) / 180.0f * 3.141592f;
     g_radTable[index] = angle;
     g_sinTable[index] = ClientSin(angle);
     g_cosTable[index] = ClientCos(angle);
-    g_radTable[index + 361] = -angle;
+    g_radTable[index + 361] = -g_radTable[index];
     g_sinTable[index + 361] = -g_sinTable[index];
     g_cosTable[index + 361] = -g_cosTable[index];
   }
