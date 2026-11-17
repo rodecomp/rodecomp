@@ -986,6 +986,8 @@ void UIWindowMgr::Shutdown() {
   this->snapExcluded.clear();
 }
 
+bool ContainsValue(const std::deque<UIWindow*>& values, UIWindow* const& value);
+
 // OFFSET: 0x00AA6B80
 // FUNCTION: fn_17234
 void UIWindowMgr::ClearMapWindows() {
@@ -1029,7 +1031,7 @@ void UIWindowMgr::ClearMapWindows() {
         continue;
       }
       if (!this->modalWindows.empty() && this->modalWindows.back() &&
-          std::find(this->modalWindows.begin(), this->modalWindows.end(), window) != this->modalWindows.end()) {
+          ContainsValue(this->modalWindows, window)) {
         ++entry;
         continue;
       }

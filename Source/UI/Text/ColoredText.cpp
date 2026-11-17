@@ -281,7 +281,7 @@ std::string StripColorCodes(const char* text, unsigned bytes) {
 
 // OFFSET: 0x00A874B0
 // FUNCTION: fn_17063
-bool ContainsValue(const std::deque<int>& values, const int& value) {
+bool ContainsValue(const std::deque<UIWindow*>& values, UIWindow* const& value) {
   return values.end() != std::find(values.begin(), values.end(), value);
 }
 
