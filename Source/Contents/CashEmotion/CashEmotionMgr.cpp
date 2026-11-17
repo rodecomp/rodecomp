@@ -1454,7 +1454,7 @@ void CCashEmotionMgr::ShowErrorMessage(const char* key, int value) {
   }
 
   std::string text = std::vformat(format, std::make_format_args(value));
-  MessageBoxA(nullptr, text.c_str(), std::string().c_str(), MB_OK);
+  MessageBoxA(nullptr, text.c_str(), std::string("").c_str(), MB_OK);
 }
 
 // OFFSET: 0x0059D040
