@@ -4996,6 +4996,10 @@ void CEffectPrim::RenderSlash1(matrix& wtm) {
 // OFFSET: 0x00BE1D70
 // FUNCTION: fn_19918
 __declspec(safebuffers) void CEffectPrim::RenderSoulLink(matrix& wtm) {
+  ZeroVector3d vec1;
+  ZeroVector3d vec2;
+  ZeroVector3d vec3;
+  ZeroVector3d vec4;
   int rpCnt = 0;
 
   for (int ec = 0; ec < 4; ++ec) {
@@ -5006,10 +5010,10 @@ __declspec(safebuffers) void CEffectPrim::RenderSoulLink(matrix& wtm) {
     }
 
     const float rx = slot.distance;
-    vector3d vec1{g_cosTable[45] * rx, 0.0f, g_sinTable[45] * rx};
-    vector3d vec2{g_cosTable[135] * rx, 0.0f, g_sinTable[135] * rx};
-    vector3d vec3{g_cosTable[225] * rx, 0.0f, g_sinTable[225] * rx};
-    vector3d vec4{g_cosTable[315] * rx, 0.0f, g_sinTable[315] * rx};
+    vec1.Set(g_cosTable[45] * rx, 0.0f, g_sinTable[45] * rx);
+    vec2.Set(g_cosTable[135] * rx, 0.0f, g_sinTable[135] * rx);
+    vec3.Set(g_cosTable[225] * rx, 0.0f, g_sinTable[225] * rx);
+    vec4.Set(g_cosTable[315] * rx, 0.0f, g_sinTable[315] * rx);
     const std::int16_t rot0 = this->state.slots[0].alphaT;
     this->Tei_TowardScreen(vec1, vec2, vec3, vec4, rot0, this->state.slots[1].alphaT);
 
