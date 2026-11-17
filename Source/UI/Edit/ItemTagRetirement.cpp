@@ -236,13 +236,13 @@ void UIItemTagCtrl::AddItemTag(const ITEM_INFO& item, unsigned int color) {
   link += this->ItemLinkNumberText(std::atoi(item.itemId.c_str()));
 
   if (item.refiningLevel != 0) {
-    link += delimiters[3];
+    link.push_back(delimiters[3]);
     link += this->ItemLinkNumberText(item.refiningLevel);
   }
 
-  link += delimiters[4];
+  link.push_back(delimiters[4]);
   link += this->ItemLinkNumberText(item.sprite);
-  link += delimiters[5];
+  link.push_back(delimiters[5]);
   link += this->ItemLinkNumberText(item.grade);
 
   const std::uint32_t* cards = item.cards;
