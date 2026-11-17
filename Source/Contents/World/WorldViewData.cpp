@@ -299,7 +299,9 @@ bool CWorldViewMgr::ScaleToScreen() {
     const int textureHeight = (*it)->texture->Height();
     for (CWorldViewMap* map : (*it)->maps) {
       ScaleArea(&map->left, textureWidth, textureHeight);
-      for (CWorldViewField* field : map->fields) {
+      const auto fieldEnd = map->fields.end();
+      for (auto fieldIt = map->fields.begin(); fieldIt != fieldEnd; ++fieldIt) {
+        CWorldViewField* field = *fieldIt;
         if (field) {
           ScaleArea(&field->left, textureWidth, textureHeight);
         }
