@@ -2531,8 +2531,9 @@ void CGameMode::ReceiveItemReward2(const unsigned char* data) {
   }
 
   const std::uint16_t value = packet->value;
+  const unsigned char result = packet->result;
   ITEM_INFO reward = item;
-  switch (packet->result) {
+  switch (result) {
   case 0:
     g_session.AddStackedItem(reward);
     g_session.RemoveInventoryItem(reward.identity[1], reward.quantity);
