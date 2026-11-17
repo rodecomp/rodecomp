@@ -9149,35 +9149,34 @@ int CGameMode::ProcessGroundClick(int result) {
   const std::uint32_t& mercenaryAid = g_session.m_mercenaryAid;
   if (g_session.homunAlive != 0) {
     if (HIBYTE(GetAsyncKeyState(VK_MENU)) && g_mouse.buttons[1] == 1) {
-      if (g_session.selectHomunEnemy != 0) {
-        g_session.selectHomunEnemy = 0;
-        return result;
-      }
+      if (g_session.selectHomunEnemy == 0) {
+        CGameActor* homun = this->scene->GetGameActorByAID(homunAid);
+        if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
+          if (homun && homun->HasActiveHomunculusAI()) {
+            AiMessage message = {};
+            message.type = 1;
+            message.x = column;
+            message.y = row;
+            homun->SetResMsg2AI(&message, 0);
+          }
+          return result;
+        }
 
-      CGameActor* homun = this->scene->GetGameActorByAID(homunAid);
-      if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
+        g_session.homunEnemyX = column;
+        g_session.homunEnemyY = row;
+        g_session.homunEnemyGid = 0;
+        g_session.attackHomunEnemy = 0;
         if (homun && homun->HasActiveHomunculusAI()) {
           AiMessage message = {};
           message.type = 1;
           message.x = column;
           message.y = row;
-          homun->SetResMsg2AI(&message, 0);
+          homun->SetMsg2AI(&message, 0);
         }
-        return result;
+        g_session.moveHomunEnemy = 1;
+      } else {
+        g_session.selectHomunEnemy = 0;
       }
-
-      g_session.homunEnemyX = column;
-      g_session.homunEnemyY = row;
-      g_session.homunEnemyGid = 0;
-      g_session.attackHomunEnemy = 0;
-      if (homun && homun->HasActiveHomunculusAI()) {
-        AiMessage message = {};
-        message.type = 1;
-        message.x = column;
-        message.y = row;
-        homun->SetMsg2AI(&message, 0);
-      }
-      g_session.moveHomunEnemy = 1;
       return result;
     }
 
@@ -9247,8 +9246,10 @@ int CGameMode::ProcessGroundClick(int result) {
     if (g_session.IsHomunculusSkill(this->skillId) == 1 && g_session.homunAlive == 1) {
       CGameActor* homun = this->scene->GetGameActorByAID(homunAid);
       if (homun && homun->HasActiveHomunculusAI() == true) {
-        const std::uint32_t state = homun->render.state;
-        if (state == 0 || state == 1 || state == 4) {
+        switch (homun->render.state) {
+        case 0:
+        case 1:
+        case 4: {
           AiMessage message;
           message.type = 8;
           message.x = column;
@@ -9258,6 +9259,7 @@ int CGameMode::ProcessGroundClick(int result) {
           message.target = 0;
           homun->SetMsg2AI(&message, 0);
           return 1;
+        }
         }
       }
     }
@@ -9286,17 +9288,20 @@ int CGameMode::ProcessGroundClick(int result) {
   if (g_session.m_showEffects != 0) {
     g_groundOverlayA = column;
     g_groundOverlayB = row;
-    g_groundOverlaySkip = 0;
-    int skip = 1;
+    int skip = 0;
+    g_groundOverlaySkip = skip;
+    int color;
     const TerrainHeightCell* cell = this->scene->terrain->CellAt(column, row);
     if (!cell || cell->type == 1) {
-      g_groundOverlayC = 0xFEFF0000;
+      color = 0xFEFF0000;
+      skip = 1;
     } else if (cell->type == 5) {
-      g_groundOverlayC = 0xFEFFFF00;
+      color = 0xFEFFFF00;
+      skip = 1;
     } else {
-      g_groundOverlayC = 0x6600FFAA;
-      skip = 0;
+      color = 0x6600FFAA;
     }
+    g_groundOverlayC = color;
     g_groundOverlaySkip = shopSuspended == true ? 1 : skip;
   }
 
