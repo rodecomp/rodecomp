@@ -3453,7 +3453,7 @@ bool CUIRegisterMgr::SaveTemporary() {
     data += "TblPos = \r\n";
     data += "{\r\n";
     for (const auto& position : this->windowPositions) {
-      data += std::format("\t[ {} ] = {{ x = {}, y = {} }},\r\n", position.first, position.second.first, position.second.second);
+      data += std::format("\t[ {} ] = {{ x = {}, y = {} }},\r\n", position.first, position.second.x, position.second.y);
     }
     data += "}\r\n";
   }
@@ -3462,7 +3462,7 @@ bool CUIRegisterMgr::SaveTemporary() {
     data += "TblSize = \r\n";
     data += "{\r\n";
     for (const auto& size : this->windowSizes) {
-      data += std::format("\t[ {} ] = {{ w = {}, h = {} }},\r\n", size.first, size.second.first, size.second.second);
+      data += std::format("\t[ {} ] = {{ w = {}, h = {} }},\r\n", size.first, size.second.cx, size.second.cy);
     }
     data += "}\r\n";
   }
@@ -3497,7 +3497,7 @@ CUIRegisterMgr::CUIRegisterMgr() {
 // FUNCTION: fn_14555
 CUIFrameWnd* CUIRegisterMgr::Create(int key) {
   auto entry = this->entries.find(key);
-  if (entry == this->entries.end()) {
+  if (this->entries.end() == entry) {
     return nullptr;
   }
 
@@ -3507,19 +3507,18 @@ CUIFrameWnd* CUIRegisterMgr::Create(int key) {
 
   if (window->m_ownsBackgroundColor) {
     auto position = this->windowPositions.find(key);
-    if (position != this->windowPositions.end()) {
+    if (this->windowPositions.end() != position) {
       RECT bounds{0, 0, g_renderer->viewport.width - window->geometry.width, g_renderer->viewport.height - window->geometry.height};
-      POINT savedPosition{position->second.first, position->second.second};
-      if (PtInRect(&bounds, savedPosition)) {
-        window->Move(position->second.first, position->second.second);
+      if (PtInRect(&bounds, position->second)) {
+        window->Move(position->second.x, position->second.y);
       }
     }
   }
 
   if (window->m_ownsBorderColor) {
     auto size = this->windowSizes.find(key);
-    if (size != this->windowSizes.end()) {
-      window->Grow(size->second.first - window->geometry.width, size->second.second - window->geometry.height);
+    if (this->windowSizes.end() != size) {
+      window->Grow(size->second.cx - window->geometry.width, size->second.cy - window->geometry.height);
     }
   }
 
@@ -3549,14 +3548,14 @@ void CUIRegisterMgr::Load() {
         int y = 0;
         script.Call("GetWindowPos", "d>bdd", entry.first, &available, &x, &y);
         if (available) {
-          this->windowPositions[entry.first] = std::pair<int, int>(x, y);
+          this->windowPositions[entry.first] = POINT{x, y};
         }
 
         int width = 0;
         int height = 0;
         script.Call("GetWindowSize", "d>bdd", entry.first, &available, &width, &height);
         if (available) {
-          this->windowSizes[entry.first] = std::pair<int, int>(width, height);
+          this->windowSizes[entry.first] = SIZE{width, height};
         }
       }
     }
