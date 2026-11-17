@@ -889,7 +889,8 @@ int ReplayFileList::Open(int mode, int argument1, int argument2) {
   } else {
     int index = 1;
 
-    for (const ReplayFileEntry& file : this->files) {
+    for (auto fileIt = this->files.begin(); fileIt != this->files.end(); ++fileIt) {
+      const ReplayFileEntry& file = *fileIt;
       if (file.index == index) {
         ++index;
       }
