@@ -24,6 +24,9 @@ struct PathCell {
 
 struct MovementRouteInterpolation {
   MovementRouteInterpolation();
+  // OFFSET: 0x00B92E80
+  // FUNCTION: fn_19557
+  ~MovementRouteInterpolation() = default;
 
   /* 0000 */ std::vector<PathCell> points;
   /* 000C */ std::uint32_t segment;
