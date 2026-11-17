@@ -6988,7 +6988,11 @@ void CGameMode::ReceiveStatusChangeNotice(const unsigned char* data) {
     char text[512];
     std::sprintf(text, "%s%s", name, message);
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), color, std::strlen(name) > 1 ? 10 : 8, 0, 0);
+    if (std::strlen(name) > 1) {
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), color, 10, 0, 0);
+    } else {
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), color, 8, 0, 0);
+    }
   }
 
   if (packet->aid == g_session.m_aid) {
