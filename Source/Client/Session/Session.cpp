@@ -1182,7 +1182,7 @@ int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
     return -1;
   } else if (tokenizer[0] == "/resetskill") {
     *talkType = 0x3E;
-    if (tokenizer.tokens.size() >= 2) {
+    if (static_cast<int>(tokenizer.tokens.size()) >= 2) {
       parts[0] = tokenizer[1];
     } else {
       parts[0].assign("1");
@@ -1391,16 +1391,8 @@ int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
     return -1;
   } else if (tokenizer[0] == "/removeon") {
     *talkType = 0xFE;
-    if (tokenizer.tokens.size() >= 2) {
-      parts[0] = tokenizer[1];
-    } else {
-      parts[0] = "0";
-    }
-    if (tokenizer.tokens.size() >= 3) {
-      parts[1] = tokenizer[2];
-    } else {
-      parts[1] = "0";
-    }
+    parts[0] = static_cast<int>(tokenizer.tokens.size()) >= 2 ? tokenizer[1] : std::string("0");
+    parts[1] = static_cast<int>(tokenizer.tokens.size()) >= 3 ? tokenizer[2] : std::string("0");
     return -1;
   } else if (tokenizer[0] == "/removeoff") {
     *talkType = 0xFF;
