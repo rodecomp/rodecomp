@@ -80,10 +80,12 @@ void CCartCannon::Open() {
   const float inverse = 1.0f / SquareRoot(dx * dx + dy * dy + dz * dz);
 
   current.x = inverse * dx * 4.0f + current.x;
+  this->startPosition.x = current.x;
   current.y = inverse * dy * 4.0f + current.y;
+  this->startPosition.y = current.y;
   current.z = inverse * dz * 4.0f + current.z;
+  this->startPosition.z = current.z;
 
-  this->startPosition = this->currentPosition;
   this->position[0] = current.x;
   this->position[1] = current.y;
   this->position[2] = current.z;
