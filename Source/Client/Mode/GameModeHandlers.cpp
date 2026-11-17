@@ -2511,7 +2511,9 @@ void CGameMode::ReceiveItemReward2(const unsigned char* data) {
     item.identified = packet->identified;
     item.damaged = packet->damaged;
     item.refiningLevel = packet->refine;
-    std::memcpy(item.cards, packet->cards, sizeof(packet->cards));
+    for (int card = 0; card < 4; ++card) {
+      item.cards[card] = packet->cards[card];
+    }
 
     int count = 0;
     for (int i = 0; i < 5; ++i) {
@@ -2521,7 +2523,7 @@ void CGameMode::ReceiveItemReward2(const unsigned char* data) {
     }
     item.identity[2] = packet->expireTime;
     item.optionCount = count;
-    for (std::int64_t index = 0; index < count; ++index) {
+    for (std::int64_t index = 0; index < item.optionCount; ++index) {
       item.options[index] = packet->options[index];
     }
     item.flags[0] = packet->bound;
