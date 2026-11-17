@@ -2839,8 +2839,9 @@ void UICashEmotionMiniWnd::Refresh(int first) {
 // FUNCTION: fn_09431
 void UICashEmotionMiniWnd::OnCreate(int width, int height) {
   int x = 24;
-  for (UICashEmotionPiece*& piece : this->m_pieces) {
-    piece = new (std::nothrow) UICashEmotionPiece();
+  for (UICashEmotionPiece*& slot : this->m_pieces) {
+    UICashEmotionPiece* piece = new (std::nothrow) UICashEmotionPiece();
+    slot = piece;
     if (piece) {
       piece->SetSize(42, 42);
       piece->Move(x, 1);
@@ -4020,7 +4021,7 @@ void UIHeadsprButton::Paint() {
   const int sourceY = static_cast<int>(record.v0 * 256.0f);
   const int sourceX = static_cast<int>(record.u0 * 256.0f);
   this->geometry.surface->DrawSurface(
-    0, 0, texture, sourceX < 0 ? 0 : sourceX, sourceY < 0 ? 0 : sourceY, image->width, image->height, cell.mirrored, image->doubleWidth + 1,
+    0, 0, texture, sourceX >= 0 ? sourceX : 0, sourceY >= 0 ? sourceY : 0, image->width, image->height, cell.mirrored, image->doubleWidth + 1,
     image->doubleHeight + 1, 0
   );
 }
