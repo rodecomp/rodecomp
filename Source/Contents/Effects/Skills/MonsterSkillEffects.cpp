@@ -3774,8 +3774,7 @@ void CSevereRainStorm::SpawnBombardHits() {
       particle->Load(std::string("NIGHT_WATCH\\NW_MISSION_BOMBARD\\mission_bombard\\mission_bombard_hit.str"));
       particle->position = position;
       particle->m_scale = static_cast<float>(ClampedRandom(51) + 50) * 0.01f;
-      CEZ2STRParticle* emitter = particle;
-      this->emitters.push_back(std::move(emitter));
+      this->emitters.push_back(std::move(particle));
     }
   }
 }
