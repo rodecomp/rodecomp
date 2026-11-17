@@ -200,7 +200,7 @@ std::list<int> FuncDrawWNDChar::DrawOrder() {
   for (int layer = 0; layer < 8; ++layer) {
     switch (layer) {
       case 0:
-        if (this->m_robe <= 0 || this->m_drawOnTop) {
+        if (this->m_robe <= 0 || this->m_drawOnTop == true) {
           break;
         }
         [[fallthrough]];
@@ -226,7 +226,11 @@ std::list<int> FuncDrawWNDChar::DrawOrder() {
         break;
       case 7:
         if (this->m_robe > 0 && this->m_drawOnTop) {
-          order[g_session.IsTopLayerRobe(this->m_robe) == true ? 400 : 2] = layer;
+          if (g_session.IsTopLayerRobe(this->m_robe) == true) {
+            order[400] = layer;
+          } else {
+            order[2] = layer;
+          }
         }
         break;
     }
@@ -234,7 +238,8 @@ std::list<int> FuncDrawWNDChar::DrawOrder() {
 
   std::list<int> layers;
   if (this->m_drawOnTop) {
-    for (std::map<int, int>::reverse_iterator it = order.rbegin(); it != order.rend(); ++it) {
+    const std::map<int, int>::reverse_iterator end = order.rend();
+    for (std::map<int, int>::reverse_iterator it = order.rbegin(); it != end; ++it) {
       const auto [priority, layer] = *it;
       if (priority < 0) {
         layers.push_back(layer);
@@ -292,7 +297,7 @@ FuncDrawOffset FuncDrawWNDChar::BodyAnchorOffset(const ActionFrame* frame, bool 
   FuncDrawOffset offset;
 
   int layer = 1;
-  CActRes* act = this->m_resources.find(layer) != this->m_resources.end() ? this->m_resources[layer].second : nullptr;
+  CActRes* act = this->m_resources.end() != this->m_resources.find(layer) ? this->m_resources[layer].second : nullptr;
   const ActionFrame& base = act->Frame(this->m_action, this->m_motion);
   if (frame->anchorCount > 0 && base.anchorCount > 0) {
     const ActionAnchor* frameAnchor = frame->anchors.data();
@@ -302,18 +307,21 @@ FuncDrawOffset FuncDrawWNDChar::BodyAnchorOffset(const ActionFrame* frame, bool 
         if (keepScale == true) {
           offset.x += baseAnchor->x - frameAnchor->x;
           offset.y += baseAnchor->y - frameAnchor->y;
+          this->offsetY = offset.y;
+          this->offsetX = offset.x;
         } else {
           offset.x = static_cast<int>(static_cast<float>(baseAnchor->x) / base.Cell(0).scaleX - static_cast<float>(frameAnchor->x) + static_cast<float>(offset.x));
           float baseY = static_cast<float>(base.anchors.data()->y);
           offset.y = static_cast<int>(baseY / base.Cell(0).scaleY - static_cast<float>(frame->anchors.data()->y) + static_cast<float>(offset.y));
+          this->offsetY = offset.y;
+          this->offsetX = offset.x;
         }
       } else {
         offset.x = baseAnchor->x - frameAnchor->x;
         offset.y = baseAnchor->y - frameAnchor->y;
+        this->offsetY = offset.y;
+        this->offsetX = offset.x;
       }
-
-      this->offsetY = offset.y;
-      this->offsetX = offset.x;
     }
   }
 
@@ -329,7 +337,7 @@ FuncDrawOffset FuncDrawWNDChar::LayerAnchorOffset(int layer, const ActionFrame**
 
   const auto resourcesEnd = this->m_resources.end();
   int bodyLayer = 2;
-  CActRes* bodyAct = this->m_resources.find(bodyLayer) != resourcesEnd ? this->m_resources[bodyLayer].second : nullptr;
+  CActRes* bodyAct = resourcesEnd != this->m_resources.find(bodyLayer) ? this->m_resources[bodyLayer].second : nullptr;
   const ActionFrame& base = bodyAct->Frame(this->m_action, this->m_motion);
   int syncedMotion = 0;
   const ActionFrame* synced = g_session.GetSyncedFrame(bodyAct, act, this->m_action, this->m_motion, this->m_time, &syncedMotion);
@@ -357,11 +365,16 @@ FuncDrawOffset FuncDrawWNDChar::LayerAnchorOffset(int layer, const ActionFrame**
 
   offset.y += ridingOffset;
   if (layer == 4) {
-    short accessory = this->m_topAccessory;
-    if (accessory == 181 || accessory == 197) {
+    switch (this->m_topAccessory) {
+    case 181:
+    case 197:
       offset.y -= 7;
-    } else if (accessory == 200 && g_session.GetCurrentSex() == 0) {
-      offset.y -= 4;
+      break;
+    case 200:
+      if (g_session.GetCurrentSex() == 0) {
+        offset.y -= 4;
+      }
+      break;
     }
   }
 
