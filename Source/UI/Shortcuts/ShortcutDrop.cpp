@@ -86,7 +86,7 @@ void UIShortCutWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
   UIWindow& window = *this;
   ShortcutGrid& grid = this->m_grid;
   const ModeDragState& value = *reinterpret_cast<const ModeDragState*>(argument);
-  const int bank = static_cast<int>(g_session.m_options.Get(10));
+  const std::int64_t bank = g_session.m_options.Get(10);
 
   if (value.skill != 0) {
     const std::string copiedName = value.skillName;
@@ -114,7 +114,7 @@ void UIShortCutWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
         return;
       }
 
-      g_session.AssignShortcut(1, skill.id, value.skillLevel, index, bank);
+      g_session.AssignShortcut(1, skill.id, value.skillLevel, index, static_cast<int>(bank));
 
       if (value.slot != index) {
         RemoveFirst(g_session.m_requestTimers, index);
@@ -150,7 +150,7 @@ void UIShortCutWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
         }
       }
 
-      g_session.AssignShortcut(1, 0, 0, value.slot, bank);
+      g_session.AssignShortcut(1, 0, 0, value.slot, static_cast<int>(bank));
       Refresh(window);
     }
 
@@ -222,7 +222,7 @@ void UIShortCutWnd::DragAndDrop(int x, int y, std::intptr_t argument) {
         return;
       }
 
-      g_session.AssignShortcut(0, static_cast<std::uint32_t>(item.GetItemId()), 0, index, bank);
+      g_session.AssignShortcut(0, static_cast<std::uint32_t>(item.GetItemId()), 0, index, static_cast<int>(bank));
       if (value.slot != index) {
         RemoveFirst(g_session.m_requestTimers, index);
       }
