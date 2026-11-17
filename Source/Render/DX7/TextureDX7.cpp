@@ -155,7 +155,7 @@ __forceinline bool CTextureDX7::Create(int width, int height, int format) {
   }
 
   if (formats[selected].dwSize != sizeof(DDPIXELFORMAT)) {
-    ShowErrorDialog("GFC ", 0);
+    ShowErrorDialog("GFC 를 구동할 수 없는 비디오시스템입니다", 0);
   }
 
   DDSURFACEDESC2 description = {sizeof(description), 0};
