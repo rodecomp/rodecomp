@@ -183,7 +183,7 @@ public:
   /* 00BC */ UIRadioBtn* tabs[2];
   /* 00C4 */ UIWindow* closeButton;
   /* 00C8 */ UIBitmapButton* buttons[11];
-  /* 00F4 */ UIWindow* resizeButton;
+  /* 00F4 */ UIResizer* resizeButton;
   /* 00F8 */ UIStaticText* titleText;
   /* 00FC */ std::list<MessengerMember> members;
   /* 0104 */ std::vector<MiniPartyInfoEntry> menuItems;
@@ -1168,11 +1168,11 @@ void UIMessengerGroupWnd::OnLBtnDown(int x, int y) {
         window->SetDragStartPosition(x, y - itemY);
 
         int index = 0;
-        for (const MessengerMember& entry : this->members) {
-          if (index >= this->scrollTop * this->columns && entry.valid && entry.accountId == selectedMember.accountId) {
-            CGameActor* actor = entry.accountId == g_session.m_aid
+        for (auto it = this->members.begin(); it != this->members.end(); ++it, ++index) {
+          if (index >= this->scrollTop * this->columns && it->valid && it->accountId == selectedMember.accountId) {
+            CGameActor* actor = it->accountId == g_session.m_aid
                                   ? gameMode->scene->player
-                                  : gameMode->scene->GetGameActorByAID(entry.accountId);
+                                  : gameMode->scene->GetGameActorByAID(it->accountId);
             if (actor) {
               window->SetGaugeValues(this->gauges[index]->current, this->gauges[index]->maximum);
             } else {
@@ -1180,7 +1180,6 @@ void UIMessengerGroupWnd::OnLBtnDown(int x, int y) {
             }
             break;
           }
-          ++index;
         }
       }
     }
@@ -1324,7 +1323,6 @@ void UIMessengerGroupWnd::LayoutButtons() {
     }
   }
 
-  int x;
   if (this->mode == 1) {
     if (g_session.PartyCount()) {
       this->buttons[10]->Move(hidden * -26 + 213, this->geometry.height - 40);
@@ -1337,21 +1335,25 @@ void UIMessengerGroupWnd::LayoutButtons() {
       this->buttons[8]->Move(-100, -100);
       this->buttons[9]->Move(-100, -100);
     }
-    x = hidden * -26 + 135;
+    if (g_session.m_lockMouse) {
+      this->buttons[5]->Move(hidden * -26 + 135, this->geometry.height - 40);
+      this->buttons[6]->Move(-100, -100);
+    } else {
+      this->buttons[6]->Move(hidden * -26 + 135, this->geometry.height - 40);
+      this->buttons[5]->Move(-100, -100);
+    }
   } else {
     this->buttons[7]->Move(-100, -100);
     this->buttons[8]->Move(-100, -100);
     this->buttons[9]->Move(-100, -100);
     this->buttons[10]->Move(-100, -100);
-    x = 135;
-  }
-
-  if (g_session.m_lockMouse) {
-    this->buttons[5]->Move(x, this->geometry.height - 40);
-    this->buttons[6]->Move(-100, -100);
-  } else {
-    this->buttons[6]->Move(x, this->geometry.height - 40);
-    this->buttons[5]->Move(-100, -100);
+    if (g_session.m_lockMouse) {
+      this->buttons[5]->Move(135, this->geometry.height - 40);
+      this->buttons[6]->Move(-100, -100);
+    } else {
+      this->buttons[6]->Move(135, this->geometry.height - 40);
+      this->buttons[5]->Move(-100, -100);
+    }
   }
 }
 
