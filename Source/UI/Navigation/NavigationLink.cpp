@@ -372,8 +372,8 @@ bool NavigationLinkParser::ParseNavigationLink(std::string value, std::string& n
 
   const auto coordinates = end - 4;
   const std::string tail = value.substr(coordinates);
-  x = this->DecodeNavigationNumber(tail.substr(0, 2));
-  y = this->DecodeNavigationNumber(tail.substr(2, 2));
+  x = GetNavigationLinkParser()->DecodeNavigationNumber(tail.substr(0, 2));
+  y = GetNavigationLinkParser()->DecodeNavigationNumber(tail.substr(2, 2));
   const std::string head = value.substr(0, coordinates);
   const auto begin = head.find(g_parserNaviLinkTag);
 
