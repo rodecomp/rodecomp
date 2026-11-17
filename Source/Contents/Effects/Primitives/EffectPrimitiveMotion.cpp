@@ -2091,16 +2091,18 @@ bool CEffectPrim::PrimGhost() {
       }
     }
 
-    slot.riseAngle += 3;
+    const std::int16_t riseAngle = static_cast<std::int16_t>(slot.riseAngle + 3);
+    slot.riseAngle = riseAngle;
 
-    if (slot.riseAngle >= 360) {
-      slot.riseAngle -= 360;
+    if (riseAngle >= 360) {
+      slot.riseAngle = static_cast<std::int16_t>(riseAngle - 360);
     }
 
-    slot.rotStart += slot.flag1[0];
+    const std::int16_t rotStart = static_cast<std::int16_t>(slot.rotStart + slot.flag1[0]);
+    slot.rotStart = rotStart;
 
-    if (slot.rotStart >= 360) {
-      slot.rotStart -= 360;
+    if (rotStart >= 360) {
+      slot.rotStart = static_cast<std::int16_t>(rotStart - 360);
     }
 
     slot.vecBPre = slot.vecBNow;
