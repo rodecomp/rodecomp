@@ -118,15 +118,17 @@ void UIRPData::SetSolid(int width, int height, std::uint32_t color) {
   this->m_primitives.clear();
 
   RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
+  const float right = static_cast<float>(width);
+  const float bottom = static_cast<float>(height);
   primitive->texture = nullptr;
   primitive->quad[0].x = 0.0f;
   primitive->quad[0].y = 0.0f;
-  primitive->quad[1].x = static_cast<float>(width);
   primitive->quad[1].y = 0.0f;
   primitive->quad[2].x = 0.0f;
-  primitive->quad[2].y = static_cast<float>(height);
-  primitive->quad[3].x = static_cast<float>(width);
-  primitive->quad[3].y = static_cast<float>(height);
+  primitive->quad[1].x = right;
+  primitive->quad[3].x = right;
+  primitive->quad[2].y = bottom;
+  primitive->quad[3].y = bottom;
   for (int i = 0; i < 4; ++i) {
     primitive->quad[i].u = 0.0f;
     primitive->quad[i].v = 0.0f;
