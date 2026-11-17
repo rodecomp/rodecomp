@@ -40,22 +40,25 @@ void matrix::MakeRotation(const ModelRotationKey& key) {
 void ModelRotationKey::Interpolate(float amount, const ModelRotationKey& first, const ModelRotationKey& second, int spins) {
   const float dot = ((second.rotation[1] * first.rotation[1] + second.rotation[0] * first.rotation[0]) + first.rotation[2] * second.rotation[2]) +
                     first.rotation[3] * second.rotation[3];
+  float magnitude = dot;
+  if (magnitude < 0.0f) {
+    magnitude = -magnitude;
+  }
   const bool flip = dot < 0.0f;
-  const float magnitude = flip ? -dot : dot;
   constexpr double epsilon = 0.000001;
   float firstWeight;
   float secondWeight;
 
-  if (!(epsilon > 1.0 - static_cast<double>(magnitude))) {
+  if (epsilon > 1.0 - static_cast<double>(magnitude)) {
+    firstWeight = static_cast<float>(1.0 - static_cast<double>(amount));
+    secondWeight = amount;
+  } else {
     const float angle = static_cast<float>(std::acos(static_cast<double>(magnitude)));
     const float denominator = ClientSin(angle);
     const float phase = (static_cast<float>(spins) * 3.141592f + angle) * amount;
 
     firstWeight = ClientSin(angle - phase) / denominator;
     secondWeight = ClientSin(phase) / denominator;
-  } else {
-    firstWeight = static_cast<float>(1.0 - static_cast<double>(amount));
-    secondWeight = amount;
   }
 
   if (flip) {
