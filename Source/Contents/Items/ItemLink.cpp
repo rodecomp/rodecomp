@@ -131,7 +131,7 @@ void UIChatHisBox::DecodeItemLinkFields(const std::string& text, std::vector<std
 
   char* buffer = new char[size];
   strcpy_s(buffer, size, text.c_str());
-  std::string value;
+  std::string value("");
   std::vector<std::int32_t> options;
   int optionCount = 0;
   int cardCount = 0;
@@ -271,7 +271,7 @@ int NavigationLinkParser::ItemLinkMessageId(const std::string& text) {
   char delimiters[] = "!#$%&'()*+,-/";
   char* buffer = new char[text.size() + 1];
   strcpy_s(buffer, text.size() + 1, text.c_str());
-  std::string value;
+  std::string value("");
 
   for (std::size_t position = 6; position < text.size() + 1; ++position) {
     if (buffer[position] >= '0') {
