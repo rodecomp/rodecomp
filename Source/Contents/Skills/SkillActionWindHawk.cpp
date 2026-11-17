@@ -248,6 +248,13 @@ struct EfstActionRegistration {
   }
 };
 
+// OFFSET: 0x007A6EE0
+// FUNCTION: fn_45580
+template <>
+CEfstAction* NewAction<CEfstAction_CALAMITYGALE, CEfstAction>() {
+  return new CEfstAction_CALAMITYGALE;
+}
+
 // OFFSET: 0x00463230
 // FUNCTION: fn_45568
 static EfstActionRegistration s_efstActionRegistered1252(1252, NewAction<CEfstAction_CALAMITYGALE, CEfstAction>);
