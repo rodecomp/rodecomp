@@ -54,6 +54,7 @@
 #include <vector>
 
 template __declspec(noinline) std::vector<unsigned char>::vector(const std::size_t, const unsigned char&, const std::allocator<unsigned char>&);
+template __declspec(noinline) std::vector<unsigned char>::vector(const std::vector<unsigned char>&);
 
 namespace {
 #pragma pack(push, 1)
