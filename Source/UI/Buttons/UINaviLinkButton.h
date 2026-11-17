@@ -8,6 +8,7 @@ public:
   UINaviLinkButton();
   ~UINaviLinkButton() override;
   void OnLBtnDown(int x, int y) override;
+  void OpenNavigation();
   std::string Link();
   /* 00F8 */ std::string link;
   /* 0110 */ int column;

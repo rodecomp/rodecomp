@@ -2750,9 +2750,7 @@ void UIShowAndEditTimeCtrl::Paint() {
 
 // OFFSET: 0x008906C0
 // FUNCTION: fn_11423
-void __fastcall ActivateNaviLink(UINaviLinkButton* button, void*, int x, int y) {
-  button->UINaviLinkButton::OnLBtnDown(x, y);
-}
+void UINaviLinkButton::OnLBtnDown(int, int) { this->OpenNavigation(); }
 
 // OFFSET: 0x0088AEC0
 // FUNCTION: fn_11360
