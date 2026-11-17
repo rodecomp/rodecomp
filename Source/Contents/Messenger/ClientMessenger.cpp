@@ -960,7 +960,8 @@ void EquipmentProperties::CEquipmentWearable::Load(bool force) {
           const int key = this->GetValue(2);
           const int level = equipped.refiningLevel;
           if (level > 0) {
-            if (this->m_info->kind == 1) {
+            switch (this->m_info->kind) {
+            case 1: {
               const int attack = CEquipmentPropertiesMgr::GetInstance()->GetRefiningBonus(3, key, level);
               if (attack != 0) {
                 this->AddProperty(fmt::format("AddExtParam arg1:0 arg2:{0}", 0x2D), "AddExtParam", -1, attack, -1);
@@ -971,7 +972,10 @@ void EquipmentProperties::CEquipmentWearable::Load(bool force) {
                 this->AddProperty(fmt::format("AddExtParam arg1:0 arg2:{0}", 0xF4), "AddExtParam", -1, resist, -1);
                 this->AddProperty(fmt::format("AddExtParam arg1:0 arg2:{0}", 0xF5), "AddExtParam", -1, resist, -1);
               }
-            } else if (this->m_info->kind == 2 || this->m_info->kind == 3) {
+              break;
+            }
+            case 2:
+            case 3: {
               const int bonus = CEquipmentPropertiesMgr::GetInstance()->GetRefiningBonus(1, key, level);
               if (bonus != 0) {
                 const int rate = CEquipmentPropertiesMgr::GetInstance()->GetGradeBonus(1, equipped.grade, 1);
@@ -989,6 +993,8 @@ void EquipmentProperties::CEquipmentWearable::Load(bool force) {
                 this->AddProperty(fmt::format("AddExtParam arg1:0 arg2:{0}", 0xF2), "AddExtParam", -1, defense, -1);
                 this->AddProperty(fmt::format("AddExtParam arg1:0 arg2:{0}", 0xF3), "AddExtParam", -1, defense, -1);
               }
+              break;
+            }
             }
           }
         }
