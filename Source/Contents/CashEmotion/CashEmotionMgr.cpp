@@ -1938,10 +1938,15 @@ const char* UICashEmotionListChildWnd_Purchase::Filter() {
 // OFFSET: 0x007C4D30
 // FUNCTION: fn_09367
 __declspec(noinline) void UICashEmotionListChildWnd_Purchase::Refresh(const char* filter) {
-  this->m_filter = filter ? filter : "";
+  if (!filter) {
+    this->m_filter = "";
+  } else {
+    this->m_filter = filter;
+  }
   for (UICashEmotionPack* item : this->m_items) {
     this->RemoveChild(item, 0);
   }
+  int y = 0;
   this->scrollPosition = 0;
   this->horizontalScrollPosition = 0;
 
@@ -1950,7 +1955,6 @@ __declspec(noinline) void UICashEmotionListChildWnd_Purchase::Refresh(const char
 
   std::vector<int> packs = g_cashEmotionMgr->SortOwnedPacks(filter);
   std::string expiryFormat = g_simpleStringMgr->GetString("EMSG_EMOTION_USEABLE_EXPIRE_TIME");
-  int y = 0;
   for (int packId : packs) {
     CashEmotionPack* info = g_cashEmotionMgr->GetPack(packId);
     if (!info || !g_cashEmotionMgr->GetPackEmotionTable(packId)) {
@@ -2939,7 +2943,7 @@ void UICashEmotionMiniWnd::SetIndex(int index) {
 int UICashEmotionMiniWnd::SendMsg(
   UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4
 ) {
-  std::pair<int, int> entry;
+  CashEmotionData* data;
 
   switch (message) {
   case UM_REFRESH:
@@ -2947,38 +2951,46 @@ int UICashEmotionMiniWnd::SendMsg(
     return 0;
 
   case UM_CASH_EMOTION_ACTIVATE:
-    entry.first = static_cast<int>(argument1);
-    entry.second = static_cast<int>(argument2);
+    data = g_cashEmotionMgr->GetEmotionData(static_cast<int>(argument1), static_cast<int>(argument2));
     break;
 
   case UM_COMMAND:
-    if (argument1 == 1) {
+    switch (argument1) {
+    case 1:
       this->Previous();
-    } else if (argument1 == 2) {
+      break;
+    case 2:
       this->Next();
+      break;
     }
     return 0;
 
   case UM_CASH_EMOTION_KEY:
-    if (argument1 == 13) {
+    switch (argument1) {
+    case 13:
       if (!this->m_selected) {
         return 0;
       }
-      entry = this->m_selected->Get(this->m_selectedIndex);
+      {
+        std::pair<int, int> entry = this->m_selected->Get(this->m_selectedIndex);
+        data = g_cashEmotionMgr->GetEmotionData(entry.first, entry.second);
+      }
       break;
-    }
-    if (argument1 == 37) {
+    case 37:
       this->Previous();
-    } else if (argument1 == 39) {
+      return 0;
+    case 39:
       this->Next();
+      return 0;
+    default:
+      return 0;
     }
-    return 0;
+    break;
 
   default:
     return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
   }
 
-  CashEmotionData* data = g_cashEmotionMgr->GetEmotionData(entry.first, entry.second);
   if (!data) {
     return 0;
   }
@@ -3543,8 +3555,8 @@ void UICashEmotionPiece::Set(int packId, int emotionId, bool showTooltip, bool h
   if (this->m_button) {
     this->m_button->SetSprite(g_cashEmotionMgr->GetSprFileName(data->actId));
     this->m_button->SetActName(g_cashEmotionMgr->GetPackName(data->sprId));
-    this->m_button->frameIndex = std::max(data->frameIndex, 0);
-    this->m_button->animationIndex = std::max(data->actionIndex, 0);
+    this->m_button->frameIndex = data->frameIndex >= 0 ? data->frameIndex : 0;
+    this->m_button->animationIndex = data->actionIndex >= 0 ? data->actionIndex : 0;
     if (showTooltip) {
       this->m_button->SetTooltip(data->name.c_str());
     } else {
