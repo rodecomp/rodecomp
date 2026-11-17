@@ -5155,25 +5155,24 @@ void CGameMode::ReceiveShopItemListPacket(const unsigned char* data) {
   }
 
   for (long long i = 0; i < count; ++i) {
-    const ShopItemListEntry& entry = entries[i];
     ITEM_INFO item;
-    item.identity[1] = entry.index;
-    item.prices[0] = entry.price;
-    item.identity[0] = entry.type;
-    item.quantity = entry.amount;
-    item.identified = entry.identified;
-    item.damaged = entry.damaged;
-    item.refiningLevel = entry.refine;
-    item.prices[1] = entry.price;
-    item.SetItemId(entry.itemId);
-    std::memcpy(item.cards, entry.cards, sizeof(entry.cards));
-    item.optionCount = CountItemSlotOptions(entry.options);
+    item.identity[1] = entries[i].index;
+    item.prices[0] = entries[i].price;
+    item.identity[0] = entries[i].type;
+    item.quantity = entries[i].amount;
+    item.identified = entries[i].identified;
+    item.damaged = entries[i].damaged;
+    item.refiningLevel = entries[i].refine;
+    item.prices[1] = entries[i].price;
+    item.SetItemId(entries[i].itemId);
+    std::memcpy(item.cards, entries[i].cards, sizeof(entries[i].cards));
+    item.optionCount = CountItemSlotOptions(entries[i].options);
     for (long long option = 0; option < static_cast<unsigned int>(item.optionCount); ++option) {
-      item.options[option] = entry.options[option];
+      item.options[option] = entries[i].options[option];
     }
-    item.identity[2] = entry.location;
-    item.sprite = entry.sprite;
-    item.grade = entry.grade;
+    item.identity[2] = entries[i].location;
+    item.sprite = entries[i].sprite;
+    item.grade = entries[i].grade;
     items.push_back(item);
   }
 
