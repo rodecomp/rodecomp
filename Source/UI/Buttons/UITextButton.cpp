@@ -1911,20 +1911,24 @@ void UIListBoxNavi::Paint() {
   }
 
   const int first = this->topLine;
-  const unsigned end = std::min(static_cast<unsigned>(this->geometry.height / this->lineHeight - this->bottomMargin + first), static_cast<unsigned>(this->lines.size()));
+  const int limit = ((this->geometry.height / this->lineHeight - this->bottomMargin) + first);
+  const int end = static_cast<int>(std::min(static_cast<unsigned>(limit), static_cast<unsigned>(this->lines.size())));
   std::uint32_t color = 0;
 
-  for (int index = first, row = 0; index < static_cast<int>(end); ++index, ++row) {
+  for (int index = first; index < end; ++index) {
+    const int row = (index - first);
+
     if (this->lineColors[index] == 1) {
       color = this->defaultLineColor;
     }
 
     if (index == this->selected) {
-      this->FillRegion(0, row * this->lineHeight, this->geometry.width, this->lineHeight - 1, this->selectionColor);
+      this->FillRegion(0, (row * this->lineHeight), this->geometry.width, (this->lineHeight - 1), this->selectionColor);
     }
 
-    const auto& line = this->lines[index];
-    this->DrawColoredText(3 - this->horizontalOffset, this->lineHeight * row, line.c_str(), static_cast<unsigned>(line.size()), color, 0, 12, false);
+    const int x = (3 - this->horizontalOffset);
+    const int y = (row * this->lineHeight);
+    this->DrawColoredText(x, y, this->lines[index].c_str(), static_cast<unsigned>(this->lines[index].size()), color, 0, 12, false);
 
     if (this->lineColors[index] == 1) {
       color = 0;
@@ -3162,30 +3166,26 @@ void UIListBox2::Paint() {
   }
 
   const int first = this->topLine;
-  const unsigned count = static_cast<unsigned>(this->lines.size());
-  unsigned end = static_cast<unsigned>(this->geometry.height / this->lineHeight - this->bottomMargin + first);
+  const int limit = ((this->geometry.height / this->lineHeight - this->bottomMargin) + first);
+  const int end = static_cast<int>(std::min(static_cast<unsigned>(limit), static_cast<unsigned>(this->lines.size())));
   std::uint32_t color = this->textColor;
-  if (count < end) {
-    end = count;
-  }
 
-  for (int row = 0; row + first < static_cast<int>(end); ++row) {
-    const int index = row + first;
+  for (int index = first; index < end; ++index) {
+    const int row = (index - first);
+
     if (index == this->selected) {
-      this->FillRegion(0, row * this->lineHeight, this->geometry.width, this->lineHeight - 1, this->selectionColor);
+      this->FillRegion(0, (row * this->lineHeight), this->geometry.width, (this->lineHeight - 1), this->selectionColor);
     }
 
-    const int x = 3 - this->horizontalOffset;
-    int y = this->lineHeight * row;
+    const int x = (3 - this->horizontalOffset);
+    int y = (row * this->lineHeight);
+
     if (this->centerVertically == 1) {
-      const int lineHeight = this->lineHeight;
-      const int height = this->TextHeight(this->lines[index].c_str(), 0, 0, 12, 0, 0);
-      y = static_cast<int>(static_cast<float>(lineHeight - height) * 0.5f + static_cast<float>(row * lineHeight));
+      y = static_cast<int>(static_cast<float>((this->lineHeight - this->TextHeight(this->lines[index].c_str(), 0, 0, 12, 0, 0))) * 0.5f + static_cast<float>((row * this->lineHeight)));
     }
 
-    const std::string& line = this->lines[index];
     this->DrawStyledColoredText(
-      x, y, line.c_str(), static_cast<unsigned>(line.size()), color, this->fontFamily, this->fontHeight, this->bold, this->italic, false
+      x, y, this->lines[index].c_str(), static_cast<unsigned>(this->lines[index].size()), color, this->fontFamily, this->fontHeight, this->bold, this->italic, false
     );
   }
 }
