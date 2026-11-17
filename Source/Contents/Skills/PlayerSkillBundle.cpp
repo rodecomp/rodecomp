@@ -99,7 +99,16 @@ CSkillInfo CPlayerSkillBundle::Lookup(std::uint32_t id) {
     return CSkillInfo(-1);
   }
 
-  const std::uint32_t key = id == 6578 || id == 6579 ? ResolveSkillId(id) : id;
+  std::uint32_t key;
+  switch (id) {
+  case 6578:
+  case 6579:
+    key = ResolveSkillId(id);
+    break;
+  default:
+    key = id;
+    break;
+  }
   const auto entry = this->index.find(key);
   if (entry != this->index.end() && entry->second->IsValid()) {
     return *entry->second;
