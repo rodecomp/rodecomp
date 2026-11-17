@@ -555,7 +555,7 @@ void CUIContents::OnCreate(int width, int height) {
   this->title = new CUIStaticText();
   this->title->SetSize(50, 12);
   this->title->Move(25, 9);
-  this->title->SetText("", 0);
+  this->title->SetText("");
   this->title->SetFitText(0);
   this->title->SetAlign(0, 0);
   this->title->SetFont("Gulim");
