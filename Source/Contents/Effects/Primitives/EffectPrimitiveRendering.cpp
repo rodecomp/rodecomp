@@ -3420,7 +3420,8 @@ __declspec(safebuffers) void CEffectPrim::RenderBladeTrail(matrix& wtm) {
       const float deltaZ = slot.vecBNow.z - position.z;
       const float length = SquareRoot(deltaZ * deltaZ + deltaX * deltaX);
       short alpha = slot.alphaB;
-      const float along = std::max(0.0f, length / static_cast<float>(this->state.slots[0].flag1[5]) * static_cast<float>(slot.process) - static_cast<float>(i));
+      const float along = std::max(
+        length / static_cast<float>(this->state.slots[0].flag1[5]) * static_cast<float>(slot.process) - static_cast<float>(i), 0.0f);
       const float z = along * g_sinTable[slot.riseAngle] + position.z;
       const float x = along * g_cosTable[slot.riseAngle] + position.x;
       const float y = position.y - 12.0f + 0.0f;
