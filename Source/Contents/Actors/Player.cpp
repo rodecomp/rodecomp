@@ -1233,8 +1233,7 @@ void CPc::ApplyLayerEffects(
 // OFFSET: 0x00DB2840
 // FUNCTION: fn_22647
 void CPc::SetSprWeapon2(int first, int second) {
-  this->weapon = first;
-  this->secondaryWeapon = second;
+  this->weaponPair = *reinterpret_cast<const std::int64_t*>(&first);
 
   int job = this->GetEffectiveJob(-1);
   if (this->IsCostumeOutfit()) {
@@ -1253,29 +1252,6 @@ void CPc::SetSprWeapon2(int first, int second) {
   this->LoadEquipSprite(6, "");
 
   switch (this->GetEffectiveJob(-1)) {
-    case JT_TAEKWON:
-    case JT_STAR:
-    case JT_STAR2:
-    case JT_TAEKWON_B:
-    case JT_STAR_B:
-    case JT_STAR2_B:
-    case JT_STAR_EMPEROR:
-    case JT_STAR_EMPEROR_B:
-    case JT_STAR2_EMPEROR:
-    case JT_STAR2_EMPEROR_B:
-    case JT_SKY_EMPEROR:
-    case JT_SKY_EMPEROR2: {
-      if ((this->GetEffectiveJob(-1) == JT_TAEKWON || this->GetEffectiveJob(-1) == JT_TAEKWON_B) &&
-          this->GetEffectiveJob(-1) != this->bodyStyle) {
-        return;
-      }
-
-      const std::string actName = g_session.GetWeaponEffectActName(viewJob, this->sex, 0, -1, 1, this->bodyStyle);
-      const std::string sprName = g_session.GetWeaponEffectSprName(viewJob, this->sex, 0, -1, 1, this->bodyStyle);
-      this->LoadEquipAction(6, actName.c_str());
-      this->LoadEquipSprite(6, sprName.c_str());
-      return;
-    }
     case JT_WOLF_RANGER:
     case JT_WOLF_RANGER_H:
     case JT_WOLF_RANGER_B:
@@ -1322,13 +1298,37 @@ void CPc::SetSprWeapon2(int first, int second) {
       this->LoadEquipSprite(6, sprName.c_str());
       return;
     }
+    case JT_TAEKWON:
+    case JT_STAR:
+    case JT_STAR2:
+    case JT_TAEKWON_B:
+    case JT_STAR_B:
+    case JT_STAR2_B:
+    case JT_STAR_EMPEROR:
+    case JT_STAR_EMPEROR_B:
+    case JT_STAR2_EMPEROR:
+    case JT_STAR2_EMPEROR_B:
+    case JT_SKY_EMPEROR:
+    case JT_SKY_EMPEROR2: {
+      if ((this->GetEffectiveJob(-1) == JT_TAEKWON || this->GetEffectiveJob(-1) == JT_TAEKWON_B) &&
+          this->GetEffectiveJob(-1) != this->bodyStyle) {
+        return;
+      }
+
+      const std::string actName = g_session.GetWeaponEffectActName(viewJob, this->sex, 0, -1, 1, this->bodyStyle);
+      const std::string sprName = g_session.GetWeaponEffectSprName(viewJob, this->sex, 0, -1, 1, this->bodyStyle);
+      this->LoadEquipAction(6, actName.c_str());
+      this->LoadEquipSprite(6, sprName.c_str());
+      return;
+    }
+  }
+
+  if (this->weaponPair == 0) {
+    return;
   }
 
   const int weaponItem = this->weapon;
   const int shieldItem = this->secondaryWeapon;
-  if (weaponItem == 0 && shieldItem == 0) {
-    return;
-  }
 
   if (g_session.GetWeaponViewValue(shieldItem) > 0) {
     int weaponType = this->GetDualWieldWeaponType(weaponItem, shieldItem);
