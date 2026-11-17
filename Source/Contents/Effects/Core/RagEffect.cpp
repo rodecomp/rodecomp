@@ -4874,7 +4874,7 @@ void CRagEffect::TexturedSlashCross(const char* name) {
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
   this->state.lastPrim->state.size = 0.0f;
-  this->state.lastPrim->state.deltaPos = {this->state.deltaPos.x, this->state.deltaPos.y, this->state.deltaPos.z};
+  this->state.lastPrim->state.deltaPos = this->state.deltaPos;
   RenderObjectState& primRender = this->state.lastPrim->render;
   primRender.position = this->render.position;
 
@@ -5011,7 +5011,7 @@ void CRagEffect::TexturedSlashLevel(const char* name, char kind) {
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
   this->state.lastPrim->state.size = 0.0f;
-  this->state.lastPrim->state.deltaPos = {this->state.deltaPos.x, this->state.deltaPos.y, this->state.deltaPos.z};
+  this->state.lastPrim->state.deltaPos = this->state.deltaPos;
   RenderObjectState& primRender = this->state.lastPrim->render;
   primRender.position = this->render.position;
 
@@ -5361,7 +5361,7 @@ void CRagEffect::SonicWave(char sonic) {
   }
 
   this->state.lastPrim->state.size = 0.0f;
-  this->state.lastPrim->state.deltaPos = {this->state.deltaPos.x, this->state.deltaPos.y, this->state.deltaPos.z};
+  this->state.lastPrim->state.deltaPos = this->state.deltaPos;
   RenderObjectState& primRender = this->state.lastPrim->render;
   primRender.position = this->render.position;
 
@@ -5789,8 +5789,8 @@ void CRagEffect::BlueRingStack() {
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\ring_blue.tga", 0, false, true, false);
   this->state.lastPrim->state.size = 4.0f;
-  this->state.lastPrim->state.deltaPos = {this->state.deltaPos.x, this->state.deltaPos.y, this->state.deltaPos.z};
-  this->state.lastPrim->state.deltaPos2 = {this->state.deltaPos2.x, this->state.deltaPos2.y, this->state.deltaPos2.z};
+  this->state.lastPrim->state.deltaPos = this->state.deltaPos;
+  this->state.lastPrim->state.deltaPos2 = this->state.deltaPos2;
 
   for (int index = 0; index < 4; ++index) {
     if (index == 3) {
@@ -9045,6 +9045,7 @@ void CRagEffect::AlphaDownRipples(const char* name, char kind) {
   }
 
   if (this->state.stateCnt == 0) {
+    g_modeMgr.GetGameMode();
     this->state.lastPrim = this->LaunchEffectPrim(12, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.duration = 99999999;
     this->state.lastPrim->state.pattern |= 1u;
@@ -10516,7 +10517,7 @@ void CRagEffect::SnowDrift(char flag) {
     this->state.lastPrim->state.slots[index].fullDisplayAngle = static_cast<std::int16_t>(rand() % 360);
     this->state.lastPrim->state.slots[index].height[8] = 0.0f;
     this->state.lastPrim->state.slots[index].alphaB = 0;
-    this->state.lastPrim->state.deltaPos = {this->state.deltaPos.x, this->state.deltaPos.y, this->state.deltaPos.z};
+    this->state.lastPrim->state.deltaPos = this->state.deltaPos;
     Get_Angle(this->render.position.x - this->state.deltaPos.x, this->render.position.z - this->state.deltaPos.z, &this->state.lastPrim->state.slots[index].riseAngle);
     this->state.lastPrim->state.slots[index].riseAngle += static_cast<std::int16_t>(rand() % 41 + 160);
 
@@ -12052,7 +12053,7 @@ void CRagEffect::ThrowItem(const char* name, char kind) {
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
 
   this->state.lastPrim->state.size = 0.0f;
-  this->state.lastPrim->state.deltaPos = {this->state.deltaPos.x, this->state.deltaPos.y, this->state.deltaPos.z};
+  this->state.lastPrim->state.deltaPos = this->state.deltaPos;
 
   const float dx = this->state.deltaPos.x - this->render.position.x;
   const float dz = this->state.deltaPos.z - this->render.position.z;
@@ -14364,22 +14365,22 @@ void CRagEffect::TANJI() {
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\blue_ivy.bmp", 0, false, true, false);
   this->state.lastPrim->state.size = 0.0f;
-  this->state.lastPrim->state.deltaPos = {this->state.deltaPos.x, this->state.deltaPos.y, this->state.deltaPos.z};
+  this->state.lastPrim->state.deltaPos = this->state.deltaPos;
   this->state.lastPrim->state.slots[0].life = 1;
   this->state.lastPrim->state.slots[0].process = -15;
   this->state.lastPrim->state.slots[0].maxHeight =
     SquareRoot((this->state.deltaPos.x - this->render.position.x) * (this->state.deltaPos.x - this->render.position.x) +
                (this->state.deltaPos.z - this->render.position.z) * (this->state.deltaPos.z - this->render.position.z));
-  this->state.lastPrim->state.slots[0].distance = static_cast<float>(this->state.count) * 0.4f + 2.0f;
+  this->state.lastPrim->state.slots[0].distance = static_cast<float>(static_cast<int>(this->state.count)) * 0.4f + 2.0f;
   this->state.lastPrim->state.slots[0].height[8] = 0.0f;
   this->state.lastPrim->state.slots[0].alphaB = 5;
   this->state.lastPrim->state.slots[0].vecBNow.x = this->render.position.x;
-  this->state.lastPrim->state.slots[0].vecBNow.y = this->render.position.y - 8.0f;
   this->state.lastPrim->state.slots[0].vecBNow.z = this->render.position.z;
+  this->state.lastPrim->state.slots[0].vecBNow.y = this->render.position.y - 8.0f;
   this->state.lastPrim->state.slots[0].rotStart = 0;
   this->state.lastPrim->state.slots[0].height[1] = 2.0f;
   this->state.lastPrim->state.slots[0].height[2] =
-    (2.0f / this->state.lastPrim->state.slots[0].maxHeight) * (this->state.deltaPos.y - this->render.position.y);
+    (this->state.lastPrim->state.slots[0].height[1] / this->state.lastPrim->state.slots[0].maxHeight) * (this->state.deltaPos.y - this->render.position.y);
   this->state.lastPrim->state.slots[0].fullDisplayAngle = 0;
   this->state.lastPrim->state.slots[0].flag1[0] = 0;
   this->state.lastPrim->state.slots[0].flag1[1] = 0;
