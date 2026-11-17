@@ -134,15 +134,16 @@ void CGameMode::StepTowardWalkableCell(const int& targetX, const int& targetY, i
 // OFFSET: 0x00CD0150
 // FUNCTION: fn_21251
 void CGameMode::FindWalkableCellToward(float x, float z, float originX, float originZ, int& column, int& row, int distance) {
-  const float deltaZ = z - originZ;
   const float deltaX = x - originX;
+  const float deltaZ = z - originZ;
   const float inverse = 1.0f / SquareRoot(deltaZ * deltaZ + deltaX * deltaX);
   const float step = static_cast<float>(distance * 5);
   this->WorldCell(inverse * deltaX * step + originX, inverse * deltaZ * step + originZ, column, row);
 
   const int startY = row;
   const int startX = column;
-  if (this->scene->terrain->Walkable(startX, startY)) {
+  const TerrainHeightCell* cell = this->scene->terrain->CellAt(startX, startY);
+  if (cell != nullptr && cell->type != 1 && cell->type != 5) {
     return;
   }
 
@@ -150,7 +151,8 @@ void CGameMode::FindWalkableCellToward(float x, float z, float originX, float or
   for (int i = 0; i < 8; ++i) {
     column = startX + offsets[i][0];
     row = startY + offsets[i][1];
-    if (this->scene->terrain->Walkable(column, row)) {
+    cell = this->scene->terrain->CellAt(column, row);
+    if (cell != nullptr && cell->type != 1 && cell->type != 5) {
       return;
     }
   }
