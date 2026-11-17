@@ -381,8 +381,7 @@ void UISeekPartyWnd::Paint() {
       "유저인터페이스\\basic_interface\\seekparty\\type_0%d\\seekparty_%s_0%d_%d.bmp", this->m_type, names[this->m_type], this->m_type, this->m_level
     ));
     if (ResourceMgr::Instance().Exists(name.c_str())) {
-      auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name.c_str())));
-      this->DrawBitmap(1, 18, bitmap, false);
+      this->DrawBitmap(1, 18, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name.c_str()))), false);
     }
   }
 
