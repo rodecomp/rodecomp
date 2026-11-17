@@ -358,77 +358,6 @@ void UIEditCtrl::OnMouseHover(int x, int y) {
   }
 }
 
-// INLINED
-__forceinline void UIEditCtrl::InsertLink(const char* value) {
-  const std::string name = g_navigationLinkParser->FormatNavigationLink(value, false);
-  this->FitTextToWidth(name, this->geometry.width / 2);
-  std::string display = "<";
-  display += name;
-  display += ">";
-  std::string before;
-  bool removed = false;
-  std::size_t position = 0;
-  std::size_t oldBytes = 0;
-
-  for (auto entry = this->links.begin(); entry != this->links.end();) {
-    UIWindow* window = *entry;
-
-    if (window->geometry.id == 438) {
-      removed = true;
-      UINaviLinkButton* button = static_cast<UINaviLinkButton*>(window);
-      const std::string linkName = g_navigationLinkParser->FormatNavigationLink(button->Link(), false);
-      this->FitTextToWidth(linkName, this->geometry.width / 2);
-      std::string old = "<";
-      old += linkName;
-      old += ">";
-
-      oldBytes = std::strlen(old.c_str());
-      position = this->text.find(old);
-
-      if (position != std::string::npos) {
-        before = this->text.substr(0, position);
-      }
-
-      this->RemoveChild(window, 1);
-      entry = this->links.erase(entry);
-    } else {
-      ++entry;
-    }
-  }
-
-  if (!_mbsstr(reinterpret_cast<const unsigned char*>(value), reinterpret_cast<const unsigned char*>(g_editNaviTagBegin.c_str())) &&
-      !_mbsstr(reinterpret_cast<const unsigned char*>(value), reinterpret_cast<const unsigned char*>(g_editNaviTagEnd.c_str()))) {
-    this->SetText(value);
-    return;
-  }
-
-  const std::string prospective = this->text + g_navigationLinkParser->DisplayNavigationLink(value);
-
-  if (static_cast<unsigned>(this->maximum) < prospective.size()) {
-    return;
-  }
-
-  if (!removed) {
-    this->text += g_navigationLinkParser->DisplayNavigationLink(value);
-  } else if (position != std::string::npos) {
-    before += display;
-    before += this->text.substr(position + oldBytes);
-    this->text = before;
-  }
-
-  this->SetText(this->text.c_str());
-  this->anchor = this->cursor = static_cast<int>(this->text.size());
-  g_serverLanguage->Select(this->cursor, this->cursor);
-
-  auto* button = new UINaviLinkButton();
-
-  button->Configure(display.c_str(), 0x009E68F0, 0, 12, 0, 0);
-  button->SetId(438);
-  button->link = GetNavigationLinkParser()->ExtractNavigationLink(value);
-  this->AddChild(button);
-  this->links.push_back(button);
-}
-
 // OFFSET: 0x008641C0
 // FUNCTION: fn_10914
 int UIEditCtrl::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
@@ -448,9 +377,74 @@ int UIEditCtrl::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       }
     }
     break;
-  case UM_INSERT_ITEM_LINK:
-    this->InsertLink(reinterpret_cast<const char*>(a));
+  case UM_INSERT_ITEM_LINK: {
+    const char* value = reinterpret_cast<const char*>(a);
+    const std::string name = GetNavigationLinkParser()->FormatNavigationLink(value, false);
+    this->FitTextToWidth(name, this->geometry.width / 2);
+    std::string display = "<";
+    display += name;
+    display += ">";
+    bool removed = false;
+    std::string before;
+    std::size_t position = 0;
+    std::size_t oldBytes = 0;
+
+    for (auto entry = this->links.begin(); entry != this->links.end();) {
+      if ((*entry)->geometry.id == 438) {
+        removed = true;
+        const std::string linkName = GetNavigationLinkParser()->FormatNavigationLink(static_cast<UINaviLinkButton*>(*entry)->Link(), false);
+        this->FitTextToWidth(linkName, this->geometry.width / 2);
+        std::string old = "<";
+        old += linkName;
+        old += ">";
+
+        oldBytes = std::strlen(old.c_str());
+        position = this->text.find(old);
+
+        if (position != std::string::npos) {
+          before = this->text.substr(0, position);
+        }
+
+        this->RemoveChild(*entry, 1);
+        entry = this->links.erase(entry);
+      } else {
+        ++entry;
+      }
+    }
+
+    if (!_mbsstr(reinterpret_cast<const unsigned char*>(value), reinterpret_cast<const unsigned char*>(g_editNaviTagBegin.c_str())) &&
+        !_mbsstr(reinterpret_cast<const unsigned char*>(value), reinterpret_cast<const unsigned char*>(g_editNaviTagEnd.c_str()))) {
+      this->SetText(value);
+      break;
+    }
+
+    const std::string prospective = this->text + GetNavigationLinkParser()->DisplayNavigationLink(value);
+
+    if (static_cast<unsigned>(this->maximum) < prospective.size()) {
+      break;
+    }
+
+    if (!removed) {
+      this->text += GetNavigationLinkParser()->DisplayNavigationLink(value);
+    } else if (position != std::string::npos) {
+      before += display;
+      before += this->text.substr(position + oldBytes);
+      this->text = before;
+    }
+
+    this->SetText(this->text.c_str());
+    this->anchor = this->cursor = static_cast<int>(this->text.size());
+    g_serverLanguage->Select(this->cursor, this->cursor);
+
+    auto* button = new UINaviLinkButton();
+
+    button->Configure(display.c_str(), 0x009E68F0, 0, 12, 0, 0);
+    button->SetId(438);
+    button->link = GetNavigationLinkParser()->ExtractNavigationLink(value);
+    this->AddChild(button);
+    this->links.push_back(button);
     break;
+  }
   }
 
   UIWindow::SendMsg(sender, message, a, b, c, d);
