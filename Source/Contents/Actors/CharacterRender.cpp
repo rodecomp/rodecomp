@@ -77,10 +77,10 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
   CGameMode* mode = g_modeMgr.GetGameMode();
   const float* origin = &this->position.x;
   const float* view = mode->camera->frame.view.values;
-  float position[3];
-  position[0] = origin[0] * view[0] + origin[1] * view[3] + origin[2] * view[6] + view[9];
-  position[1] = origin[0] * view[1] + origin[1] * view[4] + origin[2] * view[7] + view[10];
-  position[2] = origin[0] * view[2] + origin[1] * view[5] + origin[2] * view[8] + view[11];
+  vector3d position;
+  position.x = origin[0] * view[0] + origin[1] * view[3] + origin[2] * view[6] + view[9];
+  position.y = origin[0] * view[1] + origin[1] * view[4] + origin[2] * view[7] + view[10];
+  position.z = origin[0] * view[2] + origin[1] * view[5] + origin[2] * view[8] + view[11];
   float depthBias = 0.0f;
 
   float& screenX = this->screenX;
@@ -112,7 +112,7 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
   CImfRes* imf = static_cast<CImfRes*>(
     ResourceMgr::Instance().Load(g_session.GetBodyImfName(this->job, this->appearance[0], this->appearance[1], this->bodyCostume).c_str())
   );
-  this->RenderRobeCommands(commands, false, view, layer, position, screenX, screenY, distanceScale, 0.0f, rhw);
+  this->RenderRobeCommands(commands, false, view, layer, &position.x, screenX, screenY, distanceScale, 0.0f, rhw);
 
   std::map<int, SpriteLayerQuad> quads;
   std::map<int, int>& views = this->layerViews;
@@ -311,7 +311,7 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
     SpriteColor color = {};
     tagRECT rect;
     if (!this->ProjectCell(
-          index, layer, distanceScale, *cell, screenX, screenY, position, 0.0f, bottomDepth, topDepth, *image,
+          index, layer, distanceScale, *cell, screenX, screenY, &position.x, 0.0f, bottomDepth, topDepth, *image,
           quad, rect, color, offsetX, offsetY, 0
         )) {
       continue;
@@ -336,22 +336,23 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
     }
 
     const std::uint32_t* palette = sprites[type]->palette;
-    if (type == 0) {
-      if (this->appearance[2] > 0) {
-        palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(
-          g_session.GetBodyPalName(this->job, this->appearance[0], this->appearance[2], this->bodyCostume, 0, 0).c_str()
-        ))->palette;
-      } else {
-        palette = sprites[0]->palette;
-      }
-    } else if (type == 1) {
-      if (this->appearance[3] > 0) {
-        palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(
-          g_session.GetHeadPalName(this->appearance[1], this->job, this->appearance[0], this->appearance[3]).c_str()
-        ))->palette;
-      } else {
-        palette = sprites[1]->palette;
-      }
+    switch (type) {
+      case 0:
+        if (this->appearance[2] > 0) {
+          const std::string name = g_session.GetBodyPalName(this->job, this->appearance[0], this->appearance[2], this->bodyCostume, 0, 0);
+          palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(name.c_str()))->palette;
+        } else {
+          palette = sprites[0]->palette;
+        }
+        break;
+      case 1:
+        if (this->appearance[3] > 0) {
+          const std::string name = g_session.GetHeadPalName(this->appearance[1], this->job, this->appearance[0], this->appearance[3]);
+          palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(name.c_str()))->palette;
+        } else {
+          palette = sprites[1]->palette;
+        }
+        break;
     }
 
     int blend;
@@ -401,7 +402,7 @@ std::list<CharacterRenderDrawItem> CCharacterRender::BuildDrawList(unsigned char
       this->bodyBlend = blend;
       this->bodyCellX = cell->x;
       this->bodyCellY = cell->y;
-      this->RenderRobeCommands(commands, true, view, layer, position, screenX, screenY, distanceScale, 0.0f, rhw);
+      this->RenderRobeCommands(commands, true, view, layer, &position.x, screenX, screenY, distanceScale, 0.0f, rhw);
     }
   }
 
