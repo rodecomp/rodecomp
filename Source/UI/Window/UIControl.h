@@ -118,6 +118,12 @@ public:
   /* 00B0 */ std::function<bool(CUITabButton*, CUITabButton*)> onChanging;
 };
 
+// OFFSET: 0x00A63C00
+// FUNCTION: fn_16441
+inline void CUITab::SetOnChange(std::function<void(CUITabButton*)> handler) {
+  this->onChange = handler;
+}
+
 class CUIButton : public CUIControl {
 public:
   CUIButton();

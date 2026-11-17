@@ -1043,12 +1043,6 @@ void CUIEditBoxEx::SetOnSubmit(std::function<void()> handler) {
   this->onSubmit = handler;
 }
 
-// OFFSET: 0x00A63C00
-// FUNCTION: fn_16441
-void CUITab::SetOnChange(std::function<void(CUITabButton*)> handler) {
-  this->onChange = handler;
-}
-
 // OFFSET: 0x00A664C0
 // FUNCTION: fn_16616
 void RenewQuestUI::CUIQuestList::OnSelectItem(CUIQuestItem* item, const unsigned long& questId) {
