@@ -35,17 +35,19 @@ LRESULT CLanguageBase::Message(HWND, UINT message, WPARAM value, LPARAM flags, s
 
     if (flags & GCS_CURSORPOS) {
       HIMC context = ImmGetContext(hWnd);
-      if (context) {
+      if (!context) {
+        this->candidate.clear();
+      } else {
         ImmGetCompositionStringA(context, GCS_CURSORPOS, &this->compositionCursor, sizeof(this->compositionCursor));
         ImmReleaseContext(hWnd, context);
-      } else {
-        this->candidate.clear();
       }
     }
 
     if (flags & GCS_RESULTSTR) {
       HIMC context = ImmGetContext(hWnd);
-      if (context) {
+      if (!context) {
+        this->candidate.clear();
+      } else {
         WCHAR wide[256];
         char converted[256];
         const auto bytes = static_cast<std::uint32_t>(ImmGetCompositionStringW(context, GCS_RESULTSTR, wide, sizeof(wide)));
@@ -54,8 +56,6 @@ LRESULT CLanguageBase::Message(HWND, UINT message, WPARAM value, LPARAM flags, s
         converted[size] = 0;
         ImmReleaseContext(hWnd, context);
         this->Insert(converted);
-      } else {
-        this->candidate.clear();
       }
     }
     break;
