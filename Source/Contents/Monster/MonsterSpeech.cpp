@@ -80,7 +80,7 @@ void CSession::FormatMonsterSpeech(char* text, char* output, std::uint32_t aid, 
   int offset = 0;
   int length = 0;
   char* cursor = output;
-  while (feminine && monsterSpeechReplacementCount) {
+  while (feminine) {
     char* found = nullptr;
     for (int index = 0; index < monsterSpeechReplacementCount; ++index) {
       found = std::strstr(cursor, monsterSpeechReplacements[index]);
