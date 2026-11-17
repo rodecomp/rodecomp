@@ -68,7 +68,8 @@ void CEmblemDataMgr::RefreshUrls() {
 // FUNCTION: fn_03972
 void CEmblemDataMgr::Download(std::uint32_t guildId, std::uint32_t version) {
   const std::string token(g_session.m_webAuthToken, 16);
-  g_asyncWorkMgr->DownloadEmblem(this->m_downloadUrl, g_session.m_aid, token, g_session.m_accountName, guildId, version);
+  CAsyncWorkMgr* workMgr = g_asyncWorkMgr;
+  workMgr->DownloadEmblem(this->m_downloadUrl, g_session.m_aid, token, g_session.m_accountName, guildId, version);
 }
 
 // OFFSET: 0x005EB410
