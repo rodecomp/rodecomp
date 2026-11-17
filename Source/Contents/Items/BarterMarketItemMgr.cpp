@@ -719,12 +719,14 @@ BarterChunk16* BarterChunkVector::Umove(BarterChunk16* first, BarterChunk16* las
 // FUNCTION: fn_03786
 BarterChunk16* BarterChunkVector::MoveChunks16(BarterChunk16* first, BarterChunk16* last, BarterChunk16* dest)
 {
-  while (first != last) {
-    *dest = *first;
-    ++first;
-    ++dest;
+  BarterChunk16* src = first;
+  BarterChunk16* dst = dest;
+  while (src != last) {
+    *dst = *src;
+    ++src;
+    ++dst;
   }
-  return first;
+  return src;
 }
 
 struct BarterTriple {
