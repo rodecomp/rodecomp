@@ -950,7 +950,7 @@ bool LuaScript::Load(const char* name, bool resourcePath, bool looseOnly) {
     return false;
   }
 
-  std::string prefix;
+  std::string prefix("");
   if (!looseOnly) {
     prefix = std::string("LuaFiles514\\");
   }
