@@ -708,9 +708,9 @@ void CSession::LoadRobeAlpha() {
   for (int index = 1; index < 1000; ++index) {
     int robeId = 0;
     RobeAlpha alpha;
+    alpha.period = 0;
     alpha.from = 0;
     alpha.to = 0;
-    alpha.period = 0;
     LuaScript* script = this->m_hotkeyScript;
 
     if (!script->Call(OBFUSCATE_TEXT("querytransparentiteminfo", 0xD51953E763B94747ULL), OBFUSCATE_TEXT("d>dddd", 0x6373E5456BAD7B71ULL), index, &robeId, &alpha.from, &alpha.to, &alpha.period)) {
