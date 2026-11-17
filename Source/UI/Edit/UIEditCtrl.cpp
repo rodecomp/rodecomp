@@ -7461,7 +7461,8 @@ void UIItemSellWnd::OnMouseHover(int x, int y) {
     }
   }
 
-  g_modeMgr.currentMode->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
+  CMode* mode = g_modeMgr.currentMode;
+  mode->ShowTooltip(text.c_str(), tooltipX, tooltipY, g_session.GetItemNameColor(item), 0, 1);
 }
 
 // OFFSET: 0x009865C0
