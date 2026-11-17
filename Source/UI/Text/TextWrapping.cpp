@@ -61,8 +61,8 @@ void WrapPlainText(const char* text, std::vector<std::string>& lines, int width)
       breakAt = current;
     }
 
-    if (current >= limit || *current == '\n') {
-      if (*current == '\n') {
+    if (current >= limit || '\n' == *current) {
+      if ('\n' == *current) {
         breakAt = current++;
       }
 
