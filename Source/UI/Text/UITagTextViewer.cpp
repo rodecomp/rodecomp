@@ -274,8 +274,10 @@ void UITagTextViewer::AddText(const std::string& text) {
   this->m_offsetY = offset;
 
   const std::vector<std::vector<UIWindow*>> lines = info.m_lines;
-  for (std::vector<UIWindow*> line : lines) {
-    for (UIWindow* window : line) {
+  for (auto lineIt = lines.begin(); lineIt != lines.end(); ++lineIt) {
+    std::vector<UIWindow*> line = *lineIt;
+    for (auto windowIt = line.begin(); windowIt != line.end(); ++windowIt) {
+      UIWindow* window = *windowIt;
       window->Move(window->geometry.x + this->m_margin, window->geometry.y + offset + previousCursor + spacing);
       this->AddChild(window);
       this->StorePosition(window);
@@ -315,8 +317,10 @@ void UITagTextViewer::Layout() {
       offset = static_cast<unsigned int>(static_cast<float>(static_cast<unsigned int>(this->geometry.height - info.m_height)) * g_depthAverageHalf);
     }
   }
-  for (std::vector<UIWindow*> line : lines) {
-    for (UIWindow* window : line) {
+  for (auto lineIt = lines.begin(), lineEnd = lines.end(); lineIt != lineEnd; ++lineIt) {
+    std::vector<UIWindow*> line = *lineIt;
+    for (auto windowIt = line.begin(), windowEnd = line.end(); windowIt != windowEnd; ++windowIt) {
+      UIWindow* window = *windowIt;
       window->Move(window->geometry.x + this->m_margin, window->geometry.y + offset);
       this->AddChild(window);
       this->StorePosition(window);
