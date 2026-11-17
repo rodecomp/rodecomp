@@ -274,8 +274,8 @@ std::pair<bool, BarterMarketEntry> UIExpandedBarterItemPurchaseWnd::GetEntryAt(i
   }
 
   const int row = (y - 17) / 64;
-  int index = 0;
   int visible = 0;
+  int index = 0;
   for (std::list<BarterMarketEntry>::const_iterator it = this->entries.begin(); it != this->entries.end(); ++it, ++index) {
     if (index >= this->firstRow) {
       if (visible == row) {
@@ -294,8 +294,8 @@ std::pair<bool, BarterMarketEntry> UIExpandedBartermarketWnd::GetEntryAt(int x, 
     return std::make_pair(false, BarterMarketEntry());
   }
 
-  int index = 0;
   int visible = 0;
+  int index = 0;
   for (std::list<BarterMarketEntry>::iterator it = this->entries.begin(); it != this->entries.end(); ++it, ++index) {
     if (index >= this->firstRow) {
       if (visible == (y - 17) / 64) {
@@ -975,8 +975,8 @@ void UIExpandedBartermarketWnd::OnRBtnDown(int x, int y) {
   std::pair<bool, BarterMarketEntry> found = this->GetEntryOrChunkAt(x, y);
   if (found.first == true) {
     UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
-    ITEM_INFO item = found.second.ToItemInfo();
     if (window) {
+      ITEM_INFO item = found.second.ToItemInfo();
       window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
     }
   }
