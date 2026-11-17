@@ -854,8 +854,8 @@ void CSession::AddProhibitionLog(std::uint32_t aid, std::uint32_t minutes) {
 
   SYSTEMTIME localTime;
   GetLocalTime(&localTime);
-  entry.date = ((localTime.wYear << 8 | localTime.wMonth) << 8) | localTime.wDay;
-  entry.time = ((localTime.wHour << 8 | localTime.wMinute) << 8) | localTime.wSecond;
+  entry.date = ((localTime.wYear << 8 | static_cast<short>(localTime.wMonth)) << 8) | static_cast<short>(localTime.wDay);
+  entry.time = ((localTime.wHour << 8 | static_cast<short>(localTime.wMinute)) << 8) | static_cast<short>(localTime.wSecond);
   this->m_prohibitionLog.push_back(entry);
 
   CFile file;
