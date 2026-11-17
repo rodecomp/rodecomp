@@ -8752,17 +8752,17 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
           this->maskTextX = 0;
           std::memset(this->confirmPassword, 0, sizeof(this->confirmPassword));
           this->FillRegion(111, 118, 98, 14, 0xFFFFFF);
-          break;
+        } else {
+          g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_8), 0, true, false, 0, "Message", 280, 120, 0);
+          this->activeInputY = this->newPasswordY;
+          this->passwordStage = 2;
+          this->inputDigitCount = 0;
+          this->maskTextX = 0;
+          std::memset(this->currentPassword, 0, sizeof(this->currentPassword));
+          std::memset(this->newPassword, 0, sizeof(this->newPassword));
+          std::memset(this->confirmPassword, 0, sizeof(this->confirmPassword));
+          this->FillRegion(111, 79, 98, 14, 0xFFFFFF);
         }
-        g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_8), 0, true, false, 0, "Message", 280, 120, 0);
-        this->activeInputY = this->newPasswordY;
-        this->passwordStage = 2;
-        this->inputDigitCount = 0;
-        this->maskTextX = 0;
-        std::memset(this->currentPassword, 0, sizeof(this->currentPassword));
-        std::memset(this->newPassword, 0, sizeof(this->newPassword));
-        std::memset(this->confirmPassword, 0, sizeof(this->confirmPassword));
-        this->FillRegion(111, 79, 98, 14, 0xFFFFFF);
         break;
 
       case 3:
@@ -12287,66 +12287,65 @@ void UIFrameWnd::DrawItemNameText(
     const FrameTextKey key{color, static_cast<std::uint32_t>(width), std::string(text, std::strlen(text))};
     cached = this->m_textCache.find(key);
   }
-  if (cached != this->m_textCache.end()) {
-    this->DrawTextLines(position->x, position->y, position->family, position->height, cached->second);
-    return;
-  }
+  if (cached == this->m_textCache.end()) {
+    std::vector<std::pair<int, std::string>> segments;
+    const int highlightValue = static_cast<int>(highlightColor);
+    const int colorValue = static_cast<int>(color);
+    this->SplitHighlightText(text, highlight, highlightValue, colorValue, *breaks, segments);
 
-  std::vector<std::pair<int, std::string>> segments;
-  const int highlightValue = static_cast<int>(highlightColor);
-  const int colorValue = static_cast<int>(color);
-  this->SplitHighlightText(text, highlight, highlightValue, colorValue, *breaks, segments);
+    FrameTextLines lines(2);
+    std::vector<std::pair<int, std::string>>* line = &lines[0];
+    int lineCount = 1;
+    int lineWidth = 0;
+    for (auto segment = segments.begin(); segment != segments.end(); ++segment) {
+      const char* begin = segment->second.c_str();
+      const char* end = begin + segment->second.size();
+      const char* lineStart = begin;
+      const char* next = begin;
+      std::size_t offset = 0;
+      int length;
+      int measured;
+      do {
+        next = CharNextExA(static_cast<WORD>(g_textCodePage), next, 0);
+        length = static_cast<int>(next - lineStart);
+        measured = this->TextWidth(begin, length, 0, 12, 0, 0);
+        if (measured + lineWidth > width) {
+          std::pair<int, std::string> piece;
+          piece.second = segment->second.substr(offset, length);
+          piece.first = segment->first;
+          line->push_back(piece);
+          ++line;
+          ++lineCount;
+          lineStart = next;
+          offset = length;
+          lineWidth = 0;
+        }
+      } while (next < end && lineCount < 3);
 
-  FrameTextLines lines(2);
-  std::vector<std::pair<int, std::string>>* line = &lines[0];
-  int lineCount = 1;
-  int lineWidth = 0;
-  for (auto segment = segments.begin(); segment != segments.end(); ++segment) {
-    const char* begin = segment->second.c_str();
-    const char* end = begin + segment->second.size();
-    const char* lineStart = begin;
-    const char* next = begin;
-    std::size_t offset = 0;
-    int length;
-    int measured;
-    do {
-      next = CharNextExA(static_cast<WORD>(g_textCodePage), next, 0);
-      length = static_cast<int>(next - lineStart);
-      measured = this->TextWidth(begin, length, 0, 12, 0, 0);
-      if (measured + lineWidth > width) {
+      lineWidth += measured;
+      if (lineCount > 2) {
+        break;
+      }
+      if (next >= end) {
         std::pair<int, std::string> piece;
         piece.second = segment->second.substr(offset, length);
         piece.first = segment->first;
         line->push_back(piece);
-        ++line;
-        ++lineCount;
-        lineStart = next;
-        offset = length;
-        lineWidth = 0;
       }
-    } while (next < end && lineCount < 3);
-
-    lineWidth += measured;
-    if (lineCount > 2) {
-      break;
     }
-    if (next >= end) {
-      std::pair<int, std::string> piece;
-      piece.second = segment->second.substr(offset, length);
-      piece.first = segment->first;
-      line->push_back(piece);
+
+    if (this->TextWidth(text, std::strlen(text), position->family, position->height, 0, 0) > width * 2) {
+      this->FitLastTextLine(width, 2, position->family, position->height, lines);
     }
-  }
 
-  if (this->TextWidth(text, std::strlen(text), position->family, position->height, 0, 0) > width * 2) {
-    this->FitLastTextLine(width, 2, position->family, position->height, lines);
+    {
+      FrameTextKey key{color, static_cast<std::uint32_t>(width), std::string(text, std::strlen(text))};
+      this->m_textCache[std::move(key)] = lines;
+    }
+    this->DrawTextLines(position->x, position->y, position->family, position->height, lines);
+  } else {
+    this->DrawTextLines(position->x, position->y, position->family, position->height, cached->second);
   }
-
-  {
-    FrameTextKey key{color, static_cast<std::uint32_t>(width), std::string(text, std::strlen(text))};
-    this->m_textCache[std::move(key)] = lines;
-  }
-  this->DrawTextLines(position->x, position->y, position->family, position->height, lines);
 }
 
 // OFFSET: 0x00900D90
