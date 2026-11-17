@@ -9102,8 +9102,8 @@ void UIItemStoreFindWnd::Paint() {
   const int columns = (this->geometry.width - 40) / 32;
   const int rows = (this->geometry.height - 38) / 32;
   int slots = rows;
-  for (int i = 0, y = 17; i < slots; ++i, y += 32) {
-    this->DrawItemSlotFrame(10, y);
+  for (int i = 0; i < slots; ++i) {
+    this->DrawItemSlotFrame(10, i * 32 + 17);
   }
 
   {
@@ -9164,8 +9164,8 @@ void UIItemStoreSubWnd::Paint() {
   const int columns = (this->geometry.width - 40) / 32;
   const int rows = (this->geometry.height - 38) / 32;
   int slots = rows;
-  for (int i = 0, y = 17; i < slots; ++i, y += 32) {
-    this->DrawItemSlotFrame(10, y);
+  for (int i = 0; i < slots; ++i) {
+    this->DrawItemSlotFrame(10, i * 32 + 17);
   }
 
   {
