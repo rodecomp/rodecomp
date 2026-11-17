@@ -212,12 +212,10 @@ void CTalismanMarkEffect::UpdateParticle(CEZ2STRParticle* particle) {
   const float x = offsetX + viewX;
   const float y = offsetY + viewY;
   const float z = viewZ + 0.0f;
-  const float worldX = y * inverse[3] + x * inverse[0] + z * inverse[6] + inverse[9];
-  const float worldY = y * inverse[4] + x * inverse[1] + z * inverse[7] + inverse[10];
-  const float worldZ = y * inverse[5] + x * inverse[2] + z * inverse[8] + inverse[11];
-  particle->position.x = worldX;
-  particle->position.y = worldY;
-  particle->position.z = worldZ;
+  const vector3d world = {y * inverse[3] + x * inverse[0] + z * inverse[6] + inverse[9],
+                          y * inverse[4] + x * inverse[1] + z * inverse[7] + inverse[10],
+                          y * inverse[5] + x * inverse[2] + z * inverse[8] + inverse[11]};
+  particle->position = world;
   particle->Process(0.0f, 0.0f, 0.0f);
 }
 
