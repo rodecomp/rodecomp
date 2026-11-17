@@ -29,6 +29,7 @@
 #include <windows.h>
 
 template __declspec(noinline) bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+template __declspec(noinline) std::function<void(CUIListItem*)>& std::function<void(CUIListItem*)>::operator=(const std::function<void(CUIListItem*)>&);
 
 namespace EquipmentProperties {
 class CEquipmentPropertiesMgr {
@@ -112,14 +113,20 @@ void CUIListBoxEx<EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine, std::s
       item->SetSize(this->itemWidth, this->rowHeight);
       item->Show(0);
       item->SetImageResources(this->normalImage, this->hoverImage, this->pressedImage, this->disabledImage);
-      item->onHover = [this](CUIListItem* listItem) {
-        for (EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine* other : this->items) {
-          other->SetHighlighted(other == listItem);
-        }
-      };
-      item->onPress = [this](CUIListItem* listItem) {
-        this->SelectItem(listItem);
-      };
+      {
+        const std::function<void(CUIListItem*)> onHover = [this](CUIListItem* listItem) {
+          for (EquipmentPropertiesWnd::CUIItemEquipmentPropertiesLine* other : this->items) {
+            other->SetHighlighted(other == listItem);
+          }
+        };
+        item->onHover = onHover;
+      }
+      {
+        const std::function<void(CUIListItem*)> onPress = [this](CUIListItem* listItem) {
+          this->SelectItem(listItem);
+        };
+        item->onPress = onPress;
+      }
       this->AddChild(item);
       slot = item;
     }
