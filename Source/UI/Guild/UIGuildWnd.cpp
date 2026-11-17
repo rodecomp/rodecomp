@@ -1879,13 +1879,11 @@ bool UIGuildMemberManageWnd::DrawMember(GuildInfo::Member& member, int& index, i
   }
 
   if (g_modeMgr.GetGameMode()) {
-    const std::string playerName = LookupPlayerName(member.characterId);
-    member.name = playerName;
+    member.name = LookupPlayerName(member.characterId);
   }
   const std::string& name = member.name;
   if (member.name.size() == 0) {
-    member.name = LookupMessage(MSI_NAMELESS_USER);
-    member.name += g_guildNamelessTag;
+    member.name = LookupMessage(MSI_NAMELESS_USER) + g_guildNamelessTag;
   }
 
   if (member.online == 1) {
@@ -1903,8 +1901,9 @@ bool UIGuildMemberManageWnd::DrawMember(GuildInfo::Member& member, int& index, i
     const std::string headSpr = g_session.GetHeadSprName(member.job, member.sex, &member.head);
     CActRes* action = static_cast<CActRes*>(ResourceMgr::Instance().Load(headAct.c_str()));
     CSprRes* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(headSpr.c_str()));
+    const ActionFrame& frame = action->Frame(0, 0);
     const std::uint32_t* palette = sprite->palette;
-    const SpriteFrameCell& cell = action->Frame(0, 0).Cell(1);
+    const SpriteFrameCell& cell = frame.Cell(1);
     if (cell.image == -1) {
       return false;
     }
