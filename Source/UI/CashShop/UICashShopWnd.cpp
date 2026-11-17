@@ -1169,7 +1169,8 @@ int UICashShopWnd_Cart::SendMsg(UIWindow* sender, int message, std::intptr_t arg
 
     if (this->parent != nullptr) {
       int price = 0;
-      for (const ITEM_INFO& entry : this->m_cartItems) {
+      for (auto entryIt = this->m_cartItems.begin(); entryIt != this->m_cartItems.end(); ++entryIt) {
+        const ITEM_INFO& entry = *entryIt;
         price += entry.prices[0] * entry.quantity;
       }
       this->parent->SendMsg(this, UM_SET_CASHSHOP_TOTAL_PRICE, price, 0, 0, 0);
@@ -1192,7 +1193,8 @@ int UICashShopWnd_Cart::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     this->m_cartItems.erase(it);
     if (this->parent != nullptr) {
       int price = 0;
-      for (const ITEM_INFO& entry : this->m_cartItems) {
+      for (auto entryIt = this->m_cartItems.begin(); entryIt != this->m_cartItems.end(); ++entryIt) {
+        const ITEM_INFO& entry = *entryIt;
         price += entry.prices[0] * entry.quantity;
       }
       this->parent->SendMsg(this, UM_SET_CASHSHOP_TOTAL_PRICE, price, 0, 0, 0);
