@@ -607,11 +607,11 @@ void UITabControl::AddTab(const char* label, const char* tooltip) {
 
   int width;
   if (this->layout == 0 || this->layout == 2) {
-    width = this->VerticalTextHeight(label, 0, 0, this->fontSize, 0);
+    width = this->VerticalTextHeight(label, 0, 0, this->fontSize, 0) + this->tabPadding;
   } else {
-    width = this->TextWidth(label, 0, 0, this->fontSize, 0, 0);
+    width = this->TextWidth(label, 0, 0, this->fontSize, 0, 0) + this->tabPadding;
   }
-  this->widths.push_back(width + this->tabPadding);
+  this->widths.push_back(width);
 
   if (std::strlen(tooltip) != 0) {
     this->tooltips[this->labels.size() - 1] = tooltip;
