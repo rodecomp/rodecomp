@@ -3687,7 +3687,7 @@ void UICashEmotionScrollBar::Paint() {
     if (this->state == 1) {
       name = "유저인터페이스\\cashemotion\\scroll_btn_up_over.bmp";
     } else {
-      name = this->state != 4 ? "유저인터페이스\\cashemotion\\scroll_btn_up_normal.bmp" : "유저인터페이스\\cashemotion\\scroll_btn_up_press.bmp";
+      name = this->state == 4 ? "유저인터페이스\\cashemotion\\scroll_btn_up_press.bmp" : "유저인터페이스\\cashemotion\\scroll_btn_up_normal.bmp";
     }
   } else {
     disabled = true;
@@ -3704,7 +3704,7 @@ void UICashEmotionScrollBar::Paint() {
   } else if (this->state == 2) {
     name = "유저인터페이스\\cashemotion\\scroll_btn_down_over.bmp";
   } else {
-    name = this->state != 5 ? "유저인터페이스\\cashemotion\\scroll_btn_down_normal.bmp" : "유저인터페이스\\cashemotion\\scroll_btn_down_press.bmp";
+    name = this->state == 5 ? "유저인터페이스\\cashemotion\\scroll_btn_down_press.bmp" : "유저인터페이스\\cashemotion\\scroll_btn_down_normal.bmp";
   }
 
   auto* down = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name)));
