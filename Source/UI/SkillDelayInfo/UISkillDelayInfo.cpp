@@ -430,7 +430,11 @@ void CUISkillDelayInfo::OnUpdateItem(SkillDelayInfo::CUIDelayItem* item, const S
 
   for (int index = 0; index < 4; ++index) {
     const auto found = data.delayTimes.find(index);
-    item->times[index]->SetTime(found != data.delayTimes.end() ? found->second : 0);
+    if (data.delayTimes.end() != found) {
+      item->times[index]->SetTime(found->second);
+    } else {
+      item->times[index]->SetTime(0);
+    }
   }
 }
 
