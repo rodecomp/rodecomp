@@ -97,7 +97,7 @@ public:
   );
   void ApplySwing(int mode, int& x, int& y, int& outX, int& outY) const;
   void SetInstantValue(int key, std::int64_t value);
-  std::int64_t GetInstant(int key) const;
+  int GetInstant(int key) const;
   const char* GetActName();
   __declspec(noinline) CActRes* GetActRes();
   void SetFrameSequence(

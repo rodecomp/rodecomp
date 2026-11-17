@@ -16,6 +16,6 @@ void CInstantVar::Set(int key, std::int64_t value) {
 
 // OFFSET: 0x00612020
 // FUNCTION: fn_04340
-std::int64_t CRenderObject::GetInstant(int key) const {
-  return this->render.instant.Get(key);
+int CRenderObject::GetInstant(int key) const {
+  return static_cast<int>(this->render.instant.Get(key));
 }
