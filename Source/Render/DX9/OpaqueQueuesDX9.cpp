@@ -19,7 +19,8 @@ void CRendererDX9::DrawOpaqueQueues() {
   };
   std::sort(queues.queue_015C.begin(), queues.queue_015C.end(), before);
 
-  for (RenderCommand* command : queues.queue_015C) {
+  for (auto commandIt = queues.queue_015C.begin(); commandIt != queues.queue_015C.end(); ++commandIt) {
+    RenderCommand* command = *commandIt;
     if (command) {
       this->device->state.SetTexture(0, command->texture ? static_cast<CTextureDX9*>(command->texture)->NativeTexture() : nullptr);
       this->DrawPrimitive(command);
