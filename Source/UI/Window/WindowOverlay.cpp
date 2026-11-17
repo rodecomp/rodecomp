@@ -120,9 +120,10 @@ int UIFrameWnd::DrawFittedItemName(int x, int y, const ITEM_INFO* item, std::uin
       truncated = false;
     }
 
+    const bool highlighted = text == highlight;
     int bytes = static_cast<int>(end - text);
     if (bytes != 0) {
-      if (text == highlight) {
+      if (highlighted) {
         this->DrawShadowedText(offset + x, y, text, bytes, static_cast<std::uint32_t>(highlightColor), 0xE0E0E0, 0, 12, 0);
       } else if (item->damaged) {
         this->DrawShadowedText(offset + x, y, text, bytes, color, 0x5050FA, 0, 12, 0);
