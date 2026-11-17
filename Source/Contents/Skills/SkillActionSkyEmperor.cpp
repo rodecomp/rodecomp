@@ -257,11 +257,11 @@ void CSkillAction_SKE_SKY_SUN::OnSkillEffect(int level, CGameActor* source, CGam
       return;
     }
 
-    const int offsetZ = 15 - std::max(0, std::rand() % 30);
-    const int offsetX = 15 - std::max(0, std::rand() % 30);
-    effect->position[0] = target->render.position.x + offsetX;
-    effect->position[1] = target->render.position.y + 0.0f;
-    effect->position[2] = target->render.position.z + offsetZ;
+    const int rollZ = std::rand() % 30;
+    const int offsetZ = 15 - (rollZ >= 0 ? rollZ : 0);
+    const int rollX = std::rand() % 30;
+    const int offsetX = 15 - (rollX >= 0 ? rollX : 0);
+    effect->positionVector = vector3d{target->render.position.x + offsetX, target->render.position.y + 0.0f, target->render.position.z + offsetZ};
     effect->SetDelay(index * 32);
   }
 }
@@ -484,9 +484,7 @@ void CSkillAction_SKE_SUNSET_BLAST::OnSkillEffect(int level, CGameActor* source,
     const int offsetZ = 15 - (rollZ >= 0 ? rollZ : 0);
     const int rollX = std::rand() % 30;
     const int offsetX = 15 - (rollX >= 0 ? rollX : 0);
-    effect->position[0] = target->render.position.x + offsetX;
-    effect->position[1] = target->render.position.y + 0.0f;
-    effect->position[2] = target->render.position.z + offsetZ;
+    effect->positionVector = vector3d{target->render.position.x + offsetX, target->render.position.y + 0.0f, target->render.position.z + offsetZ};
     effect->SetDelay(index * 32);
   }
 }
