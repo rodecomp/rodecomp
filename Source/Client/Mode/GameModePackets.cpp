@@ -17007,10 +17007,10 @@ void CGameMode::ReceiveTaggedBroadcast(const unsigned char* data) {
   const int hashPosition = static_cast<int>(message.find('#'));
   const int colonPosition = static_cast<int>(message.find(':'));
   bool systemMessage = false;
-  unsigned long rgb = 0;
   if (std::strcmp(tag, "tool") == 0) {
     std::memcpy(head, text + 4, 6);
     head[6] = '\0';
+    unsigned long rgb;
     std::sscanf(head, "%lx", &rgb);
     color = (GetRValue(rgb) << 16) | (GetGValue(rgb) << 8) | GetBValue(rgb);
     std::memcpy(body, text + 10, length - 10);
@@ -17031,9 +17031,10 @@ void CGameMode::ReceiveTaggedBroadcast(const unsigned char* data) {
 
     std::memcpy(head, text + 0x1C, 6);
     head[6] = '\0';
+    unsigned long rgb;
     std::sscanf(head, "%lx", &rgb);
     color = (GetRValue(rgb) << 16) | (GetGValue(rgb) << 8) | GetBValue(rgb);
-    const unsigned int bodySize = size - 0x22;
+    const int bodySize = size - 0x22;
     std::memcpy(body, text + 0x22, bodySize);
     body[size - 0x22] = '\0';
     message = body;
@@ -17050,8 +17051,10 @@ void CGameMode::ReceiveTaggedBroadcast(const unsigned char* data) {
     std::memset(filtered, 0, sizeof(filtered));
     strcpy_s(filtered, sizeof(filtered), message.c_str());
     if (g_forbiddenWords.Contains(filtered) == true) {
-      std::string masked;
-      g_forbiddenWords.Mask(filtered, &masked);
+      {
+        std::string masked;
+        g_forbiddenWords.Mask(filtered, &masked);
+      }
       message = filtered;
     }
   } else if (std::strcmp(tag, "ssss") == 0) {
