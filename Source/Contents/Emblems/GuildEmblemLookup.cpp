@@ -26,10 +26,10 @@ std::string CGuildMgr::GetEmblemFilename(std::uint32_t guildId) {
 // FUNCTION: fn_05175
 int CGuildMgr::GetEmblemVersion(std::uint32_t guildId) const {
   const auto it = this->m_guilds.find(guildId);
-  if (this->m_guilds.end() != it) {
-    return it->second.m_emblemVersion;
+  if (this->m_guilds.end() == it) {
+    return 0;
   }
-  return 0;
+  return it->second.m_emblemVersion;
 }
 
 // OFFSET: 0x0065EEA0
