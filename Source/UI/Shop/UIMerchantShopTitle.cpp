@@ -38,8 +38,9 @@ void UIMerchantShopTitle::Paint() {
   const std::uint32_t color = this->ownerAid == g_session.storeSearchOwnerAid ? 0x7DFAFF : 0xFFFFFF;
   this->DrawFilledRoundedOutline(0, 0, this->geometry.width, this->geometry.height - 6, color);
   this->DrawRoundedOutline(2, 2, this->geometry.width - 4, this->geometry.height - 10, 0xC3C3C3);
-  const char* icon = this->buyingShop != 0 ? "유저인터페이스\\buyingshop.bmp" : "유저인터페이스\\shop.bmp";
-  this->DrawBitmap(3, 3, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(icon))), true);
+  const int buying = this->buyingShop;
+  CBitmapRes* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(buying == 0 ? "유저인터페이스\\shop.bmp" : "유저인터페이스\\buyingshop.bmp")));
+  this->DrawBitmap(3, 3, icon, true);
 }
 
 // OFFSET: 0x0085EC40
