@@ -61,7 +61,7 @@ public:
 
   /* 0000 */ std::string name;
   /* 0018 */ std::string displayName;
-  /* 0030 */ int id = 0;
+  /* 0030 */ int id;
   union {
     /* 0034 */ WorldViewArea area = {0, 0, 0, 0, 0};
     struct {
