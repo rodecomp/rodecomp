@@ -70,15 +70,14 @@ void TextContext::SetFont(int family, int height, unsigned char bold, unsigned c
       if (g_serviceType == ServiceIndonesia) {
         family = 8;
         height = (height + 2);
-      } else {
+      } else if (g_serviceType == ServiceRussia) {
+        family = 9;
         height = (height + 3);
-        if (g_serviceType == ServiceRussia) {
-          family = 9;
-        } else {
-          family = 1;
-          if (g_serverLanguage && g_serverLanguage->alternateLanguage == 31) {
-            family = 6;
-          }
+      } else {
+        family = 1;
+        height = (height + 3);
+        if (g_serverLanguage && g_serverLanguage->alternateLanguage == 31) {
+          family = 6;
         }
       }
       break;
