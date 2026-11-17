@@ -5033,19 +5033,16 @@ void CGameMode::ReceiveOngoingQuestList(const unsigned char* data) {
       info.m_huntMinLevel[i] = hunt->minLevel;
       info.m_huntMaxLevel[i] = hunt->maxLevel;
       const int mobId = hunt->mobId;
-      if ((mobId < 1001 || mobId > 3998) && static_cast<unsigned int>(mobId - 20021) > 11978) {
-        if (mobId == 0x1099) {
-          StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", LookupMessage(MSI_INVENTORY_EXTEND));
-        } else if (mobId == 0x109A) {
-          StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", LookupMessage(MSI_INVENTORY_EXTEND_FAILED));
-        } else if (mobId == 0x287B) {
-          const std::string mapName = FormatOwnedString("%s.rsw", hunt->name);
-          StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", g_session.GetMapDisplayName(mapName.c_str()));
-        } else {
-          StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", g_session.GetJobName(mobId, 99));
-        }
-      } else {
+      if ((mobId > 1000 && mobId < 3999) || static_cast<unsigned int>(mobId - 20021) <= 11978) {
         StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", hunt->name);
+      } else if (mobId == 0x1099) {
+        StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", LookupMessage(MSI_INVENTORY_EXTEND));
+      } else if (mobId == 0x109A) {
+        StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", LookupMessage(MSI_INVENTORY_EXTEND_FAILED));
+      } else if (mobId == 0x287B) {
+        StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", g_session.GetMapDisplayName(FormatOwnedString("%s.rsw", hunt->name).c_str()));
+      } else {
+        StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", g_session.GetJobName(mobId, 99));
       }
     }
 
@@ -5090,19 +5087,16 @@ void CGameMode::ReceiveOngoingQuestList2(const unsigned char* data) {
       info.m_huntMinLevel[i] = hunt->minLevel;
       info.m_huntMaxLevel[i] = hunt->maxLevel;
       const int mobId = hunt->mobId;
-      if ((mobId < 1001 || mobId > 3998) && static_cast<unsigned int>(mobId - 20021) > 11978) {
-        if (mobId == 0x1099) {
-          StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", LookupMessage(MSI_INVENTORY_EXTEND));
-        } else if (mobId == 0x109A) {
-          StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", LookupMessage(MSI_INVENTORY_EXTEND_FAILED));
-        } else if (mobId == 0x287B) {
-          const std::string mapName = FormatOwnedString("%s.rsw", hunt->name);
-          StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", g_session.GetMapDisplayName(mapName.c_str()));
-        } else {
-          StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", g_session.GetJobName(mobId, 99));
-        }
-      } else {
+      if ((mobId > 1000 && mobId < 3999) || static_cast<unsigned int>(mobId - 20021) <= 11978) {
         StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", hunt->name);
+      } else if (mobId == 0x1099) {
+        StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", LookupMessage(MSI_INVENTORY_EXTEND));
+      } else if (mobId == 0x109A) {
+        StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", LookupMessage(MSI_INVENTORY_EXTEND_FAILED));
+      } else if (mobId == 0x287B) {
+        StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", g_session.GetMapDisplayName(FormatOwnedString("%s.rsw", hunt->name).c_str()));
+      } else {
+        StringFormat(info.m_huntName[i], 0x33, static_cast<std::size_t>(-1), "%s", g_session.GetJobName(mobId, 99));
       }
     }
 
