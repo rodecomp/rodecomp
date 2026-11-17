@@ -284,30 +284,48 @@ void C3dModelResV2::ReadVersion2(CFile& input) {
     }
 
     input.Read(node->transform, sizeof(node->transform));
-    ModelMesh& mesh = *node->mesh;
-    input.Read(&mesh.vertexCount, 4);
-    mesh.vertices = new std::array<float, 3>[mesh.vertexCount]{};
-    input.Read(mesh.vertices, static_cast<unsigned>(mesh.vertexCount) * 12u);
-    input.Read(&mesh.textureVertexCount, 4);
-    mesh.textureVertices = new ModelTextureVertex[mesh.textureVertexCount];
-    input.Read(mesh.textureVertices, static_cast<unsigned>(mesh.textureVertexCount) * 12u);
-    input.Read(&mesh.faceCount, 4);
-    mesh.faces = new ModelFace[mesh.faceCount];
+    int vertexCount = 0;
+    input.Read(&vertexCount, 4);
+    node->mesh->vertexCount = vertexCount;
+    ShadeVector* vertices = new ShadeVector[vertexCount];
+    input.Read(vertices, static_cast<unsigned>(vertexCount) * 12u);
+    node->mesh->vertices = reinterpret_cast<std::array<float, 3>*>(vertices);
+    int textureVertexCount = 0;
+    input.Read(&textureVertexCount, 4);
+    node->mesh->textureVertexCount = textureVertexCount;
+    ModelTextureVertex* textureVertices = new ModelTextureVertex[textureVertexCount];
+    input.Read(textureVertices, static_cast<unsigned>(textureVertexCount) * 12u);
+    node->mesh->textureVertices = textureVertices;
+    int faceCount = 0;
+    input.Read(&faceCount, 4);
+    node->mesh->faceCount = faceCount;
+    ModelFace* faces = new ModelFace[faceCount];
 
-    for (int face = 0; face < mesh.faceCount; ++face) {
-      ModelFace& target = mesh.faces[face];
+    for (int face = 0; face < faceCount; ++face) {
+      ModelFace& target = faces[face];
       unsigned size = 0;
       input.Read(&size, 4);
-      std::vector<unsigned char> record(size);
-      input.Read(record.data(), size);
-      std::memcpy(&target, record.data(), 20);
-      const unsigned groups = (size - 20u) / 4u;
+      std::vector<unsigned char> buffer;
+      buffer.resize(size);
+      input.Read(buffer.data(), size);
+      ModelFaceRecord record;
+      std::memcpy(&record, buffer.data(), 20);
+      for (int corner = 0; corner < 3; ++corner) {
+        target.vertices[corner] = record.vertices[corner];
+      }
+      for (int corner = 0; corner < 3; ++corner) {
+        target.textureVertices[corner] = record.textureVertices[corner];
+      }
+      target.texture = record.texture;
+      target.twoSided = record.twoSided;
+      const unsigned groups = (buffer.size() - 20u) / 4u;
       target.smoothing.resize(groups);
-      std::memcpy(target.smoothing.data(), record.data() + 20, groups * 4u);
+      std::memcpy(target.smoothing.data(), buffer.data() + 20, groups * 4u);
     }
 
-    std::sort(mesh.faces, mesh.faces + mesh.faceCount);
-    mesh.CalculateNormals();
+    node->mesh->faces = faces;
+    std::sort(node->mesh->faces, node->mesh->faces + node->mesh->faceCount);
+    node->mesh->CalculateNormals();
     node->scaleKeys.Read(input);
     node->rotationKeys.Read(input);
     node->positionKeys.Read(input);
@@ -400,9 +418,9 @@ void C3dModelResV2::ReadVersion3(CFile& input) {
     int vertexCount = 0;
     input.Read(&vertexCount, 4);
     node->mesh->vertexCount = vertexCount;
-    auto* vertices = new std::array<float, 3>[vertexCount]{};
+    ShadeVector* vertices = new ShadeVector[vertexCount];
     input.Read(vertices, static_cast<unsigned>(vertexCount) * 12u);
-    node->mesh->vertices = vertices;
+    node->mesh->vertices = reinterpret_cast<std::array<float, 3>*>(vertices);
     int textureVertexCount = 0;
     input.Read(&textureVertexCount, 4);
     node->mesh->textureVertexCount = textureVertexCount;
