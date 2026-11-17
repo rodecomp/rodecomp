@@ -94,12 +94,8 @@ void CStormCannonEffect::OnProcess() {
     }
 
     emitter->m_alpha = static_cast<float>(this->Alpha() / 255.0);
-    const float emitterX = this->position[0] - 1.5f;
-    const float emitterY = this->position[1] - 17.0f;
-    const float emitterZ = this->position[2] + 0.0f;
-    emitter->position.x = emitterX;
-    emitter->position.y = emitterY;
-    emitter->position.z = emitterZ;
+    const vector3d position = {this->position[0] - 1.5f, this->position[1] - 17.0f, this->position[2] + 0.0f};
+    emitter->position = position;
     emitter->Process(0.0f, 0.0f, 0.0f);
   }
 }
