@@ -1813,12 +1813,12 @@ void CRenderObject::RenderBlur(
   for (int direction = 1; direction < 5; ++direction) {
     const float distance = static_cast<float>(this->render.effectPhase) * scale;
     CGameMode* mode = g_modeMgr.GetGameMode();
+    const float spread = 400.0f / mode->camera->camera.desiredDistance * distance;
     short alpha = static_cast<short>((30 - this->render.effectPhase) * 5);
     if (alpha < 0) {
       alpha = 0;
     }
 
-    const float spread = 400.0f / mode->camera->camera.desiredDistance * distance;
     if (direction == 1) {
       quad.top = static_cast<float>(box->top);
       quad.left = static_cast<float>(box->left) + offset + spread;
