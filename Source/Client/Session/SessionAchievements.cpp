@@ -14,6 +14,9 @@
 #include <vector>
 
 template __declspec(noinline) int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
+template __declspec(noinline) std::string& std::string::assign(const char*, const std::size_t);
+template __declspec(noinline) SessionRecord6178Entry* std::_Uninitialized_copy<SessionRecord6178Entry*, std::allocator<SessionRecord6178Entry>>(SessionRecord6178Entry*, SessionRecord6178Entry*, SessionRecord6178Entry*, std::allocator<SessionRecord6178Entry>&);
+template __declspec(noinline) std::pair<std::_Tree_node<std::pair<const int, SessionRecord6144>, void*>*, bool> std::map<int, SessionRecord6144>::_Mybase::_Emplace<std::pair<int, SessionRecord6144>>(std::pair<int, SessionRecord6144>&&);
 
 struct JobTitleLess {
   bool operator()(int left, int right) const;
@@ -49,25 +52,26 @@ int CSession::AddAchievementJobTitle(int id) {
   return value;
 }
 
+// INLINED
+static SessionRecord6144* FindOrRegisterAchievement(std::map<int, SessionRecord6144>& achievements, int id) {
+  auto record = achievements.find(id);
+  if (record != achievements.end()) {
+    return &record->second;
+  }
+
+  SessionRecord6144 initial = SessionRecord6144();
+  achievements.insert(std::make_pair(id, initial));
+  achievements[id].registered = 1;
+  return &achievements[id];
+}
+
 // OFFSET: 0x00E06580
 // FUNCTION: fn_23737
 bool CSession::ToggleTrackedAchievement(int id) {
   std::vector<SessionRecord6178>& tracked = this->trackedAchievements;
-  auto found = tracked.begin();
-  while (found != tracked.end() && found->id != id) {
-    ++found;
-  }
+  auto found = std::find_if(tracked.begin(), tracked.end(), [id](SessionRecord6178 record) { return id == record.id; });
 
-  SessionRecord6144* progress;
-  auto record = this->achievements.find(id);
-  if (record != this->achievements.end()) {
-    progress = &record->second;
-  } else {
-    const std::pair<int, SessionRecord6144> entry(id, SessionRecord6144());
-    this->achievements.insert(entry);
-    this->achievements[id].registered = 1;
-    progress = &this->achievements[id];
-  }
+  SessionRecord6144* progress = FindOrRegisterAchievement(this->achievements, id);
 
   if (!progress) {
     return false;
