@@ -28,8 +28,11 @@ FuncDrawWNDChar::FuncDrawWNDChar(
 )
     : m_window(window), m_x(x), m_y(y), m_sex(sex), m_job(job), m_hairColor(hairColor), m_body(body), m_head(head), m_bottomAccessory(bottomAccessory),
       m_topAccessory(topAccessory), m_midAccessory(midAccessory), m_robe(robe), m_flags(flags), m_shield(shield), m_bodyStyle(bodyStyle),
-      m_headPalette(headPalette), m_action(action), m_motion(motion), m_time(time), m_helmRobe(false), m_drawOnTop(false), m_resources(), bodyPaletteName(),
-      headPaletteName(), m_layers(), hideHeadLayer(0), offsetX(0), offsetY(0), customRendering(0) {
+      m_headPalette(headPalette), m_action(action), m_motion(motion), m_time(time), m_resources(), bodyPaletteName(),
+      headPaletteName(), m_layers(), customRendering(0) {
+  this->hideHeadLayer = 0;
+  this->offsetX = 0;
+  this->offsetY = 0;
   g_session.m_hotkeyScript->CallTable(std::string("TB_Layer_Priority", 17), std::string("IsHelmRobe", 10), "d>b", this->m_robe, &this->m_helmRobe);
   this->m_drawOnTop = this->DrawOnTop();
   this->m_layers[5] = this->m_bottomAccessory;
