@@ -3794,16 +3794,21 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
   );
 
   const vector3d origin{0.0f, 0.0f, 0.0f};
-  int effectId;
 
   if (target != nullptr && source != nullptr) {
     switch (p->skillId) {
     case NPC_RAYOFGENESIS:
-    case LG_RAYOFGENESIS:
-    case WM_METALICSOUND: {
-      effectId = p->skillId == WM_METALICSOUND ? 0x62F : 0x593;
+    case LG_RAYOFGENESIS: {
       const int duration = static_cast<int>(source->render.speed * 100.0f + 100.0f);
-      CEffect* effect = g_effectMgr->Spawn(target->render.accountId, effectId, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      CEffect* effect = g_effectMgr->Spawn(target->render.accountId, EF_NEW_RAYOFGENESIS_HIT, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      if (effect) {
+        effect->SetDelay(duration);
+      }
+      break;
+    }
+    case WM_METALICSOUND: {
+      const int duration = static_cast<int>(source->render.speed * 100.0f + 100.0f);
+      CEffect* effect = g_effectMgr->Spawn(target->render.accountId, EF_NEW_METALLICSOUND_HIT, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       if (effect) {
         effect->SetDelay(duration);
       }
@@ -3834,12 +3839,11 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
     case WL_COMET:
       if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
         g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_COMET, origin.x, origin.y, origin.z, 0, -1, 0, 0);
-        effectId = 0x5FF;
+        g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_COMET_BOTTOM, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       } else {
         g_effectMgr->Spawn(target->render.accountId, EF_NEW_COMET, origin.x, origin.y, origin.z, 0, -1, 0, 0);
-        effectId = 0x586;
+        g_effectMgr->Spawn(target->render.accountId, EF_NEW_COMET_BOTTOM, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       }
-      g_effectMgr->Spawn(target->render.accountId, effectId, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       source->SetState(7, 1);
       break;
     case SO_VARETYR_SPEAR:
@@ -3857,7 +3861,10 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
         if (effect) {
           effect->SetDelay(400);
         }
-        effectId = 0x5D9;
+        effect = g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_CART_CANNON_EXPLOSION_BOTTOM, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+        if (effect) {
+          effect->SetDelay(400);
+        }
       } else {
         effect = g_effectMgr->Spawn(source->render.accountId, EF_NEW_CART_CANNON_FIRE, origin.x, origin.y, origin.z, 0, -1, 0, 0);
         if (effect) {
@@ -3871,17 +3878,16 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
         if (effect) {
           effect->SetDelay(400);
         }
-        effectId = 0x54F;
-      }
-      effect = g_effectMgr->Spawn(target->render.accountId, effectId, origin.x, origin.y, origin.z, 0, -1, 0, 0);
-      if (effect) {
-        effect->SetDelay(400);
+        effect = g_effectMgr->Spawn(target->render.accountId, EF_NEW_CART_CANNON_EXPLOSION_BOTTOM, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+        if (effect) {
+          effect->SetDelay(400);
+        }
       }
       break;
     }
     case ABC_UNLUCKY_RUSH:
       g_effectMgr->Spawn(
-        source->render.accountId, EF_UNLUCKY_RUSH, source->render.position.x, source->render.position.y, source->render.position.z,
+        source->render.accountId, EF_UNLUCKY_RUSH, source->render.position,
         target->render.accountId, -1, 0, 0
       );
       break;
@@ -3942,7 +3948,10 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
             effect->SetDelay(200);
           }
         }
-        effectId = 0x5F0;
+        effect = g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_DRAGONBREATH_BOMB, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+        if (effect) {
+          effect->SetDelay(350);
+        }
       } else {
         if (g_effectMgr->Find(source->render.accountId, directionId) == nullptr) {
           effect = g_effectMgr->Spawn(source->render.accountId, directionId, origin.x, origin.y, origin.z, 0, -1, 0, 0);
@@ -3954,11 +3963,10 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
         if (effect) {
           effect->SetDelay(350);
         }
-        effectId = 0x563;
-      }
-      effect = g_effectMgr->Spawn(target->render.accountId, effectId, origin.x, origin.y, origin.z, 0, -1, 0, 0);
-      if (effect) {
-        effect->SetDelay(350);
+        effect = g_effectMgr->Spawn(target->render.accountId, EF_NEW_DRAGONBREATH_BOMB_BOTTOM, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+        if (effect) {
+          effect->SetDelay(350);
+        }
       }
       g_soundMgr->PlayWave("effect\\폭염룡.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       break;
@@ -3992,7 +4000,10 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
             effect->SetDelay(200);
           }
         }
-        effectId = 0x5F6;
+        effect = g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_DRAGONBREATH_WATER_BOMB, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+        if (effect) {
+          effect->SetDelay(350);
+        }
       } else {
         if (g_effectMgr->Find(source->render.accountId, directionId) == nullptr) {
           effect = g_effectMgr->Spawn(source->render.accountId, directionId, origin.x, origin.y, origin.z, 0, -1, 0, 0);
@@ -4004,11 +4015,10 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
         if (effect) {
           effect->SetDelay(350);
         }
-        effectId = 0x56B;
-      }
-      effect = g_effectMgr->Spawn(target->render.accountId, effectId, origin.x, origin.y, origin.z, 0, -1, 0, 0);
-      if (effect) {
-        effect->SetDelay(350);
+        effect = g_effectMgr->Spawn(target->render.accountId, EF_NEW_DRAGONBREATH_WATER_BOMB_BOTTOM, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+        if (effect) {
+          effect->SetDelay(350);
+        }
       }
       g_soundMgr->PlayWave("effect\\폭염룡.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       break;
@@ -4019,9 +4029,9 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
       }
       break;
     case WL_JACKFROST: {
-      const float step = static_cast<float>(std::max(std::rand() % 5, 0) + 8) * 10.0f;
+      const float step = static_cast<float>(std::ranges::max(std::rand() % 5, 0) + 8) * 10.0f;
       for (int index = 0; index < 3; ++index) {
-        const float radius = static_cast<float>(std::max(std::rand() % 10, 0)) + 5.0f;
+        const float radius = static_cast<float>(std::ranges::max(std::rand() % 10, 0)) + 5.0f;
         matrix rotation;
         rotation.MakeYRotation(static_cast<float>(index) * step / 180.0f * 3.141592f);
         vector3d position;
@@ -4031,7 +4041,7 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
                    + rotation.values[10] + target->render.position.y;
         position.z = radius * rotation.values[2] + rotation.values[5] * origin.x + rotation.values[8] * origin.x
                    + rotation.values[11] + target->render.position.z;
-        const int kind = std::max(std::rand() % 3, 0);
+        const int kind = std::ranges::max(std::rand() % 3, 0);
         int id;
         if (kind == 0) {
           id = 0x5A3;
@@ -4041,25 +4051,13 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
         if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
           id += 0x61;
         }
-        g_effectMgr->Spawn(0, id, position.x, position.y, position.z, 0, -1, 0, 0);
+        g_effectMgr->Spawn(0, id, position, 0, -1, 0, 0);
       }
       break;
     }
     case RA_ELECTRICSHOCKER:
       g_soundMgr->PlayWave("effect\\hunter_shockwavetrap.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       target->LaunchEffect(EF_SHOCKWAVEHIT, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      break;
-    case RA_CLUSTERBOMB:
-      target->LaunchEffect(EF_M03, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      g_soundMgr->PlayWave("effect\\hunter_landmine.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      break;
-    case RA_FIRINGTRAP:
-      target->LaunchEffect(EF_M01, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      g_soundMgr->PlayWave("effect\\폭염룡.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      break;
-    case RA_ICEBOUNDTRAP:
-      target->LaunchEffect(EF_ICECRASH, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      g_soundMgr->PlayWave("effect\\ef_frostdiver.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       break;
     case NC_FLAMELAUNCHER:
       target->LaunchEffect(EF_M01, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
@@ -4068,14 +4066,13 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
       break;
     case NC_ARMSCANNON: {
       for (int duration = 90; duration < 450; duration += 90) {
-        const float x = target->render.position.x;
-        const float y = target->render.position.y;
-        const float z = target->render.position.z;
-        int dx = std::max(std::rand() % 3, 0) * 5;
-        int dz = std::max(std::rand() % 3, 0) * 5;
-        const int direction = std::max(std::rand() % 4, 0);
+        vector3d position;
+        position = target->render.position;
+        int dx = std::ranges::max(std::rand() % 3, 0) * 5;
+        int dz = std::ranges::max(std::rand() % 3, 0) * 5;
+        const int direction = std::ranges::max(std::rand() % 4, 0);
         if (dx == 10 && dz == 10) {
-          if (std::max(std::rand() % 2, 0) == 0) {
+          if (std::ranges::max(std::rand() % 2, 0) == 0) {
             dx = 5;
           } else {
             dz = 5;
@@ -4089,48 +4086,65 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
           dx = -dx;
           dz = -dz;
         }
-        const vector3d position{static_cast<float>(dx) + x, y, static_cast<float>(dz) + z};
+        position.x += static_cast<float>(dx);
+        position.z += static_cast<float>(dz);
 
         CEffect* effect;
         if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
-          effect = g_effectMgr->Spawn(0, EF_MINEFFECT_ARMSCANNON_EXPLOSION, position.x, position.y, position.z, 0, -1, 0, 0);
+          effect = g_effectMgr->Spawn(0, EF_MINEFFECT_ARMSCANNON_EXPLOSION, position, 0, -1, 0, 0);
           if (effect) {
             effect->SetDelay(duration);
           }
-          effectId = 0x5D3;
+          effect = g_effectMgr->Spawn(0, EF_MINEFFECT_ARMSCANNON_EXPLOSION_BOTTOM, position, 0, -1, 0, 0);
+          if (effect) {
+            effect->SetDelay(duration);
+          }
         } else {
-          effect = g_effectMgr->Spawn(0, EF_NEW_ARMSCANNON_EXPLOSION, position.x, position.y, position.z, 0, -1, 0, 0);
+          effect = g_effectMgr->Spawn(0, EF_NEW_ARMSCANNON_EXPLOSION, position, 0, -1, 0, 0);
           if (effect) {
             effect->SetDelay(duration);
           }
-          effectId = 0x54C;
-        }
-        effect = g_effectMgr->Spawn(0, effectId, position.x, position.y, position.z, 0, -1, 0, 0);
-        if (effect) {
-          effect->SetDelay(duration);
+          effect = g_effectMgr->Spawn(0, EF_NEW_ARMSCANNON_EXPLOSION_BOTTOM, position, 0, -1, 0, 0);
+          if (effect) {
+            effect->SetDelay(duration);
+          }
         }
       }
 
       if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
         g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_ARMSCANNON_EXPLOSION, origin.x, origin.y, origin.z, 0, -1, 0, 0);
-        effectId = 0x5D3;
+        g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_ARMSCANNON_EXPLOSION_BOTTOM, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       } else {
         g_effectMgr->Spawn(target->render.accountId, EF_NEW_ARMSCANNON_EXPLOSION, origin.x, origin.y, origin.z, 0, -1, 0, 0);
-        effectId = 0x54C;
+        g_effectMgr->Spawn(target->render.accountId, EF_NEW_ARMSCANNON_EXPLOSION_BOTTOM, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       }
-      g_effectMgr->Spawn(target->render.accountId, effectId, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       g_soundMgr->PlayWave("effect\\폭염룡.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       break;
     }
+    case RA_CLUSTERBOMB:
+      target->LaunchEffect(EF_M03, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      g_soundMgr->PlayWave("effect\\hunter_landmine.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      break;
+    case RA_FIRINGTRAP:
+      target->LaunchEffect(EF_M01, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      g_soundMgr->PlayWave("effect\\폭염룡.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      break;
+    case RA_ICEBOUNDTRAP:
+      target->LaunchEffect(EF_ICECRASH, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      g_soundMgr->PlayWave("effect\\ef_frostdiver.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      break;
     case SC_FEINTBOMB:
       if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
         g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_FEINTBOMB, origin.x, origin.y, origin.z, 0, -1, 0, 0);
-        effectId = 0x5B8;
+        g_effectMgr->Spawn(target->render.accountId, EF_MINEFFECT_FEINTBOMB_BOTTOM, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       } else {
         g_effectMgr->Spawn(target->render.accountId, EF_NEW_FEINTBOMB, origin.x, origin.y, origin.z, 0, -1, 0, 0);
-        effectId = 0x521;
+        g_effectMgr->Spawn(target->render.accountId, EF_NEW_FEINTBOMB_BOTTOM, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       }
-      g_effectMgr->Spawn(target->render.accountId, effectId, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      break;
+    case GN_SPORE_EXPLOSION:
+      g_soundMgr->PlayWave("effect\\폭염룡.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
+      target->LaunchEffect(EF_SPR_LIGHTPRINT, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
     case SR_FALLENEMPIRE: {
       CEffect* effect = g_effectMgr->Spawn(target->render.accountId, EF_NEW_FALLENEMPIRE_HIT, origin.x, origin.y, origin.z, 0, -1, 0, 0);
@@ -4139,16 +4153,12 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
       }
       break;
     }
-    case GN_SPORE_EXPLOSION:
-      g_soundMgr->PlayWave("effect\\폭염룡.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      target->LaunchEffect(EF_SPR_LIGHTPRINT, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+    case SR_HOWLINGOFLION:
+      g_effectMgr->Spawn(target->render.accountId, EF_NEW_HOWLINGOFLION_HIT, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       break;
     case GN_HELLS_PLANT:
       g_effectMgr->Spawn(target->render.accountId, EF_NEW_CART_CANNON_FIRE_BOTTOM, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       g_soundMgr->PlayWave("spore_attack.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      break;
-    case SR_HOWLINGOFLION:
-      g_effectMgr->Spawn(target->render.accountId, EF_NEW_HOWLINGOFLION_HIT, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       break;
     case CD_ARBITRIUM:
       g_effectMgr->Spawn(target->render.accountId, EF_ARBITRIUM, origin.x, origin.y, origin.z, 0, -1, 0, 0);
@@ -4161,13 +4171,6 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
     case MH_TWISTER_CUTTER:
       g_effectMgr->Spawn(target->render.accountId, EF_TWISTER_CUTTER, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       break;
-    case MH_ABSOLUTE_ZEPHYR:
-      g_effectMgr->Spawn(target->render.accountId, EF_ABSOLUTE_ZEPHYR, origin.x, origin.y, origin.z, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, EF_ABSOLUTE_ZEPHYR_BOTTOM, origin.x, origin.y, origin.z, 0, -1, 0, 0);
-      break;
-    case MH_BLAZING_AND_FURIOUS:
-      g_effectMgr->Spawn(target->render.accountId, EF_BLAZING_AND_FURIOUS, origin.x, origin.y, origin.z, 0, -1, 0, 0);
-      break;
     case MH_TOXIN_OF_MANDARA:
       g_effectMgr->Spawn(target->render.accountId, EF_TOXIN_OF_MANDARA_SHOCK, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       break;
@@ -4175,9 +4178,32 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
       g_effectMgr->Spawn(target->render.accountId, EF_NEEDLE_STINGER, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       g_effectMgr->Spawn(target->render.accountId, EF_NEEDLE_STINGER_BOTTOM, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       break;
+    case MH_ABSOLUTE_ZEPHYR:
+      g_effectMgr->Spawn(target->render.accountId, EF_ABSOLUTE_ZEPHYR, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_ABSOLUTE_ZEPHYR_BOTTOM, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      break;
+    case MH_BLAZING_AND_FURIOUS:
+      g_effectMgr->Spawn(target->render.accountId, EF_BLAZING_AND_FURIOUS, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      break;
     case EM_EL_FLAMEROCK:
       g_effectMgr->Spawn(target->render.accountId, EF_ARDOR, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       g_effectMgr->Spawn(target->render.accountId, EF_ARDOR_BOTTOM, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      break;
+    case ABR_INFINITY_BUSTER:
+      g_effectMgr->Spawn(target->render.accountId, EF_ABR_INFINITY, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_ABR_INFINITY_BOTTOM, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_ABR_INFINITY_HIT, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      break;
+    case ABR_BATTLE_BUSTER:
+      g_effectMgr->Spawn(target->render.accountId, EF_NEW_BATTLE_W, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_NEW_BATTLE_W_HIT, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      break;
+    case ABR_DUAL_CANNON_FIRE:
+      g_effectMgr->Spawn(target->render.accountId, EF_NEW_D_CANNON, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      g_effectMgr->Spawn(target->render.accountId, EF_NEW_D_CANNON_HIT, origin.x, origin.y, origin.z, 0, -1, 0, 0);
+      break;
+    case EM_EL_DEADLY_POISON:
+      g_effectMgr->Spawn(target->render.accountId, EF_SERPENS_BOTTOM, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       break;
     case EM_EL_AGE_OF_ICE:
       g_effectMgr->Spawn(target->render.accountId, EF_DILUVIO_ICE, origin.x, origin.y, origin.z, 0, -1, 0, 0);
@@ -4190,22 +4216,6 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
     case EM_EL_AVALANCHE:
       g_effectMgr->Spawn(target->render.accountId, EF_TERREMOTUS, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       break;
-    case EM_EL_DEADLY_POISON:
-      g_effectMgr->Spawn(target->render.accountId, EF_SERPENS_BOTTOM, origin.x, origin.y, origin.z, 0, -1, 0, 0);
-      break;
-    case ABR_BATTLE_BUSTER:
-      g_effectMgr->Spawn(target->render.accountId, EF_NEW_BATTLE_W, origin.x, origin.y, origin.z, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, EF_NEW_BATTLE_W_HIT, origin.x, origin.y, origin.z, 0, -1, 0, 0);
-      break;
-    case ABR_DUAL_CANNON_FIRE:
-      g_effectMgr->Spawn(target->render.accountId, EF_NEW_D_CANNON, origin.x, origin.y, origin.z, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, EF_NEW_D_CANNON_HIT, origin.x, origin.y, origin.z, 0, -1, 0, 0);
-      break;
-    case ABR_INFINITY_BUSTER:
-      g_effectMgr->Spawn(target->render.accountId, EF_ABR_INFINITY, origin.x, origin.y, origin.z, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, EF_ABR_INFINITY_BOTTOM, origin.x, origin.y, origin.z, 0, -1, 0, 0);
-      g_effectMgr->Spawn(target->render.accountId, EF_ABR_INFINITY_HIT, origin.x, origin.y, origin.z, 0, -1, 0, 0);
-      break;
     }
   }
 
@@ -4214,17 +4224,22 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
       this->SendMsg(MM_MAKE_SKILL_USED_MSG, p->skillId, reinterpret_cast<std::intptr_t>(source), p->level, 0);
       return;
     }
-    const unsigned char kind = source->objectType;
-    if (kind == 10 || kind == 13 || kind == 14) {
+    switch (source->objectType) {
+    case 10:
+    case 13:
+    case 14:
       this->SendMsg(MM_MAKE_SKILL_USED_MSG, p->skillId, reinterpret_cast<std::intptr_t>(source), p->level, 0);
+      break;
     }
   }
 
-  int action;
-  int loopType;
-  g_session.GetMonsterSkillInfo(g_session.GetJobName(job, -1), message.skillId, &action, &loopType);
-  if (action != -1 && gameActor != nullptr) {
-    gameActor->SetAction(action * 8 - 8, 1, loopType == 0);
+  {
+    int action;
+    int loopType;
+    g_session.GetMonsterSkillInfo(g_session.GetJobName(job, -1), message.skillId, &action, &loopType);
+    if (action != -1 && gameActor != nullptr) {
+      gameActor->SetAction(action * 8 - 8, 1, loopType == 0);
+    }
   }
 }
 
