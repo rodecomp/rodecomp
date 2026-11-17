@@ -1322,9 +1322,11 @@ void UIComboBoxID::Resize(int width, int height) {
   UIListBoxID::Resize(width, height);
   this->topLine = 0;
   this->verticalBar->position = this->topLine;
-  this->verticalBar->Move(width - 13, 0);
   if (this->verticalOverflow != 0) {
+    this->verticalBar->Move(width - 13, 0);
     this->verticalBar->Invalidate();
+  } else {
+    this->verticalBar->Move(width - 13, 0);
   }
 }
 
