@@ -1882,31 +1882,28 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
   case UM_DEFPUSH:
     if (this->m_message0 != 0 && this->geometry.visible != 0) {
       this->SendMsg(this, UM_COMMAND, this->m_message0, 0, 0, 0);
-      return 0;
     }
-    return 0;
+    break;
   case UM_SETSTATE:
     this->geometry.state = static_cast<std::uint32_t>(a);
     if (a == 20) {
       char text[24];
       std::sprintf(text, "%d", b);
       this->m_edit->SetText(text);
-      if (this->geometry.state == 20) {
-        this->m_edit->SetText(IntToString(static_cast<int>(b), 0).c_str());
-        return 0;
-      }
     }
-    return 0;
+    if (this->geometry.state == 20) {
+      this->m_edit->SetText(IntToString(static_cast<int>(b), 0).c_str());
+    }
+    break;
   case UM_SETTEXT:
     if (b != 0) {
       this->itemTitle->SetText(reinterpret_cast<const char*>(b), 0);
       this->Invalidate();
-      return 0;
     }
-    return 0;
+    break;
   case UM_COMMAND: {
     if (a != ID_OK || this->m_edit->Length() == 0) {
-      return 0;
+      break;
     }
 
     CGameMode* mode = g_modeMgr.GetGameMode();
@@ -1919,36 +1916,215 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
     }
 
     UIWindow* window;
-    int windowId;
     switch (this->geometry.state) {
-    case 0:
-      if (quantity <= 0 || quantity > mode->drag.quantity) {
-        goto invalid;
-      }
-      mode->SendMsg(MM_ITEMTHROW_THROUGH_DROPCNTWND, quantity, 0, 0, 0);
-      break;
     case 1:
       if (quantity <= 0) {
-        goto invalid;
+        mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+        break;
       }
       if (quantity > 30000) {
         mode->drag.quantity = 30000;
       } else {
         mode->drag.quantity = quantity;
       }
-      if (quantity >= 30000) {
+      if (mode->drag.quantity == 30000) {
         char text[200];
         std::sprintf(text, LookupMessage(MSI_LIMIT_BUY_ITEM2), 30000);
         g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
       }
       window = g_windowMgr.itemPurchaseWnd;
-      goto notify;
+      if (window) {
+        window->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
+      }
+      break;
+    case 21: {
+      if (quantity <= 0) {
+        mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+        break;
+      }
+      if (quantity > 30000) {
+        mode->drag.quantity = 30000;
+      } else {
+        mode->drag.quantity = quantity;
+      }
+      if (mode->drag.quantity == 30000) {
+        char text[200] = {};
+        sprintf_s(text, sizeof(text), LookupMessage(MSI_LIMIT_BUY_ITEM2), 30000);
+        g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
+      }
+      UIParaItemPurchaseWnd* purchase = dynamic_cast<UIParaItemPurchaseWnd*>(g_windowMgr.LookupWindow(WID_PARAITEMPURCHASEWND));
+      if (purchase) {
+        purchase->SendMsg(nullptr, UM_DROP, quantity, 0, 0, 0);
+      }
+      break;
+    }
+    case 22: {
+      const int owned = g_session.GetPurchaseItemNumByItemId(mode->drag.name.c_str());
+      if (owned == 0) {
+        mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+        break;
+      }
+      if (quantity <= 0) {
+        mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+      }
+      if (quantity > owned) {
+        quantity = owned;
+      }
+      mode->drag.quantity = quantity;
+      UIParaItemShopWnd* shop = dynamic_cast<UIParaItemShopWnd*>(g_windowMgr.LookupWindow(WID_PARAITEMSHOPWND));
+      if (shop) {
+        shop->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
+      }
+      break;
+    }
+    case 24: {
+      if (quantity <= 0) {
+        mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+        break;
+      }
+      if (quantity > 30000) {
+        g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_LIMIT_BUY_ITEM)), 0xFF, 0, 0, 0);
+        mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+        break;
+      }
+      int limit = g_barterMarketItemMgr->GetValueById(mode->drag.barterId);
+      if (limit == -1) {
+        limit = 30000;
+      }
+      if (limit != 0) {
+        mode->drag.quantity = quantity <= limit ? quantity : limit;
+      }
+      window = g_windowMgr.LookupWindow(WID_BARTERITEMPURCHASEWND);
+      if (window) {
+        window->SendMsg(nullptr, UM_DROP, quantity, 0, 0, 0);
+      } else {
+        mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+      }
+      break;
+    }
+    case 23: {
+      if (quantity <= 0) {
+        mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+        break;
+      }
+      const int owned = g_barterMarketItemMgr->GetAllItemValueById(mode->drag.barterId);
+      if (owned <= 0) {
+        mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+        break;
+      }
+      if (quantity > owned) {
+        quantity = owned;
+      }
+      mode->drag.quantity = quantity;
+      window = g_windowMgr.LookupWindow(WID_BARTERMARKETWND);
+      if (window) {
+        window->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
+      }
+      break;
+    }
+    case 26: {
+      if (quantity <= 0) {
+        mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+        break;
+      }
+      if (quantity > 30000) {
+        g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_LIMIT_BUY_ITEM)), 0xFF, 0, 0, 0);
+        mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+        break;
+      }
+      int limit = g_expandedBarterMarketItemMgr->GetItemValueById(mode->drag.barterId);
+      if (limit == -1) {
+        limit = 30000;
+      }
+      if (limit != 0) {
+        mode->drag.quantity = quantity <= limit ? quantity : limit;
+      }
+      window = g_windowMgr.LookupWindow(WID_EXPANDEDBARTERITEMPURCHASEWND);
+      if (window) {
+        window->SendMsg(nullptr, UM_DROP, quantity, 0, 0, 0);
+      } else {
+        mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+      }
+      break;
+    }
+    case 25: {
+      if (quantity <= 0) {
+        mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+        break;
+      }
+      const int owned = g_expandedBarterMarketItemMgr->GetValueById(mode->drag.barterId);
+      if (owned <= 0) {
+        mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+        break;
+      }
+      if (quantity > owned) {
+        quantity = owned;
+      }
+      mode->drag.quantity = quantity;
+      window = g_windowMgr.LookupWindow(WID_EXPANDEDBARTERMARKETWND);
+      if (window) {
+        window->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
+      }
+      break;
+    }
+    case 19:
+      if (quantity <= 0) {
+        mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+        break;
+      }
+      if (quantity > 100) {
+        mode->drag.quantity = 100;
+      } else {
+        mode->drag.quantity = quantity;
+        if (quantity < 100) {
+          window = g_windowMgr.LookupWindow(WID_CASHSHOP_WND);
+          if (window) {
+            window->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
+          }
+          break;
+        }
+      }
+      g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_LIMIT_BUY_ITEM2), 100).c_str(), 0, true, false, 0, "Message", 280, 120, 0);
+      break;
+    case 20: {
+      const int current = mode->drag.quantity;
+      if (current <= 0) {
+        if (quantity <= 0) {
+          mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+          break;
+        }
+        if (current == 0) {
+          window = g_windowMgr.LookupWindow(WID_CASHSHOP_WND);
+          if (window) {
+            window->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
+          }
+          break;
+        }
+      }
+      mode->drag.quantity = quantity <= current ? quantity : current;
+      window = g_windowMgr.LookupWindow(WID_CASHSHOP_WND);
+      if (window) {
+        window->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
+      }
+      break;
+    }
+    case 0:
+      if (quantity <= 0 || quantity > mode->drag.quantity) {
+        mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+        break;
+      }
+      mode->SendMsg(MM_ITEMTHROW_THROUGH_DROPCNTWND, quantity, 0, 0, 0);
+      break;
     case 2:
     case 16: {
       const int owned = g_session.GetShopItemNum(mode->drag.id);
       if (owned == 0) {
-        goto invalid;
+        mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+        break;
       }
       if (quantity <= 0) {
         mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
@@ -1964,12 +2140,16 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       } else {
         break;
       }
-      goto notify;
+      if (window) {
+        window->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
+      }
+      break;
     }
     case 3: {
       const int owned = g_session.GetPurchaseItemNumByItemId(mode->drag.name.c_str());
       if (owned == 0) {
-        goto invalid;
+        mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+        break;
       }
       if (quantity <= 0) {
         mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
@@ -1979,13 +2159,17 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       }
       mode->drag.quantity = quantity;
       window = g_windowMgr.itemShopWnd;
-      goto notify;
+      if (window) {
+        window->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
+      }
+      break;
     }
     case 4:
     case 15: {
       const int owned = g_session.GetStorageItemNum(mode->drag.id);
       if (owned == 0) {
-        goto invalid;
+        mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+        break;
       }
       if (quantity <= 0) {
         mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
@@ -2008,7 +2192,8 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
     }
     case 5: {
       if (!g_session.HasInventoryItem(mode->drag.id)) {
-        goto invalid;
+        mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+        break;
       }
       const int owned = g_session.LookupClientItemByIdentity(mode->drag.id).quantity;
       if (quantity <= 0) {
@@ -2023,40 +2208,39 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       }
       break;
     }
-    case 6:
+    case 6: {
+      int owned = 0;
       if (quantity <= 0) {
         mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
       }
       if (mode->drag.source == 6) {
         if (g_session.GetCartItemNum(mode->drag.id) != 0) {
-          const int owned = g_session.FindCartItem(mode->drag.id).quantity;
-          if (owned != 0) {
-            mode->drag.quantity = quantity <= owned ? quantity : owned;
-          }
+          owned = g_session.FindCartItem(mode->drag.id).quantity;
         }
       } else if (mode->drag.source == 9) {
         if (g_windowMgr.merchantShopMakeWnd) {
           break;
         }
         if (g_session.GetMerchantShopItemNum(mode->drag.id) != 0) {
-          const int owned = g_session.FindMerchantShopItem(mode->drag.id).quantity;
-          if (owned != 0) {
-            mode->drag.quantity = quantity <= owned ? quantity : owned;
-          }
+          owned = g_session.FindMerchantShopItem(mode->drag.id).quantity;
         }
       } else if (mode->drag.source == 15) {
-        const int owned = mode->drag.quantity;
-        if (owned != 0) {
-          mode->drag.quantity = quantity <= owned ? quantity : owned;
-        }
+        owned = mode->drag.quantity;
+      }
+      if (owned != 0) {
+        mode->drag.quantity = quantity <= owned ? quantity : owned;
       }
       window = g_windowMgr.itemWnd;
-      goto notify;
+      if (window) {
+        window->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
+      }
+      break;
+    }
     case 7: {
       int owned = 0;
       if (mode->drag.source == 9) {
         const ITEM_INFO item = g_session.FindMerchantShopItem(mode->drag.id);
-        if (item.identity[1] != 0) {
+        if (item.identity[1] > 0) {
           owned = item.quantity;
         }
       } else {
@@ -2073,22 +2257,28 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       }
       mode->drag.quantity = quantity <= owned ? quantity : owned;
       window = g_windowMgr.itemStoreWnd;
-      goto notify;
+      if (window) {
+        window->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
+      }
+      break;
     }
     case 8: {
       int owned = 0;
-      if (mode->drag.source == 1) {
+      switch (mode->drag.source) {
+      case 1: {
         const ITEM_INFO item = g_session.LookupClientItemByIdentity(mode->drag.id);
-        if (item.identity[1] != 0) {
+        if (item.identity[1] > 0) {
           owned = item.quantity;
         }
-      } else if (mode->drag.source == 6) {
-        const ITEM_INFO item = g_session.FindCartItem(mode->drag.id);
-        if (item.identity[1] != 0) {
-          owned = item.quantity;
-        }
-      } else {
         break;
+      }
+      case 6: {
+        const ITEM_INFO item = g_session.FindCartItem(mode->drag.id);
+        if (item.identity[1] > 0) {
+          owned = item.quantity;
+        }
+        break;
+      }
       }
       if (owned == 0) {
         break;
@@ -2098,13 +2288,16 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       }
       mode->drag.quantity = quantity <= owned ? quantity : owned;
       window = g_windowMgr.merchantItemWnd;
-      goto notify;
+      if (window) {
+        window->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
+      }
+      break;
     }
     case 9: {
       int owned = 0;
       if (mode->drag.source == 11) {
         const ITEM_INFO item = g_session.FindMerchantMyShopItem(mode->drag.id);
-        if (item.identity[1] != 0) {
+        if (item.identity[1] > 0) {
           owned = item.quantity;
         }
       }
@@ -2116,13 +2309,16 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       }
       mode->drag.quantity = quantity <= owned ? quantity : owned;
       window = g_windowMgr.merchantShopMakeWnd;
-      goto notify;
+      if (window) {
+        window->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
+      }
+      break;
     }
     case 10: {
       int owned = 0;
       if (mode->drag.source == 10) {
         const ITEM_INFO item = g_session.FindMerchantPurchaseSavedItem(mode->drag.id);
-        if (item.identity[1] != 0) {
+        if (item.identity[1] > 0) {
           owned = item.quantity;
         }
       }
@@ -2134,7 +2330,10 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       }
       mode->drag.quantity = quantity <= owned ? quantity : owned;
       window = g_windowMgr.merchantMirrorItemWnd;
-      goto notify;
+      if (window) {
+        window->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
+      }
+      break;
     }
     case 11: {
       if (mode->drag.source != 13) {
@@ -2149,7 +2348,10 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       }
       mode->drag.quantity = quantity <= owned ? quantity : owned;
       window = g_windowMgr.merchantItemShopWnd;
-      goto notify;
+      if (window) {
+        window->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
+      }
+      break;
     }
     case 12:
       if (quantity <= 0) {
@@ -2157,10 +2359,14 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       }
       mode->drag.quantity = quantity;
       window = g_windowMgr.merchantItemPurchaseWnd;
-      goto notify;
+      if (window) {
+        window->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
+      }
+      break;
     case 13: {
       if (!g_session.HasInventoryItem(mode->drag.id)) {
-        goto invalid;
+        mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
+        break;
       }
       const int owned = g_session.LookupClientItemByIdentity(mode->drag.id).quantity;
       if (quantity <= 0) {
@@ -2170,13 +2376,16 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
         mode->drag.quantity = quantity <= owned ? quantity : owned;
       }
       window = g_windowMgr.rodexComposeWnd;
-      goto notify;
+      if (window) {
+        window->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
+      }
+      break;
     }
     case 17: {
       int owned = 0;
       if (mode->drag.source == 22) {
         const ITEM_INFO item = g_session.FindMerchantMyShopItem(mode->drag.id);
-        if (item.identity[1] != 0) {
+        if (item.identity[1] > 0) {
           owned = item.quantity;
         }
       }
@@ -2188,13 +2397,16 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       }
       mode->drag.quantity = quantity <= owned ? quantity : owned;
       window = g_windowMgr.buyingShopPurchaseWnd;
-      goto notify;
+      if (window) {
+        window->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
+      }
+      break;
     }
     case 18: {
       int owned = 0;
       if (mode->drag.source == 21) {
         const ITEM_INFO item = g_session.FindMerchantHopeToSellItem(mode->drag.id);
-        if (item.identity[1] != 0) {
+        if (item.identity[1] > 0) {
           owned = item.quantity;
         }
       }
@@ -2206,178 +2418,22 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
       }
       mode->drag.quantity = quantity <= owned ? quantity : owned;
       window = g_windowMgr.purchaseMirrorItemWnd;
-      goto notify;
-    }
-    case 19:
-      if (quantity <= 0) {
-        goto invalid;
-      }
-      if (quantity > 100) {
-        mode->drag.quantity = 100;
-      } else {
-        mode->drag.quantity = quantity;
-        if (quantity < 100) {
-          goto stall;
-        }
-      }
-      g_windowMgr.Confirm(FormatOwnedString(LookupMessage(MSI_LIMIT_BUY_ITEM2), 100).c_str(), 0, true, false, 0, "Message", 280, 120, 0);
-      break;
-    case 20: {
-      const int current = mode->drag.quantity;
-      if (current <= 0) {
-        if (quantity <= 0) {
-          goto invalid;
-        }
-        if (current == 0) {
-          goto stall;
-        }
-      }
-      mode->drag.quantity = quantity <= current ? quantity : current;
-      goto stall;
-    }
-    case 21: {
-      if (quantity <= 0) {
-        goto invalid;
-      }
-      if (quantity > 30000) {
-        mode->drag.quantity = 30000;
-      } else {
-        mode->drag.quantity = quantity;
-      }
-      if (quantity >= 30000) {
-        char text[200] = {};
-        sprintf_s(text, sizeof(text), LookupMessage(MSI_LIMIT_BUY_ITEM2), 30000);
-        g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
-      }
-      UIParaItemPurchaseWnd* purchase = dynamic_cast<UIParaItemPurchaseWnd*>(g_windowMgr.LookupWindow(WID_PARAITEMPURCHASEWND));
-      if (purchase) {
-        purchase->SendMsg(nullptr, UM_DROP, quantity, 0, 0, 0);
-      }
-      break;
-    }
-    case 22: {
-      const int owned = g_session.GetPurchaseItemNumByItemId(mode->drag.name.c_str());
-      if (owned == 0) {
-        goto invalid;
-      }
-      if (quantity <= 0) {
-        mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
-      }
-      if (quantity > owned) {
-        quantity = owned;
-      }
-      mode->drag.quantity = quantity;
-      UIParaItemShopWnd* shop = dynamic_cast<UIParaItemShopWnd*>(g_windowMgr.LookupWindow(WID_PARAITEMSHOPWND));
-      if (shop) {
-        shop->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
-      }
-      break;
-    }
-    case 23: {
-      if (quantity <= 0) {
-        goto invalid;
-      }
-      const int owned = g_barterMarketItemMgr->GetAllItemValueById(mode->drag.barterId);
-      if (owned <= 0) {
-        goto invalid;
-      }
-      if (quantity > owned) {
-        quantity = owned;
-      }
-      mode->drag.quantity = quantity;
-      window = g_windowMgr.LookupWindow(WID_BARTERMARKETWND);
       if (window) {
         window->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
       }
       break;
     }
-    case 24: {
-      if (quantity <= 0) {
-        goto invalid;
-      }
-      if (quantity > 30000) {
-        goto tooMany;
-      }
-      int limit = g_barterMarketItemMgr->GetValueById(mode->drag.barterId);
-      if (limit == -1) {
-        limit = 30000;
-      }
-      if (limit != 0) {
-        mode->drag.quantity = quantity <= limit ? quantity : limit;
-      }
-      windowId = 335;
-      goto lookup;
-    }
-    case 25: {
-      if (quantity <= 0) {
-        goto invalid;
-      }
-      const int owned = g_expandedBarterMarketItemMgr->GetValueById(mode->drag.barterId);
-      if (owned <= 0) {
-        goto invalid;
-      }
-      if (quantity > owned) {
-        quantity = owned;
-      }
-      mode->drag.quantity = quantity;
-      window = g_windowMgr.LookupWindow(WID_EXPANDEDBARTERMARKETWND);
-      if (window) {
-        window->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
-      }
-      break;
-    }
-    case 26: {
-      if (quantity <= 0) {
-        goto invalid;
-      }
-      if (quantity > 30000) {
-        goto tooMany;
-      }
-      int limit = g_expandedBarterMarketItemMgr->GetItemValueById(mode->drag.barterId);
-      if (limit == -1) {
-        limit = 30000;
-      }
-      if (limit != 0) {
-        mode->drag.quantity = quantity <= limit ? quantity : limit;
-      }
-      windowId = 342;
-      goto lookup;
-    }
-    lookup:
-      window = g_windowMgr.LookupWindow(static_cast<WindowId>(windowId));
-      if (window) {
-        window->SendMsg(nullptr, UM_DROP, quantity, 0, 0, 0);
-      } else {
-        mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
-      }
-      break;
-    stall:
-      window = g_windowMgr.LookupWindow(WID_CASHSHOP_WND);
-      if (window) {
-        window->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
-      }
-      break;
-    tooMany:
-      g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_LIMIT_BUY_ITEM)), 0xFF, 0, 0, 0);
-    invalid:
-      mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
-      break;
-    notify:
-      if (window) {
-        window->SendMsg(nullptr, UM_DROP, 0, 0, 0, 0);
-      }
-      break;
     }
 
     mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
     g_windowMgr.ShowWindowById(WID_ITEMDROPCNTWND, 0);
-    return 0;
+    break;
   }
   default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
+
+  return 0;
 }
 
 // OFFSET: 0x0097C230
