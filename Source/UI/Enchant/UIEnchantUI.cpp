@@ -1412,8 +1412,8 @@ bool CUIReset::LoadEnchantList() {
     return false;
   }
 
-  const std::vector<int>& slots = this->enchantInfo->slots;
-  const bool empty = std::none_of(slots.begin(), slots.end(), [item = *this->gameItem->GetItemInfo()](int slot) {
+  const ITEM_INFO* itemInfo = this->gameItem->GetItemInfo();
+  const bool empty = std::none_of(this->enchantInfo->slots.begin(), this->enchantInfo->slots.end(), [item = *itemInfo](int slot) {
     if (slot >= 4) {
       return false;
     }
@@ -1441,22 +1441,24 @@ bool CUIEnchantPage::SetItem(const ITEM_INFO& item) {
   this->gameItem->SetItem(item);
   for (const auto& entry : this->slots) {
     CUISlot* slot = entry.second;
-    int card = 0;
     if (entry.first < 4) {
-      std::memcpy(&card, &item.cards[entry.first], sizeof(card));
+      const int card = item.cards[entry.first];
+      if (card > 0) {
+        {
+          ITEM_INFO cardInfo;
+          cardInfo.SetItemId(card);
+          cardInfo.identified = 1;
+          slot->itemIcon->SetItem(cardInfo);
+          CUIRadioButton* radioButton = slot->radioButton;
+          radioButton->tooltip = slot->itemIcon->name;
+          slot->description->Clear();
+          slot->description->AddLine(cardInfo.DisplayName(0));
+        }
+        entry.second->Show(1);
+        continue;
+      }
     }
-    if (card > 0) {
-      ITEM_INFO cardInfo;
-      cardInfo.SetItemId(card);
-      cardInfo.identified = 1;
-      slot->itemIcon->SetItem(cardInfo);
-      slot->radioButton->tooltip = slot->itemIcon->name;
-      slot->description->Clear();
-      slot->description->AddLine(cardInfo.DisplayName(0));
-      slot->Show(1);
-    } else {
-      slot->Show(0);
-    }
+    slot->Show(0);
   }
   return true;
 }
