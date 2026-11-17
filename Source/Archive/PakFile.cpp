@@ -647,8 +647,7 @@ namespace myGPack {
     const std::size_t total = this->m_names.size();
 
     for (const std::string& name : this->m_names) {
-      PakName key;
-      key.Assign(name.c_str());
+      PakName key(name.c_str());
       if (!this->CopyEntry(key)) {
         return false;
       }
