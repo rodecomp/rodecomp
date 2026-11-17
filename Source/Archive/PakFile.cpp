@@ -540,7 +540,8 @@ namespace myGPack {
     used.insert({0, kPakHeaderSize});
     used.insert({this->m_tableOffset, this->m_tableSize});
 
-    for (const PakEntry& entry : this->m_entries) {
+    for (auto entryIt = this->m_entries.begin(); entryIt != this->m_entries.end(); ++entryIt) {
+      const PakEntry& entry = *entryIt;
       if (std::strrchr(entry.name.m_name, '.')) {
         used.insert({entry.dataOffset + kPakHeaderSize, entry.alignedSize});
       }
