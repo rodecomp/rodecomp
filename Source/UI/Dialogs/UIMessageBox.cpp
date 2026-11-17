@@ -3381,7 +3381,8 @@ int UILoginOTPWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       thread_local EncryptedName<sizeof(soundSource), 0x7321C3814F8799E1ULL> soundName(soundSource);
       soundMgr->PlayWave(soundName.Text(), 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       if (this->authCodeEdit->Length() == 8) {
-        g_modeMgr.currentMode->SendMsg(LMM_SET_AUTH_CODE, reinterpret_cast<int>(this->authCodeEdit->Text()), 0, 0, 0);
+        CMode* mode = g_modeMgr.currentMode;
+        mode->SendMsg(LMM_SET_AUTH_CODE, reinterpret_cast<int>(this->authCodeEdit->Text()), 0, 0, 0);
         g_modeMgr.currentMode->SendMsg(LMM_SEND_LOGIN_AUTH_CODE, 0, 0, 0, 0);
         g_windowMgr.CloseWindow(WID_LOGINOTPWND);
       } else {
