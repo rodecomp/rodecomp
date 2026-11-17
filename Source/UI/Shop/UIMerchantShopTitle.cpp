@@ -118,6 +118,7 @@ int UIMerchantShopTitle::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       title = title.substr(0, end);
     }
 
+    const char* fitted = title.c_str();
     this->fontStyle = static_cast<std::int16_t>(b);
     switch (this->fontStyle) {
     case 1:
@@ -154,7 +155,7 @@ int UIMerchantShopTitle::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     this->label->bold = 0;
     this->label->italic = 0;
     this->label->fontHeight = 12;
-    this->label->SetTextFitted(title.c_str());
+    this->label->SetTextFitted(fitted);
     this->Invalidate();
     break;
   }
