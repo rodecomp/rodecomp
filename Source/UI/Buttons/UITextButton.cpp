@@ -3029,8 +3029,10 @@ void UIListBoxID::Paint() {
       this->FillRegion(0, (index - first) * this->lineHeight, this->geometry.width, this->lineHeight - 1, this->selectionColor);
     }
 
+    const int x = 3 - this->horizontalOffset;
+    const int y = (index - first) * this->lineHeight;
     this->DrawColoredText(
-      3 - this->horizontalOffset, (index - first) * this->lineHeight, this->lines[index].text.c_str(),
+      x, y, this->lines[index].text.c_str(),
       static_cast<unsigned>(this->lines[index].text.size()), color, 0, 12, false
     );
   }
