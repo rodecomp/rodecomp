@@ -416,37 +416,37 @@ const std::vector<const char*>& FindMetalProcessItems(int id) {
   return entry == g_metalProcessItems.end() ? missing : entry->second;
 }
 
+// INLINED
+static void AppendReplayRecord(std::vector<unsigned char>& records, const std::vector<unsigned char>& record) {
+  records.insert(records.end(), record.begin(), record.end());
+}
+
 // OFFSET: 0x006D70E0
 // FUNCTION: fn_06590
 std::vector<unsigned char> ITEM_INFO::Serialize() const {
   std::vector<unsigned char> result;
-  const auto append = [&result](std::uint16_t id, const void* data, std::uint32_t bytes) {
-    const auto record = BuildReplayTaggedRecord(id, data, bytes);
-    result.insert(result.end(), record.begin(), record.end());
-  };
-
-  append(281, nullptr, 0);
-  append(283, &this->identity[0], 4);
-  append(285, &this->identity[1], 4);
-  append(284, &this->identity[2], 4);
-  append(286, &this->identity[3], 4);
-  append(287, &this->quantity, 4);
-  append(288, &this->prices[0], 4);
-  append(289, &this->prices[1], 4);
-  append(290, this->cards, 16);
+  AppendReplayRecord(result, BuildReplayTaggedRecord(281, nullptr, 0));
+  AppendReplayRecord(result, BuildReplayTaggedRecord(283, &this->identity[0], 4));
+  AppendReplayRecord(result, BuildReplayTaggedRecord(285, &this->identity[1], 4));
+  AppendReplayRecord(result, BuildReplayTaggedRecord(284, &this->identity[2], 4));
+  AppendReplayRecord(result, BuildReplayTaggedRecord(286, &this->identity[3], 4));
+  AppendReplayRecord(result, BuildReplayTaggedRecord(287, &this->quantity, 4));
+  AppendReplayRecord(result, BuildReplayTaggedRecord(288, &this->prices[0], 4));
+  AppendReplayRecord(result, BuildReplayTaggedRecord(289, &this->prices[1], 4));
+  AppendReplayRecord(result, BuildReplayTaggedRecord(290, this->cards, 16));
   const int id = std::atoi(this->itemId.c_str());
-  append(291, &id, 4);
-  append(292, this->displayName.c_str(), static_cast<std::uint32_t>(this->displayName.size()));
-  append(293, &this->identified, 1);
-  append(294, &this->damaged, 1);
-  append(295, &this->refiningLevel, 4);
-  append(296, &this->bindOnEquip, 2);
-  append(297, &this->expireTime, 4);
-  append(298, &this->sprite, 4);
-  append(299, &this->grade, 2);
-  append(300, &this->optionCount, 4);
-  append(301, this->options, 25);
-  append(282, nullptr, 0);
+  AppendReplayRecord(result, BuildReplayTaggedRecord(291, &id, 4));
+  AppendReplayRecord(result, BuildReplayTaggedRecord(292, this->displayName.c_str(), static_cast<std::uint32_t>(this->displayName.size())));
+  AppendReplayRecord(result, BuildReplayTaggedRecord(293, &this->identified, 1));
+  AppendReplayRecord(result, BuildReplayTaggedRecord(294, &this->damaged, 1));
+  AppendReplayRecord(result, BuildReplayTaggedRecord(295, &this->refiningLevel, 4));
+  AppendReplayRecord(result, BuildReplayTaggedRecord(296, &this->bindOnEquip, 2));
+  AppendReplayRecord(result, BuildReplayTaggedRecord(297, &this->expireTime, 4));
+  AppendReplayRecord(result, BuildReplayTaggedRecord(298, &this->sprite, 4));
+  AppendReplayRecord(result, BuildReplayTaggedRecord(299, &this->grade, 2));
+  AppendReplayRecord(result, BuildReplayTaggedRecord(300, &this->optionCount, 4));
+  AppendReplayRecord(result, BuildReplayTaggedRecord(301, this->options, 25));
+  AppendReplayRecord(result, BuildReplayTaggedRecord(282, nullptr, 0));
   return result;
 }
 
