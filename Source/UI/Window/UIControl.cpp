@@ -1538,23 +1538,20 @@ bool CUIRadioItem::IsChecked() {
 void CUIRadioItem::OnCreate(int width, int height) {
   this->radioButton = new CUIRadioButton();
   this->radioButton->SetSize(12, 12);
-  {
-    const std::function<void(CUIRadioButton*)> handler = [this](CUIRadioButton* button) {
-      if (this->parent) {
-        for (UIWindow* child : this->parent->m_children) {
-          CUIRadioItem* item = dynamic_cast<CUIRadioItem*>(child);
-          if (item) {
-            item->radioButton->checked = this == item;
-            item->radioButton->Invalidate();
-          }
+  this->radioButton->SetOnSelect([this](CUIRadioButton* button) {
+    if (this->parent) {
+      for (UIWindow* child : this->parent->m_children) {
+        CUIRadioItem* item = dynamic_cast<CUIRadioItem*>(child);
+        if (item) {
+          item->radioButton->checked = this == item;
+          item->radioButton->Invalidate();
         }
       }
-      if (this->onSelect) {
-        this->onSelect(this);
-      }
-    };
-    this->radioButton->onSelect = handler;
-  }
+    }
+    if (this->onSelect) {
+      this->onSelect(this);
+    }
+  });
   this->radioButton->disabled = 0;
   this->radioButton->Invalidate();
   {
