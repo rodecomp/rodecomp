@@ -19,7 +19,8 @@ float g_textureOffsetY = 0.5f;
 // FUNCTION: fn_02463
 CTexture::CTexture() {
   this->m_format = TextureFormat::UnknownTextureFormat;
-  this->textureFlags = 1;
+  this->fullSize = 1;
+  this->transparent = 0;
   this->m_width = 0;
   this->m_textureWidth = 0;
   this->m_height = 0;
