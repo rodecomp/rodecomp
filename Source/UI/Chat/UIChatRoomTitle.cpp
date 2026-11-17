@@ -166,9 +166,10 @@ int UIChatRoomTitle::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
     this->label->fontFamily = 0;
     break;
   }
-  this->label->bold = 0;
-  this->label->italic = 0;
-  this->label->fontHeight = 12;
+  UIStaticText* const label = this->label;
+  label->bold = 0;
+  label->italic = 0;
+  label->fontHeight = 12;
 
   if (g_forbiddenWords.Contains(text) == true) {
     std::string masked("");
