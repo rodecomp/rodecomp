@@ -16107,10 +16107,10 @@ void CRagEffect::WaterfallSheets(char first, char second, char third) {
     this->state.lastPrim->state.textures[2] = g_texMgr.Load("effect\\alpha_down.tga", 0, false, true, false);
   }
 
-  int width = 80;
+  int index = 0;
   int tall = 30;
 
-  for (int index = 0; index < 4; ++index) {
+  for (int width = 80; width > 28; width -= 13) {
     this->state.lastPrim->state.slots[index].life = 1;
     this->state.lastPrim->state.slots[index].process = 0;
     this->state.lastPrim->state.slots[index].alphaB = 120;
@@ -16138,12 +16138,8 @@ void CRagEffect::WaterfallSheets(char first, char second, char third) {
       this->state.lastPrim->state.slots[index].flag1[1] = 1;
     }
 
+    ++index;
     tall -= 6;
-    width -= 13;
-
-    if (width < 29) {
-      return;
-    }
   }
 }
 
