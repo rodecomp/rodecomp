@@ -3697,9 +3697,10 @@ void CUITextViewer::AddLine(const std::string& text) {
       }
     }
     this->contentHeight += lineInfo.m_height;
+    const int visibleHeight = this->geometry.height - this->paddingTop - this->paddingBottom;
     this->scrollBar->Move(this->geometry.width - this->scrollBar->geometry.width, 0);
     this->scrollBar->SetTotal(this->contentHeight);
-    this->scrollBar->SetVisible(this->geometry.height - this->paddingTop - this->paddingBottom);
+    this->scrollBar->SetVisible(visibleHeight);
     this->scrollBar->SetPosition(this->scrollBar->position);
     const int newScrollWidth = this->scrollBar->geometry.visible ? this->scrollBar->geometry.width : 0;
     this->padding->left = this->paddingLeft;
