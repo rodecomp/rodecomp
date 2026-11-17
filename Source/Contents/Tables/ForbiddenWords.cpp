@@ -56,20 +56,20 @@ bool ForbiddenWords::Load(const char* name) {
 
   for (std::vector<char*>::iterator it = tokens.begin(); it != tokens.end(); ++it) {
     char* token = *it;
-    char* first = token;
+    char* cursor = token;
 
-    while (*first == ' ' || *first == '\t') {
-      ++first;
+    while (*cursor == ' ' || *cursor == '\t') {
+      ++cursor;
     }
 
-    char* last = first;
+    char* first = cursor;
 
-    if (*last != '\0') {
-      while (*++last != '\0') {
+    if (*cursor != '\0') {
+      while (*++cursor != '\0') {
       }
     }
 
-    *last = '\0';
+    *cursor = '\0';
 
     if (*first != '\0') {
       this->words.push_back(Lowercase(token));
