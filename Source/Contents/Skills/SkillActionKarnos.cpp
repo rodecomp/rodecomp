@@ -185,6 +185,13 @@ public:
   void OnSkillObjectRemove(CRenderObject* object) override;
 };
 
+// OFFSET: 0x005B6910
+// FUNCTION: fn_45575
+template <>
+CSkillObjectAction* NewAction<CSkillObjectAction_KR_ICE_PILLAR, CSkillObjectAction>() {
+  return new CSkillObjectAction_KR_ICE_PILLAR;
+}
+
 class CSkillAction_KR_FEATHER_SPRINKLE : public CSkillAction_DamageWereRaptorForm {
 public:
   int GetSkillAttackMotion() override;
