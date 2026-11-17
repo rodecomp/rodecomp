@@ -333,10 +333,10 @@ void UIRoMapWnd::DrawDungeonLinks() {
       height = field->bottom - field->top;
       const int mapWidth = map->right - map->left;
       const int mapHeight = map->bottom - map->top;
-      const float startX = static_cast<float>(width) * g_depthAverageHalf + static_cast<float>(field->left);
-      const float startY = static_cast<float>(height) * g_depthAverageHalf + static_cast<float>(field->top);
-      const float endX = static_cast<float>(mapWidth) * g_depthAverageHalf + static_cast<float>(map->left);
-      const float endY = static_cast<float>(mapHeight) * g_depthAverageHalf + static_cast<float>(map->top) + 1.0f;
+      const float startX = static_cast<float>(width) * 0.5f + static_cast<float>(field->left);
+      const float startY = static_cast<float>(height) * 0.5f + static_cast<float>(field->top);
+      const float endX = static_cast<float>(mapWidth) * 0.5f + static_cast<float>(map->left);
+      const float endY = static_cast<float>(mapHeight) * 0.5f + static_cast<float>(map->top) + 1.0f;
       CTexture* const lineTexture = g_texMgr.Default();
       std::uint32_t color;
       if (isSelected) {
