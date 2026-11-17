@@ -92,11 +92,11 @@ void CShadowExceed::Open() {
   const float cosine = ClientCosine(static_cast<int>(actor->render.angle)) * -3.5f;
   const float offsetX = 0.3f - ClientSine(static_cast<int>(actor->render.angle)) * 5.0f;
   const float offsetY = cosine - 7.3f;
-  for (auto it = this->emitters.begin(); it != this->emitters.end(); ++it) {
-    if (*it) {
-      (*it)->offsetX = offsetX;
-      (*it)->offsetY = offsetY;
-      (*it)->offsetZ = 0.0f;
+  for (CEZ2STRParticle* emitter : this->emitters) {
+    if (emitter) {
+      emitter->offsetX = offsetX;
+      emitter->offsetY = offsetY;
+      emitter->offsetZ = 0.0f;
     }
   }
 
