@@ -1,6 +1,13 @@
 #include "UI/Window/WindowId.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Navigation/NavigationLink.h"
+#include "Utility/Text/TextTokens.h"
+
+// OFFSET: 0x0054FFA0
+// FUNCTION: fn_01965
+bool IsValidIdentChar(char value) {
+  return g_colorHexDigit[static_cast<unsigned char>(value)] != 0;
+}
 #include "Client/Mode/CMode.h"
 
 #include <algorithm>
