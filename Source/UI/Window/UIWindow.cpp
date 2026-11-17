@@ -1286,10 +1286,15 @@ void UIWindow::DrawAmount(int amount, std::string text, int x, int y) {
     shadow = 0;
   }
 
-  if (outlined) {
-    this->DrawEmboldenedText(x, y, text.c_str(), color, shadow, 0, 0, 12);
+  if (!outlined) {
+    const char* str = text.c_str();
+    const int length = static_cast<int>(std::strlen(str));
+    TextContext context(*this->geometry.surface);
+    context.SetFont(0, 12, 0, 0);
+    context.SetColor(color);
+    context.Draw(x, y, str, length);
   } else {
-    this->DrawTextAt(x, y, text.c_str(), 0, 0, 12, color, 0, 0);
+    this->DrawEmboldenedText(x, y, text.c_str(), color, shadow, 0, 0, 12);
   }
 }
 
