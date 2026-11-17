@@ -14,6 +14,8 @@ public:
   void SetSelected(bool selected);
 
 protected:
+  void PaintSelected();
+
   /* 0118 */ bool m_selected;
 };
 

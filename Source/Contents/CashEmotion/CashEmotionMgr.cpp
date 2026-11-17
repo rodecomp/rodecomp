@@ -3807,11 +3807,17 @@ __declspec(noinline) UICashEmotionSprBtn::UICashEmotionSprBtn(UIWindow* target)
 // FUNCTION: fn_09501
 void UICashEmotionSprBtn::Paint() {
   this->ClearSurface(0xFFFF00FF);
-  if (!this->m_selected) {
-    UISpriteButton::Paint();
+  if (this->m_selected) {
+    this->PaintSelected();
     return;
   }
 
+  UISpriteButton::Paint();
+}
+
+// OFFSET: 0x007CC9C0
+// FUNCTION: fn_45574
+void UICashEmotionSprBtn::PaintSelected() {
   CDC* surface = this->geometry.surface;
   if (!surface) {
     return;
