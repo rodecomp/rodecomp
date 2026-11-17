@@ -18,3 +18,19 @@ std::string CGuildMgr::GetEmblemFilename(std::uint32_t guildId) {
 
   return filename;
 }
+
+// OFFSET: 0x0065E640
+// FUNCTION: fn_05175
+int CGuildMgr::GetEmblemVersion(std::uint32_t guildId) const {
+  const auto it = this->m_guilds.find(guildId);
+  if (this->m_guilds.end() != it) {
+    return it->second.m_emblemVersion;
+  }
+  return 0;
+}
+
+// OFFSET: 0x0065EEA0
+// FUNCTION: fn_05181
+void CGuildMgr::SetEmblemVersion(std::uint32_t guildId, int version) {
+  this->m_guilds[guildId].m_emblemVersion = version;
+}
