@@ -9270,7 +9270,7 @@ namespace {
   }
 
   // INLINED
-  __forceinline void FillEquipWindowGradeItem(ITEM_INFO& item, const StoreEquipEntry& record) {
+  __forceinline void FillEquipWindowGradeItem(ITEM_INFO& item, const StoreEquipEntry& record, const StoreItemOption* options) {
     item.identity[0] = record.type;
     item.identity[1] = record.index;
     item.identity[2] = record.location;
@@ -9285,10 +9285,10 @@ namespace {
     item.bindOnEquip = record.bindOnEquip;
     item.sprite = record.sprite;
     item.flags[0] = record.placeEtcTab;
-    item.optionCount = CountStoreItemOptions(record.options);
+    item.optionCount = CountStoreItemOptions(options);
     item.grade = record.grade;
     for (int index = 0; index < item.optionCount; ++index) {
-      item.options[index] = record.options[index];
+      item.options[index] = options[index];
     }
   }
 
@@ -9339,8 +9339,10 @@ void CGameMode::ReceiveEquipWindowMicroscope4(const unsigned char* packet) {
     const StoreEquipOptionRecord* record = &records[index];
     StoreEquipEntry entry;
     ReadStoreEquipEntry(entry, *record);
+    StoreItemOption options[5];
+    std::memcpy(options, record->options, sizeof(options));
     ITEM_INFO item;
-    FillEquipWindowItem(item, entry, entry.options);
+    FillEquipWindowItem(item, entry, options);
     EquipWindowItem(item);
   }
 
@@ -9399,8 +9401,10 @@ void CGameMode::ReceiveEquipWindowMicroscope5(const unsigned char* packet) {
     const StoreEquipOptionRecord* record = &records[index];
     StoreEquipEntry entry;
     ReadStoreEquipEntry(entry, *record);
+    StoreItemOption options[5];
+    std::memcpy(options, record->options, sizeof(options));
     ITEM_INFO item;
-    FillEquipWindowItem(item, entry, entry.options);
+    FillEquipWindowItem(item, entry, options);
     EquipWindowItem(item);
   }
 
@@ -9436,8 +9440,10 @@ void CGameMode::ReceiveEquipWindowMicroscope6(const unsigned char* packet) {
     const EquipWindowGradeRecord* record = &records[index];
     StoreEquipEntry entry;
     ReadStoreEquipEntry(entry, *record);
+    StoreItemOption options[5];
+    std::memcpy(options, record->options, sizeof(options));
     ITEM_INFO item;
-    FillEquipWindowGradeItem(item, entry);
+    FillEquipWindowGradeItem(item, entry, options);
     EquipWindowItem(item);
   }
 
@@ -9536,8 +9542,10 @@ void CGameMode::ReceiveInventoryEquipList2(const unsigned char* packet) {
     const StoreEquipOptionRecord* record = &records[index];
     StoreEquipEntry entry;
     ReadStoreEquipEntry(entry, *record);
+    StoreItemOption options[5];
+    std::memcpy(options, record->options, sizeof(options));
     ITEM_INFO item;
-    FillEquipWindowItem(item, entry, entry.options);
+    FillEquipWindowItem(item, entry, options);
     AddInventoryEquipItem(item);
   }
 
@@ -9559,8 +9567,10 @@ void CGameMode::ReceiveInventoryEquipList3(const unsigned char* packet) {
     const EquipWindowGradeRecord* record = &records[index];
     StoreEquipEntry entry;
     ReadStoreEquipEntry(entry, *record);
+    StoreItemOption options[5];
+    std::memcpy(options, record->options, sizeof(options));
     ITEM_INFO item;
-    FillEquipWindowGradeItem(item, entry);
+    FillEquipWindowGradeItem(item, entry, options);
     AddInventoryEquipItem(item);
   }
 
@@ -15582,13 +15592,12 @@ void CGameMode::ReceiveActorStandEntryNamedOld(const unsigned char* data) {
       g_session.mercenaryAlive = 1;
     }
 
+    const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
     if (created) {
       this->scene->objects.push_back(actor);
       this->scene->actors.push_back(actor);
-      const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
       actor->SendMsg(nullptr, AM_INITSTANDENTRY, value, 1, 0, 0, 0, 0);
     } else {
-      const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
       actor->SendMsg(nullptr, AM_STANDENTRY, value, 0, 0, 0, 0, 0);
     }
     if (g_session.IsGuardianJob(packet->job) && g_session.GetSiegeMode() && actor->sceneNameWindow == nullptr) {
