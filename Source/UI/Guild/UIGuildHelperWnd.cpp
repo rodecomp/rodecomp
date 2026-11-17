@@ -415,7 +415,8 @@ void UIGuildTipWnd::OnCreate(int width, int height) {
 
   if (g_guildTip.m_tipList.size() != 0) {
     std::vector<StringList> tipList = g_guildTip.GetTipList();
-    for (const auto& tip : tipList) {
+    for (auto tipIt = tipList.begin(); tipIt != tipList.end(); ++tipIt) {
+      const auto& tip = *tipIt;
       for (unsigned int i = 0; i < tip.size(); ++i) {
         this->m_textViewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(tip[i].c_str()), 50, 0, 0);
       }
