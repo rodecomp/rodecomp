@@ -6,9 +6,9 @@
 // OFFSET: 0x0065E450
 // FUNCTION: fn_05174
 std::string CGuildMgr::GetEmblemFilename(std::uint32_t guildId) {
-  const auto found = this->m_guilds.find(guildId);
-  if (found == this->m_guilds.end() || found->second.m_emblemVersion <= 0) {
-    return std::string();
+  const auto found = this->m_guilds.find(static_cast<std::uint32_t>(guildId));
+  if (this->m_guilds.end() == found || found->second.m_emblemVersion <= 0) {
+    return "";
   }
 
   std::string filename = this->EmblemFilename(guildId, found->second.m_emblemVersion);
