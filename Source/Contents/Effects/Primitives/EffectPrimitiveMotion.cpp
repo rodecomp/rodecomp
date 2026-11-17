@@ -6739,9 +6739,7 @@ void CEffectPrim::PrimBubbleSwirl() {
     return;
   }
 
-  ++slot.process;
-
-  if (slot.process <= 0) {
+  if (++slot.process <= 0) {
     return;
   }
 
@@ -6762,10 +6760,11 @@ void CEffectPrim::PrimBubbleSwirl() {
   }
 
   if (slot.flag1[4] == 4) {
-    slot.fullDisplayAngle -= 15;
+    const std::int16_t displayAngle = static_cast<std::int16_t>(slot.fullDisplayAngle - 15);
+    slot.fullDisplayAngle = displayAngle;
 
-    if (slot.fullDisplayAngle < 0) {
-      slot.fullDisplayAngle += 360;
+    if (displayAngle < 0) {
+      slot.fullDisplayAngle = static_cast<std::int16_t>(displayAngle + 360);
     }
 
     slot.vecBPre.y += slot.height[1];
@@ -7010,10 +7009,11 @@ bool CEffectPrim::PrimDriftingSparks() {
       continue;
     }
 
-    ++spark.fullDisplayAngle;
+    const std::int16_t fullDisplayAngle = static_cast<std::int16_t>(spark.fullDisplayAngle + 1);
+    spark.fullDisplayAngle = fullDisplayAngle;
 
-    if (spark.fullDisplayAngle >= 360) {
-      spark.fullDisplayAngle -= 360;
+    if (fullDisplayAngle >= 360) {
+      spark.fullDisplayAngle = static_cast<std::int16_t>(fullDisplayAngle - 360);
     }
 
     spark.maxHeight *= 1.02f;
