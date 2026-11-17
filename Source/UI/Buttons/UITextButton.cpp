@@ -1884,10 +1884,11 @@ void UIItemTagButton::Paint() {
     this->parent->Invalidate();
   }
 
+  const int textY = this->textY;
   if (this->m_outline != 0) {
-    this->DrawOutlinedText(1, this->textY, this->m_text.c_str(), 0, this->m_color, this->m_outlineColor, this->m_family, this->m_height, 1, 0);
+    this->DrawOutlinedText(1, textY, this->m_text.c_str(), 0, this->m_color, this->m_outlineColor, this->m_family, this->m_height, 1, 0);
   } else {
-    this->DrawTextAt(1, this->textY, this->m_text.c_str(), 0, this->m_family, this->m_height, this->m_color, 0, 0);
+    this->DrawTextAt(1, textY, this->m_text.c_str(), 0, this->m_family, this->m_height, this->m_color, 0, 0);
   }
 
   if (this->m_underline != 0) {
