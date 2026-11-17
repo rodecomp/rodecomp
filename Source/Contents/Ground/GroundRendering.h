@@ -3,18 +3,16 @@
 
 #include "Render/Renderer.h"
 
+#include <algorithm>
+
 // INLINED
 inline const float& Minimum4(const float& a, const float& b, const float& c, const float& d) {
-  const float& first = !(a > b) ? a : b;
-  const float& second = !(c > d) ? c : d;
-  return first > second ? second : first;
+  return (std::min)((std::min)(a, b), (std::min)(c, d));
 }
 
 // INLINED
 inline const float& Maximum4(const float& a, const float& b, const float& c, const float& d) {
-  const float& first = !(b > a) ? a : b;
-  const float& second = !(d > c) ? c : d;
-  return second > first ? second : first;
+  return (std::max)((std::max)(a, b), (std::max)(c, d));
 }
 
 // INLINED
