@@ -1184,7 +1184,8 @@ void UINewSkillListWnd::UpdateScrollBar() {
     total = list.size() / this->m_columns + (list.size() % this->m_columns != 0);
   } else {
     int maxKey = 0;
-    for (const CSkillInfo& skill : list) {
+    for (auto skillIt = list.begin(); skillIt != list.end(); ++skillIt) {
+      const CSkillInfo& skill = *skillIt;
       const int key = static_cast<int>(skill.treePosition);
       if (key > maxKey) {
         maxKey = key;
