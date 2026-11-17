@@ -1713,7 +1713,7 @@ void CLoginMode::Initialize(const char* name) {
   this->cursorType = g_loginStartMode;
   this->cursorFrame = 0;
   this->pendingCursorType = -1;
-  this->OnChangeState(g_loginStartMode);
+  this->OnChangeState(this->cursorType);
   g_loginStartMode = 3;
   g_isStopByLogin = 1;
   g_session.ClearItemContainers();
