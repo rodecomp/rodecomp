@@ -203,7 +203,9 @@ timer:
   if (s_screenShakeStep < 2) {
     s_screenShakeStep = 2;
   } else if (s_screenShakeStep > 16) {
-    g_screenShakeDuration = std::max(g_screenShakeDuration - 1, 0);
+    if (--g_screenShakeDuration < 0) {
+      g_screenShakeDuration = 0;
+    }
     s_screenShakeStep = 2;
   }
 
