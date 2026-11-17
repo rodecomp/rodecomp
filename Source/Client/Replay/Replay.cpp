@@ -357,24 +357,23 @@ bool Replay::MatchesService(int mode) const {
 int Replay::AdvanceFrame() {
   if (!g_replayAnimationScaling) {
     ++this->frame;
-    return 1;
-  }
+  } else {
+    const std::uint32_t now = timeGetTime();
 
-  const std::uint32_t now = timeGetTime();
+    if (this->state != 6) {
+      ++this->frame;
+      this->elapsed += static_cast<std::uint32_t>(static_cast<float>(now - this->previousTick) * this->speed);
 
-  if (this->state != 6) {
-    ++this->frame;
-    this->elapsed += static_cast<std::uint32_t>(static_cast<float>(now - this->previousTick) * this->speed);
-
-    if (static_cast<int>(this->elapsed) >= static_cast<int>(this->header.duration)) {
-      this->previousTick = now;
-      this->elapsed = this->header.duration;
-      this->state = 6;
-      return 0;
+      if (static_cast<int>(this->elapsed) >= static_cast<int>(this->header.duration)) {
+        this->previousTick = now;
+        this->elapsed = this->header.duration;
+        this->state = 6;
+        return 0;
+      }
     }
-  }
 
-  this->previousTick = now;
+    this->previousTick = now;
+  }
   return 1;
 }
 
