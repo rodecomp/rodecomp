@@ -45,8 +45,8 @@ void CCharacterLinkedUserDataMgr::CompleteLoad(
   }
   case 4:
     g_windowMgr.LoadSkillUseLevelRegistry();
-    g_session.SetOption(7, 1, 0);
-    g_session.SetOption(8, 1, 0);
+    g_session.SetOption(7, 1);
+    g_session.SetOption(8, 1);
     this->m_loaded = true;
     break;
   }

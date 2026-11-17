@@ -843,10 +843,10 @@ public:
   void ReceiveStorageNormalList(const unsigned char* packet);
   void ReceiveStorageNormalList2(const unsigned char* packet);
   void ReceiveItemUpgrade(std::uint16_t index, std::uint16_t refine, ItemCardSlots cards, ItemSlotOptions options);
-  void ReceiveFeedConfig(unsigned char state, unsigned char option);
-  void ReceiveFeedConfig2(unsigned char state, unsigned char option, bool petAutoFeed);
-  void ReceiveFeedConfig3(unsigned char state, unsigned char option, bool petAutoFeed, bool homunculusAutoFeed);
-  void ReceiveFeedConfig4(unsigned char state, unsigned char option, bool petAutoFeed, bool homunculusAutoFeed, int value);
+  void ReceiveFeedConfig(unsigned char state, bool option);
+  void ReceiveFeedConfig2(unsigned char state, bool option, bool petAutoFeed);
+  void ReceiveFeedConfig3(unsigned char state, bool option, bool petAutoFeed, bool homunculusAutoFeed);
+  void ReceiveFeedConfig4(unsigned char state, bool option, bool petAutoFeed, bool homunculusAutoFeed, int value);
   void ReceiveParChange(unsigned char* packet);
   void ReceiveLongParChange(const unsigned char* packet);
   void ReceiveNotifyEffect(const unsigned char* packet);

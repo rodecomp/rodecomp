@@ -3,6 +3,7 @@
 #include "UI/Window/WindowId.h"
 #include "Client/Mode/CGameMode.h"
 #include "Client/Mode/ModeMgr.h"
+#include "Client/Session/Session.h"
 #include "Contents/Actors/RenderObject.h"
 #include "Contents/Camera/Camera.h"
 #include "Contents/Configuration/ServiceOptions.h"
@@ -545,7 +546,7 @@ void CEZ2STRParticle::RenderScreen(EZeffectClip* clip, EZeffectTransform* transf
   for (int i = 0; i < 4; ++i) {
     const float rotated = vertices[i].x * sine + vertices[i].y * cosine;
     vertices[i].x = ((vertices[i].x * cosine - vertices[i].y * sine) + (transform->x - 320.0f)) * scale + this->m_screen.x;
-    if (IsScreenShakeActive()) {
+    if (g_session.IsScreenShakeActive()) {
       const float shake = screenY - this->m_screen.y;
       vertices[i].y = (this->m_screen.y - ((transform->y - 240.0f) + rotated) * scale) + (shake + shake);
     } else {

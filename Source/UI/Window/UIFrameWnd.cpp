@@ -727,7 +727,7 @@ int UIChatRoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
         std::strcpy(buffer, this->edit->Text());
       }
 
-      if (g_serviceType == 1 && !ValidateCharacterName(buffer)) {
+      if (g_serviceType == 1 && !g_session.ValidateCharacterName(buffer)) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ENGLISHONLY)), 255, 0, 0, 0);
         return 0;
       }

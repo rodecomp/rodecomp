@@ -33,7 +33,7 @@ public:
   std::string GetRaceBodyResourceName(int type, int raceJob, int job, int sex, int costumeJob);
   std::string GetBodyPalName(int job, int sex, int palette, int costumeJob, int costume, int);
   std::string GetRobeSprName(int robe, int);
-  std::string GetRobeResourceName(int type, int job, int sex, int robe, bool riding, int unused, int costumeJob);
+  std::string GetRobeResourceName(int type, int job, int sex, int robe, unsigned char riding, int unused, int costumeJob);
   std::string GetShieldResourceName(int type, int job, int sex, int shield, int costumeJob);
   std::string GetHeadName(int type, int job, int sex, int* head);
   std::string GetHeadPalName(int head, int job, int sex, int palette);

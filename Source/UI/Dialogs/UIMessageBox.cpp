@@ -4163,7 +4163,7 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       if (this->m_nameEdit->Length() >= 4) {
         const BOOL allowed = g_forbiddenWords.Allows(this->m_nameEdit->Text());
         BOOL valid = TRUE;
-        if (g_serviceType == 1 && !ValidateCharacterName(this->m_nameEdit->Text())) {
+        if (g_serviceType == 1 && !g_session.ValidateCharacterName(this->m_nameEdit->Text())) {
           valid = FALSE;
         }
 

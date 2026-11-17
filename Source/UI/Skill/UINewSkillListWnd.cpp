@@ -958,7 +958,7 @@ void UINewSkillListWnd::OnLBtnDblClk(int x, int y) {
     AutomaticSkills& automatic = g_session.m_automaticSkills;
     if (automatic.Contains(skill.id)) {
       const int option = automatic.CancelOption(skill.id);
-      g_session.SetOption(option, 1, 0);
+      g_session.SetOption(option, 1);
     } else {
       automatic.DisableAll();
     }
@@ -1388,7 +1388,7 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       return 0;
     }
     default: {
-      g_session.SetOption(7, 1, 0);
+      g_session.SetOption(7, 1);
       const unsigned int offset = static_cast<unsigned int>(a) - 42;
       const unsigned int slot = offset > 41 ? static_cast<unsigned int>(a) : offset;
       CSkillInfo skill = this->SkillAt(this->m_columns * this->m_firstRow + slot, false);

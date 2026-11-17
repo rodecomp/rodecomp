@@ -5668,7 +5668,7 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
           level = skill.level;
         }
         if (this->skillTab == 0) {
-          g_session.SetOption(8, 1, 0);
+          g_session.SetOption(8, 1);
           g_session.SetHomunSkillLevel(id, level);
         } else if (this->skillTab == 1) {
           g_session.SetMercSkillLevel(id, level);
@@ -5701,7 +5701,7 @@ int UISkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
           level = skill.level;
         }
         if (this->skillTab == 0) {
-          g_session.SetOption(8, 1, 0);
+          g_session.SetOption(8, 1);
           g_session.SetHomunSkillLevel(id, level);
         } else if (this->skillTab == 1) {
           g_session.SetMercSkillLevel(id, level);

@@ -74,7 +74,7 @@ void AutomaticSkills::DisableAll() {
     const int option = ActiveOption(skill);
     if (static_cast<int>(g_session.m_options.Get(option)) != 0) {
       Cancel(skill);
-      g_session.SetOption(option, 0, 0);
+      g_session.SetOption(option, 0);
     }
   }
 }
@@ -93,10 +93,10 @@ void AutomaticSkills::Use(std::int16_t id, std::int16_t level, std::uint32_t tar
 
   if (static_cast<int>(g_session.m_options.Get(cancel)) != 0) {
     Cancel(id);
-    g_session.SetOption(cancel, 0, 0);
+    g_session.SetOption(cancel, 0);
   } else {
     g_session.automaticSkillHotkey = g_session.m_currentHotkey;
-    g_session.SetOption(ActiveOption(id), 1, 0);
+    g_session.SetOption(ActiveOption(id), 1);
   }
 }
 

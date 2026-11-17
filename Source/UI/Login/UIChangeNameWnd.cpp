@@ -111,7 +111,7 @@ int UIChangeNameWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::intpt
         break;
       }
 
-      if (g_serviceType == 1 && !ValidateCharacterName(this->m_edit->Text())) {
+      if (g_serviceType == 1 && !g_session.ValidateCharacterName(this->m_edit->Text())) {
         g_windowMgr.Confirm(LookupMessage(MSI_CHARACTERNAME_ERROR), 0, true, false, 0, "Message", 280, 120, 0);
         this->m_edit->SetText("");
         return 0;

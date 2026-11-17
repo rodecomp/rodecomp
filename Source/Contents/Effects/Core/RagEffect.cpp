@@ -14604,7 +14604,7 @@ void CRagEffect::RenderAniClip(EZeffectClip* clip, const EZeffectTransform* tran
     const float rotated = vertices[i].x * sine + vertices[i].y * cosine;
     vertices[i].x = ((vertices[i].x * cosine - vertices[i].y * sine) + (transform->x - 320.0f)) * scale + this->state.tlvertX;
 
-    if (IsScreenShakeActive()) {
+    if (g_session.IsScreenShakeActive()) {
       const float shake = screenY - this->state.tlvertY;
       vertices[i].y = (this->state.tlvertY - ((transform->y - 240.0f) + rotated) * scale) + (shake + shake);
     } else {

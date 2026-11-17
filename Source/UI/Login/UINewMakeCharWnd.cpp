@@ -570,7 +570,7 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     }
 
     int valid = 1;
-    if (g_serviceType == 1 && !ValidateCharacterName(this->m_nameEdit->Text())) {
+    if (g_serviceType == 1 && !g_session.ValidateCharacterName(this->m_nameEdit->Text())) {
       valid = 0;
     }
     int allowed = g_forbiddenWords.Allows(this->m_nameEdit->Text());

@@ -374,7 +374,7 @@ void CRenderObject::DrawSprite(int argument, bool seasonal, float offset) {
       quad.topRhw = topRhw - 0.0000003f;
     }
 
-    if (IsScreenShakeActive()) {
+    if (g_session.IsScreenShakeActive()) {
       quad.angle = 180.0f;
       this->DrawQuad(quad, palette, blend, (x - quad.right) + (x - quad.left), (y - quad.bottom) + (y - quad.top), 0);
     } else {
@@ -737,7 +737,7 @@ void CGameActor::RenderMercenary(const float* matrix, int job) {
         this->DrawPulseOutline(cell, &box, scale, bottomRhw, topRhw, palette, image, color);
       }
 
-      if (IsScreenShakeActive()) {
+      if (g_session.IsScreenShakeActive()) {
         this->DrawFlippedQuad(quad, palette, blend, x, y, 0);
       } else {
         this->DrawQuad(quad, palette, blend, 0.0f, 0.0f, 0);
@@ -807,7 +807,7 @@ void CRenderObject::DrawShadow(int argument, float scale) {
   quad.angle = static_cast<float>(cell.rotation);
   quad.image = image;
 
-  if (IsScreenShakeActive()) {
+  if (g_session.IsScreenShakeActive()) {
     this->DrawFlippedQuad(quad, sprite->palette, 257, screenX, screenY, 0);
     return;
   }

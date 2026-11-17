@@ -899,7 +899,7 @@ void CPc::RenderBodyOutline(int layer, const float* position, float x, float y, 
       bounds.Include(&quad.top);
     }
 
-    if (IsScreenShakeActive()) {
+    if (g_session.IsScreenShakeActive()) {
       this->DrawFlippedQuad(quad, sprite->palette, 5, x, y, 0);
     } else {
       this->DrawQuad(quad, sprite->palette, 5, 0.0f, 0.0f, 0);
@@ -2063,7 +2063,7 @@ void CPc::DrawBody(int, int layer, const float* position, float x, float y, floa
     }
 
     this->ApplyLayerEffects(&quad, cell, 0, &box, scale, bottomRhw, bottomRhw, topRhw, x, y, palette, image, &blend, 0, 0);
-    if (IsScreenShakeActive()) {
+    if (g_session.IsScreenShakeActive()) {
       this->DrawFlippedQuad(quad, palette, 0x101, x, y, 0);
     } else {
       this->DrawQuad(quad, palette, 0x101, 0.0f, 0.0f, 0);

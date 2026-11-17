@@ -71,11 +71,11 @@ struct SessionRecord6144 {
   /* 002C */ int completedAt = 0;
   /* 0030 */ std::uint8_t rewarded = 0;
   /* 0031 */ std::uint8_t padding_0031;
-  /* 0032 */ std::uint16_t year;
-  /* 0034 */ std::uint16_t month;
-  /* 0036 */ std::uint16_t day;
+  /* 0032 */ std::int16_t year;
+  /* 0034 */ std::int16_t month;
+  /* 0036 */ std::int16_t day;
 
-  void SplitDate(__time32_t time, std::uint16_t& year, std::uint16_t& month, std::uint16_t& day) const;
+  void SplitDate(__time32_t time, std::int16_t& year, std::int16_t& month, std::int16_t& day) const;
 };
 
 #pragma pack(push, 1)
@@ -797,7 +797,10 @@ public:
 
   void ItemBitmapPath(const char* name, char* output);
   int GetOption(int id) const;
-  void SetOption(int id, int value, int extra);
+  void SetOption(int id, std::int64_t value);
+  bool IsScreenShakeActive();
+  bool ValidateCharacterName(const char* name);
+  bool ResetHotkeySlots();
   std::uint32_t GetServerTime();
   std::uint32_t AddPingSample(std::uint32_t sample);
   std::uint32_t SetServerTime(std::uint32_t serverTime);
@@ -1265,8 +1268,8 @@ public:
   std::string GetAccessorySprName(int job, int sex, int head, int accessory);
   std::string GetShieldActName(int job, int sex, int shield, int costumeJob);
   std::string GetShieldSprName(int job, int sex, int shield, int costumeJob);
-  std::string GetRobeActName(int job, int unused, int sex, int robe, bool riding, int costumeJob);
-  std::string GetRobeSprName(int job, int unused, int sex, int robe, bool riding, int costumeJob);
+  std::string GetRobeActName(int job, int unused, int sex, int robe, unsigned char riding, int costumeJob);
+  std::string GetRobeSprName(int job, int unused, int sex, int robe, unsigned char riding, int costumeJob);
   std::string GetRobeName(unsigned int robe);
   std::string GetBodyPalName(int job, int sex, int palette, int costumeJob, int costume, int unused);
   std::string GetBodySprName(int job, int sex, int costumeJob, int costume);

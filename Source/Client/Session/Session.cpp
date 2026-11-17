@@ -95,6 +95,9 @@ template __declspec(noinline) void std::vector<SearchStoreResult>::_Destroy(Sear
 // GLOBAL: gl_24474
 CSession g_session;
 
+// GLOBAL: gl_24723
+int g_resetMessengerRandomStats = 1;
+
 // GLOBAL: gl_25140
 static std::string s_messageEndTag = "</MSG>";
 
@@ -2311,6 +2314,61 @@ void CSession::RefreshHpSpWindows() {
   g_modeMgr.GetGameMode()->NotifyItemBounds();
 }
 
+// OFFSET: 0x00DD80A0
+// FUNCTION: fn_23304
+__declspec(noinline) void CSession::UpdateRandomStats() {
+  int statCount = 12;
+  if (g_resetMessengerRandomStats != 0) {
+    g_resetMessengerRandomStats = 0;
+    int roll = std::rand() % statCount;
+    this->randomStatIndexC = roll >= 0 ? roll : 0;
+    roll = std::rand() % statCount;
+    this->randomStatIndexB = roll >= 0 ? roll : 0;
+    roll = std::rand() % statCount;
+    this->randomStatIndexE = roll >= 0 ? roll : 0;
+    roll = std::rand() % statCount;
+    this->randomStatIndexA = roll >= 0 ? roll : 0;
+    roll = std::rand() % statCount;
+    this->randomStatIndexD = roll >= 0 ? roll : 0;
+  }
+
+  const int bound70 = this->m_sp;
+  const int bound74 = this->m_maxSp;
+  const int bound68 = this->hp;
+  const int bound6C = this->maxHp;
+  int roll = std::rand() % statCount;
+  this->randomStatIndexC = roll >= 0 ? roll : 0;
+  roll = std::rand() % statCount;
+  this->randomStatIndexA = roll >= 0 ? roll : 0;
+  roll = std::rand() % statCount;
+  this->randomStatIndexD = roll >= 0 ? roll : 0;
+  roll = std::rand() % statCount;
+  this->randomStatIndexB = roll >= 0 ? roll : 0;
+  roll = std::rand() % statCount;
+  this->randomStatIndexE = roll >= 0 ? roll : 0;
+  for (int index = 0; index < 12; ++index) {
+    const int value = std::abs(std::rand()) % 1;
+    this->randomStatValues[index] = value >= 0 ? value : 0;
+  }
+
+  if (this->hp != bound68) {
+    this->hp = bound68;
+    this->RefreshHpSpWindows();
+  }
+  if (this->maxHp != bound6C) {
+    this->maxHp = bound6C;
+    this->RefreshHpSpWindows();
+  }
+  if (this->m_sp != bound70) {
+    this->m_sp = bound70;
+    this->RefreshHpSpWindows();
+  }
+  if (this->m_maxSp != bound74) {
+    this->m_maxSp = bound74;
+    this->RefreshHpSpWindows();
+  }
+}
+
 // OFFSET: 0x00DF9460
 // FUNCTION: fn_23515
 void CSession::RefreshHomunculusInfo() {
@@ -4078,7 +4136,7 @@ void CSession::LoadLuaDataFiles() {
   }
 
   this->m_hotkeyScript->Load("SaveData\\UserKeys", false, true);
-  ResetHotkeySlots();
+  this->ResetHotkeySlots();
   this->m_hotkeyScript->Load("Lua Files\\DataInfo\\NPCIdentity", true, false);
   this->m_hotkeyScript->Load("Lua Files\\DataInfo\\jobName_F", true, false);
   this->m_hotkeyScript->Load("Lua Files\\DataInfo\\jobName", true, false);

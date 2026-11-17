@@ -193,9 +193,9 @@ __forceinline void UIShortCutWnd::ClickControl(int id) {
   case SHORTCUT_BUTTON_BANK: {
     const int bank = g_session.GetOption(10);
     if (bank == 0) {
-      g_session.SetOption(10, 1, 0);
+      g_session.SetOption(10, 1);
     } else {
-      g_session.SetOption(10, 0, 0);
+      g_session.SetOption(10, 0);
     }
     this->m_bank->geometry.state = bank == 0;
     this->m_bank->Invalidate();

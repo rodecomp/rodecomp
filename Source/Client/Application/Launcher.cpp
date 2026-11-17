@@ -1299,7 +1299,7 @@ int WINAPI WinMain(HINSTANCE instance, HINSTANCE previous, LPSTR commandLine, in
 
   const std::array<char, 6> rocSource = OBFUSCATE_SOURCE_ARRAY_CHAR("1roc1", 0xE3FB23537D2785BFULL);
   EncryptedName<sizeof(rocSource), 0xE3FB23537D2785BFULL>& roc = OBFUSCATE_DECRYPT_NAME(0xE3FB23537D2785BFULL, rocSource);
-  g_session.SetOption(18, std::strstr(commandLine, roc.Text()) != nullptr, 0);
+  g_session.SetOption(18, std::strstr(commandLine, roc.Text()) != nullptr);
 
   const std::array<char, 15> stoveSandboxSource = OBFUSCATE_SOURCE_ARRAY_CHAR("/stove_sandbox", 0x1FDB81175D1557E3ULL);
   EncryptedName<sizeof(stoveSandboxSource), 0x1FDB81175D1557E3ULL>& stoveSandbox = OBFUSCATE_DECRYPT_NAME(0x1FDB81175D1557E3ULL, stoveSandboxSource);

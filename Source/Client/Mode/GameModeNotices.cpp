@@ -3540,7 +3540,7 @@ void CGameMode::ReceiveItemUpgrade(std::uint16_t index, std::uint16_t refine, It
 
 // OFFSET: 0x00D6E640
 // FUNCTION: fn_22103
-void CGameMode::ReceiveFeedConfig(unsigned char state, unsigned char option) {
+void CGameMode::ReceiveFeedConfig(unsigned char state, bool option) {
   g_session.m_allowEquipView = state;
   const char* message = LookupMessage(state + 0x54E);
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0x64FFFF, 0, 0, 0);
@@ -3554,7 +3554,7 @@ void CGameMode::ReceiveFeedConfig(unsigned char state, unsigned char option) {
 
 // OFFSET: 0x00D6E6F0
 // FUNCTION: fn_22104
-void CGameMode::ReceiveFeedConfig2(unsigned char state, unsigned char option, bool petAutoFeed) {
+void CGameMode::ReceiveFeedConfig2(unsigned char state, bool option, bool petAutoFeed) {
   g_session.m_allowEquipView = state;
   const char* message = LookupMessage(state + 0x54E);
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0x64FFFF, 0, 0, 0);
@@ -3569,7 +3569,7 @@ void CGameMode::ReceiveFeedConfig2(unsigned char state, unsigned char option, bo
 
 // OFFSET: 0x00D6E7A0
 // FUNCTION: fn_22105
-void CGameMode::ReceiveFeedConfig3(unsigned char state, unsigned char option, bool petAutoFeed, bool homunculusAutoFeed) {
+void CGameMode::ReceiveFeedConfig3(unsigned char state, bool option, bool petAutoFeed, bool homunculusAutoFeed) {
   g_session.m_allowEquipView = state;
   const char* message = LookupMessage(state + 0x54E);
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0x64FFFF, 0, 0, 0);
@@ -3585,7 +3585,7 @@ void CGameMode::ReceiveFeedConfig3(unsigned char state, unsigned char option, bo
 
 // OFFSET: 0x00D6E860
 // FUNCTION: fn_22106
-void CGameMode::ReceiveFeedConfig4(unsigned char state, unsigned char option, bool petAutoFeed, bool homunculusAutoFeed, int value) {
+void CGameMode::ReceiveFeedConfig4(unsigned char state, bool option, bool petAutoFeed, bool homunculusAutoFeed, int value) {
   g_session.m_allowEquipView = state;
   const char* message = LookupMessage(state + 0x54E);
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(message), 0x64FFFF, 0, 0, 0);
@@ -4333,7 +4333,7 @@ void CGameMode::ReceiveAcceptEnter(const unsigned char* data) {
   char mapName[36];
   sprintf(mapName, "%s.rsw", g_session.m_navigationPlayerMap);
   g_modeMgr.Switch(1, mapName);
-  g_session.SetOption(17, 0, 0);
+  g_session.SetOption(17, 0);
   GetRagConnection().SetBlock(0);
 
   if (g_pingLogEnabled) {

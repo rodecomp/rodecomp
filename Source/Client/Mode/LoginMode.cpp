@@ -1766,7 +1766,7 @@ void CLoginMode::Zc_Accept_Enter3(const AcceptEnterPositionPacket* packet) {
   g_session.m_startTimeTicks = std::chrono::system_clock::now().time_since_epoch().count();
   g_session.m_loginTimeTicks = std::chrono::system_clock::now().time_since_epoch().count();
   g_session.SetServerTime(packet->startTime);
-  g_session.SetOption(11, 1, 0);
+  g_session.SetOption(11, 1);
   const int x = (packet->posDir[0] << 2) | (packet->posDir[1] >> 6);
   const int y = ((packet->posDir[1] & 0x3F) << 4) | (packet->posDir[2] >> 4);
   const int dir = packet->posDir[2] & 0xF;
@@ -1779,7 +1779,7 @@ void CLoginMode::Zc_Accept_Enter3(const AcceptEnterPositionPacket* packet) {
   UIWaitWnd* waitWnd = static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND));
   waitWnd->SetMessage(LookupMessage(MSI_PLEASE_BE_PATIENT), 17, 1);
   GetRagConnection().SetBlock(0);
-  g_session.SetOption(17, 0, 0);
+  g_session.SetOption(17, 0);
 
   if (g_pingLogEnabled) {
     FILE* file = fopen("PingLog.txt", "at");
@@ -3938,7 +3938,7 @@ void CLoginMode::OnChangeState(int value) {
     packet.authCode = g_session.m_authCode;
     packet.sex = static_cast<unsigned char>(g_session.GetCurrentSex());
     GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
-    g_session.SetOption(17, 1, 0);
+    g_session.SetOption(17, 1);
     GetRagConnection().SetBlock(1);
     static_cast<UIWaitWnd*>(g_windowMgr.EnsureWindow(WID_WAITWND))->SetMessage(LookupMessage(MSI_WAITING_RESPONSE_FROM_SERVER), 16, 1);
     break;

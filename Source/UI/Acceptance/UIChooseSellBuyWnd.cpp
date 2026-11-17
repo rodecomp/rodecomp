@@ -4643,7 +4643,7 @@ int UIWhisperWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
         return 0;
       }
 
-      if (g_serviceType == 1 && !ValidateCharacterName(text)) {
+      if (g_serviceType == 1 && !g_session.ValidateCharacterName(text)) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ENGLISHONLY)), 0xFF, 0, 0, 0);
         return 0;
       }
@@ -5862,7 +5862,7 @@ int UIChatRoomMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         g_windowMgr.Confirm(LookupMessage(MSI_BAD_SENTANGE), 0, true, false, 0, "Message", 280, 120, 0);
         break;
       }
-      if (g_serviceType == 1 && !ValidateCharacterName(this->m_titleEdit->Text())) {
+      if (g_serviceType == 1 && !g_session.ValidateCharacterName(this->m_titleEdit->Text())) {
         g_windowMgr.Confirm(LookupMessage(MSI_ENGLISHONLY), 0, true, false, 0, "Message", 280, 120, 0);
         break;
       }
@@ -5966,7 +5966,7 @@ int UIChatRoomChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
         g_windowMgr.Confirm(LookupMessage(MSI_BAD_SENTANGE), 0, true, false, 0, "Message", 280, 120, 0);
         return 0;
       }
-      if (g_serviceType == 1 && !ValidateCharacterName(this->m_titleEdit->Text())) {
+      if (g_serviceType == 1 && !g_session.ValidateCharacterName(this->m_titleEdit->Text())) {
         g_windowMgr.Confirm(LookupMessage(MSI_ENGLISHONLY), 0, true, false, 0, "Message", 280, 120, 0);
         return 0;
       }

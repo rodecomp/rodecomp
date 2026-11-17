@@ -7153,7 +7153,7 @@ static_assert(offsetof(ZoneEnterPacket, sex) == 0x16);
 void CGameMode::ChangeZoneServer(std::string mapName, int x, int y, int ip, int port, std::string host) {
   g_session.m_startTimeTicks = std::chrono::system_clock::now().time_since_epoch().count();
   g_session.m_loginTimeTicks = std::chrono::system_clock::now().time_since_epoch().count();
-  g_session.SetOption(20, 1, 0);
+  g_session.SetOption(20, 1);
   this->nameCard.Clear();
   g_session.ClearStoreSearchResults();
   g_session.ClearShortcutSlots();
@@ -7198,7 +7198,7 @@ void CGameMode::ChangeZoneServer(std::string mapName, int x, int y, int ip, int 
       packet.authCode = g_session.m_authCode;
       packet.sex = static_cast<unsigned char>(g_session.GetCurrentSex());
       GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
-      g_session.SetOption(17, 1, 0);
+      g_session.SetOption(17, 1);
       GetRagConnection().SetBlock(1);
     } else {
       GetRagConnection().Close();
@@ -7320,7 +7320,7 @@ void CGameMode::UpdateBalloons() {
     const int x = player->render.screenX - 30;
     const int y = player->render.screenY;
     const int offset = static_cast<int>(static_cast<float>(12 * g_renderer->viewport.height / 480) * player->render.distanceScale);
-    if (IsScreenShakeActive()) {
+    if (g_session.IsScreenShakeActive()) {
       this->itemWindow->Move(x, y - offset);
     } else {
       this->itemWindow->Move(x, offset + y);
@@ -8058,7 +8058,7 @@ void CGameMode::InitializeState() {
     packet.packetType = ID_CZ_NOTIFY_ACTORINIT;
     GetRagConnection().Send(2, &packet);
     GetRagConnection().ResetDeferred();
-    g_session.SetOption(5, 1, 0);
+    g_session.SetOption(5, 1);
   }
 
   SendGameTick(
@@ -8155,7 +8155,7 @@ void CGameMode::ProcessRightButtonDrag() {
 
     AutomaticSkills* automatic = &g_session.m_automaticSkills;
     if (shortcuts->m_slots[4]->enabled && automatic->Contains(static_cast<std::uint16_t>(shortcuts->m_slots[4]->itemId))) {
-      g_session.SetOption(automatic->CancelOption(shortcuts->m_slots[4]->itemId), 1, 0);
+      g_session.SetOption(automatic->CancelOption(shortcuts->m_slots[4]->itemId), 1);
     } else {
       automatic->DisableAll();
     }
@@ -8325,7 +8325,7 @@ void CGameMode::ProcessMouseWheel(int requireControl) {
       }
 
       if (shortcuts->m_slots[3]->enabled && automatic->Contains(shortcuts->m_slots[3]->itemId)) {
-        g_session.SetOption(automatic->CancelOption(shortcuts->m_slots[3]->itemId), 1, 0);
+        g_session.SetOption(automatic->CancelOption(shortcuts->m_slots[3]->itemId), 1);
       } else {
         automatic->DisableAll();
       }
@@ -8337,7 +8337,7 @@ void CGameMode::ProcessMouseWheel(int requireControl) {
       }
 
       if (shortcuts->m_slots[2]->enabled && automatic->Contains(shortcuts->m_slots[2]->itemId)) {
-        g_session.SetOption(automatic->CancelOption(shortcuts->m_slots[2]->itemId), 1, 0);
+        g_session.SetOption(automatic->CancelOption(shortcuts->m_slots[2]->itemId), 1);
       } else {
         automatic->DisableAll();
       }
@@ -8616,7 +8616,7 @@ void CGameMode::Initialize(const char* name) {
   }
 
   if (g_session.GetOption(6) > 0) {
-    g_session.SetOption(6, 0, 0);
+    g_session.SetOption(6, 0);
     char message[256];
     std::memset(message, 0, sizeof(message));
     StringFormat(message, sizeof(message), static_cast<std::size_t>(-1), LookupMessage(MSI_WEBSITE_LINK_ADDRESS), g_serviceOptions.Get(TT_SHOW_MERCHANT_SHOP_ON_OFF) ? "ON" : "OFF");
@@ -8631,10 +8631,10 @@ void CGameMode::Initialize(const char* name) {
   if (g_session.GetOption(0xB) == 1) {
     const std::set<std::string>& names = g_whisperBlockMgr->Names();
     std::for_each(names.begin(), names.end(), [this](std::string name) { this->ExecuteTalkType(0x12, &name); });
-    g_session.SetOption(0xB, 0, 0);
+    g_session.SetOption(0xB, 0);
   }
 
-  g_session.SetOption(0x14, 0, 0);
+  g_session.SetOption(0x14, 0);
   this->isInitializing = 0;
 }
 

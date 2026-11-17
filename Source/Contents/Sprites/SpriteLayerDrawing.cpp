@@ -172,7 +172,7 @@ void SpriteLayerRenderer::Render(const float* matrix, int blendMode, char blendV
     SpriteQuad& quad = it->second.quad;
     quad.bottomRhw = quad.bottom * this->depthScale + this->depthBias;
     quad.topRhw = this->depthScale * quad.top + this->depthBias;
-    if (IsScreenShakeActive() == true) {
+    if (g_session.IsScreenShakeActive() == true) {
       this->pc->DrawFlippedQuad(quad, it->second.palette, it->second.blend, this->x, this->y, depth);
     } else {
       this->pc->DrawQuad(quad, it->second.palette, it->second.blend, 0.0f, 0.0f, depth);

@@ -118,7 +118,7 @@ bool CSession::IsNpcJob(int job) const {
 
 // OFFSET: 0x00DFA630
 // FUNCTION: fn_23577
-bool __stdcall ValidateCharacterName(const char* name) {
+bool CSession::ValidateCharacterName(const char* name) {
   const int length = static_cast<int>(std::strlen(name));
   for (int index = 0; index < length; ++index) {
     if (name[index] == 0) {
@@ -1280,7 +1280,7 @@ int CSession::GetDualWieldWeaponType(int first, int second) const {
 
 // OFFSET: 0x00E25970
 // FUNCTION: fn_23906
-bool ResetHotkeySlots() {
+bool CSession::ResetHotkeySlots() {
   g_session.m_hotkeyScript->Call("ResetTheHotKey", "dddd", 1, 132, 192, 18);
   return g_session.m_hotkeyScript->Call("ResetTheHotKey", "dddd", 1, 135, 36, 18);
 }
@@ -1622,7 +1622,7 @@ int CSession::SetFlag(char value) {
 
 // OFFSET: 0x00DFB490
 // FUNCTION: fn_23582
-bool IsScreenShakeActive() {
+bool CSession::IsScreenShakeActive() {
   return g_screenShakeDuration != 0 && g_screenShakeMode == 2;
 }
 
