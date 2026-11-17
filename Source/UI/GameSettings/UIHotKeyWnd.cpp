@@ -8,6 +8,8 @@
 #include "Render/Text/TextContext.h"
 #include "UI/GameSettings/UIHotKeyWnd.h"
 #include "UI/Chat/UINewChatWnd.h"
+#include "UI/Edit/UIEditCtrl.h"
+#include "UI/Edit/UIItemTagCtrl.h"
 #include "Client/Session/Session.h"
 #include "Contents/Hotkeys/UserHotkeyMgr.h"
 #include "Contents/Skills/AutomaticSkills.h"
@@ -32,6 +34,33 @@
 #include "Resource/MSGSTRINGID.h"
 #include <cstring>
 #include <string>
+
+// OFFSET: 0x00916170
+// FUNCTION: fn_12582
+void UINewChatWnd::ToggleInput() {
+  if (g_windowMgr.inputSuggestionsEnabled && g_windowMgr.chatModeChanged) {
+    if (strlen(this->m_chatEdit->Text()) == 0) {
+      g_windowMgr.inputSuggestionsEnabled = false;
+      this->ApplyInputLayout();
+      g_windowMgr.SetPressedWindowRoot(nullptr);
+    }
+  } else {
+    g_windowMgr.inputSuggestionsEnabled = true;
+    this->ApplyInputLayout();
+    g_windowMgr.SetFocus(this->m_inputEdit);
+    this->m_inputEdit->SetText("");
+
+    if (!g_windowMgr.chatModeChanged) {
+      this->ResizeRows(static_cast<int>(this->geometry.state));
+    }
+
+    g_windowMgr.SetPressedWindowRoot(this->m_inputEdit);
+  }
+
+  if (UIItemTagOnChat* tags = this->m_chatEdit->itemTags) {
+    tags->ClearTags();
+  }
+}
 
 // OFFSET: 0x0091FFD0
 // FUNCTION: fn_12639

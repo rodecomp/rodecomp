@@ -3,6 +3,7 @@
 #include "Network/Connection/Connection.h"
 #include "Network/Connection/ConnectionRuntime.h"
 #include "Network/Packets/PacketLengths.h"
+#include "Network/Packets/PacketId.h"
 #include "Render/DeviceContext/DCSurface.h"
 
 #include <algorithm>
@@ -12,6 +13,20 @@
 #include <timeapi.h>
 #include <memory>
 #include <string>
+
+// OFFSET: 0x00C7C970
+// FUNCTION: fn_20391
+int CRagConnection::GetPacketSize(int id) {
+  switch (id) {
+  case ID_ZC_SRPACKETR2_INIT:
+    return 12;
+
+  case ID_CZ_SRPACKETR2_START:
+    return 4;
+  }
+
+  return std::max(g_packetLengths.Lookup(id).length, 2);
+}
 
 // OFFSET: 0x00C7C110
 // FUNCTION: fn_20382

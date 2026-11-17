@@ -1,8 +1,6 @@
-#include "Network/Connection/Connection.h"
 #include "Network/Packets/PacketLengths.h"
 #include "Network/Packets/PacketId.h"
 
-#include <algorithm>
 
 // GLOBAL: gl_24489
 PacketLengths g_packetLengths;
@@ -26,19 +24,6 @@ __declspec(noinline) PacketLengthResult PacketLengths::Lookup(int id) const {
   return {1, entry->second.length};
 }
 
-// OFFSET: 0x00C7C970
-// FUNCTION: fn_20391
-int CRagConnection::GetPacketSize(int id) {
-  switch (id) {
-  case ID_ZC_SRPACKETR2_INIT:
-    return 12;
-
-  case ID_CZ_SRPACKETR2_START:
-    return 4;
-  }
-
-  return std::max(g_packetLengths.Lookup(id).length, 2);
-}
 
 namespace {
   struct PacketRegistration {

@@ -35,7 +35,7 @@ void UINewChatWnd::ShowSuggestions(std::uint8_t visible) {
 
 // OFFSET: 0x00933980
 // FUNCTION: fn_12732
-void UINewChatWnd::ApplyInputLayout() {
+__declspec(noinline) void UINewChatWnd::ApplyInputLayout() {
   if (g_windowMgr.inputSuggestionsEnabled) {
     this->m_whisperEdit->Move(6, this->geometry.height - this->m_inputAreaHeight + 4);
     this->m_chatEdit->Move(110, this->geometry.height - this->m_inputAreaHeight + 4);
@@ -200,29 +200,3 @@ void UINewChatWnd::ResizeRows(int count) {
   this->ApplyInputLayout();
 }
 
-// OFFSET: 0x00916170
-// FUNCTION: fn_12582
-void UINewChatWnd::ToggleInput() {
-  if (g_windowMgr.inputSuggestionsEnabled && g_windowMgr.chatModeChanged) {
-    if (strlen(this->m_chatEdit->Text()) == 0) {
-      g_windowMgr.inputSuggestionsEnabled = false;
-      this->ApplyInputLayout();
-      g_windowMgr.SetPressedWindowRoot(nullptr);
-    }
-  } else {
-    g_windowMgr.inputSuggestionsEnabled = true;
-    this->ApplyInputLayout();
-    g_windowMgr.SetFocus(this->m_inputEdit);
-    this->m_inputEdit->SetText("");
-
-    if (!g_windowMgr.chatModeChanged) {
-      this->ResizeRows(static_cast<int>(this->geometry.state));
-    }
-
-    g_windowMgr.SetPressedWindowRoot(this->m_inputEdit);
-  }
-
-  if (UIItemTagOnChat* tags = this->m_chatEdit->itemTags) {
-    tags->ClearTags();
-  }
-}
