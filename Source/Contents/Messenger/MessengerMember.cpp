@@ -1484,7 +1484,11 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
           dead = 1;
         }
         std::string prefix = "유저인터페이스\\renewalparty\\";
-        sprintf(path, dead ? "%sicon_jobs_%d_die.bmp" : "%sicon_jobs_%d.bmp", prefix.c_str(), it->job);
+        if (dead) {
+          sprintf(path, "%sicon_jobs_%d_die.bmp", prefix.c_str(), it->job);
+        } else {
+          sprintf(path, "%sicon_jobs_%d.bmp", prefix.c_str(), it->job);
+        }
         this->jobIcons[index]->SetBitmap(path, 0, 0);
         this->jobIcons[index]->SetBitmap(path, 1, 0);
         this->jobIcons[index]->SetBitmap(path, 2, 0);
@@ -1510,7 +1514,6 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       g_windowMgr.modal->SendMsg(nullptr, UM_REFRESH, 0, 0, 0, 0);
     }
 
-    int tooltip;
     if (this->mode == 0) {
       {
         UIBitmapButton* button = this->buttons[0];
@@ -1521,7 +1524,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       this->buttons[0]->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_01_disable.bmp", 1, 0);
       this->buttons[0]->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_01_disable.bmp", 2, 0);
       this->buttons[0]->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_01_disable.bmp", 3, 0);
-      tooltip = 0x62;
+      this->buttons[0]->SetTooltip(LookupMessage(0x62));
     } else {
       {
         UIBitmapButton* button = this->buttons[0];
@@ -1531,9 +1534,8 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       this->buttons[0]->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_partymaster_01.bmp", 0, 0);
       this->buttons[0]->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_partymaster_01_a.bmp", 1, 0);
       this->buttons[0]->SetBitmap("유저인터페이스\\basic_interface\\mesbtn_partymaster_01_b.bmp", 2, 0);
-      tooltip = 0xDBA;
+      this->buttons[0]->SetTooltip(LookupMessage(0xDBA));
     }
-    this->buttons[0]->SetTooltip(LookupMessage(tooltip));
     this->LayoutButtons();
     return 0;
   }
@@ -1649,8 +1651,11 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     }
     case 0x3C: {
       MessengerMember target = this->MemberAtIndex(this->selected);
-      if (target.valid && g_session.FindMiniPartyRecord(target.accountId).active != 1) {
-        this->OpenMiniPartyWnd(g_windowMgr.FindMiniPartyCell(), target);
+      if (target.valid) {
+        SessionRecord0734 record = g_session.FindMiniPartyRecord(target.accountId);
+        if (record.active != 1) {
+          this->OpenMiniPartyWnd(g_windowMgr.FindMiniPartyCell(), target);
+        }
       }
       return 0;
     }
@@ -1675,11 +1680,11 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       if (!g_session.m_lockMouse && this->selected != -1) {
         MessengerMember member = this->MemberAtIndex(this->selected);
         if (member.valid && !(member.name == g_session.DecodePlayerName())) {
-          const char* tag;
+          const char* tag = nullptr;
           if (g_windowMgr.IsFriend(member.name.c_str())) {
             tag = LookupMessage(MSI_FRIEND);
-          } else {
-            tag = g_session.IsGuildMemberCharacter(member.characterId) ? "GuildMember" : nullptr;
+          } else if (g_session.IsGuildMemberCharacter(member.characterId)) {
+            tag = "GuildMember";
           }
           g_windowMgr.SendNotice(
             14, reinterpret_cast<std::intptr_t>(member.name.c_str()), reinterpret_cast<std::intptr_t>(tag),
