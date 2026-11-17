@@ -125,7 +125,7 @@ std::string UIWindow::RemoveTextColors(const char* text) {
       break;
     }
 
-    current = next != nullptr ? (*next == '^' ? next + 7 : next) : nullptr;
+    current = next == nullptr ? nullptr : (*next == '^' ? next + 7 : next);
   }
 
   return result;
