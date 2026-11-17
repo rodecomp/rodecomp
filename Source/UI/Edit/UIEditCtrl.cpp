@@ -4447,7 +4447,7 @@ std::string UIEditCtrl3::ResolveItemLinks(const std::string& source) {
 // FUNCTION: fn_10777
 std::string UIEditCtrl3::PlaceLineLinks(const char* line, std::string& text, const int* lineIndex) {
   if (text.find(g_itemLinkOpen) == std::string::npos) {
-    return std::string(line, std::strlen(line));
+    return std::string(line);
   }
 
   std::string remaining(text);
@@ -11559,9 +11559,11 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     break;
   case UM_DROP: {
     CGameMode* mode = g_modeMgr.GetGameMode();
+    ModeDragState& drag = mode->drag;
     ITEM_INFO item;
-    item.Assign(mode->drag);
-    if (mode->drag.source == 20) {
+    item.Assign(drag);
+    switch (drag.source) {
+    case 20: {
       if (this->slotCount > g_session.GetNumMerchantPurchaseSavedItems()) {
         if (!g_session.AddMerchantPurchaseSavedItem(item, 1, 1)) {
           g_windowMgr.Confirm(LookupMessage(MSI_BUYINGSTORE_MAKEWND_DUPLICATEITEM), 0, true, false, 0, "Message", 280, 120, 0);
@@ -11569,7 +11571,13 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
           g_session.RemoveMerchantMyShopItem(item, 1, 1);
         }
       }
-      int index = std::min(std::max(g_session.GetNumMerchantPurchaseSavedItems() - 1, 0), 4);
+      int index = g_session.GetNumMerchantPurchaseSavedItems() - 1;
+      if (index < 0) {
+        index = 0;
+      }
+      if (index >= 5) {
+        index = 4;
+      }
       if (this->priceEdits[index]) {
         if (this->priceEdits[index]->Length() == 0) {
           this->priceEdits[index]->SetText("0");
@@ -11581,30 +11589,31 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
           this->quantityEdits[index]->SelectAll();
         }
       }
-    } else if (mode->drag.source == 11) {
-      if (item.quantity + g_session.GetMerchantPurchaseSavedItemNum(mode->drag.id) > 30000) {
-        item.quantity = 30000 - g_session.GetMerchantPurchaseSavedItemNum(mode->drag.id);
-        char text[200];
+      break;
+    }
+    case 11: {
+      char text[200];
+      if (item.quantity + g_session.GetMerchantPurchaseSavedItemNum(drag.id) > 30000) {
+        item.quantity = 30000 - g_session.GetMerchantPurchaseSavedItemNum(drag.id);
         std::sprintf(text, LookupMessage(MSI_LIMIT_SELL_ITEM), 30000);
         g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0xFF, 0, 0, 0);
       }
       if (item.quantity != 0) {
         const bool full = this->slotCount <= g_session.GetNumMerchantPurchaseSavedItems();
-        bool movable;
         if (!full) {
-          movable = g_session.GetMerchantMyShopItemNum(mode->drag.id) != 0;
-        } else {
-          movable = g_session.GetMerchantMyShopItemNum(mode->drag.id) != 0 && g_session.GetMerchantPurchaseSavedItemNum(mode->drag.id) != 0;
-        }
-        if (movable) {
+          if (g_session.GetMerchantMyShopItemNum(drag.id) != 0) {
+            g_session.AddMerchantPurchaseSavedItem(item, 0, 1);
+            g_session.RemoveMerchantMyShopItem(item, 0, 1);
+          }
+        } else if (g_session.GetMerchantMyShopItemNum(drag.id) != 0 && g_session.GetMerchantPurchaseSavedItemNum(drag.id) != 0) {
           g_session.AddMerchantPurchaseSavedItem(item, 0, 1);
           g_session.RemoveMerchantMyShopItem(item, 0, 1);
         }
         int index = g_session.GetNumMerchantPurchaseSavedItems() - 1;
-        bool fresh = true;
         std::string price;
-        ITEM_INFO owned = g_session.FindMerchantPurchaseSavedItem(mode->drag.id);
+        bool fresh = true;
+        ITEM_INFO owned = g_session.FindMerchantPurchaseSavedItem(drag.id);
         if (owned.identity[1] != 0) {
           index = 0;
           for (const ITEM_INFO& old : this->items) {
@@ -11616,25 +11625,35 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
             ++index;
           }
         }
-        index = std::min(std::max(index, 0), 12);
-        UIEditCtrl* edit = this->priceEdits[index];
-        if (edit) {
+        if (index < 0) {
+          index = 0;
+        }
+        if (index >= 13) {
+          index = 12;
+        }
+        if (this->priceEdits[index]) {
           if (this->mode != 0) {
-            if (edit->Length() == 0) {
-              edit->SetText("0");
-              g_windowMgr.SetFocus(edit);
-              edit->SelectAll();
+            if (this->priceEdits[index]->Length() == 0) {
+              this->priceEdits[index]->SetText("0");
+              g_windowMgr.SetFocus(this->priceEdits[index]);
+              this->priceEdits[index]->SelectAll();
             }
           } else if (!full) {
-            edit->Background(232, 232, 232);
-            edit->disabled = 0;
-            edit->Invalidate();
-            edit->SetText(fresh ? "0" : price.c_str());
-            g_windowMgr.SetFocus(edit);
-            edit->SelectAll();
+            this->priceEdits[index]->Background(232, 232, 232);
+            this->priceEdits[index]->disabled = 0;
+            this->priceEdits[index]->Invalidate();
+            if (fresh) {
+              this->priceEdits[index]->SetText("0");
+            } else {
+              this->priceEdits[index]->SetText(price.c_str());
+            }
+            g_windowMgr.SetFocus(this->priceEdits[index]);
+            this->priceEdits[index]->SelectAll();
           }
         }
       }
+      break;
+    }
     }
     mode->SendMsg(MM_CANCEL_DRAG, 0, 0, 0, 0);
     break;
@@ -11650,7 +11669,7 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     }
     if (a > 0 && this->mode == 0) {
       int index = static_cast<int>(a) - 1;
-      if (index <= this->editIndex) {
+      if (this->editIndex >= index) {
         --this->editIndex;
       }
       if (index == static_cast<int>(this->items.size())) {
@@ -11661,10 +11680,9 @@ int UIMerchantShopMakeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
       } else {
         g_windowMgr.SetFocus(this->priceEdits[index]);
       }
-      UIEditCtrl* edit = this->priceEdits[this->items.size()];
-      edit->Background(182, 182, 182);
-      edit->disabled = 1;
-      edit->Invalidate();
+      this->priceEdits[this->items.size()]->Background(182, 182, 182);
+      this->priceEdits[this->items.size()]->disabled = 1;
+      this->priceEdits[this->items.size()]->Invalidate();
       char text[24] = {};
       for (; index < this->slotCount - 1; ++index) {
         this->priceEdits[index]->SetText(this->priceEdits[index + 1]->Text());
