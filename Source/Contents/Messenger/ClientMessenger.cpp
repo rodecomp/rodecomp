@@ -2452,11 +2452,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadGradeBonus() {
           }
           if (this->loadValid) {
             int kind = 0;
-            unsigned int hash = 5381;
-            for (const char* character = key.c_str(); *character != '\0'; ++character) {
-              hash = hash * 33 + *character;
-            }
-            switch (hash) {
+            switch (HashName(key.c_str())) {
             case 0xBDE09DB7:
               kind = 1;
               break;
@@ -2501,11 +2497,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadGradeBonus() {
                     }
                     if (this->loadValid) {
                       int categoryIndex = 0;
-                      hash = 5381;
-                      for (const char* character = category.c_str(); *character != '\0'; ++character) {
-                        hash = hash * 33 + *character;
-                      }
-                      switch (hash) {
+                      switch (HashName(category.c_str())) {
                       case 0x95E1BB50:
                         break;
                       case 0x2B3A7568:
@@ -2556,11 +2548,7 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadGradeBonus() {
                             }
                             if (this->loadValid) {
                               int fieldIndex = 0;
-                              hash = 5381;
-                              for (const char* character = field.c_str(); *character != '\0'; ++character) {
-                                hash = hash * 33 + *character;
-                              }
-                              switch (hash) {
+                              switch (HashName(field.c_str())) {
                               case 0x09B447CA:
                                 fieldIndex = 1;
                                 break;
