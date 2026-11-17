@@ -276,8 +276,9 @@ void CRagEffect::BloodDrain() {
     return;
   }
 
+  vector3d origin{0.0f, 0.0f, 0.0f};
   for (int angle = -90; angle < 180; angle += 90) {
-    this->state.lastPrim = this->LaunchEffectPrim(8, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(8, origin);
     this->state.lastPrim->state.duration = 60;
     this->state.lastPrim->state.deltaPos2 = {0.0f, -10.0f, 0.0f};
     this->state.lastPrim->state.radius = this->state.lastPrim->CalcDist(this->state.deltaPos.x, this->state.deltaPos.z);
@@ -1990,8 +1991,9 @@ void CRagEffect::RemoveTrap() {
     return;
   }
 
+  vector3d origin{0.0f, 0.0f, 0.0f};
   for (int count = 12; count != 0; --count) {
-    this->state.lastPrim = this->LaunchEffectPrim(7, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(7, origin);
     this->state.lastPrim->state.duration = 50;
     this->state.lastPrim->state.radiusSpeed = 0.2f;
     rand();
@@ -16382,8 +16384,9 @@ void CRagEffect::SonicSlashFan(char kind) {
     return;
   }
 
+  vector3d origin{0.0f, 0.0f, 0.0f};
   for (int angle = -90; angle < 180; angle += 90) {
-    this->state.lastPrim = this->LaunchEffectPrim(8, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim = this->LaunchEffectPrim(8, origin);
     this->state.lastPrim->state.duration = 60;
     this->state.lastPrim->state.deltaPos2 = {0.0f, -10.0f, 0.0f};
     this->state.lastPrim->state.radius = this->state.lastPrim->CalcDist(this->render.position.x, this->render.position.z);

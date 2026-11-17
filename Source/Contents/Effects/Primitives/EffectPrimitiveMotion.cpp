@@ -3410,7 +3410,7 @@ void CEffectPrim::PrimElectric2() {
           this->state.slots[index].height[value] = this->state.slots[index].height[value - 1];
         }
       }
-    } else if (this->state.slots[index].vecTNow.y >= 0.0f) {
+    } else {
       for (int value = 0; static_cast<float>(value) <= this->state.slots[index].vecTNow.y; ++value) {
         this->state.slots[index].height[value] += 8.0f;
 

@@ -111,7 +111,7 @@ int CChampionMonsterMgr::ApplyEffects(int id, CGameActor* actor, int aid) {
         EffectLists* effectMgr = g_effectMgr;
         if (effectMgr->Spawn(aid, effects[i], actor->render.position, 0, -1, 0, 0) == nullptr &&
             !actor->HasId(effects[i])) {
-          actor->LaunchEffect(effects[i], actor->render.position, 0.0f);
+          actor->LaunchEffect(it->second.m_effects[i], actor->render.position, 0.0f);
         }
       }
     }

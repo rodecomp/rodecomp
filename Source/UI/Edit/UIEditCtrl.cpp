@@ -2923,9 +2923,9 @@ void UIItemSellWnd2::OnLBtnDblClk(int x, int y) {
 
   if (target) {
     this->OnLBtnDown(x, y);
-    CGameMode* mode = g_modeMgr.GetGameMode();
-    this->RecordDrop(x, y, mode->drag, 160);
-    target->DragAndDrop(x, y, reinterpret_cast<std::intptr_t>(&mode->drag));
+    auto& drag = g_modeMgr.GetGameMode()->drag;
+    this->RecordDrop(x, y, drag, 160);
+    target->DragAndDrop(x, y, reinterpret_cast<std::intptr_t>(&drag));
   }
 }
 
@@ -2940,9 +2940,9 @@ void UIItemSellWnd::OnLBtnDblClk(int x, int y) {
 
   if (target) {
     this->OnLBtnDown(x, y);
-    CGameMode* mode = g_modeMgr.GetGameMode();
-    this->RecordDrop(x, y, mode->drag, 22);
-    target->DragAndDrop(x, y, reinterpret_cast<std::intptr_t>(&mode->drag));
+    auto& drag = g_modeMgr.GetGameMode()->drag;
+    this->RecordDrop(x, y, drag, 22);
+    target->DragAndDrop(x, y, reinterpret_cast<std::intptr_t>(&drag));
   }
 }
 
@@ -5328,9 +5328,9 @@ void UIItemShopWnd2::OnLBtnDblClk(int x, int y) {
 
   if (target) {
     this->OnLBtnDown(x, y);
-    CGameMode* mode = g_modeMgr.GetGameMode();
-    this->RecordDrop(x, y, mode->drag, 161);
-    target->DragAndDrop(x, y, reinterpret_cast<std::intptr_t>(&mode->drag));
+    auto& drag = g_modeMgr.GetGameMode()->drag;
+    this->RecordDrop(x, y, drag, 161);
+    target->DragAndDrop(x, y, reinterpret_cast<std::intptr_t>(&drag));
   }
 }
 
@@ -5345,9 +5345,9 @@ void UIItemShopWnd::OnLBtnDblClk(int x, int y) {
 
   if (target) {
     this->OnLBtnDown(x, y);
-    CGameMode* mode = g_modeMgr.GetGameMode();
-    this->RecordDrop(x, y, mode->drag, 24);
-    target->DragAndDrop(x, y, reinterpret_cast<std::intptr_t>(&mode->drag));
+    auto& drag = g_modeMgr.GetGameMode()->drag;
+    this->RecordDrop(x, y, drag, 24);
+    target->DragAndDrop(x, y, reinterpret_cast<std::intptr_t>(&drag));
   }
 }
 

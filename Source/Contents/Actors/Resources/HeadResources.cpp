@@ -61,7 +61,7 @@ int CSession::GetDisplayJob() {
     if (static_cast<bool>(g_session.m_jobFlags >> 23 & 1)) {
       return 4088;
     }
-    if (g_session.m_jobFlags & 0x1000000) {
+    if (static_cast<bool>(g_session.m_jobFlags >> 24 & 1)) {
       return 4090;
     }
     if (static_cast<bool>(g_session.m_jobFlags >> 25 & 1)) {
@@ -77,7 +77,7 @@ int CSession::GetDisplayJob() {
     if (static_cast<bool>(g_session.m_jobFlags >> 23 & 1)) {
       return 4089;
     }
-    if (g_session.m_jobFlags & 0x1000000) {
+    if (static_cast<bool>(g_session.m_jobFlags >> 24 & 1)) {
       return 4091;
     }
     if (static_cast<bool>(g_session.m_jobFlags >> 25 & 1)) {
