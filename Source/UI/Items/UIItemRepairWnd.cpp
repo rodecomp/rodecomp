@@ -38,8 +38,8 @@ struct UIItemRepairRecordHeader {
 
   // INLINED
   ~UIItemRepairRecordHeader() {
-    this->bytes = 0;
     this->id = 0;
+    this->bytes = 0;
   }
 };
 #pragma pack(pop)
@@ -286,9 +286,9 @@ int UIItemRepairWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
 
       const int selected = list->selected;
       if (selected >= 0) {
-        for (UIItemRepairEntry& entry : this->entries) {
-          if (entry.index == this->indices[selected]) {
-            g_modeMgr.currentMode->SendMsg(MM_REPAIRITEM_SELECT_FROM_LIST, reinterpret_cast<int>(&entry), 0, 0, 0);
+        for (std::list<UIItemRepairEntry>::iterator it = this->entries.begin(); it != this->entries.end(); ++it) {
+          if (it->index == this->indices[selected]) {
+            g_modeMgr.currentMode->SendMsg(MM_REPAIRITEM_SELECT_FROM_LIST, reinterpret_cast<int>(&*it), 0, 0, 0);
             break;
           }
         }
@@ -304,24 +304,25 @@ int UIItemRepairWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
       g_windowMgr.CloseWindow(WID_ITEMREPAIRWND);
       return 0;
     }
-
-    return 0;
+    break;
   }
 
   case UM_REPLAY_FRAMED_DATA: {
     const auto* bytes = reinterpret_cast<const unsigned char*>(a);
     UIItemRepairRecordHeader header;
-    unsigned offset = 6;
     header = *reinterpret_cast<const UIItemRepairRecordHeader*>(bytes);
+    unsigned offset = 6;
 
-    if (header.id == 22150) {
-      while (static_cast<unsigned>(b) > offset) {
+    if (22150 == header.id) {
+      bool scanning = true;
+      while (scanning && static_cast<unsigned>(b) > offset) {
         header = *reinterpret_cast<const UIItemRepairRecordHeader*>(bytes + offset);
         offset += 6;
 
         switch (header.id) {
         case 22151:
-          return 0;
+          scanning = false;
+          break;
 
         case 22152: {
           UIItemRepairEntry entry;
@@ -337,12 +338,14 @@ int UIItemRepairWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
         }
       }
     }
-
-    return 0;
-  }
+    break;
   }
 
-  return this->UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  default:
+    return this->UIFrameWnd::SendMsg(sender, message, a, b, c, d);
+  }
+
+  return 0;
 }
 
 // OFFSET: 0x009A4C50
