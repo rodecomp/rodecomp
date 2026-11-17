@@ -106,6 +106,7 @@
 
 #include "Resource/MSGSTRINGID.h"
 
+template __declspec(noinline) std::string::size_type std::string::find(const char* const, const std::string::size_type) const noexcept;
 template __declspec(noinline) bool std::_Traits_equal<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
 template __declspec(noinline) std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const std::string, int>>>, std::_Iterator_base0>& std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const std::string, int>>>, std::_Iterator_base0>::operator++() noexcept;
 
@@ -964,24 +965,14 @@ void UIMerInfoWnd::StoreInfo() {
 int UIMerInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   switch (message) {
   case UM_DEFPUSH:
-    return 0;
+    break;
   case UM_COMMAND:
     this->RecordResponse(static_cast<int>(a), b, c, d);
 
     switch (a) {
     case ID_OK:
       this->Invalidate();
-      return 0;
-    case ID_CLOSE:
-      g_windowMgr.CloseWindow(WID_MERINFOWND);
-      return 0;
-    case ID_OPEN_MERSKILLLIST:
-      if (!g_windowMgr.CloseWindow(WID_SKILLLISTWND_SKILLTAB_1)) {
-        g_windowMgr.EnsureWindow(WID_SKILLLISTWND_SKILLTAB_1);
-        return 0;
-      }
-
-      return 0;
+      break;
     case ID_FIRE_MER: {
       CGameMode* mode = g_modeMgr.GetGameMode();
 
@@ -991,14 +982,19 @@ int UIMerInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
         g_windowMgr.CloseWindow(WID_SKILLLISTWND_SKILLTAB_1);
         g_session.ResetMercenaryStats();
         g_session.mercenaryAlive = 0;
-        return 0;
       }
-
-      return 0;
+      break;
     }
-    default:
-      return 0;
+    case ID_OPEN_MERSKILLLIST:
+      if (!g_windowMgr.CloseWindow(WID_SKILLLISTWND_SKILLTAB_1)) {
+        g_windowMgr.EnsureWindow(WID_SKILLLISTWND_SKILLTAB_1);
+      }
+      break;
+    case ID_CLOSE:
+      g_windowMgr.CloseWindow(WID_MERINFOWND);
+      break;
     }
+    break;
   case UM_SETINFO:
     this->saved = reinterpret_cast<MerInfoWndInfo*>(a);
 
@@ -1007,10 +1003,11 @@ int UIMerInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
     }
 
     this->Move(this->saved->x, this->saved->y);
-    return 0;
+    break;
   default:
     return UIFrameWnd::SendMsg(sender, message, a, b, c, d);
   }
+  return 0;
 }
 
 // OFFSET: 0x008C3670
@@ -2806,17 +2803,17 @@ int UISelectReplayDataWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
     this->m_list->SendMsg(nullptr, UM_SETCURITEM, a, 0, 0, 0);
     this->UpdateInfo();
     this->Invalidate();
-    return 0;
+    break;
   case UM_UPPUSH:
     this->m_list->SendMsg(nullptr, UM_UPPUSH, 0, 0, 0, 0);
     this->UpdateInfo();
     this->Invalidate();
-    return 0;
+    break;
   case UM_DOWNPUSH:
     this->m_list->SendMsg(nullptr, UM_DOWNPUSH, 0, 0, 0, 0);
     this->UpdateInfo();
     this->Invalidate();
-    return 0;
+    break;
   case UM_COMMAND:
     switch (a) {
     case ID_CANCEL:
@@ -2855,7 +2852,7 @@ int UISelectReplayDataWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
   case UM_SET_TARGET:
     this->UpdateInfo();
     this->Invalidate();
-    return 0;
+    break;
   case 89:
     this->m_serverButton->Move(234, this->m_serverButton->geometry.y);
     break;
@@ -3170,10 +3167,7 @@ void UIMonsterInfoWnd::OnCreate(int, int) {
   this->m_message0 = ID_OK;
 
   this->actorId = g_session.m_monsterInfoActorId;
-  {
-    const std::string actorName = g_modeMgr.GetGameMode()->ActorName(g_session.m_monsterInfoActorId);
-    this->name = actorName;
-  }
+  this->name = static_cast<const std::string&>(g_modeMgr.GetGameMode()->ActorName(g_session.m_monsterInfoActorId));
   const std::size_t separator = this->name.find("#");
   if (separator != std::string::npos) {
     this->name.erase(separator, this->name.size());
@@ -3589,26 +3583,27 @@ int UIHomunInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       char* const name = g_session.m_homunName;
       if (std::strlen(this->nameEdit->Text()) >= 24) {
         g_windowMgr.Confirm(LookupMessage(MSI_HOMUN_NAME_IN23), 0, true, false, 0, "Message", 280, 120, 0);
-      } else if (_mbsstr(reinterpret_cast<const unsigned char*>(this->nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkOpening.c_str())) ||
-                 _mbsstr(reinterpret_cast<const unsigned char*>(this->nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkClosing.c_str()))) {
-        g_windowMgr.Confirm(LookupMessage(MSI_STYLING_SHOP_OPEN_COUPON), 0, true, false, 0, "Message", 280, 120, 0);
-      } else {
-        char text[512];
-        std::sprintf(text, LookupMessage(MSI_BLOCK_CALL_NOTIFY), this->nameEdit->Text());
-        if (g_windowMgr.Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) != ID_NO) {
-          if (g_forbiddenWords.Contains(this->nameEdit->Text()) != true) {
-            g_modeMgr.GetGameMode()->SendMsg(MM_MER_RENAME, reinterpret_cast<int>(this->nameEdit->Text()), 0, 0, 0);
-            std::sprintf(name, this->nameEdit->Text());
-            this->Invalidate();
-            return 0;
-          }
-
-          g_windowMgr.Confirm(LookupMessage(MSI_CANNOT_SELL_IN_PRIVATE_TAB), 0, true, false, 0, "Message", 280, 120, 0);
-        }
-
-        this->nameEdit->SetText(name);
-        this->nameEdit->Invalidate();
+        return 0;
       }
+      if (_mbsstr(reinterpret_cast<const unsigned char*>(this->nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkOpening.c_str())) ||
+          _mbsstr(reinterpret_cast<const unsigned char*>(this->nameEdit->Text()), reinterpret_cast<const unsigned char*>(s_messageBoxItemLinkClosing.c_str()))) {
+        g_windowMgr.Confirm(LookupMessage(MSI_STYLING_SHOP_OPEN_COUPON), 0, true, false, 0, "Message", 280, 120, 0);
+        return 0;
+      }
+      char text[512];
+      std::sprintf(text, LookupMessage(MSI_BLOCK_CALL_NOTIFY), this->nameEdit->Text());
+      if (g_windowMgr.Confirm(text, 2, false, false, 0, "Message", 280, 120, 0) != ID_NO) {
+        if (g_forbiddenWords.Contains(this->nameEdit->Text()) == true) {
+          g_windowMgr.Confirm(LookupMessage(MSI_CANNOT_SELL_IN_PRIVATE_TAB), 0, true, false, 0, "Message", 280, 120, 0);
+        } else {
+          g_modeMgr.GetGameMode()->SendMsg(MM_MER_RENAME, reinterpret_cast<int>(this->nameEdit->Text()), 0, 0, 0);
+          std::sprintf(name, this->nameEdit->Text());
+          this->Invalidate();
+          return 0;
+        }
+      }
+      this->nameEdit->SetText(name);
+      this->nameEdit->Invalidate();
       return 0;
     }
     case ID_CLOSE:
