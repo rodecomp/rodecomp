@@ -530,7 +530,7 @@ bool UIHotKeyWnd::AssignSelectedHotkey(int mode) {
     return false;
   }
 
-  if (this->m_tab == 1 && g_session.HotkeyIndex(1, this->m_selectedRow) == 31) {
+  if (this->m_tab == 1 && g_session.HotkeyIndex(1, this->m_selectedRow) + 100 == 131) {
     const int key = g_windowMgr.keyCode;
     const int modifier = g_windowMgr.modifierKey;
     if (key == 0x12 || modifier == 0x12 || key == 0x11 || modifier == 0x11 || key == 0x10 || modifier == 0x10) {
