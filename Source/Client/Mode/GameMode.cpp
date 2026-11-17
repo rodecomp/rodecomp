@@ -5497,7 +5497,8 @@ void CGameMode::SendMousePointerPosition(float x, float y, int value) {
 void ShowCurrentMapName() {
   if (g_serviceOptions.Get(TT_SHOW_MAP_NAME_ON_OFF)) {
     const std::string mapName = g_session.m_navigationPlayerMap + std::string(".rsw");
-    g_mapInfoMgr->ShowMapName(mapName);
+    CMapInfoMgr* mapInfoMgr = g_mapInfoMgr;
+    mapInfoMgr->ShowMapName(mapName);
   }
 }
 
