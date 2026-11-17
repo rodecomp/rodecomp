@@ -1810,7 +1810,7 @@ void CRenderObject::RenderBlur(
   topRhw += 0.1f;
 
   SpriteQuad quad;
-  for (int direction = 1; direction < 5; ++direction) {
+  for (int direction = 1; direction <= 4; ++direction) {
     const float distance = static_cast<float>(this->render.effectPhase) * scale;
     CGameMode* mode = g_modeMgr.GetGameMode();
     const float spread = 400.0f / mode->camera->camera.desiredDistance * distance;
