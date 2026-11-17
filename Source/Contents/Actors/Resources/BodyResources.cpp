@@ -4071,9 +4071,9 @@ std::string EquipmentResourceMgr::GetBodyImfName(int job, int sex, int, int cost
 // OFFSET: 0x00BAB850
 // FUNCTION: fn_19753
 std::string EquipmentResourceMgr::GetBodyResourceName(int type, int job, int sex, int costumeJob, int costume) {
-  std::string result;
-  std::string sexName;
-  std::string jobName;
+  std::string result("");
+  std::string sexName("");
+  std::string jobName("");
 
   const bool secondJob = g_session.IsSecondJob(costumeJob);
   const int spriteJob = g_session.GetSpriteJob(job, costumeJob, true);
