@@ -1613,10 +1613,10 @@ void UINewSkillListWnd::DrawSkillTree() {
 
     if (!this->IsExtraTab(this->m_tab) && HasSkillValue(this->m_values, static_cast<int>(skill.id))) {
       this->FillRegion(x + 3, y + 43, 26, 26, 0xCCC0FF);
-      DrawRoundedBorder(*this, x + 2, y + 42, 28, 28, 0xC1B6FF);
+      this->DrawRoundedOutline(x + 2, y + 42, 28, 28, 0xC1B6FF);
     } else if (this->m_skillPoints != 0 && skill.available != 0 && skill.upgradable != 0) {
       this->FillRegion(x + 3, y + 43, 26, 26, 0xF0C4AF);
-      DrawRoundedBorder(*this, x + 2, y + 42, 28, 28, 0xF0C4AF);
+      this->DrawRoundedOutline(x + 2, y + 42, 28, 28, 0xF0C4AF);
     } else {
       this->FillRegion(x + 3, y + 43, 26, 26, 0xFFFFFF);
     }
