@@ -50,17 +50,17 @@ int CRendererDX7::SaveBitmap(const char* filename, CBitmapRes* overlay) {
   header.bfSize = 3 * (this->viewport.width * this->viewport.height + 18);
   std::fwrite(&header, sizeof(header), 1, file);
   BITMAPINFOHEADER information;
-  information.biSize = sizeof(information);
   information.biWidth = this->viewport.width;
   information.biHeight = this->viewport.height;
   information.biPlanes = 1;
   information.biBitCount = 24;
-  information.biCompression = 0;
-  information.biSizeImage = 0;
   information.biXPelsPerMeter = 0;
   information.biYPelsPerMeter = 0;
-  information.biClrUsed = 0;
+  information.biSize = sizeof(information);
+  information.biCompression = 0;
+  information.biSizeImage = 0;
   information.biClrImportant = 0;
+  information.biClrUsed = 0;
   std::fwrite(&information, sizeof(information), 1, file);
 
   DeviceOwnerDX7* owner = g_deviceOwnerDX7;
