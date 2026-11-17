@@ -498,12 +498,12 @@ bool CWorldViewMgr::AddLevel(const char* name, int level) {
         if (current < 10000) {
           found->level = current + 10000;
         }
-      } else if (current < 10000) {
-        if (current < level) {
-          found->level = level;
+      } else if (current >= 10000) {
+        if (level > current - 10000) {
+          found->level = level + 10000;
         }
-      } else if (current - 10000 < level) {
-        found->level = level + 10000;
+      } else if (level > current) {
+        found->level = level;
       }
     }
     return true;
