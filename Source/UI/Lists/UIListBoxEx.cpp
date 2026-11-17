@@ -99,7 +99,7 @@ void UIListBoxEx::Resize(int width, int height) {
 // OFFSET: 0x00875BE0
 // FUNCTION: fn_11202
 void UIListBoxEx::AddLine(const char* text, std::uint32_t color) {
-  this->lines.emplace(static_cast<int>(this->lines.size()), ExtendedListLine{text, color});
+  this->lines.insert(std::pair<const int, ExtendedListLine>(std::piecewise_construct, std::forward_as_tuple(static_cast<int>(this->lines.size())), std::forward_as_tuple(text, color)));
   const int width = this->TextWidth(text, 0, 0, 12, 0, 0);
   this->contentWidth = std::max(this->contentWidth, width);
   this->Refresh();
