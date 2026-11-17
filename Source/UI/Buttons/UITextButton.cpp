@@ -3060,9 +3060,7 @@ void UIListBoxTitle::Paint() {
     if (index == this->selected) {
       this->FillRegion(0, (index - first) * this->lineHeight, this->geometry.width, this->lineHeight - 1, this->selectionColor);
     } else {
-      const int* const titles = g_windowCloseValue;
-      const int* const titlesEnd = g_savedWindowCloseValue;
-      if (std::find(titles, titlesEnd, this->lines[index].id) != titlesEnd) {
+      if (std::find(g_windowCloseValue, g_savedWindowCloseValue, this->lines[index].id) != g_savedWindowCloseValue) {
         this->FillRegion(0, (index - first) * this->lineHeight, this->geometry.width, this->lineHeight - 1, this->titleColor);
       }
     }
