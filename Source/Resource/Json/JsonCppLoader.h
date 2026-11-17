@@ -32,10 +32,11 @@ static_assert(offsetof(JsonStorage<JsonObject>, elements) == 0x04);
 
 class JsonValue {
 public:
-  enum ValueType {
+  enum ValueType : unsigned char {
     NULL_VALUE = 0,
     BOOL_VALUE = 1,
     INT64_VALUE = 2,
+    UINT64_VALUE = 3,
     HALF_VALUE = 4,
     DOUBLE_VALUE = 5,
     STRING_VALUE = 6,
@@ -60,6 +61,7 @@ public:
     json_const_pointer = 12,
   };
 
+  ValueType Type() const;
   int GetType() const;
   bool IsNull() const;
   bool IsObject() const;
@@ -241,6 +243,7 @@ public:
   virtual ~JsonCppLoader();
 
   JsonValue& GetValue(JsonValue& out, const std::string& key, const JsonValue& node, int expectedType);
+  JsonValue::ValueType GetValueType(const JsonValue& value);
   void Fail(const char* format, ...);
   bool LoadBson(const std::string& path);
 

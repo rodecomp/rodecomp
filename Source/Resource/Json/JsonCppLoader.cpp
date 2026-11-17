@@ -180,6 +180,19 @@ struct JsonCopiedValue {
   }
 };
 
+// OFFSET: 0x005058B0
+
+// OFFSET: 0x004F3820
+// FUNCTION: fn_00484
+JsonValue::ValueType JsonCppLoader::GetValueType(const JsonValue& value) {
+  const JsonValue::ValueType type = value.Type();
+  if (type == JsonValue::UINT64_VALUE) {
+    return JsonValue::INT64_VALUE;
+  }
+
+  return type;
+}
+
 // OFFSET: 0x00509940
 // FUNCTION: fn_00891
 bool JsonCppLoader::GetMapStringBoolValue(const JsonValue& node, const std::string& key, std::map<std::string, bool>* out) {
