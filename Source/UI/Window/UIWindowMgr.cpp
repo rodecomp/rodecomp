@@ -1129,12 +1129,16 @@ UIWindowMgr::~UIWindowMgr() {
 // OFFSET: 0x00A8B0A0
 // FUNCTION: fn_17121
 void UIWindowMgr::SelectWhisperName(const char* name) {
-  if (!name || !this->chatWnd) {
+  if (!name) {
     return;
   }
 
   int index = 0;
   bool found = false;
+  if (!this->chatWnd) {
+    return;
+  }
+
   std::vector<std::string>& names = static_cast<UIWhisperEditCtrl*>(this->chatWnd->m_whisperEdit)->history;
   std::vector<std::string>::iterator it = names.begin();
   const std::vector<std::string>::iterator end = names.end();
