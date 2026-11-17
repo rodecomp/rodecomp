@@ -804,7 +804,7 @@ void CRagEffect::Hit1() {
 
 // OFFSET: 0x00C18D90
 // FUNCTION: fn_20064
-void CRagEffect::Hit2(int option) {
+__declspec(safebuffers) void CRagEffect::Hit2(int option) {
   const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   RenderVertex screen{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
   g_renderer->Project(&this->state.parent->render.position.x, view, screen);
@@ -936,10 +936,10 @@ void CRagEffect::Hit3() {
 
 // OFFSET: 0x00C19980
 // FUNCTION: fn_20066
-void CRagEffect::Hit4() {
-  CGameMode* gameMode = g_modeMgr.GetGameMode();
+__declspec(safebuffers) void CRagEffect::Hit4() {
+  const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
-  g_renderer->Project(&this->state.parent->render.position.x, gameMode->camera->frame.view.values, vertex);
+  g_renderer->Project(&this->state.parent->render.position.x, view, vertex);
   this->state.tlvertX = vertex.x;
   this->state.tlvertY = vertex.y;
 
@@ -972,7 +972,7 @@ void CRagEffect::Hit4() {
   CTexture* texture = g_texMgr.Load("effect\\lens2.tga", 0, false, true, false);
   this->state.lastPrim->state.textures[0] = texture;
 
-  for (int count = 5; count != 0; --count) {
+  for (int count = 0; count < 5; ++count) {
     this->state.lastPrim = this->LaunchEffectPrim(5, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.longitude = static_cast<float>(direction - 40 + ClampedRandom(80));
     this->state.lastPrim->state.latitude = static_cast<float>(ClampedRandom(100) - 50);
@@ -981,9 +981,7 @@ void CRagEffect::Hit4() {
     EffectPrimitiveState& spark = this->state.lastPrim->state;
     MatrixMult(spark.deltaPos3, vector3d{0.0f, 0.0f, static_cast<float>(ClampedRandom(4) + 4)}, spark.transform.values);
     EffectPrimitiveState& moving = this->state.lastPrim->state;
-    moving.deltaPos2.x = moving.deltaPos3.x + 0.0f;
-    moving.deltaPos2.y = moving.deltaPos3.y - 10.0f;
-    moving.deltaPos2.z = moving.deltaPos3.z + 0.0f;
+    moving.deltaPos2 = {moving.deltaPos3.x + 0.0f, moving.deltaPos3.y - 10.0f, moving.deltaPos3.z + 0.0f};
     this->state.lastPrim->state.speed = static_cast<float>(ClampedRandom(90) + 60) / 100.0f;
     this->state.lastPrim->state.duration = ClampedRandom(24) + 6;
     EffectPrimitiveState& fading = this->state.lastPrim->state;
@@ -12418,7 +12416,7 @@ void CRagEffect::IceArrow() {
 
 // OFFSET: 0x00C153D0
 // FUNCTION: fn_20050
-void CRagEffect::Flasher() {
+__declspec(safebuffers) void CRagEffect::Flasher() {
   if (this->state.stateCnt == 0) {
     PlayEffectWaveInline(*this, "effect\\hunter_flasher.wav");
   }
@@ -12440,7 +12438,7 @@ void CRagEffect::Flasher() {
     this->state.lastPrim->state.alpha = 0.0f;
     this->state.lastPrim->state.maxAlpha = 200.0f;
     this->state.lastPrim->state.alphaSpeed = this->state.lastPrim->state.maxAlpha / 6.0f;
-    this->state.lastPrim->state.chRadiSpeed = 1;
+    this->state.lastPrim->state.alphaCycle = 1;
 
     this->state.lastPrim->state.chPoint.push_back(40.0f);
     this->state.lastPrim->state.chVal1.push_back(120.0f);
@@ -12888,7 +12886,7 @@ void CRagEffect::RedParticleSpray(int count) {
 
 // OFFSET: 0x00C19FC0
 // FUNCTION: fn_20067
-void CRagEffect::Hit5() {
+__declspec(safebuffers) void CRagEffect::Hit5() {
   const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
   g_renderer->Project(&this->state.parent->render.position.x, view, vertex);
@@ -12926,7 +12924,7 @@ void CRagEffect::Hit5() {
 
 // OFFSET: 0x00C1A2C0
 // FUNCTION: fn_20068
-void CRagEffect::Hit6() {
+__declspec(safebuffers) void CRagEffect::Hit6() {
   const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
   RenderVertex vertex{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
   g_renderer->Project(&this->state.parent->render.position.x, view, vertex);

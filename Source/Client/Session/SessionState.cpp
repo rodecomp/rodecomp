@@ -223,7 +223,7 @@ bool CSession::EquipSwapCostumeItem(const ITEM_INFO& item) {
 
 // OFFSET: 0x00E3D8A0
 // FUNCTION: fn_24192
-void CSession::UnequipSwapEquippedItem(const ITEM_INFO& item) {
+__declspec(safebuffers) void CSession::UnequipSwapEquippedItem(const ITEM_INFO& item) {
   const int location = static_cast<int>(item.identity[3]);
   if (location == 0x8000) {
     this->SetSwapArrowIndex(0);
@@ -231,9 +231,9 @@ void CSession::UnequipSwapEquippedItem(const ITEM_INFO& item) {
     const EquipSlots slots = g_session.GetEquipSlots(location);
     if (slots.values[2] < 10) {
       if (slots.values[2] != -1) {
-        ITEM_INFO& entry = this->swapEquippedItems[slots.values[2]];
-        entry.identity[3] = 0;
-        entry.Reset();
+        const int index = slots.values[2];
+        this->swapEquippedItems[index].identity[3] = 0;
+        this->swapEquippedItems[index].Reset();
       }
       if (slots.values[1] != -1 && slots.values[1] < 10) {
         this->swapEquippedItems[slots.values[1]].Reset();
