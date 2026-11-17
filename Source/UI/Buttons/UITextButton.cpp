@@ -2840,15 +2840,17 @@ void UIItemTagOnMail::PlaceTagButton(UIWindow* button, const std::string& name, 
   const int firstLine = g_windowMgr.rodexComposeWnd->m_contents->firstVisibleLine;
   const int visibleLines = g_windowMgr.rodexComposeWnd->m_contents->geometry.height / lineHeight;
 
-  for (; line < this->m_lines.size(); ++line) {
-    const std::size_t length = this->m_lines[line].size();
-    if (rest.size() < length) {
-      break;
-    }
+  if (!this->m_lines.empty()) {
+    for (; line < this->m_lines.size(); ++line) {
+      const std::size_t length = this->m_lines[line].size();
+      if (rest.size() < length) {
+        break;
+      }
 
-    rest = rest.substr(length);
-    unsigned bytes = 0;
-    consumed += g_windowMgr.rodexComposeWnd->MeasureText(this->m_lines[line], bytes);
+      rest = rest.substr(length);
+      unsigned bytes = 0;
+      consumed += g_windowMgr.rodexComposeWnd->MeasureText(this->m_lines[line], bytes);
+    }
   }
 
   unsigned bytes = 0;
