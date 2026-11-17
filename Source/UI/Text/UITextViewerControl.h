@@ -14,7 +14,13 @@ class CUIVScrollBar;
 
 class CUITextViewer : public CUIControl {
 public:
-  CUITextViewer();
+  // OFFSET: 0x009BE300
+  // FUNCTION: fn_13947
+  CUITextViewer()
+      : CUIControl(), textX(0), textY(0), font(0), fontHeight(12), bold(false), textColor(0), shadow(false), shadowColor(0xFFFFFF), outline(false),
+        outlineColor(0xFFFFFF), lineSpacing(6), backgroundColor(0xFFFFFF), paddingLeft(3), paddingTop(3), paddingRight(3), paddingBottom(3), scrollBar(nullptr),
+        padding(nullptr), lines(), contentHeight(0), childPositions() {
+  }
   void OnCreate(int width, int height) override;
   void Resize(int width, int height) override;
   void OnProcess() override;

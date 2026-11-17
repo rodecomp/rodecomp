@@ -2643,14 +2643,6 @@ UIWindow* CUIControl::FindChildById(int id) {
   return nullptr;
 }
 
-// OFFSET: 0x009BE300
-// FUNCTION: fn_13947
-CUITextViewer::CUITextViewer()
-    : CUIControl(), textX(0), textY(0), font(0), fontHeight(12), bold(false), textColor(0), shadow(false), shadowColor(0xFFFFFF), outline(false),
-      outlineColor(0xFFFFFF), lineSpacing(6), backgroundColor(0xFFFFFF), paddingLeft(3), paddingTop(3), paddingRight(3), paddingBottom(3), scrollBar(nullptr),
-      padding(nullptr), lines(), contentHeight(0), childPositions() {
-}
-
 // OFFSET: 0x009BD4F0
 // FUNCTION: fn_13921
 bool UnusedTrue9BD4F0() {
@@ -3362,16 +3354,7 @@ void CUIEditCtrl::DrawBlinkingCaret(const std::uint32_t& color) {
   }
 }
 
-// OFFSET: 0x00AB10B0
-// FUNCTION: fn_17331
-template <>
-CUIRegisterMgr* Singleton<CUIRegisterMgr>::GetInstance() {
-  if (!s_instance) {
-    s_instance = new (std::nothrow) CUIRegisterMgr;
-  }
-
-  return s_instance;
-}
+template CUIRegisterMgr* Singleton<CUIRegisterMgr>::GetInstance();
 
 namespace {
 // INLINED

@@ -27,6 +27,8 @@ template __declspec(noinline) int std::_Traits_compare<std::char_traits<char>>(c
 template <>
 CEZ2STREffectMgr* Singleton<CEZ2STREffectMgr>::s_instance = nullptr;
 
+template CEZ2STREffectMgr* Singleton<CEZ2STREffectMgr>::GetInstance();
+
 // OFFSET: 0x005A1B70
 // FUNCTION: fn_03077
 EffectResourceSwitcher::EffectResourceSwitcher() : CEffect(-1), active(0), effect(nullptr), spawnPosition{0.0f, 0.0f, 0.0f} {

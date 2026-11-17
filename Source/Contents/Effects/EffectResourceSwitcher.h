@@ -52,17 +52,6 @@ public:
   bool Load();
 };
 
-// OFFSET: 0x005A2630
-// FUNCTION: fn_03115
-template <>
-inline CEZ2STREffectMgr* Singleton<CEZ2STREffectMgr>::GetInstance() {
-  if (!s_instance) {
-    s_instance = new (std::nothrow) CEZ2STREffectMgr;
-  }
-
-  return s_instance;
-}
-
 class EffectResourceSwitcher : public CEffect {
 public:
   /* 00CC */ unsigned char active;

@@ -40,6 +40,25 @@ extern "C" {
 #include <vector>
 #include <windows.h>
 
+// OFFSET: 0x00910BE0
+// FUNCTION: fn_12509
+SubChatWndInfo::SubChatWndInfo() {
+}
+
+// OFFSET: 0x00914AD0
+// FUNCTION: fn_12545
+SubChatWndInfo& SubChatWndInfo::operator=(const SubChatWndInfo& other) {
+  this->name = other.name;
+  for (int index = 0; index < 25; ++index) {
+    this->options[index] = other.options[index];
+  }
+  this->x = other.x;
+  this->y = other.y;
+  this->width = other.width;
+  this->height = other.height;
+  return *this;
+}
+
 template __declspec(noinline) std::_Tree_find_result<std::map<int, std::int64_t>::_Mybase::_Nodeptr> std::map<int, std::int64_t>::_Mybase::_Find_lower_bound<int>(const int&) const;
 
 template __declspec(noinline) SubChatWndInfo& std::map<int, SubChatWndInfo>::operator[](int&&);

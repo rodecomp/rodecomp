@@ -63,7 +63,16 @@ struct NaviDataEntry {
 };
 
 struct NaviRouteLine {
-  NaviRouteLine(int kind, int x, int y, const char* text, int color, int shadowColor);
+  // OFFSET: 0x00B92950
+  // FUNCTION: fn_19552
+  NaviRouteLine(int kind, int x, int y, const char* text, int color, int shadowColor) : x(0), y(0) {
+    this->kind = kind;
+    this->x = x;
+    this->y = y;
+    this->text = text;
+    this->color = color;
+    this->shadowColor = shadowColor;
+  }
 
   // OFFSET: 0x00B92F10
   // FUNCTION: fn_19558
@@ -277,7 +286,14 @@ struct NavigationTarget {
     this->x = -1;
     this->y = -1;
   }
-  NavigationTarget(int type, void* object);
+  // OFFSET: 0x00B92A70
+  // FUNCTION: fn_19554
+  NavigationTarget(int type, void* object) {
+    this->type = type;
+    this->object = object;
+    this->x = -1;
+    this->y = -1;
+  }
 
   // INLINED
   NavigationTarget(int type, void* object, int x, int y, std::string name) {

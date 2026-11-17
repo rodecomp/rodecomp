@@ -210,44 +210,6 @@ void PaintCooldowns(
 );
 
 // INLINED
-bool RotateCooldownRows(std::list<ShortcutCooldownRecord>& records, int amount, int bank, int& rotation0, int& rotation1) {
-  const int rows = amount < 4 ? amount : amount % 4;
-  if (rows <= 0) {
-    return false;
-  }
-
-  if (bank == 0 || bank == 1) {
-    int& rotation = bank == 0 ? rotation0 : rotation1;
-    rotation += rows;
-    if (rotation >= 4) {
-      rotation -= 4;
-    }
-  }
-
-  const std::uint32_t now = CooldownNow();
-
-  for (auto entry = records.begin(); entry != records.end();) {
-    if (entry->end <= now) {
-      entry = records.erase(entry);
-      continue;
-    }
-
-    for (CooldownState& state : entry->main) {
-      state.slot -= 9 * rows;
-      state.y -= 33 * rows;
-      if (state.slot < 0) {
-        state.slot += 36;
-        state.y += 132;
-      }
-    }
-
-    ++entry;
-  }
-
-  return true;
-}
-
-// INLINED
 void PaintMainCooldowns(
   std::list<ShortcutCooldownRecord>& records, const std::list<ShortcutCooldownIcon>& icons, int rows, int x, int y, CooldownOwner& owner
 ) {

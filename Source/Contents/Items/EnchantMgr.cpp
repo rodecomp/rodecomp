@@ -77,16 +77,7 @@ __forceinline CItemDBToIDMgr* ItemDbToIdMgr() {
 CEnchantMgr::~CEnchantMgr() {
 }
 
-// OFFSET: 0x006863F0
-// FUNCTION: fn_05565
-template <>
-CEnchantMgr* Singleton<CEnchantMgr>::GetInstance() {
-  if (!s_instance) {
-    s_instance = new (std::nothrow) CEnchantMgr;
-  }
-
-  return s_instance;
-}
+template CEnchantMgr* Singleton<CEnchantMgr>::GetInstance();
 
 
 // OFFSET: 0x00682960

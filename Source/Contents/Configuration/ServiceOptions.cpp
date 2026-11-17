@@ -1195,16 +1195,7 @@ void ApplyServiceOptionWindow27() {
 template <>
 CGameSettingsMgr* Singleton<CGameSettingsMgr>::s_instance = nullptr;
 
-// OFFSET: 0x00AB1040
-// FUNCTION: fn_17330
-template <>
-CGameSettingsMgr* Singleton<CGameSettingsMgr>::GetInstance() {
-  if (!s_instance) {
-    s_instance = new (std::nothrow) CGameSettingsMgr;
-  }
-
-  return s_instance;
-}
+template CGameSettingsMgr* Singleton<CGameSettingsMgr>::GetInstance();
 
 // OFFSET: 0x006C45F0
 // FUNCTION: fn_06356

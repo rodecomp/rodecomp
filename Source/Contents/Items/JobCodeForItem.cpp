@@ -133,16 +133,7 @@ template void CJobCodeForItem::AddJobGroup(unsigned int, JobId, JobId, JobId);
 template <>
 CJobCodeForItem* Singleton<CJobCodeForItem>::s_instance = nullptr;
 
-// OFFSET: 0x00E5CED0
-// FUNCTION: fn_24374
-template <>
-CJobCodeForItem* Singleton<CJobCodeForItem>::GetInstance() {
-  if (!s_instance) {
-    s_instance = new (std::nothrow) CJobCodeForItem;
-  }
-
-  return s_instance;
-}
+template CJobCodeForItem* Singleton<CJobCodeForItem>::GetInstance();
 
 // OFFSET: 0x006CB0A0
 // FUNCTION: fn_06464

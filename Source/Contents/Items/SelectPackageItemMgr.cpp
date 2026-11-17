@@ -73,16 +73,7 @@ bool CSelectPackageItemMgr::LoadScript() {
   return false;
 }
 
-// OFFSET: 0x0061F9A0
-// FUNCTION: fn_04454
-template <>
-CSelectPackageItemMgr* Singleton<CSelectPackageItemMgr>::GetInstance() {
-  if (!s_instance) {
-    s_instance = new (std::nothrow) CSelectPackageItemMgr;
-  }
-
-  return s_instance;
-}
+template CSelectPackageItemMgr* Singleton<CSelectPackageItemMgr>::GetInstance();
 
 // GLOBAL: gl_24907
 short g_itemOptionPlaceholderId = 9999;

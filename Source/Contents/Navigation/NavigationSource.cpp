@@ -231,17 +231,6 @@ CNavigationManager::CNavigationManager() {
   this->drawDestination = false;
 }
 
-// OFFSET: 0x00B92950
-// FUNCTION: fn_19552
-NaviRouteLine::NaviRouteLine(int kind, int x, int y, const char* text, int color, int shadowColor) : x(0), y(0) {
-  this->kind = kind;
-  this->x = x;
-  this->y = y;
-  this->text = text;
-  this->color = color;
-  this->shadowColor = shadowColor;
-}
-
 // OFFSET: 0x00B92CA0
 // FUNCTION: fn_45448
 CNavigationManager::~CNavigationManager() {
@@ -664,15 +653,6 @@ void CNaviInfo::SearchMap(const std::vector<std::string>& keywords, std::vector<
     target.object = *it;
     out.push_back(target);
   }
-}
-
-// OFFSET: 0x00B92A70
-// FUNCTION: fn_19554
-NavigationTarget::NavigationTarget(int type, void* object) {
-  this->type = type;
-  this->object = object;
-  this->x = -1;
-  this->y = -1;
 }
 
 // OFFSET: 0x00B93DE0

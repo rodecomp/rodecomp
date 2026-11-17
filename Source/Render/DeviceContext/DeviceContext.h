@@ -14,7 +14,9 @@ class SpriteAtlas;
 
 class CDC {
 public:
-  virtual ~CDC();
+  // OFFSET: 0x005459E0
+  // FUNCTION: fn_01834
+  virtual ~CDC() {}
   virtual void Grow(std::uint32_t width, std::uint32_t height) = 0;
   virtual bool GetDC(HDC* output) = 0;
   virtual void ReleaseDC(HDC dc) = 0;

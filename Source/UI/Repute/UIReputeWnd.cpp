@@ -28,16 +28,7 @@
 template <>
 CReputeMgr* Singleton<CReputeMgr>::s_instance = nullptr;
 
-// OFFSET: 0x00610D60
-// FUNCTION: fn_04320
-template <>
-CReputeMgr* Singleton<CReputeMgr>::GetInstance() {
-  if (!s_instance) {
-    s_instance = new (std::nothrow) CReputeMgr;
-  }
-
-  return s_instance;
-}
+template CReputeMgr* Singleton<CReputeMgr>::GetInstance();
 
 // OFFSET: 0x0060EF80
 // FUNCTION: fn_04309
