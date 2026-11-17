@@ -2564,11 +2564,13 @@ void CRandomHitEffect::OnProcess() {
   }
 
   CEZ2STRParticle* particle = this->emitter;
-  particle->position.x = this->position[0] + this->emitter->offset.x;
-  particle->position.y = this->position[1] + this->emitter->offset.y;
-  particle->position.z = this->position[2] + this->emitter->offset.z;
-  particle->Process(0.0f, 0.0f, 0.0f);
-  this->active = particle->Process(0.0f, 0.0f, 0.0f);
+  const vector3d base = {this->position[0], this->position[1], this->position[2]};
+  vector3d& target = particle->position;
+  target.x = particle->offset.x + base.x;
+  target.y = base.y + particle->offset.y;
+  target.z = base.z + particle->offset.z;
+  this->emitter->Process(0.0f, 0.0f, 0.0f);
+  this->active = this->emitter->Process(0.0f, 0.0f, 0.0f);
 }
 
 // OFFSET: 0x00720940
@@ -4446,7 +4448,7 @@ void CCurseOfCubeEffect::SpawnStart() {
 void CCurseOfCubeEffect::OnProcess() {
   for (auto it = this->emitters.begin(); it != this->emitters.end();) {
     CEZ2STRParticle* emitter = *it;
-    if (IsEmitterAlive(emitter)) {
+    if (IsEmitterAlive(*it)) {
       if (emitter) {
         const vector3d position = *&this->positionVector;
         const matrix& view = g_modeMgr.GetGameMode()->camera->frame.view;
@@ -4853,9 +4855,12 @@ void CSavageImpactEffect::Open() {
   this->emitter = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
   float toReciprocalDepth = 0.0f;
   float fromReciprocalDepth = 0.0f;
-  this->offset.x = this->sourcePosition[0] - this->position[0];
-  this->offset.y = this->sourcePosition[1] - this->position[1];
-  this->offset.z = this->sourcePosition[2] - this->position[2];
+  const float offsetX = this->sourcePosition[0] - this->position[0];
+  const float offsetY = this->sourcePosition[1] - this->position[1];
+  const float offsetZ = this->sourcePosition[2] - this->position[2];
+  this->offset.x = offsetX;
+  this->offset.y = offsetY;
+  this->offset.z = offsetZ;
 
   float fromX;
   float fromY;
@@ -4866,7 +4871,8 @@ void CSavageImpactEffect::Open() {
 
   const float dx = toX - fromX;
   const float dy = toY - fromY;
-  double angle = static_cast<float>(std::acos(static_cast<double>(dx / SquareRoot(dy * dy + dx * dx)))) / 3.141592f * 180.0f;
+  const float length = SquareRoot(dy * dy + dx * dx);
+  double angle = static_cast<float>(std::acos(static_cast<double>(dx / length))) / 3.141592f * 180.0f;
   if (fromY > toY) {
     angle = 360.0 - angle;
   }
