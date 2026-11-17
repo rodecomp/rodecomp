@@ -1244,10 +1244,11 @@ void UINewSkillListWnd::LayoutButtons() {
     this->m_btnCancel->SetState(0);
   }
 
-  for (int i = 0; i < 10; ++i) {
+  int i;
+  for (i = 0; i < 10; ++i) {
     this->m_btnLevelUp[i]->Move(-200, -200);
   }
-  for (int i = 0; i < 42; ++i) {
+  for (i = 0; i < 42; ++i) {
     this->m_btnSkills[i]->Move(-200, -200);
     this->m_btnSkillUps[i]->Move(-200, -200);
   }
