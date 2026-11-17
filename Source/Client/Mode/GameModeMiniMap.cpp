@@ -218,62 +218,65 @@ void CGameMode::DrawMiniMap() {
     return;
   }
 
-  const int width = this->scene->terrain->width;
-  const int height = this->scene->terrain->height;
-  const CPlayer* player = this->scene->player;
-  const float centerX = static_cast<float>(g_renderer->viewport.width - 144) + 64.0f;
-  int column;
-  int row;
-  this->WorldCell(player->render.position.x, player->render.position.z, column, row);
-
-  const float half = 1.0f / (g_windowMgr.minimapZoom * 2.0f);
-  const float u = static_cast<float>(column) / static_cast<float>(width);
-  const float v = static_cast<float>(height - row) / static_cast<float>(height);
   TextureRegion view;
-  view.left = u - half;
-  view.top = v - half;
-  view.right = u + half;
-  view.bottom = v + half;
-  if (view.left < 0.0f) {
-    view.left = 0.0f;
-    view.right = half + half;
-    if (view.right > 1.0f) {
-      view.right = 1.0f;
-    }
-  }
-  if (view.top < 0.0f) {
-    view.top = 0.0f;
-    view.bottom = half + half;
-    if (view.bottom > 1.0f) {
-      view.bottom = 1.0f;
-    }
-  }
-  if (view.right > 1.0f) {
-    view.right = 1.0f;
-    view.left = 1.0f - (half + half);
+  int reduction;
+  {
+    const int width = this->scene->terrain->width;
+    const int height = this->scene->terrain->height;
+    const CPlayer* player = this->scene->player;
+    const float centerX = static_cast<float>(g_renderer->viewport.width - 144) + 64.0f;
+    int row;
+    int column;
+    this->WorldCell(player->render.position.x, player->render.position.z, column, row);
+
+    const float half = 1.0f / (g_windowMgr.minimapZoom * 2.0f);
+    const float u = static_cast<float>(column) / static_cast<float>(width);
+    const float v = static_cast<float>(height - row) / static_cast<float>(height);
+    view.left = u - half;
+    view.top = v - half;
+    view.right = u + half;
+    view.bottom = v + half;
     if (view.left < 0.0f) {
       view.left = 0.0f;
+      view.right = half + half;
+      if (view.right > 1.0f) {
+        view.right = 1.0f;
+      }
     }
-  }
-  if (view.bottom > 1.0f) {
-    view.bottom = 1.0f;
-    view.top = 1.0f - (half + half);
     if (view.top < 0.0f) {
       view.top = 0.0f;
+      view.bottom = half + half;
+      if (view.bottom > 1.0f) {
+        view.bottom = 1.0f;
+      }
     }
+    if (view.right > 1.0f) {
+      view.right = 1.0f;
+      view.left = 1.0f - (half + half);
+      if (view.left < 0.0f) {
+        view.left = 0.0f;
+      }
+    }
+    if (view.bottom > 1.0f) {
+      view.bottom = 1.0f;
+      view.top = 1.0f - (half + half);
+      if (view.top < 0.0f) {
+        view.top = 0.0f;
+      }
+    }
+
+    reduction = g_textureReduction;
+    g_textureReduction = 1;
+    CTexture* texture = g_texMgr.Load(reinterpret_cast<const char*>(this->minimapBmpName), 0, false, true, false);
+    RECT rect;
+    rect.left = static_cast<int>(centerX - 64.0f);
+    rect.top = 16;
+    rect.right = static_cast<int>(centerX + 64.0f);
+    rect.bottom = 144;
+    this->DrawTexture(rect, 0, 0.0998f, g_windowMgr.minimapColor, texture, view);
+
+    this->DrawMiniMapMarker(view, column, row, 5, "유저인터페이스\\map\\map_arrow.bmp", 4, 0xFFFFFFFF, false);
   }
-
-  const int reduction = g_textureReduction;
-  g_textureReduction = 1;
-  CTexture* texture = g_texMgr.Load(reinterpret_cast<const char*>(this->minimapBmpName), 0, false, true, false);
-  RECT rect;
-  rect.left = static_cast<int>(centerX - 64.0f);
-  rect.top = 16;
-  rect.right = static_cast<int>(centerX + 64.0f);
-  rect.bottom = 144;
-  this->DrawTexture(rect, 0, 0.0998f, g_windowMgr.minimapColor, texture, view);
-
-  this->DrawMiniMapMarker(view, column, row, 5, "유저인터페이스\\map\\map_arrow.bmp", 4, 0xFFFFFFFF, false);
 
   for (auto it = g_miniMapEffectMarkers.begin(); it != g_miniMapEffectMarkers.end();) {
     this->DrawMiniMapMarker(view, it->second.x, it->second.y, 2, std::string(), 2, 0xFFFF0000, false);
@@ -302,14 +305,16 @@ void CGameMode::DrawMiniMap() {
 
   if (this->compassPosList.size() != 0) {
     for (auto it = this->compassPosList.begin(); it != this->compassPosList.end();) {
-      if (it->second.persistent == 0 && timeGetTime() > it->second.tick + 15000) {
+      const std::uint32_t tick = it->second.tick;
+      if (it->second.persistent == 0 && timeGetTime() > tick + 15000) {
         it = this->compassPosList.erase(it);
       } else {
         ++it;
       }
     }
     for (auto it = this->compassPosList.begin(); it != this->compassPosList.end(); ++it) {
-      const int elapsed = timeGetTime() - it->second.tick;
+      const std::uint32_t tick = it->second.tick;
+      const int elapsed = timeGetTime() - tick;
       if (elapsed % 1000 < 500) {
         this->DrawMiniMapMarker(view, it->second.x, it->second.y, 1, std::string(""), 3, it->second.color, false);
       }
