@@ -567,12 +567,14 @@ bool CSkill::OnProcess() {
     }
     break;
 
-  case UNT_BENEDICTIO:
-    if (this->m_effectTimer >= EffectLifetime(0x5B) - 8u) {
+  case UNT_BENEDICTIO: {
+    const unsigned interval = EffectLifetime(0x5B) - 8;
+    if (this->m_effectTimer >= interval) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_BENEDICTIO, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
+  }
 
   case UNT_SANCTUARY:
     if (!this->m_effect) {
@@ -742,8 +744,11 @@ bool CSkill::OnProcess() {
     break;
 
   case UNT_EVILLAND:
-    if (!this->m_hasEffect && g_effectMgr->Spawn(this->skillAid, EF_EVILLAND, this->render.position, 0, this->range * 2, 0, 0)) {
-      this->m_hasEffect = true;
+    if (!this->m_hasEffect) {
+      EffectLists* effects = g_effectMgr;
+      if (effects->Spawn(this->skillAid, EF_EVILLAND, this->render.position, 0, this->range * 2, 0, 0)) {
+        this->m_hasEffect = true;
+      }
     }
     break;
 
@@ -778,9 +783,12 @@ bool CSkill::OnProcess() {
     break;
 
   case UNT_CLOUD_KILL:
-    if (!this->m_hasEffect && g_effectMgr->Spawn(this->skillAid, EF_CLOUD_KILL, this->render.position, 0, -1, 0, 0)) {
-      this->m_hasEffect = true;
-      this->m_effectId = 0x438;
+    if (!this->m_hasEffect) {
+      EffectLists* effects = g_effectMgr;
+      if (effects->Spawn(this->skillAid, EF_CLOUD_KILL, this->render.position, 0, -1, 0, 0)) {
+        this->m_hasEffect = true;
+        this->m_effectId = 0x438;
+      }
     }
     break;
 
@@ -794,12 +802,14 @@ bool CSkill::OnProcess() {
     }
     break;
 
-  case UNT_FIREPILLAR_ACTIVE:
-    if (this->m_effectTimer >= EffectLifetime(0x61) - 8u) {
+  case UNT_FIREPILLAR_ACTIVE: {
+    const unsigned interval = EffectLifetime(0x61) - 8;
+    if (this->m_effectTimer >= interval) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_FIREPILLARBOMB, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
+  }
 
   case UNT_FIREPILLAR_WAITING:
   case UNT_WINDATTACK:
@@ -824,8 +834,9 @@ bool CSkill::OnProcess() {
     }
     break;
 
-  case UNT_QUAGMIRE:
-    if (this->m_effectTimer >= EffectLifetime(0x5F) - 20u) {
+  case UNT_QUAGMIRE: {
+    const unsigned interval = EffectLifetime(0x5F) - 20;
+    if (this->m_effectTimer >= interval) {
       this->m_effectTimer = 0;
       if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
         g_effectMgr->Spawn(0, EF_QUAGMIRE_VISUAL, this->render.position, 0, -1, 0, 0);
@@ -834,108 +845,137 @@ bool CSkill::OnProcess() {
       }
     }
     break;
+  }
 
-  case UNT_WARP_ACTIVE:
-    if (this->m_effectTimer >= EffectLifetime(0x13C) - 8u) {
+  case UNT_WARP_ACTIVE: {
+    const unsigned interval = EffectLifetime(0x13C) - 8;
+    if (this->m_effectTimer >= interval) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_READYPORTAL2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
+  }
 
-  case UNT_WARP_WAITING:
-    if (this->m_effectTimer >= EffectLifetime(0x13D) - 8u) {
+  case UNT_WARP_WAITING: {
+    const unsigned interval = EffectLifetime(0x13D) - 8;
+    if (this->m_effectTimer >= interval) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_PORTAL2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
+  }
 
-  case UNT_DIMENSIONDOOR:
-    if (this->m_effectTimer >= EffectLifetime(0x339) - 8u) {
+  case UNT_DIMENSIONDOOR: {
+    const unsigned interval = EffectLifetime(0x339) - 8;
+    if (this->m_effectTimer >= interval) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_FORESTLIGHT6, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
+  }
 
-  case UNT_CHAOSPANIC:
-    if (this->m_effectTimer >= EffectLifetime(0x33B) - 8u) {
+  case UNT_CHAOSPANIC: {
+    const unsigned interval = EffectLifetime(0x33B) - 8;
+    if (this->m_effectTimer >= interval) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_BOTTOM_ANI, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
+  }
 
-  case UNT_MAELSTROM:
-    if (this->m_effectTimer >= EffectLifetime(0x33C) - 8u) {
+  case UNT_MAELSTROM: {
+    const unsigned interval = EffectLifetime(0x33C) - 8;
+    if (this->m_effectTimer >= interval) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_BOTTOM_MAELSTROM, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
+  }
 
-  case UNT_REVERBERATION:
-    if (this->m_effectTimer >= EffectLifetime(0x358) - 8u) {
+  case UNT_REVERBERATION: {
+    const unsigned interval = EffectLifetime(0x358) - 8;
+    if (this->m_effectTimer >= interval) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_BOT_REVERB, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\REVERBERATION.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
+  }
 
-  case UNT_NETHERWORLD:
-    if (this->m_effectTimer >= EffectLifetime(0x35C) - 8u) {
+  case UNT_NETHERWORLD: {
+    const unsigned interval = EffectLifetime(0x35C) - 8;
+    if (this->m_effectTimer >= interval) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_BOT_REVERB2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\POEMOFNETHERWORLD.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
+  }
 
-  case UNT_SEVERE_RAINSTORM:
-    if (this->m_effectTimer >= EffectLifetime(0x359) - 8u) {
+  case UNT_SEVERE_RAINSTORM: {
+    const unsigned interval = EffectLifetime(0x359) - 8;
+    if (this->m_effectTimer >= interval) {
       this->m_effectTimer = 0;
       g_effectMgr->Spawn(0, EF_NEW_SEVERERAINSTORM, this->render.position, 0, -1, 0, 0);
       g_soundMgr->PlayWave("effect\\rainstorm.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
+  }
 
-  case UNT_BLOODYLUST:
-    if (this->m_effectTimer >= EffectLifetime(0x33D) - 8u) {
+  case UNT_BLOODYLUST: {
+    const unsigned interval = EffectLifetime(0x33D) - 8;
+    if (this->m_effectTimer >= interval) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_BOTTOM_BLOODYLUST, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
+  }
 
-  case UNT_CALLFAMILY:
-    if (this->m_effectTimer >= EffectLifetime(0x155) - 8u) {
+  case UNT_CALLFAMILY: {
+    const unsigned interval = EffectLifetime(0x155) - 8;
+    if (this->m_effectTimer >= interval) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_PORTAL3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
+  }
 
-  case UNT_SAFETYWALL:
-    if (this->m_effectTimer >= EffectLifetime(0x13B) - 7u) {
+  case UNT_SAFETYWALL: {
+    const unsigned interval = EffectLifetime(0x13B) - 7;
+    if (this->m_effectTimer >= interval) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_GLASSWALL2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
+  }
 
   case UNT_FIREWALL:
-  case UNT_FIRE_MANTLE:
-    if (this->m_effectTimer >= EffectLifetime(0x19) - 7u) {
+  case UNT_FIRE_MANTLE: {
+    const unsigned interval = EffectLifetime(0x19) - 7;
+    if (this->m_effectTimer >= interval) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_FIREWALL, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
+  }
 
-  case UNT_FIREWALK:
-    if (this->m_effectTimer >= EffectLifetime(0x398) - 7u) {
+  case UNT_FIREWALK: {
+    const unsigned interval = EffectLifetime(0x398) - 7;
+    if (this->m_effectTimer >= interval) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_FIREWALL2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
+  }
 
-  case UNT_ELECTRICWALK:
-    if (this->m_effectTimer >= EffectLifetime(0x39E) - 7u) {
+  case UNT_ELECTRICWALK: {
+    const unsigned interval = EffectLifetime(0x39E) - 7;
+    if (this->m_effectTimer >= interval) {
       this->m_effectTimer = 0;
       this->LaunchEffect(EF_SHOCKWAVE2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
+  }
 
   case UNT_VACUUM_EXTREME:
     if (this->m_effectTimer >= EffectLifetime(0x399) - 1u) {
