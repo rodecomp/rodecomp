@@ -18,6 +18,8 @@
 #include <string>
 #include <vector>
 
+template __declspec(noinline) std::string std::string::substr(std::string::size_type, std::string::size_type) const;
+
 // GLOBAL: gl_24664
 static const std::string g_viewerItemTagBegin = "<ITEM>";
 
