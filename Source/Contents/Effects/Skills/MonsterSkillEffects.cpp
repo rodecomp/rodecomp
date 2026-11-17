@@ -1793,7 +1793,8 @@ void CHawkVumerangEffect::Render() {
 // OFFSET: 0x00719030
 // FUNCTION: fn_07303
 CDropItemEffect::CDropItemEffect()
-    : CEffect(-1), emitterCount(2), soundPath("wav\\effect\\"), position{} {
+    : CEffect(-1), emitterCount(2), soundPath("wav\\effect\\") {
+  this->position = vector3d{};
   this->emitters.reserve(this->emitterCount);
 }
 
@@ -4523,34 +4524,32 @@ void CSprArrowEffect::Open() {
   this->startZ = position->z;
 }
 
+struct CylinderEdge {
+  /* 0000 */ vector3d bottom;
+  /* 000C */ vector3d top;
+};
+
 struct CylinderSlice {
   /* 0000 */ double radius;
   /* 0008 */ double pitch;
   /* 0010 */ double height;
 
-  vector3d* ComputePoints(vector3d points[2], double angle);
+  CylinderEdge ComputePoints(double angle);
 };
 
 // OFFSET: 0x0070F800
 // FUNCTION: fn_07190
-__declspec(noinline) vector3d* CylinderSlice::ComputePoints(vector3d points[2], double angle) {
+__declspec(noinline) CylinderEdge CylinderSlice::ComputePoints(double angle) {
   const float baseZ = static_cast<float>(ClientSin(static_cast<float>(angle)) * this->radius);
   const float baseX = static_cast<float>(ClientCos(static_cast<float>(angle)) * this->radius);
-  vector3d result[2];
-  result[0].x = baseX;
-  result[0].y = 0.0f;
-  result[0].z = baseZ;
+  vector3d bottom = {baseX, 0.0f, baseZ};
   const float offsetZ =
       static_cast<float>(ClientSin(static_cast<float>(angle)) * (this->height * ClientCos(static_cast<float>(this->pitch))));
   const float offsetY = static_cast<float>(this->height * -ClientSin(static_cast<float>(this->pitch)));
   const float offsetX =
       static_cast<float>(ClientCos(static_cast<float>(this->pitch)) * this->height * ClientCos(static_cast<float>(angle)));
-  result[1].x = offsetX + baseX;
-  result[1].y = offsetY + 0.0f;
-  result[1].z = offsetZ + baseZ;
-  points[0] = result[0];
-  points[1] = result[1];
-  return points;
+  vector3d top = {offsetX + bottom.x, offsetY + bottom.y, offsetZ + bottom.z};
+  return CylinderEdge{bottom, top};
 }
 
 // OFFSET: 0x0070FC80
@@ -4575,24 +4574,22 @@ void CCylinderEffect::OnProcess() {
     slice.pitch = static_cast<float>(particle->phaseParameter) / 180.0f * 3.141592f;
     slice.height = particle->animationParameter;
 
-    vector3d front[2];
-    vector3d back[2];
     const double offset = static_cast<double>(particle->columnIndex) * 0.29919925332069397 + baseAngle;
-    slice.ComputePoints(front, offset);
-    slice.ComputePoints(back, offset + 0.29919925332069397);
+    const CylinderEdge front = slice.ComputePoints(offset);
+    const CylinderEdge back = slice.ComputePoints(offset + 0.29919925332069397);
 
-    particle->vertices[0].x = front[1].x;
-    particle->vertices[0].y = front[1].y;
-    particle->vertices[0].z = front[1].z;
-    particle->vertices[2].x = front[0].x;
-    particle->vertices[2].y = front[0].y;
-    particle->vertices[2].z = front[0].z;
-    particle->vertices[1].x = back[1].x;
-    particle->vertices[1].y = back[1].y;
-    particle->vertices[1].z = back[1].z;
-    particle->vertices[3].x = back[0].x;
-    particle->vertices[3].y = back[0].y;
-    particle->vertices[3].z = back[0].z;
+    particle->vertices[0].x = front.top.x;
+    particle->vertices[0].y = front.top.y;
+    particle->vertices[0].z = front.top.z;
+    particle->vertices[2].x = front.bottom.x;
+    particle->vertices[2].y = front.bottom.y;
+    particle->vertices[2].z = front.bottom.z;
+    particle->vertices[1].x = back.top.x;
+    particle->vertices[1].y = back.top.y;
+    particle->vertices[1].z = back.top.z;
+    particle->vertices[3].x = back.bottom.x;
+    particle->vertices[3].y = back.bottom.y;
+    particle->vertices[3].z = back.bottom.z;
 
     angle = static_cast<float>(static_cast<double>(particle->speedParameter) + baseAngle);
   }
