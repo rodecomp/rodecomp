@@ -7118,7 +7118,7 @@ void UIItemShopWnd2::OnLBtnDown(int x, int y) {
 
   ITEM_INFO item = this->GetItemAt(x, y);
 
-  if (item.identity[1] == 0) {
+  if (item.identity[1] <= 0) {
     item = this->GetItemByIndex(this->hovered);
 
     if (item.identity[1] > 0) {
@@ -7129,11 +7129,7 @@ void UIItemShopWnd2::OnLBtnDown(int x, int y) {
   if (item.identity[1] > 0) {
     CGameMode* mode = g_modeMgr.GetGameMode();
     const ITEM_INFO owned = g_session.LookupClientItemByIdentity(item.identity[1]);
-    if (owned.identity[1] > 0) {
-      mode->drag.BeginItem(g_windowMgr, 3, item, item.quantity, -1);
-    } else {
-      mode->drag.BeginItem(g_windowMgr, 3, item, 1, -1);
-    }
+    mode->BeginDragItem(3, item, owned.identity[1] > 0 ? item.quantity : 1, -1);
   }
 }
 
