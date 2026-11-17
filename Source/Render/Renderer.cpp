@@ -85,14 +85,14 @@ void CRenderer::DrawBattleFieldIcon() {
   int count = (score > 9) + 1;
   digits[0] = score % 10;
   digits[1] = (score /= 10) % 10;
-  if (width < 2) {
-    int x = this->viewport.width - 207;
+  if (width > 1) {
+    int x = this->viewport.width - 175;
     for (int i = 0; i < count; ++i) {
       g_modeMgr.GetGameMode()->DrawActionSprite(x, 50, action, sprite, digits[i], 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201);
       x -= 32;
     }
   } else {
-    int x = this->viewport.width - 175;
+    int x = this->viewport.width - 207;
     for (int i = 0; i < count; ++i) {
       g_modeMgr.GetGameMode()->DrawActionSprite(x, 50, action, sprite, digits[i], 0, 1.0f, 0.0f, 0xFFFFFFFF, 0x201);
       x -= 32;
