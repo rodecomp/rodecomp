@@ -2,6 +2,8 @@
 
 #include <cstring>
 
+template __declspec(noinline) void std::string::reserve(size_type);
+
 // GLOBAL: gl_24548
 const unsigned char g_colorHexDigit[256] = {
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
