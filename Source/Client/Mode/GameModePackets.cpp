@@ -17520,74 +17520,6 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
   CEffect* effect;
 
   switch (skillId) {
-  default: {
-    if (CSkillActionMgr::GetInstance()->OnSkillCast(skillId, delay, actor) == true) {
-      return;
-    }
-
-    std::map<std::int64_t, std::int64_t> primaryEffects;
-    std::map<std::int64_t, std::int64_t> secondaryEffects;
-    primaryEffects[0x14F9] = 0x7EC;
-    secondaryEffects[0x14F9] = 0x7ED;
-    primaryEffects[0x14FB] = 0x7F0;
-    secondaryEffects[0x14FB] = 0x7F1;
-    primaryEffects[0x14FF] = 0x7F5;
-    secondaryEffects[0x14FF] = 0x7F6;
-    primaryEffects[0x14FA] = 0x7FB;
-    secondaryEffects[0x14FA] = 0x7FC;
-    primaryEffects[0x14FC] = 0x809;
-    secondaryEffects[0x14FC] = 0x80A;
-    primaryEffects[0x14ED] = 0x80D;
-    secondaryEffects[0x14ED] = 0x80E;
-    primaryEffects[0x1501] = 0x834;
-    secondaryEffects[0x1501] = 0x835;
-    primaryEffects[0x1502] = 0x839;
-    secondaryEffects[0x1502] = 0x83A;
-    primaryEffects[0x14C7] = 0x829;
-    secondaryEffects[0x14C7] = 0x82A;
-    primaryEffects[0x14FD] = 0x857;
-    secondaryEffects[0x14FD] = 0x858;
-    primaryEffects[0x1504] = 0x85A;
-    primaryEffects[0x14C3] = 0x86B;
-    primaryEffects[0x14C9] = 0x86B;
-    primaryEffects[0x14DB] = 0x873;
-    secondaryEffects[0x14DB] = 0x874;
-    primaryEffects[0x14DA] = 0x88B;
-    primaryEffects[0x14E4] = 0x8BC;
-    secondaryEffects[0x14E4] = 0x8BD;
-    primaryEffects[0x14DF] = 0x89C;
-    secondaryEffects[0x14DF] = 0x89D;
-    primaryEffects[0x14DC] = 0x8A4;
-    secondaryEffects[0x14DC] = 0x8A5;
-    primaryEffects[0x14DE] = 0x8AC;
-    secondaryEffects[0x14DE] = 0x8AD;
-    primaryEffects[0x14DD] = 0x8B4;
-    secondaryEffects[0x14DD] = 0x8B5;
-    primaryEffects[0x14E3] = 0x8C2;
-    secondaryEffects[0x14E3] = 0x8C3;
-    primaryEffects[0x14E0] = 0x8C7;
-    secondaryEffects[0x14E0] = 0x8C8;
-    primaryEffects[0x14E1] = 0x8CE;
-    secondaryEffects[0x14E1] = 0x8D0;
-    primaryEffects[0x14E2] = 0x8C7;
-    secondaryEffects[0x14E2] = 0x8C8;
-
-    const std::int64_t key = skillId;
-    const vector3d position{0.0f, 0.0f, 0.0f};
-    if (primaryEffects.find(key) != primaryEffects.end()) {
-      effect = g_effectMgr->Spawn(actor->render.accountId, static_cast<int>(primaryEffects[key]), position, 0, -1, 0, 0);
-      if (effect) {
-        effect->SetLifeTime(delay);
-      }
-    }
-    if (secondaryEffects.find(key) != secondaryEffects.end()) {
-      effect = g_effectMgr->Spawn(actor->render.accountId, static_cast<int>(secondaryEffects[key]), position, 0, -1, 0, 0);
-      if (effect) {
-        effect->SetLifeTime(delay);
-      }
-    }
-    return;
-  }
   case RK_IGNITIONBREAK:
     effect = g_effectMgr->Spawn(actor->render.accountId, EF_NEW_IGNITIONBREAK_CAST, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     if (effect) {
@@ -18282,6 +18214,73 @@ void LaunchSkillActorEffect(CGameActor* actor, short x, short y, std::uint16_t s
       effect->SetLifeTime(delay + 50);
     }
     return;
+  default: {
+    if (CSkillActionMgr::GetInstance()->OnSkillCast(skillId, delay, actor) == true) {
+      return;
+    }
+
+    std::map<std::int64_t, std::int64_t> primaryEffects;
+    std::map<std::int64_t, std::int64_t> secondaryEffects;
+    primaryEffects[0x14F9] = 0x7EC;
+    secondaryEffects[0x14F9] = 0x7ED;
+    primaryEffects[0x14FB] = 0x7F0;
+    secondaryEffects[0x14FB] = 0x7F1;
+    primaryEffects[0x14FF] = 0x7F5;
+    secondaryEffects[0x14FF] = 0x7F6;
+    primaryEffects[0x14FA] = 0x7FB;
+    secondaryEffects[0x14FA] = 0x7FC;
+    primaryEffects[0x14FC] = 0x809;
+    secondaryEffects[0x14FC] = 0x80A;
+    primaryEffects[0x14ED] = 0x80D;
+    secondaryEffects[0x14ED] = 0x80E;
+    primaryEffects[0x1501] = 0x834;
+    secondaryEffects[0x1501] = 0x835;
+    primaryEffects[0x1502] = 0x839;
+    secondaryEffects[0x1502] = 0x83A;
+    primaryEffects[0x14C7] = 0x829;
+    secondaryEffects[0x14C7] = 0x82A;
+    primaryEffects[0x14FD] = 0x857;
+    secondaryEffects[0x14FD] = 0x858;
+    primaryEffects[0x1504] = 0x85A;
+    primaryEffects[0x14C3] = 0x86B;
+    primaryEffects[0x14C9] = 0x86B;
+    primaryEffects[0x14DB] = 0x873;
+    secondaryEffects[0x14DB] = 0x874;
+    primaryEffects[0x14DA] = 0x88B;
+    primaryEffects[0x14E4] = 0x8BC;
+    secondaryEffects[0x14E4] = 0x8BD;
+    primaryEffects[0x14DF] = 0x89C;
+    secondaryEffects[0x14DF] = 0x89D;
+    primaryEffects[0x14DC] = 0x8A4;
+    secondaryEffects[0x14DC] = 0x8A5;
+    primaryEffects[0x14DE] = 0x8AC;
+    secondaryEffects[0x14DE] = 0x8AD;
+    primaryEffects[0x14DD] = 0x8B4;
+    secondaryEffects[0x14DD] = 0x8B5;
+    primaryEffects[0x14E3] = 0x8C2;
+    secondaryEffects[0x14E3] = 0x8C3;
+    primaryEffects[0x14E0] = 0x8C7;
+    secondaryEffects[0x14E0] = 0x8C8;
+    primaryEffects[0x14E1] = 0x8CE;
+    secondaryEffects[0x14E1] = 0x8D0;
+    primaryEffects[0x14E2] = 0x8C7;
+    secondaryEffects[0x14E2] = 0x8C8;
+
+    const vector3d position{0.0f, 0.0f, 0.0f};
+    if (primaryEffects.find(skillId) != primaryEffects.end()) {
+      effect = g_effectMgr->Spawn(actor->render.accountId, static_cast<int>(primaryEffects[skillId]), position, 0, -1, 0, 0);
+      if (effect) {
+        effect->SetLifeTime(delay);
+      }
+    }
+    if (secondaryEffects.find(skillId) != secondaryEffects.end()) {
+      effect = g_effectMgr->Spawn(actor->render.accountId, static_cast<int>(secondaryEffects[skillId]), position, 0, -1, 0, 0);
+      if (effect) {
+        effect->SetLifeTime(delay);
+      }
+    }
+    return;
+  }
   }
 }
 // OFFSET: 0x00D7B640
