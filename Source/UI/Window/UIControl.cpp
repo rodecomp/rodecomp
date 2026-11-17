@@ -3580,8 +3580,7 @@ void CUIHScrollBar::OnCreate(int, int) {
   if (!this->thumb) {
     this->thumb = new CUIHThumb();
     this->thumb->Show(0);
-    const std::function<void(int)> onDrag = [this](int value) { this->ScrollBy(value); };
-    AssignHandler(this->thumb->onDrag, onDrag);
+    AssignHandler(this->thumb->onDrag, std::function<void(int)>([this](int value) { this->ScrollBy(value); }));
     this->AddChild(this->thumb);
   }
 }
@@ -3604,8 +3603,7 @@ void CUIVScrollBar::OnCreate(int, int) {
   if (!this->thumb) {
     this->thumb = new CUIVThumb();
     this->thumb->Show(0);
-    const std::function<void(int)> onDrag = [this](int value) { this->ScrollBy(value); };
-    AssignHandler(this->thumb->onDrag, onDrag);
+    AssignHandler(this->thumb->onDrag, std::function<void(int)>([this](int value) { this->ScrollBy(value); }));
     this->AddChild(this->thumb);
   }
 }
