@@ -82,20 +82,13 @@ void UIWindowMgr::UpdateSnapRectangles() {
   }
 
   for (auto windowIt = this->rendered.begin(); windowIt != this->rendered.end(); ++windowIt) {
-    UIWindow* window = *windowIt;
-    if (window->geometry.visible == 0) {
+    if ((*windowIt)->geometry.visible == 0) {
       continue;
     }
 
-    bool excluded = false;
-    for (auto exIt = this->snapExcluded.begin(); exIt != this->snapExcluded.end(); ++exIt) {
-      UIWindow* ex = *exIt;
-      if (ex == window) {
-        excluded = true;
-        break;
-      }
-    }
-    if (excluded) {
+    UIWindow* window = *windowIt;
+
+    if (std::find(this->snapExcluded.begin(), this->snapExcluded.end(), window) != this->snapExcluded.end()) {
       continue;
     }
 
