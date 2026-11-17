@@ -1489,7 +1489,8 @@ std::string UIWindow::FitDisplayText(int width, const char* text, int family, in
     display = g_windowMgr.chatWnd->ConvertChat(std::move(display));
   }
 
-  display = g_navigationLinkParser->DisplayNavigationLink(display);
+  NavigationLinkParser* const parser = g_navigationLinkParser;
+  display = parser->DisplayNavigationLink(display);
   display = DisplayQuestTextTag(display);
 
   const int textWidth = this->TextWidth(display.c_str(), 0, family, height, bold, 0);
@@ -3040,7 +3041,8 @@ void UINavigationRuideWnd::Paint() {
 void UIListBox_NaviSearch::Refresh() {
   const int visible = this->geometry.height / this->lineHeight;
   const int count = static_cast<int>(this->lines.size());
-  const int overflow = std::max(0, count - visible);
+  const int excess = count - visible;
+  const int overflow = excess >= 0 ? excess : 0;
   int maximum = 0;
   if (overflow != 0) {
     this->verticalOverflow = 1;
