@@ -52,6 +52,12 @@ int CNavi_Link::GetId() const {
   return this->id;
 }
 
+// OFFSET: 0x00B8DEB0
+// FUNCTION: fn_19460
+int CNavi_Link::GetDepth() const {
+  return this->depth;
+}
+
 // OFFSET: 0x00B8E8F0
 // FUNCTION: fn_19497
 CNaviInfo* CNavi_Link::GetInfo() const {

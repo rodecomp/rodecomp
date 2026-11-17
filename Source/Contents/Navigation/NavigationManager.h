@@ -147,6 +147,7 @@ public:
   const char* GetLinkedName() const;
   NaviCell GetLinkedCell() const;
   void SetDepth(int depth);
+  int GetDepth() const;
   std::vector<NaviLink>::iterator LinkedBegin();
   std::vector<NaviLink>::iterator LinkedEnd();
   void AddLinkedLink(const NaviLink& link);
