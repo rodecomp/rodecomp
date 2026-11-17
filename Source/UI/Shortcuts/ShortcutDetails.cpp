@@ -19,7 +19,7 @@ void UIShortCutWnd::OnRBtnDown(int x, int y) {
 
   const int index = column + 9 * g_session.m_hotkeyPage;
 
-  if (index >= 9 * this->m_grid.rows) {
+  if (9 * this->m_grid.rows <= index) {
     if (g_session.ItemSlotActive()) {
       ITEM_INFO item = g_session.LookupClientItem(static_cast<int>(this->m_itemSlots[column]->itemId), 1);
 
