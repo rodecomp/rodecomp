@@ -154,10 +154,10 @@ std::pair<bool, std::string> CPetEvolutionMgr::InsertRecipe(int petEgg, int targ
   }
 
   if (it != recipes.end()) {
-    for (auto entry = it->materials.begin(); entry != it->materials.end(); ++entry) {
-      if (entry->first == material) {
-        return std::make_pair(false, "duplicate material ITID");
-      }
+    if (std::find_if(it->materials.begin(), it->materials.end(), [material](const std::pair<int, int>& entry) {
+          return entry.first == material;
+        }) != it->materials.end()) {
+      return std::make_pair(false, "duplicate material ITID");
     }
 
     it->materials.push_back(std::make_pair(material, count));
