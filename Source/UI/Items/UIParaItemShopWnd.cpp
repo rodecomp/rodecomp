@@ -832,8 +832,8 @@ void UIParaResultWnd::Paint() {
     this->FillRegion(72, 17, columns * 32 - 32, slots * 32, RGB(red, green, blue));
   }
 
-  int index = 0;
   int visible = 0;
+  int index = 0;
 
   for (auto it = this->items.begin(); it != this->items.end(); ++it, ++index) {
     if (index < this->scroll * this->columns) {
