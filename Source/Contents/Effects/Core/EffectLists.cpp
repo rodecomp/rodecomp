@@ -224,11 +224,13 @@ void EffectLists::Retire(CEffect* effect, unsigned char removeActive) {
 // OFFSET: 0x00B25120
 // FUNCTION: fn_18777
 void EffectLists::Retire(int actor, int id) {
-  if (CEffect* effect = this->Find(actor, id)) {
+  CEffect* effect = this->Find(actor, id);
+  if (effect) {
     this->retired.push_back(effect);
 
     const int owner = effect->actor;
-    if (this->active.find(owner) != this->active.end()) {
+    auto found = this->active.find(owner);
+    if (found != this->active.end()) {
       this->active[owner].remove_if([effect](CEffect* other) { return other == effect; });
     }
   }
@@ -283,7 +285,7 @@ void EffectLists::Add(int actor, CEffect* effect) {
   case EF_ANIMATED_EMITTER:
   case EF_NEW_RANGEDATTACK:
   case EF_UNK_2343:
-    this->indexed[id].push_back(effect);
+    this->indexed[static_cast<int>(id)].push_back(effect);
     break;
   }
 }
