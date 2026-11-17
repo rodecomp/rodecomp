@@ -279,6 +279,20 @@ public:
   /* 005C */ std::vector<CNavi_Link*> links;
 };
 
+struct NavigationTargetLook {
+  /* 0000 */ int job;
+  /* 0004 */ int sex;
+  /* 0008 */ int bodyPalette;
+  /* 000C */ int head;
+  /* 0010 */ int headPalette;
+  /* 0014 */ int accessory0;
+  /* 0018 */ int accessory1;
+  /* 001C */ int accessory2;
+  /* 0020 */ int robe;
+
+  ~NavigationTargetLook();
+};
+
 struct NavigationTarget {
   NavigationTarget() {
     this->type = -1;

@@ -985,7 +985,7 @@ CNavi_Object::~CNavi_Object() {
 
 // OFFSET: 0x00B8CE30
 // FUNCTION: fn_19431
-void Nullsub36() {
+NavigationTargetLook::~NavigationTargetLook() {
 }
 
 // OFFSET: 0x00B98E40

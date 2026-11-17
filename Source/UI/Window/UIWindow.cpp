@@ -96,20 +96,6 @@ std::_Tree<std::_Tset_traits<UIWindow*, std::less<UIWindow*>, std::allocator<UIW
 template __declspec(noinline) void std::vector<bool>::push_back(const bool&);
 template __declspec(noinline) int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
 
-namespace {
-  struct NavigationTargetLook {
-    /* 0000 */ int job;
-    /* 0004 */ int sex;
-    /* 0008 */ int bodyPalette;
-    /* 000C */ int head;
-    /* 0010 */ int headPalette;
-    /* 0014 */ int accessory0;
-    /* 0018 */ int accessory1;
-    /* 001C */ int accessory2;
-    /* 0020 */ int robe;
-  };
-}
-
 // INLINED
 inline WindowGeometry::WindowGeometry()
     : width(0), height(0), x(0), y(0), surface(nullptr), visible(1), id(600), state(0), animationFrame(0), targetAlpha(255), alphaStart(timeGetTime()),
@@ -3473,8 +3459,10 @@ void UINavigationV4Wnd::InsertNavigationLink(std::string name, int x, int y) {
   link += g_windowNaviLinkCloseTag;
 
   if (g_windowMgr.GetHoverWindow() && g_windowMgr.GetHoverWindow()->geometry.id != 516) {
-    if (ChatWindow()->m_chatEdit == g_windowMgr.GetHoverWindow() && !g_windowMgr.inputSuggestionsEnabled) {
-      ChatWindow()->ToggleInput();
+    UIWindow* const hover = g_windowMgr.GetHoverWindow();
+    UINewChatWnd* const chat = ChatWindow();
+    if (chat->m_chatEdit == hover && !g_windowMgr.inputSuggestionsEnabled) {
+      chat->ToggleInput();
     }
   } else if (!g_windowMgr.inputSuggestionsEnabled) {
     ChatWindow()->ToggleInput();
