@@ -220,12 +220,12 @@ void UIHotkeyGuideWnd::Paint() {
     }
   }
 
-  for (auto& label : this->m_labels) {
-    if (label.second.key.valid == true) {
-      this->DrawKeyLabel(label.second.text, &label.second.key);
+  for (auto label = this->m_labels.begin(); label != this->m_labels.end(); ++label) {
+    if (label->second.key.valid == true) {
+      this->DrawKeyLabel(label->second.text, &label->second.key);
     }
-    if (label.second.altKey.valid == true) {
-      this->DrawKeyLabel(label.second.text, &label.second.altKey);
+    if (label->second.altKey.valid == true) {
+      this->DrawKeyLabel(label->second.text, &label->second.altKey);
     }
   }
 
