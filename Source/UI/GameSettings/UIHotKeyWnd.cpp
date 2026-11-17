@@ -324,8 +324,10 @@ void UISerachStoreInfoWnd::OnMouseHover(int x, int y) {
   }
 
   if ((x > 160 && x < 330) || (x > 5 && x < 50) || static_cast<unsigned int>(x - 51) <= 108) {
-    int screenX = (x - 40) / 32 * 32 + 40;
-    int screenY = (y - 17) / 32 * 32 + 1;
+    const int column = (x - 40) / 32;
+    const int row = (y - 17) / 32;
+    int screenX = column * 32 + 40;
+    int screenY = row * 32 + 1;
     this->ToScreen(screenX, screenY);
 
     std::string text;

@@ -1016,8 +1016,10 @@ void UIBarterItemPurchaseWnd::OnMouseHover(int x, int y) {
 void UIBartermarketWnd::OnMouseHover(int x, int y) {
   std::pair<bool, BarterMarketItem> found = this->GetBarterItemAt(x, y);
   if (found.first) {
-    int tooltipX = (x - 40) / 32 * 32 + 40;
-    int tooltipY = (y - 17) / 32 * 32 + 1;
+    const int column = (x - 40) / 32;
+    const int row = (y - 17) / 32;
+    int tooltipX = column * 32 + 40;
+    int tooltipY = row * 32 + 1;
     this->ToScreen(tooltipX, tooltipY);
     std::string text;
     ITEM_DESC description = FindItemDescription(found.second.currencyItemId);

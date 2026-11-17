@@ -7364,8 +7364,10 @@ void UIMerchantShopMakeWnd::OnLBtnDown(int x, int y) {
 void UIItemPurchaseWnd::OnMouseHover(int x, int y) {
   ITEM_INFO item = this->GetItemAt(x, y);
   if (item.identity[1] > 0) {
-    int tooltipX = (x - 40) / 32 * 32 + 40;
-    int tooltipY = (y - 17) / 32 * 32 + 1;
+    const int column = (x - 40) / 32;
+    const int row = (y - 17) / 32;
+    int tooltipX = column * 32 + 40;
+    int tooltipY = row * 32 + 1;
     this->ToScreen(tooltipX, tooltipY);
 
     std::string text;
@@ -7403,8 +7405,10 @@ void UIItemPurchaseWnd::OnMouseHover(int x, int y) {
 void UIItemSellWnd2::OnMouseHover(int x, int y) {
   ITEM_INFO item = this->GetItemAt(x, y);
   if (item.identity[1] > 0) {
-    int tooltipX = (x - 40) / 32 * 32 + 40;
-    int tooltipY = (y - 17) / 32 * 32 + 1;
+    const int column = (x - 40) / 32;
+    const int row = (y - 17) / 32;
+    int tooltipX = column * 32 + 40;
+    int tooltipY = row * 32 + 1;
     this->ToScreen(tooltipX, tooltipY);
 
     std::string text;
@@ -7429,8 +7433,10 @@ void UIItemSellWnd::OnMouseHover(int x, int y) {
     return;
   }
 
-  int tooltipX = (x - 40) / 32 * 32 + 40;
-  int tooltipY = (y - 17) / 32 * 32 + 1;
+  const int column = (x - 40) / 32;
+  const int row = (y - 17) / 32;
+  int tooltipX = column * 32 + 40;
+  int tooltipY = row * 32 + 1;
   this->ToScreen(tooltipX, tooltipY);
 
   std::string text;
@@ -7495,8 +7501,10 @@ void UIItemShopWnd2::OnMouseHover(int x, int y) {
 void UIItemShopWnd::OnMouseHover(int x, int y) {
   ITEM_INFO item = this->GetItemAt(x, y);
   if (item.identity[1] > 0) {
-    int tooltipX = (x - 40) / 32 * 32 + 40;
-    int tooltipY = (y - 17) / 32 * 32 + 1;
+    const int column = (x - 40) / 32;
+    const int row = (y - 17) / 32;
+    int tooltipX = column * 32 + 40;
+    int tooltipY = row * 32 + 1;
     this->ToScreen(tooltipX, tooltipY);
 
     std::string text;
@@ -7710,8 +7718,10 @@ void UIMerchantItemPurchaseWnd::OnMouseHover(int x, int y) {
 void UIMerchantItemShopWnd::OnMouseHover(int x, int y) {
   ITEM_INFO item = this->GetItemAt(x, y);
   if (item.identity[1] > 0) {
-    int tooltipX = (x - 40) / 32 * 32 + 40;
-    int tooltipY = (y - 17) / 32 * 32 + 1;
+    const int column = (x - 40) / 32;
+    const int row = (y - 17) / 32;
+    int tooltipX = column * 32 + 40;
+    int tooltipY = row * 32 + 1;
     this->ToScreen(tooltipX, tooltipY);
 
     if (item.identified == 1 && item.optionCount != 0) {
