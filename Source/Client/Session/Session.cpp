@@ -3351,8 +3351,8 @@ void CSession::ClearItemContainers() {
   }
 
   this->m_partyMembers.clear();
-  this->partyName = "";
   this->partyLeader = 0;
+  this->partyName = "";
   this->ClearItemQuantities();
 }
 
