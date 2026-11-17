@@ -29,6 +29,7 @@
 template __declspec(noinline) int std::_Traits_compare<std::char_traits<char>>(const char*, std::size_t, const char*, std::size_t) noexcept;
 template __declspec(noinline) std::pair<std::string, std::vector<std::string>>::pair(std::string&, std::vector<std::string>&);
 template __declspec(noinline) std::_Tree_find_result<std::map<int, RobeAlpha>::_Mybase::_Nodeptr> std::map<int, RobeAlpha>::_Mybase::_Find_lower_bound<int>(const int&) const;
+template __declspec(noinline) std::vector<CNaviInfo*>::size_type std::vector<CNaviInfo*>::size() const noexcept;
 
 // GLOBAL: gl_24705
 int g_serviceMode;
@@ -602,7 +603,7 @@ SessionShop* CSession::GetShop(int shopId) {
     return &found->second;
   }
 
-  this->m_shops[shopId] = SessionShop{};
+  this->m_shops[shopId] = SessionShop{0, {}};
   return &this->m_shops[shopId];
 }
 
@@ -627,7 +628,7 @@ void CSession::SetShopItem(int shopId, unsigned int index, int itemId, int first
   }
 
   std::map<int, std::pair<int, int>>& items = shop->items[index];
-  if (items.find(itemId) == items.end()) {
+  if (items.end() == items.find(itemId)) {
     items[itemId] = index == 0 ? std::make_pair(1, second) : std::make_pair(first, second);
   }
 }
@@ -834,11 +835,11 @@ bool CSession::LoadExceptionMinimapNameTable() {
   CCommonObject& storage = this->m_tableLoader;
   const bool loaded = storage.LoadTokens(tokens, "ExceptionMinimapNameTable.txt", 0);
 
-  for (char* token : tokens) {
-    this->m_navigationForbiddenMaps.push_back(std::string(token));
+  for (auto token = tokens.begin(); token != tokens.end(); ++token) {
+    this->m_navigationForbiddenMaps.push_back(std::string(*token));
   }
 
-  std::sort(this->m_navigationForbiddenMaps.begin(), this->m_navigationForbiddenMaps.end(), std::less<std::string>());
+  std::sort(this->m_navigationForbiddenMaps.begin(), this->m_navigationForbiddenMaps.end());
   return loaded;
 }
 
