@@ -4352,7 +4352,7 @@ void CPc::SetState(int state, int resetPosition) {
     return;
   }
 
-  if (state != ST_DEAD && current == 0x51) {
+  if (current == 0x51 && state != ST_DEAD) {
     return;
   }
 
@@ -4410,7 +4410,8 @@ void CPc::SetState(int state, int resetPosition) {
       case JT_STAR_EMPEROR_B:
       case JT_SKY_EMPEROR:
         if (g_modeMgr.GetGameMode()->camera->camera.desiredDistance > g_serviceOptionJitterScale) {
-          g_modeMgr.GetGameMode()->camera->camera.desiredDistance = g_serviceOptionJitterScale;
+          CGameMode* mode = g_modeMgr.GetGameMode();
+          mode->camera->camera.desiredDistance = g_serviceOptionJitterScale;
         }
         break;
       }
