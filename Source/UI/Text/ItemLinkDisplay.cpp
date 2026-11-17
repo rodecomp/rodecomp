@@ -47,8 +47,8 @@ bool UIChatHisBox::Next(std::string& remaining, std::string& encoded, unsigned& 
     return false;
   }
 
-  do {
-    remaining = std::string(remaining, 0, close);
+  for (;;) {
+    remaining = remaining.substr(0, close);
     auto begin = remaining.find(g_itemLinkTagBegin);
 
     if (close != std::string::npos && begin == std::string::npos) {
@@ -74,17 +74,21 @@ bool UIChatHisBox::Next(std::string& remaining, std::string& encoded, unsigned& 
 
       encoded = remaining;
       remaining = original;
-      std::string name = "";
+      std::string name;
 
-      if (this->Name(encoded, name)) {
-        remaining = remaining.substr(position + encoded.size() + g_itemLinkTagBegin.size() + g_itemLinkTagEnd.size());
-      } else {
+      if (!this->Name(encoded, name)) {
         position += static_cast<unsigned>(encoded.size() + g_itemLinkTagBegin.size() + g_itemLinkTagEnd.size());
         remaining = remaining.substr(position);
         return true;
       }
+
+      remaining = remaining.substr(position + encoded.size() + g_itemLinkTagBegin.size() + g_itemLinkTagEnd.size());
     }
-  } while (close != std::string::npos);
+
+    if (close == std::string::npos) {
+      break;
+    }
+  }
 
   return true;
 }
