@@ -6507,7 +6507,8 @@ std::vector<unsigned char> CGameMode::SaveNameCardState() {
     data.insert(data.end(), chunk.begin(), chunk.end());
   }
 
-  for (CGameActor* actor : this->scene->actors) {
+  for (std::list<CGameActor*>::iterator it = this->scene->actors.begin(); it != this->scene->actors.end(); ++it) {
+    CGameActor* actor = *it;
     if (this->AppendGuildEmblem(buffer, names, actor->GetGdid(), g_guildMgr->GetEmblemVersion(actor->GetGdid()))) {
       const std::vector<unsigned char> chunk = MakeDataChunk(13002, buffer);
       data.insert(data.end(), chunk.begin(), chunk.end());
@@ -8933,7 +8934,8 @@ int g_hoverActorGid;
 
 // INLINED
 __forceinline void CGameMode::ShowHoverActorName(CGameActor* actor) {
-  this->EnsureNameBalloon(this->itemNameBalloon);
+  UINameBalloonText*& itemBalloon = this->itemNameBalloon;
+  this->EnsureNameBalloon(itemBalloon);
   CActorNameCard card = this->nameCard.Lookup(actor->render.accountId);
   if (card.received) {
     actor->hasHp == 1 && (this->scene->isPKZone == 1 || this->scene->isSiegeMode == 1)
@@ -8941,7 +8943,7 @@ __forceinline void CGameMode::ShowHoverActorName(CGameActor* actor) {
         : card.name = static_cast<const std::string&>(this->nameCard.Name(actor->render.accountId));
 
     if (g_session.IsMonsterActor(actor) == 1) {
-      UINameBalloonText* balloon = this->itemNameBalloon;
+      UINameBalloonText* balloon = itemBalloon;
       unsigned char monsterType;
       if (actor->GetEffectiveJob(-1) == 20269) {
         monsterType = 0;
@@ -8950,28 +8952,28 @@ __forceinline void CGameMode::ShowHoverActorName(CGameActor* actor) {
       }
       balloon->SetName(card, actor->IsPlayerClass(actor->GetEffectiveJob(-1)) == 0, monsterType);
     } else {
-      this->itemNameBalloon->SetName(card, actor->IsPlayerClass(actor->GetEffectiveJob(-1)) == 0, 0);
+      itemBalloon->SetName(card, actor->IsPlayerClass(actor->GetEffectiveJob(-1)) == 0, 0);
     }
 
     const unsigned char showEmblem = g_serviceOptions.Get(TT_SHOW_EMBLEM_ON_OFF);
     if ((g_session.IsNpcJob(actor->GetEffectiveJob(-1)) || g_session.IsMonsterActor(actor)) && card.groupIconId) {
-      this->itemNameBalloon->SetIcon(FormatOwnedString("유저인터페이스\\group\\group_%d.bmp", card.groupIconId).c_str(), 0);
+      itemBalloon->SetIcon(FormatOwnedString("유저인터페이스\\group\\group_%d.bmp", card.groupIconId).c_str(), 0);
     } else if (g_session.IsAllyActor(actor->render.accountId, actor->GetEffectiveJob(-1)) && card.groupIconId) {
       this->nameBalloon->SetIcon(FormatOwnedString("유저인터페이스\\group\\group_%d.bmp", card.groupIconId).c_str(), 0);
     } else if (actor->GetGdid() && showEmblem) {
       std::string emblem = g_guildMgr->GetEmblemFilename(actor->GetGdid());
       const unsigned char framedEmblem = g_serviceOptions.Get(TT_EMBLEM_FRAME_ON_OFF);
-      this->itemNameBalloon->SetIcon(emblem.c_str(), g_modeMgr.GetGameMode()->scene->isSiegeMode == 1 && framedEmblem ? 1 : 0);
+      itemBalloon->SetIcon(emblem.c_str(), g_modeMgr.GetGameMode()->scene->isSiegeMode == 1 && framedEmblem ? 1 : 0);
     } else {
-      this->itemNameBalloon->SetIcon("", 0);
+      itemBalloon->SetIcon("", 0);
     }
 
-    UINameBalloonText* balloon = this->itemNameBalloon;
+    UINameBalloonText* balloon = itemBalloon;
     if (balloon) {
       balloon->m_textColor = this->ActorNameColor(actor->GetEffectiveJob(-1), actor->render.accountId);
       balloon->m_outlineColor = 0;
     }
-    this->PlaceWindowAtActor(this->itemNameBalloon, actor);
+    this->PlaceWindowAtActor(itemBalloon, actor);
   }
 }
 
