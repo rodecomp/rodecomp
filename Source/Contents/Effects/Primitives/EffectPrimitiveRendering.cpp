@@ -2753,9 +2753,9 @@ __declspec(safebuffers) void CEffectPrim::RenderTrailSquares(matrix& wtm) {
     do {
       const int angle1 = this->state.slots[ec].rotStart;
       const float radius = this->state.slots[ec].maxHeight - shrink;
-      const int angle2 = angle1 < 270 ? angle1 + 90 : angle1 - 270;
-      const int angle3 = angle2 + 90 < 360 ? angle2 + 90 : angle2 - 270;
-      const int angle4 = angle3 + 90 < 360 ? angle3 + 90 : angle3 - 270;
+      const int angle2 = angle1 + (angle1 < 270 ? 90 : -270);
+      const int angle3 = angle2 + (angle2 + 90 < 360 ? 90 : -270);
+      const int angle4 = angle3 + (angle3 + 90 < 360 ? 90 : -270);
       vec1.Set(radius * g_cosTable[angle1], 0.0f, radius * g_sinTable[angle1]);
       vec2.Set(radius * g_cosTable[angle2], 0.0f, radius * g_sinTable[angle2]);
       vec3.Set(radius * g_cosTable[angle3], 0.0f, radius * g_sinTable[angle3]);
