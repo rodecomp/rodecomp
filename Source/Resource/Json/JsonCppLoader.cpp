@@ -3,9 +3,159 @@
 #include "Resource/Json/JsonCppLoaderParsing.h"
 
 #include <cstdarg>
+#include <cmath>
+#include <cstdint>
 #include <cstdio>
 #include <cstring>
 #include <fstream>
+#include <limits>
+#include <locale.h>
+
+namespace jsoncons {
+
+class json_exception {
+public:
+  virtual ~json_exception() noexcept = default;
+  virtual const char* what() const noexcept = 0;
+};
+
+template <class Base, class Enable = void>
+class json_runtime_error : public Base, public virtual json_exception {
+public:
+  explicit json_runtime_error(const std::string& text) noexcept;
+
+  // INLINED
+  ~json_runtime_error() noexcept {
+  }
+
+  // INLINED
+  const char* what() const noexcept override {
+    return Base::what();
+  }
+};
+
+// OFFSET: 0x004EE600
+// FUNCTION: fn_00330
+// OFFSET: 0x004EE790
+// FUNCTION: fn_00332
+template <class Base, class Enable>
+json_runtime_error<Base, Enable>::json_runtime_error(const std::string& text) noexcept : Base(text) {
+}
+
+namespace binary {
+
+// OFFSET: 0x004FC250
+// FUNCTION: fn_00671
+__declspec(noinline) double decode_half(std::uint16_t half) {
+  const std::int64_t exponent = (half >> 10) & 0x1f;
+  const std::int64_t mantissa = half & 0x3ff;
+  double value;
+  if (exponent == 0) {
+    value = std::ldexp(static_cast<double>(mantissa), -24);
+  } else if (exponent != 31) {
+    value = std::ldexp(static_cast<double>(mantissa) + 1024.0, static_cast<int>(exponent - 25));
+  } else {
+    value = mantissa == 0 ? std::numeric_limits<double>::infinity() : std::nan("");
+  }
+
+  return half & 0x8000 ? -value : value;
+}
+
+}
+
+namespace detail {
+
+class chars_to {
+public:
+  // INLINED
+  chars_to() : locale_(_create_locale(LC_NUMERIC, "C")) {
+  }
+
+  // INLINED
+  ~chars_to() noexcept {
+    _free_locale(this->locale_);
+  }
+
+  double operator()(const char* text, std::size_t length) const;
+
+private:
+  /* 0000 */ _locale_t locale_;
+};
+
+// OFFSET: 0x004E0700
+// FUNCTION: fn_00202
+__declspec(noinline) double chars_to::operator()(const char* text, std::size_t length) const {
+  char* end = nullptr;
+  const double value = _strtod_l(text, &end, this->locale_);
+  if (text == end) {
+    throw json_runtime_error<std::invalid_argument>("Convert string to double failed");
+  }
+
+  return value;
+}
+
+}
+
+}
+
+// OFFSET: 0x0051E420
+// FUNCTION: fn_01065
+const char* JsonValue::AsCString() const {
+  switch (this->type & 0x0f) {
+    case short_string_value:
+      return reinterpret_cast<const char*>(this) + 2;
+    case long_string_value:
+      return reinterpret_cast<const char*>(static_cast<const unsigned int*>(this->pointer)[1]);
+    case json_const_pointer:
+      return static_cast<const JsonValue*>(this->pointer)->AsCString();
+    default:
+      throw jsoncons::json_runtime_error<std::domain_error>("Not a cstring");
+  }
+}
+
+// OFFSET: 0x0051E630
+// FUNCTION: fn_01067
+std::string_view JsonValue::AsStringView() const {
+  switch (this->type & 0x0f) {
+    case short_string_value:
+      return std::string_view(reinterpret_cast<const char*>(this) + 2, this->type >> 4);
+    case long_string_value: {
+      const unsigned int* view = static_cast<const unsigned int*>(this->pointer);
+      return std::string_view(reinterpret_cast<const char*>(view[1]), view[2]);
+    }
+    case json_const_pointer:
+      return static_cast<const JsonValue*>(this->pointer)->AsStringView();
+    default:
+      throw jsoncons::json_runtime_error<std::domain_error>("Not a string");
+  }
+}
+
+// OFFSET: 0x0051E4C0
+// FUNCTION: fn_01066
+double JsonValue::AsDouble() const {
+  switch (this->type & 0x0f) {
+    case short_string_value:
+    case long_string_value: {
+      jsoncons::detail::chars_to toDouble;
+      return toDouble(this->AsCString(), this->AsStringView().length());
+    }
+    case half_value:
+      return jsoncons::binary::decode_half(this->smallValue);
+    case double_value: {
+      double value;
+      std::memcpy(&value, &this->integer, sizeof(value));
+      return value;
+    }
+    case int64_value:
+      return static_cast<double>(this->integer);
+    case uint64_value:
+      return static_cast<double>(static_cast<unsigned long long>(this->integer));
+    case json_const_pointer:
+      return static_cast<const JsonValue*>(this->pointer)->AsDouble();
+    default:
+      throw jsoncons::json_runtime_error<std::invalid_argument>("Not a double");
+  }
+}
 
 struct JsonValueLocal {
   JsonValue value;

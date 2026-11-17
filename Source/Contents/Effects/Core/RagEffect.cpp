@@ -25110,7 +25110,7 @@ bool CRagEffect::OnProcess() {
     default:
       char text[128];
       std::sprintf(text, "Invalid Effect Id %d", this->state.type);
-      ShowErrorDialog(GetRenderSystemHolder()->system, text, 0);
+      ShowErrorDialog(text, 0);
       return false;
     }
   }

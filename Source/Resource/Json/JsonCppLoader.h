@@ -9,6 +9,7 @@
 #include <map>
 #include <stdexcept>
 #include <string>
+#include <string_view>
 #include <utility>
 #include <vector>
 
@@ -65,6 +66,8 @@ public:
   bool AsBool() const;
   int AsInt() const;
   double AsDouble() const;
+  const char* AsCString() const;
+  std::string_view AsStringView() const;
   std::string AsString() const;
   const JsonObject& GetObject() const;
   const JsonArray& GetArray() const;
@@ -181,22 +184,6 @@ inline int JsonValue::AsInt() const {
       return std::atoi(this->AsString().c_str());
     default:
       throw std::domain_error("Not an integer");
-  }
-}
-
-inline double JsonValue::AsDouble() const {
-  const JsonValue* value = this->Dereference();
-  double real = 0.0;
-  switch (value->type & 0x0f) {
-    case int64_value:
-      return static_cast<double>(value->integer);
-    case uint64_value:
-      return static_cast<double>(static_cast<unsigned long long>(value->integer));
-    case double_value:
-      std::memcpy(&real, &value->integer, sizeof(real));
-      return real;
-    default:
-      throw std::domain_error("Not a double");
   }
 }
 

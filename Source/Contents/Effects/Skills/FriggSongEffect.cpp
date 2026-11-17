@@ -124,10 +124,10 @@ void CFriggSongEffect::OnProcess() {
       if (age < 20) {
         height = 1.0f;
       } else if (age <= 140) {
-        height = (std::max)(0.0f, g_sinTable[age - 20] * particle->speedParameter);
+        height = (std::max)(g_sinTable[age - 20] * particle->speedParameter, 0.0f);
       } else {
         const float speed = particle->speedParameter;
-        particle->speedParameter = (std::max)(0.0f, speed - 0.5f - speed * 0.01f);
+        particle->speedParameter = (std::max)(speed - 0.5f - speed * 0.01f, 0.0f);
         height = particle->speedParameter;
       }
 

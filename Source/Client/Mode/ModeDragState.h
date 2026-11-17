@@ -38,7 +38,6 @@ struct ModeDragState {
   /* 03C0 */ std::int64_t viewId;
 
   void Clear();
-  void BeginItem(WindowManagerWindows& windows, int source, const ITEM_INFO& item, int quantity, int slot);
   void BeginSkill(WindowManagerWindows& windows, ResourceMgr& resources, int source, std::uint32_t id, const char* name, int level, int slot);
   void BeginBarterItem(int source, const BarterMarketItem& item, int quantity, int slot);
   void BeginBarterEntry(int source, const BarterMarketEntry& entry, int quantity, int slot);

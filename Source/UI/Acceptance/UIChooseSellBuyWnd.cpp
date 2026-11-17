@@ -10060,11 +10060,7 @@ void UIEquipWnd::OnLBtnDown(int x, int y) {
   if (item.quantity > 0) {
     CGameMode* mode = g_modeMgr.GetGameMode();
     const EquipSlots slots = g_session.GetEquipSlots(item.identity[3]);
-    if (this->m_page == 1) {
-      mode->drag.BeginItem(g_windowMgr, 24, item, item.quantity, slots.values[2]);
-    } else {
-      mode->drag.BeginItem(g_windowMgr, 2, item, item.quantity, slots.values[2]);
-    }
+    mode->BeginDragItem(this->m_page == 1 ? 24 : 2, item, item.quantity, slots.values[2]);
   }
 
   if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {

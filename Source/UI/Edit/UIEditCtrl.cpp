@@ -1221,7 +1221,7 @@ void UIItemWnd::OnRBtnDown(int x, int y) {
       }
 
       item = g_session.LookupClientItemByIdentity(item.identity[1]);
-      mode->drag.BeginItem(g_windowMgr, 1, item, item.quantity, -1);
+      mode->BeginDragItem(1, item, item.quantity, -1);
       if (mode->ConfirmDraggedItemUse()) {
         return;
       }

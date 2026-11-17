@@ -791,11 +791,6 @@ float CSession::GetSkillFactor(int job) const {
   return 0.82f;
 }
 
-// INLINED
-float GetSkillFactor(int job) {
-  return g_session.GetSkillFactor(job);
-}
-
 // OFFSET: 0x00E084B0
 // FUNCTION: fn_23761
 void CSession::ClearAdditionalShortcutSkills() {
