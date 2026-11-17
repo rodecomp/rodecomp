@@ -1945,8 +1945,10 @@ void UIReplayRECControlWnd::OnCreate(int, int) {
 // OFFSET: 0x008B5A50
 // FUNCTION: fn_11750
 void UISelectReplayDataWnd::OnCreate(int width, int height) {
+  const int listWidth = width - 12;
+  const int listHeight = height - 170;
   this->m_list = new UIReplayListBox();
-  this->m_list->Configure(6, 127, width - 12, height - 170, 0);
+  this->m_list->Configure(6, 127, listWidth, listHeight, 0);
   this->m_list->backgroundRed = 240;
   this->m_list->backgroundGreen = 240;
   this->m_list->backgroundBlue = 240;
