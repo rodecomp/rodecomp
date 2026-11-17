@@ -3006,88 +3006,6 @@ static __forceinline void ShrinkLast(EffectPrimitiveSlot& slot, int value, float
   }
 }
 
-// INLINED
-static __forceinline void WanderAngle(float& angle, float& target) {
-  if (target > angle) {
-    angle += 3.0f;
-
-    if (angle > 359.0f) {
-      angle = 359.0f;
-    }
-
-    if (angle > target) {
-      const int range = static_cast<int>(angle);
-      int pick = 0;
-
-      if (range != 0) {
-        const int roll = std::rand() % range;
-        pick = roll >= 0 ? roll : 0;
-      }
-
-      target = static_cast<float>(pick);
-    }
-  } else {
-    angle -= 2.0f;
-
-    if (angle < 0.0f) {
-      angle = 0.0f;
-    }
-
-    if (angle <= target) {
-      const int range = static_cast<int>(angle);
-      int pick = 0;
-
-      if (range != 0) {
-        const int roll = std::rand() % range;
-        pick = roll >= 0 ? roll : 0;
-      }
-
-      target = static_cast<float>(359 - pick);
-    }
-  }
-}
-
-// INLINED
-static __forceinline void WanderAngleSlow(float& angle, float& target) {
-  if (target > angle) {
-    angle += 1.0f;
-
-    if (angle > 359.0f) {
-      angle = 359.0f;
-    }
-
-    if (angle > target) {
-      const int range = static_cast<int>(angle);
-      int pick = 0;
-
-      if (range != 0) {
-        const int roll = std::rand() % range;
-        pick = roll >= 0 ? roll : 0;
-      }
-
-      target = static_cast<float>(pick);
-    }
-  } else {
-    angle -= 1.0f;
-
-    if (angle < 0.0f) {
-      angle = 0.0f;
-    }
-
-    if (angle <= target) {
-      const int range = static_cast<int>(angle);
-      int pick = 0;
-
-      if (range != 0) {
-        const int roll = std::rand() % range;
-        pick = roll >= 0 ? roll : 0;
-      }
-
-      target = static_cast<float>(359 - pick);
-    }
-  }
-}
-
 namespace {
   // INLINED
   __forceinline int SafeRandom(int range) {
@@ -4003,9 +3921,7 @@ bool CEffectPrim::PrimSoulParticle() {
 
     ++this->state.slots[index].process;
 
-    for (int pair = 0; pair < 6; ++pair) {
-      WanderAngle(this->state.slots[index].height[pair * 2], this->state.slots[index].height[pair * 2 + 1]);
-    }
+    DriftSlotAngles(this->state.slots[index], 6, 3.0f, 2.0f);
 
     if (this->state.slots[index].process < 10) {
       this->state.slots[index].height[12] += 20.0f;
@@ -4277,9 +4193,7 @@ bool CEffectPrim::PrimTwilight() {
       this->state.slots[index].alphaB -= 5;
     }
 
-    for (int pair = 0; pair < 2; ++pair) {
-      WanderAngleSlow(this->state.slots[index].height[pair * 2], this->state.slots[index].height[pair * 2 + 1]);
-    }
+    DriftSlotAngles(this->state.slots[index], 2);
 
     this->state.slots[index].vecBNow.x += g_sinTable[static_cast<int>(this->state.slots[index].height[0])] * 0.1f;
     this->state.slots[index].vecBNow.z += g_sinTable[static_cast<int>(this->state.slots[index].height[2])] * 0.1f;
