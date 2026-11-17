@@ -72,7 +72,8 @@ void CCharacterLinkedUserDataMgr::Save() {
   if (g_session.GetOption(8) != 0) {
     Json::Value values;
 
-    for (const CSkillInfo& skill : g_session.m_homunSkills) {
+    for (auto skillIt = g_session.m_homunSkills.begin(); skillIt != g_session.m_homunSkills.end(); ++skillIt) {
+      const CSkillInfo& skill = *skillIt;
       const int id = static_cast<int>(skill.id);
       const int level = g_session.HomunSkillLevel(id);
 
