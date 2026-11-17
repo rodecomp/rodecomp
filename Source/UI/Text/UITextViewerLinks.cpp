@@ -107,7 +107,7 @@ bool UITextViewer::AddItemLinks(std::string text, unsigned addedLines) {
 
 // OFFSET: 0x00876700
 // FUNCTION: fn_11206
-bool UITextViewer::AddNaviLinks(std::string text, unsigned addedLines) {
+void UITextViewer::AddNaviLinks(std::string text, unsigned addedLines) {
   std::string parsed = RemoveTextColors(text.c_str());
   parsed = DisplayUrlTextTag(parsed);
   parsed = DisplayItemTextTag(parsed);
@@ -123,29 +123,25 @@ bool UITextViewer::AddNaviLinks(std::string text, unsigned addedLines) {
   std::vector<TextLink> extracted;
   ExtractNavigationTextLinks(parsed, extracted);
 
-  if (extracted.empty()) {
-    return false;
-  }
+  if (!extracted.empty()) {
+    for (unsigned index = 0; index < extracted.size(); ++index) {
+      auto* button = new UITextButton();
+      button->Configure(extracted[index].display.c_str(), 0x00F4934A, 0, 12, 0, 1);
+      const int height = button->geometry.height;
+      const int width = this->TextWidth(extracted[index].display.c_str(), 0, 0, 12, 0, 0);
+      button->ResizeToTextClipped(width + 1, height);
+      button->m_hoverColor = 0x00FF7864;
+      button->SetId(LINK_BUTTON_NAVI);
+      this->SplitTextLinkArguments(extracted[index].metadata, button);
+      const auto position = this->LinkPosition(extracted[index].position, addedLines);
+      button->m_value = position.first;
+      button->Move(position.second, -100);
+      this->AddChild(button);
+      this->links.push_back(button);
+    }
 
-  for (unsigned index = 0; index < extracted.size(); ++index) {
-    const TextLink& link = extracted[index];
-    auto* button = new UITextButton();
-    button->Configure(link.display.c_str(), 0x00F4934A, 0, 12, 0, 1);
-    const int height = button->geometry.height;
-    const int width = this->TextWidth(link.display.c_str(), 0, 0, 12, 0, 0);
-    button->ResizeToTextClipped(width + 1, height);
-    button->m_hoverColor = 0x00FF7864;
-    button->SetId(LINK_BUTTON_NAVI);
-    this->SplitTextLinkArguments(link.metadata, button);
-    const auto position = this->LinkPosition(link.position, addedLines);
-    button->m_value = position.first;
-    button->Move(position.second, -100);
-    this->AddChild(button);
-    this->links.push_back(button);
+    this->SendMsg(nullptr, UM_SCROLLVERT, 0, 0, 0, 0);
   }
-
-  this->SendMsg(nullptr, UM_SCROLLVERT, 0, 0, 0, 0);
-  return true;
 }
 
 // OFFSET: 0x00876D50
@@ -346,7 +342,7 @@ void UITextViewer::AddTipLinks(std::string text, unsigned addedLines) {
 
 // OFFSET: 0x00878750
 // FUNCTION: fn_11212
-bool UITextViewer::AddUrlLinks(std::string text, unsigned addedLines) {
+void UITextViewer::AddUrlLinks(std::string text, unsigned addedLines) {
   std::string parsed = RemoveTextColors(text.c_str());
   parsed = DisplayNavigationTextTag(parsed);
   parsed = DisplayItemTextTag(parsed);
@@ -356,35 +352,32 @@ bool UITextViewer::AddUrlLinks(std::string text, unsigned addedLines) {
   }
 
   parsed = DisplayTipBoxTextTag(parsed);
-  parsed = g_navigationLinkParser->DisplayNavigationLink(parsed);
+  parsed = GetNavigationLinkParser()->DisplayNavigationLink(parsed);
   parsed = DisplayQuestTextTag(parsed);
 
   std::vector<TextLink> extracted;
   ExtractUrlTextLinks(parsed, extracted);
 
-  if (extracted.empty()) {
-    return false;
-  }
+  if (!extracted.empty()) {
+    for (unsigned index = 0; index < extracted.size(); ++index) {
+      auto* button = new UITextButton();
+      button->Configure(extracted[index].display.c_str(), 0x00E6A300, 0, 12, 0, 1);
+      button->m_hoverColor = 0x00EFB700;
+      button->SetId(LINK_BUTTON_URL);
+      const int height = button->geometry.height;
+      const int width = this->TextWidth(extracted[index].display.c_str(), 0, 0, 12, 0, 0);
+      button->ResizeToTextClipped(width + 1, height);
+      parsed = RemoveTextLinkInfo(parsed);
+      const auto position = this->LinkPosition(extracted[index].position, addedLines);
+      button->m_value = position.first;
+      button->Move(position.second, -100);
+      this->AddChild(button);
+      this->SplitTextLinkArguments(extracted[index].metadata, button);
+      this->links.push_back(button);
+    }
 
-  for (unsigned index = 0; index < extracted.size(); ++index) {
-    auto* button = new UITextButton();
-    button->Configure(extracted[index].display.c_str(), 0x00E6A300, 0, 12, 0, 1);
-    button->m_hoverColor = 0x00EFB700;
-    button->SetId(LINK_BUTTON_URL);
-    const int height = button->geometry.height;
-    const int width = this->TextWidth(extracted[index].display.c_str(), 0, 0, 12, 0, 0);
-    button->ResizeToTextClipped(width + 1, height);
-    parsed = RemoveTextLinkInfo(parsed);
-    const auto position = this->LinkPosition(extracted[index].position, addedLines);
-    button->m_value = position.first;
-    button->Move(position.second, -100);
-    this->AddChild(button);
-    this->SplitTextLinkArguments(extracted[index].metadata, button);
-    this->links.push_back(button);
+    this->SendMsg(nullptr, UM_SCROLLVERT, 0, 0, 0, 0);
   }
-
-  this->SendMsg(nullptr, UM_SCROLLVERT, 0, 0, 0, 0);
-  return true;
 }
 
 // INLINED

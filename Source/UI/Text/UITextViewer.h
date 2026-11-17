@@ -59,8 +59,8 @@ private:
   std::pair<int, int> LinkPosition(unsigned position, unsigned addedLines);
   void AddLinks(const char* text, unsigned addedLines, int kind);
   bool AddItemLinks(std::string text, unsigned addedLines);
-  bool AddUrlLinks(std::string text, unsigned addedLines);
-  bool AddNaviLinks(std::string text, unsigned addedLines);
+  void AddUrlLinks(std::string text, unsigned addedLines);
+  void AddNaviLinks(std::string text, unsigned addedLines);
   bool AddQuestLinks(std::string text, unsigned addedLines);
   void AddTipLinks(std::string text, unsigned addedLines);
   void SplitTextLinkArguments(std::string text, UITextButton* button);
