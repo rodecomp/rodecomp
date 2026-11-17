@@ -30,18 +30,18 @@ matrix CView::AlternateView(float yaw) const {
   matrix orbit;
   orbit.MakeXRotation((this->camera.pitch / 180.0f) * pi);
   orbit.AppendYRotation((yaw / 180.0f) * pi);
-  const float point[3] = {0.0f, 0.0f, -this->camera.distance};
-  float eye[3];
-  eye[0] = (((orbit.values[3] * point[1] + orbit.values[0] * point[0]) + point[2] * orbit.values[6]) + orbit.values[9]) + this->camera.target.x;
-  eye[1] = (((orbit.values[4] * point[1] + orbit.values[1] * point[0]) + point[2] * orbit.values[7]) + orbit.values[10]) + this->camera.target.y;
-  eye[2] = (((orbit.values[5] * point[1] + orbit.values[2] * point[0]) + point[2] * orbit.values[8]) + orbit.values[11]) + this->camera.target.z;
-  const float height = g_modeMgr.GetGameMode()->scene->terrain->Height(eye[0], eye[2]);
+  const vector3d point{0.0f, 0.0f, -this->camera.distance};
+  vector3d eye;
+  eye.x = (((orbit.values[3] * point.y + orbit.values[0] * point.x) + point.z * orbit.values[6]) + orbit.values[9]) + this->camera.target.x;
+  eye.y = (((orbit.values[4] * point.y + orbit.values[1] * point.x) + point.z * orbit.values[7]) + orbit.values[10]) + this->camera.target.y;
+  eye.z = (((orbit.values[5] * point.y + orbit.values[2] * point.x) + point.z * orbit.values[8]) + orbit.values[11]) + this->camera.target.z;
+  const float height = g_modeMgr.GetGameMode()->scene->terrain->Height(eye.x, eye.z);
 
-  if (eye[1] > height) {
-    eye[1] = height;
+  if (eye.y > height) {
+    eye.y = height;
   }
 
   matrix output;
-  output.LookAt(eye, &this->camera.target.x, &this->frame.up.x);
+  output.LookAt(&eye.x, &this->camera.target.x, &this->frame.up.x);
   return output;
 }
