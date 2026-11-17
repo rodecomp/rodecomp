@@ -13395,9 +13395,10 @@ struct ActorStandEntry {
   /* 0070 */ int robe;
   /* 0074 */ int gid;
   /* 0078 */ int bodyCostume;
+  /* 007C */ int field_7C;
 };
 
-static_assert(sizeof(ActorStandEntry) == 0x7C);
+static_assert(sizeof(ActorStandEntry) == 0x80);
 
 // OFFSET: 0x00D7AFA0
 // FUNCTION: fn_22199
@@ -13520,12 +13521,13 @@ void CGameMode::SpawnMirrorActor(std::uint32_t aid, std::uint32_t owner, short x
       entry.direction = 180;
 
       CPc* pc = new CPc;
+      actor = pc;
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
       pc->SendMsg(nullptr, AM_INITSTANDENTRY2, value, 0, 0, 0, 0, 0);
       pc->objectType = NPC_PET_TYPE;
       pc->LaunchEffect(EF_GRAYBODY, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       this->scene->objects.push_back(pc);
-      this->scene->actors.push_back(pc);
+      this->scene->actors.push_back(actor);
       this->spriteMirrorActorIds.push_back(aid);
       return;
     }
@@ -14450,7 +14452,7 @@ void CGameMode::ReceiveActorMoveEntryLegacy(const unsigned char* data) {
   }
 
   std::int64_t bossFlag = 0;
-  if (packet->isBoss && actor->hpGaugeFlags == 0) {
+  if (packet->isBoss && actor->hpGaugeFlags <= 0) {
     actor->hpGaugeFlags = packet->isBoss;
     bossFlag = 1;
   }
@@ -14573,7 +14575,7 @@ void CGameMode::SpawnMovingActor(
       if (this->partyPosList.find(entry.aid) != this->partyPosList.end() || this->guildPosList.find(entry.aid) != this->guildPosList.end()) {
         actor->SetGroupMemberVisible(1);
       }
-    } else if (!((objectType == 1 || objectType == 6 || objectType == 12) && g_session.IsPlayerJob(job))) {
+    } else if (!((objectType == 1 || objectType == 6 || objectType == 12) && g_session.IsPlayerJob(job) == 1)) {
       entry.appearanceVariant = 0;
     }
     actor->SendMsg(nullptr, AM_INITMOVEENTRY2, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
@@ -14581,7 +14583,7 @@ void CGameMode::SpawnMovingActor(
   g_championMonsterMgr->ApplyEffects(entry.job, actor, entry.aid);
 
   std::int64_t bossFlag = 0;
-  if (isBoss && actor->hpGaugeFlags == 0) {
+  if (isBoss && actor->hpGaugeFlags <= 0) {
     actor->hpGaugeFlags = isBoss;
     bossFlag = 1;
   }
@@ -15446,7 +15448,7 @@ void CGameMode::ReceiveActorStandEntryLegacy(const unsigned char* data) {
   }
 
   std::int64_t bossFlag = 0;
-  if (packet->isBoss && actor->hpGaugeFlags == 0) {
+  if (packet->isBoss && actor->hpGaugeFlags <= 0) {
     actor->hpGaugeFlags = packet->isBoss;
     bossFlag = 1;
   }
@@ -16442,7 +16444,8 @@ void CGameMode::SpawnStandingActor(
 ) {
   ActorStandEntry entry;
   if (objectType == 0 && gid != 0) {
-    g_playerNameDictionary->Set(gid, name);
+    CPlayerNameDictionary* dictionary = g_playerNameDictionary;
+    dictionary->Set(gid, name);
   }
   if (name.size() != 0) {
     this->nameCard.SetName(aid, name);
@@ -16520,7 +16523,7 @@ void CGameMode::SpawnStandingActor(
   }
 
   std::int64_t bossFlag = 0;
-  if (isBoss && actor->hpGaugeFlags == 0) {
+  if (isBoss && actor->hpGaugeFlags <= 0) {
     actor->hpGaugeFlags = isBoss;
     bossFlag = 1;
   }
@@ -16548,9 +16551,7 @@ void CGameMode::SpawnStandingActor(
   case NPC_HO_TYPE:
   case NPC_MERSOL_TYPE:
   case NPC_ELEMENTAL_TYPE: {
-    const std::int64_t currentHp = hp;
-    const std::int64_t currentMaxHp = maxHp;
-    actor->SendMsg(nullptr, AM_UPDATE_MONSTER_GAGE, currentHp, currentMaxHp, bossFlag, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_UPDATE_MONSTER_GAGE, hp, maxHp, bossFlag, 0, 0, 0);
     break;
   }
   case NPC_ABR_TYPE:
@@ -16714,7 +16715,8 @@ void CGameMode::SpawnStateActor(
 ) {
   ActorStandEntry entry;
   if (objectType == 0 && gid != 0) {
-    g_playerNameDictionary->Set(gid, name);
+    CPlayerNameDictionary* dictionary = g_playerNameDictionary;
+    dictionary->Set(gid, name);
   }
   if (name.size() != 0) {
     this->nameCard.SetName(aid, name);
@@ -16782,7 +16784,7 @@ void CGameMode::SpawnStateActor(
       }
       actor->SendMsg(nullptr, AM_INITSTANDENTRY2, reinterpret_cast<int>(&entry), 0, 0, 0, 0, 0);
     } else {
-      if ((objectType == 1 || objectType == 6 || objectType == 12) && g_session.IsPlayerJob(job)) {
+      if ((objectType == 1 || objectType == 6 || objectType == 12) && g_session.IsPlayerJob(job) == 1) {
         entry.bodyCostume = job;
       } else {
         entry.appearanceVariant = 0;
@@ -16793,7 +16795,7 @@ void CGameMode::SpawnStateActor(
   }
 
   std::int64_t bossFlag = 0;
-  if (isBoss && actor->hpGaugeFlags == 0) {
+  if (isBoss && actor->hpGaugeFlags <= 0) {
     actor->hpGaugeFlags = isBoss;
     bossFlag = 1;
   }
@@ -16821,9 +16823,7 @@ void CGameMode::SpawnStateActor(
   case NPC_HO_TYPE:
   case NPC_MERSOL_TYPE:
   case NPC_ELEMENTAL_TYPE: {
-    const std::int64_t currentHp = hp;
-    const std::int64_t currentMaxHp = maxHp;
-    actor->SendMsg(nullptr, AM_UPDATE_MONSTER_GAGE, currentHp, currentMaxHp, bossFlag, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_UPDATE_MONSTER_GAGE, hp, maxHp, bossFlag, 0, 0, 0);
     break;
   }
   case NPC_ABR_TYPE:
@@ -17276,7 +17276,7 @@ void CGameMode::ReceiveActorStateEntryLegacy(const unsigned char* data) {
     g_championMonsterMgr->ApplyEffects(entry.job, actor, entry.aid);
   }
 
-  if (packet->isBoss && actor->hpGaugeFlags == 0) {
+  if (packet->isBoss && actor->hpGaugeFlags <= 0) {
     actor->hpGaugeFlags = packet->isBoss;
     bossFlag = 1;
   }
