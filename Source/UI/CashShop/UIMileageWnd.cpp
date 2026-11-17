@@ -35,7 +35,7 @@ struct DynamicNpcCreatePacket {
 void UIMileageWnd::Paint() {
   this->ClearSurface(0xFF00FF);
 
-  std::string text;
+  std::string text("");
   text = static_cast<const std::string&>(FormatOwnedString("유저인터페이스\\basic_interface\\mileage_bg%d.bmp", this->m_bonus));
   this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text.c_str()))), true);
 
