@@ -264,6 +264,8 @@ std::map<int, std::function<CUIFrameWnd*()>>::_Mybase::_Find_lower_bound<int>(co
 template __declspec(noinline) std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<HWND const, CWebBrowser*>>>, std::_Iterator_base0>&
 std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<HWND const, CWebBrowser*>>>, std::_Iterator_base0>::operator++() noexcept;
 template __declspec(noinline) void std::map<UIWindow*, SnapRectangle>::_Mybase::clear() noexcept;
+template __declspec(noinline) std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const int, SavedWindowRectangle*>>>, std::_Iterator_base0>&
+std::_Tree_unchecked_const_iterator<std::_Tree_val<std::_Tree_simple_types<std::pair<const int, SavedWindowRectangle*>>>, std::_Iterator_base0>::operator++() noexcept;
 
 namespace {
 #pragma pack(push, 1)
@@ -1118,10 +1120,10 @@ UIWindowMgr::~UIWindowMgr() {
     delete this->backgroundSurface;
     this->backgroundSurface = nullptr;
   }
-  for (auto& entry : this->savedRectangles) {
-    delete entry.second;
+  for (auto it = this->savedRectangles.begin(); it != this->savedRectangles.end(); ++it) {
+    delete it->second;
   }
-  this->savedRectangles.clear();
+  this->savedRectangles.erase(this->savedRectangles.begin(), this->savedRectangles.end());
 }
 
 // OFFSET: 0x00A8B0A0
