@@ -1330,9 +1330,13 @@ void CGameActor::SetState(int state, int resetPosition) {
       target->SendMsg(nullptr, AM_DELETE_MAGIC_TARGET, 0, 0, 0, 0, 0, 0);
     }
     this->SetAction(action, 5, 1);
-    const int job = this->GetEffectiveJob(-1);
-    if (job != 0x8d && job != 0xe6) {
+    switch (this->GetEffectiveJob(-1)) {
+    case 0x8d:
+    case 0xe6:
+      break;
+    default:
       this->RegisterPos();
+      break;
     }
     break;
   }
@@ -1342,15 +1346,20 @@ void CGameActor::SetState(int state, int resetPosition) {
     }
   case ST_ATTACK:
   case ST_ATTACK2:
-    this->SetAction(action, 3, this->shapeShift == 1 ? 2 : 1);
+    if (this->shapeShift == 1) {
+      this->SetAction(action, 3, 2);
+    } else {
+      this->SetAction(action, 3, 1);
+    }
     if (this->render.state != ST_ATTACK2 && this->render.state != ST_ATTACK) {
+      CRenderObject* target;
       if (this->hitTargetAid == g_session.m_aid) {
-        CRenderObject* target = mode->scene->player;
+        target = mode->scene->player;
         if (this->render.accountId != this->hitTargetAid) {
           this->Face(target->render.position.x, target->render.position.z);
         }
       } else {
-        CRenderObject* target = mode->scene->GetGameActorByAID(this->hitTargetAid);
+        target = mode->scene->GetGameActorByAID(this->hitTargetAid);
         if (target) {
           this->Face(target->render.position.x, target->render.position.z);
         }
@@ -1479,25 +1488,19 @@ void CGameActor::SetState(int state, int resetPosition) {
   case ST_A_COUNTER: {
     this->render.sequenceInterval = 4;
     int frame0;
-    int frame1;
-    int frame2;
     int frame3;
     int frame4;
     if (this->GetEffectiveJob(-1) == 0xfd1 || this->GetEffectiveJob(-1) == 0x1083 || this->GetEffectiveJob(-1) == 0x1090 ||
         this->GetEffectiveJob(-1) == 0x1092) {
       frame0 = 4;
-      frame1 = 5;
-      frame2 = 6;
       frame3 = 7;
       frame4 = 2;
     } else {
       frame0 = 2;
-      frame1 = 3;
-      frame2 = 4;
       frame3 = 4;
       frame4 = 4;
     }
-    this->SetAnimationSequence(action, frame0, action, frame1, action, frame2, action, frame3, action, frame4, 1, 500, 0);
+    this->SetAnimationSequence(action, frame0, action, frame0 + 1, action, frame0 + 2, action, frame3, action, frame4, 1, 500, 0);
     break;
   }
   case ST_R_DODGE:
@@ -1531,19 +1534,19 @@ void CGameActor::SetState(int state, int resetPosition) {
   case ST_NINJAREADY: {
     this->render.sequenceInterval = 10;
     int random = rand() % 2;
-    random = random < 0 ? 0 : random;
-    const int frame = (random != 0) + 2;
+    random = random >= 0 ? random : 0;
+    const int frame = random != 0 ? 3 : 2;
     this->SetFrameSequence(action, frame, frame, action, frame, 1, 500, 0);
     break;
   }
   case ST_GUNSKILL1: {
     this->render.sequenceInterval = 6;
     int random = rand() % 2;
-    random = random < 0 ? 0 : random;
-    if (random != 0) {
-      this->SetAnimationSequence(action, 3, action, 2, action, 1, action, 0, action, 0, 1, 1000, 0);
-    } else {
+    random = random >= 0 ? random : 0;
+    if (random == 0) {
       this->SetFrameSequence(action, 0, 3, action, 3, 1, 1000, 0);
+    } else {
+      this->SetAnimationSequence(action, 3, action, 2, action, 1, action, 0, action, 0, 1, 1000, 0);
     }
     break;
   }
@@ -1554,8 +1557,8 @@ void CGameActor::SetState(int state, int resetPosition) {
   case ST_GUNREADY: {
     this->render.sequenceInterval = 10;
     int random = rand() % 2;
-    random = random < 0 ? 0 : random;
-    const int frame = (random != 0) + 1;
+    random = random >= 0 ? random : 0;
+    const int frame = random != 0 ? 2 : 1;
     this->SetFrameSequence(action, frame, frame, action, frame, 1, 500, 0);
     break;
   }
