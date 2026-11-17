@@ -5093,7 +5093,7 @@ void CGameMode::ReceiveFriendList(const unsigned char* packet) {
     char name[25] = {};
     StringFormat(name, sizeof(name), static_cast<std::size_t>(-1), "%s", record.name);
     if (!g_playerNameDictionary->Contains(record.characterId)) {
-      std::string text(name, sizeof(name));
+      std::string text(name, name + sizeof(name));
       SetPlayerName(record.characterId, text.c_str());
     }
 
@@ -8728,21 +8728,20 @@ namespace {
 void CGameMode::ReceiveGuildPositionInfo(const unsigned char* packet) {
   const auto* p = reinterpret_cast<const PacketLengthHeader*>(packet);
   GuildInfo* guildInfo = &g_guildInfo;
-  const int count = static_cast<unsigned>(p->length - 4) >> 4;
+  const unsigned int count = static_cast<unsigned>(p->length - 4) >> 4;
   guildInfo->positions.clear();
 
   const auto* entry = reinterpret_cast<const PACKET_ZC_POSITION_INFO_sub*>(p + 1);
-  for (int index = 0; index < count; ++index, ++entry) {
-    const int positionId = entry->positionId;
+  for (unsigned int index = 0; index < count; ++index, ++entry) {
     GuildPositionEntry position;
-    position.name = guildInfo->m_positions[positionId];
+    position.positionId = entry->positionId;
+    position.name = guildInfo->m_positions[position.positionId];
 
-    const unsigned int mode = entry->right;
+    position.tax = entry->payRate;
     position.id = entry->ranking;
-    position.positionId = positionId;
+    const unsigned int mode = entry->right;
     position.canInvite = mode & 1;
     position.canExpel = (mode >> 4) & 1;
-    position.tax = entry->payRate;
     position.canStorage = (mode >> 8) & 1;
     guildInfo->positions.push_back(position);
   }
@@ -13494,17 +13493,17 @@ void CGameMode::SpawnMirrorActor(std::uint32_t aid, std::uint32_t owner, short x
       entry.job = g_session.GetDisplayJob();
       entry.appearanceVariant = g_session.GetCurrentSex();
       entry.head = g_session.m_head;
-      entry.weapon = g_session.m_weapon;
-      entry.shield = g_session.m_weaponLeft;
-      entry.accessory = g_session.m_accessory;
-      entry.direction = 180;
-      entry.shieldAppearance = g_session.m_shield;
-      entry.accessory2 = g_session.m_accessory2;
-      entry.accessory3 = g_session.m_accessory3;
+      entry.bodyCostume = g_session.m_bodyCostume;
       entry.headPalette = g_session.m_headPalette;
       entry.bodyPalette = g_session.m_bodyStyle;
+      entry.weapon = g_session.m_weapon;
+      entry.shieldAppearance = g_session.m_shield;
+      entry.accessory = g_session.m_accessory;
+      entry.accessory2 = g_session.m_accessory2;
+      entry.accessory3 = g_session.m_accessory3;
       entry.robe = g_session.m_robe;
-      entry.bodyCostume = g_session.m_bodyCostume;
+      entry.shield = g_session.m_weaponLeft;
+      entry.direction = 180;
 
       CPc* pc = new CPc;
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&entry);
