@@ -317,7 +317,9 @@ void CPlayerSkillBundle::ApplyLevelChange(CSkillInfo& value) {
     }
   }
 
-  for (int removed : this->removals) {
+  const auto removedEnd = this->removals.end();
+  for (auto removedIt = this->removals.begin(); removedIt != removedEnd; ++removedIt) {
+    int removed = *removedIt;
     const auto change = this->levelChanges.find(removed);
     if (change != this->levelChanges.end()) {
       this->levelChanges.erase(change);
