@@ -571,13 +571,6 @@ int UIFriendOptionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   }
 }
 
-// OFFSET: 0x009A54B0
-// FUNCTION: fn_13630
-int FriendOptionWndInfo::IsValid() const {
-  return this->width == 280 && this->height == 120 && this->x >= 0 && this->x <= g_renderer->viewport.width - 280 && this->y >= 0 &&
-         this->y <= g_renderer->viewport.height - 120;
-}
-
 // OFFSET: 0x007392F0
 // FUNCTION: fn_07684
 void UIFriendOptionWnd::StoreInfo() {
