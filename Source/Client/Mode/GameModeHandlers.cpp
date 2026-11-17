@@ -652,14 +652,14 @@ void CGameMode::ReceiveGroundSkillExtended(const unsigned char* record) {
 
   GroundSkillArgumentData arguments;
   GroundSkillExtendedData& data = arguments.extended;
-  data.skill.aid = packet.aid;
-  data.skill.owner = packet.owner;
-  data.skill.type = skillType;
   data.skill.x = packet.x;
   data.skill.y = packet.y;
   const unsigned char visible = packet.visible;
   data.skill.visible = visible;
+  data.skill.type = skillType;
   data.skill.level = packet.level;
+  data.skill.aid = packet.aid;
+  data.skill.owner = packet.owner;
   data.flags = packet.flags;
   if (data.skill.owner != g_session.m_aid && !visible) {
     const auto found = std::find_if(this->m_skillUnitIds.begin(), this->m_skillUnitIds.end(), [&data](std::uint32_t id) { return data.skill.aid == id; });
@@ -2951,11 +2951,11 @@ void CGameMode::Zc_Skill_Entry2(unsigned char* record) {
   GroundSkillPacket& packet = *reinterpret_cast<GroundSkillPacket*>(record);
   GroundSkillArgumentData arguments;
   GroundSkillSpawnData& data = arguments.extended.skill;
-  data.aid = packet.aid;
-  data.owner = packet.owner;
   data.type = packet.type;
   data.x = packet.x;
   data.y = packet.y;
+  data.aid = packet.aid;
+  data.owner = packet.owner;
   data.visible = true;
   data.level = 0;
   packet.visible = 1;
