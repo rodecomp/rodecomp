@@ -749,61 +749,65 @@ bool CEffectPrim::UpdateStoneCurse() {
       index = 3;
     }
 
-    EffectPrimitiveSlot& slot = this->state.slots[index];
-
-    if (slot.life != 1) {
+    if (this->state.slots[index].life != 1) {
       continue;
     }
 
-    ++slot.process;
+    ++this->state.slots[index].process;
 
     if (index < 3) {
-      slot.rotStart = static_cast<std::int16_t>(slot.rotStart + index + 3);
+      this->state.slots[index].rotStart += index + 3;
     }
 
-    if (slot.rotStart >= 360) {
-      slot.rotStart = static_cast<std::int16_t>(slot.rotStart - 360);
+    if (this->state.slots[index].rotStart >= 360) {
+      this->state.slots[index].rotStart = static_cast<std::int16_t>(this->state.slots[index].rotStart - 360);
     }
 
-    if (slot.process < this->state.duration - 40) {
-      if (slot.process < 20 && slot.alphaT != 1) {
-        if (index == 3) {
-          this->state.slots[3].alphaB = static_cast<std::int16_t>(this->state.slots[3].alphaB + 8);
+    if (this->state.slots[index].process >= this->state.duration - 40) {
+      if (index < 3) {
+        this->state.slots[index].alphaB -= 5;
 
-          if (this->state.slots[3].alphaB > 60) {
-            this->state.slots[3].alphaB = 60;
-          }
-        } else {
-          slot.alphaB = static_cast<std::int16_t>(slot.alphaB + 10);
+        if (this->state.slots[index].alphaB < 0) {
+          this->state.slots[index].alphaB = 0;
+        }
+      } else {
+        this->state.slots[index].alphaB -= 2;
 
-          if (slot.alphaB > 180) {
-            slot.alphaB = 180;
-          }
+        if (this->state.slots[index].alphaB < 0) {
+          this->state.slots[index].alphaB = 0;
         }
       }
-    } else {
-      slot.alphaB = static_cast<std::int16_t>(slot.alphaB - (index >= 3 ? 2 : 5));
+    } else if (this->state.slots[index].process < 20 && this->state.slots[index].alphaT != 1) {
+      if (index == 3) {
+        this->state.slots[3].alphaB = static_cast<std::int16_t>(this->state.slots[3].alphaB + 8);
 
-      if (slot.alphaB < 0) {
-        slot.alphaB = 0;
+        if (this->state.slots[3].alphaB > 60) {
+          this->state.slots[3].alphaB = 60;
+        }
+      } else {
+        this->state.slots[index].alphaB = static_cast<std::int16_t>(this->state.slots[index].alphaB + 10);
+
+        if (this->state.slots[index].alphaB > 180) {
+          this->state.slots[index].alphaB = 180;
+        }
       }
     }
 
     for (int sample = 0; sample < 21; ++sample) {
-      if (slot.flag1[sample] == 0) {
-        if (slot.process <= 90) {
-          slot.height[sample] = slot.maxHeight * g_sinTable[sample * 9] * g_sinTable[slot.process];
+      if (this->state.slots[index].flag1[sample] == 0) {
+        if (this->state.slots[index].process <= 90) {
+          this->state.slots[index].height[sample] = this->state.slots[index].maxHeight * g_sinTable[sample * 9] * g_sinTable[this->state.slots[index].process];
         }
 
-        const float maximum = slot.maxHeight * g_sinTable[sample * 9];
+        const float maximum = this->state.slots[index].maxHeight * g_sinTable[sample * 9];
 
-        if (slot.height[sample] > maximum) {
-          slot.height[sample] = maximum;
-          slot.flag1[sample] = 1;
+        if (this->state.slots[index].height[sample] > maximum) {
+          this->state.slots[index].height[sample] = maximum;
+          this->state.slots[index].flag1[sample] = 1;
         }
 
-        if (slot.height[sample] < 0.0f) {
-          slot.height[sample] = 0.0f;
+        if (this->state.slots[index].height[sample] < 0.0f) {
+          this->state.slots[index].height[sample] = 0.0f;
         }
       }
     }
@@ -3477,19 +3481,17 @@ __declspec(noinline) bool CEffectPrim::PrimFlowerCast() {
       this->state.slots[index].riseAngle += 360;
     }
 
-    if (this->state.slots[index].process < 111) {
-      if (this->state.slots[index].process < 20) {
-        this->state.slots[index].alphaB += 5;
-
-        if (this->state.slots[index].alphaB > 180) {
-          this->state.slots[index].alphaB = 180;
-        }
-      }
-    } else {
+    if (this->state.slots[index].process > 110) {
       this->state.slots[index].alphaB -= 1;
 
       if (this->state.slots[index].alphaB < 0) {
         this->state.slots[index].alphaB = 0;
+      }
+    } else if (this->state.slots[index].process < 20) {
+      this->state.slots[index].alphaB += 5;
+
+      if (this->state.slots[index].alphaB > 180) {
+        this->state.slots[index].alphaB = 180;
       }
     }
 
@@ -3574,9 +3576,7 @@ bool CEffectPrim::PrimMapParticle() {
       continue;
     }
 
-    for (int pair = 0; pair < 2; ++pair) {
-      WanderAngleSlow(this->state.slots[index].height[pair * 2], this->state.slots[index].height[pair * 2 + 1]);
-    }
+    DriftSlotAngles(this->state.slots[index], 2);
 
     SpinDown(this->state.slots[index].height[4]);
     SpinDown(this->state.slots[index].height[5]);
@@ -3737,9 +3737,7 @@ bool CEffectPrim::PrimPeongUp() {
       this->state.slots[index].alphaB = 0;
     }
 
-    for (int pair = 0; pair < 2; ++pair) {
-      WanderAngle(this->state.slots[index].height[pair * 2], this->state.slots[index].height[pair * 2 + 1]);
-    }
+    DriftSlotAngles(this->state.slots[index], 2, 3.0f, 2.0f);
 
     float height = this->state.slots[index].vecBPre.y;
 
@@ -4199,9 +4197,7 @@ bool CEffectPrim::PrimCHOOKGI() {
     }
   }
 
-  for (int pair = 0; pair < 3; ++pair) {
-    WanderAngleSlow(slot.height[pair * 2], slot.height[pair * 2 + 1]);
-  }
+  DriftSlotAngles(slot, 3);
 
   const char rate = slot.flag1[0];
   bool spin = true;
@@ -5317,27 +5313,26 @@ __declspec(noinline) void CEffectPrim::PrimHoverFollow() {
   FaceCamera(this->state.slots);
   this->render.position = this->state.master->render.position;
 
-  EffectPrimitiveSlot& slot = this->state.slots[0];
-  if (slot.life != 1) {
+  if (this->state.slots[0].life != 1) {
     return;
   }
 
-  ++slot.process;
-  slot.height[8] += 5.0f;
-  if (slot.height[8] >= 360.0f) {
-    slot.height[8] -= 360.0f;
+  ++this->state.slots[0].process;
+  this->state.slots[0].height[8] += 5.0f;
+  if (this->state.slots[0].height[8] >= 360.0f) {
+    this->state.slots[0].height[8] -= 360.0f;
   }
 
-  slot.rotStart = static_cast<std::int16_t>(slot.rotStart + 1);
-  if (slot.rotStart >= 360) {
-    slot.rotStart = static_cast<std::int16_t>(slot.rotStart - 360);
+  this->state.slots[0].rotStart = static_cast<std::int16_t>(this->state.slots[0].rotStart + 1);
+  if (this->state.slots[0].rotStart >= 360) {
+    this->state.slots[0].rotStart = static_cast<std::int16_t>(this->state.slots[0].rotStart - 360);
   }
 
-  slot.vecBNow.x = this->render.position.x;
-  slot.vecBNow.z = this->render.position.z;
+  this->state.slots[0].vecBNow.x = this->render.position.x;
+  this->state.slots[0].vecBNow.z = this->render.position.z;
   const float base = this->render.position.y - 6.0f;
-  slot.vecBPre.y = base;
-  slot.vecBNow.y = g_sinTable[slot.rotStart] * 3.0f + base;
+  this->state.slots[0].vecBPre.y = base;
+  this->state.slots[0].vecBNow.y = g_sinTable[this->state.slots[0].rotStart] * 3.0f + base;
 }
 
 // OFFSET: 0x00BE9690
@@ -5590,13 +5585,11 @@ void CEffectPrim::PrimBreathingWave() {
   int steps = 360;
   int phase = 0;
   for (int index = 0; index < 4; ++index, phase += 90) {
-    EffectPrimitiveSlot& slot = this->state.slots[index];
-
-    if (slot.life != 1) {
+    if (this->state.slots[index].life != 1) {
       continue;
     }
 
-    const int cycle = ++slot.process % period;
+    const int cycle = ++this->state.slots[index].process % period;
     if (cycle == 0) {
       this->state.size = 4.0f;
     } else if (cycle == 25) {
@@ -5607,43 +5600,43 @@ void CEffectPrim::PrimBreathingWave() {
       this->state.size = 8.0f;
     }
 
-    const int process = slot.process;
+    const int process = this->state.slots[index].process;
     if (process <= 0) {
       continue;
     }
 
-    --slot.riseAngle;
-    slot.distance += 0.07f;
-    if (slot.riseAngle < 10) {
-      slot.riseAngle = 10;
-      slot.alphaB = 0;
+    --this->state.slots[index].riseAngle;
+    this->state.slots[index].distance += 0.07f;
+    if (this->state.slots[index].riseAngle < 10) {
+      this->state.slots[index].riseAngle = 10;
+      this->state.slots[index].alphaB = 0;
     }
 
-    if (slot.distance >= 4.0f) {
-      slot.alphaB = static_cast<std::int16_t>(slot.alphaB - 3);
-      if (slot.alphaB <= 0) {
-        slot.alphaB = 0;
+    if (this->state.slots[index].distance >= 4.0f) {
+      this->state.slots[index].alphaB = static_cast<std::int16_t>(this->state.slots[index].alphaB - 3);
+      if (this->state.slots[index].alphaB <= 0) {
+        this->state.slots[index].alphaB = 0;
         if (process < this->state.duration - 30) {
-          slot.distance = 3.37f;
-          if (slot.alphaT == 22) {
-            slot.riseAngle = 64;
+          this->state.slots[index].distance = 3.37f;
+          if (this->state.slots[index].alphaT == 22) {
+            this->state.slots[index].riseAngle = 64;
           } else {
-            slot.riseAngle = 74;
+            this->state.slots[index].riseAngle = 74;
           }
         }
       }
-    } else if (slot.alphaT == 22) {
-      slot.alphaB = static_cast<std::int16_t>(slot.alphaB + 5);
+    } else if (this->state.slots[index].alphaT == 22) {
+      this->state.slots[index].alphaB = static_cast<std::int16_t>(this->state.slots[index].alphaB + 5);
     } else {
-      slot.alphaB = static_cast<std::int16_t>(slot.alphaB + 10);
+      this->state.slots[index].alphaB = static_cast<std::int16_t>(this->state.slots[index].alphaB + 10);
     }
 
     const int offset = index * 45;
     for (int point = 0; point < 21; ++point) {
-      const int angle = (offset < 90 ? slot.process + phase : (slot.process + offset) * 2) % steps;
-      const float base = slot.maxHeight;
-      slot.height[point] = base;
-      slot.height[point] = g_sinTable[9 * point] * slot.maxHeight * 0.3f * g_sinTable[angle] + base;
+      const int angle = (offset < 90 ? this->state.slots[index].process + phase : (this->state.slots[index].process + offset) * 2) % steps;
+      const float base = this->state.slots[index].maxHeight;
+      this->state.slots[index].height[point] = base;
+      this->state.slots[index].height[point] = g_sinTable[9 * point] * this->state.slots[index].maxHeight * 0.3f * g_sinTable[angle] + base;
     }
   }
 }
