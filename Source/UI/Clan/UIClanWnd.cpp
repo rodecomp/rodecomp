@@ -113,8 +113,8 @@ void UIClanInfoManageWnd::Paint() {
   g_skinInfo.PaletteChannels(14, 6, red, green, blue);
   this->FillRegion(200, 155, 168, 48, RGB(red, green, blue));
   int row = 0;
-  int y = 157;
   for (auto relation = g_clanInfo->m_relations.begin(); relation != g_clanInfo->m_relations.end(); ++relation) {
+    const int y = 157 + row * 16;
     if (y >= 205) {
       break;
     }
@@ -126,15 +126,14 @@ void UIClanInfoManageWnd::Paint() {
       }
       this->DrawTextAt(204, y, relation->second.c_str(), 0, 0, 12, 0, 0, 0);
       ++row;
-      y += 16;
     }
   }
 
   g_skinInfo.PaletteChannels(14, 6, red, green, blue);
   this->FillRegion(200, 229, 168, 48, RGB(red, green, blue));
   row = 0;
-  y = 231;
   for (auto relation = g_clanInfo->m_relations.begin(); relation != g_clanInfo->m_relations.end(); ++relation) {
+    const int y = 231 + row * 16;
     if (y >= 279) {
       break;
     }
@@ -146,7 +145,6 @@ void UIClanInfoManageWnd::Paint() {
       }
       this->DrawTextAt(204, y, relation->second.c_str(), 0, 0, 12, 0, 0, 0);
       ++row;
-      y += 16;
     }
   }
 }
