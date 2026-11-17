@@ -1353,7 +1353,7 @@ __declspec(noinline) EquipmentProperties::CEquipmentInfo* EquipmentProperties::C
 
 // OFFSET: 0x006AC4C0
 // FUNCTION: fn_06177
-int GetEquipLocationMask(const int& location) {
+int GetEquipLocationMask(const unsigned int& location) {
   int mask = 0;
   switch (location) {
   case 1:
@@ -4469,7 +4469,7 @@ int CheckJobGroup2(lua_State* state) {
 // OFFSET: 0x006BCE30
 // FUNCTION: fn_06276
 int GetCategoryJob(lua_State* state) {
-  std::vector<int> args;
+  std::vector<unsigned int> args;
   int count = 0;
   for (int index = -1; index < 0; ++index) {
     if (!lua_isnumber(state, index)) {
@@ -4909,7 +4909,7 @@ int GetPlayerValue(lua_State* state) {
 // OFFSET: 0x006BEFA0
 // FUNCTION: fn_06289
 int GetWeaponClass(lua_State* state) {
-  std::vector<int> args;
+  std::vector<unsigned int> args;
   int number = 0;
   for (int index = -1; index < 0; ++index) {
     if (!lua_isnumber(state, index)) {
@@ -5546,7 +5546,8 @@ bool CGameMode::HasPendingItemPickup(int value) {
 // OFFSET: 0x00CD75B0
 // FUNCTION: fn_21295
 bool CGameMode::IsValidCell(int x, int y) {
-  if (!this->scene->terrain->Walkable(x, y)) {
+  const TerrainHeightCell* cell = this->scene->terrain->CellAt(x, y);
+  if (cell == nullptr || cell->type == 1 || cell->type == 5) {
     return false;
   }
   CPlayer* player = this->scene->player;
@@ -5967,7 +5968,7 @@ void UIWindowMgr::NotifyMemberWindows(const MessengerMember* target) {
 // OFFSET: 0x006BD660
 // FUNCTION: fn_06278
 int GetEquipGrade(lua_State* state) {
-  std::vector<int> args;
+  std::vector<unsigned int> args;
   int number = 0;
   for (int index = -1; index < 0; ++index) {
     if (!lua_isnumber(state, index)) {
@@ -5982,8 +5983,8 @@ int GetEquipGrade(lua_State* state) {
   int grade = 0;
   if (args[0] != 0) {
     const int mask = GetEquipLocationMask(args[0]);
-    const EquipSlots slots = g_session.GetEquipSlots(mask);
-    const ITEM_INFO item = g_session.IsCostumeLocation(mask) ? g_session.GetCostumeItemAt(slots.values[2]) : g_session.GetEquippedItemAt(slots.values[2]);
+    const int slot = g_session.GetEquipSlots(mask).values[2];
+    const ITEM_INFO item = g_session.IsCostumeLocation(mask) ? g_session.GetCostumeItemAt(slot) : g_session.GetEquippedItemAt(slot);
     if (item.identity[1] > 0) {
       grade = item.grade;
     }
@@ -5996,7 +5997,7 @@ int GetEquipGrade(lua_State* state) {
 // OFFSET: 0x006BDF80
 // FUNCTION: fn_06281
 int GetEquipItemId(lua_State* state) {
-  std::vector<int> args;
+  std::vector<unsigned int> args;
   int number = 0;
   for (int index = -1; index < 0; ++index) {
     if (!lua_isnumber(state, index)) {
@@ -6011,10 +6012,7 @@ int GetEquipItemId(lua_State* state) {
   const int mask = GetEquipLocationMask(args[0]);
   const EquipSlots slots = g_session.GetEquipSlots(mask);
   const ITEM_INFO item = g_session.IsCostumeLocation(mask) ? g_session.GetCostumeItemAt(slots.values[2]) : g_session.GetEquippedItemAt(slots.values[2]);
-  int itemId = 0;
-  if (item.identity[1] > 0) {
-    itemId = std::atoi(item.itemId.c_str());
-  }
+  const int itemId = item.identity[1] > 0 ? std::atoi(item.itemId.c_str()) : 0;
 
   lua_pushnumber(state, itemId);
   return 1;
@@ -6023,7 +6021,7 @@ int GetEquipItemId(lua_State* state) {
 // OFFSET: 0x006BE6F0
 // FUNCTION: fn_06286
 int GetEquipRefine(lua_State* state) {
-  std::vector<int> args;
+  std::vector<unsigned int> args;
   int number = 0;
   for (int index = -1; index < 0; ++index) {
     if (!lua_isnumber(state, index)) {
@@ -6104,7 +6102,7 @@ int EquipmentProperties::CEquipmentPropertiesMgr::GetGradeBonus(const int& first
 // OFFSET: 0x006BD9D0
 // FUNCTION: fn_06279
 int GetEquipTempValue(lua_State* state) {
-  std::vector<int> args;
+  std::vector<unsigned int> args;
   int number = 0;
   for (int index = -1; index < 0; ++index) {
     if (!lua_isnumber(state, index)) {
@@ -6125,7 +6123,7 @@ int GetEquipTempValue(lua_State* state) {
 // OFFSET: 0x006BF3F0
 // FUNCTION: fn_06292
 int SetEquipTempValue(lua_State* state) {
-  std::vector<int> args;
+  std::vector<unsigned int> args;
   int number = 0;
   for (int index = -2; index < 0; ++index) {
     if (!lua_isnumber(state, index)) {
