@@ -31,20 +31,6 @@ namespace myGPack {
     return *this;
   }
 
-  // INLINED
-  static __forceinline void AssignNameKey(std::uint32_t& result, char* destination, const char* source) {
-    std::strcpy(destination, source);
-    _strlwr(destination);
-    const std::size_t length = std::strlen(destination);
-    std::uint32_t hash = 5381;
-
-    for (std::size_t i = 0; i < length; ++i) {
-      hash = 33 * hash + static_cast<std::int8_t>(destination[i]);
-    }
-
-    result = hash;
-  }
-
   // OFFSET: 0x00AECE20
   // FUNCTION: fn_18146
   bool PakName::operator==(const PakName& other) const {

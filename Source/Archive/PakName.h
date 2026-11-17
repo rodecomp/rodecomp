@@ -3,10 +3,24 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <cstdlib>
+#include <cstring>
 
 namespace myGPack {
 
-  void AssignNameKey(std::uint32_t& hash, char* destination, const char* source);
+  // INLINED
+  __forceinline void AssignNameKey(std::uint32_t& result, char* destination, const char* source) {
+    std::strcpy(destination, source);
+    _strlwr(destination);
+    const std::size_t length = std::strlen(destination);
+    std::uint32_t hash = 5381;
+
+    for (std::size_t i = 0; i < length; ++i) {
+      hash = 33 * hash + static_cast<std::int8_t>(destination[i]);
+    }
+
+    result = hash;
+  }
 
   class PakName {
   public:
