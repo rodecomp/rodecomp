@@ -32,6 +32,9 @@
 #include <regex>
 #include <utility>
 
+template __declspec(noinline) std::_Tree_find_result<std::_Tree_node<unsigned int, void*>*>
+StatusRequestTree::_Find_lower_bound<unsigned int>(const unsigned int&) const;
+
 template __declspec(noinline) std::string std::sub_match<std::string::const_iterator>::str() const;
 template __declspec(noinline) void CUIListBox<AdventureGuide::CUISubTab>::UpdateScrollBar();
 template __declspec(noinline) void CUIListBoxEx<AdventureGuide::CUIMonsterInfo, AdventureGuide::CMonsterData>::UpdateScrollBar();

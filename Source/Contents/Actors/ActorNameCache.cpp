@@ -3,6 +3,9 @@
 #include <cstddef>
 #include <cstring>
 
+template __declspec(noinline) std::_Tree_find_result<std::_Tree_node<std::pair<const std::uint32_t, CActorNameCard>, void*>*>
+ActorNameCardTree::_Find_lower_bound<std::uint32_t>(const std::uint32_t&) const;
+
 #pragma pack(push, 1)
 struct ActorNameCacheHeader {
   /* 0000 */ std::size_t count;
