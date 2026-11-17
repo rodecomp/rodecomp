@@ -114,7 +114,7 @@ void UIBartermarketWnd::DragAndDrop(int x, int y, std::intptr_t value) {
 // OFFSET: 0x00840CC0
 // FUNCTION: fn_10547
 std::pair<bool, BarterMarketItem> UIBartermarketWnd::GetBarterItemAt(int x, int y) {
-  if (x < 40 || x >= this->geometry.width - 20 || y < 17 || y >= this->visibleRows * 32 + 17) {
+  if (x < 40 || x >= this->geometry.width - 20 || y < 17 || this->visibleRows * 32 + 17 <= y) {
     return std::make_pair(false, BarterMarketItem());
   }
 
@@ -136,7 +136,7 @@ std::pair<bool, BarterMarketItem> UIBartermarketWnd::GetBarterItemAt(int x, int 
 // OFFSET: 0x00840FF0
 // FUNCTION: fn_10548
 std::pair<bool, BarterMarketItem> UIBarterItemPurchaseWnd::GetBarterItemOrPriceAt(int x, int y) {
-  if (x < 40 || x >= this->geometry.width - 20 || y < 17 || y >= this->visibleRows * 32 + 17) {
+  if (x < 40 || x >= this->geometry.width - 20 || y < 17 || this->visibleRows * 32 + 17 <= y) {
     return std::make_pair(false, BarterMarketItem());
   }
 
@@ -168,7 +168,7 @@ std::pair<bool, BarterMarketItem> UIBarterItemPurchaseWnd::GetBarterItemOrPriceA
 // OFFSET: 0x00841320
 // FUNCTION: fn_10549
 std::pair<bool, BarterMarketItem> UIBartermarketWnd::GetBarterItemOrPriceAt(int x, int y) {
-  if (x < 40 || x >= this->geometry.width - 20 || y < 17 || y >= this->visibleRows * 32 + 17) {
+  if (x < 40 || x >= this->geometry.width - 20 || y < 17 || this->visibleRows * 32 + 17 <= y) {
     return std::make_pair(false, BarterMarketItem());
   }
 
@@ -200,7 +200,7 @@ std::pair<bool, BarterMarketItem> UIBartermarketWnd::GetBarterItemOrPriceAt(int 
 // OFFSET: 0x00841650
 // FUNCTION: fn_10550
 std::pair<bool, BarterMarketItem> UIBarterItemPurchaseWnd::GetBarterItemAt(int x, int y) {
-  if (x < 40 || x >= this->geometry.width - 20 || y < 17 || y >= this->visibleRows * 32 + 17) {
+  if (x < 40 || x >= this->geometry.width - 20 || y < 17 || this->visibleRows * 32 + 17 <= y) {
     return std::make_pair(false, BarterMarketItem());
   }
 
@@ -208,7 +208,7 @@ std::pair<bool, BarterMarketItem> UIBarterItemPurchaseWnd::GetBarterItemAt(int x
   std::list<BarterMarketItem> items = *g_barterMarketItemMgr->GetAllItems();
   int index = 0;
   int visible = 0;
-  for (std::list<BarterMarketItem>::iterator it = items.begin(); it != items.end(); ++it, ++index) {
+  for (std::list<BarterMarketItem>::const_iterator it = items.begin(); it != items.end(); ++it, ++index) {
     if (index >= this->scroll * this->columns) {
       if (visible == this->columns * row) {
         return std::make_pair(true, *it);
@@ -310,8 +310,8 @@ std::pair<bool, BarterMarketEntry> UIExpandedBartermarketWnd::GetEntryAt(int x, 
 // OFFSET: 0x008462C0
 // FUNCTION: fn_10580
 std::pair<bool, BarterMarketEntry> UIExpandedBarterItemPurchaseWnd::GetEntryOrChunkAt(int x, int y) {
-  if (x < 40 || x >= this->geometry.width - 20 || y < 17 || y >= this->rowCount * 64 + 17) {
-    return std::pair<bool, BarterMarketEntry>(false, BarterMarketEntry());
+  if (x < 40 || x >= this->geometry.width - 20 || y < 17 || this->rowCount * 64 + 17 <= y) {
+    return std::make_pair(false, BarterMarketEntry());
   }
 
   const int offsetY = y - 17;
@@ -343,13 +343,13 @@ std::pair<bool, BarterMarketEntry> UIExpandedBarterItemPurchaseWnd::GetEntryOrCh
       ++visible;
     }
   }
-  return std::pair<bool, BarterMarketEntry>(false, BarterMarketEntry());
+  return std::make_pair(false, BarterMarketEntry());
 }
 
 // OFFSET: 0x00846590
 // FUNCTION: fn_10581
 std::pair<bool, BarterMarketEntry> UIExpandedBartermarketWnd::GetEntryOrChunkAt(int x, int y) {
-  if (x < 40 || x >= this->geometry.width - 20 || y < 17 || y >= this->rowCount * 64 + 17) {
+  if (x < 40 || x >= this->geometry.width - 20 || y < 17 || this->rowCount * 64 + 17 <= y) {
     return std::make_pair(false, BarterMarketEntry());
   }
 
@@ -1525,11 +1525,10 @@ int UIBartermarketWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
       if (width != this->geometry.width || height != this->geometry.height) {
         this->Resize(width, height);
         this->columns = 1;
-        const int contentHeight = this->geometry.height - this->footerHeight - this->bottomPadding - 17;
-        this->visibleRows = contentHeight / 32;
+        this->visibleRows = (height - this->footerHeight - this->bottomPadding - 17) / 32;
         this->resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
         this->scrollBar->Move(this->geometry.width - 15, 14);
-        this->scrollBar->Resize(this->scrollBar->geometry.width, contentHeight);
+        this->scrollBar->Resize(this->scrollBar->geometry.width, this->geometry.height - this->footerHeight - this->bottomPadding - 17);
         this->UpdateScrollBar();
       }
 
