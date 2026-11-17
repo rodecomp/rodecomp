@@ -80,8 +80,8 @@ CMapInfoMgr::~CMapInfoMgr() {
 // OFFSET: 0x006CE820
 // FUNCTION: fn_06484
 void CMapInfoMgr::AddMapDisplayName(std::string map, std::string name, bool show) {
-  this->m_maps.try_emplace(map).first->second.m_displayName = name;
-  this->m_maps.try_emplace(map).first->second.m_showDisplayName = show;
+  this->m_maps[map].m_displayName = name;
+  this->m_maps[map].m_showDisplayName = show;
 }
 
 // OFFSET: 0x006CE8C0
