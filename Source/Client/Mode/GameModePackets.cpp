@@ -3737,8 +3737,8 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
   const auto* p = reinterpret_cast<const PACKET_ZC_NOTIFY_SKILL*>(packet);
   ActorSkillMessage message;
   message.skillId = p->skillId;
-  message.damage = p->damage;
   message.actionType = p->action;
+  message.damage = p->damage;
   message.targetId = p->targetId;
   message.tick = p->startTime;
   message.skillLevel = p->level;
@@ -3748,38 +3748,34 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
   message.attackMotion = p->attackMt;
   message.damageMotion = p->attackedMt;
 
-  const std::uint16_t skillId = p->skillId;
-  const std::uint32_t sourceAid = p->aid;
-  const std::uint32_t targetAid = p->targetId;
-
   CGameActor* gameActor = nullptr;
   CGameActor* source = nullptr;
   int job = -1;
 
-  if (skillId == RA_WUGDASH && targetAid == g_session.m_aid) {
+  if (p->skillId == RA_WUGDASH && p->targetId == g_session.m_aid) {
     return;
   }
 
   CGameActor* target;
-  if (targetAid == g_session.m_aid) {
+  if (p->targetId == g_session.m_aid) {
     target = this->scene->player;
   } else {
-    target = this->scene->GetGameActorByAID(targetAid);
+    target = this->scene->GetGameActorByAID(p->targetId);
   }
 
-  if (sourceAid == g_session.m_aid) {
+  if (p->aid == g_session.m_aid) {
     const std::int64_t value = reinterpret_cast<std::intptr_t>(&message);
     this->scene->player->SendMsg(nullptr, AM_SKILL, value, 0, 0, 0, 0, 0);
     source = this->scene->player;
     job = source->GetEffectiveJob(-1);
   } else {
-    gameActor = this->scene->GetGameActorByAID(sourceAid);
+    gameActor = this->scene->GetGameActorByAID(p->aid);
     if (gameActor != nullptr) {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&message);
       gameActor->SendMsg(nullptr, AM_SKILL, value, 0, 0, 0, 0, 0);
       source = gameActor;
       job = source->GetEffectiveJob(-1);
-    } else if (CRenderObject* skill = this->scene->GetSkillByAID(sourceAid)) {
+    } else if (CRenderObject* skill = this->scene->GetSkillByAID(p->aid)) {
       const std::int64_t value = reinterpret_cast<std::intptr_t>(&message);
       skill->SendMsg(nullptr, AM_SKILL, value, 0, 0, 0, 0, 0);
     }
@@ -3787,24 +3783,24 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
 
   CRenderObject* targetSkill;
   if (target == nullptr) {
-    targetSkill = this->scene->GetSkillByAID(targetAid);
+    targetSkill = this->scene->GetSkillByAID(p->targetId);
   } else {
     targetSkill = nullptr;
   }
 
   CSkillActionMgr::GetInstance()->OnSkillHit(
-    skillId, source, target, targetSkill
+    p->skillId, source, target, targetSkill
   );
 
   const vector3d origin{0.0f, 0.0f, 0.0f};
   int effectId;
 
   if (target != nullptr && source != nullptr) {
-    switch (skillId) {
+    switch (p->skillId) {
     case NPC_RAYOFGENESIS:
     case LG_RAYOFGENESIS:
     case WM_METALICSOUND: {
-      effectId = skillId == WM_METALICSOUND ? 0x62F : 0x593;
+      effectId = p->skillId == WM_METALICSOUND ? 0x62F : 0x593;
       const int duration = static_cast<int>(source->render.speed * 100.0f + 100.0f);
       CEffect* effect = g_effectMgr->Spawn(target->render.accountId, effectId, origin.x, origin.y, origin.z, 0, -1, 0, 0);
       if (effect) {
@@ -3813,26 +3809,26 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
       break;
     }
     case NPC_COMET:
-      target->LaunchEffect(EF_METEORSTORM, origin, 0.0f);
+      target->LaunchEffect(EF_METEORSTORM, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       source->SetState(7, 1);
       break;
     case NPC_WIDECRITICALWOUND:
       if (source == this->scene->player) {
-        source->LaunchEffect(EF_WIDE_CRITICAL_WOUND, origin, 0.0f);
+        source->LaunchEffect(EF_WIDE_CRITICAL_WOUND, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       if (target == this->scene->player) {
-        target->LaunchEffect(EF_WIDE_CRITICAL_WOUND, origin, 0.0f);
+        target->LaunchEffect(EF_WIDE_CRITICAL_WOUND, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
     case NPC_HELLJUDGEMENT:
     case NPC_HELLJUDGEMENT2:
       if (source != target) {
-        target->LaunchEffect(EF_DEVIL, origin, 0.0f);
+        target->LaunchEffect(EF_DEVIL, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
     case RK_DEATHBOUND:
       source->SetState(2, 1);
-      target->LaunchEffect(EF_SUI_EXPLOSION, origin, 0.0f);
+      target->LaunchEffect(EF_SUI_EXPLOSION, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
     case WL_COMET:
       if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
@@ -3904,15 +3900,15 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
     }
   }
 
-  if (source != nullptr && skillId == WL_FROSTMISTY) {
+  if (source != nullptr && p->skillId == WL_FROSTMISTY) {
     source->SetState(7, 1);
   }
 
   if (target != nullptr) {
-    switch (skillId) {
+    switch (p->skillId) {
     case AS_SPLASHER:
       if (p->level == -1) {
-        target->LaunchEffect(EF_SPLASHER, origin, 0.0f);
+        target->LaunchEffect(EF_SPLASHER, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
       break;
     case NPC_DRAGONBREATH:
@@ -4050,23 +4046,23 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
     }
     case RA_ELECTRICSHOCKER:
       g_soundMgr->PlayWave("effect\\hunter_shockwavetrap.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      target->LaunchEffect(EF_SHOCKWAVEHIT, origin, 0.0f);
+      target->LaunchEffect(EF_SHOCKWAVEHIT, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
     case RA_CLUSTERBOMB:
-      target->LaunchEffect(EF_M03, origin, 0.0f);
+      target->LaunchEffect(EF_M03, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\hunter_landmine.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       break;
     case RA_FIRINGTRAP:
-      target->LaunchEffect(EF_M01, origin, 0.0f);
+      target->LaunchEffect(EF_M01, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\폭염룡.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       break;
     case RA_ICEBOUNDTRAP:
-      target->LaunchEffect(EF_ICECRASH, origin, 0.0f);
+      target->LaunchEffect(EF_ICECRASH, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\ef_frostdiver.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       break;
     case NC_FLAMELAUNCHER:
-      target->LaunchEffect(EF_M01, origin, 0.0f);
-      target->LaunchEffect(EF_FIREHIT, origin, 0.0f);
+      target->LaunchEffect(EF_M01, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      target->LaunchEffect(EF_FIREHIT, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       g_soundMgr->PlayWave("effect\\폭염룡.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
       break;
     case NC_ARMSCANNON: {
@@ -4144,7 +4140,7 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
     }
     case GN_SPORE_EXPLOSION:
       g_soundMgr->PlayWave("effect\\폭염룡.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-      target->LaunchEffect(EF_SPR_LIGHTPRINT, origin, 0.0f);
+      target->LaunchEffect(EF_SPR_LIGHTPRINT, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       break;
     case GN_HELLS_PLANT:
       g_effectMgr->Spawn(target->render.accountId, EF_NEW_CART_CANNON_FIRE_BOTTOM, origin.x, origin.y, origin.z, 0, -1, 0, 0);
@@ -4214,12 +4210,12 @@ void CGameMode::ReceiveNotifySkill(const unsigned char* packet) {
 
   if (source != nullptr) {
     if (g_session.IsMonsterActor(source) == 0) {
-      this->SendMsg(MM_MAKE_SKILL_USED_MSG, skillId, reinterpret_cast<std::intptr_t>(source), p->level, 0);
+      this->SendMsg(MM_MAKE_SKILL_USED_MSG, p->skillId, reinterpret_cast<std::intptr_t>(source), p->level, 0);
       return;
     }
     const unsigned char kind = source->objectType;
     if (kind == 10 || kind == 13 || kind == 14) {
-      this->SendMsg(MM_MAKE_SKILL_USED_MSG, skillId, reinterpret_cast<std::intptr_t>(source), p->level, 0);
+      this->SendMsg(MM_MAKE_SKILL_USED_MSG, p->skillId, reinterpret_cast<std::intptr_t>(source), p->level, 0);
     }
   }
 
