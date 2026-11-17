@@ -2580,7 +2580,7 @@ void CEffectPrim::RenderFloorSquare(matrix& wtm) {
 
     for (int index = 0; index < 4; ++index) {
       corners[index] = {dist * g_cosTable[angle] + center.x, y, dist * g_sinTable[angle] + center.z};
-      angle += angle + 90 >= 360 ? -270 : 90;
+      angle += angle + 90 < 360 ? 90 : -270;
     }
 
     if (slot.flag1[1] == 1) {
@@ -2615,7 +2615,7 @@ void CEffectPrim::RenderFloorSquare2(matrix& wtm) {
 
     for (int index = 0; index < 4; ++index) {
       corners[index] = {dist * g_cosTable[angle] + center.x, y, dist * g_sinTable[angle] + center.z};
-      angle += angle + 90 >= 360 ? -270 : 90;
+      angle += angle + 90 < 360 ? 90 : -270;
     }
 
     if (slot.flag1[3] == 0) {
@@ -3578,8 +3578,8 @@ void CEffectPrim::RenderStackedRings(matrix& wtm) {
       if (angle2 >= 360) {
         angle2 = static_cast<short>(angle2 - 360);
       }
-      const short angle3 = static_cast<short>(angle2 + 90 < 360 ? angle2 + 90 : angle2 - 270);
-      const short angle4 = static_cast<short>(angle3 + 90 < 360 ? angle3 + 90 : angle3 - 270);
+      const short angle3 = static_cast<short>(angle2 + (angle2 + 90 < 360 ? 90 : -270));
+      const short angle4 = static_cast<short>(angle3 + (angle3 + 90 < 360 ? 90 : -270));
       vec1.Set(radius * g_cosTable[angle1], y - 1.0f, radius * g_sinTable[angle1]);
       vec2.Set(radius * g_cosTable[angle2], y - 1.0f, radius * g_sinTable[angle2]);
       vec3.Set(radius * g_cosTable[angle3], y, radius * g_sinTable[angle3]);
