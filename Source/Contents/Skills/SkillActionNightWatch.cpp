@@ -508,14 +508,16 @@ void CSkillAction_NW_HASTY_FIRE_IN_THE_HOLE::OnSkillCast(int level, CGameActor* 
 // FUNCTION: fn_08707
 void CSkillAction_NW_HASTY_FIRE_IN_THE_HOLE::OnGroundSkillEffect(vector3d position, int argument2, int argument3) {
   for (int index = 0; index < 3; ++index) {
-    CEffect* effect = g_effectMgr->Spawn(
+    EffectLists* effectMgr = g_effectMgr;
+    CEffect* effect = effectMgr->Spawn(
       0, CEZ2STREffectMgr::GetInstance()->EffectId(FormatOwnedString("hasty_fire_in_the_hole_%d", index).c_str()), position, 0, -1, 0, 0
     );
     if (effect) {
       effect->SetDelay(index * 288);
     }
 
-    effect = g_effectMgr->Spawn(
+    effectMgr = g_effectMgr;
+    effect = effectMgr->Spawn(
       0, CEZ2STREffectMgr::GetInstance()->EffectId(FormatOwnedString("hasty_fire_in_the_hole_bottom_%d", index).c_str()), position, 0, -1, 0, 0
     );
     if (effect) {
