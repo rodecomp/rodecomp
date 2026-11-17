@@ -14712,23 +14712,6 @@ void CRagEffect::SendMsg(
   const std::int64_t third = static_cast<std::int64_t>(thirdHigh) << 32 | static_cast<std::uint32_t>(thirdLow);
 
   switch (message) {
-  case AM_SETPOS:
-    if (first != 0) {
-      const float* position = reinterpret_cast<const float*>(static_cast<std::intptr_t>(first));
-      this->state.deltaPos.x = position[0];
-      this->state.deltaPos.y = position[1];
-      this->state.deltaPos.z = position[2];
-    }
-    if (second != 0) {
-      const float* position = reinterpret_cast<const float*>(static_cast<std::intptr_t>(second));
-      this->state.deltaPos2.x = position[0];
-      this->state.deltaPos2.y = position[1];
-      this->state.deltaPos2.z = position[2];
-    }
-    break;
-  case AM_MASTER_DEAD:
-    this->state.parent = nullptr;
-    break;
   case AM_CHILD_DEAD:
     if (first == 0) {
       if (sender == nullptr) {
@@ -14745,6 +14728,22 @@ void CRagEffect::SendMsg(
         (*it)->HandleMasterMessage(nullptr, 24, 0, 0, 0, 0, 0, 0, 0);
       }
       this->state.primList.erase(this->state.primList.begin(), this->state.primList.end());
+    }
+    break;
+  case AM_SETPARAM: {
+    const float* param = reinterpret_cast<const float*>(static_cast<std::intptr_t>(first));
+    this->state.param[0] = param[0];
+    this->state.param[1] = param[1];
+    this->state.param[2] = param[2];
+    this->state.param[3] = param[3];
+    break;
+  }
+  case AM_MASTER_DEAD:
+    this->state.parent = nullptr;
+    break;
+  case AM_EFFECT_LOOP_COUNT:
+    if (first == 735 || first == 736 || first == 737 || first == 738) {
+      this->state.lastPrim->state.isChangeProcessed = static_cast<std::uint32_t>(second);
     }
     break;
   case AM_SETCOUNT:
@@ -14798,14 +14797,20 @@ void CRagEffect::SendMsg(
       }
     }
     break;
-  case AM_SETPARAM: {
-    const float* param = reinterpret_cast<const float*>(static_cast<std::intptr_t>(first));
-    this->state.param[0] = param[0];
-    this->state.param[1] = param[1];
-    this->state.param[2] = param[2];
-    this->state.param[3] = param[3];
+  case AM_SETPOS:
+    if (first != 0) {
+      const float* position = reinterpret_cast<const float*>(static_cast<std::intptr_t>(first));
+      this->state.deltaPos.x = position[0];
+      this->state.deltaPos.y = position[1];
+      this->state.deltaPos.z = position[2];
+    }
+    if (second != 0) {
+      const float* position = reinterpret_cast<const float*>(static_cast<std::intptr_t>(second));
+      this->state.deltaPos2.x = position[0];
+      this->state.deltaPos2.y = position[1];
+      this->state.deltaPos2.z = position[2];
+    }
     break;
-  }
   case AM_SET_DURATION:
     this->SetStateDuration(static_cast<int>(first));
     break;
@@ -14813,11 +14818,6 @@ void CRagEffect::SendMsg(
     this->state.colorChannels[0] = static_cast<std::int32_t>(first);
     this->state.colorChannels[1] = static_cast<std::int32_t>(second);
     this->state.colorChannels[2] = static_cast<std::int32_t>(third);
-    break;
-  case AM_EFFECT_LOOP_COUNT:
-    if (first == 735 || first == 736 || first == 737 || first == 738) {
-      this->state.lastPrim->state.isChangeProcessed = static_cast<std::uint32_t>(second);
-    }
     break;
   }
 }
