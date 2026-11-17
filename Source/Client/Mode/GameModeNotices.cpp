@@ -4929,12 +4929,16 @@ void CGameMode::ReceiveStovePurchaseResult(const unsigned char* data) {
     message = static_cast<const std::string&>(FormatOwnedString("%s아이템 %d개 지급 완료", name, packet->count));
   }
   case 2:
-    if (g_stoveMgr->m_pendingOperation == 2) {
+    switch (g_stoveMgr->m_pendingOperation) {
+    case 2:
       g_stoveMgr->FetchStoveTermsAgreement();
-    } else if (g_stoveMgr->m_pendingOperation == 3) {
+      break;
+    case 3: {
       g_stoveMgr->m_pendingOperation = 0;
       UICashShopWnd* window = static_cast<UICashShopWnd*>(g_windowMgr.LookupWindow(WID_CASHSHOP_WND));
       g_stoveMgr->StartPurchase(window->m_cart->m_cartItems);
+      break;
+    }
     }
     break;
   case 1:
