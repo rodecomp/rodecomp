@@ -83,7 +83,12 @@ struct WhisperWndInfo : WindowPlacement {
   int IsValid() const;
 };
 
-struct MacroReporterWndInfo : WindowPlacement {
+struct MacroReporterWndInfo {
+  /* 0000 */ int width;
+  /* 0004 */ int height;
+  /* 0008 */ int x;
+  /* 000C */ int y;
+
   void Reset();
   bool IsValid() const;
 };

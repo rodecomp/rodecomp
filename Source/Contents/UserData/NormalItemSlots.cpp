@@ -475,7 +475,7 @@ int WhisperWndInfo::IsValid() const {
 // OFFSET: 0x009A62F0
 // FUNCTION: fn_13675
 bool MacroReporterWndInfo::IsValid() const {
-  return this->width > 0 && g_renderer->viewport.width - this->x >= this->width && this->height > 0 && g_renderer->viewport.height - this->y >= this->height;
+  return this->x > 0 && g_renderer->viewport.width - this->width >= this->x && this->y > 0 && g_renderer->viewport.height - this->height >= this->y;
 }
 
 // OFFSET: 0x009A6320
@@ -1042,10 +1042,10 @@ void WhisperWndInfo::Reset() {
 // OFFSET: 0x009A6DC0
 // FUNCTION: fn_13735
 void MacroReporterWndInfo::Reset() {
-  this->x = 249;
-  this->y = 308;
-  this->width = g_renderer->viewport.width - 299;
-  this->height = (g_renderer->viewport.height - 308) / 2;
+  this->width = 249;
+  this->height = 308;
+  this->x = g_renderer->viewport.width - 299;
+  this->y = (g_renderer->viewport.height - 308) / 2;
 }
 
 // OFFSET: 0x009A6E00
