@@ -127,7 +127,7 @@ std::string UIChatHisBox::Convert(const std::string& text) {
 // OFFSET: 0x00884460
 // FUNCTION: fn_11307
 const std::string UIChatHisBox::BracketName(const std::string& name) {
-  std::string result;
+  std::string result("");
   result += '<';
   result += this->FitTextToWidth(name, this->geometry.width / 2);
   result += '>';
