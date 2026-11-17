@@ -1301,11 +1301,13 @@ void CUIReset::UpdateEnchantInfo() {
   this->enchantList->ClearData();
   this->LoadEnchantList();
 }
+}
 
+namespace EnchantUI {
 // OFFSET: 0x00A06800
 // FUNCTION: fn_15004
 void CUIEnchantPage::ResetSlots() {
-  std::for_each(this->slots.begin(), this->slots.end(), [](const auto& slot) {
+  std::for_each(this->slots.begin(), this->slots.end(), [](std::pair<const int, CUISlot*> slot) {
     slot.second->Show(0);
   });
 
