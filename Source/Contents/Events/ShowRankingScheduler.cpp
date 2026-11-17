@@ -50,16 +50,17 @@ void CShowRankingScheduler::Process(const std::uint64_t& now) {
             continue;
           }
           for (std::size_t listed = 0; listed < this->rankingList.size(); ++listed) {
-            if (this->rankingList[listed] == this->rankingData.ids[index]) {
+            if (this->rankingData.ids[index] == this->rankingList[listed]) {
               name = g_namelessName;
               break;
             }
           }
-          if (name.find(g_namelessName) == std::string::npos) {
-            name = LookupPlayerName(this->rankingData.ids[index]);
-            if (name.empty()) {
-              complete = false;
-            }
+          if (name.find(g_namelessName) != std::string::npos) {
+            continue;
+          }
+          name = LookupPlayerName(this->rankingData.ids[index]);
+          if (name.empty()) {
+            complete = false;
           }
         }
         if (!complete) {
