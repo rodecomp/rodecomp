@@ -7,19 +7,27 @@
 // FUNCTION: fn_02167
 RenderPrimitivePool::~RenderPrimitivePool() = default;
 
+namespace {
+struct PrimitivePoolAccess : RenderPrimitivePool {
+  // INLINED
+  inline RenderPrimitive* AcquireLocal() {
+    if (this->m_current == this->m_commands.end()) {
+      this->m_commands.emplace_back();
+      this->m_current = this->m_commands.end();
+      return &this->m_commands.back();
+    }
+
+    RenderPrimitive* command = &*this->m_current;
+    ++this->m_current;
+    new (command) RenderPrimitive;
+
+    return command;
+  }
+};
+}
+
 // OFFSET: 0x00543EC0
 // FUNCTION: fn_01811
 RenderPrimitive* CRenderer::AcquirePrimitive() {
-  if (this->primitives.m_current == this->primitives.m_commands.end()) {
-    this->primitives.m_commands.emplace_back();
-    this->primitives.m_current = this->primitives.m_commands.end();
-    return &this->primitives.m_commands.back();
-  }
-
-  RenderPrimitive* command = &*this->primitives.m_current;
-  ++this->primitives.m_current;
-  new (command) RenderPrimitive;
-
-  return command;
+  return static_cast<PrimitivePoolAccess&>(this->primitives).AcquireLocal();
 }
-
