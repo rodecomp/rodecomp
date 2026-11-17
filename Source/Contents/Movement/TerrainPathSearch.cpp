@@ -222,3 +222,9 @@ void CPathFinder::Reset() {
   std::vector<PathNode*>& open = this->openList.Nodes();
   open.erase(open.begin(), open.end());
 }
+
+// OFFSET: 0x00AD9920
+// FUNCTION: fn_17888
+void CPathFinder::SetAttr(C3dAttr* attr) {
+  this->attr = attr;
+}

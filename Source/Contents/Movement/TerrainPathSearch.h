@@ -56,6 +56,7 @@ public:
   int Height() const;
   int Width() const;
   bool LoadAttr(std::string name);
+  void SetAttr(C3dAttr* attr);
 };
 
 extern CPathFinder g_pathFinder;
