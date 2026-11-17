@@ -9951,6 +9951,30 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     }
     break;
   }
+  case TT_BROADCAST:
+    this->SendMsg(MM_BROADCASTMSG, 0, 0, 0, 0);
+    break;
+  case TT_LOCALBROADCAST:
+    this->SendMsg(MM_BROADCASTMSG, 1, 0, 0, 0);
+    break;
+  case TT_NAMELESS_BROADCAST:
+    this->SendMsg(MM_BROADCASTMSG, 2, 0, 0, 0);
+    break;
+  case TT_NAMELESS_LOCALBROADCAST:
+    this->SendMsg(MM_BROADCASTMSG, 3, 0, 0, 0);
+    break;
+  case TT_NAMELESS_BLUEBROADCAST:
+    this->SendMsg(MM_BROADCASTMSG, 4, 0, 0, 0);
+    break;
+  case TT_NAMELESS_BLUELOCALBROADCAST:
+    this->SendMsg(MM_BROADCASTMSG, 5, 0, 0, 0);
+    break;
+  case TT_REQ_NUM_USER:
+    this->SendMsg(MM_REQ_NUM_USER, 0, 0, 0, 0);
+    break;
+  case TT_HOMUN_WAIT:
+    this->SendMsg(MM_HOMUN_WAIT, 0, 0, 0, 0);
+    break;
   case TT_EX_HI: {
     char text[256];
     if (std::strcmp(parts[0].c_str(), "") == 0) {
@@ -10028,12 +10052,6 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     g_serviceOptions.Set(0xA5, !g_serviceOptions.Get(TT_LOGINOUT_ON_OFF));
     g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(g_serviceOptions.Get(TT_LOGINOUT_ON_OFF) ? MSI_LOGINOUT_ON : MSI_LOGINOUT_OFF)), 0x64FFFF, 0, 0, 0);
-    g_windowMgr.RefreshGameSettings();
-    break;
-  case TT_EMBLEM_FRAME_ON_OFF:
-    g_serviceOptions.Set(0xF3, !g_serviceOptions.Get(TT_EMBLEM_FRAME_ON_OFF));
-    g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
-    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(g_serviceOptions.Get(TT_EMBLEM_FRAME_ON_OFF) ? MSI_USESKILL_FAIL_EMPTY_SOUL_ENERGY : MSI_ADDSKILL_FAIL_INCLUDE_SKILL_YOU_CANNOT_LEARN)), 0x64FFFF, 0, 0, 0);
     g_windowMgr.RefreshGameSettings();
     break;
   case TT_BATTLE_ON_OFF:
@@ -10131,12 +10149,57 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     }
     g_windowMgr.RefreshGameSettings();
     break;
+  case TT_DISCONNECT_CHARACTER:
+    this->SendMsg(MM_DISCONNECT_CHARACTER, 0, 0, 0, 0);
+    break;
+  case TT_DISCONNECT_ALL_CHARACTER:
+    this->SendMsg(MM_DISCONNECT_ALL_CHARACTER, 0, 0, 0, 0);
+    break;
+  case TT_REQ_BREAK_GUILD:
+    this->SendMsg(MM_REQ_DISORGANIZE_GUILD, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
+    break;
+  case TT_REQ_MAKE_GUILD:
+    this->SendMsg(MM_REQ_MAKE_GUILD, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
+    break;
+  case TT_REQ_MAKE_GROUP:
+    this->SendMsg(MM_MAKE_GROUP, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
+    break;
+  case TT_SEEK_PARTY:
+    this->SendMsg(MM_OPEN_SEEKPARTY_MEMBER, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
+    break;
+  case TT_REQ_RECRUIT:
+    this->SendMsg(MM_OPEN_SEEKPARTY_LIST, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
+    break;
+  case TT_REQ_ITEM_CREATE:
+    this->SendMsg(MM_ITEM_CREATE, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
+    break;
   case TT_REQ_MOVETO_MAP: {
     const int third = std::atoi(parts[2].c_str());
     const int second = std::atoi(parts[1].c_str());
     this->SendMsg(MM_MOVETO_MAP, reinterpret_cast<int>(parts[0].c_str()), second, third, 0);
     break;
   }
+  case TT_REMOVE:
+    this->SendMsg(MM_REMOVE_TO_AID, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
+    break;
+  case TT_SHIFT:
+    this->SendMsg(MM_SHIFT_TO_GID, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
+    break;
+  case TT_RECALL_AID:
+    this->SendMsg(MM_RECALL_AID, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
+    break;
+  case TT_RECALL_GID:
+    this->SendMsg(MM_RECALL_GID, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
+    break;
+  case TT_CHECK_ID:
+    this->SendMsg(MM_CHECK_ID, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
+    break;
+  case TT_RC_ID:
+    this->SendMsg(MM_RC_ID, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
+    break;
+  case TT_BILLING_INFO:
+    this->SendMsg(MM_BILLING_INFO, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
+    break;
   case TT_REQ_PK: {
     std::string value(parts[0].c_str());
     LowercaseText(value);
@@ -10145,6 +10208,9 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     }
     break;
   }
+  case TT_REQ_EXPEL_GROUP_MEMBER:
+    this->SendMsg(MM_REQ_EXPEL_GROUP_MEMBER, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
+    break;
   case TT_REQ_EXCHANGE_ITEM: {
     const std::uint32_t id = this->nameCard.FindId(parts[0].c_str());
     if (id != 0) {
@@ -10355,93 +10421,6 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
   case TT_REQ_EMOTION_DICE:
     this->SendMsg(MM_CASH_EMOTION, reinterpret_cast<int>("ET_DICE1"), 0, 0, 0);
     break;
-  case TT_BROADCAST:
-    this->SendMsg(MM_BROADCASTMSG, 0, 0, 0, 0);
-    break;
-  case TT_LOCALBROADCAST:
-    this->SendMsg(MM_BROADCASTMSG, 1, 0, 0, 0);
-    break;
-  case TT_NAMELESS_BROADCAST:
-    this->SendMsg(MM_BROADCASTMSG, 2, 0, 0, 0);
-    break;
-  case TT_NAMELESS_LOCALBROADCAST:
-    this->SendMsg(MM_BROADCASTMSG, 3, 0, 0, 0);
-    break;
-  case TT_NAMELESS_BLUEBROADCAST:
-    this->SendMsg(MM_BROADCASTMSG, 4, 0, 0, 0);
-    break;
-  case TT_NAMELESS_BLUELOCALBROADCAST:
-    this->SendMsg(MM_BROADCASTMSG, 5, 0, 0, 0);
-    break;
-  case TT_REQ_NUM_USER:
-    this->SendMsg(MM_REQ_NUM_USER, 0, 0, 0, 0);
-    break;
-  case TT_HOMUN_WAIT:
-    this->SendMsg(MM_HOMUN_WAIT, 0, 0, 0, 0);
-    break;
-  case TT_DISCONNECT_CHARACTER:
-    this->SendMsg(MM_DISCONNECT_CHARACTER, 0, 0, 0, 0);
-    break;
-  case TT_DISCONNECT_ALL_CHARACTER:
-    this->SendMsg(MM_DISCONNECT_ALL_CHARACTER, 0, 0, 0, 0);
-    break;
-  case TT_REQ_BREAK_GUILD:
-    this->SendMsg(MM_REQ_DISORGANIZE_GUILD, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
-    break;
-  case TT_REQ_MAKE_GUILD:
-    this->SendMsg(MM_REQ_MAKE_GUILD, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
-    break;
-  case TT_REQ_MAKE_GROUP:
-    this->SendMsg(MM_MAKE_GROUP, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
-    break;
-  case TT_SEEK_PARTY:
-    this->SendMsg(MM_OPEN_SEEKPARTY_MEMBER, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
-    break;
-  case TT_REQ_RECRUIT:
-    this->SendMsg(MM_OPEN_SEEKPARTY_LIST, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
-    break;
-  case TT_REQ_ITEM_CREATE:
-    this->SendMsg(MM_ITEM_CREATE, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
-    break;
-  case TT_REMOVE:
-    this->SendMsg(MM_REMOVE_TO_AID, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
-    break;
-  case TT_SHIFT:
-    this->SendMsg(MM_SHIFT_TO_GID, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
-    break;
-  case TT_RECALL_AID:
-    this->SendMsg(MM_RECALL_AID, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
-    break;
-  case TT_RECALL_GID:
-    this->SendMsg(MM_RECALL_GID, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
-    break;
-  case TT_CHECK_ID:
-    this->SendMsg(MM_CHECK_ID, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
-    break;
-  case TT_RC_ID:
-    this->SendMsg(MM_RC_ID, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
-    break;
-  case TT_BILLING_INFO:
-    this->SendMsg(MM_BILLING_INFO, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
-    break;
-  case TT_REQ_EXPEL_GROUP_MEMBER:
-    this->SendMsg(MM_REQ_EXPEL_GROUP_MEMBER, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
-    break;
-  case TT_REQ_RESETSTATE:
-    this->SendMsg(MM_RESET_PARAMETER, 0, 0, 0, 0);
-    break;
-  case TT_REQ_INVITE_PARTY:
-    this->SendMsg(MM_REQ_JOIN_GROUP, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
-    break;
-  case TT_REQ_INVITE_GUILD:
-    this->SendMsg(MM_REQ_JOIN_GUILD2, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
-    break;
-  case TT_PRISON_USER:
-    this->SendMsg(MM_PRISON_USER, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
-    break;
-  case TT_OPEN_ACCOUNT_LIMITED_TOOL:
-    this->SendMsg(MM_OPEN_ACCOUNT_LIMITED_TOOL, 0, 0, 0, 0);
-    break;
   case TT_SHOW_EMOTIONLIST: {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NEW_EMOTION_LIST)), 0xFFFF64, 0, 0, 0);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_EMOTION_BIGTHROB)), 0xFFFF64, 0, 0, 0);
@@ -10478,6 +10457,9 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_EMOTION_HPTIME)), 0xFFFF64, 0, 0, 0);
     break;
   }
+  case TT_REQ_RESETSTATE:
+    this->SendMsg(MM_RESET_PARAMETER, 0, 0, 0, 0);
+    break;
   case TT_REQ_RESETSKILL:
     this->SendMsg(MM_RESET_SKILL, std::atoi(parts[0].c_str()), 0, 0, 0);
     break;
@@ -10512,6 +10494,12 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
     break;
   }
+  case TT_REQ_INVITE_PARTY:
+    this->SendMsg(MM_REQ_JOIN_GROUP, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
+    break;
+  case TT_REQ_INVITE_GUILD:
+    this->SendMsg(MM_REQ_JOIN_GUILD2, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
+    break;
   case TT_REQ_OPEN_EQUIPEDITEM_ONOFF:
     this->SendMsg(MM_OPEN_EQUIPEDITEM_CHANGE, g_session.m_allowEquipView == 0, 0, 0, 0);
     break;
@@ -10657,23 +10645,37 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
     GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
     break;
   }
+  case TT_EMBLEM_FRAME_ON_OFF:
+    g_serviceOptions.Set(0xF3, !g_serviceOptions.Get(TT_EMBLEM_FRAME_ON_OFF));
+    g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
+    g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(g_serviceOptions.Get(TT_EMBLEM_FRAME_ON_OFF) ? MSI_USESKILL_FAIL_EMPTY_SOUL_ENERGY : MSI_ADDSKILL_FAIL_INCLUDE_SKILL_YOU_CANNOT_LEARN)), 0x64FFFF, 0, 0, 0);
+    g_windowMgr.RefreshGameSettings();
+    break;
+  case TT_PRISON_USER:
+    this->SendMsg(MM_PRISON_USER, reinterpret_cast<int>(parts[0].c_str()), 0, 0, 0);
+    break;
+  case TT_OPEN_ACCOUNT_LIMITED_TOOL:
+    this->SendMsg(MM_OPEN_ACCOUNT_LIMITED_TOOL, 0, 0, 0, 0);
+    break;
   case TT_ADVEN_PARTY_BOARD:
     if (!g_windowMgr.CloseWindow(WID_ADVENPARTYBOARDWND)) {
       g_windowMgr.EnsureWindow(WID_ADVENPARTYBOARDWND);
     }
     break;
-  case TT_REMOVE_ON:
+  case TT_REMOVE_ON: {
+    TalkSelectPacket packet;
+    packet.id = ID_CZ_MACRO_CHECK_REMOVE_CHEAT;
+    packet.enabled = 1;
+    packet.value = std::atoi(parts[0].c_str());
+    packet.option = static_cast<unsigned char>(std::atoi(parts[1].c_str()));
+    GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
+    break;
+  }
   case TT_REMOVE_OFF: {
     TalkSelectPacket packet;
     packet.id = ID_CZ_MACRO_CHECK_REMOVE_CHEAT;
-    if (talkType == TT_REMOVE_ON) {
-      packet.enabled = 1;
-      packet.value = std::atoi(parts[0].c_str());
-      packet.option = static_cast<unsigned char>(std::atoi(parts[1].c_str()));
-    } else {
-      packet.enabled = 0;
-      packet.value = 0;
-    }
+    packet.enabled = 0;
+    packet.value = 0;
     GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
     break;
   }
