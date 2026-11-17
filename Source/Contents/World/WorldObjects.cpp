@@ -145,10 +145,11 @@ void CWorld::OnProcess() {
   const int ready = pending.load(std::memory_order_acquire);
   if (ready != 0) {
     const int end = this->published + ready;
+    WorldSpatialTree& root = this->spatial;
     while (this->published < end) {
       C3dActor& model = *this->models[this->published];
       for (int index = 0; index < 4; ++index) {
-        WorldSpatialTree* child = this->spatial.children[index];
+        WorldSpatialTree* child = root.children[index];
         if (IntersectsBounds(model.oriented, child->minimum)) {
           child->InsertModel(&model, 1);
         }
