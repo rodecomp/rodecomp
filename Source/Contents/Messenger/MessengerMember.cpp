@@ -254,10 +254,10 @@ std::uint32_t MessengerMember::Deserialize(const std::vector<unsigned char>& dat
     return 0xFFFFFFFF;
   }
 
-  std::uint32_t offset = 6;
   MessengerRecordHeader header;
   header.Clear();
   std::memcpy(&header, data.data(), sizeof(header));
+  std::uint32_t offset = 6;
   if (251 != header.id) {
     return 0xFFFFFFFF;
   }
@@ -409,7 +409,7 @@ void UIDragMiniPartyWnd::Paint() {
       );
     }
 
-    memset(path, 0, 0x100);
+    memset(text, 0, 0x100);
     const char* statusIcon;
     if (this->member.offline == 0) {
       if (this->member.accountId == g_session.m_aid) {
@@ -421,8 +421,8 @@ void UIDragMiniPartyWnd::Paint() {
       statusIcon = "%sicon_party_off.bmp";
     }
 
-    sprintf(path, statusIcon, prefix.c_str());
-    CBitmapRes* statusBmp = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
+    sprintf(text, statusIcon, prefix.c_str());
+    CBitmapRes* statusBmp = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text)));
     if (this->gauge) {
       this->DrawBitmap(
         static_cast<int>(this->geometry.width * 0.8f),
@@ -899,13 +899,12 @@ void UIMessengerGroupWnd::OnCreate(int, int) {
     }
   }
 
-  UIResizer* resizer = new UIResizer();
-  this->resizeButton = resizer;
-  resizer->SetSize(16, 16);
-  resizer->SetDirection(7);
-  resizer->SetBitmapName("유저인터페이스\\btn_resize.bmp");
-  resizer->Move(this->geometry.width - 15, this->geometry.height - 15);
-  resizer->SetColors(0xFFFF00FF, 0xFFFF00FF);
+  this->resizeButton = new UIResizer();
+  this->resizeButton->SetSize(16, 16);
+  this->resizeButton->SetDirection(7);
+  this->resizeButton->SetBitmapName("유저인터페이스\\btn_resize.bmp");
+  this->resizeButton->Move(this->geometry.width - 15, this->geometry.height - 15);
+  this->resizeButton->SetColors(0xFFFF00FF, 0xFFFF00FF);
   this->AddChild(this->resizeButton);
   this->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
 }
@@ -1367,11 +1366,10 @@ void UIMessengerGroupWnd::UpdateGauges() {
 
   int shown = 0;
   int index = 0;
-  UIPcGage** gauge = this->gauges;
-  for (auto it = this->members.begin(); it != this->members.end(); ++it, ++index, ++gauge) {
+  for (auto it = this->members.begin(); it != this->members.end(); ++it, ++index) {
     if (index < this->scrollTop * this->columns) {
-      if ((*gauge)->geometry.x != -100) {
-        (*gauge)->Move(-100, -100);
+      if (this->gauges[index]->geometry.x != -100) {
+        this->gauges[index]->Move(-100, -100);
       }
       continue;
     }
@@ -1385,18 +1383,18 @@ void UIMessengerGroupWnd::UpdateGauges() {
       }
 
       const int y = shown / this->columns * this->rowHeight + 17;
-      if ((*gauge)->geometry.y != y) {
-        (*gauge)->Move(47, static_cast<int>(static_cast<float>(this->rowHeight) * 0.76f + static_cast<float>(y)));
+      if (this->gauges[index]->geometry.y != y) {
+        this->gauges[index]->Move(47, static_cast<int>(static_cast<float>(this->rowHeight) * 0.76f + static_cast<float>(y)));
       }
       if (pc && !it->offline) {
-        (*gauge)->SetColor(0x444444);
-      } else if ((*gauge)->geometry.x != -100) {
-        (*gauge)->Move(-100, -100);
+        this->gauges[index]->SetColor(0x444444);
+      } else if (this->gauges[index]->geometry.x != -100) {
+        this->gauges[index]->Move(-100, -100);
       }
     }
 
-    if (++shown > this->visibleRows * this->columns && (*gauge)->geometry.x != -100) {
-      (*gauge)->Move(-100, -100);
+    if (++shown > this->visibleRows * this->columns && this->gauges[index]->geometry.x != -100) {
+      this->gauges[index]->Move(-100, -100);
     }
   }
 }
@@ -1449,21 +1447,27 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       int index = 0;
       for (auto it = this->members.begin(); it != this->members.end(); ++it, ++index) {
         if (it->valid && !it->offline) {
+          CRenderObject* actor;
+          int current;
+          int maximum;
           if (it->accountId == g_session.m_aid) {
-            if (gameMode->scene->player) {
-              this->gauges[index]->SetValues(g_session.hp, g_session.maxHp);
+            actor = gameMode->scene->player;
+            current = g_session.hp;
+            maximum = g_session.maxHp;
+          } else {
+            actor = gameMode->scene->GetGameActorByAID(it->accountId);
+            if (actor) {
+              UIPcGage* gauge = static_cast<UIPcGage*>(static_cast<CPc*>(static_cast<CGameActor*>(actor))->gaugeWindow);
+              if (gauge) {
+                current = gauge->current;
+                maximum = gauge->maximum;
+              } else {
+                current = 0;
+                maximum = 0;
+              }
             }
-          } else if (CRenderObject* actor = gameMode->scene->GetGameActorByAID(it->accountId)) {
-            UIPcGage* gauge = static_cast<UIPcGage*>(static_cast<CPc*>(static_cast<CGameActor*>(actor))->gaugeWindow);
-            int current;
-            int maximum;
-            if (gauge) {
-              current = gauge->current;
-              maximum = gauge->maximum;
-            } else {
-              current = 0;
-              maximum = 0;
-            }
+          }
+          if (actor) {
             this->gauges[index]->SetValues(current, maximum);
           }
           this->jobIcons[index]->offline = 0;
