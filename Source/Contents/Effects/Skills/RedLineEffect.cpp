@@ -105,7 +105,7 @@ void CRedLineEffect::OnProcess() {
       if (age >= 125) {
         const int alpha = particle->alpha - 15;
         particle->alpha = alpha >= 0 ? alpha : 0;
-        particle->speedParameter = std::max(0.0f, particle->speedParameter - 5.0f);
+        particle->speedParameter = std::max(particle->speedParameter - 5.0f, 0.0f);
       }
 
       if (age < 100) {
@@ -116,7 +116,7 @@ void CRedLineEffect::OnProcess() {
         width = particle->speedParameter;
       }
 
-      width = std::max(0.0f, width);
+      width = std::max(width, 0.0f);
 
       const int segment = particle->columnIndex;
       const int step = static_cast<int>(static_cast<float>(particle->angleParameter) / 20.0f);
