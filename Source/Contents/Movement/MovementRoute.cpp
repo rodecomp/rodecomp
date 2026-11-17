@@ -29,13 +29,13 @@ void CPathFinder::BuildMovementRoute(std::uint32_t tick, const PathNode* last, i
 
     const int diagonalDuration = static_cast<int>(static_cast<float>(stepDuration) * 1.414f);
     route.points[0].tick = tick;
-    const float deltaY = static_cast<float>(route.points[1].y) - route.startY;
     const float deltaX = static_cast<float>(route.points[1].x) - route.startX;
+    const float deltaY = static_cast<float>(route.points[1].y) - route.startY;
     const float initialDuration = SquareRoot(deltaY * deltaY + deltaX * deltaX) * static_cast<float>(stepDuration);
     route.points[1].tick = tick + static_cast<std::uint32_t>(initialDuration);
-    for (int index = 2; index < count; ++index) {
-      const int duration = route.points[index].metadata & 1 ? diagonalDuration : stepDuration;
-      route.points[index].tick = route.points[index - 1].tick + duration;
+    for (int index = 1; index < count - 1; ++index) {
+      const int duration = (route.points[index + 1].metadata & 1) == 0 ? stepDuration : diagonalDuration;
+      route.points[index + 1].tick = route.points[index].tick + duration;
     }
   }
 }
