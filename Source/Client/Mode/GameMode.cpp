@@ -1402,6 +1402,11 @@ __forceinline std::vector<unsigned char> MakeDataChunk(std::int16_t type, const 
   return chunk;
 }
 
+// INLINED
+__forceinline void AppendChunk(std::vector<unsigned char>& data, const std::vector<unsigned char>& chunk) {
+  data.insert(data.end(), chunk.begin(), chunk.end());
+}
+
 // OFFSET: 0x00CEC6A0
 // FUNCTION: fn_21356
 unsigned CGameMode::ReadReplayGroundSkills(const std::vector<unsigned char>& data) {
@@ -6551,6 +6556,35 @@ static_assert(sizeof(ProgressPacket) == 0xA);
 static_assert(sizeof(GameModeStoredRecord0191) == 0x1C);
 static_assert(sizeof(GameModeStoredRecord00DA) == 0x3F);
 
+// INLINED
+__forceinline std::vector<char> BuildStoredActorRecord(CGameActor* actor, CActorNameCardHolder& nameCard) {
+  CPc* pc = static_cast<CPc*>(actor);
+  std::vector<char> record;
+  record.resize(sizeof(GameModeStoredRecord00DA), 0);
+  auto* stored = reinterpret_cast<GameModeStoredRecord00DA*>(record.data());
+  stored->aid = actor->render.accountId;
+  stored->job = actor->GetEffectiveJob(-1);
+  stored->sex = static_cast<unsigned char>(actor->sex);
+  stored->cellX = static_cast<std::uint16_t>(actor->movementState[5]);
+  stored->cellY = static_cast<std::uint16_t>(actor->destCellY);
+  stored->head = static_cast<std::uint16_t>(pc->head);
+  const std::int64_t value = actor->GetWeapon();
+  stored->weapon = static_cast<int>(value);
+  stored->shield = static_cast<int>(value >> 32);
+  stored->accessory = static_cast<std::uint16_t>(pc->accessory);
+  stored->accessory2 = static_cast<std::uint16_t>(pc->accessory2);
+  stored->accessory3 = static_cast<std::uint16_t>(pc->accessory3);
+  stored->headPalette = static_cast<std::uint16_t>(pc->headPalette);
+  stored->bodyPalette = static_cast<std::uint16_t>(actor->render.bodyPalette);
+  stored->robe = static_cast<std::uint16_t>(pc->robe);
+  stored->bodyCostume = static_cast<std::uint16_t>(actor->GetBodyCostume());
+  {
+    std::string name = nameCard.Name(actor->render.accountId);
+    std::memcpy(stored->text, name.c_str(), sizeof(stored->text));
+  }
+  return record;
+}
+
 // OFFSET: 0x00CEA510
 // FUNCTION: fn_21350
 std::vector<unsigned char> CGameMode::SaveActorStates() {
@@ -7264,19 +7298,19 @@ void CGameMode::UpdateBalloons() {
       created = true;
     }
 
-    if (this->skillId != shownSkill || created == true) {
+    if (shownSkill != this->skillId || created == true) {
       shownSkill = this->skillId;
       std::string text;
       if (shownSkill == 10000) {
         text.assign(OBFUSCATE_TEXT("Capture Monster", 0x3FA3AFA7035DE3FFULL));
       } else if (shownSkill == 20000) {
-        text = OBFUSCATE_TEXT("Please Marry Me", 0xDB27CB557D038759ULL);
+        text.assign(OBFUSCATE_TEXT("Please Marry Me", 0xDB27CB557D038759ULL));
       } else if (shownSkill == 20001) {
-        text = OBFUSCATE_TEXT("Be my Baby", 0x51BB39B763BBBD8DULL);
+        text.assign(OBFUSCATE_TEXT("Be my Baby", 0x51BB39B763BBBD8DULL));
       } else if (shownSkill == 40000) {
-        text = OBFUSCATE_TEXT("Capture Monster", 0x87E3D1C50D572DEFULL);
+        text.assign(OBFUSCATE_TEXT("Capture Monster", 0x87E3D1C50D572DEFULL));
       } else if (g_session.IsState291To303(shownSkill)) {
-        text = OBFUSCATE_TEXT("????", 0xB7AFBD2FD9FD7501ULL);
+        text.assign(OBFUSCATE_TEXT("????", 0xB7AFBD2FD9FD7501ULL));
       } else {
         text = CSkillInfo::DisplayName(*g_session.m_hotkeyScript, shownSkill);
       }
@@ -7284,8 +7318,7 @@ void CGameMode::UpdateBalloons() {
       UITransBalloonText* balloon = skillBalloon;
       balloon->SetText(text.c_str(), 35);
       balloon->Move((g_renderer->viewport.width - 640) / 2 - balloon->geometry.width / 2 + 320, 46 * g_renderer->viewport.height / 480);
-      balloon->m_textColor = 0x32FF32;
-      balloon->m_outlineColor = 0;
+      balloon->SetColors(0x32FF32, 0);
     }
 
     if (!hintBalloon) {
@@ -7295,11 +7328,7 @@ void CGameMode::UpdateBalloons() {
       g_windowMgr.AddRendered(hintBalloon);
       hintBalloon->SetText(LookupMessage(MSI_SELECTTARGET), 35);
       hintBalloon->Move((g_renderer->viewport.width - 640) / 2 - hintBalloon->geometry.width / 2 + 320, 400 * g_renderer->viewport.height / 480);
-      {
-        UITransBalloonText* hint = hintBalloon;
-        hint->m_textColor = 0x32FF32;
-        hint->m_outlineColor = 0;
-      }
+      hintBalloon->SetColors(0x32FF32, 0);
     }
   }
 
