@@ -7,6 +7,7 @@
 #include "Contents/Effects/Particles/EZ2STREffectEx.h"
 #include "Contents/Effects/Core/Effect.h"
 #include "Contents/Effects/Core/EffectLists.h"
+#include "Contents/Skills/SkillId.h"
 #include "Contents/Tables/MessageTable.h"
 #include "Contents/Skills/SkillInfo.h"
 
@@ -248,10 +249,10 @@ static bool s_efstActionRegistered1252 = [](std::function<CEfstAction*()> factor
 }(NewAction<CEfstAction_CALAMITYGALE, CEfstAction>);
 
 // GLOBAL: gl_25951
-static SkillActionRegistrar s_skillAction5328(5328, NewAction<CSkillAction_WH_CALAMITYGALE, CSkillAction>);
+static SkillActionRegistrar s_skillActionWhCalamitygale{WH_CALAMITYGALE, NewAction<CSkillAction_WH_CALAMITYGALE, CSkillAction>};
 // GLOBAL: gl_25952
-static SkillActionRegistrar s_skillAction5334(5334, NewAction<CSkillAction_WH_CRESCIVE_BOLT, CSkillAction>);
+static SkillActionRegistrar s_skillActionWhCresciveBolt{WH_CRESCIVE_BOLT, NewAction<CSkillAction_WH_CRESCIVE_BOLT, CSkillAction>};
 // GLOBAL: gl_25953
-static SkillActionRegistrar s_skillAction5330(5330, NewAction<CSkillAction_WH_GALESTORM, CSkillAction>);
+static SkillActionRegistrar s_skillActionWhGalestorm{WH_GALESTORM, NewAction<CSkillAction_WH_GALESTORM, CSkillAction>};
 // GLOBAL: gl_25954
-static SkillActionRegistrar s_skillAction6520(6520, NewAction<CSkillAction_WH_WILD_WALK, CSkillAction>);
+static SkillActionRegistrar s_skillActionWhWildWalk{WH_WILD_WALK, NewAction<CSkillAction_WH_WILD_WALK, CSkillAction>};

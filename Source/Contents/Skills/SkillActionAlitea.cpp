@@ -12,6 +12,7 @@
 #include "Contents/Effects/Core/EffectActor.h"
 #include "Contents/Effects/Core/EffectLists.h"
 #include "Contents/Effects/Core/RagEffect.h"
+#include "Contents/Skills/SkillId.h"
 #include "Contents/Tables/MessageTable.h"
 #include "Contents/Skills/SkillInfo.h"
 #include "Utility/Cipher/XorBytes.h"
@@ -1794,29 +1795,29 @@ void CSkillAction_DamageWereRaptorForm::SpawnAttack02Effect(CGameActor* source, 
 }
 
 // GLOBAL: gl_25618
-static EfstActionRegistrar s_efstAction1705(1705, NewAction<CEfstAction_ALPHA_PHASE, CEfstAction>);
+static EfstActionRegistrar s_efstActionAlphaPhase(1705, NewAction<CEfstAction_ALPHA_PHASE, CEfstAction>);
 // GLOBAL: gl_25619
-static EfstActionRegistrar s_efstAction1708(1708, NewAction<CEfstAction_AT_APEX_PHASE, CEfstAction>);
+static EfstActionRegistrar s_efstActionAtApexPhase(1708, NewAction<CEfstAction_AT_APEX_PHASE, CEfstAction>);
 // GLOBAL: gl_25620
-static EfstActionRegistrar s_efstAction1706(1706, NewAction<CEfstAction_FLIP_FLAP, CEfstAction>);
+static EfstActionRegistrar s_efstActionFlipFlap(1706, NewAction<CEfstAction_FLIP_FLAP, CEfstAction>);
 // GLOBAL: gl_25621
-static EfstActionRegistrar s_efstAction1707(1707, NewAction<CEfstAction_FLIP_FLAP_TARGET, CEfstAction>);
+static EfstActionRegistrar s_efstActionFlipFlapTarget(1707, NewAction<CEfstAction_FLIP_FLAP_TARGET, CEfstAction>);
 // GLOBAL: gl_25622
-static EfstActionRegistrar s_efstAction1722(1722, NewAction<CEfstAction_FURIOS_STORM, CEfstAction>);
+static EfstActionRegistrar s_efstActionFuriosStorm(1722, NewAction<CEfstAction_FURIOS_STORM, CEfstAction>);
 // GLOBAL: gl_25623
-static EfstActionRegistrar s_efstAction1703(1703, NewAction<CEfstAction_INSANE2, CEfstAction>);
+static EfstActionRegistrar s_efstActionInsane2(1703, NewAction<CEfstAction_INSANE2, CEfstAction>);
 // GLOBAL: gl_25624
-static EfstActionRegistrar s_efstAction1704(1704, NewAction<CEfstAction_INSANE3, CEfstAction>);
+static EfstActionRegistrar s_efstActionInsane3(1704, NewAction<CEfstAction_INSANE3, CEfstAction>);
 // GLOBAL: gl_25625
-static EfstActionRegistrar s_efstAction1702(1702, NewAction<CEfstAction_INSANE, CEfstAction>);
+static EfstActionRegistrar s_efstActionInsane(1702, NewAction<CEfstAction_INSANE, CEfstAction>);
 // GLOBAL: gl_25626
-static EfstActionRegistrar s_efstAction1713(1713, NewAction<CEfstAction_NATURE_HARMONY, CEfstAction>);
+static EfstActionRegistrar s_efstActionNatureHarmony(1713, NewAction<CEfstAction_NATURE_HARMONY, CEfstAction>);
 // GLOBAL: gl_25627
-static EfstActionRegistrar s_efstAction1715(1715, NewAction<CEfstAction_PULSE_OF_MADNESS, CEfstAction>);
+static EfstActionRegistrar s_efstActionPulseOfMadness(1715, NewAction<CEfstAction_PULSE_OF_MADNESS, CEfstAction>);
 // GLOBAL: gl_25628
-static EfstActionRegistrar s_efstAction1712(1712, NewAction<CEfstAction_SOLID_STOMP, CEfstAction>);
+static EfstActionRegistrar s_efstActionSolidStomp(1712, NewAction<CEfstAction_SOLID_STOMP, CEfstAction>);
 // GLOBAL: gl_25629
-static EfstActionRegistrar s_efstAction1710(1710, NewAction<CEfstAction_ZEPHYR_LINK, CEfstAction>);
+static EfstActionRegistrar s_efstActionZephyrLink(1710, NewAction<CEfstAction_ZEPHYR_LINK, CEfstAction>);
 
 // OFFSET: 0x0040D1D0
 // FUNCTION: fn_45560
@@ -1826,62 +1827,62 @@ static bool s_skillObjectActionRegistered314 = [](std::function<CSkillObjectActi
 }(NewAction<CSkillObjectAction_AT_GLACIER_MONOLITH, CSkillObjectAction>);
 
 // GLOBAL: gl_25630
-static SkillActionRegistrar s_skillAction6591(6591, NewAction<CSkillAction_AT_AERO_SYNC, CSkillAction>);
+static SkillActionRegistrar s_skillActionAtAeroSync{AT_AERO_SYNC, NewAction<CSkillAction_AT_AERO_SYNC, CSkillAction>};
 // GLOBAL: gl_25631
-static SkillActionRegistrar s_skillAction6580(6580, NewAction<CSkillAction_AT_ALPHA_CLAW, CSkillAction>);
+static SkillActionRegistrar s_skillActionAtAlphaClaw{AT_ALPHA_CLAW, NewAction<CSkillAction_AT_ALPHA_CLAW, CSkillAction>};
 // GLOBAL: gl_25632
-static SkillActionRegistrar s_skillAction6577(6577, NewAction<CSkillAction_AT_ALPHA_PHASE, CSkillAction>);
+static SkillActionRegistrar s_skillActionAtAlphaPhase{AT_ALPHA_PHASE, NewAction<CSkillAction_AT_ALPHA_PHASE, CSkillAction>};
 // GLOBAL: gl_25633
-static SkillActionRegistrar s_skillAction6585(6585, NewAction<CSkillAction_AT_APEX_PHASE, CSkillAction>);
+static SkillActionRegistrar s_skillActionAtApexPhase{AT_APEX_PHASE, NewAction<CSkillAction_AT_APEX_PHASE, CSkillAction>};
 // GLOBAL: gl_25634
-static SkillActionRegistrar s_skillAction6596(6596, NewAction<CSkillAction_AT_CHILLING_BLAST, CSkillAction>);
+static SkillActionRegistrar s_skillActionAtChillingBlast{AT_CHILLING_BLAST, NewAction<CSkillAction_AT_CHILLING_BLAST, CSkillAction>};
 // GLOBAL: gl_25635
-static SkillActionRegistrar s_skillAction6579(6579, NewAction<CSkillAction_AT_FERAL_CLAW, CSkillAction>);
+static SkillActionRegistrar s_skillActionAtFeralClaw{AT_FERAL_CLAW, NewAction<CSkillAction_AT_FERAL_CLAW, CSkillAction>};
 // GLOBAL: gl_25636
-static SkillActionRegistrar s_skillAction6583(6583, NewAction<CSkillAction_AT_FLIP_FLAP, CSkillAction>);
+static SkillActionRegistrar s_skillActionAtFlipFlap{AT_FLIP_FLAP, NewAction<CSkillAction_AT_FLIP_FLAP, CSkillAction>};
 // GLOBAL: gl_25637
-static SkillActionRegistrar s_skillAction6582(6582, NewAction<CSkillAction_AT_FRENZY_FANG, CSkillAction>);
+static SkillActionRegistrar s_skillActionAtFrenzyFang{AT_FRENZY_FANG, NewAction<CSkillAction_AT_FRENZY_FANG, CSkillAction>};
 // GLOBAL: gl_25638
-static SkillActionRegistrar s_skillAction6601(6601, NewAction<CSkillAction_AT_FURIOS_STORM, CSkillAction>);
+static SkillActionRegistrar s_skillActionAtFuriosStorm{AT_FURIOS_STORM, NewAction<CSkillAction_AT_FURIOS_STORM, CSkillAction>};
 // GLOBAL: gl_25639
-static SkillActionRegistrar s_skillAction6592(6592, NewAction<CSkillAction_AT_GLACIER_MONOLITH, CSkillAction>);
+static SkillActionRegistrar s_skillActionAtGlacierMonolith{AT_GLACIER_MONOLITH, NewAction<CSkillAction_AT_GLACIER_MONOLITH, CSkillAction>};
 // GLOBAL: gl_25640
-static SkillActionRegistrar s_skillAction6593(6593, NewAction<CSkillAction_AT_GLACIER_NOVA, CSkillAction>);
+static SkillActionRegistrar s_skillActionAtGlacierNova{AT_GLACIER_NOVA, NewAction<CSkillAction_AT_GLACIER_NOVA, CSkillAction>};
 // GLOBAL: gl_25641
-static SkillActionRegistrar s_skillAction6594(6594, NewAction<CSkillAction_AT_GLACIER_SHARD, CSkillAction>);
+static SkillActionRegistrar s_skillActionAtGlacierShard{AT_GLACIER_SHARD, NewAction<CSkillAction_AT_GLACIER_SHARD, CSkillAction>};
 // GLOBAL: gl_25642
-static SkillActionRegistrar s_skillAction6595(6595, NewAction<CSkillAction_AT_GLACIER_STOMP, CSkillAction>);
+static SkillActionRegistrar s_skillActionAtGlacierStomp{AT_GLACIER_STOMP, NewAction<CSkillAction_AT_GLACIER_STOMP, CSkillAction>};
 // GLOBAL: gl_25643
-static SkillActionRegistrar s_skillAction6605(6605, NewAction<CSkillAction_AT_GRAVITY_HOLE, CSkillAction>);
+static SkillActionRegistrar s_skillActionAtGravityHole{AT_GRAVITY_HOLE, NewAction<CSkillAction_AT_GRAVITY_HOLE, CSkillAction>};
 // GLOBAL: gl_25644
-static SkillActionRegistrar s_skillAction6607(6607, NewAction<CSkillAction_AT_NATURE_HARMONY, CSkillAction>);
+static SkillActionRegistrar s_skillActionAtNatureHarmony{AT_NATURE_HARMONY, NewAction<CSkillAction_AT_NATURE_HARMONY, CSkillAction>};
 // GLOBAL: gl_25645
-static SkillActionRegistrar s_skillAction6586(6586, NewAction<CSkillAction_AT_PINION_SHOT, CSkillAction>);
+static SkillActionRegistrar s_skillActionAtPinionShot{AT_PINION_SHOT, NewAction<CSkillAction_AT_PINION_SHOT, CSkillAction>};
 // GLOBAL: gl_25646
-static SkillActionRegistrar s_skillAction6578(6578, NewAction<CSkillAction_AT_PRIMAL_CLAW, CSkillAction>);
+static SkillActionRegistrar s_skillActionAtPrimalClaw{AT_PRIMAL_CLAW, NewAction<CSkillAction_AT_PRIMAL_CLAW, CSkillAction>};
 // GLOBAL: gl_25647
-static SkillActionRegistrar s_skillAction6576(6576, NewAction<CSkillAction_AT_PULSE_OF_MADNESS, CSkillAction>);
+static SkillActionRegistrar s_skillActionAtPulseOfMadness{AT_PULSE_OF_MADNESS, NewAction<CSkillAction_AT_PULSE_OF_MADNESS, CSkillAction>};
 // GLOBAL: gl_25648
-static SkillActionRegistrar s_skillAction6588(6588, NewAction<CSkillAction_AT_QUILL_SPEAR, CSkillAction>);
+static SkillActionRegistrar s_skillActionAtQuillSpear{AT_QUILL_SPEAR, NewAction<CSkillAction_AT_QUILL_SPEAR, CSkillAction>};
 // GLOBAL: gl_25649
-static SkillActionRegistrar s_skillAction6589(6589, NewAction<CSkillAction_AT_QUILL_SPEAR_S, CSkillAction>);
+static SkillActionRegistrar s_skillActionAtQuillSpearS{AT_QUILL_SPEAR_S, NewAction<CSkillAction_AT_QUILL_SPEAR_S, CSkillAction>};
 // GLOBAL: gl_25650
-static SkillActionRegistrar s_skillAction6599(6599, NewAction<CSkillAction_AT_ROARING_CHARGE, CSkillAction>);
+static SkillActionRegistrar s_skillActionAtRoaringCharge{AT_ROARING_CHARGE, NewAction<CSkillAction_AT_ROARING_CHARGE, CSkillAction>};
 // GLOBAL: gl_25651
-static SkillActionRegistrar s_skillAction6600(6600, NewAction<CSkillAction_AT_ROARING_CHARGE_S, CSkillAction>);
+static SkillActionRegistrar s_skillActionAtRoaringChargeS{AT_ROARING_CHARGE_S, NewAction<CSkillAction_AT_ROARING_CHARGE_S, CSkillAction>};
 // GLOBAL: gl_25652
-static SkillActionRegistrar s_skillAction6597(6597, NewAction<CSkillAction_AT_ROARING_PIERCER, CSkillAction>);
+static SkillActionRegistrar s_skillActionAtRoaringPiercer{AT_ROARING_PIERCER, NewAction<CSkillAction_AT_ROARING_PIERCER, CSkillAction>};
 // GLOBAL: gl_25653
-static SkillActionRegistrar s_skillAction6598(6598, NewAction<CSkillAction_AT_ROARING_PIERCER_S, CSkillAction>);
+static SkillActionRegistrar s_skillActionAtRoaringPiercerS{AT_ROARING_PIERCER_S, NewAction<CSkillAction_AT_ROARING_PIERCER_S, CSkillAction>};
 // GLOBAL: gl_25654
-static SkillActionRegistrar s_skillAction6581(6581, NewAction<CSkillAction_AT_SAVAGE_LUNGE, CSkillAction>);
+static SkillActionRegistrar s_skillActionAtSavageLunge{AT_SAVAGE_LUNGE, NewAction<CSkillAction_AT_SAVAGE_LUNGE, CSkillAction>};
 // GLOBAL: gl_25655
-static SkillActionRegistrar s_skillAction6604(6604, NewAction<CSkillAction_AT_SOLID_STOMP, CSkillAction>);
+static SkillActionRegistrar s_skillActionAtSolidStomp{AT_SOLID_STOMP, NewAction<CSkillAction_AT_SOLID_STOMP, CSkillAction>};
 // GLOBAL: gl_25656
-static SkillActionRegistrar s_skillAction6590(6590, NewAction<CSkillAction_AT_TEMPEST_FLAP, CSkillAction>);
+static SkillActionRegistrar s_skillActionAtTempestFlap{AT_TEMPEST_FLAP, NewAction<CSkillAction_AT_TEMPEST_FLAP, CSkillAction>};
 // GLOBAL: gl_25657
-static SkillActionRegistrar s_skillAction6603(6603, NewAction<CSkillAction_AT_TERRA_HARVEST, CSkillAction>);
+static SkillActionRegistrar s_skillActionAtTerraHarvest{AT_TERRA_HARVEST, NewAction<CSkillAction_AT_TERRA_HARVEST, CSkillAction>};
 // GLOBAL: gl_25658
-static SkillActionRegistrar s_skillAction6602(6602, NewAction<CSkillAction_AT_TERRA_WAVE, CSkillAction>);
+static SkillActionRegistrar s_skillActionAtTerraWave{AT_TERRA_WAVE, NewAction<CSkillAction_AT_TERRA_WAVE, CSkillAction>};
 // GLOBAL: gl_25659
-static SkillActionRegistrar s_skillAction6587(6587, NewAction<CSkillAction_AT_ZEPHYR_LINK, CSkillAction>);
+static SkillActionRegistrar s_skillActionAtZephyrLink{AT_ZEPHYR_LINK, NewAction<CSkillAction_AT_ZEPHYR_LINK, CSkillAction>};

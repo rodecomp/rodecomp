@@ -12,6 +12,7 @@
 #include "Contents/Effects/Core/EffectActor.h"
 #include "Contents/Effects/Core/EffectLists.h"
 #include "Contents/Effects/Core/RagEffect.h"
+#include "Contents/Skills/SkillId.h"
 #include "Contents/Tables/MessageTable.h"
 #include "Contents/Skills/SkillInfo.h"
 #include "Utility/Cipher/XorBytes.h"
@@ -1169,74 +1170,74 @@ void CEfstAction_WERERAPTOR::OnEfstBegin(int efstId, int value, int argument3, i
 }
 
 // GLOBAL: gl_25684
-static EfstActionRegistrar s_efstAction1678(1678, NewAction<CEfstAction_BLOOD_HOWLING, CEfstAction>);
+static EfstActionRegistrar s_efstActionBloodHowling(1678, NewAction<CEfstAction_BLOOD_HOWLING, CEfstAction>);
 // GLOBAL: gl_25685
-static EfstActionRegistrar s_efstAction1681(1681, NewAction<CEfstAction_ENRAGE_RAPTOR, CEfstAction>);
+static EfstActionRegistrar s_efstActionEnrageRaptor(1681, NewAction<CEfstAction_ENRAGE_RAPTOR, CEfstAction>);
 // GLOBAL: gl_25686
-static EfstActionRegistrar s_efstAction1676(1676, NewAction<CEfstAction_ENRAGE_WOLF, CEfstAction>);
+static EfstActionRegistrar s_efstActionEnrageWolf(1676, NewAction<CEfstAction_ENRAGE_WOLF, CEfstAction>);
 // GLOBAL: gl_25687
-static EfstActionRegistrar s_efstAction1697(1697, NewAction<CEfstAction_GROUND_GROW, CEfstAction>);
+static EfstActionRegistrar s_efstActionGroundGrow(1697, NewAction<CEfstAction_GROUND_GROW, CEfstAction>);
 // GLOBAL: gl_25688
-static EfstActionRegistrar s_efstAction1698(1698, NewAction<CEfstAction_NATURE_PROTECTION, CEfstAction>);
+static EfstActionRegistrar s_efstActionNatureProtection(1698, NewAction<CEfstAction_NATURE_PROTECTION, CEfstAction>);
 // GLOBAL: gl_25689
-static EfstActionRegistrar s_efstAction1687(1687, NewAction<CEfstAction_NATURE_SHIELD, CEfstAction>);
+static EfstActionRegistrar s_efstActionNatureShield(1687, NewAction<CEfstAction_NATURE_SHIELD, CEfstAction>);
 // GLOBAL: gl_25690
-static EfstActionRegistrar s_efstAction1682(1682, NewAction<CEfstAction_PREENING, CEfstAction>);
+static EfstActionRegistrar s_efstActionPreening(1682, NewAction<CEfstAction_PREENING, CEfstAction>);
 // GLOBAL: gl_25691
-static EfstActionRegistrar s_efstAction1695(1695, NewAction<CEfstAction_THUNDERING_ROD, CEfstAction>);
+static EfstActionRegistrar s_efstActionThunderingRod(1695, NewAction<CEfstAction_THUNDERING_ROD, CEfstAction>);
 // GLOBAL: gl_25692
-static EfstActionRegistrar s_efstAction1696(1696, NewAction<CEfstAction_THUNDERING_ROD_MAX, CEfstAction>);
+static EfstActionRegistrar s_efstActionThunderingRodMax(1696, NewAction<CEfstAction_THUNDERING_ROD_MAX, CEfstAction>);
 // GLOBAL: gl_25693
-static EfstActionRegistrar s_efstAction1686(1686, NewAction<CEfstAction_TRUTH_OF_EARTH, CEfstAction>);
+static EfstActionRegistrar s_efstActionTruthOfEarth(1686, NewAction<CEfstAction_TRUTH_OF_EARTH, CEfstAction>);
 // GLOBAL: gl_25694
-static EfstActionRegistrar s_efstAction1684(1684, NewAction<CEfstAction_TRUTH_OF_ICE, CEfstAction>);
+static EfstActionRegistrar s_efstActionTruthOfIce(1684, NewAction<CEfstAction_TRUTH_OF_ICE, CEfstAction>);
 // GLOBAL: gl_25695
-static EfstActionRegistrar s_efstAction1685(1685, NewAction<CEfstAction_TRUTH_OF_WIND, CEfstAction>);
+static EfstActionRegistrar s_efstActionTruthOfWind(1685, NewAction<CEfstAction_TRUTH_OF_WIND, CEfstAction>);
 // GLOBAL: gl_25696
-static EfstActionRegistrar s_efstAction1680(1680, NewAction<CEfstAction_WERERAPTOR, CEfstAction>);
+static EfstActionRegistrar s_efstActionWereraptor(1680, NewAction<CEfstAction_WERERAPTOR, CEfstAction>);
 // GLOBAL: gl_25697
-static EfstActionRegistrar s_efstAction1675(1675, NewAction<CEfstAction_WEREWOLF, CEfstAction>);
+static EfstActionRegistrar s_efstActionWerewolf(1675, NewAction<CEfstAction_WEREWOLF, CEfstAction>);
 // GLOBAL: gl_25698
-static SkillActionRegistrar s_skillAction6546(6546, NewAction<CSkillAction_DR_AROUND_FLOWER, CSkillAction>);
+static SkillActionRegistrar s_skillActionDrAroundFlower{DR_AROUND_FLOWER, NewAction<CSkillAction_DR_AROUND_FLOWER, CSkillAction>};
 // GLOBAL: gl_25699
-static SkillActionRegistrar s_skillAction6529(6529, NewAction<CSkillAction_DR_BLOOD_HOWLING, CSkillAction>);
+static SkillActionRegistrar s_skillActionDrBloodHowling{DR_BLOOD_HOWLING, NewAction<CSkillAction_DR_BLOOD_HOWLING, CSkillAction>};
 // GLOBAL: gl_25700
-static SkillActionRegistrar s_skillAction6527(6527, NewAction<CSkillAction_DR_CRUEL_BITE, CSkillAction>);
+static SkillActionRegistrar s_skillActionDrCruelBite{DR_CRUEL_BITE, NewAction<CSkillAction_DR_CRUEL_BITE, CSkillAction>};
 // GLOBAL: gl_25701
-static SkillActionRegistrar s_skillAction6542(6542, NewAction<CSkillAction_DR_CUTTING_WIND, CSkillAction>);
+static SkillActionRegistrar s_skillActionDrCuttingWind{DR_CUTTING_WIND, NewAction<CSkillAction_DR_CUTTING_WIND, CSkillAction>};
 // GLOBAL: gl_25702
-static SkillActionRegistrar s_skillAction6545(6545, NewAction<CSkillAction_DR_EARTH_FLOWER, CSkillAction>);
+static SkillActionRegistrar s_skillActionDrEarthFlower{DR_EARTH_FLOWER, NewAction<CSkillAction_DR_EARTH_FLOWER, CSkillAction>};
 // GLOBAL: gl_25703
-static SkillActionRegistrar s_skillAction6532(6532, NewAction<CSkillAction_DR_ENRAGE_RAPTOR, CSkillAction>);
+static SkillActionRegistrar s_skillActionDrEnrageRaptor{DR_ENRAGE_RAPTOR, NewAction<CSkillAction_DR_ENRAGE_RAPTOR, CSkillAction>};
 // GLOBAL: gl_25704
-static SkillActionRegistrar s_skillAction6525(6525, NewAction<CSkillAction_DR_ENRAGE_WOLF, CSkillAction>);
+static SkillActionRegistrar s_skillActionDrEnrageWolf{DR_ENRAGE_WOLF, NewAction<CSkillAction_DR_ENRAGE_WOLF, CSkillAction>};
 // GLOBAL: gl_25705
-static SkillActionRegistrar s_skillAction6534(6534, NewAction<CSkillAction_DR_FLICKING_TONADO, CSkillAction>);
+static SkillActionRegistrar s_skillActionDrFlickingTonado{DR_FLICKING_TONADO, NewAction<CSkillAction_DR_FLICKING_TONADO, CSkillAction>};
 // GLOBAL: gl_25706
-static SkillActionRegistrar s_skillAction6528(6528, NewAction<CSkillAction_DR_HUNGER, CSkillAction>);
+static SkillActionRegistrar s_skillActionDrHunger{DR_HUNGER, NewAction<CSkillAction_DR_HUNGER, CSkillAction>};
 // GLOBAL: gl_25707
-static SkillActionRegistrar s_skillAction6540(6540, NewAction<CSkillAction_DR_ICE_CLOUD, CSkillAction>);
+static SkillActionRegistrar s_skillActionDrIceCloud{DR_ICE_CLOUD, NewAction<CSkillAction_DR_ICE_CLOUD, CSkillAction>};
 // GLOBAL: gl_25708
-static SkillActionRegistrar s_skillAction6539(6539, NewAction<CSkillAction_DR_ICE_TOTEM, CSkillAction>);
+static SkillActionRegistrar s_skillActionDrIceTotem{DR_ICE_TOTEM, NewAction<CSkillAction_DR_ICE_TOTEM, CSkillAction>};
 // GLOBAL: gl_25709
-static SkillActionRegistrar s_skillAction6535(6535, NewAction<CSkillAction_DR_LOW_FLIGHT, CSkillAction>);
+static SkillActionRegistrar s_skillActionDrLowFlight{DR_LOW_FLIGHT, NewAction<CSkillAction_DR_LOW_FLIGHT, CSkillAction>};
 // GLOBAL: gl_25710
-static SkillActionRegistrar s_skillAction6547(6547, NewAction<CSkillAction_DR_NATURE_SHIELD, CSkillAction>);
+static SkillActionRegistrar s_skillActionDrNatureShield{DR_NATURE_SHIELD, NewAction<CSkillAction_DR_NATURE_SHIELD, CSkillAction>};
 // GLOBAL: gl_25711
-static SkillActionRegistrar s_skillAction6526(6526, NewAction<CSkillAction_DR_NOMERCY_CLAW, CSkillAction>);
+static SkillActionRegistrar s_skillActionDrNomercyClaw{DR_NOMERCY_CLAW, NewAction<CSkillAction_DR_NOMERCY_CLAW, CSkillAction>};
 // GLOBAL: gl_25712
-static SkillActionRegistrar s_skillAction6536(6536, NewAction<CSkillAction_DR_PREENING, CSkillAction>);
+static SkillActionRegistrar s_skillActionDrPreening{DR_PREENING, NewAction<CSkillAction_DR_PREENING, CSkillAction>};
 // GLOBAL: gl_25713
-static SkillActionRegistrar s_skillAction6533(6533, NewAction<CSkillAction_DR_SHOOTING_FEATHER, CSkillAction>);
+static SkillActionRegistrar s_skillActionDrShootingFeather{DR_SHOOTING_FEATHER, NewAction<CSkillAction_DR_SHOOTING_FEATHER, CSkillAction>};
 // GLOBAL: gl_25714
-static SkillActionRegistrar s_skillAction6544(6544, NewAction<CSkillAction_DR_TRUTH_OF_EARTH, CSkillAction>);
+static SkillActionRegistrar s_skillActionDrTruthOfEarth{DR_TRUTH_OF_EARTH, NewAction<CSkillAction_DR_TRUTH_OF_EARTH, CSkillAction>};
 // GLOBAL: gl_25715
-static SkillActionRegistrar s_skillAction6538(6538, NewAction<CSkillAction_DR_TRUTH_OF_ICE, CSkillAction>);
+static SkillActionRegistrar s_skillActionDrTruthOfIce{DR_TRUTH_OF_ICE, NewAction<CSkillAction_DR_TRUTH_OF_ICE, CSkillAction>};
 // GLOBAL: gl_25716
-static SkillActionRegistrar s_skillAction6541(6541, NewAction<CSkillAction_DR_TRUTH_OF_WIND, CSkillAction>);
+static SkillActionRegistrar s_skillActionDrTruthOfWind{DR_TRUTH_OF_WIND, NewAction<CSkillAction_DR_TRUTH_OF_WIND, CSkillAction>};
 // GLOBAL: gl_25717
-static SkillActionRegistrar s_skillAction6531(6531, NewAction<CSkillAction_DR_WERERAPTOR, CSkillAction>);
+static SkillActionRegistrar s_skillActionDrWereraptor{DR_WERERAPTOR, NewAction<CSkillAction_DR_WERERAPTOR, CSkillAction>};
 // GLOBAL: gl_25718
-static SkillActionRegistrar s_skillAction6524(6524, NewAction<CSkillAction_DR_WEREWOLF, CSkillAction>);
+static SkillActionRegistrar s_skillActionDrWerewolf{DR_WEREWOLF, NewAction<CSkillAction_DR_WEREWOLF, CSkillAction>};
 // GLOBAL: gl_25719
-static SkillActionRegistrar s_skillAction6543(6543, NewAction<CSkillAction_DR_WIND_BOMB, CSkillAction>);
+static SkillActionRegistrar s_skillActionDrWindBomb{DR_WIND_BOMB, NewAction<CSkillAction_DR_WIND_BOMB, CSkillAction>};

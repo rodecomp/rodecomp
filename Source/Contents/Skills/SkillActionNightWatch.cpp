@@ -11,6 +11,7 @@
 #include "Contents/Effects/Core/EffectActor.h"
 #include "Contents/Effects/Core/EffectLists.h"
 #include "Contents/Effects/Core/RagEffect.h"
+#include "Contents/Skills/SkillId.h"
 #include "Contents/Skills/SkillInfo.h"
 #include "Utility/Math/AffineMatrix.h"
 #include "Utility/Math/Vector3d.h"
@@ -809,46 +810,46 @@ int CSkillAction_NW_MIDNIGHT_FALLEN::GetSkillScopeType() {
 }
 
 // GLOBAL: gl_25822
-static EfstActionRegistrar s_efstAction1354(1354, NewAction<CEfstAction_HIDDEN_CARD, CEfstAction>);
+static EfstActionRegistrar s_efstActionHiddenCard{EFST_HIDDEN_CARD, NewAction<CEfstAction_HIDDEN_CARD, CEfstAction>};
 // GLOBAL: gl_25823
-static EfstActionRegistrar s_efstAction1345(1345, NewAction<CEfstAction_INTENSIVE_AIM, CEfstAction>);
+static EfstActionRegistrar s_efstActionIntensiveAim{EFST_INTENSIVE_AIM, NewAction<CEfstAction_INTENSIVE_AIM, CEfstAction>};
 // GLOBAL: gl_25824
-static EfstActionRegistrar s_efstAction1346(1346, NewAction<CEfstAction_INTENSIVE_AIM_COUNT, CEfstAction>);
+static EfstActionRegistrar s_efstActionIntensiveAimCount{EFST_INTENSIVE_AIM_COUNT, NewAction<CEfstAction_INTENSIVE_AIM_COUNT, CEfstAction>};
 // GLOBAL: gl_25825
 static CSkillObjectActionRegistration s_skillObjectAction288(288, NewAction<CSkillObjectAction_NW_GRENADES_DROPPING, CSkillObjectAction>);
 // GLOBAL: gl_25826
 static CSkillObjectActionRegistration s_skillObjectAction291(291, NewAction<CSkillObjectAction_NW_MISSION_BOMBARD, CSkillObjectAction>);
 // GLOBAL: gl_25827
-static SkillActionRegistrar s_skillAction5413(5413, NewAction<CSkillAction_NW_AUTO_FIRING_LAUNCHER, CSkillAction>);
+static SkillActionRegistrar s_skillActionNwAutoFiringLauncher{NW_AUTO_FIRING_LAUNCHER, NewAction<CSkillAction_NW_AUTO_FIRING_LAUNCHER, CSkillAction>};
 // GLOBAL: gl_25828
-static SkillActionRegistrar s_skillAction5410(5410, NewAction<CSkillAction_NW_BASIC_GRENADE, CSkillAction>);
+static SkillActionRegistrar s_skillActionNwBasicGrenade{NW_BASIC_GRENADE, NewAction<CSkillAction_NW_BASIC_GRENADE, CSkillAction>};
 // GLOBAL: gl_25829
-static SkillActionRegistrar s_skillAction5412(5412, NewAction<CSkillAction_NW_GRENADES_DROPPING, CSkillAction>);
+static SkillActionRegistrar s_skillActionNwGrenadesDropping{NW_GRENADES_DROPPING, NewAction<CSkillAction_NW_GRENADES_DROPPING, CSkillAction>};
 // GLOBAL: gl_25830
-static SkillActionRegistrar s_skillAction5404(5404, NewAction<CSkillAction_NW_GRENADE_FRAGMENT, CSkillAction>);
+static SkillActionRegistrar s_skillActionNwGrenadeFragment{NW_GRENADE_FRAGMENT, NewAction<CSkillAction_NW_GRENADE_FRAGMENT, CSkillAction>};
 // GLOBAL: gl_25831
-static SkillActionRegistrar s_skillAction5411(5411, NewAction<CSkillAction_NW_HASTY_FIRE_IN_THE_HOLE, CSkillAction>);
+static SkillActionRegistrar s_skillActionNwHastyFireInTheHole{NW_HASTY_FIRE_IN_THE_HOLE, NewAction<CSkillAction_NW_HASTY_FIRE_IN_THE_HOLE, CSkillAction>};
 // GLOBAL: gl_25832
-static SkillActionRegistrar s_skillAction5414(5414, NewAction<CSkillAction_NW_HIDDEN_CARD, CSkillAction>);
+static SkillActionRegistrar s_skillActionNwHiddenCard{NW_HIDDEN_CARD, NewAction<CSkillAction_NW_HIDDEN_CARD, CSkillAction>};
 // GLOBAL: gl_25833
-static SkillActionRegistrar s_skillAction5403(5403, NewAction<CSkillAction_NW_INTENSIVE_AIM, CSkillAction>);
+static SkillActionRegistrar s_skillActionNwIntensiveAim{NW_INTENSIVE_AIM, NewAction<CSkillAction_NW_INTENSIVE_AIM, CSkillAction>};
 // GLOBAL: gl_25834
-static SkillActionRegistrar s_skillAction5408(5408, NewAction<CSkillAction_NW_MAGAZINE_FOR_ONE, CSkillAction>);
+static SkillActionRegistrar s_skillActionNwMagazineForOne{NW_MAGAZINE_FOR_ONE, NewAction<CSkillAction_NW_MAGAZINE_FOR_ONE, CSkillAction>};
 // GLOBAL: gl_25835
-static SkillActionRegistrar s_skillAction5501(5501, NewAction<CSkillAction_NW_MIDNIGHT_FALLEN, CSkillAction>);
+static SkillActionRegistrar s_skillActionNwMidnightFallen{NW_MIDNIGHT_FALLEN, NewAction<CSkillAction_NW_MIDNIGHT_FALLEN, CSkillAction>};
 // GLOBAL: gl_25836
-static SkillActionRegistrar s_skillAction5415(5415, NewAction<CSkillAction_NW_MISSION_BOMBARD, CSkillAction>);
+static SkillActionRegistrar s_skillActionNwMissionBombard{NW_MISSION_BOMBARD, NewAction<CSkillAction_NW_MISSION_BOMBARD, CSkillAction>};
 // GLOBAL: gl_25837
-static SkillActionRegistrar s_skillAction5406(5406, NewAction<CSkillAction_NW_ONLY_ONE_BULLET, CSkillAction>);
+static SkillActionRegistrar s_skillActionNwOnlyOneBullet{NW_ONLY_ONE_BULLET, NewAction<CSkillAction_NW_ONLY_ONE_BULLET, CSkillAction>};
 // GLOBAL: gl_25838
-static SkillActionRegistrar s_skillAction5407(5407, NewAction<CSkillAction_NW_SPIRAL_SHOOTING, CSkillAction>);
+static SkillActionRegistrar s_skillActionNwSpiralShooting{NW_SPIRAL_SHOOTING, NewAction<CSkillAction_NW_SPIRAL_SHOOTING, CSkillAction>};
 // GLOBAL: gl_25839
-static SkillActionRegistrar s_skillAction5405(5405, NewAction<CSkillAction_NW_THE_VIGILANTE_AT_NIGHT, CSkillAction>);
+static SkillActionRegistrar s_skillActionNwTheVigilanteAtNight{NW_THE_VIGILANTE_AT_NIGHT, NewAction<CSkillAction_NW_THE_VIGILANTE_AT_NIGHT, CSkillAction>};
 // GLOBAL: gl_25840
-static SkillActionRegistrar s_skillAction5496(5496, NewAction<CSkillAction_NW_THE_VIGILANTE_AT_NIGHT_GUN_GATLING, CSkillAction>);
+static SkillActionRegistrar s_skillActionNwTheVigilanteAtNightGunGatling{NW_THE_VIGILANTE_AT_NIGHT_GUN_GATLING, NewAction<CSkillAction_NW_THE_VIGILANTE_AT_NIGHT_GUN_GATLING, CSkillAction>};
 // GLOBAL: gl_25841
-static SkillActionRegistrar s_skillAction5497(5497, NewAction<CSkillAction_NW_THE_VIGILANTE_AT_NIGHT_GUN_SHOTGUN, CSkillAction>);
+static SkillActionRegistrar s_skillActionNwTheVigilanteAtNightGunShotgun{NW_THE_VIGILANTE_AT_NIGHT_GUN_SHOTGUN, NewAction<CSkillAction_NW_THE_VIGILANTE_AT_NIGHT_GUN_SHOTGUN, CSkillAction>};
 // GLOBAL: gl_25842
-static SkillActionRegistrar s_skillAction5409(5409, NewAction<CSkillAction_NW_WILD_FIRE, CSkillAction>);
+static SkillActionRegistrar s_skillActionNwWildFire{NW_WILD_FIRE, NewAction<CSkillAction_NW_WILD_FIRE, CSkillAction>};
 // GLOBAL: gl_25843
-static SkillActionRegistrar s_skillAction5500(5500, NewAction<CSkillAction_NW_WILD_SHOT, CSkillAction>);
+static SkillActionRegistrar s_skillActionNwWildShot{NW_WILD_SHOT, NewAction<CSkillAction_NW_WILD_SHOT, CSkillAction>};

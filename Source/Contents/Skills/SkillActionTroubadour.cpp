@@ -8,6 +8,7 @@
 #include "Contents/Effects/Particles/EZ2STREffectEx.h"
 #include "Contents/Effects/Core/EffectActor.h"
 #include "Contents/Effects/Core/EffectLists.h"
+#include "Contents/Skills/SkillId.h"
 #include "Contents/Tables/MessageTable.h"
 #include "Contents/Skills/SkillInfo.h"
 #include "Utility/Math/Vector3d.h"
@@ -616,38 +617,38 @@ void CSkillAction_TR_ROSEBLOSSOM::OnSkillEffect(int level, CGameActor* source, C
 }
 
 // GLOBAL: gl_25933
-static EfstActionRegistrar s_efstAction1260(1260, NewAction<CEfstAction_AIN_RHAPSODY, CEfstAction>);
+static EfstActionRegistrar s_efstActionAinRhapsody{EFST_AIN_RHAPSODY, NewAction<CEfstAction_AIN_RHAPSODY, CEfstAction>};
 // GLOBAL: gl_25934
-static EfstActionRegistrar s_efstAction1259(1259, NewAction<CEfstAction_GEF_NOCTURN, CEfstAction>);
+static EfstActionRegistrar s_efstActionGefNocturn{EFST_GEF_NOCTURN, NewAction<CEfstAction_GEF_NOCTURN, CEfstAction>};
 // GLOBAL: gl_25935
-static EfstActionRegistrar s_efstAction1262(1262, NewAction<CEfstAction_JAWAII_SERENADE, CEfstAction>);
+static EfstActionRegistrar s_efstActionJawaiiSerenade{EFST_JAWAII_SERENADE, NewAction<CEfstAction_JAWAII_SERENADE, CEfstAction>};
 // GLOBAL: gl_25936
-static EfstActionRegistrar s_efstAction1257(1257, NewAction<CEfstAction_KVASIR_SONATA, CEfstAction>);
+static EfstActionRegistrar s_efstActionKvasirSonata{EFST_KVASIR_SONATA, NewAction<CEfstAction_KVASIR_SONATA, CEfstAction>};
 // GLOBAL: gl_25937
-static EfstActionRegistrar s_efstAction1256(1256, NewAction<CEfstAction_MYSTIC_SYMPHONY, CEfstAction>);
+static EfstActionRegistrar s_efstActionMysticSymphony{EFST_MYSTIC_SYMPHONY, NewAction<CEfstAction_MYSTIC_SYMPHONY, CEfstAction>};
 // GLOBAL: gl_25938
-static EfstActionRegistrar s_efstAction1263(1263, NewAction<CEfstAction_PRON_MARCH, CEfstAction>);
+static EfstActionRegistrar s_efstActionPronMarch{EFST_PRON_MARCH, NewAction<CEfstAction_PRON_MARCH, CEfstAction>};
 // GLOBAL: gl_25939
-static SkillActionRegistrar s_skillAction5360(5360, NewAction<CSkillAction_TR_AIN_RHAPSODY, CSkillAction>);
+static SkillActionRegistrar s_skillActionTrAinRhapsody{TR_AIN_RHAPSODY, NewAction<CSkillAction_TR_AIN_RHAPSODY, CSkillAction>};
 // GLOBAL: gl_25940
-static SkillActionRegistrar s_skillAction5358(5358, NewAction<CSkillAction_TR_GEF_NOCTURN, CSkillAction>);
+static SkillActionRegistrar s_skillActionTrGefNocturn{TR_GEF_NOCTURN, NewAction<CSkillAction_TR_GEF_NOCTURN, CSkillAction>};
 // GLOBAL: gl_25941
-static SkillActionRegistrar s_skillAction5362(5362, NewAction<CSkillAction_TR_JAWAII_SERENADE, CSkillAction>);
+static SkillActionRegistrar s_skillActionTrJawaiiSerenade{TR_JAWAII_SERENADE, NewAction<CSkillAction_TR_JAWAII_SERENADE, CSkillAction>};
 // GLOBAL: gl_25942
-static SkillActionRegistrar s_skillAction5352(5352, NewAction<CSkillAction_TR_KVASIR_SONATA, CSkillAction>);
+static SkillActionRegistrar s_skillActionTrKvasirSonata{TR_KVASIR_SONATA, NewAction<CSkillAction_TR_KVASIR_SONATA, CSkillAction>};
 // GLOBAL: gl_25943
-static SkillActionRegistrar s_skillAction5356(5356, NewAction<CSkillAction_TR_METALIC_FURY, CSkillAction>);
+static SkillActionRegistrar s_skillActionTrMetalicFury{TR_METALIC_FURY, NewAction<CSkillAction_TR_METALIC_FURY, CSkillAction>};
 // GLOBAL: gl_25944
-static SkillActionRegistrar s_skillAction5351(5351, NewAction<CSkillAction_TR_MYSTIC_SYMPHONY, CSkillAction>);
+static SkillActionRegistrar s_skillActionTrMysticSymphony{TR_MYSTIC_SYMPHONY, NewAction<CSkillAction_TR_MYSTIC_SYMPHONY, CSkillAction>};
 // GLOBAL: gl_25945
-static SkillActionRegistrar s_skillAction5364(5364, NewAction<CSkillAction_TR_PRON_MARCH, CSkillAction>);
+static SkillActionRegistrar s_skillActionTrPronMarch{TR_PRON_MARCH, NewAction<CSkillAction_TR_PRON_MARCH, CSkillAction>};
 // GLOBAL: gl_25946
-static SkillActionRegistrar s_skillAction6521(6521, NewAction<CSkillAction_TR_RHYTHMICAL_WAVE, CSkillAction>);
+static SkillActionRegistrar s_skillActionTrRhythmicalWave{TR_RHYTHMICAL_WAVE, NewAction<CSkillAction_TR_RHYTHMICAL_WAVE, CSkillAction>};
 // GLOBAL: gl_25947
-static SkillActionRegistrar s_skillAction5355(5355, NewAction<CSkillAction_TR_RHYTHMSHOOTING, CSkillAction>);
+static SkillActionRegistrar s_skillActionTrRhythmshooting{TR_RHYTHMSHOOTING, NewAction<CSkillAction_TR_RHYTHMSHOOTING, CSkillAction>};
 // GLOBAL: gl_25948
-static SkillActionRegistrar s_skillAction5359(5359, NewAction<CSkillAction_TR_ROKI_CAPRICCIO, CSkillAction>);
+static SkillActionRegistrar s_skillActionTrRokiCapriccio{TR_ROKI_CAPRICCIO, NewAction<CSkillAction_TR_ROKI_CAPRICCIO, CSkillAction>};
 // GLOBAL: gl_25949
-static SkillActionRegistrar s_skillAction5353(5353, NewAction<CSkillAction_TR_ROSEBLOSSOM, CSkillAction>);
+static SkillActionRegistrar s_skillActionTrRoseblossom{TR_ROSEBLOSSOM, NewAction<CSkillAction_TR_ROSEBLOSSOM, CSkillAction>};
 // GLOBAL: gl_25950
-static SkillActionRegistrar s_skillAction5354(5354, NewAction<CSkillAction_TR_ROSEBLOSSOM_ATK, CSkillAction>);
+static SkillActionRegistrar s_skillActionTrRoseblossomAtk{TR_ROSEBLOSSOM_ATK, NewAction<CSkillAction_TR_ROSEBLOSSOM_ATK, CSkillAction>};

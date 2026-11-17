@@ -9,6 +9,7 @@
 #include "Contents/Effects/Core/EffectActor.h"
 #include "Contents/Effects/Core/EffectLists.h"
 #include "Contents/Effects/Particles/EZ2STREffectEx.h"
+#include "Contents/Skills/SkillId.h"
 #include "Contents/Tables/MessageTable.h"
 #include "Contents/Skills/SkillInfo.h"
 #include "Contents/Sound/SoundMgr.h"
@@ -938,19 +939,19 @@ EfstActionMessage CEfstAction_IG_GUARD_STANCE::GetEfstEndMessage() {
 }
 
 // GLOBAL: gl_25794
-static EfstActionRegistrar s_efstAction1203(1203, NewAction<CEfstAction_IG_ATTACK_STANCE, CEfstAction>);
+static EfstActionRegistrar s_efstActionIgAttackStance{EFST_ATTACK_STANCE, NewAction<CEfstAction_IG_ATTACK_STANCE, CEfstAction>};
 // GLOBAL: gl_25795
-static EfstActionRegistrar s_efstAction1222(1222, NewAction<CEfstAction_IG_GRAND_JUDGEMENT, CEfstAction>);
+static EfstActionRegistrar s_efstActionIgGrandJudgement{EFST_SPEAR_SCAR, NewAction<CEfstAction_IG_GRAND_JUDGEMENT, CEfstAction>};
 // GLOBAL: gl_25796
-static EfstActionRegistrar s_efstAction1204(1204, NewAction<CEfstAction_IG_GUARDIAN_SHIELD, CEfstAction>);
+static EfstActionRegistrar s_efstActionIgGuardianShield{EFST_GUARDIAN_S, NewAction<CEfstAction_IG_GUARDIAN_SHIELD, CEfstAction>};
 // GLOBAL: gl_25797
-static EfstActionRegistrar s_efstAction1202(1202, NewAction<CEfstAction_IG_GUARD_STANCE, CEfstAction>);
+static EfstActionRegistrar s_efstActionIgGuardStance{EFST_GUARD_STANCE, NewAction<CEfstAction_IG_GUARD_STANCE, CEfstAction>};
 // GLOBAL: gl_25798
-static EfstActionRegistrar s_efstAction1220(1220, NewAction<CEfstAction_IG_HOLY_SHIELD, CEfstAction>);
+static EfstActionRegistrar s_efstActionIgHolyShield{EFST_HOLY_S, NewAction<CEfstAction_IG_HOLY_SHIELD, CEfstAction>};
 // GLOBAL: gl_25799
-static EfstActionRegistrar s_efstAction1221(1221, NewAction<CEfstAction_IG_ULTIMATE_SACRIFICE, CEfstAction>);
+static EfstActionRegistrar s_efstActionIgUltimateSacrifice{EFST_ULTIMATE_S, NewAction<CEfstAction_IG_ULTIMATE_SACRIFICE, CEfstAction>};
 // GLOBAL: gl_25800
-static EfstActionRegistrar s_efstAction1217(1217, NewAction<CEfstAction_REBOUND_S, CEfstAction>);
+static EfstActionRegistrar s_efstActionReboundS{EFST_REBOUND_S, NewAction<CEfstAction_REBOUND_S, CEfstAction>};
 
 // OFFSET: 0x0045A7E0
 // FUNCTION: fn_45565
@@ -960,30 +961,30 @@ static bool s_skillObjectActionRegistered275 = [](std::function<CSkillObjectActi
 }(NewAction<CSkillObjectAction_IG_CROSS_RAIN, CSkillObjectAction>);
 
 // GLOBAL: gl_25801
-static SkillActionRegistrar s_skillAction5260(5260, NewAction<CSkillAction_IG_ATTACK_STANCE, CSkillAction>);
+static SkillActionRegistrar s_skillActionIgAttackStance{IG_ATTACK_STANCE, NewAction<CSkillAction_IG_ATTACK_STANCE, CSkillAction>};
 // GLOBAL: gl_25802
-static SkillActionRegistrar s_skillAction5267(5267, NewAction<CSkillAction_IG_CROSS_RAIN, CSkillAction>);
+static SkillActionRegistrar s_skillActionIgCrossRain{IG_CROSS_RAIN, NewAction<CSkillAction_IG_CROSS_RAIN, CSkillAction>};
 // GLOBAL: gl_25803
-static SkillActionRegistrar s_skillAction5263(5263, NewAction<CSkillAction_IG_GRAND_JUDGEMENT, CSkillAction>);
+static SkillActionRegistrar s_skillActionIgGrandJudgement{IG_GRAND_JUDGEMENT, NewAction<CSkillAction_IG_GRAND_JUDGEMENT, CSkillAction>};
 // GLOBAL: gl_25804
-static SkillActionRegistrar s_skillAction5256(5256, NewAction<CSkillAction_IG_GUARDIAN_SHIELD, CSkillAction>);
+static SkillActionRegistrar s_skillActionIgGuardianShield{IG_GUARDIAN_SHIELD, NewAction<CSkillAction_IG_GUARDIAN_SHIELD, CSkillAction>};
 // GLOBAL: gl_25805
-static SkillActionRegistrar s_skillAction5255(5255, NewAction<CSkillAction_IG_GUARD_STANCE, CSkillAction>);
+static SkillActionRegistrar s_skillActionIgGuardStance{IG_GUARD_STANCE, NewAction<CSkillAction_IG_GUARD_STANCE, CSkillAction>};
 // GLOBAL: gl_25806
-static SkillActionRegistrar s_skillAction5262(5262, NewAction<CSkillAction_IG_HOLY_SHIELD, CSkillAction>);
+static SkillActionRegistrar s_skillActionIgHolyShield{IG_HOLY_SHIELD, NewAction<CSkillAction_IG_HOLY_SHIELD, CSkillAction>};
 // GLOBAL: gl_25807
-static SkillActionRegistrar s_skillAction6504(6504, NewAction<CSkillAction_IG_IMPERIAL_CROSS, CSkillAction>);
+static SkillActionRegistrar s_skillActionIgImperialCross{IG_IMPERIAL_CROSS, NewAction<CSkillAction_IG_IMPERIAL_CROSS, CSkillAction>};
 // GLOBAL: gl_25808
-static SkillActionRegistrar s_skillAction6505(6505, NewAction<CSkillAction_IG_IMPERIAL_PRESSURE, CSkillAction>);
+static SkillActionRegistrar s_skillActionIgImperialPressure{IG_IMPERIAL_PRESSURE, NewAction<CSkillAction_IG_IMPERIAL_PRESSURE, CSkillAction>};
 // GLOBAL: gl_25809
-static SkillActionRegistrar s_skillAction5264(5264, NewAction<CSkillAction_IG_JUDGEMENT_CROSS, CSkillAction>);
+static SkillActionRegistrar s_skillActionIgJudgementCross{IG_JUDGEMENT_CROSS, NewAction<CSkillAction_IG_JUDGEMENT_CROSS, CSkillAction>};
 // GLOBAL: gl_25810
-static SkillActionRegistrar s_skillAction5266(5266, NewAction<CSkillAction_IG_OVERSLASH, CSkillAction>);
+static SkillActionRegistrar s_skillActionIgOverslash{IG_OVERSLASH, NewAction<CSkillAction_IG_OVERSLASH, CSkillAction>};
 // GLOBAL: gl_25811
-static SkillActionRegistrar s_skillAction6503(6503, NewAction<CSkillAction_IG_RADIANT_SPEAR, CSkillAction>);
+static SkillActionRegistrar s_skillActionIgRadiantSpear{IG_RADIANT_SPEAR, NewAction<CSkillAction_IG_RADIANT_SPEAR, CSkillAction>};
 // GLOBAL: gl_25812
-static SkillActionRegistrar s_skillAction5257(5257, NewAction<CSkillAction_IG_REBOUND_SHIELD, CSkillAction>);
+static SkillActionRegistrar s_skillActionIgReboundShield{IG_REBOUND_SHIELD, NewAction<CSkillAction_IG_REBOUND_SHIELD, CSkillAction>};
 // GLOBAL: gl_25813
-static SkillActionRegistrar s_skillAction5265(5265, NewAction<CSkillAction_IG_SHIELD_SHOOTING, CSkillAction>);
+static SkillActionRegistrar s_skillActionIgShieldShooting{IG_SHIELD_SHOOTING, NewAction<CSkillAction_IG_SHIELD_SHOOTING, CSkillAction>};
 // GLOBAL: gl_25814
-static SkillActionRegistrar s_skillAction5261(5261, NewAction<CSkillAction_IG_ULTIMATE_SACRIFICE, CSkillAction>);
+static SkillActionRegistrar s_skillActionIgUltimateSacrifice{IG_ULTIMATE_SACRIFICE, NewAction<CSkillAction_IG_ULTIMATE_SACRIFICE, CSkillAction>};
