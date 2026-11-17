@@ -569,8 +569,8 @@ void CUIQuestInfo::SetTitle(int id) {
   }
 
   std::string text = entry.title;
-  std::cmatch match;
-  std::regex_search(text.c_str(), text.c_str() + text.size(), match, std::regex("Q(.+)\\("));
+  std::smatch match;
+  std::regex_search(text, match, std::regex("Q(.+)\\("));
   const std::string whitespace(" \r\n\t\v\f");
   match.size() > 1 ? text = match[1].str() : text;
 
@@ -580,7 +580,7 @@ void CUIQuestInfo::SetTitle(int id) {
   this->titleViewer->AddLine(text);
 
   text = entry.paragraphs[0];
-  std::regex_search(text.c_str(), text.c_str() + text.size(), match, std::regex("\n"));
+  std::regex_search(text, match, std::regex("\n"));
   match.size() > 0 ? text = match.prefix().str() : text;
 
   text.erase(0, text.find_first_not_of(whitespace));
@@ -841,8 +841,8 @@ void AdventureGuide::CUIQuestInfo::SetTip(int id) {
   }
 
   std::string title = tip.title;
-  std::match_results<const char*> match;
-  std::regex_search(title.c_str(), title.c_str() + title.size(), match, std::regex("\\#"));
+  std::smatch match;
+  std::regex_search(title, match, std::regex("\\#"));
   const std::string whitespace(" \r\n\t\v\f");
   match.empty() ? title : title = match.prefix().str();
 
@@ -852,7 +852,7 @@ void AdventureGuide::CUIQuestInfo::SetTip(int id) {
   this->titleViewer->AddLine(title);
 
   title = tip.paragraphs.front();
-  std::regex_search(title.c_str(), title.c_str() + title.size(), match, std::regex("\n"));
+  std::regex_search(title, match, std::regex("\n"));
   match.empty() ? title : title = match.prefix().str();
   title.erase(0, title.find_first_not_of(whitespace));
   title.erase(title.find_last_not_of(whitespace) + 1);
