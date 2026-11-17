@@ -5315,7 +5315,8 @@ void CGameMode::RequestAdminStatus() {
 // OFFSET: 0x00D06BD0
 // FUNCTION: fn_21578
 void SetPlayerName(std::uint32_t id, std::string name) {
-  g_playerNameDictionary->Set(id, name);
+  CPlayerNameDictionary* dictionary = g_playerNameDictionary;
+  dictionary->Set(id, name);
   g_modeMgr.GetGameMode()->CompleteGuildMemberStatusLookup(id, name);
   GuildInfo* guildInfo = &g_guildInfo;
   guildInfo->UpdateCharacterName(id, name.c_str());
