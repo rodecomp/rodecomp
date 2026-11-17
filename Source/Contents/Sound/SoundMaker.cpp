@@ -935,10 +935,10 @@ void CNpc::SetSprJob(int job) {
     this->render.spriteJob = job;
     actionFormat = "NPC\\%s.act";
     spriteFormat = "NPC\\%s.spr";
-  } else if (job >= 6017 && job <= 6046) {
+  } else if (job >= JT_MER_ARCHER01 && job <= JT_MER_SWORDMAN10) {
     actionFormat = "인간족\\몸통\\%s.act";
     spriteFormat = "인간족\\몸통\\%s.spr";
-  } else if (job >= 6001 && job <= 6052) {
+  } else if (job >= JT_MER_LIF && job <= JT_MER_ELEANOR) {
     actionFormat = "homun\\%s.act";
     spriteFormat = "homun\\%s.spr";
   } else {
@@ -1010,7 +1010,7 @@ void CHalluNPC::Render(int argument) {
   rand();
   rand();
 
-  if (this->GetEffectiveJob(-1) >= 6017 && this->GetEffectiveJob(-1) <= 6046) {
+  if (this->GetEffectiveJob(-1) >= JT_MER_ARCHER01 && this->GetEffectiveJob(-1) <= JT_MER_SWORDMAN10) {
     if (this->render.visible) {
       if ((this->render.color & 0xFF000000) == 0xFF000000) {
         this->DrawShadow(argument, this->render.scale);
@@ -1097,7 +1097,7 @@ void CNpc::Render(int argument) {
     case JT_HIDDEN_WARP_NPC:
       return;
     default:
-      if (this->GetEffectiveJob(-1) < 6017 || this->GetEffectiveJob(-1) > 6046) {
+      if (this->GetEffectiveJob(-1) < JT_MER_ARCHER01 || this->GetEffectiveJob(-1) > JT_MER_SWORDMAN10) {
         for (const ActiveSkillEffect& effect : g_activeSkillEffects) {
           if (effect.id == 184) {
             if (this->objectType == NPC_MOB_TYPE && (!this->render.visible || !this->render.enabled)) {
@@ -1706,7 +1706,7 @@ void CNpc::SetState(int state, int) {
           if (this->bodyState != 1 && this->bodyState != 2) {
             this->render.isMotionFreezed = false;
           }
-          if (this->GetEffectiveJob(-1) >= 6017 && this->GetEffectiveJob(-1) <= 6046) {
+          if (this->GetEffectiveJob(-1) >= JT_MER_ARCHER01 && this->GetEffectiveJob(-1) <= JT_MER_SWORDMAN10) {
             this->SetAction(8, 6, 0);
           } else {
             this->SetAction(8, 4, 0);
@@ -1725,7 +1725,7 @@ void CNpc::SetState(int state, int) {
               this->SetAction(40, 4, 1);
               break;
           }
-          if (this->GetEffectiveJob(-1) >= 6017 && this->GetEffectiveJob(-1) <= 6046) {
+          if (this->GetEffectiveJob(-1) >= JT_MER_ARCHER01 && this->GetEffectiveJob(-1) <= JT_MER_SWORDMAN10) {
             this->SetAction(96, 6, 1);
           }
           break;
@@ -1741,7 +1741,7 @@ void CNpc::SetState(int state, int) {
             } else {
               this->SetAction(48, 4, 1);
             }
-          } else if (this->GetEffectiveJob(-1) >= 6017 && this->GetEffectiveJob(-1) <= 6046) {
+          } else if (this->GetEffectiveJob(-1) >= JT_MER_ARCHER01 && this->GetEffectiveJob(-1) <= JT_MER_SWORDMAN10) {
             this->SetAction(80, 3, 1);
           } else {
             this->SetAction(16, 4, 1);
@@ -1754,7 +1754,7 @@ void CNpc::SetState(int state, int) {
           if (this->render.frameSequenceActive != 0 || this->render.animationSequenceActive != 0 || this->render.timedSequenceActive != 0) {
             return;
           }
-          if (this->GetEffectiveJob(-1) >= 6017 && this->GetEffectiveJob(-1) <= 6046) {
+          if (this->GetEffectiveJob(-1) >= JT_MER_ARCHER01 && this->GetEffectiveJob(-1) <= JT_MER_SWORDMAN10) {
             this->SetAction(48, 5, 1);
             break;
           }
@@ -1777,7 +1777,7 @@ void CNpc::SetState(int state, int) {
           this->render.isLieOnGround = true;
           this->render.isMotionFreezed = false;
           this->render.trackBounds = 0;
-          if (this->GetEffectiveJob(-1) >= 6017 && this->GetEffectiveJob(-1) <= 6046) {
+          if (this->GetEffectiveJob(-1) >= JT_MER_ARCHER01 && this->GetEffectiveJob(-1) <= JT_MER_SWORDMAN10) {
             this->SetAction(64, 4, 1);
             this->UnRegisterPos();
           } else {

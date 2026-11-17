@@ -2,6 +2,7 @@
 #include "Contents/Skills/SkillId.h"
 #include "Client/Session/Session.h"
 #include "Network/Connection/Connection.h"
+#include "Network/Packets/PacketId.h"
 
 #include <cstring>
 
@@ -83,7 +84,7 @@ void AutomaticSkills::DisableAll() {
 // FUNCTION: fn_09153
 void AutomaticSkills::Use(std::int16_t id, std::int16_t level, std::uint32_t target) {
   unsigned char packet[10];
-  const std::uint16_t header = 2832;
+  const std::uint16_t header = ID_CZ_USE_SKILL_START;
   std::memcpy(packet, &header, 2);
   std::memcpy(packet + 2, &id, 2);
   std::memcpy(packet + 4, &level, 2);

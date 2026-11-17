@@ -407,7 +407,7 @@ __declspec(safebuffers) bool CGameMode::LaunchTargetEffect(int effectId, CGameAc
       effect->effectArgument = argument;
     }
 
-    if (effectId == 539) {
+    if (effectId == EF_THROWITEM4) {
       g_effectMgr->Spawn(source->render.accountId, EF_THROWITEM4_1, source->render.position,
                          target->render.accountId, -1, 0, 0);
     }

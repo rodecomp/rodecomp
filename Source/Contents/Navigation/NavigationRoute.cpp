@@ -259,7 +259,7 @@ void CNavigationManager::RequestPrivateAirship(std::string mapName, int itemId) 
   if (itemId == 0x1AFD) {
     UIPayConfirmWnd* window = new UIPayConfirmWnd();
     window->Configure(LookupMessage(MSI_ENCHANT_POSSIBLE), 0x1AFD);
-    window->SendMsg(nullptr, 0x9C, 1, 0, 0, 0);
+    window->SendMsg(nullptr, UM_SET_MODAL, 1, 0, 0, 0);
     window->SetId(0x16B);
     g_windowMgr.AddRendered(window);
     if (g_windowMgr.RunModal(window) != 187) {

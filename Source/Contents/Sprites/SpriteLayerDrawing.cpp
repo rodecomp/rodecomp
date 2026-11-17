@@ -104,7 +104,7 @@ void SpriteLayerRenderer::Render(const float* matrix, int blendMode, char blendV
 
       if (layer == 7) {
         const int job = this->pc->GetEffectiveJob(-1);
-        if (job == 0xFF6 || job == 0xFF7 || job == 0x1010) {
+        if (job == JT_MADOGEAR || job == JT_MADOGEAR_H || job == JT_MADOGEAR_B) {
           continue;
         }
       } else if (this->pc->isRiding == 1) {

@@ -776,7 +776,7 @@ void UIMessengerGroupWnd::OnCreate(int, int) {
     maximize->SetSize(maximize->BitmapWidth(), maximize->BitmapHeight());
   }
   this->iconModeButtons[1]->Move(this->geometry.width - 28, 3);
-  this->iconModeButtons[1]->SetId(523);
+  this->iconModeButtons[1]->SetId(ID_RESTORE_PARTY_LIST);
   this->AddChild(this->iconModeButtons[1]);
 
   for (int index = 0; index < 40; ++index) {

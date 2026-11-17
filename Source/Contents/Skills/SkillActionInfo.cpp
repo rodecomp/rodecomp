@@ -7,6 +7,7 @@
 #include "Contents/Skills/SkillId.h"
 #include "Contents/Skills/SkillInfo.h"
 #include "Contents/Sound/SoundMgr.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 
 #include <string>
 #include <utility>
@@ -48,7 +49,7 @@ std::uint32_t CSession::GetHotkeySkillLevel(int index) {
 // OFFSET: 0x00E13C30
 // FUNCTION: fn_23830
 void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int variant, int level) {
-  effectId = 16;
+  effectId = EF_BASH;
   motion = 8;
   const int beginEffect = this->GetBeginEffectId(skillId);
   switch (skillId) {
@@ -79,14 +80,14 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
   switch (skillId) {
   case KN_AUTOCOUNTER:
   case TF_THROWSTONE:
-    effectId = -1;
+    effectId = EF_NONE;
     motion = 11;
     break;
   case TF_SPRINKLESAND:
     motion = 11;
     break;
   case KN_BRANDISHSPEAR:
-    effectId = 144;
+    effectId = EF_BRANDISH2;
     motion = 2;
     break;
   case SM_BASH:
@@ -100,28 +101,28 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
     motion = 2;
     break;
   case KN_SPEARBOOMERANG:
-    effectId = -1;
+    effectId = EF_NONE;
     motion = 12;
     break;
   case AC_CONCENTRATION:
-    effectId = 43;
+    effectId = EF_INCAGIDEX;
     return;
   case AC_SHOWER:
-    effectId = -1;
+    effectId = EF_NONE;
     motion = 18;
     break;
   case TF_PICKSTONE:
-    effectId = -1;
+    effectId = EF_NONE;
     motion = 5;
     break;
   case MO_EXTREMITYFIST:
-    effectId = level < 4016 ? 328 : 510;
+    effectId = level < 4016 ? EF_BEGINASURA : EF_BEGINASURA11;
     break;
   case AM_CALLHOMUN:
   case AM_REST:
   case AM_RESURRECTHOMUN:
     motion = 0;
-    effectId = 342;
+    effectId = EF_COUPLECASTING;
     return;
   case DC_UGLYDANCE:
   case DC_HUMMING:
@@ -136,19 +137,19 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
   case WE_CALLALLFAMILY:
   case WE_ONEFOREVER:
   case WE_CHEERUP:
-    effectId = 342;
+    effectId = EF_COUPLECASTING;
     return;
   case ST_CHASEWALK:
     motion = 0;
-    effectId = 1195;
+    effectId = EF_AUTOSHADOWSPELL_ACTIVE;
     return;
   case WE_FEMALE:
-    effectId = 343;
+    effectId = EF_HEARTCASTING;
     return;
   case SN_SHARPSHOOTING:
   case CG_ARROWVULCAN:
     motion = 18;
-    effectId = 58;
+    effectId = EF_BEGINSPELL6;
     return;
   case BD_LULLABY:
   case BD_ETERNALCHAOS:
@@ -169,15 +170,15 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
   case SJ_BOOKOFCREATINGSTAR:
   case AB_CONVENIO:
   case EM_ELEMENTAL_VEIL:
-    effectId = 58;
+    effectId = EF_BEGINSPELL6;
     return;
   case LK_SPIRALPIERCE:
-    effectId = 502;
+    effectId = EF_PIERCEBODY;
     motion = 11;
     break;
   case AL_BLESSING:
   case CASH_BLESSING:
-    effectId = 12;
+    effectId = EF_BEGINSPELL;
     motion = 0;
     break;
   case AM_ACIDTERROR:
@@ -190,7 +191,7 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
   case MO_STEELBODY:
   case CR_FULLPROTECTION:
     motion = 0;
-    effectId = 12;
+    effectId = EF_BEGINSPELL;
     goto variant;
   case MG_SRECOVERY:
   case MG_SIGHT:
@@ -338,16 +339,16 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
   case EM_EL_STORM_WIND:
   case EM_EL_AVALANCHE:
   case EM_EL_DEADLY_POISON:
-    effectId = 12;
+    effectId = EF_BEGINSPELL;
     goto variant;
   case CR_SLIMPITCHER:
   case CR_ACIDDEMONSTRATION:
     motion = 28;
-    effectId = 12;
+    effectId = EF_BEGINSPELL;
     goto variant;
   case ST_PRESERVE:
     motion = 0;
-    effectId = 59;
+    effectId = EF_BEGINSPELL7;
     return;
   case AS_SPLASHER:
   case NPC_ARMORBRAKE:
@@ -358,12 +359,12 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
   case ASC_METEORASSAULT:
   case NPC_PULSESTRIKE:
   case NPC_PULSESTRIKE2:
-    effectId = 59;
+    effectId = EF_BEGINSPELL7;
     return;
   case TK_SEVENWIND:
   case TK_MISSION:
     motion = 0;
-    effectId = 441;
+    effectId = EF_BLUECASTING;
     return;
   case BA_DISSONANCE:
   case BA_WHISTLE:
@@ -415,53 +416,53 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
   case SP_SOULUNITY:
   case SP_SOULREAPER:
   case SP_SOULREVOLVE:
-    effectId = 441;
+    effectId = EF_BLUECASTING;
     return;
   case AM_BERSERKPITCHER:
     motion = 12;
-    effectId = 12;
+    effectId = EF_BEGINSPELL;
     goto variant;
   case AM_TWILIGHT1:
     motion = 7;
-    effectId = 573;
+    effectId = EF_TWILIGHT1;
     return;
   case AM_TWILIGHT2:
     motion = 7;
-    effectId = 574;
+    effectId = EF_TWILIGHT2;
     return;
   case AM_TWILIGHT3:
     motion = 7;
-    effectId = 575;
+    effectId = EF_TWILIGHT3;
     return;
   case NJ_HUUMA:
   case NJ_BUNSINJYUTSU:
   case NJ_NEN:
     motion = 37;
-    effectId = 441;
+    effectId = EF_BLUECASTING;
     return;
   case NJ_KOUENKA:
   case NJ_KAENSIN:
   case NJ_BAKUENRYU:
     motion = 37;
-    effectId = 55;
+    effectId = EF_BEGINSPELL3;
     return;
   case SA_ELEMENTFIRE:
-    effectId = 55;
+    effectId = EF_BEGINSPELL3;
     return;
   case NJ_HYOUSENSOU:
   case NJ_SUITON:
   case NJ_HYOUSYOURAKU:
     motion = 37;
-    effectId = 54;
+    effectId = EF_BEGINSPELL2;
     return;
   case NJ_HUUJIN:
   case NJ_RAIGEKISAI:
   case NJ_KAMAITACHI:
     motion = 37;
-    effectId = 57;
+    effectId = EF_BEGINSPELL5;
     return;
   case SA_ELEMENTWIND:
-    effectId = 57;
+    effectId = EF_BEGINSPELL5;
     return;
   case GS_BULLSEYE:
   case GS_MADNESSCANCEL:
@@ -472,33 +473,33 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
   case GS_RAPIDSHOWER:
   case GS_GATLINGFEVER:
     motion = 41;
-    effectId = 441;
+    effectId = EF_BLUECASTING;
     return;
   case GS_DUST:
   case GS_FULLBUSTER:
   case GS_SPREADATTACK:
   case GS_GROUNDDRIFT:
     motion = 42;
-    effectId = 441;
+    effectId = EF_BLUECASTING;
     return;
   case KN_CHARGEATK:
   case BA_PANGVOICE:
   case PR_REDEMPTIO:
     motion = 0;
-    effectId = 58;
+    effectId = EF_BEGINSPELL6;
     return;
   case AB_CLEARANCE:
-    effectId = 1560;
+    effectId = EF_NEW_HEAL_WHITE;
     return;
   case KN_PIERCE:
   case KN_SPEARSTAB:
   case KN_BOWLINGBASH:
   case AB_DUPLELIGHT_MELEE:
-    effectId = -1;
+    effectId = EF_NONE;
     motion = 2;
     break;
   case RK_SONICWAVE:
-    effectId = 12;
+    effectId = EF_BEGINSPELL;
     motion = 2;
     break;
   case HT_SKIDTRAP:
@@ -534,13 +535,13 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
   case SR_GENTLETOUCH_REVITALIZE:
   case SR_RIDEINLIGHTNING:
     motion = -1;
-    effectId = 831;
+    effectId = EF_BEGINSPELL_N2;
     return;
   case MB_M_TELEPORT:
   case SC_INVISIBILITY:
   case SC_FEINTBOMB:
     motion = 0;
-    effectId = 501;
+    effectId = EF_CASTSPIN;
     return;
   case SC_ENERVATION:
   case SC_GROOMY:
@@ -550,14 +551,14 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
   case SC_WEAKNESS:
   case SC_STRIPACCESSARY:
     motion = 7;
-    effectId = 441;
+    effectId = EF_BLUECASTING;
     return;
   case SC_MAELSTROM:
-    effectId = 1556;
+    effectId = EF_NEW_HEAL_BLUE;
     return;
   case RL_FALLEN_ANGEL:
     motion = 46;
-    effectId = -1;
+    effectId = EF_NONE;
     return;
   case TF_HIDING:
   case KN_SPEARMASTERY:
@@ -711,20 +712,20 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
   case ABR_NET_REPAIR:
   case ABR_NET_SUPPORT:
   case ABR_INFINITY_BUSTER:
-    effectId = -1;
+    effectId = EF_NONE;
     return;
   case NPC_ELECTRICWALK:
   case SO_ELECTRICWALK:
     motion = -1;
-    effectId = 57;
+    effectId = EF_BEGINSPELL5;
     return;
   case SO_EARTHGRAVE:
     motion = -1;
-    effectId = 1664;
+    effectId = EF_NEW_SANCTUARY;
     return;
   case SO_VARETYR_SPEAR:
     motion = 7;
-    effectId = 1565;
+    effectId = EF_NEW_HEAL_YELLOW;
     return;
   case NPC_MANDRAGORA:
   case GN_CART_TORNADO:
@@ -734,60 +735,60 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
   case GN_MAKEBOMB:
   case GN_S_PHARMACY:
     motion = -1;
-    effectId = 911;
+    effectId = EF_GREENCASTING;
     return;
   case GN_CARTBOOST:
     motion = -1;
-    effectId = 1677;
+    effectId = EF_NEW_SAFETYWALL;
     return;
   case SR_GATEOFHELL:
   case GN_MANDRAGORA:
   case SR_HOWLINGOFLION:
     motion = -1;
-    effectId = -1;
+    effectId = EF_NONE;
     return;
   case GN_SPORE_EXPLOSION:
   case GN_DEMONIC_FIRE:
     motion = 12;
-    effectId = 911;
+    effectId = EF_GREENCASTING;
     return;
   case GN_THORNS_TRAP:
   case GN_CRAZYWEED:
   case GN_FIRE_EXPANSION:
   case GN_HELLS_PLANT:
     motion = 7;
-    effectId = 911;
+    effectId = EF_GREENCASTING;
     return;
   case GN_WALLOFTHORN:
     motion = 7;
-    effectId = -1;
+    effectId = EF_NONE;
     return;
   case WL_JACKFROST:
-    effectId = 1449;
+    effectId = EF_NEW_FROSTMISTY;
     motion = 7;
     break;
   case WL_COMET:
-    effectId = 1418;
+    effectId = EF_NEW_MOON_SLASH;
     motion = 7;
     break;
   case WL_TETRAVORTEX:
-    effectId = 805;
+    effectId = EF_TETRACASTING;
     motion = 7;
     break;
   case WL_SUMMONFB:
   case WL_SUMMONBL:
   case WL_SUMMONWB:
   case WL_SUMMONSTONE:
-    effectId = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? 1430 : 1260;
+    effectId = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? EF_MINEFFECT_TETRA_CAST : EF_TETRA_VORTEX_CAST;
     g_soundMgr->PlayWave("effect\\EF_BeginSpell.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     motion = 7;
     break;
   case SC_TRIANGLESHOT:
-    effectId = 441;
+    effectId = EF_BLUECASTING;
     motion = 18;
     break;
   case SC_SHADOWFORM:
-    effectId = 826;
+    effectId = EF_DARKCASTING2;
     motion = 7;
     break;
   case AL_INCAGI:
@@ -808,13 +809,13 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
   case RA_WUGSTRIKE:
   case RA_WUGBITE:
   case RA_SENSITIVEKEEN:
-    effectId = 12;
+    effectId = EF_BEGINSPELL;
     motion = 7;
     break;
   case WL_STASIS:
   case RA_WUGMASTERY:
   case SC_AUTOSHADOWSPELL:
-    effectId = 441;
+    effectId = EF_BLUECASTING;
     motion = 7;
     break;
   case AS_SONICBLOW:
@@ -827,39 +828,39 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
   case RA_AIMEDBOLT:
   case LG_OVERBRAND:
   case LG_RAYOFGENESIS:
-    effectId = -1;
+    effectId = EF_NONE;
     motion = 7;
     break;
   case LG_EARTHDRIVE:
-    effectId = 1709;
+    effectId = EF_NEW_EARTHDRIVE_CAST;
     motion = 7;
     break;
   case LG_PIETY:
-    effectId = 830;
+    effectId = EF_BEGINSPELL_N1;
     motion = 7;
     break;
   case RA_WUGRIDER:
   case RA_WUGDASH:
   case GN_CARTCANNON:
   case LG_OVERBRAND_PLUSATK:
-    effectId = -1;
+    effectId = EF_NONE;
     motion = -1;
     break;
   case LG_EXEEDBREAK:
-    effectId = 882;
+    effectId = EF_PRIMECHARGE;
     motion = 7;
     break;
   case NC_AXETORNADO:
     motion = 2;
-    effectId = 775;
+    effectId = EF_CASTSPIN2;
     return;
   case NC_FLAMELAUNCHER:
     motion = 2;
-    effectId = 12;
+    effectId = EF_BEGINSPELL;
     goto variant;
   case NC_ARMSCANNON:
     motion = 2;
-    effectId = -1;
+    effectId = EF_NONE;
     return;
   case NPC_PSYCHIC_WAVE:
   case NPC_CLOUD_KILL:
@@ -883,31 +884,31 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
   case SO_SUMMON_VENTUS:
   case SO_SUMMON_TERA:
     motion = -1;
-    effectId = 12;
+    effectId = EF_BEGINSPELL;
     goto variant;
   case NC_SELFDESTRUCTION:
     motion = -1;
-    effectId = 775;
+    effectId = EF_CASTSPIN2;
     return;
   case NPC_FIREWALK:
   case NC_INFRAREDSCAN:
   case SO_FIREWALK:
     motion = -1;
-    effectId = 55;
+    effectId = EF_BEGINSPELL3;
     return;
   case NC_MAGNETICFIELD:
     motion = -1;
-    effectId = 54;
+    effectId = EF_BEGINSPELL2;
     return;
   case NC_ANALYZE:
   case NC_NEUTRALBARRIER:
   case NC_REPAIR:
     motion = -1;
-    effectId = 58;
+    effectId = EF_BEGINSPELL6;
     return;
   case NC_STEALTHFIELD:
     motion = -1;
-    effectId = 441;
+    effectId = EF_BLUECASTING;
     return;
   case WA_SWING_DANCE:
   case WA_SYMPHONY_OF_LOVER:
@@ -919,7 +920,7 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
   case WA_MOONLIT_SERENADE:
   case WM_POEMOFNETHERWORLD:
     motion = 16;
-    effectId = 840;
+    effectId = EF_BEGINSPELL_N3;
     if (skillId == WM_POEMOFNETHERWORLD) {
       g_soundMgr->PlayWave("effect\\나락의노래.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     } else if (skillId == WA_MOONLIT_SERENADE) {
@@ -928,26 +929,26 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
     break;
   case WM_REVERBERATION:
     motion = 16;
-    effectId = 1656;
+    effectId = EF_NEW_EPICLESIS_CAST;
     return;
   case DC_WINKCHARM:
   case WM_METALICSOUND:
     motion = 16;
-    effectId = -1;
+    effectId = EF_NONE;
     return;
   case WM_SEVERE_RAINSTORM:
     motion = 16;
-    effectId = 1286;
+    effectId = EF_NEW_SEVERERAINSTORM_HIT;
     return;
   case WM_DEADHILLHERE:
   case WM_SIRCLEOFNATURE:
     motion = 16;
-    effectId = 841;
+    effectId = EF_BEGINSPELL_N4;
     return;
   case MI_RUSH_WINDMILL:
   case MI_ECHOSONG:
     motion = 16;
-    effectId = 844;
+    effectId = EF_BEGINSPELL_N7;
     return;
   case WM_GREAT_ECHO:
   case WM_SONG_OF_MANA:
@@ -958,22 +959,22 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
   case WM_UNLIMITED_HUMMING_VOICE:
   case WM_LERADS_DEW:
     motion = 16;
-    effectId = 843;
+    effectId = EF_BEGINSPELL_N6;
     if (skillId == WM_LERADS_DEW) {
       g_soundMgr->PlayWave("effect\\레라드의이슬.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     }
     break;
   case WM_SOUND_OF_DESTRUCTION:
-    effectId = -1;
+    effectId = EF_NONE;
     motion = 16;
     break;
   case MI_HARMONIZE:
     motion = 16;
-    effectId = 441;
+    effectId = EF_BLUECASTING;
     return;
   case SJ_STAREMPEROR:
     motion = 19;
-    effectId = 58;
+    effectId = EF_BEGINSPELL6;
     return;
   case SP_CURSEEXPLOSION:
   case SP_SOULCURSE:
@@ -982,12 +983,12 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
   case SP_SWHOO:
   case SP_SOULDIVISION:
   case SP_SOULEXPLOSION:
-    effectId = 454;
+    effectId = EF_DARKCASTING;
     return;
   case TK_HIGHJUMP:
   case SU_LOPE:
     motion = 19;
-    effectId = -1;
+    effectId = EF_NONE;
     return;
   case SU_SV_STEMSPEAR:
   case SU_CN_POWDERING:
@@ -999,7 +1000,7 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
   case SU_BUNCHOFSHRIMP:
   case SU_LUNATICCARROTBEAT2:
     motion = 50;
-    effectId = -1;
+    effectId = EF_NONE;
     return;
   case AB_CLEMENTIA:
   case AB_CANTO:
@@ -1007,7 +1008,7 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
   case AB_LAUDAAGNUS:
   case AB_LAUDARAMUS:
   case AB_VITUPERATUM:
-    effectId = 830;
+    effectId = EF_BEGINSPELL_N1;
     return;
   case WL_RECOGNIZEDSPELL:
   case WL_READING_SB:
@@ -1020,47 +1021,47 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
   case LG_HESPERUSLIT:
   case LG_INSPIRATION:
   case WL_READING_SB_READING:
-    effectId = 58;
+    effectId = EF_BEGINSPELL6;
     motion = 7;
     break;
   case IQ_SINCERE_FAITH:
-    effectId = 1963;
+    effectId = EF_SINCERE_FAITH_RING;
     return;
   case IQ_POWERFUL_FAITH:
-    effectId = 1986;
+    effectId = EF_POWERFUL_FAITH_RING;
     return;
   case IQ_FIRM_FAITH:
-    effectId = 1998;
+    effectId = EF_FIRM_FAITH_RING;
     return;
   case CD_PNEUMATICUS_PROCELLA:
-    effectId = 1959;
+    effectId = EF_PNEUMATICUS_PROCELLA_RING;
     return;
   case CD_FRAMEN:
-    effectId = 1932;
+    effectId = EF_NEW_PRAMEN_RING;
     return;
   case WH_FLAMETRAP:
-    effectId = 1923;
+    effectId = EF_FLAME_TRAP_RING;
     return;
   case MT_SUMMON_ABR_INFINITY:
-    effectId = 1910;
+    effectId = EF_ABR_INFINITY_RING;
     return;
   case MT_SUMMON_ABR_BATTLE_WARIOR:
-    effectId = 1938;
+    effectId = EF_NEW_BATTLE_W_ENTITY;
     return;
   case MT_SUMMON_ABR_DUAL_CANNON:
-    effectId = 1918;
+    effectId = EF_NEW_D_CANNON_ENTITY;
     return;
   case MT_SUMMON_ABR_MOTHER_NET:
-    effectId = 1902;
+    effectId = EF_ABR_MOTHER;
     return;
   case WH_DEEPBLINDTRAP:
-    effectId = 1872;
+    effectId = EF_NEW_PNEUMA;
     return;
   case WH_SWIFTTRAP:
-    effectId = 1876;
+    effectId = EF_NEW_SW_CAST;
     return;
   case ABC_ABYSS_SQUARE:
-    effectId = -1;
+    effectId = EF_NONE;
     motion = -1;
     g_soundMgr->PlayWave("effect\\EF_BeginSpell.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
     break;
@@ -1071,17 +1072,17 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
     break;
   case SHC_FATAL_SHADOW_CROW:
     g_soundMgr->PlayWave("effect\\EF_BeginSpell.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-    effectId = -1;
+    effectId = EF_NONE;
     return;
   case NPC_BO_HELL_DUSTY:
-    effectId = 2240;
+    effectId = EF_RESEARCH_REPORT_RING;
     return;
   case NPC_BO_THROWROCK:
   case NPC_BO_WOODEN_ATTACK:
-    effectId = 2249;
+    effectId = EF_WOODEN_WARRIOR_RING;
     return;
   case NPC_BO_FAIRY_DUSTY:
-    effectId = 2255;
+    effectId = EF_WOODEN_FAIRY_RING;
     return;
   case NPC_SUMMONSLAVE:
   case NPC_SUMMONMONSTER:
@@ -1090,36 +1091,36 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
   case NPC_POWERUP:
   case ML_AUTOGUARD:
     motion = 0;
-    effectId = -1;
+    effectId = EF_NONE;
     return;
   case EL_CIRCLE_OF_FIRE:
   case EL_FIRE_ARROW:
   case EL_FIRE_BOMB:
   case EL_FIRE_WAVE:
     motion = 7;
-    effectId = 55;
+    effectId = EF_BEGINSPELL3;
     return;
   case EL_ICE_NEEDLE:
   case EL_WATER_SCREW:
   case EL_TIDAL_WEAPON:
     motion = 7;
-    effectId = 54;
+    effectId = EF_BEGINSPELL2;
     return;
   case EL_WIND_SLASH:
   case EL_HURRICANE:
     motion = 7;
-    effectId = 57;
+    effectId = EF_BEGINSPELL5;
     return;
   case EL_STONE_RAIN:
     motion = 7;
-    effectId = 56;
+    effectId = EF_BEGINSPELL4;
     return;
   case SA_ELEMENTGROUND:
-    effectId = 56;
+    effectId = EF_BEGINSPELL4;
     return;
   default:
     if (static_cast<unsigned int>(skillId - 5401) <= 106 || static_cast<unsigned int>(skillId - 6001) <= 5 || static_cast<unsigned int>(skillId - 6525) <= 81) {
-      effectId = -1;
+      effectId = EF_NONE;
     }
     {
       const std::pair<bool, int> action = CSkillActionMgr::GetInstance()->GetSkillCastMotion(skillId);
@@ -1185,37 +1186,37 @@ void CSession::GetSkillActionInfo(int skillId, int& effectId, int& motion, int v
   case GC_CLOAKINGEXCEED:
     break;
   case SA_ELEMENTWATER:
-    effectId = 54;
+    effectId = EF_BEGINSPELL2;
     return;
   case AS_VENOMKNIFE:
-    effectId = -1;
+    effectId = EF_NONE;
     motion = 11;
     break;
   }
 
-  if (effectId != 12) {
+  if (effectId != EF_BEGINSPELL) {
     return;
   }
 
 variant:
   switch (variant) {
   case ELE_WATER:
-    effectId = 54;
+    effectId = EF_BEGINSPELL2;
     return;
   case ELE_EARTH:
-    effectId = 56;
+    effectId = EF_BEGINSPELL4;
     return;
   case ELE_FIRE:
-    effectId = 55;
+    effectId = EF_BEGINSPELL3;
     return;
   case ELE_WIND:
-    effectId = 57;
+    effectId = EF_BEGINSPELL5;
     return;
   case ELE_POISON:
-    effectId = 59;
+    effectId = EF_BEGINSPELL7;
     return;
   case ELE_HOLY:
-    effectId = 58;
+    effectId = EF_BEGINSPELL6;
     return;
   }
 }
@@ -1223,7 +1224,7 @@ variant:
 // OFFSET: 0x00E15270
 // FUNCTION: fn_23831
 void CSession::GetSkillActionInfo2(int skillId, int& effectId, int& motion) {
-  effectId = 16;
+  effectId = EF_BASH;
   motion = 7;
   const int beginEffect = this->GetBeginEffectId(skillId);
   switch (skillId) {
@@ -1360,31 +1361,31 @@ void CSession::GetSkillActionInfo2(int skillId, int& effectId, int& motion) {
   case ALL_GUARDIAN_RECALL:
   case ALL_ODINS_POWER:
   case MER_MAGNIFICAT:
-    effectId = 12;
+    effectId = EF_BEGINSPELL;
     return;
   case AC_CONCENTRATION:
-    effectId = 43;
+    effectId = EF_INCAGIDEX;
     return;
   case KN_BRANDISHSPEAR:
-    effectId = 144;
+    effectId = EF_BRANDISH2;
     motion = 2;
     return;
   case NPC_UNDEADATTACK:
-    effectId = 454;
+    effectId = EF_DARKCASTING;
     return;
   case BA_DISSONANCE:
   case BA_WHISTLE:
   case BA_ASSASSINCROSS:
   case BA_POEMBRAGI:
   case BA_APPLEIDUN:
-    effectId = -1;
+    effectId = EF_NONE;
     motion = 17;
     return;
   case AL_INCAGI:
   case TF_PICKSTONE:
   case BD_ADAPTATION:
   case CASH_INCAGI:
-    effectId = -1;
+    effectId = EF_NONE;
     motion = 0;
     return;
   case CR_PROVIDENCE:
@@ -1399,7 +1400,7 @@ void CSession::GetSkillActionInfo2(int skillId, int& effectId, int& motion) {
     return;
   case HW_SOULDRAIN:
     motion = 1;
-    effectId = -1;
+    effectId = EF_NONE;
     return;
   case BD_LULLABY:
   case BD_RICHMANKIM:
@@ -1417,24 +1418,24 @@ void CSession::GetSkillActionInfo2(int skillId, int& effectId, int& motion) {
   case CG_MOONLIT:
   case CG_MARIONETTE:
   case CG_HERMODE:
-    effectId = -1;
+    effectId = EF_NONE;
     motion = 16;
     return;
   case SG_SUN_WARM:
   case SG_MOON_WARM:
   case SG_STAR_WARM:
     motion = 34;
-    effectId = -1;
+    effectId = EF_NONE;
     return;
   case SG_SUN_COMFORT:
   case SG_MOON_COMFORT:
   case SG_STAR_COMFORT:
     motion = 33;
-    effectId = -1;
+    effectId = EF_NONE;
     return;
   case TK_COUNTER:
     motion = 26;
-    effectId = -1;
+    effectId = EF_NONE;
     return;
   case NJ_TATAMIGAESHI:
   case NJ_KASUMIKIRI:
@@ -1445,7 +1446,7 @@ void CSession::GetSkillActionInfo2(int skillId, int& effectId, int& motion) {
   case NJ_HYOUSENSOU:
   case NJ_SUITON:
     motion = 35;
-    effectId = -1;
+    effectId = EF_NONE;
     return;
   case GS_FLING:
   case GS_MADNESSCANCEL:
@@ -1454,30 +1455,30 @@ void CSession::GetSkillActionInfo2(int skillId, int& effectId, int& motion) {
   case GS_DESPERADO:
   case GS_GATLINGFEVER:
     motion = 38;
-    effectId = -1;
+    effectId = EF_NONE;
     return;
   case GS_CRACKER:
   case GS_GROUNDDRIFT:
     motion = 40;
-    effectId = -1;
+    effectId = EF_NONE;
     return;
   case NPC_HELLBURNING:
-    effectId = 49;
+    effectId = EF_FIREHIT;
     return;
   case DC_WINKCHARM:
     motion = 16;
-    effectId = -1;
+    effectId = EF_NONE;
     return;
   case KN_SPEARBOOMERANG:
   case TF_SPRINKLESAND:
   case TF_THROWSTONE:
   case AS_VENOMKNIFE:
-    effectId = -1;
+    effectId = EF_NONE;
     motion = 12;
     return;
   case BS_GREED:
     motion = 5;
-    effectId = -1;
+    effectId = EF_NONE;
     return;
   case NPC_MILLENNIUMSHIELD:
   case RK_DEATHBOUND:
@@ -1486,15 +1487,15 @@ void CSession::GetSkillActionInfo2(int skillId, int& effectId, int& motion) {
     return;
   case GC_POISONSMOKE:
     motion = 7;
-    effectId = 771;
+    effectId = EF_POISONWAV;
     return;
   case GC_POISONINGWEAPON:
     motion = 7;
-    effectId = 768;
+    effectId = EF_PURPLEBODY;
     return;
   case GC_COUNTERSLASH:
     motion = 2;
-    effectId = 768;
+    effectId = EF_PURPLEBODY;
     return;
   case GC_WEAPONBLOCKING:
     motion = -1;
@@ -1503,23 +1504,23 @@ void CSession::GetSkillActionInfo2(int skillId, int& effectId, int& motion) {
   case RK_STONEHARDSKIN:
   case SC_REPRODUCE:
     motion = 21;
-    effectId = -1;
+    effectId = EF_NONE;
     return;
   case SR_SKYNETBLOW:
   case SR_TIGERCANNON:
     motion = 18;
-    effectId = -1;
+    effectId = EF_NONE;
     return;
   case TK_STORMKICK:
   case SR_WINDMILL:
   case SJ_FULLMOONKICK:
     motion = 30;
-    effectId = -1;
+    effectId = EF_NONE;
     return;
   case TK_DOWNKICK:
   case LG_FORCEOFVANGUARD:
     motion = 31;
-    effectId = -1;
+    effectId = EF_NONE;
     return;
   case TK_TURNKICK:
   case LG_REFLECTDAMAGE:
@@ -1530,27 +1531,27 @@ void CSession::GetSkillActionInfo2(int skillId, int& effectId, int& motion) {
   case SR_GENTLETOUCH_REVITALIZE:
   case SJ_PROMINENCEKICK:
     motion = 32;
-    effectId = -1;
+    effectId = EF_NONE;
     return;
   case TK_READYCOUNTER:
   case RK_FIGHTINGSPIRIT:
   case SR_GATEOFHELL:
     motion = 24;
-    effectId = -1;
+    effectId = EF_NONE;
     return;
   case TK_JUMPKICK:
   case SR_KNUCKLEARROW:
     motion = 27;
-    effectId = -1;
+    effectId = EF_NONE;
     return;
   case LG_OVERBRAND_PLUSATK:
     motion = -1;
-    effectId = 548;
+    effectId = EF_RED_HIT;
     return;
   case TK_DODGE:
   case LG_EARTHDRIVE:
     motion = 25;
-    effectId = -1;
+    effectId = EF_NONE;
     return;
   case TK_READYTURN:
   case SL_ALCHEMIST:
@@ -1580,15 +1581,15 @@ void CSession::GetSkillActionInfo2(int skillId, int& effectId, int& motion) {
   case SP_SOULFALCON:
   case SP_SOULFAIRY:
     motion = 23;
-    effectId = -1;
+    effectId = EF_NONE;
     return;
   case NC_AXEBOOMERANG:
     motion = 12;
-    effectId = 12;
+    effectId = EF_BEGINSPELL;
     return;
   case NC_POWERSWING:
     motion = 2;
-    effectId = 12;
+    effectId = EF_BEGINSPELL;
     return;
   case GS_GLITTERING:
   case NC_BOOSTKNUCKLE:
@@ -1596,49 +1597,49 @@ void CSession::GetSkillActionInfo2(int skillId, int& effectId, int& motion) {
   case NC_ANALYZE:
   case NC_MAGNETICFIELD:
     motion = 39;
-    effectId = -1;
+    effectId = EF_NONE;
     return;
   case NC_PILEBUNKER:
   case SO_SPELLFIST:
     motion = 39;
-    effectId = 441;
+    effectId = EF_BLUECASTING;
     return;
   case TK_READYDOWN:
   case GN_CARTBOOST:
     motion = 22;
-    effectId = -1;
+    effectId = EF_NONE;
     return;
   case NC_HOVERING:
   case NC_F_SIDESLIDE:
   case NC_B_SIDESLIDE:
     motion = -1;
-    effectId = 441;
+    effectId = EF_BLUECASTING;
     return;
   case NC_SELFDESTRUCTION:
     motion = 5;
-    effectId = 441;
+    effectId = EF_BLUECASTING;
     return;
   case NC_SHAPESHIFT:
   case NC_NEUTRALBARRIER:
   case NC_STEALTHFIELD:
     motion = 43;
-    effectId = 441;
+    effectId = EF_BLUECASTING;
     return;
   case NC_EMERGENCYCOOL:
     motion = 25;
-    effectId = 441;
+    effectId = EF_BLUECASTING;
     return;
   case NC_INFRAREDSCAN:
     motion = 44;
-    effectId = 548;
+    effectId = EF_RED_HIT;
     return;
   case NC_REPAIR:
     motion = 43;
-    effectId = 58;
+    effectId = EF_BEGINSPELL6;
     return;
   case SJ_FLASHKICK:
     motion = 51;
-    effectId = -1;
+    effectId = EF_NONE;
     return;
   case NJ_SYURIKEN:
   case NJ_KUNAI:
@@ -1655,7 +1656,7 @@ void CSession::GetSkillActionInfo2(int skillId, int& effectId, int& motion) {
   case KO_HAPPOKUNAI:
   case KO_MUCHANAGE:
     motion = 36;
-    effectId = -1;
+    effectId = EF_NONE;
     return;
   case TF_HIDING:
   case KN_SPEARMASTERY:
@@ -1844,7 +1845,7 @@ void CSession::GetSkillActionInfo2(int skillId, int& effectId, int& motion) {
   case EM_EL_DEEP_POISONING:
   case EM_EL_POISON_SHIELD:
   case EM_EL_DEADLY_POISON:
-    effectId = -1;
+    effectId = EF_NONE;
     return;
   case AL_HEAL:
   case AL_BLESSING:
@@ -1861,7 +1862,7 @@ void CSession::GetSkillActionInfo2(int skillId, int& effectId, int& motion) {
   case WE_CALLALLFAMILY:
   case WE_ONEFOREVER:
   case WE_CHEERUP:
-    effectId = -1;
+    effectId = EF_NONE;
     motion = 7;
     return;
   case LK_CONCENTRATION:
@@ -1890,11 +1891,11 @@ void CSession::GetSkillActionInfo2(int skillId, int& effectId, int& motion) {
   case SJ_STAREMPEROR:
   case SU_LOPE:
     motion = 20;
-    effectId = -1;
+    effectId = EF_NONE;
     return;
   case SU_SCRATCH:
     motion = 49;
-    effectId = -1;
+    effectId = EF_NONE;
     return;
   case AM_DEMONSTRATION:
   case AM_ACIDTERROR:
@@ -1910,7 +1911,7 @@ void CSession::GetSkillActionInfo2(int skillId, int& effectId, int& motion) {
   case BO_ACIDIFIED_ZONE_WIND:
   case BO_ACIDIFIED_ZONE_FIRE:
     motion = 12;
-    effectId = -1;
+    effectId = EF_NONE;
     return;
   case AM_BERSERKPITCHER:
   case CR_SLIMPITCHER:
@@ -1941,7 +1942,7 @@ void CSession::GetSkillActionInfo2(int skillId, int& effectId, int& motion) {
   case IQ_MASSIVE_F_BLASTER:
   case IQ_EXPOSION_BLASTER:
     motion = -1;
-    effectId = -1;
+    effectId = EF_NONE;
     return;
   case HT_SKIDTRAP:
   case HT_LANDMINE:
@@ -1976,7 +1977,7 @@ void CSession::GetSkillActionInfo2(int skillId, int& effectId, int& motion) {
   case LG_PINPOINTATTACK:
   case WH_GALESTORM:
     motion = 9;
-    effectId = -1;
+    effectId = EF_NONE;
     return;
   case KN_PIERCE:
   case KN_SPEARSTAB:
@@ -1999,7 +2000,7 @@ void CSession::GetSkillActionInfo2(int skillId, int& effectId, int& motion) {
   case ABC_DEFT_STAB:
   case ABC_FRENZY_SHOT:
   case ABC_CHAIN_REACTION_SHOT_ATK:
-    effectId = -1;
+    effectId = EF_NONE;
     motion = 2;
     return;
   case NPC_SUMMONSLAVE:
@@ -2020,14 +2021,14 @@ void CSession::GetSkillActionInfo2(int skillId, int& effectId, int& motion) {
   case ML_DEFENDER:
   case ML_AUTOGUARD:
     motion = 0;
-    effectId = -1;
+    effectId = EF_NONE;
     return;
   case GC_PHANTOMMENACE:
   case NC_ACCELERATION:
   case EL_WATER_SCREEN:
   case EL_WATER_BARRIER:
     motion = 7;
-    effectId = 441;
+    effectId = EF_BLUECASTING;
     return;
   case GN_CHANGEMATERIAL:
   case GN_MIX_COOKING:
@@ -2036,11 +2037,11 @@ void CSession::GetSkillActionInfo2(int skillId, int& effectId, int& motion) {
   case EL_WIND_STEP:
   case EL_ZEPHYR:
     motion = 7;
-    effectId = 911;
+    effectId = EF_GREENCASTING;
     return;
   case EL_SOLID_SKIN:
     motion = 7;
-    effectId = 56;
+    effectId = EF_BEGINSPELL4;
     return;
   case AM_CALLHOMUN:
   case AM_REST:
@@ -2174,7 +2175,7 @@ void CSession::GetSkillActionInfo2(int skillId, int& effectId, int& motion) {
   case HFLI_SBR44:
   case EL_CIRCLE_OF_FIRE:
     motion = 7;
-    effectId = -1;
+    effectId = EF_NONE;
     return;
   case AC_SHOWER:
   case RG_BACKSTAP:
@@ -2250,12 +2251,12 @@ void CSession::GetSkillActionInfo2(int skillId, int& effectId, int& motion) {
   case ABR_NET_SUPPORT:
   case ABR_INFINITY_BUSTER:
     motion = 2;
-    effectId = -1;
+    effectId = EF_NONE;
     return;
   }
 
   if (static_cast<unsigned int>(skillId - 5401) <= 106 || static_cast<unsigned int>(skillId - 6001) <= 5 || static_cast<unsigned int>(skillId - 6525) <= 81) {
-    effectId = -1;
+    effectId = EF_NONE;
   }
 
   const std::pair<bool, int> action = CSkillActionMgr::GetInstance()->GetSkillAttackMotion(skillId);
