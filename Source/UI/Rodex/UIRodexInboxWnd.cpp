@@ -379,9 +379,9 @@ void UIRodexInboxWnd::Paint() {
     return;
   }
 
-  unsigned int index = this->page * 6;
   if (this->searchActive == 1) {
-    for (int row = 0; row < 6; ++row, ++index) {
+    unsigned int index = this->page * 6;
+    for (int row = 0; row < 6; ++index, ++row) {
       if (index < this->searchResults.size()) {
         RodexMailMap* mails = RodexMailsOfType(this->searchResults[index].first);
         if (mails) {
@@ -407,6 +407,7 @@ void UIRodexInboxWnd::Paint() {
       }
     }
   } else {
+    unsigned int index = this->page * 6;
     for (int row = 0; row < 6; ++row, ++index) {
       this->checks[row]->Show(0);
       this->senderButtons[row]->Enable(0);
@@ -610,17 +611,20 @@ void UIRodexInboxWnd::RefreshMailLists() {
   this->mails1.clear();
 
   for (RodexMailMap::iterator it = g_rodexMailStore->m_mails0.begin(); it != g_rodexMailStore->m_mails0.end(); ++it) {
-    this->mails0.push_back(RodexMailEntry(0, it->first));
+    std::int64_t id = it->first;
+    this->mails0.push_back(RodexMailEntry(0, id));
   }
   std::sort(this->mails0.begin(), this->mails0.end(), RodexMailEntryLess());
 
   for (RodexMailMap::iterator it = g_rodexMailStore->m_mails2.begin(); it != g_rodexMailStore->m_mails2.end(); ++it) {
-    this->mails2.push_back(RodexMailEntry(2, it->first));
+    std::int64_t id = it->first;
+    this->mails2.push_back(RodexMailEntry(2, id));
   }
   std::sort(this->mails2.begin(), this->mails2.end(), RodexMailEntryLess());
 
   for (RodexMailMap::iterator it = g_rodexMailStore->m_mails1.begin(); it != g_rodexMailStore->m_mails1.end(); ++it) {
-    this->mails1.push_back(RodexMailEntry(1, it->first));
+    std::int64_t id = it->first;
+    this->mails1.push_back(RodexMailEntry(1, id));
   }
   std::sort(this->mails1.begin(), this->mails1.end(), RodexMailEntryLess());
 }
