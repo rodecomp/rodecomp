@@ -648,21 +648,23 @@ int UILapineUpgradeBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t 
   case UM_ADDITEM:
     if (this->item.identity[1] == 0 && this->ingredientList->CanUseIngredient(static_cast<std::uint32_t>(a)) == 1) {
       ITEM_INFO owned = g_session.LookupClientItemByIdentity(static_cast<std::uint32_t>(a));
-      if (owned.identity[1] != 0) {
-        std::vector<char*> breaks;
-        char name[260];
-        std::memset(name, 0, sizeof(name));
-        int highlightColor = 0;
-        char* cursor = name;
-        int remaining = sizeof(name);
-        char* highlight = nullptr;
-        this->BuildItemName(&owned, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
+      if (owned.identity[1] > 0) {
+        {
+          std::vector<char*> breaks;
+          char name[260];
+          std::memset(name, 0, sizeof(name));
+          int highlightColor;
+          char* cursor = name;
+          int remaining = sizeof(name);
+          char* highlight = nullptr;
+          this->BuildItemName(&owned, &highlightColor, &breaks, &cursor, &remaining, &highlight, 1, 0);
 
-        if (owned.identified == 1 && owned.optionCount != 0) {
-          sprintf_s(name, sizeof(name), LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), name, owned.optionCount);
+          if (owned.identified == 1 && owned.optionCount != 0) {
+            sprintf_s(name, sizeof(name), LookupMessage(MSI_FAILED_MAIL_LIMIT_CNT), name, owned.optionCount);
+          }
+
+          owned.SetName(name);
         }
-
-        owned.SetName(name);
         this->item = owned;
         this->Invalidate();
       }
