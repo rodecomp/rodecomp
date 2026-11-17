@@ -2431,9 +2431,10 @@ void EquipmentProperties::CEquipmentPropertiesMgr::LoadGradeBonus() {
     while (lua_next(state, -2) != 0) {
       if (this->loadValid) {
         std::string key;
-        int result = 0;
+        int result;
         int type = lua_type(this->script.GetState(), -2);
         if (type == LUA_TSTRING) {
+          result = 0;
           key = lua_tolstring(this->script.GetState(), -2, nullptr);
         } else {
           result = (type != LUA_TNIL) + 1;
