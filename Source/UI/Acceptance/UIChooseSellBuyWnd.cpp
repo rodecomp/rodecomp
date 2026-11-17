@@ -2507,9 +2507,18 @@ void UIPetTamingDeceiveWnd::OnProcess() {
     if (this->m_frame == frame && this->m_delay <= this->m_maxDelay) {
       this->m_finishTime = timeGetTime();
     }
-  } else if (this->m_frame == frame && this->m_delay <= this->m_maxDelay && timeGetTime() - this->m_finishTime >= 2000) {
-    g_windowMgr.CloseWindow(WID_PETTAMINGDECEIVEWND);
+    return;
   }
+
+  if (this->m_frame != frame || this->m_delay > this->m_maxDelay) {
+    return;
+  }
+
+  if (timeGetTime() - this->m_finishTime < 2000) {
+    return;
+  }
+
+  g_windowMgr.CloseWindow(WID_PETTAMINGDECEIVEWND);
 }
 
 // OFFSET: 0x008F5070
