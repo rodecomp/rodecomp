@@ -578,12 +578,8 @@ void UIRefiningWnd::OnMouseHover(int x, int y) {
     return;
   }
 
-  const int offsetX = x - 11;
-  if (static_cast<unsigned>(offsetX) > 242 || static_cast<unsigned>(y - 55) > 52) {
-    return;
-  }
-  const int slot = offsetX / 49;
-  if (x > slot * 49 + 57 || slot >= 5 || slot < 0) {
+  const int slot = this->SlotAt(x, y);
+  if (slot < 0) {
     return;
   }
 
