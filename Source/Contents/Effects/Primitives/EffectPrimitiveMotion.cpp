@@ -5880,10 +5880,10 @@ bool CEffectPrim::PrimFieldFireflies() {
         slot.vecBNow.x += driftX * 0.015f;
         slot.vecBNow.z += g_sinTable[static_cast<int>(slot.height[2])] * 0.015f;
       } else if (motion == 4.0f) {
-        if (driftX <= 0.0f) {
-          slot.vecBNow.x -= driftX * 0.2f;
-        } else {
+        if (driftX > 0.0f) {
           slot.vecBNow.x += driftX * 0.2f;
+        } else {
+          slot.vecBNow.x -= driftX * 0.2f;
         }
         slot.vecBNow.z += g_sinTable[static_cast<int>(slot.height[2])] * 0.05f;
       } else if (motion == 5.0f) {
@@ -7620,8 +7620,16 @@ namespace {
       float height = point.y;
 
       if (height > -40.0f) {
-        ShiftAxis(point.x, g_sinTable[static_cast<int>(slot.height[angleX])] * 0.1f, riseSubtractX);
-        ShiftAxis(point.z, g_sinTable[static_cast<int>(slot.height[angleZ])] * 0.1f, riseSubtractZ);
+        if (riseSubtractX) {
+          point.x -= g_sinTable[static_cast<int>(slot.height[angleX])] * 0.1f;
+        } else {
+          point.x += g_sinTable[static_cast<int>(slot.height[angleX])] * 0.1f;
+        }
+        if (riseSubtractZ) {
+          point.z -= g_sinTable[static_cast<int>(slot.height[angleZ])] * 0.1f;
+        } else {
+          point.z += g_sinTable[static_cast<int>(slot.height[angleZ])] * 0.1f;
+        }
       }
 
       if (height > 0.0f) {
@@ -7635,15 +7643,23 @@ namespace {
       float height = point.y;
 
       if (height > 0.0f) {
-        point.z = 0.0f;
         point.x = static_cast<float>(ClampedRandom(35) - 17);
+        point.z = 0.0f;
         height = -40.0f;
       }
 
       point.y = height + slot.maxHeight;
     } else if (kind == 15) {
-      ShiftAxis(point.x, g_sinTable[static_cast<int>(slot.height[angleX])] * 0.1f, subtractX);
-      ShiftAxis(point.z, g_sinTable[static_cast<int>(slot.height[angleZ])] * 0.1f, subtractZ);
+      if (subtractX) {
+        point.x -= g_sinTable[static_cast<int>(slot.height[angleX])] * 0.1f;
+      } else {
+        point.x += g_sinTable[static_cast<int>(slot.height[angleX])] * 0.1f;
+      }
+      if (subtractZ) {
+        point.z -= g_sinTable[static_cast<int>(slot.height[angleZ])] * 0.1f;
+      } else {
+        point.z += g_sinTable[static_cast<int>(slot.height[angleZ])] * 0.1f;
+      }
       std::int16_t distance = static_cast<std::int16_t>(point.x);
 
       if (distance < 0) {
@@ -7661,7 +7677,7 @@ namespace {
       if (distance > 10) {
         counter += 5;
 
-        if (counter > 119) {
+        if (counter >= 120) {
           counter = 0;
           point.x = 0.0f;
           point.z = 0.0f;
