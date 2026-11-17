@@ -34,7 +34,7 @@ bool C3dAttr::Load(const char* name) {
   magic[4] = 0;
 
   if (std::strcmp(magic, signature) != 0) {
-    ShowErrorDialog("Block Attr ", 0);
+    ShowErrorDialog("Block Attr 이 지원되지 않는 옛버젼의 GAT 파일입니다. 새 버젼의 RPGSTUDIO 에서 교정하세요", 0);
     return false;
   }
 
@@ -48,10 +48,12 @@ bool C3dAttr::Load(const char* name) {
     int rows;
     file.Read(&columns, sizeof(columns));
     file.Read(&rows, sizeof(rows));
+    const int newWidth = columns;
+    const int newHeight = rows;
     this->Unload();
-    this->m_cells.resize(static_cast<std::uint32_t>(columns) * static_cast<std::uint32_t>(rows));
-    this->width = columns;
-    this->height = rows;
+    this->m_cells.resize(static_cast<std::uint32_t>(newWidth) * static_cast<std::uint32_t>(newHeight));
+    this->width = newWidth;
+    this->height = newHeight;
     file.Read(this->m_cells.data(), rows * columns * sizeof(TerrainHeightCell));
 
     if (major > 1 || (major == 1 && minor >= 3)) {
