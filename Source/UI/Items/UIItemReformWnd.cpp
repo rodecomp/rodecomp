@@ -536,11 +536,11 @@ int UIItemReformWnd_List::SendMsg(
         }
         ITEM_INFO item = g_session.LookupClientItemByIdentity(*index);
         const std::uint64_t refine = item.refiningLevel;
-        if (refine < static_cast<std::uint64_t>(info->needRefineMin) || refine > static_cast<std::uint64_t>(info->needRefineMax)) {
+        if (info->needRefineMin > refine || info->needRefineMax < refine) {
           continue;
         }
         const std::uint64_t options = item.optionCount;
-        if (options < static_cast<std::uint64_t>(info->needOptionNumMin)) {
+        if (info->needOptionNumMin > options) {
           continue;
         }
         bool emptySocket = true;
