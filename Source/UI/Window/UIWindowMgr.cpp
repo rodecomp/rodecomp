@@ -2176,6 +2176,12 @@ bool UIWindowMgr::CloseDropDown() {
   return true;
 }
 
+// OFFSET: 0x00A8C780
+// FUNCTION: fn_17134
+void UIWindowMgr::CloseWaitDBSaveWindow() {
+  this->CloseWindow(WID_WAITDBSAVEWND);
+}
+
 // OFFSET: 0x00A8CA20
 // FUNCTION: fn_17139
 bool UIWindowMgr::ProcessEnterKey() {
