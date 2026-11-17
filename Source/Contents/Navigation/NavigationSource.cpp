@@ -808,7 +808,7 @@ int CNavigationManager::RouteFromPlayer() {
   }
 
   {
-    std::vector<unsigned int> candidates;
+    std::vector<int> candidates;
     for (int index = static_cast<int>(this->nodes.size()) - 1; index > 0; --index) {
       if (this->nodes[index]->GetInfo() != info) {
         continue;
