@@ -651,12 +651,16 @@ static EfstActionRegistrar s_efstActionTSecondGod{EFST_T_SECOND_GOD, NewAction<C
 // GLOBAL: gl_25899
 static EfstActionRegistrar s_efstActionTThirdGod{EFST_T_THIRD_GOD, NewAction<CEfstAction_T_THIRD_GOD, CEfstAction>};
 
+struct SkillObjectActionRegistration {
+  // INLINED
+  __forceinline SkillObjectActionRegistration(int skillId, std::function<CSkillObjectAction*()> factory) {
+    CSkillActionMgr::GetInstance()->RegisterSkillObjectAction(skillId, factory);
+  }
+};
+
 // OFFSET: 0x00460720
 // FUNCTION: fn_45566
-static bool s_skillObjectActionRegistered292 = [](std::function<CSkillObjectAction*()> factory) {
-  CSkillActionMgr::GetInstance()->RegisterSkillObjectAction(292, factory);
-  return true;
-}(NewAction<CSkillObjectAction_SOA_TOTEM_OF_TUTELARY, CSkillObjectAction>);
+static SkillObjectActionRegistration s_skillObjectActionRegistered292(292, NewAction<CSkillObjectAction_SOA_TOTEM_OF_TUTELARY, CSkillObjectAction>);
 
 // GLOBAL: gl_25900
 static SkillActionRegistrar s_skillActionSoaCircleOfDirectionsAndElementals{SOA_CIRCLE_OF_DIRECTIONS_AND_ELEMENTALS, NewAction<CSkillAction_SOA_CIRCLE_OF_DIRECTIONS_AND_ELEMENTALS, CSkillAction>};

@@ -953,12 +953,16 @@ static EfstActionRegistrar s_efstActionIgUltimateSacrifice{EFST_ULTIMATE_S, NewA
 // GLOBAL: gl_25800
 static EfstActionRegistrar s_efstActionReboundS{EFST_REBOUND_S, NewAction<CEfstAction_REBOUND_S, CEfstAction>};
 
+struct SkillObjectActionRegistration {
+  // INLINED
+  __forceinline SkillObjectActionRegistration(int skillId, std::function<CSkillObjectAction*()> factory) {
+    CSkillActionMgr::GetInstance()->RegisterSkillObjectAction(skillId, factory);
+  }
+};
+
 // OFFSET: 0x0045A7E0
 // FUNCTION: fn_45565
-static bool s_skillObjectActionRegistered275 = [](std::function<CSkillObjectAction*()> factory) {
-  CSkillActionMgr::GetInstance()->RegisterSkillObjectAction(275, factory);
-  return true;
-}(NewAction<CSkillObjectAction_IG_CROSS_RAIN, CSkillObjectAction>);
+static SkillObjectActionRegistration s_skillObjectActionRegistered275(275, NewAction<CSkillObjectAction_IG_CROSS_RAIN, CSkillObjectAction>);
 
 // GLOBAL: gl_25801
 static SkillActionRegistrar s_skillActionIgAttackStance{IG_ATTACK_STANCE, NewAction<CSkillAction_IG_ATTACK_STANCE, CSkillAction>};

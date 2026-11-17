@@ -596,12 +596,16 @@ static EfstActionRegistrar s_efstActionSandyFestival{EFST_SANDY_FESTIVAL, NewAct
 // GLOBAL: gl_25918
 static EfstActionRegistrar s_efstActionTemporaryCommunion{EFST_TEMPORARY_COMMUNION, NewAction<CEfstAction_TEMPORARY_COMMUNION, CEfstAction>};
 
+struct SkillObjectActionRegistration {
+  // INLINED
+  __forceinline SkillObjectActionRegistration(int skillId, std::function<CSkillObjectAction*()> factory) {
+    CSkillActionMgr::GetInstance()->RegisterSkillObjectAction(skillId, factory);
+  }
+};
+
 // OFFSET: 0x004616C0
 // FUNCTION: fn_45567
-static bool s_skillObjectActionRegistered293 = [](std::function<CSkillObjectAction*()> factory) {
-  CSkillActionMgr::GetInstance()->RegisterSkillObjectAction(293, factory);
-  return true;
-}(NewAction<CSkillObjectAction_SH_HYUN_ROKS_BREEZE, CSkillObjectAction>);
+static SkillObjectActionRegistration s_skillObjectActionRegistered293(293, NewAction<CSkillObjectAction_SH_HYUN_ROKS_BREEZE, CSkillObjectAction>);
 
 // GLOBAL: gl_25919
 static SkillActionRegistrar s_skillActionShBlessingOfMysticalCreatures{SH_BLESSING_OF_MYSTICAL_CREATURES, NewAction<CSkillAction_SH_BLESSING_OF_MYSTICAL_CREATURES, CSkillAction>};

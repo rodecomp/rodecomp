@@ -241,12 +241,16 @@ void CSkillAction_WH_WILD_WALK::OnSkillDamage(CGameActor* source, CGameActor* ta
   }
 }
 
+struct EfstActionRegistration {
+  // INLINED
+  __forceinline EfstActionRegistration(int efstId, std::function<CEfstAction*()> factory) {
+    CSkillActionMgr::GetInstance()->RegisterEfstAction(efstId, factory);
+  }
+};
+
 // OFFSET: 0x00463230
 // FUNCTION: fn_45568
-static bool s_efstActionRegistered1252 = [](std::function<CEfstAction*()> factory) {
-  CSkillActionMgr::GetInstance()->RegisterEfstAction(1252, factory);
-  return true;
-}(NewAction<CEfstAction_CALAMITYGALE, CEfstAction>);
+static EfstActionRegistration s_efstActionRegistered1252(1252, NewAction<CEfstAction_CALAMITYGALE, CEfstAction>);
 
 // GLOBAL: gl_25951
 static SkillActionRegistrar s_skillActionWhCalamitygale{WH_CALAMITYGALE, NewAction<CSkillAction_WH_CALAMITYGALE, CSkillAction>};
