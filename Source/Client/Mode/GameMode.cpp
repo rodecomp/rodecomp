@@ -6685,11 +6685,7 @@ std::vector<unsigned char> CGameMode::SaveActorStates() {
       record.statusType = 0x47D;
       record.value3 = 0;
 
-      std::vector<unsigned char> chunk(sizeof(GameModeChunkHeader) + sizeof(record), 0);
-      auto* header = reinterpret_cast<GameModeChunkHeader*>(chunk.data());
-      header->type = 0x191;
-      header->size = sizeof(record);
-      *reinterpret_cast<GameModeStoredRecord0191*>(chunk.data() + sizeof(GameModeChunkHeader)) = record;
+      const std::vector<unsigned char> chunk = MakeFilledRecordChunk(0x191, record);
       data.insert(data.end(), chunk.begin(), chunk.end());
     }
   }
@@ -7295,7 +7291,7 @@ void CGameMode::UpdateBalloons() {
       } else if (g_session.IsState291To303(shownSkill)) {
         text.assign(OBFUSCATE_TEXT("????", 0xB7AFBD2FD9FD7501ULL));
       } else {
-        text = CSkillInfo::DisplayName(*g_session.m_hotkeyScript, shownSkill);
+        text = CSkillInfo::DisplayName(shownSkill);
       }
 
       UITransBalloonText* balloon = skillBalloon;
