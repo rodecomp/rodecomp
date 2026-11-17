@@ -3451,13 +3451,13 @@ void UINavigationV4Wnd::InsertNavigationLink(std::string name, int x, int y) {
   link += g_windowNaviLinkCloseTag;
 
   if (g_windowMgr.GetHoverWindow() && g_windowMgr.GetHoverWindow()->geometry.id != 516) {
-    if (ChatWindow()->m_suggestions == g_windowMgr.GetHoverWindow() && !g_windowMgr.inputSuggestionsEnabled) {
+    if (ChatWindow()->m_chatEdit == g_windowMgr.GetHoverWindow() && !g_windowMgr.inputSuggestionsEnabled) {
       ChatWindow()->ToggleInput();
     }
   } else if (!g_windowMgr.inputSuggestionsEnabled) {
     ChatWindow()->ToggleInput();
   } else {
-    g_windowMgr.SetFocus(ChatWindow()->m_suggestions);
+    g_windowMgr.SetFocus(ChatWindow()->m_chatEdit);
   }
 
   g_windowMgr.GetHoverWindow()->SendMsg(nullptr, UM_INSERT_ITEM_LINK, reinterpret_cast<std::intptr_t>(link.c_str()), 0, 0, 0);
