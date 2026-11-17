@@ -667,7 +667,8 @@ void CGameMode::ReceiveGroundSkillExtended(const unsigned char* record) {
       this->m_skillUnitIds.erase(found);
       data.skill.visible = 0;
     }
-  } else if (visible) {
+  }
+  if (data.skill.visible) {
     this->m_skillUnitIds.push_back(packet.aid);
   }
 
@@ -1561,12 +1562,11 @@ void CGameMode::ReceiveActorMessage32(const unsigned char* packet) {
   message.userCount = value->users;
   message.maxUsers = value->limit;
   message.chatId = value->id;
-  if (message.text.size() > 60) {
+  if (60 < message.text.size()) {
     message.text.resize(60);
   }
 
-  const std::int64_t argument = reinterpret_cast<std::intptr_t>(&message);
-  actor->SendMsg(nullptr, AM_MAKE_CHAT_TITLE, argument, 0, 0, 0, 0, 0);
+  actor->SendMsg(nullptr, AM_MAKE_CHAT_TITLE, reinterpret_cast<int>(&message), 0, 0, 0, 0, 0);
 }
 
 // OFFSET: 0x00D3F3E0
