@@ -1305,8 +1305,8 @@ void CUICharacterInfo::OnInit() {
 void CUIItemInfo::OnRBtnDown(int, int) {
   ITEM_INFO info;
   info.SetItemId(this->itemId);
-  info.identity[0] = this->type;
   info.identified = 1;
+  info.identity[0] = this->type;
   int location;
   if (this->type == 5) {
     location = this->location <= 9 ? 2 : 0x22;
