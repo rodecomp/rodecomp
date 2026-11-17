@@ -328,16 +328,18 @@ void CReputeMgr::InfoInserter::operator()(const std::pair<int, ReputeInfoRecord>
   info.maxPointPositive = entry.second.maxPointPositive;
   info.maxPointNegative = entry.second.maxPointNegative;
   const std::string invisible = FromUtf8(entry.second.invisible, g_textCodePage);
+  ReputeVisibility visibility;
   const char* text = invisible.c_str();
   if (invisible.size() == 12 && text[0] == 'V' && text[1] == 'I' && text[2] == 'S' && text[3] == 'I' &&
       text[4] == 'B' && text[5] == 'L' && text[6] == 'E' && text[7] == '_' && text[8] == 'T' &&
       text[9] == 'R' && text[10] == 'U' && text[11] == 'E') {
-    info.visibility = REPUTE_VISIBLE;
+    visibility = REPUTE_VISIBLE;
   } else if (invisible == "VISIBLE_FALSE") {
-    info.visibility = REPUTE_HIDDEN;
+    visibility = REPUTE_HIDDEN;
   } else {
-    info.visibility = REPUTE_VISIBLE_WITH_POINT;
+    visibility = REPUTE_VISIBLE_WITH_POINT;
   }
+  info.visibility = visibility;
 
   (*this->dest)[entry.first] = info;
 }
