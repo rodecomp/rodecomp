@@ -162,8 +162,8 @@ int UIMakeTargetListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
 
       // INLINED
       ~ReplayTag() {
-        this->bytes = 0;
         this->id = 0;
+        this->bytes = 0;
       }
     };
 #pragma pack(pop)
@@ -173,14 +173,16 @@ int UIMakeTargetListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     std::memcpy(&tag, bytes, sizeof(tag));
     unsigned offset = sizeof(tag);
 
-    if (tag.id == 22050) {
-      while (static_cast<unsigned>(b) > offset) {
+    if (22050 == tag.id) {
+      bool scanning = true;
+      while (scanning && static_cast<unsigned>(b) > offset) {
         std::memcpy(&tag, bytes + offset, sizeof(tag));
         offset += sizeof(tag);
 
         switch (tag.id) {
         case 22051:
-          return 0;
+          scanning = false;
+          break;
 
         case 22052:
           itemId = 0;
