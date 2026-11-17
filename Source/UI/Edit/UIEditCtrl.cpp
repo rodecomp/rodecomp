@@ -2537,14 +2537,13 @@ void UIMerchantShopMakeWnd::OnCreate(int width, int height) {
   }
 
   if (this->mode == 0) {
-    UICheckBox* notice = new UICheckBox();
-    this->notice = notice;
-    notice->SetSize(140, 12);
-    notice->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(MSI_WARNING_PRICE7));
-    notice->FitToText();
-    notice->Move(12, this->geometry.height - 20);
-    notice->SetChecked(g_session.m_skipPriceWarning);
-    this->AddChild(notice);
+    this->notice = new UICheckBox();
+    this->notice->SetSize(140, 12);
+    this->notice->SetImages("유저인터페이스\\checkbox_1.bmp", "유저인터페이스\\checkbox_0.bmp", LookupMessage(MSI_WARNING_PRICE7));
+    this->notice->FitToText();
+    this->notice->Move(12, this->geometry.height - 20);
+    this->notice->SetChecked(g_session.m_skipPriceWarning);
+    this->AddChild(this->notice);
   }
 
   this->initialHeight = this->geometry.height;
