@@ -4082,8 +4082,7 @@ void CSession::LoadLuaDataFiles() {
   this->m_hotkeyScript->Load("Lua Files\\DataInfo\\jobName", true, false);
   {
     const std::array<char, 27> source = OBFUSCATE_SOURCE_CHARS(27, "Lua Files\\DataInfo\\PetInfo", 0x35E5656B5DEDCD75ULL);
-    thread_local EncryptedName<sizeof(source), 0x35E5656B5DEDCD75ULL> name(source);
-    this->m_hotkeyScript->Load(name.Text(), true, false);
+    this->m_hotkeyScript->Load(OBFUSCATE_DECRYPT(0x35E5656B5DEDCD75ULL, source), true, false);
   }
   this->m_hotkeyScript->Load("Lua Files\\DataInfo\\AccessoryId", true, false);
   this->m_hotkeyScript->Load("Lua Files\\DataInfo\\accName_F", true, false);
