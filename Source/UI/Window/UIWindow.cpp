@@ -93,6 +93,7 @@ template std::_Tree_find_result<std::_Tree_node<UIWindow*, void*>*>
 std::_Tree<std::_Tset_traits<UIWindow*, std::less<UIWindow*>, std::allocator<UIWindow*>, false>>::_Find_lower_bound<UIWindow*>(
   UIWindow* const&
 ) const;
+template __declspec(noinline) void std::vector<bool>::push_back(const bool&);
 
 namespace {
   struct NavigationTargetLook {
@@ -591,9 +592,10 @@ RenderPrimitive* UIWindow::DrawPrimitive() {
   }
 
   RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
-  primitive->texture = this->m_texture;
-  const float width = static_cast<float>(static_cast<std::int32_t>(this->m_texture->TextureWidth()));
-  const float height = static_cast<float>(static_cast<std::int32_t>(this->m_texture->TextureHeight()));
+  CTexture* const texture = this->m_texture;
+  primitive->texture = texture;
+  const float width = static_cast<float>(static_cast<std::int32_t>(texture->TextureWidth()));
+  const float height = static_cast<float>(static_cast<std::int32_t>(texture->TextureHeight()));
   primitive->quad[0].x = static_cast<float>(this->geometry.x);
   primitive->quad[0].y = static_cast<float>(this->geometry.y);
   primitive->quad[0].u = g_textureOffsetX / width;
@@ -611,10 +613,10 @@ RenderPrimitive* UIWindow::DrawPrimitive() {
   primitive->quad[3].u = (static_cast<float>(this->geometry.width) + g_textureOffsetX) / width;
   primitive->quad[3].v = (static_cast<float>(this->geometry.height) + g_textureOffsetY) / height;
 
-  for (RenderVertex& vertex : primitive->quad) {
-    vertex.z = 0.000001f;
-    vertex.rhw = 0.999999f;
-    vertex.diffuse = this->Color();
+  for (int i = 0; i < 4; ++i) {
+    primitive->quad[i].z = 0.000001f;
+    primitive->quad[i].rhw = 0.999999f;
+    primitive->quad[i].diffuse = this->Color();
   }
 
   return primitive;
