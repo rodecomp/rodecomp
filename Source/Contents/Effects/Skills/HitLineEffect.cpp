@@ -117,18 +117,18 @@ void CHitLineEffect::Render() {
     const int segment = particle->columnIndex;
     HitLineVector3d points[2];
     const float radius = particle->speedParameter;
-    const float* turns = &particle->animationParameter;
-    const signed char* halfTurns = &particle->animationState;
+    const float* turns = &particle->animationParameter + segment;
+    const signed char* halfTurns = &particle->animationState + segment;
     for (int index = 0; index < 2; ++index) {
-      const int count = halfTurns[segment + index];
+      const int count = halfTurns[index];
       float distance = 0.0f;
       float factor = 1.0f;
       for (int step = 0; step < count; ++step) {
-        distance += radius * 2.0f * factor;
+        distance += particle->speedParameter * 2.0f * factor;
         factor *= 0.7f;
       }
 
-      const float turn = turns[segment + index];
+      const float turn = turns[index];
       if (turn > 0.0f) {
         distance += radius * factor * (turn / 90.0f);
       }
@@ -149,18 +149,13 @@ void CHitLineEffect::Render() {
     const float length = SquareRoot(dz * dz + dx * dx);
     const float cosine = dx / length;
     const float sine = dz / length;
-    short direction = 0;
-    while (true) {
-      if (cosine >= g_cosTable[direction]) {
+    short direction = 180;
+    for (int index = 0; index < 180; ++index) {
+      if (cosine >= g_cosTable[index]) {
+        direction = static_cast<short>(index);
         if (!(sine >= 0.0f)) {
-          direction = static_cast<short>(360 - direction);
+          direction = static_cast<short>(360 - index);
         }
-        break;
-      }
-
-      ++direction;
-      if (direction >= 180) {
-        direction = 180;
         break;
       }
     }
