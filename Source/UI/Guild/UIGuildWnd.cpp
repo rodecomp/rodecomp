@@ -1430,7 +1430,7 @@ void UIGuildPositionManageWnd::Paint() {
     } else {
       std::sprintf(path, "유저인터페이스\\checkbox_%d.bmp", position->canInvite != 0);
       this->DrawBitmap(
-        g_guildPositionColumnWidths[1] + g_guildPositionColumnWidths[0] + 10, y, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)))->image,
+        g_guildPositionColumnWidths[1] + g_guildPositionColumnWidths[0] + 10, y, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path))),
         false
       );
     }
@@ -1443,7 +1443,7 @@ void UIGuildPositionManageWnd::Paint() {
       std::sprintf(path, "유저인터페이스\\checkbox_%d.bmp", position->canExpel != 0);
       this->DrawBitmap(
         g_guildPositionColumnWidths[0] + 11 + g_guildPositionColumnWidths[1] + g_guildPositionColumnWidths[2], y,
-        &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)))->image, false
+        static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path))), false
       );
     }
 
@@ -1455,7 +1455,7 @@ void UIGuildPositionManageWnd::Paint() {
       this->storageChecks[drawn]->Move(storageX, y);
     } else {
       std::sprintf(path, "유저인터페이스\\checkbox_%d.bmp", position->canStorage != 0);
-      this->DrawBitmap(storageX, y, &static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)))->image, false);
+      this->DrawBitmap(storageX, y, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path))), false);
     }
 
     const int taxX = g_guildPositionColumnWidths[0] + 13 + g_guildPositionColumnWidths[3] + g_guildPositionColumnWidths[4] + g_guildPositionColumnWidths[2] +
