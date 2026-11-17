@@ -672,7 +672,7 @@ int UIMacroReporterWnd::SendMsg(
           GetRagConnection().Send(length, buffer);
         }
       } else {
-        std::vector<int> accounts;
+        std::vector<unsigned int> accounts;
         for (auto it = this->m_entries.begin(); it != this->m_entries.end(); ++it) {
           if (std::find(accounts.begin(), accounts.end(), it->id) == accounts.end()) {
             accounts.push_back(it->id);
