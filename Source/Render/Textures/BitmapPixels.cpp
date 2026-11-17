@@ -199,20 +199,24 @@ void CDCBitmap::CopyFrom(int x, int y, int sourceX, int sourceY, int copyWidth, 
 // OFFSET: 0x00547840
 // FUNCTION: fn_01844
 void CDCBitmap::BlendFrom(std::uint32_t x, std::uint32_t y, int copyWidth, int copyHeight, const CDCBitmap& source) {
-  if (!this->m_bitmap.pixels || x >= this->m_bitmap.width || y >= this->m_bitmap.height) {
+  std::uint32_t* pixels = this->m_bitmap.pixels;
+  const std::uint32_t width = this->m_bitmap.width;
+  const std::uint32_t height = this->m_bitmap.height;
+  if (!pixels || x >= width || y >= height) {
     return;
   }
 
-  if (x + copyWidth > this->m_bitmap.width) {
-    copyWidth = this->m_bitmap.width - x;
+  if (x + copyWidth > width) {
+    copyWidth = width - x;
   }
 
-  if (y + copyHeight > this->m_bitmap.height) {
-    copyHeight = this->m_bitmap.height - y;
+  if (y + copyHeight > height) {
+    copyHeight = height - y;
   }
 
   this->m_bitmap.dirty = true;
-  std::uint32_t* destination = this->m_bitmap.pixels + x + y * this->m_bitmap.width;
+  std::uint32_t* destination = pixels + x + y * width;
+  const std::uint32_t sourceWidth = source.m_bitmap.width;
   const std::uint32_t* input = source.m_bitmap.pixels;
 
   for (int row = 0; row < copyHeight; ++row) {
@@ -221,14 +225,13 @@ void CDCBitmap::BlendFrom(std::uint32_t x, std::uint32_t y, int copyWidth, int c
     }
 
     for (int column = 0; column < copyWidth; ++column) {
-      if (source.m_alpha) {
+      if (source.m_alpha == true) {
         const std::uint32_t target = destination[column];
-        const std::uint32_t pixel = input[column];
         const WORD targetAlpha = static_cast<WORD>(target >> 24);
-        const WORD sourceAlpha = static_cast<WORD>(pixel >> 24);
-        const BYTE blue = GetBValue(target) * (255 - sourceAlpha) / 255 + GetBValue(pixel) * sourceAlpha / 255;
-        const BYTE green = GetGValue(target) * (255 - sourceAlpha) / 255 + GetGValue(pixel) * sourceAlpha / 255;
-        const BYTE red = GetRValue(target) * (255 - sourceAlpha) / 255 + GetRValue(pixel) * sourceAlpha / 255;
+        const WORD sourceAlpha = static_cast<WORD>(input[column] >> 24);
+        const BYTE blue = GetBValue(target) * (255 - sourceAlpha) / 255 + GetBValue(input[column]) * sourceAlpha / 255;
+        const BYTE green = GetGValue(target) * (255 - sourceAlpha) / 255 + GetGValue(input[column]) * sourceAlpha / 255;
+        const BYTE red = GetRValue(target) * (255 - sourceAlpha) / 255 + GetRValue(input[column]) * sourceAlpha / 255;
         destination[column] = (std::max(sourceAlpha, targetAlpha) << 24) + (blue << 16) + (green << 8) + red;
       } else if (input[column] != 0xFFFF00FF) {
         destination[column] = input[column] - 0x01000000;
@@ -236,7 +239,7 @@ void CDCBitmap::BlendFrom(std::uint32_t x, std::uint32_t y, int copyWidth, int c
     }
 
     destination += this->m_bitmap.width;
-    input += source.m_bitmap.width;
+    input += sourceWidth;
   }
 }
 
