@@ -382,8 +382,8 @@ void CTextureDX7::Fill(const RECT* rectangle, std::uint32_t color) {
 // FUNCTION: fn_01827
 void CTextureDX7::Update(const RECT* rectangle) {
   RECT destination = *rectangle;
-  DDSCAPS2 caps{DDSCAPS_TEXTURE | DDSCAPS_MIPMAP};
   IDirectDrawSurface7* level = this->m_surface;
+  DDSCAPS2 caps{DDSCAPS_TEXTURE | DDSCAPS_MIPMAP};
 
   while (SUCCEEDED(level->GetAttachedSurface(&caps, &level))) {
     destination.top >>= 1;
