@@ -8421,7 +8421,8 @@ void CGameMode::Initialize(const char* name) {
   this->isInitializing = 1;
   this->recordChatCount = 0;
   this->nameCard.SetName(g_session.m_aid, g_session.DecodePlayerName());
-  g_playerNameDictionary->Set(g_session.m_gid, g_session.DecodePlayerName());
+  CPlayerNameDictionary* names = g_playerNameDictionary;
+  names->Set(g_session.m_gid, g_session.DecodePlayerName());
   this->bossMonsterX = -1;
   this->bossMonsterY = -1;
   this->bossAlarmAndCopyNameFlags[0] = 0;
@@ -8501,7 +8502,8 @@ void CGameMode::Initialize(const char* name) {
   this->InitializeCamera();
   this->mousePointer = new CMousePointer();
   this->scene->objects.push_back(this->mousePointer);
-  g_soundMgr->SetDefaultName(g_session.GetBgmFileName(std::string(this->mapName).c_str()));
+  CSoundMgr* soundMgr = g_soundMgr;
+  soundMgr->SetDefaultName(g_session.GetBgmFileName(std::string(this->mapName).c_str()));
 
   g_weatherEffect.enabled = g_serviceOptions.Get(TT_LIGHTMAP_ON_OFF) == 0;
   if (g_serviceOptions.Get(TT_FOG_ON_OFF)) {
