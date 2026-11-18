@@ -169,11 +169,13 @@ void WrapRichText(
       breakAt = split;
 
       if (split <= begin) {
-        AppendLine(lines, begin, current);
+        const std::string line(begin, current);
+        lines.push_back(line);
         begin = current;
         limit = current + width;
       } else {
-        AppendLine(lines, begin, split);
+        const std::string line(begin, split);
+        lines.push_back(line);
         begin = split;
         limit = split + width;
       }
@@ -181,7 +183,8 @@ void WrapRichText(
   }
 
   if (begin < current) {
-    AppendLine(lines, begin, current);
+    const std::string line(begin, current);
+    lines.push_back(line);
   }
 
   if (g_inlineCharset && marker && *marker != '\0' && marker < end) {
