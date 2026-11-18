@@ -1626,11 +1626,12 @@ void UIDisplayCharacter::Paint() {
     return;
   }
 
+  const int previewBodyStyle = g_session.GetBodyStyle(player->GetEffectiveJob(-1), this->bodyStyle, this->job);
   FuncDrawWNDChar draw(
     this, this->geometry.width / 2, this->geometry.height - 33, static_cast<unsigned char>(player->sex), static_cast<short>(player->GetEffectiveJob(-1)),
     player->appearanceJob, static_cast<short>(this->job), static_cast<short>(this->head), static_cast<short>(this->bottomAccessory),
     static_cast<short>(this->topAccessory), static_cast<short>(this->middleAccessory), this->robe, player->isRiding, player->GetMadogearType(),
-    g_session.GetBodyStyle(player->GetEffectiveJob(-1), this->bodyStyle, this->job), this->headPalette, this->direction, 0, this->animationStartTick
+    previewBodyStyle, this->headPalette, this->direction, 0, this->animationStartTick
   );
   draw.Draw(false);
 }
