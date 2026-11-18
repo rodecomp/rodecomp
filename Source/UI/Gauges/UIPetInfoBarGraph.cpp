@@ -76,7 +76,15 @@ void UIPetInfoBarGraph::Paint() {
 UIINT64BarGraph::UIINT64BarGraph() : UIWindow(0), m_current(0), m_maximum(0) {
 }
 
+// OFFSET: 0x00870AD0
+// FUNCTION: fn_45793
+__declspec(noinline) UIINT64BarGraph::~UIINT64BarGraph() = default;
+
 // OFFSET: 0x0086E1B0
 // FUNCTION: fn_11066
 UIPetInfoBarGraph::UIPetInfoBarGraph() : UIWindow(0), percentage(0) {
 }
+
+// OFFSET: 0x00871550
+// FUNCTION: fn_45794
+__declspec(noinline) UIPetInfoBarGraph::~UIPetInfoBarGraph() = default;

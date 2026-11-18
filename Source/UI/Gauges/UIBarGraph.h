@@ -61,6 +61,7 @@ public:
 class UIINT64BarGraph : public UIWindow {
 public:
   UIINT64BarGraph();
+  ~UIINT64BarGraph() override;
 
   void Paint() override;
   void OnMouseHover(int x, int y) override;
@@ -78,6 +79,7 @@ protected:
 class UIPetInfoBarGraph : public UIWindow {
 public:
   UIPetInfoBarGraph();
+  ~UIPetInfoBarGraph() override;
 
   void Paint() override;
   void SetValue(int value);
