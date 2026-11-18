@@ -10112,16 +10112,7 @@ void UIItemCollectionWnd::OnRBtnDown(int x, int y) {
   }
 
   if (UIItemCollectionWnd* comparison = g_windowMgr.itemCollectionComparisonWnd) {
-    if (comparison->m_item.cards[index] != 0 && comparison->m_item.cards[index] != 254 && comparison->m_item.cards[index] != 255) {
-      ITEM_INFO compareCard;
-      compareCard.identified = 1;
-      compareCard.identity[0] = 6;
-      compareCard.refiningLevel = 0;
-      compareCard.SetItemId(comparison->m_item.cards[index]);
-      UIWindow* compareWindow = g_windowMgr.EnsureWindow(WID_COMBINEDCARDITEMCOLLECTION_COMPARISONWND);
-      compareWindow->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, compareCard.identified, 0, 0, 0);
-      compareWindow->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&compareCard), 1, 0, 0);
-    }
+    comparison->ShowComparisonCardInfo(index);
   }
 }
 
