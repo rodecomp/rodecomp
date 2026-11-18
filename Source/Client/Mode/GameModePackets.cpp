@@ -5028,19 +5028,18 @@ void CGameMode::ReceiveBuyingStoreItemList(const unsigned char* packet) {
 
   const BuyingStoreItemRecord* record = reinterpret_cast<const BuyingStoreItemRecord*>(p + 1);
   const unsigned count = (static_cast<int>(p->length) - 16u) / 11;
-  for (int index = 0; index < static_cast<int>(count);) {
+  for (int index = 0; index < static_cast<int>(count); ++record) {
     const BuyingStoreItemRecord entry = *record;
     ITEM_INFO item;
     ++index;
     item.prices[0] = entry.price;
     item.prices[1] = entry.price;
     item.identity[0] = entry.type;
+    item.identity[1] = index;
     item.quantity = entry.count;
     item.identified = 1;
-    item.identity[1] = index;
     item.SetItemId(entry.itemId);
     lists->AddMerchantMirrorItem(item);
-    ++record;
   }
 
   UIWindow* window = g_windowMgr.EnsureWindow(WID_MERCHANTITEMSHOPWND_MODE_1);
@@ -7842,7 +7841,6 @@ void CGameMode::ReceiveItemFallEntry(const unsigned char* packet) {
   entry.row = p->y;
   entry.subColumn = p->subX;
   entry.subRow = p->subY;
-  entry.falling = 0;
   _itoa(p->itemId, entry.itemId, 10);
   entry.falling = 0;
   entry.identified = p->identify;
