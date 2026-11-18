@@ -2287,6 +2287,18 @@ int CSession::GetWeightPercent() const {
   return 0;
 }
 
+// OFFSET: 0x00E31C80
+// FUNCTION: fn_45613
+ITEM_INFO CSession::GetCardItemAt(std::size_t index) const {
+  if (this->m_cardItems.empty()) {
+    return ITEM_INFO(0);
+  }
+  if (index >= this->m_cardItems.size()) {
+    return ITEM_INFO(0);
+  }
+  return this->m_cardItems[index];
+}
+
 // OFFSET: 0x00E31DE0
 // FUNCTION: fn_24177
 bool CSession::IsRequestReady(int requestId) {
