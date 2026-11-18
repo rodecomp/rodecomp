@@ -22,6 +22,7 @@ class UIItemCollectionWnd : public UIFrameWnd {
 public:
   UIItemCollectionWnd();
   ~UIItemCollectionWnd() override;
+  bool MatchesDisplayedItem(const ITEM_INFO& item) const;
   void StoreInfo() override;
   void OnCreate(int width, int height) override;
 

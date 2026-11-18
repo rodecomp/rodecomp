@@ -12646,6 +12646,20 @@ inline NEO_PACKAGEITEM::CPaidPackageItemMgr* PaidPackageItemMgr() {
   return NEO_PACKAGEITEM::CPaidPackageItemMgr::s_instance;
 }
 
+// OFFSET: 0x008DA380
+// FUNCTION: fn_45765
+__forceinline bool UIItemCollectionWnd::MatchesDisplayedItem(const ITEM_INFO& item) const {
+  if (item.itemId != this->m_item.itemId || item.refiningLevel != this->m_item.refiningLevel) {
+    return false;
+  }
+  for (unsigned int i = 0; i < 4; ++i) {
+    if (item.cards[i] != this->m_item.cards[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
 // OFFSET: 0x008FB960
 // FUNCTION: fn_12346
 int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
@@ -12710,9 +12724,7 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
     return 0;
   case UM_ITEMEXPLANATION: {
     const ITEM_INFO* item = reinterpret_cast<const ITEM_INFO*>(argument1);
-    if (item->itemId == this->m_item.itemId && item->refiningLevel == this->m_item.refiningLevel &&
-        item->cards[0] == this->m_item.cards[0] && item->cards[1] == this->m_item.cards[1] &&
-        item->cards[2] == this->m_item.cards[2] && item->cards[3] == this->m_item.cards[3] && argument2 == 0) {
+    if (this->MatchesDisplayedItem(*item) && argument2 == 0) {
       g_windowMgr.CloseWindow(this->m_kind);
       return 0;
     }
