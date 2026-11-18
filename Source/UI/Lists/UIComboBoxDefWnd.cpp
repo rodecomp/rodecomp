@@ -441,6 +441,28 @@ void UITextViewEX::AddLineLinks(UITextButton* const* first, UITextButton* const*
   this->lineLinks.push_back(std::vector<UITextButton*>(links));
 }
 
+// OFFSET: 0x008A2480
+// FUNCTION: fn_45677
+void UITextViewEX::ArrangeLinks() {
+  int x = 0;
+  auto first = this->extraLinks.begin();
+  auto link = first;
+  const auto last = this->extraLinks.end();
+  for (; link != last; ++link) {
+    UIString* label = *link;
+    const std::string caption = label->text;
+    x += label->geometry.width + 5;
+    if (x + 15 > this->geometry.width || caption == "\n") {
+      this->AddLineLinks(reinterpret_cast<UITextButton* const*>(std::to_address(first)), reinterpret_cast<UITextButton* const*>(std::to_address(link)));
+      first = link;
+      x = label->text == "\n" ? 0 : label->geometry.width + 5;
+    }
+  }
+
+  this->AddLineLinks(reinterpret_cast<UITextButton* const*>(std::to_address(first)), reinterpret_cast<UITextButton* const*>(std::to_address(link)));
+  this->Refresh();
+}
+
 // INLINED
 static void TrimLeading(std::string& text, const char* characters) {
   if (!text.empty()) {

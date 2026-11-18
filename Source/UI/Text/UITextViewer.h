@@ -77,6 +77,7 @@ public:
   void Refresh() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
   void SetText(std::string text);
+  void ArrangeLinks();
   void AddLineLinks(UITextButton* const* first, UITextButton* const* last);
   int AddWords(std::string text, int attached, int red, int green, int blue);
 
