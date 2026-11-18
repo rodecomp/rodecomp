@@ -474,7 +474,7 @@ void CUIItemInfo::SetDescription(int type, const std::vector<const char*>& descr
     std::regex pattern("\\^000000");
     std::regex_search(text, match, pattern);
     while (!match.empty()) {
-      std::string line = match.prefix().str() + match[0].str();
+      std::string line = match.prefix().str() + match.str();
       this->descriptionViewer->AddLine(line);
       ++lines;
       text = match.suffix().str();
