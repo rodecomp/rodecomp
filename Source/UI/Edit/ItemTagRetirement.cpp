@@ -96,7 +96,8 @@ bool UIItemTagOnChat::CanInsertTag(const std::string& name, int width) {
   UIEditCtrl* edit = static_cast<UIEditCtrl*>(g_windowMgr.GetHoverWindow());
   this->taggedText = edit->text;
   const std::string text = this->taggedText += tag;
-  return static_cast<unsigned int>(edit->maximum) >= text.size();
+  const unsigned int maximum = static_cast<unsigned int>(edit->maximum);
+  return text.size() <= maximum;
 }
 
 // OFFSET: 0x00879A10
