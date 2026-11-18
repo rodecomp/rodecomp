@@ -317,7 +317,7 @@ void TextContext::Draw(int x, int y, const char* text, int bytes) {
     int scanned = 0, remaining = bytes;
 
     while (scanned < bytes) {
-      scanned = (scanned + Marker(text + scanned, remaining));
+      scanned += Marker(text + scanned, remaining);
       if (scanned >= bytes) {
         this->DrawPair(x, y, current, scanned);
         return;
@@ -327,18 +327,14 @@ void TextContext::Draw(int x, int y, const char* text, int bytes) {
         return;
       }
 
-      const int segment = (Marker(text + scanned + 3, remaining - 3) + 3);
+      const int segment = Marker(text + scanned + 3, remaining - 3) + 3;
       this->DrawPair(x, y, current, segment);
-      const int first = Marker(current, segment);
-      int width = this->MeasurePart(current, first, this->m_charset).cx;
-
-      if (first < segment) {
-        width = (width + this->MeasurePart(current + first + 3, segment - first - 3, InlineCharset(current + first)).cx);
-      }
+      SIZE size;
+      this->Measure(current, segment, &size);
 
       current += segment;
-      scanned = (scanned + segment);
-      x = (x + width);
+      scanned += segment;
+      x += size.cx;
       remaining -= segment;
     }
   } else {
