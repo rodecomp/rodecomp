@@ -38,6 +38,8 @@ int CNaviData::FindRoute(std::vector<CNavi_Link*>* route, bool direct, bool allo
         if (side != 1) {
           continue;
         }
+      } else {
+        continue;
       }
     } else if (link->GetLinkedInfo()->IsVisited()) {
       continue;
@@ -140,6 +142,8 @@ int CNaviData::FindRoute(std::vector<CNavi_Link*>* route, bool direct, bool allo
             if (side != 1) {
               continue;
             }
+          } else {
+            continue;
           }
         } else if (next->GetLinkedInfo()->IsVisited()) {
           continue;
