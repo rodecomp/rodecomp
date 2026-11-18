@@ -606,6 +606,9 @@ void CWorldViewMgr::Load(LuaScript& script) {
 
   int mapId = -1;
   WorldViewArea area = {};
+  const char* mapName;
+  const char* fieldName;
+  const char* description;
   for (int worldIndex = 1; worldIndex < 400; ++worldIndex) {
     const char* worldName = nullptr;
     const char* mapTable = nullptr;
@@ -627,9 +630,9 @@ void CWorldViewMgr::Load(LuaScript& script) {
       const std::string tableName(mapTable);
       if (!tableName.empty()) {
         for (int index = 1; index < 400; ++index) {
-          const char* mapName = nullptr;
-          const char* fieldName = nullptr;
-          const char* description = nullptr;
+          mapName = nullptr;
+          fieldName = nullptr;
+          description = nullptr;
           mapId = -1;
           area.bottom = -1;
           area.right = -1;
@@ -657,15 +660,15 @@ void CWorldViewMgr::Load(LuaScript& script) {
       const std::string tableName(fieldTable);
       if (!tableName.empty()) {
         for (int index = 1; index < 400; ++index) {
-          const char* mapName = nullptr;
-          const char* displayName = nullptr;
+          mapName = nullptr;
+          description = nullptr;
           mapId = -1;
           area.bottom = -1;
           area.right = -1;
           area.top = -1;
           area.left = -1;
           if (!script.Call("queryfieldtable_load", "sd>dddddss", fieldTable, index, &mapId,
-                           &area.left, &area.top, &area.right, &area.bottom, &mapName, &displayName)) {
+                           &area.left, &area.top, &area.right, &area.bottom, &mapName, &description)) {
             char error[260] = {};
             std::sprintf(error, "queryfieldtable_load // %s Line %d 읽기 실패", fieldTable, worldIndex);
             MessageBoxA(hWnd, error, "Error", 0);
@@ -675,7 +678,7 @@ void CWorldViewMgr::Load(LuaScript& script) {
             break;
           }
           if (CWorldViewMap* map = world->FindMap(mapId)) {
-            map->displayName = displayName;
+            map->displayName = description;
             map->name = mapName;
             map->area = area;
           }
