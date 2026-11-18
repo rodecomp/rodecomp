@@ -63,24 +63,11 @@ bool JsonCppLoader::GetReputeInfoData(std::map<int, ReputeInfoRecord>* out) {
     const jsoncons::json node = member.value();
     ReputeInfoRecord record;
     this->GetStringValue(node, "Name", &record.name);
-
-    const jsoncons::json positive = this->GetValue("MaxPoint_Positive", node, jsoncons::json_type::int64_value);
-    if (positive.is_null()) {
-      this->Fail("key 에 해당하는 데이터를 찾지 못했습니다. (keyName : %s)", "MaxPoint_Positive");
-    } else {
-      record.maxPointPositive = positive.as<int>();
-    }
-
-    const jsoncons::json negative = this->GetValue("MaxPoint_Negative", node, jsoncons::json_type::int64_value);
-    if (negative.is_null()) {
-      this->Fail("key 에 해당하는 데이터를 찾지 못했습니다. (keyName : %s)", "MaxPoint_Negative");
-    } else {
-      record.maxPointNegative = negative.as<int>();
-    }
-
+    this->GetIntValue(node, "MaxPoint_Positive", &record.maxPointPositive);
+    this->GetIntValue(node, "MaxPoint_Negative", &record.maxPointNegative);
     this->GetStringValue(node, "Invisible", &record.invisible);
 
-    if (!out->insert(std::make_pair(std::stoi(name), record)).second) {
+    if (!out->insert(std::pair<int, ReputeInfoRecord>(std::stoi(name), record)).second) {
       this->Fail("중복키가 입력되었습니다. (key : %s)", name.c_str());
       return false;
     }
