@@ -340,6 +340,17 @@ void UIBmpTextButton::AddTextStyle(int state, int height, std::uint32_t color, u
 }
 
 // OFFSET: 0x00867D70
+// FUNCTION: fn_45615
+void UIStaticText::SetTextAutoWidth(const char* value, int outlineValue) {
+  this->text = value;
+  this->tooltip = value;
+  this->outline = outlineValue;
+  this->tooltipEnabled = 0;
+
+  const int width = this->TextWidth(value, 0, 0, this->fontHeight, this->bold, this->italic);
+  this->Resize(width + (this->outline ? 2 : 0), this->geometry.height);
+  this->Invalidate();
+}
 
 // OFFSET: 0x00867E20
 // FUNCTION: fn_45616
