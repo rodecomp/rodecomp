@@ -13,14 +13,18 @@ __forceinline CMiniPartyWndSortArea::CMiniPartyWndSortArea(const RECT& bounds) {
   this->rows = (this->area.bottom - this->area.top) / g_miniPartyCellHeight;
 
   const RECT target = bounds;
+  int rows = this->rows;
+  int height = g_miniPartyCellHeight;
 
-  for (int index = 0; index < this->columns * this->rows; ++index) {
-    const int x = this->area.left + g_miniPartyCellWidth * (index / this->rows);
-    const int y = this->area.top + g_miniPartyCellHeight * (index % this->rows);
+  for (int index = 0; index < this->columns * rows; ++index) {
+    const int x = this->area.left + g_miniPartyCellWidth * (index / rows);
+    const int y = this->area.top + height * (index % rows);
 
-    if (target.left <= x && x + g_miniPartyCellWidth <= target.right && target.top <= y && y + g_miniPartyCellHeight <= target.bottom) {
+    if (target.left <= x && x + g_miniPartyCellWidth <= target.right && target.top <= y && y + height <= target.bottom) {
       this->cells.push_back(index);
+      height = g_miniPartyCellHeight;
     }
+    rows = this->rows;
   }
 }
 
