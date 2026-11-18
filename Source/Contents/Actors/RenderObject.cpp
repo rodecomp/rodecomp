@@ -3664,10 +3664,10 @@ __declspec(safebuffers) void CGameActor::ProcessHitMessage(CGameObject*, const A
   this->hitTargetAid = info->targetAid;
   int damage = info->damage;
   int hitCount = info->hitCount;
+  const int attackSpeed = info->attackSpeed;
   const int extraDamage = info->extraDamage;
   const int cellX = info->cellX;
   const int cellY = info->cellY;
-  const int attackSpeed = info->attackSpeed;
   const int motionSpeed = info->motionSpeed;
 
   CGameActor* target;
@@ -3750,7 +3750,11 @@ __declspec(safebuffers) void CGameActor::ProcessHitMessage(CGameObject*, const A
           flag = 1;
           break;
         case DMG_LUCY_DODGE:
-          action = this->isCounter != 0 ? 0x1A : 0x5E;
+          if (this->isCounter != 0) {
+            action = 0x1A;
+          } else {
+            action = 0x5E;
+          }
           break;
         default:
           action = 0x1A;
@@ -3789,7 +3793,7 @@ __declspec(safebuffers) void CGameActor::ProcessHitMessage(CGameObject*, const A
       int column;
       int row;
       mode->WorldCell(player->render.position.x, player->render.position.y, column, row);
-      if (info->targetAid == this->render.accountId) {
+      if (this->render.accountId == info->targetAid) {
         effectId = -2;
       }
 
