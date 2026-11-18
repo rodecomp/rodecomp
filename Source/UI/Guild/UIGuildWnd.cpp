@@ -829,6 +829,7 @@ void UIGuildTotalInfoWnd::UpdateScroll() {
 }
 
 // OFFSET: 0x00957970
+// FUNCTION: fn_45691
 int UIGuildTotalInfoWnd::GuildIndexAt(int x, int y) {
   if (x <= this->geometry.width - 14 && x >= 4 && y >= g_guildTotalInfoRowHeight + 46 && y < (this->m_visibleRows + 1) * g_guildTotalInfoRowHeight + 46) {
     const int row = (y - g_guildTotalInfoRowHeight - 46) / g_guildTotalInfoRowHeight;
