@@ -6,6 +6,21 @@
 
 #include <string>
 
+// INLINED
+static std::string BodyJobNameOf(int job) {
+  return g_session.GetBodyJobName(job);
+}
+
+// INLINED
+static std::string SexNameOf(int sex) {
+  return g_session.GetSexName(sex);
+}
+
+// INLINED
+static std::string RobeNameOf(unsigned int robe) {
+  return g_session.GetRobeName(robe);
+}
+
 // OFFSET: 0x00BAC050
 // FUNCTION: fn_19755
 std::string EquipmentResourceMgr::GetRobeResourceName(int type, int job, int sex, int robe, unsigned char riding, int, int costumeJob) {
@@ -69,13 +84,13 @@ std::string EquipmentResourceMgr::GetRobeSprName(int robe, int) {
 // FUNCTION: fn_19757
 std::string EquipmentResourceMgr::GetShieldResourceName(int type, int job, int sex, int shield, int costumeJob) {
   const int spriteJob = g_session.GetSpriteJob(job, costumeJob, true);
-  std::string path;
-  std::string sexName;
-  std::string shieldName;
+  std::string path = "";
+  std::string sexName = "";
+  std::string shieldName = "";
 
   const int shieldView = g_session.GetItemDescription40(shield);
   {
-    const std::string& name = g_session.GetSexName(sex);
+    const std::string& name = SexNameOf(sex);
     sexName = name;
   }
   bool exists = false;
@@ -90,7 +105,7 @@ std::string EquipmentResourceMgr::GetShieldResourceName(int type, int job, int s
     }
 
     {
-      const std::string& name = g_session.GetRobeName(shieldView);
+      const std::string& name = RobeNameOf(shieldView);
       shieldName = name;
     }
     path = static_cast<const std::string&>(FormatOwnedString("방패\\%s_%s%s.%s", g_session.m_shieldJobNames[spriteJob], sexName.c_str(), shieldName.c_str(), g_equipmentResourceExtensions[type]));
