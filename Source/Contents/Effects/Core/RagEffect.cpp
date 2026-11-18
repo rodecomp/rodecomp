@@ -5389,7 +5389,11 @@ void CRagEffect::SonicWave(char sonic) {
   this->state.lastPrim = this->LaunchEffectPrim(86, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.renderFlag = 5;
   this->state.lastPrim->state.duration = this->state.duration;
-  this->state.lastPrim->state.totalTexture = sonic != 1 ? 1 : 4;
+  if (sonic == 1) {
+    this->state.lastPrim->state.totalTexture = 4;
+  } else {
+    this->state.lastPrim->state.totalTexture = 1;
+  }
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
 
   if (sonic == 1) {
@@ -8536,7 +8540,7 @@ void CRagEffect::TeleportRings(const char* name, std::int16_t level) {
 void CRagEffect::AlphaCenterStream() {
   CopyVector(this->render.position, this->state.parent->render.position);
 
-  if (this->state.stateCnt >= 9) {
+  if (this->state.stateCnt > 8) {
     return;
   }
 
@@ -8548,8 +8552,8 @@ void CRagEffect::AlphaCenterStream() {
   this->state.lastPrim->state.size = 0.0f;
   this->state.lastPrim->state.deltaPos = this->state.deltaPos;
 
-  const float dz = this->state.deltaPos.z - this->render.position.z;
   const float dx = this->state.deltaPos.x - this->render.position.x;
+  const float dz = this->state.deltaPos.z - this->render.position.z;
   const float range = SquareRoot(dz * dz + dx * dx);
   for (int i = 0; i < 4; ++i) {
     this->state.lastPrim->state.slots[i].life = 1;
@@ -10789,8 +10793,8 @@ void CRagEffect::AlphaCenterTrail() {
   this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\alpha_center.tga", 0, false, true, false);
   this->state.lastPrim->state.size = 0.0f;
   this->state.lastPrim->state.deltaPos = this->state.deltaPos;
-  const float deltaZ = this->state.deltaPos.z - this->render.position.z;
   const float deltaX = this->state.deltaPos.x - this->render.position.x;
+  const float deltaZ = this->state.deltaPos.z - this->render.position.z;
   const float distance = SquareRoot(deltaZ * deltaZ + deltaX * deltaX);
 
   for (int index = 0; index < 4; ++index) {
