@@ -73,8 +73,9 @@ __declspec(noinline) std::uint16_t PackColorA1R5G5B5(std::uint32_t color) {
 
 // OFFSET: 0x00570720
 // FUNCTION: fn_02427
-CSurfaceDX9::CSurfaceDX9(DeviceOwnerDX9& owner, int width, int height)
-    : m_owner(&owner), m_width(AlignDimension(width)), m_height(AlignDimension(height)), m_surface(nullptr) {
+CSurfaceDX9::CSurfaceDX9(DeviceOwnerDX9& owner, int width, int height) : m_owner(&owner), m_surface(nullptr) {
+  this->m_width = AlignDimension(width);
+  this->m_height = AlignDimension(height);
   owner.device->CreateOffscreenPlainSurface(this->m_width, this->m_height, owner.backBufferDescription.Format, D3DPOOL_DEFAULT, &this->m_surface, nullptr);
 }
 
