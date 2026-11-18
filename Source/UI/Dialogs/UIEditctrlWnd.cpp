@@ -59,6 +59,18 @@ UIMiniMapWnd::UIMiniMapWnd()
   this->townCheckBox = nullptr;
 }
 
+// OFFSET: 0x0099DD10
+// FUNCTION: fn_45721
+__forceinline int UIMiniMapWnd::MapToWindowX(float x, int halfWidth) const {
+  return static_cast<int>(x * this->scale - halfWidth + this->originX);
+}
+
+// OFFSET: 0x0099DD40
+// FUNCTION: fn_45722
+__forceinline int UIMiniMapWnd::MapToWindowY(float y, int halfHeight) const {
+  return static_cast<int>(this->originY - (y * this->scale + halfHeight));
+}
+
 // OFFSET: 0x0099B540
 // FUNCTION: fn_13554
 void UIMiniMapWnd::AddTownMarks() {
@@ -73,8 +85,8 @@ void UIMiniMapWnd::AddTownMarks() {
     }
 
     if (info.type == 8) {
-      const int y = static_cast<int>(this->originY - (static_cast<float>(info.y) * this->scale + 6.0f));
-      const int x = static_cast<int>(static_cast<float>(info.x) * this->scale - 6.0f + this->originX);
+      const int y = this->MapToWindowY(static_cast<float>(info.y), 6);
+      const int x = this->MapToWindowX(static_cast<float>(info.x), 6);
       this->marks[2].push_back(MiniMapMark{x, y});
     } else {
       UIBitmapButton* button = new UIBitmapButton();
@@ -84,10 +96,7 @@ void UIMiniMapWnd::AddTownMarks() {
       button->SetSize(button->BitmapWidth(), button->BitmapHeight());
       button->SetId(index + 1000);
       button->SetTooltip(info.name.c_str());
-      button->Move(
-        static_cast<int>(static_cast<float>(info.x) * this->scale - 6.0f + this->originX),
-        static_cast<int>(this->originY - (static_cast<float>(info.y) * this->scale + 6.0f))
-      );
+      button->Move(this->MapToWindowX(static_cast<float>(info.x), 6), this->MapToWindowY(static_cast<float>(info.y), 6));
       this->AddChild(button);
       this->townButtons.insert(std::make_pair(index, button));
     }
@@ -180,17 +189,7 @@ void UIEditctrlWnd::OnCreate(int, int) {
 // FUNCTION: fn_13557
 void UIMiniMapWnd::OnCreate(int width, int height) {
   const int bottom = this->geometry.height;
-  const float terrainWidth = static_cast<float>(g_modeMgr.GetGameMode()->TerrainWidth());
-  const float terrainHeight = static_cast<float>(g_modeMgr.GetGameMode()->TerrainHeight());
-  this->originX = 2.0f;
-  this->originY = 531.0f;
-  this->scale = 512.0f / std::max(terrainWidth, terrainHeight);
-  const float margin = std::fabs(terrainWidth - terrainHeight) * 0.5f * this->scale;
-  if (terrainHeight > terrainWidth) {
-    this->originX = margin + 2.0f;
-  } else if (terrainWidth > terrainHeight) {
-    this->originY = 531.0f - margin;
-  }
+  this->FitMapToWindow();
 
   this->questCheckBox = this->AddCheckBox(361, 100, 12, LookupMessage(MSI_MINIMAP_MSG_02), 20, bottom - 19, 1, LookupMessage(MSI_MINIMAP_MSG_03));
   this->townCheckBox = this->AddCheckBox(194, 100, 12, LookupMessage(MSI_MINIMAP_MSG_04), 120, bottom - 19, 1, LookupMessage(MSI_MINIMAP_MSG_05));
@@ -214,6 +213,22 @@ void UIMiniMapWnd::OnCreate(int width, int height) {
   this->m_playerHead->SetTooltip(LookupMessage(MSI_MINIMAP_MSG_10));
   this->m_playerHead->SetId(200);
   this->AddChild(this->m_playerHead);
+}
+
+// OFFSET: 0x0099DA40
+// FUNCTION: fn_45725
+__forceinline void UIMiniMapWnd::FitMapToWindow() {
+  const float terrainWidth = static_cast<float>(g_modeMgr.GetGameMode()->TerrainWidth());
+  const float terrainHeight = static_cast<float>(g_modeMgr.GetGameMode()->TerrainHeight());
+  this->originX = 2.0f;
+  this->originY = 531.0f;
+  this->scale = 512.0f / std::max(terrainWidth, terrainHeight);
+  const float margin = std::fabs(terrainWidth - terrainHeight) * 0.5f * this->scale;
+  if (terrainHeight > terrainWidth) {
+    this->originX = margin + 2.0f;
+  } else if (terrainWidth > terrainHeight) {
+    this->originY = 531.0f - margin;
+  }
 }
 
 // OFFSET: 0x0099C530
@@ -374,6 +389,8 @@ void UIMiniMapWnd::Paint() {
     }
   }
 }
+
+// OFFSET: 0x0099C8D0
 
 // OFFSET: 0x0099CC20
 // FUNCTION: fn_13563
