@@ -20,6 +20,7 @@ public:
   void StartDarken();
   void StopDarken();
   void Fireworks();
+  void Sakura();
   void Snow();
   void StartLightning();
   void StopLightning();

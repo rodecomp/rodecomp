@@ -144,6 +144,18 @@ void CWeatherEffect::Fireworks() {
   }
 }
 
+// OFFSET: 0x00C7BAA0
+// FUNCTION: fn_45581
+void CWeatherEffect::Sakura() {
+  if (this->effect && this->effect->GetDuration() - this->effect->state.stateCnt <= 300) {
+    return;
+  }
+
+  CGameMode* mode = g_modeMgr.GetGameMode();
+  this->actor = mode->scene->player;
+  this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_SAKURA, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+}
+
 // OFFSET: 0x00C7BB20
 // FUNCTION: fn_20370
 void CWeatherEffect::Snow() {
@@ -221,25 +233,11 @@ void CWeatherEffect::ApplyMapWeather(std::string mapName) {
     }
 
     if (entry->second == "snow") {
-      if (!this->effect || this->effect->GetDuration() - this->effect->state.stateCnt > 300) {
-        CGameMode* mode = g_modeMgr.GetGameMode();
-        this->actor = mode->scene->player;
-        this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_SNOW, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      }
+      this->Snow();
     } else if (entry->second == "sakura") {
-      if (!this->effect || this->effect->GetDuration() - this->effect->state.stateCnt > 300) {
-        CGameMode* mode = g_modeMgr.GetGameMode();
-        this->actor = mode->scene->player;
-        this->effect = static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_SAKURA, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      }
+      this->Sakura();
     } else if (entry->second == "pokjuk") {
-      CGameMode* mode = g_modeMgr.GetGameMode();
-      this->actor = mode->scene->player;
-      static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_POKJUK_SOUND, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-
-      for (int count = 0; count < 160; ++count) {
-        static_cast<EffectActor*>(this->actor)->LaunchEffect(EF_POKJUK, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-      }
+      this->Fireworks();
     }
   }
 }
