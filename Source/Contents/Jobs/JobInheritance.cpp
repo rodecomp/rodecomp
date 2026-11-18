@@ -1813,11 +1813,12 @@ bool CSession::UnequipCostumeItem(int location) {
     this->SetEquippedArrowIndex(0);
   } else {
     const EquipSlots slots = g_session.GetEquipSlots(location);
-    if (std::get<0>(slots) < 10) {
+    const int slot = std::get<0>(slots);
+    if (slot < 10) {
       ITEM_INFO* const items = this->costumeItems;
-      if (std::get<0>(slots) != -1) {
+      if (slot != -1) {
         const char* message = LookupMessage(MSI_ITEM_IS_REMOVED);
-        ITEM_INFO& item = items[std::get<0>(slots)];
+        ITEM_INFO& item = items[slot];
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s%s", item.DisplayName(0).c_str(), message).c_str()),
           0xFF, 7, 0, 0);
         item.identity[3] = 0;
