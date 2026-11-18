@@ -772,6 +772,21 @@ void UIChatHisBox3::Resize(int width, int height) {
 }
 
 // OFFSET: 0x00897120
+// FUNCTION: fn_45599
+void UITVTextButton::ResizeToTextClipped(int width, int height) {
+  if (this->geometry.width != width && std::strcmp(this->label.c_str(), "") != 0) {
+    this->displayText = this->label;
+    if (this->geometry.width > width) {
+      const char* clipped = this->ClipTextToWidth(this->label.c_str(), width - 2, this->m_fontFamily, this->m_fontHeight, this->m_outlined);
+      this->displayText = clipped;
+    } else {
+      width = this->TextWidth(this->label.c_str(), 0, this->m_fontFamily, this->m_fontHeight, this->m_outlined, 0) + 2;
+    }
+
+    const int expandedWidth = width + 2;
+    this->UIWindow::Resize(this->m_border ? expandedWidth : width, height);
+  }
+}
 
 // OFFSET: 0x008978A0
 // FUNCTION: fn_11536
