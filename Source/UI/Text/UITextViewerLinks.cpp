@@ -55,8 +55,7 @@ std::pair<int, int> UITextViewer::LinkPosition(unsigned position, unsigned added
 
     if (accumulated > static_cast<int>(position)) {
       result.first = index;
-      const std::string prefix = plain.substr(0, plain.size() - accumulated + position);
-      result.second = this->TextWidth(prefix.c_str(), 0, 0, 12, 0, 0) + 2;
+      result.second = this->TextWidth(plain.substr(0, plain.size() - accumulated + position).c_str(), 0, 0, 12, 0, 0) + 2;
       break;
     }
   }
