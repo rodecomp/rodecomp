@@ -2552,7 +2552,7 @@ void CSession::RefreshMerchantMyShopItems() {
       }
     }
 
-    if (match == this->m_merchantMirrorItems.end()) {
+    if (this->m_merchantMirrorItems.end() == match) {
       it = this->m_merchantMyShopItems.erase(it);
       continue;
     }
