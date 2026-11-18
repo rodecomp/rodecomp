@@ -190,150 +190,8 @@ void UIAccountLimitedToolWnd::Paint() {
 // FUNCTION: fn_12938
 int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
   switch (message) {
-  case UM_PARAM:
-    switch (argument1) {
-    case 2:
-      if (argument2 == 1) {
-        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARGAINSALE_TOOLWND_DELETE_FAILED_MSG)), 60, 0, 0);
-        UITextViewer* viewer = this->m_viewer;
-        if (viewer->verticalOverflow != 0) {
-          const int lineCount = viewer->LineCount();
-          viewer->SendMsg(nullptr, UM_SCROLLVERT, lineCount, 0, 0, 0);
-        }
-      } else {
-        this->m_viewer->SendMsg(
-          nullptr, 29, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_BARGAINSALE_TOOLWND_DELETE_SUCCESS_MSG), this->m_edits[0]->Text()).c_str()), 60, 0, 0
-        );
-        UITextViewer* viewer = this->m_viewer;
-        if (viewer->verticalOverflow != 0) {
-          const int lineCount = viewer->LineCount();
-          viewer->SendMsg(nullptr, UM_SCROLLVERT, lineCount, 0, 0, 0);
-        }
-        this->m_edits[0]->SetText("");
-        this->m_accountIdText->SetText("", 0);
-        for (int i = 1; i < 15; ++i) {
-          this->m_edits[i]->SetText("");
-          this->m_edits[i]->flat = 1;
-          UIEditCtrl* edit = this->m_edits[i];
-          edit->disabled = 1;
-          edit->Invalidate();
-        }
-        UIBitmapButton* addButton = this->m_buttons[1];
-        addButton->SetDisabled(1);
-        addButton->Invalidate();
-        UIBitmapButton* deleteButton = this->m_buttons[2];
-        deleteButton->SetDisabled(1);
-        deleteButton->Invalidate();
-        this->InvalidateChildren();
-      }
-      break;
-    case 1:
-      switch (argument2) {
-      case 3: {
-        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARGAINSALE_TOOLWND_APPLY_FAILED_MSG)), 60, 0, 0);
-        UITextViewer* viewer = this->m_viewer;
-        if (viewer->verticalOverflow != 0) {
-          const int lineCount = viewer->LineCount();
-          viewer->SendMsg(nullptr, UM_SCROLLVERT, lineCount, 0, 0, 0);
-        }
-        UIBitmapButton* addButton = this->m_buttons[1];
-        addButton->SetDisabled(1);
-        addButton->Invalidate();
-        UIBitmapButton* deleteButton = this->m_buttons[2];
-        deleteButton->SetDisabled(1);
-        deleteButton->Invalidate();
-        break;
-      }
-      case 1: {
-        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARGAINSALE_TOOLWND_APPLY_FAILED_MSG)), 60, 0, 0);
-        UITextViewer* viewer = this->m_viewer;
-        if (viewer->verticalOverflow != 0) {
-          const int lineCount = viewer->LineCount();
-          viewer->SendMsg(nullptr, UM_SCROLLVERT, lineCount, 0, 0, 0);
-        }
-        UIBitmapButton* addButton = this->m_buttons[1];
-        addButton->SetDisabled(1);
-        addButton->Invalidate();
-        UIBitmapButton* deleteButton = this->m_buttons[2];
-        deleteButton->SetDisabled(1);
-        deleteButton->Invalidate();
-        break;
-      }
-      case 0: {
-        const std::string text = FormatOwnedString(
-          LookupMessage(MSI_ACCOUNT_LIMITED_TOOL_RESULT_NEWFORMAT), this->m_edits[0]->Text(), std::atoi(this->m_edits[1]->Text()), std::atoi(this->m_edits[3]->Text()),
-          std::atoi(this->m_edits[4]->Text()), std::atoi(this->m_edits[5]->Text()), std::atoi(this->m_edits[6]->Text()), std::atoi(this->m_edits[7]->Text()),
-          std::atoi(this->m_edits[8]->Text()), std::atoi(this->m_edits[9]->Text()), std::atoi(this->m_edits[10]->Text()), std::atoi(this->m_edits[11]->Text())
-        );
-        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text.c_str()), 60, 0, 0);
-        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARGAINSALE_TOOLWND_APPLY_SUCCESS_MSG)), 60, 0, 0);
-        UITextViewer* viewer = this->m_viewer;
-        if (viewer->verticalOverflow != 0) {
-          const int lineCount = viewer->LineCount();
-          viewer->SendMsg(nullptr, UM_SCROLLVERT, lineCount, 0, 0, 0);
-        }
-        UIBitmapButton* deleteButton = this->m_buttons[2];
-        deleteButton->SetDisabled(0);
-        deleteButton->Invalidate();
-        for (int i = 1; i < 15; ++i) {
-          this->m_edits[i]->flat = 1;
-          UIEditCtrl* edit = this->m_edits[i];
-          edit->disabled = 1;
-          edit->Invalidate();
-        }
-        break;
-      }
-      }
-      break;
-    case 0: {
-      this->m_accountIdText->SetNumber(argument2);
-      UIBitmapButton* addButton = this->m_buttons[1];
-      addButton->SetDisabled(0);
-      addButton->Invalidate();
-      UIBitmapButton* deleteButton = this->m_buttons[2];
-      deleteButton->SetDisabled(0);
-      deleteButton->Invalidate();
-      for (int i = 1; i < 15; ++i) {
-        this->m_edits[i]->flat = 0;
-        UIEditCtrl* edit = this->m_edits[i];
-        edit->disabled = 0;
-        edit->Invalidate();
-      }
-      break;
-    }
-    }
-    break;
   case UM_COMMAND:
     switch (argument1) {
-    case ID_DELETE: {
-      AccountLimitedDeletePacket packet;
-      packet.id = ID_CZ_DEL_ACCOUNT_LIMTIED_SALE_ITEM;
-      packet.accountId = std::atoi(this->m_accountIdText->GetText().c_str());
-      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
-      break;
-    }
-    case ID_CLOSE:
-      g_modeMgr.GetGameMode()->SendMsg(MM_CLOSE_ACCOUNT_LIMITED_TOOL, 0, 0, 0, 0);
-      break;
-    case ID_SEARCH: {
-      const std::string name = this->m_edits[0]->Text();
-      if (name.empty()) {
-        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARGAINSALE_TOOLWND_INPUT_ITEMDBNAME_MSG)), 60, 0, 0);
-        UITextViewer* viewer = this->m_viewer;
-        if (viewer->verticalOverflow != 0) {
-          const int lineCount = viewer->LineCount();
-          viewer->SendMsg(nullptr, UM_SCROLLVERT, lineCount, 0, 0, 0);
-        }
-        this->m_edits[0]->SelectAll();
-      } else if (name.size() < 50) {
-        AccountLimitedSearchPacket packet;
-        packet.id = ID_CZ_SEARCH_ACCOUNT_LIMTIED_SALE_ITEM;
-        SecureZeroMemory(packet.name, sizeof(packet.name));
-        strncpy_s(packet.name, sizeof(packet.name), name.c_str(), name.size());
-        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
-      }
-      break;
-    }
     case 561: {
       if (std::atoi(this->m_edits[1]->Text()) <= 0) {
         this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARGAINSALE_TOOLWND_INPUT_COUNT_MSG)), 60, 0, 0);
@@ -419,10 +277,154 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
       break;
     }
+    case ID_DELETE: {
+      AccountLimitedDeletePacket packet;
+      packet.id = ID_CZ_DEL_ACCOUNT_LIMTIED_SALE_ITEM;
+      packet.accountId = std::atoi(this->m_accountIdText->GetText().c_str());
+      GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
+      break;
+    }
+    case ID_CLOSE:
+      g_modeMgr.GetGameMode()->SendMsg(MM_CLOSE_ACCOUNT_LIMITED_TOOL, 0, 0, 0, 0);
+      break;
+    case ID_SEARCH: {
+      const std::string name = this->m_edits[0]->Text();
+      if (name.empty()) {
+        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARGAINSALE_TOOLWND_INPUT_ITEMDBNAME_MSG)), 60, 0, 0);
+        UITextViewer* viewer = this->m_viewer;
+        if (viewer->verticalOverflow != 0) {
+          const int lineCount = viewer->LineCount();
+          viewer->SendMsg(nullptr, UM_SCROLLVERT, lineCount, 0, 0, 0);
+        }
+        this->m_edits[0]->SelectAll();
+      } else {
+        if (name.size() >= 50) {
+          break;
+        }
+
+        AccountLimitedSearchPacket packet;
+        packet.id = ID_CZ_SEARCH_ACCOUNT_LIMTIED_SALE_ITEM;
+        SecureZeroMemory(packet.name, sizeof(packet.name));
+        strncpy_s(packet.name, sizeof(packet.name), name.c_str(), name.size());
+        GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
+      }
+      break;
+    }
     }
     break;
+  case UM_PARAM:
+    switch (argument1) {
+    case 1:
+      switch (argument2) {
+      case 3: {
+        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARGAINSALE_TOOLWND_APPLY_FAILED_MSG)), 60, 0, 0);
+        UITextViewer* viewer = this->m_viewer;
+        if (viewer->verticalOverflow != 0) {
+          const int lineCount = viewer->LineCount();
+          viewer->SendMsg(nullptr, UM_SCROLLVERT, lineCount, 0, 0, 0);
+        }
+        UIBitmapButton* addButton = this->m_buttons[1];
+        addButton->SetDisabled(1);
+        addButton->Invalidate();
+        UIBitmapButton* deleteButton = this->m_buttons[2];
+        deleteButton->SetDisabled(1);
+        deleteButton->Invalidate();
+        break;
+      }
+      case 1: {
+        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARGAINSALE_TOOLWND_APPLY_FAILED_MSG)), 60, 0, 0);
+        UITextViewer* viewer = this->m_viewer;
+        if (viewer->verticalOverflow != 0) {
+          const int lineCount = viewer->LineCount();
+          viewer->SendMsg(nullptr, UM_SCROLLVERT, lineCount, 0, 0, 0);
+        }
+        UIBitmapButton* addButton = this->m_buttons[1];
+        addButton->SetDisabled(1);
+        addButton->Invalidate();
+        UIBitmapButton* deleteButton = this->m_buttons[2];
+        deleteButton->SetDisabled(1);
+        deleteButton->Invalidate();
+        break;
+      }
+      case 0: {
+        const std::string text = FormatOwnedString(
+          LookupMessage(MSI_ACCOUNT_LIMITED_TOOL_RESULT_NEWFORMAT), this->m_edits[0]->Text(), std::atoi(this->m_edits[1]->Text()), std::atoi(this->m_edits[3]->Text()),
+          std::atoi(this->m_edits[4]->Text()), std::atoi(this->m_edits[5]->Text()), std::atoi(this->m_edits[6]->Text()), std::atoi(this->m_edits[7]->Text()),
+          std::atoi(this->m_edits[8]->Text()), std::atoi(this->m_edits[9]->Text()), std::atoi(this->m_edits[10]->Text()), std::atoi(this->m_edits[11]->Text())
+        );
+        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text.c_str()), 60, 0, 0);
+        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARGAINSALE_TOOLWND_APPLY_SUCCESS_MSG)), 60, 0, 0);
+        UITextViewer* viewer = this->m_viewer;
+        if (viewer->verticalOverflow != 0) {
+          const int lineCount = viewer->LineCount();
+          viewer->SendMsg(nullptr, UM_SCROLLVERT, lineCount, 0, 0, 0);
+        }
+        UIBitmapButton* deleteButton = this->m_buttons[2];
+        deleteButton->SetDisabled(0);
+        deleteButton->Invalidate();
+        for (int i = 1; i < 15; ++i) {
+          this->m_edits[i]->flat = 1;
+          UIEditCtrl* edit = this->m_edits[i];
+          edit->disabled = 1;
+          edit->Invalidate();
+        }
+        break;
+      }
+      }
+      break;
+    case 2:
+      if (argument2 == 1) {
+        this->m_viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BARGAINSALE_TOOLWND_DELETE_FAILED_MSG)), 60, 0, 0);
+        UITextViewer* viewer = this->m_viewer;
+        if (viewer->verticalOverflow != 0) {
+          const int lineCount = viewer->LineCount();
+          viewer->SendMsg(nullptr, UM_SCROLLVERT, lineCount, 0, 0, 0);
+        }
+      } else {
+        this->m_viewer->SendMsg(
+          nullptr, 29, reinterpret_cast<std::intptr_t>(FormatOwnedString(LookupMessage(MSI_BARGAINSALE_TOOLWND_DELETE_SUCCESS_MSG), this->m_edits[0]->Text()).c_str()), 60, 0, 0
+        );
+        UITextViewer* viewer = this->m_viewer;
+        if (viewer->verticalOverflow != 0) {
+          const int lineCount = viewer->LineCount();
+          viewer->SendMsg(nullptr, UM_SCROLLVERT, lineCount, 0, 0, 0);
+        }
+        this->m_edits[0]->SetText("");
+        this->m_accountIdText->SetText("", 0);
+        for (int i = 1; i < 15; ++i) {
+          this->m_edits[i]->SetText("");
+          this->m_edits[i]->flat = 1;
+          UIEditCtrl* edit = this->m_edits[i];
+          edit->disabled = 1;
+          edit->Invalidate();
+        }
+        UIBitmapButton* addButton = this->m_buttons[1];
+        addButton->SetDisabled(1);
+        addButton->Invalidate();
+        UIBitmapButton* deleteButton = this->m_buttons[2];
+        deleteButton->SetDisabled(1);
+        deleteButton->Invalidate();
+        this->InvalidateChildren();
+      }
+      break;
+    case 0: {
+      this->m_accountIdText->SetNumber(argument2);
+      UIBitmapButton* addButton = this->m_buttons[1];
+      addButton->SetDisabled(0);
+      addButton->Invalidate();
+      UIBitmapButton* deleteButton = this->m_buttons[2];
+      deleteButton->SetDisabled(0);
+      deleteButton->Invalidate();
+      for (int i = 1; i < 15; ++i) {
+        this->m_edits[i]->flat = 0;
+        UIEditCtrl* edit = this->m_edits[i];
+        edit->disabled = 0;
+        edit->Invalidate();
+      }
+      break;
+    }
+    }
   }
-
   return 0;
 }
 
