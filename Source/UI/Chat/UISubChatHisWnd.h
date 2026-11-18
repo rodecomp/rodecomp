@@ -29,6 +29,7 @@ class UISubChatHisWnd : public UIFrameWnd {
 
 public:
   UISubChatHisWnd();
+  __declspec(noinline) ~UISubChatHisWnd() override;
   void Resize(int width, int height) override;
   void Move(int x, int y) override;
   void StoreInfo() override;

@@ -230,3 +230,7 @@ UISubChatHisWnd::UISubChatHisWnd()
     break;
   }
 }
+
+// OFFSET: 0x009148F0
+// FUNCTION: fn_45708
+UISubChatHisWnd::~UISubChatHisWnd() = default;
