@@ -230,7 +230,7 @@ void CAcidifiedThrow::OnProcess() {
     }
   }
 
-  if (activeCount == 0) {
+  if (0 == activeCount) {
     this->active = false;
   }
 }
