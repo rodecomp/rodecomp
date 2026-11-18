@@ -3998,13 +3998,12 @@ void EquipmentProperties::CEquipmentPropertiesMgr::AddExpansion(const int& kind,
   }
 
   auto found = this->properties2.find(key);
-  if (found != this->properties2.end()) {
+  if (this->properties2.end() != found) {
     delete found->second;
     this->properties2.erase(found);
   }
 
-  CEquipmentExpansion* expansion = new CEquipmentExpansion(itemId, kind);
-  CEquipment* equipment = this->properties2.insert({key, expansion}).first->second;
+  CEquipment* equipment = this->properties2.insert({key, new CEquipmentExpansion(itemId, kind)}).first->second;
   if (kind == 1) {
     notify = g_windowMgr.LookupWindow(WID_RUNESYSTEMWND) != nullptr;
   }
@@ -4873,7 +4872,7 @@ void CSession::AddFriend(MessengerMember& member) {
   int index = 0;
 
   for (std::list<MessengerMember>::iterator it = this->m_friends.begin(); it != this->m_friends.end(); ++it) {
-    if (it->name == member.name) {
+    if (member.name == it->name) {
       member.color = MemberColor(index);
       *it = member;
     }
@@ -6606,12 +6605,11 @@ void EquipmentProperties::CEquipmentPropertiesMgr::EquipWearable(const ITEM_INFO
   this->m_dirty = true;
   const int key = GetEquipLocationIndex(item->identity[3]);
   const auto found = this->properties1.find(static_cast<int>(key));
-  if (found != this->properties1.end()) {
+  if (this->properties1.end() != found) {
     delete found->second;
     this->properties1.erase(found);
   }
-  CEquipmentWearable* replacement = new CEquipmentWearable(item);
-  CEquipmentWearable* wearable = this->properties1.insert({key, replacement}).first->second;
+  CEquipmentWearable* wearable = this->properties1.insert({key, new CEquipmentWearable(item)}).first->second;
   wearable->UpdateActive();
   if (!wearable->IsActive()) {
     wearable->Load(false);
