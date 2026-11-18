@@ -16,6 +16,7 @@ class UIScrollBar;
 class UIEquipWnd : public UIFrameWnd {
 public:
   UIEquipWnd();
+  int DamageSkinSlotAt(int x, int y) const;
   bool NeedsFrameRefresh() override;
   void Move(int x, int y) override;
   void DragAndDrop(int x, int y, std::intptr_t value) override;

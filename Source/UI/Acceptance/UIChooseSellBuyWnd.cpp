@@ -1923,6 +1923,18 @@ void UICombinedCardItemCollectionWnd::OnLBtnUp(int x, int y) {
   }
 }
 
+// OFFSET: 0x008D7F90
+// FUNCTION: fn_45762
+__forceinline int UIEquipWnd::DamageSkinSlotAt(int x, int y) const {
+  for (int index = 0; index < 4; ++index) {
+    const int left = 6 + index * 68;
+    if (left <= x && x <= left + 64 && y >= 58 && y <= 150) {
+      return this->m_firstSlot + index;
+    }
+  }
+  return -1;
+}
+
 // OFFSET: 0x008F3BB0
 // FUNCTION: fn_12282
 void UIEquipWnd::OnLBtnUp(int x, int y) {
@@ -1932,15 +1944,9 @@ void UIEquipWnd::OnLBtnUp(int x, int y) {
     return;
   }
 
-  for (int i = 0; i < 4; ++i) {
-    const int left = 6 + i * 68;
-    if (left <= x && x <= left + 64 && y >= 58 && y <= 150) {
-      const int slot = this->m_firstSlot + i;
-      if (slot >= 0 && this->m_hoverSlot != slot) {
-        this->m_hoverSlot = slot;
-      }
-      return;
-    }
+  const int slot = this->DamageSkinSlotAt(x, y);
+  if (slot >= 0 && this->m_hoverSlot != slot) {
+    this->m_hoverSlot = slot;
   }
 }
 
@@ -8568,6 +8574,20 @@ UIStatusWnd::UIStatusWnd()
 // FUNCTION: fn_45814
 UIStatusWnd::~UIStatusWnd() = default;
 
+// INLINED
+static __forceinline void WriteShowTipsAtStartup(const int& enabled) {
+  HKEY key;
+  DWORD disposition = 0;
+  if (RegCreateKeyExA(HKEY_LOCAL_MACHINE, g_subKey, 0, nullptr, 0, KEY_ALL_ACCESS, nullptr, &key, &disposition) == ERROR_SUCCESS) {
+    RegSetValueExA(key, "SHOWTIPSATSTARTUP", 0, REG_DWORD, reinterpret_cast<const BYTE*>(&enabled), sizeof(enabled));
+    RegCloseKey(key);
+  }
+}
+
+// OFFSET: 0x0090B370
+
+// OFFSET: 0x0090B3E0
+
 // OFFSET: 0x00906DE0
 // FUNCTION: fn_12385
 int UITipOfTheDayWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
@@ -10368,6 +10388,25 @@ int UIMakingArrowListWnd::SendMsg(UIWindow*, int message, std::intptr_t a, std::
   return 0;
 }
 
+// OFFSET: 0x008F6050
+// FUNCTION: fn_45761
+__forceinline void UITipboxWnd::AdvanceDots() {
+  if (this->m_frameTime - this->m_buildTime >= 300) {
+    this->m_buildTime = timeGetTime();
+    for (std::size_t index = 0; index < this->m_dots.size(); ++index) {
+      if (!this->m_dots[index].visible) {
+        this->m_dots[index].visible = true;
+        break;
+      }
+      if (this->m_dots.size() - 1 == index) {
+        for (std::size_t dot = 0; dot < this->m_dots.size(); ++dot) {
+          this->m_dots[dot].visible = false;
+        }
+      }
+    }
+  }
+}
+
 // OFFSET: 0x008F50E0
 // FUNCTION: fn_12301
 void UITipboxWnd::OnProcess() {
@@ -10386,20 +10425,7 @@ void UITipboxWnd::OnProcess() {
   if (g_itemTagOwner->HasImages() == true) {
     this->Invalidate();
   }
-  if (this->m_frameTime - this->m_buildTime >= 300) {
-    this->m_buildTime = timeGetTime();
-    for (std::size_t index = 0; index < this->m_dots.size(); ++index) {
-      if (!this->m_dots[index].visible) {
-        this->m_dots[index].visible = true;
-        break;
-      }
-      if (this->m_dots.size() - 1 == index) {
-        for (std::size_t dot = 0; dot < this->m_dots.size(); ++dot) {
-          this->m_dots[dot].visible = false;
-        }
-      }
-    }
-  }
+  this->AdvanceDots();
   this->UpdateAnimations();
   this->m_frameTime = timeGetTime();
 }

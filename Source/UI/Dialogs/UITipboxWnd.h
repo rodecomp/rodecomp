@@ -37,6 +37,8 @@ struct TipBoxDot {
 class UITipboxWnd : public UIFrameWnd {
 public:
   UITipboxWnd();
+  void SaveStartupPreference() const;
+  void AdvanceDots();
   void ShowTip(int id);
   __declspec(noinline) void TrimAt(std::string& text, const char* marker);
   void UpdateAnimations();
