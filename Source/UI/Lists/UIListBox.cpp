@@ -286,6 +286,15 @@ void UIListBox::Refresh() {
   this->verticalBar->Invalidate();
 }
 
+// OFFSET: 0x0089C270
+// FUNCTION: fn_45597
+void UIListBox::SetScrollPosition(int value) {
+  if (this->verticalOverflow != 0) {
+    this->verticalBar->position = value;
+  }
+  this->Refresh();
+}
+
 // OFFSET: 0x008805F0
 // FUNCTION: fn_11277
 int UIListBox::LineAt(int x, int y) const {

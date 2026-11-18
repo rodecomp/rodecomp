@@ -28,6 +28,7 @@ public:
   virtual void AddLine(const char* text);
   virtual void Clear();
   virtual void Refresh();
+  void SetScrollPosition(int value);
   __declspec(noinline) int LineAt(int x, int y) const;
   int LineCount() const;
   bool CopyText(char* buffer, int length);
