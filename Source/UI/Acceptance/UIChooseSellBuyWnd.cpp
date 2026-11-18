@@ -10107,10 +10107,10 @@ void UIItemCollectionWnd::OnRBtnDown(int x, int y) {
   card.SetItemId(this->m_item.cards[index]);
   UIWindow* window = g_windowMgr.EnsureWindow(WID_COMBINEDCARDITEMCOLLECTIONWND);
   window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, card.identified, 0, 0, 0);
-  if (index < this->m_item.SlotCount()) {
-    window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&card), 0, 0, 0);
-  } else {
+  if (index >= this->m_item.SlotCount()) {
     window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&card), 1, 0, 0);
+  } else {
+    window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&card), 0, 0, 0);
   }
 
   if (UIItemCollectionWnd* comparison = g_windowMgr.itemCollectionComparisonWnd) {
