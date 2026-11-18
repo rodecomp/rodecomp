@@ -58,8 +58,38 @@ std::uint32_t MovementRouteInterpolation::Segment() const {
   return this->segment;
 }
 
+// OFFSET: 0x00AD9510
+// FUNCTION: fn_45898
+float MovementRouteInterpolation::StartX() const {
+  return this->startX;
+}
+
+// OFFSET: 0x00AD9520
+// FUNCTION: fn_45899
+float MovementRouteInterpolation::StartY() const {
+  return this->startY;
+}
+
 // OFFSET: 0x00AD9910
 // FUNCTION: fn_17887
 void MovementRouteInterpolation::ResetSegment() {
   this->segment = 0;
+}
+
+// OFFSET: 0x00AD9930
+// FUNCTION: fn_45900
+void MovementRouteInterpolation::SetSegment(std::uint32_t segment) {
+  this->segment = segment;
+}
+
+// OFFSET: 0x00AD9940
+// FUNCTION: fn_45901
+void MovementRouteInterpolation::SetStartX(float startX) {
+  this->startX = startX;
+}
+
+// OFFSET: 0x00AD9960
+// FUNCTION: fn_45902
+void MovementRouteInterpolation::SetStartY(float startY) {
+  this->startY = startY;
 }
