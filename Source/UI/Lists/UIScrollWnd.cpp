@@ -109,6 +109,7 @@ bool UIScrollWnd::Update(int redraw) {
 }
 
 // OFFSET: 0x009ACA00
+// FUNCTION: fn_45697
 bool UIScrollWnd::UpdateUncached(int redraw) {
   for (auto it = this->childOrigins.begin(); it != this->childOrigins.end(); ++it) {
     it->first->Move(it->second.first - this->horizontalScrollPosition, it->second.second - this->scrollPosition);
