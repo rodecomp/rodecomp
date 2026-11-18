@@ -1857,49 +1857,61 @@ bool UIShowInfoWnd::SendStyleChange() {
   bool changed = false;
   int index = 0;
   for (std::list<int>::iterator it = this->m_list.begin(); it != this->m_list.end(); ++it, ++index) {
-    int value = 0;
     int kind = 0;
+    int value = 0;
     const int type = *it;
     if (type == STYLE_TABLE_HEAD_PALETTE) {
       if (this->m_checks[index]->geometry.state != 0) {
         changed = true;
         int table = STYLE_TABLE_HEAD_PALETTE;
-        g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", this->m_display->GetStyleTable(table).c_str(), this->m_display->headPalette, &value);
+        int seq = 0;
+        g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", this->m_display->GetStyleTable(table).c_str(), this->m_display->headPalette, &seq);
+        value = seq;
       }
     } else if (type == STYLE_TABLE_HEAD_STYLE) {
       if (this->m_checks[index]->geometry.state != 0) {
         changed = true;
         int table = STYLE_TABLE_HEAD_STYLE;
-        g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", this->m_display->GetStyleTable(table).c_str(), this->m_display->head, &value);
+        int seq = 0;
+        g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", this->m_display->GetStyleTable(table).c_str(), this->m_display->head, &seq);
         kind = g_session.IsDoramJob(g_session.GetDisplayJob()) == true ? 6 : 1;
+        value = seq;
       }
     } else if (type == STYLE_TABLE_BODY_PALETTE) {
       if (this->m_checks[index]->geometry.state != 0) {
         changed = true;
         int table = STYLE_TABLE_BODY_PALETTE;
-        g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", this->m_display->GetStyleTable(table).c_str(), this->m_display->bodyStyle, &value);
+        int seq = 0;
+        g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", this->m_display->GetStyleTable(table).c_str(), this->m_display->bodyStyle, &seq);
         kind = g_session.IsDoramJob(g_session.GetDisplayJob()) == true ? 8 : 2;
+        value = seq;
       }
     } else if (type == STYLE_TABLE_TOP_ACCESSORY) {
       if (this->m_checks[index]->geometry.state != 0) {
         changed = true;
         int table = STYLE_TABLE_TOP_ACCESSORY;
-        g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", this->m_display->GetStyleTable(table).c_str(), this->m_display->topAccessoryItemId, &value);
+        int seq = 0;
+        g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", this->m_display->GetStyleTable(table).c_str(), this->m_display->topAccessoryItemId, &seq);
         kind = 3;
+        value = seq;
       }
     } else if (type == STYLE_TABLE_MID_ACCESSORY) {
       if (this->m_checks[index]->geometry.state != 0) {
         changed = true;
         int table = STYLE_TABLE_MID_ACCESSORY;
-        g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", this->m_display->GetStyleTable(table).c_str(), this->m_display->middleAccessoryItemId, &value);
+        int seq = 0;
+        g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", this->m_display->GetStyleTable(table).c_str(), this->m_display->middleAccessoryItemId, &seq);
         kind = 4;
+        value = seq;
       }
     } else if (type == STYLE_TABLE_BOTTOM_ACCESSORY) {
       if (this->m_checks[index]->geometry.state != 0) {
         changed = true;
         int table = STYLE_TABLE_BOTTOM_ACCESSORY;
-        g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", this->m_display->GetStyleTable(table).c_str(), this->m_display->bottomAccessoryItemId, &value);
+        int seq = 0;
+        g_session.m_hotkeyScript->Call("StylingShop_GetSeqnumber_by_goods", "sd>d", this->m_display->GetStyleTable(table).c_str(), this->m_display->bottomAccessoryItemId, &seq);
         kind = 5;
+        value = seq;
       }
     } else if (type == STYLE_TABLE_BODY_STYLE) {
       if (this->m_checks[index]->geometry.state != 0) {
