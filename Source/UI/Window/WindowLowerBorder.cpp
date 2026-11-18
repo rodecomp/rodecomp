@@ -43,9 +43,9 @@ int UIWindow::DrawButtonBarAt(int style, int x, int width, int rows) {
   CBitmapRes* middle =
     this->LoadStyledBitmap(style, "유저인터페이스\\basic_interface\\btnbar_mid%d.bmp", "유저인터페이스\\basic_interface\\btnbar_mid.bmp");
   if (middle) {
-    const int middleWidth = middle->image.width;
     width = width - rightWidth - leftWidth;
-    const int count = (width % middleWidth != 0) + width / middleWidth;
+    const int middleWidth = middle->image.width;
+    const int count = (width % middleWidth != 0) + width / middle->image.width;
     const int startX = leftWidth + x;
 
     for (int row = 1; row <= rows; ++row) {
