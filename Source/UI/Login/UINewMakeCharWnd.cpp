@@ -570,15 +570,15 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
       return 0;
     }
 
-    int valid = 1;
+    bool valid = true;
     if (g_serviceType == ServiceAmerica && !g_session.ValidateCharacterName(this->m_nameEdit->Text())) {
-      valid = 0;
+      valid = false;
     }
-    int allowed = g_forbiddenWords.Allows(this->m_nameEdit->Text());
+    bool allowed = g_forbiddenWords.Allows(this->m_nameEdit->Text());
     bool hasControlCharacter = g_session.HasControlCharacter(this->m_nameEdit->Text());
-    int blank = g_session.IsBlankString(this->m_nameEdit->Text());
+    bool blank = g_session.IsBlankString(this->m_nameEdit->Text());
 
-    if (!hasControlCharacter && allowed == 1 && valid == 1 && blank == 0) {
+    if (!hasControlCharacter && allowed && valid && !blank) {
       if (this->m_nameEdit->Length() >= 24) {
         g_windowMgr.Confirm(LookupMessage(MSI_NAMELENGTH_TOO_LONG), 0, true, false, 0, "Message", 280, 120, 0);
         this->m_nameEdit->SetText("");
@@ -604,13 +604,13 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
       g_modeMgr.currentMode->SendMsg(LMM_SENDCHARINFO, 0, 0, 0, 0);
       g_windowMgr.Schedule(this);
     } else {
-      if (hasControlCharacter || allowed == 0) {
+      if (hasControlCharacter || !allowed) {
         g_windowMgr.Confirm(LookupMessage(MSI_BAD_NAME), 0, true, false, 0, "Message", 280, 120, 0);
       }
-      if (valid == 0) {
+      if (!valid) {
         g_windowMgr.Confirm(LookupMessage(MSI_ENGLISHONLY), 0, true, false, 0, "Message", 280, 120, 0);
       }
-      if (blank == 1) {
+      if (blank) {
         g_windowMgr.Confirm(LookupMessage(MSI_NO_SPACE_IN_NAME), 0, true, false, 0, "Message", 280, 120, 0);
       }
     }
