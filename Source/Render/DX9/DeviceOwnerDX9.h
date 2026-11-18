@@ -40,6 +40,11 @@ public:
     return this->state.SetTexture(stage, texture);
   }
 
+  // INLINED
+  HRESULT SetSamplerState(UINT stage, D3DSAMPLERSTATETYPE type, DWORD value) {
+    return this->state.SetSamplerState(stage, type, value);
+  }
+
   /* 0000 */ HWND window;
   /* 0004 */ IDirect3D9Ex* direct3D;
   /* 0008 */ IDirect3DDevice9Ex* device;
