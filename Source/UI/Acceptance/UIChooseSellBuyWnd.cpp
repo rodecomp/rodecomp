@@ -1510,15 +1510,15 @@ void UITipOfTheDayWnd::Paint() {
   }
 
   int rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
-  for (int y = 17; rows > 0; --rows, y += 8) {
+  for (int i = 0; i < rows; ++i) {
     auto* left = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_left.bmp")));
-    this->DrawBitmap(0, y, left, false);
+    this->DrawBitmap(0, i * 8 + 17, left, false);
   }
 
   rows = (this->geometry.height - 38) / 8 + ((this->geometry.height - 38) % 8 != 0);
-  for (int y = 17; rows > 0; --rows, y += 8) {
+  for (int i = 0; i < rows; ++i) {
     auto* right = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\itemwin_right.bmp")));
-    this->DrawBitmap(this->geometry.width - right->image.width, y, right, false);
+    this->DrawBitmap(this->geometry.width - right->image.width, i * 8 + 17, right, false);
   }
 
   unsigned red, green, blue;
@@ -7265,7 +7265,7 @@ ITEM_INFO UInCashWnd::ItemAt(int x, int y) {
           return ITEM_INFO(0);
         }
         this->m_selected = row;
-        for (; index > 0; --index) {
+        for (int step = 0; step < index; ++step) {
           ++it;
         }
         break;
@@ -7288,7 +7288,7 @@ ITEM_INFO UInCashWnd::ItemAt(int x, int y) {
           return ITEM_INFO(0);
         }
         this->m_selected = row + 4;
-        for (; index > 0; --index) {
+        for (int step = 0; step < index; ++step) {
           ++it;
         }
         break;
@@ -7316,7 +7316,7 @@ ITEM_INFO UInCashWnd::ItemAt(int x, int y) {
   }
 
   std::list<ITEM_INFO>::iterator it = this->m_otherItems.begin();
-  for (int remaining = index; remaining > 0; --remaining) {
+  for (int step = 0; step < index; ++step) {
     ++it;
   }
   this->m_selected = ~index;
