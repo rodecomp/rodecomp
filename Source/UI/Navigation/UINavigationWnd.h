@@ -40,6 +40,7 @@ public:
   bool ClearHistory();
 
 protected:
+  void DrawRouteLabels(int activeLabel);
   void DrawRoutePoints(int x, int y, float size);
   bool DrawPlayerMarker(int x, int y, float size);
 

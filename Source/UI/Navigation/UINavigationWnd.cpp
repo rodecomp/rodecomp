@@ -554,6 +554,20 @@ bool UINavigationWnd::DrawPlayerMarker(int x, int y, float size) {
   return false;
 }
 
+// OFFSET: 0x00941060
+// FUNCTION: fn_45699
+void UINavigationWnd::DrawRouteLabels(int activeLabel) {
+  const int labelCount = static_cast<int>(g_navigationManager.routeLines.size());
+  for (int index = 0; index < labelCount; ++index) {
+    if (g_navigationManager.routeLines[index].kind == activeLabel) {
+      const int x = g_navigationManager.routeLines[index].x;
+      const int y = g_navigationManager.routeLines[index].y;
+      this->DrawTextAt(x + 1, y + 1, g_navigationManager.routeLines[index].text.c_str(), 0, 0, 12, 0x1E1E1E, 0, 0);
+      this->DrawTextAt(x, y, g_navigationManager.routeLines[index].text.c_str(), 0, 0, 12, 0xE6E6E6, 0, 0);
+    }
+  }
+}
+
 // OFFSET: 0x0092CEF0
 // FUNCTION: fn_12668
 void UINavigationWnd::Paint() {
