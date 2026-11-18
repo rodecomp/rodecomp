@@ -5265,9 +5265,9 @@ void CGameActor::SetBodyPalette(int) {
 // FUNCTION: fn_21196
 void CGameActor::ProcessSkillMessage(CGameObject*, const ActorSkillInfo* info, int, int) {
   CGameMode* mode = g_modeMgr.GetGameMode();
+  int type = info->type;
   int hitCount = info->hitCount;
   const int skillId = info->skillId;
-  int type = info->type;
   const int cellX = info->cellX;
   const int cellY = info->cellY;
   const int attackSpeed = info->attackSpeed;
