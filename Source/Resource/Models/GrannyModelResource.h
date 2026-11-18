@@ -209,6 +209,7 @@ public:
   void FreeInstance();
   void Release();
   granny_file* ReadAnimationFile(const char* name, const char* suffix);
+  void SetAnimationDuration(float duration);
 
   /* 0000 */ float animationDuration;
   /* 0004 */ unsigned char padding_0004[0x14C];
@@ -261,6 +262,7 @@ public:
   bool FindHairPivot();
   void Release();
   granny_world_pose* Animate(float seconds, granny_model_instance* instance);
+  void SetAnimationDuration(float duration);
 
   /* 0110 */ float animationDuration;
   /* 0114 */ unsigned char padding_0114[0x14C];

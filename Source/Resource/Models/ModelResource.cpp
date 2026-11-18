@@ -1159,6 +1159,18 @@ bool C3dGrannyModelRes::FindHairPivot() {
   return false;
 }
 
+// OFFSET: 0x0075CF70
+// FUNCTION: fn_45904
+void GrannyAnimationLibrary::SetAnimationDuration(float duration) {
+  this->animationDuration = duration / 5.0f + duration;
+}
+
+// OFFSET: 0x0075CF90
+// FUNCTION: fn_45905
+void C3dGrannyModelRes::SetAnimationDuration(float duration) {
+  this->animationDuration = duration / 5.0f + duration;
+}
+
 // OFFSET: 0x0075CFC0
 // FUNCTION: fn_08029
 granny_world_pose* C3dGrannyModelRes::Animate(float seconds, granny_model_instance* instance) {
