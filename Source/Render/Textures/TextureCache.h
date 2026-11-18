@@ -25,6 +25,10 @@ public:
   void Reload();
 
 private:
+  CTexture* Find(const char* name);
+  void Insert(CTexture* texture);
+  void ReloadTexture(CTexture* texture, int width, int height, const std::uint32_t* pixels);
+
   /* 0000 */ std::map<const char*, CTexture*, TextureNameLess> m_textures;
 };
 

@@ -137,19 +137,29 @@ CTexture* TextureCache::Create(const char* name, int option, bool fullSize, bool
   return texture;
 }
 
+// OFFSET: 0x005714E0
+// FUNCTION: fn_45878
+void TextureCache::Insert(CTexture* texture) {
+  this->m_textures.insert({texture->m_name, texture});
+}
+
+// OFFSET: 0x00571760
+// FUNCTION: fn_45879
+CTexture* TextureCache::Find(const char* name) {
+  const auto found = this->m_textures.find(name);
+  return found == this->m_textures.end() ? nullptr : found->second;
+}
+
 // OFFSET: 0x005717A0
 // FUNCTION: fn_02454
 CTexture* TextureCache::Load(const char* name, int option, bool fullSize, bool dynamic, bool renderTarget) {
-  const char* key = name;
-  const auto found = this->m_textures.find(key);
-
-  if (found != this->m_textures.end() && found->second) {
-    CTexture* texture = found->second;
+  CTexture* texture = this->Find(name);
+  if (texture) {
     texture->Touch();
     return texture;
   }
 
-  CTexture* texture = this->Create(name, option, fullSize, dynamic, renderTarget);
+  texture = this->Create(name, option, fullSize, dynamic, renderTarget);
 
   if (!texture) {
     return this->Default();
@@ -157,8 +167,7 @@ CTexture* TextureCache::Load(const char* name, int option, bool fullSize, bool d
 
   texture->SetName(name);
   texture->Touch();
-  this->m_textures.insert({texture->m_name, texture});
-
+  this->Insert(texture);
   return texture;
 }
 
@@ -185,6 +194,19 @@ void TextureCache::Clear() {
   this->m_textures.clear();
 }
 
+// OFFSET: 0x00571B10
+// FUNCTION: fn_45880
+void TextureCache::ReloadTexture(CTexture* texture, int width, int height, const std::uint32_t* pixels) {
+  if (texture) {
+    if (texture->fullSize == 1) {
+      texture->Create(width, height, texture->m_format);
+    } else {
+      texture->Create(width / g_textureReduction, height / g_textureReduction, texture->m_format);
+    }
+    texture->Upload(0, 0, width, height, pixels, 0, 0);
+  }
+}
+
 // OFFSET: 0x00571B70
 // FUNCTION: fn_02456
 void TextureCache::Reload() {
@@ -195,20 +217,7 @@ void TextureCache::Reload() {
       continue;
     }
 
-    CTexture* texture = entry->second;
-    const auto* pixels = bitmap->image.pixels;
-    const int height = bitmap->image.height;
-    const int width = bitmap->image.width;
-
-    if (texture) {
-      if ((texture->textureFlags & 0xFF) == 1) {
-        texture->Create(width, height, texture->m_format);
-      } else {
-        texture->Create(width / g_textureReduction, height / g_textureReduction, texture->m_format);
-      }
-
-      texture->Upload(0, 0, width, height, pixels, 0, 0);
-    }
+    this->ReloadTexture(entry->second, bitmap->image.width, bitmap->image.height, bitmap->image.pixels);
 
     ResourceMgr::Instance().Remove(bitmap);
   }
