@@ -313,19 +313,23 @@ void CStormKickEffect::OnProcess() {
       if (this->id == EF_STORMKICK8) {
         if (frame > 30) {
           alpha -= 3;
-          alpha = alpha >= 0 ? alpha : 0;
+          if (alpha < 0) {
+            alpha = 0;
+          }
         } else {
           alpha += 3;
         }
       } else if (frame > 50) {
-        alpha = std::max(alpha - 1, 0);
+        alpha = alpha - 1 < 0 ? 0 : alpha - 1;
       } else if (frame < 12) {
         ++alpha;
       }
       particle->alpha = alpha;
+      float scale = particle->scale;
       if (frame > 12) {
-        particle->scale += 0.1f;
+        scale += 0.1f;
       }
+      particle->scale = scale;
 
       const int segment = particle->columnIndex;
       const float radius = particle->animationParameter;
@@ -334,13 +338,16 @@ void CStormKickEffect::OnProcess() {
       const float horizontal = radius * g_cosTable[tilt];
       const float vertical = radius * g_sinTable[tilt];
 
+      const float offsetX = g_cosTable[angle] * horizontal;
+      const float offsetZ = g_sinTable[angle] * horizontal;
+
       EffectPoint corners[4];
       float innerX = g_cosTable[angle] * particle->scale;
       float innerY = -particle->speedParameter;
       float innerZ = g_sinTable[angle] * particle->scale;
-      float outerX = innerX + g_cosTable[angle] * horizontal;
+      float outerX = innerX + offsetX;
       float outerY = innerY - vertical;
-      float outerZ = innerZ + g_sinTable[angle] * horizontal;
+      float outerZ = innerZ + offsetZ;
 
       particle->vertices[3].x = innerX;
       particle->vertices[3].y = innerY;
