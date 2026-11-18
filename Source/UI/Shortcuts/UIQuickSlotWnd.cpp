@@ -41,16 +41,12 @@ void UIQuickSlotWnd::OnLBtnDown(int x, int y) {
     return;
   }
 
-  if (g_replayAnimationScaling != 0 || static_cast<unsigned int>(y) > 23) {
+  if (g_replayAnimationScaling != 0) {
     return;
   }
 
-  if (x > 58 && x < this->geometry.width) {
-    return;
-  }
-
-  const int index = (x - 4) / 29;
-  if (x > index * 29 + 30 || index == -1) {
+  const int index = this->SlotAt(x, y);
+  if (index == -1) {
     return;
   }
 
@@ -74,13 +70,7 @@ void UIQuickSlotWnd::OnLBtnDown(int x, int y) {
 // OFFSET: 0x00931920
 // FUNCTION: fn_12709
 void UIQuickSlotWnd::OnMouseHover(int x, int y) {
-  int index;
-  if (static_cast<unsigned int>(y) <= 23 && (x <= 58 || x >= this->geometry.width)) {
-    const int column = (x - 4) / 29;
-    index = x > column * 29 + 30 ? -1 : column;
-  } else {
-    index = -1;
-  }
+  const int index = this->SlotAt(x, y);
 
   if (index != this->m_selected) {
     this->m_selected = index;

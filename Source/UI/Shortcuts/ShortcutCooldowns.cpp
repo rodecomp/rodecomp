@@ -458,16 +458,12 @@ void UIQuickSlotWnd::OnCreate(int, int) {}
 // OFFSET: 0x00930610
 // FUNCTION: fn_12686
 void UIQuickSlotWnd::OnLBtnDblClk(int x, int y) {
-  if (static_cast<int>(g_session.m_options.Get(5)) > 0 || static_cast<unsigned>(y) > 23) {
+  if (static_cast<int>(g_session.m_options.Get(5)) > 0) {
     return;
   }
 
-  if (x > 58 && x < this->geometry.width) {
-    return;
-  }
-
-  const int slot = (x - 4) / 29;
-  if (x > slot * 29 + 30 || slot == -1) {
+  const int slot = this->SlotAt(x, y);
+  if (slot == -1) {
     return;
   }
 

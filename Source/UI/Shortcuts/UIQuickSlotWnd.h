@@ -42,6 +42,21 @@ protected:
   /* 00BC */ QuickSlotEntry m_entries[2];
 };
 
+// OFFSET: 0x0091C500
+// FUNCTION: fn_12615
+inline int UIQuickSlotWnd::SlotAt(int x, int y) {
+  if (y < 0 || y >= 24 || (x > 58 && x < this->geometry.width)) {
+    return -1;
+  }
+
+  const int index = (x - 4) / 29;
+  if (x > index * 29 + 30) {
+    return -1;
+  }
+
+  return index;
+}
+
 static_assert(sizeof(QuickSlotEntry) == 7);
 
 #endif
