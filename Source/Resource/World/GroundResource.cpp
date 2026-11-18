@@ -140,23 +140,53 @@ void CGndRes::Unload() {
   this->cells = nullptr;
 }
 
+// OFFSET: 0x0074E440
+// FUNCTION: fn_45816
+unsigned char GroundLegacyLightmap::GetSample(int index) const {
+  const int bit = index * 5;
+  const int shift = bit % 8;
+  const unsigned char* packed = this->bits + bit / 8;
+  const unsigned char mask = static_cast<unsigned char>(0xF8 >> shift);
+  unsigned char value;
+
+  if (shift < 4) {
+    value = static_cast<unsigned char>((packed[0] & mask) << shift);
+  } else {
+    value = static_cast<unsigned char>(((packed[0] & mask) << shift) + (((0xF8 << (8 - shift)) & packed[1]) >> (8 - shift)));
+  }
+
+  return value;
+}
+
 // OFFSET: 0x0074E4B0
 // FUNCTION: fn_07909
 void GroundLegacyLightmap::Decode(unsigned char* output) const {
   for (int index = 0; index < 64; ++index) {
-    const int bit = index * 5;
-    const int shift = bit % 8;
-    const unsigned char* packed = this->bits + bit / 8;
-    const int mask = 248 >> shift;
-    unsigned char value;
-
-    if (shift < 4) {
-      value = static_cast<unsigned char>((packed[0] & mask) << shift);
-    } else {
-      value = static_cast<unsigned char>(((packed[0] & mask) << shift) + (((248 << (8 - shift)) & packed[1]) >> (8 - shift)));
-    }
-
+    const unsigned char value = this->GetSample(index);
     output[index] = value;
+  }
+}
+
+// OFFSET: 0x0074EB60
+// FUNCTION: fn_45817
+void GroundLegacyLightmap::SetSample(int index, unsigned char value) {
+  const int bit = index * 5;
+  const int shift = bit % 8;
+  unsigned char* packed = this->bits + bit / 8;
+  value &= 0xF8;
+  packed[0] = static_cast<unsigned char>((packed[0] & (~0xF8u >> shift)) | (value >> shift));
+
+  if (shift >= 4) {
+    const int remaining = 8 - shift;
+    packed[1] = static_cast<unsigned char>((packed[1] & (0x07 << remaining)) | (value << remaining));
+  }
+}
+
+// OFFSET: 0x0074EBD0
+// FUNCTION: fn_45818
+void GroundLegacyLightmap::Encode(const unsigned char* input) {
+  for (int index = 0; index < 64; ++index) {
+    this->SetSample(index, input[index]);
   }
 }
 
