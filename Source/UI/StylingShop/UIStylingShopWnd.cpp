@@ -1320,6 +1320,17 @@ __declspec(noinline) UIShowInfoWnd::~UIShowInfoWnd() {
 UIMyStyleWnd::UIMyStyleWnd() : UIStylingshopTabParentWnd(), m_selectedSlot(0), m_slots{} {
 }
 
+// OFFSET: 0x00825720
+// FUNCTION: fn_45610
+void UIMyStyleWnd::RemoveSelectedStyle() {
+  UISlotOfMyStyleWnd* slot = this->m_slots[this->m_selectedSlot];
+  if (slot && slot->m_showInfo && slot->m_showInfo->SendStyleChange() == true) {
+    this->RemoveChild(this->m_slots[this->m_selectedSlot], 1);
+    this->m_slots[this->m_selectedSlot] = nullptr;
+    this->deleteStyleButtons[this->m_selectedSlot]->Enable(0);
+  }
+}
+
 // OFFSET: 0x00823210
 // FUNCTION: fn_10291
 UIShowInfoWnd::UIShowInfoWnd()
@@ -1465,12 +1476,7 @@ int UIStylingShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
         }
         if (it->first->geometry.id == STYLINGSHOP_TAB_FAVORITE) {
           UIMyStyleWnd* myStyle = static_cast<UIMyStyleWnd*>(tab);
-          UISlotOfMyStyleWnd* slot = myStyle->m_slots[myStyle->m_selectedSlot];
-          if (slot && slot->m_showInfo && slot->m_showInfo->SendStyleChange() == true) {
-            myStyle->RemoveChild(myStyle->m_slots[myStyle->m_selectedSlot], 1);
-            myStyle->m_slots[myStyle->m_selectedSlot] = nullptr;
-            myStyle->deleteStyleButtons[myStyle->m_selectedSlot]->Enable(0);
-          }
+          myStyle->RemoveSelectedStyle();
         } else if (tab->m_showInfo) {
           tab->m_showInfo->SendStyleChange();
         }

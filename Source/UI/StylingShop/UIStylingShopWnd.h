@@ -215,6 +215,7 @@ class UISlotOfMyStyleWnd;
 class UIMyStyleWnd : public UIStylingshopTabParentWnd {
 public:
   UIMyStyleWnd();
+  void RemoveSelectedStyle();
   void LoadLikeList();
   void SaveLikeList();
   void OnCreate(int width, int height) override;
