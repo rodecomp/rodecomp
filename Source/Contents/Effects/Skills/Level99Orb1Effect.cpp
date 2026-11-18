@@ -93,29 +93,27 @@ void CLevel99Orb1Effect::OnProcess() {
           this->offsets[index].y = height;
           this->offsets[index].z = 0.0f;
 
-          float* angle = &particle->animationParameter;
           for (int i = 0; i < 4; ++i) {
-            *angle++ = static_cast<float>(Random(360));
+            particle->animationValues[i] = static_cast<float>(Random(360));
           }
 
           particle->alpha = 0;
         } else {
-          float* angles = &particle->animationParameter;
           for (int i = 0; i < 2; ++i) {
-            const int current = static_cast<int>(angles[i]);
-            const int delta = static_cast<int>(angles[i + 2]) - current;
-            angles[i] = static_cast<float>(current + (delta > 0 ? 3 : -2));
+            const int current = static_cast<int>(particle->animationValues[i]);
+            const int delta = static_cast<int>(particle->animationValues[i + 2]) - current;
+            particle->animationValues[i] = static_cast<float>(current + (delta > 0 ? 3 : -2));
             if (std::abs(delta) < 3) {
               if (delta > 0) {
-                angles[i + 2] = static_cast<float>(Random(current));
+                particle->animationValues[i + 2] = static_cast<float>(Random(current));
               } else {
-                angles[i + 2] = static_cast<float>(359 - Random(current));
+                particle->animationValues[i + 2] = static_cast<float>(359 - Random(current));
               }
             }
           }
 
-          this->offsets[index].x += speed * g_sinTable[static_cast<int>(angles[0])];
-          this->offsets[index].z += speed * g_sinTable[static_cast<int>(angles[1])];
+          this->offsets[index].x += speed * g_sinTable[static_cast<int>(particle->animationValues[0])];
+          this->offsets[index].z += speed * g_sinTable[static_cast<int>(particle->animationValues[1])];
           if (this->offsets[index].y < -20.0f) {
             const int alpha = particle->alpha - 4;
             particle->alpha = alpha >= 0 ? alpha : 0;
