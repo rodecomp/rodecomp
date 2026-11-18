@@ -364,15 +364,17 @@ void UIAchListWnd::Paint() {
 
     const AchievementInfo& info = found->second;
     const SessionRecord6144 record = g_session.FindAchievementRecord(found->first);
-    if (this->selectedIndex == this->firstRow + row) {
+    if (this->selectedIndex != this->firstRow + row) {
+      if (record.completed != 1) {
+        this->DrawBitmap(0, this->rowHeight * row, AchievementBitmap("유저인터페이스\\achievement_re\\list_out.bmp"), false);
+      } else {
+        this->DrawBitmap(0, this->rowHeight * row, AchievementBitmap("유저인터페이스\\achievement_re\\list_complete_out.bmp"), false);
+      }
+    } else {
       this->DrawBitmap(
         0, this->rowHeight * row,
         AchievementBitmap(record.completed == 1 ? "유저인터페이스\\achievement_re\\list_complete_press.bmp" : "유저인터페이스\\achievement_re\\list_press.bmp"), false
       );
-    } else if (record.completed == 1) {
-      this->DrawBitmap(0, this->rowHeight * row, AchievementBitmap("유저인터페이스\\achievement_re\\list_complete_out.bmp"), false);
-    } else {
-      this->DrawBitmap(0, this->rowHeight * row, AchievementBitmap("유저인터페이스\\achievement_re\\list_out.bmp"), false);
     }
 
     CBitmapRes* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(("유저인터페이스\\achievement_re\\icon_" + info.iconName + ".bmp").c_str())));

@@ -8505,7 +8505,11 @@ int UIItemShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       this->checkBox->m_disabled = 1;
     }
 
-    this->footerHeight = this->showFooter != 0 ? 20 : 0;
+    if (this->showFooter != 0) {
+      this->footerHeight = 20;
+    } else {
+      this->footerHeight = 0;
+    }
     {
       const int height = this->geometry.height - this->bottomPadding - this->footerHeight - 17;
       this->visibleRows = height / 32;
@@ -9771,10 +9775,10 @@ void UIMerchantItemPurchaseWnd::Paint() {
     char price[64];
     char text[64];
     int length;
-    if (it->prices[0] == it->prices[1]) {
-      length = sprintf(text, " %s Zeny", FormatGroupedInteger(static_cast<int>(it->prices[0]), price, 64));
-    } else {
+    if (it->prices[0] != it->prices[1]) {
       length = sprintf(text, " %d -> %s Zeny", it->prices[0], FormatGroupedInteger(static_cast<int>(it->prices[1]), price, 64));
+    } else {
+      length = sprintf(text, " %s Zeny", FormatGroupedInteger(static_cast<int>(it->prices[0]), price, 64));
     }
     this->DrawRightAlignedText(this->geometry.width - 18, top + 29, text, length, 0, 12, 0, 0);
     ++visible;

@@ -452,7 +452,7 @@ long long UIBank_NewWnd::TransactionAmount(unsigned char deposit) {
       }
       return amount;
     }
-    if (balance == 0) {
+    if (0 == balance) {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_BANK_0_MONEY)), 255, 0, 0, 0);
       this->m_status = LookupMessage(MSI_BANK_0_MINI);
       return 0;
