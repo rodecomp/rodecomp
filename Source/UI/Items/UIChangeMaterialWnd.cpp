@@ -293,25 +293,25 @@ void UIChangeMaterialWnd_List::RefreshVisibleEntries() {
   this->m_entries.clear();
 
   std::map<MaterialKey, ChangeMaterialRecipeList, MaterialKeyLess> library = g_changeMaterialMgr->GetLibrary();
-  for (const auto& item : library) {
-    std::vector<ChangeMaterialRecipe> recipes = item.second.m_recipes;
-    for (const ChangeMaterialRecipe& recipe : recipes) {
+  for (auto item = library.begin(); item != library.end(); ++item) {
+    std::vector<ChangeMaterialRecipe> recipes = item->second.m_recipes;
+    for (auto recipe = recipes.begin(); recipe != recipes.end(); ++recipe) {
       MaterialListEntry entry;
-      if (recipe.materials.empty() || recipe.products.empty()) {
+      if (recipe->materials.empty() || recipe->products.empty()) {
         continue;
       }
 
-      entry.materials.resize(recipe.materials.size());
+      entry.materials.resize(recipe->materials.size());
       auto material = entry.materials.begin();
-      for (const ChangeMaterialEntry& source : recipe.materials) {
+      for (const ChangeMaterialEntry& source : recipe->materials) {
         material->id = source.itemId;
         material->quantity = source.count;
         ++material;
       }
 
-      entry.results.resize(recipe.products.size());
+      entry.results.resize(recipe->products.size());
       auto result = entry.results.begin();
-      for (const ChangeMaterialProduct& source : recipe.products) {
+      for (const ChangeMaterialProduct& source : recipe->products) {
         result->id = source.itemId;
         result->quantity = source.count;
         result->amount = source.rate;
@@ -334,7 +334,7 @@ void UIChangeMaterialWnd_List::RefreshVisibleEntries() {
     }
   }
 
-  this->ApplyFilter(std::string());
+  this->ApplyFilter(std::string(""));
   this->SetSelectedIndex(0);
 }
 
