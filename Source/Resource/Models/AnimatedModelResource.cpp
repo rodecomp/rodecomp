@@ -44,8 +44,9 @@ AnimatedModelNode::AnimatedModelNode() {
   this->faces = nullptr;
 }
 
-// INLINED
-AnimatedModelNode::~AnimatedModelNode() {
+// OFFSET: 0x0075C920
+// FUNCTION: fn_45848
+void AnimatedModelNode::ReleaseGeometry() {
   if (this->frames) {
     delete[] this->frames;
     this->frames = nullptr;
@@ -70,6 +71,11 @@ AnimatedModelNode::~AnimatedModelNode() {
     delete[] this->textures;
     this->textures = nullptr;
   }
+}
+
+// INLINED
+AnimatedModelNode::~AnimatedModelNode() {
+  this->ReleaseGeometry();
 }
 
 // OFFSET: 0x007550E0
@@ -251,23 +257,7 @@ bool C3dAnimModelRes::Load(const char* name) {
   return true;
 }
 
-// INLINED
-GrannyAnimationLibrary::~GrannyAnimationLibrary() {
-  if (this->instance) {
-    this->FreeInstance();
-
-    for (auto& job : this->animations) {
-      for (granny_animation*& animation : job) {
-        if (animation) {
-          animation = nullptr;
-        }
-      }
-    }
-
-    GrannyFreeLocalPose(this->localPose);
-    GrannyFreeFile(this->file);
-  }
-}
+// OFFSET: 0x007566B0
 
 // OFFSET: 0x00755340
 // FUNCTION: fn_07981
