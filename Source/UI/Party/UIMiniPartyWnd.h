@@ -42,7 +42,11 @@ public:
   void OnLBtnDown(int x, int y) override;
   void OnLBtnUp(int x, int y) override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
-  MessengerMember GetMember();
+  // OFFSET: 0x00740170
+  // FUNCTION: fn_07728
+  MessengerMember GetMember() {
+    return this->m_member;
+  }
 
   /* 00B4 */ MessengerMember m_member;
   /* 0104 */ int m_cell;

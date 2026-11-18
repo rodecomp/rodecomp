@@ -2036,13 +2036,6 @@ UIMiniPartyInfoWnd::UIMiniPartyInfoWnd()
   this->m_entries.clear();
 }
 
-// OFFSET: 0x00740170
-// FUNCTION: fn_07728
-MessengerMember UIMiniPartyWnd::GetMember() {
-  MessengerMember member = this->m_member;
-  return member;
-}
-
 // OFFSET: 0x00740250
 // FUNCTION: fn_07729
 void UIMiniPartyInfoWnd::OnCreate(int width, int) {
