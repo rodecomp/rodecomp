@@ -101,11 +101,10 @@ bool CBitmapRes::DecodePng(const void* data, int bytes, const char*) {
   this->image.pixels = new std::uint32_t[this->image.width * this->image.height];
 
   for (int y = 0; y < this->image.height; ++y) {
-    const unsigned char* pixel = rows[y];
+    const unsigned char* row = rows[y];
     std::uint32_t* out = &this->image.pixels[this->image.width * y];
     for (int x = 0; x < this->image.width; ++x) {
-      *out++ = (((((pixel[3] << 8) + pixel[0]) << 8) + pixel[1]) << 8) + pixel[2];
-      pixel += 4;
+      *out++ = (((((row[4 * x + 3] << 8) + row[4 * x]) << 8) + row[4 * x + 1]) << 8) + row[4 * x + 2];
     }
   }
 
