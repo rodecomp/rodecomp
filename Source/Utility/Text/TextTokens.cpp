@@ -42,15 +42,16 @@ bool IsHexColorToken(const char* text, const char* end) {
 
 // OFFSET: 0x009BA740
 // FUNCTION: fn_13883
-std::string __stdcall StripColorTokens(const char* text, std::uint32_t length) {
+std::string __stdcall StripColorTokens(std::string_view text) {
+  const char* current = text.data();
+  const std::size_t length = text.size();
   std::string result;
   result.reserve(length);
-  if (text == nullptr) {
+  if (current == nullptr) {
     return result;
   }
 
-  const char* current = text;
-  const char* end = text + length;
+  const char* end = current + length;
   while (current < end) {
     if (IsHexColorToken(current, end)) {
       current += 7;

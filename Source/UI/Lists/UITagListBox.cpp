@@ -758,7 +758,7 @@ void UITagListBox::AddTagButton(STagInfoV2 tag, int lineCount) {
     bytes += static_cast<int>(this->lines[index].size());
     if (tag.startOffset < bytes) {
       const int prefixLength = static_cast<int>(this->lines[index].size()) - bytes + tag.startOffset;
-      const std::string stripped = StripColorTokens(this->lines[index].c_str(), prefixLength);
+      const std::string stripped = StripColorTokens(std::string_view(this->lines[index].c_str(), prefixLength));
       const std::string prefix = stripped.substr(0, prefixLength);
       x = this->TextWidth(prefix.c_str(), 0, 0, 12, 0, 0) + 2;
       line = index;
