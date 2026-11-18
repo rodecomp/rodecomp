@@ -272,47 +272,13 @@ void SpriteLayerRenderer::DrawLayerOutlines(std::uint32_t color) {
     SpriteQuad outline = quad;
     outline.color = color;
 
-    outline.top = quad.top + negative;
-    outline.bottom = quad.bottom + negative;
-    outline.left = quad.left + 0.0f;
-    outline.right = quad.right + 0.0f;
-    this->QueueQuad(layer, &outline, palette, 5);
-
-    outline.top = quad.top + negative;
-    outline.bottom = quad.bottom + negative;
-    outline.left = quad.left + negative;
-    outline.right = quad.right + negative;
-    this->QueueQuad(layer, &outline, palette, 5);
-
-    outline.top = quad.top + offset;
-    outline.bottom = quad.bottom + offset;
-    outline.left = quad.left + negative;
-    outline.right = quad.right + negative;
-    this->QueueQuad(layer, &outline, palette, 5);
-
-    outline.top = quad.top + negative;
-    outline.bottom = quad.bottom + negative;
-    outline.left = quad.left + offset;
-    outline.right = quad.right + offset;
-    this->QueueQuad(layer, &outline, palette, 5);
-
-    outline.top = quad.top + offset;
-    outline.bottom = quad.bottom + offset;
-    outline.left = quad.left + offset;
-    outline.right = quad.right + offset;
-    this->QueueQuad(layer, &outline, palette, 5);
-
-    outline.top = quad.top + offset;
-    outline.bottom = quad.bottom + offset;
-    outline.left = quad.left + 0.0f;
-    outline.right = quad.right + 0.0f;
-    this->QueueQuad(layer, &outline, palette, 5);
-
-    outline.top = quad.top + negative;
-    outline.bottom = quad.bottom + negative;
-    outline.left = quad.left + 0.0f;
-    outline.right = quad.right + 0.0f;
-    this->QueueQuad(layer, &outline, palette, 5);
+    this->QueueOutline(layer, negative, 0.0f, palette, quad, outline);
+    this->QueueOutline(layer, negative, negative, palette, quad, outline);
+    this->QueueOutline(layer, offset, negative, palette, quad, outline);
+    this->QueueOutline(layer, negative, offset, palette, quad, outline);
+    this->QueueOutline(layer, offset, offset, palette, quad, outline);
+    this->QueueOutline(layer, offset, 0.0f, palette, quad, outline);
+    this->QueueOutline(layer, negative, 0.0f, palette, quad, outline);
   }
 }
 
@@ -749,5 +715,90 @@ void SpriteLayerRenderer::LoadLayers() {
       this->hideHeadLayer = true;
       return;
     }
+  }
+}
+
+// OFFSET: 0x00640DB0
+// FUNCTION: fn_45587
+std::pair<bool, const ActionFrame*> SpriteLayerRenderer::FindSyncedFrame(int layer, CActRes* action) const {
+  switch (layer) {
+    case 2:
+    case 3:
+    case 4:
+    case 8: {
+      const int bodyCount = static_cast<CActRes*>(this->pc->GetEquipAction(1))->FrameCount(this->pc->render.previousAnimation);
+      const int layerCount = static_cast<CActRes*>(this->pc->GetEquipAction(layer))->FrameCount(this->pc->render.previousAnimation);
+      if (bodyCount > 0 && layerCount > 0 && layerCount > bodyCount && layerCount % bodyCount == 0) {
+        return {true, &action->Frame(this->pc->render.previousAnimation, this->pc->render.curMotion * (layerCount / bodyCount))};
+      }
+      break;
+    }
+  }
+  return {false, nullptr};
+}
+
+// OFFSET: 0x00641390
+
+// OFFSET: 0x00641490
+// FUNCTION: fn_45589
+void SpriteLayerRenderer::PrepareLayers() {
+  this->layerShift = 0;
+  this->swingX = 0;
+  this->swingY = 0;
+  this->hideHeadLayer = false;
+  this->hideAccessories = false;
+  this->alternateLayerRendering = false;
+
+  this->layerViews[2] = this->pc->accessory;
+  this->layerViews[3] = this->pc->accessory2;
+  this->layerViews[4] = this->pc->accessory3;
+  this->layerViews[8] = this->pc->robe;
+  this->LoadLayers();
+}
+
+// OFFSET: 0x00641570
+// FUNCTION: fn_45590
+bool SpriteLayerRenderer::ShouldDrawLayer(int layer) const {
+  if (layer == 5 || layer == 6 || layer == 7) {
+    if (this->pc->IsCostumeOutfit() == true || !IsReadyOrAttackAction(this->pc->render.previousAnimation)) {
+      return false;
+    }
+
+    if (layer == 7) {
+      const int job = this->pc->GetEffectiveJob(-1);
+      return job != JT_MADOGEAR && job != JT_MADOGEAR_H && job != JT_MADOGEAR_B;
+    }
+    if ((layer == 5 || layer == 6) && this->pc->isRiding == 1) {
+      return false;
+    }
+  }
+
+  if ((layer == 2 || layer == 3 || layer == 4) && this->hideAccessories == true) {
+    return false;
+  }
+
+  if (layer == 8 && this->pc->isHelmRobe == false) {
+    return false;
+  }
+  return true;
+}
+
+// OFFSET: 0x00641CD0
+
+// OFFSET: 0x00641DE0
+// FUNCTION: fn_45592
+void SpriteLayerRenderer::QueueOutline(int layer, float yOffset, float xOffset, const std::uint32_t* palette, const SpriteQuad& quad, SpriteQuad& outline) {
+  outline.top = yOffset + quad.top;
+  outline.bottom = yOffset + quad.bottom;
+  outline.left = xOffset + quad.left;
+  outline.right = xOffset + quad.right;
+  this->QueueQuad(layer, &outline, palette, 5);
+}
+
+// OFFSET: 0x00642130
+// FUNCTION: fn_45593
+void SpriteLayerRenderer::IncludeLayerBounds(int layer, const float* box) {
+  if ((layer == 0 || layer == 1) && this->pc->render.trackBounds == 1) {
+    this->bounds.Include(box);
   }
 }
