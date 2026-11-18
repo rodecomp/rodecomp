@@ -239,7 +239,8 @@ void UITextViewEX::OnCreate(int width, int height) {
 // FUNCTION: fn_11515
 void UITextViewEX::Refresh() {
   const int visible = this->geometry.height / this->lineHeight;
-  const int overflow = std::max((static_cast<int>(this->lineLinks.size()) - visible), 0);
+  const int excess = static_cast<int>(this->lineLinks.size()) - visible;
+  const int overflow = excess >= 0 ? excess : 0;
 
   this->verticalOverflow = overflow != 0;
   UIScrollBar* bar = this->verticalBar;
