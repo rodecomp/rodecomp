@@ -309,7 +309,8 @@ std::string CNavigationManager::RouteText() {
   CNaviInfo* info = this->data.GetInfo();
   if (info != nullptr) {
     NaviCell cell;
-    if (this->data.GetCell(&cell)->x > 0) {
+    this->data.GetCell(&cell);
+    if (cell.x > 0) {
       NaviCell cellX;
       StringFormat(buffer, sizeof(buffer), static_cast<std::size_t>(-1), "[%s] -> %s %d %d", LookupMessage(MSI_NAVIGATION_DESTINATION), info->GetName(), this->data.GetCell(&cellX)->x, this->data.GetCell(&cell)->y);
     } else {
