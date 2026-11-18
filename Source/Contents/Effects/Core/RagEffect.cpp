@@ -2528,12 +2528,12 @@ bool CRagEffect::Potion_Berserk() {
   }
 
   this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
-  if (this->state.stateCnt < 151) {
-    return true;
+  if (this->state.stateCnt > 150) {
+    this->state.parent->SendMsg(nullptr, AM_RETURN_COLOR, 0, 0, 0, 0, 0, 0);
+    return false;
   }
 
-  this->state.parent->SendMsg(nullptr, AM_RETURN_COLOR, 0, 0, 0, 0, 0, 0);
-  return false;
+  return true;
 }
 
 // OFFSET: 0x00C52370
@@ -3790,7 +3790,7 @@ void CRagEffect::TexturedSkillIcon(const char* name, std::int16_t level, std::in
   char iconName[64];
   CopyVector(this->render.position, this->state.parent->render.position);
 
-  if (this->state.stateCnt != (level != 0 ? level : 0)) {
+  if (this->state.stateCnt != (level == 0 ? 0 : level)) {
     return;
   }
 
@@ -5930,22 +5930,18 @@ void CRagEffect::TexturedComet(const char* name, char kind) {
   this->state.lastPrim->state.duration = this->state.duration;
   this->state.lastPrim->state.totalTexture = 2;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
-  const char* second;
 
   if (kind == 1) {
     this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\thunder_ball_0002.bmp", 0, false, true, false);
-    second = "effect\\thunder_ball_0003.bmp";
+    this->state.lastPrim->state.textures[1] = g_texMgr.Load("effect\\thunder_ball_0003.bmp", 0, false, true, false);
+  } else if (kind == 2) {
+    this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\meteo_comet_b.bmp", 0, false, true, false);
+    this->state.lastPrim->state.textures[1] = g_texMgr.Load("effect\\meteo_comet_c.bmp", 0, false, true, false);
   } else {
-    if (kind == 2) {
-      this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\meteo_comet_b.bmp", 0, false, true, false);
-      second = "effect\\meteo_comet_c.bmp";
-    } else {
-      this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\pok1.tga", 0, false, true, false);
-      second = "effect\\pok3.tga";
-    }
+    this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\pok1.tga", 0, false, true, false);
+    this->state.lastPrim->state.textures[1] = g_texMgr.Load("effect\\pok3.tga", 0, false, true, false);
   }
 
-  this->state.lastPrim->state.textures[1] = g_texMgr.Load(second, 0, false, true, false);
   this->state.lastPrim->state.size = 0.0f;
   RenderObjectState& primRender = this->state.lastPrim->render;
   primRender.position = this->render.position;
@@ -7076,9 +7072,8 @@ __declspec(safebuffers) void CRagEffect::RisingSparkles(char colorMode) {
   this->state.lastPrim = this->LaunchEffectPrim(16, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 50;
   this->state.lastPrim->state.transform.MakeYRotation(GetRadian(ClampedRandom(360)));
-  const float distance = static_cast<float>(ClampedRandom(7) + 3);
-  const vector3d forward{0.0f, 0.0f, distance};
-  MatrixMult(this->state.lastPrim->state.deltaPos2, forward, this->state.lastPrim->state.transform.values);
+  EffectPrimitiveState& launched = this->state.lastPrim->state;
+  MatrixMult(launched.deltaPos2, {0.0f, 0.0f, static_cast<float>(ClampedRandom(7) + 3)}, launched.transform.values);
   this->state.lastPrim->state.deltaPos2.y -= 5.0f;
   this->state.lastPrim->state.transform.MakeXRotation(GetRadian(-90));
   this->state.lastPrim->state.accel = -0.015f;
@@ -8090,16 +8085,16 @@ void CRagEffect::RocketPunch() {
   std::int16_t angle;
   this->state.lastPrim->Get_Angle(this->render.position.x - this->state.deltaPos.x, this->render.position.z - this->state.deltaPos.z, &angle);
   const CView* camera = g_modeMgr.GetGameMode()->camera;
-  std::int16_t direction = static_cast<std::int16_t>(static_cast<int>(camera->camera.yaw) + angle) % 360;
-  if (0 > direction) {
-    direction += 360;
+  angle = static_cast<std::int16_t>(static_cast<int>(camera->camera.yaw) + angle) % 360;
+  if (0 > angle) {
+    angle += 360;
   }
 
-  if (direction >= 180 && direction < 270) {
+  if (angle >= 180 && angle < 270) {
     this->state.lastPrim->SetAction(4, 16, 1);
-  } else if (direction >= 90 && direction < 180) {
+  } else if (angle >= 90 && angle < 180) {
     this->state.lastPrim->SetAction(6, 16, 1);
-  } else if (direction >= 0 && direction < 90) {
+  } else if (angle >= 0 && angle < 90) {
     this->state.lastPrim->SetAction(0, 16, 1);
   } else {
     this->state.lastPrim->SetAction(2, 16, 1);
@@ -8143,20 +8138,20 @@ void CRagEffect::GreenRocketPunch() {
   std::int16_t angle;
   this->state.lastPrim->Get_Angle(this->render.position.x - this->state.deltaPos.x, this->render.position.z - this->state.deltaPos.z, &angle);
   const CView* camera = g_modeMgr.GetGameMode()->camera;
-  std::int16_t direction = static_cast<std::int16_t>(static_cast<int>(camera->camera.yaw) + angle) % 360;
-  if (direction < 0) {
-    direction += 360;
+  angle = static_cast<std::int16_t>(static_cast<int>(camera->camera.yaw) + angle) % 360;
+  if (angle < 0) {
+    angle += 360;
   }
 
   this->state.lastPrim->state.red = 105;
   this->state.lastPrim->state.green = 255;
   this->state.lastPrim->state.blue = 105;
   this->state.lastPrim->state.alpha = static_cast<float>((5 - this->state.stateCnt) * 40);
-  if (direction >= 180 && direction < 270) {
+  if (angle >= 180 && angle < 270) {
     this->state.lastPrim->SetAction(4, 16, 1);
-  } else if (direction >= 90 && direction < 180) {
+  } else if (angle >= 90 && angle < 180) {
     this->state.lastPrim->SetAction(6, 16, 1);
-  } else if (direction >= 0 && direction < 90) {
+  } else if (angle >= 0 && angle < 90) {
     this->state.lastPrim->SetAction(0, 16, 1);
   } else {
     this->state.lastPrim->SetAction(2, 16, 1);
@@ -9179,7 +9174,10 @@ void CRagEffect::AlphaDownRipples(const char* name, char kind) {
 // FUNCTION: fn_20027
 bool CRagEffect::Coin() {
   if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) == 0 && this->state.stateCnt == 20) {
-    const int coinCount = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0 ? 2 : 5;
+    int coinCount = 5;
+    if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) != 0) {
+      coinCount = 2;
+    }
 
     for (int coin = 0; coin < coinCount; ++coin) {
       this->state.lastPrim = this->LaunchEffectPrim(6, vector3d{0.0f, 0.0f, 0.0f});
@@ -11051,22 +11049,19 @@ void CRagEffect::YufitelHit(char kind) {
   this->state.lastPrim->state.animSpeed = 1;
   this->state.lastPrim->state.totalTexture = 5;
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
-  const char* last;
   if (kind == 0) {
     this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\thunder_plazma_blast_a.bmp", 0, false, true, false);
     this->state.lastPrim->state.textures[1] = g_texMgr.Load("effect\\thunder_plazma_blast_b.bmp", 0, false, true, false);
     this->state.lastPrim->state.textures[2] = g_texMgr.Load("effect\\thunder_ball_d.bmp", 0, false, true, false);
     this->state.lastPrim->state.textures[3] = g_texMgr.Load("effect\\thunder_ball_e.bmp", 0, false, true, false);
-    last = "effect\\thunder_ball_f.bmp";
+    this->state.lastPrim->state.textures[4] = g_texMgr.Load("effect\\thunder_ball_f.bmp", 0, false, true, false);
   } else {
     this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\twirl_soft.bmp", 0, false, true, false);
     this->state.lastPrim->state.textures[1] = g_texMgr.Load("effect\\thunder_ball_b.bmp", 0, false, true, false);
     this->state.lastPrim->state.textures[2] = g_texMgr.Load("effect\\twirl_soft.bmp", 0, false, true, false);
     this->state.lastPrim->state.textures[3] = g_texMgr.Load("effect\\thunder_ball_c.bmp", 0, false, true, false);
-    last = "effect\\twirl_soft.bmp";
+    this->state.lastPrim->state.textures[4] = g_texMgr.Load("effect\\twirl_soft.bmp", 0, false, true, false);
   }
-
-  this->state.lastPrim->state.textures[4] = g_texMgr.Load(last, 0, false, true, false);
 }
 
 // OFFSET: 0x00C457B0
@@ -11669,7 +11664,7 @@ void CRagEffect::Map_MagicZone(const char* name, char type) {
   this->state.lastPrim->state.slots[2].life = 0;
   this->state.lastPrim->state.slots[3].life = 0;
 
-  if (type == 2 || type == 3) {
+  if (type >= 2 && type <= 3) {
     this->state.lastPrim->state.slots[0].distance = 40.0f;
   } else if (type == 4 || type == 14) {
     if (this->state.param[0] <= 0.0f) {
@@ -14408,19 +14403,19 @@ void CRagEffect::CHIMTO(char flag) {
   std::int16_t angle;
   this->state.lastPrim->Get_Angle(this->render.position.x - this->state.deltaPos.x, this->render.position.z - this->state.deltaPos.z, &angle);
   const CView* camera = g_modeMgr.GetGameMode()->camera;
-  std::int16_t direction = static_cast<std::int16_t>(static_cast<int>(camera->camera.yaw) + angle) % 360;
-  if (direction < 0) {
-    direction += 360;
+  angle = static_cast<std::int16_t>(static_cast<int>(camera->camera.yaw) + angle) % 360;
+  if (angle < 0) {
+    angle += 360;
   }
 
   this->state.lastPrim->state.renderFlag |= 0x200u;
 
   int animation;
-  if (direction >= 180 && direction < 270) {
+  if (angle >= 180 && angle < 270) {
     animation = 0;
-  } else if (direction >= 90 && direction < 180) {
+  } else if (angle >= 90 && angle < 180) {
     animation = 1;
-  } else if (direction >= 0 && direction < 90) {
+  } else if (angle >= 0 && angle < 90) {
     animation = 2;
   } else {
     animation = 3;
@@ -14450,11 +14445,11 @@ void CRagEffect::TANJI() {
   this->state.lastPrim->state.textures[0] = g_texMgr.Load("effect\\blue_ivy.bmp", 0, false, true, false);
   this->state.lastPrim->state.size = 0.0f;
   this->state.lastPrim->state.deltaPos = this->state.deltaPos;
+  const float dx = this->state.deltaPos.x - this->render.position.x;
+  const float dz = this->state.deltaPos.z - this->render.position.z;
   this->state.lastPrim->state.slots[0].life = 1;
   this->state.lastPrim->state.slots[0].process = -15;
-  this->state.lastPrim->state.slots[0].maxHeight =
-    SquareRoot((this->state.deltaPos.x - this->render.position.x) * (this->state.deltaPos.x - this->render.position.x) +
-               (this->state.deltaPos.z - this->render.position.z) * (this->state.deltaPos.z - this->render.position.z));
+  this->state.lastPrim->state.slots[0].maxHeight = SquareRoot(dx * dx + dz * dz);
   this->state.lastPrim->state.slots[0].distance = static_cast<float>(static_cast<int>(this->state.count)) * 0.4f + 2.0f;
   this->state.lastPrim->state.slots[0].height[8] = 0.0f;
   this->state.lastPrim->state.slots[0].alphaB = 5;
@@ -15002,12 +14997,12 @@ bool CRagEffect::Potion_Awakening() {
   }
 
   this->ProcessEZ2STR(0.0f, -80.0f, 0.0f);
-  if (this->state.stateCnt <= 150) {
-    return true;
+  if (this->state.stateCnt > 150) {
+    this->state.parent->SendMsg(nullptr, AM_RETURN_COLOR, 0, 0, 0, 0, 0, 0);
+    return false;
   }
 
-  this->state.parent->SendMsg(nullptr, AM_RETURN_COLOR, 0, 0, 0, 0, 0, 0);
-  return false;
+  return true;
 }
 // OFFSET: 0x00C3C4E0
 // FUNCTION: fn_20110
