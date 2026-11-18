@@ -269,8 +269,9 @@ int ItemLinkMessageId(const std::string& text) {
 // FUNCTION: fn_10416
 int NavigationLinkParser::ItemLinkMessageId(const std::string& text) {
   char delimiters[] = "!#$%&'()*+,-/";
-  char* buffer = new char[text.size() + 1];
-  strcpy_s(buffer, text.size() + 1, text.c_str());
+  const std::size_t size = text.size() + 1;
+  char* buffer = new char[size];
+  strcpy_s(buffer, size, text.c_str());
   std::string value("");
 
   for (std::size_t position = 6; position < text.size() + 1; ++position) {
