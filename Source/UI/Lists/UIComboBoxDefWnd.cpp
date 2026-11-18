@@ -49,8 +49,8 @@ UIComboBoxDefWnd::UIComboBoxDefWnd()
       borderGreen(0), borderBlue(0), dropdownHeight(40) {
 }
 
-// OFFSET: 0x00872AE0
-// FUNCTION: fn_11134
+// OFFSET: 0x00870680
+// FUNCTION: fn_45656
 UIComboBoxDefWnd::~UIComboBoxDefWnd() = default;
 
 // OFFSET: 0x00885920
@@ -275,8 +275,8 @@ UIComboBoxDef2Wnd::UIComboBoxDef2Wnd()
     : UIComboBoxDefWnd(), skin(0), alignment(0), textOffset(0), previousTextX(0) {
 }
 
-// OFFSET: 0x00872A70
-// FUNCTION: fn_11133
+// OFFSET: 0x00870620
+// FUNCTION: fn_45655
 UIComboBoxDef2Wnd::~UIComboBoxDef2Wnd() = default;
 
 // OFFSET: 0x00885250
