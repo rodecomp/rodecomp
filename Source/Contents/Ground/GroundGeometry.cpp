@@ -89,7 +89,8 @@ namespace {
   }
 }
 
-// INLINED
+// OFFSET: 0x00ABD7D0
+// FUNCTION: fn_45862
 GroundBase::GroundBase() {
   this->waterStateA = 0;
   this->cellSize = 10.0f;
@@ -104,8 +105,7 @@ GroundBase::GroundBase() {
   this->loaded = 0;
 }
 
-// INLINED
-GroundBase::~GroundBase() = default;
+// OFFSET: 0x00ABDCA0
 
 // OFFSET: 0x00ABD640
 // FUNCTION: fn_17546
