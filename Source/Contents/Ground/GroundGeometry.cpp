@@ -15,6 +15,10 @@ namespace {
   };
 
   struct CellNormals {
+    // OFFSET: 0x00ABD9A0
+    // FUNCTION: fn_45866
+    CellNormals() = default;
+
     /* 0000 */ NormalVector faces[2];
     /* 0018 */ NormalVector side2;
     /* 0024 */ NormalVector side1;
