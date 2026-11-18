@@ -1473,7 +1473,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     break;
   }
   case AM_DELETE_ICEEFFECT:
-  case 107:
+  case AM_MAKE_FREEZINGEFFECT:
     if (this->statusEffects[3] != 0) {
       this->statusEffects[3]->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0);
       this->statusEffects[3] = 0;
@@ -1601,7 +1601,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
     break;
   }
-  case 131: {
+  case AM_MAKE_BLUE_EFFECT: {
     CGameObject* effect = mode->SpawnMsgEffect(0x16, &this->render.position, this->render.accountId, true);
     this->msgEffectList.push_back(effect);
     effect->SendMsg(this, AM_SET_MASTER_POINTER, 0, 0, 0, 0, 0, 0);
@@ -1638,7 +1638,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     }
     this->SetState(ST_DEAD, 1);
     break;
-  case 134: {
+  case AM_MAKE_CURSOR_EFFECT: {
     if (this->statusEffects[11] != 0) {
       break;
     }
@@ -1648,7 +1648,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     this->statusEffects[11] = effect;
     break;
   }
-  case 135:
+  case AM_DELETE_CURSOR_EFFECT:
     if (this->statusEffects[11] != 0) {
       this->statusEffects[11]->SendMsg(nullptr, AM_DISAPPEAR, 0, 0, 0, 0, 0, 0);
       this->statusEffects[11] = 0;
@@ -1937,7 +1937,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     }
     break;
   }
-  case 108:
+  case AM_WILL_BE_ATTACK:
     this->SetState(ST_ATTACK, 1);
     this->attackMotion = static_cast<float>(this->GetAttackMotion());
     this->RegisterPos();

@@ -8743,7 +8743,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
   if (message == UM_COMMAND) {
     switch (a) {
     case ID_CANCEL:
-      g_windowMgr.CloseWindow(115);
+      g_windowMgr.CloseWindow(WID_STOREPASSWORDINPUTWND);
       if (mode->cursorType == 9) {
         g_windowMgr.EnsureWindow(WID_NEWSELECTCHARWND);
       }
@@ -8758,7 +8758,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
             password += 100000000;
           }
           mode->SendMsg(188, password, g_session.m_storePasswordMode, 0, 0);
-          g_windowMgr.CloseWindow(115);
+          g_windowMgr.CloseWindow(WID_STOREPASSWORDINPUTWND);
           break;
         }
         g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_4_8), 0, true, false, 0, "Message", 280, 120, 0);
@@ -8827,7 +8827,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
               newPassword += 100000000;
             }
             mode->SendMsg(188, password, g_session.m_storePasswordMode, newPassword, 0);
-            g_windowMgr.CloseWindow(115);
+            g_windowMgr.CloseWindow(WID_STOREPASSWORDINPUTWND);
           } else {
             g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_MISMATCH), 0, true, false, 0, "Message", 280, 120, 0);
             this->passwordStage = 2;

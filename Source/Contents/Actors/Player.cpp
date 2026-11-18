@@ -4865,7 +4865,7 @@ void CPc::SendMsg(
   }
   case AM_MAKE_CHICKEN:
   case AM_DELETE_CHICKEN:
-  case 136: {
+  case AM_CAMPINFO: {
     this->SetSprJob(this->GetEffectiveJob(-1));
     this->SetImfFileName();
     const std::uint64_t weapon = this->GetWeapon();
@@ -5175,7 +5175,7 @@ void CPc::SendMsg(
   default:
     CGameActor::SendMsg(sender, message, b, c, d, e, f, g);
     break;
-  case 77:
+  case AM_MAKE_BLUR_ACTOR:
     break;
   }
 }
@@ -5435,7 +5435,7 @@ void CGrannyPc::SendMsg(
   default:
     CGameActor::SendMsg(sender, message, b, c, d, e, 0, 0);
     break;
-  case 77:
+  case AM_MAKE_BLUR_ACTOR:
     break;
   }
 }
