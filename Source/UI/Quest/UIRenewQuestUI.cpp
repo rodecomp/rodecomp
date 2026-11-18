@@ -1211,9 +1211,13 @@ void CUIRenewQuestUI::UpdateQuestLists(unsigned int flags) {
         const int position = listBox->data.size() == 0 ? -1 : listBox->scrollBar->position;
         listBox->ClearData();
         for (std::pair<const unsigned long, RenewQuestOngoingInfo> entry : g_renewQuestMgr->m_ongoingQuests) {
-          if (this->MatchesFilter(entry.second) && entry.second.questType == 1) {
-            listBox->AddData(entry.first, false);
+          if (!this->MatchesFilter(entry.second)) {
+            continue;
           }
+          if (entry.second.questType != 1) {
+            continue;
+          }
+          listBox->AddData(entry.first, false);
         }
         listBox->UpdateScrollBar();
         if (position == -1) {
