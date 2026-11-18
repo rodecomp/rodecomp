@@ -106,8 +106,8 @@ void CShowRankingScheduler::Show() {
   auto style = styles.find(kind);
   if (style != styles.end()) {
     title = style->second.title;
-    color = style->second.color;
     background = style->second.background;
+    color = style->second.color;
   } else {
     title = "===========================================";
     background = 0;
@@ -119,7 +119,7 @@ void CShowRankingScheduler::Show() {
     std::string name = "";
     if (this->rankingData.ids[index] != 0) {
       for (std::size_t listed = 0; listed < this->rankingList.size(); ++listed) {
-        if (this->rankingList[listed] == this->rankingData.ids[index]) {
+        if (this->rankingData.ids[index] == this->rankingList[listed]) {
           name = g_namelessName;
           break;
         }
