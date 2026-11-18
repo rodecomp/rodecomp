@@ -856,7 +856,7 @@ int CCashEmotionMgr::GetEarliestExpiry() {
 // FUNCTION: fn_02951
 __declspec(noinline) CashEmotionTable* CCashEmotionMgr::GetPackEmotionTable(int packId) {
   auto it = this->m_emotionsByPack.find(packId);
-  if (it != this->m_emotionsByPack.end()) {
+  if (this->m_emotionsByPack.end() != it) {
     return &it->second;
   }
 
