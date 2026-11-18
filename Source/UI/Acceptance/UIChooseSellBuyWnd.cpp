@@ -12093,8 +12093,11 @@ int UIChoose3Wnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       ++this->m_lastItemIndex;
       this->m_items.push_back(this->m_lastItemIndex);
       UIListBox* list = this->m_list;
+      const int scrollBarWidth = list->verticalBar ? list->verticalBar->geometry.width : 0;
       const int listWidth = list->geometry.width;
-      const int growWidth = 0;
+      const int overflowWidth = list->contentWidth + list->textInset * 2 - listWidth + scrollBarWidth;
+      const int maximumGrowWidth = 0;
+      const int growWidth = std::min(std::max(0, overflowWidth), maximumGrowWidth);
       int growHeight = 0;
       if (this->m_minimumLines < static_cast<int>(list->lines.size()) && list->LineCount() <= this->m_maximumLines) {
         growHeight = list->lineHeight;
