@@ -28,12 +28,13 @@ void UIWindow::DrawItemAndQuantityAuxiliary(
   if (plain != 0) {
     this->DrawTextAt(x + 16, y + 20, text, 0, 0, 11, 0, 0, 0);
   } else {
+    const int top = y + 15;
     const int left = x + (item.quantity < 1000 ? 14 : 0);
-    this->DrawTextAt(left + 1, y + 15, text, 0, 0, 11, 0xFFFFFF, 0, 0);
-    this->DrawTextAt(left - 1, y + 15, text, 0, 0, 11, 0xFFFFFF, 0, 0);
+    this->DrawTextAt(left + 1, top, text, 0, 0, 11, 0xFFFFFF, 0, 0);
+    this->DrawTextAt(left - 1, top, text, 0, 0, 11, 0xFFFFFF, 0, 0);
     this->DrawTextAt(left, y + 16, text, 0, 0, 11, 0xFFFFFF, 0, 0);
     this->DrawTextAt(left, y + 14, text, 0, 0, 11, 0xFFFFFF, 0, 0);
-    this->DrawTextAt(left, y + 15, text, 0, 0, 11, 0, 0, 0);
+    this->DrawTextAt(left, top, text, 0, 0, 11, 0, 0, 0);
   }
 }
 
@@ -83,11 +84,12 @@ void UIWindow::DrawItemAndQuantity(
   if (plain != 0) {
     this->DrawTextAt(x + 16, y + 20, text, 0, 0, 11, 0, 0, 0);
   } else {
+    const int top = y + 15;
     const int left = x + (item.quantity < 1000 ? 14 : 0);
-    this->DrawTextAt(left + 1, y + 15, text, 0, 0, 11, 0xFFFFFF, 0, 0);
-    this->DrawTextAt(left - 1, y + 15, text, 0, 0, 11, 0xFFFFFF, 0, 0);
+    this->DrawTextAt(left + 1, top, text, 0, 0, 11, 0xFFFFFF, 0, 0);
+    this->DrawTextAt(left - 1, top, text, 0, 0, 11, 0xFFFFFF, 0, 0);
     this->DrawTextAt(left, y + 16, text, 0, 0, 11, 0xFFFFFF, 0, 0);
     this->DrawTextAt(left, y + 14, text, 0, 0, 11, 0xFFFFFF, 0, 0);
-    this->DrawTextAt(left, y + 15, text, 0, 0, 11, 0, 0, 0);
+    this->DrawTextAt(left, top, text, 0, 0, 11, 0, 0, 0);
   }
 }
