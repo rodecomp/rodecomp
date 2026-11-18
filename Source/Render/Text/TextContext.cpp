@@ -314,12 +314,16 @@ void TextContext::DrawPair(int x, int y, const char* text, int bytes) {
 void TextContext::Draw(int x, int y, const char* text, int bytes) {
   if (g_inlineCharset) {
     const char* current = text;
+    int left = x;
     int scanned = 0, remaining = bytes;
 
-    while (scanned < bytes) {
+    if (bytes <= 0) {
+      return;
+    }
+    do {
       scanned += Marker(text + scanned, remaining);
       if (scanned >= bytes) {
-        this->DrawPair(x, y, current, scanned);
+        this->DrawPair(left, y, current, scanned);
         return;
       }
 
@@ -328,15 +332,15 @@ void TextContext::Draw(int x, int y, const char* text, int bytes) {
       }
 
       const int segment = Marker(text + scanned + 3, remaining - 3) + 3;
-      this->DrawPair(x, y, current, segment);
+      this->DrawPair(left, y, current, segment);
       SIZE size;
       this->Measure(current, segment, &size);
 
       current += segment;
       scanned += segment;
-      x += size.cx;
+      left += size.cx;
       remaining -= segment;
-    }
+    } while (scanned < bytes);
   } else {
     this->DrawPair(x, y, text, bytes);
   }
