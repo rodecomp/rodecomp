@@ -17488,7 +17488,8 @@ void CGameMode::SetPartyMemberList(const char* value, std::vector<PartyRosterEnt
   }
   g_session.partyName = partyName;
 
-  for (const PartyRosterEntry& entry : *members) {
+  for (auto iter = members->begin(); iter != members->end(); ++iter) {
+    const PartyRosterEntry& entry = *iter;
     char name[25];
     name[24] = '\0';
     std::memcpy(name, entry.name, sizeof(entry.name));
