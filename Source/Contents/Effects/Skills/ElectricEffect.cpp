@@ -18,7 +18,7 @@
 // OFFSET: 0x00B4E890
 // FUNCTION: fn_19002
 void CElectricEffect::AddBolt(int tilt) {
-  for (int row = 0; row < 4; ++row) {
+  for (int row = 0; row < 4; ++row, tilt += 45) {
     const int roll = rand() % 11;
     const float spin = static_cast<float>(roll >= 0 ? roll : 0) * 0.01f;
 
@@ -43,19 +43,16 @@ void CElectricEffect::AddBolt(int tilt) {
         particle->InitParticleQuad(particle->vertices);
         this->bolts.push_back(particle);
 
-        float* arc = &particle->animationParameter;
-        arc[20] = 9.0f;
+        particle->animationValues[20] = 9.0f;
         for (int index = 20; index > 0; --index) {
-          if (arc[index] + 9.0f > 180.0f) {
-            arc[index - 1] = 180.0f;
+          if (particle->animationValues[index] + 9.0f > 180.0f) {
+            particle->animationValues[index - 1] = 180.0f;
           } else {
-            arc[index - 1] = arc[index] + 9.0f;
+            particle->animationValues[index - 1] = particle->animationValues[index] + 9.0f;
           }
         }
       }
     }
-
-    tilt += 45;
   }
 }
 
