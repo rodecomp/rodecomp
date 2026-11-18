@@ -4418,7 +4418,7 @@ __declspec(noinline) void CGameMode::ReceiveItem1740List(const unsigned char* pa
   const int length = p->length;
   const int count = static_cast<int>(static_cast<unsigned int>(length - 4) / sizeof(StoreNormalRecord));
   const auto* record = reinterpret_cast<const StoreNormalRecord*>(p + 1);
-  for (int index = count; index > 0; --index, ++record) {
+  for (int index = count; index >= 1; --index, ++record) {
     ITEM_INFO item;
     item.identity[0] = record->type;
     item.identity[1] = record->index;

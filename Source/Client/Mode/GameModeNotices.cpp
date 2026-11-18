@@ -7394,7 +7394,7 @@ void CGameMode::RefreshInventoryOrEquipItem2(const unsigned char* data) {
   }
   item.grade = packet->grade;
 
-  if (lookup == 0) {
+  if (0 == lookup) {
     g_session.UpdateInventoryItem(item, 1);
   } else if (lookup == 1) {
     g_session.SetEquippedItem(slot, item);

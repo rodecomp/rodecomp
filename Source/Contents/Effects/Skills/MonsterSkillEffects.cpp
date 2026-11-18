@@ -1148,7 +1148,7 @@ CParticle* CFootprintEffect::SpawnFootprint() {
     const float z = vertex.x * world.values[2] + vertex.y * world.values[5] + 0.0f * world.values[8] + world.values[11];
     CGameMode* mode = g_modeMgr.GetGameMode();
     float y = mode->scene->terrain->PlaneHeight(x, z) - 2.0f;
-    if (this->lastGroundHeight != -1000.0f && y - this->lastGroundHeight > 5.0f) {
+    if (-1000.0f != this->lastGroundHeight && y - this->lastGroundHeight > 5.0f) {
       y = this->lastGroundHeight;
     }
     this->lastGroundHeight = y;
@@ -1167,8 +1167,8 @@ CParticle* CFootprintEffect::SpawnFootprint() {
 // OFFSET: 0x00712A90
 // FUNCTION: fn_07242
 void CFootprintEffect::OnProcess() {
-  const float dx = this->position[0] - this->lastPosition.x;
   const float dy = this->position[1] - this->lastPosition.y;
+  const float dx = this->position[0] - this->lastPosition.x;
   const float dz = this->position[2] - this->lastPosition.z;
   if (static_cast<double>(dx * dx + dy * dy + dz * dz) > this->stepDistance) {
     CParticle* emitter = this->SpawnFootprint();
