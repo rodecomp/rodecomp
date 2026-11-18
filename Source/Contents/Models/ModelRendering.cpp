@@ -69,10 +69,10 @@ void C3dNodeV1::Draw(const float* matrix, unsigned char reversed, bool clip, uns
   combined.Compose(this->transform, camera);
   // GLOBAL: gl_24586
   static ProjectedVertex projected[30000];
-  float ambient[3];
-  std::memcpy(ambient, g_worldLighting.ambient, sizeof(ambient));
   float lightColor[3];
   std::memcpy(lightColor, g_weatherEffect.lightColor, sizeof(lightColor));
+  float ambient[3];
+  std::memcpy(ambient, g_worldLighting.ambient, sizeof(ambient));
 
   const int vertexCount = this->mesh->vertexCount;
   const std::array<float, 3>* meshVertices = this->mesh->vertices;
@@ -97,7 +97,7 @@ void C3dNodeV1::Draw(const float* matrix, unsigned char reversed, bool clip, uns
     const std::uint16_t texture = face->texture;
     std::uint16_t flags = 0;
 
-    while (face != faceEnd && face->texture == texture) {
+    while (face != faceEnd && face != nullptr && face->texture == texture) {
       const RenderVertex& a = projected[face->vertices[0]];
       const RenderVertex& b = projected[face->vertices[1]];
       const RenderVertex& c = projected[face->vertices[2]];
@@ -168,7 +168,7 @@ void C3dNodeV1::Draw(const float* matrix, unsigned char reversed, bool clip, uns
       command->vertices = vertices;
       command->vertexCount = count;
       command->texture = this->textures[texture % this->textures.size()];
-      command->depthFlags = static_cast<std::uint16_t>((command->depthFlags & 0x00FFu) | (static_cast<unsigned>(commandMode) << 8));
+      reinterpret_cast<unsigned char*>(&command->depthFlags)[1] = commandMode;
 
       if (alpha < 255 || command->texture->Format() == TextureFormat::A4R4G4B4) {
         flags |= 1;
