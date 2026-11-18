@@ -2189,15 +2189,15 @@ void UITipboxWnd::ShowTip(int id) {
 // OFFSET: 0x008F5AF0
 // FUNCTION: fn_12313
 void UITipboxWnd::UpdatePageText() {
-  this->m_pageText->SetText(IntToString((g_itemTagOwner->paragraphIndex >= 0 ? g_itemTagOwner->paragraphIndex : 0) + 1, 0).c_str(), 0);
+  this->m_pageText->SetText(IntToString((g_itemTagOwner->paragraphIndex < 0 ? 0 : g_itemTagOwner->paragraphIndex) + 1, 0).c_str(), 0);
   this->m_pageText->SetFont(0, 12, 1, 0);
 
   const std::string separator = "/";
   this->m_pageTotalText->SetText((separator + IntToString(static_cast<int>(g_itemTagOwner->m_currentEntry.paragraphs.size()), 0)).c_str(), 0);
 
   const int pageWidth = this->ColoredTextWidth(
-    IntToString((g_itemTagOwner->paragraphIndex >= 0 ? g_itemTagOwner->paragraphIndex : 0) + 1, 0).c_str(),
-    std::strlen(IntToString((g_itemTagOwner->paragraphIndex >= 0 ? g_itemTagOwner->paragraphIndex : 0) + 1, 0).c_str()), 0, 12, 1
+    IntToString((g_itemTagOwner->paragraphIndex < 0 ? 0 : g_itemTagOwner->paragraphIndex) + 1, 0).c_str(),
+    std::strlen(IntToString((g_itemTagOwner->paragraphIndex < 0 ? 0 : g_itemTagOwner->paragraphIndex) + 1, 0).c_str()), 0, 12, 1
   );
   const int totalWidth = this->ColoredTextWidth(
     (separator + IntToString(static_cast<int>(g_itemTagOwner->m_currentEntry.paragraphs.size()), 0)).c_str(), std::strlen((separator + IntToString(static_cast<int>(g_itemTagOwner->m_currentEntry.paragraphs.size()), 0)).c_str()), 0, 12, 0
@@ -6087,12 +6087,9 @@ void UIItemIdentifyWnd::UpdateScroll() {
     return;
   }
 
-  const int total = this->m_items.size() / this->m_columns + (this->m_items.size() % this->m_columns != 0);
   const int visible = this->m_rows;
-  int maximum = 0;
-  if (total - visible >= 0) {
-    maximum = total - visible;
-  }
+  const int total = this->m_items.size() / this->m_columns + (this->m_items.size() % this->m_columns != 0);
+  const int maximum = total - visible < 0 ? 0 : total - visible;
   this->m_scrollable = maximum != 0;
 
   if (maximum) {
@@ -10086,10 +10083,10 @@ void UIItemCollection_ComparisonWnd::OnRBtnDown(int x, int y) {
   card.SetItemId(this->m_item.cards[index]);
   UIWindow* window = g_windowMgr.EnsureWindow(WID_COMBINEDCARDITEMCOLLECTIONWND);
   window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, card.identified, 0, 0, 0);
-  if (index < this->m_item.SlotCount()) {
-    window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&card), 0, 0, 0);
-  } else {
+  if (index >= this->m_item.SlotCount()) {
     window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&card), 1, 0, 0);
+  } else {
+    window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&card), 0, 0, 0);
   }
 }
 
