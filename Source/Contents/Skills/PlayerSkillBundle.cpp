@@ -1,4 +1,5 @@
 #include "Contents/Skills/PlayerSkillBundle.h"
+#include "Contents/Effects/Core/EffectTypes.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
 #include "Contents/Skills/SkillId.h"
@@ -76,21 +77,21 @@ __declspec(noinline) std::uint32_t ResolveSkillId(std::uint32_t id);
 // OFFSET: 0x00CACF20
 // FUNCTION: fn_21049
 std::uint32_t ResolveSkillId(std::uint32_t id) {
-  if (g_session.GetPlayerSkillMode() != 1 || (id != 6578 && id != 6579)) {
+  if (g_session.GetPlayerSkillMode() != 1 || (id != AT_PRIMAL_CLAW && id != AT_FERAL_CLAW)) {
     return id;
   }
 
-  if (g_session.HasSkillEffect(1717)) {
-    const std::optional<CSkillInfo*> skill = g_session.m_skillBundle.FindIndexed(6580);
+  if (g_session.HasSkillEffect(EFST_ALPHA_CLAW_READY)) {
+    const std::optional<CSkillInfo*> skill = g_session.m_skillBundle.FindIndexed(AT_ALPHA_CLAW);
     if (skill && (*skill)->IsValid()) {
-      return 6580;
+      return AT_ALPHA_CLAW;
     }
   }
 
-  if (g_session.HasSkillEffect(1716)) {
-    const std::optional<CSkillInfo*> skill = g_session.m_skillBundle.FindIndexed(6579);
+  if (g_session.HasSkillEffect(EFST_FERAL_CLAW_READY)) {
+    const std::optional<CSkillInfo*> skill = g_session.m_skillBundle.FindIndexed(AT_FERAL_CLAW);
     if (skill && (*skill)->IsValid()) {
-      return 6579;
+      return AT_FERAL_CLAW;
     }
   }
 
@@ -106,8 +107,8 @@ CSkillInfo CPlayerSkillBundle::Lookup(std::uint32_t id) {
 
   std::uint32_t key;
   switch (id) {
-  case 6578:
-  case 6579:
+  case AT_PRIMAL_CLAW:
+  case AT_FERAL_CLAW:
     key = ResolveSkillId(id);
     break;
   default:

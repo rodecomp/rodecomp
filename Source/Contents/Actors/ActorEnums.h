@@ -8,6 +8,11 @@ enum ShapeShiftType : int {
   SHAPESHIFT_NATURE_PROTECTION = 3,
 };
 
+enum EffectSetCountCommand : int {
+  SETCOUNT_EFFECT_COLOR = 0xFFFF,
+  SETCOUNT_EFFECT_COLOR_RESET = 0xFFFE,
+};
+
 enum AccountIdSentinel : unsigned int {
   INVALID_AID = 0xFFFFFFFF,
 };

@@ -3201,49 +3201,49 @@ void CPlayer::ReapplySkillEffects() {
     case EFST_TWOHANDQUICKEN: {
       CRagEffect* effect = this->LaunchEffect(EF_MAKEBLUR, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (effect) {
-        effect->SendMsg(nullptr, AM_SETCOUNT, 0, 0xFFFF, 0x82, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETCOUNT, 0, SETCOUNT_EFFECT_COLOR, EF_TWOHANDQUICKEN, 0, 0, 0);
       }
       break;
     }
     case EFST_ONEHANDQUICKEN: {
       CRagEffect* effect = this->LaunchEffect(EF_MAKEBLUR, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (effect) {
-        effect->SendMsg(nullptr, AM_SETCOUNT, 0, 0xFFFF, 0x82, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETCOUNT, 0, SETCOUNT_EFFECT_COLOR, EF_TWOHANDQUICKEN, 0, 0, 0);
       }
       break;
     }
     case EFST_NJ_BUNSINJYUTSU: {
       CRagEffect* effect = this->LaunchEffect(EF_BUNSINJYUTSU, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (effect) {
-        effect->SendMsg(nullptr, AM_SETCOUNT, 0, 0xFFFF, 0x269, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETCOUNT, 0, SETCOUNT_EFFECT_COLOR, EF_BUNSINJYUTSU, 0, 0, 0);
       }
       break;
     }
     case EFST_OVERTHRUST: {
       CRagEffect* effect = this->LaunchEffect(EF_MAKEBLUR, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (effect) {
-        effect->SendMsg(nullptr, AM_SETCOUNT, 0, 0xFFFF, 0x80, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETCOUNT, 0, SETCOUNT_EFFECT_COLOR, EF_OVERTHRUST, 0, 0, 0);
       }
       break;
     }
     case EFST_OVERTHRUSTMAX: {
       CRagEffect* effect = this->LaunchEffect(EF_MAKEBLUR, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (effect) {
-        effect->SendMsg(nullptr, AM_SETCOUNT, 0, 0xFFFF, 0x80, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETCOUNT, 0, SETCOUNT_EFFECT_COLOR, EF_OVERTHRUST, 0, 0, 0);
       }
       break;
     }
     case EFST_ENERGYCOAT: {
       CRagEffect* effect = this->LaunchEffect(EF_MAKEBLUR, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (effect) {
-        effect->SendMsg(nullptr, AM_SETCOUNT, 0, 0xFFFF, 0xA9, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETCOUNT, 0, SETCOUNT_EFFECT_COLOR, EF_ENERGYCOAT, 0, 0, 0);
       }
       break;
     }
     case EFST_SPEARQUICKEN: {
       CRagEffect* effect = this->LaunchEffect(EF_MAKEBLUR, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (effect) {
-        effect->SendMsg(nullptr, AM_SETCOUNT, 0, 0xFFFF, 0xFA, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETCOUNT, 0, SETCOUNT_EFFECT_COLOR, EF_SPEARQUICKEN, 0, 0, 0);
       }
       break;
     }
@@ -3346,7 +3346,7 @@ void CPlayer::ReapplySkillEffects() {
       }
       CRagEffect* effect = this->LaunchEffect(EF_MAKEHALLU2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (effect) {
-        effect->SendMsg(nullptr, AM_SETCOUNT, 0, 0xFFFF, 0x39D, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETCOUNT, 0, SETCOUNT_EFFECT_COLOR, EF_MAKEHALLU2, 0, 0, 0);
       }
       break;
     }
@@ -3545,7 +3545,7 @@ void CPlayer::ReapplySkillEffects() {
       }
       CRagEffect* effect = this->LaunchEffect(EF_MAKEHALLU, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       if (effect) {
-        effect->SendMsg(nullptr, AM_SETCOUNT, 0, 0xFFFF, 0x318, 0, 0, 0);
+        effect->SendMsg(nullptr, AM_SETCOUNT, 0, SETCOUNT_EFFECT_COLOR, EF_MAKEHALLU, 0, 0, 0);
       }
       break;
     }

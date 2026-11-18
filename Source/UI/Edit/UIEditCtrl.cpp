@@ -2400,7 +2400,7 @@ int UIItemDropCntWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
     }
     case 17: {
       int owned = 0;
-      if (mode->drag.source == DRAG_BUYINGSTORE_SHOP_LIST2) {
+      if (mode->drag.source == DRAG_PURCHASE_MIRROR_LIST) {
         const ITEM_INFO item = g_session.FindMerchantMyShopItem(mode->drag.id);
         if (item.identity[1] > 0) {
           owned = item.quantity;
@@ -7450,7 +7450,7 @@ void UIMerchantMirrorItemWnd::OnLBtnDown(int x, int y) {
     if (this->mode == 1) {
       mode->BeginDragItem(DRAG_BUYINGSTORE_SHOP_LIST, item, item.quantity, -1);
     } else if (this->mode == 2) {
-      mode->BeginDragItem(DRAG_BUYINGSTORE_SHOP_LIST2, item, item.quantity, -1);
+      mode->BeginDragItem(DRAG_PURCHASE_MIRROR_LIST, item, item.quantity, -1);
     } else {
       mode->BeginDragItem(DRAG_VENDING_SHOP_LIST, item, item.quantity, -1);
     }

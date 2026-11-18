@@ -2563,7 +2563,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
       if (on) {
         CRagEffect* effect = this->LaunchEffect(EF_MAKEBLUR, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         if (effect) {
-          effect->SendMsg(nullptr, AM_SETCOUNT, 0, 0xFFFF, 0x82, 0, 0, 0);
+          effect->SendMsg(nullptr, AM_SETCOUNT, 0, SETCOUNT_EFFECT_COLOR, EF_TWOHANDQUICKEN, 0, 0, 0);
         }
       }
       break;
@@ -2575,7 +2575,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
       if (on) {
         CRagEffect* effect = this->LaunchEffect(EF_MAKEBLUR, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         if (effect) {
-          effect->SendMsg(nullptr, AM_SETCOUNT, 0, 0xFFFF, 0xFA, 0, 0, 0);
+          effect->SendMsg(nullptr, AM_SETCOUNT, 0, SETCOUNT_EFFECT_COLOR, EF_SPEARQUICKEN, 0, 0, 0);
         }
       }
       break;
@@ -2652,7 +2652,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
       if (on) {
         CRagEffect* effect = this->LaunchEffect(EF_MAKEBLUR, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         if (effect) {
-          effect->SendMsg(nullptr, AM_SETCOUNT, 0, 0xFFFE, 0x80, 0, 0, 0);
+          effect->SendMsg(nullptr, AM_SETCOUNT, 0, SETCOUNT_EFFECT_COLOR_RESET, EF_OVERTHRUST, 0, 0, 0);
         }
       }
       break;
@@ -2832,7 +2832,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
       if (on) {
         CRagEffect* effect = this->LaunchEffect(EF_MAKEBLUR, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         if (effect) {
-          effect->SendMsg(nullptr, AM_SETCOUNT, 0, 0xFFFF, 0x80, 0, 0, 0);
+          effect->SendMsg(nullptr, AM_SETCOUNT, 0, SETCOUNT_EFFECT_COLOR, EF_OVERTHRUST, 0, 0, 0);
         }
       }
       break;
@@ -2844,7 +2844,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
       if (on) {
         CRagEffect* effect = this->LaunchEffect(EF_MAKEBLUR, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         if (effect) {
-          effect->SendMsg(nullptr, AM_SETCOUNT, 0, 0xFFFF, 0xA9, 0, 0, 0);
+          effect->SendMsg(nullptr, AM_SETCOUNT, 0, SETCOUNT_EFFECT_COLOR, EF_ENERGYCOAT, 0, 0, 0);
         }
       }
       break;
@@ -3043,7 +3043,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
         if (on) {
           CRagEffect* effect = this->LaunchEffect(EF_MAKEHALLU2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
           if (effect) {
-            effect->SendMsg(nullptr, AM_SETCOUNT, 0, 0xFFFF, 0x39D, 0, 0, 0);
+            effect->SendMsg(nullptr, AM_SETCOUNT, 0, SETCOUNT_EFFECT_COLOR, EF_MAKEHALLU2, 0, 0, 0);
           }
         }
       }
@@ -3574,7 +3574,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
       if (!effect) {
         break;
       }
-      effect->SendMsg(nullptr, AM_SETCOUNT, 0, 0xFFFF, 0x318, 0, 0, 0);
+      effect->SendMsg(nullptr, AM_SETCOUNT, 0, SETCOUNT_EFFECT_COLOR, EF_MAKEHALLU, 0, 0, 0);
       break;
     }
     case EFST_SOULLINK:
@@ -4411,7 +4411,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
   case AM_FASTMOVE:
     if (g_session.IsPlayerJobId(this->GetEffectiveJob(-1))) {
       if (CRagEffect* effect = this->LaunchEffect(EF_MAKEBLUR, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
-        effect->SendMsg(nullptr, AM_SETCOUNT, 0, 0xFFFF, 0xF3, 0, 100, 0);
+        effect->SendMsg(nullptr, AM_SETCOUNT, 0, SETCOUNT_EFFECT_COLOR, EF_FASTMOVE, 0, 100, 0);
       }
       if (CEffect* fallenAngel = g_effectMgr->Find(this->render.accountId, EF_FALLEN_ANGEL)) {
         vector3d position{0.0f, 0.0f, 0.0f};

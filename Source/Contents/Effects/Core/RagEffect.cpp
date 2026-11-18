@@ -14804,45 +14804,45 @@ void CRagEffect::SendMsg(
     }
     break;
   case AM_SETCOUNT:
-    if (first == 0xFFFF) {
-      if (second == 130) {
+    if (first == SETCOUNT_EFFECT_COLOR) {
+      if (second == EF_TWOHANDQUICKEN) {
         this->render.position.x = 200.0f;
         this->render.position.y = 200.0f;
         this->render.position.z = 0.0f;
-      } else if (second == 128) {
+      } else if (second == EF_OVERTHRUST) {
         this->render.position.x = 250.0f;
         this->render.position.y = 150.0f;
         this->render.position.z = 150.0f;
-      } else if (second == 250) {
+      } else if (second == EF_SPEARQUICKEN) {
         this->render.position.x = 200.0f;
         this->render.position.y = 200.0f;
         this->render.position.z = 0.0f;
-      } else if (second == 169) {
+      } else if (second == EF_ENERGYCOAT) {
         this->render.position.x = 180.0f;
         this->render.position.y = 180.0f;
         this->render.position.z = 250.0f;
-      } else if (second == 243) {
+      } else if (second == EF_FASTMOVE) {
         this->render.position.x = 250.0f;
         this->render.position.y = 250.0f;
         this->render.position.z = 250.0f;
         this->state.duration = thirdLow;
-      } else if (second == 792 || second == 925 || second == 824) {
+      } else if (second == EF_MAKEHALLU || second == EF_MAKEHALLU2 || second == EF_MAKEFEINT) {
         this->render.position.x = 250.0f;
         this->render.position.y = 250.0f;
         this->render.position.z = 250.0f;
-      } else if (second == 1058) {
+      } else if (second == EF_SC_ESCAPE) {
         const float* position = reinterpret_cast<const float*>(static_cast<std::intptr_t>(thirdLow));
         this->state.deltaPos.x = position[0];
         this->state.deltaPos.y = position[1];
         this->state.deltaPos.z = position[2];
         this->state.duration = 20;
       }
-    } else if (first == 0xFFFE) {
-      if (second == 128) {
+    } else if (first == SETCOUNT_EFFECT_COLOR_RESET) {
+      if (second == EF_OVERTHRUST) {
         this->render.position.x = -1.0f;
         this->render.position.y = -1.0f;
         this->render.position.z = -1.0f;
-      } else if (second == 130) {
+      } else if (second == EF_TWOHANDQUICKEN) {
         this->render.position.x = -2.0f;
         this->render.position.y = -2.0f;
         this->render.position.z = -2.0f;

@@ -2942,21 +2942,21 @@ void CGameMode::ApplyActorStatusEffects(std::uint32_t aid, int state, int flag, 
       if (!actor->HasId(EF_MAKEBLUR)) {
         CRagEffect* effect = actor->LaunchEffect(EF_MAKEBLUR, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         if (effect) {
-          effect->SendMsg(nullptr, AM_SETCOUNT, 0, 0xFFFF, 130, 0, 0, 0);
+          effect->SendMsg(nullptr, AM_SETCOUNT, 0, SETCOUNT_EFFECT_COLOR, EF_TWOHANDQUICKEN, 0, 0, 0);
         }
       }
     } else if (options & 0x2) {
       if (!actor->HasId(EF_MAKEBLUR)) {
         CRagEffect* effect = actor->LaunchEffect(EF_MAKEBLUR, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         if (effect) {
-          effect->SendMsg(nullptr, AM_SETCOUNT, 0, 0xFFFF, 128, 0, 0, 0);
+          effect->SendMsg(nullptr, AM_SETCOUNT, 0, SETCOUNT_EFFECT_COLOR, EF_OVERTHRUST, 0, 0, 0);
         }
       }
     } else if (options & 0x4) {
       if (!actor->HasId(EF_MAKEBLUR)) {
         CRagEffect* effect = actor->LaunchEffect(EF_MAKEBLUR, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         if (effect) {
-          effect->SendMsg(nullptr, AM_SETCOUNT, 0, 0xFFFF, 169, 0, 0, 0);
+          effect->SendMsg(nullptr, AM_SETCOUNT, 0, SETCOUNT_EFFECT_COLOR, EF_ENERGYCOAT, 0, 0, 0);
         }
       }
     } else if (options & 0x4000) {
@@ -20673,7 +20673,7 @@ void CGameMode::ReceiveSkillUse(std::uint16_t skillId, int level, std::uint32_t 
       vector3d position = source->render.position;
       if (CRagEffect* effect = source->LaunchEffect(EF_ESCAPE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f)) {
         const std::int64_t value = reinterpret_cast<std::intptr_t>(&position);
-        effect->SendMsg(nullptr, AM_SETCOUNT, 0, 0xFFFF, 0x422, 0, static_cast<int>(value), static_cast<int>(value >> 32));
+        effect->SendMsg(nullptr, AM_SETCOUNT, 0, SETCOUNT_EFFECT_COLOR, EF_SC_ESCAPE, 0, static_cast<int>(value), static_cast<int>(value >> 32));
       }
     }
     break;
