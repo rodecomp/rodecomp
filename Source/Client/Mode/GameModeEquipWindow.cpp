@@ -35,10 +35,10 @@ void CGameMode::ReceiveEquipWindowMicroscope(const unsigned char* packet) {
   g_session.ResetEquipped();
   g_session.ResetAlternateCostumeItems();
 
-  const int length = *reinterpret_cast<const std::int16_t*>(packet + 2);
-  const int count = static_cast<unsigned>(length - 45) / sizeof(EquipWindowRecord);
-  const EquipWindowRecord* record = reinterpret_cast<const EquipWindowRecord*>(packet + 45);
-  for (int index = 0; index < count; ++index, ++record) {
+  const int count = (*reinterpret_cast<const std::int16_t*>(packet + 2) - 45) / sizeof(EquipWindowRecord);
+  const EquipWindowRecord* records = reinterpret_cast<const EquipWindowRecord*>(packet + 45);
+  for (int index = 0; index < count; ++index) {
+    const EquipWindowRecord* record = &records[index];
     ITEM_INFO item;
     item.identity[0] = record->type;
     item.identity[2] = record->location;
