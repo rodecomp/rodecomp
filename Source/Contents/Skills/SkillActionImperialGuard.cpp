@@ -852,33 +852,28 @@ void CSkillAction_IG_GRAND_JUDGEMENT::OnSkillEffect(int level, CGameActor* sourc
   effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("new_grand_judgement_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
   const int subEffectId = CEZ2STREffectMgr::GetInstance()->EffectId("new_grand_judgement_sub");
   for (int index = 0; index < 8; ++index) {
-    const float originX = target->render.position.x;
-    float x = originX;
-    const float y = target->render.position.y;
-    const float originZ = target->render.position.z;
-    float z = originZ;
+    vector3d position = {target->render.position.x, target->render.position.y, target->render.position.z};
+    const float originX = position.x;
+    const float originZ = position.z;
     int roll;
-    switch (index & 3) {
-    case 1:
+    const int quadrant = index & 3;
+    if (quadrant == 1) {
       roll = rand() % 8;
-      x = originX + static_cast<float>(roll >= 0 ? roll : 0);
+      position.x = originX + static_cast<float>(roll >= 0 ? roll : 0);
       roll = rand() % 8;
-      z = originZ + static_cast<float>(roll >= 0 ? roll : 0);
-      break;
-    case 2:
+      position.z = originZ + static_cast<float>(roll >= 0 ? roll : 0);
+    } else if (quadrant == 2) {
       roll = rand() % 8;
-      x = originX + static_cast<float>(roll >= 0 ? roll : 0);
+      position.x = originX + static_cast<float>(roll >= 0 ? roll : 0);
       roll = rand() % 8;
-      z = originZ - static_cast<float>(roll >= 0 ? roll : 0);
-      break;
-    case 3:
+      position.z = originZ - static_cast<float>(roll >= 0 ? roll : 0);
+    } else if (quadrant == 3) {
       roll = rand() % 8;
-      x = originX - static_cast<float>(roll >= 0 ? roll : 0);
+      position.x = originX - static_cast<float>(roll >= 0 ? roll : 0);
       roll = rand() % 8;
-      z = originZ + static_cast<float>(roll >= 0 ? roll : 0);
-      break;
+      position.z = originZ + static_cast<float>(roll >= 0 ? roll : 0);
     }
-    CEffect* effect = g_effectMgr->Spawn(0, subEffectId, vector3d{x, y, z}, 0, -1, 0, 0);
+    CEffect* effect = g_effectMgr->Spawn(0, subEffectId, position, 0, -1, 0, 0);
     if (effect) {
       effect->SetDelay(140 * (index + 1));
     }
