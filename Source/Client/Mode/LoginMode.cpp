@@ -2018,12 +2018,12 @@ void CLoginMode::ShowLoginError(int code, int argument) {
       if (g_stoveMgr->m_environment == 1) {
         url = "https://member.gate8.com/auth/login/by_game?redirect_url=https%3A%2F%2Fro.game.gate8.com%2Faccount%2Fingamepopup&access_token=";
       } else {
-        url = "https://member.onstove.com/auth/login/by_game?redirect_url=https://ro.game.onstove.com/account/ingamepopup/&access_token=";
+        url.assign("https://member.onstove.com/auth/login/by_game?redirect_url=https://ro.game.onstove.com/account/ingamepopup/&access_token=", 121);
       }
       url += g_stoveMgr->GetAccessToken();
       constexpr std::array<char, 5> source = OBFUSCATE_SOURCE("OPEN", 0xD98F5345098D630DULL);
       ShellExecuteA(nullptr, OBFUSCATE_DECRYPT(0xD98F5345098D630DULL, source), url.c_str(), url.c_str(), nullptr, SW_SHOWNORMAL);
-      message = "";
+      message.assign("", 0);
       g_modeMgr.Quit();
       return;
     }
