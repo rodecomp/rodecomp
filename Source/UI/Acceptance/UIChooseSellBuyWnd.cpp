@@ -358,7 +358,8 @@ void UIChooseSellBuyWnd::OnCreate(int width, int height) {
   this->viewer->Configure(10, 22, width - 20, height - 55, 0);
   unsigned red, green, blue;
   g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-  this->viewer->SetBackgroundColor(0xFF000000u | RGB(red, green, blue));
+  const COLORREF rgb = RGB(red, green, blue);
+  this->viewer->SetBackgroundColor(rgb | 0xFF000000u);
   this->AddChild(this->viewer);
   const char* text = LookupMessage(MSI_SELECT_DEAL_TYPE);
   this->viewer->SendMsg(nullptr, UM_SETTEXT, reinterpret_cast<std::intptr_t>(text), 38, 0, 0);
@@ -4393,8 +4394,8 @@ void UIPetEggListWnd::Paint() {
 // OFFSET: 0x008D2370
 // FUNCTION: fn_12097
 void UInCashWnd::DrawItems() {
-  int row = 0;
   int index = 0;
+  int row = 0;
   for (auto it = this->items.begin(); it != this->items.end(); ++it, ++index) {
     if (index < this->m_page * 8 - 8) {
       continue;
@@ -4404,7 +4405,8 @@ void UInCashWnd::DrawItems() {
     const int y = (row < 4 ? row : row - 4) * this->m_rowHeight + this->m_listTop;
     const std::string path = "유저인터페이스\\collection\\" + std::string(it->ResourcePath()) + ".bmp";
     if (!path.empty()) {
-      this->DrawBitmap(x, y, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str()))), true);
+      CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str())));
+      this->DrawBitmap(x, y, bitmap, true);
     }
 
     char text[64];
@@ -4422,8 +4424,8 @@ void UInCashWnd::DrawItems() {
     }
   }
 
-  row = 0;
   index = 0;
+  row = 0;
   for (auto it = this->m_otherItems.begin(); it != this->m_otherItems.end(); ++it, ++index) {
     const int y = this->m_rowHeight * row + this->m_listTop;
     if (index < this->m_firstOther || index >= this->m_firstOther + 4) {
@@ -4432,7 +4434,8 @@ void UInCashWnd::DrawItems() {
 
     const std::string path = "유저인터페이스\\collection\\" + std::string(it->ResourcePath()) + ".bmp";
     if (!path.empty()) {
-      this->DrawBitmap(453, y, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str()))), true);
+      CBitmapRes* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path.c_str())));
+      this->DrawBitmap(453, y, bitmap, true);
     }
 
     char text[64];
@@ -10566,8 +10569,8 @@ void UITipboxWnd::Paint() {
 void UITipOfTheDayWnd::OnCreate(int width, int height) {
   const std::string prefix("유저인터페이스\\");
   const char* names[3][3] = {{"btn_back", "btn_back_a", "btn_back_b"}, {"btn_next", "btn_next_a", "btn_next_b"}, {"btn_close", "btn_close_a", "btn_close_b"}};
-  int positions[3][2] = {{144, this->geometry.height - 24}, {189, this->geometry.height - 24}, {234, this->geometry.height - 24}};
   int ids[3] = {246, 218, 201};
+  int positions[3][2] = {{144, this->geometry.height - 24}, {189, this->geometry.height - 24}, {234, this->geometry.height - 24}};
   const char* tooltips[3] = {"", "", "/tip"};
 
   for (int index = 0; index < 3; ++index) {
@@ -10588,7 +10591,8 @@ void UITipOfTheDayWnd::OnCreate(int width, int height) {
   this->m_textViewer->Configure(10, 22, width - 20, height - 55, 0);
   unsigned red, green, blue;
   g_skinInfo.PaletteChannels(2, 2, red, green, blue);
-  this->m_textViewer->SetBackgroundColor(0xFF000000u | RGB(red, green, blue));
+  const COLORREF rgb = RGB(red, green, blue);
+  this->m_textViewer->SetBackgroundColor(rgb | 0xFF000000u);
   this->AddChild(this->m_textViewer);
 
   this->m_showTipsAtStartup = g_window315Enabled;
@@ -10624,7 +10628,8 @@ void UITipboxWnd::OnCreate(int width, int) {
   this->tipViewer->SetSize(226, 245);
   {
     UITagTextViewer* viewer = this->tipViewer;
-    viewer->m_backgroundColor = RGB(red, green, blue) | 0xFF000000u;
+    const COLORREF rgb = RGB(red, green, blue);
+    viewer->m_backgroundColor = rgb | 0xFF000000u;
     viewer->Invalidate();
   }
   this->tipViewer->m_textWidth = 188;
