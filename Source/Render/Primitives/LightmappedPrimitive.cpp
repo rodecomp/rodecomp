@@ -40,13 +40,18 @@ struct LightmappedBuffer {
 static_assert(offsetof(LightmappedBuffer, indices) == 0x8);
 #endif
 
+// INLINED
+template <class T>
+inline void ReleaseArray(T*& buffer) {
+  delete[] static_cast<char*>(buffer);
+  buffer = nullptr;
+}
+
 // OFFSET: 0x00569310
 // FUNCTION: fn_02254
 void LightmappedBuffer::Clear() {
-  delete[] static_cast<char*>(this->vertices);
-  this->vertices = nullptr;
-  delete[] static_cast<char*>(this->indices);
-  this->indices = nullptr;
+  ReleaseArray(this->vertices);
+  ReleaseArray(this->indices);
 }
 
 // OFFSET: 0x00569020
