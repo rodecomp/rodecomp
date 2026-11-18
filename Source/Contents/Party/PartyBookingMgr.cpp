@@ -97,8 +97,9 @@ std::pair<bool, PartyBookingEntry> PartyBookingMgr::MakeEntry(PARTY_BOOKING_AD_I
   char buffer[255];
   std::memset(buffer, 0, sizeof(buffer));
 
-  int region = info.detail.mapId >> 8;
-  int mapIndex = static_cast<unsigned char>(info.detail.mapId);
+  int mapId = info.detail.mapId;
+  int region = mapId >> 8;
+  int mapIndex = static_cast<unsigned char>(mapId);
 
   PartyBookingEntry entry;
   std::string regionName;
@@ -109,8 +110,7 @@ std::pair<bool, PartyBookingEntry> PartyBookingMgr::MakeEntry(PARTY_BOOKING_AD_I
     regionName = this->m_regionNames.at(0);
   }
 
-  ++region;
-  auto found = this->m_maps.find(region);
+  auto found = this->m_maps.find(region + 1);
   if (found == this->m_maps.end()) {
     return std::make_pair(false, entry);
   }
@@ -129,9 +129,10 @@ std::pair<bool, PartyBookingEntry> PartyBookingMgr::MakeEntry(PARTY_BOOKING_AD_I
 
   int maxLevel = info.detail.level + 15;
   if (maxLevel > g_session.m_maxLevel) {
-    maxLevel = g_session.m_maxLevel;
+    sprintf(buffer, "%02d~%02d", info.detail.level, g_session.m_maxLevel);
+  } else {
+    sprintf(buffer, "%02d~%02d", info.detail.level, maxLevel);
   }
-  sprintf(buffer, "%02d~%02d", info.detail.level, maxLevel);
   entry.level = buffer;
 
   entry.location = regionName + " " + map.name;
@@ -139,7 +140,7 @@ std::pair<bool, PartyBookingEntry> PartyBookingMgr::MakeEntry(PARTY_BOOKING_AD_I
   std::memset(buffer, 0, sizeof(buffer));
   for (int i = 0; i < 6; ++i) {
     short job = info.detail.job[i];
-    if (static_cast<unsigned short>(job) < 5) {
+    if (static_cast<unsigned short>(job) <= 4) {
       std::strcat(buffer, LookupMessage(job + 0x6AF));
       std::strcat(buffer, ",");
     } else if (job >= 0) {
