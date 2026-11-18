@@ -46,6 +46,8 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
   virtual void UpdateScrollBar();
 
+  void ResetTree();
+  void InitializeTree(int width, int height);
   void HideNodes(std::list<UITreeNode*>& nodes);
   bool DeleteChildNodes(UITreeNode* node);
   bool RemoveChildNode(UITreeNode* parent, int id, bool keepButtons);
