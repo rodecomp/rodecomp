@@ -5,7 +5,8 @@
 
 class UICharInfoBalloonText : public UITransBalloonText {
 public:
-  // INLINED
+  // OFFSET: 0x009111F0
+  // FUNCTION: fn_45714
   UICharInfoBalloonText() : UITransBalloonText() {}
   void Paint() override;
 };
