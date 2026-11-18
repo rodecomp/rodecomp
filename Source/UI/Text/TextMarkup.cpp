@@ -183,7 +183,7 @@ const std::string UIWindow::RemoveTextLinkInfo(const std::string& source) {
     return source;
   }
 
-  std::string result;
+  std::string result = "";
 
   do {
     if (position > 0) {
