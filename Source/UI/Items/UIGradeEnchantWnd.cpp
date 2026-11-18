@@ -79,10 +79,10 @@ static inline int MaterialRowAt(int x, int y) {
 // OFFSET: 0x007E68F0
 // FUNCTION: fn_09738
 UIGradeEnchantWnd::UIGradeEnchantWnd()
-    : UIFrameWnd(0), enhancedUpButton(nullptr), state(0),
-      result(-1), itemFrameInterval(200), wheelFrameInterval(100), stateTick(0), wheelTick(0), itemFrame(1), wheelFrame(1), resultTick(0),
-      selectedMaterial(-1), hoverMaterial(-1), materials(), protect(0), blessingAmount(0), baseSuccessRate(0),
-      messageIds(), item(0), startButton(nullptr), enhancedDownButton(nullptr) {
+    : UIFrameWnd(0), startButton(nullptr), enhancedUpButton(nullptr), enhancedDownButton(nullptr), state(0), result(-1),
+      itemFrameInterval(200), wheelFrameInterval(100), stateTick(0), wheelTick(0), itemFrame(1), wheelFrame(1), resultTick(0),
+      selectedMaterial(-1), hoverMaterial(-1), materials(), protect(0), unknown_0111(0), blessingAmount(0), baseSuccessRate(0),
+      messageIds(), item(0) {
   this->requestPending = 0;
   this->info = {};
   this->enchantOption = 0;

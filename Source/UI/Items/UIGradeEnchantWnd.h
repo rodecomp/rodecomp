@@ -5,6 +5,7 @@
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Window/UIFrameWnd.h"
 
+#include <cstddef>
 #include <cstdint>
 #include <vector>
 
@@ -101,11 +102,16 @@ public:
   /* 0108 */ int enchantOption;
   /* 010C */ int enchantOptionCount;
   /* 0110 */ unsigned char protect;
+  /* 0111 */ unsigned char unknown_0111;
   /* 0114 */ int blessingAmount;
   /* 0118 */ int baseSuccessRate;
   /* 011C */ std::vector<int> messageIds;
   /* 0128 */ ITEM_INFO item;
   /* 0220 */ unsigned char requestPending;
 };
+
+#if defined(_WIN32) && !defined(_WIN64)
+static_assert(offsetof(UIGradeEnchantWnd, unknown_0111) == 0x111);
+#endif
 
 #endif
