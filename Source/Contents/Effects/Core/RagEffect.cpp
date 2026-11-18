@@ -7707,7 +7707,7 @@ void CRagEffect::TexturedRisingPillar(const char* name, char) {
 void CRagEffect::CloudBurst() {
   CopyVector(this->render.position, this->state.parent->render.position);
 
-  if (this->state.stateCnt < 2) {
+  if (this->state.stateCnt <= 1) {
     this->state.lastPrim = this->LaunchEffectPrim(69, vector3d{0.0f, 0.0f, 0.0f});
     this->state.lastPrim->state.renderFlag = 5;
     this->state.lastPrim->state.duration = this->state.duration;
@@ -7716,14 +7716,12 @@ void CRagEffect::CloudBurst() {
     this->state.lastPrim->state.size = 0.0f;
     this->state.lastPrim->state.deltaPos = this->state.deltaPos;
 
-    const float targetX = this->state.deltaPos.x;
-    const float x = this->render.position.x;
-    const float targetZ = this->state.deltaPos.z;
-    const float z = this->render.position.z;
+    const float dx = this->state.deltaPos.x - this->render.position.x;
+    const float dz = this->state.deltaPos.z - this->render.position.z;
     for (int i = 0; i < 4; ++i) {
       this->state.lastPrim->state.slots[i].life = 1;
       this->state.lastPrim->state.slots[i].process = -ClampedRandom(20);
-      this->state.lastPrim->Get_Angle(targetX - x, targetZ - z, &this->state.lastPrim->state.slots[i].rotStart);
+      this->state.lastPrim->Get_Angle(dx, dz, &this->state.lastPrim->state.slots[i].rotStart);
       this->state.lastPrim->state.slots[i].alphaB = 0;
       this->state.lastPrim->state.slots[i].vecBNow.x = static_cast<float>(ClampedRandom(100)) * 0.06f - 3.0f + this->render.position.x;
       this->state.lastPrim->state.slots[i].vecBNow.z = static_cast<float>(ClampedRandom(100)) * 0.06f - 3.0f + this->render.position.z;
