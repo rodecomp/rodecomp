@@ -743,6 +743,24 @@ void CUIListBox<AdventureGuide::CUITab>::SelectItem(CUIListItem* item) {
   }
 }
 
+// OFFSET: 0x009DE640
+// OFFSET: 0x009DE600
+template <class T> __forceinline bool CUIListBox<T>::SelectFirstItem() {
+  if (!this->items.empty()) {
+    T* first = this->items.front();
+    if (first) {
+      this->SelectItem(first);
+      if (first != this->selected) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
+template bool CUIListBox<AdventureGuide::CUISubTab>::SelectFirstItem();
+template bool CUIListBox<AdventureGuide::CUITab>::SelectFirstItem();
+
 // OFFSET: 0x009DC950
 // FUNCTION: fn_14329
 void CUIAdventureGuide::OnInit() {
@@ -804,12 +822,7 @@ void CUIAdventureGuide::OnInit() {
     }
   }
 
-  if (!this->tabs->items.empty()) {
-    AdventureGuide::CUITab* first = this->tabs->items.front();
-    if (first) {
-      this->tabs->SelectItem(first);
-    }
-  }
+  this->tabs->SelectFirstItem();
   g_renewQuestMgr->SendQuestStatusRequest();
 }
 
@@ -842,6 +855,18 @@ void AdventureGuide::CUIQuestInfo::SetTip(int id) {
   title.erase(title.find_last_not_of(whitespace) + 1);
   this->titleViewer->SetBold(false);
   this->titleViewer->AddLine(title);
+}
+
+// OFFSET: 0x009DE680
+void AdventureGuide::CUIQuest::MarkQuest(int questId) {
+  const auto& entries = this->questList->items;
+  std::vector<CUIQuestInfo*> items(entries.begin(), entries.end());
+  auto found = std::find_if(items.begin(), items.end(), [questId](CUIQuestInfo* item) {
+    return item->questId == questId;
+  });
+  if (found != items.end()) {
+    (*found)->stampImage->Show(1);
+  }
 }
 
 // OFFSET: 0x009DEBF0
@@ -887,14 +912,8 @@ void CUIAdventureGuide::OnSelectTab(AdventureGuide::CUITab* tab) {
   const int type = tab->type;
   CUIListBox<AdventureGuide::CUISubTab>* subTabs = tab->subTabs;
   if (subTabs) {
-    if (!subTabs->items.empty()) {
-      AdventureGuide::CUISubTab* first = subTabs->items.front();
-      if (first) {
-        subTabs->SelectItem(first);
-        if (first != subTabs->selected) {
-          return;
-        }
-      }
+    if (subTabs->SelectFirstItem()) {
+      return;
     }
 
     if (subTabs->selected) {

@@ -247,6 +247,7 @@ public:
   void LoadSkin(bool resolveSkin) override;
 
   void SelectItem(CUIListItem* item);
+  bool SelectFirstItem();
   T* CreateItem();
 
   // INLINED

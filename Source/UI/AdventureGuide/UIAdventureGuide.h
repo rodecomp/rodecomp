@@ -138,6 +138,7 @@ public:
   void LoadPage(int type, int id) override;
 
   void OnSelectQuest(CUIQuestInfo* item, const CQuestInfo& data);
+  void MarkQuest(int questId);
   void RequestNavigation();
   void SearchNavigation();
 
