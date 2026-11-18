@@ -180,7 +180,7 @@ void UISeekPartyMBWnd::CreateJobChecks() {
     check->SetHidden(true);
     check->m_disabled = 1;
     this->AddChild(check);
-    this->m_jobChecks[0].emplace(static_cast<unsigned short>(job), check);
+    this->m_jobChecks[0].insert(std::pair<const unsigned short, UICheckBox*>(job, check));
   }
 
   for (int category = 1; category < 8; ++category) {
@@ -197,7 +197,7 @@ void UISeekPartyMBWnd::CreateJobChecks() {
       check->SetHidden(true);
       check->m_disabled = 1;
       this->AddChild(check);
-      this->m_jobChecks[category].emplace(static_cast<unsigned short>(starts[category] + i), check);
+      this->m_jobChecks[category].insert(std::pair<const unsigned short, UICheckBox*>(starts[category] + i, check));
       ++message;
     }
   }
