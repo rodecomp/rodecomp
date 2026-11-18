@@ -452,10 +452,12 @@ void CUIProbabilityTable::Search() {
   };
 
   const unsigned int selected = list->selected;
-  const bool repeatSearch = keyword == this->m_lastSearch;
   auto start = list->data.begin();
-  if (repeatSearch) {
-    const int next = list->data.size() - 1 != selected ? static_cast<int>(list->selected) + 1 : 0;
+  if (keyword == this->m_lastSearch) {
+    int next = 0;
+    if (list->data.size() - 1 != selected) {
+      next = static_cast<int>(list->selected) + 1;
+    }
     std::advance(start, next);
   }
 
