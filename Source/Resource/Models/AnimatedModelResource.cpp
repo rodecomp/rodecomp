@@ -270,6 +270,23 @@ bool C3dAnimModelRes::Load(const char* name) {
 }
 
 // OFFSET: 0x007566B0
+// FUNCTION: fn_45849
+GrannyAnimationLibrary::~GrannyAnimationLibrary() {
+  if (this->instance) {
+    this->FreeInstance();
+
+    for (auto& job : this->animations) {
+      for (granny_animation*& animation : job) {
+        if (animation) {
+          animation = nullptr;
+        }
+      }
+    }
+
+    GrannyFreeLocalPose(this->localPose);
+    GrannyFreeFile(this->file);
+  }
+}
 
 // OFFSET: 0x00755340
 // FUNCTION: fn_07981
