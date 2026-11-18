@@ -307,6 +307,18 @@ void UIBmpTextButton::AddTextStyle(int state, int height, std::uint32_t color, u
   this->styles.push_back(style);
 }
 
+// OFFSET: 0x00867D70
+
+// OFFSET: 0x00867E20
+// FUNCTION: fn_45616
+void UIStaticText::SetTextGrowToFit(const char* value, unsigned char outlineValue) {
+  const int width = this->TextWidth(value, 0, 0, this->fontHeight, this->bold, 0);
+  if (this->geometry.width < width) {
+    this->Resize(width, this->geometry.height);
+  }
+  this->SetText(value, outlineValue);
+}
+
 // OFFSET: 0x00868750
 // FUNCTION: fn_10963
 void UIStaticText::SetTextAutoWidth(const char* value) {

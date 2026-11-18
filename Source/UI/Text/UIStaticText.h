@@ -24,6 +24,8 @@ public:
   void SetTextFitted(const char* value);
   void SetTextFittedCodePage(const char* value);
   void SetTextAutoWidth(const char* value);
+  void SetTextAutoWidth(const char* value, int outlineValue);
+  void SetTextGrowToFit(const char* value, unsigned char outlineValue);
   void SetNumber(int value);
   void SetTextWithinWidth(const char* value, int outlineValue);
   void SetFont(int family, int height, unsigned char bold, unsigned char italic);
