@@ -3555,20 +3555,10 @@ void UISayDialogWnd::Resize(int width, int height) {
   this->UIFrameWnd::Resize(width, height);
   this->m_viewer->Resize(width - 20, height - 40);
 
-  for (UIWindow* button : this->m_buttons) {
-    if (button == nullptr) {
-      continue;
+  for (UIBitmapButton* const& button : this->m_buttons) {
+    if (button) {
+      button->Move(this->ButtonX(button), this->geometry.height - 24);
     }
-
-    int x = this->geometry.width - 4;
-    const int y = this->geometry.height - 24;
-    for (auto it = this->m_buttons.begin(); it != this->m_buttons.end(); ++it) {
-      UIWindow* other = *it;
-      if (button != other) {
-        x += -4 - static_cast<UIBitmapButton*>(other)->BitmapWidth();
-      }
-    }
-    button->Move(x - static_cast<UIBitmapButton*>(button)->BitmapWidth(), y);
   }
 }
 

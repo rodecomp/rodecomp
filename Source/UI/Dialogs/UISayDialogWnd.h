@@ -29,7 +29,7 @@ public:
   void Paint() override;
   std::vector<unsigned char> GetReplayData() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
-  __declspec(noinline) int ButtonX(UIBitmapButton* button);
+  int ButtonX(UIBitmapButton* button);
 };
 
 #endif
