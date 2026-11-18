@@ -394,15 +394,16 @@ void UIHotKeyWnd::Paint() {
         }
       }
 
+      const int keyColumnWidth = this->m_keyColumnWidth;
       const int textWidth = this->TextWidth(info.text.c_str(), 0, 0, 12, 0, 0);
-      const int textX = (this->m_keyColumnWidth - textWidth) / 2;
+      const int textX = (keyColumnWidth - textWidth) / 2;
       const int halfWidth = this->geometry.width / 2;
       const int column = visibleRow / this->m_rowsPerPage;
       const int rowY = this->m_titleHeight + this->m_tabHeight + this->m_verticalMargin +
                        (visibleRow % this->m_rowsPerPage) * this->m_rowHeight;
 
-      const int backgroundX = column ? this->geometry.width - this->m_keyColumnWidth - this->m_horizontalMargin
-                                     : halfWidth - this->m_keyColumnWidth;
+      const int backgroundX = column ? this->geometry.width - keyColumnWidth - this->m_horizontalMargin
+                                     : halfWidth - keyColumnWidth;
       const int keyX = column ? halfWidth : this->m_horizontalMargin;
 
       std::uint32_t color = 0xDFFFFE;
@@ -417,7 +418,7 @@ void UIHotKeyWnd::Paint() {
         break;
       }
 
-      this->FillRegion(backgroundX, rowY, this->m_keyColumnWidth, this->m_rowHeight - 1, color);
+      this->FillRegion(backgroundX, rowY, keyColumnWidth, this->m_rowHeight - 1, color);
 
       if (visibleRow == this->m_selectedRow) {
         this->FillRegion(keyX + 1, rowY, halfWidth - this->m_horizontalMargin - 1, 19, 0xE1E1FF);
@@ -439,9 +440,9 @@ void UIHotKeyWnd::Paint() {
 
   if (this->m_paged) {
     std::string text = FormatOwnedString("%d / %d", this->m_page, this->m_pageCount);
+    UIBitmapButton* prevButton = this->m_prevButton;
     const int pagesWidth = this->TextWidth(text.c_str(), 0, 0, 12, 0, 0);
-    const int pageX =
-      (this->m_prevButton->geometry.width - pagesWidth + 60) / 2 + this->m_prevButton->geometry.x;
+    const int pageX = (prevButton->geometry.width - pagesWidth + 60) / 2 + prevButton->geometry.x;
 
     text = static_cast<const std::string&>(FormatOwnedString("%d", this->m_page));
     this->DrawOutlinedText(pageX, 25, text.c_str(), 0, 0x7F3CFF, 0xFFFFFF, 0, 11, 1, 0);
