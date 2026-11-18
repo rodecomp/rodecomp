@@ -2,7 +2,8 @@
 #include "File/File.h"
 #include "Resource/ResourceMgr.h"
 
-// INLINED
+// OFFSET: 0x007500B0
+// FUNCTION: fn_45835
 CImfRes::CImfRes() {
   for (int priority = 0; priority < 15; ++priority) {
     this->m_maxAction[priority] = 0;
