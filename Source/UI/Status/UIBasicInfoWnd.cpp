@@ -482,14 +482,12 @@ void UIBasicInfoWnd::DrawCollapsed() {
     0, family, fontHeight, 0, 0, 0
   );
 
-  const int hp = g_session.hp;
-  const int maxHp = g_session.maxHp;
   std::uint32_t hpColor = 0;
-  if (maxHp > 0) {
-    hpColor = 0.25f > static_cast<float>(hp) / static_cast<float>(maxHp) ? 255 : 0;
+  if (g_session.maxHp > 0 && 0.25f > static_cast<float>(g_session.hp) / static_cast<float>(g_session.maxHp)) {
+    hpColor = 255;
   }
   this->DrawTextAt(
-    8, 36, FormatOwnedString("%s %d / %d", LookupMessage(MSI_BASICINFO_HP), hp, maxHp).c_str(), 0, family, fontHeight, hpColor, 0, 0
+    8, 36, FormatOwnedString("%s %d / %d", LookupMessage(MSI_BASICINFO_HP), g_session.hp, g_session.maxHp).c_str(), 0, family, fontHeight, hpColor, 0, 0
   );
 
   std::int64_t current = BaseExpCurrent();
@@ -513,14 +511,12 @@ void UIBasicInfoWnd::DrawCollapsed() {
     136, 36, FormatOwnedString("| %s %.1lf%%", LookupMessage(MSI_BASICINFO_EXP), percent).c_str(), 0, family, fontHeight, 0, 0, 0
   );
 
-  const int sp = g_session.m_sp;
-  const int spMax = g_session.m_maxSp;
   std::uint32_t spColor = 0;
-  if (spMax > 0) {
-    spColor = 0.25f > static_cast<float>(sp) / static_cast<float>(spMax) ? 255 : 0;
+  if (g_session.m_maxSp > 0 && 0.25f > static_cast<float>(g_session.m_sp) / static_cast<float>(g_session.m_maxSp)) {
+    spColor = 255;
   }
   this->DrawTextAt(
-    8, 52, FormatOwnedString("%s %d / %d", LookupMessage(MSI_BASICINFO_SP), sp, spMax).c_str(), 0, family, fontHeight, spColor, 0, 0
+    8, 52, FormatOwnedString("%s %d / %d", LookupMessage(MSI_BASICINFO_SP), g_session.m_sp, g_session.m_maxSp).c_str(), 0, family, fontHeight, spColor, 0, 0
   );
 
   this->DrawTextAt(
