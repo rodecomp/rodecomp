@@ -2,7 +2,6 @@
 #define RAGNAROK_SOURCE_UTILITY_LEXICON_LEXICONSERIALIZER_H
 
 #include <cstdint>
-#include <cstring>
 
 struct LexiconNode {
   /* 0000 */ unsigned char value;
@@ -22,22 +21,8 @@ struct LexiconHeader {
 };
 
 struct LexiconSerializer {
-  // INLINED
-  LexiconSerializer() {
-    this->root = nullptr;
-    this->wordCount = 0;
-    this->serializedSize = 0;
-    this->nodeCount = 0;
-    this->buffer = nullptr;
-    std::memset(&this->header, 0, sizeof(this->header));
-  }
-  // INLINED
-  ~LexiconSerializer() {
-    if (this->buffer != nullptr) {
-      delete this->buffer;
-    }
-    this->Destroy(this->root);
-  }
+  LexiconSerializer();
+  ~LexiconSerializer();
 
   /* 0000 */ LexiconNode* root;
   /* 0004 */ int wordCount;
@@ -49,6 +34,8 @@ struct LexiconSerializer {
   bool Load(const char* path);
   bool Insert(const unsigned char* word, int length);
   void Destroy(LexiconNode* node);
+  unsigned char UnbranchedLength(const LexiconNode* node) const;
+  int SiblingCount(const LexiconNode* node) const;
   std::uint32_t Serialize(LexiconNode* node, std::uint32_t offset, unsigned char terminal);
 };
 

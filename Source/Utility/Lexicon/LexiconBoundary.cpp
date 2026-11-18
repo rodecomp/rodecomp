@@ -84,6 +84,32 @@ bool LexiconBoundary::Matches(unsigned char previous, unsigned char current, uns
   return (HasClass(before, 10) && (after & 0x10002) != 0) || HasClass(after, 10);
 }
 
+// OFFSET: 0x00AC3D50
+// FUNCTION: fn_45867
+LexiconSerializer::LexiconSerializer() {
+  this->root = nullptr;
+  this->wordCount = 0;
+  this->serializedSize = 0;
+  this->nodeCount = 0;
+  this->buffer = nullptr;
+  std::memset(&this->header, 0, sizeof(this->header));
+}
+
+// OFFSET: 0x00AC3E30
+// FUNCTION: fn_45871
+LexiconSerializer::~LexiconSerializer() {
+  if (this->buffer != nullptr) {
+    delete this->buffer;
+  }
+  this->Destroy(this->root);
+}
+
+// OFFSET: 0x00AC3D90
+// FUNCTION: fn_45870
+LexiconBoundary::~LexiconBoundary() {
+  delete this->serializer;
+}
+
 // OFFSET: 0x00AC4A40
 // FUNCTION: fn_17632
 bool LexiconBoundary::Load() {
@@ -102,6 +128,26 @@ void LexiconSerializer::Destroy(LexiconNode* node) {
     this->Destroy(node->sibling);
     delete node;
   }
+}
+
+// OFFSET: 0x00AC3FC0
+// FUNCTION: fn_45868
+unsigned char LexiconSerializer::UnbranchedLength(const LexiconNode* node) const {
+  unsigned char length = 0;
+  for (; node != nullptr && node->sibling == nullptr; node = node->child) {
+    ++length;
+  }
+  return length;
+}
+
+// OFFSET: 0x00AC4030
+// FUNCTION: fn_45869
+int LexiconSerializer::SiblingCount(const LexiconNode* node) const {
+  int count = 0;
+  for (; node != nullptr; node = node->sibling) {
+    ++count;
+  }
+  return count;
 }
 
 // OFFSET: 0x00AC4D40

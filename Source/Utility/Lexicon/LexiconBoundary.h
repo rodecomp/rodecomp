@@ -6,6 +6,8 @@
 struct LexiconSerializer;
 
 struct LexiconBoundary {
+  ~LexiconBoundary();
+
   /* 0000 */ LexiconSerializer* serializer;
   /* 0004 */ std::uint32_t flags[256];
 
