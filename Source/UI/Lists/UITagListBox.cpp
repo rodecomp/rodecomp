@@ -378,6 +378,14 @@ int UITagListBox::SendMsg(UIWindow* sender, int message, std::intptr_t argument1
   return 0;
 }
 
+// OFFSET: 0x009B8320
+// FUNCTION: fn_45777
+__forceinline void UITagListBox::AppendTaggedText(const char* text, int width) {
+  std::vector<STagInfoV2> tags;
+  const std::string parsed = this->ParseTaggedText(std::string(text), tags);
+  this->AppendTaggedLines(parsed, tags, width);
+}
+
 // OFFSET: 0x009B9EA0
 // FUNCTION: fn_13881
 void UITagListBox::AppendText(std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
@@ -406,9 +414,7 @@ void UITagListBox::AppendText(std::intptr_t argument1, std::intptr_t argument2, 
         this->AddLine(lines[index].c_str());
       }
     } else {
-      std::vector<STagInfoV2> tags;
-      const std::string parsed = this->ParseTaggedText(std::string(text), tags);
-      this->AppendTaggedLines(parsed, tags, lineWidth);
+      this->AppendTaggedText(text, lineWidth);
     }
 
     this->plainTextMode &= ~255;
@@ -633,9 +639,9 @@ std::string UITagListBox::ParseTaggedText(std::string text, std::vector<STagInfo
   return result;
 }
 
-namespace {
-// INLINED
-int WrappedLineLength(const char* text, int length, int width) {
+// OFFSET: 0x009B8480
+// FUNCTION: fn_45778
+__forceinline int UITagListBox::WrappedLineLength(const char* text, int length, int width) const {
   if (text == nullptr) {
     return -1;
   }
@@ -661,7 +667,6 @@ int WrappedLineLength(const char* text, int length, int width) {
 
   return static_cast<int>(current - text);
 }
-}
 
 // OFFSET: 0x009BB8E0
 // FUNCTION: fn_13888
@@ -671,7 +676,7 @@ void UITagListBox::AppendTaggedLines(std::string text, std::vector<STagInfoV2>& 
   std::size_t position = 0;
   while (text.size() > position) {
     const char* start = buffer + position;
-    int next = WrappedLineLength(start, static_cast<int>(text.size() - position), width) + static_cast<int>(position);
+    int next = this->WrappedLineLength(start, static_cast<int>(text.size() - position), width) + static_cast<int>(position);
     for (std::size_t index = 0; index < tags.size(); ++index) {
       if (next > tags[index].startOffset && next < tags[index].endOffset) {
         next = tags[index].startOffset;
@@ -688,6 +693,26 @@ void UITagListBox::AppendTaggedLines(std::string text, std::vector<STagInfoV2>& 
     this->AddTagButton(*tag, static_cast<int>(this->lines.size()) - firstLine);
   }
   this->SendMsg(nullptr, UM_SCROLLVERT, 0, 0, 0, 0);
+}
+
+// OFFSET: 0x009BB7A0
+// FUNCTION: fn_45779
+__forceinline std::pair<unsigned int, int> UITagListBox::FindTagPosition(int offset, int lineCount) {
+  std::pair<unsigned int, int> position{};
+  int bytes = 0;
+  const unsigned int count = static_cast<unsigned int>(this->lines.size());
+  for (unsigned int index = count - lineCount; index < count; ++index) {
+    bytes += static_cast<int>(this->lines[index].size());
+    if (offset < bytes) {
+      const int prefixLength = static_cast<int>(this->lines[index].size()) - bytes + offset;
+      const std::string stripped = StripColorTokens(std::string_view(this->lines[index].c_str(), prefixLength));
+      position.first = index;
+      const std::string prefix = stripped.substr(0, prefixLength);
+      position.second = this->TextWidth(prefix.c_str(), 0, 0, 12, 0, 0) + 2;
+      break;
+    }
+  }
+  return position;
 }
 
 // OFFSET: 0x009B7A20
@@ -750,24 +775,9 @@ void UITagListBox::AddTagButton(STagInfoV2 tag, int lineCount) {
     }
   }
 
-  int x = 0;
-  unsigned int line = 0;
-  int bytes = 0;
-  const unsigned int count = static_cast<unsigned int>(this->lines.size());
-  for (unsigned int index = count - lineCount; index < count; ++index) {
-    bytes += static_cast<int>(this->lines[index].size());
-    if (tag.startOffset < bytes) {
-      const int prefixLength = static_cast<int>(this->lines[index].size()) - bytes + tag.startOffset;
-      const std::string stripped = StripColorTokens(std::string_view(this->lines[index].c_str(), prefixLength));
-      const std::string prefix = stripped.substr(0, prefixLength);
-      x = this->TextWidth(prefix.c_str(), 0, 0, 12, 0, 0) + 2;
-      line = index;
-      break;
-    }
-  }
-
-  button->m_value = line;
-  button->Move(x, -100);
+  const auto position = this->FindTagPosition(tag.startOffset, lineCount);
+  button->m_value = position.first;
+  button->Move(position.second, -100);
   this->AddChild(button);
   this->m_tagWindows.push_back(button);
 }
