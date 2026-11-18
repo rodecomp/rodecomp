@@ -453,10 +453,12 @@ void CUIProbabilityTable::Search() {
     return FindSubstring(data.name, keyword) != -1;
   };
 
+  const unsigned int selected = list->selected;
+  const bool repeatSearch = keyword == this->m_lastSearch;
   auto start = list->data.begin();
-  if (keyword == this->m_lastSearch) {
-    const int next = list->data.size() - 1 != list->selected ? static_cast<int>(list->selected) + 1 : 0;
-    start = std::next(list->data.begin(), next);
+  if (repeatSearch) {
+    const int next = list->data.size() - 1 != selected ? static_cast<int>(list->selected) + 1 : 0;
+    std::advance(start, next);
   }
 
   auto found = std::find_if(start, list->data.end(), matches);
@@ -469,13 +471,7 @@ void CUIProbabilityTable::Search() {
 
     CUIListBoxEx<ProbabilityTable::CUIItem, ProbabilityTable::CItemData>* current = this->m_list;
     const int index = static_cast<int>(std::distance(list->data.begin(), found));
-    current->scrollBar->SetPosition(current->rowHeight * index);
-    for (ProbabilityTable::CUIItem* item : current->items) {
-      if (index == item->index) {
-        current->SelectItem(item);
-        break;
-      }
-    }
+    current->SelectIndex(index);
     this->m_list->RebindIndex(this->m_list->selected);
   } else {
     g_windowMgr.Confirm(LookupMessage(MSI_NO_SEARCH_RESULTS), 0, true, false, 0, "Message", 280, 120, 0);

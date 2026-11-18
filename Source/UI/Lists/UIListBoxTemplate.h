@@ -354,7 +354,17 @@ public:
   }
   bool RebindIndex(int index);
   void SelectItem(CUIListItem* item);
-  bool SelectIndex(int index);
+  // INLINED
+  bool SelectIndex(int index) {
+    this->scrollBar->SetPosition(this->rowHeight * index);
+    for (T* item : this->items) {
+      if (item->index == index) {
+        this->SelectItem(item);
+        return true;
+      }
+    }
+    return false;
+  }
   void AddNewItem() {
   }
   __declspec(noinline) T* CreateItem();
