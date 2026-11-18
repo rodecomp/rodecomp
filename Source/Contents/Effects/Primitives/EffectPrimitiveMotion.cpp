@@ -2444,7 +2444,12 @@ bool CEffectPrim::Prim3DParticle() {
 
   this->ProcessAlpha();
   this->ShiftSegment();
-  return this->AnimMotion();
+
+  if (!this->AnimMotion()) {
+    return false;
+  }
+
+  return true;
 }
 
 // OFFSET: 0x00BB75B0
@@ -5447,13 +5452,13 @@ void CEffectPrim::PrimWaveSpin() {
     }
 
     const int process = ++slot.process;
-    slot.rotStart = static_cast<std::int16_t>(slot.rotStart + (this->state.accel == 99.0f ? 3 : 5));
+    slot.rotStart = static_cast<std::int16_t>(slot.rotStart + (this->state.accel != 99.0f ? 5 : 3));
     if (slot.rotStart >= 360) {
       slot.rotStart = static_cast<std::int16_t>(slot.rotStart - 360);
     }
 
-    slot.riseAngle = static_cast<std::int16_t>(slot.riseAngle - 1);
     slot.distance += this->state.accel != 99.0f ? 0.3f : 0.1f;
+    slot.riseAngle = static_cast<std::int16_t>(slot.riseAngle - 1);
     if (this->state.accel != 99.0f) {
       if (slot.riseAngle < 40) {
         slot.riseAngle = 40;
@@ -7002,39 +7007,38 @@ bool CEffectPrim::PrimDriftingSparks() {
   }
 
   for (int index = 0; index < 4; ++index) {
-    EffectPrimitiveSlot& spark = slots[index];
-
     if (index != 0) {
-      ++spark.process;
+      ++this->state.slots[index].process;
     }
 
-    if (spark.process <= 0) {
+    if (this->state.slots[index].process <= 0) {
       continue;
     }
 
-    const std::int16_t fullDisplayAngle = static_cast<std::int16_t>(spark.fullDisplayAngle + 1);
-    spark.fullDisplayAngle = fullDisplayAngle;
+    ++this->state.slots[index].fullDisplayAngle;
 
-    if (fullDisplayAngle >= 360) {
-      spark.fullDisplayAngle = static_cast<std::int16_t>(fullDisplayAngle - 360);
+    if (this->state.slots[index].fullDisplayAngle >= 360) {
+      this->state.slots[index].fullDisplayAngle -= 360;
     }
 
-    spark.maxHeight *= 1.02f;
+    const std::int16_t angle = this->state.slots[index].fullDisplayAngle;
 
-    if (spark.maxHeight > 6.0f) {
-      spark.riseAngle -= 3;
+    this->state.slots[index].maxHeight *= 1.02f;
 
-      if (spark.riseAngle <= 0) {
-        spark.maxHeight = 3.0f;
-        spark.rotStart = static_cast<std::int16_t>(ClampedRandom(360));
-        spark.riseAngle = 200;
+    if (this->state.slots[index].maxHeight > 6.0f) {
+      this->state.slots[index].riseAngle -= 3;
+
+      if (this->state.slots[index].riseAngle <= 0) {
+        this->state.slots[index].maxHeight = 3.0f;
+        this->state.slots[index].rotStart = static_cast<std::int16_t>(ClampedRandom(360));
+        this->state.slots[index].riseAngle = 200;
       }
     }
 
-    spark.height[12] = spark.maxHeight * g_sinTable[spark.fullDisplayAngle] * 0.1f + spark.maxHeight * 0.9f;
+    this->state.slots[index].height[12] = this->state.slots[index].maxHeight * g_sinTable[angle] * 0.1f + this->state.slots[index].maxHeight * 0.9f;
 
-    if (spark.height[12] < 0.0f) {
-      spark.height[12] = 0.0f;
+    if (this->state.slots[index].height[12] < 0.0f) {
+      this->state.slots[index].height[12] = 0.0f;
     }
   }
 
@@ -7124,17 +7128,17 @@ bool CEffectPrim::PrimWanderingFlames() {
 
     for (int fade = 12; fade < 14; ++fade) {
       if (slot.process < 10) {
-        slot.height[fade] += 25.0f;
+        slots[index].height[fade] += 25.0f;
 
-        if (slot.height[fade] >= 255.0f) {
-          slot.height[fade] = 255.0f;
+        if (slots[index].height[fade] >= 255.0f) {
+          slots[index].height[fade] = 255.0f;
         }
       } else if (slot.process > 20) {
-        slot.height[fade] -= 3.0f;
+        slots[index].height[fade] -= 3.0f;
 
-        if (slot.height[fade] < 0.0f) {
+        if (slots[index].height[fade] < 0.0f) {
           slot.life = 0;
-          slot.height[fade] = 0.0f;
+          slots[index].height[fade] = 0.0f;
         }
       }
     }
@@ -7178,17 +7182,17 @@ bool CEffectPrim::PrimWanderingFlames2() {
 
     for (int fade = 12; fade < 14; ++fade) {
       if (slot.process < 50) {
-        slot.height[fade] += 25.0f;
+        slots[index].height[fade] += 25.0f;
 
-        if (slot.height[fade] >= 255.0f) {
-          slot.height[fade] = 255.0f;
+        if (slots[index].height[fade] >= 255.0f) {
+          slots[index].height[fade] = 255.0f;
         }
       } else if (slot.process > 60) {
-        slot.height[fade] -= 3.0f;
+        slots[index].height[fade] -= 3.0f;
 
-        if (slot.height[fade] < 0.0f) {
+        if (slots[index].height[fade] < 0.0f) {
           slot.life = 0;
-          slot.height[fade] = 0.0f;
+          slots[index].height[fade] = 0.0f;
         }
       }
     }
@@ -7378,11 +7382,11 @@ void CEffectPrim::PrimFallingPetals() {
 
 namespace {
   // INLINED
-  __forceinline void RespawnRotatedPoint(const EffectPrimitiveSlot& slot, vector3d& point, float scale, bool narrow) {
-    if (narrow) {
-      point.x = static_cast<float>(ClampedRandom(25) - 12);
-    } else {
+  __forceinline void RespawnRotatedPoint(vector3d& point, float scale, bool narrow, std::int16_t angle) {
+    if (!narrow) {
       point.x = static_cast<float>(ClampedRandom(45) - 22);
+    } else {
+      point.x = static_cast<float>(ClampedRandom(25) - 12);
     }
 
     point.y = static_cast<float>(ClampedRandom(30));
@@ -7391,8 +7395,8 @@ namespace {
     point.y = scale * point.y;
     point.z = static_cast<float>(z) * scale;
 
-    const float cosine = g_cosTable[slot.fullDisplayAngle];
-    const float sine = g_sinTable[slot.fullDisplayAngle];
+    const float cosine = g_cosTable[angle];
+    const float sine = g_sinTable[angle];
     const float x = point.x;
     point.x = cosine * x - point.z * sine;
     point.z = sine * x + point.z * cosine;
@@ -7412,6 +7416,7 @@ void CEffectPrim::PrimFallingPetals2() {
       continue;
     }
 
+    const std::int16_t angle = slot.fullDisplayAngle;
     const float scale = static_cast<float>(slot.riseAngle) / 10.0f;
     DriftSlotAngles(slot, 8);
 
@@ -7420,7 +7425,7 @@ void CEffectPrim::PrimFallingPetals2() {
       slot.vecBPre.z = g_sinTable[static_cast<int>(slot.height[2])] * 0.01f + slot.vecBPre.z;
 
       if (slot.vecBPre.y < scale * -8.0f) {
-        RespawnRotatedPoint(slot, slot.vecBPre, scale, slot.flag1[12] != 0);
+        RespawnRotatedPoint(slot.vecBPre, scale, slot.flag1[12] != 0, angle);
       }
     }
 
@@ -7431,7 +7436,7 @@ void CEffectPrim::PrimFallingPetals2() {
       slot.vecBNow.z -= g_sinTable[static_cast<int>(slot.height[6])] * 0.01f;
 
       if (slot.vecBNow.y < scale * -8.0f) {
-        RespawnRotatedPoint(slot, slot.vecBNow, scale, false);
+        RespawnRotatedPoint(slot.vecBNow, scale, false, angle);
       }
     }
 
@@ -7442,7 +7447,7 @@ void CEffectPrim::PrimFallingPetals2() {
       slot.vecTPre.z -= g_sinTable[static_cast<int>(slot.height[10])] * 0.01f;
 
       if (slot.vecTPre.y < scale * -8.0f) {
-        RespawnRotatedPoint(slot, slot.vecTPre, scale, false);
+        RespawnRotatedPoint(slot.vecTPre, scale, false, angle);
       }
     }
 
@@ -7453,7 +7458,7 @@ void CEffectPrim::PrimFallingPetals2() {
       slot.vecTNow.z = g_sinTable[static_cast<int>(slot.height[14])] * 0.01f + slot.vecTNow.z;
 
       if (slot.vecTNow.y < scale * -8.0f) {
-        RespawnRotatedPoint(slot, slot.vecTNow, scale, false);
+        RespawnRotatedPoint(slot.vecTNow, scale, false, angle);
       }
     }
 
