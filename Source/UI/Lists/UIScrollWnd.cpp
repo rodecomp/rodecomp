@@ -42,9 +42,9 @@ UIScrollWnd::UIScrollWnd(int width, int height, unsigned char cached)
   this->OnCreate(width, height);
 }
 
-// OFFSET: 0x009AC2B0
-// FUNCTION: fn_13772
-UIScrollWnd::~UIScrollWnd() {
+// OFFSET: 0x009AC830
+// FUNCTION: fn_45696
+void UIScrollWnd::DestroyScrollBars() {
   if (this->horizontalBar) {
     this->RemoveChild(this->horizontalBar, 0);
     delete this->horizontalBar;
@@ -55,6 +55,12 @@ UIScrollWnd::~UIScrollWnd() {
     delete this->scrollBar;
     this->scrollBar = nullptr;
   }
+}
+
+// OFFSET: 0x009AC2B0
+// FUNCTION: fn_13772
+UIScrollWnd::~UIScrollWnd() {
+  this->DestroyScrollBars();
 }
 
 // OFFSET: 0x009AC5D0
@@ -99,30 +105,35 @@ bool UIScrollWnd::Update(int redraw) {
     return this->UpdateCached(redraw);
   }
 
-  int needRedraw = redraw;
+  return this->UpdateUncached(redraw);
+}
+
+// OFFSET: 0x009ACA00
+bool UIScrollWnd::UpdateUncached(int redraw) {
   for (auto it = this->childOrigins.begin(); it != this->childOrigins.end(); ++it) {
     it->first->Move(it->second.first - this->horizontalScrollPosition, it->second.second - this->scrollPosition);
   }
 
   if (this->m_dirty == 1) {
     this->Paint();
-    needRedraw = 1;
     this->m_dirty = 0;
+    redraw = 1;
   }
 
   bool changed = false;
   for (UIWindow* child : this->m_children) {
     if (this->horizontalBar != child && this->scrollBar != child) {
-      if (child->geometry.x + child->geometry.width > 0 && child->geometry.x < this->geometry.width && child->geometry.y + child->geometry.height > 0 &&
+      const int bottom = child->geometry.y + child->geometry.height;
+      if (child->geometry.x + child->geometry.width > 0 && child->geometry.x < this->geometry.width && bottom > 0 &&
           child->geometry.y < this->geometry.height && child->geometry.visible == 1) {
-        changed |= this->UpdateChild(child, needRedraw);
+        changed |= this->UpdateChild(child, redraw);
       }
     } else if (child->geometry.visible == 1) {
-      changed |= child->Update(needRedraw);
+      changed |= child->Update(redraw);
     }
   }
 
-  if (this->parent && this->parent->m_cached == 0 && (needRedraw == 1 || changed == 1)) {
+  if (this->parent && this->parent->m_cached == 0 && (redraw == 1 || changed == 1)) {
     this->parent->geometry.surface->BlendFrom(
       this->geometry.x, this->geometry.y, this->geometry.width, this->geometry.height, *static_cast<CDCBitmap*>(this->geometry.surface)
     );

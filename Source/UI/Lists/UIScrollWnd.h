@@ -22,11 +22,13 @@ public:
 
   RenderPrimitive* BuildPrimitive(int x, int y, int sourceX, int sourceY, int width, int height, CTexture* texture, std::uint32_t color);
   void Clear();
+  void DestroyScrollBars();
   __declspec(noinline) void RemoveChild(UIWindow* child, unsigned char destroy);
   void AddScrollChild(UIWindow* child);
   void MoveScrollChild(UIWindow* child, int x, int y);
 
   bool Update(int redraw) override;
+  bool UpdateUncached(int redraw);
   bool UpdateCached(int redraw);
   bool UpdateChild(UIWindow* child, int redraw);
 
