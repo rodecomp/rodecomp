@@ -1099,7 +1099,7 @@ void CUISelectPackageItemBox::Open(int sourceIndex) {
 
   this->packageId = std::atoi(item.itemId.c_str());
   const char* name = FindItemDescription(this->packageId).identifiedName;
-  this->title->SetTitle(name);
+  this->title->SetTitle(name, std::strlen(name));
   if (!Singleton<CSelectPackageItemMgr>::s_instance) {
     Singleton<CSelectPackageItemMgr>::s_instance = new (std::nothrow) CSelectPackageItemMgr;
   }
