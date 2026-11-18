@@ -6708,9 +6708,9 @@ int UIMerchantItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intpt
       }
     }
 
-    char text[256];
     int total = owned + item.quantity;
     if (limit < total) {
+      char text[200];
       total = limit;
       item.quantity = limit - owned;
       const char* format = LookupMessage(!this->buyingStore ? MSI_CAN_BUY_ITEM_NUM : MSI_BUYINGSTORE_SELLWND_LIMITNUM);
@@ -6719,6 +6719,7 @@ int UIMerchantItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std::intpt
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 255, 0, 0, 0);
     }
     if (total > 30000) {
+      char text[200];
       item.quantity = 30000 - owned;
       const char* format = LookupMessage((this->buyingStore != 0) + 1704);
       std::sprintf(text, format, 30000);
