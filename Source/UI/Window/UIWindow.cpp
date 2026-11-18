@@ -3739,12 +3739,13 @@ void UIWindow::DrawAlignedText(
   int x, int y, std::string text, int width, int align, std::uint32_t color, int outlineColor, int family, int height, unsigned char bold, unsigned char outlined
 ) {
   const int textWidth = this->TextWidth(text.c_str(), static_cast<unsigned>(text.size()), family, height, bold, 0);
+  int drawX = x;
   switch (align) {
   case 2:
-    x -= textWidth;
+    drawX -= textWidth;
     break;
   case 6:
-    x = static_cast<int>((width - textWidth) * g_depthAverageHalf + x);
+    drawX = static_cast<int>((width - textWidth) * g_depthAverageHalf + drawX);
     break;
   }
 
@@ -3763,7 +3764,7 @@ void UIWindow::DrawAlignedText(
         TextContext context(*this->geometry.surface);
         context.SetFont(family, height, bold, 0);
         context.SetColor(outlineColor);
-        context.Draw(x + offset + 1, y, string, bytes);
+        context.Draw(drawX + 1 + offset, y, string, bytes);
       }
       {
         const std::string glyph(current, next);
@@ -3772,7 +3773,7 @@ void UIWindow::DrawAlignedText(
         TextContext context(*this->geometry.surface);
         context.SetFont(family, height, bold, 0);
         context.SetColor(outlineColor);
-        context.Draw(x + offset - 1, y, string, bytes);
+        context.Draw(drawX - 1 + offset, y, string, bytes);
       }
       {
         const std::string glyph(current, next);
@@ -3781,7 +3782,7 @@ void UIWindow::DrawAlignedText(
         TextContext context(*this->geometry.surface);
         context.SetFont(family, height, bold, 0);
         context.SetColor(outlineColor);
-        context.Draw(x + offset, y + 1, string, bytes);
+        context.Draw(drawX + offset, y + 1, string, bytes);
       }
       {
         const std::string glyph(current, next);
@@ -3790,7 +3791,7 @@ void UIWindow::DrawAlignedText(
         TextContext context(*this->geometry.surface);
         context.SetFont(family, height, bold, 0);
         context.SetColor(outlineColor);
-        context.Draw(x + offset, y - 1, string, bytes);
+        context.Draw(drawX + offset, y - 1, string, bytes);
       }
     }
 
@@ -3801,7 +3802,7 @@ void UIWindow::DrawAlignedText(
       TextContext context(*this->geometry.surface);
       context.SetFont(family, height, bold, 0);
       context.SetColor(color);
-      context.Draw(x + offset, y, string, bytes);
+      context.Draw(drawX + offset, y, string, bytes);
     }
 
     offset += glyphWidth;
