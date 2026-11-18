@@ -1479,7 +1479,16 @@ void UIAchViewWnd::UpdateInfo() {
       if (this->info->reward.titleId > 0) {
         const std::string bitmap = "유저인터페이스\\achievement_re\\reward_title.bmp";
         const std::string title = g_session.GetJobTitleString(this->info->reward.titleId);
-        this->rewards[0]->Set(bitmap.c_str(), title.c_str(), 0);
+        const char* text = title.c_str();
+        if (text) {
+          this->rewards[0]->tooltip = std::string(text);
+        }
+        this->rewards[0]->bitmapName = bitmap.c_str();
+        this->rewards[0]->bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(bitmap.c_str())));
+        if (this->rewards[0]->bitmap) {
+          this->rewards[0]->Resize(this->rewards[0]->bitmap->image.width, this->rewards[0]->bitmap->image.height);
+        }
+        this->rewards[0]->itemId = 0;
         this->rewards[0]->Show(1);
       }
 
