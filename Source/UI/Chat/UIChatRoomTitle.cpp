@@ -111,13 +111,7 @@ int UIChatRoomTitle::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
     return UIWindow::SendMsg(sender, message, a, b, c, d);
   }
 
-  const ChatRoomTitleInfo* info = reinterpret_cast<const ChatRoomTitleInfo*>(a);
-  this->info.title = info->title;
-  this->info.password = info->password;
-  this->info.type = info->type;
-  this->info.memberCount = info->memberCount;
-  this->info.memberLimit = info->memberLimit;
-  this->info.id = info->id;
+  this->info = *reinterpret_cast<const ChatRoomTitleInfo*>(a);
 
   const std::size_t lineEnd = this->info.title.find('\r');
   if (lineEnd != std::string::npos) {
