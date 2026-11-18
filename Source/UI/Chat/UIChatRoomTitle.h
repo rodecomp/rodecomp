@@ -22,6 +22,7 @@ class UIChatRoomTitle : public UIWindow {
 
 public:
   UIChatRoomTitle();
+  __declspec(noinline) ~UIChatRoomTitle() override;
   void OnCreate(int width, int height) override;
   void OnLBtnDblClk(int x, int y) override;
   void Paint() override;

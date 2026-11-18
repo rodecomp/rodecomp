@@ -23,6 +23,10 @@
 UIChatRoomTitle::UIChatRoomTitle() : UIWindow(0) {
 }
 
+// OFFSET: 0x00851440
+// FUNCTION: fn_45637
+UIChatRoomTitle::~UIChatRoomTitle() = default;
+
 // OFFSET: 0x0085AB80
 // FUNCTION: fn_10785
 void UIChatRoomTitle::OnCreate(int, int) {
