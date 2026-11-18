@@ -7,6 +7,8 @@
 
 class UIImgMenu : public UIWindow {
 public:
+  UIImgMenu();
+
   int ItemAt(int x, int y);
   void Move(int x, int y) override;
   void Paint() override;
