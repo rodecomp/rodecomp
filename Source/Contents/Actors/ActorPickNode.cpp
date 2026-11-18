@@ -144,22 +144,23 @@ void CActorPickNode::MakeQuardTree(int depth, ActorPickBounds bounds) {
       CActorPickNode* child = new CActorPickNode;
       this->children[index] = child;
       ActorPickBounds childBounds = this->bounds;
+      ActorPickBounds& quadrant = childBounds;
       switch (index) {
       case 0:
-        childBounds.right /= 2;
-        childBounds.bottom /= 2;
+        quadrant.right /= 2;
+        quadrant.bottom /= 2;
         break;
       case 1:
-        childBounds.left = childBounds.right / 2 + 1;
-        childBounds.bottom /= 2;
+        quadrant.left = quadrant.right / 2 + 1;
+        quadrant.bottom /= 2;
         break;
       case 2:
-        childBounds.left = childBounds.right / 2 + 1;
-        childBounds.top = childBounds.bottom / 2 + 1;
+        quadrant.left = quadrant.right / 2 + 1;
+        quadrant.top = quadrant.bottom / 2 + 1;
         break;
       case 3:
-        childBounds.right /= 2;
-        childBounds.top = childBounds.bottom / 2 + 1;
+        quadrant.right /= 2;
+        quadrant.top = quadrant.bottom / 2 + 1;
         break;
       }
       child->MakeQuardTree(depth - 1, childBounds);
