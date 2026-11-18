@@ -36,7 +36,7 @@ bool JsonCppLoader::GetReputeGroupData(std::map<int, ReputeGroupRecord>* out) {
     this->GetStringValue(node, "Name", &record.name);
     this->GetIntVectorValue(node, "ReputeList", &record.reputes);
 
-    if (!out->insert(std::pair<int, ReputeGroupRecord>(std::stoi(name), record)).second) {
+    if (!out->insert(std::make_pair(std::stoi(name), record)).second) {
       this->Fail("중복키가 입력되었습니다. (name : %s)", name.c_str());
       return false;
     }
