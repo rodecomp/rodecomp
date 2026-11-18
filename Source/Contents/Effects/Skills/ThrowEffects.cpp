@@ -416,8 +416,9 @@ void CThrowItemEffect::InitTrajectory(CParticle* particle) {
 // OFFSET: 0x00B7EA40
 // FUNCTION: fn_19240
 void CVolcanoEffect::AddRings() {
+  int baseAngle = 0;
   int row = 0;
-  for (int baseAngle = 0; baseAngle < 360; baseAngle += 90) {
+  for (; baseAngle < 360; baseAngle += 90) {
     for (int segment = 0; segment <= 21; ++segment) {
       CParticle* particle = CreateParticle(&this->positionVector, 5);
       if (!particle) {
