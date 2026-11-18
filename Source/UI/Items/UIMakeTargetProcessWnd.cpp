@@ -205,7 +205,7 @@ int UIMakeTargetProcessWnd::SendMsg(UIWindow* sender, int message, std::intptr_t
       }
     }
 
-    return 0;
+    break;
   }
 
   case UM_COMMAND: {
