@@ -24,6 +24,13 @@ C3dAttr* C3dAttr::Create() {
 }
 
 // OFFSET: 0x00748BC0
+// FUNCTION: fn_45836
+void C3dAttr::Resize(int columns, int rows) {
+  this->Unload();
+  this->m_cells.resize(static_cast<std::uint32_t>(columns) * static_cast<std::uint32_t>(rows));
+  this->width = columns;
+  this->height = rows;
+}
 
 // OFFSET: 0x007484E0
 // FUNCTION: fn_07829
@@ -50,12 +57,7 @@ bool C3dAttr::Load(const char* name) {
     int rows;
     file.Read(&columns, sizeof(columns));
     file.Read(&rows, sizeof(rows));
-    const int newWidth = columns;
-    const int newHeight = rows;
-    this->Unload();
-    this->m_cells.resize(static_cast<std::uint32_t>(newWidth) * static_cast<std::uint32_t>(newHeight));
-    this->width = newWidth;
-    this->height = newHeight;
+    this->Resize(columns, rows);
     file.Read(this->m_cells.data(), rows * columns * sizeof(TerrainHeightCell));
 
     if (major > 1 || (major == 1 && minor >= 3)) {
