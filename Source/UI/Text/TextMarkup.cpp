@@ -86,7 +86,10 @@ bool UIWindow::HasTextLinks(const std::string& text) {
     hasLink = true;
   }
 
-  return text.find(g_itemLinkTagOpen) != std::string::npos || text.find(g_questTagBegin) != std::string::npos || hasLink;
+  if (text.find(g_itemLinkTagOpen) != std::string::npos || text.find(g_questTagBegin) != std::string::npos) {
+    return true;
+  }
+  return hasLink;
 }
 
 // OFFSET: 0x008791E0
