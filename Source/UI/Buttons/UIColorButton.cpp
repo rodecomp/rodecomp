@@ -18,6 +18,10 @@ UIColorButton::UIColorButton() : UIButton() {
   this->normalBlue = blue;
 }
 
+// OFFSET: 0x00851560
+// FUNCTION: fn_45636
+UIColorButton::~UIColorButton() = default;
+
 // OFFSET: 0x0085C9A0
 // FUNCTION: fn_10804
 void UIColorButton::Paint() {

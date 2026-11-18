@@ -6,6 +6,7 @@
 class UIColorButton : public UIButton {
 public:
   UIColorButton();
+  __declspec(noinline) ~UIColorButton() override;
   void Paint() override;
 
   /* 00B4 */ unsigned activeRed;
