@@ -297,8 +297,7 @@ bool C3dModelResV1::Load(const char* name) {
   file.Read(magic, 4);
 
   if (std::strcmp(magic, "GRSM") != 0) {
-    constexpr char message[] = "모델파일이 아닙니다. 형식을 다시한번 확인해주세요.";
-    ShowErrorDialog(message, 0);
+    ShowErrorDialog("모델파일이 아닙니다. 형식을 다시한번 확인해주세요.", 0);
     return false;
   }
 
@@ -309,33 +308,34 @@ bool C3dModelResV1::Load(const char* name) {
   file.Read(&minor, 1);
 
   if (major != 1 || minor > 5) {
-    constexpr char message[] = "지원되지 않는 버젼입니다. 내용물이 깨져있을 수 있습니다";
-    ShowErrorDialog(message, 0);
+    ShowErrorDialog("지원되지 않는 버젼입니다. 내용물이 깨져있을 수 있습니다", 0);
     return false;
   }
 
   file.Read(&this->animationLength, 4);
   file.Read(&this->shade, 4);
 
-  if (minor < 4) {
-    this->alpha = 255;
-  } else {
+  if (minor >= 4) {
     file.Read(&this->alpha, 1);
+  } else {
+    this->alpha = 255;
   }
 
   unsigned char reserved[16]{};
   file.Read(reserved, sizeof(reserved));
   std::vector<std::string> textureNames;
-  int textureCount = 0;
-  file.Read(&textureCount, 4);
-  char textureName[40]{};
+  {
+    int textureCount = 0;
+    file.Read(&textureCount, 4);
+    char textureName[40]{};
 
-  for (int index = 0; index < textureCount; ++index) {
-    file.Read(textureName, sizeof(textureName));
-    textureNames.push_back(textureName);
+    for (int index = 0; index < textureCount; ++index) {
+      file.Read(textureName, sizeof(textureName));
+      textureNames.push_back(textureName);
 
-    if (std::strstr(textureName, ".bik")) {
-      this->movieNames.push_back(textureName);
+      if (std::strstr(textureName, ".bik")) {
+        this->movieNames.push_back(textureName);
+      }
     }
   }
 
@@ -345,7 +345,107 @@ bool C3dModelResV1::Load(const char* name) {
   file.Read(&nodeCount, 4);
 
   for (int index = 0; index < nodeCount; ++index) {
-    this->ReadNode(file, minor, textureNames);
+    ModelNodeV1* node = new ModelNodeV1;
+    node->model = this;
+    node->alpha = this->alpha;
+    char field[40]{};
+    file.Read(field, sizeof(field));
+    node->name = field;
+    file.Read(field, sizeof(field));
+    node->parentName = field;
+    int nodeTextureCount = 0;
+    file.Read(&nodeTextureCount, 4);
+
+    for (int textureSlot = 0; textureSlot < nodeTextureCount; ++textureSlot) {
+      int textureIndex = 0;
+      file.Read(&textureIndex, 4);
+      CTexture* texture = g_texMgr.Load(textureNames[textureIndex].c_str(), 0, false, true, false);
+      node->textures.push_back(texture);
+
+      if (texture) {
+        texture->Retain();
+      }
+    }
+
+    matrix transform;
+    file.Read(&transform, sizeof(transform));
+    file.Read(node->position, sizeof(node->position));
+    file.Read(&node->angle, 4);
+    file.Read(node->axis, sizeof(node->axis));
+    file.Read(node->scale, sizeof(node->scale));
+    node->mesh = std::make_unique<ModelMesh>();
+    int vertexCount = 0;
+    file.Read(&vertexCount, 4);
+    node->mesh->vertexCount = vertexCount;
+    auto* vertices = new std::array<float, 3>[vertexCount]{};
+    file.Read(vertices, static_cast<unsigned>(vertexCount) * 12u);
+    node->mesh->vertices = vertices;
+
+    for (int vertexIndex = 0; vertexIndex < vertexCount; ++vertexIndex) {
+      std::array<float, 3>& vertex = vertices[vertexIndex];
+      const float x = ((vertex[0] * transform.values[0] + vertex[1] * transform.values[3]) + vertex[2] * transform.values[6]) + transform.values[9];
+      const float y = ((vertex[0] * transform.values[1] + vertex[1] * transform.values[4]) + transform.values[7] * vertex[2]) + transform.values[10];
+      const float z = ((vertex[0] * transform.values[2] + vertex[1] * transform.values[5]) + transform.values[8] * vertex[2]) + transform.values[11];
+      vertex[0] = x;
+      vertex[1] = y;
+      vertex[2] = z;
+    }
+
+    int textureVertexCount = 0;
+    file.Read(&textureVertexCount, 4);
+    node->mesh->textureVertexCount = textureVertexCount;
+    ModelTextureVertex* textureVertices = new ModelTextureVertex[textureVertexCount];
+
+    if (minor == 1) {
+      for (int vertexIndex = 0; vertexIndex < textureVertexCount; ++vertexIndex) {
+        float uv[2];
+        file.Read(uv, sizeof(uv));
+        textureVertices[vertexIndex].shaded = 0xFFFFFFFFu;
+        textureVertices[vertexIndex].u = uv[0];
+        textureVertices[vertexIndex].v = uv[1];
+      }
+    } else {
+      file.Read(textureVertices, static_cast<unsigned>(textureVertexCount) * 12u);
+    }
+
+    node->mesh->textureVertices = textureVertices;
+    int faceCount = 0;
+    file.Read(&faceCount, 4);
+    node->mesh->faceCount = faceCount;
+    ModelFace* faces = new ModelFace[faceCount];
+
+    if (minor == 1) {
+      for (int faceIndex = 0; faceIndex < faceCount; ++faceIndex) {
+        ModelFace& face = faces[faceIndex];
+        ModelFaceRecordV1 record;
+        file.Read(&record, sizeof(record));
+        record.CopyTo(face);
+
+        if (face.smoothing.empty()) {
+          face.smoothing.push_back(0);
+        }
+      }
+    } else {
+      for (int faceIndex = 0; faceIndex < faceCount; ++faceIndex) {
+        ModelFace& face = faces[faceIndex];
+        ModelFaceRecord record;
+        file.Read(&record, sizeof(record));
+        record.CopyTo(face);
+
+        if (face.smoothing.empty()) {
+          face.smoothing.push_back(record.smoothGroup);
+        }
+      }
+    }
+
+    node->mesh->faces = faces;
+    // INLINED
+    std::sort(node->mesh->faces, node->mesh->faces + node->mesh->faceCount, [](const ModelFace& a, const ModelFace& b) { return a.texture < b.texture; });
+    node->mesh->CalculateNormals();
+    static_cast<ModelKeyList2&>(node->rotationKeys).Read(file);
+
+    this->nodes.push_back(node);
+    this->meshes[node->name] = node->mesh.get();
   }
 
   for (ModelNode* node : this->nodes) {
@@ -364,7 +464,7 @@ bool C3dModelResV1::Load(const char* name) {
       for (int index = 0; index < volumeCount; ++index) {
         auto* volume = new ModelVolume;
         std::memset(volume, 0, 132);
-        ModelVolumeRecord record{};
+        ModelVolumeRecord record;
         file.Read(&record, sizeof(record));
         volume->flag = record.flag;
         std::memcpy(volume, &record, sizeof(ModelVolumeRecordV1));
