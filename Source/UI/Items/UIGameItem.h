@@ -9,7 +9,7 @@
 
 class CUIGameItem : public CUIControl {
 public:
-  CUIGameItem();
+  inline CUIGameItem();
 
   /* 0080 */ int mode;
   /* 0084 */ unsigned char showNameTooltip;
@@ -33,6 +33,13 @@ public:
   void SetItem(const ITEM_INFO& item);
   void SetScale(short scale);
 };
+
+// OFFSET: 0x009F71F0
+// FUNCTION: fn_14769
+inline CUIGameItem::CUIGameItem()
+    : CUIControl(), mode(0), showNameTooltip(1), allowItemInfo(1), transparent(0), scale(100), itemInfo(), name(), image(), showOverlay(0),
+      overlay(), onClick() {
+}
 
 class CUIGameItemWithNum : public CUIGameItem {
 public:

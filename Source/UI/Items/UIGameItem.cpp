@@ -22,13 +22,6 @@
 #include <format>
 #include <string>
 
-// OFFSET: 0x009F71F0
-// FUNCTION: fn_14769
-CUIGameItem::CUIGameItem()
-    : CUIControl(), mode(0), showNameTooltip(1), allowItemInfo(1), transparent(0), scale(100), itemInfo(), name(), image(), showOverlay(0),
-      overlay(), onClick() {
-}
-
 // OFFSET: 0x009E72A0
 // FUNCTION: fn_14476
 void CUIGameItem::SetMode(int mode) {
