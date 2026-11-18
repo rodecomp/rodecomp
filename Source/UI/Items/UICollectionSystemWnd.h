@@ -18,6 +18,9 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
 
 private:
+  void AdvanceFrame(std::uint32_t now);
+  void CheckFinalFrame(std::uint32_t now);
+
   /* 00B4 */ int m_frameDelay;
   /* 00B8 */ int collectionId;
   /* 00BC */ int animationIndex;

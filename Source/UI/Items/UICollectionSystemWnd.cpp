@@ -57,7 +57,12 @@ void CUICollectionSystemWnd::Paint() {
     );
   }
 
-  const std::uint32_t now = timeGetTime();
+  this->AdvanceFrame(timeGetTime());
+}
+
+// OFFSET: 0x00916640
+// FUNCTION: fn_45675
+void CUICollectionSystemWnd::AdvanceFrame(std::uint32_t now) {
   if (!this->m_paused && static_cast<int>(now - this->m_lastTick) > this->m_frameDelay) {
     ++this->m_frame;
     if (this->m_frame >= static_cast<int>(this->m_action->FrameCount(this->animationIndex))) {
@@ -80,7 +85,12 @@ void CUICollectionSystemWnd::OnLBtnDown(int, int) {
 // FUNCTION: fn_12717
 void CUICollectionSystemWnd::OnProcess() {
   this->Invalidate();
-  const std::uint32_t now = timeGetTime();
+  this->CheckFinalFrame(timeGetTime());
+}
+
+// OFFSET: 0x009168D0
+// FUNCTION: fn_45676
+void CUICollectionSystemWnd::CheckFinalFrame(std::uint32_t now) {
   if (this->m_frame == this->m_lastFrame) {
     if (!this->m_paused) {
       this->m_paused = true;
