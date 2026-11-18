@@ -573,3 +573,13 @@ void UIListBoxID::AddLine(const char* text, int id) {
 // FUNCTION: fn_11054
 UIListBox2::UIListBox2() : UIListBox(), fontFamily(0), fontHeight(12), bold(0), italic(0) {
 }
+
+// OFFSET: 0x0089BC80
+// FUNCTION: fn_45602
+void UIListBox2::SetFont(int family, int height, unsigned char boldValue, unsigned char italicValue) {
+  this->fontFamily = family;
+  this->fontHeight = height;
+  this->bold = boldValue;
+  this->italic = italicValue;
+  this->Invalidate();
+}

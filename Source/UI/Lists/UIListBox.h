@@ -69,6 +69,7 @@ class UIListBox2 : public UIListBox {
 public:
   UIListBox2();
   void Paint() override;
+  void SetFont(int family, int height, unsigned char bold, unsigned char italic);
 
   /* 00D4 */ int fontFamily;
   /* 00D8 */ int fontHeight;
