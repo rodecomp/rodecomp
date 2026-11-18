@@ -55,7 +55,7 @@ void CPartialShutDownSchedule::SetPeriod(__time32_t endTime, __time32_t startTim
     return;
   }
 
-  this->seconds = static_cast<std::int64_t>(_difftime32(this->endTime->seconds, this->startTime->seconds));
+  this->seconds = static_cast<int>(_difftime32(this->endTime->seconds, this->startTime->seconds));
   if (this->seconds < 3600) {
     this->UpdateNotice();
     return;
