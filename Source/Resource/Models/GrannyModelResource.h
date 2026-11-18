@@ -201,6 +201,8 @@ class GrannyAnimationLibrary {
 public:
   ~GrannyAnimationLibrary();
   bool Load(const char* name, int job, int action);
+  granny_animation* GetAnimation(unsigned job, unsigned action);
+  granny_animation* LoadAnimation(const GrannyModelInstance* instance, char* name, const char* suffix);
   void InitializeMesh(GrannyMeshEntry& entry, granny_mesh* mesh, granny_model_instance* instance);
   void InstantiateModel(GrannyModelInstance* target, const granny_model* model);
   void Initialize();

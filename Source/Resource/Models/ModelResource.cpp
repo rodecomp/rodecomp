@@ -756,6 +756,25 @@ __forceinline void GrannyAnimationLibrary::InstantiateModel(GrannyModelInstance*
   }
 }
 
+// OFFSET: 0x00759840
+__forceinline granny_animation* GrannyAnimationLibrary::LoadAnimation(const GrannyModelInstance* instance, char* name, const char* suffix) {
+  granny_animation* animation = nullptr;
+  if (char* extension = std::strchr(name, '.')) {
+    *extension = '\0';
+  }
+
+  if (granny_file* file = this->ReadAnimationFile(name, suffix)) {
+    if (granny_file_info* info = GrannyGetFileInfo(file)) {
+      if (!instance->instance || info->animationCount != 1) {
+        ShowErrorDialog("This sample only supports single-animation files", 0);
+        return nullptr;
+      }
+      animation = info->animations[0];
+    }
+  }
+  return animation;
+}
+
 // OFFSET: 0x00757390
 // FUNCTION: fn_08005
 bool GrannyAnimationLibrary::Load(const char* name, int job, int action) {
@@ -799,26 +818,8 @@ bool GrannyAnimationLibrary::Load(const char* name, int job, int action) {
     this->InstantiateModel(instance, info->models[0]);
 
     if (info->animationCount != 0) {
-      granny_animation* animation = nullptr;
-
-      if (char* extension = std::strchr(this->fileName, '.')) {
-        *extension = '\0';
-      }
-
-      if (granny_file* animationFile = this->ReadAnimationFile(this->fileName, "")) {
-        if (granny_file_info* animationInfo = GrannyGetFileInfo(animationFile)) {
-          if (!instance->instance || animationInfo->animationCount != 1) {
-            ShowErrorDialog("This sample only supports single-animation files", 0);
-            this->animations[job][action] = nullptr;
-            return false;
-          }
-
-          animation = animationInfo->animations[0];
-        }
-      }
-
+      granny_animation* animation = this->LoadAnimation(instance, this->fileName, "");
       this->animations[job][action] = animation;
-
       if (!animation) {
         return false;
       }
@@ -843,38 +844,38 @@ bool GrannyAnimationLibrary::Load(const char* name, int job, int action) {
   return result;
 }
 
+// OFFSET: 0x007596D0
+granny_animation* GrannyAnimationLibrary::GetAnimation(unsigned job, unsigned action) {
+  granny_animation* const& animation = this->animations[job][action];
+  if (animation) {
+    return animation;
+  }
+
+  g_modelPath[0] = '\0';
+  if (job > JT_WIZARD || action > 4) {
+    return nullptr;
+  }
+  if (action == 0) {
+    std::sprintf(g_modelPath, "model\\3dmob\\%s", g_session.GetJobName(g_animationJobs[job], -1));
+  } else {
+    std::sprintf(g_modelPath, "model\\3dmob_bone\\%d_%s.gr2", job, g_animationNames[action]);
+  }
+  if (!g_modelPath[0] || !ResourceExists(g_modelPath, 0)) {
+    return nullptr;
+  }
+  if (job != JT_SWORDMAN) {
+    this->Load(g_modelPath, job, action);
+  }
+  return animation;
+}
+
 // OFFSET: 0x00757270
 // FUNCTION: fn_08004
 granny_control* C3dGrannyModelRes::PlayAnimation(unsigned action, granny_model_instance* instance, granny_control* control, int loopCount) {
   if (!control) {
-    const unsigned job = this->job;
-    GrannyAnimationLibrary* library = this->animations;
-    granny_animation* const& animation = library->animations[job][action];
-
+    granny_animation* animation = this->animations->GetAnimation(this->job, action);
     if (!animation) {
-      g_modelPath[0] = '\0';
-
-      if (job > JT_WIZARD || action > 4) {
-        return nullptr;
-      }
-
-      if (action == 0) {
-        std::sprintf(g_modelPath, "model\\3dmob\\%s", g_session.GetJobName(g_animationJobs[job], -1));
-      } else {
-        std::sprintf(g_modelPath, "model\\3dmob_bone\\%d_%s.gr2", job, g_animationNames[action]);
-      }
-
-      if (!g_modelPath[0] || !ResourceExists(g_modelPath, 0)) {
-        return nullptr;
-      }
-
-      if (job != JT_SWORDMAN) {
-        library->Load(g_modelPath, job, action);
-      }
-
-      if (!animation) {
-        return nullptr;
-      }
+      return nullptr;
     }
 
     granny_control* result = GrannyPlayControlledAnimation(0.0f, animation, instance);
