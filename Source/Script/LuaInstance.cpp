@@ -86,8 +86,7 @@ bool CLuaInstance::LoadFile(const std::string& path) {
     return true;
   }
 
-  const char* error = lua_tostring(this->m_state, -1);
-  MessageBoxA(nullptr, error, path.c_str(), MB_OK);
+  MessageBoxA(nullptr, lua_tostring(this->m_state, -1), path.c_str(), MB_OK);
   lua_pop(this->m_state, 1);
   delete[] buffer;
 
