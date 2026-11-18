@@ -2099,7 +2099,7 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
         if (level <= 0) {
           level = 1;
         }
-        if (level > skill.level) {
+        if (skill.level < level) {
           level = skill.level;
         }
         g_session.m_skillBundle.SetSkillValue(skillId, level);
@@ -2226,8 +2226,7 @@ int UIGuildSkillWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, st
   case UM_USESKILL: {
     const CSkillInfo* skill = reinterpret_cast<const CSkillInfo*>(a1);
     if (skill->level != 0) {
-      CMode* gameMode = g_modeMgr.currentMode;
-      gameMode->SendMsg(MM_USING_SKILL, a1, g_session.UseLevel(skill->id), 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_USING_SKILL, a1, g_session.UseLevel(skill->id), 0, 0);
     }
     break;
   }

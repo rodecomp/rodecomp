@@ -639,8 +639,8 @@ bool CNavigationManager::StartNavigation(std::string name, int type, unsigned ch
   this->searchText = text;
   this->hideWindow = flag;
   this->allowWarps = (mode >> 2) & 1;
-  this->allowGates = mode & 1;
   this->includeObjects = (mode >> 1) & 1;
+  this->allowGates = mode & 1;
   if (this->UpdateSearchResults()) {
     this->selectedPath = 0;
     this->selectedPathNode = 0;

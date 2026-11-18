@@ -8739,20 +8739,20 @@ int UIStatusWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
           this->m_statButtons[i]->Move(-100, -100);
         }
       }
-      if (g_session.GetTraitStat(231) < 1) {
-        for (int i = 0; i < 6; ++i) {
-          this->m_extendedButtons[i]->Move(-100, -100);
-        }
-      } else {
+      if (g_session.GetTraitStat(231) >= 1) {
         std::int64_t traitCosts[6];
         std::memcpy(traitCosts, g_session.m_traits.points, sizeof(traitCosts));
         y = 145;
         for (int i = 0; i < 6; ++i, y += 16) {
-          if (traitCosts[i] != 0) {
+          if (0 != traitCosts[i]) {
             this->m_extendedButtons[i]->Move(78, y);
           } else {
             this->m_extendedButtons[i]->Move(-100, -100);
           }
+        }
+      } else {
+        for (int i = 0; i < 6; ++i) {
+          this->m_extendedButtons[i]->Move(-100, -100);
         }
       }
       this->Invalidate();

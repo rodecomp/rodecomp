@@ -1037,7 +1037,7 @@ void UIWindowMgr::ClearMapWindows() {
     for (auto entry = this->retired.begin(); entry != this->retired.end();) {
       bool unregistered = true;
       for (int index = 0; index < this->retainedWindows.size(); ++index) {
-        if (*entry == this->retainedWindows[index]) {
+        if (this->retainedWindows[index] == *entry) {
           unregistered = false;
         }
       }
@@ -1050,10 +1050,10 @@ void UIWindowMgr::ClearMapWindows() {
     }
 
     for (auto entry = this->snapRectangles.begin(); entry != this->snapRectangles.end();) {
-      if (this->chatWnd == entry->first) {
-        ++entry;
-      } else {
+      if (this->chatWnd != entry->first) {
         entry = this->snapRectangles.erase(entry);
+      } else {
+        ++entry;
       }
     }
 

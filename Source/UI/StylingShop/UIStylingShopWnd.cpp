@@ -342,16 +342,15 @@ int UICostumeChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     break;
   }
   case STYLINGSHOP_BUTTON_JOB_NEXT: {
-    UIDisplayCharacter* display = this->m_display;
-    if (display->m_jobs.size() >= 2) {
-      std::map<int, int>::iterator it = display->m_jobs.find(display->job);
-      if (it != display->m_jobs.end()) {
+    if (this->m_display->m_jobs.size() >= 2) {
+      std::map<int, int>::iterator it = this->m_display->m_jobs.find(this->m_display->job);
+      if (it != this->m_display->m_jobs.end()) {
         ++it;
       }
-      if (it == display->m_jobs.end()) {
-        it = display->m_jobs.begin();
+      if (it == this->m_display->m_jobs.end()) {
+        it = this->m_display->m_jobs.begin();
       }
-      display->job = it->first;
+      this->m_display->job = it->first;
     }
     break;
   }

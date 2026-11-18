@@ -9650,8 +9650,7 @@ void UIItemStoreWnd::Paint() {
     this->DrawRoundedOutline(55, 131, 187, 139, 0xCE9484);
     this->DrawFilledRoundedOutline(56, 132, 185, 137, 0xFFE7DE);
     this->DrawFilledRoundedOutline(61, 137, 175, 127, 0xFFFFFF);
-    auto* poring = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\notice_poring.bmp")));
-    this->DrawBitmap(116, 151, poring, 1);
+    this->DrawBitmap(116, 151, (static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\notice_poring.bmp")))), 1);
     this->DrawCenteredText(20, 210, LookupMessage(MSI_ITEMSTORE_DOWNLOADING), 257, 0, 12, 0, 0);
     this->DrawCenteredText(20, 236, LookupMessage(MSI_RODEX_NOW_LOADING), 257, 0, 15, 0xC89482, 1);
     this->DrawCenteredText(20, 272, LookupMessage(MSI_WARNINGMSG_LOADING), 257, 0, 12, 0x6464DC, 1);
@@ -9693,8 +9692,7 @@ void UIItemStoreWnd::Paint() {
     }
   }
 
-  auto* icon = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\inventory\\icon_num.bmp")));
-  this->DrawBitmap(6, this->geometry.height - 21, icon, 1);
+  this->DrawBitmap(6, this->geometry.height - 21, (static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\inventory\\icon_num.bmp")))), 1);
   const std::uint32_t color = this->m_itemCount >= this->m_capacity ? 0xFF : 0x232323;
   this->DrawTextAt(22, this->geometry.height - 19, FormatOwnedString("%d", this->m_itemCount).c_str(), 0, 0, 11, color, 0, 0);
   const int width = this->TextWidth(FormatOwnedString("%d", this->m_itemCount).c_str(), 0, 0, 11, 0, 0);
@@ -11088,12 +11086,14 @@ int UIItemSellWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
   case UM_COMMAND: {
     this->RecordResponse(static_cast<int>(a), b, c, d);
     CMode* mode = g_modeMgr.currentMode;
-    if (a == ID_OK) {
+    if (a != ID_OK) {
+      if (a != ID_CANCEL) {
+        break;
+      }
+    } else {
       if (g_session.HasRequiredItems()) {
         mode->SendMsg(MM_REQ_SELL, 0, 0, 0, 0);
       }
-    } else if (a != ID_CANCEL) {
-      break;
     }
 
     g_windowMgr.CloseWindow(WID_ITEMSHOPWND);
@@ -11163,7 +11163,7 @@ int UIItemSellWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
     ItemListChunkHeader header;
     header = *reinterpret_cast<const ItemListChunkHeader*>(bytes);
     unsigned offset = 6;
-    if (header.type == 20750) {
+    if (20750 == header.type) {
       while (static_cast<unsigned>(b) > offset) {
         header = *reinterpret_cast<const ItemListChunkHeader*>(bytes + offset);
         offset += 6;
@@ -11260,8 +11260,7 @@ void UIItemWnd::Paint() {
   for (int i = 0; i < slotRows; ++i) {
     for (int j = 0; j < slotColumns; ++j) {
       if (this->categoryFilter == 3 && g_session.m_blockPrivateTab == 1) {
-        auto* lock = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\inventory\\itemwin_mid_lock.bmp")));
-        this->DrawBitmap(j * 32 + 40, i * 32 + 17, lock, false);
+        this->DrawBitmap(j * 32 + 40, i * 32 + 17, (static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\inventory\\itemwin_mid_lock.bmp")))), false);
       } else {
         this->DrawItemSlotFrame(j * 32 + 40, i * 32 + 17);
       }
@@ -11283,8 +11282,7 @@ void UIItemWnd::Paint() {
     const int x = visible % this->columns * 32 + 40;
     if (it->flags[1]) {
       if (this->categoryFilter == 3 && g_session.m_blockPrivateTab == 1) {
-        auto* mark = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\inventory\\itemwin_new_lock.bmp")));
-        this->DrawBitmap(x, y, mark, false);
+        this->DrawBitmap(x, y, (static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\inventory\\itemwin_new_lock.bmp")))), false);
       } else {
         this->DrawNewItemMark(x, y);
       }

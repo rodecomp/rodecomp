@@ -9064,7 +9064,11 @@ void CRagEffect::FrostScatter(char swapAxes, char narrow) {
     this->state.lastPrim->state.slots[i].maxHeight = 0.05f;
     this->state.lastPrim->state.slots[i].flag1[11] = swapAxes;
     this->state.lastPrim->state.slots[i].flag1[12] = narrow;
-    this->state.lastPrim->state.slots[i].distance = water ? 7.0f : 4.5f;
+    if (!(water)) {
+      this->state.lastPrim->state.slots[i].distance = 4.5f;
+    } else {
+      this->state.lastPrim->state.slots[i].distance = 7.0f;
+    }
     ScatterFrostVector(*this, i, 2, 0);
     ScatterFrostVector(*this, i, 0, 4);
     ScatterFrostVector(*this, i, 3, 8);

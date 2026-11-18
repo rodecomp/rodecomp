@@ -529,7 +529,6 @@ void UIRefiningWnd::OnLBtnUp(int x, int y) {
     }
 
     const int owned = g_session.LookupClientItem(this->catalystItemId, 0).quantity;
-    UIRefining_Notice* notice = this->notice;
     const char* text;
     int duration;
     unsigned char highlight;
@@ -548,7 +547,7 @@ void UIRefiningWnd::OnLBtnUp(int x, int y) {
       duration = 3000;
       highlight = 1;
     }
-    notice->SetNotice(text, duration, highlight);
+    this->notice->SetNotice(text, duration, highlight);
   }
 
   this->Invalidate();

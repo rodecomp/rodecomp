@@ -534,7 +534,7 @@ int UIRuneSetReWard::SendMsg(
 ) {
   switch (message) {
   case UM_SETINFO:
-    if (static_cast<unsigned int>(argument1) <= 2 && argument2) {
+    if (argument1 >= 0 && argument1 < 3 && argument2) {
       this->m_texts[argument1] = reinterpret_cast<const char*>(argument2);
     }
     break;

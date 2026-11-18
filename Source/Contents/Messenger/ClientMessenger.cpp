@@ -978,23 +978,23 @@ std::string EquipmentProperties::CEquipmentProperties1Dim::Describe(bool detaile
 
   if (detailed == false) {
     auto minimum = this->m_definition->formatOptions.find(0);
-    if (minimum != this->m_definition->formatOptions.end()) {
+    if (this->m_definition->formatOptions.end() != minimum) {
       value = std::max(value, minimum->second);
     }
     auto maximum = this->m_definition->formatOptions.find(1);
-    if (maximum != this->m_definition->formatOptions.end()) {
+    if (this->m_definition->formatOptions.end() != maximum) {
       value = std::min(value, maximum->second);
     }
   }
 
   double result = value;
   auto divisor = this->m_definition->formatOptions.find(2);
-  if (divisor != this->m_definition->formatOptions.end()) {
+  if (this->m_definition->formatOptions.end() != divisor) {
     result /= divisor->second;
   }
   int precision = 0;
   auto digits = this->m_definition->formatOptions.find(3);
-  if (digits != this->m_definition->formatOptions.end()) {
+  if (this->m_definition->formatOptions.end() != digits) {
     precision = digits->second;
   }
 
@@ -1002,7 +1002,7 @@ std::string EquipmentProperties::CEquipmentProperties1Dim::Describe(bool detaile
   const double scale = std::pow(10.0, precision);
   const double rounded = std::floor(result * scale) / scale;
   std::string number = fmt::format("{:.{}f}", sign * rounded, precision);
-  if (rounded != 0.0) {
+  if (0.0 != rounded) {
     const int nonPositive = !(rounded > 0.0);
     switch (this->m_definition->signLabels.size()) {
     case 0:
@@ -5074,8 +5074,8 @@ bool CGameMode::GetClosestValidCell(int* x, int* y) {
   this->WorldSubcell(player->render.position.x, player->render.position.z, column, row, subColumn, subRow);
   const int startY = *y;
   const int startX = *x;
-  const int deltaY = row - startY;
   const int deltaX = column - startX;
+  const int deltaY = row - startY;
   const int offsets[9][2] = {{0, 0}, {1, 0}, {1, 1}, {1, -1}, {-1, 0}, {-1, 1}, {-1, -1}, {0, 1}, {0, -1}};
   if (std::abs(deltaX) >= std::abs(deltaY)) {
     if (deltaX == 0) {

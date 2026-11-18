@@ -364,12 +364,14 @@ __declspec(safebuffers) void CEffectPrim::RenderSegmentSprites(matrix& wtm) {
         short alpha = static_cast<short>((cell.color >> 24) * 0.85f);
         quad.bottomRhw = 1.0f / ((bottom - screenY) * g_tangent + depth) + 0.0001f;
         quad.topRhw = 1.0f / ((top - screenY) * g_tangent + depth) + 0.0001f;
-        if ((this->state.pattern & 0x200) == 0) {
+        if ((this->state.pattern & 0x200) != 0) {
+          if (this->state.slots[ec].flag1[0] == 0) {
+            quad.color = (((((alpha << 8) + (cell.color & 0xFF)) << 8) + (cell.color >> 8 & 0xFF)) << 8) + (cell.color >> 16 & 0xFF);
+          } else if (this->state.slots[ec].flag1[0] == 1) {
+            quad.color = (alpha << 24) + 0x3737FF;
+          }
+        } else {
           quad.color = record.color;
-        } else if (this->state.slots[ec].flag1[0] == 0) {
-          quad.color = (((((alpha << 8) + (cell.color & 0xFF)) << 8) + (cell.color >> 8 & 0xFF)) << 8) + (cell.color >> 16 & 0xFF);
-        } else if (this->state.slots[ec].flag1[0] == 1) {
-          quad.color = (alpha << 24) + 0x3737FF;
         }
         quad.angle = static_cast<float>(cell.rotation) + this->state.roll;
         quad.image = image;
@@ -382,12 +384,14 @@ __declspec(safebuffers) void CEffectPrim::RenderSegmentSprites(matrix& wtm) {
         alpha = static_cast<short>((cell.color >> 24) * g_depthAverageHalf);
         quad.bottomRhw = 1.0f / ((bottom - screenY) * g_tangent + depth) + 0.0002f;
         quad.topRhw = 1.0f / ((top - screenY) * g_tangent + depth) + 0.0002f;
-        if ((this->state.pattern & 0x200) == 0) {
+        if ((this->state.pattern & 0x200) != 0) {
+          if (this->state.slots[ec].flag1[0] == 0) {
+            quad.color = (((alpha << 8) + (cell.color & 0xFF)) << 16) + 0x3737;
+          } else if (this->state.slots[ec].flag1[0] == 1) {
+            quad.color = (alpha << 24) + 0x3737FF;
+          }
+        } else {
           quad.color = record.color;
-        } else if (this->state.slots[ec].flag1[0] == 0) {
-          quad.color = (((alpha << 8) + (cell.color & 0xFF)) << 16) + 0x3737;
-        } else if (this->state.slots[ec].flag1[0] == 1) {
-          quad.color = (alpha << 24) + 0x3737FF;
         }
         quad.angle = static_cast<float>(cell.rotation) + this->state.roll;
         quad.image = image;
@@ -1749,7 +1753,7 @@ __declspec(safebuffers) void CEffectPrim::RenderTaperedQuad(matrix& wtm) {
     const int angle = this->state.slots[ec].fullDisplayAngle;
     const float inner = dist - this->state.slots[ec].rotStart * dist / 50.0f;
     int angle1 = angle - 90;
-    if (angle1 < 0) {
+    if (0 > angle1) {
       angle1 += 360;
     }
     int angle2 = angle1 - 180;
