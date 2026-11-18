@@ -174,7 +174,9 @@ float g_projectionScale = 0.16f;
 // GLOBAL: gl_24775
 int g_worldViewDrawn;
 
-CView::~CView() {
+// OFFSET: 0x00ADAEA0
+// FUNCTION: fn_45884
+__declspec(noinline) CView::~CView() {
   if (this->skyBox) {
     delete this->skyBox;
   }
