@@ -8,5 +8,7 @@ void __stdcall WindowScreenPosition(const UIWindow* window, int& x, int& y);
 void __stdcall WindowScreenBounds(const UIWindow* window, int& left, int& top, int& right, int& bottom);
 
 bool WindowBoundsOverlap(const int first[4], const int second[4]);
+bool WindowsOverlap(const UIWindow* first, const UIWindow* second);
+void MoveOverlappingWindowBeside(UIWindow* window, const UIWindow* anchor, bool moveLeft);
 
 #endif
