@@ -1484,18 +1484,20 @@ void CGameMode::ReceiveCardCompositionResult(const unsigned char* data) {
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ITEM_COMPOUNDING_SUCCEESS)), 0xFFFF00, 0, 0, 0);
     ITEM_INFO card = g_session.LookupClientItemByIdentity(packet->cardIndex);
     ITEM_INFO equip = g_session.LookupClientItemByIdentity(packet->equipIndex);
-    if (equip.identity[1] != 0 && card.identity[1] != 0) {
-      std::uint32_t* cards = equip.cards;
-      for (int i = 0; i < 4; ++i) {
-        if (cards[i] == 0) {
-          cards[i] = std::atoi(card.itemId.c_str());
-          break;
-        }
-      }
-
-      g_session.RemoveInventoryItem(packet->cardIndex, 1);
-      g_session.UpdateInventoryItem(equip, 1);
+    if (equip.identity[1] <= 0 || card.identity[1] <= 0) {
+      break;
     }
+
+    std::uint32_t* cards = equip.cards;
+    for (int i = 0; i < 4; ++i) {
+      if (cards[i] == 0) {
+        cards[i] = std::atoi(card.itemId.c_str());
+        break;
+      }
+    }
+
+    g_session.RemoveInventoryItem(packet->cardIndex, 1);
+    g_session.UpdateInventoryItem(equip, 1);
     break;
   }
   case ITEMCOMPOSITION_FAILURE:
@@ -1509,7 +1511,7 @@ void CGameMode::ReceiveCardCompositionResult(const unsigned char* data) {
 void CGameMode::ReceiveRefineResult(const unsigned char* data) {
   const auto* packet = reinterpret_cast<const RefineResultPacket*>(data);
   ITEM_INFO item = g_session.LookupClientItemByIdentity(packet->index);
-  if (item.identity[1] != 0) {
+  if (item.identity[1] > 0) {
     item.refiningLevel = packet->refine;
     g_session.UpdateInventoryItem(item, 1);
   }
