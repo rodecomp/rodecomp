@@ -72,6 +72,10 @@ UIFrameWnd::UIFrameWnd(unsigned char cached)
     : UIWindow(cached), m_dragX(0), m_dragY(0), m_message0(600), m_message1(600) {
 }
 
+// OFFSET: 0x008A4D10
+// FUNCTION: fn_45806
+UIChatRoomWnd::~UIChatRoomWnd() = default;
+
 // OFFSET: 0x008A4E00
 // FUNCTION: fn_11677
 UICntWnd::~UICntWnd() = default;

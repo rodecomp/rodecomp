@@ -21,6 +21,7 @@ class UIStaticText;
 class UIChatRoomWnd : public UIFrameWnd {
 public:
   UIChatRoomWnd();
+  __declspec(noinline) ~UIChatRoomWnd() override;
   void Move(int x, int y) override;
   void StoreInfo() override;
   void OnCreate(int width, int height) override;
