@@ -1167,10 +1167,13 @@ bool CSession::UnequipItem(int location, std::uint32_t identity) {
     }
   } else {
     const EquipSlots slots = g_session.GetEquipSlots(location);
-    if (std::get<0>(slots) < 10) {
-      if (std::get<0>(slots) != -1) {
-        ITEM_INFO& item = this->equippedItems[std::get<0>(slots)];
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s%s", item.DisplayName(0).c_str(), LookupMessage(MSI_ITEM_IS_REMOVED)).c_str()), 0xFF, 7, 0, 0);
+    const int slot = std::get<0>(slots);
+    if (slot < 10) {
+      ITEM_INFO* const items = this->equippedItems;
+      if (slot != -1) {
+        const char* message = LookupMessage(MSI_ITEM_IS_REMOVED);
+        ITEM_INFO& item = items[slot];
+        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s%s", item.DisplayName(0).c_str(), message).c_str()), 0xFF, 7, 0, 0);
         item.identity[3] = 0;
 
         bool merged = false;
@@ -1191,10 +1194,10 @@ bool CSession::UnequipItem(int location, std::uint32_t identity) {
         item.Reset();
       }
       if (std::get<1>(slots) != -1 && std::get<1>(slots) < 10) {
-        this->equippedItems[std::get<1>(slots)].Reset();
+        items[std::get<1>(slots)].Reset();
       }
       if (std::get<2>(slots) != -1 && std::get<2>(slots) < 10) {
-        this->equippedItems[std::get<2>(slots)].Reset();
+        items[std::get<2>(slots)].Reset();
       }
     }
     this->RequestBasicInfoRefresh();
