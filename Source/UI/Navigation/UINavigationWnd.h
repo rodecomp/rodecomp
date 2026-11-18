@@ -39,6 +39,9 @@ public:
   bool ClearHistory();
 
 protected:
+  void DrawRoutePoints(int x, int y, float size);
+  bool DrawPlayerMarker(int x, int y, float size);
+
   /* 00B4 */ UIWindow* m_closeButton;
   /* 00B8 */ UIButton* m_minimizeButton;
   /* 00BC */ std::string m_title;

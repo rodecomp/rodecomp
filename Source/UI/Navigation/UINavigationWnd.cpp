@@ -522,6 +522,32 @@ void UINavigationWnd::StoreInfo() {
   }
 }
 
+// OFFSET: 0x0091B600
+// FUNCTION: fn_45670
+void UINavigationWnd::DrawRoutePoints(int x, int y, float size) {
+  const float scale = size * g_navigationPointScale;
+  const auto pointEnd = g_navigationManager.cells.end();
+  for (auto pointIt = g_navigationManager.cells.begin(); pointIt != pointEnd; ++pointIt) {
+    const NaviCell& point = *pointIt;
+    this->FillRegion(static_cast<int>(point.x * scale + x), static_cast<int>(point.y * scale + y), 2, 2, 0x00F0F00A);
+  }
+}
+
+// OFFSET: 0x0091B6A0
+// FUNCTION: fn_45671
+bool UINavigationWnd::DrawPlayerMarker(int x, int y, float size) {
+  int cellX = 0;
+  int cellY = 0;
+  if (g_navigationManager.PlayerCell(&cellX, &cellY)) {
+    NaviCell view;
+    g_navigationManager.MapCellToView(&view, g_session.m_navigationPlayerMap, cellX, cellY, size);
+    this->FillRegion(view.x + x - 1, view.y + y - 1, 3, 3, 0xFF);
+    this->FillRegion(view.x + x, view.y + y, 1, 1, 0xFFFF);
+    return true;
+  }
+  return false;
+}
+
 // OFFSET: 0x0092CEF0
 // FUNCTION: fn_12668
 void UINavigationWnd::Paint() {
