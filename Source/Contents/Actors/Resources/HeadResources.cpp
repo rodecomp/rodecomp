@@ -266,10 +266,7 @@ std::string EquipmentResourceMgr::GetHeadPalName(int head, int job, int sex, int
     }
 
     if (!ResourceMgr::Instance().Exists(result.c_str())) {
-      {
-        const std::string& name = g_session.GetSexName(sex);
-        sexName = name;
-      }
+      sexName = SexNameOf(sex);
       result = static_cast<const std::string&>(FormatOwnedString("%s\\머리\\머리%s_%s_%d.pal", this->GetBodyRacePrefix(job).c_str(), headName.c_str(), sexName.c_str(), palette));
     }
 
@@ -283,10 +280,7 @@ std::string EquipmentResourceMgr::GetHeadPalName(int head, int job, int sex, int
       headName = g_session.m_humanFemaleHeadNames[head];
     }
 
-    {
-      const std::string& name = g_session.GetSexName(sex);
-      sexName = name;
-    }
+    sexName = SexNameOf(sex);
     result = static_cast<const std::string&>(FormatOwnedString("머리\\머리%s_%s_%d.pal", headName.c_str(), sexName.c_str(), palette));
     return result;
   }
