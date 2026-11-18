@@ -136,17 +136,7 @@ unsigned int DeviceOwnerDX7Handle::PackColor(int red, int green, int blue) const
 // OFFSET: 0x0055C110
 // FUNCTION: fn_45496
 void CRendererDX7::DrawTopmostQueue() {
-  std::sort(this->queues.queue_021C.begin(), this->queues.queue_021C.end(), [](const DepthPrimitive& left, const DepthPrimitive& right) {
-    if (left.depth < right.depth) {
-      return true;
-    }
-
-    if (right.depth < left.depth) {
-      return false;
-    }
-
-    return left.depth == right.depth && reinterpret_cast<std::uintptr_t>(left.primitive) < reinterpret_cast<std::uintptr_t>(right.primitive);
-  });
+  std::sort(this->queues.queue_021C.begin(), this->queues.queue_021C.end());
 
   for (auto it = this->queues.queue_021C.begin(); it != this->queues.queue_021C.end(); ++it) {
     RenderCommand* command = it->primitive;
@@ -174,18 +164,6 @@ void CRendererDX7::DrawBlendedQueue() {
 // OFFSET: 0x0055C270
 // FUNCTION: fn_45495
 void CRendererDX7::FlushRenderList() {
-  const auto byDepth = [](const DepthPrimitive& left, const DepthPrimitive& right) {
-    if (left.depth < right.depth) {
-      return true;
-    }
-
-    if (right.depth < left.depth) {
-      return false;
-    }
-
-    return left.depth == right.depth && reinterpret_cast<std::uintptr_t>(left.primitive) < reinterpret_cast<std::uintptr_t>(right.primitive);
-  };
-
   this->device->SetTextureStageState(0, D3DTSS_MIPFILTER, D3DTFP_LINEAR);
   this->ApplyFog();
   this->device->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
@@ -309,7 +287,7 @@ void CRendererDX7::FlushRenderList() {
 
   this->device->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
   this->device->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-  std::sort(this->queues.queue_01C8.begin(), this->queues.queue_01C8.end(), byDepth);
+  std::sort(this->queues.queue_01C8.begin(), this->queues.queue_01C8.end());
 
   for (auto it = this->queues.queue_01C8.begin(); it != this->queues.queue_01C8.end(); ++it) {
     RenderCommand* command = it->primitive;
@@ -325,7 +303,7 @@ void CRendererDX7::FlushRenderList() {
   DWORD reference = 0;
   this->device->GetRenderState(D3DRENDERSTATE_ALPHAREF, &reference);
   this->device->SetRenderState(D3DRENDERSTATE_ALPHAREF, 207);
-  std::sort(this->queues.queue_0228.begin(), this->queues.queue_0228.end(), byDepth);
+  std::sort(this->queues.queue_0228.begin(), this->queues.queue_0228.end());
 
   for (auto it = this->queues.queue_0228.begin(); it != this->queues.queue_0228.end(); ++it) {
     RenderCommand* command = it->primitive;
@@ -337,7 +315,7 @@ void CRendererDX7::FlushRenderList() {
   this->device->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE);
   this->device->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
   this->device->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-  std::sort(this->queues.queue_01D4.begin(), this->queues.queue_01D4.end(), byDepth);
+  std::sort(this->queues.queue_01D4.begin(), this->queues.queue_01D4.end());
 
   for (auto it = this->queues.queue_01D4.begin(); it != this->queues.queue_01D4.end(); ++it) {
     RenderCommand* command = it->primitive;
@@ -362,7 +340,7 @@ void CRendererDX7::FlushRenderList() {
   this->device->SetRenderState(D3DRENDERSTATE_ZENABLE, D3DZB_FALSE);
   this->device->SetRenderState(D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE);
   this->device->SetRenderState(D3DRENDERSTATE_DESTBLEND, D3DBLEND_ONE);
-  std::sort(this->queues.queue_01E0.begin(), this->queues.queue_01E0.end(), byDepth);
+  std::sort(this->queues.queue_01E0.begin(), this->queues.queue_01E0.end());
 
   for (auto it = this->queues.queue_01E0.begin(); it != this->queues.queue_01E0.end(); ++it) {
     RenderCommand* command = it->primitive;
