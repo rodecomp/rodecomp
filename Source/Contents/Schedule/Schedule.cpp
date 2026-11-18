@@ -26,7 +26,7 @@ CSchedulerIDAlocator::~CSchedulerIDAlocator() = default;
 // OFFSET: 0x00BA8990
 // FUNCTION: fn_19727
 bool CSchedule::CheckTime(const std::uint64_t& now) {
-  if (this->interval == 0 || this->interval <= 0) {
+  if (0 == this->interval || this->interval <= 0) {
     return false;
   }
   const std::int64_t current = now;
