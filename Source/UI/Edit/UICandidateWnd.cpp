@@ -70,8 +70,7 @@ void UICandidateWnd::Paint() {
   }
   case 2: {
     std::memset(text, 0, sizeof(text));
-    int y = 12;
-    for (int i = 0; i < this->m_count; ++i) {
+    for (int i = 0, y = 12; i < this->m_count; ++i, y += 20) {
       StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%d %s", i + 1, this->m_candidates[i].c_str());
       if (this->m_selection == i) {
         unsigned red, green, blue;
@@ -79,7 +78,6 @@ void UICandidateWnd::Paint() {
         this->FillRegion(8, y - 2, this->TextWidth(text, 0, 0, 12, 0, 0) + 4, 16, RGB(red, green, blue));
       }
       this->DrawTextAt(10, y, text, 0, 0, 12, 0, 0, 0);
-      y += 20;
     }
     std::sprintf(text, "%d / %d", this->m_page + 1, this->m_lastPage + 1);
     this->DrawTextAt(110 - this->TextWidth(text, 0, 0, 12, 0, 0), 192, text, 0, 0, 12, 0, 0, 0);
@@ -93,10 +91,11 @@ void UICandidateWnd::Paint() {
       StringFormat(text, sizeof(text), static_cast<std::size_t>(-1), "%d %s", i + 1, this->m_candidates[i].c_str());
       if (i != this->m_selection) {
         this->DrawTextAt(x, 12, text, 0, 0, 12, 0, 0, 0);
+        x += this->TextWidth(text, static_cast<unsigned>(std::strlen(text)), 0, 12, 0, 0) + 8;
       } else {
         this->DrawTextAt(x, 12, text, static_cast<int>(std::strlen(text)), 0, 12, 0xFF, 0, 0);
+        x += this->TextWidth(text, static_cast<unsigned>(std::strlen(text)), 0, 12, 0, 0) + 8;
       }
-      x += this->TextWidth(text, static_cast<unsigned>(std::strlen(text)), 0, 12, 0, 0) + 8;
     }
     this->FillTriangleRegion(8, 18, 14, 10, 14, 26, this->m_page <= 0 ? 0xD2D2D2 : 0xFF9F70);
     const int width = this->geometry.width;
