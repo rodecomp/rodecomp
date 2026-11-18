@@ -3,6 +3,21 @@
 #include "Resource/Bitmap/SkinPalette.h"
 #include "UI/Buttons/UIColorButton.h"
 
+// OFFSET: 0x0084F190
+// FUNCTION: fn_45630
+UIColorButton::UIColorButton() : UIButton() {
+  unsigned red, green, blue;
+  g_skinInfo.PaletteChannels(6, 2, red, green, blue);
+  this->activeRed = red;
+  this->activeGreen = green;
+  this->activeBlue = blue;
+
+  g_skinInfo.PaletteChannels(18, 2, red, green, blue);
+  this->normalRed = red;
+  this->normalGreen = green;
+  this->normalBlue = blue;
+}
+
 // OFFSET: 0x0085C9A0
 // FUNCTION: fn_10804
 void UIColorButton::Paint() {

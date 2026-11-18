@@ -5,6 +5,7 @@
 
 class UIColorButton : public UIButton {
 public:
+  UIColorButton();
   void Paint() override;
 
   /* 00B4 */ unsigned activeRed;
