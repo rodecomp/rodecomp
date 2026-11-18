@@ -5,7 +5,7 @@
 
 #include <vector>
 
-struct AsyncDiagnostic;
+#include "Utility/Async/AsyncDiagnostic.h"
 #include "UI/Window/WindowManagerWindows.h"
 
 class CAdventurerAgencyMgr {

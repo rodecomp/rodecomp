@@ -13,7 +13,7 @@
 void CCharacterLinkedUserDataMgr::CompleteLoad(
   AsyncDiagnostic diagnostic, std::uint32_t accountId, std::uint32_t characterId, std::string accountName, std::string response
 ) {
-  if (!diagnostic.success) {
+  if (!std::get<0>(diagnostic)) {
     return;
   }
 

@@ -7,7 +7,7 @@
 class LuaScript;
 class CConnection;
 class CAsyncWorkMgr;
-struct AsyncDiagnostic;
+#include "Utility/Async/AsyncDiagnostic.h"
 
 class CEmblemDataMgr {
 public:

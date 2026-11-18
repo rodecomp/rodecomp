@@ -5,7 +5,7 @@
 #include <string>
 
 class LuaScript;
-struct AsyncDiagnostic;
+#include "Utility/Async/AsyncDiagnostic.h"
 namespace Json {
   class Value;
 }

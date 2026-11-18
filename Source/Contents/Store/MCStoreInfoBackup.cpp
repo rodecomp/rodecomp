@@ -90,7 +90,7 @@ void CMCStoreInfoBackup::Reset() {
 void CMCStoreInfoBackup::CompleteLoad(
   AsyncDiagnostic diagnostic, std::uint32_t, std::uint32_t, std::string, std::string response
 ) {
-  if (!diagnostic.success) {
+  if (!std::get<0>(diagnostic)) {
     return;
   }
 
@@ -117,7 +117,7 @@ void CMCStoreInfoBackup::CompleteLoad(
 void CMCStoreInfoBackup::CompleteSave(AsyncDiagnostic diagnostic, std::string response) {
   --this->pendingSaves;
 
-  if (!diagnostic.success) {
+  if (!std::get<0>(diagnostic)) {
     return;
   }
 

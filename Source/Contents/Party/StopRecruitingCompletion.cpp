@@ -17,7 +17,7 @@
 void CAdventurerAgencyMgr::CompleteStopRecruiting(AsyncDiagnostic diagnostic, std::string response) {
   --this->pending;
 
-  if (!diagnostic.success) {
+  if (!std::get<0>(diagnostic)) {
     if (this->masterAccountId == g_session.m_aid) {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_ADVENTURER_AGENCY_RECRUIT_STOP_FAILED)), 0xFF, 0, 0, 0);
     }

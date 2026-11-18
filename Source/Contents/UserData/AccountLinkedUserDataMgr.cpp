@@ -112,7 +112,7 @@ std::string CAccountLinkedUserDataMgr::SaveUrl() const {
 void CAccountLinkedUserDataMgr::CompleteLoad(
   AsyncDiagnostic diagnostic, std::uint32_t accountId, std::string accountName, std::string response
 ) {
-  if (diagnostic.success && this->m_accountId == 0) {
+  if (std::get<0>(diagnostic) && this->m_accountId == 0) {
     Json::Value root;
     Json::Reader reader;
     if (reader.parse(response, root, true)) {

@@ -115,3 +115,4 @@ void CRegisterPartyAsyncWork::Complete() {
 }
 
 template void std::deque<CRegisterPartyAsyncWork*>::push_back(CRegisterPartyAsyncWork*&&);
+template __declspec(noinline) AsyncDiagnostic& AsyncDiagnostic::operator=<AsyncDiagnostic, bool, 0>(AsyncDiagnostic&&) noexcept;

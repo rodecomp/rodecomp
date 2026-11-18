@@ -24,7 +24,7 @@ namespace {
   // INLINED
   __forceinline AsyncDiagnostic Diagnostic(bool success, const char* text, const char* file, std::uint32_t line) {
     std::string message = text;
-    return AsyncDiagnostic(&success, &message, file, &line);
+    return AsyncDiagnostic(success, std::move(message), file, line);
   }
 
   // INLINED

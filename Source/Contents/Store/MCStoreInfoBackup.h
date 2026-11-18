@@ -7,7 +7,7 @@
 
 class LuaScript;
 class CAsyncWorkMgr;
-struct AsyncDiagnostic;
+#include "Utility/Async/AsyncDiagnostic.h"
 namespace Json {
   class Value;
 }

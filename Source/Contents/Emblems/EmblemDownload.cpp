@@ -24,7 +24,7 @@ namespace {
 // OFFSET: 0x005EB800
 // FUNCTION: fn_03975
 void CEmblemDataMgr::CompleteDownload(AsyncDiagnostic diagnostic, int responseCode, std::string response, std::uint32_t guildId, std::uint32_t version) {
-  if (!diagnostic.success || responseCode != 200) {
+  if (!std::get<0>(diagnostic) || responseCode != 200) {
     return;
   }
 

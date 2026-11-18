@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <string>
 
-struct AsyncDiagnostic;
+#include "Utility/Async/AsyncDiagnostic.h"
 class LuaScript;
 class CRenderSystemBase;
 class CAsyncWorkMgr;

@@ -13,7 +13,7 @@
 void CAdventurerAgencyMgr::CompleteList(AsyncDiagnostic diagnostic, std::string response) {
   --this->pending;
 
-  if (!diagnostic.success) {
+  if (!std::get<0>(diagnostic)) {
     return;
   }
 

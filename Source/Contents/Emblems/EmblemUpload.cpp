@@ -28,7 +28,7 @@ namespace {
 // OFFSET: 0x005EBAD0
 // FUNCTION: fn_03976
 void CEmblemDataMgr::CompleteUpload(AsyncDiagnostic diagnostic, std::string response, std::uint32_t guildId) {
-  if (!diagnostic.success) {
+  if (!std::get<0>(diagnostic)) {
     return;
   }
 

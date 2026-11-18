@@ -21,7 +21,7 @@ namespace {
   // INLINED
   __forceinline AsyncDiagnostic Diagnostic(bool success, const char* text, std::uint32_t line) {
     std::string message = text;
-    return AsyncDiagnostic(&success, &message, sourceFile, &line);
+    return AsyncDiagnostic(success, std::move(message), sourceFile, line);
   }
 }
 
@@ -162,3 +162,4 @@ void CLoadPartyListAsyncWork::Complete() {
 }
 
 template void std::deque<CLoadPartyListAsyncWork*>::push_back(CLoadPartyListAsyncWork*&&);
+template __declspec(noinline) AsyncDiagnostic& AsyncDiagnostic::operator=<AsyncDiagnostic, bool, 0>(AsyncDiagnostic&&) noexcept;
