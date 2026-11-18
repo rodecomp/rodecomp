@@ -1258,19 +1258,20 @@ void UIBarterItemPurchaseWnd::OnCreate(int width, int height) {
     {"btn_cancel", "btn_cancel_a", "btn_cancel_b"},
   };
   const int ids[2] = {184, 185};
-  const int xs[2] = {this->geometry.width - 106, this->geometry.width - 61};
-  const int y = this->geometry.height - 24;
+  const POINT positions[2] = {
+    {this->geometry.width - 106, this->geometry.height - 24},
+    {this->geometry.width - 61, this->geometry.height - 24},
+  };
 
   for (int index = 0; index < 2; ++index) {
-    UIBitmapButton* button = index == 0 ? static_cast<UIBitmapButton*>(new UIPurchaseButton()) : new UIBitmapButton();
-    this->buttons[index] = button;
-    button->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
-    button->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
-    button->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
-    button->SetSize(button->BitmapWidth(), button->BitmapHeight());
-    button->Move(xs[index], y);
-    button->SetId(ids[index]);
-    this->AddChild(button);
+    this->buttons[index] = index == 0 ? static_cast<UIBitmapButton*>(new UIPurchaseButton) : new UIBitmapButton();
+    this->buttons[index]->SetBitmap((prefix + names[index][0] + ".bmp").c_str(), 0, 0);
+    this->buttons[index]->SetBitmap((prefix + names[index][1] + ".bmp").c_str(), 1, 0);
+    this->buttons[index]->SetBitmap((prefix + names[index][2] + ".bmp").c_str(), 2, 0);
+    this->buttons[index]->SetSize(this->buttons[index]->BitmapWidth(), this->buttons[index]->BitmapHeight());
+    this->buttons[index]->Move(positions[index].x, positions[index].y);
+    this->buttons[index]->SetId(ids[index]);
+    this->AddChild(this->buttons[index]);
   }
 
   this->columns = 1;
