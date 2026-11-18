@@ -18290,18 +18290,23 @@ void CRagEffect::FreezingCircle(char kind) {
 
     this->state.lastPrim->state.slots[i].maxHeight = 0.15f;
 
-    if (kind == 3) {
+    if (kind == 1) {
+      this->state.lastPrim->state.slots[i].distance = 2.4f;
+    } else if (kind == 3) {
       this->state.lastPrim->state.slots[i].distance = 3.2f;
       this->state.lastPrim->state.slots[i].maxHeight = 0.6f;
+    } else if (kind == 4 || kind == 5 || kind >= 8) {
+      this->state.lastPrim->state.slots[i].distance = 2.4f;
+    } else if (kind == 6) {
+      this->state.lastPrim->state.slots[i].distance = 2.4f;
+    } else {
+      this->state.lastPrim->state.slots[i].distance = 0.8f;
+    }
+
+    if (kind == 3) {
       this->state.lastPrim->state.slots[i].vecBPre.x = static_cast<float>(ClampedRandom(15) - 8);
       this->state.lastPrim->state.slots[i].vecBPre.z = static_cast<float>(ClampedRandom(15) - 8);
     } else {
-      if (kind == 1 || kind == 4 || kind == 5 || kind >= 8 || kind == 6) {
-        this->state.lastPrim->state.slots[i].distance = 2.4f;
-      } else {
-        this->state.lastPrim->state.slots[i].distance = 0.8f;
-      }
-
       if (kind == 6) {
         this->state.lastPrim->state.slots[i].vecBPre.x = static_cast<float>(ClampedRandom(35) - 17);
       } else {
@@ -18374,18 +18379,17 @@ void CRagEffect::FreezingCircle(char kind) {
       this->state.lastPrim->state.slots[i].vecTPre.y = -60.0f;
       this->state.lastPrim->state.slots[i].vecTNow.y = -70.0f;
       this->state.lastPrim->state.slots[i].flag1[0] = 14;
-    } else if (kind == 6) {
-      this->state.lastPrim->state.slots[i].vecBPre.y = static_cast<float>(-40 - ClampedRandom(40));
-      this->state.lastPrim->state.slots[i].vecBNow.y = static_cast<float>(-40 - ClampedRandom(40));
-      this->state.lastPrim->state.slots[i].vecTPre.y = static_cast<float>(-40 - ClampedRandom(40));
-      this->state.lastPrim->state.slots[i].vecTNow.y = static_cast<float>(-40 - ClampedRandom(40));
-      this->state.lastPrim->state.slots[i].flag1[0] = 16;
     } else {
       if (kind == 5 || kind == 7) {
         this->state.lastPrim->state.slots[i].vecBPre.y = 0.0f;
         this->state.lastPrim->state.slots[i].vecBNow.y = 0.0f;
         this->state.lastPrim->state.slots[i].vecTPre.y = 0.0f;
         this->state.lastPrim->state.slots[i].vecTNow.y = 0.0f;
+      } else if (kind == 6) {
+        this->state.lastPrim->state.slots[i].vecBPre.y = static_cast<float>(-40 - ClampedRandom(40));
+        this->state.lastPrim->state.slots[i].vecBNow.y = static_cast<float>(-40 - ClampedRandom(40));
+        this->state.lastPrim->state.slots[i].vecTPre.y = static_cast<float>(-40 - ClampedRandom(40));
+        this->state.lastPrim->state.slots[i].vecTNow.y = static_cast<float>(-40 - ClampedRandom(40));
       }
 
       if (kind == 1) {
@@ -18399,6 +18403,8 @@ void CRagEffect::FreezingCircle(char kind) {
         this->state.lastPrim->state.slots[i].flag1[3] = 0;
         this->state.lastPrim->state.slots[i].flag1[4] = 0;
         this->state.lastPrim->state.slots[i].flag1[5] = kind;
+      } else if (kind == 6) {
+        this->state.lastPrim->state.slots[i].flag1[0] = 16;
       } else {
         this->state.lastPrim->state.slots[i].flag1[0] = 0;
       }
