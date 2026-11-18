@@ -106,9 +106,9 @@ RenewQuestInfo::RenewQuestInfo()
 // OFFSET: 0x00676770
 // FUNCTION: fn_05421
 RenewQuestRecommendedInfo::RenewQuestRecommendedInfo() : backgroundImage("") {
-  for (int index = 0; index < 3; ++index) {
-    this->m_descriptions[index].clear();
-  }
+  this->m_descriptions[0].clear();
+  this->m_descriptions[1].clear();
+  this->m_descriptions[2].clear();
 }
 
 // OFFSET: 0x00675990
@@ -678,12 +678,12 @@ void CRenewQuestMgr::SendQuestStatusRequest() {
   }
 
   header.packetLength = static_cast<std::int16_t>(length);
-  packet.header = header;
+  memcpy_s(&packet.header, sizeof(packet.header), &header, sizeof(header));
 
-  unsigned int* questId = packet.questIds;
+  int index = 0;
   for (const unsigned int& id : this->m_statusRequests) {
-    memcpy_s(questId, sizeof(unsigned int), &id, sizeof(unsigned int));
-    ++questId;
+    memcpy_s(&packet.questIds[index], sizeof(unsigned int), &id, sizeof(unsigned int));
+    ++index;
   }
 
   GetRagConnection().Send(length, &packet);
