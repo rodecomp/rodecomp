@@ -2998,21 +2998,8 @@ int UISelectServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   case UM_SET_TARGET: {
     this->m_event = a;
     this->m_valueName = reinterpret_cast<const char*>(b);
-    const char* name = this->m_valueName.c_str();
-    this->m_selectedServer = g_serviceType;
-    HKEY probe;
-    if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, g_subKey, 0, KEY_QUERY_VALUE, &probe) == ERROR_SUCCESS) {
-      RegCloseKey(probe);
-      HKEY key;
-      if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, g_subKey, 0, KEY_QUERY_VALUE, &key) == ERROR_SUCCESS) {
-        DWORD type = REG_DWORD;
-        DWORD size = 4;
-        RegQueryValueExA(key, name, nullptr, &type, reinterpret_cast<BYTE*>(&this->m_selectedServer), &size);
-        RegCloseKey(key);
-        return 0;
-      }
-    }
-    break;
+    this->LoadServerSelection(this->m_valueName.c_str());
+    return 0;
   }
   case UM_COMMAND:
     switch (a) {
@@ -3028,15 +3015,7 @@ int UISelectServerWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
         g_windowMgr.Schedule(this);
         g_modeMgr.currentMode->SendMsg(this->m_event, this->m_serverList->selected, 0, 0, 0);
         g_soundMgr->PlayWave("버튼소리.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
-        const char* name = this->m_valueName.c_str();
-        this->m_selectedServer = this->m_serverList->selected;
-        HKEY key;
-        DWORD disposition = 0;
-        if (RegCreateKeyExA(HKEY_LOCAL_MACHINE, g_subKey, 0, nullptr, 0, KEY_ALL_ACCESS, nullptr, &key, &disposition) == ERROR_SUCCESS) {
-          RegSetValueExA(key, name, 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->m_selectedServer), 4);
-          RegCloseKey(key);
-          return 0;
-        }
+        this->SaveServerSelection(this->m_valueName.c_str());
       }
       break;
     case ID_CANCEL:
