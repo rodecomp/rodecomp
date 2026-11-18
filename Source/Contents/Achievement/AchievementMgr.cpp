@@ -252,17 +252,17 @@ bool CAchievementMgr::LoadAchievementInfo() {
 // OFFSET: 0x0066ED90
 // FUNCTION: fn_05323
 std::pair<bool, std::string> CAchievementMgr::InsertAchieveInfo(int id, std::string title, std::string summaryText, std::string description, int points) {
-  if (this->achievements.find(id) != this->achievements.end()) {
-    const std::string message = FormatOwnedString("duplicate achievement info [%d]", id);
-    return std::make_pair(false, message);
+  const auto found = this->achievements.find(id);
+  if (found == this->achievements.end()) {
+    const auto inserted = this->achievements.insert(std::pair<int, AchievementInfo>(id, AchievementInfo(title, summaryText, description, points)));
+    if (inserted.second == true) {
+      return std::make_pair(true, "good");
+    } else {
+      return std::make_pair(false, static_cast<const std::string&>(FormatOwnedString("achievement info [%d] insert fail", id)));
+    }
+  } else {
+    return std::make_pair(false, static_cast<const std::string&>(FormatOwnedString("duplicate achievement info [%d]", id)));
   }
-
-  if (this->achievements.insert(std::pair<int, AchievementInfo>(id, AchievementInfo(title, summaryText, description, points))).second == true) {
-    return std::make_pair(true, "good");
-  }
-
-  const std::string message = FormatOwnedString("achievement info [%d] insert fail", id);
-  return std::make_pair(false, message);
 }
 
 // OFFSET: 0x0066F170
