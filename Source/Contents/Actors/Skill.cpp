@@ -290,34 +290,39 @@ void CSkill::SetRenderInfo(const float* box, float x, float y) {
   this->SetTlvert(x, y);
 }
 
-// OFFSET: 0x00E55320
-// FUNCTION: fn_24304
-__forceinline void CSkill::ShowModel(const char* modelName) {
-  if (modelName == nullptr || this->render.enabled == 0) {
+// INLINED
+static __forceinline void ShowModelImpl(CSkill* skill, const char* modelName) {
+  if (modelName == nullptr || skill->render.enabled == 0) {
     return;
   }
 
-  this->ReleaseModel();
+  skill->ReleaseModel();
   const vector3d diffuse{0.5f, 0.7f, 0.5f};
   const vector3d white{1.0f, 1.0f, 1.0f};
   const vector3d ambient{0.5f, 0.5f, 0.5f};
   auto* resource = static_cast<C3dModelRes*>(ResourceMgr::Instance().Load(modelName));
   if (resource->major == 1) {
-    this->m_model = new C3dActorV1;
+    skill->m_model = new C3dActorV1;
   } else if (resource->major == 2) {
-    this->m_model = new C3dActorV2;
+    skill->m_model = new C3dActorV2;
   }
 
-  this->m_model->CopyVolumes(resource->volumes);
-  this->m_model->SetSpeed(1.0f);
-  const vector3d position = this->render.position;
-  this->m_model->SetPosition(position);
-  this->m_model->Assign(*resource);
-  this->m_model->Animate(3.0);
-  this->m_model->occlusionEnabled = 0;
-  this->m_model->playback = 0;
-  this->m_model->Prepare(&diffuse.x, &white.x, &ambient.x);
-  g_modeMgr.GetGameMode()->scene->spatial.InsertModel(this->m_model, 0);
+  skill->m_model->CopyVolumes(resource->volumes);
+  skill->m_model->SetSpeed(1.0f);
+  const vector3d position = skill->render.position;
+  skill->m_model->SetPosition(position);
+  skill->m_model->Assign(*resource);
+  skill->m_model->Animate(3.0);
+  skill->m_model->occlusionEnabled = 0;
+  skill->m_model->playback = 0;
+  skill->m_model->Prepare(&diffuse.x, &white.x, &ambient.x);
+  g_modeMgr.GetGameMode()->scene->spatial.InsertModel(skill->m_model, 0);
+}
+
+// OFFSET: 0x00E55320
+// FUNCTION: fn_24304
+void CSkill::ShowModel(const char* modelName) {
+  ShowModelImpl(this, modelName);
 }
 
 // OFFSET: 0x00E51BD0
@@ -543,12 +548,12 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
     case UNT_VERDURETRAP:
       this->m_effectId = 0x8B;
       this->render.trackBounds = 0;
-      this->ShowModel(this->GetTrapModelName());
+      ShowModelImpl(this, this->GetTrapModelName());
       return;
     case UNT_ELECTRICSHOCKER:
       this->m_effectId = 0x6B;
       this->render.trackBounds = 0;
-      this->ShowModel(this->GetTrapModelName());
+      ShowModelImpl(this, this->GetTrapModelName());
       if (!this->HasId(EF_SHOCKWAVE)) {
         this->LaunchEffect(EF_SHOCKWAVE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
@@ -557,12 +562,12 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
     case UNT_CLUSTERBOMB:
       this->m_effectId = 0x6B;
       this->render.trackBounds = 0;
-      this->ShowModel(this->GetTrapModelName());
+      ShowModelImpl(this, this->GetTrapModelName());
       return;
     case UNT_ICEBOUNDTRAP:
       this->m_effectId = 0x6C;
       this->render.trackBounds = 0;
-      this->ShowModel(this->GetTrapModelName());
+      ShowModelImpl(this, this->GetTrapModelName());
       return;
     case UNT_GROUNDDRIFT_WATER:
       this->m_effectId = 0x6C;
@@ -577,12 +582,12 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
       return;
     case UNT_TRAP:
       this->render.trackBounds = 1;
-      this->ShowModel(this->GetTrapModelName());
+      ShowModelImpl(this, this->GetTrapModelName());
       return;
     case UNT_BLASTMINE:
       this->render.trackBounds = 1;
       this->m_effectId = 0x6A;
-      this->ShowModel(this->GetTrapModelName());
+      ShowModelImpl(this, this->GetTrapModelName());
       return;
     case UNT_REVERBERATION:
     case UNT_NETHERWORLD:
@@ -595,31 +600,31 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
     case UNT_TALKIEBOX:
     case UNT_THORNS_TRAP:
       this->render.trackBounds = 1;
-      this->ShowModel(this->GetTrapModelName());
+      ShowModelImpl(this, this->GetTrapModelName());
       return;
     case UNT_SANDMAN:
       this->render.trackBounds = 1;
       this->m_effectId = 0x8B;
-      this->ShowModel(this->GetTrapModelName());
+      ShowModelImpl(this, this->GetTrapModelName());
       return;
     case UNT_FLASHER:
       this->render.trackBounds = 1;
       this->m_effectId = 0x63;
-      this->ShowModel(this->GetTrapModelName());
+      ShowModelImpl(this, this->GetTrapModelName());
       return;
     case UNT_FREEZINGTRAP:
       this->render.trackBounds = 1;
       this->m_effectId = 0x6C;
-      this->ShowModel(this->GetTrapModelName());
+      ShowModelImpl(this, this->GetTrapModelName());
       return;
     case UNT_CLAYMORETRAP:
       this->render.trackBounds = 1;
       this->m_effectId = 0x6B;
-      this->ShowModel(this->GetTrapModelName());
+      ShowModelImpl(this, this->GetTrapModelName());
       return;
     case UNT_SHOCKWAVE:
       this->render.trackBounds = 1;
-      this->ShowModel(this->GetTrapModelName());
+      ShowModelImpl(this, this->GetTrapModelName());
       if (this->render.enabled && !this->HasId(EF_SHOCKWAVE)) {
         this->LaunchEffect(EF_SHOCKWAVE, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
@@ -847,28 +852,28 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
       return;
     case UNT_DEEPBLINDTRAP:
       this->render.trackBounds = 1;
-      this->ShowModel(this->GetTrapModelName());
+      ShowModelImpl(this, this->GetTrapModelName());
       if (this->render.enabled) {
         g_effectMgr->Spawn(this->render.accountId, EF_DEEP_BLIND_TRAP, position, 0, -1, 0, 0);
       }
       return;
     case UNT_SWIFTTRAP:
       this->render.trackBounds = 1;
-      this->ShowModel(this->GetTrapModelName());
+      ShowModelImpl(this, this->GetTrapModelName());
       if (this->render.enabled) {
         g_effectMgr->Spawn(this->render.accountId, EF_SWIFT_TRAP, position, 0, -1, 0, 0);
       }
       return;
     case UNT_SOLIDTRAP:
       this->render.trackBounds = 1;
-      this->ShowModel(this->GetTrapModelName());
+      ShowModelImpl(this, this->GetTrapModelName());
       if (this->render.enabled) {
         g_effectMgr->Spawn(this->render.accountId, EF_SOLID_TRAP, position, 0, -1, 0, 0);
       }
       return;
     case UNT_FLAMETRAP:
       this->render.trackBounds = 1;
-      this->ShowModel(this->GetTrapModelName());
+      ShowModelImpl(this, this->GetTrapModelName());
       if (this->render.enabled) {
         g_effectMgr->Spawn(this->render.accountId, EF_FLAME_TRAP, position, 0, -1, 0, 0);
       }
