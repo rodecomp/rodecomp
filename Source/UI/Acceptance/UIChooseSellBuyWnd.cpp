@@ -12589,7 +12589,8 @@ void UIExchangeWnd::Paint() {
   this->DrawRightAlignedText(220, 332, amount, length, 1, 16, 0x323232, 0);
   length = std::sprintf(amount, "%s", FormatGroupedInteger(g_session.otherExchangeMoney, grouped, sizeof(grouped)));
   colors = PriceColor(g_session.otherExchangeMoney);
-  textColor = RGB(GetRValue(colors.primary), GetGValue(colors.primary), GetBValue(colors.primary));
+  const std::uint32_t primary = colors.primary;
+  textColor = RGB(GetRValue(primary), GetGValue(primary), GetBValue(primary));
   this->DrawRightAlignedText(499, 331, amount, length, 1, 16, textColor, 0);
   this->DrawRightAlignedText(500, 331, amount, length, 1, 16, textColor, 0);
   this->DrawRightAlignedText(500, 332, amount, length, 1, 16, 0x323232, 0);
