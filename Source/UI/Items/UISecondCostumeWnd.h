@@ -12,7 +12,9 @@ class UIComboBoxDefWnd;
 class UIListBox;
 
 struct SecondCostumeEntry {
-  SecondCostumeEntry() : name(""), value(0) {
+  SecondCostumeEntry(const char* entryName, int entryValue) : name("") {
+    this->name = entryName;
+    this->value = entryValue;
   }
   ~SecondCostumeEntry() {
     this->name.clear();

@@ -83,9 +83,7 @@ void UISecondCostumeWnd::LoadLists() {
       break;
     }
 
-    SecondCostumeEntry entry;
-    entry.name = name;
-    entry.value = value;
+    SecondCostumeEntry entry(name, value);
     this->m_entries[0].push_back(entry);
   }
 
@@ -97,9 +95,7 @@ void UISecondCostumeWnd::LoadLists() {
       break;
     }
 
-    SecondCostumeEntry entry;
-    entry.name = name;
-    entry.value = value;
+    SecondCostumeEntry entry(name, value);
     this->m_entries[1].push_back(entry);
   }
 
@@ -111,9 +107,7 @@ void UISecondCostumeWnd::LoadLists() {
       break;
     }
 
-    SecondCostumeEntry entry;
-    entry.name = name;
-    entry.value = value;
+    SecondCostumeEntry entry(name, value);
     this->m_entries[2].push_back(entry);
   }
 
@@ -125,9 +119,7 @@ void UISecondCostumeWnd::LoadLists() {
       break;
     }
 
-    SecondCostumeEntry entry;
-    entry.name = name;
-    entry.value = value;
+    SecondCostumeEntry entry(name, value);
     this->m_entries[3].push_back(entry);
   }
 
