@@ -1248,8 +1248,8 @@ void CFootprintStrEffect::Open() {
 
   g_session.m_hotkeyScript->Call("GetFootprintStrFileTop", "d>ss", this->instanceId, &leftFile, &rightFile);
   if (!IsNullOrEmpty(leftFile) && !IsNullOrEmpty(rightFile)) {
-    this->topFiles.first = leftFile;
     this->topFiles.second = rightFile;
+    this->topFiles.first = leftFile;
   }
 
   if (this->bottomFiles.first.size() == 0 && this->bottomFiles.second.size() == 0 && this->topFiles.first.size() == 0 &&
