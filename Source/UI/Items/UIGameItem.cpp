@@ -123,6 +123,35 @@ void CUIGameItem::OnRBtnDown(int, int) {
   }
 }
 
+// OFFSET: 0x009E77B0
+// FUNCTION: fn_45731
+__forceinline void CUIGameItem::ClearItem() {
+  this->itemInfo.Reset();
+  this->name = "";
+  this->image = nullptr;
+  this->overlay = nullptr;
+  this->Invalidate();
+}
+
+// OFFSET: 0x009E7870
+// FUNCTION: fn_45732
+void CUIGameItem::SetItemById(int itemId) {
+  if (itemId == 0) {
+    this->ClearItem();
+    return;
+  }
+
+  const ITEM_INFO* item = g_session.FindInventoryItemByItemId(itemId, false);
+  if (item && item->identity[1] > 0) {
+    this->SetItem(*item);
+    return;
+  }
+
+  ITEM_INFO fallback;
+  fallback.SetItemId(itemId);
+  this->SetItem(fallback);
+}
+
 // OFFSET: 0x009E79D0
 // FUNCTION: fn_14484
 void CUIGameItem::SetItem(const ITEM_INFO& item) {

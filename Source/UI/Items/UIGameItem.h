@@ -30,6 +30,8 @@ public:
   virtual void SetMode(int mode);
 
   ITEM_INFO* GetItemInfo();
+  void ClearItem();
+  void SetItemById(int itemId);
   void SetItem(const ITEM_INFO& item);
   void SetScale(short scale);
 };
