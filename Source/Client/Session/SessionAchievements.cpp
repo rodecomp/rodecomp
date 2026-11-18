@@ -78,7 +78,8 @@ bool CSession::ToggleTrackedAchievement(int id) {
   }
 
   if (found != tracked.end()) {
-    tracked.erase(found);
+    std::copy(found + 1, tracked.end(), found);
+    tracked.pop_back();
   } else {
     if (tracked.size() >= 3) {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_FAIL_ADD_ACHIEVEMENT_TRACING)), 0x64FFFF, 0, 0, 0);
