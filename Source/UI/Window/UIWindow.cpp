@@ -133,11 +133,21 @@ namespace {
     /* 000A */ std::int32_t event;
     /* 000E */ char text[100];
   };
+
+  struct MessageTextRecord {
+    /* 0000 */ std::uint32_t marker;
+    /* 0004 */ std::uint16_t bytes;
+    /* 0006 */ std::int32_t windowId;
+    /* 000A */ std::int32_t message;
+    /* 000E */ std::int32_t argument;
+    /* 0012 */ char text[100];
+  };
 #pragma pack(pop)
 
   static_assert(sizeof(DropRecord) == 0x191);
   static_assert(sizeof(ValuesRecord) == 0x1E);
   static_assert(sizeof(TextRecord) == 0x72);
+  static_assert(sizeof(MessageTextRecord) == 0x76);
 }
 
 // INLINED
@@ -334,6 +344,24 @@ void UIWindow::RecordValues(int value, int argument1, int argument2, int argumen
   packet.arguments[1] = argument2;
   packet.arguments[2] = argument3;
   packet.arguments[3] = argument4;
+  Replay::Instance().Record(packet.bytes, &packet, 42, 0);
+}
+
+// OFFSET: 0x00A83390
+// FUNCTION: fn_45730
+void UIWindow::RecordMessageText(int message, int argument, const char* text) {
+  if (Replay::Instance().state != 2) {
+    return;
+  }
+
+  MessageTextRecord packet;
+  std::memset(packet.text, 0, sizeof(packet.text));
+  packet.marker = 0x038C08AEu;
+  packet.bytes = sizeof(packet);
+  packet.windowId = this->geometry.id;
+  packet.message = message;
+  packet.argument = argument;
+  std::memcpy(packet.text, text, std::min(static_cast<int>(std::strlen(text)), 100));
   Replay::Instance().Record(packet.bytes, &packet, 42, 0);
 }
 

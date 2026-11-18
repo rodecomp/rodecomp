@@ -226,6 +226,7 @@ public:
   int RecordData(std::uint16_t type, std::vector<unsigned char> data);
   void RecordValues(int value, int argument1, int argument2, int argument3, int argument4);
   void RecordWindowFlag(bool value);
+  void RecordMessageText(int message, int argument, const char* text);
   void RecordText(int event, const char* text);
   int RestoreEditTexts(const unsigned char* data);
   void DrawActionSprite(
