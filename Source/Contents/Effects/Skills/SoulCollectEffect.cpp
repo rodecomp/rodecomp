@@ -68,8 +68,9 @@ void CSoulCollectEffect::Open() {
     for (int index = 0; index < current - this->effectLevel; ++index) {
       if (this->particles.size() != 0) {
         for (int layer = 0; layer < 2; ++layer) {
-          FreeParticle(this->particles.back());
-          this->particles.pop_back();
+          const auto last = std::prev(this->particles.end());
+          FreeParticle(*last);
+          this->particles.erase(last);
         }
       }
     }
