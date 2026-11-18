@@ -219,8 +219,7 @@ public:
   CParticle* SpawnFootprint();
 
   /* 00CC */ std::list<CParticle*> emitters;
-  /* 00D4 */ std::string leftTexture;
-  /* 00EC */ std::string rightTexture;
+  /* 00D4 */ std::pair<std::string, std::string> textures;
   /* 0104 */ int padding_0104;
   /* 0108 */ double stepDistance;
   /* 0110 */ unsigned char leftFoot;
@@ -243,10 +242,8 @@ public:
 
   /* 00CC */ std::list<CEZ2STRParticle*> emitters;
   /* 00D4 */ std::list<CEZ2STRParticle*> topEmitters;
-  /* 00DC */ std::string leftBottomFile;
-  /* 00F4 */ std::string rightBottomFile;
-  /* 010C */ std::string leftTopFile;
-  /* 0124 */ std::string rightTopFile;
+  /* 00DC */ std::pair<std::string, std::string> bottomFiles;
+  /* 010C */ std::pair<std::string, std::string> topFiles;
   /* 0140 */ double bottomScale;
   /* 0148 */ double topScale;
   /* 0150 */ double topHeight;
@@ -576,8 +573,8 @@ static_assert(offsetof(CFootprintEffect, stepDistance) == 0x108);
 static_assert(offsetof(CFootprintEffect, lastPosition) == 0x114);
 static_assert(sizeof(CFootprintEffect) == 0x128);
 static_assert(sizeof(CFootprintStrEffect) == 0x178);
-static_assert(offsetof(CFootprintStrEffect, leftBottomFile) == 0xDC);
-static_assert(offsetof(CFootprintStrEffect, rightTopFile) == 0x124);
+static_assert(offsetof(CFootprintStrEffect, bottomFiles) == 0xDC);
+static_assert(offsetof(CFootprintStrEffect, topFiles) == 0x10C);
 static_assert(offsetof(CFootprintStrEffect, bottomScale) == 0x140);
 static_assert(offsetof(CFootprintStrEffect, lastPosition) == 0x16C);
 static_assert(offsetof(CFullScreenEffect, loaded) == 0xD8);

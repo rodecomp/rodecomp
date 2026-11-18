@@ -1087,8 +1087,8 @@ void CFootprintEffect::Open() {
     return;
   }
 
-  this->leftTexture = leftFile;
-  this->rightTexture = rightFile;
+  this->textures.first = leftFile;
+  this->textures.second = rightFile;
 
   double scale = 5.0;
   g_session.m_hotkeyScript->Call("GetFootprintPngScale", "d>l", this->instanceId, &scale);
@@ -1115,7 +1115,7 @@ bool CFootprintEffect::IsAlive() {
 // OFFSET: 0x007127B0
 // FUNCTION: fn_07241
 CParticle* CFootprintEffect::SpawnFootprint() {
-  const std::string& texture = this->leftFoot ? this->leftTexture : this->rightTexture;
+  const std::string& texture = this->leftFoot ? this->textures.first : this->textures.second;
   if (texture.size() == 0) {
     return nullptr;
   }
@@ -1242,18 +1242,18 @@ void CFootprintStrEffect::Open() {
   char* rightFile = nullptr;
   g_session.m_hotkeyScript->Call("GetFootprintStrFileBottom", "d>ss", this->instanceId, &leftFile, &rightFile);
   if (!IsNullOrEmpty(leftFile) && !IsNullOrEmpty(rightFile)) {
-    this->leftBottomFile = leftFile;
-    this->rightBottomFile = rightFile;
+    this->bottomFiles.first = leftFile;
+    this->bottomFiles.second = rightFile;
   }
 
   g_session.m_hotkeyScript->Call("GetFootprintStrFileTop", "d>ss", this->instanceId, &leftFile, &rightFile);
   if (!IsNullOrEmpty(leftFile) && !IsNullOrEmpty(rightFile)) {
-    this->leftTopFile = leftFile;
-    this->rightTopFile = rightFile;
+    this->topFiles.first = leftFile;
+    this->topFiles.second = rightFile;
   }
 
-  if (this->leftBottomFile.size() == 0 && this->rightBottomFile.size() == 0 && this->leftTopFile.size() == 0 &&
-      this->rightTopFile.size() == 0) {
+  if (this->bottomFiles.first.size() == 0 && this->bottomFiles.second.size() == 0 && this->topFiles.first.size() == 0 &&
+      this->topFiles.second.size() == 0) {
     return;
   }
 
@@ -1296,7 +1296,7 @@ void CFootprintStrEffect::SpawnFootprint() {
   point.y = g_modeMgr.GetGameMode()->scene->terrain->Height(point.x, point.z);
   vector3d spawn = point;
 
-  const std::string& bottom = this->leftFoot ? this->leftBottomFile : this->rightBottomFile;
+  const std::string& bottom = this->leftFoot ? this->bottomFiles.first : this->bottomFiles.second;
   if (bottom.size() != 0) {
     CEZ2STRParticle* particle = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&spawn, 5));
     CEZ2STRParticle* emitter = particle;
@@ -1314,7 +1314,7 @@ void CFootprintStrEffect::SpawnFootprint() {
     }
   }
 
-  const std::string& top = this->leftFoot ? this->leftTopFile : this->rightTopFile;
+  const std::string& top = this->leftFoot ? this->topFiles.first : this->topFiles.second;
   if (top.size() != 0) {
     spawn.x = point.x + 0.0f;
     spawn.y = point.y + static_cast<float>(-this->topHeight);
