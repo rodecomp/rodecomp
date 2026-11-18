@@ -1760,10 +1760,22 @@ void UITabControl::Configure(
   this->uniformWidths = uniformWidths;
   this->skipTabFill = skipTabFill;
   this->allowTabRename = allowTabRename;
-  this->activeFillColor = activeFillColor ? activeFillColor : 0xFFFFFF;
-  this->inactiveFillColor = inactiveFillColor ? inactiveFillColor : 0xFFFFFF;
+  if (!activeFillColor) {
+    this->activeFillColor = 0xFFFFFF;
+  } else {
+    this->activeFillColor = activeFillColor;
+  }
+  if (!inactiveFillColor) {
+    this->inactiveFillColor = 0xFFFFFF;
+  } else {
+    this->inactiveFillColor = inactiveFillColor;
+  }
   this->activeBorderColor = activeBorderColor ? activeBorderColor : 0xC3C3C3;
-  this->inactiveBorderColor = inactiveBorderColor ? inactiveBorderColor : 0xC3C3C3;
+  if (!inactiveBorderColor) {
+    this->inactiveBorderColor = 0xC3C3C3;
+  } else {
+    this->inactiveBorderColor = inactiveBorderColor;
+  }
   this->activeTextColor = activeTextColor;
   this->inactiveTextColor = inactiveTextColor;
   this->ClearTabs();
