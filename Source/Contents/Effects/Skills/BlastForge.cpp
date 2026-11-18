@@ -10,12 +10,18 @@
 #include <timeapi.h>
 
 // INLINED
-static __forceinline vector3d TransformPoint(const matrix& transform, const vector3d& point) {
-  vector3d result;
-  result.x = point.y * transform.values[3] + point.x * transform.values[0] + point.z * transform.values[6] + transform.values[9];
-  result.y = point.y * transform.values[4] + point.x * transform.values[1] + point.z * transform.values[7] + transform.values[10];
-  result.z = point.y * transform.values[5] + point.x * transform.values[2] + point.z * transform.values[8] + transform.values[11];
-  return result;
+static __forceinline vector3d TransformPoint(const matrix& transform, const vector3d point) {
+  return vector3d{point.y * transform.values[3] + point.x * transform.values[0] + point.z * transform.values[6] + transform.values[9],
+                  point.y * transform.values[4] + point.x * transform.values[1] + point.z * transform.values[7] + transform.values[10],
+                  point.y * transform.values[5] + point.x * transform.values[2] + point.z * transform.values[8] + transform.values[11]};
+}
+
+// INLINED
+static __forceinline bool IsParticleActive(const CEZ2STRParticle* particle) {
+  if (0.0f == particle->life) {
+    return true;
+  }
+  return static_cast<float>(particle->elapsedFrames) < particle->life * 60.0f;
 }
 
 // INLINED
@@ -140,7 +146,7 @@ void CBlastForge::Render() {
 // FUNCTION: fn_06866
 void CBlastForge::ProcessBlastParticles() {
   if (this->blastParticle && this->blastBottomParticle) {
-    if (this->blastParticle->life == 0.0f || static_cast<float>(this->blastParticle->elapsedFrames) < this->blastParticle->life * 60.0f) {
+    if (IsParticleActive(this->blastParticle) == true) {
       PlaceParticle(this->blastParticle, this->position);
       if (this->blastBottomParticle) {
         PlaceParticle(this->blastBottomParticle, this->position);
