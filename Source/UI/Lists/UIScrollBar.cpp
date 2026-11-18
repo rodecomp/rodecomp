@@ -2115,8 +2115,8 @@ void UIChatHisBox::RewrapLinkLines(std::vector<std::string>& wrapped, int& mode)
           wrapped[line] = split[part];
         }
         if (line + part < wrapped.size() && part == split.size() - 1) {
-          const std::string& following = wrapped[line + part];
-          split[part].append(following.data(), following.size()).swap(wrapped[line + part]);
+          std::string& following = wrapped[line + part];
+          following.swap(split[part].append(following));
         } else if (part != 0) {
           std::vector<std::string> rebuilt;
           for (unsigned int index = 0; index < wrapped.size(); ++index) {
@@ -2139,12 +2139,11 @@ void UIChatHisBox::RewrapLinkLines(std::vector<std::string>& wrapped, int& mode)
 
     remaining = wrapped[line];
     unsigned int offset = 0;
-    std::size_t position = remaining.find(close);
-    while (position != std::string::npos) {
+    std::size_t position;
+    for (position = remaining.find(close); position != std::string::npos; position = remaining.find(close)) {
       ++position;
       offset += static_cast<unsigned int>(position);
       remaining = remaining.substr(position);
-      position = remaining.find(close);
     }
 
     position = remaining.find(open);
@@ -2161,8 +2160,7 @@ void UIChatHisBox::RewrapLinkLines(std::vector<std::string>& wrapped, int& mode)
       }
 
       if (line + 1 < wrapped.size() && wrapped[line + 1].find(close) != std::string::npos) {
-        const std::string& following = wrapped[line + 1];
-        remaining.append(following.data(), following.size());
+        remaining.append(wrapped[line + 1]);
         wrapped[line + 1].swap(remaining);
         wrapped[line] = wrapped[line].substr(0, offset);
       }
