@@ -11,6 +11,14 @@
 #include <algorithm>
 #include <cstring>
 
+// OFFSET: 0x00AC1540
+// FUNCTION: fn_45865
+__forceinline int GroundGeometry::WaterPartition(int column, int row) const {
+  const int x = std::min(column / (this->width / this->waterColumns), this->waterColumns - 1);
+  const int z = std::min(row / (this->height / this->waterRows), this->waterRows - 1);
+  return z * this->waterColumns + x;
+}
+
 // OFFSET: 0x00AC2B80
 // FUNCTION: fn_17594
 void GroundGeometry::DrawWaterCell(
@@ -20,9 +28,7 @@ void GroundGeometry::DrawWaterCell(
   unsigned partition = 0;
 
   if (this->waterPartitioned) {
-    const int x = std::min(column / (this->width / this->waterColumns), this->waterColumns - 1);
-    const int z = std::min(row / (this->height / this->waterRows), this->waterRows - 1);
-    partition = static_cast<unsigned>(x) + static_cast<unsigned>(z) * static_cast<unsigned>(this->waterColumns);
+    partition = static_cast<unsigned>(this->WaterPartition(column, row));
   }
 
   const GroundWater& surface = this->waterSurfaces[partition];

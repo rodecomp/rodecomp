@@ -120,6 +120,7 @@ public:
   void LightmapSample(int column, int row, unsigned char& alpha, unsigned char& red, unsigned char& green, unsigned char& blue) const;
   bool TerrainCellCorners(int column, int row, float* vertices) const;
   float WaterLevel(int column, int row) const;
+  __forceinline int WaterPartition(int column, int row) const;
 
   /* 0064 */ std::vector<GroundQuad> tiles;
   /* 0070 */ std::vector<std::array<float, 3>> lighting;
