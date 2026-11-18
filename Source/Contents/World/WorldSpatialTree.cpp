@@ -352,33 +352,39 @@ void WorldSpatialTree::RefreshModelBounds(int depth) {
     this->maximum[1] = terrainMaximum > groundMaximum ? terrainMaximum : groundMaximum;
     this->minimum[1] = terrainMinimum < groundMinimum ? terrainMinimum : groundMinimum;
 
-    for (auto object = this->objects.begin(); object != this->objects.end(); ++object) {
-      if (this->minimum[1] > (*object)->minimum[1]) {
-        this->minimum[1] = (*object)->minimum[1];
+    for (C3dActor* const& object : this->objects) {
+      const float low = object->minimum[1];
+      if (this->minimum[1] > low) {
+        this->minimum[1] = low;
       }
 
-      if ((*object)->maximum[1] > this->maximum[1]) {
-        this->maximum[1] = (*object)->maximum[1];
+      const float high = object->maximum[1];
+      if (high > this->maximum[1]) {
+        this->maximum[1] = high;
       }
     }
 
     WorldSpatialTree* node = this;
     const float averageHalf = g_depthAverageHalf;
     do {
-      if (node->minimum[1] > this->minimum[1]) {
-        node->minimum[1] = this->minimum[1];
+      float low = node->minimum[1];
+      if (low > this->minimum[1]) {
+        low = this->minimum[1];
+        node->minimum[1] = low;
       }
 
-      if (this->maximum[1] > node->maximum[1]) {
-        node->maximum[1] = this->maximum[1];
+      float high = node->maximum[1];
+      if (this->maximum[1] > high) {
+        high = this->maximum[1];
+        node->maximum[1] = high;
       }
 
       node->halfSize[0] = node->maximum[0] - node->center[0];
       const float halfZ = node->maximum[2] - node->center[2];
-      const float middleY = (node->maximum[1] + node->minimum[1]) * averageHalf;
+      const float middleY = (high + low) * averageHalf;
       node->center[1] = middleY;
       node->halfSize[2] = halfZ;
-      node->halfSize[1] = node->maximum[1] - middleY;
+      node->halfSize[1] = high - middleY;
       node = node->parent;
     } while (node);
   } else {
