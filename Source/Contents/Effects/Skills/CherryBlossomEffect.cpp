@@ -88,14 +88,13 @@ void CCherryBlossomEffect::OnProcess() {
           this->offsets[index].y = height;
           this->offsets[index].z = 0.0f;
 
-          float* angle = &particle->animationParameter;
           for (int i = 0; i < 4; ++i) {
-            *angle++ = static_cast<float>(Random(360));
+            particle->animationValues[i] = static_cast<float>(Random(360));
           }
 
           particle->alpha = 0;
         } else {
-          float* angles = &particle->animationParameter;
+          float* angles = particle->animationValues;
           for (int i = 0; i < 2; ++i) {
             const int current = static_cast<int>(angles[i]);
             const int delta = static_cast<int>(angles[i + 2]) - current;
