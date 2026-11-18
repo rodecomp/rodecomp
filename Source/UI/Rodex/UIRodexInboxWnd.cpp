@@ -212,7 +212,7 @@ void UIRodexInboxWnd::OnCreate(int width, int height) {
   this->refreshButton->SetTooltip(LookupMessage(MSI_RODEX_REFRESH));
   this->refreshButton->SetSize(this->refreshButton->BitmapWidth(), this->refreshButton->BitmapHeight());
   this->refreshButton->Move(0xEF, 0x14);
-  this->refreshButton->SetId(ID_PARTY_RELOAD_FIRST_PAGE);
+  this->refreshButton->SetId(ID_REFRESH);
   this->AddChild(this->refreshButton);
 
   this->writeButton = new UIBitmapButton();
@@ -922,7 +922,7 @@ int UIRodexInboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       break;
     }
 
-    case ID_PARTY_RELOAD_FIRST_PAGE: {
+    case ID_REFRESH: {
       g_rodexMailStore->PurgeFlagged();
       for (int i = 0; i < 6; ++i) {
         this->checks[i]->SetChecked(0);

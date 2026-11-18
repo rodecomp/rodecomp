@@ -413,7 +413,7 @@ int UIChangeMaterialWnd::SendMsg(
     case ID_SEARCH:
       this->itemList->SendMsg(nullptr, UM_COMMAND, ID_SEARCH, reinterpret_cast<std::intptr_t>(this->searchEdit->Text()), 0, 0);
       break;
-    case ID_PARTY_RELOAD_FIRST_PAGE:
+    case ID_REFRESH:
       this->itemList->SendMsg(nullptr, UM_REFRESHITEM, 0, 0, 0, 0);
       break;
     default:
@@ -744,7 +744,7 @@ void UIChangeMaterialWnd::OnCreate(int width, int height) {
   refresh->SetBitmap("유저인터페이스\\ChangeMaterial\\btn_refresh_disable.bmp", 3, 0);
   refresh->SetSize(refresh->BitmapWidth(), refresh->BitmapHeight());
   refresh->Move(476, 259);
-  refresh->SetId(ID_PARTY_RELOAD_FIRST_PAGE);
+  refresh->SetId(ID_REFRESH);
   this->AddChild(refresh);
 
   this->m_sortBox = new UIChangeMaterialWnd_CheckBox();

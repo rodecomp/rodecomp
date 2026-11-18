@@ -4333,12 +4333,12 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
     break;
   case HK_CHATWND_MAKE + 100:
     if (this->basicInfoWnd) {
-      this->basicInfoWnd->SendMsg(nullptr, UM_COMMAND, 0xD6, 0, 0, 0);
+      this->basicInfoWnd->SendMsg(nullptr, UM_COMMAND, BASICINFO_BUTTON_CHATROOM, 0, 0, 0);
     }
     break;
   case HK_CARTWND_ONOFF + 100:
     if (this->basicInfoWnd) {
-      this->basicInfoWnd->SendMsg(nullptr, UM_COMMAND, 0xF7, 0, 0, 0);
+      this->basicInfoWnd->SendMsg(nullptr, UM_COMMAND, BASICINFO_BUTTON_MERCHANT, 0, 0, 0);
     }
     break;
   case HK_MAPWND_ONOFF + 100:
@@ -7453,7 +7453,7 @@ UIWindow* UIWindowMgr::EnsureWindow(int id) {
   }
 
   auto topEntry = std::find_if(this->rendered.begin(), this->rendered.end(), [](const UIWindow* entry) {
-    return entry->geometry.id == 363;
+    return entry->geometry.id == ID_PAY_CONFIRM_WND;
   });
   if (topEntry != this->rendered.end()) {
     UIWindow* top = *topEntry;

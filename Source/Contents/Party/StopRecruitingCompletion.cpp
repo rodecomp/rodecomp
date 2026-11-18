@@ -51,6 +51,6 @@ void CAdventurerAgencyMgr::CompleteStopRecruiting(AsyncDiagnostic diagnostic, st
 
   if (board) {
     board->stop->Enable(0);
-    board->SendMsg(nullptr, UM_COMMAND, ID_PARTY_RELOAD_FIRST_PAGE, 0, 0, 0);
+    board->SendMsg(nullptr, UM_COMMAND, ID_REFRESH, 0, 0, 0);
   }
 }

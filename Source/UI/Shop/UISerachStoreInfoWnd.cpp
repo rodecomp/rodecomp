@@ -156,7 +156,7 @@ void UISerachStoreInfoWnd::OnCreate(int width, int height) {
     this->m_findButton->SetBitmap((path + "btn_find_b" + ".bmp").c_str(), 2, 0);
     this->m_findButton->SetSize(this->m_findButton->BitmapWidth(), this->m_findButton->BitmapHeight());
     this->m_findButton->Move(this->geometry.width - 0x2D, 0x38);
-    this->m_findButton->SetId(ID_PARTY_SEARCH);
+    this->m_findButton->SetId(ID_FIND);
     this->AddChild(this->m_findButton);
   }
 
@@ -226,7 +226,7 @@ int UISerachStoreInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
         }
       }
       break;
-    case ID_PARTY_SEARCH: {
+    case ID_FIND: {
       this->m_searchPending = 1;
       UIBitmapButton* findButton = this->m_findButton;
       findButton->SetDisabled(1);

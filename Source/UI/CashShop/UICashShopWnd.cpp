@@ -290,7 +290,7 @@ void UICashShopWnd::OnCreate(int, int) {
   this->m_refreshButton->SetSize(this->m_refreshButton->BitmapWidth(), this->m_refreshButton->BitmapHeight());
   this->m_refreshButton->SetText(LookupMessage(MSI_CASHSHOP_REFRESH));
   this->m_refreshButton->Move(0x1C4, 0x204);
-  this->m_refreshButton->SetId(0x19F);
+  this->m_refreshButton->SetId(ID_REFRESH);
   this->AddChild(this->m_refreshButton);
 
   this->m_searchEdit = new UIEditCtrl();
@@ -1058,7 +1058,7 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
       GetRagConnection().Send(static_cast<short>(length), &packet);
       return 0;
     }
-    case ID_PARTY_RELOAD_FIRST_PAGE:
+    case ID_REFRESH:
       g_modeMgr.GetGameMode()->SendMsg(MM_GET_ACCOUNT_LIMITED_SALE_LIST, 0, 0, 0, 0);
       return 0;
     }

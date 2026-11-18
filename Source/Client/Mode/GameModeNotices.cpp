@@ -1609,7 +1609,7 @@ void CGameMode::ReceiveItemEffectResult(const unsigned char* data) {
     text = FormatOwnedString(LookupMessage(MSI_MAKE_TARGET_FAIL_MSG), item.DisplayName(0).c_str()).c_str();
     UIWindow* window = g_windowMgr.LookupWindow(WID_CHANGEMATERIALWND);
     if (window) {
-      window->SendMsg(nullptr, UM_COMMAND, 415, 0, 0, 0);
+      window->SendMsg(nullptr, UM_COMMAND, ID_REFRESH, 0, 0, 0);
     }
     break;
   }
@@ -1621,7 +1621,7 @@ void CGameMode::ReceiveItemEffectResult(const unsigned char* data) {
     text = FormatOwnedString(LookupMessage(MSI_MAKE_TARGET_FAIL_MSG), item.DisplayName(0).c_str()).c_str();
     UIWindow* window = g_windowMgr.LookupWindow(WID_CHANGEMATERIALWND);
     if (window) {
-      window->SendMsg(nullptr, UM_COMMAND, 415, 0, 0, 0);
+      window->SendMsg(nullptr, UM_COMMAND, ID_REFRESH, 0, 0, 0);
     }
     break;
   }

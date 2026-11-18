@@ -263,7 +263,7 @@ void CNavigationManager::RequestPrivateAirship(std::string mapName, int itemId) 
     UIPayConfirmWnd* window = new UIPayConfirmWnd();
     window->Configure(LookupMessage(MSI_PAY_CONFIRM_BY_NYANGVINE_FRUIT), 0x1AFD);
     window->SendMsg(nullptr, UM_SET_MODAL, 1, 0, 0, 0);
-    window->SetId(0x16B);
+    window->SetId(ID_PAY_CONFIRM_WND);
     g_windowMgr.AddRendered(window);
     if (g_windowMgr.RunModal(window) != 187) {
       return;

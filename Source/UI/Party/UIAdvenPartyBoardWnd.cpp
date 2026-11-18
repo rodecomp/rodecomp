@@ -604,7 +604,7 @@ void UIAdvenPartyBoardWnd::OnCreate(int, int) {
   search->SetBitmap("유저인터페이스\\UIadventurerAgency\\btn_search_disable.bmp", 3, 0);
   search->SetSize(search->BitmapWidth(), search->BitmapHeight());
   search->Move(354, 22);
-  search->SetId(ID_PARTY_SEARCH);
+  search->SetId(ID_FIND);
   search->SetText(LookupMessage(MSI_ADVEN_SEARCH));
   this->AddChild(search);
   auto* reset = new UIBmpTextButton();
@@ -624,7 +624,7 @@ void UIAdvenPartyBoardWnd::OnCreate(int, int) {
   this->refresh->SetBitmap("유저인터페이스\\UIadventurerAgency\\btn_refresh_disable.bmp", 3, 0);
   this->refresh->SetSize(this->refresh->BitmapWidth(), this->refresh->BitmapHeight());
   this->refresh->Move(452, 22);
-  this->refresh->SetId(ID_PARTY_RELOAD_FIRST_PAGE);
+  this->refresh->SetId(ID_REFRESH);
   this->AddChild(this->refresh);
 
   this->previous = new UIBitmapButton();
@@ -978,7 +978,7 @@ int UIAdvenPartyBoardWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       this->page = (this->page - 1);
 
       if (this->searching == 1) {
-        this->SendMsg(nullptr, UM_COMMAND, ID_PARTY_SEARCH, this->page, 246, 0);
+        this->SendMsg(nullptr, UM_COMMAND, ID_FIND, this->page, 246, 0);
       } else {
         this->LoadPage(this->page);
       }
@@ -992,13 +992,13 @@ int UIAdvenPartyBoardWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       this->next->Invalidate();
 
       if (this->searching == 1) {
-        this->SendMsg(nullptr, UM_COMMAND, ID_PARTY_SEARCH, this->page, 218, 0);
+        this->SendMsg(nullptr, UM_COMMAND, ID_FIND, this->page, 218, 0);
       } else {
         this->LoadPage(this->page);
       }
 
       break;
-    case ID_PARTY_SEARCH:
+    case ID_FIND:
       this->Search(static_cast<int>(c));
       break;
     case ID_CLOSE:
@@ -1051,7 +1051,7 @@ int UIAdvenPartyBoardWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     case ADVENPARTY_BUTTON_STOP_RECRUIT:
       g_adventurerAgencyMgr->RequestStop();
       break;
-    case ID_PARTY_RELOAD_FIRST_PAGE:
+    case ID_REFRESH:
       this->page = 1;
       this->searching = 0;
       this->LoadPage(1);

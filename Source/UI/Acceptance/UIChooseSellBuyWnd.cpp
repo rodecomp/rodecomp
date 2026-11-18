@@ -10604,7 +10604,7 @@ void UITipboxWnd::OnCreate(int width, int) {
   searchButton->SetBitmap("유저인터페이스\\tipbox\\btn_searchbar_press.bmp", 2, 0);
   searchButton->SetSize(searchButton->BitmapWidth(), searchButton->BitmapHeight());
   searchButton->Move(448, 21);
-  searchButton->SetId(365);
+  searchButton->SetId(ID_FIND);
   this->AddChild(searchButton);
 
   UICheckBox* checkBox = new UICheckBox();
@@ -12308,7 +12308,7 @@ int UITipboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
       }
     }
     break;
-  case 0x16D: {
+  case ID_FIND: {
     std::string keyword(this->searchEdit->Text());
     if (keyword.size() != 0) {
       this->searchResults->Show(1);

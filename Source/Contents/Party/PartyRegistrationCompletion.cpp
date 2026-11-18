@@ -42,6 +42,6 @@ void CAdventurerAgencyMgr::CompleteRegistration(AsyncDiagnostic diagnostic, std:
   if (board == nullptr) {
     g_windowMgr.EnsureWindow(WID_ADVENPARTYBOARDWND);
   } else {
-    board->SendMsg(nullptr, UM_COMMAND, ID_PARTY_RELOAD_FIRST_PAGE, 0, 0, 0);
+    board->SendMsg(nullptr, UM_COMMAND, ID_REFRESH, 0, 0, 0);
   }
 }
