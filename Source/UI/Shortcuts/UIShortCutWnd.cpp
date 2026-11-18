@@ -197,8 +197,11 @@ __forceinline void UIShortCutWnd::ClickControl(int id) {
     } else {
       g_session.SetOption(10, 0);
     }
-    this->m_bank->geometry.state = bank == 0;
-    this->m_bank->Invalidate();
+    {
+      UICheckBox* checkBox = this->m_bank;
+      checkBox->geometry.state = bank == 0;
+      checkBox->Invalidate();
+    }
 
     for (std::list<ShortcutCooldownRecord>::iterator record = g_session.m_requestTimers.begin(); record != g_session.m_requestTimers.end(); ++record) {
       record->main.clear();
@@ -211,22 +214,34 @@ __forceinline void UIShortCutWnd::ClickControl(int id) {
   case SHORTCUT_BUTTON_HIDE_ITEMS:
     g_session.ItemSlotActive() = false;
     this->m_showItems->Enable(1);
-    this->m_showItems->SetDisabled(0);
-    this->m_showItems->Invalidate();
+    {
+      UIBitmapButton* button = this->m_showItems;
+      button->SetDisabled(0);
+      button->Invalidate();
+    }
     this->m_hideItems->Enable(0);
-    this->m_hideItems->SetDisabled(1);
-    this->m_hideItems->Invalidate();
+    {
+      UIBitmapButton* button = this->m_hideItems;
+      button->SetDisabled(1);
+      button->Invalidate();
+    }
     this->SendMsg(nullptr, UM_RESIZE, 0, 0, 0, 0);
     return;
 
   case SHORTCUT_BUTTON_SHOW_ITEMS:
     g_session.ItemSlotActive() = true;
     this->m_showItems->Enable(0);
-    this->m_showItems->SetDisabled(1);
-    this->m_showItems->Invalidate();
+    {
+      UIBitmapButton* button = this->m_showItems;
+      button->SetDisabled(1);
+      button->Invalidate();
+    }
     this->m_hideItems->Enable(1);
-    this->m_hideItems->SetDisabled(0);
-    this->m_hideItems->Invalidate();
+    {
+      UIBitmapButton* button = this->m_hideItems;
+      button->SetDisabled(0);
+      button->Invalidate();
+    }
     this->SendMsg(nullptr, UM_RESIZE, 0, 0, 0, 0);
     return;
 
@@ -243,22 +258,33 @@ __forceinline void UIShortCutWnd::PlaceRowButtons() {
   case 1:
     this->m_decrease->Enable(0);
     this->m_increase->Enable(1);
-    this->m_increase->SetDisabled(0);
+    {
+      UIBitmapButton* button = this->m_increase;
+      button->SetDisabled(0);
+      button->Invalidate();
+    }
     break;
 
   case 4:
     this->m_decrease->Enable(1);
     this->m_increase->Enable(1);
-    this->m_increase->SetDisabled(1);
+    {
+      UIBitmapButton* button = this->m_increase;
+      button->SetDisabled(1);
+      button->Invalidate();
+    }
     break;
 
   default:
     this->m_decrease->Enable(1);
     this->m_increase->Enable(1);
-    this->m_increase->SetDisabled(0);
+    {
+      UIBitmapButton* button = this->m_increase;
+      button->SetDisabled(0);
+      button->Invalidate();
+    }
     break;
   }
-  this->m_increase->Invalidate();
 }
 
 // INLINED
@@ -278,22 +304,33 @@ __forceinline void UIShortCutWnd::ResizeRows() {
   case 1:
     this->m_decrease->Enable(0);
     this->m_increase->Enable(1);
-    this->m_increase->SetDisabled(0);
+    {
+      UIBitmapButton* button = this->m_increase;
+      button->SetDisabled(0);
+      button->Invalidate();
+    }
     break;
 
   case 4:
     this->m_decrease->Enable(1);
     this->m_increase->Enable(1);
-    this->m_increase->SetDisabled(1);
+    {
+      UIBitmapButton* button = this->m_increase;
+      button->SetDisabled(1);
+      button->Invalidate();
+    }
     break;
 
   default:
     this->m_decrease->Enable(1);
     this->m_increase->Enable(1);
-    this->m_increase->SetDisabled(0);
+    {
+      UIBitmapButton* button = this->m_increase;
+      button->SetDisabled(0);
+      button->Invalidate();
+    }
     break;
   }
-  this->m_increase->Invalidate();
   this->StoreInfo();
 }
 
@@ -311,21 +348,33 @@ __forceinline void UIShortCutWnd::RestoreLayout(NormalItemSlotWindow* value) {
     this->m_showItems->Move(247, this->m_saved->height - 10);
     this->m_hideItems->Move(247, this->m_saved->height - 10);
     this->m_showItems->Enable(0);
-    this->m_showItems->SetDisabled(1);
-    this->m_showItems->Invalidate();
+    {
+      UIBitmapButton* button = this->m_showItems;
+      button->SetDisabled(1);
+      button->Invalidate();
+    }
     this->m_hideItems->Enable(1);
-    this->m_hideItems->SetDisabled(0);
-    this->m_hideItems->Invalidate();
+    {
+      UIBitmapButton* button = this->m_hideItems;
+      button->SetDisabled(0);
+      button->Invalidate();
+    }
   } else {
     this->Resize(this->geometry.width, height);
     this->m_showItems->Move(247, height - 10);
     this->m_hideItems->Move(247, height - 10);
     this->m_showItems->Enable(1);
-    this->m_showItems->SetDisabled(0);
-    this->m_showItems->Invalidate();
+    {
+      UIBitmapButton* button = this->m_showItems;
+      button->SetDisabled(0);
+      button->Invalidate();
+    }
     this->m_hideItems->Enable(0);
-    this->m_hideItems->SetDisabled(1);
-    this->m_hideItems->Invalidate();
+    {
+      UIBitmapButton* button = this->m_hideItems;
+      button->SetDisabled(1);
+      button->Invalidate();
+    }
   }
 
   this->m_grid.rows = height / 33;

@@ -26,37 +26,40 @@ struct ShortcutCooldownRecord {
 
 // INLINED
 inline bool RotateCooldownRows(std::list<ShortcutCooldownRecord>& records, int amount, int bank, int& rotation0, int& rotation1) {
-  const int rows = amount < 4 ? amount : amount % 4;
+  const int rows = amount >= 4 ? amount % 4 : amount;
   if (rows <= 0) {
     return false;
   }
 
-  if (bank == 0 || bank == 1) {
-    int& rotation = bank == 0 ? rotation0 : rotation1;
-    rotation += rows;
-    if (rotation >= 4) {
-      rotation -= 4;
+  if (bank == 0) {
+    rotation0 += rows;
+    if (rotation0 >= 4) {
+      rotation0 -= 4;
+    }
+  } else if (bank == 1) {
+    rotation1 += rows;
+    if (rotation1 >= 4) {
+      rotation1 -= 4;
     }
   }
 
   const std::uint32_t now = CooldownNow();
 
   for (auto entry = records.begin(); entry != records.end();) {
-    if (entry->end <= now) {
-      entry = records.erase(entry);
-      continue;
-    }
-
-    for (CooldownState& state : entry->main) {
-      state.slot -= 9 * rows;
-      state.y -= 33 * rows;
-      if (state.slot < 0) {
-        state.slot += 36;
-        state.y += 132;
+    if (entry->end > now) {
+      for (auto state = entry->main.begin(); state != entry->main.end(); ++state) {
+        state->slot -= 9 * rows;
+        state->y -= 33 * rows;
+        if (state->slot < 0) {
+          state->slot += 36;
+          state->y += 132;
+        }
       }
-    }
 
-    ++entry;
+      ++entry;
+    } else {
+      entry = records.erase(entry);
+    }
   }
 
   return true;
