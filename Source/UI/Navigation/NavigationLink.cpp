@@ -580,13 +580,15 @@ std::string NavigationLinkParser::FormatMessageArguments(std::string value, int 
         char buffer[164] = {};
 
         if (_mbsstr(reinterpret_cast<const unsigned char*>(conversion), reinterpret_cast<const unsigned char*>("s"))) {
-          if (arguments[index].find("MsgStr(") == std::string::npos) {
-            std::sprintf(buffer, format.c_str(), arguments[index].c_str());
-          } else {
-            arguments[index] = arguments[index].substr(7);
-            arguments[index] = arguments[index].substr(0, arguments[index].size() - 1);
+          if (arguments[index].find("MsgStr(") != std::string::npos) {
+            std::string stripped = arguments[index].substr(7);
+            arguments[index] = std::move(stripped);
+            std::string trimmed = arguments[index].substr(0, arguments[index].size() - 1);
+            arguments[index] = std::move(trimmed);
             const std::string nested = LookupMessage(std::atoi(arguments[index].c_str()));
             std::sprintf(buffer, format.c_str(), nested.c_str());
+          } else {
+            std::sprintf(buffer, format.c_str(), arguments[index].c_str());
           }
         } else if (_mbsstr(reinterpret_cast<const unsigned char*>(conversion), reinterpret_cast<const unsigned char*>("d"))) {
           std::sprintf(buffer, format.c_str(), std::atoi(arguments[index].c_str()));
