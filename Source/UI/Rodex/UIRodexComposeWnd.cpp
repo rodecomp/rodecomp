@@ -359,10 +359,10 @@ int UIRodexComposeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
       }
       if (GetNavigationLinkParser()->HasLink(this->m_recipientEdit->Text())) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_NOT_USING_TAG_TO_NAME)), 0x64FFFF, 0, 0, 0);
-      } else {
-        g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_INVALID_MAIL_RECIEVER_INFO)), 0x64FFFF, 0, 0, 0);
+        return 0;
       }
-      break;
+      g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_INVALID_MAIL_RECIEVER_INFO)), 0x64FFFF, 0, 0, 0);
+      return 0;
     case ID_SEND: {
       if (this->m_recipientEdit->Length() == 0 && this->m_confirmedRecipientEdit->Length() == 0) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_INVALID_MAIL_RECIEVER_INFO)), 0x64FFFF, 0, 0, 0);
@@ -416,7 +416,7 @@ int UIRodexComposeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argu
         mail.recipientId = this->m_recipientId;
         mail.recipient = this->m_confirmedRecipientEdit->Text();
         mail.title = this->m_titleEdit->Text();
-        mail.body.assign(body.c_str(), body.size());
+        mail.body = body;
         mail.zeny = static_cast<int>(zeny);
         g_modeMgr.GetGameMode()->SendMsg(MM_SEND_MAIL, reinterpret_cast<int>(&mail), 0, 0, 0);
         return 0;
@@ -501,8 +501,8 @@ void UIRodexComposeWnd::Paint() {
   g_session.IsNumberWithCommas(inputBuf);
   std::int64_t inputZeny = _atoi64(inputBuf);
   if (this->m_zeny->Text() != nullptr) {
-    tax += (inputZeny * 2) / 100;
-    this->m_tax = tax;
+    this->m_tax = tax + (inputZeny * 2) / 100;
+    tax = this->m_tax;
   }
   FormatGroupedInteger(tax, taxBuf, sizeof(taxBuf));
   std::uint32_t taxColor = (inputZeny + this->m_tax > g_session.m_zeny) ? 0x4E71CF : 0;
@@ -522,29 +522,29 @@ void UIRodexComposeWnd::Paint() {
     this->DrawBitmap(x, 319, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\shadow_item_off.bmp"))), true);
   }
 
-  int itemX = 30;
-  for (const auto& item : this->m_items) {
+  int index = 0;
+  for (auto item = this->m_items.begin(); item != this->m_items.end(); ++item) {
+    int itemX = index * 34 + 30;
     this->DrawBitmap(itemX - 4, 319, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\shadow_item_on.bmp"))), true);
     if (this->m_tax > g_session.m_zeny) {
-      this->DrawItemAndQuantityAuxiliary(2, itemX, 309, item, item.identified, 0);
+      this->DrawItemAndQuantityAuxiliary(2, itemX, 309, *item, item->identified, 0);
     } else {
-      this->DrawItemAndQuantity(itemX, 309, item, 0, 0);
+      this->DrawItemAndQuantity(itemX, 309, *item, 0, 0);
     }
-    if (item.grade > 0) {
-      this->DrawBitmap(itemX, 321, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", static_cast<int>(item.grade)).c_str()))), true);
+    if (0 < item->grade) {
+      this->DrawBitmap(itemX, 321, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(FormatOwnedString("유저인터페이스\\grade_enchant\\grade_icon%d.bmp", static_cast<int>(item->grade)).c_str()))), true);
     }
-    itemX += 34;
+    ++index;
   }
 
   if (this->m_tagCtrl) {
-    auto* tagCtrl = this->m_tagCtrl;
-    tagCtrl->SetLines(this->m_contents->wrappedLines);
-    tagCtrl->SetTaggedText(this->m_contents->Text(), this->m_contents->geometry.width);
-    tagCtrl->UpdateItemTags();
-    int diff = tagCtrl->linkedText.size() - tagCtrl->taggedText.size();
+    this->m_tagCtrl->SetLines(this->m_contents->wrappedLines);
+    this->m_tagCtrl->SetTaggedText(this->m_contents->Text(), this->m_contents->geometry.width);
+    this->m_tagCtrl->UpdateItemTags();
+    int diff = this->m_tagCtrl->linkedText.size() - this->m_tagCtrl->taggedText.size();
     this->m_contents->tagTextLength = std::max(0, diff);
-    if (tagCtrl->previousTagCount == 0) {
-      delete tagCtrl;
+    if (this->m_tagCtrl->previousTagCount == 0) {
+      delete this->m_tagCtrl;
       this->m_tagCtrl = nullptr;
     }
   }
