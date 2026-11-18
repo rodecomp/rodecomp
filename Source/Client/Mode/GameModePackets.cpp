@@ -11423,7 +11423,7 @@ void CGameMode::ReceiveItemPickupAck9(const unsigned char* data) {
 
     if (this->recordItemPickups == 1) {
       auto found = this->itemPickupCounts.find(packet->itemId);
-      if (found == this->itemPickupCounts.end()) {
+      if (this->itemPickupCounts.end() == found) {
         this->itemPickupCounts.insert(std::make_pair(packet->itemId, packet->amount));
       } else {
         found->second += packet->amount;
