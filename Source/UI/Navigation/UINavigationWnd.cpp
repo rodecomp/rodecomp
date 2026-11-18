@@ -881,6 +881,23 @@ int UINavigationWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
   return 0;
 }
 
+// INLINED
+static std::string MobAmountText(int flag) {
+  std::string kind = "없음";
+  if (flag > 99) {
+    kind = LookupMessage(MSI_NAVIGATION_NUM1);
+  } else if (flag > 49) {
+    kind = LookupMessage(MSI_NAVIGATION_NUM2);
+  } else if (flag >= 20 && flag <= 49) {
+    kind = LookupMessage(MSI_NAVIGATION_NUM3);
+  } else if (flag >= 5 && flag <= 19) {
+    kind = LookupMessage(MSI_NAVIGATION_NUM4);
+  } else if (flag >= 1 && flag <= 4) {
+    kind = LookupMessage(MSI_NAVIGATION_NUM5);
+  }
+  return kind;
+}
+
 // OFFSET: 0x0093D620
 // FUNCTION: fn_12769
 void UINavigationWnd::FillRouteList() {
@@ -906,18 +923,7 @@ void UINavigationWnd::FillRouteList() {
       CNavi_Object* object = static_cast<CNavi_Object*>(state.object);
       const int flag = object->GetFlag();
       if (flag > 0) {
-        std::string kind = "없음";
-        if (flag > 99) {
-          kind = LookupMessage(MSI_NAVIGATION_NUM1);
-        } else if (flag > 49) {
-          kind = LookupMessage(MSI_NAVIGATION_NUM2);
-        } else if (flag >= 20 && flag <= 49) {
-          kind = LookupMessage(MSI_NAVIGATION_NUM3);
-        } else if (flag >= 5 && flag <= 19) {
-          kind = LookupMessage(MSI_NAVIGATION_NUM4);
-        } else if (flag >= 1 && flag <= 4) {
-          kind = LookupMessage(MSI_NAVIGATION_NUM5);
-        }
+        const std::string kind = MobAmountText(flag);
         std::sprintf(text, LookupMessage(MSI_NAVIGATION_MOB_S_S_S), object->GetInfo()->GetName(), object->GetName(), kind.c_str());
       } else {
         std::sprintf(text, LookupMessage(MSI_NAVIGATION_MOB_S_S), object->GetInfo()->GetName(), object->GetName());
