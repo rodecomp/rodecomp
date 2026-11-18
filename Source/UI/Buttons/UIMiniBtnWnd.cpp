@@ -27,20 +27,18 @@ void UIMiniBtnWnd::Paint() {
 // OFFSET: 0x00930CD0
 // FUNCTION: fn_12694
 void UIMiniBtnWnd::OnLBtnDown(int, int) {
-  bool visible;
-  UIWindow* window = g_windowMgr.LookupWindow(static_cast<WindowId>(this->m_windowId));
-  if (window) {
-    visible = window->geometry.visible == 0;
-  } else {
-    window = g_windowMgr.EnsureWindow(this->m_windowId);
-    visible = true;
-  }
+  this->Toggle();
+}
 
-  if (window) {
-    window->Show(visible);
-    window->SendMsg(this, UM_COMMAND, ID_APPLY, visible, 0, 0);
+// OFFSET: 0x0093CAD0
+// FUNCTION: fn_45680
+void UIMiniBtnWnd::SetImages(const char* activeImage, const char* inactiveImage) {
+  const auto* activeBitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(activeImage)));
+  const auto* inactiveBitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(inactiveImage)));
+  if (activeBitmap && inactiveBitmap) {
+    this->m_activeImage = activeImage;
+    this->m_inactiveImage = inactiveImage;
   }
-  this->Invalidate();
 }
 
 // OFFSET: 0x00941120

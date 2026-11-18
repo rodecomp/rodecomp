@@ -10,6 +10,7 @@ public:
   UIMiniBtnWnd();
   void Paint() override;
   void OnLBtnDown(int x, int y) override;
+  void SetImages(const char* activeImage, const char* inactiveImage);
   void Toggle();
 
   /* 00B4 */ std::string m_activeImage;
