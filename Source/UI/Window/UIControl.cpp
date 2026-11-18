@@ -33,6 +33,7 @@
 #include "UI/AdventureGuide/UIAdventureGuide.h"
 #include "UI/Window/FrameSkin.h"
 #include "UI/Text/CreateLineInfo.h"
+#include "UI/Layout/SnapMgr.h"
 
 #include <algorithm>
 #include <cmath>
@@ -3745,4 +3746,30 @@ void CUITextViewer::AddLine(const std::string& text) {
 CUIAdventureGuide::CUIAdventureGuide()
     : background(nullptr), titleBar(nullptr), characterInfo(nullptr), titleText(nullptr), intro(nullptr), quest(nullptr), monster(nullptr), item(nullptr),
       tabs(nullptr) {
+}
+
+class TitleBarHelper : public CUITitleBar {
+public:
+  void ToggleParentHeight();
+};
+
+// OFFSET: 0x009F1980
+// FUNCTION: fn_45746
+void TitleBarHelper::ToggleParentHeight() {
+  const int height = this->geometry.height;
+  const int parentHeight = this->parent->geometry.height;
+  if (parentHeight == height) {
+    int savedHeight;
+    std::memcpy(&savedHeight, this->unknown_00D8, sizeof(savedHeight));
+    this->parent->Resize(this->parent->geometry.width, savedHeight);
+  } else {
+    std::memcpy(this->unknown_00D8, &parentHeight, sizeof(parentHeight));
+    this->parent->Resize(this->parent->geometry.width, height);
+  }
+  g_windowMgr.StoreSnapRectangle(this->parent);
+  g_windowMgr.Promote(this->parent);
+  const int delta = this->parent->geometry.height - parentHeight;
+  if (delta != 0) {
+    g_snapMgr.MoveEdge(this->parent, 0, delta, 3);
+  }
 }
