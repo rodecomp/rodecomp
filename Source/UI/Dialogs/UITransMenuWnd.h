@@ -25,6 +25,8 @@ public:
   void ClearItems();
 
 protected:
+  int ItemIndexAt(const int& x, const int& y) const;
+
   /* 00B4 */ std::vector<TransMenuItem> m_items;
   /* 00C0 */ std::uint32_t m_x;
   /* 00C4 */ std::uint32_t m_y;
