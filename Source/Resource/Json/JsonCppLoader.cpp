@@ -12,9 +12,10 @@
 jsoncons::json JsonCppLoader::GetValue(const std::string& key, const jsoncons::json& node, jsoncons::json_type type) {
   if (!node.is_null() && node.is_object() && node.find(key) != node.object_range().end()) {
     jsoncons::json value = node.at(key);
-    if (this->GetValueType(value) == type) {
-      return value;
+    if (this->GetValueType(value) != type) {
+      return jsoncons::json::null();
     }
+    return value;
   }
 
   return jsoncons::json::null();
