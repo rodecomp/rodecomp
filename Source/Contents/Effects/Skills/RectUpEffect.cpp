@@ -42,14 +42,16 @@ bool CRectUpEffect::IsAlive() {
 void CRectUpEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
-    particle->position.x = this->position[0] + particle->offsetX;
-    particle->position.y = this->position[1] + particle->offsetY;
-    particle->position.z = this->position[2] + particle->offsetZ;
+    particle->position = vector3d{this->position[0] + particle->offsetX, this->position[1] + particle->offsetY, this->position[2] + particle->offsetZ};
 
     int& phase = particle->angleParameter;
     phase += phase + 1 < 360 ? 1 : -359;
     if (particle->elapsedFrames > this->particleLifetime) {
-      particle->alpha = std::max(particle->alpha - 2, 0);
+      int alpha = particle->alpha - 2;
+      if (alpha < 0) {
+        alpha = 0;
+      }
+      particle->alpha = alpha;
     }
 
     float height = particle->speedParameter * g_sinTable[phase] * 0.35f + particle->speedParameter * 0.65f;
