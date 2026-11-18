@@ -103,6 +103,36 @@ void CRmaRes::Unload() {
   this->actionModels.erase(this->actionModels.begin(), this->actionModels.end());
 }
 
+// OFFSET: 0x007470C0
+// FUNCTION: fn_45821
+int CRmaRes::EndFrame(int action) {
+  return this->actions[action].endFrame;
+}
+
+// OFFSET: 0x00747130
+
+// OFFSET: 0x007473A0
+// FUNCTION: fn_45823
+int CRmaRes::GetDelay(int action) {
+  return this->actions[action].delay;
+}
+
+// OFFSET: 0x007473C0
+// FUNCTION: fn_45824
+std::string* CRmaRes::GetModel(int action) {
+  return &this->models[this->actionModels[action]];
+}
+
+// OFFSET: 0x007473E0
+// FUNCTION: fn_45825
+int CRmaRes::GetStartFrame(int action) {
+  return this->actions[action].startFrame;
+}
+
+// OFFSET: 0x00747400
+
+// OFFSET: 0x00747450
+
 // INLINED
 CRmaRes::CRmaRes(const char* extension, const char* prefix) {
   ResourceMgr::Instance().Register(extension, prefix, this);
