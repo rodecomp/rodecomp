@@ -1510,13 +1510,16 @@ CUIAdventureGuide* CreateAdventureGuide() {
   return new CUIAdventureGuide();
 }
 
+struct UIRegistration {
+  // INLINED
+  __forceinline UIRegistration(int id, std::function<CUIFrameWnd*()> factory) {
+    Singleton<CUIRegisterMgr>::GetInstance()->Register(id, factory);
+  }
+};
+
 // OFFSET: 0x00487B10
 // FUNCTION: fn_45546
-static bool s_registered = [] {
-  std::function<CUIFrameWnd*()> factory = CreateAdventureGuide;
-  Singleton<CUIRegisterMgr>::GetInstance()->Register(10002, factory);
-  return true;
-}();
+static UIRegistration s_adventureGuideRegistered(10002, CreateAdventureGuide);
 
 namespace AdventureGuide {
 

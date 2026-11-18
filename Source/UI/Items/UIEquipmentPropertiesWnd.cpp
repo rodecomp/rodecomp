@@ -861,10 +861,13 @@ CUIEquipmentPropertiesWnd* CreateEquipmentPropertiesWnd() {
   return new CUIEquipmentPropertiesWnd();
 }
 
+struct UIRegistration {
+  // INLINED
+  __forceinline UIRegistration(int id, std::function<CUIFrameWnd*()> factory) {
+    Singleton<CUIRegisterMgr>::GetInstance()->Register(id, factory);
+  }
+};
+
 // OFFSET: 0x00492C70
 // FUNCTION: fn_45548
-static bool s_registered = [] {
-  std::function<CUIFrameWnd*()> factory = CreateEquipmentPropertiesWnd;
-  Singleton<CUIRegisterMgr>::GetInstance()->Register(10001, factory);
-  return true;
-}();
+static UIRegistration s_equipmentPropertiesRegistered(10001, CreateEquipmentPropertiesWnd);

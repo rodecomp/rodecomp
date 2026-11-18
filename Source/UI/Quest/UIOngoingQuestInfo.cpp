@@ -68,13 +68,16 @@ CUIOngoingQuestInfo* CreateOngoingQuestInfo() {
   return new CUIOngoingQuestInfo();
 }
 
+struct UIRegistration {
+  // INLINED
+  __forceinline UIRegistration(int id, std::function<CUIFrameWnd*()> factory) {
+    Singleton<CUIRegisterMgr>::GetInstance()->Register(id, factory);
+  }
+};
+
 // OFFSET: 0x00497950
 // FUNCTION: fn_45552
-static bool s_registered = [] {
-  std::function<CUIFrameWnd*()> factory = CreateOngoingQuestInfo;
-  Singleton<CUIRegisterMgr>::GetInstance()->Register(10009, factory);
-  return true;
-}();
+static UIRegistration s_ongoingQuestRegistered(10009, CreateOngoingQuestInfo);
 
 // OFFSET: 0x00A4FDE0
 // FUNCTION: fn_16223

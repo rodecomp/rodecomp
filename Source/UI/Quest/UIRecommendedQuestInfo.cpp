@@ -255,13 +255,16 @@ CUIFrameWnd* CreateRecommendedQuestInfo() {
   return new CUIRecommendedQuestInfo();
 }
 
+struct UIRegistration {
+  // INLINED
+  __forceinline UIRegistration(int id, std::function<CUIFrameWnd*()> factory) {
+    Singleton<CUIRegisterMgr>::GetInstance()->Register(id, factory);
+  }
+};
+
 // OFFSET: 0x004985B0
 // FUNCTION: fn_45553
-static bool s_registered = [] {
-  std::function<CUIFrameWnd*()> factory = CreateRecommendedQuestInfo;
-  Singleton<CUIRegisterMgr>::GetInstance()->Register(10010, factory);
-  return true;
-}();
+static UIRegistration s_recommendedQuestRegistered(10010, CreateRecommendedQuestInfo);
 
 // OFFSET: 0x00A58E00
 // FUNCTION: fn_16351

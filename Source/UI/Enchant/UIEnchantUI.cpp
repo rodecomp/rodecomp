@@ -454,13 +454,16 @@ CUIEnchantUI* CreateEnchantUI() {
   return new CUIEnchantUI();
 }
 
+struct UIRegistration {
+  // INLINED
+  __forceinline UIRegistration(int id, std::function<CUIFrameWnd*()> factory) {
+    Singleton<CUIRegisterMgr>::GetInstance()->Register(id, factory);
+  }
+};
+
 // OFFSET: 0x00492010
 // FUNCTION: fn_45547
-static bool s_registered = [] {
-  std::function<CUIFrameWnd*()> factory = CreateEnchantUI;
-  Singleton<CUIRegisterMgr>::GetInstance()->Register(10006, factory);
-  return true;
-}();
+static UIRegistration s_enchantUIRegistered(10006, CreateEnchantUI);
 
 namespace EnchantUI {
 // OFFSET: 0x009FD340

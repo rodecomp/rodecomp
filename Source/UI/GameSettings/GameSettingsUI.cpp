@@ -2014,13 +2014,16 @@ CUIFrameWnd* CreateGameSettingsUI() {
   return new CUIGameSettingsUI();
 }
 
+struct UIRegistration {
+  // INLINED
+  __forceinline UIRegistration(int id, std::function<CUIFrameWnd*()> factory) {
+    Singleton<CUIRegisterMgr>::GetInstance()->Register(id, factory);
+  }
+};
+
 // OFFSET: 0x00494730
 // FUNCTION: fn_45545
-static bool s_registered = [] {
-  std::function<CUIFrameWnd*()> factory = CreateGameSettingsUI;
-  Singleton<CUIRegisterMgr>::GetInstance()->Register(10014, factory);
-  return true;
-}();
+static UIRegistration s_registration(10014, CreateGameSettingsUI);
 
 // OFFSET: 0x00A1BFD0
 // FUNCTION: fn_15374

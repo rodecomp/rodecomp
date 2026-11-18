@@ -1032,13 +1032,16 @@ CUIExchangeUI* CreateExchangeUI() {
   return new CUIExchangeUI();
 }
 
+struct UIRegistration {
+  // INLINED
+  __forceinline UIRegistration(int id, std::function<CUIFrameWnd*()> factory) {
+    Singleton<CUIRegisterMgr>::GetInstance()->Register(id, factory);
+  }
+};
+
 // OFFSET: 0x00493AD0
 // FUNCTION: fn_45549
-static bool s_registered = [] {
-  std::function<CUIFrameWnd*()> factory = CreateExchangeUI;
-  Singleton<CUIRegisterMgr>::GetInstance()->Register(10011, factory);
-  return true;
-}();
+static UIRegistration s_exchangeUIRegistered(10011, CreateExchangeUI);
 
 // OFFSET: 0x00A151F0
 // FUNCTION: fn_15195

@@ -70,13 +70,16 @@ CUISkillDelayInfo* CreateSkillDelayInfo() {
   return new CUISkillDelayInfo();
 }
 
+struct UIRegistration {
+  // INLINED
+  __forceinline UIRegistration(int id, std::function<CUIFrameWnd*()> factory) {
+    Singleton<CUIRegisterMgr>::GetInstance()->Register(id, factory);
+  }
+};
+
 // OFFSET: 0x0049C2D0
 // FUNCTION: fn_45556
-static bool s_registered = [] {
-  std::function<CUIFrameWnd*()> factory = CreateSkillDelayInfo;
-  Singleton<CUIRegisterMgr>::GetInstance()->Register(10030, factory);
-  return true;
-}();
+static UIRegistration s_skillDelayInfoRegistered(10030, CreateSkillDelayInfo);
 
 // OFFSET: 0x00A71950
 // FUNCTION: fn_16806
