@@ -17,12 +17,6 @@ template __declspec(noinline) std::string& std::string::operator=(std::string&&)
 
 namespace {
   constexpr char sourceFile[] = "C:\\repositories\\RagnarokClient\\RagnarokClient\\Contents\\AdventurerAgency\\CLoadPartyLIstAsyncWork.cpp";
-
-  // INLINED
-  __forceinline AsyncDiagnostic Diagnostic(bool success, const char* text, std::uint32_t line) {
-    std::string message = text;
-    return AsyncDiagnostic(success, std::move(message), sourceFile, line);
-  }
 }
 
 // GLOBAL: gl_25604
@@ -72,83 +66,59 @@ bool CLoadPartyListAsyncWork::Execute() {
   StringFormat(page, sizeof(page), _TRUNCATE, "%d", this->m_page);
   const std::string world = CCURLMgr::GetInstance()->ToUtf8(this->m_world);
   CCURLPostHander handler(this->m_url);
-  constexpr std::array<std::uint8_t, 4> gidArray = OBFUSCATE_SOURCE("GID", 0x2F2701A7E56D3D89ULL);
-  const std::uint8_t (&gid)[4] = gidArray._Elems;
-  handler.AddField(OBFUSCATE_DECRYPT(0x2F2701A7E56D3D89ULL, gid), character, 4);
-  constexpr std::array<std::uint8_t, 4> aidArray = OBFUSCATE_SOURCE("AID", 0x6B3301E1A3079125ULL);
-  const std::uint8_t (&aid)[4] = aidArray._Elems;
-  handler.AddField(OBFUSCATE_DECRYPT(0x6B3301E1A3079125ULL, aid), account, 4);
-  constexpr std::array<std::uint8_t, 10> worldNameArray = OBFUSCATE_SOURCE("WorldName", 0x71B7691737C5A1AFULL);
-  const std::uint8_t (&worldName)[10] = worldNameArray._Elems;
-  handler.AddField(OBFUSCATE_DECRYPT(0x71B7691737C5A1AFULL, worldName), world, 4);
-  const std::uint8_t authToken[] = OBFUSCATE_SOURCE_BYTES(10, "AuthToken", 0xC39FB559A17D3963ULL);
-  handler.AddField(OBFUSCATE_DECRYPT(0xC39FB559A17D3963ULL, authToken), this->m_token, 4);
+  handler.AddField(OBFUSCATE_BYTES_TEXT("GID", 0x2F2701A7E56D3D89ULL), character, 4);
+  handler.AddField(OBFUSCATE_BYTES_TEXT("AID", 0x6B3301E1A3079125ULL), account, 4);
+  handler.AddField(OBFUSCATE_BYTES_TEXT("WorldName", 0x71B7691737C5A1AFULL), world, 4);
+  handler.AddField(OBFUSCATE_BYTES_TEXT("AuthToken", 0xC39FB559A17D3963ULL), this->m_token, 4);
 
   switch (this->m_search) {
   case 0: {
-    constexpr std::array<std::uint8_t, 5> pageNameArray = OBFUSCATE_SOURCE("page", 0x2B8725D7E95325F5ULL);
-    const std::uint8_t (&pageName)[5] = pageNameArray._Elems;
-    handler.AddField(OBFUSCATE_DECRYPT(0x2B8725D7E95325F5ULL, pageName), page, 4);
+    handler.AddField(OBFUSCATE_BYTES_TEXT("page", 0x2B8725D7E95325F5ULL), page, 4);
     break;
   }
   case 1: {
     char minimum[10] = {};
     StringFormat(minimum, sizeof(minimum), _TRUNCATE, "%d", this->m_filter.minimumLevel);
-    const std::uint8_t minLevel[] = OBFUSCATE_SOURCE_BYTES(6, "MinLV", 0x899D11BB83695B0DULL);
-    handler.AddField(OBFUSCATE_DECRYPT(0x899D11BB83695B0DULL, minLevel), minimum, 4);
+    handler.AddField(OBFUSCATE_BYTES_TEXT("MinLV", 0x899D11BB83695B0DULL), minimum, 4);
     char maximum[10] = {};
     StringFormat(maximum, sizeof(maximum), _TRUNCATE, "%d", this->m_filter.maximumLevel);
-    const std::uint8_t maxLevel[] = OBFUSCATE_SOURCE_BYTES(6, "MaxLV", 0xBDADDD87C5A50B6BULL);
-    handler.AddField(OBFUSCATE_DECRYPT(0xBDADDD87C5A50B6BULL, maxLevel), maximum, 4);
+    handler.AddField(OBFUSCATE_BYTES_TEXT("MaxLV", 0xBDADDD87C5A50B6BULL), maximum, 4);
 
     if (this->m_filter.tanker) {
-      const std::uint8_t tankerOn[] = OBFUSCATE_SOURCE_BYTES(2, "1", 0x5FFD7FABB5D1EF57ULL);
-      const std::uint8_t tanker[] = OBFUSCATE_SOURCE_BYTES(7, "Tanker", 0x7989830DE73B9DBDULL);
-      handler.AddField(OBFUSCATE_DECRYPT(0x7989830DE73B9DBDULL, tanker), OBFUSCATE_DECRYPT(0x5FFD7FABB5D1EF57ULL, tankerOn), 4);
+      handler.AddField(OBFUSCATE_BYTES_TEXT("Tanker", 0x7989830DE73B9DBDULL), OBFUSCATE_BYTES_TEXT("1", 0x5FFD7FABB5D1EF57ULL), 4);
     }
 
     if (this->m_filter.dealer) {
-      const std::uint8_t dealerOn[] = OBFUSCATE_SOURCE_BYTES(2, "1", 0xF535E561137F138DULL);
-      const std::uint8_t dealer[] = OBFUSCATE_SOURCE_BYTES(7, "Dealer", 0xA7471985F93F9BDFULL);
-      handler.AddField(OBFUSCATE_DECRYPT(0xA7471985F93F9BDFULL, dealer), OBFUSCATE_DECRYPT(0xF535E561137F138DULL, dealerOn), 4);
+      handler.AddField(OBFUSCATE_BYTES_TEXT("Dealer", 0xA7471985F93F9BDFULL), OBFUSCATE_BYTES_TEXT("1", 0xF535E561137F138DULL), 4);
     }
 
     if (this->m_filter.healer) {
-      const std::uint8_t healerOn[] = OBFUSCATE_SOURCE_BYTES(2, "1", 0x01E7898D9D235DDFULL);
-      const std::uint8_t healer[] = OBFUSCATE_SOURCE_BYTES(7, "Healer", 0xD3E5516F89F161D1ULL);
-      handler.AddField(OBFUSCATE_DECRYPT(0xD3E5516F89F161D1ULL, healer), OBFUSCATE_DECRYPT(0x01E7898D9D235DDFULL, healerOn), 4);
+      handler.AddField(OBFUSCATE_BYTES_TEXT("Healer", 0xD3E5516F89F161D1ULL), OBFUSCATE_BYTES_TEXT("1", 0x01E7898D9D235DDFULL), 4);
     }
 
     if (this->m_filter.assist) {
-      const std::uint8_t assistOn[] = OBFUSCATE_SOURCE_BYTES(2, "1", 0x9DEFC105A1EB2F71ULL);
-      const std::uint8_t assist[] = OBFUSCATE_SOURCE_BYTES(7, "Assist", 0x0DF5B33D9F21EB79ULL);
-      handler.AddField(OBFUSCATE_DECRYPT(0x0DF5B33D9F21EB79ULL, assist), OBFUSCATE_DECRYPT(0x9DEFC105A1EB2F71ULL, assistOn), 4);
+      handler.AddField(OBFUSCATE_BYTES_TEXT("Assist", 0x0DF5B33D9F21EB79ULL), OBFUSCATE_BYTES_TEXT("1", 0x9DEFC105A1EB2F71ULL), 4);
     }
 
     if (this->m_filter.type != 0) {
       char type[10] = {};
       StringFormat(type, sizeof(type), _TRUNCATE, "%d", this->m_filter.type);
-      const std::uint8_t typeName[] = OBFUSCATE_SOURCE_BYTES(5, "Type", 0x6961FF056999A303ULL);
-      handler.AddField(OBFUSCATE_DECRYPT(0x6961FF056999A303ULL, typeName), type, 4);
+      handler.AddField(OBFUSCATE_BYTES_TEXT("Type", 0x6961FF056999A303ULL), type, 4);
     }
 
     if (!this->m_filter.memo.empty()) {
       std::string memo = CCURLMgr::GetInstance()->ToUtf8(this->m_filter.memo);
-      const std::uint8_t memoName[] = OBFUSCATE_SOURCE_BYTES(5, "Memo", 0xBD3F430159B551FDULL);
-      handler.AddField(OBFUSCATE_DECRYPT(0xBD3F430159B551FDULL, memoName), memo, 4);
+      handler.AddField(OBFUSCATE_BYTES_TEXT("Memo", 0xBD3F430159B551FDULL), memo, 4);
     }
 
-    const std::uint8_t pageName[] = OBFUSCATE_SOURCE_BYTES(5, "page", 0xC7FB6DF18577D34BULL);
-    handler.AddField(OBFUSCATE_DECRYPT(0xC7FB6DF18577D34BULL, pageName), page, 4);
+    handler.AddField(OBFUSCATE_BYTES_TEXT("page", 0xC7FB6DF18577D34BULL), page, 4);
     break;
   }
   }
 
   if (handler.Perform() == 0) {
     this->m_response = CCURLMgr::GetInstance()->FromUtf8(handler.Response());
-    const std::uint8_t success[] = OBFUSCATE_SOURCE_BYTES(8, "success", 0x5B832361BDA77197ULL);
-    AsyncDiagnostic diagnostic = Diagnostic(true, OBFUSCATE_DECRYPT(0x5B832361BDA77197ULL, success), 138);
-    this->m_diagnostic = std::move(diagnostic);
+    this->m_diagnostic = AsyncDiagnostic(true, std::string(OBFUSCATE_BYTES_TEXT("success", 0x5B832361BDA77197ULL)), sourceFile, 138);
   }
 
   return false;
