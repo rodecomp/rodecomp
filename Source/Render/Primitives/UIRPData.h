@@ -20,6 +20,11 @@ public:
   void DrawNamedScaledRegion(float x, float y, std::string name, std::uint32_t color, int width, int height, float scalePercent, int sourceX, int sourceY);
   void SetSolid(int width, int height, std::uint32_t color);
 
+  // INLINED
+  const std::list<RenderCommand*>& Primitives() const {
+    return this->m_primitives;
+  }
+
 protected:
   /* 0004 */ std::list<RenderCommand*> m_primitives;
   /* 000C */ CTexture* m_texture;

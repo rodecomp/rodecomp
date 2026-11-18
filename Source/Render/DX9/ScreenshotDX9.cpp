@@ -6,37 +6,36 @@
 
 #include <cstdint>
 
-namespace {
-  class ScreenshotOverlay : public UIRPData {
-  public:
-    // INLINED
-    const std::list<RenderCommand*>& Primitives() const {
-      return this->m_primitives;
-    }
-  };
-}
-
 // OFFSET: 0x005680A0
 // FUNCTION: fn_02236
 bool CRendererDX9::SaveScreenshot(const char* filename, int format, CTexture* overlay, const tagRECT* rectangle) {
   if (overlay) {
-    unsigned x = rectangle ? static_cast<unsigned>(rectangle->right) : this->device->backBufferDescription.Width;
-    unsigned y = rectangle ? static_cast<unsigned>(rectangle->bottom) : this->device->backBufferDescription.Height;
+    DeviceOwnerDX9* device = this->device;
+    unsigned y;
+    unsigned x;
+    if (rectangle) {
+      x = rectangle->right;
+      y = rectangle->bottom;
+    } else {
+      x = device->backBufferDescription.Width;
+      y = device->backBufferDescription.Height;
+    }
     x -= overlay->Width();
     y -= overlay->Height();
-    ScreenshotOverlay drawing;
+    UIRPData drawing;
     drawing.Draw(x, y, overlay, 0xFFFFFFFFu, 0, 0, false);
 
     if (this->device->Begin()) {
       ScopedDeviceStateDX9 restore = this->device->SaveState();
-      this->device->state.SetRenderState(D3DRS_ZENABLE, D3DZB_FALSE);
-      this->device->state.SetRenderState(D3DRS_FOGENABLE, 0);
-      this->device->state.SetRenderState(D3DRS_ALPHAREF, 1);
-      this->device->state.SetRenderState(D3DRS_ALPHATESTENABLE, 1);
-      this->device->state.SetRenderState(D3DRS_ALPHABLENDENABLE, 1);
+      this->device->SetRenderState(D3DRS_ZENABLE, D3DZB_FALSE);
+      this->device->SetRenderState(D3DRS_FOGENABLE, 0);
+      this->device->SetRenderState(D3DRS_ALPHAREF, 1);
+      this->device->SetRenderState(D3DRS_ALPHATESTENABLE, 1);
+      this->device->SetRenderState(D3DRS_ALPHABLENDENABLE, 1);
 
-      for (RenderCommand* command : drawing.Primitives()) {
-        this->device->state.SetTexture(0, command->texture ? static_cast<CTextureDX9*>(command->texture)->NativeTexture() : nullptr);
+      for (RenderCommand* const& command : drawing.Primitives()) {
+        IDirect3DBaseTexture9* texture = command->texture ? static_cast<CTextureDX9*>(command->texture)->NativeTexture() : nullptr;
+        this->device->SetTexture(0, texture);
         this->DrawPrimitive(command);
       }
 

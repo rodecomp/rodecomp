@@ -30,6 +30,16 @@ public:
   bool RestoreBackBuffer();
   ScopedDeviceStateDX9 SaveState();
 
+  // INLINED
+  HRESULT SetRenderState(D3DRENDERSTATETYPE type, DWORD value) {
+    return this->state.SetRenderState(type, value);
+  }
+
+  // INLINED
+  HRESULT SetTexture(UINT stage, IDirect3DBaseTexture9* texture) {
+    return this->state.SetTexture(stage, texture);
+  }
+
   /* 0000 */ HWND window;
   /* 0004 */ IDirect3D9Ex* direct3D;
   /* 0008 */ IDirect3DDevice9Ex* device;
