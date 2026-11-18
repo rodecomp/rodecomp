@@ -21,6 +21,12 @@ static __forceinline bool ParticleAlive(const CParticle* particle) {
   return particle->life * 60.0f > static_cast<float>(particle->elapsedFrames);
 }
 
+// INLINED
+template <typename... Args>
+void LoadFormatted(CEZ2STRParticle* particle, const char* format, Args... args) {
+  particle->Load(FormatOwnedString(format, args...));
+}
+
 // OFFSET: 0x00705F80
 // FUNCTION: fn_07040
 CJupitelThunderStormEffect::CJupitelThunderStormEffect() : CEffect(2366), particle(nullptr), step({0.0f, 0.0f, 0.0f}), duration(10) {
@@ -45,21 +51,19 @@ void CJupitelThunderStormEffect::Close() {
 // OFFSET: 0x00706180
 // FUNCTION: fn_07043
 void CJupitelThunderStormEffect::Open() {
-  const float dy = this->sourcePosition[1] - this->position[1];
-  const float dx = this->sourcePosition[0] - this->position[0];
-  const float dz = this->sourcePosition[2] - this->position[2];
+  const float* origin = this->position;
+  const float* target = this->sourcePosition;
+  const float dx = target[0] - origin[0];
+  const float dy = target[1] - origin[1];
+  const float dz = target[2] - origin[2];
   const float distance = SquareRoot(dy * dy + dx * dx + dz * dz);
   const float speed = distance / static_cast<float>(this->duration);
 
-  this->step.x = this->sourcePosition[0] - this->position[0];
-  this->step.y = this->sourcePosition[1] - this->position[1];
-  this->step.z = this->sourcePosition[2] - this->position[2];
+  this->step = vector3d{target[0] - origin[0], target[1] - origin[1], target[2] - origin[2]};
   const float scale = 1.0f / SquareRoot(this->step.x * this->step.x + this->step.y * this->step.y + this->step.z * this->step.z);
-  this->step.x = scale * this->step.x * speed;
-  this->step.y = scale * this->step.y * speed;
-  this->step.z = scale * this->step.z * speed;
+  this->step = this->step * scale * speed;
 
-  const float angle = ScreenAngle(this->position, this->sourcePosition, g_modeMgr.GetGameMode()->camera->frame.view.values);
+  const float angle = ScreenAngle(origin, target, g_modeMgr.GetGameMode()->camera->frame.view.values);
   CEZ2STRParticle* ball = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
   this->particle = ball;
   if (ball) {
@@ -71,7 +75,8 @@ void CJupitelThunderStormEffect::Open() {
   int index = 0;
   const int rings = (this->effectLevel - 1) / 4;
   const int lastDelay = ((this->effectLevel - 1) / 2 + 6) * 150;
-  for (int delay = 80; delay <= lastDelay; delay += 80, ++index) {
+  for (int time = 80; time <= lastDelay; time += 80, ++index) {
+    const int delay = time;
     CEZ2STRParticle* bolt = static_cast<CEZ2STRParticle*>(CreateEZ2STRParticle(&this->positionVector, 5));
     if (!bolt) {
       continue;
@@ -91,10 +96,10 @@ void CJupitelThunderStormEffect::Open() {
     }
 
     const int variant = rand() % 3;
-    bolt->Load(FormatOwnedString("HYPER_NOVICE\\HN_JUPITEL_THUNDER_STORM\\jupitel_thunder_storm\\jupitel_thunder_storm_%02d.str", variant >= 0 ? variant : 0));
-    bolt->position.z = offsetZ + this->sourcePosition[2];
-    bolt->position.y = this->sourcePosition[1] - 15.0f;
-    bolt->position.x = static_cast<float>(corners[corner][0]) * (static_cast<float>(offsetX) + g_depthAverageHalf) + this->sourcePosition[0];
+    LoadFormatted(bolt, "HYPER_NOVICE\\HN_JUPITEL_THUNDER_STORM\\jupitel_thunder_storm\\jupitel_thunder_storm_%02d.str", variant >= 0 ? variant : 0);
+    bolt->position.z = offsetZ + target[2];
+    bolt->position.y = target[1] - 15.0f;
+    bolt->position.x = static_cast<float>(corners[corner][0]) * (static_cast<float>(offsetX) + g_depthAverageHalf) + target[0];
     bolt->m_delay = delay;
     this->particles.push_back(bolt);
 
