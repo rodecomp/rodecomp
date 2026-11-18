@@ -26,7 +26,7 @@ void LegacyPositionTrack::Sample(int frame, matrix& output) const {
   const unsigned count = keys.size();
 
   if (count == 0) {
-    std::memcpy(output.values, g_identityMatrix, sizeof(g_identityMatrix));
+    output.Identity();
     return;
   }
 
@@ -35,18 +35,24 @@ void LegacyPositionTrack::Sample(int frame, matrix& output) const {
     return;
   }
 
-  for (unsigned next = 1; next < count; ++next) {
+  unsigned next = 1;
+  for (; next < count; ++next) {
     if (keys[next].frame > frame) {
-      const auto& a = keys[next - 1];
-      const auto& b = keys[next];
-      const float amount = static_cast<float>((frame - a.frame)) / static_cast<float>((b.frame - a.frame));
-      const float previous = static_cast<float>(1.0 - static_cast<double>(amount));
-      output.MakeTranslate(
-        previous * a.position[0] + amount * b.position[0], previous * a.position[1] + amount * b.position[1], previous * a.position[2] + amount * b.position[2]
-      );
-      return;
+      break;
     }
   }
+
+  if (next >= count) {
+    return;
+  }
+
+  const auto& a = keys[next - 1];
+  const auto& b = keys[next];
+  const float amount = static_cast<float>(frame - a.frame) / static_cast<float>(b.frame - a.frame);
+  const float previous = static_cast<float>(1.0 - static_cast<double>(amount));
+  output.MakeTranslate(
+    previous * a.position[0] + amount * b.position[0], previous * a.position[1] + amount * b.position[1], previous * a.position[2] + amount * b.position[2]
+  );
 }
 
 // OFFSET: 0x00540670
