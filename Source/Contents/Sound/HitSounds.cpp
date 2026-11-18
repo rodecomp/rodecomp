@@ -19,45 +19,7 @@ const char* CSession::GetHitWaveName(int job) {
     return jobWaves.begin()[job].c_str();
   }
 
-  const int weapon = g_session.GetRealWeaponId(-1);
-  if (weapon == -1) {
-    const int roll = std::rand() % 4;
-    switch (roll >= 0 ? roll : 0) {
-    case 0:
-      return "_enemy_hit_normal1.wav";
-    case 1:
-      return "_enemy_hit_normal2.wav";
-    case 2:
-      return "_enemy_hit_normal3.wav";
-    case 3:
-      return "_enemy_hit_normal4.wav";
-    }
-  }
-
-  const std::vector<std::string>& weaponWaves = this->m_weaponHitWaves;
-  if (weaponWaves.empty() || weaponWaves.size() <= static_cast<unsigned int>(weapon)) {
-    return nullptr;
-  }
-
-  if (this->GetDisplayJob() == 4046 || this->GetDisplayJob() == 4225) {
-    return weaponWaves[weapon].c_str();
-  }
-
-  if (weapon == 0) {
-    const int roll = std::rand() % 4;
-    switch (roll >= 0 ? roll : 0) {
-    case 0:
-      return "_hit_fist1.wav";
-    case 1:
-      return "_hit_fist2.wav";
-    case 2:
-      return "_hit_fist3.wav";
-    case 3:
-      return "_hit_fist4.wav";
-    }
-  }
-
-  return weaponWaves[weapon].c_str();
+  return this->GetWeaponHitWaveName(-1);
 }
 
 // OFFSET: 0x00DE3680
