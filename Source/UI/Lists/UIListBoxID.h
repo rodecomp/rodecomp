@@ -11,6 +11,10 @@
 class UIScrollBar;
 
 struct IdListLine {
+  IdListLine() = default;
+  // INLINED
+  IdListLine(int id, const char* text) : id(id), text(text) {}
+
   /* 0000 */ int id;
   /* 0004 */ std::string text;
 };

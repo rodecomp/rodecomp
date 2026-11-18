@@ -26,6 +26,7 @@
 #include <mbstring.h>
 
 template __declspec(noinline) std::pair<std::map<int, IdListLine>::iterator, bool> std::_Tree<std::_Tmap_traits<int, IdListLine, std::less<int>, std::allocator<std::pair<const int, IdListLine>>, false>>::insert(std::pair<const int, IdListLine>&&);
+template __declspec(noinline) std::_Tree_find_result<std::map<int, int>::_Mybase::_Nodeptr> std::map<int, int>::_Mybase::_Find_lower_bound<int>(const int&) const;
 
 // OFFSET: 0x0086D940
 // FUNCTION: fn_11055
