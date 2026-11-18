@@ -46,19 +46,16 @@ FuncDrawWNDChar::FuncDrawWNDChar(
 void FuncDrawWNDChar::Draw(bool option) {
   std::list<int> layers = this->DrawOrder();
   this->LoadResources(layers);
-  for (int layer : layers) {
-    int key = layer;
-    if (this->m_resources.find(key) == this->m_resources.end()) {
-      continue;
-    }
-
-    std::pair<CSprRes*, CActRes*> resource = this->m_resources[key];
+  for (std::list<int>::iterator it = layers.begin(); it != layers.end(); ++it) {
+    int layer = *it;
+    std::pair<CSprRes*, CActRes*> resource = this->Resource(layer);
     CSprRes* sprite = resource.first;
     CActRes* act = resource.second;
     if (!sprite || !act) {
       continue;
     }
 
+    int key = layer;
     FuncDrawOffset offset;
     if (g_session.IsDoramJob(this->m_job) == true) {
       int x = 0;
@@ -99,10 +96,8 @@ void FuncDrawWNDChar::Draw(bool option) {
         case 4:
         case 5:
         case 6: {
-          const auto bodyResource = this->m_resources.find(2);
-          if (!this->hideHeadLayer && bodyResource != this->m_resources.end() && this->m_resources[2].second) {
-            CActRes* bodyAct = this->m_resources[2].second;
-            this->BodyAnchorOffset(&bodyAct->Frame(this->m_action, this->m_motion), option);
+          if (!this->hideHeadLayer && this->Resource(2).second) {
+            this->BodyAnchorOffset(&this->Resource(2).second->Frame(this->m_action, this->m_motion), option);
           }
 
           FuncDrawOffset anchor = this->LayerAnchorOffset(layer, &frame, act);
@@ -110,32 +105,35 @@ void FuncDrawWNDChar::Draw(bool option) {
           offset.y += anchor.y;
           break;
         }
-        case 0:
-        case 7: {
-          int baseMotion = this->m_motion;
-          int syncedMotion = this->m_motion;
-          CActRes* layerAct = this->m_resources[key].second;
-          int action = this->m_action;
-          if ((action >= 0 && action < 8) || static_cast<unsigned>(action - 16) <= 7) {
-            baseMotion = 0;
-          }
+        default:
+          if (layer == 0 || layer == 7) {
+            int baseMotion = this->m_motion;
+            int syncedMotion = this->m_motion;
+            CActRes* layerAct = this->Resource(layer).second;
+            int action = this->m_action;
+            if ((action >= 0 && action < 8) || static_cast<unsigned>(action - 16) <= 7) {
+              baseMotion = 0;
+            }
 
-          const auto bodyResource = this->m_resources.find(1);
-          CActRes* bodyAct = bodyResource != this->m_resources.end() ? bodyResource->second.second : nullptr;
-          g_session.GetSyncedFrame(bodyAct, layerAct, action, baseMotion, this->m_time, &syncedMotion);
-          frame = &layerAct->Frame(this->m_action, syncedMotion);
+            g_session.GetSyncedFrame(this->Resource(1).second, layerAct, action, baseMotion, this->m_time, &syncedMotion);
+            frame = &layerAct->Frame(this->m_action, syncedMotion);
+          }
           break;
-        }
       }
     }
 
     const std::uint32_t* palette = sprite->palette;
-    if (layer == 1) {
-      if (this->m_bodyStyle > 0) {
-        palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->bodyPaletteName))->palette;
-      }
-    } else if (layer == 2 && this->m_headPalette > 0) {
-      palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->headPaletteName))->palette;
+    switch (layer) {
+      case 1:
+        if (this->m_bodyStyle > 0) {
+          palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->bodyPaletteName))->palette;
+        }
+        break;
+      case 2:
+        if (this->m_headPalette > 0) {
+          palette = static_cast<CPaletteRes*>(ResourceMgr::Instance().Load(this->headPaletteName))->palette;
+        }
+        break;
     }
 
     const SpriteFrameCell& cell = frame->Cell(this->IsSpecialLayer(layer));
@@ -177,8 +175,8 @@ void FuncDrawWNDChar::Draw(bool option) {
 
       int x = this->m_x + cell.x + offset.x;
       int y = cell.y + this->m_y + offset.y;
-      int clip = y < 0 ? y : 0;
-      int top = y < 0 ? 0 : y;
+      int clip = y >= 0 ? 0 : y;
+      int top = y >= 0 ? y : 0;
       if (clip <= top) {
         this->m_window->geometry.surface->DrawSurface(
           x, top, texture, static_cast<int>(record.u0 * 256.0f), static_cast<int>(record.v0 * 256.0f - static_cast<float>(clip)), image->width,
@@ -337,9 +335,7 @@ FuncDrawOffset FuncDrawWNDChar::LayerAnchorOffset(int layer, const ActionFrame**
   const ActionFrame* current = *frame;
   FuncDrawOffset offset;
 
-  const auto resourcesEnd = this->m_resources.end();
-  int bodyLayer = 2;
-  CActRes* bodyAct = resourcesEnd != this->m_resources.find(bodyLayer) ? this->m_resources[bodyLayer].second : nullptr;
+  CActRes* bodyAct = this->Resource(2).second;
   const ActionFrame& base = bodyAct->Frame(this->m_action, this->m_motion);
   int syncedMotion = 0;
   const ActionFrame* synced = g_session.GetSyncedFrame(bodyAct, act, this->m_action, this->m_motion, this->m_time, &syncedMotion);
