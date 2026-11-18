@@ -37,6 +37,7 @@ public:
 
   void OnCreate(int width, int height) override;
   bool IsChecked();
+  void SetChecked(bool checked, bool notify);
 };
 
 #if defined(_WIN32) && !defined(_WIN64)

@@ -1545,6 +1545,17 @@ bool CUIRadioItem::IsChecked() {
   return this->radioButton->checked;
 }
 
+// OFFSET: 0x009E9120
+// FUNCTION: fn_45737
+void CUIRadioItem::SetChecked(bool checked, bool notify) {
+  CUIRadioButton* button = this->radioButton;
+  button->checked = checked;
+  if (notify && button->onCheck) {
+    button->onCheck(checked);
+  }
+  button->Invalidate();
+}
+
 // OFFSET: 0x009E89C0
 // FUNCTION: fn_45573
 void CUIRadioItem::OnCreate(int width, int height) {
