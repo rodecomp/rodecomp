@@ -77,13 +77,14 @@ void CRectUpEffect::Render() {
       const int angle = static_cast<int>(particle->angle) % 360;
       const float x = particle->scale * g_cosTable[angle];
       const float z = particle->scale * g_sinTable[angle];
+      const float height = particle->animationParameter;
 
       EffectPoint edge[2];
       edge[0].x = x;
       edge[0].y = 0.0f;
       edge[0].z = z;
       edge[1].x = x;
-      edge[1].y = -particle->animationParameter;
+      edge[1].y = -height;
       edge[1].z = z;
 
       particle->vertices[1].x = edge[1].x;
