@@ -182,11 +182,11 @@ void UIRegisterPartyWnd::OnCreate(int, int) {
   WrapPlainText(LookupMessage(MSI_ADVEN_WARNING_TEXT), lines, 40);
   int y = 136;
 
-  for (const auto& line : lines) {
+  for (unsigned index = 0; index < lines.size(); ++index) {
     auto* value = new UIStaticText();
     value->SetSize(this->geometry.width - 18, 15);
     value->Move(9, y);
-    value->SetText(line.c_str(), 0);
+    value->SetText(lines[index].c_str(), 0);
     value->SetFont(0, 11, 0, 0);
     value->SetColor(255, 0, 0);
     this->AddChild(value);
