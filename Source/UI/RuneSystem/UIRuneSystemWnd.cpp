@@ -157,7 +157,8 @@ void UIRuneSetReWard::Paint() {
   }
 
   if (name && !name->empty()) {
-    this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(name->c_str()))), true);
+    const char* bitmapName = name->c_str();
+    this->DrawBitmap(0, 0, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(bitmapName))), true);
   }
   if (this->parent) {
     this->parent->Invalidate();
