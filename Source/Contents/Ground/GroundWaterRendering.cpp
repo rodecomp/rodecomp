@@ -25,7 +25,7 @@ void GroundGeometry::DrawWaterCell(
     partition = static_cast<unsigned>(x) + static_cast<unsigned>(z) * static_cast<unsigned>(this->waterColumns);
   }
 
-  GroundWater& surface = this->waterSurfaces[partition];
+  const GroundWater& surface = this->waterSurfaces[partition];
   float middle;
   float first;
   float last;
@@ -107,6 +107,6 @@ void GroundGeometry::DrawWaterCell(
   }
 
   *reinterpret_cast<unsigned char*>(&primitive->depthFlags) = 1;
-  primitive->texture = surface.texture;
+  primitive->texture = this->waterSurfaces[partition].texture;
   g_renderer->Submit(primitive, 1);
 }
