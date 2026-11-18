@@ -295,3 +295,7 @@ int UIQuestDisplay::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
 // FUNCTION: fn_12855
 UIQuestDisplay::UIQuestDisplay() : UIWindow(0) {
 }
+
+// OFFSET: 0x00947A10
+// FUNCTION: fn_45796
+UIQuestDisplay::~UIQuestDisplay() = default;

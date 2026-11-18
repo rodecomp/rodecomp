@@ -11,6 +11,7 @@ struct QuestDisplayInfo;
 class UIQuestDisplay : public UIWindow {
 public:
   UIQuestDisplay();
+  __declspec(noinline) ~UIQuestDisplay() override;
   bool IsTransmitMouseInput() override;
   void StoreInfo() override;
   void Paint() override;
