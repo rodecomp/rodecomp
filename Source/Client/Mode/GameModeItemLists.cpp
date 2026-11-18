@@ -3,6 +3,7 @@
 #include "Contents/Items/InventoryType.h"
 #include "Client/Session/Session.h"
 #include "Contents/ClientState.h"
+#include "Contents/CombatTypes.h"
 #include "Contents/Items/ItemInfo.h"
 #include "Contents/Messenger/ClientMessenger.h"
 #include "Contents/Messenger/EquipmentPropertiesMgr.h"
@@ -19,6 +20,10 @@ namespace {
 #pragma pack(push, 1)
   using EquipListOption = ItemOptionRecord;
 
+  struct EquipListOptions {
+    /* 0000 */ EquipListOption values[5];
+  };
+
   struct EquipListRecord {
     /* 0000 */ std::int16_t index;
     /* 0002 */ int itemId;
@@ -31,7 +36,7 @@ namespace {
     /* 0024 */ std::uint16_t bindOnEquip;
     /* 0026 */ std::uint16_t sprite;
     /* 0028 */ unsigned char optionCount;
-    /* 0029 */ EquipListOption options[5];
+    /* 0029 */ EquipListOptions options;
     /* 0042 */ unsigned char identified : 1;
     /* 0042 */ unsigned char damaged : 1;
     /* 0042 */ unsigned char etcTab : 1;
@@ -57,26 +62,139 @@ namespace {
   }
 
   // INLINED
-  __forceinline void FillEquipListItem(ITEM_INFO& item, const EquipListRecord& record, const EquipListOption* options) {
-    item.identity[0] = record.type;
-    item.identity[1] = record.index;
-    item.identity[2] = record.location;
-    item.identity[3] = record.wearState;
-    item.quantity = 1;
-    std::memcpy(item.cards, record.cards, sizeof(record.cards));
-    item.SetItemId(record.itemId);
-    item.identified = record.identified;
-    item.damaged = record.damaged;
-    item.refiningLevel = record.refine;
-    item.expireTime = record.expireTime;
-    item.bindOnEquip = record.bindOnEquip;
-    item.sprite = record.sprite;
-    item.flags[0] = record.etcTab;
-    item.optionCount = CountEquipListOptions(options);
-    item.grade = 0;
-    for (int index = 0; index < item.optionCount; ++index) {
-      item.options[index] = options[index];
+  __forceinline void AddStorageEquipListItem(
+    unsigned char type, std::uint32_t location, std::int16_t index, std::uint32_t wearState, std::uint32_t card1, std::uint32_t card2, std::uint32_t card3,
+    std::uint32_t card4, int itemId, unsigned char identified, unsigned char damaged, unsigned char refine, std::uint32_t expireTime,
+    std::uint16_t bindOnEquip, std::uint16_t sprite, unsigned char placeEtcTab, int grade, EquipListOptions options
+  ) {
+    if (location == EQP_AMMO) {
+      return;
     }
+
+    ITEM_INFO item;
+    item.identity[0] = type;
+    item.identity[2] = location;
+    item.identity[1] = index;
+    item.identity[3] = wearState;
+    item.quantity = 1;
+    std::uint32_t* cards = item.cards;
+    cards[0] = card1;
+    cards[1] = card2;
+    cards[2] = card3;
+    cards[3] = card4;
+    item.SetItemId(itemId);
+    item.identified = identified;
+    item.damaged = damaged;
+    item.refiningLevel = refine;
+    item.expireTime = expireTime;
+    item.bindOnEquip = bindOnEquip;
+    item.sprite = sprite;
+    item.flags[0] = placeEtcTab;
+    item.optionCount = CountEquipListOptions(options.values);
+    item.grade = grade;
+    for (int index = 0; index < item.optionCount; ++index) {
+      item.options[index] = options.values[index];
+    }
+    g_session.AddCartItem(item, 0);
+  }
+
+  // INLINED
+  __forceinline void AddInventoryEquipListItem(
+    unsigned char type, std::uint32_t location, std::int16_t index, std::uint32_t wearState, std::uint32_t card1, std::uint32_t card2, std::uint32_t card3,
+    std::uint32_t card4, int itemId, unsigned char identified, unsigned char damaged, unsigned char refine, std::uint32_t expireTime,
+    std::uint16_t bindOnEquip, std::uint16_t sprite, unsigned char placeEtcTab, int grade, EquipListOptions options
+  ) {
+    ITEM_INFO item;
+    item.identity[0] = type;
+    item.identity[2] = location;
+    item.identity[1] = index;
+    item.identity[3] = wearState;
+    item.quantity = 1;
+    std::uint32_t* cards = item.cards;
+    cards[0] = card1;
+    cards[1] = card2;
+    cards[2] = card3;
+    cards[3] = card4;
+    item.SetItemId(itemId);
+    item.identified = identified;
+    item.damaged = damaged;
+    item.refiningLevel = refine;
+    item.expireTime = expireTime;
+    item.bindOnEquip = bindOnEquip;
+    item.sprite = sprite;
+    item.flags[0] = placeEtcTab;
+    item.optionCount = CountEquipListOptions(options.values);
+    item.grade = grade;
+    for (int index = 0; index < item.optionCount; ++index) {
+      item.options[index] = options.values[index];
+    }
+
+    if (g_session.IsPetEgg(std::atoi(item.itemId.c_str())) && item.damaged) {
+      g_session.petEggIndex = item.identity[1];
+    }
+
+    if (item.identity[3] != 0) {
+      if (g_session.IsCostumeLocation(item.identity[3])) {
+        char equipped = 1;
+        g_session.EquipCostumeItem(item, &equipped);
+      } else {
+        char equipped = 1;
+        g_session.EquipInventoryItem(item, &equipped);
+      }
+    } else {
+      g_session.AddInventoryItem(item, 0);
+      g_session.UpdateInventoryItem(item, 0);
+    }
+
+    if (g_session.IsPetEgg(std::atoi(item.itemId.c_str())) && item.damaged) {
+      const int petEgg = std::atoi(g_session.LookupClientItemByIdentity(g_session.petEggIndex).itemId.c_str());
+      if (!g_petEvolutionMgr->IsAutoFeeding(petEgg) && g_session.m_petAutoFeed == true) {
+        g_session.SendPetAutoFeedOption(0);
+      }
+
+      EquipmentProperties::CEquipmentPropertiesMgr* manager = g_equipmentPropertiesMgr;
+      if (manager == nullptr) {
+        manager = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
+        g_equipmentPropertiesMgr = manager;
+      }
+
+      const int itemId = std::atoi(item.itemId.c_str());
+      const int kind = 0;
+      manager->AddExpansion(kind, itemId, false);
+    }
+  }
+
+  // INLINED
+  __forceinline void AddCartEquipListItem(
+    unsigned char type, std::uint32_t location, std::int16_t index, std::uint32_t wearState, std::uint32_t card1, std::uint32_t card2, std::uint32_t card3,
+    std::uint32_t card4, int itemId, unsigned char identified, unsigned char damaged, unsigned char refine, std::uint32_t expireTime,
+    std::uint16_t bindOnEquip, std::uint16_t sprite, unsigned char placeEtcTab, int grade, EquipListOptions options
+  ) {
+    ITEM_INFO item;
+    item.identity[0] = type;
+    item.identity[2] = location;
+    item.identity[1] = index;
+    item.identity[3] = wearState;
+    item.quantity = 1;
+    std::uint32_t* cards = item.cards;
+    cards[0] = card1;
+    cards[1] = card2;
+    cards[2] = card3;
+    cards[3] = card4;
+    item.SetItemId(itemId);
+    item.identified = identified;
+    item.damaged = damaged;
+    item.refiningLevel = refine;
+    item.expireTime = expireTime;
+    item.bindOnEquip = bindOnEquip;
+    item.sprite = sprite;
+    item.flags[0] = placeEtcTab;
+    item.optionCount = CountEquipListOptions(options.values);
+    item.grade = grade;
+    for (int index = 0; index < item.optionCount; ++index) {
+      item.options[index] = options.values[index];
+    }
+    g_session.AddMerchantShopItem(item);
   }
 }
 
@@ -88,67 +206,30 @@ void CGameMode::ReceiveEquipListPart(unsigned char listType, int count, const un
   switch (listType) {
   case INVTYPE_STORAGE:
   case INVTYPE_GUILD_STORAGE:
-    for (int remaining = count; remaining > 0; --remaining, ++records) {
-      const EquipListRecord record = *records;
-      if (record.location == 0x8000) {
-        continue;
-      }
-
-      EquipListOption options[5];
-      std::memcpy(options, records->options, sizeof(options));
-      ITEM_INFO item;
-      FillEquipListItem(item, record, options);
-      g_session.AddCartItem(item, 0);
+    for (int i = 0; i < count; ++i) {
+      const EquipListRecord& record = records[i];
+      AddStorageEquipListItem(
+        record.type, record.location, record.index, record.wearState, record.cards[0], record.cards[1], record.cards[2], record.cards[3], record.itemId,
+        record.identified, record.damaged, record.refine, record.expireTime, record.bindOnEquip, record.sprite, record.etcTab, 0, record.options
+      );
     }
     break;
   case INVTYPE_INVENTORY:
-    for (int remaining = count; remaining > 0; --remaining, ++records) {
-      const EquipListRecord record = *records;
-      EquipListOption options[5];
-      std::memcpy(options, records->options, sizeof(options));
-      ITEM_INFO item;
-      FillEquipListItem(item, record, options);
-
-      if (g_session.IsPetEgg(std::atoi(item.itemId.c_str())) && item.damaged) {
-        g_session.petEggIndex = item.identity[1];
-      }
-
-      if (item.identity[3] == 0) {
-        g_session.AddInventoryItem(item, 0);
-        g_session.UpdateInventoryItem(item, 0);
-      } else {
-        char equipped = 1;
-        if (g_session.IsCostumeLocation(item.identity[3])) {
-          g_session.EquipCostumeItem(item, &equipped);
-        } else {
-          g_session.EquipInventoryItem(item, &equipped);
-        }
-      }
-
-      if (g_session.IsPetEgg(std::atoi(item.itemId.c_str())) && item.damaged) {
-        const int petEgg = std::atoi(g_session.LookupClientItemByIdentity(g_session.petEggIndex).itemId.c_str());
-        if (!g_petEvolutionMgr->IsAutoFeeding(petEgg) && g_session.m_petAutoFeed == true) {
-          g_session.SendPetAutoFeedOption(0);
-        }
-
-        if (g_equipmentPropertiesMgr == nullptr) {
-          g_equipmentPropertiesMgr = new (std::nothrow) EquipmentProperties::CEquipmentPropertiesMgr;
-        }
-
-        const int kind = 0;
-        const int itemId = std::atoi(item.itemId.c_str());
-        g_equipmentPropertiesMgr->AddExpansion(kind, itemId, false);
-      }
+    for (int i = 0; i < count; ++i) {
+      const EquipListRecord& record = records[i];
+      AddInventoryEquipListItem(
+        record.type, record.location, record.index, record.wearState, record.cards[0], record.cards[1], record.cards[2], record.cards[3], record.itemId,
+        record.identified, record.damaged, record.refine, record.expireTime, record.bindOnEquip, record.sprite, record.etcTab, 0, record.options
+      );
     }
     break;
   case INVTYPE_CART:
-    for (int remaining = count; remaining > 0; --remaining, ++records) {
-      const EquipListRecord record = *records;
-      EquipListOption options[5];
-      std::memcpy(options, records->options, sizeof(options));
-      ITEM_INFO item;
-      FillEquipListItem(item, record, options);
-      g_session.AddMerchantShopItem(item);
+    for (int i = 0; i < count; ++i) {
+      const EquipListRecord& record = records[i];
+      AddCartEquipListItem(
+        record.type, record.location, record.index, record.wearState, record.cards[0], record.cards[1], record.cards[2], record.cards[3], record.itemId,
+        record.identified, record.damaged, record.refine, record.expireTime, record.bindOnEquip, record.sprite, record.etcTab, 0, record.options
+      );
     }
     break;
   }
