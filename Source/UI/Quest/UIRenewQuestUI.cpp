@@ -1925,6 +1925,11 @@ CUIRenewQuestUI::CUIRenewQuestUI()
       titleBar(nullptr), background(nullptr) {
 }
 
+// INLINED
+static void SetTabTooltip(CUITabButton* button, const std::string& text) {
+  button->tooltipText = text;
+}
+
 // OFFSET: 0x00A66DA0
 // FUNCTION: fn_16624
 void CUIRenewQuestUI::OnInit() {
@@ -1949,7 +1954,6 @@ void CUIRenewQuestUI::OnInit() {
   this->UpdateQuestLists(0xF);
 
   for (UIWindow* child : this->filterPanel->m_children) {
-    const std::string& name = g_renewQuestMgr->GetFilterName(child->geometry.id);
-    static_cast<CUITabButton*>(child)->tooltipText = name;
+    SetTabTooltip(static_cast<CUITabButton*>(child), g_renewQuestMgr->GetFilterName(child->geometry.id));
   }
 }
