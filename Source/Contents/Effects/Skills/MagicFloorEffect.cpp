@@ -149,14 +149,20 @@ void CMagicFloorEffect::OnProcess() {
       int angle = 0;
       switch (particle->columnIndex) {
       case 0:
+        angle = static_cast<int>(particle->angle + 1.0f);
+        break;
       case 1:
         angle = static_cast<int>(particle->angle + 1.0f);
         break;
       case 2:
+        angle = static_cast<int>(particle->angle + 2.0f);
+        break;
       case 3:
         angle = static_cast<int>(particle->angle + 2.0f);
         break;
       case 4:
+        angle = static_cast<int>(particle->angle - 1.0f);
+        break;
       case 5:
         angle = static_cast<int>(particle->angle - 1.0f);
         break;
@@ -193,11 +199,11 @@ void CMagicFloorEffect::OnProcess() {
 
     if (particle) {
       const int direction = static_cast<int>(particle->angle + 5.0f) % 360;
+      particle->angle = static_cast<float>(direction);
       const int sweep = std::min(particle->angleParameter + 3, 180);
       particle->angleParameter = sweep;
       int alpha = particle->alpha;
       const int phase = particle->elapsedFrames % 300;
-      particle->angle = static_cast<float>(direction);
       if (phase == 0) {
         alpha = 50;
       } else if (phase > 100) {
@@ -219,15 +225,17 @@ void CMagicFloorEffect::OnProcess() {
       const float height = radius * g_sinTable[tilt];
       const float cosine = g_cosTable[angle];
       const float sine = g_sinTable[angle];
-      const float floorRadius = this->scaleParameter;
+      const float offsetX = cosine * spread;
+      const float offsetZ = sine * spread;
 
       EffectPoint points[4];
+      const float floorRadius = this->scaleParameter;
       points[0].x = floorRadius * cosine;
       points[0].y = -particle->speedParameter;
       points[0].z = floorRadius * sine;
-      points[1].x = points[0].x + cosine * spread;
+      points[1].x = points[0].x + offsetX;
       points[1].y = points[0].y - height;
-      points[1].z = points[0].z + sine * spread;
+      points[1].z = points[0].z + offsetZ;
 
       particle->vertices[3].x = points[0].x;
       particle->vertices[3].y = points[0].y;
