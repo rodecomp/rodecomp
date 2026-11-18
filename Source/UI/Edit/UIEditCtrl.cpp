@@ -9543,15 +9543,13 @@ void UIItemShopWnd::Paint() {
     char currency[8];
     sprintf(currency, "Z");
     if (this->showFooter != 0) {
-      const char* name;
       if (g_serviceType == 6) {
-        name = "K";
+        sprintf(currency, "K");
       } else if (g_serviceType == 0) {
-        name = g_session.m_channelCopId != 1 ? "C" : "H";
+        sprintf(currency, g_session.m_channelCopId != 1 ? "C" : "H");
       } else {
-        name = "P";
+        sprintf(currency, "P");
       }
-      sprintf(currency, name);
     }
 
     char price[64];
