@@ -41,6 +41,8 @@ struct PACKET_CZ_PARTY_BOOKING_REQ_SEARCH {
 }
 
 
+template __declspec(noinline) bool std::operator==(const std::string&, const char* const);
+
 // OFFSET: 0x00925D70
 // FUNCTION: fn_12649
 void UISeekPartyListWnd::OnCreate(int width, int height) {
