@@ -106,6 +106,16 @@ PathNode* CPathFinder::FindOrCreateNode(int x, int y) {
   return node;
 }
 
+// INLINED
+static void UpdateOpenNode(std::vector<PathNode*>& open, PathNode* node) {
+  for (auto it = open.begin(); it != open.end(); ++it) {
+    if ((*it)->x == node->x && (*it)->y == node->y) {
+      std::push_heap(open.begin(), it + 1, NodeTotalGreater());
+      return;
+    }
+  }
+}
+
 // OFFSET: 0x00AD9610
 // FUNCTION: fn_17882
 bool CPathFinder::AddNeighbor(PathNode* current, int cost, int nextX, int nextY, int metadata) {
@@ -123,13 +133,7 @@ bool CPathFinder::AddNeighbor(PathNode* current, int cost, int nextX, int nextY,
       next->metadata = metadata;
 
       if (next->state == 1) {
-        std::vector<PathNode*>& open = this->openList.Nodes();
-        for (auto it = open.begin(); it != open.end(); ++it) {
-          if ((*it)->x == next->x && (*it)->y == next->y) {
-            std::push_heap(open.begin(), it + 1, NodeTotalGreater());
-            return true;
-          }
-        }
+        UpdateOpenNode(this->openList.Nodes(), next);
       } else if (next->state == 2) {
         next->state = 1;
       }
