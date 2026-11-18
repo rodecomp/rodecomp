@@ -205,7 +205,7 @@ void UIWindow::AddRotatedSpriteCellOverlay(
 
   for (UIWindow* window = this->parent; window; window = window->parent) {
     if (!window->parent) {
-      window->m_overlayPrimitives.push_back(primitive);
+      PushOverlay(window->m_overlayPrimitives, primitive);
     }
   }
 }
