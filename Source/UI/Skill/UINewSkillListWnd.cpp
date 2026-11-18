@@ -1562,7 +1562,7 @@ bool UINewSkillListWnd::IncreaseSkillLevel(int skillId) {
       bool found = false;
       for (auto valueIt = this->m_plannedSkillLevels.begin(); valueIt != this->m_plannedSkillLevels.end(); ++valueIt) {
         NewSkillListValue& value = *valueIt;
-        if (value.id == id) {
+        if (id == value.id) {
           value.value = level;
           found = true;
           break;
