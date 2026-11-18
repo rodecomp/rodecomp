@@ -9618,6 +9618,30 @@ void UIExchangeWnd::OnProcess() {
   this->zenyEdit->SetCursor(this->zenyEdit->Length());
 }
 
+// OFFSET: 0x008D2CA0
+// FUNCTION: fn_45663
+void UIItemCollectionWnd::DrawComparisonBox(int x, int y, int width, int height) {
+  const char* prefix = this->m_kind != 234 ? "유저인터페이스\\sysbox_" : "유저인터페이스\\basic_interface\\sysbox_comparison_";
+  this->DrawSkinBox(prefix, x, y, width, height, true);
+}
+
+// OFFSET: 0x008CFD30
+// FUNCTION: fn_45664
+void UIItemCollectionWnd::ShowComparisonCardInfo(int index) {
+  if (this->m_item.cards[index] == 0 || this->m_item.cards[index] == 254 || this->m_item.cards[index] == 255) {
+    return;
+  }
+
+  ITEM_INFO card;
+  card.identified = 1;
+  card.identity[0] = 6;
+  card.refiningLevel = 0;
+  card.SetItemId(this->m_item.cards[index]);
+  UIWindow* window = g_windowMgr.EnsureWindow(WID_COMBINEDCARDITEMCOLLECTION_COMPARISONWND);
+  window->SendMsg(nullptr, UM_SET_IDENTIFIY_INFO, card.identified, 0, 0, 0);
+  window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&card), 1, 0, 0);
+}
+
 // OFFSET: 0x008EE2B0
 // FUNCTION: fn_12224
 void UIItemCollectionWnd::Paint() {
