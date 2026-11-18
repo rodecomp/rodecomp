@@ -36,6 +36,7 @@ public:
 class UIMiniPartyWnd : public UIFrameWnd {
 public:
   UIMiniPartyWnd();
+  __declspec(noinline) ~UIMiniPartyWnd() override;
   void OnCreate(int width, int height) override;
   void Move(int x, int y) override;
   void Paint() override;

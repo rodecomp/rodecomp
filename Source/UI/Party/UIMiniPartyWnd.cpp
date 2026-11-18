@@ -44,6 +44,10 @@ UIMiniPartyWnd::UIMiniPartyWnd()
   this->geometry.id = WID_MINIPARTYWND;
 }
 
+// OFFSET: 0x00742950
+// FUNCTION: fn_45751
+UIMiniPartyWnd::~UIMiniPartyWnd() = default;
+
 // OFFSET: 0x00742AA0
 // FUNCTION: fn_07739
 void UIMiniPartyWnd::Move(int x, int y) {
