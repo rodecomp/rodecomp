@@ -5,7 +5,7 @@
 // OFFSET: 0x00E2FE80
 // FUNCTION: fn_24165
 unsigned CSession::BaseJob(unsigned job) const {
-  switch (job) {
+  switch (static_cast<JobId>(job)) {
   case JT_FROG_NINJA:
     return JT_NINJA;
   case JT_FROG_LINKER:
