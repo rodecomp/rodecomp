@@ -412,6 +412,7 @@ void CStormKickEffect::Render() {
     case EF_STORMKICK3:
     case EF_STORMKICK7:
       particle->destinationBlend = 6;
+      particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
       break;
     case EF_STORMKICK6:
       if (0.0f == motion[1]) {
@@ -419,16 +420,16 @@ void CStormKickEffect::Render() {
         particle->alpha = alpha / 3;
         particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
         particle->alpha = alpha;
-        continue;
+        break;
       }
       if (1.0f != motion[1]) {
-        continue;
+        break;
       }
     default:
       particle->destinationBlend = 2;
+      particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
       break;
     }
-    particle->Render(false, 0.0f, 1.0f, 0.0f, 1.0f, false, true);
   }
 
   for (auto it = this->clouds.begin(); it != this->clouds.end(); ++it) {
