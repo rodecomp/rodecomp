@@ -334,14 +334,14 @@ void C3dModelResV2::ReadVersion2(CFile& input) {
   }
 
   for (auto it = this->nodes.begin(); it != this->nodes.end(); ++it) {
-    ModelNode* node = *it;
+    ModelNode* const& node = *it;
 
     if (!node->parentName.empty()) {
       ModelNode* parent = this->FindNode(node->parentName.c_str());
 
       if (parent) {
         node->parent = parent;
-        parent->children.push_back(*it);
+        parent->children.push_back(node);
       }
     }
   }
