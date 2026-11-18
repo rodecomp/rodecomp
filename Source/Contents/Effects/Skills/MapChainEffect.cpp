@@ -121,10 +121,9 @@ bool CMapChainEffect::IsAlive() {
 void CMapChainEffect::OnProcess() {
   for (std::vector<CParticle*>::iterator it = this->particles.begin(); it != this->particles.end(); ++it) {
     CParticle* particle = *it;
-    vector3d& position = (*it)->position;
-    position.x = this->position[0];
-    position.y = this->position[1];
-    position.z = this->position[2];
+    (*it)->position.x = this->position[0];
+    (*it)->position.y = this->position[1];
+    (*it)->position.z = this->position[2];
     if (particle) {
       float angle = *static_cast<const float*>(particle->animationParameters) + particle->angle;
       if (angle >= 360.0f) {
@@ -133,10 +132,7 @@ void CMapChainEffect::OnProcess() {
       particle->angle = angle;
 
       if (particle->rowIndex > 5) {
-        int delta = -3;
-        if (particle->elapsedFrames % 600 <= 250) {
-          delta = 3;
-        }
+        int delta = particle->elapsedFrames % 600 <= 250 ? 3 : -3;
         int alpha = particle->alpha + delta;
         if (alpha >= 255) {
           alpha = 255;
