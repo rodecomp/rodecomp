@@ -774,6 +774,17 @@ void UINewSkillListWnd::ResetLists() {
   g_session.m_skillBundle.MarkLevelChanges();
 }
 
+// OFFSET: 0x009B1020
+// FUNCTION: fn_45774
+bool UINewSkillListWnd::HasSkillValue(int id) {
+  for (const NewSkillListValue& entry : this->m_values) {
+    if (entry.id == id) {
+      return true;
+    }
+  }
+  return false;
+}
+
 // OFFSET: 0x009B0EE0
 // FUNCTION: fn_13812
 bool UINewSkillListWnd::IsExtraTab(int tab) {
@@ -1525,17 +1536,7 @@ int UINewSkillListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
 }
 
 // INLINED
-static bool HasSkillValue(const std::list<NewSkillListValue>& values, int id) {
-  for (const NewSkillListValue& entry : values) {
-    if (entry.id == id) {
-      return true;
-    }
-  }
-  return false;
-}
-
-// INLINED
-static int SkillValueOf(const std::list<NewSkillListValue>& values, int id) {
+static int PlannedSkillValueOf(const std::list<NewSkillListValue>& values, int id) {
   for (const NewSkillListValue& entry : values) {
     if (id == entry.id) {
       return entry.value;
@@ -1566,7 +1567,7 @@ bool UINewSkillListWnd::IncreaseSkillLevel(int skillId) {
 
       int target;
       if (id == skillId) {
-        target = (std::max)(static_cast<int>(info->learnedLevel), SkillValueOf(this->m_plannedSkillLevels, id)) + 1;
+        target = (std::max)(static_cast<int>(info->learnedLevel), PlannedSkillValueOf(this->m_plannedSkillLevels, id)) + 1;
         if (static_cast<int>(info->learnedLevel) >= static_cast<int>(info->maxLevel)) {
           return false;
         }
@@ -1628,6 +1629,29 @@ bool UINewSkillListWnd::IncreaseSkillLevel(int skillId) {
   return false;
 }
 
+// OFFSET: 0x009B4130
+// FUNCTION: fn_45775
+int UINewSkillListWnd::SkillValueOf(int id) {
+  for (const NewSkillListValue& entry : this->m_plannedSkillLevels) {
+    if (id == entry.id) {
+      return entry.value;
+    }
+  }
+  return 0;
+}
+
+// OFFSET: 0x009B4160
+// FUNCTION: fn_45776
+void UINewSkillListWnd::SetSkillValue(int id, int value) {
+  for (NewSkillListValue& entry : this->m_plannedSkillLevels) {
+    if (id == entry.id) {
+      entry.value = value;
+      return;
+    }
+  }
+  this->m_plannedSkillLevels.push_back(NewSkillListValue{id, value});
+}
+
 // OFFSET: 0x009AF960
 // FUNCTION: fn_13803
 void UINewSkillListWnd::DrawSkillTree() {
@@ -1656,7 +1680,7 @@ void UINewSkillListWnd::DrawSkillTree() {
     const int x = position % this->m_columns * 68 + 72;
     const int y = position / this->m_columns * 56;
 
-    if (!this->IsExtraTab(this->m_tab) && HasSkillValue(this->m_values, static_cast<int>(skill.id))) {
+    if (!this->IsExtraTab(this->m_tab) && this->HasSkillValue(static_cast<int>(skill.id))) {
       this->FillRegion(x + 3, y + 43, 26, 26, 0xCCC0FF);
       this->DrawRoundedOutline(x + 2, y + 42, 28, 28, 0xC1B6FF);
     } else if (this->m_skillPoints != 0 && skill.available != 0 && skill.upgradable != 0) {
@@ -1675,7 +1699,7 @@ void UINewSkillListWnd::DrawSkillTree() {
       bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(text)));
     }
     if (bitmap) {
-      if (!this->IsExtraTab(this->m_tab) && HasSkillValue(this->m_values, static_cast<int>(skill.id))) {
+      if (!this->IsExtraTab(this->m_tab) && this->HasSkillValue(static_cast<int>(skill.id))) {
         this->DrawAuxiliary(2, x + 4, y + 44, bitmap, true, true);
         const std::string value = this->ValueText(static_cast<int>(skill.id));
         if (value.size() != 0) {
@@ -1690,7 +1714,7 @@ void UINewSkillListWnd::DrawSkillTree() {
         this->DrawBitmap(x + 4, y + 44, bitmap, true);
       }
 
-      const int planned = SkillValueOf(this->m_plannedSkillLevels, static_cast<int>(skill.id));
+      const int planned = this->SkillValueOf(static_cast<int>(skill.id));
       const CSkillInfo* current = g_session.m_skillBundle.FindGrouped(skill.id);
       if (current) {
         const int added = std::max(0, planned - current->learnedLevel);
@@ -1727,7 +1751,7 @@ void UINewSkillListWnd::DrawSkillTree() {
         textX += this->TextWidth(" / ", 0, 0, 11, 1, 0);
 
         const std::uint32_t id = skill.id;
-        int target = SkillValueOf(this->m_plannedSkillLevels, static_cast<int>(id));
+        int target = this->SkillValueOf(static_cast<int>(id));
         const int grouped = g_session.m_skillBundle.GroupedLevel(id);
         if (target < grouped) {
           target = grouped;

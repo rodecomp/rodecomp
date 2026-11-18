@@ -54,6 +54,9 @@ public:
   void LayoutButtons();
   int SkillIndexAt(int x, int y);
   int AddedSkillLevel(int id);
+  bool HasSkillValue(int id);
+  int SkillValueOf(int id);
+  void SetSkillValue(int id, int value);
   bool IncreaseSkillLevel(int skillId);
   void DrawCharacter();
   void DrawSkillList();
