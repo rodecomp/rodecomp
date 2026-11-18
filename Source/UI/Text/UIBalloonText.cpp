@@ -362,7 +362,8 @@ void UINameBalloonText::SetName(const CActorNameCard& info, bool stripHash, unsi
     }
 
     if (std::strlen(info.title.c_str()) != 0) {
-      name = FormatOwnedString("[%s] %s", info.title.c_str(), name.c_str());
+      const std::string titledName = FormatOwnedString("[%s] %s", info.title.c_str(), name.c_str());
+      name = titledName;
     }
 
     if (info.partyName[0] == '\0') {
@@ -408,7 +409,8 @@ void UINameBalloonText::SetName(const CActorNameCard& info, bool stripHash, unsi
 
   int width = 32;
   for (auto line = this->m_lines.begin(); line != this->m_lines.end(); ++line) {
-    const int lineWidth = this->TextWidth(line->c_str(), 0, 0, g_nameBalloonFontHeight, g_serviceFlag06, 0) + 8;
+    const std::string text = *line;
+    const int lineWidth = this->TextWidth(text.c_str(), 0, 0, g_nameBalloonFontHeight, g_serviceFlag06, 0) + 8;
     width = std::max(lineWidth, width);
   }
 
