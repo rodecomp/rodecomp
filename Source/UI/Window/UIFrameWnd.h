@@ -28,6 +28,7 @@ public:
   UIBitmapButton* AddBaseButton();
   UIBitmapButton* AddBigCloseButton(const char* tooltip, int width);
   UIBitmapButton* AddMinimizeButton(const char* tooltip, int width);
+  UIBitmapButton* AddMaximizeButton(const char* tooltip, int width);
   UIBitmapButton* AddBitmapButton(int id, int x, int y, const char* name, const char* tooltip);
   UIBitmapButton* AddNumberedButton(int id, int x, int y, const char* name, const char* tooltip, bool prefix);
   UICheckBox* AddStyledCheckBox(int id, int width, int height, const char* text, int x, int y, bool checked, const char* tooltip, int fontHeight,

@@ -326,6 +326,25 @@ UIBitmapButton* UIFrameWnd::AddCloseButton(const char* tooltip, int width) {
   return button;
 }
 
+// OFFSET: 0x008CF1B0
+// FUNCTION: fn_45662
+UIBitmapButton* UIFrameWnd::AddMaximizeButton(const char* tooltip, int width) {
+  if (width == 0) {
+    width = this->geometry.width;
+  }
+
+  UIBitmapButton* button = new UIBitmapButton();
+  button->SetBitmap("유저인터페이스\\renewalparty\\btn_titlebar_maximum_out.bmp", 0, 0);
+  button->SetBitmap("유저인터페이스\\renewalparty\\btn_titlebar_maximum_over.bmp", 1, 0);
+  button->SetBitmap("유저인터페이스\\renewalparty\\btn_titlebar_maximum_press.bmp", 2, 0);
+  button->SetSize(button->BitmapWidth(), button->BitmapHeight());
+  button->Move(width - 28, 3);
+  button->SetId(ID_RESTORE_PARTY_LIST);
+  button->SetTooltip(tooltip);
+  this->AddChild(button);
+  return button;
+}
+
 // OFFSET: 0x008CF2A0
 // FUNCTION: fn_12077
 UIBitmapButton* UIFrameWnd::AddMinimizeButton(const char* tooltip, int width) {
