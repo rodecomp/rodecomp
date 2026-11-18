@@ -1962,19 +1962,14 @@ bool UIGuildMemberManageWnd::DrawMember(GuildInfo::Member& member, int& index, i
   x += g_guildMemberColumnWidths[3] + 1;
   this->DrawRightAlignedText(g_guildMemberColumnWidths[4] + x - 4, y, FormatOwnedString("%3.0f%%", member.expRatio).c_str(), 0, 0, 12, 0, 0);
   x += g_guildMemberColumnWidths[4] + 1;
-  if (member.exp < 0x7FFFFFFF) {
-    this->DrawRightAlignedText(g_guildMemberColumnWidths[5] + x - 4, y, FormatOwnedString("%d", member.exp).c_str(), 0, 0, 12, 0, 0);
-  } else {
+  if (member.exp >= 0x7FFFFFFF) {
     this->DrawRightAlignedText(g_guildMemberColumnWidths[5] + x - 4, y, FormatOwnedString("%d", member.exp).c_str(), 0, 0, 12, 0xFF, 0);
+  } else {
+    this->DrawRightAlignedText(g_guildMemberColumnWidths[5] + x - 4, y, FormatOwnedString("%d", member.exp).c_str(), 0, 0, 12, 0, 0);
   }
 
   char lastLogin[128];
-  const __time32_t* lastLoginTime = &member.lastOfflineTime;
-  if (*lastLoginTime != 0) {
-    strftime(lastLogin, sizeof(lastLogin), LookupMessage(MSI_TIME_TYPE4), _localtime32(lastLoginTime));
-  } else {
-    lastLogin[0] = '\0';
-  }
+  strftime(lastLogin, sizeof(lastLogin), LookupMessage(MSI_TIME_TYPE4), _localtime32(&member.lastOfflineTime));
   this->DrawTextAt(8, y + 17, FormatOwnedString(LookupMessage(MSI_LAST_LOGIN), lastLogin).c_str(), 0, 0, 11, 0x404040, 0, 0);
   return true;
 }
