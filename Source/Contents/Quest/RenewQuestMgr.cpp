@@ -343,10 +343,10 @@ std::string RenewQuestOngoingInfo::GetHuntText(int index) const {
     text = static_cast<const std::string&>(g_renewQuestMgr->GetMonsterConditionText(this->m_huntConditionFlags[index], minLevel, maxLevel));
   } else {
     const char* name = this->m_huntName[index];
-    if (this->m_huntMinLevel[index] >= 0 && this->m_huntMaxLevel[index] >= 0 && (minLevel != 0 || this->m_huntMaxLevel[index] != 0)) {
-      if (minLevel == 0) {
+    if (-1 < this->m_huntMinLevel[index] && -1 < this->m_huntMaxLevel[index] && (0 != minLevel || 0 != this->m_huntMaxLevel[index])) {
+      if (0 == minLevel) {
         text = std::format("{} Lv.{}▼", name, maxLevel);
-      } else if (this->m_huntMaxLevel[index] == 0) {
+      } else if (0 == this->m_huntMaxLevel[index]) {
         text = std::format("{} Lv.{}▲", name, minLevel);
       } else {
         text = std::format("{} Lv.{}~Lv.{}", name, minLevel, maxLevel);
@@ -357,7 +357,7 @@ std::string RenewQuestOngoingInfo::GetHuntText(int index) const {
   }
 
   const short goal = this->m_huntMaxCount[index];
-  if (goal > 0) {
+  if (0 < goal) {
     const short count = this->m_huntKillCount[index];
     if (count == goal) {
       text = std::format("{} ( {} )", text, LookupMessage(MSI_COMPLETE_HUNTING_QUEST));
@@ -611,7 +611,7 @@ int CRenewQuestMgr::L_AddQuestFilterInfo(lua_State* state) {
     }
   }
 
-  g_renewQuestMgr->m_filters.try_emplace(static_cast<int>(id), RenewQuestFilter{std::string(name.c_str(), name.size()), std::move(icons)});
+  g_renewQuestMgr->m_filters.emplace(static_cast<int>(id), RenewQuestFilter{std::string(name.c_str(), name.size()), std::move(icons)});
   return 0;
 }
 
