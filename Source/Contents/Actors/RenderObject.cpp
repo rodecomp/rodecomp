@@ -2487,21 +2487,21 @@ int CGameActor::GetEffectiveJob(int job) {
     job = this->job;
   }
 
-  if (StateFlag12(this->GetStateFlags())) {
+  if (IsWeddingDress(this->GetStateFlags())) {
     return JT_MARRIED;
   }
 
-  if (!StateFlag15(this->GetStateFlags())) {
-    if (StateFlag16(this->GetStateFlags())) {
+  if (!IsStarUnion(this->GetStateFlags())) {
+    if (IsXmasDress(this->GetStateFlags())) {
       return JT_SANTA;
     }
-    if (StateFlag18(this->GetStateFlags())) {
+    if (IsSummerDress(this->GetStateFlags())) {
       return JT_SUMMER;
     }
-    if (StateFlag27(this->GetStateFlags())) {
+    if (IsHanbokDress(this->GetStateFlags())) {
       return JT_HANBOK;
     }
-    if (StateFlag28(this->GetStateFlags())) {
+    if (IsOktoberfestDress(this->GetStateFlags())) {
       return JT_OKTOBERFEST;
     }
     if (this->mountedState == 1) {
@@ -2509,7 +2509,7 @@ int CGameActor::GetEffectiveJob(int job) {
     }
   }
 
-  if (StateFlag05(this->GetStateFlags())) {
+  if (IsRidingPeco(this->GetStateFlags())) {
     switch (job) {
       case JT_KNIGHT:
         return JT_CHICKEN;
@@ -2534,7 +2534,7 @@ int CGameActor::GetEffectiveJob(int job) {
     }
   }
 
-  if (StateFlag19(this->GetStateFlags())) {
+  if (IsRidingGreenDragon(this->GetStateFlags())) {
     switch (job) {
       case JT_RUNE_KNIGHT:
         return JT_RUNE_CHICKEN;
@@ -2545,28 +2545,28 @@ int CGameActor::GetEffectiveJob(int job) {
       case JT_DRAGON_KNIGHT:
         return JT_DRAGON_KNIGHT_CHICKEN;
     }
-  } else if (StateFlag23(this->GetStateFlags())) {
+  } else if (IsRidingBrownDragon(this->GetStateFlags())) {
     switch (job) {
       case JT_RUNE_KNIGHT:
         return JT_RUNE_CHICKEN2;
       case JT_RUNE_KNIGHT_H:
         return JT_RUNE_CHICKEN2_H;
     }
-  } else if (StateFlag24(this->GetStateFlags())) {
+  } else if (IsRidingGrayDragon(this->GetStateFlags())) {
     switch (job) {
       case JT_RUNE_KNIGHT:
         return JT_RUNE_CHICKEN3;
       case JT_RUNE_KNIGHT_H:
         return JT_RUNE_CHICKEN3_H;
     }
-  } else if (StateFlag25(this->GetStateFlags())) {
+  } else if (IsRidingBlueDragon(this->GetStateFlags())) {
     switch (job) {
       case JT_RUNE_KNIGHT:
         return JT_RUNE_CHICKEN4;
       case JT_RUNE_KNIGHT_H:
         return JT_RUNE_CHICKEN4_H;
     }
-  } else if (StateFlag26(this->GetStateFlags())) {
+  } else if (IsRidingRedDragon(this->GetStateFlags())) {
     switch (job) {
       case JT_RUNE_KNIGHT:
         return JT_RUNE_CHICKEN5;
@@ -2575,7 +2575,7 @@ int CGameActor::GetEffectiveJob(int job) {
     }
   }
 
-  if (StateFlag21(this->GetStateFlags())) {
+  if (IsRidingWarg(this->GetStateFlags())) {
     switch (job) {
       case JT_RANGER:
         return JT_WOLF_RANGER;
@@ -2601,7 +2601,7 @@ int CGameActor::GetEffectiveJob(int job) {
     }
   }
 
-  if (StateFlag15(this->GetStateFlags())) {
+  if (IsStarUnion(this->GetStateFlags())) {
     switch (job) {
       case JT_STAR:
         return JT_STAR2;
@@ -4315,7 +4315,7 @@ void CGameActor::SetCharm(int type, int count) {
   this->SendMsg(this, AM_DELETE_EFFECT, EF_CHOOKGI_GROUND, 0, 0, 0, 0, 0);
   this->SendMsg(this, AM_DELETE_EFFECT, EF_CHOOKGI_FIRE, 0, 0, 0, 0, 0);
   this->SendMsg(this, AM_DELETE_EFFECT, EF_CHOOKGI_WIND, 0, 0, 0, 0, 0);
-  if (count <= 0 || StateFlag01(this->GetStateFlags()) || StateFlag02(this->GetStateFlags())) {
+  if (count <= 0 || IsHiding(this->GetStateFlags()) || IsCloaking(this->GetStateFlags())) {
     return;
   }
 
@@ -4642,7 +4642,7 @@ __declspec(noinline) void CGameActor::ProcessViewCheck() {
   }
 
   timeGetTime();
-  if (StateFlag00(this->stateFlags)) {
+  if (IsSightActive(this->stateFlags)) {
     if (static_cast<unsigned int>(EffectLifetime(0x16)) <= static_cast<unsigned int>(this->effectLaunchCnt)) {
       this->effectLaunchCnt = 0;
       vector3d zero;
@@ -4653,7 +4653,7 @@ __declspec(noinline) void CGameActor::ProcessViewCheck() {
     }
   }
 
-  if (StateFlag13(this->stateFlags)) {
+  if (IsRuwachActive(this->stateFlags)) {
     if (static_cast<unsigned int>(EffectLifetime(0x21)) <= static_cast<unsigned int>(this->effectLaunchCnt)) {
       this->effectLaunchCnt = 0;
       vector3d zero;
@@ -4816,27 +4816,27 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
   CWorld* world = g_modeMgr.GetGameMode()->scene;
   SpriteColor& color = this->render.colorChannels;
 
-  if (StateFlag00Changed(this->stateFlags, previousFlags) && StateFlag00(this->stateFlags) && world && world->player) {
+  if (IsSightActiveChanged(this->stateFlags, previousFlags) && IsSightActive(this->stateFlags) && world && world->player) {
     const vector3d& player = static_cast<const CRenderObject*>(world->player)->render.position;
     g_soundMgr->PlayWave(
       "effect\\EF_Sight.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
     );
   }
 
-  if (StateFlag13Changed(this->stateFlags, previousFlags) && StateFlag13(this->stateFlags) && world && world->player) {
+  if (IsRuwachActiveChanged(this->stateFlags, previousFlags) && IsRuwachActive(this->stateFlags) && world && world->player) {
     const vector3d& player = static_cast<const CRenderObject*>(world->player)->render.position;
     g_soundMgr->PlayWave(
       "effect\\EF_Sight.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
     );
   }
 
-  if (StateFlag01Changed(this->stateFlags, previousFlags)) {
+  if (IsHidingChanged(this->stateFlags, previousFlags)) {
     this->ResetJobEffects();
     if (this->GetEffectiveJob(-1) == 45) {
       this->SendMsg(this, AM_DELETE_EFFECT, EF_WARPZONE2, 0, 0, 0, 0, 0);
     }
 
-    if (StateFlag01(this->stateFlags)) {
+    if (IsHiding(this->stateFlags)) {
       if (notify) {
         this->SendMsg(nullptr, AM_MAKE_SMOKE_FFECT, 0, 0, 0, 0, 0, 0);
         if (this->GetEffectiveJob(-1) != 25 && this->GetEffectiveJob(-1) != 4222) {
@@ -4853,10 +4853,10 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
       if (this->maxHp > 0) {
         this->SendMsg(nullptr, AM_DELETE_CART, 0, 0, 0, 0, 0, 0);
       }
-      if (StateFlag04(this->stateFlags)) {
+      if (HasFalcon(this->stateFlags)) {
         this->SendMsg(nullptr, AM_DELETE_BIRD, 0, 0, 0, 0, 0, 0);
       }
-      if (StateFlag20(this->stateFlags)) {
+      if (HasWarg(this->stateFlags)) {
         this->SendMsg(nullptr, AM_DELETE_WOLF, 0, 0, 0, 0, 0, 0);
       }
       if (!g_session.IsGuildMemberAccount(this->render.accountId)) {
@@ -4879,10 +4879,10 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
       if (this->maxHp > 0) {
         this->SendMsg(nullptr, AM_MAKE_CART, 0, 0, 0, 0, 0, 0);
       }
-      if (StateFlag04(this->stateFlags)) {
+      if (HasFalcon(this->stateFlags)) {
         this->SendMsg(nullptr, AM_MAKE_BIRD, 0, 0, 0, 0, 0, 0);
       }
-      if (StateFlag20(this->stateFlags)) {
+      if (HasWarg(this->stateFlags)) {
         this->SendMsg(nullptr, AM_MAKE_WOLF, 0, 0, 0, 0, 0, 0);
       }
       this->RefreshGuildEmblemWindow();
@@ -4895,9 +4895,9 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
     }
   }
 
-  if (StateFlag02Changed(this->stateFlags, previousFlags)) {
+  if (IsCloakingChanged(this->stateFlags, previousFlags)) {
     this->ResetJobEffects();
-    if (StateFlag02(this->stateFlags)) {
+    if (IsCloaking(this->stateFlags)) {
       this->render.visible = 0;
       this->render.enabled = 0;
       if (this->render.accountId != g_session.m_aid && g_session.IsAdminSubMode(7) == 0) {
@@ -4908,10 +4908,10 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
       if (this->maxHp > 0) {
         this->SendMsg(nullptr, AM_DELETE_CART, 0, 0, 0, 0, 0, 0);
       }
-      if (StateFlag04(this->stateFlags)) {
+      if (HasFalcon(this->stateFlags)) {
         this->SendMsg(nullptr, AM_DELETE_BIRD, 0, 0, 0, 0, 0, 0);
       }
-      if (StateFlag20(this->stateFlags)) {
+      if (HasWarg(this->stateFlags)) {
         this->SendMsg(nullptr, AM_DELETE_WOLF, 0, 0, 0, 0, 0, 0);
       }
       if (!g_session.IsGuildMemberAccount(this->render.accountId)) {
@@ -4930,10 +4930,10 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
       if (this->maxHp > 0) {
         this->SendMsg(nullptr, AM_MAKE_CART, 0, 0, 0, 0, 0, 0);
       }
-      if (StateFlag04(this->stateFlags)) {
+      if (HasFalcon(this->stateFlags)) {
         this->SendMsg(nullptr, AM_MAKE_BIRD, 0, 0, 0, 0, 0, 0);
       }
-      if (StateFlag20(this->stateFlags)) {
+      if (HasWarg(this->stateFlags)) {
         this->SendMsg(nullptr, AM_MAKE_WOLF, 0, 0, 0, 0, 0, 0);
       }
       this->RefreshGuildEmblemWindow();
@@ -4943,43 +4943,43 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
     }
   }
 
-  if (!StateFlag01(this->stateFlags) && !StateFlag02(this->stateFlags) && !StateFlag06(this->stateFlags)) {
-    if (StateFlag04Changed(this->stateFlags, previousFlags)) {
-      this->SendMsg(nullptr, StateFlag04(this->stateFlags) ? AM_MAKE_BIRD : AM_DELETE_BIRD, 0, 0, 0, 0, 0, 0);
+  if (!IsHiding(this->stateFlags) && !IsCloaking(this->stateFlags) && !IsInvisible(this->stateFlags)) {
+    if (HasFalconChanged(this->stateFlags, previousFlags)) {
+      this->SendMsg(nullptr, HasFalcon(this->stateFlags) ? AM_MAKE_BIRD : AM_DELETE_BIRD, 0, 0, 0, 0, 0, 0);
     }
-    if (StateFlag20Changed(this->stateFlags, previousFlags)) {
-      this->SendMsg(nullptr, StateFlag20(this->stateFlags) ? AM_MAKE_WOLF : AM_DELETE_WOLF, 0, 0, 0, 0, 0, 0);
+    if (HasWargChanged(this->stateFlags, previousFlags)) {
+      this->SendMsg(nullptr, HasWarg(this->stateFlags) ? AM_MAKE_WOLF : AM_DELETE_WOLF, 0, 0, 0, 0, 0, 0);
     }
   }
 
-  if (StateFlag19Changed(this->stateFlags, previousFlags)) {
-    this->SendMsg(nullptr, StateFlag19(this->stateFlags) ? AM_MAKE_CHICKEN : AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
+  if (IsRidingGreenDragonChanged(this->stateFlags, previousFlags)) {
+    this->SendMsg(nullptr, IsRidingGreenDragon(this->stateFlags) ? AM_MAKE_CHICKEN : AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
   }
-  if (StateFlag23Changed(this->stateFlags, previousFlags)) {
-    this->SendMsg(nullptr, StateFlag23(this->stateFlags) ? AM_MAKE_CHICKEN : AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
+  if (IsRidingBrownDragonChanged(this->stateFlags, previousFlags)) {
+    this->SendMsg(nullptr, IsRidingBrownDragon(this->stateFlags) ? AM_MAKE_CHICKEN : AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
   }
-  if (StateFlag24Changed(this->stateFlags, previousFlags)) {
-    this->SendMsg(nullptr, StateFlag24(this->stateFlags) ? AM_MAKE_CHICKEN : AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
+  if (IsRidingGrayDragonChanged(this->stateFlags, previousFlags)) {
+    this->SendMsg(nullptr, IsRidingGrayDragon(this->stateFlags) ? AM_MAKE_CHICKEN : AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
   }
-  if (StateFlag25Changed(this->stateFlags, previousFlags)) {
-    this->SendMsg(nullptr, StateFlag25(this->stateFlags) ? AM_MAKE_CHICKEN : AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
+  if (IsRidingBlueDragonChanged(this->stateFlags, previousFlags)) {
+    this->SendMsg(nullptr, IsRidingBlueDragon(this->stateFlags) ? AM_MAKE_CHICKEN : AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
   }
-  if (StateFlag26Changed(this->stateFlags, previousFlags)) {
-    this->SendMsg(nullptr, StateFlag26(this->stateFlags) ? AM_MAKE_CHICKEN : AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
+  if (IsRidingRedDragonChanged(this->stateFlags, previousFlags)) {
+    this->SendMsg(nullptr, IsRidingRedDragon(this->stateFlags) ? AM_MAKE_CHICKEN : AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
   }
-  if (StateFlag21Changed(this->stateFlags, previousFlags)) {
-    this->SendMsg(nullptr, StateFlag21(this->stateFlags) ? AM_MAKE_CHICKEN : AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
+  if (IsRidingWargChanged(this->stateFlags, previousFlags)) {
+    this->SendMsg(nullptr, IsRidingWarg(this->stateFlags) ? AM_MAKE_CHICKEN : AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
   }
-  if (StateFlag05Changed(this->stateFlags, previousFlags)) {
-    this->SendMsg(nullptr, StateFlag05(this->stateFlags) ? AM_MAKE_CHICKEN : AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
+  if (IsRidingPecoChanged(this->stateFlags, previousFlags)) {
+    this->SendMsg(nullptr, IsRidingPeco(this->stateFlags) ? AM_MAKE_CHICKEN : AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
   }
-  if (StateFlag15Changed(this->stateFlags, previousFlags)) {
-    this->SendMsg(nullptr, StateFlag15(this->stateFlags) ? AM_MAKE_CHICKEN : AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
+  if (IsStarUnionChanged(this->stateFlags, previousFlags)) {
+    this->SendMsg(nullptr, IsStarUnion(this->stateFlags) ? AM_MAKE_CHICKEN : AM_DELETE_CHICKEN, 0, 0, 0, 0, 0, 0);
   }
 
-  if (StateFlag06Changed(this->stateFlags, previousFlags)) {
+  if (IsInvisibleChanged(this->stateFlags, previousFlags)) {
     this->ResetJobEffects();
-    if (StateFlag06(this->stateFlags)) {
+    if (IsInvisible(this->stateFlags)) {
       const int admin = g_session.IsAdminSubMode(8);
       this->render.shadowVisible = 0;
       if (admin == 0) {
@@ -4996,10 +4996,10 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
       if (this->maxHp > 0) {
         this->SendMsg(nullptr, AM_DELETE_CART, 0, 0, 0, 0, 0, 0);
       }
-      if (StateFlag04(this->stateFlags)) {
+      if (HasFalcon(this->stateFlags)) {
         this->SendMsg(nullptr, AM_DELETE_BIRD, 0, 0, 0, 0, 0, 0);
       }
-      if (StateFlag20(this->stateFlags)) {
+      if (HasWarg(this->stateFlags)) {
         this->SendMsg(nullptr, AM_DELETE_WOLF, 0, 0, 0, 0, 0, 0);
       }
       if (!g_session.IsGuildMemberAccount(this->render.accountId)) {
@@ -5023,10 +5023,10 @@ void CGameActor::SetStatusStates(int bodyState, std::uint32_t stateFlags, int ef
       if (this->maxHp > 0) {
         this->SendMsg(nullptr, AM_MAKE_CART, 0, 0, 0, 0, 0, 0);
       }
-      if (StateFlag04(this->stateFlags)) {
+      if (HasFalcon(this->stateFlags)) {
         this->SendMsg(nullptr, AM_MAKE_BIRD, 0, 0, 0, 0, 0, 0);
       }
-      if (StateFlag20(this->stateFlags)) {
+      if (HasWarg(this->stateFlags)) {
         this->SendMsg(nullptr, AM_MAKE_WOLF, 0, 0, 0, 0, 0, 0);
       }
       this->RefreshGuildEmblemWindow();

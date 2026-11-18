@@ -1001,7 +1001,7 @@ bool CCorpse::OnProcess() {
 // FUNCTION: fn_22412
 void CHalluNPC::Render(int argument) {
   const float* matrix = reinterpret_cast<const float*>(argument);
-  if (StateFlag02(this->stateFlags) || StateFlag06(this->stateFlags) || StateFlag01(this->stateFlags)) {
+  if (IsCloaking(this->stateFlags) || IsInvisible(this->stateFlags) || IsHiding(this->stateFlags)) {
     return;
   }
 
@@ -1484,7 +1484,7 @@ bool CNpc::OnProcess() {
 // FUNCTION: fn_22409
 void CBlurPC::Render(int argument) {
   const float* matrix = reinterpret_cast<const float*>(argument);
-  if (StateFlag02(this->stateFlags) || StateFlag06(this->stateFlags) || StateFlag01(this->stateFlags)) {
+  if (IsCloaking(this->stateFlags) || IsInvisible(this->stateFlags) || IsHiding(this->stateFlags)) {
     return;
   }
 
@@ -1525,7 +1525,7 @@ void CBlurPC::Render(int argument) {
 // FUNCTION: fn_22413
 void CHalluPC2::Render(int argument) {
   const float* matrix = reinterpret_cast<const float*>(argument);
-  if (StateFlag02(this->stateFlags) || StateFlag06(this->stateFlags) || StateFlag01(this->stateFlags)) {
+  if (IsCloaking(this->stateFlags) || IsInvisible(this->stateFlags) || IsHiding(this->stateFlags)) {
     return;
   }
 
@@ -1555,7 +1555,7 @@ void CHalluPC::Render(int argument) {
     }
   }
 
-  if (StateFlag02(this->stateFlags) || StateFlag06(this->stateFlags) || StateFlag01(this->stateFlags)) {
+  if (IsCloaking(this->stateFlags) || IsInvisible(this->stateFlags) || IsHiding(this->stateFlags)) {
     return;
   }
 

@@ -567,7 +567,7 @@ void CGameMode::ShowGuildEmblem(CGameActor* actor, int guildId, int unused) {
   }
 
   if (!IsAdminAccount(g_session.m_aid)) {
-    if (StateFlag02(actor->GetStateFlags()) || StateFlag01(actor->GetStateFlags()) || StateFlag06(actor->GetStateFlags())) {
+    if (IsCloaking(actor->GetStateFlags()) || IsHiding(actor->GetStateFlags()) || IsInvisible(actor->GetStateFlags())) {
       return;
     }
   }
@@ -790,12 +790,12 @@ void CGameMode::OpenActorMenu(const ActorPickInfo* pick, int handled) {
     }
 
     CPlayer* player = g_modeMgr.GetGameMode()->scene->player;
-    if (!StateFlag01(player->GetStateFlags()) && !StateFlag02(player->GetStateFlags())) {
+    if (!IsHiding(player->GetStateFlags()) && !IsCloaking(player->GetStateFlags())) {
       this->actorMenuIds.push_back(0x2A);
       sprintf(line, LookupMessage(MSI_REQ_VIEW_OTHERUSER), name.c_str());
       menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(line), 0, 0, 0);
     }
-    if (!StateFlag01(player->GetStateFlags()) && !StateFlag02(player->GetStateFlags())) {
+    if (!IsHiding(player->GetStateFlags()) && !IsCloaking(player->GetStateFlags())) {
       this->actorMenuIds.push_back(4);
       sprintf(line, LookupMessage(MSI_REQ_DEAL_WITH2), name.c_str());
       menu->SendMsg(nullptr, UM_ADDITEM, reinterpret_cast<std::intptr_t>(line), 0, 0, 0);

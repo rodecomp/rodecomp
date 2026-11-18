@@ -1228,7 +1228,7 @@ void CGameMode::ReceiveActorEffect228(const unsigned char* data) {
   }
 
   auto* gameActor = static_cast<CGameActor*>(actor);
-  if (StateFlag01(gameActor->GetStateFlags()) == true || StateFlag02(gameActor->GetStateFlags()) == true) {
+  if (IsHiding(gameActor->GetStateFlags()) == true || IsCloaking(gameActor->GetStateFlags()) == true) {
     actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_CHOOKGI, 0, 0, 0, 0, 0);
   }
 
@@ -4810,11 +4810,11 @@ void CGameMode::ReceiveSpriteChange2(const unsigned char* data) {
       break;
     case LOOK_BODY2:
       actor->SetBodyCostume(packet->valueLow, 1);
-      if (StateFlag04(actor->GetStateFlags())) {
+      if (HasFalcon(actor->GetStateFlags())) {
         actor->SendMsg(nullptr, AM_DELETE_BIRD, 0, 0, 0, 0, 0, 0);
         actor->SendMsg(nullptr, AM_MAKE_BIRD, 0, 0, 0, 0, 0, 0);
       }
-      if (StateFlag20(actor->GetStateFlags())) {
+      if (HasWarg(actor->GetStateFlags())) {
         actor->SendMsg(nullptr, AM_DELETE_WOLF, 0, 0, 0, 0, 0, 0);
         actor->SendMsg(nullptr, AM_MAKE_WOLF, 0, 0, 0, 0, 0, 0);
       }

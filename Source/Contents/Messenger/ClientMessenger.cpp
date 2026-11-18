@@ -5406,7 +5406,7 @@ bool CGameMode::IsRegisterCell(int x, int y) {
       if (actor == nullptr) {
         return true;
       }
-      if (!StateFlag01(actor->GetStateFlags())) {
+      if (!IsHiding(actor->GetStateFlags())) {
         return true;
       }
     }

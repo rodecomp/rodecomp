@@ -1217,7 +1217,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
   CGameMode* mode = g_modeMgr.GetGameMode();
   bool visible = true;
   if (this->render.accountId != g_session.m_aid) {
-    if (StateFlag01(this->stateFlags) || StateFlag02(this->stateFlags) || StateFlag06(this->stateFlags)) {
+    if (IsHiding(this->stateFlags) || IsCloaking(this->stateFlags) || IsInvisible(this->stateFlags)) {
       visible = false;
     }
   }
@@ -1335,7 +1335,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     break;
   }
   case AM_MAKE_CART: {
-    if (StateFlag01(this->stateFlags) || StateFlag02(this->stateFlags) || this->statusEffects[1] != 0) {
+    if (IsHiding(this->stateFlags) || IsCloaking(this->stateFlags) || this->statusEffects[1] != 0) {
       break;
     }
     int effectIds[14][2] = {
@@ -2072,7 +2072,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     this->SetPropensityInfo(entry->honor, entry->virtue);
     if (c == 1) {
       this->render.color = 0x44FFFFFF;
-    } else if (c == 2 && !StateFlag06(entry->stateFlags)) {
+    } else if (c == 2 && !IsInvisible(entry->stateFlags)) {
       this->LaunchEffect(EF_ENTRY2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     break;
@@ -2341,7 +2341,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     if (g_session.m_maxBaseLevel == static_cast<signed char>(this->levelAuraType)) {
       break;
     }
-    if (StateFlag06(this->stateFlags) || StateFlag01(this->stateFlags) || StateFlag02(this->stateFlags)) {
+    if (IsInvisible(this->stateFlags) || IsHiding(this->stateFlags) || IsCloaking(this->stateFlags)) {
       break;
     }
     if (g_session.IsMonsterClass(this->GetEffectiveJob(-1))) {
@@ -2407,7 +2407,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     if (g_session.m_maxBaseLevel == static_cast<signed char>(this->levelAuraType)) {
       break;
     }
-    if (StateFlag06(this->stateFlags) || StateFlag01(this->stateFlags) || StateFlag02(this->stateFlags)) {
+    if (IsInvisible(this->stateFlags) || IsHiding(this->stateFlags) || IsCloaking(this->stateFlags)) {
       break;
     }
     this->levelAuraType = static_cast<unsigned char>(g_session.m_maxBaseLevel);
@@ -2459,7 +2459,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     if (g_session.m_maxBaseLevel == static_cast<signed char>(this->levelAuraType)) {
       break;
     }
-    if (StateFlag06(this->stateFlags) || StateFlag01(this->stateFlags) || StateFlag02(this->stateFlags)) {
+    if (IsInvisible(this->stateFlags) || IsHiding(this->stateFlags) || IsCloaking(this->stateFlags)) {
       break;
     }
     this->levelAuraType = static_cast<unsigned char>(g_session.m_maxBaseLevel);
@@ -2488,7 +2488,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     if (g_session.m_maxBaseLevel == static_cast<signed char>(this->levelAuraType)) {
       break;
     }
-    if (StateFlag06(this->stateFlags) == true || StateFlag01(this->stateFlags) == true || StateFlag02(this->stateFlags) == true) {
+    if (IsInvisible(this->stateFlags) == true || IsHiding(this->stateFlags) == true || IsCloaking(this->stateFlags) == true) {
       break;
     }
     this->levelAuraType = static_cast<unsigned char>(g_session.m_maxBaseLevel);
@@ -3422,7 +3422,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
           break;
         }
         this->maxHp = static_cast<int>(d);
-        if (StateFlag01(this->stateFlags) || StateFlag02(this->stateFlags) || StateFlag06(this->stateFlags)) {
+        if (IsHiding(this->stateFlags) || IsCloaking(this->stateFlags) || IsInvisible(this->stateFlags)) {
           break;
         }
         this->SendMsg(nullptr, AM_DELETE_CART, 0, 0, 0, 0, 0, 0);

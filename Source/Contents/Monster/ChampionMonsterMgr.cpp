@@ -107,7 +107,7 @@ int CChampionMonsterMgr::ApplyEffects(int id, CGameActor* actor, int aid) {
   }
 
   std::vector<int>& effects = it->second.m_effects;
-  if (actor->render.visible && actor->render.enabled && !StateFlag02(actor->GetStateFlags())) {
+  if (actor->render.visible && actor->render.enabled && !IsCloaking(actor->GetStateFlags())) {
     for (unsigned int i = 0; i < effects.size(); ++i) {
       if (g_effectMgr->Find(aid, effects[i]) == nullptr) {
         EffectLists* effectMgr = g_effectMgr;

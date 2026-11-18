@@ -1047,7 +1047,7 @@ void CPc::ApplyLayerEffects(
 ) {
   for (const ActiveSkillEffect& effect : g_activeSkillEffects) {
     if (effect.id == 184) {
-      if ((!this->render.visible || !this->render.enabled) && !StateFlag06(this->stateFlags)) {
+      if ((!this->render.visible || !this->render.enabled) && !IsInvisible(this->stateFlags)) {
         return;
       }
       break;
@@ -1072,7 +1072,7 @@ void CPc::ApplyLayerEffects(
   }
 
   short hover = 0;
-  if (StateFlag15(this->GetStateFlags()) == true) {
+  if (IsStarUnion(this->GetStateFlags()) == true) {
     hover = static_cast<short>(this->HoverHeight());
   }
 
@@ -1774,8 +1774,8 @@ std::int64_t CGrannyPc::GetWeapon() {
 // OFFSET: 0x00DAB250
 // FUNCTION: fn_22582
 bool CPc::IsCostumeOutfit() const {
-  return StateFlag12(this->stateFlags) || StateFlag16(this->stateFlags) || StateFlag18(this->stateFlags) ||
-    StateFlag27(this->stateFlags) || StateFlag28(this->stateFlags) || this->mountedState == 1;
+  return IsWeddingDress(this->stateFlags) || IsXmasDress(this->stateFlags) || IsSummerDress(this->stateFlags) ||
+    IsHanbokDress(this->stateFlags) || IsOktoberfestDress(this->stateFlags) || this->mountedState == 1;
 }
 
 // OFFSET: 0x00DAB460
@@ -2265,7 +2265,7 @@ bool CPc::OnProcess() {
   }
 
   const bool show = this->GetMonsterTransformJob() > 0;
-  if (!StateFlag02(this->stateFlags) && !StateFlag06(this->stateFlags) && !StateFlag01(this->stateFlags)) {
+  if (!IsCloaking(this->stateFlags) && !IsInvisible(this->stateFlags) && !IsHiding(this->stateFlags)) {
     if (show) {
       if (!this->msgEffect) {
         CMsgEffect* effect = g_modeMgr.GetGameMode()->SpawnMsgEffect(44, &this->render.position, this->render.accountId, true);
@@ -2289,7 +2289,7 @@ bool CPc::OnProcess() {
 // FUNCTION: fn_22595
 void CPc::Render(int argument) {
   bool hasEffect = false;
-  if (StateFlag14(this->stateFlags)) {
+  if (IsChaseWalking(this->stateFlags)) {
     this->UpdateFootprints(1);
   }
   if ((this->render.flags & 0x8000) != 0) {
@@ -2309,7 +2309,7 @@ void CPc::Render(int argument) {
   }
 
   const float* matrix = reinterpret_cast<const float*>(argument);
-  if (hasEffect == true && (!this->render.visible || !this->render.enabled) && !StateFlag06(this->stateFlags)) {
+  if (hasEffect == true && (!this->render.visible || !this->render.enabled) && !IsInvisible(this->stateFlags)) {
     this->SetColor(-1, 0, 0, 0);
     this->DrawLayers(matrix, 0, 0);
     return;
@@ -2398,17 +2398,17 @@ void CPc::SetSprActFull(int first, int second, int third, int fourth, int fifth,
   this->SetActorJob(first);
 
   int job = first;
-  if (StateFlag12(this->stateFlags)) {
+  if (IsWeddingDress(this->stateFlags)) {
     job = 0x16;
-  } else if (StateFlag16(this->stateFlags) && !StateFlag15(this->stateFlags)) {
+  } else if (IsXmasDress(this->stateFlags) && !IsStarUnion(this->stateFlags)) {
     job = 0x1a;
-  } else if (StateFlag18(this->stateFlags) && !StateFlag15(this->stateFlags)) {
+  } else if (IsSummerDress(this->stateFlags) && !IsStarUnion(this->stateFlags)) {
     job = 0x1b;
-  } else if (StateFlag27(this->stateFlags) && !StateFlag15(this->stateFlags)) {
+  } else if (IsHanbokDress(this->stateFlags) && !IsStarUnion(this->stateFlags)) {
     job = 0x1c;
-  } else if (StateFlag28(this->stateFlags) && !StateFlag15(this->stateFlags)) {
+  } else if (IsOktoberfestDress(this->stateFlags) && !IsStarUnion(this->stateFlags)) {
     job = 0x1d;
-  } else if (this->mountedState == 1 && !StateFlag15(this->stateFlags)) {
+  } else if (this->mountedState == 1 && !IsStarUnion(this->stateFlags)) {
     job = 0x1e;
   } else if (this->isRiding != 0) {
     job = g_session.GetRidingJob(job);
@@ -2443,17 +2443,17 @@ void CPc::SetSprAct2(int first, int second, int third, int fourth, int fifth, in
   this->render.bodyPalette = tenth;
   this->render.bodyPalette = g_session.GetBodyStyle(first, tenth, this->bodyStyle);
 
-  if (StateFlag12(eleventh)) {
+  if (IsWeddingDress(eleventh)) {
     this->SetActorJob(0x16);
-  } else if (StateFlag16(eleventh) && !StateFlag15(eleventh)) {
+  } else if (IsXmasDress(eleventh) && !IsStarUnion(eleventh)) {
     this->SetActorJob(0x1a);
-  } else if (StateFlag18(eleventh) && !StateFlag15(eleventh)) {
+  } else if (IsSummerDress(eleventh) && !IsStarUnion(eleventh)) {
     this->SetActorJob(0x1b);
-  } else if (StateFlag27(eleventh) && !StateFlag15(eleventh)) {
+  } else if (IsHanbokDress(eleventh) && !IsStarUnion(eleventh)) {
     this->SetActorJob(0x1c);
-  } else if (StateFlag28(eleventh) && !StateFlag15(eleventh)) {
+  } else if (IsOktoberfestDress(eleventh) && !IsStarUnion(eleventh)) {
     this->SetActorJob(0x1d);
-  } else if (this->mountedState == 1 && !StateFlag15(this->stateFlags)) {
+  } else if (this->mountedState == 1 && !IsStarUnion(this->stateFlags)) {
     this->SetActorJob(0x1e);
   } else if (this->HasShapeShift() == true) {
     this->SetSprJob(this->GetShapeShiftJob());
@@ -2465,8 +2465,8 @@ void CPc::SetSprAct2(int first, int second, int third, int fourth, int fifth, in
 
   this->SetSprHead(this->head);
 
-  if (!StateFlag12(eleventh) && !StateFlag16(eleventh) && !StateFlag18(eleventh) && !StateFlag27(eleventh) &&
-      !StateFlag28(eleventh) && this->mountedState != 1 && this->isRiding == 0) {
+  if (!IsWeddingDress(eleventh) && !IsXmasDress(eleventh) && !IsSummerDress(eleventh) && !IsHanbokDress(eleventh) &&
+      !IsOktoberfestDress(eleventh) && this->mountedState != 1 && this->isRiding == 0) {
     switch (this->GetEffectiveJob(-1)) {
       case JT_ASSASSIN:
       case JT_ASSASSIN_H:
@@ -2489,8 +2489,8 @@ void CPc::SetSprAct2(int first, int second, int third, int fourth, int fifth, in
   this->SetSprAccessory2(this->accessory2);
   this->SetSprAccessory3(this->accessory3);
 
-  if (!StateFlag12(eleventh) && !StateFlag16(eleventh) && !StateFlag18(eleventh) && !StateFlag27(eleventh) &&
-      !StateFlag28(eleventh) && this->mountedState != 1 && this->isRiding == 0) {
+  if (!IsWeddingDress(eleventh) && !IsXmasDress(eleventh) && !IsSummerDress(eleventh) && !IsHanbokDress(eleventh) &&
+      !IsOktoberfestDress(eleventh) && this->mountedState != 1 && this->isRiding == 0) {
     this->SetSprShield(this->shield);
   }
 
@@ -2541,22 +2541,22 @@ void CPc::SetSprJob(int job) {
   if (this->GetMonsterTransformJob() > 0) {
     this->LoadEquipAction(0, g_session.GetMonsterActName(this->GetMonsterTransformJob()).c_str());
     this->LoadEquipSprite(0, g_session.GetMonsterSprName(this->GetMonsterTransformJob()).c_str());
-  } else if (StateFlag12(this->stateFlags) == true || job == JT_MARRIED) {
+  } else if (IsWeddingDress(this->stateFlags) == true || job == JT_MARRIED) {
     this->LoadEquipAction(0, g_session.GetRaceBodyResourceName(0, this->appearanceJob, JT_MARRIED, this->sex, 0).c_str());
     this->LoadEquipSprite(0, g_session.GetRaceBodyResourceName(1, this->appearanceJob, JT_MARRIED, this->sex, 0).c_str());
-  } else if (StateFlag16(this->stateFlags) && !StateFlag15(this->stateFlags)) {
+  } else if (IsXmasDress(this->stateFlags) && !IsStarUnion(this->stateFlags)) {
     this->LoadEquipAction(0, g_session.GetBodyActionResourceName(JT_SANTA, this->sex, 0, 0).c_str());
     this->LoadEquipSprite(0, g_session.GetBodySprName(JT_SANTA, this->sex, 0, 0).c_str());
-  } else if (StateFlag18(this->stateFlags) && !StateFlag15(this->stateFlags)) {
+  } else if (IsSummerDress(this->stateFlags) && !IsStarUnion(this->stateFlags)) {
     this->LoadEquipAction(0, g_session.GetBodyActionResourceName(JT_SUMMER, this->sex, 0, 0).c_str());
     this->LoadEquipSprite(0, g_session.GetBodySprName(JT_SUMMER, this->sex, 0, 0).c_str());
-  } else if (StateFlag27(this->stateFlags) && !StateFlag15(this->stateFlags)) {
+  } else if (IsHanbokDress(this->stateFlags) && !IsStarUnion(this->stateFlags)) {
     this->LoadEquipAction(0, g_session.GetBodyActionResourceName(JT_HANBOK, this->sex, 0, 0).c_str());
     this->LoadEquipSprite(0, g_session.GetBodySprName(JT_HANBOK, this->sex, 0, 0).c_str());
-  } else if (StateFlag28(this->stateFlags) && !StateFlag15(this->stateFlags)) {
+  } else if (IsOktoberfestDress(this->stateFlags) && !IsStarUnion(this->stateFlags)) {
     this->LoadEquipAction(0, g_session.GetBodyActionResourceName(JT_OKTOBERFEST, this->sex, 0, 0).c_str());
     this->LoadEquipSprite(0, g_session.GetBodySprName(JT_OKTOBERFEST, this->sex, 0, 0).c_str());
-  } else if (this->mountedState == 1 && !StateFlag15(this->stateFlags)) {
+  } else if (this->mountedState == 1 && !IsStarUnion(this->stateFlags)) {
     this->LoadEquipAction(0, g_session.GetBodyActionResourceName(JT_SUMMER2, this->sex, 0, 0).c_str());
     this->LoadEquipSprite(0, g_session.GetBodySprName(JT_SUMMER2, this->sex, 0, 0).c_str());
   } else if (this->isRiding != 0) {
@@ -2595,7 +2595,7 @@ void CPc::SetSprJob(int job) {
 // OFFSET: 0x00DB4E70
 // FUNCTION: fn_22653
 __declspec(noinline) void CPlayer::UpdateMsgEffect(bool show) {
-  if (StateFlag02(this->stateFlags) || StateFlag06(this->stateFlags) || StateFlag01(this->stateFlags)) {
+  if (IsCloaking(this->stateFlags) || IsInvisible(this->stateFlags) || IsHiding(this->stateFlags)) {
     show = false;
   }
 
@@ -3887,7 +3887,7 @@ void CPlayer::SendMsg(
     mode->SendMsg(MM_REQUEST_ACT, 0, this->proceedTargetGid, 0, 0);
     break;
   case AM_REQ_SIT:
-    if (!StateFlag01(this->stateFlags)) {
+    if (!IsHiding(this->stateFlags)) {
       if (this->render.state == ST_STAND) {
         mode->SendMsg(MM_REQUEST_ACT, 2, this->proceedTargetGid, 0, 0);
       } else if (this->render.state == ST_SIT) {
@@ -4041,7 +4041,7 @@ void CPlayer::SendMsg(
     break;
   case AM_PROCEEDGROUNDSKILL:
     if (this->render.state != ST_SIT &&
-        (!StateFlag01(this->stateFlags) || b == 0x89 || b == 0xD4 || b == 0x211 || b == 0x212)) {
+        (!IsHiding(this->stateFlags) || b == 0x89 || b == 0xD4 || b == 0x211 || b == 0x212)) {
       this->proceedType = 4;
       this->skillId = static_cast<int>(b);
       this->gSkillDx = static_cast<int>(c);
@@ -4051,14 +4051,14 @@ void CPlayer::SendMsg(
     break;
   case AM_PROCEEDSKILL:
     if (this->render.state != ST_SIT &&
-        (!StateFlag01(this->stateFlags) || c == 0x89 || c == 0xD4 || c == 0x211 || c == 0x212 || c == 0x250)) {
+        (!IsHiding(this->stateFlags) || c == 0x89 || c == 0xD4 || c == 0x211 || c == 0x212 || c == 0x250)) {
       this->proceedType = 3;
       this->proceedTargetGid = static_cast<int>(b);
       this->skillId = static_cast<int>(c);
     }
     break;
   case AM_RESUMEPROCEEDATTACK:
-    if (this->render.state != ST_SIT && !StateFlag01(this->stateFlags)) {
+    if (this->render.state != ST_SIT && !IsHiding(this->stateFlags)) {
       int attackMode = 5;
       if (this->proceedType != 1) {
         attackMode = 1;
@@ -4073,7 +4073,7 @@ void CPlayer::SendMsg(
     }
     break;
   case AM_PROCEEDATTACK:
-    if (this->render.state != ST_SIT && !StateFlag01(this->stateFlags)) {
+    if (this->render.state != ST_SIT && !IsHiding(this->stateFlags)) {
       CRenderObject* target = mode->scene->GetGameActorByAID(static_cast<std::uint32_t>(b));
       if (target != nullptr) {
         this->proceedType =
@@ -4089,13 +4089,13 @@ void CPlayer::SendMsg(
     }
     break;
   case AM_PROCEEDPICKUPITEM:
-    if (this->render.state != ST_SIT && !StateFlag01(this->stateFlags)) {
+    if (this->render.state != ST_SIT && !IsHiding(this->stateFlags)) {
       this->proceedType = 2;
       this->proceedTargetGid = static_cast<int>(b);
     }
     break;
   case AM_PROCEEDTOUCHSKILL:
-    if (this->render.state != ST_SIT && !StateFlag01(this->stateFlags)) {
+    if (this->render.state != ST_SIT && !IsHiding(this->stateFlags)) {
       const int* skill = reinterpret_cast<const int*>(static_cast<std::intptr_t>(c));
       this->proceedType = 6;
       this->skillId = skill[1];
@@ -4917,7 +4917,7 @@ void CPc::SendMsg(
       this->SetState(ST_STAND, 1);
       break;
     }
-    if (c == 2 && !StateFlag06(this->stateFlags)) {
+    if (c == 2 && !IsInvisible(this->stateFlags)) {
       this->LaunchEffect(EF_ENTRY2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     this->ShowPartyMemberEffect(entry->aid);
@@ -4963,7 +4963,7 @@ void CPc::SendMsg(
       this->SetState(ST_STAND, 1);
       break;
     }
-    if (c == 2 && !StateFlag06(this->stateFlags)) {
+    if (c == 2 && !IsInvisible(this->stateFlags)) {
       this->LaunchEffect(EF_ENTRY2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     this->ShowPartyMemberEffect(entry->aid);
@@ -5332,7 +5332,7 @@ void CGrannyPc::SendMsg(
       this->SetState(ST_STAND, 1);
       break;
     }
-    if (c == 2 && !StateFlag06(this->stateFlags)) {
+    if (c == 2 && !IsInvisible(this->stateFlags)) {
       this->LaunchEffect(EF_ENTRY2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     this->ShowPartyMemberEffect(entry->aid);

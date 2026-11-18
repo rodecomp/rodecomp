@@ -697,7 +697,7 @@ void CGameActor::UpdateStateEffects() {
   }
 
   const std::uint64_t now = timeGetTime();
-  if (StateFlag00(this->stateFlags) && static_cast<unsigned>(this->effectLaunchCnt) >= static_cast<unsigned>(EffectLifetime(22))) {
+  if (IsSightActive(this->stateFlags) && static_cast<unsigned>(this->effectLaunchCnt) >= static_cast<unsigned>(EffectLifetime(22))) {
     this->effectLaunchCnt = 0;
     CRagEffect* effect = this->LaunchEffect(EF_SIGHT, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
@@ -705,7 +705,7 @@ void CGameActor::UpdateStateEffects() {
     }
   }
 
-  if (StateFlag13(this->stateFlags) && static_cast<unsigned>(this->effectLaunchCnt) >= static_cast<unsigned>(EffectLifetime(33))) {
+  if (IsRuwachActive(this->stateFlags) && static_cast<unsigned>(this->effectLaunchCnt) >= static_cast<unsigned>(EffectLifetime(33))) {
     this->effectLaunchCnt = 0;
     CRagEffect* effect = this->LaunchEffect(EF_RUWACH, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     if (effect) {
@@ -724,7 +724,7 @@ void CGameActor::UpdateHpGauge() {
   }
 
   if (g_serviceOptions.Get(TT_MONSTERHP_ON_OFF) && this->hpGaugeWindow->displayMode != 0 &&
-      !StateFlag01(this->stateFlags) && !StateFlag02(this->stateFlags) && !StateFlag06(this->stateFlags) &&
+      !IsHiding(this->stateFlags) && !IsCloaking(this->stateFlags) && !IsInvisible(this->stateFlags) &&
       g_windowMgr.windowVisibilityState != 2) {
     this->hpGaugeWindow->Show(1);
     if (this->render.state == ST_DEAD && this->hpGaugeWindow->current != 0) {
@@ -766,127 +766,127 @@ bool CGameActor::UpdateFadeOut() {
 // FUNCTION: fn_21050
 int __stdcall MountedJob(int job, std::uint32_t flags) {
   if (job == JT_RUNE_KNIGHT) {
-    if (StateFlag19(flags)) {
+    if (IsRidingGreenDragon(flags)) {
       return JT_RUNE_CHICKEN;
     }
-    if (StateFlag23(flags)) {
+    if (IsRidingBrownDragon(flags)) {
       return JT_RUNE_CHICKEN2;
     }
-    if (StateFlag24(flags)) {
+    if (IsRidingGrayDragon(flags)) {
       return JT_RUNE_CHICKEN3;
     }
-    if (StateFlag25(flags)) {
+    if (IsRidingBlueDragon(flags)) {
       return JT_RUNE_CHICKEN4;
     }
-    if (StateFlag26(flags)) {
+    if (IsRidingRedDragon(flags)) {
       return JT_RUNE_CHICKEN5;
     }
   } else if (job == JT_RUNE_KNIGHT_H) {
-    if (StateFlag19(flags)) {
+    if (IsRidingGreenDragon(flags)) {
       return JT_RUNE_CHICKEN_H;
     }
-    if (StateFlag23(flags)) {
+    if (IsRidingBrownDragon(flags)) {
       return JT_RUNE_CHICKEN2_H;
     }
-    if (StateFlag24(flags)) {
+    if (IsRidingGrayDragon(flags)) {
       return JT_RUNE_CHICKEN3_H;
     }
-    if (StateFlag25(flags)) {
+    if (IsRidingBlueDragon(flags)) {
       return JT_RUNE_CHICKEN4_H;
     }
-    if (StateFlag26(flags)) {
+    if (IsRidingRedDragon(flags)) {
       return JT_RUNE_CHICKEN5_H;
     }
   } else if (job == JT_RUNE_KNIGHT_B) {
-    if (StateFlag19(flags)) {
+    if (IsRidingGreenDragon(flags)) {
       return JT_RUNE_CHICKEN_B;
     }
   } else if (job == JT_RANGER) {
-    if (StateFlag21(flags)) {
+    if (IsRidingWarg(flags)) {
       return JT_WOLF_RANGER;
     }
   } else if (job == JT_RANGER_H) {
-    if (StateFlag21(flags)) {
+    if (IsRidingWarg(flags)) {
       return JT_WOLF_RANGER_H;
     }
   } else if (job == JT_RANGER_B) {
-    if (StateFlag21(flags)) {
+    if (IsRidingWarg(flags)) {
       return JT_WOLF_RANGER_B;
     }
   } else if (job == JT_MECHANIC) {
-    if (StateFlag22(flags)) {
+    if (IsRidingMadogear(flags)) {
       return JT_MADOGEAR;
     }
   } else if (job == JT_MECHANIC_H) {
-    if (StateFlag22(flags)) {
+    if (IsRidingMadogear(flags)) {
       return JT_MADOGEAR_H;
     }
   } else if (job == JT_MECHANIC_B) {
-    if (StateFlag22(flags)) {
+    if (IsRidingMadogear(flags)) {
       return JT_MADOGEAR_B;
     }
   } else if (job == JT_KNIGHT) {
-    if (StateFlag05(flags)) {
+    if (IsRidingPeco(flags)) {
       return JT_CHICKEN;
     }
   } else if (job == JT_CRUSADER) {
-    if (StateFlag05(flags)) {
+    if (IsRidingPeco(flags)) {
       return JT_CHICKEN2;
     }
   } else if (job == JT_KNIGHT_H) {
-    if (StateFlag05(flags)) {
+    if (IsRidingPeco(flags)) {
       return JT_CHICKEN_H;
     }
   } else if (job == JT_KNIGHT_B) {
-    if (StateFlag05(flags)) {
+    if (IsRidingPeco(flags)) {
       return JT_CHICKEN_B;
     }
   } else if (job == JT_CRUSADER_H) {
-    if (StateFlag05(flags)) {
+    if (IsRidingPeco(flags)) {
       return JT_CHICKEN2_H;
     }
   } else if (job == JT_CRUSADER_B) {
-    if (StateFlag05(flags)) {
+    if (IsRidingPeco(flags)) {
       return JT_CHICKEN2_B;
     }
   } else if (job == JT_ROYAL_GUARD) {
-    if (StateFlag05(flags)) {
+    if (IsRidingPeco(flags)) {
       return JT_ROYAL_CHICKEN;
     }
   } else if (job == JT_ROYAL_GUARD_H) {
-    if (StateFlag05(flags)) {
+    if (IsRidingPeco(flags)) {
       return JT_ROYAL_CHICKEN_H;
     }
   } else if (job == JT_ROYAL_GUARD_B) {
-    if (StateFlag05(flags)) {
+    if (IsRidingPeco(flags)) {
       return JT_ROYAL_CHICKEN_B;
     }
   } else if (job == JT_STAR) {
-    if (StateFlag15(flags)) {
+    if (IsStarUnion(flags)) {
       return JT_STAR2;
     }
   } else if (job == JT_STAR_B) {
-    if (StateFlag15(flags)) {
+    if (IsStarUnion(flags)) {
       return JT_STAR2_B;
     }
   } else if (job == JT_WINDHAWK) {
-    if (StateFlag21(flags) == true) {
+    if (IsRidingWarg(flags) == true) {
       return JT_WOLF_WINDHAWK;
     }
   } else if (job == JT_MEISTER) {
-    if (StateFlag22(flags) == true) {
+    if (IsRidingMadogear(flags) == true) {
       return JT_MEISTER_MADOGEAR;
     }
   } else if (job == JT_DRAGON_KNIGHT) {
-    if (StateFlag19(flags) == true) {
+    if (IsRidingGreenDragon(flags) == true) {
       return JT_DRAGON_KNIGHT_CHICKEN;
     }
   } else if (job == JT_IMPERIAL_GUARD) {
-    if (StateFlag05(flags) == true) {
+    if (IsRidingPeco(flags) == true) {
       return JT_IMPERIAL_GUARD_CHICKEN;
     }
   } else if (job == JT_SKY_EMPEROR) {
-    if (StateFlag15(flags)) {
+    if (IsStarUnion(flags)) {
       return JT_SKY_EMPEROR2;
     }
   }

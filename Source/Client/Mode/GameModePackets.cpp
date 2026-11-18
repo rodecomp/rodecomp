@@ -2926,12 +2926,12 @@ void CGameMode::ApplyActorStatusEffects(std::uint32_t aid, int state, int flag, 
   }
 
   actor->characterLevel = static_cast<std::uint16_t>(flag);
-  if (!StateFlag06(state)) {
+  if (!IsInvisible(state)) {
     actor->UpdateMaxLevelAura();
   }
 
   if (actor->IsPlayerClass(actor->GetEffectiveJob(-1))) {
-    if (StateFlag01(actor->GetStateFlags()) || StateFlag02(actor->GetStateFlags())) {
+    if (IsHiding(actor->GetStateFlags()) || IsCloaking(actor->GetStateFlags())) {
       actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_GUMGANG, 0, 0, 0, 0, 0);
       actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_STEELBODY, 0, 0, 0, 0, 0);
       actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_SU_STOOP, 0, 0, 0, 0, 0);
@@ -3034,7 +3034,7 @@ void CGameMode::ApplyActorStatusEffects(std::uint32_t aid, int state, int flag, 
     return;
   }
 
-  if (StateFlag01(actor->GetStateFlags()) || StateFlag02(actor->GetStateFlags())) {
+  if (IsHiding(actor->GetStateFlags()) || IsCloaking(actor->GetStateFlags())) {
     actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_GUMGANG, 0, 0, 0, 0, 0);
     actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_STEELBODY, 0, 0, 0, 0, 0);
     actor->SendMsg(nullptr, AM_DELETE_EFFECT, EF_SU_STOOP, 0, 0, 0, 0, 0);
@@ -3545,7 +3545,7 @@ __declspec(noinline) void CGameMode::ReceiveSoulEnergy(const unsigned char* data
     return;
   }
 
-  if (StateFlag01(actor->GetStateFlags()) || StateFlag02(actor->GetStateFlags())) {
+  if (IsHiding(actor->GetStateFlags()) || IsCloaking(actor->GetStateFlags())) {
     g_effectMgr->Retire(actor->render.accountId, 1225);
   }
 
@@ -4815,7 +4815,7 @@ void CGameMode::Zc_Spirits2(const unsigned char* data) {
     return;
   }
 
-  if (StateFlag01(actor->GetStateFlags()) || StateFlag02(actor->GetStateFlags())) {
+  if (IsHiding(actor->GetStateFlags()) || IsCloaking(actor->GetStateFlags())) {
     switch (actor->GetEffectiveJob(-1)) {
     case JT_GUNSLINGER:
     case JT_REBELLION:
@@ -4915,7 +4915,7 @@ void CGameMode::UpdateActorSpiritCount(std::uint32_t aid, std::int16_t count) {
     break;
   }
 
-  if (StateFlag01(actor->GetStateFlags()) || StateFlag02(actor->GetStateFlags())) {
+  if (IsHiding(actor->GetStateFlags()) || IsCloaking(actor->GetStateFlags())) {
     switch (job) {
     case JT_DRAGON_KNIGHT:
     case JT_DRAGON_KNIGHT_RIDING:
@@ -11595,7 +11595,7 @@ void CGameMode::ReceiveEffectNumber(const unsigned char* data) {
   } else {
     actor = this->scene->GetGameActorByAID(packet->aid);
     const std::uint32_t state = actor->GetStateFlags();
-    if (StateFlag02(state) || StateFlag01(state) || StateFlag06(state)) {
+    if (IsCloaking(state) || IsHiding(state) || IsInvisible(state)) {
       return;
     }
   }
@@ -11930,7 +11930,7 @@ void CGameMode::ReceiveActorDisappear(const unsigned char* data) {
     break;
   case CLR_TELEPORT:
     if (CGameActor* actor = this->scene->GetGameActorByAID(packet->aid)) {
-      if (!StateFlag06(actor->GetStateFlags())) {
+      if (!IsInvisible(actor->GetStateFlags())) {
         this->LaunchDummyEffect(&actor->render.position, 0x130, 300, 0);
       }
     }
@@ -15784,7 +15784,7 @@ void CGameMode::ReceiveActorStandEntryOld(const unsigned char* data) {
     this->scene->objects.push_back(actor);
     this->scene->actors.push_back(actor);
     actor->SendMsg(nullptr, AM_INITSTANDENTRY2, reinterpret_cast<int>(&entry), 2, 0, 0, 0, 0);
-    if (isPc && !IsAdminAccount(packet->aid) && !StateFlag06(packet->effectState)) {
+    if (isPc && !IsAdminAccount(packet->aid) && !IsInvisible(packet->effectState)) {
       actor->LaunchEffect(EF_ENTRY2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
@@ -15910,7 +15910,7 @@ void CGameMode::ReceiveActorStandEntryOld2(const unsigned char* data) {
     this->scene->actors.push_back(actor);
     actor->SendMsg(nullptr, AM_INITSTANDENTRY2, reinterpret_cast<int>(&entry), 2, 0, 0, 0, 0);
     actor->characterLevel = packet->level;
-    if (isPc && !IsAdminAccount(packet->aid) && !StateFlag06(packet->effectState)) {
+    if (isPc && !IsAdminAccount(packet->aid) && !IsInvisible(packet->effectState)) {
       actor->LaunchEffect(EF_ENTRY2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
     if (g_session.GetSiegeMode() && entry.head != 0x2E && actor->sceneNameWindow == nullptr &&
@@ -16040,7 +16040,7 @@ void CGameMode::ReceiveActorStandEntryOld3(const unsigned char* data) {
     actor->characterLevel = packet->level;
     if (isPc) {
       actor->render.font = packet->font;
-      if (!IsAdminAccount(packet->aid) && !StateFlag06(packet->effectState)) {
+      if (!IsAdminAccount(packet->aid) && !IsInvisible(packet->effectState)) {
         actor->LaunchEffect(EF_ENTRY2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
       }
     }
@@ -16176,7 +16176,7 @@ void CGameMode::ReceiveActorStandEntryOld0(const unsigned char* data) {
         actor->SetGuildInfo(emblem, packet->shield);
       }
     }
-    if (isPc && !IsAdminAccount(packet->aid) && !StateFlag06(packet->effectState)) {
+    if (isPc && !IsAdminAccount(packet->aid) && !IsInvisible(packet->effectState)) {
       actor->LaunchEffect(EF_ENTRY2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
   }

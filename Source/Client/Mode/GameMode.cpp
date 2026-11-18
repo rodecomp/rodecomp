@@ -4071,7 +4071,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       ITEM_INFO item = g_session.LookupClientItemByIdentity(argument1);
       const std::uint32_t state = this->scene->player->GetStateFlags();
       const int bodyState = this->scene->player->bodyState;
-      if (StateFlag01(state) || ((bodyState == 4 || bodyState == 1) && item.GetItemId() != 0x31B5)) {
+      if (IsHiding(state) || ((bodyState == 4 || bodyState == 1) && item.GetItemId() != 0x31B5)) {
         return 0;
       }
       if (this->scene->player->render.state == 6 &&
@@ -4614,7 +4614,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         message = 0xF84;
       } else if (this->isPlayerDead) {
         message = 0xBB7;
-      } else if (StateFlag01(this->scene->player->GetStateFlags())) {
+      } else if (IsHiding(this->scene->player->GetStateFlags())) {
         message = 0xF83;
       }
       if (message) {
@@ -7100,7 +7100,7 @@ void __stdcall OpenWordDisplay(CGameActor* actor) {
   }
 
   if (!IsAdminAccount(g_session.m_aid)) {
-    if (StateFlag02(actor->GetStateFlags()) || StateFlag01(actor->GetStateFlags()) || StateFlag06(actor->GetStateFlags())) {
+    if (IsCloaking(actor->GetStateFlags()) || IsHiding(actor->GetStateFlags()) || IsInvisible(actor->GetStateFlags())) {
       return;
     }
   }
@@ -9707,7 +9707,7 @@ void CGameMode::UpdateHoverNameBalloon() {
       return;
     }
 
-    if (actor->render.visible == 1 && actor->render.enabled == 1 && !StateFlag02(actor->GetStateFlags())) {
+    if (actor->render.visible == 1 && actor->render.enabled == 1 && !IsCloaking(actor->GetStateFlags())) {
       this->ShowHoverActorName(actor);
     }
   } else {
@@ -9721,14 +9721,14 @@ void CGameMode::UpdateHoverNameBalloon() {
       return;
     }
 
-    if (!actor->objectType && actor->render.visible == 1 && actor->render.enabled == 1 && !StateFlag02(actor->GetStateFlags())) {
+    if (!actor->objectType && actor->render.visible == 1 && actor->render.enabled == 1 && !IsCloaking(actor->GetStateFlags())) {
       this->isItemNameBalloonPlaced = 0;
       this->ShowHoverActorName(actor);
     }
   }
 
   if (actor->GetEffectiveJob(-1) != JT_WARPNPC &&
-      (actor->objectType || (actor->render.visible == 1 && actor->render.enabled == 1 && !StateFlag02(actor->GetStateFlags())))) {
+      (actor->objectType || (actor->render.visible == 1 && actor->render.enabled == 1 && !IsCloaking(actor->GetStateFlags())))) {
     this->SendMsg(MM_SHOWMOUSEPOINTER, static_cast<int>(actor->render.position.x), static_cast<int>(actor->render.position.z), 0, 0);
     return;
   }
@@ -10461,7 +10461,7 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
   }
   case TT_HIDE: {
     std::uint32_t flags = g_session.m_jobFlags;
-    if (StateFlag02(flags)) {
+    if (IsCloaking(flags)) {
       ClearMemberFlags(&flags);
     } else {
       SetMemberFlags(&flags);

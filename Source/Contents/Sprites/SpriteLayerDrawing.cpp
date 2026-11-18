@@ -609,7 +609,7 @@ void SpriteLayerRenderer::LoadLayers() {
         this->hideAccessories = true;
       }
 
-      if (StateFlag11(this->pc->stateFlags) == true) {
+      if (IsOrcish(this->pc->stateFlags) == true) {
         if (g_session.IsDoramJob(this->pc->job) == true) {
           sprite = ResourceMgr::Instance().Load("이팩트\\orcface_doram.spr");
           action = ResourceMgr::Instance().Load("이팩트\\orcface_doram.act");

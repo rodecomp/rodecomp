@@ -285,7 +285,7 @@ int AiHomunAttack(lua_State* state) {
   if (!actor || !targetActor) {
     return 0;
   }
-  if (StateFlag06(targetActor->GetStateFlags()) || StateFlag01(targetActor->GetStateFlags()) || StateFlag02(targetActor->GetStateFlags())) {
+  if (IsInvisible(targetActor->GetStateFlags()) || IsHiding(targetActor->GetStateFlags()) || IsCloaking(targetActor->GetStateFlags())) {
     return 0;
   }
 
@@ -322,7 +322,7 @@ int AiMercenaryAttack(lua_State* state) {
   if (!actor || !targetActor) {
     return 0;
   }
-  if (StateFlag06(targetActor->GetStateFlags()) || StateFlag01(targetActor->GetStateFlags()) || StateFlag02(targetActor->GetStateFlags())) {
+  if (IsInvisible(targetActor->GetStateFlags()) || IsHiding(targetActor->GetStateFlags()) || IsCloaking(targetActor->GetStateFlags())) {
     return 0;
   }
 
@@ -392,7 +392,7 @@ int AiHomunGetV(lua_State* state) {
   case V_POSITION:
   case V_POSITION_APPLY_SKILLATTACKRANGE:
     if (actor) {
-      if (aid == g_session.m_aid || !(StateFlag06(actor->GetStateFlags()) || StateFlag01(actor->GetStateFlags()) || StateFlag02(actor->GetStateFlags()))) {
+      if (aid == g_session.m_aid || !(IsInvisible(actor->GetStateFlags()) || IsHiding(actor->GetStateFlags()) || IsCloaking(actor->GetStateFlags()))) {
         int cellX, cellY;
         mode->WorldCell(actor->render.position.x, actor->render.position.z, cellX, cellY);
 
@@ -580,7 +580,7 @@ int AiMercenaryGetV(lua_State* state) {
   case V_POSITION:
   case V_POSITION_APPLY_SKILLATTACKRANGE:
     if (actor) {
-      if (aid == g_session.m_aid || !(StateFlag06(actor->GetStateFlags()) || StateFlag01(actor->GetStateFlags()) || StateFlag02(actor->GetStateFlags()))) {
+      if (aid == g_session.m_aid || !(IsInvisible(actor->GetStateFlags()) || IsHiding(actor->GetStateFlags()) || IsCloaking(actor->GetStateFlags()))) {
         int cellX, cellY;
         mode->WorldCell(actor->render.position.x, actor->render.position.z, cellX, cellY);
 
@@ -1002,7 +1002,7 @@ int AiIsMonster(lua_State* state) {
     }
 
     if (checkState) {
-      if (StateFlag06(actor->GetStateFlags()) || StateFlag01(actor->GetStateFlags()) || StateFlag02(actor->GetStateFlags())) {
+      if (IsInvisible(actor->GetStateFlags()) || IsHiding(actor->GetStateFlags()) || IsCloaking(actor->GetStateFlags())) {
         result = 0.0;
       } else {
         result = 1.0;
@@ -1135,7 +1135,7 @@ int AiSkillObject(lua_State* state) {
   } else {
     targetActor = mode->scene->GetGameActorByAID(target);
     if (targetActor) {
-      if (StateFlag06(targetActor->GetStateFlags()) || StateFlag01(targetActor->GetStateFlags()) || StateFlag02(targetActor->GetStateFlags())) {
+      if (IsInvisible(targetActor->GetStateFlags()) || IsHiding(targetActor->GetStateFlags()) || IsCloaking(targetActor->GetStateFlags())) {
         return 0;
       }
     }

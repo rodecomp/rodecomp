@@ -3117,14 +3117,14 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       if (g_session.replayPacketMode > 0) {
         enabled = true;
       }
-      if (StateFlag05(g_session.m_jobFlags)) {
+      if (IsRidingPeco(g_session.m_jobFlags)) {
         notice = LookupMessage(g_session.GetDisplayJob() == JT_ROYAL_CHICKEN || g_session.GetDisplayJob() == JT_ROYAL_CHICKEN_H || g_session.GetDisplayJob() == JT_ROYAL_CHICKEN_B
                                  ? MSI_ROYAL_CHIKENOFF
                                  : MSI_CHIKENOFF);
-      } else if (StateFlag22(g_session.m_jobFlags)) {
+      } else if (IsRidingMadogear(g_session.m_jobFlags)) {
         notice = LookupMessage(MSI_MADOOFF);
-      } else if (StateFlag19(g_session.m_jobFlags) || StateFlag23(g_session.m_jobFlags) || StateFlag24(g_session.m_jobFlags) || StateFlag25(g_session.m_jobFlags) ||
-                 StateFlag26(g_session.m_jobFlags)) {
+      } else if (IsRidingGreenDragon(g_session.m_jobFlags) || IsRidingBrownDragon(g_session.m_jobFlags) || IsRidingGrayDragon(g_session.m_jobFlags) || IsRidingBlueDragon(g_session.m_jobFlags) ||
+                 IsRidingRedDragon(g_session.m_jobFlags)) {
         notice = LookupMessage(MSI_DRAGONOFF);
       } else {
         notice.clear();
@@ -3369,9 +3369,9 @@ void UIEquipWnd::OnCreate(int width, int height) {
       this->m_viewButton->SetId(ID_EQUIP_OPTION_OFF);
 
       const char* tooltip = nullptr;
-      if (StateFlag04(g_session.m_jobFlags)) {
+      if (HasFalcon(g_session.m_jobFlags)) {
         tooltip = LookupMessage(MSI_BIRDOFF);
-      } else if (StateFlag05(g_session.m_jobFlags)) {
+      } else if (IsRidingPeco(g_session.m_jobFlags)) {
         switch (g_session.GetDisplayJob()) {
         case JT_ROYAL_CHICKEN:
         case JT_ROYAL_CHICKEN_H:
@@ -3383,9 +3383,9 @@ void UIEquipWnd::OnCreate(int width, int height) {
           tooltip = LookupMessage(MSI_CHIKENOFF);
           break;
         }
-      } else if (StateFlag22(g_session.m_jobFlags)) {
+      } else if (IsRidingMadogear(g_session.m_jobFlags)) {
         tooltip = LookupMessage(MSI_MADOOFF);
-      } else if (StateFlag19(g_session.m_jobFlags) || StateFlag23(g_session.m_jobFlags) || StateFlag24(g_session.m_jobFlags) || StateFlag25(g_session.m_jobFlags) || StateFlag26(g_session.m_jobFlags)) {
+      } else if (IsRidingGreenDragon(g_session.m_jobFlags) || IsRidingBrownDragon(g_session.m_jobFlags) || IsRidingGrayDragon(g_session.m_jobFlags) || IsRidingBlueDragon(g_session.m_jobFlags) || IsRidingRedDragon(g_session.m_jobFlags)) {
         tooltip = LookupMessage(MSI_DRAGONOFF);
       }
       if (g_session.replayPacketMode > 0) {
@@ -4929,14 +4929,14 @@ void UIEquipWnd::UpdateCharacterView(int reset) {
   }
 
   int view = 0;
-  if (StateFlag04(g_session.m_jobFlags)) {
+  if (HasFalcon(g_session.m_jobFlags)) {
     view = 5;
-  } else if (StateFlag05(g_session.m_jobFlags)) {
+  } else if (IsRidingPeco(g_session.m_jobFlags)) {
     view = 4;
-  } else if (StateFlag22(g_session.m_jobFlags)) {
+  } else if (IsRidingMadogear(g_session.m_jobFlags)) {
     view = 3;
-  } else if (StateFlag19(g_session.m_jobFlags) || StateFlag23(g_session.m_jobFlags) || StateFlag24(g_session.m_jobFlags) ||
-             StateFlag25(g_session.m_jobFlags) || StateFlag26(g_session.m_jobFlags)) {
+  } else if (IsRidingGreenDragon(g_session.m_jobFlags) || IsRidingBrownDragon(g_session.m_jobFlags) || IsRidingGrayDragon(g_session.m_jobFlags) ||
+             IsRidingBlueDragon(g_session.m_jobFlags) || IsRidingRedDragon(g_session.m_jobFlags)) {
     view = 1;
   }
   mode->SendMsg(MM_REQ_CARTOFF, view, 0, 0, 0);
@@ -5705,8 +5705,8 @@ bool IsEquipViewHidden() {
     return false;
   }
 
-  if (StateFlag04(g_session.m_jobFlags) || StateFlag05(g_session.m_jobFlags) || StateFlag19(g_session.m_jobFlags) || StateFlag23(g_session.m_jobFlags) ||
-      StateFlag24(g_session.m_jobFlags) || StateFlag25(g_session.m_jobFlags) || StateFlag26(g_session.m_jobFlags) || StateFlag22(g_session.m_jobFlags)) {
+  if (HasFalcon(g_session.m_jobFlags) || IsRidingPeco(g_session.m_jobFlags) || IsRidingGreenDragon(g_session.m_jobFlags) || IsRidingBrownDragon(g_session.m_jobFlags) ||
+      IsRidingGrayDragon(g_session.m_jobFlags) || IsRidingBlueDragon(g_session.m_jobFlags) || IsRidingRedDragon(g_session.m_jobFlags) || IsRidingMadogear(g_session.m_jobFlags)) {
     return false;
   }
 
