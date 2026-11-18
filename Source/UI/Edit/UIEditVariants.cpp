@@ -748,6 +748,8 @@ int UIEditCtrl::MeasureText(const std::string& text, const int& bytes) {
 UIEditCtrl4::UIEditCtrl4() : UIEditCtrl(), placeholderColor(0xFFFFFFFFu), placeholder(""), placeholderEnabled(0) {
 }
 
+// OFFSET: 0x00851710
+// FUNCTION: fn_45644
 UIEditCtrl4::~UIEditCtrl4() = default;
 
 // OFFSET: 0x0085AA40
