@@ -27,16 +27,15 @@ void CSphereWindEffect::Close() {
 void CSphereWindEffect::Open() {
   for (int start = 0; start < 45; start += 9) {
     const int id = this->id;
-    int tilt = start;
-    for (int ring = 0; ring < 4; ++ring) {
+    for (int ring = 0, tilt = start; ring < 4; ++ring, tilt += 45) {
       const int radiusRoll = rand() % 11;
       const float radius = static_cast<float>(radiusRoll >= 0 ? radiusRoll : 0) * 0.2f + 4.0f;
       const int rotationRoll = rand() % 360;
-      const int rotation = rotationRoll >= 0 ? rotationRoll : 0;
+      const float rotation = static_cast<float>(rotationRoll >= 0 ? rotationRoll : 0);
       const int spreadRoll = rand() % 91;
       const int spread = (spreadRoll >= 0 ? spreadRoll : 0) + 180;
       const int spinRoll = rand() % 4;
-      const int spin = (spinRoll >= 0 ? spinRoll : 0) + 3;
+      const float spin = static_cast<float>((spinRoll >= 0 ? spinRoll : 0) + 3);
 
       for (int segment = 0; segment < 21; ++segment) {
         CParticle* particle = CreateParticle(&this->positionVector, 5);
@@ -50,12 +49,12 @@ void CSphereWindEffect::Open() {
         particle->groupIndex = 1;
         particle->speedParameter = radius;
         particle->scale = 14.0f;
-        particle->angle = static_cast<float>(rotation);
+        particle->angle = rotation;
         particle->phaseParameter = tilt;
         particle->alpha = 100;
         particle->angleParameter = spread;
         particle->animationParameter = -14.0f;
-        particle->animationParameters[0] = static_cast<float>(spin);
+        particle->animationParameters[0] = spin;
         particle->InitParticleQuad(particle->vertices);
         this->particles.push_back(particle);
 
@@ -67,8 +66,6 @@ void CSphereWindEffect::Open() {
           particle->SetColor(255, 100, 100);
         }
       }
-
-      tilt += 45;
     }
   }
 }
