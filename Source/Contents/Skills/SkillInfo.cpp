@@ -2219,32 +2219,29 @@ void CSkillAction_DK_SERVANT_W_PHANTOM::OnSkillHit(CGameActor* source, CGameActo
     return;
   }
 
-  const int duration = static_cast<int>(source ? source->render.speed * 100.0f + 100.0f : 500.0f);
+  const int duration = static_cast<int>(!source ? 500.0f : source->render.speed * 100.0f + 100.0f);
   EffectLists* effects = g_effectMgr;
   CEffect* sign = effects->Find(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_sign"));
-  const vector3d offset = {0.0f, 0.0f, 0.0f};
-  CEffect* effect;
-  effects = g_effectMgr;
   if (sign) {
-    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_phantom_down"), offset.x, offset.y, offset.z, 0, -1, 0, 0);
     effects = g_effectMgr;
-    effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servantweapon_hit_bottom"), offset.x, offset.y, offset.z, 0, -1, 0, 0);
-    if (effect) {
+    effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_phantom_down"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
+    effects = g_effectMgr;
+    if (CEffect* effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servantweapon_hit_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
       effect->SetDelay(duration);
     }
     effects = g_effectMgr;
-    effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servantweapon_hit"), offset.x, offset.y, offset.z, 0, -1, 0, 0);
+    if (CEffect* effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servantweapon_hit"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
+      effect->SetDelay(duration);
+    }
   } else {
-    effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_phantom_sub_bottom"), offset.x, offset.y, offset.z, 0, -1, 0, 0);
-    if (effect) {
+    effects = g_effectMgr;
+    if (CEffect* effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_phantom_sub_bottom"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
       effect->SetDelay(duration);
     }
     effects = g_effectMgr;
-    effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_phantom_sub"), offset.x, offset.y, offset.z, 0, -1, 0, 0);
-  }
-
-  if (effect) {
-    effect->SetDelay(duration);
+    if (CEffect* effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_phantom_sub"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
+      effect->SetDelay(duration);
+    }
   }
 }
 
@@ -2270,10 +2267,11 @@ void CSkillAction_DK_SERVANT_W_DEMOL::OnSkillHit(CGameActor* source, CGameActor*
   if (target) {
     const int roll = std::rand() % 2;
     const int side = roll >= 0 ? roll : 0;
-    EffectLists* effects = g_effectMgr;
     if (side == 0) {
+      EffectLists* effects = g_effectMgr;
       effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_demolition_leftdown"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     } else {
+      EffectLists* effects = g_effectMgr;
       effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId("servant_demolition_rightdown"), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
     }
   }
