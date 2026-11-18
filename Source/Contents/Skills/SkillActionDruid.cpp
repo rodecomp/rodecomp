@@ -579,16 +579,17 @@ void CSkillAction_DR_LOW_FLIGHT::OnSkillEffect(int level, CGameActor* source, CG
 
   const float scale = source->attackMotion * source->render.speed * 16.0f;
   const bool flag = direction != 1 && direction != 2;
+  const bool horizontal = (direction & 1) != 0;
 
   const std::string effectName(
-    (direction & 1) != 0 ? std::string(OBFUSCATE_TEXT_NAMED("low_flight_horizon", 0x8B65CD61012B5931ULL, horizonName)) : std::string(OBFUSCATE_TEXT_NAMED("low_flight_vertical", 0xF7530137154D8FE5ULL, verticalName))
+    horizontal ? std::string(OBFUSCATE_TEXT_NAMED("low_flight_horizon", 0x8B65CD61012B5931ULL, horizonName)) : std::string(OBFUSCATE_TEXT_NAMED("low_flight_vertical", 0xF7530137154D8FE5ULL, verticalName))
   );
 
+  float angleOffset = 0.0f;
   EffectLists* effects = g_effectMgr;
   if (CEffect* effect = effects->Spawn(target->render.accountId, CEZ2STREffectMgr::GetInstance()->EffectId(effectName), vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0)) {
     effect->SetDelay(static_cast<int>(scale));
-    float angleOffset = 0.0f;
-    if ((direction & 1) != 0) {
+    if (horizontal) {
       effect->SetFlipX(flag);
       if (!flag) {
         angleOffset = -180.0f;
