@@ -83,6 +83,18 @@ void CMultiTexParticle::AllocateVertices(int count) {
   this->command.vertices = new MultiTexVertex[count];
 }
 
+// INLINED
+static void SetTexCoord(LightmappedVertex& vertex, float u, float v) {
+  vertex.u = u;
+  vertex.v = v;
+}
+
+// INLINED
+static void SetLightCoord(LightmappedVertex& vertex, float u, float v) {
+  vertex.lightU = u;
+  vertex.lightV = v;
+}
+
 // OFFSET: 0x007080F0
 // FUNCTION: fn_07069
 void CMultiTexParticle::Render(int column, int row) {
@@ -107,14 +119,8 @@ void CMultiTexParticle::Render(int column, int row) {
     g_renderer->Project(&corners[i].x, cameraMatrix, this->command.vertices[i]);
     this->command.vertices[i].z -= 0.000030517578125f;
     this->command.vertices[i].diffuse = 0xFFFFFFFF;
-    const float u = this->uv1[i][0] + this->offsetU;
-    const float v = this->uv1[i][1] + this->offsetV;
-    this->command.vertices[i].u = u;
-    this->command.vertices[i].v = v;
-    const float lightU = this->uv2[i][0];
-    const float lightV = this->uv2[i][1];
-    this->command.vertices[i].lightU = lightU;
-    this->command.vertices[i].lightV = lightV;
+    SetTexCoord(this->command.vertices[i], this->uv1[i][0] + this->offsetU, this->uv1[i][1] + this->offsetV);
+    SetLightCoord(this->command.vertices[i], this->uv2[i][0], this->uv2[i][1]);
   }
 
   g_renderer->SubmitAuxiliaryPrimitive(&this->command);
