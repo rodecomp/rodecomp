@@ -207,7 +207,7 @@ CharacterInfo* UISelCharForUServerWnd::GetCharacterInfoAt(int x, int y) {
 // FUNCTION: fn_12777
 void UISelCharForUServerWnd::UpdateCharInfoBalloon(int x, int y, std::uint32_t color) {
   const int red = (color >> 16) & 0xFF;
-  const int green = (color >> 8) & 0xFF;
+  const volatile int green = (color >> 8) & 0xFF;
   const int blue = color & 0xFF;
   if (!this->characterInfoBalloon) {
     this->characterInfoBalloon = new UICharInfoBalloonText();
