@@ -10692,7 +10692,7 @@ bool UIEditCtrl3::ExtractItemLink(std::string& text, std::string& link, int& pos
 
       link = text;
       text = source;
-      std::string name = "";
+      std::string name;
       if (!this->LinkDisplayName(link, name)) {
         position += link.size() + g_itemLinkClose.size() + g_itemLinkOpen.size();
         text = text.substr(position);
