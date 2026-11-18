@@ -104,19 +104,6 @@ void CRendererDX9::DrawLightmappedPrimitive(LightmappedPrimitive* primitive) {
   }
 }
 
-// INLINED
-static bool operator<(const DepthPrimitive& left, const DepthPrimitive& right) {
-  if (left.depth < right.depth) {
-    return true;
-  }
-
-  if (right.depth < left.depth) {
-    return false;
-  }
-
-  return left.depth == right.depth && std::less<RenderCommand*>{}(left.primitive, right.primitive);
-}
-
 // OFFSET: 0x005658F0
 // FUNCTION: fn_02221
 void CRendererDX9::DrawDepthQueue(bool sort, std::vector<DepthPrimitive>& queue) {

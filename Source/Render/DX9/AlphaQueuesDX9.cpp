@@ -9,19 +9,6 @@
 
 namespace {
   // INLINED
-  bool Before(const DepthPrimitive& left, const DepthPrimitive& right) {
-    if (left.depth < right.depth) {
-      return true;
-    }
-
-    if (right.depth < left.depth) {
-      return false;
-    }
-
-    return left.depth == right.depth && reinterpret_cast<std::uintptr_t>(left.primitive) < reinterpret_cast<std::uintptr_t>(right.primitive);
-  }
-
-  // INLINED
   bool WritesDepth(const RenderCommand& command) {
     return (command.depthFlags & 0xFFu) != 0 && (command.depthFlags & 0xFF00u) != 0;
   }
@@ -32,12 +19,8 @@ namespace {
 void CRendererDX9::DrawAlphaQueues() {
   RenderQueues& queues = this->queues;
   ScopedDeviceStateDX9 restore = this->device->SaveState();
-  const auto before = [](const DepthPrimitive& left, const DepthPrimitive& right) {
-    return Before(left, right);
-  };
-
-  std::sort(queues.queue_018C.begin(), queues.queue_018C.end(), before);
-  std::sort(queues.queue_01BC.begin(), queues.queue_01BC.end(), before);
+  std::sort(queues.queue_018C.begin(), queues.queue_018C.end());
+  std::sort(queues.queue_01BC.begin(), queues.queue_01BC.end());
   this->device->state.SetRenderState(D3DRS_ALPHABLENDENABLE, 1);
   this->device->state.SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
   this->device->state.SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);

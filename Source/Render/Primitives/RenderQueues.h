@@ -9,6 +9,8 @@
 struct DepthPrimitive {
   /* 0000 */ float depth;
   /* 0004 */ RenderCommand* primitive;
+
+  auto operator<=>(const DepthPrimitive&) const = default;
 };
 
 struct RenderQueues {

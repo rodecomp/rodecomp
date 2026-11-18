@@ -71,12 +71,12 @@ void CRendererDX9::DrawQueues() {
   this->device->state.SetRenderState(D3DRS_ALPHABLENDENABLE, 1);
   this->DrawAuxiliaryQueue();
 
-  const auto drawCommand = [&](RenderCommand& command) {
-    this->device->state.SetTexture(0, command.texture ? static_cast<CTextureDX9*>(command.texture)->NativeTexture() : nullptr);
-    this->SetTextureMode(command.textureMode);
-    this->device->state.SetRenderState(D3DRS_SRCBLEND, command.sourceBlend);
-    this->device->state.SetRenderState(D3DRS_DESTBLEND, command.destinationBlend);
-    this->DrawPrimitive(&command);
+  const auto drawCommand = [&](RenderCommand* const& command) {
+    this->device->state.SetTexture(0, command->texture ? static_cast<CTextureDX9*>(command->texture)->NativeTexture() : nullptr);
+    this->SetTextureMode(command->textureMode);
+    this->device->state.SetRenderState(D3DRS_SRCBLEND, command->sourceBlend);
+    this->device->state.SetRenderState(D3DRS_DESTBLEND, command->destinationBlend);
+    this->DrawPrimitive(command);
   };
 
   {
@@ -84,9 +84,9 @@ void CRendererDX9::DrawQueues() {
     this->device->state.SetRenderState(D3DRS_FOGENABLE, 0);
     this->device->state.SetRenderState(D3DRS_ZWRITEENABLE, 0);
 
-    for (RenderCommand* command : queues.queue_0210) {
+    for (RenderCommand*& command : queues.queue_0210) {
       if (command) {
-        drawCommand(*command);
+        drawCommand(command);
       }
     }
   }
@@ -99,17 +99,7 @@ void CRendererDX9::DrawQueues() {
 
   {
     ScopedDeviceStateDX9 restore = this->device->SaveState();
-    std::sort(queues.queue_0180.begin(), queues.queue_0180.end(), [](const DepthPrimitive& left, const DepthPrimitive& right) {
-      if (left.depth < right.depth) {
-        return true;
-      }
-
-      if (right.depth < left.depth) {
-        return false;
-      }
-
-      return left.depth == right.depth && reinterpret_cast<std::uintptr_t>(left.primitive) < reinterpret_cast<std::uintptr_t>(right.primitive);
-    });
+    std::sort(queues.queue_0180.begin(), queues.queue_0180.end());
     this->device->state.SetRenderState(D3DRS_ALPHATESTENABLE, 1);
     this->device->state.SetRenderState(D3DRS_ZWRITEENABLE, 1);
     this->device->state.SetRenderState(D3DRS_ALPHAREF, 159);
@@ -153,8 +143,8 @@ void CRendererDX9::DrawQueues() {
     this->device->state.SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_WRAP);
     this->device->state.SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_WRAP);
 
-    for (RenderCommand* command : queues.queue_01EC) {
-      drawCommand(*command);
+    for (RenderCommand*& command : queues.queue_01EC) {
+      drawCommand(command);
     }
   }
 
@@ -178,14 +168,19 @@ void CRendererDX9::DrawQueues() {
     ScopedDeviceStateDX9 restore = this->device->SaveState();
 
     for (const DepthPrimitive& entry : queues.queue_0234) {
-      RenderCommand& command = *entry.primitive;
-      this->device->state.SetTexture(0, command.texture ? static_cast<CTextureDX9*>(command.texture)->NativeTexture() : nullptr);
-      this->SetTextureMode(command.textureMode);
+      RenderCommand* command = entry.primitive;
+      const float depth = entry.depth;
+      this->device->state.SetTexture(0, command->texture ? static_cast<CTextureDX9*>(command->texture)->NativeTexture() : nullptr);
+      this->SetTextureMode(command->textureMode);
 
-      const bool selected = !(entry.depth >= 0.99f);
-      this->device->state.SetRenderState(D3DRS_SRCBLEND, selected ? command.sourceBlend : D3DBLEND_SRCALPHA);
-      this->device->state.SetRenderState(D3DRS_DESTBLEND, selected ? command.destinationBlend : D3DBLEND_INVSRCALPHA);
-      this->DrawPrimitive(&command);
+      if (depth >= 0.99f) {
+        this->device->state.SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+        this->device->state.SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+      } else {
+        this->device->state.SetRenderState(D3DRS_SRCBLEND, command->sourceBlend);
+        this->device->state.SetRenderState(D3DRS_DESTBLEND, command->destinationBlend);
+      }
+      this->DrawPrimitive(command);
     }
   }
 }

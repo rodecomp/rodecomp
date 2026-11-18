@@ -10,19 +10,6 @@ namespace {
   }
 }
 
-// INLINED
-static bool operator<(const DepthPrimitive& left, const DepthPrimitive& right) {
-  if (left.depth < right.depth) {
-    return true;
-  }
-
-  if (right.depth < left.depth) {
-    return false;
-  }
-
-  return left.depth == right.depth && reinterpret_cast<std::uintptr_t>(left.primitive) < reinterpret_cast<std::uintptr_t>(right.primitive);
-}
-
 // OFFSET: 0x0055B160
 // FUNCTION: fn_02089
 void CRendererDX7::DrawAlphaQueues() {
