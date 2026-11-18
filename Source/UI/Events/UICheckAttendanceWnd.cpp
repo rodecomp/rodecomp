@@ -89,14 +89,16 @@ void UICheckAttendanceWnd::VisitChildren() {
 // FUNCTION: fn_09638
 int UICheckAttendanceWnd::SlotAt(int x, int y) {
   const int top = this->BannerHeight() + 95;
-  const int column = x - 26;
-  if (static_cast<unsigned int>(column) <= 306 && y >= top && top + 252 >= y && column % 62 <= 58) {
-    const int row = y - top;
-    if (row % 64 <= 60) {
-      return (column / 62) % 5 + (row / 64) % 4 * 5;
-    }
+  if (x < 26 || x > 332 || y < top || y > top + 252) {
+    return -1;
   }
-  return -1;
+
+  const int localX = x - 26;
+  const int localY = y - top;
+  if (localX % 62 > 58 || localY % 64 > 60) {
+    return -1;
+  }
+  return (localY / 64) % 4 * 5 + (localX / 62) % 5;
 }
 
 // INLINED
