@@ -591,15 +591,19 @@ int UIExpandedBarterItemPurchaseWnd::SendMsg(UIWindow* sender, int message, std:
 
   case UM_COMMAND: {
     CGameMode* mode = g_modeMgr.GetGameMode();
-    if (a == ID_OK) {
+    switch (a) {
+    case ID_OK:
       if (this->Purchase()) {
         mode->SendMsg(MM_NPC_EXPANDED_BARTER_MARKET_PURCHASE, 0, 0, 0, 0);
         mode->SendMsg(MM_RELEASE_QUEST, 0, 0, 0, 0);
         g_expandedBarterMarketItemMgr->Clear();
+        return 0;
       }
-    } else if (a == ID_CANCEL) {
+      break;
+    case ID_CANCEL:
       mode->SendMsg(MM_RELEASE_QUEST, 0, 0, 0, 0);
       g_expandedBarterMarketItemMgr->Clear();
+      return 0;
     }
     return 0;
   }
