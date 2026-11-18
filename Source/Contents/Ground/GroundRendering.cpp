@@ -11,10 +11,17 @@
 namespace {
   // INLINED
   __forceinline void SubmitGroundQuad(const float* matrix, const GroundQuad& quad, bool clip) {
-    RenderVertex vertices[4]{};
+    RenderVertex vertices[4];
 
     for (auto& vertex : vertices) {
+      vertex.x = 0.0f;
+      vertex.y = 0.0f;
+      vertex.z = 0.0f;
+      vertex.rhw = 0.0f;
+      vertex.diffuse = 0;
       vertex.specular = 0xFF000000u;
+      vertex.u = 0.0f;
+      vertex.v = 0.0f;
     }
 
     for (unsigned corner = 0; corner < 4; ++corner) {
