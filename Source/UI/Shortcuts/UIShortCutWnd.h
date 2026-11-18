@@ -41,6 +41,7 @@ public:
   friend class CGameMode;
 
 private:
+  void DrawShortcutItem(int x, int y, const ITEM_INFO& item, unsigned char identified);
   void ClickControl(int id);
   int HitTestSlot(int x, int y);
   void PlaceRowButtons();

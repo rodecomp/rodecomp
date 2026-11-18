@@ -26,18 +26,11 @@ namespace {
   CBitmapRes* Load(const char* path) {
     return static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(path)));
   }
-
-  // INLINED
-  __forceinline void Count(UIWindow& window, int right, int y, int value) {
-    char text[16];
-    std::sprintf(text, "%d", value);
-    window.DrawRightOutlinedText(right, y, text, 0, 0, 0xFFFFFF, 0, 11, 0);
-  }
 }
 
 // OFFSET: 0x00A86200
 // FUNCTION: fn_17019
-void UIWindow::DrawRightOutlinedText(
+__declspec(noinline) void UIWindow::DrawRightOutlinedText(
   int right, int y, const char* text, int bytes, std::uint32_t color, std::uint32_t outline, int family, int height,
   unsigned char bold
 ) {
@@ -57,6 +50,17 @@ void UIWindow::DrawRightOutlinedText(
   context.Draw(left, y + 1, text, bytes);
   context.SetColor(color);
   context.Draw(left, y, text, bytes);
+}
+
+// OFFSET: 0x00918940
+// FUNCTION: fn_45758
+__forceinline void UIShortCutWnd::DrawShortcutItem(int x, int y, const ITEM_INFO& item, unsigned char identified) {
+  this->DrawItemIcon(x, y, item, identified);
+  if (item.quantity != 0) {
+    char text[16];
+    std::sprintf(text, "%d", item.quantity);
+    this->DrawRightOutlinedText(x + 27, y + 17, text, 0, 0, 0xFFFFFF, 0, 11, 0);
+  }
 }
 
 // OFFSET: 0x0092F8E0
@@ -126,10 +130,7 @@ void UIShortCutWnd::Paint() {
       } else {
         ITEM_INFO item = g_session.LookupClientItem(static_cast<int>(itemId), 1);
         if (item.identity[1] > 0) {
-          window.DrawItemIcon(x, y, item, item.identified);
-          if (item.quantity != 0) {
-            Count(window, x + 27, (y + 17), item.quantity);
-          }
+          this->DrawShortcutItem(x, y, item, item.identified);
 
           if (0 < item.grade) {
             window.DrawBitmap(
@@ -156,10 +157,7 @@ void UIShortCutWnd::Paint() {
       if (item.identity[1] > 0) {
         const int x = 16 + 29 * column;
         const int y = ((grid.rows * 33) + 4);
-        window.DrawItemIcon(x, y, item, item.identified);
-        if (item.quantity != 0) {
-          Count(window, x + 27, (y + 17), item.quantity);
-        }
+        this->DrawShortcutItem(x, y, item, item.identified);
       }
     }
   }
