@@ -189,21 +189,21 @@ void UIListBoxEx::Paint() {
     this->ClearSurface(RGB(this->backgroundRed, this->backgroundGreen, this->backgroundBlue));
   }
 
-  const unsigned end = std::min(
-    static_cast<unsigned>(this->lines.size()), static_cast<unsigned>(this->topLine + (this->geometry.height / this->lineHeight - this->bottomMargin))
-  );
+  const int first = this->topLine;
+  const int visible = this->geometry.height / this->lineHeight - this->bottomMargin;
+  const unsigned end = std::min(static_cast<unsigned>(this->lines.size()), static_cast<unsigned>(visible + first));
 
-  for (int index = this->topLine; index < static_cast<int>(end); ++index) {
-    const int y = this->lineHeight * (index - this->topLine);
-
+  for (int index = first; index < static_cast<int>(end); ++index) {
+    const int row = index - first;
     if (index == this->selected) {
-      this->FillRegion(0, y, this->geometry.width, this->lineHeight - 1, this->selectionColor);
+      this->FillRegion(0, row * this->lineHeight, this->geometry.width, this->lineHeight - 1, this->selectionColor);
     }
 
+    const int x = 3 - this->horizontalOffset;
+    const int y = row * this->lineHeight;
     std::uint32_t color = this->lines[index].color;
     this->DrawColoredText(
-      3 - this->horizontalOffset, y, this->lines[index].text.c_str(), static_cast<unsigned>(this->lines[index].text.size()), color, 0, 12,
-      false
+      x, y, this->lines[index].text.c_str(), static_cast<unsigned>(this->lines[index].text.size()), color, 0, 12, false
     );
   }
 }
