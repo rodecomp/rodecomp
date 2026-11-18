@@ -165,6 +165,11 @@ std::string CSession::GetImfName(int job) {
   return this->m_imfNames[job];
 }
 
+// INLINED
+static const std::string SexNameOf(int sex) {
+  return g_session.GetSexName(sex);
+}
+
 // OFFSET: 0x00BAB110
 // FUNCTION: fn_19751
 std::string EquipmentResourceMgr::GetHeadName(int type, int job, int sex, int* head) {
@@ -201,10 +206,7 @@ std::string EquipmentResourceMgr::GetHeadName(int type, int job, int sex, int* h
     }
   }
 
-  {
-    const std::string& name = g_session.GetSexName(sex);
-    sexName = name;
-  }
+  sexName = SexNameOf(sex);
   result = static_cast<const std::string&>(this->GetBodyRacePrefix(job)) +
            static_cast<const std::string&>(FormatOwnedString("\\머리통\\%s\\%s_%s.%s", sexName.c_str(), headName.c_str(), sexName.c_str(), g_equipmentResourceExtensions[type]));
   return result;
