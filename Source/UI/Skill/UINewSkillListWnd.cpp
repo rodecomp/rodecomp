@@ -1505,7 +1505,7 @@ static bool HasSkillValue(const std::list<NewSkillListValue>& values, int id) {
 // INLINED
 static int SkillValueOf(const std::list<NewSkillListValue>& values, int id) {
   for (const NewSkillListValue& entry : values) {
-    if (entry.id == id) {
+    if (id == entry.id) {
       return entry.value;
     }
   }
@@ -1611,8 +1611,12 @@ void UINewSkillListWnd::DrawSkillTree() {
     if (position == -1) {
       continue;
     }
-    position -= this->m_firstRow * this->m_columns;
-    if (position < 0 || position >= 42) {
+    const int first = this->m_firstRow * this->m_columns;
+    if (position < first) {
+      continue;
+    }
+    position -= first;
+    if (position >= 42) {
       continue;
     }
 
@@ -1664,10 +1668,11 @@ void UINewSkillListWnd::DrawSkillTree() {
       }
     }
 
+    const bool raised = skill.level > this->SkillAt(static_cast<int>(skill.treePosition), true).level;
     int red = shade;
     int green = shade;
     int blue = shade;
-    if (skill.level > this->SkillAt(static_cast<int>(skill.treePosition), true).level) {
+    if (raised) {
       red = 127;
       green = 60;
       blue = 255;
@@ -1703,8 +1708,7 @@ void UINewSkillListWnd::DrawSkillTree() {
         this->DrawOutlinedText(textX, textY, text, 0, (blue << 8 | green) << 8 | red, 0xFFFFFF, 0, 11, 1, 0);
       } else {
         std::sprintf(text, "%d", skill.level);
-        const int width = this->TextWidth(text, 0, 0, 11, 1, 0);
-        this->DrawOutlinedText((24 - width) / 2 + x + 4, textY, text, 0, (blue << 8 | green) << 8 | red, 0xFFFFFF, 0, 11, 1, 0);
+        this->DrawOutlinedText((24 - this->TextWidth(text, 0, 0, 11, 1, 0)) / 2 + x + 4, textY, text, 0, (blue << 8 | green) << 8 | red, 0xFFFFFF, 0, 11, 1, 0);
       }
     }
 
