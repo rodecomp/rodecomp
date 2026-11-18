@@ -27,6 +27,7 @@ void CSphereWind2Effect::Close() {
 // OFFSET: 0x00B77380
 // FUNCTION: fn_19183
 void CSphereWind2Effect::Open() {
+  const vector3d* origin = &this->positionVector;
   for (int base = 0; base < 45; base += 9) {
     int angle = base;
     for (int ring = 0; ring < 4; ++ring) {
@@ -37,14 +38,14 @@ void CSphereWind2Effect::Open() {
       const int speed = std::ranges::max(rand() % 4, 0) + 3;
 
       for (int part = 0; part < 21; ++part) {
-        CParticle* particle = CreateParticle(&this->positionVector, 5);
+        CParticle* particle = CreateParticle(origin, 5);
         if (!particle) {
           continue;
         }
 
-        particle->effectId = this->id;
         particle->columnIndex = part;
         particle->rowIndex = ring;
+        particle->effectId = this->id;
         particle->groupIndex = 1;
         particle->elapsedFrames = delay;
         particle->speedParameter = radius;
