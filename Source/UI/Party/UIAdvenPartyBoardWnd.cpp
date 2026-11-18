@@ -396,7 +396,17 @@ void UIApplyForPartyWnd::OnCreate(int, int) {
 // OFFSET: 0x007C1D10
 // FUNCTION: fn_09319
 void UIApplyForPartyWnd::SetInfo(CAdvenPartyInfo value) {
-  this->info = value;
+  this->info.tanker = value.tanker;
+  this->info.healer = value.healer;
+  this->info.dealer = value.dealer;
+  this->info.assist = value.assist;
+  this->info.minimumLevel = value.minimumLevel;
+  this->info.maximumLevel = value.maximumLevel;
+  this->info.type = value.type;
+  this->info.memo = value.memo;
+  this->info.characterName = value.characterName;
+  this->info.accountId = value.accountId;
+  this->info.characterId = value.characterId;
   this->Invalidate();
 }
 
