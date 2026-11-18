@@ -3493,7 +3493,10 @@ void C3dGrannyGameActor::SetSprAct(int job, int value, int) {
   this->model = static_cast<C3dGrannyModelRes*>(ResourceMgr::Instance().Load(this->name));
   this->instance = GrannyInstantiateModel(this->model->model);
   for (int mesh = 0; mesh < this->model->instance->meshCount; ++mesh) {
-    RenderCommand* previous = this->commands[mesh];
+    RenderCommand* previous = nullptr;
+    if (this->commands[mesh] != nullptr) {
+      previous = this->commands[mesh];
+    }
     RenderCommand* command = new ModelRenderCommand();
     this->commands[mesh] = command;
     command->AllocateTriangles(this->model->GetTriangleCount(mesh));
@@ -3502,7 +3505,10 @@ void C3dGrannyGameActor::SetSprAct(int job, int value, int) {
       ::operator delete(previous, 0x28);
     }
 
-    RenderVertex* previousVertices = this->vertices[mesh];
+    RenderVertex* previousVertices = nullptr;
+    if (this->vertices[mesh] != nullptr) {
+      previousVertices = this->vertices[mesh];
+    }
     this->vertices[mesh] = new RenderVertex[this->model->GetTriangleCount(mesh) * 3];
     std::memset(this->vertices[mesh], 0, this->model->GetTriangleCount(mesh) * 3 * sizeof(RenderVertex));
     if (previousVertices != nullptr) {
@@ -3513,9 +3519,10 @@ void C3dGrannyGameActor::SetSprAct(int job, int value, int) {
   this->lastClock = GrannyGetSystemSeconds();
   this->motionProgress = 0.0f;
   if (job == JT_ZOMBIE_DRAGON || job == JT_HUGELING) {
+    C3dGrannyModelRes* model = this->model;
     this->actorType = 1;
-    this->model->baseHeight = 30.0f;
-    this->model->topHeight = 30.0f;
+    model->baseHeight = 30.0f;
+    model->topHeight = 30.0f;
   } else {
     this->actorType = job == JT_GUILD_FLAG ? 2 : 0;
   }
