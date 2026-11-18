@@ -1541,6 +1541,19 @@ void UILoginWnd::OnMouseMove(int, int) {
 void UIMakeCharWnd::OnProcess() {
 }
 
+// OFFSET: 0x008BB2F0
+// FUNCTION: fn_45657
+void UIMakeCharWnd::SetHairScrollRanges() {
+  if (this->m_hairStyleBar) {
+    this->m_hairStyleBar->SetRange(22, 1, 23);
+    this->m_hairStyleBar->Invalidate();
+  }
+  if (this->m_hairColorBar) {
+    this->m_hairColorBar->SetRange(8, 1, 9);
+    this->m_hairColorBar->Invalidate();
+  }
+}
+
 // OFFSET: 0x008AC490
 // FUNCTION: fn_11733
 void UIMakeCharWnd::InitHairControls() {
@@ -1596,14 +1609,7 @@ void UIMakeCharWnd::InitHairControls() {
   this->m_hairColorBar->Configure(10, 230, 0, 130);
   this->AddChild(this->m_hairColorBar);
 
-  if (this->m_hairStyleBar) {
-    this->m_hairStyleBar->SetRange(22, 1, 23);
-    this->m_hairStyleBar->Invalidate();
-  }
-  if (this->m_hairColorBar) {
-    this->m_hairColorBar->SetRange(8, 1, 9);
-    this->m_hairColorBar->Invalidate();
-  }
+  this->SetHairScrollRanges();
   this->m_hairStyleBar->SetPosition(this->m_hairStyle);
   this->m_hairColorBar->SetPosition(this->m_hairColor);
 }
@@ -2947,6 +2953,37 @@ bool UISelectReplayDataWnd::UpdateInfo() {
     this->m_texts[4]->SetTextFitted("");
   }
   return true;
+}
+
+// OFFSET: 0x008ABD20
+// FUNCTION: fn_45658
+void UISelectServerWnd::LoadServerSelection(const char* valueName) {
+  this->m_selectedServer = g_serviceType;
+  HKEY probe;
+  if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, g_subKey, 0, KEY_QUERY_VALUE, &probe) != ERROR_SUCCESS) {
+    return;
+  }
+  RegCloseKey(probe);
+
+  HKEY key;
+  if (RegOpenKeyExA(HKEY_LOCAL_MACHINE, g_subKey, 0, KEY_QUERY_VALUE, &key) == ERROR_SUCCESS) {
+    DWORD type = REG_DWORD;
+    DWORD size = sizeof(this->m_selectedServer);
+    RegQueryValueExA(key, valueName, nullptr, &type, reinterpret_cast<BYTE*>(&this->m_selectedServer), &size);
+    RegCloseKey(key);
+  }
+}
+
+// OFFSET: 0x008BB380
+// FUNCTION: fn_45659
+void UISelectServerWnd::SaveServerSelection(const char* valueName) {
+  this->m_selectedServer = this->m_serverList->selected;
+  HKEY key;
+  DWORD disposition = 0;
+  if (RegCreateKeyExA(HKEY_LOCAL_MACHINE, g_subKey, 0, nullptr, 0, KEY_ALL_ACCESS, nullptr, &key, &disposition) == ERROR_SUCCESS) {
+    RegSetValueExA(key, valueName, 0, REG_DWORD, reinterpret_cast<const BYTE*>(&this->m_selectedServer), sizeof(this->m_selectedServer));
+    RegCloseKey(key);
+  }
 }
 
 // OFFSET: 0x008C18C0

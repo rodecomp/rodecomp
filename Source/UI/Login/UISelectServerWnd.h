@@ -15,6 +15,8 @@ public:
   void OnDestroy() override;
   void Paint() override;
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;
+  void LoadServerSelection(const char* valueName);
+  void SaveServerSelection(const char* valueName);
 
   /* 00B4 */ UIServerListBox* m_serverList;
   /* 00B8 */ UIWindow* m_okButton;
