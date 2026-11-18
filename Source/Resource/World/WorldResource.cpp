@@ -26,14 +26,14 @@ namespace {
 
   struct WorldLightFileRecord {
     /* 0000 */ char name[80];
-    /* 0050 */ vector3d position{};
+    /* 0050 */ vector3d position{0.0f, 0.0f, 0.0f};
     /* 005C */ unsigned char colorAndRange[16];
   };
 
   struct WorldLegacySoundFileRecord {
     /* 0000 */ char name[80];
     /* 0050 */ char file[80];
-    /* 00A0 */ vector3d position{};
+    /* 00A0 */ vector3d position{0.0f, 0.0f, 0.0f};
     /* 00AC */ float volume;
     /* 00B0 */ int width;
     /* 00B4 */ int height;
@@ -69,10 +69,6 @@ namespace {
 C3dWorldRes::C3dWorldRes() : lightDirection{0.0f, 0.0f, 0.0f}, diffuse{0.0f, 0.0f, 0.0f}, ambient{0.0f, 0.0f, 0.0f}, flag(0) {
   this->spatial = nullptr;
 }
-
-// OFFSET: 0x00763550
-// FUNCTION: fn_08077
-C3dWorldRes::~C3dWorldRes() = default;
 
 // OFFSET: 0x00761940
 // FUNCTION: fn_08071

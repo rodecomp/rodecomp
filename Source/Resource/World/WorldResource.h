@@ -12,12 +12,14 @@
 class CFile;
 
 struct WorldModelRecord {
+  WorldModelRecord() : position{0.0f, 0.0f, 0.0f}, rotation{0.0f, 0.0f, 0.0f}, scale{0.0f, 0.0f, 0.0f} {}
+
   /* 0000 */ char name[40];
   /* 0028 */ char model[80];
   /* 0078 */ char node[80];
-  /* 00C8 */ vector3d position{};
-  /* 00D4 */ vector3d rotation{};
-  /* 00E0 */ vector3d scale{};
+  /* 00C8 */ vector3d position;
+  /* 00D4 */ vector3d rotation;
+  /* 00E0 */ vector3d scale;
   /* 00EC */ int animation;
   /* 00F0 */ int animationType;
   /* 00F4 */ float animationSpeed;
@@ -28,9 +30,11 @@ struct WorldModelRecord {
 };
 
 struct WorldSoundRecord {
+  WorldSoundRecord() : position{0.0f, 0.0f, 0.0f} {}
+
   /* 0000 */ char name[80];
   /* 0050 */ char file[80];
-  /* 00A0 */ float position[3]{};
+  /* 00A0 */ float position[3];
   /* 00AC */ float volume;
   /* 00B0 */ int width;
   /* 00B4 */ int height;
@@ -39,8 +43,10 @@ struct WorldSoundRecord {
 };
 
 struct WorldEffectRecord {
+  WorldEffectRecord() : position{0.0f, 0.0f, 0.0f} {}
+
   /* 0000 */ char name[80];
-  /* 0050 */ vector3d position{};
+  /* 0050 */ vector3d position;
   /* 005C */ int id;
   /* 0060 */ float delay;
   /* 0064 */ float parameters[4];
@@ -57,7 +63,9 @@ class C3dWorldRes : public CRes {
 public:
   C3dWorldRes();
   C3dWorldRes(const char* extension, const char* prefix);
-  ~C3dWorldRes() override;
+  // OFFSET: 0x00763550
+  // FUNCTION: fn_08077
+  ~C3dWorldRes() override = default;
   C3dWorldRes* Create() override;
   bool Load(const char* name) override;
   void Unload() override;
