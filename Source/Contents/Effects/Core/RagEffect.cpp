@@ -2068,20 +2068,23 @@ void CRagEffect::GrimToothAtk() {
     ClientSine(index * 120);
     ClientCosine(index * 120);
 
-    if (index == 0) {
+    if (index != 0) {
+      if (index != 1) {
+        if (index == 2) {
+          this->state.lastPrim->state.deltaPos2 = {-12.0f, 40.0f, 6.0f};
+        }
+      } else {
+        this->state.lastPrim->state.deltaPos2 = {12.0f, 40.0f, 6.0f};
+      }
+    } else {
       this->state.lastPrim->state.deltaPos2 = {0.0f, 40.0f, -12.0f};
-    } else if (index == 1) {
-      this->state.lastPrim->state.deltaPos2 = {12.0f, 40.0f, 6.0f};
-    } else if (index == 2) {
-      this->state.lastPrim->state.deltaPos2 = {-12.0f, 40.0f, 6.0f};
     }
 
     this->state.lastPrim->state.size = 0.9f;
     this->state.lastPrim->state.heightSize = 25.0f;
     this->state.lastPrim->state.longitude = static_cast<float>((6 - index) * 120);
     this->state.lastPrim->state.latitude = 75.0f;
-    EffectPrimitiveState& tilt = this->state.lastPrim->state;
-    tilt.transform.MakeXRotation(GetRadian(static_cast<int>(tilt.latitude)));
+    this->state.lastPrim->state.transform.MakeXRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.latitude)));
     this->state.lastPrim->state.transform.AppendYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
     this->state.lastPrim->state.rotTransform = this->state.lastPrim->state.transform;
     this->state.lastPrim->state.speed = 3.5f;
