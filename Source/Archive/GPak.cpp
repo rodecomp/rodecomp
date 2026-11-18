@@ -173,6 +173,9 @@ bool CGPak::Open(CPakFile* file) {
   return false;
 }
 
+// STRING: st_14036
+char g_specialPakExtensions[4][5] = {".gnd", ".gat", ".act", ".str"};
+
 // OFFSET: 0x00AEC050
 // FUNCTION: fn_18133
 bool CGPak::ReadTableV1() {
@@ -245,9 +248,16 @@ bool CGPak::ReadTableV1() {
     entry.name.Assign(name);
 
     const char* extension = std::strrchr(name, '.');
-    bool special = extension && (_stricmp(extension, ".gnd") == 0 || _stricmp(extension, ".gat") == 0 || _stricmp(extension, ".act") == 0 ||
-                                 _stricmp(extension, ".str") == 0);
-    entry.flags |= special ? 4 : 2;
+    std::uint8_t kind = 2;
+    if (extension) {
+      for (const char* specialExtension : g_specialPakExtensions) {
+        if (_stricmp(extension, specialExtension) == 0) {
+          kind = 4;
+          break;
+        }
+      }
+    }
+    entry.flags |= kind;
     maximum = std::max(maximum, entry.alignedSize);
     sequence += 5;
     legacyKey -= 2;
