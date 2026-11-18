@@ -300,6 +300,29 @@ void UIItemTagCtrl::SetTaggedText(const std::string& text, int width) {
   this->tagWidth = width;
 }
 
+// OFFSET: 0x008809A0
+// FUNCTION: fn_45601
+unsigned int UIItemTagCtrl::GetVisibleTagPrefix(std::string& visible, const std::string& text) {
+  unsigned int firstVisible = 0;
+  UIWindow* hover = g_windowMgr.GetHoverWindow();
+  if (hover != nullptr) {
+    switch (hover->geometry.id) {
+    case 0x1EA:
+    case 0x1EC:
+    case 0x1ED:
+    case 0x1EE:
+      firstVisible = static_cast<UIEditCtrl*>(hover)->firstVisible;
+      break;
+    }
+
+    if (text.size() >= firstVisible) {
+      visible = text.substr(firstVisible);
+    }
+  }
+
+  return firstVisible;
+}
+
 // OFFSET: 0x00879BC0
 // FUNCTION: fn_11220
 bool UIItemTagOnMegaPhone::CanInsertTag(const std::string& name, int width) {

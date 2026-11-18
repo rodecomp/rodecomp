@@ -26,6 +26,7 @@ public:
   bool RemoveInvalidTag(std::list<ItemTagRecord>::iterator& entry);
   void SetTaggedText(const std::string& text, int width);
   void UpdateItemTags();
+  unsigned int GetVisibleTagPrefix(std::string& visible, const std::string& text);
   void AddItemTag(const ITEM_INFO& item, unsigned int color);
   std::string ItemLinkNumberText(int value);
   std::string AddSkillTag(int tagId, unsigned int color);
