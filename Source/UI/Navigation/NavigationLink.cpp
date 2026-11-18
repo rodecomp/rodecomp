@@ -1253,9 +1253,9 @@ void ShowTextButtonItem(UITextButton* button) {
   const std::string itemId = button->GetLine(0);
   const int index = std::atoi(button->GetLine(1).c_str());
   ITEM_INFO item;
+  item.identified = 1;
   item.identity[0] = static_cast<std::uint32_t>(index);
   item.itemId = itemId;
-  item.identified = 1;
   UIWindow* window = g_windowMgr.EnsureWindow(WID_ITEMCOLLECTIONWND);
   if (window) {
     window->SendMsg(nullptr, UM_ITEMEXPLANATION, reinterpret_cast<std::intptr_t>(&item), 0, 0, 0);
@@ -1857,8 +1857,8 @@ void OpenTextButtonNavigation(UITextButton* button) {
       code -= 100;
     }
 
-    unsigned char group = code < 10 ? hundreds : static_cast<unsigned char>(hundreds + 2);
-    const int remainder = code < 10 ? code : code - 10;
+    unsigned char group = code >= 10 ? static_cast<unsigned char>(hundreds + 2) : hundreds;
+    const int remainder = code >= 10 ? code - 10 : code;
     if (remainder >= 1) {
       group = static_cast<unsigned char>(group + 4);
     }
