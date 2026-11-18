@@ -168,7 +168,8 @@ void CSurfaceDX7::Upload(int x, int y, int width, int height, const std::uint32_
     for (int row = 0; row < height; ++row) {
       auto* output = reinterpret_cast<std::uint16_t*>(line);
       for (int column = 0; column < width; ++column) {
-        const std::uint16_t value = this->m_owner->PackColor(GetBValue(pixels[column]), GetGValue(pixels[column]), GetRValue(pixels[column]));
+        const std::uint32_t color = pixels[column];
+        const std::uint16_t value = this->m_owner->PackColor((color >> 16) & 255, (color >> 8) & 255, color & 255);
         if (value != transparent) {
           output[column] = value;
         }
