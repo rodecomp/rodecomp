@@ -713,18 +713,19 @@ __declspec(noinline) MessengerMember UIMessengerGroupWnd::MemberAt(int x, int y)
     return MessengerMember(0);
   }
 
-  if (y >= 17 && y < this->visibleRows * this->rowHeight + 17) {
-    this->selected = (y - 17) / this->rowHeight + this->scrollTop;
-    int position = 0;
-    for (auto it = this->members.begin(); it != this->members.end(); ++it, ++position) {
-      if (position == this->selected) {
-        return *it;
-      }
-    }
-
-    this->selected = -1;
+  if (y < 17 || y >= this->visibleRows * this->rowHeight + 17) {
+    return MessengerMember(0);
   }
 
+  this->selected = (y - 17) / this->rowHeight + this->scrollTop;
+  int position = 0;
+  for (auto it = this->members.begin(); it != this->members.end(); ++it, ++position) {
+    if (position == this->selected) {
+      return *it;
+    }
+  }
+
+  this->selected = -1;
   return MessengerMember(0);
 }
 
@@ -1532,7 +1533,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
     return 0;
   }
   case UM_MAKEMENU:
-    this->menuItems.clear();
+    this->menuItems.erase(this->menuItems.begin(), this->menuItems.end());
     if (g_windowMgr.menuWnd) {
       g_windowMgr.CloseWindow(WID_MENUWND);
     }
