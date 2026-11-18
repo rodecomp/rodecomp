@@ -3346,8 +3346,8 @@ void CGameMode::ReceiveStorageEquipList3(const unsigned char* data) {
     item.identity[2] = record->location;
     item.identity[1] = record->index;
     item.identity[3] = record->wearState;
-    std::memcpy(item.cards, record->cards, sizeof(record->cards));
     item.quantity = 1;
+    std::memcpy(item.cards, record->cards, sizeof(record->cards));
     item.SetItemId(record->itemId);
     item.identified = record->identified;
     item.damaged = record->damaged;
