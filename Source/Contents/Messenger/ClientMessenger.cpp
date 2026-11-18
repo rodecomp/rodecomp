@@ -57,6 +57,7 @@
 #include <ctime>
 #include <format>
 #include <fmt/format.h>
+#include <fmt/xchar.h>
 #include <list>
 #include <map>
 #include <new>
@@ -91,6 +92,8 @@ template __declspec(noinline) void std::_Tree_val<std::_Tree_simple_types<std::p
 template __declspec(noinline) std::string fmt::format<const char*&, int&>(fmt::format_string<const char*&, int&>, const char*&, int&);
 template __declspec(noinline) std::string fmt::format<unsigned int&, int&>(fmt::format_string<unsigned int&, int&>, unsigned int&, int&);
 template __declspec(noinline) std::string fmt::format<int&, const char*&>(fmt::format_string<int&, const char*&>, int&, const char*&);
+template __declspec(noinline) std::string fmt::format<double, int&>(fmt::format_string<double, int&>, double&&, int&);
+template __declspec(noinline) std::wstring fmt::format<std::wstring, std::wstring>(fmt::wformat_string<std::wstring, std::wstring>, std::wstring&&, std::wstring&&);
 
 namespace EquipmentProperties {
   class CEquipmentProperties {
@@ -1016,22 +1019,22 @@ std::string EquipmentProperties::CEquipmentProperties1Dim::Describe(bool detaile
   const double sign = (result < 0.0 && this->m_definition->signLabels.size() == 2) ? -1.0 : 1.0;
   const double scale = std::pow(10.0, precision);
   const double rounded = std::floor(result * scale) / scale;
-  std::string number = std::format("{:.{}f}", sign * rounded, precision);
+  std::string number = fmt::format("{:.{}f}", sign * rounded, precision);
   if (rounded != 0.0) {
-    const int nonPositive = rounded <= 0.0;
+    const int nonPositive = !(rounded > 0.0);
     switch (this->m_definition->signLabels.size()) {
     case 0:
-      text = EncodeText(g_textCodePage,
-                        std::vformat(DecodeText(g_textCodePage, this->m_definition->formatText), std::make_wformat_args(DecodeText(g_textCodePage, number))));
+      text = static_cast<const std::string&>(EncodeText(
+        g_textCodePage,
+        fmt::format(fmt::runtime(DecodeText(g_textCodePage, this->m_definition->formatText)), DecodeText(g_textCodePage, number))));
       break;
     case 2: {
       const int index = negative == true ? nonPositive ^ 1 : nonPositive;
       if (index == 1) {
         text += "{~}";
       }
-      text += EncodeText(g_textCodePage, std::vformat(DecodeText(g_textCodePage, this->m_definition->formatText),
-                                                      std::make_wformat_args(DecodeText(g_textCodePage, number),
-                                                                             DecodeText(g_textCodePage, this->m_definition->signLabels[index]))));
+      text += EncodeText(g_textCodePage, fmt::format(fmt::runtime(DecodeText(g_textCodePage, this->m_definition->formatText)),
+                                                    DecodeText(g_textCodePage, number), DecodeText(g_textCodePage, this->m_definition->signLabels[index])));
       break;
     }
     }
@@ -1171,8 +1174,8 @@ std::string EquipmentProperties::CEquipmentProperties::Describe(bool detailed, b
     text = this->m_definition->formatText;
     break;
   case 2:
-    text += EncodeText(g_textCodePage, std::vformat(DecodeText(g_textCodePage, this->m_definition->formatText),
-                                                    std::make_wformat_args(DecodeText(g_textCodePage, this->m_definition->signLabels[negative]))));
+    text += EncodeText(g_textCodePage, fmt::format(fmt::runtime(DecodeText(g_textCodePage, this->m_definition->formatText)),
+                                                  DecodeText(g_textCodePage, this->m_definition->signLabels[negative])));
     break;
   }
   return text;
