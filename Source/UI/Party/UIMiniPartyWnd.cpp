@@ -278,7 +278,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
       this->SendMsg(nullptr, UM_COMMAND, ID_LEAVE, 0, 0, 0);
       return 0;
     case MENUID_MAKE_WHISPER_WINDOW:
-      this->SendMsg(nullptr, 71, 0, 0, 0, 0);
+      this->SendMsg(nullptr, UM_MAKE_WHISPER_WINDOW, 0, 0, 0, 0);
       return 0;
     case MENUID_INVITE_IN_PARTY:
       if (this->m_owner->m_cell != -1) {

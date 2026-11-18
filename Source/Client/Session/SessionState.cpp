@@ -1,5 +1,6 @@
 #include "Client/Mode/ModeMessage.h"
 #include "Contents/Actors/ActorEnums.h"
+#include "Contents/CombatTypes.h"
 #include "UI/Window/UIEnums.h"
 #include "Client/Session/Session.h"
 #include "Client/Input/InputCharset.h"
@@ -223,7 +224,7 @@ bool CSession::EquipSwapCostumeItem(const ITEM_INFO& item) {
 // FUNCTION: fn_24192
 __declspec(safebuffers) void CSession::UnequipSwapEquippedItem(const ITEM_INFO& item) {
   const int location = static_cast<int>(item.identity[3]);
-  if (location == 0x8000) {
+  if (location == EQP_AMMO) {
     this->SetSwapArrowIndex(0);
   } else {
     const EquipSlots slots = g_session.GetEquipSlots(location);
@@ -252,7 +253,7 @@ __declspec(safebuffers) void CSession::UnequipSwapEquippedItem(const ITEM_INFO& 
 // FUNCTION: fn_24193
 void CSession::UnequipSwapCostumeItem(const ITEM_INFO& item) {
   const int location = static_cast<int>(item.identity[3]);
-  if (location == 0x8000) {
+  if (location == EQP_AMMO) {
     ITEM_INFO equipped = g_session.FindItemByIdentity(item.identity[1], location);
     if (equipped.identity[1] > 0) {
       const char* message = LookupMessage(MSI_ITEM_IS_REMOVED);

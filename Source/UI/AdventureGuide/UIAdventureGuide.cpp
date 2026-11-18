@@ -1,4 +1,5 @@
 #include "Client/Session/Session.h"
+#include "Contents/CombatTypes.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
 #include "Contents/AdventureGuide/AdventureGuideMgr.h"
@@ -1320,34 +1321,34 @@ void CUIItemInfo::OnRBtnDown(int, int) {
   } else if (this->type == 4) {
     switch (this->location) {
     case 0:
-      location = 0x100;
+      location = EQP_HEAD_TOP;
       break;
     case 1:
-      location = 0x200;
+      location = EQP_HEAD_MID;
       break;
     case 2:
-      location = 1;
+      location = EQP_HEAD_LOW;
       break;
     case 3:
-      location = 0x10;
+      location = EQP_ARMOR;
       break;
     case 4:
-      location = 4;
+      location = EQP_GARMENT;
       break;
     case 5:
-      location = 0x20;
+      location = EQP_HAND_L;
       break;
     case 6:
-      location = 0x40;
+      location = EQP_SHOES;
       break;
     case 7:
-      location = 0x88;
+      location = EQP_ACC_RL;
       break;
     case 8:
-      location = 8;
+      location = EQP_ACC_R;
       break;
     case 9:
-      location = 0x80;
+      location = EQP_ACC_L;
       break;
     default:
       location = 0;

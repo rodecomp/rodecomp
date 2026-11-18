@@ -2733,7 +2733,7 @@ void UIListBoxID::OnLBtnDblClk(int, int) {
 // FUNCTION: fn_11406
 void UINewComboBoxCtrl::OnLBtnDblClk(int, int) {
   if (this->parent) {
-    this->parent->SendMsg(this, 124, this->selected, 0, 0, 0);
+    this->parent->SendMsg(this, UM_COMBOBOX_DBLCLK, this->selected, 0, 0, 0);
   }
 }
 

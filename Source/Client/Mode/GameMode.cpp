@@ -1,4 +1,5 @@
 #include "Contents/Actors/ActorEnums.h"
+#include "Contents/Ground/TerrainHeight.h"
 #include "Network/Packets/NoticeEnums.h"
 #include "Contents/Configuration/ServiceEnums.h"
 #include "Contents/Effects/Core/EffectTypes.h"
@@ -2499,7 +2500,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       return 0;
     case 0x24:
     case 0x55:
-    case 0x62:
+    case MM_CHANGE_SKILL_NAME:
     case 0x9F:
     case 0xA0:
     case 0xA6:
@@ -9277,10 +9278,10 @@ int CGameMode::ProcessGroundClick(int result) {
     g_groundOverlaySkip = skip;
     int color;
     const TerrainHeightCell* cell = this->scene->terrain->CellAt(column, row);
-    if (!cell || cell->type == 1) {
+    if (!cell || cell->type == TERRAIN_CELL_BLOCKED) {
       color = 0xFEFF0000;
       skip = 1;
-    } else if (cell->type == 5) {
+    } else if (cell->type == TERRAIN_CELL_CLIFF) {
       color = 0xFEFFFF00;
       skip = 1;
     } else {
@@ -9318,7 +9319,7 @@ int CGameMode::ProcessGroundClick(int result) {
   bool findClosest = true;
   CPlayer* player = this->scene->player;
   const TerrainHeightCell* cell = this->scene->terrain->CellAt(column, row);
-  if (cell && cell->type != 1 && cell->type != 5 &&
+  if (cell && cell->type != TERRAIN_CELL_BLOCKED && cell->type != TERRAIN_CELL_CLIFF &&
       (column != player->destCellX || row != player->destCellZ)) {
     int startColumn;
     int startRow;
@@ -9682,7 +9683,7 @@ void CGameMode::ProcessInput() {
       int row = -1;
       this->PickScreenTerrain(column, row);
       const TerrainHeightCell* cell = this->scene->terrain->CellAt(column, row);
-      if (cell && cell->type != 1 && cell->type != 5) {
+      if (cell && cell->type != TERRAIN_CELL_BLOCKED && cell->type != TERRAIN_CELL_CLIFF) {
         this->SetCursorAction(0);
       } else {
         this->SetCursorAction(13);

@@ -13,6 +13,7 @@
 #include "Resource/ResourceMgr.h"
 #include "Resource/Sprites/ActionResource.h"
 #include "Resource/Sprites/SpriteResource.h"
+#include "UI/Window/UIEnums.h"
 #include "UI/Window/UIWindowMgr.h"
 
 #include <windows.h>
@@ -103,7 +104,7 @@ void CMode::DrawCursor() {
     break;
   }
 
-  g_windowMgr.SendNotice(16, this->cursorActionFrame, 0, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_SET_CURSOR_ACTION_FRAME, this->cursorActionFrame, 0, 0, 0, 0);
 
   const int y = static_cast<int>(static_cast<float>(g_mouse.y) + this->cursorOffsetY);
   const int x = static_cast<int>(static_cast<float>(g_mouse.x) + this->cursorOffsetX);

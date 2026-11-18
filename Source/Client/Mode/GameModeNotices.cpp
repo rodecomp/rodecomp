@@ -1,5 +1,6 @@
 #include "UI/Chat/UINewChatWnd.h"
 #include "Contents/Actors/Skill.h"
+#include "Contents/CombatTypes.h"
 #include "UI/GameSettings/TalkType.h"
 #include "Client/Mode/ModeMessage.h"
 #include "Contents/Actors/ActorEnums.h"
@@ -3368,7 +3369,7 @@ static __forceinline void AddStorageEquipItem(
   std::uint32_t card3, int itemId, unsigned char identified, unsigned char damaged, unsigned char refine, int expireTime,
   std::uint16_t bindOnEquip, std::uint16_t sprite, unsigned char etcTab, ItemSlotOptions options
 ) {
-  if (location == 0x8000) {
+  if (location == EQP_AMMO) {
     return;
   }
 

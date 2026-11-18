@@ -86,5 +86,5 @@ void C3dAttr::HeightBounds(const int* rectangle, float& minimum, float& maximum)
 // FUNCTION: fn_07841
 bool C3dAttr::Walkable(int column, int row) const {
   const TerrainHeightCell* cell = this->CellAt(column, row);
-  return cell && cell->type != 1 && cell->type != 5;
+  return cell && cell->type != TERRAIN_CELL_BLOCKED && cell->type != TERRAIN_CELL_CLIFF;
 }

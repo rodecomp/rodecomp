@@ -2402,7 +2402,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     break;
   }
   case AM_MAKE_LEVEL160_EFFECT:
-  case 147: {
+  case AM_MAKE_LEVEL150_EFFECT: {
     this->hasLevelAura = 1;
     const unsigned char showFirst = g_serviceOptions.Get(TT_FULL_AURA_ON_OFF);
     if (g_session.m_maxBaseLevel == static_cast<signed char>(this->levelAuraType)) {
@@ -2423,7 +2423,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
       if (g_session.m_homunMaxLvAuraSub > 0) {
         second = g_session.m_homunMaxLvAuraSub;
       }
-    } else if (message == 0x93) {
+    } else if (message == AM_MAKE_LEVEL150_EFFECT) {
       first = 0x3D2;
       second = 0x3D3;
       if (g_session.m_default150LvAura > 0) {
@@ -2454,7 +2454,7 @@ void CGameActor::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t
     }
     break;
   }
-  case 150: {
+  case AM_MAKE_LEVEL185_EFFECT: {
     this->hasLevelAura = 1;
     const unsigned char showFirst = g_serviceOptions.Get(TT_FULL_AURA_ON_OFF);
     if (g_session.m_maxBaseLevel == static_cast<signed char>(this->levelAuraType)) {

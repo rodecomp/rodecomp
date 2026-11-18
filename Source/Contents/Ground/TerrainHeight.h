@@ -4,6 +4,11 @@
 #include <cstddef>
 #include <cstdint>
 
+enum TerrainCellType : int {
+  TERRAIN_CELL_BLOCKED = 1,
+  TERRAIN_CELL_CLIFF = 5,
+};
+
 struct TerrainHeightCell {
   /* 0000 */ float heights[4];
   /* 0010 */ std::uint32_t type;

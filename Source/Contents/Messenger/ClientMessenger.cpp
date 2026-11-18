@@ -5412,7 +5412,7 @@ bool CGameMode::HasPendingItemPickup(int value) {
 // FUNCTION: fn_21295
 bool CGameMode::IsValidCell(int x, int y) {
   const TerrainHeightCell* cell = this->scene->terrain->CellAt(x, y);
-  if (cell == nullptr || cell->type == 1 || cell->type == 5) {
+  if (cell == nullptr || cell->type == TERRAIN_CELL_BLOCKED || cell->type == TERRAIN_CELL_CLIFF) {
     return false;
   }
   CPlayer* player = this->scene->player;

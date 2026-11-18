@@ -226,7 +226,7 @@ void UIRuneSet_Info::OnLBtnDblClk(int x, int y) {
       CRuneSystemMgr::GetInstance()->SetSelectTag(this->m_runeSet->GetTagId());
       CRuneSystemMgr::GetInstance()->SendRequest(ID_CZ_RUNE_REQ_TAG_INFO, nullptr, -1);
     }
-    this->parent->SendMsg(this, 0xA9, 1, static_cast<std::intptr_t>(this->m_runeSet->m_slots[slot]->GetId()), 0, 0);
+    this->parent->SendMsg(this, UM_RUNE_SELECT_TAB, 1, static_cast<std::intptr_t>(this->m_runeSet->m_slots[slot]->GetId()), 0, 0);
   }
 }
 
@@ -603,7 +603,7 @@ int UIRuneSystem_tagListWnd::SendMsg(UIWindow*, int message, std::intptr_t argum
       break;
     }
     break;
-  case 0xA9:
+  case UM_RUNE_SELECT_TAB:
     this->Move(0, (argument1 == 0 ? argument2 : 0) + 44);
     break;
   }
@@ -867,7 +867,7 @@ void UIRuneSystemWnd::SelectTab() {
     }
   }
   this->m_equipRuneSet->Show(this->m_tab->geometry.state == 0);
-  this->m_tagList->SendMsg(this, 0xA9, this->m_tab->geometry.state, this->m_equipRuneSet->geometry.height, 0, 0);
+  this->m_tagList->SendMsg(this, UM_RUNE_SELECT_TAB, this->m_tab->geometry.state, this->m_equipRuneSet->geometry.height, 0, 0);
   this->m_tagList->Show(1);
   this->m_tagList->Invalidate();
 
@@ -2221,7 +2221,7 @@ int UIRuneSystemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     }
     return 0;
   }
-  case 0xA9:
+  case UM_RUNE_SELECT_TAB:
     {
       auto* tab = this->m_tab;
       tab->geometry.state = argument1;

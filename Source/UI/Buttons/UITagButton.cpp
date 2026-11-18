@@ -22,7 +22,7 @@ void UITagButton::OnLBtnUp(int x, int y) {
 
   if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
     if (g_windowMgr.GetHoverWindow() && this->item.identified) {
-      g_windowMgr.GetHoverWindow()->SendMsg(nullptr, 148, reinterpret_cast<std::intptr_t>(&this->item), 0, 0, 0);
+      g_windowMgr.GetHoverWindow()->SendMsg(nullptr, UM_INSERT_ITEM_TAG, reinterpret_cast<std::intptr_t>(&this->item), 0, 0, 0);
     }
 
     return;

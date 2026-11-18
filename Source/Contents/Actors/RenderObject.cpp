@@ -4384,7 +4384,7 @@ void CGameActor::UpdateMaxLevelAura() {
 
   if (g_session.IsTreeGroupTwo(this->GetEffectiveJob(-1))) {
     if (g_session.m_maxLevel == static_cast<std::int16_t>(this->characterLevel)) {
-      this->SendMsg(nullptr, 0x96, 0, 0, 0, 0, 0, 0);
+      this->SendMsg(nullptr, AM_MAKE_LEVEL185_EFFECT, 0, 0, 0, 0, 0, 0);
       return;
     }
     this->hasLevelAura = 0;
@@ -4421,7 +4421,7 @@ void CGameActor::UpdateMaxLevelAura() {
   if (g_session.IsMercenaryJob(this->GetEffectiveJob(-1))) {
     const int skill = static_cast<std::int16_t>(this->characterLevel);
     if (g_session.m_maxBaseLevelHomun == skill) {
-      this->SendMsg(nullptr, 0x93, 0, 0, 0, 0, 0, 0);
+      this->SendMsg(nullptr, AM_MAKE_LEVEL150_EFFECT, 0, 0, 0, 0, 0, 0);
       return;
     }
     if (g_session.m_maxBaseLevel != skill || g_session.IsNewMercenaryJob(this->GetEffectiveJob(-1)) != 0) {

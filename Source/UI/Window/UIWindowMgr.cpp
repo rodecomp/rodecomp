@@ -2676,14 +2676,14 @@ bool UIWindowMgr::ProcessHotkeyAction(int action, int pressed) {
 
   case 70:
     if (HIBYTE(GetAsyncKeyState(VK_CONTROL)) && this->keyboardCommandRootWnd) {
-      this->keyboardCommandRootWnd->SendMsg(nullptr, 177, 0, 0, 0, 0);
+      this->keyboardCommandRootWnd->SendMsg(nullptr, UM_FINDPUSH, 0, 0, 0, 0);
       return false;
     }
     break;
 
   case VK_HOME:
     if (this->keyboardCommandRootWnd) {
-      this->keyboardCommandRootWnd->SendMsg(nullptr, 179, 0, 0, 0, 0);
+      this->keyboardCommandRootWnd->SendMsg(nullptr, UM_HOMEPUSH, 0, 0, 0, 0);
       return false;
     }
     break;

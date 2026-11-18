@@ -1129,7 +1129,7 @@ int UIDisplayCharacter::SendMsg(UIWindow* sender, int message, std::intptr_t arg
     this->SelectNextStyle(this->GetStyleTable(STYLE_TABLE_BODY_PALETTE).c_str(), &this->bodyStyle);
     break;
   case STYLINGSHOP_BUTTON_PALETTE:
-    shop->SendMsg(nullptr, 495, 0, 0, 0, 0);
+    shop->SendMsg(nullptr, UM_STYLINGSHOP_PALETTE, 0, 0, 0, 0);
     break;
   case ID_BOOKMARK:
     if (this->m_favoriteButton->m_argument == 0) {

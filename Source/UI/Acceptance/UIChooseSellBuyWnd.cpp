@@ -8389,7 +8389,7 @@ int UISkillNameChangeWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
   case UM_COMMAND:
     if (a == ID_OK) {
       if (this->m_skillId != -1 && this->m_edit->Length() != 0) {
-        g_modeMgr.currentMode->SendMsg(98, this->m_skillId, reinterpret_cast<std::intptr_t>(this->m_edit->Text()), 0, 0);
+        g_modeMgr.currentMode->SendMsg(MM_CHANGE_SKILL_NAME, this->m_skillId, reinterpret_cast<std::intptr_t>(this->m_edit->Text()), 0, 0);
       }
       g_windowMgr.CloseWindow(WID_SKILLNAMECHANGEWND);
     }
@@ -8787,7 +8787,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
           for (unsigned i = 0; i < std::strlen(this->currentPassword); ++i) {
             password += 100000000;
           }
-          mode->SendMsg(188, password, g_session.m_storePasswordMode, 0, 0);
+          mode->SendMsg(MM_STORE_PASSWORD, password, g_session.m_storePasswordMode, 0, 0);
           g_windowMgr.CloseWindow(WID_STOREPASSWORDINPUTWND);
           break;
         }
@@ -8856,7 +8856,7 @@ int UIStorePasswordInputWnd::SendMsg(UIWindow* sender, int message, std::intptr_
             for (unsigned i = 0; i < std::strlen(this->confirmPassword); ++i) {
               newPassword += 100000000;
             }
-            mode->SendMsg(188, password, g_session.m_storePasswordMode, newPassword, 0);
+            mode->SendMsg(MM_STORE_PASSWORD, password, g_session.m_storePasswordMode, newPassword, 0);
             g_windowMgr.CloseWindow(WID_STOREPASSWORDINPUTWND);
           } else {
             g_windowMgr.Confirm(LookupMessage(MSI_STORE_PASSWORD_MISMATCH), 0, true, false, 0, "Message", 280, 120, 0);

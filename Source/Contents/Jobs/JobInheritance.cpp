@@ -1809,7 +1809,7 @@ public:
 // OFFSET: 0x00E24B30
 // FUNCTION: fn_23899
 bool CSession::UnequipCostumeItem(int location) {
-  if (location == 0x8000) {
+  if (location == EQP_AMMO) {
     this->SetEquippedArrowIndex(0);
   } else {
     const EquipSlots slots = g_session.GetEquipSlots(location);

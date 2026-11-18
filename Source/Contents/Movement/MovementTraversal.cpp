@@ -9,7 +9,7 @@ bool CPathFinder::CanMove(int startX, int startY, int targetX, int targetY, char
   }
 
   const TerrainHeightCell* cell = attr->CellAt(targetX, targetY);
-  if (!cell || cell->type == 1 || (flag != 12 && cell->type == 5)) {
+  if (!cell || cell->type == TERRAIN_CELL_BLOCKED || (flag != 12 && cell->type == TERRAIN_CELL_CLIFF)) {
     return false;
   }
 

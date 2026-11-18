@@ -25829,7 +25829,7 @@ void CGameMode::ProcessIncomingPackets() {
     case ID_ZC_EQUIP_ARROW: {
       const auto* packet = reinterpret_cast<const PACKET_ZC_EQUIP_ARROW*>(g_gameModePacketBuffer);
       if (static_cast<std::uint16_t>(packet->index) == 0 && g_session.equippedArrowIndex) {
-        const int location = 0x8000;
+        const int location = EQP_AMMO;
         EquipmentProperties::CEquipmentPropertiesMgr *properties = EquipmentProperties::CEquipmentPropertiesMgr::GetInstance();
         const int index = GetEquipLocationIndex(location);
         if (properties->FindProperty1(index)) {

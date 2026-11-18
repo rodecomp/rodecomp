@@ -116,7 +116,7 @@ void CGameMode::StepTowardWalkableCell(const int& targetX, const int& targetY, i
   }
 
   const TerrainHeightCell* cell = this->scene->terrain->CellAt(x, y);
-  if (cell != nullptr && cell->type != 1 && cell->type != 5) {
+  if (cell != nullptr && cell->type != TERRAIN_CELL_BLOCKED && cell->type != TERRAIN_CELL_CLIFF) {
     return;
   }
 
@@ -125,7 +125,7 @@ void CGameMode::StepTowardWalkableCell(const int& targetX, const int& targetY, i
     x = startX + offsets[i][0];
     y = startY + offsets[i][1];
     cell = this->scene->terrain->CellAt(x, y);
-    if (cell != nullptr && cell->type != 1 && cell->type != 5) {
+    if (cell != nullptr && cell->type != TERRAIN_CELL_BLOCKED && cell->type != TERRAIN_CELL_CLIFF) {
       return;
     }
   }
@@ -143,7 +143,7 @@ void CGameMode::FindWalkableCellToward(float x, float z, float originX, float or
   const int startY = row;
   const int startX = column;
   const TerrainHeightCell* cell = this->scene->terrain->CellAt(startX, startY);
-  if (cell != nullptr && cell->type != 1 && cell->type != 5) {
+  if (cell != nullptr && cell->type != TERRAIN_CELL_BLOCKED && cell->type != TERRAIN_CELL_CLIFF) {
     return;
   }
 
@@ -152,7 +152,7 @@ void CGameMode::FindWalkableCellToward(float x, float z, float originX, float or
     column = startX + offsets[i][0];
     row = startY + offsets[i][1];
     cell = this->scene->terrain->CellAt(column, row);
-    if (cell != nullptr && cell->type != 1 && cell->type != 5) {
+    if (cell != nullptr && cell->type != TERRAIN_CELL_BLOCKED && cell->type != TERRAIN_CELL_CLIFF) {
       return;
     }
   }

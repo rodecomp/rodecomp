@@ -1,4 +1,5 @@
 #include "Client/Mode/CMode.h"
+#include "UI/Window/UIEnums.h"
 #include "UI/Window/UIWindowMgr.h"
 
 #include <windows.h>
@@ -32,5 +33,5 @@ void CMode::SetCursorAction(int action) {
   this->cursorAction = action;
   this->cursorActionFrame = 0;
   this->cursorTick = timeGetTime();
-  g_windowMgr.SendNotice(15, this->cursorAction, 0, 0, 0, 0);
+  g_windowMgr.SendNotice(UIM_SET_CURSOR_ACTION, this->cursorAction, 0, 0, 0, 0);
 }
