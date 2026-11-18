@@ -34,6 +34,17 @@ UIPreviewEquipWnd::~UIPreviewEquipWnd() {
   delete this->m_render;
 }
 
+// INLINED
+static void DrawPreviewCharacter(
+  UIWindow* window, int x, int y, unsigned char sex, short job, int hairColor, short body, short head, short bottomAccessory, short topAccessory,
+  short midAccessory, int robe, unsigned char flags, int shield, int bodyStyle, int headPalette, int action, int motion, int time
+) {
+  FuncDrawWNDChar(
+    window, x, y, sex, job, hairColor, body, head, bottomAccessory, topAccessory, midAccessory, robe, flags, shield, bodyStyle, headPalette, action,
+    motion, time
+  ).Draw(1);
+}
+
 // OFFSET: 0x007F3590
 // FUNCTION: fn_09881
 void UIPreviewEquipWnd::DrawCharacter() {
@@ -62,13 +73,13 @@ void UIPreviewEquipWnd::DrawCharacter() {
     static_cast<float>(this->geometry.height) + this->m_render->viewportOffsetY
   );
 
-  FuncDrawWNDChar(
+  DrawPreviewCharacter(
     this, static_cast<int>(screenX), static_cast<int>(screenY), static_cast<unsigned char>(this->m_render->appearance[0]),
     static_cast<short>(this->m_render->job), this->m_render->headJob, static_cast<short>(this->m_render->bodyCostume),
     static_cast<short>(this->m_render->appearance[1]), static_cast<short>(this->m_render->lowerHeadgear), static_cast<short>(this->m_render->upperHeadgear),
     static_cast<short>(this->m_render->middleHeadgear), this->m_render->robe, this->m_render->riding, this->m_render->madogearType, this->m_render->appearance[2],
     this->m_render->appearance[3], this->m_render->actionIndex, this->m_render->frameIndex, 0
-  ).Draw(1);
+  );
 }
 
 // OFFSET: 0x007F38A0
