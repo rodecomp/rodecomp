@@ -1291,7 +1291,7 @@ AdventureGuideResult CAdventureGuideMgr::InsertDungeonContents(int id, int menu,
 // OFFSET: 0x00665150
 // FUNCTION: fn_05241
 AdventureGuideResult CAdventureGuideMgr::InsertDungeonReward(int id, std::string_view text) {
-  const auto it = std::find_if(dungeonContents.begin(), dungeonContents.end(), [&](const auto& entry) {
+  const auto it = std::find_if(dungeonContents.begin(), dungeonContents.end(), [id](const auto& entry) {
     return entry.second.end() != entry.second.find(id);
   });
   if (it == dungeonContents.end()) {
@@ -1337,7 +1337,7 @@ AdventureGuideResult CAdventureGuideMgr::InsertEpisodeContents(int id, int menu,
 // OFFSET: 0x00665750
 // FUNCTION: fn_05244
 AdventureGuideResult CAdventureGuideMgr::InsertEpisodeReward(int id, std::string_view text) {
-  const auto it = std::find_if(episodeContents.begin(), episodeContents.end(), [&](const auto& entry) {
+  const auto it = std::find_if(episodeContents.begin(), episodeContents.end(), [id](const auto& entry) {
     return entry.second.end() != entry.second.find(id);
   });
   if (it == episodeContents.end()) {
@@ -1499,7 +1499,7 @@ AdventureGuideResult CAdventureGuideMgr::InsertQuestContents(int id, int menu, i
 // OFFSET: 0x00666E70
 // FUNCTION: fn_05254
 AdventureGuideResult CAdventureGuideMgr::InsertQuestReward(int id, std::string_view text) {
-  const auto it = std::find_if(questContents.begin(), questContents.end(), [&](const auto& entry) {
+  const auto it = std::find_if(questContents.begin(), questContents.end(), [id](const auto& entry) {
     return entry.second.end() != entry.second.find(id);
   });
   if (it == questContents.end()) {
