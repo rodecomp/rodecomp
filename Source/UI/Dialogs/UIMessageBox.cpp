@@ -4320,12 +4320,12 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 
       this->m_info.head = static_cast<std::int16_t>(this->m_hairStyle + 1);
       int head = this->m_info.head;
-      this->m_view.actionNames[1].assign(g_session.GetHeadActName(this->m_info.job, sex, &head));
-      this->m_view.spriteNames[1].assign(g_session.GetHeadSprName(this->m_info.job, sex, &head));
+      this->m_view.actionNames[1].assign(static_cast<const std::string&>(g_session.GetHeadActName(this->m_info.job, sex, &head)));
+      this->m_view.spriteNames[1].assign(static_cast<const std::string&>(g_session.GetHeadSprName(this->m_info.job, sex, &head)));
       this->m_info.head = static_cast<std::int16_t>(head);
       this->m_view.imfName = g_session.GetBodyImfName(this->m_info.job, sex, this->m_info.head, this->m_info.bodyCostume);
       if (this->m_view.headPalette) {
-        this->m_view.headPaletteName.assign(g_session.GetHeadPalName(head, this->m_info.job, sex, this->m_view.headPalette));
+        this->m_view.headPaletteName.assign(static_cast<const std::string&>(g_session.GetHeadPalName(head, this->m_info.job, sex, this->m_view.headPalette)));
       }
       return this->m_hairStyle - previous;
     }
@@ -4350,7 +4350,7 @@ int UIMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
 
       this->m_view.headPalette = this->m_hairColor;
       if (this->m_view.headPalette) {
-        this->m_view.headPaletteName = g_session.GetHeadPalName(this->m_info.head, this->m_info.job, sex, this->m_view.headPalette);
+        this->m_view.headPaletteName = static_cast<const std::string&>(g_session.GetHeadPalName(this->m_info.head, this->m_info.job, sex, this->m_view.headPalette));
       }
       this->m_info.headPalette = static_cast<std::int16_t>(this->m_view.headPalette);
       return this->m_hairColor - previous;
