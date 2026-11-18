@@ -12,3 +12,9 @@ void UINewComboBoxCtrl::Clear() {
   this->items.clear();
   this->selected = 0;
 }
+
+// OFFSET: 0x0089B450
+// FUNCTION: fn_45606
+void UINewComboBoxCtrl::AddOption(std::string text) {
+  this->items.push_back(text);
+}
