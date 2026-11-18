@@ -61,10 +61,7 @@ CActRes* CActRes::Create() {
 bool CActRes::Load(const char* name) {
   CFile file;
   if (!file.Open(name, 0, true, false)) {
-    const std::string path(name);
-    const std::string prefix("Cannot find File : ");
-    const std::string message = prefix + path;
-    ShowErrorDialog(message.c_str(), 0);
+    ShowErrorDialog((std::string("Cannot find File : ") + std::string(name)).c_str(), 0);
     return false;
   }
 
@@ -94,9 +91,10 @@ bool CActRes::Load(const char* name) {
     return false;
   }
 
+  const int animationCount = header.count;
   this->Unload();
-  this->animations.resize(header.count);
-  this->speeds.resize(header.count, 4.0f);
+  this->animations.resize(animationCount);
+  this->speeds.resize(animationCount, 4.0f);
 
   for (unsigned animationIndex = 0; animationIndex < this->animations.size(); ++animationIndex) {
     std::vector<ActionFrame>& animation = this->animations[animationIndex];
@@ -150,15 +148,18 @@ bool CActRes::Load(const char* name) {
             std::int32_t imageType;
           } legacy;
           file.Read(&legacy, sizeof(legacy));
+          cell.colorChannels.alpha = legacy.color.alpha;
+          cell.colorChannels.red = legacy.color.red;
+          cell.colorChannels.green = legacy.color.green;
+          cell.colorChannels.blue = legacy.color.blue;
           cell.x = legacy.x;
           cell.y = legacy.y;
-          cell.image = legacy.image;
+          cell.rotation = legacy.rotation;
           cell.mirrored = legacy.mirrored;
-          cell.colorChannels = legacy.color;
+          cell.imageType = legacy.imageType;
+          cell.image = legacy.image;
           cell.scaleX = legacy.scale;
           cell.scaleY = legacy.scale;
-          cell.rotation = legacy.rotation;
-          cell.imageType = legacy.imageType;
 
           if (cell.image == -1 || !SpriteImageSize(spriteName.c_str(), cell, width, height)) {
             continue;
@@ -167,12 +168,17 @@ bool CActRes::Load(const char* name) {
           file.Read(&cell, sizeof(cell));
 
           if (header.version >= 0x0205) {
-            file.Read(&width, sizeof(width));
-            file.Read(&height, sizeof(height));
+            int imageWidth;
+            int imageHeight;
+            file.Read(&imageWidth, sizeof(imageWidth));
+            file.Read(&imageHeight, sizeof(imageHeight));
 
             if (cell.image == -1) {
               continue;
             }
+
+            width = imageWidth;
+            height = imageHeight;
           } else if (cell.image == -1 || !SpriteImageSize(spriteName.c_str(), cell, width, height)) {
             continue;
           }
