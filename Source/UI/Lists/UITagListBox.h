@@ -42,6 +42,7 @@ public:
   void DecodeValues(std::vector<unsigned int>& values, const char* text, int& position, const int& end, const char& separator, const char& alternate);
   int DecodeCards(std::vector<int>& fields, const char* text, int& position, const char& separator, const int& end, int index);
   void AddTagButton(STagInfoV2 tag, int lineCount);
+  static __forceinline std::string __stdcall ItemName(int id);
   void AppendTaggedText(const char* text, int width);
   int WrappedLineLength(const char* text, int length, int width) const;
   std::pair<unsigned int, int> FindTagPosition(int offset, int lineCount);

@@ -469,12 +469,11 @@ std::string infoTagOpening = "<INFO>";
 // GLOBAL: gl_25152
 std::string infoTagClosing = "</INFO>";
 
-namespace {
-// INLINED
-std::string ItemName(int id) {
+// OFFSET: 0x009B9B90
+// FUNCTION: fn_45781
+__forceinline std::string __stdcall UITagListBox::ItemName(int id) {
   ITEM_DESC description = FindItemDescription(id);
   return description.identifiedName;
-}
 }
 
 // OFFSET: 0x009B94E0
