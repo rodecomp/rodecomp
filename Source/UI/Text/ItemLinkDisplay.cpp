@@ -47,7 +47,7 @@ bool UIChatHisBox::Next(std::string& remaining, std::string& encoded, unsigned& 
     return false;
   }
 
-  for (;;) {
+  while (close != std::string::npos) {
     remaining = remaining.substr(0, close);
     auto begin = remaining.find(g_itemLinkTagBegin);
 
@@ -61,8 +61,6 @@ bool UIChatHisBox::Next(std::string& remaining, std::string& encoded, unsigned& 
     close = remaining.find(g_itemLinkTagEnd);
 
     if (begin != std::string::npos) {
-      const auto beginTagSize = g_itemLinkTagBegin.size();
-
       do {
         position += static_cast<unsigned>(begin);
         remaining = remaining.substr(begin + g_itemLinkTagBegin.size());
@@ -70,13 +68,13 @@ bool UIChatHisBox::Next(std::string& remaining, std::string& encoded, unsigned& 
         close = remaining.find(g_itemLinkTagEnd);
 
         if (begin != std::string::npos) {
-          position += static_cast<unsigned>(beginTagSize);
+          position += static_cast<unsigned>(g_itemLinkTagBegin.size());
         }
       } while (begin != std::string::npos);
 
       encoded = remaining;
       remaining = original;
-      std::string name;
+      std::string name = "";
 
       if (!this->Name(encoded, name)) {
         position += static_cast<unsigned>(encoded.size() + g_itemLinkTagBegin.size() + g_itemLinkTagEnd.size());
@@ -85,10 +83,6 @@ bool UIChatHisBox::Next(std::string& remaining, std::string& encoded, unsigned& 
       }
 
       remaining = remaining.substr(position + encoded.size() + g_itemLinkTagBegin.size() + g_itemLinkTagEnd.size());
-    }
-
-    if (close == std::string::npos) {
-      break;
     }
   }
 
