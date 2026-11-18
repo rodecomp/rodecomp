@@ -184,32 +184,30 @@ std::string CTipBoxMgr::Title(int id, std::string* abbreviated, int width) const
 // OFFSET: 0x007ACF50
 // FUNCTION: fn_09128
 void CTipBoxMgr::Sub7ACF50() {
-  const TipBoxEntry& entry = this->m_currentEntry;
-
-  if (entry.bitmapName.size() == 0) {
+  if (this->m_currentEntry.bitmapName.size() == 0) {
     this->m_image.kind = 2;
     return;
   }
 
-  const int cell = entry.imageCell - 1;
+  const int cell = this->m_currentEntry.imageCell - 1;
   const float cellWidth = static_cast<float>(this->m_width) / 3.0f;
   const int row = cell / 3;
   const int column = cell % 3;
   const float cellHeight = static_cast<float>(this->m_height) / 3.0f;
-  const std::size_t found = entry.bitmapName.find("유저인터페이스\\");
+  const std::size_t found = this->m_currentEntry.bitmapName.find("유저인터페이스\\");
 
   this->m_image.x = static_cast<float>(column) * cellWidth + cellWidth * 0.5f;
   this->m_image.y = static_cast<float>(this->m_maximumId) + cellHeight * 0.5f + static_cast<float>(row) * cellHeight;
 
   if (found != std::string::npos) {
-    this->m_imagePath = entry.bitmapName + ".bmp";
+    this->m_imagePath = this->m_currentEntry.bitmapName + ".bmp";
 
     const auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->m_imagePath.c_str())));
     if (!bitmap) {
       return;
     }
 
-    const float scale = static_cast<float>(entry.imageScalePercent) * 0.01f;
+    const float scale = static_cast<float>(this->m_currentEntry.imageScalePercent) * 0.01f;
     this->m_image.x -= static_cast<float>(bitmap->image.width) * 0.5f * scale;
     this->m_image.y -= static_cast<float>(bitmap->image.height) * 0.5f * scale;
 
@@ -233,7 +231,7 @@ void CTipBoxMgr::Sub7ACF50() {
     this->m_image.scale = scale;
     this->m_image.height = static_cast<float>(bitmap->image.height) * scale;
   } else {
-    this->m_imagePath = "sprite\\" + entry.bitmapName;
+    this->m_imagePath = "sprite\\" + this->m_currentEntry.bitmapName;
 
     const auto* sprite = static_cast<CSprRes*>(ResourceMgr::Instance().Load(this->m_imagePath + ".spr"));
     if (!sprite) {
@@ -245,8 +243,8 @@ void CTipBoxMgr::Sub7ACF50() {
       return;
     }
 
-    const float scale = static_cast<float>(entry.imageScalePercent) * 0.01f;
-    const float ratio = static_cast<float>(entry.imageScalePercent) / 100.0f;
+    const float scale = static_cast<float>(this->m_currentEntry.imageScalePercent) * 0.01f;
+    const float ratio = static_cast<float>(this->m_currentEntry.imageScalePercent) / 100.0f;
     this->m_image.x -= static_cast<float>(image->width) * 0.5f * scale;
     this->m_image.y -= static_cast<float>(image->height) * 0.5f * scale;
 
