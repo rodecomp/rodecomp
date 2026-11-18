@@ -40,12 +40,11 @@ void CMCStoreInfoBackup::ImportData(Json::Value& data) {
     item.optionCount = (*entry).get("RandomOptionCount", 0).asInt();
     Json::Value options = (*entry)["RandomOptionList"];
     int index = 0;
-    ItemOptionRecord* record = item.options;
 
-    for (auto option = options.begin(); option != options.end() && index <= 5; ++option, ++index, ++record) {
-      record->id = static_cast<std::int16_t>((*option).get("OptIndex", 0).asInt());
-      record->value = static_cast<std::int16_t>((*option).get("Value", 0).asInt());
-      record->parameter = static_cast<unsigned char>((*option).get("Parm1", 0).asInt());
+    for (auto option = options.begin(); option != options.end() && index <= 5; ++option, ++index) {
+      item.options[index].id = static_cast<std::int16_t>((*option).get("OptIndex", 0).asInt());
+      item.options[index].value = static_cast<std::int16_t>((*option).get("Value", 0).asInt());
+      item.options[index].parameter = static_cast<unsigned char>((*option).get("Parm1", 0).asInt());
     }
 
     item.prices[0] = static_cast<std::uint32_t>((*entry).get("Price", 0).asInt());
