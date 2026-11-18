@@ -1199,7 +1199,7 @@ __declspec(noinline) bool CNavigationManager::UpdateSearchResults() {
     return false;
   }
 
-  std::sort(this->states.begin(), this->states.end(), [](const NavigationTarget& left, const NavigationTarget& right) { return left > right; });
+  std::sort(this->states.begin(), this->states.end(), std::greater<>{});
   this->BuildNodePaths();
   this->SelectNodePath(this->searchText);
   return true;
