@@ -227,7 +227,7 @@ CRenderer::CRenderer() : viewDirectionX(0), viewDirectionY(0), viewDirectionZ(0)
   this->fog.enabled = 0;
   this->fog.dirty = 1;
   this->fog.supported = 0;
-  this->queues.Reserve(1000);
+  this->ReserveQueues(1000);
 }
 
 // OFFSET: 0x00562090

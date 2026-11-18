@@ -113,10 +113,10 @@ void CRendererDX9::Submit(LightmappedPrimitive* command, int queue) {
 
   switch (queue) {
   case 0:
-    this->queues.lightmapped.first.push_back(command);
+    this->lightmappedFirst.push_back(command);
     break;
   case 1:
-    this->queues.lightmapped.second.push_back(command);
+    this->lightmappedSecond.push_back(command);
     break;
   }
 }

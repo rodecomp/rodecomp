@@ -20,45 +20,45 @@ void CRenderer::Submit(RenderCommand* primitive, std::uint16_t flags) {
     };
     if (flags & 4) {
       if (flags & 8) {
-        this->queues.queue_0210.push_back(primitive);
+        this->queue_0210.push_back(primitive);
       } else if (flags & 0x200) {
-        this->queues.queue_0234.push_back({average(), primitive});
+        this->queue_0234.push_back({average(), primitive});
       } else {
-        this->queues.queue_01EC.push_back(primitive);
+        this->queue_01EC.push_back(primitive);
       }
     } else if (flags & 2) {
       if (flags & 0x100) {
-        this->queues.queue_01C8.push_back({average(), primitive});
+        this->queue_01C8.push_back({average(), primitive});
       } else if (flags & 0x200) {
-        this->queues.queue_01E0.push_back({average(), primitive});
+        this->queue_01E0.push_back({average(), primitive});
       } else {
-        this->queues.queue_01D4.push_back({average(), primitive});
+        this->queue_01D4.push_back({average(), primitive});
       }
     } else if (flags & 0x10) {
-      this->queues.queue_0228.push_back({average(), primitive});
+      this->queue_0228.push_back({average(), primitive});
     } else if (flags & 0x100) {
-      this->queues.queue_0180.push_back({average(), primitive});
+      this->queue_0180.push_back({average(), primitive});
     } else if (flags & 0x200) {
       if (flags & 8) {
-        this->queues.queue_021C.push_back({average(), primitive});
+        this->queue_021C.push_back({average(), primitive});
       } else {
-        this->queues.queue_0198.push_back({average(), primitive});
+        this->queue_0198.push_back({average(), primitive});
       }
     } else if (flags & 0x20) {
-      this->queues.queue_01BC.push_back({first(), primitive});
+      this->queue_01BC.push_back({first(), primitive});
     } else if (static_cast<unsigned char>(primitive->depthFlags) == 1) {
-      this->queues.queue_018C.push_back({first(), primitive});
+      this->queue_018C.push_back({first(), primitive});
     } else {
-      this->queues.queue_01A4.push_back({first(), primitive});
+      this->queue_01A4.push_back({first(), primitive});
     }
   } else if (flags & 0x800) {
-    this->queues.queue_0168.push_back(primitive);
+    this->queue_0168.push_back(primitive);
   } else if (flags & 0x1000) {
-    this->queues.queue_0174.push_back(primitive);
+    this->queue_0174.push_back(primitive);
   } else if (flags & 0x20) {
-    this->queues.queue_01B0.push_back(primitive);
+    this->queue_01B0.push_back(primitive);
   } else {
-    this->queues.queue_015C.push_back(primitive);
+    this->queue_015C.push_back(primitive);
   }
 }
 

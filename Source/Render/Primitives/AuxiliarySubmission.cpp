@@ -14,7 +14,7 @@ __declspec(noinline) void LightmappedCommand::ApplyAuxiliaryDepthAlpha() {
 // FUNCTION: fn_02072
 void CRenderer::SubmitAuxiliaryPrimitive(LightmappedCommand* primitive) {
   primitive->ApplyAuxiliaryDepthAlpha();
-  this->queues.queue_0240.push_back(primitive);
+  this->queue_0240.push_back(primitive);
 }
 
 // INLINED

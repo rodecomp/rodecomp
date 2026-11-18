@@ -78,26 +78,10 @@ private:
   /* 00A4 */ std::deque<LightmappedPrimitive>::iterator m_current;
 };
 
-struct LightmappedQueues {
-  /* 01F8 */ std::vector<LightmappedPrimitive*> first;
-  /* 0204 */ std::vector<LightmappedPrimitive*> second;
-
-  // INLINED
-  __forceinline ~LightmappedQueues() = default;
-
-  void Clear();
-};
-
 static_assert(sizeof(LightmappedVertex) == 40);
 // INLINED
 inline void LightmappedPrimitivePool::Rewind() {
   this->m_current = this->m_commands.begin();
-}
-
-// INLINED
-inline void LightmappedQueues::Clear() {
-  this->first.clear();
-  this->second.clear();
 }
 
 // INLINED
@@ -117,13 +101,10 @@ static_assert(sizeof(LightmappedPrimitive) == 188);
 static_assert(sizeof(LightmappedCommand) == 28);
 static_assert(sizeof(ModelRenderCommand) == 40);
 static_assert(sizeof(LightmappedPrimitivePool) == 0x20);
-static_assert(sizeof(LightmappedQueues) == 0x18);
 static_assert(offsetof(LightmappedVertex, lightU) == 0x0020);
 static_assert(offsetof(LightmappedVertex, lightV) == 0x0024);
 static_assert(offsetof(LightmappedCommand, primitiveType) == 0x0018);
 static_assert(offsetof(LightmappedPrimitive, quad) == 0x001C);
-static_assert(offsetof(LightmappedQueues, first) + 0x01F8 == 0x01F8);
-static_assert(offsetof(LightmappedQueues, second) + 0x01F8 == 0x0204);
 #endif
 
 #endif

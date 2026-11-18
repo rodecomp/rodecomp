@@ -13,8 +13,8 @@ namespace {
 // OFFSET: 0x0055B160
 // FUNCTION: fn_02089
 void CRendererDX7::DrawAlphaQueues() {
-  std::sort(this->queues.queue_018C.begin(), this->queues.queue_018C.end());
-  std::sort(this->queues.queue_01BC.begin(), this->queues.queue_01BC.end());
+  std::sort(this->queue_018C.begin(), this->queue_018C.end());
+  std::sort(this->queue_01BC.begin(), this->queue_01BC.end());
 
   DWORD zWrite = 0;
   DWORD alphaTest = 0;
@@ -49,22 +49,22 @@ void CRendererDX7::DrawAlphaQueues() {
     this->device->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE);
     this->device->SetRenderState(D3DRENDERSTATE_ALPHAFUNC, D3DCMP_GREATEREQUAL);
     this->device->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_CLAMP);
-    std::for_each(this->queues.queue_018C.begin(), this->queues.queue_018C.end(), drawAlphaTested);
+    std::for_each(this->queue_018C.begin(), this->queue_018C.end(), drawAlphaTested);
     this->device->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP);
-    std::for_each(this->queues.queue_01BC.begin(), this->queues.queue_01BC.end(), drawAlphaTested);
+    std::for_each(this->queue_01BC.begin(), this->queue_01BC.end(), drawAlphaTested);
 
     this->device->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
     this->device->SetRenderState(D3DRENDERSTATE_ALPHAFUNC, D3DCMP_LESS);
     this->device->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_CLAMP);
-    std::for_each(this->queues.queue_018C.begin(), this->queues.queue_018C.end(), drawAlphaTested);
+    std::for_each(this->queue_018C.begin(), this->queue_018C.end(), drawAlphaTested);
     this->device->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP);
-    std::for_each(this->queues.queue_01BC.begin(), this->queues.queue_01BC.end(), drawAlphaTested);
+    std::for_each(this->queue_01BC.begin(), this->queue_01BC.end(), drawAlphaTested);
 
     this->device->SetRenderState(D3DRENDERSTATE_ALPHAREF, 1);
     this->device->SetRenderState(D3DRENDERSTATE_ALPHAFUNC, D3DCMP_GREATEREQUAL);
-    std::sort(this->queues.queue_01A4.begin(), this->queues.queue_01A4.end());
+    std::sort(this->queue_01A4.begin(), this->queue_01A4.end());
 
-    for (auto it = this->queues.queue_01A4.begin(); it != this->queues.queue_01A4.end(); ++it) {
+    for (auto it = this->queue_01A4.begin(); it != this->queue_01A4.end(); ++it) {
       RenderCommand* command = it->primitive;
       this->BindTexture(static_cast<CTextureDX7*>(command->texture));
       command->Draw(reinterpret_cast<int>(this->device));
@@ -78,9 +78,9 @@ void CRendererDX7::DrawAlphaQueues() {
     };
 
     this->device->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_CLAMP);
-    std::for_each(this->queues.queue_018C.begin(), this->queues.queue_018C.end(), drawDepthWriting);
+    std::for_each(this->queue_018C.begin(), this->queue_018C.end(), drawDepthWriting);
     this->device->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP);
-    std::for_each(this->queues.queue_01BC.begin(), this->queues.queue_01BC.end(), drawDepthWriting);
+    std::for_each(this->queue_01BC.begin(), this->queue_01BC.end(), drawDepthWriting);
   }
 
   this->device->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, zWrite);

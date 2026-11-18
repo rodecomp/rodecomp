@@ -12,7 +12,7 @@
 // FUNCTION: fn_02079
 void CRenderer::ClearFrame() {
   g_effectMgr->ClearRetired();
-  this->queues.Clear();
+  this->ClearQueues();
   this->commands.Rewind();
   this->primitives.Rewind();
   this->lightmapped.Rewind();
