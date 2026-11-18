@@ -697,7 +697,6 @@ void ApplyAiPatch() {
     operation.hwnd = nullptr;
     operation.wFunc = FO_DELETE;
     operation.pFrom = path;
-    operation.pTo = nullptr;
     operation.fFlags = FOF_ALLOWUNDO | FOF_NOCONFIRMATION;
     SHFileOperationA(&operation);
   }
