@@ -3267,8 +3267,8 @@ void CSession::ResetCharacterState() {
   this->quitAllowed = 0;
   this->sessionFlag = 0;
   g_session.m_mapTransitionFlag = 0;
-  this->m_playerMessage82Arg = 0;
   this->adoptionSkillAvailable = 0;
+  this->m_playerMessage82Arg = 0;
   this->m_randomLoadingScreen = 1;
   this->guildLeader = 0;
   this->showTimer = 0;
