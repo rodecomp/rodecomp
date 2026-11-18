@@ -35,6 +35,7 @@ public:
   void OnMouseHover(int x, int y) override;
   void ReloadHotkeys();
   bool AssignSelectedHotkey(int mode);
+  int ValidateSpecialHotkeyMode(int mode);
   int CheckHotkeyConflict();
 
   /* 00B4 */ int m_selectedRow;
