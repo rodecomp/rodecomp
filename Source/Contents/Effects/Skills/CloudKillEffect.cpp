@@ -51,16 +51,19 @@ void CCloudKillEffect::AddSprites() {
       rotation.MakeYRotation(GetRadian(ClampedRandom(360)));
       const float distance = static_cast<float>(ClampedRandom(6) + 2);
       const float* values = rotation.values;
-      particle->originX = values[3] * 0.0f + values[0] * 0.0f + distance * values[6] + values[9] + static_cast<float>(x);
-      particle->originY = values[4] * 0.0f + values[1] * 0.0f + distance * values[7] + values[10] + 0.0f;
-      particle->originZ = values[5] * 0.0f + values[2] * 0.0f + distance * values[8] + values[11] + static_cast<float>(z);
+      const vector3d origin = {values[3] * 0.0f + values[0] * 0.0f + distance * values[6] + values[9] + static_cast<float>(x),
+                               values[4] * 0.0f + values[1] * 0.0f + distance * values[7] + values[10] + 0.0f,
+                               values[5] * 0.0f + values[2] * 0.0f + distance * values[8] + values[11] + static_cast<float>(z)};
+      particle->originX = origin.x;
+      particle->originY = origin.y;
+      particle->originZ = origin.z;
       rotation.MakeXRotation(GetRadian(90));
       const float speed = static_cast<float>(ClampedRandom(30) + 30) / 100.0f;
       const float acceleration = -(speed / 40.0f) * g_depthAverageHalf;
-      const int size = ClampedRandom(50);
+      const float scale = static_cast<float>(ClampedRandom(50) + 40) / 170.0f;
       particle->frameDelay = speed;
       particle->acceleration = acceleration;
-      particle->scale = static_cast<float>(size + 40) / 170.0f;
+      particle->scale = scale;
       particle->spin = 3.0f;
       particle->alpha = 0;
       particle->animationParameter = 25.4f;
