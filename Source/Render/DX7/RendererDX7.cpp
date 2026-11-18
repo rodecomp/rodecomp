@@ -2,13 +2,19 @@
 
 #include <timeapi.h>
 
+// OFFSET: 0x0055FAA0
+// FUNCTION: fn_45908
+void CRendererDX7::ResetFrameRate() {
+  this->samples = 0;
+  this->time = timeGetTime();
+  this->rate = 0;
+}
+
 // OFFSET: 0x00559420
 // FUNCTION: fn_02065
 CRendererDX7::CRendererDX7() {
   this->frame = 0;
-  this->samples = 0;
-  this->time = timeGetTime();
-  this->rate = 0;
+  this->ResetFrameRate();
   this->boundTexture = nullptr;
   this->boundLightmap = nullptr;
   this->fog.enabled = 0;

@@ -46,6 +46,7 @@ public:
   void SetTexture(unsigned stage, CTextureDX7* texture);
   void Present(bool option) override;
   float FPS() const override;
+  void ResetFrameRate();
   void CaptureBackBuffer() override;
   void RestoreBackBuffer() override;
   void DrawAuxiliaryPrimitive(LightmappedCommand* primitive) override;
