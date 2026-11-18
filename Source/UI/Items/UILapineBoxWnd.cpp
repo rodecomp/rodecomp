@@ -322,11 +322,11 @@ int UILapineBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     case ID_LAPINE_COMBINE_ITEMS: {
       RandomCombineItemPacket* packet = new (std::nothrow) RandomCombineItemPacket;
       packet->id = ID_CZ_REQ_RANDOM_COMBINE_ITEM;
-      const std::int16_t materialsLength = static_cast<std::int16_t>(this->items.size() * 4);
-      packet->length = materialsLength + 8;
+      const std::size_t materialsLength = this->items.size() * 4;
+      packet->length = static_cast<std::int16_t>(materialsLength + 8);
       packet->ingredientId = this->ingredientId;
 
-      char* payload = new (std::nothrow) char[materialsLength + 8];
+      char* payload = new (std::nothrow) char[static_cast<std::int16_t>(materialsLength) + 8];
       memcpy_s(payload, packet->length, packet, 8);
 
       for (std::size_t index = 0; index < this->items.size(); ++index) {
@@ -351,15 +351,13 @@ int UILapineBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
     }
     case ID_LAPINE_ADD_INGREDIENT: {
       const std::vector<UIIngredientInfoWnd*>& entries = this->ingredientList->items;
-      const auto selected = std::find_if(entries.begin(), entries.end(), [](UIIngredientInfoWnd* entry) {
-        return entry->selected == 1;
-      });
-
-      if (selected != entries.end()) {
-        UIIngredientInfoWnd* entry = *selected;
-
-        if (entry != nullptr && entry->insufficient != 1 && this->ingredientList->SendMsg(this, UM_DECITEM, entry->item.identity[1], 0, 0, 0) >= 0) {
-          this->AddIngredient(entry->item.identity[1], entry->quantity);
+      for (std::vector<UIIngredientInfoWnd*>::const_iterator it = entries.begin(); it != entries.end(); ++it) {
+        if ((*it)->selected == 1) {
+          UIIngredientInfoWnd* entry = *it;
+          if (entry != nullptr && entry->insufficient != 1 && this->ingredientList->SendMsg(this, UM_DECITEM, entry->item.identity[1], 0, 0, 0) >= 0) {
+            this->AddIngredient(entry->item.identity[1], entry->quantity);
+          }
+          break;
         }
       }
       break;
