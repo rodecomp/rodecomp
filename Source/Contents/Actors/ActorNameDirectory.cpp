@@ -17,7 +17,8 @@ std::size_t CActorNameCardHolder::Erase(std::uint32_t id) {
 // OFFSET: 0x005BF890
 // FUNCTION: fn_03498
 std::uint32_t CActorNameCardHolder::FindId(std::string name) {
-  auto it = std::find_if(this->cards.begin(), this->cards.end(), [name](std::pair<const std::uint32_t, CActorNameCard> entry) {
+  auto it = std::find_if(this->cards.begin(), this->cards.end(), [name](const std::pair<const std::uint32_t, CActorNameCard>& item) {
+    const std::pair<const std::uint32_t, CActorNameCard> entry = item;
     return entry.second.name == name;
   });
 
