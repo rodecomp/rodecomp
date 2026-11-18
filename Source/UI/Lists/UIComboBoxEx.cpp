@@ -16,18 +16,6 @@
 
 template __declspec(noinline) std::_Tree_find_result<std::map<int, ExtendedListLine>::_Mybase::_Nodeptr> std::map<int, ExtendedListLine>::_Mybase::_Find_lower_bound<int>(const int&) const;
 
-namespace {
-  // INLINED
-  unsigned Palette(int column, int row) {
-    unsigned red;
-    unsigned green;
-    unsigned blue;
-    g_skinInfo.PaletteChannels(column, row, red, green, blue);
-
-    return RGB(red, green, blue);
-  }
-}
-
 // OFFSET: 0x00872C00
 // FUNCTION: fn_11136
 UIComboBoxEx::~UIComboBoxEx() = default;
@@ -249,8 +237,11 @@ __forceinline void UIComboBoxEx::DrawRows(bool centered) {
 // OFFSET: 0x0088A360
 // FUNCTION: fn_11354
 void UIComboBoxEx::Paint() {
-  this->ClearSurface(Palette(6, 6));
-  this->FillRegion(1, 1, (this->geometry.width - 2), (this->geometry.height - 2), Palette(2, 2));
+  unsigned red, green, blue;
+  g_skinInfo.PaletteChannels(6, 6, red, green, blue);
+  this->ClearSurface(RGB(red, green, blue));
+  g_skinInfo.PaletteChannels(2, 2, red, green, blue);
+  this->FillRegion(1, 1, (this->geometry.width - 2), (this->geometry.height - 2), RGB(red, green, blue));
 
   auto* leftUp = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\sysboxs_lu.bmp")));
   this->DrawBitmap(0, 0, leftUp, false);
@@ -270,13 +261,15 @@ void UIComboBoxEx::Paint() {
 
   for (int row = top; row < end; ++row) {
     if (row == this->selected) {
-      this->FillRegion(3, ((this->lineHeight * (row - top)) + 1), (this->geometry.width - 6), (this->lineHeight - 2), Palette(6, 2));
+      g_skinInfo.PaletteChannels(6, 2, red, green, blue);
+      this->FillRegion(3, ((this->lineHeight * (row - top)) + 1), (this->geometry.width - 6), (this->lineHeight - 2), RGB(red, green, blue));
     }
     this->DrawTextAt(3 - this->horizontalOffset, this->lineHeight * (row - top) + 2, this->lines[row].text.c_str(), 0, 0, 12, this->lines[row].color, 0, 0);
   }
 
   if (this->verticalOverflow != 0) {
-    this->FillRegion((this->geometry.width - 16), 0, 16, this->geometry.height, Palette(2, 2));
+    g_skinInfo.PaletteChannels(2, 2, red, green, blue);
+    this->FillRegion((this->geometry.width - 16), 0, 16, this->geometry.height, RGB(red, green, blue));
   }
 
   this->parent->Invalidate();
