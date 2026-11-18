@@ -1,4 +1,5 @@
 #include "Contents/Models/ModelActor.h"
+#include "Contents/Map/MapSkyMgr.h"
 #include "Utility/Math/AffineMatrix.h"
 
 #include <array>
@@ -146,6 +147,89 @@ __forceinline void C3dActor::FinishBounds(const float* bounds, bool modern) {
   this->dirty = 1;
 }
 
+// INLINED
+__forceinline void FinishBoundsModern(C3dActor* actor, const float* bounds, bool modern) {
+  for (unsigned axis = 0; axis < 3; ++axis) {
+    actor->minimum[axis] = 100000;
+  }
+
+  for (unsigned axis = 0; axis < 3; ++axis) {
+    actor->maximum[axis] = -100000;
+  }
+
+  BoundsCorner points[8];
+  points[0].Set(bounds[0], bounds[1], bounds[2]);
+  points[1].Set(bounds[3], bounds[1], bounds[2]);
+  points[2].Set(bounds[0], bounds[4], bounds[2]);
+  points[3].Set(bounds[3], bounds[4], bounds[2]);
+  points[4].Set(bounds[0], bounds[1], bounds[5]);
+  points[5].Set(bounds[3], bounds[1], bounds[5]);
+  points[6].Set(bounds[0], bounds[4], bounds[5]);
+  points[7].Set(bounds[3], bounds[4], bounds[5]);
+
+  for (unsigned corner = 0; corner < 8; ++corner) {
+    float* stored = actor->corners[corner];
+    stored[0] = Coordinate(points[corner].values, actor->transform.values, 0);
+    stored[1] = Coordinate(points[corner].values, actor->transform.values, 1);
+    stored[2] = Coordinate(points[corner].values, actor->transform.values, 2);
+
+    for (unsigned axis = 0; axis < 3; ++axis) {
+      if (actor->minimum[axis] > stored[axis]) {
+        actor->minimum[axis] = stored[axis];
+      }
+    }
+
+    for (unsigned axis = 0; axis < 3; ++axis) {
+      if (stored[axis] > actor->maximum[axis]) {
+        actor->maximum[axis] = stored[axis];
+      }
+    }
+  }
+
+  for (unsigned axis = 0; axis < 3; ++axis) {
+    const float low = Coordinate(bounds, actor->transform.values, axis);
+    const float high = Coordinate(bounds + 3, actor->transform.values, axis);
+    actor->oriented.center[axis] = (modern || axis == 2 ? high + low : low + high) * g_depthAverageHalf;
+  }
+
+  for (unsigned axis = 0; axis < 3; ++axis) {
+    actor->oriented.halfSize[axis] = Absolute((bounds[axis + 3] - bounds[axis]) * (&actor->scale.x)[axis]) * g_depthAverageHalf;
+  }
+
+  matrix axes;
+  axes.SetScale(actor->scale.x, actor->scale.y, actor->scale.z);
+  axes.AppendYRotation(Radians(actor->rotation.y));
+  axes.AppendXRotation(Radians(actor->rotation.x));
+  axes.AppendZRotation(Radians(actor->rotation.z));
+
+  SetAxis(actor->oriented.axes[0], axes.values);
+  SetAxis(actor->oriented.axes[1], axes.values + 3);
+  SetAxis(actor->oriented.axes[2], axes.values + 6);
+
+  for (std::list<ModelVolume*>::iterator it = actor->volumes.begin(); it != actor->volumes.end(); ++it) {
+    ModelVolume* volume = *it;
+    volume->transform.MakeXRotation(Radians(volume->rotation[0]));
+    volume->transform.AppendYRotation(Radians(volume->rotation[1]));
+    volume->transform.AppendZRotation(Radians(volume->rotation[2]));
+    volume->transform.AppendTranslate(volume->position);
+    volume->inverseTransform.MakeInverse(volume->transform);
+    matrix combined;
+    combined.Compose(volume->transform, actor->transform);
+
+    const float* size = volume->size;
+    TransformCorner(volume->corners[0], -size[0], -size[1], -size[2], combined.values);
+    TransformCorner(volume->corners[1], size[0], -size[1], -size[2], combined.values);
+    TransformCorner(volume->corners[2], size[0], size[1], -size[2], combined.values);
+    TransformCorner(volume->corners[3], -size[0], size[1], -size[2], combined.values);
+    TransformCorner(volume->corners[4], -size[0], -size[1], size[2], combined.values);
+    TransformCorner(volume->corners[5], size[0], -size[1], size[2], combined.values);
+    TransformCorner(volume->corners[6], size[0], size[1], size[2], combined.values);
+    TransformCorner(volume->corners[7], -size[0], size[1], size[2], combined.values);
+  }
+
+  actor->dirty = 1;
+}
+
 // OFFSET: 0x00AB9660
 // FUNCTION: fn_17512
 void C3dActorV1::UpdateBounds() {
@@ -177,5 +261,5 @@ void C3dActorV2::UpdateBounds() {
   }
 
   this->UpdateMatrix();
-  this->FinishBounds(bounds.data(), true);
+  FinishBoundsModern(this, bounds.data(), true);
 }
