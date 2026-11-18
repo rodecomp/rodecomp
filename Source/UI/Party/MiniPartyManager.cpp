@@ -83,7 +83,8 @@ void UIWindowMgr::RearrangeMiniPartyWindows() {
 // OFFSET: 0x00A8AF20
 // FUNCTION: fn_17119
 void UIWindowMgr::AddMiniPartyWindow(UIWindow* window) {
-  this->rendered.push_back(window);
+  UIWindow* added = window;
+  this->rendered.push_back(added);
   this->snapExcluded.emplace_back(window);
   this->ArrangeMiniPartyWindows();
 }
