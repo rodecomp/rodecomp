@@ -545,50 +545,49 @@ void CRagEffect::GrimTooth() {
     return;
   }
 
-  if (this->state.stateCnt % 3 != 0) {
+  if (this->state.stateCnt % 3 == 0) {
+    const vector3d saved = this->render.position;
+
+    if (this->CalcDist(this->state.deltaPos.x, this->state.deltaPos.z) <= 2.5f) {
+      this->state.flag = 1;
+    }
+
+    CopyVector(this->render.position, saved);
+    this->state.lastPrim = this->LaunchEffectPrim(9, vector3d{0.0f, 0.0f, 0.0f});
+    this->state.lastPrim->state.pattern |= 1u;
+    this->state.lastPrim->state.duration = 40;
+    const int angle = ClampedRandom(360);
+    rand();
+    ClientSine(angle);
+    ClientCosine(angle);
+    this->state.lastPrim->state.deltaPos2 = {0.0f, 20.0f, 0.0f};
+    vector3d& velocity = this->state.lastPrim->state.deltaPos2;
+    velocity.x = this->state.deltaPos3.x + velocity.x;
+    velocity.y = this->state.deltaPos3.y + velocity.y;
+    velocity.z = this->state.deltaPos3.z + velocity.z;
+    this->state.lastPrim->state.size = static_cast<float>(ClampedRandom(40) + 60) / 100.0f;
+    this->state.lastPrim->state.heightSize = 10.0f;
+    this->state.lastPrim->state.longitude = static_cast<float>(ClampedRandom(360));
+    this->state.lastPrim->state.latitude = static_cast<float>(ClampedRandom(30) + 75);
+    this->state.lastPrim->state.transform.MakeXRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.latitude)));
+    this->state.lastPrim->state.transform.AppendYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
+    this->state.lastPrim->state.rotTransform = this->state.lastPrim->state.transform;
+    this->state.lastPrim->state.speed = 3.0f;
+    const float decay = -(this->state.lastPrim->state.speed / this->state.lastPrim->state.duration);
+    this->state.lastPrim->state.accel = decay + decay;
+    this->state.lastPrim->state.chCnt = 6;
+    this->state.lastPrim->state.fadeOutCnt = this->state.lastPrim->state.duration - 10;
+    this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
+    CTexture* texture = g_texMgr.Load("effect\\stone.bmp", 0, false, true, false);
+    this->state.deltaPos3.x = this->state.deltaPos3.x - this->state.deltaPos2.x;
+    this->state.lastPrim->state.textures[0] = texture;
+    this->state.deltaPos3.y = this->state.deltaPos3.y - this->state.deltaPos2.y;
+    this->state.deltaPos3.z = this->state.deltaPos3.z - this->state.deltaPos2.z;
+  } else {
     this->state.deltaPos3.x = this->state.deltaPos3.x - this->state.deltaPos2.x;
     this->state.deltaPos3.y = this->state.deltaPos3.y - this->state.deltaPos2.y;
     this->state.deltaPos3.z = this->state.deltaPos3.z - this->state.deltaPos2.z;
-    return;
   }
-
-  const vector3d saved = this->render.position;
-
-  if (this->CalcDist(this->state.deltaPos.x, this->state.deltaPos.z) <= 2.5f) {
-    this->state.flag = 1;
-  }
-
-  CopyVector(this->render.position, saved);
-  this->state.lastPrim = this->LaunchEffectPrim(9, vector3d{0.0f, 0.0f, 0.0f});
-  this->state.lastPrim->state.pattern |= 1u;
-  this->state.lastPrim->state.duration = 40;
-  const int angle = ClampedRandom(360);
-  rand();
-  ClientSine(angle);
-  ClientCosine(angle);
-  this->state.lastPrim->state.deltaPos2 = {0.0f, 20.0f, 0.0f};
-  vector3d& velocity = this->state.lastPrim->state.deltaPos2;
-  velocity.x = this->state.deltaPos3.x + velocity.x;
-  velocity.y = this->state.deltaPos3.y + velocity.y;
-  velocity.z = this->state.deltaPos3.z + velocity.z;
-  this->state.lastPrim->state.size = static_cast<float>(ClampedRandom(40) + 60) / 100.0f;
-  this->state.lastPrim->state.heightSize = 10.0f;
-  this->state.lastPrim->state.longitude = static_cast<float>(ClampedRandom(360));
-  this->state.lastPrim->state.latitude = static_cast<float>(ClampedRandom(30) + 75);
-  this->state.lastPrim->state.transform.MakeXRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.latitude)));
-  this->state.lastPrim->state.transform.AppendYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
-  this->state.lastPrim->state.rotTransform = this->state.lastPrim->state.transform;
-  this->state.lastPrim->state.speed = 3.0f;
-  const float decay = -(this->state.lastPrim->state.speed / this->state.lastPrim->state.duration);
-  this->state.lastPrim->state.accel = decay + decay;
-  this->state.lastPrim->state.chCnt = 6;
-  this->state.lastPrim->state.fadeOutCnt = this->state.lastPrim->state.duration - 10;
-  this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
-  CTexture* texture = g_texMgr.Load("effect\\stone.bmp", 0, false, true, false);
-  this->state.deltaPos3.x = this->state.deltaPos3.x - this->state.deltaPos2.x;
-  this->state.deltaPos3.y = this->state.deltaPos3.y - this->state.deltaPos2.y;
-  this->state.lastPrim->state.textures[0] = texture;
-  this->state.deltaPos3.z = this->state.deltaPos3.z - this->state.deltaPos2.z;
 }
 
 // OFFSET: 0x00C1B490
@@ -2345,8 +2344,8 @@ void CRagEffect::SonicBlowHit() {
   }
 
   const int facing = static_cast<int>(180.0f - this->state.parent->render.angle);
-  const int spreadX = rand() % 10;
-  const int spreadY = rand() % 20;
+  const int spreadX = ClampedRandom(10);
+  const int spreadY = ClampedRandom(20);
   rand();
   this->state.lastPrim = this->LaunchEffectPrim(13, vector3d{0.0f, 0.0f, 0.0f});
   this->state.lastPrim->state.duration = 12;
@@ -2354,14 +2353,15 @@ void CRagEffect::SonicBlowHit() {
   this->state.lastPrim->state.latitude = -90.0f;
   this->state.lastPrim->state.transform.MakeXRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.latitude)));
   this->state.lastPrim->state.transform.AppendYRotation(GetRadian(static_cast<int>(this->state.lastPrim->state.longitude)));
+  MatrixMult(this->state.lastPrim->state.speed3d, vector3d{0.0f, -2.0f, 0.0f}, this->state.lastPrim->state.transform.values);
   EffectPrimitiveState& lift = this->state.lastPrim->state;
-  MatrixMult(lift.speed3d, vector3d{0.0f, -2.0f, 0.0f}, lift.transform.values);
   lift.deltaPos.x = lift.speed3d.x + lift.deltaPos.x;
   lift.deltaPos.y = lift.speed3d.y + lift.deltaPos.y;
   lift.deltaPos.z = lift.speed3d.z + lift.deltaPos.z;
-  this->state.lastPrim->state.deltaPos2.z = 0.0f;
-  this->state.lastPrim->state.deltaPos2.x = static_cast<float>((std::max(spreadX, 0) + 1) / 4);
-  this->state.lastPrim->state.deltaPos2.y = static_cast<float>((std::max(spreadY, 0) + 1) / 2 - 11);
+  vector3d& spread = this->state.lastPrim->state.deltaPos2;
+  spread.z = 0.0f;
+  spread.x = static_cast<float>((spreadX + 1) / 4);
+  spread.y = static_cast<float>((spreadY + 1) / 2 - 11);
   this->state.lastPrim->state.speed = 0.4f;
   EffectPrimitiveState& slow = this->state.lastPrim->state;
   slow.accel = -(slow.speed / static_cast<float>(slow.duration)) * 0.5f;
@@ -7253,18 +7253,14 @@ void CRagEffect::TexturedForkBolt(const char* name, char flag) {
   this->state.lastPrim->Get_Angle(
     this->state.deltaPos.x - this->render.position.x, this->state.deltaPos.z - this->render.position.z, &this->state.lastPrim->state.slots[0].riseAngle
   );
-  this->state.lastPrim->state.slots[0].vecBPre.x = x - this->render.position.x;
-  this->state.lastPrim->state.slots[0].vecBPre.y = y - this->render.position.y;
-  this->state.lastPrim->state.slots[0].vecBPre.z = z - this->render.position.z;
+  this->state.lastPrim->state.slots[0].vecBPre = vector3d{x - this->render.position.x, y - this->render.position.y, z - this->render.position.z};
   this->state.lastPrim->state.slots[0].height[0] = static_cast<float>(this->state.lastPrim->state.slots[0].riseAngle);
   this->state.lastPrim->state.slots[0].height[1] = static_cast<float>(this->state.lastPrim->state.slots[0].riseAngle - 45 + rand() % 91);
   this->state.lastPrim->state.slots[0].height[2] = static_cast<float>(this->state.lastPrim->state.slots[0].riseAngle - 45 + rand() % 91);
   this->state.lastPrim->state.slots[0].height[3] = 180.0f;
   this->state.lastPrim->state.slots[0].height[4] = 180.0f;
   this->state.lastPrim->state.slots[0].height[12] = 0.0f;
-  this->state.lastPrim->state.slots[0].vecBNow.x = x - this->render.position.x;
-  this->state.lastPrim->state.slots[0].vecBNow.y = y - this->render.position.y;
-  this->state.lastPrim->state.slots[0].vecBNow.z = z - this->render.position.z;
+  this->state.lastPrim->state.slots[0].vecBNow = vector3d{x - this->render.position.x, y - this->render.position.y, z - this->render.position.z};
   this->state.lastPrim->state.slots[0].height[5] = static_cast<float>(this->state.lastPrim->state.slots[0].riseAngle);
   this->state.lastPrim->state.slots[0].height[6] = static_cast<float>(this->state.lastPrim->state.slots[0].riseAngle - 45 + rand() % 91);
   this->state.lastPrim->state.slots[0].height[7] = static_cast<float>(this->state.lastPrim->state.slots[0].riseAngle - 45 + rand() % 91);
@@ -14225,11 +14221,11 @@ void CRagEffect::QuadRingStackSized(const char* name, char kind) {
   this->state.lastPrim->state.slots[0].process = 0;
   this->state.lastPrim->state.slots[0].fullDisplayAngle = 315;
   this->state.lastPrim->state.slots[0].maxHeight = 25.0f;
+  this->state.lastPrim->state.slots[0].vecBNow.y = 0.0f;
   this->state.lastPrim->state.slots[0].rotStart = 0;
   this->state.lastPrim->state.slots[0].alphaB = 180;
   this->state.lastPrim->state.slots[0].distance = 4.5f;
   this->state.lastPrim->state.slots[0].riseAngle = 70;
-  this->state.lastPrim->state.slots[0].vecBNow.y = 0.0f;
 
   for (int height = 0; height < 21; ++height) {
     this->state.lastPrim->state.slots[0].height[height] = 0.0f;
@@ -14239,10 +14235,10 @@ void CRagEffect::QuadRingStackSized(const char* name, char kind) {
   this->state.lastPrim->state.slots[1].life = 1;
   this->state.lastPrim->state.slots[1].process = 0;
   this->state.lastPrim->state.slots[1].fullDisplayAngle = 315;
-  this->state.lastPrim->state.slots[1].maxHeight = 22.0f;
-  this->state.lastPrim->state.slots[1].rotStart = 90;
   this->state.lastPrim->state.slots[1].alphaB = 180;
   this->state.lastPrim->state.slots[1].distance = 5.0f;
+  this->state.lastPrim->state.slots[1].maxHeight = 22.0f;
+  this->state.lastPrim->state.slots[1].rotStart = 90;
   this->state.lastPrim->state.slots[1].riseAngle = 57;
   this->state.lastPrim->state.slots[1].vecBNow.y = 0.0f;
 
@@ -14253,12 +14249,12 @@ void CRagEffect::QuadRingStackSized(const char* name, char kind) {
 
   this->state.lastPrim->state.slots[2].life = 1;
   this->state.lastPrim->state.slots[2].process = 0;
+  this->state.lastPrim->state.slots[2].riseAngle = 45;
+  this->state.lastPrim->state.slots[2].distance = 5.5f;
   this->state.lastPrim->state.slots[2].fullDisplayAngle = 315;
   this->state.lastPrim->state.slots[2].maxHeight = 19.0f;
   this->state.lastPrim->state.slots[2].rotStart = 180;
   this->state.lastPrim->state.slots[2].alphaB = 180;
-  this->state.lastPrim->state.slots[2].distance = 5.5f;
-  this->state.lastPrim->state.slots[2].riseAngle = 45;
   this->state.lastPrim->state.slots[2].vecBNow.y = 0.0f;
 
   for (int height = 0; height < 21; ++height) {
@@ -14268,13 +14264,13 @@ void CRagEffect::QuadRingStackSized(const char* name, char kind) {
 
   this->state.lastPrim->state.slots[3].life = 1;
   this->state.lastPrim->state.slots[3].process = 0;
+  this->state.lastPrim->state.slots[3].distance = 4.0f;
+  this->state.lastPrim->state.slots[3].riseAngle = 89;
+  this->state.lastPrim->state.slots[3].vecBNow.y = 0.0f;
   this->state.lastPrim->state.slots[3].fullDisplayAngle = 360;
   this->state.lastPrim->state.slots[3].maxHeight = 250.0f;
   this->state.lastPrim->state.slots[3].rotStart = 0;
   this->state.lastPrim->state.slots[3].alphaB = 70;
-  this->state.lastPrim->state.slots[3].distance = 4.0f;
-  this->state.lastPrim->state.slots[3].riseAngle = 89;
-  this->state.lastPrim->state.slots[3].vecBNow.y = 0.0f;
 
   for (int height = 0; height < 21; ++height) {
     this->state.lastPrim->state.slots[3].height[height] = 0.0f;
@@ -15567,9 +15563,9 @@ void CRagEffect::TexturedMagicRing(char type) {
     this->state.lastPrim->state.slots[2].maxHeight = 7.5f;
     this->state.lastPrim->state.slots[2].rotStart = 180;
     this->state.lastPrim->state.slots[2].alphaB = 0;
+    this->state.lastPrim->state.slots[2].alphaT = 3;
     this->state.lastPrim->state.slots[2].distance = 9.0f;
     this->state.lastPrim->state.slots[2].riseAngle = 90;
-    this->state.lastPrim->state.slots[2].alphaT = 3;
     for (int i = 0; i < 21; ++i) {
       this->state.lastPrim->state.slots[2].height[i] = 1.5f;
       this->state.lastPrim->state.slots[2].flag1[i] = 0;
@@ -15578,9 +15574,9 @@ void CRagEffect::TexturedMagicRing(char type) {
     this->state.lastPrim->state.slots[3].life = 1;
     this->state.lastPrim->state.slots[3].process = 0;
     this->state.lastPrim->state.slots[3].fullDisplayAngle = 30;
+    this->state.lastPrim->state.slots[3].alphaB = 0;
     this->state.lastPrim->state.slots[3].maxHeight = 10.0f;
     this->state.lastPrim->state.slots[3].rotStart = 270;
-    this->state.lastPrim->state.slots[3].alphaB = 0;
     this->state.lastPrim->state.slots[3].distance = 8.0f;
     this->state.lastPrim->state.slots[3].riseAngle = 90;
     this->state.lastPrim->state.slots[3].alphaT = 3;
@@ -16230,8 +16226,8 @@ void CRagEffect::TexturedBlueRing(const char* name) {
   this->state.lastPrim->state.textures = new CTexture*[this->state.lastPrim->state.totalTexture];
   this->state.lastPrim->state.textures[0] = g_texMgr.Load(name, 0, false, true, false);
   this->state.lastPrim->state.size = 4.0f;
-  this->state.lastPrim->state.deltaPos = {this->state.deltaPos.x, this->state.deltaPos.y, this->state.deltaPos.z};
-  this->state.lastPrim->state.deltaPos2 = {this->state.deltaPos2.x, this->state.deltaPos2.y, this->state.deltaPos2.z};
+  this->state.lastPrim->state.deltaPos = this->state.deltaPos;
+  this->state.lastPrim->state.deltaPos2 = this->state.deltaPos2;
 
   this->state.lastPrim->state.slots[0].life = 1;
   this->state.lastPrim->state.slots[0].process = 0;
