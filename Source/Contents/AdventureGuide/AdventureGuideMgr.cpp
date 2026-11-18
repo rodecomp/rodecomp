@@ -80,10 +80,10 @@ int InsertIntroContents(lua_State* state) {
     return 2;
   }
 
-  const int id = static_cast<int>(lua_tonumber(state, -3));
+  const double id = lua_tonumber(state, -3);
   const std::string_view title = lua_tostring(state, -2);
   const std::string_view text = lua_tostring(state, -1);
-  const AdventureGuideResult result = g_adventureGuideMgr->InsertIntroContents(id, title, text);
+  const AdventureGuideResult result = g_adventureGuideMgr->InsertIntroContents(static_cast<int>(id), title, text);
 
   if (!result.ok) {
     lua_pushboolean(state, 0);
