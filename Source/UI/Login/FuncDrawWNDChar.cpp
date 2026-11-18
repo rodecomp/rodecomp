@@ -47,18 +47,18 @@ void FuncDrawWNDChar::Draw(bool option) {
   std::list<int> layers = this->DrawOrder();
   this->LoadResources(layers);
   for (int layer : layers) {
-    const auto resource = this->m_resources.find(layer);
-    if (resource == this->m_resources.end()) {
+    int key = layer;
+    if (this->m_resources.find(key) == this->m_resources.end()) {
       continue;
     }
 
-    CSprRes* sprite = resource->second.first;
-    CActRes* act = resource->second.second;
+    std::pair<CSprRes*, CActRes*> resource = this->m_resources[key];
+    CSprRes* sprite = resource.first;
+    CActRes* act = resource.second;
     if (!sprite || !act) {
       continue;
     }
 
-    int key = layer;
     FuncDrawOffset offset;
     if (g_session.IsDoramJob(this->m_job) == true) {
       int x = 0;
@@ -100,8 +100,8 @@ void FuncDrawWNDChar::Draw(bool option) {
         case 5:
         case 6: {
           const auto bodyResource = this->m_resources.find(2);
-          if (!this->hideHeadLayer && bodyResource != this->m_resources.end() && bodyResource->second.second) {
-            CActRes* bodyAct = bodyResource->second.second;
+          if (!this->hideHeadLayer && bodyResource != this->m_resources.end() && this->m_resources[2].second) {
+            CActRes* bodyAct = this->m_resources[2].second;
             this->BodyAnchorOffset(&bodyAct->Frame(this->m_action, this->m_motion), option);
           }
 
@@ -114,7 +114,7 @@ void FuncDrawWNDChar::Draw(bool option) {
         case 7: {
           int baseMotion = this->m_motion;
           int syncedMotion = this->m_motion;
-          CActRes* layerAct = resource->second.second;
+          CActRes* layerAct = this->m_resources[key].second;
           int action = this->m_action;
           if ((action >= 0 && action < 8) || static_cast<unsigned>(action - 16) <= 7) {
             baseMotion = 0;
