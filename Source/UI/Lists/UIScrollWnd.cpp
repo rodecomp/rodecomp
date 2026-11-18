@@ -33,6 +33,13 @@ struct PrimitivePoolAccess : RenderPrimitivePool {
 };
 }
 
+// OFFSET: 0x009AC800
+// FUNCTION: fn_45752
+void UIScrollWnd::InitializeScrollWindow(int width, int height) {
+  this->UIWindow::Resize(width, height);
+  this->OnCreate(width, height);
+}
+
 // OFFSET: 0x009AC040
 // FUNCTION: fn_13770
 UIScrollWnd::UIScrollWnd(int width, int height, unsigned char cached)

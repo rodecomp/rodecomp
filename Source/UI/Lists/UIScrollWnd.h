@@ -22,6 +22,7 @@ public:
 
   RenderPrimitive* BuildPrimitive(int x, int y, int sourceX, int sourceY, int width, int height, CTexture* texture, std::uint32_t color);
   void Clear();
+  void InitializeScrollWindow(int width, int height);
   void DestroyScrollBars();
   void ShowHorizontalScrollBar(int visible, bool redraw);
   void ShowVerticalScrollBar(int visible, bool redraw);
