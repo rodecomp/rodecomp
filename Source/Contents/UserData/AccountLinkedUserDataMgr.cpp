@@ -44,9 +44,8 @@ struct WhisperNameAppender {
   /* 0000 */ Json::Value* values;
 
   // INLINED
-  void operator()(const std::string& name) const {
-    const std::string copy = name;
-    this->values->append(ToUtf8(copy, g_textCodePage));
+  void operator()(std::string name) const {
+    this->values->append(ToUtf8(name, g_textCodePage));
   }
 };
 
