@@ -61,14 +61,18 @@ public:
   void UpdatePreviewResources();
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
-  /* 00B4 */ int m_viewX;
-  /* 00B8 */ int m_viewY;
-  /* 00BC */ std::string m_raceActions[5];
-  /* 0134 */ std::string m_raceSprites[5];
-  /* 01AC */ std::string m_raceOffsets;
-  /* 01C4 */ int m_racePaletteEnabled[2];
-  /* 01CC */ std::string m_headPalette;
-  /* 01E4 */ std::string m_bodyPalette;
+  struct PreviewResources {
+    /* 0000 */ int viewX;
+    /* 0004 */ int viewY;
+    /* 0008 */ std::string actions[5];
+    /* 0080 */ std::string sprites[5];
+    /* 00F8 */ std::string offsets;
+    /* 0110 */ int paletteEnabled[2];
+    /* 0118 */ std::string headPalette;
+    /* 0130 */ std::string bodyPalette;
+  };
+
+  /* 00B4 */ PreviewResources m_preview;
   /* 01FC */ int actionBase;
   /* 0200 */ int m_action;
   /* 0204 */ int m_frame;
