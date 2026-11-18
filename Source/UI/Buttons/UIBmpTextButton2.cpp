@@ -49,8 +49,45 @@ inline bool UIBmpTextButton2::HasLabel(int index) const {
 }
 
 // OFFSET: 0x00858DE0
+// FUNCTION: fn_45628
+std::string UIBmpTextButton2::GetLabel(int index, int* height, std::uint32_t* color, unsigned char* bold,
+                                       unsigned char* shadow, int* x, int* y) const {
+  std::string text;
+  if (this->HasLabel(index)) {
+    const BmpTextButtonLabel& label = this->labels[index];
+    text = label.text;
+    *height = label.height;
+    *color = label.color;
+    *bold = label.bold;
+    *shadow = label.shadow;
+    *x = label.x;
+    *y = label.y;
+  }
+  return text;
+}
 
 // OFFSET: 0x00869390
+// FUNCTION: fn_45625
+void UIBmpTextButton2::SetLabel(std::string text, int index, int height, std::uint32_t color,
+                                unsigned char bold, unsigned char shadow, int x, int y) {
+  const auto assignLabel = [&](BmpTextButtonLabel& label) {
+    label.text = text;
+    label.height = height;
+    label.color = color;
+    label.bold = bold;
+    label.shadow = shadow;
+    label.x = x;
+    label.y = y;
+  };
+
+  if (this->HasLabel(index)) {
+    assignLabel(this->labels[index]);
+  } else {
+    BmpTextButtonLabel label;
+    assignLabel(label);
+    this->labels.push_back(label);
+  }
+}
 
 // OFFSET: 0x0086A670
 // FUNCTION: fn_45629
