@@ -123,10 +123,10 @@ void GroundGeometry::MarkRay(const float* ray, int column, int row, float limit)
     return;
   }
 
-  const GroundCell& cell = this->cells[static_cast<unsigned>(column) + static_cast<unsigned>(row) * static_cast<unsigned>(this->width)];
-  MarkQuadRay(ray, cell.top, limit);
-  MarkQuadRay(ray, cell.side2, limit);
-  MarkQuadRay(ray, cell.side1, limit);
+  const unsigned index = static_cast<unsigned>(column) + static_cast<unsigned>(row) * static_cast<unsigned>(this->width);
+  MarkQuadRay(ray, this->cells[index].top, limit);
+  MarkQuadRay(ray, this->cells[index].side2, limit);
+  MarkQuadRay(ray, this->cells[index].side1, limit);
 }
 
 // OFFSET: 0x00AC0170
