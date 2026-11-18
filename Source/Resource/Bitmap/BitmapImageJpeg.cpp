@@ -41,8 +41,8 @@ bool CBitmapRes::DecodeJpeg(const void* data, int bytes) {
   ijlFree(&properties);
 
   for (int y = 0; y < this->image.height; ++y) {
-    std::uint32_t* out = &this->image.pixels[this->image.width * y];
     const unsigned char* input = &source[3 * this->image.width * y];
+    std::uint32_t* out = &this->image.pixels[this->image.width * y];
     if (!input) {
       return false;
     }
