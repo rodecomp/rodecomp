@@ -15,6 +15,10 @@ UIChatRoomChangeWnd::UIChatRoomChangeWnd() : UIChatRoomMakeWnd() {
   this->m_title = LookupMessage(MSI_CHANGE_ROOM_SETTING);
 }
 
+// OFFSET: 0x008CA5A0
+// FUNCTION: fn_45811
+UIChatRoomChangeWnd::~UIChatRoomChangeWnd() = default;
+
 // OFFSET: 0x008CA5F0
 // FUNCTION: fn_11994
 UIChatRoomMakeWnd::~UIChatRoomMakeWnd() = default;
