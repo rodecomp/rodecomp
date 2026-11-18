@@ -3698,7 +3698,6 @@ void UIPetInfoWnd::OnCreate(int, int) {
     this->AddChild(this->renameButton);
   }
 
-  const char tooltip[] = "Pet Command";
   this->statusButton = new UINoneVisibleButton();
   this->statusButton->SetSize(120, 18);
   this->statusButton->Move(150, 44);
@@ -3706,6 +3705,7 @@ void UIPetInfoWnd::OnCreate(int, int) {
   this->AddChild(this->statusButton);
   {
     const std::string prefix("유저인터페이스\\basic_interface\\");
+    const char tooltip[] = "Pet Command";
     UIBitmapButton* button = new UIBitmapButton();
     button->SetBitmap((prefix + "txtbox_btn_a" + ".bmp").c_str(), 0, 0);
     button->SetBitmap((prefix + "txtbox_btn_b" + ".bmp").c_str(), 1, 0);
