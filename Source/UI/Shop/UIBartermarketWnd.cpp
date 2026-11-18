@@ -119,10 +119,10 @@ std::pair<bool, BarterMarketItem> UIBartermarketWnd::GetBarterItemAt(int x, int 
     return std::make_pair(false, BarterMarketItem());
   }
 
-  const int row = (y - 17) / 32;
-  std::list<BarterMarketItem> items = *g_barterMarketItemMgr->GetItems();
   int index = 0;
   int visible = 0;
+  const int row = (y - 17) / 32;
+  std::list<BarterMarketItem> items = *g_barterMarketItemMgr->GetItems();
   for (std::list<BarterMarketItem>::iterator it = items.begin(); it != items.end(); ++it, ++index) {
     if (index >= this->scroll * this->columns) {
       if (visible == this->columns * row) {
@@ -205,10 +205,10 @@ std::pair<bool, BarterMarketItem> UIBarterItemPurchaseWnd::GetBarterItemAt(int x
     return std::make_pair(false, BarterMarketItem());
   }
 
-  const int row = (y - 17) / 32;
-  std::list<BarterMarketItem> items = *g_barterMarketItemMgr->GetAllItems();
   int index = 0;
   int visible = 0;
+  const int row = (y - 17) / 32;
+  std::list<BarterMarketItem> items = *g_barterMarketItemMgr->GetAllItems();
   for (std::list<BarterMarketItem>::const_iterator it = items.begin(); it != items.end(); ++it, ++index) {
     if (index >= this->scroll * this->columns) {
       if (visible == this->columns * row) {
