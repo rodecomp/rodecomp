@@ -13,6 +13,13 @@ void CView::SetUp(const vector3d& up) {
   this->frame.up = up;
 }
 
+// INLINED
+static void OrbitOffset(vector3d& result, const vector3d& v, const matrix& orbit) {
+  result.y = v.y * orbit.values[4] + v.x * orbit.values[1] + v.z * orbit.values[7] + orbit.values[10];
+  result.z = v.y * orbit.values[5] + v.x * orbit.values[2] + v.z * orbit.values[8] + orbit.values[11];
+  result.x = v.y * orbit.values[3] + v.x * orbit.values[0] + v.z * orbit.values[6] + orbit.values[9];
+}
+
 // OFFSET: 0x00ADB560
 // FUNCTION: fn_17920
 void CView::Refresh() {
@@ -20,10 +27,8 @@ void CView::Refresh() {
   matrix orbit;
   orbit.MakeXRotation((this->camera.pitch / 180.0f) * pi);
   orbit.AppendYRotation((this->camera.yaw / 180.0f) * pi);
-  const float distance = -this->camera.distance;
-  this->frame.eye.y = ((orbit.values[4] * 0.0f + orbit.values[1] * 0.0f) + distance * orbit.values[7]) + orbit.values[10];
-  this->frame.eye.z = ((orbit.values[5] * 0.0f + orbit.values[2] * 0.0f) + distance * orbit.values[8]) + orbit.values[11];
-  this->frame.eye.x = (((orbit.values[3] * 0.0f + orbit.values[0] * 0.0f) + distance * orbit.values[6]) + orbit.values[9]) + this->camera.target.x;
+  OrbitOffset(this->frame.eye, vector3d{0.0f, 0.0f, -this->camera.distance}, orbit);
+  this->frame.eye.x += this->camera.target.x;
   this->frame.eye.y = this->camera.target.y + this->frame.eye.y;
   this->frame.eye.z = this->camera.target.z + this->frame.eye.z;
   const float height = g_modeMgr.GetGameMode()->scene->terrain->Height(this->frame.eye.x, this->frame.eye.z);
