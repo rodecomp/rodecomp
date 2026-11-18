@@ -76,8 +76,7 @@ void UIWindowMgr::RearrangeMiniPartyWindows() {
     static_cast<UIMiniPartyWnd*>(*entry)->m_cell = *cell;
 
     const int index = *cell;
-    const MessengerMember member = static_cast<UIMiniPartyWnd*>(*entry)->m_member;
-    g_session.SetRecord0734Value(member.accountId, index);
+    g_session.SetRecord0734Value(static_cast<UIMiniPartyWnd*>(*entry)->GetMember().accountId, index);
   }
 }
 
