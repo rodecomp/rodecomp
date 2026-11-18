@@ -22,7 +22,10 @@ private:
 // INLINED
 inline std::int64_t CInstantVar::Get(int key) const {
   const auto entry = this->m_values.find(key);
-  return entry == this->m_values.end() ? 0 : entry->second;
+  if (entry == this->m_values.end()) {
+    return 0;
+  }
+  return entry->second;
 }
 
 // INLINED
