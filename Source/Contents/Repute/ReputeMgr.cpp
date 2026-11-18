@@ -23,7 +23,7 @@ bool JsonCppLoader::GetReputeGroupData(std::map<int, ReputeGroupRecord>* out) {
     return false;
   }
 
-  if (this->document.find("ReputeGroup") == this->document.object_range().end()) {
+  if (this->document.object_range().end() == this->document.find("ReputeGroup")) {
     this->Fail("키에 해당하는 데이터가 없습니다. (key : %s)", "ReputeGroup");
     return false;
   }
@@ -53,7 +53,7 @@ bool JsonCppLoader::GetReputeInfoData(std::map<int, ReputeInfoRecord>* out) {
     return false;
   }
 
-  if (this->document.find("reputeInfo") == this->document.object_range().end()) {
+  if (this->document.object_range().end() == this->document.find("reputeInfo")) {
     this->Fail("키에 해당하는 데이터가 없습니다. (key : %s)", "reputeInfo");
     return false;
   }
