@@ -3294,7 +3294,7 @@ void UICashEmotionPack_Purchase::ShowExpiry(__time32_t expiry) {
     return;
   }
 
-  unsigned int remaining = expiry - g_cashEmotionMgr->GetServerTime();
+  unsigned int remaining = static_cast<unsigned int>(expiry) - g_cashEmotionMgr->GetServerTime();
   if (remaining > 60) {
     unsigned int days = remaining / 86400;
     remaining -= days * 86400;
@@ -3304,7 +3304,8 @@ void UICashEmotionPack_Purchase::ShowExpiry(__time32_t expiry) {
     std::string text = fmt::vformat(this->m_title, fmt::make_format_args(days, hours, minutes));
     this->m_titleText->SetTextFitted(text.c_str());
   } else {
-    this->m_titleText->SetTextFitted(g_simpleStringMgr->GetString("EMSG_PERIOD_OF_LAST_TIME"));
+    const char* text = g_simpleStringMgr->GetString("EMSG_PERIOD_OF_LAST_TIME");
+    this->m_titleText->SetTextFitted(text);
   }
 
   this->SendMsg(this, UM_REFRESH, 0, 0, 0, 0);
