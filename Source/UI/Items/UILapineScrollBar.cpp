@@ -261,8 +261,11 @@ void UILapineBoxWnd::Paint() {
   for (unsigned index = 0; index < this->items.size(); ++index) {
     int position[2];
     this->MaterialPosition(position, index);
-    this->DrawBitmap(position[0] - 4, position[1] + 11, static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\lapine\\shadow_item_off.bmp"))), true);
-    this->DrawItemAndQuantity(position[0], position[1], this->items[index], 0, 0);
+    auto* shadow = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\lapine\\shadow_item_off.bmp")));
+    const int x = position[0];
+    const int y = position[1];
+    this->DrawBitmap(x - 4, y + 11, shadow, true);
+    this->DrawItemAndQuantity(x, y, this->items[index], 0, 0);
   }
 
   if (this->noticeTick + this->noticeDuration > timeGetTime()) {
