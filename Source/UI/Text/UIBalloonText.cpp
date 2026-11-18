@@ -334,18 +334,18 @@ void UINameBalloonText::SetName(const CActorNameCard& info, bool stripHash, unsi
   }
 
   if (g_serviceFlag05) {
-    if (std::strlen(info.displayName.c_str()) != 0) {
+    if (info.displayName[0] != '\0') {
       this->m_lines.push_back(info.displayName.c_str());
     }
 
-    if (std::strlen(info.clanName.c_str()) == 0) {
+    if (info.clanName[0] == '\0') {
       this->nameWidth = 0;
     } else {
       char position[260];
       std::memset(position, 0, sizeof(position));
       strncpy_s(position, sizeof(position), info.clanName.c_str(), info.clanName.size());
-      if (g_forbiddenWords.Contains(position)) {
-        std::string masked;
+      if (g_forbiddenWords.Contains(position) == true) {
+        std::string masked = "";
         g_forbiddenWords.Mask(position, &masked);
       }
       this->m_lines.push_back(position);
@@ -353,11 +353,11 @@ void UINameBalloonText::SetName(const CActorNameCard& info, bool stripHash, unsi
 
     this->m_lines.push_back(name.c_str());
   } else {
-    if (std::strlen(info.displayName.c_str()) != 0) {
+    if (info.displayName[0] != '\0') {
       this->m_lines.push_back(info.displayName.c_str());
     }
 
-    if (std::strlen(info.title.c_str()) != 0) {
+    if (info.title[0] != '\0') {
       const std::string titledName = FormatOwnedString("[%s] %s", info.title.c_str(), name.c_str());
       name = titledName;
     }
@@ -368,8 +368,8 @@ void UINameBalloonText::SetName(const CActorNameCard& info, bool stripHash, unsi
       char party[260];
       std::memset(party, 0, sizeof(party));
       strncpy_s(party, sizeof(party), info.partyName.c_str(), info.partyName.size());
-      if (g_forbiddenWords.Contains(party)) {
-        std::string masked;
+      if (g_forbiddenWords.Contains(party) == true) {
+        std::string masked = "";
         g_forbiddenWords.Mask(party, &masked);
       }
 
@@ -379,11 +379,11 @@ void UINameBalloonText::SetName(const CActorNameCard& info, bool stripHash, unsi
       this->m_lines.push_back(line);
     }
 
-    if (std::strlen(info.guildName.c_str()) != 0) {
+    if (info.guildName[0] != '\0') {
       char guild[260];
       std::memset(guild, 0, sizeof(guild));
       strncpy_s(guild, sizeof(guild), info.guildName.c_str(), info.guildName.size());
-      if (g_forbiddenWords.Contains(guild)) {
+      if (g_forbiddenWords.Contains(guild) == true) {
         std::string masked = "";
         g_forbiddenWords.Mask(guild, &masked);
       }
@@ -391,7 +391,7 @@ void UINameBalloonText::SetName(const CActorNameCard& info, bool stripHash, unsi
       char position[260];
       std::memset(position, 0, sizeof(position));
       strncpy_s(position, sizeof(position), info.clanName.c_str(), info.clanName.size());
-      if (g_forbiddenWords.Contains(position)) {
+      if (g_forbiddenWords.Contains(position) == true) {
         std::string masked = "";
         g_forbiddenWords.Mask(position, &masked);
       }
