@@ -22,6 +22,20 @@ void UIBitmapTab::Paint() {
   }
 }
 
+// OFFSET: 0x00858CC0
+// FUNCTION: fn_45631
+int UIBitmapTab::TabAt(int, int y) {
+  int bottom = 0;
+  for (unsigned index = 0; index < this->tabs.size(); ++index) {
+    bottom += this->tabs[index].height;
+    if (y < bottom) {
+      return static_cast<int>(index);
+    }
+  }
+
+  return -1;
+}
+
 // OFFSET: 0x0085EA90
 // FUNCTION: fn_10838
 void UIBitmapTab::OnLBtnDown(int, int y) {
