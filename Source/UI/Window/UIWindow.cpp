@@ -1518,9 +1518,9 @@ int UIWindow::VerticalTextHeight(const char* text, unsigned bytes, int family, i
     text = marker + 3;
   }
 
+  SIZE size;
   while (text < end) {
     const char* next = CharNextExA(static_cast<WORD>(g_textCodePage), text, 0);
-    SIZE size;
     context.Measure(text, static_cast<int>(next - text), &size);
     total += size.cy;
     text = next;
