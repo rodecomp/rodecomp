@@ -1,5 +1,6 @@
 #include "Render/Primitives/LightmappedPrimitive.h"
 #include "Render/Primitives/RenderPrimitive.h"
+#include "Render/Projection/RenderProjection.h"
 #include "Render/Renderer.h"
 
 #include <bit>
