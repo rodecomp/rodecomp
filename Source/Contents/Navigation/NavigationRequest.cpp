@@ -272,16 +272,22 @@ int CNaviInfo::GetIndex() const {
   return this->index;
 }
 
+// INLINED
+template <typename T>
+static T* FindNaviObjectById(const std::vector<T*>& objects, unsigned int id) {
+  for (T* object : objects) {
+    if (static_cast<unsigned int>(object->id) == id) {
+      return object;
+    }
+  }
+  return nullptr;
+}
+
 // OFFSET: 0x00B8DF40
 // FUNCTION: fn_19464
 CNavi_Link* CNaviInfo::FindLink(unsigned int key, bool byId) {
   if (byId) {
-    for (CNavi_Link* link : this->links) {
-      if (static_cast<unsigned int>(link->id) == key) {
-        return link;
-      }
-    }
-    return nullptr;
+    return FindNaviObjectById(this->links, key);
   }
   if (this->links.empty() || key >= this->links.size()) {
     return nullptr;
@@ -293,12 +299,7 @@ CNavi_Link* CNaviInfo::FindLink(unsigned int key, bool byId) {
 // FUNCTION: fn_19478
 CNavi_Object* CNaviInfo::FindNpc(unsigned int key, bool byId) {
   if (byId) {
-    for (CNavi_Object* npc : this->npcs) {
-      if (static_cast<unsigned int>(npc->id) == key) {
-        return npc;
-      }
-    }
-    return nullptr;
+    return FindNaviObjectById(this->npcs, key);
   }
   if (this->npcs.empty() || key >= this->npcs.size()) {
     return nullptr;
@@ -364,12 +365,7 @@ std::vector<CNavi_Link*>* CNaviInfo::Links() {
 // FUNCTION: fn_19469
 CNavi_Object* CNaviInfo::FindMob(unsigned int key, bool byId) {
   if (byId) {
-    for (CNavi_Object* mob : this->mobs) {
-      if (static_cast<unsigned int>(mob->id) == key) {
-        return mob;
-      }
-    }
-    return nullptr;
+    return FindNaviObjectById(this->mobs, key);
   }
   if (this->mobs.empty() || key >= this->mobs.size()) {
     return nullptr;
