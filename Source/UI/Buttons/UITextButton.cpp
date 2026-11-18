@@ -87,17 +87,18 @@ namespace {
   void SetButtonLabel(UIButton& button, std::string text) {
     button.label = text;
   }
+}
 
-  // INLINED
-  __forceinline int TabOffset(const UITabControl& control, int count) {
-    int offset = 0;
+// OFFSET: 0x00880AB0
+// FUNCTION: fn_45582
+int UITabControl::TabOffset(int count) const {
+  int offset = 0;
 
-    for (int index = 0; index < count; ++index) {
-      offset += control.widths[index] - 1;
-    }
-
-    return offset;
+  for (int index = 0; index < count; ++index) {
+    offset += this->widths[index] - 1;
   }
+
+  return offset;
 }
 
 // OFFSET: 0x0087C590
@@ -481,7 +482,7 @@ void UITabControl::OnMouseHover(int x, int y) {
     return;
   }
 
-  x = TabOffset(*this, index);
+  x = this->TabOffset(index);
   y = -20;
   this->ToScreen(x, y);
   g_modeMgr.currentMode->ShowTooltip(this->tooltips[index].c_str(), x, y, -1, false, true);
@@ -819,9 +820,9 @@ void UITextButton::ResizeToTextClipped(int width, int height) {
 // FUNCTION: fn_11539
 __declspec(noinline) void UITabControl::FitToTabs() {
   if (this->layout != 0 && this->layout != 2) {
-    this->Resize(TabOffset(*this, static_cast<int>(this->labels.size())) + 1, this->tabHeight + 1);
+    this->Resize(this->TabOffset(static_cast<int>(this->labels.size())) + 1, this->tabHeight + 1);
   } else {
-    this->Resize(this->tabHeight + 1, TabOffset(*this, static_cast<int>(this->labels.size())) + 1);
+    this->Resize(this->tabHeight + 1, this->TabOffset(static_cast<int>(this->labels.size())) + 1);
   }
 
   this->Invalidate();
@@ -2734,7 +2735,7 @@ void UITabControl::OnLBtnDblClk(int, int) {
   this->edit->SetText(this->labels[this->activeTabIndex].c_str());
   this->edit->Resize(this->widths[this->activeTabIndex] - 4, this->geometry.height - 2);
 
-  this->edit->Move(TabOffset(*this, this->activeTabIndex) + 2, 2);
+  this->edit->Move(this->TabOffset(this->activeTabIndex) + 2, 2);
   g_windowMgr.SetFocus(this->edit);
 }
 
@@ -3320,10 +3321,7 @@ void UITabControl::Paint() {
     }
 
     if (this->flags.size() >= static_cast<unsigned>(static_cast<int>(this->labels.size())) && this->flags[index]) {
-      int offset = 0;
-      for (int previous = 0; previous < index; ++previous) {
-        offset += this->widths[previous] - 1;
-      }
+      const int offset = this->TabOffset(index);
 
       auto* bitmap = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve("유저인터페이스\\basic_interface\\icon_new.bmp")));
       this->DrawBitmap(1, static_cast<unsigned short>(offset) + 2, bitmap, false);
