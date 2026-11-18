@@ -157,12 +157,6 @@ public:
   /* 04EC */ float extentRight;
   /* 04F0 */ float extentBottom;
   /* 04F4 */ int outlineColor;
-  union { /* 04F8 */ int destCellX; float motionY; };
-  /* 04FC */ int destCellZ;
-  /* 0500 */ int attackReqTime;
-  /* 0504 */ std::uint32_t preMoveStartTick;
-  /* 0508 */ int proceedType;
-  union { /* 050C */ int preMoveOn; CPc* blurSource; };
 };
 
 class CBlurPC : public CPc {
@@ -174,6 +168,11 @@ public:
     CGameObject* sender, std::int64_t message, std::int64_t b, std::int64_t c, std::int64_t d, std::int64_t e, std::int64_t f, std::int64_t g
   ) override;
   void Render(int argument) override;
+
+  /* 04F8 */ float motionY;
+  /* 04FC */ int destCellZ;
+  /* 0500 */ unsigned char padding_0500[0x0C];
+  /* 050C */ CPc* blurSource;
 };
 
 class CHalluPC : public CPc {
@@ -186,6 +185,10 @@ public:
   ) override;
   void Render(int argument) override;
 
+  /* 04F8 */ float motionY;
+  /* 04FC */ int destCellZ;
+  /* 0500 */ unsigned char padding_0500[0x0C];
+  /* 050C */ int preMoveOn;
   /* 0510 */ CPc* sourcePc;
   /* 0514 */ int padding_0514;
 };
@@ -200,6 +203,10 @@ public:
   ) override;
   void Render(int argument) override;
 
+  /* 04F8 */ float motionY;
+  /* 04FC */ int destCellZ;
+  /* 0500 */ unsigned char padding_0500[0x0C];
+  /* 050C */ int preMoveOn;
   /* 0510 */ CPc* sourcePc;
   /* 0514 */ int padding_0514;
 };
@@ -225,6 +232,12 @@ public:
   void Initialize();
   void SetState(int state, int resetPosition) override;
 
+  /* 04F8 */ int destCellX;
+  /* 04FC */ int destCellZ;
+  /* 0500 */ int attackReqTime;
+  /* 0504 */ std::uint32_t preMoveStartTick;
+  /* 0508 */ int proceedType;
+  /* 050C */ int preMoveOn;
   /* 0510 */ int attackMode;
   /* 0514 */ int isAttackRequest;
   /* 0518 */ int isPreengageStateOfMove;
@@ -393,9 +406,11 @@ static_assert(offsetof(CPc, msgEffect) == 0x414);
 static_assert(offsetof(CPc, imfName) == 0x418);
 static_assert(offsetof(CPc, extentLeft) == 0x4E4);
 static_assert(offsetof(CPc, extentBottom) == 0x4F0);
-static_assert(offsetof(CPc, destCellX) == 0x4F8);
-static_assert(offsetof(CPc, destCellZ) == 0x4FC);
-static_assert(offsetof(CPc, preMoveOn) == 0x50C);
+static_assert(sizeof(CPc) == 0x4F8);
+static_assert(offsetof(CPlayer, destCellX) == 0x4F8);
+static_assert(offsetof(CPlayer, destCellZ) == 0x4FC);
+static_assert(offsetof(CPlayer, preMoveOn) == 0x50C);
+static_assert(offsetof(CBlurPC, blurSource) == 0x50C);
 static_assert(offsetof(CHalluPC, sourcePc) == 0x510);
 static_assert(offsetof(CHalluPC2, sourcePc) == 0x510);
 static_assert(offsetof(CPc, weapon) == 0x448);
