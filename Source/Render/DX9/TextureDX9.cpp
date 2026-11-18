@@ -339,16 +339,17 @@ bool CTextureDX9::UploadSurface(
     return false;
   }
 
-  const int stride = sourceWidth ? sourceWidth : width;
-  int stepX = 1, stepY = 1;
-  const int extentX = x + width;
-  const int extentY = y + height;
+  if (!sourceWidth) {
+    sourceWidth = width;
+  }
 
-  while (static_cast<UINT>(extentX / stepX) > this->m_width) {
+  int stepX = 1;
+  while (static_cast<UINT>((x + width) / stepX) > this->m_width) {
     ++stepX;
   }
 
-  while (static_cast<UINT>(extentY / stepY) > this->m_height) {
+  int stepY = 1;
+  while (static_cast<UINT>((y + height) / stepY) > this->m_height) {
     ++stepY;
   }
 
@@ -368,7 +369,7 @@ bool CTextureDX9::UploadSurface(
   case D3DFMT_A1R5G5B5:
     for (int row = 0; row < h; ++row) {
       auto* output = static_cast<unsigned char*>(locked.pBits) + row * locked.Pitch;
-      const std::uint32_t* input = pixels + row * stepY * stride;
+      const std::uint32_t* input = pixels + row * stepY * sourceWidth;
 
       for (int column = 0; column < w; ++column) {
         const std::uint16_t converted = Convert16(input[column * stepX], D3DFMT_A1R5G5B5);
@@ -389,7 +390,7 @@ bool CTextureDX9::UploadSurface(
   case D3DFMT_A4R4G4B4:
     for (int row = 0; row < h; ++row) {
       auto* output = static_cast<unsigned char*>(locked.pBits) + row * locked.Pitch;
-      const std::uint32_t* input = pixels + row * stepY * stride;
+      const std::uint32_t* input = pixels + row * stepY * sourceWidth;
 
       for (int column = 0; column < w; ++column) {
         const std::uint16_t converted = Convert16(input[column * stepX], D3DFMT_A4R4G4B4);
@@ -410,7 +411,7 @@ bool CTextureDX9::UploadSurface(
   case D3DFMT_R5G6B5:
     for (int row = 0; row < h; ++row) {
       auto* output = static_cast<unsigned char*>(locked.pBits) + row * locked.Pitch;
-      const std::uint32_t* input = pixels + row * stepY * stride;
+      const std::uint32_t* input = pixels + row * stepY * sourceWidth;
 
       for (int column = 0; column < w; ++column) {
         const std::uint16_t converted = Convert16(input[column * stepX], D3DFMT_R5G6B5);
@@ -421,7 +422,7 @@ bool CTextureDX9::UploadSurface(
   case D3DFMT_A8R8G8B8:
     for (int row = 0; row < h; ++row) {
       auto* output = static_cast<unsigned char*>(locked.pBits) + row * locked.Pitch;
-      const std::uint32_t* input = pixels + row * stepY * stride;
+      const std::uint32_t* input = pixels + row * stepY * sourceWidth;
 
       for (int column = 0; column < w; ++column) {
         const std::uint32_t color = input[column * stepX];
