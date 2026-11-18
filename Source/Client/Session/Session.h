@@ -983,6 +983,7 @@ public:
   ITEM_INFO GetEquippedItemAt(int index) const;
   ITEM_INFO GetSwapEquippedItem(int index) const;
   ITEM_INFO GetSwapCostumeItem(int index) const;
+  int GetWeightPercent() const;
   ITEM_INFO FindItemByIdentity(std::uint32_t identity, int location);
   unsigned char IsAllyActor(std::uint32_t aid, int job);
   const char* GetDamageSkinAuxiliaryName() const;
@@ -1188,6 +1189,7 @@ public:
   std::string GetWeaponEffectActName(int job, int sex, int weapon, int weaponItem, int effect, int costume);
   std::string GetWeaponEffectSprName(int job, int sex, int weapon, int weaponItem, int effect, int costume);
   void CollectCardItems();
+  ITEM_INFO GetCardItemAt(std::size_t index) const;
   std::uint32_t ReadReplayCharacter(const std::vector<unsigned char>& data);
   std::uint32_t ReadReplayStats(const std::vector<unsigned char>& data);
   std::uint32_t ReadReplayCompanions(const std::vector<unsigned char>& data);

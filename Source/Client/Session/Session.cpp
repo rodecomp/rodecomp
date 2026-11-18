@@ -2281,6 +2281,17 @@ ITEM_INFO CSession::GetSwapCostumeItem(int index) const {
   return ITEM_INFO(0);
 }
 
+// OFFSET: 0x00E31C60
+// FUNCTION: fn_45612
+int CSession::GetWeightPercent() const {
+  if (this->m_weight > 0 && this->m_maxWeight > 0) {
+    return this->m_weight * 100 / this->m_maxWeight;
+  }
+  return 0;
+}
+
+// OFFSET: 0x00E31C80
+
 // OFFSET: 0x00E31DE0
 // FUNCTION: fn_24177
 bool CSession::IsRequestReady(int requestId) {
