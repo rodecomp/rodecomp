@@ -30,10 +30,10 @@ public:
   bool GetMapStringBoolValue(const jsoncons::json& node, const std::string& key, std::map<std::string, bool>* out);
   bool GetIntVectorValue(const jsoncons::json& node, const std::string& key, std::vector<int>* out);
   bool GetBoolValue(const jsoncons::json& node, const std::string& key, bool* out);
-  bool Load(std::vector<unsigned char>& buffer, bool bson);
-  bool LoadBson(std::vector<unsigned char>& buffer);
+  bool Load(const std::vector<unsigned char>& buffer, bool bson);
+  bool LoadBson(const std::vector<unsigned char>& buffer);
   bool LoadJson(const std::string& path);
-  bool LoadJson(std::vector<unsigned char>& buffer);
+  bool LoadJson(const std::vector<unsigned char>& buffer);
   bool GetEZ2STREffect(std::map<std::string, EZ2STREffectRecord>* out);
   bool GetReputeGroupData(std::map<int, ReputeGroupRecord>* out);
   bool GetReputeInfoData(std::map<int, ReputeInfoRecord>* out);

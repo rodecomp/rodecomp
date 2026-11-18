@@ -100,13 +100,7 @@ bool CReputeMgr::LoadReputeGroupData(std::map<std::uint64_t, ReputeGroup>& group
 
   JsonCppLoader loader;
   const auto* data = static_cast<const unsigned char*>(file.GetData());
-  bool parsed;
-  {
-    std::vector<unsigned char> buffer(data, data + file.GetSize());
-    parsed = loader.Load(buffer, true);
-  }
-
-  if (!parsed) {
+  if (!loader.Load(std::vector<unsigned char>(data, data + file.GetSize()), true)) {
     return false;
   }
 
@@ -131,13 +125,7 @@ bool CReputeMgr::LoadReputeInfoData(std::map<std::uint64_t, ReputeInfo>& infos) 
 
   JsonCppLoader loader;
   const auto* data = static_cast<const unsigned char*>(file.GetData());
-  bool parsed;
-  {
-    std::vector<unsigned char> buffer(data, data + file.GetSize());
-    parsed = loader.Load(buffer, true);
-  }
-
-  if (!parsed) {
+  if (!loader.Load(std::vector<unsigned char>(data, data + file.GetSize()), true)) {
     return false;
   }
 

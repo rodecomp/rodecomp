@@ -112,7 +112,7 @@ bool JsonCppLoader::LoadJson(const std::string& path) {
 
 // OFFSET: 0x004F3C70
 // FUNCTION: fn_00486
-bool JsonCppLoader::Load(std::vector<unsigned char>& buffer, bool bson) {
+bool JsonCppLoader::Load(const std::vector<unsigned char>& buffer, bool bson) {
   if (buffer.empty()) {
     this->Fail("error : JsonCppLoader::Load failed (reason : 비어있는 버퍼가 전달되었습니다.)");
     return false;
@@ -135,7 +135,7 @@ bool JsonCppLoader::Load(std::vector<unsigned char>& buffer, bool bson) {
 
 // OFFSET: 0x004F3DF0
 // FUNCTION: fn_00488
-__declspec(noinline) bool JsonCppLoader::LoadBson(std::vector<unsigned char>& buffer) {
+__declspec(noinline) bool JsonCppLoader::LoadBson(const std::vector<unsigned char>& buffer) {
   if (buffer.empty()) {
     this->Fail("비어있는 버퍼가 전달되었습니다.");
     return false;
@@ -153,7 +153,7 @@ __declspec(noinline) bool JsonCppLoader::LoadBson(std::vector<unsigned char>& bu
 
 // OFFSET: 0x004F4040
 // FUNCTION: fn_00490
-__declspec(noinline) bool JsonCppLoader::LoadJson(std::vector<unsigned char>& buffer) {
+__declspec(noinline) bool JsonCppLoader::LoadJson(const std::vector<unsigned char>& buffer) {
   if (buffer.empty()) {
     this->Fail("비어있는 버퍼가 전달되었습니다.");
     return false;
