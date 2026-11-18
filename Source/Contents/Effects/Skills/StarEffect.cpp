@@ -124,8 +124,7 @@ void CStarEffect::UpdateParticle(CParticle* particle) {
       texture = 1;
     }
     state.texture = static_cast<float>(texture);
-    const std::string name = FormatOwnedString("effect\\star%02d.bmp", texture);
-    particle->SetTexture(name.c_str());
+    particle->SetTexture(FormatOwnedString("effect\\star%02d.bmp", texture).c_str());
   }
 
   int alpha = particle->alpha;
@@ -145,7 +144,10 @@ void CStarEffect::UpdateParticle(CParticle* particle) {
     int target = static_cast<int>(angle[1]);
     int current = static_cast<int>(angle[0]);
     if (target > current) {
-      current = std::min(current + 1, 359);
+      ++current;
+      if (current > 359) {
+        current = 359;
+      }
       if (current > target) {
         target = Random(current);
       }
@@ -175,16 +177,18 @@ void CStarEffect::UpdateParticle(CParticle* particle) {
   particle->scale = state.baseScale * g_sinTable[phase] * 0.05f + state.baseScale;
   state.phase = static_cast<float>(phase);
 
-  matrix rotation;
-  std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
-  rotation.MakeXRotation(g_modeMgr.GetGameMode()->camera->camera.pitch / 180.0f * 3.141592f);
-  const float particleScale = particle->scale;
-  matrix scale;
-  std::memcpy(scale.values, g_identityMatrix, sizeof(scale.values));
-  scale.SetScale(particleScale, particleScale, 1.0f);
-  matrix transform;
-  transform.Compose(scale, rotation);
-  particle->transform = transform;
+  {
+    matrix rotation;
+    std::memcpy(rotation.values, g_identityMatrix, sizeof(rotation.values));
+    rotation.MakeXRotation(g_modeMgr.GetGameMode()->camera->camera.pitch / 180.0f * 3.141592f);
+    const float particleScale = particle->scale;
+    matrix scale;
+    std::memcpy(scale.values, g_identityMatrix, sizeof(scale.values));
+    scale.SetScale(particleScale, particleScale, 1.0f);
+    matrix transform;
+    transform.Compose(scale, rotation);
+    particle->transform = transform;
+  }
 }
 
 // OFFSET: 0x00B7A540
