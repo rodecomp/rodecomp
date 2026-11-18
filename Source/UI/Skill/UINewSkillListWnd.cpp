@@ -462,9 +462,10 @@ CSkillInfo UINewSkillListWnd::SkillAt(int index, bool live) {
 CSkillInfo UINewSkillListWnd::FindSkillById(int id, bool live) {
   CSkillInfo result(0);
   for (int tab = 0; tab < static_cast<int>(this->m_tabs->labels.size()); ++tab) {
-    for (const CSkillInfo& skill : this->SkillList(tab, live)) {
-      if (skill.id == id) {
-        return result = skill;
+    std::list<CSkillInfo>& list = this->SkillList(tab, live);
+    for (std::list<CSkillInfo>::iterator it = list.begin(); it != list.end(); ++it) {
+      if (it->id == id) {
+        return result = *it;
       }
     }
   }
