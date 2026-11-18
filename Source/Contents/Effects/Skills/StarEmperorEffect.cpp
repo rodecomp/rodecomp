@@ -12,6 +12,15 @@
 CStarEmperorEffect::CStarEmperorEffect() : CEffect(-1), sphere(), rings() {
 }
 
+// INLINED
+static vector3d TransformPoint(const matrix& transform, const vector3d& point) {
+  vector3d result;
+  result.x = point.x * transform.values[0] + point.y * transform.values[3] + point.z * transform.values[6] + transform.values[9];
+  result.y = point.x * transform.values[1] + point.y * transform.values[4] + point.z * transform.values[7] + transform.values[10];
+  result.z = point.x * transform.values[2] + point.y * transform.values[5] + point.z * transform.values[8] + transform.values[11];
+  return result;
+}
+
 // OFFSET: 0x0072BE20
 // FUNCTION: fn_07476
 void CStarEmperorEffect::BuildSphere() {
@@ -50,11 +59,12 @@ void CStarEmperorEffect::BuildSphere() {
       corners[3].MakeXRotation(bottomPitch);
       corners[3].AppendYRotation(rightYaw);
 
+      const vector3d point = {0.0f, 0.0f, -1.0f};
       for (int i = 0; i < 4; ++i) {
-        const float* m = corners[i].values;
-        particle->vertices[i].x = 0.0f * m[0] + 0.0f * m[3] - 1.0f * m[6] + m[9];
-        particle->vertices[i].y = 0.0f * m[1] + 0.0f * m[4] - 1.0f * m[7] + m[10];
-        particle->vertices[i].z = 0.0f * m[2] + 0.0f * m[5] - 1.0f * m[8] + m[11];
+        const vector3d position = TransformPoint(corners[i], point);
+        particle->vertices[i].x = position.x;
+        particle->vertices[i].y = position.y;
+        particle->vertices[i].z = position.z;
       }
 
       this->sphere.push_back(particle);
