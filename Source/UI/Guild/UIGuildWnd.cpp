@@ -179,6 +179,7 @@ void UIGuildPositionManageWnd::Invalidate() {
 }
 
 // OFFSET: 0x00957800
+// FUNCTION: fn_45690
 int UIGuildMemberManageWnd::MemberIndexAt(int x, int y) {
   if (x >= 5 && x <= 382 && y >= 66 && y <= 283) {
     const int index = (y - 66) / (this->m_rowSpacing + 36) + this->m_columns * this->m_scrollTop;
