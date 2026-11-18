@@ -13,8 +13,12 @@ namespace {
   }
 
   // INLINED
-  bool Near(int value, int edge) {
-    return value >= (edge - 10) && value <= (edge + 10);
+  bool SnapEdge(int edge, int value, int& offset) {
+    if (value < edge - 10 || value > edge + 10) {
+      return false;
+    }
+    offset = edge - value;
+    return true;
   }
 }
 
@@ -52,59 +56,17 @@ void SnapRectangle::Snap(const SnapRectangle& other, int& dx, int& dy) const {
   dx = 0;
   dy = 0;
   if (Overlaps(this->left.begin, this->left.end, other.right.begin, other.right.end)) {
-    int edge = this->left.position;
-    int value = other.right.position;
-    bool close = Near(value, edge);
-
-    if (!close) {
-      edge = this->right.position;
-      value = other.left.position;
-      close = Near(value, edge);
-    }
-
-    if (close) {
-      dx = (edge - value);
-      edge = this->top.position;
-      value = other.top.position;
-      close = Near(value, edge);
-
-      if (!close) {
-        edge = this->bottom.position;
-        value = other.bottom.position;
-        close = Near(value, edge);
-      }
-
-      if (close) {
-        dy = (edge - value);
+    if (SnapEdge(this->left.position, other.right.position, dx) || SnapEdge(this->right.position, other.left.position, dx)) {
+      if (!SnapEdge(this->top.position, other.top.position, dy)) {
+        SnapEdge(this->bottom.position, other.bottom.position, dy);
       }
     }
   }
 
   if (Overlaps(this->top.begin, this->top.end, other.bottom.begin, other.bottom.end)) {
-    int edge = this->top.position;
-    int value = other.bottom.position;
-    bool close = Near(value, edge);
-
-    if (!close) {
-      edge = this->bottom.position;
-      value = other.top.position;
-      close = Near(value, edge);
-    }
-
-    if (close) {
-      dy = (edge - value);
-      edge = this->left.position;
-      value = other.left.position;
-      close = Near(value, edge);
-
-      if (!close) {
-        edge = this->right.position;
-        value = other.right.position;
-        close = Near(value, edge);
-      }
-
-      if (close) {
-        dx = (edge - value);
+    if (SnapEdge(this->top.position, other.bottom.position, dy) || SnapEdge(this->bottom.position, other.top.position, dy)) {
+      if (!SnapEdge(this->left.position, other.left.position, dx)) {
+        SnapEdge(this->right.position, other.right.position, dx);
       }
     }
   }
