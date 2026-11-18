@@ -323,7 +323,7 @@ void UISeekPartyMBWnd::OnCreate(int width, int height) {
     this->confirmButton->SetBitmap((path + "btn_ok_b" + ".bmp").c_str(), 2, 0);
     this->confirmButton->SetSize(this->confirmButton->BitmapWidth(), this->confirmButton->BitmapHeight());
     this->confirmButton->Move(this->geometry.width - 0x5D, this->geometry.height - 0x18);
-    this->confirmButton->SetId(0xB8);
+    this->confirmButton->SetId(ID_OK);
     this->AddChild(this->confirmButton);
   }
 
@@ -335,7 +335,7 @@ void UISeekPartyMBWnd::OnCreate(int width, int height) {
     this->cancelButton->SetBitmap((path + "btn_cancel_b" + ".bmp").c_str(), 2, 0);
     this->cancelButton->SetSize(this->cancelButton->BitmapWidth(), this->cancelButton->BitmapHeight());
     this->cancelButton->Move(this->geometry.width - 0x2E, this->geometry.height - 0x18);
-    this->cancelButton->SetId(0xB9);
+    this->cancelButton->SetId(ID_CANCEL);
     this->AddChild(this->cancelButton);
   }
 

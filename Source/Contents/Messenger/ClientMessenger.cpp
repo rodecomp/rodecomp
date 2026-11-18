@@ -5075,7 +5075,7 @@ __declspec(noinline) void UIWindowMgr::NotifyItemWindows(int accountId, int lowe
       matches = member.accountId == accountId;
     }
     if (matches) {
-      window->SendMsg(nullptr, UM_COMMAND, 34, accountId, lower, upper);
+      window->SendMsg(nullptr, UM_COMMAND, ID_UPDATE_MEMBER_HP, accountId, lower, upper);
       break;
     }
   }
@@ -5146,7 +5146,7 @@ __declspec(noinline) void CGameMode::NotifyItemBounds() {
     this->itemWindow->Invalidate();
   }
   if (g_windowMgr.messengerGroupWnd) {
-    g_windowMgr.messengerGroupWnd->SendMsg(nullptr, UM_COMMAND, 34, g_session.m_aid, 0, 0);
+    g_windowMgr.messengerGroupWnd->SendMsg(nullptr, UM_COMMAND, ID_UPDATE_MEMBER_HP, g_session.m_aid, 0, 0);
   }
   g_windowMgr.NotifyItemWindows(g_session.m_aid, g_session.hp, g_session.maxHp);
 }

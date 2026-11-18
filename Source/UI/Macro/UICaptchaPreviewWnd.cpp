@@ -4,6 +4,7 @@
 #include "UI/Edit/UIEditCtrl.h"
 #include "UI/Macro/UIMacroDetectorWnd.h"
 #include "UI/Window/InputFocus.h"
+#include "UI/Window/UIEnums.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Window/WindowBorder.h"
 #include "Contents/Tables/MessageTable.h"
@@ -111,7 +112,7 @@ void UIMacroDetectorWnd::OnCreate(int, int) {
   this->m_button->SetBitmap("유저인터페이스\\btn_get_b.bmp", 2, 0);
   this->m_button->SetSize(this->m_button->BitmapWidth(), this->m_button->BitmapHeight());
   this->m_button->Move(253, 261);
-  this->m_button->SetId(345);
+  this->m_button->SetId(ID_SEND);
   this->AddChild(this->m_button);
 }
 

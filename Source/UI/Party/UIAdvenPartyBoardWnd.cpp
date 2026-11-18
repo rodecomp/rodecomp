@@ -362,19 +362,19 @@ void UIApplyForPartyWnd::OnCreate(int, int) {
   UIBasicButton* button = new UIBasicButton();
   button->Configure(this->TextWidth(LookupMessage(MSI_CHAT_WITH_PARTYMASTER), 0, 0, 12, 0, 0) + 10, LookupMessage(MSI_CHAT_WITH_PARTYMASTER));
   button->Move(51, 165);
-  button->SetId(381);
+  button->SetId(ID_WHISPER_PARTY_LEADER);
   this->AddChild(button);
 
   button = new UIBasicButton();
   button->Configure(this->TextWidth(LookupMessage(MSI_ASK_JOIN), 0, 0, 12, 0, 0) + 10, LookupMessage(MSI_ASK_JOIN));
   button->Move(108, 165);
-  button->SetId(271);
+  button->SetId(ID_APPLY);
   this->AddChild(button);
 
   button = new UIBasicButton();
   button->Configure(this->TextWidth(LookupMessage(MSI_CLOSE), 0, 0, 12, 0, 0) + 10, LookupMessage(MSI_CLOSE));
   button->Move(173, 165);
-  button->SetId(201);
+  button->SetId(ID_CLOSE);
   this->AddChild(button);
 
   std::vector<std::string> lines;

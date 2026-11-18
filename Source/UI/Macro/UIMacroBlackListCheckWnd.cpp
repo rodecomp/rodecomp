@@ -63,7 +63,7 @@ void UIMacroBlackListCheckWnd::OnCreate(int width, int height) {
   this->okButton->SetBitmap("유저인터페이스\\btn_big_ok_b.bmp", 3, 0);
   this->okButton->SetSize(this->okButton->BitmapWidth(), this->okButton->BitmapHeight());
   this->okButton->Move(110, 284);
-  this->okButton->SetId(184);
+  this->okButton->SetId(ID_OK);
   this->okButton->Enable(1);
   this->AddChild(this->okButton);
 

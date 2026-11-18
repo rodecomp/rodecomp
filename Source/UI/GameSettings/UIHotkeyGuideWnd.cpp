@@ -200,7 +200,7 @@ void UIHotkeyGuideWnd::OnCreate(int, int) {
   settings->SetSize(settings->BitmapWidth(), settings->BitmapHeight());
   settings->SetText(LookupMessage(MSI_HOTKEY_SETTING));
   settings->Move(763, 462);
-  settings->SetId(342);
+  settings->SetId(ID_HOTKEY_SETTINGS);
   this->AddChild(settings);
 }
 
@@ -292,7 +292,7 @@ void UIHotkeyGuideWnd::OnProcess() {
 int UIHotkeyGuideWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
   if (message == UM_COMMAND) {
     switch (a) {
-    case 342: {
+    case ID_HOTKEY_SETTINGS: {
       UIWindow* window = g_windowMgr.EnsureWindow(WID_HOTKEYWND);
       if (window) {
         window->SendMsg(this, UM_TAB, 1, 0, 0, 0);

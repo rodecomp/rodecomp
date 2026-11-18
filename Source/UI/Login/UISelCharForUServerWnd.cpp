@@ -64,7 +64,7 @@ void UISelCharForUServerWnd::OnCreate(int, int) {
     this->confirmButton->SetBitmap((path + "btn_ok_b" + ".bmp").c_str(), 2, 0);
     this->confirmButton->SetSize(this->confirmButton->BitmapWidth(), this->confirmButton->BitmapHeight());
     this->confirmButton->Move(this->geometry.width - 46, this->geometry.height - 24);
-    this->confirmButton->SetId(184);
+    this->confirmButton->SetId(ID_OK);
     this->AddChild(this->confirmButton);
   }
 

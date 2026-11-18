@@ -733,7 +733,7 @@ void UIMessageBox::Configure(
     link->Configure(LookupMessage(MSI_WEB_ADDRESS_FOR_RESTART), 0x00F4934A, 0, 12, 0, 0);
     link->m_hoverColor = 0x00FF7864;
     link->Move(14, 70);
-    link->SetId(426);
+    link->SetId(ID_RESTART_WEB_LINK);
     link->SetDisabled(0);
     link->Invalidate();
     this->AddChild(link);
@@ -1103,7 +1103,7 @@ void UILoginOTPWnd::OnCreate(int, int) {
   button->SetBitmap(pressedName.Text(), 2, 0);
   button->SetSize(button->BitmapWidth(), button->BitmapHeight());
   button->Move(186, 92);
-  button->SetId(382);
+  button->SetId(ID_OTP_CONFIRM);
   button->SetText(LookupMessage(MSI_OK));
   button->AddTextStyle(0, 12, 0x313131, 1, 1, -1000, -1000);
   button->AddTextStyle(1, 12, 0x313131, 1, 1, -1000, -1000);
@@ -1651,7 +1651,7 @@ void UIChatRoomWnd::OnCreate(int, int) {
   this->edit->Background(242, 242, 242);
   this->AddChild(this->edit);
   g_windowMgr.SetFocus(this->edit);
-  this->edit->SetId(494);
+  this->edit->SetId(ID_CHATROOM_EDIT);
 
   UIChatHisBox2* history = new UIChatHisBox2();
   this->history = history;
@@ -3376,7 +3376,7 @@ int UILoginOTPWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::
       }
       break;
 
-    case 382: {
+    case ID_OTP_CONFIRM: {
       CSoundMgr* const soundMgr = g_soundMgr;
       constexpr auto soundSourceText = OBFUSCATE_SOURCE("버튼소리.wav", 0x7321C3814F8799E1ULL);
       const auto& soundSource = soundSourceText.data;
@@ -3643,7 +3643,7 @@ int UIHomunInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       }
       return 0;
     }
-    case 488: {
+    case ID_MESSAGEBOX_RESULT: {
       CGameMode* mode = g_modeMgr.GetGameMode();
       if (sender == this->feedConfirmation && b == ID_YES) {
         if (g_windowMgr.LookupWindow(WID_EXCHANGEUI)) {
@@ -3701,7 +3701,7 @@ void UIPetInfoWnd::OnCreate(int, int) {
   this->statusButton = new UINoneVisibleButton();
   this->statusButton->SetSize(120, 18);
   this->statusButton->Move(150, 44);
-  this->statusButton->SetId(268);
+  this->statusButton->SetId(ID_COMMAND_MENU);
   this->AddChild(this->statusButton);
   {
     const std::string prefix("유저인터페이스\\basic_interface\\");
@@ -3713,7 +3713,7 @@ void UIPetInfoWnd::OnCreate(int, int) {
     button->SetSize(button->BitmapWidth(), button->BitmapHeight());
     button->Move(270 - button->BitmapWidth(), 44);
     button->SetTooltip(tooltip);
-    button->SetId(268);
+    button->SetId(ID_COMMAND_MENU);
     this->AddChild(button);
   }
 
@@ -3830,7 +3830,7 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
         }
       }
       return 0;
-    case 268: {
+    case ID_COMMAND_MENU: {
       UIWindow* menu = g_windowMgr.EnsureWindow(WID_COMBOBOXIDWND);
       std::string feed;
       std::string performance;
@@ -3869,7 +3869,7 @@ int UIPetInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       menu->Move(x, y);
       return 0;
     }
-    case 488: {
+    case ID_MESSAGEBOX_RESULT: {
       CGameMode* mode = g_modeMgr.GetGameMode();
       if (sender == this->feedConfirmationWnd && b == ID_YES) {
         if (g_windowMgr.LookupWindow(WID_EXCHANGEUI)) {

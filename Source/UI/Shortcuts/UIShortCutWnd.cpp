@@ -1445,7 +1445,7 @@ void UINewChatWnd::OnCreate(int width, int height) {
     UIChatHisBox* chatBox = new UIChatHisBox();
     chatBox->Configure(0, 0, this->geometry.width - 8, 70, 0);
     chatBox->Move(-100 - this->geometry.width, -100);
-    chatBox->SetId(0x1ED);
+    chatBox->SetId(ID_CHAT_EDIT);
     this->AddChild(chatBox);
     this->m_tabs.push_back(chatBox);
   }
@@ -1467,7 +1467,7 @@ void UINewChatWnd::OnCreate(int width, int height) {
   this->AddChild(this->m_chatEdit);
   this->m_inputEdit = this->m_chatEdit;
   g_windowMgr.SetFocus(this->m_chatEdit);
-  this->m_chatEdit->SetId(0x1ED);
+  this->m_chatEdit->SetId(ID_CHAT_EDIT);
 
   this->m_whisperEdit = new UIWhisperEditCtrl();
   this->m_whisperEdit->SetSize(90, 16);

@@ -73,7 +73,7 @@ void UIReputeWnd::OnCreate(int width, int height) {
   search->SetSize(search->BitmapWidth(), search->BitmapHeight());
   search->SetLabel(LookupMessage(MSI_SEARCH));
   search->Move(336, 25);
-  search->SetId(321);
+  search->SetId(ID_SEARCH);
   this->AddChild(search);
   this->m_message0 = 321;
 
@@ -85,7 +85,7 @@ void UIReputeWnd::OnCreate(int width, int height) {
   this->m_prevButton->Move(567, 402);
   this->m_prevButton->Enable(0);
   this->m_prevButton->SetTooltip(LookupMessage(MSI_PREV_PAGE));
-  this->m_prevButton->SetId(316);
+  this->m_prevButton->SetId(ID_PREV_PAGE);
   this->AddChild(this->m_prevButton);
 
   this->m_nextButton = new UIBitmapButton();
@@ -96,13 +96,13 @@ void UIReputeWnd::OnCreate(int width, int height) {
   this->m_nextButton->Move(623, 402);
   this->m_nextButton->Enable(0);
   this->m_nextButton->SetTooltip(LookupMessage(MSI_NEXT_PAGE));
-  this->m_nextButton->SetId(317);
+  this->m_nextButton->SetId(ID_NEXT_PAGE);
   this->AddChild(this->m_nextButton);
 
   UIBasicButton* close = new UIBasicButton();
   close->Configure(42, LookupMessage(MSI_CLOSE));
   close->Move(589, 425);
-  close->SetId(201);
+  close->SetId(ID_CLOSE);
   this->AddChild(close);
 
   this->m_groupCombo->AddOption(LookupMessage(MSI_REPUTE_TOTAL), 0);

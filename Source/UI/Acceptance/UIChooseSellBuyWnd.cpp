@@ -781,7 +781,7 @@ void UIMinimapZoomWnd::OnCreate(int, int) {
     this->m_buttons.push_back(button);
   }
 
-  this->SendMsg(this, UM_COMMAND, 502, 0, 0, 0);
+  this->SendMsg(this, UM_COMMAND, ID_REFRESH_MINIMAP_BUTTONS, 0, 0, 0);
 
   for (int index = 0;; ++index) {
     CTownInfoMgr* townInfoMgr = g_townInfoMgr;
@@ -832,7 +832,7 @@ int UIMinimapZoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
       g_windowMgr.EnsureWindow(WID_ROMAPWND);
     }
     return 0;
-  case 453: {
+  case ID_SHOW_MINIMAP_ZOOM_BUTTON: {
     const auto it = this->m_zoom.find(argument2);
     if (it != this->m_zoom.end()) {
       static_cast<UIButton*>(it->second)->Enable(1);
@@ -841,7 +841,7 @@ int UIMinimapZoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     this->Invalidate();
     return 0;
   }
-  case 455: {
+  case ID_HIDE_MINIMAP_ZOOM_BUTTON: {
     const auto it = this->m_zoom.find(argument2);
     if (it != this->m_zoom.end()) {
       static_cast<UIButton*>(it->second)->Enable(0);
@@ -849,7 +849,7 @@ int UIMinimapZoomWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
     this->Invalidate();
     return 0;
   }
-  case 502: {
+  case ID_REFRESH_MINIMAP_BUTTONS: {
     const unsigned char enabled = g_serviceOptions.Get(TT_SHOW_MINIMAP_BUTTON_ONOFF);
     for (UIWindow* button : this->m_buttons) {
       static_cast<UIButton*>(button)->Enable(enabled);
@@ -2183,7 +2183,7 @@ int UIMenuWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
 // FUNCTION: fn_12073
 void UITipboxWnd::ShowTip(int id) {
   g_itemTagOwner->SelectTip(id);
-  this->SendMsg(this, UM_COMMAND, 543, 0, 0, 0);
+  this->SendMsg(this, UM_COMMAND, ID_REFRESH_TIP, 0, 0, 0);
   g_windowMgr.Promote(this);
 }
 
@@ -3002,7 +3002,7 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
 
     if (this->m_page == 2 || this->m_page == 3) {
       if (this->swapWindow && this->swapWindow->geometry.state != 0) {
-        this->SendMsg(nullptr, UM_COMMAND, 508, 0, 0, 0);
+        this->SendMsg(nullptr, UM_COMMAND, ID_SWAP_EQUIPMENT, 0, 0, 0);
       }
       if (this->swapButton) {
         this->swapButton->SetState(0);
@@ -3013,7 +3013,7 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       if (this->swapWindow) {
         if (g_session.m_swapEquipmentMode == 1) {
           this->swapWindow->geometry.state = 0;
-          this->SendMsg(nullptr, UM_COMMAND, 508, 0, 0, 0);
+          this->SendMsg(nullptr, UM_COMMAND, ID_SWAP_EQUIPMENT, 0, 0, 0);
         }
         this->swapWindow->equipmentPage = this->m_page + 1;
         this->swapWindow->Invalidate();
@@ -3225,14 +3225,14 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       g_session.m_damageMillionUnit = millionUnit;
       return 0;
     }
-    case 480: {
+    case ID_TITLE_LIST: {
       ChangeTitlePacket packet;
       packet.packetType = ID_CZ_REQ_CHANGE_TITLE;
       packet.titleId = b;
       GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
       return 0;
     }
-    case 508: {
+    case ID_SWAP_EQUIPMENT: {
       const int height = this->contentOffset + 167;
       this->Resize(this->geometry.width, height + 158);
       if (!this->swapWindow) {
@@ -3260,7 +3260,7 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       this->Resize(this->geometry.width, height);
       return 0;
     }
-    case 575: {
+    case ID_TAKEOFF_ALL: {
       TakeoffEquipAllPacket packet;
       if (this->m_page == 1) {
         packet.location = 0x3F7C00;
@@ -3275,7 +3275,7 @@ int UIEquipWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       this->unequipButton->Invalidate();
       return 0;
     }
-    case 582:
+    case ID_EQUIPMENT_PROPERTIES:
       if (!g_windowMgr.CloseWindow(WID_EQUIPMENTPROPERTIESWND)) {
         g_windowMgr.EnsureWindow(WID_EQUIPMENTPROPERTIESWND);
       }
@@ -3436,7 +3436,7 @@ void UIEquipWnd::OnCreate(int width, int height) {
   background[0] = 225;
   background[1] = 225;
   background[2] = 225;
-  this->m_titleList->SetId(480);
+  this->m_titleList->SetId(ID_TITLE_LIST);
   this->m_titleList->Show(0);
   this->AddChild(this->m_titleList);
 
@@ -3447,7 +3447,7 @@ void UIEquipWnd::OnCreate(int width, int height) {
     this->swapButton->SetBitmap("유저인터페이스\\basic_interface\\btn_e_change_b.bmp", 2, 0);
     this->swapButton->SetSize(this->swapButton->BitmapWidth(), this->swapButton->BitmapHeight());
     this->swapButton->Move(193, 167);
-    this->swapButton->SetId(508);
+    this->swapButton->SetId(ID_SWAP_EQUIPMENT);
     this->swapButton->SetTooltip(LookupMessage(MSI_SWAP_EQUIPITEM_EQUIPMENTSET));
     this->AddChild(this->swapButton);
   }
@@ -3459,7 +3459,7 @@ void UIEquipWnd::OnCreate(int width, int height) {
   this->unequipButton->SetBitmap("유저인터페이스\\basic_interface\\btn_e_off_c.bmp", 3, 0);
   this->unequipButton->SetSize(this->unequipButton->BitmapWidth(), this->unequipButton->BitmapHeight());
   this->unequipButton->Move(235, 167);
-  this->unequipButton->SetId(575);
+  this->unequipButton->SetId(ID_TAKEOFF_ALL);
   this->unequipButton->SetTooltip(LookupMessage(MSI_TAKEOFF_ALL));
   this->AddChild(this->unequipButton);
   this->SendMsg(this, UM_SET_DISABLE, 575, 0, 0, 0);
@@ -3537,14 +3537,14 @@ void UIEquipWnd::OnCreate(int width, int height) {
       this->abilityButton->SetBitmap("유저인터페이스\\basic_interface\\btn_e_ability_b.bmp", 2, 0);
       this->abilityButton->SetSize(this->abilityButton->BitmapWidth(), this->abilityButton->BitmapHeight());
       this->abilityButton->Move(g_equipAbilityButtonPosition[0], g_equipAbilityButtonPosition[1]);
-      this->abilityButton->SetId(582);
+      this->abilityButton->SetId(ID_EQUIPMENT_PROPERTIES);
       this->abilityButton->SetTooltip(LookupMessage(MSI_EQUIPMENT_PROPERTIES));
       this->AddChild(this->abilityButton);
     }
   }
 
   if (g_session.m_swapEquipmentMode == 1) {
-    this->SendMsg(nullptr, UM_COMMAND, 508, 0, 0, 0);
+    this->SendMsg(nullptr, UM_COMMAND, ID_SWAP_EQUIPMENT, 0, 0, 0);
   }
 }
 
@@ -3983,7 +3983,7 @@ void UIItemCollectionWnd::OnCreate(int width, int height) {
   this->m_viewButton->SetBitmap((path + "btn_view_b" + ".bmp").c_str(), 2, 0);
   this->m_viewButton->SetSize(this->m_viewButton->BitmapWidth(), this->m_viewButton->BitmapHeight());
   this->m_viewButton->Move(6, 6);
-  this->m_viewButton->SetId(250);
+  this->m_viewButton->SetId(ID_CARDITEM);
   this->AddChild(this->m_viewButton);
 
   const std::string prefix = "book\\";
@@ -4013,7 +4013,7 @@ void UIItemCollectionWnd::OnCreate(int width, int height) {
   if (!this->m_moveInfo) {
     this->m_moveInfo = new UIItemMoveInfo();
     this->m_moveInfo->Configure(LookupMessage(MSI_ITEMMOVEINFO_BTN), 0, 0, 12, 0, 1);
-    this->m_moveInfo->SetId(487);
+    this->m_moveInfo->SetId(ID_ITEM_MOVE_INFO);
     UIItemMoveInfo* moveInfo = this->m_moveInfo;
     const int textHeight = this->TextHeight(LookupMessage(MSI_ITEMMOVEINFO_BTN), 0, 0, 12, 0, 0);
     const int textWidth = this->TextWidth(LookupMessage(MSI_ITEMMOVEINFO_BTN), 0, 0, 12, 0, 0) + 1;
@@ -4215,7 +4215,7 @@ void UIStatusWnd::OnCreate(int, int) {
   this->m_expandButton->SetSize(this->m_expandButton->BitmapWidth(), this->m_expandButton->BitmapHeight());
   this->m_expandButton->SetText(LookupMessage(MSI_ADVANCED_STATUS));
   this->m_expandButton->Move(2, 121);
-  this->m_expandButton->SetId(550);
+  this->m_expandButton->SetId(ID_TOGGLE_STATUS_EXPAND);
   this->AddChild(this->m_expandButton);
   this->m_expandedHeight = this->geometry.height;
 }
@@ -4294,7 +4294,7 @@ void UIProhibitListWnd::OnCreate(int, int) {
   auto* area = new UINoneVisibleButton();
   area->SetSize(120, 18);
   area->Move(350, 59);
-  area->SetId(268);
+  area->SetId(ID_COMMAND_MENU);
   this->AddChild(area);
 
   const std::string prefix("유저인터페이스\\basic_interface\\");
@@ -4305,7 +4305,7 @@ void UIProhibitListWnd::OnCreate(int, int) {
   button->SetSize(button->BitmapWidth(), button->BitmapHeight());
   button->Move(270 - button->BitmapWidth(), 44);
   button->SetTooltip(tooltip);
-  button->SetId(268);
+  button->SetId(ID_COMMAND_MENU);
   this->AddChild(button);
 }
 
@@ -6473,7 +6473,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
     this->m_pointBalance = argument1;
     this->m_cashBalance = argument2;
     this->m_pointEdit->SetText("0");
-    this->SendMsg(this, UM_COMMAND, 386, 0, 0, 0);
+    this->SendMsg(this, UM_COMMAND, ID_RESET_CART, 0, 0, 0);
     return 0;
 
   case UM_SET_CASHSHOP_BALANCE: {
@@ -6571,7 +6571,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
 
   case UM_COMMAND:
     switch (argument1) {
-    case 386:
+    case ID_RESET_CART:
       this->m_totalPrice = 0;
       g_session.ClearPurchaseItems();
       this->m_otherItems.erase(this->m_otherItems.begin(), this->m_otherItems.end());
@@ -6666,7 +6666,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
       return 0;
     }
 
-    case 387:
+    case ID_FIRST_PAGE:
       this->m_page = 1;
       return 0;
 
@@ -6684,7 +6684,7 @@ int UInCashWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, 
       }
       break;
 
-    case 388:
+    case ID_LAST_PAGE:
       this->m_page = this->m_pageCount;
       return 0;
 
@@ -7873,7 +7873,7 @@ void UINpcTextEditDialogWnd::OnCreate(int, int) {
   this->edit->Background(232, 232, 232);
   this->edit->SetText("");
   this->AddChild(this->edit);
-  this->edit->SetId(492);
+  this->edit->SetId(ID_NPC_TEXT_EDIT);
   g_windowMgr.SetFocus(this->edit);
   this->edit->SelectAll();
 
@@ -8631,7 +8631,7 @@ int UIStatusWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     case ID_LUK:
       RequestStatusPointUp(this, mode, statCosts, statusPoint, 5);
       break;
-    case 550: {
+    case ID_TOGGLE_STATUS_EXPAND: {
       const char* normal;
       const char* pressed;
       if (this->m_extended == 1) {
@@ -8685,7 +8685,7 @@ int UIStatusWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     this->SendMsg(nullptr, UM_REFRESHBUTTON, 0, 0, 0, 0);
     this->Move(this->m_info->x, this->m_info->y);
     this->m_extended = this->m_info->extended != 1;
-    this->SendMsg(nullptr, UM_COMMAND, 550, 0, 0, 0);
+    this->SendMsg(nullptr, UM_COMMAND, ID_TOGGLE_STATUS_EXPAND, 0, 0, 0);
     break;
   case UM_REFRESHBUTTON:
     if (this->geometry.state == 0) {
@@ -9416,7 +9416,7 @@ void UIWhisperWnd::OnCreate(int, int) {
   this->m_edit->TextColor(255, 255, 255, 0xFFFFFFFF);
   this->AddChild(this->m_edit);
   g_windowMgr.SetFocus(this->m_edit);
-  this->m_edit->SetId(490);
+  this->m_edit->SetId(ID_WHISPER_EDIT);
 
   UIChatHisBox2* history = new UIChatHisBox2();
   this->m_chatHistory = history;
@@ -10640,7 +10640,7 @@ void UITipboxWnd::OnCreate(int width, int) {
   this->tagButton->SetBitmap("유저인터페이스\\tipbox\\bt_tagcatch_disabled.bmp", 3, 0);
   this->tagButton->SetSize(this->tagButton->BitmapWidth(), this->tagButton->BitmapHeight());
   this->tagButton->Move(450, 47);
-  this->tagButton->SetId(517);
+  this->tagButton->SetId(ID_CATCH_TIP_TAG);
   this->AddChild(this->tagButton);
 
   this->AddCloseButton("", 0)->Move(width - 15, 3);
@@ -12256,21 +12256,21 @@ int UITipboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     this->RefreshTip();
     break;
   }
-  case 0x205:
+  case ID_CATCH_TIP_TAG:
     if (!g_windowMgr.GetHoverWindow()) {
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_TIPTAG_FOCUS_WARNING)), 0xFF, 0, 0, 0);
     } else {
       const int id = g_itemTagOwner->currentTipId;
       switch (g_windowMgr.GetHoverWindow()->geometry.id) {
-      case 0x1EC:
+      case ID_NPC_TEXT_EDIT:
         g_windowMgr.npcTextEditDialogWnd->InsertSkillTag(id);
         break;
-      case 0x1EB:
+      case ID_RODEX_COMPOSE_EDIT:
         g_windowMgr.rodexComposeWnd->InsertSkillTag(id);
         break;
-      case 0x1EA:
-      case 0x1ED:
-      case 0x1EE:
+      case ID_WHISPER_EDIT:
+      case ID_CHAT_EDIT:
+      case ID_CHATROOM_EDIT:
         static_cast<UIChatEditCtrl*>(g_windowMgr.GetHoverWindow())->InsertItemTag(id);
         break;
       }
@@ -12298,7 +12298,7 @@ int UITipboxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::in
     }
     break;
   }
-  case 0x21F:
+  case ID_REFRESH_TIP:
     {
       UIButton* button = this->nextButton;
       button->SetDisabled(g_itemTagOwner->IsLastTip() == true ? 1 : 0);
@@ -12404,7 +12404,7 @@ int UIProhibitListWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, s
   switch (message) {
   case UM_COMMAND: {
     switch (a) {
-    case 0x10C: {
+    case ID_COMMAND_MENU: {
       UIWindow* menu = g_windowMgr.EnsureWindow(WID_COMBOBOXWND);
       std::string feeding;
       std::string performance;
@@ -12866,7 +12866,7 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
     this->m_withdrawButton = new UIBasicButton();
     this->m_withdrawButton->Configure(77, LookupMessage(MSI_BUTTON_EQUIP_PREVIEW));
     this->m_withdrawButton->Move(9, 117);
-    this->m_withdrawButton->SetId(354);
+    this->m_withdrawButton->SetId(ID_PREVIEW);
     this->m_withdrawButton->invalidateParent = 1;
     this->AddChild(this->m_withdrawButton);
     if (this->geometry.height < 172) {

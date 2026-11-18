@@ -134,7 +134,7 @@ void UIRodexContentsWnd::OnCreate(int, int) {
         UIBasicButton* report = new UIBasicButton();
         report->Configure(70, LookupMessage(MSI_RODEX_TAB_RETURN));
         report->Move(224, 29);
-        report->SetId(310);
+        report->SetId(ID_REPORT_RODEX);
         report->SetDisabled(0);
         report->Invalidate();
         this->AddChild(report);
@@ -167,7 +167,7 @@ void UIRodexContentsWnd::OnCreate(int, int) {
   this->m_confirmButton = new UIBasicButton();
   this->m_confirmButton->Configure(50, LookupMessage(MSI_RODEX_BUTTON_DELETE));
   this->m_confirmButton->Move(6, 376);
-  this->m_confirmButton->SetId(211);
+  this->m_confirmButton->SetId(ID_DELETE);
   this->AddChild(this->m_confirmButton);
 }
 
@@ -417,7 +417,7 @@ void UIRodexContentsWnd::SetMailContents(std::string title, std::string sender, 
   contents->disabled = 1;
   contents->Invalidate();
   this->m_contents->multiline = 1;
-  this->m_contents->SetId(504);
+  this->m_contents->SetId(ID_RODEX_READ_CONTENTS);
 
   if (text.find(g_rodexNaviLinkBegin) == std::string::npos && text.find(g_rodexNaviLinkEnd) == std::string::npos) {
     this->m_contents->SetText(text.c_str());
@@ -435,7 +435,7 @@ void UIRodexContentsWnd::SetMailContents(std::string title, std::string sender, 
     this->m_itemButton->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_receive_press.bmp", 2, 0);
     this->m_itemButton->SetSize(this->m_itemButton->BitmapWidth(), this->m_itemButton->BitmapHeight());
     this->m_itemButton->Move(252, 312);
-    this->m_itemButton->SetId(189);
+    this->m_itemButton->SetId(ID_BUTTON1);
     this->AddChild(this->m_itemButton);
   }
 
@@ -447,7 +447,7 @@ void UIRodexContentsWnd::SetMailContents(std::string title, std::string sender, 
     this->m_zenyButton->SetBitmap("유저인터페이스\\basic_interface\\rodexsystem\\renewal\\btn_receive_press.bmp", 2, 0);
     this->m_zenyButton->SetSize(this->m_zenyButton->BitmapWidth(), this->m_zenyButton->BitmapHeight());
     this->m_zenyButton->Move(252, 345);
-    this->m_zenyButton->SetId(190);
+    this->m_zenyButton->SetId(ID_BUTTON2);
     this->AddChild(this->m_zenyButton);
   }
 
@@ -455,7 +455,7 @@ void UIRodexContentsWnd::SetMailContents(std::string title, std::string sender, 
     this->m_adminButton = new UIBasicButton();
     this->m_adminButton->Configure(70, LookupMessage(MSI_RODEX_BUTTON_ANSWER));
     this->m_adminButton->Move(224, 376);
-    this->m_adminButton->SetId(305);
+    this->m_adminButton->SetId(ID_SEND_MAIL);
     UIBasicButton* button = this->m_adminButton;
     button->SetDisabled(0);
     button->Invalidate();

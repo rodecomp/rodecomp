@@ -144,7 +144,7 @@ void UICheckAttendanceWnd::OnCreate(int, int) {
   this->m_notice->AddTextStyle(1, 14, 0x313131, 1, 1, -1000, -1000);
   this->m_notice->AddTextStyle(2, 14, 0x313131, 1, 1, -1000, -1000);
   this->m_notice->Move(170, 376);
-  this->m_notice->SetId(201);
+  this->m_notice->SetId(ID_CLOSE);
   this->AddChild(this->m_notice);
 
   this->m_banner = new UICheckAttendanceWnd_Banner();

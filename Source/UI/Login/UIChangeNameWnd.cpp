@@ -56,7 +56,7 @@ void UIChangeNameWnd::OnCreate(int, int) {
     this->m_okButton->SetBitmap((prefix + "btn_ok_b" + ".bmp").c_str(), 2, 0);
     this->m_okButton->SetSize(this->m_okButton->BitmapWidth(), this->m_okButton->BitmapHeight());
     this->m_okButton->Move(this->geometry.width - 93, this->geometry.height - 24);
-    this->m_okButton->SetId(184);
+    this->m_okButton->SetId(ID_OK);
     this->AddChild(this->m_okButton);
   }
   {
@@ -67,7 +67,7 @@ void UIChangeNameWnd::OnCreate(int, int) {
     this->m_cancelButton->SetBitmap((prefix + "btn_cancel_b" + ".bmp").c_str(), 2, 0);
     this->m_cancelButton->SetSize(this->m_cancelButton->BitmapWidth(), this->m_cancelButton->BitmapHeight());
     this->m_cancelButton->Move(this->geometry.width - 46, this->geometry.height - 24);
-    this->m_cancelButton->SetId(185);
+    this->m_cancelButton->SetId(ID_CANCEL);
     this->AddChild(this->m_cancelButton);
   }
 
@@ -77,7 +77,7 @@ void UIChangeNameWnd::OnCreate(int, int) {
   this->m_edit->SetSize(this->m_edit->geometry.width, this->m_edit->geometry.height);
   this->m_edit->Move(60, 44);
   this->m_edit->maximum = 24;
-  this->m_edit->SetId(184);
+  this->m_edit->SetId(ID_OK);
   this->AddChild(this->m_edit);
   g_windowMgr.SetFocus(this->m_edit);
   this->m_message0 = 184;

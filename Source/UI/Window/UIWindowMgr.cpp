@@ -4599,7 +4599,7 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
     break;
   case HK_MAIL_ONOFF + 100:
     if (UIWindow* window = g_windowMgr.LookupWindow(WID_MENUICONWND)) {
-      window->SendMsg(nullptr, UM_COMMAND, 0x1DC, 0, 0, 0);
+      window->SendMsg(nullptr, UM_COMMAND, ID_TOGGLE_MAIL, 0, 0, 0);
     }
     break;
   case HK_SWAP_EQUIPMENT + 100:
@@ -4612,12 +4612,12 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
     break;
   case HK_CHANGE_SKILLBAR + 100:
     if (UIWindow* window = g_windowMgr.LookupWindow(WID_SHORTCUTWND)) {
-      window->SendMsg(nullptr, UM_COMMAND, 0x225, 0, 0, 0);
+      window->SendMsg(nullptr, UM_COMMAND, ID_CHANGE_SKILLBAR, 0, 0, 0);
     }
     break;
   case HK_COSEQUIPWND_ONOFF + 100:
     if (this->basicInfoWnd) {
-      this->basicInfoWnd->SendMsg(nullptr, UM_COMMAND, 0x242, 0, 0, 0);
+      this->basicInfoWnd->SendMsg(nullptr, UM_COMMAND, ID_OPEN_COSTUME_EQUIP, 0, 0, 0);
     }
     break;
   case HK_PARTYBOARDWND_ONOFF + 100:

@@ -1087,7 +1087,7 @@ void ApplyServiceOptionNotifyWindow(int id, bool value, bool notify, int enabled
   }
 
   if (UIWindow* window = static_cast<UIWindow*>(g_windowMgr.minimapZoomWnd)) {
-    window->SendMsg(nullptr, UM_COMMAND, 0x1F6, 0, 0, 0);
+    window->SendMsg(nullptr, UM_COMMAND, ID_REFRESH_MINIMAP_BUTTONS, 0, 0, 0);
   }
 }
 

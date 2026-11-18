@@ -988,7 +988,7 @@ void UIGuildInfoManageWnd::OnCreate(int, int) {
     } else {
       this->m_disbandButton->Move(-200, -200);
     }
-    this->m_disbandButton->SetId(449);
+    this->m_disbandButton->SetId(ID_DISBAND_GUILD);
     this->AddChild(this->m_disbandButton);
   }
 
@@ -996,12 +996,12 @@ void UIGuildInfoManageWnd::OnCreate(int, int) {
   this->m_agitList->SetSize(95, 158);
   this->m_agitList->Move(this->TextWidth(LookupMessage(MSI_GUILD_MANAGE_LAND), 0, 0, 12, 0, 0) + 19, 129);
   this->m_agitList->lineHeight = 13;
-  this->m_agitList->SetId(558);
+  this->m_agitList->SetId(ID_AGIT_LIST);
   this->AddChild(this->m_agitList);
 
   this->m_agitMenu = new UIListBoxAgitMenu();
   this->m_agitMenu->SetSize(120, 35);
-  this->m_agitMenu->SetId(559);
+  this->m_agitMenu->SetId(ID_AGIT_MENU);
   this->m_agitMenu->Show(0);
   this->m_agitMenu->AddLine(LookupMessage(MSI_GUILD_AGIT_MOVE_AGIT));
   this->m_agitMenu->AddLine(LookupMessage(MSI_GUILD_AGIT_INVESTMENT_INFO));
@@ -1987,7 +1987,7 @@ void UIGuildNoticeWnd::OnCreate(int, int) {
   this->m_titleEdit->Move(50, 66);
   this->m_titleEdit->maximum = 60;
   this->m_titleEdit->Background(242, 242, 242);
-  this->m_titleEdit->SetId(281);
+  this->m_titleEdit->SetId(ID_NOTICE_TITLE_EDIT);
   this->AddChild(this->m_titleEdit);
   g_windowMgr.SetFocus(this->m_titleEdit);
   this->m_titleEdit->SetText(g_guildInfo.subject.c_str());
@@ -3101,7 +3101,7 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       menu->Move(x + 1, y + 1);
       return 0;
     }
-    case 449:
+    case ID_DISBAND_GUILD:
       g_windowMgr.Confirm(LookupMessage(MSI_GUILD_STORAGE_WARNING), 0, false, false, 0, "Message", 280, 120, 0);
       g_windowMgr.EnsureWindow(WID_CREATEGUILDWND_MODE_1);
       return 0;

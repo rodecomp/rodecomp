@@ -1985,7 +1985,7 @@ std::string UIChatHisBox::RenderItemLinks(const char* lineText, std::string& sou
       button->Configure(label.c_str(), 0x82F2E1, 0, 12, 0, 0);
       button->SetTooltip(item.DisplayName(0).c_str());
       button->m_hoverColor = 0x82F2E1;
-      button->SetId(0x1D0);
+      button->SetId(ID_ITEM_TAG);
       button->ResizeToTextClipped(
           this->TextWidth(label.c_str(), 0, 0, 12, 0, 0) + 1,
           button->geometry.height);
@@ -2075,7 +2075,7 @@ std::string UIChatHisBox::RenderNavigationLinks(const char* text, std::string& s
       button->SetTooltip(name.c_str());
     }
     button->m_hoverColor = 0x82F2E1;
-    button->SetId(438);
+    button->SetId(ID_NAVI_LINK);
     const int height = button->geometry.height;
     button->ResizeToTextClipped(
         this->TextWidth(label.c_str(), 0, 0, 12, 0, 0) + 1, height);

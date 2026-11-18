@@ -11,6 +11,7 @@
 #include "UI/Edit/UIItemTagCtrl.h"
 #include "UI/Rodex/UIRodexComposeWnd.h"
 #include "UI/Text/UITextViewer.h"
+#include "UI/Window/UIEnums.h"
 #include "UI/Window/UIWindow.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Text/FormatString.h"
@@ -227,7 +228,7 @@ void UIItemTagCtrl::AddItemTag(const ITEM_INFO& item, unsigned int color) {
 
   button->Configure(label.c_str(), color, 0, 12, 0, 0);
   button->SetTooltip(tag.c_str());
-  button->SetId(0x1D0);
+  button->SetId(ID_ITEM_TAG);
   button->Move(0, 0);
   button->item = item;
   this->AddTagButton(button);
@@ -307,10 +308,10 @@ unsigned int UIItemTagCtrl::GetVisibleTagPrefix(std::string& visible, const std:
   UIWindow* hover = g_windowMgr.GetHoverWindow();
   if (hover != nullptr) {
     switch (hover->geometry.id) {
-    case 0x1EA:
-    case 0x1EC:
-    case 0x1ED:
-    case 0x1EE:
+    case ID_WHISPER_EDIT:
+    case ID_NPC_TEXT_EDIT:
+    case ID_CHAT_EDIT:
+    case ID_CHATROOM_EDIT:
       firstVisible = static_cast<UIEditCtrl*>(hover)->firstVisible;
       break;
     }
@@ -377,10 +378,10 @@ void UIItemTagCtrl::UpdateItemTags() {
         UIWindow* hover = g_windowMgr.GetHoverWindow();
         if (hover != nullptr) {
           switch (hover->geometry.id) {
-          case 0x1EA:
-          case 0x1EC:
-          case 0x1ED:
-          case 0x1EE:
+          case ID_WHISPER_EDIT:
+          case ID_NPC_TEXT_EDIT:
+          case ID_CHAT_EDIT:
+          case ID_CHATROOM_EDIT:
             firstVisible = static_cast<UIEditCtrl*>(hover)->firstVisible;
             break;
           }

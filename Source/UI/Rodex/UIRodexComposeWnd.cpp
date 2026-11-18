@@ -615,7 +615,7 @@ void UIRodexComposeWnd::OnCreate(int, int) {
   }
   SetButtonText(this->m_confirmRecipientButton, LookupMessage(MSI_RODEX_BUTTON_CONFIRM_ID));
   this->m_confirmRecipientButton->Move(0xA2, 0x1A);
-  this->m_confirmRecipientButton->SetId(0xD5);
+  this->m_confirmRecipientButton->SetId(ID_CHECK);
   this->AddChild(this->m_confirmRecipientButton);
 
   this->m_recipientLevelText = new UIStaticText();
@@ -661,7 +661,7 @@ void UIRodexComposeWnd::OnCreate(int, int) {
   this->m_contents->TextColor(0x31, 0x31, 0x31, 0xFFFFFFFF);
   this->AddChild(this->m_contents);
   g_windowMgr.SetFocus(this->m_contents);
-  this->m_contents->SetId(0x1EB);
+  this->m_contents->SetId(ID_RODEX_COMPOSE_EDIT);
 
   this->m_zeny = new UIEditCtrl_Currency();
   this->m_zeny->SetSize(0x54, 0xE);
@@ -674,6 +674,6 @@ void UIRodexComposeWnd::OnCreate(int, int) {
   this->m_sendButton = new UIBasicButton();
   this->m_sendButton->Configure(0x46, LookupMessage(MSI_RODEX_BUTTON_SEND));
   this->m_sendButton->Move(0xE2, 0x178);
-  this->m_sendButton->SetId(0x159);
+  this->m_sendButton->SetId(ID_SEND);
   this->AddChild(this->m_sendButton);
 }

@@ -243,7 +243,7 @@ void UICashShopWnd::OnCreate(int, int) {
   previous->SetBitmap("유저인터페이스\\cashshop\\bt_arrowL_on.bmp", 2, 0);
   previous->SetSize(previous->BitmapWidth(), previous->BitmapHeight());
   previous->Move(0xEC, 0x1ED);
-  previous->SetId(0x13C);
+  previous->SetId(ID_PREV_PAGE);
   this->AddChild(previous);
 
   UIBitmapButton* next = new UIBitmapButton();
@@ -252,7 +252,7 @@ void UICashShopWnd::OnCreate(int, int) {
   next->SetBitmap("유저인터페이스\\cashshop\\bt_arrowR_on.bmp", 2, 0);
   next->SetSize(next->BitmapWidth(), next->BitmapHeight());
   next->Move(0x122, 0x1ED);
-  next->SetId(0x13D);
+  next->SetId(ID_NEXT_PAGE);
   this->AddChild(next);
 
   UIBitmapButton* first = new UIBitmapButton();
@@ -261,7 +261,7 @@ void UICashShopWnd::OnCreate(int, int) {
   first->SetBitmap("유저인터페이스\\cashshop\\bt_arrowL2_on.bmp", 2, 0);
   first->SetSize(first->BitmapWidth(), first->BitmapHeight());
   first->Move(0xD9, 0x1ED);
-  first->SetId(0x183);
+  first->SetId(ID_FIRST_PAGE);
   this->AddChild(first);
 
   UIBitmapButton* last = new UIBitmapButton();
@@ -270,7 +270,7 @@ void UICashShopWnd::OnCreate(int, int) {
   last->SetBitmap("유저인터페이스\\cashshop\\bt_arrowR2_on.bmp", 2, 0);
   last->SetSize(last->BitmapWidth(), last->BitmapHeight());
   last->Move(0x130, 0x1ED);
-  last->SetId(0x184);
+  last->SetId(ID_LAST_PAGE);
   this->AddChild(last);
 
   UIBmpTextButton* charge = new UIBmpTextButton();
@@ -280,7 +280,7 @@ void UICashShopWnd::OnCreate(int, int) {
   charge->SetSize(charge->BitmapWidth(), charge->BitmapHeight());
   charge->SetText(LookupMessage(MSI_CASHSHOP_CASH_CHARGE));
   charge->Move(0x28E, 0x2E);
-  charge->SetId(0x11C);
+  charge->SetId(ID_CHARGE);
   this->AddChild(charge);
 
   this->m_refreshButton = new UIBmpTextButton();
@@ -307,7 +307,7 @@ void UICashShopWnd::OnCreate(int, int) {
   search->SetBitmap("유저인터페이스\\cashshop\\btn_searchbar_press.bmp", 2, 0);
   search->SetSize(search->BitmapWidth(), search->BitmapHeight());
   search->Move(0x188, 0x204);
-  search->SetId(0x141);
+  search->SetId(ID_SEARCH);
   this->AddChild(search);
 
   UIBmpTextButton* buy = new UIBmpTextButton();
@@ -317,7 +317,7 @@ void UICashShopWnd::OnCreate(int, int) {
   buy->SetSize(buy->BitmapWidth(), buy->BitmapHeight());
   buy->SetText(LookupMessage(MSI_CASHSHOP_ITEM_BUY));
   buy->Move(0x228, 0x1FC);
-  buy->SetId(0xE0);
+  buy->SetId(ID_BUY);
   this->AddChild(buy);
 
   this->m_pointsEdit = new UIEditCtrl_Custom();
@@ -382,7 +382,7 @@ void UICashShopWnd_CartItem::OnCreate(int, int) {
   close->SetBitmap("유저인터페이스\\cashshop\\btn_close.bmp", 2, 0);
   close->SetSize(close->BitmapWidth(), close->BitmapHeight());
   close->Move(0xA1, 2);
-  close->SetId(0xD3);
+  close->SetId(ID_DELETE);
   this->AddChild(close);
 
   UIBitmapButton* plus = new UIBitmapButton();
@@ -391,7 +391,7 @@ void UICashShopWnd_CartItem::OnCreate(int, int) {
   plus->SetBitmap("유저인터페이스\\cashshop\\btn_plus_press.bmp", 2, 0);
   plus->SetSize(plus->BitmapWidth(), plus->BitmapHeight());
   plus->Move(0x52, 0x1D);
-  plus->SetId(0x117);
+  plus->SetId(ID_UP);
   this->AddChild(plus);
 
   UIBitmapButton* minus = new UIBitmapButton();
@@ -400,7 +400,7 @@ void UICashShopWnd_CartItem::OnCreate(int, int) {
   minus->SetBitmap("유저인터페이스\\cashshop\\btn_minus_press.bmp", 2, 0);
   minus->SetSize(minus->BitmapWidth(), minus->BitmapHeight());
   minus->Move(0x52, 0x26);
-  minus->SetId(0x118);
+  minus->SetId(ID_DOWN);
   this->AddChild(minus);
 }
 
@@ -415,7 +415,7 @@ void UICashShopWnd_Item::OnCreate(int, int) {
   this->m_addButton->SetSize(this->m_addButton->BitmapWidth(), this->m_addButton->BitmapHeight());
   this->m_addButton->SetText(LookupMessage(MSI_BUY));
   this->m_addButton->Move(0x53, 0x55);
-  this->m_addButton->SetId(0xE0);
+  this->m_addButton->SetId(ID_BUY);
   this->AddChild(this->m_addButton);
 
   this->m_soldOut = new UIStaticBitmap();
@@ -791,7 +791,7 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
     this->m_cashPoints = argument1;
     this->m_secondaryPoints = argument2;
     this->m_pointsEdit->SetText(IntToString(0, 0).c_str());
-    this->SendMsg(this, UM_COMMAND, 0x182, 0, 0, 0);
+    this->SendMsg(this, UM_COMMAND, ID_RESET_CART, 0, 0, 0);
     return 0;
   }
 
@@ -896,7 +896,7 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
 
   case UM_COMMAND:
     switch (argument1) {
-    case 0x182:
+    case ID_RESET_CART:
       this->m_totalPrice = 0;
       this->m_cart->m_cartItems.clear();
       this->m_cart->SendMsg(this->m_cart, UM_SCROLLVERT, 0, 0, 0, 0);
@@ -979,7 +979,7 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
     case ID_CHARGE:
       ShellExecuteA(nullptr, "OPEN", LookupMessage(MSI_CASHSHOP_CASH_CHARGE_ADDRESS), LookupMessage(MSI_CASHSHOP_CASH_CHARGE_ADDRESS), nullptr, SW_SHOW);
       return 0;
-    case 0x183:
+    case ID_FIRST_PAGE:
       this->m_page = 0;
       this->LayoutPage();
       return 0;
@@ -991,7 +991,7 @@ int UICashShopWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument
       this->m_page = std::min(this->m_page + 1, this->m_pageCount - 1);
       this->LayoutPage();
       return 0;
-    case 0x184:
+    case ID_LAST_PAGE:
       this->m_page = this->m_pageCount - 1;
       this->LayoutPage();
       return 0;

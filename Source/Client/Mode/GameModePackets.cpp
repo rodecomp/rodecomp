@@ -5616,7 +5616,7 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
       g_session.RefreshHpSpWindows();
     }
     if (g_windowMgr.messengerGroupWnd) {
-      g_windowMgr.messengerGroupWnd->SendMsg(nullptr, UM_COMMAND, 34, g_session.m_aid, 0, 0);
+      g_windowMgr.messengerGroupWnd->SendMsg(nullptr, UM_COMMAND, ID_UPDATE_MEMBER_HP, g_session.m_aid, 0, 0);
     }
     break;
   case SP_SP:
@@ -11844,7 +11844,7 @@ void CGameMode::ReceiveActorDisappear(const unsigned char* data) {
       this->SendMsg(MM_DELETEREGISTERPOS, packet->aid, 0, 0, 0);
     }
     if (g_windowMgr.messengerGroupWnd) {
-      g_windowMgr.messengerGroupWnd->SendMsg(nullptr, UM_COMMAND, 34, packet->aid, 0, 0);
+      g_windowMgr.messengerGroupWnd->SendMsg(nullptr, UM_COMMAND, ID_UPDATE_MEMBER_HP, packet->aid, 0, 0);
     }
     break;
   case CLR_DEAD: {
@@ -11938,7 +11938,7 @@ void CGameMode::ReceiveActorDisappear(const unsigned char* data) {
       this->SendMsg(MM_DELETEREGISTERPOS, packet->aid, 0, 0, 0);
     }
     if (g_windowMgr.messengerGroupWnd) {
-      g_windowMgr.messengerGroupWnd->SendMsg(nullptr, UM_COMMAND, 34, packet->aid, 0, 0);
+      g_windowMgr.messengerGroupWnd->SendMsg(nullptr, UM_COMMAND, ID_UPDATE_MEMBER_HP, packet->aid, 0, 0);
     }
     break;
   default:
@@ -25500,7 +25500,7 @@ void CGameMode::ProcessIncomingPackets() {
         actor->SendMsg(nullptr, AM_UPDATEGAGE, hp, maxHp, 0, 0, 0, 0);
       }
       if (g_windowMgr.messengerGroupWnd) {
-        g_windowMgr.messengerGroupWnd->SendMsg(nullptr, UM_COMMAND, 34, aid, hp, maxHp);
+        g_windowMgr.messengerGroupWnd->SendMsg(nullptr, UM_COMMAND, ID_UPDATE_MEMBER_HP, aid, hp, maxHp);
       }
       g_windowMgr.NotifyItemWindows(aid, hp, maxHp);
       break;
@@ -27628,7 +27628,7 @@ void CGameMode::ProcessIncomingPackets() {
           actor->SendMsg(nullptr, AM_UPDATEGAGE, hp, maxHp, 0, 0, 0, 0);
         }
         if (g_windowMgr.messengerGroupWnd) {
-          g_windowMgr.messengerGroupWnd->SendMsg(nullptr, UM_COMMAND, 34, static_cast<int>(packet->aid),
+          g_windowMgr.messengerGroupWnd->SendMsg(nullptr, UM_COMMAND, ID_UPDATE_MEMBER_HP, static_cast<int>(packet->aid),
                                            packet->hp,
                                            packet->maxHp);
         }

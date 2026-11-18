@@ -38,7 +38,7 @@ UIBitmapButton* UIEmotionWnd::AddCloseButton(const char* tooltip, int width) {
   button->SetBitmap("유저인터페이스\\basic_interface\\sys_close_on.bmp", 2, 0);
   button->SetSize(button->BitmapWidth(), button->BitmapHeight());
   button->Move(width - 14, 3);
-  button->SetId(201);
+  button->SetId(ID_CLOSE);
   button->SetTooltip(tooltip);
   this->AddChild(button);
 
@@ -83,7 +83,7 @@ void UIEmotionWnd::OnCreate(int, int) {
     this->viewButton->SetBitmap((path + "btn_view_b" + ".bmp").c_str(), 2, 0);
     this->viewButton->SetSize(this->viewButton->BitmapWidth(), this->viewButton->BitmapHeight());
     this->viewButton->Move(this->geometry.width - 50, this->geometry.height - 25);
-    this->viewButton->SetId(283);
+    this->viewButton->SetId(ID_OPEN_EMOTIONLIST);
     this->AddChild(this->viewButton);
   }
 

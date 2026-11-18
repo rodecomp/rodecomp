@@ -54,7 +54,7 @@ void UIJobListWnd::OnCreate(int width, int height) {
     this->m_okButton->SetBitmap((path + "btn_ok_b" + ".bmp").c_str(), 2, 0);
     this->m_okButton->SetSize(this->m_okButton->BitmapWidth(), this->m_okButton->BitmapHeight());
     this->m_okButton->Move(this->geometry.width - 92, this->geometry.height - 24);
-    this->m_okButton->SetId(184);
+    this->m_okButton->SetId(ID_OK);
     this->AddChild(this->m_okButton);
   }
 

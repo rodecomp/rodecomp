@@ -98,7 +98,7 @@ void UICaptchaRegisterWnd::OnCreate(int width, int height) {
   this->registerButton->SetBitmap("유저인터페이스\\btn_ok_dis.bmp", 3, 0);
   this->registerButton->SetSize(this->registerButton->BitmapWidth(), this->registerButton->BitmapHeight());
   this->registerButton->Move(238, 181);
-  this->registerButton->SetId(345);
+  this->registerButton->SetId(ID_SEND);
   this->AddChild(this->registerButton);
 }
 

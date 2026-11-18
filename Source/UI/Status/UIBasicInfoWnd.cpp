@@ -324,7 +324,7 @@ int UIBasicInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argumen
       }
       break;
     }
-    case 578: {
+    case ID_OPEN_COSTUME_EQUIP: {
       UIEquipWnd* equip = dynamic_cast<UIEquipWnd*>(g_windowMgr.LookupWindow(WID_EQUIPWND));
       if (!equip) {
         equip = dynamic_cast<UIEquipWnd*>(static_cast<UIFrameWnd*>(g_windowMgr.EnsureWindow(WID_EQUIPWND)));

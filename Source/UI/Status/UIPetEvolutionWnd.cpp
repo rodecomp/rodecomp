@@ -46,7 +46,7 @@ void UIPetEvolutionWnd::OnCreate(int width, int height) {
   okButton->SetBitmap("유저인터페이스\\btn_big_ok_b.bmp", 2, 0);
   okButton->SetSize(okButton->BitmapWidth(), okButton->BitmapHeight());
   okButton->Move(this->geometry.width - (okButton->BitmapWidth() * 2 + 20), this->geometry.height - okButton->BitmapHeight() - 10);
-  okButton->SetId(184);
+  okButton->SetId(ID_OK);
   this->AddChild(okButton);
 
   UIBitmapButton* cancelButton = new UIBitmapButton();
@@ -55,7 +55,7 @@ void UIPetEvolutionWnd::OnCreate(int width, int height) {
   cancelButton->SetBitmap("유저인터페이스\\btn_big_cancel_b.bmp", 2, 0);
   cancelButton->SetSize(cancelButton->BitmapWidth(), cancelButton->BitmapHeight());
   cancelButton->Move(this->geometry.width - cancelButton->BitmapWidth() - 10, this->geometry.height - cancelButton->BitmapHeight() - 10);
-  cancelButton->SetId(185);
+  cancelButton->SetId(ID_CANCEL);
   this->AddChild(cancelButton);
 }
 

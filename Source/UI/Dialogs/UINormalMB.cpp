@@ -37,7 +37,7 @@ int UINormalMB::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
       action->second();
     } else {
       if (this->m_owner) {
-        this->m_owner->SendMsg(this, UM_COMMAND, 488, a, 0, 0);
+        this->m_owner->SendMsg(this, UM_COMMAND, ID_MESSAGEBOX_RESULT, a, 0, 0);
       }
 
       if (this->m_keepOpen) {

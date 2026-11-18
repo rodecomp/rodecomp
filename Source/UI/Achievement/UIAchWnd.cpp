@@ -306,7 +306,7 @@ void UIAchViewWnd::OnCreate(int, int) {
   this->receiveButton->SetBitmap((name + "_disable.bmp").c_str(), 3, 0);
   this->receiveButton->SetSize(this->receiveButton->BitmapWidth(), this->receiveButton->BitmapHeight());
   this->receiveButton->Move(90, 372);
-  this->receiveButton->SetId(474);
+  this->receiveButton->SetId(ID_RECEIVE_ACHIEVEMENT_REWARD);
   this->receiveButton->Enable(0);
   this->receiveButton->m_invalidateParent = 1;
   this->AddChild(this->receiveButton);
@@ -1085,12 +1085,12 @@ void UIAchTracingWnd::OnCreate(int, int) {
   for (int index = 0; index < 3; ++index) {
     this->toggleButtons[index] = new UITextButton();
     this->toggleButtons[index]->Configure("", 0, 0, 12, 1, 0);
-    this->toggleButtons[index]->SetId(478);
+    this->toggleButtons[index]->SetId(ID_TOGGLE_TRACKED_ACHIEVEMENT);
     this->AddChild(this->toggleButtons[index]);
 
     this->openButtons[index] = new UITextButton();
     this->openButtons[index]->Configure("▶", 0, 0, 12, 1, 0);
-    this->openButtons[index]->SetId(479);
+    this->openButtons[index]->SetId(ID_OPEN_TRACKED_ACHIEVEMENT);
     this->AddChild(this->openButtons[index]);
   }
 }
@@ -1168,7 +1168,7 @@ int UIAchTracingWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
     break;
   case UM_TEXT_LBTN_UP:
     switch (argument1) {
-    case 478: {
+    case ID_TOGGLE_TRACKED_ACHIEVEMENT: {
       auto it = std::find_if(g_achievementTracking.begin(), g_achievementTracking.end(), [argument2](AchTracingEntry entry) {
         return argument2 == entry.id;
       });
@@ -1179,7 +1179,7 @@ int UIAchTracingWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argume
       }
       break;
     }
-    case 479: {
+    case ID_OPEN_TRACKED_ACHIEVEMENT: {
       UIWindow* window = g_windowMgr.EnsureWindow(WID_ACHIEVEMENTWND);
       if (window) {
         static_cast<UIAchievementWnd*>(window)->SelectAchievement(argument2);

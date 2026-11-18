@@ -129,7 +129,7 @@ void UIHotKeyWnd::OnCreate(int, int) {
   this->m_prevButton->Move(this->geometry.width - 80, 25);
   this->m_prevButton->Enable(0);
   this->m_prevButton->SetTooltip(LookupMessage(MSI_PREV_PAGE));
-  this->m_prevButton->SetId(316);
+  this->m_prevButton->SetId(ID_PREV_PAGE);
   this->AddChild(this->m_prevButton);
 
   this->m_nextButton = new UIBitmapButton();
@@ -140,7 +140,7 @@ void UIHotKeyWnd::OnCreate(int, int) {
   this->m_nextButton->Move(this->geometry.width - 20, 25);
   this->m_nextButton->Enable(0);
   this->m_nextButton->SetTooltip(LookupMessage(MSI_NEXT_PAGE));
-  this->m_nextButton->SetId(317);
+  this->m_nextButton->SetId(ID_NEXT_PAGE);
   this->AddChild(this->m_nextButton);
 }
 

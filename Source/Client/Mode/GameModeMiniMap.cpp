@@ -508,9 +508,9 @@ void CGameMode::DrawMiniMapMarker(
     }
   } else if (kind == 6) {
     if (texture.size() == 0) {
-      g_windowMgr.LookupWindow(WID_MINIMAPZOOMWND)->SendMsg(nullptr, UM_COMMAND, 0x1C5, color, rect.left, rect.top);
+      g_windowMgr.LookupWindow(WID_MINIMAPZOOMWND)->SendMsg(nullptr, UM_COMMAND, ID_SHOW_MINIMAP_ZOOM_BUTTON, color, rect.left, rect.top);
     } else {
-      g_windowMgr.LookupWindow(WID_MINIMAPZOOMWND)->SendMsg(nullptr, UM_COMMAND, 0x1C7, color, rect.left, rect.top);
+      g_windowMgr.LookupWindow(WID_MINIMAPZOOMWND)->SendMsg(nullptr, UM_COMMAND, ID_HIDE_MINIMAP_ZOOM_BUTTON, color, rect.left, rect.top);
       CTexture* marker = g_texMgr.Load(texture.c_str(), 0, false, true, false);
       this->DrawTexture(rect, 0, 0.0999f, 0xFFFFFFFF, marker, TextureRegion{0.0f, 0.0f, 1.0f, 1.0f});
     }

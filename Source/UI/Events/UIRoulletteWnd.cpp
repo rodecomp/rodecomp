@@ -115,7 +115,7 @@ void UIRoulletteWnd::OnCreate(int, int) {
   this->m_startButton->SetBitmap("유저인터페이스\\basic_interface\\roullette\\StartRoullette_b.bmp", 2, 0);
   this->m_startButton->SetSize(this->m_startButton->BitmapWidth(), this->m_startButton->BitmapHeight());
   this->m_startButton->Move(-100, -100);
-  this->m_startButton->SetId(409);
+  this->m_startButton->SetId(ID_ROULETTE_GENERATE);
   this->AddChild(this->m_startButton);
 
   if (g_effectDetailLevel == 2) {
@@ -156,7 +156,7 @@ void UIRoulletteWnd::OnCreate(int, int) {
   this->m_prizeButton->SetBitmap("유저인터페이스\\basic_interface\\roullette\\GetWinPrize_b.bmp", 2, 0);
   this->m_prizeButton->SetSize(this->m_prizeButton->BitmapWidth(), this->m_prizeButton->BitmapHeight());
   this->m_prizeButton->Move(-100, -100);
-  this->m_prizeButton->SetId(410);
+  this->m_prizeButton->SetId(ID_ROULETTE_RECEIVE_ITEM);
   this->AddChild(this->m_prizeButton);
 
   this->m_goldText = new UIStaticText();

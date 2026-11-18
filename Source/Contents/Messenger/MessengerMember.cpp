@@ -1786,7 +1786,7 @@ int UIMessengerGroupWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a,
       this->SendMsg(nullptr, UM_RESIZE, 7, this->geometry.width, this->geometry.height, 0);
       return 0;
     }
-    case 0x22: {
+    case ID_UPDATE_MEMBER_HP: {
       CGameMode* gameMode = g_modeMgr.GetGameMode();
       if (!gameMode || this->mode == 0) {
         return 0;

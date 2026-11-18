@@ -393,7 +393,7 @@ int UIMiniPartyInfoWnd::SendMsg(UIWindow* sender, int message, std::intptr_t arg
         }
       }
       break;
-    case 34: {
+    case ID_UPDATE_MEMBER_HP: {
       CWorld* world = g_modeMgr.GetGameMode()->scene;
       CRenderObject* actor;
       if (static_cast<std::uint32_t>(argument2) == g_session.m_aid) {

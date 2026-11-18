@@ -439,7 +439,7 @@ int UIEditCtrl::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::int
     auto* button = new UINaviLinkButton();
 
     button->Configure(display.c_str(), 0x009E68F0, 0, 12, 0, 0);
-    button->SetId(438);
+    button->SetId(ID_NAVI_LINK);
     button->link = GetNavigationLinkParser()->ExtractNavigationLink(value);
     this->AddChild(button);
     this->links.push_back(button);
@@ -4534,7 +4534,7 @@ std::string UIEditCtrl3::PlaceLineLinks(const char* line, std::string& text, con
       button->Configure(name.c_str(), 0x82F2E1, 0, 12, 0, 0);
       button->SetTooltip(item.DisplayName(0).c_str());
       button->m_hoverColor = 0x82F2E1;
-      button->SetId(0x1D0);
+      button->SetId(ID_ITEM_TAG);
       button->ResizeToTextClipped(this->TextWidth(name.c_str(), 0, 0, 12, 0, 0) + 1, button->geometry.height);
       this->AddChild(button);
       buttons.push_back(button);
@@ -8180,7 +8180,7 @@ void UIItemWnd::OnCreate(int width, int height) {
   this->optionBox = compare;
   compare->SetSize(12, 12);
   this->optionBox->SetBitmaps("유저인터페이스\\inventory\\item_compare_on.bmp", "유저인터페이스\\inventory\\item_compare_off.bmp");
-  this->optionBox->SetId(456);
+  this->optionBox->SetId(ID_ITEM_COMPARE);
   this->optionBox->Move(103, height - 17);
   this->optionBox->SetChecked(g_serviceOptions.Get(TT_ITEM_COMPARE_ON_OFF));
   this->optionBox->SetTooltip(LookupMessage(MSI_INVENTORY_ITEM_COMPARE));
@@ -9993,7 +9993,7 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
     return 0;
   case UM_COMMAND:
     switch (a) {
-    case 456:
+    case ID_ITEM_COMPARE:
       Singleton<CGameSettingsMgr>::GetInstance()->ToggleOption(264);
       return 0;
     case ID_TOGGLE_ITEM_TRADE_LOCK: {

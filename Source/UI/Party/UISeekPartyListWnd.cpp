@@ -511,7 +511,7 @@ void UISeekPartyListWnd::OnLBtnDblClk(int x, int y) {
     this->Invalidate();
   }
 
-  this->SendMsg(nullptr, UM_COMMAND, 0x17d, 0, 0, 0);
+  this->SendMsg(nullptr, UM_COMMAND, ID_WHISPER_PARTY_LEADER, 0, 0, 0);
 }
 
 // OFFSET: 0x00931090
