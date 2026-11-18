@@ -292,15 +292,15 @@ void CSkill::SetRenderInfo(const float* box, float x, float y) {
 
 // OFFSET: 0x00E55320
 // FUNCTION: fn_24304
-__declspec(safebuffers) void CSkill::ShowModel(const char* modelName) {
+__forceinline void CSkill::ShowModel(const char* modelName) {
   if (modelName == nullptr || this->render.enabled == 0) {
     return;
   }
 
   this->ReleaseModel();
-  const float diffuse[3] = {0.5f, 0.7f, 0.5f};
-  const float white[3] = {1.0f, 1.0f, 1.0f};
-  const float ambient[3] = {0.5f, 0.5f, 0.5f};
+  const vector3d diffuse{0.5f, 0.7f, 0.5f};
+  const vector3d white{1.0f, 1.0f, 1.0f};
+  const vector3d ambient{0.5f, 0.5f, 0.5f};
   auto* resource = static_cast<C3dModelRes*>(ResourceMgr::Instance().Load(modelName));
   if (resource->major == 1) {
     this->m_model = new C3dActorV1;
@@ -316,7 +316,7 @@ __declspec(safebuffers) void CSkill::ShowModel(const char* modelName) {
   this->m_model->Animate(3.0);
   this->m_model->occlusionEnabled = 0;
   this->m_model->playback = 0;
-  this->m_model->Prepare(diffuse, white, ambient);
+  this->m_model->Prepare(&diffuse.x, &white.x, &ambient.x);
   g_modeMgr.GetGameMode()->scene->spatial.InsertModel(this->m_model, 0);
 }
 
@@ -326,29 +326,6 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
   CGameMode* mode = g_modeMgr.GetGameMode();
 
   switch (message) {
-  case AM_CHAT: {
-    const char* text = reinterpret_cast<const char*>(static_cast<std::intptr_t>(b));
-    if (std::strlen(text) == 0) {
-      return;
-    }
-
-    this->chatTick = timeGetTime();
-    if (this->actorWindows[0] == 0) {
-      UITransBalloonText* balloon =
-        new UITransBalloonText();
-      this->actorWindows[0] = balloon;
-      balloon->SetSize(8, 8);
-      g_windowMgr.AddRenderedFront(this->actorWindows[0]);
-    }
-
-    UITransBalloonText* balloon = static_cast<UITransBalloonText*>(this->actorWindows[0]);
-    balloon->SetText(text, 35);
-    balloon->SetColors(0xFF8080, 0);
-    this->chatWidth = balloon->geometry.width;
-    this->chatHeight = balloon->geometry.height;
-    balloon->Move(this->render.screenX - this->chatWidth / 2, this->render.screenY - g_renderer->viewport.height * 110 / 480);
-    return;
-  }
   case AM_SKILL: {
     const SkillHitMessage* hit = reinterpret_cast<const SkillHitMessage*>(static_cast<std::intptr_t>(b));
     const int skillId = hit->skillId;
@@ -473,6 +450,33 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
     }
     return;
   }
+  case AM_SETJOB:
+    this->SetActorJob(static_cast<int>(b));
+    switch (this->GetEffectiveJob(-1)) {
+    case UNT_WARP_WAITING: {
+      const vector3d& player = g_modeMgr.GetGameMode()->scene->player->render.position;
+      g_soundMgr->PlayWave(
+        "effect\\EF_Portal.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
+      );
+      break;
+    }
+    case UNT_USED_TRAPS:
+      if (this->m_effectId != -1 &&
+          !g_effectMgr->Spawn(0, this->m_effectId, this->render.position, 0, -1, 0, 0)) {
+        CRagEffect* effect = this->LaunchEffect(this->m_effectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        if (effect != nullptr) {
+          effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&this->render.position), 0, 0, 0, 0);
+        }
+      }
+      break;
+    }
+
+    this->m_effectTimer = 36000;
+    this->ShowModel(this->GetTrapModelName());
+    if (this->m_model != nullptr) {
+      this->m_model->playback = 1;
+    }
+    return;
   case AM_SKILLSTANDENTRY: {
     const SkillUnitMessage* unit = reinterpret_cast<const SkillUnitMessage*>(static_cast<std::intptr_t>(b));
     this->range = unit->range;
@@ -880,44 +884,6 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
       return;
     }
   }
-  case AM_SETJOB:
-    this->SetActorJob(static_cast<int>(b));
-    switch (this->GetEffectiveJob(-1)) {
-    case UNT_WARP_WAITING: {
-      const vector3d& player = g_modeMgr.GetGameMode()->scene->player->render.position;
-      g_soundMgr->PlayWave(
-        "effect\\EF_Portal.wav", this->render.position.x - player.x, 0.0f, this->render.position.z - player.z, 250, 40, 1.0f, 0
-      );
-      break;
-    }
-    case UNT_USED_TRAPS:
-      if (this->m_effectId != -1 &&
-          !g_effectMgr->Spawn(0, this->m_effectId, this->render.position, 0, -1, 0, 0)) {
-        CRagEffect* effect = this->LaunchEffect(this->m_effectId, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
-        if (effect != nullptr) {
-          effect->SendMsg(nullptr, AM_SETPOS, 0, reinterpret_cast<int>(&this->render.position), 0, 0, 0, 0);
-        }
-      }
-      break;
-    }
-
-    this->m_effectTimer = 36000;
-    this->ShowModel(this->GetTrapModelName());
-    if (this->m_model != nullptr) {
-      this->m_model->playback = 1;
-    }
-    return;
-  case AM_DISAPPEAR:
-    if (this->GetEffectiveJob(-1) == UNT_CANE_OF_EVIL_EYE) {
-      CEffect* effect = g_effectMgr->Find(this->render.accountId, 0x903);
-      if (effect != nullptr) {
-        static_cast<CCaneOfEvilEyeEffect*>(effect)->Finish();
-      }
-    } else {
-      CSkillActionMgr* actions = CSkillActionMgr::GetInstance();
-      actions->OnSkillObjectRemove(this->GetEffectiveJob(-1), this);
-    }
-    return;
   case AM_SKILL_UPDATE:
     if (this->render.enabled) {
       return;
@@ -942,6 +908,40 @@ void CSkill::SendMsg(CGameObject* sender, std::int64_t message, std::int64_t b, 
     case UNT_FLAMETRAP:
       g_effectMgr->Spawn(this->render.accountId, EF_FLAME_TRAP, vector3d{0.0f, 0.0f, 0.0f}, 0, -1, 0, 0);
       return;
+    }
+    return;
+  case AM_CHAT: {
+    const char* text = reinterpret_cast<const char*>(static_cast<std::intptr_t>(b));
+    if (std::strlen(text) == 0) {
+      return;
+    }
+
+    this->chatTick = timeGetTime();
+    if (this->actorWindows[0] == 0) {
+      UITransBalloonText* balloon =
+        new UITransBalloonText();
+      this->actorWindows[0] = balloon;
+      balloon->SetSize(8, 8);
+      g_windowMgr.AddRenderedFront(this->actorWindows[0]);
+    }
+
+    UITransBalloonText* balloon = static_cast<UITransBalloonText*>(this->actorWindows[0]);
+    balloon->SetText(text, 35);
+    balloon->SetColors(0xFF8080, 0);
+    this->chatWidth = balloon->geometry.width;
+    this->chatHeight = balloon->geometry.height;
+    balloon->Move(this->render.screenX - this->chatWidth / 2, this->render.screenY - g_renderer->viewport.height * 110 / 480);
+    return;
+  }
+  case AM_DISAPPEAR:
+    if (this->GetEffectiveJob(-1) == UNT_CANE_OF_EVIL_EYE) {
+      CEffect* effect = g_effectMgr->Find(this->render.accountId, 0x903);
+      if (effect != nullptr) {
+        static_cast<CCaneOfEvilEyeEffect*>(effect)->Finish();
+      }
+    } else {
+      CSkillActionMgr* actions = CSkillActionMgr::GetInstance();
+      actions->OnSkillObjectRemove(this->GetEffectiveJob(-1), this);
     }
     return;
   default:
