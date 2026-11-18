@@ -133,7 +133,7 @@ namespace {
     if (!aes.Initialize(secret, sizeof(secret), std::span<const UCHAR>(iv, 16), AES::CBC)) {
       return false;
     }
-    return aes.Decrypt(data, static_cast<ULONG>(size), data, static_cast<ULONG>(size), 0) == size;
+    return aes.Decrypt(std::span<UCHAR>(data, size), std::span<UCHAR>(data, size), 0) == size;
   }
 
   // Decrypts the 96 header bytes after the plaintext {version, variant, ?, ?, xxh32} prefix
