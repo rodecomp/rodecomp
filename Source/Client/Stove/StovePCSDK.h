@@ -69,7 +69,6 @@ namespace Stove::PCSDK {
       StovePCPaymentOption();
       StovePCPaymentOption(const StovePCPaymentOption& other);
       void SetOperation(StovePCPaymentOperation operation);
-      void SetOperation(int operation);
 
       /* 0000 */ void* padding_0000[6];
     };

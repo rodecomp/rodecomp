@@ -83,7 +83,7 @@ void CStoveMgr::FetchAllProducts() {
 // FUNCTION: fn_04801
 void CStoveMgr::FetchStoveTermsAgreement() {
   Stove::PCSDK::IAP::StovePCTermsOption option;
-  option.SetOperation(static_cast<int>(Stove::PCSDK::IAP::StovePCPaymentOperation::DEFAULT));
+  option.SetOperation(Stove::PCSDK::IAP::StovePCPaymentOperation::DEFAULT);
   IAP_FetchTermsAgreement(&option, OnStoveTermsAgreementFetched);
   g_stoveWaitingCallback = true;
   do {
