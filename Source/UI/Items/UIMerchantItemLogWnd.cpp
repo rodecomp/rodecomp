@@ -110,12 +110,12 @@ void UIMerchantItemLogWnd::Paint() {
   auto it = this->items.begin();
   auto log = this->logs.begin();
 
-  for (int index = 0, visible = 0; visible < this->visibleRows; ++index, ++it, ++log) {
-    if (index < this->scroll) {
+  for (int index = 0, visible = 0; visible + 1 <= this->visibleRows; ++it, ++log) {
+    if (index++ < this->scroll) {
       continue;
     }
 
-    if (this->items.size() < static_cast<unsigned>(index + 1)) {
+    if (this->items.size() < static_cast<unsigned>(index)) {
       break;
     }
 
