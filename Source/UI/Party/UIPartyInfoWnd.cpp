@@ -19,6 +19,8 @@ UIPartyInfoWnd::UIPartyInfoWnd()
   this->m_drawLabel = 0;
 }
 
+// OFFSET: 0x007BB370
+// FUNCTION: fn_45804
 UIPartyInfoWnd::~UIPartyInfoWnd() = default;
 
 // OFFSET: 0x007BBEF0
