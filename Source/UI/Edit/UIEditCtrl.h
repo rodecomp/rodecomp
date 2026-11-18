@@ -136,6 +136,7 @@ public:
   void PlaceLinks(const std::string& value, int y, int line, int firstLine, int endLine);
   std::string ResolveItemLinks(const std::string& source);
   std::string PlaceLineLinks(const char* line, std::string& text, const int* lineIndex);
+  void WrapText(std::vector<std::string>& lines, const std::string& text);
   void WrapLines(std::vector<std::string>& lines);
   std::string TakePendingText();
   void SetTagColor(std::uint32_t color);

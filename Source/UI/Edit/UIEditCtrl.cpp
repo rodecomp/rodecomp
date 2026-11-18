@@ -4558,17 +4558,23 @@ std::string UIEditCtrl3::PlaceLineLinks(const char* line, std::string& text, con
   return result;
 }
 
+// OFFSET: 0x00860030
+// FUNCTION: fn_45654
+void UIEditCtrl3::WrapText(std::vector<std::string>& lines, const std::string& text) {
+  int width = this->geometry.width - 6;
+  if (this->scrollEnabled != 0) {
+    width += 3 - this->scrollBar->geometry.width;
+  }
+  this->WrapTextWithBreaks(text.c_str(), &lines, &this->lineBreaks, width);
+}
+
 // OFFSET: 0x00869810
 // FUNCTION: fn_10973
 void UIEditCtrl3::SetLinkedText(const char* value) {
   std::string resolved = this->ResolveItemLinks(std::string(value));
 
   std::vector<std::string> lines;
-  int width = this->geometry.width - 6;
-  if (this->scrollEnabled != 0) {
-    width += 3 - this->scrollBar->geometry.width;
-  }
-  this->WrapTextWithBreaks(resolved.c_str(), &lines, &this->lineBreaks, width);
+  this->WrapText(lines, resolved);
   this->WrapLines(lines);
 
   this->lineCount = static_cast<int>(lines.size());
@@ -4580,11 +4586,7 @@ void UIEditCtrl3::SetLinkedText(const char* value) {
   if (this->scrollEnabled != 0) {
     lines.clear();
     resolved = this->ResolveItemLinks(std::string(value));
-    width = this->geometry.width - 6;
-    if (this->scrollEnabled != 0) {
-      width += 3 - this->scrollBar->geometry.width;
-    }
-    this->WrapTextWithBreaks(resolved.c_str(), &lines, &this->lineBreaks, width);
+    this->WrapText(lines, resolved);
     this->WrapLines(lines);
   }
 
