@@ -155,6 +155,13 @@ void DrawWorldModelLeaves(
   }
 }
 
+// OFFSET: 0x00ADBA40
+// FUNCTION: fn_45893
+void WorldViewSpatial::ClearVisibility() {
+  this->inside.erase(this->inside.begin(), this->inside.end());
+  this->clipped.erase(this->clipped.begin(), this->clipped.end());
+}
+
 // OFFSET: 0x00ADC1E0
 // FUNCTION: fn_17930
 void CView::Render() {

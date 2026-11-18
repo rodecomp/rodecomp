@@ -25,6 +25,7 @@ struct WorldViewSpatial {
   int ClassifyOriented(const OrientedBounds& bounds) const;
   void Collect(float horizontal, float vertical, const float* matrix, WorldSpatialTree& root);
   void CollectNode(WorldSpatialTree* node, int depth, bool fullyInside);
+  void ClearVisibility();
 };
 
 #if defined(_WIN32) && !defined(_WIN64)
