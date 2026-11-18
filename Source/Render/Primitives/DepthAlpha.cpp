@@ -5,6 +5,12 @@
 
 __declspec(noinline) std::uint32_t DepthAlpha(float reciprocalDepth);
 
+// OFFSET: 0x0055D120
+// FUNCTION: fn_45881
+float DepthToRhw(float depth) {
+  return (1500.0f - depth * 1490.0f) / 15000.0f;
+}
+
 // OFFSET: 0x0055D190
 // FUNCTION: fn_02100
 std::uint32_t DepthAlpha(float reciprocalDepth) {

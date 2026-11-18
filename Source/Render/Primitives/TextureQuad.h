@@ -19,5 +19,6 @@ extern unsigned char g_multitexture;
 extern float g_fogDensity;
 
 float RhwToDepth(float rhw);
+float DepthToRhw(float depth);
 
 #endif
