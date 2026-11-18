@@ -306,6 +306,21 @@ void UINameBalloonText::SetIcon(const char* name, unsigned char framed) {
 
   this->Invalidate();
 }
+
+// OFFSET: 0x00865C40
+// FUNCTION: fn_45617
+void UIVerticalNameBalloonText::SetIcon(const char* name) {
+  if (name == nullptr || name[0] == '\0') {
+    return;
+  }
+
+  this->iconName = name;
+  if (this->iconName.size() != 0) {
+    this->Resize(std::max(this->geometry.width, 24), this->textHeight + 25);
+  }
+  this->Invalidate();
+}
+
 // OFFSET: 0x0084FED0
 // FUNCTION: fn_10668
 UINameBalloonText::UINameBalloonText() : UIBalloonText(), monsterType(0), framed(0) {

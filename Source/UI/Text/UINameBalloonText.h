@@ -26,6 +26,8 @@ public:
 class UIVerticalNameBalloonText : public UINameBalloonText {
 public:
   UIVerticalNameBalloonText();
+  using UINameBalloonText::SetIcon;
+  void SetIcon(const char* name);
   void Paint() override;
   void AddNameLine(const char* text) override;
 
