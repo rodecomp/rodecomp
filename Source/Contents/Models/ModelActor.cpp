@@ -226,7 +226,7 @@ C3dNode* C3dActorV2::Find(const char* name) {
 // FUNCTION: fn_17510
 void C3dActor::CopyVolumes(const std::list<ModelVolume*>& source) {
   for (auto it = source.begin(); it != source.end(); ++it) {
-    ModelVolume* volume = new ModelVolume;
+    ModelVolume* volume = new ModelVolume();
     *volume = **it;
     this->volumes.push_back(volume);
   }
