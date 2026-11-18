@@ -1894,8 +1894,7 @@ int UIWindowMgr::SendNotice(int selector, std::intptr_t a, std::intptr_t b, std:
         window->m_name = name + "  (" + reinterpret_cast<const char*>(b) + ")  *^_^*";
       }
       if (c != 0) {
-        std::string code(reinterpret_cast<const char*>(c));
-        window->m_code = std::move(code);
+        window->m_code = reinterpret_cast<const char*>(c);
       }
       const int count = static_cast<int>(this->namedWindows.size());
       if (count != 0) {
