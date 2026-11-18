@@ -28,6 +28,10 @@ EZeffectClip::~EZeffectClip() {
   }
 }
 
+// OFFSET: 0x0074D7F0
+// FUNCTION: fn_45819
+EZeffectData::~EZeffectData() = default;
+
 // OFFSET: 0x0074D570
 // FUNCTION: fn_07893
 CEZeffectRes::CEZeffectRes() {

@@ -57,6 +57,8 @@ struct EZeffectClip {
 };
 
 struct EZeffectData {
+  ~EZeffectData();
+
   /* 0000 */ int maximumFrame;
   /* 0004 */ int fps;
   /* 0008 */ int clipCount;
