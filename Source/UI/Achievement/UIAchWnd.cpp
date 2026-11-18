@@ -945,7 +945,7 @@ int UIAchViewWnd::SendMsg(UIWindow*, int message, std::intptr_t argument1, std::
 void UIAchListWnd::SetAchievements(std::map<int, AchievementInfo>* achievements, int mode) {
   this->ids.clear();
 
-  auto byProgress = [this](int left, int right) {
+  auto byProgress = [&](int left, int right) {
     return g_session.FindAchievementRecord(left).completedAt < g_session.FindAchievementRecord(right).completedAt;
   };
 
