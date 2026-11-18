@@ -1164,6 +1164,14 @@ int UIShowAndEditTimeCtrl::SendMsg(UIWindow* sender, int message, std::intptr_t 
   return 0;
 }
 
+// OFFSET: 0x0089C2A0
+// FUNCTION: fn_45598
+void UIShowAndEditTimeCtrl::SetSecond(int value) {
+  UIEditCtrlVarId* field = this->fields[1];
+  this->unknown_0088 = value;
+  field->SetText(FormatOwnedString("%d", value).c_str());
+}
+
 // OFFSET: 0x00853F20
 // FUNCTION: fn_10745
 void UIEditCtrl3::ClearLineState() {
