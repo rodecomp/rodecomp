@@ -4728,24 +4728,20 @@ void CGameActor::SpawnDamageDigits(int, int damage, std::uint32_t color, int typ
   const int value = damage >= 0 ? damage : 0;
   std::vector<int> digits;
   int remaining = value;
-  int digit;
   if (g_serviceOptions.Get(TT_EXTEND_DAMAGE_ON_OFF)) {
     if (value >= 100000000) {
-      digit = 11;
       remaining = value / 1000000;
-      digits.push_back(digit);
+      digits.push_back(11);
     } else if (value >= 1000000) {
-      digit = 10;
       remaining = value / 1000;
-      digits.push_back(digit);
+      digits.push_back(10);
     }
   } else if (value > 999999) {
     remaining = 999999;
   }
 
   do {
-    digit = remaining % 10;
-    digits.push_back(digit);
+    digits.push_back(remaining % 10);
     remaining /= 10;
   } while (remaining != 0);
 
