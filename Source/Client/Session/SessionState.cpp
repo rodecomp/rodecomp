@@ -52,6 +52,40 @@ static const SkillDelayField g_skillDelayFields[] = {
   {3, "SkillSinglePostDelay"},
 };
 
+// OFFSET: 0x00E2FBB0
+// FUNCTION: fn_45611
+int CSession::GetElementalSize() const {
+  CGameActor* actor = static_cast<CGameActor*>(g_modeMgr.GetGameMode()->scene->GetGameActorByAID(this->elementalGid));
+  if (!actor) {
+    return 0;
+  }
+
+  switch (actor->GetEffectiveJob(-1)) {
+  case JT_EL_AGNI_S:
+  case JT_EL_AQUA_S:
+  case JT_EL_VENTUS_S:
+  case JT_EL_TERA_S:
+    return 1;
+  case JT_EL_AGNI_M:
+  case JT_EL_AQUA_M:
+  case JT_EL_VENTUS_M:
+  case JT_EL_TERA_M:
+    return 2;
+  case JT_EL_AGNI_L:
+  case JT_EL_AQUA_L:
+  case JT_EL_VENTUS_L:
+  case JT_EL_TERA_L:
+  case JT_EM_DILUVIO:
+  case JT_EM_ARDOR:
+  case JT_EM_PROCELLA:
+  case JT_EM_TERREMOTUS:
+  case JT_EM_SERPENS:
+    return 3;
+  default:
+    return 0;
+  }
+}
+
 // OFFSET: 0x00E30940
 // FUNCTION: fn_24168
 const char* CSession::GetPlayerMapDisplayName() {
@@ -112,43 +146,7 @@ void CSession::LoadSkillDelayList(int skillId, std::vector<std::map<int, int>>& 
       delays.resize(1);
     }
 
-    CGameActor* actor = static_cast<CGameActor*>(
-      g_modeMgr.GetGameMode()->scene->GetGameActorByAID(this->elementalGid)
-    );
-    int delay;
-    if (actor) {
-      switch (actor->GetEffectiveJob(-1)) {
-      case JT_EL_AGNI_S:
-      case JT_EL_AQUA_S:
-      case JT_EL_VENTUS_S:
-      case JT_EL_TERA_S:
-        delay = 3000;
-        break;
-      case JT_EL_AGNI_M:
-      case JT_EL_AQUA_M:
-      case JT_EL_VENTUS_M:
-      case JT_EL_TERA_M:
-        delay = 6000;
-        break;
-      case JT_EL_AGNI_L:
-      case JT_EL_AQUA_L:
-      case JT_EL_VENTUS_L:
-      case JT_EL_TERA_L:
-      case JT_EM_DILUVIO:
-      case JT_EM_ARDOR:
-      case JT_EM_PROCELLA:
-      case JT_EM_TERREMOTUS:
-      case JT_EM_SERPENS:
-        delay = 9000;
-        break;
-      default:
-        delay = 0;
-        break;
-      }
-    } else {
-      delay = 0;
-    }
-    delays[0][3] = delay;
+    delays[0][3] = this->GetElementalSize() * 3000;
   }
 }
 
