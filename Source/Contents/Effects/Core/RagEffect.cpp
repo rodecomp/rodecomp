@@ -11457,8 +11457,8 @@ void CRagEffect::FireArrow() {
     );
     this->state.lastPrim->state.longitude = -heading;
     this->state.longitude = -heading;
-    const float dx = std::fabs(this->state.lastPrim->state.deltaPos2.x);
     const float dz = std::fabs(this->state.lastPrim->state.deltaPos2.z);
+    const float dx = std::fabs(this->state.lastPrim->state.deltaPos2.x);
     const float run = SquareRoot(dx * dx + dz * dz);
     const float pitch = this->state.lastPrim->Heading(-std::fabs(this->state.lastPrim->state.deltaPos2.y), run, 0.0f, 0.0f);
     this->state.lastPrim->state.latitude = pitch;
