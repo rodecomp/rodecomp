@@ -11,6 +11,17 @@
 #include "UI/Window/UIWindowMgr.h"
 
 #include "Resource/MSGSTRINGID.h"
+
+// OFFSET: 0x008506F0
+// FUNCTION: fn_45632
+UITextureButton::UITextureButton()
+    : UIButton() {
+  this->textureWidth = 0;
+  this->textureHeight = 0;
+  this->toggleEnabled = 0;
+  this->toggled = 0;
+}
+
 // OFFSET: 0x0085E070
 // FUNCTION: fn_10822
 void UITextureButton::Paint() {

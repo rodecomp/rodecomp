@@ -4,16 +4,19 @@
 #include "UI/Buttons/UIButton.h"
 
 #include <cstddef>
+#include <cstdint>
 #include <string>
 
 class UITextureButton : public UIButton {
 public:
+  UITextureButton();
   void Paint() override;
   void OnLBtnUp(int x, int y) override;
   void VisitChildren() override;
+  bool SetTexture(const char* name, int state);
 
-  /* 00B4 */ int padding_00B4;
-  /* 00B8 */ int padding_00B8;
+  /* 00B4 */ std::uint32_t textureWidth;
+  /* 00B8 */ std::uint32_t textureHeight;
 
   /* 00BC */ std::string normalTexture;
   /* 00D4 */ std::string hoverTexture;

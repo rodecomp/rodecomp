@@ -1,7 +1,13 @@
+#include "Contents/Configuration/ServiceConfiguration.h"
+#include "Contents/Configuration/ServiceEnums.h"
 #include "Resource/Bitmap/BitmapResource.h"
 #include "Resource/ResourceMgr.h"
 #include "Resource/Bitmap/TextureNames.h"
 #include "UI/Buttons/UIBitmapButton.h"
+#include "UI/Buttons/UITextureButton.h"
+#include "Render/Textures/Texture.h"
+#include "Render/Textures/TextureCache.h"
+
 // OFFSET: 0x0084EAB0
 // FUNCTION: fn_10650
 UIBitmapButton::UIBitmapButton()
@@ -11,6 +17,8 @@ UIBitmapButton::UIBitmapButton()
   this->m_disabledName.clear();
   this->m_invalidateParent = 0;
 }
+
+// OFFSET: 0x008695B0
 
 // OFFSET: 0x008657A0
 // FUNCTION: fn_10931
