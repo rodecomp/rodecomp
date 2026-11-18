@@ -510,24 +510,59 @@ void C3dGrannyModelRes::RebindMeshes(const C3dGrannyModelRes& target) {
 }
 
 // OFFSET: 0x00759430
+__forceinline GrannyTextureEntry* C3dGrannyModelRes::FindMaterialTexture(const granny_material* material) const {
+  const granny_texture* texture = GrannyGetMaterialTextureByType(material, 2);
+  if (texture) {
+    for (int index = 0; index < this->textureCount; ++index) {
+      if (std::strcmp(this->textures[index].name, texture->fromFileName) == 0) {
+        return &this->textures[index];
+      }
+    }
+  }
+
+  return nullptr;
+}
 
 // OFFSET: 0x00758B30
+__forceinline void C3dGrannyModelRes::InitializeMesh(GrannyMeshEntry& entry, granny_mesh* mesh, granny_model_instance* instance) {
+  entry.mesh = mesh;
+  granny_skeleton* skeleton = GrannyGetSourceSkeleton(instance);
+  entry.binding = GrannyNewMeshBinding(mesh, skeleton, skeleton);
+
+  const unsigned int indexCount = GrannyGetMeshIndexCount(mesh);
+  entry.indices = new std::uint16_t[indexCount];
+  if (indexCount != 0) {
+    GrannyCopyMeshIndices(mesh, 2, entry.indices);
+  }
+
+  const int vertexBytes = GrannyGetMeshVertexCount(mesh) * 32;
+  entry.vertices = nullptr;
+  if (GrannyMeshIsRigid(mesh)) {
+    entry.vertices = new unsigned char[vertexBytes];
+    GrannyCopyMeshVertices(mesh, GrannyPNT332VertexType, entry.vertices);
+    entry.deformer = nullptr;
+  } else {
+    if (this->deformBufferSize < vertexBytes) {
+      this->deformBufferSize = vertexBytes;
+    }
+
+    entry.deformer = GrannyNewMeshDeformer(GrannyGetMeshVertexType(mesh), GrannyPNT332VertexType, 2);
+    if (!entry.deformer) {
+      ShowErrorDialog("Granny didn't find a matching deformer for the vertex format used by mesh", 0);
+    }
+  }
+
+  entry.materialCount = mesh->materialBindingCount;
+  entry.textures = new GrannyTextureEntry*[entry.materialCount];
+
+  for (int material = 0; material < entry.materialCount; ++material) {
+    entry.textures[material] = this->FindMaterialTexture(mesh->materialBindings[material].material);
+  }
+}
 
 // OFFSET: 0x00758E40
 // FUNCTION: fn_08009
 void C3dGrannyModelRes::InstantiateModel(GrannyModelInstance* target, const granny_model* model) {
-  auto findTexture = [this](const granny_texture* texture) -> GrannyTextureEntry* {
-    if (texture) {
-      for (int index = 0; index < this->textureCount; ++index) {
-        if (std::strcmp(this->textures[index].name, texture->fromFileName) == 0) {
-          return &this->textures[index];
-        }
-      }
-    }
-
-    return nullptr;
-  };
-
   const int boneCount = model->skeleton->boneCount;
   if (this->maxBoneCount < boneCount) {
     this->maxBoneCount = boneCount;
@@ -539,41 +574,7 @@ void C3dGrannyModelRes::InstantiateModel(GrannyModelInstance* target, const gran
   target->meshes = new GrannyMeshEntry[target->meshCount];
 
   for (int index = 0; index < target->meshCount; ++index) {
-    GrannyMeshEntry& entry = target->meshes[index];
-    granny_mesh* mesh = model->meshBindings[index].mesh;
-    entry.mesh = mesh;
-    granny_skeleton* skeleton = GrannyGetSourceSkeleton(target->instance);
-    entry.binding = GrannyNewMeshBinding(mesh, skeleton, skeleton);
-
-    const unsigned int indexCount = GrannyGetMeshIndexCount(mesh);
-    entry.indices = new std::uint16_t[indexCount];
-    if (indexCount != 0) {
-      GrannyCopyMeshIndices(mesh, 2, entry.indices);
-    }
-
-    const int vertexBytes = GrannyGetMeshVertexCount(mesh) * 32;
-    entry.vertices = nullptr;
-    if (GrannyMeshIsRigid(mesh)) {
-      entry.vertices = new unsigned char[vertexBytes];
-      GrannyCopyMeshVertices(mesh, GrannyPNT332VertexType, entry.vertices);
-      entry.deformer = nullptr;
-    } else {
-      if (this->deformBufferSize < vertexBytes) {
-        this->deformBufferSize = vertexBytes;
-      }
-
-      entry.deformer = GrannyNewMeshDeformer(GrannyGetMeshVertexType(mesh), GrannyPNT332VertexType, 2);
-      if (!entry.deformer) {
-        ShowErrorDialog("Granny didn't find a matching deformer for the vertex format used by mesh", 0);
-      }
-    }
-
-    entry.materialCount = mesh->materialBindingCount;
-    entry.textures = new GrannyTextureEntry*[entry.materialCount];
-
-    for (int material = 0; material < entry.materialCount; ++material) {
-      entry.textures[material] = findTexture(GrannyGetMaterialTextureByType(mesh->materialBindings[material].material, 2));
-    }
+    this->InitializeMesh(target->meshes[index], model->meshBindings[index].mesh, target->instance);
   }
 }
 
