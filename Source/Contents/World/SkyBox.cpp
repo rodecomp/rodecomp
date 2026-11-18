@@ -105,21 +105,34 @@ CSkyBox::~CSkyBox() {
   }
 }
 
+// OFFSET: 0x0075FE30
+// FUNCTION: fn_45903
+FlareElement CLensFlare::MakeElement(int type, float distance, float size, float red, float green, float blue) const {
+  FlareElement element;
+  element.type = type;
+  element.distance = distance;
+  element.size = size;
+  element.red = red;
+  element.green = green;
+  element.blue = blue;
+  return element;
+}
+
 // OFFSET: 0x0075E530
 // FUNCTION: fn_08050
 void CLensFlare::Init() {
-  this->m_elements[0] = FlareElement(2, 181.8f, 0.45f, 0.0f, 0.0f, 1.0f);
-  this->m_elements[1] = FlareElement(1, 98.1f, 0.3f, 0.0f, 1.0f, 0.0f);
-  this->m_elements[2] = FlareElement(1, 95.4f, 0.67f, 1.0f, 0.0f, 0.0f);
-  this->m_elements[3] = FlareElement(1, 92.700005f, 0.06f, 0.6f, 0.0f, 0.0f);
-  this->m_elements[4] = FlareElement(3, 90.0f, 0.15f, 0.4f, 0.0f, 0.0f);
-  this->m_elements[5] = FlareElement(1, 4.5f, 0.7f, 0.3f, 0.0f, 0.0f);
-  this->m_elements[6] = FlareElement(3, 1.8000001f, 0.07f, 0.3f, 0.0f, 0.0f);
-  this->m_elements[7] = FlareElement(0, 0.0f, 0.06f, 0.3f, 0.0f, 0.0f);
-  this->m_elements[8] = FlareElement(4, -2.25f, 0.15f, 0.5f, 0.0f, 0.0f);
-  this->m_elements[9] = FlareElement(4, -3.6000001f, 0.03f, 0.6f, 0.0f, 0.0f);
-  this->m_elements[10] = FlareElement(4, -5.4f, 0.06f, 0.4f, 0.0f, 0.0f);
-  this->m_elements[11] = FlareElement(4, -90.0f, 0.04f, 0.2f, 0.0f, 0.0f);
+  this->m_elements[0] = this->MakeElement(2, 181.8f, 0.45f, 0.0f, 0.0f, 1.0f);
+  this->m_elements[1] = this->MakeElement(1, 98.1f, 0.3f, 0.0f, 1.0f, 0.0f);
+  this->m_elements[2] = this->MakeElement(1, 95.4f, 0.67f, 1.0f, 0.0f, 0.0f);
+  this->m_elements[3] = this->MakeElement(1, 92.700005f, 0.06f, 0.6f, 0.0f, 0.0f);
+  this->m_elements[4] = this->MakeElement(3, 90.0f, 0.15f, 0.4f, 0.0f, 0.0f);
+  this->m_elements[5] = this->MakeElement(1, 4.5f, 0.7f, 0.3f, 0.0f, 0.0f);
+  this->m_elements[6] = this->MakeElement(3, 1.8000001f, 0.07f, 0.3f, 0.0f, 0.0f);
+  this->m_elements[7] = this->MakeElement(0, 0.0f, 0.06f, 0.3f, 0.0f, 0.0f);
+  this->m_elements[8] = this->MakeElement(4, -2.25f, 0.15f, 0.5f, 0.0f, 0.0f);
+  this->m_elements[9] = this->MakeElement(4, -3.6000001f, 0.03f, 0.6f, 0.0f, 0.0f);
+  this->m_elements[10] = this->MakeElement(4, -5.4f, 0.06f, 0.4f, 0.0f, 0.0f);
+  this->m_elements[11] = this->MakeElement(4, -90.0f, 0.04f, 0.2f, 0.0f, 0.0f);
 
   for (int i = 0; i < 12; ++i) {
     const FlareElement& element = this->m_elements[i];

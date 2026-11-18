@@ -12,9 +12,6 @@ class CRes;
 
 struct FlareElement {
   FlareElement();
-  FlareElement(int type, float distance, float size, float red, float green, float blue)
-    : type(type), distance(distance), size(size), red(red), green(green), blue(blue), position{0.0f, 0.0f, 0.0f} {
-  }
 
   FlareElement& operator=(const FlareElement& other) {
     this->type = other.type;
@@ -43,6 +40,7 @@ public:
   __declspec(noinline) CLensFlare();
 
   void Init();
+  FlareElement MakeElement(int type, float distance, float size, float red, float green, float blue) const;
   void Update(const float* matrix, vector3d eye, vector3d target);
   void Render(const float* matrix, vector3d eye, vector3d target);
 
