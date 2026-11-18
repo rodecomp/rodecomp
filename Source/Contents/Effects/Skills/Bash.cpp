@@ -35,17 +35,9 @@ void CBash::Close() {
 // OFFSET: 0x00B422E0
 // FUNCTION: fn_18870
 __declspec(safebuffers) void CBash::Open() {
-  CGameMode* mode = g_modeMgr.GetGameMode();
-  RenderVertex screen;
-  screen.x = 0.0f;
-  screen.y = 0.0f;
-  screen.z = 0.0f;
-  screen.rhw = 0.0f;
-  screen.diffuse = 0;
-  screen.specular = 0xFF000000;
-  screen.u = 0.0f;
-  screen.v = 0.0f;
-  g_renderer->Project(this->position, mode->camera->frame.view.values, screen);
+  const float* view = g_modeMgr.GetGameMode()->camera->frame.view.values;
+  RenderVertex screen{0.0f, 0.0f, 0.0f, 0.0f, 0u, 0xFF000000u, 0.0f, 0.0f};
+  g_renderer->Project(this->position, view, screen);
   this->screenX = screen.x;
   this->screenY = screen.y - 40.0f;
 
@@ -70,7 +62,10 @@ __declspec(safebuffers) void CBash::Open() {
     ++index;
   }
 
-  int count = g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) ? 10 : 20;
+  int count = 20;
+  if (g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF)) {
+    count = 10;
+  }
   do {
     CParticle* particle = CreateParticle(&this->positionVector, 1);
     const int angle = rand() % 360;
@@ -80,6 +75,7 @@ __declspec(safebuffers) void CBash::Open() {
     const int width = rand() % 25;
     const int radius = rand() % 40;
     const int growth = rand() % 30;
+    const int lifetime = this->effectLifetime;
     float* values = &particle->animationParameter;
     values[0] = static_cast<float>(angle >= 0 ? angle : 0);
     values[1] = speed;
@@ -89,7 +85,7 @@ __declspec(safebuffers) void CBash::Open() {
     values[5] = static_cast<float>((growth >= 0 ? growth : 0) + 20) / 10.0f;
     values[6] = 200.0f;
     values[7] = 20.0f;
-    values[8] = static_cast<float>(this->effectLifetime - this->effectLifetime / 3);
+    values[8] = static_cast<float>(lifetime - lifetime / 3);
     particle->alpha = 0;
     particle->SetTexture("EFFECT\\alpha_center.tga");
     this->sparks.push_back(particle);
