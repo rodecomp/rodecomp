@@ -1206,7 +1206,7 @@ void CUIGroup::Apply() {
 // OFFSET: 0x00A40430
 // FUNCTION: fn_15971
 void CUIGroupEmblem::Apply() {
-  g_serviceOptions.Set(0xF3, 0);
+  g_serviceOptions.Set(TT_EMBLEM_FRAME_ON_OFF, 0);
   g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_EMBLEM_FRAME_DRAW_OFF)), 0x64FFFF, 0, 0, 0);
 }
@@ -1214,7 +1214,7 @@ void CUIGroupEmblem::Apply() {
 // OFFSET: 0x00A40480
 // FUNCTION: fn_15972
 void CUIGroupLogInOut::Apply() {
-  g_serviceOptions.Set(0xA5, 1);
+  g_serviceOptions.Set(TT_LOGINOUT_ON_OFF, 1);
   g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_LOGINOUT_ON)), 0x64FFFF, 0, 0, 0);
 }
@@ -1475,7 +1475,7 @@ void CUIGroupSound::SetBgmEnabled(bool enabled) {
   CUIVScrollBar* const slider = this->m_bgmSlider;
   slider->dragging = !enabled;
   slider->Invalidate();
-  g_serviceOptions.Set(7, enabled);
+  g_serviceOptions.Set(TT_MUSIC_ON_OFF, enabled);
   if (previous != enabled) {
     g_modeMgr.currentMode->SendMsg(MM_REFRESH_MUSIC, 0, 0, 0, 0);
   }
@@ -1501,7 +1501,7 @@ void CUIGroupSound::SetEffectVolume(int volume) {
 // OFFSET: 0x00A3F560
 // FUNCTION: fn_15945
 void CUIGroupEmblem::SetEnabled(bool enabled) {
-  g_serviceOptions.Set(0xF3, enabled);
+  g_serviceOptions.Set(TT_EMBLEM_FRAME_ON_OFF, enabled);
   g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(enabled ? MSI_EMBLEM_FRAME_DRAW_ON : MSI_EMBLEM_FRAME_DRAW_OFF)), 0x64FFFF, 0, 0, 0);
 }
@@ -1509,7 +1509,7 @@ void CUIGroupEmblem::SetEnabled(bool enabled) {
 // OFFSET: 0x00A3F5C0
 // FUNCTION: fn_15946
 void CUIGroupLogInOut::SetEnabled(bool enabled) {
-  g_serviceOptions.Set(0xA5, enabled);
+  g_serviceOptions.Set(TT_LOGINOUT_ON_OFF, enabled);
   g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(enabled ? MSI_LOGINOUT_ON : MSI_LOGINOUT_OFF)), 0x64FFFF, 0, 0, 0);
 }
@@ -1528,7 +1528,7 @@ void CUIGroupSound::OnEffectMute(bool muted) {
   CUIVScrollBar* const slider = this->m_effectSlider;
   slider->dragging = !enabled;
   slider->Invalidate();
-  g_serviceOptions.Set(0xB, enabled);
+  g_serviceOptions.Set(TT_EFFECT_SOUND_ON_OFF, enabled);
 }
 
 // OFFSET: 0x00A401C0
@@ -2259,7 +2259,7 @@ void GameSettingsUI::CUIGroupSound::Apply() {
   CUIVScrollBar* const slider = this->m_effectSlider;
   slider->dragging = !enabled;
   slider->Invalidate();
-  g_serviceOptions.Set(0xB, enabled);
+  g_serviceOptions.Set(TT_EFFECT_SOUND_ON_OFF, enabled);
 }
 
 // OFFSET: 0x00A19C60

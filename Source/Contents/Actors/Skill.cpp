@@ -76,7 +76,7 @@ CGraffiSkill::CGraffiSkill() : CSkill(0) {
 // FUNCTION: fn_24256
 CSkill::CSkill(std::uint32_t aid) {
   this->skillAid = aid;
-  this->SetActorJob(0x7E);
+  this->SetActorJob(JT_SAFETYWALL);
   this->m_effectTimer = 0x8CA0;
   this->render.trackBounds = 0;
   this->render.enabled = 0;

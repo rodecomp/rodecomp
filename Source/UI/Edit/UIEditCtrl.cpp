@@ -9996,7 +9996,7 @@ int UIItemWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intp
   case UM_COMMAND:
     switch (a) {
     case ID_ITEM_COMPARE:
-      Singleton<CGameSettingsMgr>::GetInstance()->ToggleOption(264);
+      Singleton<CGameSettingsMgr>::GetInstance()->ToggleOption(TT_ITEM_COMPARE_ON_OFF);
       return 0;
     case ID_TOGGLE_ITEM_TRADE_LOCK: {
       const char* normal;

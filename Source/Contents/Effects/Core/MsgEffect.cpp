@@ -475,7 +475,7 @@ bool CMsgEffect::OnProcess() {
       {
         const int frame = static_cast<int>(elapsed);
         if (frame % 34 == 0) {
-          this->m_owner->SendMsg(nullptr, 0x4D, 0, 0, 0, 0, 0, 0);
+          this->m_owner->SendMsg(nullptr, AM_MAKE_BLUR_ACTOR, 0, 0, 0, 0, 0, 0);
         }
       }
       return true;

@@ -1,6 +1,7 @@
 #include "Render/Primitives/RenderPrimitivePool.h"
 #include <new>
 #include "Contents/Effects/Core/RagEffect.h"
+#include "Contents/Jobs/JobId.h"
 #include "UI/GameSettings/TalkType.h"
 #include "Client/Mode/ModeMessage.h"
 #include "Contents/Actors/ActorEnums.h"
@@ -22432,19 +22433,19 @@ bool CRagEffect::OnProcess3() {
       plant->render.position = this->render.position;
       if (this->state.type == EF_BIO5_PLANT_GREEN) {
         plant->SetActionName("sprite\\몬스터\\green_plant.act");
-        plant->SetActorJob(1080);
+        plant->SetActorJob(JT_GREEN_PLANT);
       } else if (this->state.type == EF_BIO5_PLANT_BLUE) {
         plant->SetActionName("sprite\\몬스터\\blue_plant.act");
-        plant->SetActorJob(1079);
+        plant->SetActorJob(JT_BLUE_PLANT);
       } else if (this->state.type == EF_BIO5_PLANT_YELLOW) {
         plant->SetActionName("sprite\\몬스터\\yellow_plant.act");
-        plant->SetActorJob(1081);
+        plant->SetActorJob(JT_YELLOW_PLANT);
       } else if (this->state.type == EF_BIO5_PLANT_WHITE) {
         plant->SetActionName("sprite\\몬스터\\white_plant.act");
-        plant->SetActorJob(1082);
+        plant->SetActorJob(JT_WHITE_PLANT);
       } else if (this->state.type == EF_BIO5_PLANT_RED) {
         plant->SetActionName("sprite\\몬스터\\red_plant.act");
-        plant->SetActorJob(1078);
+        plant->SetActorJob(JT_RED_PLANT);
       }
       plant->SetSprAct(plant->GetEffectiveJob(-1), plant->sex, 0);
       WorldObjects().push_back(plant);

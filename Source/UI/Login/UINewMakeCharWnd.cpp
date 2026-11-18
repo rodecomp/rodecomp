@@ -1,5 +1,6 @@
 #include "Render/DeviceContext/DCSurface.h"
 #include "Client/Mode/ModeMessage.h"
+#include "Contents/Jobs/JobId.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "UI/Login/UINewMakeCharWnd.h"
@@ -660,7 +661,7 @@ int UINewMakeCharWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argum
           this->m_character.job = 0;
           break;
         case 1:
-          this->m_character.job = 0x107A;
+          this->m_character.job = JT_DO_SUMMONER;
           break;
         }
         this->UpdatePreviewResources();

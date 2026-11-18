@@ -105,7 +105,7 @@ CHalluPlant::CHalluPlant() {
   this->render.shadowVisible = 0;
   this->render.motionStartTime = timeGetTime();
   this->SetSexBit(0);
-  this->SetActorJob(1079);
+  this->SetActorJob(JT_BLUE_PLANT);
   this->isRiding = 0;
   this->SetMonsterTransformJob(-1);
   this->render.position.x = 0.0f;
@@ -1455,11 +1455,11 @@ bool CNpc::OnProcess() {
   this->UpdateBubblePositions();
 
   if (g_session.homunAlive && g_session.homunEnemyGid == this->render.accountId) {
-    this->SendMsg(nullptr, 0x86, 0, 0, 0, 0, 0, 0);
+    this->SendMsg(nullptr, AM_MAKE_CURSOR_EFFECT, 0, 0, 0, 0, 0, 0);
   } else if (g_session.mercenaryAlive && g_session.mercenaryEnemyGid == this->render.accountId) {
-    this->SendMsg(nullptr, 0x86, 0, 0, 0, 0, 0, 0);
+    this->SendMsg(nullptr, AM_MAKE_CURSOR_EFFECT, 0, 0, 0, 0, 0, 0);
   } else {
-    this->SendMsg(nullptr, 0x87, 0, 0, 0, 0, 0, 0);
+    this->SendMsg(nullptr, AM_DELETE_CURSOR_EFFECT, 0, 0, 0, 0, 0, 0);
   }
 
   this->UpdateMinimapMarker();

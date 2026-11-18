@@ -3815,7 +3815,7 @@ __declspec(safebuffers) void CGameActor::ProcessHitMessage(CGameObject*, const A
       }
 
       const int job = this->GetEffectiveJob(-1);
-      if (extraDamage != 0 && (g_session.IsNpcJob(job) || job > 4000 || job == 12)) {
+      if (extraDamage != 0 && (g_session.IsNpcJob(job) || job > 4000 || job == JT_ASSASSIN)) {
         int total = damage;
         if (hitCount > 1) {
           for (int hit = hitCount - 1; hit != 0; --hit) {
@@ -4443,90 +4443,90 @@ void CGameActor::SetActorJob(int job) {
   this->job = job;
   switch (job) {
   case JT_CHICKEN_H:
-    this->job = 0xfa8;
+    this->job = JT_KNIGHT_H;
     break;
   case JT_CHICKEN:
-    this->job = 7;
+    this->job = JT_KNIGHT;
     break;
   case JT_CHICKEN2:
-    this->job = 0xe;
+    this->job = JT_CRUSADER;
     break;
   case JT_WOLF_WINDHAWK:
-    this->job = 0x10a1;
+    this->job = JT_WINDHAWK;
     break;
   case JT_CHICKEN_B:
-    this->job = 0xfbe;
+    this->job = JT_KNIGHT_B;
     break;
   case JT_CHICKEN2_H:
-    this->job = 0xfaf;
+    this->job = JT_CRUSADER_H;
     break;
   case JT_CHICKEN2_B:
-    this->job = 0xfc5;
+    this->job = JT_CRUSADER_B;
     break;
   case JT_STAR2:
-    this->job = 0xfcf;
+    this->job = JT_STAR;
     break;
   case JT_ROYAL_CHICKEN:
-    this->job = 0xfe2;
+    this->job = JT_ROYAL_GUARD;
     break;
   case JT_ROYAL_CHICKEN_H:
-    this->job = 0xfe9;
+    this->job = JT_ROYAL_GUARD_H;
     break;
   case JT_ROYAL_CHICKEN_B:
-    this->job = 0x1006;
+    this->job = JT_ROYAL_GUARD_B;
     break;
   case JT_RUNE_CHICKEN_B:
-    this->job = 0x1000;
+    this->job = JT_RUNE_KNIGHT_B;
     break;
   case JT_RUNE_CHICKEN:
   case JT_RUNE_CHICKEN2:
   case JT_RUNE_CHICKEN3:
   case JT_RUNE_CHICKEN4:
   case JT_RUNE_CHICKEN5:
-    this->job = 0xfd6;
+    this->job = JT_RUNE_KNIGHT;
     break;
   case JT_RUNE_CHICKEN_H:
   case JT_RUNE_CHICKEN2_H:
   case JT_RUNE_CHICKEN3_H:
   case JT_RUNE_CHICKEN4_H:
   case JT_RUNE_CHICKEN5_H:
-    this->job = 0xfdc;
+    this->job = JT_RUNE_KNIGHT_H;
     break;
   case JT_WOLF_RANGER:
-    this->job = 0xfd8;
+    this->job = JT_RANGER;
     break;
   case JT_WOLF_RANGER_H:
-    this->job = 0xfde;
+    this->job = JT_RANGER_H;
     break;
   case JT_WOLF_RANGER_B:
-    this->job = 0x1002;
+    this->job = JT_RANGER_B;
     break;
   case JT_MADOGEAR:
-    this->job = 0xfda;
+    this->job = JT_MECHANIC;
     break;
   case JT_MADOGEAR_H:
-    this->job = 0xfe0;
+    this->job = JT_MECHANIC_H;
     break;
   case JT_MADOGEAR_B:
-    this->job = 0x1004;
+    this->job = JT_MECHANIC_B;
     break;
   case JT_STAR2_B:
-    this->job = 0x1082;
+    this->job = JT_STAR_B;
     break;
   case JT_STAR2_EMPEROR_B:
-    this->job = 0x1091;
+    this->job = JT_STAR_EMPEROR_B;
     break;
   case JT_MEISTER_MADOGEAR:
-    this->job = 0x109d;
+    this->job = JT_MEISTER;
     break;
   case JT_DRAGON_KNIGHT_CHICKEN:
-    this->job = 0x109c;
+    this->job = JT_DRAGON_KNIGHT;
     break;
   case JT_IMPERIAL_GUARD_CHICKEN:
-    this->job = 0x10a2;
+    this->job = JT_IMPERIAL_GUARD;
     break;
   case JT_SKY_EMPEROR2:
-    this->job = 0x10ce;
+    this->job = JT_SKY_EMPEROR;
     break;
   }
 

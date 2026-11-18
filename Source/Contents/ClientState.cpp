@@ -1,4 +1,5 @@
 #include "Contents/ClientState.h"
+#include "UI/GameSettings/TalkType.h"
 #include "UI/Window/UIEnums.h"
 #include "UI/Window/WindowId.h"
 #include "Contents/Actors/ActorEnums.h"
@@ -1000,7 +1001,7 @@ void CSession::SetPetAutoFeed(bool enabled) {
 void CSession::SetPetInfoAlert(bool enabled) {
   std::string notice = LookupMessage(enabled ? 4357 : 4379);
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(notice.c_str()), 0x64FFFF, 0, 0, 0);
-  g_serviceOptions.Set(0x128, enabled);
+  g_serviceOptions.Set(TT_PETINFO_ALERT_ONOFF, enabled);
   g_windowMgr.RefreshGameSettingOption(0x128);
 }
 

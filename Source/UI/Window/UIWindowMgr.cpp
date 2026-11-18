@@ -3954,7 +3954,7 @@ bool UIWindowMgr::CloseWindow(int id) {
   case WID_RODEXINBOXWND:
     if (this->rodexInboxWnd) {
       HeaderOnlyPacket packet;
-      packet.id = 0x9E9;
+      packet.id = ID_CZ_CLOSE_RODEXBOX;
       GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
       this->Schedule(this->rodexInboxWnd);
       this->rodexInboxWnd = nullptr;
@@ -3967,7 +3967,7 @@ bool UIWindowMgr::CloseWindow(int id) {
   case WID_RODEXCOMPOSEWND:
     if (this->rodexComposeWnd) {
       HeaderOnlyPacket packet;
-      packet.id = 0xA03;
+      packet.id = ID_CZ_REQ_CANCEL_WRITE_RODEX;
       GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
       g_session.RestoreSelectionItems();
       g_session.ClearItemQuantities();
@@ -4001,7 +4001,7 @@ bool UIWindowMgr::CloseWindow(int id) {
   case WID_ROULLETTEWND:
     if (this->roulletteWnd) {
       HeaderOnlyPacket packet;
-      packet.id = 0xA1D;
+      packet.id = ID_CZ_REQ_CLOSE_ROULETTE;
       GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
       g_rouletteMgr->Reset();
       this->Schedule(this->roulletteWnd);
@@ -4088,7 +4088,7 @@ bool UIWindowMgr::CloseWindow(int id) {
       this->cashShopWnd = nullptr;
       closed = true;
       HeaderOnlyPacket packet;
-      packet.id = 0x84A;
+      packet.id = ID_CZ_SE_CASHSHOP_CLOSE;
       GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.id), &packet);
     }
     break;
@@ -4614,7 +4614,7 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
     }
     break;
   case 0x9F:
-    Singleton<CGameSettingsMgr>::GetInstance()->ToggleOption(0x109);
+    Singleton<CGameSettingsMgr>::GetInstance()->ToggleOption(TT_HIDE_PLAYER_ON_OFF);
     break;
   case 0xA0:
     if (!g_windowMgr.CloseWindow(WID_REPUTEWND)) {
@@ -4627,7 +4627,7 @@ bool UIWindowMgr::ProcessShortcutKey(int action) {
     }
     break;
   case 0xA3:
-    Singleton<CGameSettingsMgr>::GetInstance()->ToggleOption(0x10A);
+    Singleton<CGameSettingsMgr>::GetInstance()->ToggleOption(TT_HIDE_SUMMON_ON_OFF);
     break;
   case HK_MACRO_1 + 200:
   case HK_MACRO_2 + 200:

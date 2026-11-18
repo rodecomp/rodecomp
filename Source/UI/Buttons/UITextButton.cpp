@@ -3317,7 +3317,7 @@ void UIImgMenu::OnLBtnUp(int x, int y) {
     if (UIWindow* target = g_windowMgr.LookupWindow(static_cast<WindowId>(this->callerWindowId))) {
       target->SendMsg(nullptr, UM_MENU_SELECTED, this->hovered, this->geometry.id, 0, 0);
     }
-    g_windowMgr.CloseWindow(0x7A);
+    g_windowMgr.CloseWindow(WID_IMGMENUWND);
   }
 }
 

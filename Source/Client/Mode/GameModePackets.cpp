@@ -5642,7 +5642,7 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
     g_soundMgr->PlayWave("levelup.wav", 0.0f, 0.0f, 0.0f, 250, 40, 1.0f, 0);
 
     if (g_session.IsSuperNoviceClass(g_session.GetDisplayJob())) {
-      this->scene->player->LaunchEffect(338, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      this->scene->player->LaunchEffect(EF_ANGEL2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     } else {
       switch (g_session.GetDisplayJob()) {
       case JT_TAEKWON:
@@ -5662,15 +5662,15 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
       case JT_SKY_EMPEROR:
       case JT_SOUL_ASCETIC:
       case JT_SKY_EMPEROR2:
-        this->scene->player->LaunchEffect(582, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        this->scene->player->LaunchEffect(EF_ANGEL3, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         break;
       case JT_GANGSI:
       case JT_DEATHKNIGHT:
       case JT_COLLECTOR:
-        this->scene->player->LaunchEffect(338, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        this->scene->player->LaunchEffect(EF_ANGEL2, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         break;
       default:
-        this->scene->player->LaunchEffect(371, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+        this->scene->player->LaunchEffect(EF_ANGEL, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
         break;
       }
     }
@@ -5701,9 +5701,9 @@ void CGameMode::ReceiveParChange(unsigned char* data) {
     g_session.InvalidateWindowFrames();
     CPlayer* player = this->scene->player;
     if (packet->value <= 50) {
-      player->LaunchEffect(158, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      player->LaunchEffect(EF_JOBLVUP, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     } else {
-      player->LaunchEffect(337, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
+      player->LaunchEffect(EF_JOBLVUP50, vector3d{0.0f, 0.0f, 0.0f}, 0.0f);
     }
 
     if (g_replayAnimationScaling == 0) {

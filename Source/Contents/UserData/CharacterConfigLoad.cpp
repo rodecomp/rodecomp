@@ -2,6 +2,7 @@
 #include "Contents/Async/AsyncWorkMgr.h"
 #include "Contents/UserData/CharacterLinkedUserDataMgr.h"
 #include "Contents/Configuration/ServiceOptions.h"
+#include "UI/GameSettings/TalkType.h"
 #include "UI/Window/UIWindowMgr.h"
 #include "Utility/Async/AsyncDiagnostic.h"
 
@@ -31,7 +32,7 @@ void CCharacterLinkedUserDataMgr::CompleteLoad(
 
     {
       const Json::Value comparison = root["data"]["ItemComparison"];
-      g_serviceOptions.Set(264, comparison.isNull() ? true : comparison.asBool());
+      g_serviceOptions.Set(TT_ITEM_COMPARE_ON_OFF, comparison.isNull() ? true : comparison.asBool());
     }
 
     {

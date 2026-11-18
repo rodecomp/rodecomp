@@ -2399,17 +2399,17 @@ void CPc::SetSprActFull(int first, int second, int third, int fourth, int fifth,
 
   int job = first;
   if (IsWeddingDress(this->stateFlags)) {
-    job = 0x16;
+    job = JT_MARRIED;
   } else if (IsXmasDress(this->stateFlags) && !IsStarUnion(this->stateFlags)) {
-    job = 0x1a;
+    job = JT_SANTA;
   } else if (IsSummerDress(this->stateFlags) && !IsStarUnion(this->stateFlags)) {
-    job = 0x1b;
+    job = JT_SUMMER;
   } else if (IsHanbokDress(this->stateFlags) && !IsStarUnion(this->stateFlags)) {
-    job = 0x1c;
+    job = JT_HANBOK;
   } else if (IsOktoberfestDress(this->stateFlags) && !IsStarUnion(this->stateFlags)) {
-    job = 0x1d;
+    job = JT_OKTOBERFEST;
   } else if (this->mountedState == 1 && !IsStarUnion(this->stateFlags)) {
-    job = 0x1e;
+    job = JT_SUMMER2;
   } else if (this->isRiding != 0) {
     job = g_session.GetRidingJob(job);
   }
@@ -2444,17 +2444,17 @@ void CPc::SetSprAct2(int first, int second, int third, int fourth, int fifth, in
   this->render.bodyPalette = g_session.GetBodyStyle(first, tenth, this->bodyStyle);
 
   if (IsWeddingDress(eleventh)) {
-    this->SetActorJob(0x16);
+    this->SetActorJob(JT_MARRIED);
   } else if (IsXmasDress(eleventh) && !IsStarUnion(eleventh)) {
-    this->SetActorJob(0x1a);
+    this->SetActorJob(JT_SANTA);
   } else if (IsSummerDress(eleventh) && !IsStarUnion(eleventh)) {
-    this->SetActorJob(0x1b);
+    this->SetActorJob(JT_SUMMER);
   } else if (IsHanbokDress(eleventh) && !IsStarUnion(eleventh)) {
-    this->SetActorJob(0x1c);
+    this->SetActorJob(JT_HANBOK);
   } else if (IsOktoberfestDress(eleventh) && !IsStarUnion(eleventh)) {
-    this->SetActorJob(0x1d);
+    this->SetActorJob(JT_OKTOBERFEST);
   } else if (this->mountedState == 1 && !IsStarUnion(this->stateFlags)) {
-    this->SetActorJob(0x1e);
+    this->SetActorJob(JT_SUMMER2);
   } else if (this->HasShapeShift() == true) {
     this->SetSprJob(this->GetShapeShiftJob());
   } else if (this->isRiding != 0) {

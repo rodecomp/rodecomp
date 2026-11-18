@@ -1019,7 +1019,7 @@ void CGameMode::ReceivePetAct(unsigned char* packet) {
   if (kind == 2) {
     const std::int64_t emotion = value;
     const std::int64_t basePack = g_cashEmotionMgr->BasePackId();
-    actor->SendMsg(nullptr, 160, basePack, emotion, 0, 0, 0, 0);
+    actor->SendMsg(nullptr, AM_CASH_EMOTION, basePack, emotion, 0, 0, 0, 0);
     return;
   }
 
