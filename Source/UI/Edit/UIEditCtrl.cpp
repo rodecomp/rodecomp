@@ -3206,7 +3206,8 @@ void UIMerchantShopMakeWnd::OnProcess() {
 
     const PriceColors colors = PriceColor(price);
     edit->TextColor(GetRValue(colors.primary), GetGValue(colors.primary), GetBValue(colors.primary), colors.secondary);
-    edit->SetText(FormatGroupedInteger(price, text, sizeof(text)));
+    FormatGroupedInteger(price, text, sizeof(text));
+    edit->SetText(text);
     this->previousPriceText = this->priceEdits[index]->Text();
     this->previousPriceLength = this->priceEdits[index]->Length();
     edit->SetCursor(edit->Length());
