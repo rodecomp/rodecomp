@@ -735,7 +735,8 @@ const char* CCashEmotionMgr::GetPackName(int packId) {
 std::vector<int> CCashEmotionMgr::FindBaseEmotions(const char* filter) {
   std::vector<int> result;
 
-  auto it = this->emotionOrder.find(this->basePackId);
+  const int packId = this->basePackId;
+  auto it = this->emotionOrder.find(packId);
   if (it == this->emotionOrder.end()) {
     return result;
   }
@@ -746,17 +747,7 @@ std::vector<int> CCashEmotionMgr::FindBaseEmotions(const char* filter) {
     others.reserve(it->second.size());
 
     for (int emotionId : it->second) {
-      auto pack = this->m_emotionsByPack.find(this->basePackId);
-      if (pack == this->m_emotionsByPack.end()) {
-        continue;
-      }
-
-      auto emotion = pack->second.find(emotionId);
-      if (emotion == pack->second.end()) {
-        continue;
-      }
-
-      const char* name = emotion->second.name.c_str();
+      const char* name = this->GetEmotionName(this->basePackId, emotionId);
       if (name) {
         if (std::strstr(name, filter)) {
           result.push_back(emotionId);
@@ -767,7 +758,7 @@ std::vector<int> CCashEmotionMgr::FindBaseEmotions(const char* filter) {
     }
 
     std::sort(result.begin(), result.end(), CashEmotionPackOrder{this, true});
-    for (int emotionId : others) {
+    for (const int& emotionId : others) {
       result.push_back(emotionId);
     }
   } else {
