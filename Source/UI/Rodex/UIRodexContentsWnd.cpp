@@ -43,6 +43,11 @@
 #include <cstring>
 #include <map>
 
+// GLOBAL: gl_25979
+static const std::string g_rodexNaviLinkBegin = "<NAVIL>";
+// GLOBAL: gl_25980
+static const std::string g_rodexNaviLinkEnd = "</NAVIL>";
+
 namespace {
 #pragma pack(push, 1)
 struct RodexMailAttachmentRequestPacket {
@@ -414,7 +419,7 @@ void UIRodexContentsWnd::SetMailContents(std::string title, std::string sender, 
   this->m_contents->multiline = 1;
   this->m_contents->SetId(504);
 
-  if (text.find("<NAVIL>") == std::string::npos && text.find("</NAVIL>") == std::string::npos) {
+  if (text.find(g_rodexNaviLinkBegin) == std::string::npos && text.find(g_rodexNaviLinkEnd) == std::string::npos) {
     this->m_contents->SetText(text.c_str());
   } else {
     this->m_contents->SendMsg(nullptr, UM_INSERT_ITEM_LINK, reinterpret_cast<std::intptr_t>(text.c_str()), 0, 0, 0);
