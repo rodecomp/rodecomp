@@ -330,7 +330,7 @@ void UIItemTagCtrl::UpdateItemTags() {
     this->previousTagCount = static_cast<int>(this->tags.size());
   }
 
-  std::string prefix;
+  std::string prefix = "";
   std::string remaining = this->taggedText;
   if (!this->tags.empty()) {
     for (auto entry = this->tags.begin(); entry != this->tags.end();) {
