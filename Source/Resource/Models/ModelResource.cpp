@@ -1086,18 +1086,14 @@ const void* C3dGrannyModelRes::GetMeshRenderData(
 
   if (GrannyMeshIsRigid(meshes[mesh].mesh)) {
     const float* composite = GrannyGetWorldPoseComposite4x4(model->worldPose, boneIndices[0]);
-    transform->values[0] = composite[0];
-    transform->values[1] = composite[1];
-    transform->values[2] = composite[2];
-    transform->values[3] = composite[4];
-    transform->values[4] = composite[5];
-    transform->values[5] = composite[6];
-    transform->values[6] = composite[8];
-    transform->values[7] = composite[9];
-    transform->values[8] = composite[10];
-    transform->values[9] = composite[12];
-    transform->values[10] = composite[13];
-    transform->values[11] = composite[14];
+    for (int row = 0; row < 4; ++row) {
+      const float* source = composite + row * 4;
+      const vector3d axis{source[0], source[1], source[2]};
+      float* destination = transform->values + row * 3;
+      destination[0] = axis.x;
+      destination[1] = axis.y;
+      destination[2] = axis.z;
+    }
 
     const void* vertices = meshes[mesh].vertices;
     *indices = meshes[mesh].indices;
@@ -1113,10 +1109,11 @@ const void* C3dGrannyModelRes::GetMeshRenderData(
     GrannyDeformVertices(meshes[mesh].deformer, boneIndices, matrices, vertexCount, GrannyGetMeshVertices(meshes[mesh].mesh), this->deformBuffer);
     GrannyGetMeshBytesPerIndex(meshes[mesh].mesh);
     GrannyGetMeshIndices(meshes[mesh].mesh);
+    const void* vertices = this->deformBuffer;
     *indices = meshes[mesh].indices;
     *triangleCount = GrannyGetMeshIndexCount(meshes[mesh].mesh) / 3;
-    std::memcpy(transform->values, g_identityMatrix, sizeof(g_identityMatrix));
-    return this->deformBuffer;
+    transform->Identity();
+    return vertices;
   }
 
   return nullptr;
