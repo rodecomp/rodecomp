@@ -16,6 +16,7 @@ public:
   void OnLBtnDown(int x, int y) override;
   void OnLBtnUp(int x, int y) override;
   void OnWheel(int delta) override;
+  void SetNote(std::string text);
 
   /* 00B0 */ UIStaticText_LF* m_text;
 };

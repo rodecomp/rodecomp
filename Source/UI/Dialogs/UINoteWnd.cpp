@@ -72,6 +72,18 @@ UINoteWnd::UINoteWnd()
     : UIFrameWnd(0), m_scroll(nullptr) {
 }
 
+// INLINED
+inline void UINoteWnd_Scroll::SetNote(std::string text) {
+  this->m_text = new UIStaticText_LF(0);
+  this->m_text->SetSize(this->geometry.width - 13, 12);
+  this->m_text->Move(0, 0);
+  this->m_text->SetText(text);
+  this->AddScrollChild(this->m_text);
+  this->horizontalBar->Show(0);
+  this->scrollBar->Show(0);
+  this->Invalidate();
+}
+
 // OFFSET: 0x00950840
 // FUNCTION: fn_12944
 int UINoteWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) {
@@ -81,22 +93,10 @@ int UINoteWnd::SendMsg(UIWindow* sender, int message, std::intptr_t argument1, s
       g_windowMgr.CloseWindow(this->geometry.id);
     }
     break;
-  case UM_SETINFO: {
-    {
-      UINoteWnd_Scroll* scroll = this->m_scroll;
-      const std::string text = LookupMessage(static_cast<int>(argument1));
-      scroll->m_text = new UIStaticText_LF(0);
-      scroll->m_text->SetSize(scroll->geometry.width - 13, 12);
-      scroll->m_text->Move(0, 0);
-      scroll->m_text->SetText(text);
-      scroll->AddScrollChild(scroll->m_text);
-      scroll->horizontalBar->Show(0);
-      scroll->scrollBar->Show(0);
-      scroll->Invalidate();
-    }
+  case UM_SETINFO:
+    this->m_scroll->SetNote(LookupMessage(static_cast<int>(argument1)));
     this->Invalidate();
     break;
-  }
   }
 
   return UIWindow::SendMsg(sender, message, argument1, argument2, argument3, argument4);
