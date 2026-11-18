@@ -99,6 +99,7 @@ public:
 
   void AddChild(UIWindow* child);
   void AddChildFront(UIWindow* child);
+  void Destroy();
   void DeleteChildren();
   void ClearChildren(bool destroy);
   void RemoveChild(UIWindow* child, unsigned char destroy);

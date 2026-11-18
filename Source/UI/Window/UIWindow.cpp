@@ -220,13 +220,21 @@ UIWindow::UIWindow(unsigned char cached)
   this->m_cached = cached;
 }
 
+// OFFSET: 0x00A7B6E0
+// FUNCTION: fn_45747
+__forceinline void UIWindow::Destroy() {
+  this->OnDestroy();
+  if (this->geometry.surface) {
+    delete this->geometry.surface;
+    this->geometry.surface = nullptr;
+  }
+  this->DeleteChildren();
+}
+
 // OFFSET: 0x00A79E90
 // FUNCTION: fn_16917
 UIWindow::~UIWindow() {
-  this->OnDestroy();
-  delete this->geometry.surface;
-  this->geometry.surface = nullptr;
-  this->DeleteChildren();
+  this->Destroy();
   g_windowMgr.UnregisterWindow(this);
   g_windowMgr.ForgetWindowReferences(this);
 }
