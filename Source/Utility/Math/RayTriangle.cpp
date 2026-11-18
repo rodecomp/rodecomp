@@ -1,6 +1,6 @@
 #include "Utility/Math/RayTriangle.h"
 
-#include <bit>
+#include "Render/Projection/RenderProjection.h"
 
 // OFFSET: 0x00554060
 // FUNCTION: fn_02020
@@ -27,13 +27,14 @@ int IntersectRayTriangle(const float* ray, const float* first, const float* seco
     return false;
   }
 
-  const float inverse = 1.0f / determinant;
+  const float unit = g_projectionDepthNumerator;
+  const float inverse = unit / determinant;
   tvec[0] = ray[0] - first[0];
   tvec[1] = ray[1] - first[1];
   tvec[2] = ray[2] - first[2];
 
   u = (tvec[1] * pvec[1] + tvec[0] * pvec[0] + tvec[2] * pvec[2]) * inverse;
-  if (u < 0.0f || u > 1.0f) {
+  if (u < 0.0f || u > unit) {
     return false;
   }
 
@@ -42,7 +43,7 @@ int IntersectRayTriangle(const float* ray, const float* first, const float* seco
   qvec[2] = tvec[0] * edge1[1] - tvec[1] * edge1[0];
 
   v = (qvec[1] * ray[4] + qvec[0] * ray[3] + qvec[2] * ray[5]) * inverse;
-  if (v < 0.0f || u + v > 1.0f) {
+  if (v < 0.0f || v + u > unit) {
     return false;
   }
 
