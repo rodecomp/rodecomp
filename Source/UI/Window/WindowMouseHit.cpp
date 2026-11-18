@@ -28,6 +28,8 @@
 
 #include <algorithm>
 
+template __declspec(noinline) std::_List_node<UIWindow*, void*>* std::list<UIWindow*>::_Emplace<UIWindow* const&>(std::_List_node<UIWindow*, void*>* const, UIWindow* const&);
+
 // INLINED
 static MessengerMember PartyMember(UIMiniPartyWnd* window) {
   return window->m_member;
