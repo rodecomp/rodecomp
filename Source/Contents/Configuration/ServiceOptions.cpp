@@ -526,9 +526,9 @@ bool GameSettings::ReadOptionTable() {
     return false;
   }
 
-  this->options.resize(lua_objlen(state, -1));
-  lua_pushnil(state);
-  while (lua_next(state, -2)) {
+  const size_t count = lua_objlen(state, -1);
+  this->options.resize(count);
+  for (lua_pushnil(state); lua_next(state, -2); lua_pop(state, 1)) {
     GameSettingsOption option;
     const int index = lua_tointeger(state, -2);
 
@@ -621,11 +621,13 @@ bool GameSettings::ReadOptionTable() {
     lua_pop(state, 1);
 
     this->options[index - 1] = std::move(option);
-    lua_pop(state, 1);
   }
 
   lua_pop(state, 1);
-  return lua_gettop(state) == 0;
+  if (lua_gettop(state) != 0) {
+    return false;
+  }
+  return true;
 }
 
 // OFFSET: 0x006C2610

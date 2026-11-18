@@ -22,7 +22,6 @@ struct GameSettingsOption {
   /* 003C */ int tipBoxId = 0;
   /* 0040 */ std::string description;
   /* 0058 */ bool defaultValue;
-  /* 0059 */ unsigned char padding_0059[3];
   /* 005C */ int enabledMessage = 4698;
   /* 0060 */ int disabledMessage = 4698;
 };
