@@ -2287,8 +2287,6 @@ int CSession::GetWeightPercent() const {
   return 0;
 }
 
-// OFFSET: 0x00E31C80
-
 // OFFSET: 0x00E31DE0
 // FUNCTION: fn_24177
 bool CSession::IsRequestReady(int requestId) {
