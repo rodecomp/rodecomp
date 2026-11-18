@@ -48,18 +48,11 @@ RenderCommand::RenderCommand()
 RenderPrimitive::RenderPrimitive() : RenderCommand() {
   this->vertices = this->quad;
   this->vertexCount = 4;
-  this->primitiveType = D3DPT_TRIANGLESTRIP;
 
   for (RenderVertex& vertex : this->quad) {
-    vertex.x = 0;
-    vertex.y = 0;
-    vertex.z = 0;
-    vertex.rhw = 0;
-    vertex.diffuse = 0;
-    vertex.specular = 0xFF000000;
-    vertex.u = 0;
-    vertex.v = 0;
+    vertex.Reset();
   }
+  this->primitiveType = D3DPT_TRIANGLESTRIP;
 }
 
 // OFFSET: 0x00569120
