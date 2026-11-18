@@ -437,7 +437,8 @@ int UIChangeMaterialWnd::SendMsg(
 
       if (entry->results.size() > 1) {
         int total = 0;
-        for (const MaterialResult& result : entry->results) {
+        for (auto resultIt = entry->results.begin(); resultIt != entry->results.end(); ++resultIt) {
+          const MaterialResult& result = *resultIt;
           total += result.amount;
         }
         this->m_resultAmount = total > 1000 ? total : 1000;
