@@ -178,17 +178,20 @@ void UIGuildPositionManageWnd::Invalidate() {
   g_windowMgr.SetFocus(nullptr);
 }
 
+// OFFSET: 0x00957800
+int UIGuildMemberManageWnd::MemberIndexAt(int x, int y) {
+  if (x >= 5 && x <= 382 && y >= 66 && y <= 283) {
+    const int index = (y - 66) / (this->m_rowSpacing + 36) + this->m_columns * this->m_scrollTop;
+    return index >= this->m_members.size() ? -1 : index;
+  }
+  return -1;
+}
+
 // OFFSET: 0x009603C0
 // FUNCTION: fn_13103
 void UIGuildMemberManageWnd::OnRBtnDown(int x, int y) {
   const int previous = this->m_hoverRow;
-  int row;
-  if (x >= 5 && x <= 382 && y >= 66 && y <= 283) {
-    const int index = (y - 66) / (this->m_rowSpacing + 36) + this->m_columns * this->m_scrollTop;
-    row = index >= this->m_members.size() ? -1 : index;
-  } else {
-    row = -1;
-  }
+  const int row = this->MemberIndexAt(x, y);
 
   this->m_hoverRow = row;
   if (previous != row) {
@@ -720,12 +723,8 @@ void UIGuildBanishedMemberWnd::UpdateScroll() {
   this->m_scrollBar->Invalidate();
 }
 
-// OFFSET: 0x0095FBF0
-// FUNCTION: fn_13083
-void UIGuildBanishedMemberWnd::OnLBtnDown(int x, int y) {
-  UIGuildWnd::OnLBtnDown(x, y);
-  const int previous = this->m_hoverRow;
-  int hover = -1;
+// OFFSET: 0x00957760
+int UIGuildBanishedMemberWnd::MemberIndexAt(int x, int y) {
   if (x <= this->geometry.width - 14 && x >= 4 && y >= g_guildBanishedRowHeight + 46 && y < (this->m_visibleRows + 1) * g_guildBanishedRowHeight + 46) {
     const int row = (y - g_guildBanishedRowHeight - 46) / g_guildBanishedRowHeight;
     int visible = 0;
@@ -734,13 +733,21 @@ void UIGuildBanishedMemberWnd::OnLBtnDown(int x, int y) {
     for (auto member = members.begin(); member != members.end(); ++member, ++index) {
       if (index >= this->m_scrollTop * this->m_columns) {
         if (visible == this->m_columns * row) {
-          hover = index;
-          break;
+          return index;
         }
         ++visible;
       }
     }
   }
+  return -1;
+}
+
+// OFFSET: 0x0095FBF0
+// FUNCTION: fn_13083
+void UIGuildBanishedMemberWnd::OnLBtnDown(int x, int y) {
+  UIGuildWnd::OnLBtnDown(x, y);
+  const int previous = this->m_hoverRow;
+  const int hover = this->MemberIndexAt(x, y);
 
   this->m_hoverRow = hover;
   if (previous != hover) {
@@ -819,12 +826,8 @@ void UIGuildTotalInfoWnd::UpdateScroll() {
   this->m_scrollBar->Invalidate();
 }
 
-// OFFSET: 0x0095FF60
-// FUNCTION: fn_13090
-void UIGuildTotalInfoWnd::OnLBtnDown(int x, int y) {
-  UIGuildWnd::OnLBtnDown(x, y);
-  const int previous = this->m_hoverRow;
-  int hover = -1;
+// OFFSET: 0x00957970
+int UIGuildTotalInfoWnd::GuildIndexAt(int x, int y) {
   if (x <= this->geometry.width - 14 && x >= 4 && y >= g_guildTotalInfoRowHeight + 46 && y < (this->m_visibleRows + 1) * g_guildTotalInfoRowHeight + 46) {
     const int row = (y - g_guildTotalInfoRowHeight - 46) / g_guildTotalInfoRowHeight;
     int visible = 0;
@@ -833,13 +836,21 @@ void UIGuildTotalInfoWnd::OnLBtnDown(int x, int y) {
     for (auto entry = entries.begin(); entry != entries.end(); ++entry, ++index) {
       if (index >= this->m_scrollTop * this->m_columns) {
         if (visible == this->m_columns * row) {
-          hover = index;
-          break;
+          return index;
         }
         ++visible;
       }
     }
   }
+  return -1;
+}
+
+// OFFSET: 0x0095FF60
+// FUNCTION: fn_13090
+void UIGuildTotalInfoWnd::OnLBtnDown(int x, int y) {
+  UIGuildWnd::OnLBtnDown(x, y);
+  const int previous = this->m_hoverRow;
+  const int hover = this->GuildIndexAt(x, y);
 
   this->m_hoverRow = hover;
   if (previous != hover) {
@@ -1260,13 +1271,7 @@ void UIGuildMemberManageWnd::OnLBtnDown(int x, int y) {
   }
 
   const int previous = this->m_hoverRow;
-  int row;
-  if (x >= 5 && x <= 382 && y >= 66 && y <= 283) {
-    const int index = (y - 66) / (this->m_rowSpacing + 36) + this->m_columns * this->m_scrollTop;
-    row = index >= this->m_members.size() ? -1 : index;
-  } else {
-    row = -1;
-  }
+  const int row = this->MemberIndexAt(x, y);
 
   this->m_hoverRow = row;
   if (previous != row) {
@@ -1480,6 +1485,18 @@ void UIGuildPositionManageWnd::Paint() {
   }
 }
 
+// OFFSET: 0x00956850
+void UIGuildInfoManageWnd::DrawEmblem() {
+  unsigned red, green, blue;
+  g_skinInfo.PaletteChannels(6, 2, red, green, blue);
+  this->FillRegion(299, 64, 26, 26, RGB(red, green, blue));
+  const std::string emblemName = g_guildMgr->GetEmblemFilename(this->m_guildId);
+  CEmblemRes* emblem = static_cast<CEmblemRes*>(ResourceMgr::Instance().Load(emblemName));
+  if (emblem) {
+    this->DrawBitmap(300, 65, &emblem->gif, true);
+  }
+}
+
 // OFFSET: 0x0095DB80
 // FUNCTION: fn_13072
 void UIGuildInfoManageWnd::Paint() {
@@ -1527,16 +1544,7 @@ void UIGuildInfoManageWnd::Paint() {
   std::sprintf(text, "%s", LookupMessage(MSI_HOSTILITY_GUILD));
   this->DrawTextAt(200, 213, text, 0, 0, 12, 0, 0, 0);
 
-  unsigned red, green, blue;
-  g_skinInfo.PaletteChannels(6, 2, red, green, blue);
-  this->FillRegion(299, 64, 26, 26, RGB(red, green, blue));
-  {
-    const std::string emblemName = g_guildMgr->GetEmblemFilename(this->m_guildId);
-    CEmblemRes* emblem = static_cast<CEmblemRes*>(ResourceMgr::Instance().Load(emblemName));
-    if (emblem) {
-      this->DrawBitmap(300, 65, &emblem->gif, true);
-    }
-  }
+  this->DrawEmblem();
 
   unsigned boxRed, boxGreen, boxBlue;
   g_skinInfo.PaletteChannels(14, 6, boxRed, boxGreen, boxBlue);
@@ -2985,6 +2993,16 @@ void UIGuildPositionManageWnd::OnCreate(int, int) {
   this->UpdateScroll();
 }
 
+// OFFSET: 0x009611B0
+// FUNCTION: fn_45692
+void UIGuildInfoManageWnd::RefreshEmblemFiles() {
+  this->emblemFiles.clear();
+  char directory[256];
+  std::sprintf(directory, "%s\\emblem\\", g_applicationDirectory);
+  EnumerateFileNames(this->emblemFiles, directory, "*.bmp");
+  EnumerateFileNames(this->emblemFiles, directory, "*.gif");
+}
+
 // OFFSET: 0x00961880
 // FUNCTION: fn_13127
 int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a1, std::intptr_t a2, std::intptr_t a3, std::intptr_t a4) {
@@ -3075,11 +3093,7 @@ int UIGuildInfoManageWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
       if (g_windowMgr.comboBoxWnd != 0) {
         g_windowMgr.CloseWindow(WID_COMBOBOXWND);
       }
-      this->emblemFiles.clear();
-      char directory[256];
-      std::sprintf(directory, "%s\\emblem\\", g_applicationDirectory);
-      EnumerateFileNames(this->emblemFiles, directory, "*.bmp");
-      EnumerateFileNames(this->emblemFiles, directory, "*.gif");
+      this->RefreshEmblemFiles();
       const int count = static_cast<int>(this->emblemFiles.size());
       if (count == 0) {
         g_windowMgr.Confirm(LookupMessage(MSI_EMBLEM_CHANGE), 0, true, false, 0, "Caution", 280, 120, 0);

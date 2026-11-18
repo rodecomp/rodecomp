@@ -75,6 +75,8 @@ public:
   void UpdateScroll();
 
 protected:
+  int MemberIndexAt(int x, int y);
+
   /* 00D0 */ UIStaticText* m_names[11];
   /* 00FC */ UIStaticText* m_reasons[11];
   /* 0128 */ UIScrollBar* m_scrollBar;
@@ -98,6 +100,9 @@ public:
   int SendMsg(UIWindow* sender, int message, std::intptr_t argument1, std::intptr_t argument2, std::intptr_t argument3, std::intptr_t argument4) override;
 
 protected:
+  void DrawEmblem();
+  void RefreshEmblemFiles();
+
   void RefreshAgitList();
   void HideAgitMenu();
 
@@ -129,6 +134,8 @@ public:
   void UpdateScroll();
 
 protected:
+  int MemberIndexAt(int x, int y);
+
   bool DrawMember(GuildInfo::Member& member, int& index, int row);
   bool GetMember(int index, GuildInfo::Member& member);
   void SortMembers(int column);
@@ -257,6 +264,8 @@ public:
   void UpdateScroll();
 
 protected:
+  int GuildIndexAt(int x, int y);
+
   /* 00D0 */ UIStaticText* m_rows[12];
   /* 0100 */ UIScrollBar* m_scrollBar;
   /* 0104 */ int m_scrollTop;
