@@ -1822,7 +1822,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
     }
     case MM_REQ_ITEMCOMPOSITION: {
       const PACKET_CZ_REQ_ITEMCOMPOSITION packet{
-        ID_CZ_REQ_ITEMCOMPOSITION, static_cast<std::uint16_t>(argument1), static_cast<std::uint16_t>(argument2)
+        ID_CZ_REQ_ITEMCOMPOSITION, static_cast<std::uint16_t>(argument2), static_cast<std::uint16_t>(argument1)
       };
       GetRagConnection().Send(GetRagConnection().GetPacketSize(packet.packetType), &packet);
       return 0;
