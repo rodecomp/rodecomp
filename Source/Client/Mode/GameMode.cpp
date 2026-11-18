@@ -4075,15 +4075,15 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         return 0;
       }
       if (this->scene->player->render.state == 6 &&
-          (item.GetItemId() == 0x259 || item.GetItemId() == 0x25A || item.GetItemId() == 0x263 ||
-           item.GetItemId() == 0x25D || item.GetItemId() == 0x25E || item.GetItemId() == 0x5813)) {
+          (item.GetItemId() == Wing_Of_Fly || item.GetItemId() == Wing_Of_Butterfly || item.GetItemId() == Spectacles ||
+           item.GetItemId() == Anodyne || item.GetItemId() == Aloebera || item.GetItemId() == Anodyne_B)) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANT_USE_WHEN_SITDOWN)), 0xFF, 0, 0, 0);
         return 0;
       }
       if (Singleton<CSelectPackageItemMgr>::GetInstance()->OpenItem(argument1)) {
         return 0;
       }
-      if (item.GetItemId() == 0x19295) {
+      if (item.GetItemId() == Change_Gender_Card) {
         if (g_session.IsPlayerPerformerJob(g_session.m_job)) {
           g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_GENDER_CHANGE_FAILED_CAUSE_JOB)), 0xFF, 0, 0, 0);
           return 0;
@@ -4628,7 +4628,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
       }
       if (this->scene->player->render.state == 6) {
         const int itemId = item.GetItemId();
-        if (itemId == 0x259 || itemId == 0x25A || itemId == 0x263 || itemId == 0x25D || itemId == 0x25E || itemId == 0x5813) {
+        if (itemId == Wing_Of_Fly || itemId == Wing_Of_Butterfly || itemId == Spectacles || itemId == Anodyne || itemId == Aloebera || itemId == Anodyne_B) {
           g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_CANT_USE_WHEN_SITDOWN)), 0xFF, 0, 0, 0);
           return 0;
         }

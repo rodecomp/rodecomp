@@ -122,7 +122,12 @@ enum item_itemid : int {
   Lovely_Choco_Tart = 597,
   Light_Red_Pot = 598,
   Light_Orange_Pot = 599,
+  Wing_Of_Fly = 601,
+  Wing_Of_Butterfly = 602,
+  Anodyne = 605,
+  Aloebera = 606,
   Yggdrasilberry = 607,
+  Spectacles = 611,
   Center_Potion = 645,
   Awakening_Potion = 656,
   Berserk_Potion = 657,
@@ -247,6 +252,8 @@ enum item_itemid : int {
   Lucky_Cookie_B = 11575,
   Lucky_Candy_Cane_B = 11576,
   Lucky_Candy_B = 11579,
+  Anodyne_B = 22547,
+  Change_Gender_Card = 103061,
 };
 
 #endif

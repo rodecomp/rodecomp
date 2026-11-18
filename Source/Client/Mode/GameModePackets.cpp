@@ -6,6 +6,7 @@
 #include "Contents/Actors/ActorEnums.h"
 #include "Contents/CombatTypes.h"
 #include "Contents/Effects/Core/EffectTypes.h"
+#include "Contents/Items/ItemId.h"
 #include "Contents/Items/ItemType.h"
 #include "Contents/Skills/SkillId.h"
 #include "Contents/Skills/SkillUnitId.h"
@@ -26501,7 +26502,7 @@ void CGameMode::ProcessIncomingPackets() {
             }
           }
         } else {
-          if (packet->itemId != 103061) {
+          if (packet->itemId != Change_Gender_Card) {
             break;
           }
           g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_USE_ITEM_FAILED)), 0xFF, 0, 0, 0);
