@@ -19,6 +19,8 @@ public:
   void Create(int width, int height);
 
 protected:
+  void SelectQuestAt(int x, int y);
+
   /* 007C */ unsigned int selectedQuestId;
   /* 0080 */ int m_selectedIndex;
   /* 0084 */ std::vector<MiniPartyInfoEntry> m_menuItems;

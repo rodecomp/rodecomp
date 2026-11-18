@@ -157,10 +157,9 @@ void UIQuestDisplay::Paint() {
   }
 }
 
-// OFFSET: 0x0094F1D0
-// FUNCTION: fn_12934
-void UIQuestDisplay::OnRBtnUp(int x, int y) {
-  const int previous = this->m_selectedIndex;
+// OFFSET: 0x00949AB0
+// FUNCTION: fn_45700
+__forceinline void UIQuestDisplay::SelectQuestAt(int x, int y) {
   int selected = -1;
   int single = 0;
   int none = 0;
@@ -193,6 +192,13 @@ void UIQuestDisplay::OnRBtnUp(int x, int y) {
   }
 
   this->m_selectedIndex = selected;
+}
+
+// OFFSET: 0x0094F1D0
+// FUNCTION: fn_12934
+void UIQuestDisplay::OnRBtnUp(int x, int y) {
+  const int previous = this->m_selectedIndex;
+  this->SelectQuestAt(x, y);
   if (previous != this->m_selectedIndex) {
     this->Invalidate();
   }
