@@ -50,6 +50,23 @@ const std::string s_chatItemLinkOpening = "<ITEML>";
 // GLOBAL: gl_25450
 static const std::string s_itemLinkClosing = "</ITEML>";
 
+// OFFSET: 0x00940D80
+// FUNCTION: fn_45679
+void UINewChatWnd::SetStickOn(unsigned char enabled) {
+  g_windowMgr.chatWndStickOn = enabled;
+  if (enabled) {
+    this->m_currentTab = 0;
+    if (this->m_savedRowCount == 0) {
+      this->m_savedRowCount = 1;
+    }
+    this->ResizeRows(this->m_savedRowCount);
+  } else {
+    this->m_savedRowCount = this->geometry.state;
+    this->ResizeRows(0);
+  }
+  this->Invalidate();
+}
+
 // OFFSET: 0x00936360
 // FUNCTION: fn_12750
 int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) {
@@ -391,13 +408,7 @@ int UINewChatWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std::i
       g_windowMgr.SelectWhisperName(reinterpret_cast<const char*>(b));
       return 0;
     case ID_STICK_ON:
-      g_windowMgr.chatWndStickOn = 1;
-      this->m_currentTab = 0;
-      if (this->m_savedRowCount == 0) {
-        this->m_savedRowCount = 1;
-      }
-      this->ResizeRows(this->m_savedRowCount);
-      this->Invalidate();
+      this->SetStickOn(1);
       return 0;
     case ID_STICK_OFF:
       this->SendMsg(this, UM_DETACH_CHAT_TAB, this->m_currentTab, 0, 0, 0);

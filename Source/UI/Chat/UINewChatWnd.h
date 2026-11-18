@@ -41,6 +41,7 @@ public:
   void ApplyInputLayout();
   void ApplyHeaderLayout();
   void ResizeRows(int count);
+  void SetStickOn(unsigned char enabled);
   void ToggleInput();
 
   /* 00B4 */ UIEditCtrl* m_inputEdit;
