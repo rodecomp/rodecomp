@@ -282,10 +282,9 @@ void CTextureDX7::Upload(int x, int y, int width, int height, const std::uint32_
     return;
   }
 
-  auto* output = static_cast<unsigned char*>(description.lpSurface);
-
   switch (this->m_format) {
-  case TextureFormat::A1R5G5B5:
+  case TextureFormat::A1R5G5B5: {
+    auto* output = static_cast<unsigned char*>(description.lpSurface);
     for (int row = 0; row < rows; ++row) {
       for (int column = 0; column < columns; ++column) {
         const std::uint32_t color = pixels[column * stepX];
@@ -307,7 +306,9 @@ void CTextureDX7::Upload(int x, int y, int width, int height, const std::uint32_
       pixels += static_cast<unsigned>(stepY) * stride;
     }
     break;
-  case TextureFormat::A4R4G4B4:
+  }
+  case TextureFormat::A4R4G4B4: {
+    auto* output = static_cast<unsigned char*>(description.lpSurface);
     for (int row = 0; row < rows; ++row) {
       for (int column = 0; column < columns; ++column) {
         const std::uint32_t color = pixels[column * stepX];
@@ -329,7 +330,9 @@ void CTextureDX7::Upload(int x, int y, int width, int height, const std::uint32_
       pixels += static_cast<unsigned>(stepY) * stride;
     }
     break;
-  case TextureFormat::R5G6B5:
+  }
+  case TextureFormat::R5G6B5: {
+    auto* output = static_cast<unsigned char*>(description.lpSurface);
     for (int row = 0; row < rows; ++row) {
       for (int column = 0; column < columns; ++column) {
         const std::uint32_t color = pixels[column * stepX];
@@ -345,7 +348,9 @@ void CTextureDX7::Upload(int x, int y, int width, int height, const std::uint32_
       pixels += static_cast<unsigned>(stepY) * stride;
     }
     break;
-  case TextureFormat::A8R8G8B8:
+  }
+  case TextureFormat::A8R8G8B8: {
+    auto* output = static_cast<unsigned char*>(description.lpSurface);
     for (int row = 0; row < rows; ++row) {
       for (int column = 0; column < columns; ++column) {
         const std::uint32_t color = transparent && !pixels[column * stepX] ? 0 : pixels[column * stepX];
@@ -356,6 +361,7 @@ void CTextureDX7::Upload(int x, int y, int width, int height, const std::uint32_
       pixels += static_cast<unsigned>(stepY) * stride;
     }
     break;
+  }
   }
 
   this->m_surface->Unlock(nullptr);
