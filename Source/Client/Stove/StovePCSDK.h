@@ -45,7 +45,7 @@ namespace Stove::PCSDK {
       void SetEnvironment(const wchar_t* environment);
       void SetApplicationKey(const wchar_t* applicationKey);
 
-      /* 0000 */ std::uint8_t padding_0000[36];
+      /* 0000 */ void* padding_0000[3];
     };
 
     struct __declspec(dllimport) StovePCUser {

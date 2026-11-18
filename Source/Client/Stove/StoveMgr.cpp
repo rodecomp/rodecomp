@@ -103,7 +103,11 @@ void CStoveMgr::RunCallback() {
 void CStoveMgr::FetchCategoryProducts() {
   g_session.ClearInventoryCategoryItems(9);
   Stove::PCSDK::IAP::StovePCFetchProductParam param;
-  param.SetCategoryId(this->m_environment == 2 ? g_stoveCategoryIdA : g_stoveCategoryIdB);
+  if (this->m_environment == 2) {
+    param.SetCategoryId(g_stoveCategoryIdA);
+  } else {
+    param.SetCategoryId(g_stoveCategoryIdB);
+  }
   param.SetPageNumber(1);
   param.SetPageSize(0x7FFFFFFF);
   IAP_FetchProducts(&param, OnStoveCategoryProductsFetched);
@@ -229,9 +233,7 @@ void ShutdownCallback::operator()(Stove::PCSDK::CallbackResult callbackResult, S
     std::string message =
         EncodeText(CP_ACP, std::wstring(reinterpret_cast<const Stove::PCSDK::Base::StovePCLogEvent&>(shutdown).GetCategory1()));
     if (reinterpret_cast<const Stove::PCSDK::Base::StovePCToken&>(shutdown).GetAccessToken() == nullptr) {
-      constexpr auto captionSourceText = OBFUSCATE_SOURCE("메시지", 0x91E147EBBD47C39FULL);
-      const auto& captionSource = captionSourceText.data;
-      const char* caption = OBFUSCATE_DECRYPT(0x91E147EBBD47C39FULL, captionSource);
+      const char* caption = OBFUSCATE_TEXT("메시지", 0x91E147EBBD47C39FULL);
       MessageBoxA(hWnd, message.c_str(), caption, MB_OK);
       g_modeMgr.currentMode->SendMsg(MM_QUIT, 0, 0, 0, 0);
     } else if (g_modeMgr.state == 0) {
@@ -240,7 +242,7 @@ void ShutdownCallback::operator()(Stove::PCSDK::CallbackResult callbackResult, S
       UIBroadcastBalloon* balloonWindow = g_modeMgr.GetGameMode()->EnsureBroadcastBalloon();
       if (balloonWindow != nullptr) {
         BroadcastBalloonMessage balloon;
-        balloon.lines.push_back(BroadcastBalloonLine{message, 0x62B0FF, 0});
+        balloon.lines.emplace_back(message, 0x62B0FF, 0);
         balloonWindow->AddMessage(0, balloon);
       }
       g_windowMgr.SendNotice(UIM_OPENCHATWND, 0, 0, 0, 0, 0);
@@ -248,9 +250,7 @@ void ShutdownCallback::operator()(Stove::PCSDK::CallbackResult callbackResult, S
       g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY2, reinterpret_cast<std::intptr_t>(message.c_str()), 0x62B0FF, 0, 0, 0);
     }
   } else {
-    constexpr auto captionSourceText = OBFUSCATE_SOURCE("메시지", 0xA1A55B4D1597EDD3ULL);
-    const auto& captionSource = captionSourceText.data;
-    const char* caption = OBFUSCATE_DECRYPT(0xA1A55B4D1597EDD3ULL, captionSource);
+    const char* caption = OBFUSCATE_TEXT("메시지", 0xA1A55B4D1597EDD3ULL);
     MessageBoxA(hWnd, FormatOwnedString(TokenCallbackFailureMessage()().Text()).c_str(), caption, MB_OK);
     PostQuitMessage(0);
   }
@@ -352,11 +352,8 @@ void CategoryProductsCallback::operator()(Stove::PCSDK::CallbackResult callbackR
         } else if (std::strcmp(categoryId.c_str(), "44C71118750747D") == 0) {
           list = 8;
         } else {
-          const char captionSource[] = OBFUSCATE_SOURCE_CHARS(7, "메시지", 0xC52FB5FBB94FF917ULL);
-          const char* caption = OBFUSCATE_DECRYPT(0xC52FB5FBB94FF917ULL, captionSource);
-          constexpr std::array<char, 34> messageSource = OBFUSCATE_SOURCE("등록되지 않은 카테고리입니다 (%s)", 0x17359BF953C367B3ULL);
-          const char* message = OBFUSCATE_DECRYPT(0x17359BF953C367B3ULL, messageSource);
-          MessageBoxA(hWnd, FormatOwnedString(message, categoryId.c_str()).c_str(), caption, MB_OK);
+          const char* caption = OBFUSCATE_TEXT("메시지", 0xC52FB5FBB94FF917ULL);
+          MessageBoxA(hWnd, FormatOwnedString(OBFUSCATE_ARRAY_TEXT("등록되지 않은 카테고리입니다 (%s)", 0x17359BF953C367B3ULL, char), categoryId.c_str()).c_str(), caption, MB_OK);
           continue;
         }
       } else {
@@ -379,12 +376,8 @@ void CategoryProductsCallback::operator()(Stove::PCSDK::CallbackResult callbackR
         } else if (std::strcmp(categoryId.c_str(), "14A6891F90E24D7") == 0) {
           list = 8;
         } else {
-          constexpr auto captionSourceText = OBFUSCATE_SOURCE("메시지", 0x69FD1D9733D3CFC1ULL);
-          const auto& captionSource = captionSourceText.data;
-          const char* caption = OBFUSCATE_DECRYPT(0x69FD1D9733D3CFC1ULL, captionSource);
-          constexpr std::array<char, 34> messageSource = OBFUSCATE_SOURCE("등록되지 않은 카테고리입니다 (%s)", 0x93E7A3A1F587CDC5ULL);
-          const char* message = OBFUSCATE_DECRYPT(0x93E7A3A1F587CDC5ULL, messageSource);
-          MessageBoxA(hWnd, FormatOwnedString(message, categoryId.c_str()).c_str(), caption, MB_OK);
+          const char* caption = OBFUSCATE_TEXT("메시지", 0x69FD1D9733D3CFC1ULL);
+          MessageBoxA(hWnd, FormatOwnedString(OBFUSCATE_ARRAY_TEXT("등록되지 않은 카테고리입니다 (%s)", 0x93E7A3A1F587CDC5ULL, char), categoryId.c_str()).c_str(), caption, MB_OK);
           continue;
         }
       }
@@ -407,25 +400,27 @@ void CategoryProductsCallback::operator()(Stove::PCSDK::CallbackResult callbackR
       item.SetName(name);
       item.identified = 1;
       if (list == 8) {
-        if (product.GetPurchaseLimitCount() != 0 && product.GetSaleBeginDate() != 0 && product.GetSaleEndDate() != 0) {
-          item.bindOnEquip = 8;
-          const int guidQuantity = product.GetGuidQuantity();
-          item.saleData.purchaseCount = product.GetPurchaseLimitCount() - guidQuantity;
-          item.quantity = product.GetPurchaseLimitCount();
-          item.saleData.startTime = static_cast<__time32_t>(std::chrono::system_clock::to_time_t(std::chrono::system_clock::time_point(std::chrono::milliseconds(product.GetSaleBeginDate()))));
-          item.saleData.endTime = static_cast<__time32_t>(std::chrono::system_clock::to_time_t(std::chrono::system_clock::time_point(std::chrono::milliseconds(product.GetSaleEndDate()))));
-          g_session.AddInventoryCategoryItem(item, 9);
+        if (product.GetPurchaseLimitCount() == 0 || 0 == product.GetSaleBeginDate() || 0 == product.GetSaleEndDate()) {
+          continue;
         }
-      } else if (product.GetPurchaseLimitCount() == 0 && product.GetSaleBeginDate() == 0 && product.GetSaleEndDate() == 0) {
+        item.bindOnEquip = 8;
+        const int guidQuantity = product.GetGuidQuantity();
+        item.saleData.purchaseCount = product.GetPurchaseLimitCount() - guidQuantity;
+        item.quantity = product.GetPurchaseLimitCount();
+        item.saleData.startTime = static_cast<__time32_t>(std::chrono::system_clock::to_time_t(std::chrono::system_clock::time_point(std::chrono::milliseconds(product.GetSaleBeginDate()))));
+        item.saleData.endTime = static_cast<__time32_t>(std::chrono::system_clock::to_time_t(std::chrono::system_clock::time_point(std::chrono::milliseconds(product.GetSaleEndDate()))));
+        g_session.AddInventoryCategoryItem(item, 9);
+      } else {
+        if (product.GetPurchaseLimitCount() != 0 || 0 != product.GetSaleBeginDate() || 0 != product.GetSaleEndDate()) {
+          continue;
+        }
         item.bindOnEquip = static_cast<std::uint16_t>(list);
         g_session.AddInventoryCategoryItem(item, list);
       }
     }
   } else {
-    const char captionSource[] = OBFUSCATE_SOURCE_CHARS(7, "메시지", 0x8B65CD61012B5931ULL);
-    const char* caption = OBFUSCATE_DECRYPT(0x8B65CD61012B5931ULL, captionSource);
-    constexpr std::array<char, 56> messageSource = OBFUSCATE_SOURCE("장애가 발생 하였습니다. STOVE 고객센터로 문의 바랍니다.", 0xF5657D1F3DE5CDC7ULL);
-    const char* message = OBFUSCATE_DECRYPT(0xF5657D1F3DE5CDC7ULL, messageSource);
+    const char* caption = OBFUSCATE_TEXT("메시지", 0x8B65CD61012B5931ULL);
+    const char* message = OBFUSCATE_ARRAY_TEXT("장애가 발생 하였습니다. STOVE 고객센터로 문의 바랍니다.", 0xF5657D1F3DE5CDC7ULL, char);
     MessageBoxA(hWnd, FormatOwnedString(message).c_str(), caption, MB_OK);
   }
 }
@@ -510,9 +505,7 @@ bool CStoveMgr::Initialize() {
   }
 
   Stove::PCSDK::Base::StovePCInitializeParam param;
-  constexpr auto sandboxSourceText = OBFUSCATE_SOURCE("/stove_sandbox", 0x490FFB43A12F0DB9ULL);
-  const auto& sandboxSource = sandboxSourceText.data;
-  const char* sandbox = OBFUSCATE_DECRYPT(0x490FFB43A12F0DB9ULL, sandboxSource);
+  const char* sandbox = OBFUSCATE_TEXT("/stove_sandbox", 0x490FFB43A12F0DB9ULL);
   if (std::strstr(g_commandLine, sandbox) != nullptr) {
     this->m_environment = 1;
     param.SetEnvironment(L"SANDBOX");
@@ -520,9 +513,7 @@ bool CStoveMgr::Initialize() {
     param.SetApplicationKey(L"6b57af29764992a85cf793b01d4af15be6047715fd5f4687b23d0a1ba02337f5");
     this->m_applicationId = L"SB__SH_IPJVFX";
   } else {
-    constexpr auto liveSourceText = OBFUSCATE_SOURCE("/stove_live", 0x91651D81F559F971ULL);
-    const auto& liveSource = liveSourceText.data;
-    const char* live = OBFUSCATE_DECRYPT(0x91651D81F559F971ULL, liveSource);
+    const char* live = OBFUSCATE_TEXT("/stove_live", 0x91651D81F559F971ULL);
     if (std::strstr(g_commandLine, live) != nullptr) {
       this->m_environment = 2;
       param.SetEnvironment(L"LIVE");
@@ -532,15 +523,10 @@ bool CStoveMgr::Initialize() {
     }
   }
 
-  constexpr auto skipRestartSourceText = OBFUSCATE_SOURCE("/stove_cag_tool", 0x73D1674B61DF7B0BULL);
-  const auto& skipRestartSource = skipRestartSourceText.data;
-  const char* skipRestart = OBFUSCATE_DECRYPT(0x73D1674B61DF7B0BULL, skipRestartSource);
+  const char* skipRestart = OBFUSCATE_TEXT("/stove_cag_tool", 0x73D1674B61DF7B0BULL);
   if (std::strstr(g_commandLine, skipRestart) == nullptr && Base_RestartAppIfNecessary(&param) == true) {
-    constexpr auto captionSourceText = OBFUSCATE_SOURCE("메시지", 0x0F0F8B6B8F9D19D1ULL);
-    const auto& captionSource = captionSourceText.data;
-    const char* caption = OBFUSCATE_DECRYPT(0x0F0F8B6B8F9D19D1ULL, captionSource);
-    constexpr std::array<char, 38> messageSource = OBFUSCATE_SOURCE("Stove 클라이언트를 통해 실행해 주세요", 0xD98F03A52D35636DULL);
-    const char* message = OBFUSCATE_DECRYPT(0xD98F03A52D35636DULL, messageSource);
+    const char* caption = OBFUSCATE_TEXT("메시지", 0x0F0F8B6B8F9D19D1ULL);
+    const char* message = OBFUSCATE_ARRAY_TEXT("Stove 클라이언트를 통해 실행해 주세요", 0xD98F03A52D35636DULL, char);
     MessageBoxA(hWnd, FormatOwnedString(message).c_str(), caption, MB_OK);
     return false;
   }
@@ -555,11 +541,8 @@ bool CStoveMgr::Initialize() {
     return true;
   }
 
-  constexpr auto captionSourceText = OBFUSCATE_SOURCE("메시지", 0x812BE72BCD5707B7ULL);
-  const auto& captionSource = captionSourceText.data;
-  const char* caption = OBFUSCATE_DECRYPT(0x812BE72BCD5707B7ULL, captionSource);
-  constexpr std::array<char, 45> messageSource = OBFUSCATE_SOURCE("필수 사전 작업이 실패하여 게임을 종료합니다.", 0x59278F63D79F3DA1ULL);
-  const char* message = OBFUSCATE_DECRYPT(0x59278F63D79F3DA1ULL, messageSource);
+  const char* caption = OBFUSCATE_TEXT("메시지", 0x812BE72BCD5707B7ULL);
+  const char* message = OBFUSCATE_ARRAY_TEXT("필수 사전 작업이 실패하여 게임을 종료합니다.", 0x59278F63D79F3DA1ULL, char);
   MessageBoxA(hWnd, FormatOwnedString(message).c_str(), caption, MB_OK);
   return false;
 }
