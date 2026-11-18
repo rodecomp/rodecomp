@@ -62,7 +62,7 @@ UIMiniMapWnd::UIMiniMapWnd()
 // OFFSET: 0x0099B540
 // FUNCTION: fn_13554
 void UIMiniMapWnd::AddTownMarks() {
-  std::string mapName = g_modeMgr.GetGameMode()->mapName;
+  std::string mapName = g_modeMgr.GetGameMode()->MapName();
   this->marks[2].clear();
 
   for (int index = 0;; ++index) {
@@ -73,10 +73,9 @@ void UIMiniMapWnd::AddTownMarks() {
     }
 
     if (info.type == 8) {
-      MiniMapMark mark;
-      mark.y = static_cast<int>(this->originY - (static_cast<float>(info.y) * this->scale + 6.0f));
-      mark.x = static_cast<int>(static_cast<float>(info.x) * this->scale - 6.0f + this->originX);
-      this->marks[2].push_back(mark);
+      const int y = static_cast<int>(this->originY - (static_cast<float>(info.y) * this->scale + 6.0f));
+      const int x = static_cast<int>(static_cast<float>(info.x) * this->scale - 6.0f + this->originX);
+      this->marks[2].push_back(MiniMapMark{x, y});
     } else {
       UIBitmapButton* button = new UIBitmapButton();
       button->SetBitmap(info.image.c_str(), 0, 0);
