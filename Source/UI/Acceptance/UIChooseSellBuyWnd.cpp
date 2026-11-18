@@ -711,7 +711,7 @@ void UIMenuWnd::Paint() {
   const int count = static_cast<int>(this->m_items.size());
   for (int index = 0; index < count; ++index) {
     const std::string& item = this->m_items[index];
-    const bool separator = item == g_menuSeparator;
+    const bool separator = this->IsSeparator(index);
     int unique = 1;
     if (index != 0 && this->m_items[index - 1] == item) {
       unique = 0;
@@ -1739,23 +1739,7 @@ void UIItemIdentifyWnd::OnLBtnDown(int x, int y) {
   }
 
   const int previous = this->m_selected;
-  int selected = -1;
-
-  if (x <= this->geometry.width - 14 && x >= 4 && y >= 34 && y < this->m_rows * 32 + 34) {
-    const int row = (y - 34) / 32;
-    int visible = 0;
-    int index = 0;
-
-    for (auto it = this->m_items.begin(); it != this->m_items.end(); ++it, ++index) {
-      if (index >= this->m_scroll * this->m_columns) {
-        if (visible == this->m_columns * row) {
-          selected = index;
-          break;
-        }
-        ++visible;
-      }
-    }
-  }
+  const int selected = this->ItemAt(x, y);
 
   this->m_selected = selected;
   if (previous != selected) {
@@ -1981,7 +1965,7 @@ void UIItemCollection_ComparisonWnd::OnLBtnUp(int, int) {
 void UIMenuWnd::OnLBtnUp(int x, int y) {
   const int index = this->ItemAt(x, y);
   this->m_selected = index;
-  if (index == -1 || this->m_items[index] == g_menuSeparator) {
+  if (index == -1 || this->IsSeparator(index)) {
     return;
   }
 
@@ -1989,7 +1973,7 @@ void UIMenuWnd::OnLBtnUp(int x, int y) {
   const int last = count == 0 ? 0 : std::min(index, count - 1);
   int separators = 0;
   for (int i = 0; i < last; ++i) {
-    if (this->m_items[i] == g_menuSeparator) {
+    if (this->IsSeparator(i)) {
       ++separators;
     }
   }
@@ -2121,6 +2105,15 @@ int UIMenuWnd::ItemAt(int x, int y) {
   const unsigned index = row >= 0 ? row : 0;
   const unsigned last = static_cast<unsigned>(this->m_items.size()) - 1;
   return index <= last ? index : last;
+}
+
+// OFFSET: 0x008DA300
+int UIMenuWnd::IsSeparator(int index) {
+  int separator = 0;
+  if (this->m_items[index] == g_menuSeparator) {
+    separator = 1;
+  }
+  return separator;
 }
 
 // OFFSET: 0x008D9D00
@@ -7171,6 +7164,26 @@ __declspec(noinline) ITEM_INFO UIItemIdentifyWnd::GetItem(int index, int* found)
   *found = 0;
   ITEM_INFO empty(0);
   return empty;
+}
+
+// OFFSET: 0x008D7EA0
+int UIItemIdentifyWnd::ItemAt(int x, int y) {
+  if (x > this->geometry.width - 14 || x < 4 || y < 34 || y >= this->m_rows * 32 + 34) {
+    return -1;
+  }
+
+  const int row = (y - 34) / 32;
+  int visible = 0;
+  int index = 0;
+  for (std::list<ITEM_INFO>::iterator item = this->m_items.begin(); item != this->m_items.end(); ++item, ++index) {
+    if (index >= this->m_scroll * this->m_columns) {
+      if (visible == this->m_columns * row) {
+        return index;
+      }
+      ++visible;
+    }
+  }
+  return -1;
 }
 
 // OFFSET: 0x008D7F30

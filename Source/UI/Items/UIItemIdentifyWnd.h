@@ -38,6 +38,7 @@ public:
   void OnRBtnUp(int x, int y) override;
   void OnWheel(int delta) override;
   std::vector<unsigned char> GetReplayData() override;
+  int ItemAt(int x, int y);
   ITEM_INFO GetItem(int index, int* found);
   ITEM_INFO GetSelectedItem(int* found);
   int SendMsg(UIWindow* sender, int message, std::intptr_t a, std::intptr_t b, std::intptr_t c, std::intptr_t d) override;

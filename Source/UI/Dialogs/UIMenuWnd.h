@@ -28,6 +28,7 @@ public:
 
   void AddItem(const char* text, const std::uint32_t& color);
   int ItemAt(int x, int y);
+  int IsSeparator(int index);
 };
 
 extern const char* g_menuSeparator;
