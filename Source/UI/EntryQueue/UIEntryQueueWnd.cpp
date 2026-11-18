@@ -490,8 +490,7 @@ int UIEntryQueueWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std
         error = 0x86D;
       } else if (g_session.partyLeader == 0) {
         error = 0x86E;
-      } else if (static_cast<unsigned>(g_entryQueueMgr->current->minLevel) <
-                 static_cast<unsigned>(g_session.OnlinePartyCount())) {
+      } else if (EntryQueueInfo* current = g_entryQueueMgr->current; static_cast<unsigned>(current->minLevel) < static_cast<unsigned>(g_session.OnlinePartyCount())) {
         error = 0x86F;
       } else {
         if (this->ConfirmApply(LookupMessage(MSI_BATTLEFIELD_DOYOU_PALTY))) {
