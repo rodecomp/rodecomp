@@ -45,8 +45,8 @@ void CFuumaShouakuEffect::Open() {
 
   const float* target = this->sourcePosition;
   const float* origin = this->position;
-  const float dy = target[1] - origin[1];
   const float dx = target[0] - origin[0];
+  const float dy = target[1] - origin[1];
   const float dz = target[2] - origin[2];
   this->travelFrames = static_cast<int>(SquareRoot(dy * dy + dx * dx + dz * dz) * g_depthAverageHalf);
 
@@ -57,9 +57,12 @@ void CFuumaShouakuEffect::Open() {
   this->velocityY = velocityY;
   this->velocityZ = velocityZ;
   const float scale = 1.0f / SquareRoot(velocityX * velocityX + velocityY * velocityY + velocityZ * velocityZ);
-  this->velocityX = scale * this->velocityX * 2.0f;
-  this->velocityY = scale * this->velocityY * 2.0f;
-  this->velocityZ = scale * this->velocityZ * 2.0f;
+  this->velocityX = scale * this->velocityX;
+  this->velocityY = scale * this->velocityY;
+  this->velocityZ = scale * this->velocityZ;
+  this->velocityX *= 2.0f;
+  this->velocityY *= 2.0f;
+  this->velocityZ *= 2.0f;
 
   this->first->m_angle = ScreenAngle(origin, target, g_modeMgr.GetGameMode()->camera->frame.view.values);
 }
