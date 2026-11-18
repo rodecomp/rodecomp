@@ -13289,7 +13289,7 @@ void CRagEffect::StoneSpike() {
 void CRagEffect::WhiteSparkRing(char kind) {
   CopyVector(this->render.position, this->state.parent->render.position);
 
-  if (static_cast<unsigned>(this->state.stateCnt) >= 3) {
+  if (static_cast<unsigned>(this->state.stateCnt) > 2) {
     return;
   }
 
