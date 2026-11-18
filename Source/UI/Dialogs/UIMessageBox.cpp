@@ -2587,8 +2587,8 @@ void UILoginWnd::LoadLogin() {
     if (saveId != 0) {
       int shade;
       if (std::strcmp("", id) != 0 && std::strcmp(OBFUSCATE_STRING("ID", 0x83EFBFBB37EDBDBDULL).Text(), id) != 0) {
-        shade = 0;
         this->idPlaceholder = false;
+        shade = 0;
       } else {
         this->idPlaceholder = true;
         this->idEdit->SetText(OBFUSCATE_STRING("ID", 0xBF2B4B31397FF5A7ULL).Text());
