@@ -365,7 +365,7 @@ void UINameBalloonText::SetName(const CActorNameCard& info, bool stripHash, unsi
       name = FormatOwnedString("[%s] %s", info.title.c_str(), name.c_str());
     }
 
-    if (std::strlen(info.partyName.c_str()) == 0) {
+    if (info.partyName[0] == '\0') {
       this->m_lines.push_back(name.c_str());
     } else {
       char party[260];
