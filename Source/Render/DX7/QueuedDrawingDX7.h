@@ -8,7 +8,8 @@
 #include <cstddef>
 #include <d3d.h>
 
-// INLINED
+// OFFSET: 0x0055F8B0
+// FUNCTION: fn_45907
 inline void CRendererDX7::BindTexture(CTextureDX7* texture) {
   if (this->boundTexture != texture) {
     if (!texture) {
@@ -20,7 +21,8 @@ inline void CRendererDX7::BindTexture(CTextureDX7* texture) {
   }
 }
 
-// INLINED
+// OFFSET: 0x0055ED00
+// FUNCTION: fn_45906
 inline void CRendererDX7::BindLightmap(CTextureDX7* lightmap) {
   if (this->boundLightmap != lightmap) {
     if (!lightmap) {

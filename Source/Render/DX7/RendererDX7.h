@@ -59,9 +59,7 @@ public:
   void DrawTopmostQueue();
   void DrawBlendedQueue();
   void FlushRenderList();
-  // INLINED
   void BindTexture(CTextureDX7* texture);
-  // INLINED
   void BindLightmap(CTextureDX7* lightmap);
 };
 
