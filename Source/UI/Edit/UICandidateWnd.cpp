@@ -25,6 +25,18 @@ UICompositionWnd::UICompositionWnd() : UIFrameWnd(0) {}
 // FUNCTION: fn_13196
 UIKeyStrokeWnd::UIKeyStrokeWnd() : UIFrameWnd(0) {}
 
+// OFFSET: 0x0096D450
+// FUNCTION: fn_45705
+UICandidateWnd::~UICandidateWnd() = default;
+
+// OFFSET: 0x0096D4C0
+// FUNCTION: fn_45706
+UICompositionWnd::~UICompositionWnd() = default;
+
+// OFFSET: 0x0096D520
+// FUNCTION: fn_45707
+UIKeyStrokeWnd::~UIKeyStrokeWnd() = default;
+
 // OFFSET: 0x0096D6F0
 // FUNCTION: fn_13200
 void UICandidateWnd::OnCreate(int, int) {}
