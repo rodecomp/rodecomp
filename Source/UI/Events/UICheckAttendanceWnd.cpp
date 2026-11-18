@@ -180,9 +180,9 @@ void UICheckAttendanceWnd::Paint() {
   {
     std::string message;
     if (this->m_blinking == 1) {
-      message = FormatOwnedString(LookupMessage(MSI_CHECK_ATTENDANCE_CHECK_BEFORE), this->m_checkedDays + 1);
+      message = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_CHECK_ATTENDANCE_CHECK_BEFORE), this->m_checkedDays + 1));
     } else {
-      message = FormatOwnedString(LookupMessage(MSI_CHECK_ATTENDANCE_CHECK_AFTER), this->m_checkedDays);
+      message = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_CHECK_ATTENDANCE_CHECK_AFTER), this->m_checkedDays));
     }
 
     if (!message.empty()) {
