@@ -2736,8 +2736,7 @@ int UIItemCompositionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a
     if (a != 0) {
       ITEM_INFO item = g_session.LookupClientItemByIdentity(static_cast<std::uint32_t>(a));
       if (item.identity[1] != 0) {
-        const std::string name = item.DisplayName(0);
-        this->m_title = FormatOwnedString("%s (%s)", LookupMessage(MSI_ITEM_COMPOUNDING), name.c_str());
+        this->m_title = static_cast<const std::string&>(FormatOwnedString("%s (%s)", LookupMessage(MSI_ITEM_COMPOUNDING), item.DisplayName(0).c_str()));
       }
     }
     return 0;
