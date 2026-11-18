@@ -623,7 +623,7 @@ int ReadItemList(std::list<ITEM_INFO>& items, int offset, int size, const std::v
 
   std::vector<unsigned char> buffer(size, 0);
   std::memcpy(buffer.data(), data.data() + offset, size);
-  int end = offset + size;
+  offset += size;
   std::uint32_t consumed = 0;
   std::vector<unsigned char> remaining(buffer);
   while (consumed < buffer.size()) {
@@ -636,7 +636,7 @@ int ReadItemList(std::list<ITEM_INFO>& items, int offset, int size, const std::v
     }
   }
 
-  return end;
+  return offset;
 }
 
 // OFFSET: 0x00E49090
@@ -648,7 +648,7 @@ int ReadItemArray(ITEM_INFO* items, int offset, int size, const std::vector<unsi
 
   std::vector<unsigned char> buffer(size, 0);
   std::memcpy(buffer.data(), data.data() + offset, size);
-  int end = offset + size;
+  offset += size;
   std::uint32_t consumed = 0;
   ITEM_INFO item;
   std::vector<unsigned char> remaining(buffer);
@@ -662,7 +662,7 @@ int ReadItemArray(ITEM_INFO* items, int offset, int size, const std::vector<unsi
     std::memcpy(remaining.data(), buffer.data() + consumed, buffer.size() - consumed);
   }
 
-  return end;
+  return offset;
 }
 
 // OFFSET: 0x00DDA740
