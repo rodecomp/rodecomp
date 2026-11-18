@@ -665,11 +665,11 @@ namespace myGPack {
       table.insert(table.end(), name, name + std::strlen(name) + 1);
 
       PakEntryRecord record;
-      record.compressedSize = entry.compressedSize;
       record.alignedSize = entry.alignedSize;
+      record.compressedSize = entry.compressedSize;
       record.originalSize = entry.originalSize;
-      record.flags = entry.flags;
       record.dataOffset = entry.dataOffset;
+      record.flags = entry.flags;
       const auto* bytes = reinterpret_cast<const std::uint8_t*>(&record);
       table.insert(table.end(), bytes, bytes + sizeof(record));
     }
@@ -694,15 +694,16 @@ namespace myGPack {
       auxiliary = this->m_auxiliary;
     }
 
+    const std::uint32_t auxiliarySize = static_cast<std::uint32_t>(auxiliary.size());
     PakTableHeader header;
-    header.auxiliarySize = static_cast<std::uint32_t>(auxiliary.size());
+    header.auxiliarySize = auxiliarySize;
     header.compressedSize = compressedLength;
     header.originalSize = static_cast<std::uint32_t>(table.size());
 
-    const std::uint64_t offset = this->Allocate(header.auxiliarySize + compressedLength + sizeof(header));
+    const std::uint64_t offset = this->Allocate(auxiliarySize + compressedLength + sizeof(header));
 
     if (this->m_output.Write(offset, &header, sizeof(header)) && this->m_output.Write(offset + sizeof(header), compressed.data(), compressedLength) &&
-        this->m_output.Write(offset + compressedLength + sizeof(header), auxiliary.data(), header.auxiliarySize) &&
+        this->m_output.Write(offset + compressedLength + sizeof(header), auxiliary.data(), auxiliarySize) &&
         this->m_output.Write(0, "Event Horizon", 14)) {
       PakHeaderTable information;
       information.tableOffset = offset - kPakHeaderSize;
