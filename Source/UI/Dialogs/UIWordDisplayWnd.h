@@ -9,6 +9,7 @@
 class UIWordDisplayWnd : public UIFrameWnd {
 public:
   UIWordDisplayWnd();
+  __declspec(noinline) ~UIWordDisplayWnd() override;
   void OnCreate(int width, int height) override;
   void OnProcess() override;
   void Paint() override;

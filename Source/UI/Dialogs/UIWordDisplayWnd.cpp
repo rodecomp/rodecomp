@@ -9,6 +9,10 @@
 #include "Resource/Bitmap/TextureNames.h"
 #include "UI/Dialogs/UIWordDisplayWnd.h"
 
+// OFFSET: 0x00851FC0
+// FUNCTION: fn_45648
+UIWordDisplayWnd::~UIWordDisplayWnd() = default;
+
 // OFFSET: 0x0085B000
 // FUNCTION: fn_10791
 void UIWordDisplayWnd::OnCreate(int, int) {
