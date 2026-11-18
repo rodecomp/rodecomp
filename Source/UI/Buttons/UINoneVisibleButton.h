@@ -6,6 +6,7 @@
 class UINoneVisibleButton : public UIButton {
 public:
   UINoneVisibleButton();
+  __declspec(noinline) ~UINoneVisibleButton() override;
   void Paint() override;
 };
 
