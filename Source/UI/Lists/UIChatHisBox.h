@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 
+struct ITEM_INFO;
 class UIItemTagButton;
 class UINaviLinkButton;
 
@@ -57,6 +58,7 @@ public:
   void DecodeOptions(std::vector<std::int32_t>& options, const char* text, int& position, const int& length, const char& separator,
                      const char& recordSeparator);
   void DecodeItemLinkFields(const std::string& text, std::vector<std::int32_t>& fields);
+  bool ItemFromLinkFields(const std::vector<std::int32_t>& fields, ITEM_INFO& item);
 
   /* 00D4 */ std::list<std::vector<UIItemTagButton*>> itemTags;
 

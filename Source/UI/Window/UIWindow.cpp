@@ -466,7 +466,7 @@ bool UIWindow::Update(int redraw) {
       return false;
     }
 
-    std::list<RenderPrimitive*> primitives(this->m_primitives);
+    std::list<RenderCommand*> primitives(this->m_primitives);
 
     for (auto it = this->m_children.begin(); it != this->m_children.end(); ++it) {
       UIWindow* child = *it;

@@ -3519,13 +3519,13 @@ void CPlayer::ReapplySkillEffects() {
     case EFST_ANTI_M_BLAST:
       g_effectMgr->Retire(this->render.accountId, 0x470);
       if (g_effectMgr->HasAllocator(0x470) == true) {
-        g_effectMgr->Spawn(this->render.accountId, EF_RL_ANTI_MATERIAL_BLAST, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, EF_RL_ANTI_MATERIAL_BLAST, this->render.position, 0, -1, 0, 0);
       }
       break;
     case EFST_FLOWER_LEAF:
       g_effectMgr->Retire(this->render.accountId, 0x3F5);
       if (g_effectMgr->HasAllocator(0x3F5) == true) {
-        g_effectMgr->Spawn(this->render.accountId, EF_CHERRYBLOSSOM, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, EF_CHERRYBLOSSOM, this->render.position, 0, -1, 0, 0);
       }
       break;
     case EFST_DARKCROW:
@@ -3555,7 +3555,7 @@ void CPlayer::ReapplySkillEffects() {
     case EFST_SPRITEMABLE:
       g_effectMgr->Retire(this->render.accountId, 0x448);
       if (g_effectMgr->HasAllocator(0x448) == true) {
-        g_effectMgr->Spawn(this->render.accountId, EF_SPRITEMABLE, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, EF_SPRITEMABLE, this->render.position, 0, -1, 0, 0);
       }
       break;
     case EFST_SUHIDE:
@@ -3565,19 +3565,19 @@ void CPlayer::ReapplySkillEffects() {
     case EFST_TUNAPARTY:
       g_effectMgr->Retire(this->render.accountId, 0x449);
       if (g_effectMgr->HasAllocator(0x449) == true) {
-        g_effectMgr->Spawn(this->render.accountId, EF_TUNAPARTY, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, EF_TUNAPARTY, this->render.position, 0, -1, 0, 0);
       }
       break;
     case EFST_SV_ROOTTWIST:
       g_effectMgr->Retire(this->render.accountId, 0x456);
       if (g_effectMgr->HasAllocator(0x456) == true) {
-        g_effectMgr->Spawn(this->render.accountId, EF_SU_SV_ROOTTWIST, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, EF_SU_SV_ROOTTWIST, this->render.position, 0, -1, 0, 0);
       }
       break;
     case EFST_BITESCAR:
       g_effectMgr->Retire(this->render.accountId, 0x45F);
       if (g_effectMgr->HasAllocator(0x45F) == true) {
-        g_effectMgr->Spawn(this->render.accountId, EF_BITE_SCAR, this->render.position.x, this->render.position.y, this->render.position.z, 0, -1, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, EF_BITE_SCAR, this->render.position, 0, -1, 0, 0);
       }
       break;
     case EFST_SOULATTACK:
@@ -3707,7 +3707,7 @@ void CPlayer::ReapplySkillEffects() {
       break;
     case EFST_CLIMAX:
       if (!g_effectMgr->Has(this->render.accountId, 0x708)) {
-        g_effectMgr->Spawn(this->render.accountId, EF_CLIMAX, this->render.position.x, this->render.position.y, this->render.position.z, 0, value, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, EF_CLIMAX, this->render.position, 0, value, 0, 0);
       }
       break;
     case EFST_MEDIALE:
@@ -3717,7 +3717,7 @@ void CPlayer::ReapplySkillEffects() {
       break;
     case EFST_ABYSS_SLAYER:
       if (!g_effectMgr->Has(this->render.accountId, 0x84E)) {
-        g_effectMgr->Spawn(this->render.accountId, EF_ABYSS_SLAYER, this->render.position.x, this->render.position.y, this->render.position.z, 0, value, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, EF_ABYSS_SLAYER, this->render.position, 0, value, 0, 0);
       }
       break;
     case EFST_FIRST_FAITH_POWER:
@@ -3733,11 +3733,11 @@ void CPlayer::ReapplySkillEffects() {
       break;
     case EFST_D_MACHINE:
       if (!g_effectMgr->Has(this->render.accountId, 0x719)) {
-        g_effectMgr->Spawn(this->render.accountId, EF_NEW_D_MACHINE, this->render.position.x, this->render.position.y, this->render.position.z, 0, value, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, EF_NEW_D_MACHINE, this->render.position, 0, value, 0, 0);
       }
       break;
     case EFST_A_MACHINE:
-      g_effectMgr->Spawn(this->render.accountId, EF_A_MACHINE, this->render.position.x, this->render.position.y, this->render.position.z, 0, value, 0, 0);
+      g_effectMgr->Spawn(this->render.accountId, EF_A_MACHINE, this->render.position, 0, value, 0, 0);
       break;
     case EFST_COMPETENTIA:
       if (!g_serviceOptions.Get(TT_MIN_EFFECT_ON_OFF) && !g_effectMgr->Has(this->render.accountId, 0x73C)) {
@@ -3754,7 +3754,7 @@ void CPlayer::ReapplySkillEffects() {
       break;
     case EFST_E_SLASH_COUNT:
       if (!g_effectMgr->Has(this->render.accountId, 0x779)) {
-        g_effectMgr->Spawn(this->render.accountId, EF_ETERNAL_SLASH_COUNT, this->render.position.x, this->render.position.y, this->render.position.z, 0, value, 0, 0);
+        g_effectMgr->Spawn(this->render.accountId, EF_ETERNAL_SLASH_COUNT, this->render.position, 0, value, 0, 0);
       }
       break;
     case EFST_HELLS_PLANT_ARMOR:

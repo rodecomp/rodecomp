@@ -32,7 +32,6 @@ static_assert(sizeof(RodexMailItem) == 0x3C);
 struct RodexMail {
   /* 0000 */ unsigned char isRead;
   /* 0001 */ unsigned char type;
-  /* 0002 */ std::array<std::byte, 2> padding_0002;
   /* 0004 */ std::string sender;
   /* 001C */ int sentAt;
   /* 0020 */ int expiresAt;
@@ -41,11 +40,9 @@ struct RodexMail {
   /* 0054 */ unsigned char hasItem;
   /* 0055 */ struct RodexMailAttachments {
     /* 0000 */ RodexMailItem items[5];
-    /* 012C */ unsigned char unknown_012C[7];
   } attachments;
   /* 0188 */ std::int64_t zeny;
   /* 0190 */ std::uint8_t isReturned = 0;
-  /* 0191 */ std::array<std::byte, 3> padding_0191;
   /* 0194 */ int isKnownSender = -1;
 };
 

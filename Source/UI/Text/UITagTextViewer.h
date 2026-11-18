@@ -1,6 +1,7 @@
 #ifndef RAGNAROK_SOURCE_UI_TEXT_UITAGTEXTVIEWER_H
 #define RAGNAROK_SOURCE_UI_TEXT_UITAGTEXTVIEWER_H
 
+#include "UI/Text/CreateLineInfo.h"
 #include "UI/Window/UIWindow.h"
 
 #include <cstdint>
@@ -17,13 +18,6 @@ namespace TagTextViewer {
 
     /* 0000 */ float x;
     /* 0004 */ float y;
-  };
-
-  struct TextFont {
-    /* 0000 */ std::uint32_t color;
-    /* 0004 */ int height;
-    /* 0008 */ unsigned char bold;
-    /* 0009 */ unsigned char italic;
   };
 
   class UIScroll : public UIWindow {
@@ -60,7 +54,7 @@ public:
   /* 0094 */ int m_lineSpacing;
   /* 0098 */ int m_margin;
   /* 009C */ int m_topMargin;
-  /* 00A0 */ TagTextViewer::TextFont m_font;
+  /* 00A0 */ LineTextStyle m_font;
   /* 00AC */ bool m_outlined;
   /* 00B0 */ std::uint32_t m_outlineColor;
   /* 00B4 */ unsigned char m_horizontalAlign;
@@ -72,7 +66,6 @@ public:
 
 #if defined(_WIN32) && !defined(_WIN64)
 static_assert(sizeof(TagTextViewer::Position) == 8);
-static_assert(sizeof(TagTextViewer::TextFont) == 12);
 #endif
 
 #endif

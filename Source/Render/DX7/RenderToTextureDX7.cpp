@@ -34,7 +34,7 @@ bool CTextureDX7::CopySurface(IDirectDrawSurface7* source, const RECT* rectangle
 // OFFSET: 0x00813CA0
 // FUNCTION: fn_10125
 bool CRendererDX7::RenderToTexture(
-  int width, int height, const std::list<RenderPrimitive*>& primitives, CTexture*& texture
+  int width, int height, const std::list<RenderCommand*>& primitives, CTexture*& texture
 ) {
   if (!texture) {
     texture = g_texMgr.CreateTexture(width, height, TextureFormat::A8R8G8B8, false, false);

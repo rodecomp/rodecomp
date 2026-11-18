@@ -1111,7 +1111,7 @@ int CSession::GetTalkType(const char* text, int* talkType, std::string* parts) {
       return -1;
     }
     char volume[20];
-    _itoa(CSoundMgr::Volume(g_soundMgr), volume, 10);
+    _itoa(g_soundMgr->Volume(), volume, 10);
     parts[0].assign(volume, std::strlen(volume));
     return -1;
   } else if ((IsTalkCommand(tokenizer[0], {'/', 'g', 'c'}) || IsTalkCommand(tokenizer[0], {'/', 'g', 'u', 'i', 'l', 'd', 'c', 'h', 'a', 't'})) && static_cast<int>(tokenizer.tokens.size()) >= 2) {

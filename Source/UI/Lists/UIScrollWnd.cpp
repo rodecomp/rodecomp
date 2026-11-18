@@ -152,7 +152,7 @@ bool UIScrollWnd::UpdateCached(int redraw) {
   }
 
   if (redraw == 1 || changed == 1) {
-    std::list<RenderPrimitive*> primitives(this->m_primitives);
+    std::list<RenderCommand*> primitives(this->m_primitives);
     for (UIWindow* child : this->m_children) {
       if (this->horizontalBar == child || this->scrollBar == child) {
         static_cast<CDCBitmap*>(child->geometry.surface)->UploadTexture(child->m_texture);

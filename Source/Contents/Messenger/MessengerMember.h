@@ -7,7 +7,11 @@
 #include <vector>
 
 struct MessengerMember {
-  MessengerMember();
+  // OFFSET: 0x00D03DC0
+  // FUNCTION: fn_21550
+  MessengerMember() : valid(1), dead(0) {
+  }
+
   // OFFSET: 0x00739B60
   // FUNCTION: fn_07696
   explicit MessengerMember(int) : valid(0), dead(0) {

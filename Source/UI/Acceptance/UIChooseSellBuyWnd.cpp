@@ -7012,9 +7012,9 @@ void UIEquipWnd::OnLBtnDblClk(int x, int y) {
   if (item.identity[1] > 0 && item.quantity > 0) {
     const EquipSlots slots = g_session.GetEquipSlots(static_cast<int>(item.identity[3]));
     if (this->m_page == 1) {
-      g_modeMgr.currentMode->SendMsg(MM_TAKE_OFF_EQUIP, slots.values[2], 1, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_TAKE_OFF_EQUIP, std::get<0>(slots), 1, 0, 0);
     } else {
-      g_modeMgr.currentMode->SendMsg(MM_TAKE_OFF_EQUIP, slots.values[2], 0, 0, 0);
+      g_modeMgr.currentMode->SendMsg(MM_TAKE_OFF_EQUIP, std::get<0>(slots), 0, 0, 0);
     }
   }
 }
@@ -7063,12 +7063,12 @@ void UIEquipWnd::OnMouseHover(int x, int y) {
     ITEM_INFO dragged = g_session.LookupClientItemByIdentity(mode->drag.id);
     if (dragged.identity[1] > 0 && dragged.identity[2] != 0) {
       const EquipSlots slots = g_session.GetEquipSlots(static_cast<int>(dragged.identity[2]));
-      this->m_highlight[0] = slots.values[2];
-      if (slots.values[1] != -1) {
-        this->m_highlight[1] = slots.values[1];
+      this->m_highlight[0] = std::get<0>(slots);
+      if (std::get<1>(slots) != -1) {
+        this->m_highlight[1] = std::get<1>(slots);
       }
-      if (slots.values[0] != -1) {
-        this->m_highlight[2] = slots.values[0];
+      if (std::get<2>(slots) != -1) {
+        this->m_highlight[2] = std::get<2>(slots);
       }
     }
   }
@@ -10112,7 +10112,11 @@ void UIEquipWnd::OnLBtnDown(int x, int y) {
   if (item.quantity > 0) {
     CGameMode* mode = g_modeMgr.GetGameMode();
     const EquipSlots slots = g_session.GetEquipSlots(item.identity[3]);
-    mode->BeginDragItem(this->m_page == 1 ? 24 : 2, item, item.quantity, slots.values[2]);
+    if (this->m_page == 1) {
+      mode->BeginDragItem(24, item, item.quantity, std::get<0>(slots));
+    } else {
+      mode->BeginDragItem(2, item, item.quantity, std::get<0>(slots));
+    }
   }
 
   if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
@@ -12665,7 +12669,8 @@ int UIItemCollectionWnd::SendMsg(UIWindow* sender, int message, std::intptr_t ar
   case UM_ITEMEXPLANATION: {
     const ITEM_INFO* item = reinterpret_cast<const ITEM_INFO*>(argument1);
     if (item->itemId == this->m_item.itemId && item->refiningLevel == this->m_item.refiningLevel &&
-        std::memcmp(item->cards, this->m_item.cards, sizeof(item->cards)) == 0 && argument2 == 0) {
+        item->cards[0] == this->m_item.cards[0] && item->cards[1] == this->m_item.cards[1] &&
+        item->cards[2] == this->m_item.cards[2] && item->cards[3] == this->m_item.cards[3] && argument2 == 0) {
       g_windowMgr.CloseWindow(this->m_kind);
       return 0;
     }

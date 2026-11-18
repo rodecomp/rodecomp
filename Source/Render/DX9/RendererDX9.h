@@ -26,7 +26,7 @@ public:
   void DrawAuxiliaryPrimitive(LightmappedCommand* primitive) override;
   void DrawLightmappedPrimitive(LightmappedPrimitive* primitive) override;
   void DrawPrimitive(RenderCommand* primitive) override;
-  bool RenderToTexture(int width, int height, const std::list<RenderPrimitive*>& primitives, CTexture*& texture) override;
+  bool RenderToTexture(int width, int height, const std::list<RenderCommand*>& primitives, CTexture*& texture) override;
   int SaveBitmap(const char* filename, CBitmapRes* overlay) override;
   int SaveJpeg(const char* filename, CBitmapRes* overlay) override;
   void CleanupTextures() override;

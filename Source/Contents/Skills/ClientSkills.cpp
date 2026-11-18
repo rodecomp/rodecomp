@@ -381,7 +381,7 @@ void CSession::AddAchievementId(int id) {
 // FUNCTION: fn_23744
 bool CSession::EquipAlternateCostumeItem(const ITEM_INFO& item) {
   const EquipSlots slots = g_session.GetEquipSlots(item.identity[3]);
-  const int order[3] = {slots.values[2], slots.values[1], slots.values[0]};
+  const int order[3] = {std::get<0>(slots), std::get<1>(slots), std::get<2>(slots)};
 
   for (int index = 0; index < 3; ++index) {
     const int slot = order[index];
@@ -970,7 +970,7 @@ public:
 // FUNCTION: fn_23739
 bool CSession::EquipCostumeItem(const ITEM_INFO& item, const char* name) {
   const EquipSlots slots = g_session.GetEquipSlots(item.identity[3]);
-  const int order[3] = {slots.values[2], slots.values[1], slots.values[0]};
+  const int order[3] = {std::get<0>(slots), std::get<1>(slots), std::get<2>(slots)};
 
   for (int index = 0; index < 3; ++index) {
     const int slot = order[index];

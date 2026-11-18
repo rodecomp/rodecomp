@@ -27,6 +27,7 @@
 #include <new>
 #include <set>
 #include <string>
+#include <tuple>
 #include <utility>
 #include <vector>
 
@@ -40,9 +41,7 @@ struct HotkeyInfo;
 struct ActionFrame;
 struct vector3d;
 
-struct EquipSlots {
-  /* 0000 */ int values[3];
-};
+using EquipSlots = std::tuple<int, int, int>;
 
 struct BlockedCharacter {
   /* 0000 */ std::uint32_t gid;
@@ -50,18 +49,25 @@ struct BlockedCharacter {
 };
 
 struct GuildStorageLogEntry {
-  /* 0000 */ int logId = 0;
-  /* 0004 */ int quantity = 0;
-  /* 0008 */ unsigned char operation = 0;
-  /* 0009 */ char characterName[24] = {};
-  /* 0021 */ char timestamp[24] = {};
+  // INLINED
+  GuildStorageLogEntry() : logId(0), quantity(0), operation(0), identified(0), itemType(0), refineLevel(0), category(0), grade(0) {
+    SecureZeroMemory(this->characterName, sizeof(this->characterName));
+    SecureZeroMemory(this->timestamp, sizeof(this->timestamp));
+    SecureZeroMemory(this->cards, sizeof(this->cards));
+  }
+
+  /* 0000 */ int logId;
+  /* 0004 */ int quantity;
+  /* 0008 */ unsigned char operation;
+  /* 0009 */ char characterName[24];
+  /* 0021 */ char timestamp[24];
   /* 003C */ std::string itemName;
-  /* 0054 */ unsigned char identified = 0;
-  /* 0058 */ int itemType = 0;
-  /* 005C */ int refineLevel = 0;
-  /* 0060 */ unsigned char cards[16] = {};
-  /* 0070 */ unsigned char category = 0;
-  /* 0072 */ std::int16_t grade = 0;
+  /* 0054 */ unsigned char identified;
+  /* 0058 */ int itemType;
+  /* 005C */ int refineLevel;
+  /* 0060 */ unsigned char cards[16];
+  /* 0070 */ unsigned char category;
+  /* 0072 */ std::int16_t grade;
 };
 
 struct SessionRecord6144 {

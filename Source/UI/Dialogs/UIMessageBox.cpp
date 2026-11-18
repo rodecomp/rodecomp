@@ -3086,8 +3086,7 @@ void UIPetInfoWnd::Paint() {
 
     char command[] = "< Command >";
     this->FillRegion(160, 44, 110, 18, 0xFAE6E6);
-    const int width = this->TextWidth(command, 0, 0, 12, 0, 0);
-    this->DrawTextAt(206 - width / 2, 48, command, 0, 0, 12, 0, 0, 0);
+    this->DrawTextAt(206 - this->TextWidth(command, 0, 0, 12, 0, 0) / 2, 48, command, 0, 0, 12, 0, 0, 0);
     this->DrawTextAt(100, 119, LookupMessage(MSI_PET_ACCESSARY), 0, 0, 12, 0, 0, 0);
     this->DrawTextAt(100, 139, LookupMessage(g_session.petAccessory == 0 ? MSI_ITEM_UNEQUIPED : MSI_ITEM_EQUIPED), 0, 0, 12, 0, 0, 0);
 

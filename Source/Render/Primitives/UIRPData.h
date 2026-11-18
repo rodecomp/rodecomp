@@ -19,7 +19,7 @@ public:
   void SetSolid(int width, int height, std::uint32_t color);
 
 protected:
-  /* 0004 */ std::list<RenderPrimitive*> m_primitives;
+  /* 0004 */ std::list<RenderCommand*> m_primitives;
   /* 000C */ CTexture* m_texture;
 };
 

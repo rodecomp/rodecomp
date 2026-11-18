@@ -28,10 +28,6 @@ public:
   void Shutdown();
   void EndSamples();
 
-  // INLINED
-  __declspec(noinline) static int Volume(const CSoundMgr* sound) {
-    return sound->Volume();
-  }
   int Volume() const;
   void Pause(int paused);
   void SetVolume(int volume);

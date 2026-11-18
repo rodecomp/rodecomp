@@ -5996,7 +5996,7 @@ int GetEquipGrade(lua_State* state) {
   int grade = 0;
   if (args[0] != 0) {
     const int mask = GetEquipLocationMask(args[0]);
-    const int slot = g_session.GetEquipSlots(mask).values[2];
+    const int slot = std::get<0>(g_session.GetEquipSlots(mask));
     const ITEM_INFO item = g_session.IsCostumeLocation(mask) ? g_session.GetCostumeItemAt(slot) : g_session.GetEquippedItemAt(slot);
     if (item.identity[1] > 0) {
       grade = item.grade;
@@ -6024,7 +6024,7 @@ int GetEquipItemId(lua_State* state) {
 
   const int mask = GetEquipLocationMask(args[0]);
   const EquipSlots slots = g_session.GetEquipSlots(mask);
-  const ITEM_INFO item = g_session.IsCostumeLocation(mask) ? g_session.GetCostumeItemAt(slots.values[2]) : g_session.GetEquippedItemAt(slots.values[2]);
+  const ITEM_INFO item = g_session.IsCostumeLocation(mask) ? g_session.GetCostumeItemAt(std::get<0>(slots)) : g_session.GetEquippedItemAt(std::get<0>(slots));
   const int itemId = item.identity[1] > 0 ? std::atoi(item.itemId.c_str()) : 0;
 
   lua_pushnumber(state, itemId);
@@ -6048,7 +6048,7 @@ int GetEquipRefine(lua_State* state) {
 
   const int mask = GetEquipLocationMask(args[0]);
   const EquipSlots slots = g_session.GetEquipSlots(mask);
-  const ITEM_INFO item = g_session.IsCostumeLocation(mask) ? g_session.GetCostumeItemAt(slots.values[2]) : g_session.GetEquippedItemAt(slots.values[2]);
+  const ITEM_INFO item = g_session.IsCostumeLocation(mask) ? g_session.GetCostumeItemAt(std::get<0>(slots)) : g_session.GetEquippedItemAt(std::get<0>(slots));
   int refine = 0;
   if (item.identity[1] > 0) {
     refine = item.refiningLevel;
@@ -6697,7 +6697,7 @@ EquipmentProperties::CEquipmentWearable::CEquipmentWearable(const ITEM_INFO* ite
   this->m_type = item->identity[3];
   this->m_info = CEquipmentPropertiesMgr::GetInstance()->FindEquipmentInfo(this->m_id);
   const EquipSlots slots = g_session.GetEquipSlots(this->m_type);
-  this->inventoryIndex = slots.values[2];
+  this->inventoryIndex = std::get<0>(slots);
 
   for (int index = 0; index < 4; ++index) {
     int card;

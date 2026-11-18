@@ -91,7 +91,7 @@ void CScatterEffect::OnProcess() {
       translate.MakeTranslate(particle->velocity.x + 0.0f, particle->velocity.y - 40.0f, particle->velocity.z + 0.0f);
       particle->transform = translate;
     }
-    ++(*it)->elapsedFrames;
+    ++particle->elapsedFrames;
   }
 }
 

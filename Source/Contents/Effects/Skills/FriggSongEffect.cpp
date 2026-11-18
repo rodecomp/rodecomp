@@ -113,10 +113,9 @@ bool CFriggSongEffect::IsAlive() {
 // FUNCTION: fn_07005
 void CFriggSongEffect::OnProcess() {
   for (auto it = this->particles.begin(); it != this->particles.end(); ++it) {
-    (*it)->position.x = this->position[0];
-    (*it)->position.y = this->position[1];
-    (*it)->position.z = this->position[2];
-    if (CParticle* particle = *it) {
+    (*it)->position = this->positionVector;
+    CParticle* particle = *it;
+    if (particle) {
       const int age = particle->elapsedFrames;
       const float baseAngle = particle->angle;
       const int angle = static_cast<int>(baseAngle - static_cast<float>(age));
@@ -141,7 +140,7 @@ void CFriggSongEffect::OnProcess() {
       rotation.Compose(first, scale);
       particle->transform = rotation;
     }
-    ++(*it)->elapsedFrames;
+    ++particle->elapsedFrames;
   }
 }
 

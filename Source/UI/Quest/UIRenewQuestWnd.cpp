@@ -294,7 +294,7 @@ void UIOngoingQuestScrollWnd::SetQuest(unsigned int questId) {
   UITagTextViewer* viewer = new UITagTextViewer();
   viewer->SetSize(290, 200);
   viewer->Move(32, 30);
-  viewer->m_font = TagTextViewer::TextFont{0x38302E, 12, 0, 0};
+  viewer->m_font = {0x38302E, 12, false, false};
   this->AddScrollChild(viewer);
 
   int height;
@@ -533,7 +533,7 @@ void UIRecommededQuestScrollWnd::SetQuest(unsigned int questId) {
   viewers[1]->Move(16, 157);
   viewers[1]->m_backgroundColor = 0xFFFF00FF;
   viewers[1]->Invalidate();
-  viewers[1]->m_font = TagTextViewer::TextFont{0x2A2A2A, 12, 1, 0};
+  viewers[1]->m_font = {0x2A2A2A, 12, true, false};
   viewers[1]->m_outlined = 1;
   viewers[1]->m_outlineColor = 0xFFFFFF;
   viewers[1]->m_lineSpacing = 4;

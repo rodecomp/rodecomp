@@ -7,10 +7,17 @@
 #include <list>
 #include <string>
 #include <vector>
+#include <windows.h>
 
 struct ModeDragState;
 
 struct RawItemBasic {
+  // OFFSET: 0x00D042A0
+  // FUNCTION: fn_21557
+  RawItemBasic() : id(0), price(0), realPrice(0), type(0), identified(0), location(0), sprite(0) {
+    SecureZeroMemory(this->itemId, sizeof(this->itemId));
+  }
+
   /* 0000 */ std::int32_t id;
   /* 0004 */ std::uint32_t price;
   /* 0008 */ std::uint32_t realPrice;

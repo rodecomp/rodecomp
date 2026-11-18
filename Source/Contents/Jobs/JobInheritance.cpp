@@ -1828,22 +1828,22 @@ bool CSession::UnequipCostumeItem(int location) {
     this->SetEquippedArrowIndex(0);
   } else {
     const EquipSlots slots = g_session.GetEquipSlots(location);
-    if (slots.values[2] < 10) {
+    if (std::get<0>(slots) < 10) {
       ITEM_INFO* const items = this->costumeItems;
-      if (slots.values[2] != -1) {
+      if (std::get<0>(slots) != -1) {
         const char* message = LookupMessage(MSI_ITEM_IS_REMOVED);
-        ITEM_INFO& item = items[slots.values[2]];
+        ITEM_INFO& item = items[std::get<0>(slots)];
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(FormatOwnedString("%s%s", item.DisplayName(0).c_str(), message).c_str()),
           0xFF, 7, 0, 0);
         item.identity[3] = 0;
         this->AddInventoryItem(item, 1);
         item.Reset();
       }
-      if (slots.values[1] != -1 && slots.values[1] < 10) {
-        items[slots.values[1]].Reset();
+      if (std::get<1>(slots) != -1 && std::get<1>(slots) < 10) {
+        items[std::get<1>(slots)].Reset();
       }
-      if (slots.values[0] != -1 && slots.values[0] < 10) {
-        items[slots.values[0]].Reset();
+      if (std::get<2>(slots) != -1 && std::get<2>(slots) < 10) {
+        items[std::get<2>(slots)].Reset();
       }
     }
     this->RequestBasicInfoRefresh();

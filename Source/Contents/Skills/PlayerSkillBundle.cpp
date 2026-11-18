@@ -265,7 +265,7 @@ std::list<CSkillInfo>& CPlayerSkillBundle::Group(int group) {
 
 // OFFSET: 0x00771F30
 // FUNCTION: fn_08292
-std::size_t CPlayerSkillBundle::GroupSize(int group) const {
+int CPlayerSkillBundle::GroupSize(int group) const {
   const auto entry = this->groups.find(group);
   return entry != this->groups.end() ? entry->second.size() : 0;
 }

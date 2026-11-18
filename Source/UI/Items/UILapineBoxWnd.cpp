@@ -344,7 +344,9 @@ int UILapineBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, std:
       this->Invalidate();
 
       delete packet;
-      delete[] payload;
+      if (payload) {
+        delete[] payload;
+      }
       break;
     }
     case ID_LAPINE_ADD_INGREDIENT: {

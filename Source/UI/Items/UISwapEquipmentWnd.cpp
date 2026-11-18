@@ -141,7 +141,7 @@ void UISwapEquipmentWnd::DrawEquipmentSlots() {
         }
       } else {
         const EquipSlots slots = g_session.GetEquipSlots(item.identity[3]);
-        int locations[3] = {slots.values[2], slots.values[1], slots.values[0]};
+        int locations[3] = {std::get<0>(slots), std::get<1>(slots), std::get<2>(slots)};
         for (int i = 0; i < 3; ++i) {
           fromSwap = this->GetSlotItem(locations[i]).identity[1] > 0;
         }
@@ -412,9 +412,9 @@ void UISwapEquipmentWnd::OnLBtnDblClk(int x, int y) {
     if (GetAsyncKeyState(VK_CONTROL)) {
       mode->SendMsg(MM_SWAP_EQUIPMENT_BY_INDEX, reinterpret_cast<int>(&item), 0, 0, 0);
     } else if (this->equipmentPage == 2) {
-      mode->SendMsg(MM_TAKE_OFF_SWAP_EQUIP, slots.values[2], 1, 0, 0);
+      mode->SendMsg(MM_TAKE_OFF_SWAP_EQUIP, std::get<0>(slots), 1, 0, 0);
     } else {
-      mode->SendMsg(MM_TAKE_OFF_SWAP_EQUIP, slots.values[2], 0, 0, 0);
+      mode->SendMsg(MM_TAKE_OFF_SWAP_EQUIP, std::get<0>(slots), 0, 0, 0);
     }
   }
 }
@@ -429,9 +429,9 @@ void UISwapEquipmentWnd::OnLBtnDown(int x, int y) {
 
   const EquipSlots slots = g_session.GetEquipSlots(item.identity[3]);
   if (this->equipmentPage == 2) {
-    g_modeMgr.GetGameMode()->BeginDragItem(18, item, item.quantity, slots.values[2]);
+    g_modeMgr.GetGameMode()->BeginDragItem(18, item, item.quantity, std::get<0>(slots));
   } else {
-    g_modeMgr.GetGameMode()->BeginDragItem(17, item, item.quantity, slots.values[2]);
+    g_modeMgr.GetGameMode()->BeginDragItem(17, item, item.quantity, std::get<0>(slots));
   }
 
   if (HIBYTE(GetAsyncKeyState(VK_SHIFT))) {
@@ -500,12 +500,12 @@ void UISwapEquipmentWnd::OnMouseHover(int x, int y) {
     ITEM_INFO item = g_session.LookupClientItemByIdentity(id);
     if (item.identity[1] > 0 && item.identity[2] != 0) {
       const EquipSlots slots = g_session.GetEquipSlots(item.identity[2]);
-      this->hoverSlot = slots.values[2];
-      if (slots.values[1] != -1) {
-        this->hoverSecondarySlot = slots.values[1];
+      this->hoverSlot = std::get<0>(slots);
+      if (std::get<1>(slots) != -1) {
+        this->hoverSecondarySlot = std::get<1>(slots);
       }
-      if (slots.values[0] != -1) {
-        this->hoverTertiarySlot = slots.values[0];
+      if (std::get<2>(slots) != -1) {
+        this->hoverTertiarySlot = std::get<2>(slots);
       }
     }
   }

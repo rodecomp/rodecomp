@@ -35,7 +35,7 @@ public:
   virtual void DrawAuxiliaryPrimitive(LightmappedCommand* primitive) = 0;
   virtual void DrawLightmappedPrimitive(LightmappedPrimitive* primitive) = 0;
   virtual void DrawPrimitive(RenderCommand* primitive) = 0;
-  virtual bool RenderToTexture(int width, int height, const std::list<RenderPrimitive*>& primitives, CTexture*& texture) = 0;
+  virtual bool RenderToTexture(int width, int height, const std::list<RenderCommand*>& primitives, CTexture*& texture) = 0;
   virtual int SaveBitmap(const char* filename, CBitmapRes* overlay) = 0;
   virtual int SaveJpeg(const char* filename, CBitmapRes* overlay) = 0;
   virtual void CleanupTextures() = 0;

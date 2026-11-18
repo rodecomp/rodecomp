@@ -210,11 +210,6 @@ static_assert(sizeof(MiniPartyIconPosition) == 12);
 static_assert(sizeof(MessengerRecordHeader) == 6);
 #endif
 
-// OFFSET: 0x00D03DC0
-// FUNCTION: fn_21550
-MessengerMember::MessengerMember() : valid(1), dead(0) {
-}
-
 // OFFSET: 0x007382E0
 // FUNCTION: fn_07664
 UIDragMiniPartyWnd::UIDragMiniPartyWnd(MessengerMember member)

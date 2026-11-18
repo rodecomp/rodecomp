@@ -206,7 +206,7 @@ void UIChatHisBox::DecodeItemLinkFields(const std::string& text, std::vector<std
 
 // OFFSET: 0x008933E0
 // FUNCTION: fn_11505
-bool ItemFromLinkFields(const std::vector<std::int32_t>& fields, ITEM_INFO& item) {
+bool UIChatHisBox::ItemFromLinkFields(const std::vector<std::int32_t>& fields, ITEM_INFO& item) {
   if (fields.empty()) {
     return false;
   }

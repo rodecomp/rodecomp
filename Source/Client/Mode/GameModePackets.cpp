@@ -8555,7 +8555,7 @@ namespace {
 __declspec(noinline) void CGameMode::ReceiveEquipCardChange(const unsigned char* packet) {
   const auto* p = reinterpret_cast<const PACKET_ZC_UPDATE_CARDSLOT*>(packet);
   const EquipSlots slots = g_session.GetEquipSlots(p->wearState);
-  ITEM_INFO item = g_session.GetEquippedItemAt(slots.values[2]);
+  ITEM_INFO item = g_session.GetEquippedItemAt(std::get<0>(slots));
   if (item.identity[1] != 0) {
     std::uint32_t* cards = item.cards;
     switch (p->equipFlag) {
@@ -8567,7 +8567,7 @@ __declspec(noinline) void CGameMode::ReceiveEquipCardChange(const unsigned char*
       cards[p->cardSlot] = 0;
       break;
     }
-    g_session.SetEquippedItem(slots.values[2], item);
+    g_session.SetEquippedItem(std::get<0>(slots), item);
   }
 }
 
@@ -10344,7 +10344,7 @@ void CGameMode::ReceiveEquipItemDamaged(const unsigned char* packet) {
     }
   } else {
     const EquipSlots slots = g_session.GetEquipSlots(p->equipLocation);
-    ITEM_INFO item = g_session.GetEquippedItemAt(slots.values[2]);
+    ITEM_INFO item = g_session.GetEquippedItemAt(std::get<0>(slots));
     if (item.identity[1] > 0) {
       text = static_cast<const std::string&>(FormatOwnedString(LookupMessage(MSI_DAMAGED_EQUIP), item.DisplayName(0).c_str()));
     }
@@ -14108,8 +14108,9 @@ void CGameMode::ReceiveActorTypedEntry(const unsigned char* data) {
   entry.xSize = packet->xSize;
   entry.ySize = packet->ySize;
   entry.head = packet->head;
-  entry.weapon = packet->weapon;
-  entry.shield = packet->weapon >> 31;
+  const std::int64_t weapon = packet->weapon;
+  entry.weapon = static_cast<int>(weapon);
+  entry.shield = static_cast<int>(weapon >> 32);
   entry.accessory = packet->accessory;
   entry.state = packet->state;
   entry.effectState = packet->healthState;
@@ -14215,8 +14216,9 @@ void CGameMode::ReceiveNpcStandEntry(const unsigned char* data) {
   entry.xSize = packet->xSize;
   entry.ySize = packet->ySize;
   entry.head = packet->head;
-  entry.weapon = packet->weapon;
-  entry.shield = packet->weapon >> 31;
+  const std::int64_t weapon = packet->weapon;
+  entry.weapon = static_cast<int>(weapon);
+  entry.shield = static_cast<int>(weapon >> 32);
   entry.accessory = packet->accessory;
   entry.effectState = packet->healthState;
   entry.bodyState = packet->bodyState;

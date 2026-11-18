@@ -39,7 +39,7 @@ public:
   void DrawPrimitive(RenderCommand* primitive);
   void DrawLightmappedPrimitive(LightmappedPrimitive* primitive);
   void SetTextureMode(int mode);
-  bool RenderToTexture(int width, int height, const std::list<RenderPrimitive*>& primitives, CTexture*& texture);
+  bool RenderToTexture(int width, int height, const std::list<RenderCommand*>& primitives, CTexture*& texture);
   int SaveBitmap(const char* filename, CBitmapRes* overlay) override;
   int SaveJpeg(const char* filename, CBitmapRes* overlay) override;
   bool SaveLogo(std::string filename) override;

@@ -21,7 +21,7 @@ float g_heightScale = 1.34f;
 // FUNCTION: fn_10102
 bool CCharacterRender::ProjectCell(
   int unused, int layer, float scale, const SpriteFrameCell& cell, float x, float y, const float* position, float shift, float& bottomDepth,
-  float& topDepth, const SpriteRleImage& image, SpriteQuad& quad, tagRECT& bounds, SpriteColor& color, int offsetX, int offsetY, int flags
+  float& topDepth, const SpriteRleImage& image, SpriteQuad& quad, tagRECT& bounds, SpriteColor& color, int offsetX, int offsetY, bool flags
 ) const {
   const float depthBias = scale / g_heightScale * g_cameraScaleX;
   const double scaleY = scale * cell.scaleY;

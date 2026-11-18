@@ -134,7 +134,7 @@ void CRendererDX9::DrawDepthQueue(bool sort, std::vector<DepthPrimitive>& queue)
 
 // OFFSET: 0x00565210
 // FUNCTION: fn_02216
-bool CRendererDX9::RenderToTexture(int width, int height, const std::list<RenderPrimitive*>& primitives, CTexture*& texture) {
+bool CRendererDX9::RenderToTexture(int width, int height, const std::list<RenderCommand*>& primitives, CTexture*& texture) {
   IDirect3DTexture9* nativeTexture = nullptr;
   if (texture) {
     nativeTexture = static_cast<CTextureDX9*>(texture)->NativeTexture();

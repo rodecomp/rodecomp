@@ -10,7 +10,7 @@ namespace {
   class ScreenshotOverlay : public UIRPData {
   public:
     // INLINED
-    const std::list<RenderPrimitive*>& Primitives() const {
+    const std::list<RenderCommand*>& Primitives() const {
       return this->m_primitives;
     }
   };
@@ -35,7 +35,7 @@ bool CRendererDX9::SaveScreenshot(const char* filename, int format, CTexture* ov
       this->device->state.SetRenderState(D3DRS_ALPHATESTENABLE, 1);
       this->device->state.SetRenderState(D3DRS_ALPHABLENDENABLE, 1);
 
-      for (RenderPrimitive* command : drawing.Primitives()) {
+      for (RenderCommand* command : drawing.Primitives()) {
         this->device->state.SetTexture(0, command->texture ? static_cast<CTextureDX9*>(command->texture)->NativeTexture() : nullptr);
         this->DrawPrimitive(command);
       }

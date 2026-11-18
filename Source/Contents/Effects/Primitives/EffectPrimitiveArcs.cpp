@@ -1702,9 +1702,9 @@ __declspec(safebuffers) void CEffectPrim::RenderSegmentSpriteGlow(matrix& wtm) {
         quad.topRhw = 1.0f / ((top - screenY) * g_tangent + depth);
         quad.angle = static_cast<float>(cell.rotation) + this->state.roll;
 
-        unsigned char red = static_cast<unsigned char>(cell.color);
-        unsigned char green = static_cast<unsigned char>(cell.color >> 8);
-        unsigned char blue = static_cast<unsigned char>(cell.color >> 16);
+        unsigned char red = cell.colorChannels.red;
+        unsigned char green = cell.colorChannels.green;
+        unsigned char blue = cell.colorChannels.blue;
         quad.image = image;
         this->GetColorOverride(&red, &green, &blue);
         const std::uint32_t color = (((((alpha << 8) + red) << 8) + green) << 8) + blue;

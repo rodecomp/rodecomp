@@ -30,7 +30,7 @@ bool UIChatHisBox::Name(const std::string& encoded, std::string& output) {
   this->DecodeItemLinkFields(encoded, fields);
   ITEM_INFO item;
 
-  if (ItemFromLinkFields(fields, item)) {
+  if (this->ItemFromLinkFields(fields, item)) {
     output = item.DisplayName(0);
     return true;
   }

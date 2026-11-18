@@ -111,7 +111,7 @@ namespace {
 }
 
 // INLINED
-static void FollowMaster(CEffectPrim& particle) {
+static __forceinline void FollowMaster(CEffectPrim& particle) {
   const CRagEffect* master = particle.state.master;
   particle.render.position = master->render.position;
 }
@@ -3997,9 +3997,7 @@ void CEffectPrim::PrimSphereWind2() {
     this->state.slots[index].distance *= 1.01f;
     ++this->state.slots[index].riseAngle;
 
-    const int coin = std::rand() % 2;
-
-    if ((coin < 0 ? 0 : coin) == 0) {
+    if (ClampedRandom(2) == 0) {
       ++this->state.slots[index].riseAngle;
     }
 

@@ -3681,7 +3681,7 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         return 0;
       }
       const EquipSlots slots = g_session.GetEquipSlots(argument2);
-      const ITEM_INFO equipped = g_session.GetEquippedItemAt(slots.values[2]);
+      const ITEM_INFO equipped = g_session.GetEquippedItemAt(std::get<0>(slots));
       if (equipped.damaged != 0) {
         g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(LookupMessage(MSI_DAMAGED_ITEM)), 255, 0, 0, 0);
         return 0;
@@ -4830,12 +4830,13 @@ int CGameMode::SendMsg(int event, int argument1, int argument2, int argument3, i
         }
       } else {
         const EquipSlots slots = g_session.GetEquipSlots(argument2);
-        for (int index = 2; index >= 0; --index) {
+        const int order[3] = {std::get<0>(slots), std::get<1>(slots), std::get<2>(slots)};
+        for (int index = 0; index < 3; ++index) {
           ITEM_INFO equipped;
           if (g_session.IsCostumeLocation(argument2)) {
-            equipped = g_session.GetSwapEquippedItem(slots.values[index]);
+            equipped = g_session.GetSwapEquippedItem(order[index]);
           } else {
-            equipped = g_session.GetSwapCostumeItem(slots.values[index]);
+            equipped = g_session.GetSwapCostumeItem(order[index]);
           }
           if (static_cast<std::uint32_t>(argument1) == equipped.identity[1]) {
             return 0;
@@ -10115,7 +10116,8 @@ void CGameMode::ExecuteTalkType(int talkType, std::string* arguments) {
   case TT_BVOLUME: {
     const int volume = std::atoi(parts[0].c_str());
     g_soundMgr->SetVolume(volume);
-    g_soundMgr->SetTargetVolume(CSoundMgr::Volume(g_soundMgr));
+    CSoundMgr* soundMgr = g_soundMgr;
+    soundMgr->SetTargetVolume(soundMgr->Volume());
     char text[120];
     std::sprintf(text, "%s %d", LookupMessage(MSI_VOLUME_OF_BGM), volume);
     g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0x64FFFF, 0, 0, 0);

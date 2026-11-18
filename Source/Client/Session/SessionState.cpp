@@ -201,9 +201,9 @@ bool CSession::IsThirdJobOrHigher(int job) {
 bool CSession::EquipSwapCostumeItem(const ITEM_INFO& item) {
   const EquipSlots slots = g_session.GetEquipSlots(static_cast<int>(item.identity[3]));
   int order[3];
-  order[0] = slots.values[2];
-  order[1] = slots.values[1];
-  order[2] = slots.values[0];
+  order[0] = std::get<0>(slots);
+  order[1] = std::get<1>(slots);
+  order[2] = std::get<2>(slots);
   if (item.identity[3] == 0x8000) {
     g_session.SetSwapArrowIndex(item.identity[1]);
   }
@@ -232,17 +232,17 @@ __declspec(safebuffers) void CSession::UnequipSwapEquippedItem(const ITEM_INFO& 
     this->SetSwapArrowIndex(0);
   } else {
     const EquipSlots slots = g_session.GetEquipSlots(location);
-    if (slots.values[2] < 10) {
-      if (slots.values[2] != -1) {
-        const int index = slots.values[2];
+    if (std::get<0>(slots) < 10) {
+      if (std::get<0>(slots) != -1) {
+        const int index = std::get<0>(slots);
         this->swapEquippedItems[index].identity[3] = 0;
         this->swapEquippedItems[index].Reset();
       }
-      if (slots.values[1] != -1 && slots.values[1] < 10) {
-        this->swapEquippedItems[slots.values[1]].Reset();
+      if (std::get<1>(slots) != -1 && std::get<1>(slots) < 10) {
+        this->swapEquippedItems[std::get<1>(slots)].Reset();
       }
-      if (slots.values[0] != -1 && slots.values[0] < 10) {
-        this->swapEquippedItems[slots.values[0]].Reset();
+      if (std::get<2>(slots) != -1 && std::get<2>(slots) < 10) {
+        this->swapEquippedItems[std::get<2>(slots)].Reset();
       }
     }
   }
@@ -266,17 +266,17 @@ void CSession::UnequipSwapCostumeItem(const ITEM_INFO& item) {
     this->SetSwapArrowIndex(0);
   } else {
     const EquipSlots slots = g_session.GetEquipSlots(location);
-    if (slots.values[2] < 10) {
-      if (slots.values[2] != -1) {
-        ITEM_INFO& entry = this->swapCostumeItems[slots.values[2]];
+    if (std::get<0>(slots) < 10) {
+      if (std::get<0>(slots) != -1) {
+        ITEM_INFO& entry = this->swapCostumeItems[std::get<0>(slots)];
         entry.identity[3] = 0;
         entry.Reset();
       }
-      if (slots.values[1] != -1 && slots.values[1] < 10) {
-        this->swapCostumeItems[slots.values[1]].Reset();
+      if (std::get<1>(slots) != -1 && std::get<1>(slots) < 10) {
+        this->swapCostumeItems[std::get<1>(slots)].Reset();
       }
-      if (slots.values[0] != -1 && slots.values[0] < 10) {
-        this->swapCostumeItems[slots.values[0]].Reset();
+      if (std::get<2>(slots) != -1 && std::get<2>(slots) < 10) {
+        this->swapCostumeItems[std::get<2>(slots)].Reset();
       }
     }
   }

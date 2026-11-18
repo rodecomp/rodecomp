@@ -61,11 +61,11 @@ void PublishWorldModels(WorldSpatialTree& root, C3dActor* const* models, int& pu
   const int end = published + ready;
 
   while (published < end) {
-    C3dActor& model = *models[published];
+    C3dActor* model = models[published];
 
     for (WorldSpatialTree* child : root.children) {
-      if (IntersectsBounds(model.oriented, child->minimum)) {
-        child->InsertModel(&model, 1);
+      if (IntersectsBounds(model->oriented, child->minimum)) {
+        child->InsertModel(model, 1);
       }
     }
 
