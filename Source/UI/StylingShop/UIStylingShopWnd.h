@@ -63,8 +63,7 @@ public:
   /* 00A8 */ int animationStartTick;
   /* 00AC */ UIBitmapButton* m_favoriteButton;
   /* 00B0 */ bool hideFavoriteButton;
-  /* 00B4 */ int shadowX;
-  /* 00B8 */ int shadowY;
+  /* 00B4 */ POINT shadow;
   /* 00BC */ int topAccessoryItemId;
   /* 00C0 */ int middleAccessoryItemId;
   /* 00C4 */ int bottomAccessoryItemId;

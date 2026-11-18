@@ -494,8 +494,7 @@ UICostumeChangeWnd::UICostumeChangeWnd() : UIStylingshopTabParentWnd() {
 UIDisplayCharacter::UIDisplayCharacter()
     : UIWindow(0), slotNumber(0), direction(0), robe(0), head(0), job(0), headPalette(0), bodyStyle(0), topAccessory(0), middleAccessory(0),
       bottomAccessory(0), hideFavoriteButton(false), topAccessoryItemId(0), middleAccessoryItemId(0), bottomAccessoryItemId(0) {
-  this->shadowX = 0;
-  this->shadowY = 0;
+  std::memset(&this->shadow, 0, sizeof(this->shadow));
   this->shadowBitmapName = "유저인터페이스\\styleshop\\shadow_chr_off.bmp";
 }
 
@@ -503,8 +502,7 @@ UIDisplayCharacter::UIDisplayCharacter()
 inline UIDisplayCharacter::UIDisplayCharacter(bool hideFavoriteButton)
     : UIWindow(0), slotNumber(0), direction(0), robe(0), head(0), job(0), headPalette(0), bodyStyle(0), topAccessory(0), middleAccessory(0),
       bottomAccessory(0), hideFavoriteButton(hideFavoriteButton), topAccessoryItemId(0), middleAccessoryItemId(0), bottomAccessoryItemId(0) {
-  this->shadowX = 0;
-  this->shadowY = 0;
+  std::memset(&this->shadow, 0, sizeof(this->shadow));
   this->shadowBitmapName = "유저인터페이스\\styleshop\\shadow_chr_off.bmp";
 }
 
@@ -1613,7 +1611,7 @@ void UIDisplayCharacter::Paint() {
   this->ClearSurface(0xFFFFFFFF);
   CBitmapRes* shadow = static_cast<CBitmapRes*>(ResourceMgr::Instance().Load(Resolve(this->shadowBitmapName)));
   if (shadow) {
-    this->DrawBitmap(this->shadowX, this->shadowY, shadow, false);
+    this->DrawBitmap(this->shadow.x, this->shadow.y, shadow, false);
   }
 
   CPlayer* player = g_modeMgr.GetGameMode()->scene->player;
@@ -2302,8 +2300,8 @@ void UIDisplayCharacter::OnCreate(int width, int height) {
   this->topAccessory = g_session.m_accessory2;
   this->middleAccessory = g_session.m_accessory3;
   this->bottomAccessory = g_session.m_accessory;
-  this->shadowX = static_cast<int>(std::round(static_cast<float>(this->geometry.width) * 0.55f) - 40.0f);
-  this->shadowY = static_cast<int>(std::round(static_cast<float>(this->geometry.height) * 0.877f) - 17.0f);
+  this->shadow.x = static_cast<int>(std::round(static_cast<float>(this->geometry.width) * 0.55f) - 40.0f);
+  this->shadow.y = static_cast<int>(std::round(static_cast<float>(this->geometry.height) * 0.877f) - 17.0f);
 }
 
 // OFFSET: 0x00829080
