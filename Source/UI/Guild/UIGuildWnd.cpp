@@ -1487,6 +1487,7 @@ void UIGuildPositionManageWnd::Paint() {
 }
 
 // OFFSET: 0x00956850
+// FUNCTION: fn_45688
 void UIGuildInfoManageWnd::DrawEmblem() {
   unsigned red, green, blue;
   g_skinInfo.PaletteChannels(6, 2, red, green, blue);
