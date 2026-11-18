@@ -9,6 +9,7 @@ struct ActorPickInfo {
   // INLINED
   ActorPickInfo() : left(0.0f), top(0.0f), depth(0.0f), right(0.0f), bottom(0.0f), depthOffset(0.0f) {
   }
+  bool Contains(float x, float y) const;
 
   /* 0000 */ float left;
   /* 0004 */ float top;
@@ -31,18 +32,14 @@ struct ActorPickBounds {
 
 class CActorPickNode {
 public:
-  // INLINED
-  CActorPickNode() {
-    for (int index = 0; index < 4; ++index) {
-      this->children[index] = nullptr;
-    }
-  }
-
+  CActorPickNode();
   virtual ~CActorPickNode();
   void AddPickInfo(ActorPickInfo* info);
   __declspec(noinline) void Clear();
   ActorPickInfo* Pick(float x, float y);
   void MakeQuardTree(int depth, ActorPickBounds bounds);
+  int QuadrantAt(int x, int y) const;
+  ActorPickBounds ChildBounds(ActorPickBounds bounds, int quadrant) const;
 
   /* 0004 */ ActorPickBounds bounds;
   /* 0014 */ CActorPickNode* children[4];

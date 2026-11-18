@@ -33,6 +33,13 @@ bool CPathFinder::Walkable(int column, int row) const {
   return this->attr->Walkable(column, row);
 }
 
+// OFFSET: 0x00ADA4F0
+CActorPickNode::CActorPickNode() {
+  for (int index = 0; index < 4; ++index) {
+    this->children[index] = nullptr;
+  }
+}
+
 // OFFSET: 0x00ADA690
 // FUNCTION: fn_17906
 __declspec(noinline) CActorPickNode::~CActorPickNode() {
@@ -104,7 +111,7 @@ ActorPickInfo* CActorPickNode::Pick(float x, float y) {
     ActorPickInfo* result = nullptr;
     float bestDepth = 0.0f;
     for (ActorPickInfo* info : this->pickInfos) {
-      if (x > info->left && x < info->right && y > info->top && y < info->bottom && info->depthOffset + info->depth > bestDepth) {
+      if (info->Contains(x, y) && info->depthOffset + info->depth > bestDepth) {
         result = info;
         bestDepth = info->depthOffset + info->depth;
       }
@@ -112,12 +119,7 @@ ActorPickInfo* CActorPickNode::Pick(float x, float y) {
     return result;
   }
 
-  int quadrant;
-  if (static_cast<int>(x) <= this->bounds.right / 2) {
-    quadrant = static_cast<int>(y) <= this->bounds.bottom / 2 ? 0 : 3;
-  } else {
-    quadrant = (static_cast<int>(y) > this->bounds.bottom / 2) + 1;
-  }
+  const int quadrant = this->QuadrantAt(static_cast<int>(x), static_cast<int>(y));
 
   ActorPickInfo* result = this->children[quadrant]->Pick(x, y);
   if (result) {
@@ -134,6 +136,21 @@ ActorPickInfo* CActorPickNode::Pick(float x, float y) {
   return nullptr;
 }
 
+// OFFSET: 0x00ADA9E0
+int CActorPickNode::QuadrantAt(int x, int y) const {
+  const int centerX = this->bounds.right / 2;
+  const int centerY = this->bounds.bottom / 2;
+  if (x <= centerX) {
+    return y <= centerY ? 0 : 3;
+  }
+  return (y > centerY) + 1;
+}
+
+// OFFSET: 0x00ADAA20
+bool ActorPickInfo::Contains(float x, float y) const {
+  return x > this->left && x < this->right && y > this->top && y < this->bottom;
+}
+
 // OFFSET: 0x00ADAA60
 // FUNCTION: fn_17911
 void CActorPickNode::MakeQuardTree(int depth, ActorPickBounds bounds) {
@@ -143,29 +160,33 @@ void CActorPickNode::MakeQuardTree(int depth, ActorPickBounds bounds) {
     for (int index = 0; index < 4; ++index) {
       CActorPickNode* child = new CActorPickNode;
       this->children[index] = child;
-      ActorPickBounds childBounds = this->bounds;
-      ActorPickBounds& quadrant = childBounds;
-      switch (index) {
-      case 0:
-        quadrant.right /= 2;
-        quadrant.bottom /= 2;
-        break;
-      case 1:
-        quadrant.left = quadrant.right / 2 + 1;
-        quadrant.bottom /= 2;
-        break;
-      case 2:
-        quadrant.left = quadrant.right / 2 + 1;
-        quadrant.top = quadrant.bottom / 2 + 1;
-        break;
-      case 3:
-        quadrant.right /= 2;
-        quadrant.top = quadrant.bottom / 2 + 1;
-        break;
-      }
-      child->MakeQuardTree(depth - 1, childBounds);
+      child->MakeQuardTree(depth - 1, this->ChildBounds(this->bounds, index));
     }
   }
+}
+
+// OFFSET: 0x00ADABD0
+// FUNCTION: fn_45897
+ActorPickBounds CActorPickNode::ChildBounds(ActorPickBounds bounds, int quadrant) const {
+  switch (quadrant) {
+  case 0:
+    bounds.right /= 2;
+    bounds.bottom /= 2;
+    break;
+  case 1:
+    bounds.left = bounds.right / 2 + 1;
+    bounds.bottom /= 2;
+    break;
+  case 2:
+    bounds.left = bounds.right / 2 + 1;
+    bounds.top = bounds.bottom / 2 + 1;
+    break;
+  case 3:
+    bounds.right /= 2;
+    bounds.top = bounds.bottom / 2 + 1;
+    break;
+  }
+  return bounds;
 }
 
 // GLOBAL: gl_24536
