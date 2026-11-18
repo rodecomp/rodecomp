@@ -53,6 +53,7 @@ public:
   DWORD RedExpansion();
   DWORD RedShift();
   IDirectDrawSurface7* RenderTarget();
+  D3DDEVICEDESC7 Capabilities() const;
 
   /* 0000 */ HWND window;
   /* 0004 */ DWORD width;

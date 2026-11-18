@@ -6,6 +6,12 @@
 #include "Render/Textures/Texture.h"
 #include "UI/GameSettings/GameSettingsUI.h"
 
+// OFFSET: 0x0055D0D0
+// FUNCTION: fn_45882
+D3DDEVICEDESC7 DeviceOwnerDX7::Capabilities() const {
+  return this->caps;
+}
+
 // INLINED
 inline void TextureAllocationDX7::Update(int enabled, const D3DDEVICEDESC7& caps) {
   if (enabled != 0 && (caps.dpcTriCaps.dwTextureFilterCaps & D3DPTFILTERCAPS_LINEARMIPLINEAR)) {
