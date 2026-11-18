@@ -10625,9 +10625,10 @@ void CGameMode::ReceivePetChangeState(const unsigned char* data) {
       if (UIWindow* window = g_windowMgr.LookupWindow(WID_ITEMWND)) {
         window->Invalidate();
       }
+      EquipmentProperties::CEquipmentPropertiesMgr* properties = EquipmentProperties::CEquipmentPropertiesMgr::GetInstance();
       const int itemId = -1;
       const int kind = 0;
-      EquipmentProperties::CEquipmentPropertiesMgr::GetInstance()->RemoveExpansion(kind, itemId);
+      properties->RemoveExpansion(kind, itemId);
       g_windowMgr.CloseWindow(WID_PETINFOWND);
       break;
     }
