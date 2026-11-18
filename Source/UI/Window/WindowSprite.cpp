@@ -9,6 +9,12 @@
 #include "UI/Window/UIWindow.h"
 #include "Utility/Math/AffineMatrix.h"
 
+// INLINED
+static void PushOverlay(std::vector<RenderPrimitive*>& overlays, RenderPrimitive* primitive)
+{
+  overlays.push_back(primitive);
+}
+
 // OFFSET: 0x00A7A0C0
 // FUNCTION: fn_16922
 void UIWindow::AddSpriteCellOverlay(
@@ -53,15 +59,14 @@ void UIWindow::AddSpriteCellOverlay(
     const float sine = ClientSine(static_cast<int>(angle));
     const float upper = static_cast<float>(cell->y) * scale + static_cast<float>(y);
     const float lower = static_cast<float>((static_cast<std::int16_t>(image->doubleHeight) + 1) * image->height + cell->y) * scale + static_cast<float>(y) + 1.0f;
-    const int width = image->width;
     float startX;
     float endX;
     if (cell->mirrored & 1) {
-      startX = static_cast<float>((static_cast<std::int16_t>(image->doubleWidth) + 1) * width + cell->x) * scale + static_cast<float>(x);
+      startX = static_cast<float>((static_cast<std::int16_t>(image->doubleWidth) + 1) * image->width + cell->x) * scale + static_cast<float>(x);
       endX = static_cast<float>(cell->x) * scale + static_cast<float>(x) + 1.0f;
     } else {
       startX = static_cast<float>(cell->x) * scale + static_cast<float>(x);
-      endX = static_cast<float>((static_cast<std::int16_t>(image->doubleWidth) + 1) * width + cell->x) * scale + static_cast<float>(x) + 1.0f;
+      endX = static_cast<float>((static_cast<std::int16_t>(image->doubleWidth) + 1) * image->width + cell->x) * scale + static_cast<float>(x) + 1.0f;
     }
     const float halfWidth = (endX - startX) * 0.5f;
     const float halfHeight = (lower - upper) * 0.5f;
@@ -124,8 +129,7 @@ void UIWindow::AddSpriteCellOverlay(
   vertices[3].diffuse = color;
   vertices[3].v = record.v1;
 
-  std::vector<RenderPrimitive*>& overlays = this->m_overlayPrimitives;
-  overlays.push_back(primitive);
+  PushOverlay(this->m_overlayPrimitives, primitive);
 }
 
 // OFFSET: 0x00A7A5C0
