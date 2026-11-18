@@ -37,6 +37,7 @@ void GroundLightmapSet::Build(CGndRes& resource) {
     for (int index = 0; index < 1024 && first + index < this->lightmapCount; ++index) {
       unsigned char decoded[256];
       resource.Lightmap(first + index, decoded);
+      GroundLightmap& map = this->lightmaps[first + index];
       const int tile = first + index - atlas * 1024;
       const unsigned column = tile % 32;
       const unsigned row = tile / 32;
@@ -49,7 +50,6 @@ void GroundLightmapSet::Build(CGndRes& resource) {
         }
       }
 
-      GroundLightmap& map = this->lightmaps[first + index];
       map.uv[0][0] = std::clamp(static_cast<float>(8 * column + 1) / 256.0f, 0.0f, 1.0f);
       map.uv[0][1] = std::clamp(static_cast<float>(8 * row + 1) / 256.0f, 0.0f, 1.0f);
       map.uv[1][0] = std::clamp(static_cast<float>(8 * column + 7) / 256.0f, 0.0f, 1.0f);
@@ -65,7 +65,10 @@ void GroundLightmapSet::Build(CGndRes& resource) {
 
       for (unsigned corner = 0; corner < 4; ++corner) {
         const unsigned pixel = samples[corner];
-        map.cornerColors[corner].argb = (((((decoded[pixel] << 8) + decoded[64 + pixel * 3]) << 8) + decoded[65 + pixel * 3]) << 8) + decoded[66 + pixel * 3];
+        map.cornerColors[corner].a = decoded[pixel];
+        map.cornerColors[corner].r = decoded[64 + pixel * 3];
+        map.cornerColors[corner].g = decoded[65 + pixel * 3];
+        map.cornerColors[corner].b = decoded[66 + pixel * 3];
       }
     }
 
