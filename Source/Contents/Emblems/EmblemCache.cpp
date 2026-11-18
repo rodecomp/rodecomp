@@ -21,19 +21,6 @@
 #include <windows.h>
 #include <zlib.h>
 
-namespace {
-  // INLINED
-  __forceinline std::string Basename(const std::string& path) {
-    std::string name = path;
-    const auto separator = path.rfind('\\');
-    if (separator != std::string::npos) {
-      name = path.substr(separator + 1, path.size());
-    }
-
-    return name;
-  }
-}
-
 // OFFSET: 0x0065ED00
 // FUNCTION: fn_05178
 std::string CGuildMgr::EmblemFilename(std::uint32_t guild, std::uint32_t revision) const {
@@ -45,7 +32,13 @@ std::string CGuildMgr::EmblemFilename(std::uint32_t guild, std::uint32_t revisio
 // OFFSET: 0x0065E6F0
 // FUNCTION: fn_05176
 bool CGuildMgr::IsInvalidEmblem(std::string path) const {
-  return this->m_invalidEmblems.find(Basename(path)) != this->m_invalidEmblems.end();
+  std::string name = path;
+  const auto separator = path.rfind('\\');
+  if (separator != std::string::npos) {
+    name = path.substr(separator + 1, path.size());
+  }
+
+  return this->m_invalidEmblems.end() != this->m_invalidEmblems.find(name);
 }
 
 // OFFSET: 0x0065DFB0
