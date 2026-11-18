@@ -259,7 +259,7 @@ int UIAccountLimitedToolWnd::SendMsg(UIWindow* sender, int message, std::intptr_
       __time32_t period = _time32(nullptr);
       tm* periodDate = _localtime32(&period);
       const time_t days = std::atoi(this->m_edits[12]->Text());
-      periodDate->tm_mday = days == 0 ? 15 : static_cast<int>(days);
+      periodDate->tm_mday = static_cast<int>(0 == days ? 15 : days);
       periodDate->tm_hour = std::atoi(this->m_edits[13]->Text());
       periodDate->tm_min = std::atoi(this->m_edits[14]->Text());
       periodDate->tm_sec = 0;
