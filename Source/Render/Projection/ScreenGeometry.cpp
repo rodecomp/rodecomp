@@ -27,9 +27,11 @@ void DrawScreenLine(ScreenPoint start, ScreenPoint end, int thickness, CTexture*
   const float width = static_cast<float>(thickness);
   const float offsetY = ClientSin(angle) * width;
   const float offsetX = ClientCos(angle) * width;
-  DrawScreenQuad(
-    start.x - offsetX, start.y - offsetY, start.x + offsetX, start.y + offsetY, end.x - offsetX, end.y - offsetY, end.x + offsetX, end.y + offsetY, texture, color
-  );
+  const ScreenPoint p0 = {start.x - offsetX, start.y - offsetY};
+  const ScreenPoint p1 = {start.x + offsetX, start.y + offsetY};
+  const ScreenPoint p2 = {end.x - offsetX, end.y - offsetY};
+  const ScreenPoint p3 = {end.x + offsetX, end.y + offsetY};
+  DrawScreenQuad(p0, p1, p2, p3, texture, color);
 }
 
 // OFFSET: 0x0054DB40
@@ -73,7 +75,7 @@ void DrawScreenQuad(float x0, float y0, float x1, float y1, float x2, float y2, 
 
 // OFFSET: 0x00915F60
 // FUNCTION: fn_12581
-void DrawScreenQuad(ScreenPoint p0, ScreenPoint p1, ScreenPoint p2, ScreenPoint p3, CTexture* texture, std::uint32_t color) {
+__declspec(noinline) void DrawScreenQuad(ScreenPoint p0, ScreenPoint p1, ScreenPoint p2, ScreenPoint p3, CTexture* texture, std::uint32_t color) {
   RenderPrimitive* primitive = g_renderer->AcquirePrimitive();
   RenderVertex* vertices = primitive->vertices;
   vertices[0].x = p0.x;
