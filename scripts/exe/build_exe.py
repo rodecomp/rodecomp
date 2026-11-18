@@ -32,8 +32,9 @@ Pipeline, in this order:
   1. compile   every unit of data/compile.json (+ EXE_ONLY_UNITS)
   2. link      Ragexe.exe, Ragexe.pdb, Ragexe.map
   3. patch     scripts/exe/postprocess.py applies scripts/exe/patches/NNNN_*.py in order: byte edits the
-               shipped exe received after it was compiled, which no C++ source reproduces. Skipped with
-               --no-postprocess (gives the exe exactly as the source compiles).
+               shipped exe received after it was compiled, which no C++ source reproduces. There are none
+               at present (the target is Gravity's unpatched build, which the source reproduces). Skipped
+               with --no-postprocess (gives the exe exactly as the source compiles).
 
     python scripts/exe/build_exe.py                     # compile + link + patch, fail on any error
     python scripts/exe/build_exe.py --force-multiple    # accept duplicate definitions
