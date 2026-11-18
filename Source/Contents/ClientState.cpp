@@ -982,8 +982,16 @@ void CSession::SetHomunculusAutoFeed(bool enabled) {
 // OFFSET: 0x00E48980
 // FUNCTION: fn_24223
 void CSession::SetPetAutoFeed(bool enabled) {
-  g_session.m_petAutoFeed = enabled == true;
-  const char* text = LookupMessage(enabled ? 2579 : 2580);
+  int message;
+  if (enabled == true) {
+    g_session.m_petAutoFeed = true;
+    message = 2579;
+  } else {
+    g_session.m_petAutoFeed = false;
+    message = 2580;
+  }
+
+  const char* text = LookupMessage(message);
   g_windowMgr.SendNotice(UIM_PUSHINTOCHATHISTORY, reinterpret_cast<std::intptr_t>(text), 0x64FFFF, 0, 0, 0);
 }
 
