@@ -1318,7 +1318,8 @@ int UITreeView::LayoutNodes(std::list<UITreeNode*>& nodes, int x, int y) {
                       label->m_outlined, 0
                     ) +
                     2;
-            width = label->m_border ? width + 2 : width;
+            int& bordered = width;
+            bordered = !label->m_border ? width : width + 2;
           }
           label->UIWindow::Resize(width, height);
         }
