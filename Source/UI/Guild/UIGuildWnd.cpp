@@ -725,6 +725,7 @@ void UIGuildBanishedMemberWnd::UpdateScroll() {
 }
 
 // OFFSET: 0x00957760
+// FUNCTION: fn_45689
 int UIGuildBanishedMemberWnd::MemberIndexAt(int x, int y) {
   if (x <= this->geometry.width - 14 && x >= 4 && y >= g_guildBanishedRowHeight + 46 && y < (this->m_visibleRows + 1) * g_guildBanishedRowHeight + 46) {
     const int row = (y - g_guildBanishedRowHeight - 46) / g_guildBanishedRowHeight;
