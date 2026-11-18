@@ -34,20 +34,12 @@ int CSession::UseLevel(int id) const {
   return 0;
 }
 
-// OFFSET: 0x005E6EF0
-// FUNCTION: fn_03933
-void CCharacterLinkedUserDataMgr::Save() {
-  if (!this->m_loaded) {
-    return;
-  }
-
-  Json::Value root;
-  Json::Value data;
-
-  if (g_session.GetOption(7) != 0) {
+// INLINED
+inline void CCharacterLinkedUserDataMgr::SaveUseSkillLevel(Json::Value& data) {
+  if (static_cast<int>(g_session.m_options.Get(7)) != 0) {
     Json::Value values;
 
-    struct SaveUseSkillLevel {
+    struct UseSkillLevelAppender {
       Json::Value* values;
 
       // OFFSET: 0x005E7AE0
@@ -65,21 +57,23 @@ void CCharacterLinkedUserDataMgr::Save() {
       }
     };
 
-    g_session.m_skillBundle.ForEachGrouped(SaveUseSkillLevel{&values});
+    g_session.m_skillBundle.ForEachGrouped(UseSkillLevelAppender{&values});
     data["UseSkillInfo"] = values;
   }
+}
 
-  if (g_session.GetOption(8) != 0) {
+// INLINED
+inline void CCharacterLinkedUserDataMgr::SaveHomunSkillLevel(Json::Value& data) {
+  if (static_cast<int>(g_session.m_options.Get(8)) != 0) {
     Json::Value values;
 
     for (auto skillIt = g_session.m_homunSkills.begin(); skillIt != g_session.m_homunSkills.end(); ++skillIt) {
       const CSkillInfo& skill = *skillIt;
-      const int id = static_cast<int>(skill.id);
-      const int level = g_session.HomunSkillLevel(id);
+      const int level = g_session.HomunSkillLevel(skill.id);
 
       if (level != 0) {
         Json::Value value;
-        value["HomunSKID"] = id;
+        value["HomunSKID"] = skill.id;
         value["HomunSKLv"] = level;
         values.append(value);
       }
@@ -87,6 +81,20 @@ void CCharacterLinkedUserDataMgr::Save() {
 
     data["HomunSkillInfo"] = values;
   }
+}
+
+// OFFSET: 0x005E6EF0
+// FUNCTION: fn_03933
+void CCharacterLinkedUserDataMgr::Save() {
+  if (!this->m_loaded) {
+    return;
+  }
+
+  Json::Value root;
+  Json::Value data;
+
+  this->SaveUseSkillLevel(data);
+  this->SaveHomunSkillLevel(data);
 
   data["ItemComparison"] = g_serviceOptions.Get(TT_ITEM_COMPARE_ON_OFF);
   data["SortPrivateTab"] = g_session.m_sortPrivateTab;
