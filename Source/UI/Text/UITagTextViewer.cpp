@@ -256,7 +256,7 @@ void UITagTextViewer::AddText(const std::string& text) {
   this->m_cursorY += info.m_height;
 
   int offset = std::max(this->m_topMargin, 0);
-  if (this->m_topMargin + this->m_cursorY < this->geometry.height) {
+  if (this->geometry.height > this->m_topMargin + this->m_cursorY) {
     if (this->m_verticalAlign == 5) {
       offset = this->geometry.height - this->m_topMargin - this->m_cursorY;
     } else if (this->m_verticalAlign == 4) {
@@ -265,10 +265,11 @@ void UITagTextViewer::AddText(const std::string& text) {
   }
 
   for (std::map<UIWindow*, TagTextViewer::Position>::iterator it = this->m_positions.begin(); it != this->m_positions.end(); ++it) {
-    UIWindow* window = it->first;
-    window->Move(window->geometry.x, window->geometry.y - this->m_offsetY + offset);
-    it->second.y = static_cast<float>(window->geometry.y);
-    it->second.x = static_cast<float>(window->geometry.x);
+    it->first->Move(it->first->geometry.x, it->first->geometry.y - this->m_offsetY + offset);
+    const float y = static_cast<float>(it->first->geometry.y);
+    const float x = static_cast<float>(it->first->geometry.x);
+    it->second.y = y;
+    it->second.x = x;
   }
   this->m_offsetY = offset;
 
@@ -276,10 +277,9 @@ void UITagTextViewer::AddText(const std::string& text) {
   for (auto lineIt = lines.begin(); lineIt != lines.end(); ++lineIt) {
     std::vector<UIWindow*> line = *lineIt;
     for (auto windowIt = line.begin(); windowIt != line.end(); ++windowIt) {
-      UIWindow* window = *windowIt;
-      window->Move(window->geometry.x + this->m_margin, window->geometry.y + offset + previousCursor + spacing);
-      this->AddChild(window);
-      this->StorePosition(window);
+      (*windowIt)->Move((*windowIt)->geometry.x + this->m_margin, (*windowIt)->geometry.y + offset + previousCursor + spacing);
+      this->AddChild(*windowIt);
+      this->StorePosition(*windowIt);
     }
   }
 
@@ -315,13 +315,12 @@ void UITagTextViewer::Layout() {
       offset = static_cast<unsigned int>(static_cast<float>(static_cast<unsigned int>(this->geometry.height - info.m_height)) * g_depthAverageHalf);
     }
   }
-  for (auto lineIt = lines.begin(), lineEnd = lines.end(); lineIt != lineEnd; ++lineIt) {
+  for (auto lineIt = lines.begin(); lineIt != lines.end(); ++lineIt) {
     std::vector<UIWindow*> line = *lineIt;
     for (auto windowIt = line.begin(), windowEnd = line.end(); windowIt != windowEnd; ++windowIt) {
-      UIWindow* window = *windowIt;
-      window->Move(window->geometry.x + this->m_margin, window->geometry.y + offset);
-      this->AddChild(window);
-      this->StorePosition(window);
+      (*windowIt)->Move((*windowIt)->geometry.x + this->m_margin, (*windowIt)->geometry.y + offset);
+      this->AddChild(*windowIt);
+      this->StorePosition(*windowIt);
     }
   }
 
