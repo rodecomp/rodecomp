@@ -72,3 +72,7 @@ int UIOpenMailBoxWnd::SendMsg(UIWindow* sender, int message, std::intptr_t a, st
 UIOpenMailBoxWnd::UIOpenMailBoxWnd()
     : UIFrameWnd(0) {
 }
+
+// OFFSET: 0x00947970
+// FUNCTION: fn_45810
+UIOpenMailBoxWnd::~UIOpenMailBoxWnd() = default;
