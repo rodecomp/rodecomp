@@ -8,7 +8,7 @@ class UIBitmapButton : public UIButton {
   friend class UIAchViewWnd;
 
 public:
-  UIBitmapButton();
+  __declspec(noinline) UIBitmapButton();
   ~UIBitmapButton() override;
   void Paint() override;
   bool SetBitmap(const char* name, int state, unsigned char exactSize);

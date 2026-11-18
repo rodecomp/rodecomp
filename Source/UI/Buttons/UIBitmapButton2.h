@@ -5,6 +5,8 @@
 
 class UIBitmapButton2 : public UIBitmapButton {
 public:
+  __declspec(noinline) UIBitmapButton2();
+  __declspec(noinline) ~UIBitmapButton2() override;
   void DragAndDrop(int argument1, int argument2, std::intptr_t argument3) override;
   void OnLBtnUp(int x, int y) override;
   void OnRBtnDown(int x, int y) override;

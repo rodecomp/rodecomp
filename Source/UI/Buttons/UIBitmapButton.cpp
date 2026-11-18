@@ -5,6 +5,7 @@
 #include "Resource/Bitmap/TextureNames.h"
 #include "UI/Buttons/UIBitmapButton.h"
 #include "UI/Buttons/UITextureButton.h"
+#include "UI/Buttons/UIBitmapButton2.h"
 #include "Render/Textures/Texture.h"
 #include "Render/Textures/TextureCache.h"
 
@@ -17,6 +18,16 @@ UIBitmapButton::UIBitmapButton()
   this->m_disabledName.clear();
   this->m_invalidateParent = 0;
 }
+
+// OFFSET: 0x0086C530
+// FUNCTION: fn_45791
+UIBitmapButton2::UIBitmapButton2()
+    : UIBitmapButton() {
+}
+
+// OFFSET: 0x00870280
+// FUNCTION: fn_45792
+UIBitmapButton2::~UIBitmapButton2() = default;
 
 // OFFSET: 0x008695B0
 // FUNCTION: fn_45624
