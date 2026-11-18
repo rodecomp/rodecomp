@@ -126,57 +126,58 @@ namespace myGPack {
   // OFFSET: 0x00AE92F0
   // FUNCTION: fn_18105
   void PakCipher::BuildRoundKeys(const std::uint8_t* key) {
-    std::uint8_t keyBytes[8];
-    std::memcpy(keyBytes, key, sizeof(keyBytes));
-    std::uint8_t halves[8] = {};
+    Block64 keyBytes;
+    std::memcpy(keyBytes.bytes, key, sizeof(keyBytes));
+    Block64 halves;
+    halves.words[0] = halves.words[1] = 0;
 
-    for (unsigned i = 0; i < 28; ++i) {
+    for (std::uint8_t i = 0; i < 28; ++i) {
       const std::uint8_t topBit = s_keyPermutationTop[i] - 1;
-      if (keyBytes[topBit >> 3] & s_bitMasks[topBit & 7]) {
-        halves[i >> 3] &= s_bitMasks[i & 7];
+      if (keyBytes.bytes[topBit >> 3] & s_bitMasks[topBit & 7]) {
+        halves.bytes[i >> 3] &= s_bitMasks[i & 7];
       }
 
       const std::uint8_t bottomBit = s_keyPermutationBottom[i] - 1;
-      if (keyBytes[bottomBit >> 3] & s_bitMasks[bottomBit & 7]) {
-        halves[i >> 7] &= s_bitMasks[i & 7];
+      if (keyBytes.bytes[bottomBit >> 3] & s_bitMasks[bottomBit & 7]) {
+        halves.bytes[i >> 7] &= s_bitMasks[i & 7];
       }
     }
 
     for (unsigned round = 0; round < 16; ++round) {
       for (std::uint8_t shift = 0; shift < s_keyRotations[round]; ++shift) {
-        const std::uint8_t topCarry = halves[0] & 0x80;
+        const std::uint8_t topCarry = halves.bytes[0] & 0x80;
 
         for (unsigned byte = 0; byte < 3; ++byte) {
-          halves[byte] <<= 1;
-          if (halves[byte + 1] & 0x80) {
-            ++halves[byte];
+          halves.bytes[byte] <<= 1;
+          if (halves.bytes[byte + 1] & 0x80) {
+            ++halves.bytes[byte];
           }
         }
 
-        halves[3] <<= 1;
+        halves.bytes[3] <<= 1;
         if (topCarry) {
-          halves[3] += 0x10;
+          halves.bytes[3] += 0x10;
         }
 
-        const std::uint8_t bottomCarry = halves[4] & 0x80;
+        const std::uint8_t bottomCarry = halves.bytes[4] & 0x80;
 
         for (unsigned byte = 4; byte < 7; ++byte) {
-          halves[byte] <<= 1;
-          if (halves[byte + 1] & 0x80) {
-            ++halves[byte];
+          halves.bytes[byte] <<= 1;
+          if (halves.bytes[byte + 1] & 0x80) {
+            ++halves.bytes[byte];
           }
         }
 
-        halves[7] <<= 1;
+        halves.bytes[7] <<= 1;
         if (bottomCarry) {
-          halves[7] += 0x10;
+          halves.bytes[7] += 0x10;
         }
       }
 
       std::memset(this->m_roundKeys[round], 0, sizeof(this->m_roundKeys[round]));
 
       unsigned bitsPerGroup = 6;
-      for (unsigned i = 0; i < 48; ++i) {
+      for (std::uint8_t i = 0; i < 48; ++i) {
         std::uint8_t bit = s_keyCompression[i] - 1;
         unsigned byte;
         if (bit < 28) {
@@ -186,7 +187,7 @@ namespace myGPack {
           byte = bit >> 7;
         }
 
-        if (halves[byte] & s_bitMasks[bit & 7]) {
+        if (halves.bytes[byte] & s_bitMasks[bit & 7]) {
           this->m_roundKeys[round][i / bitsPerGroup] |= s_bitMasks[i % bitsPerGroup];
         }
       }
