@@ -8,7 +8,11 @@ void UICharInfoBalloonText::Paint() {
   int y = 6;
   for (unsigned int i = 0; i < this->m_lines.size(); ++i) {
     const unsigned int rightColumn = i & 1;
-    this->DrawShadowedText(rightColumn ? 50 : 6, y, this->m_lines[i].c_str(), 0, this->m_textColor, this->m_outlineColor, 0, this->m_fontHeight, 0);
+    int x = 6;
+    if (rightColumn) {
+      x = 50;
+    }
+    this->DrawShadowedText(x, y, this->m_lines[i].c_str(), 0, this->m_textColor, this->m_outlineColor, 0, this->m_fontHeight, 0);
     if (rightColumn) {
       y += this->TextHeight(this->m_lines[i].c_str(), 0, 0, this->m_fontHeight, 0, 0) + 4;
     }
