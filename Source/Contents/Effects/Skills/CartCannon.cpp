@@ -79,19 +79,20 @@ void CCartCannon::Open() {
   const float dz = target.z - current.z;
   const float inverse = 1.0f / SquareRoot(dx * dx + dy * dy + dz * dz);
 
-  current.x = inverse * dx * 4.0f + current.x;
-  this->startPosition.x = current.x;
-  current.y = inverse * dy * 4.0f + current.y;
-  this->startPosition.y = current.y;
-  current.z = inverse * dz * 4.0f + current.z;
-  this->startPosition.z = current.z;
+  const vector3d moved = {inverse * dx * 4.0f + current.x, inverse * dy * 4.0f + current.y, inverse * dz * 4.0f + current.z};
+  current.x = moved.x;
+  this->startPosition.x = moved.x;
+  current.y = moved.y;
+  this->startPosition.y = moved.y;
+  current.z = moved.z;
+  this->startPosition.z = moved.z;
 
-  this->position[0] = current.x;
-  this->position[1] = current.y;
-  this->position[2] = current.z;
+  this->position[0] = moved.x;
+  this->position[1] = moved.y;
+  this->position[2] = moved.z;
 
   CGameMode* mode = g_modeMgr.GetGameMode();
-  const float angle = static_cast<float>(atan2(static_cast<double>(target.z - current.z), static_cast<double>(target.x - current.x)));
+  const float angle = static_cast<float>(atan2(static_cast<double>(target.z - this->currentPosition.z), static_cast<double>(target.x - current.x)));
   float yaw = mode->CameraDesiredYaw() + angle / 3.141592f * 180.0f;
   if (yaw < 0.0f) {
     yaw += 360.0f;
