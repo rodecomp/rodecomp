@@ -139,6 +139,7 @@ public:
   void WrapLines(std::vector<std::string>& lines);
   std::string TakePendingText();
   void SetTagColor(std::uint32_t color);
+  void ClearTags();
   void ClearLineState();
   int DecodeLinkNumber(std::string text);
   void DecodeLinkOptions(std::vector<int>& options, const char* text, int& position, const int& length, const char& separator, const char& alternate);

@@ -555,6 +555,20 @@ void UIEditCtrl3::SetTagColor(std::uint32_t color) {
   }
 }
 
+// OFFSET: 0x008542B0
+// FUNCTION: fn_45635
+__declspec(noinline) void UIEditCtrl3::ClearTags() {
+  for (auto entry = this->entries.begin(); entry != this->entries.end();) {
+    for (unsigned index = 0; index < entry->size(); ++index) {
+      this->RemoveChild((*entry)[index], 1);
+    }
+    std::vector<UIItemTagButton*> buttons;
+    buttons.swap(*entry);
+    entry = this->entries.erase(entry);
+  }
+  this->entries.clear();
+}
+
 // INLINED
 void UIEditCtrl::TextColor(std::uint32_t primary, std::uint32_t secondary) {
   this->secondColor = secondary;
