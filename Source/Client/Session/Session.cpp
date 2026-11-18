@@ -1910,14 +1910,18 @@ int CSession::GetBodyStyle(int job, int style, int renderJob) {
   return static_cast<unsigned>(g_session.GetBodyStyleJob(job) - JT_NOVICE_H) < 7;
 }
 
+// INLINED
+static void AppendSerialized(std::vector<unsigned char>& records, const std::vector<unsigned char>& record) {
+  records.insert(records.end(), record.begin(), record.end());
+}
+
 // OFFSET: 0x00E2F920
 // FUNCTION: fn_24160
 std::vector<unsigned char> SerializeItems(const std::list<ITEM_INFO>& items) {
   std::vector<unsigned char> result;
 
   for (std::list<ITEM_INFO>::const_iterator it = items.begin(); it != items.end(); ++it) {
-    const std::vector<unsigned char> bytes = it->Serialize();
-    result.insert(result.end(), bytes.begin(), bytes.end());
+    AppendSerialized(result, it->Serialize());
   }
 
   return result;
@@ -2294,7 +2298,7 @@ ITEM_INFO CSession::GetCardItemAt(std::size_t index) const {
   if (this->m_cardItems.empty()) {
     return ITEM_INFO(0);
   }
-  if (index >= this->m_cardItems.size()) {
+  if (this->m_cardItems.size() <= index) {
     return ITEM_INFO(0);
   }
   return this->m_cardItems[index];
@@ -3693,8 +3697,7 @@ void CSession::InitJobKeyNames() {
 std::vector<unsigned char> SerializeMessengerMembers(const std::list<MessengerMember>& members) {
   std::vector<unsigned char> records;
   for (std::list<MessengerMember>::const_iterator it = members.begin(); it != members.end(); ++it) {
-    const std::vector<unsigned char> record = it->Serialize();
-    records.insert(records.end(), record.begin(), record.end());
+    AppendSerialized(records, it->Serialize());
   }
   return records;
 }
