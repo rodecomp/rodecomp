@@ -20,6 +20,8 @@ public:
   void OnRBtnUp(int x, int y) override;
   void OnWheel(int value) override;
   void SetText(const char* value, int outline);
+  void SetTextShrinkToFit(const char* value, int outlineValue);
+  void SetTextTruncated(const char* value, int outlineValue);
   void SetColor(int redValue, int greenValue, int blueValue);
   void SetTextFitted(const char* value);
   void SetTextFittedCodePage(const char* value);
@@ -62,6 +64,7 @@ class UIStaticText3 : public UIStaticText {
 public:
   UIStaticText3();
   void Paint() override;
+  void SetTextCentered(const char* value, unsigned char outlineValue);
 
   /* 00D8 */ int textX;
 };

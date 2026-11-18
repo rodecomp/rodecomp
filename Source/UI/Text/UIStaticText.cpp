@@ -45,6 +45,40 @@ void UIStaticText::SetText(const char* value, int outlineValue) {
   this->Invalidate();
 }
 
+// OFFSET: 0x00867BD0
+// FUNCTION: fn_45619
+void UIStaticText::SetTextShrinkToFit(const char* value, int outlineValue) {
+  this->text = value;
+  this->tooltip = value;
+  this->outline = outlineValue;
+  this->tooltipEnabled = 0;
+
+  const int width = this->TextWidth(value, 0, 0, this->fontHeight, this->bold, this->italic) + (this->outline != 0 ? 2 : 0);
+  if (this->geometry.width < width) {
+    this->SetTextFitted(value);
+  } else {
+    this->Resize(width, this->geometry.height);
+  }
+  this->Invalidate();
+}
+
+// OFFSET: 0x008691E0
+// FUNCTION: fn_45620
+void UIStaticText::SetTextTruncated(const char* value, int outlineValue) {
+  this->text = value;
+  this->tooltip = value;
+  this->outline = outlineValue;
+  this->tooltipEnabled = 0;
+
+  const int width = this->TextWidth(value, 0, 0, this->fontHeight, this->bold, this->italic) + (this->outline != 0 ? 2 : 0);
+  if (this->geometry.width < width) {
+    this->SetTextFitted(value);
+  }
+  this->Invalidate();
+}
+
+// OFFSET: 0x00869290
+
 // OFFSET: 0x008685B0
 // FUNCTION: fn_10961
 void UIStaticText::SetColor(int redValue, int greenValue, int blueValue) {
