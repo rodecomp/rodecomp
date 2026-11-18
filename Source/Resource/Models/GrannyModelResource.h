@@ -207,6 +207,7 @@ public:
   void InstantiateModel(GrannyModelInstance* target, const granny_model* model);
   void Initialize();
   void FreeInstance();
+  void Release();
   granny_file* ReadAnimationFile(const char* name, const char* suffix);
 
   /* 0000 */ float animationDuration;
@@ -235,6 +236,7 @@ class C3dGrannyModelRes : public CRes {
 public:
   C3dGrannyModelRes();
   C3dGrannyModelRes(const char* extension, const char* prefix);
+  ~C3dGrannyModelRes() override;
   C3dGrannyModelRes* Create() override;
   void Unload() override;
   bool Load(const char* name) override;

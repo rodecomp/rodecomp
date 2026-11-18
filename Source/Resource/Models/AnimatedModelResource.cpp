@@ -269,22 +269,29 @@ bool C3dAnimModelRes::Load(const char* name) {
   return true;
 }
 
+// OFFSET: 0x0075C9D0
+// FUNCTION: fn_45856
+void GrannyAnimationLibrary::Release() {
+  this->FreeInstance();
+
+  for (int job = 0; job < 100; ++job) {
+    for (int action = 0; action < 20; ++action) {
+      granny_animation*& animation = this->animations[job][action];
+      if (animation) {
+        animation = nullptr;
+      }
+    }
+  }
+
+  GrannyFreeLocalPose(this->localPose);
+  GrannyFreeFile(this->file);
+}
+
 // OFFSET: 0x007566B0
 // FUNCTION: fn_45849
 GrannyAnimationLibrary::~GrannyAnimationLibrary() {
   if (this->instance) {
-    this->FreeInstance();
-
-    for (auto& job : this->animations) {
-      for (granny_animation*& animation : job) {
-        if (animation) {
-          animation = nullptr;
-        }
-      }
-    }
-
-    GrannyFreeLocalPose(this->localPose);
-    GrannyFreeFile(this->file);
+    this->Release();
   }
 }
 
@@ -298,6 +305,14 @@ C3dGrannyModelRes::C3dGrannyModelRes() {
   this->model = nullptr;
   this->job = 0;
   this->hairPivot = 0;
+}
+
+// OFFSET: 0x00756740
+// FUNCTION: fn_45857
+__declspec(noinline) C3dGrannyModelRes::~C3dGrannyModelRes() {
+  if (this->instance) {
+    this->Release();
+  }
 }
 
 // OFFSET: 0x00753540
